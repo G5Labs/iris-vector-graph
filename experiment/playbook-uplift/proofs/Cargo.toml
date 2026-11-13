@@ -1,0 +1,30 @@
+[package]
+name = "ivg-redaction-proofs"
+version = "0.1.0"
+edition = "2021"
+description = "L1/L2 models of IVG erasure -> ledger redaction -> replay, with refinement and replay proofs (playbook §3.3)."
+publish = false
+
+[dependencies]
+vstd = { version = "=0.0.0-2026-09-20-0158", features = ["std", "alloc"] }
+actors = { git = "file:///home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/playbook-reference-actors", rev = "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877" }
+
+[patch.crates-io]
+verus_builtin_macros = { git = "file:///home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/playbook-reference-actors", rev = "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877" }
+
+[features]
+# Broken-implementation controls (playbook §3.3 gate). Each must make the proof fail, located in l2.rs.
+control_unmarked_start = []
+control_other_target = []
+control_meta_every = []
+control_keep_retry_key = []
+control_no_final_check = []
+control_no_commit_block = []
+
+[package.metadata.verus]
+verify = true
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(verus_only)', 'cfg(verus_keep_ghost)', 'cfg(verus_keep_ghost_body)'] }
+
+[workspace]
