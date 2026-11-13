@@ -79,7 +79,25 @@ def oracle(obs: dict) -> list:
     return bad
 
 
+def reevaluate(path: Path) -> int:
+    """Re-apply the oracle to recorded results (the verify field holds the report's result or its text)."""
+    import re
+    results = json.loads(path.read_text())
+    for r in results:
+        v = r["after_retry"]["verify"]
+        m = re.search(r"result='(\w+)'", v)
+        r["after_retry"]["verify"] = m.group(1) if m else v
+        r["violations"] = oracle(r["after_retry"])
+    bad = [r["delay_s"] for r in results if r["violations"]]
+    print(json.dumps([{k: r[k] for k in ("delay_s", "client_killed", "violations")} | {"retry": r["retry"],
+                       "committed_before_retry": bool(r["after_kill"]["revisions"])} for r in results]))
+    print(f"oracle violations in {len(bad)} of {len(results)}: {bad}")
+    return 0 if not bad else 1
+
+
 def main() -> int:
+    if "--reevaluate" in sys.argv:
+        return reevaluate(Path(sys.argv[sys.argv.index("--reevaluate") + 1]))
     if "--self-test-oracle" in sys.argv:
         double = oracle({"edge_rows": N, "create_rel_records": 2 * N, "revisions": ["3", "4"], "verify": "equal"})
         missing = oracle({"edge_rows": 0, "create_rel_records": N, "revisions": ["3"], "verify": "diverged"})
@@ -117,7 +135,7 @@ def main() -> int:
         retry = [json.loads(x) for x in out_r.splitlines() if x.startswith("{")]
         obs = observe(ctl, tag)
         v = IRISGraphEngine(ctl.conn, namespace=NS, embedding_dimension=4).ledger.verify()
-        obs["verify"] = str(getattr(v, "status", v))
+        obs["verify"] = str(getattr(v, "result", v))
         res = {"delay_s": delay, "client_killed": killed, "first_reply": rest.strip()[-200:],
                "after_kill": mid, "retry": retry[-1] if retry else {"error": err_r[-300:]}, "after_retry": obs,
                "violations": oracle(obs)}

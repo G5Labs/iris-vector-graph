@@ -1,0 +1,16 @@
+{
+  "command": "locks.sh iris python traces/lost_ack.py $RUN_DIR/traces/lost-ack; python traces/lost_ack.py --reevaluate $RUN_DIR/traces/lost-ack/results.json (oracle field extraction fixed after the run; observations unchanged)",
+  "experiment_head": "cff144dc6909c1c050cb4d5e6f61e6ecb9f053d5",
+  "id": "live-lost-ack-commit",
+  "kind": "live",
+  "lane": "orchestrator",
+  "log": "$RUN_DIR/traces/lost-ack/reevaluate.log",
+  "log_bytes": 818,
+  "log_sha256": "b70e8d751ec6048103a94fc2f263460b1e080eeae3d1fd88523ab98211a342e4",
+  "observes": "6 worlds of a 1,500-relationship ledger commit with idempotency key whose client OS process is SIGKILLed at 0.05/0.3/0.8/1.5 s (or completes at 3/8 s): killed before the commit began (retry commits fresh, 1 world); killed after the server committed without the client seeing it (retry replays, 3 worlds); acknowledged (retry replays, 2 worlds). Every world: exactly one revision with the 1,500 records, 1,500 rows, verify equal. Not observed: a server-side rollback after disconnect (the server finished the call). Oracle self-test rejects double-applied and missing-content observations.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-13T23:51:25+00:00",
+  "result": "pass",
+  "results_sha256": "a483740bee515917307ee8d9c4bba400ea0c36616439f2ed8e88827f4311d0d6"
+}
