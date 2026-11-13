@@ -63,7 +63,7 @@ def trial(i: int, release_after: float, out: Path) -> dict:
         reset(ctl)
         eng = engine(ctl)
         eng.ledger.enable()
-        seed = Changeset(actor="audit:f1201", actor_type="ingest")
+        seed = Changeset(actor="audit:f1201", actor_type="ingest", auto_stub_missing_nodes=True)
         seed.create_relationship("x", "R", "y", graph=G)
         r0 = eng.ledger.commit(seed)
         ctl.conn.commit()
@@ -87,7 +87,7 @@ def trial(i: int, release_after: float, out: Path) -> dict:
 
     def commit():
         try:
-            cs = Changeset(actor="audit:f1201", actor_type="ingest")
+            cs = Changeset(actor="audit:f1201", actor_type="ingest", auto_stub_missing_nodes=True)
             cs.create_relationship("u", "R", "v", graph=G)
             r = engine(p).ledger.commit(cs)
             p.conn.commit()
