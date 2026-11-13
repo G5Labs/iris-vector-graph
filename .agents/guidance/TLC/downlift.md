@@ -1,0 +1,17 @@
+# Initial downlift: requirements into ontology and implementation
+
+Read only for an explicitly requested from-scratch downlift, its design-only preparation or continuation of that initial work. Incremental development does not restart this process. A design-only request ends at the design handoff; implement when authorized. Do not start uplift unless separately requested.
+
+Use the supplied requirements, mocks and governing ontology as the source baseline. Pin that baseline and its core-feature inventory, marking retained, changed and deferred outcomes with owners and observable acceptance conditions. Preserve all in-scope outcomes and exceptions; make genuine ambiguities and provisional choices visible. For a separate target, map retained meaning to new owners and record in-scope migration, compatibility and rollback obligations. Build a concise initial ontology and continue one design plan, using `.g5/downlift/<task>/downlift-plan.md` if no plan exists. For ontology writing, use [meaning and selection](../ontology.md), [format](../ontology-format.md) and [examples](../ontology-examples.md) as needed.
+
+Use [TLA+/TLC design guidance](tla-design.md) for the design phase, continuing the same ontology and plan under this downlift's scope. Compare credible simpler designs under the same required outcomes, concurrency, failure behavior and operating envelope. Initial downlift examines the sixteen dimensions in the installed `ontology-planning` skill's `references/design-evaluation.md`; it does not require sixteen reports or numerical scores.
+
+Save the initial ontology and design before refinement using the shared [model-checking mechanics](model-checking.md). Save TLA+/TLC artifacts under `.g5/TLA_verification/` following the [artifact layout](setup_foundation.md#artifact-paths). Initial downlift covers every retained original core feature with TLA+/TLC, sharing concern models. Use the models to examine consequential design choices and preserve legitimate completion as well as safety. Refine the same ontology and plan from findings, keeping essential assumptions visible and model mechanics in linked evidence. Recheck affected models and distinguish discovered simplifications from deliberate negative controls or confirmation of an existing design.
+
+Self-review the final design against all requirements, including those outside the models. Present its consequential decisions and unresolved assumptions for human reading. Keep a compact mapping from obligations to checked properties, results, gaps and required runtime trajectories in the same plan.
+
+During authorized implementation, use native coding methods within that design. Amend the owning ontology and plan for important discoveries before dependent work. Run real E2E tests for retained journeys and refusal/recovery behavior, plus TLC-derived trajectory tests through the actual implementation. Required checks must pass after the final relevant change; report blocked or unexecuted coverage as incomplete.
+
+Model checks do not prove running code, and initial downlift does not authorize a separate production-proof or deep-review campaign. For an explicitly requested deep PR review, use [deep-review guidance](../deep-review.md). Later fixes and PR adjustments maintain the existing ontology with native methods; they do not reload this initial workflow.
+
+At the final handoff, follow [verification foundation setup](setup_foundation.md) for the work authorized. For design-only work, hand off the models, design evidence and outstanding implementation checks.
