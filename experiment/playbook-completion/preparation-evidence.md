@@ -1,6 +1,6 @@
 # Follow-up evidence for the decision ledger
 
-These checks ran on 13 November 2026 in the follow-up worktree, with IVG product at `3eaa79cf`, submission at `9c3719c1`, and the dedicated `ivg-playbook-20261113-iris` Community 2026.1 container. The prior submission's evidence is in its own run directory. The new logs are under `$RUN_DIR/preparation` after sourcing [environment.sh](environment.sh).
+These checks ran on 13 November 2026 in the follow-up worktree, with IVG product at `3eaa79cf`, submission at `9c3719c1`, and the dedicated `ivg-playbook-20261113-iris` Community 2026.1 container. The prior submission's evidence is in its own run directory. These historical pre-repair logs are under `~/runs/iris-vector-graph-playbook-uplift-20261113/completion/preparation`. The current environment points to a separate clean audit run.
 
 | Log | What ran | Result | SHA-256 |
 | --- | --- | --- | --- |
