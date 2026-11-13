@@ -1,0 +1,15 @@
+{
+  "command": "flock -w 1800 $RUN_DIR/intent-a/auditia.lock timeout 600 python experiment/playbook-completion/intent/probes/lane-a/hd0401_gen_return.py",
+  "experiment_head": "c01a7ccd00b29670b521799344233fa4a814c925",
+  "id": "intent-a-hd0401-gen-return",
+  "kind": "probe",
+  "lane": "intent-a",
+  "log": "$RUN_DIR/intent-a/hd0401_gen_return.log",
+  "log_bytes": 1634,
+  "log_sha256": "fd6c237392deb6bc106668c10c273a6265a91a868a4744a643d139b663a842c8",
+  "observes": "AUDITIA, adjacency indexed: ^KG(gen,g,s)=2 after two create_edge; erase_graph and delete_node kill it (undefined); rewriting the same two edges brings it back to 2. The generation returns to a pre-erase value (ABA), so a count an in-flight reader took under gen 2 would validate again. Fails the working property (generation never returns) and the letter of ADR-0012 'every adjacency write must bump'; matches the Adj.cls:46-48 comment and spike README 'or kill'. Single-process degree answers stayed correct (2).",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-13T22:43:07+00:00",
+  "result": "fail"
+}

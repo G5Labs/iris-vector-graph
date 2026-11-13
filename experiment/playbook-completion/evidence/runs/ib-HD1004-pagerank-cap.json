@@ -1,0 +1,15 @@
+{
+  "command": "flock -s $RUN_DIR/intent-b/auditib.lock timeout 600 python experiment/playbook-completion/intent/probes/lane-b/hd1004_pagerank_cap.py",
+  "experiment_head": "c01a7ccd00b29670b521799344233fa4a814c925",
+  "id": "ib-HD1004-pagerank-cap",
+  "kind": "probe",
+  "lane": "intent-b",
+  "log": "$RUN_DIR/intent-b/hd1004_pagerank_cap.log",
+  "log_bytes": 593,
+  "log_sha256": "238e8ffee858e98ddf3a5b953763afd80f396ba1d518a07e5ddbcaf986bf3b07",
+  "observes": "Owner Graph.KG.PageRank.PageRankGlobalJson called as _execute_pagerank does with 10,050 edgeless ids (no writes): returns 10,000 rows, listed scores sum 0.995025; the native-route ranking _ranked_rows(rows,0) keeps all 10,050. Violates the kg_PAGERANK docstring (algorithms.py:749-752: every node takes part, scores sum to 1 over node_count(); R306 'before, a node with no edge had no pair') and spec 236 Story 2 scenario 3 (native and owner node sets match).",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-13T22:43:34+00:00",
+  "result": "fail"
+}

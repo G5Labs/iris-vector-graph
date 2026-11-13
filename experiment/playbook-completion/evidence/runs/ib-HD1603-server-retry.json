@@ -1,0 +1,15 @@
+{
+  "command": "flock -s $RUN_DIR/intent-b/auditib.lock timeout 600 python experiment/playbook-completion/intent/probes/lane-b/hd1603_server_retry.py",
+  "experiment_head": "c01a7ccd00b29670b521799344233fa4a814c925",
+  "id": "ib-HD1603-server-retry",
+  "kind": "probe",
+  "lane": "intent-b",
+  "log": "$RUN_DIR/intent-b/hd1603_server_retry.log",
+  "log_bytes": 5008,
+  "log_sha256": "33b8cc18bb6d13e50825ee5d81c646ab8a15961c59ef0c4bcbb2d4398f805eec",
+  "observes": "Pin's cypher_api app in-process (TestClient), engines on AUDITIB, fault injected into the first engine only. (A) CREATE executes then ConnectionError: one HTTP request answers 200 and 2 nodes are written (_run_cypher resets the engine and re-runs any exception, cypher_api.py:239-250). (B) ValueError before execution: retried on a new engine (any exception type, not only COMMUNICATION/LICENSE as in v1.47.0 9c683292). No stated contract; reproduces the deviation from the decisions.md working assumption (retry only reads / writes known unexecuted).",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-13T22:44:02+00:00",
+  "result": "expected-violation"
+}

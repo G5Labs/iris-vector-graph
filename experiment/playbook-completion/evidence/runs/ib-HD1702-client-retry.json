@@ -1,0 +1,15 @@
+{
+  "command": "timeout 300 python experiment/playbook-completion/intent/probes/lane-b/hd1702_client_retry.py",
+  "experiment_head": "c01a7ccd00b29670b521799344233fa4a814c925",
+  "id": "ib-HD1702-client-retry",
+  "kind": "probe",
+  "lane": "intent-b",
+  "log": "$RUN_DIR/intent-b/hd1702_client_retry.log",
+  "log_bytes": 1805,
+  "log_sha256": "272facfbeb76e29e2a970b9ec0dbb327c820b5a91bb08a4f08d83545f50cadd1",
+  "observes": "No-IRIS: IVGClient(max_retries=3, timeout=0.5) against a local counting stub of POST /api/cypher. A CREATE was executed 3x on persistent 500, 2x when the first attempt 'committed' then got a 502 (caller saw success, no sign of the duplicate), and 3x when each attempt 'committed' but answered after the read timeout (caller got IVGClientError). Reads and writes treated identically. Oracle = working assumption (no resend of a non-idempotent write after an ambiguous outcome); the retry itself is the documented behaviour (sdk.py docstrings, API_REFERENCE, commit aaa54a44), so expected-violation, not fail.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-13T22:42:18+00:00",
+  "result": "expected-violation"
+}

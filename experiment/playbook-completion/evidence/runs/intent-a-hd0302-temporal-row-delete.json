@@ -1,0 +1,17 @@
+{
+  "command": "flock /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/intent-a/auditia.lock timeout 600 python experiment/playbook-completion/intent/probes/lane-a/hd0302_temporal_row_delete.py",
+  "contested": "maintainer-test-accepts-as-built",
+  "experiment_head": "c01a7ccd00b29670b521799344233fa4a814c925",
+  "hd": "HD-0302",
+  "id": "intent-a-hd0302-temporal-row-delete",
+  "kind": "probe",
+  "lane": "intent-a",
+  "log": "$RUN_DIR/intent-a/hd0302_temporal_row_delete.log",
+  "log_bytes": 1576,
+  "log_sha256": "dc127279c05ad954bf7be2daa67b97e6bf42568b9af334977945f2223c39dd16",
+  "observes": "HD-0302 graph ia-0302 structural predicate: delete_edge removed the marked row ({temporal:true}) and the ^KG out entry while get_edges_in_window still returns the triple's timestamp; same for a row adopted by create_edge. Violates the CONTEXT.md:66-73 / ADR-0009 implication; consistent with the maintainer test test_254_purge_e2e.py::test_delete_edge_then_purge, which accepts it.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-13T22:43:19+00:00",
+  "result": "fail"
+}

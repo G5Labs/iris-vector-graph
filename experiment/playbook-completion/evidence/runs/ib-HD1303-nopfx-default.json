@@ -1,0 +1,15 @@
+{
+  "command": "bash experiment/playbook-completion/tools/locks.sh iris timeout 600 python experiment/playbook-completion/intent/probes/lane-b/hd12_14_redaction_probes.py nopfx_default",
+  "experiment_head": "dbcb7e147469b6da8b3b82a49a03ad64e0312533",
+  "id": "ib-HD1303-nopfx-default",
+  "kind": "probe",
+  "lane": "intent-b",
+  "log": "$RUN_DIR/intent-b/ibR_nopfx_default.log",
+  "log_bytes": 4238,
+  "log_sha256": "74b70ab44cf4d624ebaff93398926f644e6c276ec0b330ca342fefdfe1a58a51",
+  "observes": "AUDITIB. Nodes ibR_B|m1/m2 created in named graph ibR_gB before enable(); genesis records them as node records with graph ''. redact(None) with no prefix: accepted, complete, 4 node records (2 create_node, 2 set_prop) tombstoned while the gB rows stay live; verify() diverges with 4 node differences. Oracle specs/256-ledger-tenant-redaction/plan.md:10 (node-liveness for a default-graph target is graph-blind -> refuse): VIOLATED (F-1304 reproduced in this audit). An earlier run (ibR_nopfx_default.v1-oracle-bug.log, same behaviour) printed HOLDS because its check counted the gB relationship record; the oracle was corrected to count node records only, not weakened.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-13T23:31:44+00:00",
+  "result": "fail"
+}

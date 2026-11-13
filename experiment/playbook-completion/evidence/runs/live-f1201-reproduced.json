@@ -1,0 +1,16 @@
+{
+  "command": "locks.sh iris python traces/f1201_native.py $RUN_DIR/traces/f1201-other --trials 8 --seed other",
+  "experiment_head": "dbcb7e147469b6da8b3b82a49a03ad64e0312533",
+  "id": "live-f1201-reproduced",
+  "journal_oracle": "traces/f1201-other/trial-0.json",
+  "kind": "live",
+  "lane": "orchestrator",
+  "log": "$RUN_DIR/traces/f1201-other/summary.json",
+  "log_bytes": 1242,
+  "log_sha256": "b78288782017b8f692d78994bafd9c58a8497935e75eef745e3b957eae3702b3",
+  "observes": "F-1201 reproduced on the pin, 8/8 trials (IRIS 2026.1 Community, AUDITCORE): 4,000 statements in graph H; G empty; a probe holds ^IVG.AdjW(\"G\") exclusively so EraseGraph(G) pauses in Adjacency.RemoveGraph after its row deletes; a ledger commit of u-R-v into G runs; after release the journal shows the committer's SET ^IVG.Ledger(\"stmt\",4001) and tuple, then the eraser's KILL of both (EraseLedgerFor dirty-reads every statement entry; no head lock); final state: edge u-R-v, nodes u, v and ^KG adjacency live in G with no statement entry (ERS-I3 violated)",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-13T23:33:15+00:00",
+  "result": "fail"
+}

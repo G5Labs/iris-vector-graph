@@ -1,0 +1,16 @@
+{
+  "attempt": "2",
+  "command": "bash experiment/playbook-completion/tools/locks.sh iris timeout 900 python experiment/playbook-completion/intent/probes/lane-a/hd0603_vgs_topk.py",
+  "experiment_head": "d1b7d06ca56597d0993ea11733d67c0a08add141",
+  "id": "intent-a-hd0603-vgs-topk",
+  "kind": "probe",
+  "lane": "intent-a",
+  "log": "$RUN_DIR/intent-a/hd0603_vgs_topk.log",
+  "log_bytes": 3564,
+  "log_sha256": "5e244672b337023aaf59b1d5a775929afca95d3d7ff6d3b80fdf18c218f3b504",
+  "observes": "Rerun under the IRIS connection lock (attempt 1, hd0603_vgs_topk.infra-attempt1.log, lost 1 of 12 child connections to the Community license cap: infrastructure, not product). AUDITIA graph ia-0603: kg_KNN_VEC top-4 = v1 1.0, v2 0.9986, v3 0.7071, v4 0.53, each with 10 confidence-900 neighbours (score 0). kg_VECTOR_GRAPH_SEARCH(k=2) under PYTHONHASHSEED 0..11: in 12/12 runs the answer was not {v1,v2}; v1 (similarity 1.0) never appeared; 7 runs returned only 0.0-scored neighbours. The product does what its R025 docstring/API_REFERENCE says ('keeps k of that set in no particular order'); the best-k property of the working assumption is what this documented baseline violates (expected), not a stated contract.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-13T23:05:25+00:00",
+  "result": "expected-violation"
+}

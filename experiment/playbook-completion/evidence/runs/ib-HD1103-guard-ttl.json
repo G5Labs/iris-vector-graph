@@ -1,0 +1,15 @@
+{
+  "command": "cd experiment/playbook-completion/intent/probes/lane-b && flock -x -w 1800 $RUN_DIR/intent-b/auditib.lock timeout 600 python hd1103_strict_guard_surface.py > $RUN_DIR/intent-b/ib3_hd1103.log 2>&1",
+  "experiment_head": "c01a7ccd00b29670b521799344233fa4a814c925",
+  "id": "ib-HD1103-guard-ttl",
+  "kind": "probe",
+  "lane": "intent-b",
+  "log": "$RUN_DIR/intent-b/ib3_hd1103.log",
+  "log_bytes": 4361,
+  "log_sha256": "a49bb31f5b4f786063c80a3f84a1f016634a202d0cccd94d17b51fcddeb02248",
+  "observes": "AUDITIB, ledger strict on. Steps 1,3,4: create_node refused LedgerStrictModeError (ledger-api.md:84-91); engine A's guard cached 'not strict' and A's create_node written immediately after engine B (another process) set strict, refused after 5.5 s (guard.py TTL_SECONDS=5.0, documented); raw SQL INSERT written (documented unguarded, ledger-api.md:93). Reading (a), a client-side cached guard on the listed calls, matches; reading (b), a server-side barrier, does not hold at the pin.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-13T22:45:07+00:00",
+  "result": "pass"
+}

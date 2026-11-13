@@ -1,0 +1,15 @@
+{
+  "command": "cd experiment/playbook-completion/intent/probes/lane-b && flock -x -w 1800 $RUN_DIR/intent-b/auditib.lock timeout 600 python hd1802_snapshot_interleaved_commit.py > $RUN_DIR/intent-b/ib3_hd1802.log 2>&1",
+  "experiment_head": "c01a7ccd00b29670b521799344233fa4a814c925",
+  "id": "ib-HD1802-torn-save",
+  "kind": "probe",
+  "lane": "intent-b",
+  "log": "$RUN_DIR/intent-b/ib3_hd1802.log",
+  "log_bytes": 4273,
+  "log_sha256": "f3fabd78894f2bf34a966912fe84103c313d7a5336282a749332ed4822ad25d3",
+  "observes": "AUDITIB. Quiet save: archive head 2 with node ib3_q1 in sql/Graph_KG_nodes (consistent). Interleaved save (forced in the test process: a second identity-checked process commits create_node ib3_q2 after the table reads, before the first global ^KG is read): the archive's ^IVG.Ledger head is 3 and holds rec seq 3, but ib3_q2 is not in the archived nodes table, so replay(archive ledger) != archive rows. save_snapshot holds no lock or transaction (snapshot.py:864-1034). No stated point-in-time contract at the pin ('point-in-time' removed from ADMIN_API.md in e146fc7a); the quiet-writer premise of the working assumption suffices in this instance.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-13T22:46:22+00:00",
+  "result": "expected-violation"
+}

@@ -1,0 +1,15 @@
+{
+  "command": "flock -w 1800 $RUN_DIR/intent-a/auditia.lock timeout 600 python experiment/playbook-completion/intent/probes/lane-a/hd0604_queue_claim.py",
+  "experiment_head": "c01a7ccd00b29670b521799344233fa4a814c925",
+  "id": "intent-a-hd0604-queue-claim",
+  "kind": "probe",
+  "lane": "intent-a",
+  "log": "$RUN_DIR/intent-a/hd0604_queue_claim.log",
+  "log_bytes": 953,
+  "log_sha256": "ac89b219c5c54695f2883456be72c6782b87f1da3adfc790a6db48a36f1ef687",
+  "observes": "AUDITIA, empty ^EmbedQueue. Three entries enqueued (graph ia-0604). Two IRIS processes each called Graph.KG.EmbedQueue.ClaimPendingBatch (the call process_embed_queue makes): both were handed the same 3 entries, and all stay PENDING. Pass for the code's own stated contract (EmbedQueue.cls:22, commit 5bb149ed 'Single-processor': plain ordered scan, no claim state); it confirms that two concurrent workers double-process and that nothing in the queue enforces a single worker. Entries removed (SetResult DONE + ClearDone; queue undefined after).",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-13T22:49:15+00:00",
+  "result": "pass"
+}

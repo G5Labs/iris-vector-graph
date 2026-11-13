@@ -1,0 +1,15 @@
+{
+  "command": "flock -s $RUN_DIR/intent-b/auditib.lock timeout 600 python experiment/playbook-completion/intent/probes/lane-b/hd1605_gql_depth.py",
+  "experiment_head": "c01a7ccd00b29670b521799344233fa4a814c925",
+  "id": "ib-HD1605-gql-depth-health",
+  "kind": "probe",
+  "lane": "intent-b",
+  "log": "$RUN_DIR/intent-b/hd1605_gql_depth.log",
+  "log_bytes": 2490,
+  "log_sha256": "d7518d196647cbe4fd3875fc3835a9c285c3707e761b7c85efd5ee388510d1bc",
+  "observes": "iris_vector_graph.gql.create_app on AUDITIB: a query nested 14 levels through outgoing/node over a self-loop is accepted and resolves all 14 levels (no depth limiter); the sample API schema (api/gql/schema.py) carries QueryDepthLimiter with max depth 10. /health of the generated app with its connection closed answers 200 status healthy (database disconnected). No stated contract for the generated app's limits (spec 019 Draft listed security as future); parity with the sample API is the decisions.md alternative.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-13T22:44:02+00:00",
+  "result": "expected-violation"
+}

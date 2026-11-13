@@ -1,0 +1,15 @@
+{
+  "command": "flock -w 1800 $RUN_DIR/intent-a/auditia.lock timeout 600 python experiment/playbook-completion/intent/probes/lane-a/hd0903_native_read_open_txn.py",
+  "experiment_head": "c01a7ccd00b29670b521799344233fa4a814c925",
+  "id": "intent-a-hd0903-native-read-open-txn",
+  "kind": "probe",
+  "lane": "intent-a",
+  "log": "$RUN_DIR/intent-a/hd0903_native_read_open_txn.log",
+  "log_bytes": 3484,
+  "log_sha256": "137a0528aa74cb622dc4c65ed9861dfb3045ca9922574ee5557e5a93434e4098",
+  "observes": "AUDITIA live, two connections, deterministic interleaving: while A's transaction is open, B's native read (interpreted, counter +1) and B's SQL-path read agree at every step and both see A's uncommitted writes statement by statement: the edge before its far node's label (unlabelled [b], labelled []), then the label ([b]); after A's ROLLBACK both answer []. Native has the SQL path's isolation here (FR-002); a reader can see part of one transaction (reading a, as USER_GUIDE:260-262 documents for MATCH/SELECT).",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-13T22:46:16+00:00",
+  "result": "pass"
+}

@@ -1,0 +1,15 @@
+{
+  "command": "flock -s -w 1800 $RUN_DIR/intent-b/auditib.lock timeout 600 python experiment/playbook-completion/intent/probes/lane-b/hd1701_execute_sql_read_only.py",
+  "experiment_head": "c01a7ccd00b29670b521799344233fa4a814c925",
+  "id": "ib-HD1701-readonly-flag",
+  "kind": "probe",
+  "lane": "intent-b",
+  "log": "$RUN_DIR/intent-b/hd1701_execute_sql_read_only.log",
+  "log_bytes": 861,
+  "log_sha256": "9589e4cf198022f81916c905c83e984bc542a90c14459eb9ea0a03cdeffcb248",
+  "observes": "IRISGraphStore.execute_sql(sql, params, read_only=True) on AUDITIB: an INSERT into Graph_KG.nodes (ib2_ id) and a CREATE TABLE IVGAudit.ib2_ro both executed (row/table present after the probe's commit). Oracle = working assumption (read_only=True refuses DML/DDL); no stated contract defines the flag, so expected-violation. Also observed: each executed write came back with IVGResult.error='<USAGE ERROR> ... did not return a result set' (fetchall on a non-query), i.e. the result reports failure for a write that ran.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-13T22:41:38+00:00",
+  "result": "expected-violation"
+}

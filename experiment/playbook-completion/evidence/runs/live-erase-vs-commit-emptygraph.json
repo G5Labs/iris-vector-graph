@@ -1,0 +1,15 @@
+{
+  "command": "locks.sh iris python traces/f1201_native.py $RUN_DIR/traces/f1201-empty --trials 8 --seed none",
+  "experiment_head": "dbcb7e147469b6da8b3b82a49a03ad64e0312533",
+  "id": "live-erase-vs-commit-emptygraph",
+  "kind": "live",
+  "lane": "orchestrator",
+  "log": "$RUN_DIR/traces/f1201-empty/summary.json",
+  "log_bytes": 1242,
+  "log_sha256": "68c9cc1592e073a6d7598f27c40bf1d7df2681ffc71307162606cf417ca36eb0",
+  "observes": "8/8: with G empty the eraser paused in Adjacency.RemoveGraph; after release its transaction (statement scan included) ended before the committer allocated its statement (journal order), so the commit's edge kept its live statement and adjacency; no ERS-I3 violation; F-1201 window not reached because the eraser's remaining work is shorter",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-13T23:27:38+00:00",
+  "result": "pass"
+}

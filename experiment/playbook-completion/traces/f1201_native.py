@@ -39,6 +39,7 @@ DB = "/usr/irissys/mgr/auditcore/"
 G = "G"
 # "edge": G holds x-R-y before the erase (the eraser's rdf_edges DELETE then waits on the writer lock);
 # "none": G is empty, so the eraser's row DELETEs touch nothing and it pauses in Adjacency.RemoveGraph, after them.
+# "other": as "none", plus 4,000 statements in graph H, which lengthens the eraser's statement scan after the pause.
 SEED = "edge"
 
 
@@ -67,6 +68,14 @@ def trial(i: int, release_after: float, out: Path) -> dict:
         eng = engine(ctl)
         eng.ledger.enable()
         r0 = None
+        if SEED == "other":
+            # many statements in another graph: EraseLedgerFor scans every ("stmt") entry, so its scan is long
+            for chunk in range(4):
+                bulk = Changeset(actor="audit:f1201", actor_type="ingest", auto_stub_missing_nodes=True)
+                for k in range(1000):
+                    bulk.create_relationship(f"h{chunk}_{k}", "R", f"h{chunk}_{k + 1}", graph="H")
+                eng.ledger.commit(bulk)
+                ctl.conn.commit()
         if SEED == "edge":
             seed = Changeset(actor="audit:f1201", actor_type="ingest", auto_stub_missing_nodes=True)
             seed.create_relationship("x", "R", "y", graph=G)

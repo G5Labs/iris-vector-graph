@@ -1,0 +1,15 @@
+{
+  "command": "cd experiment/playbook-completion/intent/probes/lane-b && flock -x -w 1800 $RUN_DIR/intent-b/auditib.lock timeout 600 python hd1105_post_commit_properties.py > $RUN_DIR/intent-b/ib3_hd1105.log 2>&1",
+  "experiment_head": "c01a7ccd00b29670b521799344233fa4a814c925",
+  "id": "ib-HD1105-approach-a",
+  "kind": "probe",
+  "lane": "intent-b",
+  "log": "$RUN_DIR/intent-b/ib3_hd1105.log",
+  "log_bytes": 4169,
+  "log_sha256": "aff9d1ffef45b1e133a032cf35c1e4cc2a1336582e79f4fbe2c08732401d6b49",
+  "observes": "AUDITIB. Commit with post_commit_properties {ib3_p1:{audit:$REVISION_ID}}: post_commit_applied=True, default-graph rdf_props row holds the revision id, the revision's records hold only create_node/add_label (no set_prop), verify() diverges with unrecorded_writes prop:audit. Matches spec 218 Approach A ('direct SQL, no new revision', CHANGELOG.md:4991-4996; 69a4966c USER_GUIDE text 'intentionally unledgered') and the 4.7.0 test comment (test_470_ledger_caller_txn_e2e.py:218-219).",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-13T22:45:08+00:00",
+  "result": "pass"
+}

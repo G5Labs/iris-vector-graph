@@ -1,0 +1,15 @@
+{
+  "command": "bash experiment/playbook-completion/tools/locks.sh iris bash $RUN_DIR/intent-b/run_ibR_all.sh (runs: timeout 600 python experiment/playbook-completion/intent/probes/lane-b/hd12_14_redaction_probes.py reader_full_race)",
+  "experiment_head": "dbcb7e147469b6da8b3b82a49a03ad64e0312533",
+  "id": "ib-HD1401-reader-full-race",
+  "kind": "probe",
+  "lane": "intent-b",
+  "log": "$RUN_DIR/intent-b/ibR_reader_full_race.log",
+  "log_bytes": 5499,
+  "log_sha256": "f2f006b11a84f93e8fb8a2502d8d4c37cbbba0b7dc4c64772e6580f170981623",
+  "observes": "AUDITIB. Ledger of 5,207 records (more than one reader page, RECORD_PAGE 5,000); gA erased. ledger.reconstruct(head) checks the marker (none) and reads lazily; after the reader consumed the first gA relationship record (page 1 already fetched), a second process runs redact(ibR_gA) to completion (4 records, redaction seq 5); the reader's second page is read after it. Result: reconstruct answered a view with 1 of 2 gA statements (pre 2, post 0); a marker re-check after the read sees none; head moved 4->5. Oracle spec 256 Decision 3 (replaced 'atomic from a reader's view', 42907b21) + client.py:691-692: VIOLATED. Interleaving forced from the test process by wrapping replay.iter_records_sql (default page size); no product code changed. Discriminates mechanisms: post-read marker re-check insufficient, epoch comparison would detect.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-13T23:26:22+00:00",
+  "result": "fail"
+}
