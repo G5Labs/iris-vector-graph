@@ -28,10 +28,16 @@ Product pin `3eaa79cf77d3e0a879b2cced634cf2729d81499e` (tree `b098a6f4`). Origin
   | `AUDITCORE` | orchestrator | erase/redact/replay traces |
   | `AUDITENV` | orchestrator | IRIS environment contract (no product classes) |
   | `AUDITA` / `AUDITB` / `AUDITC` | breadth lanes A / B / C | targeted live checks of their modules |
+  | `AUDITIA` / `AUDITIB` | intent lanes A / B | discriminating probes for decisions |
 
   Use only your namespace. Do not restart, stop or reconfigure the container or create namespaces; ask the
-  orchestrator. Wrap timing-sensitive work (performance, lock-wait timing) in
-  `bash experiment/playbook-completion/tools/locks.sh iris <cmd>` so it runs alone.
+  orchestrator.
+- **Connection cap.** IRIS Community allows 8 connections in total for the whole container, shared by every lane
+  (exceeding it fails with "Unable to allocate a license"; the identity probe then reports a mismatch). Therefore
+  EVERY command that connects to IRIS runs under `bash experiment/playbook-completion/tools/locks.sh iris <cmd>`,
+  holds the lock only for that command, and opens at most 6 connections at once. Long suites run in chunks (one
+  directory or file set per lock hold) so other lanes can interleave. A license failure is infrastructure, not a
+  product result: rerun under the lock, never record it as a pass or a product failure.
 - Journal oracle: `traces/journal.py` reads the IRIS journal server-side (nothing compiled): `mark()`,
   `records_since(mark, dbs={"/usr/irissys/mgr/<namespace lower>/"})`, `transactions()`, `storage_map(conn)`,
   `footprint()`. Use it to validate a declared write footprint independently of the source reading.
