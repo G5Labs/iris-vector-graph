@@ -138,7 +138,8 @@ def snapshot(c: Conn, root: str = "^IVG.Ledger") -> Dict[Tuple, Any]:
 def apply(state: Dict[Tuple, Any], rec: Dict) -> None:
     _, subs = parse_ref(rec["g"])
     if rec["t"] == "SET":
-        state[subs] = decode_value(rec["n"])
+        v = decode_value(rec["n"])
+        state[subs] = "" if v is None else _deep(v)   # the journal reader reports an empty new value as None
     elif rec["t"] in ("KILL",):
         for k in [k for k in state if k[:len(subs)] == subs]:
             del state[k]
@@ -344,14 +345,35 @@ def run(out: Path, batch: int) -> Dict:
     ctl = Conn(NS)
     final_engine = snapshot(ctl)
     ctl.close()
-
     recs_j = journal.records_since(m, dbs={DB})
+    trace = {"before": [[list(k), v] for k, v in before0.items()], "final": [[list(k), v] for k, v in final_engine.items()],
+             "ops": ops, "journal": recs_j, "smap": smap}
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "trace.json").write_text(json.dumps(trace, default=list))
+    return check_trace(trace, out)
+
+
+def _deep(v):
+    return tuple(_deep(x) for x in v) if isinstance(v, (list, tuple)) else v
+
+
+def _state(pairs):
+    return {tuple(k): _deep(v) for k, v in pairs}
+
+
+def check_trace(trace: Dict, out: Optional[Path] = None) -> Dict:
+    before0, final_engine = _state(trace["before"]), _state(trace["final"])
+    ops, recs_j, smap = trace["ops"], trace["journal"], trace["smap"]
+    for o in ops:
+        if "target" in o:
+            o["target"] = tuple(o["target"])
     pid_ops: Dict[str, List[Dict]] = defaultdict(list)
     for o in ops:
         pid_ops[o["pid"]].append(o)
     units = journal.transactions(recs_j)
     state = dict(before0)
-    report = {"engine": None, "ops": ops, "transactions": [], "violations": [], "frame": [], "unclassified": []}
+    report = {"ops": ops, "transactions": [], "violations": [], "frame": [], "unclassified": [],
+              "checked": Counter()}
     for u in sorted(units, key=lambda u: u.get("end") or u.get("begin") or 0):
         olist = pid_ops.get(u["pid"])
         prior = dict(state)
@@ -369,6 +391,10 @@ def run(out: Path, batch: int) -> Dict:
             report["frame"].append({"op": o["op"], "pid": u["pid"], "outside": outside})
         if u["kind"] == "txn" and u["committed"] and not u.get("rolled_back"):
             step_rule(o["op"], o, prior, state, notes)
+            report["checked"][o["op"]] += 1
+            report["checked"]["tombstones"] += sum(1 for k, v in recs(state).items()
+                                                   if isinstance(v, tuple) and v and v[0] == "redacted"
+                                                   and recs(prior).get(k) != v)
         check_invariants(state, notes)
         report["transactions"].append({"op": o["op"], "pid": u["pid"], "kind": u["kind"], "committed": u["committed"],
                                        "rolled_back": u.get("rolled_back"), "records": len(u["records"]),
@@ -383,20 +409,82 @@ def run(out: Path, batch: int) -> Dict:
     per_op = Counter((o["op"], o["pid"]) for o in ops)
     report["txn_count_per_op"] = {f"{k[0]}@{k[1]}": sum(1 for t in report["transactions"]
                                                          if t["pid"] == k[1] and t["kind"] == "txn") for k in per_op}
-    out.mkdir(parents=True, exist_ok=True)
-    (out / "journal.json").write_text(json.dumps(recs_j))
-    (out / "report.json").write_text(json.dumps(report, indent=1, default=str))
+    report["checked"] = dict(report["checked"])
+    if out is not None:
+        (out / "report.json").write_text(json.dumps(report, indent=1, default=str))
     return report
 
 
+def mutate(trace: Dict, kind: str) -> Dict:
+    """Negative controls: a trace the product never produced, each of which a rule must reject."""
+    t = json.loads(json.dumps(trace, default=list))
+    j = t["journal"]
+    redact_pid = next(o["pid"] for o in t["ops"] if o["op"] == "redact")
+    commit_pids = [o["pid"] for o in t["ops"] if o["op"] == "commit"]
+    erase_pid = next(o["pid"] for o in t["ops"] if o["op"] == "erase")
+    if kind == "tombstone-outside-target":
+        # retarget one of the redaction's tombstones onto a beta record of the same revision layout
+        # a node record of tenant beta, written by a commit, becomes the target of one of the redaction's tombstones
+        beta = next(r for r in j if r["p"] in commit_pids and r["g"].startswith('^IVG.Ledger("rec"') and r["t"] == "SET"
+                    and isinstance(decode_value(r["n"]), tuple) and decode_value(r["n"])[1:3] == ("node", "beta|1"))
+        r = next(r for r in j if r["p"] == redact_pid and r["g"].startswith('^IVG.Ledger("rec"') and r["t"] == "SET")
+        r["g"] = beta["g"]
+    elif kind == "commit-rewrites-history":
+        r = next(r for r in j if r["p"] == commit_pids[-1] and r["g"].startswith('^IVG.Ledger("rec"'))
+        r["g"] = '^IVG.Ledger("rec",1,1)'
+    elif kind == "erase-touches-records":
+        victim = next(r["g"] for r in j if r["p"] in commit_pids and r["g"].startswith('^IVG.Ledger("rec"'))
+        r = next(r for r in j if r["p"] == erase_pid and r["g"].startswith('^IVG.Ledger("stmt"'))
+        j.insert(j.index(r) + 1, {**r, "g": victim, "t": "ZKILL", "n": None})
+    elif kind == "frame-violation":
+        r = next(r for r in j if r["p"] == redact_pid and r["g"].startswith("^IVG.Ledger"))
+        j.insert(j.index(r) + 1, {**r, "g": '^KG("out",0,"acme|1")', "t": "SET"})
+    elif kind == "live-stmt-without-tuple":
+        r = next(r for r in j if r["p"] == commit_pids[0] and r["g"].startswith('^IVG.Ledger("tuple"'))
+        j.remove(r)
+    return t
+
+
+CONTROLS = {"tombstone-outside-target": "RED-I1", "commit-rewrites-history": "commit wrote records outside",
+            "erase-touches-records": "erasure changed", "frame-violation": "global:^KG",
+            "live-stmt-without-tuple": "INV stmt/tuple"}
+
+
+def self_test(path: Path) -> int:
+    trace = json.loads(path.read_text())
+    base = check_trace(trace)
+    ok = not base["violations"] and not base["frame"]
+    print("unmutated:", "clean" if ok else base["violations"][:3], base["checked"])
+    for k, expected in CONTROLS.items():
+        try:
+            r = check_trace(mutate(trace, k))
+            found = r["violations"] + [str(x) for x in r["frame"]]
+            hits = [v for v in found if expected in v]
+            caught = bool(hits)
+            detail = hits[:1] or found[:1]
+        except (StopIteration, IndexError) as ex:
+            caught, detail = False, [f"control not applicable to this trace: {ex!r}"]
+        ok = ok and caught
+        print(f"control {k}: {'REJECTED' if caught else 'NOT CAUGHT'} {detail}")
+    print("self-test", "PASS" if ok else "FAIL")
+    return 0 if ok else 1
+
+
 def main() -> int:
+    if "--self-test" in sys.argv:
+        return self_test(Path(sys.argv[sys.argv.index("--self-test") + 1]))
+    if "--check" in sys.argv:
+        rep = check_trace(json.loads(Path(sys.argv[sys.argv.index("--check") + 1]).read_text()))
+        print(json.dumps({k: rep[k] for k in ("violations", "frame", "checked", "replay_matches_engine",
+                                               "replay_diff_sample", "txn_count_per_op")}, indent=1, default=str))
+        return 0 if not rep["violations"] and not rep["frame"] and rep["replay_matches_engine"] else 1
     out = Path(sys.argv[1])
     batch = int(sys.argv[sys.argv.index("--batch") + 1]) if "--batch" in sys.argv else 1
     c = Conn(NS)
     print("engine:", version(c), flush=True)
     c.close()
     rep = run(out, batch)
-    print(json.dumps({"ops": [(o["op"], o["ok"], o["seconds"]) for o in rep["ops"]],
+    print(json.dumps({"ops": [(o["op"], o["ok"], o["seconds"]) for o in rep["ops"]], "checked": rep["checked"],
                       "transactions": len(rep["transactions"]), "violations": rep["violations"],
                       "frame_outside": rep["frame"], "unclassified": rep["unclassified"],
                       "replay_matches_engine": rep["replay_matches_engine"],

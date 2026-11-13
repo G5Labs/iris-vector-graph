@@ -37,6 +37,9 @@ from iris_vector_graph.ledger import Changeset  # noqa: E402
 NS = "AUDITCORE"
 DB = "/usr/irissys/mgr/auditcore/"
 G = "G"
+# "edge": G holds x-R-y before the erase (the eraser's rdf_edges DELETE then waits on the writer lock);
+# "none": G is empty, so the eraser's row DELETEs touch nothing and it pauses in Adjacency.RemoveGraph, after them.
+SEED = "edge"
 
 
 def engine(c: Conn) -> IRISGraphEngine:
@@ -63,16 +66,18 @@ def trial(i: int, release_after: float, out: Path) -> dict:
         reset(ctl)
         eng = engine(ctl)
         eng.ledger.enable()
-        seed = Changeset(actor="audit:f1201", actor_type="ingest", auto_stub_missing_nodes=True)
-        seed.create_relationship("x", "R", "y", graph=G)
-        r0 = eng.ledger.commit(seed)
-        ctl.conn.commit()
+        r0 = None
+        if SEED == "edge":
+            seed = Changeset(actor="audit:f1201", actor_type="ingest", auto_stub_missing_nodes=True)
+            seed.create_relationship("x", "R", "y", graph=G)
+            r0 = eng.ledger.commit(seed)
+            ctl.conn.commit()
     finally:
         ctl.close()
 
     q, e, p = Conn(NS), Conn(NS), Conn(NS)
     res = {"trial": i, "release_after_s": release_after, "pids": {"probe": q.pid, "eraser": e.pid, "committer": p.pid},
-           "seed_revision": getattr(r0, "revision", None) and str(r0.revision.seq)}
+           "seed": SEED, "seed_revision": getattr(r0, "revision", None) and str(r0.revision.seq)}
     m = journal.mark()
     q.o.lock("", 0, "^IVG.AdjW", G)  # exclusive: the eraser and the committer will each ask for it shared
     t0 = time.time()
@@ -147,6 +152,8 @@ def main() -> int:
     out = Path(sys.argv[1])
     out.mkdir(parents=True, exist_ok=True)
     n = int(sys.argv[sys.argv.index("--trials") + 1]) if "--trials" in sys.argv else 8
+    global SEED
+    SEED = sys.argv[sys.argv.index("--seed") + 1] if "--seed" in sys.argv else "edge"
     c = Conn(NS)
     print("engine:", version(c), flush=True)
     c.close()
