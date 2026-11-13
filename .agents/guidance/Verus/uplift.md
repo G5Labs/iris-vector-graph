@@ -2,7 +2,9 @@
 
 Use for an explicitly requested recovery of an existing product's governing contract, or a continuation of that recovery. Confirm the source set and scope from the request and prior decisions, including whether the frontend is included. The usual initial scope is backend behavior. A missing ontology alone does not start uplift. Use the existing plan or `.g5/uplift/<task>/uplift-plan.md`. Keep baseline revisions, assignments, evidence, open obligations and the review-round count there.
 
-One orchestrator owns integration. Delegate intent recovery, modeling and independent review to isolated sessions with bounded questions and write ownership. When isolation is unavailable, do the useful serial work and record independent review pending and the uplift incomplete. Use the [shared execution and evidence guidance](../uplift-evidence.md) to budget expensive runs and resume from actual artifacts. Existing authorization governs product repairs, new runtime tests and any deferred execution.
+Treat the product as read-only throughout initial uplift, including delegated work, review and resumptions. Keep product source, existing tests, configuration, dependencies and shipped documentation at the baseline. Run existing checks against that baseline. Put new ontology, models, verification controls and evidence in the uplift's designated locations. Keep proposed product fixes and refactors in the findings for a separately authorized implementation task.
+
+One orchestrator owns integration. Delegate intent recovery, modeling and independent review to isolated sessions with bounded questions and write ownership. When isolation is unavailable, do the useful serial work and record independent review pending and the uplift incomplete. Use the [shared execution and evidence guidance](../uplift-evidence.md) to budget expensive runs and resume from actual artifacts.
 
 ## A. Recover intent and challenge ontology coverage
 
@@ -18,8 +20,16 @@ For example, when one command changes two records, locate each commit. Where the
 
 For each remaining clause inherited from an older foundation, name the current owner, the exact assertion and applicable evidence, and the part still uncovered. After a counterexample, inspect the complete production path and decide whether the error lies in the contract, model, binding or product. Reopen stage A when the source evidence changes the interpretation. Keep a proposed repair separate and state the behavior to preserve, affected writers and readers, and a case that would distinguish success. Run authorized checks on the reviewed artifacts.
 
-## C. Independently review, fix and recheck
+## C. Independently review and correct the uplift artifacts
 
-Use the [shared independent review and repair loop](../uplift-review.md). Each round challenges both coverage and fidelity against original sources and actual operations. Ask the reviewer to try a false premise, an erroneously permitted step or a faulty implementation and also establish that a valid outcome survives. Examine actual verdicts and the product binding. Repair the owning artifacts and validate the repairs. The default maximum is three rounds for the whole uplift, including resumptions. Stop early after a clean independent review and completion of feasible required work.
+Use the [shared independent review and repair loop](../uplift-review.md). Each round challenges both coverage and fidelity against original sources and actual operations. Ask the reviewer to try a false premise, an erroneously permitted step or a faulty implementation in an isolated control and also establish that a valid outcome survives. Examine actual verdicts and the product binding. Correct the owning uplift artifacts and validate the corrections. The default maximum is three rounds for the whole uplift, including resumptions. Stop early after a clean independent review and completion of feasible required work.
+
+## Findings for the product owner
+
+Record every bug, design simplification and unresolved question found during the uplift in the project's findings record.
+
+- For a bug, cite the expected behavior, what the baseline actually does and the evidence. Mark a suspected defect and the missing evidence when confirmation is still open.
+- For a simplification, describe the proposal, why it helps, the behavior to preserve and a case that would distinguish a safe change.
+- For an unresolved question, state the plausible interpretations, the evidence for each and the decision a human needs to make.
 
 Compare the final ontology bodies with the baseline for lost conditions, exceptions and uncertainty, including statements that changed parents. Finish the [Verus foundation handoff](setup_foundation.md). Report incomplete required work, established and conditional claims, product defects and human decisions. A documented product defect can coexist with a completed uplift.
