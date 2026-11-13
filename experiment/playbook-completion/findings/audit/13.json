@@ -1,0 +1,147 @@
+[
+ {
+  "id": "F-1301",
+  "module": "13",
+  "title": "Spec 256 FR-004 ('every record') contradicts Decision 2 ('any record') on clearing revision free text",
+  "intended": "Decision 2 / ADR-0013 (accepted): clear free text when any record of the revision is redacted (HD-1302 supported).",
+  "observed": "Implementation and live behaviour follow 'any' (fresh: upstream spanning-revision test in the original run; intent lane B record HD-1302). The spec's FR-004 wording is stale.",
+  "disposition": "confirmed-source",
+  "evidence": [
+   {
+    "kind": "source",
+    "ref": "specs/256-ledger-tenant-redaction/spec.md (FR-004 vs Decisions)"
+   }
+  ],
+  "gates": [
+   "3.1-intent",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S3",
+  "confidence": "high",
+  "remedy": "Edit FR-004 to say 'any record', matching Decision 2 and ADR-0013.",
+  "notes": "Documentation conflict; product behaviour matches the accepted decision."
+ },
+ {
+  "id": "F-1302",
+  "module": "13",
+  "title": "Redaction can tombstone history of content a concurrent commit made live (unlocked start, late marker)",
+  "intended": "RED-B1.1 / ADR-0013: a redaction never tombstones live content; the marker refuses commits into the target from the start.",
+  "observed": "Original live reproduction on the same pin (scenario commit_in_unmarked_window, which compiles the original probe class and is not rerun here) and as-built model trace (3 steps); the opening checks run without the head lock and the marker is set at the first tombstone (LedgerRedact.cls:202-211, 322-324). Fresh model and proof evidence: core lanes (pending).",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "original",
+    "ref": "live:native-commit_in_unmarked_window"
+   },
+   {
+    "kind": "original",
+    "ref": "mc:redaction-as-built-live"
+   }
+  ],
+  "gates": [
+   "3.3-model-check",
+   "3.3-controls",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S1",
+  "confidence": "high",
+  "remedy": "Check liveness and set the marker in one transaction under the head lock (HD-1301 working answer).",
+  "notes": "Original evidence attributable to submission 9c3719c1 at the same product pin."
+ },
+ {
+  "id": "F-1303",
+  "module": "13",
+  "title": "Concurrent redactions of two targets mix their audit counts and one removes the other's marker",
+  "intended": "Decision 1: each redaction revision records what it redacted; one target at a time (RED-B6, RED-B7.1).",
+  "observed": "Fresh rerun on the pin: both runs pass the 'another redaction?' check, each target gets a redaction revision, and the audits' record counts are mixed (shared counters; Final reads them under any marker, LedgerRedact.cls:409-462).",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "run",
+    "ref": "live-native-rerun-1314"
+   },
+   {
+    "kind": "original",
+    "ref": "mc:redaction-as-built-audit"
+   }
+  ],
+  "gates": [
+   "3.3-model-check",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S1",
+  "confidence": "high",
+  "remedy": "Own the marker per target from the start and let Batch/Final act only under their own marker; keep counters per target.",
+  "notes": ""
+ },
+ {
+  "id": "F-1304",
+  "module": "13",
+  "title": "An unprefixed default-graph redaction tombstones history of nodes live in a named graph",
+  "intended": "RED-X2 / FR-005: never redact content that is live in any graph; HD-1303(b) working answer: refuse an ambiguous unprefixed default-graph target unless no matching node is live anywhere.",
+  "observed": "Fresh rerun: redact(None) is accepted although tenant B's nodes are live in a named graph, tombstones their node records (graph-blind), and verify then diverges. Independently reproduced by intent lane B.",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "run",
+    "ref": "live-native-rerun-1314"
+   }
+  ],
+  "gates": [
+   "3.3-model-check",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S1",
+  "confidence": "high",
+  "remedy": "Count live nodes in every graph for an unprefixed default-graph target (as LiveRows already does for prefixed ones), or refuse it.",
+  "notes": "Three targeting predicates differ (Matches, LiveRows, DropStatements); see the core models."
+ },
+ {
+  "id": "F-1305",
+  "module": "13",
+  "title": "A graph-per-tenant redaction with unprefixed ids reports success while the tenant's node history remains",
+  "intended": "Spec 256: tenant erasure removes the tenant's content from history (RED-B1.2, SC-001).",
+  "observed": "Fresh rerun: redact(gTenantA) completes; tenant A's node ids and property values stay in the ledger (node records are graph-blind); verify diverges.",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "run",
+    "ref": "live-native-rerun-1314"
+   }
+  ],
+  "gates": [
+   "3.3-model-check",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S1",
+  "confidence": "high",
+  "remedy": "Return an explicit incomplete/refused outcome when node history cannot be attributed (HD-1304 working answer), or record each node record's graph.",
+  "notes": ""
+ },
+ {
+  "id": "F-1306",
+  "module": "13",
+  "title": "A retried commit re-applies post-commit properties and revives erased content",
+  "intended": "HD-1305 (supported): a retry must not recreate an erased tenant's properties; idempotency contract.",
+  "observed": "Fresh rerun: the replay of a retried commit re-applies the post-commit property; an erased node's property is live again. Intent lane B additionally observed the property write landing in a target while its redaction marker was set (RED-B5 bypass).",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "run",
+    "ref": "live-native-rerun-1314"
+   },
+   {
+    "kind": "run",
+    "ref": "ib-HD1305-retry-revives"
+   }
+  ],
+  "gates": [
+   "3.3-model-check",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S1",
+  "confidence": "high",
+  "remedy": "Do not reapply post-commit properties on an idempotent replay (or record their completion atomically with the revision) and route them through the marker check.",
+  "notes": ""
+ }
+]

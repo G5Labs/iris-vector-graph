@@ -1,0 +1,50 @@
+[
+ {
+  "id": "F-1401",
+  "module": "14",
+  "title": "verify() reports divergence after a logged detach-delete involving named-graph edges",
+  "intended": "RPL-B7: verify says equal when every change went through the ledger.",
+  "observed": "Fresh rerun: verify on the built world already diverges, only on tenantA|n3 (the detach delete kept its named-graph row).",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "run",
+    "ref": "live-native-rerun-1314"
+   }
+  ],
+  "gates": [
+   "3.3-model-check",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S2",
+  "confidence": "high",
+  "remedy": "Make the ledger's detach-delete and verify agree on node identity across graphs (HD-1401/HD-1101).",
+  "notes": "False integrity alarm."
+ },
+ {
+  "id": "F-1402",
+  "module": "14",
+  "title": "A reader can return a partially redacted view",
+  "intended": "RPL-I1 / HD-1401: a reader returns a consistent pre- or post-redaction view or the documented in-progress result.",
+  "observed": "Fresh rerun: the reader's view shows tenant A's graph half redacted. Intent lane B: a whole redaction can finish between two pages of one reconstruct() call with the marker absent before and after, so the post-read marker re-check proposed in the original review cannot detect it (an epoch check would).",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "run",
+    "ref": "live-native-rerun-1314"
+   },
+   {
+    "kind": "run",
+    "ref": "ib-HD1401-reader-full-race"
+   }
+  ],
+  "gates": [
+   "3.3-model-check",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S1",
+  "confidence": "high",
+  "remedy": "Validate a reader's whole read against a redaction epoch (counter bumped by every batch and Final) and retry or refuse on change.",
+  "notes": "The original reviewed reader design (marker re-check) is insufficient for multi-page reads."
+ }
+]
