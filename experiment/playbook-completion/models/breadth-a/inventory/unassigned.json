@@ -1,0 +1,745 @@
+{
+ "generated_by": "models/breadth-a/tools/inventory.py",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "excluded_by_scope": {
+  "01": [
+   {
+    "name": "SchemaMixin.routed_table_ddl",
+    "source": "iris_vector_graph/_engine/schema.py:834-882",
+    "reason": "Scope 06: the registry's persistence half lives in _engine/schema.py (06-vectors.md:15-16)"
+   },
+   {
+    "name": "SchemaMixin.get_embedding_identity",
+    "source": "iris_vector_graph/_engine/schema.py:1033-1084",
+    "reason": "Scope 06: the registry's persistence half lives in _engine/schema.py (06-vectors.md:15-16)"
+   },
+   {
+    "name": "SchemaMixin.set_embedding_identity",
+    "source": "iris_vector_graph/_engine/schema.py:1086-1221",
+    "reason": "Scope 06: the registry's persistence half lives in _engine/schema.py (06-vectors.md:15-16)"
+   },
+   {
+    "name": "SchemaMixin.adopt_embedding_identities",
+    "source": "iris_vector_graph/_engine/schema.py:1256-1335",
+    "reason": "Scope 06: the registry's persistence half lives in _engine/schema.py (06-vectors.md:15-16)"
+   },
+   {
+    "name": "SchemaMixin.enforce_embedding_identity",
+    "source": "iris_vector_graph/_engine/schema.py:1354-1397",
+    "reason": "Scope 06: the registry's persistence half lives in _engine/schema.py (06-vectors.md:15-16)"
+   },
+   {
+    "name": "SchemaMixin.reconcile_recorded_dimensions",
+    "source": "iris_vector_graph/_engine/schema.py:1688-1711",
+    "reason": "Scope 06: the registry's persistence half lives in _engine/schema.py (06-vectors.md:15-16)"
+   },
+   {
+    "name": "SchemaMixin.embedding_inventory",
+    "source": "iris_vector_graph/_engine/schema.py:1715-1809",
+    "reason": "Scope 06: the registry's persistence half lives in _engine/schema.py (06-vectors.md:15-16)"
+   },
+   {
+    "name": "SchemaMixin.list_quarantine",
+    "source": "iris_vector_graph/_engine/schema.py:1913-1970",
+    "reason": "Scope 06: the registry's persistence half lives in _engine/schema.py (06-vectors.md:15-16)"
+   },
+   {
+    "name": "SchemaMixin.place_quarantined",
+    "source": "iris_vector_graph/_engine/schema.py:1972-2070",
+    "reason": "Scope 06: the registry's persistence half lives in _engine/schema.py (06-vectors.md:15-16)"
+   },
+   {
+    "name": "SchemaMixin.sync",
+    "source": "iris_vector_graph/_engine/schema.py:2859-2875",
+    "reason": "Scope 04: the engine's sync, rebuild and backfill entry points (04-adjacency.md:10-12)"
+   },
+   {
+    "name": "SchemaMixin.rebuild_kg",
+    "source": "iris_vector_graph/_engine/schema.py:2913-2921",
+    "reason": "Scope 04: the engine's sync, rebuild and backfill entry points (04-adjacency.md:10-12)"
+   },
+   {
+    "name": "SchemaMixin.rebuild_nkg",
+    "source": "iris_vector_graph/_engine/schema.py:2924-2932",
+    "reason": "Scope 04: the engine's sync, rebuild and backfill entry points (04-adjacency.md:10-12)"
+   },
+   {
+    "name": "SchemaMixin.backfill_degp",
+    "source": "iris_vector_graph/_engine/schema.py:2935-2949",
+    "reason": "Scope 04: the engine's sync, rebuild and backfill entry points (04-adjacency.md:10-12)"
+   },
+   {
+    "name": "SchemaMixin.backfill_deg2p_exact",
+    "source": "iris_vector_graph/_engine/schema.py:2952-2963",
+    "reason": "Scope 04: the engine's sync, rebuild and backfill entry points (04-adjacency.md:10-12)"
+   },
+   {
+    "name": "SchemaMixin.materialize_inference",
+    "source": "iris_vector_graph/_engine/schema.py:2966-3183",
+    "reason": "not setup; no ontology Scope line names inference materialization (reported unassigned)"
+   },
+   {
+    "name": "SchemaMixin.retract_inference",
+    "source": "iris_vector_graph/_engine/schema.py:3186-3259",
+    "reason": "not setup; no ontology Scope line names inference retraction (reported unassigned)"
+   },
+   {
+    "name": "SchemaMixin.reify_edge",
+    "source": "iris_vector_graph/_engine/schema.py:3264-3332",
+    "reason": "reification is cited by 15-integrations, not by setup"
+   },
+   {
+    "name": "SchemaMixin.get_reifications",
+    "source": "iris_vector_graph/_engine/schema.py:3335-3358",
+    "reason": "reification is cited by 15-integrations, not by setup"
+   },
+   {
+    "name": "SchemaMixin.delete_reification",
+    "source": "iris_vector_graph/_engine/schema.py:3361-3397",
+    "reason": "reification is cited by 15-integrations, not by setup"
+   },
+   {
+    "name": "GraphSchema.hnsw_indexes",
+    "source": "iris_vector_graph/schema.py:1966-2012",
+    "reason": "vector index DDL: Scope 01 'the vector width rules of setup are stated in module VEC'"
+   },
+   {
+    "name": "GraphSchema.get_embedding_dimension",
+    "source": "iris_vector_graph/schema.py:2063-2141",
+    "reason": "vector width rule: stated in module VEC (01 Scope)"
+   }
+  ],
+  "02": [],
+  "03": [
+   {
+    "name": "NodesEdgesMixin.backfill_2hop_exact",
+    "source": "iris_vector_graph/_engine/nodes_edges.py:517-530",
+    "reason": "04 Scope: derived two-hop counts (TraversalBuild) are module ADJ"
+   },
+   {
+    "name": "NodesEdgesMixin.erase_graph",
+    "source": "iris_vector_graph/_engine/nodes_edges.py:1473-1527",
+    "reason": "03 Scope: owned by the erasure module"
+   },
+   {
+    "name": "NodesEdgesMixin.delete_nodes_by_prefix",
+    "source": "iris_vector_graph/_engine/nodes_edges.py:1529-1563",
+    "reason": "03 Scope: owned by the erasure module"
+   },
+   {
+    "name": "NodesEdgesMixin.drop_graph",
+    "source": "iris_vector_graph/_engine/nodes_edges.py:1588-1595",
+    "reason": "03 Scope: owned by the erasure module"
+   },
+   {
+    "name": "NodesEdgesMixin.bulk_delete_adjacency",
+    "source": "iris_vector_graph/_engine/nodes_edges.py:2301-2339",
+    "reason": "04 Scope names it (04-adjacency.md:12)"
+   }
+  ],
+  "04": [],
+  "05": [],
+  "06": [
+   {
+    "name": "VectorMixin.kg_TXT",
+    "source": "iris_vector_graph/_engine/vector.py:917-1054",
+    "reason": "06 Scope: kg_TXT is module TXT"
+   },
+   {
+    "name": "VectorMixin.bm25_build",
+    "source": "iris_vector_graph/_engine/vector.py:1749-1785",
+    "reason": "06 Scope: bm25_* are module TXT"
+   },
+   {
+    "name": "VectorMixin.bm25_search",
+    "source": "iris_vector_graph/_engine/vector.py:1786-1839",
+    "reason": "module TXT"
+   },
+   {
+    "name": "VectorMixin.bm25_insert",
+    "source": "iris_vector_graph/_engine/vector.py:1840-1848",
+    "reason": "module TXT"
+   },
+   {
+    "name": "VectorMixin.bm25_delete",
+    "source": "iris_vector_graph/_engine/vector.py:1849-1855",
+    "reason": "module TXT"
+   },
+   {
+    "name": "VectorMixin.bm25_upgrade",
+    "source": "iris_vector_graph/_engine/vector.py:1857-1866",
+    "reason": "module TXT"
+   },
+   {
+    "name": "VectorMixin.bm25_drop",
+    "source": "iris_vector_graph/_engine/vector.py:1868-1870",
+    "reason": "module TXT"
+   },
+   {
+    "name": "VectorMixin.bm25_info",
+    "source": "iris_vector_graph/_engine/vector.py:1871-1879",
+    "reason": "module TXT"
+   }
+  ]
+ },
+ "note": "members of lane-A files that the Scope lines give to another module or to none",
+ "rest_routes": [
+  {
+   "route": "GET /browser",
+   "handler": "iris_vector_graph/cypher_api.py:79-90",
+   "function": "browser_redirect",
+   "calls": [
+    "exists",
+    "get"
+   ]
+  },
+  {
+   "route": "WEBSOCKET /",
+   "handler": "iris_vector_graph/cypher_api.py:136-138",
+   "function": "bolt_ws",
+   "calls": [
+    "run",
+    "websocket"
+   ]
+  },
+  {
+   "route": "WEBSOCKET ",
+   "handler": "iris_vector_graph/cypher_api.py:136-138",
+   "function": "bolt_ws",
+   "calls": [
+    "run",
+    "websocket"
+   ]
+  },
+  {
+   "route": "GET /health",
+   "handler": "iris_vector_graph/cypher_api.py:269-285",
+   "function": "health",
+   "calls": [
+    "execute_cypher",
+    "get"
+   ]
+  },
+  {
+   "route": "POST /api/cypher",
+   "handler": "iris_vector_graph/cypher_api.py:352-376",
+   "function": "cypher_query",
+   "calls": [
+    "WriteToConsoleLog",
+    "cls",
+    "dumps",
+    "execute_cypher",
+    "fhir_patient_anchors",
+    "fromkeys",
+    "get",
+    "post",
+    "time",
+    "uuid4"
+   ]
+  },
+  {
+   "route": "POST /db/neo4j/tx/commit",
+   "handler": "iris_vector_graph/cypher_api.py:380-405",
+   "function": "neo4j_tx_commit",
+   "calls": [
+    "WriteToConsoleLog",
+    "append",
+    "cls",
+    "dumps",
+    "execute_cypher",
+    "get",
+    "post",
+    "time",
+    "uuid4"
+   ]
+  },
+  {
+   "route": "GET /db/neo4j",
+   "handler": "iris_vector_graph/cypher_api.py:415-428",
+   "function": "neo4j_discovery",
+   "calls": [
+    "get"
+   ]
+  },
+  {
+   "route": "GET /",
+   "handler": "iris_vector_graph/cypher_api.py:415-428",
+   "function": "neo4j_discovery",
+   "calls": [
+    "get"
+   ]
+  },
+  {
+   "route": "GET /db/neo4j/tx",
+   "handler": "iris_vector_graph/cypher_api.py:432-433",
+   "function": "neo4j_tx_endpoint",
+   "calls": [
+    "get"
+   ]
+  },
+  {
+   "route": "POST /db/{db_name}/query/v2",
+   "handler": "iris_vector_graph/cypher_api.py:437-460",
+   "function": "neo4j_query_v2",
+   "calls": [
+    "WriteToConsoleLog",
+    "cls",
+    "dumps",
+    "execute_cypher",
+    "post",
+    "time",
+    "uuid4"
+   ]
+  },
+  {
+   "route": "GET /schema",
+   "handler": "iris_vector_graph/cypher_api.py:470-482",
+   "function": "get_schema",
+   "calls": [
+    "get",
+    "get_edge_count",
+    "get_label_distribution",
+    "get_labels",
+    "get_node_count",
+    "get_property_keys",
+    "get_relationship_types"
+   ]
+  },
+  {
+   "route": "GET /indexes",
+   "handler": "iris_vector_graph/cypher_api.py:486-495",
+   "function": "get_indexes",
+   "calls": [
+    "execute_cypher",
+    "get"
+   ]
+  },
+  {
+   "route": "GET /server",
+   "handler": "iris_vector_graph/cypher_api.py:499-524",
+   "function": "get_server_info",
+   "calls": [
+    "get",
+    "status"
+   ]
+  },
+  {
+   "route": "GET /metrics",
+   "handler": "iris_vector_graph/cypher_api.py:528-554",
+   "function": "get_metrics",
+   "calls": [
+    "get",
+    "status"
+   ]
+  },
+  {
+   "route": "GET /stats",
+   "handler": "iris_vector_graph/cypher_api.py:558-568",
+   "function": "get_stats",
+   "calls": [
+    "embedding_count",
+    "get",
+    "get_edge_count",
+    "get_label_distribution",
+    "get_node_count"
+   ]
+  },
+  {
+   "route": "POST /admin/schema/init",
+   "handler": "iris_vector_graph/cypher_api.py:579-594",
+   "function": "admin_schema_init",
+   "calls": [
+    "initialize_schema",
+    "post"
+   ]
+  },
+  {
+   "route": "POST /admin/indexes/rebuild",
+   "handler": "iris_vector_graph/cypher_api.py:598-605",
+   "function": "admin_indexes_rebuild",
+   "calls": [
+    "post",
+    "rebuild_kg",
+    "rebuild_nkg"
+   ]
+  },
+  {
+   "route": "POST /admin/embed",
+   "handler": "iris_vector_graph/cypher_api.py:614-620",
+   "function": "admin_embed",
+   "calls": [
+    "embed_nodes",
+    "post"
+   ]
+  },
+  {
+   "route": "POST /admin/load",
+   "handler": "iris_vector_graph/cypher_api.py:629-643",
+   "function": "admin_load",
+   "calls": [
+    "NamedTemporaryFile",
+    "body",
+    "post",
+    "unlink",
+    "write"
+   ]
+  },
+  {
+   "route": "GET /admin/export",
+   "handler": "iris_vector_graph/cypher_api.py:647-665",
+   "function": "admin_export",
+   "calls": [
+    "NamedTemporaryFile",
+    "export_graph_ndjson",
+    "get",
+    "read",
+    "unlink"
+   ]
+  },
+  {
+   "route": "POST /admin/snapshot",
+   "handler": "iris_vector_graph/cypher_api.py:669-678",
+   "function": "admin_snapshot_save",
+   "calls": [
+    "gettempdir",
+    "post",
+    "save_snapshot",
+    "time"
+   ]
+  },
+  {
+   "route": "GET /admin/queries",
+   "handler": "iris_vector_graph/cypher_api.py:682-699",
+   "function": "admin_list_queries",
+   "calls": [
+    "execute",
+    "fetchall",
+    "get"
+   ]
+  },
+  {
+   "route": "DELETE /admin/queries/{query_id}",
+   "handler": "iris_vector_graph/cypher_api.py:703-715",
+   "function": "admin_kill_query",
+   "calls": [
+    "delete",
+    "execute"
+   ]
+  },
+  {
+   "route": "POST /admin/explain",
+   "handler": "iris_vector_graph/cypher_api.py:724-740",
+   "function": "admin_explain",
+   "calls": [
+    "post"
+   ]
+  },
+  {
+   "route": "GET /",
+   "handler": "api/main.py:97-98",
+   "function": "create_app.<locals>.root",
+   "calls": [
+    "get"
+   ]
+  },
+  {
+   "route": "GET /health",
+   "handler": "api/main.py:101-113",
+   "function": "create_app.<locals>.health",
+   "calls": [
+    "_iris_obj",
+    "execute",
+    "fetchone",
+    "get"
+   ]
+  },
+  {
+   "route": "POST ",
+   "handler": "api/routers/cypher.py:94-260",
+   "function": "execute_cypher_query",
+   "calls": [
+    "append",
+    "cursor",
+    "execute",
+    "fetchall",
+    "lower",
+    "model_dump",
+    "post",
+    "time",
+    "uuid4"
+   ]
+  },
+  {
+   "route": "POST /vectorSearch",
+   "handler": "iris_src/src/Graph/KG/Service.cls:265-284",
+   "function": "Graph.KG.Service.VectorSearch",
+   "calls": [
+    "%DynamicArray._New",
+    "%DynamicObject._New",
+    "Graph.KG.PyOps.ReadFailure",
+    "Graph.KG.PyOps.ReadRows",
+    "Graph.KG.PyOps.RouteVectorRows",
+    "Graph.KG.PyOps.VectorSearch",
+    "Graph.KG.PyOps.getExpectedDimension",
+    "Graph.KG.PyOps.vectorToJson",
+    "Graph.KG.Service.ReadJSON",
+    "Graph.KG.Service.WriteError",
+    "Graph.KG.Service.WriteJSON"
+   ],
+   "csp": true,
+   "sql_tables": [
+    "embedding_registry",
+    "kg_KNN_VEC"
+   ]
+  },
+  {
+   "route": "POST /hybridSearch",
+   "handler": "iris_src/src/Graph/KG/Service.cls:286-302",
+   "function": "Graph.KG.Service.HybridSearch",
+   "calls": [
+    "%DynamicArray._New",
+    "%DynamicObject._New",
+    "Graph.KG.PyOps.HybridSearch",
+    "Graph.KG.PyOps.getExpectedDimension",
+    "Graph.KG.PyOps.vectorToJson",
+    "Graph.KG.Service.ReadJSON",
+    "Graph.KG.Service.WriteError",
+    "Graph.KG.Service.WriteJSON"
+   ],
+   "csp": true,
+   "sql_tables": [
+    "embedding_registry",
+    "kg_RRF_FUSE",
+    "kg_TXT"
+   ]
+  },
+  {
+   "route": "POST /metaPath",
+   "handler": "iris_src/src/Graph/KG/Service.cls:304-319",
+   "function": "Graph.KG.Service.MetaPath",
+   "calls": [
+    "Graph.KG.PyOps.MetaPath",
+    "Graph.KG.Service.ReadJSON",
+    "Graph.KG.Service.WriteError",
+    "Graph.KG.Service.WriteJSON",
+    "Graph.KG.Traversal.BFSJSON",
+    "Graph.KG.TraversalBFS.BFSJSON"
+   ],
+   "csp": true,
+   "sql_tables": []
+  }
+ ],
+ "cli_commands": [
+  {
+   "command": "connect",
+   "function": "connect",
+   "source": "iris_vector_graph/cli.py:140-148",
+   "urls": [
+    "/health"
+   ],
+   "calls": [
+    "command",
+    "dumps",
+    "exit",
+    "ping"
+   ]
+  },
+  {
+   "command": "query",
+   "function": "query",
+   "source": "iris_vector_graph/cli.py:156-173",
+   "urls": [
+    "/api/cypher"
+   ],
+   "calls": [
+    "argument",
+    "command",
+    "dumps",
+    "execute_aql",
+    "execute_cypher",
+    "exit",
+    "option",
+    "split"
+   ]
+  },
+  {
+   "command": "load",
+   "function": "load",
+   "source": "iris_vector_graph/cli.py:178-185",
+   "urls": [
+    "/admin/load"
+   ],
+   "calls": [
+    "argument",
+    "command",
+    "dumps",
+    "exit",
+    "load_ndjson"
+   ]
+  },
+  {
+   "command": "status",
+   "function": "status",
+   "source": "iris_vector_graph/cli.py:189-196",
+   "urls": [
+    "/server"
+   ],
+   "calls": [
+    "command",
+    "dumps",
+    "exit",
+    "server_info"
+   ]
+  },
+  {
+   "command": "schema init",
+   "function": "schema_init",
+   "source": "iris_vector_graph/cli.py:212-234",
+   "urls": [
+    "/admin/schema/init"
+   ],
+   "calls": [
+    "command",
+    "dumps",
+    "exit",
+    "get",
+    "json",
+    "option",
+    "post",
+    "raise_for_status"
+   ]
+  },
+  {
+   "command": "schema status",
+   "function": "schema_status",
+   "source": "iris_vector_graph/cli.py:238-245",
+   "urls": [
+    "/schema"
+   ],
+   "calls": [
+    "command",
+    "dumps",
+    "exit",
+    "schema"
+   ]
+  },
+  {
+   "command": "embeddings inventory",
+   "function": "embeddings_inventory",
+   "source": "iris_vector_graph/cli.py:258-281",
+   "urls": [],
+   "calls": [
+    "command",
+    "dumps",
+    "embedding_inventory",
+    "exit",
+    "option"
+   ]
+  },
+  {
+   "command": "fhir register",
+   "function": "fhir_register",
+   "source": "iris_vector_graph/cli.py:330-342",
+   "urls": [],
+   "calls": [
+    "command",
+    "option"
+   ]
+  },
+  {
+   "command": "fhir rebuild",
+   "function": "fhir_rebuild",
+   "source": "iris_vector_graph/cli.py:347-348",
+   "urls": [],
+   "calls": [
+    "argument",
+    "command"
+   ]
+  },
+  {
+   "command": "fhir sync",
+   "function": "fhir_sync",
+   "source": "iris_vector_graph/cli.py:354-361",
+   "urls": [],
+   "calls": [
+    "argument",
+    "command",
+    "option"
+   ]
+  },
+  {
+   "command": "fhir status",
+   "function": "fhir_status",
+   "source": "iris_vector_graph/cli.py:366-367",
+   "urls": [],
+   "calls": [
+    "argument",
+    "command"
+   ]
+  },
+  {
+   "command": "fhir links",
+   "function": "fhir_links",
+   "source": "iris_vector_graph/cli.py:394-402",
+   "urls": [],
+   "calls": [
+    "Choice",
+    "argument",
+    "command",
+    "option"
+   ]
+  },
+  {
+   "command": "fhir schedule",
+   "function": "fhir_schedule",
+   "source": "iris_vector_graph/cli.py:409-413",
+   "urls": [],
+   "calls": [
+    "argument",
+    "command",
+    "option"
+   ]
+  },
+  {
+   "command": "server start",
+   "function": "server_start",
+   "source": "iris_vector_graph/cli.py:427-441",
+   "urls": [],
+   "calls": [
+    "command",
+    "exit",
+    "option",
+    "run"
+   ]
+  },
+  {
+   "command": "indexes list",
+   "function": "indexes_list",
+   "source": "iris_vector_graph/cli.py:449-456",
+   "urls": [
+    "/indexes"
+   ],
+   "calls": [
+    "_get",
+    "command",
+    "exit"
+   ]
+  },
+  {
+   "command": "indexes rebuild",
+   "function": "indexes_rebuild",
+   "source": "iris_vector_graph/cli.py:460-471",
+   "urls": [
+    "/admin/indexes/rebuild"
+   ],
+   "calls": [
+    "command",
+    "dumps",
+    "exit",
+    "json",
+    "post",
+    "raise_for_status"
+   ]
+  }
+ ]
+}

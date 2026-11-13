@@ -1,0 +1,500 @@
+{
+ "module": "03",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "lane": "breadth-a",
+ "generated_by": "experiment/playbook-completion/live/breadth-a/make_audit.py",
+ "source_findings": "experiment/playbook-uplift/findings/03.md",
+ "original_count": 9,
+ "new_count": 2,
+ "dispositions": {
+  "confirmed-source": 3,
+  "reproduced-live": 8
+ },
+ "findings": [
+  {
+   "id": "F-0301",
+   "title": "The bulk loader writes while ledger strict mode is on",
+   "intended": "HD-0301 (supported): spec 213's API contract excludes the bulk loader and raw SQL from strict mode; the USER_GUIDE (docs/USER_GUIDE.md:1107-1121) says strict refuses create_node, create_edge 'and the other methods'.",
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "State the exclusion in the USER_GUIDE next to strict mode (the contract is supported as is).",
+   "gates": [
+    "3.3a-writesets",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-ledger"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/bulk_loader.py:252-272"
+    }
+   ],
+   "notes": "Behaviour matches the supported contract (HD-0301); the defect is the USER_GUIDE wording. Severity lowered to S3 accordingly.",
+   "module": "03",
+   "observed": {
+    "probe": "p0301_bulk_loader_under_strict",
+    "verdict": "loader wrote under strict mode (contract exception; docs say otherwise)",
+    "oracle": "Spec 213 API contract: bulk loader and raw SQL are outside strict mode (HD-0301)",
+    "values": {
+     "bulk_loader": "{'nodes': 1, 'labels': 0, 'props': 2, 'elapsed_s': 0.0}",
+     "create_node_under_strict": "refused LedgerStrictModeError",
+     "rows": 1
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0301_bulk_loader_under_strict.json",
+    "log": "$RUN_DIR/breadth-a/live/ledger-all-20261113T232600.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-0302",
+   "title": "Strict mode reaches another engine only after its five-second cache expires",
+   "intended": "USER_GUIDE.md:1107-1121 states refusal without a window; HD-1103 (supported): strict mode is a client-side guard whose cache behaviour must be inventoried.",
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Document the window and the fail-open rule next to set_strict, or check on the server.",
+   "gates": [
+    "3.5-lockplans",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-ledger"
+    },
+    {
+     "kind": "tested",
+     "ref": "tests/unit/test_ledger_guard.py::test_cache_honours_ttl_and_refresh"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/ledger/guard.py:20-59"
+    }
+   ],
+   "notes": "",
+   "module": "03",
+   "observed": {
+    "probe": "p0302_strict_cache_window",
+    "verdict": "another engine wrote within its cache window",
+    "oracle": "once strict is on, every engine refuses the guarded writes",
+    "values": {
+     "e1_write_after_strict": true,
+     "e2_write": "refused LedgerStrictModeError",
+     "elapsed_s": 0.0
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0302_strict_cache_window.json",
+    "log": "$RUN_DIR/breadth-a/live/ledger-all-20261113T232600.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-0303",
+   "title": "A direct edge delete leaves the ledger's live link for the edge",
+   "intended": "CONTEXT.md:198-205 (no live statement outlives its content); INV-stmt (semantics/writesets.json).",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Route delete_edge (and the Cypher relationship delete) through Eraser.EraseEdges.",
+   "gates": [
+    "3.3-model-check",
+    "3.3a-writesets",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-ledger-stmt"
+    },
+    {
+     "kind": "mc",
+     "ref": "breadth-a-mc-wrt_ledger_stmt-as-built"
+    },
+    {
+     "kind": "mc",
+     "ref": "breadth-a-mc-wrt_ledger_stmt-reviewed"
+    },
+    {
+     "kind": "control",
+     "ref": "breadth-a-control-wrt_ledger_stmt"
+    }
+   ],
+   "notes": "The first live attempt (breadth-a-live-ledger, p0303) read ^IVG.Ledger('tuple') with graph key 0 instead of GraphKey.ForLedger('') ($Char(1)) and decided nothing; p0303b corrects the key. A ledger create of the same triple after the direct delete allocated a new statement (p0303: 1 then 2), so the reuse happens through the tuple index for a directly re-created edge, as the finding says.",
+   "module": "03",
+   "observed": {
+    "probe": "p0303b_direct_delete_keeps_stmt",
+    "verdict": "statement 4 and its tuple entry stay live after the row is gone; the re-created edge inherits it",
+    "oracle": "no live statement outlives its edge row (CONTEXT.md:198-205, INV-stmt)",
+    "values": {
+     "ledger_key_default": "'\\x01'",
+     "row_after_direct_delete": 0,
+     "stmt_entry_alive_after_direct_delete": 1,
+     "stmt_first": "4",
+     "tuple_after_create": "4",
+     "tuple_after_direct_delete": "4",
+     "tuple_after_direct_recreate": "4",
+     "verify_after_direct_delete": {
+      "classification": "unrecorded_writes",
+      "differences": [
+       "DiffEntry(entity_kind='rel', entity_id='1', attr='', before='{\"graph\":null,\"o\":\"balb232559\",\"p\":\"LR\",\"s\":\"bala232559\"}', after=None)",
+       "DiffEntry(entity_kind='rel', entity_id='4', attr='', before='{\"graph\":null,\"o\":\"balb233236\",\"p\":\"LR\",\"s\":\"bala233236\"}', after=None)",
+       "DiffEntry(entity_kind='rel', entity_id='{\"graph\":\"baj07232613\",\"o\":\"jv_l1\",\"p\":\"LL\",\"s\":\"jv_l0\"}', attr='', before=None, after='{\"graph\":\"baj07232613\",\"o\":\"jv_l1\",\"p\":\"LL\",\"s\":\"jv_l0\"}')"
+      ],
+      "result": "diverges"
+     }
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0303b_direct_delete_keeps_stmt.json",
+    "log": "$RUN_DIR/breadth-a/live/ledger-p_enable-p0303b_direct_delete_keeps_stmt-p_disable-20261113T233237.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-0304",
+   "title": "Storing an edge over a marked edge does not take the edge over",
+   "intended": "ADR-0009 (CONTEXT.md:66-73) and HD-0302 (supported): an explicit structural create clears the temporal mark; a temporal-backed row must not delete an explicitly written edge.",
+   "severity": "S1",
+   "confidence": "high",
+   "remedy": "Run the adopt step after store_edge's swallowed duplicate.",
+   "gates": [
+    "3.3-model-check",
+    "3.3a-writesets",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-05-temporal"
+    },
+    {
+     "kind": "mc",
+     "ref": "breadth-a-mc-tmp_mark-as-built"
+    },
+    {
+     "kind": "mc",
+     "ref": "breadth-a-mc-tmp_mark-reviewed"
+    },
+    {
+     "kind": "control",
+     "ref": "breadth-a-control-tmp_mark"
+    }
+   ],
+   "notes": "Discriminating control in the same probe: over the same marked row, create_edge adopts (qualifiers NULL) and its edge survives the last temporal delete; store_edge keeps {\"temporal\":true} and its edge is deleted (data loss).",
+   "module": "03",
+   "observed": {
+    "probe": "p0304_store_edge_does_not_adopt",
+    "verdict": "create_edge's edge survives (control), store_edge's edge is deleted",
+    "oracle": "an explicitly written edge survives the last temporal delete (ADR-0009, CONTEXT.md:66-73)",
+    "values": {
+     "paths": {
+      "create_edge": {
+       "after_explicit_write": [
+        [
+         null
+        ]
+       ],
+       "after_last_temporal_delete": [
+        [
+         null
+        ]
+       ],
+       "marked_row": [
+        [
+         "{\"temporal\":true}"
+        ]
+       ]
+      },
+      "store_edge": {
+       "after_explicit_write": [
+        [
+         "{\"temporal\":true}"
+        ]
+       ],
+       "after_last_temporal_delete": [],
+       "marked_row": [
+        [
+         "{\"temporal\":true}"
+        ]
+       ]
+      }
+     }
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0304_store_edge_does_not_adopt.json",
+    "log": "$RUN_DIR/breadth-a/live/05-all-20261113T224508.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-0305",
+   "title": "A bulk write larger than one chunk is not one transaction on the server-loader path",
+   "intended": "USER_GUIDE.md:238-241: each bulk write is a transaction of its own.",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Run the loader on the cursor's own process inside the WriteTxn (txn.native()), or one loader call per transaction.",
+   "gates": [
+    "3.3-model-check",
+    "3.7-trace-replay",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-03-bulk-atomicity"
+    },
+    {
+     "kind": "trace",
+     "ref": "breadth-a-live-03-bulk-atomicity"
+    },
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-03-bulk-killed-client"
+    },
+    {
+     "kind": "mc",
+     "ref": "breadth-a-mc-wrt_bulk_atomic-as-built"
+    },
+    {
+     "kind": "mc",
+     "ref": "breadth-a-mc-wrt_bulk_atomic-reviewed"
+    },
+    {
+     "kind": "control",
+     "ref": "breadth-a-control-wrt_bulk_atomic"
+    }
+   ],
+   "notes": "from_connect engine: 1,001 of 2,000 nodes committed and visible to a READ COMMITTED reader while the call was stalled in chunk 2; the journal shows two committed node transactions by the engine's Native API process, none by its cursor process. A client killed inside chunk 2 left exactly chunk 1 committed (breadth-a-live-03-bulk-killed-client).",
+   "module": "03",
+   "observed": {
+    "probe": "p0305_bulk_chunks_not_one_transaction",
+    "verdict": "1001 of 2000 nodes committed and visible to another process while the call ran; 2 node-writing transactions, pids ['7440'] (cursor pid 7437)",
+    "oracle": "no other process sees part of one bulk write; its writes are one transaction of the caller's",
+    "values": {
+     "blocker_pid": "7438",
+     "call": {
+      "result": "returned 2000 ids",
+      "seconds": 5.2
+     },
+     "call_still_running_at_4s": true,
+     "cleanup_left": 0,
+     "committed_nodes_visible_to_another_process_mid_call": 1001,
+     "cursor_pid": "7437",
+     "journal_node_transactions": [
+      {
+       "committed": true,
+       "pid": "7440",
+       "records": 15000,
+       "rolled_back": false,
+       "stores": [
+        "sql:Graph_KG.nodes",
+        "sql:Graph_KG.rdf_props"
+       ]
+      },
+      {
+       "committed": true,
+       "pid": "7440",
+       "records": 22000,
+       "rolled_back": false,
+       "stores": [
+        "global:^KG",
+        "sql:Graph_KG.nodes",
+        "sql:Graph_KG.rdf_labels",
+        "sql:Graph_KG.rdf_props"
+       ]
+      }
+     ],
+     "nodes_committed_after_call": 2000,
+     "objectscript_deployed": true
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0305_bulk_chunks_not_one_transaction.json",
+    "log": "$RUN_DIR/breadth-a/live/03-p0305_bulk_chunks_not_one_transaction-20261113T225713.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-0306",
+   "title": "create_node answers False for a write IRIS refuses as invalid",
+   "intended": "create_node docstring: False means the node already exists; 4.6.0 R203: a refusal is not 'already there'.",
+   "severity": "S4",
+   "confidence": "high",
+   "remedy": "Drop the 'validation failed' match or width-check the graph name.",
+   "gates": [
+    "3.5-decoders",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-03-writes"
+    }
+   ],
+   "notes": "Also settles premise P-0307 live (a 300-character graph name).",
+   "module": "03",
+   "observed": {
+    "probe": "p0306_long_graph_name_reads_as_duplicate",
+    "verdict": "answered False (exists) with nothing written",
+    "oracle": "False means the node already exists (create_node docstring); a refusal raises (R203)",
+    "values": {
+     "create_node": false,
+     "rows_written": 0
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0306_long_graph_name_reads_as_duplicate.json",
+    "log": "$RUN_DIR/breadth-a/live/03-all-20261113T224729.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-0307",
+   "title": "The server path of bulk_ingest_edges skips a refused edge without an error",
+   "intended": "4.7.0 row 14: every bulk writer raises for a refused row; the SQL path of bulk_ingest_edges raises GraphWriteError.",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Width-check in Python before sending; make the loader throw on a refused row.",
+   "gates": [
+    "5c-refusals",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-03-writes"
+    }
+   ],
+   "notes": "",
+   "module": "03",
+   "observed": {
+    "probe": "p0307_ingest_drops_refused_edge",
+    "verdict": "the too-wide edge was dropped, count 1, no error",
+    "oracle": "a refused row raises (4.7.0 row 14 for every other bulk writer; the SQL path raises)",
+    "values": {
+     "count": 1,
+     "objectscript_deployed": true,
+     "rows": [
+      [
+       "OK"
+      ]
+     ]
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0307_ingest_drops_refused_edge.json",
+    "log": "$RUN_DIR/breadth-a/live/03-all-20261113T224729.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-0308",
+   "title": "The bulk loader stores a NaN or infinite edge property as JSON no reader accepts",
+   "intended": "4.6.0 R307: create_edge and store_edge refuse NaN/Infinity because IRIS JSON functions then fail every relationship read.",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Use _qualifiers_json (allow_nan=False) in the loader.",
+   "gates": [
+    "5c-refusals",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-03-writes"
+    }
+   ],
+   "notes": "create_edge refused the same value (ValueError); the Cypher read of the loaded graph failed with SQLCODE -149 in CY_REL_PROP.",
+   "module": "03",
+   "observed": {
+    "probe": "p0308_loader_nan_breaks_reads",
+    "verdict": "loader stored NaN and the Cypher read failed",
+    "oracle": "a stored edge never makes a relationship read fail (R307 refuses NaN on create_edge)",
+    "values": {
+     "create_edge_nan": "refused ValueError",
+     "cypher_read": [
+      "error",
+      "<SQL ERROR>; Details: [SQLCODE: <-149>:<SQL Function encountered an error>]\r\n[Location: <ServerLoop - Query Fetch>]\r\n[%msg: <SQL Function GRAPH_KG.CY_REL_PROP failed with error:  SQLCODE=-400,%msg=>]"
+     ],
+     "stored_qualifiers": [
+      [
+       "b",
+       "{\"w\": NaN}"
+      ],
+      [
+       "c",
+       "{\"w\": 1.0}"
+      ]
+     ]
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0308_loader_nan_breaks_reads.json",
+    "log": "$RUN_DIR/breadth-a/live/03-all-20261113T224729.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-0309",
+   "title": "The bulk loader rebuilds the indexes of Graph_KG whatever schema it loaded",
+   "intended": "ADR-0016 / CONTEXT.md:20-24: a namespace's IVG schema may be other than Graph_KG.",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Derive the class names from the schema.",
+   "gates": [
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/bulk_loader.py:493-496"
+    }
+   ],
+   "notes": "Live check blocked-access: needs a namespace whose IVG Schema is not Graph_KG (namespaces are the orchestrator's). Related observation (breadth-a-live-bulkloader-noindex): edges BulkLoader.load_edges wrote with its default %NOINDEX and no rebuild_all_indices were invisible to indexed reads (0 vs 2 rows) and survived erase_graph of their graph; reported to the erasure lane, not counted here (the loader's docstring requires the rebuild).",
+   "module": "03",
+   "observed": "rebuild_all_indices calls %BuildIndices on the fixed classes Graph.KG.rdfedges/rdflabels/rdfprops/nodes (iris_vector_graph/bulk_loader.py:495).",
+   "disposition": "confirmed-source"
+  },
+  {
+   "id": "F-C0301",
+   "title": "create_edge's adoption of a marked row runs after its transaction commits",
+   "intended": "create_edge docstring/ADR-0009: an explicit create over a marked row adopts it in the same write.",
+   "severity": "S4",
+   "confidence": "medium",
+   "remedy": "Adopt inside the same transaction as the guarded insert.",
+   "gates": [
+    "3.5-lockplans",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/nodes_edges.py:1236-1252"
+    }
+   ],
+   "notes": "New, from the footprint sub-lane's static reading; confirmed in source, not provoked (a narrow interleaving).",
+   "module": "03",
+   "observed": "When the guarded insert finds the triple, txn.commit() runs first and _adopt_temporal_row's UPDATE runs afterwards as its own statement (iris_vector_graph/_engine/nodes_edges.py:1236-1252); a temporal delete in between removes the marked row and the call answers False (duplicate) with no edge.",
+   "disposition": "confirmed-source"
+  },
+  {
+   "id": "F-C0302",
+   "title": "Property lookups with a limit return a storage-order subset",
+   "intended": "A capped lookup answers a defined subset (no stated order at the pin; ADR/USER_GUIDE silent).",
+   "severity": "S4",
+   "confidence": "medium",
+   "remedy": "ORDER BY the subject (and value) under a limit, or document the arbitrary subset.",
+   "gates": [
+    "3.4-storage-order",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/nodes_edges.py:801-832"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/nodes_edges.py:892-915"
+    },
+    {
+     "kind": "inspected",
+     "ref": "experiment/playbook-completion/models/breadth-a/storage-order/03.json"
+    }
+   ],
+   "notes": "New, from the storage-order disposition (the coordinator's scan missed both: TOP is built in a separate string).",
+   "module": "03",
+   "observed": "get_node_ids_by_property and get_property_pairs_like build SELECT TOP n ... with no ORDER BY (iris_vector_graph/_engine/nodes_edges.py:820, 904): with a limit the caller gets the first n rows in scan order.",
+   "disposition": "confirmed-source"
+  }
+ ]
+}

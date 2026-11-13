@@ -1,0 +1,61 @@
+{
+ "call": "returned True",
+ "conn_pid": "11225",
+ "declared_found": true,
+ "declared_not_observed_this_run": [
+  "global:^IVG.AdjNoLock",
+  "global:^NKG",
+  "global:^NKG(\"$meta\")",
+  "global:^||IVG.AdjNoLockWarned [process-private/scratch]"
+ ],
+ "declared_writes": [
+  "global:^IVG.AdjNoLock",
+  "global:^KG(\"__version\")",
+  "global:^KG(\"gen\")",
+  "global:^KG(\"in\")",
+  "global:^KG(\"out\")",
+  "global:^NKG",
+  "global:^NKG(\"$meta\")",
+  "global:^||IVG.AdjNoLockWarned [process-private/scratch]",
+  "sql:Graph_KG.rdf_edges"
+ ],
+ "footprint": "py:IRISGraphEngine.delete_edge",
+ "graph": "baj04232613",
+ "id": "J04",
+ "log": "$RUN_DIR/breadth-a/journal/journal-20261113T232613.log",
+ "module": "03",
+ "namespace": "AUDITA",
+ "observed": {
+  "outermost_transactions": [
+   {
+    "end": "commit",
+    "nesting_levels": 2,
+    "non_transactional_inside": [
+     "global:^KG(\"__version\")",
+     "global:^KG(\"gen\")"
+    ],
+    "pid": "11225",
+    "stores_in_txn": [
+     "global:^KG(\"in\")",
+     "global:^KG(\"out\")",
+     "sql:Graph_KG.rdf_edges"
+    ]
+   }
+  ],
+  "pids": [
+   "11225"
+  ],
+  "records": 14,
+  "stores_written": [
+   "global:^KG(\"__version\")",
+   "global:^KG(\"gen\")",
+   "global:^KG(\"in\")",
+   "global:^KG(\"out\")",
+   "sql:Graph_KG.rdf_edges"
+  ],
+  "written_with_no_transaction_open": []
+ },
+ "seconds": 0.0,
+ "undeclared_writes": [],
+ "verdict": "footprint covers every observed write"
+}

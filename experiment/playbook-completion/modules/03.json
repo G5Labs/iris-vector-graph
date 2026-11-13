@@ -1,0 +1,452 @@
+{
+ "module": "03",
+ "name": "writes",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "lane": "breadth-a",
+ "generated_by": "experiment/playbook-completion/live/breadth-a/make_modules.py",
+ "summary": {
+  "entry_points": 98,
+  "entry_points_by_kind": {
+   "classmethod": 5,
+   "cli": 1,
+   "internal": 1,
+   "native(functional-index-callback)": 6,
+   "python-api": 81,
+   "python-api(constructor)": 2,
+   "python-api(property)": 1,
+   "rest": 1
+  },
+  "omissions": 30,
+  "cells": 51,
+  "cells_without_entry_point": 2,
+  "footprints": 47,
+  "footprints_reviewed_by_hand": 12,
+  "footprints_journal_validated": 9,
+  "journal": {
+   "validated": 9,
+   "covered": 8,
+   "extraction_gaps": 0,
+   "harness_errors": 0,
+   "product_mismatches": 1
+  },
+  "model_families": [
+   "tmp_mark",
+   "wrt_bulk_atomic",
+   "wrt_ledger_stmt"
+  ],
+  "model_checks": 18,
+  "model_checks_met": 18,
+  "findings_original": 9,
+  "findings_new": 2,
+  "findings_by_disposition": {
+   "confirmed-source": [
+    "F-0309",
+    "F-C0301",
+    "F-C0302"
+   ],
+   "reproduced-live": [
+    "F-0301",
+    "F-0302",
+    "F-0303",
+    "F-0304",
+    "F-0305",
+    "F-0306",
+    "F-0307",
+    "F-0308"
+   ]
+  },
+  "findings_by_severity": {
+   "S1": [
+    "F-0304"
+   ],
+   "S2": [
+    "F-0303",
+    "F-0305",
+    "F-0307",
+    "F-0308",
+    "F-0309"
+   ],
+   "S3": [
+    "F-0301",
+    "F-0302"
+   ],
+   "S4": [
+    "F-0306",
+    "F-C0301",
+    "F-C0302"
+   ]
+  },
+  "writeset_pairs": {
+   "mc": 14,
+   "finding": 0,
+   "open": 97
+  },
+  "registered_runs": [
+   "breadth-a-control-tmp_mark",
+   "breadth-a-control-wrt_bulk_atomic",
+   "breadth-a-control-wrt_ledger_stmt",
+   "breadth-a-live-03-bulk-atomicity",
+   "breadth-a-live-03-bulk-killed-client",
+   "breadth-a-live-03-writes",
+   "breadth-a-live-05-temporal",
+   "breadth-a-live-ledger",
+   "breadth-a-live-ledger-stmt",
+   "breadth-a-mc-tmp_mark-as-built",
+   "breadth-a-mc-tmp_mark-reviewed",
+   "breadth-a-mc-wrt_bulk_atomic-as-built",
+   "breadth-a-mc-wrt_bulk_atomic-reviewed",
+   "breadth-a-mc-wrt_ledger_stmt-as-built",
+   "breadth-a-mc-wrt_ledger_stmt-reviewed"
+  ]
+ },
+ "gates_by_id": {
+  "3.1-cells": {
+   "status": "closed",
+   "evidence": [
+    "experiment/playbook-uplift/ontology/03-writes.md",
+    "models/breadth-a/inventory/03.json#cells_without_entry_point"
+   ],
+   "remaining": "2 defined cells cite no entry point of this module (most cite code in another module); see the inventory",
+   "reason": "51 cells; 2 carry an open human decision"
+  },
+  "3.1-coverage": {
+   "status": "open",
+   "evidence": [
+    "models/breadth-a/inventory/03.json",
+    "models/breadth-a/tools/inventory.py"
+   ],
+   "remaining": "30 inventoried entry points no statement or cell covers (of 98); add statements or record them as helpers"
+  },
+  "3.1-intent": {
+   "status": "open",
+   "evidence": [
+    "experiment/playbook-completion/decisions.md"
+   ],
+   "remaining": "owned by the intent lanes; decisions.md records a working disposition for every HD of this module"
+  },
+  "3.2-coverage": {
+   "status": "open",
+   "evidence": [
+    "models/breadth-a/inventory/env-features-03.json"
+   ],
+   "remaining": "the orchestrator's IRIS environment contract must cover each env_feature; live premises settled here: P-0202 (F-0203), P-0307 (F-0306), P-0401 ($Increment journaled outside the transaction, J02/J13), P-0002 (dirty reads, F-0402)"
+  },
+  "3.3-L1": {
+   "status": "open",
+   "evidence": [
+    "models/breadth-a/src (tmp_mark, wrt_bulk_atomic, wrt_ledger_stmt)"
+   ],
+   "remaining": "explorer models state the module's key invariants (see RESULTS.json); no Verus L1"
+  },
+  "3.3-L2": {
+   "status": "open",
+   "evidence": [
+    "models/breadth-a/RESULTS.json"
+   ],
+   "remaining": "no L2 machine over the real data layout"
+  },
+  "3.3-refinement": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "no refinement evidence"
+  },
+  "3.3-controls": {
+   "status": "open",
+   "evidence": [
+    "models/breadth-a/RESULTS.json: wrt_bulk_atomic-control-sql-commit, wrt_ledger_stmt-control-tuple-only, tmp_mark-control-adopt-keeps-marker"
+   ],
+   "remaining": "controls are explorer mutants (each caught), not proof-level rejections"
+  },
+  "3.3-model-check": {
+   "status": "closed",
+   "evidence": [
+    "models/breadth-a/RESULTS.json (18 checks, families tmp_mark, wrt_bulk_atomic, wrt_ledger_stmt)",
+    "breadth-a-mc-all"
+   ],
+   "reason": "as-built / reviewed / control / sharpness (and progress where it matters) per family, exhaustive within bounds; scope is each family's invariant and the operations its doc comment lists (other operations of the module are not modeled)"
+  },
+  "3.3a-writesets": {
+   "status": "failed",
+   "evidence": [
+    "models/breadth-a/writesets.json"
+   ],
+   "remaining": "as-built violations recorded as findings ['F-0303', 'F-0304']; 97 (invariant, writer) pairs with no discharge; 14 discharged for the reviewed design by mc (the as-built pair is a finding)",
+   "reason": "pairs computed from footprints (declared + journal) against the model invariants' read sets"
+  },
+  "3.4-statements": {
+   "status": "open",
+   "evidence": [
+    "footprints/03.json#journal_validation"
+   ],
+   "remaining": "no statement proved against an IRIS model; journal validation compares write sets only"
+  },
+  "3.4-ownership": {
+   "status": "open",
+   "evidence": [
+    "footprints/03.json"
+   ],
+   "remaining": "no ownership self-test"
+  },
+  "3.4-storage-order": {
+   "status": "open",
+   "evidence": [
+    "models/breadth-a/storage-order/03.json",
+    "$RUN_DIR/checks/storage-order.json"
+   ],
+   "remaining": "dispose of the order-dependent sites listed",
+   "reason": "the scan's only site is existence-only, but it missed two capped property lookups (nodes_edges.py:820, 904) that return a storage-order subset"
+  },
+  "3.4-declared-reads": {
+   "status": "open",
+   "evidence": [
+    "findings/audit/03.json"
+   ],
+   "remaining": "no declared-reads self-test"
+  },
+  "3.5-handlers": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "no handler proved"
+  },
+  "3.5-lockplans": {
+   "status": "failed",
+   "evidence": [
+    "footprints/03.json (locks)",
+    "findings/audit/03.json"
+   ],
+   "remaining": "lock-plan defects: ['F-0302', 'F-C0301']"
+  },
+  "3.5-decoders": {
+   "status": "failed",
+   "evidence": [
+    "findings/audit/03.json"
+   ],
+   "remaining": "decoder/status-map defects: ['F-0306']"
+  },
+  "3.6-frame": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "not done in this lane"
+  },
+  "3.6-row-permutation": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "not done in this lane"
+  },
+  "3.7-lock-log": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "not done in this lane"
+  },
+  "3.7-mutation": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "not done in this lane"
+  },
+  "3.6-keys": {
+   "status": "open",
+   "evidence": [
+    "findings/audit/03.json"
+   ],
+   "remaining": "not done"
+  },
+  "3.6-fk": {
+   "status": "open",
+   "evidence": [
+    "findings/audit/03.json"
+   ],
+   "remaining": "not done"
+  },
+  "3.6-capacity": {
+   "status": "open",
+   "evidence": [
+    "findings/audit/03.json"
+   ],
+   "remaining": "not done"
+  },
+  "3.7-trace-replay": {
+   "status": "open",
+   "evidence": [
+    "footprints/03.json#journal_validation",
+    "breadth-a-journal-footprints"
+   ],
+   "remaining": "9 journal traces captured and compared with footprints; not replayed through the models"
+  },
+  "3.8-findings-disposed": {
+   "status": "closed",
+   "evidence": [
+    "findings/audit/03.json"
+   ],
+   "remaining": "observation-only: every original finding has an audited record; product obligations stay failed",
+   "reason": "dispositions {confirmed-source: 3, reproduced-live: 8}"
+  },
+  "5c-refusals": {
+   "status": "failed",
+   "evidence": [
+    "findings/audit/03.json"
+   ],
+   "remaining": "refusal defects ['F-0307', 'F-0308']; X statements not audited mechanically"
+  }
+ },
+ "env_features": [
+  {
+   "feature": "TSTART / TCOMMIT nesting",
+   "occurrences": 4,
+   "samples": [
+    "iris_src/src/Graph/KG/Txn.cls:27",
+    "iris_src/src/Graph/KG/Txn.cls:29",
+    "iris_src/src/Graph/KG/Txn.cls:42",
+    "iris_vector_graph/_write_txn.py:150"
+   ]
+  },
+  {
+   "feature": "TROLLBACK 1 (one level)",
+   "occurrences": 1,
+   "samples": [
+    "iris_src/src/Graph/KG/Txn.cls:55"
+   ]
+  },
+  {
+   "feature": "$TLevel",
+   "occurrences": 8,
+   "samples": [
+    "iris_src/src/Graph/KG/Txn.cls:26",
+    "iris_src/src/Graph/KG/Txn.cls:30",
+    "iris_src/src/Graph/KG/Txn.cls:39",
+    "iris_src/src/Graph/KG/Txn.cls:41",
+    "iris_src/src/Graph/KG/Txn.cls:44"
+   ]
+  },
+  {
+   "feature": "SQL transaction control from Python (commit/rollback/autocommit)",
+   "occurrences": 46,
+   "samples": [
+    "iris_vector_graph/_engine/nodes_edges.py:388",
+    "iris_vector_graph/_engine/nodes_edges.py:394",
+    "iris_vector_graph/_engine/nodes_edges.py:422",
+    "iris_vector_graph/_engine/nodes_edges.py:459",
+    "iris_vector_graph/_engine/nodes_edges.py:472"
+   ]
+  },
+  {
+   "feature": "%NOINDEX / %NOCHECK",
+   "occurrences": 13,
+   "samples": [
+    "iris_vector_graph/_engine/nodes_edges.py:1774",
+    "iris_vector_graph/_engine/nodes_edges.py:2410",
+    "iris_vector_graph/bulk_loader.py:267",
+    "iris_vector_graph/bulk_loader.py:276",
+    "iris_vector_graph/bulk_loader.py:291"
+   ]
+  },
+  {
+   "feature": "DDL (CREATE/ALTER/DROP TABLE, INDEX, VIEW)",
+   "occurrences": 3,
+   "samples": [
+    "iris_vector_graph/_engine/nodes_edges.py:1763",
+    "iris_vector_graph/_engine/nodes_edges.py:1930",
+    "iris_vector_graph/engine.py:1896"
+   ]
+  },
+  {
+   "feature": "iFind full-text index",
+   "occurrences": 1,
+   "samples": [
+    "iris_vector_graph/_engine/nodes_edges.py:1710"
+   ]
+  },
+  {
+   "feature": "Process-private globals (^||)",
+   "occurrences": 2,
+   "samples": [
+    "iris_src/src/Graph/KG/PropWrite.cls:69",
+    "iris_src/src/Graph/KG/PropWrite.cls:98"
+   ]
+  },
+  {
+   "feature": "Functional index callbacks / %BuildIndices / BUILD INDEX",
+   "occurrences": 3,
+   "samples": [
+    "iris_vector_graph/_engine/nodes_edges.py:2409",
+    "iris_vector_graph/bulk_loader.py:503",
+    "iris_vector_graph/bulk_loader.py:597"
+   ]
+  },
+  {
+   "feature": "Native API from Python (classMethod*, globals)",
+   "occurrences": 23,
+   "samples": [
+    "iris_vector_graph/_engine/nodes_edges.py:428",
+    "iris_vector_graph/_engine/nodes_edges.py:484",
+    "iris_vector_graph/_engine/nodes_edges.py:488",
+    "iris_vector_graph/_engine/nodes_edges.py:1226",
+    "iris_vector_graph/_engine/nodes_edges.py:1366"
+   ]
+  },
+  {
+   "feature": "Embedded/dynamic SQL in ObjectScript (&sql, %SQL.Statement)",
+   "occurrences": 1,
+   "samples": [
+    "iris_src/src/Graph/KG/PropWrite.cls:71"
+   ]
+  },
+  {
+   "feature": "%DynamicObject / JSON functions",
+   "occurrences": 5,
+   "samples": [
+    "iris_vector_graph/prop_values.py:142",
+    "iris_vector_graph/prop_values.py:146",
+    "iris_vector_graph/prop_values.py:147",
+    "iris_vector_graph/prop_values.py:172",
+    "iris_vector_graph/prop_values.py:185"
+   ]
+  },
+  {
+   "feature": "$ZStrip / $ZConvert character classes",
+   "occurrences": 1,
+   "samples": [
+    "iris_src/src/Graph/KG/PropWrite.cls:68"
+   ]
+  },
+  {
+   "feature": "Global collation order ($Order/$Query)",
+   "occurrences": 1,
+   "samples": [
+    "iris_src/src/Graph/KG/PropWrite.cls:90"
+   ]
+  },
+  {
+   "feature": "Class dictionary reads (^oddDEF, %Dictionary)",
+   "occurrences": 4,
+   "samples": [
+    "iris_src/src/Graph/KG/PropWrite.cls:71",
+    "iris_src/src/Graph/KG/PropWrite.cls:76",
+    "iris_vector_graph/_dictionary.py:60",
+    "iris_vector_graph/_dictionary.py:64"
+   ]
+  },
+  {
+   "feature": "SQLCODE-specific handling",
+   "occurrences": 21,
+   "samples": [
+    "iris_vector_graph/_dictionary.py:32",
+    "iris_vector_graph/_dictionary.py:34",
+    "iris_vector_graph/_engine/nodes_edges.py:996",
+    "iris_vector_graph/_engine/nodes_edges.py:997",
+    "iris_vector_graph/_engine/nodes_edges.py:1007"
+   ]
+  },
+  {
+   "feature": "TOP / LIMIT / FETCH FIRST result prefix",
+   "occurrences": 5,
+   "samples": [
+    "iris_vector_graph/_engine/nodes_edges.py:810",
+    "iris_vector_graph/_engine/nodes_edges.py:820",
+    "iris_vector_graph/_engine/nodes_edges.py:882",
+    "iris_vector_graph/_engine/nodes_edges.py:884",
+    "iris_vector_graph/_engine/nodes_edges.py:904"
+   ]
+  }
+ ],
+ "env_features_method": "regex over the source ranges of the module's inventoried entry points; over-approximates"
+}

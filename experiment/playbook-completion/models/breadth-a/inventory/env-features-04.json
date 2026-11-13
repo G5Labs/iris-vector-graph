@@ -1,0 +1,236 @@
+{
+ "module": "04",
+ "generated_by": "experiment/playbook-completion/models/breadth-a/tools/env_features.py",
+ "method": "regex over the source ranges of the module's inventoried entry points; over-approximates",
+ "env_features": [
+  {
+   "feature": "LOCK with timeout",
+   "occurrences": 13,
+   "samples": [
+    "iris_src/src/Graph/KG/Adj.cls:68",
+    "iris_src/src/Graph/KG/Adj.cls:144",
+    "iris_src/src/Graph/KG/Adjacency.cls:63",
+    "iris_src/src/Graph/KG/Adjacency.cls:431",
+    "iris_src/src/Graph/KG/Adjacency.cls:455"
+   ]
+  },
+  {
+   "feature": "LOCK shared mode (#\"S\")",
+   "occurrences": 16,
+   "samples": [
+    "iris_src/src/Graph/KG/Adjacency.cls:63",
+    "iris_src/src/Graph/KG/Adjacency.cls:93",
+    "iris_src/src/Graph/KG/Adjacency.cls:137",
+    "iris_src/src/Graph/KG/Adjacency.cls:158",
+    "iris_src/src/Graph/KG/Adjacency.cls:262"
+   ]
+  },
+  {
+   "feature": "LOCK exclusive probe with 0 timeout (#\"E\":0)",
+   "occurrences": 2,
+   "samples": [
+    "iris_src/src/Graph/KG/Adj.cls:68",
+    "iris_src/src/Graph/KG/Adj.cls:144"
+   ]
+  },
+  {
+   "feature": "LOCK release inside a transaction (deferred unlock, P-0003)",
+   "occurrences": 27,
+   "samples": [
+    "iris_src/src/Graph/KG/Adj.cls:71",
+    "iris_src/src/Graph/KG/Adj.cls:147",
+    "iris_src/src/Graph/KG/Adjacency.cls:93",
+    "iris_src/src/Graph/KG/Adjacency.cls:137",
+    "iris_src/src/Graph/KG/Adjacency.cls:158"
+   ]
+  },
+  {
+   "feature": "$Increment (not undone by rollback, P-0401)",
+   "occurrences": 33,
+   "samples": [
+    "iris_src/src/Graph/KG/Adjacency.cls:67",
+    "iris_src/src/Graph/KG/Adjacency.cls:89",
+    "iris_src/src/Graph/KG/Adjacency.cls:92",
+    "iris_src/src/Graph/KG/Adjacency.cls:102",
+    "iris_src/src/Graph/KG/Adjacency.cls:103"
+   ]
+  },
+  {
+   "feature": "TSTART / TCOMMIT nesting",
+   "occurrences": 9,
+   "samples": [
+    "iris_src/src/Graph/KG/EdgeScan.cls:277",
+    "iris_src/src/Graph/KG/EdgeScan.cls:307",
+    "iris_src/src/Graph/KG/EdgeScan.cls:352",
+    "iris_src/src/Graph/KG/EdgeScan.cls:424",
+    "iris_src/src/Graph/KG/TraversalBuild.cls:40"
+   ]
+  },
+  {
+   "feature": "TROLLBACK with no argument (ends every level, P-0409)",
+   "occurrences": 2,
+   "samples": [
+    "iris_src/src/Graph/KG/TraversalBuild.cls:50",
+    "iris_src/src/Graph/KG/TraversalBuild.cls:156"
+   ]
+  },
+  {
+   "feature": "TROLLBACK 1 (one level)",
+   "occurrences": 2,
+   "samples": [
+    "iris_src/src/Graph/KG/EdgeScan.cls:309",
+    "iris_src/src/Graph/KG/EdgeScan.cls:426"
+   ]
+  },
+  {
+   "feature": "$TLevel",
+   "occurrences": 4,
+   "samples": [
+    "iris_src/src/Graph/KG/EdgeScan.cls:275",
+    "iris_src/src/Graph/KG/EdgeScan.cls:309",
+    "iris_src/src/Graph/KG/EdgeScan.cls:426",
+    "iris_src/src/Graph/KG/TraversalBuild.cls:156"
+   ]
+  },
+  {
+   "feature": "%IGNOREINDEX",
+   "occurrences": 4,
+   "samples": [
+    "iris_src/src/Graph/KG/EdgeScan.cls:373",
+    "iris_src/src/Graph/KG/EdgeScan.cls:376",
+    "iris_src/src/Graph/KG/EdgeScan.cls:412",
+    "iris_src/src/Graph/KG/EdgeScan.cls:415"
+   ]
+  },
+  {
+   "feature": "DDL (CREATE/ALTER/DROP TABLE, INDEX, VIEW)",
+   "occurrences": 1,
+   "samples": [
+    "iris_src/src/Graph/KG/TraversalBuild.cls:75"
+   ]
+  },
+  {
+   "feature": "Process-private globals (^||)",
+   "occurrences": 21,
+   "samples": [
+    "iris_src/src/Graph/KG/Adjacency.cls:68",
+    "iris_src/src/Graph/KG/Adjacency.cls:69",
+    "iris_src/src/Graph/KG/TraversalBuild.cls:302",
+    "iris_src/src/Graph/KG/TraversalBuild.cls:331",
+    "iris_src/src/Graph/KG/TraversalBuild.cls:460"
+   ]
+  },
+  {
+   "feature": "Functional index callbacks / %BuildIndices / BUILD INDEX",
+   "occurrences": 4,
+   "samples": [
+    "iris_src/src/Graph/KG/Adjacency.cls:228",
+    "iris_src/src/Graph/KG/TraversalBuild.cls:63",
+    "iris_src/src/Graph/KG/TraversalBuild.cls:133",
+    "iris_src/src/Graph/KG/TraversalBuild.cls:135"
+   ]
+  },
+  {
+   "feature": "Parallel jobs (JOB, WorkMgr, %BuildIndices jobs)",
+   "occurrences": 5,
+   "samples": [
+    "iris_src/src/Graph/KG/TraversalBuild.cls:131",
+    "iris_src/src/Graph/KG/TraversalBuild.cls:337",
+    "iris_src/src/Graph/KG/TraversalBuild.cls:352",
+    "iris_src/src/Graph/KG/TraversalBuild.cls:357",
+    "iris_src/src/Graph/KG/TraversalBuild.cls:519"
+   ]
+  },
+  {
+   "feature": "Native API from Python (classMethod*, globals)",
+   "occurrences": 8,
+   "samples": [
+    "iris_vector_graph/_edgeless.py:28",
+    "iris_vector_graph/_engine/admin.py:793",
+    "iris_vector_graph/_engine/admin.py:797",
+    "iris_vector_graph/_engine/admin.py:888",
+    "iris_vector_graph/_engine/nodes_edges.py:526"
+   ]
+  },
+  {
+   "feature": "Embedded/dynamic SQL in ObjectScript (&sql, %SQL.Statement)",
+   "occurrences": 28,
+   "samples": [
+    "iris_src/src/Graph/KG/Adjacency.cls:597",
+    "iris_src/src/Graph/KG/Adjacency.cls:603",
+    "iris_src/src/Graph/KG/Adjacency.cls:628",
+    "iris_src/src/Graph/KG/Adjacency.cls:636",
+    "iris_src/src/Graph/KG/Adjacency.cls:674"
+   ]
+  },
+  {
+   "feature": "%DynamicObject / JSON functions",
+   "occurrences": 35,
+   "samples": [
+    "iris_src/src/Graph/KG/Adjacency.cls:584",
+    "iris_src/src/Graph/KG/Adjacency.cls:589",
+    "iris_src/src/Graph/KG/Adjacency.cls:656",
+    "iris_src/src/Graph/KG/Adjacency.cls:743",
+    "iris_src/src/Graph/KG/Adjacency.cls:758"
+   ]
+  },
+  {
+   "feature": "Global collation order ($Order/$Query)",
+   "occurrences": 94,
+   "samples": [
+    "iris_src/src/Graph/KG/Adj.cls:116",
+    "iris_src/src/Graph/KG/Adj.cls:128",
+    "iris_src/src/Graph/KG/Adj.cls:153",
+    "iris_src/src/Graph/KG/Adj.cls:164",
+    "iris_src/src/Graph/KG/Adj.cls:191"
+   ]
+  },
+  {
+   "feature": "Global KILL of a subtree / Merge",
+   "occurrences": 69,
+   "samples": [
+    "iris_src/src/Graph/KG/Adj.cls:79",
+    "iris_src/src/Graph/KG/Adj.cls:170",
+    "iris_src/src/Graph/KG/Adj.cls:200",
+    "iris_src/src/Graph/KG/Adjacency.cls:152",
+    "iris_src/src/Graph/KG/Adjacency.cls:153"
+   ]
+  },
+  {
+   "feature": "Class dictionary reads (^oddDEF, %Dictionary)",
+   "occurrences": 1,
+   "samples": [
+    "iris_src/src/Graph/KG/Adjacency.cls:552"
+   ]
+  },
+  {
+   "feature": "SQL empty string as $Char(0)",
+   "occurrences": 24,
+   "samples": [
+    "iris_src/src/Graph/KG/Adjacency.cls:582",
+    "iris_src/src/Graph/KG/Adjacency.cls:583",
+    "iris_src/src/Graph/KG/Adjacency.cls:627",
+    "iris_src/src/Graph/KG/Adjacency.cls:654",
+    "iris_src/src/Graph/KG/Adjacency.cls:698"
+   ]
+  },
+  {
+   "feature": "SQLCODE-specific handling",
+   "occurrences": 37,
+   "samples": [
+    "iris_src/src/Graph/KG/Adjacency.cls:598",
+    "iris_src/src/Graph/KG/Adjacency.cls:599",
+    "iris_src/src/Graph/KG/Adjacency.cls:604",
+    "iris_src/src/Graph/KG/Adjacency.cls:609",
+    "iris_src/src/Graph/KG/Adjacency.cls:610"
+   ]
+  },
+  {
+   "feature": "%Stream",
+   "occurrences": 1,
+   "samples": [
+    "iris_src/src/Graph/KG/EdgeScan.cls:317"
+   ]
+  }
+ ]
+}

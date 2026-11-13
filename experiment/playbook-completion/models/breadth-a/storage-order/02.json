@@ -1,0 +1,71 @@
+{
+ "module": "02",
+ "gate": "3.4-storage-order",
+ "input": "$RUN_DIR/checks/storage-order.json",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "generated_by": "experiment/playbook-completion/models/breadth-a/tools/storage_order_dispositions.py",
+ "method": "each scan site in the module's files assigned by enclosing function (storage_order_sites.py, inventory entry-point ranges and Scope lines) and read at the pin; scan completeness sampled by grep of the module's scope files for TOP/LIMIT/FETCH FIRST and truncating $Order loops ($RUN_DIR/breadth-a/storage-order/grep-missed.log). Source reading only; nothing was run.",
+ "sites": [
+  {
+   "file": "iris_vector_graph/engine.py",
+   "line": 624,
+   "function": "IRISGraphEngine._more_than_one_graph",
+   "disposition": "existence-only",
+   "key_or_reason": "any first row works: its graph_id is then compared with index probes for a graph above and below it (634), so the answer (two or more graphs?) does not depend on which row came first",
+   "cites": [
+    "iris_vector_graph/engine.py:621-641"
+   ],
+   "finding_candidate": false,
+   "title": "",
+   "severity": "",
+   "note": "a NULL first graph_id takes the MIN/MAX path (628-631); {g, NULL} answers False on both paths, so the answer is order-independent there too",
+   "sql_excerpt": "SELECT TOP 1 graph_id FROM {}.nodes"
+  },
+  {
+   "file": "iris_vector_graph/engine.py",
+   "line": 634,
+   "function": "IRISGraphEngine._more_than_one_graph",
+   "disposition": "existence-only",
+   "key_or_reason": "existence of a graph_id above / below the first one",
+   "cites": [
+    "iris_vector_graph/engine.py:633-636"
+   ],
+   "finding_candidate": false,
+   "title": "",
+   "severity": "",
+   "sql_excerpt": "SELECT TOP 1 graph_id FROM {}.nodes WHERE graph_id {} ?"
+  }
+ ],
+ "missed_by_scan": [
+  {
+   "file": "iris_vector_graph/_engine/query.py",
+   "line": 2412,
+   "function": "QueryMixin._edge_graphs",
+   "disposition": "collation-ordered",
+   "key_or_reason": "for _ in range(10_000): nextSubscript over ^KG(\"out\"): the first 10,000 graph keys in collation order; the rest are silently left out, and any error answers []",
+   "cites": [
+    "iris_vector_graph/_engine/query.py:2408-2420"
+   ],
+   "finding_candidate": true,
+   "title": "An all-graphs walk lists at most 10,000 graphs (existing finding F-0209)",
+   "severity": "S4",
+   "finding": "F-0209",
+   "documented": false,
+   "note": "Deterministic (collation), not storage order; the truncation is undocumented. A capacity issue (gate 3.6-capacity) already recorded as F-0209."
+  }
+ ],
+ "out_of_scope": [],
+ "summary": {
+  "existence-only": 2
+ },
+ "summary_missed": {
+  "collation-ordered": 1
+ },
+ "finding_candidates": [
+  "An all-graphs walk lists at most 10,000 graphs (existing finding F-0209)"
+ ],
+ "status_suggestion": {
+  "status": "closed",
+  "reason": "both scan sites are existence probes whose answer is order-independent; the one truncating traversal (_edge_graphs) is collation-ordered and already finding F-0209 (gate 3.6-capacity)"
+ }
+}

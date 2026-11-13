@@ -1,0 +1,489 @@
+{
+ "module": "01",
+ "name": "install-schema",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "lane": "breadth-a",
+ "generated_by": "experiment/playbook-completion/live/breadth-a/make_modules.py",
+ "summary": {
+  "entry_points": 314,
+  "entry_points_by_kind": {
+   "classmethod": 8,
+   "cli": 2,
+   "exported": 2,
+   "internal": 3,
+   "python-api": 139,
+   "python-api(constructor)": 5,
+   "python-api(property)": 6,
+   "rest": 3,
+   "sqlfile-object": 56,
+   "sqlproc": 90
+  },
+  "omissions": 96,
+  "cells": 51,
+  "cells_without_entry_point": 0,
+  "footprints": 80,
+  "footprints_reviewed_by_hand": 3,
+  "footprints_journal_validated": 1,
+  "journal": {
+   "validated": 1,
+   "covered": 0,
+   "extraction_gaps": 1,
+   "harness_errors": 0,
+   "product_mismatches": 0
+  },
+  "model_families": [
+   "ins_legacy",
+   "ins_setup"
+  ],
+  "model_checks": 12,
+  "model_checks_met": 12,
+  "findings_original": 10,
+  "findings_new": 1,
+  "findings_by_disposition": {
+   "confirmed-source": [
+    "F-0102",
+    "F-0104",
+    "F-0105",
+    "F-0107",
+    "F-0108",
+    "F-0109",
+    "F-0110"
+   ],
+   "reproduced-live": [
+    "F-0103",
+    "F-0106",
+    "F-C0101"
+   ],
+   "reproduced-test": [
+    "F-0101"
+   ]
+  },
+  "findings_by_severity": {
+   "S2": [
+    "F-0102",
+    "F-0106",
+    "F-C0101"
+   ],
+   "S3": [
+    "F-0101",
+    "F-0103",
+    "F-0104",
+    "F-0105",
+    "F-0107",
+    "F-0109",
+    "F-0110"
+   ],
+   "S4": [
+    "F-0108"
+   ]
+  },
+  "writeset_pairs": {
+   "mc": 1,
+   "finding": 0,
+   "open": 112
+  },
+  "registered_runs": [
+   "breadth-a-control-ins_legacy",
+   "breadth-a-live-01-install",
+   "breadth-a-live-02-mode-off",
+   "breadth-a-mc-ins_legacy-as-built",
+   "breadth-a-mc-ins_setup-as-built",
+   "breadth-a-probe-local-0101-0601"
+  ]
+ },
+ "gates_by_id": {
+  "3.1-cells": {
+   "status": "closed",
+   "evidence": [
+    "experiment/playbook-uplift/ontology/01-install-schema.md",
+    "models/breadth-a/inventory/01.json#cells_without_entry_point"
+   ],
+   "remaining": "0 defined cells cite no entry point of this module (most cite code in another module); see the inventory",
+   "reason": "51 cells; 0 carry an open human decision"
+  },
+  "3.1-coverage": {
+   "status": "open",
+   "evidence": [
+    "models/breadth-a/inventory/01.json",
+    "models/breadth-a/tools/inventory.py"
+   ],
+   "remaining": "96 inventoried entry points no statement or cell covers (of 314); add statements or record them as helpers"
+  },
+  "3.1-intent": {
+   "status": "open",
+   "evidence": [
+    "experiment/playbook-completion/decisions.md"
+   ],
+   "remaining": "owned by the intent lanes; decisions.md records a working disposition for every HD of this module"
+  },
+  "3.2-coverage": {
+   "status": "open",
+   "evidence": [
+    "models/breadth-a/inventory/env-features-01.json"
+   ],
+   "remaining": "the orchestrator's IRIS environment contract must cover each env_feature; live premises settled here: P-0202 (F-0203), P-0307 (F-0306), P-0401 ($Increment journaled outside the transaction, J02/J13), P-0002 (dirty reads, F-0402)"
+  },
+  "3.3-L1": {
+   "status": "open",
+   "evidence": [
+    "models/breadth-a/src (ins_legacy, ins_setup)"
+   ],
+   "remaining": "explorer models state the module's key invariants (see RESULTS.json); no Verus L1"
+  },
+  "3.3-L2": {
+   "status": "open",
+   "evidence": [
+    "models/breadth-a/RESULTS.json"
+   ],
+   "remaining": "no L2 machine over the real data layout"
+  },
+  "3.3-refinement": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "no refinement evidence"
+  },
+  "3.3-controls": {
+   "status": "open",
+   "evidence": [
+    "models/breadth-a/RESULTS.json: ins_setup-control-silent-skip, ins_legacy-control-first-item-only"
+   ],
+   "remaining": "controls are explorer mutants (each caught), not proof-level rejections"
+  },
+  "3.3-model-check": {
+   "status": "closed",
+   "evidence": [
+    "models/breadth-a/RESULTS.json (12 checks, families ins_legacy, ins_setup)",
+    "breadth-a-mc-all"
+   ],
+   "reason": "as-built / reviewed / control / sharpness (and progress where it matters) per family, exhaustive within bounds; scope is each family's invariant and the operations its doc comment lists (other operations of the module are not modeled)"
+  },
+  "3.3a-writesets": {
+   "status": "failed",
+   "evidence": [
+    "models/breadth-a/writesets.json"
+   ],
+   "remaining": "as-built violations recorded as findings ['F-0103']; 112 (invariant, writer) pairs with no discharge; 1 discharged for the reviewed design by mc (the as-built pair is a finding)",
+   "reason": "pairs computed from footprints (declared + journal) against the model invariants' read sets"
+  },
+  "3.4-statements": {
+   "status": "open",
+   "evidence": [
+    "footprints/01.json#journal_validation"
+   ],
+   "remaining": "no statement proved against an IRIS model; journal validation compares write sets only"
+  },
+  "3.4-ownership": {
+   "status": "open",
+   "evidence": [
+    "footprints/01.json"
+   ],
+   "remaining": "no ownership self-test; see F-0404 (second ^KG writer), F-0107"
+  },
+  "3.4-storage-order": {
+   "status": "open",
+   "evidence": [
+    "models/breadth-a/storage-order/01.json",
+    "$RUN_DIR/checks/storage-order.json"
+   ],
+   "remaining": "dispose of the order-dependent sites listed",
+   "reason": "4 order-dependent sites, all inside get_schema_visualization's documented sample (2773-2776); no self-test pins the sample, and its graph-blind joins are F-0106; every other site is existence-only or a false positive"
+  },
+  "3.4-declared-reads": {
+   "status": "failed",
+   "evidence": [
+    "findings/audit/01.json"
+   ],
+   "remaining": "no declared-reads self-test; cross-graph reads are findings ['F-0106']"
+  },
+  "3.5-handlers": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "no handler proved"
+  },
+  "3.5-lockplans": {
+   "status": "open",
+   "evidence": [
+    "footprints/01.json (locks)",
+    "findings/audit/01.json"
+   ],
+   "remaining": "lock plans extracted (footprints) but not proved"
+  },
+  "3.5-decoders": {
+   "status": "failed",
+   "evidence": [
+    "findings/audit/01.json"
+   ],
+   "remaining": "decoder/status-map defects: ['F-0101', 'F-0102', 'F-C0101']"
+  },
+  "3.6-frame": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "not done in this lane"
+  },
+  "3.6-row-permutation": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "not done in this lane"
+  },
+  "3.7-lock-log": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "not done in this lane"
+  },
+  "3.7-mutation": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "not done in this lane"
+  },
+  "3.6-keys": {
+   "status": "open",
+   "evidence": [
+    "findings/audit/01.json"
+   ],
+   "remaining": "not done"
+  },
+  "3.6-fk": {
+   "status": "open",
+   "evidence": [
+    "findings/audit/01.json"
+   ],
+   "remaining": "not done"
+  },
+  "3.6-capacity": {
+   "status": "open",
+   "evidence": [
+    "findings/audit/01.json"
+   ],
+   "remaining": "not done"
+  },
+  "3.7-trace-replay": {
+   "status": "open",
+   "evidence": [
+    "footprints/01.json#journal_validation",
+    "breadth-a-journal-footprints"
+   ],
+   "remaining": "1 journal traces captured and compared with footprints; not replayed through the models"
+  },
+  "3.8-findings-disposed": {
+   "status": "closed",
+   "evidence": [
+    "findings/audit/01.json"
+   ],
+   "remaining": "observation-only: every original finding has an audited record; product obligations stay failed",
+   "reason": "dispositions {confirmed-source: 7, reproduced-live: 3, reproduced-test: 1}"
+  },
+  "5c-refusals": {
+   "status": "open",
+   "evidence": [
+    "findings/audit/01.json"
+   ],
+   "remaining": "X statements not audited mechanically"
+  }
+ },
+ "env_features": [
+  {
+   "feature": "SQL transaction control from Python (commit/rollback/autocommit)",
+   "occurrences": 10,
+   "samples": [
+    "iris_vector_graph/_engine/legacy.py:525",
+    "iris_vector_graph/_engine/legacy.py:576",
+    "iris_vector_graph/_engine/legacy.py:685",
+    "iris_vector_graph/_engine/schema.py:2138",
+    "iris_vector_graph/migrations/_commit.py:29"
+   ]
+  },
+  {
+   "feature": "%NOINDEX / %NOCHECK",
+   "occurrences": 3,
+   "samples": [
+    "iris_vector_graph/schema.py:1782",
+    "iris_vector_graph/schema.py:1788",
+    "iris_vector_graph/schema.py:3051"
+   ]
+  },
+  {
+   "feature": "%IGNOREINDEX",
+   "occurrences": 6,
+   "samples": [
+    "iris_vector_graph/schema.py:279",
+    "iris_vector_graph/schema.py:281",
+    "iris_vector_graph/schema.py:1815",
+    "iris_vector_graph/schema.py:1816",
+    "iris_vector_graph/schema.py:1821"
+   ]
+  },
+  {
+   "feature": "DDL (CREATE/ALTER/DROP TABLE, INDEX, VIEW)",
+   "occurrences": 153,
+   "samples": [
+    "iris_vector_graph/_engine/legacy.py:671",
+    "iris_vector_graph/schema.py:303",
+    "iris_vector_graph/schema.py:329",
+    "iris_vector_graph/schema.py:337",
+    "iris_vector_graph/schema.py:338"
+   ]
+  },
+  {
+   "feature": "CREATE OR REPLACE FUNCTION/PROCEDURE (LANGUAGE OBJECTSCRIPT)",
+   "occurrences": 63,
+   "samples": [
+    "iris_vector_graph/_engine/legacy.py:659",
+    "iris_vector_graph/legacy_text.py:34",
+    "iris_vector_graph/legacy_text.py:62",
+    "iris_vector_graph/routine_record.py:27",
+    "iris_vector_graph/schema.py:2176"
+   ]
+  },
+  {
+   "feature": "GRANT / REVOKE / SQL privileges",
+   "occurrences": 10,
+   "samples": [
+    "iris_src/src/Graph/KG/SqlPrivilege.cls:73",
+    "iris_src/src/Graph/KG/SqlPrivilege.cls:78",
+    "iris_vector_graph/_engine/legacy.py:260",
+    "iris_vector_graph/_engine/legacy.py:263",
+    "iris_vector_graph/_engine/legacy.py:438"
+   ]
+  },
+  {
+   "feature": "Vector SQL (VECTOR type, TO_VECTOR, VECTOR_COSINE/DOT)",
+   "occurrences": 8,
+   "samples": [
+    "iris_vector_graph/schema.py:433",
+    "iris_vector_graph/schema.py:443",
+    "iris_vector_graph/schema.py:461",
+    "iris_vector_graph/schema.py:1836",
+    "iris_vector_graph/schema.py:2154"
+   ]
+  },
+  {
+   "feature": "HNSW vector index",
+   "occurrences": 10,
+   "samples": [
+    "iris_vector_graph/schema.py:427",
+    "iris_vector_graph/schema.py:454",
+    "iris_vector_graph/schema.py:1967",
+    "iris_vector_graph/schema.py:1974",
+    "iris_vector_graph/schema.py:1975"
+   ]
+  },
+  {
+   "feature": "iFind full-text index",
+   "occurrences": 18,
+   "samples": [
+    "iris_vector_graph/schema.py:197",
+    "iris_vector_graph/schema.py:213",
+    "iris_vector_graph/schema.py:216",
+    "iris_vector_graph/schema.py:225",
+    "iris_vector_graph/schema.py:230"
+   ]
+  },
+  {
+   "feature": "Native API from Python (classMethod*, globals)",
+   "occurrences": 19,
+   "samples": [
+    "iris_vector_graph/_engine/class_deploy.py:147",
+    "iris_vector_graph/_engine/class_deploy.py:207",
+    "iris_vector_graph/_engine/class_deploy.py:208",
+    "iris_vector_graph/_engine/class_deploy.py:263",
+    "iris_vector_graph/_engine/class_deploy.py:282"
+   ]
+  },
+  {
+   "feature": "Embedded/dynamic SQL in ObjectScript (&sql, %SQL.Statement)",
+   "occurrences": 5,
+   "samples": [
+    "iris_vector_graph/schema.py:2390",
+    "iris_vector_graph/schema.py:2393",
+    "iris_vector_graph/schema.py:2396",
+    "iris_vector_graph/schema.py:2405",
+    "iris_vector_graph/schema.py:2420"
+   ]
+  },
+  {
+   "feature": "%DynamicObject / JSON functions",
+   "occurrences": 46,
+   "samples": [
+    "iris_vector_graph/_engine/admin.py:383",
+    "iris_vector_graph/_engine/legacy.py:117",
+    "iris_vector_graph/_engine/legacy.py:658",
+    "iris_vector_graph/schema.py:569",
+    "iris_vector_graph/schema.py:596"
+   ]
+  },
+  {
+   "feature": "$ZStrip / $ZConvert character classes",
+   "occurrences": 6,
+   "samples": [
+    "iris_src/src/Graph/KG/SqlPrivilege.cls:24",
+    "iris_src/src/Graph/KG/SqlPrivilege.cls:43",
+    "iris_src/src/Graph/KG/SqlPrivilege.cls:46",
+    "iris_vector_graph/schema.py:2200",
+    "iris_vector_graph/schema.py:2318"
+   ]
+  },
+  {
+   "feature": "Class dictionary reads (^oddDEF, %Dictionary)",
+   "occurrences": 26,
+   "samples": [
+    "iris_vector_graph/_engine/class_deploy.py:147",
+    "iris_vector_graph/_engine/class_deploy.py:196",
+    "iris_vector_graph/_engine/class_deploy.py:207",
+    "iris_vector_graph/_engine/class_deploy.py:208",
+    "iris_vector_graph/schema.py:207"
+   ]
+  },
+  {
+   "feature": "Class compile/delete at run time ($System.OBJ)",
+   "occurrences": 6,
+   "samples": [
+    "iris_vector_graph/_engine/class_deploy.py:263",
+    "iris_vector_graph/_engine/class_deploy.py:282",
+    "iris_vector_graph/_engine/class_deploy.py:290",
+    "iris_vector_graph/schema.py:200",
+    "iris_vector_graph/schema.py:243"
+   ]
+  },
+  {
+   "feature": "SQL empty string as $Char(0)",
+   "occurrences": 29,
+   "samples": [
+    "iris_vector_graph/schema.py:2181",
+    "iris_vector_graph/schema.py:2185",
+    "iris_vector_graph/schema.py:2191",
+    "iris_vector_graph/schema.py:2218",
+    "iris_vector_graph/schema.py:2261"
+   ]
+  },
+  {
+   "feature": "SQLCODE-specific handling",
+   "occurrences": 44,
+   "samples": [
+    "iris_src/src/Graph/KG/SqlPrivilege.cls:27",
+    "iris_src/src/Graph/KG/SqlPrivilege.cls:48",
+    "iris_src/src/Graph/KG/SqlPrivilege.cls:50",
+    "iris_src/src/Graph/KG/SqlPrivilege.cls:60",
+    "iris_src/src/Graph/KG/SqlPrivilege.cls:63"
+   ]
+  },
+  {
+   "feature": "TOP / LIMIT / FETCH FIRST result prefix",
+   "occurrences": 12,
+   "samples": [
+    "iris_vector_graph/_engine/schema.py:2791",
+    "iris_vector_graph/_engine/schema.py:2800",
+    "iris_vector_graph/_engine/schema.py:2819",
+    "iris_vector_graph/_engine/schema.py:2825",
+    "iris_vector_graph/_engine/schema.py:2833"
+   ]
+  },
+  {
+   "feature": "%Stream",
+   "occurrences": 1,
+   "samples": [
+    "iris_vector_graph/_engine/class_deploy.py:258"
+   ]
+  }
+ ],
+ "env_features_method": "regex over the source ranges of the module's inventoried entry points; over-approximates"
+}

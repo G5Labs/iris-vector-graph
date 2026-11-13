@@ -1,0 +1,4074 @@
+{
+ "module": "03",
+ "name": "writes",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "generated_by": "experiment/playbook-completion/models/breadth-a/tools/inventory.py",
+ "method": "Mechanical: Python ast over the module's files and a line scanner over its .cls files, with the file/function assignment of modules.py transcribed from the ontology Scope line (03-writes.md:5). Coverage: a statement names the entry point or cites its file with an overlapping line range. Name matching is textual; a hit is evidence of mention, not of a correct statement.",
+ "scope_files": {
+  "python": [
+   "iris_vector_graph/_engine/nodes_edges.py",
+   "iris_vector_graph/_write_txn.py",
+   "iris_vector_graph/bulk_loader.py",
+   "iris_vector_graph/prop_values.py",
+   "iris_vector_graph/_dictionary.py",
+   "iris_vector_graph/_collation.py",
+   "iris_vector_graph/_batch_check.py",
+   "iris_vector_graph/engine.py"
+  ],
+  "cls": [
+   "iris_src/src/Graph/KG/PropWrite.cls",
+   "iris_src/src/Graph/KG/Txn.cls",
+   "iris_src/src/Graph/KG/LabelIndex.cls"
+  ],
+  "sql_files": false
+ },
+ "ontology": "experiment/playbook-uplift/ontology/03-writes.md",
+ "statements": 152,
+ "cells": [
+  {
+   "entity": "node in one graph",
+   "state": "absent",
+   "command": "create node",
+   "outcome": "ok",
+   "statements": [
+    "WRT-B3.1"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:IRISGraphEngine.create_node",
+    "py:iris_vector_graph._write_txn.WriteTxn.cursor"
+   ],
+   "entry_point_count": 2,
+   "ontology_line": 196
+  },
+  {
+   "entity": "node in one graph",
+   "state": "present",
+   "command": "create node",
+   "outcome": "no-op",
+   "statements": [
+    "WRT-B3.2"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:IRISGraphEngine.create_node"
+   ],
+   "entry_point_count": 1,
+   "ontology_line": 197
+  },
+  {
+   "entity": "node in one graph",
+   "state": "held by two graphs",
+   "command": "create node",
+   "outcome": "no-op",
+   "statements": [
+    "WRT-B3.2"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:IRISGraphEngine.create_node"
+   ],
+   "entry_point_count": 1,
+   "ontology_line": 198
+  },
+  {
+   "entity": "node in one graph",
+   "state": "absent",
+   "command": "store node",
+   "outcome": "ok",
+   "statements": [
+    "WRT-B3.9"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:IRISGraphEngine.store_node"
+   ],
+   "entry_point_count": 1,
+   "ontology_line": 199
+  },
+  {
+   "entity": "node in one graph",
+   "state": "present",
+   "command": "store node",
+   "outcome": "ok",
+   "statements": [
+    "WRT-B3.9",
+    "WRT-B3.12"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:IRISGraphEngine.store_edge",
+    "py:IRISGraphEngine.store_node"
+   ],
+   "entry_point_count": 2,
+   "ontology_line": 200
+  },
+  {
+   "entity": "node in one graph",
+   "state": "held by two graphs",
+   "command": "store node",
+   "outcome": "ok",
+   "statements": [
+    "WRT-B3.9"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:IRISGraphEngine.store_node"
+   ],
+   "entry_point_count": 1,
+   "ontology_line": 201
+  },
+  {
+   "entity": "node in one graph",
+   "state": "absent",
+   "command": "bulk create nodes",
+   "outcome": "ok",
+   "statements": [
+    "WRT-B3.14"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:IRISGraphEngine.bulk_create_edges",
+    "py:IRISGraphEngine.bulk_create_nodes",
+    "py:IRISGraphEngine.bulk_ingest_edges",
+    "py:IRISGraphEngine.create_edge",
+    "py:IRISGraphEngine.create_node",
+    "py:IRISGraphEngine.store_edge",
+    "py:IRISGraphEngine.store_node"
+   ],
+   "entry_point_count": 7,
+   "ontology_line": 202
+  },
+  {
+   "entity": "node in one graph",
+   "state": "present",
+   "command": "bulk create nodes",
+   "outcome": "ok",
+   "statements": [
+    "WRT-B3.14"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:IRISGraphEngine.bulk_create_edges",
+    "py:IRISGraphEngine.bulk_create_nodes",
+    "py:IRISGraphEngine.bulk_ingest_edges",
+    "py:IRISGraphEngine.create_edge",
+    "py:IRISGraphEngine.create_node",
+    "py:IRISGraphEngine.store_edge",
+    "py:IRISGraphEngine.store_node"
+   ],
+   "entry_point_count": 7,
+   "ontology_line": 203
+  },
+  {
+   "entity": "node in one graph",
+   "state": "held by two graphs",
+   "command": "bulk create nodes",
+   "outcome": "ok",
+   "statements": [
+    "WRT-B3.14",
+    "WRT-B3.15"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:IRISGraphEngine.bulk_create_edges",
+    "py:IRISGraphEngine.bulk_create_nodes",
+    "py:IRISGraphEngine.bulk_ingest_edges",
+    "py:IRISGraphEngine.create_edge",
+    "py:IRISGraphEngine.create_node",
+    "py:IRISGraphEngine.store_edge",
+    "py:IRISGraphEngine.store_node"
+   ],
+   "entry_point_count": 7,
+   "ontology_line": 204
+  },
+  {
+   "entity": "node in one graph",
+   "state": "absent",
+   "command": "delete node without graph",
+   "outcome": "no-op",
+   "statements": [
+    "WRT-B3.26"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:IRISGraphEngine.delete_node"
+   ],
+   "entry_point_count": 1,
+   "ontology_line": 205
+  },
+  {
+   "entity": "node in one graph",
+   "state": "present",
+   "command": "delete node without graph",
+   "outcome": "ok",
+   "statements": [
+    "WRT-B3.23"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:IRISGraphEngine.bulk_delete_nodes",
+    "py:IRISGraphEngine.delete_node"
+   ],
+   "entry_point_count": 2,
+   "ontology_line": 206
+  },
+  {
+   "entity": "node in one graph",
+   "state": "held by two graphs",
+   "command": "delete node without graph",
+   "outcome": "refused",
+   "statements": [
+    "WRT-X3.24"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:IRISGraphEngine.bulk_delete_nodes",
+    "py:IRISGraphEngine.delete_node"
+   ],
+   "entry_point_count": 2,
+   "ontology_line": 207
+  },
+  {
+   "entity": "node in one graph",
+   "state": "absent",
+   "command": "delete node with graph",
+   "outcome": "no-op",
+   "statements": [
+    "WRT-B3.26"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:IRISGraphEngine.delete_node"
+   ],
+   "entry_point_count": 1,
+   "ontology_line": 208
+  },
+  {
+   "entity": "node in one graph",
+   "state": "present",
+   "command": "delete node with graph",
+   "outcome": "ok",
+   "statements": [
+    "WRT-B3.25"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:IRISGraphEngine.bulk_delete_nodes",
+    "py:IRISGraphEngine.delete_node"
+   ],
+   "entry_point_count": 2,
+   "ontology_line": 209
+  },
+  {
+   "entity": "node in one graph",
+   "state": "held by two graphs",
+   "command": "delete node with graph",
+   "outcome": "ok",
+   "statements": [
+    "WRT-B3.25"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:IRISGraphEngine.bulk_delete_nodes",
+    "py:IRISGraphEngine.delete_node"
+   ],
+   "entry_point_count": 2,
+   "ontology_line": 210
+  },
+  {
+   "entity": "edge in one graph",
+   "state": "absent",
+   "command": "create edge",
+   "outcome": "ok",
+   "statements": [
+    "WRT-B4.1"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:IRISGraphEngine.bulk_create_edges",
+    "py:IRISGraphEngine.bulk_ingest_edges",
+    "py:IRISGraphEngine.create_edge",
+    "py:IRISGraphEngine.store_edge"
+   ],
+   "entry_point_count": 4,
+   "ontology_line": 211
+  },
+  {
+   "entity": "edge in one graph",
+   "state": "present",
+   "command": "create edge",
+   "outcome": "no-op",
+   "statements": [
+    "WRT-B4.2"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:IRISGraphEngine.create_edge"
+   ],
+   "entry_point_count": 1,
+   "ontology_line": 212
+  },
+  {
+   "entity": "edge in one graph",
+   "state": "marked",
+   "command": "create edge",
+   "outcome": "ok",
+   "statements": [
+    "WRT-B4.8"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:IRISGraphEngine.create_edge"
+   ],
+   "entry_point_count": 1,
+   "ontology_line": 213
+  },
+  {
+   "entity": "edge in one graph",
+   "state": "absent",
+   "command": "store edge",
+   "outcome": "ok",
+   "statements": [
+    "WRT-B4.10"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:IRISGraphEngine.store_edge"
+   ],
+   "entry_point_count": 1,
+   "ontology_line": 214
+  },
+  {
+   "entity": "edge in one graph",
+   "state": "present",
+   "command": "store edge",
+   "outcome": "no-op",
+   "statements": [
+    "WRT-B4.10"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:IRISGraphEngine.store_edge"
+   ],
+   "entry_point_count": 1,
+   "ontology_line": 215
+  },
+  {
+   "entity": "edge in one graph",
+   "state": "marked",
+   "command": "store edge",
+   "outcome": "ok",
+   "statements": [
+    "WRT-B4.11"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:IRISGraphEngine.store_edge"
+   ],
+   "entry_point_count": 1,
+   "ontology_line": 216
+  },
+  {
+   "entity": "edge in one graph",
+   "state": "absent",
+   "command": "bulk create edges",
+   "outcome": "ok",
+   "statements": [
+    "WRT-B4.22"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:IRISGraphEngine.bulk_create_edges"
+   ],
+   "entry_point_count": 1,
+   "ontology_line": 217
+  },
+  {
+   "entity": "edge in one graph",
+   "state": "present",
+   "command": "bulk create edges",
+   "outcome": "no-op",
+   "statements": [
+    "WRT-B4.22"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:IRISGraphEngine.bulk_create_edges"
+   ],
+   "entry_point_count": 1,
+   "ontology_line": 218
+  },
+  {
+   "entity": "edge in one graph",
+   "state": "marked",
+   "command": "bulk create edges",
+   "outcome": "ok",
+   "statements": [
+    "WRT-B4.25"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:IRISGraphEngine.bulk_create_edges"
+   ],
+   "entry_point_count": 1,
+   "ontology_line": 219
+  },
+  {
+   "entity": "edge in one graph",
+   "state": "absent",
+   "command": "set edge weight",
+   "outcome": "no-op",
+   "statements": [
+    "WRT-B4.14"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:IRISGraphEngine.set_edge_weight"
+   ],
+   "entry_point_count": 1,
+   "ontology_line": 220
+  },
+  {
+   "entity": "edge in one graph",
+   "state": "present",
+   "command": "set edge weight",
+   "outcome": "ok",
+   "statements": [
+    "WRT-B4.13"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:IRISGraphEngine.set_edge_weight"
+   ],
+   "entry_point_count": 1,
+   "ontology_line": 221
+  },
+  {
+   "entity": "edge in one graph",
+   "state": "marked",
+   "command": "set edge weight",
+   "outcome": "ok",
+   "statements": [
+    "WRT-B4.13",
+    "WRT-T4.17"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:IRISGraphEngine.set_edge_weight"
+   ],
+   "entry_point_count": 1,
+   "ontology_line": 222
+  },
+  {
+   "entity": "edge in one graph",
+   "state": "absent",
+   "command": "delete edge",
+   "outcome": "no-op",
+   "statements": [
+    "WRT-B4.20"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:IRISGraphEngine.delete_edge"
+   ],
+   "entry_point_count": 1,
+   "ontology_line": 223
+  },
+  {
+   "entity": "edge in one graph",
+   "state": "present",
+   "command": "delete edge",
+   "outcome": "ok",
+   "statements": [
+    "WRT-B4.18"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:IRISGraphEngine.delete_edge"
+   ],
+   "entry_point_count": 1,
+   "ontology_line": 224
+  },
+  {
+   "entity": "edge in one graph",
+   "state": "marked",
+   "command": "delete edge",
+   "outcome": "open",
+   "statements": [],
+   "decision": "HD-0302",
+   "entry_points": [],
+   "entry_point_count": 0,
+   "ontology_line": 225,
+   "statements_cite": [],
+   "cited_code_outside_module": []
+  },
+  {
+   "entity": "caller transaction",
+   "state": "none",
+   "command": "direct write",
+   "outcome": "ok",
+   "statements": [
+    "WRT-B2.1"
+   ],
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Txn.End",
+    "py:iris_vector_graph._write_txn.WriteTxn.commit"
+   ],
+   "entry_point_count": 2,
+   "ontology_line": 226
+  },
+  {
+   "entity": "caller transaction",
+   "state": "open",
+   "command": "direct write",
+   "outcome": "ok",
+   "statements": [
+    "WRT-B2.2"
+   ],
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Txn.Begin",
+    "py:iris_vector_graph._write_txn.WriteTxn.begin"
+   ],
+   "entry_point_count": 2,
+   "ontology_line": 227
+  },
+  {
+   "entity": "caller transaction",
+   "state": "open on old server code",
+   "command": "direct write",
+   "outcome": "refused",
+   "statements": [
+    "WRT-X2.6"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph._write_txn.WriteTxn.begin"
+   ],
+   "entry_point_count": 1,
+   "ontology_line": 228
+  },
+  {
+   "entity": "caller transaction",
+   "state": "none",
+   "command": "failed direct write",
+   "outcome": "refused",
+   "statements": [
+    "WRT-X3.7",
+    "WRT-B2"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:IRISGraphEngine.create_node"
+   ],
+   "entry_point_count": 1,
+   "ontology_line": 229
+  },
+  {
+   "entity": "caller transaction",
+   "state": "open",
+   "command": "failed direct write",
+   "outcome": "refused",
+   "statements": [
+    "WRT-B2.3"
+   ],
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Txn.Undo",
+    "py:iris_vector_graph._write_txn.WriteTxn.rollback"
+   ],
+   "entry_point_count": 2,
+   "ontology_line": 230
+  },
+  {
+   "entity": "caller transaction",
+   "state": "open on old server code",
+   "command": "failed direct write",
+   "outcome": "refused",
+   "statements": [
+    "WRT-X2.6"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph._write_txn.WriteTxn.begin"
+   ],
+   "entry_point_count": 1,
+   "ontology_line": 231
+  },
+  {
+   "entity": "caller transaction",
+   "state": "none",
+   "command": "load session",
+   "outcome": "ok",
+   "statements": [
+    "WRT-B7.1"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:IRISGraphEngine.bulk_load_session"
+   ],
+   "entry_point_count": 1,
+   "ontology_line": 232
+  },
+  {
+   "entity": "caller transaction",
+   "state": "open",
+   "command": "load session",
+   "outcome": "ok",
+   "statements": [
+    "WRT-B7.2"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:IRISGraphEngine.bulk_load_session"
+   ],
+   "entry_point_count": 1,
+   "ontology_line": 233
+  },
+  {
+   "entity": "caller transaction",
+   "state": "open on old server code",
+   "command": "load session",
+   "outcome": "refused",
+   "statements": [
+    "WRT-X2.6"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph._write_txn.WriteTxn.begin"
+   ],
+   "entry_point_count": 1,
+   "ontology_line": 234
+  },
+  {
+   "entity": "caller transaction",
+   "state": "none",
+   "command": "bulk loader",
+   "outcome": "ok",
+   "statements": [
+    "WRT-B7.6"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph.bulk_loader.BulkLoader.__init__"
+   ],
+   "entry_point_count": 1,
+   "ontology_line": 235
+  },
+  {
+   "entity": "caller transaction",
+   "state": "open",
+   "command": "bulk loader",
+   "outcome": "refused",
+   "statements": [
+    "WRT-X7.7"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph._write_txn.refuse_in_caller_transaction",
+    "py:iris_vector_graph.bulk_loader.BulkLoader.build_graph_globals",
+    "py:iris_vector_graph.bulk_loader.BulkLoader.load_edges",
+    "py:iris_vector_graph.bulk_loader.BulkLoader.load_networkx",
+    "py:iris_vector_graph.bulk_loader.BulkLoader.load_nodes",
+    "py:iris_vector_graph.bulk_loader.BulkLoader.rebuild_all_indices"
+   ],
+   "entry_point_count": 6,
+   "ontology_line": 236
+  },
+  {
+   "entity": "caller transaction",
+   "state": "open on old server code",
+   "command": "bulk loader",
+   "outcome": "refused",
+   "statements": [
+    "WRT-X7.7"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph._write_txn.refuse_in_caller_transaction",
+    "py:iris_vector_graph.bulk_loader.BulkLoader.build_graph_globals",
+    "py:iris_vector_graph.bulk_loader.BulkLoader.load_edges",
+    "py:iris_vector_graph.bulk_loader.BulkLoader.load_networkx",
+    "py:iris_vector_graph.bulk_loader.BulkLoader.load_nodes",
+    "py:iris_vector_graph.bulk_loader.BulkLoader.rebuild_all_indices"
+   ],
+   "entry_point_count": 6,
+   "ontology_line": 237
+  },
+  {
+   "entity": "ledger state",
+   "state": "never enabled",
+   "command": "direct write",
+   "outcome": "ok",
+   "statements": [
+    "WRT-B1"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:IRISGraphEngine.create_node"
+   ],
+   "entry_point_count": 1,
+   "ontology_line": 238
+  },
+  {
+   "entity": "ledger state",
+   "state": "on",
+   "command": "direct write",
+   "outcome": "ok",
+   "statements": [
+    "WRT-B1.1"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:IRISGraphEngine.create_node"
+   ],
+   "entry_point_count": 1,
+   "ontology_line": 239
+  },
+  {
+   "entity": "ledger state",
+   "state": "strict",
+   "command": "direct write",
+   "outcome": "refused",
+   "statements": [
+    "WRT-X1.2"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:IRISGraphEngine.bulk_create_nodes",
+    "py:IRISGraphEngine.create_edge"
+   ],
+   "entry_point_count": 2,
+   "ontology_line": 240
+  },
+  {
+   "entity": "ledger state",
+   "state": "never enabled",
+   "command": "Cypher write",
+   "outcome": "ok",
+   "statements": [
+    "WRT-B1"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:IRISGraphEngine.create_node"
+   ],
+   "entry_point_count": 1,
+   "ontology_line": 241
+  },
+  {
+   "entity": "ledger state",
+   "state": "on",
+   "command": "Cypher write",
+   "outcome": "ok",
+   "statements": [
+    "WRT-B1.1"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:IRISGraphEngine.create_node"
+   ],
+   "entry_point_count": 1,
+   "ontology_line": 242
+  },
+  {
+   "entity": "ledger state",
+   "state": "strict",
+   "command": "Cypher write",
+   "outcome": "refused",
+   "statements": [
+    "WRT-X1.2"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:IRISGraphEngine.bulk_create_nodes",
+    "py:IRISGraphEngine.create_edge"
+   ],
+   "entry_point_count": 2,
+   "ontology_line": 243
+  },
+  {
+   "entity": "ledger state",
+   "state": "never enabled",
+   "command": "bulk loader",
+   "outcome": "ok",
+   "statements": [
+    "WRT-B7.6"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph.bulk_loader.BulkLoader.__init__"
+   ],
+   "entry_point_count": 1,
+   "ontology_line": 244
+  },
+  {
+   "entity": "ledger state",
+   "state": "on",
+   "command": "bulk loader",
+   "outcome": "ok",
+   "statements": [
+    "WRT-T1.6"
+   ],
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph.bulk_loader.BulkLoader.load_edges",
+    "py:iris_vector_graph.bulk_loader.BulkLoader.load_networkx",
+    "py:iris_vector_graph.bulk_loader.BulkLoader.load_nodes"
+   ],
+   "entry_point_count": 3,
+   "ontology_line": 245
+  },
+  {
+   "entity": "ledger state",
+   "state": "strict",
+   "command": "bulk loader",
+   "outcome": "open",
+   "statements": [],
+   "decision": "HD-0301",
+   "entry_points": [],
+   "entry_point_count": 0,
+   "ontology_line": 246,
+   "statements_cite": [],
+   "cited_code_outside_module": []
+  }
+ ],
+ "counts": {
+  "entry_points": 98,
+  "by_kind": {
+   "classmethod": 5,
+   "cli": 1,
+   "internal": 1,
+   "native(functional-index-callback)": 6,
+   "python-api": 81,
+   "python-api(constructor)": 2,
+   "python-api(property)": 1,
+   "rest": 1
+  },
+  "by_tag": {
+   "classmethod": 5,
+   "cli": 1,
+   "internal": 1,
+   "lifecycle": 4,
+   "native(functional-index-callback)": 6,
+   "python-api": 81,
+   "python-api(constructor)": 2,
+   "python-api(property)": 1,
+   "rest": 1
+  },
+  "omissions": 30,
+  "cells_without_entry_point": 2,
+  "covered": 68
+ },
+ "entry_points": [
+  {
+   "id": "py:iris_vector_graph._engine.nodes_edges.kg_adjacency_left",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "kg_adjacency_left",
+   "qual": "kg_adjacency_left",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:40-51",
+   "file": "iris_vector_graph/_engine/nodes_edges.py",
+   "start": 40,
+   "end": 51,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-X4.7",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:40-51"
+    }
+   ],
+   "covered_by_count": 1
+  },
+  {
+   "id": "py:IRISGraphEngine.bulk_load_session",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "bulk_load_session",
+   "qual": "NodesEdgesMixin.bulk_load_session",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:370-502",
+   "file": "iris_vector_graph/_engine/nodes_edges.py",
+   "start": 370,
+   "end": 502,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-D1",
+     "how": "names bulk_load_session"
+    },
+    {
+     "statement": "WRT-D2",
+     "how": "cites callee caller_transaction_level (iris_vector_graph/_write_txn.py:64-87)"
+    },
+    {
+     "statement": "WRT-D13",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:370-395"
+    },
+    {
+     "statement": "WRT-T2.5",
+     "how": "cites callee _driver_autocommit_off (iris_vector_graph/_write_txn.py:58-62)"
+    },
+    {
+     "statement": "WRT-T3.20",
+     "how": "cites callee GraphSchema.disable_indexes (iris_vector_graph/schema.py:1640-1685)"
+    },
+    {
+     "statement": "WRT-T3.21",
+     "how": "cites callee _rebuild_after_load (iris_vector_graph/_engine/nodes_edges.py:67-79)"
+    },
+    {
+     "statement": "WRT-B7.1",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:370-502"
+    },
+    {
+     "statement": "WRT-B7.2",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:414-418"
+    },
+    {
+     "statement": "WRT-T7.3",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:418-418"
+    },
+    {
+     "statement": "WRT-T7.5",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:477-499"
+    }
+   ],
+   "covered_by_count": 10
+  },
+  {
+   "id": "py:IRISGraphEngine.get_node",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "get_node",
+   "qual": "NodesEdgesMixin.get_node",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:563-582",
+   "file": "iris_vector_graph/_engine/nodes_edges.py",
+   "start": 563,
+   "end": 582,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-B3.3",
+     "how": "names get_node"
+    },
+    {
+     "statement": "WRT-B5.4",
+     "how": "cites callee read_node_value (iris_vector_graph/prop_values.py:273-279)"
+    },
+    {
+     "statement": "WRT-B5.5",
+     "how": "cites callee parse_prop_text (iris_vector_graph/prop_values.py:129-138)"
+    }
+   ],
+   "covered_by_count": 3
+  },
+  {
+   "id": "py:IRISGraphEngine.get_nodes",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "get_nodes",
+   "qual": "NodesEdgesMixin.get_nodes",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:621-697",
+   "file": "iris_vector_graph/_engine/nodes_edges.py",
+   "start": 621,
+   "end": 697,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-B5.4",
+     "how": "cites callee read_node_value (iris_vector_graph/prop_values.py:273-279)"
+    },
+    {
+     "statement": "WRT-B5.5",
+     "how": "cites callee parse_prop_text (iris_vector_graph/prop_values.py:129-138)"
+    }
+   ],
+   "covered_by_count": 2
+  },
+  {
+   "id": "py:IRISGraphEngine.count_nodes",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "count_nodes",
+   "qual": "NodesEdgesMixin.count_nodes",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:733-758",
+   "file": "iris_vector_graph/_engine/nodes_edges.py",
+   "start": 733,
+   "end": 758,
+   "public": true,
+   "module": "03",
+   "covered_by": [],
+   "covered_by_count": 0,
+   "covered_elsewhere": [
+    "GID-T3.9 (cites iris_vector_graph/_engine/nodes_edges.py:747-747)"
+   ]
+  },
+  {
+   "id": "py:IRISGraphEngine.get_node_ids_by_label",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "get_node_ids_by_label",
+   "qual": "NodesEdgesMixin.get_node_ids_by_label",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:760-777",
+   "file": "iris_vector_graph/_engine/nodes_edges.py",
+   "start": 760,
+   "end": 777,
+   "public": true,
+   "module": "03",
+   "covered_by": [],
+   "covered_by_count": 0,
+   "covered_elsewhere": [
+    "GID-Q6.11 (cites iris_vector_graph/_engine/nodes_edges.py:760-794)"
+   ]
+  },
+  {
+   "id": "py:IRISGraphEngine.get_nodes_by_label",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "get_nodes_by_label",
+   "qual": "NodesEdgesMixin.get_nodes_by_label",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:779-794",
+   "file": "iris_vector_graph/_engine/nodes_edges.py",
+   "start": 779,
+   "end": 794,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-B5.4",
+     "how": "cites callee read_node_value (iris_vector_graph/prop_values.py:273-279)"
+    },
+    {
+     "statement": "WRT-B5.5",
+     "how": "cites callee parse_prop_text (iris_vector_graph/prop_values.py:129-138)"
+    }
+   ],
+   "covered_by_count": 2
+  },
+  {
+   "id": "py:IRISGraphEngine.get_node_ids_by_property",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "get_node_ids_by_property",
+   "qual": "NodesEdgesMixin.get_node_ids_by_property",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:801-831",
+   "file": "iris_vector_graph/_engine/nodes_edges.py",
+   "start": 801,
+   "end": 831,
+   "public": true,
+   "module": "03",
+   "covered_by": [],
+   "covered_by_count": 0,
+   "covered_elsewhere": []
+  },
+  {
+   "id": "py:IRISGraphEngine.get_nodes_by_property",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "get_nodes_by_property",
+   "qual": "NodesEdgesMixin.get_nodes_by_property",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:833-844",
+   "file": "iris_vector_graph/_engine/nodes_edges.py",
+   "start": 833,
+   "end": 844,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-B5.4",
+     "how": "cites callee read_node_value (iris_vector_graph/prop_values.py:273-279)"
+    },
+    {
+     "statement": "WRT-B5.5",
+     "how": "cites callee parse_prop_text (iris_vector_graph/prop_values.py:129-138)"
+    }
+   ],
+   "covered_by_count": 2
+  },
+  {
+   "id": "py:IRISGraphEngine.get_property_pairs",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "get_property_pairs",
+   "qual": "NodesEdgesMixin.get_property_pairs",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:846-860",
+   "file": "iris_vector_graph/_engine/nodes_edges.py",
+   "start": 846,
+   "end": 860,
+   "public": true,
+   "module": "03",
+   "covered_by": [],
+   "covered_by_count": 0,
+   "covered_elsewhere": []
+  },
+  {
+   "id": "py:IRISGraphEngine.get_property_values",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "get_property_values",
+   "qual": "NodesEdgesMixin.get_property_values",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:862-877",
+   "file": "iris_vector_graph/_engine/nodes_edges.py",
+   "start": 862,
+   "end": 877,
+   "public": true,
+   "module": "03",
+   "covered_by": [],
+   "covered_by_count": 0,
+   "covered_elsewhere": []
+  },
+  {
+   "id": "py:IRISGraphEngine.property_value_exists",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "property_value_exists",
+   "qual": "NodesEdgesMixin.property_value_exists",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:879-890",
+   "file": "iris_vector_graph/_engine/nodes_edges.py",
+   "start": 879,
+   "end": 890,
+   "public": true,
+   "module": "03",
+   "covered_by": [],
+   "covered_by_count": 0,
+   "covered_elsewhere": []
+  },
+  {
+   "id": "py:IRISGraphEngine.get_property_pairs_like",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "get_property_pairs_like",
+   "qual": "NodesEdgesMixin.get_property_pairs_like",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:892-914",
+   "file": "iris_vector_graph/_engine/nodes_edges.py",
+   "start": 892,
+   "end": 914,
+   "public": true,
+   "module": "03",
+   "covered_by": [],
+   "covered_by_count": 0,
+   "covered_elsewhere": []
+  },
+  {
+   "id": "py:IRISGraphEngine.get_json_field_values",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "get_json_field_values",
+   "qual": "NodesEdgesMixin.get_json_field_values",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:916-930",
+   "file": "iris_vector_graph/_engine/nodes_edges.py",
+   "start": 916,
+   "end": 930,
+   "public": true,
+   "module": "03",
+   "covered_by": [],
+   "covered_by_count": 0,
+   "covered_elsewhere": []
+  },
+  {
+   "id": "py:IRISGraphEngine.get_node_ids_like",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "get_node_ids_like",
+   "qual": "NodesEdgesMixin.get_node_ids_like",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:932-944",
+   "file": "iris_vector_graph/_engine/nodes_edges.py",
+   "start": 932,
+   "end": 944,
+   "public": true,
+   "module": "03",
+   "covered_by": [],
+   "covered_by_count": 0,
+   "covered_elsewhere": []
+  },
+  {
+   "id": "py:IRISGraphEngine.count_subjects_with_property",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "count_subjects_with_property",
+   "qual": "NodesEdgesMixin.count_subjects_with_property",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:946-966",
+   "file": "iris_vector_graph/_engine/nodes_edges.py",
+   "start": 946,
+   "end": 966,
+   "public": true,
+   "module": "03",
+   "covered_by": [],
+   "covered_by_count": 0,
+   "covered_elsewhere": []
+  },
+  {
+   "id": "py:IRISGraphEngine.create_node",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "create_node",
+   "qual": "NodesEdgesMixin.create_node",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:968-1104",
+   "file": "iris_vector_graph/_engine/nodes_edges.py",
+   "start": 968,
+   "end": 1104,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-D1",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:968-1005"
+    },
+    {
+     "statement": "WRT-D10",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:1020-1027"
+    },
+    {
+     "statement": "WRT-D16",
+     "how": "cites callee prop_value (iris_vector_graph/prop_values.py:106-126)"
+    },
+    {
+     "statement": "WRT-T0.1",
+     "how": "names create_node"
+    },
+    {
+     "statement": "WRT-B1",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:1005-1005"
+    },
+    {
+     "statement": "WRT-B1.1",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:1005-1005"
+    },
+    {
+     "statement": "WRT-B2",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:1016-1018"
+    },
+    {
+     "statement": "WRT-B3",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:968-1104"
+    },
+    {
+     "statement": "WRT-B3.1",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:1014-1096"
+    },
+    {
+     "statement": "WRT-B3.2",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:1023-1031"
+    },
+    {
+     "statement": "WRT-B3.3",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:1055-1057"
+    },
+    {
+     "statement": "WRT-B3.4",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:1060-1063"
+    }
+   ],
+   "covered_by_count": 25
+  },
+  {
+   "id": "py:IRISGraphEngine.create_edge",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "create_edge",
+   "qual": "NodesEdgesMixin.create_edge",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:1151-1255",
+   "file": "iris_vector_graph/_engine/nodes_edges.py",
+   "start": 1151,
+   "end": 1255,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-D1",
+     "how": "names create_edge"
+    },
+    {
+     "statement": "WRT-D7",
+     "how": "cites callee cls:Graph.KG.Adjacency.Put (iris_src/src/Graph/KG/Adjacency.cls:80-89)"
+    },
+    {
+     "statement": "WRT-D10",
+     "how": "cites callee GraphSchema.get_bulk_insert_sql (iris_vector_graph/schema.py:1814-1814)"
+    },
+    {
+     "statement": "WRT-X1.2",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:1195-1195"
+    },
+    {
+     "statement": "WRT-B2.12",
+     "how": "cites callee cls:Graph.KG.Adjacency.Put (iris_src/src/Graph/KG/Adjacency.cls:89-92)"
+    },
+    {
+     "statement": "WRT-T2.13",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:1246-1249"
+    },
+    {
+     "statement": "WRT-B3.14",
+     "how": "cites callee GraphSchema.get_bulk_insert_sql (iris_vector_graph/schema.py:1821-1822)"
+    },
+    {
+     "statement": "WRT-B4",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:1151-1255"
+    },
+    {
+     "statement": "WRT-B4.1",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:1207-1210"
+    },
+    {
+     "statement": "WRT-B4.2",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:1213-1220"
+    },
+    {
+     "statement": "WRT-B4.3",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:1199-1204"
+    },
+    {
+     "statement": "WRT-X4.4",
+     "how": "cites callee _qualifiers_json (iris_vector_graph/_engine/nodes_edges.py:288-302)"
+    }
+   ],
+   "covered_by_count": 18
+  },
+  {
+   "id": "py:IRISGraphEngine.set_edge_weight",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "set_edge_weight",
+   "qual": "NodesEdgesMixin.set_edge_weight",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:1306-1380",
+   "file": "iris_vector_graph/_engine/nodes_edges.py",
+   "start": 1306,
+   "end": 1380,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-D1",
+     "how": "names set_edge_weight"
+    },
+    {
+     "statement": "WRT-D7",
+     "how": "cites callee cls:Graph.KG.Adjacency.Put (iris_src/src/Graph/KG/Adjacency.cls:80-89)"
+    },
+    {
+     "statement": "WRT-B2.12",
+     "how": "cites callee cls:Graph.KG.Adjacency.Put (iris_src/src/Graph/KG/Adjacency.cls:89-92)"
+    },
+    {
+     "statement": "WRT-T4.6",
+     "how": "cites callee cls:Graph.KG.EdgeScan.WriteAdjacency (iris_src/src/Graph/KG/EdgeScan.cls:154-157)"
+    },
+    {
+     "statement": "WRT-B4.13",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:1347-1362"
+    },
+    {
+     "statement": "WRT-B4.14",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:1343-1346"
+    },
+    {
+     "statement": "WRT-X4.15",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:1349-1356"
+    },
+    {
+     "statement": "WRT-B4.16",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:1338-1342"
+    },
+    {
+     "statement": "WRT-T4.17",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:1357-1361"
+    }
+   ],
+   "covered_by_count": 9
+  },
+  {
+   "id": "py:IRISGraphEngine.delete_edge",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "delete_edge",
+   "qual": "NodesEdgesMixin.delete_edge",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:1382-1456",
+   "file": "iris_vector_graph/_engine/nodes_edges.py",
+   "start": 1382,
+   "end": 1456,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-D1",
+     "how": "names delete_edge"
+    },
+    {
+     "statement": "WRT-B1.9",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:1418-1433"
+    },
+    {
+     "statement": "WRT-B4.18",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:1423-1433"
+    },
+    {
+     "statement": "WRT-B4.19",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:1418-1422"
+    },
+    {
+     "statement": "WRT-B4.20",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:1456-1456"
+    },
+    {
+     "statement": "WRT-Q4.21",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:1429-1433"
+    }
+   ],
+   "covered_by_count": 6
+  },
+  {
+   "id": "py:IRISGraphEngine.list_graphs",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "list_graphs",
+   "qual": "NodesEdgesMixin.list_graphs",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:1458-1471",
+   "file": "iris_vector_graph/_engine/nodes_edges.py",
+   "start": 1458,
+   "end": 1471,
+   "public": true,
+   "module": "03",
+   "covered_by": [],
+   "covered_by_count": 0,
+   "covered_elsewhere": [
+    "GID-B1.6 (cites iris_vector_graph/_engine/nodes_edges.py:1458-1471)"
+   ]
+  },
+  {
+   "id": "py:IRISGraphEngine.erase_all",
+   "kind": "python-api",
+   "kinds": [
+    "python-api",
+    "lifecycle"
+   ],
+   "name": "erase_all",
+   "qual": "NodesEdgesMixin.erase_all",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:1565-1586",
+   "file": "iris_vector_graph/_engine/nodes_edges.py",
+   "start": 1565,
+   "end": 1586,
+   "public": true,
+   "module": "03",
+   "covered_by": [],
+   "covered_by_count": 0,
+   "covered_elsewhere": [
+    "INS-T1.23 (cites callee unwrap_connection (iris_vector_graph/schema_name.py:404-452))",
+    "GID-B4.6 (cites callee cls:Graph.KG.Eraser.EraseAll (iris_src/src/Graph/KG/Eraser.cls:807-807))",
+    "ADJ-B1.7 (cites callee cls:Graph.KG.Adjacency.RemoveAll (iris_src/src/Graph/KG/Adjacency.cls:466-468))",
+    "TMP-D3 (cites callee cls:Graph.KG.TemporalIndex.EraseAll (iris_src/src/Graph/KG/TemporalIndex.cls:362-391))"
+   ]
+  },
+  {
+   "id": "py:IRISGraphEngine.bulk_create_nodes",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "bulk_create_nodes",
+   "qual": "NodesEdgesMixin.bulk_create_nodes",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:1648-1871",
+   "file": "iris_vector_graph/_engine/nodes_edges.py",
+   "start": 1648,
+   "end": 1871,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-D1",
+     "how": "names bulk_create_nodes"
+    },
+    {
+     "statement": "WRT-D9",
+     "how": "cites callee NodesEdgesMixin._drop_orphaned_props (iris_vector_graph/_engine/nodes_edges.py:1617-1622)"
+    },
+    {
+     "statement": "WRT-D10",
+     "how": "cites callee GraphSchema.get_bulk_insert_sql (iris_vector_graph/schema.py:1814-1814)"
+    },
+    {
+     "statement": "WRT-D11",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:1648-1653"
+    },
+    {
+     "statement": "WRT-D12",
+     "how": "cites callee cls:Graph.KG.EdgeScan.BulkIngestNodesSQL (iris_src/src/Graph/KG/EdgeScan.cls:340-429)"
+    },
+    {
+     "statement": "WRT-D15",
+     "how": "cites callee missing_rows (iris_vector_graph/_batch_check.py:48-65)"
+    },
+    {
+     "statement": "WRT-D16",
+     "how": "cites callee prop_value (iris_vector_graph/prop_values.py:106-126)"
+    },
+    {
+     "statement": "WRT-X1.2",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:1693-1693"
+    },
+    {
+     "statement": "WRT-X3.6",
+     "how": "cites callee check_width (iris_vector_graph/_widths.py:15-32)"
+    },
+    {
+     "statement": "WRT-B3.14",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:1654-1687"
+    },
+    {
+     "statement": "WRT-B3.15",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:1697-1699"
+    },
+    {
+     "statement": "WRT-X3.16",
+     "how": "cites callee _check_create_nodes (iris_vector_graph/_engine/nodes_edges.py:243-262)"
+    }
+   ],
+   "covered_by_count": 25
+  },
+  {
+   "id": "py:IRISGraphEngine.bulk_create_edges",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "bulk_create_edges",
+   "qual": "NodesEdgesMixin.bulk_create_edges",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:1873-2017",
+   "file": "iris_vector_graph/_engine/nodes_edges.py",
+   "start": 1873,
+   "end": 2017,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-D1",
+     "how": "names bulk_create_edges"
+    },
+    {
+     "statement": "WRT-D10",
+     "how": "cites callee GraphSchema.get_bulk_insert_sql (iris_vector_graph/schema.py:1814-1814)"
+    },
+    {
+     "statement": "WRT-D11",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:1873-1880"
+    },
+    {
+     "statement": "WRT-D15",
+     "how": "cites callee missing_rows (iris_vector_graph/_batch_check.py:48-65)"
+    },
+    {
+     "statement": "WRT-X3.6",
+     "how": "cites callee check_width (iris_vector_graph/_widths.py:15-32)"
+    },
+    {
+     "statement": "WRT-B3.14",
+     "how": "cites callee GraphSchema.get_bulk_insert_sql (iris_vector_graph/schema.py:1821-1822)"
+    },
+    {
+     "statement": "WRT-T3.20",
+     "how": "cites callee GraphSchema.disable_indexes (iris_vector_graph/schema.py:1640-1685)"
+    },
+    {
+     "statement": "WRT-T3.21",
+     "how": "cites callee _rebuild_after_load (iris_vector_graph/_engine/nodes_edges.py:67-79)"
+    },
+    {
+     "statement": "WRT-B4.1",
+     "how": "cites callee NodesEdgesMixin._ensure_edge_endpoints (iris_vector_graph/_engine/nodes_edges.py:1106-1149)"
+    },
+    {
+     "statement": "WRT-B4.22",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:1945-1980"
+    },
+    {
+     "statement": "WRT-X4.23",
+     "how": "cites callee _check_create_edges (iris_vector_graph/_engine/nodes_edges.py:212-237)"
+    },
+    {
+     "statement": "WRT-B4.24",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:1982-1990"
+    }
+   ],
+   "covered_by_count": 18
+  },
+  {
+   "id": "py:IRISGraphEngine.bulk_ingest_edges",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "bulk_ingest_edges",
+   "qual": "NodesEdgesMixin.bulk_ingest_edges",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:2019-2132",
+   "file": "iris_vector_graph/_engine/nodes_edges.py",
+   "start": 2019,
+   "end": 2132,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-D1",
+     "how": "names bulk_ingest_edges"
+    },
+    {
+     "statement": "WRT-D7",
+     "how": "cites callee cls:Graph.KG.Adjacency.Put (iris_src/src/Graph/KG/Adjacency.cls:80-89)"
+    },
+    {
+     "statement": "WRT-D10",
+     "how": "cites callee GraphSchema.get_bulk_insert_sql (iris_vector_graph/schema.py:1814-1814)"
+    },
+    {
+     "statement": "WRT-D11",
+     "how": "names bulk_ingest_edges"
+    },
+    {
+     "statement": "WRT-D12",
+     "how": "cites callee cls:Graph.KG.EdgeScan.BulkIngestEdgesSQL (iris_src/src/Graph/KG/EdgeScan.cls:267-312)"
+    },
+    {
+     "statement": "WRT-B2.12",
+     "how": "cites callee cls:Graph.KG.Adjacency.Put (iris_src/src/Graph/KG/Adjacency.cls:89-92)"
+    },
+    {
+     "statement": "WRT-B3.14",
+     "how": "cites callee GraphSchema.get_bulk_insert_sql (iris_vector_graph/schema.py:1821-1822)"
+    },
+    {
+     "statement": "WRT-B3.19",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:2047-2068"
+    },
+    {
+     "statement": "WRT-B4.1",
+     "how": "cites callee NodesEdgesMixin._ensure_edge_endpoints (iris_vector_graph/_engine/nodes_edges.py:1106-1149)"
+    },
+    {
+     "statement": "WRT-T4.6",
+     "how": "cites callee cls:Graph.KG.EdgeScan.WriteAdjacency (iris_src/src/Graph/KG/EdgeScan.cls:154-157)"
+    },
+    {
+     "statement": "WRT-X4.7",
+     "how": "cites callee kg_adjacency_left (iris_vector_graph/_engine/nodes_edges.py:40-51)"
+    },
+    {
+     "statement": "WRT-B4.28",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:2085-2088"
+    }
+   ],
+   "covered_by_count": 16
+  },
+  {
+   "id": "py:IRISGraphEngine.delete_node",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "delete_node",
+   "qual": "NodesEdgesMixin.delete_node",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:2227-2268",
+   "file": "iris_vector_graph/_engine/nodes_edges.py",
+   "start": 2227,
+   "end": 2268,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-D1",
+     "how": "names delete_node"
+    },
+    {
+     "statement": "WRT-B1.8",
+     "how": "cites callee NodesEdgesMixin._delete_in_scope (iris_vector_graph/_engine/nodes_edges.py:2176-2200)"
+    },
+    {
+     "statement": "WRT-B3.22",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:2227-2268"
+    },
+    {
+     "statement": "WRT-B3.23",
+     "how": "cites callee NodesEdgesMixin._delete_scopes (iris_vector_graph/_engine/nodes_edges.py:2202-2225)"
+    },
+    {
+     "statement": "WRT-X3.24",
+     "how": "cites callee NodesEdgesMixin._delete_scopes (iris_vector_graph/_engine/nodes_edges.py:2212-2224)"
+    },
+    {
+     "statement": "WRT-B3.25",
+     "how": "cites callee NodesEdgesMixin._delete_scopes (iris_vector_graph/_engine/nodes_edges.py:2205-2206)"
+    },
+    {
+     "statement": "WRT-B3.26",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:2265-2268"
+    },
+    {
+     "statement": "WRT-T3.27",
+     "how": "cites callee IRISGraphStore.delete_nodes (iris_vector_graph/stores/iris_sql_store.py:1340-1359)"
+    }
+   ],
+   "covered_by_count": 8
+  },
+  {
+   "id": "py:IRISGraphEngine.bulk_delete_nodes",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "bulk_delete_nodes",
+   "qual": "NodesEdgesMixin.bulk_delete_nodes",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:2270-2299",
+   "file": "iris_vector_graph/_engine/nodes_edges.py",
+   "start": 2270,
+   "end": 2299,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-D1",
+     "how": "names bulk_delete_nodes"
+    },
+    {
+     "statement": "WRT-B1.8",
+     "how": "cites callee NodesEdgesMixin._delete_in_scope (iris_vector_graph/_engine/nodes_edges.py:2176-2200)"
+    },
+    {
+     "statement": "WRT-B3.22",
+     "how": "cites callee NodesEdgesMixin._delete_in_scope (iris_vector_graph/_engine/nodes_edges.py:2176-2200)"
+    },
+    {
+     "statement": "WRT-B3.23",
+     "how": "cites callee NodesEdgesMixin._delete_scopes (iris_vector_graph/_engine/nodes_edges.py:2202-2225)"
+    },
+    {
+     "statement": "WRT-X3.24",
+     "how": "cites callee NodesEdgesMixin._delete_scopes (iris_vector_graph/_engine/nodes_edges.py:2212-2224)"
+    },
+    {
+     "statement": "WRT-B3.25",
+     "how": "cites callee NodesEdgesMixin._delete_scopes (iris_vector_graph/_engine/nodes_edges.py:2205-2206)"
+    },
+    {
+     "statement": "WRT-T3.27",
+     "how": "cites callee IRISGraphStore.delete_nodes (iris_vector_graph/stores/iris_sql_store.py:1340-1359)"
+    },
+    {
+     "statement": "WRT-B3.28",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:2270-2299"
+    }
+   ],
+   "covered_by_count": 8
+  },
+  {
+   "id": "py:IRISGraphEngine.get_node_properties",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "get_node_properties",
+   "qual": "NodesEdgesMixin.get_node_properties",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:2341-2349",
+   "file": "iris_vector_graph/_engine/nodes_edges.py",
+   "start": 2341,
+   "end": 2349,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-B5.4",
+     "how": "cites callee read_node_value (iris_vector_graph/prop_values.py:273-279)"
+    }
+   ],
+   "covered_by_count": 1
+  },
+  {
+   "id": "py:IRISGraphEngine.get_node_name",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "get_node_name",
+   "qual": "NodesEdgesMixin.get_node_name",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:2351-2354",
+   "file": "iris_vector_graph/_engine/nodes_edges.py",
+   "start": 2351,
+   "end": 2354,
+   "public": true,
+   "module": "03",
+   "covered_by": [],
+   "covered_by_count": 0,
+   "covered_elsewhere": [
+    "GID-I1.7 (cites callee NodesEdgesMixin.get_nodes (iris_vector_graph/_engine/nodes_edges.py:654-669))"
+   ]
+  },
+  {
+   "id": "py:IRISGraphEngine.get_nodes_by_ids",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "get_nodes_by_ids",
+   "qual": "NodesEdgesMixin.get_nodes_by_ids",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:2356-2360",
+   "file": "iris_vector_graph/_engine/nodes_edges.py",
+   "start": 2356,
+   "end": 2360,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-B5.4",
+     "how": "cites callee read_node_value (iris_vector_graph/prop_values.py:273-279)"
+    },
+    {
+     "statement": "WRT-B5.5",
+     "how": "cites callee parse_prop_text (iris_vector_graph/prop_values.py:129-138)"
+    }
+   ],
+   "covered_by_count": 2
+  },
+  {
+   "id": "py:IRISGraphEngine.node_count",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "node_count",
+   "qual": "NodesEdgesMixin.node_count",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:2362-2372",
+   "file": "iris_vector_graph/_engine/nodes_edges.py",
+   "start": 2362,
+   "end": 2372,
+   "public": true,
+   "module": "03",
+   "covered_by": [],
+   "covered_by_count": 0,
+   "covered_elsewhere": [
+    "GID-I1.7 (cites callee NodesEdgesMixin._count_in_graph (iris_vector_graph/_engine/nodes_edges.py:2382-2391))"
+   ]
+  },
+  {
+   "id": "py:IRISGraphEngine.edge_count",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "edge_count",
+   "qual": "NodesEdgesMixin.edge_count",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:2374-2380",
+   "file": "iris_vector_graph/_engine/nodes_edges.py",
+   "start": 2374,
+   "end": 2380,
+   "public": true,
+   "module": "03",
+   "covered_by": [],
+   "covered_by_count": 0,
+   "covered_elsewhere": [
+    "GID-I1.7 (cites callee NodesEdgesMixin._count_in_graph (iris_vector_graph/_engine/nodes_edges.py:2382-2391))"
+   ]
+  },
+  {
+   "id": "py:IRISGraphEngine.store_node",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "store_node",
+   "qual": "NodesEdgesMixin.store_node",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:2393-2530",
+   "file": "iris_vector_graph/_engine/nodes_edges.py",
+   "start": 2393,
+   "end": 2530,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-D1",
+     "how": "names store_node"
+    },
+    {
+     "statement": "WRT-D16",
+     "how": "cites callee prop_value (iris_vector_graph/prop_values.py:106-126)"
+    },
+    {
+     "statement": "WRT-B3.9",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:2393-2530"
+    },
+    {
+     "statement": "WRT-B3.10",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:2452-2467"
+    },
+    {
+     "statement": "WRT-B3.11",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:2478-2493"
+    },
+    {
+     "statement": "WRT-B3.12",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:2436-2451"
+    },
+    {
+     "statement": "WRT-T3.13",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:2420-2427"
+    },
+    {
+     "statement": "WRT-B3.14",
+     "how": "names store_node"
+    },
+    {
+     "statement": "WRT-B5",
+     "how": "cites callee prop_value (iris_vector_graph/prop_values.py:106-126)"
+    },
+    {
+     "statement": "WRT-B5.1",
+     "how": "cites callee prop_value (iris_vector_graph/prop_values.py:120-122)"
+    },
+    {
+     "statement": "WRT-B5.2",
+     "how": "cites callee prop_value (iris_vector_graph/prop_values.py:125-126)"
+    },
+    {
+     "statement": "WRT-B5.3",
+     "how": "cites callee prop_text (iris_vector_graph/prop_values.py:94-97)"
+    }
+   ],
+   "covered_by_count": 13
+  },
+  {
+   "id": "py:IRISGraphEngine.store_edge",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "store_edge",
+   "qual": "NodesEdgesMixin.store_edge",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:2532-2588",
+   "file": "iris_vector_graph/_engine/nodes_edges.py",
+   "start": 2532,
+   "end": 2588,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-D1",
+     "how": "names store_edge"
+    },
+    {
+     "statement": "WRT-D10",
+     "how": "cites callee GraphSchema.get_bulk_insert_sql (iris_vector_graph/schema.py:1814-1814)"
+    },
+    {
+     "statement": "WRT-B3.12",
+     "how": "cites callee _swallow_duplicate (iris_vector_graph/_engine/nodes_edges.py:124-151)"
+    },
+    {
+     "statement": "WRT-B3.14",
+     "how": "cites callee GraphSchema.get_bulk_insert_sql (iris_vector_graph/schema.py:1821-1822)"
+    },
+    {
+     "statement": "WRT-B4.1",
+     "how": "cites callee NodesEdgesMixin._ensure_edge_endpoints (iris_vector_graph/_engine/nodes_edges.py:1106-1149)"
+    },
+    {
+     "statement": "WRT-X4.4",
+     "how": "cites callee _qualifiers_json (iris_vector_graph/_engine/nodes_edges.py:288-302)"
+    },
+    {
+     "statement": "WRT-B4.10",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:2532-2588"
+    },
+    {
+     "statement": "WRT-B4.11",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:2567-2581"
+    },
+    {
+     "statement": "WRT-T4.12",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:2550-2553"
+    },
+    {
+     "statement": "WRT-T6.3",
+     "how": "cites iris_vector_graph/_engine/nodes_edges.py:2550-2553"
+    }
+   ],
+   "covered_by_count": 10
+  },
+  {
+   "id": "py:IRISGraphEngine.nodes_exist",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "nodes_exist",
+   "qual": "NodesEdgesMixin.nodes_exist",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:2590-2625",
+   "file": "iris_vector_graph/_engine/nodes_edges.py",
+   "start": 2590,
+   "end": 2625,
+   "public": true,
+   "module": "03",
+   "covered_by": [],
+   "covered_by_count": 0,
+   "covered_elsewhere": []
+  },
+  {
+   "id": "py:iris_vector_graph._write_txn.is_duplicate",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "is_duplicate",
+   "qual": "is_duplicate",
+   "source": "iris_vector_graph/_write_txn.py:46-49",
+   "file": "iris_vector_graph/_write_txn.py",
+   "start": 46,
+   "end": 49,
+   "public": true,
+   "module": "03",
+   "covered_by": [],
+   "covered_by_count": 0,
+   "covered_elsewhere": []
+  },
+  {
+   "id": "py:iris_vector_graph._write_txn.caller_transaction_level",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "caller_transaction_level",
+   "qual": "caller_transaction_level",
+   "source": "iris_vector_graph/_write_txn.py:64-87",
+   "file": "iris_vector_graph/_write_txn.py",
+   "start": 64,
+   "end": 87,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-D2",
+     "how": "cites iris_vector_graph/_write_txn.py:64-87"
+    },
+    {
+     "statement": "WRT-T2.5",
+     "how": "cites callee _driver_autocommit_off (iris_vector_graph/_write_txn.py:58-62)"
+    }
+   ],
+   "covered_by_count": 2
+  },
+  {
+   "id": "py:iris_vector_graph._write_txn.refuse_in_caller_transaction",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "refuse_in_caller_transaction",
+   "qual": "refuse_in_caller_transaction",
+   "source": "iris_vector_graph/_write_txn.py:90-99",
+   "file": "iris_vector_graph/_write_txn.py",
+   "start": 90,
+   "end": 99,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-D2",
+     "how": "cites callee caller_transaction_level (iris_vector_graph/_write_txn.py:64-87)"
+    },
+    {
+     "statement": "WRT-T2.5",
+     "how": "cites callee _driver_autocommit_off (iris_vector_graph/_write_txn.py:58-62)"
+    },
+    {
+     "statement": "WRT-X7.7",
+     "how": "cites iris_vector_graph/_write_txn.py:90-99"
+    }
+   ],
+   "covered_by_count": 3
+  },
+  {
+   "id": "py:iris_vector_graph._write_txn.WriteTxn.__init__",
+   "kind": "python-api(constructor)",
+   "kinds": [
+    "python-api(constructor)"
+   ],
+   "name": "__init__",
+   "qual": "WriteTxn.__init__",
+   "source": "iris_vector_graph/_write_txn.py:110-121",
+   "file": "iris_vector_graph/_write_txn.py",
+   "start": 110,
+   "end": 121,
+   "public": true,
+   "module": "03",
+   "covered_by": [],
+   "covered_by_count": 0,
+   "covered_elsewhere": []
+  },
+  {
+   "id": "py:iris_vector_graph._write_txn.WriteTxn.cursor",
+   "kind": "python-api(property)",
+   "kinds": [
+    "python-api(property)"
+   ],
+   "name": "cursor",
+   "qual": "WriteTxn.cursor",
+   "source": "iris_vector_graph/_write_txn.py:126-129",
+   "file": "iris_vector_graph/_write_txn.py",
+   "start": 126,
+   "end": 129,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-T2.4",
+     "how": "names cursor"
+    },
+    {
+     "statement": "WRT-B3.1",
+     "how": "names cursor"
+    }
+   ],
+   "covered_by_count": 2
+  },
+  {
+   "id": "py:iris_vector_graph._write_txn.WriteTxn.native",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "native",
+   "qual": "WriteTxn.native",
+   "source": "iris_vector_graph/_write_txn.py:147-160",
+   "file": "iris_vector_graph/_write_txn.py",
+   "start": 147,
+   "end": 160,
+   "public": true,
+   "module": "03",
+   "covered_by": [],
+   "covered_by_count": 0,
+   "covered_elsewhere": [
+    "INS-T1.23 (cites callee unwrap_connection (iris_vector_graph/schema_name.py:404-452))"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph._write_txn.WriteTxn.begin",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "begin",
+   "qual": "WriteTxn.begin",
+   "source": "iris_vector_graph/_write_txn.py:164-175",
+   "file": "iris_vector_graph/_write_txn.py",
+   "start": 164,
+   "end": 175,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-B2.2",
+     "how": "cites iris_vector_graph/_write_txn.py:164-175"
+    },
+    {
+     "statement": "WRT-T2.4",
+     "how": "cites callee WriteTxn._call (iris_vector_graph/_write_txn.py:131-137)"
+    },
+    {
+     "statement": "WRT-T2.5",
+     "how": "cites callee _driver_autocommit_off (iris_vector_graph/_write_txn.py:58-62)"
+    },
+    {
+     "statement": "WRT-X2.6",
+     "how": "cites callee WriteTxn._begin_plain (iris_vector_graph/_write_txn.py:177-203)"
+    },
+    {
+     "statement": "WRT-T2.7",
+     "how": "cites callee WriteTxn._begin_plain (iris_vector_graph/_write_txn.py:195-210)"
+    }
+   ],
+   "covered_by_count": 5
+  },
+  {
+   "id": "py:iris_vector_graph._write_txn.WriteTxn.commit",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "commit",
+   "qual": "WriteTxn.commit",
+   "source": "iris_vector_graph/_write_txn.py:212-232",
+   "file": "iris_vector_graph/_write_txn.py",
+   "start": 212,
+   "end": 232,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-B2.1",
+     "how": "cites iris_vector_graph/_write_txn.py:212-232"
+    },
+    {
+     "statement": "WRT-T2.4",
+     "how": "cites callee WriteTxn._call (iris_vector_graph/_write_txn.py:131-137)"
+    },
+    {
+     "statement": "WRT-X2.8",
+     "how": "cites iris_vector_graph/_write_txn.py:224-232"
+    }
+   ],
+   "covered_by_count": 3
+  },
+  {
+   "id": "py:iris_vector_graph._write_txn.WriteTxn.rollback",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "rollback",
+   "qual": "WriteTxn.rollback",
+   "source": "iris_vector_graph/_write_txn.py:234-253",
+   "file": "iris_vector_graph/_write_txn.py",
+   "start": 234,
+   "end": 253,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-B2.3",
+     "how": "cites iris_vector_graph/_write_txn.py:234-253"
+    },
+    {
+     "statement": "WRT-T2.4",
+     "how": "cites callee WriteTxn._call (iris_vector_graph/_write_txn.py:131-137)"
+    },
+    {
+     "statement": "WRT-T2.10",
+     "how": "cites iris_vector_graph/_write_txn.py:234-253"
+    }
+   ],
+   "covered_by_count": 3
+  },
+  {
+   "id": "py:iris_vector_graph._write_txn.write_txn",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "write_txn",
+   "qual": "write_txn",
+   "source": "iris_vector_graph/_write_txn.py:275-277",
+   "file": "iris_vector_graph/_write_txn.py",
+   "start": 275,
+   "end": 277,
+   "public": true,
+   "module": "03",
+   "covered_by": [],
+   "covered_by_count": 0,
+   "covered_elsewhere": [
+    "VEC-B1.17 (names write_txn)"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph.bulk_loader.BulkLoader.__init__",
+   "kind": "python-api(constructor)",
+   "kinds": [
+    "python-api(constructor)"
+   ],
+   "name": "__init__",
+   "qual": "BulkLoader.__init__",
+   "source": "iris_vector_graph/bulk_loader.py:56-78",
+   "file": "iris_vector_graph/bulk_loader.py",
+   "start": 56,
+   "end": 78,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-D14",
+     "how": "cites iris_vector_graph/bulk_loader.py:53-78"
+    },
+    {
+     "statement": "WRT-Q1.7",
+     "how": "cites iris_vector_graph/bulk_loader.py:56-78"
+    },
+    {
+     "statement": "WRT-B7.6",
+     "how": "cites iris_vector_graph/bulk_loader.py:56-78"
+    },
+    {
+     "statement": "WRT-B7.16",
+     "how": "cites iris_vector_graph/bulk_loader.py:73-81"
+    }
+   ],
+   "covered_by_count": 4
+  },
+  {
+   "id": "py:iris_vector_graph.bulk_loader.BulkLoader.load_nodes",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "load_nodes",
+   "qual": "BulkLoader.load_nodes",
+   "source": "iris_vector_graph/bulk_loader.py:252-378",
+   "file": "iris_vector_graph/bulk_loader.py",
+   "start": 252,
+   "end": 378,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-D2",
+     "how": "cites callee caller_transaction_level (iris_vector_graph/_write_txn.py:64-87)"
+    },
+    {
+     "statement": "WRT-D16",
+     "how": "cites callee prop_value (iris_vector_graph/prop_values.py:106-126)"
+    },
+    {
+     "statement": "WRT-T1.6",
+     "how": "cites iris_vector_graph/bulk_loader.py:252-272"
+    },
+    {
+     "statement": "WRT-X3.6",
+     "how": "cites callee check_width (iris_vector_graph/_widths.py:15-32)"
+    },
+    {
+     "statement": "WRT-B5",
+     "how": "cites callee prop_value (iris_vector_graph/prop_values.py:106-126)"
+    },
+    {
+     "statement": "WRT-B5.1",
+     "how": "cites callee prop_value (iris_vector_graph/prop_values.py:120-122)"
+    },
+    {
+     "statement": "WRT-B5.2",
+     "how": "cites callee prop_value (iris_vector_graph/prop_values.py:125-126)"
+    },
+    {
+     "statement": "WRT-B5.3",
+     "how": "cites callee prop_text (iris_vector_graph/prop_values.py:94-97)"
+    },
+    {
+     "statement": "WRT-B5.4",
+     "how": "cites callee prop_text (iris_vector_graph/prop_values.py:98-99)"
+    },
+    {
+     "statement": "WRT-X7.7",
+     "how": "cites callee BulkLoader._refuse_in_caller_transaction (iris_vector_graph/bulk_loader.py:156-163)"
+    },
+    {
+     "statement": "WRT-T7.8",
+     "how": "cites callee BulkLoader._executemany_batched (iris_vector_graph/bulk_loader.py:108-144)"
+    },
+    {
+     "statement": "WRT-T7.9",
+     "how": "cites iris_vector_graph/bulk_loader.py:291-291"
+    }
+   ],
+   "covered_by_count": 19
+  },
+  {
+   "id": "py:iris_vector_graph.bulk_loader.BulkLoader.load_edges",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "load_edges",
+   "qual": "BulkLoader.load_edges",
+   "source": "iris_vector_graph/bulk_loader.py:380-482",
+   "file": "iris_vector_graph/bulk_loader.py",
+   "start": 380,
+   "end": 482,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-D2",
+     "how": "cites callee caller_transaction_level (iris_vector_graph/_write_txn.py:64-87)"
+    },
+    {
+     "statement": "WRT-T1.6",
+     "how": "cites iris_vector_graph/bulk_loader.py:380-402"
+    },
+    {
+     "statement": "WRT-X3.6",
+     "how": "cites callee check_width (iris_vector_graph/_widths.py:15-32)"
+    },
+    {
+     "statement": "WRT-X7.7",
+     "how": "cites callee BulkLoader._refuse_in_caller_transaction (iris_vector_graph/bulk_loader.py:156-163)"
+    },
+    {
+     "statement": "WRT-T7.8",
+     "how": "cites callee BulkLoader._executemany_batched (iris_vector_graph/bulk_loader.py:108-144)"
+    },
+    {
+     "statement": "WRT-T7.9",
+     "how": "cites iris_vector_graph/bulk_loader.py:456-462"
+    },
+    {
+     "statement": "WRT-B7.10",
+     "how": "cites callee BulkLoader._known_nodes_sql (iris_vector_graph/bulk_loader.py:182-199)"
+    },
+    {
+     "statement": "WRT-B7.11",
+     "how": "cites iris_vector_graph/bulk_loader.py:420-440"
+    },
+    {
+     "statement": "WRT-B7.12",
+     "how": "cites callee BulkLoader._register_endpoints (iris_vector_graph/bulk_loader.py:201-228)"
+    },
+    {
+     "statement": "WRT-X7.13",
+     "how": "cites iris_vector_graph/bulk_loader.py:401-413"
+    },
+    {
+     "statement": "WRT-B7.14",
+     "how": "cites callee BulkLoader._executemany_batched (iris_vector_graph/bulk_loader.py:118-144)"
+    },
+    {
+     "statement": "WRT-B7.15",
+     "how": "cites iris_vector_graph/bulk_loader.py:453-453"
+    }
+   ],
+   "covered_by_count": 15
+  },
+  {
+   "id": "py:iris_vector_graph.bulk_loader.BulkLoader.rebuild_all_indices",
+   "kind": "python-api",
+   "kinds": [
+    "python-api",
+    "lifecycle"
+   ],
+   "name": "rebuild_all_indices",
+   "qual": "BulkLoader.rebuild_all_indices",
+   "source": "iris_vector_graph/bulk_loader.py:484-510",
+   "file": "iris_vector_graph/bulk_loader.py",
+   "start": 484,
+   "end": 510,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-D2",
+     "how": "cites callee caller_transaction_level (iris_vector_graph/_write_txn.py:64-87)"
+    },
+    {
+     "statement": "WRT-X7.7",
+     "how": "cites callee BulkLoader._refuse_in_caller_transaction (iris_vector_graph/bulk_loader.py:156-163)"
+    },
+    {
+     "statement": "WRT-T7.9",
+     "how": "cites iris_vector_graph/bulk_loader.py:484-510"
+    },
+    {
+     "statement": "WRT-B7.16",
+     "how": "cites iris_vector_graph/bulk_loader.py:495-495"
+    }
+   ],
+   "covered_by_count": 4
+  },
+  {
+   "id": "py:iris_vector_graph.bulk_loader.BulkLoader.build_graph_globals",
+   "kind": "python-api",
+   "kinds": [
+    "python-api",
+    "lifecycle"
+   ],
+   "name": "build_graph_globals",
+   "qual": "BulkLoader.build_graph_globals",
+   "source": "iris_vector_graph/bulk_loader.py:512-538",
+   "file": "iris_vector_graph/bulk_loader.py",
+   "start": 512,
+   "end": 538,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-D2",
+     "how": "cites callee caller_transaction_level (iris_vector_graph/_write_txn.py:64-87)"
+    },
+    {
+     "statement": "WRT-X7.7",
+     "how": "cites callee BulkLoader._refuse_in_caller_transaction (iris_vector_graph/bulk_loader.py:156-163)"
+    },
+    {
+     "statement": "WRT-T7.18",
+     "how": "cites iris_vector_graph/bulk_loader.py:512-538"
+    }
+   ],
+   "covered_by_count": 3
+  },
+  {
+   "id": "py:iris_vector_graph.bulk_loader.BulkLoader.load_networkx",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "load_networkx",
+   "qual": "BulkLoader.load_networkx",
+   "source": "iris_vector_graph/bulk_loader.py:540-629",
+   "file": "iris_vector_graph/bulk_loader.py",
+   "start": 540,
+   "end": 629,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-D2",
+     "how": "cites callee caller_transaction_level (iris_vector_graph/_write_txn.py:64-87)"
+    },
+    {
+     "statement": "WRT-D16",
+     "how": "cites callee prop_value (iris_vector_graph/prop_values.py:106-126)"
+    },
+    {
+     "statement": "WRT-T1.6",
+     "how": "cites callee BulkLoader.load_nodes (iris_vector_graph/bulk_loader.py:252-272)"
+    },
+    {
+     "statement": "WRT-X3.6",
+     "how": "cites callee check_width (iris_vector_graph/_widths.py:15-32)"
+    },
+    {
+     "statement": "WRT-B5",
+     "how": "cites callee prop_value (iris_vector_graph/prop_values.py:106-126)"
+    },
+    {
+     "statement": "WRT-B5.1",
+     "how": "cites callee prop_value (iris_vector_graph/prop_values.py:120-122)"
+    },
+    {
+     "statement": "WRT-B5.2",
+     "how": "cites callee prop_value (iris_vector_graph/prop_values.py:125-126)"
+    },
+    {
+     "statement": "WRT-B5.3",
+     "how": "cites callee prop_text (iris_vector_graph/prop_values.py:94-97)"
+    },
+    {
+     "statement": "WRT-B5.4",
+     "how": "cites callee prop_text (iris_vector_graph/prop_values.py:98-99)"
+    },
+    {
+     "statement": "WRT-X7.7",
+     "how": "cites callee BulkLoader._refuse_in_caller_transaction (iris_vector_graph/bulk_loader.py:156-163)"
+    },
+    {
+     "statement": "WRT-T7.8",
+     "how": "cites callee BulkLoader._executemany_batched (iris_vector_graph/bulk_loader.py:108-144)"
+    },
+    {
+     "statement": "WRT-T7.9",
+     "how": "cites callee BulkLoader.load_nodes (iris_vector_graph/bulk_loader.py:291-291)"
+    }
+   ],
+   "covered_by_count": 22
+  },
+  {
+   "id": "py:iris_vector_graph.bulk_loader.networkx_edge_rows",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "networkx_edge_rows",
+   "qual": "networkx_edge_rows",
+   "source": "iris_vector_graph/bulk_loader.py:635-651",
+   "file": "iris_vector_graph/bulk_loader.py",
+   "start": 635,
+   "end": 651,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-T7.17",
+     "how": "cites iris_vector_graph/bulk_loader.py:632-651"
+    }
+   ],
+   "covered_by_count": 1
+  },
+  {
+   "id": "py:iris_vector_graph.bulk_loader.main",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "main",
+   "qual": "main",
+   "source": "iris_vector_graph/bulk_loader.py:654-710",
+   "file": "iris_vector_graph/bulk_loader.py",
+   "start": 654,
+   "end": 710,
+   "public": true,
+   "module": "03",
+   "covered_by": [],
+   "covered_by_count": 0,
+   "covered_elsewhere": []
+  },
+  {
+   "id": "py:iris_vector_graph.prop_values.prop_text",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "prop_text",
+   "qual": "prop_text",
+   "source": "iris_vector_graph/prop_values.py:94-100",
+   "file": "iris_vector_graph/prop_values.py",
+   "start": 94,
+   "end": 100,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-B5.3",
+     "how": "cites iris_vector_graph/prop_values.py:94-97"
+    },
+    {
+     "statement": "WRT-B5.4",
+     "how": "cites iris_vector_graph/prop_values.py:98-99"
+    }
+   ],
+   "covered_by_count": 2
+  },
+  {
+   "id": "py:iris_vector_graph.prop_values.prop_value",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "prop_value",
+   "qual": "prop_value",
+   "source": "iris_vector_graph/prop_values.py:106-126",
+   "file": "iris_vector_graph/prop_values.py",
+   "start": 106,
+   "end": 126,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-D16",
+     "how": "cites iris_vector_graph/prop_values.py:106-126"
+    },
+    {
+     "statement": "WRT-B5",
+     "how": "cites iris_vector_graph/prop_values.py:106-126"
+    },
+    {
+     "statement": "WRT-B5.1",
+     "how": "cites iris_vector_graph/prop_values.py:120-122"
+    },
+    {
+     "statement": "WRT-B5.2",
+     "how": "cites iris_vector_graph/prop_values.py:125-126"
+    },
+    {
+     "statement": "WRT-B5.3",
+     "how": "cites iris_vector_graph/prop_values.py:116-117"
+    },
+    {
+     "statement": "WRT-B5.4",
+     "how": "cites callee prop_text (iris_vector_graph/prop_values.py:98-99)"
+    }
+   ],
+   "covered_by_count": 6
+  },
+  {
+   "id": "py:iris_vector_graph.prop_values.parse_prop_text",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "parse_prop_text",
+   "qual": "parse_prop_text",
+   "source": "iris_vector_graph/prop_values.py:129-138",
+   "file": "iris_vector_graph/prop_values.py",
+   "start": 129,
+   "end": 138,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-B5.5",
+     "how": "cites iris_vector_graph/prop_values.py:129-138"
+    }
+   ],
+   "covered_by_count": 1
+  },
+  {
+   "id": "py:iris_vector_graph.prop_values.parse_rel_prop_text",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "parse_rel_prop_text",
+   "qual": "parse_rel_prop_text",
+   "source": "iris_vector_graph/prop_values.py:141-168",
+   "file": "iris_vector_graph/prop_values.py",
+   "start": 141,
+   "end": 168,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-B5.5",
+     "how": "cites callee parse_prop_text (iris_vector_graph/prop_values.py:129-138)"
+    },
+    {
+     "statement": "WRT-T5.13",
+     "how": "cites iris_vector_graph/prop_values.py:141-168"
+    }
+   ],
+   "covered_by_count": 2
+  },
+  {
+   "id": "py:iris_vector_graph.prop_values.number_spellings",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "number_spellings",
+   "qual": "number_spellings",
+   "source": "iris_vector_graph/prop_values.py:171-186",
+   "file": "iris_vector_graph/prop_values.py",
+   "start": 171,
+   "end": 186,
+   "public": true,
+   "module": "03",
+   "covered_by": [],
+   "covered_by_count": 0,
+   "covered_elsewhere": []
+  },
+  {
+   "id": "py:iris_vector_graph.prop_values.bool_spellings_sql",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "bool_spellings_sql",
+   "qual": "bool_spellings_sql",
+   "source": "iris_vector_graph/prop_values.py:189-192",
+   "file": "iris_vector_graph/prop_values.py",
+   "start": 189,
+   "end": 192,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-T5.6",
+     "how": "cites iris_vector_graph/prop_values.py:189-192"
+    }
+   ],
+   "covered_by_count": 1
+  },
+  {
+   "id": "py:iris_vector_graph.prop_values.decode_typed_text",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "decode_typed_text",
+   "qual": "decode_typed_text",
+   "source": "iris_vector_graph/prop_values.py:204-231",
+   "file": "iris_vector_graph/prop_values.py",
+   "start": 204,
+   "end": 231,
+   "public": true,
+   "module": "03",
+   "covered_by": [],
+   "covered_by_count": 0,
+   "covered_elsewhere": []
+  },
+  {
+   "id": "py:iris_vector_graph.prop_values.decode_json_list_map",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "decode_json_list_map",
+   "qual": "decode_json_list_map",
+   "source": "iris_vector_graph/prop_values.py:234-248",
+   "file": "iris_vector_graph/prop_values.py",
+   "start": 234,
+   "end": 248,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-B5.5",
+     "how": "cites iris_vector_graph/prop_values.py:234-248"
+    }
+   ],
+   "covered_by_count": 1
+  },
+  {
+   "id": "py:iris_vector_graph.prop_values.decode_json_value",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "decode_json_value",
+   "qual": "decode_json_value",
+   "source": "iris_vector_graph/prop_values.py:251-258",
+   "file": "iris_vector_graph/prop_values.py",
+   "start": 251,
+   "end": 258,
+   "public": true,
+   "module": "03",
+   "covered_by": [],
+   "covered_by_count": 0,
+   "covered_elsewhere": []
+  },
+  {
+   "id": "py:iris_vector_graph.prop_values.read_prop_value",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "read_prop_value",
+   "qual": "read_prop_value",
+   "source": "iris_vector_graph/prop_values.py:266-270",
+   "file": "iris_vector_graph/prop_values.py",
+   "start": 266,
+   "end": 270,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-B5.5",
+     "how": "cites callee decode_json_list_map (iris_vector_graph/prop_values.py:234-248)"
+    }
+   ],
+   "covered_by_count": 1
+  },
+  {
+   "id": "py:iris_vector_graph.prop_values.read_node_value",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "read_node_value",
+   "qual": "read_node_value",
+   "source": "iris_vector_graph/prop_values.py:273-279",
+   "file": "iris_vector_graph/prop_values.py",
+   "start": 273,
+   "end": 279,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-B5.4",
+     "how": "cites iris_vector_graph/prop_values.py:273-279"
+    },
+    {
+     "statement": "WRT-B5.5",
+     "how": "cites callee parse_prop_text (iris_vector_graph/prop_values.py:129-138)"
+    }
+   ],
+   "covered_by_count": 2
+  },
+  {
+   "id": "py:iris_vector_graph._dictionary.sql_refused",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "sql_refused",
+   "qual": "sql_refused",
+   "source": "iris_vector_graph/_dictionary.py:31-34",
+   "file": "iris_vector_graph/_dictionary.py",
+   "start": 31,
+   "end": 34,
+   "public": true,
+   "module": "03",
+   "covered_by": [],
+   "covered_by_count": 0,
+   "covered_elsewhere": []
+  },
+  {
+   "id": "py:iris_vector_graph._dictionary.compiled_class_exists",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "compiled_class_exists",
+   "qual": "compiled_class_exists",
+   "source": "iris_vector_graph/_dictionary.py:59-60",
+   "file": "iris_vector_graph/_dictionary.py",
+   "start": 59,
+   "end": 60,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-T8.5",
+     "how": "cites iris_vector_graph/_dictionary.py:48-64"
+    }
+   ],
+   "covered_by_count": 1
+  },
+  {
+   "id": "py:iris_vector_graph._dictionary.compiled_method_exists",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "compiled_method_exists",
+   "qual": "compiled_method_exists",
+   "source": "iris_vector_graph/_dictionary.py:63-64",
+   "file": "iris_vector_graph/_dictionary.py",
+   "start": 63,
+   "end": 64,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-T8.5",
+     "how": "cites iris_vector_graph/_dictionary.py:48-64"
+    }
+   ],
+   "covered_by_count": 1
+  },
+  {
+   "id": "py:iris_vector_graph._collation.collation_key",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "collation_key",
+   "qual": "collation_key",
+   "source": "iris_vector_graph/_collation.py:17-21",
+   "file": "iris_vector_graph/_collation.py",
+   "start": 17,
+   "end": 21,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-T8.6",
+     "how": "cites iris_vector_graph/_collation.py:1-21"
+    }
+   ],
+   "covered_by_count": 1
+  },
+  {
+   "id": "py:iris_vector_graph._collation.rank_key",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "rank_key",
+   "qual": "rank_key",
+   "source": "iris_vector_graph/_collation.py:30-32",
+   "file": "iris_vector_graph/_collation.py",
+   "start": 30,
+   "end": 32,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-T8.6",
+     "how": "cites callee collation_key (iris_vector_graph/_collation.py:1-21)"
+    },
+    {
+     "statement": "WRT-T8.7",
+     "how": "cites iris_vector_graph/_collation.py:24-32"
+    }
+   ],
+   "covered_by_count": 2
+  },
+  {
+   "id": "py:iris_vector_graph._batch_check.check_rowcount",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "check_rowcount",
+   "qual": "check_rowcount",
+   "source": "iris_vector_graph/_batch_check.py:35-45",
+   "file": "iris_vector_graph/_batch_check.py",
+   "start": 35,
+   "end": 45,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-T8.1",
+     "how": "cites iris_vector_graph/_batch_check.py:35-45"
+    },
+    {
+     "statement": "WRT-T8.4",
+     "how": "cites callee _live (iris_vector_graph/_batch_check.py:29-32)"
+    }
+   ],
+   "covered_by_count": 2
+  },
+  {
+   "id": "py:iris_vector_graph._batch_check.missing_rows",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "missing_rows",
+   "qual": "missing_rows",
+   "source": "iris_vector_graph/_batch_check.py:48-65",
+   "file": "iris_vector_graph/_batch_check.py",
+   "start": 48,
+   "end": 65,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-D15",
+     "how": "cites iris_vector_graph/_batch_check.py:48-65"
+    },
+    {
+     "statement": "WRT-T8.2",
+     "how": "cites iris_vector_graph/_batch_check.py:48-65"
+    },
+    {
+     "statement": "WRT-T8.4",
+     "how": "cites callee _live (iris_vector_graph/_batch_check.py:29-32)"
+    }
+   ],
+   "covered_by_count": 3
+  },
+  {
+   "id": "py:iris_vector_graph._batch_check.raise_if_missing",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "raise_if_missing",
+   "qual": "raise_if_missing",
+   "source": "iris_vector_graph/_batch_check.py:68-80",
+   "file": "iris_vector_graph/_batch_check.py",
+   "start": 68,
+   "end": 80,
+   "public": true,
+   "module": "03",
+   "covered_by": [
+    {
+     "statement": "WRT-X8.3",
+     "how": "cites iris_vector_graph/_batch_check.py:68-80"
+    }
+   ],
+   "covered_by_count": 1
+  },
+  {
+   "id": "py:iris_vector_graph.engine._GraphSubEngine.create_node",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "create_node",
+   "qual": "_GraphSubEngine.create_node",
+   "source": "iris_vector_graph/engine.py:161-161",
+   "file": "iris_vector_graph/engine.py",
+   "start": 161,
+   "end": 161,
+   "public": true,
+   "module": "03",
+   "assignment_reason": "the write facade of engine.py (03 Scope); from_connect/_iris_obj decide which server process a write runs in (WRT-D17)",
+   "covered_by": [
+    {
+     "statement": "WRT-D1",
+     "how": "names create_node"
+    },
+    {
+     "statement": "WRT-T0.1",
+     "how": "cites iris_vector_graph/engine.py:157-173"
+    },
+    {
+     "statement": "WRT-T6.3",
+     "how": "names create_node"
+    }
+   ],
+   "covered_by_count": 3
+  },
+  {
+   "id": "py:iris_vector_graph.engine._GraphSubEngine.create_edge",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "create_edge",
+   "qual": "_GraphSubEngine.create_edge",
+   "source": "iris_vector_graph/engine.py:162-162",
+   "file": "iris_vector_graph/engine.py",
+   "start": 162,
+   "end": 162,
+   "public": true,
+   "module": "03",
+   "assignment_reason": "the write facade of engine.py (03 Scope); from_connect/_iris_obj decide which server process a write runs in (WRT-D17)",
+   "covered_by": [
+    {
+     "statement": "WRT-D1",
+     "how": "names create_edge"
+    },
+    {
+     "statement": "WRT-T0.1",
+     "how": "cites iris_vector_graph/engine.py:157-173"
+    },
+    {
+     "statement": "WRT-X4.5",
+     "how": "names create_edge"
+    }
+   ],
+   "covered_by_count": 3
+  },
+  {
+   "id": "py:iris_vector_graph.engine._GraphSubEngine.delete_node",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "delete_node",
+   "qual": "_GraphSubEngine.delete_node",
+   "source": "iris_vector_graph/engine.py:163-163",
+   "file": "iris_vector_graph/engine.py",
+   "start": 163,
+   "end": 163,
+   "public": true,
+   "module": "03",
+   "assignment_reason": "the write facade of engine.py (03 Scope); from_connect/_iris_obj decide which server process a write runs in (WRT-D17)",
+   "covered_by": [
+    {
+     "statement": "WRT-D1",
+     "how": "names delete_node"
+    },
+    {
+     "statement": "WRT-T0.1",
+     "how": "cites iris_vector_graph/engine.py:157-173"
+    }
+   ],
+   "covered_by_count": 2
+  },
+  {
+   "id": "py:iris_vector_graph.engine._GraphSubEngine.delete_edge",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "delete_edge",
+   "qual": "_GraphSubEngine.delete_edge",
+   "source": "iris_vector_graph/engine.py:165-165",
+   "file": "iris_vector_graph/engine.py",
+   "start": 165,
+   "end": 165,
+   "public": true,
+   "module": "03",
+   "assignment_reason": "the write facade of engine.py (03 Scope); from_connect/_iris_obj decide which server process a write runs in (WRT-D17)",
+   "covered_by": [
+    {
+     "statement": "WRT-D1",
+     "how": "names delete_edge"
+    },
+    {
+     "statement": "WRT-T0.1",
+     "how": "cites iris_vector_graph/engine.py:157-173"
+    },
+    {
+     "statement": "WRT-B1.9",
+     "how": "names delete_edge"
+    }
+   ],
+   "covered_by_count": 3
+  },
+  {
+   "id": "py:iris_vector_graph.engine._GraphSubEngine.bulk_create_nodes",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "bulk_create_nodes",
+   "qual": "_GraphSubEngine.bulk_create_nodes",
+   "source": "iris_vector_graph/engine.py:166-166",
+   "file": "iris_vector_graph/engine.py",
+   "start": 166,
+   "end": 166,
+   "public": true,
+   "module": "03",
+   "assignment_reason": "the write facade of engine.py (03 Scope); from_connect/_iris_obj decide which server process a write runs in (WRT-D17)",
+   "covered_by": [
+    {
+     "statement": "WRT-D1",
+     "how": "names bulk_create_nodes"
+    },
+    {
+     "statement": "WRT-D11",
+     "how": "names bulk_create_nodes"
+    },
+    {
+     "statement": "WRT-T0.1",
+     "how": "cites iris_vector_graph/engine.py:157-173"
+    }
+   ],
+   "covered_by_count": 3
+  },
+  {
+   "id": "py:iris_vector_graph.engine._GraphSubEngine.bulk_create_edges",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "bulk_create_edges",
+   "qual": "_GraphSubEngine.bulk_create_edges",
+   "source": "iris_vector_graph/engine.py:167-167",
+   "file": "iris_vector_graph/engine.py",
+   "start": 167,
+   "end": 167,
+   "public": true,
+   "module": "03",
+   "assignment_reason": "the write facade of engine.py (03 Scope); from_connect/_iris_obj decide which server process a write runs in (WRT-D17)",
+   "covered_by": [
+    {
+     "statement": "WRT-D1",
+     "how": "names bulk_create_edges"
+    },
+    {
+     "statement": "WRT-D11",
+     "how": "names bulk_create_edges"
+    },
+    {
+     "statement": "WRT-T0.1",
+     "how": "cites iris_vector_graph/engine.py:157-173"
+    }
+   ],
+   "covered_by_count": 3
+  },
+  {
+   "id": "py:iris_vector_graph.engine._GraphSubEngine.get_node_count",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "get_node_count",
+   "qual": "_GraphSubEngine.get_node_count",
+   "source": "iris_vector_graph/engine.py:168-168",
+   "file": "iris_vector_graph/engine.py",
+   "start": 168,
+   "end": 168,
+   "public": true,
+   "module": "03",
+   "assignment_reason": "the write facade of engine.py (03 Scope); from_connect/_iris_obj decide which server process a write runs in (WRT-D17)",
+   "covered_by": [
+    {
+     "statement": "WRT-T0.1",
+     "how": "cites iris_vector_graph/engine.py:157-173"
+    }
+   ],
+   "covered_by_count": 1
+  },
+  {
+   "id": "py:iris_vector_graph.engine._GraphSubEngine.get_edge_count",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "get_edge_count",
+   "qual": "_GraphSubEngine.get_edge_count",
+   "source": "iris_vector_graph/engine.py:169-169",
+   "file": "iris_vector_graph/engine.py",
+   "start": 169,
+   "end": 169,
+   "public": true,
+   "module": "03",
+   "assignment_reason": "the write facade of engine.py (03 Scope); from_connect/_iris_obj decide which server process a write runs in (WRT-D17)",
+   "covered_by": [
+    {
+     "statement": "WRT-T0.1",
+     "how": "cites iris_vector_graph/engine.py:157-173"
+    }
+   ],
+   "covered_by_count": 1
+  },
+  {
+   "id": "py:iris_vector_graph.engine._GraphSubEngine.get_labels",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "get_labels",
+   "qual": "_GraphSubEngine.get_labels",
+   "source": "iris_vector_graph/engine.py:170-170",
+   "file": "iris_vector_graph/engine.py",
+   "start": 170,
+   "end": 170,
+   "public": true,
+   "module": "03",
+   "assignment_reason": "the write facade of engine.py (03 Scope); from_connect/_iris_obj decide which server process a write runs in (WRT-D17)",
+   "covered_by": [
+    {
+     "statement": "WRT-T0.1",
+     "how": "cites iris_vector_graph/engine.py:157-173"
+    }
+   ],
+   "covered_by_count": 1
+  },
+  {
+   "id": "py:iris_vector_graph.engine._GraphSubEngine.get_relationship_types",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "get_relationship_types",
+   "qual": "_GraphSubEngine.get_relationship_types",
+   "source": "iris_vector_graph/engine.py:171-171",
+   "file": "iris_vector_graph/engine.py",
+   "start": 171,
+   "end": 171,
+   "public": true,
+   "module": "03",
+   "assignment_reason": "the write facade of engine.py (03 Scope); from_connect/_iris_obj decide which server process a write runs in (WRT-D17)",
+   "covered_by": [
+    {
+     "statement": "WRT-T0.1",
+     "how": "cites iris_vector_graph/engine.py:157-173"
+    }
+   ],
+   "covered_by_count": 1
+  },
+  {
+   "id": "py:iris_vector_graph.engine.IRISGraphEngine.from_connect",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "from_connect",
+   "qual": "IRISGraphEngine.from_connect",
+   "source": "iris_vector_graph/engine.py:487-514",
+   "file": "iris_vector_graph/engine.py",
+   "start": 487,
+   "end": 514,
+   "public": true,
+   "module": "03",
+   "assignment_reason": "the write facade of engine.py (03 Scope); from_connect/_iris_obj decide which server process a write runs in (WRT-D17)",
+   "covered_by": [
+    {
+     "statement": "WRT-T2.13",
+     "how": "names from_connect"
+    },
+    {
+     "statement": "WRT-B3.19",
+     "how": "names from_connect"
+    }
+   ],
+   "covered_by_count": 2
+  },
+  {
+   "id": "py:iris_vector_graph.engine.IRISGraphEngine.from_wrapper",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "from_wrapper",
+   "qual": "IRISGraphEngine.from_wrapper",
+   "source": "iris_vector_graph/engine.py:517-557",
+   "file": "iris_vector_graph/engine.py",
+   "start": 517,
+   "end": 557,
+   "public": true,
+   "module": "03",
+   "assignment_reason": "the write facade of engine.py (03 Scope); from_connect/_iris_obj decide which server process a write runs in (WRT-D17)",
+   "covered_by": [],
+   "covered_by_count": 0,
+   "covered_elsewhere": []
+  },
+  {
+   "id": "py:iris_vector_graph.engine.IRISGraphEngine._iris_obj",
+   "kind": "internal",
+   "kinds": [
+    "internal"
+   ],
+   "name": "_iris_obj",
+   "qual": "IRISGraphEngine._iris_obj",
+   "source": "iris_vector_graph/engine.py:1894-1942",
+   "file": "iris_vector_graph/engine.py",
+   "start": 1894,
+   "end": 1942,
+   "public": false,
+   "module": "03",
+   "assignment_reason": "the write facade of engine.py (03 Scope); from_connect/_iris_obj decide which server process a write runs in (WRT-D17)",
+   "covered_by": [
+    {
+     "statement": "WRT-D17",
+     "how": "cites iris_vector_graph/engine.py:1916-1942"
+    },
+    {
+     "statement": "WRT-T2.13",
+     "how": "cites iris_vector_graph/engine.py:1916-1942"
+    },
+    {
+     "statement": "WRT-B3.19",
+     "how": "cites iris_vector_graph/engine.py:1916-1942"
+    }
+   ],
+   "covered_by_count": 3
+  },
+  {
+   "id": "cls:Graph.KG.PropWrite.SetVal",
+   "kind": "classmethod",
+   "kinds": [
+    "classmethod"
+   ],
+   "name": "SetVal",
+   "qual": "Graph.KG.PropWrite.SetVal",
+   "class": "Graph.KG.PropWrite",
+   "source": "iris_src/src/Graph/KG/PropWrite.cls:32-62",
+   "file": "iris_src/src/Graph/KG/PropWrite.cls",
+   "start": 32,
+   "end": 62,
+   "public": true,
+   "private": false,
+   "module": "03",
+   "keywords": "",
+   "language": "objectscript",
+   "covered_by": [
+    {
+     "statement": "WRT-B5.7",
+     "how": "cites iris_src/src/Graph/KG/PropWrite.cls:32-62"
+    },
+    {
+     "statement": "WRT-T5.8",
+     "how": "cites iris_src/src/Graph/KG/PropWrite.cls:40-61"
+    },
+    {
+     "statement": "WRT-I5.9",
+     "how": "cites iris_src/src/Graph/KG/PropWrite.cls:36-39"
+    },
+    {
+     "statement": "WRT-X5.10",
+     "how": "cites iris_src/src/Graph/KG/PropWrite.cls:43-46"
+    },
+    {
+     "statement": "WRT-X5.11",
+     "how": "cites iris_src/src/Graph/KG/PropWrite.cls:40-40"
+    }
+   ],
+   "covered_by_count": 5
+  },
+  {
+   "id": "cls:Graph.KG.PropWrite.Layout",
+   "kind": "classmethod",
+   "kinds": [
+    "classmethod"
+   ],
+   "name": "Layout",
+   "qual": "Graph.KG.PropWrite.Layout",
+   "class": "Graph.KG.PropWrite",
+   "source": "iris_src/src/Graph/KG/PropWrite.cls:66-100",
+   "file": "iris_src/src/Graph/KG/PropWrite.cls",
+   "start": 66,
+   "end": 100,
+   "public": true,
+   "private": false,
+   "module": "03",
+   "keywords": "",
+   "language": "objectscript",
+   "covered_by": [
+    {
+     "statement": "WRT-X5.10",
+     "how": "cites iris_src/src/Graph/KG/PropWrite.cls:66-100"
+    }
+   ],
+   "covered_by_count": 1
+  },
+  {
+   "id": "cls:Graph.KG.Txn.Begin",
+   "kind": "classmethod",
+   "kinds": [
+    "classmethod"
+   ],
+   "name": "Begin",
+   "qual": "Graph.KG.Txn.Begin",
+   "class": "Graph.KG.Txn",
+   "source": "iris_src/src/Graph/KG/Txn.cls:19-31",
+   "file": "iris_src/src/Graph/KG/Txn.cls",
+   "start": 19,
+   "end": 31,
+   "public": true,
+   "private": false,
+   "module": "03",
+   "keywords": "",
+   "language": "objectscript",
+   "covered_by": [
+    {
+     "statement": "WRT-D3",
+     "how": "cites iris_src/src/Graph/KG/Txn.cls:15-31"
+    },
+    {
+     "statement": "WRT-B2.2",
+     "how": "cites iris_src/src/Graph/KG/Txn.cls:15-31"
+    },
+    {
+     "statement": "WRT-T2.5",
+     "how": "cites iris_src/src/Graph/KG/Txn.cls:15-31"
+    },
+    {
+     "statement": "WRT-T2.9",
+     "how": "cites iris_src/src/Graph/KG/Txn.cls:21-25"
+    }
+   ],
+   "covered_by_count": 4
+  },
+  {
+   "id": "cls:Graph.KG.Txn.End",
+   "kind": "classmethod",
+   "kinds": [
+    "classmethod"
+   ],
+   "name": "End",
+   "qual": "Graph.KG.Txn.End",
+   "class": "Graph.KG.Txn",
+   "source": "iris_src/src/Graph/KG/Txn.cls:36-45",
+   "file": "iris_src/src/Graph/KG/Txn.cls",
+   "start": 36,
+   "end": 45,
+   "public": true,
+   "private": false,
+   "module": "03",
+   "keywords": "",
+   "language": "objectscript",
+   "covered_by": [
+    {
+     "statement": "WRT-D18",
+     "how": "cites iris_src/src/Graph/KG/Txn.cls:33-45"
+    },
+    {
+     "statement": "WRT-B2.1",
+     "how": "cites iris_src/src/Graph/KG/Txn.cls:33-45"
+    },
+    {
+     "statement": "WRT-I2.11",
+     "how": "cites iris_src/src/Graph/KG/Txn.cls:33-58"
+    }
+   ],
+   "covered_by_count": 3
+  },
+  {
+   "id": "cls:Graph.KG.Txn.Undo",
+   "kind": "classmethod",
+   "kinds": [
+    "classmethod"
+   ],
+   "name": "Undo",
+   "qual": "Graph.KG.Txn.Undo",
+   "class": "Graph.KG.Txn",
+   "source": "iris_src/src/Graph/KG/Txn.cls:49-58",
+   "file": "iris_src/src/Graph/KG/Txn.cls",
+   "start": 49,
+   "end": 58,
+   "public": true,
+   "private": false,
+   "module": "03",
+   "keywords": "",
+   "language": "objectscript",
+   "covered_by": [
+    {
+     "statement": "WRT-B2.3",
+     "how": "cites iris_src/src/Graph/KG/Txn.cls:47-58"
+    },
+    {
+     "statement": "WRT-I2.11",
+     "how": "cites iris_src/src/Graph/KG/Txn.cls:33-58"
+    }
+   ],
+   "covered_by_count": 2
+  },
+  {
+   "id": "cls:Graph.KG.LabelIndex.InsertIndex",
+   "kind": "native(functional-index-callback)",
+   "kinds": [
+    "native(functional-index-callback)"
+   ],
+   "name": "InsertIndex",
+   "qual": "Graph.KG.LabelIndex.InsertIndex",
+   "class": "Graph.KG.LabelIndex",
+   "source": "iris_src/src/Graph/KG/LabelIndex.cls:10-13",
+   "file": "iris_src/src/Graph/KG/LabelIndex.cls",
+   "start": 10,
+   "end": 13,
+   "public": true,
+   "private": false,
+   "module": "03",
+   "keywords": " ServerOnly = 1 ",
+   "language": "objectscript",
+   "covered_by": [
+    {
+     "statement": "WRT-T6",
+     "how": "cites iris_src/src/Graph/KG/LabelIndex.cls:1-13"
+    }
+   ],
+   "covered_by_count": 1
+  },
+  {
+   "id": "cls:Graph.KG.LabelIndex.UpdateIndex",
+   "kind": "native(functional-index-callback)",
+   "kinds": [
+    "native(functional-index-callback)"
+   ],
+   "name": "UpdateIndex",
+   "qual": "Graph.KG.LabelIndex.UpdateIndex",
+   "class": "Graph.KG.LabelIndex",
+   "source": "iris_src/src/Graph/KG/LabelIndex.cls:16-23",
+   "file": "iris_src/src/Graph/KG/LabelIndex.cls",
+   "start": 16,
+   "end": 23,
+   "public": true,
+   "private": false,
+   "module": "03",
+   "keywords": " ServerOnly = 1 ",
+   "language": "objectscript",
+   "covered_by": [
+    {
+     "statement": "WRT-T6.1",
+     "how": "cites iris_src/src/Graph/KG/LabelIndex.cls:16-24"
+    }
+   ],
+   "covered_by_count": 1
+  },
+  {
+   "id": "cls:Graph.KG.LabelIndex.DeleteIndex",
+   "kind": "native(functional-index-callback)",
+   "kinds": [
+    "native(functional-index-callback)"
+   ],
+   "name": "DeleteIndex",
+   "qual": "Graph.KG.LabelIndex.DeleteIndex",
+   "class": "Graph.KG.LabelIndex",
+   "source": "iris_src/src/Graph/KG/LabelIndex.cls:25-28",
+   "file": "iris_src/src/Graph/KG/LabelIndex.cls",
+   "start": 25,
+   "end": 28,
+   "public": true,
+   "private": false,
+   "module": "03",
+   "keywords": " ServerOnly = 1 ",
+   "language": "objectscript",
+   "covered_by": [
+    {
+     "statement": "WRT-T6",
+     "how": "cites iris_src/src/Graph/KG/LabelIndex.cls:25-28"
+    }
+   ],
+   "covered_by_count": 1
+  },
+  {
+   "id": "cls:Graph.KG.LabelIndex.PurgeIndex",
+   "kind": "native(functional-index-callback)",
+   "kinds": [
+    "native(functional-index-callback)",
+    "lifecycle"
+   ],
+   "name": "PurgeIndex",
+   "qual": "Graph.KG.LabelIndex.PurgeIndex",
+   "class": "Graph.KG.LabelIndex",
+   "source": "iris_src/src/Graph/KG/LabelIndex.cls:30-33",
+   "file": "iris_src/src/Graph/KG/LabelIndex.cls",
+   "start": 30,
+   "end": 33,
+   "public": true,
+   "private": false,
+   "module": "03",
+   "keywords": " ServerOnly = 1 ",
+   "language": "objectscript",
+   "covered_by": [
+    {
+     "statement": "WRT-T6.2",
+     "how": "cites iris_src/src/Graph/KG/LabelIndex.cls:30-33"
+    }
+   ],
+   "covered_by_count": 1
+  },
+  {
+   "id": "cls:Graph.KG.LabelIndex.SortBeginIndex",
+   "kind": "native(functional-index-callback)",
+   "kinds": [
+    "native(functional-index-callback)"
+   ],
+   "name": "SortBeginIndex",
+   "qual": "Graph.KG.LabelIndex.SortBeginIndex",
+   "class": "Graph.KG.LabelIndex",
+   "source": "iris_src/src/Graph/KG/LabelIndex.cls:35-38",
+   "file": "iris_src/src/Graph/KG/LabelIndex.cls",
+   "start": 35,
+   "end": 38,
+   "public": true,
+   "private": false,
+   "module": "03",
+   "keywords": " ServerOnly = 1 ",
+   "language": "objectscript",
+   "covered_by": [],
+   "covered_by_count": 0,
+   "covered_elsewhere": []
+  },
+  {
+   "id": "cls:Graph.KG.LabelIndex.SortEndIndex",
+   "kind": "native(functional-index-callback)",
+   "kinds": [
+    "native(functional-index-callback)"
+   ],
+   "name": "SortEndIndex",
+   "qual": "Graph.KG.LabelIndex.SortEndIndex",
+   "class": "Graph.KG.LabelIndex",
+   "source": "iris_src/src/Graph/KG/LabelIndex.cls:40-43",
+   "file": "iris_src/src/Graph/KG/LabelIndex.cls",
+   "start": 40,
+   "end": 43,
+   "public": true,
+   "private": false,
+   "module": "03",
+   "keywords": " ServerOnly = 1 ",
+   "language": "objectscript",
+   "covered_by": [],
+   "covered_by_count": 0,
+   "covered_elsewhere": []
+  },
+  {
+   "id": "rest:GET /health",
+   "kind": "rest",
+   "kinds": [
+    "rest"
+   ],
+   "name": "GET /health",
+   "qual": "create_app.<locals>.health",
+   "source": "api/main.py:101-113",
+   "file": "api/main.py",
+   "start": 101,
+   "end": 113,
+   "public": true,
+   "module": "03",
+   "reaches": [
+    "_iris_obj"
+   ],
+   "covered_by": [],
+   "covered_by_count": 0,
+   "covered_elsewhere": []
+  },
+  {
+   "id": "cli:ivg connect",
+   "kind": "cli",
+   "kinds": [
+    "cli"
+   ],
+   "name": "connect",
+   "qual": "connect",
+   "source": "iris_vector_graph/cli.py:140-148",
+   "file": "iris_vector_graph/cli.py",
+   "start": 140,
+   "end": 148,
+   "public": true,
+   "module": "03",
+   "via": [
+    "/health"
+   ],
+   "covered_by": [],
+   "covered_by_count": 0,
+   "covered_elsewhere": []
+  }
+ ],
+ "omissions": [
+  {
+   "id": "py:IRISGraphEngine.count_nodes",
+   "kind": "python-api",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:733-758",
+   "covered_elsewhere": [
+    "GID-T3.9 (cites iris_vector_graph/_engine/nodes_edges.py:747-747)"
+   ]
+  },
+  {
+   "id": "py:IRISGraphEngine.get_node_ids_by_label",
+   "kind": "python-api",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:760-777",
+   "covered_elsewhere": [
+    "GID-Q6.11 (cites iris_vector_graph/_engine/nodes_edges.py:760-794)"
+   ]
+  },
+  {
+   "id": "py:IRISGraphEngine.get_node_ids_by_property",
+   "kind": "python-api",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:801-831",
+   "covered_elsewhere": []
+  },
+  {
+   "id": "py:IRISGraphEngine.get_property_pairs",
+   "kind": "python-api",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:846-860",
+   "covered_elsewhere": []
+  },
+  {
+   "id": "py:IRISGraphEngine.get_property_values",
+   "kind": "python-api",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:862-877",
+   "covered_elsewhere": []
+  },
+  {
+   "id": "py:IRISGraphEngine.property_value_exists",
+   "kind": "python-api",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:879-890",
+   "covered_elsewhere": []
+  },
+  {
+   "id": "py:IRISGraphEngine.get_property_pairs_like",
+   "kind": "python-api",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:892-914",
+   "covered_elsewhere": []
+  },
+  {
+   "id": "py:IRISGraphEngine.get_json_field_values",
+   "kind": "python-api",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:916-930",
+   "covered_elsewhere": []
+  },
+  {
+   "id": "py:IRISGraphEngine.get_node_ids_like",
+   "kind": "python-api",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:932-944",
+   "covered_elsewhere": []
+  },
+  {
+   "id": "py:IRISGraphEngine.count_subjects_with_property",
+   "kind": "python-api",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:946-966",
+   "covered_elsewhere": []
+  },
+  {
+   "id": "py:IRISGraphEngine.list_graphs",
+   "kind": "python-api",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:1458-1471",
+   "covered_elsewhere": [
+    "GID-B1.6 (cites iris_vector_graph/_engine/nodes_edges.py:1458-1471)"
+   ]
+  },
+  {
+   "id": "py:IRISGraphEngine.erase_all",
+   "kind": "python-api",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:1565-1586",
+   "covered_elsewhere": [
+    "INS-T1.23 (cites callee unwrap_connection (iris_vector_graph/schema_name.py:404-452))",
+    "GID-B4.6 (cites callee cls:Graph.KG.Eraser.EraseAll (iris_src/src/Graph/KG/Eraser.cls:807-807))",
+    "ADJ-B1.7 (cites callee cls:Graph.KG.Adjacency.RemoveAll (iris_src/src/Graph/KG/Adjacency.cls:466-468))",
+    "TMP-D3 (cites callee cls:Graph.KG.TemporalIndex.EraseAll (iris_src/src/Graph/KG/TemporalIndex.cls:362-391))"
+   ]
+  },
+  {
+   "id": "py:IRISGraphEngine.get_node_name",
+   "kind": "python-api",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:2351-2354",
+   "covered_elsewhere": [
+    "GID-I1.7 (cites callee NodesEdgesMixin.get_nodes (iris_vector_graph/_engine/nodes_edges.py:654-669))"
+   ]
+  },
+  {
+   "id": "py:IRISGraphEngine.node_count",
+   "kind": "python-api",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:2362-2372",
+   "covered_elsewhere": [
+    "GID-I1.7 (cites callee NodesEdgesMixin._count_in_graph (iris_vector_graph/_engine/nodes_edges.py:2382-2391))"
+   ]
+  },
+  {
+   "id": "py:IRISGraphEngine.edge_count",
+   "kind": "python-api",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:2374-2380",
+   "covered_elsewhere": [
+    "GID-I1.7 (cites callee NodesEdgesMixin._count_in_graph (iris_vector_graph/_engine/nodes_edges.py:2382-2391))"
+   ]
+  },
+  {
+   "id": "py:IRISGraphEngine.nodes_exist",
+   "kind": "python-api",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:2590-2625",
+   "covered_elsewhere": []
+  },
+  {
+   "id": "py:iris_vector_graph._write_txn.is_duplicate",
+   "kind": "python-api",
+   "source": "iris_vector_graph/_write_txn.py:46-49",
+   "covered_elsewhere": []
+  },
+  {
+   "id": "py:iris_vector_graph._write_txn.WriteTxn.__init__",
+   "kind": "python-api(constructor)",
+   "source": "iris_vector_graph/_write_txn.py:110-121",
+   "covered_elsewhere": []
+  },
+  {
+   "id": "py:iris_vector_graph._write_txn.WriteTxn.native",
+   "kind": "python-api",
+   "source": "iris_vector_graph/_write_txn.py:147-160",
+   "covered_elsewhere": [
+    "INS-T1.23 (cites callee unwrap_connection (iris_vector_graph/schema_name.py:404-452))"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph._write_txn.write_txn",
+   "kind": "python-api",
+   "source": "iris_vector_graph/_write_txn.py:275-277",
+   "covered_elsewhere": [
+    "VEC-B1.17 (names write_txn)"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph.bulk_loader.main",
+   "kind": "python-api",
+   "source": "iris_vector_graph/bulk_loader.py:654-710",
+   "covered_elsewhere": []
+  },
+  {
+   "id": "py:iris_vector_graph.prop_values.number_spellings",
+   "kind": "python-api",
+   "source": "iris_vector_graph/prop_values.py:171-186",
+   "covered_elsewhere": []
+  },
+  {
+   "id": "py:iris_vector_graph.prop_values.decode_typed_text",
+   "kind": "python-api",
+   "source": "iris_vector_graph/prop_values.py:204-231",
+   "covered_elsewhere": []
+  },
+  {
+   "id": "py:iris_vector_graph.prop_values.decode_json_value",
+   "kind": "python-api",
+   "source": "iris_vector_graph/prop_values.py:251-258",
+   "covered_elsewhere": []
+  },
+  {
+   "id": "py:iris_vector_graph._dictionary.sql_refused",
+   "kind": "python-api",
+   "source": "iris_vector_graph/_dictionary.py:31-34",
+   "covered_elsewhere": []
+  },
+  {
+   "id": "py:iris_vector_graph.engine.IRISGraphEngine.from_wrapper",
+   "kind": "python-api",
+   "source": "iris_vector_graph/engine.py:517-557",
+   "covered_elsewhere": []
+  },
+  {
+   "id": "cls:Graph.KG.LabelIndex.SortBeginIndex",
+   "kind": "native(functional-index-callback)",
+   "source": "iris_src/src/Graph/KG/LabelIndex.cls:35-38",
+   "covered_elsewhere": []
+  },
+  {
+   "id": "cls:Graph.KG.LabelIndex.SortEndIndex",
+   "kind": "native(functional-index-callback)",
+   "source": "iris_src/src/Graph/KG/LabelIndex.cls:40-43",
+   "covered_elsewhere": []
+  },
+  {
+   "id": "rest:GET /health",
+   "kind": "rest",
+   "source": "api/main.py:101-113",
+   "covered_elsewhere": []
+  },
+  {
+   "id": "cli:ivg connect",
+   "kind": "cli",
+   "source": "iris_vector_graph/cli.py:140-148",
+   "covered_elsewhere": []
+  }
+ ],
+ "not_counted_as_omissions": {},
+ "cells_without_entry_point": [
+  {
+   "entity": "edge in one graph",
+   "state": "marked",
+   "command": "delete edge",
+   "outcome": "open",
+   "statements": [],
+   "decision": "HD-0302",
+   "entry_points": [],
+   "entry_point_count": 0,
+   "ontology_line": 225,
+   "statements_cite": [],
+   "cited_code_outside_module": []
+  },
+  {
+   "entity": "ledger state",
+   "state": "strict",
+   "command": "bulk loader",
+   "outcome": "open",
+   "statements": [],
+   "decision": "HD-0301",
+   "entry_points": [],
+   "entry_point_count": 0,
+   "ontology_line": 246,
+   "statements_cite": [],
+   "cited_code_outside_module": []
+  }
+ ],
+ "excluded_by_scope": [
+  {
+   "name": "NodesEdgesMixin.backfill_2hop_exact",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:517-530",
+   "reason": "04 Scope: derived two-hop counts (TraversalBuild) are module ADJ"
+  },
+  {
+   "name": "NodesEdgesMixin.erase_graph",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:1473-1527",
+   "reason": "03 Scope: owned by the erasure module"
+  },
+  {
+   "name": "NodesEdgesMixin.delete_nodes_by_prefix",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:1529-1563",
+   "reason": "03 Scope: owned by the erasure module"
+  },
+  {
+   "name": "NodesEdgesMixin.drop_graph",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:1588-1595",
+   "reason": "03 Scope: owned by the erasure module"
+  },
+  {
+   "name": "NodesEdgesMixin.bulk_delete_adjacency",
+   "source": "iris_vector_graph/_engine/nodes_edges.py:2301-2339",
+   "reason": "04 Scope names it (04-adjacency.md:12)"
+  }
+ ]
+}

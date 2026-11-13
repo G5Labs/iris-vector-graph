@@ -1,0 +1,435 @@
+{
+ "module": "01",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "lane": "breadth-a",
+ "generated_by": "experiment/playbook-completion/live/breadth-a/make_audit.py",
+ "source_findings": "experiment/playbook-uplift/findings/01.md",
+ "original_count": 10,
+ "new_count": 1,
+ "dispositions": {
+  "confirmed-source": 7,
+  "reproduced-live": 3,
+  "reproduced-test": 1
+ },
+ "findings": [
+  {
+   "id": "F-0101",
+   "title": "Legacy removal reports objects removed that may still be there",
+   "intended": "`removed` is whether the object was dropped (specs/262-ivg-owned-sql-schema/data-model.md:50-60).",
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Set `removed` from _drop's result for views and from the class delete's result for every item of that class; a unit case where DROP VIEW raises.",
+   "gates": [
+    "3.5-decoders",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "probe",
+     "ref": "breadth-a-probe-local-0101-0601"
+    },
+    {
+     "kind": "mc",
+     "ref": "breadth-a-mc-ins_legacy-as-built"
+    },
+    {
+     "kind": "control",
+     "ref": "breadth-a-control-ins_legacy"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/legacy.py:666-698"
+    }
+   ],
+   "notes": "Reproduced by running the pin's remove_legacy_objects against a fake connection whose DROP VIEW and class delete fail (no IRIS: a 4.5.x legacy object set cannot be produced in AUDITA without installing objects). Model ins_legacy (INS-I7.6) violates as built and passes reviewed.",
+   "module": "01",
+   "observed": {
+    "probe": "local_f0101",
+    "verdict": "view and second SqlProc item reported removed although every drop/delete failed",
+    "oracle": "removed is True only for an object that was dropped or deleted",
+    "values": {
+     "every_drop_and_delete_failed": true,
+     "removed": [
+      [
+       "view",
+       "User.kgoldview",
+       true
+      ],
+      [
+       "procedure",
+       "User.CypherFn",
+       false
+      ],
+      [
+       "procedure",
+       "User.CypherFn",
+       true
+      ]
+     ]
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/local_f0101.json",
+    "log": "$RUN_DIR/breadth-a/live/local-20261113T225331.log",
+    "source": "remove_legacy_objects sets removed=True after DROP VIEW without reading _drop's result and for every later item of a class once the class was handled (iris_vector_graph/_engine/legacy.py:666-686)."
+   },
+   "disposition": "reproduced-test"
+  },
+  {
+   "id": "F-0102",
+   "title": "Some setup failures are only logged, not put in the reply's warnings",
+   "intended": "ADMIN_GUIDE (docs/ADMIN_GUIDE.md:428): `warnings` lists what you must act on, each also logged at WARNING.",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Append each of these to status['warnings']; a unit test that makes one CREATE TABLE fail with a non-tolerated error.",
+   "gates": [
+    "3.5-decoders",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/schema.py:2506-2511"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/schema.py:1664-1671"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/schema.py:2680-2681"
+    },
+    {
+     "kind": "mc",
+     "ref": "breadth-a-mc-ins_setup-as-built"
+    }
+   ],
+   "notes": "Not provoked live: making a CREATE TABLE fail in AUDITA needs a privilege or catalog change on the shared container (forbidden). Model ins_setup check ins_setup-as-built-F0102 (INS-B1.12) violates as built.",
+   "module": "01",
+   "observed": "A base DDL failure other than already-exists/privilege is a log line (iris_vector_graph/_engine/schema.py:2506-2511); a failed ALTER ... emb VECTOR goes to report['failed'] and a log line (1666-1671); a failed ^KG bootstrap is a log line (2680-2681). Re-read at the pin.",
+   "disposition": "confirmed-source"
+  },
+  {
+   "id": "F-0103",
+   "title": "The first-use check accepts a namespace with no schema record",
+   "intended": "Spec 262 FR-006a (specs/262-ivg-owned-sql-schema/spec.md:245): refuse when the namespace has no schema record or lacks the 4.6.0 objects; HD-0101 (supported) separates an unreadable record (warn) from a readable mismatch (refuse).",
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Refuse when no record exists whatever the marker says (setup exempt), or amend FR-006a and the ADMIN_GUIDE to say the marker alone is accepted.",
+   "gates": [
+    "3.3-model-check",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-01-install"
+    },
+    {
+     "kind": "mc",
+     "ref": "breadth-a-mc-ins_setup-as-built"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/schema_name.py:220-235"
+    }
+   ],
+   "notes": "docs/KNOWN_ISSUES.md:787-809 accepts the behaviour; the spec and the known issue conflict (S3).",
+   "module": "01",
+   "observed": {
+    "probe": "p0103_no_record_marker_accepted",
+    "verdict": "accepted with no record (marker class present)",
+    "oracle": "FR-006a: an engine refuses a namespace with no schema record (setup exempt)",
+    "values": {
+     "check_first_access": "accepted",
+     "record_before": [
+      "Graph_KG",
+      "2026-11-13 22:24:04 UTC 4.7.0"
+     ],
+     "record_during": "None",
+     "record_restored": [
+      "Graph_KG",
+      "2026-11-13 22:24:04 UTC 4.7.0"
+     ]
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0103_no_record_marker_accepted.json",
+    "log": "$RUN_DIR/breadth-a/live/01-p0103_no_record_marker_accepted-p0106_property_keys_cross_graph-p0107_unqualified_drop_index-20261113T232555.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-0104",
+   "title": "Spec 240 says its design was not adopted, but it ships",
+   "intended": "A spec's status line describes the shipped code.",
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Update the spec status or remove the module.",
+   "gates": [
+    "3.1-coverage",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "specs/240-alt-migration-as-data/spec.md:6"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/migrations/docs_and_edge_vectors.py:53"
+    }
+   ],
+   "notes": "",
+   "module": "01",
+   "observed": "specs/240-alt-migration-as-data/spec.md:6 'Status: Exploratory (alternative implementation; not adopted)'; iris_vector_graph/migrations/docs_and_edge_vectors.py:53 imports iris_vector_graph.migrations.statements.",
+   "disposition": "confirmed-source"
+  },
+  {
+   "id": "F-0105",
+   "title": "The SQL files under sql/ describe an old schema and put objects outside the IVG Schema",
+   "intended": "Spec 262 FR-001/FR-002 (spec.md:231-233): IVG creates nothing outside the IVG Schema; HD-0103 (assumption): packaged SQL loaded by the legacy deployer is reachable.",
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Per HD-0103: bring the legacy deployer to parity or retire it; mark the historical files.",
+   "gates": [
+    "3.1-coverage",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "sql/schema.sql:4-7"
+    },
+    {
+     "kind": "inspected",
+     "ref": "scripts/deploy_production.py:63-66"
+    }
+   ],
+   "notes": "Not run: executing the legacy deployer would create objects outside the IVG Schema in a shared container.",
+   "module": "01",
+   "observed": "sql/schema.sql:4-7 creates Graph_KG.nodes keyed by node_id alone; scripts/deploy_production.py:65 still runs sql/schema.sql and sql/operators_fixed.sql.",
+   "disposition": "confirmed-source"
+  },
+  {
+   "id": "F-0106",
+   "title": "Property keys of a label mix graphs",
+   "intended": "CONTEXT.md:38-43 / SYS-I2: an all-graphs read is the union of each graph's own answer; content of one graph never answers about another.",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Join rdf_labels to rdf_props on (graph_id, s); a test with one id in two graphs.",
+   "gates": [
+    "3.4-declared-reads",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-01-install"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/schema.py:500-515"
+    }
+   ],
+   "notes": "The docstring now says 'Not graph-scoped'; the join by id alone still lists a key no node with the label holds.",
+   "module": "01",
+   "observed": {
+    "probe": "p0106_property_keys_cross_graph",
+    "verdict": "graph B's key listed under graph A's label",
+    "oracle": "every key listed for label L is held by a node with L in its own graph",
+    "values": {
+     "get_property_keys": [
+      "baonlyB232555",
+      "id",
+      "own"
+     ]
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0106_property_keys_cross_graph.json",
+    "log": "$RUN_DIR/breadth-a/live/01-p0103_no_record_marker_accepted-p0106_property_keys_cross_graph-p0107_unqualified_drop_index-20261113T232555.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-0107",
+   "title": "Every setup runs an unqualified DROP INDEX",
+   "intended": "Spec 262 FR-007 (spec.md:246-248): IVG's SQL names only IVG Schema objects, fully qualified.",
+   "severity": "S3",
+   "confidence": "medium",
+   "remedy": "Qualify it (DROP INDEX idx_props_key_val ON <schema>.rdf_props) or drop the step.",
+   "gates": [
+    "3.4-ownership",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/schema.py:655-658"
+    },
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-01-install"
+    }
+   ],
+   "notes": "The live observation lists every index of that name in AUDITA and the process's default schema; whether IRIS would drop an application's SQLUser index of that name was not tried (it would need a SQLUser object).",
+   "module": "01",
+   "observed": {
+    "probe": "p0107_unqualified_drop_index",
+    "verdict": "observation",
+    "oracle": "spec 262 FR-007: IVG's SQL names only fully qualified objects in the IVG Schema",
+    "values": {
+     "default_schema": "SQLUser",
+     "indexes_named_idx_props_key_val": []
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0107_unqualified_drop_index.json",
+    "log": "$RUN_DIR/breadth-a/live/01-p0103_no_record_marker_accepted-p0106_property_keys_cross_graph-p0107_unqualified_drop_index-20261113T232555.log",
+    "source": "iris_vector_graph/schema.py:657 ('DROP INDEX idx_props_key_val') in ensure_indexes; no schema token, so the SchemaCursor rewrite leaves it unqualified.",
+    "note": "the probe did not decide (crashed or observation only)"
+   },
+   "disposition": "confirmed-source"
+  },
+  {
+   "id": "F-0108",
+   "title": "The upstream test deploy does not follow setup's skip rules",
+   "intended": "docs/ADMIN_GUIDE.md:353: IRIS Community is supported; initialize_schema skips classes whose %AI dependencies are absent.",
+   "severity": "S4",
+   "confidence": "high",
+   "remedy": "Have the fixture call initialize_schema() or apply select_classes; a CI job on Community.",
+   "gates": [
+    "3.7-mutation",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "tests/conftest.py:215-262"
+    },
+    {
+     "kind": "live",
+     "ref": "$RUN_DIR/setup/deploy-AUDITA.json"
+    }
+   ],
+   "notes": "Test-infrastructure finding; the completion audit uses the pin's initialize_schema for deployment.",
+   "module": "01",
+   "observed": "tests/conftest.py:215-262 compiles every class under iris_src/src and raises on any failure; setup skipped Graph.KG.MCPService/MCPToolSet/MCPTools in AUDITA ($RUN_DIR/setup/deploy-AUDITA.json).",
+   "disposition": "confirmed-source"
+  },
+  {
+   "id": "F-0109",
+   "title": "The 4.0.0 upgrade does not follow the namespace's schema",
+   "intended": "ADR-0016 (docs/adr/0016-one-ivg-schema-per-namespace.md:10-12): the schema name chosen at install is followed by everything.",
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Read the record (refuse a mismatch) or document Graph_KG-only.",
+   "gates": [
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/migrations/upgrade.py:55-59"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/migrations/upgrade.py:138-141"
+    }
+   ],
+   "notes": "A live upgrade needs a 3.x fixture namespace; not available (blocked-access for a live run: the orchestrator owns namespaces).",
+   "module": "01",
+   "observed": "iris_vector_graph/migrations/upgrade.py:58 DEFAULT_SCHEMA = 'Graph_KG' and :140 schema default; ^IVG.Deploy('schema') is never read.",
+   "disposition": "confirmed-source"
+  },
+  {
+   "id": "F-0110",
+   "title": "ADR-0016 lags the shipped design",
+   "intended": "A decision record states the shipped mechanism and API names.",
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Amend the ADR's status and consequences.",
+   "gates": [
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "docs/adr/0016-one-ivg-schema-per-namespace.md:5"
+    },
+    {
+     "kind": "inspected",
+     "ref": "docs/adr/0016-one-ivg-schema-per-namespace.md:26"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/admin.py:378"
+    }
+   ],
+   "notes": "",
+   "module": "01",
+   "observed": "docs/adr/0016-one-ivg-schema-per-namespace.md:5 'implementation pending: spec 262'; :26 names remove_legacy_sql_objects while the method is remove_legacy_objects (iris_vector_graph/_engine/admin.py:378).",
+   "disposition": "confirmed-source"
+  },
+  {
+   "id": "F-C0101",
+   "title": "An inline relationship property in a Cypher pattern fails on an edge with no properties",
+   "intended": "openCypher: MATCH (x)-[r:R {k: 0}]->(y) and MATCH (x)-[r:R]->(y) WHERE r.k = 0 are equivalent; a missing property makes the filter false, not an error. create_edge's docstring: omitted properties leave the property null.",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Guard Graph_KG.JSON_VALUE against an empty/NULL document (as CY_REL_PROP does), or emit the guarded function in _merge_prop_preds; a Cypher test over an edge written by create_edge without properties.",
+   "gates": [
+    "3.4-statements",
+    "3.5-decoders",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-02-mode-off"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/schema.py:2185"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher/translator.py:11197-11216"
+    }
+   ],
+   "notes": "New. Graph_KG.JSON_VALUE (DDL at iris_vector_graph/schema.py:2185, created by setup: module 01) calls %FromJSON on NULL and then %Get on a non-object: <INVALID OREF>, SQLCODE -149. Inline MATCH and inline DELETE fail; the WHERE form answers []. Any edge written without properties (create_edge, store_edge, bulk paths) is a trigger. The Cypher translation belongs to module 08; reported here because the failing object is setup's DDL.",
+   "module": "01",
+   "observed": {
+    "probe": "pC0101_inline_rel_prop_null_qualifiers",
+    "verdict": "inline form raises SQLCODE -149 on NULL qualifiers",
+    "oracle": "an inline relationship property filter answers like the equivalent WHERE filter",
+    "values": {
+     "cypher": {
+      "inline_delete": [
+       "error",
+       "tion encountered an error>]\r\n[Location: <ServerLoop>]\r\n[%msg: <SQL Function GRAPH_KG.JSON_VALUE failed with error:  SQLCODE=-400,%msg=ERROR #5002: ObjectScript error: <INVALID OREF>zJSONVALUE+1^Graph.KG.funcJSONVALUE.1>]"
+      ],
+      "inline_form": [
+       "error",
+       "ed an error>]\r\n[Location: <ServerLoop - Query Fetch>]\r\n[%msg: <SQL Function GRAPH_KG.JSON_VALUE failed with error:  SQLCODE=-400,%msg=ERROR #5002: ObjectScript error: <INVALID OREF>zJSONVALUE+1^Graph.KG.funcJSONVALUE.1>]"
+      ],
+      "merge_inline": [
+       "ok",
+       [
+        [
+         1
+        ]
+       ]
+      ],
+      "where_form": [
+       "ok",
+       []
+      ]
+     },
+     "json_value_null": "ion: <ServerLoop - Query Open()>]\r\n[%msg: <SQL Function GRAPH_KG.JSON_VALUE failed with error:  SQLCODE=-400,%msg=ERROR #5002: ObjectScript error: <INVALID OREF>zJSONVALUE+1^Graph.KG.funcJSONVALUE.1>]",
+     "qualifiers": [
+      [
+       null
+      ]
+     ]
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/pC0101_inline_rel_prop_null_qualifiers.json",
+    "log": "$RUN_DIR/breadth-a/live/02-p0201_mode_off_lone_ekey1-pC0101_inline_rel_prop_null_qualifiers-20261113T224152.log"
+   },
+   "disposition": "reproduced-live"
+  }
+ ]
+}

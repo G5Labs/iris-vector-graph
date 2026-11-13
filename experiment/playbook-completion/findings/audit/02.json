@@ -1,0 +1,394 @@
+{
+ "module": "02",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "lane": "breadth-a",
+ "generated_by": "experiment/playbook-completion/live/breadth-a/make_audit.py",
+ "source_findings": "experiment/playbook-uplift/findings/02.md",
+ "original_count": 9,
+ "new_count": 0,
+ "dispositions": {
+  "confirmed-source": 2,
+  "reproduced-live": 6,
+  "reproduced-model": 1
+ },
+ "findings": [
+  {
+   "id": "F-0201",
+   "title": "A graph whose mode is off can hold two edges of one triple",
+   "intended": "Spec 234 FR-002: with the mode off a triple never gets a second edge; GID-I4.10.",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Guard the single-edge writers on the triple whatever its ekey, or refuse mode off while an edge has a non-zero ekey (or renumber the lone edge to 0).",
+   "gates": [
+    "3.3-model-check",
+    "3.3a-writesets",
+    "3.6-keys",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-02-mode-off"
+    },
+    {
+     "kind": "mc",
+     "ref": "breadth-a-mc-gid_mode-as-built"
+    },
+    {
+     "kind": "mc",
+     "ref": "breadth-a-mc-gid_mode-reviewed"
+    },
+    {
+     "kind": "control",
+     "ref": "breadth-a-control-gid_mode"
+    }
+   ],
+   "notes": "Impact reproduced too: after a per-edge delete of the ekey-1 row the surviving ekey-0 row has no ^KG out leaf and verify_graph reports 1 missing out and 1 missing in entry.",
+   "module": "02",
+   "observed": {
+    "probe": "p0201_mode_off_lone_ekey1",
+    "verdict": "two rows of one triple in a mode-off graph",
+    "oracle": "mode off => at most one row per triple (spec 234 FR-002)",
+    "values": {
+     "adjacency_out_leaf_defined": 0,
+     "create_edge_returned": true,
+     "is_multi_server": "0",
+     "mode_off_accepted": true,
+     "rows_after_create_edge": [
+      0,
+      1
+     ],
+     "rows_after_delete_k0": [
+      1
+     ],
+     "rows_after_delete_k1": [
+      0
+     ],
+     "verify_graph_drift": [
+      {
+       "count": 1,
+       "detail": "rows in Graph_KG.rdf_edges with no ^KG(\"out\") entry, so traversal cannot see them",
+       "kind": "missing",
+       "store": "^KG(\"out\")"
+      },
+      {
+       "count": 1,
+       "detail": "rows with no ^KG(\"in\") entry, so inbound traversal cannot see them",
+       "kind": "missing",
+       "store": "^KG(\"in\")"
+      }
+     ],
+     "verify_graph_ok": 0
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0201_mode_off_lone_ekey1.json",
+    "log": "$RUN_DIR/breadth-a/live/02-p0201_mode_off_lone_ekey1-pC0101_inline_rel_prop_null_qualifiers-20261113T224152.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-0202",
+   "title": "The name check is not run at every entry that takes a graph name",
+   "intended": "ADR-0003 (docs/adr/0003-two-graph-key-derivations.md:119-121): the validator rejects the name '0'.",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Call validate_graph_name at every entry (create_node, store_node, store_edge, bulk paths, BulkLoader, USE GRAPH) and write the canonical name.",
+   "gates": [
+    "3.5-decoders",
+    "5c-refusals",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-02-identity"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/nodes_edges.py:968-1015"
+    }
+   ],
+   "notes": "create_node and store_node wrote rows under graph '0'; node_count and delete_node then refuse the name (the rows cannot be read or removed through the API that wrote them); store_edge into '0' fails late with the server's ERROR #5001 inside a SQLCODE -400.",
+   "module": "02",
+   "observed": {
+    "probe": "p0202_reserved_name_writers",
+    "verdict": "2 node rows written under the reserved graph name 0",
+    "oracle": "every writer that takes a graph name refuses the reserved name \"0\" (ADR-0003:119-121)",
+    "values": {
+     "cleanup_rows_left": 0,
+     "create_node_graph0": true,
+     "delete_node_graph0": "ValueError: graph name \"0\" is reserved: IRIS canonicalizes the subscript \"0\" to the integer 0 that keys the default graph",
+     "node_count_graph0": "ValueError: graph name \"0\" is reserved: IRIS canonicalizes the subscript \"0\" to the integer 0 that keys the default graph",
+     "rows_in_graph_0": [
+      [
+       "ban0224011"
+      ],
+      [
+       "ban0224011s"
+      ]
+     ],
+     "store_edge_graph0": "GraphWriteError: store_edge failed (SQLCODE -400), nothing written: <SQL ERROR>; Details: [SQLCODE: <-400>:<Fatal error occurred>]\r\n[Location: <ServerLoop>]\r\n[%msg: <ERROR #5001: graph name \"0\" is reserved: IRIS canonicalizes the subscript \"0\" to the integer 0 that keys the default graph>]",
+     "store_node_graph0": true
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0202_reserved_name_writers.json",
+    "log": "$RUN_DIR/breadth-a/live/02-all-20261113T224011.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-0203",
+   "title": "The Python name check refuses fewer control characters than the server check",
+   "intended": "CHANGELOG.md:4618-4620: the Python mirror exists to refuse what the server refuses, before the round trip.",
+   "severity": "S4",
+   "confidence": "high",
+   "remedy": "Refuse unicodedata category Cc (0-31, 127-159) in _validate.validate_graph_name.",
+   "gates": [
+    "5c-refusals",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-02-identity"
+    }
+   ],
+   "notes": "Also settles premise P-0202 live: $ZStrip(,'*C') covers U+0085.",
+   "module": "02",
+   "observed": {
+    "probe": "p0203_c1_control_char",
+    "verdict": "Python accepts, server refuses",
+    "oracle": "the Python mirror refuses every name the server refuses (CHANGELOG.md:4618-4620)",
+    "values": {
+     "create_edge": "GraphWriteError: create_edge failed (SQLCODE -400), nothing written: <SQL ERROR>; Details: [SQLCODE: <-400>:<Fatal error occurred>]\r\n[Location: <ServerLoop>]\r\n[%msg: <ERROR #5001: graph name contains a control character, which cannot be used as a subscript>]",
+     "python_validate": "'ba\\x85bac1224011'",
+     "rows_left_in_c1_graph": 0,
+     "server_validate_error_text": "ERROR #5001: graph name contains a control character, which cannot be used as a subscript"
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0203_c1_control_char.json",
+    "log": "$RUN_DIR/breadth-a/live/02-all-20261113T224011.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-0204",
+   "title": "The graph check reports a multigraph's parallel edges as missing adjacency",
+   "intended": "Spec 234 SC-005: zero drift on a multigraph after random creates and deletes.",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Compare rows per (s,p,o) with the keyed '#' count.",
+   "gates": [
+    "3.5-decoders",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-02-identity"
+    }
+   ],
+   "notes": "Same defect as F-0403. Three parallel edges, keyed count 3: verify reports ok 0 with 2 missing out and in entries.",
+   "module": "02",
+   "observed": {
+    "probe": "p0204_verify_parallel",
+    "verdict": "false drift on parallel edges",
+    "oracle": "verify_graph(g)['ok'] is true for a multigraph whose index matches its rows",
+    "values": {
+     "keyed_count": "3",
+     "rows": [
+      0,
+      1,
+      2
+     ],
+     "verify": {
+      "counts": {
+       "cacheEntries": 0,
+       "inEdges": 1,
+       "outEdges": 1,
+       "sqlEdges": 3
+      },
+      "drift": [
+       {
+        "count": 2,
+        "detail": "rows in Graph_KG.rdf_edges with no ^KG(\"out\") entry, so traversal cannot see them",
+        "kind": "missing",
+        "store": "^KG(\"out\")"
+       },
+       {
+        "count": 2,
+        "detail": "rows with no ^KG(\"in\") entry, so inbound traversal cannot see them",
+        "kind": "missing",
+        "store": "^KG(\"in\")"
+       }
+      ],
+      "ok": 0
+     }
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0204_verify_parallel.json",
+    "log": "$RUN_DIR/breadth-a/live/02-all-20261113T224011.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-0205",
+   "title": "Direct edge writes, the ledger and Bolt do not track parallel edges, and the user docs do not say so",
+   "intended": "Spec 234 FR-007/FR-012/FR-013 (edge_id identity, ambiguous_tuple refusal); its status line says US4 not done.",
+   "severity": "S2",
+   "confidence": "medium",
+   "remedy": "Implement FR-007/012/013 or document each limit.",
+   "gates": [
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/bolt_server.py:770"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/LedgerApply.cls:144-157"
+    }
+   ],
+   "notes": "Not reproduced live (Bolt server not started in the audit; ledger-on-multigraph left to the ledger lane).",
+   "module": "02",
+   "observed": "Bolt gives a relationship id hash(f'{s}-{type}-{o}') (iris_vector_graph/bolt_server.py:770); LedgerApply.FindEdge takes the first row of the triple (iris_src/src/Graph/KG/LedgerApply.cls:144-157). Re-read at the pin.",
+   "disposition": "confirmed-source"
+  },
+  {
+   "id": "F-0206",
+   "title": "Some Python readers join one graph's ids with another graph's data",
+   "intended": "USER_GUIDE.md:466-467 (graph= omitted means the default graph); HD-0201 (assumption): no join of ids from one scope to records of another.",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Hydrate each id from its own graph; give _filter_edges_by_properties and set_edge_weight a graph.",
+   "gates": [
+    "3.4-declared-reads",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-02-identity"
+    }
+   ],
+   "notes": "get_nodes_by_label(L) answered the default graph's node (labels ['Other']) for an id labelled L only in a named graph.",
+   "module": "02",
+   "observed": {
+    "probe": "p0206_cross_graph_hydration",
+    "verdict": "answered the default graph's node, which lacks the label",
+    "oracle": "every node answered for label L holds L (and its properties) in its own graph",
+    "values": {
+     "get_nodes_by_label": [
+      {
+       "id": "baid224011",
+       "labels": [
+        "Other"
+       ],
+       "p_id": "baid224011",
+       "where": "default"
+      }
+     ]
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0206_cross_graph_hydration.json",
+    "log": "$RUN_DIR/breadth-a/live/02-all-20261113T224011.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-0207",
+   "title": "Turning the mode off races a write that adds a parallel edge",
+   "intended": "Spec 234 FR-002 (the refusal exists to keep a mode-off graph single-edge).",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Hold a lock the multigraph writers also take across the count and the kill.",
+   "gates": [
+    "3.3-model-check",
+    "3.5-lockplans",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "mc",
+     "ref": "breadth-a-mc-gid_mode-as-built"
+    },
+    {
+     "kind": "mc",
+     "ref": "breadth-a-mc-gid_mode-reviewed"
+    },
+    {
+     "kind": "control",
+     "ref": "breadth-a-control-gid_mode"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/GraphMode.cls:26-61"
+    }
+   ],
+   "notes": "Check gid_mode-as-built-F0207 (GID-I4.10) gives the race trace; the reviewed design with the shared lock passes exhaustively; control gid_mode-control-writers-unlocked is caught. Not provoked live: the window lies inside one class method.",
+   "module": "02",
+   "observed": "GraphMode.Set counts parallel triples with one SQL query then kills the setting, no lock, no transaction (iris_src/src/Graph/KG/GraphMode.cls:26-45).",
+   "disposition": "reproduced-model"
+  },
+  {
+   "id": "F-0208",
+   "title": "An engine keeps a graph's mode forever, so another engine's change is not seen",
+   "intended": "Spec 234 FR-002; GID-I4.10.",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Read the mode per statement, expire the cache, or refuse a keyed insert server-side in a mode-off graph.",
+   "gates": [
+    "3.3-model-check",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-02-identity"
+    },
+    {
+     "kind": "mc",
+     "ref": "breadth-a-mc-gid_mode-as-built"
+    }
+   ],
+   "notes": "",
+   "module": "02",
+   "observed": {
+    "probe": "p0208_stale_mode_cache",
+    "verdict": "stale cache wrote a parallel edge into a mode-off graph",
+    "oracle": "mode off => at most one row per triple, whichever engine writes (spec 234 FR-002)",
+    "values": {
+     "e1_cached_after": true,
+     "e1_cached_multi": true,
+     "rows": [
+      0,
+      1
+     ],
+     "server_mode_after_e2_off": "0"
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0208_stale_mode_cache.json",
+    "log": "$RUN_DIR/breadth-a/live/02-all-20261113T224011.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-0209",
+   "title": "An all-graphs walk can miss graphs",
+   "intended": "An all-graphs read is the union over every graph (CONTEXT.md:38-43).",
+   "severity": "S4",
+   "confidence": "high",
+   "remedy": "List without a cap and raise on failure.",
+   "gates": [
+    "3.6-capacity",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/query.py:2408-2420"
+    }
+   ],
+   "notes": "Not run: needs 10,001 graphs with edges.",
+   "module": "02",
+   "observed": "_edge_graphs stops after 10,000 graphs and answers [] on any error (iris_vector_graph/_engine/query.py:2408-2420).",
+   "disposition": "confirmed-source"
+  }
+ ]
+}

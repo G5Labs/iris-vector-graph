@@ -66,8 +66,8 @@ _READ = r'''
    if isSK {{ set d=r.DatabaseName }}
    if (isSK && (dbs'="") && ((","_dbs_",")'[(","_d_","))) {{ set r=r.Next continue }}
    if isSK {{ set g=r.GlobalNode }}
-   if (isSK && (r.NumberOfValues>0)) {{ set n=$system.Encryption.Base64Encode(r.NewValue,1) }}
-   if isSK {{ try {{ set ov=r.OldValue if $data(ov)#2 {{ set o=$system.Encryption.Base64Encode(ov,1) }} }} catch {{ }} }}
+   if (isSK && (r.NumberOfValues>0)) {{ try {{ set n=$system.Encryption.Base64Encode(r.NewValue,1) }} catch {{ set n="*" }} }}
+   if isSK {{ try {{ set ov=r.OldValue if $data(ov)#2 {{ set o=$system.Encryption.Base64Encode(ov,1) }} }} catch {{ set o="*" }} }}
    write $char(30),"JRN|",r.Address,"|",r.TypeName,"|",r.ProcessID,"|",r.InTransaction,"|",d,"|",$zconvert(g,"O","JSON"),"|",n,"|",o,"|",r.TimeStamp,!
    set nrec=nrec+1, r=r.Next
   }}
@@ -97,8 +97,10 @@ def records_since(m: Mark, dbs: Optional[Iterable[str]] = None, pids: Optional[S
         _, a, t, p, x, d = parts[:6]
         n, o, ts = parts[-3:]
         g = "|".join(parts[6:-3])
+        # "*": a value base64 cannot carry (an IRIS $vector); the write is recorded, its value is not
         rec = {"a": int(a), "t": t, "p": p, "x": x == "1", "d": d,
-               "g": json.loads('"' + g + '"') if g else "", "n": n or None, "o": o or None, "ts": ts}
+               "g": json.loads('"' + g + '"') if g else "", "n": None if n in ("", "*") else n,
+               "o": None if o in ("", "*") else o, "ts": ts, "opaque": n == "*" or o == "*"}
         if pids is not None and rec["p"] not in pids:
             continue
         if not keep_system and rec["g"] and rec["g"].startswith(SYSTEM_GLOBAL_PREFIXES):

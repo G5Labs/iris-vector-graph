@@ -1,0 +1,445 @@
+{
+ "module": "05",
+ "name": "temporal",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "lane": "breadth-a",
+ "generated_by": "experiment/playbook-completion/live/breadth-a/make_modules.py",
+ "summary": {
+  "entry_points": 134,
+  "entry_points_by_kind": {
+   "classmethod": 71,
+   "classmethod(cited)": 4,
+   "python-api": 57,
+   "python-api(constructor)": 1,
+   "python-api(property)": 1
+  },
+  "omissions": 9,
+  "cells": 58,
+  "cells_without_entry_point": 4,
+  "footprints": 89,
+  "footprints_reviewed_by_hand": 5,
+  "footprints_journal_validated": 4,
+  "journal": {
+   "validated": 4,
+   "covered": 1,
+   "extraction_gaps": 3,
+   "harness_errors": 0,
+   "product_mismatches": 0
+  },
+  "model_families": [
+   "tmp_bucket",
+   "tmp_mark"
+  ],
+  "model_checks": 12,
+  "model_checks_met": 12,
+  "findings_original": 14,
+  "findings_new": 1,
+  "findings_by_disposition": {
+   "confirmed-source": [
+    "F-0506",
+    "F-0514"
+   ],
+   "reproduced-live": [
+    "F-0501",
+    "F-0502",
+    "F-0503",
+    "F-0504",
+    "F-0505",
+    "F-0507",
+    "F-0508",
+    "F-0509",
+    "F-0510",
+    "F-0511",
+    "F-0512",
+    "F-0513",
+    "F-C0501"
+   ]
+  },
+  "findings_by_severity": {
+   "S1": [
+    "F-0505"
+   ],
+   "S2": [
+    "F-0501",
+    "F-0502",
+    "F-0503",
+    "F-0504",
+    "F-0506",
+    "F-0507",
+    "F-0510",
+    "F-0514",
+    "F-C0501"
+   ],
+   "S3": [
+    "F-0508",
+    "F-0509",
+    "F-0511",
+    "F-0512",
+    "F-0513"
+   ]
+  },
+  "writeset_pairs": {
+   "mc": 30,
+   "finding": 0,
+   "open": 171
+  },
+  "registered_runs": [
+   "breadth-a-control-tmp_bucket",
+   "breadth-a-live-05-partial",
+   "breadth-a-live-05-purge",
+   "breadth-a-live-05-temporal",
+   "breadth-a-live-ledger",
+   "breadth-a-mc-tmp_bucket-as-built",
+   "breadth-a-mc-tmp_bucket-reviewed",
+   "breadth-a-mc-tmp_mark-as-built",
+   "breadth-a-mc-tmp_mark-reviewed"
+  ]
+ },
+ "gates_by_id": {
+  "3.1-cells": {
+   "status": "closed",
+   "evidence": [
+    "experiment/playbook-uplift/ontology/05-temporal.md",
+    "models/breadth-a/inventory/05.json#cells_without_entry_point"
+   ],
+   "remaining": "4 defined cells cite no entry point of this module (most cite code in another module); see the inventory",
+   "reason": "58 cells; 0 carry an open human decision"
+  },
+  "3.1-coverage": {
+   "status": "open",
+   "evidence": [
+    "models/breadth-a/inventory/05.json",
+    "models/breadth-a/tools/inventory.py"
+   ],
+   "remaining": "9 inventoried entry points no statement or cell covers (of 134); add statements or record them as helpers"
+  },
+  "3.1-intent": {
+   "status": "open",
+   "evidence": [
+    "experiment/playbook-completion/decisions.md"
+   ],
+   "remaining": "owned by the intent lanes; decisions.md records a working disposition for every HD of this module"
+  },
+  "3.2-coverage": {
+   "status": "open",
+   "evidence": [
+    "models/breadth-a/inventory/env-features-05.json"
+   ],
+   "remaining": "the orchestrator's IRIS environment contract must cover each env_feature; live premises settled here: P-0202 (F-0203), P-0307 (F-0306), P-0401 ($Increment journaled outside the transaction, J02/J13), P-0002 (dirty reads, F-0402)"
+  },
+  "3.3-L1": {
+   "status": "open",
+   "evidence": [
+    "models/breadth-a/src (tmp_bucket, tmp_mark)"
+   ],
+   "remaining": "explorer models state the module's key invariants (see RESULTS.json); no Verus L1"
+  },
+  "3.3-L2": {
+   "status": "open",
+   "evidence": [
+    "models/breadth-a/RESULTS.json"
+   ],
+   "remaining": "no L2 machine over the real data layout"
+  },
+  "3.3-refinement": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "no refinement evidence"
+  },
+  "3.3-controls": {
+   "status": "open",
+   "evidence": [
+    "models/breadth-a/RESULTS.json: tmp_mark-control-adopt-keeps-marker, tmp_bucket-control-bucket-counted"
+   ],
+   "remaining": "controls are explorer mutants (each caught), not proof-level rejections"
+  },
+  "3.3-model-check": {
+   "status": "closed",
+   "evidence": [
+    "models/breadth-a/RESULTS.json (12 checks, families tmp_bucket, tmp_mark)",
+    "breadth-a-mc-all"
+   ],
+   "reason": "as-built / reviewed / control / sharpness (and progress where it matters) per family, exhaustive within bounds; scope is each family's invariant and the operations its doc comment lists (other operations of the module are not modeled)"
+  },
+  "3.3a-writesets": {
+   "status": "failed",
+   "evidence": [
+    "models/breadth-a/writesets.json"
+   ],
+   "remaining": "as-built violations recorded as findings ['F-0501', 'F-0505', 'F-0507']; 171 (invariant, writer) pairs with no discharge; 30 discharged for the reviewed design by mc (the as-built pair is a finding)",
+   "reason": "pairs computed from footprints (declared + journal) against the model invariants' read sets"
+  },
+  "3.4-statements": {
+   "status": "open",
+   "evidence": [
+    "footprints/05.json#journal_validation"
+   ],
+   "remaining": "no statement proved against an IRIS model; journal validation compares write sets only"
+  },
+  "3.4-ownership": {
+   "status": "open",
+   "evidence": [
+    "footprints/05.json"
+   ],
+   "remaining": "no ownership self-test"
+  },
+  "3.4-storage-order": {
+   "status": "closed",
+   "evidence": [
+    "models/breadth-a/storage-order/05.json",
+    "$RUN_DIR/checks/storage-order.json"
+   ],
+   "reason": "no scan site; the temporal readers' truncations are collation-ordered pages that resume"
+  },
+  "3.4-declared-reads": {
+   "status": "open",
+   "evidence": [
+    "findings/audit/05.json"
+   ],
+   "remaining": "no declared-reads self-test"
+  },
+  "3.5-handlers": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "no handler proved"
+  },
+  "3.5-lockplans": {
+   "status": "open",
+   "evidence": [
+    "footprints/05.json (locks)",
+    "findings/audit/05.json"
+   ],
+   "remaining": "lock plans extracted (footprints) but not proved"
+  },
+  "3.5-decoders": {
+   "status": "failed",
+   "evidence": [
+    "findings/audit/05.json"
+   ],
+   "remaining": "decoder/status-map defects: ['F-0502', 'F-0508', 'F-0509', 'F-0510', 'F-0512']"
+  },
+  "3.6-frame": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "not done in this lane"
+  },
+  "3.6-row-permutation": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "not done in this lane"
+  },
+  "3.7-lock-log": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "not done in this lane"
+  },
+  "3.7-mutation": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "not done in this lane"
+  },
+  "3.6-keys": {
+   "status": "open",
+   "evidence": [
+    "findings/audit/05.json"
+   ],
+   "remaining": "not done"
+  },
+  "3.6-fk": {
+   "status": "open",
+   "evidence": [
+    "findings/audit/05.json"
+   ],
+   "remaining": "not done"
+  },
+  "3.6-capacity": {
+   "status": "failed",
+   "evidence": [
+    "findings/audit/05.json"
+   ],
+   "remaining": "['F-0514']"
+  },
+  "3.7-trace-replay": {
+   "status": "open",
+   "evidence": [
+    "footprints/05.json#journal_validation",
+    "breadth-a-journal-footprints"
+   ],
+   "remaining": "4 journal traces captured and compared with footprints; not replayed through the models"
+  },
+  "3.8-findings-disposed": {
+   "status": "closed",
+   "evidence": [
+    "findings/audit/05.json"
+   ],
+   "remaining": "observation-only: every original finding has an audited record; product obligations stay failed",
+   "reason": "dispositions {confirmed-source: 2, reproduced-live: 13}"
+  },
+  "5c-refusals": {
+   "status": "failed",
+   "evidence": [
+    "findings/audit/05.json"
+   ],
+   "remaining": "refusal defects ['F-0513', 'F-C0501']; X statements not audited mechanically"
+  }
+ },
+ "env_features": [
+  {
+   "feature": "$Increment (not undone by rollback, P-0401)",
+   "occurrences": 9,
+   "samples": [
+    "iris_src/src/Graph/KG/TemporalIndex.cls:102",
+    "iris_src/src/Graph/KG/TemporalIndex.cls:117",
+    "iris_src/src/Graph/KG/TemporalIndex.cls:118",
+    "iris_src/src/Graph/KG/TemporalIndex.cls:357",
+    "iris_src/src/Graph/KG/TemporalIndex.cls:422"
+   ]
+  },
+  {
+   "feature": "TSTART / TCOMMIT nesting",
+   "occurrences": 5,
+   "samples": [
+    "iris_src/src/Graph/KG/TemporalIndex.cls:1103",
+    "iris_src/src/Graph/KG/TemporalIndex.cls:1106",
+    "iris_src/src/Graph/KG/TemporalPolicy.cls:175",
+    "iris_src/src/Graph/KG/TemporalPolicy.cls:202",
+    "iris_src/src/Graph/KG/TemporalPolicy.cls:210"
+   ]
+  },
+  {
+   "feature": "TROLLBACK 1 (one level)",
+   "occurrences": 2,
+   "samples": [
+    "iris_src/src/Graph/KG/TemporalIndex.cls:1108",
+    "iris_src/src/Graph/KG/TemporalPolicy.cls:215"
+   ]
+  },
+  {
+   "feature": "$TLevel",
+   "occurrences": 4,
+   "samples": [
+    "iris_src/src/Graph/KG/TemporalIndex.cls:1101",
+    "iris_src/src/Graph/KG/TemporalIndex.cls:1108",
+    "iris_src/src/Graph/KG/TemporalPolicy.cls:173",
+    "iris_src/src/Graph/KG/TemporalPolicy.cls:215"
+   ]
+  },
+  {
+   "feature": "SQL transaction control from Python (commit/rollback/autocommit)",
+   "occurrences": 2,
+   "samples": [
+    "iris_vector_graph/_engine/temporal.py:322",
+    "iris_vector_graph/_engine/temporal.py:474"
+   ]
+  },
+  {
+   "feature": "Process-private globals (^||)",
+   "occurrences": 48,
+   "samples": [
+    "iris_src/src/Graph/KG/TemporalIndex.cls:947",
+    "iris_src/src/Graph/KG/TemporalIndex.cls:971",
+    "iris_src/src/Graph/KG/TemporalIndex.cls:972",
+    "iris_src/src/Graph/KG/TemporalIndex.cls:996",
+    "iris_src/src/Graph/KG/TemporalIndex.cls:1001"
+   ]
+  },
+  {
+   "feature": "Native API from Python (classMethod*, globals)",
+   "occurrences": 17,
+   "samples": [
+    "iris_vector_graph/_engine/temporal.py:619",
+    "iris_vector_graph/_engine/temporal.py:637",
+    "iris_vector_graph/_engine/temporal.py:742",
+    "iris_vector_graph/_engine/temporal.py:750",
+    "iris_vector_graph/_engine/temporal.py:756"
+   ]
+  },
+  {
+   "feature": "Embedded/dynamic SQL in ObjectScript (&sql, %SQL.Statement)",
+   "occurrences": 10,
+   "samples": [
+    "iris_src/src/Graph/KG/Adjacency.cls:597",
+    "iris_src/src/Graph/KG/Adjacency.cls:603",
+    "iris_src/src/Graph/KG/Adjacency.cls:628",
+    "iris_src/src/Graph/KG/Adjacency.cls:636",
+    "iris_src/src/Graph/KG/Adjacency.cls:674"
+   ]
+  },
+  {
+   "feature": "%DynamicObject / JSON functions",
+   "occurrences": 22,
+   "samples": [
+    "iris_src/src/Graph/KG/Adjacency.cls:584",
+    "iris_src/src/Graph/KG/Adjacency.cls:589",
+    "iris_src/src/Graph/KG/Adjacency.cls:656",
+    "iris_src/src/Graph/KG/LedgerApply.cls:617",
+    "iris_src/src/Graph/KG/LedgerApply.cls:633"
+   ]
+  },
+  {
+   "feature": "$ZStrip / $ZConvert character classes",
+   "occurrences": 5,
+   "samples": [
+    "iris_src/src/Graph/KG/TemporalWindow.cls:265",
+    "iris_src/src/Graph/KG/TemporalWindow.cls:266",
+    "iris_src/src/Graph/KG/TemporalWindow.cls:282",
+    "iris_src/src/Graph/KG/TemporalWindow.cls:284",
+    "iris_src/src/Graph/KG/TemporalWindow.cls:358"
+   ]
+  },
+  {
+   "feature": "Global collation order ($Order/$Query)",
+   "occurrences": 128,
+   "samples": [
+    "iris_src/src/Graph/KG/Adjacency.cls:664",
+    "iris_src/src/Graph/KG/Adjacency.cls:668",
+    "iris_src/src/Graph/KG/Adjacency.cls:672",
+    "iris_src/src/Graph/KG/TemporalIndex.cls:253",
+    "iris_src/src/Graph/KG/TemporalIndex.cls:255"
+   ]
+  },
+  {
+   "feature": "Global KILL of a subtree / Merge",
+   "occurrences": 58,
+   "samples": [
+    "iris_src/src/Graph/KG/TemporalIndex.cls:83",
+    "iris_src/src/Graph/KG/TemporalIndex.cls:91",
+    "iris_src/src/Graph/KG/TemporalIndex.cls:350",
+    "iris_src/src/Graph/KG/TemporalIndex.cls:351",
+    "iris_src/src/Graph/KG/TemporalIndex.cls:352"
+   ]
+  },
+  {
+   "feature": "Time functions (DATEDIFF, $ZTimeStamp, $Horolog)",
+   "occurrences": 4,
+   "samples": [
+    "iris_src/src/Graph/KG/TemporalIndex.cls:51",
+    "iris_src/src/Graph/KG/TemporalIndex.cls:170",
+    "iris_src/src/Graph/KG/TemporalIndex.cls:761",
+    "iris_src/src/Graph/KG/TemporalIndex.cls:776"
+   ]
+  },
+  {
+   "feature": "SQL empty string as $Char(0)",
+   "occurrences": 4,
+   "samples": [
+    "iris_src/src/Graph/KG/Adjacency.cls:582",
+    "iris_src/src/Graph/KG/Adjacency.cls:583",
+    "iris_src/src/Graph/KG/Adjacency.cls:627",
+    "iris_src/src/Graph/KG/Adjacency.cls:654"
+   ]
+  },
+  {
+   "feature": "SQLCODE-specific handling",
+   "occurrences": 16,
+   "samples": [
+    "iris_src/src/Graph/KG/Adjacency.cls:598",
+    "iris_src/src/Graph/KG/Adjacency.cls:599",
+    "iris_src/src/Graph/KG/Adjacency.cls:604",
+    "iris_src/src/Graph/KG/Adjacency.cls:609",
+    "iris_src/src/Graph/KG/Adjacency.cls:610"
+   ]
+  }
+ ],
+ "env_features_method": "regex over the source ranges of the module's inventoried entry points; over-approximates"
+}

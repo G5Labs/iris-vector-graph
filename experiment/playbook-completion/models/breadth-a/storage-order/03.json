@@ -1,0 +1,69 @@
+{
+ "module": "03",
+ "gate": "3.4-storage-order",
+ "input": "$RUN_DIR/checks/storage-order.json",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "generated_by": "experiment/playbook-completion/models/breadth-a/tools/storage_order_dispositions.py",
+ "method": "each scan site in the module's files assigned by enclosing function (storage_order_sites.py, inventory entry-point ranges and Scope lines) and read at the pin; scan completeness sampled by grep of the module's scope files for TOP/LIMIT/FETCH FIRST and truncating $Order loops ($RUN_DIR/breadth-a/storage-order/grep-missed.log). Source reading only; nothing was run.",
+ "sites": [
+  {
+   "file": "iris_vector_graph/_engine/nodes_edges.py",
+   "line": 884,
+   "function": "NodesEdgesMixin.property_value_exists",
+   "disposition": "existence-only",
+   "key_or_reason": "return cursor.fetchone() is not None",
+   "cites": [
+    "iris_vector_graph/_engine/nodes_edges.py:879-889"
+   ],
+   "finding_candidate": false,
+   "title": "",
+   "severity": "",
+   "sql_excerpt": "SELECT TOP 1 1 FROM {} WHERE \"key\" = ? AND val LIKE ?"
+  }
+ ],
+ "missed_by_scan": [
+  {
+   "file": "iris_vector_graph/_engine/nodes_edges.py",
+   "line": 820,
+   "function": "NodesEdgesMixin.get_node_ids_by_property",
+   "disposition": "order-dependent",
+   "key_or_reason": "TOP n s FROM rdf_props WHERE key = ? [AND val = ?] with no ORDER BY: with a limit the caller gets the first n subjects in scan order",
+   "cites": [
+    "iris_vector_graph/_engine/nodes_edges.py:801-832"
+   ],
+   "finding_candidate": true,
+   "title": "Property lookups with a limit return a storage-order subset",
+   "severity": "S4",
+   "note": "The scan missed it: the TOP is built in a separate f-string. The docstring promises only a 'Cap on returned rows' (815); the same query is graph-blind (F-0206 family)."
+  },
+  {
+   "file": "iris_vector_graph/_engine/nodes_edges.py",
+   "line": 904,
+   "function": "NodesEdgesMixin.get_property_pairs_like",
+   "disposition": "order-dependent",
+   "key_or_reason": "TOP n s, val ... WHERE key = ? AND val LIKE ? with no ORDER BY: a capped keyword probe answers the first n matches in scan order",
+   "cites": [
+    "iris_vector_graph/_engine/nodes_edges.py:892-915"
+   ],
+   "finding_candidate": true,
+   "title": "as nodes_edges.py:820 (same candidate)",
+   "severity": "S4",
+   "note": "The docstring calls it a 'bounded LIKE probe' (898) and promises no order."
+  }
+ ],
+ "out_of_scope": [],
+ "summary": {
+  "existence-only": 1
+ },
+ "summary_missed": {
+  "order-dependent": 2
+ },
+ "finding_candidates": [
+  "Property lookups with a limit return a storage-order subset",
+  "as nodes_edges.py:820 (same candidate)"
+ ],
+ "status_suggestion": {
+  "status": "open",
+  "reason": "the scan's only site is existence-only, but it missed two capped property lookups (nodes_edges.py:820, 904) that return a storage-order subset"
+ }
+}

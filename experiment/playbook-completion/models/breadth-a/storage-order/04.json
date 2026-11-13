@@ -1,0 +1,52 @@
+{
+ "module": "04",
+ "gate": "3.4-storage-order",
+ "input": "$RUN_DIR/checks/storage-order.json",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "generated_by": "experiment/playbook-completion/models/breadth-a/tools/storage_order_dispositions.py",
+ "method": "each scan site in the module's files assigned by enclosing function (storage_order_sites.py, inventory entry-point ranges and Scope lines) and read at the pin; scan completeness sampled by grep of the module's scope files for TOP/LIMIT/FETCH FIRST and truncating $Order loops ($RUN_DIR/breadth-a/storage-order/grep-missed.log). Source reading only; nothing was run.",
+ "sites": [],
+ "missed_by_scan": [
+  {
+   "file": "iris_src/src/Graph/KG/Edgeless.cls",
+   "line": 65,
+   "function": "Edgeless.Scan",
+   "disposition": "collation-ordered",
+   "key_or_reason": "pages loners in node_id order (ORDER BY node_id, 52-54) and returns the resume key at the cap",
+   "cites": [
+    "iris_src/src/Graph/KG/Edgeless.cls:22-27",
+    "iris_src/src/Graph/KG/Edgeless.cls:43-68"
+   ],
+   "finding_candidate": false,
+   "title": "",
+   "severity": "",
+   "documented": true,
+   "note": "Deterministic paging; checked, not a scan miss of the storage-order rule."
+  }
+ ],
+ "out_of_scope": [
+  {
+   "file": "iris_vector_graph/stores/iris_sql_store.py",
+   "line": 2633,
+   "function": "IRISGraphStore.execute_knn_vec",
+   "owner": "17 operations (SQL adapter); has ORDER BY score DESC",
+   "in_scan": true
+  },
+  {
+   "file": "iris_vector_graph/stores/iris_sql_store.py",
+   "line": 1179,
+   "function": "fetch_clause (missed by scan)",
+   "owner": "17 operations (SQL adapter)",
+   "in_scan": false
+  }
+ ],
+ "summary": {},
+ "summary_missed": {
+  "collation-ordered": 1
+ },
+ "finding_candidates": [],
+ "status_suggestion": {
+  "status": "closed",
+  "reason": "no scan site in module 04's functions; grep of its files found only Edgeless.Scan, which pages in node_id order"
+ }
+}

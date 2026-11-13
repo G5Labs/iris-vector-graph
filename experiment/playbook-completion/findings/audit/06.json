@@ -1,0 +1,881 @@
+{
+ "module": "06",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "lane": "breadth-a",
+ "generated_by": "experiment/playbook-completion/live/breadth-a/make_audit.py",
+ "source_findings": "experiment/playbook-uplift/findings/06.md",
+ "original_count": 18,
+ "new_count": 5,
+ "dispositions": {
+  "confirmed-source": 11,
+  "reproduced-live": 10,
+  "reproduced-model": 1,
+  "reproduced-test": 1
+ },
+ "findings": [
+  {
+   "id": "F-0601",
+   "title": "A registry read that fails for any reason lets a vector write through unchecked",
+   "intended": "ADR-0006 (refusable before it happens); FR-014 (enforcement is not opt-in).",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Raise from get_embedding_identity (and the inventory/quarantine reads) unless the registry is absent.",
+   "gates": [
+    "3.5-decoders",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "probe",
+     "ref": "breadth-a-probe-local-0101-0601"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/schema.py:1033-1061"
+    }
+   ],
+   "notes": "Pin code against a fake cursor raising SQLCODE -99 on the registry read: get_embedding_identity -> None and enforce_embedding_identity returns None (write proceeds). Not provoked live: revoking SELECT in AUDITA changes server security settings (forbidden).",
+   "module": "06",
+   "observed": {
+    "probe": "local_f0601",
+    "verdict": "privilege error on the registry read turned the identity check off",
+    "oracle": "a registry read that fails for any reason but absence refuses the write",
+    "values": {
+     "enforce_embedding_identity": "returned None (write proceeds)",
+     "get_embedding_identity": "None"
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/local_f0601.json",
+    "log": "$RUN_DIR/breadth-a/live/local-20261113T225331.log"
+   },
+   "disposition": "reproduced-test"
+  },
+  {
+   "id": "F-0602",
+   "title": "Vectors from one model can be stored under another model's identity",
+   "intended": "ADR-0006: a vector's identity is the model that made it.",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Offer the identity of the model that produced the vector, or refuse cross-model fallback.",
+   "gates": [
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/embeddings.py:157-197"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/embeddings.py:2033-2049"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/schema.py:1013-1018"
+    }
+   ],
+   "notes": "Live check blocked-access: IRIS EMBEDDING() configurations need %Embedding/AI Hub (P-0101), absent on Community 2026.1.",
+   "module": "06",
+   "observed": "embed_text falls back to a Python embedder when the IRIS EMBEDDING() call fails (iris_vector_graph/_engine/embeddings.py:157-197); _encode_batch never calls IRIS EMBEDDING() (2033-2049); the offered identity comes from embedding_config first (iris_vector_graph/_engine/schema.py:1013-1018).",
+   "disposition": "confirmed-source"
+  },
+  {
+   "id": "F-0603",
+   "title": "The IRIS queue worker writes vectors with no identity check, and ignores the model for the default graph",
+   "intended": "ADR-0006 / spec 226: every seam that writes vectors consults the registry.",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Route default-graph entries through the registry and compare the entry's model and width before writing.",
+   "gates": [
+    "3.3a-writesets",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/EmbedQueue.cls:258-338"
+    }
+   ],
+   "notes": "Live write path blocked-access: it needs a working EMBEDDING() config (absent on Community); without it the worker writes nothing at all (F-0604).",
+   "module": "06",
+   "observed": "ProcessBatch targets Graph_KG.kg_NodeEmbeddings for every default-graph entry whatever its config (iris_src/src/Graph/KG/EmbedQueue.cls:280-286) and reads no registry row.",
+   "disposition": "confirmed-source"
+  },
+  {
+   "id": "F-0604",
+   "title": "The IRIS queue worker marks an entry DONE when no vector was made",
+   "intended": "SetResult: DONE carries the result vector, ERROR the message; VEC-I7.18.",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Set ERROR with the IRIS message on a failed Prepare, a negative SQLCODE or an empty result.",
+   "gates": [
+    "3.3-model-check",
+    "3.5-decoders",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-06-vectors"
+    },
+    {
+     "kind": "mc",
+     "ref": "breadth-a-mc-vec_queue-as-built"
+    },
+    {
+     "kind": "mc",
+     "ref": "breadth-a-mc-vec_queue-reviewed"
+    },
+    {
+     "kind": "control",
+     "ref": "breadth-a-control-vec_queue"
+    }
+   ],
+   "notes": "",
+   "module": "06",
+   "observed": {
+    "probe": "p0604_queue_done_without_vector",
+    "verdict": "entry DONE, no vector, no error",
+    "oracle": "an entry is DONE only with a stored vector; a failed EMBEDDING() is ERROR with the IRIS message",
+    "values": {
+     "enqueued": 1,
+     "entry_status_error_result": {
+      "baq230626": [
+       "DONE",
+       "",
+       1
+      ]
+     },
+     "process_batch": "{\"processed\":1,\"errors\":0}",
+     "req_ids": [
+      "baq230626"
+     ],
+     "vector_rows": 0
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0604_queue_done_without_vector.json",
+    "log": "$RUN_DIR/breadth-a/live/06-all-20261113T230626.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-0605",
+   "title": "enqueue_for_embedding checks the default table's row, not the target graph's route",
+   "intended": "Spec 227: kg_NodeEmbeddings' registry row is the default pair's row and nobody else's (embeddings.py:1992-1998).",
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Resolve the target route (graph, config) and enforce against its row.",
+   "gates": [
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/embeddings.py:1803-1850"
+    }
+   ],
+   "notes": "",
+   "module": "06",
+   "observed": "enqueue_for_embedding always enforces against ('kg_NodeEmbeddings', graph '') (iris_vector_graph/_engine/embeddings.py:1839-1842 at the pin's numbering: the enforce call before _ensure_queue_route).",
+   "disposition": "confirmed-source"
+  },
+  {
+   "id": "F-0606",
+   "title": "Erasure leaves IVF, tree and PLAID indexes holding an erased graph's ids and vectors",
+   "intended": "HD-0601 (assumption): retained vector-index contents are observable after erasure unless purged; graph-owned indexes must be invalidated or deleted. docs/migration/v4.0.0.md:742-750 names IVF a gap.",
+   "severity": "S1",
+   "confidence": "high",
+   "remedy": "Prune or invalidate graph-owned indexes in the erase; record the graph with the index.",
+   "gates": [
+    "3.3-model-check",
+    "3.3a-writesets",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-06-vectors"
+    },
+    {
+     "kind": "mc",
+     "ref": "breadth-a-mc-vec_ivf-as-built"
+    },
+    {
+     "kind": "mc",
+     "ref": "breadth-a-mc-vec_ivf-reviewed"
+    },
+    {
+     "kind": "control",
+     "ref": "breadth-a-control-vec_ivf"
+    }
+   ],
+   "notes": "After erase_graph removed the graph's 4 nodes, ivf_search answered the same 3 erased ids with the same scores and ivf_info still counts 4.",
+   "module": "06",
+   "observed": {
+    "probe": "p0606_erase_leaves_ivf",
+    "verdict": "IVF still answers 3 erased ids",
+    "oracle": "HD-0601 (assumption): erasure leaves no graph-owned index answering the erased graph's ids",
+    "values": {
+     "erase_graph": 4,
+     "ivf_build": {
+      "dim": 4,
+      "indexed": 4,
+      "metric": "cosine",
+      "nlist": 2
+     },
+     "ivf_info_after_erase": {
+      "dim": 4,
+      "indexed": 4,
+      "metric": "cosine",
+      "nlist": 2,
+      "type": "ivf"
+     },
+     "rows_after_erase": 0,
+     "search_after_erase": [
+      [
+       "n3",
+       4.3125
+      ],
+      [
+       "n2",
+       3.3125
+      ],
+      [
+       "n1",
+       2.3125
+      ]
+     ],
+     "search_before": [
+      [
+       "n3",
+       4.3125
+      ],
+      [
+       "n2",
+       3.3125
+      ],
+      [
+       "n1",
+       2.3125
+      ]
+     ]
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0606_erase_leaves_ivf.json",
+    "log": "$RUN_DIR/breadth-a/live/06-all-20261113T230626.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-0607",
+   "title": "The IVF index's 'cosine' metric is an unnormalised dot product",
+   "intended": "metric='cosine' is cosine similarity (VecIndex.Cosine normalises, VecIndex.cls:83-90).",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Normalise at build, insert and query time.",
+   "gates": [
+    "3.5-decoders",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-06-vectors"
+    }
+   ],
+   "notes": "Query [1,1,0,0]: long45 [10,0,0,0] scored 10.0 above short0 [0.1,0.1,0,0] scored 0.2; cosine orders them the other way.",
+   "module": "06",
+   "observed": {
+    "probe": "p0607_ivf_cosine_is_dot",
+    "verdict": "dot-product order and scores outside [-1, 1]",
+    "oracle": "cosine ranks short0 (cos 1.0) above long45 (cos 0.707), scores within [-1, 1]",
+    "values": {
+     "ivf_search": [
+      [
+       "long45",
+       10.0
+      ],
+      [
+       "short0",
+       0.2
+      ]
+     ]
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0607_ivf_cosine_is_dot.json",
+    "log": "$RUN_DIR/breadth-a/live/06-all-20261113T230626.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-0608",
+   "title": "Vector index stores do not check width or duplicates",
+   "intended": "VEC-B11.14: an id lives in at most one cell; indexed counts distinct ids.",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Delete before insert across cells, count only new ids, refuse another width.",
+   "gates": [
+    "3.3-model-check",
+    "3.6-keys",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-06-vectors"
+    },
+    {
+     "kind": "mc",
+     "ref": "breadth-a-mc-vec_ivf-as-built"
+    },
+    {
+     "kind": "mc",
+     "ref": "breadth-a-mc-vec_ivf-reviewed"
+    }
+   ],
+   "notes": "Re-inserting 'a' put it in cells 0 and 1, indexed 2 -> 3, and the stale vector still answered the old direction with score 1.0. VecIndex and PLAID branches of the finding were not run.",
+   "module": "06",
+   "observed": {
+    "probe": "p0608_ivf_insert_duplicates",
+    "verdict": "a in cells ['0', '1'], indexed 3",
+    "oracle": "an id lives in at most one cell; indexed counts distinct ids",
+    "values": {
+     "cells_holding_a": [
+      "0",
+      "1"
+     ],
+     "info_after_reinsert": {
+      "dim": 4,
+      "indexed": 3,
+      "metric": "dot",
+      "nlist": 2,
+      "type": "ivf"
+     },
+     "info_before": {
+      "dim": 4,
+      "indexed": 2,
+      "metric": "dot",
+      "nlist": 2,
+      "type": "ivf"
+     },
+     "search_old_direction": [
+      [
+       "a",
+       1.0
+      ],
+      [
+       "b",
+       0.0
+      ]
+     ]
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0608_ivf_insert_duplicates.json",
+    "log": "$RUN_DIR/breadth-a/live/06-all-20261113T230626.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-0609",
+   "title": "The fused search may read an IVF index built for another graph",
+   "intended": "FR-013 (a scoped lookup never widens); search_nodes_by_vector refuses the same case (vector.py:783-790).",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Refuse the IVF leg for an index of unknown or other graph; persist the graph with the index.",
+   "gates": [
+    "3.4-declared-reads",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/vector.py:194-225"
+    }
+   ],
+   "notes": "",
+   "module": "06",
+   "observed": "_fusion_leg_index falls back to an index whose graph is unknown, with a WARNING (iris_vector_graph/_engine/vector.py:208-225).",
+   "disposition": "confirmed-source"
+  },
+  {
+   "id": "F-0610",
+   "title": "The SQL kg_KNN_VEC answers no rows, without error, for a graph whose vectors are under a declared model",
+   "intended": "docs/KNOWN_ISSUES.md:702-714 (such a call raises); 4.6.0 R265 (no silent empty answer).",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Have VectorRouteGuard refuse when the graph has any node route other than kg_NodeEmbeddings.",
+   "gates": [
+    "3.5-decoders",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-06-vectors"
+    }
+   ],
+   "notes": "The engine's search_nodes_by_vector answers [('v1', 1.0)] for the same graph and model; SQL kg_KNN_VEC answers [].",
+   "module": "06",
+   "observed": {
+    "probe": "p0610_knn_vec_declared_model",
+    "verdict": "empty answer, no error",
+    "oracle": "the SQL procedure answers the graph's vectors or raises; never an empty answer over held vectors",
+    "values": {
+     "engine_search_nodes_by_vector": [
+      [
+       "v1",
+       1.0
+      ]
+     ],
+     "kg_KNN_VEC": [
+      "ok",
+      []
+     ],
+     "registry": [
+      [
+       "kg_emb_0cd4b06f37fd16f1",
+       "bakv230626",
+       "ba-model",
+       4
+      ]
+     ]
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0610_knn_vec_declared_model.json",
+    "log": "$RUN_DIR/breadth-a/live/06-all-20261113T230626.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-0611",
+   "title": "Edge vectors the upgrade places in a named graph are not found by edge search, and the edge and text quarantines have no API",
+   "intended": "CONTEXT.md:159-161 (an operator places each quarantined vector); edge search resolves (graph, model, edge) routes.",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Route named-graph edge rows into kg_eemb_ tables or register kg_EdgeEmbeddings per graph; add list/place calls.",
+   "gates": [
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/migrations/statements.py:203-240"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/schema.py:1305-1315"
+    }
+   ],
+   "notes": "Live check needs a 3.2.0 fixture namespace (blocked-access: namespaces belong to the orchestrator).",
+   "module": "06",
+   "observed": "The edge step inserts into kg_EdgeEmbeddings with the edge's graph_id (iris_vector_graph/migrations/statements.py:203-240) and adopts kg_EdgeEmbeddings for graph '' only (iris_vector_graph/_engine/schema.py:1312-1315).",
+   "disposition": "confirmed-source"
+  },
+  {
+   "id": "F-0612",
+   "title": "The edge and table searches skip rules the node search keeps",
+   "intended": "ADR-0005 forbids the lengthed TO_VECTOR form for a query vector; 4.6.0 R142 uses the route's dtype.",
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Use the unlengthed form and the route's dtype; extend the routed-name refusal to kg_eemb_.",
+   "gates": [
+    "3.5-decoders",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/vector.py:366-391"
+    }
+   ],
+   "notes": "",
+   "module": "06",
+   "observed": "edge_vector_search builds TO_VECTOR(?, engine dtype, comma-counted dim) and answers [] for errors containing '-30', 'not found' or 'empty' (iris_vector_graph/_engine/vector.py:366-391).",
+   "disposition": "confirmed-source"
+  },
+  {
+   "id": "F-0613",
+   "title": "VectorOptimizer.migrate_to_optimized writes vectors without the identity check and reports success with failures",
+   "intended": "ADR-0006: every seam that writes vectors consults the registry.",
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Enforce the identity, run as one transaction or report failure when failed > 0.",
+   "gates": [
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/vector_utils.py:151-280"
+    }
+   ],
+   "notes": "",
+   "module": "06",
+   "observed": "migrate_to_optimized inserts row by row with no enforce_embedding_identity and no transaction and returns success: True with a failed count (iris_vector_graph/vector_utils.py:151-280).",
+   "disposition": "confirmed-source"
+  },
+  {
+   "id": "F-0614",
+   "title": "embed_nodes and embed_edges count an identity refusal as an error and return normally",
+   "intended": "ADR-0006: spec 226 requires it to raise.",
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Re-raise EmbeddingIdentityConflict.",
+   "gates": [
+    "3.5-decoders",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-06-embed"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/embeddings.py:1462-1480"
+    }
+   ],
+   "notes": "",
+   "module": "06",
+   "observed": {
+    "probe": "p0614_embed_nodes_refusal_counted",
+    "verdict": "identity conflict counted as errors; returned normally",
+    "oracle": "a recorded-identity conflict raises EmbeddingIdentityConflict",
+    "values": {
+     "embed_nodes": {
+      "embedded": 0,
+      "errors": 2,
+      "skipped": 0,
+      "total": 2
+     },
+     "identity_conflict_logged": true,
+     "rows_in_route": 1
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0614_embed_nodes_refusal_counted.json",
+    "log": "$RUN_DIR/breadth-a/live/06-p0614_embed_nodes_refusal_counted-p0616_selector_crosses_graphs_and_like-pC0602_knn_vec_label_rows-20261113T233234.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-0615",
+   "title": "A store_embeddings batch refused for a missing node can leave a new empty route behind",
+   "intended": "SYS-I3: a refused write changes no store (VEC-X3.9).",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Check every node before resolving the route.",
+   "gates": [
+    "3.3-model-check",
+    "3.3a-writesets",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-06-vectors"
+    },
+    {
+     "kind": "mc",
+     "ref": "breadth-a-mc-vec_route_batch-as-built"
+    },
+    {
+     "kind": "mc",
+     "ref": "breadth-a-mc-vec_route_batch-reviewed"
+    },
+    {
+     "kind": "control",
+     "ref": "breadth-a-control-vec_route_batch"
+    }
+   ],
+   "notes": "Refused with 'Node does not exist', yet a 6-wide kg_emb_ route and its registry row exist afterwards.",
+   "module": "06",
+   "observed": {
+    "probe": "p0615_refused_batch_leaves_route",
+    "verdict": "refused, yet a 6-wide route and registry row now exist",
+    "oracle": "a refused batch leaves the registry and routes as they were",
+    "values": {
+     "call": "refused ValueError: Node does not exist in graph 'barb230626': missing",
+     "registry_after": [
+      [
+       "kg_emb_e36fb2b6690d9b86",
+       "barb230626",
+       "ba-m6",
+       6
+      ]
+     ],
+     "registry_after_erase": [],
+     "registry_before": []
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0615_refused_batch_leaves_route.json",
+    "log": "$RUN_DIR/breadth-a/live/06-all-20261113T230626.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-0616",
+   "title": "The embed selector's label filter crosses graphs, and its exclude pattern escapes without ESCAPE",
+   "intended": "Spec 227: selection is graph-scoped (embed_nodes docstring); an exclude pattern skips the matching ids (P-0603).",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Add the graph predicate to the label subqueries and ESCAPE '\\' to the LIKE.",
+   "gates": [
+    "3.4-declared-reads",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-06-selector"
+    },
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-06-embed"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/embed_selector.py:71-112"
+    }
+   ],
+   "notes": "Two earlier runs failed in the harness's fake model (breadth-a-live-06-vectors, breadth-a-live-06-embed) but already showed the selection: total 3 nodes selected in g for label X with exclude x_*, where only xy1 qualifies.",
+   "module": "06",
+   "observed": {
+    "probe": "p0616_selector_crosses_graphs_and_like",
+    "verdict": "'same' embedded via another graph's label; x_1 not excluded",
+    "oracle": "only g's nodes holding X in g are embedded; exclude x_* skips x_1",
+    "values": {
+     "embedded_in_g": [
+      "same",
+      "x_1",
+      "xy1"
+     ],
+     "label_run": {
+      "embedded": 3,
+      "errors": 0,
+      "skipped": 0,
+      "total": 3
+     }
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0616_selector_crosses_graphs_and_like.json",
+    "log": "$RUN_DIR/breadth-a/live/06-p0616_selector_crosses_graphs_and_like-20261113T233430.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-0617",
+   "title": "The glossary and user guide say a second model's write is refused; the code routes it to its own table",
+   "intended": "CONTEXT.md:154-157 and docs/USER_GUIDE.md:958-960.",
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Update CONTEXT.md and the USER_GUIDE.",
+   "gates": [
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "CONTEXT.md:154-157"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/embeddings.py:755-792"
+    },
+    {
+     "kind": "tested",
+     "ref": "tests/integration/test_embedding_identity_refusal_e2e.py::test_same_width_different_model_gets_its_own_route"
+    }
+   ],
+   "notes": "p0610/p0614 probes in AUDITA created model-keyed routes without refusal, consistent with the code.",
+   "module": "06",
+   "observed": "A write naming another model gets its own route (iris_vector_graph/_engine/embeddings.py:755-792); the upstream test test_same_width_different_model_gets_its_own_route asserts it.",
+   "disposition": "confirmed-source"
+  },
+  {
+   "id": "F-0618",
+   "title": "The ledger's node delete does not reach a default-graph node's routed vectors",
+   "intended": "The engine's delete_node (Eraser.EraseNodeIds) reaches every route; a ledger delete of the same node should too.",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Have LedgerApply.DeleteNodeRows delete from every node route the registry names for the default graph.",
+   "gates": [
+    "3.3a-writesets",
+    "3.6-fk",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-ledger"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/LedgerApply.cls:353-370"
+    }
+   ],
+   "notes": "",
+   "module": "06",
+   "observed": {
+    "probe": "p0618_ledger_delete_routed_vector",
+    "verdict": "ledger delete refused by the route's foreign key",
+    "oracle": "a ledger delete_node removes what the engine's delete_node removes (Eraser reaches every route)",
+    "values": {
+     "engine_delete_node": true,
+     "ledger_delete": [
+      "refused",
+      "ChangesetOperationError: changeset operation 0 failed: delete node failed: At least 1 Row exists in table 'Graph_KG.kg_emb_2bc807736f42742f' which references key 'uqnodesgraphnode' - Foreign Key Constraint 'fk_kg_emb_2bc807736f42742f', Field(s) 'graph_id','node_id' failed on"
+     ],
+     "node_after": 1,
+     "route": [
+      [
+       "kg_emb_2bc807736f42742f"
+      ]
+     ]
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0618_ledger_delete_routed_vector.json",
+    "log": "$RUN_DIR/breadth-a/live/ledger-all-20261113T232600.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-C0601",
+   "title": "A node re-enqueued while a worker holds its old text is marked DONE with the old vector",
+   "intended": "enqueue_for_embedding docstring: re-enqueue overwrites, one entry per node (the latest request is the one to honour).",
+   "severity": "S3",
+   "confidence": "medium",
+   "remedy": "Version each entry (a sequence stamped at enqueue) and set DONE only if the version is unchanged; or claim atomically.",
+   "gates": [
+    "3.3-model-check",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "mc",
+     "ref": "breadth-a-mc-vec_queue-as-built"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/EmbedQueue.cls:35-60"
+    }
+   ],
+   "notes": "New, from the model sub-lane (check vec_queue-as-built-reenqueue). HD-0604 assumes a single active consumer; even with one worker the enqueue/work interleaving loses the newer text.",
+   "module": "06",
+   "observed": "ClaimPendingBatch is a plain scan with no claim state (iris_src/src/Graph/KG/EmbedQueue.cls:105-133); Enqueue overwrites a PENDING entry of the same graph (EmbedQueue.cls:44-58); the worker then sets DONE for the entry id with the vector of the text it read before.",
+   "disposition": "reproduced-model"
+  },
+  {
+   "id": "F-C0603",
+   "title": "kg_KNN_VEC's route guard picks an arbitrary registry row where Python applies a fixed preference",
+   "intended": "Route resolution is one rule across surfaces (embeddings.py:107-118 orders the candidates).",
+   "severity": "S4",
+   "confidence": "low",
+   "remedy": "Apply the Python preference in the guard (ORDER BY it) or refuse when more than one row qualifies.",
+   "gates": [
+    "3.4-storage-order",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/GraphStores.cls:300-312"
+    },
+    {
+     "kind": "inspected",
+     "ref": "experiment/playbook-completion/models/breadth-a/storage-order/06.json"
+    }
+   ],
+   "notes": "New, from the storage-order disposition; reachability (two unkeyed node rows for one graph) not shown.",
+   "module": "06",
+   "observed": "VectorRouteGuard selects TOP 1 table_name over registry rows keyed (table_name, graph_id), so two node rows for one graph with no model key answer in scan order (iris_src/src/Graph/KG/GraphStores.cls:300-312).",
+   "disposition": "confirmed-source"
+  },
+  {
+   "id": "F-C0604",
+   "title": "The 4.0.0 vector migration takes an undeclared legacy table's width from an arbitrary row",
+   "intended": "Migration sizes a route from the data it moves; rows of several widths are a quarantine case.",
+   "severity": "S4",
+   "confidence": "low",
+   "remedy": "Measure every distinct width and refuse/quarantine a mixed table.",
+   "gates": [
+    "3.4-storage-order",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/migrations/graph_scoped_embeddings.py:1265-1280"
+    },
+    {
+     "kind": "inspected",
+     "ref": "experiment/playbook-completion/models/breadth-a/storage-order/06.json"
+    }
+   ],
+   "notes": "New, from the storage-order disposition; a 3.x fixture with mixed widths would be needed to provoke it.",
+   "module": "06",
+   "observed": "_Migrator._measured_width reads one stored vector with no ORDER BY when neither the table nor the registry declares a width (iris_vector_graph/migrations/graph_scoped_embeddings.py:1265-1280).",
+   "disposition": "confirmed-source"
+  },
+  {
+   "id": "F-C0605",
+   "title": "The embed queue serves PENDING entries in node-id order, so an entry can wait indefinitely",
+   "intended": "A queue that is worked repeatedly eventually serves every entry (progress; HD-0604 single consumer).",
+   "severity": "S4",
+   "confidence": "low",
+   "remedy": "Serve in arrival order (a sequence subscript) or round-robin from the last reqId.",
+   "gates": [
+    "3.3-model-check",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/EmbedQueue.cls:112-133"
+    },
+    {
+     "kind": "inspected",
+     "ref": "experiment/playbook-completion/models/breadth-a/storage-order/06.json"
+    }
+   ],
+   "notes": "New, from the storage-order disposition (collation-ordered, not storage-ordered). A progress (AG EF) model with an unbounded arrival stream would show it; the bounded vec_queue model drains because arrivals are bounded.",
+   "module": "06",
+   "observed": "ClaimPendingBatch and ProcessBatch take the first batchSize PENDING entries in reqId (= node id) collation order (iris_src/src/Graph/KG/EmbedQueue.cls:112-133, 258-268); under steady enqueueing of low-collating ids a high id is never reached.",
+   "disposition": "confirmed-source"
+  },
+  {
+   "id": "F-C0602",
+   "title": "SQL kg_KNN_VEC answers a node once per label, so a multi-label node takes several of the k places",
+   "intended": "kg_KNN_VEC is a k-nearest-nodes search over the default route (schema.py:2437-2483); kg_RRF_FUSE's vector leg calls it with no label filter (schema.py:2558).",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Use EXISTS for the label filter (no join when no filter is given), or SELECT DISTINCT node_id.",
+   "gates": [
+    "3.4-statements",
+    "3.6-row-permutation",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-06-embed"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/schema.py:2468-2479"
+    }
+   ],
+   "notes": "New, from the storage-order sub-lane's note; reproduced: a node with labels LA and LB filled both places of k=2 and pushed out the second-nearest node.",
+   "module": "06",
+   "observed": {
+    "probe": "pC0602_knn_vec_label_rows",
+    "verdict": "answer ['bakn1233234', 'bakn1233234'] (a twice, b pushed out)",
+    "oracle": "k nearest nodes: each node at most once; with k=2 both a and b answer",
+    "values": {
+     "kg_KNN_VEC_k2": [
+      [
+       "bakn1233234",
+       1
+      ],
+      [
+       "bakn1233234",
+       1
+      ]
+     ]
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/pC0602_knn_vec_label_rows.json",
+    "log": "$RUN_DIR/breadth-a/live/06-p0614_embed_nodes_refusal_counted-p0616_selector_crosses_graphs_and_like-pC0602_knn_vec_label_rows-20261113T233234.log"
+   },
+   "disposition": "reproduced-live"
+  }
+ ]
+}

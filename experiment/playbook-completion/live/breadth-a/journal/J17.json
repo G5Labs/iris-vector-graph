@@ -1,0 +1,13 @@
+{
+ "call": "returned True",
+ "conn_pid": "11225",
+ "error": "Traceback (most recent call last):\n  File \"/home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/iris-vector-graph-audit/experiment/playbook-completion/live/breadth-a/journal_validate.py\", line 238, in main\n    recs = J.records_since(m, dbs={DB})\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/iris-vector-graph-audit/experiment/playbook-completion/traces/journal.py\", line 90, in records_since\n    raise RuntimeError(\"journal read did not finish: \" + out[-1000:])\nRuntimeError: journal read did not finish: .%OpenId(file) FOR { \nSET r=$SELECT(start:f.GetRecordAt(start),1:f.FirstRecordGet()) IF (start && $ISO\nBJECT(r)) { SET r=r.Next } WHILE $ISOBJECT(r) { SET d=\"\",g=\"\",n=\"\",o=\"\",isSK=r.%\nIsA(\"%SYS.Journal.SetKillRecord\") IF isSK { SET d=r.DatabaseName } IF (isSK && (\ndbs'=\"\") && ((\",\"_dbs_\",\")'[(\",\"_d_\",\"))) { SET r=r.Next CONTINUE } IF isSK { SE\nT g=r.GlobalNode } IF (isSK && (r.NumberOfValues>0)) { SET n=$SYSTEM.Encryption.\n                                                       ^\nBase64Encode(r.NewValue,1) } IF isSK { TRY { SET ov=r.OldValue IF $DATA(ov)#2 { \nSET o=$SYSTEM.Encryption.Base64Encode(ov,1) } } CATCH { } } WRITE $CHAR(30),\"JRN\n|\",r.Address,\"|\",r.TypeName,\"|\",r.ProcessID,\"|\",r.InTransaction,\"|\",d,\"|\",$ZCONV\nERT(g,\"O\",\"JSON\"),\"|\",n,\"|\",o,\"|\",r.TimeStamp,! SET nrec=nrec+1, r=r.Next } SET \nnf=\"\", sc=##CLASS(%SYS.Journal.File).GetNext(file,.nf) IF (nf=\"\") { QUIT } SET f\nile=nf, start=0, f=##CLASS(%SYS.Journal.File).%OpenId(file) } WRITE $CHAR(30),\"J\nRNEND|\",nrec,!\n<VECTOR>\n%SYS>\n\n",
+ "footprint": "py:IRISGraphEngine.store_embedding",
+ "graph": "baj17232613",
+ "id": "J17",
+ "log": "$RUN_DIR/breadth-a/journal/journal-20261113T232613.log",
+ "module": "06",
+ "namespace": "AUDITA",
+ "seconds": 0.52,
+ "verdict": "harness error"
+}

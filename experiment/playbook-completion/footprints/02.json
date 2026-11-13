@@ -1,0 +1,373 @@
+{
+ "module": "02",
+ "name": "graph-identity",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "generated_by": "experiment/playbook-completion/models/breadth-a/tools/footprints.py",
+ "inputs": [
+  "experiment/playbook-completion/models/breadth-a/inventory/02.json",
+  "experiment/playbook-completion/models/breadth-a/tools/footprint_reviews.json"
+ ],
+ "method": "for each entry point, the call closure (srcindex.Resolver, at most DEPTH hops and\nNODE_CAP functions) is walked and every reached function contributes\n  - SQL effects of its SQL text: INSERT/UPDATE/DELETE/TRUNCATE/DDL targets are writes, FROM/JOIN are reads, with the\n    hints %NOLOCK/%NOINDEX/%NOCHECK/FOR UPDATE and SQL transaction statements;\n  - ObjectScript global references classified by command (Set target, Kill, $Increment, Merge target = write;\n    otherwise read), LOCK commands with mode and timeout, TSTART/TCOMMIT/TROLLBACK (with or without a level), $TLevel;\n  - Python Native API global access and WriteTxn / commit / rollback markers;\n  - implicit server hooks the SQL filer runs for a write: the functional indexes idx_edges_adj (Graph.KG.AdjIndex ->\n    Graph.KG.Adjacency) on Graph_KG.rdf_edges and idx_labels_adj (Graph.KG.LabelIndex) on Graph_KG.rdf_labels\n    (iris_vector_graph/schema.py:774-780), and the iFind index on rdf_props.val / docs.text (schema.py:482, 566).\nEvery item keeps up to MAX_AT source locations with the function it came from. Records carry\n`confidence: \"extracted\"`; entries listed in footprint_reviews.json are merged with the reviewer's corrections and\nmarked `confidence: \"reviewed\"`. `journal` stays null here: the lane fills it from the journal oracle.\nKnown limits: string-built SQL whose table name is a runtime value is reported as Graph_KG.<dynamic:...>; dynamic\ndispatch (getattr, callbacks) is not followed; a Set whose target is computed by indirection is caught only through\n$Name; Python helpers reached through a variable are missed. The reviewed subset corrects what was checked by hand.",
+ "counts": {
+  "entry_points": 7,
+  "writers": 3,
+  "readers": 4,
+  "reviewed": 2,
+  "journal_validated": 0
+ },
+ "entry_points": [
+  {
+   "id": "cls:Graph.KG.GraphMode.Set",
+   "kind": "classmethod",
+   "source": "iris_src/src/Graph/KG/GraphMode.cls:26-45",
+   "role": "both",
+   "reads": [
+    {
+     "store": "sql:Graph_KG.rdf_edges",
+     "at": [
+      "iris_src/src/Graph/KG/GraphMode.cls:51 (GraphMode.ParallelCount)"
+     ]
+    }
+   ],
+   "writes": [
+    {
+     "store": "global:^IVG.GraphMode",
+     "ops": null,
+     "at": [
+      "iris_src/src/Graph/KG/GraphMode.cls:32 (GraphMode.Set)",
+      "iris_src/src/Graph/KG/GraphMode.cls:40 (GraphMode.Set)"
+     ]
+    }
+   ],
+   "transactions": [],
+   "locks": [],
+   "calls": [
+    "Graph.KG.GraphKey.Canonical",
+    "Graph.KG.GraphKey.ForIndex",
+    "Graph.KG.GraphKey.ForName",
+    "Graph.KG.GraphKey.Validate",
+    "Graph.KG.GraphMode.ParallelCount"
+   ],
+   "extraction": {
+    "functions_followed": 6,
+    "max_depth": 6,
+    "truncated_at_cap": false,
+    "implicit_hooks": []
+   },
+   "confidence": "reviewed",
+   "atomicity_claim": {
+    "claim": "Turning it off is refused while any triple of the graph still has two edges",
+    "source": "iris_src/src/Graph/KG/GraphMode.cls:21-24; specs/234-multigraph-parallel-edges FR-002"
+   },
+   "notes": [
+    "F-0207: a concurrent Cypher CREATE can add a parallel edge between ParallelCount and the Kill",
+    "F-0208: other engines keep their cached mode (admin.py:917-936)",
+    "F-0201: ParallelCount counts only triples with >=2 rows; a lone edge at ekey 1 passes"
+   ],
+   "journal": null,
+   "review": {
+    "reviewed_against": "iris_src/src/Graph/KG/GraphMode.cls:26-61",
+    "writes": {
+     "global:^IVG.GraphMode(key)": "Set \"multi\" (on) or Kill (off) by Graph.KG.GraphMode.Apply -> Set",
+     "engine cache _graph_mode_cache": "this engine's entry only (_graph_mode_forget)"
+    },
+    "reads": {
+     "sql:Graph_KG.rdf_edges": "ParallelCount GROUP BY s, p, o_id HAVING COUNT(*) > 1 (off only)"
+    },
+    "transactions": "none: count and Kill are two steps with no TSTART; Native API call through self._iris_obj() (iris_vector_graph/engine.py:1894-1942): the cursor's own process when the engine was built on a DB-API connection, but a second DB-API connection (another server process) on an engine made by from_connect (connection params with a username)",
+    "locks": "none (no ^IVG.AdjW or other lock around count+kill)",
+    "corrections": []
+   }
+  },
+  {
+   "id": "py:IRISGraphEngine.set_multigraph",
+   "kind": "python-api",
+   "source": "iris_vector_graph/_engine/admin.py:893-915",
+   "role": "both",
+   "reads": [
+    {
+     "store": "sql:Graph_KG.rdf_edges",
+     "at": [
+      "iris_src/src/Graph/KG/GraphMode.cls:51 (GraphMode.ParallelCount)"
+     ]
+    }
+   ],
+   "writes": [
+    {
+     "store": "global:^IVG.GraphMode",
+     "ops": null,
+     "at": [
+      "iris_src/src/Graph/KG/GraphMode.cls:32 (GraphMode.Set)",
+      "iris_src/src/Graph/KG/GraphMode.cls:40 (GraphMode.Set)"
+     ]
+    }
+   ],
+   "transactions": [],
+   "locks": [],
+   "calls": [
+    "Graph.KG.GraphKey.Canonical",
+    "Graph.KG.GraphKey.ForIndex",
+    "Graph.KG.GraphKey.ForName",
+    "Graph.KG.GraphKey.Validate",
+    "Graph.KG.GraphMode.Apply",
+    "Graph.KG.GraphMode.ParallelCount",
+    "Graph.KG.GraphMode.Set"
+   ],
+   "extraction": {
+    "functions_followed": 12,
+    "max_depth": 6,
+    "truncated_at_cap": false,
+    "implicit_hooks": []
+   },
+   "confidence": "reviewed",
+   "atomicity_claim": {
+    "claim": "Turning it off is refused while any triple of the graph still has two edges",
+    "source": "iris_src/src/Graph/KG/GraphMode.cls:21-24; specs/234-multigraph-parallel-edges FR-002"
+   },
+   "notes": [
+    "F-0207: a concurrent Cypher CREATE can add a parallel edge between ParallelCount and the Kill",
+    "F-0208: other engines keep their cached mode (admin.py:917-936)",
+    "F-0201: ParallelCount counts only triples with >=2 rows; a lone edge at ekey 1 passes"
+   ],
+   "journal": [
+    {
+     "candidate": "J08",
+     "footprint": "py:IRISGraphEngine.set_multigraph",
+     "run": "breadth-a-journal-footprints",
+     "result_file": "experiment/playbook-completion/live/breadth-a/journal/J08.json",
+     "call": "returned None",
+     "pids": [
+      "11225"
+     ],
+     "stores_written": [
+      "global:^IVG.GraphMode"
+     ],
+     "outermost_transactions": [],
+     "written_with_no_transaction_open": [
+      "11225 global:^IVG.GraphMode"
+     ],
+     "undeclared_writes": [],
+     "verdict": "covered",
+     "mismatch_classification": null,
+     "explanation": null,
+     "transaction_note": "GraphMode.Set: ^IVG.GraphMode killed with no transaction and no lock (corroborates F-0207)."
+    }
+   ],
+   "review": {
+    "reviewed_against": "iris_vector_graph/_engine/admin.py:893-936; iris_src/src/Graph/KG/GraphMode.cls:20-61",
+    "writes": {
+     "global:^IVG.GraphMode(key)": "Set \"multi\" (on) or Kill (off) by Graph.KG.GraphMode.Apply -> Set",
+     "engine cache _graph_mode_cache": "this engine's entry only (_graph_mode_forget)"
+    },
+    "reads": {
+     "sql:Graph_KG.rdf_edges": "ParallelCount GROUP BY s, p, o_id HAVING COUNT(*) > 1 (off only)"
+    },
+    "transactions": "none: count and Kill are two steps with no TSTART; Native API call through self._iris_obj() (iris_vector_graph/engine.py:1894-1942): the cursor's own process when the engine was built on a DB-API connection, but a second DB-API connection (another server process) on an engine made by from_connect (connection params with a username)",
+    "locks": "none (no ^IVG.AdjW or other lock around count+kill)",
+    "corrections": []
+   }
+  },
+  {
+   "id": "cls:Graph.KG.GraphMode.Apply",
+   "kind": "classmethod",
+   "source": "iris_src/src/Graph/KG/GraphMode.cls:66-75",
+   "role": "both",
+   "reads": [
+    {
+     "store": "sql:Graph_KG.rdf_edges",
+     "at": [
+      "iris_src/src/Graph/KG/GraphMode.cls:51 (GraphMode.ParallelCount)"
+     ]
+    }
+   ],
+   "writes": [
+    {
+     "store": "global:^IVG.GraphMode",
+     "ops": null,
+     "at": [
+      "iris_src/src/Graph/KG/GraphMode.cls:32 (GraphMode.Set)",
+      "iris_src/src/Graph/KG/GraphMode.cls:40 (GraphMode.Set)"
+     ]
+    }
+   ],
+   "transactions": [],
+   "locks": [],
+   "calls": [
+    "Graph.KG.GraphKey.Canonical",
+    "Graph.KG.GraphKey.ForIndex",
+    "Graph.KG.GraphKey.ForName",
+    "Graph.KG.GraphKey.Validate",
+    "Graph.KG.GraphMode.ParallelCount",
+    "Graph.KG.GraphMode.Set"
+   ],
+   "extraction": {
+    "functions_followed": 7,
+    "max_depth": 6,
+    "truncated_at_cap": false,
+    "implicit_hooks": []
+   },
+   "confidence": "extracted",
+   "atomicity_claim": null,
+   "notes": [],
+   "journal": null
+  },
+  {
+   "id": "cls:Graph.KG.GraphMode.IsMulti",
+   "kind": "classmethod",
+   "source": "iris_src/src/Graph/KG/GraphMode.cls:16-20",
+   "role": "reader",
+   "reads": [
+    {
+     "store": "global:^IVG.GraphMode",
+     "at": [
+      "iris_src/src/Graph/KG/GraphMode.cls:19 (GraphMode.IsMulti)"
+     ]
+    }
+   ],
+   "writes": [],
+   "transactions": [],
+   "locks": [],
+   "calls": [
+    "Graph.KG.GraphKey.Canonical",
+    "Graph.KG.GraphKey.ForIndex",
+    "Graph.KG.GraphKey.Validate"
+   ],
+   "extraction": {
+    "functions_followed": 4,
+    "max_depth": 6,
+    "truncated_at_cap": false,
+    "implicit_hooks": []
+   },
+   "confidence": "extracted",
+   "atomicity_claim": null,
+   "notes": [],
+   "journal": null
+  },
+  {
+   "id": "cls:Graph.KG.GraphMode.ParallelCount",
+   "kind": "classmethod",
+   "source": "iris_src/src/Graph/KG/GraphMode.cls:48-61",
+   "role": "reader",
+   "reads": [
+    {
+     "store": "sql:Graph_KG.rdf_edges",
+     "at": [
+      "iris_src/src/Graph/KG/GraphMode.cls:51 (GraphMode.ParallelCount)"
+     ]
+    }
+   ],
+   "writes": [],
+   "transactions": [],
+   "locks": [],
+   "calls": [
+    "Graph.KG.GraphKey.Canonical",
+    "Graph.KG.GraphKey.ForName",
+    "Graph.KG.GraphKey.Validate"
+   ],
+   "extraction": {
+    "functions_followed": 4,
+    "max_depth": 6,
+    "truncated_at_cap": false,
+    "implicit_hooks": []
+   },
+   "confidence": "extracted",
+   "atomicity_claim": null,
+   "notes": [],
+   "journal": null
+  },
+  {
+   "id": "py:IRISGraphEngine.is_multigraph",
+   "kind": "python-api",
+   "source": "iris_vector_graph/_engine/admin.py:917-926",
+   "role": "reader",
+   "reads": [
+    {
+     "store": "global:^IVG.GraphMode",
+     "at": [
+      "iris_src/src/Graph/KG/GraphMode.cls:19 (GraphMode.IsMulti)"
+     ]
+    }
+   ],
+   "writes": [],
+   "transactions": [],
+   "locks": [],
+   "calls": [
+    "Graph.KG.GraphKey.Canonical",
+    "Graph.KG.GraphKey.ForIndex",
+    "Graph.KG.GraphKey.Validate",
+    "Graph.KG.GraphMode.IsMulti"
+   ],
+   "extraction": {
+    "functions_followed": 8,
+    "max_depth": 6,
+    "truncated_at_cap": false,
+    "implicit_hooks": []
+   },
+   "confidence": "extracted",
+   "atomicity_claim": null,
+   "notes": [],
+   "journal": null
+  },
+  {
+   "id": "py:iris_vector_graph.engine.IRISGraphEngine._more_than_one_graph",
+   "kind": "internal",
+   "source": "iris_vector_graph/engine.py:612-639",
+   "role": "reader",
+   "reads": [
+    {
+     "store": "sql:Graph_KG.nodes",
+     "at": [
+      "iris_vector_graph/engine.py:624 (IRISGraphEngine._more_than_one_graph)",
+      "iris_vector_graph/engine.py:630 (IRISGraphEngine._more_than_one_graph)",
+      "iris_vector_graph/engine.py:634 (IRISGraphEngine._more_than_one_graph)"
+     ]
+    }
+   ],
+   "writes": [],
+   "transactions": [],
+   "locks": [],
+   "calls": [],
+   "extraction": {
+    "functions_followed": 1,
+    "max_depth": 6,
+    "truncated_at_cap": false,
+    "implicit_hooks": []
+   },
+   "confidence": "extracted",
+   "atomicity_claim": null,
+   "notes": [],
+   "journal": null
+  }
+ ],
+ "journal_validation": [
+  {
+   "candidate": "J08",
+   "footprint": "py:IRISGraphEngine.set_multigraph",
+   "run": "breadth-a-journal-footprints",
+   "result_file": "experiment/playbook-completion/live/breadth-a/journal/J08.json",
+   "call": "returned None",
+   "pids": [
+    "11225"
+   ],
+   "stores_written": [
+    "global:^IVG.GraphMode"
+   ],
+   "outermost_transactions": [],
+   "written_with_no_transaction_open": [
+    "11225 global:^IVG.GraphMode"
+   ],
+   "undeclared_writes": [],
+   "verdict": "covered",
+   "mismatch_classification": null,
+   "explanation": null,
+   "transaction_note": "GraphMode.Set: ^IVG.GraphMode killed with no transaction and no lock (corroborates F-0207)."
+  }
+ ],
+ "journal_summary": {
+  "validated": 1,
+  "covered": 1,
+  "extraction_gaps": 0,
+  "harness_errors": 0,
+  "product_mismatches": 0
+ }
+}

@@ -1,0 +1,345 @@
+{
+ "module": "01",
+ "gate": "3.4-storage-order",
+ "input": "$RUN_DIR/checks/storage-order.json",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "generated_by": "experiment/playbook-completion/models/breadth-a/tools/storage_order_dispositions.py",
+ "method": "each scan site in the module's files assigned by enclosing function (storage_order_sites.py, inventory entry-point ranges and Scope lines) and read at the pin; scan completeness sampled by grep of the module's scope files for TOP/LIMIT/FETCH FIRST and truncating $Order loops ($RUN_DIR/breadth-a/storage-order/grep-missed.log). Source reading only; nothing was run.",
+ "sites": [
+  {
+   "file": "iris_vector_graph/_engine/admin.py",
+   "line": 706,
+   "function": "AdminMixin._missing_routines",
+   "disposition": "false-positive",
+   "key_or_reason": "docstring text naming the probe, not SQL",
+   "cites": [
+    "iris_vector_graph/_engine/admin.py:706-713"
+   ],
+   "finding_candidate": false,
+   "title": "",
+   "severity": "",
+   "owner_note": "status().missing_routines is reported by module 17's status; the routines are setup's (INS-B5.7)",
+   "sql_excerpt": "The functions and procedures setup declares (``GraphSchema.get_procedures_sql_list``) that this engine's IVG Schema lacks, as the DDL names them (4.6.0 R200: ``"
+  },
+  {
+   "file": "iris_vector_graph/_engine/admin.py",
+   "line": 733,
+   "function": "AdminMixin._missing_routines",
+   "disposition": "false-positive",
+   "key_or_reason": "SELECT TOP 0 <schema>.<name>(NULL): a Prepare probe that returns no rows; only its SQLCODE is read",
+   "cites": [
+    "iris_vector_graph/_engine/admin.py:731-743"
+   ],
+   "finding_candidate": false,
+   "title": "",
+   "severity": "",
+   "sql_excerpt": "SELECT TOP 0 {}.{}(NULL)"
+  },
+  {
+   "file": "iris_vector_graph/_engine/schema.py",
+   "line": 2360,
+   "function": "SchemaMixin._plan_setup",
+   "disposition": "existence-only",
+   "key_or_reason": "kg_built = ... cursor.fetchone() is not None",
+   "cites": [
+    "iris_vector_graph/_engine/schema.py:2360-2361"
+   ],
+   "finding_candidate": false,
+   "title": "",
+   "severity": "",
+   "aside": "reads Graph_KG.rdf_edges literally while the same function plans for `schema` (2350); a namespace whose IVG Schema is not Graph_KG is probed in the wrong schema (spec 262 FR-007; not storage order)",
+   "sql_excerpt": "SELECT TOP 1 1 FROM Graph_KG.rdf_edges"
+  },
+  {
+   "file": "iris_vector_graph/_engine/schema.py",
+   "line": 2791,
+   "function": "SchemaMixin.get_schema_visualization",
+   "disposition": "order-dependent",
+   "key_or_reason": "TOP 1 rl.s WHERE label = ?: the sampled node of a label is the first in scan order",
+   "cites": [
+    "iris_vector_graph/_engine/schema.py:2788-2793",
+    "iris_vector_graph/_engine/schema.py:2773-2776"
+   ],
+   "finding_candidate": false,
+   "title": "",
+   "severity": "",
+   "documented": true,
+   "note": "Documented as a sample ('Sampled, not exact: ... one node carrying it'). The sample is graph-blind (rdf_labels/rdf_props joined by id only): finding F-0106.",
+   "sql_excerpt": "SELECT TOP 1 rl.s FROM {}.rdf_labels rl WHERE rl.label = ?"
+  },
+  {
+   "file": "iris_vector_graph/_engine/schema.py",
+   "line": 2800,
+   "function": "SchemaMixin.get_schema_visualization",
+   "disposition": "false-positive",
+   "key_or_reason": "DISTINCT TOP 20 \"key\" ... ORDER BY \"key\" in the concatenated literal",
+   "cites": [
+    "iris_vector_graph/_engine/schema.py:2799-2802"
+   ],
+   "finding_candidate": false,
+   "title": "",
+   "severity": "",
+   "sql_excerpt": "SELECT DISTINCT TOP 20 \"key\" FROM"
+  },
+  {
+   "file": "iris_vector_graph/_engine/schema.py",
+   "line": 2825,
+   "function": "SchemaMixin.get_schema_visualization",
+   "disposition": "order-dependent",
+   "key_or_reason": "TOP 1 s, o_id WHERE p = ?: the sampled edge of a predicate is the first in scan order",
+   "cites": [
+    "iris_vector_graph/_engine/schema.py:2819-2826",
+    "iris_vector_graph/_engine/schema.py:2774-2775"
+   ],
+   "finding_candidate": false,
+   "title": "",
+   "severity": "",
+   "documented": true,
+   "note": "Documented sample ('those of one edge's endpoints').",
+   "sql_excerpt": "SELECT TOP 1 s, o_id FROM {}.rdf_edges WHERE p = ?"
+  },
+  {
+   "file": "iris_vector_graph/_engine/schema.py",
+   "line": 2833,
+   "function": "SchemaMixin.get_schema_visualization",
+   "disposition": "order-dependent",
+   "key_or_reason": "TOP 1 label WHERE s = ?: for an endpoint with several labels the start label is whichever row comes first; graph-blind (no graph_id)",
+   "cites": [
+    "iris_vector_graph/_engine/schema.py:2832-2837"
+   ],
+   "finding_candidate": false,
+   "title": "",
+   "severity": "",
+   "documented": true,
+   "note": "Inside the documented 'sampled, not exact' contract (2773-2776), which does not say which label of a multi-label endpoint is used; the graph-blind join is F-0106.",
+   "sql_excerpt": "SELECT TOP 1 label FROM {}.rdf_labels WHERE s = ?"
+  },
+  {
+   "file": "iris_vector_graph/_engine/schema.py",
+   "line": 2839,
+   "function": "SchemaMixin.get_schema_visualization",
+   "disposition": "order-dependent",
+   "key_or_reason": "as 2833, for the end label",
+   "cites": [
+    "iris_vector_graph/_engine/schema.py:2838-2843"
+   ],
+   "finding_candidate": false,
+   "title": "",
+   "severity": "",
+   "documented": true,
+   "note": "as 2833",
+   "sql_excerpt": "SELECT TOP 1 label FROM {}.rdf_labels WHERE s = ?"
+  },
+  {
+   "file": "iris_vector_graph/schema.py",
+   "line": 887,
+   "function": "GraphSchema.ensure_adjacency_index",
+   "disposition": "existence-only",
+   "key_or_reason": "chooses the log level only: logger.info if cursor.fetchone() else logger.debug",
+   "cites": [
+    "iris_vector_graph/schema.py:887-888"
+   ],
+   "finding_candidate": false,
+   "title": "",
+   "severity": "",
+   "sql_excerpt": "SELECT TOP 1 1 FROM Graph_KG.{}"
+  },
+  {
+   "file": "iris_vector_graph/schema.py",
+   "line": 933,
+   "function": "GraphSchema.ensure_props_value_key",
+   "disposition": "existence-only",
+   "key_or_reason": "batch drain: UPDATE ... WHERE %ID IN (SELECT TOP n %ID ... WHERE val_key IS NULL AND val IS NOT NULL) repeats until a batch is short or no row qualifies, so which rows one batch takes cannot change the end state (every qualifying row is recomputed; a stalled pass stops on the rows left, whatever their order)",
+   "cites": [
+    "iris_vector_graph/schema.py:928-955"
+   ],
+   "finding_candidate": false,
+   "title": "",
+   "severity": "",
+   "note": "the scan reports line 933; the TOP is on 934",
+   "sql_excerpt": "UPDATE Graph_KG.rdf_props SET val = val WHERE %ID IN (SELECT TOP {} %ID FROM Graph_KG.rdf_props WHERE val_key IS NULL AND val IS NOT NULL)"
+  },
+  {
+   "file": "iris_vector_graph/schema.py",
+   "line": 1908,
+   "function": "GraphSchema.validate_schema",
+   "disposition": "existence-only",
+   "key_or_reason": "status[table] = True when the SELECT runs; the row is not read",
+   "cites": [
+    "iris_vector_graph/schema.py:1904-1911"
+   ],
+   "finding_candidate": false,
+   "title": "",
+   "severity": "",
+   "sql_excerpt": "SELECT TOP 1 * FROM {}"
+  }
+ ],
+ "missed_by_scan": [],
+ "out_of_scope": [
+  {
+   "file": "iris_vector_graph/_engine/admin.py",
+   "line": 104,
+   "function": "active_queries_sql",
+   "owner": "17 operations (list_active_queries)",
+   "in_scan": true
+  },
+  {
+   "file": "iris_vector_graph/engine.py",
+   "line": 576,
+   "function": "IRISGraphEngine._native_privileges",
+   "owner": "09 native executor",
+   "in_scan": true
+  },
+  {
+   "file": "iris_vector_graph/engine.py",
+   "line": 784,
+   "function": "IRISGraphEngine._detect_fetch_first_unsafe",
+   "owner": "08 cypher-sql (driver probe)",
+   "in_scan": true
+  },
+  {
+   "file": "iris_vector_graph/engine.py",
+   "line": 1340,
+   "function": "IRISGraphEngine._proc_db_schema_nodetypeproperties",
+   "owner": "08 cypher-sql procedures",
+   "in_scan": true
+  },
+  {
+   "file": "iris_vector_graph/engine.py",
+   "line": 1346,
+   "function": "IRISGraphEngine._proc_db_schema_nodetypeproperties",
+   "owner": "08 cypher-sql procedures",
+   "in_scan": true
+  },
+  {
+   "file": "iris_vector_graph/engine.py",
+   "line": 1382,
+   "function": "IRISGraphEngine._proc_db_schema_reltypeproperties",
+   "owner": "08 cypher-sql procedures",
+   "in_scan": true
+  },
+  {
+   "file": "iris_vector_graph/engine.py",
+   "line": 1491,
+   "function": "IRISGraphEngine._proc_db_propertykeys",
+   "owner": "08 cypher-sql procedures",
+   "in_scan": true
+  },
+  {
+   "file": "iris_vector_graph/engine.py",
+   "line": 1624,
+   "function": "IRISGraphEngine._proc_apoc_meta_data",
+   "owner": "08 cypher-sql procedures",
+   "in_scan": true
+  },
+  {
+   "file": "iris_vector_graph/schema.py",
+   "line": 2484,
+   "function": "kg_TXT DDL",
+   "owner": "07 text-search",
+   "in_scan": true
+  },
+  {
+   "file": "iris_vector_graph/schema.py",
+   "line": 2513,
+   "function": "kg_TXT DDL body (missed by scan)",
+   "owner": "07 text-search",
+   "in_scan": false
+  },
+  {
+   "file": "iris_vector_graph/schema.py",
+   "line": 2545,
+   "function": "kg_RRF_FUSE DDL body (missed by scan)",
+   "owner": "07 text-search (fusion)",
+   "in_scan": false
+  }
+ ],
+ "summary": {
+  "false-positive": 3,
+  "existence-only": 4,
+  "order-dependent": 4
+ },
+ "summary_missed": {},
+ "finding_candidates": [],
+ "status_suggestion": {
+  "status": "open",
+  "reason": "4 order-dependent sites, all inside get_schema_visualization's documented sample (2773-2776); no self-test pins the sample, and its graph-blind joins are F-0106; every other site is existence-only or a false positive"
+ },
+ "not_in_modules_01_06": [
+  {
+   "file": "iris_vector_graph/_engine/query.py",
+   "lines": [
+    151,
+    588,
+    1818,
+    1835,
+    1837
+   ],
+   "owner": "08 cypher-sql"
+  },
+  {
+   "file": "iris_vector_graph/cypher/translator.py",
+   "lines": [
+    2926,
+    3330,
+    3343,
+    4433,
+    4440,
+    4460,
+    4482,
+    5809,
+    8176,
+    11141,
+    11175,
+    12386
+   ],
+   "owner": "08 cypher-sql"
+  },
+  {
+   "file": "iris_vector_graph/text_search.py",
+   "lines": [
+    48,
+    77,
+    111,
+    165,
+    212
+   ],
+   "owner": "07 text-search"
+  },
+  {
+   "file": "iris_vector_graph/gql/engine.py",
+   "lines": [
+    40
+   ],
+   "owner": "16 interfaces"
+  },
+  {
+   "file": "iris_vector_graph/ledger/replay.py",
+   "lines": [
+    342
+   ],
+   "owner": "14 replay"
+  },
+  {
+   "file": "iris_vector_graph/dbapi_utils.py",
+   "lines": [
+    267
+   ],
+   "owner": "17 operations"
+  },
+  {
+   "file": "iris_src/src/Graph/KG/Cypher/Exec.cls",
+   "lines": [
+    1101
+   ],
+   "owner": "09 native executor"
+  },
+  {
+   "file": "iris_src/src/Graph/KG/MCPTools.cls",
+   "lines": [
+    33
+   ],
+   "owner": "16 interfaces"
+  }
+ ]
+}

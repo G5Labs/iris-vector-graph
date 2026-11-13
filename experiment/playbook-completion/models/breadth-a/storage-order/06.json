@@ -1,0 +1,409 @@
+{
+ "module": "06",
+ "gate": "3.4-storage-order",
+ "input": "$RUN_DIR/checks/storage-order.json",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "generated_by": "experiment/playbook-completion/models/breadth-a/tools/storage_order_dispositions.py",
+ "method": "each scan site in the module's files assigned by enclosing function (storage_order_sites.py, inventory entry-point ranges and Scope lines) and read at the pin; scan completeness sampled by grep of the module's scope files for TOP/LIMIT/FETCH FIRST and truncating $Order loops ($RUN_DIR/breadth-a/storage-order/grep-missed.log). Source reading only; nothing was run.",
+ "sites": [
+  {
+   "file": "iris_vector_graph/_engine/embeddings.py",
+   "line": 884,
+   "function": "EmbeddingsMixin._probe_native_vec",
+   "disposition": "existence-only",
+   "key_or_reason": "WHERE 1=0 compile probe: only whether VECTOR_COSINE prepares",
+   "cites": [
+    "iris_vector_graph/_engine/embeddings.py:880-896"
+   ],
+   "finding_candidate": false,
+   "title": "",
+   "severity": "",
+   "sql_excerpt": "SELECT TOP 1 VECTOR_COSINE(emb, TO_VECTOR('[0]', DOUBLE)) FROM {} WHERE 1=0"
+  },
+  {
+   "file": "iris_vector_graph/_engine/vector.py",
+   "line": 60,
+   "function": "VectorMixin._detect_stored_vector_dtype",
+   "disposition": "existence-only",
+   "key_or_reason": "one stored vector to probe the column's element type, which is declared per table, so any row answers the same",
+   "cites": [
+    "iris_vector_graph/_engine/vector.py:56-84"
+   ],
+   "finding_candidate": false,
+   "title": "",
+   "severity": "",
+   "sql_excerpt": "SELECT TOP 1 emb FROM {} WHERE emb IS NOT NULL"
+  },
+  {
+   "file": "iris_vector_graph/_engine/vector.py",
+   "line": 72,
+   "function": "VectorMixin._detect_stored_vector_dtype",
+   "disposition": "existence-only",
+   "key_or_reason": "LIMIT 1 cast probe: only whether the statement runs",
+   "cites": [
+    "iris_vector_graph/_engine/vector.py:69-79"
+   ],
+   "finding_candidate": false,
+   "title": "",
+   "severity": "",
+   "sql_excerpt": "SELECT VECTOR_COSINE(emb, TO_VECTOR(?, {})) FROM {} WHERE emb IS NOT NULL LIMIT 1"
+  },
+  {
+   "file": "iris_vector_graph/_engine/vector.py",
+   "line": 377,
+   "function": "VectorMixin.edge_vector_search",
+   "disposition": "false-positive",
+   "key_or_reason": "ORDER BY score DESC in the concatenated literal",
+   "cites": [
+    "iris_vector_graph/_engine/vector.py:377-383"
+   ],
+   "finding_candidate": false,
+   "title": "",
+   "severity": "",
+   "tie_break": "scan order (ORDER BY score only; equal scores at the k-th place are cut in storage order)",
+   "sql_excerpt": "SELECT TOP"
+  },
+  {
+   "file": "iris_vector_graph/_engine/vector.py",
+   "line": 435,
+   "function": "VectorMixin._raise_width_mismatch",
+   "disposition": "existence-only",
+   "key_or_reason": "one stored vector's width for an error message; a route's emb column declares one width",
+   "cites": [
+    "iris_vector_graph/_engine/vector.py:425-446"
+   ],
+   "finding_candidate": false,
+   "title": "",
+   "severity": "",
+   "sql_excerpt": "SELECT TOP 1 emb FROM {} WHERE {}"
+  },
+  {
+   "file": "iris_vector_graph/_engine/vector.py",
+   "line": 569,
+   "function": "VectorMixin.kg_KNN_VEC",
+   "disposition": "false-positive",
+   "key_or_reason": "ORDER BY score DESC in the concatenated literal",
+   "cites": [
+    "iris_vector_graph/_engine/vector.py:569-574"
+   ],
+   "finding_candidate": false,
+   "title": "",
+   "severity": "",
+   "tie_break": "scan order (ORDER BY score only; equal scores at the k-th place are cut in storage order)",
+   "sql_excerpt": "SELECT TOP ? n.node_id, VECTOR_COSINE(n.emb, TO_VECTOR(?,"
+  },
+  {
+   "file": "iris_vector_graph/_engine/vector.py",
+   "line": 578,
+   "function": "VectorMixin.kg_KNN_VEC",
+   "disposition": "false-positive",
+   "key_or_reason": "ORDER BY score DESC in the concatenated literal",
+   "cites": [
+    "iris_vector_graph/_engine/vector.py:578-583"
+   ],
+   "finding_candidate": false,
+   "title": "",
+   "severity": "",
+   "tie_break": "scan order (ORDER BY score only; equal scores at the k-th place are cut in storage order)",
+   "sql_excerpt": "SELECT TOP ? n.node_id, VECTOR_COSINE(n.emb, TO_VECTOR(?,"
+  },
+  {
+   "file": "iris_vector_graph/_engine/vector.py",
+   "line": 587,
+   "function": "VectorMixin.kg_KNN_VEC",
+   "disposition": "false-positive",
+   "key_or_reason": "ORDER BY score DESC in the concatenated literal",
+   "cites": [
+    "iris_vector_graph/_engine/vector.py:587-591"
+   ],
+   "finding_candidate": false,
+   "title": "",
+   "severity": "",
+   "tie_break": "scan order (ORDER BY score only; equal scores at the k-th place are cut in storage order)",
+   "sql_excerpt": "SELECT TOP ? n.node_id, VECTOR_COSINE(n.emb, TO_VECTOR(?,"
+  },
+  {
+   "file": "iris_vector_graph/_engine/vector.py",
+   "line": 595,
+   "function": "VectorMixin.kg_KNN_VEC",
+   "disposition": "false-positive",
+   "key_or_reason": "ORDER BY score DESC in the concatenated literal",
+   "cites": [
+    "iris_vector_graph/_engine/vector.py:595-599"
+   ],
+   "finding_candidate": false,
+   "title": "",
+   "severity": "",
+   "tie_break": "scan order (ORDER BY score only; equal scores at the k-th place are cut in storage order)",
+   "sql_excerpt": "SELECT TOP ? n.node_id, VECTOR_COSINE(n.emb, TO_VECTOR(?,"
+  },
+  {
+   "file": "iris_vector_graph/_engine/vector.py",
+   "line": 661,
+   "function": "VectorMixin.measure_route_recall",
+   "disposition": "false-positive",
+   "key_or_reason": "ORDER BY node_id in the same literal; node_id is unique per (graph_id) in a route",
+   "cites": [
+    "iris_vector_graph/_engine/vector.py:660-663"
+   ],
+   "finding_candidate": false,
+   "title": "",
+   "severity": "",
+   "sql_excerpt": "SELECT TOP ? node_id FROM"
+  },
+  {
+   "file": "iris_vector_graph/_engine/vector.py",
+   "line": 819,
+   "function": "VectorMixin._kg_KNN_VEC_python_optimized",
+   "disposition": "false-positive",
+   "key_or_reason": "ORDER BY score DESC in the concatenated literal",
+   "cites": [
+    "iris_vector_graph/_engine/vector.py:818-825"
+   ],
+   "finding_candidate": false,
+   "title": "",
+   "severity": "",
+   "tie_break": "scan order (ORDER BY score only; equal scores at the k-th place are cut in storage order)",
+   "sql_excerpt": "SELECT TOP"
+  },
+  {
+   "file": "iris_vector_graph/_engine/vector.py",
+   "line": 829,
+   "function": "VectorMixin._kg_KNN_VEC_python_optimized",
+   "disposition": "false-positive",
+   "key_or_reason": "ORDER BY score DESC in the concatenated literal",
+   "cites": [
+    "iris_vector_graph/_engine/vector.py:828-833"
+   ],
+   "finding_candidate": false,
+   "title": "",
+   "severity": "",
+   "tie_break": "scan order (ORDER BY score only; equal scores at the k-th place are cut in storage order)",
+   "sql_excerpt": "SELECT TOP"
+  },
+  {
+   "file": "iris_vector_graph/_engine/vector.py",
+   "line": 1146,
+   "function": "VectorMixin.validate_vector_table",
+   "disposition": "existence-only",
+   "key_or_reason": "one sampled value's length; documented as 'the length of one sampled vector', and a VECTOR column declares one width",
+   "cites": [
+    "iris_vector_graph/_engine/vector.py:1122-1158"
+   ],
+   "finding_candidate": false,
+   "title": "",
+   "severity": "",
+   "documented": true,
+   "sql_excerpt": "SELECT TOP 1 {} FROM {}"
+  },
+  {
+   "file": "iris_vector_graph/_engine/vector.py",
+   "line": 1265,
+   "function": "VectorMixin.vector_search",
+   "disposition": "false-positive",
+   "key_or_reason": "ORDER BY score DESC in the concatenated literal",
+   "cites": [
+    "iris_vector_graph/_engine/vector.py:1264-1269"
+   ],
+   "finding_candidate": false,
+   "title": "",
+   "severity": "",
+   "tie_break": "scan order (ORDER BY score only; equal scores at the k-th place are cut in storage order)",
+   "sql_excerpt": "SELECT TOP"
+  },
+  {
+   "file": "iris_vector_graph/vector_utils.py",
+   "line": 123,
+   "function": "VectorOptimizer.check_hnsw_availability",
+   "disposition": "false-positive",
+   "key_or_reason": "ORDER BY similarity DESC in the same literal; only timing and count are used",
+   "cites": [
+    "iris_vector_graph/vector_utils.py:123-130"
+   ],
+   "finding_candidate": false,
+   "title": "",
+   "severity": "",
+   "sql_excerpt": "SELECT TOP 5 node_id, VECTOR_COSINE(emb, TO_VECTOR(?,"
+  },
+  {
+   "file": "iris_vector_graph/vector_utils.py",
+   "line": 320,
+   "function": "VectorOptimizer.benchmark_vector_search",
+   "disposition": "false-positive",
+   "key_or_reason": "ORDER BY similarity DESC in the same literal; only timing and count are used",
+   "cites": [
+    "iris_vector_graph/vector_utils.py:320-327"
+   ],
+   "finding_candidate": false,
+   "title": "",
+   "severity": "",
+   "sql_excerpt": "SELECT TOP"
+  },
+  {
+   "file": "iris_vector_graph/vector_utils.py",
+   "line": 352,
+   "function": "VectorOptimizer.benchmark_vector_search",
+   "disposition": "existence-only",
+   "key_or_reason": "any 100 rows serve the timing benchmark; the result holds only timings and min(len, k)",
+   "cites": [
+    "iris_vector_graph/vector_utils.py:345-375"
+   ],
+   "finding_candidate": false,
+   "title": "",
+   "severity": "",
+   "sql_excerpt": "SELECT TOP 100 node_id, emb FROM {}.kg_NodeEmbeddings WHERE emb IS NOT NULL"
+  },
+  {
+   "file": "iris_vector_graph/vector_utils.py",
+   "line": 455,
+   "function": "VectorOptimizer.get_vector_statistics",
+   "disposition": "existence-only",
+   "key_or_reason": "one row's vector for 'vector_dimension'; the column declares one width",
+   "cites": [
+    "iris_vector_graph/vector_utils.py:453-462"
+   ],
+   "finding_candidate": false,
+   "title": "",
+   "severity": "",
+   "aside": "len(sample_vector) is the length of the value as returned; if the driver returns the CSV text this is a character count, not a width (not storage order; unverified)",
+   "sql_excerpt": "SELECT TOP 1 emb FROM {}"
+  },
+  {
+   "file": "iris_vector_graph/migrations/graph_scoped_embeddings.py",
+   "line": 1273,
+   "function": "_Migrator._measured_width",
+   "disposition": "order-dependent",
+   "key_or_reason": "the 4.0.0 node step sizes the route tables from one stored vector when the legacy table declares no width and the registry records none; with rows of several widths, the plan's width is whichever row the scan returns first",
+   "cites": [
+    "iris_vector_graph/migrations/graph_scoped_embeddings.py:840-846",
+    "iris_vector_graph/migrations/graph_scoped_embeddings.py:1268-1283"
+   ],
+   "finding_candidate": true,
+   "title": "The 4.0.0 vector migration takes an undeclared legacy table's width from an arbitrary row",
+   "severity": "S4",
+   "note": "Reachable only for a legacy table with no declared and no recorded width and mixed widths; a VECTOR column declared with a type and no length holds rows of different widths (docs/migration/v4.0.0.md:329-332 relies on this for the quarantine's emb). Which rows then fit the new route is decided by scan order. Not reproduced.",
+   "sql_excerpt": "SELECT TOP 1 emb FROM {} WHERE emb IS NOT NULL"
+  },
+  {
+   "file": "iris_vector_graph/schema.py",
+   "line": 2436,
+   "function": "GraphSchema.get_procedures_sql_list (kg_KNN_VEC DDL)",
+   "disposition": "false-positive",
+   "key_or_reason": "the procedure body ends ORDER BY score DESC (the scan matched the CREATE line)",
+   "cites": [
+    "iris_vector_graph/schema.py:2469-2482"
+   ],
+   "finding_candidate": false,
+   "title": "",
+   "severity": "",
+   "tie_break": "scan order (ORDER BY score only; equal scores at the k-th place are cut in storage order)",
+   "aside": "not storage order: with labelFilter NULL the LEFT JOIN of rdf_labels keeps one row per label, so a node with n labels can fill n of the k places (schema.py:2471-2476); kg_RRF_FUSE's vector leg passes NULL (schema.py:2558). Unverified; outside this gate.",
+   "sql_excerpt": ".kg_KNN_VEC( IN queryInput VARCHAR(32000), IN k INT, IN labelFilter VARCHAR(128), -- The fourth argument was embeddingConfig, accepted and ignored. In 4.0.0 it "
+  },
+  {
+   "file": "iris_src/src/Graph/KG/GraphStores.cls",
+   "line": 308,
+   "function": "VectorRouteGuard",
+   "disposition": "order-dependent",
+   "key_or_reason": "SELECT TOP 1 table_name ... WHERE graph_id = :pGraph AND COALESCE(model_key,'') = '' AND kind node: the registry key is (table_name, graph_id) (_engine/schema.py:143-158) and the (graph_id, model_key) index is not unique (_engine/schema.py:585-588), so two node rows can answer one graph; the guard returns 0 (read kg_NodeEmbeddings) or raises depending on which row the scan returns first",
+   "cites": [
+    "iris_src/src/Graph/KG/GraphStores.cls:304-318",
+    "iris_vector_graph/_engine/embeddings.py:107-118",
+    "iris_vector_graph/_engine/embeddings.py:693-728"
+   ],
+   "finding_candidate": true,
+   "title": "kg_KNN_VEC's route guard picks an arbitrary registry row where Python applies a fixed preference",
+   "severity": "S4",
+   "note": "Python resolves two rows for one pair with _route_preference (FR-015: kg_NodeEmbeddings before kg_NodeEmbeddings_optimized). The guard has no such rule. Reachable when a named graph holds both legacy rows (a 3.2.0 adoption mapped to one named graph); not reproduced. Owner: GraphStores.cls is module 12's file; VEC-B5.21/VEC-I5.22 state the guard in module 06.",
+   "sql_excerpt": "&sql(SELECT TOP 1 table_name INTO :tTable FROM Graph_KG.embedding_registry"
+  }
+ ],
+ "missed_by_scan": [
+  {
+   "file": "iris_src/src/Graph/KG/EmbedQueue.cls",
+   "line": 131,
+   "function": "EmbedQueue.ClaimPendingBatch",
+   "disposition": "collation-ordered",
+   "key_or_reason": "the first batchSize PENDING entries in reqId order; reqId is the node id (Enqueue, 37-38), so entries are served in id collation order, not arrival order",
+   "cites": [
+    "iris_src/src/Graph/KG/EmbedQueue.cls:105-134",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:35-59"
+   ],
+   "finding_candidate": true,
+   "title": "The embed queue serves PENDING entries in node-id order, so a late-collating entry can wait indefinitely under steady enqueue",
+   "severity": "S4",
+   "documented": true,
+   "note": "Documented as a 'plain ordered scan (single-processor; no claim state)' (106-107); the arrival-order consequence (no FIFO, possible starvation) is not stated. Progress property, not reproduced."
+  },
+  {
+   "file": "iris_src/src/Graph/KG/EmbedQueue.cls",
+   "line": 267,
+   "function": "EmbedQueue.ProcessBatch",
+   "disposition": "collation-ordered",
+   "key_or_reason": "the same order for the ObjectScript worker (Quit:processed>=batchSize)",
+   "cites": [
+    "iris_src/src/Graph/KG/EmbedQueue.cls:258-268"
+   ],
+   "finding_candidate": true,
+   "title": "as EmbedQueue.cls:131 (same candidate)",
+   "severity": "S4",
+   "documented": true
+  },
+  {
+   "file": "iris_src/src/Graph/KG/IVFIndex.cls",
+   "line": 141,
+   "function": "IVFIndex.Search",
+   "disposition": "collation-ordered",
+   "key_or_reason": "results ranked by ^||ivfRanked(-score, nodeId): ties broken by node id, deterministic",
+   "cites": [
+    "iris_src/src/Graph/KG/IVFIndex.cls:128-155"
+   ],
+   "finding_candidate": false,
+   "title": "",
+   "severity": "",
+   "documented": false,
+   "note": "Deterministic; the metric itself is F-0607."
+  }
+ ],
+ "out_of_scope": [
+  {
+   "file": "iris_vector_graph/_engine/vector.py",
+   "line": 979,
+   "function": "VectorMixin.kg_TXT",
+   "owner": "07 text-search",
+   "in_scan": true
+  },
+  {
+   "file": "iris_vector_graph/_engine/vector.py",
+   "line": 998,
+   "function": "VectorMixin.kg_TXT",
+   "owner": "07 text-search",
+   "in_scan": true
+  },
+  {
+   "file": "iris_vector_graph/_engine/vector.py",
+   "line": 1042,
+   "function": "VectorMixin.kg_TXT",
+   "owner": "07 text-search",
+   "in_scan": true
+  }
+ ],
+ "summary": {
+  "existence-only": 7,
+  "false-positive": 12,
+  "order-dependent": 2
+ },
+ "summary_missed": {
+  "collation-ordered": 3
+ },
+ "finding_candidates": [
+  "The 4.0.0 vector migration takes an undeclared legacy table's width from an arbitrary row",
+  "The embed queue serves PENDING entries in node-id order, so a late-collating entry can wait indefinitely under steady enqueue",
+  "as EmbedQueue.cls:131 (same candidate)",
+  "kg_KNN_VEC's route guard picks an arbitrary registry row where Python applies a fixed preference"
+ ],
+ "status_suggestion": {
+  "status": "open",
+  "reason": "two order-dependent candidates (graph_scoped_embeddings.py:1273 migration width; GraphStores.cls:308 route guard), score ties cut in scan order at every top-k search, and the embed queue's id-order service"
+ }
+}
