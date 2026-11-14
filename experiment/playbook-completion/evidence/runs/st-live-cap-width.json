@@ -1,0 +1,15 @@
+{
+  "command": "locks.sh iris python experiment/playbook-completion/structural/capkeys/cap_width.py $RUN_DIR/structural/capkeys/cap-width-r2.json",
+  "experiment_head": "d77620a9333a7eb5b62ca9b8c92144a6aaf74d2b",
+  "id": "st-live-cap-width",
+  "kind": "live",
+  "lane": "structural",
+  "log": "$RUN_DIR/structural/capkeys/cap-width-r2.json",
+  "log_bytes": 56536,
+  "log_sha256": "6ccebd6ea81893630fdbf20b21919c340760d571441d282a10ce2fa368890ede",
+  "observes": "AUDITD, key widths s=o=n, p=n//2, bisection per writer from an empty namespace: the widest edge accepted is 194 with the default graph and 155 with a 100-char graph name for every edge writer (create_node+create_edge, bulk_create_nodes+bulk_create_edges, create_edge_temporal, Cypher CREATE, IRISGraphStore.write_nodes+write_edges [default graph only]); an earlier harness run (cap-width.json, unregistered, classification superseded) found 195/156 at lower row ids, so the limit shrinks with the rdf_edges row-id length. At the widest width every writer's rows have their ^KG out/in and label entries and read back; one past, every writer refuses with SQLCODE -415 <SUBSCRIPT> in the rdf_edges unique index and the failing step leaves only ^KG(gen) stamps ($Increment, survives rollback by design, Adjacency.cls:23-28), iFind word-dictionary entries, or (bulk_create_edges) derived-store rebuild stamps, EXCEPT create_edge_temporal, which leaves ^KG tout/tin/bucket/tlast entries for an edge with no structural row (its error says so; F-C0501). Node ids: 256 accepted with graph names of 0 and 100 chars, 234 with a 256-char graph name, 235 refused (create_node, bulk_create_nodes) with nothing but iFind dictionary entries left. Cross phase at the widest edge (G=0 n=194, G=100 n=155): sync, rebuild_kg, verify_graph ok, Cypher MATCH, save_snapshot + replacing restore_snapshot, erase_graph all leave rows and adjacency consistent",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T11:45:49+00:00",
+  "result": "fail"
+}

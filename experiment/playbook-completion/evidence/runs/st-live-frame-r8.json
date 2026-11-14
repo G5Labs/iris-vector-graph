@@ -1,0 +1,16 @@
+{
+  "command": "locks.sh iris timeout 1800 bash -c 'python frame_live.py control; python frame_live.py run 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 17 18 S S2' (experiment/playbook-completion/structural/frame/, AUDITD)",
+  "experiment_head": "f9e4c64b86f4261c926f274f754f2cc5f1b1e5d0",
+  "id": "st-live-frame-r8",
+  "inputs_sha256_12": "56492501b98c:structural/frame/live-01-20261114T121654.json;f319e2181e2f:structural/frame/live-02-20261114T121654.json;002275fe9de4:structural/frame/live-03-20261114T121654.json;ba0c3405c382:structural/frame/live-04-20261114T121654.json;bc5e563f0b1c:structural/frame/live-05-20261114T121654.json;e8fc36c0a2a3:structural/frame/live-06-20261114T121654.json;08eaef4d26dd:structural/frame/live-07-20261114T121654.json;8b540800d9f4:structural/frame/live-08-20261114T121654.json;ab87cd3e57d1:structural/frame/live-09-20261114T121654.json;f854ae1c4f97:structural/frame/live-10-20261114T121654.json;c66cd9c7ad5e:structural/frame/live-11-20261114T121654.json;d182a5ccbc2c:structural/frame/live-12-20261114T121654.json;9f97e8380bd3:structural/frame/live-13-20261114T121654.json;538458f86906:structural/frame/live-14-20261114T121654.json;a069edc653fb:structural/frame/live-15-20261114T121654.json;522161795632:structural/frame/live-17-20261114T121654.json;a66f57dedc7b:structural/frame/live-18-20261114T121654.json;9fa1c47bcf11:structural/frame/live-S-20261114T121654.json;de41b690389f:structural/frame/live-S2-20261114T121654.json;",
+  "kind": "live",
+  "lane": "structural",
+  "log": "$RUN_DIR/structural/frame/final-r8.log",
+  "log_bytes": 188619,
+  "log_sha256": "f09172f703ed9ce98851a43cd61468b6b5638adc7768b38d3fe80588d2a47d94",
+  "observes": "108 writer actions of modules 01-15, 17, 18 through the product's own API, each from lib.reset + base data, journal-oracled (pid-filtered, AUDITD db): 100 exercised (>=1 journaled write, no error), 8 journaled nothing (remove_legacy_objects, backfill_degp, bm25_upgrade, Gen.Mode, Gen.DropAll, a native read in compile mode off, ledger readers, write_nodes over an existing node). Store level held on 98, key level on 107. Store excursions on 10 actions: 9 are declaration gaps of the footprint used (01 initialize_schema and 06 store_embedding write embedding_registry; 03 delete_node/bulk_delete_nodes write ^NKG($meta,version); 05 backfill_temporal_structural_rows writes ^KG adjacency; 10 kg_PERSONALIZED_PAGERANK/degree_centrality write ^KG(degc); 12 EraseAll drops routed tables; 14 Ledger.PurgeAll is declared nowhere), 1 is a product excursion: triangle_count writes ^IVG.Deploy(routines) (F-C1001, also the only key-level excursion). Reached and key-level-held: LedgerApply.cls:664, LedgerGenesis.cls:110-111, LedgerRedact.cls:465. Per-file sha256 in --extra",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T12:21:12+00:00",
+  "result": "fail"
+}

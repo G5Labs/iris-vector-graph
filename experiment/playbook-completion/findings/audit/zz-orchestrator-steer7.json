@@ -1,0 +1,28 @@
+[
+ {
+  "id": "F-C0347",
+  "module": "03",
+  "title": "A caller transaction with more than about 1,000 row writes to a table escalates to a table lock; every other process's write to that table, in any graph, then waits 10 s and fails with SQLCODE -110",
+  "intended": "No IVG document states whether one graph's (or tenant's) transaction may block writes to other graphs: a search of docs/, specs/ and README.md at the pin for lock escalation, LockThreshold or escalat* finds no statement on it; the multi-graph documents promise isolation of answers (SYS-I2), not of availability. The product neither documents nor configures the IRIS lock-escalation threshold (the engine default; iris-contract treats lock escalation as an engine feature). Intent undecided.",
+  "observed": "Live on AUDITD (structural lane, st-live-cap-batch, part '03 lock escalation'): with setAutoCommit(False), a caller transaction holding 200 create_node inserts leaves row locks only, and a second process's create_node succeeds in 0.03 s; holding 1,500 inserts, the lock table shows table locks ^t52S.XCFT.1 (nodes) and ^t52S.DMCe.1 (rdf_props) in mode X, and a second process's create_node of another node in another call waits 10.09 s and raises GraphWriteError SQLCODE -110 'nothing written' (its node is absent and the answer is consistent). Answers stay consistent; only availability across graphs is affected.",
+  "disposition": "intent-undecided",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "st-live-cap-batch"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/nodes_edges.py:1103"
+   }
+  ],
+  "gates": [
+   "3.6-capacity",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S3",
+  "confidence": "high",
+  "remedy": "Decide whether large caller transactions may block other graphs' writers; if not, document a batch limit below the escalation threshold or configure the threshold for IVG's tables, and say so in the operations guide.",
+  "notes": "Filed by the orchestrator from the structural lane's observation (the lane recorded it as intent-undecided without a finding). The st-live-cap-batch record is 'incomplete' overall because its Cypher UNWIND part was undecided (rerun as st-live-cap-batch-r2); the escalation part is decided in its log."
+ }
+]

@@ -1,0 +1,15 @@
+{
+  "command": "python experiment/playbook-completion/structural/order/storage_order_scan.py --self-test; python experiment/playbook-completion/structural/order/control_original.py",
+  "experiment_head": "d77620a9333a7eb5b62ca9b8c92144a6aaf74d2b",
+  "id": "st-control-so-selftest",
+  "kind": "control",
+  "lane": "structural",
+  "log": "$RUN_DIR/structural/order/so-selftest.log",
+  "log_bytes": 1247,
+  "log_sha256": "1d0fa016dc734aa32611610cdfb4f7ddbeb9694b1d9dcb24d3bacfade5fc3c48",
+  "observes": "Extended storage-order scanner self-test PASS: seeded candidates flagged for all 7 rules planted (one-literal TOP t_lit.py:1, split f-string TOP t_split.py:4, first-row fetchone t_first.py:3, slice cut of an unordered fetchall t_slice.py:4, ObjectScript &sql SELECT INTO C.cls:5, cursor-order allocation D.cls:6, If-form count cutoff D.cls:21); not flagged: the ordered literal, the ordered split statement, a unique-key fetchone (nodes(node_id,graph_id)), an existence fetchone, a unique-key SELECT INTO, sorted(set()) slice and an ORDER BY cursor; gate fails on an undisposed site, a stale citation and an unknown class, passes when disposed. Control: the original tools/storage_order_check.py flags only t_lit.py:1 of the same planted files (misses the 6 other rules)",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T11:48:57+00:00",
+  "result": "pass"
+}

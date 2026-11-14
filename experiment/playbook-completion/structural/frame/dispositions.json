@@ -1,0 +1,93 @@
+{
+ "_doc": "Per-module dispositions of the excursions of the decisive frame run (st-live-frame-r8) and the exact remainders. A declaration gap is an excursion against the footprint the check used (footprints/NN.json or correspondence/correspondence.json) where the written node is under the action's keys (key level held) but the footprint omits the store: reported for the footprint's owner, never widened here. A finding is an excursion the product's own contract forbids.",
+ "modules": {
+  "01": {
+   "dispositioned_actions": ["01-initialize-schema-rerun"],
+   "gaps": ["footprints/01.json py:IRISGraphEngine.initialize_schema omits sql:Graph_KG.embedding_registry: a setup rerun writes the registry rows of kg_NodeEmbeddings and kg_NodeEmbeddings_optimized (4 row nodes and their indexes, journal st-live-frame-r8)"],
+   "remaining": "remove_legacy_objects(dry_run=False) journaled nothing (no legacy objects in AUDITD; making them needs an older release's classes, out of scope); the upgrade and migration writers (upgrade_to_4_0_0, add_graph_id_column/_index/_to_nodes, add_graph_oid_index, tighten_graph_id_column, stage_class_owned_rdf_edges, update_spo_unique_constraint, upgrade_val_column, ensure_ekey, disable_indexes) need a pre-4.x schema and were not run; the DDL class is not observable with the journal oracle: traces/journal.py filters the catalog globals (^oddDEF, ^oddCOM, ^oddSQL, ^rINDEXSQL) as system globals; only ^oddTSQL is visible",
+   "product_obligation": "unknown"
+  },
+  "02": {
+   "remaining": "the only source class not observed is sql-ddl, from iris_vector_graph/engine.py:765-803 (_drop_fetch_first_probe_tables / the FETCH FIRST probe's scratch tables), attributed to 02 by engine.py's file owners because no inventoried entry contains those lines; the probe was not run under the journal. GraphMode.Set and the Kill of set_multigraph(False) were exercised and held at key level (^IVG.GraphMode(\"fg\") only)",
+   "product_obligation": "unknown"
+  },
+  "03": {
+   "dispositioned_actions": ["03-delete-node", "03-bulk-delete-nodes"],
+   "gaps": ["footprints/03.json py:IRISGraphEngine.delete_node and py:IRISGraphEngine.bulk_delete_nodes omit global:^NKG: both raise the interned-snapshot version ^NKG(\"$meta\",\"version\") (journal st-live-frame-r8)"],
+   "remaining": "sql-ddl not observed (engine.py:765-803 FETCH FIRST probe, as module 02); BulkLoader.load_nodes/load_edges/load_networkx/build_graph_globals, bulk_load_session and the LabelIndex functional-index callbacks as separate entry points were not run (the callbacks ran inside every label write)",
+   "product_obligation": "unknown"
+  },
+  "04": {
+   "remaining": "source classes not observed in module 04's own actions: sql-ddl (adjacency index DDL), sql-delete-predicate (EdgeScan/Adjacency SQL deletes), sql-update (nodes_edges.py:91 adoption UPDATE, observed under module 03's 03-create-edge-adopts-temporal-row, where its frame held); backfill_degp journaled nothing (nothing to backfill); 83 class-level writer entry points of footprints/04.json ran only inside the engine actions exercised (sync, rebuild_kg, rebuild_nkg, Reweight, Degree, AssertTemporalRow) or not at all. Namespace-wide rebuilds (sync, rebuild_kg, rebuild_nkg) are whole-store actions: store level only",
+   "product_obligation": "unknown"
+  },
+  "05": {
+   "dispositioned_actions": ["05-backfill-structural-rows"],
+   "gaps": ["footprints/05.json py:IRISGraphEngine.backfill_temporal_structural_rows omits global:^KG: the backfilled structural row's functional index writes ^KG(\"out\"/\"in\",\"fg\",...), ^KG(\"gen\",\"fg\",\"fr:a\") and ^KG(\"__version\")", "footprints/05.json py:IRISGraphEngine.bulk_create_edges_temporal and footprints/17.json IRISGraphStore.write_temporal_edge list ^KG sub-stores without the temporal subtrees ^KG(\"tout\"/\"tin\"/\"bucket\"/\"tagg\"/\"tlast\") the journal shows (the breadth-a extraction gap J13-J15)"],
+   "remaining": "sql-ddl not observed (engine.py:765-803 FETCH FIRST probe, attributed by file owners); the class-level writers of TemporalIndex (Migrate*, Rebuild*, RetireExpired, UpdateHLL, BackfillWalk, Purge (all graphs, F-0507)) ran only through the engine actions exercised or not at all",
+   "product_obligation": "unknown"
+  },
+  "06": {
+   "dispositioned_actions": ["06-store-embedding-graph-route"],
+   "gaps": ["footprints/06.json py:IRISGraphEngine.store_embedding omits sql:Graph_KG.embedding_registry: the first vector of a named graph registers its route (journal st-live-frame-r8: ^t52S.F59P.1(rowid) with graph fg and table kg_emb_5a5585b52a5621ac)"],
+   "remaining": "sql-ddl: the route's CREATE TABLE writes its catalog to globals traces/journal.py filters as system globals, so only its storage and registry row are judged; EmbedQueue.ProcessBatch / process_embed_queue, embed_nodes/embed_edges, place_quarantined, reconcile_recorded_dimensions, adopt_embedding_identities, the 4.0.0 migrations and VectorOptimizer.migrate_to_optimized were not run (they need an embedding model or legacy data)",
+   "product_obligation": "unknown"
+  },
+  "07": {
+   "remaining": "source classes not observed: sql-ddl, sql-insert, sql-update at iris_vector_graph/schema.py:3165-3240 (the generated kg_TXT SQL procedures, attributed to 07), not run; bm25_upgrade journaled nothing (the index was already at the current schema; an old-schema index cannot be made without an older release). Build, Insert, Delete and Drop held at key level (^BM25Idx(\"fb\") and the stopword list only); every BM25 write is outside a transaction (F-0701, not a frame matter)",
+   "product_obligation": "unknown"
+  },
+  "08": {
+   "remaining": "sql-ddl not observed: iris_vector_graph/_engine/query.py:1887-1892 (Cypher schema commands CREATE/DROP INDEX/CONSTRAINT) and the engine.py FETCH FIRST probe were not run; Cypher CREATE, SET (insert and update), MERGE, DELETE, DETACH DELETE and map_sql_table held at key level",
+   "product_obligation": "unknown"
+  },
+  "09": {
+   "force_open": true,
+   "remaining": "no persistent writer of module 09 was exercised: Gen.For / Gen.Build (job and sync mode) compile a generated class IVGC.P<h>, which this audit may not do (CONVENTIONS: nothing but the pin's classes through the pin's deploy path is compiled), so every run here set the process compile mode to off; Gen.DropAll journaled nothing (no ^IVG.CypherCompiled entry exists in AUDITD); IVG.CypherEngine.InitSchema*/RebuildKG/SmokeTest not run. A native read in mode off wrote nothing persistent (store and key level trivially held)",
+   "product_obligation": "unknown"
+  },
+  "10": {
+   "dispositioned_actions": ["10-ppr-cache", "10-degree-centrality", "10-triangle-count"],
+   "findings": ["F-C1001"],
+   "gaps": ["footprints/10.json eng:IRISGraphEngine.kg_PERSONALIZED_PAGERANK and eng:IRISGraphEngine.degree_centrality omit global:^KG: both write the degree cache ^KG(\"degc\",g,node,$c(1)) for the nodes they read (journal st-live-frame-r8)"],
+   "basis": "triangle_count, a read, writes setup's routine record ^IVG.Deploy(\"routines\") (outside its declared writes, which are none, and outside every key it reads): F-C1001 (reproduced again here, 1 journal record).",
+   "remaining": "sql-ddl not observed (engine.py:765-803 FETCH FIRST probe, attributed by file owners; F-C1001's CREATE FUNCTION DDL is filtered by the journal oracle as system globals); 87 class-level writers of footprints/10.json ran only through the engine actions exercised or not at all",
+   "product_obligation": "fails"
+  },
+  "11": {
+   "remaining": "sql-ddl not observed (iris_src/src/Graph/KG/Ledger.cls:232 BUILD INDEX, not run). Reached and held at key level: LedgerApply.cls:664 (the rdf_reifications DELETE of a deleted relationship: KILL ^t52S.fjEY.1(rowid) in 11-commit-delete-rel-reified) and LedgerGenesis.cls:110-111 (adoption of a delete_rel: KILL ^IVG.Ledger(\"tuple\",\"lt|a\",\"R\",\"lt|b\",\"\") and SET ^IVG.Ledger(\"stmt\",5) in 11-reenable-adoption)",
+   "product_obligation": "unknown"
+  },
+  "12": {
+   "dispositioned_actions": ["12-erase-all"],
+   "gaps": ["correspondence/correspondence.json actions[erase-edges-all] omits the routed vector tables: EraseAll deletes every route's rows and drops the tables (kg_emb_006437ec700a8b1a of graph fz in st-live-frame-r8; Eraser.cls:716-740)"],
+   "basis": "Graph-scoped erasures (erase_graph, drop_graph, delete_nodes_by_prefix) drop the whole interned snapshot ^NKG and every graph's ^IVG.AlgoCache: declared ('^NKG (DropNKG)') and intended (Eraser.cls:1036-1052: 'a per-graph erase cannot say which parts of it are gone'), accepted as declared whole-store invalidations of derived caches, not as content writes of another graph. The route's DROP TABLE catalog (^oddTSQL entries naming kg_emb_5a5585b52a5621ac / kgemb5a5585b52a5621ac_Extent) held at key level; the bystander graph fz's rows, adjacency and route were not written.",
+   "remaining": "sql-update not observed in module 12's actions (nodes_edges.py:91, a module constant used by module 03's create_edge, attributed by file owners); FHIR side tables, ^IVG.AdjNoLock and RemoveSource's in-kill were not reached (no FHIR graph, the writer lock was always granted)",
+   "product_obligation": "unknown"
+  },
+  "13": {
+   "remaining": "sql-delete-key not observed: iris_vector_graph/ledger/client.py:473 (the post-commit property DELETE, attributed to 13 by the inventory) did not run with an existing property. Reached and held: DropStatements' tuple kill LedgerRedact.cls:465 (KILL ^IVG.Ledger(\"tuple\",\"ta|1\",\"R\",\"ta|2\",\"\") with its (\"stmt\",5)); tenant b's revision was not written",
+   "product_obligation": "unknown"
+  },
+  "14": {
+   "dispositioned_actions": ["14-purge-all"],
+   "gaps": ["no footprint declares Graph.KG.Ledger.PurgeAll (Ledger.cls:242-248): Kill ^IVG.Ledger and %KillExtent of ledger_revisions and ledger_stats; a whole-store action, store level only"],
+   "remaining": "sql-ddl not observed (Ledger.cls:232 BUILD INDEX); readers journaled nothing (held trivially); verify and verify(adopt=True) held at key level",
+   "product_obligation": "unknown"
+  },
+  "15": {
+   "remaining": "sql-ddl not observed (FHIRGraph.cls:1428-1430 and the FHIR-graph table DDL in _engine/schema.py); the FHIR-graph writers (Register, Rebuild, SyncOnce, Reinterpret, Schedule/Unschedule, FHIRGraphSyncTask.OnTask, RecordError), migrate_fhir_bridges_to_crosswalk and attach_embeddings_to_table were not run",
+   "product_obligation": "unknown"
+  },
+  "17": {
+   "remaining": "sql-ddl (dbapi_utils.py:191, 222; utils.py:62-64 index helpers) and sql-update (dbapi_utils.py:161) not observed; execute_sql(read_only=True) with an INSERT (HD-1701) and dbapi_utils.insert_vector not run; write_nodes over an existing node journaled nothing",
+   "product_obligation": "unknown"
+  },
+  "18": {
+   "findings": [],
+   "basis": "restore_snapshot(merge=True) wrote only rows and nodes whose values the archive carries (key level, keys = every string the archive's NDJSON members hold); restore_snapshot(merge=False) is a whole-namespace replacement (store level only, within its declared stores); Snapshot.SetNodeJSON wrote only the node it was given (^VecIdx(\"fv\",\"frk\")).",
+   "remaining": "not run: restore over an enabled ledger (F-1801), a merge over existing temporal aggregates (F-1805, outside this check's data), Snapshot.ImportGlobals/ExportGlobals/WriteFileChunk/DeleteDir (server-file helpers, F-1806/F-C1803); the replace restore's key level is not decided (whole-store class)",
+   "product_obligation": "unknown"
+  }
+ }
+}

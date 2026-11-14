@@ -1,0 +1,15 @@
+{
+  "command": "bash experiment/playbook-completion/product-gates/run_lint.sh $RUN_DIR/product-gates/lint-r1 (under locks.sh heavy); step: mypy 2.1.0 iris_vector_graph --cache-dir <OUT>/mypy-cache --show-error-codes (pyproject [tool.mypy])",
+  "experiment_head": "d77620a9333a7eb5b62ca9b8c92144a6aaf74d2b",
+  "id": "pg-lint-mypy",
+  "kind": "check",
+  "lane": "product-gates",
+  "log": "$RUN_DIR/product-gates/lint-r1/mypy.out",
+  "log_bytes": 452910,
+  "log_sha256": "b072f935f69546b1c9b7600b15ec3781aaa86de5310855fe201bd53e03154b61",
+  "observes": "mypy 2.1.0 (uv.lock) with pyproject.toml [tool.mypy] (disallow_untyped_defs, warn_return_any, ...) on the shipped package (the pin names no mypy target): Found 3535 errors in 89 files (checked 119 source files); by code no-untyped-def 1,777, attr-defined 929, no-any-return 172, assignment 118, union-attr 110, arg-type 103, var-annotated 72, unreachable 64. Module 11-14 files: 259 errors (attr-defined 182, all mixin attributes in nodes_edges.py; no-untyped-def 49). The 13 errors in iris_vector_graph/ledger/ other than missing annotations (replay.py:199, 203, 205, 500, 502, 509, 511, 750; client.py:373, 375, 376, 377, 381) were read and are typing imprecision (Optional inference after dict.pop/get; WriteTxn.__exit__ annotated bool but always returns False, _write_txn.py:267-272), not runtime defects (inspected). (Record re-registered before any commit to correct a count of these errors from 9 to 13.)",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T11:22:43+00:00",
+  "result": "fail"
+}

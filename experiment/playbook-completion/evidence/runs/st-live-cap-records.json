@@ -1,0 +1,15 @@
+{
+  "command": "locks.sh iris python experiment/playbook-completion/structural/capkeys/cap_records.py $RUN_DIR/structural/capkeys/cap-records.json",
+  "experiment_head": "d77620a9333a7eb5b62ca9b8c92144a6aaf74d2b",
+  "id": "st-live-cap-records",
+  "kind": "live",
+  "lane": "structural",
+  "log": "$RUN_DIR/structural/capkeys/cap-records.json",
+  "log_bytes": 8355,
+  "log_sha256": "fad8f1982970beb2b25192e40437c44227ed75d46ce23e9a91b806e5e27f652d",
+  "observes": "AUDITD, one ledger commit per case with a relationship qualifier of n chars, then every reader: plain 1,000,000 / 1,800,000 / 3,000,000 / 3,600,000 and 1,000,000 double quotes: commit ok; get_revision and reconstruct return the exact value (length+SHA-256), history ok, export_reconstruction contains it, verify 'equal'; save_snapshot + replacing restore_snapshot: get_revision exact, edge row qualifier exact, verify 'equal'; EraseNodes then redact(prefix) complete (4 records tombstoned, 1 metadata cleared) and the value is gone from get_revision. 1,900,000 double quotes and 700,000 x \\\\x01 (JSON escaping past 3,641,144) are refused at commit with LedgerInconsistencyError '<MAXSTRING> QualsJson+12^Graph.KG.LedgerApply.1' (a length limit reported as an inconsistency, F-C1107; state after the refusal not re-read in this run). No accepted record that a reader of 11/13/14/18 cannot return",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T11:45:50+00:00",
+  "result": "pass"
+}

@@ -1,0 +1,179 @@
+# Structural lane (steer 7): ownership, storage order, declared reads, keys, FK, capacity, row permutation, frame
+
+Product pin `3eaa79cf`, unchanged (`check-product-scope.sh` passes at every registration). Namespace `AUDITD`
+(fresh; the pin deployed by its own `initialize_schema` at 11:17 UTC and re-run once by this lane over data as a
+module-01 probe, `st-live-setup-rerun`). Observation only: nothing compiled by the lane, scratch globals
+`^IVGAuditD*` only (removed), every IRIS command under `tools/locks.sh iris`, at most 6 connections, each live
+script self-contained in one lock hold that starts from the product's own `Graph.KG.Eraser.EraseAll` +
+`Graph.KG.Ledger.PurgeAll` (`live/lib.py`). Raw logs: `$RUN_DIR/structural/<sub-lane>/`. Registered runs:
+`evidence/runs/st-*.json`. New findings: `findings/audit/zz-structural.json`. Proposed cells: `MATRIX-INPUT.json`
+(written by `merge.py` from the sub-lanes' `cells.json`; this file is rendered by `render.py`).
+
+The work ran as five sub-lanes, each with its own directory, method record (`<sub>/method.json`), self-test and
+runs: `ownership/` (3.4-ownership), `order/` (3.4-storage-order, 3.6-row-permutation), `reads/`
+(3.4-declared-reads), `frame/` (3.6-frame), `capkeys/` (3.6-capacity, 3.6-keys, 3.6-fk).
+
+Evidence grades stay apart: `live` (observed on AUDITD through the product's entry points), `check` (a mechanical
+source check with a self-test; graded inspected), `inspected` (read at the pin, path:lines). Nothing here is proved,
+and no probe result is a proof that an obligation holds: where the probes found no violation the cell's product
+obligation is `unknown` (shown below as "no violation seen"). A closed cell means the verification step was done
+with a registered decisive run and a self-test.
+
+## Result per gate and module
+
+<!-- TABLE -->
+
+## Method and result per gate
+
+### 3.4-ownership (sub-lane `ownership/`)
+
+Method: `ownership/census_all.py`, a generalised copy of `tools/writer_census.py`, finds every write site of every
+durable store at the pin (ObjectScript Set/Merge/Kill/$Increment incl. multi-target Set and resolved indirection,
+%Save/%KillExtent/%DeleteId, embedded and dynamic SQL DML/DDL; Python SQL text with run-time names resolved, Native
+API set/kill/increment; ^KG/^NKG/^IVG.Ledger split by first subscript). Sites are attributed to modules through
+`models/breadth-c/inventory.json`; each store has a declared owner with a citation (ontology Scope lines, ADR-0011,
+ADR-0002, GraphStores.Inventory, the snapshot STORE_PLAN). Every writer module other than the owner breaks the
+single-owner rule; those no document names are ownership findings. Controls: the census finds all 268 sites of the
+registered census (`followup-writer-census`), agrees with the product's own guard
+`tests/unit/test_adjacency_single_writer.py`, and explains all 393 journal-observed (entry, store) pairs of
+`footprints/NN.json` (0 gaps). Self-test: 8 seeded cases (multi-target Set second writer, delegating call not
+flagged, indirection Kill, f-string DELETE, variable-name Native kill) all classified correctly.
+Runs: `st-control-own-selftest` (pass), `st-check-own-controls` (pass), `st-check-own-census` (fail).
+
+Result: 1,826 write sites over 101 stores; 98 stores have more than one writer module (nodes 11 modules, rdf_edges
+10, rdf_labels 9, rdf_props 11): 140 co-writes some document names, 25 no document names, 30 conditional (restore's
+any-global loaders), 21 ADR class violations. The rule fails for every module decided (01-06, 08-10, 15, 16, 18).
+New findings F-C0440, F-C0640, F-C0840, F-C1040, F-C1240, F-C1540, F-C1740; reused F-0404, F-0618, F-1604, F-1801,
+F-1805, F-1806. Open: schema-object (DDL) ownership is listed, not decided (F-0107 stays); whether the named shared
+ownership is acceptable is a maintainer decision.
+Process note for the orchestrator: the sub-lane rewrote the records of `st-check-own-controls` and
+`st-check-own-census` (same ids, same unchanged logs) to correct counts it had misstated, before any commit; each
+record carries a `note` saying so. CONVENTIONS asks for errata instead; the orchestrator decides whether to keep the
+rewritten records or replace them with new ids.
+
+### 3.4-storage-order (sub-lane `order/`)
+
+Method: `order/storage_order_scan.py`, a copy of `tools/storage_order_check.py` with six more rules (a TOP/LIMIT
+split across literals, Python first-row reads of unordered multi-row statements, ObjectScript `SELECT INTO` and
+single `%Next()` reads, identity allocation in an unordered cursor loop, count cut-offs over a cursor or $Order,
+slices of unordered lists). 292 sites; all 198 in the 11 gated modules disposed in `order/dispositions.json` (82 by
+hand, each with path:line and an anchor text the gate re-checks at the pin): ORDER BY present / order irrelevant
+(existence, unique key, documented sample, set-valued) / reliance (a finding). The gate fails on an undisposed or
+stale site. Self-test: 7 planted rules caught, 7 order-free seeds not flagged; the original checker misses 6 of the
+7 (`st-control-so-selftest`). Reliance was confirmed live where feasible (`st-live-so-*`).
+Runs: `st-check-so-gate` (pass: every site disposed), `st-control-so-selftest`, `st-live-so-confirm`,
+`st-live-so-11`, `st-live-so-17b`.
+
+Result: reliance in 03 (F-C0302, F-0206), 06 (F-C0603, F-C0604, new F-C0642: vector top-k cuts tied scores in
+storage order), 11 (F-0205 live: a ledger delete by tuple removes the parallel edge inserted first; F-C1108), 16
+(new F-C1642), 17 (new F-C1742; and new F-C1743, S2: `IRISGraphStore.query_nodes(limit=n)` kills the calling Python
+process with SIGSEGV on 2026.1 / driver 5.3.2). No reliance in 01 (only inside a documented sample), 09, 12, 13,
+14, 18. Not disposed: 39 candidate sites of modules whose cells other lanes closed (15, 10, 08, 02, 05, 07), listed
+in `order/method.json`.
+
+### 3.4-declared-reads (sub-lane `reads/`)
+
+Read-oracle feasibility, decided on the instance (`reads/method.json`): the SQL statement index records a dynamic
+statement's relations at prepare time but no synchronous per-execution count and nothing for embedded SQL
+(`st-probe-reads-stmtindex`); per-job PTools stats see only statements compiled after the flag (cached and
+embedded SQL invisible without purging or recompiling, which the rules forbid; `st-probe-reads-ptools`);
+%Monitor.System.LineByLine shows executed INT lines and global-reference counts but not which globals or subscripts,
+so not the graph key (`st-probe-reads-linebyline`). Oracle used instead: non-interference. Each read action runs on a
+base state and again after perturbations outside its declared footprint (the same ids with other labels,
+properties, edges, temporal edges or vectors in every other graph; undeclared stores; another tenant's commits); a
+changed answer is a read outside the footprint; an inside perturbation checks sensitivity. A second, table-level
+oracle wraps the harness's DB-API cursor and records the SQL text the product's Python code sends. Self-test
+(`st-control-reads-selftest`): a seeded graph-blind reader is flagged, the scoped one not; a seeded read of an
+undeclared table is reported. Runs: `st-live-reads-a` (01-06), `st-live-reads-b` (10-18), `st-live-reads-c` (18
+rerun with timestamps masked; the 18 verdict in `-b` was a harness artefact).
+
+Result: reads outside the footprint in 01 (F-0106), 05 (F-0508), 15 (F-1507 and new F-C1547: get_reifications
+reads the reifier's properties from every graph). The other decided modules show no violation among the checked
+actions but stay open because most inventoried read entry points were not checked (counts and names in each cell's
+`remaining`). Non-interference sees only reads that reach the answer, under the listed perturbations.
+
+### 3.6-keys, 3.6-fk, 3.6-capacity (sub-lane `capkeys/`)
+
+Method (`capkeys/method.json`): live probes through each module's public entry points, every case from an empty
+namespace. Key oracle: no duplicate declared key by `%IGNOREINDEX *` full scans (which see %NOINDEX/%NOCHECK rows),
+^KG out/in and label index equal to the rows, edge ids distinct, the DDL's constraints present in the catalog. FK
+oracle: edge endpoints, labels, properties (no declared FK), node embeddings, ^KG out/in/label/tout endpoints,
+reification edge and reifier node, by full scans. Capacity oracles: exact read-back (length and SHA-256), the
+journal's net effect of the failing call (non-transactional counters excluded) to tell clean refusal from partial
+write, rows vs ^KG vs temporal reads for widths, client memory (tracemalloc) for snapshots, and a second process
+against a lock-escalated transaction. Self-test `st-control-capkeys-selftest`: 7 + 9 seeded key/FK states each
+reported with exactly its condition, 7 value outcomes, live reader checks on scratch globals.
+
+Capacity results: every writer of rdf_edges refuses an edge past s = o = 194, p = 97 (155 with a 100-character
+graph name; 195/156 at lower row ids, so the limit shrinks with the row-id length) with SQLCODE -415 and nothing
+written, the limit F-C1106 records for the ledger; the temporal writer leaves temporal entries behind (F-C0501).
+Column widths and the 3,641,144-character limit are refused cleanly everywhere probed; ledger records up to 3.6 M
+characters pass every reader of 11/13/14/18 exactly. Defects: BM25 builds fail on one long token after emptying the
+index (F-C0748), a Cypher CREATE/MERGE with literal endpoint ids drops parameter-bound relationship properties
+(F-C0848, found by the read-back oracle at every size) and stores a WITH-bound one as non-JSON (F-C0849), PROV
+one-edge lookups read the whole history as one string (F-C1549), snapshots hold the whole archive in client memory
+(about 11 MB per 1,000 edges, F-C1848), compiled native plan classes have no bound (F-C0948, inspected). A caller
+transaction of 1,500 inserts escalates to table locks on nodes and rdf_props and another process's write to any graph
+then fails after 10 s with SQLCODE -110 (clean): no IVG document states whether that is acceptable; reported as
+intent-undecided without a finding id. Redaction of 1,100 revisions in one batch did not block another tenant's
+commits.
+
+Keys results: the key invariants hold for every writer probed except the bulk loader, which writes duplicate node,
+label, property and edge keys (in-batch duplicate id, `skip_existing=False`, two loaders at once; F-C0349), and
+racing `create_edge` calls on a new edge whose endpoint is new, which in 4 of 8 trials answer False ("already
+exists") for an edge that is never written (F-C0348). Racing MERGE/CREATE/reify keep the keys and answer errors.
+FK results: hold for 02, 03, 04, 05; in 15, `delete_edge` and Cypher `DELETE r` leave reification rows naming deleted
+edges (F-C1548). Setup (01) keeps all 24 declared constraints and every row when re-run over data.
+
+### 3.4-storage-order's companion: 3.6-row-permutation (sub-lane `order/`)
+
+Method: `order/permutation.py` writes the same data through the product's writers in three insertion orders
+(forward, reverse, shuffle; reset between orders, inside one lock hold) and compares the module's read APIs:
+multiset equality where no order is promised, list equality where an order or a top-k/page cut is part of the
+contract (cited per API in `order/method.json`). Self-test `st-control-so-perm-selftest`: a seeded `TOP 1` reader over
+`%IGNOREINDEX *` is flagged, a seeded ORDER BY reader is not. One verdict run per module (`st-check-so-perm-NN`).
+
+Result: answers differ by insertion order in 03 (F-C0302, F-0206), 06 (F-C0642), 07 (F-C0703 live), 16 (F-C1642), 17
+(F-C1742; query_nodes(limit) crashes, F-C1743), and 11's detach-delete statement ids (F-C1108, intent-undecided).
+Equal in three orders for the listed reads of 01 (documented sample, every answer valid), 02, 04, 05, 10, 12, 13, 14,
+15. Not permuted: Bolt/HTTP surfaces (16), FHIR sync (15), random walk/Leiden/Arno (10), redaction stop/resume (13).
+
+### 3.6-frame (sub-lane `frame/`)
+
+Method (`frame/method.json`): statement-shape classes (SQL insert, update-by-key, delete-by-key,
+delete-by-predicate, DDL; global set of a keyed node, kill of a keyed subtree, $Increment counter, merge;
+%Save/%KillExtent) with a census of each module's source per class (`frame/shape_census.py`). 108 writer actions run
+live through the product's API, each from a reset plus base data in the action's graph, a bystander graph and the
+default graph; the IRIS journal filtered to the action's process is the oracle. Store level: every journaled node's
+store is in the entry point's declared writes (read unchanged from `footprints/NN.json` / `correspondence.json`);
+key level: every node lies under the action's argument keys or is a cited counter/version node. A module's cell
+closes only if the self-test passed, every excursion is explained, and every statement-shape class present in the
+module's source is observed in the journal of its actions. Self-test `st-control-frame-selftest`: a conforming
+create_node passes, a seeded write to `^IVGAuditDFrmX` is caught at store level, a seeded second node at key level.
+Runs: `st-live-frame-r8` (live, fail), `st-check-frame-aggregate` (check, fail); seven earlier debug passes fixed the
+harness only and are not registered.
+
+Result: 100 of 108 actions wrote; store level held on 98, key level on 107. The one product excursion is F-C1001
+(module 10: `triangle_count`, a read, writes `^IVG.Deploy("routines")`), reproduced again. Nine store excursions are
+footprint omissions, not product defects, and were not widened (01/06 `embedding_registry`, 03 `^NKG("$meta")`,
+05 adjacency from the backfill and the temporal subtrees, 10 `^KG("degc")`, 12 routed vector tables in EraseAll,
+14 `Ledger.PurgeAll`; list in `frame/dispositions.json`). Three statements the matrix listed as unexecuted were
+reached and held at key level (`LedgerApply.cls:664`, `LedgerGenesis.cls:110-111`, `LedgerRedact.cls:465`).
+Graph-scoped erasures drop the whole `^NKG` snapshot and every graph's `^IVG.AlgoCache`, which is declared
+(`Eraser.cls:1036-1052`). Only 18 closes; the others stay open because a statement-shape class in their source was
+not observed (DDL mostly, which `traces/journal.py` filters out except `^oddTSQL`), listed per module in each
+cell's `remaining`.
+
+## Exact open obligations (by gate)
+
+<!-- OPEN -->
+
+## Not findings, reported for decision
+
+- Lock escalation across graphs (capkeys): one caller transaction with more than about 1,000 row writes per table
+  makes every other process's write to that table, in any graph, fail after 10 s with SQLCODE -110 (`st-live-cap-batch`).
+  Answers stay consistent; whether one tenant may block another is not stated anywhere (intent-undecided).
+- A count aggregate of 4 for 3 temporal events after `keys.py`'s combined sequence (`st-live-keys`), not repeated in 18
+  isolated trials (`st-live-keys-temporal-count`, `st-live-keys-temporal-race`).
+- Reused, unregistered first-attempt logs are listed in `capkeys/method.json` (`unregistered_logs`) and the order
+  sub-lane's superseded results in `order/method.json` (`superseded`).

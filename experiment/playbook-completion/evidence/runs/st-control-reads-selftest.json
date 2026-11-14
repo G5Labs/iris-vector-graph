@@ -1,0 +1,15 @@
+{
+  "command": "locks.sh iris timeout 2400 python3 experiment/playbook-completion/structural/reads/noninterference.py --self-test --out $RUN_DIR/structural/reads/r1-selftest.json",
+  "experiment_head": "d77620a9333a7eb5b62ca9b8c92144a6aaf74d2b",
+  "id": "st-control-reads-selftest",
+  "kind": "control",
+  "lane": "structural",
+  "log": "$RUN_DIR/structural/reads/r1-selftest.json",
+  "log_bytes": 4782,
+  "log_sha256": "42747df7f9e7ae3a005cda28dbdc4e1829209506784c07fbd711bd3ab7c25833",
+  "observes": "AUDITD self-test of the declared-reads oracles: oracle A (non-interference) flags the seeded graph-blind reader (SELECT key,val FROM rdf_props WHERE s=a, declared a in stg1) under the other-graph perturbation and passes the seeded scoped reader (AND graph_id=stg1); both change under the inside perturbation. Oracle B (Python-issued SQL capture) reports exactly Graph_KG.docs for the seeded undeclared-table reader and nothing undeclared for the scoped reader. Both PASS",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T11:50:47+00:00",
+  "result": "pass"
+}

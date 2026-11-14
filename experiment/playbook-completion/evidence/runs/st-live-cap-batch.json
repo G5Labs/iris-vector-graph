@@ -1,0 +1,15 @@
+{
+  "command": "locks.sh iris python experiment/playbook-completion/structural/capkeys/cap_batch.py $RUN_DIR/structural/capkeys/cap-batch.json",
+  "experiment_head": "d77620a9333a7eb5b62ca9b8c92144a6aaf74d2b",
+  "id": "st-live-cap-batch",
+  "kind": "live",
+  "lane": "structural",
+  "log": "$RUN_DIR/structural/capkeys/cap-batch.json",
+  "log_bytes": 7261,
+  "log_sha256": "724d6143af08208a5bc32ad77f9463d4bfca45932ad98ef6e92a2b75b9486ccb",
+  "observes": "AUDITD, batch sizes and lock escalation: 17 IRISGraphStore.write_nodes of 1,201 nodes writes 1,201 rows and get_nodes over the 1,201 ids returns each exactly once (500-id chunks); 06 store_embeddings of 2,000 vectors writes 2,000 rows; 04 bulk_create_edges of 5,000 edges in a named graph answers 5000, verify_graph ok (5,000 sql/out/in), 0 key violations; 15 with 40,000 temporal edges of short ids (window JSON under the long-string limit) get_edges_in_window and iter_edges_in_window return 40,000, prov_export (whole window: 40,000 activities; one-second window: 1), prov_as_dict of one edge and prov_export_from_cypher of one node succeed; 03 lock escalation: a caller transaction (setAutoCommit False) holding 200 create_node inserts leaves row locks only and a second process's create_node succeeds in 0.03 s; holding 1,500 inserts the lock table shows table locks ^t52S.XCFT.1 (nodes) and ^t52S.DMCe.1 (rdf_props) mode X, and a second process's create_node of another node waits 10.09 s and raises GraphWriteError SQLCODE -110 'nothing written' (its node absent, answer consistent); 13 redaction of 1,100 revisions with batch_size 50 and 100,000 completes (0.29 s / 0.17 s) while another tenant commits 400 times with max latency 0.002 s and no error. NOT decided here: 08 UNWIND (harness expected an error answer, the product raised GraphWriteError for the bad-row statement; rerun as st-live-cap-batch-r2)",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T11:52:30+00:00",
+  "result": "incomplete"
+}

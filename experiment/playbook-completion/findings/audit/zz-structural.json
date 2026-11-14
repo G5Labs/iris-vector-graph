@@ -1,0 +1,622 @@
+[
+ {
+  "id": "F-C0348",
+  "module": "03",
+  "title": "Racing create_edge calls on a new edge whose endpoint is new can all lose: some answer False ('already exists') and no edge is written",
+  "intended": "create_edge answers False only if the edge already existed, a duplicate is never an error (iris_vector_graph/_engine/nodes_edges.py:1176-1186 docstring); when two writers race to create one edge, one adds it and the other answers False (WRT-B4.9, 03-writes.md:118; nodes_edges.py:1243-1245 'a concurrent writer won the race'); endpoint rows a concurrent writer got to first are not an error (nodes_edges.py:1123-1124).",
+  "observed": "Live AUDITD (st-live-keys-race-edge): four connections released together call create_edge('rx:1','R','rx:2') with rx:2 not yet a node. In 4 of 8 trials no call succeeds: two answer False and two raise GraphWriteError SQLCODE -121 (fk_edges_dest), and afterwards neither the edge nor rx:2 exists. With both endpoints present beforehand, 8 of 8 trials give one True, three False and one edge. Reading of the code: a racer that meets another racer's uncommitted endpoint row skips its own insert (nodes_edges.py:1123-1124), its edge insert then fails the FK or meets another racer's uncommitted edge row, and -119 from an uncommitted row that later rolls back is answered as a duplicate (nodes_edges.py:1243-1245, 1251-1255).",
+  "disposition": "reproduced-live",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "st-live-keys-race-edge"
+   },
+   {
+    "kind": "live",
+    "ref": "st-live-keys"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/nodes_edges.py:1205-1256"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/nodes_edges.py:1106-1150"
+   }
+  ],
+  "gates": [
+   "3.6-keys",
+   "3.6-fk"
+  ],
+  "severity": "S2",
+  "confidence": "high",
+  "remedy": "Treat -119/-121 met against another writer's uncommitted row as 'retry' rather than 'duplicate': wait on the row (a SQL lock on the key, e.g. LOCK of the (graph, s, p, o) tuple before the probe) and re-probe after it commits or rolls back; answer False only when a committed edge is found.",
+  "notes": "A caller that receives False has no reason to retry, so the write is lost. The same race shape (several -119/-121/-110 errors, nothing written) was seen for bulk_create_nodes, store_node, Cypher MERGE of a new path and concurrent reify_edge (st-live-keys); those raise errors rather than answer success, so callers can retry."
+ },
+ {
+  "id": "F-C0349",
+  "module": "03",
+  "title": "The bulk loader writes duplicate node, label, property and edge keys: an id twice in one batch, a load with skip_existing=False, or two loaders at once",
+  "intended": "Graph_KG.nodes is keyed by (node_id, graph_id), rdf_labels by (graph_id, s, label), rdf_props by (graph_id, s, key) and rdf_edges by (s, p, o_id, graph_id, ekey) (iris_vector_graph/schema.py:35-44, 396-419). BulkLoader writes %NOINDEX %NOCHECK, which skips those checks (P-0304), and relies on its own scans to keep them: 'Without the hint every existence check here believes the previous bulk load never happened, and %NOCHECK means the second copy lands without complaint' (iris_vector_graph/bulk_loader.py:182-199); load_edges dedupes its input in memory (bulk_loader.py:420-427).",
+  "observed": "Live AUDITD (st-live-keys): load_nodes([('kb:1', ...), ('kb:1', ...)]) answers nodes 2, labels 2, props 4 and leaves two node rows, two label rows and two rows per property key for (default graph, kb:1); get_node('kb:1') answers labels ['A', 'A']. load_nodes and load_edges run a second time with skip_existing=False duplicate the node, label, prop and edge keys. Two loaders of the same 50 ids started together each write all 50 nodes. In every case rebuild_all_indices answers True for all four classes and the duplicates stay; the load answers report no error.",
+  "disposition": "reproduced-live",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "st-live-keys"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/bulk_loader.py:290-334"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/bulk_loader.py:420-440"
+   }
+  ],
+  "gates": [
+   "3.6-keys"
+  ],
+  "severity": "S2",
+  "confidence": "high",
+  "remedy": "Deduplicate node ids (and labels/properties per node) in the batch as load_edges does; refuse skip_existing=False under %NOCHECK or drop %NOCHECK for the key-carrying inserts; serialise loaders of one graph (a lock on the graph) and check the declared keys before %BuildIndices, failing the load on a duplicate.",
+  "notes": "The default path (skip_existing=True, one loader, distinct ids) keeps the keys. The duplicates are invisible to index reads that pick one row and visible to scans and to get_node's label list."
+ },
+ {
+  "id": "F-C0440",
+  "module": "04",
+  "title": "^KG(\"prop\") has no owning module, and four modules write it",
+  "intended": "Playbook \u00a73.4 (experiment/playbook-uplift/verification-playbook.txt:32, 311): each store has a single write owner. ADJ-0 lists the stores the adjacency module owns (experiment/playbook-uplift/ontology/04-adjacency.md:49) and ^KG(\"prop\") is not among them. No other Root or Scope line names it. GraphStores.Inventory lists it as graph content (iris_src/src/Graph/KG/GraphStores.cls:82).",
+  "observed": "st-check-own-census: writers of ^KG(\"prop\") are Graph.KG.TraversalBuild.BuildKG (iris_src/src/Graph/KG/TraversalBuild.cls:65, Kill ^KG(\"prop\")), the 4.0.0 node-store step rekey_kg_node_stores (iris_vector_graph/migrations/kg_node_stores.py:176), Graph.KG.Eraser (EraseGraph :239, EraseIdSet :579, EraseAll :794, ForgetNodes :1327) and the restore paths (snapshot STORE_PLAN; Snapshot.ImportGlobals/SetNodeJSON, conditional). Readers include Graph.KG.Subgraph.",
+  "disposition": "confirmed-source",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "check",
+    "ref": "st-check-own-census"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/TraversalBuild.cls:60-67"
+   },
+   {
+    "kind": "inspected",
+    "ref": "experiment/playbook-uplift/ontology/04-adjacency.md:49"
+   }
+  ],
+  "gates": [
+   "3.4-ownership"
+  ],
+  "severity": "S4",
+  "confidence": "high",
+  "remedy": "Name an owner for ^KG(\"prop\") (the adjacency module's ADJ-0 list, or a module of its own) and route the other writers through it, or retire the store if nothing current needs it.",
+  "notes": "Structural: no wrong answer was shown. The store is erased and archived like owned content (GraphStores, STORE_PLAN)."
+ },
+ {
+  "id": "F-C0640",
+  "module": "06",
+  "title": "Dropping a neighborhood_vector index handle kills ^NKG(\"q\") in the interned snapshot",
+  "intended": "^NKG is owned by the adjacency module (04-adjacency.md:49, ADJ-0 'Stores owned ... ^NKG') with the algorithms module (10-algorithms.md:5-9); VEC owns its own index globals (06-vectors.md:8-9). Playbook \u00a73.4: single write owner.",
+  "observed": "iris_vector_graph/_engine/vector.py:329-330 VectorMixin._neighborhood_index_drop runs Native API kill('^NKG', 'q') for any index name; index_protocol.py:50 routes the drop of a 'neighborhood_vector' index handle to it. The build and search of that index type are not implemented (vector.py:322-328 raise NotImplementedError). No other product site writes ^NKG(\"q\") except Graph.KG.GraphIndex.DropNKG (Kill ^NKG) and the restore paths (st-check-own-census).",
+  "disposition": "confirmed-source",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "check",
+    "ref": "st-check-own-census"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/vector.py:322-331"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/index_protocol.py:50"
+   }
+  ],
+  "gates": [
+   "3.4-ownership"
+  ],
+  "severity": "S4",
+  "confidence": "high",
+  "remedy": "Give the neighborhood index a global of its own (or make the drop a no-op while the index type is unimplemented); never kill a sub-store of ^NKG from the vector module.",
+  "notes": "Only the 'q' subtree is killed and nothing else writes it today, so no current answer changes; the write is a latent cross-module hazard."
+ },
+ {
+  "id": "F-C0642",
+  "module": "06",
+  "title": "Vector top-k searches cut equal scores in storage order",
+  "intended": "Playbook principle 5 (never depend on storage or insertion order, only on keys and explicit orderings; verification-playbook.txt:33-34); HD-0603's working assumption, a ranking contract with defined tie behaviour (decisions.md:83-85, intent/HD-0603.md:37-41); kg_KNN_VEC returns 'up to k (node_id, cosine) pairs, highest first' (docs/API_REFERENCE.md:955-971) with no tie rule. F-C0703 is the same defect for text search.",
+  "observed": "Live (st-live-perm-b, AUDITD): five nodes, three with the identical vector [1,0,0,0], stored in three insertion orders; kg_KNN_VEC('[1,0,0,0]', k=2) answered [pv:1, pv:2] (forward), [pv:3, pv:2] (reverse), [pv:2, pv:3] (shuffle): which tied node is cut depends on insertion order; with k=4 the same set comes back with the tied ranks reordered. Source: every vector top-k orders by score only (ORDER BY score DESC with no tie key: iris_vector_graph/_engine/vector.py:569-600 kg_KNN_VEC, :377-383 edge_vector_search, :819-829 the optimized path, :1264-1268 vector_search; the generated kg_KNN_VEC procedure iris_vector_graph/schema.py:2436-2482); module 17's adapter helpers have the same shape (iris_vector_graph/dbapi_utils.py:266-272, iris_vector_graph/stores/iris_sql_store.py:2633-2641).",
+  "disposition": "reproduced-live",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "st-live-perm-b"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/vector.py:569-600"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/schema.py:2436-2482"
+   }
+  ],
+  "gates": [
+   "3.6-row-permutation",
+   "3.4-storage-order"
+  ],
+  "severity": "S3",
+  "confidence": "high",
+  "remedy": "Order every vector top-k by a total key (score DESC, then node_id, or (s, p, o_id) for edges) in the SQL, the generated procedure and the adapter helpers, and state the tie rule in the API reference; a test that stores tied vectors in two orders and compares answers.",
+  "notes": "Severity follows F-C0703 (the text-search counterpart). The storage-order gate disposes these statements as 'ORDER BY present'; the reliance is the incomplete order at the cut, which only the row-permutation run shows. HD-0603 itself (kg_VECTOR_GRAPH_SEARCH's list(set(...))[:k], Python hash order) is intent-undecided and not part of this finding."
+ },
+ {
+  "id": "F-C0748",
+  "module": "07",
+  "title": "One token longer than the subscript limit in any document makes bm25_build fail after it has emptied the index, and searches then answer nothing",
+  "intended": "A refused command leaves every store as it was (SYS-I3, TXT-X2 in experiment/playbook-uplift/ontology/07-text-search.md; cited by F-0704); Build indexes every node of the graph over the named properties (iris_src/src/Graph/KG/BM25Index.cls:97-175).",
+  "observed": "Live AUDITD (st-live-cap-bm25): with one document holding a 600- or 2,000-character token (or a 300-character token in a document whose id has 256 characters), bm25_build raises 'RuntimeError: <THROW>' and leaves the index without documents; rebuilding a good 5-document index after one such node is added destroys it the same way, and bm25_search for any ordinary term then answers [] without error. Build kills ^BM25Idx(name) first (BM25Index.cls:99) and Tokenize tests each token with $Data(^BM25Idx(\"__stop__\", tok)) (:83), which raises <SUBSCRIPT> for a long token; bm25_insert and bm25_search with such a token raise <SUBSCRIPT> and leave the index unchanged. Tokens of 200 and 400 characters index normally.",
+  "disposition": "reproduced-live",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "st-live-cap-bm25"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/BM25Index.cls:56-87"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/BM25Index.cls:97-110"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/BM25Index.cls:176-204"
+   }
+  ],
+  "gates": [
+   "3.6-capacity"
+  ],
+  "severity": "S2",
+  "confidence": "high",
+  "remedy": "Skip or truncate tokens longer than a fixed length in Tokenize (before any subscript use), and build into a temporary name that replaces the old index only on success (as F-0704's remedy); report the document that failed.",
+  "notes": "Same kill-before-build root as F-0704 (a refused index-handle build), reached here by data rather than by a bad argument: a URL, hash or sequence of a few hundred characters anywhere in the graph makes the graph's BM25 index unbuildable."
+ },
+ {
+  "id": "F-C0840",
+  "module": "08",
+  "title": "A Cypher DELETE deletes vector rows and reification rows itself, and only from the legacy vector table",
+  "intended": "The vector tables are VEC's (06-vectors.md:5-8: the routed kg_emb_<hash> tables and the three legacy tables), reifications are INT's (15-integrations.md:5-10: reify_edge, get_reifications, delete_reification). The Cypher module's Scope names writes of the graph tables (08-cypher-sql.md:5, CYP-D1 :40: nodes, rdf_labels, rdf_props, rdf_edges). Playbook \u00a73.4: single write owner.",
+  "observed": "iris_vector_graph/cypher/translator.py translate_delete_clause adds DELETE statements on Graph_KG.kg_NodeEmbeddings (:10750 for reifier nodes, :10783 for deleted nodes) and on Graph_KG.rdf_reifications (:10757, :10796, :10800) to the write transaction (st-check-own-census sites). No statement names a routed kg_emb_/kg_eemb_ table.",
+  "disposition": "confirmed-source",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "check",
+    "ref": "st-check-own-census"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/cypher/translator.py:10740-10800"
+   }
+  ],
+  "gates": [
+   "3.4-ownership"
+  ],
+  "severity": "S3",
+  "confidence": "high",
+  "remedy": "Delete a node's vectors and reification links through the owners' paths (the eraser's route-aware node erase, delete_reification), so every route is reached and one module keeps each store's rules.",
+  "notes": "Not run here. Routed node tables carry a foreign key onto nodes (iris_vector_graph/_engine/schema.py:255-263, fk_{short}), so a DETACH DELETE of a node holding a routed vector may be refused whole or leave the vector, as F-0618 shows for the ledger's node delete; a live check would decide."
+ },
+ {
+  "id": "F-C0848",
+  "module": "08",
+  "title": "A Cypher CREATE or MERGE with literal or parameter endpoint ids drops a parameter-bound relationship property without an error",
+  "intended": "docs/KNOWN_ISSUES.md:89-95: 'A literal (a list or a map too), a parameter and a WITH's column are stored'; iris_vector_graph/cypher/translator.py:507-512 (_refuse_unstorable_rel_props: a parameter is stored, anything it cannot store is refused before writing).",
+  "observed": "Live AUDITD (st-live-cypher-relprop, found by st-live-cap-values): CREATE (a:L {id: 'a2'})-[:R {q: $v}]->(b:L {id: 'b2'}), the same with $s/$o endpoint ids, with a number parameter, and MERGE (a:L {id: 'a4'})-[:R {q: $v}]->(b:L {id: 'b4'}) each answer no error and create the edge with no q (rdf_edges.qualifiers empty; r.q null). The same parameter between MATCHed endpoints and a literal q are stored. The literal-endpoint path (translator.py:10213-10222) resolves an ast.Literal or a FOREACH binding only, so a parameter resolves to None and is dropped as a null property (:10228).",
+  "disposition": "reproduced-live",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "st-live-cypher-relprop"
+   },
+   {
+    "kind": "live",
+    "ref": "st-live-cap-values"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/cypher/translator.py:10213-10246"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/cypher/translator.py:473-504"
+   }
+  ],
+  "gates": [
+   "3.6-capacity",
+   "3.6-frame"
+  ],
+  "severity": "S2",
+  "confidence": "high",
+  "remedy": "Resolve parameters (context.input_params) in the literal-endpoint path as _rel_literal_props does, or route such patterns through _rel_literal_props; refuse any property the writer cannot store instead of dropping it.",
+  "notes": "Not a capacity effect: the property is dropped at every size (10 characters included). Found by the capacity probe's read-back oracle."
+ },
+ {
+  "id": "F-C0849",
+  "module": "08",
+  "title": "A relationship property bound by a WITH before a literal-endpoint CREATE is stored as text that is not JSON",
+  "intended": "rdf_edges.qualifiers holds a JSON object (iris_vector_graph/schema.py:40, %Library.DynamicObject; translator.py:466-469); docs/KNOWN_ISSUES.md:94-95 says a WITH's column is stored.",
+  "observed": "Live AUDITD (st-live-cypher-relprop): WITH $v AS v CREATE (a:L {id: 'a5'})-[:R {q: v}]->(b:L {id: 'b5'}) with v = 'val' answers no error and stores the qualifiers text {\"q\": val} (unquoted), which json.loads rejects; MATCH ...-[r]->... RETURN r.q answers null.",
+  "disposition": "reproduced-live",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "st-live-cypher-relprop"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/cypher/translator.py:10410-10432"
+   }
+  ],
+  "gates": [
+   "3.6-frame"
+  ],
+  "severity": "S3",
+  "confidence": "medium",
+  "remedy": "Quote stage-bound string values when the qualifiers JSON is assembled (json-encode the column, not splice it raw), or bind the whole object as one parameter.",
+  "notes": "translator.py:10415-10418 says stage columns are spliced raw because some are already JSON; a plain string column is not. Which code path built this statement was inferred from the stored text, not traced."
+ },
+ {
+  "id": "F-C0948",
+  "module": "09",
+  "title": "Compiled native plan classes have no bound: one class per plan shape accumulates until a deploy",
+  "intended": "Playbook \u00a73.6 capacity: a stated bound or measured limit for every resource that grows with use (gate 3.6-capacity, open text 'a bound or a measured limit for compiled classes'); NAT-T5.2: one compiled plan serves every read of its shape.",
+  "observed": "Inspected at the pin: Gen.Build compiles one class IVGC.P<hash> per plan-shape hash (iris_src/src/Graph/KG/Cypher/Gen.cls:163-221) and records it in ^IVG.CypherCompiled; the only removal is DropAll (Gen.cls:225-230), called by setup's deploy (iris_vector_graph/schema.py:2939). No count, size or age bound and no eviction exist, so the namespace gains one compiled class (and its routines) per distinct shape (labels, keys, hop structure) for as long as the namespace lives, within the 32-bit hash space that F-0901 shows can collide.",
+  "disposition": "confirmed-source",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/Cypher/Gen.cls:163-230"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/schema.py:2939"
+   }
+  ],
+  "gates": [
+   "3.6-capacity"
+  ],
+  "severity": "S4",
+  "confidence": "medium",
+  "remedy": "Bound the compiled-plan set (a count or LRU with DropAll of cold entries, or compile only shapes seen N times) and document the bound; or state that applications must not generate unbounded shapes.",
+  "notes": "Not measured live: running the native executor compiles product-generated classes into the namespace, which this lane left to the native-executor lane. Impact depends on how many distinct shapes an application issues."
+ },
+ {
+  "id": "F-C1040",
+  "module": "10",
+  "title": "Graph.KG.ArnoAccel.BumpVersion moves the adjacency module's graph-version token",
+  "intended": "The graph-version token ^KG(\"__version\") is in the adjacency module's owned stores (04-adjacency.md:49 ADJ-0; :64 ADJ-D15 'Each write that can change an answer moves it up'); ADR-0011 puts every rule that must hold on each adjacency write in Graph.KG.Adjacency (docs/adr/0011-the-adjacency-index-has-one-writer-module.md:12-30). Playbook \u00a73.4: single write owner.",
+  "observed": "iris_src/src/Graph/KG/ArnoAccel.cls:295-302 BumpVersion runs $Increment(^KG(\"__version\")) and $Increment(^NKG(\"$meta\",\"version\")) outside Graph.KG.Adjacency (st-check-own-census: the only undeclared writer of ^KG(\"__version\") besides the restore's _raise_kg_version, snapshot.py:57, covered by F-0404).",
+  "disposition": "confirmed-source",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "check",
+    "ref": "st-check-own-census"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/ArnoAccel.cls:291-302"
+   }
+  ],
+  "gates": [
+   "3.4-ownership"
+  ],
+  "severity": "S4",
+  "confidence": "high",
+  "remedy": "Bump the token through the adjacency module (one method that also keeps the degree generation rules), and name the Arno bridge as its caller.",
+  "notes": "An extra increment only invalidates caches; no wrong answer follows from this write alone."
+ },
+ {
+  "id": "F-C1240",
+  "module": "12",
+  "title": "EraseAll kills ^ArnoKG, a store the erase plan (GraphStores.Inventory) does not list",
+  "intended": "Graph.KG.GraphStores.Inventory is the product's list of the stores erasure covers (12-erasure.md:5 Scope; iris_src/src/Graph/KG/GraphStores.cls:28-130, 'Stated once here rather than rediscovered by each consumer'). ^ArnoKG belongs to the algorithms module's Arno bridge (10-algorithms.md:5-8). Playbook \u00a73.4: single write owner.",
+  "observed": "iris_src/src/Graph/KG/Eraser.cls:806 (EraseAll) runs Kill ^ArnoKG; GraphStores.Inventory has no ^ArnoKG entry; EraseGraph and EraseNodes write no ^ArnoKG (st-check-own-census).",
+  "disposition": "confirmed-source",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "check",
+    "ref": "st-check-own-census"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/Eraser.cls:794-808"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/GraphStores.cls:28-130"
+   }
+  ],
+  "gates": [
+   "3.4-ownership"
+  ],
+  "severity": "S4",
+  "confidence": "high",
+  "remedy": "List ^ArnoKG in GraphStores.Inventory (with the scope it can be erased by) and clear it through the Arno bridge's own invalidation (NKGAccelLoader.InvalidateAdjCache).",
+  "notes": "The kill itself is the right effect for an erase-all (ADR-0004). Not checked here: whether a graph erasure (which does not touch ^ArnoKG) leaves an Arno-path answer built from the erased graph's cached adjacency; that is an erasure-completeness question for the owning lanes."
+ },
+ {
+  "id": "F-C1540",
+  "module": "15",
+  "title": "The FHIR graph build writes the adjacency label index and the vector and document rows itself",
+  "intended": "^KG(\"label\") is the adjacency module's (03-writes.md:43 WRT-D7 'owned by the adjacency module'; 04-adjacency.md:49), written by Graph.KG.Adjacency.PutLabel/RemoveLabel, which move the graph-version token; the label functional index calls them on each rdf_labels row (iris_vector_graph/schema.py:780, iris_src/src/Graph/KG/LabelIndex.cls:10-27). Vector and document rows are VEC's (06-vectors.md:5-8; 07-text-search.md:9-10). INT-F1.17 (15-integrations.md:94) says that with the functional index declared the row writes keep ^KG and the class skips its own Put/Remove.",
+  "observed": "iris_src/src/Graph/KG/FHIRGraph.cls sets ^KG(\"label\",...) directly in SyncProps (:2566, unconditionally) and EnsureNode (:2616, unconditionally) and kills it in SyncProps (:2560) and DropNode (:2475-2477, :2491) when not indexed; DropNode deletes Graph_KG.docs, kg_NodeEmbeddings, kg_NodeEmbeddings_optimized and every routed node table (:2481-2489) and DeleteEdge deletes kg_EdgeEmbeddings and every routed edge table (:2588-2594) by its own SQL (st-check-own-census).",
+  "disposition": "confirmed-source",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "check",
+    "ref": "st-check-own-census"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/FHIRGraph.cls:2470-2620"
+   }
+  ],
+  "gates": [
+   "3.4-ownership"
+  ],
+  "severity": "S3",
+  "confidence": "medium",
+  "remedy": "Write labels only through the rows (indexed) or Graph.KG.Adjacency.PutLabel/RemoveLabel (not indexed), and delete a node's vectors and documents through the eraser's node path, so each store keeps one writer and the version token moves.",
+  "notes": "Consequence not demonstrated: in an indexed namespace the direct Set duplicates the hook's write; where the label index is not declared, label changes made here do not move ^KG(\"__version\"), so a cached algorithm answer could outlive them (the F-0405 family). Confidence medium for that reason."
+ },
+ {
+  "id": "F-C1547",
+  "module": "15",
+  "title": "get_reifications reads the reifier's properties from every graph",
+  "intended": "get_reifications returns the reifiers of rdf_edges row edge_id with their properties (iris_vector_graph/_engine/schema.py:3335-3339); a reifier node is an ordinary node of one graph (15-integrations.md INT-D19, INT-E1; reify_edge writes it in the default graph, INT-E1.6 / F-1502), and since spec 227 a node id is unique per graph, not per namespace (iris_vector_graph/schema.py:383-391); content of one graph never shows up in an answer about another graph (00-system.md SYS-I2).",
+  "observed": "Live AUDITD (st-live-reads-b, non-interference oracle with self-test st-control-reads-selftest): default-graph edge a-R-b reified as rf1 with props {p: '1'}; adding a node rf1 in named graph stg2 with props {p: '2', q: 'x'} (and a reification of another edge) changed get_reifications(edge a-R-b) from [{reifier_id: rf1, properties: {id: rf1, p: '1'}}] to [{reifier_id: rf1, properties: {id: rf1, p: '2', q: 'x'}}]: another graph's property rows of the same id are joined in and overwrite the reifier's own. The query joins rdf_props on the id alone: LEFT JOIN rdf_props p ON p.s = r.reifier_id (schema.py:3343-3346), with no graph_id condition.",
+  "disposition": "reproduced-live",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "st-live-reads-b"
+   },
+   {
+    "kind": "control",
+    "ref": "st-control-reads-selftest"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/schema.py:3335-3360"
+   }
+  ],
+  "gates": [
+   "3.4-declared-reads"
+  ],
+  "severity": "S2",
+  "confidence": "high",
+  "remedy": "Join the reifier's properties in the reifier node's graph (the graph reify_edge wrote it in, or the edge's graph once F-1502 is fixed): add the graph_id condition to the rdf_props join, e.g. through the nodes row of the reifier.",
+  "notes": "Distinct from F-1502 (where the reifier is written) and F-1503 (delete_reification deletes every graph's rows): this is the reader. A named graph that happens to hold a node with the reifier's id (another tenant's data) changes the answer about a default-graph edge."
+ },
+ {
+  "id": "F-C1548",
+  "module": "15",
+  "title": "Deleting a relationship with delete_edge or Cypher DELETE leaves its reification rows pointing at an edge that no longer exists",
+  "intended": "A reification belongs to its edge: rdf_reifications(reifier_id, edge_id) names the reified edge (iris_vector_graph/schema.py:514-519); delete_node removes the reifiers of a node's edges (INT-E1.9, F-C1502) and erase_graph deletes the rdf_reifications rows of the graph's edges (F-1502 observed), so a deleted edge has no reification.",
+  "observed": "Live AUDITD (st-live-fk): two edges reified (fr:r1, fr:r2); delete_edge('fr:1','R','fr:2') and MATCH (a {id:'fr:2'})-[r:R]->(b {id:'fr:3'}) DELETE r both answer success, and afterwards both rdf_reifications rows remain with edge_ids 6101 and 6102 that no rdf_edges row has; get_reifications(6101) still answers fr:r1 with its properties. rdf_reifications.edge_id has no foreign key (schema.py:514-519).",
+  "disposition": "reproduced-live",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "st-live-fk"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/schema.py:514-519"
+   }
+  ],
+  "gates": [
+   "3.6-fk"
+  ],
+  "severity": "S3",
+  "confidence": "high",
+  "remedy": "Delete (or refuse to delete before removing) the edge's rdf_reifications rows and reifier nodes in delete_edge and in the Cypher relationship DELETE, in the same transaction, as delete_node intends; or declare a foreign key with ON DELETE CASCADE.",
+  "notes": "Edge ids are IDENTITY values and are not reused here, so a dangling row does not attach to a new edge; the reifier node and its properties survive (cf. F-1502 for erase_graph, F-1503 for delete_reification)."
+ },
+ {
+  "id": "F-C1549",
+  "module": "15",
+  "title": "A one-edge PROV lookup fails once the default graph's temporal history no longer fits one IRIS string",
+  "intended": "prov_as_dict maps one temporal edge (iris_vector_graph/_engine/prov.py:86-105) and prov_export_from_cypher the edges of the nodes a query returns (prov.py:141-175); INT-V1.6 (15-integrations.md:283) bounds only a window export ('Export a big history window by window'); module 05 has a paged reader for any window (iter_edges_in_window, spec 255).",
+  "observed": "Live AUDITD (st-live-cap-batch-r2): with 40,000 default-graph temporal edges whose JSON passes 3,641,144 characters, prov_as_dict of one edge and prov_export_from_cypher of one node both raise RuntimeError '<MAXSTRING>QueryWindow+27^Graph.KG.TemporalIndex.1', as does prov_export of the whole window; a one-second window exports. Both helpers read the whole default-graph window with QueryWindow(0, 9999999999) and filter in Python (prov.py:181-221). With short ids (st-live-cap-batch, window under the limit) all succeed.",
+  "disposition": "reproduced-live",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "st-live-cap-batch-r2"
+   },
+   {
+    "kind": "live",
+    "ref": "st-live-cap-batch"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/prov.py:181-221"
+   }
+  ],
+  "gates": [
+   "3.6-capacity"
+  ],
+  "severity": "S3",
+  "confidence": "high",
+  "remedy": "Read through the paged cursor (iter_edges_in_window with source or sources filters) or QueryWindow narrowed to the edge's timestamp and source, so a lookup's cost depends on its own edges, not on the whole history.",
+  "notes": "prov_as_dict's docstring says the whole window is read; it does not say the call fails past the string limit. The whole-window prov_export failure is the documented INT-V1.6 cap (its raising instead of logging is F-1501)."
+ },
+ {
+  "id": "F-C1642",
+  "module": "16",
+  "title": "The generated GraphQL server pages nodes(label) over an unordered id list",
+  "intended": "A paged field (nodes(label, limit, offset), iris_vector_graph/gql/schema.py:150-156 -> gql/resolvers.py:32) is meant to page a defined sequence, so that consecutive pages partition the answer whatever the storage order (playbook principle 5, verification-playbook.txt:33-34). The sample API's own nodes field orders before it pages (api/gql/core/resolvers.py:159-177).",
+  "observed": "Live (st-live-so-confirm P16, AUDITD): five nodes of label Q written forward and in reverse; resolve_nodes(label='Q', limit=2, offset=0|2|4) answered pages [so16:0, so16:1] [so16:2, so16:3] [so16:4] forward and [so16:4, so16:3] [so16:2, so16:1] [so16:0] reverse; the permutation run (st-live-perm-c, module 16) shows three different first pages for three orders, while the sample API's ORDER BY created_at pages held. Source: SELECT s FROM rdf_labels WHERE label = ? with no ORDER BY, then all_ids[offset : offset + limit] (iris_vector_graph/gql/resolvers.py:32-46).",
+  "disposition": "reproduced-live",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "st-live-so-confirm"
+   },
+   {
+    "kind": "live",
+    "ref": "st-live-perm-c"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/gql/resolvers.py:32-46"
+   }
+  ],
+  "gates": [
+   "3.4-storage-order",
+   "3.6-row-permutation"
+  ],
+  "severity": "S4",
+  "confidence": "high",
+  "remedy": "ORDER BY s (and the graph) in the statement and page in SQL (TOP/offset over the ordered rows), scoped to one graph (F-1603).",
+  "notes": "F-1603 is the cross-graph part of the same resolver (the page is cut from every graph's ids); this finding is the order part and holds within one graph."
+ },
+ {
+  "id": "F-C1740",
+  "module": "17",
+  "title": "The SQL adapter's node delete removes document and reification rows by its own SQL",
+  "intended": "OPS-B5.6 (17-operations.md:189): delete nodes removes ids 'with their labels, properties, edges and vectors' (no documents or reification links named). Documents are VEC's (07-text-search.md:9-10), reifications INT's (15-integrations.md:5-10). Playbook \u00a73.4: single write owner.",
+  "observed": "iris_vector_graph/stores/iris_sql_store.py _delete_nodes_sql deletes Graph_KG.rdf_reifications rows (:1387) and Graph_KG.docs rows (:1403) itself, besides the content and legacy vector tables OPS-B5.6 names (st-check-own-census).",
+  "disposition": "confirmed-source",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "check",
+    "ref": "st-check-own-census"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/stores/iris_sql_store.py:1363-1418"
+   }
+  ],
+  "gates": [
+   "3.4-ownership"
+  ],
+  "severity": "S4",
+  "confidence": "high",
+  "remedy": "Delete through the owners (the eraser's node erase, which already reaches documents and routes) and state in OPS-B5.6 what the delete removes.",
+  "notes": "The SQL path is the fallback when the erasure server code is absent (OPS-T5.6.1, 17-operations.md:190)."
+ },
+ {
+  "id": "F-C1742",
+  "module": "17",
+  "title": "IRISGraphStore.query_nodes(limit=n) cuts an unordered node scan",
+  "intended": "A capped read answers a defined subset (playbook principle 5; store_protocol.py:10-11 states no order); the same lane's F-C0302 is the engine counterpart.",
+  "observed": "Source at the pin: without a label, query_nodes runs SELECT node_id FROM <schema>.nodes FETCH FIRST n ROWS ONLY with no ORDER BY (iris_vector_graph/stores/iris_sql_store.py:1176-1181), so the n nodes answered (and then filtered by property) are the first n in scan order. The product call itself cannot be observed answering here: it kills the client process first (F-C1743, st-live-so-confirm P17). The same unordered prefix in the TOP spelling, sent by a harness cursor over the same data, answered [so17:0, so17:1] forward and [so17:4, so17:3] reverse (st-live-so-17b).",
+  "disposition": "confirmed-source",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/stores/iris_sql_store.py:1162-1200"
+   },
+   {
+    "kind": "check",
+    "ref": "st-check-so-gate"
+   },
+   {
+    "kind": "live",
+    "ref": "st-live-so-17b"
+   }
+  ],
+  "gates": [
+   "3.4-storage-order",
+   "3.6-row-permutation"
+  ],
+  "severity": "S4",
+  "confidence": "high",
+  "remedy": "ORDER BY node_id (and graph) before the cut, with TOP n rather than FETCH FIRST (see F-C1743), and scope the read to one graph (F-1701).",
+  "notes": "The property filter that follows reads by (s, key) in any graph (F-1701). Disposition stays confirmed-source: the live answer shown is a harness statement of the same shape, not the product call."
+ },
+ {
+  "id": "F-C1743",
+  "module": "17",
+  "title": "IRISGraphStore.query_nodes(limit=n) kills the calling Python process (SIGSEGV) on IRIS Community 2026.1 with the locked driver",
+  "intended": "A public store method either answers or raises (store_protocol.py:10-11); the product knows FETCH FIRST is hazardous for this driver/engine family and avoids it elsewhere (iris_vector_graph/engine.py:725-739 _fetch_first_unsafe and its subprocess probe :772-830; docs/iris-sql-quirks.md:47-62; the in-line comment iris_sql_store.py:1177-1178 records a segfault on FETCH FIRST ? ROWS ONLY on ARM64).",
+  "observed": "Live (st-live-so-confirm P17, AUDITD, IRIS 2026.1 Community build 234U, intersystems_irispython 5.3.2, x86_64): a child process that calls engine._store.query_nodes(limit=2) prints its start mark and exits with return code -11 (SIGSEGV) before any answer, in both insertion orders; the first attempt inside the permutation harness ended the harness with 'dumped core'. The statement is SELECT node_id FROM Graph_KG.nodes FETCH FIRST 2 ROWS ONLY (iris_vector_graph/stores/iris_sql_store.py:1179-1180), sent without consulting _fetch_first_unsafe. Attribution control (st-live-so-17b): the same statement from a harness cursor also exits -11, the TOP spelling answers: the crash is the engine/driver's behaviour on this statement, which the adapter sends without the engine's own _fetch_first_unsafe check.",
+  "disposition": "reproduced-live",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "st-live-so-confirm"
+   },
+   {
+    "kind": "live",
+    "ref": "st-live-so-17b"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/stores/iris_sql_store.py:1176-1181"
+   }
+  ],
+  "gates": [
+   "3.7-failure-controls",
+   "3.6-capacity"
+  ],
+  "severity": "S2",
+  "confidence": "high",
+  "remedy": "Use TOP n (as the translator does for joins and the engine does when _fetch_first_unsafe is set) or consult _fetch_first_unsafe in the adapter; a test that runs query_nodes(limit=n) on the supported driver.",
+  "notes": "Tested with driver 5.3.2 (the pin's uv.lock) only; 5.4.0 not tried. A segfault is uncatchable in-process: every caller of the adapter (LazyKG, the store protocol's users) loses the process."
+ },
+ {
+  "id": "F-C1848",
+  "module": "18",
+  "title": "save_snapshot and restore_snapshot hold the whole archive in client memory: about 11 MB per 1,000 edges, 190 times the archive's size",
+  "intended": "Playbook \u00a73.6 capacity: a stated bound or measured limit for every resource that grows with the data. save_snapshot documents 'the whole database's graph content' (iris_vector_graph/_engine/snapshot.py:803-815) and states no memory bound; no IVG document gives one.",
+  "observed": "Live AUDITD (st-live-cap-snapshot-mem): peak client allocation of save_snapshot 21.3 / 89.2 / 356.1 MB and of restore_snapshot 21.8 / 84.6 / 338.4 MB for 2,000 / 8,000 / 32,000 edges (archives of 0.12 / 0.48 / 1.9 MB); save takes 7 / 28 / 108 s. save_snapshot fetches every row of every table with fetchall() and builds every NDJSON member as a list in memory before writing (snapshot.py:864-900); restore reads every member into memory (snapshot.py:1107-1112). By extrapolation a namespace of a million edges needs about 11 GB on the client; nothing refuses or streams.",
+  "disposition": "reproduced-live",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "st-live-cap-snapshot-mem"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/snapshot.py:864-900"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/snapshot.py:1107-1112"
+   }
+  ],
+  "gates": [
+   "3.6-capacity"
+  ],
+  "severity": "S3",
+  "confidence": "high",
+  "remedy": "Stream each table into its ZIP member with a server-side cursor in pages (zipfile open(..., 'w') per member) and restore member by member in batches; until then document the memory needed per edge and a size above which snapshots are refused.",
+  "notes": "The million-edge figure is a linear extrapolation of three points, not measured. Cf. F-1510 (RDF export claims bounded memory); here no claim is made, so the defect is the missing capacity contract plus the amplification."
+ }
+]

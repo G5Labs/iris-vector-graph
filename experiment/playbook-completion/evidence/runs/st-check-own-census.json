@@ -1,0 +1,18 @@
+{
+  "command": "python experiment/playbook-completion/structural/ownership/ownership.py --out /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/structural/ownership/final-20261114T115151Z",
+  "experiment_head": "d77620a9333a7eb5b62ca9b8c92144a6aaf74d2b",
+  "id": "st-check-own-census",
+  "kind": "check",
+  "lane": "structural",
+  "log": "$RUN_DIR/structural/ownership/final-20261114T115151Z/check.log",
+  "log_bytes": 11625,
+  "log_sha256": "065161bd150a828bcbca9fb0225370041f51c132a5fd91bbacd47109501480e9",
+  "note": "record rewritten before commit: counts corrected (writer 40, content writer modules)",
+  "observes": "single-write-owner check over a source-derived writer census of the pin (generalised copy of tools/writer_census.py: every durable store; 248 files: iris_src/src/**/*.cls, iris_vector_graph/** without browser_static, api/**, src/**, sql/**, examples/domains/biomedical/** served by the sample API): 1,826 write sites, 101 row/node stores (DDL counted separately: 162 schema objects); 98 stores have more than one writer module. (store, writer module) pairs: 95 owner, 25 undeclared (no ontology, ADR or product store plan names the write), 140 declared co-writers (named by the owner's ontology 11, the writer's ontology 40, a product store plan GraphStores.Inventory/STORE_PLAN 89), 30 conditional (run-time names: Snapshot.ImportGlobals/SetNodeJSON any global, restore's allow-listed roots with run-time sub-stores), 4 delegates, 5 unserved (api/gql/resolvers, an unused bulk template), 3 sole writers, 3 IRIS Task Manager rows; 21 ADR class violations (ADR-0011 ^KG(\"out\")/(\"in\"), ADR-0002 temporal subtrees: all by restore paths, conditional). No content table has a single write owner (nodes 11, rdf_edges 10, rdf_labels 9, rdf_props 11 writer modules). Undeclared second writers by module: 04 ^KG(\"prop\") (no owner); 06 ^NKG(\"q\"); 08 kg_NodeEmbeddings, rdf_reifications; 10 ^KG(\"__version\"); 11 kg_NodeEmbeddings(_optimized); 12 ^ArnoKG; 15 ^KG(\"label\"), docs, kg_*Embeddings, kg_emb_*/kg_eemb_*; 16 rdf_props (examples resolver updateProtein); 17 docs, rdf_reifications; 18 ^KG(\"__version\"/\"degc\"/\"degw\"/\"gen\"); 00 (unowned import_rdf, materialize/retract_inference) content tables",
+  "out_dir": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/structural/ownership/final-20261114T115151Z",
+  "ownership_json": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/structural/ownership/final-20261114T115151Z/ownership.json",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T11:53:05+00:00",
+  "result": "fail"
+}

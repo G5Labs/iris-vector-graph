@@ -1,0 +1,15 @@
+{
+  "command": "locks.sh iris python experiment/playbook-completion/structural/capkeys/cap_values.py $RUN_DIR/structural/capkeys/cap-values-r2.json",
+  "experiment_head": "d77620a9333a7eb5b62ca9b8c92144a6aaf74d2b",
+  "id": "st-live-cap-values",
+  "kind": "live",
+  "lane": "structural",
+  "log": "$RUN_DIR/structural/capkeys/cap-values-r2.json",
+  "log_bytes": 21105,
+  "log_sha256": "e7bbc33ee53b83ebe1d9f47417bb86b129deccdb9d5f28a85a398d581eac4b13",
+  "observes": "AUDITD, value sizes with exact read-back (length+SHA-256) and journal residue (row-id counters, ^KG version/gen stamps, rdf_props iFind dictionary excluded): exact: create_node prop 64000, label 128, create_edge qualifier 1,000,000 and 3,641,124 chars, Cypher CREATE node prop 64000, temporal attrs 1,000,000, store_embedding metadata 1,000,000; clean-refusal (error, no residue): create_node prop 64001/1,000,000/3,641,144, label 129, key 129, bulk_create_nodes prop 64001/1,000,000, create_edge qualifier 4,000,000 (MAXSTRING), Cypher CREATE/SET node prop 64001/1,000,000 (-104), IRISGraphStore.write_nodes 64001/1,000,000, reify_edge prop 64001/1,000,000, store_embedding metadata 4,000,000; refused with documented residue: create_edge_temporal attrs 3,641,144 and 4,000,000 (<MAXSTRING> InsertEdge, temporal stores stay, F-C0501); silent loss: Cypher CREATE (a {id:'cr:1'})-[:R {q: $v}]->(b {id:'cr:2'}) answers no error and stores no q for v of 10, 1,000,000 and 4,000,000 chars (rdf_edges.qualifiers and r.q both empty)",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T11:45:49+00:00",
+  "result": "fail"
+}

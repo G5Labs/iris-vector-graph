@@ -1,0 +1,199 @@
+{
+ "cells": [
+  {
+   "gate": "3.4-declared-reads",
+   "module": "01",
+   "status": "closed",
+   "evidence": [
+    "run:st-control-reads-selftest",
+    "run:st-live-reads-a",
+    "experiment/playbook-completion/structural/reads/method.json",
+    "experiment/playbook-completion/structural/reads/noninterference.py"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "1 read actions checked by non-interference (oracle A, self-tested): 0 hold, 1 violate, 0 undecided. Violations: get_property_keys(label=L) [not graph-scoped: keys of nodes with label L] changed under 'same ids without L in other graphs' (F-0106)",
+   "as_built_findings": [
+    "F-0106"
+   ],
+   "remaining": "67 of 68 inventoried read/both entry points not checked: py:IRISGraphEngine.initialize_schema, py:IRISGraphEngine.remove_legacy_objects, py:iris_vector_graph._engine.legacy.remove_legacy_objects, cls:Graph.KG.SqlProcs.backfilltemporalrows, cls:Graph.KG.SqlProcs.kgBM25, py:iris_vector_graph._engine.legacy.copy_ledger_history, py:iris_vector_graph._engine.legacy.grant_read_path, py:iris_vector_graph._engine.legacy.read_path_routines, py:iris_vector_graph._engine.legacy.replace_arno_wrappers, py:iris_vector_graph._engine.legacy.revoke_legacy_arno, py:iris_vector_graph.migrations.upgrade.upgrade_to_4_0_0, py:iris_vector_graph.schema.GraphSchema.add_graph_id_to_nodes, py:iris_vector_graph.schema.GraphSchema.bootstrap_kg_global, py:iris_vector_graph.schema.GraphSchema.deploy_objectscript_classes, py:iris_vector_graph.schema.GraphSchema.ensure_adjacency_index, py:iris_vector_graph.schema.GraphSchema.ensure_ekey, py:iris_vector_graph.schema.GraphSchema.ensure_props_value_key, py:iris_vector_graph.schema.GraphSchema.get_bulk_insert_sql, py:iris_vector_graph.schema.GraphSchema.get_graph_scope_migration_sql, py:iris_vector_graph.schema.GraphSchema.get_procedures_sql_list, py:iris_vector_graph.schema.GraphSchema.stage_class_owned_rdf_edges, py:iris_vector_graph.schema.GraphSchema.upgrade_val_column, py:iris_vector_graph.schema_name.foreign_classes, py:iris_vector_graph.schema_name.refuse_package_clash, rest:POST /admin/schema/init, cls:Graph.KG.SqlProcs.DijkstraPath, cls:Graph.KG.SqlProcs.LedgerRecordsFetch, cls:Graph.KG.SqlProcs.MatchEdges, cls:Graph.KG.SqlProcs.MatchEdgesAllGraphs, cls:Graph.KG.SqlProcs.PropSet, cls:Graph.KG.SqlProcs.kgIVF, py:IRISGraphEngine.get_edge_count, py:IRISGraphEngine.get_label_distribution, py:IRISGraphEngine.get_labels, py:IRISGraphEngine.get_node_count, py:IRISGraphEngine.get_relationship_types, py:IRISGraphEngine.get_schema_visualization, py:IRISGraphEngine.is_ready, py:IRISGraphEngine.node_exists, py:iris_vector_graph._engine.class_deploy.deploy_packaged_classes, py:iris_vector_graph._engine.class_deploy.foreign_schema_classes, py:iris_vector_graph._engine.class_deploy.upload_and_compile, py:iris_vector_graph._engine.legacy.arno_copies, py:iris_vector_graph._engine.legacy.direct_grants, py:iris_vector_graph._engine.legacy.grants_by_object, py:iris_vector_graph._engine.legacy.grants_on, py:iris_vector_graph._engine.legacy.legacy_count, py:iris_vector_graph._engine.legacy.present_legacy_objects, py:iris_vector_graph._engine.legacy.user_roles, py:iris_vector_graph.engine.IRISGraphEngine._check_namespace_schema, py:iris_vector_graph.engine.IRISGraphEngine._schema_check_passed, py:iris_vector_graph.engine.IRISGraphEngine._waive_schema_check, py:iris_vector_graph.routine_record.RoutineRecord.__init__, py:iris_vector_graph.schema.GraphSchema.adjacency_index_kind, py:iris_vector_graph.schema.GraphSchema.check_objectscript_classes, py:iris_vector_graph.schema.GraphSchema.ensure_ledger_index, py:iris_vector_graph.schema.GraphSchema.pending_rdf_edges_rescue, py:iris_vector_graph.schema.GraphSchema.resolve_table_class, py:iris_vector_graph.schema.GraphSchema.validate_schema, py:iris_vector_graph.schema.repair_ifind_helpers, py:iris_vector_graph.schema_name.check_first_access, py:scripts.deploy_graph_tvfs.main, py:scripts.deploy_graph_tvfs.verify_deployment, py:scripts.deploy_production.deploy_classes, py:scripts.deploy_production.main, rest:GET /schema, rest:GET /stats | non-interference sees only reads that reach the answer, and only under the perturbations listed per action in structural/reads/method.json"
+  },
+  {
+   "gate": "3.4-declared-reads",
+   "module": "03",
+   "status": "open",
+   "evidence": [
+    "run:st-control-reads-selftest",
+    "run:st-live-reads-a",
+    "experiment/playbook-completion/structural/reads/method.json",
+    "experiment/playbook-completion/structural/reads/noninterference.py"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "30 read actions checked by non-interference (oracle A, self-tested): 30 hold, 0 violate, 0 undecided; no violation among the checked actions",
+   "as_built_findings": [],
+   "remaining": "20 of 43 inventoried read/both entry points not checked: py:IRISGraphEngine.bulk_create_edges, py:IRISGraphEngine.bulk_create_nodes, py:IRISGraphEngine.bulk_ingest_edges, py:IRISGraphEngine.delete_edge, py:IRISGraphEngine.delete_node, py:IRISGraphEngine.store_edge, py:IRISGraphEngine.store_node, py:iris_vector_graph.bulk_loader.BulkLoader.load_edges, py:iris_vector_graph.bulk_loader.BulkLoader.load_networkx, py:iris_vector_graph.bulk_loader.BulkLoader.load_nodes, py:IRISGraphEngine.bulk_delete_nodes, py:IRISGraphEngine.bulk_load_session, py:IRISGraphEngine.erase_all, py:IRISGraphEngine.set_edge_weight, py:iris_vector_graph.bulk_loader.BulkLoader.build_graph_globals, cls:Graph.KG.PropWrite.Layout, cls:Graph.KG.PropWrite.SetVal, py:iris_vector_graph._batch_check.missing_rows, py:iris_vector_graph._dictionary.compiled_class_exists, py:iris_vector_graph._dictionary.compiled_method_exists | inside perturbation did not change the answer (sensitivity not shown): get_json_field_values('j', 'f') [all graphs]; get_nodes_by_property('k', 'v1') [all graphs] | non-interference sees only reads that reach the answer, and only under the perturbations listed per action in structural/reads/method.json"
+  },
+  {
+   "gate": "3.4-declared-reads",
+   "module": "04",
+   "status": "open",
+   "evidence": [
+    "run:st-control-reads-selftest",
+    "run:st-live-reads-a",
+    "experiment/playbook-completion/structural/reads/method.json",
+    "experiment/playbook-completion/structural/reads/noninterference.py"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "4 read actions checked by non-interference (oracle A, self-tested): 4 hold, 0 violate, 0 undecided; no violation among the checked actions",
+   "as_built_findings": [],
+   "remaining": "113 of 116 inventoried read/both entry points not checked: cls:Graph.KG.Adjacency.Put, cls:Graph.KG.Adjacency.PutShadow, cls:Graph.KG.Adjacency.Remove, cls:Graph.KG.Adjacency.Reweight, cls:Graph.KG.TraversalBuild.BuildKG, py:IRISGraphEngine.sync, cls:Graph.KG.Adj.WarmAll, cls:Graph.KG.Adj.WarmCache, cls:Graph.KG.Adj.WarmFill, cls:Graph.KG.AdjIndex.DeleteIndex, cls:Graph.KG.AdjIndex.InsertIndex, cls:Graph.KG.AdjIndex.UpdateIndex, cls:Graph.KG.Adjacency.AssertTemporalRow, cls:Graph.KG.Adjacency.EndRebuild, cls:Graph.KG.Adjacency.FillTriple, cls:Graph.KG.Adjacency.MarkGraphGone, cls:Graph.KG.Adjacency.PutKeyed, cls:Graph.KG.Adjacency.RemoveKeyed, cls:Graph.KG.Adjacency.RemoveNode, cls:Graph.KG.Adjacency.RemoveSource, cls:Graph.KG.Adjacency.RetractTemporalRow, cls:Graph.KG.Adjacency.RetractTemporalRows, cls:Graph.KG.Adjacency.RetractTemporalShadows, cls:Graph.KG.Adjacency.RowPut, cls:Graph.KG.Adjacency.RowRemove, cls:Graph.KG.Adjacency.RowUpdate, cls:Graph.KG.Adjacency.SetLeafFromLowest, cls:Graph.KG.Adjacency.WriterLock, cls:Graph.KG.EdgeScan.BulkDeleteAdjacency, cls:Graph.KG.EdgeScan.BulkIngestEdgesFile, cls:Graph.KG.EdgeScan.BulkIngestEdgesSQL, cls:Graph.KG.EdgeScan.BulkIngestNodesSQL, cls:Graph.KG.EdgeScan.DeleteAdjacency, cls:Graph.KG.EdgeScan.DeleteAdjacencyAllGraphs, cls:Graph.KG.EdgeScan.DeleteAdjacencyKeyed, cls:Graph.KG.EdgeScan.RegisterDefaultNode, cls:Graph.KG.EdgeScan.WriteAdjacency, cls:Graph.KG.EdgeScan.WriteAdjacencyKeyed, cls:Graph.KG.GraphIndex.DeleteIndex, cls:Graph.KG.GraphIndex.DropNKG, cls:Graph.KG.GraphIndex.InitStructuralLabels, cls:Graph.KG.GraphIndex.InternLabel, cls:Graph.KG.GraphIndex.InternNode, cls:Graph.KG.GraphIndex.UpdateStructuralHLL, cls:Graph.KG.TraversalBuild.ArnoCapabilities, cls:Graph.KG.TraversalBuild.BackfillDegp, cls:Graph.KG.TraversalBuild.Build2HopExactStats, cls:Graph.KG.TraversalBuild.Build2HopStats, cls:Graph.KG.TraversalBuild.BuildKGKeyed, cls:Graph.KG.TraversalBuild.BuildNKG, cls:Graph.KG.TraversalBuild.DictSweepAllowed, cls:Graph.KG.TraversalBuild.EnsureNKG, cls:Graph.KG.TraversalBuild.GuardCounters, cls:Graph.KG.TraversalBuild.InitNKGSkeleton, cls:Graph.KG.TraversalBuild.MergedDegree, cls:Graph.KG.TraversalBuild.PutLabelBack, cls:Graph.KG.TraversalBuild.PutNodeBack, cls:Graph.KG.TraversalBuild.RetireNode, cls:Graph.KG.TraversalBuild.RewriteNKG, cls:Graph.KG.TraversalBuild.RewritePass, cls:Graph.KG.TraversalBuild.SweepDegrees, cls:Graph.KG.TraversalBuild.SweepEdge, cls:Graph.KG.TraversalBuild.SweepEdges, cls:Graph.KG.TraversalBuild.SweepLabels, cls:Graph.KG.TraversalBuild.SweepMirrors, cls:Graph.KG.TraversalBuild.SweepNodes, cls:Graph.KG.TraversalBuild.SweepSketches, cls:Graph.KG.TraversalBuild.WalkSource, py:IRISGraphEngine.backfill_2hop_exact, py:IRISGraphEngine.backfill_deg2p_exact, py:IRISGraphEngine.bulk_delete_adjacency, py:IRISGraphEngine.rebuild_kg, py:IRISGraphEngine.rebuild_nkg, py:IRISGraphEngine.status, py:IRISGraphEngine.verify_sync, rest:GET /metrics, rest:GET /server, rest:POST /admin/indexes/rebuild, cls:Graph.KG.Adj.AllWarm, cls:Graph.KG.Adj.Cached, cls:Graph.KG.Adj.Count, cls:Graph.KG.Adj.HasEdges, cls:Graph.KG.Adj.NextSource, cls:Graph.KG.Adjacency.HeldElsewhere, cls:Graph.KG.Adjacency.KeyCount, cls:Graph.KG.Adjacency.OtherEdgeKeys, cls:Graph.KG.AlgoCache.Get, cls:Graph.KG.AlgoCache.Lookup, cls:Graph.KG.AlgoCache.Token, cls:Graph.KG.EdgeScan.MatchEdges, cls:Graph.KG.EdgeScan.MatchEdgesAllGraphs, cls:Graph.KG.EdgeScan.ScanOneGraph, cls:Graph.KG.Edgeless.HasOther, cls:Graph.KG.Edgeless.Loners, cls:Graph.KG.Edgeless.Scan, cls:Graph.KG.GraphIndex.GetLabelIdx, cls:Graph.KG.GraphIndex.GetNodeIdx, cls:Graph.KG.GraphVerify.VerifyGraph, cls:Graph.KG.TraversalBuild.FirstWeight, cls:Graph.KG.TraversalBuild.HeldAnywhere, cls:Graph.KG.TraversalBuild.IsSource, cls:Graph.KG.TraversalBuild.KGEdgeCount, cls:Graph.KG.TraversalBuild.LabelInKG, cls:Graph.KG.TraversalBuild.NKGEdgeCount, cls:Graph.KG.TraversalBuild.NKGLiveNodeCount, cls:Graph.KG.TraversalBuild.NKGNodeCount, cls:Graph.KG.TraversalBuild.NKGPopulated, cls:Graph.KG.TraversalBuild.NodeInKG, cls:Graph.KG.TraversalBuild.SketchOf, py:iris_vector_graph._edgeless.loners, py:iris_vector_graph._edgeless.loners_sql, py:iris_vector_graph.engine.IRISGraphEngine._adjacency_indexed, py:iris_vector_graph.stores.iris_sql_store.IRISGraphStore._cached_algorithm | non-interference sees only reads that reach the answer, and only under the perturbations listed per action in structural/reads/method.json"
+  },
+  {
+   "gate": "3.4-declared-reads",
+   "module": "05",
+   "status": "closed",
+   "evidence": [
+    "run:st-control-reads-selftest",
+    "run:st-live-reads-a",
+    "experiment/playbook-completion/structural/reads/method.json",
+    "experiment/playbook-completion/structural/reads/noninterference.py"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "13 read actions checked by non-interference (oracle A, self-tested): 12 hold, 1 violate, 0 undecided. Violations: find_burst_nodes(T, window, threshold=1, now) graph=G1 changed under 'another source's edges of another predicate, same graph, a's edge of another predicate, same graph' (F-0508)",
+   "as_built_findings": [
+    "F-0508"
+   ],
+   "remaining": "73 of 83 inventoried read/both entry points not checked: py:IRISGraphEngine.bulk_create_edges_temporal, py:IRISGraphEngine.delete_edge_temporal, py:IRISGraphEngine.purge_before, cls:Graph.KG.Adjacency.AssertTemporalRow, cls:Graph.KG.Adjacency.RetractTemporalRow, cls:Graph.KG.Adjacency.RetractTemporalRows, cls:Graph.KG.LedgerApply.OpCreateTemporalEdge, cls:Graph.KG.TemporalIndex.BackfillRows, cls:Graph.KG.TemporalIndex.BackfillStructuralRows, cls:Graph.KG.TemporalIndex.BackfillWalk, cls:Graph.KG.TemporalIndex.BulkInsert, cls:Graph.KG.TemporalIndex.BulkInsertCounts, cls:Graph.KG.TemporalIndex.DeleteTemporalEdge, cls:Graph.KG.TemporalIndex.EraseNodes, cls:Graph.KG.TemporalIndex.InsertEdge, cls:Graph.KG.TemporalIndex.InternLabelSet, cls:Graph.KG.TemporalIndex.MigrateDerived, cls:Graph.KG.TemporalIndex.MigrateRaw, cls:Graph.KG.TemporalIndex.MigrateToGraphScoped, cls:Graph.KG.TemporalIndex.NoteLatest, cls:Graph.KG.TemporalIndex.PurgeBefore, cls:Graph.KG.TemporalIndex.PurgeBucketRange, cls:Graph.KG.TemporalIndex.PurgeRawBefore, cls:Graph.KG.TemporalIndex.RebuildBucket, cls:Graph.KG.TemporalIndex.RebuildBucketAggregate, cls:Graph.KG.TemporalIndex.RebuildLatest, cls:Graph.KG.TemporalIndex.Relatest, cls:Graph.KG.TemporalIndex.RelatestRange, cls:Graph.KG.TemporalIndex.RemoveTemporalRow, cls:Graph.KG.TemporalIndex.RetireExpired, cls:Graph.KG.TemporalIndex.UpdateHLL, cls:Graph.KG.TemporalIndex.WriteStores, cls:Graph.KG.TemporalPolicy.BackfillRows, cls:Graph.KG.TemporalPolicy.DropRows, py:IRISGraphEngine.backfill_temporal_structural_rows, py:IRISGraphEngine.drop_temporal_structural_rows, py:IRISGraphEngine.rebuild_temporal_latest, py:iris_vector_graph.migrations.temporal_structural_rows.backfill_structural_rows, cls:Graph.KG.TemporalIndex.BucketGroupsEvents, cls:Graph.KG.TemporalIndex.FindBursts, cls:Graph.KG.TemporalIndex.FlatDepth, cls:Graph.KG.TemporalIndex.GetAggregate, cls:Graph.KG.TemporalIndex.GetBucketGroupTargets, cls:Graph.KG.TemporalIndex.GetBucketGroups, cls:Graph.KG.TemporalIndex.GetDistinctCount, cls:Graph.KG.TemporalIndex.GetEdgeAttrs, cls:Graph.KG.TemporalIndex.GetVelocity, cls:Graph.KG.TemporalIndex.HasTemporalEdge, cls:Graph.KG.TemporalIndex.MigrateOrphans, cls:Graph.KG.TemporalIndex.QueryWindow, cls:Graph.KG.TemporalIndex.QueryWindowInbound, cls:Graph.KG.TemporalIndex.QueryWindowSources, cls:Graph.KG.TemporalIndex.ResolveLabelSet, cls:Graph.KG.TemporalIndexMS.GetBucketCount, cls:Graph.KG.TemporalPolicy.IsStructural, cls:Graph.KG.TemporalPolicy.IsStructuralKey, cls:Graph.KG.TemporalPolicy.List, cls:Graph.KG.TemporalPolicy.ListAll, cls:Graph.KG.TemporalWindow.Latest, cls:Graph.KG.TemporalWindow.Next, cls:Graph.KG.TemporalWindow.NextKey, cls:Graph.KG.TemporalWindow.NextListed, cls:Graph.KG.TemporalWindow.Open, cls:Graph.KG.TemporalWindow.Page, cls:Graph.KG.TemporalWindow.Resolve, cls:Graph.KG.TemporalWindow.Row, cls:Graph.KG.TemporalWindow.State, py:IRISGraphEngine.erase_bare_nodes, py:IRISGraphEngine.list_temporal_structural_opt_outs, py:iris_vector_graph._engine.temporal_only_warning.registered, py:iris_vector_graph._engine.temporal_only_warning.warn_empty_bfs, py:iris_vector_graph._engine.temporal_only_warning.warn_empty_cypher, py:iris_vector_graph._engine.temporal_only_warning.warn_if_named | non-interference sees only reads that reach the answer, and only under the perturbations listed per action in structural/reads/method.json"
+  },
+  {
+   "gate": "3.4-declared-reads",
+   "module": "10",
+   "status": "open",
+   "evidence": [
+    "run:st-control-reads-selftest",
+    "run:st-live-reads-b",
+    "experiment/playbook-completion/structural/reads/method.json",
+    "experiment/playbook-completion/structural/reads/noninterference.py"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "20 read actions checked by non-interference (oracle A, self-tested): 19 hold, 0 violate, 1 undecided; no violation among the checked actions",
+   "as_built_findings": [],
+   "remaining": "200 of 219 inventoried read/both entry points not checked: cls:Graph.KG.Algorithms.WCCJson, cls:Graph.KG.Algorithms.CDLPJson, cls:Graph.KG.PageRank.RunJson, cls:Graph.KG.PageRank.CheckArgs, cls:Graph.KG.PageRank.NodeSeeds, cls:Graph.KG.PageRank.WithUnscored, cls:Graph.KG.PageRank.Run, cls:Graph.KG.PageRank.PageRankGlobalJson, cls:Graph.KG.PageRankEmbedded.ComputePageRank, cls:Graph.KG.PageRankEmbedded.ComputePageRankWithMetrics, cls:Graph.KG.Centrality.DegreeCentralityJson, cls:Graph.KG.Communities.TriangleCountJson, cls:Graph.KG.Communities.KCoreJson, cls:Graph.KG.Communities.SCCJson, cls:Graph.KG.Communities.LeidenJson, cls:Graph.KG.Communities.ClosenessJsonPy, cls:Graph.KG.Communities.LeidenJsonPy, cls:Graph.KG.Communities.LeidenJsonAuto, cls:Graph.KG.Subgraph.SubgraphJson, cls:Graph.KG.Subgraph.PPRGuidedJson, cls:Graph.KG.Traversal.DijkstraProc, cls:Graph.KG.Traversal.BuildKG, cls:Graph.KG.Traversal.NKGEdgeCount, cls:Graph.KG.Traversal.NKGNodeCount, cls:Graph.KG.Traversal.NKGLiveNodeCount, cls:Graph.KG.Traversal.BuildNKG, cls:Graph.KG.Traversal.BackfillDegp, cls:Graph.KG.Traversal.Build2HopStats, cls:Graph.KG.Traversal.Build2HopExactStats, cls:Graph.KG.Traversal.KGEdgeCount, cls:Graph.KG.Traversal.NKGPopulated, cls:Graph.KG.Traversal.BFS, cls:Graph.KG.Traversal.BFSFast, cls:Graph.KG.Traversal.BFSJSON, cls:Graph.KG.Traversal.BFSFastJson, cls:Graph.KG.Traversal.BFSFastJsonDirect, cls:Graph.KG.Traversal.BFSFastJsonChunked, cls:Graph.KG.Traversal.BFSFastStream, cls:Graph.KG.Traversal.ReadLargeOutChunk, cls:Graph.KG.Traversal.BFSFastJsonSorted, cls:Graph.KG.Traversal.BFSFastCountDistinct, cls:Graph.KG.Traversal.ShortestPathJson, cls:Graph.KG.Traversal.DijkstraJson, cls:Graph.KG.Traversal.KHopCount, cls:Graph.KG.Traversal.KHopNeighborIds, cls:Graph.KG.Traversal.KHop2Count, cls:Graph.KG.Traversal.KHop2NeighborIds, cls:Graph.KG.Traversal.KHop2CountFast, cls:Graph.KG.Traversal.KHop2CountExact, cls:Graph.KG.TraversalBFS.BFS, cls:Graph.KG.TraversalBFS.BFSFast, cls:Graph.KG.TraversalBFS.BFSJSON, cls:Graph.KG.TraversalBFS.BFSFastJson, cls:Graph.KG.TraversalBFS.BFSFastJsonDirect, cls:Graph.KG.TraversalBFS.BFSFastJsonChunked, cls:Graph.KG.TraversalBFS.BFSFastStream, cls:Graph.KG.TraversalBFS.ReachTypes, cls:Graph.KG.TraversalBFS.ReadLargeOutChunk, cls:Graph.KG.TraversalBFS.BFSFastJsonSorted, cls:Graph.KG.TraversalBFS.BFSFastCountDistinct, cls:Graph.KG.TraversalKHop.KHopCount, cls:Graph.KG.TraversalKHop.KHopNeighborIds, cls:Graph.KG.TraversalKHop.KHop2Count, cls:Graph.KG.TraversalKHop.KHop2NeighborIds, cls:Graph.KG.TraversalKHop.KHop2CountFast, cls:Graph.KG.TraversalKHop.KHop2CountExact, cls:Graph.KG.TraversalPaths.ShortestPathJson, cls:Graph.KG.TraversalPaths.ShortestLength, cls:Graph.KG.TraversalPaths.DijkstraJson, cls:Graph.KG.TraversalPaths.DijkstraCost, cls:Graph.KG.VarLength.Ends, cls:Graph.KG.VarLength.NamedEnds, cls:Graph.KG.VarLength.EndsCount, cls:Graph.KG.VarLength.EndsInto, cls:Graph.KG.VarLength.CPUs, cls:Graph.KG.VarLength.LastLevelPart, cls:Graph.KG.NKGAccel.UseNKG, cls:Graph.KG.NKGAccel.ResetCache, cls:Graph.KG.NKGAccel.Load, cls:Graph.KG.NKGAccel.LoadedPath, cls:Graph.KG.NKGAccel.Unload, cls:Graph.KG.NKGAccel.IsLoaded, cls:Graph.KG.NKGAccel.WarmAdjCache, cls:Graph.KG.NKGAccel.Capabilities, cls:Graph.KG.NKGAccel.BuildNKGRust, cls:Graph.KG.NKGAccel.GetFirstNKGNode, cls:Graph.KG.NKGAccel.ExportAdjacency, cls:Graph.KG.NKGAccel.ReadLargeOutChunk, cls:Graph.KG.NKGAccel.KHopNeighbors, cls:Graph.KG.NKGAccel.KHopNeighborsSorted, cls:Graph.KG.NKGAccel.KHopJson, cls:Graph.KG.NKGAccel.RandomWalkJson, cls:Graph.KG.NKGAccel.BFSJson, cls:Graph.KG.NKGAccel.ShortestPathNKG, cls:Graph.KG.NKGAccel.CountDistinctKHop, cls:Graph.KG.NKGAccel.Build2HopExact, cls:Graph.KG.NKGAccel.ClosenessGlobal, cls:Graph.KG.NKGAccel.ClosenessGlobalMSBFS, cls:Graph.KG.NKGAccel.EigenvectorGlobal, cls:Graph.KG.NKGAccel.BetweennessGlobal, cls:Graph.KG.NKGAccel.BetweennessWorker, cls:Graph.KG.NKGAccel.BetweennessGlobalParallel, cls:Graph.KG.NKGAccel.BetweennessNeighborhood, cls:Graph.KG.NKGAccelAdjacency.ExportAdjacency, cls:Graph.KG.NKGAccelAdjacency.ExportAdjacencyWithPreds, cls:Graph.KG.NKGAccelAdjacency.StoreLargeOut, cls:Graph.KG.NKGAccelAdjacency.ReadLargeOutChunk, cls:Graph.KG.NKGAccelCentrality.ClosenessGlobal, cls:Graph.KG.NKGAccelCentrality.EigenvectorGlobal, cls:Graph.KG.NKGAccelCentrality.BetweennessGlobal, cls:Graph.KG.NKGAccelCentrality.BetweennessWorker, cls:Graph.KG.NKGAccelCentrality.BetweennessGlobalParallel, cls:Graph.KG.NKGAccelCentrality.BetweennessNeighborhood, cls:Graph.KG.NKGAccelCentrality.ClosenessGlobalMSBFS, cls:Graph.KG.NKGAccelLoader.UseNKG, cls:Graph.KG.NKGAccelLoader.ResetCache, cls:Graph.KG.NKGAccelLoader.Load, cls:Graph.KG.NKGAccelLoader.LoadedPath, cls:Graph.KG.NKGAccelLoader.LoadError, cls:Graph.KG.NKGAccelLoader.Unload, cls:Graph.KG.NKGAccelLoader.IsLoaded, cls:Graph.KG.NKGAccelLoader.WarmAdjCache, cls:Graph.KG.NKGAccelLoader.Capabilities, cls:Graph.KG.NKGAccelLoader.BuildNKGRust, cls:Graph.KG.NKGAccelLoader.GetFirstNKGNode, cls:Graph.KG.NKGAccelTraversal.KHopNeighbors, cls:Graph.KG.NKGAccelTraversal.KHopNeighborsSorted, cls:Graph.KG.NKGAccelTraversal.KHopJson, cls:Graph.KG.NKGAccelTraversal.RandomWalkJson, cls:Graph.KG.NKGAccelTraversal.LastBfsPath, cls:Graph.KG.NKGAccelTraversal.LastBfsError, cls:Graph.KG.NKGAccelTraversal.LastBfsChunks, cls:Graph.KG.NKGAccelTraversal.BFSJson, cls:Graph.KG.NKGAccelTraversal.ShortestPathNKG, cls:Graph.KG.NKGAccelTraversal.CountDistinctKHop, cls:Graph.KG.NKGAccelTraversal.StructuralGuard, cls:Graph.KG.NKGAccelTraversal.Build2HopExact, cls:Graph.KG.ArnoAccel.LibPath, cls:Graph.KG.ArnoAccel.TrustedPath, cls:Graph.KG.ArnoAccel.RequireCallout, cls:Graph.KG.ArnoAccel.LoadedPath, cls:Graph.KG.ArnoAccel.LibExists, cls:Graph.KG.ArnoAccel.OpenLibrary, cls:Graph.KG.ArnoAccel.Load, cls:Graph.KG.ArnoAccel.GetLibPath, cls:Graph.KG.ArnoAccel.IsAvailable, cls:Graph.KG.ArnoAccel.ReaderRevisions, cls:Graph.KG.ArnoAccel.LibraryVersion, cls:Graph.KG.ArnoAccel.PageRankNativeJson, cls:Graph.KG.ArnoAccel.PPRNativeJson, cls:Graph.KG.ArnoAccel.WCCNativeJson, cls:Graph.KG.ArnoAccel.CDLPNativeJson, cls:Graph.KG.ArnoAccel.SubgraphNativeJson, cls:Graph.KG.ArnoAccel.BuildGraphJson, cls:Graph.KG.ArnoAccel.PageRankGlobalJson, cls:Graph.KG.ArnoAccel.PPRJson, cls:Graph.KG.ArnoAccel.WCCJson, cls:Graph.KG.ArnoAccel.CDLPJson, cls:Graph.KG.ArnoAccel.SubgraphJson, cls:Graph.KG.ArnoAccel.KhopSampleJson, cls:Graph.KG.ArnoAccel.RandomWalkJson, cls:Graph.KG.ArnoAccel.NeighborAggJson, cls:Graph.KG.AlgoCache.Token, cls:Graph.KG.AlgoCache.Lookup, cls:Graph.KG.AlgoCache.Get, py:iris_vector_graph/stores/arno_bridge.py:resolve_lib_path, py:iris_vector_graph/stores/arno_bridge.py:record_configured_lib_path, py:iris_vector_graph/stores/arno_bridge.py:build_kg_adjacency_json, py:iris_vector_graph/stores/arno_bridge.py:build_kg_adjacency_chunked, py:iris_vector_graph/arno_readers.py:read_reader_report, py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.execute_vl_ends, py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.shortest_path_length, py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.execute_shortest_path, py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.execute_subgraph, py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.execute_degree_centrality, py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.execute_betweenness_neighborhood, eng:IRISGraphEngine.betweenness_centrality_neighborhood, eng:IRISGraphEngine.bfs_vector_rerank, eng:IRISGraphEngine.kg_GRAPH_PATH, eng:IRISGraphEngine.kg_GRAPH_WALK_TVF, eng:IRISGraphEngine.kg_MENTIONS, eng:IRISGraphEngine.kg_PPR, eng:IRISGraphEngine.kg_PPR_GUIDED_SUBGRAPH, eng:IRISGraphEngine.kg_RERANK, eng:IRISGraphEngine.rebuild_nkg, eng:IRISGraphEngine.sync, cypher:ivg.shortestpath.weighted, cypher:gds.pagerank.stream, cypher:gds.betweenness.stream, cypher:gds.shortestpath.dijkstra.stream, cypher:gds.shortestpath.dijkstra, cypher:ivg.degreecentrality, cypher:ivg.betweenness, cypher:ivg.closeness, cypher:ivg.eigenvector, cypher:ivg.leiden, cypher:ivg.trianglecount, cypher:ivg.scc, cypher:ivg.kcore, cypher:ivg.neighbors | undecided: random_walk(a) [default graph]: nodes visited (vacuous: no walk steps without the Arno library (F-1002)) | non-interference sees only reads that reach the answer, and only under the perturbations listed per action in structural/reads/method.json"
+  },
+  {
+   "gate": "3.4-declared-reads",
+   "module": "11",
+   "status": "open",
+   "evidence": [
+    "run:st-control-reads-selftest",
+    "run:st-live-reads-b",
+    "experiment/playbook-completion/structural/reads/method.json",
+    "experiment/playbook-completion/structural/reads/noninterference.py"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "4 read actions checked by non-interference (oracle A, self-tested): 4 hold, 0 violate, 0 undecided; no violation among the checked actions",
+   "as_built_findings": [],
+   "remaining": "36 of 37 inventoried read/both entry points not checked: cls:Graph.KG.Ledger.NowMs, cls:Graph.KG.Ledger.NewId, cls:Graph.KG.Ledger.State, cls:Graph.KG.Ledger.GKey, cls:Graph.KG.Ledger.MetaGet, cls:Graph.KG.Ledger.Err, cls:Graph.KG.Ledger.ErrLimit, cls:Graph.KG.Ledger.RevisionObj, cls:Graph.KG.Ledger.RevisionResponse, cls:Graph.KG.Ledger.ReadLargeOutChunk, cls:Graph.KG.Ledger.Meta, cls:Graph.KG.Ledger.Head, cls:Graph.KG.Ledger.SeqOf, cls:Graph.KG.Ledger.StmtForTuple, cls:Graph.KG.LedgerApply.Enc, cls:Graph.KG.LedgerApply.EncNull, cls:Graph.KG.LedgerApply.Rec, cls:Graph.KG.LedgerApply.IsReserved, cls:Graph.KG.LedgerApply.Run, cls:Graph.KG.LedgerApply.NodeExists, cls:Graph.KG.LedgerApply.TupleJson, cls:Graph.KG.LedgerApply.ParseQuals, cls:Graph.KG.LedgerApply.FindEdge, cls:Graph.KG.LedgerApply.NodeSnapshotJson, cls:Graph.KG.LedgerApply.QualsJson, cls:Graph.KG.LedgerApply.WeightOf, cls:Graph.KG.LedgerApply.IsNumeric, cls:Graph.KG.LedgerStats.PropertyFor, py:iris_vector_graph/ledger/client.py:GraphLedger.stats, py:iris_vector_graph/ledger/guard.py:LedgerGuard.check_structural_write, eng:IRISGraphEngine.ledger, obj:Graph.KG.LedgerRevision.%Save(existing), obj:Graph.KG.LedgerRevision.%DeleteId, sql:SELECT Graph_KG.ledger_stats, sql:SELECT Graph_KG.ledger_revisions, eng:IRISGraphEngine.status[ledger] | non-interference sees only reads that reach the answer, and only under the perturbations listed per action in structural/reads/method.json"
+  },
+  {
+   "gate": "3.4-declared-reads",
+   "module": "12",
+   "status": "open",
+   "evidence": [
+    "run:st-control-reads-selftest",
+    "run:st-live-reads-b",
+    "experiment/playbook-completion/structural/reads/method.json",
+    "experiment/playbook-completion/structural/reads/noninterference.py"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "2 read actions checked by non-interference (oracle A, self-tested): 2 hold, 0 violate, 0 undecided; no violation among the checked actions",
+   "as_built_findings": [],
+   "remaining": "1 of 3 inventoried read/both entry points not checked: erase-edges-all (EraseEdgesAll) | non-interference sees only reads that reach the answer, and only under the perturbations listed per action in structural/reads/method.json"
+  },
+  {
+   "gate": "3.4-declared-reads",
+   "module": "13",
+   "status": "open",
+   "evidence": [
+    "run:st-control-reads-selftest",
+    "run:st-live-reads-b",
+    "experiment/playbook-completion/structural/reads/method.json",
+    "experiment/playbook-completion/structural/reads/noninterference.py"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "1 read actions checked by non-interference (oracle A, self-tested): 1 hold, 0 violate, 0 undecided; no violation among the checked actions",
+   "as_built_findings": [],
+   "remaining": "2 of 3 inventoried read/both entry points not checked: redact-stop-resume (max_batches > 0, then resume), GraphLedger.redaction_in_progress | non-interference sees only reads that reach the answer, and only under the perturbations listed per action in structural/reads/method.json"
+  },
+  {
+   "gate": "3.4-declared-reads",
+   "module": "14",
+   "status": "open",
+   "evidence": [
+    "run:st-control-reads-selftest",
+    "run:st-live-reads-b",
+    "experiment/playbook-completion/structural/reads/method.json",
+    "experiment/playbook-completion/structural/reads/noninterference.py"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "3 read actions checked by non-interference (oracle A, self-tested): 3 hold, 0 violate, 0 undecided; no violation among the checked actions",
+   "as_built_findings": [],
+   "remaining": "4 of 7 inventoried read/both entry points not checked: diff, export_reconstruction, Graph.KG.Ledger Records page reader (SqlProcs.LedgerRecordsFetch) / CanonicalRecord, post-commit-properties | non-interference sees only reads that reach the answer, and only under the perturbations listed per action in structural/reads/method.json"
+  },
+  {
+   "gate": "3.4-declared-reads",
+   "module": "15",
+   "status": "closed",
+   "evidence": [
+    "run:st-control-reads-selftest",
+    "run:st-live-reads-b",
+    "experiment/playbook-completion/structural/reads/method.json",
+    "experiment/playbook-completion/structural/reads/noninterference.py"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "5 read actions checked by non-interference (oracle A, self-tested): 3 hold, 2 violate, 0 undecided. Violations: get_reifications(edge a-R-b) changed under 'reifier id in another graph and another edge's reification' (F-C1547); get_kg_anchors([I10, I11]) changed under 'mapped id exists only in a named graph' (F-1507)",
+   "as_built_findings": [
+    "F-1507",
+    "F-C1547"
+   ],
+   "remaining": "4 of 9 inventoried read/both entry points not checked: IRISGraphEngine.list_table_mappings, Graph.KG.FHIRGraph.Status / LinkReport / ResolveConcepts / ExpandConcepts / CoverageReport / ConceptGaps / PatientConcepts / TokenPaths / IndexedTokenParams / CompartmentParams / GroupPPR / GroupByPatient, IRISGraphEngine.fhir_patient_anchors, cypher_api /api/cypher (FHIR anchors: _patient_anchors, _resolve_patient_anchors) | non-interference sees only reads that reach the answer, and only under the perturbations listed per action in structural/reads/method.json"
+  },
+  {
+   "gate": "3.4-declared-reads",
+   "module": "18",
+   "status": "open",
+   "evidence": [
+    "run:st-control-reads-selftest",
+    "run:st-live-reads-c",
+    "run:st-live-reads-b (module 18 verdict there is a harness artifact, superseded)",
+    "experiment/playbook-completion/structural/reads/method.json",
+    "experiment/playbook-completion/structural/reads/noninterference.py"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "1 read actions checked by non-interference (oracle A, self-tested): 1 hold, 0 violate, 0 undecided; no violation among the checked actions",
+   "as_built_findings": [],
+   "remaining": "4 of 5 inventoried read/both entry points not checked: IRISGraphEngine.snapshot_info, POST /admin/snapshot, Graph.KG.Snapshot.NodeValueJSON, Graph.KG.Snapshot.ReadFileChunk / GetFileSize / FileExists | non-interference sees only reads that reach the answer, and only under the perturbations listed per action in structural/reads/method.json"
+  }
+ ]
+}

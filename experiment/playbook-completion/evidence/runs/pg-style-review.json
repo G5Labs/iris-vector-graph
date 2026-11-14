@@ -1,0 +1,15 @@
+{
+  "command": "style review of the production files of modules 11-14 against the pin's documented conventions (CONTRIBUTING.md, .specify/memory/constitution.md, CONTEXT.md, docs/dev/TESTING_POLICY.md, docs/adr/0001-0016, PRE_RELEASE_CHECKLIST.md, docs/architecture/ARCHITECTURE.md, docs/dev/notes/research/alt-impl/BRIEF.md at secondary authority); product-gates/STYLE.md, snapshot sha256 9675980f5e7652a5...",
+  "experiment_head": "f9e4c64b86f4261c926f274f754f2cc5f1b1e5d0",
+  "id": "pg-style-review",
+  "kind": "review",
+  "lane": "product-gates",
+  "log": "$RUN_DIR/product-gates/STYLE.snapshot.md",
+  "log_bytes": 25609,
+  "log_sha256": "9675980f5e7652a5bb93cebbb72d5cdfb97ce1eb03350fe27d9a219949c03e00",
+  "observes": "3.5-style fails: 23 deviations of 7 documented conventions in 26 listed (23 applicable and judged): C-7 single owner of the adjacency label store (ADR-0008:12-21) 3 (Eraser.cls:240, 580-585, 793); C-8 no direct ^KG writes outside owners (ADR-0001:48-49 with ADR-0011) 6 (Eraser.cls); C-9 temporal globals only through TemporalIndex (ADR-0002:9-13) 1 (GraphStores.cls:195-239 Digest); C-14 class headers are the reference (ARCHITECTURE.md:203) 5 inaccurate headers (LedgerApply, Eraser, GraphStores, LedgerStats, LedgerRevision); C-16 glossary meaning (CONTEXT.md:173-177) 1 (changeset.py:334-335); C-17 no broad except on a data-changing path (TESTING_POLICY.md:291-293) 6 (guard.py, _engine/ledger.py, replay.py); C-21 status idiom (BRIEF.md, secondary) 1 (Ledger.cls:242-248); 22 of 6 without the secondary source. 5 borderline cases not counted; no AGENTS.md/CLAUDE.md at the pin; ObjectScript and Python docstring/naming style undocumented (a documentation gap, not a pass). Inspected-grade (source reading by a lane review agent; 9 citations spot-checked by the lane, all as cited). Candidate findings 1 and 2 are F-0801 and F-0511; 3-7 are unfiled inspected candidates.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T12:21:56+00:00",
+  "result": "fail"
+}

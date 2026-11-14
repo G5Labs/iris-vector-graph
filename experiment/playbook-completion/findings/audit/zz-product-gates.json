@@ -1,0 +1,52 @@
+[
+ {
+  "id": "F-C0090",
+  "module": "00",
+  "title": "Four unit tests never run: each is shadowed by a later method of the same name in its test class (lint warning F811)",
+  "intended": "The product's lint gate is 'ruff check . - zero errors' (PRE_RELEASE_CHECKLIST.md:139-146; CONTRIBUTING.md:36-39 'Lint before you commit'), and its default rules include F811 (redefinition of an unused name). A test the suite contains is meant to run: CONTRIBUTING.md:175 ('Write the test before the code, and assert the answer'); pytest collects one function per name in a class, so a redefined test method replaces the earlier one.",
+  "observed": "ruff 0.15.14 (pg-lint-ruff) reports F811 at tests/unit/test_coverage_boost.py:307 and :319 (TestBulkLoader.test_load_networkx_empty_graph and test_load_networkx_with_nodes_and_edges redefine :234 and :245) and at tests/unit/test_engine_deep.py:399 (TestEmbedNodesMethod.test_embed_nodes_progress_callback redefines :367) and :1139 (TestEngineEmbedTextMethod.test_embed_text_embedder_returns_list redefines :1132). pytest --collect-only on the three classes collects each of these names once, and the class attribute is the later definition in all four cases (co_firstlineno 307, 319, 399, 1139; $RUN_DIR/product-gates/lint-r1/shadowed-collect.txt). Three of the four shadowed bodies check something their replacement does not: :234 patches BulkLoader._executemany_batched and _rebuild_indices (the replacement patches builtins.__import__ and passes build_globals=False); :245 builds nodes with a label= attribute (the replacement uses namespace= and asserts input counts); :367 sets an embedder on a fresh engine and asserts the result type (the replacement asserts only that a progress list exists). :1132 and :1139 are equivalent.",
+  "disposition": "confirmed-source",
+  "evidence": [
+   {
+    "kind": "run",
+    "ref": "pg-lint-ruff"
+   },
+   {
+    "kind": "run",
+    "ref": "pg-lint-summary"
+   },
+   {
+    "kind": "log",
+    "ref": "$RUN_DIR/product-gates/lint-r1/shadowed-collect.txt"
+   },
+   {
+    "kind": "inspected",
+    "ref": "tests/unit/test_coverage_boost.py:234-256"
+   },
+   {
+    "kind": "inspected",
+    "ref": "tests/unit/test_coverage_boost.py:307-335"
+   },
+   {
+    "kind": "inspected",
+    "ref": "tests/unit/test_engine_deep.py:367-375"
+   },
+   {
+    "kind": "inspected",
+    "ref": "tests/unit/test_engine_deep.py:399-404"
+   },
+   {
+    "kind": "inspected",
+    "ref": "tests/unit/test_engine_deep.py:1132-1144"
+   }
+  ],
+  "gates": [
+   "3.5-lint",
+   "3.8-test-reflection"
+  ],
+  "severity": "S4",
+  "confidence": "high",
+  "remedy": "Give each pair distinct names (or merge them) so both bodies run, after deciding which assertions are wanted; select F811 as an error in a [tool.ruff] table so the lint gate fails on a shadowed test.",
+  "notes": "Test-suite defect, not a product behaviour: the shadowed tests cover BulkLoader.load_networkx (modules 03/15) and engine.embed_nodes / embed_text (module 06). Found by the lane's 3.5-lint run. The other 60 of ruff's 64 F811 warnings were read by name: 58 in tests are pytest fixture parameters that rebind an imported fixture (pytest's usual pattern) or local re-imports, 1 is a notebook re-import, and 1 is in product code: iris_vector_graph/bolt_server.py:314 rebinds decode_messages to its stateless replacement on purpose, leaving the first definition (:269-291) dead; not a defect."
+ }
+]

@@ -1,0 +1,21 @@
+[
+ {
+  "id": "F-C1547",
+  "module": "15",
+  "title": "get_reifications reads the reifier's properties from every graph",
+  "intended": "get_reifications returns the reifiers of rdf_edges row edge_id with their properties (iris_vector_graph/_engine/schema.py:3335-3339); a reifier node is an ordinary node of one graph (15-integrations.md INT-D19, INT-E1; reify_edge writes it in the default graph, INT-E1.6 / F-1502), and since spec 227 a node id is unique per graph, not per namespace (iris_vector_graph/schema.py:383-391); content of one graph never shows up in an answer about another graph (00-system.md SYS-I2).",
+  "observed": "Live AUDITD (st-live-reads-b, non-interference oracle with self-test st-control-reads-selftest): default-graph edge a-R-b reified as rf1 with props {p: '1'}; adding a node rf1 in named graph stg2 with props {p: '2', q: 'x'} (and a reification of another edge) changed get_reifications(edge a-R-b) from [{reifier_id: rf1, properties: {id: rf1, p: '1'}}] to [{reifier_id: rf1, properties: {id: rf1, p: '2', q: 'x'}}]: another graph's property rows of the same id are joined in and overwrite the reifier's own. The query joins rdf_props on the id alone: LEFT JOIN rdf_props p ON p.s = r.reifier_id (schema.py:3343-3346), with no graph_id condition.",
+  "disposition": "reproduced-live",
+  "outcome": "product-defect",
+  "evidence": [
+   {"kind": "live", "ref": "st-live-reads-b"},
+   {"kind": "control", "ref": "st-control-reads-selftest"},
+   {"kind": "inspected", "ref": "iris_vector_graph/_engine/schema.py:3335-3360"}
+  ],
+  "gates": ["3.4-declared-reads"],
+  "severity": "S2",
+  "confidence": "high",
+  "remedy": "Join the reifier's properties in the reifier node's graph (the graph reify_edge wrote it in, or the edge's graph once F-1502 is fixed): add the graph_id condition to the rdf_props join, e.g. through the nodes row of the reifier.",
+  "notes": "Distinct from F-1502 (where the reifier is written) and F-1503 (delete_reification deletes every graph's rows): this is the reader. A named graph that happens to hold a node with the reifier's id (another tenant's data) changes the answer about a default-graph edge."
+ }
+]

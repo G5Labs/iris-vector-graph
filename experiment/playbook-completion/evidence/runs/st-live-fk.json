@@ -1,0 +1,15 @@
+{
+  "command": "locks.sh iris python experiment/playbook-completion/structural/capkeys/fk.py $RUN_DIR/structural/capkeys/fk.json",
+  "experiment_head": "d77620a9333a7eb5b62ca9b8c92144a6aaf74d2b",
+  "id": "st-live-fk",
+  "kind": "live",
+  "lane": "structural",
+  "log": "$RUN_DIR/structural/capkeys/fk.json",
+  "log_bytes": 8970,
+  "log_sha256": "9f5895dca9ce3db3adcbd50d49be1bdaf2c0c7e21633294d03064c41a7e1db72",
+  "observes": "AUDITD, FK oracle over full scans (F1 edge endpoints, F2 labels, F3 props [no declared FK], F4 node embeddings, F5 ^KG out/in and label index endpoints, F6 ^KG tout endpoints, F7 rdf_reifications edge and reifier node) after 8 cases: holds for 02 (create_edge into a graph whose endpoints are default-only registers them in that graph; Cypher USE GRAPH create; delete_edge all_graphs), 03 delete paths (delete_node, Cypher DETACH DELETE, DELETE of a node with edges refused, REMOVE label), 03 endpoint registration by IRISGraphStore.write_edges, BulkLoader.load_edges, bulk_create_edges and store_edge, bulk_create_nodes + delete_nodes_by_prefix, erase_graph and delete_nodes_by_prefix with temporal edges, 04 four racing delete_node/create_edge on one node, 05 temporal edges with unknown endpoints (node rows created) and delete_node of a temporal endpoint (its temporal entries removed). Violated (15): after delete_edge and after Cypher MATCH ()-[r]->() DELETE r, the rdf_reifications rows of both edges remain with edge_ids that no longer exist (6101, 6102) and get_reifications(deleted edge id) still answers the reifier with its properties. One step was a harness error: drop_temporal_structural_rows() needs a predicate argument (not run)",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T11:50:51+00:00",
+  "result": "fail"
+}

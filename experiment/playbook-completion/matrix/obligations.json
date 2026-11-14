@@ -7659,61 +7659,156 @@
    "status": "not-applicable"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "footprints/01.json"
+   "as_built_findings": [
+    "F-1806"
    ],
+   "cited_runs": [
+    "st-check-own-census",
+    "st-check-own-controls",
+    "st-control-own-selftest"
+   ],
+   "evidence": [
+    "run:st-check-own-census",
+    "run:st-check-own-controls",
+    "run:st-control-own-selftest",
+    "experiment/playbook-completion/structural/ownership/method.json",
+    "experiment/playbook-completion/structural/ownership/ownership.py",
+    "experiment/playbook-completion/structural/ownership/census_all.py"
+   ],
+   "evidence_grade": "registered-run",
    "findings": [
-    "F-0107"
+    "F-0107",
+    "F-1806"
    ],
    "gate": "3.4-ownership",
    "level": "product",
    "module": "01",
    "product_basis": {
     "fails": [
-     "finding F-0107"
+     "finding F-0107",
+     "finding F-1806",
+     "stated fails by matrix-input/structural.json",
+     "run st-check-own-census (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "no ownership self-test; see F-0404 (second ^KG writer), F-0107",
-   "source": "modules/01.json",
-   "status": "open"
+   "remaining": "source-level census: run-time names rest on the cited resolution hints in census_all.py/ownership.py (TABLE_HINTS, LINE_HINTS, TEMPLATE_USERS); a write form the scanner does not recognise is covered only as far as the registered census (268/268) and the 393 journal-observed pairs reach. Whether declared shared ownership is accepted is a maintainer decision (\u00a73.8). DDL (162 schema objects) is reported in ownership.json 'ddl', not decided here; F-0107 (unqualified DROP INDEX) is the open DDL ownership finding.",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "ownership"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "footprints/02.json"
+   "cited_runs": [
+    "st-check-own-census",
+    "st-check-own-controls",
+    "st-control-own-selftest"
    ],
+   "evidence": [
+    "run:st-check-own-census",
+    "run:st-check-own-controls",
+    "run:st-control-own-selftest",
+    "experiment/playbook-completion/structural/ownership/method.json",
+    "experiment/playbook-completion/structural/ownership/ownership.py",
+    "experiment/playbook-completion/structural/ownership/census_all.py"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.4-ownership",
    "level": "product",
    "module": "02",
-   "product_obligation": "unknown",
-   "remaining": "no ownership self-test",
-   "source": "modules/02.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "stated fails by matrix-input/structural.json",
+     "run st-check-own-census (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "source-level census: run-time names rest on the cited resolution hints in census_all.py/ownership.py (TABLE_HINTS, LINE_HINTS, TEMPLATE_USERS); a write form the scanner does not recognise is covered only as far as the registered census (268/268) and the 393 journal-observed pairs reach. Whether declared shared ownership is accepted is a maintainer decision (\u00a73.8).",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "ownership"
   },
   {
-   "cited_runs": [],
+   "as_built_findings": [
+    "F-0503",
+    "F-1502",
+    "F-1503",
+    "F-1604"
+   ],
+   "cited_runs": [
+    "st-check-own-census",
+    "st-check-own-controls",
+    "st-control-own-selftest"
+   ],
    "evidence": [
-    "footprints/03.json"
+    "run:st-check-own-census",
+    "run:st-check-own-controls",
+    "run:st-control-own-selftest",
+    "experiment/playbook-completion/structural/ownership/method.json",
+    "experiment/playbook-completion/structural/ownership/ownership.py",
+    "experiment/playbook-completion/structural/ownership/census_all.py"
+   ],
+   "evidence_grade": "registered-run",
+   "findings": [
+    "F-1502",
+    "F-1503",
+    "F-1604"
+   ],
+   "findings_undecided": [
+    "F-0503"
    ],
    "gate": "3.4-ownership",
    "level": "product",
    "module": "03",
-   "product_obligation": "unknown",
-   "remaining": "no ownership self-test",
-   "source": "modules/03.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "finding F-1502",
+     "finding F-1503",
+     "finding F-1604",
+     "stated fails by matrix-input/structural.json",
+     "run st-check-own-census (fail)"
+    ],
+    "intent_undecided": [
+     "finding F-0503"
+    ]
+   },
+   "product_obligation": "fails",
+   "remaining": "source-level census: run-time names rest on the cited resolution hints in census_all.py/ownership.py (TABLE_HINTS, LINE_HINTS, TEMPLATE_USERS); a write form the scanner does not recognise is covered only as far as the registered census (268/268) and the 393 journal-observed pairs reach. Whether declared shared ownership is accepted is a maintainer decision (\u00a73.8). Unowned writers of content tables: modules/00.json reconciliation (unowned product entry points import_rdf, materialize_inference / retract_inference; open under 3.1-coverage).",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "ownership"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "footprints/04.json"
+   "as_built_findings": [
+    "F-0404",
+    "F-1806",
+    "F-C0440",
+    "F-C0640",
+    "F-C1040",
+    "F-C1540"
    ],
+   "cited_runs": [
+    "st-check-own-census",
+    "st-check-own-controls",
+    "st-control-own-selftest"
+   ],
+   "evidence": [
+    "run:st-check-own-census",
+    "run:st-check-own-controls",
+    "run:st-control-own-selftest",
+    "experiment/playbook-completion/structural/ownership/method.json",
+    "experiment/playbook-completion/structural/ownership/ownership.py",
+    "experiment/playbook-completion/structural/ownership/census_all.py"
+   ],
+   "evidence_grade": "registered-run",
    "findings": [
     "F-0404",
-    "F-C0440"
+    "F-1806",
+    "F-C0440",
+    "F-C0640",
+    "F-C1040",
+    "F-C1540"
    ],
    "gate": "3.4-ownership",
    "level": "product",
@@ -7721,49 +7816,113 @@
    "product_basis": {
     "fails": [
      "finding F-0404",
-     "finding F-C0440"
+     "finding F-1806",
+     "finding F-C0440",
+     "finding F-C0640",
+     "finding F-C1040",
+     "finding F-C1540",
+     "stated fails by matrix-input/structural.json",
+     "run st-check-own-census (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "no ownership self-test; see F-0404 (second ^KG writer), F-0107",
-   "source": "modules/04.json",
-   "status": "open"
+   "remaining": "source-level census: run-time names rest on the cited resolution hints in census_all.py/ownership.py (TABLE_HINTS, LINE_HINTS, TEMPLATE_USERS); a write form the scanner does not recognise is covered only as far as the registered census (268/268) and the 393 journal-observed pairs reach. Whether declared shared ownership is accepted is a maintainer decision (\u00a73.8).",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "ownership"
   },
   {
-   "cited_runs": [],
+   "as_built_findings": [
+    "F-0503"
+   ],
+   "cited_runs": [
+    "st-check-own-census",
+    "st-check-own-controls",
+    "st-control-own-selftest"
+   ],
    "evidence": [
-    "footprints/05.json"
+    "run:st-check-own-census",
+    "run:st-check-own-controls",
+    "run:st-control-own-selftest",
+    "experiment/playbook-completion/structural/ownership/method.json",
+    "experiment/playbook-completion/structural/ownership/ownership.py",
+    "experiment/playbook-completion/structural/ownership/census_all.py"
+   ],
+   "evidence_grade": "registered-run",
+   "findings_undecided": [
+    "F-0503"
    ],
    "gate": "3.4-ownership",
    "level": "product",
    "module": "05",
-   "product_obligation": "unknown",
-   "remaining": "no ownership self-test",
-   "source": "modules/05.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "stated fails by matrix-input/structural.json",
+     "run st-check-own-census (fail)"
+    ],
+    "intent_undecided": [
+     "finding F-0503"
+    ]
+   },
+   "product_obligation": "fails",
+   "remaining": "source-level census: run-time names rest on the cited resolution hints in census_all.py/ownership.py (TABLE_HINTS, LINE_HINTS, TEMPLATE_USERS); a write form the scanner does not recognise is covered only as far as the registered census (268/268) and the 393 journal-observed pairs reach. Whether declared shared ownership is accepted is a maintainer decision (\u00a73.8).",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "ownership"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "footprints/06.json"
+   "as_built_findings": [
+    "F-0618",
+    "F-1806",
+    "F-C0640",
+    "F-C0840",
+    "F-C1540",
+    "F-C1740"
    ],
+   "cited_runs": [
+    "st-check-own-census",
+    "st-check-own-controls",
+    "st-control-own-selftest"
+   ],
+   "evidence": [
+    "run:st-check-own-census",
+    "run:st-check-own-controls",
+    "run:st-control-own-selftest",
+    "experiment/playbook-completion/structural/ownership/method.json",
+    "experiment/playbook-completion/structural/ownership/ownership.py",
+    "experiment/playbook-completion/structural/ownership/census_all.py"
+   ],
+   "evidence_grade": "registered-run",
    "findings": [
-    "F-C0640"
+    "F-0618",
+    "F-1806",
+    "F-C0640",
+    "F-C0840",
+    "F-C1540",
+    "F-C1740"
    ],
    "gate": "3.4-ownership",
    "level": "product",
    "module": "06",
    "product_basis": {
     "fails": [
-     "finding F-C0640"
+     "finding F-0618",
+     "finding F-1806",
+     "finding F-C0640",
+     "finding F-C0840",
+     "finding F-C1540",
+     "finding F-C1740",
+     "stated fails by matrix-input/structural.json",
+     "run st-check-own-census (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "no ownership self-test",
-   "source": "modules/06.json",
-   "status": "open"
+   "remaining": "source-level census: run-time names rest on the cited resolution hints in census_all.py/ownership.py (TABLE_HINTS, LINE_HINTS, TEMPLATE_USERS); a write form the scanner does not recognise is covered only as far as the registered census (268/268) and the 393 journal-observed pairs reach. Whether declared shared ownership is accepted is a maintainer decision (\u00a73.8).",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "ownership"
   },
   {
    "cited_runs": [
@@ -7805,10 +7964,23 @@
    "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "experiment/playbook-uplift/ontology/08-cypher-sql.md:5"
+   "as_built_findings": [
+    "F-C0840"
    ],
+   "cited_runs": [
+    "st-check-own-census",
+    "st-check-own-controls",
+    "st-control-own-selftest"
+   ],
+   "evidence": [
+    "run:st-check-own-census",
+    "run:st-check-own-controls",
+    "run:st-control-own-selftest",
+    "experiment/playbook-completion/structural/ownership/method.json",
+    "experiment/playbook-completion/structural/ownership/ownership.py",
+    "experiment/playbook-completion/structural/ownership/census_all.py"
+   ],
+   "evidence_grade": "registered-run",
    "findings": [
     "F-C0840"
    ],
@@ -7817,58 +7989,105 @@
    "module": "08",
    "product_basis": {
     "fails": [
-     "finding F-C0840"
+     "finding F-C0840",
+     "stated fails by matrix-input/structural.json",
+     "run st-check-own-census (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "reason": "Ownership is documented (Scope line; ADR-0008/0011: Adjacency is the one writer of ^KG); no self-tested ownership check exists for the graph tables Cypher writes.",
-   "remaining": "Self-tested ownership check over the writer census.",
-   "source": "modules/08.json",
-   "status": "open"
+   "remaining": "source-level census: run-time names rest on the cited resolution hints in census_all.py/ownership.py (TABLE_HINTS, LINE_HINTS, TEMPLATE_USERS); a write form the scanner does not recognise is covered only as far as the registered census (268/268) and the 393 journal-observed pairs reach. Whether declared shared ownership is accepted is a maintainer decision (\u00a73.8).",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "ownership"
   },
   {
-   "cited_runs": [
-    "b-09-footprint"
+   "as_built_findings": [
+    "F-1806"
    ],
+   "cited_runs": [
+    "b-09-footprint",
+    "st-check-own-census",
+    "st-check-own-controls",
+    "st-control-own-selftest"
+   ],
+   "earlier_evidence_kept": true,
    "evidence": [
+    "run:st-check-own-census",
+    "run:st-check-own-controls",
+    "run:st-control-own-selftest",
+    "experiment/playbook-completion/structural/ownership/method.json",
+    "experiment/playbook-completion/structural/ownership/ownership.py",
+    "experiment/playbook-completion/structural/ownership/census_all.py",
     "live:b-09-footprint",
     "inspected:iris_vector_graph/schema.py:2934-2941"
    ],
    "evidence_grade": "registered-run",
+   "findings": [
+    "F-1806"
+   ],
    "gate": "3.4-ownership",
    "level": "product",
    "module": "09",
-   "product_obligation": "unknown",
-   "reason": "single write owner: ^IVG.CypherCompiled and package IVGC are written only by Graph.KG.Cypher.Gen (For/Build/DropAll; grep of iris_src and iris_vector_graph at the pin finds no other writer; the deploy calls Gen.DropAll, schema.py:2939); ^IVG.CypherGen is configuration written by operators and tests (documented, docs/ADMIN_GUIDE.md:774-779); journal footprints show no other module's process writing them during module 09 runs",
-   "remaining": "a self-test for an ownership checker (none exists for this global)",
-   "source": "modules/09.json",
-   "status": "closed"
+   "product_basis": {
+    "fails": [
+     "finding F-1806",
+     "stated fails by matrix-input/structural.json",
+     "run st-check-own-census (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "source-level census: run-time names rest on the cited resolution hints in census_all.py/ownership.py (TABLE_HINTS, LINE_HINTS, TEMPLATE_USERS); a write form the scanner does not recognise is covered only as far as the registered census (268/268) and the 393 journal-observed pairs reach. Whether declared shared ownership is accepted is a maintainer decision (\u00a73.8).",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "ownership"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "footprints/10.json"
+   "as_built_findings": [
+    "F-1806",
+    "F-C1040",
+    "F-C1240"
    ],
+   "cited_runs": [
+    "st-check-own-census",
+    "st-check-own-controls",
+    "st-control-own-selftest"
+   ],
+   "evidence": [
+    "run:st-check-own-census",
+    "run:st-check-own-controls",
+    "run:st-control-own-selftest",
+    "experiment/playbook-completion/structural/ownership/method.json",
+    "experiment/playbook-completion/structural/ownership/ownership.py",
+    "experiment/playbook-completion/structural/ownership/census_all.py"
+   ],
+   "evidence_grade": "registered-run",
    "findings": [
+    "F-1806",
     "F-C1001",
-    "F-C1040"
+    "F-C1040",
+    "F-C1240"
    ],
    "gate": "3.4-ownership",
    "level": "product",
    "module": "10",
    "product_basis": {
     "fails": [
+     "finding F-1806",
      "finding F-C1001",
-     "finding F-C1040"
+     "finding F-C1040",
+     "finding F-C1240",
+     "stated fails by matrix-input/structural.json",
+     "run st-check-own-census (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "reason": "^IVG.AlgoCache: written by AlgoCache.Put, killed by AlgoCache.Invalidate* and Eraser.InvalidateDerived (documented, ALG-B16.10). ^NKG: BuildNKG (spec 260 D-NKG-WRITER) plus Adjacency.Put interning, Eraser DropNKG and ArnoAccel.BumpVersion's $meta version: several writers. ^KG(\"degc\") (module 04's degree cache) is filled by module 10 reads (Adj.cls:64-79). ^IVG.Deploy(\"routines\") (setup's record) is written by a read path (F-C1001).",
-   "remaining": "A mechanical single-owner check with a self-test over these globals.",
-   "source": "modules/10.json",
-   "status": "open"
+   "remaining": "source-level census: run-time names rest on the cited resolution hints in census_all.py/ownership.py (TABLE_HINTS, LINE_HINTS, TEMPLATE_USERS); a write form the scanner does not recognise is covered only as far as the registered census (268/268) and the 393 journal-observed pairs reach. Whether declared shared ownership is accepted is a maintainer decision (\u00a73.8).",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "ownership"
   },
   {
    "cited_runs": [
@@ -7994,12 +8213,29 @@
    "status": "closed"
   },
   {
+   "as_built_findings": [
+    "F-1502",
+    "F-1503",
+    "F-C0840",
+    "F-C1540",
+    "F-C1740"
+   ],
    "cited_runs": [
     "c15-live-bridge",
     "c15-live-delreif2",
-    "c15-live-reify"
+    "c15-live-reify",
+    "st-check-own-census",
+    "st-check-own-controls",
+    "st-control-own-selftest"
    ],
+   "earlier_evidence_kept": true,
    "evidence": [
+    "run:st-check-own-census",
+    "run:st-check-own-controls",
+    "run:st-control-own-selftest",
+    "experiment/playbook-completion/structural/ownership/method.json",
+    "experiment/playbook-completion/structural/ownership/ownership.py",
+    "experiment/playbook-completion/structural/ownership/census_all.py",
     "c15-live-reify",
     "c15-live-delreif2",
     "c15-live-bridge",
@@ -8007,31 +8243,54 @@
    ],
    "evidence_grade": "registered-run",
    "findings": [
-    "F-C1540"
+    "F-1502",
+    "F-1503",
+    "F-C0840",
+    "F-C1540",
+    "F-C1740"
    ],
    "gate": "3.4-ownership",
    "level": "product",
    "module": "15",
    "product_basis": {
     "fails": [
+     "finding F-1502",
+     "finding F-1503",
+     "finding F-C0840",
      "finding F-C1540",
-     "lane status failed (modules/15.json)",
+     "finding F-C1740",
+     "stated fails by matrix-input/structural.json",
      "run c15-live-bridge (fail)",
      "run c15-live-delreif2 (fail)",
-     "run c15-live-reify (fail)"
+     "run c15-live-reify (fail)",
+     "run st-check-own-census (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "Reifier rows of a named-graph edge are owned by the default graph (F-1502); delete_reification writes every graph's rows (F-1503); no ownership self-test for module 15.",
-   "source": "modules/15.json",
-   "status": "closed"
+   "remaining": "source-level census: run-time names rest on the cited resolution hints in census_all.py/ownership.py (TABLE_HINTS, LINE_HINTS, TEMPLATE_USERS); a write form the scanner does not recognise is covered only as far as the registered census (268/268) and the 393 journal-observed pairs reach. Whether declared shared ownership is accepted is a maintainer decision (\u00a73.8).",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "ownership"
   },
   {
-   "cited_runs": [
-    "c16-s3-graphql-sample-api"
+   "as_built_findings": [
+    "F-1604"
    ],
+   "cited_runs": [
+    "c16-s3-graphql-sample-api",
+    "st-check-own-census",
+    "st-check-own-controls",
+    "st-control-own-selftest"
+   ],
+   "earlier_evidence_kept": true,
    "evidence": [
+    "run:st-check-own-census",
+    "run:st-check-own-controls",
+    "run:st-control-own-selftest",
+    "experiment/playbook-completion/structural/ownership/method.json",
+    "experiment/playbook-completion/structural/ownership/ownership.py",
+    "experiment/playbook-completion/structural/ownership/census_all.py",
     "examples/domains/biomedical/resolver.py:262-275",
     "c16-s3-graphql-sample-api"
    ],
@@ -8045,15 +8304,17 @@
    "product_basis": {
     "fails": [
      "finding F-1604",
-     "lane status failed (modules/16.json)",
-     "run c16-s3-graphql-sample-api (fail)"
+     "stated fails by matrix-input/structural.json",
+     "run c16-s3-graphql-sample-api (fail)",
+     "run st-check-own-census (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "updateProtein writes Graph_KG.rdf_props directly (owner: module 03 write path); no ownership self-test built",
-   "source": "modules/16.json",
-   "status": "closed"
+   "remaining": "source-level census: run-time names rest on the cited resolution hints in census_all.py/ownership.py (TABLE_HINTS, LINE_HINTS, TEMPLATE_USERS); a write form the scanner does not recognise is covered only as far as the registered census (268/268) and the 393 journal-observed pairs reach. Whether declared shared ownership is accepted is a maintainer decision (\u00a73.8).",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "ownership"
   },
   {
    "cited_runs": [
@@ -8083,14 +8344,30 @@
    "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [
+   "as_built_findings": [
+    "F-0404",
     "F-1801",
-    "F-C1803",
+    "F-1805",
     "F-1806"
    ],
+   "cited_runs": [
+    "st-check-own-census",
+    "st-check-own-controls",
+    "st-control-own-selftest"
+   ],
+   "evidence": [
+    "run:st-check-own-census",
+    "run:st-check-own-controls",
+    "run:st-control-own-selftest",
+    "experiment/playbook-completion/structural/ownership/method.json",
+    "experiment/playbook-completion/structural/ownership/ownership.py",
+    "experiment/playbook-completion/structural/ownership/census_all.py"
+   ],
+   "evidence_grade": "registered-run",
    "findings": [
+    "F-0404",
     "F-1801",
+    "F-1805",
     "F-1806",
     "F-C1803"
    ],
@@ -8099,17 +8376,21 @@
    "module": "18",
    "product_basis": {
     "fails": [
+     "finding F-0404",
      "finding F-1801",
+     "finding F-1805",
      "finding F-1806",
      "finding F-C1803",
-     "lane status failed (modules/18.json)"
+     "stated fails by matrix-input/structural.json",
+     "run st-check-own-census (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "closed claim cites no registered run or committed artifact",
-   "source": "modules/18.json",
-   "status": "open"
+   "remaining": "source-level census: run-time names rest on the cited resolution hints in census_all.py/ownership.py (TABLE_HINTS, LINE_HINTS, TEMPLATE_USERS); a write form the scanner does not recognise is covered only as far as the registered census (268/268) and the 393 journal-observed pairs reach. Whether declared shared ownership is accepted is a maintainer decision (\u00a73.8).",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "ownership"
   },
   {
    "cited_runs": [],
@@ -8125,19 +8406,27 @@
    "status": "not-applicable"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "models/breadth-a/storage-order/01.json",
-    "$RUN_DIR/checks/storage-order.json"
+   "cited_runs": [
+    "st-check-so-gate",
+    "st-check-so-perm-01",
+    "st-control-so-selftest"
    ],
+   "evidence": [
+    "run:st-check-so-gate",
+    "run:st-control-so-selftest",
+    "experiment/playbook-completion/structural/order/dispositions.json",
+    "run:st-check-so-perm-01"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.4-storage-order",
    "level": "product",
    "module": "01",
+   "product_basis": "36 scan sites in module 01's functions decided (9 single-row aggregates, 8 existence probes, 6 unique keys, 2 one-row system functions, 1 batch drain, 2 ORDER BY present) and 8 order-dependent sites, all inside get_schema_visualization's documented sample ('Sampled, not exact', _engine/schema.py:2775-2777); live, the sample differs by insertion order and every answer is a valid sample (st-check-so-perm-01). No reliance outside a documented sample",
    "product_obligation": "unknown",
-   "reason": "4 order-dependent sites, all inside get_schema_visualization's documented sample (2773-2776); no self-test pins the sample, and its graph-blind joins are F-0106; every other site is existence-only or a false positive",
-   "remaining": "dispose of the order-dependent sites listed",
-   "source": "modules/01.json",
-   "status": "open"
+   "remaining": "",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "order"
   },
   {
    "cited_runs": [],
@@ -8155,12 +8444,26 @@
    "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "models/breadth-a/storage-order/03.json",
-    "$RUN_DIR/checks/storage-order.json"
+   "as_built_findings": [
+    "F-C0302",
+    "F-0206"
    ],
+   "cited_runs": [
+    "st-check-so-gate",
+    "st-check-so-perm-03",
+    "st-control-so-selftest",
+    "st-live-so-confirm"
+   ],
+   "evidence": [
+    "run:st-check-so-gate",
+    "run:st-control-so-selftest",
+    "experiment/playbook-completion/structural/order/dispositions.json",
+    "run:st-live-so-confirm",
+    "run:st-check-so-perm-03"
+   ],
+   "evidence_grade": "registered-run",
    "findings": [
+    "F-0206",
     "F-C0302"
    ],
    "gate": "3.4-storage-order",
@@ -8168,15 +8471,19 @@
    "module": "03",
    "product_basis": {
     "fails": [
-     "finding F-C0302"
+     "finding F-0206",
+     "finding F-C0302",
+     "stated fails by matrix-input/structural.json",
+     "run st-check-so-perm-03 (fail)",
+     "run st-live-so-confirm (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "reason": "the scan's only site is existence-only, but it missed two capped property lookups (nodes_edges.py:820, 904) that return a storage-order subset",
-   "remaining": "dispose of the order-dependent sites listed",
-   "source": "modules/03.json",
-   "status": "open"
+   "remaining": "",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "order"
   },
   {
    "cited_runs": [],
@@ -8209,11 +8516,23 @@
    "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "models/breadth-a/storage-order/06.json",
-    "$RUN_DIR/checks/storage-order.json"
+   "as_built_findings": [
+    "F-C0603",
+    "F-C0604",
+    "F-C0642"
    ],
+   "cited_runs": [
+    "st-check-so-gate",
+    "st-check-so-perm-06",
+    "st-control-so-selftest"
+   ],
+   "evidence": [
+    "run:st-check-so-gate",
+    "run:st-control-so-selftest",
+    "experiment/playbook-completion/structural/order/dispositions.json",
+    "run:st-check-so-perm-06"
+   ],
+   "evidence_grade": "registered-run",
    "findings": [
     "F-C0603",
     "F-C0604",
@@ -8226,15 +8545,17 @@
     "fails": [
      "finding F-C0603",
      "finding F-C0604",
-     "finding F-C0642"
+     "finding F-C0642",
+     "stated fails by matrix-input/structural.json",
+     "run st-check-so-perm-06 (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "reason": "two order-dependent candidates (graph_scoped_embeddings.py:1273 migration width; GraphStores.cls:308 route guard), score ties cut in scan order at every top-k search, and the embed queue's id-order service",
-   "remaining": "dispose of the order-dependent sites listed",
-   "source": "modules/06.json",
-   "status": "open"
+   "remaining": "F-C0603 and F-C0604 not reproduced live (need two default-model node routes for one graph / a legacy table without a declared width)",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "order"
   },
   {
    "cited_runs": [
@@ -8308,18 +8629,25 @@
    "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "inspected:$RUN_DIR/checks/storage-order.json"
+   "cited_runs": [
+    "st-check-so-gate",
+    "st-control-so-selftest"
    ],
+   "evidence": [
+    "run:st-check-so-gate",
+    "run:st-control-so-selftest",
+    "experiment/playbook-completion/structural/order/dispositions.json"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.4-storage-order",
    "level": "product",
    "module": "09",
+   "product_basis": "6 sites: Anchors numbers the candidate set in cursor order but every ordered or limited plan sorts before it cuts (set-valued); NamedEnds' TOP 1001 is a count probe that falls back to the general walk; two $Order cut-offs are collation-ordered. No reliance (F-0907 is the shadow comparison's row-order rule, gate 3.7-differential)",
    "product_obligation": "unknown",
-   "reason": "1 storage-order site(s) in module 09's own files dispositioned (Exec.cls:1101 cardinality cap: existence-only); query.py sites [151, 588, 1818, 1835, 1837] lie outside the native routing span (2032-2250) and are module 08's; engine.py:576 (gate fact, cited) existence-only",
-   "remaining": "closed claim cites no registered run or committed artifact",
-   "source": "modules/09.json",
-   "status": "open"
+   "remaining": "no row-permutation run for module 09 in this lane (not in the open list)",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "order"
   },
   {
    "cited_runs": [],
@@ -8338,14 +8666,27 @@
    "status": "closed"
   },
   {
+   "as_built_findings": [
+    "F-0205",
+    "F-C1108"
+   ],
    "cited_runs": [
-    "storage-order-scan"
+    "st-check-so-gate",
+    "st-check-so-perm-11",
+    "st-control-so-selftest",
+    "st-live-so-11"
    ],
    "evidence": [
-    "check:storage-order-scan",
-    "inspected:iris_vector_graph/ledger/replay.py:342-345"
+    "run:st-check-so-gate",
+    "run:st-control-so-selftest",
+    "experiment/playbook-completion/structural/order/dispositions.json",
+    "run:st-live-so-11",
+    "run:st-check-so-perm-11"
    ],
-   "evidence_grade": "inspected",
+   "evidence_grade": "registered-run",
+   "findings": [
+    "F-0205"
+   ],
    "findings_undecided": [
     "F-C1108"
    ],
@@ -8353,55 +8694,90 @@
    "level": "product",
    "module": "11",
    "product_basis": {
-    "fails": [],
+    "fails": [
+     "finding F-0205",
+     "stated fails by matrix-input/structural.json",
+     "run st-live-so-11 (fail)"
+    ],
     "intent_undecided": [
-     "finding F-C1108"
+     "finding F-C1108",
+     "run st-check-so-perm-11 (fail) of F-C1108"
     ]
    },
-   "product_obligation": "intent-undecided",
-   "reason": "1 flagged site in module 11 files (replay.py:342, history; reported twice) is a false positive: ORDER BY seq is appended in a separate literal at replay.py:345 and seq is the unique IdKey (LedgerRevision.cls:44). Ledger*.cls, client.py, changeset.py, guard.py and _engine/ledger.py have no flagged site.",
-   "remaining": "closed claim cites only non-decisive runs ['storage-order-scan']",
-   "source": "modules/11.json",
-   "status": "open"
+   "product_obligation": "fails",
+   "remaining": "",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "order"
   },
   {
    "cited_runs": [
-    "storage-order-scan"
+    "st-check-so-gate",
+    "st-check-so-perm-12",
+    "st-control-so-selftest"
    ],
    "evidence": [
-    "run:storage-order-scan"
+    "run:st-check-so-gate",
+    "run:st-control-so-selftest",
+    "experiment/playbook-completion/structural/order/dispositions.json",
+    "run:st-check-so-perm-12"
    ],
+   "evidence_grade": "registered-run",
    "gate": "3.4-storage-order",
    "level": "product",
    "module": "12",
+   "product_basis": "2 sites in module 12's functions: one single-row aggregate and EraseBareNodes' batch over a $Order root (collation order, batches commit and resume by key); erase_graph and delete_nodes_by_prefix answers and the remaining rows are equal in three insertion orders. GraphStores.cls:308 (VectorRouteGuard) is in 12's class file but is module 06's route rule (F-C0603)",
    "product_obligation": "unknown",
-   "status": "open"
+   "remaining": "",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "order"
   },
   {
    "cited_runs": [
-    "storage-order-scan"
+    "st-check-so-gate",
+    "st-check-so-perm-13",
+    "st-control-so-selftest"
    ],
    "evidence": [
-    "run:storage-order-scan"
+    "run:st-check-so-gate",
+    "run:st-control-so-selftest",
+    "experiment/playbook-completion/structural/order/dispositions.json",
+    "run:st-check-so-perm-13"
    ],
+   "evidence_grade": "registered-run",
    "gate": "3.4-storage-order",
    "level": "product",
    "module": "13",
+   "product_basis": "2 sites: the revision row read by seq (unique key) and BatchInLock's cut-off, which walks ^IVG.Ledger('rec', seq, ordinal) in key order and resumes from the saved key (the restart-from-first after a stop is F-C1303, progress); receipt and history equal for three commit orders",
    "product_obligation": "unknown",
-   "status": "open"
+   "remaining": "",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "order"
   },
   {
    "cited_runs": [
-    "storage-order-scan"
+    "st-check-so-gate",
+    "st-check-so-perm-14",
+    "st-control-so-selftest"
    ],
    "evidence": [
-    "run:storage-order-scan"
+    "run:st-check-so-gate",
+    "run:st-control-so-selftest",
+    "experiment/playbook-completion/structural/order/dispositions.json",
+    "run:st-check-so-perm-14"
    ],
+   "evidence_grade": "registered-run",
    "gate": "3.4-storage-order",
    "level": "product",
    "module": "14",
+   "product_basis": "2 sites: fetch_history's TOP n is followed by ORDER BY seq on the assembled statement (replay.py:342-345: the earlier 'intent-undecided' reading of this site was the literal-only scan's false positive) and the revision read by seq (unique key); verify, reconstruct and canonical reads equal in three orders",
    "product_obligation": "unknown",
-   "status": "open"
+   "remaining": "",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "order"
   },
   {
    "cited_runs": [],
@@ -8421,10 +8797,23 @@
    "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "$RUN_DIR/checks/storage-order.json"
+   "as_built_findings": [
+    "F-C1642"
    ],
+   "cited_runs": [
+    "st-check-so-gate",
+    "st-check-so-perm-16",
+    "st-control-so-selftest",
+    "st-live-so-confirm"
+   ],
+   "evidence": [
+    "run:st-check-so-gate",
+    "run:st-control-so-selftest",
+    "experiment/playbook-completion/structural/order/dispositions.json",
+    "run:st-live-so-confirm",
+    "run:st-check-so-perm-16"
+   ],
+   "evidence_grade": "registered-run",
    "findings": [
     "F-C1642"
    ],
@@ -8433,34 +8822,40 @@
    "module": "16",
    "product_basis": {
     "fails": [
-     "finding F-C1642"
+     "finding F-C1642",
+     "stated fails by matrix-input/structural.json",
+     "run st-check-so-perm-16 (fail)",
+     "run st-live-so-confirm (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "decide whether sampled schema discovery may depend on storage order; no self-test",
-   "sites": [
-    {
-     "disposition": "intent-undecided",
-     "reason": "documented sampling (gql/engine.py:38-39 'Using TOP clause for sampling as per SC-002/SC-003 and FR-002'): not a unique key and not existence-only; for a label with more than sample_limit (1000) nodes the generated type's fields depend on which rows storage order returns, so the schema can differ between starts. No source settles whether a storage-order-dependent schema is acceptable. The same subquery joins rdf_props on s alone (graph mixing, F-1603).",
-     "site": "iris_vector_graph/gql/engine.py:40",
-     "sql": "SELECT DISTINCT p.key ... AND p.s IN (SELECT TOP {sample_limit} s FROM rdf_labels WHERE label = ?)"
-    },
-    {
-     "disposition": "false-positive",
-     "reason": "a /// doc-comment example of RunSQL input (MCPTools.cls:31-33), not executed SQL",
-     "site": "iris_src/src/Graph/KG/MCPTools.cls:33"
-    }
-   ],
-   "source": "modules/16.json",
-   "status": "open"
+   "remaining": "",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "order"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "$RUN_DIR/checks/storage-order.json sites in module-17 files: admin.py:104 (active_queries_sql: TOP n of CURRENT_STATEMENTS, a documented bounded diagnostic sample, OPS-B3.4 'up to a limit'; no order promised - existence-only/sample, not a finding); admin.py:706 (docstring text: false positive); admin.py:733 (SELECT TOP 0 name(NULL): a prepare-time existence probe returning no rows - false positive); dbapi_utils.py:267 (ORDER BY score DESC is on the next f-string line :272 - false positive for row order; the direction is wrong for L2, F-1705); stores/iris_sql_store.py:2633 (ORDER BY score DESC at :2641 - false positive; ties at the k-th score are broken by storage order, an open note for HD-0603's defined tie behaviour, not a finding here)"
+   "as_built_findings": [
+    "F-C1742",
+    "F-1701"
    ],
+   "cited_runs": [
+    "st-check-so-gate",
+    "st-control-so-selftest",
+    "st-live-so-17b",
+    "st-live-so-confirm"
+   ],
+   "evidence": [
+    "run:st-check-so-gate",
+    "run:st-control-so-selftest",
+    "experiment/playbook-completion/structural/order/dispositions.json",
+    "run:st-live-so-17b",
+    "run:st-live-so-confirm"
+   ],
+   "evidence_grade": "registered-run",
    "findings": [
+    "F-1701",
     "F-C1742"
    ],
    "gate": "3.4-storage-order",
@@ -8468,27 +8863,40 @@
    "module": "17",
    "product_basis": {
     "fails": [
-     "finding F-C1742"
+     "finding F-1701",
+     "finding F-C1742",
+     "stated fails by matrix-input/structural.json",
+     "run st-live-so-17b (fail)",
+     "run st-live-so-confirm (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "closed claim cites no registered run or committed artifact",
-   "source": "modules/17.json",
-   "status": "open"
+   "remaining": "",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "order"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "$RUN_DIR/checks/storage-order.json: no site in iris_vector_graph/_engine/snapshot.py or Graph/KG/Snapshot.cls"
+   "cited_runs": [
+    "st-check-so-gate",
+    "st-control-so-selftest"
    ],
+   "evidence": [
+    "run:st-check-so-gate",
+    "run:st-control-so-selftest",
+    "experiment/playbook-completion/structural/order/dispositions.json"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.4-storage-order",
    "level": "product",
    "module": "18",
+   "product_basis": "1 site: restore's registry read by table_name, which only routed tables reach and whose name is derived from (graph, model) (routing.py:32-78): unique. The save path reads whole tables (set-valued); no prefix cut or first-row read in snapshot.py or Snapshot.cls",
    "product_obligation": "unknown",
-   "remaining": "closed claim cites no registered run or committed artifact",
-   "source": "modules/18.json",
-   "status": "open"
+   "remaining": "no row-permutation run for module 18 in this lane (its cell is closed by breadth C, inspected)",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "order"
   },
   {
    "cited_runs": [],
@@ -8504,11 +8912,22 @@
    "status": "not-applicable"
   },
   {
-   "cited_runs": [],
+   "as_built_findings": [
+    "F-0106"
+   ],
+   "cited_runs": [
+    "st-control-reads-selftest",
+    "st-live-reads-a"
+   ],
+   "earlier_evidence_kept": true,
    "evidence": [
+    "run:st-control-reads-selftest",
+    "run:st-live-reads-a",
+    "experiment/playbook-completion/structural/reads/method.json",
+    "experiment/playbook-completion/structural/reads/noninterference.py",
     "findings/audit/01.json"
    ],
-   "evidence_grade": "inspected",
+   "evidence_grade": "registered-run",
    "findings": [
     "F-0106"
    ],
@@ -8518,14 +8937,16 @@
    "product_basis": {
     "fails": [
      "finding F-0106",
-     "lane status failed (modules/01.json)"
+     "stated fails by matrix-input/structural.json",
+     "run st-live-reads-a (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "no declared-reads self-test; cross-graph reads are findings ['F-0106']",
-   "source": "modules/01.json",
-   "status": "closed"
+   "remaining": "67 of 68 inventoried read/both entry points not checked: py:IRISGraphEngine.initialize_schema, py:IRISGraphEngine.remove_legacy_objects, py:iris_vector_graph._engine.legacy.remove_legacy_objects, cls:Graph.KG.SqlProcs.backfilltemporalrows, cls:Graph.KG.SqlProcs.kgBM25, py:iris_vector_graph._engine.legacy.copy_ledger_history, py:iris_vector_graph._engine.legacy.grant_read_path, py:iris_vector_graph._engine.legacy.read_path_routines, py:iris_vector_graph._engine.legacy.replace_arno_wrappers, py:iris_vector_graph._engine.legacy.revoke_legacy_arno, py:iris_vector_graph.migrations.upgrade.upgrade_to_4_0_0, py:iris_vector_graph.schema.GraphSchema.add_graph_id_to_nodes, py:iris_vector_graph.schema.GraphSchema.bootstrap_kg_global, py:iris_vector_graph.schema.GraphSchema.deploy_objectscript_classes, py:iris_vector_graph.schema.GraphSchema.ensure_adjacency_index, py:iris_vector_graph.schema.GraphSchema.ensure_ekey, py:iris_vector_graph.schema.GraphSchema.ensure_props_value_key, py:iris_vector_graph.schema.GraphSchema.get_bulk_insert_sql, py:iris_vector_graph.schema.GraphSchema.get_graph_scope_migration_sql, py:iris_vector_graph.schema.GraphSchema.get_procedures_sql_list, py:iris_vector_graph.schema.GraphSchema.stage_class_owned_rdf_edges, py:iris_vector_graph.schema.GraphSchema.upgrade_val_column, py:iris_vector_graph.schema_name.foreign_classes, py:iris_vector_graph.schema_name.refuse_package_clash, rest:POST /admin/schema/init, cls:Graph.KG.SqlProcs.DijkstraPath, cls:Graph.KG.SqlProcs.LedgerRecordsFetch, cls:Graph.KG.SqlProcs.MatchEdges, cls:Graph.KG.SqlProcs.MatchEdgesAllGraphs, cls:Graph.KG.SqlProcs.PropSet, cls:Graph.KG.SqlProcs.kgIVF, py:IRISGraphEngine.get_edge_count, py:IRISGraphEngine.get_label_distribution, py:IRISGraphEngine.get_labels, py:IRISGraphEngine.get_node_count, py:IRISGraphEngine.get_relationship_types, py:IRISGraphEngine.get_schema_visualization, py:IRISGraphEngine.is_ready, py:IRISGraphEngine.node_exists, py:iris_vector_graph._engine.class_deploy.deploy_packaged_classes, py:iris_vector_graph._engine.class_deploy.foreign_schema_classes, py:iris_vector_graph._engine.class_deploy.upload_and_compile, py:iris_vector_graph._engine.legacy.arno_copies, py:iris_vector_graph._engine.legacy.direct_grants, py:iris_vector_graph._engine.legacy.grants_by_object, py:iris_vector_graph._engine.legacy.grants_on, py:iris_vector_graph._engine.legacy.legacy_count, py:iris_vector_graph._engine.legacy.present_legacy_objects, py:iris_vector_graph._engine.legacy.user_roles, py:iris_vector_graph.engine.IRISGraphEngine._check_namespace_schema, py:iris_vector_graph.engine.IRISGraphEngine._schema_check_passed, py:iris_vector_graph.engine.IRISGraphEngine._waive_schema_check, py:iris_vector_graph.routine_record.RoutineRecord.__init__, py:iris_vector_graph.schema.GraphSchema.adjacency_index_kind, py:iris_vector_graph.schema.GraphSchema.check_objectscript_classes, py:iris_vector_graph.schema.GraphSchema.ensure_ledger_index, py:iris_vector_graph.schema.GraphSchema.pending_rdf_edges_rescue, py:iris_vector_graph.schema.GraphSchema.resolve_table_class, py:iris_vector_graph.schema.GraphSchema.validate_schema, py:iris_vector_graph.schema.repair_ifind_helpers, py:iris_vector_graph.schema_name.check_first_access, py:scripts.deploy_graph_tvfs.main, py:scripts.deploy_graph_tvfs.verify_deployment, py:scripts.deploy_production.deploy_classes, py:scripts.deploy_production.main, rest:GET /schema, rest:GET /stats | non-interference sees only reads that reach the answer, and only under the perturbations listed per action in structural/reads/method.json",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "reads"
   },
   {
    "cited_runs": [],
@@ -8552,43 +8973,93 @@
    "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "findings/audit/03.json"
+   "cited_runs": [
+    "st-control-reads-selftest",
+    "st-live-reads-a"
    ],
+   "evidence": [
+    "run:st-control-reads-selftest",
+    "run:st-live-reads-a",
+    "experiment/playbook-completion/structural/reads/method.json",
+    "experiment/playbook-completion/structural/reads/noninterference.py"
+   ],
+   "evidence_grade": "live",
    "gate": "3.4-declared-reads",
    "level": "product",
    "module": "03",
-   "product_obligation": "unknown",
-   "remaining": "no declared-reads self-test",
-   "source": "modules/03.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "run st-live-reads-a (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "20 of 43 inventoried read/both entry points not checked: py:IRISGraphEngine.bulk_create_edges, py:IRISGraphEngine.bulk_create_nodes, py:IRISGraphEngine.bulk_ingest_edges, py:IRISGraphEngine.delete_edge, py:IRISGraphEngine.delete_node, py:IRISGraphEngine.store_edge, py:IRISGraphEngine.store_node, py:iris_vector_graph.bulk_loader.BulkLoader.load_edges, py:iris_vector_graph.bulk_loader.BulkLoader.load_networkx, py:iris_vector_graph.bulk_loader.BulkLoader.load_nodes, py:IRISGraphEngine.bulk_delete_nodes, py:IRISGraphEngine.bulk_load_session, py:IRISGraphEngine.erase_all, py:IRISGraphEngine.set_edge_weight, py:iris_vector_graph.bulk_loader.BulkLoader.build_graph_globals, cls:Graph.KG.PropWrite.Layout, cls:Graph.KG.PropWrite.SetVal, py:iris_vector_graph._batch_check.missing_rows, py:iris_vector_graph._dictionary.compiled_class_exists, py:iris_vector_graph._dictionary.compiled_method_exists | inside perturbation did not change the answer (sensitivity not shown): get_json_field_values('j', 'f') [all graphs]; get_nodes_by_property('k', 'v1') [all graphs] | non-interference sees only reads that reach the answer, and only under the perturbations listed per action in structural/reads/method.json",
+   "source": "matrix-input/structural.json",
+   "status": "open",
+   "sub_lane": "reads"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "findings/audit/04.json"
+   "cited_runs": [
+    "st-control-reads-selftest",
+    "st-live-reads-a"
    ],
+   "evidence": [
+    "run:st-control-reads-selftest",
+    "run:st-live-reads-a",
+    "experiment/playbook-completion/structural/reads/method.json",
+    "experiment/playbook-completion/structural/reads/noninterference.py"
+   ],
+   "evidence_grade": "live",
    "gate": "3.4-declared-reads",
    "level": "product",
    "module": "04",
-   "product_obligation": "unknown",
-   "remaining": "no declared-reads self-test",
-   "source": "modules/04.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "run st-live-reads-a (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "113 of 116 inventoried read/both entry points not checked: cls:Graph.KG.Adjacency.Put, cls:Graph.KG.Adjacency.PutShadow, cls:Graph.KG.Adjacency.Remove, cls:Graph.KG.Adjacency.Reweight, cls:Graph.KG.TraversalBuild.BuildKG, py:IRISGraphEngine.sync, cls:Graph.KG.Adj.WarmAll, cls:Graph.KG.Adj.WarmCache, cls:Graph.KG.Adj.WarmFill, cls:Graph.KG.AdjIndex.DeleteIndex, cls:Graph.KG.AdjIndex.InsertIndex, cls:Graph.KG.AdjIndex.UpdateIndex, cls:Graph.KG.Adjacency.AssertTemporalRow, cls:Graph.KG.Adjacency.EndRebuild, cls:Graph.KG.Adjacency.FillTriple, cls:Graph.KG.Adjacency.MarkGraphGone, cls:Graph.KG.Adjacency.PutKeyed, cls:Graph.KG.Adjacency.RemoveKeyed, cls:Graph.KG.Adjacency.RemoveNode, cls:Graph.KG.Adjacency.RemoveSource, cls:Graph.KG.Adjacency.RetractTemporalRow, cls:Graph.KG.Adjacency.RetractTemporalRows, cls:Graph.KG.Adjacency.RetractTemporalShadows, cls:Graph.KG.Adjacency.RowPut, cls:Graph.KG.Adjacency.RowRemove, cls:Graph.KG.Adjacency.RowUpdate, cls:Graph.KG.Adjacency.SetLeafFromLowest, cls:Graph.KG.Adjacency.WriterLock, cls:Graph.KG.EdgeScan.BulkDeleteAdjacency, cls:Graph.KG.EdgeScan.BulkIngestEdgesFile, cls:Graph.KG.EdgeScan.BulkIngestEdgesSQL, cls:Graph.KG.EdgeScan.BulkIngestNodesSQL, cls:Graph.KG.EdgeScan.DeleteAdjacency, cls:Graph.KG.EdgeScan.DeleteAdjacencyAllGraphs, cls:Graph.KG.EdgeScan.DeleteAdjacencyKeyed, cls:Graph.KG.EdgeScan.RegisterDefaultNode, cls:Graph.KG.EdgeScan.WriteAdjacency, cls:Graph.KG.EdgeScan.WriteAdjacencyKeyed, cls:Graph.KG.GraphIndex.DeleteIndex, cls:Graph.KG.GraphIndex.DropNKG, cls:Graph.KG.GraphIndex.InitStructuralLabels, cls:Graph.KG.GraphIndex.InternLabel, cls:Graph.KG.GraphIndex.InternNode, cls:Graph.KG.GraphIndex.UpdateStructuralHLL, cls:Graph.KG.TraversalBuild.ArnoCapabilities, cls:Graph.KG.TraversalBuild.BackfillDegp, cls:Graph.KG.TraversalBuild.Build2HopExactStats, cls:Graph.KG.TraversalBuild.Build2HopStats, cls:Graph.KG.TraversalBuild.BuildKGKeyed, cls:Graph.KG.TraversalBuild.BuildNKG, cls:Graph.KG.TraversalBuild.DictSweepAllowed, cls:Graph.KG.TraversalBuild.EnsureNKG, cls:Graph.KG.TraversalBuild.GuardCounters, cls:Graph.KG.TraversalBuild.InitNKGSkeleton, cls:Graph.KG.TraversalBuild.MergedDegree, cls:Graph.KG.TraversalBuild.PutLabelBack, cls:Graph.KG.TraversalBuild.PutNodeBack, cls:Graph.KG.TraversalBuild.RetireNode, cls:Graph.KG.TraversalBuild.RewriteNKG, cls:Graph.KG.TraversalBuild.RewritePass, cls:Graph.KG.TraversalBuild.SweepDegrees, cls:Graph.KG.TraversalBuild.SweepEdge, cls:Graph.KG.TraversalBuild.SweepEdges, cls:Graph.KG.TraversalBuild.SweepLabels, cls:Graph.KG.TraversalBuild.SweepMirrors, cls:Graph.KG.TraversalBuild.SweepNodes, cls:Graph.KG.TraversalBuild.SweepSketches, cls:Graph.KG.TraversalBuild.WalkSource, py:IRISGraphEngine.backfill_2hop_exact, py:IRISGraphEngine.backfill_deg2p_exact, py:IRISGraphEngine.bulk_delete_adjacency, py:IRISGraphEngine.rebuild_kg, py:IRISGraphEngine.rebuild_nkg, py:IRISGraphEngine.status, py:IRISGraphEngine.verify_sync, rest:GET /metrics, rest:GET /server, rest:POST /admin/indexes/rebuild, cls:Graph.KG.Adj.AllWarm, cls:Graph.KG.Adj.Cached, cls:Graph.KG.Adj.Count, cls:Graph.KG.Adj.HasEdges, cls:Graph.KG.Adj.NextSource, cls:Graph.KG.Adjacency.HeldElsewhere, cls:Graph.KG.Adjacency.KeyCount, cls:Graph.KG.Adjacency.OtherEdgeKeys, cls:Graph.KG.AlgoCache.Get, cls:Graph.KG.AlgoCache.Lookup, cls:Graph.KG.AlgoCache.Token, cls:Graph.KG.EdgeScan.MatchEdges, cls:Graph.KG.EdgeScan.MatchEdgesAllGraphs, cls:Graph.KG.EdgeScan.ScanOneGraph, cls:Graph.KG.Edgeless.HasOther, cls:Graph.KG.Edgeless.Loners, cls:Graph.KG.Edgeless.Scan, cls:Graph.KG.GraphIndex.GetLabelIdx, cls:Graph.KG.GraphIndex.GetNodeIdx, cls:Graph.KG.GraphVerify.VerifyGraph, cls:Graph.KG.TraversalBuild.FirstWeight, cls:Graph.KG.TraversalBuild.HeldAnywhere, cls:Graph.KG.TraversalBuild.IsSource, cls:Graph.KG.TraversalBuild.KGEdgeCount, cls:Graph.KG.TraversalBuild.LabelInKG, cls:Graph.KG.TraversalBuild.NKGEdgeCount, cls:Graph.KG.TraversalBuild.NKGLiveNodeCount, cls:Graph.KG.TraversalBuild.NKGNodeCount, cls:Graph.KG.TraversalBuild.NKGPopulated, cls:Graph.KG.TraversalBuild.NodeInKG, cls:Graph.KG.TraversalBuild.SketchOf, py:iris_vector_graph._edgeless.loners, py:iris_vector_graph._edgeless.loners_sql, py:iris_vector_graph.engine.IRISGraphEngine._adjacency_indexed, py:iris_vector_graph.stores.iris_sql_store.IRISGraphStore._cached_algorithm | non-interference sees only reads that reach the answer, and only under the perturbations listed per action in structural/reads/method.json",
+   "source": "matrix-input/structural.json",
+   "status": "open",
+   "sub_lane": "reads"
   },
   {
-   "cited_runs": [],
+   "as_built_findings": [
+    "F-0508"
+   ],
+   "cited_runs": [
+    "st-control-reads-selftest",
+    "st-live-reads-a"
+   ],
    "evidence": [
-    "findings/audit/05.json"
+    "run:st-control-reads-selftest",
+    "run:st-live-reads-a",
+    "experiment/playbook-completion/structural/reads/method.json",
+    "experiment/playbook-completion/structural/reads/noninterference.py"
+   ],
+   "evidence_grade": "registered-run",
+   "findings": [
+    "F-0508"
    ],
    "gate": "3.4-declared-reads",
    "level": "product",
    "module": "05",
-   "product_obligation": "unknown",
-   "remaining": "no declared-reads self-test",
-   "source": "modules/05.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "finding F-0508",
+     "stated fails by matrix-input/structural.json",
+     "run st-live-reads-a (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "73 of 83 inventoried read/both entry points not checked: py:IRISGraphEngine.bulk_create_edges_temporal, py:IRISGraphEngine.delete_edge_temporal, py:IRISGraphEngine.purge_before, cls:Graph.KG.Adjacency.AssertTemporalRow, cls:Graph.KG.Adjacency.RetractTemporalRow, cls:Graph.KG.Adjacency.RetractTemporalRows, cls:Graph.KG.LedgerApply.OpCreateTemporalEdge, cls:Graph.KG.TemporalIndex.BackfillRows, cls:Graph.KG.TemporalIndex.BackfillStructuralRows, cls:Graph.KG.TemporalIndex.BackfillWalk, cls:Graph.KG.TemporalIndex.BulkInsert, cls:Graph.KG.TemporalIndex.BulkInsertCounts, cls:Graph.KG.TemporalIndex.DeleteTemporalEdge, cls:Graph.KG.TemporalIndex.EraseNodes, cls:Graph.KG.TemporalIndex.InsertEdge, cls:Graph.KG.TemporalIndex.InternLabelSet, cls:Graph.KG.TemporalIndex.MigrateDerived, cls:Graph.KG.TemporalIndex.MigrateRaw, cls:Graph.KG.TemporalIndex.MigrateToGraphScoped, cls:Graph.KG.TemporalIndex.NoteLatest, cls:Graph.KG.TemporalIndex.PurgeBefore, cls:Graph.KG.TemporalIndex.PurgeBucketRange, cls:Graph.KG.TemporalIndex.PurgeRawBefore, cls:Graph.KG.TemporalIndex.RebuildBucket, cls:Graph.KG.TemporalIndex.RebuildBucketAggregate, cls:Graph.KG.TemporalIndex.RebuildLatest, cls:Graph.KG.TemporalIndex.Relatest, cls:Graph.KG.TemporalIndex.RelatestRange, cls:Graph.KG.TemporalIndex.RemoveTemporalRow, cls:Graph.KG.TemporalIndex.RetireExpired, cls:Graph.KG.TemporalIndex.UpdateHLL, cls:Graph.KG.TemporalIndex.WriteStores, cls:Graph.KG.TemporalPolicy.BackfillRows, cls:Graph.KG.TemporalPolicy.DropRows, py:IRISGraphEngine.backfill_temporal_structural_rows, py:IRISGraphEngine.drop_temporal_structural_rows, py:IRISGraphEngine.rebuild_temporal_latest, py:iris_vector_graph.migrations.temporal_structural_rows.backfill_structural_rows, cls:Graph.KG.TemporalIndex.BucketGroupsEvents, cls:Graph.KG.TemporalIndex.FindBursts, cls:Graph.KG.TemporalIndex.FlatDepth, cls:Graph.KG.TemporalIndex.GetAggregate, cls:Graph.KG.TemporalIndex.GetBucketGroupTargets, cls:Graph.KG.TemporalIndex.GetBucketGroups, cls:Graph.KG.TemporalIndex.GetDistinctCount, cls:Graph.KG.TemporalIndex.GetEdgeAttrs, cls:Graph.KG.TemporalIndex.GetVelocity, cls:Graph.KG.TemporalIndex.HasTemporalEdge, cls:Graph.KG.TemporalIndex.MigrateOrphans, cls:Graph.KG.TemporalIndex.QueryWindow, cls:Graph.KG.TemporalIndex.QueryWindowInbound, cls:Graph.KG.TemporalIndex.QueryWindowSources, cls:Graph.KG.TemporalIndex.ResolveLabelSet, cls:Graph.KG.TemporalIndexMS.GetBucketCount, cls:Graph.KG.TemporalPolicy.IsStructural, cls:Graph.KG.TemporalPolicy.IsStructuralKey, cls:Graph.KG.TemporalPolicy.List, cls:Graph.KG.TemporalPolicy.ListAll, cls:Graph.KG.TemporalWindow.Latest, cls:Graph.KG.TemporalWindow.Next, cls:Graph.KG.TemporalWindow.NextKey, cls:Graph.KG.TemporalWindow.NextListed, cls:Graph.KG.TemporalWindow.Open, cls:Graph.KG.TemporalWindow.Page, cls:Graph.KG.TemporalWindow.Resolve, cls:Graph.KG.TemporalWindow.Row, cls:Graph.KG.TemporalWindow.State, py:IRISGraphEngine.erase_bare_nodes, py:IRISGraphEngine.list_temporal_structural_opt_outs, py:iris_vector_graph._engine.temporal_only_warning.registered, py:iris_vector_graph._engine.temporal_only_warning.warn_empty_bfs, py:iris_vector_graph._engine.temporal_only_warning.warn_empty_cypher, py:iris_vector_graph._engine.temporal_only_warning.warn_if_named | non-interference sees only reads that reach the answer, and only under the perturbations listed per action in structural/reads/method.json",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "reads"
   },
   {
    "cited_runs": [],
@@ -8740,10 +9211,17 @@
    "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "footprints/10.json"
+   "cited_runs": [
+    "st-control-reads-selftest",
+    "st-live-reads-b"
    ],
+   "evidence": [
+    "run:st-control-reads-selftest",
+    "run:st-live-reads-b",
+    "experiment/playbook-completion/structural/reads/method.json",
+    "experiment/playbook-completion/structural/reads/noninterference.py"
+   ],
+   "evidence_grade": "live",
    "findings": [
     "F-1006"
    ],
@@ -8752,70 +9230,143 @@
    "module": "10",
    "product_basis": {
     "fails": [
-     "finding F-1006"
+     "finding F-1006",
+     "run st-live-reads-b (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "reason": "",
-   "remaining": "Reads are declared from the static closure; no read-footprint check with a self-test.",
-   "source": "modules/10.json",
-   "status": "open"
+   "remaining": "200 of 219 inventoried read/both entry points not checked: cls:Graph.KG.Algorithms.WCCJson, cls:Graph.KG.Algorithms.CDLPJson, cls:Graph.KG.PageRank.RunJson, cls:Graph.KG.PageRank.CheckArgs, cls:Graph.KG.PageRank.NodeSeeds, cls:Graph.KG.PageRank.WithUnscored, cls:Graph.KG.PageRank.Run, cls:Graph.KG.PageRank.PageRankGlobalJson, cls:Graph.KG.PageRankEmbedded.ComputePageRank, cls:Graph.KG.PageRankEmbedded.ComputePageRankWithMetrics, cls:Graph.KG.Centrality.DegreeCentralityJson, cls:Graph.KG.Communities.TriangleCountJson, cls:Graph.KG.Communities.KCoreJson, cls:Graph.KG.Communities.SCCJson, cls:Graph.KG.Communities.LeidenJson, cls:Graph.KG.Communities.ClosenessJsonPy, cls:Graph.KG.Communities.LeidenJsonPy, cls:Graph.KG.Communities.LeidenJsonAuto, cls:Graph.KG.Subgraph.SubgraphJson, cls:Graph.KG.Subgraph.PPRGuidedJson, cls:Graph.KG.Traversal.DijkstraProc, cls:Graph.KG.Traversal.BuildKG, cls:Graph.KG.Traversal.NKGEdgeCount, cls:Graph.KG.Traversal.NKGNodeCount, cls:Graph.KG.Traversal.NKGLiveNodeCount, cls:Graph.KG.Traversal.BuildNKG, cls:Graph.KG.Traversal.BackfillDegp, cls:Graph.KG.Traversal.Build2HopStats, cls:Graph.KG.Traversal.Build2HopExactStats, cls:Graph.KG.Traversal.KGEdgeCount, cls:Graph.KG.Traversal.NKGPopulated, cls:Graph.KG.Traversal.BFS, cls:Graph.KG.Traversal.BFSFast, cls:Graph.KG.Traversal.BFSJSON, cls:Graph.KG.Traversal.BFSFastJson, cls:Graph.KG.Traversal.BFSFastJsonDirect, cls:Graph.KG.Traversal.BFSFastJsonChunked, cls:Graph.KG.Traversal.BFSFastStream, cls:Graph.KG.Traversal.ReadLargeOutChunk, cls:Graph.KG.Traversal.BFSFastJsonSorted, cls:Graph.KG.Traversal.BFSFastCountDistinct, cls:Graph.KG.Traversal.ShortestPathJson, cls:Graph.KG.Traversal.DijkstraJson, cls:Graph.KG.Traversal.KHopCount, cls:Graph.KG.Traversal.KHopNeighborIds, cls:Graph.KG.Traversal.KHop2Count, cls:Graph.KG.Traversal.KHop2NeighborIds, cls:Graph.KG.Traversal.KHop2CountFast, cls:Graph.KG.Traversal.KHop2CountExact, cls:Graph.KG.TraversalBFS.BFS, cls:Graph.KG.TraversalBFS.BFSFast, cls:Graph.KG.TraversalBFS.BFSJSON, cls:Graph.KG.TraversalBFS.BFSFastJson, cls:Graph.KG.TraversalBFS.BFSFastJsonDirect, cls:Graph.KG.TraversalBFS.BFSFastJsonChunked, cls:Graph.KG.TraversalBFS.BFSFastStream, cls:Graph.KG.TraversalBFS.ReachTypes, cls:Graph.KG.TraversalBFS.ReadLargeOutChunk, cls:Graph.KG.TraversalBFS.BFSFastJsonSorted, cls:Graph.KG.TraversalBFS.BFSFastCountDistinct, cls:Graph.KG.TraversalKHop.KHopCount, cls:Graph.KG.TraversalKHop.KHopNeighborIds, cls:Graph.KG.TraversalKHop.KHop2Count, cls:Graph.KG.TraversalKHop.KHop2NeighborIds, cls:Graph.KG.TraversalKHop.KHop2CountFast, cls:Graph.KG.TraversalKHop.KHop2CountExact, cls:Graph.KG.TraversalPaths.ShortestPathJson, cls:Graph.KG.TraversalPaths.ShortestLength, cls:Graph.KG.TraversalPaths.DijkstraJson, cls:Graph.KG.TraversalPaths.DijkstraCost, cls:Graph.KG.VarLength.Ends, cls:Graph.KG.VarLength.NamedEnds, cls:Graph.KG.VarLength.EndsCount, cls:Graph.KG.VarLength.EndsInto, cls:Graph.KG.VarLength.CPUs, cls:Graph.KG.VarLength.LastLevelPart, cls:Graph.KG.NKGAccel.UseNKG, cls:Graph.KG.NKGAccel.ResetCache, cls:Graph.KG.NKGAccel.Load, cls:Graph.KG.NKGAccel.LoadedPath, cls:Graph.KG.NKGAccel.Unload, cls:Graph.KG.NKGAccel.IsLoaded, cls:Graph.KG.NKGAccel.WarmAdjCache, cls:Graph.KG.NKGAccel.Capabilities, cls:Graph.KG.NKGAccel.BuildNKGRust, cls:Graph.KG.NKGAccel.GetFirstNKGNode, cls:Graph.KG.NKGAccel.ExportAdjacency, cls:Graph.KG.NKGAccel.ReadLargeOutChunk, cls:Graph.KG.NKGAccel.KHopNeighbors, cls:Graph.KG.NKGAccel.KHopNeighborsSorted, cls:Graph.KG.NKGAccel.KHopJson, cls:Graph.KG.NKGAccel.RandomWalkJson, cls:Graph.KG.NKGAccel.BFSJson, cls:Graph.KG.NKGAccel.ShortestPathNKG, cls:Graph.KG.NKGAccel.CountDistinctKHop, cls:Graph.KG.NKGAccel.Build2HopExact, cls:Graph.KG.NKGAccel.ClosenessGlobal, cls:Graph.KG.NKGAccel.ClosenessGlobalMSBFS, cls:Graph.KG.NKGAccel.EigenvectorGlobal, cls:Graph.KG.NKGAccel.BetweennessGlobal, cls:Graph.KG.NKGAccel.BetweennessWorker, cls:Graph.KG.NKGAccel.BetweennessGlobalParallel, cls:Graph.KG.NKGAccel.BetweennessNeighborhood, cls:Graph.KG.NKGAccelAdjacency.ExportAdjacency, cls:Graph.KG.NKGAccelAdjacency.ExportAdjacencyWithPreds, cls:Graph.KG.NKGAccelAdjacency.StoreLargeOut, cls:Graph.KG.NKGAccelAdjacency.ReadLargeOutChunk, cls:Graph.KG.NKGAccelCentrality.ClosenessGlobal, cls:Graph.KG.NKGAccelCentrality.EigenvectorGlobal, cls:Graph.KG.NKGAccelCentrality.BetweennessGlobal, cls:Graph.KG.NKGAccelCentrality.BetweennessWorker, cls:Graph.KG.NKGAccelCentrality.BetweennessGlobalParallel, cls:Graph.KG.NKGAccelCentrality.BetweennessNeighborhood, cls:Graph.KG.NKGAccelCentrality.ClosenessGlobalMSBFS, cls:Graph.KG.NKGAccelLoader.UseNKG, cls:Graph.KG.NKGAccelLoader.ResetCache, cls:Graph.KG.NKGAccelLoader.Load, cls:Graph.KG.NKGAccelLoader.LoadedPath, cls:Graph.KG.NKGAccelLoader.LoadError, cls:Graph.KG.NKGAccelLoader.Unload, cls:Graph.KG.NKGAccelLoader.IsLoaded, cls:Graph.KG.NKGAccelLoader.WarmAdjCache, cls:Graph.KG.NKGAccelLoader.Capabilities, cls:Graph.KG.NKGAccelLoader.BuildNKGRust, cls:Graph.KG.NKGAccelLoader.GetFirstNKGNode, cls:Graph.KG.NKGAccelTraversal.KHopNeighbors, cls:Graph.KG.NKGAccelTraversal.KHopNeighborsSorted, cls:Graph.KG.NKGAccelTraversal.KHopJson, cls:Graph.KG.NKGAccelTraversal.RandomWalkJson, cls:Graph.KG.NKGAccelTraversal.LastBfsPath, cls:Graph.KG.NKGAccelTraversal.LastBfsError, cls:Graph.KG.NKGAccelTraversal.LastBfsChunks, cls:Graph.KG.NKGAccelTraversal.BFSJson, cls:Graph.KG.NKGAccelTraversal.ShortestPathNKG, cls:Graph.KG.NKGAccelTraversal.CountDistinctKHop, cls:Graph.KG.NKGAccelTraversal.StructuralGuard, cls:Graph.KG.NKGAccelTraversal.Build2HopExact, cls:Graph.KG.ArnoAccel.LibPath, cls:Graph.KG.ArnoAccel.TrustedPath, cls:Graph.KG.ArnoAccel.RequireCallout, cls:Graph.KG.ArnoAccel.LoadedPath, cls:Graph.KG.ArnoAccel.LibExists, cls:Graph.KG.ArnoAccel.OpenLibrary, cls:Graph.KG.ArnoAccel.Load, cls:Graph.KG.ArnoAccel.GetLibPath, cls:Graph.KG.ArnoAccel.IsAvailable, cls:Graph.KG.ArnoAccel.ReaderRevisions, cls:Graph.KG.ArnoAccel.LibraryVersion, cls:Graph.KG.ArnoAccel.PageRankNativeJson, cls:Graph.KG.ArnoAccel.PPRNativeJson, cls:Graph.KG.ArnoAccel.WCCNativeJson, cls:Graph.KG.ArnoAccel.CDLPNativeJson, cls:Graph.KG.ArnoAccel.SubgraphNativeJson, cls:Graph.KG.ArnoAccel.BuildGraphJson, cls:Graph.KG.ArnoAccel.PageRankGlobalJson, cls:Graph.KG.ArnoAccel.PPRJson, cls:Graph.KG.ArnoAccel.WCCJson, cls:Graph.KG.ArnoAccel.CDLPJson, cls:Graph.KG.ArnoAccel.SubgraphJson, cls:Graph.KG.ArnoAccel.KhopSampleJson, cls:Graph.KG.ArnoAccel.RandomWalkJson, cls:Graph.KG.ArnoAccel.NeighborAggJson, cls:Graph.KG.AlgoCache.Token, cls:Graph.KG.AlgoCache.Lookup, cls:Graph.KG.AlgoCache.Get, py:iris_vector_graph/stores/arno_bridge.py:resolve_lib_path, py:iris_vector_graph/stores/arno_bridge.py:record_configured_lib_path, py:iris_vector_graph/stores/arno_bridge.py:build_kg_adjacency_json, py:iris_vector_graph/stores/arno_bridge.py:build_kg_adjacency_chunked, py:iris_vector_graph/arno_readers.py:read_reader_report, py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.execute_vl_ends, py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.shortest_path_length, py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.execute_shortest_path, py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.execute_subgraph, py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.execute_degree_centrality, py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.execute_betweenness_neighborhood, eng:IRISGraphEngine.betweenness_centrality_neighborhood, eng:IRISGraphEngine.bfs_vector_rerank, eng:IRISGraphEngine.kg_GRAPH_PATH, eng:IRISGraphEngine.kg_GRAPH_WALK_TVF, eng:IRISGraphEngine.kg_MENTIONS, eng:IRISGraphEngine.kg_PPR, eng:IRISGraphEngine.kg_PPR_GUIDED_SUBGRAPH, eng:IRISGraphEngine.kg_RERANK, eng:IRISGraphEngine.rebuild_nkg, eng:IRISGraphEngine.sync, cypher:ivg.shortestpath.weighted, cypher:gds.pagerank.stream, cypher:gds.betweenness.stream, cypher:gds.shortestpath.dijkstra.stream, cypher:gds.shortestpath.dijkstra, cypher:ivg.degreecentrality, cypher:ivg.betweenness, cypher:ivg.closeness, cypher:ivg.eigenvector, cypher:ivg.leiden, cypher:ivg.trianglecount, cypher:ivg.scc, cypher:ivg.kcore, cypher:ivg.neighbors | undecided: random_walk(a) [default graph]: nodes visited (vacuous: no walk steps without the Arno library (F-1002)) | non-interference sees only reads that reach the answer, and only under the perturbations listed per action in structural/reads/method.json",
+   "source": "matrix-input/structural.json",
+   "status": "open",
+   "sub_lane": "reads"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
-   "gate": "3.4-declared-reads",
-   "level": "product",
-   "level_detail": "as-built (pin 3eaa79cf), AUDITC traces",
-   "module": "11",
-   "product_obligation": "unknown",
-   "remaining": "The journal records writes only; no read oracle. Declared read sets are listed per action from source (correspondence.json reads); the correctness-relevant reads (EraseLedgerFor's dirty scan, unlocked LiveRows, readers' once-only marker check) are modelled (F-1201, F-C1201, F-C1301, F-1402).",
-   "source": "matrix-input/correspondence_status.json",
-   "status": "open"
-  },
-  {
-   "cited_runs": [],
-   "evidence": [],
-   "gate": "3.4-declared-reads",
-   "level": "product",
-   "level_detail": "as-built (pin 3eaa79cf), AUDITC traces",
-   "module": "12",
-   "product_obligation": "unknown",
-   "remaining": "The journal records writes only; no read oracle. Declared read sets are listed per action from source (correspondence.json reads); the correctness-relevant reads (EraseLedgerFor's dirty scan, unlocked LiveRows, readers' once-only marker check) are modelled (F-1201, F-C1201, F-C1301, F-1402).",
-   "source": "matrix-input/correspondence_status.json",
-   "status": "open"
-  },
-  {
-   "cited_runs": [],
-   "evidence": [],
-   "gate": "3.4-declared-reads",
-   "level": "product",
-   "level_detail": "as-built (pin 3eaa79cf), AUDITC traces",
-   "module": "13",
-   "product_obligation": "unknown",
-   "remaining": "The journal records writes only; no read oracle. Declared read sets are listed per action from source (correspondence.json reads); the correctness-relevant reads (EraseLedgerFor's dirty scan, unlocked LiveRows, readers' once-only marker check) are modelled (F-1201, F-C1201, F-C1301, F-1402).",
-   "source": "matrix-input/correspondence_status.json",
-   "status": "open"
-  },
-  {
-   "cited_runs": [],
-   "evidence": [],
-   "gate": "3.4-declared-reads",
-   "level": "product",
-   "level_detail": "as-built (pin 3eaa79cf), AUDITC traces",
-   "module": "14",
-   "product_obligation": "unknown",
-   "remaining": "The journal records writes only; no read oracle. Declared read sets are listed per action from source (correspondence.json reads); the correctness-relevant reads (EraseLedgerFor's dirty scan, unlocked LiveRows, readers' once-only marker check) are modelled (F-1201, F-C1201, F-C1301, F-1402).",
-   "source": "matrix-input/correspondence_status.json",
-   "status": "open"
-  },
-  {
-   "cited_runs": [],
-   "evidence": [
-    "footprints/15.json (reads declared from source)"
+   "cited_runs": [
+    "st-control-reads-selftest",
+    "st-live-reads-b"
    ],
+   "evidence": [
+    "run:st-control-reads-selftest",
+    "run:st-live-reads-b",
+    "experiment/playbook-completion/structural/reads/method.json",
+    "experiment/playbook-completion/structural/reads/noninterference.py"
+   ],
+   "evidence_grade": "live",
+   "gate": "3.4-declared-reads",
+   "level": "product",
+   "module": "11",
+   "product_basis": {
+    "fails": [
+     "run st-live-reads-b (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "36 of 37 inventoried read/both entry points not checked: cls:Graph.KG.Ledger.NowMs, cls:Graph.KG.Ledger.NewId, cls:Graph.KG.Ledger.State, cls:Graph.KG.Ledger.GKey, cls:Graph.KG.Ledger.MetaGet, cls:Graph.KG.Ledger.Err, cls:Graph.KG.Ledger.ErrLimit, cls:Graph.KG.Ledger.RevisionObj, cls:Graph.KG.Ledger.RevisionResponse, cls:Graph.KG.Ledger.ReadLargeOutChunk, cls:Graph.KG.Ledger.Meta, cls:Graph.KG.Ledger.Head, cls:Graph.KG.Ledger.SeqOf, cls:Graph.KG.Ledger.StmtForTuple, cls:Graph.KG.LedgerApply.Enc, cls:Graph.KG.LedgerApply.EncNull, cls:Graph.KG.LedgerApply.Rec, cls:Graph.KG.LedgerApply.IsReserved, cls:Graph.KG.LedgerApply.Run, cls:Graph.KG.LedgerApply.NodeExists, cls:Graph.KG.LedgerApply.TupleJson, cls:Graph.KG.LedgerApply.ParseQuals, cls:Graph.KG.LedgerApply.FindEdge, cls:Graph.KG.LedgerApply.NodeSnapshotJson, cls:Graph.KG.LedgerApply.QualsJson, cls:Graph.KG.LedgerApply.WeightOf, cls:Graph.KG.LedgerApply.IsNumeric, cls:Graph.KG.LedgerStats.PropertyFor, py:iris_vector_graph/ledger/client.py:GraphLedger.stats, py:iris_vector_graph/ledger/guard.py:LedgerGuard.check_structural_write, eng:IRISGraphEngine.ledger, obj:Graph.KG.LedgerRevision.%Save(existing), obj:Graph.KG.LedgerRevision.%DeleteId, sql:SELECT Graph_KG.ledger_stats, sql:SELECT Graph_KG.ledger_revisions, eng:IRISGraphEngine.status[ledger] | non-interference sees only reads that reach the answer, and only under the perturbations listed per action in structural/reads/method.json",
+   "source": "matrix-input/structural.json",
+   "status": "open",
+   "sub_lane": "reads"
+  },
+  {
+   "cited_runs": [
+    "st-control-reads-selftest",
+    "st-live-reads-b"
+   ],
+   "evidence": [
+    "run:st-control-reads-selftest",
+    "run:st-live-reads-b",
+    "experiment/playbook-completion/structural/reads/method.json",
+    "experiment/playbook-completion/structural/reads/noninterference.py"
+   ],
+   "evidence_grade": "live",
+   "gate": "3.4-declared-reads",
+   "level": "product",
+   "module": "12",
+   "product_basis": {
+    "fails": [
+     "run st-live-reads-b (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "1 of 3 inventoried read/both entry points not checked: erase-edges-all (EraseEdgesAll) | non-interference sees only reads that reach the answer, and only under the perturbations listed per action in structural/reads/method.json",
+   "source": "matrix-input/structural.json",
+   "status": "open",
+   "sub_lane": "reads"
+  },
+  {
+   "cited_runs": [
+    "st-control-reads-selftest",
+    "st-live-reads-b"
+   ],
+   "evidence": [
+    "run:st-control-reads-selftest",
+    "run:st-live-reads-b",
+    "experiment/playbook-completion/structural/reads/method.json",
+    "experiment/playbook-completion/structural/reads/noninterference.py"
+   ],
+   "evidence_grade": "live",
+   "gate": "3.4-declared-reads",
+   "level": "product",
+   "module": "13",
+   "product_basis": {
+    "fails": [
+     "run st-live-reads-b (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "2 of 3 inventoried read/both entry points not checked: redact-stop-resume (max_batches > 0, then resume), GraphLedger.redaction_in_progress | non-interference sees only reads that reach the answer, and only under the perturbations listed per action in structural/reads/method.json",
+   "source": "matrix-input/structural.json",
+   "status": "open",
+   "sub_lane": "reads"
+  },
+  {
+   "cited_runs": [
+    "st-control-reads-selftest",
+    "st-live-reads-b"
+   ],
+   "evidence": [
+    "run:st-control-reads-selftest",
+    "run:st-live-reads-b",
+    "experiment/playbook-completion/structural/reads/method.json",
+    "experiment/playbook-completion/structural/reads/noninterference.py"
+   ],
+   "evidence_grade": "live",
+   "gate": "3.4-declared-reads",
+   "level": "product",
+   "module": "14",
+   "product_basis": {
+    "fails": [
+     "run st-live-reads-b (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "4 of 7 inventoried read/both entry points not checked: diff, export_reconstruction, Graph.KG.Ledger Records page reader (SqlProcs.LedgerRecordsFetch) / CanonicalRecord, post-commit-properties | non-interference sees only reads that reach the answer, and only under the perturbations listed per action in structural/reads/method.json",
+   "source": "matrix-input/structural.json",
+   "status": "open",
+   "sub_lane": "reads"
+  },
+  {
+   "as_built_findings": [
+    "F-1507",
+    "F-C1547"
+   ],
+   "cited_runs": [
+    "st-control-reads-selftest",
+    "st-live-reads-b"
+   ],
+   "evidence": [
+    "run:st-control-reads-selftest",
+    "run:st-live-reads-b",
+    "experiment/playbook-completion/structural/reads/method.json",
+    "experiment/playbook-completion/structural/reads/noninterference.py"
+   ],
+   "evidence_grade": "registered-run",
    "findings": [
+    "F-1507",
     "F-C1547"
    ],
    "gate": "3.4-declared-reads",
@@ -8823,14 +9374,18 @@
    "module": "15",
    "product_basis": {
     "fails": [
-     "finding F-C1547"
+     "finding F-1507",
+     "finding F-C1547",
+     "stated fails by matrix-input/structural.json",
+     "run st-live-reads-b (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "Reads are declared but not checked mechanically (the journal sees writes only); no declared-reads self-test. get_kg_anchors reads nodes of every graph (F-1507).",
-   "source": "modules/15.json",
-   "status": "open"
+   "remaining": "4 of 9 inventoried read/both entry points not checked: IRISGraphEngine.list_table_mappings, Graph.KG.FHIRGraph.Status / LinkReport / ResolveConcepts / ExpandConcepts / CoverageReport / ConceptGaps / PatientConcepts / TokenPaths / IndexedTokenParams / CompartmentParams / GroupPPR / GroupByPatient, IRISGraphEngine.fhir_patient_anchors, cypher_api /api/cypher (FHIR anchors: _patient_anchors, _resolve_patient_anchors) | non-interference sees only reads that reach the answer, and only under the perturbations listed per action in structural/reads/method.json",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "reads"
   },
   {
    "cited_runs": [
@@ -8894,12 +9449,19 @@
    "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "F-1802",
-    "F-1803",
-    "F-C1804"
+   "cited_runs": [
+    "st-control-reads-selftest",
+    "st-live-reads-b",
+    "st-live-reads-c"
    ],
+   "evidence": [
+    "run:st-control-reads-selftest",
+    "run:st-live-reads-c",
+    "run:st-live-reads-b (module 18 verdict there is a harness artifact, superseded)",
+    "experiment/playbook-completion/structural/reads/method.json",
+    "experiment/playbook-completion/structural/reads/noninterference.py"
+   ],
+   "evidence_grade": "live",
    "findings": [
     "F-1802",
     "F-1803"
@@ -8911,14 +9473,15 @@
     "fails": [
      "finding F-1802",
      "finding F-1803",
-     "lane status failed (modules/18.json)"
+     "run st-live-reads-b (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "closed claim cites no registered run or committed artifact",
-   "source": "modules/18.json",
-   "status": "open"
+   "remaining": "4 of 5 inventoried read/both entry points not checked: IRISGraphEngine.snapshot_info, POST /admin/snapshot, Graph.KG.Snapshot.NodeValueJSON, Graph.KG.Snapshot.ReadFileChunk / GetFileSize / FileExists | non-interference sees only reads that reach the answer, and only under the perturbations listed per action in structural/reads/method.json",
+   "source": "matrix-input/structural.json",
+   "status": "open",
+   "sub_lane": "reads"
   },
   {
    "cited_runs": [],
@@ -10435,23 +10998,90 @@
    "status": "open"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "as_built_findings": [
+    "F-C0090"
+   ],
+   "cited_runs": [
+    "pg-lint-black",
+    "pg-lint-flake8",
+    "pg-lint-isort",
+    "pg-lint-markdown",
+    "pg-lint-mypy",
+    "pg-lint-ruff",
+    "pg-lint-ruff-current",
+    "pg-lint-summary"
+   ],
+   "evidence": [
+    "run:pg-lint-summary",
+    "run:pg-lint-ruff",
+    "run:pg-lint-ruff-current",
+    "run:pg-lint-black",
+    "run:pg-lint-isort",
+    "run:pg-lint-flake8",
+    "run:pg-lint-mypy",
+    "run:pg-lint-markdown",
+    "experiment/playbook-completion/product-gates/run_lint.sh",
+    "experiment/playbook-completion/product-gates/lint_summary.py"
+   ],
+   "evidence_grade": "registered-run",
+   "findings": [
+    "F-C0090"
+   ],
    "gate": "3.5-lint",
    "level": "product",
    "module": "product",
-   "product_obligation": "unknown",
-   "remaining": "product linters not run",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "finding F-C0090",
+     "stated fails by matrix-input/product-gates.json",
+     "run pg-lint-black (fail)",
+     "run pg-lint-flake8 (fail)",
+     "run pg-lint-isort (fail)",
+     "run pg-lint-markdown (fail)",
+     "run pg-lint-mypy (fail)",
+     "run pg-lint-ruff (fail)",
+     "run pg-lint-ruff-current (fail)",
+     "run pg-lint-summary (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "ObjectScript: no linter is configured; the compile gate (PRE_RELEASE_CHECKLIST.md:150-156) is observable only through the pin's deploy path, which reports failures (0 in AUDITIA, 3 MCP classes skipped for %AI) but not compiler warnings (CompileList flags ck-d, _engine/class_deploy.py:282). The product pins no ruff version, so the ruff count depends on the version (both recorded). Warnings other than F811 and the module 11-14 mypy errors were counted, not triaged one by one.",
+   "source": "matrix-input/product-gates.json",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "as_built_findings": [
+    "F-0801",
+    "F-0511"
+   ],
+   "cited_runs": [
+    "pg-style-review"
+   ],
+   "evidence": [
+    "run:pg-style-review",
+    "experiment/playbook-completion/product-gates/STYLE.md"
+   ],
+   "evidence_grade": "inspected",
+   "findings": [
+    "F-0511",
+    "F-0801"
+   ],
    "gate": "3.5-style",
    "level": "product",
    "module": "product",
-   "product_obligation": "unknown",
-   "remaining": "no style review of product code (observation-only)",
+   "product_basis": {
+    "fails": [
+     "finding F-0511",
+     "finding F-0801",
+     "stated fails by matrix-input/product-gates.json",
+     "run pg-style-review (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "Only modules 11-14 were reviewed; the cell is product-wide (modules 00-10 and 15-18 not reviewed). The pin documents no ObjectScript formatting/naming rules and no Python docstring/naming rules, and has no AGENTS.md or CLAUDE.md, so those aspects cannot be judged (documentation gap, not a pass). Five inspected candidates (STYLE.md candidates 3-7: swallowed verify/strict counters, PurgeAll returning OK after a failed %KillExtent, an erase removing stale label entries without a version bump, unchecked embedding and reification deletes in LedgerApply) need a live check before they can be findings.",
+   "source": "matrix-input/product-gates.json",
    "status": "open"
   },
   {
@@ -10501,92 +11131,238 @@
    "status": "not-applicable"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "st-check-frame-aggregate",
+    "st-control-frame-selftest",
+    "st-live-frame-r8"
+   ],
+   "declaration_gaps": [
+    "footprints/01.json py:IRISGraphEngine.initialize_schema omits sql:Graph_KG.embedding_registry: a setup rerun writes the registry rows of kg_NodeEmbeddings and kg_NodeEmbeddings_optimized (4 row nodes and their indexes, journal st-live-frame-r8)"
+   ],
+   "evidence": [
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame/method.json"
+   ],
+   "evidence_grade": "live",
    "gate": "3.6-frame",
    "level": "product",
    "module": "01",
-   "product_obligation": "unknown",
-   "remaining": "not done in this lane",
-   "source": "modules/01.json",
-   "status": "open"
-  },
-  {
-   "cited_runs": [],
-   "evidence": [],
-   "gate": "3.6-frame",
-   "level": "product",
-   "module": "02",
-   "product_obligation": "unknown",
-   "remaining": "not done in this lane",
-   "source": "modules/02.json",
-   "status": "open"
-  },
-  {
-   "cited_runs": [],
-   "evidence": [],
-   "gate": "3.6-frame",
-   "level": "product",
-   "module": "03",
-   "product_obligation": "unknown",
-   "remaining": "not done in this lane",
-   "source": "modules/03.json",
-   "status": "open"
-  },
-  {
-   "cited_runs": [],
-   "evidence": [],
-   "gate": "3.6-frame",
-   "level": "product",
-   "module": "04",
-   "product_obligation": "unknown",
-   "remaining": "not done in this lane",
-   "source": "modules/04.json",
-   "status": "open"
-  },
-  {
-   "cited_runs": [],
-   "evidence": [],
-   "gate": "3.6-frame",
-   "level": "product",
-   "module": "05",
-   "product_obligation": "unknown",
-   "remaining": "not done in this lane",
-   "source": "modules/05.json",
-   "status": "open"
-  },
-  {
-   "cited_runs": [],
-   "evidence": [],
-   "gate": "3.6-frame",
-   "level": "product",
-   "module": "06",
-   "product_obligation": "unknown",
-   "remaining": "not done in this lane",
-   "source": "modules/06.json",
-   "status": "open"
-  },
-  {
-   "cited_runs": [],
-   "evidence": [],
-   "gate": "3.6-frame",
-   "level": "product",
-   "module": "07",
-   "product_obligation": "unknown",
-   "reason": "No frame obligation per statement shape for the ^BM25Idx writers (the model frames by construction only).",
-   "remaining": "Frame lemmas: Build/Insert/Delete/Upgrade/Drop touch only ^BM25Idx(name) and the stopword node.",
-   "source": "modules/07.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "run st-check-frame-aggregate (fail)",
+     "run st-live-frame-r8 (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "statement-shape classes present in the module's source but not observed in the journal of its exercised actions: sql-ddl, sql-delete-key, sql-delete-predicate, sql-update | writer actions run but not exercised (error or no journaled write): 01-remove-legacy (no journaled write) | remove_legacy_objects(dry_run=False) journaled nothing (no legacy objects in AUDITD; making them needs an older release's classes, out of scope); the upgrade and migration writers (upgrade_to_4_0_0, add_graph_id_column/_index/_to_nodes, add_graph_oid_index, tighten_graph_id_column, stage_class_owned_rdf_edges, update_spo_unique_constraint, upgrade_val_column, ensure_ekey, disable_indexes) need a pre-4.x schema and were not run; the DDL class is not observable with the journal oracle: traces/journal.py filters the catalog globals (^oddDEF, ^oddCOM, ^oddSQL, ^rINDEXSQL) as system globals; only ^oddTSQL is visible",
+   "source": "matrix-input/structural.json",
+   "status": "open",
+   "sub_lane": "frame"
   },
   {
    "cited_runs": [
-    "b-08-live-footprints",
-    "b-08-live-footprints-rerun"
+    "st-check-frame-aggregate",
+    "st-control-frame-selftest",
+    "st-live-frame-r8"
+   ],
+   "declaration_gaps": [],
+   "evidence": [
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame/method.json"
+   ],
+   "evidence_grade": "live",
+   "gate": "3.6-frame",
+   "level": "product",
+   "module": "02",
+   "product_basis": {
+    "fails": [
+     "run st-check-frame-aggregate (fail)",
+     "run st-live-frame-r8 (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "statement-shape classes present in the module's source but not observed in the journal of its exercised actions: sql-ddl | the only source class not observed is sql-ddl, from iris_vector_graph/engine.py:765-803 (_drop_fetch_first_probe_tables / the FETCH FIRST probe's scratch tables), attributed to 02 by engine.py's file owners because no inventoried entry contains those lines; the probe was not run under the journal. GraphMode.Set and the Kill of set_multigraph(False) were exercised and held at key level (^IVG.GraphMode(\"fg\") only)",
+   "source": "matrix-input/structural.json",
+   "status": "open",
+   "sub_lane": "frame"
+  },
+  {
+   "cited_runs": [
+    "st-check-frame-aggregate",
+    "st-control-frame-selftest",
+    "st-live-frame-r8"
+   ],
+   "declaration_gaps": [
+    "footprints/03.json py:IRISGraphEngine.delete_node and py:IRISGraphEngine.bulk_delete_nodes omit global:^NKG: both raise the interned-snapshot version ^NKG(\"$meta\",\"version\") (journal st-live-frame-r8)"
    ],
    "evidence": [
-    "b-08-live-footprints",
-    "b-08-live-footprints-rerun"
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame/method.json"
    ],
+   "evidence_grade": "live",
+   "gate": "3.6-frame",
+   "level": "product",
+   "module": "03",
+   "product_basis": {
+    "fails": [
+     "run st-check-frame-aggregate (fail)",
+     "run st-live-frame-r8 (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "statement-shape classes present in the module's source but not observed in the journal of its exercised actions: sql-ddl | sql-ddl not observed (engine.py:765-803 FETCH FIRST probe, as module 02); BulkLoader.load_nodes/load_edges/load_networkx/build_graph_globals, bulk_load_session and the LabelIndex functional-index callbacks as separate entry points were not run (the callbacks ran inside every label write)",
+   "source": "matrix-input/structural.json",
+   "status": "open",
+   "sub_lane": "frame"
+  },
+  {
+   "cited_runs": [
+    "st-check-frame-aggregate",
+    "st-control-frame-selftest",
+    "st-live-frame-r8"
+   ],
+   "declaration_gaps": [],
+   "evidence": [
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame/method.json"
+   ],
+   "evidence_grade": "live",
+   "gate": "3.6-frame",
+   "level": "product",
+   "module": "04",
+   "product_basis": {
+    "fails": [
+     "run st-check-frame-aggregate (fail)",
+     "run st-live-frame-r8 (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "statement-shape classes present in the module's source but not observed in the journal of its exercised actions: sql-ddl, sql-delete-predicate, sql-update | writer actions run but not exercised (error or no journaled write): 04-backfill-degp (no journaled write) | source classes not observed in module 04's own actions: sql-ddl (adjacency index DDL), sql-delete-predicate (EdgeScan/Adjacency SQL deletes), sql-update (nodes_edges.py:91 adoption UPDATE, observed under module 03's 03-create-edge-adopts-temporal-row, where its frame held); backfill_degp journaled nothing (nothing to backfill); 83 class-level writer entry points of footprints/04.json ran only inside the engine actions exercised (sync, rebuild_kg, rebuild_nkg, Reweight, Degree, AssertTemporalRow) or not at all. Namespace-wide rebuilds (sync, rebuild_kg, rebuild_nkg) are whole-store actions: store level only",
+   "source": "matrix-input/structural.json",
+   "status": "open",
+   "sub_lane": "frame"
+  },
+  {
+   "cited_runs": [
+    "st-check-frame-aggregate",
+    "st-control-frame-selftest",
+    "st-live-frame-r8"
+   ],
+   "declaration_gaps": [
+    "footprints/05.json py:IRISGraphEngine.backfill_temporal_structural_rows omits global:^KG: the backfilled structural row's functional index writes ^KG(\"out\"/\"in\",\"fg\",...), ^KG(\"gen\",\"fg\",\"fr:a\") and ^KG(\"__version\")",
+    "footprints/05.json py:IRISGraphEngine.bulk_create_edges_temporal and footprints/17.json IRISGraphStore.write_temporal_edge list ^KG sub-stores without the temporal subtrees ^KG(\"tout\"/\"tin\"/\"bucket\"/\"tagg\"/\"tlast\") the journal shows (the breadth-a extraction gap J13-J15)"
+   ],
+   "evidence": [
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame/method.json"
+   ],
+   "evidence_grade": "live",
+   "gate": "3.6-frame",
+   "level": "product",
+   "module": "05",
+   "product_basis": {
+    "fails": [
+     "run st-check-frame-aggregate (fail)",
+     "run st-live-frame-r8 (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "statement-shape classes present in the module's source but not observed in the journal of its exercised actions: sql-ddl | sql-ddl not observed (engine.py:765-803 FETCH FIRST probe, attributed by file owners); the class-level writers of TemporalIndex (Migrate*, Rebuild*, RetireExpired, UpdateHLL, BackfillWalk, Purge (all graphs, F-0507)) ran only through the engine actions exercised or not at all",
+   "source": "matrix-input/structural.json",
+   "status": "open",
+   "sub_lane": "frame"
+  },
+  {
+   "cited_runs": [
+    "st-check-frame-aggregate",
+    "st-control-frame-selftest",
+    "st-live-frame-r8"
+   ],
+   "declaration_gaps": [
+    "footprints/06.json py:IRISGraphEngine.store_embedding omits sql:Graph_KG.embedding_registry: the first vector of a named graph registers its route (journal st-live-frame-r8: ^t52S.F59P.1(rowid) with graph fg and table kg_emb_5a5585b52a5621ac)"
+   ],
+   "evidence": [
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame/method.json"
+   ],
+   "evidence_grade": "live",
+   "gate": "3.6-frame",
+   "level": "product",
+   "module": "06",
+   "product_basis": {
+    "fails": [
+     "run st-check-frame-aggregate (fail)",
+     "run st-live-frame-r8 (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "statement-shape classes present in the module's source but not observed in the journal of its exercised actions: sql-ddl | sql-ddl: the route's CREATE TABLE writes its catalog to globals traces/journal.py filters as system globals, so only its storage and registry row are judged; EmbedQueue.ProcessBatch / process_embed_queue, embed_nodes/embed_edges, place_quarantined, reconcile_recorded_dimensions, adopt_embedding_identities, the 4.0.0 migrations and VectorOptimizer.migrate_to_optimized were not run (they need an embedding model or legacy data)",
+   "source": "matrix-input/structural.json",
+   "status": "open",
+   "sub_lane": "frame"
+  },
+  {
+   "cited_runs": [
+    "st-check-frame-aggregate",
+    "st-control-frame-selftest",
+    "st-live-frame-r8"
+   ],
+   "declaration_gaps": [],
+   "evidence": [
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame/method.json"
+   ],
+   "evidence_grade": "live",
+   "gate": "3.6-frame",
+   "level": "product",
+   "module": "07",
+   "product_basis": {
+    "fails": [
+     "run st-check-frame-aggregate (fail)",
+     "run st-live-frame-r8 (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "statement-shape classes present in the module's source but not observed in the journal of its exercised actions: sql-ddl, sql-insert, sql-update | writer actions run but not exercised (error or no journaled write): 07-bm25-upgrade (no journaled write) | source classes not observed: sql-ddl, sql-insert, sql-update at iris_vector_graph/schema.py:3165-3240 (the generated kg_TXT SQL procedures, attributed to 07), not run; bm25_upgrade journaled nothing (the index was already at the current schema; an old-schema index cannot be made without an older release). Build, Insert, Delete and Drop held at key level (^BM25Idx(\"fb\") and the stopword list only); every BM25 write is outside a transaction (F-0701, not a frame matter)",
+   "source": "matrix-input/structural.json",
+   "status": "open",
+   "sub_lane": "frame"
+  },
+  {
+   "cited_runs": [
+    "st-check-frame-aggregate",
+    "st-control-frame-selftest",
+    "st-live-frame-r8"
+   ],
+   "declaration_gaps": [],
+   "evidence": [
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame/method.json"
+   ],
+   "evidence_grade": "live",
    "findings": [
     "F-C0848",
     "F-C0849"
@@ -10597,138 +11373,241 @@
    "product_basis": {
     "fails": [
      "finding F-C0848",
-     "finding F-C0849"
+     "finding F-C0849",
+     "run st-check-frame-aggregate (fail)",
+     "run st-live-frame-r8 (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "reason": "Frame per statement shape not stated: a Cypher write may touch nodes/rdf_labels/rdf_props/rdf_edges, ^KG and ^NKG (journal: no undeclared store), but no per-shape frame obligation is discharged.",
-   "remaining": "Frame lemma per translator statement class.",
-   "source": "modules/08.json",
-   "status": "open"
+   "remaining": "statement-shape classes present in the module's source but not observed in the journal of its exercised actions: sql-ddl | sql-ddl not observed: iris_vector_graph/_engine/query.py:1887-1892 (Cypher schema commands CREATE/DROP INDEX/CONSTRAINT) and the engine.py FETCH FIRST probe were not run; Cypher CREATE, SET (insert and update), MERGE, DELETE, DETACH DELETE and map_sql_table held at key level",
+   "source": "matrix-input/structural.json",
+   "status": "open",
+   "sub_lane": "frame"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "st-check-frame-aggregate",
+    "st-control-frame-selftest",
+    "st-live-frame-r8"
+   ],
+   "declaration_gaps": [],
+   "evidence": [
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame/method.json"
+   ],
+   "evidence_grade": "live",
    "gate": "3.6-frame",
    "level": "product",
    "module": "09",
-   "product_obligation": "unknown",
-   "reason": "frame obligations not stated",
-   "remaining": "",
-   "source": "modules/09.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "run st-check-frame-aggregate (fail)",
+     "run st-live-frame-r8 (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "statement-shape classes present in the module's source but not observed in the journal of its exercised actions: global-increment, global-kill, global-merge, global-set, sql-ddl | writer actions run but not exercised (error or no journaled write): 09-gen-mode (no journaled write); 09-gen-dropall (no journaled write); 09-native-read-off (no journaled write) | no persistent writer of module 09 was exercised: Gen.For / Gen.Build (job and sync mode) compile a generated class IVGC.P<h>, which this audit may not do (CONVENTIONS: nothing but the pin's classes through the pin's deploy path is compiled), so every run here set the process compile mode to off; Gen.DropAll journaled nothing (no ^IVG.CypherCompiled entry exists in AUDITD); IVG.CypherEngine.InitSchema*/RebuildKG/SmokeTest not run. A native read in mode off wrote nothing persistent (store and key level trivially held)",
+   "source": "matrix-input/structural.json",
+   "status": "open",
+   "sub_lane": "frame"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "as_built_findings": [
+    "F-C1001"
+   ],
+   "cited_runs": [
+    "st-check-frame-aggregate",
+    "st-control-frame-selftest",
+    "st-live-frame-r8"
+   ],
+   "declaration_gaps": [
+    "footprints/10.json eng:IRISGraphEngine.kg_PERSONALIZED_PAGERANK and eng:IRISGraphEngine.degree_centrality omit global:^KG: both write the degree cache ^KG(\"degc\",g,node,$c(1)) for the nodes they read (journal st-live-frame-r8)"
+   ],
+   "evidence": [
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame/method.json"
+   ],
+   "evidence_grade": "live",
+   "findings": [
+    "F-C1001"
+   ],
    "gate": "3.6-frame",
    "level": "product",
    "module": "10",
-   "product_obligation": "unknown",
-   "reason": "",
-   "remaining": "No frame obligations stated for the cache/^NKG writers.",
-   "source": "modules/10.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "finding F-C1001",
+     "stated fails by matrix-input/structural.json",
+     "run st-check-frame-aggregate (fail)",
+     "run st-live-frame-r8 (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "statement-shape classes present in the module's source but not observed in the journal of its exercised actions: sql-ddl | sql-ddl not observed (engine.py:765-803 FETCH FIRST probe, attributed by file owners; F-C1001's CREATE FUNCTION DDL is filtered by the journal oracle as system globals); 87 class-level writers of footprints/10.json ran only through the engine actions exercised or not at all",
+   "source": "matrix-input/structural.json",
+   "status": "open",
+   "sub_lane": "frame"
   },
   {
    "cited_runs": [
-    "corr-frame-keys-fk",
-    "corr-trace-conf",
-    "corr-trace-ext",
-    "corr-trace-lostack"
+    "st-check-frame-aggregate",
+    "st-control-frame-selftest",
+    "st-live-frame-r8"
    ],
+   "declaration_gaps": [],
    "evidence": [
-    "run:corr-trace-conf",
-    "run:corr-trace-ext",
-    "run:corr-trace-lostack",
-    "run:corr-frame-keys-fk"
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame/method.json"
    ],
+   "evidence_grade": "live",
    "gate": "3.6-frame",
    "level": "product",
-   "level_detail": "as-built (pin 3eaa79cf), AUDITC traces",
    "module": "11",
-   "product_obligation": "unknown",
-   "remaining": "Holds on every executed transaction at store granularity (0 excursions); 43/46 write statements executed; not: LedgerApply.cls:664, LedgerGenesis.cls:110-111.",
-   "source": "matrix-input/correspondence_status.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "run st-check-frame-aggregate (fail)",
+     "run st-live-frame-r8 (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "statement-shape classes present in the module's source but not observed in the journal of its exercised actions: sql-ddl | sql-ddl not observed (iris_src/src/Graph/KG/Ledger.cls:232 BUILD INDEX, not run). Reached and held at key level: LedgerApply.cls:664 (the rdf_reifications DELETE of a deleted relationship: KILL ^t52S.fjEY.1(rowid) in 11-commit-delete-rel-reified) and LedgerGenesis.cls:110-111 (adoption of a delete_rel: KILL ^IVG.Ledger(\"tuple\",\"lt|a\",\"R\",\"lt|b\",\"\") and SET ^IVG.Ledger(\"stmt\",5) in 11-reenable-adoption)",
+   "source": "matrix-input/structural.json",
+   "status": "open",
+   "sub_lane": "frame"
   },
   {
    "cited_runs": [
-    "corr-frame-keys-fk",
-    "corr-trace-conf",
-    "corr-trace-ext",
-    "corr-trace-lostack"
+    "st-check-frame-aggregate",
+    "st-control-frame-selftest",
+    "st-live-frame-r8"
+   ],
+   "declaration_gaps": [
+    "correspondence/correspondence.json actions[erase-edges-all] omits the routed vector tables: EraseAll deletes every route's rows and drops the tables (kg_emb_006437ec700a8b1a of graph fz in st-live-frame-r8; Eraser.cls:716-740)"
    ],
    "evidence": [
-    "run:corr-trace-conf",
-    "run:corr-trace-ext",
-    "run:corr-trace-lostack",
-    "run:corr-frame-keys-fk"
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame/method.json"
    ],
+   "evidence_grade": "live",
    "gate": "3.6-frame",
    "level": "product",
-   "level_detail": "as-built (pin 3eaa79cf), AUDITC traces",
    "module": "12",
-   "product_obligation": "unknown",
-   "remaining": "Holds on every executed transaction at store granularity; 86/97 write statements executed (routed tables, FHIR side tables, ^NKG invalidated, RemoveSource in-kill, AdjNoLock not executed).",
-   "source": "matrix-input/correspondence_status.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "run st-check-frame-aggregate (fail)",
+     "run st-live-frame-r8 (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "statement-shape classes present in the module's source but not observed in the journal of its exercised actions: sql-update | sql-update not observed in module 12's actions (nodes_edges.py:91, a module constant used by module 03's create_edge, attributed by file owners); FHIR side tables, ^IVG.AdjNoLock and RemoveSource's in-kill were not reached (no FHIR graph, the writer lock was always granted)",
+   "source": "matrix-input/structural.json",
+   "status": "open",
+   "sub_lane": "frame"
   },
   {
    "cited_runs": [
-    "corr-frame-keys-fk",
-    "corr-trace-conf",
-    "corr-trace-ext",
-    "corr-trace-lostack"
+    "st-check-frame-aggregate",
+    "st-control-frame-selftest",
+    "st-live-frame-r8"
    ],
+   "declaration_gaps": [],
    "evidence": [
-    "run:corr-trace-conf",
-    "run:corr-trace-ext",
-    "run:corr-trace-lostack",
-    "run:corr-frame-keys-fk"
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame/method.json"
    ],
+   "evidence_grade": "live",
    "gate": "3.6-frame",
    "level": "product",
-   "level_detail": "as-built (pin 3eaa79cf), AUDITC traces",
    "module": "13",
-   "product_obligation": "unknown",
-   "remaining": "Holds on every executed transaction; 18/19 write statements executed (DropStatements' tuple kill LedgerRedact.cls:465 not).",
-   "source": "matrix-input/correspondence_status.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "run st-check-frame-aggregate (fail)",
+     "run st-live-frame-r8 (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "statement-shape classes present in the module's source but not observed in the journal of its exercised actions: sql-delete-key | sql-delete-key not observed: iris_vector_graph/ledger/client.py:473 (the post-commit property DELETE, attributed to 13 by the inventory) did not run with an existing property. Reached and held: DropStatements' tuple kill LedgerRedact.cls:465 (KILL ^IVG.Ledger(\"tuple\",\"ta|1\",\"R\",\"ta|2\",\"\") with its (\"stmt\",5)); tenant b's revision was not written",
+   "source": "matrix-input/structural.json",
+   "status": "open",
+   "sub_lane": "frame"
   },
   {
    "cited_runs": [
-    "corr-frame-keys-fk",
-    "corr-trace-conf",
-    "corr-trace-ext",
-    "corr-trace-lostack"
+    "st-check-frame-aggregate",
+    "st-control-frame-selftest",
+    "st-live-frame-r8"
+   ],
+   "declaration_gaps": [
+    "no footprint declares Graph.KG.Ledger.PurgeAll (Ledger.cls:242-248): Kill ^IVG.Ledger and %KillExtent of ledger_revisions and ledger_stats; a whole-store action, store level only"
    ],
    "evidence": [
-    "run:corr-trace-conf",
-    "run:corr-trace-ext",
-    "run:corr-trace-lostack",
-    "run:corr-frame-keys-fk"
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame/method.json"
    ],
+   "evidence_grade": "live",
    "gate": "3.6-frame",
    "level": "product",
-   "level_detail": "as-built (pin 3eaa79cf), AUDITC traces",
    "module": "14",
-   "product_obligation": "unknown",
-   "remaining": "Holds on every executed transaction (verify writes only ledger_stats; readers nothing); per-statement-shape obligation not proved.",
-   "source": "matrix-input/correspondence_status.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "run st-check-frame-aggregate (fail)",
+     "run st-live-frame-r8 (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "statement-shape classes present in the module's source but not observed in the journal of its exercised actions: sql-ddl | writer actions run but not exercised (error or no journaled write): 14-readers (no journaled write) | sql-ddl not observed (Ledger.cls:232 BUILD INDEX); readers journaled nothing (held trivially); verify and verify(adopt=True) held at key level",
+   "source": "matrix-input/structural.json",
+   "status": "open",
+   "sub_lane": "frame"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "st-check-frame-aggregate",
+    "st-control-frame-selftest",
+    "st-live-frame-r8"
+   ],
+   "declaration_gaps": [],
+   "evidence": [
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame/method.json"
+   ],
+   "evidence_grade": "live",
    "gate": "3.6-frame",
    "level": "product",
    "module": "15",
-   "product_obligation": "unknown",
-   "remaining": "No frame obligations generated for module-15 statement shapes.",
-   "source": "modules/15.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "run st-check-frame-aggregate (fail)",
+     "run st-live-frame-r8 (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "statement-shape classes present in the module's source but not observed in the journal of its exercised actions: sql-ddl | sql-ddl not observed (FHIRGraph.cls:1428-1430 and the FHIR-graph table DDL in _engine/schema.py); the FHIR-graph writers (Register, Rebuild, SyncOnce, Reinterpret, Schedule/Unschedule, FHIRGraphSyncTask.OnTask, RecordError), migrate_fhir_bridges_to_crosswalk and attach_embeddings_to_table were not run",
+   "source": "matrix-input/structural.json",
+   "status": "open",
+   "sub_lane": "frame"
   },
   {
    "cited_runs": [],
@@ -10742,21 +11621,49 @@
    "status": "not-applicable"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "st-check-frame-aggregate",
+    "st-control-frame-selftest",
+    "st-live-frame-r8"
+   ],
+   "declaration_gaps": [],
+   "evidence": [
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame/method.json"
+   ],
+   "evidence_grade": "live",
    "gate": "3.6-frame",
    "level": "product",
    "module": "17",
-   "product_obligation": "unknown",
-   "remaining": "",
-   "source": "modules/17.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "run st-check-frame-aggregate (fail)",
+     "run st-live-frame-r8 (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "statement-shape classes present in the module's source but not observed in the journal of its exercised actions: sql-ddl, sql-update | writer actions run but not exercised (error or no journaled write): 17-write-nodes-update (no journaled write) | sql-ddl (dbapi_utils.py:191, 222; utils.py:62-64 index helpers) and sql-update (dbapi_utils.py:161) not observed; execute_sql(read_only=True) with an INSERT (HD-1701) and dbapi_utils.insert_vector not run; write_nodes over an existing node journaled nothing",
+   "source": "matrix-input/structural.json",
+   "status": "open",
+   "sub_lane": "frame"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "F-1805"
+   "cited_runs": [
+    "st-check-frame-aggregate",
+    "st-control-frame-selftest",
+    "st-live-frame-r8"
    ],
+   "declaration_gaps": [],
+   "evidence": [
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame/method.json"
+   ],
+   "evidence_grade": "registered-run",
    "findings": [
     "F-1805"
    ],
@@ -10766,14 +11673,16 @@
    "product_basis": {
     "fails": [
      "finding F-1805",
-     "lane status failed (modules/18.json)"
+     "run st-check-frame-aggregate (fail)",
+     "run st-live-frame-r8 (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "closed claim cites no registered run or committed artifact",
-   "source": "modules/18.json",
-   "status": "open"
+   "remaining": "not run: restore over an enabled ledger (F-1801), a merge over existing temporal aggregates (F-1805, outside this check's data), Snapshot.ImportGlobals/ExportGlobals/WriteFileChunk/DeleteDir (server-file helpers, F-1806/F-C1803); the replace restore's key level is not decided (whole-store class)",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "frame"
   },
   {
    "cited_runs": [],
@@ -10789,63 +11698,143 @@
    "status": "not-applicable"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "st-check-so-perm-01",
+    "st-control-so-perm-selftest"
+   ],
+   "evidence": [
+    "run:st-control-so-perm-selftest",
+    "run:st-check-so-perm-01",
+    "$RUN_DIR/structural/order/perm-a.json (raw log of st-live-perm-a, which covers several modules)"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.6-row-permutation",
    "level": "product",
    "module": "01",
+   "product_basis": "get_schema_visualization: answers differ (documented sample) and all pass the sample validator",
    "product_obligation": "unknown",
-   "remaining": "not done in this lane",
-   "source": "modules/01.json",
-   "status": "open"
+   "remaining": "permuted reads only; other module-01 reads (status, setup reports) not permuted",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "order"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "st-check-so-perm-02",
+    "st-control-so-perm-selftest"
+   ],
+   "evidence": [
+    "run:st-control-so-perm-selftest",
+    "run:st-check-so-perm-02",
+    "$RUN_DIR/structural/order/perm-a.json (raw log of st-live-perm-a, which covers several modules)"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.6-row-permutation",
    "level": "product",
    "module": "02",
+   "product_basis": "list_graphs, count_nodes(graph), get_nodes(graph), get_node, _more_than_one_graph equal in three orders",
    "product_obligation": "unknown",
-   "remaining": "not done in this lane",
-   "source": "modules/02.json",
-   "status": "open"
+   "remaining": "permuted reads only; Bolt/ledger graph-scope surfaces are other modules'",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "order"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "as_built_findings": [
+    "F-C0302",
+    "F-0206"
+   ],
+   "cited_runs": [
+    "st-check-so-perm-03",
+    "st-control-so-perm-selftest",
+    "st-live-so-confirm"
+   ],
+   "evidence": [
+    "run:st-control-so-perm-selftest",
+    "run:st-check-so-perm-03",
+    "$RUN_DIR/structural/order/perm-a.json (raw log of st-live-perm-a, which covers several modules)",
+    "run:st-live-so-confirm"
+   ],
+   "evidence_grade": "registered-run",
+   "findings": [
+    "F-0206",
+    "F-C0302"
+   ],
    "gate": "3.6-row-permutation",
    "level": "product",
    "module": "03",
-   "product_obligation": "unknown",
-   "remaining": "not done in this lane",
-   "source": "modules/03.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "finding F-0206",
+     "finding F-C0302",
+     "stated fails by matrix-input/structural.json",
+     "run st-check-so-perm-03 (fail)",
+     "run st-live-so-confirm (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "permuted reads only (listed in the verdict run); the module's other code is covered statically by 3.4-storage-order",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "order"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "st-check-so-perm-04",
+    "st-control-so-perm-selftest"
+   ],
+   "evidence": [
+    "run:st-control-so-perm-selftest",
+    "run:st-check-so-perm-04",
+    "$RUN_DIR/structural/order/perm-a.json (raw log of st-live-perm-a, which covers several modules)"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.6-row-permutation",
    "level": "product",
    "module": "04",
+   "product_basis": "kg_NEIGHBORS, get_edge_count, verify_graph, an unordered Cypher edge read and Adj.Degree equal in three orders",
    "product_obligation": "unknown",
-   "remaining": "not done in this lane",
-   "source": "modules/04.json",
-   "status": "open"
+   "remaining": "permuted reads only; rebuild/sync outputs (^NKG, degree caches) compared only through these reads",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "order"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "st-check-so-perm-05",
+    "st-control-so-perm-selftest"
+   ],
+   "evidence": [
+    "run:st-control-so-perm-selftest",
+    "run:st-check-so-perm-05",
+    "$RUN_DIR/structural/order/perm-a.json (raw log of st-live-perm-a, which covers several modules)"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.6-row-permutation",
    "level": "product",
    "module": "05",
+   "product_basis": "window read (ordered, with a tie at one timestamp), aggregate, bucket groups, latest edges and burst nodes equal in three orders",
    "product_obligation": "unknown",
-   "remaining": "not done in this lane",
-   "source": "modules/05.json",
-   "status": "open"
+   "remaining": "permuted reads only; purges and the paged window reader across pages not permuted",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "order"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "as_built_findings": [
+    "F-C0642"
+   ],
+   "cited_runs": [
+    "st-check-so-perm-06",
+    "st-control-so-perm-selftest"
+   ],
+   "evidence": [
+    "run:st-control-so-perm-selftest",
+    "run:st-check-so-perm-06",
+    "$RUN_DIR/structural/order/perm-b.json (raw log of st-live-perm-b, which covers several modules)"
+   ],
+   "evidence_grade": "registered-run",
    "findings": [
     "F-C0602",
     "F-C0642"
@@ -10856,23 +11845,33 @@
    "product_basis": {
     "fails": [
      "finding F-C0602",
-     "finding F-C0642"
+     "finding F-C0642",
+     "stated fails by matrix-input/structural.json",
+     "run st-check-so-perm-06 (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "not done in this lane",
-   "source": "modules/06.json",
-   "status": "open"
+   "remaining": "permuted reads only (listed in the verdict run); the module's other code is covered statically by 3.4-storage-order",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "order"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    {
-     "kind": "finding",
-     "ref": "F-C0703"
-    }
+   "as_built_findings": [
+    "F-C0703"
    ],
+   "cited_runs": [
+    "st-check-so-perm-07",
+    "st-control-so-perm-selftest",
+    "st-live-perm-b07"
+   ],
+   "evidence": [
+    "run:st-control-so-perm-selftest",
+    "run:st-check-so-perm-07",
+    "run:st-live-perm-b07"
+   ],
+   "evidence_grade": "registered-run",
    "findings": [
     "F-C0703"
    ],
@@ -10882,15 +11881,17 @@
    "product_basis": {
     "fails": [
      "finding F-C0703",
-     "lane status failed (modules/07.json)"
+     "stated fails by matrix-input/structural.json",
+     "run st-check-so-perm-07 (fail)",
+     "run st-live-perm-b07 (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "reason": "Top-k text answers and fused ranks change with row order (F-C0703: kg_TXT LIKE fallback has no ORDER BY; score-only orderings tie).",
-   "remaining": "closed claim cites no registered run or committed artifact",
-   "source": "modules/07.json",
-   "status": "open"
+   "remaining": "permuted reads only; kg_RRF_FUSE's hash-order tie (F-C0703) not run",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "order"
   },
   {
    "cited_runs": [
@@ -10948,103 +11949,159 @@
   },
   {
    "cited_runs": [
-    "b-10-run-unit"
+    "st-check-so-perm-10",
+    "st-control-so-perm-selftest"
    ],
    "evidence": [
-    {
-     "kind": "run",
-     "ref": "b-10-run-unit"
-    }
+    "run:st-control-so-perm-selftest",
+    "run:st-check-so-perm-10",
+    "$RUN_DIR/structural/order/perm-b.json (raw log of st-live-perm-b, which covers several modules)"
    ],
+   "evidence_grade": "registered-run",
    "gate": "3.6-row-permutation",
    "level": "product",
    "module": "10",
+   "product_basis": "PageRank, WCC, CDLP, degree centrality top-k with every degree tied, triangles, khop, subgraph equal in three orders",
    "product_obligation": "unknown",
-   "reason": "Rankings break ties by id (R050, unit-tested); F-1006 is an order-dependent answer when two embedding rows match.",
-   "remaining": "No proof that answers are invariant under row permutation.",
-   "source": "modules/10.json",
-   "status": "open"
+   "remaining": "permuted reads only; random_walk (random by design), Leiden and the Arno/NKG accelerated paths not permuted",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "order"
   },
   {
+   "as_built_findings": [
+    "F-C1108"
+   ],
    "cited_runs": [
-    "corr-row-permutation"
+    "st-check-so-perm-11",
+    "st-control-so-perm-selftest"
    ],
    "evidence": [
-    "run:corr-row-permutation"
+    "run:st-control-so-perm-selftest",
+    "run:st-check-so-perm-11",
+    "$RUN_DIR/structural/order/perm-c.json (raw log of st-live-perm-c, which covers several modules)"
    ],
+   "evidence_grade": "registered-run",
    "findings_undecided": [
     "F-C1108"
    ],
    "gate": "3.6-row-permutation",
    "level": "product",
-   "level_detail": "as-built (pin 3eaa79cf), AUDITC traces",
    "module": "11",
    "product_basis": {
     "fails": [],
     "intent_undecided": [
      "finding F-C1108",
-     "run corr-row-permutation (fail) of F-C1108"
+     "run st-check-so-perm-11 (fail) of F-C1108"
     ]
    },
    "product_obligation": "intent-undecided",
-   "remaining": "F-C1108 (intent-undecided): detach-delete statement ids follow storage order; FindEdge's first row in a multigraph inspected only; all $ORDER scans key-ordered (inspected).",
-   "source": "matrix-input/correspondence_status.json",
-   "status": "open"
+   "remaining": "permuted reads only (listed in the verdict run); the module's other code is covered statically by 3.4-storage-order",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "order"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
-   "gate": "3.6-row-permutation",
-   "level": "product",
-   "level_detail": "as-built (pin 3eaa79cf), AUDITC traces",
-   "module": "12",
-   "product_obligation": "unknown",
-   "remaining": "Inspected only: every eraser scan is set-valued or collect-then-kill (Eraser.cls:331-348, 485-591, 1117-1144); no permutation run.",
-   "source": "matrix-input/correspondence_status.json",
-   "status": "open"
-  },
-  {
-   "cited_runs": [],
-   "evidence": [],
-   "gate": "3.6-row-permutation",
-   "level": "product",
-   "level_detail": "as-built (pin 3eaa79cf), AUDITC traces",
-   "module": "13",
-   "product_obligation": "unknown",
-   "remaining": "Inspected only: the scan order is the (seq, ordinal) key order by design; DropStatements collect-then-kill; no permutation run.",
-   "source": "matrix-input/correspondence_status.json",
-   "status": "open"
-  },
-  {
-   "cited_runs": [],
-   "evidence": [],
-   "gate": "3.6-row-permutation",
-   "level": "product",
-   "level_detail": "as-built (pin 3eaa79cf), AUDITC traces",
-   "module": "14",
-   "product_obligation": "unknown",
-   "remaining": "Inspected only: readers iterate key order; verify compares sets; no permutation run.",
-   "source": "matrix-input/correspondence_status.json",
-   "status": "open"
-  },
-  {
-   "cited_runs": [],
-   "evidence": [
-    "3.4-storage-order above"
+   "cited_runs": [
+    "st-check-so-perm-12",
+    "st-control-so-perm-selftest"
    ],
+   "evidence": [
+    "run:st-control-so-perm-selftest",
+    "run:st-check-so-perm-12",
+    "$RUN_DIR/structural/order/perm-c.json (raw log of st-live-perm-c, which covers several modules)"
+   ],
+   "evidence_grade": "registered-run",
+   "gate": "3.6-row-permutation",
+   "level": "product",
+   "module": "12",
+   "product_basis": "erase_graph, delete_nodes_by_prefix and the remaining rows equal in three orders",
+   "product_obligation": "unknown",
+   "remaining": "permuted reads only (listed in the verdict run); the module's other code is covered statically by 3.4-storage-order",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "order"
+  },
+  {
+   "cited_runs": [
+    "st-check-so-perm-13",
+    "st-control-so-perm-selftest",
+    "st-live-perm-c13"
+   ],
+   "evidence": [
+    "run:st-control-so-perm-selftest",
+    "run:st-check-so-perm-13",
+    "run:st-live-perm-c13"
+   ],
+   "evidence_grade": "registered-run",
+   "gate": "3.6-row-permutation",
+   "level": "product",
+   "module": "13",
+   "product_basis": "redaction receipt and every revision record (normalised) equal for three commit orders",
+   "product_obligation": "unknown",
+   "remaining": "permuted reads only; the stop/resume path (F-C1303) not permuted",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "order"
+  },
+  {
+   "cited_runs": [
+    "st-check-so-perm-14",
+    "st-control-so-perm-selftest"
+   ],
+   "evidence": [
+    "run:st-control-so-perm-selftest",
+    "run:st-check-so-perm-14",
+    "$RUN_DIR/structural/order/perm-c.json (raw log of st-live-perm-c, which covers several modules)"
+   ],
+   "evidence_grade": "registered-run",
+   "gate": "3.6-row-permutation",
+   "level": "product",
+   "module": "14",
+   "product_basis": "verify, reconstruct(head) and canonical reads equal in three orders",
+   "product_obligation": "unknown",
+   "remaining": "permuted reads only; export_reconstruction files and paged readers not permuted",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "order"
+  },
+  {
+   "cited_runs": [
+    "st-check-so-perm-15",
+    "st-control-so-perm-selftest"
+   ],
+   "evidence": [
+    "run:st-control-so-perm-selftest",
+    "run:st-check-so-perm-15",
+    "$RUN_DIR/structural/order/perm-c.json (raw log of st-live-perm-c, which covers several modules)"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.6-row-permutation",
    "level": "product",
    "module": "15",
+   "product_basis": "export_rdf and prov_export (canonical rdflib graphs) and get_reifications equal in three orders",
    "product_obligation": "unknown",
-   "remaining": "Order-independence argued for the FHIR scans (storage-order gate) but not proved.",
-   "source": "modules/15.json",
-   "status": "open"
+   "remaining": "permuted reads only; FHIR sync paths not exercised (no FHIR server classes on Community)",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "order"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "iris_vector_graph/gql/resolvers.py:32-46"
+   "as_built_findings": [
+    "F-C1642"
    ],
+   "cited_runs": [
+    "st-check-so-perm-16",
+    "st-control-so-perm-selftest",
+    "st-live-so-confirm"
+   ],
+   "evidence": [
+    "run:st-control-so-perm-selftest",
+    "run:st-check-so-perm-16",
+    "$RUN_DIR/structural/order/perm-c.json (raw log of st-live-perm-c, which covers several modules)",
+    "run:st-live-so-confirm"
+   ],
+   "evidence_grade": "registered-run",
    "findings": [
     "F-C1642"
    ],
@@ -11053,18 +12110,37 @@
    "module": "16",
    "product_basis": {
     "fails": [
-     "finding F-C1642"
+     "finding F-C1642",
+     "stated fails by matrix-input/structural.json",
+     "run st-check-so-perm-16 (fail)",
+     "run st-live-so-confirm (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "nodes(label) paging slices an unordered id list (offset/limit without ORDER BY): page content depends on row order",
-   "source": "modules/16.json",
-   "status": "open"
+   "remaining": "permuted reads only; Bolt, HTTP Cypher and REST surfaces not reachable in-process here",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "order"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "as_built_findings": [
+    "F-C1742"
+   ],
+   "cited_runs": [
+    "st-check-so-perm-17",
+    "st-control-so-perm-selftest",
+    "st-live-so-17b",
+    "st-live-so-confirm"
+   ],
+   "evidence": [
+    "run:st-control-so-perm-selftest",
+    "run:st-check-so-perm-17",
+    "$RUN_DIR/structural/order/perm-c.json (raw log of st-live-perm-c, which covers several modules)",
+    "run:st-live-so-17b",
+    "run:st-live-so-confirm"
+   ],
+   "evidence_grade": "registered-run",
    "findings": [
     "F-C1742"
    ],
@@ -11073,14 +12149,18 @@
    "module": "17",
    "product_basis": {
     "fails": [
-     "finding F-C1742"
+     "finding F-C1742",
+     "stated fails by matrix-input/structural.json",
+     "run st-live-so-17b (fail)",
+     "run st-live-so-confirm (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "",
-   "source": "modules/17.json",
-   "status": "open"
+   "remaining": "permuted reads only (listed in the verdict run); the module's other code is covered statically by 3.4-storage-order",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "order"
   },
   {
    "cited_runs": [],
@@ -11110,17 +12190,32 @@
    "status": "not-applicable"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "findings/audit/01.json"
+   "cited_runs": [
+    "st-control-capkeys-selftest",
+    "st-live-keys",
+    "st-live-setup-rerun"
    ],
+   "evidence": [
+    "run:st-live-keys",
+    "run:st-live-setup-rerun",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.6-keys",
    "level": "product",
    "module": "01",
-   "product_obligation": "unknown",
-   "remaining": "not done",
-   "source": "modules/01.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "run st-live-keys (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "capkeys"
   },
   {
    "cited_runs": [],
@@ -11147,10 +12242,22 @@
    "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "findings/audit/03.json"
+   "as_built_findings": [
+    "F-C0349",
+    "F-C0348"
    ],
+   "cited_runs": [
+    "st-control-capkeys-selftest",
+    "st-live-keys",
+    "st-live-keys-race-edge"
+   ],
+   "evidence": [
+    "run:st-live-keys",
+    "run:st-live-keys-race-edge",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "registered-run",
    "findings": [
     "F-C0348",
     "F-C0349"
@@ -11161,40 +12268,74 @@
    "product_basis": {
     "fails": [
      "finding F-C0348",
-     "finding F-C0349"
+     "finding F-C0349",
+     "stated fails by matrix-input/structural.json",
+     "run st-live-keys (fail)",
+     "run st-live-keys-race-edge (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "not done",
-   "source": "modules/03.json",
-   "status": "open"
+   "remaining": "",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "capkeys"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "findings/audit/04.json"
+   "cited_runs": [
+    "st-control-capkeys-selftest",
+    "st-live-keys"
    ],
+   "evidence": [
+    "run:st-live-keys",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.6-keys",
    "level": "product",
    "module": "04",
-   "product_obligation": "unknown",
-   "remaining": "not done",
-   "source": "modules/04.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "run st-live-keys (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "capkeys"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "findings/audit/05.json"
+   "cited_runs": [
+    "st-control-capkeys-selftest",
+    "st-live-keys",
+    "st-live-keys-temporal-count",
+    "st-live-keys-temporal-race"
    ],
+   "evidence": [
+    "run:st-live-keys",
+    "run:st-live-keys-temporal-count",
+    "run:st-live-keys-temporal-race",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.6-keys",
    "level": "product",
    "module": "05",
-   "product_obligation": "unknown",
-   "remaining": "not done",
-   "source": "modules/05.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "run st-live-keys (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "the count aggregate once read 4 for 3 events after keys.py's combined sequence (st-live-keys) and was not reproduced in 18 isolated trials; the bucket aggregate is a derived count, F-0501 family",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "capkeys"
   },
   {
    "cited_runs": [],
@@ -11255,26 +12396,29 @@
   },
   {
    "cited_runs": [
-    "b-08-live-f0805"
+    "st-control-capkeys-selftest",
+    "st-live-keys"
    ],
    "evidence": [
-    "b-08-live-f0805",
-    "iris_vector_graph/cypher/translator.py:10306-10365"
+    "run:st-live-keys",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
    ],
+   "evidence_grade": "registered-run",
    "gate": "3.6-keys",
    "level": "product",
    "module": "08",
    "product_basis": {
     "fails": [
-     "run b-08-live-f0805 (fail)"
+     "run st-live-keys (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "reason": "Unique keys relied on: rdf_edges u_spo_graph_ekey (-119 observed live, F-0805), nodes pk (graph_id,node_id); guarded INSERT ... WHERE NOT EXISTS has no lock, so concurrent CREATEs fall back to the unique key (not exercised).",
-   "remaining": "Concurrent CREATE/MERGE interleavings against the unique keys.",
-   "source": "modules/08.json",
-   "status": "open"
+   "remaining": "racing MERGE answers errors rather than matching (a MERGE path race left nothing in one round); callers must retry",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "capkeys"
   },
   {
    "cited_runs": [
@@ -11436,25 +12580,29 @@
   },
   {
    "cited_runs": [
-    "c15-live-reify"
+    "st-control-capkeys-selftest",
+    "st-live-keys"
    ],
    "evidence": [
-    "c15-live-reify (pk_reifications -119)",
-    "iris_vector_graph/schema.py:303-323,514-520"
+    "run:st-live-keys",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
    ],
+   "evidence_grade": "registered-run",
    "gate": "3.6-keys",
    "level": "product",
    "module": "15",
    "product_basis": {
     "fails": [
-     "run c15-live-reify (fail)"
+     "run st-live-keys (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "Key invariants (fhir_graphs PK graph_id, rdf_reifications PK reifier_id, crosswalk key) observed enforced by IRIS, not proved; reifier_id is namespace-wide while the reified edge is per graph.",
-   "source": "modules/15.json",
-   "status": "open"
+   "remaining": "",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "capkeys"
   },
   {
    "cited_runs": [],
@@ -11468,10 +12616,19 @@
    "status": "not-applicable"
   },
   {
-   "cited_runs": [],
-   "evidence": [
+   "as_built_findings": [
     "F-1707"
    ],
+   "cited_runs": [
+    "st-control-capkeys-selftest",
+    "st-live-keys"
+   ],
+   "evidence": [
+    "run:st-live-keys",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "registered-run",
    "findings": [
     "F-1707"
    ],
@@ -11481,21 +12638,33 @@
    "product_basis": {
     "fails": [
      "finding F-1707",
-     "lane status failed (modules/17.json)"
+     "stated fails by matrix-input/structural.json",
+     "run st-live-keys (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "closed claim cites no registered run or committed artifact",
-   "source": "modules/17.json",
-   "status": "open"
+   "remaining": "",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "capkeys"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "F-1802",
-    "F-1803"
+   "as_built_findings": [
+    "F-1802"
    ],
+   "cited_runs": [
+    "st-control-capkeys-selftest",
+    "st-live-cap-snapshot-mem",
+    "st-live-keys"
+   ],
+   "evidence": [
+    "run:st-live-keys",
+    "run:st-live-cap-snapshot-mem",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "registered-run",
    "findings": [
     "F-1802",
     "F-1803"
@@ -11507,14 +12676,17 @@
     "fails": [
      "finding F-1802",
      "finding F-1803",
-     "lane status failed (modules/18.json)"
+     "stated fails by matrix-input/structural.json",
+     "run st-live-cap-snapshot-mem (fail)",
+     "run st-live-keys (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "closed claim cites no registered run or committed artifact",
-   "source": "modules/18.json",
-   "status": "open"
+   "remaining": "F-1802 not re-probed here",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "capkeys"
   },
   {
    "cited_runs": [],
@@ -11530,36 +12702,72 @@
    "status": "not-applicable"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "findings/audit/01.json"
+   "cited_runs": [
+    "st-control-capkeys-selftest",
+    "st-live-keys",
+    "st-live-setup-rerun"
    ],
+   "evidence": [
+    "run:st-live-keys",
+    "run:st-live-setup-rerun",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.6-fk",
    "level": "product",
    "module": "01",
-   "product_obligation": "unknown",
-   "remaining": "not done",
-   "source": "modules/01.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "run st-live-keys (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "capkeys"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "findings/audit/02.json"
+   "cited_runs": [
+    "st-control-capkeys-selftest",
+    "st-live-fk"
    ],
+   "evidence": [
+    "run:st-live-fk",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.6-fk",
    "level": "product",
    "module": "02",
-   "product_obligation": "unknown",
-   "remaining": "not done",
-   "source": "modules/02.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "run st-live-fk (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "capkeys"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "findings/audit/03.json"
+   "cited_runs": [
+    "st-control-capkeys-selftest",
+    "st-live-fk",
+    "st-live-keys-race-edge"
    ],
+   "evidence": [
+    "run:st-live-fk",
+    "run:st-live-keys-race-edge",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "registered-run",
    "findings": [
     "F-C0348"
    ],
@@ -11568,40 +12776,69 @@
    "module": "03",
    "product_basis": {
     "fails": [
-     "finding F-C0348"
+     "finding F-C0348",
+     "run st-live-fk (fail)",
+     "run st-live-keys-race-edge (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "not done",
-   "source": "modules/03.json",
-   "status": "open"
+   "remaining": "",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "capkeys"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "findings/audit/04.json"
+   "cited_runs": [
+    "st-control-capkeys-selftest",
+    "st-live-fk"
    ],
+   "evidence": [
+    "run:st-live-fk",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.6-fk",
    "level": "product",
    "module": "04",
-   "product_obligation": "unknown",
-   "remaining": "not done",
-   "source": "modules/04.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "run st-live-fk (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "capkeys"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "findings/audit/05.json"
+   "cited_runs": [
+    "st-control-capkeys-selftest",
+    "st-live-fk"
    ],
+   "evidence": [
+    "run:st-live-fk",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.6-fk",
    "level": "product",
    "module": "05",
-   "product_obligation": "unknown",
-   "remaining": "not done",
-   "source": "modules/05.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "run st-live-fk (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "drop_temporal_structural_rows(predicate) not run (harness passed no predicate)",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "capkeys"
   },
   {
    "cited_runs": [],
@@ -11785,13 +13022,19 @@
    "status": "closed"
   },
   {
+   "as_built_findings": [
+    "F-C1548"
+   ],
    "cited_runs": [
-    "c15-live-delreif"
+    "st-control-capkeys-selftest",
+    "st-live-fk"
    ],
    "evidence": [
-    "c15-live-delreif (fk_edges_source refuses, txn rolls back)",
-    "iris_vector_graph/schema.py:42-43,408"
+    "run:st-live-fk",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
    ],
+   "evidence_grade": "registered-run",
    "findings": [
     "F-C1548"
    ],
@@ -11800,14 +13043,17 @@
    "module": "15",
    "product_basis": {
     "fails": [
-     "finding F-C1548"
+     "finding F-C1548",
+     "stated fails by matrix-input/structural.json",
+     "run st-live-fk (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "rdf_reifications.edge_id and fhir_* tables have no FK (reifier nodes outlive their edges: F-1502); FK conditions not discharged by proof.",
-   "source": "modules/15.json",
-   "status": "open"
+   "remaining": "",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "capkeys"
   },
   {
    "cited_runs": [],
@@ -11866,17 +13112,32 @@
    "status": "not-applicable"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "findings/audit/01.json"
+   "cited_runs": [
+    "st-control-capkeys-selftest",
+    "st-live-keys",
+    "st-live-setup-rerun"
    ],
+   "evidence": [
+    "run:st-live-setup-rerun",
+    "run:st-live-keys",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "live",
    "gate": "3.6-capacity",
    "level": "product",
    "module": "01",
-   "product_obligation": "unknown",
-   "remaining": "not done",
-   "source": "modules/01.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "run st-live-keys (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "setup's size-dependent statements are the legacy upgrade steps (iris_vector_graph/migrations/upgrade.py:441-451, statements.py:331, kg_node_stores.py:335-356, docs_and_edge_vectors.py:575: whole-table fetchall); they run only on a pre-4.6 namespace, which needs the pinned release fixture (scripts/fixtures/build_release_namespace) in a scratch namespace; not driven here",
+   "source": "matrix-input/structural.json",
+   "status": "open",
+   "sub_lane": "capkeys"
   },
   {
    "cited_runs": [],
@@ -11903,30 +13164,76 @@
    "status": "closed"
   },
   {
-   "cited_runs": [],
+   "as_built_findings": [
+    "F-C1106"
+   ],
+   "cited_runs": [
+    "st-control-capkeys-selftest",
+    "st-live-cap-batch",
+    "st-live-cap-values",
+    "st-live-cap-width"
+   ],
    "evidence": [
-    "findings/audit/03.json"
+    "run:st-live-cap-width",
+    "run:st-live-cap-values",
+    "run:st-live-cap-batch",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "registered-run",
+   "findings": [
+    "F-C1106"
+   ],
+   "findings_undecided": [
+    "F-C0347"
    ],
    "gate": "3.6-capacity",
    "level": "product",
    "module": "03",
-   "product_obligation": "unknown",
-   "remaining": "not done",
-   "source": "modules/03.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "finding F-C1106",
+     "stated fails by matrix-input/structural.json",
+     "run st-live-cap-values (fail)",
+     "run st-live-cap-width (fail)"
+    ],
+    "intent_undecided": [
+     "finding F-C0347"
+    ]
+   },
+   "product_obligation": "fails",
+   "remaining": "lock escalation across graphs (one caller transaction blocks every graph's writers) is IRIS behaviour no IVG document states; intent-undecided, reported to the orchestrator, no finding filed",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "capkeys"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "findings/audit/04.json"
+   "cited_runs": [
+    "st-control-capkeys-selftest",
+    "st-live-cap-batch",
+    "st-live-cap-width"
    ],
+   "evidence": [
+    "run:st-live-cap-width",
+    "run:st-live-cap-batch",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.6-capacity",
    "level": "product",
    "module": "04",
-   "product_obligation": "unknown",
-   "remaining": "not done",
-   "source": "modules/04.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "run st-live-cap-width (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "lock-table use of Adjacency's own Lock +^KG(...) under many concurrent writers not driven",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "capkeys"
   },
   {
    "cited_runs": [],
@@ -11953,33 +13260,50 @@
    "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "findings/audit/06.json"
+   "cited_runs": [
+    "st-control-capkeys-selftest",
+    "st-live-cap-batch",
+    "st-live-cap-values"
    ],
+   "evidence": [
+    "run:st-live-cap-values",
+    "run:st-live-cap-batch",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.6-capacity",
    "level": "product",
    "module": "06",
-   "product_obligation": "unknown",
-   "remaining": "not done",
-   "source": "modules/06.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "run st-live-cap-values (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "IVF/PLAID/VecIdx global sizes and vector dimension limits not probed",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "capkeys"
   },
   {
+   "as_built_findings": [
+    "F-C0748",
+    "F-0704"
+   ],
    "cited_runs": [
-    "b-07-fc0702-nested-rollback"
+    "st-control-capkeys-selftest",
+    "st-live-cap-bm25"
    ],
    "evidence": [
-    {
-     "kind": "live",
-     "ref": "b-07-fc0702-nested-rollback"
-    },
-    {
-     "kind": "inspected",
-     "ref": "iris_src/src/Graph/KG/BM25Index.cls:194"
-    }
+    "run:st-live-cap-bm25",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
    ],
+   "evidence_grade": "registered-run",
    "findings": [
+    "F-0704",
     "F-C0748"
    ],
    "gate": "3.6-capacity",
@@ -11987,28 +13311,45 @@
    "module": "07",
    "product_basis": {
     "fails": [
+     "finding F-0704",
      "finding F-C0748",
-     "run b-07-fc0702-nested-rollback (fail)"
+     "stated fails by matrix-input/structural.json",
+     "run st-live-cap-bm25 (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "reason": "Subscript capacity: document ids and tokens are global subscripts; a 604-character id raised <SUBSCRIPT> inside Insert (b-07-fc0702-nested-rollback), which also triggered F-C0702. Not checked: a token longer than a subscript in Build, which writes outside a transaction (would leave a partial index, cf. F-0701); lock-table limits not exercised.",
-   "remaining": "Live check of an over-long token in Build; document the id/token length limits.",
-   "source": "modules/07.json",
-   "status": "open"
+   "remaining": "",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "capkeys"
   },
   {
+   "as_built_findings": [
+    "F-C0848",
+    "F-C0849",
+    "F-C1106"
+   ],
    "cited_runs": [
-    "b-08-live-f0806",
-    "b-08-live-f0807"
+    "st-control-capkeys-selftest",
+    "st-live-cap-batch-r2",
+    "st-live-cap-values",
+    "st-live-cap-width",
+    "st-live-cypher-relprop"
    ],
    "evidence": [
-    "b-08-live-f0807",
-    "b-08-live-f0806"
+    "run:st-live-cap-values",
+    "run:st-live-cypher-relprop",
+    "run:st-live-cap-batch-r2",
+    "run:st-live-cap-width",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
    ],
+   "evidence_grade": "registered-run",
    "findings": [
-    "F-C0848"
+    "F-C0848",
+    "F-C0849",
+    "F-C1106"
    ],
    "gate": "3.6-capacity",
    "level": "product",
@@ -12016,22 +13357,36 @@
    "product_basis": {
     "fails": [
      "finding F-C0848",
-     "run b-08-live-f0806 (fail)",
-     "run b-08-live-f0807 (fail)"
+     "finding F-C0849",
+     "finding F-C1106",
+     "stated fails by matrix-input/structural.json",
+     "run st-live-cap-batch-r2 (fail)",
+     "run st-live-cap-values (fail)",
+     "run st-live-cap-width (fail)",
+     "run st-live-cypher-relprop (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "reason": "Capacity bounds stated: count-only CREATE refused over 100,000 rows (query.py:1980-1985, live), walks refused over 20,000 paths (CYP-X4.11), node_id VARCHAR(256) (live -104 on a 404-char id), silent 1000-key cap in db.propertyKeys (engine.py:1491) and 20-key caps in schema procedures; no capacity test of string/subscript limits for qualifiers JSON (VARCHAR(32000) functions).",
-   "remaining": "Capacity tests for qualifiers / property values near IRIS string limits.",
-   "source": "modules/08.json",
-   "status": "open"
+   "remaining": "",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "capkeys"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "inspected:iris_src/src/Graph/KG/Cypher/Exec.cls:449-450"
+   "as_built_findings": [
+    "F-C0948"
    ],
+   "cited_runs": [
+    "st-control-capkeys-selftest"
+   ],
+   "evidence": [
+    "iris_src/src/Graph/KG/Cypher/Gen.cls:163-230",
+    "iris_vector_graph/schema.py:2939",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "registered-run",
    "findings": [
     "F-C0948"
    ],
@@ -12040,15 +13395,16 @@
    "module": "09",
    "product_basis": {
     "fails": [
-     "finding F-C0948"
+     "finding F-C0948",
+     "stated fails by matrix-input/structural.json"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "reason": "rows are paged (1000 per page, strings under 3.6 MB, Exec.cls:76-87, :1902-1910); workers at most 8 (Exec.cls:449-450); routes and translations at most 256 per engine (NAT-T7.9); compiled classes grow by one per new shape and nothing prunes them (NAT-T5.25) \u2014 no capacity bound or test",
-   "remaining": "a bound or a measured limit for compiled classes",
-   "source": "modules/09.json",
-   "status": "open"
+   "remaining": "not measured live (running the native executor compiles product-generated classes into the namespace)",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "capkeys"
   },
   {
    "cited_runs": [
@@ -12144,40 +13500,77 @@
    "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "corr-capacity",
+    "st-control-capkeys-selftest",
+    "st-live-cap-batch",
+    "st-live-cap-records"
+   ],
+   "evidence": [
+    "run:st-live-cap-records",
+    "run:st-live-cap-batch",
+    "run:corr-capacity",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.6-capacity",
    "level": "product",
-   "level_detail": "as-built (pin 3eaa79cf), AUDITC traces",
    "module": "13",
-   "product_obligation": "unknown",
-   "remaining": "String/subscript limits hold for the cases probed in run corr-capacity (redaction of a 1 MB record, of the widest edge, a 10,000-char prefix); lock-table capacity and batch-size escalation are outside the IRIS contract's subset (unrepresentable).",
-   "source": "matrix-input/correspondence_status.json",
-   "status": "open"
-  },
-  {
-   "cited_runs": [],
-   "evidence": [],
-   "gate": "3.6-capacity",
-   "level": "product",
-   "level_detail": "as-built (pin 3eaa79cf), AUDITC traces",
-   "module": "14",
-   "product_obligation": "unknown",
-   "remaining": "verify at the widest edge holds (corr-capacity); readers/reconstruct over very large records not probed; lock-table capacity outside the contract's subset.",
-   "source": "matrix-input/correspondence_status.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "run corr-capacity (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "IRIS lock-table capacity not filled on purpose (shared instance)",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "capkeys"
   },
   {
    "cited_runs": [
-    "c15-live-memory"
+    "st-control-capkeys-selftest",
+    "st-live-cap-records"
    ],
    "evidence": [
-    "iris_src/src/Graph/KG/FHIRGraph.cls:30 (BATCHSIZE 200)",
-    "FHIRGraph.cls:2730-2732 (walk 64/10000)",
-    "c15-live-memory (F-1510)",
-    "P-1510"
+    "run:st-live-cap-records",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
    ],
+   "evidence_grade": "registered-run",
+   "gate": "3.6-capacity",
+   "level": "product",
+   "module": "14",
+   "product_basis": "no violation in the probed cases (live, not a proof): get_revision, history, reconstruct, export_reconstruction and verify return records up to 3,600,000 chars exactly; escape-expanding payloads past the limit are refused at commit (reported as LedgerInconsistencyError, F-C1107, module 11)",
+   "product_obligation": "unknown",
+   "remaining": "",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "capkeys"
+  },
+  {
+   "as_built_findings": [
+    "F-C1549",
+    "F-1501"
+   ],
+   "cited_runs": [
+    "st-control-capkeys-selftest",
+    "st-live-cap-batch",
+    "st-live-cap-batch-r2",
+    "st-live-cap-values"
+   ],
+   "evidence": [
+    "run:st-live-cap-batch",
+    "run:st-live-cap-batch-r2",
+    "run:st-live-cap-values",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "registered-run",
    "findings": [
+    "F-1501",
     "F-C1549"
    ],
    "gate": "3.6-capacity",
@@ -12185,15 +13578,19 @@
    "module": "15",
    "product_basis": {
     "fails": [
+     "finding F-1501",
      "finding F-C1549",
-     "run c15-live-memory (fail)"
+     "stated fails by matrix-input/structural.json",
+     "run st-live-cap-batch-r2 (fail)",
+     "run st-live-cap-values (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "Long-string limit for JSON replies and PROV windows (P-1510) not driven; RDF export memory is linear (F-1510); batch sizes stated but not checked against the IRIS lock table.",
-   "source": "modules/15.json",
-   "status": "open"
+   "remaining": "",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "capkeys"
   },
   {
    "cited_runs": [
@@ -12225,12 +13622,25 @@
    "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "iris_vector_graph/stores/iris_sql_store.py:1112-1114, 1303-1305 (500-id chunks, P-1708)",
-    "iris_vector_graph/host.py:52-77 (P-1707)"
+   "as_built_findings": [
+    "F-C1106"
    ],
+   "cited_runs": [
+    "st-control-capkeys-selftest",
+    "st-live-cap-batch",
+    "st-live-cap-values",
+    "st-live-cap-width"
+   ],
+   "evidence": [
+    "run:st-live-cap-width",
+    "run:st-live-cap-values",
+    "run:st-live-cap-batch",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "registered-run",
    "findings": [
+    "F-C1106",
     "F-C1743"
    ],
    "gate": "3.6-capacity",
@@ -12238,21 +13648,38 @@
    "module": "17",
    "product_basis": {
     "fails": [
-     "finding F-C1743"
+     "finding F-C1106",
+     "finding F-C1743",
+     "stated fails by matrix-input/structural.json",
+     "run st-live-cap-values (fail)",
+     "run st-live-cap-width (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "not measured",
-   "source": "modules/17.json",
-   "status": "open"
+   "remaining": "host.py connection limits (P-1707) not probed",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "capkeys"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "iris_vector_graph/_engine/snapshot.py:1103-1110 (every archive member read into memory)",
-    "snapshot.py:862-1041 (whole archive built in memory)"
+   "as_built_findings": [
+    "F-C1848"
    ],
+   "cited_runs": [
+    "st-control-capkeys-selftest",
+    "st-live-cap-records",
+    "st-live-cap-snapshot-mem",
+    "st-live-cap-width"
+   ],
+   "evidence": [
+    "run:st-live-cap-snapshot-mem",
+    "run:st-live-cap-records",
+    "run:st-live-cap-width",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "registered-run",
    "findings": [
     "F-C1848"
    ],
@@ -12261,14 +13688,18 @@
    "module": "18",
    "product_basis": {
     "fails": [
-     "finding F-C1848"
+     "finding F-C1848",
+     "stated fails by matrix-input/structural.json",
+     "run st-live-cap-snapshot-mem (fail)",
+     "run st-live-cap-width (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "no bound or streaming; not measured",
-   "source": "modules/18.json",
-   "status": "open"
+   "remaining": "",
+   "source": "matrix-input/structural.json",
+   "status": "closed",
+   "sub_lane": "capkeys"
   },
   {
    "cited_runs": [
@@ -12318,14 +13749,40 @@
     "env-synchcommit-setting",
     "live-crash-world-r2",
     "live-lost-ack-commit",
-    "live-native-rerun-1314"
+    "live-native-rerun-1314",
+    "pg-disconnect-commit",
+    "pg-disconnect-erase",
+    "pg-disconnect-live-controls",
+    "pg-disconnect-locktimeout",
+    "pg-disconnect-redact",
+    "pg-disconnect-reevaluate",
+    "pg-disconnect-selftest",
+    "pg-disconnect-stop",
+    "pg-disconnect-stop-midbatch",
+    "pg-fc-crash-oracle-selftest",
+    "pg-fc-lost-ack-oracle-selftest"
    ],
    "evidence": [
     "run:live-lost-ack-commit",
     "run:live-native-rerun-1314",
     "run:live-crash-world-r2",
-    "run:env-synchcommit-setting"
+    "run:env-synchcommit-setting",
+    "run:pg-fc-crash-oracle-selftest",
+    "run:pg-fc-lost-ack-oracle-selftest",
+    "run:pg-disconnect-commit",
+    "run:pg-disconnect-redact",
+    "run:pg-disconnect-erase",
+    "run:pg-disconnect-stop",
+    "run:pg-disconnect-stop-midbatch",
+    "run:pg-disconnect-locktimeout",
+    "run:pg-disconnect-reevaluate",
+    "run:pg-disconnect-selftest",
+    "run:pg-disconnect-live-controls",
+    "experiment/playbook-completion/product-gates/disconnect_world.py",
+    "experiment/playbook-completion/product-gates/wireproxy.py",
+    "experiment/playbook-completion/product-gates/DISCONNECT.md"
    ],
+   "evidence_grade": "live",
    "findings": [
     "F-C1203",
     "F-C1303",
@@ -12353,7 +13810,8 @@
      "finding F-C1350",
      "finding F-C1351",
      "finding F-C1703",
-     "finding F-CS01"
+     "finding F-CS01",
+     "stated fails by matrix-input/product-gates.json"
     ],
     "intent_undecided": [
      "finding F-C1102",
@@ -12361,7 +13819,8 @@
     ]
    },
    "product_obligation": "fails",
-   "remaining": "lost-ack world (6/6 exactly once) and native rerun ran; the instance crash world ran once per world (live-crash-world-r2: in-flight commit all-or-nothing; an acknowledged commit lost with SynchCommit=0, env-synchcommit-setting; F-C1102 intent-undecided); SynchCommit=1, repeated trials and multi-node worlds not run",
+   "remaining": "Crash world: one trial per world (live-crash-world-r2); repeating it needs container SIGKILL and restart, which lanes may not do (operator/orchestrator). SynchCommit=1 untested (needs reconfiguring the container: operator). Multi-node (ECP/mirror) worlds blocked-access (no multi-node setup). Not in the disconnect world: the HTTP API path (its retry worlds are F-C1703, F-C1604), non-ledger writers (create_node, bulk loads), and a crash at the disconnect points.",
+   "source": "matrix-input/product-gates.json",
    "status": "open"
   },
   {
@@ -13405,13 +14864,28 @@
    "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "pg-disconnect-live-controls",
+    "pg-disconnect-selftest",
+    "pg-failure-controls",
+    "pg-fc-crash-oracle-selftest",
+    "pg-fc-lost-ack-oracle-selftest"
+   ],
+   "evidence": [
+    "run:pg-failure-controls",
+    "run:pg-fc-crash-oracle-selftest",
+    "run:pg-fc-lost-ack-oracle-selftest",
+    "run:pg-disconnect-selftest",
+    "run:pg-disconnect-live-controls",
+    "experiment/playbook-completion/product-gates/FAILURE-CONTROLS.md",
+    "experiment/playbook-completion/product-gates/check_failure_controls.py"
+   ],
+   "evidence_grade": "run",
    "findings": [
     "F-C1743"
    ],
    "gate": "3.7-failure-controls",
-   "level": "product",
+   "level": "method",
    "module": "product",
    "product_basis": {
     "fails": [
@@ -13420,7 +14894,8 @@
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "no evidence recorded",
+   "remaining": "No negative control for S5b (F-1102 stats row lock: the same oracle on a free stats row), S13 (F-C1307: a world without the bypass writer must release the marker), S15 (F-C0801: a committed Cypher write must leave counters equal to rows), S16 (killed bulk load: a seeded check telling a complete load from a partial one), S17 (max_ops refusal: a changeset at the limit accepted in the same probe). S6 licence refusal at product level is blocked-access: it needs exclusive use of the container's 8 shared licence units (operator).",
+   "source": "matrix-input/product-gates.json",
    "status": "open"
   },
   {
@@ -13617,11 +15092,19 @@
     "experiment/playbook-completion/reflection/premise_tests.json"
    ],
    "evidence_grade": "registered-run",
+   "findings": [
+    "F-C0090"
+   ],
    "gate": "3.8-test-reflection",
    "level": "method",
    "module": "product",
-   "product_basis": "every premise named in TRUST.md, the 8 PROOFS.md premise tables, models/core/MODELS.md and the IRIS contract maps to a test or to a named missing test: 224 premises, 39 tested and holding, 44 shown false at the pin (their findings fail their own cells), 86 partial, 55 untested; the product's own suites detect 4 of 246 reproduced findings (242 undetected, incl. every reproduced S1). Whether the product meets the premises that are untested or partial is open.",
-   "product_obligation": "unknown",
+   "product_basis": {
+    "fails": [
+     "finding F-C0090"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
    "remaining": "the tests named in should_exist are not run (55 untested, 86 partial premises); needing the operator or an unavailable dependency: the SynchCommit=1 crash world, embedded SQL (E-1, scope ruling), IRIS 2026.3 / Enterprise / multi-node (blocked-access), the spec-236 scratch suites (licence); breadth model crates' restrictions (modules/NN.json) are outside this map",
    "source": "matrix-input/reflection.json",
    "status": "closed"
@@ -13762,6 +15245,9 @@
     "F-C0301",
     "F-C0302"
    ],
+   "findings_undecided": [
+    "F-C0347"
+   ],
    "gate": "3.8-findings-disposed",
    "level": "method",
    "module": "03",
@@ -13779,7 +15265,9 @@
      "finding F-C0301",
      "finding F-C0302"
     ],
-    "intent_undecided": []
+    "intent_undecided": [
+     "finding F-C0347"
+    ]
    },
    "product_obligation": "fails",
    "reason": "dispositions {confirmed-source: 3, reproduced-live: 8}",
@@ -31740,6 +33228,70 @@
   },
   {
    "confidence": "high",
+   "disposition": "intent-undecided",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "st-live-cap-batch"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/nodes_edges.py:1103"
+    }
+   ],
+   "gates": [
+    "3.6-capacity",
+    "3.8-findings-disposed"
+   ],
+   "id": "F-C0347",
+   "severity": "S3"
+  },
+  {
+   "confidence": "high",
+   "disposition": "confirmed-source",
+   "evidence": [
+    {
+     "kind": "run",
+     "ref": "pg-lint-ruff"
+    },
+    {
+     "kind": "run",
+     "ref": "pg-lint-summary"
+    },
+    {
+     "kind": "log",
+     "ref": "$RUN_DIR/product-gates/lint-r1/shadowed-collect.txt"
+    },
+    {
+     "kind": "inspected",
+     "ref": "tests/unit/test_coverage_boost.py:234-256"
+    },
+    {
+     "kind": "inspected",
+     "ref": "tests/unit/test_coverage_boost.py:307-335"
+    },
+    {
+     "kind": "inspected",
+     "ref": "tests/unit/test_engine_deep.py:367-375"
+    },
+    {
+     "kind": "inspected",
+     "ref": "tests/unit/test_engine_deep.py:399-404"
+    },
+    {
+     "kind": "inspected",
+     "ref": "tests/unit/test_engine_deep.py:1132-1144"
+    }
+   ],
+   "gates": [
+    "3.5-lint",
+    "3.8-test-reflection"
+   ],
+   "id": "F-C0090",
+   "severity": "S4"
+  },
+  {
+   "confidence": "high",
    "disposition": "reproduced-live",
    "evidence": [
     {
@@ -33528,15 +35080,15 @@
   }
  ],
  "product_counts": {
-  "fails": 347,
+  "fails": 390,
   "holds-in-model-only": 1,
   "holds-inspected": 85,
   "holds-live": 29,
-  "intent-undecided": 2,
+  "intent-undecided": 1,
   "n/a": 33,
-  "unknown": 250
+  "unknown": 208
  },
- "registry_runs": 1064,
+ "registry_runs": 1080,
  "starting_inventory": {
   "cells": 904,
   "decisions": 61,
@@ -33548,9 +35100,9 @@
  },
  "status_counts": {
   "blocked": 8,
-  "closed": 431,
+  "closed": 495,
   "not-applicable": 35,
-  "open": 273
+  "open": 209
  },
  "submission": "9c3719c1",
  "writer_obligations": [

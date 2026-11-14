@@ -1,0 +1,56 @@
+{
+ "gate": "3.4-declared-reads",
+ "lane": "structural (sub-task reads)",
+ "namespace": "AUDITD",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "question": "Does each query read only its declared footprint (footprints/NN.json reads; correspondence.json reads for 11-14; the graph or target the call is scoped to), with a self-test that rejects an injected violation?",
+ "read_oracle_feasibility": [
+  {
+   "candidate": "IRIS SQL statement index (INFORMATION_SCHEMA.STATEMENTS, STATEMENT_RELATIONS, STATEMENT_LOCATIONS)",
+   "attempt": "structural/reads/probe_stmtindex.py on AUDITD (run st-probe-reads-stmtindex)",
+   "observed": "a new dynamic statement appears at prepare time with its relations (e.g. GRAPH_KG.NODES); its StatCount stayed NULL after three executions (statistics are not written synchronously per execution); the 12 embedded-SQL statements located in Graph.KG.Eraser.1 are registered at class compile time and their StatCount did not change when EraseAll ran; the product's Python readers' statements were already in the index (prepared earlier), so nothing new appeared for engine.get_node",
+   "can_observe": "the tables a statement TEXT references (static relation list), once per distinct normalized statement",
+   "cannot_observe": "which statement ran during a given action (no synchronous per-execution counter), embedded-SQL executions, global ($Order/$Get/$Data) reads, rows (graph scoping)",
+   "usable_as_read_oracle": false
+  },
+  {
+   "candidate": "%SYS.PTools per-job SQL statistics ($SYSTEM.SQL.PTools.setSQLStatsFlagJob(2) on the harness's own process, reset to 0 after)",
+   "attempt": "structural/reads/probe_ptools.py (run st-probe-reads-ptools)",
+   "observed": "%SYS_PTools.StatsSQL gained rows only for statements compiled after the flag was set (the harness's new statement with a unique alias, and the StatsSQL count itself); the product's engine.get_node statements (already cached) and Graph.KG.Eraser.EraseAll's embedded SQL left no row",
+   "can_observe": "table-level text of statements newly compiled in the flagged job, with row counts and global-reference counts per statement",
+   "cannot_observe": "already-cached product statements and embedded SQL compiled into the pin's classes (making them visible needs purging cached queries or recompiling classes, which the compilation rule forbids); global reads; rows",
+   "usable_as_read_oracle": false
+  },
+  {
+   "candidate": "%Monitor.System.LineByLine (instance monitor, started and stopped inside one lock hold)",
+   "attempt": "structural/reads/probe_linebyline.py around Graph.KG.Edgeless.LonersJson (run st-probe-reads-linebyline)",
+   "observed": "Start/Result/Stop work on AUDITD: 31 of 124 INT lines of Graph.KG.Edgeless.1 ran, each with an execution count and a global-reference count (metric GloRef); the monitor was stopped (IsActive 0) before the hold ended",
+   "can_observe": "which INT lines of the monitored class routines ran and how many global references each made",
+   "cannot_observe": "which global nodes or subscripts were referenced (so not the graph key, which is a run-time subscript), SQL run in cached-query routines, Python code; the read set must be reconstructed from static per-line references (as correspondence/tools/coverage.py maps INT to .cls lines), i.e. it is a line-coverage oracle, not a read oracle",
+   "usable_as_read_oracle": "only at store level combined with static per-line extraction; not used for the decision"
+  },
+  {
+   "candidate": "Python-side capture of the SQL text the product sends (iris.dbapi.Cursor.execute/executemany wrapped in the harness process, not in the product)",
+   "attempt": "oracle B of structural/reads/noninterference.py (every case; self-test case 3)",
+   "observed": "every SQL text the product's Python code sends through the DB-API is recorded with run-time table names resolved; tables after FROM/JOIN are compared with the footprint's declared tables",
+   "can_observe": "table-level read set of Python-issued SQL",
+   "cannot_observe": "SQL and global reads inside Graph.KG classes reached through the Native API; rows (graph, id) a statement selects",
+   "usable_as_read_oracle": "table level, Python-issued SQL only (reported per case; an undeclared table is a footprint gap, not by itself a product defect)"
+  },
+  {
+   "candidate": "Non-interference (semantic): the answer must not change when state outside the declared footprint changes",
+   "attempt": "oracle A of structural/reads/noninterference.py",
+   "can_observe": "any read outside the declared footprint that influences the answer, at row granularity (another graph's rows with the same ids, other keys/labels/predicates/prefixes in the same graph, stores the action does not declare, other tenants' ledger history)",
+   "cannot_observe": "a read outside the footprint whose value never reaches the answer (it costs time, not correctness); perturbations not tried (the set per action is listed in per_module)",
+   "usable_as_read_oracle": true
+  }
+ ],
+ "method": "Oracle A, per read action: base state from lib.reset() (product's own EraseAll + PurgeAll) on a fresh connection, the action run on a fresh engine; run twice (stable answer required); for each perturbation OUTSIDE the declared footprint, base + perturbation, run again; a changed answer (canonical form: lists sorted, floats to 10 digits; an order-only change is recorded separately) is a read outside the declared footprint. Where given, a perturbation INSIDE the footprint must change the answer (sensitivity); where it does not, the cell says so. Outside perturbations used: the same ids (and one more) with other labels, properties, edges, temporal edges or vectors in every other graph (default graph and stg1/stg2); other ids/labels/keys in the same graph (including LIKE wildcard characters in ids and keys); another predicate in the same graph; other tenants' ledger commits; the tenant's ids written directly in a named graph; a scratch global ^IVGAuditDRdSnap (removed after each variant). Oracle B (table level) as in the feasibility table.",
+ "self_test": {
+  "cases": [
+   "SEEDED graph-blind reader: SELECT key, val FROM Graph_KG.rdf_props WHERE s = 'a' (declared: a in stg1) must be flagged by the other-graph perturbation",
+   "SEEDED scoped reader: the same with AND graph_id = 'stg1' must hold; both must change under the inside perturbation",
+   "SEEDED undeclared-table reader for oracle B: a cursor reading Graph_KG.docs with declared tables {rdf_props} must report docs, and the scoped reader must report nothing undeclared"
+  ]
+ }
+}

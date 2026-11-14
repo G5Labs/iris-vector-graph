@@ -1,0 +1,15 @@
+{
+  "command": "locks.sh iris python experiment/playbook-completion/structural/order/permutation.py $RUN_DIR/structural/order/perm-c.json 11,12,13,14,15,16,17",
+  "experiment_head": "8d11c49c4337db1fcf521c56a0c66e39b67128c4",
+  "id": "st-live-perm-c",
+  "kind": "live",
+  "lane": "structural",
+  "log": "$RUN_DIR/structural/order/perm-c.json",
+  "log_bytes": 76708,
+  "log_sha256": "dabd2256c9e675aae2ce3f7aab9c8feb4d43503ae65dbc30e99c24472f163057",
+  "observes": "AUDITD, three insertion orders: 11 genesis records, detach-delete record content, verify and history equal; the statement ids the detach cascade assigns to three unrecorded edges differ by insertion order (F-C1108, intent-undecided); 12 delete_nodes_by_prefix (2), erase_graph (5) and the remaining rows equal; 13 redaction receipt equal (10 tombstoned, 4 revisions, metadata 4), the history-records comparison in this run is a harness artefact (canonicalisation sorted the fields inside each record, so seq-dependent digests landed in different positions) and is superseded by st-live-perm-c13; 14 verify, reconstruct(head) with statement ids compared as a set of tuples, and canonical nodes equal; 15 export_rdf and prov_export (canonical rdflib graphs) and get_reifications equal; 16 generated GraphQL resolve_nodes(label, limit=2, offset 0 and 2) pages differ ([pq:0,pq:1] / [pq:4,pq:3] / [pq:1,pq:2]: F-C1642), the sample API CoreQuery.nodes pages (ORDER BY created_at) equal; 17 IRISGraphStore query_nodes(label), get_nodes, get_node_count equal (query_nodes(limit) probed in a child process: st-live-so-confirm)",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T12:07:01+00:00",
+  "result": "fail"
+}

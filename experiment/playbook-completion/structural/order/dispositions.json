@@ -1,0 +1,766 @@
+{
+ "dispositions": {
+  "api/gql/core/resolvers.py:207:prefix-literal": {
+   "anchor": "query = \"\"\"",
+   "cite": [
+    "api/gql/core/resolvers.py:159-177"
+   ],
+   "class": "false-positive",
+   "module": "16",
+   "reason": "the {order_clause} placeholder is always an ORDER BY: n.created_at by default, n.node_id or a property value (api/gql/core/resolvers.py:159-177); ties at the page cut (equal created_at) follow storage order, the same tie class as the top-k searches"
+  },
+  "api/gql/core/resolvers.py:232:prefix-literal": {
+   "anchor": "query = \"\"\"",
+   "cite": [
+    "api/gql/core/resolvers.py:159-177"
+   ],
+   "class": "false-positive",
+   "module": "16",
+   "reason": "the {order_clause} placeholder is always an ORDER BY: n.created_at by default, n.node_id or a property value (api/gql/core/resolvers.py:159-177); ties at the page cut (equal created_at) follow storage order, the same tie class as the top-k searches"
+  },
+  "api/gql/core/resolvers.py:248:prefix-literal": {
+   "anchor": "query = \"\"\"",
+   "cite": [
+    "api/gql/core/resolvers.py:159-177"
+   ],
+   "class": "false-positive",
+   "module": "16",
+   "reason": "the {order_clause} placeholder is always an ORDER BY: n.created_at by default, n.node_id or a property value (api/gql/core/resolvers.py:159-177); ties at the page cut (equal created_at) follow storage order, the same tie class as the top-k searches"
+  },
+  "api/gql/core/resolvers.py:266:prefix-literal": {
+   "anchor": "query = \"\"\"",
+   "cite": [
+    "api/gql/core/resolvers.py:159-177"
+   ],
+   "class": "false-positive",
+   "module": "16",
+   "reason": "the {order_clause} placeholder is always an ORDER BY: n.created_at by default, n.node_id or a property value (api/gql/core/resolvers.py:159-177); ties at the page cut (equal created_at) follow storage order, the same tie class as the top-k searches"
+  },
+  "api/gql/resolvers/query.py:93:first-row": {
+   "anchor": "fetchone",
+   "cite": [
+    "api/gql/schema.py:16",
+    "api/gql/resolvers/query.py:76-94"
+   ],
+   "class": "order-irrelevant",
+   "module": "16",
+   "reason": "unreachable: the sample app's schema imports only api.gql.core.resolvers (api/gql/schema.py:16); this older resolver module is not imported anywhere at the pin"
+  },
+  "api/main.py:47:first-row": {
+   "anchor": "fetchone",
+   "cite": [
+    "api/main.py:44-48"
+   ],
+   "class": "order-irrelevant",
+   "module": "16",
+   "reason": "SELECT 1: no FROM, one row"
+  },
+  "iris_src/src/Graph/KG/Cypher/Exec.cls:1101:prefix-literal": {
+   "anchor": "SELECT TOP 1001",
+   "cite": [
+    "iris_src/src/Graph/KG/Cypher/Exec.cls:1095-1122"
+   ],
+   "class": "order-irrelevant",
+   "module": "09",
+   "reason": "NamedEnds: TOP 1001 is a count probe; with more than 1000 rows the method answers 0 and the general walk runs (:1117), with at most 1000 every row is read, so which 1001 rows come first never changes the answer"
+  },
+  "iris_src/src/Graph/KG/Cypher/Exec.cls:1117:os-cutoff": {
+   "anchor": "Quit:tN>1000",
+   "cite": [
+    "iris_src/src/Graph/KG/Cypher/Exec.cls:1110-1118"
+   ],
+   "class": "order-irrelevant",
+   "module": "09",
+   "reason": "as Exec.cls:1101: the cut-off falls back to the general walk"
+  },
+  "iris_src/src/Graph/KG/Cypher/Exec.cls:867:os-cursor-alloc": {
+   "anchor": "$Increment(tN)",
+   "cite": [
+    "iris_src/src/Graph/KG/Cypher/Exec.cls:847-901"
+   ],
+   "class": "set-valued",
+   "module": "09",
+   "reason": "Anchors numbers anchor candidates in cursor order (^||IVG.CypherRun('cand', $Increment(tN))); the numbering only enumerates the candidate set: an unordered Cypher answer's row order is unspecified (openCypher), and ordered/limited plans sort before cutting (NAT-T8.4; F-0907 shows the shadow comparison, not the executor, holds row order)"
+  },
+  "iris_src/src/Graph/KG/Cypher/Exec.cls:900:os-cursor-alloc": {
+   "anchor": "$Increment(tN)",
+   "cite": [
+    "iris_src/src/Graph/KG/Cypher/Exec.cls:847-901"
+   ],
+   "class": "set-valued",
+   "module": "09",
+   "reason": "Anchors numbers anchor candidates in cursor order (^||IVG.CypherRun('cand', $Increment(tN))); the numbering only enumerates the candidate set: an unordered Cypher answer's row order is unspecified (openCypher), and ordered/limited plans sort before cutting (NAT-T8.4; F-0907 shows the shadow comparison, not the executor, holds row order)"
+  },
+  "iris_src/src/Graph/KG/EmbedQueue.cls:250:os-first-row": {
+   "anchor": "%Next()",
+   "cite": [
+    "iris_src/src/Graph/KG/EmbedQueue.cls:243-254",
+    "iris_vector_graph/_engine/schema.py:143-158"
+   ],
+   "class": "unique-key",
+   "module": "06",
+   "reason": "registry by (table_name, graph_id) (pk_embedding_registry, _engine/schema.py:143-158); COALESCE folds NULL and '' graph ids, which only an upgraded install can hold both of"
+  },
+  "iris_src/src/Graph/KG/GraphStores.cls:308:os-first-row": {
+   "anchor": "SELECT TOP 1 table_name",
+   "cite": [
+    "iris_src/src/Graph/KG/GraphStores.cls:300-312"
+   ],
+   "class": "finding:F-C0603",
+   "module": "06",
+   "reason": "VectorRouteGuard selects TOP 1 table_name over registry rows keyed (table_name, graph_id): two node routes for one graph with no model key answer in scan order, where Python applies _route_preference (breadth-a 06.json; the guard serves kg_KNN_VEC, module 06's route rule, though the class is in 12's inventory)"
+  },
+  "iris_src/src/Graph/KG/GraphStores.cls:308:prefix-literal": {
+   "anchor": "SELECT TOP 1 table_name",
+   "cite": [
+    "iris_src/src/Graph/KG/GraphStores.cls:300-312"
+   ],
+   "class": "finding:F-C0603",
+   "module": "06",
+   "reason": "VectorRouteGuard selects TOP 1 table_name over registry rows keyed (table_name, graph_id): two node routes for one graph with no model key answer in scan order, where Python applies _route_preference (breadth-a 06.json; the guard serves kg_KNN_VEC, module 06's route rule, though the class is in 12's inventory)"
+  },
+  "iris_src/src/Graph/KG/LedgerApply.cls:153:os-first-row": {
+   "anchor": "%Next()",
+   "cite": [
+    "iris_src/src/Graph/KG/LedgerApply.cls:144-157"
+   ],
+   "class": "finding:F-0205",
+   "module": "11",
+   "reason": "FindEdge takes the first rdf_edges row of (s, p, o_id, graph) without ekey: in a multigraph the ledger's delete/qualifier ops act on whichever parallel edge comes first in storage order (F-0205 cites LedgerApply.cls:144-157); confirmed live st-live-so-11"
+  },
+  "iris_src/src/Graph/KG/LedgerApply.cls:258:os-first-row": {
+   "anchor": "%Next()",
+   "cite": [
+    "iris_src/src/Graph/KG/LedgerApply.cls:253-262"
+   ],
+   "class": "existence-only",
+   "module": "11",
+   "reason": "AddLabel: SELECT 1 ... If tRS.%Next(): existence of the label row"
+  },
+  "iris_src/src/Graph/KG/LedgerApply.cls:272:os-first-row": {
+   "anchor": "%Next()",
+   "cite": [
+    "iris_src/src/Graph/KG/LedgerApply.cls:265-283",
+    "iris_vector_graph/schema.py:417",
+    "iris_src/src/Graph/KG/LedgerApply.cls:15"
+   ],
+   "class": "unique-key",
+   "module": "11",
+   "reason": "SetProp reads val by (s, key) in the default graph: pk_props PRIMARY KEY (graph_id, s, key) (schema.py:417); DEFAULTGRAPH folds NULL and '' graph ids (LedgerApply.cls:15), which only an upgraded install holds both of"
+  },
+  "iris_src/src/Graph/KG/LedgerApply.cls:302:os-first-row": {
+   "anchor": "%Next()",
+   "cite": [
+    "iris_src/src/Graph/KG/LedgerApply.cls:295-307"
+   ],
+   "class": "existence-only",
+   "module": "11",
+   "reason": "OpRemoveLabel: SELECT 1 ... existence of the label row"
+  },
+  "iris_src/src/Graph/KG/LedgerApply.cls:328:os-first-row": {
+   "anchor": "%Next()",
+   "cite": [
+    "iris_src/src/Graph/KG/LedgerApply.cls:321-335",
+    "iris_vector_graph/schema.py:417"
+   ],
+   "class": "unique-key",
+   "module": "11",
+   "reason": "OpRemoveProp: as SetProp (pk_props)"
+  },
+  "iris_src/src/Graph/KG/LedgerApply.cls:388:os-cursor-alloc": {
+   "anchor": "While tRS.%Next()",
+   "cite": [
+    "iris_src/src/Graph/KG/LedgerApply.cls:384-400"
+   ],
+   "class": "finding:F-C1108",
+   "module": "11",
+   "reason": "OpDeleteNode detach allocates statement ids to unrecorded incident edges in the order of an unordered cursor (:385-397); reproduced live by corr-row-permutation (F-C1108, intent-undecided)"
+  },
+  "iris_src/src/Graph/KG/LedgerRedact.cls:309:os-cutoff": {
+   "anchor": "tMatched >= pBatch",
+   "cite": [
+    "iris_src/src/Graph/KG/LedgerRedact.cls:303-320"
+   ],
+   "class": "collation-ordered",
+   "module": "13",
+   "reason": "BatchInLock walks ^IVG.Ledger('rec', seq, ordinal) in subscript (key) order and stops a batch at pBatch matches or pCap scanned; the next batch resumes from the saved (pSeq, pOrd) key (LedgerRedact.cls:303-320), so the batches partition the record keys whatever the content tables' row order. A restart from the first record after a stop is F-C1303 (progress), not storage order"
+  },
+  "iris_vector_graph/_engine/admin.py:104:prefix-literal": {
+   "anchor": "SELECT TOP",
+   "cite": [
+    "iris_vector_graph/_engine/admin.py:95-107"
+   ],
+   "class": "documented-sample",
+   "module": "17",
+   "reason": "active_queries_sql: TOP n of CURRENT_STATEMENTS, a bounded diagnostic list (docstring admin.py:95-101; OPS-B3.4 'up to a limit'); no order is promised"
+  },
+  "iris_vector_graph/_engine/embeddings.py:163:first-row": {
+   "anchor": "fetchone",
+   "cite": [
+    "iris_vector_graph/_engine/embeddings.py:161-163"
+   ],
+   "class": "order-irrelevant",
+   "module": "06",
+   "reason": "SELECT EMBEDDING(?, ?): no FROM, one row"
+  },
+  "iris_vector_graph/_engine/embeddings.py:1734:first-row": {
+   "anchor": "fetchone",
+   "cite": [
+    "iris_vector_graph/_engine/embeddings.py:1729-1734",
+    "iris_vector_graph/schema.py:430-436"
+   ],
+   "class": "unique-key",
+   "module": "06",
+   "reason": "route row by (node_id, graph_id): uq_emb_graph_node UNIQUE (graph_id, node_id) on every route (schema.py:430-436, _engine/schema.py routed_table_ddl)"
+  },
+  "iris_vector_graph/_engine/embeddings.py:1888:first-row": {
+   "anchor": "fetchone",
+   "cite": [
+    "iris_vector_graph/_engine/embeddings.py:1887-1888"
+   ],
+   "class": "unique-key",
+   "module": "06",
+   "reason": "%Embedding.Config by Name, the configuration's key"
+  },
+  "iris_vector_graph/_engine/nodes_edges.py:605:first-row": {
+   "anchor": "row = cursor.fetchone()",
+   "cite": [
+    "iris_vector_graph/_engine/nodes_edges.py:584-618"
+   ],
+   "class": "finding:F-0206",
+   "module": "03",
+   "reason": "_filter_edges_by_properties reads the qualifiers of the first rdf_edges row of (s, p, o_id) in any graph (no graph_id, no ekey): with the triple in two graphs, or parallel edges in a multigraph, the filter tests whichever row comes first in storage order. F-0206's remedy names this function ('give _filter_edges_by_properties ... a graph'); confirmed live st-live-so-03"
+  },
+  "iris_vector_graph/_engine/nodes_edges.py:828:prefix-split": {
+   "anchor": "cursor.execute(sql, params)",
+   "cite": [
+    "iris_vector_graph/_engine/nodes_edges.py:801-832"
+   ],
+   "class": "finding:F-C0302",
+   "module": "03",
+   "reason": "get_node_ids_by_property: TOP n built in a separate f-string (:820) with no ORDER BY: with a limit the caller gets the first n subjects in scan order; confirmed live st-live-so-03"
+  },
+  "iris_vector_graph/_engine/nodes_edges.py:911:prefix-split": {
+   "anchor": "cursor.execute(sql, [key, like])",
+   "cite": [
+    "iris_vector_graph/_engine/nodes_edges.py:892-915"
+   ],
+   "class": "finding:F-C0302",
+   "module": "03",
+   "reason": "get_property_pairs_like: as :828 (TOP built at :904)"
+  },
+  "iris_vector_graph/_engine/query.py:1835:prefix-literal": {
+   "anchor": "TOP 25",
+   "cite": [
+    "iris_vector_graph/_engine/query.py:1830-1840"
+   ],
+   "class": "finding:F-C0802",
+   "module": "08",
+   "reason": "the text shortcuts answer the first 25 ids / types in storage order (modules/08.json storage_order)"
+  },
+  "iris_vector_graph/_engine/query.py:1837:prefix-literal": {
+   "anchor": "TOP 25",
+   "cite": [
+    "iris_vector_graph/_engine/query.py:1830-1840"
+   ],
+   "class": "finding:F-C0802",
+   "module": "08",
+   "reason": "the text shortcuts answer the first 25 ids / types in storage order (modules/08.json storage_order)"
+  },
+  "iris_vector_graph/_engine/query.py:3120:first-row": {
+   "anchor": "fetchone",
+   "cite": [
+    "iris_vector_graph/_engine/query.py:3091-3120",
+    "iris_vector_graph/schema.py:44"
+   ],
+   "class": "unique-key",
+   "module": "08",
+   "reason": "_vlp_qualifiers by (s, p, o_id, graph): unique outside a multigraph (u_spo_graph_ekey with ekey 0); a multigraph walk passes edge_id and reads the row by edge_id (query.py:3091-3104, 4.6.0 R294)"
+  },
+  "iris_vector_graph/_engine/schema.py:1049:first-row": {
+   "anchor": "fetchone",
+   "cite": [
+    "iris_vector_graph/_engine/schema.py:1044-1049",
+    "iris_vector_graph/_engine/schema.py:158"
+   ],
+   "class": "unique-key",
+   "module": "06",
+   "reason": "registry row by (table_name, graph_id), its primary key pk_embedding_registry (_engine/schema.py:158)"
+  },
+  "iris_vector_graph/_engine/schema.py:2084:first-row": {
+   "anchor": "fetchone",
+   "cite": [
+    "iris_vector_graph/_engine/schema.py:2079-2084",
+    "iris_vector_graph/_engine/schema.py:212-213"
+   ],
+   "class": "unique-key",
+   "module": "06",
+   "reason": "quarantine row by q_rowid, the table's IDENTITY primary key (_engine/schema.py:212-213); quarantine is module 06's (06 Scope)"
+  },
+  "iris_vector_graph/_engine/schema.py:2791:prefix-literal": {
+   "anchor": "TOP 1",
+   "cite": [
+    "iris_vector_graph/_engine/schema.py:2772-2779",
+    "iris_vector_graph/_engine/schema.py:2789-2792"
+   ],
+   "class": "documented-sample",
+   "module": "01",
+   "reason": "get_schema_visualization documents a sample: 'Sampled, not exact: a label's properties are the first 20 keys of one node carrying it, and a predicate's start and end labels are those of one edge's endpoints' (_engine/schema.py:2775-2777); which row is sampled is outside the contract. Its graph-blind joins are F-0106."
+  },
+  "iris_vector_graph/_engine/schema.py:2794:first-row": {
+   "anchor": "fetchone",
+   "cite": [
+    "iris_vector_graph/_engine/schema.py:2772-2779",
+    "iris_vector_graph/_engine/schema.py:2792-2795"
+   ],
+   "class": "documented-sample",
+   "module": "01",
+   "reason": "get_schema_visualization documents a sample: 'Sampled, not exact: a label's properties are the first 20 keys of one node carrying it, and a predicate's start and end labels are those of one edge's endpoints' (_engine/schema.py:2775-2777); which row is sampled is outside the contract. Its graph-blind joins are F-0106."
+  },
+  "iris_vector_graph/_engine/schema.py:2825:prefix-literal": {
+   "anchor": "TOP 1",
+   "cite": [
+    "iris_vector_graph/_engine/schema.py:2772-2779",
+    "iris_vector_graph/_engine/schema.py:2823-2826"
+   ],
+   "class": "documented-sample",
+   "module": "01",
+   "reason": "get_schema_visualization documents a sample: 'Sampled, not exact: a label's properties are the first 20 keys of one node carrying it, and a predicate's start and end labels are those of one edge's endpoints' (_engine/schema.py:2775-2777); which row is sampled is outside the contract. Its graph-blind joins are F-0106."
+  },
+  "iris_vector_graph/_engine/schema.py:2827:first-row": {
+   "anchor": "fetchone",
+   "cite": [
+    "iris_vector_graph/_engine/schema.py:2772-2779",
+    "iris_vector_graph/_engine/schema.py:2825-2828"
+   ],
+   "class": "documented-sample",
+   "module": "01",
+   "reason": "get_schema_visualization documents a sample: 'Sampled, not exact: a label's properties are the first 20 keys of one node carrying it, and a predicate's start and end labels are those of one edge's endpoints' (_engine/schema.py:2775-2777); which row is sampled is outside the contract. Its graph-blind joins are F-0106."
+  },
+  "iris_vector_graph/_engine/schema.py:2833:prefix-literal": {
+   "anchor": "TOP 1",
+   "cite": [
+    "iris_vector_graph/_engine/schema.py:2772-2779",
+    "iris_vector_graph/_engine/schema.py:2831-2834"
+   ],
+   "class": "documented-sample",
+   "module": "01",
+   "reason": "get_schema_visualization documents a sample: 'Sampled, not exact: a label's properties are the first 20 keys of one node carrying it, and a predicate's start and end labels are those of one edge's endpoints' (_engine/schema.py:2775-2777); which row is sampled is outside the contract. Its graph-blind joins are F-0106."
+  },
+  "iris_vector_graph/_engine/schema.py:2835:first-row": {
+   "anchor": "fetchone",
+   "cite": [
+    "iris_vector_graph/_engine/schema.py:2772-2779",
+    "iris_vector_graph/_engine/schema.py:2833-2836"
+   ],
+   "class": "documented-sample",
+   "module": "01",
+   "reason": "get_schema_visualization documents a sample: 'Sampled, not exact: a label's properties are the first 20 keys of one node carrying it, and a predicate's start and end labels are those of one edge's endpoints' (_engine/schema.py:2775-2777); which row is sampled is outside the contract. Its graph-blind joins are F-0106."
+  },
+  "iris_vector_graph/_engine/schema.py:2839:prefix-literal": {
+   "anchor": "TOP 1",
+   "cite": [
+    "iris_vector_graph/_engine/schema.py:2772-2779",
+    "iris_vector_graph/_engine/schema.py:2837-2840"
+   ],
+   "class": "documented-sample",
+   "module": "01",
+   "reason": "get_schema_visualization documents a sample: 'Sampled, not exact: a label's properties are the first 20 keys of one node carrying it, and a predicate's start and end labels are those of one edge's endpoints' (_engine/schema.py:2775-2777); which row is sampled is outside the contract. Its graph-blind joins are F-0106."
+  },
+  "iris_vector_graph/_engine/schema.py:2841:first-row": {
+   "anchor": "fetchone",
+   "cite": [
+    "iris_vector_graph/_engine/schema.py:2772-2779",
+    "iris_vector_graph/_engine/schema.py:2839-2842"
+   ],
+   "class": "documented-sample",
+   "module": "01",
+   "reason": "get_schema_visualization documents a sample: 'Sampled, not exact: a label's properties are the first 20 keys of one node carrying it, and a predicate's start and end labels are those of one edge's endpoints' (_engine/schema.py:2775-2777); which row is sampled is outside the contract. Its graph-blind joins are F-0106."
+  },
+  "iris_vector_graph/_engine/schema.py:700:first-row": {
+   "anchor": "SELECT $USERNAME",
+   "cite": [
+    "iris_vector_graph/_engine/schema.py:699-701"
+   ],
+   "class": "order-irrelevant",
+   "module": "01",
+   "reason": "SELECT $USERNAME has no FROM: one row by construction"
+  },
+  "iris_vector_graph/_engine/snapshot.py:1421:first-row": {
+   "anchor": "fetchone",
+   "cite": [
+    "iris_vector_graph/_engine/snapshot.py:1398-1426",
+    "iris_vector_graph/routing.py:32-78"
+   ],
+   "class": "unique-key",
+   "module": "18",
+   "reason": "only routed tables reach this read (is_routed_embedding_table, snapshot.py:1400-1404) and a route's name is derived from its graph and model (routing.py:32-78), so table_name selects one registry row (pk_embedding_registry (table_name, graph_id))"
+  },
+  "iris_vector_graph/_engine/vector.py:1146:prefix-literal": {
+   "anchor": "TOP 1",
+   "cite": [
+    "iris_vector_graph/_engine/vector.py:1130-1150"
+   ],
+   "class": "existence-only",
+   "module": "06",
+   "reason": "validate_vector_table: documented as 'the length of one sampled vector' and a VECTOR column declares one width (breadth-a 06.json)"
+  },
+  "iris_vector_graph/_engine/vector.py:1147:first-row": {
+   "anchor": "fetchone",
+   "cite": [
+    "iris_vector_graph/_engine/vector.py:1130-1150"
+   ],
+   "class": "existence-only",
+   "module": "06",
+   "reason": "validate_vector_table: documented as 'the length of one sampled vector' and a VECTOR column declares one width (breadth-a 06.json)"
+  },
+  "iris_vector_graph/_engine/vector.py:1521:py-slice-cut": {
+   "anchor": "all_entities[:k]",
+   "cite": [
+    "iris_vector_graph/_engine/vector.py:1463-1468",
+    "iris_vector_graph/_engine/vector.py:1515-1521"
+   ],
+   "class": "documented-sample",
+   "module": "06",
+   "reason": "kg_VECTOR_GRAPH_SEARCH keeps k of list(set(...)) - Python set order (hash order of str, randomized per process), not storage order; the docstring documents 'keeps k of that set in no particular order' (vector.py:1463-1468). The reviewed contract HD-0603 (best k, defined ties) is an assumption, intent-undecided (intent/HD-0603.md:37-41)"
+  },
+  "iris_vector_graph/_engine/vector.py:435:prefix-literal": {
+   "anchor": "TOP 1",
+   "cite": [
+    "iris_vector_graph/_engine/vector.py:425-446"
+   ],
+   "class": "existence-only",
+   "module": "06",
+   "reason": "one stored vector's width for an error message; a route's emb column declares one width (vector.py:425-446)"
+  },
+  "iris_vector_graph/_engine/vector.py:437:first-row": {
+   "anchor": "fetchone",
+   "cite": [
+    "iris_vector_graph/_engine/vector.py:425-446"
+   ],
+   "class": "existence-only",
+   "module": "06",
+   "reason": "one stored vector's width for an error message; a route's emb column declares one width (vector.py:425-446)"
+  },
+  "iris_vector_graph/_engine/vector.py:562:first-row": {
+   "anchor": "fetchone",
+   "cite": [
+    "iris_vector_graph/_engine/vector.py:557-562",
+    "iris_vector_graph/schema.py:430-436"
+   ],
+   "class": "unique-key",
+   "module": "06",
+   "reason": "the query node's own vector by (node_id, graph) on its route: uq_emb_graph_node"
+  },
+  "iris_vector_graph/_engine/vector.py:60:prefix-literal": {
+   "anchor": "TOP 1",
+   "cite": [
+    "iris_vector_graph/_engine/vector.py:56-84"
+   ],
+   "class": "existence-only",
+   "module": "06",
+   "reason": "one stored vector to probe the column's element type, declared per table, so any row answers the same; the LIMIT 1 cast probe only tests that the statement runs (vector.py:56-84; breadth-a 06.json)"
+  },
+  "iris_vector_graph/_engine/vector.py:62:first-row": {
+   "anchor": "TOP 1",
+   "cite": [
+    "iris_vector_graph/_engine/vector.py:56-84"
+   ],
+   "class": "existence-only",
+   "module": "06",
+   "reason": "one stored vector to probe the column's element type, declared per table, so any row answers the same; the LIMIT 1 cast probe only tests that the statement runs (vector.py:56-84; breadth-a 06.json)"
+  },
+  "iris_vector_graph/_engine/vector.py:71:prefix-split": {
+   "anchor": "LIMIT 1",
+   "cite": [
+    "iris_vector_graph/_engine/vector.py:56-84"
+   ],
+   "class": "existence-only",
+   "module": "06",
+   "reason": "one stored vector to probe the column's element type, declared per table, so any row answers the same; the LIMIT 1 cast probe only tests that the statement runs (vector.py:56-84; breadth-a 06.json)"
+  },
+  "iris_vector_graph/_engine/vector.py:72:prefix-literal": {
+   "anchor": "LIMIT 1",
+   "cite": [
+    "iris_vector_graph/_engine/vector.py:56-84"
+   ],
+   "class": "existence-only",
+   "module": "06",
+   "reason": "one stored vector to probe the column's element type, declared per table, so any row answers the same; the LIMIT 1 cast probe only tests that the statement runs (vector.py:56-84; breadth-a 06.json)"
+  },
+  "iris_vector_graph/_engine/vector.py:75:first-row": {
+   "anchor": "fetchone",
+   "cite": [
+    "iris_vector_graph/_engine/vector.py:56-84"
+   ],
+   "class": "existence-only",
+   "module": "06",
+   "reason": "one stored vector to probe the column's element type, declared per table, so any row answers the same; the LIMIT 1 cast probe only tests that the statement runs (vector.py:56-84; breadth-a 06.json)"
+  },
+  "iris_vector_graph/_write_txn.py:134:first-row": {
+   "anchor": "fetchone",
+   "cite": [
+    "iris_vector_graph/_write_txn.py:131-134"
+   ],
+   "class": "order-irrelevant",
+   "module": "03",
+   "reason": "SELECT <schema>.Txn_<name>(?): no FROM, one row by construction"
+  },
+  "iris_vector_graph/_write_txn.py:142:first-row": {
+   "anchor": "fetchone",
+   "cite": [
+    "iris_vector_graph/_write_txn.py:139-142"
+   ],
+   "class": "order-irrelevant",
+   "module": "03",
+   "reason": "SELECT $TLEVEL: no FROM, one row by construction"
+  },
+  "iris_vector_graph/_write_txn.py:77:first-row": {
+   "anchor": "fetchone",
+   "cite": [
+    "iris_vector_graph/_write_txn.py:74-77"
+   ],
+   "class": "order-irrelevant",
+   "module": "03",
+   "reason": "SELECT $TLEVEL: no FROM, one row by construction"
+  },
+  "iris_vector_graph/engine.py:1340:prefix-literal": {
+   "anchor": "TOP 1",
+   "cite": [
+    "iris_vector_graph/engine.py:1337-1343"
+   ],
+   "class": "finding:F-C0802",
+   "module": "08",
+   "reason": "db.schema.nodeTypeProperties / relTypeProperties sample one node or edge per label/type in storage order (module 08's disposition, modules/08.json storage_order)"
+  },
+  "iris_vector_graph/engine.py:1343:first-row": {
+   "anchor": "fetchone",
+   "cite": [
+    "iris_vector_graph/engine.py:1340-1346"
+   ],
+   "class": "finding:F-C0802",
+   "module": "08",
+   "reason": "db.schema.nodeTypeProperties / relTypeProperties sample one node or edge per label/type in storage order (module 08's disposition, modules/08.json storage_order)"
+  },
+  "iris_vector_graph/engine.py:1382:prefix-literal": {
+   "anchor": "TOP 1",
+   "cite": [
+    "iris_vector_graph/engine.py:1379-1385"
+   ],
+   "class": "finding:F-C0802",
+   "module": "08",
+   "reason": "db.schema.nodeTypeProperties / relTypeProperties sample one node or edge per label/type in storage order (module 08's disposition, modules/08.json storage_order)"
+  },
+  "iris_vector_graph/engine.py:1385:first-row": {
+   "anchor": "fetchone",
+   "cite": [
+    "iris_vector_graph/engine.py:1382-1388"
+   ],
+   "class": "finding:F-C0802",
+   "module": "08",
+   "reason": "db.schema.nodeTypeProperties / relTypeProperties sample one node or edge per label/type in storage order (module 08's disposition, modules/08.json storage_order)"
+  },
+  "iris_vector_graph/engine.py:624:prefix-literal": {
+   "anchor": "TOP 1 graph_id",
+   "cite": [
+    "iris_vector_graph/engine.py:615-638"
+   ],
+   "class": "existence-only",
+   "module": "02",
+   "reason": "_more_than_one_graph: any first row, then whether a graph above or below it exists (engine.py:615-638; breadth-a 02.json)"
+  },
+  "iris_vector_graph/engine.py:625:first-row": {
+   "anchor": "fetchone",
+   "cite": [
+    "iris_vector_graph/engine.py:615-638"
+   ],
+   "class": "existence-only",
+   "module": "02",
+   "reason": "_more_than_one_graph: any first row, then whether a graph above or below it exists (engine.py:615-638; breadth-a 02.json)"
+  },
+  "iris_vector_graph/engine.py:634:prefix-literal": {
+   "anchor": "TOP 1 graph_id",
+   "cite": [
+    "iris_vector_graph/engine.py:615-638"
+   ],
+   "class": "existence-only",
+   "module": "02",
+   "reason": "_more_than_one_graph: any first row, then whether a graph above or below it exists (engine.py:615-638; breadth-a 02.json)"
+  },
+  "iris_vector_graph/engine.py:852:first-row": {
+   "anchor": "fetchone",
+   "cite": [
+    "iris_vector_graph/engine.py:850-853"
+   ],
+   "class": "order-irrelevant",
+   "module": "08",
+   "reason": "SELECT $ZVERSION: no FROM, one row"
+  },
+  "iris_vector_graph/gql/engine.py:40:prefix-literal": {
+   "anchor": "sql = f\"\"\"",
+   "cite": [
+    "iris_vector_graph/gql/engine.py:32-50"
+   ],
+   "class": "documented-sample",
+   "module": "16",
+   "reason": "get_sampled_properties is documented as sampling ('Samples nodes of a given label', 'Using TOP clause for sampling as per SC-002/SC-003 and FR-002'): the discovered key set may depend on which sample_limit nodes come first only when a label has more than sample_limit (1000) nodes; its graph-blind join is F-1603"
+  },
+  "iris_vector_graph/gql/resolvers.py:40:py-slice-cut": {
+   "anchor": "all_ids[offset : offset + limit]",
+   "cite": [
+    "iris_vector_graph/gql/resolvers.py:32-46"
+   ],
+   "class": "finding:F-C1642",
+   "module": "16",
+   "reason": "resolve_nodes pages all_ids[offset:offset+limit] of an unordered SELECT s FROM rdf_labels: page membership follows storage order; F-1603 is the cross-graph part (the page cut from every graph's ids); confirmed live st-live-so-16"
+  },
+  "iris_vector_graph/ledger/client.py:557:first-row": {
+   "anchor": "fetchone",
+   "cite": [
+    "iris_vector_graph/ledger/client.py:550-558",
+    "iris_src/src/Graph/KG/LedgerStats.cls:48",
+    "iris_src/src/Graph/KG/LedgerStats.cls:56"
+   ],
+   "class": "unique-key",
+   "module": "11",
+   "reason": "ledger_stats has IdKey LedgerName and only the 'default' row is written (LedgerStats.cls:48, 56)"
+  },
+  "iris_vector_graph/migrations/graph_scoped_embeddings.py:1273:prefix-literal": {
+   "anchor": "SELECT TOP 1 emb",
+   "cite": [
+    "iris_vector_graph/migrations/graph_scoped_embeddings.py:1265-1280"
+   ],
+   "class": "finding:F-C0604",
+   "module": "06",
+   "reason": "_measured_width sizes the route from one stored vector with no ORDER BY when neither the table nor the registry declares a width (breadth-a 06.json)"
+  },
+  "iris_vector_graph/schema.py:1073:first-row": {
+   "anchor": "fetchone",
+   "cite": [
+    "iris_vector_graph/schema.py:1068-1073"
+   ],
+   "class": "unique-key",
+   "module": "01",
+   "reason": "INFORMATION_SCHEMA.COLUMNS by (TABLE_SCHEMA, TABLE_NAME, COLUMN_NAME): one catalog row per column"
+  },
+  "iris_vector_graph/schema.py:1131:first-row": {
+   "anchor": "fetchone",
+   "cite": [
+    "iris_vector_graph/schema.py:1126-1131"
+   ],
+   "class": "unique-key",
+   "module": "01",
+   "reason": "INFORMATION_SCHEMA.COLUMNS by (TABLE_SCHEMA, TABLE_NAME, COLUMN_NAME): one catalog row per column"
+  },
+  "iris_vector_graph/schema.py:1353:first-row": {
+   "anchor": "fetchone",
+   "cite": [
+    "iris_vector_graph/schema.py:1349-1353"
+   ],
+   "class": "unique-key",
+   "module": "01",
+   "reason": "INFORMATION_SCHEMA.COLUMNS by (TABLE_SCHEMA, TABLE_NAME, COLUMN_NAME='graph_id'): one catalog row"
+  },
+  "iris_vector_graph/schema.py:1862:first-row": {
+   "anchor": "fetchone",
+   "cite": [
+    "iris_vector_graph/schema.py:1858-1862"
+   ],
+   "class": "unique-key",
+   "module": "01",
+   "reason": "%Dictionary.PropertyDefinition by (parent, Name): the definition's ID is parent||Name"
+  },
+  "iris_vector_graph/schema.py:1908:prefix-literal": {
+   "anchor": "SELECT TOP 1",
+   "cite": [
+    "iris_vector_graph/schema.py:1905-1911"
+   ],
+   "class": "existence-only",
+   "module": "01",
+   "reason": "status[table] = True when the SELECT runs; the row is not read (schema.py:1905-1911)"
+  },
+  "iris_vector_graph/schema.py:2053:first-row": {
+   "anchor": "fetchone",
+   "cite": [
+    "iris_vector_graph/schema.py:2049-2053"
+   ],
+   "class": "unique-key",
+   "module": "01",
+   "reason": "%Dictionary.CompiledClass by (SqlSchemaName, SqlTableName): one class projects one SQL table name in a namespace"
+  },
+  "iris_vector_graph/schema.py:2123:first-row": {
+   "anchor": "fetchone",
+   "cite": [
+    "iris_vector_graph/schema.py:2100-2126"
+   ],
+   "class": "unique-key",
+   "module": "01",
+   "reason": "INFORMATION_SCHEMA.COLUMNS by (TABLE_SCHEMA, TABLE_NAME, COLUMN_NAME='emb') per candidate table; the loop stops at the first table that has the column (deterministic candidate order, schema.py:2100-2126)"
+  },
+  "iris_vector_graph/schema.py:883:first-row": {
+   "anchor": "backfill_temporal_rows",
+   "cite": [
+    "iris_vector_graph/schema.py:882-884"
+   ],
+   "class": "order-irrelevant",
+   "module": "01",
+   "reason": "SELECT Graph_KG.backfill_temporal_rows(): a function call with no FROM, one row"
+  },
+  "iris_vector_graph/schema.py:933:prefix-literal": {
+   "anchor": "SELECT TOP",
+   "cite": [
+    "iris_vector_graph/schema.py:928-941"
+   ],
+   "class": "set-valued",
+   "module": "01",
+   "reason": "batch drain: UPDATE ... WHERE %ID IN (SELECT TOP n %ID ... WHERE val_key IS NULL AND val IS NOT NULL) repeats until a batch is short, so every qualifying row is updated whatever order batches take (schema.py:928-941); breadth-a 01.json"
+  },
+  "iris_vector_graph/stores/iris_sql_store.py:1180:prefix-split": {
+   "anchor": "cursor.execute",
+   "cite": [
+    "iris_vector_graph/stores/iris_sql_store.py:1162-1182",
+    "iris_vector_graph/store_protocol.py:10-11"
+   ],
+   "class": "finding:F-C1742",
+   "module": "17",
+   "reason": "query_nodes(limit=n) without a label: SELECT node_id FROM nodes FETCH FIRST n ROWS ONLY with no ORDER BY: the caller gets the first n node rows in storage order (store_protocol.py:10-11 promises no order); confirmed live st-live-so-17"
+  },
+  "iris_vector_graph/stores/iris_sql_store.py:1192:first-row": {
+   "anchor": "fetchone",
+   "cite": [
+    "iris_vector_graph/stores/iris_sql_store.py:1184-1200"
+   ],
+   "class": "finding:F-1701",
+   "module": "17",
+   "reason": "query_nodes' property filter reads val by (s, key) with no graph: with the id in two graphs it tests whichever graph's row comes first; F-1701's remedy names query_nodes ('give get_nodes/get_node_labels/query_nodes a graph argument')"
+  },
+  "iris_vector_graph/vector_utils.py:352:prefix-literal": {
+   "anchor": "SELECT TOP 100",
+   "cite": [
+    "iris_vector_graph/vector_utils.py:345-370"
+   ],
+   "class": "order-irrelevant",
+   "module": "06",
+   "reason": "benchmark: any 100 rows serve the timing; the result holds only timings and min(len, k) (vector_utils.py:345-370)"
+  },
+  "iris_vector_graph/vector_utils.py:455:prefix-literal": {
+   "anchor": "TOP 1",
+   "cite": [
+    "iris_vector_graph/vector_utils.py:450-460"
+   ],
+   "class": "existence-only",
+   "module": "06",
+   "reason": "one row's vector for 'vector_dimension'; the column declares one width"
+  },
+  "iris_vector_graph/vector_utils.py:456:first-row": {
+   "anchor": "fetchone",
+   "cite": [
+    "iris_vector_graph/vector_utils.py:450-460"
+   ],
+   "class": "existence-only",
+   "module": "06",
+   "reason": "one row's vector for 'vector_dimension'; the column declares one width"
+  }
+ },
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e"
+}

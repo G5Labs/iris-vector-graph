@@ -1,0 +1,15 @@
+{
+  "command": "locks.sh iris timeout 2400 python3 experiment/playbook-completion/structural/reads/noninterference.py --modules 01,02,03,04,05,06 --out $RUN_DIR/structural/reads/r1-a.json",
+  "experiment_head": "d77620a9333a7eb5b62ca9b8c92144a6aaf74d2b",
+  "id": "st-live-reads-a",
+  "kind": "live",
+  "lane": "structural",
+  "log": "$RUN_DIR/structural/reads/r1-a.json",
+  "log_bytes": 130786,
+  "log_sha256": "dd6fd1c1b213e15872c62ec70b9032577aa4a8b8e6f54c69b70eb02915c55dc5",
+  "observes": "AUDITD non-interference read oracle (self-test st-control-reads-selftest), 50 read actions: 01 get_property_keys(label=L) changes when a node with the same id but without L exists in another graph (F-0106, violation); 02 1/1 holds; 03 30/30 hold (graph-scoped readers, default-graph readers, all-graphs readers under key noise, create_node/create_edge outcomes); 04 4/4 hold (verify_graph x2, Edgeless.LonersJson, Adj.Degree); 05 12 hold and find_burst_nodes(T, graph=stg1) changes under other-predicate edges in the same graph (F-0508, violation); 06 kg_KNN_VEC(graph=stg1) holds. Inside perturbation unchanged (sensitivity not shown) for get_json_field_values and get_nodes_by_property",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T11:50:47+00:00",
+  "result": "fail"
+}

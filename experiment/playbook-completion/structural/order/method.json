@@ -1,0 +1,428 @@
+{
+ "lane": "structural (fork: storage order and row permutation)",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "namespace": "AUDITD",
+ "gates": [
+  "3.4-storage-order",
+  "3.6-row-permutation"
+ ],
+ "method": {
+  "3.4-storage-order": "structural/order/storage_order_scan.py: a copy of tools/storage_order_check.py (unchanged there) extended with rules prefix-split (TOP/LIMIT assembled from several literals, f-string placeholders resolved from the function's assignments), first-row (fetchone()/fetchall()[0] of an unordered multi-row SELECT), os-first-row (&sql SELECT INTO outside a cursor; dynamic statements read with one If rs.%Next()), os-cursor-alloc (a result-set loop without ORDER BY that allocates identities), os-cutoff (Quit:/If count cut-offs over a cursor or $Order), py-slice-cut (a slice of an unordered fetched list or a set); scope iris_vector_graph, api, src (.py) and iris_src/src, src (.cls); sites mapped to modules via models/breadth-c/inventory.json (innermost entry range, else file owners), overridden per site by the disposition's module where the inventory names several. Automatic classes from the statement text: ORDER BY present (incl. an ORDER BY in the same f-string or the assembled statement), existence (TOP 1 1, WHERE 1=0, TOP 0, fetchone() is (not) None), single-row aggregate, unique key (WHERE pins every column of a declared key, schema.py DDL keys), collation order ($Order loops). Every other site of the gated modules has a hand disposition (dispositions.json, made by make_dispositions.py) with path:line cites and an anchor text that must occur within 3 lines of the site; the gate fails on an undisposed site, a stale cite or anchor, an unknown class or an unused disposition.",
+  "3.6-row-permutation": "structural/order/permutation.py: per module a small dataset written through the product's writers in three insertion orders (forward, reverse, fixed shuffle), AUDITD emptied by lib.reset (Eraser.EraseAll, Ledger.PurgeAll) between orders inside one lock hold; the module's read APIs compared across orders: set (deep multiset), list (exact, where the contract has an order or a top-k/paging cut) or sample (may differ; every answer must pass a well-formedness validator). Generated ids, digests, seqs and blank nodes normalised where they follow an explicit order by design; statement ids kept where they are the subject (F-C1108). Per-module verdicts (verdict.py) are registered separately so a module's cell cites only its own result. so_live.py confirms the storage-order reliance sites live (two insertion orders)."
+ },
+ "self_tests": {
+  "st-control-so-selftest": "seeded sites for all 7 rules flagged, 7 seeded order-free sites not flagged, gate rejects undisposed/stale/unknown-class; the original checker misses 6 of the 7 planted rules (control_original.py)",
+  "st-control-so-perm-selftest": "seeded TOP 1 FROM %IGNOREINDEX * reader flagged (ps:0/ps:5/ps:4), seeded ORDER BY reader not flagged"
+ },
+ "runs": {
+  "st-check-so-gate": {
+   "kind": "check",
+   "result": "pass",
+   "log": "$RUN_DIR/structural/order/so-gate.json"
+  },
+  "st-check-so-perm-01": {
+   "kind": "check",
+   "result": "pass",
+   "log": "$RUN_DIR/structural/order/verdicts/perm-01.json"
+  },
+  "st-check-so-perm-02": {
+   "kind": "check",
+   "result": "pass",
+   "log": "$RUN_DIR/structural/order/verdicts/perm-02.json"
+  },
+  "st-check-so-perm-03": {
+   "kind": "check",
+   "result": "fail",
+   "log": "$RUN_DIR/structural/order/verdicts/perm-03.json"
+  },
+  "st-check-so-perm-04": {
+   "kind": "check",
+   "result": "pass",
+   "log": "$RUN_DIR/structural/order/verdicts/perm-04.json"
+  },
+  "st-check-so-perm-05": {
+   "kind": "check",
+   "result": "pass",
+   "log": "$RUN_DIR/structural/order/verdicts/perm-05.json"
+  },
+  "st-check-so-perm-06": {
+   "kind": "check",
+   "result": "fail",
+   "log": "$RUN_DIR/structural/order/verdicts/perm-06.json"
+  },
+  "st-check-so-perm-07": {
+   "kind": "check",
+   "result": "fail",
+   "log": "$RUN_DIR/structural/order/verdicts/perm-07.json"
+  },
+  "st-check-so-perm-10": {
+   "kind": "check",
+   "result": "pass",
+   "log": "$RUN_DIR/structural/order/verdicts/perm-10.json"
+  },
+  "st-check-so-perm-11": {
+   "kind": "check",
+   "result": "fail",
+   "log": "$RUN_DIR/structural/order/verdicts/perm-11.json"
+  },
+  "st-check-so-perm-12": {
+   "kind": "check",
+   "result": "pass",
+   "log": "$RUN_DIR/structural/order/verdicts/perm-12.json"
+  },
+  "st-check-so-perm-13": {
+   "kind": "check",
+   "result": "pass",
+   "log": "$RUN_DIR/structural/order/verdicts/perm-13.json"
+  },
+  "st-check-so-perm-14": {
+   "kind": "check",
+   "result": "pass",
+   "log": "$RUN_DIR/structural/order/verdicts/perm-14.json"
+  },
+  "st-check-so-perm-15": {
+   "kind": "check",
+   "result": "pass",
+   "log": "$RUN_DIR/structural/order/verdicts/perm-15.json"
+  },
+  "st-check-so-perm-16": {
+   "kind": "check",
+   "result": "fail",
+   "log": "$RUN_DIR/structural/order/verdicts/perm-16.json"
+  },
+  "st-check-so-perm-17": {
+   "kind": "check",
+   "result": "pass",
+   "log": "$RUN_DIR/structural/order/verdicts/perm-17.json"
+  },
+  "st-control-so-perm-selftest": {
+   "kind": "control",
+   "result": "pass",
+   "log": "$RUN_DIR/structural/order/perm-selftest.json"
+  },
+  "st-control-so-selftest": {
+   "kind": "control",
+   "result": "pass",
+   "log": "$RUN_DIR/structural/order/so-selftest.log"
+  },
+  "st-live-so-11": {
+   "kind": "live",
+   "result": "fail",
+   "log": "$RUN_DIR/structural/order/so-live-p11.json"
+  },
+  "st-live-so-17b": {
+   "kind": "live",
+   "result": "fail",
+   "log": "$RUN_DIR/structural/order/so-live-p17b.json"
+  },
+  "st-live-so-confirm": {
+   "kind": "live",
+   "result": "fail",
+   "log": "$RUN_DIR/structural/order/so-live-try1.json"
+  },
+  "st-live-perm-a": {
+   "kind": "live",
+   "result": "fail",
+   "log": "$RUN_DIR/structural/order/perm-a.json"
+  },
+  "st-live-perm-b": {
+   "kind": "live",
+   "result": "fail",
+   "log": "$RUN_DIR/structural/order/perm-b.json"
+  },
+  "st-live-perm-b07": {
+   "kind": "live",
+   "result": "fail",
+   "log": "$RUN_DIR/structural/order/perm-b07.json"
+  },
+  "st-live-perm-c": {
+   "kind": "live",
+   "result": "fail",
+   "log": "$RUN_DIR/structural/order/perm-c.json"
+  },
+  "st-live-perm-c13": {
+   "kind": "live",
+   "result": "pass",
+   "log": "$RUN_DIR/structural/order/perm-c13.json"
+  }
+ },
+ "site_tables": {
+  "dispositions": "experiment/playbook-completion/structural/order/dispositions.json",
+  "scan_and_gate": "$RUN_DIR/structural/order/so-gate.json (sites, decided with basis/cites, problems)"
+ },
+ "decisions": {
+  "3.4-storage-order/01": {
+   "status": "closed",
+   "product_obligation": "unknown",
+   "findings": [],
+   "reason": "36 scan sites in module 01's functions decided (9 single-row aggregates, 8 existence probes, 6 unique keys, 2 one-row system functions, 1 batch drain, 2 ORDER BY present) and 8 order-dependent sites, all inside get_schema_visualization's documented sample ('Sampled, not exact', _engine/schema.py:2775-2777); live, the sample differs by insertion order and every answer is a valid sample (st-check-so-perm-01). No reliance outside a documented sample",
+   "remaining": ""
+  },
+  "3.4-storage-order/03": {
+   "status": "closed",
+   "product_obligation": "fails",
+   "findings": [
+    "F-C0302",
+    "F-0206"
+   ],
+   "reason": "reliance shown live: get_node_ids_by_property / get_property_pairs_like with a limit answer the first n rows in scan order (F-C0302, nodes_edges.py:828, 911); _filter_edges_by_properties reads the first rdf_edges row of (s, p, o_id) in any graph (F-0206, nodes_edges.py:605). The other 9 module-03 sites are one-row functions, aggregates or existence probes",
+   "remaining": ""
+  },
+  "3.4-storage-order/06": {
+   "status": "closed",
+   "product_obligation": "fails",
+   "findings": [
+    "F-C0603",
+    "F-C0604",
+    "F-C0642"
+   ],
+   "reason": "45 sites decided; reliance: VectorRouteGuard TOP 1 over registry rows (F-C0603, GraphStores.cls:308, confirmed-source), _measured_width from one arbitrary row (F-C0604, graph_scoped_embeddings.py:1273, confirmed-source); the top-k statements order by score only, so ties at the cut follow storage order (F-C0642, live st-check-so-perm-06); kg_VECTOR_GRAPH_SEARCH's list(set())[:k] is Python hash order, documented 'in no particular order' (HD-0603, intent-undecided)",
+   "remaining": "F-C0603 and F-C0604 not reproduced live (need two default-model node routes for one graph / a legacy table without a declared width)"
+  },
+  "3.4-storage-order/09": {
+   "status": "closed",
+   "product_obligation": "unknown",
+   "findings": [],
+   "reason": "6 sites: Anchors numbers the candidate set in cursor order but every ordered or limited plan sorts before it cuts (set-valued); NamedEnds' TOP 1001 is a count probe that falls back to the general walk; two $Order cut-offs are collation-ordered. No reliance (F-0907 is the shadow comparison's row-order rule, gate 3.7-differential)",
+   "remaining": "no row-permutation run for module 09 in this lane (not in the open list)"
+  },
+  "3.4-storage-order/11": {
+   "status": "closed",
+   "product_obligation": "fails",
+   "findings": [
+    "F-0205",
+    "F-C1108"
+   ],
+   "reason": "FindEdge takes the first rdf_edges row of a tuple without ekey or ORDER BY; live, a ledger delete by tuple on a multigraph removes the parallel edge inserted first (plan: idkeys from an index intersection, row-id order) (F-0205); OpDeleteNode allocates statement ids in cursor order (F-C1108, intent-undecided, reproduced again). 5 other sites are existence probes or unique-key reads; the genesis capture orders every scan",
+   "remaining": ""
+  },
+  "3.4-storage-order/12": {
+   "status": "closed",
+   "product_obligation": "unknown",
+   "findings": [],
+   "reason": "2 sites in module 12's functions: one single-row aggregate and EraseBareNodes' batch over a $Order root (collation order, batches commit and resume by key); erase_graph and delete_nodes_by_prefix answers and the remaining rows are equal in three insertion orders. GraphStores.cls:308 (VectorRouteGuard) is in 12's class file but is module 06's route rule (F-C0603)",
+   "remaining": ""
+  },
+  "3.4-storage-order/13": {
+   "status": "closed",
+   "product_obligation": "unknown",
+   "findings": [],
+   "reason": "2 sites: the revision row read by seq (unique key) and BatchInLock's cut-off, which walks ^IVG.Ledger('rec', seq, ordinal) in key order and resumes from the saved key (the restart-from-first after a stop is F-C1303, progress); receipt and history equal for three commit orders",
+   "remaining": ""
+  },
+  "3.4-storage-order/14": {
+   "status": "closed",
+   "product_obligation": "unknown",
+   "findings": [],
+   "reason": "2 sites: fetch_history's TOP n is followed by ORDER BY seq on the assembled statement (replay.py:342-345: the earlier 'intent-undecided' reading of this site was the literal-only scan's false positive) and the revision read by seq (unique key); verify, reconstruct and canonical reads equal in three orders",
+   "remaining": ""
+  },
+  "3.4-storage-order/16": {
+   "status": "closed",
+   "product_obligation": "fails",
+   "findings": [
+    "F-C1642"
+   ],
+   "reason": "resolve_nodes pages an unordered SELECT by slicing (gql/resolvers.py:40; F-C1642, live); the sample API's CoreQuery.nodes always orders (created_at by default; ties at a page cut would follow storage order), get_sampled_properties is a documented sample, the old api/gql/resolvers/query.py is not imported (api/gql/schema.py:16)",
+   "remaining": ""
+  },
+  "3.4-storage-order/17": {
+   "status": "closed",
+   "product_obligation": "fails",
+   "findings": [
+    "F-C1742",
+    "F-1701"
+   ],
+   "reason": "query_nodes(limit=n) cuts an unordered node scan (F-C1742, confirmed-source; the TOP spelling of the same statement answers by insertion order, st-live-so-17b) and its property filter reads (s, key) in any graph, first row wins (F-1701); active_queries_sql is a documented bounded sample; the vector helpers order by score (ties: the F-C0642 pattern). Found while confirming: query_nodes(limit) kills the client process with SIGSEGV (F-C1743, gates 3.7-failure-controls / 3.6-capacity)",
+   "remaining": ""
+  },
+  "3.4-storage-order/18": {
+   "status": "closed",
+   "product_obligation": "unknown",
+   "findings": [],
+   "reason": "1 site: restore's registry read by table_name, which only routed tables reach and whose name is derived from (graph, model) (routing.py:32-78): unique. The save path reads whole tables (set-valued); no prefix cut or first-row read in snapshot.py or Snapshot.cls",
+   "remaining": "no row-permutation run for module 18 in this lane (its cell is closed by breadth C, inspected)"
+  },
+  "3.6-row-permutation/01": {
+   "status": "closed",
+   "product_obligation": "unknown",
+   "findings": [],
+   "reason": "get_schema_visualization: answers differ (documented sample) and all pass the sample validator",
+   "remaining": "permuted reads only; other module-01 reads (status, setup reports) not permuted"
+  },
+  "3.6-row-permutation/02": {
+   "status": "closed",
+   "product_obligation": "unknown",
+   "findings": [],
+   "reason": "list_graphs, count_nodes(graph), get_nodes(graph), get_node, _more_than_one_graph equal in three orders",
+   "remaining": "permuted reads only; Bolt/ledger graph-scope surfaces are other modules'"
+  },
+  "3.6-row-permutation/03": {
+   "status": "closed",
+   "product_obligation": "fails",
+   "findings": [
+    "F-C0302",
+    "F-0206"
+   ],
+   "reason": "capped property lookups and the edge property filter differ by insertion order (st-check-so-perm-03); label/node/count reads equal",
+   "remaining": "permuted reads only (listed in the verdict run); the module's other code is covered statically by 3.4-storage-order"
+  },
+  "3.6-row-permutation/04": {
+   "status": "closed",
+   "product_obligation": "unknown",
+   "findings": [],
+   "reason": "kg_NEIGHBORS, get_edge_count, verify_graph, an unordered Cypher edge read and Adj.Degree equal in three orders",
+   "remaining": "permuted reads only; rebuild/sync outputs (^NKG, degree caches) compared only through these reads"
+  },
+  "3.6-row-permutation/05": {
+   "status": "closed",
+   "product_obligation": "unknown",
+   "findings": [],
+   "reason": "window read (ordered, with a tie at one timestamp), aggregate, bucket groups, latest edges and burst nodes equal in three orders",
+   "remaining": "permuted reads only; purges and the paged window reader across pages not permuted"
+  },
+  "3.6-row-permutation/06": {
+   "status": "closed",
+   "product_obligation": "fails",
+   "findings": [
+    "F-C0642"
+   ],
+   "reason": "kg_KNN_VEC cuts three tied scores at k=2 differently per insertion order (st-check-so-perm-06)",
+   "remaining": "permuted reads only (listed in the verdict run); the module's other code is covered statically by 3.4-storage-order"
+  },
+  "3.6-row-permutation/07": {
+   "status": "closed",
+   "product_obligation": "fails",
+   "findings": [
+    "F-C0703"
+   ],
+   "reason": "kg_TXT (LIKE fallback, TOP k without ORDER BY) cuts three tied documents differently per insertion order (st-check-so-perm-07: F-C0703 reproduced live); bm25_search breaks ties by node id and holds",
+   "remaining": "permuted reads only; kg_RRF_FUSE's hash-order tie (F-C0703) not run"
+  },
+  "3.6-row-permutation/10": {
+   "status": "closed",
+   "product_obligation": "unknown",
+   "findings": [],
+   "reason": "PageRank, WCC, CDLP, degree centrality top-k with every degree tied, triangles, khop, subgraph equal in three orders",
+   "remaining": "permuted reads only; random_walk (random by design), Leiden and the Arno/NKG accelerated paths not permuted"
+  },
+  "3.6-row-permutation/11": {
+   "status": "closed",
+   "product_obligation": "intent-undecided",
+   "findings": [
+    "F-C1108"
+   ],
+   "reason": "genesis records, detach content, verify and history equal; the detach cascade's statement ids follow insertion order (F-C1108, intent-undecided)",
+   "remaining": "permuted reads only (listed in the verdict run); the module's other code is covered statically by 3.4-storage-order"
+  },
+  "3.6-row-permutation/12": {
+   "status": "closed",
+   "product_obligation": "unknown",
+   "findings": [],
+   "reason": "erase_graph, delete_nodes_by_prefix and the remaining rows equal in three orders",
+   "remaining": "permuted reads only (listed in the verdict run); the module's other code is covered statically by 3.4-storage-order"
+  },
+  "3.6-row-permutation/13": {
+   "status": "closed",
+   "product_obligation": "unknown",
+   "findings": [],
+   "reason": "redaction receipt and every revision record (normalised) equal for three commit orders",
+   "remaining": "permuted reads only; the stop/resume path (F-C1303) not permuted"
+  },
+  "3.6-row-permutation/14": {
+   "status": "closed",
+   "product_obligation": "unknown",
+   "findings": [],
+   "reason": "verify, reconstruct(head) and canonical reads equal in three orders",
+   "remaining": "permuted reads only; export_reconstruction files and paged readers not permuted"
+  },
+  "3.6-row-permutation/15": {
+   "status": "closed",
+   "product_obligation": "unknown",
+   "findings": [],
+   "reason": "export_rdf and prov_export (canonical rdflib graphs) and get_reifications equal in three orders",
+   "remaining": "permuted reads only; FHIR sync paths not exercised (no FHIR server classes on Community)"
+  },
+  "3.6-row-permutation/16": {
+   "status": "closed",
+   "product_obligation": "fails",
+   "findings": [
+    "F-C1642"
+   ],
+   "reason": "the generated GraphQL resolve_nodes pages differ by insertion order; the sample API's ordered pages hold",
+   "remaining": "permuted reads only; Bolt, HTTP Cypher and REST surfaces not reachable in-process here"
+  },
+  "3.6-row-permutation/17": {
+   "status": "closed",
+   "product_obligation": "fails",
+   "findings": [
+    "F-C1742"
+   ],
+   "reason": "query_nodes(label), get_nodes, get_node_count equal; query_nodes(limit=n) never answers here (SIGSEGV, F-C1743) and its statement shape answers by insertion order (st-live-so-17b, F-C1742)",
+   "remaining": "permuted reads only (listed in the verdict run); the module's other code is covered statically by 3.4-storage-order"
+  }
+ },
+ "superseded": {
+  "st-live-perm-c module 13 history comparison": "harness artefact (fields inside each record were sorted, digests landed in different positions); st-live-perm-c13 reruns it with whole records: holds",
+  "st-live-so-confirm P11": "create_edge of a second (s,p,o) in a multigraph left one row; st-live-so-11 adds the parallel edge with a multigraph Cypher CREATE",
+  "first permutation attempt for module 17": "the harness process dumped core inside IRISGraphStore.query_nodes(limit=2) (F-C1743); query_nodes(limit) then moved to a child process (so_live.py P17/P17b)"
+ },
+ "outside_this_lane_undisposed_sites": {
+  "count": 39,
+  "note": "candidate sites of modules whose 3.4-storage-order cell other lanes closed (15, 10, 08, 02, 05, 07); not disposed here",
+  "sites": [
+   "iris_src/src/Graph/KG/FHIRGraph.cls:196 os-first-row (15) Graph.KG.FHIRGraph.Register",
+   "iris_src/src/Graph/KG/FHIRGraph.cls:216 os-first-row (15) Graph.KG.FHIRGraph.Register",
+   "iris_src/src/Graph/KG/FHIRGraph.cls:477 os-cursor-alloc (15) Graph.KG.FHIRGraph.Rebuild",
+   "iris_src/src/Graph/KG/FHIRGraph.cls:483 os-cutoff (15) Graph.KG.FHIRGraph.Rebuild",
+   "iris_src/src/Graph/KG/FHIRGraph.cls:597 os-cutoff (15) Graph.KG.FHIRGraph.SyncOnce",
+   "iris_src/src/Graph/KG/FHIRGraph.cls:804 os-cursor-alloc (15) Graph.KG.FHIRGraph.ResolveConcepts",
+   "iris_src/src/Graph/KG/FHIRGraph.cls:818 os-cursor-alloc (15) Graph.KG.FHIRGraph.ResolveConcepts",
+   "iris_src/src/Graph/KG/FHIRGraph.cls:823 os-cursor-alloc (15) Graph.KG.FHIRGraph.ResolveConcepts",
+   "iris_src/src/Graph/KG/FHIRGraph.cls:1382 os-cursor-alloc (15) Graph.KG.FHIRGraph.TokenRows",
+   "iris_src/src/Graph/KG/FHIRGraph.cls:1458 os-cursor-alloc (15) Graph.KG.FHIRGraph.Rederive",
+   "iris_src/src/Graph/KG/FHIRGraph.cls:1460 os-cutoff (15) Graph.KG.FHIRGraph.Rederive",
+   "iris_src/src/Graph/KG/FHIRGraph.cls:1634 os-first-row (15) Graph.KG.FHIRGraph.Group",
+   "iris_src/src/Graph/KG/FHIRGraph.cls:1995 os-cutoff (15) Graph.KG.FHIRGraph.SyncAllDefinitions",
+   "iris_src/src/Graph/KG/FHIRGraph.cls:2021 os-first-row (15) Graph.KG.FHIRGraph.SyncDefinition",
+   "iris_src/src/Graph/KG/FHIRGraph.cls:2220 os-cursor-alloc (15) Graph.KG.FHIRGraph.ResyncKey",
+   "iris_src/src/Graph/KG/FHIRGraph.cls:2407 os-cursor-alloc (15) Graph.KG.FHIRGraph.DropNode",
+   "iris_src/src/Graph/KG/FHIRGraph.cls:2436 os-cursor-alloc (15) Graph.KG.FHIRGraph.DropNode",
+   "iris_src/src/Graph/KG/GraphMode.cls:59 os-first-row (02) Graph.KG.GraphMode.ParallelCount",
+   "iris_src/src/Graph/KG/PageRank.cls:144 os-cutoff (10) Graph.KG.PageRank.WithUnscored",
+   "iris_src/src/Graph/KG/Subgraph.cls:87 os-cutoff (10) Graph.KG.Subgraph.SubgraphJson",
+   "iris_src/src/Graph/KG/Subgraph.cls:89 os-cutoff (10) Graph.KG.Subgraph.SubgraphJson",
+   "iris_src/src/Graph/KG/Subgraph.cls:346 os-cutoff (10) Graph.KG.Subgraph.PPRGuidedJson",
+   "iris_src/src/Graph/KG/VarLength.cls:178 os-cutoff (10) Graph.KG.VarLength.EndsInto",
+   "iris_src/src/IVG/Percentile.cls:15 os-cutoff (08) IVG.Percentile.PDISC",
+   "iris_vector_graph/_engine/fhir.py:316 py-slice-cut (15) FhirMixin.attach_embeddings_to_table",
+   "iris_vector_graph/_engine/query.py:151 prefix-literal (08) node_with_labels",
+   "iris_vector_graph/_engine/temporal.py:179 first-row (05) _select_structural_row",
+   "iris_vector_graph/_engine/vector.py:1042 prefix-literal (07) VectorMixin.kg_TXT",
+   "iris_vector_graph/cypher/translator.py:2926 prefix-literal (08) _translate_vector_search._branch",
+   "iris_vector_graph/cypher/translator.py:11141 prefix-literal (08) _merge_action_value_sql",
+   "iris_vector_graph/cypher/translator.py:11175 prefix-literal (08) _merge_action_value_sql",
+   "iris_vector_graph/cypher/translator.py:11309 py-slice-cut (08) _move_before_edge_insert",
+   "iris_vector_graph/cypher/translator.py:12386 prefix-literal (08) translate_merge_clause",
+   "iris_vector_graph/stores/arno_bridge.py:415 first-row (10) arno_available",
+   "iris_vector_graph/stores/arno_bridge.py:484 first-row (10) arno_call",
+   "iris_vector_graph/stores/arno_bridge.py:509 first-row (10) arno_call",
+   "iris_vector_graph/stores/arno_bridge.py:762 first-row (10) build_kg_adjacency_chunked",
+   "iris_vector_graph/stores/arno_bridge.py:905 first-row (10) _build_kg_adjacency_serverside",
+   "iris_vector_graph/stores/arno_bridge.py:926 first-row (10) _build_kg_adjacency_serverside"
+  ]
+ },
+ "new_findings": [
+  "F-C0642",
+  "F-C1642",
+  "F-C1742",
+  "F-C1743"
+ ],
+ "existing_findings_with_new_live_evidence": {
+  "F-C0302": "st-live-so-confirm P03, st-check-so-perm-03 (was confirmed-source)",
+  "F-0206": "_filter_edges_by_properties live (st-live-so-confirm P03)",
+  "F-0205": "st-live-so-11 (was confirmed-source)",
+  "F-C0703": "st-live-perm-b07 kg_TXT tie cut (was confirmed-source)",
+  "F-C1108": "st-check-so-perm-11 (reproduced again, intent-undecided)"
+ }
+}

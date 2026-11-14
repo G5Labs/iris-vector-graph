@@ -1,0 +1,15 @@
+{
+  "command": "locks.sh iris python experiment/playbook-completion/structural/capkeys/temporal_count.py $RUN_DIR/structural/capkeys/temporal-count-r2.json",
+  "experiment_head": "00206ce6b39ee44140ab17aa7dfbb0ac46186f4d",
+  "id": "st-live-keys-temporal-count",
+  "kind": "live",
+  "lane": "structural",
+  "log": "$RUN_DIR/structural/capkeys/temporal-count-r2.json",
+  "log_bytes": 1436,
+  "log_sha256": "f1d827a6e70d82710e5e0fa22247d91ba02d90f704b68083cf0025a168b9bbe4",
+  "observes": "AUDITD, module 05, each variant alone from an empty namespace: insert x2 of one key, upsert x2, insert then upsert, 4 racing inserts, insert at t then upsert x2 at t+5, insert at t then insert at t+5: in every variant get_temporal_aggregate(count) equals the distinct events of get_edges_in_window (1,1,1,1,2,2). The count 4 for 3 events that st-live-keys saw after its combined sequence is not reproduced here",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T12:14:01+00:00",
+  "result": "pass"
+}
