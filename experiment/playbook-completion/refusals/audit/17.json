@@ -233,17 +233,19 @@
   {
    "id": "OPS-X4.84",
    "text": "If the class list cannot be read for want of a right, the engine raises. It does not take that as no classes.",
-   "outcome": "holds-run",
+   "outcome": "holds-live",
    "implementing_code": [
     "iris_vector_graph/engine.py:1800-1803"
    ],
    "evidence": [
+    "run:rx-live-priv",
     "run:val-unit-3-c02"
    ],
-   "notes": "_detect_capabilities re-raises ClassesUnreadable instead of answering 'not deployed'. Evidence: upstream unit tests (a refused dictionary read, ClassesUnreadable) passed here in val-unit-3-c02. Not triggered live: it needs a login refused read on the routines database/class dictionary (a second IRIS user/role: container security configuration, not available to this lane).",
-   "log_contains": {
-    "run:val-unit-3-c02": "test_460_r050_routines_refused.py::test_khop_raises_instead_of_answering_no_nodes PASSED"
-   }
+   "notes": "Live as IVGAUDIT_RO with the role's %DB_%DEFAULT resource removed for the window (restored at once; AUDITE's globals and routines are one database, /usr/irissys/mgr/audite/, so the class dictionary is unreadable; the login itself was accepted): building the engine / _detect_capabilities and khop raised ClassesUnreadable 'IVG's classes are in this namespace's routines database (/usr/irissys/mgr/audite/), which this user may not read: <PROTECT>...' instead of answering 'no classes'; 0 journal records. Unit tests also passed in val-unit-3-c02.",
+   "live_cases": [
+    "as IVGAUDIT_RO without R on the routines database: capability detection -> ClassesUnreadable (not 'no classes')",
+    "as IVGAUDIT_RO without R on the routines database: khop -> raises, not []"
+   ]
   },
   {
    "id": "OPS-X5.4.1",

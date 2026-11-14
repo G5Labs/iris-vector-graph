@@ -46,14 +46,15 @@
     "iris_vector_graph/schema_name.py:107-121",
     "iris_vector_graph/schema_name.py:123-131"
    ],
-   "outcome": "holds-run",
-   "notes": "Not triggered live: it needs a user without %CREATE_TABLE/%CREATE_FUNCTION running setup. The lane's connection is _SYSTEM (%All); the versions lane's least-privilege user IVGAUDIT_RO is disabled and scoped to AUDITB (enabling it is the operator's). Evidence: the upstream unit tests on fakes (test_setup_stops_at_the_first_privilege_violation_and_names_it, test_a_violation_after_objects_were_created_says_so) passed in val-unit-3-c01. The error text match rests on premise P-0105 (IRIS's -99 wording).",
+   "outcome": "holds-live",
+   "notes": "Live as IVGAUDIT_RO (SELECT and EXECUTE on the schema, database at R, no %CREATE_* privilege): engine.initialize_schema() raised IVGSchemaError 'cannot create IVG's SQL objects in schema Graph_KG: user IVGAUDIT_RO does not hold the SQL privilege %CREATE_TABLE ... Nothing was created.' (names the user, the schema and the right); 0 journal records. Unit tests on fakes also passed in val-unit-3-c01.",
    "evidence": [
+    "run:rx-live-priv",
     "run:val-unit-3-c01"
    ],
-   "log_contains": {
-    "run:val-unit-3-c01": "tests/unit/test_262_setup_privilege.py::test_setup_stops_at_the_first_privilege_violation_and_names_it PASSED"
-   }
+   "live_cases": [
+    "as IVGAUDIT_RO (no %CREATE_* rights): initialize_schema -> IVGSchemaError naming user, schema and the right"
+   ]
   },
   {
    "id": "INS-X2.3",
@@ -474,14 +475,22 @@
     "iris_src/src/Graph/KG/SqlPrivilege.cls:18-31",
     "iris_src/src/Graph/KG/SqlProcs.cls:133-162"
    ],
-   "outcome": "holds-run",
-   "notes": "Real-IRIS e2e (gate on, operator ruling): a fixture user holding EXECUTE but no SELECT calls each global-reading SQL function; the test asserts 'SQLCODE=-99' and 'User <u> lacks SELECT on <schema.table>' (tests/e2e/test_460_r280_sql_global_readers_privilege_e2e.py:140-144); all 8 parametrizations PASSED in val-gated-rag-1 (the run's 2 failures are unrelated rrf-score-string). Not probed by this lane: its connection is _SYSTEM (%All passes, SqlPrivilege.cls:21).",
+   "outcome": "holds-live",
+   "notes": "Live as IVGAUDIT_RO holding only EXECUTE ON SCHEMA Graph_KG in AUDITE (window 15:31:49-15:31:56Z, 2026-11-14): each of the 8 global-reading SQL functions the pinned e2e test names was refused with 'SQLCODE=-99,%msg=User IVGAUDIT_RO lacks SELECT on Graph_KG.rdf_edges' (rdf_props for kg_BM25), surfaced by the driver inside SQLCODE -149; 0 journal records. Earlier evidence: the e2e test passed in val-gated-rag-1.",
    "evidence": [
+    "run:rx-live-priv",
     "run:val-gated-rag-1"
    ],
-   "log_contains": {
-    "run:val-gated-rag-1": "tests/e2e/test_460_r280_sql_global_readers_privilege_e2e.py::test_execute_without_select_is_refused_naming_the_table[kg_PPR] PASSED"
-   }
+   "live_cases": [
+    "as IVGAUDIT_RO (EXECUTE only): CY_VLP_ENDS -> -99 naming Graph_KG.rdf_edges",
+    "as IVGAUDIT_RO (EXECUTE only): kg_PPR -> -99 naming Graph_KG.rdf_edges",
+    "as IVGAUDIT_RO (EXECUTE only): kg_DegreeCentrality -> -99 naming Graph_KG.rdf_edges",
+    "as IVGAUDIT_RO (EXECUTE only): kg_SCC -> -99 naming Graph_KG.rdf_edges",
+    "as IVGAUDIT_RO (EXECUTE only): MatchEdges -> -99 naming Graph_KG.rdf_edges",
+    "as IVGAUDIT_RO (EXECUTE only): MatchEdgesAllGraphs -> -99 naming Graph_KG.rdf_edges",
+    "as IVGAUDIT_RO (EXECUTE only): DijkstraPath -> -99 naming Graph_KG.rdf_edges",
+    "as IVGAUDIT_RO (EXECUTE only): kg_BM25 -> -99 naming Graph_KG.rdf_props"
+   ]
   },
   {
    "id": "INS-X10.8",

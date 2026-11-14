@@ -104,3 +104,40 @@ INSERT -99, global SET `<PROTECT>`). This matches ADMIN_GUIDE.md:455-457 on Comm
 - A per-namespace database resource (for example `%DB_AUDITB` on AUDITB's database) if the reader's database scope must
   be one namespace. This changes the container's database configuration.
 - Deleting the disabled user and role when the experiment ends (they are left in place, disabled, as instructed).
+
+## Refusals lane: AUDITE windows (2026-11-14, steer after integration 1529a141)
+
+The refusals lane used the same principal, at the operator's authorisation, for six stated refusals that need a
+least-privilege caller (INS-X1.5, INS-X10.7, ALG-B9.3, SNP-X1.3, OPS-X4.84, VEC-X1.16). Method as above: role and user
+changes in `%SYS` (`Security.Users.Modify` Enabled 1/0; `Security.Roles.Modify` Resources), `GRANT` as SQL in AUDITE
+(grantor `_SYSTEM`), each revoked with `REVOKE ... FROM IVGAUDIT_RO_ROLE AS "_SYSTEM"` and confirmed by
+`$SYSTEM.SQL.Security.CheckPrivilege` 0 before the next scenario. All under one `tools/locks.sh iris` hold per round
+(`refusals/priv/run_priv.sh`, `refusals/priv/live_priv.py`), at most 4 connections. The password reached the process only
+as `IVGAUDIT_PW`, passed by name; a `grep -F -f` of the password over `$RUN_DIR/refusals/priv/` finds it nowhere.
+AUDITB's two existing grants were not touched. AUDITE's database has the resource `%DB_%DEFAULT` and holds both its
+globals and its routines (`/usr/irissys/mgr/audite/`).
+
+| Window (UTC) | Round / run | Scenario | Grants in AUDITE (all revoked) | Role resources during the scenario |
+|---|---|---|---|---|
+| 15:31:49-15:31:56 | r1, `rx-live-priv` | INS-X10.7 | EXECUTE ON SCHEMA Graph_KG | unchanged (R) |
+| | | ALG-B9.3, INS-X1.5 | SELECT and EXECUTE ON SCHEMA Graph_KG | unchanged (R) |
+| | | SNP-X1.3 | SELECT on the 18 other Graph_KG tables (not rdf_props); EXECUTE ON SCHEMA | unchanged (R) |
+| | | OPS-X4.84 | SELECT and EXECUTE ON SCHEMA Graph_KG | `%DB_%DEFAULT` removed for the scenario (login still accepted), restored |
+| | | VEC-X1.16 (superseded by r3) | SELECT on every table but embedding_registry; INSERT, UPDATE, DELETE on kg_NodeEmbeddings; EXECUTE ON SCHEMA | `%DB_%DEFAULT:RW` for the scenario, restored to R |
+| 15:33:20-15:33:22 | r2 (not registered: harness error, nodes not seeded) | VEC-X1.16 | as r3 | `%DB_%DEFAULT:RW`, restored |
+| 15:33:36-15:33:38 | r3, `rx-live-priv-vec` | VEC-X1.16 | SELECT on every table but embedding_registry (then SELECT on it for one write, revoked mid-scenario); INSERT, UPDATE, DELETE on kg_NodeEmbeddings and kg_emb_98033a63c948f288; EXECUTE ON SCHEMA | `%DB_%DEFAULT:RW`, restored to R |
+
+While the role held `%DB_%DEFAULT:RW` (two seconds in r1, r2 and r3 each) it could write every database that shares
+that resource (the list above); only this lane's process used the login, under the IRIS lock.
+
+Results (refusals/REFUSALS.md):
+- **Hold live:** INS-X10.7, INS-X1.5, ALG-B9.3, SNP-X1.3 and OPS-X4.84 refuse as stated with 0 journal records.
+- **VEC-X1.16 fails live (F-0601).**
+  - On a fresh engine the write is refused, but by the route lookup (`_read_route`, R161), not by the identity check.
+  - Once a route is cached (30 s), a write after `REVOKE SELECT` on the registry returned True and wrote its row.
+
+Final state after each round (`rx-live-priv-final`, `$RUN_DIR/refusals/priv/final-state-r{1,2,3}.json`):
+- `IVGAUDIT_RO` Enabled 0; login to AUDITE is refused with Access Denied.
+- `IVGAUDIT_RO_ROLE` resources are `%DB_%DEFAULT:R,%Native_ClassExecution:U,%Native_GlobalAccess:U`, as recorded before.
+- 0 SQL privilege rows for the user or the role in AUDITE.
+- `CheckPrivilege` is 0 for the user and the role on every Graph_KG table of AUDITE, for s, i, u and d.

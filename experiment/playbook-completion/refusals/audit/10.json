@@ -490,10 +490,14 @@
     "iris_vector_graph/_engine/algorithms.py:100-131",
     "iris_vector_graph/_engine/algorithms.py:719-724"
    ],
-   "outcome": "blocked-access",
-   "dependency": "a login that may not write AUDITE's globals database (<PROTECT> on ^ArnoKG): the disposable least-privilege user IVGAUDIT_RO exists but is disabled, with SQL grants in AUDITB only (versions/PRIVILEGE.md); enabling it and granting in AUDITE is a security change for the operator",
-   "evidence": [],
-   "notes": "Not triggered; no upstream test of _refused_work_area was run here."
+   "outcome": "holds-live",
+   "evidence": [
+    "run:rx-live-priv"
+   ],
+   "notes": "Live as IVGAUDIT_RO (SELECT and EXECUTE on the schema; the documented reading role, database at R): engine.kg_GRAPH_WALK('rxp:a') raised RuntimeError 'kg_GRAPH_WALK failed: it writes a work area, ^ArnoKG(\"bfs_r\"), and IRIS refused this login a write to the namespace's globals database (<PROTECT>). It needs the namespace's database resource at RW ...'; 0 journal records.",
+   "live_cases": [
+    "as IVGAUDIT_RO (database R): kg_GRAPH_WALK -> refused naming ^ArnoKG(\"bfs_r\") and RW"
+   ]
   },
   {
    "id": "ALG-B10.6",

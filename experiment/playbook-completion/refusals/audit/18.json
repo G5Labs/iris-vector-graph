@@ -6,7 +6,7 @@
   {
    "id": "SNP-X1.3",
    "text": "A table or native index that cannot be read stops the save. The error names it, and no file is written.",
-   "outcome": "holds-run",
+   "outcome": "holds-live",
    "implementing_code": [
     "iris_vector_graph/_engine/snapshot.py:17-25",
     "iris_vector_graph/_engine/snapshot.py:905-910",
@@ -18,13 +18,14 @@
     "iris_vector_graph/_engine/snapshot.py:1035-1041"
    ],
    "evidence": [
+    "run:rx-live-priv",
     "run:val-unit-3-c02",
     "run:rx-live-18"
    ],
-   "notes": "Every read error of a table, the vector tables, the registry, a routed table (other than SQLCODE -30) or a global raises SnapshotReadError naming it; the ZIP is opened for writing only after every read (:1035). Evidence: the upstream unit test (fake cursor refusing each table with SQLCODE -99) passed here in val-unit-3-c02. Not triggered live: the condition needs a login refused SELECT on a Graph_KG table (a second IRIS user/role, container security configuration, not available to this lane); the upstream live test tests/e2e/test_460_r271_snapshot_unreadable_table_e2e.py was SKIPPED in the validation e2e run. rx-live-18 records only the readable-namespace context (archive written).",
-   "log_contains": {
-    "run:val-unit-3-c02": "test_460_r271_snapshot_raises.py::test_a_refused_table_raises_and_writes_nothing[Graph_KG.rdf_props] PASSED"
-   }
+   "notes": "Live as IVGAUDIT_RO holding SELECT on the 18 other Graph_KG tables of AUDITE and none on rdf_props (CheckPrivilege rdf_props 0, nodes 1): engine.save_snapshot raised SnapshotReadError 'save_snapshot: cannot read Graph_KG.rdf_props: ... SQLCODE -99 ... No archive was written'; the target directory stayed empty; 0 journal records. Upstream unit test also passed in val-unit-3-c02. The native-index half (an unreadable global) is not separable here: AUDITE's globals share one database resource.",
+   "live_cases": [
+    "as IVGAUDIT_RO without SELECT on Graph_KG.rdf_props: save_snapshot -> SnapshotReadError naming it, no file"
+   ]
   },
   {
    "id": "SNP-X1.9.1",

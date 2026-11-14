@@ -11810,7 +11810,8 @@
     "rx-dec-live-10",
     "rx-dec-map",
     "rx-dec-selftest",
-    "rx-dec-unit"
+    "rx-dec-unit",
+    "rx-live-priv"
    ],
    "evidence": [
     "run:rx-dec-map",
@@ -11819,6 +11820,7 @@
     "run:rx-dec-unit",
     "run:b-10-run-unit",
     "refusals/decoders/decoders.json",
+    "run:rx-live-priv",
     {
      "kind": "run",
      "ref": "b-10-run-unit"
@@ -11840,7 +11842,7 @@
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "Native Reader (ArnoAccel) decoders blocked-access (x86_64 libarno_callout.so, F-1001); the degree fallback, _refused_work_area and _runjson_failure branches not exercised live (need a missing deployed class, a read-only login or pre-4.6 classes; token and text shapes checked statically)",
+   "remaining": "Native Reader (ArnoAccel) decoders blocked-access (x86_64 libarno_callout.so, F-1001); the degree fallback and _runjson_failure branches not exercised live (need a missing deployed class or pre-4.6 classes; token and text shapes checked statically). _refused_work_area's message now live as IVGAUDIT_RO (rx-live-priv, ALG-B9.3)",
    "source": "matrix-input/refusals.json",
    "status": "closed"
   },
@@ -12042,7 +12044,8 @@
     "rx-dec-live-18",
     "rx-dec-map",
     "rx-dec-selftest",
-    "rx-dec-unit"
+    "rx-dec-unit",
+    "rx-live-priv"
    ],
    "evidence": [
     "run:rx-dec-map",
@@ -12052,6 +12055,7 @@
     "run:c18-live-value-types",
     "run:c18-live-swallowed-lines",
     "refusals/decoders/decoders.json",
+    "run:rx-live-priv",
     "F-1804",
     "F-C1802"
    ],
@@ -12075,7 +12079,7 @@
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "the SnapshotReadError mapping for a refused table is unit-tested only (rx-dec-unit; needs a least-privilege login)",
+   "remaining": "",
    "source": "matrix-input/refusals.json",
    "status": "closed"
   },
@@ -17471,8 +17475,11 @@
   {
    "cited_runs": [
     "rx-audit",
+    "rx-audit-r2",
     "rx-audit-selftest",
+    "rx-audit-selftest-r2",
     "rx-live-01",
+    "rx-live-priv",
     "val-gated-rag-1",
     "val-scratch-1",
     "val-unit-3-c00",
@@ -17485,6 +17492,7 @@
    ],
    "evidence": [
     "run:rx-live-01",
+    "run:rx-live-priv",
     "run:val-gated-rag-1",
     "run:val-scratch-1",
     "run:val-unit-3-c00",
@@ -17494,10 +17502,12 @@
     "run:val-unit-3-c04",
     "run:val-unit-3-c05",
     "run:val-unit-3-c06",
-    "run:rx-audit",
-    "run:rx-audit-selftest",
+    "run:rx-audit-r2",
+    "run:rx-audit-selftest-r2",
     "refusals/audit.json",
     "refusals/REFUSALS.md",
+    "run:rx-audit",
+    "run:rx-audit-selftest",
     "findings/audit/01.json"
    ],
    "evidence_grade": "registered-run",
@@ -17514,7 +17524,7 @@
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "INS-X2.10 blocked-access (needs a namespace with no schema record holding the product's tables in another schema; the only fixture, tests/e2e/test_262_record.py, was skipped in every validation run, and no scratch namespace was created); 13 statements evidenced by upstream tests passed here (val-*), not live (no-record namespace, least-privilege user, foreign classes in a schema package, v3.2.0 tables, refused mid-upgrade commit); INS-X5.6 and INS-X6.13 inspected only (X6.13's function driven live)",
+   "remaining": "INS-X2.10 blocked-access (needs a namespace with no schema record holding the product's tables in another schema; the only fixture, tests/e2e/test_262_record.py, was skipped in every validation run, and no scratch namespace was created); 11 statements evidenced by upstream tests passed here (val-*), not live (no-record namespace, foreign classes in a schema package, v3.2.0 tables, refused mid-upgrade commit); INS-X5.6 and INS-X6.13 inspected only (X6.13's function driven live). INS-X1.5 and INS-X10.7 now live as IVGAUDIT_RO (rx-live-priv)",
    "source": "matrix-input/refusals.json",
    "status": "closed"
   },
@@ -17576,17 +17586,21 @@
    ],
    "cited_runs": [
     "rx-audit",
+    "rx-audit-r2",
     "rx-audit-selftest",
+    "rx-audit-selftest-r2",
     "rx-live-04",
     "val-integration-1-c05"
    ],
    "evidence": [
     "run:rx-live-04",
     "run:val-integration-1-c05",
-    "run:rx-audit",
-    "run:rx-audit-selftest",
+    "run:rx-audit-r2",
+    "run:rx-audit-selftest-r2",
     "refusals/audit.json",
     "refusals/REFUSALS.md",
+    "run:rx-audit",
+    "run:rx-audit-selftest",
     "findings/audit/04.json"
    ],
    "evidence_grade": "registered-run",
@@ -17647,8 +17661,11 @@
    "cited_runs": [
     "breadth-a-probe-local-0101-0601",
     "rx-audit",
+    "rx-audit-r2",
     "rx-audit-selftest",
+    "rx-audit-selftest-r2",
     "rx-live-06",
+    "rx-live-priv-vec",
     "rx-probe-06-local",
     "val-e2e-1-c00",
     "val-unit-2",
@@ -17662,6 +17679,7 @@
    "evidence": [
     "run:breadth-a-probe-local-0101-0601",
     "run:rx-live-06",
+    "run:rx-live-priv-vec",
     "run:rx-probe-06-local",
     "run:val-e2e-1-c00",
     "run:val-unit-2",
@@ -17671,10 +17689,12 @@
     "run:val-unit-3-c03",
     "run:val-unit-3-c05",
     "run:val-unit-3-c06",
-    "run:rx-audit",
-    "run:rx-audit-selftest",
+    "run:rx-audit-r2",
+    "run:rx-audit-selftest-r2",
     "refusals/audit.json",
     "refusals/REFUSALS.md",
+    "run:rx-audit",
+    "run:rx-audit-selftest",
     "findings/audit/06.json"
    ],
    "evidence_grade": "registered-run",
@@ -17700,6 +17720,7 @@
      "stated fails by matrix-input/refusals.json",
      "run breadth-a-probe-local-0101-0601 (fail)",
      "run rx-live-06 (fail)",
+     "run rx-live-priv-vec (fail)",
      "run rx-probe-06-local (fail)",
      "run val-unit-3-c05 (fail)",
      "run val-unit-3-c06 (fail)"
@@ -17707,7 +17728,7 @@
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "product defects VEC-X1.16 (F-0601), X3.9 (F-0615), X3.16 (F-0613), X5.15 (F-0612, edge-route half now live), X6.7 (F-0614); VEC-X8.4 intent-undecided (pin docstring answers [] for an unreadable registry); VEC-X5.11 blocked-access (needs an IRIS without native VECTOR_COSINE, before 2024.1); 10 statements by upstream tests passed here only (restricted user or legacy/upgrade states: the O-1 4.5.1 fixture namespace could make the quarantine/migration ones live)",
+   "remaining": "product defects VEC-X1.16 (F-0601: live as IVGAUDIT_RO, rx-live-priv-vec: refused on a fresh engine only by the route lookup; with a cached route a write after REVOKE SELECT on the registry lands), X3.9 (F-0615), X3.16 (F-0613), X5.15 (F-0612, edge-route half now live), X6.7 (F-0614); VEC-X8.4 intent-undecided (pin docstring answers [] for an unreadable registry); VEC-X5.11 blocked-access (needs an IRIS without native VECTOR_COSINE, before 2024.1); 10 statements by upstream tests passed here only (restricted user or legacy/upgrade states: the O-1 4.5.1 fixture namespace could make the quarantine/migration ones live)",
    "source": "matrix-input/refusals.json",
    "status": "closed"
   },
@@ -17820,18 +17841,24 @@
     "b-10-live-refusals",
     "b-10-run-unit",
     "rx-audit",
+    "rx-audit-r2",
     "rx-audit-selftest",
+    "rx-audit-selftest-r2",
     "rx-live-10",
-    "rx-live-10-rebuild-wait"
+    "rx-live-10-rebuild-wait",
+    "rx-live-priv"
    ],
    "evidence": [
     "run:b-10-run-unit",
     "run:rx-live-10",
     "run:rx-live-10-rebuild-wait",
-    "run:rx-audit",
-    "run:rx-audit-selftest",
+    "run:rx-live-priv",
+    "run:rx-audit-r2",
+    "run:rx-audit-selftest-r2",
     "refusals/audit.json",
     "refusals/REFUSALS.md",
+    "run:rx-audit",
+    "run:rx-audit-selftest",
     {
      "kind": "live",
      "ref": "b-10-live-refusals"
@@ -17845,9 +17872,9 @@
    "gate": "5c-refusals",
    "level": "product",
    "module": "10",
-   "product_basis": "34 X statements audited mechanically (rx-audit): blocked-access 2, holds-live 27, holds-run 5; no refusal found not implemented as stated, but not every one is evidenced live",
+   "product_basis": "34 X statements audited mechanically (rx-audit-r2): blocked-access 1, holds-live 28, holds-run 5; no refusal found not implemented as stated, but not every one is evidenced live",
    "product_obligation": "unknown",
-   "remaining": "ALG-B9.3 blocked-access (a login that cannot write AUDITE's globals: IVGAUDIT_RO exists but is disabled, grants only in AUDITB; enabling is the operator's); ALG-B6.95 library branches blocked-access (x86_64 libarno_callout.so 1.2.1, F-1001); ALG-B1.13, B15.2, B15.3, B15.10, B15.11 by upstream tests/gate functions only (B1.13 mocked path)",
+   "remaining": "ALG-B6.95 library branches blocked-access (x86_64 libarno_callout.so 1.2.1, F-1001); ALG-B1.13, B15.2, B15.3, B15.10, B15.11 by upstream tests/gate functions only (B1.13 mocked path). ALG-B9.3 now live as IVGAUDIT_RO (rx-live-priv)",
    "source": "matrix-input/refusals.json",
    "status": "closed"
   },
@@ -17860,17 +17887,21 @@
     "b-11-live-footprints-1",
     "b-11-run-unit",
     "rx-audit",
+    "rx-audit-r2",
     "rx-audit-selftest",
+    "rx-audit-selftest-r2",
     "rx-live-11",
     "rx-live-11-r2"
    ],
    "evidence": [
     "run:rx-live-11",
     "run:rx-live-11-r2",
-    "run:rx-audit",
-    "run:rx-audit-selftest",
+    "run:rx-audit-r2",
+    "run:rx-audit-selftest-r2",
     "refusals/audit.json",
     "refusals/REFUSALS.md",
+    "run:rx-audit",
+    "run:rx-audit-selftest",
     "live:b-11-live-findings",
     "live:b-11-live-footprints-1",
     "run:b-11-run-unit",
@@ -17987,17 +18018,21 @@
     "c15-live-register",
     "c15-run-unit",
     "rx-audit",
+    "rx-audit-r2",
     "rx-audit-selftest",
+    "rx-audit-selftest-r2",
     "rx-live-15",
     "val-unit-3-c01"
    ],
    "evidence": [
     "run:rx-live-15",
     "run:val-unit-3-c01",
-    "run:rx-audit",
-    "run:rx-audit-selftest",
+    "run:rx-audit-r2",
+    "run:rx-audit-selftest-r2",
     "refusals/audit.json",
     "refusals/REFUSALS.md",
+    "run:rx-audit",
+    "run:rx-audit-selftest",
     "c15-live-refusals",
     "c15-live-register",
     "c15-run-unit",
@@ -18027,17 +18062,21 @@
    "cited_runs": [
     "c16-s1-cypher-http",
     "rx-audit",
+    "rx-audit-r2",
     "rx-audit-selftest",
+    "rx-audit-selftest-r2",
     "rx-live-16",
     "val-gated-rag-1"
    ],
    "evidence": [
     "run:rx-live-16",
     "run:val-gated-rag-1",
-    "run:rx-audit",
-    "run:rx-audit-selftest",
+    "run:rx-audit-r2",
+    "run:rx-audit-selftest-r2",
     "refusals/audit.json",
     "refusals/REFUSALS.md",
+    "run:rx-audit",
+    "run:rx-audit-selftest",
     "c16-s1-cypher-http"
    ],
    "evidence_grade": "registered-run",
@@ -18064,19 +18103,25 @@
    ],
    "cited_runs": [
     "rx-audit",
+    "rx-audit-r2",
     "rx-audit-selftest",
+    "rx-audit-selftest-r2",
     "rx-live-17",
+    "rx-live-priv",
     "val-unit-3-c02",
     "val-unit-3-c05"
    ],
    "evidence": [
     "run:rx-live-17",
+    "run:rx-live-priv",
     "run:val-unit-3-c02",
     "run:val-unit-3-c05",
-    "run:rx-audit",
-    "run:rx-audit-selftest",
+    "run:rx-audit-r2",
+    "run:rx-audit-selftest-r2",
     "refusals/audit.json",
     "refusals/REFUSALS.md",
+    "run:rx-audit",
+    "run:rx-audit-selftest",
     "F-1703 (strict namespace warns, X statement says raise)",
     "F-1714"
    ],
@@ -18103,7 +18148,7 @@
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "OPS-X4.8.2 (F-1703), OPS-X6.2 (F-1714, explain and load_ndjson raise httpx.HTTPStatusError), OPS-X2.1.1 (close does not run, F-C1715) fail; OPS-X4.84 and OPS-X5.7.1 by upstream unit tests only (need a least-privilege login, a namespace without Graph.KG.Eraser); async client not re-probed for OPS-X6.2",
+   "remaining": "OPS-X4.8.2 (F-1703), OPS-X6.2 (F-1714, explain and load_ndjson raise httpx.HTTPStatusError), OPS-X2.1.1 (close does not run, F-C1715) fail; OPS-X5.7.1 by an upstream unit test only (needs a namespace without Graph.KG.Eraser); async client not re-probed for OPS-X6.2. OPS-X4.84 now live as IVGAUDIT_RO (rx-live-priv)",
    "source": "matrix-input/refusals.json",
    "status": "closed"
   },
@@ -18114,17 +18159,23 @@
    ],
    "cited_runs": [
     "rx-audit",
+    "rx-audit-r2",
     "rx-audit-selftest",
+    "rx-audit-selftest-r2",
     "rx-live-18",
+    "rx-live-priv",
     "val-unit-3-c02"
    ],
    "evidence": [
     "run:rx-live-18",
+    "run:rx-live-priv",
     "run:val-unit-3-c02",
-    "run:rx-audit",
-    "run:rx-audit-selftest",
+    "run:rx-audit-r2",
+    "run:rx-audit-selftest-r2",
     "refusals/audit.json",
     "refusals/REFUSALS.md",
+    "run:rx-audit",
+    "run:rx-audit-selftest",
     "SNP-X2.1/X2.2: c18-live-refusals",
     "SNP-X2.14: F-C1802",
     "SNP-X5.1: F-1806"
@@ -18149,7 +18200,7 @@
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "SNP-X2.14 (F-C1802) and SNP-X5.1 (F-1806) fail, reproduced live; SNP-X1.3 by upstream unit test only (needs a login refused SELECT)",
+   "remaining": "SNP-X2.14 (F-C1802) and SNP-X5.1 (F-1806) fail, reproduced live; SNP-X1.3 now live as IVGAUDIT_RO (rx-live-priv; the native-index half cannot be separated: AUDITE's globals share one database resource)",
    "source": "matrix-input/refusals.json",
    "status": "closed"
   },
@@ -28715,7 +28766,7 @@
   {
    "audit": {
     "confidence": "high",
-    "disposition": "reproduced-test",
+    "disposition": "reproduced-live",
     "evidence": [
      {
       "kind": "probe",
@@ -28724,6 +28775,10 @@
      {
       "kind": "inspected",
       "ref": "iris_vector_graph/_engine/schema.py:1033-1061"
+     },
+     {
+      "kind": "live",
+      "ref": "rx-live-priv-vec"
      }
     ],
     "gates": [
@@ -37875,7 +37930,7 @@
   "n/a": 33,
   "unknown": 191
  },
- "registry_runs": 1269,
+ "registry_runs": 1274,
  "starting_inventory": {
   "cells": 904,
   "decisions": 61,

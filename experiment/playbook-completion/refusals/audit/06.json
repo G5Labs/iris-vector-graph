@@ -60,14 +60,22 @@
    "outcome": "product-defect",
    "implementing_code": [
     "iris_vector_graph/_engine/schema.py:1042-1061",
-    "iris_vector_graph/_engine/schema.py:1383-1385"
+    "iris_vector_graph/_engine/schema.py:1383-1385",
+    "iris_vector_graph/_engine/embeddings.py:377-430",
+    "iris_vector_graph/_engine/embeddings.py:313-336"
    ],
    "evidence": [
+    "run:rx-live-priv-vec",
     "run:breadth-a-probe-local-0101-0601",
     "run:rx-probe-06-local"
    ],
    "finding": "F-0601",
-   "notes": "Not implemented: get_embedding_identity answers None for any read error (schema.py:1054-1056), and enforce_embedding_identity then lets the write through (1383-1385). Shown on pin code with a stand-in cursor raising SQLCODE -99 (breadth-a probe; again in rx-probe-06-local: returned None, write proceeds). Not triggerable live here: a present-but-unreadable registry needs a second IRIS user without SELECT on it (the versions lane's least-privilege user is disabled and not this lane's to enable)."
+   "notes": "Live as IVGAUDIT_RO (database RW for the window only; SELECT on every Graph_KG table but embedding_registry; INSERT/UPDATE/DELETE on the target tables): on a fresh engine the write is refused, but by the route lookup, not by the identity check (frames store_embedding -> _route_for_write -> _read_route, embeddings.py:420-427 re-raises any failure but -30, R161) for both a routed model and the default pair. Once a route is cached (30 s, embeddings.py:313-336), the identity check is the only registry read: after SELECT on the registry was revoked (CheckPrivilege 0), a second store_embedding on the same engine returned True and wrote its row (get_embedding_identity answers None on the -99, schema.py:1054-1056; enforce lets it through, 1383-1385). The stated refusal is therefore not implemented by the code that states it (F-0601), and holds only incidentally on a cache miss. Earlier: stand-in cursor probes (breadth-a-probe-local-0101-0601, rx-probe-06-local).",
+   "live_cases": [
+    "r2 (a) fresh engine, routed model rxp-m1, no SELECT on the registry -> refused",
+    "r2 (b) fresh engine, default pair, no SELECT on the registry -> refused",
+    "r2 (c) route cached, then SELECT on the registry revoked: second write -> refused (stated)"
+   ]
   },
   {
    "id": "VEC-X1.19",

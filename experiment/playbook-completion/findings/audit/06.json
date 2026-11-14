@@ -32,9 +32,13 @@
     {
      "kind": "inspected",
      "ref": "iris_vector_graph/_engine/schema.py:1033-1061"
+    },
+    {
+     "kind": "live",
+     "ref": "rx-live-priv-vec"
     }
    ],
-   "notes": "Pin code against a fake cursor raising SQLCODE -99 on the registry read: get_embedding_identity -> None and enforce_embedding_identity returns None (write proceeds). Not provoked live: revoking SELECT in AUDITA changes server security settings (forbidden).",
+   "notes": "Pin code against a fake cursor raising SQLCODE -99 on the registry read: get_embedding_identity -> None and enforce_embedding_identity returns None (write proceeds). Not provoked live: revoking SELECT in AUDITA changes server security settings (forbidden). Reproduced live since steer 9 (rx-live-priv-vec): as the disposable least-privilege user, with a route cached and SELECT on the embedding registry revoked (CheckPrivilege 0), a vector write returned True and the row landed; earlier evidence used stand-ins.",
    "module": "06",
    "observed": {
     "probe": "local_f0601",
@@ -47,7 +51,7 @@
     "result_file": "experiment/playbook-completion/live/breadth-a/results/local_f0601.json",
     "log": "$RUN_DIR/breadth-a/live/local-20261113T225331.log"
    },
-   "disposition": "reproduced-test"
+   "disposition": "reproduced-live"
   },
   {
    "id": "F-0602",

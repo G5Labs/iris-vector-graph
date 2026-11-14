@@ -16,8 +16,8 @@
  "audited": 244,
  "per_module": {
   "01": {
-   "holds-live": 13,
-   "holds-run": 13,
+   "holds-live": 15,
+   "holds-run": 11,
    "blocked-access": 1,
    "holds-inspected": 2
   },
@@ -33,9 +33,9 @@
    "intent-undecided": 1
   },
   "10": {
-   "holds-live": 27,
+   "holds-live": 28,
    "holds-run": 5,
-   "blocked-access": 2
+   "blocked-access": 1
   },
   "11": {
    "holds-live": 30,
@@ -54,13 +54,12 @@
    "holds-run": 1
   },
   "17": {
-   "holds-live": 25,
+   "holds-live": 26,
    "product-defect": 3,
-   "holds-run": 2
+   "holds-run": 1
   },
   "18": {
-   "holds-run": 1,
-   "holds-live": 7,
+   "holds-live": 8,
    "product-defect": 2
   }
  },
@@ -110,14 +109,15 @@
     "iris_vector_graph/schema_name.py:107-121",
     "iris_vector_graph/schema_name.py:123-131"
    ],
-   "outcome": "holds-run",
-   "notes": "Not triggered live: it needs a user without %CREATE_TABLE/%CREATE_FUNCTION running setup. The lane's connection is _SYSTEM (%All); the versions lane's least-privilege user IVGAUDIT_RO is disabled and scoped to AUDITB (enabling it is the operator's). Evidence: the upstream unit tests on fakes (test_setup_stops_at_the_first_privilege_violation_and_names_it, test_a_violation_after_objects_were_created_says_so) passed in val-unit-3-c01. The error text match rests on premise P-0105 (IRIS's -99 wording).",
+   "outcome": "holds-live",
+   "notes": "Live as IVGAUDIT_RO (SELECT and EXECUTE on the schema, database at R, no %CREATE_* privilege): engine.initialize_schema() raised IVGSchemaError 'cannot create IVG's SQL objects in schema Graph_KG: user IVGAUDIT_RO does not hold the SQL privilege %CREATE_TABLE ... Nothing was created.' (names the user, the schema and the right); 0 journal records. Unit tests on fakes also passed in val-unit-3-c01.",
    "evidence": [
+    "run:rx-live-priv",
     "run:val-unit-3-c01"
    ],
-   "log_contains": {
-    "run:val-unit-3-c01": "tests/unit/test_262_setup_privilege.py::test_setup_stops_at_the_first_privilege_violation_and_names_it PASSED"
-   }
+   "live_cases": [
+    "as IVGAUDIT_RO (no %CREATE_* rights): initialize_schema -> IVGSchemaError naming user, schema and the right"
+   ]
   },
   {
    "id": "INS-X2.3",
@@ -538,14 +538,22 @@
     "iris_src/src/Graph/KG/SqlPrivilege.cls:18-31",
     "iris_src/src/Graph/KG/SqlProcs.cls:133-162"
    ],
-   "outcome": "holds-run",
-   "notes": "Real-IRIS e2e (gate on, operator ruling): a fixture user holding EXECUTE but no SELECT calls each global-reading SQL function; the test asserts 'SQLCODE=-99' and 'User <u> lacks SELECT on <schema.table>' (tests/e2e/test_460_r280_sql_global_readers_privilege_e2e.py:140-144); all 8 parametrizations PASSED in val-gated-rag-1 (the run's 2 failures are unrelated rrf-score-string). Not probed by this lane: its connection is _SYSTEM (%All passes, SqlPrivilege.cls:21).",
+   "outcome": "holds-live",
+   "notes": "Live as IVGAUDIT_RO holding only EXECUTE ON SCHEMA Graph_KG in AUDITE (window 15:31:49-15:31:56Z, 2026-11-14): each of the 8 global-reading SQL functions the pinned e2e test names was refused with 'SQLCODE=-99,%msg=User IVGAUDIT_RO lacks SELECT on Graph_KG.rdf_edges' (rdf_props for kg_BM25), surfaced by the driver inside SQLCODE -149; 0 journal records. Earlier evidence: the e2e test passed in val-gated-rag-1.",
    "evidence": [
+    "run:rx-live-priv",
     "run:val-gated-rag-1"
    ],
-   "log_contains": {
-    "run:val-gated-rag-1": "tests/e2e/test_460_r280_sql_global_readers_privilege_e2e.py::test_execute_without_select_is_refused_naming_the_table[kg_PPR] PASSED"
-   }
+   "live_cases": [
+    "as IVGAUDIT_RO (EXECUTE only): CY_VLP_ENDS -> -99 naming Graph_KG.rdf_edges",
+    "as IVGAUDIT_RO (EXECUTE only): kg_PPR -> -99 naming Graph_KG.rdf_edges",
+    "as IVGAUDIT_RO (EXECUTE only): kg_DegreeCentrality -> -99 naming Graph_KG.rdf_edges",
+    "as IVGAUDIT_RO (EXECUTE only): kg_SCC -> -99 naming Graph_KG.rdf_edges",
+    "as IVGAUDIT_RO (EXECUTE only): MatchEdges -> -99 naming Graph_KG.rdf_edges",
+    "as IVGAUDIT_RO (EXECUTE only): MatchEdgesAllGraphs -> -99 naming Graph_KG.rdf_edges",
+    "as IVGAUDIT_RO (EXECUTE only): DijkstraPath -> -99 naming Graph_KG.rdf_edges",
+    "as IVGAUDIT_RO (EXECUTE only): kg_BM25 -> -99 naming Graph_KG.rdf_props"
+   ]
   },
   {
    "id": "INS-X10.8",
@@ -684,14 +692,22 @@
    "outcome": "product-defect",
    "implementing_code": [
     "iris_vector_graph/_engine/schema.py:1042-1061",
-    "iris_vector_graph/_engine/schema.py:1383-1385"
+    "iris_vector_graph/_engine/schema.py:1383-1385",
+    "iris_vector_graph/_engine/embeddings.py:377-430",
+    "iris_vector_graph/_engine/embeddings.py:313-336"
    ],
    "evidence": [
+    "run:rx-live-priv-vec",
     "run:breadth-a-probe-local-0101-0601",
     "run:rx-probe-06-local"
    ],
    "finding": "F-0601",
-   "notes": "Not implemented: get_embedding_identity answers None for any read error (schema.py:1054-1056), and enforce_embedding_identity then lets the write through (1383-1385). Shown on pin code with a stand-in cursor raising SQLCODE -99 (breadth-a probe; again in rx-probe-06-local: returned None, write proceeds). Not triggerable live here: a present-but-unreadable registry needs a second IRIS user without SELECT on it (the versions lane's least-privilege user is disabled and not this lane's to enable)."
+   "notes": "Live as IVGAUDIT_RO (database RW for the window only; SELECT on every Graph_KG table but embedding_registry; INSERT/UPDATE/DELETE on the target tables): on a fresh engine the write is refused, but by the route lookup, not by the identity check (frames store_embedding -> _route_for_write -> _read_route, embeddings.py:420-427 re-raises any failure but -30, R161) for both a routed model and the default pair. Once a route is cached (30 s, embeddings.py:313-336), the identity check is the only registry read: after SELECT on the registry was revoked (CheckPrivilege 0), a second store_embedding on the same engine returned True and wrote its row (get_embedding_identity answers None on the -99, schema.py:1054-1056; enforce lets it through, 1383-1385). The stated refusal is therefore not implemented by the code that states it (F-0601), and holds only incidentally on a cache miss. Earlier: stand-in cursor probes (breadth-a-probe-local-0101-0601, rx-probe-06-local).",
+   "live_cases": [
+    "r2 (a) fresh engine, routed model rxp-m1, no SELECT on the registry -> refused",
+    "r2 (b) fresh engine, default pair, no SELECT on the registry -> refused",
+    "r2 (c) route cached, then SELECT on the registry revoked: second write -> refused (stated)"
+   ]
   },
   {
    "id": "VEC-X1.19",
@@ -1780,10 +1796,14 @@
     "iris_vector_graph/_engine/algorithms.py:100-131",
     "iris_vector_graph/_engine/algorithms.py:719-724"
    ],
-   "outcome": "blocked-access",
-   "dependency": "a login that may not write AUDITE's globals database (<PROTECT> on ^ArnoKG): the disposable least-privilege user IVGAUDIT_RO exists but is disabled, with SQL grants in AUDITB only (versions/PRIVILEGE.md); enabling it and granting in AUDITE is a security change for the operator",
-   "evidence": [],
-   "notes": "Not triggered; no upstream test of _refused_work_area was run here."
+   "outcome": "holds-live",
+   "evidence": [
+    "run:rx-live-priv"
+   ],
+   "notes": "Live as IVGAUDIT_RO (SELECT and EXECUTE on the schema; the documented reading role, database at R): engine.kg_GRAPH_WALK('rxp:a') raised RuntimeError 'kg_GRAPH_WALK failed: it writes a work area, ^ArnoKG(\"bfs_r\"), and IRIS refused this login a write to the namespace's globals database (<PROTECT>). It needs the namespace's database resource at RW ...'; 0 journal records.",
+   "live_cases": [
+    "as IVGAUDIT_RO (database R): kg_GRAPH_WALK -> refused naming ^ArnoKG(\"bfs_r\") and RW"
+   ]
   },
   {
    "id": "ALG-B10.6",
@@ -3858,17 +3878,19 @@
   {
    "id": "OPS-X4.84",
    "text": "If the class list cannot be read for want of a right, the engine raises. It does not take that as no classes.",
-   "outcome": "holds-run",
+   "outcome": "holds-live",
    "implementing_code": [
     "iris_vector_graph/engine.py:1800-1803"
    ],
    "evidence": [
+    "run:rx-live-priv",
     "run:val-unit-3-c02"
    ],
-   "notes": "_detect_capabilities re-raises ClassesUnreadable instead of answering 'not deployed'. Evidence: upstream unit tests (a refused dictionary read, ClassesUnreadable) passed here in val-unit-3-c02. Not triggered live: it needs a login refused read on the routines database/class dictionary (a second IRIS user/role: container security configuration, not available to this lane).",
-   "log_contains": {
-    "run:val-unit-3-c02": "test_460_r050_routines_refused.py::test_khop_raises_instead_of_answering_no_nodes PASSED"
-   }
+   "notes": "Live as IVGAUDIT_RO with the role's %DB_%DEFAULT resource removed for the window (restored at once; AUDITE's globals and routines are one database, /usr/irissys/mgr/audite/, so the class dictionary is unreadable; the login itself was accepted): building the engine / _detect_capabilities and khop raised ClassesUnreadable 'IVG's classes are in this namespace's routines database (/usr/irissys/mgr/audite/), which this user may not read: <PROTECT>...' instead of answering 'no classes'; 0 journal records. Unit tests also passed in val-unit-3-c02.",
+   "live_cases": [
+    "as IVGAUDIT_RO without R on the routines database: capability detection -> ClassesUnreadable (not 'no classes')",
+    "as IVGAUDIT_RO without R on the routines database: khop -> raises, not []"
+   ]
   },
   {
    "id": "OPS-X5.4.1",
@@ -4142,7 +4164,7 @@
   {
    "id": "SNP-X1.3",
    "text": "A table or native index that cannot be read stops the save. The error names it, and no file is written.",
-   "outcome": "holds-run",
+   "outcome": "holds-live",
    "implementing_code": [
     "iris_vector_graph/_engine/snapshot.py:17-25",
     "iris_vector_graph/_engine/snapshot.py:905-910",
@@ -4154,13 +4176,14 @@
     "iris_vector_graph/_engine/snapshot.py:1035-1041"
    ],
    "evidence": [
+    "run:rx-live-priv",
     "run:val-unit-3-c02",
     "run:rx-live-18"
    ],
-   "notes": "Every read error of a table, the vector tables, the registry, a routed table (other than SQLCODE -30) or a global raises SnapshotReadError naming it; the ZIP is opened for writing only after every read (:1035). Evidence: the upstream unit test (fake cursor refusing each table with SQLCODE -99) passed here in val-unit-3-c02. Not triggered live: the condition needs a login refused SELECT on a Graph_KG table (a second IRIS user/role, container security configuration, not available to this lane); the upstream live test tests/e2e/test_460_r271_snapshot_unreadable_table_e2e.py was SKIPPED in the validation e2e run. rx-live-18 records only the readable-namespace context (archive written).",
-   "log_contains": {
-    "run:val-unit-3-c02": "test_460_r271_snapshot_raises.py::test_a_refused_table_raises_and_writes_nothing[Graph_KG.rdf_props] PASSED"
-   }
+   "notes": "Live as IVGAUDIT_RO holding SELECT on the 18 other Graph_KG tables of AUDITE and none on rdf_props (CheckPrivilege rdf_props 0, nodes 1): engine.save_snapshot raised SnapshotReadError 'save_snapshot: cannot read Graph_KG.rdf_props: ... SQLCODE -99 ... No archive was written'; the target directory stayed empty; 0 journal records. Upstream unit test also passed in val-unit-3-c02. The native-index half (an unreadable global) is not separable here: AUDITE's globals share one database resource.",
+   "live_cases": [
+    "as IVGAUDIT_RO without SELECT on Graph_KG.rdf_props: save_snapshot -> SnapshotReadError naming it, no file"
+   ]
   },
   {
    "id": "SNP-X1.9.1",
