@@ -10724,11 +10724,13 @@
   {
    "cited_runs": [
     "corr-closure-scan",
-    "followup-writer-census"
+    "followup-writer-census",
+    "rf-premise-map-check"
    ],
    "evidence": [
     "run:corr-closure-scan",
-    "run:followup-writer-census"
+    "run:followup-writer-census",
+    "run:rf-premise-map-check"
    ],
    "gate": "3.6-closure",
    "level": "product",
@@ -10740,8 +10742,11 @@
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "condition list not written. Ledger-state writers outside any modelled action, reconciled (review R2-04): corr-closure-scan finds 1 of 44 literal-name sites (restore_snapshot, snapshot.py:403; F-1801); followup-writer-census lists 8 ledger writers outside the ledger classes, of which it agrees on 4 (EraseAll, EraseEdgeRow, EraseLedgerFor: erasure owner actions without the head lock, F-1114; restore via _import_global_from_ndjson, snapshot.py:1679, the same writer as the scan's snapshot.py:403) and adds 4 the scan does not see because they use run-time names or a client surface: Snapshot.ImportGlobals (Snapshot.cls:31, $System.OBJ.Load), Snapshot.SetNodeJSON (Snapshot.cls:90, Set @ indirection), legacy.copy_ledger_history (legacy.py:642; F-C1306) and the SQL INSERT surface of Graph_KG.ledger_revisions (the triggers cover UPDATE and DELETE only). So 5 ledger writers lie outside every modelled action, not 1 (erratum for corr-closure-scan in evidence/errata.json)",
-   "status": "open"
+   "remaining": "condition list not written. Ledger-state writers outside any modelled action, reconciled (review R2-04): corr-closure-scan finds 1 of 44 literal-name sites (restore_snapshot, snapshot.py:403; F-1801); followup-writer-census lists 8 ledger writers outside the ledger classes, of which it agrees on 4 (EraseAll, EraseEdgeRow, EraseLedgerFor: erasure owner actions without the head lock, F-1114; restore via _import_global_from_ndjson, snapshot.py:1679, the same writer as the scan's snapshot.py:403) and adds 4 the scan does not see because they use run-time names or a client surface: Snapshot.ImportGlobals (Snapshot.cls:31, $System.OBJ.Load), Snapshot.SetNodeJSON (Snapshot.cls:90, Set @ indirection), legacy.copy_ledger_history (legacy.py:642; F-C1306) and the SQL INSERT surface of Graph_KG.ledger_revisions (the triggers cover UPDATE and DELETE only). So 5 ledger writers lie outside every modelled action, not 1 (erratum for corr-closure-scan in evidence/errata.json) every-premise-maps-to-a-test part: 224 premises mapped in reflection/premise_tests.json (39 holds, 44 violated, 86 partial, 55 untested; TEST-REFLECTION.md section D); the condition list itself is still not written",
+   "status": "open",
+   "supplemented_by": [
+    "matrix-input/reflection.json"
+   ]
   },
   {
    "cited_runs": [
@@ -12039,14 +12044,25 @@
    "status": "open"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "rf-premise-map-check",
+    "rf-premise-map-selftest"
+   ],
+   "evidence": [
+    "run:rf-premise-map-check",
+    "run:rf-premise-map-selftest",
+    "experiment/playbook-completion/reflection/TEST-REFLECTION.md",
+    "experiment/playbook-completion/reflection/premise_tests.json"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.8-test-reflection",
    "level": "method",
    "module": "product",
+   "product_basis": "every premise named in TRUST.md, the 8 PROOFS.md premise tables, models/core/MODELS.md and the IRIS contract maps to a test or to a named missing test: 224 premises, 39 tested and holding, 44 shown false at the pin (their findings fail their own cells), 86 partial, 55 untested; the product's own suites detect 4 of 246 reproduced findings (242 undetected, incl. every reproduced S1). Whether the product meets the premises that are untested or partial is open.",
    "product_obligation": "unknown",
-   "remaining": "pending",
-   "status": "open"
+   "remaining": "the tests named in should_exist are not run (55 untested, 86 partial premises); needing the operator or an unavailable dependency: the SynchCommit=1 crash world, embedded SQL (E-1, scope ruling), IRIS 2026.3 / Enterprise / multi-node (blocked-access), the spec-236 scratch suites (licence); breadth model crates' restrictions (modules/NN.json) are outside this map",
+   "source": "matrix-input/reflection.json",
+   "status": "closed"
   },
   {
    "cited_runs": [
@@ -13255,14 +13271,137 @@
    "status": "open"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "as_built_findings": [
+    "F-0707",
+    "F-0705",
+    "F-0606",
+    "F-1114",
+    "F-0701",
+    "F-0208",
+    "F-1402",
+    "F-0303",
+    "F-1101",
+    "F-0305",
+    "F-0409",
+    "F-C0502",
+    "F-0309",
+    "F-0307",
+    "F-0804",
+    "F-0802",
+    "F-0308",
+    "F-0502",
+    "F-0814",
+    "F-C1803",
+    "F-0201",
+    "F-0304",
+    "F-C0602",
+    "F-0901",
+    "F-1801",
+    "F-0610",
+    "F-0202",
+    "F-C1601",
+    "F-1003",
+    "F-C1303",
+    "F-0407",
+    "F-1708",
+    "F-0803"
+   ],
+   "cited_runs": [
+    "rf-root-causes-check",
+    "rf-root-causes-check-r2",
+    "rf-root-causes-selftest",
+    "rf-root-causes-selftest-r2"
+   ],
+   "evidence": [
+    "run:rf-root-causes-check-r2",
+    "run:rf-root-causes-selftest-r2",
+    "run:rf-root-causes-check",
+    "run:rf-root-causes-selftest",
+    "experiment/playbook-completion/reflection/ROOT-CAUSES.md",
+    "experiment/playbook-completion/reflection/root_causes.json"
+   ],
+   "evidence_grade": "registered-run",
+   "findings": [
+    "F-0201",
+    "F-0202",
+    "F-0208",
+    "F-0303",
+    "F-0304",
+    "F-0305",
+    "F-0307",
+    "F-0308",
+    "F-0309",
+    "F-0407",
+    "F-0409",
+    "F-0502",
+    "F-0606",
+    "F-0610",
+    "F-0701",
+    "F-0705",
+    "F-0707",
+    "F-0802",
+    "F-0803",
+    "F-0804",
+    "F-0814",
+    "F-0901",
+    "F-1003",
+    "F-1101",
+    "F-1114",
+    "F-1402",
+    "F-1708",
+    "F-1801",
+    "F-C0502",
+    "F-C0602",
+    "F-C1303",
+    "F-C1601",
+    "F-C1803"
+   ],
    "gate": "5c-root-causes",
    "level": "method",
    "module": "product",
-   "product_obligation": "unknown",
-   "remaining": "root-cause grouping pending",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "finding F-0201",
+     "finding F-0202",
+     "finding F-0208",
+     "finding F-0303",
+     "finding F-0304",
+     "finding F-0305",
+     "finding F-0307",
+     "finding F-0308",
+     "finding F-0309",
+     "finding F-0407",
+     "finding F-0409",
+     "finding F-0502",
+     "finding F-0606",
+     "finding F-0610",
+     "finding F-0701",
+     "finding F-0705",
+     "finding F-0707",
+     "finding F-0802",
+     "finding F-0803",
+     "finding F-0804",
+     "finding F-0814",
+     "finding F-0901",
+     "finding F-1003",
+     "finding F-1101",
+     "finding F-1114",
+     "finding F-1402",
+     "finding F-1708",
+     "finding F-1801",
+     "finding F-C0502",
+     "finding F-C0602",
+     "finding F-C1303",
+     "finding F-C1601",
+     "finding F-C1803",
+     "stated fails by matrix-input/reflection.json"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "semantics_xref pending: the semantics lane's final axioms.json / mechanisms.json did not exist (tentative ids from its drafts are recorded per root cause); findings added after 2026-11-14 ~12:00 UTC by any lane make check_root_causes.py fail until assigned (ratchet); the remedies are prose, none implemented or tested",
+   "source": "matrix-input/reflection.json",
+   "status": "closed"
   },
   {
    "cited_runs": [
@@ -27060,13 +27199,13 @@
   }
  ],
  "product_counts": {
-  "fails": 265,
+  "fails": 266,
   "holds-in-model-only": 1,
   "intent-undecided": 2,
   "n/a": 33,
-  "unknown": 446
+  "unknown": 445
  },
- "registry_runs": 880,
+ "registry_runs": 956,
  "starting_inventory": {
   "cells": 904,
   "decisions": 61,
@@ -27078,9 +27217,9 @@
  },
  "status_counts": {
   "blocked": 8,
-  "closed": 244,
+  "closed": 246,
   "not-applicable": 35,
-  "open": 460
+  "open": 458
  },
  "submission": "9c3719c1",
  "writer_obligations": [

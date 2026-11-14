@@ -138,7 +138,7 @@ only the driver's `rollback()` ends every level. Two variables differ (engine 20
 5.3.2); the 2026.3 engine and driver 5.4.0 are not available here (**blocked-access**), so the difference cannot be
 attributed. Impact on the as-built product: the main write path uses `Txn_Begin/End/Undo` (TSTART/TCOMMIT/TROLLBACK 1),
 which behaves as the product expects; the statement is a documentation premise that is false on a supported version
-(ADMIN_GUIDE lists 2026.1 Community as tested). Recorded as finding F-C1701 candidate (S3, documentation/premise).
+(ADMIN_GUIDE lists 2026.1 Community as tested). Recorded as finding F-C1705 (S3, documentation/premise; the draft called it an F-C1701 candidate).
 Likewise `VECTOR_L2` (P-1710) does not exist here (X-VEC; the mutant encoding the premise is killed).
 
 ## Outside the semantic subset (refused, never claimed)

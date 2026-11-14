@@ -1,0 +1,86 @@
+{
+ "lane": "reflection",
+ "generated": "2026-11-14",
+ "cells": [
+  {
+   "gate": "5c-root-causes",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:rf-root-causes-check-r2",
+    "run:rf-root-causes-selftest-r2",
+    "run:rf-root-causes-check",
+    "run:rf-root-causes-selftest",
+    "experiment/playbook-completion/reflection/ROOT-CAUSES.md",
+    "experiment/playbook-completion/reflection/root_causes.json"
+   ],
+   "evidence_grade": "inspected",
+   "level": "method",
+   "product_obligation": "fails",
+   "product_basis": "253 of the corpus's 257 findings (246 reproduced or source-confirmed, 7 conditional: intent-undecided or blocked-access) fall to 33 root causes, each a missing or violated shared rule; 12 root causes carry S1 findings (RC-01, RC-02, RC-03, RC-04, RC-07, RC-09, RC-11, RC-16, RC-19, RC-20, RC-22, RC-25); the ten largest cover 126 findings; 4 refuted/not-reproduced findings excluded. as_built_findings lists the highest-severity reproduced member of each root cause.",
+   "as_built_findings": [
+    "F-0707",
+    "F-0705",
+    "F-0606",
+    "F-1114",
+    "F-0701",
+    "F-0208",
+    "F-1402",
+    "F-0303",
+    "F-1101",
+    "F-0305",
+    "F-0409",
+    "F-C0502",
+    "F-0309",
+    "F-0307",
+    "F-0804",
+    "F-0802",
+    "F-0308",
+    "F-0502",
+    "F-0814",
+    "F-C1803",
+    "F-0201",
+    "F-0304",
+    "F-C0602",
+    "F-0901",
+    "F-1801",
+    "F-0610",
+    "F-0202",
+    "F-C1601",
+    "F-1003",
+    "F-C1303",
+    "F-0407",
+    "F-1708",
+    "F-0803"
+   ],
+   "remaining": "semantics_xref pending: the semantics lane's final axioms.json / mechanisms.json did not exist (tentative ids from its drafts are recorded per root cause); findings added after 2026-11-14 ~12:00 UTC by any lane make check_root_causes.py fail until assigned (ratchet); the remedies are prose, none implemented or tested"
+  },
+  {
+   "gate": "3.8-test-reflection",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:rf-premise-map-check",
+    "run:rf-premise-map-selftest",
+    "experiment/playbook-completion/reflection/TEST-REFLECTION.md",
+    "experiment/playbook-completion/reflection/premise_tests.json"
+   ],
+   "evidence_grade": "inspected",
+   "level": "method",
+   "product_obligation": "unknown",
+   "product_basis": "every premise named in TRUST.md, the 8 PROOFS.md premise tables, models/core/MODELS.md and the IRIS contract maps to a test or to a named missing test: 224 premises, 39 tested and holding, 44 shown false at the pin (their findings fail their own cells), 86 partial, 55 untested; the product's own suites detect 4 of 246 reproduced findings (242 undetected, incl. every reproduced S1). Whether the product meets the premises that are untested or partial is open.",
+   "as_built_findings": [],
+   "remaining": "the tests named in should_exist are not run (55 untested, 86 partial premises); needing the operator or an unavailable dependency: the SynchCommit=1 crash world, embedded SQL (E-1, scope ruling), IRIS 2026.3 / Enterprise / multi-node (blocked-access), the spec-236 scratch suites (licence); breadth model crates' restrictions (modules/NN.json) are outside this map"
+  }
+ ],
+ "supplements": [
+  {
+   "gate": "3.6-closure",
+   "module": "product",
+   "add_evidence": [
+    "run:rf-premise-map-check"
+   ],
+   "add_remaining": "every-premise-maps-to-a-test part: 224 premises mapped in reflection/premise_tests.json (39 holds, 44 violated, 86 partial, 55 untested; TEST-REFLECTION.md section D); the condition list itself is still not written"
+  }
+ ]
+}

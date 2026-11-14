@@ -31,11 +31,12 @@ counts as a product result: reviewed designs that are proved or model-checked ar
 
 - F-1201 moved from model-only to **reproduced live** (`live-f1201-reproduced`), with the journal as an independent
   oracle of the interleaving.
-- All 197 original findings have a disposition with fresh evidence on the pin: 139 reproduced live, 35 confirmed from
-  source, 12 by an upstream test, 3 by model, 3 intent-undecided (F-0401, F-0503, F-1201: the behaviour is observed,
-  the intent rests only on an Assumption HD; review R-11, R2-08), 2 not reproduced, 2 blocked on access, 1 refuted
-  (`findings/audit/*.json`, as the matrix counts them). 59 new findings (8 S1, 22 S2, 16 S3, 13 S4; 36 reproduced live,
-  4 by an upstream test run here, 5 by model, 10 from source, 3 intent-undecided: F-C0402, F-C1102, F-C1108).
+- All 197 original findings have a disposition with fresh evidence on the pin: 140 reproduced live, 35 confirmed from
+  source, 12 by an upstream test, 3 by model, 2 intent-undecided (F-0401, F-0503: the behaviour is observed, the
+  intent rests only on an Assumption HD; review R-11, R2-08), 2 not reproduced, 2 blocked on access, 1 refuted
+  (`findings/audit/*.json`, as the matrix counts them; F-1201 is reproduced live since review R2-11). 60 new findings
+  (8 S1, 23 S2, 16 S3, 13 S4; 37 reproduced live, 4 by an upstream test run here, 5 by model, 10 from source, 3
+  intent-undecided: F-C0402, F-C1102, F-C1108; 1 not reproduced).
 - The three targeting predicates, graph-blind node provenance, overlapping ids, statement/tuple maps, post-commit
   replay, per-target counters, marker ownership/absence, concurrent erase/start, abort and recovery are each modelled
   (`models/core/MODELS.md`).
@@ -67,9 +68,9 @@ counts as a product result: reviewed designs that are proved or model-checked ar
 Others of note: F-C1303 (a bounded redaction resume never finishes, live), F-C1307 (one writer keeps a redaction open
 and blocks every tenant, live), F-1801 (restoring an older archive breaks every later commit), F-C1706 (the pin's own
 uv.lock installs a driver on which scores come back as Decimal, duplicate skips raise and list parameters fail, S2).
-Observed but intent-undecided: F-C1102 (acknowledged commit lost on crash with SynchCommit=0, live; no IVG document
-states a durability premise) and F-1201 (a graph erasure removes the statement entry of a concurrent commit's edge,
-live 8/8; its intent rests on HD-1201).
+F-1201 (a graph erasure removes the statement entry of a concurrent commit's edge, live 8/8) is a reproduced
+defect (review R2-11). Observed but intent-undecided: F-C1102 (acknowledged commit lost on crash with SynchCommit=0,
+live; no IVG document states a durability premise).
 
 ## Remaining blockers (exact)
 

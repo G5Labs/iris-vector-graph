@@ -63,7 +63,7 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 3.7-full-rerun | product | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.8-status | method | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.8-trust | method | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
-| 3.8-test-reflection | method | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 3.8-test-reflection | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.8-review | method | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.8-findings-disposed | method | 0 | 0 | 18 | 0 | 1 | 13 | 0 | 0 | 5 | 1 |
 | 5-trust-strict | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
@@ -75,10 +75,10 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 5b-client-entry | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 5b-refuse-not-guess | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 5c-refusals | method | 9 | 0 | 9 | 0 | 1 | 12 | 0 | 0 | 6 | 1 |
-| 5c-root-causes | method | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 5c-root-causes | method | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
 | 5c-reviewers | method | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
 
-Totals: {'closed': 244, 'not-applicable': 35, 'open': 460, 'blocked': 8}; evidence grade of closed cells: {'registered-run': 202, 'inspected': 42}; product: {'unknown': 446, 'n/a': 33, 'fails': 265, 'intent-undecided': 2, 'holds-in-model-only': 1}
+Totals: {'closed': 246, 'not-applicable': 35, 'open': 458, 'blocked': 8}; evidence grade of closed cells: {'registered-run': 204, 'inspected': 42}; product: {'unknown': 445, 'n/a': 33, 'fails': 266, 'intent-undecided': 2, 'holds-in-model-only': 1}
 
 ## Writer census obligations (review R2-02)
 
