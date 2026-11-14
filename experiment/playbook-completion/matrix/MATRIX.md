@@ -64,7 +64,7 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 3.8-status | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.8-trust | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.8-test-reflection | method | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| 3.8-review | method | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 3.8-review | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.8-findings-disposed | method | 0 | 0 | 18 | 0 | 1 | 14 | 0 | 0 | 0 | 0 | 0 | 4 | 1 |
 | 5-trust-strict | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 5-mutants-located | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
@@ -78,7 +78,7 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 5c-root-causes | method | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 5c-reviewers | method | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
-Totals: {'closed': 610, 'not-applicable': 35, 'open': 83, 'blocked': 24}; evidence grade of closed cells: {'registered-run': 494, 'inspected': 116}; product: {'unknown': 190, 'n/a': 33, 'fails': 408, 'intent-undecided': 6, 'holds-in-model-only': 1, 'holds-live': 9, 'holds-inspected': 69, 'holds-as-detection': 36}
+Totals: {'closed': 611, 'not-applicable': 35, 'open': 82, 'blocked': 24}; evidence grade of closed cells: {'registered-run': 495, 'inspected': 116}; product: {'unknown': 190, 'n/a': 33, 'fails': 408, 'intent-undecided': 6, 'holds-in-model-only': 1, 'holds-live': 9, 'holds-inspected': 69, 'holds-as-detection': 36}
 
 ## Writer census obligations (review R2-02)
 

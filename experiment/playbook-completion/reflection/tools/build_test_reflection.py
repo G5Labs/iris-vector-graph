@@ -228,7 +228,8 @@ def render() -> str:
       "prove it.\n")
 
     w("## F. Tests that should exist and need the operator or an unavailable dependency\n")
-    w("- The crash world with `SynchCommit=1` (needs the container reconfigured; the audit may not reconfigure it).")
+    w("- More crash trials and other crash points under `SynchCommit=1` (3 trials ran, `live-crash-repeat-sc1`, with the "
+      "container reconfigured and restored by the orchestrator; three trials are evidence, not proof).")
     w("- The transaction-verb cases on IRIS 2026.3, the product premise's engine (`ver-avail-iris-2026.3`, "
       "blocked-access), on Enterprise / IRIS for Health and on a multi-node ECP or mirror setup (blocked-access).")
     w("- (Done since the first pass: premise E-1, embedded SQL, was validated by the contract-2 lane on the pin's own "

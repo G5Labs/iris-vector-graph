@@ -373,7 +373,7 @@ Outside the contract's validated subset (23 features, all untested as engine cla
 | D-2 | `b-07-fp-writers`, `trace-conformance-ledger`, `corr-frame-keys-fk`, `env-ext-r6` | Statement semantics outside the contract's subset (JSON functions, embedded SQL, iFind, %Save concurrency) and every statement not executed by a checked trace. |
 | D-3 | `trace-conformance-ledger`, `corr-trace-conf`, `corr-trace-ext`, `corr-line-coverage`, `sim-main-20261114`, `sim-race-20261114` | 281/1,760 ObjectScript and 181/690 Python handler lines of modules 11-14 are unchecked; handlers of every other module have no trace check against a model. |
 | D-4 | `corr-lockplan`, `live-f1201-reproduced`, `live-erase-vs-commit-fk`, `env-ext-r6` | Lock plans of modules other than 11-14 and of the AdjW users beyond the probes; lock timeouts and escalation (outside the contract). |
-| D-5 | `trace-conformance-ledger`, `sim-main-20261114`, `live-lost-ack-commit`, `corr-trace-lostack`, `live-crash-world-r2` | Composition over arbitrary executions, multi-node (ECP/mirror: blocked-access), SynchCommit=1, and every invariant the simulator's oracle does not state. |
+| D-5 | `trace-conformance-ledger`, `sim-main-20261114`, `live-lost-ack-commit`, `corr-trace-lostack`, `live-crash-world-r2` | Composition over arbitrary executions, multi-node (ECP/mirror: blocked-access), and every invariant the simulator's oracle does not state; durability under SynchCommit=1 is sampled by 3 crash trials only (live-crash-repeat-sc1). |
 | D-6 | `corr-frame-keys-fk`, `corr-capacity`, `corr-row-permutation`, `corr-closure-scan` | Modules other than 11-14; capacity beyond the key-length limits probed. |
 | D-7 | `env-contract-r2`, `env-ext-r6`, `env-contract-r6-recheck`, `ver-e262-d532-full` | The link from proofs/ participant contracts to contract clauses is by inspection; outside-subset features have no clause. |
 | D-8 | `live-fc1303-bounded-resume`, `fu-r03-marker-held-open`, `sim-race-20261114`, `env-contract-r2` | Fair scheduling of enabled steps and operator behaviour are not tested; no soak shows completion under fair schedules. |
@@ -388,7 +388,7 @@ No row of PROOF-DEBT.md is paid by these tests: they sample the obligation on th
 
 ## F. Tests that should exist and need the operator or an unavailable dependency
 
-- The crash world with `SynchCommit=1` (needs the container reconfigured; the audit may not reconfigure it).
+- More crash trials and other crash points under `SynchCommit=1` (3 trials ran, `live-crash-repeat-sc1`, with the container reconfigured and restored by the orchestrator; three trials are evidence, not proof).
 - The transaction-verb cases on IRIS 2026.3, the product premise's engine (`ver-avail-iris-2026.3`, blocked-access), on Enterprise / IRIS for Health and on a multi-node ECP or mirror setup (blocked-access).
 - (Done since the first pass: premise E-1, embedded SQL, was validated by the contract-2 lane on the pin's own compiled classes, `env2-e1-r1`, without compiling anything.)
 - The spec-236 scratch suites (more than 8 licence units) and the %AI-dependent MCP cases.

@@ -52,7 +52,7 @@ unchanged v4.5.1 release, an `IVG262*` scratch namespace, used only to load v4.5
 the pin's upgrade for 3.6-capacity/01. This is the orchestrator's extension, not the operator's words; the cell carries
 `depends_on` this record, and the operator is asked to confirm it. A read-only class inventory after the pin's upgrade
 (`o1-cap-inventory`): 222 non-% classes, 55 equal to the pin's sources, 8 v4.5.1-only, 11 v4.5.1 schema classes or formatting
-differences, 148 generated: the same composition as `IVG262FC1306`.
+differences, 148 generated: the same groups as `IVG262FC1306` with different counts (55/8/11/148 against 54/8/11/178).
 
 | Setup | Version | Namespace | Classes | Effect |
 |---|---|---|---|---|

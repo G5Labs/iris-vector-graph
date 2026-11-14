@@ -11,6 +11,10 @@ All under `tools/locks.sh iris`, while no lane used the container (Q18f). Raw lo
 | 16:32-16:43 | six trials under SynchCommit=1 (same kills and restarts) | `live-crash-repeat-sc1` |
 | 16:43:56 | restore: `Config.Miscellaneous.Modify(SynchCommit=0)` (BEFORE=1 AFTER=0), `docker restart`, `iris.cpf` 327 `SynchCommit=0`, `qlist` ok, healthy (16:44:03) | `$RUN_DIR/crash-repeat/sc1-procedure.log` |
 
+After the first kill (trial in-flight-1 under SynchCommit=0) Docker did not report healthy within the harness's 360 s
+wait (restart 363.2 s, `healthy: false`), while IRIS already accepted connections and the trial's checks ran; every later
+restart reported healthy within 6.4-12.5 s (`$RUN_DIR/crash-repeat/sc0/results.json`, `sc1/results.json`).
+
 Each SIGKILL is an abnormal shutdown that IRIS records in `messages.log` and may raise as an alert (as on 2026-11-14 01:19,
 `incidents/HEALTH-ALERT-0119.md`); no alert was cleared by the audit. After the last restart Docker reported healthy and
 `iris qlist` ok. Every durability result of the audit is attributed to the SynchCommit setting it ran under.
