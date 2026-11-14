@@ -1,35 +1,34 @@
 # Restartable work queue
 
-Ordered by value. Status: `todo`, `doing`, `done` (registered evidence ids), `open` (stopped, with reason),
-`blocked` (exact dependency). A successor resumes from the first non-done row of each lane. Lanes own disjoint paths
-(`CONVENTIONS.md`); the orchestrator commits. Gate-level status lives in `matrix/obligations.json` (generated; every
-`closed` cell cites registered passing runs; `python matrix/build_matrix.py --check`). Reconciled 2026-11-14 00:30 UTC.
+Ordered by value. Status: `todo`, `doing`, `done` (registered evidence ids / commit), `open` (stopped, with reason),
+`blocked` (exact dependency). A successor resumes from the first non-done row. Lanes own disjoint paths
+(`CONVENTIONS.md`); the orchestrator commits. Gate status lives in `matrix/obligations.json` (generated; verification
+status, evidence level and product obligation per cell). Reconciled 2026-11-14 02:20 UTC against the committed tree.
 
 | # | Lane | Item | Status |
 |---|---|---|---|
-| Q1 | orchestrator | Scaffolding: conventions, registry, locks, per-lane namespaces, journal oracle | done (c01a7ccd; journal vector fix 5d876950) |
-| Q2 | orchestrator | IRIS 2026.1 environment contract, native differential, sharpness, mutants | done: env-contract-r2 (0 outside, 282/283 singleton, 17/17 mutants), env-contract-selftest; env-contract-r1 kept (fail, first draft) |
-| Q2b | orchestrator | Extend the contract with features the breadth lanes list in `modules/NN.json` env_features (vector SQL, %NOINDEX, functional indexes, Task Manager, `$vector`) | todo; until then those modules' `3.2-coverage` stays open |
-| Q3 | core-models | Erase/redact/replay machines M1 targeting, M2 concurrency, M3 retry/readers; controls; progress mutants; refinement audit | done: 82 checks met (core-*); reviewed results are model-level |
-| Q3b | orchestrator | Live checks of the core lane's proposed findings: F-C1303 (bounded resume never finishes) running; F-C1301/F-C1302/F-C1202 model-only | doing (traces/fc1303_resume.py) |
-| Q4 | core-proofs | Participant contracts, Protocol2 composition (two levels), safety theorems, progress under fairness, controls incl. progress-only | done: core-proofs-baseline (88 verified, 0 errors), 5 located controls; independent recheck running; model-level |
-| Q5 | orchestrator | Journal trace conformance of product operations | done for the two-tenant ledger/erase/redact scenario: trace-conformance-ledger, trace-conformance-controls |
-| Q5b | orchestrator | F-1201 native reproduction | done: live-f1201-reproduced (8/8, fail = product defect); live-erase-vs-commit-fk, live-erase-vs-commit-emptygraph |
-| Q6 | orchestrator | §3.4-3.6 correspondence for modules 11-14: statement/handler map, unchecked lines, lock plan, frame/keys/FK/capacity conditions | todo (highest remaining gate; trace conformance is the strongest correspondence so far) |
-| Q7 | orchestrator | Obligation matrix | done and maintained (build_matrix.py; starting inventories reproduced exactly) |
-| Q8 | ontology | Literal §3.1 rule, checker, controls, repaired ontology | done: ontology-check-final, ontology-self-test, ontology-independent-recheck |
-| Q8b | ontology | Tag the repaired ontology with completion evidence (C- refs) | todo |
-| Q9 | intent-a / intent-b | Intent recovery for 61 HD questions with probes | done (intent/*.json; intent-a-*, ib-*) |
-| Q10 | breadth-a | Modules 01-06 | done (breadth-a-*) |
-| Q10 | breadth-c | Modules 00, 15-18 | done (c15..c18-*, cmc-*); incident IVG460SNAP dispositioned |
-| Q10 | breadth-b | Modules 07-11 | doing; rerun of runs active 23:02:53-23:03:40 under the lock requested |
-| Q11 | validation | Existing suites on the pin, triage, SC-002/003 and baselines, multi-process, editions | doing; rerun of the USER chunk active in the incident window requested |
-| Q12 | orchestrator | Findings audit 12-14 | done (findings/audit/12-14.json); lost-ack world live-lost-ack-commit |
-| Q12b | orchestrator | Instance crash world (container restart with all lanes quiet) | todo (end of run) |
-| Q13 | review | Independent intent review (§3.8): omitted writers, over-narrow domains, assumed fairness, model-to-code relation | todo (after Q6) |
-| Q14 | orchestrator | verify.sh against a candidate commit; trust inventory; proof debt; phase verdict; STATUS | todo (verify.sh drafted, cff144dc) |
+| Q1 | orchestrator | Scaffolding, registry, locks, per-lane namespaces, journal oracle | done (c01a7ccd; fixes 5d876950, 88217557) |
+| Q2 | orchestrator | IRIS 2026.1 contract: differential, sharpness, mutants | done: `env-contract-r2` (283 cases, 0 outside, 17/17) |
+| Q2b | contract-ext | Contract extension with the lanes' env features (functional indexes, DDL, empty strings, vectors, ...) | doing: round r3 in progress (40 mutants defined); `VALIDATED_ROUND` set when it meets the gate |
+| Q3 | core-models | Erase/redact/replay machines, controls, progress mutants, refinement audit | done: 82 checks (core-*), model-level (307a0a8c) |
+| Q3b | orchestrator | Live checks of core proposals | done: F-C1303 `live-fc1303-bounded-resume`; F-C1301/F-C1302/F-C1202 model-only |
+| Q4 | core-proofs | Protocol2 composition, safety, progress, controls | done: 88 verified, 0 errors (core-proofs-*, recheck core-proofs-recheck-*), model-level; refuted premises shown (b9192179) |
+| Q5 | orchestrator | Journal trace conformance | done: `trace-conformance-ledger`, `trace-conformance-controls` |
+| Q5b | orchestrator | F-1201 native reproduction | done: `live-f1201-reproduced` (8/8) |
+| Q6 | correspondence | §3.4-3.6 map, unchecked lines, conditions, lock plans for 11-14 | done (09c52ae4): 13/15 actions trace-checked; handler/statement proofs open (no frontend) |
+| Q7 | orchestrator | Obligation matrix | done and maintained (build_matrix.py) |
+| Q8 | ontology | Literal §3.1 rule, repaired ontology, evidence tags, model-only qualifiers | done (bdcea01f, f3fe3917) |
+| Q9 | intent-a/b | Intent recovery, 61 decisions | done (e1df8e3e) |
+| Q10 | breadth-a/b/c | Modules 00-11, 15-18 | done (5d876950, 88217557, bd727838) |
+| Q11 | validation | Suites, triage, SC-002/003, baselines, multi-process, editions | doing; reruns requested for USER 23:01:45-23:03:40 and scratch-236 licence-refused runs |
+| Q12 | orchestrator | Findings 12-14; lost-ack world; crash world | done: findings/audit/12-14, `live-lost-ack-commit`, `live-crash-world-r2` (r1 invalid, recorded) |
+| Q13 | review | Independent review | done: no sign-off (`independent-review-1`); dispositions: R-01..R-04, R-10 reproduced/recorded (followup, F-C1306 live), R-02 census corrected, R-05/R-07 matrix and ontology fixed, R-06 premises shown |
+| Q13b | orchestrator | Second review pass after the dispositions | todo |
+| Q14 | orchestrator | verify.sh on a candidate commit; STATUS, test reflection, phase verdict | doing: fast gate 20 s (18 steps); TRUST.md, PROOF-DEBT.md written |
+| I-1..I-4 | orchestrator | Incidents: IVG460SNAP, USER-REDEPLOY-08, superseded proof logs, health alert | recorded in `incidents/` |
 
-Operator-only dependencies so far: IRIS 2026.3 engine and driver 5.4.0 (to attribute the SQL-transaction version
-difference); an IRIS Enterprise image/licence (SC-003 target, edition comparison); `%AI` classes (MCP module);
-FHIR server classes (`HS.FHIRServer`, module 15); a multi-node ECP/mirror setup (multi-node e2e); more licence
-connections than Community's 8 would remove the main throughput limit.
+Operator-only dependencies: IRIS 2026.3 engine and driver 5.4.0 (version difference of SQL transaction verbs); an IRIS
+Enterprise image/licence (SC-003 target and edition comparison); `%AI` classes (MCP module); FHIR server classes
+(`HS.FHIRServer`, module 15); a multi-node ECP/mirror setup (multi-node e2e); a second IRIS user/role (least-privilege
+checks, F-0908); the `arno-callout` library (F-1001); more licence connections than Community's 8 (throughput; the
+licence refusals at 01:31-01:47 came from this cap).

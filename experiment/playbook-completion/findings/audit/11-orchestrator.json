@@ -2,7 +2,7 @@
  {
   "id": "F-C1102",
   "module": "11",
-  "title": "An acknowledged ledger commit can be lost on an instance crash under the default IRIS configuration",
+  "title": "With SynchCommit=0 (the tested setting, IRIS default) an acknowledged ledger commit can be lost on an instance crash",
   "intended": "A revision the ledger reports as committed exists afterwards (spec 213: a revision exists iff its mutations are visible; clients treat the returned revision as durable). No IVG document states a durability premise or the IRIS setting it needs.",
   "observed": "Live: with iris.cpf SynchCommit=0 (the IRIS default: TCOMMIT returns before the journal is synced), a 36,000-operation commit acknowledged as seq 3 was entirely absent after a SIGKILL of the container and journal recovery; the ledger stayed consistent (head, revision rows, statement/tuple map, verify equal) and a retry with the same idempotency key committed once. The in-flight trial recovered all-or-nothing.",
   "disposition": "reproduced-live",
@@ -19,6 +19,6 @@
   "severity": "S2",
   "confidence": "high",
   "remedy": "Document the durability premise (SynchCommit=1 or a journal flush before acknowledging, or say that acknowledged revisions can be lost on a crash and that an idempotent retry recovers them), and consider checking the setting at enable().",
-  "notes": "Environment premise rather than a code defect: the engine's documented default permits it. Exactly-once is preserved by the idempotency key; durability is not. The earlier run live-crash-world-r1-invalid exercised two crash/restart cycles without a commit in flight."
+  "notes": "Attributed to the tested IRIS configuration SynchCommit=0 (iris.cpf of the audit container). With SynchCommit=1 the result may differ; not tested here. Environment premise rather than a code defect: the engine's documented default permits it. Exactly-once is preserved by the idempotency key; durability is not. The earlier run live-crash-world-r1-invalid exercised two crash/restart cycles without a commit in flight."
  }
 ]
