@@ -1,0 +1,19 @@
+{
+ "_doc": "Review 4, writesets slice (fork): verdicts on ws-* run records, the 26 lemma cells citing failed runs, and a discharge sample. Reruns: $RUN_DIR/review-4/writesets/check.log, check-selftest.log.",
+ "evidence": {
+  "ws-check": "MATCH", "ws-check-selftest": "MATCH (19/19; the C0 build-equality check is not seeded)",
+  "ws-deploy-auditb": "PARTIAL: 'namespace empty before the writesets probes' is not in the log",
+  "ws-live-fc1301-delete-reification": "MATCH", "ws-live-fhir-blocked": "MATCH", "ws-live-fk-guard": "MATCH (only fk_edges_dest fired; source FK by inspection)",
+  "ws-live-gap-marker": "MATCH ('3 revisions' inferred from seq 5 of the other-tenant commit)",
+  "ws-live-gap-restore": "MATCH ('redactedRev(2)': log shows a count of 1; seq by code LedgerRedact.cls:345)",
+  "ws-live-ins-bulk_create_edges": "MATCH", "ws-live-ins-bulk_create_edges_temporal": "MATCH", "ws-live-ins-bulk_create_nodes": "MATCH",
+  "ws-live-ins-bulk_ingest_edges": "MATCH", "ws-live-ins-create_edge_temporal": "MATCH", "ws-live-ins-reify_edge": "MATCH",
+  "ws-live-ins-store_edge": "MATCH", "ws-live-ins-store_node": "MATCH", "ws-live-ins-store_write_edges": "MATCH", "ws-live-ins-store_write_nodes": "MATCH",
+  "ws-live-ins-bulkloader_load_edges": "MISMATCH: observes 'equal again after erasing wsd10'; log verify_after_erasing_D = diverges (rel wsd10|n1-R->wsd10|n2 survives delete_nodes_by_prefix)",
+  "ws-live-ins-import_rdf": "MISMATCH: observes 'verify() went equal -> diverges' and 'equal again after erasing wsd11'; log verify_baseline = diverges and verify_after_erasing_D = diverges, both from a wst10 rel left by the previous case through reset (EraseAll+PurgeAll)",
+  "ws-live-migrations": "MATCH", "ws-live-noindex": "MATCH (the 'LiveRows-shaped' counts are the probe's own SQL; the product evidence is the completed redaction)",
+  "ws-live-snap-importglobals": "MATCH ('scratch directory removed': rm output empty, not positively shown)",
+  "ws-live-snap-setnodejson": "MATCH (40/40 refused)", "ws-live-sql-guard": "MATCH", "ws-live-sql-insert-wedge": "MATCH (one later commit observed; 'every later commit' in WRITESETS.md and F-C1150 is inferred)",
+  "ws-live-stmt-collision": "MATCH", "ws-live-stmt-purge": "MATCH (fallback mechanism by inspection; purge_before returned 0 yet deleted the row)"
+ }
+}
