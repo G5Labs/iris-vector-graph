@@ -1,0 +1,15 @@
+{
+  "command": "bash experiment/playbook-completion/tools/locks.sh iris python experiment/playbook-completion/product-gates/fc_controls.py s13 $RUN_DIR/product-gates/fc-controls",
+  "experiment_head": "e7cf1457e9d16c76fa772c2deeb94d31296c62b7",
+  "id": "pg-fc-s13-control",
+  "kind": "control",
+  "lane": "product-gates",
+  "log": "$RUN_DIR/product-gates/fc-controls/s13.json",
+  "log_bytes": 2754,
+  "log_sha256": "76fc1a951de893ceaf756afd397dba12f079e71fbac5c52d8413cca9fa88047b",
+  "observes": "Negative control for S13 (F-C1307, fu-r03-marker-held-open), AUDITIA, fresh ledger per arm. Oracle: after an interrupted bounded redaction (redact(None, prefix='pga', batch_size=1, max_batches=1) left the marker in both arms), the documented recovery (run it again) releases the marker, tenant pgb's revision is readable and verify() is equal. Precondition absent (no writer on the target): re-run complete, marker released, get_revision 3 records, verify equal: passes. Precondition present (create_node('pga|zombie') after the bounded run, accepted on the non-strict ledger): re-run refused RedactionTargetLiveError (4 live rows), marker kept, tenant pgb's get_revision RedactionInProgressError, verify redaction_in_progress: flagged (3 violations). Cleanup: erase again and re-run completes, marker released. Control passes.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T12:54:49+00:00",
+  "result": "pass"
+}

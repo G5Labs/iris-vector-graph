@@ -15521,19 +15521,32 @@
     "pg-disconnect-live-controls",
     "pg-disconnect-selftest",
     "pg-failure-controls",
+    "pg-failure-controls-r2",
     "pg-fc-crash-oracle-selftest",
-    "pg-fc-lost-ack-oracle-selftest"
+    "pg-fc-lost-ack-oracle-selftest",
+    "pg-fc-s13-control",
+    "pg-fc-s15-control",
+    "pg-fc-s16-control",
+    "pg-fc-s17-control",
+    "pg-fc-s5b-control"
    ],
    "evidence": [
+    "run:pg-failure-controls-r2",
     "run:pg-failure-controls",
     "run:pg-fc-crash-oracle-selftest",
     "run:pg-fc-lost-ack-oracle-selftest",
     "run:pg-disconnect-selftest",
     "run:pg-disconnect-live-controls",
+    "run:pg-fc-s5b-control",
+    "run:pg-fc-s13-control",
+    "run:pg-fc-s15-control",
+    "run:pg-fc-s16-control",
+    "run:pg-fc-s17-control",
     "experiment/playbook-completion/product-gates/FAILURE-CONTROLS.md",
-    "experiment/playbook-completion/product-gates/check_failure_controls.py"
+    "experiment/playbook-completion/product-gates/check_failure_controls.py",
+    "experiment/playbook-completion/product-gates/fc_controls.py"
    ],
-   "evidence_grade": "run",
+   "evidence_grade": "live",
    "findings": [
     "F-C1743"
    ],
@@ -15547,9 +15560,9 @@
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "No negative control for S5b (F-1102 stats row lock: the same oracle on a free stats row), S13 (F-C1307: a world without the bypass writer must release the marker), S15 (F-C0801: a committed Cypher write must leave counters equal to rows), S16 (killed bulk load: a seeded check telling a complete load from a partial one), S17 (max_ops refusal: a changeset at the limit accepted in the same probe). S6 licence refusal at product level is blocked-access: it needs exclusive use of the container's 8 shared licence units (operator).",
+   "remaining": "S6 only: a product-level licence-refusal run (a connection refused in the middle of an operation) needs exclusive use of the container's 8 shared licence units; the orchestrator will run it when the container is exclusive.",
    "source": "matrix-input/product-gates.json",
-   "status": "open"
+   "status": "blocked"
   },
   {
    "as_built_findings": [
@@ -35890,7 +35903,7 @@
   "n/a": 33,
   "unknown": 202
  },
- "registry_runs": 1143,
+ "registry_runs": 1152,
  "starting_inventory": {
   "cells": 904,
   "decisions": 61,
@@ -35901,10 +35914,10 @@
   "writer_obligations": 83
  },
  "status_counts": {
-  "blocked": 9,
+  "blocked": 10,
   "closed": 545,
   "not-applicable": 35,
-  "open": 163
+  "open": 162
  },
  "submission": "9c3719c1",
  "writer_obligations": [

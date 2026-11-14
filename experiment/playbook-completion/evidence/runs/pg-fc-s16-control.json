@@ -1,0 +1,15 @@
+{
+  "command": "bash experiment/playbook-completion/tools/locks.sh iris python experiment/playbook-completion/product-gates/fc_controls.py s16 $RUN_DIR/product-gates/fc-controls",
+  "experiment_head": "e7cf1457e9d16c76fa772c2deeb94d31296c62b7",
+  "id": "pg-fc-s16-control",
+  "kind": "control",
+  "lane": "product-gates",
+  "log": "$RUN_DIR/product-gates/fc-controls/s16.json",
+  "log_bytes": 3058,
+  "log_sha256": "1829048e78cb974e5c8f96a3b085cf12900bb5ee9f01e8a22d7cc8fc751ae7db",
+  "observes": "Negative control for S16 (killed bulk load, breadth-a-live-03-bulk-killed-client, F-0305), AUDITIA, a client OS process with a from_connect engine (2 server processes), a second connection holding LOCK TABLE Graph_KG.rdf_labels IN EXCLUSIVE MODE. Oracle: one bulk_create_nodes call (1,000 unlabelled + 1,000 labelled nodes) is all or nothing. Absent (a), server-loader path (capabilities read, as the original probe), not killed: 2,000 nodes, 2,000 props, 1,000 labels: passes. Absent (b), batch-SQL path (fresh engine, one cursor transaction), killed after 4 s: the blocked process was still waiting after 20 s and was terminated by its pid: 0/0/0: passes. Present, server-loader path killed while chunk 2 waits: the client's server processes exited 6.4 s later on their own; chunk 1 stayed committed (1,000 nodes, 1,000 props, 0 labels): flagged. Control passes. A first attempt (/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/product-gates/fc-controls/s16-attempt1-sqlpath.json, not registered) used fresh engines in every arm, so all took the SQL path and the present arm left nothing: it lacked the precondition, which the registered run establishes.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T12:54:49+00:00",
+  "result": "pass"
+}
