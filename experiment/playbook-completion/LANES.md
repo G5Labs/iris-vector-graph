@@ -1,6 +1,6 @@
 # Lane checkpoint (orchestrator; read by the hourly monitor)
 
-Updated: 2026-11-14 ~23:00 UTC: account signed off (review 6, 76fb07ce); D-7 integrated (737c3930); bounded merge gate passed (verify-merge-20e3b336, 215 s); periodic full verification verify-clean-25ba22dd; addendum review running; steer 13: proofs-sys (system axioms over composed mechanisms) and proofs-env extension running (no IRIS).
+Updated: 2026-11-14 ~23:25 UTC: sign-off extends to 4e4a4d88 (review 6 addendum); its S4 items fixed (06cf63d1); merge gate from a fresh checkout 61/61 in 341 s (verify-merge-06cf63d1); running: proofs-sys (system axioms, steer 13) and the proofs-env extension; next: integrate both, a periodic full verification (verify.sh --live --clean) including them, a scoped addendum.
 previous account is live: `ListAgents` empty, no audit process running, IRIS and heavy locks free, container healthy,
 product scope check passes). Last checkpoint commit before the switch: `1564a673`.
 

@@ -54,7 +54,7 @@ status, evidence level and product obligation per cell). Reconciled 2026-11-14 (
 | Q18i | orchestrator | bounded merge gate per the playbook (verify.sh --merge, hard 1200 s) | done: verify-merge-20e3b336, -bb1f23fc (51/51, ~216 s) |
 | Q18j | proofs-sys | D-14 remainder: system axioms over the composed mechanisms in Verus | doing (steer 13) |
 | Q18k | proofs-env | D-7 remainder: extension clauses, E-1, X2 into the Verus subset | doing (steer 13) |
-| Q18l | review | scoped addendum to review 6: R6 fixes, O-1 on IVG262CAP, D-7, the merge-gate interpretation | doing |
+| Q18l | review | scoped addendum to review 6: R6 fixes, O-1 on IVG262CAP, D-7, the merge-gate interpretation | done: sign-off extends to 4e4a4d88; A-01..A-06 fixed (06cf63d1) |
 | Q18g | orchestrator | STATUS/TRUST/PROOF-DEBT refresh; verify.sh --live --clean on a committed tree; fifth review | doing: account refreshed (1dff8e3c, 82027430); clean gate on the candidate running |
 | I-1..I-4 | orchestrator | Incidents: IVG460SNAP, USER-REDEPLOY-08, superseded proof logs, health alert | recorded in `incidents/` |
 
