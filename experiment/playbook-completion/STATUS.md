@@ -16,9 +16,11 @@ evidence (counts in Numbers, below, generated and checked by the fast gate). App
 - every finding still needs a maintainer's fix or recorded decision (3.8-findings-disposed);
 - the independent review signed off the account (the specification against intent and its accuracy, not the product) in its sixth
   pass, for candidate `76fb07ce` (`independent-review-6`); passes 1-5 did not, and their conditions are answered in `review/`;
-- the clean live gate passed on candidate `25ba22dd` (`verify-clean-25ba22dd`: 73/73 steps exit 0, 5,119 s, every crate built
-  from an empty target; the earlier run on `a42f10c8` failed nine proof readers and is kept); its slowest step,
-  `proofs-mech`, takes 2,230 s, above the 20-minute single-gate target (5a-gate-20min stays open).
+- the periodic full verification passed on candidate `25ba22dd` (`verify.sh --live --clean`, `verify-clean-25ba22dd`: 73/73
+  steps, 5,119 s, every crate and control built from an empty target; the earlier run on `a42f10c8` failed nine proof
+  readers and is kept); the bounded merge gate the playbook times at 20 minutes (`verify.sh --merge`: spec and trust
+  checks, Verus on changed crates, native-IRIS canaries and the touched slices, under a hard 1,200 s envelope) passed
+  on `20e3b336` in 215 s (`verify-merge-20e3b336`; two earlier failing runs kept).
 
 Read the matrix (`matrix/MATRIX.md`) as two questions per cell: was the verification step done with adequate evidence
 (status), and does the product meet the obligation (product label). A model result never counts as a product result.
@@ -35,7 +37,7 @@ Read the matrix (`matrix/MATRIX.md`) as two questions per cell: was the verifica
 | §3.4-3.6 storage, handlers, composition | not done | ownership, storage order, row permutation, keys, FK, capacity, frame (catalog/dictionary oracle) and declared reads (non-interference oracle) per module; decoders and status maps; trace conformance; CLOSURE.md: every environment condition (177 at this commit), each validated, partly validated, assumed with its consequence, or false at the pin | **open**: statement, handler and lock-plan proofs and composition (no verifier); declared reads 10 fails (F-C1041, F-C1046: ^NKG class methods answer all graphs merged) and 8 Arno-library readers cannot run here (F-1001); frame 07, 09, 15 (an older release's edge rescue, plan compilation, FHIR classes). Capacity 01 closed: the pin's upgrade of a loaded v4.5.1 namespace (built by the O-1 fixture) completes in 14 s with no limit hit; the 3.x whole-table migrations need the v3.2.0 fixture, which O-1 does not cover |
 | §3.7 validation | 14 scenarios; no crash/perf | upstream suites on the unchanged pin with every failure triaged; trace replay of 17 modules through their machines with controls, lock logs; crash world 3+3 trials per SynchCommit setting; lost-ack; disconnect (49 trials); licence refusal (S6); every failure scenario with a negative control; SC-002/SC-003 measured; lint and style under the product's own rules (fail) | **closed** except blocked: editions (2026.3, Enterprise), multi-node, licence-bound suites, perf baselines needing Enterprise/Arno, mutation of product code (operator question O-2), FHIR (15); full clean rerun passed (`verify-clean-25ba22dd`) |
 | §3.8 account | review signed off the worked example | STATUS (this file, numbers generated and checked), TRUST (incl. log provenance), PROOF-DEBT, matrix, root causes (36 causes, `rf-root-causes-check-r3`), test reflection (274 premises mapped), four independent reviews | **open** only for maintainer decisions on every finding (3.8-findings-disposed); review signed off in pass 6 (`independent-review-6`) |
-| §5 hygiene, proof debt | — | locks, timeouts, disk floor; every unproved obligation in PROOF-DEBT.md | **open**: lock holds are not logged (5-hygiene); `proofs-mech`'s gate takes ~35 min, above the 20-minute single-gate target (5a-gate-20min) |
+| §5 hygiene, proof debt | — | locks, timeouts, disk floor; every unproved obligation in PROOF-DEBT.md | **open** only for 5-hygiene (lock holds are not logged); 5a-gate-20min closed: the merge gate fits the playbook's hard 20-minute bound (215 s, `verify-merge-20e3b336`); every crate with controls (proofs-mech ~37 min) runs in the periodic full verification, as the playbook places it |
 
 ## What changed since the baseline (each with evidence)
 
@@ -124,7 +126,7 @@ conditions are assumed with their consequence (CLOSURE.md). Durability results h
 | Explorer crates (checks in RESULTS.json) | `breadth-a` 104; `breadth-b` 132; `breadth-c` 39; `core` 82; `core-partition` 16; `semantics` 272 |
 | Write-set discharges (census obligations; breadth-a module-invariant pairs) | census 185: finding 64, guard 9, lemma 105, open 7; breadth-a 566: finding 190, guard 20, lemma 352, open 4 |
 | IRIS features used by the product's code, all 19 modules (contract-2) | inside 784, validated 324, outside 1237, unclassified 0 |
-| Matrix cells by status | blocked 24, closed 611, not-applicable 35, open 82 |
+| Matrix cells by status | blocked 24, closed 612, not-applicable 35, open 81 |
 | Matrix cells by product obligation | fails 408, holds-as-detection 36, holds-in-model-only 1, holds-inspected 69, holds-live 9, intent-undecided 6, n/a 33, unknown 190 |
 
 <!-- numbers:end -->

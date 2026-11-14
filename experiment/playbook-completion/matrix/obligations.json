@@ -17667,19 +17667,25 @@
   {
    "cited_runs": [
     "verify-clean-25ba22dd",
-    "verify-clean-a42f10c8"
+    "verify-merge-20e3b336",
+    "verify-merge-3904248d",
+    "verify-merge-4f7da97d"
    ],
    "evidence": [
+    "run:verify-merge-20e3b336",
+    "run:verify-merge-3904248d",
+    "run:verify-merge-4f7da97d",
     "run:verify-clean-25ba22dd",
-    "run:verify-clean-a42f10c8",
-    "experiment/playbook-completion/verify.sh"
+    "experiment/playbook-completion/verify.sh",
+    "experiment/playbook-completion/tools/merge_gate.py"
    ],
+   "evidence_grade": "registered-run",
    "gate": "5a-gate-20min",
    "level": "method",
    "module": "product",
    "product_obligation": "unknown",
-   "remaining": "The fast gate runs in minutes; in the clean run verify-clean-25ba22dd every step but one is under 20 minutes (next slowest partition families ~7-8 min); proofs-mech takes 2,230 s, above the 20-minute single-gate target; the whole clean live run takes 5,119 s. Meeting the target needs proofs-mech split into per-mechanism gates (120 controls at ~17 s each).",
-   "status": "open"
+   "remaining": "Interpretation corrected (operator, 2026-11-14 22:45 UTC; verification-playbook.txt:479-489): the hard 20-minute bound is on the merge gate, a single build on one machine whose blocking checks are real-database tests of the touched slices plus a fixed canary set, the spec and trust checks and Verus on the changed crates only (a time or resource limit is debt, not a failure); full controls and every crate belong to the periodic full verification. verify.sh --merge re-executes itself under timeout 1200 and passed on 20e3b336 in 215 s (base 25ba22dd; changed crate proofs-env verified; 12 unchanged crates reused after their sources hashes and their base gate exits were checked; canaries: the contract's named cases, trace conformance, F-1201; touched slices 03, 10, 11, 17; module 13 via the ledger canaries). Two earlier failing merge runs are kept; they show the gate blocks. 'Touched slices' in this observation-only audit are the modules whose verification artifacts changed since the base; the product source is pinned. The periodic full verification is verify.sh --live --clean (verify-clean-25ba22dd, 5,119 s).",
+   "status": "closed"
   },
   {
    "cited_runs": [
@@ -38292,7 +38298,7 @@
   "n/a": 33,
   "unknown": 190
  },
- "registry_runs": 1473,
+ "registry_runs": 1476,
  "starting_inventory": {
   "cells": 904,
   "decisions": 61,
@@ -38304,9 +38310,9 @@
  },
  "status_counts": {
   "blocked": 24,
-  "closed": 611,
+  "closed": 612,
   "not-applicable": 35,
-  "open": 82
+  "open": 81
  },
  "submission": "9c3719c1",
  "writer_obligations": [

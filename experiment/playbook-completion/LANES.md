@@ -1,6 +1,6 @@
 # Lane checkpoint (orchestrator; read by the hourly monitor)
 
-Updated: 2026-11-14 ~22:45 UTC: independent review signed off the account (pass 6, candidate 76fb07ce); only proofs-env (D-7) is running.
+Updated: 2026-11-14 ~23:00 UTC: account signed off (review 6, 76fb07ce); D-7 integrated (737c3930); bounded merge gate passed (verify-merge-20e3b336, 215 s); periodic full verification verify-clean-25ba22dd; addendum review for D-7, the R6 fixes, O-1's application and the gate interpretation next.
 previous account is live: `ListAgents` empty, no audit process running, IRIS and heavy locks free, container healthy,
 product scope check passes). Last checkpoint commit before the switch: `1564a673`.
 
