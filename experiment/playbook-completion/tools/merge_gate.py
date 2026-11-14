@@ -84,6 +84,28 @@ def runner(c: str):
     return m
 
 
+def hash_same(want: str, got: str) -> bool:
+    """Recorded and recomputed sources hashes agree; an empty or short value on either side never matches."""
+    want, got = str(want or ""), str(got or "")
+    if len(want) < 12 or len(got) < 12:
+        return False
+    return got.startswith(want) or want.startswith(got)
+
+
+SHARED = (r"/traces/", r"/iris-contract/", r"/contract-2/", r"/trace-replay/(trlib|run|families_[\w]+|lockrun|lockcheck|locklog)\.py$",
+          r"/tools/(iris_conn|locks)\.", r"/live/")
+
+
+def blocked_replay() -> set[str]:
+    """Modules whose 3.7-trace-replay cell is blocked (an unavailable dependency, e.g. 15: no FHIR server)."""
+    ob = json.loads((PC / "matrix" / "obligations.json").read_text())
+    return {c["module"] for c in ob["cells"] if c["gate"] == "3.7-trace-replay" and c["status"] == "blocked"}
+
+
+def replayable() -> list[str]:
+    return sorted(p.stem[1:] for p in (PC / "trace-replay").glob("m[0-9][0-9].py") if p.stem[1:] not in blocked_replay())
+
+
 def base_summary(b: str) -> dict:
     """The per-step exit codes of the passing clean full verification whose candidate is b."""
     for p in sorted((PC / "evidence" / "runs").glob("verify-clean-*.json")):
@@ -109,7 +131,7 @@ def cache_check(b: str) -> int:
         want = str(res.get("sources_sha256", ""))
         m = runner(c)
         got = m.sources_sha256() if hasattr(m, "sources_sha256") else ""
-        same = bool(want) and (got.startswith(want) or want.startswith(got[:len(want)]))
+        same = hash_same(want, got)
         step = bs.get("steps", {}).get(c)
         ok = same and step == 0
         bad += not ok
@@ -151,7 +173,12 @@ def verus(c: str, out: str) -> int:
     d = parse_verus_json(js.read_text(errors="replace"))
     text = log.read_text(errors="replace")
     if rc == 124 or re.search(r"rlimit|resource limit", text, re.I) and not d:
-        print(f"{c}: TIME/RESOURCE LIMIT (rc {rc}): recorded as proof debt, not a gate failure (playbook)")
+        # playbook: a resource-limit or time-limit result is recorded as proof debt with its location, not a gate
+        # failure, and is never a pass: written to merge-debt.jsonl, which verify.sh reports as inconclusive
+        with open(o.parent / "merge-debt.jsonl", "a") as f:
+            f.write(json.dumps({"crate": c, "rc": rc, "log": str(log), "kind": "time-or-resource-limit",
+                                "location": re.findall(r"-->\s*(\S+:\d+)", text)[:5]}) + "\n")
+        print(f"{c}: INCONCLUSIVE (time or resource limit, rc {rc}): recorded as proof debt in merge-debt.jsonl")
         return 0
     if not d:
         print(f"{c}: no verification result (rc {rc}); see {log}")
@@ -164,6 +191,20 @@ def verus(c: str, out: str) -> int:
 def touched_modules(b: str) -> list[str]:
     mods = set()
     names = git("diff", "--name-only", b, "HEAD", "--", REL).split()
+    if any(re.search(s, n) for n in names for s in SHARED):
+        return replayable() + [m for m in ("12", "13", "14") if m not in replayable()]
+    # lane-level files (writesets/, structural/, refusals/, ...): the modules whose matrix cells changed
+    try:
+        old = json.loads(git("show", f"{b}:{REL}/matrix/obligations.json"))
+        new = json.loads((PC / "matrix" / "obligations.json").read_text())
+        key = lambda c: (c["gate"], c["module"], c.get("obligation_id"))  # noqa: E731
+        sig = lambda c: (c.get("status"), c.get("product_obligation"), tuple(c.get("cited_runs") or []), c.get("remaining"))  # noqa: E731
+        o = {key(c): sig(c) for c in old["cells"]}
+        for c in new["cells"]:
+            if o.get(key(c)) != sig(c) and re.fullmatch(r"\d\d", str(c["module"])):
+                mods.add(c["module"])
+    except subprocess.CalledProcessError:
+        pass
     for n in names:
         m = re.search(r"/(?:findings/audit|modules|footprints)/(\d\d)[-.]", n) or re.search(r"/ontology/(\d\d)-", n) \
             or re.search(r"/trace-replay/m(\d\d)\.py$", n)
@@ -202,6 +243,8 @@ def self_test() -> int:
         lg.write_text("cases 3 observed-runs 3 outside-contract 0 singleton-cases 3")
         ok &= contract_outside(str(lg)) == 0
     ok &= bool(crates())
+    ok &= not hash_same("", "") and not hash_same("abc", "") and not hash_same("", "a" * 64)
+    ok &= hash_same("0123456789ab", "0123456789abcdef") and not hash_same("0123456789ab", "0123456789ac")
     print("self-test", "pass" if ok else "FAIL")
     return 0 if ok else 1
 
@@ -225,6 +268,9 @@ def main() -> int:
         return verus(a[1], a[2])
     if a[0] == "touched-modules":
         print(" ".join(touched_modules(a[1])))
+        return 0
+    if a[0] == "blocked-replay":
+        print(" ".join(sorted(blocked_replay())))
         return 0
     if a[0] == "contract-outside":
         return contract_outside(a[1])

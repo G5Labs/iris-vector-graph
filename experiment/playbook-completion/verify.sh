@@ -130,10 +130,10 @@ if [[ "$mode" == merge ]]; then
   # no FHIR server here)
   MRD="$out/mergeroot"; mkdir -p "$MRD"; ln -sfn "$RUN_DIR/locks" "$MRD/locks"
   for nn in $($MG touched-modules "$BASE"); do
-    if [[ -f "$here/trace-replay/m$nn.py" ]]; then
+    if [[ -f "$here/trace-replay/m$nn.py" ]] && ! $MG blocked-replay | grep -qw "$nn"; then
       step "slice-$nn" 600 $L env RUN_DIR="$MRD" TR_NAMESPACE=AUDITE bash -c "cd '$here/trace-replay' && python run.py capture $nn && python run.py check $nn"
     else
-      echo "slice-$nn: no trace-replay scenario (12-14: covered by the ledger canaries; 15: blocked, no FHIR server)" >> "$out/inputs.txt"
+      echo "slice-$nn: no runnable trace-replay scenario (12-14: covered by the ledger canaries; blocked replay, e.g. 15: no FHIR server)" >> "$out/inputs.txt"
     fi
   done
 fi
@@ -212,6 +212,11 @@ import json, sys
 rows = [json.loads(l) for l in open(sys.argv[1])]
 bad = [r["step"] for r in rows if r["exit"] != 0]
 print(f"{len(rows)} steps; {len(rows) - len(bad)} exit 0; nonzero: {bad}")
+import os
+debt = os.path.join(os.path.dirname(sys.argv[1]), "merge-debt.jsonl")
+if os.path.exists(debt):
+    for l in open(debt):
+        print("INCONCLUSIVE (proof debt, not a pass):", l.strip())
 sys.exit(1 if bad else 0)
 EOF
 rc=$?

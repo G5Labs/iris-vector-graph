@@ -138,11 +138,11 @@ Every premise named in the sources below has an entry (the checker extracts them
 | proofs-d9/PROOFS.md | 12 | 0 | 3 | 8 | 1 |
 | proofs-d9b/PROOFS.md | 11 | 0 | 2 | 6 | 3 |
 | proofs-d9c/PROOFS.md | 17 | 0 | 4 | 10 | 3 |
-| proofs-env/PROOFS.md | 10 | 1 | 2 | 5 | 2 |
+| proofs-env/PROOFS.md | 4 | 1 | 1 | 1 | 1 |
 | proofs-mech/PROOFS.md (prose premises) | 3 | 0 | 0 | 2 | 1 |
 | proofs-pa3/PROOFS.md | 15 | 0 | 5 | 8 | 2 |
 | iris-contract/CONTRACT.md (clauses, E-1, Freedom, outside-subset features) | 59 | 34 | 0 | 5 | 20 |
-| **total** | **284** | **44** | **57** | **124** | **59** |
+| **total** | **278** | **44** | **56** | **120** | **58** |
 
 ### D.1 Premises shown false at the pin (tested-violated)
 
@@ -204,7 +204,6 @@ Every premise named in the sources below has an entry (the checker extracts them
 | proofs:P-C03 | Target membership is a property of the replay key (separability); one predicate stands for the Eraser's SQL, LiveRows and Matches | live-native-rerun-1314, ib-HD1303-nopfx-default, ib-HD1304-graph-per-tenant, fu-r04-temporal-only-live-b |
 | proofs:P-C04 | An erasure is not rolled back between its two steps (no abort modelled) | ib-HD1201-open-erasure, env-contract-r2 |
 | proofs-env:ENV-3 | the product discipline disc (only the exclusive head-lock holder writes the ledger globals, inside its transaction) | live-f1201-reproduced |
-| proofs-env:PF-6 | Eventually nothing t.lv selects is live when Final runs (no bypass writer or commit into lv minus rm keeps it live), or the operator erases t again | fu-r03-marker-held-open |
 
 ### D.2 Premises with no test or a partial test, and the test that should exist
 
@@ -367,11 +366,6 @@ Contract features outside the validated subset are summarised after the table.
 | proofs:PF-4 | A process with an enabled step is eventually scheduled and its transaction commits (IRIS Locks: deferral, Nesting) | tested-partial | env-contract-r2, val-perf-committer-n3-1, val-mp-existing-1 | Lock-fairness stress test: more than 2 processes contending for ^IVG.Ledger(head) (commits, batches, Final) for minutes, recording each process's longest wait and timeouts; queue fairness is outside the contract. |
 | proofs-env:ENV-2 | the Verus subset covers the clauses the proof premises use | tested-partial | proofs-env-premise-map | Extending the Verus subset with the r6 extension clauses, E-1 and X2. |
 | proofs-env:ENV-4 | no liveness clause: the progress premises are not implied by the contract | untested | proofs-env-premise-map | Progress tests under IRIS scheduling (D-8). |
-| proofs-env:PF-1 | The operator re-runs the redaction after a stop (as in proofs/) | tested-partial | live-native-rerun-1314, tests/integration/test_256_ledger_redaction_e2e.py::TestBatchesAndMarker::test_a_paused_redaction_is_honoured_and_resumes, fu-r03-marker-held-open | Operator side cannot be tested on the product. Missing: a bounded re-run after each stop finishing in work bounded by the ledger size (fails at the pin, F-C1303), with bypass writers quiet. |
-| proofs-env:PF-2 | The ledger is enabled (re-enabled after a disable) while the run needs it | tested-partial | live-native-rerun-1314, tests/integration/test_256_ledger_redaction_e2e.py::TestUS3Refusals::test_a_disabled_ledger_is_refused_and_nothing_changes | Operator premise. Missing: disable and re-enable during an unfinished run with commits, bypass writes and adoption in between, then resume: the run must still finish with its target kept. |
-| proofs-env:PF-3 | Every erasure ends: its commit or rollback releases the head lock | tested-partial | env-contract-r2, corr-lockplan, ib-HD1201-open-erasure | Engine part holds. Missing: a probe that erase_graph inside a long-lived caller transaction is refused or bounded, and that a waiting Start proceeds after the eraser commits, rolls back or is terminated. |
-| proofs-env:PF-4 | An enabled step is eventually scheduled (as in proofs/) | tested-partial | env-contract-r2, val-perf-committer-n3-1 | Lock-fairness stress test: more than 2 processes (commits, bypass writers, erasers, batches, Final) contending for minutes, recording each process's longest wait and timeouts. |
-| proofs-env:PF-5 | Every bypass transaction ends (a resume's Start waits for them, G-B) | untested | - | Live probe: a bypass writer holds a caller transaction open while a redaction starts; check whether anything bounds it and that a Start waiting on it (G-B) proceeds once it commits, rolls back or is terminated. |
 
 Outside the contract's validated subset (23 features, all untested as engine clauses; the modules relying on each are listed in `iris-contract/CONTRACT.md`): $LIST semantics, $NAME, $LISTVALID; $ZF callouts; %Regex; EMBEDDING(); SQL text parsing; generat; %DynamicObject / JSON functions; HNSW vector index maintenance and build; IRISTEMP globals; JOB / WorkMgr processes; SQLCODEs other than -30, -110, -119, -201, -359, -400; Task Manager; absent on Community 2026.1: InterSystems FHIR server storage; catalog views other than TABLES / COLUMNS, default-schema re; class dictionary and run-time compilation (compiling is out ; compiled SQL routines (CREATE FUNCTION / PROCEDURE, [SqlProc; embedded Python (needs irispython in the container); engine limits (long strings, subscript length, bound-paramet; iFind search semantics (tokenizer %iFind.Utils.Analyze, word; journaling (the audit's oracle, not a clause); management APIs (%SYS.ProcessQuery, KillProcess, GetVersion,; named-index %IGNOREINDEX forms (only %IGNOREINDEX * is exerc; object filing (%OpenId / %Save concurrency), triggers, forei; pure functions and clocks ($ZCRC, SHA, GUID, $RANDOM, $HOROL; result-prefix queries (TOP / LIMIT / FETCH FIRST); streams; web dispatch, roles and SQL privileges. Test that should exist for each: $NAME and $LISTVALID remain outside (contract-2 family 'list' residual)..
 
@@ -406,7 +400,7 @@ No row of PROOF-DEBT.md is paid by these tests: they sample the obligation on th
 
 ## G. Environment closure
 
-The environment conditions the proofs and models rely on are listed exactly in `CLOSURE.md` (gate 3.6-closure): 177 conditions, validated 47, validated-in-part 55, assumed 67, shown-false 8. It joins this map's engine and progress premises with the IRIS contract's clauses (r6 and contract-2) and contract-2's outside-premise families, each with its validating run or its consequence.
+The environment conditions the proofs and models rely on are listed exactly in `CLOSURE.md` (gate 3.6-closure): 171 conditions, validated 47, validated-in-part 51, assumed 66, shown-false 7. It joins this map's engine and progress premises with the IRIS contract's clauses (r6 and contract-2) and contract-2's outside-premise families, each with its validating run or its consequence.
 
 ## H. Limits
 

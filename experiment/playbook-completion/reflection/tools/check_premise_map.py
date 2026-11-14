@@ -83,6 +83,7 @@ MODELS_ASSUMPTIONS = {"core": {
 
 # Proof crates whose premises are stated in prose instead of a `| Id | Premise |` table: crate -> {id -> anchor}.
 # A crate with neither a premise table nor an entry here fails the check ([missing]).
+PF_REFERENCES_ONLY = {"proofs-env"}
 PROSE_PREMISES = {"proofs-mech": {
     "PM-1": "the worker is weakly fair",
     "PM-2": "the premise is that the run is resumed that many more times",
@@ -191,11 +192,14 @@ def source_premises() -> dict:
         for c in rows:
             for cid in expand_ids(_clean(c)):
                 out[f"{crate}:{cid}"] = rel
-        for a, b in re.findall(r"\bPF-(\d+)\.\.PF-(\d+)\b", text):
-            for n in range(int(a), int(b) + 1):
+        # PF-n named in prose are the crate's premises, except in crates that only cite other crates' PF-n without
+        # assuming them (review A-03: proofs-env's ENV-4 says the contract does not imply them)
+        if crate not in PF_REFERENCES_ONLY:
+            for a, b in re.findall(r"\bPF-(\d+)\.\.PF-(\d+)\b", text):
+                for n in range(int(a), int(b) + 1):
+                    out[f"{crate}:PF-{n}"] = rel
+            for n in set(re.findall(r"\bPF-(\d+)\b", text)):
                 out[f"{crate}:PF-{n}"] = rel
-        for n in set(re.findall(r"\bPF-(\d+)\b", text)):
-            out[f"{crate}:PF-{n}"] = rel
         for pid in PROSE_PREMISES.get(crate, {}):
             out[f"{crate}:{pid}"] = rel
         if not rows and crate not in PROSE_PREMISES:

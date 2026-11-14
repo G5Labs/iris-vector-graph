@@ -1,0 +1,290 @@
+[
+ {
+  "id": "env-dml-single",
+  "result": "pass",
+  "verdict": "MATCH",
+  "reason": "2 cases; autocommit off: DELETE/UPDATE no row -> TLEVEL 0; failing single-row INSERT -119 -> TLEVEL 1 until driver rollback; contract 2 cases 0 outside; contract mutants failed-dml-opens-nothing and empty-dml-opens-txn killed (absent from alive list)"
+ },
+ {
+  "id": "env-estop-gap",
+  "result": "pass",
+  "verdict": "MATCH",
+  "reason": "3 cases (two open levels; outer write only; outer-level INSERT), each Terminate without commit; finals undefined / rows []; contract 3 cases 0 outside 3 singleton; contract exit 1 only from 41/42 contract mutants alive (disclosed); contract sources unchanged since 76fb07ce (only the case file added)"
+ },
+ {
+  "id": "proofs-env-baseline",
+  "result": "pass",
+  "verdict": "MATCH",
+  "reason": "305 verified, 0 errors, RUNNER SUMMARY with pinned JSON sha; 34 premise theorems and 17 cx functions in src; trust scan empty (RESULTS.json trust_inventory)"
+ },
+ {
+  "id": "proofs-env-ctl-dml-ignores-row-locks",
+  "result": "expected-violation",
+  "verdict": "MATCH",
+  "reason": "log/json hashes ok; verified/errors equal; error locations == RUNNER SUMMARY == observes == the LOCATE lines of the control in src/premises.rs; each line inside a named failing function; counterexample (cx.rs) not among failing functions"
+ },
+ {
+  "id": "proofs-env-ctl-flat-lock-names",
+  "result": "expected-violation",
+  "verdict": "MATCH",
+  "reason": "log/json hashes ok; verified/errors equal; error locations == RUNNER SUMMARY == observes == the LOCATE lines of the control in src/premises.rs; each line inside a named failing function; counterexample (cx.rs) not among failing functions"
+ },
+ {
+  "id": "proofs-env-ctl-freedom-wait-only",
+  "result": "expected-violation",
+  "verdict": "MATCH",
+  "reason": "log/json hashes ok; verified/errors equal; error locations == RUNNER SUMMARY == observes == the LOCATE lines of the control in src/premises.rs; each line inside a named failing function; counterexample (cx.rs) not among failing functions"
+ },
+ {
+  "id": "proofs-env-ctl-incr-rolled-back",
+  "result": "expected-violation",
+  "verdict": "MATCH",
+  "reason": "log/json hashes ok; verified/errors equal; error locations == RUNNER SUMMARY == observes == the LOCATE lines of the control in src/premises.rs; each line inside a named failing function; counterexample (cx.rs) not among failing functions"
+ },
+ {
+  "id": "proofs-env-ctl-insert-dup-waits",
+  "result": "expected-violation",
+  "verdict": "MATCH",
+  "reason": "log/json hashes ok; verified/errors equal; error locations == RUNNER SUMMARY == observes == the LOCATE lines of the control in src/premises.rs; each line inside a named failing function; counterexample (cx.rs) not among failing functions"
+ },
+ {
+  "id": "proofs-env-ctl-kill-not-logged",
+  "result": "expected-violation",
+  "verdict": "MATCH",
+  "reason": "log/json hashes ok; verified/errors equal; error locations == RUNNER SUMMARY == observes == the LOCATE lines of the control in src/premises.rs; each line inside a named failing function; counterexample (cx.rs) not among failing functions"
+ },
+ {
+  "id": "proofs-env-ctl-lock-wait-never-granted",
+  "result": "expected-violation",
+  "verdict": "MATCH",
+  "reason": "log/json hashes ok; verified/errors equal; error locations == RUNNER SUMMARY == observes == the LOCATE lines of the control in src/premises.rs; each line inside a named failing function; counterexample (cx.rs) not among failing functions"
+ },
+ {
+  "id": "proofs-env-ctl-no-dirty-reads",
+  "result": "expected-violation",
+  "verdict": "MATCH",
+  "reason": "log/json hashes ok; verified/errors equal; error locations == RUNNER SUMMARY == observes == the LOCATE lines of the control in src/premises.rs; each line inside a named failing function; counterexample (cx.rs) not among failing functions"
+ },
+ {
+  "id": "proofs-env-ctl-rollback-one-undoes-all",
+  "result": "expected-violation",
+  "verdict": "MATCH",
+  "reason": "log/json hashes ok; verified/errors equal; error locations == RUNNER SUMMARY == observes == the LOCATE lines of the control in src/premises.rs; each line inside a named failing function; counterexample (cx.rs) not among failing functions"
+ },
+ {
+  "id": "proofs-env-ctl-rollback-physical",
+  "result": "expected-violation",
+  "verdict": "MATCH",
+  "reason": "log/json hashes ok; verified/errors equal; error locations == RUNNER SUMMARY == observes == the LOCATE lines of the control in src/premises.rs; each line inside a named failing function; counterexample (cx.rs) not among failing functions"
+ },
+ {
+  "id": "proofs-env-ctl-row-lock-statement-only",
+  "result": "expected-violation",
+  "verdict": "MATCH",
+  "reason": "log/json hashes ok; verified/errors equal; error locations == RUNNER SUMMARY == observes == the LOCATE lines of the control in src/premises.rs; each line inside a named failing function; counterexample (cx.rs) not among failing functions"
+ },
+ {
+  "id": "proofs-env-ctl-select-committed-only",
+  "result": "expected-violation",
+  "verdict": "MATCH",
+  "reason": "log/json hashes ok; verified/errors equal; error locations == RUNNER SUMMARY == observes == the LOCATE lines of the control in src/premises.rs; each line inside a named failing function; counterexample (cx.rs) not among failing functions"
+ },
+ {
+  "id": "proofs-env-ctl-shared-conflicts-shared",
+  "result": "expected-violation",
+  "verdict": "MATCH",
+  "reason": "log/json hashes ok; verified/errors equal; error locations == RUNNER SUMMARY == observes == the LOCATE lines of the control in src/premises.rs; each line inside a named failing function; counterexample (cx.rs) not among failing functions"
+ },
+ {
+  "id": "proofs-env-ctl-sql-commit-ends-all",
+  "result": "expected-violation",
+  "verdict": "MATCH",
+  "reason": "log/json hashes ok; verified/errors equal; error locations == RUNNER SUMMARY == observes == the LOCATE lines of the control in src/premises.rs; each line inside a named failing function; counterexample (cx.rs) not among failing functions"
+ },
+ {
+  "id": "proofs-env-ctl-stop-commits",
+  "result": "expected-violation",
+  "verdict": "MATCH",
+  "reason": "log/json hashes ok; verified/errors equal; error locations == RUNNER SUMMARY == observes == the LOCATE lines of the control in src/premises.rs; each line inside a named failing function; counterexample (cx.rs) not among failing functions"
+ },
+ {
+  "id": "proofs-env-ctl-stop-top-level-only",
+  "result": "expected-violation",
+  "verdict": "MATCH",
+  "reason": "log/json hashes ok; verified/errors equal; error locations == RUNNER SUMMARY == observes == the LOCATE lines of the control in src/premises.rs; each line inside a named failing function; counterexample (cx.rs) not among failing functions"
+ },
+ {
+  "id": "proofs-env-ctl-unlock-immediate",
+  "result": "expected-violation",
+  "verdict": "MATCH",
+  "reason": "log/json hashes ok; verified/errors equal; error locations == RUNNER SUMMARY == observes == the LOCATE lines of the control in src/premises.rs; each line inside a named failing function; counterexample (cx.rs) not among failing functions"
+ },
+ {
+  "id": "proofs-env-differential-r2",
+  "result": "pass",
+  "verdict": "MATCH",
+  "reason": "RUNNER SUMMARY counts equal observes (cases in subset, 0 disagreements, 0 outside; mutants killed n/29, alive list); r3 per-round HARNESS lines equal PROOFS.md section 2 table"
+ },
+ {
+  "id": "proofs-env-differential-r3",
+  "result": "pass",
+  "verdict": "MATCH",
+  "reason": "RUNNER SUMMARY counts equal observes (cases in subset, 0 disagreements, 0 outside; mutants killed n/29, alive list); r3 per-round HARNESS lines equal PROOFS.md section 2 table"
+ },
+ {
+  "id": "proofs-env-differential",
+  "result": "pass",
+  "verdict": "MATCH",
+  "reason": "RUNNER SUMMARY counts equal observes (cases in subset, 0 disagreements, 0 outside; mutants killed n/29, alive list); r3 per-round HARNESS lines equal PROOFS.md section 2 table"
+ },
+ {
+  "id": "proofs-env-mutants-r2",
+  "result": "incomplete",
+  "verdict": "MATCH",
+  "reason": "RUNNER SUMMARY counts equal observes (cases in subset, 0 disagreements, 0 outside; mutants killed n/29, alive list); r3 per-round HARNESS lines equal PROOFS.md section 2 table"
+ },
+ {
+  "id": "proofs-env-mutants-r3",
+  "result": "pass",
+  "verdict": "MATCH",
+  "reason": "RUNNER SUMMARY counts equal observes (cases in subset, 0 disagreements, 0 outside; mutants killed n/29, alive list); r3 per-round HARNESS lines equal PROOFS.md section 2 table"
+ },
+ {
+  "id": "proofs-env-mutants",
+  "result": "incomplete",
+  "verdict": "MATCH",
+  "reason": "RUNNER SUMMARY counts equal observes (cases in subset, 0 disagreements, 0 outside; mutants killed n/29, alive list); r3 per-round HARNESS lines equal PROOFS.md section 2 table"
+ },
+ {
+  "id": "proofs-env-premise-map-r2",
+  "result": "pass",
+  "verdict": "PARTIAL",
+  "reason": "counts match; the claim that P-0001 / P-C01 / P-D9-1 now cite the observation is in premise_map.json, not in the log"
+ },
+ {
+  "id": "proofs-env-premise-map",
+  "result": "pass",
+  "verdict": "PARTIAL",
+  "reason": "counts match the log; \"3 seeded faults\" and the lemma/control registration checks are shown only as \"self-test pass\" / \"problems 0\""
+ },
+ {
+  "id": "proofs-env-recheck-baseline",
+  "result": "pass",
+  "verdict": "MATCH",
+  "reason": "305 verified, 0 errors, RUNNER SUMMARY with pinned JSON sha; 34 premise theorems and 17 cx functions in src; trust scan empty (RESULTS.json trust_inventory)"
+ },
+ {
+  "id": "proofs-env-recheck-ctl-dml-ignores-row-locks",
+  "result": "expected-violation",
+  "verdict": "MATCH",
+  "reason": "log/json hashes ok; verified/errors equal; error locations == RUNNER SUMMARY == observes == the LOCATE lines of the control in src/premises.rs; each line inside a named failing function; counterexample (cx.rs) not among failing functions"
+ },
+ {
+  "id": "proofs-env-recheck-ctl-flat-lock-names",
+  "result": "expected-violation",
+  "verdict": "MATCH",
+  "reason": "log/json hashes ok; verified/errors equal; error locations == RUNNER SUMMARY == observes == the LOCATE lines of the control in src/premises.rs; each line inside a named failing function; counterexample (cx.rs) not among failing functions"
+ },
+ {
+  "id": "proofs-env-recheck-ctl-freedom-wait-only",
+  "result": "expected-violation",
+  "verdict": "MATCH",
+  "reason": "log/json hashes ok; verified/errors equal; error locations == RUNNER SUMMARY == observes == the LOCATE lines of the control in src/premises.rs; each line inside a named failing function; counterexample (cx.rs) not among failing functions"
+ },
+ {
+  "id": "proofs-env-recheck-ctl-incr-rolled-back",
+  "result": "expected-violation",
+  "verdict": "MATCH",
+  "reason": "log/json hashes ok; verified/errors equal; error locations == RUNNER SUMMARY == observes == the LOCATE lines of the control in src/premises.rs; each line inside a named failing function; counterexample (cx.rs) not among failing functions"
+ },
+ {
+  "id": "proofs-env-recheck-ctl-insert-dup-waits",
+  "result": "expected-violation",
+  "verdict": "MATCH",
+  "reason": "log/json hashes ok; verified/errors equal; error locations == RUNNER SUMMARY == observes == the LOCATE lines of the control in src/premises.rs; each line inside a named failing function; counterexample (cx.rs) not among failing functions"
+ },
+ {
+  "id": "proofs-env-recheck-ctl-kill-not-logged",
+  "result": "expected-violation",
+  "verdict": "MATCH",
+  "reason": "log/json hashes ok; verified/errors equal; error locations == RUNNER SUMMARY == observes == the LOCATE lines of the control in src/premises.rs; each line inside a named failing function; counterexample (cx.rs) not among failing functions"
+ },
+ {
+  "id": "proofs-env-recheck-ctl-lock-wait-never-granted",
+  "result": "expected-violation",
+  "verdict": "MATCH",
+  "reason": "log/json hashes ok; verified/errors equal; error locations == RUNNER SUMMARY == observes == the LOCATE lines of the control in src/premises.rs; each line inside a named failing function; counterexample (cx.rs) not among failing functions"
+ },
+ {
+  "id": "proofs-env-recheck-ctl-no-dirty-reads",
+  "result": "expected-violation",
+  "verdict": "MATCH",
+  "reason": "log/json hashes ok; verified/errors equal; error locations == RUNNER SUMMARY == observes == the LOCATE lines of the control in src/premises.rs; each line inside a named failing function; counterexample (cx.rs) not among failing functions"
+ },
+ {
+  "id": "proofs-env-recheck-ctl-rollback-one-undoes-all",
+  "result": "expected-violation",
+  "verdict": "MATCH",
+  "reason": "log/json hashes ok; verified/errors equal; error locations == RUNNER SUMMARY == observes == the LOCATE lines of the control in src/premises.rs; each line inside a named failing function; counterexample (cx.rs) not among failing functions"
+ },
+ {
+  "id": "proofs-env-recheck-ctl-rollback-physical",
+  "result": "expected-violation",
+  "verdict": "MATCH",
+  "reason": "log/json hashes ok; verified/errors equal; error locations == RUNNER SUMMARY == observes == the LOCATE lines of the control in src/premises.rs; each line inside a named failing function; counterexample (cx.rs) not among failing functions"
+ },
+ {
+  "id": "proofs-env-recheck-ctl-row-lock-statement-only",
+  "result": "expected-violation",
+  "verdict": "MATCH",
+  "reason": "log/json hashes ok; verified/errors equal; error locations == RUNNER SUMMARY == observes == the LOCATE lines of the control in src/premises.rs; each line inside a named failing function; counterexample (cx.rs) not among failing functions"
+ },
+ {
+  "id": "proofs-env-recheck-ctl-select-committed-only",
+  "result": "expected-violation",
+  "verdict": "MATCH",
+  "reason": "log/json hashes ok; verified/errors equal; error locations == RUNNER SUMMARY == observes == the LOCATE lines of the control in src/premises.rs; each line inside a named failing function; counterexample (cx.rs) not among failing functions"
+ },
+ {
+  "id": "proofs-env-recheck-ctl-shared-conflicts-shared",
+  "result": "expected-violation",
+  "verdict": "MATCH",
+  "reason": "log/json hashes ok; verified/errors equal; error locations == RUNNER SUMMARY == observes == the LOCATE lines of the control in src/premises.rs; each line inside a named failing function; counterexample (cx.rs) not among failing functions"
+ },
+ {
+  "id": "proofs-env-recheck-ctl-sql-commit-ends-all",
+  "result": "expected-violation",
+  "verdict": "MATCH",
+  "reason": "log/json hashes ok; verified/errors equal; error locations == RUNNER SUMMARY == observes == the LOCATE lines of the control in src/premises.rs; each line inside a named failing function; counterexample (cx.rs) not among failing functions"
+ },
+ {
+  "id": "proofs-env-recheck-ctl-stop-commits",
+  "result": "expected-violation",
+  "verdict": "MATCH",
+  "reason": "log/json hashes ok; verified/errors equal; error locations == RUNNER SUMMARY == observes == the LOCATE lines of the control in src/premises.rs; each line inside a named failing function; counterexample (cx.rs) not among failing functions"
+ },
+ {
+  "id": "proofs-env-recheck-ctl-stop-top-level-only",
+  "result": "expected-violation",
+  "verdict": "MATCH",
+  "reason": "log/json hashes ok; verified/errors equal; error locations == RUNNER SUMMARY == observes == the LOCATE lines of the control in src/premises.rs; each line inside a named failing function; counterexample (cx.rs) not among failing functions"
+ },
+ {
+  "id": "proofs-env-recheck-ctl-unlock-immediate",
+  "result": "expected-violation",
+  "verdict": "MATCH",
+  "reason": "log/json hashes ok; verified/errors equal; error locations == RUNNER SUMMARY == observes == the LOCATE lines of the control in src/premises.rs; each line inside a named failing function; counterexample (cx.rs) not among failing functions"
+ },
+ {
+  "id": "proofs-env-recheck-differential",
+  "result": "pass",
+  "verdict": "MATCH",
+  "reason": "RUNNER SUMMARY counts equal observes (cases in subset, 0 disagreements, 0 outside; mutants killed n/29, alive list); r3 per-round HARNESS lines equal PROOFS.md section 2 table"
+ },
+ {
+  "id": "proofs-env-recheck-mutants",
+  "result": "incomplete",
+  "verdict": "MATCH",
+  "reason": "RUNNER SUMMARY counts equal observes (cases in subset, 0 disagreements, 0 outside; mutants killed n/29, alive list); r3 per-round HARNESS lines equal PROOFS.md section 2 table"
+ }
+]

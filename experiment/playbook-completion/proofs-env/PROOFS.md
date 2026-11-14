@@ -9,8 +9,9 @@ The specification is linked mechanically to the executable contract (`iris-contr
 verified against it and run on every recorded round (no IRIS): 0 disagreements, 0 observations outside.
 
 Before this lane, D-7 read: "the link from the proof crates' participant contracts to the contract's clauses is by
-inspection". Now: every proof-premise condition of `reflection/CLOSURE.md` (72) and 7 PROOFS.md premises it does not
-list have a checked verdict (`premise_map.json`, `proofs-env-premise-map`): of the 79 rows, 12 are proved, 10 proved in
+inspection". Now: the 72 proof-premise conditions `reflection/CLOSURE.md` listed before this crate (its later list adds this crate's
+own ENV-1..ENV-4, mapped in `reflection/premise_tests.json`) and 7 PROOFS.md premises it does not list have a checked
+verdict (`premise_map.json`, `proofs-env-premise-map`): of the 79 rows, 12 are proved, 10 proved in
 part, 8 proved under the product's discipline, 3 proved false from the contract, 1 proved permitted-not-implied, 9 are
 outside the contract and 36 are progress premises the contract cannot imply (closure rows only: 9 / 10 / 5 / 3 / 0 / 9
 / 36).
@@ -138,7 +139,7 @@ Each theorem is one call of a generic lemma (`src/gen.rs`) whose precondition is
 | TRUST P-0003 | proved | `premise_trust_p_0003` |
 | TRUST P-1201 | proved | `premise_trust_p_1201` |
 | proofs-d9 P-D9-2 (commit waits for a bypass-written row) | proved for UPDATE / DELETE; for an INSERT of the bypass's key the contract implies an **immediate -119, not a wait** | `premise_d9_p_d9_2_wait`, `premise_d9_p_d9_2_insert_fails` |
-| proofs-d9 P-D9-2 (bypass write waits for the erasure's deleted row) | **permitted-not-implied** (both outcomes permitted; the crates' wait is the observed branch, a sharpening) | `premise_d9_p_d9_2_freedom` |
+| proofs-d9 P-D9-2 (bypass write waits for the erasure's deleted row) | **permitted-not-implied** for this half (both outcomes permitted; the crates' wait is the observed branch, a sharpening); counted under P-D9-2's in-part verdict in `premise_map.json` | `premise_d9_p_d9_2_freedom` |
 | proofs-breadth / -pa3 P-L5 | proved (the nested level's row lock survives its TCOMMIT) | `premise_breadth_p_l5` |
 | proofs-breadth / -pa3 P-A2 | proved for UPDATE / DELETE of an existing row | `premise_breadth_p_a2` |
 | proofs-breadth / -pa3 P-A6 | proved in part: before-images restored for nodes nobody wrote since; **a node another process wrote since keeps that write** | `premise_breadth_p_a6_kill`, `premise_breadth_p_a6_incr`, `gen::lemma_fresh_set_rollback`, `premise_core_ma_5_rollback_other` |
