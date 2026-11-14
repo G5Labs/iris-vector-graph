@@ -1,0 +1,134 @@
+{
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "pin_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+ "checkout": "$RUN_DIR/validation/checkout: git clone --shared --no-checkout of the local repository, checkout --detach at the pin (tree b098a6f4), submodule vendor/opencypher 677cbafa from the local module store; made go+rX at 2026-11-14 01:31 UTC (see rule clone-perms)",
+ "machine": {
+  "host": "GCP VM, Intel Xeon Platinum 8481C @ 2.70GHz, 22 vCPU (10 visible), 86 GB RAM, Linux 7.0.0-1014-gcp, shared with the other lanes (load average 5-8)",
+  "container": "ivg-playbook-20261113-audit-iris, image containers.intersystems.com/intersystems/iris-community:2026.1 (sha256:546fe52b9e68), IRIS 2026.1 (Build 234U) Community, cpuset 5,6 (2 CPUs), no memory limit, globals auto-sized, USER journalled",
+  "licence": "InterSystems IRIS Community license, 8 licence units for the whole container (env-probe/license.log); %AI.Tool/%AI.ToolSet/%AI.MCP.Service/%AI.Policy.ConsoleAudit absent",
+  "client": "Python 3.11.18 ($IVG_BASE_RUN/venv), intersystems-irispython 5.3.2 (the pin's uv.lock), pytest 9.0.3, behave"
+ },
+ "harness": {
+  "file": "experiment/playbook-completion/validation/run_suite.py",
+  "replaces": [
+   "tests.conftest._deploy_objectscript: only the session fixture's call (container == $IVG_TEST_CONTAINER, namespace unset or USER, no Native handle, no port) -> deploy_community (identity-checked, the pin's IRISGraphEngine.initialize_schema() at width 768); every other call -> the pin's original function. In scratch mode also a namespace that did not exist when the run started.",
+   "scripts/dev/tcp_setup.make_namespace / drop_namespace with a real IRIS handle -> AuditNamespacePolicy (default); in scratch mode (VALIDATION_SCRATCH_NS=1, operator ruling 2026-11-14) allowed only for namespaces absent at run start",
+   "scripts/dev/tcp_setup.run on the real server with lines creating a namespace or database -> AuditNamespacePolicy"
+  ],
+  "switches": [
+   "IVG_GATE_NAMESPACES=0 (tests/e2e/gate.py's documented switch)",
+   "every run under tools/locks.sh iris (connection cap)"
+  ],
+  "per_run_records": "run.log, junit.xml, meta.json (deploy calls, delegated calls, guard hits, iris.cpf [Namespaces] before/after), exit"
+ },
+ "incidents": [
+  {
+   "window_utc": "2026-11-13 23:01:45-23:03:40",
+   "what": "two uncoordinated fixtures of other lanes in the same container: a module-08 unit test reloaded ~45 pin classes into USER at 23:01:48-50 (incidents/USER-REDEPLOY-08.md); breadth lane C's tests/unit/test_snapshot.py created IVG460SNAP and compiled the pin into it at 23:02:53 (incidents/IVG460SNAP.md)",
+   "validation_runs_overlapping": [
+    "integration-1-c00 (22:57:56-23:04:23)"
+   ],
+   "rerun": "integration-1-c00-rerun: 191 passed, 10 failed, 141 skipped, per-test outcomes of all 342 cases identical",
+   "registered": [
+    "val-integration-1-c00",
+    "val-integration-1-c00-rerun"
+   ]
+  },
+  {
+   "window_utc": "2026-11-14 01:31:40-01:46:40 (and the per-file reruns to ~01:58)",
+   "what": "this lane's spec 236 scratch run (IVG_NS_IVG236=IVG236VAL): the pinned ivg_236_scratch fixture holds every connection it opens until session end and exceeded the 8-unit Community licence; 316 'License limit exceeded' container alerts, Docker health failed",
+   "runs": [
+    "scratch-236-1",
+    "scratch-236-2a-f00..f10",
+    "scratch-236-2b-f00..f10"
+   ],
+   "disposition": "infrastructure, not counted; one-file-per-process reruns (2a/2b) still exceeded the cap, so no further rerun (operator asked to avoid bursts); blocked-access: licence with more than 8 units",
+   "registered": [
+    "val-scratch-236-1",
+    "val-scratch-236-1-rerun-a-f00..b-f10"
+   ]
+  },
+  {
+   "window_utc": "2026-11-14 01:19:03 (container StartedAt)",
+   "what": "orchestrator hard-kill/restart of the container (crash-recovery world) while holding the iris lock",
+   "validation_runs_affected": "none: e2e-1-c02 ended 01:17:08, e2e-1-c03 started after the restart (all validation runs hold the lock)"
+  }
+ ],
+ "namespaces_created_by_validation": [
+  "IVG460SNAPVAL",
+  "IVG262REC",
+  "IVG262FPG",
+  "IVG262FPA",
+  "IVG470NSE84FE5 (made and dropped by its fixture)",
+  "IVG236VAL"
+ ],
+ "side_effects": [
+  "IVGDev.Setup and IVGDev.Run (scripts/dev/objectscript/IVGDev/*.cls at the pin) compiled into %SYS by the suites' own tcp_setup.ensure_helper (absent at 22:38 UTC, present after docs-1)",
+  "legacy SQLUser.nodes etc. created in USER by tests/integration/test_nodepk_migration.py:198/477 and test_pagerank_sql_optimization.py:40 (the suite's own DDL); later unqualified SQL in other tests hits it",
+  "e2e security tests create and delete their own users, roles and web applications"
+ ],
+ "blocked": [
+  {
+   "lane": "e2e gated files (234 files, ~12,000 skipped cases)",
+   "dependency": "~45 scratch namespaces made by tests/e2e/gate.py (22 with IVG installed, plus RAG/split/empty/name-only groups, several building older releases from git tags). Allowed by the operator ruling under the lock, but not run: gate setup and several gated files hold many connections at once (r464txn/r470txn open transactions on several connections), which the 8-unit licence cannot carry without repeating the 01:31 licence alerts"
+  },
+  {
+   "lane": "tests/docs/test_docs_run.py (16 documents)",
+   "dependency": "scratch namespace IVG460DOC made beforehand by `python scripts/dev/make_scratch_namespace.py IVG460DOC` (a manual prerequisite, not a fixture)"
+  },
+  {
+   "lane": "spec 236 scratch suites (22 integration files)",
+   "dependency": "a licence with more than 8 units (Enterprise): ivg_236_scratch keeps its connections for the session"
+  },
+  {
+   "lane": "FHIR suites (IVGFHIR)",
+   "dependency": "a FHIR-capable IRIS for Health namespace IVGFHIR with a FHIR server endpoint (CONTRIBUTING.md 'The FHIR namespace'); Community IRIS has no HS_FHIRServer"
+  },
+  {
+   "lane": "Arno (Rust) acceleration paths",
+   "dependency": "libarno_callout.so deployed in the IRIS manager directory ($ZF callout); not built or deployed here"
+  },
+  {
+   "lane": "MCP classes / tests",
+   "dependency": "%AI.Tool, %AI.ToolSet, %AI.MCP.Service, %AI.Policy.ConsoleAudit (absent on Community 2026.1)"
+  },
+  {
+   "lane": "8-writer ledger soak (test_ledger_us03 eight writers; test_ledger_perf TestSoak; test_nodepk_advanced_benchmarks concurrent throughput)",
+   "dependency": "more than 6 concurrent connections (coordinator cap 6; licence 8)"
+  },
+  {
+   "lane": "Neo4j / GDS / Memgraph comparisons (tests/perf/test_betweenness_vs_gds Neo4j leg, test_head_to_head, benchmarks/neo4j_comparison.py, three_engine_benchmark.py, LDBC SNB runs in docs/BENCHMARKS.md)",
+   "dependency": "Neo4j 5 + GDS / Memgraph servers and LDBC datagen data; none local, no network pulls made"
+  },
+  {
+   "lane": "benchmarks/_load_and_bench_enterprise.py, Arno benchmark legs",
+   "dependency": "Enterprise IRIS container (ivg-iris-enterprise) with libarno"
+  },
+  {
+   "lane": "driver 5.4.x comparison (for the Decimal and LIST ERROR classes)",
+   "dependency": "intersystems-irispython 5.4.0/5.4.1 wheels: only 5.3.2 is in the local caches; pip install would need the network (not done)"
+  },
+  {
+   "lane": "tests/python REST cases",
+   "dependency": "IRIS web server /kg application on localhost:52773 (the audit container publishes only the superserver)"
+  },
+  {
+   "lane": "docker-compose / quickstart (.github/workflows/quickstart.yml)",
+   "dependency": "a stock container from the repo's docker-compose.yml and a wheel build in a clean venv with network installs; not run (would start another IRIS container)"
+  }
+ ],
+ "editions_versions": {
+  "local_images": [
+   "containers.intersystems.com/intersystems/iris-community:2026.1 (2026.1.0.234.1com)",
+   "ipm-verus-uplift-20261113:571e04a1 (another project's image, also 2026.1.0.234.1com Community)"
+  ],
+  "enterprise": "blocked-access: no Enterprise / IRIS for Health image (e.g. containers.intersystems.com/intersystems/iris or irishealth; the product's reference is irishealth:2026.3.0AI per docs/dev/driver-drift.md) and no iris.key licence on this VM; pulling needs InterSystems Container Registry credentials and the network (not done)",
+  "other_versions": "blocked-access: no other IRIS version locally; not pulled"
+ },
+ "multi_node": "blocked-access, distinct from multi-process: one container, no second IRIS instance, no ECP data server or mirror member (%SYSTEM.Mirror.IsMember()=0); a multi-node run needs at least two IRIS instances and a licence that enables ECP/mirroring, plus permission to reconfigure, which this lane does not have",
+ "suites_without_tests": {
+  "tests/oracle": "library only (compare.py, reference.py, ...), exercised by the r306/r307/r308 e2e files",
+  "tests/benchmarks": "scripts (bench.py etc.), run as bench-1/bench-2",
+  "tests/fixtures, tests/helpers, tests/support": "helpers"
+ }
+}
