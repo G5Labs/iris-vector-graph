@@ -57,6 +57,8 @@ step decoder-map          60  python3 "$here/tools/decoder_map_check.py"
 step decoder-map-selftest 60  python3 "$here/tools/decoder_map_check.py" --self-test
 step storage-order-selftest 60 python3 "$here/tools/storage_order_check.py" --self-test
 step writer-census-selftest 120 python3 "$here/tools/writer_census.py" --self-test
+step intent-check         120 python3 "$here/tools/intent_check.py"
+step intent-selftest      300 python3 "$here/tools/intent_check.py" --self-test
 step contract-build       900 env CARGO_TARGET_DIR="$T/iris-contract" cargo build --release --offline --manifest-path "$here/iris-contract/Cargo.toml"
 step contract-selftest    600 "$T/iris-contract/release/iris-contract" selftest
 round="$(cat "$here/iris-contract/VALIDATED_ROUND" 2>/dev/null || echo r2)"   # the latest round that met the gate

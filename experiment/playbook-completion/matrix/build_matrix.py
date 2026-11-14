@@ -66,6 +66,7 @@ HDID = re.compile(r"\bHD-\d{4}\b")
 LOCATED_CONTROL = re.compile(r"^control_\w+ \((F-C?\d{4}|HD-\d{4})")
 RUN_PREFIXES = ("run:", "mc:", "live:", "trace:", "check:", "registry:")
 CENSUS_INPUT = ROOT / "matrix-input" / "writer-census-obligations.json"
+DISCHARGES = ROOT / "writesets" / "DISCHARGES.json"
 CENSUS_RUN = "followup-writer-census"
 
 
@@ -172,6 +173,18 @@ def resolve(e, reg: dict):
     if re.match(r"^m\d\d-", tok) and "b-mc-" + tok in reg:
         return "b-mc-" + tok
     return None
+
+
+def evidence_file(e: str) -> bool:
+    """A committed artifact named by an evidence item: a path relative to the completion directory or the repository,
+    optionally prefixed by a grade ('inspected:') and followed by ':lines' or ' (annotation)'."""
+    s = str(e).strip()
+    for p in ("inspected:", "file:", "path:"):
+        if s.startswith(p):
+            s = s[len(p):].strip()
+    s = s.split(" (")[0].split()[0] if s.split() else ""
+    s = re.sub(r":[0-9][0-9,\-]*$", "", s)
+    return bool(s) and ((ROOT / s).exists() or (ROOT.parent.parent / s).exists())
 
 
 def audit_records() -> list:
@@ -418,7 +431,7 @@ def main() -> int:
         # decisive: the run settled something (a pass, an expected violation, or a product failure)
         passing = [i for i in ids if (reg[i] or {}).get("result") in ("pass", "expected-violation", "fail")]
         nonpass = [i for i in ids if i not in passing]
-        files = [e for e in map(str, ev) if (ROOT / e).exists() or (ROOT.parent.parent / e).exists()]
+        files = [e for e in map(str, ev) if evidence_file(e)]
         st = c.get("status", "open")
         if st == "failed":            # lanes' "failed" = a product defect: the verification itself is done
             st = "closed"
@@ -470,6 +483,38 @@ def main() -> int:
                 c = {"gate": g["id"], "module": nn, "status": "open", "evidence": [], "remaining": "no evidence recorded"}
             cells.append(finish(c, g["id"], nn))
     gate_ids = {g["id"] for g in gates}
+    # write-set discharges (writesets lane, queue Q17c): one entry per census obligation id
+    dis = load(DISCHARGES, {}) if DISCHARGES.exists() else {}
+    applied = set()
+    for i, c in enumerate(extra):
+        d = dis.get(c.get("obligation_id")) if c["gate"] == "3.3a-writesets" else None
+        if not d:
+            continue
+        applied.add(c["obligation_id"])
+        kind = d.get("discharge")
+        c = {**c, "discharge": kind, "discharge_grade": d.get("grade"), "discharge_source": "writesets/DISCHARGES.json"}
+        refs = [str(e) for e in d.get("evidence", [])]
+        for r in refs:
+            if resolve(r, reg) is None:
+                f = r.split(":")[0] if not r.startswith("run:") else r
+                if not ((ROOT / f).exists() or (ROOT.parent.parent / f).exists()):
+                    problems.append(f"{c['obligation_id']}: discharge evidence {r} is neither a registered run nor a file")
+        c["evidence"] = list(c.get("evidence", [])) + [r.split(":")[0] if resolve(r, reg) is None and not r.startswith("run:")
+                                                       else r for r in refs]
+        c["discharge_evidence"] = refs
+        if kind in ("lemma", "guard", "finding"):
+            c["status"] = "closed"
+            if kind == "finding":
+                c["as_built_findings"] = sorted(set(c.get("as_built_findings", [])) | set(d.get("findings", [])))
+            c["remaining"] = f"discharged by {kind} ({d.get('grade')}): {d.get('reason', '')}".strip()
+        elif kind == "open":
+            c["remaining"] = "open after the writesets lane: " + str(d.get("reason", ""))
+        else:
+            problems.append(f"{c['obligation_id']}: unknown discharge kind {kind!r}")
+        extra[i] = c
+    for k in sorted(set(dis) - applied):
+        if not str(k).startswith("module:"):
+            problems.append(f"writesets/DISCHARGES.json names {k}, which is no census obligation")
     for c in extra:
         if c["gate"] not in gate_ids or c.get("module", "product") not in nns + ["product"]:
             problems.append(f"extra cell {c.get('obligation_id')}: unknown gate or module")

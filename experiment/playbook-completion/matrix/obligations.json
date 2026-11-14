@@ -219,14 +219,15 @@
    "evidence": [
     "inspected:experiment/playbook-completion/models/breadth-b/inventory/09.json"
    ],
+   "evidence_grade": "inspected",
    "gate": "3.1-cells",
    "level": "method",
    "module": "09",
    "product_obligation": "unknown",
    "reason": "all 57 cells defined (no open cell); every cell command maps to entry points (inventory cells_without_entry_point = 0). Cell correctness is audited separately: 'compiled shape|building|drop all' (NAT-I5) fails as built (F-0905)",
-   "remaining": "closed claim cites no registered run or committed artifact",
+   "remaining": "",
    "source": "modules/09.json",
-   "status": "open"
+   "status": "closed"
   },
   {
    "cited_runs": [],
@@ -251,14 +252,15 @@
     "inventory:experiment/playbook-completion/models/breadth-b/inventory/11.json",
     "inspected:experiment/playbook-uplift/ontology/11-ledger.md (Cells)"
    ],
+   "evidence_grade": "inspected",
    "gate": "3.1-cells",
    "level": "method",
    "module": "11",
    "product_obligation": "unknown",
    "reason": "69 cells over 5 entities; 62 defined, 7 open and assigned to human decisions HD-1101 (named-only node id x upsert/set-property/add-label/delete-plain/delete-detach) and HD-1102 (holding-writes x disable/set-strict), each with a working disposition in decisions.md. Every cell command maps to entry points (cell_map); 0 cells without an entry point.",
-   "remaining": "closed claim cites no registered run or committed artifact",
+   "remaining": "Resolve the 7 open cells to the working answers once HD-1101/HD-1102 are decided.",
    "source": "modules/11.json",
-   "status": "open"
+   "status": "closed"
   },
   {
    "cited_runs": [],
@@ -323,26 +325,28 @@
    "evidence": [
     "experiment/playbook-uplift/ontology/17-operations.md ## Cells (54 cells, none open)"
    ],
+   "evidence_grade": "inspected",
    "gate": "3.1-cells",
    "level": "method",
    "module": "17",
    "product_obligation": "unknown",
-   "remaining": "closed claim cites no registered run or committed artifact",
+   "remaining": "",
    "source": "modules/17.json",
-   "status": "open"
+   "status": "closed"
   },
   {
    "cited_runs": [],
    "evidence": [
     "experiment/playbook-uplift/ontology/18-snapshot.md ## Cells (21 cells; the two open cells assigned to HD-1801)"
    ],
+   "evidence_grade": "inspected",
    "gate": "3.1-cells",
    "level": "method",
    "module": "18",
    "product_obligation": "unknown",
-   "remaining": "closed claim cites no registered run or committed artifact",
+   "remaining": "",
    "source": "modules/18.json",
-   "status": "open"
+   "status": "closed"
   },
   {
    "cited_runs": [],
@@ -639,6 +643,7 @@
    "evidence": [
     "experiment/playbook-completion/models/breadth-c/inventory.json reconciliation.18 (22 entry points; the 8 lexically uncovered are SetNodeJSON (SNP-T1.9), the private helpers IsVector/Encode/Decode/NodeRef, and the plan helpers routed_export_plan/ledger_storage_globals/snapshot_globals/kg_export_subscripts (SNP-B1.7, SNP-I1.1))"
    ],
+   "evidence_grade": "inspected",
    "findings": [
     "F-C1804"
    ],
@@ -652,207 +657,285 @@
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "closed claim cites no registered run or committed artifact",
+   "remaining": "no cell covers the Snapshot.cls file helpers (stated by SNP-T5/SNP-X5.1 only); import/export NDJSON, import_rdf, load_networkx, load_obo are excluded by the Scope line and owned by no module (modules/00.json); SNP-B1.18/SNP-I1 do not cover routed edge vectors, which the archive omits (F-C1804)",
    "source": "modules/18.json",
-   "status": "open"
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "experiment/playbook-completion/decisions.md (61 HD entries with working dispositions)"
+   "cited_runs": [
+    "intent-structure-check",
+    "intent-structure-selftest"
    ],
+   "evidence": [
+    "run:intent-structure-check",
+    "run:intent-structure-selftest",
+    "intent/HD-0001.md"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.1-intent",
    "level": "method",
    "module": "00",
    "product_obligation": "unknown",
-   "remaining": "closed claim cites no registered run or committed artifact",
-   "source": "modules/00.json",
-   "status": "open"
+   "remaining": "intent recovered independently for HD-0001 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "experiment/playbook-completion/decisions.md"
+   "cited_runs": [
+    "intent-structure-check",
+    "intent-structure-selftest"
    ],
+   "evidence": [
+    "run:intent-structure-check",
+    "run:intent-structure-selftest",
+    "intent/HD-0101.md",
+    "intent/HD-0102.md",
+    "intent/HD-0103.md"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.1-intent",
    "level": "method",
    "module": "01",
    "product_obligation": "unknown",
-   "remaining": "owned by the intent lanes; decisions.md records a working disposition for every HD of this module",
-   "source": "modules/01.json",
-   "status": "open"
+   "remaining": "intent recovered independently for HD-0101, HD-0102, HD-0103 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "experiment/playbook-completion/decisions.md"
+   "cited_runs": [
+    "intent-structure-check",
+    "intent-structure-selftest"
    ],
+   "evidence": [
+    "run:intent-structure-check",
+    "run:intent-structure-selftest",
+    "intent/HD-0201.md",
+    "intent/HD-0202.md"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.1-intent",
    "level": "method",
    "module": "02",
    "product_obligation": "unknown",
-   "remaining": "owned by the intent lanes; decisions.md records a working disposition for every HD of this module",
-   "source": "modules/02.json",
-   "status": "open"
+   "remaining": "intent recovered independently for HD-0201, HD-0202 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "experiment/playbook-completion/decisions.md"
+   "cited_runs": [
+    "intent-structure-check",
+    "intent-structure-selftest"
    ],
+   "evidence": [
+    "run:intent-structure-check",
+    "run:intent-structure-selftest",
+    "intent/HD-0301.md",
+    "intent/HD-0302.md"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.1-intent",
    "level": "method",
    "module": "03",
    "product_obligation": "unknown",
-   "remaining": "owned by the intent lanes; decisions.md records a working disposition for every HD of this module",
-   "source": "modules/03.json",
-   "status": "open"
+   "remaining": "intent recovered independently for HD-0301, HD-0302 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "experiment/playbook-completion/decisions.md"
+   "cited_runs": [
+    "intent-structure-check",
+    "intent-structure-selftest"
    ],
+   "evidence": [
+    "run:intent-structure-check",
+    "run:intent-structure-selftest",
+    "intent/HD-0401.md",
+    "intent/HD-0402.md"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.1-intent",
    "level": "method",
    "module": "04",
    "product_obligation": "unknown",
-   "remaining": "owned by the intent lanes; decisions.md records a working disposition for every HD of this module",
-   "source": "modules/04.json",
-   "status": "open"
+   "remaining": "intent recovered independently for HD-0401, HD-0402 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "experiment/playbook-completion/decisions.md"
+   "cited_runs": [
+    "intent-structure-check",
+    "intent-structure-selftest"
    ],
+   "evidence": [
+    "run:intent-structure-check",
+    "run:intent-structure-selftest",
+    "intent/HD-0501.md",
+    "intent/HD-0502.md"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.1-intent",
    "level": "method",
    "module": "05",
    "product_obligation": "unknown",
-   "remaining": "owned by the intent lanes; decisions.md records a working disposition for every HD of this module",
-   "source": "modules/05.json",
-   "status": "open"
+   "remaining": "intent recovered independently for HD-0501, HD-0502 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "experiment/playbook-completion/decisions.md"
+   "cited_runs": [
+    "intent-structure-check",
+    "intent-structure-selftest"
    ],
+   "evidence": [
+    "run:intent-structure-check",
+    "run:intent-structure-selftest",
+    "intent/HD-0601.md",
+    "intent/HD-0602.md",
+    "intent/HD-0603.md",
+    "intent/HD-0604.md"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.1-intent",
    "level": "method",
    "module": "06",
    "product_obligation": "unknown",
-   "remaining": "owned by the intent lanes; decisions.md records a working disposition for every HD of this module",
-   "source": "modules/06.json",
-   "status": "open"
+   "remaining": "intent recovered independently for HD-0601, HD-0602, HD-0603, HD-0604 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    {
-     "kind": "inspected",
-     "ref": "experiment/playbook-completion/decisions.md:93-111"
-    }
+   "cited_runs": [
+    "intent-structure-check",
+    "intent-structure-selftest"
    ],
+   "evidence": [
+    "run:intent-structure-check",
+    "run:intent-structure-selftest",
+    "intent/HD-0701.md",
+    "intent/HD-0702.md",
+    "intent/HD-0703.md",
+    "intent/HD-0704.md",
+    "intent/HD-0705.md"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.1-intent",
    "level": "method",
    "module": "07",
    "product_obligation": "unknown",
-   "reason": "HD-0701..HD-0705 carry working assumptions (decisions.md:93-111), not maintainer decisions; F-0703 is intent-undecided (SYS-I8 status of a caller-maintained BM25 index).",
-   "remaining": "Owned by the intent lanes.",
-   "source": "modules/07.json",
-   "status": "open"
+   "remaining": "intent recovered independently for HD-0701, HD-0702, HD-0703, HD-0704, HD-0705 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "experiment/playbook-completion/decisions.md"
+   "cited_runs": [
+    "intent-structure-check",
+    "intent-structure-selftest"
    ],
+   "evidence": [
+    "run:intent-structure-check",
+    "run:intent-structure-selftest",
+    "intent/HD-0801.md",
+    "intent/HD-0802.md",
+    "intent/HD-0803.md",
+    "intent/HD-0804.md"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.1-intent",
    "level": "method",
    "module": "08",
    "product_obligation": "unknown",
-   "reason": "HD-0801..HD-0804 carry working dispositions in decisions.md (assumptions, not maintainer decisions); F-0801's mechanism question (CYP-Q7.6) and mapped labels (CYP-Q4.17) remain human decisions.",
-   "remaining": "Maintainer decisions for HD-0801..0804 (intent lanes).",
-   "source": "modules/08.json",
-   "status": "open"
+   "remaining": "intent recovered independently for HD-0801, HD-0802, HD-0803, HD-0804 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "inspected:experiment/playbook-completion/decisions.md",
-    "inspected:experiment/playbook-completion/intent/HD-0901.md",
-    "inspected:experiment/playbook-completion/intent/HD-0902.md",
-    "inspected:experiment/playbook-completion/intent/HD-0903.md",
-    "inspected:experiment/playbook-completion/intent/HD-0904.md"
+   "cited_runs": [
+    "intent-structure-check",
+    "intent-structure-selftest"
    ],
+   "evidence": [
+    "run:intent-structure-check",
+    "run:intent-structure-selftest",
+    "intent/HD-0901.md",
+    "intent/HD-0902.md",
+    "intent/HD-0903.md",
+    "intent/HD-0904.md"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.1-intent",
    "level": "method",
    "module": "09",
    "product_obligation": "unknown",
-   "reason": "HD-0901..HD-0904 have working dispositions (decisions.md) and intent-lane recovery files",
-   "remaining": "closed claim cites no registered run or committed artifact",
-   "source": "modules/09.json",
-   "status": "open"
+   "remaining": "intent recovered independently for HD-0901, HD-0902, HD-0903, HD-0904 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "experiment/playbook-completion/decisions.md (HD-1001..HD-1004)"
+   "cited_runs": [
+    "intent-structure-check",
+    "intent-structure-selftest"
    ],
+   "evidence": [
+    "run:intent-structure-check",
+    "run:intent-structure-selftest",
+    "intent/HD-1001.md",
+    "intent/HD-1002.md",
+    "intent/HD-1003.md",
+    "intent/HD-1004.md"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.1-intent",
    "level": "method",
    "module": "10",
    "product_obligation": "unknown",
-   "reason": "",
-   "remaining": "Owned by the intent lanes: HD-1001..1004 carry working assumptions, not maintainer decisions.",
-   "source": "modules/10.json",
-   "status": "open"
+   "remaining": "intent recovered independently for HD-1001, HD-1002, HD-1003, HD-1004 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided",
+   "status": "closed"
   },
   {
    "cited_runs": [
-    "ib-HD1101-namedonly",
-    "ib-HD1102-txn-rollback",
-    "ib-HD1103-guard-ttl",
-    "ib-HD1104-settings",
-    "ib-HD1105-replay-reapplies"
+    "intent-structure-check",
+    "intent-structure-selftest"
    ],
    "evidence": [
-    "inspected:experiment/playbook-completion/intent/HD-1101.md",
-    "inspected:experiment/playbook-completion/intent/HD-1102.md",
-    "inspected:experiment/playbook-completion/intent/HD-1103.md",
-    "inspected:experiment/playbook-completion/intent/HD-1104.md",
-    "inspected:experiment/playbook-completion/intent/HD-1105.md",
-    "live:ib-HD1101-namedonly",
-    "live:ib-HD1102-txn-rollback",
-    "live:ib-HD1103-guard-ttl",
-    "live:ib-HD1104-settings",
-    "live:ib-HD1105-replay-reapplies"
+    "run:intent-structure-check",
+    "run:intent-structure-selftest",
+    "intent/HD-1101.md",
+    "intent/HD-1102.md",
+    "intent/HD-1103.md",
+    "intent/HD-1104.md",
+    "intent/HD-1105.md"
    ],
    "evidence_grade": "registered-run",
    "gate": "3.1-intent",
    "level": "method",
    "module": "11",
    "product_obligation": "unknown",
-   "reason": "Intent lane B recovered intent for every LED decision (files above) with discriminating probes.",
-   "remaining": "Maintainer decisions remain open (HD-1101..1105); working dispositions in decisions.md.",
-   "source": "modules/11.json",
+   "remaining": "intent recovered independently for HD-1101, HD-1102, HD-1103, HD-1104, HD-1105 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided",
    "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "intent-structure-check",
+    "intent-structure-selftest"
+   ],
+   "evidence": [
+    "run:intent-structure-check",
+    "run:intent-structure-selftest",
+    "intent/HD-1201.md"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.1-intent",
    "level": "method",
    "module": "12",
    "product_obligation": "unknown",
-   "remaining": "closed claim cites no registered run or committed artifact",
-   "status": "open"
+   "remaining": "intent recovered independently for HD-1201 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "intent-structure-check",
+    "intent-structure-selftest"
+   ],
+   "evidence": [
+    "run:intent-structure-check",
+    "run:intent-structure-selftest",
+    "intent/HD-1301.md",
+    "intent/HD-1302.md",
+    "intent/HD-1303.md",
+    "intent/HD-1304.md",
+    "intent/HD-1305.md"
+   ],
+   "evidence_grade": "registered-run",
    "findings": [
     "F-1301"
    ],
@@ -866,75 +949,110 @@
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "closed claim cites no registered run or committed artifact",
-   "status": "open"
+   "remaining": "intent recovered independently for HD-1301, HD-1302, HD-1303, HD-1304, HD-1305 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "intent-structure-check",
+    "intent-structure-selftest"
+   ],
+   "evidence": [
+    "run:intent-structure-check",
+    "run:intent-structure-selftest",
+    "intent/HD-1401.md"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.1-intent",
    "level": "method",
    "module": "14",
    "product_obligation": "unknown",
-   "remaining": "closed claim cites no registered run or committed artifact",
-   "status": "open"
+   "remaining": "intent recovered independently for HD-1401 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "experiment/playbook-completion/intent/HD-1501.md",
-    "experiment/playbook-completion/intent/HD-1502.md",
-    "experiment/playbook-completion/intent/HD-1503.md",
-    "experiment/playbook-completion/intent/HD-1504.md",
-    "experiment/playbook-completion/decisions.md HD-1501..1504"
+   "cited_runs": [
+    "intent-structure-check",
+    "intent-structure-selftest"
    ],
-   "evidence_grade": "inspected",
+   "evidence": [
+    "run:intent-structure-check",
+    "run:intent-structure-selftest",
+    "intent/HD-1501.md",
+    "intent/HD-1502.md",
+    "intent/HD-1503.md",
+    "intent/HD-1504.md"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.1-intent",
    "level": "method",
    "module": "15",
    "product_obligation": "unknown",
-   "remaining": "Maintainer answers (HD-1501 and HD-1503 are assumptions; HD-1502 and HD-1504 supported).",
-   "source": "modules/15.json",
+   "remaining": "intent recovered independently for HD-1501, HD-1502, HD-1503, HD-1504 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided",
    "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "experiment/playbook-completion/decisions.md HD-1601..1605"
+   "cited_runs": [
+    "intent-structure-check",
+    "intent-structure-selftest"
    ],
+   "evidence": [
+    "run:intent-structure-check",
+    "run:intent-structure-selftest",
+    "intent/HD-1601.md",
+    "intent/HD-1602.md",
+    "intent/HD-1603.md",
+    "intent/HD-1604.md",
+    "intent/HD-1605.md"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.1-intent",
    "level": "method",
    "module": "16",
    "product_obligation": "unknown",
-   "remaining": "working answers recorded; maintainer decision pending (HD-1603 retry, HD-1705 bind)",
-   "source": "modules/16.json",
-   "status": "open"
+   "remaining": "intent recovered independently for HD-1601, HD-1602, HD-1603, HD-1604, HD-1605 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "experiment/playbook-completion/decisions.md HD-1701..HD-1705"
+   "cited_runs": [
+    "intent-structure-check",
+    "intent-structure-selftest"
    ],
+   "evidence": [
+    "run:intent-structure-check",
+    "run:intent-structure-selftest",
+    "intent/HD-1701.md",
+    "intent/HD-1702.md",
+    "intent/HD-1703.md",
+    "intent/HD-1704.md",
+    "intent/HD-1705.md"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.1-intent",
    "level": "method",
    "module": "17",
    "product_obligation": "unknown",
-   "remaining": "closed claim cites no registered run or committed artifact",
-   "source": "modules/17.json",
-   "status": "open"
+   "remaining": "intent recovered independently for HD-1701, HD-1702, HD-1703, HD-1704, HD-1705 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "experiment/playbook-completion/decisions.md HD-1801, HD-1802"
+   "cited_runs": [
+    "intent-structure-check",
+    "intent-structure-selftest"
    ],
+   "evidence": [
+    "run:intent-structure-check",
+    "run:intent-structure-selftest",
+    "intent/HD-1801.md",
+    "intent/HD-1802.md"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.1-intent",
    "level": "method",
    "module": "18",
    "product_obligation": "unknown",
-   "remaining": "closed claim cites no registered run or committed artifact",
-   "source": "modules/18.json",
-   "status": "open"
+   "remaining": "intent recovered independently for HD-1801, HD-1802 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided",
+   "status": "closed"
   },
   {
    "cited_runs": [
@@ -5508,6 +5626,7 @@
    "evidence": [
     "modules/10.json invariant_writesets"
    ],
+   "evidence_grade": "inspected",
    "findings": [
     "F-1004",
     "F-1005"
@@ -5525,9 +5644,9 @@
    },
    "product_obligation": "fails",
    "reason": "Every (invariant, writer plan) pair is discharged by a guard, a model check, a live observation or a recorded finding; the pairs discharged only by product-defect findings (F-1004 edgeless node write vs ALG-I4; F-1005 PutShadow vs ALG-B12.7) are failed obligations.",
-   "remaining": "closed claim cites no registered run or committed artifact",
+   "remaining": "Fixes or decisions for F-1004 and F-1005.",
    "source": "modules/10.json",
-   "status": "open"
+   "status": "closed"
   },
   {
    "cited_runs": [
@@ -6785,14 +6904,15 @@
     "$RUN_DIR/checks/storage-order.json",
     "modules/10.json storage_order"
    ],
+   "evidence_grade": "inspected",
    "gate": "3.4-storage-order",
    "level": "product",
    "module": "10",
    "product_obligation": "unknown",
    "reason": "0 of 109 flagged SQL texts lie in module 10's owned code; the non-SQL prefix cuts reviewed are ordered by a unique key (storage_order.non_sql_prefix_cuts_reviewed).",
-   "remaining": "closed claim cites no registered run or committed artifact",
+   "remaining": "",
    "source": "modules/10.json",
-   "status": "open"
+   "status": "closed"
   },
   {
    "cited_runs": [
@@ -6802,6 +6922,7 @@
     "check:storage-order-scan",
     "inspected:iris_vector_graph/ledger/replay.py:342-345"
    ],
+   "evidence_grade": "inspected",
    "findings_undecided": [
     "F-C1108"
    ],
@@ -6867,13 +6988,14 @@
     "iris_src/src/Graph/KG/FHIRGraph.cls:366-368 (link report ORDER BY)",
     "iris_vector_graph/_engine/fhir_graph.py:578 (ORDER BY graph_id)"
    ],
+   "evidence_grade": "inspected",
    "gate": "3.4-storage-order",
    "level": "product",
    "module": "15",
    "product_obligation": "unknown",
-   "remaining": "closed claim cites no registered run or committed artifact",
+   "remaining": "Confirmed by this lane: no TOP / FETCH FIRST / LIMIT in module-15 SQL (grep of FHIRGraph*.cls, fhir*.py, rdf_export, _rdf_utils, shacl, prov, reify lines schema.py:3264-3397, sql/fhir_bridges.sql, sql/rdf_reifications.sql, including SQL text inside %SQL.Statement strings). The one order-sensitive scan (SyncOnce advancing the watermark to the last ID seen) orders by ID; Rebuild's unordered scan is order-free (watermarks set to pre-scan maxima at the end); ConceptGaps/GroupByPatient top-N use subscript-ordered local arrays (deterministic ties). Self-test is the checker's (main lane).",
    "source": "modules/15.json",
-   "status": "open"
+   "status": "closed"
   },
   {
    "cited_runs": [],
@@ -9484,13 +9606,14 @@
    "evidence": [
     "iris_vector_graph/_engine/snapshot.py:211-239 (RESTORE_TABLE_ORDER puts nodes first; endpoints registered per edge, :1175-1203)"
    ],
+   "evidence_grade": "inspected",
    "gate": "3.6-row-permutation",
    "level": "product",
    "module": "18",
    "product_obligation": "unknown",
-   "remaining": "closed claim cites no registered run or committed artifact",
+   "remaining": "inspected only",
    "source": "modules/18.json",
-   "status": "open"
+   "status": "closed"
   },
   {
    "cited_runs": [],
@@ -10193,13 +10316,14 @@
     "iris_vector_graph/stores/iris_sql_store.py:1275-1290 (write_edges registers endpoints in the default graph first)",
     "footprints/17.json store.write_edges journal"
    ],
+   "evidence_grade": "inspected",
    "gate": "3.6-fk",
    "level": "product",
    "module": "17",
    "product_obligation": "unknown",
-   "remaining": "closed claim cites no registered run or committed artifact",
+   "remaining": "inspected + one journal",
    "source": "modules/17.json",
-   "status": "open"
+   "status": "closed"
   },
   {
    "cited_runs": [
@@ -26942,7 +27066,7 @@
   "n/a": 33,
   "unknown": 446
  },
- "registry_runs": 878,
+ "registry_runs": 880,
  "starting_inventory": {
   "cells": 904,
   "decisions": 61,
@@ -26954,9 +27078,9 @@
  },
  "status_counts": {
   "blocked": 8,
-  "closed": 217,
+  "closed": 244,
   "not-applicable": 35,
-  "open": 487
+  "open": 460
  },
  "submission": "9c3719c1",
  "writer_obligations": [

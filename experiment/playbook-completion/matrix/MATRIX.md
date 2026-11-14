@@ -10,9 +10,9 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 3.1-grade | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.1-terms | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.1-index | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
-| 3.1-cells | method | 8 | 0 | 10 | 0 | 1 | 0 | 0 | 0 | 18 | 1 |
-| 3.1-coverage | method | 0 | 0 | 24 | 0 | 0 | 5 | 0 | 0 | 19 | 0 |
-| 3.1-intent | method | 2 | 0 | 17 | 0 | 0 | 1 | 0 | 0 | 18 | 0 |
+| 3.1-cells | method | 12 | 0 | 6 | 0 | 1 | 0 | 0 | 0 | 18 | 1 |
+| 3.1-coverage | method | 1 | 0 | 23 | 0 | 0 | 5 | 0 | 0 | 19 | 0 |
+| 3.1-intent | method | 19 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 18 | 0 |
 | 3.2-library | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.2-differential | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.2-sharpness | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
@@ -30,11 +30,11 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 3.3a-mechanisms | model | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.3a-lifecycles | model | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.3a-domain-contract | model | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
-| 3.3a-writesets | model | 4 | 0 | 199 | 0 | 1 | 21 | 0 | 0 | 182 | 1 |
+| 3.3a-writesets | model | 5 | 0 | 198 | 0 | 1 | 21 | 0 | 0 | 182 | 1 |
 | 3.3a-trace | model | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.4-statements | product | 0 | 0 | 16 | 0 | 3 | 5 | 0 | 0 | 13 | 1 |
 | 3.4-ownership | product | 9 | 0 | 9 | 0 | 1 | 12 | 0 | 0 | 6 | 1 |
-| 3.4-storage-order | product | 5 | 0 | 13 | 0 | 1 | 4 | 1 | 0 | 13 | 1 |
+| 3.4-storage-order | product | 7 | 0 | 11 | 0 | 1 | 4 | 1 | 0 | 13 | 1 |
 | 3.4-declared-reads | product | 8 | 0 | 10 | 0 | 1 | 10 | 0 | 0 | 8 | 1 |
 | 3.4-generator | method | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 |
 | 3.5-handlers | product | 2 | 0 | 16 | 0 | 1 | 8 | 0 | 0 | 10 | 1 |
@@ -44,9 +44,9 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 3.5-style | product | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.6-composition | product | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
 | 3.6-frame | product | 0 | 0 | 17 | 0 | 2 | 1 | 0 | 0 | 16 | 2 |
-| 3.6-row-permutation | product | 2 | 0 | 16 | 0 | 1 | 4 | 1 | 0 | 13 | 1 |
+| 3.6-row-permutation | product | 3 | 0 | 15 | 0 | 1 | 4 | 1 | 0 | 13 | 1 |
 | 3.6-keys | product | 9 | 0 | 8 | 0 | 2 | 10 | 0 | 0 | 7 | 2 |
-| 3.6-fk | product | 6 | 0 | 7 | 0 | 6 | 3 | 0 | 0 | 10 | 6 |
+| 3.6-fk | product | 7 | 0 | 6 | 0 | 6 | 3 | 0 | 0 | 10 | 6 |
 | 3.6-capacity | product | 6 | 0 | 12 | 0 | 1 | 9 | 0 | 0 | 9 | 1 |
 | 3.6-closure | product | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
 | 3.7-explorers | model | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0 |
@@ -78,7 +78,7 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 5c-root-causes | method | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 5c-reviewers | method | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
 
-Totals: {'closed': 217, 'not-applicable': 35, 'open': 487, 'blocked': 8}; evidence grade of closed cells: {'registered-run': 184, 'inspected': 33}; product: {'unknown': 446, 'n/a': 33, 'fails': 265, 'intent-undecided': 2, 'holds-in-model-only': 1}
+Totals: {'closed': 244, 'not-applicable': 35, 'open': 460, 'blocked': 8}; evidence grade of closed cells: {'registered-run': 202, 'inspected': 42}; product: {'unknown': 446, 'n/a': 33, 'fails': 265, 'intent-undecided': 2, 'holds-in-model-only': 1}
 
 ## Writer census obligations (review R2-02)
 
