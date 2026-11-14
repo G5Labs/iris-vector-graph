@@ -1,0 +1,1215 @@
+{
+ "_doc": "Supplements from lane proofs-mech (proof debt D-14, playbook 3.3a item 2). Model-level only; product obligations stay failed. Merge add_evidence, add_evidence_grade and add_remaining into the existing 3.3a-mechanisms/product cell (status stays open: its remaining parts are the code correspondence and the unattached findings).",
+ "proposed_elsewhere": {
+  "PROOF-DEBT.md D-14": "paid at model level by proofs-mech (1149 verified, 0 errors, --no-cheating, empty trust inventory; 120 located controls; recheck proofs-mech-recheck): all 45 laws proved once over their mechanism's trait, instantiated by 78 instances; still open: code correspondence (D-2/D-3), mechanisms not composed, unattached findings, fixed small domains (PROOFS.md 'Open obligations')",
+  "STATUS.md 3.3a row": "add: 45 mechanism laws proved generically in Verus over 13 traits (proofs-mech, model level), every as-built departure a located control",
+  "TRUST.md": "no new trusted item; the fairness premises of M07-L4 (weakly fair worker; a resumed run is resumed 3 - cursor more times) are hypotheses of the progress theorems (assumed, not discharged against IRIS)"
+ },
+ "law_status": {
+  "M01-L1": {
+   "generic_theorems": [
+    "theorem_action_laws",
+    "theorem_ledger"
+   ],
+   "discharged_by": [
+    "CommitCore (ledger/commit-core)",
+    "NodeDeleteNamedOnlyReviewed (ledger/node-delete-named-only)",
+    "TemporalInsertCollisionReviewed (ledger/temporal-insert-collision)",
+    "StrictCachedGuardReviewed (ledger/strict-cached-guard)",
+    "BypassUncheckedReviewed (ledger/bypass-unchecked)"
+   ],
+   "broken_by": [
+    "CtlOverwriteRecord (proofs-mech-ledger-control-c2-overwrite-record)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M01-L2": {
+   "generic_theorems": [
+    "theorem_l2",
+    "theorem_ledger"
+   ],
+   "discharged_by": [
+    "CommitCore (ledger/commit-core)",
+    "NodeDeleteNamedOnlyReviewed (ledger/node-delete-named-only)",
+    "TemporalInsertCollisionReviewed (ledger/temporal-insert-collision)",
+    "StrictCachedGuardReviewed (ledger/strict-cached-guard)",
+    "BypassUncheckedReviewed (ledger/bypass-unchecked)"
+   ],
+   "broken_by": [
+    "NodeDeleteNamedOnlyAsBuilt (proofs-mech-ledger-node-delete-named-only-as-built)",
+    "TemporalInsertCollisionAsBuilt (proofs-mech-ledger-temporal-insert-collision-as-built)",
+    "CtlTwoStepRecord (proofs-mech-ledger-control-c1-two-step-record)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M01-L3": {
+   "generic_theorems": [
+    "theorem_action_laws",
+    "theorem_ledger"
+   ],
+   "discharged_by": [
+    "CommitCore (ledger/commit-core)",
+    "NodeDeleteNamedOnlyReviewed (ledger/node-delete-named-only)",
+    "TemporalInsertCollisionReviewed (ledger/temporal-insert-collision)",
+    "StrictCachedGuardReviewed (ledger/strict-cached-guard)",
+    "BypassUncheckedReviewed (ledger/bypass-unchecked)"
+   ],
+   "broken_by": [
+    "CtlIgnoreHead (proofs-mech-ledger-control-c3-ignore-head)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M01-L4": {
+   "generic_theorems": [
+    "theorem_action_laws",
+    "theorem_ledger"
+   ],
+   "discharged_by": [
+    "CommitCore (ledger/commit-core)",
+    "NodeDeleteNamedOnlyReviewed (ledger/node-delete-named-only)",
+    "TemporalInsertCollisionReviewed (ledger/temporal-insert-collision)",
+    "StrictCachedGuardReviewed (ledger/strict-cached-guard)",
+    "BypassUncheckedReviewed (ledger/bypass-unchecked)"
+   ],
+   "broken_by": [
+    "StrictCachedGuardAsBuilt (proofs-mech-ledger-strict-cached-guard-as-built)",
+    "BypassUncheckedAsBuilt (proofs-mech-ledger-bypass-unchecked-as-built)",
+    "CtlUnguardedBypass (proofs-mech-ledger-control-c4-unguarded-bypass)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M02-L1": {
+   "generic_theorems": [
+    "theorem_l1",
+    "theorem_retry"
+   ],
+   "discharged_by": [
+    "IdempotentSetup (retry/idempotent-setup)",
+    "LedgerKeyReviewed (retry/ledger-key)",
+    "ZeroRecordRevisionReviewed (retry/zero-record-revision)",
+    "ClientResendReviewed (retry/client-resend)",
+    "ServerRerunReviewed (retry/server-rerun)"
+   ],
+   "broken_by": [
+    "LedgerKeyAsBuilt (proofs-mech-retry-ledger-key-as-built)",
+    "ClientResendAsBuilt (proofs-mech-retry-client-resend-as-built)",
+    "ServerRerunAsBuilt (proofs-mech-retry-server-rerun-as-built)",
+    "CtlBindAfterEffect (proofs-mech-retry-control-c1-bind-after-effect)",
+    "CtlPostOnReplay (proofs-mech-retry-control-c2-post-on-replay)",
+    "CtlApplyConflict (proofs-mech-retry-control-c3-apply-conflict)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M02-L2": {
+   "generic_theorems": [
+    "theorem_l2",
+    "theorem_retry"
+   ],
+   "discharged_by": [
+    "IdempotentSetup (retry/idempotent-setup)",
+    "LedgerKeyReviewed (retry/ledger-key)",
+    "ZeroRecordRevisionReviewed (retry/zero-record-revision)",
+    "ClientResendReviewed (retry/client-resend)",
+    "ServerRerunReviewed (retry/server-rerun)"
+   ],
+   "broken_by": [
+    "LedgerKeyAsBuilt (proofs-mech-retry-ledger-key-as-built)",
+    "CtlPostOnReplay (proofs-mech-retry-control-c2-post-on-replay)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M02-L3": {
+   "generic_theorems": [
+    "theorem_l3",
+    "theorem_retry"
+   ],
+   "discharged_by": [
+    "IdempotentSetup (retry/idempotent-setup)",
+    "LedgerKeyReviewed (retry/ledger-key)",
+    "ZeroRecordRevisionReviewed (retry/zero-record-revision)",
+    "ClientResendReviewed (retry/client-resend)",
+    "ServerRerunReviewed (retry/server-rerun)"
+   ],
+   "broken_by": [
+    "CtlApplyConflict (proofs-mech-retry-control-c3-apply-conflict)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M02-L4": {
+   "generic_theorems": [
+    "theorem_l4",
+    "theorem_retry"
+   ],
+   "discharged_by": [
+    "IdempotentSetup (retry/idempotent-setup)",
+    "LedgerKeyReviewed (retry/ledger-key)",
+    "ZeroRecordRevisionReviewed (retry/zero-record-revision)",
+    "ClientResendReviewed (retry/client-resend)",
+    "ServerRerunReviewed (retry/server-rerun)"
+   ],
+   "broken_by": [
+    "ZeroRecordRevisionAsBuilt (proofs-mech-retry-zero-record-revision-as-built)",
+    "CtlRedactionKeepsBinding (proofs-mech-retry-control-c4-redaction-keeps-binding)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M03-L1": {
+   "generic_theorems": [
+    "theorem_l1",
+    "theorem_excl"
+   ],
+   "discharged_by": [
+    "HeadLockCommit (excl/head-lock-commit)",
+    "AdjacencyNoLockMark (excl/adjacency-no-lock-mark)",
+    "RedactionMarkerReviewed (excl/redaction-marker)",
+    "EraserNoHeadLockReviewed (excl/eraser-no-head-lock)",
+    "AdjacencyWriterLockReviewed (excl/adjacency-writer-lock)",
+    "Bm25WriteLockReviewed (excl/bm25-write-lock)",
+    "PlanBuildLockReviewed (excl/plan-build-lock)",
+    "ModeSwitchReviewed (excl/mode-switch)"
+   ],
+   "broken_by": [
+    "CtlLockAdmitsTwo (proofs-mech-excl-control-c1-lock-admits-two)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M03-L2": {
+   "generic_theorems": [
+    "theorem_l2",
+    "theorem_excl"
+   ],
+   "discharged_by": [
+    "HeadLockCommit (excl/head-lock-commit)",
+    "AdjacencyNoLockMark (excl/adjacency-no-lock-mark)",
+    "RedactionMarkerReviewed (excl/redaction-marker)",
+    "EraserNoHeadLockReviewed (excl/eraser-no-head-lock)",
+    "AdjacencyWriterLockReviewed (excl/adjacency-writer-lock)",
+    "Bm25WriteLockReviewed (excl/bm25-write-lock)",
+    "PlanBuildLockReviewed (excl/plan-build-lock)",
+    "ModeSwitchReviewed (excl/mode-switch)"
+   ],
+   "broken_by": [
+    "EraserNoHeadLockAsBuilt (proofs-mech-excl-eraser-no-head-lock-as-built)",
+    "AdjacencyWriterLockAsBuilt (proofs-mech-excl-adjacency-writer-lock-as-built)",
+    "Bm25WriteLockAsBuilt (proofs-mech-excl-bm25-write-lock-as-built)",
+    "PlanBuildLockAsBuilt (proofs-mech-excl-plan-build-lock-as-built)",
+    "ModeSwitchAsBuilt (proofs-mech-excl-mode-switch-as-built)",
+    "CtlWriterWithoutLock (proofs-mech-excl-control-c2-writer-without-lock)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M03-L3": {
+   "generic_theorems": [
+    "theorem_l3",
+    "theorem_excl"
+   ],
+   "discharged_by": [
+    "HeadLockCommit (excl/head-lock-commit)",
+    "AdjacencyNoLockMark (excl/adjacency-no-lock-mark)",
+    "RedactionMarkerReviewed (excl/redaction-marker)",
+    "EraserNoHeadLockReviewed (excl/eraser-no-head-lock)",
+    "AdjacencyWriterLockReviewed (excl/adjacency-writer-lock)",
+    "Bm25WriteLockReviewed (excl/bm25-write-lock)",
+    "PlanBuildLockReviewed (excl/plan-build-lock)",
+    "ModeSwitchReviewed (excl/mode-switch)"
+   ],
+   "broken_by": [
+    "RedactionMarkerAsBuilt (proofs-mech-excl-redaction-marker-as-built)",
+    "CtlWriterWithoutLock (proofs-mech-excl-control-c2-writer-without-lock)",
+    "CtlCheckBeforeLock (proofs-mech-excl-control-c3-check-before-lock)",
+    "CtlTombWithoutCheck (proofs-mech-excl-control-c5-tomb-without-check)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M03-L4": {
+   "generic_theorems": [
+    "theorem_l4",
+    "theorem_excl"
+   ],
+   "discharged_by": [
+    "HeadLockCommit (excl/head-lock-commit)",
+    "AdjacencyNoLockMark (excl/adjacency-no-lock-mark)",
+    "RedactionMarkerReviewed (excl/redaction-marker)",
+    "EraserNoHeadLockReviewed (excl/eraser-no-head-lock)",
+    "AdjacencyWriterLockReviewed (excl/adjacency-writer-lock)",
+    "Bm25WriteLockReviewed (excl/bm25-write-lock)",
+    "PlanBuildLockReviewed (excl/plan-build-lock)",
+    "ModeSwitchReviewed (excl/mode-switch)"
+   ],
+   "broken_by": [
+    "RedactionMarkerAsBuilt (proofs-mech-excl-redaction-marker-as-built)",
+    "CtlClearAny (proofs-mech-excl-control-c4-clear-any)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M03-L5": {
+   "generic_theorems": [
+    "theorem_l5",
+    "theorem_excl"
+   ],
+   "discharged_by": [
+    "HeadLockCommit (excl/head-lock-commit)",
+    "AdjacencyNoLockMark (excl/adjacency-no-lock-mark)",
+    "RedactionMarkerReviewed (excl/redaction-marker)",
+    "EraserNoHeadLockReviewed (excl/eraser-no-head-lock)",
+    "AdjacencyWriterLockReviewed (excl/adjacency-writer-lock)",
+    "Bm25WriteLockReviewed (excl/bm25-write-lock)",
+    "PlanBuildLockReviewed (excl/plan-build-lock)",
+    "ModeSwitchReviewed (excl/mode-switch)"
+   ],
+   "broken_by": [
+    "RedactionMarkerAsBuilt (proofs-mech-excl-redaction-marker-as-built)",
+    "CtlWriterWithoutLock (proofs-mech-excl-control-c2-writer-without-lock)",
+    "CtlCheckBeforeLock (proofs-mech-excl-control-c3-check-before-lock)",
+    "CtlTombWithoutCheck (proofs-mech-excl-control-c5-tomb-without-check)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M04-L1": {
+   "generic_theorems": [
+    "theorem_l1",
+    "theorem_derived"
+   ],
+   "discharged_by": [
+    "AdjacencyFunctional (derived/adjacency-functional)",
+    "DegreeCacheReviewed (derived/degree-cache)",
+    "ResultCache04Reviewed (derived/result-cache-04)",
+    "AlgoCacheEdgelessReviewed (derived/algo-cache-edgeless)",
+    "InternedSnapshotReviewed (derived/interned-snapshot)",
+    "Bm25TextChangeReviewed (derived/bm25-text-change)",
+    "StatementMapDirectDeleteReviewed (derived/statement-map-direct-delete)",
+    "BucketAggregateUpdateReviewed (derived/bucket-aggregate-update)",
+    "EngineModeCacheReviewed (derived/engine-mode-cache)",
+    "TtlCacheReviewed (derived/ttl-cache)",
+    "NativeGateLabelIndexReviewed (derived/native-gate-label-index)",
+    "IvfEraseReviewed (derived/ivf-erase)"
+   ],
+   "broken_by": [
+    "DegreeCacheF0402 (proofs-mech-derived-degree-cache-as-built-f0402)",
+    "DegreeCacheFC0401 (proofs-mech-derived-degree-cache-as-built-fc0401)",
+    "DegreeCacheF0406 (proofs-mech-derived-degree-cache-as-built-f0406)",
+    "ResultCache04F0402 (proofs-mech-derived-result-cache-04-as-built-f0402)",
+    "AlgoCacheEdgelessF1004 (proofs-mech-derived-algo-cache-edgeless-as-built-f1004)",
+    "InternedSnapshotF1005 (proofs-mech-derived-interned-snapshot-as-built-f1005)",
+    "InternedSnapshotFC0801 (proofs-mech-derived-interned-snapshot-as-built-fc0801)",
+    "Bm25TextChangeF0703 (proofs-mech-derived-bm25-text-change-as-built-f0703)",
+    "StatementMapDirectDeleteF0303 (proofs-mech-derived-statement-map-direct-delete-as-built-f0303)",
+    "BucketAggregateUpdateF0501 (proofs-mech-derived-bucket-aggregate-update-as-built-f0501)",
+    "EngineModeCacheF0208 (proofs-mech-derived-engine-mode-cache-as-built-f0208)",
+    "TtlCacheF0302 (proofs-mech-derived-ttl-cache-as-built-f0302)",
+    "TtlCacheEXC05 (proofs-mech-derived-ttl-cache-as-built-exc05)",
+    "NativeGateLabelIndexF0906 (proofs-mech-derived-native-gate-label-index-as-built-f0906)",
+    "IvfEraseF0606 (proofs-mech-derived-ivf-erase-as-built-f0606)",
+    "CtlUnmaintainedPath (proofs-mech-derived-control-c1-unmaintained-path)",
+    "CtlTokenAfterCompute (proofs-mech-derived-control-c2-token-after-compute)",
+    "CtlRebuildStampOnly (proofs-mech-derived-control-c3-rebuild-stamp-only)",
+    "CtlProbeLate (proofs-mech-derived-control-c5-probe-late)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M04-L2": {
+   "generic_theorems": [
+    "theorem_l2",
+    "theorem_derived"
+   ],
+   "discharged_by": [
+    "AdjacencyFunctional (derived/adjacency-functional)",
+    "DegreeCacheReviewed (derived/degree-cache)",
+    "ResultCache04Reviewed (derived/result-cache-04)",
+    "AlgoCacheEdgelessReviewed (derived/algo-cache-edgeless)",
+    "InternedSnapshotReviewed (derived/interned-snapshot)",
+    "Bm25TextChangeReviewed (derived/bm25-text-change)",
+    "StatementMapDirectDeleteReviewed (derived/statement-map-direct-delete)",
+    "BucketAggregateUpdateReviewed (derived/bucket-aggregate-update)",
+    "EngineModeCacheReviewed (derived/engine-mode-cache)",
+    "TtlCacheReviewed (derived/ttl-cache)",
+    "NativeGateLabelIndexReviewed (derived/native-gate-label-index)",
+    "IvfEraseReviewed (derived/ivf-erase)"
+   ],
+   "broken_by": [
+    "AlgoCacheEdgelessF1004 (proofs-mech-derived-algo-cache-edgeless-as-built-f1004)",
+    "InternedSnapshotF1005 (proofs-mech-derived-interned-snapshot-as-built-f1005)",
+    "Bm25TextChangeF0703 (proofs-mech-derived-bm25-text-change-as-built-f0703)",
+    "StatementMapDirectDeleteF0303 (proofs-mech-derived-statement-map-direct-delete-as-built-f0303)",
+    "EngineModeCacheF0208 (proofs-mech-derived-engine-mode-cache-as-built-f0208)",
+    "TtlCacheF0302 (proofs-mech-derived-ttl-cache-as-built-f0302)",
+    "TtlCacheEXC05 (proofs-mech-derived-ttl-cache-as-built-exc05)",
+    "NativeGateLabelIndexF0906 (proofs-mech-derived-native-gate-label-index-as-built-f0906)",
+    "IvfEraseF0606 (proofs-mech-derived-ivf-erase-as-built-f0606)",
+    "CtlUnmaintainedPath (proofs-mech-derived-control-c1-unmaintained-path)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M04-L3": {
+   "generic_theorems": [
+    "theorem_l3",
+    "theorem_derived"
+   ],
+   "discharged_by": [
+    "AdjacencyFunctional (derived/adjacency-functional)",
+    "DegreeCacheReviewed (derived/degree-cache)",
+    "ResultCache04Reviewed (derived/result-cache-04)",
+    "AlgoCacheEdgelessReviewed (derived/algo-cache-edgeless)",
+    "InternedSnapshotReviewed (derived/interned-snapshot)",
+    "Bm25TextChangeReviewed (derived/bm25-text-change)",
+    "StatementMapDirectDeleteReviewed (derived/statement-map-direct-delete)",
+    "BucketAggregateUpdateReviewed (derived/bucket-aggregate-update)",
+    "EngineModeCacheReviewed (derived/engine-mode-cache)",
+    "TtlCacheReviewed (derived/ttl-cache)",
+    "NativeGateLabelIndexReviewed (derived/native-gate-label-index)",
+    "IvfEraseReviewed (derived/ivf-erase)"
+   ],
+   "broken_by": [
+    "CtlRebuildStampOnly (proofs-mech-derived-control-c3-rebuild-stamp-only)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M04-L4": {
+   "generic_theorems": [
+    "theorem_l4",
+    "theorem_derived"
+   ],
+   "discharged_by": [
+    "AdjacencyFunctional (derived/adjacency-functional)",
+    "DegreeCacheReviewed (derived/degree-cache)",
+    "ResultCache04Reviewed (derived/result-cache-04)",
+    "AlgoCacheEdgelessReviewed (derived/algo-cache-edgeless)",
+    "InternedSnapshotReviewed (derived/interned-snapshot)",
+    "Bm25TextChangeReviewed (derived/bm25-text-change)",
+    "StatementMapDirectDeleteReviewed (derived/statement-map-direct-delete)",
+    "BucketAggregateUpdateReviewed (derived/bucket-aggregate-update)",
+    "EngineModeCacheReviewed (derived/engine-mode-cache)",
+    "TtlCacheReviewed (derived/ttl-cache)",
+    "NativeGateLabelIndexReviewed (derived/native-gate-label-index)",
+    "IvfEraseReviewed (derived/ivf-erase)"
+   ],
+   "broken_by": [
+    "DegreeCacheF0402 (proofs-mech-derived-degree-cache-as-built-f0402)",
+    "DegreeCacheFC0401 (proofs-mech-derived-degree-cache-as-built-fc0401)",
+    "DegreeCacheF0406 (proofs-mech-derived-degree-cache-as-built-f0406)",
+    "ResultCache04F0402 (proofs-mech-derived-result-cache-04-as-built-f0402)",
+    "AlgoCacheEdgelessF1004 (proofs-mech-derived-algo-cache-edgeless-as-built-f1004)",
+    "InternedSnapshotF1005 (proofs-mech-derived-interned-snapshot-as-built-f1005)",
+    "InternedSnapshotFC0801 (proofs-mech-derived-interned-snapshot-as-built-fc0801)",
+    "Bm25TextChangeF0703 (proofs-mech-derived-bm25-text-change-as-built-f0703)",
+    "StatementMapDirectDeleteF0303 (proofs-mech-derived-statement-map-direct-delete-as-built-f0303)",
+    "BucketAggregateUpdateF0501 (proofs-mech-derived-bucket-aggregate-update-as-built-f0501)",
+    "EngineModeCacheF0208 (proofs-mech-derived-engine-mode-cache-as-built-f0208)",
+    "TtlCacheF0302 (proofs-mech-derived-ttl-cache-as-built-f0302)",
+    "TtlCacheEXC05 (proofs-mech-derived-ttl-cache-as-built-exc05)",
+    "NativeGateLabelIndexF0906 (proofs-mech-derived-native-gate-label-index-as-built-f0906)",
+    "IvfEraseF0606 (proofs-mech-derived-ivf-erase-as-built-f0606)",
+    "CtlUnmaintainedPath (proofs-mech-derived-control-c1-unmaintained-path)",
+    "CtlTokenAfterCompute (proofs-mech-derived-control-c2-token-after-compute)",
+    "CtlRebuildStampOnly (proofs-mech-derived-control-c3-rebuild-stamp-only)",
+    "CtlUncheckedGate (proofs-mech-derived-control-c4-unchecked-gate)",
+    "CtlProbeLate (proofs-mech-derived-control-c5-probe-late)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M05-L1": {
+   "generic_theorems": [
+    "theorem_l1",
+    "theorem_removal"
+   ],
+   "discharged_by": [
+    "RowsAdjacencyTemporal (removal/rows-adjacency-temporal)",
+    "Bm25Reviewed (removal/bm25)",
+    "VectorIndexesReviewed (removal/vector-indexes)",
+    "QuarantineReviewed (removal/quarantine)",
+    "SnapshotArchivesReviewed (removal/snapshot-archives)",
+    "ReifierDefaultGraphReviewed (removal/reifier-default-graph)",
+    "TemporalOnlyPrefixReviewed (removal/temporal-only-prefix)",
+    "HistoryTextReviewed (removal/history-text)",
+    "DefaultRoutedVectorsReviewed (removal/default-routed-vectors)",
+    "TemporalPurgeAllGraphsReviewed (removal/temporal-purge-all-graphs)"
+   ],
+   "broken_by": [
+    "Bm25AsBuilt (proofs-mech-removal-bm25-as-built)",
+    "VectorIndexesAsBuilt (proofs-mech-removal-vector-indexes-as-built)",
+    "QuarantineAsBuilt (proofs-mech-removal-quarantine-as-built)",
+    "SnapshotArchivesAsBuilt (proofs-mech-removal-snapshot-archives-as-built)",
+    "ReifierDefaultGraphAsBuilt (proofs-mech-removal-reifier-default-graph-as-built)",
+    "TemporalOnlyPrefixAsBuilt (proofs-mech-removal-temporal-only-prefix-as-built)",
+    "HistoryTextAsBuilt (proofs-mech-removal-history-text-as-built)",
+    "DefaultRoutedVectorsAsBuilt (proofs-mech-removal-default-routed-vectors-as-built)",
+    "CtlStoreDropped (proofs-mech-removal-control-c1-store-dropped)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M05-L2": {
+   "generic_theorems": [
+    "theorem_l2",
+    "theorem_removal"
+   ],
+   "discharged_by": [
+    "RowsAdjacencyTemporal (removal/rows-adjacency-temporal)",
+    "Bm25Reviewed (removal/bm25)",
+    "VectorIndexesReviewed (removal/vector-indexes)",
+    "QuarantineReviewed (removal/quarantine)",
+    "SnapshotArchivesReviewed (removal/snapshot-archives)",
+    "ReifierDefaultGraphReviewed (removal/reifier-default-graph)",
+    "TemporalOnlyPrefixReviewed (removal/temporal-only-prefix)",
+    "HistoryTextReviewed (removal/history-text)",
+    "DefaultRoutedVectorsReviewed (removal/default-routed-vectors)",
+    "TemporalPurgeAllGraphsReviewed (removal/temporal-purge-all-graphs)"
+   ],
+   "broken_by": [
+    "TemporalPurgeAllGraphsAsBuilt (proofs-mech-removal-temporal-purge-all-graphs-as-built)",
+    "CtlCrossTarget (proofs-mech-removal-control-c2-cross-target)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M05-L3": {
+   "generic_theorems": [
+    "theorem_l3",
+    "theorem_removal"
+   ],
+   "discharged_by": [
+    "RowsAdjacencyTemporal (removal/rows-adjacency-temporal)",
+    "Bm25Reviewed (removal/bm25)",
+    "VectorIndexesReviewed (removal/vector-indexes)",
+    "QuarantineReviewed (removal/quarantine)",
+    "SnapshotArchivesReviewed (removal/snapshot-archives)",
+    "ReifierDefaultGraphReviewed (removal/reifier-default-graph)",
+    "TemporalOnlyPrefixReviewed (removal/temporal-only-prefix)",
+    "HistoryTextReviewed (removal/history-text)",
+    "DefaultRoutedVectorsReviewed (removal/default-routed-vectors)",
+    "TemporalPurgeAllGraphsReviewed (removal/temporal-purge-all-graphs)"
+   ],
+   "broken_by": [
+    "Bm25AsBuilt (proofs-mech-removal-bm25-as-built)",
+    "VectorIndexesAsBuilt (proofs-mech-removal-vector-indexes-as-built)",
+    "QuarantineAsBuilt (proofs-mech-removal-quarantine-as-built)",
+    "SnapshotArchivesAsBuilt (proofs-mech-removal-snapshot-archives-as-built)",
+    "ReifierDefaultGraphAsBuilt (proofs-mech-removal-reifier-default-graph-as-built)",
+    "TemporalOnlyPrefixAsBuilt (proofs-mech-removal-temporal-only-prefix-as-built)",
+    "HistoryTextAsBuilt (proofs-mech-removal-history-text-as-built)",
+    "DefaultRoutedVectorsAsBuilt (proofs-mech-removal-default-routed-vectors-as-built)",
+    "CtlStoreDropped (proofs-mech-removal-control-c1-store-dropped)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M06-L1": {
+   "generic_theorems": [
+    "theorem_l1",
+    "theorem_snapshot"
+   ],
+   "discharged_by": [
+    "EdgeVectorsMissingReviewed (snapshot/edge-vectors-missing)",
+    "ReplacingRestoreReviewed (snapshot/replacing-restore)",
+    "MergeAggregatesReviewed (snapshot/merge-aggregates)"
+   ],
+   "broken_by": [
+    "EdgeVectorsMissingAsBuilt (proofs-mech-snapshot-edge-vectors-missing-as-built)",
+    "CtlStoreLeftOut (proofs-mech-snapshot-control-c1-store-left-out)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M06-L2": {
+   "generic_theorems": [
+    "theorem_l2",
+    "theorem_snapshot"
+   ],
+   "discharged_by": [
+    "EdgeVectorsMissingReviewed (snapshot/edge-vectors-missing)",
+    "ReplacingRestoreReviewed (snapshot/replacing-restore)",
+    "MergeAggregatesReviewed (snapshot/merge-aggregates)"
+   ],
+   "broken_by": [
+    "ReplacingRestoreAsBuilt (proofs-mech-snapshot-replacing-restore-as-built)",
+    "CtlHeadLaidOver (proofs-mech-snapshot-control-c2-head-laid-over)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M06-L3": {
+   "generic_theorems": [
+    "theorem_l3",
+    "theorem_snapshot"
+   ],
+   "discharged_by": [
+    "EdgeVectorsMissingReviewed (snapshot/edge-vectors-missing)",
+    "ReplacingRestoreReviewed (snapshot/replacing-restore)",
+    "MergeAggregatesReviewed (snapshot/merge-aggregates)"
+   ],
+   "broken_by": [
+    "MergeAggregatesAsBuilt (proofs-mech-snapshot-merge-aggregates-as-built)",
+    "CtlAggregatesOverwritten (proofs-mech-snapshot-control-c3-aggregates-overwritten)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M07-L1": {
+   "generic_theorems": [
+    "theorem_l1",
+    "theorem_entry"
+   ],
+   "discharged_by": [
+    "EmbedQueueEntryReviewed (queue/embed-queue)"
+   ],
+   "broken_by": [
+    "EmbedQueueF0604 (proofs-mech-queue-embed-queue-as-built-f0604)",
+    "EmbedQueueFC0601 (proofs-mech-queue-embed-queue-as-built-fc0601)",
+    "EmbedQueueHD0604 (proofs-mech-queue-embed-queue-as-built-hd0604)",
+    "CtlTwoConsumers (proofs-mech-queue-control-c2-two-consumers)",
+    "CtlMarkAlways (proofs-mech-queue-control-c3-mark-always)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M07-L2": {
+   "generic_theorems": [
+    "theorem_l2",
+    "theorem_entry"
+   ],
+   "discharged_by": [
+    "EmbedQueueEntryReviewed (queue/embed-queue)"
+   ],
+   "broken_by": [
+    "EmbedQueueHD0604 (proofs-mech-queue-embed-queue-as-built-hd0604)",
+    "CtlTwoConsumers (proofs-mech-queue-control-c2-two-consumers)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M07-L3": {
+   "generic_theorems": [
+    "theorem_l3",
+    "theorem_order"
+   ],
+   "discharged_by": [
+    "EmbedQueueOrderReviewed (queue/embed-queue)"
+   ],
+   "broken_by": [
+    "EmbedQueueOrderAsBuilt (proofs-mech-queue-embed-queue-as-built-fc0605-overtaking)",
+    "CtlLifo (proofs-mech-queue-control-c1-lifo-overtaking)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M07-L4": {
+   "generic_theorems": [
+    "theorem_l4_order",
+    "theorem_l4_resume",
+    "theorem_order",
+    "theorem_resume"
+   ],
+   "discharged_by": [
+    "EmbedQueueOrderReviewed (queue/embed-queue)",
+    "BoundedRedactionResumeReviewed (queue/bounded-redaction-resume)"
+   ],
+   "broken_by": [
+    "EmbedQueueOrderAsBuilt (proofs-mech-queue-embed-queue-as-built-fc0605-overtaking)",
+    "CtlLifo (proofs-mech-queue-control-c1-lifo-overtaking)",
+    "BoundedRedactionResumeAsBuilt (proofs-mech-queue-bounded-redaction-resume-as-built)",
+    "CtlRestartScan (proofs-mech-queue-control-c4-restart-scan)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M08-L1": {
+   "generic_theorems": [
+    "theorem_l1",
+    "theorem_install"
+   ],
+   "discharged_by": [
+    "Canonical (install/canonical)",
+    "FirstUseNoRecordReviewed (install/first-use-no-record)",
+    "UnqualifiedDropReviewed (install/unqualified-drop)",
+    "UncheckedSettingReviewed (install/unchecked-setting)",
+    "ConcurrentFirstEnableReviewed (install/concurrent-first-enable)"
+   ],
+   "broken_by": [
+    "FirstUseNoRecordAsBuilt (proofs-mech-install-first-use-no-record-as-built)",
+    "CtlFirstUseAcceptsAny (proofs-mech-install-control-c1-first-use-accepts-any)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M08-L2": {
+   "generic_theorems": [
+    "theorem_action_laws",
+    "theorem_install"
+   ],
+   "discharged_by": [
+    "Canonical (install/canonical)",
+    "FirstUseNoRecordReviewed (install/first-use-no-record)",
+    "UnqualifiedDropReviewed (install/unqualified-drop)",
+    "UncheckedSettingReviewed (install/unchecked-setting)",
+    "ConcurrentFirstEnableReviewed (install/concurrent-first-enable)"
+   ],
+   "broken_by": [
+    "ConcurrentFirstEnableAsBuilt (proofs-mech-install-concurrent-first-enable-as-built)",
+    "CtlEnableRaceErrors (proofs-mech-install-control-c4-enable-race-errors)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M08-L3": {
+   "generic_theorems": [
+    "theorem_action_laws",
+    "theorem_install"
+   ],
+   "discharged_by": [
+    "Canonical (install/canonical)",
+    "FirstUseNoRecordReviewed (install/first-use-no-record)",
+    "UnqualifiedDropReviewed (install/unqualified-drop)",
+    "UncheckedSettingReviewed (install/unchecked-setting)",
+    "ConcurrentFirstEnableReviewed (install/concurrent-first-enable)"
+   ],
+   "broken_by": [
+    "UnqualifiedDropAsBuilt (proofs-mech-install-unqualified-drop-as-built)",
+    "CtlUnqualifiedDrop (proofs-mech-install-control-c2-unqualified-drop)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M08-L4": {
+   "generic_theorems": [
+    "theorem_action_laws",
+    "theorem_install"
+   ],
+   "discharged_by": [
+    "Canonical (install/canonical)",
+    "FirstUseNoRecordReviewed (install/first-use-no-record)",
+    "UnqualifiedDropReviewed (install/unqualified-drop)",
+    "UncheckedSettingReviewed (install/unchecked-setting)",
+    "ConcurrentFirstEnableReviewed (install/concurrent-first-enable)"
+   ],
+   "broken_by": [
+    "UncheckedSettingAsBuilt (proofs-mech-install-unchecked-setting-as-built)",
+    "CtlSettingUnchecked (proofs-mech-install-control-c3-setting-unchecked)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M09-L1": {
+   "generic_theorems": [
+    "theorem_l1",
+    "theorem_scope"
+   ],
+   "discharged_by": [
+    "ScopeCanonical (scope/canonical)",
+    "NameCheckMissingReviewed (scope/name-check-missing)",
+    "AllGraphsWalkReviewed (scope/all-graphs-walk)",
+    "UnscopedReadReviewed (scope/unscoped-read)",
+    "InternedNoGraphDimensionReviewed (scope/interned-no-graph-dimension)",
+    "DeleteEveryGraphReviewed (scope/delete-every-graph)",
+    "ThreePredicatesReviewed (scope/three-predicates)"
+   ],
+   "broken_by": [
+    "NameCheckMissingAsBuilt (proofs-mech-scope-name-check-missing-as-built)",
+    "CtlKeyIgnoresName (proofs-mech-scope-control-c1-key-ignores-name)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M09-L2": {
+   "generic_theorems": [
+    "theorem_l2",
+    "theorem_scope"
+   ],
+   "discharged_by": [
+    "ScopeCanonical (scope/canonical)",
+    "NameCheckMissingReviewed (scope/name-check-missing)",
+    "AllGraphsWalkReviewed (scope/all-graphs-walk)",
+    "UnscopedReadReviewed (scope/unscoped-read)",
+    "InternedNoGraphDimensionReviewed (scope/interned-no-graph-dimension)",
+    "DeleteEveryGraphReviewed (scope/delete-every-graph)",
+    "ThreePredicatesReviewed (scope/three-predicates)"
+   ],
+   "broken_by": [
+    "AllGraphsWalkAsBuilt (proofs-mech-scope-all-graphs-walk-as-built)",
+    "UnscopedReadAsBuilt (proofs-mech-scope-unscoped-read-as-built)",
+    "InternedNoGraphDimensionAsBuilt (proofs-mech-scope-interned-no-graph-dimension-as-built)",
+    "CtlJoinAcrossGraphs (proofs-mech-scope-control-c2-join-across-graphs)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M09-L3": {
+   "generic_theorems": [
+    "theorem_l3",
+    "theorem_scope"
+   ],
+   "discharged_by": [
+    "ScopeCanonical (scope/canonical)",
+    "NameCheckMissingReviewed (scope/name-check-missing)",
+    "AllGraphsWalkReviewed (scope/all-graphs-walk)",
+    "UnscopedReadReviewed (scope/unscoped-read)",
+    "InternedNoGraphDimensionReviewed (scope/interned-no-graph-dimension)",
+    "DeleteEveryGraphReviewed (scope/delete-every-graph)",
+    "ThreePredicatesReviewed (scope/three-predicates)"
+   ],
+   "broken_by": [
+    "DeleteEveryGraphAsBuilt (proofs-mech-scope-delete-every-graph-as-built)",
+    "CtlDeleteEveryGraph (proofs-mech-scope-control-c3-delete-every-graph)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M09-L4": {
+   "generic_theorems": [
+    "theorem_l4",
+    "theorem_scope"
+   ],
+   "discharged_by": [
+    "ScopeCanonical (scope/canonical)",
+    "NameCheckMissingReviewed (scope/name-check-missing)",
+    "AllGraphsWalkReviewed (scope/all-graphs-walk)",
+    "UnscopedReadReviewed (scope/unscoped-read)",
+    "InternedNoGraphDimensionReviewed (scope/interned-no-graph-dimension)",
+    "DeleteEveryGraphReviewed (scope/delete-every-graph)",
+    "ThreePredicatesReviewed (scope/three-predicates)"
+   ],
+   "broken_by": [
+    "ThreePredicatesAsBuilt (proofs-mech-scope-three-predicates-as-built)",
+    "CtlGraphBlindMatch (proofs-mech-scope-control-c4-graph-blind-match)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M10-L1": {
+   "generic_theorems": [
+    "theorem_l1",
+    "theorem_unit"
+   ],
+   "discharged_by": [
+    "Canonical (unit/canonical)",
+    "PerChunkCommitReviewed (unit/per-chunk-commit)",
+    "RollbackAllLevelsReviewed (unit/rollback-all-levels)",
+    "PerStatementCommitReviewed (unit/per-statement-commit)",
+    "NoTransactionReviewed (unit/no-transaction)",
+    "WrongReplyReviewed (unit/wrong-reply)",
+    "HiddenFailureReviewed (unit/hidden-failure)"
+   ],
+   "broken_by": [
+    "PerChunkCommitAsBuilt (proofs-mech-unit-per-chunk-commit-as-built)",
+    "PerStatementCommitAsBuilt (proofs-mech-unit-per-statement-commit-as-built)",
+    "NoTransactionAsBuilt (proofs-mech-unit-no-transaction-as-built)",
+    "CtlPerStatement (proofs-mech-unit-control-c1-per-statement)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M10-L2": {
+   "generic_theorems": [
+    "theorem_l2",
+    "theorem_unit"
+   ],
+   "discharged_by": [
+    "Canonical (unit/canonical)",
+    "PerChunkCommitReviewed (unit/per-chunk-commit)",
+    "RollbackAllLevelsReviewed (unit/rollback-all-levels)",
+    "PerStatementCommitReviewed (unit/per-statement-commit)",
+    "NoTransactionReviewed (unit/no-transaction)",
+    "WrongReplyReviewed (unit/wrong-reply)",
+    "HiddenFailureReviewed (unit/hidden-failure)"
+   ],
+   "broken_by": [
+    "RollbackAllLevelsAsBuilt (proofs-mech-unit-rollback-all-levels-as-built)",
+    "CtlRollbackAllLevels (proofs-mech-unit-control-c2-rollback-all-levels)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M10-L3": {
+   "generic_theorems": [
+    "theorem_l3",
+    "theorem_unit"
+   ],
+   "discharged_by": [
+    "Canonical (unit/canonical)",
+    "PerChunkCommitReviewed (unit/per-chunk-commit)",
+    "RollbackAllLevelsReviewed (unit/rollback-all-levels)",
+    "PerStatementCommitReviewed (unit/per-statement-commit)",
+    "NoTransactionReviewed (unit/no-transaction)",
+    "WrongReplyReviewed (unit/wrong-reply)",
+    "HiddenFailureReviewed (unit/hidden-failure)"
+   ],
+   "broken_by": [
+    "WrongReplyAsBuilt (proofs-mech-unit-wrong-reply-as-built)",
+    "HiddenFailureAsBuilt (proofs-mech-unit-hidden-failure-as-built)",
+    "CtlOkOnFailure (proofs-mech-unit-control-c3-ok-on-failure)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M11-L1": {
+   "generic_theorems": [
+    "theorem_action_laws",
+    "theorem_cap"
+   ],
+   "discharged_by": [
+    "HttpServer (cap/http-server)",
+    "DemoServerReviewed (cap/demo-server)",
+    "AqlReviewed (cap/aql)",
+    "AqlCodeTextReviewed (cap/aql-code-text)",
+    "SnapshotFileHelpersReviewed (cap/snapshot-file-helpers)",
+    "PrivilegeInEngineOnlyReviewed (cap/privilege-in-engine-only)"
+   ],
+   "broken_by": [
+    "AqlAsBuilt (proofs-mech-cap-aql-as-built)",
+    "SnapshotFileHelpersAsBuilt (proofs-mech-cap-snapshot-file-helpers-as-built)",
+    "CtlWriteWithoutReadOnlyCheck (proofs-mech-cap-control-c1-write-without-read-only-check)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M11-L2": {
+   "generic_theorems": [
+    "theorem_action_laws",
+    "theorem_cap"
+   ],
+   "discharged_by": [
+    "HttpServer (cap/http-server)",
+    "DemoServerReviewed (cap/demo-server)",
+    "AqlReviewed (cap/aql)",
+    "AqlCodeTextReviewed (cap/aql-code-text)",
+    "SnapshotFileHelpersReviewed (cap/snapshot-file-helpers)",
+    "PrivilegeInEngineOnlyReviewed (cap/privilege-in-engine-only)"
+   ],
+   "broken_by": [
+    "DemoServerAsBuilt (proofs-mech-cap-demo-server-as-built)",
+    "SnapshotFileHelpersAsBuilt (proofs-mech-cap-snapshot-file-helpers-as-built)",
+    "PrivilegeInEngineOnlyAsBuilt (proofs-mech-cap-privilege-in-engine-only-as-built)",
+    "CtlRouteWithoutKeyCheck (proofs-mech-cap-control-c2-route-without-key-check)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M11-L3": {
+   "generic_theorems": [
+    "theorem_action_laws",
+    "theorem_cap"
+   ],
+   "discharged_by": [
+    "HttpServer (cap/http-server)",
+    "DemoServerReviewed (cap/demo-server)",
+    "AqlReviewed (cap/aql)",
+    "AqlCodeTextReviewed (cap/aql-code-text)",
+    "SnapshotFileHelpersReviewed (cap/snapshot-file-helpers)",
+    "PrivilegeInEngineOnlyReviewed (cap/privilege-in-engine-only)"
+   ],
+   "broken_by": [
+    "AqlCodeTextAsBuilt (proofs-mech-cap-aql-code-text-as-built)",
+    "SnapshotFileHelpersAsBuilt (proofs-mech-cap-snapshot-file-helpers-as-built)",
+    "CtlFileRoute (proofs-mech-cap-control-c3-file-route)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M12-L1": {
+   "generic_theorems": [
+    "theorem_l1",
+    "theorem_catalog"
+   ],
+   "discharged_by": [
+    "CatalogCanonical (catalog/canonical)",
+    "Bm25IndexGraphUncheckedReviewed (catalog/bm25-index-graph-unchecked)",
+    "IvfIndexGraphUncheckedReviewed (catalog/ivf-index-graph-unchecked)",
+    "IdentityFailOpenReviewed (catalog/identity-fail-open)",
+    "ShortHashNameReviewed (catalog/short-hash-name)"
+   ],
+   "broken_by": [
+    "Bm25IndexNoRecordAsBuilt (proofs-mech-catalog-bm25-index-graph-unchecked-as-built-m12-l1-f-0705)",
+    "CtlNoRecord (proofs-mech-catalog-control-c3-no-record)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M12-L2": {
+   "generic_theorems": [
+    "theorem_l2",
+    "theorem_catalog"
+   ],
+   "discharged_by": [
+    "CatalogCanonical (catalog/canonical)",
+    "Bm25IndexGraphUncheckedReviewed (catalog/bm25-index-graph-unchecked)",
+    "IvfIndexGraphUncheckedReviewed (catalog/ivf-index-graph-unchecked)",
+    "IdentityFailOpenReviewed (catalog/identity-fail-open)",
+    "ShortHashNameReviewed (catalog/short-hash-name)"
+   ],
+   "broken_by": [
+    "Bm25IndexGraphUncheckedAsBuilt (proofs-mech-catalog-bm25-index-graph-unchecked-as-built)",
+    "Bm25IndexNoRecordAsBuilt (proofs-mech-catalog-bm25-index-graph-unchecked-as-built-m12-l1-f-0705)",
+    "IvfIndexGraphUncheckedAsBuilt (proofs-mech-catalog-ivf-index-graph-unchecked-as-built)",
+    "IdentityFailOpenAsBuilt (proofs-mech-catalog-identity-fail-open-as-built)",
+    "CtlUncheckedRead (proofs-mech-catalog-control-c1-unchecked-read)",
+    "CtlNoRecord (proofs-mech-catalog-control-c3-no-record)",
+    "CtlFailOpen (proofs-mech-catalog-control-c4-fail-open)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M12-L3": {
+   "generic_theorems": [
+    "theorem_l3",
+    "theorem_catalog"
+   ],
+   "discharged_by": [
+    "CatalogCanonical (catalog/canonical)",
+    "Bm25IndexGraphUncheckedReviewed (catalog/bm25-index-graph-unchecked)",
+    "IvfIndexGraphUncheckedReviewed (catalog/ivf-index-graph-unchecked)",
+    "IdentityFailOpenReviewed (catalog/identity-fail-open)",
+    "ShortHashNameReviewed (catalog/short-hash-name)"
+   ],
+   "broken_by": [
+    "ShortHashNameAsBuilt (proofs-mech-catalog-short-hash-name-as-built)",
+    "CtlShortHash (proofs-mech-catalog-control-c2-short-hash)"
+   ],
+   "status": "proved generically (model level)"
+  },
+  "M13-L1": {
+   "generic_theorems": [
+    "theorem_l1",
+    "theorem_epoch"
+   ],
+   "discharged_by": [
+    "CheckAtStartReviewed (epoch/check-at-start)",
+    "NoCheckReviewed (epoch/no-check)"
+   ],
+   "broken_by": [
+    "CheckAtStartAsBuilt (proofs-mech-epoch-check-at-start-as-built)",
+    "NoCheckAsBuilt (proofs-mech-epoch-no-check-as-built)",
+    "CtlNoEndCheck (proofs-mech-epoch-control-c1-no-end-check)"
+   ],
+   "status": "proved generically (model level)"
+  }
+ },
+ "cells": [
+  {
+   "gate": "3.3a-mechanisms",
+   "module": "product",
+   "add_evidence": [
+    "run:proofs-mech-baseline",
+    "run:proofs-mech-recheck",
+    "run:proofs-mech-cap-aql-as-built",
+    "run:proofs-mech-cap-aql-code-text-as-built",
+    "run:proofs-mech-cap-control-c1-write-without-read-only-check",
+    "run:proofs-mech-cap-control-c2-route-without-key-check",
+    "run:proofs-mech-cap-control-c3-file-route",
+    "run:proofs-mech-cap-demo-server-as-built",
+    "run:proofs-mech-cap-privilege-in-engine-only-as-built",
+    "run:proofs-mech-cap-snapshot-file-helpers-as-built",
+    "run:proofs-mech-catalog-bm25-index-graph-unchecked-as-built",
+    "run:proofs-mech-catalog-bm25-index-graph-unchecked-as-built-m12-l1-f-0705",
+    "run:proofs-mech-catalog-control-c1-unchecked-read",
+    "run:proofs-mech-catalog-control-c2-short-hash",
+    "run:proofs-mech-catalog-control-c3-no-record",
+    "run:proofs-mech-catalog-control-c4-fail-open",
+    "run:proofs-mech-catalog-identity-fail-open-as-built",
+    "run:proofs-mech-catalog-ivf-index-graph-unchecked-as-built",
+    "run:proofs-mech-catalog-short-hash-name-as-built",
+    "run:proofs-mech-derived-algo-cache-edgeless-as-built-f1004",
+    "run:proofs-mech-derived-bm25-text-change-as-built-f0703",
+    "run:proofs-mech-derived-bucket-aggregate-update-as-built-f0501",
+    "run:proofs-mech-derived-control-c1-unmaintained-path",
+    "run:proofs-mech-derived-control-c2-token-after-compute",
+    "run:proofs-mech-derived-control-c3-rebuild-stamp-only",
+    "run:proofs-mech-derived-control-c4-unchecked-gate",
+    "run:proofs-mech-derived-control-c5-probe-late",
+    "run:proofs-mech-derived-degree-cache-as-built-f0402",
+    "run:proofs-mech-derived-degree-cache-as-built-f0406",
+    "run:proofs-mech-derived-degree-cache-as-built-fc0401",
+    "run:proofs-mech-derived-engine-mode-cache-as-built-f0208",
+    "run:proofs-mech-derived-interned-snapshot-as-built-f1005",
+    "run:proofs-mech-derived-interned-snapshot-as-built-fc0801",
+    "run:proofs-mech-derived-ivf-erase-as-built-f0606",
+    "run:proofs-mech-derived-native-gate-label-index-as-built-f0906",
+    "run:proofs-mech-derived-result-cache-04-as-built-f0402",
+    "run:proofs-mech-derived-statement-map-direct-delete-as-built-f0303",
+    "run:proofs-mech-derived-ttl-cache-as-built-exc05",
+    "run:proofs-mech-derived-ttl-cache-as-built-f0302",
+    "run:proofs-mech-epoch-check-at-start-as-built",
+    "run:proofs-mech-epoch-control-c1-no-end-check",
+    "run:proofs-mech-epoch-no-check-as-built",
+    "run:proofs-mech-excl-adjacency-writer-lock-as-built",
+    "run:proofs-mech-excl-bm25-write-lock-as-built",
+    "run:proofs-mech-excl-control-c1-lock-admits-two",
+    "run:proofs-mech-excl-control-c2-writer-without-lock",
+    "run:proofs-mech-excl-control-c3-check-before-lock",
+    "run:proofs-mech-excl-control-c4-clear-any",
+    "run:proofs-mech-excl-control-c5-tomb-without-check",
+    "run:proofs-mech-excl-eraser-no-head-lock-as-built",
+    "run:proofs-mech-excl-mode-switch-as-built",
+    "run:proofs-mech-excl-plan-build-lock-as-built",
+    "run:proofs-mech-excl-redaction-marker-as-built",
+    "run:proofs-mech-install-concurrent-first-enable-as-built",
+    "run:proofs-mech-install-control-c1-first-use-accepts-any",
+    "run:proofs-mech-install-control-c2-unqualified-drop",
+    "run:proofs-mech-install-control-c3-setting-unchecked",
+    "run:proofs-mech-install-control-c4-enable-race-errors",
+    "run:proofs-mech-install-first-use-no-record-as-built",
+    "run:proofs-mech-install-unchecked-setting-as-built",
+    "run:proofs-mech-install-unqualified-drop-as-built",
+    "run:proofs-mech-ledger-bypass-unchecked-as-built",
+    "run:proofs-mech-ledger-control-c1-two-step-record",
+    "run:proofs-mech-ledger-control-c2-overwrite-record",
+    "run:proofs-mech-ledger-control-c3-ignore-head",
+    "run:proofs-mech-ledger-control-c4-unguarded-bypass",
+    "run:proofs-mech-ledger-node-delete-named-only-as-built",
+    "run:proofs-mech-ledger-strict-cached-guard-as-built",
+    "run:proofs-mech-ledger-temporal-insert-collision-as-built",
+    "run:proofs-mech-queue-bounded-redaction-resume-as-built",
+    "run:proofs-mech-queue-control-c1-lifo-overtaking",
+    "run:proofs-mech-queue-control-c2-two-consumers",
+    "run:proofs-mech-queue-control-c3-mark-always",
+    "run:proofs-mech-queue-control-c4-restart-scan",
+    "run:proofs-mech-queue-embed-queue-as-built-f0604",
+    "run:proofs-mech-queue-embed-queue-as-built-fc0601",
+    "run:proofs-mech-queue-embed-queue-as-built-fc0605-overtaking",
+    "run:proofs-mech-queue-embed-queue-as-built-hd0604",
+    "run:proofs-mech-removal-bm25-as-built",
+    "run:proofs-mech-removal-control-c1-store-dropped",
+    "run:proofs-mech-removal-control-c2-cross-target",
+    "run:proofs-mech-removal-default-routed-vectors-as-built",
+    "run:proofs-mech-removal-history-text-as-built",
+    "run:proofs-mech-removal-quarantine-as-built",
+    "run:proofs-mech-removal-reifier-default-graph-as-built",
+    "run:proofs-mech-removal-snapshot-archives-as-built",
+    "run:proofs-mech-removal-temporal-only-prefix-as-built",
+    "run:proofs-mech-removal-temporal-purge-all-graphs-as-built",
+    "run:proofs-mech-removal-vector-indexes-as-built",
+    "run:proofs-mech-retry-client-resend-as-built",
+    "run:proofs-mech-retry-control-c1-bind-after-effect",
+    "run:proofs-mech-retry-control-c2-post-on-replay",
+    "run:proofs-mech-retry-control-c3-apply-conflict",
+    "run:proofs-mech-retry-control-c4-redaction-keeps-binding",
+    "run:proofs-mech-retry-ledger-key-as-built",
+    "run:proofs-mech-retry-server-rerun-as-built",
+    "run:proofs-mech-retry-zero-record-revision-as-built",
+    "run:proofs-mech-scope-all-graphs-walk-as-built",
+    "run:proofs-mech-scope-control-c1-key-ignores-name",
+    "run:proofs-mech-scope-control-c2-join-across-graphs",
+    "run:proofs-mech-scope-control-c3-delete-every-graph",
+    "run:proofs-mech-scope-control-c4-graph-blind-match",
+    "run:proofs-mech-scope-delete-every-graph-as-built",
+    "run:proofs-mech-scope-interned-no-graph-dimension-as-built",
+    "run:proofs-mech-scope-name-check-missing-as-built",
+    "run:proofs-mech-scope-three-predicates-as-built",
+    "run:proofs-mech-scope-unscoped-read-as-built",
+    "run:proofs-mech-snapshot-control-c1-store-left-out",
+    "run:proofs-mech-snapshot-control-c2-head-laid-over",
+    "run:proofs-mech-snapshot-control-c3-aggregates-overwritten",
+    "run:proofs-mech-snapshot-edge-vectors-missing-as-built",
+    "run:proofs-mech-snapshot-merge-aggregates-as-built",
+    "run:proofs-mech-snapshot-replacing-restore-as-built",
+    "run:proofs-mech-unit-control-c1-per-statement",
+    "run:proofs-mech-unit-control-c2-rollback-all-levels",
+    "run:proofs-mech-unit-control-c3-ok-on-failure",
+    "run:proofs-mech-unit-hidden-failure-as-built",
+    "run:proofs-mech-unit-no-transaction-as-built",
+    "run:proofs-mech-unit-per-chunk-commit-as-built",
+    "run:proofs-mech-unit-per-statement-commit-as-built",
+    "run:proofs-mech-unit-rollback-all-levels-as-built",
+    "run:proofs-mech-unit-wrong-reply-as-built",
+    "experiment/playbook-completion/proofs-mech/PROOFS.md",
+    "experiment/playbook-completion/proofs-mech/RESULTS.json"
+   ],
+   "add_evidence_grade": "proved (Verus, model level, decisive, --no-cheating, empty trust inventory): 1149 verified, 0 errors (proofs-mech-baseline, recheck proofs-mech-recheck); all 45 laws of the 13 mechanisms proved once over the mechanism's trait (generic lemmas requiring the instance obligations, discharged as trait proof functions by every instance; M07-L4 as two progress theorems under explicit fairness premises); 78 canonical or reviewed instances discharge every obligation of their trait; 120 of 120 located controls (74 as-built or exception variants of the pin, 46 generic mutants) fail exactly at the obligation of each law the explorer reports violated, each with a refutation of the obligation and a proved counterexample run",
+   "level": "model",
+   "product_obligation": "fails",
+   "product_basis": "the pin's departing variants stay failed: each of the 74 as-built/exception controls is the pin's variant failing its obligation at the located line with a proved run of its machine that breaks the law; a law proved here holds for the twin of every instance that discharges it, not for the product (no correspondence proof, D-2/D-3)",
+   "as_built_findings": [
+    "F-0103",
+    "F-0107",
+    "F-0202",
+    "F-0203",
+    "F-0207",
+    "F-0208",
+    "F-0301",
+    "F-0302",
+    "F-0303",
+    "F-0305",
+    "F-0306",
+    "F-0307",
+    "F-0402",
+    "F-0406",
+    "F-0407",
+    "F-0409",
+    "F-0501",
+    "F-0503",
+    "F-0504",
+    "F-0507",
+    "F-0511",
+    "F-0601",
+    "F-0602",
+    "F-0603",
+    "F-0604",
+    "F-0605",
+    "F-0606",
+    "F-0609",
+    "F-0613",
+    "F-0615",
+    "F-0616",
+    "F-0618",
+    "F-0701",
+    "F-0702",
+    "F-0703",
+    "F-0704",
+    "F-0705",
+    "F-0707",
+    "F-0709",
+    "F-0711",
+    "F-0801",
+    "F-0804",
+    "F-0807",
+    "F-0814",
+    "F-0815",
+    "F-0817",
+    "F-0818",
+    "F-0819",
+    "F-0820",
+    "F-0901",
+    "F-0903",
+    "F-0905",
+    "F-0906",
+    "F-0908",
+    "F-1001",
+    "F-1002",
+    "F-1004",
+    "F-1005",
+    "F-1006",
+    "F-1008",
+    "F-1013",
+    "F-1101",
+    "F-1104",
+    "F-1105",
+    "F-1108",
+    "F-1114",
+    "F-1201",
+    "F-1302",
+    "F-1303",
+    "F-1304",
+    "F-1305",
+    "F-1306",
+    "F-1401",
+    "F-1402",
+    "F-1502",
+    "F-1503",
+    "F-1506",
+    "F-1507",
+    "F-1508",
+    "F-1511",
+    "F-1601",
+    "F-1603",
+    "F-1604",
+    "F-1609",
+    "F-1610",
+    "F-1614",
+    "F-1615",
+    "F-1701",
+    "F-1801",
+    "F-1803",
+    "F-1804",
+    "F-1805",
+    "F-1806",
+    "F-C0401",
+    "F-C0501",
+    "F-C0601",
+    "F-C0605",
+    "F-C0670",
+    "F-C0702",
+    "F-C0801",
+    "F-C0901",
+    "F-C1201",
+    "F-C1203",
+    "F-C1303",
+    "F-C1304",
+    "F-C1305",
+    "F-C1306",
+    "F-C1308",
+    "F-C1309",
+    "F-C1501",
+    "F-C1502",
+    "F-C1604",
+    "F-C1703",
+    "F-C1801",
+    "F-C1803",
+    "F-C1804",
+    "F-CS01"
+   ],
+   "add_remaining": "explorer-only after proofs-mech: none of the 45 laws (each has a generic Verus theorem); still open: (1) the code-to-model correspondence of every mechanism twin (D-2, D-3); (2) the mechanisms are proved one at a time, not composed with each other (composition is proofs-d9*'s subject), and the sys00 system machine stays explorer-only; (3) the axiom-breaking findings MECHANISMS.md leaves unattached to a mechanism instance have no instance here; (4) fixed small domains kept from the explorer (two targets M-03/M-05, two graphs/two ids/four names M-09, three ids and three records M-07); (5) objects the semantics lane does not model (18/namespace in M-01/M-04, 15/fhir-graph, 15/fhir-sync-task, 09/compiled-shape, 07/docs-table-search, 15/concept-pipeline, 16/mcp-tool-set, 05/reader-handle) have no instance; (6) M-07's AG-EF-blind fact (as built, id 2 can always still be served) explorer-only"
+  }
+ ]
+}

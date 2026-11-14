@@ -6807,6 +6807,8 @@
     "F-CS01"
    ],
    "cited_runs": [
+    "proofs-mech-baseline",
+    "proofs-mech-recheck",
     "sem-check-r4",
     "sem-control-cap-r2",
     "sem-control-catalog-r2",
@@ -6893,9 +6895,13 @@
     "run:sem-control-scope-r2",
     "run:sem-control-snapshot-r2",
     "run:sem-control-unit-r2",
-    "run:sem-check-r4"
+    "run:sem-check-r4",
+    "run:proofs-mech-baseline",
+    "run:proofs-mech-recheck",
+    "experiment/playbook-completion/proofs-mech/PROOFS.md",
+    "experiment/playbook-completion/proofs-mech/RESULTS.json"
    ],
-   "evidence_grade": "mc (explorer, exhaustive within declared bounds, none truncated; 243 mechanism checks: one generic machine per mechanism over a trait, one instance per object variant; 48 negative controls, at least one per law, all caught; every Keep check with its complement (all safety laws explored alone)); not proved",
+   "evidence_grade": "registered-run",
    "findings": [
     "F-0103",
     "F-0107",
@@ -7156,9 +7162,9 @@
     ]
    },
    "product_obligation": "fails",
-   "remaining": "the playbook's 'generic lemmas proved once over a trait' (Verus) are not written: PROOF-DEBT D-14 (a separate proof lane); 75 axiom-breaking findings are not attached to a mechanism instance (MECHANISMS.md, last section); no result transfers to the product",
+   "remaining": "Closed at model level (steer 9): all 45 laws of the 13 mechanisms are proved once over their mechanism's trait in Verus (proofs-mech: 1,149 verified, 0 errors, --no-cheating, empty trust inventory; 78 reviewed/canonical instances discharge every obligation; 120 located controls: 72 as-built variants, 2 named exceptions, 46 generic mutants; recheck proofs-mech-recheck), with the explorer's generic checks (sem-mc-*) alongside. Remaining, outside this gate: no code correspondence (D-2, D-3); mechanisms proved one at a time, not composed (sys00 stays explorer-only); the axiom-breaking findings MECHANISMS.md does not attach to a mechanism instance; small fixed domains (proofs-mech/PROOFS.md). The progress law M07-L4 assumes a weakly fair worker (TRUST.md). Every as-built variant that departs from a law is a located control, so the product obligation stays failed.",
    "source": "matrix-input/semantics.json",
-   "status": "open"
+   "status": "closed"
   },
   {
    "as_built_findings": [
@@ -37977,7 +37983,7 @@
   "n/a": 33,
   "unknown": 191
  },
- "registry_runs": 1398,
+ "registry_runs": 1399,
  "starting_inventory": {
   "cells": 904,
   "decisions": 61,
@@ -37989,9 +37995,9 @@
  },
  "status_counts": {
   "blocked": 25,
-  "closed": 599,
+  "closed": 600,
   "not-applicable": 35,
-  "open": 93
+  "open": 92
  },
  "submission": "9c3719c1",
  "writer_obligations": [

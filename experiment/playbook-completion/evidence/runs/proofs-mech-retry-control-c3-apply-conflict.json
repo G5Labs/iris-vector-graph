@@ -1,0 +1,23 @@
+{
+  "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features retry_control_c3_apply_conflict -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+  "error_locations": "src/ctl_retry.rs:86,src/ctl_retry.rs:90",
+  "errors": "2",
+  "experiment_head": "95abaf5fe096564138a2f8a9ed58665b85107ad0",
+  "id": "proofs-mech-retry-control-c3-apply-conflict",
+  "json_log": "$RUN_DIR/proofs-mech/run-20261114T151136Z/retry_control_c3_apply_conflict.json",
+  "json_sha256": "0829c838a97dc4854892439a05ce876179bdf489e957d7d422a63332cc320c5e",
+  "kind": "control",
+  "lane": "proofs-mech",
+  "log": "$RUN_DIR/proofs-mech/run-20261114T151136Z/retry_control_c3_apply_conflict.log",
+  "log_bytes": 1138,
+  "log_sha256": "16067681cdfe74542d75b4b4f615cd6e505f263ae775d94ef3cce1ecd8a21bc1",
+  "observes": "retry_control_c3_apply_conflict (M-02 CtlApplyConflict, explorer check retry-control-C3-apply-conflict, mutant; findings none): 2 errors, exactly at ['src/ctl_retry.rs:86', 'src/ctl_retry.rs:90'] (laws M02-L1,M02-L3, the explorer's violated laws); failing ['i02_retry::CtlApplyConflict::discharge_l1', 'i02_retry::CtlApplyConflict::discharge_l3']; every other function verifies as in the baseline=True; refutations i02_retry::refute_ctl_apply_conflict_l1,i02_retry::refute_ctl_apply_conflict_l3 and counterexamples cx02_retry::cx_ctl_apply_conflict_l1,cx02_retry::cx_ctl_apply_conflict_l3 verified=True",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T15:47:40+00:00",
+  "result": "expected-violation",
+  "rlimit_total": "102955150",
+  "sources_sha256": "3e168bab31757fd605c7d744a6a9485a4bda23def41d5b86a0b4d5524fd7ab71",
+  "verified": "1151",
+  "verus_total_ms": "17259"
+}

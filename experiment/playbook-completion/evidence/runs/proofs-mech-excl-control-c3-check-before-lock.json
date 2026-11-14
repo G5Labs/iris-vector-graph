@@ -1,0 +1,23 @@
+{
+  "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features excl_control_c3_check_before_lock -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+  "error_locations": "src/ctl_excl.rs:121,src/ctl_excl.rs:125",
+  "errors": "2",
+  "experiment_head": "95abaf5fe096564138a2f8a9ed58665b85107ad0",
+  "id": "proofs-mech-excl-control-c3-check-before-lock",
+  "json_log": "$RUN_DIR/proofs-mech/run-20261114T151136Z/excl_control_c3_check_before_lock.json",
+  "json_sha256": "9ee1932aef7fb50f0a35504a65fe352cba999d00936948e3308a26754fa5aa7a",
+  "kind": "control",
+  "lane": "proofs-mech",
+  "log": "$RUN_DIR/proofs-mech/run-20261114T151136Z/excl_control_c3_check_before_lock.log",
+  "log_bytes": 1156,
+  "log_sha256": "31ad6b3b18a688799965a587604c9748c3fbd955ac45c6b5cdd941fa7944196d",
+  "observes": "excl_control_c3_check_before_lock (M-03 CtlCheckBeforeLock, explorer check excl-control-C3-check-before-lock, mutant; findings none): 2 errors, exactly at ['src/ctl_excl.rs:121', 'src/ctl_excl.rs:125'] (laws M03-L3,M03-L5, the explorer's violated laws); failing ['i03_excl::CtlCheckBeforeLock::discharge_l3', 'i03_excl::CtlCheckBeforeLock::discharge_l5']; every other function verifies as in the baseline=True; refutations i03_excl::refute_ctl_check_before_lock_l3,i03_excl::refute_ctl_check_before_lock_l5 and counterexamples cx03_excl::cx_ctl_check_before_lock_l3,cx03_excl::cx_ctl_check_before_lock_l5 verified=True",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T15:47:38+00:00",
+  "result": "expected-violation",
+  "rlimit_total": "106025695",
+  "sources_sha256": "3e168bab31757fd605c7d744a6a9485a4bda23def41d5b86a0b4d5524fd7ab71",
+  "verified": "1152",
+  "verus_total_ms": "17397"
+}

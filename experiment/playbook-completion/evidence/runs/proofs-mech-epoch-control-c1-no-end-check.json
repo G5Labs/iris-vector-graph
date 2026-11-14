@@ -1,0 +1,23 @@
+{
+  "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features epoch_control_c1_no_end_check -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+  "error_locations": "src/ctl_epoch.rs:34",
+  "errors": "1",
+  "experiment_head": "95abaf5fe096564138a2f8a9ed58665b85107ad0",
+  "id": "proofs-mech-epoch-control-c1-no-end-check",
+  "json_log": "$RUN_DIR/proofs-mech/run-20261114T151136Z/epoch_control_c1_no_end_check.json",
+  "json_sha256": "203f5e9aab88bc144fc6200ad8fb0f62cdb9158d618de2e0e97c8d2cf6168fff",
+  "kind": "control",
+  "lane": "proofs-mech",
+  "log": "$RUN_DIR/proofs-mech/run-20261114T151136Z/epoch_control_c1_no_end_check.log",
+  "log_bytes": 859,
+  "log_sha256": "a7e433aa707d6f266cb274423b776abe217e81a5cafafe70e243af2a3a545eff",
+  "observes": "epoch_control_c1_no_end_check (M-13 CtlNoEndCheck, explorer check epoch-control-C1-no-end-check, mutant; findings none): 1 errors, exactly at ['src/ctl_epoch.rs:34'] (laws M13-L1, the explorer's violated laws); failing ['i13_epoch::CtlNoEndCheck::discharge_l1']; every other function verifies as in the baseline=True; refutations i13_epoch::refute_ctl_no_end_check_l1 and counterexamples cx13_epoch::cx_ctl_no_end_check_l1 verified=True",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T15:47:37+00:00",
+  "result": "expected-violation",
+  "rlimit_total": "102952472",
+  "sources_sha256": "3e168bab31757fd605c7d744a6a9485a4bda23def41d5b86a0b4d5524fd7ab71",
+  "verified": "1149",
+  "verus_total_ms": "17163"
+}

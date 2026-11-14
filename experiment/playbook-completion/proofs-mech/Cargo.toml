@@ -1,0 +1,153 @@
+[package]
+name = "ivg-proofs-mech"
+version = "0.1.0"
+edition = "2021"
+description = "Completion audit, PROOFS-MECH lane (proof debt D-14, playbook 3.3a item 2): the 13 shared mechanisms of semantics/MECHANISMS.md, each a trait with its state, operations and instance parameters, its L1 laws as spec predicates, generic lemmas proved once over the trait (the instance parameters' obligations are trait proof functions every instance discharges), and one instance per object variant; as-built variants that depart from a law are located controls with proved counterexamples."
+publish = false
+
+[dependencies]
+vstd = { version = "=0.0.0-2026-09-20-0158", features = ["std", "alloc"] }
+actors = { git = "file:///home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/playbook-reference-actors", rev = "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877" }
+
+[patch.crates-io]
+verus_builtin_macros = { git = "file:///home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/playbook-reference-actors", rev = "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877" }
+
+[features]
+# Located controls. Each feature compiles exactly one instance's discharge of the mechanism trait (impl <Mech>Object
+# for <Variant>) in the mechanism's control file src/ctl_<mech>.rs; nothing else changes. The variant is either an
+# as-built variant of the pin that mechanisms.json records as departing from a law (with its finding), or a generic
+# mutant of the canonical instance (the semantics lane's negative control). Each must fail to verify only at the
+# obligation(s) of the law(s) it breaks (the lines marked `// LOCATE <feature> <law>`), while its refutation of the
+# obligation and its counterexample to the law (src/cxNN_<mech>.rs, always compiled) verify. Each control's metadata
+# (explorer check ids, objects, findings, the explorer's violated laws, refutations, counterexamples) is its
+# `// CONTROL` line in the ctl file; tools/run_proofs.py parses it and regenerates this list (--sync-features).
+#@CONTROLS-BEGIN
+cap_demo_server_as_built = []   # src/ctl_cap.rs DemoServerAsBuilt (cap-demo-server-as-built; M11-L2)
+cap_aql_as_built = []   # src/ctl_cap.rs AqlAsBuilt (cap-aql-as-built; M11-L1)
+cap_aql_code_text_as_built = []   # src/ctl_cap.rs AqlCodeTextAsBuilt (cap-aql-code-text-as-built; M11-L3)
+cap_snapshot_file_helpers_as_built = []   # src/ctl_cap.rs SnapshotFileHelpersAsBuilt (cap-snapshot-file-helpers-as-built; M11-L1,M11-L2,M11-L3)
+cap_privilege_in_engine_only_as_built = []   # src/ctl_cap.rs PrivilegeInEngineOnlyAsBuilt (cap-privilege-in-engine-only-as-built; M11-L2)
+cap_control_c1_write_without_read_only_check = []   # src/ctl_cap.rs CtlWriteWithoutReadOnlyCheck (cap-control-C1-write-without-read-only-check; M11-L1)
+cap_control_c2_route_without_key_check = []   # src/ctl_cap.rs CtlRouteWithoutKeyCheck (cap-control-C2-route-without-key-check; M11-L2)
+cap_control_c3_file_route = []   # src/ctl_cap.rs CtlFileRoute (cap-control-C3-file-route; M11-L3)
+catalog_bm25_index_graph_unchecked_as_built = []   # src/ctl_catalog.rs Bm25IndexGraphUncheckedAsBuilt (catalog-bm25-index-graph-unchecked-as-built; M12-L2)
+catalog_bm25_index_graph_unchecked_as_built_m12_l1_f_0705 = []   # src/ctl_catalog.rs Bm25IndexNoRecordAsBuilt (catalog-bm25-index-graph-unchecked-as-built-M12-L1-F-0705,catalog-bm25-index-graph-unchecked-as-built-M12-L2-F-0705; M12-L1,M12-L2)
+catalog_ivf_index_graph_unchecked_as_built = []   # src/ctl_catalog.rs IvfIndexGraphUncheckedAsBuilt (catalog-ivf-index-graph-unchecked-as-built; M12-L2)
+catalog_identity_fail_open_as_built = []   # src/ctl_catalog.rs IdentityFailOpenAsBuilt (catalog-identity-fail-open-as-built; M12-L2)
+catalog_short_hash_name_as_built = []   # src/ctl_catalog.rs ShortHashNameAsBuilt (catalog-short-hash-name-as-built; M12-L3)
+catalog_control_c1_unchecked_read = []   # src/ctl_catalog.rs CtlUncheckedRead (catalog-control-C1-unchecked-read; M12-L2)
+catalog_control_c2_short_hash = []   # src/ctl_catalog.rs CtlShortHash (catalog-control-C2-short-hash; M12-L3)
+catalog_control_c3_no_record = []   # src/ctl_catalog.rs CtlNoRecord (catalog-control-C3-no-record; M12-L1,M12-L2)
+catalog_control_c4_fail_open = []   # src/ctl_catalog.rs CtlFailOpen (catalog-control-C4-fail-open; M12-L2)
+derived_degree_cache_as_built_f0402 = []   # src/ctl_derived.rs DegreeCacheF0402 (derived-degree-cache-as-built-F0402; M04-L1,M04-L4)
+derived_degree_cache_as_built_fc0401 = []   # src/ctl_derived.rs DegreeCacheFC0401 (derived-degree-cache-as-built-FC0401; M04-L1,M04-L4)
+derived_degree_cache_as_built_f0406 = []   # src/ctl_derived.rs DegreeCacheF0406 (derived-degree-cache-as-built-F0406; M04-L1,M04-L4)
+derived_result_cache_04_as_built_f0402 = []   # src/ctl_derived.rs ResultCache04F0402 (derived-result-cache-04-as-built-F0402; M04-L1,M04-L4)
+derived_algo_cache_edgeless_as_built_f1004 = []   # src/ctl_derived.rs AlgoCacheEdgelessF1004 (derived-algo-cache-edgeless-as-built-F1004; M04-L1,M04-L2,M04-L4)
+derived_interned_snapshot_as_built_f1005 = []   # src/ctl_derived.rs InternedSnapshotF1005 (derived-interned-snapshot-as-built-F1005; M04-L1,M04-L2,M04-L4)
+derived_interned_snapshot_as_built_fc0801 = []   # src/ctl_derived.rs InternedSnapshotFC0801 (derived-interned-snapshot-as-built-FC0801; M04-L1,M04-L4)
+derived_bm25_text_change_as_built_f0703 = []   # src/ctl_derived.rs Bm25TextChangeF0703 (derived-bm25-text-change-as-built-F0703; M04-L1,M04-L2,M04-L4)
+derived_statement_map_direct_delete_as_built_f0303 = []   # src/ctl_derived.rs StatementMapDirectDeleteF0303 (derived-statement-map-direct-delete-as-built-F0303; M04-L1,M04-L2,M04-L4)
+derived_bucket_aggregate_update_as_built_f0501 = []   # src/ctl_derived.rs BucketAggregateUpdateF0501 (derived-bucket-aggregate-update-as-built-F0501; M04-L1,M04-L4)
+derived_engine_mode_cache_as_built_f0208 = []   # src/ctl_derived.rs EngineModeCacheF0208 (derived-engine-mode-cache-as-built-F0208; M04-L1,M04-L2,M04-L4)
+derived_ttl_cache_as_built_f0302 = []   # src/ctl_derived.rs TtlCacheF0302 (derived-ttl-cache-as-built-F0302; M04-L1,M04-L2,M04-L4)
+derived_ttl_cache_as_built_exc05 = []   # src/ctl_derived.rs TtlCacheEXC05 (derived-ttl-cache-as-built-EXC05; M04-L1,M04-L2,M04-L4)
+derived_native_gate_label_index_as_built_f0906 = []   # src/ctl_derived.rs NativeGateLabelIndexF0906 (derived-native-gate-label-index-as-built-F0906; M04-L1,M04-L2,M04-L4)
+derived_ivf_erase_as_built_f0606 = []   # src/ctl_derived.rs IvfEraseF0606 (derived-ivf-erase-as-built-F0606; M04-L1,M04-L2,M04-L4)
+derived_control_c1_unmaintained_path = []   # src/ctl_derived.rs CtlUnmaintainedPath (derived-control-C1-unmaintained-path; M04-L1,M04-L2,M04-L4)
+derived_control_c2_token_after_compute = []   # src/ctl_derived.rs CtlTokenAfterCompute (derived-control-C2-token-after-compute; M04-L1,M04-L4)
+derived_control_c3_rebuild_stamp_only = []   # src/ctl_derived.rs CtlRebuildStampOnly (derived-control-C3-rebuild-stamp-only; M04-L1,M04-L3,M04-L4)
+derived_control_c4_unchecked_gate = []   # src/ctl_derived.rs CtlUncheckedGate (derived-control-C4-unchecked-gate; M04-L4)
+derived_control_c5_probe_late = []   # src/ctl_derived.rs CtlProbeLate (derived-control-C5-probe-late; M04-L1,M04-L4)
+epoch_check_at_start_as_built = []   # src/ctl_epoch.rs CheckAtStartAsBuilt (epoch-check-at-start-as-built; M13-L1)
+epoch_no_check_as_built = []   # src/ctl_epoch.rs NoCheckAsBuilt (epoch-no-check-as-built; M13-L1)
+epoch_control_c1_no_end_check = []   # src/ctl_epoch.rs CtlNoEndCheck (epoch-control-C1-no-end-check; M13-L1)
+excl_redaction_marker_as_built = []   # src/ctl_excl.rs RedactionMarkerAsBuilt (excl-redaction-marker-as-built,excl-redaction-marker-as-built-F1302-marker,excl-redaction-marker-as-built-F1302-tomb-live; M03-L3,M03-L4,M03-L5)
+excl_eraser_no_head_lock_as_built = []   # src/ctl_excl.rs EraserNoHeadLockAsBuilt (excl-eraser-no-head-lock-as-built; M03-L2)
+excl_adjacency_writer_lock_as_built = []   # src/ctl_excl.rs AdjacencyWriterLockAsBuilt (excl-adjacency-writer-lock-as-built; M03-L2)
+excl_bm25_write_lock_as_built = []   # src/ctl_excl.rs Bm25WriteLockAsBuilt (excl-bm25-write-lock-as-built; M03-L2)
+excl_plan_build_lock_as_built = []   # src/ctl_excl.rs PlanBuildLockAsBuilt (excl-plan-build-lock-as-built; M03-L2)
+excl_mode_switch_as_built = []   # src/ctl_excl.rs ModeSwitchAsBuilt (excl-mode-switch-as-built; M03-L2)
+excl_control_c1_lock_admits_two = []   # src/ctl_excl.rs CtlLockAdmitsTwo (excl-control-C1-lock-admits-two; M03-L1)
+excl_control_c2_writer_without_lock = []   # src/ctl_excl.rs CtlWriterWithoutLock (excl-control-C2-writer-without-lock; M03-L2,M03-L3,M03-L5)
+excl_control_c3_check_before_lock = []   # src/ctl_excl.rs CtlCheckBeforeLock (excl-control-C3-check-before-lock; M03-L3,M03-L5)
+excl_control_c4_clear_any = []   # src/ctl_excl.rs CtlClearAny (excl-control-C4-clear-any; M03-L4)
+excl_control_c5_tomb_without_check = []   # src/ctl_excl.rs CtlTombWithoutCheck (excl-control-C5-tomb-without-check; M03-L3,M03-L5)
+install_first_use_no_record_as_built = []   # src/ctl_install.rs FirstUseNoRecordAsBuilt (install-first-use-no-record-as-built; M08-L1)
+install_unqualified_drop_as_built = []   # src/ctl_install.rs UnqualifiedDropAsBuilt (install-unqualified-drop-as-built; M08-L3)
+install_unchecked_setting_as_built = []   # src/ctl_install.rs UncheckedSettingAsBuilt (install-unchecked-setting-as-built; M08-L4)
+install_concurrent_first_enable_as_built = []   # src/ctl_install.rs ConcurrentFirstEnableAsBuilt (install-concurrent-first-enable-as-built; M08-L2)
+install_control_c1_first_use_accepts_any = []   # src/ctl_install.rs CtlFirstUseAcceptsAny (install-control-C1-first-use-accepts-any; M08-L1)
+install_control_c2_unqualified_drop = []   # src/ctl_install.rs CtlUnqualifiedDrop (install-control-C2-unqualified-drop; M08-L3)
+install_control_c3_setting_unchecked = []   # src/ctl_install.rs CtlSettingUnchecked (install-control-C3-setting-unchecked; M08-L4)
+install_control_c4_enable_race_errors = []   # src/ctl_install.rs CtlEnableRaceErrors (install-control-C4-enable-race-errors; M08-L2)
+ledger_node_delete_named_only_as_built = []   # src/ctl_ledger.rs NodeDeleteNamedOnlyAsBuilt (ledger-node-delete-named-only-as-built; M01-L2)
+ledger_temporal_insert_collision_as_built = []   # src/ctl_ledger.rs TemporalInsertCollisionAsBuilt (ledger-temporal-insert-collision-as-built; M01-L2)
+ledger_strict_cached_guard_as_built = []   # src/ctl_ledger.rs StrictCachedGuardAsBuilt (ledger-strict-cached-guard-as-built; M01-L4)
+ledger_bypass_unchecked_as_built = []   # src/ctl_ledger.rs BypassUncheckedAsBuilt (ledger-bypass-unchecked-as-built; M01-L4)
+ledger_control_c1_two_step_record = []   # src/ctl_ledger.rs CtlTwoStepRecord (ledger-control-C1-two-step-record; M01-L2)
+ledger_control_c2_overwrite_record = []   # src/ctl_ledger.rs CtlOverwriteRecord (ledger-control-C2-overwrite-record; M01-L1)
+ledger_control_c3_ignore_head = []   # src/ctl_ledger.rs CtlIgnoreHead (ledger-control-C3-ignore-head; M01-L3)
+ledger_control_c4_unguarded_bypass = []   # src/ctl_ledger.rs CtlUnguardedBypass (ledger-control-C4-unguarded-bypass; M01-L4)
+queue_embed_queue_as_built_f0604 = []   # src/ctl_queue.rs EmbedQueueF0604 (queue-embed-queue-as-built-F0604; M07-L1)
+queue_embed_queue_as_built_fc0601 = []   # src/ctl_queue.rs EmbedQueueFC0601 (queue-embed-queue-as-built-FC0601; M07-L1)
+queue_embed_queue_as_built_hd0604 = []   # src/ctl_queue.rs EmbedQueueHD0604 (queue-embed-queue-as-built-HD0604; M07-L1,M07-L2)
+queue_control_c2_two_consumers = []   # src/ctl_queue.rs CtlTwoConsumers (queue-control-C2-two-consumers; M07-L1,M07-L2)
+queue_control_c3_mark_always = []   # src/ctl_queue.rs CtlMarkAlways (queue-control-C3-mark-always; M07-L1)
+queue_embed_queue_as_built_fc0605_overtaking = []   # src/ctl_queue.rs EmbedQueueOrderAsBuilt (queue-embed-queue-as-built-FC0605-overtaking,queue-embed-queue-as-built-FC0605-fair-lasso; M07-L3,M07-L4)
+queue_control_c1_lifo_overtaking = []   # src/ctl_queue.rs CtlLifo (queue-control-C1-lifo-overtaking,queue-control-C1b-lifo-fair-lasso; M07-L3,M07-L4)
+queue_bounded_redaction_resume_as_built = []   # src/ctl_queue.rs BoundedRedactionResumeAsBuilt (queue-bounded-redaction-resume-as-built; M07-L4)
+queue_control_c4_restart_scan = []   # src/ctl_queue.rs CtlRestartScan (queue-control-C4-restart-scan; M07-L4)
+removal_bm25_as_built = []   # src/ctl_removal.rs Bm25AsBuilt (removal-bm25-as-built,removal-bm25-as-built-M05-L3; M05-L1,M05-L3)
+removal_vector_indexes_as_built = []   # src/ctl_removal.rs VectorIndexesAsBuilt (removal-vector-indexes-as-built,removal-vector-indexes-as-built-M05-L3; M05-L1,M05-L3)
+removal_quarantine_as_built = []   # src/ctl_removal.rs QuarantineAsBuilt (removal-quarantine-as-built; M05-L1,M05-L3)
+removal_snapshot_archives_as_built = []   # src/ctl_removal.rs SnapshotArchivesAsBuilt (removal-snapshot-archives-as-built; M05-L1,M05-L3)
+removal_reifier_default_graph_as_built = []   # src/ctl_removal.rs ReifierDefaultGraphAsBuilt (removal-reifier-default-graph-as-built; M05-L1,M05-L3)
+removal_temporal_only_prefix_as_built = []   # src/ctl_removal.rs TemporalOnlyPrefixAsBuilt (removal-temporal-only-prefix-as-built; M05-L1,M05-L3)
+removal_history_text_as_built = []   # src/ctl_removal.rs HistoryTextAsBuilt (removal-history-text-as-built; M05-L1,M05-L3)
+removal_default_routed_vectors_as_built = []   # src/ctl_removal.rs DefaultRoutedVectorsAsBuilt (removal-default-routed-vectors-as-built; M05-L1,M05-L3)
+removal_temporal_purge_all_graphs_as_built = []   # src/ctl_removal.rs TemporalPurgeAllGraphsAsBuilt (removal-temporal-purge-all-graphs-as-built; M05-L2)
+removal_control_c1_store_dropped = []   # src/ctl_removal.rs CtlStoreDropped (removal-control-C1-store-dropped,removal-control-C1b-store-dropped-inventory; M05-L1,M05-L3)
+removal_control_c2_cross_target = []   # src/ctl_removal.rs CtlCrossTarget (removal-control-C2-cross-target; M05-L2)
+retry_ledger_key_as_built = []   # src/ctl_retry.rs LedgerKeyAsBuilt (retry-ledger-key-as-built; M02-L1,M02-L2)
+retry_zero_record_revision_as_built = []   # src/ctl_retry.rs ZeroRecordRevisionAsBuilt (retry-zero-record-revision-as-built; M02-L4)
+retry_client_resend_as_built = []   # src/ctl_retry.rs ClientResendAsBuilt (retry-client-resend-as-built; M02-L1)
+retry_server_rerun_as_built = []   # src/ctl_retry.rs ServerRerunAsBuilt (retry-server-rerun-as-built; M02-L1)
+retry_control_c1_bind_after_effect = []   # src/ctl_retry.rs CtlBindAfterEffect (retry-control-C1-bind-after-effect; M02-L1)
+retry_control_c2_post_on_replay = []   # src/ctl_retry.rs CtlPostOnReplay (retry-control-C2-post-on-replay; M02-L1,M02-L2)
+retry_control_c3_apply_conflict = []   # src/ctl_retry.rs CtlApplyConflict (retry-control-C3-apply-conflict; M02-L1,M02-L3)
+retry_control_c4_redaction_keeps_binding = []   # src/ctl_retry.rs CtlRedactionKeepsBinding (retry-control-C4-redaction-keeps-binding; M02-L4)
+scope_name_check_missing_as_built = []   # src/ctl_scope.rs NameCheckMissingAsBuilt (scope-name-check-missing-as-built; M09-L1)
+scope_all_graphs_walk_as_built = []   # src/ctl_scope.rs AllGraphsWalkAsBuilt (scope-all-graphs-walk-as-built; M09-L2)
+scope_unscoped_read_as_built = []   # src/ctl_scope.rs UnscopedReadAsBuilt (scope-unscoped-read-as-built; M09-L2)
+scope_interned_no_graph_dimension_as_built = []   # src/ctl_scope.rs InternedNoGraphDimensionAsBuilt (scope-interned-no-graph-dimension-as-built; M09-L2)
+scope_delete_every_graph_as_built = []   # src/ctl_scope.rs DeleteEveryGraphAsBuilt (scope-delete-every-graph-as-built; M09-L3)
+scope_three_predicates_as_built = []   # src/ctl_scope.rs ThreePredicatesAsBuilt (scope-three-predicates-as-built; M09-L4)
+scope_control_c1_key_ignores_name = []   # src/ctl_scope.rs CtlKeyIgnoresName (scope-control-C1-key-ignores-name; M09-L1)
+scope_control_c2_join_across_graphs = []   # src/ctl_scope.rs CtlJoinAcrossGraphs (scope-control-C2-join-across-graphs; M09-L2)
+scope_control_c3_delete_every_graph = []   # src/ctl_scope.rs CtlDeleteEveryGraph (scope-control-C3-delete-every-graph; M09-L3)
+scope_control_c4_graph_blind_match = []   # src/ctl_scope.rs CtlGraphBlindMatch (scope-control-C4-graph-blind-match; M09-L4)
+snapshot_edge_vectors_missing_as_built = []   # src/ctl_snapshot.rs EdgeVectorsMissingAsBuilt (snapshot-edge-vectors-missing-as-built; M06-L1)
+snapshot_replacing_restore_as_built = []   # src/ctl_snapshot.rs ReplacingRestoreAsBuilt (snapshot-replacing-restore-as-built; M06-L2)
+snapshot_merge_aggregates_as_built = []   # src/ctl_snapshot.rs MergeAggregatesAsBuilt (snapshot-merge-aggregates-as-built; M06-L3)
+snapshot_control_c1_store_left_out = []   # src/ctl_snapshot.rs CtlStoreLeftOut (snapshot-control-C1-store-left-out; M06-L1)
+snapshot_control_c2_head_laid_over = []   # src/ctl_snapshot.rs CtlHeadLaidOver (snapshot-control-C2-head-laid-over; M06-L2)
+snapshot_control_c3_aggregates_overwritten = []   # src/ctl_snapshot.rs CtlAggregatesOverwritten (snapshot-control-C3-aggregates-overwritten; M06-L3)
+unit_per_chunk_commit_as_built = []   # src/ctl_unit.rs PerChunkCommitAsBuilt (unit-per-chunk-commit-as-built; M10-L1)
+unit_rollback_all_levels_as_built = []   # src/ctl_unit.rs RollbackAllLevelsAsBuilt (unit-rollback-all-levels-as-built; M10-L2)
+unit_per_statement_commit_as_built = []   # src/ctl_unit.rs PerStatementCommitAsBuilt (unit-per-statement-commit-as-built; M10-L1)
+unit_no_transaction_as_built = []   # src/ctl_unit.rs NoTransactionAsBuilt (unit-no-transaction-as-built; M10-L1)
+unit_wrong_reply_as_built = []   # src/ctl_unit.rs WrongReplyAsBuilt (unit-wrong-reply-as-built; M10-L3)
+unit_hidden_failure_as_built = []   # src/ctl_unit.rs HiddenFailureAsBuilt (unit-hidden-failure-as-built; M10-L3)
+unit_control_c1_per_statement = []   # src/ctl_unit.rs CtlPerStatement (unit-control-C1-per-statement; M10-L1)
+unit_control_c2_rollback_all_levels = []   # src/ctl_unit.rs CtlRollbackAllLevels (unit-control-C2-rollback-all-levels; M10-L2)
+unit_control_c3_ok_on_failure = []   # src/ctl_unit.rs CtlOkOnFailure (unit-control-C3-ok-on-failure; M10-L3)
+#@CONTROLS-END
+
+[package.metadata.verus]
+verify = true
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(verus_only)', 'cfg(verus_keep_ghost)', 'cfg(verus_keep_ghost_body)'] }
+
+[workspace]

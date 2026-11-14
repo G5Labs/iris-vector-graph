@@ -70,7 +70,7 @@
   {
    "gate": "3.3a-mechanisms",
    "module": "product",
-   "status": "open",
+   "status": "closed",
    "evidence": [
     "experiment/playbook-completion/semantics/MECHANISMS.md",
     "experiment/playbook-completion/semantics/mechanisms.json",
@@ -115,7 +115,11 @@
     "run:sem-control-scope-r2",
     "run:sem-control-snapshot-r2",
     "run:sem-control-unit-r2",
-    "run:sem-check-r4"
+    "run:sem-check-r4",
+    "run:proofs-mech-baseline",
+    "run:proofs-mech-recheck",
+    "experiment/playbook-completion/proofs-mech/PROOFS.md",
+    "experiment/playbook-completion/proofs-mech/RESULTS.json"
    ],
    "evidence_grade": "mc (explorer, exhaustive within declared bounds, none truncated; 243 mechanism checks: one generic machine per mechanism over a trait, one instance per object variant; 48 negative controls, at least one per law, all caught; every Keep check with its complement (all safety laws explored alone)); not proved",
    "level": "model",
@@ -239,7 +243,7 @@
     "F-C1804",
     "F-CS01"
    ],
-   "remaining": "the playbook's 'generic lemmas proved once over a trait' (Verus) are not written: PROOF-DEBT D-14 (a separate proof lane); 75 axiom-breaking findings are not attached to a mechanism instance (MECHANISMS.md, last section); no result transfers to the product"
+   "remaining": "Closed at model level (steer 9): all 45 laws of the 13 mechanisms are proved once over their mechanism's trait in Verus (proofs-mech: 1,149 verified, 0 errors, --no-cheating, empty trust inventory; 78 reviewed/canonical instances discharge every obligation; 120 located controls: 72 as-built variants, 2 named exceptions, 46 generic mutants; recheck proofs-mech-recheck), with the explorer's generic checks (sem-mc-*) alongside. Remaining, outside this gate: no code correspondence (D-2, D-3); mechanisms proved one at a time, not composed (sys00 stays explorer-only); the axiom-breaking findings MECHANISMS.md does not attach to a mechanism instance; small fixed domains (proofs-mech/PROOFS.md). The progress law M07-L4 assumes a weakly fair worker (TRUST.md). Every as-built variant that departs from a law is a located control, so the product obligation stays failed."
   },
   {
    "gate": "3.3a-lifecycles",
