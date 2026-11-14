@@ -32,12 +32,12 @@ status, evidence level and product obligation per cell). Reconciled 2026-11-14 (
 | Q16d | review | Third review pass; operator scope ruling R2-07 | done: no sign-off (`independent-review-3`); A-1..A-4 applied; operator ruling R2-07/O-1 still requested |
 | Q16e | proofs-d1c | D-1 for modules 03 and 05 | done: 111 verified (proofs-d1c-*, recheck), model-level |
 | Q16f | proofs-d1d/e/f | D-1 for 07-09, 01-02+10, 15-17 (+00) | done: 118, 115, 115 verified (rechecks), model-level; module 00 not applicable |
-| Q17a | proofs-d9b | D-9 remainder: readers/verify racing a redaction, statement history, Decision 2, retry-key movement, F-1306, F-CS01 (empty revision), original F-1302/F-1303/F-1306 controls; D-12 progress-only control | doing |
-| Q17b | semantics | §3.3a system-wide: axioms, shared mechanisms with generic controls, canonical lifecycles, per-object declarations, requirement trace; module 00 model check; F-C0605 model (module 06) | doing |
-| Q17c | writesets | 3.3a-writesets: discharge each census obligation (WS-OBL/WS-COND/WS-GAP) by lemma, guard or recorded finding | doing |
-| Q17d | models-2 | D-10 (M1 2+2 by partition), D-13 (eraser overlapping a writer of the same graph in the module 04/11 proofs) | doing |
+| Q17a | proofs-d9b | D-9 remainder: readers/verify racing a redaction, statement history, Decision 2, retry-key movement, F-1306, F-CS01 (empty revision), original F-1302/F-1303/F-1306 controls; D-12 progress-only control | done (e8a0d08a): 158 verified, 13 located controls, D-12 progress-only control; model-level |
+| Q17b | semantics | §3.3a system-wide: axioms, shared mechanisms with generic controls, canonical lifecycles, per-object declarations, requirement trace; module 00 model check; F-C0605 model (module 06) | done (b0433157): 14 axioms, 13 mechanisms, 266 checks, 8 lifecycles, 2,545/2,600 requirements traced; F-C0670 |
+| Q17c | writesets | 3.3a-writesets: discharge each census obligation (WS-OBL/WS-COND/WS-GAP) by lemma, guard or recorded finding | done (ed0fc784): 185 census obligations, 178 closed, 7 open; F-C1350, F-C1351, F-C1850 (S1) and 4 S2 |
+| Q17d | models-2 | D-10 (M1 2+2 by partition), D-13 (eraser overlapping a writer of the same graph in the module 04/11 proofs) | done (8d11c49c): proofs-pa3 108 verified; core-partition (2+2) exhaustive; model-level |
 | Q17e | product-gates | 3.5-lint/style, disconnect world (3.7-integration-worlds), failure controls | doing |
-| Q17f | review | Fourth review pass over proofs-d1c..d1f and Q17a-h | todo |
+| Q17f | review | Fourth review pass over proofs-d1c..d1f and Q17a-h | doing: fourth pass started on the finished lanes |
 | Q17g | structural | 3.4 ownership/storage-order/declared-reads, 3.6 keys/fk/capacity/row-permutation/frame per module (AUDITD) | doing |
 | Q17h | trace-replay | 3.7 trace replay through the breadth machines and lock logs per module (AUDITE) | doing |
 | Q17i | orchestrator | 3.1-intent per module: structural intent check (`intent-structure-check`, `-selftest`) | done (05a86981) |
