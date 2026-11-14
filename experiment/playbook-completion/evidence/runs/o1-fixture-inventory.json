@@ -1,0 +1,15 @@
+{
+  "command": "locks.sh iris docker exec -i $IVG_TEST_CONTAINER iris session IRIS -U %SYS < incidents/o1/export.script (read-only $System.OBJ.ExportUDL of %SYS IVGDev.* and every non-% class of IVG262FC1306 to the container's /tmp, copied out, then removed); python incidents/o1/compare_classes.py",
+  "experiment_head": "1564a673ea1737c0d9e32fe8f30a1d0d04bcf910",
+  "id": "o1-fixture-inventory",
+  "kind": "probe",
+  "lane": "orchestrator",
+  "log": "$RUN_DIR/o1/o1-inventory.log",
+  "log_bytes": 8947,
+  "log_sha256": "56049c1dc1e4a0ca5ad21c94239ea4e65a45c1ea0f35631ea6b8b3068151eeb2",
+  "observes": "Operator clarification O-1 record. %SYS holds IVGDev.Run and IVGDev.Setup; both equal scripts/dev/objectscript/IVGDev/*.cls at the pin once the deploy-time Parameter SOURCEHASH value is blanked. IVG262FC1306 holds 251 non-% classes: 54 equal the pin's iris_src sources under the schema normalization the pin's own schema_prefix='RAG' deploy applies (35 of them also have a v4.5.1 file of the same name with other text, 10 equal v4.5.1 too, 9 have no v4.5.1 file); 8 exist only in v4.5.1 (Graph.KG.BenchFormat, Graph.KG.Benchmark, User.CypherFn, User.Exec, User.SQL, User.funcJSONKEYS, User.funcSTRSPLIT, iris.vector.graph.GraphOperators); 11 have a pin name but text equal to neither tree after normalization (v4.5.1's Graph.KG.LedgerRevision/LedgerStats/Meta-type schema classes and formatting-only differences such as Graph.KG.PageRank, IVG.CypherEngine); 178 are IRIS-generated classes in neither tree. Nothing compiled, written in IRIS or dropped",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T14:32:26+00:00",
+  "result": "pass"
+}

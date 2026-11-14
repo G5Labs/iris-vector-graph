@@ -526,7 +526,8 @@ def main() -> int:
             if kind == "finding":
                 c["as_built_findings"] = sorted(set(c.get("as_built_findings", [])) | set(d.get("findings", [])))
             how = f", holds as {d['holds_as']}" if d.get("holds_as") else ""
-            dep = f"; depends on operator ruling {', '.join(d['depends_on'])}" if d.get("depends_on") else ""
+            dep = (f"; its evidence uses fixture setup authorized by operator clarification "
+                   f"{', '.join(d['depends_on'])} (incidents/O-1-FIXTURES.md)") if d.get("depends_on") else ""
             c["remaining"] = f"discharged by {kind} ({d.get('grade')}{how}{dep}): {d.get('reason', '')}".strip()
         elif kind == "open":
             c["remaining"] = "open after the writesets lane: " + str(d.get("reason", ""))

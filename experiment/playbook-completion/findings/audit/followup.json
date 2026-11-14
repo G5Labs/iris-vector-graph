@@ -123,6 +123,10 @@
    {
     "kind": "run",
     "ref": "scripts/fixtures/build_release_namespace.py:466-491 (build), :367-376 (run_ledger_commits), used unmodified"
+   },
+   {
+    "kind": "probe",
+    "ref": "o1-fixture-inventory"
    }
   ],
   "gates": [
@@ -133,7 +137,7 @@
   "severity": "S1",
   "confidence": "high",
   "remedy": "On redaction, also clear (or report) rows of a legacy Graph_KG.ledger_revisions (and ^Graph.KG.LedgerRevisionD) when the IVG Schema is not Graph_KG; or have the upgrade move rather than copy the rows (delete or %NODELDATA plus kill of the legacy storage after the copy is verified); and name any remaining legacy copy in the receipt.",
-  "notes": "Reproduced live 2026-11-14 01:52 UTC by lane fc1306 under tools/locks.sh iris, in a new scratch namespace IVG262FC1306 (/usr/irissys/mgr/ivg262fc1306/, recorded in incidents/NAMESPACES.md, left intact). The pinned fixture compiled v4.5.1's classes there (its own code, as tests/e2e/test_460_upgrade_ledger_history_e2e.py::upg does); nothing else was compiled besides the pin's own initialize_schema (66 classes, 3 MCP classes skipped: %AI absent on Community; not a dependency of this probe). The probe adds two tenants' metadata-bearing changesets through v4.5.1's public ledger API (fc1306/ledger451_child.py) because the fixture's own two changesets carry messages only. Side observation, not part of this finding: the actor value ('r114', the fixture's) stays in both schemas' ActorIdx; actor is outside FR-004's cleared fields by design. Probe: experiment/playbook-completion/fc1306/probe.py; raw result $RUN_DIR/fc1306/probe.json."
+  "notes": "Reproduced live 2026-11-14 01:52 UTC by lane fc1306 under tools/locks.sh iris, in a new scratch namespace IVG262FC1306 (/usr/irissys/mgr/ivg262fc1306/, recorded in incidents/NAMESPACES.md, left intact). The pinned fixture compiled v4.5.1's classes there (its own code, as tests/e2e/test_460_upgrade_ledger_history_e2e.py::upg does); nothing else was compiled besides the pin's own initialize_schema (66 classes, 3 MCP classes skipped: %AI absent on Community; not a dependency of this probe). The probe adds two tenants' metadata-bearing changesets through v4.5.1's public ledger API (fc1306/ledger451_child.py) because the fixture's own two changesets carry messages only. Side observation, not part of this finding: the actor value ('r114', the fixture's) stays in both schemas' ActorIdx; actor is outside FR-004's cleared fields by design. Probe: experiment/playbook-completion/fc1306/probe.py; raw result $RUN_DIR/fc1306/probe.json. Attribution (operator clarification O-1, incidents/O-1-FIXTURES.md, o1-fixture-inventory): the probe's namespace IVG262FC1306 holds the pin's classes deployed by the pin's own initialize_schema(schema_prefix='RAG') and residue of the unchanged v4.5.1 release that the pinned fixture scripts/fixtures/build_release_namespace.build built there (8 v4.5.1-only classes and v4.5.1's Graph.KG.LedgerRevision/LedgerStats); that residue is the upgrade test's intended precondition. The defect is in the pin's upgrade and redaction code. Setup authorized under O-1."
  },
  {
   "id": "F-C1307",

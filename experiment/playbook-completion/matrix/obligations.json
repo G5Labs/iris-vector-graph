@@ -20986,7 +20986,7 @@
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "discharged by finding (live; depends on operator ruling O-1): F-C1306's live run went through this writer (initialize_schema(schema_prefix='RAG') -> ledger_history_copied, the 7+1 rows): it copies Graph_KG.ledger_revisions into the IVG Schema and leaves the originals; ClearRevision clears only the copy, so after a complete redaction the Graph_KG rows of the tombstoned revisions keep message, source, correlation id and key. Depends on the operator's ruling O-1 (review R2-07): fc1306-legacy-ledger-rows compiled a non-pin release (v4.5.1) into a scratch namespace; if O-1 rules that out of scope, this discharge falls back to inspected (legacy.py:606-646, LedgerRedact.cls:353-378).",
+   "remaining": "discharged by finding (live; its evidence uses fixture setup authorized by operator clarification O-1 (incidents/O-1-FIXTURES.md)): F-C1306's live run went through this writer (initialize_schema(schema_prefix='RAG') -> ledger_history_copied, the 7+1 rows): it copies Graph_KG.ledger_revisions into the IVG Schema and leaves the originals; ClearRevision clears only the copy, so after a complete redaction the Graph_KG rows of the tombstoned revisions keep message, source, correlation id and key. Depends on the operator's ruling O-1 (review R2-07): fc1306-legacy-ledger-rows compiled a non-pin release (v4.5.1) into a scratch namespace; if O-1 rules that out of scope, this discharge falls back to inspected (legacy.py:606-646, LedgerRedact.cls:353-378).",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -34510,6 +34510,10 @@
     {
      "kind": "run",
      "ref": "scripts/fixtures/build_release_namespace.py:466-491 (build), :367-376 (run_ledger_commits), used unmodified"
+    },
+    {
+     "kind": "probe",
+     "ref": "o1-fixture-inventory"
     }
    ],
    "gates": [
@@ -36832,7 +36836,7 @@
   "n/a": 33,
   "unknown": 198
  },
- "registry_runs": 1232,
+ "registry_runs": 1238,
  "starting_inventory": {
   "cells": 904,
   "decisions": 61,
