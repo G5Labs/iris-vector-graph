@@ -1,0 +1,18 @@
+{
+  "command": "bash experiment/playbook-completion/versions/privilege/run-round.sh r3 --skip-files (privilege_probe.py --revoke-as irisowner,_SYSTEM --skip-files)",
+  "experiment_head": "3d1095e3490c14fd3e057e8636e294a022754a17",
+  "id": "ver-priv-r3",
+  "kind": "live",
+  "lane": "versions",
+  "log": "$RUN_DIR/versions/privilege/r3/probe.json",
+  "log_bytes": 13954,
+  "log_sha256": "5bac6e20adbe67a2f36282f57a0d13e1b0f961b5e6ca29f3c99bbbfcf2e391a5",
+  "login_after_disable_sha256": "8a173949a39badd01055dcf8c7da87d48d7c24bf7f500df0418fc1d186c0454c",
+  "observes": "IVGAUDIT_RO (documented reading row) in AUDITB, IRIS 2026.1, driver 5.3.2; graph a->b->c->d (KNOWS, label P) written and erased by the owner through the pin's API. Before the revoke R1 answers natively: label scan (3 rows), labelled id anchor, unlabelled id anchor (native delta 1 each). REVOKE SELECT ON SCHEMA Graph_KG AS irisowner and AS _SYSTEM: CheckPrivilege(rdf_edges,s) 0 for user and role. Running engine R1 (cached native privilege True): label scan answers all 3 rows and labelled id anchor answers [b] NATIVELY (delta 1) while its own SQL is refused -99; unlabelled id anchor refused (Exec.Run's anchor is SQL on Graph_KG.nodes: 'Cypher anchor SQLCODE -99', engine falls back to SQL, -99). Fresh engine R2: gate closed, all three -99 via SQL. Graph.KG.Cypher.Exec.Run called directly over the Native API by the revoked user (no SELECT on any Graph_KG table): label-scan and labelled-id plans return the rows; the unlabelled-id plan is refused by its SQL anchor. ^KG readable over the Native API. After the re-GRANT, R2 keeps its cached False (answers via SQL). Data reset by erase_all (7 rows); user disabled, login refused (Access Denied)",
+  "privileges_final_sha256": "d36cd062de763af3a3385d2392f7260c9a3631e9b16e136aed4b28a01d374b92",
+  "probe_log_sha256": "a76878d9d2a6e9bd0e4209f4d022f0bfb45f9337f61a101edbd0eebb4d1a597e",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T04:46:17+00:00",
+  "result": "pass"
+}

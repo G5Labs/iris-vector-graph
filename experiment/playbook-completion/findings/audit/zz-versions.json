@@ -1,0 +1,245 @@
+[
+ {
+  "id": "F-C1705",
+  "module": "17",
+  "title": "The product's transaction premise 'measured on IRIS 2026.3 (driver 5.4.0)' is false on 2026.1 and 2026.2 with either driver: the driver is not its cause",
+  "intended": "iris_vector_graph/_write_txn.py:15-17 and iris_src/src/Graph/KG/Txn.cls:7-8 state, as a measured fact, that SQL COMMIT and ROLLBACK end every level and START TRANSACTION inside a transaction does nothing; docs/ADMIN_GUIDE.md:19-28 recommends 2026.1 or later and runs 2026.1 Community on every push.",
+  "observed": "Live, same 113 cases (cases.py --seed 20261114) on four engine x driver cells: SQL COMMIT and ROLLBACK at $TLEVEL 2 end ONE level (2 -> 1) and START TRANSACTION inside a level does nothing, on IRIS 2026.1 (Build 234U) and 2026.2 (Build 221U) Community, with intersystems-irispython 5.3.2 and 5.4.0 (ver-e261-d532, ver-e261-d540, ver-e262-d532, ver-e262-d540: the premise mutants sql-commit-ends-all / sql-rollback-ends-all killed by 2 and 4 cases in every cell), through both client entry points iris.dbapi.connect and iris.connect (ver-sql-entry-probe-e261, ver-sql-entry-probe-e262). The full contract (515 cases) holds unchanged on 2026.2 (ver-e262-d532-full). Driver 5.4.0 is therefore not the cause; the 2026.3 engine (the product cites irishealth:2026.3.0AI.113.0) cannot be obtained here (ver-avail-iris-2026.3), so whether 2026.3 behaves as stated stays unverified.",
+  "disposition": "reproduced-live",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "ver-e261-d532"
+   },
+   {
+    "kind": "live",
+    "ref": "ver-e261-d540"
+   },
+   {
+    "kind": "live",
+    "ref": "ver-e262-d532"
+   },
+   {
+    "kind": "live",
+    "ref": "ver-e262-d540"
+   },
+   {
+    "kind": "live",
+    "ref": "ver-e262-d532-full"
+   },
+   {
+    "kind": "live",
+    "ref": "ver-sql-entry-probe-e261"
+   },
+   {
+    "kind": "live",
+    "ref": "ver-sql-entry-probe-e262"
+   },
+   {
+    "kind": "check",
+    "ref": "ver-matrix-compare"
+   },
+   {
+    "kind": "open",
+    "ref": "ver-avail-iris-2026.3"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_write_txn.py:15-17"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/Txn.cls:7-8"
+   },
+   {
+    "kind": "inspected",
+    "ref": "docs/ADMIN_GUIDE.md:19-28"
+   }
+  ],
+  "gates": [
+   "3.2-coverage",
+   "3.7-editions",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S3",
+  "confidence": "high",
+  "remedy": "State the premise per version (one level on 2026.1/2026.2; every level on 2026.3 if re-measured there), or drop it: the shape it justifies (Txn_Begin/End/Undo = TSTART/TCOMMIT/TROLLBACK 1) is right on every version measured. Re-measure on 2026.3 and record the build.",
+  "notes": "This is the version-difference record that iris-contract/CONTRACT.md ('Version difference recorded') calls 'F-C1701 candidate'; F-C1701 is already module 17's console-script finding, so the record takes the next free id. Impact on the as-built product is documentary: the main write path uses Txn_Begin/End/Undo, which behave as the product expects on both engines; the plain 4.6.3 path (namespace without Txn_Begin) refuses inside a caller transaction (_write_txn.py:26-28), and with no caller transaction START TRANSACTION + COMMIT/ROLLBACK at level 1 is correct under either reading. The engine attribution (2026.3) remains open. Separate driver observation (contract, not product): with 5.4.0, setAutoCommit(True) while autocommit is already on does not commit an open level (5.3.2 commits one), on both engines (ver-autocommit-probe-e261/-e262); the pin never calls setAutoCommit, so it has no product consequence (versions/VERSIONS.md)."
+ },
+ {
+  "id": "F-0908",
+  "module": "09",
+  "title": "The privilege check spec 253 puts in the executor is in the engine only",
+  "intended": "specs/253-native-cypher-executor/spec.md:124-127 (FR-011: the executor MUST check SELECT on the graph tables, cached per process and user); decisions.md HD-0901 working answer: authorization at use.",
+  "observed": "Live (ver-priv-r3; ver-priv-r2): a disposable user IVGAUDIT_RO holding ADMIN_GUIDE section 3's reading row in AUDITB (%DB_%DEFAULT:R, %Native_ClassExecution:U, %Native_GlobalAccess:U; SELECT and EXECUTE ON SCHEMA Graph_KG) had SELECT revoked (grantor-aware, CheckPrivilege 0 for user and role). Graph.KG.Cypher.Exec.Run called directly over the Native API by that user, now with no SELECT on any Graph_KG table, answered the plans for MATCH (a:P)-[:KNOWS]->(b) (3 rows) and MATCH (a:P {node_id:'a'})-[:KNOWS]->(b) ([b]); only a plan whose anchor the executor resolves through dynamic SQL (an unlabelled id: Exec.cls:855-871) was refused (-99, IRIS's own check of that statement). A running engine built before the revoke (its _native_privileges cached True, engine.py:559-586) kept answering those two reads natively while its own SQL was refused; a fresh engine closed its gate. Source as before: Exec.Run (Exec.cls:32-72) checks no privilege. Earlier: confirmed in source only (live blocked-access for want of a second user).",
+  "disposition": "reproduced-live",
+  "outcome": "intent-undecided",
+  "live": "done: ver-priv-r3 (and ver-priv-r2); the earlier blocked-access was the missing second IRIS user, now provided by the operator (versions/PRIVILEGE.md)",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "ver-priv-r3"
+   },
+   {
+    "kind": "live",
+    "ref": "ver-priv-r2"
+   },
+   {
+    "kind": "live",
+    "ref": "ver-priv-create"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/Cypher/Exec.cls:32-72"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/Cypher/Exec.cls:832-904"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/engine.py:559-586"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/cypher/native_plan.py:532-533"
+   },
+   {
+    "kind": "inspected",
+    "ref": "docs/ADMIN_GUIDE.md:565-575"
+   },
+   {
+    "kind": "inspected",
+    "ref": "experiment/playbook-completion/intent/HD-0901.md"
+   },
+   {
+    "kind": "open",
+    "ref": "HD-0901"
+   }
+  ],
+  "gates": [
+   "3.5-handlers",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S3",
+  "confidence": "high",
+  "remedy": "Amend FR-011 to the shipped design (engine-side check, database resource as the boundary), or add the check to Run.",
+  "notes": "The code-vs-spec gap is confirmed in source. Which contract holds is undecided: FR-011 (decided 2026-10-20) puts the check in the executor; the later maintainer statement R280 (commit d3a86fcd, 2026-11-04) and docs/ADMIN_GUIDE.md:565-570 make the database resource the native boundary (intent/HD-0901.md: treat FR-011's executor check as an unimplemented spec requirement whose amendment is the maintainer's call). Update (versions lane, 2026-11-14): HD-0901's discriminating trace Read; Revoke; Read ran live on 2026.1 (ver-priv-r3): as built, a running engine keeps reading ^KG-only plan shapes (label scans, labelled id anchors) after a SQL REVOKE (violates P1, satisfies P1' = FR-011 'cached per process and user'); SQL-anchored shapes (unlabelled id, property anchors) are refused at once by IRIS at the executor's anchor statement; a fresh engine refuses all. The as-built behaviour is now live; which contract holds is still the maintainer's call (HD-0901). Round ver-priv-r1 is invalid for the revoke (REVOKE without AS did not remove a grant made by another grantor) and is kept as evidence only.",
+  "previous_disposition": "confirmed-source",
+  "source_record": "findings/audit/09.json"
+ },
+ {
+  "id": "F-C1803",
+  "module": "18",
+  "title": "Graph.KG.Snapshot's unused file helpers read, write and delete server files for any Native API caller",
+  "intended": "ADMIN_GUIDE.md:450-473 grants the least-privilege reading role %Native_ClassExecution:U; nothing in the product needs server file access through IVG classes (no caller of ReadFileChunk/WriteFileChunk/DeleteDir/ExportGlobals). docs/ADMIN_GUIDE.md:598: 'A read-only role is one whose database resource is R'; :520 'With the database at R it writes nothing'.",
+  "observed": "Live (c18-live-file-helpers, as _SYSTEM): FileExists('/etc/hostname') = 1, GetFileSize = 33, ReadFileChunk returned 'ivg-playbook-20261113-audit-iris\\n'. Source: WriteFileChunk (Snapshot.cls:49-57) writes any path, DeleteDir (:64-68) runs RemoveDirectoryTree on any path, ExportGlobals (:4-22) writes any global to any directory, all as the IRIS server's OS user, with no IVG check. Live as the documented reading role (ver-priv-r1, ver-priv-r2; user IVGAUDIT_RO, database resource at R, %Native_ClassExecution:U): FileExists('/etc/hostname') = 1, GetFileSize = 33, ReadFileChunk returned the host name, ReadFileChunk('/usr/irissys/iris.cpf') returned the instance configuration; ExportGlobals('/tmp/ivgaudit-versions-<stamp>/', [^KG]) created the directory and wrote ^KG.gof (2,498 bytes); WriteFileChunk wrote a file there and ReadFileChunk read it back (docker exec ls -ln: both files, owned by the IRIS server's OS user); DeleteDir removed the directory (answered 1; ls finds nothing). The same role's global SET is refused (<PROTECT>) and its SQL writes -99.",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "ver-priv-r2"
+   },
+   {
+    "kind": "live",
+    "ref": "ver-priv-r1"
+   },
+   {
+    "kind": "live",
+    "ref": "c18-live-file-helpers"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/Snapshot.cls:4-73"
+   },
+   {
+    "kind": "inspected",
+    "ref": "docs/ADMIN_GUIDE.md:450-473"
+   },
+   {
+    "kind": "inspected",
+    "ref": "scripts/setup_security.sql:5-7"
+   },
+   {
+    "kind": "inspected",
+    "ref": "docs/ADMIN_GUIDE.md:595-599"
+   }
+  ],
+  "gates": [
+   "3.4-ownership",
+   "5c-refusals"
+  ],
+  "severity": "S1",
+  "confidence": "high",
+  "remedy": "Delete the file and global helpers (no product caller), or restrict them to an admin role and an allow-listed folder.",
+  "notes": "Extends F-1806 from loading globals to arbitrary server file read/write/delete. Update (versions lane, 2026-11-14): reading-role reachability is now live (read, write, export of globals to server files, and directory delete), so confidence high. A role the guide calls read-only (database resource R) writes and deletes server files through IVG's classes.",
+  "previous_confidence": "medium",
+  "source_record": "findings/audit/18.json"
+ },
+ {
+  "id": "F-1001",
+  "module": "10",
+  "title": "A native reader answers default-graph calls in a namespace where a named graph has edges",
+  "intended": "spec 236 FR-014a: a native reader 'MUST be used only for the graph scope its proof covers' (specs/236-arno-callout-adoption/spec.md:268-272); ALG-I3 / SYS-I2 (a default-graph answer never mixes in a named graph's edges); the BFS route and the ^NKG tiers probe for named-graph edges (iris_vector_graph/stores/iris_sql_store.py:1842-1858, :3322).",
+  "disposition": "blocked-access",
+  "outcome": "blocked-access",
+  "gates": [
+   "3.3-model-check",
+   "3.5-handlers",
+   "3.2-coverage"
+  ],
+  "severity": "S1",
+  "confidence": "medium",
+  "remedy": "Route to a native reader only when named_graph_with_edges() is None (as BFS and the ^NKG tiers do), or add a named-graph fixture to the reader gate and record graph scope in the proof; then a live test in USER with arno-callout 1.2.1 loaded and a named graph's edges.",
+  "observed": "Source at the pin: arno_readers.route takes no named-graph input and answers native for graph '' (iris_vector_graph/arno_readers.py:257-280); _execute_pagerank routes with no named_graph_with_edges probe (iris_sql_store.py:2388-2400). Probe b-10-probe-units ran the pin's route(): 'native' for graph '' with no parameter that could carry named-graph edges. Model m10-routes-as-built-pagerank-scope finds the mixed answer only with a library whose reader is graph-blind; with a graph-0-only reader (m10-routes-as-built-pagerank-scope-default-only-lib) it passes: the outcome hinges on the open premise P-1004. Live observation is blocked: the arno-callout library is not loaded in this container (NKGAccel.Capabilities rust_callout false, b-10-live-nkg) and _arno_route answers owner outside the USER namespace (iris_sql_store.py:883-894), which the validation lane owns. Update (versions lane, ver-arno-callout): the documented install path (scripts/enterprise-container.sh install-arno <path>, :408-435) needs the library file in hand and checks the arm64 1.2.1 sha256 1123cb82...; the file is not distributed with IVG (README.md:120-122, ADMIN_GUIDE.md:651-653) and is built from the separate Arno project (docs/architecture/rust-accelerator.md:9-11); it is on no public index (PyPI: arno-callout / arno_callout / arno / libarno-callout / iris-arno unresolvable, JSON 404), GitHub shows only this product's references, no copy exists on the host or in either container, the internal registry image that mounts it does not resolve, and this host is x86_64.",
+  "evidence": [
+   {
+    "kind": "probe",
+    "ref": "b-10-probe-units"
+   },
+   {
+    "kind": "mc",
+    "ref": "m10-routes-as-built-pagerank-scope"
+   },
+   {
+    "kind": "mc",
+    "ref": "m10-routes-as-built-pagerank-scope-default-only-lib"
+   },
+   {
+    "kind": "mc",
+    "ref": "m10-routes-reviewed"
+   },
+   {
+    "kind": "mc",
+    "ref": "m10-routes-control-no-probe"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/arno_readers.py:257-280"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/stores/iris_sql_store.py:2388-2400"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/stores/iris_sql_store.py:1842-1858"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/stores/iris_sql_store.py:883-894"
+   },
+   {
+    "kind": "assumed",
+    "ref": "P-1004 (open: sources disagree on what the reader reads)"
+   },
+   {
+    "kind": "open",
+    "ref": "ver-arno-callout"
+   }
+  ],
+  "notes": "Blocked dependency: arno-callout 1.2.1 library build loaded into the USER namespace of an IRIS instance (the proof record names arno-callout 1.2.1+844e5ff75f45, arm64). The missing probe itself is confirmed at the source; whether answers mix graphs depends on P-1004. Exact remaining blocker (2026-11-14): an x86_64 libarno_callout.so 1.2.1 (+844e5ff75f45 or the reader-proof build), or an arm64 host for the pinned arm64 build, loaded into USER of an IRIS instance (_arno_route answers owner elsewhere, iris_sql_store.py:883-894); .iris-dev.toml:7 notes Arno BFS is disabled on Community. Operator dependency.",
+  "source_record": "findings/audit/10.json"
+ }
+]

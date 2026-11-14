@@ -1,0 +1,15 @@
+{
+  "command": "python experiment/playbook-completion/versions/autocommit_probe.py AUDITENV (5.3.2; and PYTHONPATH=<5.4.0 site-packages>:<main venv>:<repo>), inside versions/privilege/run-all.sh's lock hold",
+  "experiment_head": "3d1095e3490c14fd3e057e8636e294a022754a17",
+  "id": "ver-autocommit-probe-e261",
+  "kind": "probe",
+  "lane": "versions",
+  "log": "$RUN_DIR/versions/logs/autocommit-probe-e261.log",
+  "log_bytes": 1240,
+  "log_sha256": "19693b77038eab0cc9cbf362997279d285d504dee6da079034fc61cc9ce466f4",
+  "observes": "IRIS 2026.1: with a Native level open and autocommit already on, setAutoCommit(True) commits one level on 5.3.2 ($TLEVEL 1 -> 0, the write survives TROLLBACK) and does nothing on 5.4.0 (1 -> 1, TROLLBACK undoes it); off -> on commits one level on both. Both builds expose conn.autocommit; the pin's _write_txn._driver_autocommit_off / caller_transaction_level answer the same (True/0 after setAutoCommit(False), False/None after True)",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T04:33:57+00:00",
+  "result": "pass"
+}

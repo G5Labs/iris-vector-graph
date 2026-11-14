@@ -65,7 +65,7 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 3.8-trust | method | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.8-test-reflection | method | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.8-review | method | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
-| 3.8-findings-disposed | method | 0 | 0 | 18 | 0 | 1 | 12 | 0 | 6 | 1 |
+| 3.8-findings-disposed | method | 0 | 0 | 18 | 0 | 1 | 13 | 0 | 5 | 1 |
 | 5-trust-strict | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 5-mutants-located | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 5-selftests | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
@@ -78,4 +78,4 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 5c-root-causes | method | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 5c-reviewers | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 
-Totals: {'closed': 145, 'not-applicable': 36, 'open': 369, 'blocked': 7}; evidence grade of closed cells: {'registered-run': 106, 'inspected': 39}; product: {'unknown': 337, 'n/a': 34, 'fails': 173, 'holds-in-model-only': 13}
+Totals: {'closed': 145, 'not-applicable': 36, 'open': 369, 'blocked': 7}; evidence grade of closed cells: {'registered-run': 106, 'inspected': 39}; product: {'unknown': 336, 'n/a': 34, 'fails': 174, 'holds-in-model-only': 13}

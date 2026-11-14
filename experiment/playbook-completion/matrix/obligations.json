@@ -1211,7 +1211,8 @@
    ],
    "findings": [
     "F-1705",
-    "F-C1704"
+    "F-C1704",
+    "F-C1705"
    ],
    "gate": "3.2-coverage",
    "level": "method",
@@ -4398,6 +4399,7 @@
    "findings": [
     "F-1801",
     "F-1806",
+    "F-C1803",
     "F-C1803"
    ],
    "gate": "3.4-ownership",
@@ -5188,6 +5190,7 @@
    "findings": [
     "F-0901",
     "F-0902",
+    "F-0908",
     "F-0908"
    ],
    "gate": "3.5-handlers",
@@ -8817,6 +8820,7 @@
     "inspected:experiment/playbook-completion/findings/audit/09.json"
    ],
    "findings": [
+    "F-0908",
     "F-0908"
    ],
    "gate": "3.8-findings-disposed",
@@ -8966,10 +8970,13 @@
    "evidence": [
     "findings/audit/17.json"
    ],
+   "findings": [
+    "F-C1705"
+   ],
    "gate": "3.8-findings-disposed",
    "level": "method",
    "module": "17",
-   "product_obligation": "unknown",
+   "product_obligation": "fails",
    "remaining": "every finding is recorded with evidence and a disposition; a fix or a maintainer decision per finding is outside this observation-only audit",
    "source": "modules/17.json",
    "status": "open"
@@ -9435,6 +9442,7 @@
    "findings": [
     "F-1806",
     "F-C1802",
+    "F-C1803",
     "F-C1803"
    ],
    "gate": "5c-refusals",
@@ -13050,11 +13058,27 @@
   {
    "audit": {
     "confidence": "high",
-    "disposition": "confirmed-source",
+    "disposition": "reproduced-live",
     "evidence": [
+     {
+      "kind": "live",
+      "ref": "ver-priv-r3"
+     },
+     {
+      "kind": "live",
+      "ref": "ver-priv-r2"
+     },
+     {
+      "kind": "live",
+      "ref": "ver-priv-create"
+     },
      {
       "kind": "inspected",
       "ref": "iris_src/src/Graph/KG/Cypher/Exec.cls:32-72"
+     },
+     {
+      "kind": "inspected",
+      "ref": "iris_src/src/Graph/KG/Cypher/Exec.cls:832-904"
      },
      {
       "kind": "inspected",
@@ -13163,6 +13187,10 @@
      {
       "kind": "assumed",
       "ref": "P-1004 (open: sources disagree on what the reader reads)"
+     },
+     {
+      "kind": "open",
+      "ref": "ver-arno-callout"
      }
     ],
     "gates": [
@@ -17274,9 +17302,17 @@
    "severity": "S2"
   },
   {
-   "confidence": "medium",
+   "confidence": "high",
    "disposition": "reproduced-live",
    "evidence": [
+    {
+     "kind": "live",
+     "ref": "ver-priv-r2"
+    },
+    {
+     "kind": "live",
+     "ref": "ver-priv-r1"
+    },
     {
      "kind": "live",
      "ref": "c18-live-file-helpers"
@@ -17292,6 +17328,10 @@
     {
      "kind": "inspected",
      "ref": "scripts/setup_security.sql:5-7"
+    },
+    {
+     "kind": "inspected",
+     "ref": "docs/ADMIN_GUIDE.md:595-599"
     }
    ],
    "gates": [
@@ -17679,6 +17719,67 @@
     "3.8-findings-disposed"
    ],
    "id": "F-C1309",
+   "severity": "S3"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "ver-e261-d532"
+    },
+    {
+     "kind": "live",
+     "ref": "ver-e261-d540"
+    },
+    {
+     "kind": "live",
+     "ref": "ver-e262-d532"
+    },
+    {
+     "kind": "live",
+     "ref": "ver-e262-d540"
+    },
+    {
+     "kind": "live",
+     "ref": "ver-e262-d532-full"
+    },
+    {
+     "kind": "live",
+     "ref": "ver-sql-entry-probe-e261"
+    },
+    {
+     "kind": "live",
+     "ref": "ver-sql-entry-probe-e262"
+    },
+    {
+     "kind": "check",
+     "ref": "ver-matrix-compare"
+    },
+    {
+     "kind": "open",
+     "ref": "ver-avail-iris-2026.3"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_write_txn.py:15-17"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Txn.cls:7-8"
+    },
+    {
+     "kind": "inspected",
+     "ref": "docs/ADMIN_GUIDE.md:19-28"
+    }
+   ],
+   "gates": [
+    "3.2-coverage",
+    "3.7-editions",
+    "3.8-findings-disposed"
+   ],
+   "id": "F-C1705",
    "severity": "S3"
   }
  ],
@@ -18417,7 +18518,7 @@
    "source": "TRUST.md"
   }
  ],
- "registry_runs": 690,
+ "registry_runs": 711,
  "starting_inventory": {
   "cells": 904,
   "decisions": 61,

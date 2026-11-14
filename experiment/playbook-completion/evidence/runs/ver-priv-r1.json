@@ -1,0 +1,17 @@
+{
+  "command": "bash versions/privilege/run-all.sh (privilege_probe.py, REVOKE without AS)",
+  "experiment_head": "3d1095e3490c14fd3e057e8636e294a022754a17",
+  "id": "ver-priv-r1",
+  "kind": "live",
+  "lane": "versions",
+  "log": "$RUN_DIR/versions/privilege/probe.json",
+  "log_bytes": 9662,
+  "log_sha256": "f6d9504dba91197637f645f8c96d6f78c22228b04dce24bc157d62b03a032026",
+  "login_after_disable_sha256": "8a173949a39badd01055dcf8c7da87d48d7c24bf7f500df0418fc1d186c0454c",
+  "observes": "INVALID for HD-0901/F-0908: the probe's REVOKE SELECT ON SCHEMA Graph_KG FROM IVGAUDIT_RO_ROLE ran as _SYSTEM without AS, but the grant's grantor was irisowner, so it removed nothing (the reader's SQL still answered, privileges-after.log lists the irisowner grant; IRIS: without AS a REVOKE removes only the current user's grants, SQLCODE 100, as the pin notes at _engine/legacy.py:539-540); its restore GRANT added a second SELECT grant (grantor _SYSTEM). Valid parts (privileges as the documented reading row): reader native and SQL reads answer; create_node and SQL INSERT refused -99; F-C1803: as the reader, Graph.KG.Snapshot FileExists/GetFileSize/ReadFileChunk('/etc/hostname'), ReadFileChunk('/usr/irissys/iris.cpf'), ExportGlobals(^KG -> /tmp/...), WriteFileChunk, DeleteDir all succeeded (docker exec ls confirms the files, then their removal). User disabled at the end (login refused: Access Denied)",
+  "probe_log_sha256": "fd3d5bcc0a913ac887e2ba17fdeffb0cd34416f719a75b917ceb8a28970a6e35",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T04:44:21+00:00",
+  "result": "incomplete"
+}

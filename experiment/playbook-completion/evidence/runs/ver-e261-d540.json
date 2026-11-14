@@ -1,0 +1,19 @@
+{
+  "command": "bash experiment/playbook-completion/versions/run-cell.sh e261-d540 5.4.0 ivg-playbook-20261113-audit-iris 34973 AUDITENV iris; iris-contract check",
+  "driver": "5.4.0",
+  "driver_log_sha256": "4c02aee01fe997ddc62bdefa510bb02f6c0bfe8ba9d69e3b4b428eafee916a2e",
+  "engine": "2026.1",
+  "experiment_head": "3d1095e3490c14fd3e057e8636e294a022754a17",
+  "id": "ver-e261-d540",
+  "kind": "check",
+  "lane": "versions",
+  "log": "$RUN_DIR/versions/e261-d540/report.json",
+  "log_bytes": 10410,
+  "log_sha256": "81db0631d0cbbd219b22c5e0a9092259513f8373b25b7ccef71dcd8a45b24570",
+  "observes": "IRIS 2026.1 (Build 234U) Community, audit container, AUDITENV, driver intersystems-irispython 5.4.0 (separate venv first on PYTHONPATH; metadata 5.4.0, irissdk 6ab7b9ea): 113 cases from cases.py --seed 20261114 (every named case using a SQL/driver transaction verb or txn-*: 23 named; rand-txn 60; rand-stmt 30), contract snapshot lib.rs 0c82d244, driver.py e82b7c49. 1 outside: autocommit-on-commits-one-level (setAutoCommit(True) while autocommit is already on leaves the open level: $TLEVEL 1 and 2 stay, the later TROLLBACK undoes the write; off->on still commits one level). Every other case identical to ver-e261-d532: SQL COMMIT/ROLLBACK end one level, START TRANSACTION inside a level does nothing, driver commit() one level, rollback() all levels. The driver does not produce the product's 2026.3 premise",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T04:33:33+00:00",
+  "result": "fail",
+  "seed": "20261114"
+}
