@@ -1,0 +1,53 @@
+{
+ "_doc": "Corrections to registered run descriptions found by the second evidence audit (review/REVIEW-2.md). Records are not rewritten; the corrected statement and its evidence are here. Two earlier corrections were made in place under the same id (noted).",
+ "errata": [
+  {
+   "id": "live-crash-world-r1-invalid",
+   "correction": "The record says no commit was in flight at the kill; results.json shows the client process still running (commit_running_at_crash: true). Correct statement: the client was still building/sending a 60,000-operation changeset, which the ledger refuses before applying anything (max_ops 50,000), so no commit could have taken effect whether or not the request reached the server. The 'manual retry' cited was not saved; it is now reproduced and logged as live-maxops-60000-refused. The oracle's 'acknowledged commit lost' lines in this run follow from the refused retry (acknowledged: null), not from durability.",
+   "evidence": [
+    "live-maxops-60000-refused"
+   ]
+  },
+  {
+   "id": "live-crash-world-r2",
+   "correction": "The SynchCommit=0 setting is now evidenced by a saved file.",
+   "evidence": [
+    "env-synchcommit-setting"
+   ]
+  },
+  {
+   "id": "proofs-breadth-hd0401-erase-kills-gen",
+   "correction": "'errors: 3' counts failed Verus functions; the compiler log reports 6 error diagnostics at the same 6 locations.",
+   "evidence": [
+    "proofs-breadth-recheck"
+   ]
+  },
+  {
+   "id": "trace-conformance-ledger",
+   "correction": "Corrected in place on 2026-11-14 (18 -> 17 transactions) under the same id; the original wording survives in git (dbcb7e14). Future corrections are added here instead.",
+   "evidence": []
+  },
+  {
+   "id": "writer-census",
+   "correction": "Corrected in place (56/23 -> 31/25/48) under the same id; original in git (dd6ac583). Superseded by followup-writer-census (269 sites).",
+   "evidence": [
+    "followup-writer-census"
+   ]
+  },
+  {
+   "id": "fu-r01b-quarantine-erase-plan",
+   "correction": "result 'pass' is the upstream tests passing; those tests demonstrate the defect F-C1305 (a quarantined row survives every erase and redaction).",
+   "evidence": []
+  },
+  {
+   "id": "corr-row-permutation",
+   "correction": "result 'fail' records an order dependence (F-C1108) whose intent is undecided; it is not a confirmed defect.",
+   "evidence": []
+  },
+  {
+   "id": "ver-e262-d540",
+   "correction": "result 'fail' is the driver-5.4.0 autocommit difference (one case outside the pre-revision contract); not an IVG defect.",
+   "evidence": []
+  }
+ ]
+}

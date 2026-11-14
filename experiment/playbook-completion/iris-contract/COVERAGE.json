@@ -1,0 +1,2888 @@
+{
+ "contract": "experiment/playbook-completion/iris-contract/CONTRACT.md",
+ "deciding_round": "env-ext-r6 (evidence/runs/env-ext-r6.json; CONTRACT.md Results)",
+ "statuses": {
+  "in-contract": "the relied semantics is a validated clause",
+  "availability-only": "the contract decides only existence on this engine",
+  "outside-subset": "not modelled; keeps the module's 3.2-coverage gate open"
+ },
+ "clauses": {
+  "E-GLOBALS": "Globals: SET / KILL subtree / $GET / $DATA, restored by rollback",
+  "E-NEST": "Nesting (TSTART / TCOMMIT / TROLLBACK, $TLEVEL)",
+  "E-PARTIAL": "Partial rollback (TROLLBACK 1), globals and SQL rows alike",
+  "E-INCR": "$INCREMENT not undone by rollback",
+  "E-PPG": "Process-private globals: not rolled back, private",
+  "E-VIS": "Visibility: no isolation for globals, READ UNCOMMITTED for SQL",
+  "E-ROLLBACK-OTHER": "Rollback does not overwrite another process's later write",
+  "E-SQL-START": "SQL START TRANSACTION",
+  "E-SQL-END": "SQL COMMIT / ROLLBACK end one level",
+  "E-DRV": "Driver commit() one level / rollback() every level",
+  "E-AUTOCOMMIT": "Autocommit default on; off: first DML opens a level; turning it on commits one open level",
+  "E-LOCK-DEFER": "Locks: deferred release inside a transaction",
+  "E-LOCK-LIFE": "Locks: survive commit",
+  "E-LOCK-NAMES": "Locks: hierarchical names",
+  "E-LOCK-MODES": "Locks: shared / exclusive",
+  "E-LOCK-COUNT": "Locks: incremental counts",
+  "E-LOCK-NONINC": "Non-incremental LOCK",
+  "E-LOCK-WAIT": "Lock wait / timeout 0 ($TEST)",
+  "E-ROWLOCK": "Row locks",
+  "E-UNIQUE": "Unique keys (-119 at once)",
+  "E-STOP": "Process stop: rollback, locks released",
+  "E-CALLER": "SQL and Native API of one connection share a server process",
+  "X-FX": "Functional index entries in the row's statement and transaction",
+  "X-NOINDEX": "%NOINDEX / %NOCHECK / BUILD INDEX / %IGNOREINDEX * scan",
+  "X-DDL": "DDL: catalog effects, in a transaction rolled back with it",
+  "X-NULL": "NULL and '' encodings on the two client paths; COALESCE guard",
+  "X-STMT": "Statement-level atomicity; a failed statement still opens the autocommit-off transaction",
+  "X-ORDER": "$ORDER / nextSubscript collation",
+  "X-STAR": "SELECT * column order; ALTER TABLE ADD COLUMN appends",
+  "X-TLEVEL-SQL": "SELECT $TLEVEL; a query does not open a transaction",
+  "X-VEC": "Vector SQL functions availability; $VECTOR in a global",
+  "X-ZSTRIP": "$ZSTRIP classes C and W and actions * < > ="
+ },
+ "modules": {
+  "00": {
+   "features": [
+    {
+     "index": 0,
+     "feature": "Process death rolls back the open transaction (SYS-P1)",
+     "source": "iris_src/src/Graph/KG/Ledger.cls:397-415",
+     "status": "in-contract",
+     "clauses": [
+      "E-STOP"
+     ],
+     "note": "closing a connection is assumed equal to a process stop"
+    },
+    {
+     "index": 1,
+     "feature": "Uncommitted reads: SQL default isolation READ UNCOMMITTED and global reads (SYS-P2)",
+     "source": "iris_vector_graph/_engine/snapshot.py:864-1034",
+     "status": "in-contract",
+     "clauses": [
+      "E-VIS"
+     ]
+    },
+    {
+     "index": 2,
+     "feature": "A lock freed inside a transaction is held to its end (SYS-P3)",
+     "source": "iris_src/src/Graph/KG/Ledger.cls:397-404",
+     "status": "in-contract",
+     "clauses": [
+      "E-LOCK-DEFER"
+     ]
+    },
+    {
+     "index": 3,
+     "feature": "Process death frees its locks (SYS-P4)",
+     "source": "iris_src/src/Graph/KG/Ledger.cls:440-444",
+     "status": "in-contract",
+     "clauses": [
+      "E-STOP"
+     ],
+     "note": "closing a connection is assumed equal to a process stop"
+    },
+    {
+     "index": 4,
+     "feature": "DB-API connection autocommit is True by default",
+     "source": "iris_vector_graph/_engine/snapshot.py:1205-1216 (_commit per table)",
+     "status": "in-contract",
+     "clauses": [
+      "E-SQL-START",
+      "E-SQL-END",
+      "E-DRV",
+      "E-AUTOCOMMIT"
+     ]
+    },
+    {
+     "index": 5,
+     "feature": "$INCREMENT / ID counters journaled non-transactionally inside a transaction (not rolled back)",
+     "source": "journal of create_node in AUDITC (^t52S.XCFT.1, ^KG(\"__version\"))",
+     "status": "in-contract",
+     "clauses": [
+      "E-INCR"
+     ]
+    },
+    {
+     "index": 6,
+     "feature": "IRIS Community connection/licence cap (8 here)",
+     "source": "CONVENTIONS.md Connection cap",
+     "status": "availability-only",
+     "clauses": [],
+     "note": "infrastructure fact (CONVENTIONS connection cap), not a contract clause"
+    },
+    {
+     "index": 7,
+     "feature": "VECTOR_L2 SQL function absent on IRIS Community 2026.1 (SQLCODE -359); VECTOR_COSINE present",
+     "source": "iris_vector_graph/dbapi_utils.py:256-272",
+     "status": "availability-only",
+     "clauses": [
+      "X-VEC"
+     ],
+     "note": "VECTOR_COSINE / VECTOR_DOT_PRODUCT exist, VECTOR_L2 does not (-359); TO_VECTOR(text, DOUBLE)"
+    }
+   ],
+   "counts": {
+    "in-contract": 6,
+    "availability-only": 2,
+    "outside-subset": 0
+   },
+   "gate_3.2_coverage": "closable",
+   "open_because": []
+  },
+  "01": {
+   "features": [
+    {
+     "index": 0,
+     "feature": "SQL transaction control from Python (commit/rollback/autocommit)",
+     "source": "iris_vector_graph/_engine/legacy.py:525, iris_vector_graph/_engine/legacy.py:576",
+     "status": "in-contract",
+     "clauses": [
+      "E-SQL-START",
+      "E-SQL-END",
+      "E-DRV",
+      "E-AUTOCOMMIT"
+     ]
+    },
+    {
+     "index": 1,
+     "feature": "%NOINDEX / %NOCHECK",
+     "source": "iris_vector_graph/schema.py:1782, iris_vector_graph/schema.py:1788",
+     "status": "in-contract",
+     "clauses": [
+      "X-NOINDEX"
+     ],
+     "note": "%IGNOREINDEX: the `*` form (full scan) is exercised; named-index forms are not"
+    },
+    {
+     "index": 2,
+     "feature": "%IGNOREINDEX",
+     "source": "iris_vector_graph/schema.py:279, iris_vector_graph/schema.py:281",
+     "status": "outside-subset",
+     "reason": "only the `%IGNOREINDEX *` full scan is exercised (X-NOINDEX); the product's named-index forms are not"
+    },
+    {
+     "index": 3,
+     "feature": "DDL (CREATE/ALTER/DROP TABLE, INDEX, VIEW)",
+     "source": "iris_vector_graph/_engine/legacy.py:671, iris_vector_graph/schema.py:303",
+     "status": "in-contract",
+     "clauses": [
+      "X-DDL"
+     ],
+     "note": "DDL in a transaction is rolled back with it (catalog); use of a table after its CREATE was rolled back is outside"
+    },
+    {
+     "index": 4,
+     "feature": "CREATE OR REPLACE FUNCTION/PROCEDURE (LANGUAGE OBJECTSCRIPT)",
+     "source": "iris_vector_graph/_engine/legacy.py:659, iris_vector_graph/legacy_text.py:34",
+     "status": "outside-subset",
+     "reason": "SQL routines (compiled) not modelled"
+    },
+    {
+     "index": 5,
+     "feature": "GRANT / REVOKE / SQL privileges",
+     "source": "iris_src/src/Graph/KG/SqlPrivilege.cls:73, iris_src/src/Graph/KG/SqlPrivilege.cls:78",
+     "status": "outside-subset",
+     "reason": "web dispatch, roles and SQL privileges not modelled"
+    },
+    {
+     "index": 6,
+     "feature": "Vector SQL (VECTOR type, TO_VECTOR, VECTOR_COSINE/DOT)",
+     "source": "iris_vector_graph/schema.py:433, iris_vector_graph/schema.py:443",
+     "status": "availability-only",
+     "clauses": [
+      "X-VEC"
+     ],
+     "note": "VECTOR_COSINE / VECTOR_DOT_PRODUCT exist, VECTOR_L2 does not (-359); TO_VECTOR(text, DOUBLE)"
+    },
+    {
+     "index": 7,
+     "feature": "HNSW vector index",
+     "source": "iris_vector_graph/schema.py:427, iris_vector_graph/schema.py:454",
+     "status": "outside-subset",
+     "reason": "HNSW vector index maintenance is outside the subset"
+    },
+    {
+     "index": 8,
+     "feature": "iFind full-text index",
+     "source": "iris_vector_graph/schema.py:197, iris_vector_graph/schema.py:213",
+     "status": "outside-subset",
+     "reason": "iFind search semantics (tokenizer, word dictionary written outside the transaction, ranking) not modelled; only the per-row index entries' transaction behaviour is (X-FX)"
+    },
+    {
+     "index": 9,
+     "feature": "Native API from Python (classMethod*, globals)",
+     "source": "iris_vector_graph/_engine/class_deploy.py:147, iris_vector_graph/_engine/class_deploy.py:207",
+     "status": "in-contract",
+     "clauses": [
+      "E-GLOBALS"
+     ],
+     "note": "MERGE and $LIST slot access are not modelled"
+    },
+    {
+     "index": 10,
+     "feature": "Embedded/dynamic SQL in ObjectScript (&sql, %SQL.Statement)",
+     "source": "iris_vector_graph/schema.py:2390, iris_vector_graph/schema.py:2393",
+     "status": "outside-subset",
+     "reason": "embedded SQL (&sql) compiled into classes: assumed equal to dynamic SQL (premise E-1), untested; %SQL.Statement %ExecDirect is in the contract (E-PARTIAL, X-FX, X-STMT, X-NULL)"
+    },
+    {
+     "index": 11,
+     "feature": "%DynamicObject / JSON functions",
+     "source": "iris_vector_graph/_engine/admin.py:383, iris_vector_graph/_engine/legacy.py:117",
+     "status": "outside-subset",
+     "reason": "%DynamicObject / JSON functions not modelled"
+    },
+    {
+     "index": 12,
+     "feature": "$ZStrip / $ZConvert character classes",
+     "source": "iris_src/src/Graph/KG/SqlPrivilege.cls:24, iris_src/src/Graph/KG/SqlPrivilege.cls:43",
+     "status": "in-contract",
+     "clauses": [
+      "X-ZSTRIP"
+     ],
+     "note": "$ZCONVERT not modelled"
+    },
+    {
+     "index": 13,
+     "feature": "Class dictionary reads (^oddDEF, %Dictionary)",
+     "source": "iris_vector_graph/_engine/class_deploy.py:147, iris_vector_graph/_engine/class_deploy.py:196",
+     "status": "outside-subset",
+     "reason": "class dictionary and run-time compilation not modelled (compiling is out of the audit's scope)"
+    },
+    {
+     "index": 14,
+     "feature": "Class compile/delete at run time ($System.OBJ)",
+     "source": "iris_vector_graph/_engine/class_deploy.py:263, iris_vector_graph/_engine/class_deploy.py:282",
+     "status": "outside-subset",
+     "reason": "class dictionary and run-time compilation not modelled (compiling is out of the audit's scope)"
+    },
+    {
+     "index": 15,
+     "feature": "SQL empty string as $Char(0)",
+     "source": "iris_vector_graph/schema.py:2181, iris_vector_graph/schema.py:2185",
+     "status": "in-contract",
+     "clauses": [
+      "X-NULL"
+     ],
+     "note": "the embedded-Python path (P-1709) is outside"
+    },
+    {
+     "index": 16,
+     "feature": "SQLCODE-specific handling",
+     "source": "iris_src/src/Graph/KG/SqlPrivilege.cls:27, iris_src/src/Graph/KG/SqlPrivilege.cls:48",
+     "status": "outside-subset",
+     "reason": "only -30, -110, -119, -201, -359 and -400 are contract observations; the other codes the module maps are not modelled"
+    },
+    {
+     "index": 17,
+     "feature": "TOP / LIMIT / FETCH FIRST result prefix",
+     "source": "iris_vector_graph/_engine/schema.py:2791, iris_vector_graph/_engine/schema.py:2800",
+     "status": "outside-subset",
+     "reason": "result-prefix queries not modelled"
+    },
+    {
+     "index": 18,
+     "feature": "%Stream",
+     "source": "iris_vector_graph/_engine/class_deploy.py:258",
+     "status": "outside-subset",
+     "reason": "streams not modelled"
+    }
+   ],
+   "counts": {
+    "in-contract": 6,
+    "availability-only": 1,
+    "outside-subset": 12
+   },
+   "gate_3.2_coverage": "open",
+   "open_because": [
+    "%DynamicObject / JSON functions not modelled",
+    "HNSW vector index maintenance is outside the subset",
+    "SQL routines (compiled) not modelled",
+    "class dictionary and run-time compilation not modelled (compiling is out of the audit's scope)",
+    "embedded SQL (&sql) compiled into classes: assumed equal to dynamic SQL (premise E-1), untested; %SQL.Statement %ExecDirect is in the contract (E-PARTIAL, X-FX, X-STMT, X-NULL)",
+    "iFind search semantics (tokenizer, word dictionary written outside the transaction, ranking) not modelled; only the per-row index entries' transaction behaviour is (X-FX)",
+    "only -30, -110, -119, -201, -359 and -400 are contract observations; the other codes the module maps are not modelled",
+    "only the `%IGNOREINDEX *` full scan is exercised (X-NOINDEX); the product's named-index forms are not",
+    "result-prefix queries not modelled",
+    "streams not modelled",
+    "web dispatch, roles and SQL privileges not modelled"
+   ]
+  },
+  "02": {
+   "features": [
+    {
+     "index": 0,
+     "feature": "Native API from Python (classMethod*, globals)",
+     "source": "iris_vector_graph/_engine/admin.py:907, iris_vector_graph/_engine/admin.py:924",
+     "status": "in-contract",
+     "clauses": [
+      "E-GLOBALS"
+     ],
+     "note": "MERGE and $LIST slot access are not modelled"
+    },
+    {
+     "index": 1,
+     "feature": "Embedded/dynamic SQL in ObjectScript (&sql, %SQL.Statement)",
+     "source": "iris_src/src/Graph/KG/GraphMode.cls:54",
+     "status": "outside-subset",
+     "reason": "embedded SQL (&sql) compiled into classes: assumed equal to dynamic SQL (premise E-1), untested; %SQL.Statement %ExecDirect is in the contract (E-PARTIAL, X-FX, X-STMT, X-NULL)"
+    },
+    {
+     "index": 2,
+     "feature": "$ZStrip / $ZConvert character classes",
+     "source": "iris_src/src/Graph/KG/GraphKey.cls:44",
+     "status": "in-contract",
+     "clauses": [
+      "X-ZSTRIP"
+     ],
+     "note": "$ZCONVERT not modelled"
+    },
+    {
+     "index": 3,
+     "feature": "Global KILL of a subtree / Merge",
+     "source": "iris_src/src/Graph/KG/GraphMode.cls:40",
+     "status": "in-contract",
+     "clauses": [
+      "E-GLOBALS"
+     ],
+     "note": "MERGE and $LIST slot access are not modelled"
+    },
+    {
+     "index": 4,
+     "feature": "SQL empty string as $Char(0)",
+     "source": "iris_src/src/Graph/KG/GraphKey.cls:84, iris_vector_graph/_validate.py:27",
+     "status": "in-contract",
+     "clauses": [
+      "X-NULL"
+     ],
+     "note": "the embedded-Python path (P-1709) is outside"
+    },
+    {
+     "index": 5,
+     "feature": "SQLCODE-specific handling",
+     "source": "iris_src/src/Graph/KG/GraphMode.cls:55, iris_src/src/Graph/KG/GraphMode.cls:56",
+     "status": "outside-subset",
+     "reason": "only -30, -110, -119, -201, -359 and -400 are contract observations; the other codes the module maps are not modelled"
+    },
+    {
+     "index": 6,
+     "feature": "TOP / LIMIT / FETCH FIRST result prefix",
+     "source": "iris_vector_graph/engine.py:624, iris_vector_graph/engine.py:634",
+     "status": "outside-subset",
+     "reason": "result-prefix queries not modelled"
+    }
+   ],
+   "counts": {
+    "in-contract": 4,
+    "availability-only": 0,
+    "outside-subset": 3
+   },
+   "gate_3.2_coverage": "open",
+   "open_because": [
+    "embedded SQL (&sql) compiled into classes: assumed equal to dynamic SQL (premise E-1), untested; %SQL.Statement %ExecDirect is in the contract (E-PARTIAL, X-FX, X-STMT, X-NULL)",
+    "only -30, -110, -119, -201, -359 and -400 are contract observations; the other codes the module maps are not modelled",
+    "result-prefix queries not modelled"
+   ]
+  },
+  "03": {
+   "features": [
+    {
+     "index": 0,
+     "feature": "TSTART / TCOMMIT nesting",
+     "source": "iris_src/src/Graph/KG/Txn.cls:27, iris_src/src/Graph/KG/Txn.cls:29",
+     "status": "in-contract",
+     "clauses": [
+      "E-NEST",
+      "E-PARTIAL"
+     ]
+    },
+    {
+     "index": 1,
+     "feature": "TROLLBACK 1 (one level)",
+     "source": "iris_src/src/Graph/KG/Txn.cls:55",
+     "status": "in-contract",
+     "clauses": [
+      "E-NEST",
+      "E-PARTIAL"
+     ]
+    },
+    {
+     "index": 2,
+     "feature": "$TLevel",
+     "source": "iris_src/src/Graph/KG/Txn.cls:26, iris_src/src/Graph/KG/Txn.cls:30",
+     "status": "in-contract",
+     "clauses": [
+      "E-NEST",
+      "E-PARTIAL"
+     ]
+    },
+    {
+     "index": 3,
+     "feature": "SQL transaction control from Python (commit/rollback/autocommit)",
+     "source": "iris_vector_graph/_engine/nodes_edges.py:388, iris_vector_graph/_engine/nodes_edges.py:394",
+     "status": "in-contract",
+     "clauses": [
+      "E-SQL-START",
+      "E-SQL-END",
+      "E-DRV",
+      "E-AUTOCOMMIT"
+     ]
+    },
+    {
+     "index": 4,
+     "feature": "%NOINDEX / %NOCHECK",
+     "source": "iris_vector_graph/_engine/nodes_edges.py:1774, iris_vector_graph/_engine/nodes_edges.py:2410",
+     "status": "in-contract",
+     "clauses": [
+      "X-NOINDEX"
+     ],
+     "note": "%IGNOREINDEX: the `*` form (full scan) is exercised; named-index forms are not"
+    },
+    {
+     "index": 5,
+     "feature": "DDL (CREATE/ALTER/DROP TABLE, INDEX, VIEW)",
+     "source": "iris_vector_graph/_engine/nodes_edges.py:1763, iris_vector_graph/_engine/nodes_edges.py:1930",
+     "status": "in-contract",
+     "clauses": [
+      "X-DDL"
+     ],
+     "note": "DDL in a transaction is rolled back with it (catalog); use of a table after its CREATE was rolled back is outside"
+    },
+    {
+     "index": 6,
+     "feature": "iFind full-text index",
+     "source": "iris_vector_graph/_engine/nodes_edges.py:1710",
+     "status": "outside-subset",
+     "reason": "iFind search semantics (tokenizer, word dictionary written outside the transaction, ranking) not modelled; only the per-row index entries' transaction behaviour is (X-FX)"
+    },
+    {
+     "index": 7,
+     "feature": "Process-private globals (^||)",
+     "source": "iris_src/src/Graph/KG/PropWrite.cls:69, iris_src/src/Graph/KG/PropWrite.cls:98",
+     "status": "in-contract",
+     "clauses": [
+      "E-PPG"
+     ]
+    },
+    {
+     "index": 8,
+     "feature": "Functional index callbacks / %BuildIndices / BUILD INDEX",
+     "source": "iris_vector_graph/_engine/nodes_edges.py:2409, iris_vector_graph/bulk_loader.py:503",
+     "status": "in-contract",
+     "clauses": [
+      "X-FX",
+      "X-NOINDEX"
+     ],
+     "note": "carrier: %iFind.Index.Basic (a %Library.FunctionalIndex shipped with IRIS); the product's own callbacks are not compiled here"
+    },
+    {
+     "index": 9,
+     "feature": "Native API from Python (classMethod*, globals)",
+     "source": "iris_vector_graph/_engine/nodes_edges.py:428, iris_vector_graph/_engine/nodes_edges.py:484",
+     "status": "in-contract",
+     "clauses": [
+      "E-GLOBALS"
+     ],
+     "note": "MERGE and $LIST slot access are not modelled"
+    },
+    {
+     "index": 10,
+     "feature": "Embedded/dynamic SQL in ObjectScript (&sql, %SQL.Statement)",
+     "source": "iris_src/src/Graph/KG/PropWrite.cls:71",
+     "status": "outside-subset",
+     "reason": "embedded SQL (&sql) compiled into classes: assumed equal to dynamic SQL (premise E-1), untested; %SQL.Statement %ExecDirect is in the contract (E-PARTIAL, X-FX, X-STMT, X-NULL)"
+    },
+    {
+     "index": 11,
+     "feature": "%DynamicObject / JSON functions",
+     "source": "iris_vector_graph/prop_values.py:142, iris_vector_graph/prop_values.py:146",
+     "status": "outside-subset",
+     "reason": "%DynamicObject / JSON functions not modelled"
+    },
+    {
+     "index": 12,
+     "feature": "$ZStrip / $ZConvert character classes",
+     "source": "iris_src/src/Graph/KG/PropWrite.cls:68",
+     "status": "in-contract",
+     "clauses": [
+      "X-ZSTRIP"
+     ],
+     "note": "$ZCONVERT not modelled"
+    },
+    {
+     "index": 13,
+     "feature": "Global collation order ($Order/$Query)",
+     "source": "iris_src/src/Graph/KG/PropWrite.cls:90",
+     "status": "in-contract",
+     "clauses": [
+      "X-ORDER"
+     ],
+     "note": "$QUERY and the ]] operator rely on the same collation but are not exercised"
+    },
+    {
+     "index": 14,
+     "feature": "Class dictionary reads (^oddDEF, %Dictionary)",
+     "source": "iris_src/src/Graph/KG/PropWrite.cls:71, iris_src/src/Graph/KG/PropWrite.cls:76",
+     "status": "outside-subset",
+     "reason": "class dictionary and run-time compilation not modelled (compiling is out of the audit's scope)"
+    },
+    {
+     "index": 15,
+     "feature": "SQLCODE-specific handling",
+     "source": "iris_vector_graph/_dictionary.py:32, iris_vector_graph/_dictionary.py:34",
+     "status": "outside-subset",
+     "reason": "only -30, -110, -119, -201, -359 and -400 are contract observations; the other codes the module maps are not modelled"
+    },
+    {
+     "index": 16,
+     "feature": "TOP / LIMIT / FETCH FIRST result prefix",
+     "source": "iris_vector_graph/_engine/nodes_edges.py:810, iris_vector_graph/_engine/nodes_edges.py:820",
+     "status": "outside-subset",
+     "reason": "result-prefix queries not modelled"
+    }
+   ],
+   "counts": {
+    "in-contract": 11,
+    "availability-only": 0,
+    "outside-subset": 6
+   },
+   "gate_3.2_coverage": "open",
+   "open_because": [
+    "%DynamicObject / JSON functions not modelled",
+    "class dictionary and run-time compilation not modelled (compiling is out of the audit's scope)",
+    "embedded SQL (&sql) compiled into classes: assumed equal to dynamic SQL (premise E-1), untested; %SQL.Statement %ExecDirect is in the contract (E-PARTIAL, X-FX, X-STMT, X-NULL)",
+    "iFind search semantics (tokenizer, word dictionary written outside the transaction, ranking) not modelled; only the per-row index entries' transaction behaviour is (X-FX)",
+    "only -30, -110, -119, -201, -359 and -400 are contract observations; the other codes the module maps are not modelled",
+    "result-prefix queries not modelled"
+   ]
+  },
+  "04": {
+   "features": [
+    {
+     "index": 0,
+     "feature": "LOCK with timeout",
+     "source": "iris_src/src/Graph/KG/Adj.cls:68, iris_src/src/Graph/KG/Adj.cls:144",
+     "status": "in-contract",
+     "clauses": [
+      "E-LOCK-WAIT",
+      "E-LOCK-COUNT",
+      "E-LOCK-NAMES"
+     ],
+     "note": "timeouts are modelled as wait / no-wait"
+    },
+    {
+     "index": 1,
+     "feature": "LOCK shared mode (#\"S\")",
+     "source": "iris_src/src/Graph/KG/Adjacency.cls:63, iris_src/src/Graph/KG/Adjacency.cls:93",
+     "status": "in-contract",
+     "clauses": [
+      "E-LOCK-MODES",
+      "E-LOCK-WAIT"
+     ],
+     "note": "timeouts are modelled as wait / no-wait"
+    },
+    {
+     "index": 2,
+     "feature": "LOCK exclusive probe with 0 timeout (#\"E\":0)",
+     "source": "iris_src/src/Graph/KG/Adj.cls:68, iris_src/src/Graph/KG/Adj.cls:144",
+     "status": "in-contract",
+     "clauses": [
+      "E-LOCK-WAIT",
+      "E-LOCK-COUNT",
+      "E-LOCK-NAMES"
+     ],
+     "note": "timeouts are modelled as wait / no-wait"
+    },
+    {
+     "index": 3,
+     "feature": "LOCK release inside a transaction (deferred unlock, P-0003)",
+     "source": "iris_src/src/Graph/KG/Adj.cls:71, iris_src/src/Graph/KG/Adj.cls:147",
+     "status": "in-contract",
+     "clauses": [
+      "E-LOCK-DEFER"
+     ]
+    },
+    {
+     "index": 4,
+     "feature": "$Increment (not undone by rollback, P-0401)",
+     "source": "iris_src/src/Graph/KG/Adjacency.cls:67, iris_src/src/Graph/KG/Adjacency.cls:89",
+     "status": "in-contract",
+     "clauses": [
+      "E-INCR"
+     ]
+    },
+    {
+     "index": 5,
+     "feature": "TSTART / TCOMMIT nesting",
+     "source": "iris_src/src/Graph/KG/EdgeScan.cls:277, iris_src/src/Graph/KG/EdgeScan.cls:307",
+     "status": "in-contract",
+     "clauses": [
+      "E-NEST",
+      "E-PARTIAL"
+     ]
+    },
+    {
+     "index": 6,
+     "feature": "TROLLBACK with no argument (ends every level, P-0409)",
+     "source": "iris_src/src/Graph/KG/TraversalBuild.cls:50, iris_src/src/Graph/KG/TraversalBuild.cls:156",
+     "status": "in-contract",
+     "clauses": [
+      "E-NEST",
+      "E-PARTIAL"
+     ]
+    },
+    {
+     "index": 7,
+     "feature": "TROLLBACK 1 (one level)",
+     "source": "iris_src/src/Graph/KG/EdgeScan.cls:309, iris_src/src/Graph/KG/EdgeScan.cls:426",
+     "status": "in-contract",
+     "clauses": [
+      "E-NEST",
+      "E-PARTIAL"
+     ]
+    },
+    {
+     "index": 8,
+     "feature": "$TLevel",
+     "source": "iris_src/src/Graph/KG/EdgeScan.cls:275, iris_src/src/Graph/KG/EdgeScan.cls:309",
+     "status": "in-contract",
+     "clauses": [
+      "E-NEST",
+      "E-PARTIAL"
+     ]
+    },
+    {
+     "index": 9,
+     "feature": "%IGNOREINDEX",
+     "source": "iris_src/src/Graph/KG/EdgeScan.cls:373, iris_src/src/Graph/KG/EdgeScan.cls:376",
+     "status": "outside-subset",
+     "reason": "only the `%IGNOREINDEX *` full scan is exercised (X-NOINDEX); the product's named-index forms are not"
+    },
+    {
+     "index": 10,
+     "feature": "DDL (CREATE/ALTER/DROP TABLE, INDEX, VIEW)",
+     "source": "iris_src/src/Graph/KG/TraversalBuild.cls:75",
+     "status": "in-contract",
+     "clauses": [
+      "X-DDL"
+     ],
+     "note": "DDL in a transaction is rolled back with it (catalog); use of a table after its CREATE was rolled back is outside"
+    },
+    {
+     "index": 11,
+     "feature": "Process-private globals (^||)",
+     "source": "iris_src/src/Graph/KG/Adjacency.cls:68, iris_src/src/Graph/KG/Adjacency.cls:69",
+     "status": "in-contract",
+     "clauses": [
+      "E-PPG"
+     ]
+    },
+    {
+     "index": 12,
+     "feature": "Functional index callbacks / %BuildIndices / BUILD INDEX",
+     "source": "iris_src/src/Graph/KG/Adjacency.cls:228, iris_src/src/Graph/KG/TraversalBuild.cls:63",
+     "status": "in-contract",
+     "clauses": [
+      "X-FX",
+      "X-NOINDEX"
+     ],
+     "note": "carrier: %iFind.Index.Basic (a %Library.FunctionalIndex shipped with IRIS); the product's own callbacks are not compiled here"
+    },
+    {
+     "index": 13,
+     "feature": "Parallel jobs (JOB, WorkMgr, %BuildIndices jobs)",
+     "source": "iris_src/src/Graph/KG/TraversalBuild.cls:131, iris_src/src/Graph/KG/TraversalBuild.cls:337",
+     "status": "outside-subset",
+     "reason": "JOB / WorkMgr processes not modelled"
+    },
+    {
+     "index": 14,
+     "feature": "Native API from Python (classMethod*, globals)",
+     "source": "iris_vector_graph/_edgeless.py:28, iris_vector_graph/_engine/admin.py:793",
+     "status": "in-contract",
+     "clauses": [
+      "E-GLOBALS"
+     ],
+     "note": "MERGE and $LIST slot access are not modelled"
+    },
+    {
+     "index": 15,
+     "feature": "Embedded/dynamic SQL in ObjectScript (&sql, %SQL.Statement)",
+     "source": "iris_src/src/Graph/KG/Adjacency.cls:597, iris_src/src/Graph/KG/Adjacency.cls:603",
+     "status": "outside-subset",
+     "reason": "embedded SQL (&sql) compiled into classes: assumed equal to dynamic SQL (premise E-1), untested; %SQL.Statement %ExecDirect is in the contract (E-PARTIAL, X-FX, X-STMT, X-NULL)"
+    },
+    {
+     "index": 16,
+     "feature": "%DynamicObject / JSON functions",
+     "source": "iris_src/src/Graph/KG/Adjacency.cls:584, iris_src/src/Graph/KG/Adjacency.cls:589",
+     "status": "outside-subset",
+     "reason": "%DynamicObject / JSON functions not modelled"
+    },
+    {
+     "index": 17,
+     "feature": "Global collation order ($Order/$Query)",
+     "source": "iris_src/src/Graph/KG/Adj.cls:116, iris_src/src/Graph/KG/Adj.cls:128",
+     "status": "in-contract",
+     "clauses": [
+      "X-ORDER"
+     ],
+     "note": "$QUERY and the ]] operator rely on the same collation but are not exercised"
+    },
+    {
+     "index": 18,
+     "feature": "Global KILL of a subtree / Merge",
+     "source": "iris_src/src/Graph/KG/Adj.cls:79, iris_src/src/Graph/KG/Adj.cls:170",
+     "status": "in-contract",
+     "clauses": [
+      "E-GLOBALS"
+     ],
+     "note": "MERGE and $LIST slot access are not modelled"
+    },
+    {
+     "index": 19,
+     "feature": "Class dictionary reads (^oddDEF, %Dictionary)",
+     "source": "iris_src/src/Graph/KG/Adjacency.cls:552",
+     "status": "outside-subset",
+     "reason": "class dictionary and run-time compilation not modelled (compiling is out of the audit's scope)"
+    },
+    {
+     "index": 20,
+     "feature": "SQL empty string as $Char(0)",
+     "source": "iris_src/src/Graph/KG/Adjacency.cls:582, iris_src/src/Graph/KG/Adjacency.cls:583",
+     "status": "in-contract",
+     "clauses": [
+      "X-NULL"
+     ],
+     "note": "the embedded-Python path (P-1709) is outside"
+    },
+    {
+     "index": 21,
+     "feature": "SQLCODE-specific handling",
+     "source": "iris_src/src/Graph/KG/Adjacency.cls:598, iris_src/src/Graph/KG/Adjacency.cls:599",
+     "status": "outside-subset",
+     "reason": "only -30, -110, -119, -201, -359 and -400 are contract observations; the other codes the module maps are not modelled"
+    },
+    {
+     "index": 22,
+     "feature": "%Stream",
+     "source": "iris_src/src/Graph/KG/EdgeScan.cls:317",
+     "status": "outside-subset",
+     "reason": "streams not modelled"
+    }
+   ],
+   "counts": {
+    "in-contract": 16,
+    "availability-only": 0,
+    "outside-subset": 7
+   },
+   "gate_3.2_coverage": "open",
+   "open_because": [
+    "%DynamicObject / JSON functions not modelled",
+    "JOB / WorkMgr processes not modelled",
+    "class dictionary and run-time compilation not modelled (compiling is out of the audit's scope)",
+    "embedded SQL (&sql) compiled into classes: assumed equal to dynamic SQL (premise E-1), untested; %SQL.Statement %ExecDirect is in the contract (E-PARTIAL, X-FX, X-STMT, X-NULL)",
+    "only -30, -110, -119, -201, -359 and -400 are contract observations; the other codes the module maps are not modelled",
+    "only the `%IGNOREINDEX *` full scan is exercised (X-NOINDEX); the product's named-index forms are not",
+    "streams not modelled"
+   ]
+  },
+  "05": {
+   "features": [
+    {
+     "index": 0,
+     "feature": "$Increment (not undone by rollback, P-0401)",
+     "source": "iris_src/src/Graph/KG/TemporalIndex.cls:102, iris_src/src/Graph/KG/TemporalIndex.cls:117",
+     "status": "in-contract",
+     "clauses": [
+      "E-INCR"
+     ]
+    },
+    {
+     "index": 1,
+     "feature": "TSTART / TCOMMIT nesting",
+     "source": "iris_src/src/Graph/KG/TemporalIndex.cls:1103, iris_src/src/Graph/KG/TemporalIndex.cls:1106",
+     "status": "in-contract",
+     "clauses": [
+      "E-NEST",
+      "E-PARTIAL"
+     ]
+    },
+    {
+     "index": 2,
+     "feature": "TROLLBACK 1 (one level)",
+     "source": "iris_src/src/Graph/KG/TemporalIndex.cls:1108, iris_src/src/Graph/KG/TemporalPolicy.cls:215",
+     "status": "in-contract",
+     "clauses": [
+      "E-NEST",
+      "E-PARTIAL"
+     ]
+    },
+    {
+     "index": 3,
+     "feature": "$TLevel",
+     "source": "iris_src/src/Graph/KG/TemporalIndex.cls:1101, iris_src/src/Graph/KG/TemporalIndex.cls:1108",
+     "status": "in-contract",
+     "clauses": [
+      "E-NEST",
+      "E-PARTIAL"
+     ]
+    },
+    {
+     "index": 4,
+     "feature": "SQL transaction control from Python (commit/rollback/autocommit)",
+     "source": "iris_vector_graph/_engine/temporal.py:322, iris_vector_graph/_engine/temporal.py:474",
+     "status": "in-contract",
+     "clauses": [
+      "E-SQL-START",
+      "E-SQL-END",
+      "E-DRV",
+      "E-AUTOCOMMIT"
+     ]
+    },
+    {
+     "index": 5,
+     "feature": "Process-private globals (^||)",
+     "source": "iris_src/src/Graph/KG/TemporalIndex.cls:947, iris_src/src/Graph/KG/TemporalIndex.cls:971",
+     "status": "in-contract",
+     "clauses": [
+      "E-PPG"
+     ]
+    },
+    {
+     "index": 6,
+     "feature": "Native API from Python (classMethod*, globals)",
+     "source": "iris_vector_graph/_engine/temporal.py:619, iris_vector_graph/_engine/temporal.py:637",
+     "status": "in-contract",
+     "clauses": [
+      "E-GLOBALS"
+     ],
+     "note": "MERGE and $LIST slot access are not modelled"
+    },
+    {
+     "index": 7,
+     "feature": "Embedded/dynamic SQL in ObjectScript (&sql, %SQL.Statement)",
+     "source": "iris_src/src/Graph/KG/Adjacency.cls:597, iris_src/src/Graph/KG/Adjacency.cls:603",
+     "status": "outside-subset",
+     "reason": "embedded SQL (&sql) compiled into classes: assumed equal to dynamic SQL (premise E-1), untested; %SQL.Statement %ExecDirect is in the contract (E-PARTIAL, X-FX, X-STMT, X-NULL)"
+    },
+    {
+     "index": 8,
+     "feature": "%DynamicObject / JSON functions",
+     "source": "iris_src/src/Graph/KG/Adjacency.cls:584, iris_src/src/Graph/KG/Adjacency.cls:589",
+     "status": "outside-subset",
+     "reason": "%DynamicObject / JSON functions not modelled"
+    },
+    {
+     "index": 9,
+     "feature": "$ZStrip / $ZConvert character classes",
+     "source": "iris_src/src/Graph/KG/TemporalWindow.cls:265, iris_src/src/Graph/KG/TemporalWindow.cls:266",
+     "status": "in-contract",
+     "clauses": [
+      "X-ZSTRIP"
+     ],
+     "note": "$ZCONVERT not modelled"
+    },
+    {
+     "index": 10,
+     "feature": "Global collation order ($Order/$Query)",
+     "source": "iris_src/src/Graph/KG/Adjacency.cls:664, iris_src/src/Graph/KG/Adjacency.cls:668",
+     "status": "in-contract",
+     "clauses": [
+      "X-ORDER"
+     ],
+     "note": "$QUERY and the ]] operator rely on the same collation but are not exercised"
+    },
+    {
+     "index": 11,
+     "feature": "Global KILL of a subtree / Merge",
+     "source": "iris_src/src/Graph/KG/TemporalIndex.cls:83, iris_src/src/Graph/KG/TemporalIndex.cls:91",
+     "status": "in-contract",
+     "clauses": [
+      "E-GLOBALS"
+     ],
+     "note": "MERGE and $LIST slot access are not modelled"
+    },
+    {
+     "index": 12,
+     "feature": "Time functions (DATEDIFF, $ZTimeStamp, $Horolog)",
+     "source": "iris_src/src/Graph/KG/TemporalIndex.cls:51, iris_src/src/Graph/KG/TemporalIndex.cls:170",
+     "status": "outside-subset",
+     "reason": "pure functions and clocks not modelled"
+    },
+    {
+     "index": 13,
+     "feature": "SQL empty string as $Char(0)",
+     "source": "iris_src/src/Graph/KG/Adjacency.cls:582, iris_src/src/Graph/KG/Adjacency.cls:583",
+     "status": "in-contract",
+     "clauses": [
+      "X-NULL"
+     ],
+     "note": "the embedded-Python path (P-1709) is outside"
+    },
+    {
+     "index": 14,
+     "feature": "SQLCODE-specific handling",
+     "source": "iris_src/src/Graph/KG/Adjacency.cls:598, iris_src/src/Graph/KG/Adjacency.cls:599",
+     "status": "outside-subset",
+     "reason": "only -30, -110, -119, -201, -359 and -400 are contract observations; the other codes the module maps are not modelled"
+    }
+   ],
+   "counts": {
+    "in-contract": 11,
+    "availability-only": 0,
+    "outside-subset": 4
+   },
+   "gate_3.2_coverage": "open",
+   "open_because": [
+    "%DynamicObject / JSON functions not modelled",
+    "embedded SQL (&sql) compiled into classes: assumed equal to dynamic SQL (premise E-1), untested; %SQL.Statement %ExecDirect is in the contract (E-PARTIAL, X-FX, X-STMT, X-NULL)",
+    "only -30, -110, -119, -201, -359 and -400 are contract observations; the other codes the module maps are not modelled",
+    "pure functions and clocks not modelled"
+   ]
+  },
+  "06": {
+   "features": [
+    {
+     "index": 0,
+     "feature": "$Increment (not undone by rollback, P-0401)",
+     "source": "iris_src/src/Graph/KG/EmbedQueue.cls:91",
+     "status": "in-contract",
+     "clauses": [
+      "E-INCR"
+     ]
+    },
+    {
+     "index": 1,
+     "feature": "SQL transaction control from Python (commit/rollback/autocommit)",
+     "source": "iris_vector_graph/_engine/embeddings.py:1004, iris_vector_graph/_engine/embeddings.py:1022",
+     "status": "in-contract",
+     "clauses": [
+      "E-SQL-START",
+      "E-SQL-END",
+      "E-DRV",
+      "E-AUTOCOMMIT"
+     ]
+    },
+    {
+     "index": 2,
+     "feature": "DDL (CREATE/ALTER/DROP TABLE, INDEX, VIEW)",
+     "source": "iris_vector_graph/_engine/embeddings.py:254, iris_vector_graph/_engine/schema.py:842",
+     "status": "in-contract",
+     "clauses": [
+      "X-DDL"
+     ],
+     "note": "DDL in a transaction is rolled back with it (catalog); use of a table after its CREATE was rolled back is outside"
+    },
+    {
+     "index": 3,
+     "feature": "Vector SQL (VECTOR type, TO_VECTOR, VECTOR_COSINE/DOT)",
+     "source": "iris_src/src/Graph/KG/EmbedQueue.cls:284, iris_src/src/Graph/KG/EmbedQueue.cls:316",
+     "status": "availability-only",
+     "clauses": [
+      "X-VEC"
+     ],
+     "note": "VECTOR_COSINE / VECTOR_DOT_PRODUCT exist, VECTOR_L2 does not (-359); TO_VECTOR(text, DOUBLE)"
+    },
+    {
+     "index": 4,
+     "feature": "HNSW vector index",
+     "source": "iris_vector_graph/_engine/schema.py:334, iris_vector_graph/_engine/vector.py:1428",
+     "status": "outside-subset",
+     "reason": "HNSW vector index maintenance is outside the subset"
+    },
+    {
+     "index": 5,
+     "feature": "$vectorop / $vector (ObjectScript vectors)",
+     "source": "iris_src/src/Graph/KG/IVFIndex.cls:24, iris_src/src/Graph/KG/IVFIndex.cls:68",
+     "status": "in-contract",
+     "clauses": [
+      "X-VEC"
+     ],
+     "note": "$VECTOR element set/get and rollback; the Native API cannot read a $VECTOR value (<LIST ERROR>); $VECTOROP functions not modelled"
+    },
+    {
+     "index": 6,
+     "feature": "IRIS EMBEDDING() SQL function / %Embedding config",
+     "source": "iris_src/src/Graph/KG/EmbedQueue.cls:308, iris_vector_graph/_engine/embeddings.py:153",
+     "status": "outside-subset",
+     "reason": "EMBEDDING() / %Embedding configuration not modelled"
+    },
+    {
+     "index": 7,
+     "feature": "iFind full-text index",
+     "source": "iris_vector_graph/_engine/vector.py:1510, iris_vector_graph/migrations/docs_and_edge_vectors.py:180",
+     "status": "outside-subset",
+     "reason": "iFind search semantics (tokenizer, word dictionary written outside the transaction, ranking) not modelled; only the per-row index entries' transaction behaviour is (X-FX)"
+    },
+    {
+     "index": 8,
+     "feature": "Process-private globals (^||)",
+     "source": "iris_src/src/Graph/KG/IVFIndex.cls:71, iris_src/src/Graph/KG/IVFIndex.cls:83",
+     "status": "in-contract",
+     "clauses": [
+      "E-PPG"
+     ]
+    },
+    {
+     "index": 9,
+     "feature": "Native API from Python (classMethod*, globals)",
+     "source": "iris_vector_graph/_engine/vector.py:1566, iris_vector_graph/_engine/vector.py:1582",
+     "status": "in-contract",
+     "clauses": [
+      "E-GLOBALS"
+     ],
+     "note": "MERGE and $LIST slot access are not modelled"
+    },
+    {
+     "index": 10,
+     "feature": "Embedded/dynamic SQL in ObjectScript (&sql, %SQL.Statement)",
+     "source": "iris_src/src/Graph/KG/EmbedQueue.cls:207, iris_src/src/Graph/KG/EmbedQueue.cls:225",
+     "status": "outside-subset",
+     "reason": "embedded SQL (&sql) compiled into classes: assumed equal to dynamic SQL (premise E-1), untested; %SQL.Statement %ExecDirect is in the contract (E-PARTIAL, X-FX, X-STMT, X-NULL)"
+    },
+    {
+     "index": 11,
+     "feature": "%DynamicObject / JSON functions",
+     "source": "iris_src/src/Graph/KG/EmbedQueue.cls:67, iris_src/src/Graph/KG/EmbedQueue.cls:86",
+     "status": "outside-subset",
+     "reason": "%DynamicObject / JSON functions not modelled"
+    },
+    {
+     "index": 12,
+     "feature": "$ZStrip / $ZConvert character classes",
+     "source": "iris_src/src/Graph/KG/EmbedQueue.cls:30, iris_src/src/Graph/KG/EmbedQueue.cls:141",
+     "status": "in-contract",
+     "clauses": [
+      "X-ZSTRIP"
+     ],
+     "note": "$ZCONVERT not modelled"
+    },
+    {
+     "index": 13,
+     "feature": "Global collation order ($Order/$Query)",
+     "source": "iris_src/src/Graph/KG/EmbedQueue.cls:118, iris_src/src/Graph/KG/EmbedQueue.cls:173",
+     "status": "in-contract",
+     "clauses": [
+      "X-ORDER"
+     ],
+     "note": "$QUERY and the ]] operator rely on the same collation but are not exercised"
+    },
+    {
+     "index": 14,
+     "feature": "Global KILL of a subtree / Merge",
+     "source": "iris_src/src/Graph/KG/EmbedQueue.cls:191, iris_src/src/Graph/KG/IVFIndex.cls:8",
+     "status": "in-contract",
+     "clauses": [
+      "E-GLOBALS"
+     ],
+     "note": "MERGE and $LIST slot access are not modelled"
+    },
+    {
+     "index": 15,
+     "feature": "Class dictionary reads (^oddDEF, %Dictionary)",
+     "source": "iris_vector_graph/_engine/schema.py:333, iris_vector_graph/schema.py:1999",
+     "status": "outside-subset",
+     "reason": "class dictionary and run-time compilation not modelled (compiling is out of the audit's scope)"
+    },
+    {
+     "index": 16,
+     "feature": "Task Manager (%SYS.Task)",
+     "source": "iris_src/src/Graph/KG/EmbedQueue.cls:353, iris_src/src/Graph/KG/EmbedQueue.cls:354",
+     "status": "outside-subset",
+     "reason": "Task Manager not modelled"
+    },
+    {
+     "index": 17,
+     "feature": "Time functions (DATEDIFF, $ZTimeStamp, $Horolog)",
+     "source": "iris_src/src/Graph/KG/EmbedQueue.cls:58, iris_src/src/Graph/KG/EmbedQueue.cls:100",
+     "status": "outside-subset",
+     "reason": "pure functions and clocks not modelled"
+    },
+    {
+     "index": 18,
+     "feature": "SQL empty string as $Char(0)",
+     "source": "iris_vector_graph/schema.py:2101",
+     "status": "in-contract",
+     "clauses": [
+      "X-NULL"
+     ],
+     "note": "the embedded-Python path (P-1709) is outside"
+    },
+    {
+     "index": 19,
+     "feature": "SQLCODE-specific handling",
+     "source": "iris_src/src/Graph/KG/EmbedQueue.cls:211, iris_src/src/Graph/KG/EmbedQueue.cls:228",
+     "status": "outside-subset",
+     "reason": "only -30, -110, -119, -201, -359 and -400 are contract observations; the other codes the module maps are not modelled"
+    },
+    {
+     "index": 20,
+     "feature": "INSERT OR UPDATE",
+     "source": "iris_src/src/Graph/KG/EmbedQueue.cls:316",
+     "status": "outside-subset",
+     "reason": "INSERT OR UPDATE not modelled"
+    },
+    {
+     "index": 21,
+     "feature": "TOP / LIMIT / FETCH FIRST result prefix",
+     "source": "iris_vector_graph/_engine/vector.py:377, iris_vector_graph/_engine/vector.py:569",
+     "status": "outside-subset",
+     "reason": "result-prefix queries not modelled"
+    }
+   ],
+   "counts": {
+    "in-contract": 10,
+    "availability-only": 1,
+    "outside-subset": 11
+   },
+   "gate_3.2_coverage": "open",
+   "open_because": [
+    "%DynamicObject / JSON functions not modelled",
+    "EMBEDDING() / %Embedding configuration not modelled",
+    "HNSW vector index maintenance is outside the subset",
+    "INSERT OR UPDATE not modelled",
+    "Task Manager not modelled",
+    "class dictionary and run-time compilation not modelled (compiling is out of the audit's scope)",
+    "embedded SQL (&sql) compiled into classes: assumed equal to dynamic SQL (premise E-1), untested; %SQL.Statement %ExecDirect is in the contract (E-PARTIAL, X-FX, X-STMT, X-NULL)",
+    "iFind search semantics (tokenizer, word dictionary written outside the transaction, ranking) not modelled; only the per-row index entries' transaction behaviour is (X-FX)",
+    "only -30, -110, -119, -201, -359 and -400 are contract observations; the other codes the module maps are not modelled",
+    "pure functions and clocks not modelled",
+    "result-prefix queries not modelled"
+   ]
+  },
+  "07": {
+   "features": [
+    {
+     "index": 0,
+     "feature": "LOCK +name:timeout (incremental exclusive lock with timeout, $TEST)",
+     "source": "iris_src/src/Graph/KG/BM25Index.cls:403-410, :534-539",
+     "status": "in-contract",
+     "clauses": [
+      "E-LOCK-WAIT",
+      "E-LOCK-COUNT",
+      "E-LOCK-NAMES"
+     ],
+     "note": "timeouts are modelled as wait / no-wait"
+    },
+    {
+     "index": 1,
+     "feature": "LOCK released when the owning process ends",
+     "source": "iris_src/src/Graph/KG/BM25Index.cls:403-410",
+     "status": "in-contract",
+     "clauses": [
+      "E-STOP"
+     ],
+     "note": "closing a connection is assumed equal to a process stop"
+    },
+    {
+     "index": 2,
+     "feature": "TSTART/TCOMMIT nesting inside a caller's transaction; TROLLBACK with no argument ends every level",
+     "source": "iris_src/src/Graph/KG/BM25Index.cls:460-490, :504-511",
+     "status": "in-contract",
+     "clauses": [
+      "E-NEST",
+      "E-PARTIAL"
+     ]
+    },
+    {
+     "index": 3,
+     "feature": "$TLEVEL",
+     "source": "iris_src/src/Graph/KG/BM25Index.cls:487, :508; iris_vector_graph/_write_txn.py:64-85",
+     "status": "in-contract",
+     "clauses": [
+      "E-NEST",
+      "E-PARTIAL"
+     ]
+    },
+    {
+     "index": 4,
+     "feature": "TROLLBACK undoes Set/Kill but not $Increment (P-0702)",
+     "source": "iris_src/src/Graph/KG/BM25Index.cls:24-26",
+     "status": "in-contract",
+     "clauses": [
+      "E-INCR"
+     ]
+    },
+    {
+     "index": 5,
+     "feature": "Global Kill of a subtree, Set/$Get/$Data/$Order on globals, no transaction (auto-commit per node)",
+     "source": "iris_src/src/Graph/KG/BM25Index.cls:99, :542-572, :587-591",
+     "status": "in-contract",
+     "clauses": [
+      "E-GLOBALS",
+      "X-ORDER",
+      "E-VIS"
+     ]
+    },
+    {
+     "index": 6,
+     "feature": "Visibility of other processes' uncommitted global writes (no read isolation for globals)",
+     "source": "iris_src/src/Graph/KG/BM25Index.cls:236-374",
+     "status": "in-contract",
+     "clauses": [
+      "E-VIS"
+     ]
+    },
+    {
+     "index": 7,
+     "feature": "Global subscript length limit (<SUBSCRIPT> error)",
+     "source": "iris_src/src/Graph/KG/BM25Index.cls:194, :418, :474",
+     "status": "outside-subset",
+     "reason": "engine limits (string, subscript, parameter count) not modelled"
+    },
+    {
+     "index": 8,
+     "feature": "Process-private globals ^|| (P-0704)",
+     "source": "iris_src/src/Graph/KG/BM25Index.cls:223-233, :261",
+     "status": "in-contract",
+     "clauses": [
+      "E-PPG"
+     ]
+    },
+    {
+     "index": 9,
+     "feature": "Canonical numeric subscript collation (P-0705)",
+     "source": "iris_src/src/Graph/KG/BM25Index.cls:300-374",
+     "status": "in-contract",
+     "clauses": [
+      "X-ORDER"
+     ],
+     "note": "$QUERY and the ]] operator rely on the same collation but are not exercised"
+    },
+    {
+     "index": 10,
+     "feature": "%iFind.Utils.Analyze(text,'en',1) tokenizer (P-0701)",
+     "source": "iris_src/src/Graph/KG/BM25Index.cls:60-64",
+     "status": "outside-subset",
+     "reason": "iFind tokenizer / analysis not modelled"
+    },
+    {
+     "index": 11,
+     "feature": "iFind index on docs and %ID %FIND search_index(...) predicate (P-0707)",
+     "source": "iris_vector_graph/schema.py:2485-2503; iris_vector_graph/_engine/vector.py:917-1054",
+     "status": "outside-subset",
+     "reason": "iFind search semantics (tokenizer, word dictionary written outside the transaction, ranking) not modelled; only the per-row index entries' transaction behaviour is (X-FX)"
+    },
+    {
+     "index": 12,
+     "feature": "%SQL.Statement dynamic SQL at default isolation (read uncommitted) with empty parameter bound as NULL (P-0706)",
+     "source": "iris_src/src/Graph/KG/BM25Index.cls:123-131",
+     "status": "in-contract",
+     "clauses": [
+      "X-NULL"
+     ],
+     "note": "the embedded-Python path (P-1709) is outside"
+    },
+    {
+     "index": 13,
+     "feature": "SQL procedures/functions (CREATE OR REPLACE PROCEDURE ... LANGUAGE SQL; [SqlProc] class methods), JSON_TABLE over a function result",
+     "source": "iris_vector_graph/schema.py:2485-2560; iris_src/src/Graph/KG/SqlProcs.cls:131-135; iris_vector_graph/cypher/translator.py:3168-3190",
+     "status": "outside-subset",
+     "reason": "%DynamicObject / JSON functions not modelled"
+    },
+    {
+     "index": 14,
+     "feature": "SQL privilege check ($SYSTEM.SQL.Security.CheckPrivilege via Graph.KG.SqlPrivilege)",
+     "source": "iris_src/src/Graph/KG/SqlProcs.cls:131-135",
+     "status": "outside-subset",
+     "reason": "web dispatch, roles and SQL privileges not modelled"
+    },
+    {
+     "index": 15,
+     "feature": "Embedded Python (Language = python) and iris.gref global walk",
+     "source": "iris_src/src/Graph/KG/PyOps.cls:370-421; iris_vector_graph/_engine/vector.py:84-104",
+     "status": "outside-subset",
+     "reason": "embedded Python is not driven by the contract (needs irispython in the container)"
+    },
+    {
+     "index": 16,
+     "feature": "Native API classMethodValue sharing the DBAPI connection's server process",
+     "source": "iris_vector_graph/_engine/vector.py:1749-1880",
+     "status": "in-contract",
+     "clauses": [
+      "E-CALLER"
+     ]
+    },
+    {
+     "index": 17,
+     "feature": "SQL START TRANSACTION/COMMIT/ROLLBACK end every level (driver autocommit)",
+     "source": "iris_vector_graph/_write_txn.py:15-18",
+     "status": "in-contract",
+     "clauses": [
+      "E-SQL-END",
+      "E-SQL-START"
+     ],
+     "note": "the contract refutes the premise on 2026.1: SQL COMMIT / ROLLBACK end one level"
+    },
+    {
+     "index": 18,
+     "feature": "Journaling of the database holding ^BM25Idx",
+     "source": "experiment/playbook-completion/traces/journal.py",
+     "status": "outside-subset",
+     "reason": "the journal is the audit's oracle, not a contract clause"
+    },
+    {
+     "index": 19,
+     "feature": "%CSP.REST routing",
+     "source": "iris_src/src/Graph/KG/Service.cls:7-9, :286-302",
+     "status": "outside-subset",
+     "reason": "web dispatch, roles and SQL privileges not modelled"
+    }
+   ],
+   "counts": {
+    "in-contract": 12,
+    "availability-only": 0,
+    "outside-subset": 8
+   },
+   "gate_3.2_coverage": "open",
+   "open_because": [
+    "%DynamicObject / JSON functions not modelled",
+    "embedded Python is not driven by the contract (needs irispython in the container)",
+    "engine limits (string, subscript, parameter count) not modelled",
+    "iFind search semantics (tokenizer, word dictionary written outside the transaction, ranking) not modelled; only the per-row index entries' transaction behaviour is (X-FX)",
+    "iFind tokenizer / analysis not modelled",
+    "the journal is the audit's oracle, not a contract clause",
+    "web dispatch, roles and SQL privileges not modelled"
+   ]
+  },
+  "08": {
+   "features": [
+    {
+     "index": 0,
+     "feature": "TSTART/TCOMMIT/TROLLBACK 1 nesting, reached as SQL functions on the writing cursor (one level per write query, under a caller's SQL START TRANSACTION or driver autocommit-off)",
+     "source": "iris_src/src/Graph/KG/Txn.cls:19-58; iris_vector_graph/_write_txn.py:1-30, 275",
+     "status": "in-contract",
+     "clauses": [
+      "E-NEST",
+      "E-PARTIAL",
+      "E-AUTOCOMMIT",
+      "E-CALLER"
+     ],
+     "note": "the product's SQL functions (Graph_KG.Txn_*) are not callable in AUDITENV; TSTART on the cursor's process is E-CALLER"
+    },
+    {
+     "index": 1,
+     "feature": "SQL START TRANSACTION inside a transaction is a no-op; SQL COMMIT/ROLLBACK end every level",
+     "source": "iris_vector_graph/_write_txn.py:13-20",
+     "status": "in-contract",
+     "clauses": [
+      "E-SQL-END",
+      "E-SQL-START"
+     ],
+     "note": "the contract refutes the premise on 2026.1: SQL COMMIT / ROLLBACK end one level"
+    },
+    {
+     "index": 2,
+     "feature": "SELECT $TLEVEL over SQL",
+     "source": "iris_vector_graph/_write_txn.py:64-90",
+     "status": "in-contract",
+     "clauses": [
+      "X-TLEVEL-SQL",
+      "E-NEST"
+     ]
+    },
+    {
+     "index": 3,
+     "feature": "Statement-level atomicity: a failed SQL statement undoes only itself; the transaction stays open (P-0803)",
+     "source": "iris_vector_graph/stores/iris_sql_store.py:1552-1553",
+     "status": "in-contract",
+     "clauses": [
+      "X-STMT"
+     ]
+    },
+    {
+     "index": 4,
+     "feature": "Unique index violation SQLCODE -119 writes no row (P-0804)",
+     "source": "iris_vector_graph/_write_txn.py:46-49",
+     "status": "in-contract",
+     "clauses": [
+      "E-UNIQUE",
+      "X-STMT"
+     ]
+    },
+    {
+     "index": 5,
+     "feature": "%Library.FunctionalIndex callbacks run in the row's process and transaction; TROLLBACK undoes their global SETs (P-0801)",
+     "source": "iris_src/src/Graph/KG/AdjIndex.cls:1-26",
+     "status": "in-contract",
+     "clauses": [
+      "X-FX",
+      "X-NOINDEX"
+     ],
+     "note": "carrier: %iFind.Index.Basic (a %Library.FunctionalIndex shipped with IRIS); the product's own callbacks are not compiled here"
+    },
+    {
+     "index": 6,
+     "feature": "$INCREMENT is not undone by TROLLBACK",
+     "source": "iris_src/src/Graph/KG/Adjacency.cls:23-30, 89-107",
+     "status": "in-contract",
+     "clauses": [
+      "E-INCR"
+     ]
+    },
+    {
+     "index": 7,
+     "feature": "LOCK +^G#\"S\" shared lock with timeout (5 s), held to transaction end when taken inside a transaction",
+     "source": "iris_src/src/Graph/KG/Adjacency.cls:23-31, 61-74",
+     "status": "in-contract",
+     "clauses": [
+      "E-LOCK-MODES",
+      "E-LOCK-DEFER",
+      "E-LOCK-WAIT"
+     ],
+     "note": "timeouts are modelled as wait / no-wait"
+    },
+    {
+     "index": 8,
+     "feature": "Default SQL/global isolation: read uncommitted (no %NOLOCK used; P-0002)",
+     "source": "footprints/08.json (grep %NOLOCK = 0 in translator/query/store)",
+     "status": "in-contract",
+     "clauses": [
+      "E-VIS"
+     ]
+    },
+    {
+     "index": 9,
+     "feature": "INSERT ... SELECT ... WHERE NOT EXISTS guarded inserts (no lock; unique keys as backstop)",
+     "source": "iris_vector_graph/cypher/translator.py:10306-10365",
+     "status": "in-contract",
+     "clauses": [
+      "E-UNIQUE",
+      "E-VIS",
+      "X-STMT"
+     ],
+     "note": "the guard takes no lock; the unique key is the backstop (E-UNIQUE)"
+    },
+    {
+     "index": 10,
+     "feature": "JSON_TABLE over a SQL function's JSON result",
+     "source": "iris_vector_graph/cypher/translator.py:15421-15431",
+     "status": "outside-subset",
+     "reason": "%DynamicObject / JSON functions not modelled"
+    },
+    {
+     "index": 11,
+     "feature": "JSON_ARRAYAGG, LIST(), %EXACT, %SQLUPPER, %IGNOREINDEX hints, CAST, COALESCE in generated SQL",
+     "source": "iris_vector_graph/cypher/translator.py:1289, 5941-5945",
+     "status": "outside-subset",
+     "reason": "%DynamicObject / JSON functions not modelled"
+    },
+    {
+     "index": 12,
+     "feature": "CREATE OR REPLACE FUNCTION ... LANGUAGE OBJECTSCRIPT (SQL UDFs) and [SqlProc] class methods projected as SQL functions",
+     "source": "iris_vector_graph/schema.py:2176-2310; iris_src/src/Graph/KG/SqlProcs.cls:1-20",
+     "status": "outside-subset",
+     "reason": "SQL routines (compiled) not modelled"
+    },
+    {
+     "index": 13,
+     "feature": "%Library.DynamicObject / DynamicArray JSON (%FromJSON, %GetTypeOf, %Get(key,,\"json\"))",
+     "source": "iris_vector_graph/schema.py:2185-2310; iris_src/src/Graph/KG/CypherFn.cls:28-255",
+     "status": "outside-subset",
+     "reason": "%DynamicObject / JSON functions not modelled"
+    },
+    {
+     "index": 14,
+     "feature": "$LISTBUILD type byte ($ASCII($LISTBUILD(v),2)) to recover stored number types",
+     "source": "iris_vector_graph/schema.py:2203, 2231-2257",
+     "status": "outside-subset",
+     "reason": "$LIST semantics not modelled"
+    },
+    {
+     "index": 15,
+     "feature": "%Regex.Matcher",
+     "source": "iris_src/src/Graph/KG/CypherFn.cls:13-26",
+     "status": "outside-subset",
+     "reason": "%Regex not modelled"
+    },
+    {
+     "index": 16,
+     "feature": "Dynamic SQL accepts -- comments (no multi-statement per execute; P-0806)",
+     "source": "iris_vector_graph/cypher/translator.py:29578",
+     "status": "outside-subset",
+     "reason": "SQL text parsing not modelled"
+    },
+    {
+     "index": 17,
+     "feature": "%iFind.Index.Basic on rdf_props.val (word dictionary written outside the transaction)",
+     "source": "iris_vector_graph/schema.py:167-178",
+     "status": "outside-subset",
+     "reason": "iFind search semantics (tokenizer, word dictionary written outside the transaction, ranking) not modelled; only the per-row index entries' transaction behaviour is (X-FX)"
+    },
+    {
+     "index": 18,
+     "feature": "Bitmap extent indexes (DDL tables), journaled as BitSET",
+     "source": "$RUN_DIR/breadth-b/live/08-footprints.json",
+     "status": "outside-subset",
+     "reason": "the bitmap extent and index-driven full-table DML are not modelled (env/explore-4 A11: DELETE without WHERE misses %NOINDEX rows; the cases scan with %IGNOREINDEX *)"
+    },
+    {
+     "index": 19,
+     "feature": "SQL string literal escaping by doubling quotes (P-0805)",
+     "source": "iris_vector_graph/cypher/translator.py:2085-2086",
+     "status": "outside-subset",
+     "reason": "SQL text parsing not modelled"
+    },
+    {
+     "index": 20,
+     "feature": "Collation %EXACT on node_id; default SQLUPPER elsewhere",
+     "source": "iris_vector_graph/schema.py:396",
+     "status": "outside-subset",
+     "reason": "SQL collation functions / generated SQL not modelled"
+    },
+    {
+     "index": 21,
+     "feature": "SQLCODE map: -23, -104, -119, -149, -359/-428, <PROTECT>/-99",
+     "source": "iris_vector_graph/_write_txn.py:46-57; iris_vector_graph/stores/iris_sql_store.py:1540-1550",
+     "status": "outside-subset",
+     "reason": "only -30, -110, -119, -201, -359 and -400 are contract observations; -23, -104, -149, -428, -99 and <PROTECT> are not modelled"
+    },
+    {
+     "index": 22,
+     "feature": "DB-API driver: autocommit default; with autocommit off the transaction starts at the first write",
+     "source": "iris_vector_graph/_write_txn.py:22-26, 55-62",
+     "status": "in-contract",
+     "clauses": [
+      "E-SQL-START",
+      "E-SQL-END",
+      "E-DRV",
+      "E-AUTOCOMMIT"
+     ]
+    },
+    {
+     "index": 23,
+     "feature": "Native API classMethodValue on the engine's connection (guard probe of Graph.KG.Ledger.Meta)",
+     "source": "iris_vector_graph/ledger/guard.py:38-59",
+     "status": "in-contract",
+     "clauses": [
+      "E-CALLER"
+     ],
+     "note": "caller identity is an exploratory observation (env/explore-2.log test 7)"
+    },
+    {
+     "index": 24,
+     "feature": "License-limited connections (IRIS Community: 8 here); a connect can fail 'Unable to allocate a license'",
+     "source": "$RUN_DIR/breadth-b/live/08-findings.json (_env); live/breadth-b/08_common.py:conn_retry",
+     "status": "availability-only",
+     "clauses": [],
+     "note": "infrastructure fact (CONVENTIONS connection cap), not a contract clause"
+    }
+   ],
+   "counts": {
+    "in-contract": 12,
+    "availability-only": 1,
+    "outside-subset": 12
+   },
+   "gate_3.2_coverage": "open",
+   "open_because": [
+    "$LIST semantics not modelled",
+    "%DynamicObject / JSON functions not modelled",
+    "%Regex not modelled",
+    "SQL collation functions / generated SQL not modelled",
+    "SQL routines (compiled) not modelled",
+    "SQL text parsing not modelled",
+    "iFind search semantics (tokenizer, word dictionary written outside the transaction, ranking) not modelled; only the per-row index entries' transaction behaviour is (X-FX)",
+    "only -30, -110, -119, -201, -359 and -400 are contract observations; -23, -104, -149, -428, -99 and <PROTECT> are not modelled",
+    "the bitmap extent and index-driven full-table DML are not modelled (env/explore-4 A11: DELETE without WHERE misses %NOINDEX rows; the cases scan with %IGNOREINDEX *)"
+   ]
+  },
+  "09": {
+   "features": [
+    {
+     "index": 0,
+     "feature": "$ZCRC(string, 7) CRC-32 (equals zlib.crc32, b-09-probe)",
+     "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:69; iris_src/src/Graph/KG/Cypher/Exec.cls:1243; iris_src/src/Graph/KG/Cypher/Exec.cls:817; iris_src/src/Graph/KG/Cypher/Exec.cls:828; iris_src/src/Graph/KG/Cypher/Exec.cls:1294; iris_src/src/Graph/KG/Cypher/Exec.cls:1384",
+     "status": "outside-subset",
+     "reason": "pure functions and clocks not modelled"
+    },
+    {
+     "index": 1,
+     "feature": "JOB command (background process, timeout 0, one attempt)",
+     "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:92-99",
+     "status": "outside-subset",
+     "reason": "JOB / WorkMgr processes not modelled"
+    },
+    {
+     "index": 2,
+     "feature": "Run-time class compilation: %SYSTEM.OBJ LoadStream/Compile/Delete/DeletePackage (not transactional; writes class dictionary and routine globals incl. ^oddDEP)",
+     "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:184-215; iris_src/src/Graph/KG/Cypher/Gen.cls:225-230; iris_vector_graph/schema.py:2934-2941",
+     "status": "outside-subset",
+     "reason": "class dictionary and run-time compilation not modelled (compiling is out of the audit's scope)"
+    },
+    {
+     "index": 3,
+     "feature": "A class (re)compiled or deleted takes effect at the next call in every process (P-0904)",
+     "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:199; iris_src/src/Graph/KG/Cypher/Exec.cls:258",
+     "status": "outside-subset",
+     "reason": "class dictionary and run-time compilation not modelled (compiling is out of the audit's scope)"
+    },
+    {
+     "index": 4,
+     "feature": "A failed compile in a process may leave it unable to prepare new SQL (P-0903, 2026.3; not seen on 2026.1)",
+     "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:101; iris_src/src/Graph/KG/Cypher/Gen.cls:205",
+     "status": "outside-subset",
+     "reason": "class dictionary and run-time compilation not modelled (compiling is out of the audit's scope)"
+    },
+    {
+     "index": 5,
+     "feature": "LOCK +^G(sub):0 incremental exclusive lock with zero timeout and $TEST; released on process exit",
+     "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:166-167; iris_src/src/Graph/KG/Cypher/Gen.cls:172; iris_src/src/Graph/KG/Cypher/Gen.cls:180; iris_src/src/Graph/KG/Cypher/Gen.cls:220",
+     "status": "in-contract",
+     "clauses": [
+      "E-LOCK-WAIT",
+      "E-LOCK-COUNT",
+      "E-STOP"
+     ]
+    },
+    {
+     "index": 6,
+     "feature": "Process-private globals ^|| (not journaled, freed at process exit)",
+     "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:35-36; iris_src/src/Graph/KG/Cypher/Exec.cls:176; iris_src/src/Graph/KG/Cypher/Props.cls:16-21; iris_src/src/Graph/KG/Cypher/Gen.cls:30-34; iris_src/src/Graph/KG/Cypher/Exec.cls:817",
+     "status": "in-contract",
+     "clauses": [
+      "E-PPG"
+     ]
+    },
+    {
+     "index": 7,
+     "feature": "%SYSTEM.WorkMgr work queues (worker processes with the caller's namespace and roles, WaitForComplete; P-0905)",
+     "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:467-476",
+     "status": "outside-subset",
+     "reason": "JOB / WorkMgr processes not modelled"
+    },
+    {
+     "index": 8,
+     "feature": "^IRIS.Temp globals (IRISTEMP database, not journaled, shared across processes) and $Increment on them",
+     "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:451-452; iris_src/src/Graph/KG/Cypher/Exec.cls:578; iris_src/src/Graph/KG/Cypher/Exec.cls:1889",
+     "status": "outside-subset",
+     "reason": "IRISTEMP database (not journaled, shared) not modelled"
+    },
+    {
+     "index": 9,
+     "feature": "$Increment on globals (atomic, not rolled back)",
+     "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:35; iris_src/src/Graph/KG/Cypher/Exec.cls:451; iris_src/src/Graph/KG/Cypher/Exec.cls:1889",
+     "status": "in-contract",
+     "clauses": [
+      "E-INCR"
+     ]
+    },
+    {
+     "index": 10,
+     "feature": "Read-uncommitted visibility across processes for globals and SQL at default isolation (P-0002)",
+     "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:999-1094; iris_vector_graph/_engine/query.py:2202-2224",
+     "status": "in-contract",
+     "clauses": [
+      "E-VIS"
+     ]
+    },
+    {
+     "index": 11,
+     "feature": "Dynamic SQL from ObjectScript (%SQL.Statement %ExecDirect, %Prepare, %SQLCODE) inside a native run",
+     "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:866-869; iris_src/src/Graph/KG/Cypher/Exec.cls:897-899; iris_src/src/Graph/KG/Cypher/Exec.cls:1109; iris_src/src/Graph/KG/Cypher/Props.cls:64-70; iris_src/src/Graph/KG/Cypher/Props.cls:112-118",
+     "status": "in-contract",
+     "clauses": [
+      "E-PARTIAL",
+      "X-FX",
+      "X-STMT",
+      "X-NULL"
+     ],
+     "note": "the terminal driver's %ExecDirect path; embedded &sql compiled into classes is assumed equal (premise E-1)"
+    },
+    {
+     "index": 12,
+     "feature": "Class dictionary SQL (%Dictionary.CompiledStorage/CompiledStorageIndex/CompiledIndex/CompiledStorageDataValue/CompiledClass.TimeChanged/CompiledProperty) readable by the role",
+     "source": "iris_src/src/Graph/KG/Cypher/Props.cls:29-41; iris_src/src/Graph/KG/Cypher/Props.cls:106-110; iris_src/src/Graph/KG/Cypher/Exec.cls:888; iris_src/src/Graph/KG/Cypher/Exec.cls:1103",
+     "status": "outside-subset",
+     "reason": "class dictionary and run-time compilation not modelled (compiling is out of the audit's scope)"
+    },
+    {
+     "index": 13,
+     "feature": "Direct global access to a SQL table's storage (rdf_props data/index globals, $List slot) and name indirection @",
+     "source": "iris_src/src/Graph/KG/Cypher/Props.cls:56-60; iris_src/src/Graph/KG/Cypher/Exec.cls:131-132",
+     "status": "outside-subset",
+     "reason": "$LIST semantics not modelled"
+    },
+    {
+     "index": 14,
+     "feature": "TimeChanged of a class moves on every recompile including DDL (P-0906)",
+     "source": "iris_src/src/Graph/KG/Cypher/Props.cls:106-110; iris_src/src/Graph/KG/Cypher/Gen.cls:136-139",
+     "status": "outside-subset",
+     "reason": "class dictionary and run-time compilation not modelled (compiling is out of the audit's scope)"
+    },
+    {
+     "index": 15,
+     "feature": "$LIST semantics: SET $LIST pads undefined elements; $LIST of an undefined element raises <NULL VALUE>; $ListGet does not (P-0907)",
+     "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:71; iris_src/src/Graph/KG/Cypher/Gen.cls:207; iris_src/src/Graph/KG/Cypher/Gen.cls:210; iris_src/src/Graph/KG/Cypher/Gen.cls:248-251",
+     "status": "outside-subset",
+     "reason": "$LIST semantics not modelled"
+    },
+    {
+     "index": 16,
+     "feature": "Functional indexes that maintain ^KG from rdf_edges/rdf_labels row writes in the row's transaction (P-0902)",
+     "source": "iris_vector_graph/engine.py:703-724; iris_vector_graph/schema.py:769-782",
+     "status": "in-contract",
+     "clauses": [
+      "X-FX",
+      "X-NOINDEX"
+     ],
+     "note": "carrier: %iFind.Index.Basic (a %Library.FunctionalIndex shipped with IRIS); the product's own callbacks are not compiled here"
+    },
+    {
+     "index": 17,
+     "feature": "SQL privilege refusal at Prepare (SQLCODE -99) as the privilege probe",
+     "source": "iris_vector_graph/engine.py:559-586",
+     "status": "outside-subset",
+     "reason": "web dispatch, roles and SQL privileges not modelled"
+    },
+    {
+     "index": 18,
+     "feature": "objectgenerator methods (compile-time constants)",
+     "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:25-29; iris_src/src/Graph/KG/Cypher/Gen.cls:53-57",
+     "status": "outside-subset",
+     "reason": "class dictionary and run-time compilation not modelled (compiling is out of the audit's scope)"
+    },
+    {
+     "index": 19,
+     "feature": "$ClassMethod dynamic dispatch",
+     "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:199; iris_src/src/Graph/KG/Cypher/Exec.cls:258",
+     "status": "outside-subset",
+     "reason": "class dictionary and run-time compilation not modelled (compiling is out of the audit's scope)"
+    },
+    {
+     "index": 20,
+     "feature": "%SYS.System.WriteToConsoleLog (messages.log)",
+     "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:177; iris_src/src/Graph/KG/Cypher/Gen.cls:212; iris_src/src/Graph/KG/Cypher/Exec.cls:165",
+     "status": "outside-subset",
+     "reason": "management APIs not modelled (process stop is, via %SYSTEM.Process.Terminate: E-STOP)"
+    },
+    {
+     "index": 21,
+     "feature": "$System.Encryption.SHAHash(256) and Base64Encode",
+     "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:147-157",
+     "status": "outside-subset",
+     "reason": "pure functions and clocks not modelled"
+    },
+    {
+     "index": 22,
+     "feature": "%Library.DynamicObject/DynamicArray JSON (%FromJSON/%ToJSON), long strings up to 3.6 MB",
+     "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:34; iris_src/src/Graph/KG/Cypher/Exec.cls:76-87; iris_src/src/Graph/KG/Cypher/Exec.cls:1902-1910",
+     "status": "outside-subset",
+     "reason": "engine limits (string, subscript, parameter count) not modelled"
+    },
+    {
+     "index": 23,
+     "feature": "$Horolog / $ZTimestamp / $ZDateTime",
+     "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:141-144; iris_src/src/Graph/KG/Cypher/Gen.cls:55",
+     "status": "outside-subset",
+     "reason": "pure functions and clocks not modelled"
+    },
+    {
+     "index": 24,
+     "feature": "String collation and the sorts-after operator ]] for sort keys and key ranges",
+     "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:250; iris_src/src/Graph/KG/Cypher/SortKey.cls:9-151",
+     "status": "in-contract",
+     "clauses": [
+      "X-ORDER"
+     ],
+     "note": "$QUERY and the ]] operator rely on the same collation but are not exercised"
+    },
+    {
+     "index": 25,
+     "feature": "%Stream.GlobalCharacter",
+     "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:184-203",
+     "status": "outside-subset",
+     "reason": "streams not modelled"
+    },
+    {
+     "index": 26,
+     "feature": "Embedded Python methods ([Language = python]) importing the Python package inside IRIS",
+     "source": "iris_src/src/IVG/CypherEngine.cls:56-230",
+     "status": "outside-subset",
+     "reason": "embedded Python is not driven by the contract (needs irispython in the container)"
+    },
+    {
+     "index": 27,
+     "feature": "Native API over DB-API connections (classMethodValue; a dedicated connection is another server process)",
+     "source": "iris_vector_graph/engine.py:1894-1942; iris_vector_graph/_engine/query.py:2206-2224",
+     "status": "in-contract",
+     "clauses": [
+      "E-CALLER"
+     ],
+     "note": "caller identity is an exploratory observation (env/explore-2.log test 7)"
+    },
+    {
+     "index": 28,
+     "feature": "Number of CPUs (Graph.KG.VarLength.CPUs) and Community's connection/core limits",
+     "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:449-450",
+     "status": "availability-only",
+     "clauses": [],
+     "note": "infrastructure fact (CONVENTIONS connection cap), not a contract clause"
+    }
+   ],
+   "counts": {
+    "in-contract": 8,
+    "availability-only": 1,
+    "outside-subset": 20
+   },
+   "gate_3.2_coverage": "open",
+   "open_because": [
+    "$LIST semantics not modelled",
+    "IRISTEMP database (not journaled, shared) not modelled",
+    "JOB / WorkMgr processes not modelled",
+    "class dictionary and run-time compilation not modelled (compiling is out of the audit's scope)",
+    "embedded Python is not driven by the contract (needs irispython in the container)",
+    "engine limits (string, subscript, parameter count) not modelled",
+    "management APIs not modelled (process stop is, via %SYSTEM.Process.Terminate: E-STOP)",
+    "pure functions and clocks not modelled",
+    "streams not modelled",
+    "web dispatch, roles and SQL privileges not modelled"
+   ]
+  },
+  "10": {
+   "features": [
+    {
+     "index": 0,
+     "feature": "$Increment on a global as a cross-process version token (^KG(\"__version\"), ^NKG(\"$meta\",\"version\")); atomic, never rolled back (P-1002)",
+     "source": "iris_src/src/Graph/KG/ArnoAccel.cls:299-303; iris_src/src/Graph/KG/Adjacency.cls:131-136",
+     "status": "in-contract",
+     "clauses": [
+      "E-INCR"
+     ]
+    },
+    {
+     "index": 1,
+     "feature": "LOCK +name:timeout with $TEST (exclusive, incremental) on ^IVG.NKGBuild",
+     "source": "iris_src/src/Graph/KG/TraversalBuild.cls:288-298, :410-424",
+     "status": "in-contract",
+     "clauses": [
+      "E-LOCK-WAIT",
+      "E-LOCK-COUNT",
+      "E-LOCK-NAMES"
+     ],
+     "note": "timeouts are modelled as wait / no-wait"
+    },
+    {
+     "index": 2,
+     "feature": "lock-free global reads concurrent with writers (read-uncommitted visibility of ^KG/^NKG; a long run may see a mix, ALG-P6)",
+     "source": "iris_src/src/Graph/KG/PageRank.cls:87-116; iris_src/src/Graph/KG/NKGAccelTraversal.cls:187-222",
+     "status": "in-contract",
+     "clauses": [
+      "E-VIS"
+     ]
+    },
+    {
+     "index": 3,
+     "feature": "$Order / $Data traversal in subscript collation order (canonical numbers first, then strings)",
+     "source": "iris_src/src/Graph/KG/PageRank.cls:500-521; iris_vector_graph/_engine/algorithms.py:392-420",
+     "status": "in-contract",
+     "clauses": [
+      "X-ORDER"
+     ],
+     "note": "$QUERY and the ]] operator rely on the same collation but are not exercised"
+    },
+    {
+     "index": 4,
+     "feature": "process-private globals ^||name (not journaled, per process)",
+     "source": "iris_src/src/Graph/KG/PageRank.cls:506-521; iris_src/src/Graph/KG/NKGAccelTraversal.cls:198-205; iris_src/src/Graph/KG/NKGAccelAdjacency.cls:217-228; iris_src/src/Graph/KG/VarLength.cls:263-270",
+     "status": "in-contract",
+     "clauses": [
+      "E-PPG"
+     ]
+    },
+    {
+     "index": 5,
+     "feature": "IRISTEMP globals ^IRIS.Temp.* shared across worker processes (not journaled)",
+     "source": "iris_src/src/Graph/KG/VarLength.cls:342-404",
+     "status": "outside-subset",
+     "reason": "IRISTEMP database (not journaled, shared) not modelled"
+    },
+    {
+     "index": 6,
+     "feature": "persistent per-pid work globals killed after use (^bcParSrc, ^bcParScore, ^bcBitAdj; ^ArnoKG(\"bfs_r\"/\"bfs_chunk\"))",
+     "source": "iris_src/src/Graph/KG/NKGAccelCentrality.cls:325, :440, :470, :582; iris_src/src/Graph/KG/TraversalBFS.cls:312-318, :458",
+     "status": "in-contract",
+     "clauses": [
+      "E-GLOBALS"
+     ],
+     "note": "MERGE and $LIST slot access are not modelled"
+    },
+    {
+     "index": 7,
+     "feature": "JOB worker processes sized by $System.Util.NumberOfCPUs()",
+     "source": "iris_src/src/Graph/KG/NKGAccelCentrality.cls:381, :560; iris_src/src/Graph/KG/VarLength.cls:263-270",
+     "status": "outside-subset",
+     "reason": "JOB / WorkMgr processes not modelled"
+    },
+    {
+     "index": 8,
+     "feature": "embedded Python class methods [Language = python] with iris.sql.exec / iris.cls",
+     "source": "iris_src/src/Graph/KG/PageRankEmbedded.cls:5-30, :106-131; iris_src/src/Graph/KG/Communities.cls:543, :615",
+     "status": "outside-subset",
+     "reason": "embedded Python is not driven by the contract (needs irispython in the container)"
+    },
+    {
+     "index": 9,
+     "feature": "unqualified SQL table names resolved in the namespace's default schema (SQLUser) from embedded Python",
+     "source": "iris_src/src/Graph/KG/PageRankEmbedded.cls:19-25",
+     "status": "outside-subset",
+     "reason": "embedded Python is not driven by the contract (needs irispython in the container)"
+    },
+    {
+     "index": 10,
+     "feature": "$ZF(-5) callout library loading and calls, with the $ZF heap limit (34,808 chars at default zfheap, P-1003)",
+     "source": "iris_src/src/Graph/KG/NKGAccelTraversal.cls:17, :279-286; iris_vector_graph/stores/arno_bridge.py:137-350",
+     "status": "outside-subset",
+     "reason": "$ZF callouts not modelled"
+    },
+    {
+     "index": 11,
+     "feature": "runtime CREATE FUNCTION DDL for $ZF wrapper functions",
+     "source": "iris_vector_graph/stores/arno_bridge.py:106-136, :360-378",
+     "status": "outside-subset",
+     "reason": "$ZF callouts not modelled"
+    },
+    {
+     "index": 12,
+     "feature": "namespace switch of a process (Arno readers read USER's ^KG whatever namespace calls, P-1001)",
+     "source": "iris_vector_graph/stores/iris_sql_store.py:883-894; iris_src/src/Graph/KG/ArnoAccel.cls",
+     "status": "outside-subset",
+     "reason": "catalog views other than TABLES / COLUMNS, default-schema resolution and namespaces not modelled"
+    },
+    {
+     "index": 13,
+     "feature": "%DynamicArray / %DynamicObject JSON (%ToJSON, %FromJSON)",
+     "source": "iris_src/src/Graph/KG/PageRank.cls:502-521; iris_src/src/Graph/KG/VarLength.cls:14-25",
+     "status": "outside-subset",
+     "reason": "%DynamicObject / JSON functions not modelled"
+    },
+    {
+     "index": 14,
+     "feature": "$ListBuild / $ListGet values",
+     "source": "iris_src/src/Graph/KG/AlgoCache.cls:27-50",
+     "status": "outside-subset",
+     "reason": "$LIST semantics not modelled"
+    },
+    {
+     "index": 15,
+     "feature": "long strings and the Native API string limit (answers chunked at 9,000 chars into ^||LargeOut; cache payloads up to 1,000,000 chars)",
+     "source": "iris_src/src/Graph/KG/NKGAccelAdjacency.cls:217-228; iris_vector_graph/algo_cache.py:21-28",
+     "status": "outside-subset",
+     "reason": "engine limits (string, subscript, parameter count) not modelled"
+    },
+    {
+     "index": 16,
+     "feature": "$Random",
+     "source": "iris_src/src/Graph/KG/NKGAccelTraversal.cls:206-208",
+     "status": "outside-subset",
+     "reason": "pure functions and clocks not modelled"
+    },
+    {
+     "index": 17,
+     "feature": "SQL COUNT(*) and MAX(%ID) with RowIDs never reused (monotonic row ids)",
+     "source": "iris_vector_graph/_engine/algorithms.py:179-193",
+     "status": "outside-subset",
+     "reason": "row-id allocation not modelled"
+    },
+    {
+     "index": 18,
+     "feature": "Kill of a whole global outside any transaction",
+     "source": "iris_src/src/Graph/KG/AlgoCache.cls:54-66; iris_src/src/Graph/KG/Eraser.cls:1052",
+     "status": "in-contract",
+     "clauses": [
+      "E-GLOBALS"
+     ],
+     "note": "MERGE and $LIST slot access are not modelled"
+    },
+    {
+     "index": 19,
+     "feature": "embedded SQL / %SQL.Statement reads of Graph_KG.nodes at default isolation",
+     "source": "iris_src/src/Graph/KG/PageRank.cls:87-116; iris_vector_graph/_engine/algorithms.py:619-626",
+     "status": "outside-subset",
+     "reason": "embedded SQL (&sql): premise E-1; %SQL.Statement reads at the default isolation are E-VIS"
+    },
+    {
+     "index": 20,
+     "feature": "$SYSTEM.Status / %Status error reporting through the Native API (<THROW>, <PROTECT>)",
+     "source": "iris_vector_graph/_engine/algorithms.py:100-133",
+     "status": "outside-subset",
+     "reason": "error reporting through the Native API not modelled"
+    }
+   ],
+   "counts": {
+    "in-contract": 7,
+    "availability-only": 0,
+    "outside-subset": 14
+   },
+   "gate_3.2_coverage": "open",
+   "open_because": [
+    "$LIST semantics not modelled",
+    "$ZF callouts not modelled",
+    "%DynamicObject / JSON functions not modelled",
+    "IRISTEMP database (not journaled, shared) not modelled",
+    "JOB / WorkMgr processes not modelled",
+    "catalog views other than TABLES / COLUMNS, default-schema resolution and namespaces not modelled",
+    "embedded Python is not driven by the contract (needs irispython in the container)",
+    "embedded SQL (&sql): premise E-1; %SQL.Statement reads at the default isolation are E-VIS",
+    "engine limits (string, subscript, parameter count) not modelled",
+    "error reporting through the Native API not modelled",
+    "pure functions and clocks not modelled",
+    "row-id allocation not modelled"
+   ]
+  },
+  "11": {
+   "features": [
+    {
+     "index": 0,
+     "feature": "LOCK +name:timeout with $TEST (head lock, 30 s)",
+     "source": "iris_src/src/Graph/KG/Ledger.cls:264, :439-443",
+     "status": "in-contract",
+     "clauses": [
+      "E-LOCK-WAIT",
+      "E-LOCK-COUNT",
+      "E-LOCK-NAMES"
+     ],
+     "note": "timeouts are modelled as wait / no-wait"
+    },
+    {
+     "index": 1,
+     "feature": "Unlock inside a transaction deferred to the outermost end",
+     "source": "iris_src/src/Graph/KG/Ledger.cls:388-410",
+     "status": "in-contract",
+     "clauses": [
+      "E-LOCK-DEFER"
+     ]
+    },
+    {
+     "index": 2,
+     "feature": "TSTART nesting; TCOMMIT lowers $TLEVEL; TROLLBACK 1 partial; outer rollback undoes inner",
+     "source": "iris_src/src/Graph/KG/Ledger.cls:397-416",
+     "status": "in-contract",
+     "clauses": [
+      "E-NEST",
+      "E-PARTIAL"
+     ]
+    },
+    {
+     "index": 3,
+     "feature": "$TLEVEL test",
+     "source": "iris_src/src/Graph/KG/Ledger.cls:261; iris_vector_graph/ledger/client.py:268-279",
+     "status": "in-contract",
+     "clauses": [
+      "E-NEST",
+      "E-PARTIAL"
+     ]
+    },
+    {
+     "index": 4,
+     "feature": "Dirty visibility of globals set inside another process's open transaction",
+     "source": "iris_src/src/Graph/KG/Ledger.cls:40-43, :143-164, :254",
+     "status": "in-contract",
+     "clauses": [
+      "E-VIS"
+     ]
+    },
+    {
+     "index": 5,
+     "feature": "SQL writes via %SQL.Statement %ExecDirect join the ObjectScript transaction",
+     "source": "iris_src/src/Graph/KG/LedgerApply.cls:74-77",
+     "status": "in-contract",
+     "clauses": [
+      "E-PARTIAL",
+      "X-FX",
+      "X-STMT",
+      "X-NULL"
+     ],
+     "note": "the terminal driver's %ExecDirect path; embedded &sql compiled into classes is assumed equal (premise E-1)"
+    },
+    {
+     "index": 6,
+     "feature": "Rollback restores a node's before-image; does not overwrite another process's later change",
+     "source": "iris_src/src/Graph/KG/Ledger.cls:306-314",
+     "status": "in-contract",
+     "clauses": [
+      "E-ROLLBACK-OTHER",
+      "E-GLOBALS",
+      "E-INCR"
+     ]
+    },
+    {
+     "index": 7,
+     "feature": "%Persistent %OpenId/%Save default concurrency: no lock on open, exclusive row lock on save held to the transaction end, ~10 s lock timeout returning an error status",
+     "source": "iris_src/src/Graph/KG/LedgerStats.cls:51-88; iris_src/src/Graph/KG/Ledger.cls:559-565",
+     "status": "outside-subset",
+     "reason": "object filing, triggers and foreign keys not modelled"
+    },
+    {
+     "index": 8,
+     "feature": "Object %Save of a duplicate IdKey fails (#5805)",
+     "source": "iris_src/src/Graph/KG/LedgerRevision.cls:44",
+     "status": "outside-subset",
+     "reason": "object filing, triggers and foreign keys not modelled"
+    },
+    {
+     "index": 9,
+     "feature": "SQL row triggers Foreach=row/object with %ok/%msg; bypass by %NOTRIGGER / TRUNCATE",
+     "source": "iris_src/src/Graph/KG/LedgerRevision.cls:87-108",
+     "status": "outside-subset",
+     "reason": "object filing, triggers and foreign keys not modelled"
+    },
+    {
+     "index": 10,
+     "feature": "%OnBeforeSave / %OnDelete object callbacks",
+     "source": "iris_src/src/Graph/KG/LedgerRevision.cls:111-123",
+     "status": "outside-subset",
+     "reason": "object filing, triggers and foreign keys not modelled"
+    },
+    {
+     "index": 11,
+     "feature": "%KillExtent",
+     "source": "iris_src/src/Graph/KG/Ledger.cls:241-248",
+     "status": "outside-subset",
+     "reason": "object filing, triggers and foreign keys not modelled"
+    },
+    {
+     "index": 12,
+     "feature": "$INCREMENT not undone by rollback",
+     "source": "iris_src/src/Graph/KG/Ledger.cls:126; Adjacency (module 04)",
+     "status": "in-contract",
+     "clauses": [
+      "E-INCR"
+     ]
+    },
+    {
+     "index": 13,
+     "feature": "Process-private globals",
+     "source": "iris_src/src/Graph/KG/Ledger.cls:123-139, :181-185, :427-436",
+     "status": "in-contract",
+     "clauses": [
+      "E-PPG"
+     ]
+    },
+    {
+     "index": 14,
+     "feature": "Foreign keys enforced on rdf_labels/rdf_edges; none on rdf_props",
+     "source": "iris_src/src/Graph/KG/LedgerApply.cls:253-285; iris_vector_graph/schema.py:411-417",
+     "status": "outside-subset",
+     "reason": "object filing, triggers and foreign keys not modelled"
+    },
+    {
+     "index": 15,
+     "feature": "Functional (adjacency) index maintenance inside SQL DML",
+     "source": "iris_src/src/Graph/KG/LedgerApply.cls:499-520",
+     "status": "in-contract",
+     "clauses": [
+      "X-FX",
+      "X-NOINDEX"
+     ],
+     "note": "carrier: %iFind.Index.Basic (a %Library.FunctionalIndex shipped with IRIS); the product's own callbacks are not compiled here"
+    },
+    {
+     "index": 16,
+     "feature": "%DynamicObject/%DynamicArray %FromJSON/%ToJSON/%GetTypeOf; %ToJSON key order",
+     "source": "iris_src/src/Graph/KG/Ledger.cls:52-121, :521-522",
+     "status": "outside-subset",
+     "reason": "%DynamicObject / JSON functions not modelled"
+    },
+    {
+     "index": 17,
+     "feature": "%Stream.TmpCharacter",
+     "source": "iris_src/src/Graph/KG/Ledger.cls:427-436",
+     "status": "outside-subset",
+     "reason": "streams not modelled"
+    },
+    {
+     "index": 18,
+     "feature": "$ZTIMESTAMP (UTC)",
+     "source": "iris_src/src/Graph/KG/Ledger.cls:27-33",
+     "status": "outside-subset",
+     "reason": "pure functions and clocks not modelled"
+    },
+    {
+     "index": 19,
+     "feature": "$System.Util.CreateGUID",
+     "source": "iris_src/src/Graph/KG/Ledger.cls:35-38",
+     "status": "outside-subset",
+     "reason": "pure functions and clocks not modelled"
+    },
+    {
+     "index": 20,
+     "feature": "$System.Encryption SHA-256 (via LedgerRedact.Sha256Hex)",
+     "source": "iris_src/src/Graph/KG/Ledger.cls:464-470",
+     "status": "outside-subset",
+     "reason": "pure functions and clocks not modelled"
+    },
+    {
+     "index": 21,
+     "feature": "BUILD INDEX FOR TABLE",
+     "source": "iris_src/src/Graph/KG/Ledger.cls:224-239",
+     "status": "in-contract",
+     "clauses": [
+      "X-FX",
+      "X-NOINDEX"
+     ],
+     "note": "carrier: %iFind.Index.Basic (a %Library.FunctionalIndex shipped with IRIS); the product's own callbacks are not compiled here"
+    },
+    {
+     "index": 22,
+     "feature": "Native API class call on the caller's DB-API connection runs in that server process (P-1107)",
+     "source": "iris_vector_graph/ledger/client.py:239-252, :402-404",
+     "status": "in-contract",
+     "clauses": [
+      "E-CALLER"
+     ],
+     "note": "caller identity is an exploratory observation (env/explore-2.log test 7)"
+    },
+    {
+     "index": 23,
+     "feature": "DB-API driver START TRANSACTION / commit() / rollback() levels",
+     "source": "iris_vector_graph/ledger/client.py:395-400, :456-487",
+     "status": "in-contract",
+     "clauses": [
+      "E-SQL-START",
+      "E-SQL-END",
+      "E-DRV",
+      "E-AUTOCOMMIT"
+     ]
+    },
+    {
+     "index": 24,
+     "feature": "Process stop rolls back every level and releases locks",
+     "source": "iris_src/src/Graph/KG/Ledger.cls:397-416",
+     "status": "in-contract",
+     "clauses": [
+      "E-STOP"
+     ],
+     "note": "closing a connection is assumed equal to a process stop"
+    },
+    {
+     "index": 25,
+     "feature": "SELECT TOP n ... ORDER BY on the IdKey",
+     "source": "iris_vector_graph/ledger/replay.py:342-345",
+     "status": "outside-subset",
+     "reason": "result-prefix queries not modelled"
+    },
+    {
+     "index": 26,
+     "feature": "Journaling of the namespace database (every ^IVG.Ledger/table write journaled with transaction flags)",
+     "source": "experiment/playbook-completion/traces/journal.py",
+     "status": "outside-subset",
+     "reason": "the journal is the audit's oracle, not a contract clause"
+    }
+   ],
+   "counts": {
+    "in-contract": 14,
+    "availability-only": 0,
+    "outside-subset": 13
+   },
+   "gate_3.2_coverage": "open",
+   "open_because": [
+    "%DynamicObject / JSON functions not modelled",
+    "object filing, triggers and foreign keys not modelled",
+    "pure functions and clocks not modelled",
+    "result-prefix queries not modelled",
+    "streams not modelled",
+    "the journal is the audit's oracle, not a contract clause"
+   ]
+  },
+  "15": {
+   "features": [
+    {
+     "index": 0,
+     "feature": "Dynamic SQL in server code (%SQL.Statement %ExecDirect/%Prepare, %SQLCODE) with the caller's SQL privileges",
+     "source": "iris_src/src/Graph/KG/FHIRGraph.cls:3039-3095",
+     "status": "outside-subset",
+     "reason": "web dispatch, roles and SQL privileges not modelled"
+    },
+    {
+     "index": 1,
+     "feature": "Nested transactions TSTART/TCOMMIT/TROLLBACK 1 with $TLevel; SQL and global writes of one process in one transaction",
+     "source": "iris_src/src/Graph/KG/FHIRGraph.cls:513-534,1927-1974,1985-2001; iris_vector_graph/_write_txn.py",
+     "status": "in-contract",
+     "clauses": [
+      "E-NEST",
+      "E-PARTIAL"
+     ]
+    },
+    {
+     "index": 2,
+     "feature": "LOCK with zero timeout and $Test (busy answer); lock release at process end (P-0004)",
+     "source": "iris_src/src/Graph/KG/FHIRGraph.cls:455-456,550-551,638-639",
+     "status": "in-contract",
+     "clauses": [
+      "E-LOCK-WAIT",
+      "E-LOCK-COUNT",
+      "E-LOCK-NAMES"
+     ],
+     "note": "timeouts are modelled as wait / no-wait"
+    },
+    {
+     "index": 3,
+     "feature": "Task Manager %SYS.Task (%New/%OpenId/%Save/%DeleteId/AssignSettings; DailyFrequency/DailyIncrement in minutes) and %SYS.Task.Definition OnTask",
+     "source": "iris_src/src/Graph/KG/FHIRGraph.cls:667-741; iris_src/src/Graph/KG/FHIRGraphSyncTask.cls:6-29",
+     "status": "outside-subset",
+     "reason": "Task Manager not modelled"
+    },
+    {
+     "index": 4,
+     "feature": "InterSystems FHIR server storage (HS_FHIRServer.Repo/RepoInstance, JsonAdvSQL Rsrc/RsrcVer change feed with rising IDs, SearchColumn metadata, HS.FHIRServer.Schema compartment params, soft deletes)",
+     "source": "iris_src/src/Graph/KG/FHIRGraph.cls:13-18,167-226,1770-1860,2653-2660",
+     "status": "outside-subset",
+     "reason": "InterSystems FHIR server storage: absent on Community 2026.1"
+    },
+    {
+     "index": 5,
+     "feature": "%DynamicObject/%DynamicArray JSON and the long-string limit (3,641,144 characters)",
+     "source": "iris_src/src/Graph/KG/FHIRGraph.cls (all replies); iris_src/src/Graph/KG/TemporalIndex.cls:688-722 (QueryWindow for PROV)",
+     "status": "outside-subset",
+     "reason": "engine limits (string, subscript, parameter count) not modelled"
+    },
+    {
+     "index": 6,
+     "feature": "Catalog: INFORMATION_SCHEMA.TABLES/COLUMNS, $SYSTEM.SQL.Schema.TableExists, default schema SQLUser for unqualified names",
+     "source": "iris_vector_graph/_engine/fhir.py:112-126; iris_vector_graph/_engine/fhir_graph.py:196-202; iris_src/src/Graph/KG/Eraser.cls:1155-1159",
+     "status": "outside-subset",
+     "reason": "default-schema (SQLUser) resolution is not modelled; TABLES, COLUMNS and TableExists are (X-DDL)"
+    },
+    {
+     "index": 7,
+     "feature": "SQL constraints: composite foreign keys rdf_edges(graph_id,s/o_id) -> nodes(graph_id,node_id), fk_labels_node, primary key pk_reifications",
+     "source": "iris_vector_graph/schema.py:42-43,408,514-520",
+     "status": "outside-subset",
+     "reason": "object filing, triggers and foreign keys not modelled"
+    },
+    {
+     "index": 8,
+     "feature": "SQL INSERT OR UPDATE upsert",
+     "source": "iris_vector_graph/_engine/fhir.py:420-440; iris_vector_graph/_engine/fhir_graph.py:600-605",
+     "status": "outside-subset",
+     "reason": "INSERT OR UPDATE not modelled"
+    },
+    {
+     "index": 9,
+     "feature": "Native API classMethodValue on the DB-API connection's process (shared transaction context)",
+     "source": "iris_vector_graph/_engine/fhir_graph.py:183-188; iris_vector_graph/_engine/nodes_edges.py:1512-1527",
+     "status": "in-contract",
+     "clauses": [
+      "E-CALLER"
+     ]
+    },
+    {
+     "index": 10,
+     "feature": "rdf_labels/rdf_edges row hooks maintaining ^KG(\"label\"/\"out\"/\"in\") (adjacency functional index, Graph.KG.Adjacency.Indexed)",
+     "source": "iris_src/src/Graph/KG/FHIRGraph.cls:56-57; iris_src/src/Graph/KG/Adjacency.cls:540",
+     "status": "in-contract",
+     "clauses": [
+      "X-FX",
+      "X-NOINDEX"
+     ],
+     "note": "carrier: %iFind.Index.Basic (a %Library.FunctionalIndex shipped with IRIS); the product's own callbacks are not compiled here"
+    },
+    {
+     "index": 11,
+     "feature": "Non-transactional $INCREMENT counters and graph-version stamps journaled inside the bracket",
+     "source": "global ^KG(\"__version\"), ^NKG(\"$meta\",\"version\") (observed)",
+     "status": "in-contract",
+     "clauses": [
+      "E-INCR"
+     ]
+    }
+   ],
+   "counts": {
+    "in-contract": 5,
+    "availability-only": 0,
+    "outside-subset": 7
+   },
+   "gate_3.2_coverage": "open",
+   "open_because": [
+    "INSERT OR UPDATE not modelled",
+    "InterSystems FHIR server storage: absent on Community 2026.1",
+    "Task Manager not modelled",
+    "default-schema (SQLUser) resolution is not modelled; TABLES, COLUMNS and TableExists are (X-DDL)",
+    "engine limits (string, subscript, parameter count) not modelled",
+    "object filing, triggers and foreign keys not modelled",
+    "web dispatch, roles and SQL privileges not modelled"
+   ]
+  },
+  "16": {
+   "features": [
+    {
+     "index": 0,
+     "feature": "DB-API connection over the SuperServer (one IRIS process per connection)",
+     "source": "iris_vector_graph/cypher_api.py:156-172; api/main.py:21-37",
+     "status": "in-contract",
+     "clauses": [
+      "E-CALLER"
+     ],
+     "note": "caller identity is an exploratory observation (env/explore-2.log test 7)"
+    },
+    {
+     "index": 1,
+     "feature": "instance connection/licence cap (Community: 8 connections in total)",
+     "source": "iris_vector_graph/bolt_server.py:391-394 (one connection per Bolt session); P-1609",
+     "status": "availability-only",
+     "clauses": [],
+     "note": "infrastructure fact (CONVENTIONS connection cap), not a contract clause"
+    },
+    {
+     "index": 2,
+     "feature": "engine write transactions (TSTART/TCOMMIT via the engine) per Cypher call",
+     "source": "iris_vector_graph/_engine/query.py:1946-1967 (module 08), used by cypher_api.py:239-260, bolt_server.py:580",
+     "status": "in-contract",
+     "clauses": [
+      "E-NEST",
+      "E-PARTIAL"
+     ]
+    },
+    {
+     "index": 3,
+     "feature": "SQL START TRANSACTION / COMMIT / ROLLBACK on a DB-API cursor",
+     "source": "api/routers/cypher.py:139-158; api/gql/schema.py:182-201",
+     "status": "in-contract",
+     "clauses": [
+      "E-SQL-START",
+      "E-SQL-END",
+      "E-DRV",
+      "E-AUTOCOMMIT"
+     ]
+    },
+    {
+     "index": 4,
+     "feature": "closing a connection rolls back its open transaction (P-0001/SYS-P1)",
+     "source": "iris_vector_graph/cypher_api.py:209-217 (_reset_engine in the retry path)",
+     "status": "in-contract",
+     "clauses": [
+      "E-STOP"
+     ],
+     "note": "closing a connection is assumed equal to a process stop"
+    },
+    {
+     "index": 5,
+     "feature": "$INCREMENT / ID counters are non-transactional (journaled outside the transaction bracket)",
+     "source": "observed in every journal capture",
+     "status": "in-contract",
+     "clauses": [
+      "E-INCR"
+     ]
+    },
+    {
+     "index": 6,
+     "feature": "%SYSTEM.SYS.KillProcess callable from SQL",
+     "source": "iris_vector_graph/cypher_api.py:707",
+     "status": "outside-subset",
+     "reason": "management APIs not modelled (process stop is, via %SYSTEM.Process.Terminate: E-STOP)"
+    },
+    {
+     "index": 7,
+     "feature": "%SYS.ProcessQuery readable from SQL",
+     "source": "iris_vector_graph/_engine/admin.py active_queries_sql via cypher_api.py:686-694",
+     "status": "outside-subset",
+     "reason": "management APIs not modelled (process stop is, via %SYSTEM.Process.Terminate: E-STOP)"
+    },
+    {
+     "index": 8,
+     "feature": "%SYSTEM.Version.GetVersion via the Native API",
+     "source": "iris_vector_graph/cypher_api.py:752-763",
+     "status": "outside-subset",
+     "reason": "management APIs not modelled (process stop is, via %SYSTEM.Process.Terminate: E-STOP)"
+    },
+    {
+     "index": 9,
+     "feature": "%CSP.REST dispatch (UrlMap) and %request.Content stream Read()",
+     "source": "iris_src/src/Graph/KG/Service.cls:4-10, 321-327",
+     "status": "outside-subset",
+     "reason": "web dispatch, roles and SQL privileges not modelled"
+    },
+    {
+     "index": 10,
+     "feature": "Security.Applications / roles (MatchRoles, AutheEnabled=32) and SQL GRANT in %SYS",
+     "source": "iris_src/src/Graph/KG/Service.cls:30-75, 104-260",
+     "status": "outside-subset",
+     "reason": "web dispatch, roles and SQL privileges not modelled"
+    },
+    {
+     "index": 11,
+     "feature": "%AI.MCP.Service, %AI.ToolSet, %AI.Tool, %AI.Policy.ConsoleAudit",
+     "source": "iris_src/src/Graph/KG/MCPService.cls:3; MCPToolSet.cls:5; MCPTools.cls:3",
+     "status": "outside-subset",
+     "reason": "%AI classes: absent on Community 2026.1"
+    },
+    {
+     "index": 12,
+     "feature": "embedded Python in IRIS ([Language = python], iris.sql.prepare/exec)",
+     "source": "iris_src/src/Graph/KG/MCPTools.cls:9, 74, 193; src/iris_fraud_server/app.py:205-270",
+     "status": "outside-subset",
+     "reason": "embedded Python is not driven by the contract (needs irispython in the container)"
+    },
+    {
+     "index": 13,
+     "feature": "VECTOR columns and VECTOR_DOT_PRODUCT",
+     "source": "iris_src/src/Graph/KG/MCPTools.cls:210-212; src/iris_fraud_server/app.py:256-262",
+     "status": "availability-only",
+     "clauses": [
+      "X-VEC"
+     ],
+     "note": "VECTOR_COSINE / VECTOR_DOT_PRODUCT exist, VECTOR_L2 does not (-359); TO_VECTOR(text, DOUBLE)"
+    },
+    {
+     "index": 14,
+     "feature": "IVG Schema record ^IVG.Deploy(\"schema\") read through the Native API",
+     "source": "api/main.py:40-66 (read_record)",
+     "status": "in-contract",
+     "clauses": [
+      "E-GLOBALS",
+      "E-CALLER"
+     ]
+    },
+    {
+     "index": 15,
+     "feature": "IRIS WSGI hosting of a2wsgi apps (cypher_api.wsgi_app) and embedded `iris` module",
+     "source": "iris_vector_graph/cypher_api.py:22-28, 781-785",
+     "status": "outside-subset",
+     "reason": "embedded Python is not driven by the contract (needs irispython in the container)"
+    }
+   ],
+   "counts": {
+    "in-contract": 6,
+    "availability-only": 2,
+    "outside-subset": 8
+   },
+   "gate_3.2_coverage": "open",
+   "open_because": [
+    "%AI classes: absent on Community 2026.1",
+    "embedded Python is not driven by the contract (needs irispython in the container)",
+    "management APIs not modelled (process stop is, via %SYSTEM.Process.Terminate: E-STOP)",
+    "web dispatch, roles and SQL privileges not modelled"
+   ]
+  },
+  "17": {
+   "features": [
+    {
+     "index": 0,
+     "feature": "DB-API driver iris.dbapi.connect and Native API iris.createIRIS (classMethodValue, get, set, kill, isDefined, nextSubscript); one IRIS process per connection (P-1704)",
+     "source": "iris_vector_graph/host.py; stores/iris_sql_store.py; pyproject.toml:41-48",
+     "status": "in-contract",
+     "clauses": [
+      "E-GLOBALS",
+      "E-CALLER",
+      "X-ORDER"
+     ]
+    },
+    {
+     "index": 1,
+     "feature": "DB-API autocommit True by default; SQL START TRANSACTION/COMMIT/ROLLBACK and $TLEVEL probe",
+     "source": "iris_vector_graph/_write_txn.py:90-277",
+     "status": "in-contract",
+     "clauses": [
+      "E-AUTOCOMMIT",
+      "E-SQL-START",
+      "E-SQL-END",
+      "X-TLEVEL-SQL"
+     ]
+    },
+    {
+     "index": 2,
+     "feature": "Embedded Python iris.sql / iris.cls / iris.gref in-process (P-1705) and '' bound as NULL (P-1709)",
+     "source": "iris_vector_graph/embedded.py:136-150, 188-190",
+     "status": "outside-subset",
+     "reason": "embedded Python is not driven by the contract (needs irispython in the container)"
+    },
+    {
+     "index": 3,
+     "feature": "IRIS long-string limit 3,641,144 (<MAXSTRING>, <STRINGSTACK>) (P-1707)",
+     "source": "iris_vector_graph/host.py:52-77",
+     "status": "outside-subset",
+     "reason": "engine limits (string, subscript, parameter count) not modelled"
+    },
+    {
+     "index": 4,
+     "feature": "~1000 bound parameters per statement (P-1708)",
+     "source": "iris_vector_graph/stores/iris_sql_store.py:1112-1114, 1303-1305",
+     "status": "outside-subset",
+     "reason": "engine limits (string, subscript, parameter count) not modelled"
+    },
+    {
+     "index": 5,
+     "feature": "VECTOR_L2 is a distance; VECTOR_COSINE / VECTOR_DOT_PRODUCT similarities; TO_VECTOR(text, dtype, dim); VECTOR(DOUBLE, n) columns (P-1710)",
+     "source": "iris_vector_graph/dbapi_utils.py:238-275; stores/iris_sql_store.py:2633-2645",
+     "status": "availability-only",
+     "clauses": [
+      "X-VEC"
+     ],
+     "note": "the premise P-1710 is refuted here: VECTOR_L2 does not exist (-359); the mutant encoding it is killed"
+    },
+    {
+     "index": 6,
+     "feature": "CREATE INDEX ... AS HNSW(M, efConstruction, Distance) DDL",
+     "source": "iris_vector_graph/dbapi_utils.py:170-204",
+     "status": "outside-subset",
+     "reason": "HNSW vector index maintenance is outside the subset"
+    },
+    {
+     "index": 7,
+     "feature": "INFORMATION_SCHEMA.ROUTINES visibility and Prepare SQLCODE -359/-99/-357 (P-1711)",
+     "source": "iris_vector_graph/_engine/admin.py:705-760",
+     "status": "outside-subset",
+     "reason": "catalog views other than TABLES / COLUMNS, default-schema resolution and namespaces not modelled"
+    },
+    {
+     "index": 8,
+     "feature": "INFORMATION_SCHEMA.CURRENT_STATEMENTS / STATEMENTS and %SYSTEM.SYS.KillProcess via SQL",
+     "source": "iris_vector_graph/_engine/admin.py:94-107, 938-966",
+     "status": "outside-subset",
+     "reason": "catalog views other than TABLES / COLUMNS, default-schema resolution and namespaces not modelled"
+    },
+    {
+     "index": 9,
+     "feature": "INFORMATION_SCHEMA.TABLE_CONSTRAINTS",
+     "source": "(oracle used by lane C for F-1707)",
+     "status": "outside-subset",
+     "reason": "catalog views other than TABLES / COLUMNS, default-schema resolution and namespaces not modelled"
+    },
+    {
+     "index": 10,
+     "feature": "%Dictionary.CompiledMethod/CompiledClass/CompiledStorage reads (compiled_method_exists, Meta.cls HNSW listing)",
+     "source": "iris_vector_graph/stores/iris_sql_store.py:1305-1318; iris_src/src/Graph/KG/Meta.cls:37-60",
+     "status": "outside-subset",
+     "reason": "class dictionary reads not modelled"
+    },
+    {
+     "index": 11,
+     "feature": "<LIST ERROR> after another connection's %BuildIndices (P-1715)",
+     "source": "iris_vector_graph/utils.py:114-130",
+     "status": "outside-subset",
+     "reason": "effects of an index (re)build on another connection's cached code are not modelled"
+    },
+    {
+     "index": 12,
+     "feature": "%SYS.Namespace query / Create over SQL and Native API (bolt-on installer)",
+     "source": "deploy/bolt-on/install.sh:36-49",
+     "status": "outside-subset",
+     "reason": "catalog views other than TABLES / COLUMNS, default-schema resolution and namespaces not modelled"
+    },
+    {
+     "index": 13,
+     "feature": "Community core limit and ignored licence key (P-1702); %AI classes only on AI builds (P-1703)",
+     "source": "docker-compose.yml:17-22; docs/ADMIN_GUIDE.md section 4",
+     "status": "availability-only",
+     "clauses": [],
+     "note": "infrastructure fact (CONVENTIONS connection cap), not a contract clause"
+    },
+    {
+     "index": 14,
+     "feature": "VECTOR_L2 absent on IRIS Community 2026.1 (SQLCODE -359)",
+     "source": "iris_vector_graph/dbapi_utils.py:256-272",
+     "status": "availability-only",
+     "clauses": [
+      "X-VEC"
+     ],
+     "note": "VECTOR_COSINE / VECTOR_DOT_PRODUCT exist, VECTOR_L2 does not (-359); TO_VECTOR(text, DOUBLE)"
+    }
+   ],
+   "counts": {
+    "in-contract": 2,
+    "availability-only": 3,
+    "outside-subset": 10
+   },
+   "gate_3.2_coverage": "open",
+   "open_because": [
+    "HNSW vector index maintenance is outside the subset",
+    "catalog views other than TABLES / COLUMNS, default-schema resolution and namespaces not modelled",
+    "class dictionary reads not modelled",
+    "effects of an index (re)build on another connection's cached code are not modelled",
+    "embedded Python is not driven by the contract (needs irispython in the container)",
+    "engine limits (string, subscript, parameter count) not modelled"
+   ]
+  },
+  "18": {
+   "features": [
+    {
+     "index": 0,
+     "feature": "SQL default isolation READ UNCOMMITTED and uncommitted global reads (SYS-P2)",
+     "source": "iris_vector_graph/_engine/snapshot.py:864-1034",
+     "status": "in-contract",
+     "clauses": [
+      "E-VIS"
+     ]
+    },
+    {
+     "index": 1,
+     "feature": "SELECT * returns columns in declaration order (P-1801)",
+     "source": "iris_vector_graph/_engine/snapshot.py:866-874, 1287-1292",
+     "status": "in-contract",
+     "clauses": [
+      "X-STAR"
+     ]
+    },
+    {
+     "index": 2,
+     "feature": "Native API nextSubscript('' start)/get/set/kill round trip of global values through str() (P-1802)",
+     "source": "iris_vector_graph/_engine/snapshot.py:1612-1692",
+     "status": "in-contract",
+     "clauses": [
+      "X-ORDER",
+      "E-GLOBALS"
+     ],
+     "note": "nextSubscript answers canonical strings in $ORDER order; note: the Native API cannot read a $VECTOR value (get raises <LIST ERROR>, X-VEC)"
+    },
+    {
+     "index": 3,
+     "feature": "Native API set refuses a null subscript (<SUBSCRIPT>)",
+     "source": "iris_vector_graph/_engine/snapshot.py:1665-1683",
+     "status": "outside-subset",
+     "reason": "Native API subscript validation not modelled"
+    },
+    {
+     "index": 4,
+     "feature": "$Vector / $IsVector / $VectorOp / $VectorDefined, $ListValid / $ListNext, $Name indirection, %DynamicObject JSON",
+     "source": "iris_src/src/Graph/KG/Snapshot.cls:75-162",
+     "status": "outside-subset",
+     "reason": "$LISTVALID / $LISTNEXT, $NAME and %DynamicObject are not modelled; $VECTOR set/get/rollback is (X-VEC)"
+    },
+    {
+     "index": 5,
+     "feature": "INSERT ... SELECT ... WHERE NOT EXISTS; INSERT OR UPDATE; TO_VECTOR(text, dtype)",
+     "source": "iris_vector_graph/_engine/snapshot.py:1265-1298, 1341-1356",
+     "status": "outside-subset",
+     "reason": "INSERT OR UPDATE not modelled"
+    },
+    {
+     "index": 6,
+     "feature": "Runtime DDL: CREATE TABLE (routed vector tables, FHIR tables), HNSW index build, DROP TABLE after TCOMMIT",
+     "source": "iris_vector_graph/_engine/snapshot.py:1239-1248, 1372-1500; Eraser.cls:821-850",
+     "status": "outside-subset",
+     "reason": "HNSW index build is outside; CREATE / DROP TABLE are in X-DDL"
+    },
+    {
+     "index": 7,
+     "feature": "TSTART/TCOMMIT/TROLLBACK around Eraser.EraseAll; DB-API autocommit for the restore's INSERTs",
+     "source": "iris_src/src/Graph/KG/Eraser.cls:709-819; snapshot.py:1205-1216",
+     "status": "in-contract",
+     "clauses": [
+      "E-NEST",
+      "E-PARTIAL",
+      "E-AUTOCOMMIT"
+     ]
+    },
+    {
+     "index": 8,
+     "feature": "Persistent class IdKey uniqueness (LedgerRevision Seq)",
+     "source": "iris_src/src/Graph/KG/LedgerRevision.cls:44; Ledger.cls:530-556",
+     "status": "outside-subset",
+     "reason": "object filing, triggers and foreign keys not modelled"
+    },
+    {
+     "index": 9,
+     "feature": "%Library.File, %Stream.FileCharacter, $System.OBJ.Export/Load (.GBL, .gof), %ResultSet %Library.File:FileSet",
+     "source": "iris_src/src/Graph/KG/Snapshot.cls:4-73",
+     "status": "outside-subset",
+     "reason": "class dictionary and run-time compilation not modelled (compiling is out of the audit's scope)"
+    },
+    {
+     "index": 10,
+     "feature": "Journal (BeginTrans/CommitTrans, SET/KILL with in-transaction flag) as the footprint oracle",
+     "source": "experiment/playbook-completion/traces/journal.py",
+     "status": "outside-subset",
+     "reason": "the journal is the audit's oracle, not a contract clause"
+    }
+   ],
+   "counts": {
+    "in-contract": 4,
+    "availability-only": 0,
+    "outside-subset": 7
+   },
+   "gate_3.2_coverage": "open",
+   "open_because": [
+    "$LISTVALID / $LISTNEXT, $NAME and %DynamicObject are not modelled; $VECTOR set/get/rollback is (X-VEC)",
+    "HNSW index build is outside; CREATE / DROP TABLE are in X-DDL",
+    "INSERT OR UPDATE not modelled",
+    "Native API subscript validation not modelled",
+    "class dictionary and run-time compilation not modelled (compiling is out of the audit's scope)",
+    "object filing, triggers and foreign keys not modelled",
+    "the journal is the audit's oracle, not a contract clause"
+   ]
+  }
+ },
+ "summary": {
+  "00": {
+   "in-contract": 6,
+   "availability-only": 2,
+   "outside-subset": 0
+  },
+  "01": {
+   "in-contract": 6,
+   "availability-only": 1,
+   "outside-subset": 12
+  },
+  "02": {
+   "in-contract": 4,
+   "availability-only": 0,
+   "outside-subset": 3
+  },
+  "03": {
+   "in-contract": 11,
+   "availability-only": 0,
+   "outside-subset": 6
+  },
+  "04": {
+   "in-contract": 16,
+   "availability-only": 0,
+   "outside-subset": 7
+  },
+  "05": {
+   "in-contract": 11,
+   "availability-only": 0,
+   "outside-subset": 4
+  },
+  "06": {
+   "in-contract": 10,
+   "availability-only": 1,
+   "outside-subset": 11
+  },
+  "07": {
+   "in-contract": 12,
+   "availability-only": 0,
+   "outside-subset": 8
+  },
+  "08": {
+   "in-contract": 12,
+   "availability-only": 1,
+   "outside-subset": 12
+  },
+  "09": {
+   "in-contract": 8,
+   "availability-only": 1,
+   "outside-subset": 20
+  },
+  "10": {
+   "in-contract": 7,
+   "availability-only": 0,
+   "outside-subset": 14
+  },
+  "11": {
+   "in-contract": 14,
+   "availability-only": 0,
+   "outside-subset": 13
+  },
+  "15": {
+   "in-contract": 5,
+   "availability-only": 0,
+   "outside-subset": 7
+  },
+  "16": {
+   "in-contract": 6,
+   "availability-only": 2,
+   "outside-subset": 8
+  },
+  "17": {
+   "in-contract": 2,
+   "availability-only": 3,
+   "outside-subset": 10
+  },
+  "18": {
+   "in-contract": 4,
+   "availability-only": 0,
+   "outside-subset": 7
+  }
+ }
+}

@@ -99,7 +99,8 @@ fn check(cases: &[Case], observed: &BTreeMap<String, Vec<Outcome>>) -> Value {
 
 mod selftest {
     //! Structural self-tests of the contract machine with the explorer: two processes running every op over a
-    //! small alphabet; invariants that must hold for the validated semantics and that a broken acquire violates.
+    //! small alphabet (round r3 adds the functional-index table, %NOINDEX, BUILD INDEX and DDL); invariants that
+    //! must hold for the validated semantics and that a broken acquire violates.
     use explorer::*;
     use iris_contract::*;
 
@@ -116,8 +117,12 @@ mod selftest {
             Op::Set { node: a.clone(), value: "1".into() }, Op::Kill { node: root.clone() },
             Op::Lock { node: a.clone(), mode: Mode::E, wait: false }, Op::Lock { node: root.clone(), mode: Mode::S, wait: false },
             Op::Unlock { node: a.clone(), mode: Mode::E, immediate: false }, Op::Unlock { node: root.clone(), mode: Mode::S, immediate: true },
-            Op::Insert { table: "T".into(), k: "1".into(), v: "x".into() }, Op::Delete { table: "T".into(), k: "1".into() },
+            Op::Insert { table: "T".into(), k: "1".into(), v: "x".into(), noindex: false, nocheck: false }, Op::Delete { table: "T".into(), k: "1".into() },
             Op::Await,
+            // extension (r3): functional index, %NOINDEX, BUILD INDEX, DDL
+            Op::Insert { table: "F".into(), k: "1".into(), v: "apple".into(), noindex: true, nocheck: false },
+            Op::Insert { table: "D1".into(), k: "1".into(), v: "x".into(), noindex: false, nocheck: false },
+            Op::BuildIndex { table: "F".into() }, Op::CreateTable { table: "D1".into() }, Op::DropTable { table: "D1".into() },
         ]
     }
 
@@ -173,6 +178,17 @@ mod selftest {
                 }),
                 invariant("undo stack depth equals the transaction level", |s: &(Engine, u8)| {
                     s.0.procs.iter().all(|p| p.undo.len() as u32 == p.tlevel)
+                }),
+                invariant("a table's rows exist only while the table exists (or after DDL on it was rolled back)",
+                          |s: &(Engine, u8)| {
+                    s.0.g.keys().filter(|n| n.root.starts_with("^SQL.")).all(|n| {
+                        let t = n.root.trim_start_matches("^SQL.");
+                        s.0.table_exists(t) || s.0.g.keys().any(|g| g.root == "#ghost" && g.subs[0] == t)
+                    })
+                }),
+                invariant("every unique-index entry outside any transaction names a row", |s: &(Engine, u8)| {
+                    s.0.procs.iter().any(|p| p.tlevel > 0) || s.0.g.keys().filter(|n| n.root.starts_with("^PK."))
+                        .all(|n| s.0.g.contains_key(&row_at(n.root.trim_start_matches("^PK."), &n.subs[0], &n.subs[1])))
                 }),
             ]
         }

@@ -42,7 +42,9 @@
    "status": "closed",
    "evidence": [
     "run:env-contract-r2",
-    "run:env-contract-selftest"
+    "run:env-contract-r6-recheck",
+    "run:env-contract-selftest",
+    "run:env-ext-r6"
    ]
   },
   {
@@ -50,7 +52,9 @@
    "module": "product",
    "status": "closed",
    "evidence": [
-    "run:env-contract-r2"
+    "run:env-contract-r2",
+    "run:env-contract-r6-recheck",
+    "run:env-ext-r6"
    ]
   },
   {
@@ -58,16 +62,20 @@
    "module": "product",
    "status": "closed",
    "evidence": [
-    "run:env-contract-r2"
+    "run:env-contract-r2",
+    "run:env-contract-r6-recheck",
+    "run:env-ext-r6"
    ],
-   "remaining": "one freedom kept (INSERT after uncommitted delete)"
+   "remaining": "r6: 515 of 516 cases single-outcome; one freedom kept"
   },
   {
    "gate": "3.2-mutants",
    "module": "product",
    "status": "closed",
    "evidence": [
-    "run:env-contract-r2"
+    "run:env-contract-r2",
+    "run:env-contract-r6-recheck",
+    "run:env-ext-r6"
    ]
   },
   {
@@ -212,7 +220,9 @@
    "module": "product",
    "status": "closed",
    "evidence": [
-    "run:env-contract-r2"
+    "run:env-contract-r2",
+    "run:env-contract-r6-recheck",
+    "run:env-ext-r6"
    ]
   },
   {
@@ -317,7 +327,9 @@
    "module": "product",
    "status": "closed",
    "evidence": [
-    "run:env-contract-r2"
+    "run:env-contract-r2",
+    "run:env-contract-r6-recheck",
+    "run:env-ext-r6"
    ]
   },
   {
@@ -325,7 +337,9 @@
    "module": "product",
    "status": "closed",
    "evidence": [
-    "run:env-contract-r2"
+    "run:env-contract-r2",
+    "run:env-contract-r6-recheck",
+    "run:env-ext-r6"
    ]
   },
   {
@@ -1080,6 +1094,166 @@
    ],
    "level": "model",
    "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence"
+  },
+  {
+   "gate": "3.2-coverage",
+   "module": "00",
+   "status": "closed",
+   "level": "method",
+   "evidence": [
+    "run:env-ext-r6"
+   ],
+   "remaining": "every relied-on feature is in the contract"
+  },
+  {
+   "gate": "3.2-coverage",
+   "module": "01",
+   "status": "open",
+   "level": "method",
+   "evidence": [
+    "run:env-ext-r6"
+   ],
+   "remaining": "outside the contract's subset: %DynamicObject / JSON functions not modelled; HNSW vector index maintenance is outside the subset; SQL routines (compiled) not modelled; class dictionary and run-time compilation not modelled (compiling is out of the audit's scope); embedded SQL (&sql) compiled into classes: assumed equal to dynamic SQL (premise E-1), untested; %SQL.Statement %ExecDirect is in the contract (E-PARTIAL, X-FX, X-STMT, X-NULL); iFind search semantics (tokenizer, word dictionary written outside the transaction, ranking) not modelled; only the per-row index entries' transaction behaviour is (X-FX)"
+  },
+  {
+   "gate": "3.2-coverage",
+   "module": "02",
+   "status": "open",
+   "level": "method",
+   "evidence": [
+    "run:env-ext-r6"
+   ],
+   "remaining": "outside the contract's subset: embedded SQL (&sql) compiled into classes: assumed equal to dynamic SQL (premise E-1), untested; %SQL.Statement %ExecDirect is in the contract (E-PARTIAL, X-FX, X-STMT, X-NULL); only -30, -110, -119, -201, -359 and -400 are contract observations; the other codes the module maps are not modelled; result-prefix queries not modelled"
+  },
+  {
+   "gate": "3.2-coverage",
+   "module": "03",
+   "status": "open",
+   "level": "method",
+   "evidence": [
+    "run:env-ext-r6"
+   ],
+   "remaining": "outside the contract's subset: %DynamicObject / JSON functions not modelled; class dictionary and run-time compilation not modelled (compiling is out of the audit's scope); embedded SQL (&sql) compiled into classes: assumed equal to dynamic SQL (premise E-1), untested; %SQL.Statement %ExecDirect is in the contract (E-PARTIAL, X-FX, X-STMT, X-NULL); iFind search semantics (tokenizer, word dictionary written outside the transaction, ranking) not modelled; only the per-row index entries' transaction behaviour is (X-FX); only -30, -110, -119, -201, -359 and -400 are contract observations; the other codes the module maps are not modelled; result-prefix queries not modelled"
+  },
+  {
+   "gate": "3.2-coverage",
+   "module": "04",
+   "status": "open",
+   "level": "method",
+   "evidence": [
+    "run:env-ext-r6"
+   ],
+   "remaining": "outside the contract's subset: %DynamicObject / JSON functions not modelled; JOB / WorkMgr processes not modelled; class dictionary and run-time compilation not modelled (compiling is out of the audit's scope); embedded SQL (&sql) compiled into classes: assumed equal to dynamic SQL (premise E-1), untested; %SQL.Statement %ExecDirect is in the contract (E-PARTIAL, X-FX, X-STMT, X-NULL); only -30, -110, -119, -201, -359 and -400 are contract observations; the other codes the module maps are not modelled; only the `%IGNOREINDEX *` full scan is exercised (X-NOINDEX); the product's named-index forms are not"
+  },
+  {
+   "gate": "3.2-coverage",
+   "module": "05",
+   "status": "open",
+   "level": "method",
+   "evidence": [
+    "run:env-ext-r6"
+   ],
+   "remaining": "outside the contract's subset: %DynamicObject / JSON functions not modelled; embedded SQL (&sql) compiled into classes: assumed equal to dynamic SQL (premise E-1), untested; %SQL.Statement %ExecDirect is in the contract (E-PARTIAL, X-FX, X-STMT, X-NULL); only -30, -110, -119, -201, -359 and -400 are contract observations; the other codes the module maps are not modelled; pure functions and clocks not modelled"
+  },
+  {
+   "gate": "3.2-coverage",
+   "module": "06",
+   "status": "open",
+   "level": "method",
+   "evidence": [
+    "run:env-ext-r6"
+   ],
+   "remaining": "outside the contract's subset: %DynamicObject / JSON functions not modelled; EMBEDDING() / %Embedding configuration not modelled; HNSW vector index maintenance is outside the subset; INSERT OR UPDATE not modelled; Task Manager not modelled; class dictionary and run-time compilation not modelled (compiling is out of the audit's scope)"
+  },
+  {
+   "gate": "3.2-coverage",
+   "module": "07",
+   "status": "open",
+   "level": "method",
+   "evidence": [
+    "run:env-ext-r6"
+   ],
+   "remaining": "outside the contract's subset: %DynamicObject / JSON functions not modelled; embedded Python is not driven by the contract (needs irispython in the container); engine limits (string, subscript, parameter count) not modelled; iFind search semantics (tokenizer, word dictionary written outside the transaction, ranking) not modelled; only the per-row index entries' transaction behaviour is (X-FX); iFind tokenizer / analysis not modelled; the journal is the audit's oracle, not a contract clause"
+  },
+  {
+   "gate": "3.2-coverage",
+   "module": "08",
+   "status": "open",
+   "level": "method",
+   "evidence": [
+    "run:env-ext-r6"
+   ],
+   "remaining": "outside the contract's subset: $LIST semantics not modelled; %DynamicObject / JSON functions not modelled; %Regex not modelled; SQL collation functions / generated SQL not modelled; SQL routines (compiled) not modelled; SQL text parsing not modelled"
+  },
+  {
+   "gate": "3.2-coverage",
+   "module": "09",
+   "status": "open",
+   "level": "method",
+   "evidence": [
+    "run:env-ext-r6"
+   ],
+   "remaining": "outside the contract's subset: $LIST semantics not modelled; IRISTEMP database (not journaled, shared) not modelled; JOB / WorkMgr processes not modelled; class dictionary and run-time compilation not modelled (compiling is out of the audit's scope); embedded Python is not driven by the contract (needs irispython in the container); engine limits (string, subscript, parameter count) not modelled"
+  },
+  {
+   "gate": "3.2-coverage",
+   "module": "10",
+   "status": "open",
+   "level": "method",
+   "evidence": [
+    "run:env-ext-r6"
+   ],
+   "remaining": "outside the contract's subset: $LIST semantics not modelled; $ZF callouts not modelled; %DynamicObject / JSON functions not modelled; IRISTEMP database (not journaled, shared) not modelled; JOB / WorkMgr processes not modelled; catalog views other than TABLES / COLUMNS, default-schema resolution and namespaces not modelled"
+  },
+  {
+   "gate": "3.2-coverage",
+   "module": "11",
+   "status": "open",
+   "level": "method",
+   "evidence": [
+    "run:env-ext-r6"
+   ],
+   "remaining": "outside the contract's subset: %DynamicObject / JSON functions not modelled; object filing, triggers and foreign keys not modelled; pure functions and clocks not modelled; result-prefix queries not modelled; streams not modelled; the journal is the audit's oracle, not a contract clause"
+  },
+  {
+   "gate": "3.2-coverage",
+   "module": "15",
+   "status": "open",
+   "level": "method",
+   "evidence": [
+    "run:env-ext-r6"
+   ],
+   "remaining": "outside the contract's subset: INSERT OR UPDATE not modelled; InterSystems FHIR server storage: absent on Community 2026.1; Task Manager not modelled; default-schema (SQLUser) resolution is not modelled; TABLES, COLUMNS and TableExists are (X-DDL); engine limits (string, subscript, parameter count) not modelled; object filing, triggers and foreign keys not modelled"
+  },
+  {
+   "gate": "3.2-coverage",
+   "module": "16",
+   "status": "open",
+   "level": "method",
+   "evidence": [
+    "run:env-ext-r6"
+   ],
+   "remaining": "outside the contract's subset: %AI classes: absent on Community 2026.1; embedded Python is not driven by the contract (needs irispython in the container); management APIs not modelled (process stop is, via %SYSTEM.Process.Terminate: E-STOP); web dispatch, roles and SQL privileges not modelled"
+  },
+  {
+   "gate": "3.2-coverage",
+   "module": "17",
+   "status": "open",
+   "level": "method",
+   "evidence": [
+    "run:env-ext-r6"
+   ],
+   "remaining": "outside the contract's subset: HNSW vector index maintenance is outside the subset; catalog views other than TABLES / COLUMNS, default-schema resolution and namespaces not modelled; class dictionary reads not modelled; effects of an index (re)build on another connection's cached code are not modelled; embedded Python is not driven by the contract (needs irispython in the container); engine limits (string, subscript, parameter count) not modelled"
+  },
+  {
+   "gate": "3.2-coverage",
+   "module": "18",
+   "status": "open",
+   "level": "method",
+   "evidence": [
+    "run:env-ext-r6"
+   ],
+   "remaining": "outside the contract's subset: $LISTVALID / $LISTNEXT, $NAME and %DynamicObject are not modelled; $VECTOR set/get/rollback is (X-VEC); HNSW index build is outside; CREATE / DROP TABLE are in X-DDL; INSERT OR UPDATE not modelled; Native API subscript validation not modelled; class dictionary and run-time compilation not modelled (compiling is out of the audit's scope); object filing, triggers and foreign keys not modelled"
   }
  ]
 }

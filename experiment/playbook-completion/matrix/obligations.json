@@ -880,11 +880,15 @@
   {
    "cited_runs": [
     "env-contract-r2",
-    "env-contract-selftest"
+    "env-contract-r6-recheck",
+    "env-contract-selftest",
+    "env-ext-r6"
    ],
    "evidence": [
     "run:env-contract-r2",
-    "run:env-contract-selftest"
+    "run:env-contract-r6-recheck",
+    "run:env-contract-selftest",
+    "run:env-ext-r6"
    ],
    "evidence_grade": "registered-run",
    "gate": "3.2-library",
@@ -895,10 +899,14 @@
   },
   {
    "cited_runs": [
-    "env-contract-r2"
+    "env-contract-r2",
+    "env-contract-r6-recheck",
+    "env-ext-r6"
    ],
    "evidence": [
-    "run:env-contract-r2"
+    "run:env-contract-r2",
+    "run:env-contract-r6-recheck",
+    "run:env-ext-r6"
    ],
    "evidence_grade": "registered-run",
    "gate": "3.2-differential",
@@ -909,25 +917,33 @@
   },
   {
    "cited_runs": [
-    "env-contract-r2"
+    "env-contract-r2",
+    "env-contract-r6-recheck",
+    "env-ext-r6"
    ],
    "evidence": [
-    "run:env-contract-r2"
+    "run:env-contract-r2",
+    "run:env-contract-r6-recheck",
+    "run:env-ext-r6"
    ],
    "evidence_grade": "registered-run",
    "gate": "3.2-sharpness",
    "level": "method",
    "module": "product",
    "product_obligation": "unknown",
-   "remaining": "one freedom kept (INSERT after uncommitted delete)",
+   "remaining": "r6: 515 of 516 cases single-outcome; one freedom kept",
    "status": "closed"
   },
   {
    "cited_runs": [
-    "env-contract-r2"
+    "env-contract-r2",
+    "env-contract-r6-recheck",
+    "env-ext-r6"
    ],
    "evidence": [
-    "run:env-contract-r2"
+    "run:env-contract-r2",
+    "run:env-contract-r6-recheck",
+    "run:env-ext-r6"
    ],
    "evidence_grade": "registered-run",
    "gate": "3.2-mutants",
@@ -937,138 +953,138 @@
    "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "env_features above",
-    "modules/15.json, 16.json, 17.json, 18.json env_features"
+   "cited_runs": [
+    "env-ext-r6"
    ],
+   "evidence": [
+    "run:env-ext-r6"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.2-coverage",
    "level": "method",
    "module": "00",
    "product_obligation": "unknown",
-   "remaining": "orchestrator's IRIS contract must place each listed feature inside its subset or mark it outside",
-   "source": "modules/00.json",
-   "status": "open"
+   "remaining": "every relied-on feature is in the contract",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
+   "cited_runs": [
+    "env-ext-r6"
+   ],
    "evidence": [
-    "models/breadth-a/inventory/env-features-01.json"
+    "run:env-ext-r6"
    ],
    "gate": "3.2-coverage",
    "level": "method",
    "module": "01",
    "product_obligation": "unknown",
-   "remaining": "the orchestrator's IRIS environment contract must cover each env_feature; live premises settled here: P-0202 (F-0203), P-0307 (F-0306), P-0401 ($Increment journaled outside the transaction, J02/J13), P-0002 (dirty reads, F-0402)",
-   "source": "modules/01.json",
+   "remaining": "outside the contract's subset: %DynamicObject / JSON functions not modelled; HNSW vector index maintenance is outside the subset; SQL routines (compiled) not modelled; class dictionary and run-time compilation not modelled (compiling is out of the audit's scope); embedded SQL (&sql) compiled into classes: assumed equal to dynamic SQL (premise E-1), untested; %SQL.Statement %ExecDirect is in the contract (E-PARTIAL, X-FX, X-STMT, X-NULL); iFind search semantics (tokenizer, word dictionary written outside the transaction, ranking) not modelled; only the per-row index entries' transaction behaviour is (X-FX)",
    "status": "open"
   },
   {
-   "cited_runs": [],
+   "cited_runs": [
+    "env-ext-r6"
+   ],
    "evidence": [
-    "models/breadth-a/inventory/env-features-02.json"
+    "run:env-ext-r6"
    ],
    "gate": "3.2-coverage",
    "level": "method",
    "module": "02",
    "product_obligation": "unknown",
-   "remaining": "the orchestrator's IRIS environment contract must cover each env_feature; live premises settled here: P-0202 (F-0203), P-0307 (F-0306), P-0401 ($Increment journaled outside the transaction, J02/J13), P-0002 (dirty reads, F-0402)",
-   "source": "modules/02.json",
+   "remaining": "outside the contract's subset: embedded SQL (&sql) compiled into classes: assumed equal to dynamic SQL (premise E-1), untested; %SQL.Statement %ExecDirect is in the contract (E-PARTIAL, X-FX, X-STMT, X-NULL); only -30, -110, -119, -201, -359 and -400 are contract observations; the other codes the module maps are not modelled; result-prefix queries not modelled",
    "status": "open"
   },
   {
-   "cited_runs": [],
+   "cited_runs": [
+    "env-ext-r6"
+   ],
    "evidence": [
-    "models/breadth-a/inventory/env-features-03.json"
+    "run:env-ext-r6"
    ],
    "gate": "3.2-coverage",
    "level": "method",
    "module": "03",
    "product_obligation": "unknown",
-   "remaining": "the orchestrator's IRIS environment contract must cover each env_feature; live premises settled here: P-0202 (F-0203), P-0307 (F-0306), P-0401 ($Increment journaled outside the transaction, J02/J13), P-0002 (dirty reads, F-0402)",
-   "source": "modules/03.json",
+   "remaining": "outside the contract's subset: %DynamicObject / JSON functions not modelled; class dictionary and run-time compilation not modelled (compiling is out of the audit's scope); embedded SQL (&sql) compiled into classes: assumed equal to dynamic SQL (premise E-1), untested; %SQL.Statement %ExecDirect is in the contract (E-PARTIAL, X-FX, X-STMT, X-NULL); iFind search semantics (tokenizer, word dictionary written outside the transaction, ranking) not modelled; only the per-row index entries' transaction behaviour is (X-FX); only -30, -110, -119, -201, -359 and -400 are contract observations; the other codes the module maps are not modelled; result-prefix queries not modelled",
    "status": "open"
   },
   {
-   "cited_runs": [],
+   "cited_runs": [
+    "env-ext-r6"
+   ],
    "evidence": [
-    "models/breadth-a/inventory/env-features-04.json"
+    "run:env-ext-r6"
    ],
    "gate": "3.2-coverage",
    "level": "method",
    "module": "04",
    "product_obligation": "unknown",
-   "remaining": "the orchestrator's IRIS environment contract must cover each env_feature; live premises settled here: P-0202 (F-0203), P-0307 (F-0306), P-0401 ($Increment journaled outside the transaction, J02/J13), P-0002 (dirty reads, F-0402)",
-   "source": "modules/04.json",
+   "remaining": "outside the contract's subset: %DynamicObject / JSON functions not modelled; JOB / WorkMgr processes not modelled; class dictionary and run-time compilation not modelled (compiling is out of the audit's scope); embedded SQL (&sql) compiled into classes: assumed equal to dynamic SQL (premise E-1), untested; %SQL.Statement %ExecDirect is in the contract (E-PARTIAL, X-FX, X-STMT, X-NULL); only -30, -110, -119, -201, -359 and -400 are contract observations; the other codes the module maps are not modelled; only the `%IGNOREINDEX *` full scan is exercised (X-NOINDEX); the product's named-index forms are not",
    "status": "open"
   },
   {
-   "cited_runs": [],
+   "cited_runs": [
+    "env-ext-r6"
+   ],
    "evidence": [
-    "models/breadth-a/inventory/env-features-05.json"
+    "run:env-ext-r6"
    ],
    "gate": "3.2-coverage",
    "level": "method",
    "module": "05",
    "product_obligation": "unknown",
-   "remaining": "the orchestrator's IRIS environment contract must cover each env_feature; live premises settled here: P-0202 (F-0203), P-0307 (F-0306), P-0401 ($Increment journaled outside the transaction, J02/J13), P-0002 (dirty reads, F-0402)",
-   "source": "modules/05.json",
+   "remaining": "outside the contract's subset: %DynamicObject / JSON functions not modelled; embedded SQL (&sql) compiled into classes: assumed equal to dynamic SQL (premise E-1), untested; %SQL.Statement %ExecDirect is in the contract (E-PARTIAL, X-FX, X-STMT, X-NULL); only -30, -110, -119, -201, -359 and -400 are contract observations; the other codes the module maps are not modelled; pure functions and clocks not modelled",
    "status": "open"
   },
   {
-   "cited_runs": [],
+   "cited_runs": [
+    "env-ext-r6"
+   ],
    "evidence": [
-    "models/breadth-a/inventory/env-features-06.json"
+    "run:env-ext-r6"
    ],
    "gate": "3.2-coverage",
    "level": "method",
    "module": "06",
    "product_obligation": "unknown",
-   "remaining": "the orchestrator's IRIS environment contract must cover each env_feature; live premises settled here: P-0202 (F-0203), P-0307 (F-0306), P-0401 ($Increment journaled outside the transaction, J02/J13), P-0002 (dirty reads, F-0402)",
-   "source": "modules/06.json",
+   "remaining": "outside the contract's subset: %DynamicObject / JSON functions not modelled; EMBEDDING() / %Embedding configuration not modelled; HNSW vector index maintenance is outside the subset; INSERT OR UPDATE not modelled; Task Manager not modelled; class dictionary and run-time compilation not modelled (compiling is out of the audit's scope)",
    "status": "open"
   },
   {
-   "cited_runs": [],
+   "cited_runs": [
+    "env-ext-r6"
+   ],
    "evidence": [
-    {
-     "kind": "live",
-     "ref": "b-07-fc0702-nested-rollback"
-    }
+    "run:env-ext-r6"
    ],
    "gate": "3.2-coverage",
    "level": "method",
    "module": "07",
    "product_obligation": "unknown",
-   "reason": "20 IRIS features listed in env_features; none yet inside the orchestrator's IRIS contract. F-C0702 shows TROLLBACK-level semantics (bare TROLLBACK ends every level) matter to this module.",
-   "remaining": "IRIS environment contract (AUDITENV) to cover or exclude each env feature.",
-   "source": "modules/07.json",
+   "remaining": "outside the contract's subset: %DynamicObject / JSON functions not modelled; embedded Python is not driven by the contract (needs irispython in the container); engine limits (string, subscript, parameter count) not modelled; iFind search semantics (tokenizer, word dictionary written outside the transaction, ranking) not modelled; only the per-row index entries' transaction behaviour is (X-FX); iFind tokenizer / analysis not modelled; the journal is the audit's oracle, not a contract clause",
    "status": "open"
   },
   {
    "cited_runs": [
-    "b-08-live-fc0801-rollback-nkg",
-    "b-08-live-footprints"
+    "env-ext-r6"
    ],
    "evidence": [
-    "modules/08.json env_features",
-    "b-08-live-footprints",
-    "b-08-live-fc0801-rollback-nkg"
+    "run:env-ext-r6"
    ],
    "gate": "3.2-coverage",
    "level": "method",
    "module": "08",
    "product_obligation": "unknown",
-   "reason": "Module 08 relies on the IRIS features listed in env_features; several were observed live here (nested TSTART levels under a caller transaction, -119 writes nothing, functional-index writes undone by TROLLBACK 1, $INCREMENT survives TROLLBACK, one statement per execute bounding F-0815), but no environment contract with differential validation and mutants exists for them in this lane. 25 features listed in env_features.",
-   "remaining": "Orchestrator's IRIS environment contract (AUDITENV) to cover env_features with sharpness tests.",
-   "source": "modules/08.json",
+   "remaining": "outside the contract's subset: $LIST semantics not modelled; %DynamicObject / JSON functions not modelled; %Regex not modelled; SQL collation functions / generated SQL not modelled; SQL routines (compiled) not modelled; SQL text parsing not modelled",
    "status": "open"
   },
   {
-   "cited_runs": [],
+   "cited_runs": [
+    "env-ext-r6"
+   ],
    "evidence": [
-    "live:b-09-probe",
-    "live:b-09-f0909-txn-visibility"
+    "run:env-ext-r6"
    ],
    "findings": [
     "F-0909"
@@ -1077,40 +1093,39 @@
    "level": "method",
    "module": "09",
    "product_obligation": "fails",
-   "reason": "29 IRIS engine features listed in env_features with source lines; whether each is inside the orchestrator's IRIS 2026.1 contract is not yet decided here. Two are checked live by this lane: $ZCRC(x,7) = CRC-32 (b-09-probe) and cross-process read-uncommitted visibility (b-09-f0909); P-0903 did not reproduce on 2026.1 (b-09-f0904-sync-failed-build)",
-   "remaining": "map env_features into the IRIS contract (AUDITENV, orchestrator)",
-   "source": "modules/09.json",
+   "remaining": "outside the contract's subset: $LIST semantics not modelled; IRISTEMP database (not journaled, shared) not modelled; JOB / WorkMgr processes not modelled; class dictionary and run-time compilation not modelled (compiling is out of the audit's scope); embedded Python is not driven by the contract (needs irispython in the container); engine limits (string, subscript, parameter count) not modelled",
    "status": "open"
   },
   {
-   "cited_runs": [],
+   "cited_runs": [
+    "env-ext-r6"
+   ],
    "evidence": [
-    "modules/10.json env_features"
+    "run:env-ext-r6"
    ],
    "gate": "3.2-coverage",
    "level": "method",
    "module": "10",
    "product_obligation": "unknown",
-   "reason": "",
-   "remaining": "21 IRIS features listed with source lines; the orchestrator's IRIS 2026.1 contract must cover or mark each outside its subset.",
-   "source": "modules/10.json",
+   "remaining": "outside the contract's subset: $LIST semantics not modelled; $ZF callouts not modelled; %DynamicObject / JSON functions not modelled; IRISTEMP database (not journaled, shared) not modelled; JOB / WorkMgr processes not modelled; catalog views other than TABLES / COLUMNS, default-schema resolution and namespaces not modelled",
    "status": "open"
   },
   {
-   "cited_runs": [],
+   "cited_runs": [
+    "env-ext-r6"
+   ],
    "evidence": [
-    "inspected:experiment/playbook-completion/iris-contract/CONTRACT.md"
+    "run:env-ext-r6"
    ],
    "findings": [
-    "F-C1102"
+    "F-C1102",
+    "F-C1110"
    ],
    "gate": "3.2-coverage",
    "level": "method",
    "module": "11",
    "product_obligation": "fails",
-   "reason": "27 IRIS features listed in env_features: 10 inside the contract's subset, 4 partly (lock timeout/$TEST, object duplicate IdKey, native-on-caller-connection, journaling), 13 outside it.",
-   "remaining": "Add to the IRIS contract: object concurrency of %OpenId/%Save (no lock on open; %Save row lock held to the outermost transaction end; 10 s lock timeout returning an error status), LOCK with timeout and $TEST, SQL row triggers and their bypasses (%NOTRIGGER, TRUNCATE; P-1108), %OnBeforeSave/%OnDelete, %KillExtent, object %Save duplicate IdKey (#5805), foreign-key enforcement on rdf_labels vs none on rdf_props, %DynamicObject %ToJSON key order (F-1113), functional-index maintenance inside SQL statements.",
-   "source": "modules/11.json",
+   "remaining": "outside the contract's subset: %DynamicObject / JSON functions not modelled; object filing, triggers and foreign keys not modelled; pure functions and clocks not modelled; result-prefix queries not modelled; streams not modelled; the journal is the audit's oracle, not a contract clause",
    "status": "open"
   },
   {
@@ -1163,35 +1178,24 @@
   },
   {
    "cited_runs": [
-    "c15-live-delreif",
-    "c15-live-register",
-    "c15-live-tablemap"
+    "env-ext-r6"
    ],
    "evidence": [
-    "modules/15.json env_features",
-    "c15-live-register",
-    "c15-live-tablemap",
-    "c15-live-delreif"
+    "run:env-ext-r6"
    ],
    "gate": "3.2-coverage",
    "level": "method",
    "module": "15",
    "product_obligation": "unknown",
-   "remaining": "FHIR repository internals (P-1502..P-1504, P-1511), Task Manager (P-1505), privilege premise (P-1506) and MAXSTRING (P-1510) are not checked against the IRIS contract: HS.FHIRServer.* / HS_FHIRServer SQL schema (IRIS for Health FHIR repository) absent on IRIS Community 2026.1 in AUDITC (live c15-live-register: 0 classes, 0 tables, Register refuses 'no FHIR repository').",
-   "source": "modules/15.json",
-   "status": "blocked"
+   "remaining": "outside the contract's subset: INSERT OR UPDATE not modelled; InterSystems FHIR server storage: absent on Community 2026.1; Task Manager not modelled; default-schema (SQLUser) resolution is not modelled; TABLES, COLUMNS and TableExists are (X-DDL); engine limits (string, subscript, parameter count) not modelled; object filing, triggers and foreign keys not modelled",
+   "status": "open"
   },
   {
    "cited_runs": [
-    "c16-s2-bolt-sessions",
-    "c16-s5-fraud-sql-stream",
-    "c16-s8-followup"
+    "env-ext-r6"
    ],
    "evidence": [
-    "modules/16.json#env_features",
-    "c16-s5-fraud-sql-stream",
-    "c16-s8-followup",
-    "c16-s2-bolt-sessions"
+    "run:env-ext-r6"
    ],
    "findings": [
     "F-1605"
@@ -1200,14 +1204,15 @@
    "level": "method",
    "module": "16",
    "product_obligation": "fails",
-   "remaining": "CSP dispatch and %AI features cannot be exercised here (blocked-access)",
-   "source": "modules/16.json",
+   "remaining": "outside the contract's subset: %AI classes: absent on Community 2026.1; embedded Python is not driven by the contract (needs irispython in the container); management APIs not modelled (process stop is, via %SYSTEM.Process.Terminate: E-STOP); web dispatch, roles and SQL privileges not modelled",
    "status": "open"
   },
   {
-   "cited_runs": [],
+   "cited_runs": [
+    "env-ext-r6"
+   ],
    "evidence": [
-    "modules/17.json env_features"
+    "run:env-ext-r6"
    ],
    "findings": [
     "F-1705",
@@ -1218,21 +1223,21 @@
    "level": "method",
    "module": "17",
    "product_obligation": "fails",
-   "remaining": "IRIS contract placement",
-   "source": "modules/17.json",
+   "remaining": "outside the contract's subset: HNSW vector index maintenance is outside the subset; catalog views other than TABLES / COLUMNS, default-schema resolution and namespaces not modelled; class dictionary reads not modelled; effects of an index (re)build on another connection's cached code are not modelled; embedded Python is not driven by the contract (needs irispython in the container); engine limits (string, subscript, parameter count) not modelled",
    "status": "open"
   },
   {
-   "cited_runs": [],
+   "cited_runs": [
+    "env-ext-r6"
+   ],
    "evidence": [
-    "env_features"
+    "run:env-ext-r6"
    ],
    "gate": "3.2-coverage",
    "level": "method",
    "module": "18",
    "product_obligation": "unknown",
-   "remaining": "the IRIS contract must place each feature (uncommitted reads, Native API value round trip, SELECT * order, IdKey uniqueness, autocommit) inside its subset",
-   "source": "modules/18.json",
+   "remaining": "outside the contract's subset: $LISTVALID / $LISTNEXT, $NAME and %DynamicObject are not modelled; $VECTOR set/get/rollback is (X-VEC); HNSW index build is outside; CREATE / DROP TABLE are in X-DDL; INSERT OR UPDATE not modelled; Native API subscript validation not modelled; class dictionary and run-time compilation not modelled (compiling is out of the audit's scope); object filing, triggers and foreign keys not modelled",
    "status": "open"
   },
   {
@@ -7685,10 +7690,14 @@
   },
   {
    "cited_runs": [
-    "env-contract-r2"
+    "env-contract-r2",
+    "env-contract-r6-recheck",
+    "env-ext-r6"
    ],
    "evidence": [
-    "run:env-contract-r2"
+    "run:env-contract-r2",
+    "run:env-contract-r6-recheck",
+    "run:env-ext-r6"
    ],
    "evidence_grade": "registered-run",
    "gate": "3.7-differential",
@@ -8871,7 +8880,8 @@
     "F-1112",
     "F-1113",
     "F-1114",
-    "F-C1101"
+    "F-C1101",
+    "F-C1110"
    ],
    "gate": "3.8-findings-disposed",
    "level": "method",
@@ -9083,10 +9093,14 @@
   },
   {
    "cited_runs": [
-    "env-contract-r2"
+    "env-contract-r2",
+    "env-contract-r6-recheck",
+    "env-ext-r6"
    ],
    "evidence": [
-    "run:env-contract-r2"
+    "run:env-contract-r2",
+    "run:env-contract-r6-recheck",
+    "run:env-ext-r6"
    ],
    "evidence_grade": "registered-run",
    "gate": "5b-client-entry",
@@ -9097,10 +9111,14 @@
   },
   {
    "cited_runs": [
-    "env-contract-r2"
+    "env-contract-r2",
+    "env-contract-r6-recheck",
+    "env-ext-r6"
    ],
    "evidence": [
-    "run:env-contract-r2"
+    "run:env-contract-r2",
+    "run:env-contract-r6-recheck",
+    "run:env-ext-r6"
    ],
    "evidence_grade": "registered-run",
    "gate": "5b-refuse-not-guess",
@@ -17722,6 +17740,22 @@
    "severity": "S3"
   },
   {
+   "confidence": "medium",
+   "disposition": "confirmed-source",
+   "evidence": [
+    {
+     "kind": "run",
+     "ref": "env-ext-r6"
+    }
+   ],
+   "gates": [
+    "3.2-coverage",
+    "3.8-findings-disposed"
+   ],
+   "id": "F-C1110",
+   "severity": "S3"
+  },
+  {
    "confidence": "high",
    "disposition": "reproduced-live",
    "evidence": [
@@ -18518,7 +18552,7 @@
    "source": "TRUST.md"
   }
  ],
- "registry_runs": 711,
+ "registry_runs": 716,
  "starting_inventory": {
   "cells": 904,
   "decisions": 61,
@@ -18529,8 +18563,8 @@
   "writer_obligations": 83
  },
  "status_counts": {
-  "blocked": 7,
-  "closed": 145,
+  "blocked": 6,
+  "closed": 146,
   "not-applicable": 36,
   "open": 369
  },

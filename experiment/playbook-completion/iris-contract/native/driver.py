@@ -46,16 +46,84 @@ def ok() -> Dict:
     return {"obs": "ok"}
 
 
+# ---------------------------------------------------------------------------------------------- extension (r3)
+# Scratch tables, created by reset(): T, S, E (k, v), F (k, v) with the functional index fx (%iFind.Index.Basic,
+# a %Library.FunctionalIndex subclass shipped with IRIS: nothing of ours is compiled), C (declared column order).
+# D1 and D2 are created and dropped by the cases themselves.
+F_TABLE = "IVGAudit.F"
+E_TABLE = "IVGAudit.E"
+C_COLS = "zeta VARCHAR(5), alpha VARCHAR(5), mid INTEGER, k VARCHAR(5) PRIMARY KEY"
+FIND_IDS = f"SELECT %ID FROM {F_TABLE} WHERE %ID %FIND search_index(fx, ?) ORDER BY %ID"
+EXISTS_Q = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='IVGAudit' AND TABLE_NAME=?"
+MATCH_Q = f"SELECT COUNT(*) FROM {E_TABLE} WHERE COALESCE(v, '') = COALESCE(?, '')"
+VEC_A, VEC_B = "TO_VECTOR('1,0', DOUBLE)", "TO_VECTOR('0.6,0.8', DOUBLE)"
+
+
+def tname(t: str) -> str:
+    return f"IVGAudit.{t}"
+
+
+def hints(op: Dict) -> str:
+    return ("%NOINDEX " if op.get("noindex") else "") + ("%NOCHECK " if op.get("nocheck") else "")
+
+
+def sql_lit(v: Optional[str]) -> str:
+    return "NULL" if v is None else "'" + v.replace("'", "''") + "'"
+
+
+def ddl_create(t: str) -> str:
+    # storage under the scratch prefix (^IVGAudit<t>.N), so reset() can empty it whatever the indexes hold
+    return (f"CREATE TABLE {tname(t)} (k VARCHAR(20) PRIMARY KEY, v VARCHAR(20)) "
+            f"WITH %CLASSPARAMETER DEFAULTGLOBAL = '^IVGAudit{t}'")
+
+
+def select_q(t: str) -> str:
+    # a full scan (%NOINDEX rows are in no index); no ORDER BY: ordering by the unique key keeps one row per key
+    # when %NOCHECK / %NOINDEX made it non-unique (explore-6 K3), so the client sorts by (k, v)
+    return f"SELECT k, v FROM %IGNOREINDEX * {tname(t)}"
+
+
+def sql_fn_q(name: str) -> str:
+    return f"SELECT {name}({VEC_A}, {VEC_B})"
+
+
+def fmt4(x) -> Optional[str]:
+    return None if x is None else str(round(float(x), 4))
+
+
+def canon(s) -> str:
+    """A subscript as IRIS writes it: the Native API answers numeric subscripts as int / float."""
+    if isinstance(s, bool):
+        return str(int(s))
+    if isinstance(s, int):
+        return str(s)
+    if isinstance(s, float):
+        t = repr(s)
+        if t.endswith(".0"):
+            t = t[:-2]
+        if t.startswith("0."):
+            t = t[1:]
+        elif t.startswith("-0."):
+            t = "-" + t[2:]
+        return t
+    if isinstance(s, (bytes, bytearray)):
+        return s.decode()
+    return str(s)
+
+
 def norm_err(e: BaseException) -> Dict:
     t = str(e)
-    for name in ("<COMMAND>", "<TIMEOUT>", "<UNDEFINED>", "<SYNTAX>"):
-        if name in t:
-            return {"obs": "error", "error": name}
+    # The statement's SQLCODE first: the server appends the process's last ObjectScript error to the next failing
+    # statement's report ("[Error: <<COMMAND>>]" after a Native tCommit at level 0, env/explore-8.log), which is
+    # not that statement's result.
     if "SQLCODE" in t or "SQL ERROR" in t.upper():
         import re
         m = re.search(r"SQLCODE:?\s*<?(-?\d+)", t)
         if m:
             return {"obs": "sql_error", "sqlcode": int(m.group(1))}
+    for name in ("<COMMAND>", "<TIMEOUT>", "<UNDEFINED>", "<SYNTAX>", "<LIST ERROR>"):
+        if name in t:
+            return {"obs": "error", "error": name}
     return {"obs": "error", "error": t[:120]}
 
 
@@ -105,18 +173,88 @@ class DbapiProc:
 
     def _dml(self, op: Dict) -> Dict:
         cur = self.c.conn.cursor()
+        t = tname(op.get("table", "T"))
         try:
             if op["op"] == "insert":
-                cur.execute(f"INSERT INTO {TABLE} (k, v) VALUES (?, ?)", (op["k"], op["v"]))
+                cur.execute(f"INSERT {hints(op)}INTO {t} (k, v) VALUES (?, ?)", (op["k"], op["v"]))
             elif op["op"] == "update":
-                cur.execute(f"UPDATE {TABLE} SET v = ? WHERE k = ?", (op["v"], op["k"]))
-            else:
-                cur.execute(f"DELETE FROM {TABLE} WHERE k = ?", (op["k"],))
+                cur.execute(f"UPDATE {t} SET v = ? WHERE k = ?", (op["v"], op["k"]))
+            elif op["op"] == "delete":
+                cur.execute(f"DELETE FROM {t} WHERE k = ?", (op["k"],))
+            elif op["op"] == "put_e":
+                if op.get("literal"):
+                    cur.execute(f"INSERT INTO {E_TABLE} (k, v) VALUES ('{op['k']}', {sql_lit(op['v'])})")
+                else:
+                    cur.execute(f"INSERT INTO {E_TABLE} (k, v) VALUES (?, ?)", (op["k"], op["v"]))
+            elif op["op"] == "insert_select":
+                cur.execute(f"INSERT INTO {tname(op['to'])} (k, v) SELECT k, v FROM {tname(op['from'])}")
             return {"obs": "count", "rowcount": max(cur.rowcount, 0)}
         except Exception as e:  # noqa: BLE001
             return norm_err(e)
         finally:
             cur.close()
+
+    def _q(self, q: str, *params):
+        cur = self.c.conn.cursor()
+        try:
+            cur.execute(q, params) if params else cur.execute(q)
+            return [tuple(r) for r in cur.fetchall()] if cur.description else cur.rowcount
+        finally:
+            cur.close()
+
+    def _ext(self, k: str, op: Dict) -> Optional[Dict]:
+        """The extension's operations (round r3); None if `k` is not one of them."""
+        if k == "find":
+            ids = [r[0] for r in self._q(FIND_IDS, op["word"])]
+            keys = []
+            for i in ids:
+                r = self._q(f"SELECT k FROM {F_TABLE} WHERE %ID = ?", i)
+                keys.append(str(r[0][0]) if r else "?")
+            return {"obs": "keys", "keys": sorted(keys)}
+        if k == "build_index":
+            self._q(f"BUILD INDEX FOR TABLE {tname(op['table'])}"); return ok()
+        if k == "create_table":
+            self._q(ddl_create(op["table"])); return ok()
+        if k == "drop_table":
+            self._q(f"DROP TABLE {tname(op['table'])}"); return ok()
+        if k == "table_exists":
+            n = self._q(EXISTS_Q, op["table"])[0][0]
+            return {"obs": "test", "test": bool(int(n))}
+        if k == "add_column":
+            self._q(f"ALTER TABLE {tname(op['table'])} ADD COLUMN {op['col']} VARCHAR(5)"); return ok()
+        if k == "select_star":
+            cur = self.c.conn.cursor()
+            try:
+                cur.execute(f"SELECT * FROM {tname(op['table'])}")
+                cols = [str(d[0]) for d in cur.description]
+                cur.fetchall()
+            finally:
+                cur.close()
+            return {"obs": "cols", "cols": cols}
+        if k == "get_e":
+            r = self._q(f"SELECT v, CASE WHEN v IS NULL THEN 1 ELSE 0 END FROM {E_TABLE} WHERE k = ?", op["k"])
+            if not r:
+                return {"obs": "rows", "rows": []}
+            v, n = r[0]
+            return {"obs": "cell", "value": None if v is None else str(v), "null": bool(int(n))}
+        if k == "match_e":
+            n = self._q(MATCH_Q, op["v"])[0][0]
+            return {"obs": "count", "rowcount": int(n)}
+        if k == "order":
+            root, *subs = self.node(op["node"])
+            out, s = [], ""
+            while True:
+                s = self.o.nextSubscript(False, root, *subs, s)
+                if s is None or s == "":
+                    break
+                out.append(canon(s))
+            return {"obs": "subs", "subs": out}
+        if k == "sql_t_level":
+            return {"obs": "level", "tlevel": int(self._q("SELECT $TLEVEL")[0][0])}
+        if k == "sql_fn":
+            r = self._q(sql_fn_q(op["name"]))
+            return {"obs": "value", "value": fmt4(r[0][0])}
+        return None
 
     def run(self, op: Dict) -> Dict:
         k = op["op"]
@@ -177,6 +315,8 @@ class DbapiProc:
                 o.unlock(mode, *self.node(op["node"])); return ok()
             if k == "release_all":
                 o.releaseAllLocks(); return ok()
+            if k in ("put_e", "insert_select"):
+                return self._dml(op)  # never blocks in the subset (the model refuses the blocking schedules)
             if k in ("insert", "update", "delete"):
                 a = Async(lambda: self._dml(op))
                 r = a.wait(ISSUE_WAIT)
@@ -186,10 +326,15 @@ class DbapiProc:
                 return r
             if k == "select":
                 cur = self.c.conn.cursor()
-                cur.execute(f"SELECT k, v FROM {TABLE} ORDER BY k")
-                rows = [[str(a), str(b)] for a, b in cur.fetchall()]
-                cur.close()
+                try:
+                    cur.execute(select_q(op.get("table", "T")))
+                    rows = sorted([str(a), str(b)] for a, b in cur.fetchall())
+                finally:
+                    cur.close()
                 return {"obs": "rows", "rows": rows}
+            r = self._ext(k, op)
+            if r is not None:
+                return r
             return {"obs": "refused", "what": f"{k} on dbapi"}
         except Exception as e:  # noqa: BLE001
             return norm_err(e)
@@ -211,7 +356,8 @@ class TermProc:
     def __init__(self) -> None:
         self.p = subprocess.Popen(["docker", "exec", "-i", os.environ["IVG_TEST_CONTAINER"], "iris", "session",
                                    "IRIS", "-U", NS], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-                                  stderr=subprocess.STDOUT, text=True, bufsize=1)
+                                  stderr=subprocess.STDOUT, text=True, bufsize=1, encoding="utf-8",
+                                  errors="replace")
         self.q: "queue.Queue[str]" = queue.Queue()
         threading.Thread(target=self._reader, daemon=True).start()
         self.seq = 0
@@ -290,14 +436,76 @@ class TermProc:
             typ = f'#"{t}"' if t else ""
             return f'lock -{self.ref(op["node"])}{typ} ' + w + '"ok",!'
         if k == "release_all": return 'lock  ' + w + '"ok",!'
+        ex = 'set rs=##class(%SQL.Statement).%ExecDirect(,"{}"{}) ' + w + '"S",rs.%SQLCODE,"|",rs.%ROWCOUNT,!'
         if k in ("insert", "update", "delete"):
-            if k == "insert": stmt = f"INSERT INTO {TABLE} (k, v) VALUES ('{op['k']}', '{op['v']}')"
-            elif k == "update": stmt = f"UPDATE {TABLE} SET v = '{op['v']}' WHERE k = '{op['k']}'"
-            else: stmt = f"DELETE FROM {TABLE} WHERE k = '{op['k']}'"
-            return f'set rs=##class(%SQL.Statement).%ExecDirect(,"{stmt}") ' + w + '"S",rs.%SQLCODE,"|",rs.%ROWCOUNT,!'
+            t = tname(op.get("table", "T"))
+            if k == "insert": stmt = f"INSERT {hints(op)}INTO {t} (k, v) VALUES ('{op['k']}', '{op['v']}')"
+            elif k == "update": stmt = f"UPDATE {t} SET v = '{op['v']}' WHERE k = '{op['k']}'"
+            else: stmt = f"DELETE FROM {t} WHERE k = '{op['k']}'"
+            return ex.format(stmt, "")
         if k == "select":
-            return (f'set rs=##class(%SQL.Statement).%ExecDirect(,"SELECT k, v FROM {TABLE} ORDER BY k"), out="" '
+            return (f'set rs=##class(%SQL.Statement).%ExecDirect(,"{select_q(op.get("table", "T"))}"), out="" '
+                    'if rs.%SQLCODE<0 { ' + w + '"S",rs.%SQLCODE,"|",! quit } '
                     'while rs.%Next() { set out=out_rs.k_$c(31)_rs.v_$c(29) } ' + w + '"W",out,!')
+        # ------------------------------------------------------------------------------ extension (r3)
+        if k == "find":
+            return ('set rs=##class(%SQL.Statement).%ExecDirect(,"' + FIND_IDS.replace(" ORDER BY %ID", "").replace("%ID FROM", "%ID AS i FROM")
+                    + '","' + op["word"] + '"),out="" '
+                    'if rs.%SQLCODE<0 { ' + w + '"S",rs.%SQLCODE,"|",! quit } '
+                    'while rs.%Next() { set r2=##class(%SQL.Statement).%ExecDirect(,"SELECT k FROM ' + F_TABLE
+                    + ' WHERE %ID = ?",rs.i),kk="?" set:r2.%Next() kk=r2.k set out=out_kk_$c(31) } ' + w + '"K",out,!')
+        if k == "build_index": return ex.format(f"BUILD INDEX FOR TABLE {tname(op['table'])}", "")
+        if k == "create_table": return ex.format(ddl_create(op["table"]), "")
+        if k == "drop_table": return ex.format(f"DROP TABLE {tname(op['table'])}", "")
+        if k == "add_column": return ex.format(f"ALTER TABLE {tname(op['table'])} ADD COLUMN {op['col']} VARCHAR(5)", "")
+        if k == "insert_select":
+            return ex.format(f"INSERT INTO {tname(op['to'])} (k, v) SELECT k, v FROM {tname(op['from'])}", "")
+        if k == "table_exists":
+            return w + f'"T",##class(%SYSTEM.SQL.Schema).TableExists("{tname(op["table"])}"),!'
+        if k == "put_e":
+            v = op["v"]
+            if op.get("literal"):
+                lit = "NULL" if v is None else "'" + v + "'"
+                return ex.format(f"INSERT INTO {E_TABLE} (k, v) VALUES ('{op['k']}', {lit})", "")
+            arg = "$c(0)" if v == "\x00" else '"' + (v or "") + '"'
+            return ex.format(f"INSERT INTO {E_TABLE} (k, v) VALUES (?, ?)", f',"{op["k"]}",{arg}')
+        if k == "get_e":
+            return (f'set rs=##class(%SQL.Statement).%ExecDirect(,"SELECT v, CASE WHEN v IS NULL THEN 1 ELSE 0 END AS n '
+                    f'FROM {E_TABLE} WHERE k = ?","{op["k"]}") if rs.%Next() {{ ' + w
+                    + '"C",rs.n,"|",$replace(rs.v,$c(0),"<c0>"),! } else { ' + w + '"C",! }')
+        if k == "match_e":
+            v = op["v"]
+            arg = "$c(0)" if v == "\x00" else '"' + (v or "") + '"'
+            return ('set rs=##class(%SQL.Statement).%ExecDirect(,"' + MATCH_Q.replace("COUNT(*)", "COUNT(*) AS n") + '",'
+                    + arg + ') do rs.%Next() ' + w + '"N",rs.n,!')
+        if k == "order":
+            n = op["node"]
+            root = real_root(n["root"])
+            subs = ",".join('"' + x.replace('"', '""') + '"' for x in n.get("subs", []))
+            ref = root + "(" + (subs + "," if subs else "") + "s)"
+            return 'set s="",out="" for { set s=$order(' + ref + ') quit:s=""  set out=out_s_$c(31) } ' + w + '"O",out,!'
+        if k == "sql_t_level":
+            return 'set rs=##class(%SQL.Statement).%ExecDirect(,"SELECT $TLEVEL AS l") do rs.%Next() ' + w + '"L",rs.l,!'
+        if k == "sql_fn":
+            return ('set rs=##class(%SQL.Statement).%ExecDirect(,"' + sql_fn_q(op["name"]) + ' AS d") '
+                    'if rs.%SQLCODE<0 { ' + w + '"S",rs.%SQLCODE,"|",! } else { do rs.%Next() ' + w + '"F",rs.d,! }')
+        if k == "vec_set":
+            return f'set $vector({self.ref(op["node"])},{int(op["i"])},"double")={op["x"]} ' + w + '"ok",!'
+        if k == "vec_get":
+            r = self.ref(op["node"])
+            i = int(op["i"])
+            return (f'kill x set d=0 if $data({r})#2 {{ if $isvector({r}) {{ if $vectordefined({r},{i}) {{ set d=1,x=$vector({r},{i}) }} }} }} '
+                    + w + '"V",d,"|",$get(x),!')
+        if k == "z_strip":
+            cs = ",".join(str(int(c)) for c in op["s"])
+            rem = op.get("rem", "")
+            return (f'set x=$zstrip($c({cs}),"{op["mask"]}","{rem}"),out="" for i=1:1:$length(x) {{ set out=out_$ascii(x,i)_"," }} '
+                    + w + '"Z",out,!')
+        if k == "z_class":
+            c = op["class"]
+            return ('set out="",prev=-2,st=-1 for i=0:1:65535 { set r=($zstrip($c(i),"*' + c + '")="") '
+                    'if r,prev\'=(i-1) { set:st>=0 out=out_st_"-"_prev_"," set st=i } set:r prev=i } '
+                    'set:st>=0 out=out_st_"-"_prev ' + w + '"R",out,!')
         return None
 
     @staticmethod
@@ -318,12 +526,29 @@ class TermProc:
             code, _, n = body.partition("|")
             code = int(code or 0)
             if code < 0: return {"obs": "sql_error", "sqlcode": code}
-            if op["op"] in ("insert", "update", "delete"):
+            if op["op"] in ("insert", "update", "delete", "put_e", "insert_select"):
                 return {"obs": "count", "rowcount": int(n or 0)}
             return ok()
         if tag == "W":
-            rows = [x.split("\x1f") for x in body.split("\x1d") if x]
+            rows = sorted(x.split("\x1f") for x in body.split("\x1d") if x)
             return {"obs": "rows", "rows": rows}
+        if tag == "K":
+            return {"obs": "keys", "keys": sorted(x for x in body.split("\x1f") if x)}
+        if tag == "C":
+            if body == "":
+                return {"obs": "rows", "rows": []}
+            n, _, v = body.partition("|")
+            return {"obs": "cell", "value": v.replace("<c0>", "\x00"), "null": n == "1"}
+        if tag == "O":
+            return {"obs": "subs", "subs": [x for x in body.split("\x1f") if x != ""]}
+        if tag == "F":
+            return {"obs": "value", "value": fmt4(body)}
+        if tag == "Z":
+            return {"obs": "codes", "codes": [int(x) for x in body.split(",") if x != ""]}
+        if tag == "R":
+            return {"obs": "value", "value": body}
+        if tag == "N":
+            return {"obs": "count", "rowcount": int(body)}
         return {"obs": "error", "error": raw}
 
     def run(self, op: Dict) -> Dict:
@@ -343,7 +568,8 @@ class TermProc:
         if cmd is None:
             return {"obs": "refused", "what": f"{k} on term"}
         seq = self._send(f"try {{ {cmd} }} catch ex {{ write $c(30),\"E|\",ex.Name,! }}")
-        r = self._get(seq, ISSUE_WAIT if k in ("lock", "lock_only", "insert", "update", "delete") else 15)
+        r = self._get(seq, ISSUE_WAIT if k in ("lock", "lock_only", "insert", "update", "delete")
+                      else (70 if k == "z_class" else 15))
         if r is None:
             self.pending = (seq, op)
             return {"obs": "pending"}
@@ -359,12 +585,47 @@ class TermProc:
             self.p.kill()
 
 
+STORE_GLOBALS = 12  # ^IVGAudit<t>.1 .. .12: data, extent, indexes, iFind's globals (explore-5 J1: at most .6)
+
+
+def _exists(ctl: Conn, t: str) -> bool:
+    return bool(ctl.sql(EXISTS_Q, t)[0][0])
+
+
+def _storage_ok(ctl: Conn, t: str) -> bool:
+    r = ctl.sql("SELECT DataLocation FROM %Dictionary.CompiledStorage WHERE parent = ?", tname(t))
+    return bool(r) and str(r[0][0]).startswith(f"^IVGAudit{t}.")
+
+
+def _kill_store(ctl: Conn, t: str) -> None:
+    for i in range(1, STORE_GLOBALS + 1):
+        ctl.o.kill(f"^IVGAudit{t}.{i}")
+
+
 def reset(ctl: Conn) -> None:
+    """Every case starts from: ^IVGAuditEnv and ^IVGAuditLk empty; T, S, E, F empty (F with its functional index
+    fx); C with its four declared columns; D1 and D2 absent. Tables are emptied by killing their own storage
+    globals (a %NOINDEX row is in no index, so DELETE cannot be relied on to reach it)."""
     ctl.o.kill(GROOT)
     ctl.o.kill(LROOT)
-    if not ctl.sql("SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='IVGAudit' AND TABLE_NAME='T'")[0][0]:
-        ctl.sql(f"CREATE TABLE {TABLE} (k VARCHAR(20) PRIMARY KEY, v VARCHAR(20))")
-    ctl.sql(f"DELETE FROM {TABLE}")
+    for t in ("T", "S", "E", "F"):
+        if not (_exists(ctl, t) and _storage_ok(ctl, t)):
+            if _exists(ctl, t):
+                ctl.sql(f"DROP TABLE {tname(t)}")
+            ctl.sql(ddl_create(t))
+            if t == "F":
+                ctl.sql(f"CREATE INDEX fx ON {F_TABLE} (v) AS %iFind.Index.Basic")
+        _kill_store(ctl, t)
+    cols = [r[0] for r in ctl.sql("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='IVGAudit' "
+                                  "AND TABLE_NAME='C' ORDER BY ORDINAL_POSITION")]
+    if cols != ["zeta", "alpha", "mid", "k"]:
+        if _exists(ctl, "C"):
+            ctl.sql("DROP TABLE IVGAudit.C")
+        ctl.sql(f"CREATE TABLE IVGAudit.C ({C_COLS})")
+    for t in ("D1", "D2"):
+        if _exists(ctl, t):
+            ctl.sql(f"DROP TABLE {tname(t)}")
+        _kill_store(ctl, t)
 
 
 def gone(ctl: Conn, pid: str, secs: float = 15) -> bool:
@@ -401,9 +662,12 @@ def run_case(case: Dict, ctl: Conn) -> Dict:
         for n in case.get("observe", []):
             v = ctl.o.get(real_root(n["root"]), *n.get("subs", []))
             finals.append({"obs": "value", "value": None if v is None else str(v)})
-        for _t in case.get("observe_tables", []):
-            rows = ctl.sql(f"SELECT k, v FROM {TABLE} ORDER BY k")
-            finals.append({"obs": "rows", "rows": [[str(a), str(b)] for a, b in rows]})
+        for t in case.get("observe_tables", []):
+            try:
+                rows = ctl.sql(select_q(t))
+                finals.append({"obs": "rows", "rows": sorted([str(a), str(b)] for a, b in rows)})
+            except Exception as e:  # noqa: BLE001
+                finals.append(norm_err(e))
         return {"obs": obs, "finals": finals}
     finally:
         for i, pr in enumerate(procs):
