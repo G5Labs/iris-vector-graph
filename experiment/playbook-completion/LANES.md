@@ -1,6 +1,6 @@
 # Lane checkpoint (orchestrator; read by the hourly monitor)
 
-Updated: 2026-11-14 ~14:50 UTC, after the account switch (session resumed on the new account; no subagent of the
+Updated: 2026-11-14 (writesets done; proofs-mech, refusals, structural resumed and running). First written ~14:50 UTC, after the account switch (session resumed on the new account; no subagent of the
 previous account is live: `ListAgents` empty, no audit process running, IRIS and heavy locks free, container healthy,
 product scope check passes). Last checkpoint commit before the switch: `1564a673`.
 
@@ -10,7 +10,7 @@ product scope check passes). Last checkpoint commit before the switch: `1564a673
 |---|---|---|---|---|
 | proofs-mech (D-14, mechanism laws over a trait in Verus) | Q18b | **interrupted** (quota) during fork integration | `proofs-mech/src` (m01/m02/m05/m11/m12/m13 traits, i*/ctl*/cx* instances and controls), forks in `$RUN_DIR/proofs-mech/fork-a..e`; no runner, no registered run | resume from the artifacts: assemble, add the gate runner, run baseline/controls/recheck |
 | refusals (5c-refusals, 3.5-decoders 07/10/18) | Q18c | **interrupted** (quota) mid live probes | `refusals/` extraction (`x-statements.json`), `rx_audit.py`, `live_*.py` per module, decoder checks; no registered run | resume: run the per-module probes under the IRIS lock (AUDITE), register, write REFUSALS.md |
-| writesets breadth-a pairs | Q18d | **interrupted** (quota) while writing the breadth-a builder | `writesets/BREADTH-A-DISCHARGES.json` (567 entries), `BREADTH-A-RUN-PAIRS.json`, `tools/build_breadth_a.py`; 5 registered runs `ws-live-ba-*`; findings F-C0350, F-C0351 and an F-C0450 change uncommitted in `findings/audit/zz-writesets.json` | resume: finish the builder and checker, self-test, matrix input |
+| writesets breadth-a pairs | Q18d | **done** (728e18a1) | 561 of 566 pairs discharged, 5 open; F-C0350, F-C0351; ws-check-r3, selftest 45/45 | — |
 | structural frame2 / reads2 (DDL frame oracle; declared reads) | Q18c-d | **interrupted** (quota) | `structural/frame2/` (dictoracle, frame2_live), `structural/reads2/` (ni2, ni_base); no registered run | resume both |
 | reflection | Q18e | waiting for the lanes above | — | classify every new finding; premise map by glob; TEST-REFLECTION refresh |
 | orchestrator: O-1 | — | **done** (this checkpoint) | `incidents/O-1-FIXTURES.md`, run `o1-fixture-inventory`, CONVENTIONS updated, F-C1306 attribution | give the clarification to the next reviewer |
