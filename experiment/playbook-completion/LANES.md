@@ -1,6 +1,6 @@
 # Lane checkpoint (orchestrator; read by the hourly monitor)
 
-Updated: 2026-11-14 ~20:15 UTC (after the 19:20 quota reset; same account).
+Updated: 2026-11-14 ~20:45 UTC: candidate committed; clean live gate running; fifth review to follow.
 previous account is live: `ListAgents` empty, no audit process running, IRIS and heavy locks free, container healthy,
 product scope check passes). Last checkpoint commit before the switch: `1564a673`.
 
@@ -20,9 +20,9 @@ product scope check passes). Last checkpoint commit before the switch: `1564a673
 | orchestrator: crash world, SynchCommit=1 | **done**: `live-crash-repeat-sc1` (0/3 acknowledged lost; SynchCommit=0 restored, healthy) | `$RUN_DIR/crash-repeat/` | — |
 | (old row) crash world, SynchCommit=1 | **running** since ~16:45 UTC: `bash tools/locks.sh iris timeout 7000 bash $RUN_DIR/crash-repeat/sc1-procedure.sh` (log `$RUN_DIR/crash-repeat/sc1-procedure.log`; it restores SynchCommit=0 itself) | `$RUN_DIR/crash-repeat/sc1/` | (1) `docker exec -i $IVG_TEST_CONTAINER iris session IRIS -U %SYS < $RUN_DIR/crash-repeat/set-synchcommit-1.script` under `tools/locks.sh iris`; (2) `docker restart $IVG_TEST_CONTAINER`, wait healthy; (3) `bash tools/locks.sh iris timeout 5400 python traces/crash_world_repeat.py $RUN_DIR/crash-repeat/sc1 --trials 3 --expect-synchcommit 1`; (4) restore with `set-synchcommit-0.script`, restart, confirm `iris.cpf` line `SynchCommit=0` and Docker healthy; record in `incidents/` (alerts from the deliberate crashes are expected; preserve them, do not clear) |
 | orchestrator: S6 licence refusal | **done**: `live-licence-world` (F-C1795) | — | design: hold idle connections up to the 8-unit cap, then drive a product operation that needs a new connection; record refusal handling and that nothing partial is written |
-| orchestrator: account and closure | STATUS/PROOF-DEBT/TRUST refreshed (1dff8e3c); operator clean gate on a42f10c8 failed 9 proof readers (fixed 6238aaaa, kept as `verify-clean-a42f10c8`); **next**: integrate the structural follow-up, commit a candidate, `bash verify.sh --live --clean` (~80 min), fifth review | — | STATUS rewrite with `python tools/status_numbers.py --write`; TRUST/PROOF-DEBT; `bash verify.sh --live --clean` on a committed tree (expect ~60 min: proofs-mech alone ~36 min); fifth independent review with the O-1 clarification (`incidents/O-1-FIXTURES.md`) |
+| orchestrator: account and closure | candidate = the commit that adds this line; fast gate 38/38 before it (`$RUN_DIR/verify/20261114T203822Z`); **running**: `bash verify.sh --live --clean` (log `$RUN_DIR/checks/steer11/verify-clean-candidate.log`); next: register it, then the fifth independent review (with O-1) | — | register the gate; review |
 
-| structural final follow-up | **running** (resumed ~20:00 UTC): 3.6-capacity/01 via the O-1 4.5.1 fixture, declared reads 04/10, bulk_load_session pair | `structural/MATRIX-INPUT-3.json` | integrate |
+| structural final follow-up | **done** (82027430; integrated by the orchestrator from the idle parent's artifacts with its merge3.py) | `structural/MATRIX-INPUT-3.json` | — |
 
 ## Blockers
 

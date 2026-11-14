@@ -45,12 +45,12 @@ status, evidence level and product obligation per cell). Reconciled 2026-11-14 (
 | Q17k | contract-2 | 3.2-coverage per module; premise E-1 via the pin's own compiled &sql (AUDITCORE, AUDITENV) | done (cd45f771): 3.2-coverage closed; E-1 validated |
 | Q17l | reflection | 5c root causes, 3.8 test reflection | done (bad04b31): 33 root causes, 224 premises mapped |
 | Q18a | proofs-d9c | Review R4-01/03/04: guard G-BM, F-C1350 control, F-1306 as direct SQL | done (cd45f771): 158 verified, 14 controls |
-| Q18b | proofs-mech | D-14: mechanism laws proved once over a trait in Verus | doing |
+| Q18b | proofs-mech | D-14: mechanism laws proved once over a trait in Verus | done (e9041b19) |
 | Q18c | refusals | 5c-refusals for 01, 04, 06, 10, 11, 15-18; 3.5-decoders 07, 10, 18 (AUDITE) | done (1529a141); least-privilege follow-up doing |
 | Q18d | writesets | breadth-a module-invariant pairs for 01, 03-06; 08; 18 restore_merge | done (728e18a1): 561/566, 5 open |
-| Q18e | reflection | root causes and premise map for every new finding and crate; TEST-REFLECTION refresh | todo (after Q18b-d) |
-| Q18f | orchestrator | exclusive-container worlds: repeated crash trials, SynchCommit=1, product-level licence refusal (S6) | todo (when no lane uses IRIS) |
-| Q18g | orchestrator | STATUS/TRUST/PROOF-DEBT refresh; verify.sh --live --clean on a committed tree; fifth review | todo |
+| Q18e | reflection | root causes and premise map for every new finding and crate; TEST-REFLECTION refresh | done (3d75a633) |
+| Q18f | orchestrator | exclusive-container worlds: repeated crash trials, SynchCommit=1, product-level licence refusal (S6) | done: live-crash-repeat-sc0, -sc1, live-licence-world |
+| Q18g | orchestrator | STATUS/TRUST/PROOF-DEBT refresh; verify.sh --live --clean on a committed tree; fifth review | doing: account refreshed (1dff8e3c, 82027430); clean gate on the candidate running |
 | I-1..I-4 | orchestrator | Incidents: IVG460SNAP, USER-REDEPLOY-08, superseded proof logs, health alert | recorded in `incidents/` |
 
 Genuinely unavailable (attempts in `versions/AVAILABILITY.md`): an IRIS 2026.3 engine (no public tag; the cited
