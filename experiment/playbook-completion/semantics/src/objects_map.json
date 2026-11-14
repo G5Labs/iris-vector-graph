@@ -1,0 +1,1202 @@
+{
+ "_doc": "Hand mapping (semantics lane, steer 7; product pin 3eaa79cf) of every ontology entity (the 62 'Entity <name>: states ...; commands ...' lines of experiment/playbook-completion/ontology/[0-9]*.md) onto the canonical lifecycles of semantics/lifecycles.json. Key: two-digit module + '/' + entity name lowercased, spaces as '-'. state_map: every ontology state, spelled exactly, to a canonical state id of the lifecycle (or {state, facet} when the ontology state is a mode, a setting value or a property orthogonal to the lifecycle). command_map: every ontology command, spelled exactly, to one canonical command id of the lifecycle, read as what the command is for this object. lifecycle null only with a reason; then 'closest' names the lifecycle whose ids the maps use (a value-class entity may omit state_map). semantics/tools/build_semantics.py merges this file into objects.json.",
+ "objects": {
+  "01/namespace": {
+   "lifecycle": "LC-3",
+   "state_map": {
+    "fresh": "absent",
+    "old release": "outdated",
+    "split": {
+     "state": "broken",
+     "facet": "no schema record and the tables in another schema or several"
+    },
+    "unfinished": "partial",
+    "same record": "in-force",
+    "other record": {
+     "state": "broken",
+     "facet": "the record names another schema than the one asked for"
+    }
+   },
+   "command_map": {
+    "setup": "setup",
+    "preview": "read",
+    "first use": "consult",
+    "legacy removal": "remove"
+   }
+  },
+  "01/class-set": {
+   "lifecycle": "LC-3",
+   "state_map": {
+    "none": "absent",
+    "current": "in-force",
+    "changed": "outdated",
+    "partly failed": "partial"
+   },
+   "command_map": {
+    "deploy": "setup",
+    "forced deploy": "upgrade",
+    "preview": "read"
+   }
+  },
+  "01/legacy-object": {
+   "lifecycle": "LC-3",
+   "state_map": {
+    "owned": {
+     "state": "outdated",
+     "facet": "4.5.x object from the fixed manifest, frozen until removed (EXC-09)"
+    },
+    "not owned": {
+     "state": "absent",
+     "facet": "another owner's object of that name: not the product's"
+    },
+    "unreadable": {
+     "state": "broken",
+     "facet": "its text cannot be read, so ownership cannot be shown"
+    }
+   },
+   "command_map": {
+    "list": "read",
+    "remove": "remove",
+    "setup": "setup"
+   }
+  },
+  "01/setup-routine": {
+   "lifecycle": "LC-3",
+   "state_map": {
+    "missing": "absent",
+    "current": "in-force",
+    "text changed": "outdated"
+   },
+   "command_map": {
+    "setup": "setup",
+    "forced setup": "upgrade"
+   }
+  },
+  "02/graph-mode": {
+   "lifecycle": "LC-3",
+   "state_map": {
+    "off": "disabled",
+    "on without parallel edges": {
+     "state": "in-force",
+     "facet": "multigraph on, no parallel edge yet"
+    },
+    "on with parallel edges": {
+     "state": "in-force",
+     "facet": "multigraph on, holds parallel edges"
+    }
+   },
+   "command_map": {
+    "turn on": "set",
+    "turn off": "set",
+    "direct create of a held triple": "consult",
+    "Cypher create of a held triple": "consult",
+    "erase graph": "remove"
+   },
+   "notes": "erasing a graph clears its mode (GID-B4.6)"
+  },
+  "02/graph-name": {
+   "lifecycle": null,
+   "reason": "The four states (empty, ordinary name, the name 0, a control character) are classes of an input value, fixed when the caller writes the name: nothing moves a name from one class to another. Validity is a refusal at every entry (AX-03, M-09 law M09-L1), independent of whether the graph the name designates is empty or live, so no canonical state applies; the commands are mapped onto the scope lifecycle LC-6 of the graph the name designates.",
+   "closest": "LC-6",
+   "command_map": {
+    "make a key": "read",
+    "direct edge create": "write-into",
+    "direct node create": "write-into",
+    "Cypher write under the name": "write-into"
+   },
+   "notes": "state_map omitted: a value class has no lifecycle state; the empty name designates the default graph"
+  },
+  "03/node-in-one-graph": {
+   "lifecycle": "LC-1",
+   "state_map": {
+    "absent": "absent",
+    "present": "live",
+    "held by two graphs": {
+     "state": "live",
+     "facet": "shared id: the same id is live in another graph"
+    }
+   },
+   "command_map": {
+    "create node": "create",
+    "store node": "create",
+    "bulk create nodes": "create",
+    "delete node without graph": "delete",
+    "delete node with graph": "delete"
+   },
+   "notes": "store is create-or-update (LC-1 create includes store)"
+  },
+  "03/edge-in-one-graph": {
+   "lifecycle": "LC-1",
+   "state_map": {
+    "absent": "absent",
+    "present": "live",
+    "marked": {
+     "state": "live",
+     "facet": "marked: implied by a temporal write (ADR-0009)"
+    }
+   },
+   "command_map": {
+    "create edge": "create",
+    "store edge": "create",
+    "bulk create edges": "create",
+    "set edge weight": "update",
+    "delete edge": "delete"
+   }
+  },
+  "03/caller-transaction": {
+   "lifecycle": "LC-7",
+   "state_map": {
+    "none": {
+     "state": "closed",
+     "facet": "no transaction open"
+    },
+    "open": "open",
+    "open on old server code": {
+     "state": "open",
+     "facet": "the deployed server code is an older release"
+    }
+   },
+   "command_map": {
+    "direct write": "use",
+    "failed direct write": "use",
+    "load session": "use",
+    "bulk loader": "use"
+   },
+   "notes": "every command is a step inside the caller's transaction; a failed step must leave it as it was (AX-03)"
+  },
+  "03/ledger-state": {
+   "lifecycle": "LC-3",
+   "state_map": {
+    "never enabled": "absent",
+    "on": "in-force",
+    "strict": {
+     "state": "in-force",
+     "facet": "strict"
+    }
+   },
+   "command_map": {
+    "direct write": "consult",
+    "Cypher write": "consult",
+    "bulk loader": "consult"
+   },
+   "notes": "the same setting as 11/ledger, seen from the writers; disabled appears only there"
+  },
+  "04/adjacency-entry": {
+   "lifecycle": "LC-2",
+   "state_map": {
+    "absent": "absent",
+    "present": "current"
+   },
+   "command_map": {
+    "put": "maintain",
+    "remove": "maintain",
+    "reweight": "maintain",
+    "row-delete": "maintain"
+   },
+   "notes": "derived from the edge rows (functional index where declared)"
+  },
+  "04/degree-cache-entry": {
+   "lifecycle": "LC-2",
+   "state_map": {
+    "absent": "absent",
+    "current": "current",
+    "stale": "stale"
+   },
+   "command_map": {
+    "read-degree": "read",
+    "write-edge": "maintain",
+    "rollback-write": "maintain",
+    "erase-source": "maintain",
+    "rebuild": "rebuild"
+   },
+   "notes": "read-degree also fills the entry"
+  },
+  "04/graph-writer-lock": {
+   "lifecycle": "LC-7",
+   "state_map": {
+    "free": {
+     "state": "closed",
+     "facet": "lock free"
+    },
+    "shared-by-writers": {
+     "state": "open",
+     "facet": "shared, held by row writers"
+    },
+    "held-alone-elsewhere": {
+     "state": "open",
+     "facet": "exclusive, held by another process"
+    },
+    "held-by-rebuild": {
+     "state": "open",
+     "facet": "exclusive, held by a rebuild"
+    }
+   },
+   "command_map": {
+    "row-write": "open",
+    "erase-graph": "open",
+    "rebuild": "open",
+    "read-degree": "use"
+   },
+   "notes": "row-write takes it shared, erase-graph and rebuild exclusive; read-degree takes no lock and only observes the generation"
+  },
+  "04/result-cache-entry": {
+   "lifecycle": "LC-2",
+   "state_map": {
+    "absent": "absent",
+    "current": "current",
+    "stale": "stale"
+   },
+   "command_map": {
+    "lookup": "read",
+    "write-edge": "maintain",
+    "rollback-write": "maintain",
+    "erase-graph": "maintain"
+   }
+  },
+  "04/no-lock-mark": {
+   "lifecycle": "LC-2",
+   "state_map": {
+    "unset": "current",
+    "set": {
+     "state": "stale",
+     "facet": "degraded: a write went in without the writer lock"
+    }
+   },
+   "command_map": {
+    "lockless-write": "maintain",
+    "read-degree": "read",
+    "rebuild": "rebuild",
+    "erase-graph": "drop",
+    "status": "read"
+   },
+   "notes": "the mark is the staleness signal of the graph's adjacency-derived caches; its state is theirs"
+  },
+  "05/temporal-coordinates": {
+   "lifecycle": "LC-1",
+   "state_map": {
+    "empty": "absent",
+    "held": "live"
+   },
+   "command_map": {
+    "insert write": "create",
+    "update write": "update",
+    "skip write": "create",
+    "delete": "delete",
+    "purge": "delete",
+    "erase graph": "erase"
+   },
+   "notes": "insert and skip modes create only at empty coordinates; purge removes the events before a time (closest: delete)"
+  },
+  "05/triple-row": {
+   "lifecycle": "LC-1",
+   "state_map": {
+    "absent": "absent",
+    "marked": {
+     "state": "live",
+     "facet": "marked: implied by a temporal edge"
+    },
+    "explicit": {
+     "state": "live",
+     "facet": "explicit: written by a structural create"
+    }
+   },
+   "command_map": {
+    "temporal write": "create",
+    "last time delete": "delete",
+    "temporal purge": "delete",
+    "plain edge write": "create",
+    "drop rows": "erase",
+    "row backfill": "create"
+   },
+   "notes": "plain edge write over a marked row clears the mark (facet change); drop rows removes every marked row of a temporal-only type"
+  },
+  "05/edge-type-in-a-graph": {
+   "lifecycle": "LC-3",
+   "state_map": {
+    "structural": {
+     "state": "in-force",
+     "facet": "structural (the default)"
+    },
+    "temporal-only": {
+     "state": "in-force",
+     "facet": "temporal-only (ADR-0015)"
+    }
+   },
+   "command_map": {
+    "list as temporal-only": "set",
+    "list as structural": "set",
+    "temporal write": "consult",
+    "drop rows": "consult",
+    "row backfill": "consult",
+    "erase graph": "remove",
+    "erase all": "remove"
+   },
+   "notes": "a per-graph setting of a predicate; erase all clears the temporal-only list"
+  },
+  "05/reader-handle": {
+   "lifecycle": "LC-7",
+   "state_map": {
+    "open": "open",
+    "closed": "closed"
+   },
+   "command_map": {
+    "next page": "use",
+    "close": "close",
+    "state": "use"
+   },
+   "notes": "state reports the handle without changing it"
+  },
+  "05/latest-event-index": {
+   "lifecycle": "LC-2",
+   "state_map": {
+    "complete": "current",
+    "incomplete": "stale"
+   },
+   "command_map": {
+    "latest by sources": "read",
+    "latest by prefix": "read",
+    "rebuild": "rebuild",
+    "write": "maintain"
+   },
+   "notes": "incomplete is the staleness signal; a prefix read refuses on it (TMP-X7.4)"
+  },
+  "06/route": {
+   "lifecycle": "LC-3",
+   "state_map": {
+    "none": "absent",
+    "routed": "in-force",
+    "orphan same width": {
+     "state": "outdated",
+     "facet": "the table outlived its registry row; same width, reused"
+    },
+    "orphan other width": {
+     "state": "broken",
+     "facet": "the table outlived its registry row at another width; refused"
+    }
+   },
+   "command_map": {
+    "store": "consult",
+    "store batch": "consult",
+    "search": "consult",
+    "count": "consult",
+    "resolve": "read",
+    "create": "setup",
+    "place quarantined": "consult"
+   },
+   "notes": "a catalog entry binding (graph, model) to a vector table (M-12)"
+  },
+  "06/registry-row": {
+   "lifecycle": "LC-3",
+   "state_map": {
+    "none": "absent",
+    "adopted": {
+     "state": "in-force",
+     "facet": "adopted: a width and no model key"
+    },
+    "claimed": {
+     "state": "in-force",
+     "facet": "claimed: model key set"
+    }
+   },
+   "command_map": {
+    "store same width": "consult",
+    "store other width": "consult",
+    "claim same model": "set",
+    "claim other model": "set",
+    "force": "set",
+    "adopt": "upgrade"
+   },
+   "notes": "force is a forced set over any row; adopt moves a legacy table under the registry (LC-3 upgrade)"
+  },
+  "06/queue-entry": {
+   "lifecycle": "LC-5",
+   "state_map": {
+    "absent": "absent",
+    "pending": "pending",
+    "done": "done",
+    "failed": "failed"
+   },
+   "command_map": {
+    "enqueue": "start",
+    "enqueue other graph": "start",
+    "python worker": "work",
+    "server worker": "work",
+    "clear done": "clear",
+    "read entry": "read"
+   },
+   "notes": "no running state is declared: neither worker claims an entry (F-C0601, M-07)"
+  },
+  "06/quarantined-row": {
+   "lifecycle": "LC-8",
+   "state_map": {
+    "held": "kept",
+    "placed": "released"
+   },
+   "command_map": {
+    "list": "read",
+    "place": "restore",
+    "place wrong width": "restore",
+    "erase graph": "discard"
+   },
+   "notes": "erase graph leaves a held row (VEC-B9.10, F-C1305): its discard is the missing reach of AX-10"
+  },
+  "06/ivf-index": {
+   "lifecycle": "LC-2",
+   "state_map": {
+    "missing": "absent",
+    "built": "current"
+   },
+   "command_map": {
+    "build": "build",
+    "search": "read",
+    "insert": "maintain",
+    "delete": "maintain",
+    "drop": "drop",
+    "info": "read"
+   },
+   "notes": "no stale state is declared although vector writes and erasure do not maintain it (F-0606, M-04)"
+  },
+  "07/bm25-index": {
+   "lifecycle": "LC-2",
+   "state_map": {
+    "missing": "absent",
+    "building": "building",
+    "schema 1": {
+     "state": "current",
+     "facet": "layout schema 1"
+    },
+    "upgrading": {
+     "state": "building",
+     "facet": "upgrading to schema 2"
+    },
+    "schema 2": {
+     "state": "current",
+     "facet": "layout schema 2"
+    }
+   },
+   "command_map": {
+    "build": "build",
+    "insert": "maintain",
+    "delete": "maintain",
+    "search": "read",
+    "upgrade": "upgrade",
+    "drop": "drop",
+    "info": "read"
+   },
+   "notes": "no stale state is declared although a node text change does not maintain it (F-0703)"
+  },
+  "07/fused-search": {
+   "lifecycle": "LC-7",
+   "state_map": {
+    "legs answer": "closed",
+    "vector leg fails": {
+     "state": "errored",
+     "facet": "the vector leg failed"
+    },
+    "text leg fails": {
+     "state": "errored",
+     "facet": "the text leg failed"
+    }
+   },
+   "command_map": {
+    "engine fusion": "use",
+    "SQL fusion": "use",
+    "web hybrid route": "use",
+    "multi-modal search": "use",
+    "adaptive search": "use",
+    "retrieve call": "use"
+   },
+   "notes": "a request; each command is one kind of fused request"
+  },
+  "08/cypher-node": {
+   "lifecycle": "LC-1",
+   "state_map": {
+    "absent": "absent",
+    "bare": {
+     "state": "live",
+     "facet": "bare: no edges"
+    },
+    "linked": {
+     "state": "live",
+     "facet": "linked: has edges"
+    }
+   },
+   "command_map": {
+    "create": "create",
+    "merge": "create",
+    "set": "update",
+    "remove": "update",
+    "delete": "delete",
+    "detach-delete": "delete"
+   },
+   "notes": "MERGE is match-or-create (LC-1 create includes merge-create); Cypher REMOVE drops a property or label (update)"
+  },
+  "08/cypher-edge": {
+   "lifecycle": "LC-1",
+   "state_map": {
+    "absent": "absent",
+    "single": "live",
+    "parallel": {
+     "state": "live",
+     "facet": "parallel (multigraph)"
+    }
+   },
+   "command_map": {
+    "create": "create",
+    "merge": "create",
+    "set": "update",
+    "delete": "delete"
+   }
+  },
+  "08/cypher-call": {
+   "lifecycle": "LC-7",
+   "state_map": {
+    "plain": {
+     "state": "open",
+     "facet": "plain"
+    },
+    "read-only": {
+     "state": "open",
+     "facet": "read-only"
+    },
+    "ledger-on": {
+     "state": "open",
+     "facet": "ledger on"
+    },
+    "ledger-strict": {
+     "state": "open",
+     "facet": "ledger strict"
+    }
+   },
+   "command_map": {
+    "read": "use",
+    "write": "use",
+    "unparsable": "use"
+   },
+   "notes": "the states are facets of an open request; an unparsable query ends refused"
+  },
+  "08/graph-scope": {
+   "lifecycle": null,
+   "reason": "Not an object: the scope is a facet of a Cypher request (08/cypher-call, LC-7), fixed when the query is parsed and never changed; its cells check scoping per clause (AX-02, M-09). The maps use the request lifecycle LC-7.",
+   "closest": "LC-7",
+   "state_map": {
+    "one-graph": {
+     "state": "open",
+     "facet": "scope: one graph (USE GRAPH)"
+    },
+    "all-graphs": {
+     "state": "open",
+     "facet": "scope: all graphs"
+    }
+   },
+   "command_map": {
+    "match": "use",
+    "create": "use",
+    "merge": "use",
+    "set": "use",
+    "delete": "use"
+   }
+  },
+  "09/compiled-shape": {
+   "lifecycle": "LC-2",
+   "state_map": {
+    "absent": "absent",
+    "building": "building",
+    "abandoned": {
+     "state": "build-failed",
+     "facet": "build abandoned (older than two minutes); the next read claims it"
+    },
+    "ok": "current",
+    "failed": "build-failed",
+    "stale": "stale"
+   },
+   "command_map": {
+    "job read": "read",
+    "sync read": "read",
+    "off read": "read",
+    "drop all": "drop",
+    "alter props table": "maintain"
+   },
+   "notes": "a read in job or sync mode also starts a build"
+  },
+  "09/process-mode": {
+   "lifecycle": "LC-3",
+   "state_map": {
+    "job": {
+     "state": "in-force",
+     "facet": "mode job"
+    },
+    "sync": {
+     "state": "in-force",
+     "facet": "mode sync"
+    },
+    "off": "disabled"
+   },
+   "command_map": {
+    "set job": "set",
+    "set sync": "set",
+    "set off": "set",
+    "clear": "remove",
+    "set other": "set"
+   },
+   "notes": "set other is a value outside the domain (F-0903, M08-L4)"
+  },
+  "09/engine-native-path": {
+   "lifecycle": "LC-3",
+   "state_map": {
+    "on": "in-force",
+    "off": "disabled",
+    "shut": {
+     "state": "broken",
+     "facet": "the native gate is shut by a failed check (index, bulk load, privilege, version)"
+    },
+    "shadow": {
+     "state": "in-force",
+     "facet": "shadow: both paths answer and are compared"
+    }
+   },
+   "command_map": {
+    "supported read": "consult",
+    "declined read": "consult",
+    "write": "consult"
+   }
+  },
+  "10/interned-snapshot": {
+   "lifecycle": "LC-2",
+   "state_map": {
+    "unbuilt": "absent",
+    "current": "current",
+    "merged": {
+     "state": "current",
+     "facet": "merged: graphs' edges held together, one edge per triple (EXC-06)"
+    },
+    "marked": {
+     "state": "stale",
+     "facet": "marked for rebuild by the next reader"
+    }
+   },
+   "command_map": {
+    "sync": "rebuild",
+    "centrality method": "read",
+    "snapshot procedure": "read",
+    "random walk": "read"
+   }
+  },
+  "10/result-cache-entry": {
+   "lifecycle": "LC-2",
+   "state_map": {
+    "absent": "absent",
+    "current": "current",
+    "stale": "stale"
+   },
+   "command_map": {
+    "run algorithm": "read",
+    "write edge": "maintain",
+    "write edgeless node": "maintain",
+    "erase graph": "maintain"
+   },
+   "notes": "run algorithm reads the entry or computes and stores it"
+  },
+  "10/native-route": {
+   "lifecycle": "LC-3",
+   "state_map": {
+    "library absent": "absent",
+    "unproven": {
+     "state": "outdated",
+     "facet": "the library's reader revision is below the proof record"
+    },
+    "proven": "in-force"
+   },
+   "command_map": {
+    "default-graph call": "consult",
+    "named-graph call": "consult",
+    "other-namespace call": "consult"
+   }
+  },
+  "10/default-graph-algorithm-call": {
+   "lifecycle": "LC-7",
+   "state_map": {
+    "only default edges": {
+     "state": "open",
+     "facet": "only the default graph has edges in the namespace"
+    },
+    "named edges": {
+     "state": "open",
+     "facet": "a named graph has edges"
+    }
+   },
+   "command_map": {
+    "global pagerank": "use",
+    "components": "use",
+    "centrality method": "use",
+    "snapshot procedure": "use",
+    "random walk": "use",
+    "subgraph": "use",
+    "khop": "use"
+   },
+   "notes": "a request; its states are a condition of the namespace's content, so facets of an open request"
+  },
+  "11/ledger": {
+   "lifecycle": "LC-3",
+   "state_map": {
+    "never-enabled": "absent",
+    "enabled": "in-force",
+    "disabled": "disabled"
+   },
+   "command_map": {
+    "enable": "setup",
+    "disable": "set",
+    "set-strict": "set",
+    "commit": "consult",
+    "head": "read"
+   },
+   "notes": "enable from never-enabled writes the genesis revision; from disabled it re-enables"
+  },
+  "11/retry-key": {
+   "lifecycle": "LC-4",
+   "state_map": {
+    "free": "absent",
+    "bound": "committed"
+   },
+   "command_map": {
+    "commit-same": "replay",
+    "commit-other": "append",
+    "commit-stale-head": "append"
+   },
+   "notes": "commit-same on a free key is the first commit and binds it; the redacted state is not an entity state here (LC-4 tombstoned, idemRedacted)"
+  },
+  "11/edge-statement": {
+   "lifecycle": "LC-2",
+   "state_map": {
+    "none": "absent",
+    "recorded": "current",
+    "unrecorded": {
+     "state": "stale",
+     "facet": "the edge is live with no statement"
+    }
+   },
+   "command_map": {
+    "create-edge": "maintain",
+    "upsert-edge": "maintain",
+    "set-qualifier": "maintain",
+    "delete-edge": "maintain"
+   },
+   "notes": "the statement maps are derived from the records (M-04)"
+  },
+  "11/node-id": {
+   "lifecycle": "LC-1",
+   "state_map": {
+    "absent": "absent",
+    "default-only": {
+     "state": "live",
+     "facet": "in the default graph only"
+    },
+    "default-linked": {
+     "state": "live",
+     "facet": "in the default graph and linked"
+    },
+    "named-only": {
+     "state": "live",
+     "facet": "in a named graph only: the ledger's node record is graph-blind"
+    }
+   },
+   "command_map": {
+    "create-node": "create",
+    "upsert-node": "create",
+    "set-property": "update",
+    "add-label": "update",
+    "delete-plain": "delete",
+    "delete-detach": "delete"
+   }
+  },
+  "11/caller-transaction": {
+   "lifecycle": "LC-7",
+   "state_map": {
+    "none": {
+     "state": "closed",
+     "facet": "no transaction open"
+    },
+    "holding-writes": "open",
+    "autocommit-unwritten": "new"
+   },
+   "command_map": {
+    "commit": "use",
+    "enable": "use",
+    "disable": "use",
+    "set-strict": "use"
+   },
+   "notes": "autocommit off with nothing written opens no level yet (X-TLEVEL-SQL); commit here is the ledger commit, a step inside the caller's transaction"
+  },
+  "12/graph-content": {
+   "lifecycle": "LC-6",
+   "state_map": {
+    "live": "live",
+    "being erased": "erasing",
+    "erased": "erased"
+   },
+   "command_map": {
+    "erase the graph": "erase",
+    "erase nodes by prefix": "erase",
+    "commit into the graph": "write-into",
+    "write outside the ledger": "write-into",
+    "redact": "redact"
+   }
+  },
+  "13/redaction-target": {
+   "lifecycle": "LC-6",
+   "state_map": {
+    "live": "live",
+    "erased": "erased",
+    "redacting": "redacting",
+    "redacted": "redacted"
+   },
+   "command_map": {
+    "redact": "redact",
+    "redact another target": "redact",
+    "commit into it": "write-into",
+    "write outside the ledger": "write-into",
+    "retry an old key": "write-into",
+    "erase": "erase"
+   },
+   "notes": "redact another target is a redaction of a different scope, here for its effect on this one (F-1303)"
+  },
+  "13/redaction-run": {
+   "lifecycle": "LC-5",
+   "state_map": {
+    "running": "running",
+    "stopped": "stopped",
+    "finished": "done"
+   },
+   "command_map": {
+    "call again": "resume",
+    "stop the process": "stop",
+    "disable the ledger": "stop"
+   }
+  },
+  "14/ledger-view": {
+   "lifecycle": "LC-6",
+   "state_map": {
+    "agreeing": {
+     "state": "live",
+     "facet": "replay equals the store"
+    },
+    "erased not redacted": "erased",
+    "redacting": "redacting",
+    "redacted": "redacted",
+    "with unrecorded writes": {
+     "state": "live",
+     "facet": "with unrecorded writes"
+    }
+   },
+   "command_map": {
+    "verify": "read",
+    "verify with adoption": "write-into",
+    "read records": "read",
+    "reconstruct": "read",
+    "export": "read"
+   },
+   "notes": "verify with adoption records the unrecorded writes as an adoption revision"
+  },
+  "15/fhir-graph": {
+   "lifecycle": "LC-3",
+   "state_map": {
+    "no tables": {
+     "state": "absent",
+     "facet": "the FHIR repository tables are missing"
+    },
+    "unregistered": "absent",
+    "idle": "in-force",
+    "busy": {
+     "state": "in-force",
+     "facet": "a sync is running"
+    }
+   },
+   "command_map": {
+    "register": "setup",
+    "rebuild": "consult",
+    "sync": "consult",
+    "reinterpret": "consult",
+    "status": "read",
+    "schedule": "set",
+    "unschedule": "set",
+    "erase": "remove"
+   },
+   "notes": "the sync and rebuild are runs (LC-5, M-07) of this registered integration"
+  },
+  "15/reifier": {
+   "lifecycle": "LC-1",
+   "state_map": {
+    "none": "absent",
+    "linked": "live",
+    "orphan": {
+     "state": "live",
+     "facet": "orphan: outlived its edge (F-1502)"
+    }
+   },
+   "command_map": {
+    "reify": "create",
+    "read": "read",
+    "delete": "delete",
+    "erase": "erase"
+   }
+  },
+  "15/rdf-extra": {
+   "lifecycle": "LC-3",
+   "state_map": {
+    "rdflib 7": "in-force",
+    "no rdflib": "absent",
+    "rdflib 8": {
+     "state": "broken",
+     "facet": "rdflib 8 lacks ConjunctiveGraph"
+    }
+   },
+   "command_map": {
+    "export": "consult",
+    "cypher export": "consult",
+    "shacl check": "consult",
+    "prov export": "consult"
+   },
+   "notes": "an optional dependency of the install"
+  },
+  "15/table-mapping": {
+   "lifecycle": "LC-3",
+   "state_map": {
+    "unmapped": "absent",
+    "mapped": "in-force"
+   },
+   "command_map": {
+    "map table": "setup",
+    "map link": "setup",
+    "remove": "remove",
+    "attach vectors": "set",
+    "list": "read"
+   }
+  },
+  "16/cypher-http-call": {
+   "lifecycle": "LC-7",
+   "state_map": {
+    "key off": {
+     "state": "open",
+     "facet": "no key configured on the server"
+    },
+    "key missing": "refused",
+    "key given": "open",
+    "key given read-only": {
+     "state": "open",
+     "facet": "read-only"
+    }
+   },
+   "command_map": {
+    "health": "use",
+    "cypher read": "use",
+    "cypher write": "use",
+    "admin write": "use",
+    "explain": "use"
+   },
+   "notes": "health needs no key, so key missing refuses every route but health"
+  },
+  "16/bolt-session-with-a-key-set": {
+   "lifecycle": "LC-7",
+   "state_map": {
+    "new": "new",
+    "logged in": "open",
+    "failed": {
+     "state": "refused",
+     "facet": "login failed"
+    }
+   },
+   "command_map": {
+    "hello with key": "open",
+    "hello with wrong key": "open",
+    "run": "use",
+    "reset": "use",
+    "rollback": "rollback"
+   },
+   "notes": "a hello with a wrong key ends the session refused"
+  },
+  "16/graph-a-caller-names": {
+   "lifecycle": "LC-6",
+   "state_map": {
+    "default graph": {
+     "state": "live",
+     "facet": "the default graph"
+    },
+    "named graph": {
+     "state": "live",
+     "facet": "a named graph"
+    },
+    "graph with no content": "empty"
+   },
+   "command_map": {
+    "GraphQL node read": "read",
+    "FHIR event write": "write-into",
+    "REST vector search": "read",
+    "Cypher read with USE GRAPH": "read"
+   }
+  },
+  "16/rest-web-app-path": {
+   "lifecycle": "LC-3",
+   "state_map": {
+    "absent": "absent",
+    "IVG app": "in-force",
+    "other app": {
+     "state": "broken",
+     "facet": "another web app holds the path"
+    }
+   },
+   "command_map": {
+    "create web app": "setup",
+    "vector search": "consult",
+    "walk": "consult"
+   }
+  },
+  "16/mcp-tool-set": {
+   "lifecycle": "LC-3",
+   "state_map": {
+    "AI build": "in-force",
+    "Community build": {
+     "state": "absent",
+     "facet": "edition: Community has no %AI classes"
+    }
+   },
+   "command_map": {
+    "Cypher tool": "consult",
+    "SQL tool": "consult",
+    "load tool": "consult",
+    "vector lookup": "consult"
+   }
+  },
+  "17/link": {
+   "lifecycle": "LC-7",
+   "state_map": {
+    "client": {
+     "state": "open",
+     "facet": "link kind: client"
+    },
+    "inside IRIS": {
+     "state": "open",
+     "facet": "link kind: inside IRIS"
+    },
+    "outside IRIS": {
+     "state": "open",
+     "facet": "link kind: outside IRIS (no server process)"
+    }
+   },
+   "command_map": {
+    "call method": "use",
+    "call percent method": "use",
+    "run SQL": "use",
+    "SQL begin": "open",
+    "commit": "commit",
+    "rollback": "rollback"
+   },
+   "notes": "open, commit and rollback act on the transaction carried by the link"
+  },
+  "17/namespace": {
+   "lifecycle": "LC-3",
+   "state_map": {
+    "set up": "in-force",
+    "refused": {
+     "state": "broken",
+     "facet": "refused: the namespace check or schema record does not match"
+    },
+    "reader role": {
+     "state": "in-force",
+     "facet": "read-only role"
+    }
+   },
+   "command_map": {
+    "status": "read",
+    "verify sync": "read",
+    "verify and repair": "consult",
+    "verify graph": "read"
+   },
+   "notes": "verify and repair writes repairs of derived stores"
+  },
+  "17/client-request": {
+   "lifecycle": "LC-7",
+   "state_map": {
+    "accepted": "closed",
+    "key refused": "refused",
+    "unreachable": {
+     "state": "errored",
+     "facet": "unreachable: outcome unknown"
+    },
+    "server error": {
+     "state": "errored",
+     "facet": "server error"
+    }
+   },
+   "command_map": {
+    "run query": "use",
+    "ping": "use",
+    "read info": "use",
+    "load file": "use"
+   }
+  },
+  "17/index-handle": {
+   "lifecycle": "LC-2",
+   "state_map": {
+    "empty": "absent",
+    "built": "current"
+   },
+   "command_map": {
+    "build": "build",
+    "status": "read",
+    "search": "read",
+    "insert": "maintain",
+    "drop": "drop"
+   },
+   "notes": "a handle over one named search index (BM25 or IVF): the same store as 07/bm25-index or 06/ivf-index"
+  },
+  "18/namespace": {
+   "lifecycle": "LC-3",
+   "state_map": {
+    "no ledger": {
+     "state": "in-force",
+     "facet": "no ledger"
+    },
+    "ledger on": {
+     "state": "in-force",
+     "facet": "ledger on"
+    },
+    "strict ledger": {
+     "state": "in-force",
+     "facet": "strict ledger"
+    },
+    "caller write open": {
+     "state": "in-force",
+     "facet": "a caller's write transaction is open"
+    }
+   },
+   "command_map": {
+    "save": "read",
+    "replacing restore": "consult",
+    "merge restore": "consult"
+   },
+   "notes": "the namespace seen by the snapshot commands; save reads it, the restores act on it"
+  },
+  "18/snapshot-archive": {
+   "lifecycle": "LC-8",
+   "state_map": {
+    "current layout": {
+     "state": "kept",
+     "facet": "current layout"
+    },
+    "no layout note": {
+     "state": "kept",
+     "facet": "no layout note (older archive)"
+    },
+    "other layout": {
+     "state": "kept",
+     "facet": "other layout"
+    }
+   },
+   "command_map": {
+    "replacing restore": "restore",
+    "merge restore": "restore",
+    "info": "read"
+   }
+  }
+ }
+}

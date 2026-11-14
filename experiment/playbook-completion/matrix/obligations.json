@@ -4202,17 +4202,53 @@
    ]
   },
   {
-   "cited_runs": [],
+   "as_built_findings": [
+    "F-1101",
+    "F-1306",
+    "F-1302",
+    "F-0702",
+    "F-0606"
+   ],
+   "cited_runs": [
+    "sem-control-sys00",
+    "sem-mc-sys00-as-built",
+    "sem-mc-sys00-reviewed"
+   ],
    "evidence": [
-    "experiment/playbook-completion/models/breadth-c/RESULTS.json"
+    "experiment/playbook-completion/models/breadth-c/RESULTS.json",
+    "experiment/playbook-completion/models/semantics/src/sys00.rs",
+    "experiment/playbook-completion/models/semantics/RESULTS.json",
+    "run:sem-mc-sys00-reviewed",
+    "run:sem-mc-sys00-as-built",
+    "run:sem-control-sys00"
+   ],
+   "evidence_grade": "registered-run",
+   "findings": [
+    "F-0606",
+    "F-0702",
+    "F-1101",
+    "F-1302",
+    "F-1306"
    ],
    "gate": "3.3-model-check",
    "level": "model",
    "module": "00",
-   "product_obligation": "unknown",
-   "remaining": "SYS-I3 (refusal changes nothing), SYS-I4 (all-or-none across stores), SYS-I5 (ledger only grows) and SYS-I6 (retry saves once) are exercised by lane C's machines M1 retry, M2 unit, M5 restore (as-built violations, reviewed designs pass); the other universal axioms by the owning modules' lanes",
-   "source": "modules/00.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "finding F-0606",
+     "finding F-0702",
+     "finding F-1101",
+     "finding F-1302",
+     "finding F-1306",
+     "stated fails by matrix-input/semantics.json",
+     "run sem-mc-sys00-as-built (expected-violation)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "AX-01, AX-09 and AX-13 are outside the composition (checked by the generic machines M-12/M-01, M-08, M-11: sem-mc-catalog-*, sem-mc-install-*, sem-mc-cap-*); AX-02, AX-03, AX-04, AX-05, AX-12 hold within the composition only, the product breaks them elsewhere (axioms.json); progress rests on TRUST.md's operator-re-run premise",
+   "source": "matrix-input/semantics.json",
+   "status": "closed"
   },
   {
    "cited_runs": [
@@ -4368,13 +4404,30 @@
    "status": "closed"
   },
   {
+   "as_built_findings": [
+    "F-0604",
+    "F-0606",
+    "F-0608",
+    "F-0615",
+    "F-C0601",
+    "F-C0605",
+    "F-C0670"
+   ],
    "cited_runs": [
-    "breadth-a-mc-all"
+    "breadth-a-mc-all",
+    "sem-control-queue",
+    "sem-mc-queue-as-built",
+    "sem-mc-queue-reviewed"
    ],
    "evidence": [
-    "models/breadth-a/RESULTS.json (27 checks, families vec_build_publish, vec_ivf, vec_queue, vec_route_batch)",
-    "breadth-a-mc-all"
+    "models/breadth-a/RESULTS.json",
+    "run:breadth-a-mc-all",
+    "experiment/playbook-completion/models/semantics/src/queue.rs",
+    "run:sem-mc-queue-as-built",
+    "run:sem-mc-queue-reviewed",
+    "run:sem-control-queue"
    ],
+   "evidence_grade": "registered-run",
    "findings": [
     "F-0604",
     "F-0606",
@@ -4395,15 +4448,16 @@
      "finding F-0615",
      "finding F-C0601",
      "finding F-C0605",
-     "finding F-C0670"
+     "finding F-C0670",
+     "stated fails by matrix-input/semantics.json",
+     "run sem-mc-queue-as-built (expected-violation)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "reason": "as-built / reviewed / control / sharpness (and progress where it matters) per family, exhaustive within bounds; scope is each family's invariant and the operations its doc comment lists (other operations of the module are not modeled)",
-   "remaining": "findings meant for a model with no model: ['F-C0605']",
-   "source": "modules/06.json",
-   "status": "open"
+   "remaining": "fair_lasso is tooling added in models/semantics (unproved; its controls are the FIFO pass and the LIFO and as-built catches); the batch size is abstracted to 1",
+   "source": "matrix-input/semantics.json",
+   "status": "closed"
   },
   {
    "cited_runs": [
@@ -5409,43 +5463,670 @@
    "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "as_built_findings": [
+    "F-0304",
+    "F-0409",
+    "F-0505",
+    "F-0606",
+    "F-0702",
+    "F-0705",
+    "F-0707",
+    "F-0711",
+    "F-0802",
+    "F-0814",
+    "F-0815",
+    "F-0816",
+    "F-0818",
+    "F-0820",
+    "F-1002",
+    "F-1008",
+    "F-1101",
+    "F-1114",
+    "F-1302",
+    "F-1303",
+    "F-1304",
+    "F-1305",
+    "F-1306",
+    "F-1402",
+    "F-1502",
+    "F-1503",
+    "F-1603",
+    "F-1604",
+    "F-1701",
+    "F-1709",
+    "F-1801",
+    "F-C0702",
+    "F-C1201",
+    "F-C1203",
+    "F-C1301",
+    "F-C1306",
+    "F-C1308",
+    "F-C1350",
+    "F-C1803",
+    "F-C1804",
+    "F-C1850"
+   ],
+   "cited_runs": [
+    "sem-check",
+    "sem-check-selftest",
+    "sem-control-sys00",
+    "sem-mc-sys00-as-built",
+    "sem-mc-sys00-reviewed"
+   ],
+   "evidence": [
+    "experiment/playbook-completion/semantics/AXIOMS.md",
+    "experiment/playbook-completion/semantics/axioms.json",
+    "experiment/playbook-completion/semantics/src/finding_classes.json",
+    "run:sem-check",
+    "run:sem-check-selftest",
+    "run:sem-mc-sys00-reviewed",
+    "run:sem-mc-sys00-as-built",
+    "run:sem-control-sys00"
+   ],
+   "evidence_grade": "registered-run",
+   "findings": [
+    "F-0304",
+    "F-0409",
+    "F-0505",
+    "F-0606",
+    "F-0702",
+    "F-0705",
+    "F-0707",
+    "F-0711",
+    "F-0802",
+    "F-0814",
+    "F-0815",
+    "F-0816",
+    "F-0818",
+    "F-0820",
+    "F-1002",
+    "F-1008",
+    "F-1101",
+    "F-1114",
+    "F-1302",
+    "F-1303",
+    "F-1304",
+    "F-1305",
+    "F-1306",
+    "F-1402",
+    "F-1502",
+    "F-1503",
+    "F-1603",
+    "F-1604",
+    "F-1701",
+    "F-1709",
+    "F-1801",
+    "F-C0702",
+    "F-C1201",
+    "F-C1203",
+    "F-C1301",
+    "F-C1306",
+    "F-C1308",
+    "F-C1803",
+    "F-C1804"
+   ],
    "gate": "3.3a-axioms",
-   "level": "model",
+   "level": "method",
    "module": "product",
-   "product_obligation": "unknown",
-   "remaining": "axioms/mechanisms/lifecycles exist for the worked example only (experiment/playbook-uplift/semantics); not product-wide",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "finding F-0304",
+     "finding F-0409",
+     "finding F-0505",
+     "finding F-0606",
+     "finding F-0702",
+     "finding F-0705",
+     "finding F-0707",
+     "finding F-0711",
+     "finding F-0802",
+     "finding F-0814",
+     "finding F-0815",
+     "finding F-0816",
+     "finding F-0818",
+     "finding F-0820",
+     "finding F-1002",
+     "finding F-1008",
+     "finding F-1101",
+     "finding F-1114",
+     "finding F-1302",
+     "finding F-1303",
+     "finding F-1304",
+     "finding F-1305",
+     "finding F-1306",
+     "finding F-1402",
+     "finding F-1502",
+     "finding F-1503",
+     "finding F-1603",
+     "finding F-1604",
+     "finding F-1701",
+     "finding F-1709",
+     "finding F-1801",
+     "finding F-C0702",
+     "finding F-C1201",
+     "finding F-C1203",
+     "finding F-C1301",
+     "finding F-C1306",
+     "finding F-C1308",
+     "finding F-C1803",
+     "finding F-C1804",
+     "stated fails by matrix-input/semantics.json"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "the repaired SYS-I wording (AX-01..AX-09) is proposed in semantics/src/axioms_src.json, not written into ontology/00-system.md (ontology lane); AX-12's durability half rests on an intent-undecided premise (F-C1102) F-1001 (Arno callout) is blocked-access, so it is classed under the axioms but not counted as as-built evidence here.",
+   "source": "matrix-input/semantics.json",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "as_built_findings": [
+    "F-0103",
+    "F-0107",
+    "F-0202",
+    "F-0203",
+    "F-0207",
+    "F-0208",
+    "F-0301",
+    "F-0302",
+    "F-0303",
+    "F-0305",
+    "F-0306",
+    "F-0307",
+    "F-0402",
+    "F-0406",
+    "F-0407",
+    "F-0409",
+    "F-0501",
+    "F-0503",
+    "F-0504",
+    "F-0507",
+    "F-0511",
+    "F-0601",
+    "F-0602",
+    "F-0603",
+    "F-0604",
+    "F-0605",
+    "F-0606",
+    "F-0609",
+    "F-0613",
+    "F-0615",
+    "F-0616",
+    "F-0618",
+    "F-0701",
+    "F-0702",
+    "F-0703",
+    "F-0704",
+    "F-0705",
+    "F-0707",
+    "F-0709",
+    "F-0711",
+    "F-0801",
+    "F-0804",
+    "F-0807",
+    "F-0814",
+    "F-0815",
+    "F-0817",
+    "F-0818",
+    "F-0819",
+    "F-0820",
+    "F-0901",
+    "F-0903",
+    "F-0905",
+    "F-0906",
+    "F-0908",
+    "F-1002",
+    "F-1004",
+    "F-1005",
+    "F-1006",
+    "F-1008",
+    "F-1013",
+    "F-1101",
+    "F-1104",
+    "F-1105",
+    "F-1108",
+    "F-1114",
+    "F-1201",
+    "F-1302",
+    "F-1303",
+    "F-1304",
+    "F-1305",
+    "F-1306",
+    "F-1401",
+    "F-1402",
+    "F-1502",
+    "F-1503",
+    "F-1506",
+    "F-1511",
+    "F-1601",
+    "F-1603",
+    "F-1604",
+    "F-1609",
+    "F-1610",
+    "F-1614",
+    "F-1701",
+    "F-1801",
+    "F-1803",
+    "F-1804",
+    "F-1805",
+    "F-1806",
+    "F-C0401",
+    "F-C0501",
+    "F-C0601",
+    "F-C0605",
+    "F-C0670",
+    "F-C0702",
+    "F-C0801",
+    "F-C0901",
+    "F-C1201",
+    "F-C1203",
+    "F-C1303",
+    "F-C1304",
+    "F-C1305",
+    "F-C1306",
+    "F-C1308",
+    "F-C1309",
+    "F-C1501",
+    "F-C1502",
+    "F-C1604",
+    "F-C1703",
+    "F-C1801",
+    "F-C1803",
+    "F-C1804",
+    "F-CS01"
+   ],
+   "cited_runs": [
+    "sem-check",
+    "sem-control-cap",
+    "sem-control-catalog",
+    "sem-control-derived",
+    "sem-control-epoch",
+    "sem-control-excl",
+    "sem-control-install",
+    "sem-control-ledger",
+    "sem-control-queue",
+    "sem-control-removal",
+    "sem-control-retry",
+    "sem-control-scope",
+    "sem-control-snapshot",
+    "sem-control-unit",
+    "sem-mc-all",
+    "sem-mc-cap-as-built",
+    "sem-mc-cap-reviewed",
+    "sem-mc-catalog-as-built",
+    "sem-mc-catalog-reviewed",
+    "sem-mc-derived-as-built",
+    "sem-mc-derived-reviewed",
+    "sem-mc-epoch-as-built",
+    "sem-mc-epoch-reviewed",
+    "sem-mc-excl-as-built",
+    "sem-mc-excl-reviewed",
+    "sem-mc-install-as-built",
+    "sem-mc-install-reviewed",
+    "sem-mc-ledger-as-built",
+    "sem-mc-ledger-reviewed",
+    "sem-mc-queue-as-built",
+    "sem-mc-queue-reviewed",
+    "sem-mc-removal-as-built",
+    "sem-mc-removal-reviewed",
+    "sem-mc-retry-as-built",
+    "sem-mc-retry-reviewed",
+    "sem-mc-scope-as-built",
+    "sem-mc-scope-reviewed",
+    "sem-mc-snapshot-as-built",
+    "sem-mc-snapshot-reviewed",
+    "sem-mc-unit-as-built",
+    "sem-mc-unit-reviewed"
+   ],
+   "evidence": [
+    "experiment/playbook-completion/semantics/MECHANISMS.md",
+    "experiment/playbook-completion/semantics/mechanisms.json",
+    "experiment/playbook-completion/models/semantics/RESULTS.json",
+    "run:sem-mc-all",
+    "run:sem-mc-cap-as-built",
+    "run:sem-mc-cap-reviewed",
+    "run:sem-mc-catalog-as-built",
+    "run:sem-mc-catalog-reviewed",
+    "run:sem-mc-derived-as-built",
+    "run:sem-mc-derived-reviewed",
+    "run:sem-mc-epoch-as-built",
+    "run:sem-mc-epoch-reviewed",
+    "run:sem-mc-excl-as-built",
+    "run:sem-mc-excl-reviewed",
+    "run:sem-mc-install-as-built",
+    "run:sem-mc-install-reviewed",
+    "run:sem-mc-ledger-as-built",
+    "run:sem-mc-ledger-reviewed",
+    "run:sem-mc-queue-as-built",
+    "run:sem-mc-queue-reviewed",
+    "run:sem-mc-removal-as-built",
+    "run:sem-mc-removal-reviewed",
+    "run:sem-mc-retry-as-built",
+    "run:sem-mc-retry-reviewed",
+    "run:sem-mc-scope-as-built",
+    "run:sem-mc-scope-reviewed",
+    "run:sem-mc-snapshot-as-built",
+    "run:sem-mc-snapshot-reviewed",
+    "run:sem-mc-unit-as-built",
+    "run:sem-mc-unit-reviewed",
+    "run:sem-control-cap",
+    "run:sem-control-catalog",
+    "run:sem-control-derived",
+    "run:sem-control-epoch",
+    "run:sem-control-excl",
+    "run:sem-control-install",
+    "run:sem-control-ledger",
+    "run:sem-control-queue",
+    "run:sem-control-removal",
+    "run:sem-control-retry",
+    "run:sem-control-scope",
+    "run:sem-control-snapshot",
+    "run:sem-control-unit",
+    "run:sem-check"
+   ],
+   "evidence_grade": "registered-run",
    "findings": [
-    "F-C0670"
+    "F-0103",
+    "F-0107",
+    "F-0202",
+    "F-0203",
+    "F-0207",
+    "F-0208",
+    "F-0301",
+    "F-0302",
+    "F-0303",
+    "F-0305",
+    "F-0306",
+    "F-0307",
+    "F-0402",
+    "F-0406",
+    "F-0407",
+    "F-0409",
+    "F-0501",
+    "F-0504",
+    "F-0507",
+    "F-0511",
+    "F-0601",
+    "F-0602",
+    "F-0603",
+    "F-0604",
+    "F-0605",
+    "F-0606",
+    "F-0609",
+    "F-0613",
+    "F-0615",
+    "F-0616",
+    "F-0618",
+    "F-0701",
+    "F-0702",
+    "F-0703",
+    "F-0704",
+    "F-0705",
+    "F-0707",
+    "F-0709",
+    "F-0711",
+    "F-0801",
+    "F-0804",
+    "F-0807",
+    "F-0814",
+    "F-0815",
+    "F-0817",
+    "F-0818",
+    "F-0819",
+    "F-0820",
+    "F-0901",
+    "F-0903",
+    "F-0905",
+    "F-0906",
+    "F-0908",
+    "F-1002",
+    "F-1004",
+    "F-1005",
+    "F-1006",
+    "F-1008",
+    "F-1013",
+    "F-1101",
+    "F-1104",
+    "F-1105",
+    "F-1108",
+    "F-1114",
+    "F-1201",
+    "F-1302",
+    "F-1303",
+    "F-1304",
+    "F-1305",
+    "F-1306",
+    "F-1401",
+    "F-1402",
+    "F-1502",
+    "F-1503",
+    "F-1506",
+    "F-1511",
+    "F-1601",
+    "F-1603",
+    "F-1604",
+    "F-1609",
+    "F-1610",
+    "F-1614",
+    "F-1701",
+    "F-1801",
+    "F-1803",
+    "F-1804",
+    "F-1805",
+    "F-1806",
+    "F-C0401",
+    "F-C0501",
+    "F-C0601",
+    "F-C0605",
+    "F-C0670",
+    "F-C0702",
+    "F-C0801",
+    "F-C0901",
+    "F-C1201",
+    "F-C1203",
+    "F-C1303",
+    "F-C1304",
+    "F-C1305",
+    "F-C1306",
+    "F-C1308",
+    "F-C1309",
+    "F-C1501",
+    "F-C1502",
+    "F-C1604",
+    "F-C1703",
+    "F-C1801",
+    "F-C1803",
+    "F-C1804",
+    "F-CS01"
+   ],
+   "findings_undecided": [
+    "F-0503"
    ],
    "gate": "3.3a-mechanisms",
    "level": "model",
    "module": "product",
    "product_basis": {
     "fails": [
-     "finding F-C0670"
+     "finding F-0103",
+     "finding F-0107",
+     "finding F-0202",
+     "finding F-0203",
+     "finding F-0207",
+     "finding F-0208",
+     "finding F-0301",
+     "finding F-0302",
+     "finding F-0303",
+     "finding F-0305",
+     "finding F-0306",
+     "finding F-0307",
+     "finding F-0402",
+     "finding F-0406",
+     "finding F-0407",
+     "finding F-0409",
+     "finding F-0501",
+     "finding F-0504",
+     "finding F-0507",
+     "finding F-0511",
+     "finding F-0601",
+     "finding F-0602",
+     "finding F-0603",
+     "finding F-0604",
+     "finding F-0605",
+     "finding F-0606",
+     "finding F-0609",
+     "finding F-0613",
+     "finding F-0615",
+     "finding F-0616",
+     "finding F-0618",
+     "finding F-0701",
+     "finding F-0702",
+     "finding F-0703",
+     "finding F-0704",
+     "finding F-0705",
+     "finding F-0707",
+     "finding F-0709",
+     "finding F-0711",
+     "finding F-0801",
+     "finding F-0804",
+     "finding F-0807",
+     "finding F-0814",
+     "finding F-0815",
+     "finding F-0817",
+     "finding F-0818",
+     "finding F-0819",
+     "finding F-0820",
+     "finding F-0901",
+     "finding F-0903",
+     "finding F-0905",
+     "finding F-0906",
+     "finding F-0908",
+     "finding F-1002",
+     "finding F-1004",
+     "finding F-1005",
+     "finding F-1006",
+     "finding F-1008",
+     "finding F-1013",
+     "finding F-1101",
+     "finding F-1104",
+     "finding F-1105",
+     "finding F-1108",
+     "finding F-1114",
+     "finding F-1201",
+     "finding F-1302",
+     "finding F-1303",
+     "finding F-1304",
+     "finding F-1305",
+     "finding F-1306",
+     "finding F-1401",
+     "finding F-1402",
+     "finding F-1502",
+     "finding F-1503",
+     "finding F-1506",
+     "finding F-1511",
+     "finding F-1601",
+     "finding F-1603",
+     "finding F-1604",
+     "finding F-1609",
+     "finding F-1610",
+     "finding F-1614",
+     "finding F-1701",
+     "finding F-1801",
+     "finding F-1803",
+     "finding F-1804",
+     "finding F-1805",
+     "finding F-1806",
+     "finding F-C0401",
+     "finding F-C0501",
+     "finding F-C0601",
+     "finding F-C0605",
+     "finding F-C0670",
+     "finding F-C0702",
+     "finding F-C0801",
+     "finding F-C0901",
+     "finding F-C1201",
+     "finding F-C1203",
+     "finding F-C1303",
+     "finding F-C1304",
+     "finding F-C1305",
+     "finding F-C1306",
+     "finding F-C1308",
+     "finding F-C1309",
+     "finding F-C1501",
+     "finding F-C1502",
+     "finding F-C1604",
+     "finding F-C1703",
+     "finding F-C1801",
+     "finding F-C1803",
+     "finding F-C1804",
+     "finding F-CS01",
+     "stated fails by matrix-input/semantics.json",
+     "run sem-mc-cap-as-built (expected-violation)",
+     "run sem-mc-catalog-as-built (expected-violation)",
+     "run sem-mc-derived-as-built (expected-violation)",
+     "run sem-mc-epoch-as-built (expected-violation)",
+     "run sem-mc-excl-as-built (expected-violation)",
+     "run sem-mc-install-as-built (expected-violation)",
+     "run sem-mc-ledger-as-built (expected-violation)",
+     "run sem-mc-queue-as-built (expected-violation)",
+     "run sem-mc-removal-as-built (expected-violation)",
+     "run sem-mc-retry-as-built (expected-violation)",
+     "run sem-mc-scope-as-built (expected-violation)",
+     "run sem-mc-snapshot-as-built (expected-violation)",
+     "run sem-mc-unit-as-built (expected-violation)"
+    ],
+    "intent_undecided": [
+     "finding F-0503"
+    ]
+   },
+   "product_obligation": "fails",
+   "remaining": "generic lemmas are explorer checks over a trait, not Verus proofs over a trait (playbook: 'proved once over a trait'); 63 axiom-breaking findings are not attached to a mechanism instance (MECHANISMS.md, last section); no result transfers to the product F-1001 (Arno callout) is blocked-access, so it is classed under the axioms but not counted as as-built evidence here.",
+   "source": "matrix-input/semantics.json",
+   "status": "closed"
+  },
+  {
+   "as_built_findings": [
+    "F-0606",
+    "F-0703",
+    "F-C0601",
+    "F-C0670",
+    "F-1502"
+   ],
+   "cited_runs": [
+    "sem-check",
+    "sem-check-selftest"
+   ],
+   "evidence": [
+    "experiment/playbook-completion/semantics/LIFECYCLES.md",
+    "experiment/playbook-completion/semantics/lifecycles.json",
+    "experiment/playbook-completion/semantics/objects.json",
+    "run:sem-check",
+    "run:sem-check-selftest"
+   ],
+   "evidence_grade": "registered-run",
+   "findings": [
+    "F-0606",
+    "F-0703",
+    "F-1502",
+    "F-C0601",
+    "F-C0670"
+   ],
+   "gate": "3.3a-lifecycles",
+   "level": "method",
+   "module": "product",
+   "product_basis": {
+    "fails": [
+     "finding F-0606",
+     "finding F-0703",
+     "finding F-1502",
+     "finding F-C0601",
+     "finding F-C0670",
+     "stated fails by matrix-input/semantics.json"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "worked example only",
-   "status": "open"
-  },
-  {
-   "cited_runs": [],
-   "evidence": [],
-   "gate": "3.3a-lifecycles",
-   "level": "model",
-   "module": "product",
-   "product_obligation": "unknown",
-   "remaining": "worked example only",
-   "status": "open"
+   "remaining": "none for the gate text; the ontology's own entity names collide across modules (namespace in 01/17/18, result cache entry in 04/10, caller transaction in 03/11): resolved in the mapping, not renamed in the ontology (ontology lane)",
+   "source": "matrix-input/semantics.json",
+   "status": "closed"
   },
   {
    "as_built_findings": [
@@ -5511,17 +6192,11 @@
     "models/breadth-a/writesets.json",
     "run:followup-writer-census"
    ],
-   "findings": [
-    "F-C0150",
-    "F-C0151"
-   ],
    "gate": "3.3a-writesets",
    "level": "model",
    "module": "01",
    "product_basis": {
     "fails": [
-     "finding F-C0150",
-     "finding F-C0151",
      "lane status failed (modules/01.json)"
     ],
     "intent_undecided": []
@@ -5605,8 +6280,7 @@
    "findings": [
     "F-0402",
     "F-0405",
-    "F-0406",
-    "F-C0450"
+    "F-0406"
    ],
    "findings_undecided": [
     "F-0401"
@@ -5619,7 +6293,6 @@
      "finding F-0402",
      "finding F-0405",
      "finding F-0406",
-     "finding F-C0450",
      "lane status failed (modules/04.json)"
     ],
     "intent_undecided": [
@@ -5863,8 +6536,7 @@
     "F-1103",
     "F-1105",
     "F-1108",
-    "F-1114",
-    "F-C1150"
+    "F-1114"
    ],
    "gate": "3.3a-writesets",
    "level": "model",
@@ -5876,7 +6548,6 @@
      "finding F-1105",
      "finding F-1108",
      "finding F-1114",
-     "finding F-C1150",
      "lane status failed (modules/11.json)"
     ],
     "intent_undecided": []
@@ -5932,8 +6603,7 @@
    ],
    "findings": [
     "F-C1301",
-    "F-C1308",
-    "F-C1350"
+    "F-C1308"
    ],
    "gate": "3.3a-writesets",
    "level": "model",
@@ -5941,8 +6611,7 @@
    "product_basis": {
     "fails": [
      "finding F-C1301",
-     "finding F-C1308",
-     "finding F-C1350"
+     "finding F-C1308"
     ],
     "intent_undecided": []
    },
@@ -6076,8 +6745,7 @@
    ],
    "findings": [
     "F-1801",
-    "F-C1804",
-    "F-C1850"
+    "F-C1804"
    ],
    "gate": "3.3a-writesets",
    "level": "model",
@@ -6086,7 +6754,6 @@
     "fails": [
      "finding F-1801",
      "finding F-C1804",
-     "finding F-C1850",
      "lane status failed (modules/18.json)"
     ],
     "intent_undecided": []
@@ -6100,13 +6767,25 @@
    ]
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "sem-check",
+    "sem-check-selftest"
+   ],
+   "evidence": [
+    "experiment/playbook-completion/semantics/trace.json",
+    "experiment/playbook-completion/semantics/data/trace_sample_review.json",
+    "experiment/playbook-completion/semantics/SEMANTICS.md",
+    "run:sem-check",
+    "run:sem-check-selftest"
+   ],
+   "evidence_grade": "check (mechanical: every B/T/I/X/P ontology statement of 19 modules, 2,600, exactly once) + inspected (rule precision by a sample of 80: 68 agree, 10 partly, 2 disagree; one reviewer, not independent)",
    "gate": "3.3a-trace",
-   "level": "model",
+   "level": "method",
    "module": "product",
+   "product_basis": "a trace is a property of the specification; the product's conformance is in the other cells",
    "product_obligation": "unknown",
-   "remaining": "requirement-to-axiom tracing only for modules 12-14",
+   "remaining": "55 requirements open (53 P premises outside the validated IRIS-contract subset: catalog/grants, limits, HNSW, Task Manager, FHIR, %AI, Arno, networkx; 2 I cost/memory rules TXT-B4.8, INT-R1.13), listed in trace.json 'open' with reasons; 1,041 B/T statements trace only to their module's functional contract (DC-FUNC-NN), whose L1 models are not checked statement by statement",
+   "source": "matrix-input/semantics.json",
    "status": "open"
   },
   {
@@ -10984,7 +11663,6 @@
     "F-C1306",
     "F-C1307",
     "F-C1308",
-    "F-C1350",
     "F-C1703",
     "F-CS01"
    ],
@@ -11001,7 +11679,6 @@
      "finding F-C1306",
      "finding F-C1307",
      "finding F-C1308",
-     "finding F-C1350",
      "finding F-C1703",
      "finding F-CS01"
     ],
@@ -12315,9 +12992,7 @@
     "F-0108",
     "F-0109",
     "F-0110",
-    "F-C0101",
-    "F-C0150",
-    "F-C0151"
+    "F-C0101"
    ],
    "gate": "3.8-findings-disposed",
    "level": "method",
@@ -12334,9 +13009,7 @@
      "finding F-0108",
      "finding F-0109",
      "finding F-0110",
-     "finding F-C0101",
-     "finding F-C0150",
-     "finding F-C0151"
+     "finding F-C0101"
     ],
     "intent_undecided": []
    },
@@ -12442,8 +13115,7 @@
     "F-0407",
     "F-0408",
     "F-0409",
-    "F-C0401",
-    "F-C0450"
+    "F-C0401"
    ],
    "findings_undecided": [
     "F-0401",
@@ -12462,8 +13134,7 @@
      "finding F-0407",
      "finding F-0408",
      "finding F-0409",
-     "finding F-C0401",
-     "finding F-C0450"
+     "finding F-C0401"
     ],
     "intent_undecided": [
      "finding F-0401",
@@ -12707,8 +13378,7 @@
     "F-1113",
     "F-1114",
     "F-C1101",
-    "F-C1110",
-    "F-C1150"
+    "F-C1110"
    ],
    "gate": "3.8-findings-disposed",
    "level": "method",
@@ -12730,8 +13400,7 @@
      "finding F-1113",
      "finding F-1114",
      "finding F-C1101",
-     "finding F-C1110",
-     "finding F-C1150"
+     "finding F-C1110"
     ],
     "intent_undecided": []
    },
@@ -12785,7 +13454,6 @@
     "F-C1307",
     "F-C1308",
     "F-C1309",
-    "F-C1350",
     "F-CS01"
    ],
    "gate": "3.8-findings-disposed",
@@ -12808,7 +13476,6 @@
      "finding F-C1307",
      "finding F-C1308",
      "finding F-C1309",
-     "finding F-C1350",
      "finding F-CS01"
     ],
     "intent_undecided": []
@@ -12893,19 +13560,10 @@
    "evidence": [
     "findings/audit/18.json"
    ],
-   "findings": [
-    "F-C1850"
-   ],
    "gate": "3.8-findings-disposed",
    "level": "method",
    "module": "18",
-   "product_basis": {
-    "fails": [
-     "finding F-C1850"
-    ],
-    "intent_undecided": []
-   },
-   "product_obligation": "fails",
+   "product_obligation": "unknown",
    "remaining": "every finding is recorded with evidence and a disposition; a fix or a maintainer decision per finding is outside this observation-only audit",
    "source": "modules/18.json",
    "status": "open"
@@ -26718,215 +27376,6 @@
    ],
    "id": "F-C1705",
    "severity": "S3"
-  },
-  {
-   "confidence": "high",
-   "disposition": "reproduced-live",
-   "evidence": [
-    {
-     "kind": "live",
-     "ref": "ws-live-ins-store_node"
-    },
-    {
-     "kind": "live",
-     "ref": "ws-live-ins-store_edge"
-    },
-    {
-     "kind": "live",
-     "ref": "ws-live-ins-bulk_create_nodes"
-    },
-    {
-     "kind": "live",
-     "ref": "ws-live-ins-bulk_ingest_edges"
-    },
-    {
-     "kind": "live",
-     "ref": "ws-live-ins-bulk_create_edges"
-    },
-    {
-     "kind": "live",
-     "ref": "ws-live-ins-store_write_nodes"
-    },
-    {
-     "kind": "live",
-     "ref": "ws-live-ins-store_write_edges"
-    },
-    {
-     "kind": "live",
-     "ref": "ws-live-ins-create_edge_temporal"
-    },
-    {
-     "kind": "live",
-     "ref": "ws-live-ins-bulk_create_edges_temporal"
-    },
-    {
-     "kind": "live",
-     "ref": "ws-live-ins-reify_edge"
-    },
-    {
-     "kind": "live",
-     "ref": "ws-live-ins-bulkloader_load_edges"
-    },
-    {
-     "kind": "live",
-     "ref": "ws-live-ins-import_rdf"
-    },
-    {
-     "kind": "inspected",
-     "ref": "iris_src/src/Graph/KG/LedgerRedact.cls:302-330"
-    },
-    {
-     "kind": "inspected",
-     "ref": "iris_src/src/Graph/KG/LedgerRedact.cls:202-211"
-    },
-    {
-     "kind": "inspected",
-     "ref": "iris_src/src/Graph/KG/LedgerRedact.cls:409-416"
-    }
-   ],
-   "gates": [
-    "3.3a-writesets",
-    "3.7-integration-worlds",
-    "3.8-findings-disposed"
-   ],
-   "id": "F-C1350",
-   "severity": "S1"
-  },
-  {
-   "confidence": "high",
-   "disposition": "reproduced-live",
-   "evidence": [
-    {
-     "kind": "live",
-     "ref": "ws-live-stmt-collision"
-    },
-    {
-     "kind": "live",
-     "ref": "ws-live-stmt-purge"
-    },
-    {
-     "kind": "inspected",
-     "ref": "iris_src/src/Graph/KG/Adjacency.cls:736-748"
-    },
-    {
-     "kind": "inspected",
-     "ref": "iris_src/src/Graph/KG/LedgerApply.cls:420-434"
-    },
-    {
-     "kind": "inspected",
-     "ref": "iris_src/src/Graph/KG/TemporalPolicy.cls:124-228"
-    }
-   ],
-   "gates": [
-    "3.3a-writesets",
-    "3.8-findings-disposed"
-   ],
-   "id": "F-C0450",
-   "severity": "S2"
-  },
-  {
-   "confidence": "high",
-   "disposition": "reproduced-live",
-   "evidence": [
-    {
-     "kind": "live",
-     "ref": "ws-live-stmt-collision"
-    },
-    {
-     "kind": "inspected",
-     "ref": "iris_vector_graph/_engine/schema.py:3186-3259"
-    },
-    {
-     "kind": "inspected",
-     "ref": "iris_vector_graph/_engine/schema.py:61"
-    }
-   ],
-   "gates": [
-    "3.3a-writesets",
-    "3.8-findings-disposed"
-   ],
-   "id": "F-C0151",
-   "severity": "S2"
-  },
-  {
-   "confidence": "high",
-   "disposition": "reproduced-live",
-   "evidence": [
-    {
-     "kind": "live",
-     "ref": "ws-live-migrations"
-    },
-    {
-     "kind": "inspected",
-     "ref": "iris_vector_graph/schema.py:1514-1637"
-    },
-    {
-     "kind": "inspected",
-     "ref": "iris_vector_graph/schema.py:704-722"
-    }
-   ],
-   "gates": [
-    "3.3a-writesets",
-    "3.8-findings-disposed"
-   ],
-   "id": "F-C0150",
-   "severity": "S2"
-  },
-  {
-   "confidence": "high",
-   "disposition": "reproduced-live",
-   "evidence": [
-    {
-     "kind": "live",
-     "ref": "ws-live-sql-insert-wedge"
-    },
-    {
-     "kind": "live",
-     "ref": "ws-live-sql-guard"
-    },
-    {
-     "kind": "inspected",
-     "ref": "iris_src/src/Graph/KG/LedgerRevision.cls:44"
-    },
-    {
-     "kind": "inspected",
-     "ref": "iris_src/src/Graph/KG/LedgerRevision.cls:87-108"
-    }
-   ],
-   "gates": [
-    "3.3a-writesets",
-    "3.8-findings-disposed"
-   ],
-   "id": "F-C1150",
-   "severity": "S2"
-  },
-  {
-   "confidence": "high",
-   "disposition": "reproduced-live",
-   "evidence": [
-    {
-     "kind": "live",
-     "ref": "ws-live-gap-restore"
-    },
-    {
-     "kind": "live",
-     "ref": "ws-live-gap-marker"
-    },
-    {
-     "kind": "inspected",
-     "ref": "iris_vector_graph/_engine/snapshot.py:1654-1692"
-    },
-    {
-     "kind": "inspected",
-     "ref": "iris_src/src/Graph/KG/LedgerRedact.cls:333-378"
-    }
-   ],
-   "gates": [
-    "3.3a-writesets",
-    "3.8-findings-disposed"
-   ],
-   "id": "F-C1850",
-   "severity": "S1"
   }
  ],
  "not_implemented": [
@@ -27665,13 +28114,13 @@
   }
  ],
  "product_counts": {
-  "fails": 268,
+  "fails": 270,
   "holds-in-model-only": 1,
   "intent-undecided": 2,
   "n/a": 33,
-  "unknown": 443
+  "unknown": 441
  },
- "registry_runs": 969,
+ "registry_runs": 1016,
  "starting_inventory": {
   "cells": 904,
   "decisions": 61,
@@ -27683,9 +28132,9 @@
  },
  "status_counts": {
   "blocked": 8,
-  "closed": 246,
+  "closed": 251,
   "not-applicable": 35,
-  "open": 458
+  "open": 453
  },
  "submission": "9c3719c1",
  "writer_obligations": [

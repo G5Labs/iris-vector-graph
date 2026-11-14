@@ -25,10 +25,10 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 3.3-protocol | model | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
 | 3.3-progress-controls | model | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
 | 3.3-cost | model | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
-| 3.3-model-check | model | 17 | 0 | 2 | 0 | 0 | 18 | 0 | 0 | 1 | 0 |
-| 3.3a-axioms | model | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
-| 3.3a-mechanisms | model | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
-| 3.3a-lifecycles | model | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 3.3-model-check | model | 19 | 0 | 0 | 0 | 0 | 19 | 0 | 0 | 0 | 0 |
+| 3.3a-axioms | model | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
+| 3.3a-mechanisms | model | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
+| 3.3a-lifecycles | model | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
 | 3.3a-domain-contract | model | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
 | 3.3a-writesets | model | 5 | 0 | 198 | 0 | 1 | 21 | 0 | 0 | 182 | 1 |
 | 3.3a-trace | model | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
@@ -65,7 +65,7 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 3.8-trust | method | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.8-test-reflection | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.8-review | method | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
-| 3.8-findings-disposed | method | 0 | 0 | 18 | 0 | 1 | 14 | 0 | 0 | 4 | 1 |
+| 3.8-findings-disposed | method | 0 | 0 | 18 | 0 | 1 | 13 | 0 | 0 | 5 | 1 |
 | 5-trust-strict | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 5-mutants-located | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 5-selftests | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
@@ -78,7 +78,7 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 5c-root-causes | method | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
 | 5c-reviewers | method | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
 
-Totals: {'closed': 246, 'not-applicable': 35, 'open': 458, 'blocked': 8}; evidence grade of closed cells: {'registered-run': 204, 'inspected': 42}; product: {'unknown': 443, 'n/a': 33, 'fails': 268, 'intent-undecided': 2, 'holds-in-model-only': 1}
+Totals: {'closed': 251, 'not-applicable': 35, 'open': 453, 'blocked': 8}; evidence grade of closed cells: {'registered-run': 209, 'inspected': 42}; product: {'unknown': 441, 'n/a': 33, 'fails': 270, 'intent-undecided': 2, 'holds-in-model-only': 1}
 
 ## Writer census obligations (review R2-02)
 

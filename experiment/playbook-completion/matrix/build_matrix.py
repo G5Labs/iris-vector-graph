@@ -189,7 +189,10 @@ def evidence_file(e: str) -> bool:
 
 def audit_records() -> list:
     out = []
+    skip = {s.strip() for s in os.environ.get("MATRIX_EXCLUDE", "").split(",") if s.strip()}
     for p in sorted((ROOT / "findings" / "audit").glob("*.json")):
+        if str(p.relative_to(ROOT)) in skip:   # an in-progress lane's file (orchestrator snapshots only)
+            continue
         recs = load(p, [])
         for r in (recs if isinstance(recs, list) else recs.get("findings", []) + recs.get("new_findings", [])):
             out.append((p.stem, r))

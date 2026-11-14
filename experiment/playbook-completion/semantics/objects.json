@@ -1,0 +1,5189 @@
+{
+ "_doc": "Every object (ontology Entity line) of every module, with its canonical lifecycle (lifecycles.json), the state and command mapping (src/objects_map.json), the mechanisms it uses (src/mechanisms_src.json instances) and the axioms those implement. Built by semantics/tools/build_semantics.py; the object list is derived from the ontology, not by hand. Module 00 declares no entity (its statements are the axioms' sources).",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "objects": [
+  {
+   "id": "01/namespace",
+   "module": "01",
+   "entity": "namespace",
+   "ontology": "experiment/playbook-completion/ontology/01-install-schema.md:271",
+   "states": [
+    "fresh",
+    "old release",
+    "split",
+    "unfinished",
+    "same record",
+    "other record"
+   ],
+   "commands": [
+    "setup",
+    "preview",
+    "first use",
+    "legacy removal"
+   ],
+   "lifecycle": "LC-3",
+   "state_map": {
+    "fresh": "absent",
+    "old release": "outdated",
+    "split": {
+     "state": "broken",
+     "facet": "no schema record and the tables in another schema or several"
+    },
+    "unfinished": "partial",
+    "same record": "in-force",
+    "other record": {
+     "state": "broken",
+     "facet": "the record names another schema than the one asked for"
+    }
+   },
+   "command_map": {
+    "setup": "setup",
+    "preview": "read",
+    "first use": "consult",
+    "legacy removal": "remove"
+   },
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/schema_name.py:220-235",
+     "departs": [
+      "M08-L1"
+     ],
+     "findings": [
+      "F-0103"
+     ],
+     "model": "install/first-use-no-record",
+     "mechanism": "M-08",
+     "model_checks": [
+      "install-first-use-no-record-as-built",
+      "install-first-use-no-record-reviewed"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-03",
+    "AX-09"
+   ],
+   "hand_rolled": [
+    "M-08"
+   ],
+   "findings": [
+    "F-0103"
+   ]
+  },
+  {
+   "id": "01/class-set",
+   "module": "01",
+   "entity": "class set",
+   "ontology": "experiment/playbook-completion/ontology/01-install-schema.md:272",
+   "states": [
+    "none",
+    "current",
+    "changed",
+    "partly failed"
+   ],
+   "commands": [
+    "deploy",
+    "forced deploy",
+    "preview"
+   ],
+   "lifecycle": "LC-3",
+   "state_map": {
+    "none": "absent",
+    "current": "in-force",
+    "changed": "outdated",
+    "partly failed": "partial"
+   },
+   "command_map": {
+    "deploy": "setup",
+    "forced deploy": "upgrade",
+    "preview": "read"
+   },
+   "mechanisms": [
+    {
+     "use": "canonical",
+     "where": "iris_vector_graph/schema.py (deploy)",
+     "model": "install/canonical",
+     "mechanism": "M-08",
+     "model_checks": [
+      "install-canonical-as-built",
+      "install-control-C1-first-use-accepts-any",
+      "install-control-C2-unqualified-drop",
+      "install-control-C3-setting-unchecked",
+      "install-control-C4-enable-race-errors",
+      "install-sharp-other-schema-refused",
+      "install-sharp-both-enables-ok"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-03",
+    "AX-09"
+   ],
+   "hand_rolled": [],
+   "findings": []
+  },
+  {
+   "id": "01/legacy-object",
+   "module": "01",
+   "entity": "legacy object",
+   "ontology": "experiment/playbook-completion/ontology/01-install-schema.md:273",
+   "states": [
+    "owned",
+    "not owned",
+    "unreadable"
+   ],
+   "commands": [
+    "list",
+    "remove",
+    "setup"
+   ],
+   "lifecycle": "LC-3",
+   "state_map": {
+    "owned": {
+     "state": "outdated",
+     "facet": "4.5.x object from the fixed manifest, frozen until removed (EXC-09)"
+    },
+    "not owned": {
+     "state": "absent",
+     "facet": "another owner's object of that name: not the product's"
+    },
+    "unreadable": {
+     "state": "broken",
+     "facet": "its text cannot be read, so ownership cannot be shown"
+    }
+   },
+   "command_map": {
+    "list": "read",
+    "remove": "remove",
+    "setup": "setup"
+   },
+   "mechanisms": [
+    {
+     "use": "canonical",
+     "where": "iris_vector_graph/_engine/legacy.py",
+     "exception": "EXC-09",
+     "model": "install/canonical",
+     "note": "listed from a fixed manifest; its removal report is F-0101 (AX-12)",
+     "mechanism": "M-08",
+     "model_checks": [
+      "install-canonical-as-built",
+      "install-control-C1-first-use-accepts-any",
+      "install-control-C2-unqualified-drop",
+      "install-control-C3-setting-unchecked",
+      "install-control-C4-enable-race-errors",
+      "install-sharp-other-schema-refused",
+      "install-sharp-both-enables-ok"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-03",
+    "AX-09"
+   ],
+   "hand_rolled": [],
+   "findings": []
+  },
+  {
+   "id": "01/setup-routine",
+   "module": "01",
+   "entity": "setup routine",
+   "ontology": "experiment/playbook-completion/ontology/01-install-schema.md:274",
+   "states": [
+    "missing",
+    "current",
+    "text changed"
+   ],
+   "commands": [
+    "setup",
+    "forced setup"
+   ],
+   "lifecycle": "LC-3",
+   "state_map": {
+    "missing": "absent",
+    "current": "in-force",
+    "text changed": "outdated"
+   },
+   "command_map": {
+    "setup": "setup",
+    "forced setup": "upgrade"
+   },
+   "mechanisms": [
+    {
+     "use": "canonical",
+     "where": "iris_vector_graph/schema.py (initialize_schema)",
+     "model": "retry/idempotent-setup",
+     "mechanism": "M-02",
+     "model_checks": [
+      "retry-idempotent-setup-as-built",
+      "retry-idempotent-setup-reviewed"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/schema.py:655-658",
+     "departs": [
+      "M08-L3"
+     ],
+     "findings": [
+      "F-0107"
+     ],
+     "model": "install/unqualified-drop",
+     "mechanism": "M-08",
+     "model_checks": [
+      "install-unqualified-drop-as-built",
+      "install-unqualified-drop-reviewed"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-03",
+    "AX-06",
+    "AX-09",
+    "AX-12"
+   ],
+   "hand_rolled": [
+    "M-08"
+   ],
+   "findings": [
+    "F-0107"
+   ]
+  },
+  {
+   "id": "02/graph-mode",
+   "module": "02",
+   "entity": "graph mode",
+   "ontology": "experiment/playbook-completion/ontology/02-graph-identity.md:170",
+   "states": [
+    "off",
+    "on without parallel edges",
+    "on with parallel edges"
+   ],
+   "commands": [
+    "turn on",
+    "turn off",
+    "direct create of a held triple",
+    "Cypher create of a held triple",
+    "erase graph"
+   ],
+   "lifecycle": "LC-3",
+   "state_map": {
+    "off": "disabled",
+    "on without parallel edges": {
+     "state": "in-force",
+     "facet": "multigraph on, no parallel edge yet"
+    },
+    "on with parallel edges": {
+     "state": "in-force",
+     "facet": "multigraph on, holds parallel edges"
+    }
+   },
+   "command_map": {
+    "turn on": "set",
+    "turn off": "set",
+    "direct create of a held triple": "consult",
+    "Cypher create of a held triple": "consult",
+    "erase graph": "remove"
+   },
+   "notes": "erasing a graph clears its mode (GID-B4.6)",
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/GraphMode.cls:26-61",
+     "departs": [
+      "M03-L2"
+     ],
+     "findings": [
+      "F-0207"
+     ],
+     "model": "excl/mode-switch",
+     "mechanism": "M-03",
+     "model_checks": [
+      "excl-mode-switch-as-built",
+      "excl-mode-switch-reviewed"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine (engine mode cache)",
+     "departs": [
+      "M04-L2"
+     ],
+     "findings": [
+      "F-0208"
+     ],
+     "model": "derived/engine-mode-cache",
+     "mechanism": "M-04",
+     "model_checks": [
+      "derived-engine-mode-cache-as-built-F0208",
+      "derived-engine-mode-cache-reviewed"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-08",
+    "AX-11",
+    "AX-12"
+   ],
+   "hand_rolled": [
+    "M-03",
+    "M-04"
+   ],
+   "findings": [
+    "F-0207",
+    "F-0208"
+   ]
+  },
+  {
+   "id": "02/graph-name",
+   "module": "02",
+   "entity": "graph name",
+   "ontology": "experiment/playbook-completion/ontology/02-graph-identity.md:171",
+   "states": [
+    "empty",
+    "ordinary name",
+    "the name 0",
+    "name with a control character"
+   ],
+   "commands": [
+    "make a key",
+    "direct edge create",
+    "direct node create",
+    "Cypher write under the name"
+   ],
+   "lifecycle": null,
+   "closest_lifecycle": "LC-6",
+   "reason": "The four states (empty, ordinary name, the name 0, a control character) are classes of an input value, fixed when the caller writes the name: nothing moves a name from one class to another. Validity is a refusal at every entry (AX-03, M-09 law M09-L1), independent of whether the graph the name designates is empty or live, so no canonical state applies; the commands are mapped onto the scope lifecycle LC-6 of the graph the name designates.",
+   "state_map": {},
+   "command_map": {
+    "make a key": "read",
+    "direct edge create": "write-into",
+    "direct node create": "write-into",
+    "Cypher write under the name": "write-into"
+   },
+   "notes": "state_map omitted: a value class has no lifecycle state; the empty name designates the default graph",
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/nodes_edges.py:968-1015",
+     "departs": [
+      "M09-L1"
+     ],
+     "findings": [
+      "F-0202",
+      "F-0203"
+     ],
+     "model": "scope/name-check-missing",
+     "mechanism": "M-09",
+     "model_checks": [
+      "scope-name-check-missing-as-built",
+      "scope-name-check-missing-reviewed"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-02"
+   ],
+   "hand_rolled": [
+    "M-09"
+   ],
+   "findings": [
+    "F-0202",
+    "F-0203"
+   ]
+  },
+  {
+   "id": "03/node-in-one-graph",
+   "module": "03",
+   "entity": "node in one graph",
+   "ontology": "experiment/playbook-completion/ontology/03-writes.md:217",
+   "states": [
+    "absent",
+    "present",
+    "held by two graphs"
+   ],
+   "commands": [
+    "create node",
+    "store node",
+    "bulk create nodes",
+    "delete node without graph",
+    "delete node with graph"
+   ],
+   "lifecycle": "LC-1",
+   "state_map": {
+    "absent": "absent",
+    "present": "live",
+    "held by two graphs": {
+     "state": "live",
+     "facet": "shared id: the same id is live in another graph"
+    }
+   },
+   "command_map": {
+    "create node": "create",
+    "store node": "create",
+    "bulk create nodes": "create",
+    "delete node without graph": "delete",
+    "delete node with graph": "delete"
+   },
+   "notes": "store is create-or-update (LC-1 create includes store)",
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/bulk_loader.py:252-272; iris_vector_graph/_engine/temporal.py:623-641",
+     "departs": [
+      "M01-L4"
+     ],
+     "findings": [
+      "F-0301",
+      "F-0504",
+      "F-1108"
+     ],
+     "model": "ledger/bypass-unchecked",
+     "note": "bulk loader, purges and two other write paths write governed rows with no strict check and no record",
+     "mechanism": "M-01",
+     "model_checks": [
+      "ledger-bypass-unchecked-as-built",
+      "ledger-bypass-unchecked-reviewed"
+     ]
+    },
+    {
+     "use": "canonical",
+     "where": "iris_vector_graph/schema.py:395-402",
+     "model": "scope/canonical",
+     "mechanism": "M-09",
+     "model_checks": [
+      "scope-canonical-as-built",
+      "scope-control-C1-key-ignores-name",
+      "scope-control-C2-join-across-graphs",
+      "scope-control-C3-delete-every-graph",
+      "scope-control-C4-graph-blind-match",
+      "scope-sharp-same-id-two-graphs-differ",
+      "scope-sharp-named-write"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/nodes_edges.py (create_node)",
+     "departs": [
+      "M10-L3"
+     ],
+     "findings": [
+      "F-0306",
+      "F-0307"
+     ],
+     "model": "unit/hidden-failure",
+     "mechanism": "M-10",
+     "model_checks": [
+      "unit-hidden-failure-as-built",
+      "unit-hidden-failure-reviewed"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-02",
+    "AX-03",
+    "AX-04",
+    "AX-05",
+    "AX-07",
+    "AX-12"
+   ],
+   "hand_rolled": [
+    "M-01",
+    "M-10"
+   ],
+   "findings": [
+    "F-0301",
+    "F-0306",
+    "F-0307",
+    "F-0504",
+    "F-1108"
+   ]
+  },
+  {
+   "id": "03/edge-in-one-graph",
+   "module": "03",
+   "entity": "edge in one graph",
+   "ontology": "experiment/playbook-completion/ontology/03-writes.md:218",
+   "states": [
+    "absent",
+    "present",
+    "marked"
+   ],
+   "commands": [
+    "create edge",
+    "store edge",
+    "bulk create edges",
+    "set edge weight",
+    "delete edge"
+   ],
+   "lifecycle": "LC-1",
+   "state_map": {
+    "absent": "absent",
+    "present": "live",
+    "marked": {
+     "state": "live",
+     "facet": "marked: implied by a temporal write (ADR-0009)"
+    }
+   },
+   "command_map": {
+    "create edge": "create",
+    "store edge": "create",
+    "bulk create edges": "create",
+    "set edge weight": "update",
+    "delete edge": "delete"
+   },
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/Adjacency.cls:575-603",
+     "departs": [
+      "M01-L4"
+     ],
+     "findings": [
+      "F-0503"
+     ],
+     "model": "ledger/bypass-unchecked",
+     "note": "a temporal write creates node rows the ledger never records",
+     "mechanism": "M-01",
+     "model_checks": [
+      "ledger-bypass-unchecked-as-built",
+      "ledger-bypass-unchecked-reviewed"
+     ]
+    },
+    {
+     "use": "canonical",
+     "where": "iris_vector_graph/schema.py:34-45",
+     "model": "scope/canonical",
+     "mechanism": "M-09",
+     "model_checks": [
+      "scope-canonical-as-built",
+      "scope-control-C1-key-ignores-name",
+      "scope-control-C2-join-across-graphs",
+      "scope-control-C3-delete-every-graph",
+      "scope-control-C4-graph-blind-match",
+      "scope-sharp-same-id-two-graphs-differ",
+      "scope-sharp-named-write"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-02",
+    "AX-04",
+    "AX-05",
+    "AX-07"
+   ],
+   "hand_rolled": [
+    "M-01"
+   ],
+   "findings": [
+    "F-0503"
+   ]
+  },
+  {
+   "id": "03/caller-transaction",
+   "module": "03",
+   "entity": "caller transaction",
+   "ontology": "experiment/playbook-completion/ontology/03-writes.md:219",
+   "states": [
+    "none",
+    "open",
+    "open on old server code"
+   ],
+   "commands": [
+    "direct write",
+    "failed direct write",
+    "load session",
+    "bulk loader"
+   ],
+   "lifecycle": "LC-7",
+   "state_map": {
+    "none": {
+     "state": "closed",
+     "facet": "no transaction open"
+    },
+    "open": "open",
+    "open on old server code": {
+     "state": "open",
+     "facet": "the deployed server code is an older release"
+    }
+   },
+   "command_map": {
+    "direct write": "use",
+    "failed direct write": "use",
+    "load session": "use",
+    "bulk loader": "use"
+   },
+   "notes": "every command is a step inside the caller's transaction; a failed step must leave it as it was (AX-03)",
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/bulk_loader.py (server-loader path)",
+     "departs": [
+      "M10-L1"
+     ],
+     "findings": [
+      "F-0305"
+     ],
+     "model": "unit/per-chunk-commit",
+     "mechanism": "M-10",
+     "model_checks": [
+      "unit-per-chunk-commit-as-built",
+      "unit-per-chunk-commit-reviewed"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-03",
+    "AX-04",
+    "AX-12"
+   ],
+   "hand_rolled": [
+    "M-10"
+   ],
+   "findings": [
+    "F-0305"
+   ]
+  },
+  {
+   "id": "03/ledger-state",
+   "module": "03",
+   "entity": "ledger state",
+   "ontology": "experiment/playbook-completion/ontology/03-writes.md:220",
+   "states": [
+    "never enabled",
+    "on",
+    "strict"
+   ],
+   "commands": [
+    "direct write",
+    "Cypher write",
+    "bulk loader"
+   ],
+   "lifecycle": "LC-3",
+   "state_map": {
+    "never enabled": "absent",
+    "on": "in-force",
+    "strict": {
+     "state": "in-force",
+     "facet": "strict"
+    }
+   },
+   "command_map": {
+    "direct write": "consult",
+    "Cypher write": "consult",
+    "bulk loader": "consult"
+   },
+   "notes": "the same setting as 11/ledger, seen from the writers; disabled appears only there",
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/ledger/guard.py:20-59",
+     "departs": [
+      "M01-L4"
+     ],
+     "findings": [
+      "F-0302",
+      "F-0801"
+     ],
+     "model": "ledger/strict-cached-guard",
+     "note": "strict mode is a client-side check over a 5 s cache that fails open",
+     "mechanism": "M-01",
+     "model_checks": [
+      "ledger-strict-cached-guard-as-built",
+      "ledger-strict-cached-guard-reviewed",
+      "ledger-sharp-two-records",
+      "ledger-sharp-strict-refusal"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/ledger/guard.py:20-59",
+     "departs": [
+      "M04-L2"
+     ],
+     "findings": [
+      "F-0302"
+     ],
+     "model": "derived/ttl-cache",
+     "note": "a 5 s cache with no staleness signal",
+     "mechanism": "M-04",
+     "model_checks": [
+      "derived-ttl-cache-as-built-F0302",
+      "derived-ttl-cache-as-built-EXC05",
+      "derived-ttl-cache-reviewed"
+     ]
+    },
+    {
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/Ledger.cls:252-380",
+     "model": "install/canonical",
+     "note": "enable / disable / set-strict are settings with refusals",
+     "mechanism": "M-08",
+     "model_checks": [
+      "install-canonical-as-built",
+      "install-control-C1-first-use-accepts-any",
+      "install-control-C2-unqualified-drop",
+      "install-control-C3-setting-unchecked",
+      "install-control-C4-enable-race-errors",
+      "install-sharp-other-schema-refused",
+      "install-sharp-both-enables-ok"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-03",
+    "AX-04",
+    "AX-05",
+    "AX-07",
+    "AX-08",
+    "AX-09"
+   ],
+   "hand_rolled": [
+    "M-01",
+    "M-04"
+   ],
+   "findings": [
+    "F-0302",
+    "F-0801"
+   ]
+  },
+  {
+   "id": "04/adjacency-entry",
+   "module": "04",
+   "entity": "adjacency entry",
+   "ontology": "experiment/playbook-completion/ontology/04-adjacency.md:341",
+   "states": [
+    "absent",
+    "present"
+   ],
+   "commands": [
+    "put",
+    "remove",
+    "reweight",
+    "row-delete"
+   ],
+   "lifecycle": "LC-2",
+   "state_map": {
+    "absent": "absent",
+    "present": "current"
+   },
+   "command_map": {
+    "put": "maintain",
+    "remove": "maintain",
+    "reweight": "maintain",
+    "row-delete": "maintain"
+   },
+   "notes": "derived from the edge rows (functional index where declared)",
+   "mechanisms": [
+    {
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/AdjIndex.cls:12-23 (functional index, X-FX)",
+     "model": "derived/adjacency-functional",
+     "mechanism": "M-04",
+     "model_checks": [
+      "derived-adjacency-functional-as-built",
+      "derived-adjacency-functional-reviewed"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/Adjacency.cls (rebuild)",
+     "departs": [
+      "M10-L2"
+     ],
+     "findings": [
+      "F-0409"
+     ],
+     "model": "unit/rollback-all-levels",
+     "mechanism": "M-10",
+     "model_checks": [
+      "unit-rollback-all-levels-as-built",
+      "unit-rollback-all-levels-reviewed"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-03",
+    "AX-04",
+    "AX-08",
+    "AX-12"
+   ],
+   "hand_rolled": [
+    "M-10"
+   ],
+   "findings": [
+    "F-0409"
+   ]
+  },
+  {
+   "id": "04/degree-cache-entry",
+   "module": "04",
+   "entity": "degree cache entry",
+   "ontology": "experiment/playbook-completion/ontology/04-adjacency.md:342",
+   "states": [
+    "absent",
+    "current",
+    "stale"
+   ],
+   "commands": [
+    "read-degree",
+    "write-edge",
+    "rollback-write",
+    "erase-source",
+    "rebuild"
+   ],
+   "lifecycle": "LC-2",
+   "state_map": {
+    "absent": "absent",
+    "current": "current",
+    "stale": "stale"
+   },
+   "command_map": {
+    "read-degree": "read",
+    "write-edge": "maintain",
+    "rollback-write": "maintain",
+    "erase-source": "maintain",
+    "rebuild": "rebuild"
+   },
+   "notes": "read-degree also fills the entry",
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/Adjacency.cls:80-160",
+     "departs": [
+      "M04-L1"
+     ],
+     "findings": [
+      "F-0402",
+      "F-0406",
+      "F-C0401"
+     ],
+     "model": "derived/degree-cache",
+     "note": "the token moves before commit and a rollback does not move it again, so a reader fill of the uncommitted count stays current; clearing the cache keeps the warm stamp",
+     "mechanism": "M-04",
+     "model_checks": [
+      "derived-degree-cache-as-built-F0402",
+      "derived-degree-cache-as-built-FC0401",
+      "derived-degree-cache-as-built-F0406",
+      "derived-degree-cache-reviewed",
+      "derived-control-C1-unmaintained-path",
+      "derived-control-C2-token-after-compute",
+      "derived-control-C3-rebuild-stamp-only",
+      "derived-control-C4-unchecked-gate",
+      "derived-control-C5-probe-late",
+      "derived-sharp-stale",
+      "derived-sharp-fill-current",
+      "derived-sharp-rebuilt"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-08"
+   ],
+   "hand_rolled": [
+    "M-04"
+   ],
+   "findings": [
+    "F-0402",
+    "F-0406",
+    "F-C0401"
+   ]
+  },
+  {
+   "id": "04/graph-writer-lock",
+   "module": "04",
+   "entity": "graph writer lock",
+   "ontology": "experiment/playbook-completion/ontology/04-adjacency.md:343",
+   "states": [
+    "free",
+    "shared-by-writers",
+    "held-alone-elsewhere",
+    "held-by-rebuild"
+   ],
+   "commands": [
+    "row-write",
+    "erase-graph",
+    "rebuild",
+    "read-degree"
+   ],
+   "lifecycle": "LC-7",
+   "state_map": {
+    "free": {
+     "state": "closed",
+     "facet": "lock free"
+    },
+    "shared-by-writers": {
+     "state": "open",
+     "facet": "shared, held by row writers"
+    },
+    "held-alone-elsewhere": {
+     "state": "open",
+     "facet": "exclusive, held by another process"
+    },
+    "held-by-rebuild": {
+     "state": "open",
+     "facet": "exclusive, held by a rebuild"
+    }
+   },
+   "command_map": {
+    "row-write": "open",
+    "erase-graph": "open",
+    "rebuild": "open",
+    "read-degree": "use"
+   },
+   "notes": "row-write takes it shared, erase-graph and rebuild exclusive; read-degree takes no lock and only observes the generation",
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/Adjacency.cls:61-75",
+     "departs": [
+      "M03-L2"
+     ],
+     "findings": [
+      "F-0407"
+     ],
+     "model": "excl/adjacency-writer-lock",
+     "note": "writers share the lock and proceed without it after 5 s, setting the no-lock mark (a signalled degraded mode); Reweight takes none",
+     "mechanism": "M-03",
+     "model_checks": [
+      "excl-adjacency-writer-lock-as-built",
+      "excl-adjacency-writer-lock-reviewed"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-11",
+    "AX-12"
+   ],
+   "hand_rolled": [
+    "M-03"
+   ],
+   "findings": [
+    "F-0407"
+   ]
+  },
+  {
+   "id": "04/result-cache-entry",
+   "module": "04",
+   "entity": "result cache entry",
+   "ontology": "experiment/playbook-completion/ontology/04-adjacency.md:344",
+   "states": [
+    "absent",
+    "current",
+    "stale"
+   ],
+   "commands": [
+    "lookup",
+    "write-edge",
+    "rollback-write",
+    "erase-graph"
+   ],
+   "lifecycle": "LC-2",
+   "state_map": {
+    "absent": "absent",
+    "current": "current",
+    "stale": "stale"
+   },
+   "command_map": {
+    "lookup": "read",
+    "write-edge": "maintain",
+    "rollback-write": "maintain",
+    "erase-graph": "maintain"
+   },
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/AlgoCache.cls:1-50",
+     "departs": [
+      "M04-L1"
+     ],
+     "findings": [
+      "F-0402"
+     ],
+     "model": "derived/degree-cache",
+     "mechanism": "M-04",
+     "model_checks": [
+      "derived-degree-cache-as-built-F0402",
+      "derived-degree-cache-as-built-FC0401",
+      "derived-degree-cache-as-built-F0406",
+      "derived-degree-cache-reviewed",
+      "derived-control-C1-unmaintained-path",
+      "derived-control-C2-token-after-compute",
+      "derived-control-C3-rebuild-stamp-only",
+      "derived-control-C4-unchecked-gate",
+      "derived-control-C5-probe-late",
+      "derived-sharp-stale",
+      "derived-sharp-fill-current",
+      "derived-sharp-rebuilt"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-08"
+   ],
+   "hand_rolled": [
+    "M-04"
+   ],
+   "findings": [
+    "F-0402"
+   ]
+  },
+  {
+   "id": "04/no-lock-mark",
+   "module": "04",
+   "entity": "no-lock mark",
+   "ontology": "experiment/playbook-completion/ontology/04-adjacency.md:345",
+   "states": [
+    "unset",
+    "set"
+   ],
+   "commands": [
+    "lockless-write",
+    "read-degree",
+    "rebuild",
+    "erase-graph",
+    "status"
+   ],
+   "lifecycle": "LC-2",
+   "state_map": {
+    "unset": "current",
+    "set": {
+     "state": "stale",
+     "facet": "degraded: a write went in without the writer lock"
+    }
+   },
+   "command_map": {
+    "lockless-write": "maintain",
+    "read-degree": "read",
+    "rebuild": "rebuild",
+    "erase-graph": "drop",
+    "status": "read"
+   },
+   "notes": "the mark is the staleness signal of the graph's adjacency-derived caches; its state is theirs",
+   "mechanisms": [
+    {
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/Adjacency.cls:55-75",
+     "model": "excl/adjacency-writer-lock",
+     "note": "the mark is the signal of an unlocked write",
+     "mechanism": "M-03",
+     "model_checks": [
+      "excl-adjacency-writer-lock-as-built",
+      "excl-adjacency-writer-lock-reviewed"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-11",
+    "AX-12"
+   ],
+   "hand_rolled": [],
+   "findings": []
+  },
+  {
+   "id": "05/temporal-coordinates",
+   "module": "05",
+   "entity": "temporal coordinates",
+   "ontology": "experiment/playbook-completion/ontology/05-temporal.md:343",
+   "states": [
+    "empty",
+    "held"
+   ],
+   "commands": [
+    "insert write",
+    "update write",
+    "skip write",
+    "delete",
+    "purge",
+    "erase graph"
+   ],
+   "lifecycle": "LC-1",
+   "state_map": {
+    "empty": "absent",
+    "held": "live"
+   },
+   "command_map": {
+    "insert write": "create",
+    "update write": "update",
+    "skip write": "create",
+    "delete": "delete",
+    "purge": "delete",
+    "erase graph": "erase"
+   },
+   "notes": "insert and skip modes create only at empty coordinates; purge removes the events before a time (closest: delete)",
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/LedgerApply.cls (temporal insert op)",
+     "departs": [
+      "M01-L2"
+     ],
+     "findings": [
+      "F-0511"
+     ],
+     "model": "ledger/temporal-insert-collision",
+     "mechanism": "M-01",
+     "model_checks": [
+      "ledger-temporal-insert-collision-as-built",
+      "ledger-temporal-insert-collision-reviewed"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/TemporalIndex.cls (bucket aggregate)",
+     "departs": [
+      "M04-L1"
+     ],
+     "findings": [
+      "F-0501"
+     ],
+     "model": "derived/bucket-aggregate-update",
+     "note": "an update-mode write counts its edge again in the bucket aggregate",
+     "mechanism": "M-04",
+     "model_checks": [
+      "derived-bucket-aggregate-update-as-built-F0501",
+      "derived-bucket-aggregate-update-reviewed"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/TemporalIndex.cls (Purge)",
+     "departs": [
+      "M05-L2"
+     ],
+     "findings": [
+      "F-0507"
+     ],
+     "model": "removal/temporal-purge-all-graphs",
+     "mechanism": "M-05",
+     "model_checks": [
+      "removal-temporal-purge-all-graphs-as-built",
+      "removal-temporal-purge-all-graphs-reviewed"
+     ]
+    },
+    {
+     "use": "canonical",
+     "where": "docs/adr/0001-graph-key-as-first-subscript.md",
+     "model": "scope/canonical",
+     "mechanism": "M-09",
+     "model_checks": [
+      "scope-canonical-as-built",
+      "scope-control-C1-key-ignores-name",
+      "scope-control-C2-join-across-graphs",
+      "scope-control-C3-delete-every-graph",
+      "scope-control-C4-graph-blind-match",
+      "scope-sharp-same-id-two-graphs-differ",
+      "scope-sharp-named-write"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/TemporalIndex.cls (refused write)",
+     "departs": [
+      "M10-L1"
+     ],
+     "findings": [
+      "F-C0501"
+     ],
+     "model": "unit/no-transaction",
+     "mechanism": "M-10",
+     "model_checks": [
+      "unit-no-transaction-as-built",
+      "unit-no-transaction-reviewed"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-02",
+    "AX-03",
+    "AX-04",
+    "AX-05",
+    "AX-07",
+    "AX-08",
+    "AX-10",
+    "AX-12"
+   ],
+   "hand_rolled": [
+    "M-01",
+    "M-04",
+    "M-05",
+    "M-10"
+   ],
+   "findings": [
+    "F-0501",
+    "F-0507",
+    "F-0511",
+    "F-C0501"
+   ]
+  },
+  {
+   "id": "05/triple-row",
+   "module": "05",
+   "entity": "triple row",
+   "ontology": "experiment/playbook-completion/ontology/05-temporal.md:344",
+   "states": [
+    "absent",
+    "marked",
+    "explicit"
+   ],
+   "commands": [
+    "temporal write",
+    "last time delete",
+    "temporal purge",
+    "plain edge write",
+    "drop rows",
+    "row backfill"
+   ],
+   "lifecycle": "LC-1",
+   "state_map": {
+    "absent": "absent",
+    "marked": {
+     "state": "live",
+     "facet": "marked: implied by a temporal edge"
+    },
+    "explicit": {
+     "state": "live",
+     "facet": "explicit: written by a structural create"
+    }
+   },
+   "command_map": {
+    "temporal write": "create",
+    "last time delete": "delete",
+    "temporal purge": "delete",
+    "plain edge write": "create",
+    "drop rows": "erase",
+    "row backfill": "create"
+   },
+   "notes": "plain edge write over a marked row clears the mark (facet change); drop rows removes every marked row of a temporal-only type",
+   "mechanisms": [
+    {
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/TemporalIndex.cls",
+     "model": "derived/adjacency-functional",
+     "note": "the marked structural row is derived from the temporal edge; its ownership departures are M-01/AX-01 findings (F-0506, F-0304)",
+     "mechanism": "M-04",
+     "model_checks": [
+      "derived-adjacency-functional-as-built",
+      "derived-adjacency-functional-reviewed"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-08"
+   ],
+   "hand_rolled": [],
+   "findings": []
+  },
+  {
+   "id": "05/edge-type-in-a-graph",
+   "module": "05",
+   "entity": "edge type in a graph",
+   "ontology": "experiment/playbook-completion/ontology/05-temporal.md:345",
+   "states": [
+    "structural",
+    "temporal-only"
+   ],
+   "commands": [
+    "list as temporal-only",
+    "list as structural",
+    "temporal write",
+    "drop rows",
+    "row backfill",
+    "erase graph",
+    "erase all"
+   ],
+   "lifecycle": "LC-3",
+   "state_map": {
+    "structural": {
+     "state": "in-force",
+     "facet": "structural (the default)"
+    },
+    "temporal-only": {
+     "state": "in-force",
+     "facet": "temporal-only (ADR-0015)"
+    }
+   },
+   "command_map": {
+    "list as temporal-only": "set",
+    "list as structural": "set",
+    "temporal write": "consult",
+    "drop rows": "consult",
+    "row backfill": "consult",
+    "erase graph": "remove",
+    "erase all": "remove"
+   },
+   "notes": "a per-graph setting of a predicate; erase all clears the temporal-only list",
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/Eraser.cls:322-348, 590-610; iris_src/src/Graph/KG/LedgerRedact.cls:149-178",
+     "departs": [
+      "M05-L1"
+     ],
+     "findings": [
+      "F-C1203",
+      "F-C1308"
+     ],
+     "model": "removal/temporal-only-prefix",
+     "mechanism": "M-05",
+     "model_checks": [
+      "removal-temporal-only-prefix-as-built",
+      "removal-temporal-only-prefix-reviewed"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-02",
+    "AX-04",
+    "AX-10"
+   ],
+   "hand_rolled": [
+    "M-05"
+   ],
+   "findings": [
+    "F-C1203",
+    "F-C1308"
+   ]
+  },
+  {
+   "id": "05/reader-handle",
+   "module": "05",
+   "entity": "reader handle",
+   "ontology": "experiment/playbook-completion/ontology/05-temporal.md:346",
+   "states": [
+    "open",
+    "closed"
+   ],
+   "commands": [
+    "next page",
+    "close",
+    "state"
+   ],
+   "lifecycle": "LC-7",
+   "state_map": {
+    "open": "open",
+    "closed": "closed"
+   },
+   "command_map": {
+    "next page": "use",
+    "close": "close",
+    "state": "use"
+   },
+   "notes": "state reports the handle without changing it",
+   "mechanisms": [
+    {
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/TemporalWindow.cls",
+     "note": "not modelled here: the paged window reader's consistency is HD-1401/HD-0903 working answers (quiet-writer premise)",
+     "mechanism": "M-13",
+     "model_checks": []
+    }
+   ],
+   "axioms": [
+    "AX-12"
+   ],
+   "hand_rolled": [],
+   "findings": []
+  },
+  {
+   "id": "05/latest-event-index",
+   "module": "05",
+   "entity": "latest-event index",
+   "ontology": "experiment/playbook-completion/ontology/05-temporal.md:347",
+   "states": [
+    "complete",
+    "incomplete"
+   ],
+   "commands": [
+    "latest by sources",
+    "latest by prefix",
+    "rebuild",
+    "write"
+   ],
+   "lifecycle": "LC-2",
+   "state_map": {
+    "complete": "current",
+    "incomplete": "stale"
+   },
+   "command_map": {
+    "latest by sources": "read",
+    "latest by prefix": "read",
+    "rebuild": "rebuild",
+    "write": "maintain"
+   },
+   "notes": "incomplete is the staleness signal; a prefix read refuses on it (TMP-X7.4)",
+   "mechanisms": [
+    {
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/TemporalIndex.cls",
+     "model": "derived/adjacency-functional",
+     "note": "complete / incomplete is the staleness signal; rebuild makes it complete",
+     "mechanism": "M-04",
+     "model_checks": [
+      "derived-adjacency-functional-as-built",
+      "derived-adjacency-functional-reviewed"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-08"
+   ],
+   "hand_rolled": [],
+   "findings": []
+  },
+  {
+   "id": "06/route",
+   "module": "06",
+   "entity": "route",
+   "ontology": "experiment/playbook-completion/ontology/06-vectors.md:355",
+   "states": [
+    "none",
+    "routed",
+    "orphan same width",
+    "orphan other width"
+   ],
+   "commands": [
+    "store",
+    "store batch",
+    "search",
+    "count",
+    "resolve",
+    "create",
+    "place quarantined"
+   ],
+   "lifecycle": "LC-3",
+   "state_map": {
+    "none": "absent",
+    "routed": "in-force",
+    "orphan same width": {
+     "state": "outdated",
+     "facet": "the table outlived its registry row; same width, reused"
+    },
+    "orphan other width": {
+     "state": "broken",
+     "facet": "the table outlived its registry row at another width; refused"
+    }
+   },
+   "command_map": {
+    "store": "consult",
+    "store batch": "consult",
+    "search": "consult",
+    "count": "consult",
+    "resolve": "read",
+    "create": "setup",
+    "place quarantined": "consult"
+   },
+   "notes": "a catalog entry binding (graph, model) to a vector table (M-12)",
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/vector.py (route memory)",
+     "departs": [
+      "M04-L2"
+     ],
+     "exception": "EXC-05",
+     "model": "derived/ttl-cache",
+     "note": "the documented 30 s route memory (VEC-T2.13)",
+     "mechanism": "M-04",
+     "model_checks": [
+      "derived-ttl-cache-as-built-F0302",
+      "derived-ttl-cache-as-built-EXC05",
+      "derived-ttl-cache-reviewed"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/LedgerApply.cls:353-370",
+     "departs": [
+      "M05-L1"
+     ],
+     "findings": [
+      "F-0618"
+     ],
+     "model": "removal/default-routed-vectors",
+     "note": "the ledger's node delete does not reach a default-graph node's routed vectors",
+     "mechanism": "M-05",
+     "model_checks": [
+      "removal-default-routed-vectors-as-built",
+      "removal-default-routed-vectors-reviewed"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/embeddings.py:1803-1850",
+     "departs": [
+      "M09-L2"
+     ],
+     "findings": [
+      "F-0605",
+      "F-0616"
+     ],
+     "model": "scope/unscoped-read",
+     "mechanism": "M-09",
+     "model_checks": [
+      "scope-unscoped-read-as-built",
+      "scope-unscoped-read-reviewed"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/embeddings.py (store_embeddings route creation)",
+     "departs": [
+      "M10-L1"
+     ],
+     "findings": [
+      "F-0615"
+     ],
+     "model": "unit/no-transaction",
+     "note": "the route is made in its own steps before the batch, so a refused batch leaves it",
+     "mechanism": "M-10",
+     "model_checks": [
+      "unit-no-transaction-as-built",
+      "unit-no-transaction-reviewed"
+     ]
+    },
+    {
+     "use": "canonical",
+     "where": "iris_vector_graph/_engine/vector.py:164-226 (registry row names the table, VEC-I2.3)",
+     "model": "catalog/canonical",
+     "mechanism": "M-12",
+     "model_checks": [
+      "catalog-canonical-as-built",
+      "catalog-canonical-reviewed",
+      "catalog-control-C1-unchecked-read",
+      "catalog-control-C2-short-hash",
+      "catalog-control-C3-no-record",
+      "catalog-control-C4-fail-open",
+      "catalog-sharp-three-artifacts"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-01",
+    "AX-02",
+    "AX-03",
+    "AX-04",
+    "AX-08",
+    "AX-10",
+    "AX-12"
+   ],
+   "hand_rolled": [
+    "M-04",
+    "M-05",
+    "M-09",
+    "M-10"
+   ],
+   "findings": [
+    "F-0605",
+    "F-0615",
+    "F-0616",
+    "F-0618"
+   ]
+  },
+  {
+   "id": "06/registry-row",
+   "module": "06",
+   "entity": "registry row",
+   "ontology": "experiment/playbook-completion/ontology/06-vectors.md:356",
+   "states": [
+    "none",
+    "adopted",
+    "claimed"
+   ],
+   "commands": [
+    "store same width",
+    "store other width",
+    "claim same model",
+    "claim other model",
+    "force",
+    "adopt"
+   ],
+   "lifecycle": "LC-3",
+   "state_map": {
+    "none": "absent",
+    "adopted": {
+     "state": "in-force",
+     "facet": "adopted: a width and no model key"
+    },
+    "claimed": {
+     "state": "in-force",
+     "facet": "claimed: model key set"
+    }
+   },
+   "command_map": {
+    "store same width": "consult",
+    "store other width": "consult",
+    "claim same model": "set",
+    "claim other model": "set",
+    "force": "set",
+    "adopt": "upgrade"
+   },
+   "notes": "force is a forced set over any row; adopt moves a legacy table under the registry (LC-3 upgrade)",
+   "mechanisms": [
+    {
+     "use": "canonical",
+     "where": "iris_vector_graph/_engine/embeddings.py:157-197",
+     "model": "retry/idempotent-setup",
+     "note": "setting the same model again changes nothing (VEC-B1.18)",
+     "mechanism": "M-02",
+     "model_checks": [
+      "retry-idempotent-setup-as-built",
+      "retry-idempotent-setup-reviewed"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/schema.py:1033-1061; iris_vector_graph/_engine/embeddings.py:157-197, 2033-2049",
+     "departs": [
+      "M12-L2"
+     ],
+     "findings": [
+      "F-0601",
+      "F-0602",
+      "F-0603",
+      "F-0613"
+     ],
+     "model": "catalog/identity-fail-open",
+     "mechanism": "M-12",
+     "model_checks": [
+      "catalog-identity-fail-open-as-built",
+      "catalog-identity-fail-open-reviewed"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-01",
+    "AX-02",
+    "AX-06",
+    "AX-08",
+    "AX-12"
+   ],
+   "hand_rolled": [
+    "M-12"
+   ],
+   "findings": [
+    "F-0601",
+    "F-0602",
+    "F-0603",
+    "F-0613"
+   ]
+  },
+  {
+   "id": "06/queue-entry",
+   "module": "06",
+   "entity": "queue entry",
+   "ontology": "experiment/playbook-completion/ontology/06-vectors.md:357",
+   "states": [
+    "absent",
+    "pending",
+    "done",
+    "failed"
+   ],
+   "commands": [
+    "enqueue",
+    "enqueue other graph",
+    "python worker",
+    "server worker",
+    "clear done",
+    "read entry"
+   ],
+   "lifecycle": "LC-5",
+   "state_map": {
+    "absent": "absent",
+    "pending": "pending",
+    "done": "done",
+    "failed": "failed"
+   },
+   "command_map": {
+    "enqueue": "start",
+    "enqueue other graph": "start",
+    "python worker": "work",
+    "server worker": "work",
+    "clear done": "clear",
+    "read entry": "read"
+   },
+   "notes": "no running state is declared: neither worker claims an entry (F-C0601, M-07)",
+   "mechanisms": [
+    {
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/EmbedQueue.cls:35-60",
+     "model": "retry/idempotent-setup",
+     "note": "one entry per node id: a second enqueue overwrites; its lost-update race is M-07's",
+     "mechanism": "M-02",
+     "model_checks": [
+      "retry-idempotent-setup-as-built",
+      "retry-idempotent-setup-reviewed"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/EmbedQueue.cls:35-60, 106-134, 258-338",
+     "departs": [
+      "M07-L1",
+      "M07-L2",
+      "M07-L3",
+      "M07-L4"
+     ],
+     "findings": [
+      "F-0604",
+      "F-C0601",
+      "F-C0605",
+      "F-C0670"
+     ],
+     "model": "queue/embed-queue",
+     "note": "as built: DONE without a vector (F-0604), DONE with an old text (F-C0601), node-id service order (F-C0605); two workers (the IRIS task and process_embed_queue) can work one entry at once: the single-consumer premise (HD-0604) is neither enforced nor documented (new finding F-C0670)",
+     "mechanism": "M-07",
+     "model_checks": [
+      "queue-embed-queue-as-built-F0604",
+      "queue-embed-queue-as-built-FC0601",
+      "queue-embed-queue-as-built-HD0604",
+      "queue-embed-queue-reviewed-entry",
+      "queue-control-C2-two-consumers",
+      "queue-control-C3-mark-always",
+      "queue-embed-queue-as-built-FC0605-overtaking",
+      "queue-embed-queue-as-built-FC0605-fair-lasso",
+      "queue-embed-queue-as-built-FC0605-agef-blind",
+      "queue-embed-queue-reviewed-overtaking",
+      "queue-embed-queue-reviewed-fair-lasso",
+      "queue-control-C1-lifo-overtaking",
+      "queue-control-C1b-lifo-fair-lasso",
+      "queue-sharp-fifo-serves-high",
+      "queue-sharp-fifo-overtake-2"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-06",
+    "AX-11",
+    "AX-12",
+    "AX-14"
+   ],
+   "hand_rolled": [
+    "M-07"
+   ],
+   "findings": [
+    "F-0604",
+    "F-C0601",
+    "F-C0605",
+    "F-C0670"
+   ]
+  },
+  {
+   "id": "06/quarantined-row",
+   "module": "06",
+   "entity": "quarantined row",
+   "ontology": "experiment/playbook-completion/ontology/06-vectors.md:358",
+   "states": [
+    "held",
+    "placed"
+   ],
+   "commands": [
+    "list",
+    "place",
+    "place wrong width",
+    "erase graph"
+   ],
+   "lifecycle": "LC-8",
+   "state_map": {
+    "held": "kept",
+    "placed": "released"
+   },
+   "command_map": {
+    "list": "read",
+    "place": "restore",
+    "place wrong width": "restore",
+    "erase graph": "discard"
+   },
+   "notes": "erase graph leaves a held row (VEC-B9.10, F-C1305): its discard is the missing reach of AX-10",
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/Eraser.cls:300-302, 752-758",
+     "departs": [
+      "M05-L1"
+     ],
+     "findings": [
+      "F-C1305"
+     ],
+     "model": "removal/quarantine",
+     "mechanism": "M-05",
+     "model_checks": [
+      "removal-quarantine-as-built",
+      "removal-quarantine-reviewed"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-02",
+    "AX-04",
+    "AX-10"
+   ],
+   "hand_rolled": [
+    "M-05"
+   ],
+   "findings": [
+    "F-C1305"
+   ]
+  },
+  {
+   "id": "06/ivf-index",
+   "module": "06",
+   "entity": "IVF index",
+   "ontology": "experiment/playbook-completion/ontology/06-vectors.md:359",
+   "states": [
+    "missing",
+    "built"
+   ],
+   "commands": [
+    "build",
+    "search",
+    "insert",
+    "delete",
+    "drop",
+    "info"
+   ],
+   "lifecycle": "LC-2",
+   "state_map": {
+    "missing": "absent",
+    "built": "current"
+   },
+   "command_map": {
+    "build": "build",
+    "search": "read",
+    "insert": "maintain",
+    "delete": "maintain",
+    "drop": "drop",
+    "info": "read"
+   },
+   "notes": "no stale state is declared although vector writes and erasure do not maintain it (F-0606, M-04)",
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/IVFIndex.cls",
+     "departs": [
+      "M04-L2"
+     ],
+     "findings": [
+      "F-0606"
+     ],
+     "model": "derived/ivf-erase",
+     "note": "erasure leaves the index's entries; modelled as the erasure write path not maintaining it",
+     "mechanism": "M-04",
+     "model_checks": [
+      "derived-ivf-erase-as-built-F0606",
+      "derived-ivf-erase-reviewed"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/GraphStores.cls:26-133",
+     "departs": [
+      "M05-L1",
+      "M05-L3"
+     ],
+     "findings": [
+      "F-0606"
+     ],
+     "model": "removal/vector-indexes",
+     "mechanism": "M-05",
+     "model_checks": [
+      "removal-vector-indexes-as-built",
+      "removal-vector-indexes-as-built-M05-L3",
+      "removal-vector-indexes-reviewed"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/vector.py:194-225",
+     "departs": [
+      "M12-L2"
+     ],
+     "findings": [
+      "F-0609"
+     ],
+     "model": "catalog/index-graph-unchecked",
+     "mechanism": "M-12",
+     "model_checks": [
+      "catalog-index-graph-unchecked-as-built",
+      "catalog-index-graph-unchecked-as-built-M12-L1-F-0705",
+      "catalog-index-graph-unchecked-as-built-M12-L2-F-0705",
+      "catalog-index-graph-unchecked-reviewed"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-01",
+    "AX-02",
+    "AX-04",
+    "AX-08",
+    "AX-10"
+   ],
+   "hand_rolled": [
+    "M-04",
+    "M-05",
+    "M-12"
+   ],
+   "findings": [
+    "F-0606",
+    "F-0609"
+   ]
+  },
+  {
+   "id": "07/bm25-index",
+   "module": "07",
+   "entity": "BM25 index",
+   "ontology": "experiment/playbook-completion/ontology/07-text-search.md:254",
+   "states": [
+    "missing",
+    "building",
+    "schema 1",
+    "upgrading",
+    "schema 2"
+   ],
+   "commands": [
+    "build",
+    "insert",
+    "delete",
+    "search",
+    "upgrade",
+    "drop",
+    "info"
+   ],
+   "lifecycle": "LC-2",
+   "state_map": {
+    "missing": "absent",
+    "building": "building",
+    "schema 1": {
+     "state": "current",
+     "facet": "layout schema 1"
+    },
+    "upgrading": {
+     "state": "building",
+     "facet": "upgrading to schema 2"
+    },
+    "schema 2": {
+     "state": "current",
+     "facet": "layout schema 2"
+    }
+   },
+   "command_map": {
+    "build": "build",
+    "insert": "maintain",
+    "delete": "maintain",
+    "search": "read",
+    "upgrade": "upgrade",
+    "drop": "drop",
+    "info": "read"
+   },
+   "notes": "no stale state is declared although a node text change does not maintain it (F-0703)",
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/BM25Index.cls:97-175, 403-410, 587-591",
+     "departs": [
+      "M03-L2"
+     ],
+     "findings": [
+      "F-0701"
+     ],
+     "model": "excl/bm25-write-lock",
+     "mechanism": "M-03",
+     "model_checks": [
+      "excl-bm25-write-lock-as-built",
+      "excl-bm25-write-lock-reviewed"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "docs/USER_GUIDE.md:893-894; iris_src/src/Graph/KG/BM25Index.cls",
+     "departs": [
+      "M04-L2"
+     ],
+     "findings": [
+      "F-0703"
+     ],
+     "model": "derived/bm25-text-change",
+     "note": "a node text change neither reindexes nor marks the index stale",
+     "mechanism": "M-04",
+     "model_checks": [
+      "derived-bm25-text-change-as-built-F0703",
+      "derived-bm25-text-change-reviewed"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/Eraser.cls:138-147",
+     "departs": [
+      "M05-L1",
+      "M05-L3"
+     ],
+     "findings": [
+      "F-0702"
+     ],
+     "model": "removal/bm25",
+     "mechanism": "M-05",
+     "model_checks": [
+      "removal-bm25-as-built",
+      "removal-bm25-as-built-M05-L3",
+      "removal-bm25-reviewed"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/BM25Index.cls (insert in a caller transaction)",
+     "departs": [
+      "M10-L2"
+     ],
+     "findings": [
+      "F-C0702",
+      "F-0704"
+     ],
+     "model": "unit/rollback-all-levels",
+     "mechanism": "M-10",
+     "model_checks": [
+      "unit-rollback-all-levels-as-built",
+      "unit-rollback-all-levels-reviewed"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/BM25Index.cls:608-612; iris_vector_graph/cypher/translator.py:3133-3134, 3283-3292",
+     "departs": [
+      "M12-L1",
+      "M12-L2"
+     ],
+     "findings": [
+      "F-0705",
+      "F-0707"
+     ],
+     "model": "catalog/index-graph-unchecked",
+     "mechanism": "M-12",
+     "model_checks": [
+      "catalog-index-graph-unchecked-as-built",
+      "catalog-index-graph-unchecked-as-built-M12-L1-F-0705",
+      "catalog-index-graph-unchecked-as-built-M12-L2-F-0705",
+      "catalog-index-graph-unchecked-reviewed"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-01",
+    "AX-02",
+    "AX-03",
+    "AX-04",
+    "AX-08",
+    "AX-10",
+    "AX-11",
+    "AX-12"
+   ],
+   "hand_rolled": [
+    "M-03",
+    "M-04",
+    "M-05",
+    "M-10",
+    "M-12"
+   ],
+   "findings": [
+    "F-0701",
+    "F-0702",
+    "F-0703",
+    "F-0704",
+    "F-0705",
+    "F-0707",
+    "F-C0702"
+   ]
+  },
+  {
+   "id": "07/fused-search",
+   "module": "07",
+   "entity": "fused search",
+   "ontology": "experiment/playbook-completion/ontology/07-text-search.md:255",
+   "states": [
+    "legs answer",
+    "vector leg fails",
+    "text leg fails"
+   ],
+   "commands": [
+    "engine fusion",
+    "SQL fusion",
+    "web hybrid route",
+    "multi-modal search",
+    "adaptive search",
+    "retrieve call"
+   ],
+   "lifecycle": "LC-7",
+   "state_map": {
+    "legs answer": "closed",
+    "vector leg fails": {
+     "state": "errored",
+     "facet": "the vector leg failed"
+    },
+    "text leg fails": {
+     "state": "errored",
+     "facet": "the text leg failed"
+    }
+   },
+   "command_map": {
+    "engine fusion": "use",
+    "SQL fusion": "use",
+    "web hybrid route": "use",
+    "multi-modal search": "use",
+    "adaptive search": "use",
+    "retrieve call": "use"
+   },
+   "notes": "a request; each command is one kind of fused request",
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/vector.py:194-225",
+     "departs": [
+      "M09-L2"
+     ],
+     "findings": [
+      "F-0609",
+      "F-0711"
+     ],
+     "model": "scope/unscoped-read",
+     "mechanism": "M-09",
+     "model_checks": [
+      "scope-unscoped-read-as-built",
+      "scope-unscoped-read-reviewed"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine (fusion)",
+     "departs": [
+      "M10-L3"
+     ],
+     "findings": [
+      "F-0709"
+     ],
+     "model": "unit/hidden-failure",
+     "note": "a failed leg is hidden in an ok answer",
+     "mechanism": "M-10",
+     "model_checks": [
+      "unit-hidden-failure-as-built",
+      "unit-hidden-failure-reviewed"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-02",
+    "AX-03",
+    "AX-04",
+    "AX-12"
+   ],
+   "hand_rolled": [
+    "M-09",
+    "M-10"
+   ],
+   "findings": [
+    "F-0609",
+    "F-0709",
+    "F-0711"
+   ]
+  },
+  {
+   "id": "08/cypher-node",
+   "module": "08",
+   "entity": "cypher node",
+   "ontology": "experiment/playbook-completion/ontology/08-cypher-sql.md:301",
+   "states": [
+    "absent",
+    "bare",
+    "linked"
+   ],
+   "commands": [
+    "create",
+    "merge",
+    "set",
+    "remove",
+    "delete",
+    "detach-delete"
+   ],
+   "lifecycle": "LC-1",
+   "state_map": {
+    "absent": "absent",
+    "bare": {
+     "state": "live",
+     "facet": "bare: no edges"
+    },
+    "linked": {
+     "state": "live",
+     "facet": "linked: has edges"
+    }
+   },
+   "command_map": {
+    "create": "create",
+    "merge": "create",
+    "set": "update",
+    "remove": "update",
+    "delete": "delete",
+    "detach-delete": "delete"
+   },
+   "notes": "MERGE is match-or-create (LC-1 create includes merge-create); Cypher REMOVE drops a property or label (update)",
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/query.py:2299-2301",
+     "departs": [
+      "M01-L4"
+     ],
+     "findings": [
+      "F-0801"
+     ],
+     "model": "ledger/strict-cached-guard",
+     "mechanism": "M-01",
+     "model_checks": [
+      "ledger-strict-cached-guard-as-built",
+      "ledger-strict-cached-guard-reviewed",
+      "ledger-sharp-two-records",
+      "ledger-sharp-strict-refusal"
+     ]
+    },
+    {
+     "use": "canonical",
+     "where": "iris_vector_graph/cypher/translator.py",
+     "model": "scope/canonical",
+     "mechanism": "M-09",
+     "model_checks": [
+      "scope-canonical-as-built",
+      "scope-control-C1-key-ignores-name",
+      "scope-control-C2-join-across-graphs",
+      "scope-control-C3-delete-every-graph",
+      "scope-control-C4-graph-blind-match",
+      "scope-sharp-same-id-two-graphs-differ",
+      "scope-sharp-named-write"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-02",
+    "AX-04",
+    "AX-05",
+    "AX-07"
+   ],
+   "hand_rolled": [
+    "M-01"
+   ],
+   "findings": [
+    "F-0801"
+   ]
+  },
+  {
+   "id": "08/cypher-edge",
+   "module": "08",
+   "entity": "cypher edge",
+   "ontology": "experiment/playbook-completion/ontology/08-cypher-sql.md:302",
+   "states": [
+    "absent",
+    "single",
+    "parallel"
+   ],
+   "commands": [
+    "create",
+    "merge",
+    "set",
+    "delete"
+   ],
+   "lifecycle": "LC-1",
+   "state_map": {
+    "absent": "absent",
+    "single": "live",
+    "parallel": {
+     "state": "live",
+     "facet": "parallel (multigraph)"
+    }
+   },
+   "command_map": {
+    "create": "create",
+    "merge": "create",
+    "set": "update",
+    "delete": "delete"
+   },
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/query.py:2299-2301",
+     "departs": [
+      "M01-L4"
+     ],
+     "findings": [
+      "F-0801"
+     ],
+     "model": "ledger/strict-cached-guard",
+     "mechanism": "M-01",
+     "model_checks": [
+      "ledger-strict-cached-guard-as-built",
+      "ledger-strict-cached-guard-reviewed",
+      "ledger-sharp-two-records",
+      "ledger-sharp-strict-refusal"
+     ]
+    },
+    {
+     "use": "canonical",
+     "where": "iris_vector_graph/cypher/translator.py",
+     "model": "scope/canonical",
+     "mechanism": "M-09",
+     "model_checks": [
+      "scope-canonical-as-built",
+      "scope-control-C1-key-ignores-name",
+      "scope-control-C2-join-across-graphs",
+      "scope-control-C3-delete-every-graph",
+      "scope-control-C4-graph-blind-match",
+      "scope-sharp-same-id-two-graphs-differ",
+      "scope-sharp-named-write"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-02",
+    "AX-04",
+    "AX-05",
+    "AX-07"
+   ],
+   "hand_rolled": [
+    "M-01"
+   ],
+   "findings": [
+    "F-0801"
+   ]
+  },
+  {
+   "id": "08/cypher-call",
+   "module": "08",
+   "entity": "cypher call",
+   "ontology": "experiment/playbook-completion/ontology/08-cypher-sql.md:303",
+   "states": [
+    "plain",
+    "read-only",
+    "ledger-on",
+    "ledger-strict"
+   ],
+   "commands": [
+    "read",
+    "write",
+    "unparsable"
+   ],
+   "lifecycle": "LC-7",
+   "state_map": {
+    "plain": {
+     "state": "open",
+     "facet": "plain"
+    },
+    "read-only": {
+     "state": "open",
+     "facet": "read-only"
+    },
+    "ledger-on": {
+     "state": "open",
+     "facet": "ledger on"
+    },
+    "ledger-strict": {
+     "state": "open",
+     "facet": "ledger strict"
+    }
+   },
+   "command_map": {
+    "read": "use",
+    "write": "use",
+    "unparsable": "use"
+   },
+   "notes": "the states are facets of an open request; an unparsable query ends refused",
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/ledger/guard.py:20-80",
+     "departs": [
+      "M01-L4"
+     ],
+     "findings": [
+      "F-0801"
+     ],
+     "model": "ledger/strict-cached-guard",
+     "mechanism": "M-01",
+     "model_checks": [
+      "ledger-strict-cached-guard-as-built",
+      "ledger-strict-cached-guard-reviewed",
+      "ledger-sharp-two-records",
+      "ledger-sharp-strict-refusal"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/query.py:1946-1966",
+     "departs": [
+      "M10-L3"
+     ],
+     "findings": [
+      "F-0807",
+      "F-0804",
+      "F-0817"
+     ],
+     "model": "unit/wrong-reply",
+     "note": "refusals of the wrong class or answered as no rows",
+     "mechanism": "M-10",
+     "model_checks": [
+      "unit-wrong-reply-as-built",
+      "unit-wrong-reply-reviewed"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/cypher/aql/translator.py:50-58, 154-168",
+     "departs": [
+      "M11-L1",
+      "M11-L3"
+     ],
+     "findings": [
+      "F-0814",
+      "F-0815"
+     ],
+     "model": "cap/aql",
+     "mechanism": "M-11",
+     "model_checks": [
+      "cap-aql-as-built",
+      "cap-aql-reviewed"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-03",
+    "AX-04",
+    "AX-05",
+    "AX-07",
+    "AX-12",
+    "AX-13"
+   ],
+   "hand_rolled": [
+    "M-01",
+    "M-10",
+    "M-11"
+   ],
+   "findings": [
+    "F-0801",
+    "F-0804",
+    "F-0807",
+    "F-0814",
+    "F-0815",
+    "F-0817"
+   ]
+  },
+  {
+   "id": "08/graph-scope",
+   "module": "08",
+   "entity": "graph scope",
+   "ontology": "experiment/playbook-completion/ontology/08-cypher-sql.md:304",
+   "states": [
+    "one-graph",
+    "all-graphs"
+   ],
+   "commands": [
+    "match",
+    "create",
+    "merge",
+    "set",
+    "delete"
+   ],
+   "lifecycle": null,
+   "closest_lifecycle": "LC-7",
+   "reason": "Not an object: the scope is a facet of a Cypher request (08/cypher-call, LC-7), fixed when the query is parsed and never changed; its cells check scoping per clause (AX-02, M-09). The maps use the request lifecycle LC-7.",
+   "state_map": {
+    "one-graph": {
+     "state": "open",
+     "facet": "scope: one graph (USE GRAPH)"
+    },
+    "all-graphs": {
+     "state": "open",
+     "facet": "scope: all graphs"
+    }
+   },
+   "command_map": {
+    "match": "use",
+    "create": "use",
+    "merge": "use",
+    "set": "use",
+    "delete": "use"
+   },
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/cypher/translator.py:15404-15431",
+     "departs": [
+      "M09-L2"
+     ],
+     "findings": [
+      "F-0818",
+      "F-0819",
+      "F-0820"
+     ],
+     "model": "scope/all-graphs-walk",
+     "mechanism": "M-09",
+     "model_checks": [
+      "scope-all-graphs-walk-as-built",
+      "scope-all-graphs-walk-reviewed"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-02"
+   ],
+   "hand_rolled": [
+    "M-09"
+   ],
+   "findings": [
+    "F-0818",
+    "F-0819",
+    "F-0820"
+   ]
+  },
+  {
+   "id": "09/compiled-shape",
+   "module": "09",
+   "entity": "compiled shape",
+   "ontology": "experiment/playbook-completion/ontology/09-native-executor.md:265",
+   "states": [
+    "absent",
+    "building",
+    "abandoned",
+    "ok",
+    "failed",
+    "stale"
+   ],
+   "commands": [
+    "job read",
+    "sync read",
+    "off read",
+    "drop all",
+    "alter props table"
+   ],
+   "lifecycle": "LC-2",
+   "state_map": {
+    "absent": "absent",
+    "building": "building",
+    "abandoned": {
+     "state": "build-failed",
+     "facet": "build abandoned (older than two minutes); the next read claims it"
+    },
+    "ok": "current",
+    "failed": "build-failed",
+    "stale": "stale"
+   },
+   "command_map": {
+    "job read": "read",
+    "sync read": "read",
+    "off read": "read",
+    "drop all": "drop",
+    "alter props table": "maintain"
+   },
+   "notes": "a read in job or sync mode also starts a build",
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/Cypher/Gen.cls:166, 225-230",
+     "departs": [
+      "M03-L2"
+     ],
+     "findings": [
+      "F-0905"
+     ],
+     "model": "excl/plan-build-lock",
+     "mechanism": "M-03",
+     "model_checks": [
+      "excl-plan-build-lock-as-built",
+      "excl-plan-build-lock-reviewed"
+     ]
+    },
+    {
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/Cypher/Gen.cls:13-16, 225-230",
+     "model": "derived/adjacency-functional",
+     "note": "a deploy discards every compiled plan (stamp); key collisions are M-12's",
+     "mechanism": "M-04",
+     "model_checks": [
+      "derived-adjacency-functional-as-built",
+      "derived-adjacency-functional-reviewed"
+     ]
+    },
+    {
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/Cypher/Gen.cls:61-105",
+     "note": "not modelled here: the build job is breadth-b machine planc",
+     "mechanism": "M-07",
+     "model_checks": []
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/Cypher/Gen.cls:69-80",
+     "departs": [
+      "M12-L3"
+     ],
+     "findings": [
+      "F-0901",
+      "F-C0901"
+     ],
+     "model": "catalog/short-hash-name",
+     "mechanism": "M-12",
+     "model_checks": [
+      "catalog-short-hash-name-as-built",
+      "catalog-short-hash-name-reviewed"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-01",
+    "AX-02",
+    "AX-08",
+    "AX-11",
+    "AX-12",
+    "AX-14"
+   ],
+   "hand_rolled": [
+    "M-03",
+    "M-12"
+   ],
+   "findings": [
+    "F-0901",
+    "F-0905",
+    "F-C0901"
+   ]
+  },
+  {
+   "id": "09/process-mode",
+   "module": "09",
+   "entity": "process mode",
+   "ontology": "experiment/playbook-completion/ontology/09-native-executor.md:266",
+   "states": [
+    "job",
+    "sync",
+    "off"
+   ],
+   "commands": [
+    "set job",
+    "set sync",
+    "set off",
+    "clear",
+    "set other"
+   ],
+   "lifecycle": "LC-3",
+   "state_map": {
+    "job": {
+     "state": "in-force",
+     "facet": "mode job"
+    },
+    "sync": {
+     "state": "in-force",
+     "facet": "mode sync"
+    },
+    "off": "disabled"
+   },
+   "command_map": {
+    "set job": "set",
+    "set sync": "set",
+    "set off": "set",
+    "clear": "remove",
+    "set other": "set"
+   },
+   "notes": "set other is a value outside the domain (F-0903, M08-L4)",
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/Cypher/Gen.cls:41-44, 61-105",
+     "departs": [
+      "M08-L4"
+     ],
+     "findings": [
+      "F-0903"
+     ],
+     "model": "install/unchecked-setting",
+     "mechanism": "M-08",
+     "model_checks": [
+      "install-unchecked-setting-as-built",
+      "install-unchecked-setting-reviewed"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-03",
+    "AX-09"
+   ],
+   "hand_rolled": [
+    "M-08"
+   ],
+   "findings": [
+    "F-0903"
+   ]
+  },
+  {
+   "id": "09/engine-native-path",
+   "module": "09",
+   "entity": "engine native path",
+   "ontology": "experiment/playbook-completion/ontology/09-native-executor.md:267",
+   "states": [
+    "on",
+    "off",
+    "shut",
+    "shadow"
+   ],
+   "commands": [
+    "supported read",
+    "declined read",
+    "write"
+   ],
+   "lifecycle": "LC-3",
+   "state_map": {
+    "on": "in-force",
+    "off": "disabled",
+    "shut": {
+     "state": "broken",
+     "facet": "the native gate is shut by a failed check (index, bulk load, privilege, version)"
+    },
+    "shadow": {
+     "state": "in-force",
+     "facet": "shadow: both paths answer and are compared"
+    }
+   },
+   "command_map": {
+    "supported read": "consult",
+    "declined read": "consult",
+    "write": "consult"
+   },
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/cypher/native_plan.py:528-529; iris_vector_graph/engine.py:703-724",
+     "departs": [
+      "M04-L4"
+     ],
+     "findings": [
+      "F-0906"
+     ],
+     "model": "derived/native-gate-label-index",
+     "mechanism": "M-04",
+     "model_checks": [
+      "derived-native-gate-label-index-as-built-F0906",
+      "derived-native-gate-label-index-reviewed"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/Cypher/Exec.cls:32-72",
+     "departs": [
+      "M11-L2"
+     ],
+     "findings": [
+      "F-0908"
+     ],
+     "model": "cap/privilege-in-engine-only",
+     "mechanism": "M-11",
+     "model_checks": [
+      "cap-privilege-in-engine-only-as-built",
+      "cap-privilege-in-engine-only-reviewed"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-03",
+    "AX-08",
+    "AX-13"
+   ],
+   "hand_rolled": [
+    "M-04",
+    "M-11"
+   ],
+   "findings": [
+    "F-0906",
+    "F-0908"
+   ]
+  },
+  {
+   "id": "10/interned-snapshot",
+   "module": "10",
+   "entity": "interned snapshot",
+   "ontology": "experiment/playbook-completion/ontology/10-algorithms.md:278",
+   "states": [
+    "unbuilt",
+    "current",
+    "merged",
+    "marked"
+   ],
+   "commands": [
+    "sync",
+    "centrality method",
+    "snapshot procedure",
+    "random walk"
+   ],
+   "lifecycle": "LC-2",
+   "state_map": {
+    "unbuilt": "absent",
+    "current": "current",
+    "merged": {
+     "state": "current",
+     "facet": "merged: graphs' edges held together, one edge per triple (EXC-06)"
+    },
+    "marked": {
+     "state": "stale",
+     "facet": "marked for rebuild by the next reader"
+    }
+   },
+   "command_map": {
+    "sync": "rebuild",
+    "centrality method": "read",
+    "snapshot procedure": "read",
+    "random walk": "read"
+   },
+   "mechanisms": [
+    {
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/NKGAccelLoader.cls",
+     "model": "excl/head-lock-commit",
+     "note": "rebuilt under lock ^IVG.NKGBuild; staleness is M-04's",
+     "mechanism": "M-03",
+     "model_checks": [
+      "excl-head-lock-commit-as-built",
+      "excl-head-lock-commit-reviewed"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/TemporalIndex.cls:104-112; iris_src/src/Graph/KG/Adjacency.cls:111-140",
+     "departs": [
+      "M04-L2",
+      "M04-L1"
+     ],
+     "findings": [
+      "F-1005",
+      "F-C0801"
+     ],
+     "model": "derived/interned-snapshot",
+     "mechanism": "M-04",
+     "model_checks": [
+      "derived-interned-snapshot-as-built-F1005",
+      "derived-interned-snapshot-as-built-FC0801",
+      "derived-interned-snapshot-reviewed"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "CONTEXT.md:97-102",
+     "departs": [
+      "M09-L2"
+     ],
+     "exception": "EXC-06",
+     "model": "scope/interned-no-graph-dimension",
+     "note": "documented: no graph dimension",
+     "mechanism": "M-09",
+     "model_checks": [
+      "scope-interned-no-graph-dimension-as-built",
+      "scope-interned-no-graph-dimension-reviewed"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-02",
+    "AX-08",
+    "AX-11",
+    "AX-12"
+   ],
+   "hand_rolled": [
+    "M-04",
+    "M-09"
+   ],
+   "findings": [
+    "F-1005",
+    "F-C0801"
+   ]
+  },
+  {
+   "id": "10/result-cache-entry",
+   "module": "10",
+   "entity": "result cache entry",
+   "ontology": "experiment/playbook-completion/ontology/10-algorithms.md:279",
+   "states": [
+    "absent",
+    "current",
+    "stale"
+   ],
+   "commands": [
+    "run algorithm",
+    "write edge",
+    "write edgeless node",
+    "erase graph"
+   ],
+   "lifecycle": "LC-2",
+   "state_map": {
+    "absent": "absent",
+    "current": "current",
+    "stale": "stale"
+   },
+   "command_map": {
+    "run algorithm": "read",
+    "write edge": "maintain",
+    "write edgeless node": "maintain",
+    "erase graph": "maintain"
+   },
+   "notes": "run algorithm reads the entry or computes and stores it",
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/stores/iris_sql_store.py:921-983, 2231-2275",
+     "departs": [
+      "M04-L2"
+     ],
+     "findings": [
+      "F-1004"
+     ],
+     "model": "derived/algo-cache-edgeless",
+     "note": "a node written without an edge moves no token",
+     "mechanism": "M-04",
+     "model_checks": [
+      "derived-algo-cache-edgeless-as-built-F1004",
+      "derived-algo-cache-edgeless-reviewed"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-08"
+   ],
+   "hand_rolled": [
+    "M-04"
+   ],
+   "findings": [
+    "F-1004"
+   ]
+  },
+  {
+   "id": "10/native-route",
+   "module": "10",
+   "entity": "native route",
+   "ontology": "experiment/playbook-completion/ontology/10-algorithms.md:280",
+   "states": [
+    "library absent",
+    "unproven",
+    "proven"
+   ],
+   "commands": [
+    "default-graph call",
+    "named-graph call",
+    "other-namespace call"
+   ],
+   "lifecycle": "LC-3",
+   "state_map": {
+    "library absent": "absent",
+    "unproven": {
+     "state": "outdated",
+     "facet": "the library's reader revision is below the proof record"
+    },
+    "proven": "in-force"
+   },
+   "command_map": {
+    "default-graph call": "consult",
+    "named-graph call": "consult",
+    "other-namespace call": "consult"
+   },
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/algorithms.py",
+     "departs": [
+      "M09-L2"
+     ],
+     "findings": [
+      "F-1001"
+     ],
+     "model": "scope/unscoped-read",
+     "note": "F-1001 is blocked-access (x86_64 library)",
+     "mechanism": "M-09",
+     "model_checks": [
+      "scope-unscoped-read-as-built",
+      "scope-unscoped-read-reviewed"
+     ]
+    },
+    {
+     "use": "canonical",
+     "where": "iris_vector_graph (proof record)",
+     "model": "catalog/canonical",
+     "note": "routes by reader revision, not library version (CONTEXT.md:266-282)",
+     "mechanism": "M-12",
+     "model_checks": [
+      "catalog-canonical-as-built",
+      "catalog-canonical-reviewed",
+      "catalog-control-C1-unchecked-read",
+      "catalog-control-C2-short-hash",
+      "catalog-control-C3-no-record",
+      "catalog-control-C4-fail-open",
+      "catalog-sharp-three-artifacts"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-01",
+    "AX-02",
+    "AX-08"
+   ],
+   "hand_rolled": [
+    "M-09"
+   ],
+   "findings": [
+    "F-1001"
+   ]
+  },
+  {
+   "id": "10/default-graph-algorithm-call",
+   "module": "10",
+   "entity": "default-graph algorithm call",
+   "ontology": "experiment/playbook-completion/ontology/10-algorithms.md:281",
+   "states": [
+    "only default edges",
+    "named edges"
+   ],
+   "commands": [
+    "global pagerank",
+    "components",
+    "centrality method",
+    "snapshot procedure",
+    "random walk",
+    "subgraph",
+    "khop"
+   ],
+   "lifecycle": "LC-7",
+   "state_map": {
+    "only default edges": {
+     "state": "open",
+     "facet": "only the default graph has edges in the namespace"
+    },
+    "named edges": {
+     "state": "open",
+     "facet": "a named graph has edges"
+    }
+   },
+   "command_map": {
+    "global pagerank": "use",
+    "components": "use",
+    "centrality method": "use",
+    "snapshot procedure": "use",
+    "random walk": "use",
+    "subgraph": "use",
+    "khop": "use"
+   },
+   "notes": "a request; its states are a condition of the namespace's content, so facets of an open request",
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/algorithms.py:658-678",
+     "departs": [
+      "M09-L2"
+     ],
+     "findings": [
+      "F-1002",
+      "F-1006",
+      "F-1008",
+      "F-1013",
+      "F-1001"
+     ],
+     "exception": "EXC-06",
+     "model": "scope/unscoped-read",
+     "mechanism": "M-09",
+     "model_checks": [
+      "scope-unscoped-read-as-built",
+      "scope-unscoped-read-reviewed"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-02"
+   ],
+   "hand_rolled": [
+    "M-09"
+   ],
+   "findings": [
+    "F-1001",
+    "F-1002",
+    "F-1006",
+    "F-1008",
+    "F-1013"
+   ]
+  },
+  {
+   "id": "11/ledger",
+   "module": "11",
+   "entity": "ledger",
+   "ontology": "experiment/playbook-completion/ontology/11-ledger.md:399",
+   "states": [
+    "never-enabled",
+    "enabled",
+    "disabled"
+   ],
+   "commands": [
+    "enable",
+    "disable",
+    "set-strict",
+    "commit",
+    "head"
+   ],
+   "lifecycle": "LC-3",
+   "state_map": {
+    "never-enabled": "absent",
+    "enabled": "in-force",
+    "disabled": "disabled"
+   },
+   "command_map": {
+    "enable": "setup",
+    "disable": "set",
+    "set-strict": "set",
+    "commit": "consult",
+    "head": "read"
+   },
+   "notes": "enable from never-enabled writes the genesis revision; from disabled it re-enables",
+   "mechanisms": [
+    {
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/Ledger.cls:397-528",
+     "model": "ledger/commit-core",
+     "mechanism": "M-01",
+     "model_checks": [
+      "ledger-commit-core-as-built",
+      "ledger-commit-core-reviewed",
+      "ledger-control-C1-two-step-record",
+      "ledger-control-C2-overwrite-record",
+      "ledger-control-C3-ignore-head",
+      "ledger-control-C4-unguarded-bypass"
+     ]
+    },
+    {
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/Ledger.cls:440-444, 404",
+     "model": "excl/head-lock-commit",
+     "mechanism": "M-03",
+     "model_checks": [
+      "excl-head-lock-commit-as-built",
+      "excl-head-lock-commit-reviewed"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/Ledger.cls:252-329",
+     "departs": [
+      "M08-L2"
+     ],
+     "findings": [
+      "F-1104"
+     ],
+     "model": "install/concurrent-first-enable",
+     "note": "two first enables at once: the second fails instead of returning the genesis",
+     "mechanism": "M-08",
+     "model_checks": [
+      "install-concurrent-first-enable-as-built",
+      "install-concurrent-first-enable-reviewed"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-03",
+    "AX-04",
+    "AX-05",
+    "AX-07",
+    "AX-09",
+    "AX-11",
+    "AX-12"
+   ],
+   "hand_rolled": [
+    "M-08"
+   ],
+   "findings": [
+    "F-1104"
+   ]
+  },
+  {
+   "id": "11/retry-key",
+   "module": "11",
+   "entity": "retry key",
+   "ontology": "experiment/playbook-completion/ontology/11-ledger.md:400",
+   "states": [
+    "free",
+    "bound"
+   ],
+   "commands": [
+    "commit-same",
+    "commit-other",
+    "commit-stale-head"
+   ],
+   "lifecycle": "LC-4",
+   "state_map": {
+    "free": "absent",
+    "bound": "committed"
+   },
+   "command_map": {
+    "commit-same": "replay",
+    "commit-other": "append",
+    "commit-stale-head": "append"
+   },
+   "notes": "commit-same on a free key is the first commit and binds it; the redacted state is not an entity state here (LC-4 tombstoned, idemRedacted)",
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/Ledger.cls:454-473; iris_vector_graph/ledger/client.py:418-487",
+     "departs": [
+      "M02-L1",
+      "M02-L2"
+     ],
+     "findings": [
+      "F-1101",
+      "F-1306"
+     ],
+     "model": "retry/ledger-key",
+     "note": "the server binding is atomic with the commit; the client re-applies post-commit properties on a replayed answer",
+     "mechanism": "M-02",
+     "model_checks": [
+      "retry-ledger-key-as-built",
+      "retry-ledger-key-reviewed",
+      "retry-control-C1-bind-after-effect",
+      "retry-control-C2-post-on-replay",
+      "retry-control-C3-apply-conflict",
+      "retry-control-C4-redaction-keeps-binding",
+      "retry-sharp-replay",
+      "retry-sharp-conflict",
+      "retry-sharp-redacted-refusal"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-06",
+    "AX-12"
+   ],
+   "hand_rolled": [
+    "M-02"
+   ],
+   "findings": [
+    "F-1101",
+    "F-1306"
+   ]
+  },
+  {
+   "id": "11/edge-statement",
+   "module": "11",
+   "entity": "edge statement",
+   "ontology": "experiment/playbook-completion/ontology/11-ledger.md:401",
+   "states": [
+    "none",
+    "recorded",
+    "unrecorded"
+   ],
+   "commands": [
+    "create-edge",
+    "upsert-edge",
+    "set-qualifier",
+    "delete-edge"
+   ],
+   "lifecycle": "LC-2",
+   "state_map": {
+    "none": "absent",
+    "recorded": "current",
+    "unrecorded": {
+     "state": "stale",
+     "facet": "the edge is live with no statement"
+    }
+   },
+   "command_map": {
+    "create-edge": "maintain",
+    "upsert-edge": "maintain",
+    "set-qualifier": "maintain",
+    "delete-edge": "maintain"
+   },
+   "notes": "the statement maps are derived from the records (M-04)",
+   "mechanisms": [
+    {
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/LedgerApply.cls",
+     "model": "ledger/commit-core",
+     "mechanism": "M-01",
+     "model_checks": [
+      "ledger-commit-core-as-built",
+      "ledger-commit-core-reviewed",
+      "ledger-control-C1-two-step-record",
+      "ledger-control-C2-overwrite-record",
+      "ledger-control-C3-ignore-head",
+      "ledger-control-C4-unguarded-bypass"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/nodes_edges.py (direct delete_edge)",
+     "departs": [
+      "M04-L2"
+     ],
+     "findings": [
+      "F-0303"
+     ],
+     "model": "derived/statement-map-direct-delete",
+     "mechanism": "M-04",
+     "model_checks": [
+      "derived-statement-map-direct-delete-as-built-F0303",
+      "derived-statement-map-direct-delete-reviewed"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-04",
+    "AX-05",
+    "AX-07",
+    "AX-08"
+   ],
+   "hand_rolled": [
+    "M-04"
+   ],
+   "findings": [
+    "F-0303"
+   ]
+  },
+  {
+   "id": "11/node-id",
+   "module": "11",
+   "entity": "node id",
+   "ontology": "experiment/playbook-completion/ontology/11-ledger.md:402",
+   "states": [
+    "absent",
+    "default-only",
+    "default-linked",
+    "named-only"
+   ],
+   "commands": [
+    "create-node",
+    "upsert-node",
+    "set-property",
+    "add-label",
+    "delete-plain",
+    "delete-detach"
+   ],
+   "lifecycle": "LC-1",
+   "state_map": {
+    "absent": "absent",
+    "default-only": {
+     "state": "live",
+     "facet": "in the default graph only"
+    },
+    "default-linked": {
+     "state": "live",
+     "facet": "in the default graph and linked"
+    },
+    "named-only": {
+     "state": "live",
+     "facet": "in a named graph only: the ledger's node record is graph-blind"
+    }
+   },
+   "command_map": {
+    "create-node": "create",
+    "upsert-node": "create",
+    "set-property": "update",
+    "add-label": "update",
+    "delete-plain": "delete",
+    "delete-detach": "delete"
+   },
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/LedgerApply.cls:79-84, 354-385",
+     "departs": [
+      "M01-L2"
+     ],
+     "findings": [
+      "F-1105"
+     ],
+     "model": "ledger/node-delete-named-only",
+     "note": "a delete of a node only a named graph holds is recorded although it removed nothing; replay then deletes what the store kept",
+     "mechanism": "M-01",
+     "model_checks": [
+      "ledger-node-delete-named-only-as-built",
+      "ledger-node-delete-named-only-reviewed"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/LedgerApply.cls:79-84",
+     "departs": [
+      "M09-L4"
+     ],
+     "findings": [
+      "F-1105",
+      "F-1401"
+     ],
+     "model": "scope/three-predicates",
+     "note": "ledger node records are graph-blind",
+     "mechanism": "M-09",
+     "model_checks": [
+      "scope-three-predicates-as-built",
+      "scope-three-predicates-reviewed"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-02",
+    "AX-04",
+    "AX-05",
+    "AX-07"
+   ],
+   "hand_rolled": [
+    "M-01",
+    "M-09"
+   ],
+   "findings": [
+    "F-1105",
+    "F-1401"
+   ]
+  },
+  {
+   "id": "11/caller-transaction",
+   "module": "11",
+   "entity": "caller transaction",
+   "ontology": "experiment/playbook-completion/ontology/11-ledger.md:403",
+   "states": [
+    "none",
+    "holding-writes",
+    "autocommit-unwritten"
+   ],
+   "commands": [
+    "commit",
+    "enable",
+    "disable",
+    "set-strict"
+   ],
+   "lifecycle": "LC-7",
+   "state_map": {
+    "none": {
+     "state": "closed",
+     "facet": "no transaction open"
+    },
+    "holding-writes": "open",
+    "autocommit-unwritten": "new"
+   },
+   "command_map": {
+    "commit": "use",
+    "enable": "use",
+    "disable": "use",
+    "set-strict": "use"
+   },
+   "notes": "autocommit off with nothing written opens no level yet (X-TLEVEL-SQL); commit here is the ledger commit, a step inside the caller's transaction",
+   "mechanisms": [
+    {
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/Ledger.cls:390-415",
+     "model": "unit/canonical",
+     "note": "the commit is a nested level; a refused changeset takes back its own level alone",
+     "mechanism": "M-10",
+     "model_checks": [
+      "unit-canonical-as-built",
+      "unit-control-C1-per-statement",
+      "unit-control-C2-rollback-all-levels",
+      "unit-control-C3-ok-on-failure",
+      "unit-sharp-refused-inside-caller",
+      "unit-sharp-ok"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-03",
+    "AX-04",
+    "AX-12"
+   ],
+   "hand_rolled": [],
+   "findings": []
+  },
+  {
+   "id": "12/graph-content",
+   "module": "12",
+   "entity": "graph content",
+   "ontology": "experiment/playbook-completion/ontology/12-erasure.md:60",
+   "states": [
+    "live",
+    "being erased",
+    "erased"
+   ],
+   "commands": [
+    "erase the graph",
+    "erase nodes by prefix",
+    "commit into the graph",
+    "write outside the ledger",
+    "redact"
+   ],
+   "lifecycle": "LC-6",
+   "state_map": {
+    "live": "live",
+    "being erased": "erasing",
+    "erased": "erased"
+   },
+   "command_map": {
+    "erase the graph": "erase",
+    "erase nodes by prefix": "erase",
+    "commit into the graph": "write-into",
+    "write outside the ledger": "write-into",
+    "redact": "redact"
+   },
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/Eraser.cls:665-678, 809-811",
+     "departs": [
+      "M03-L2"
+     ],
+     "findings": [
+      "F-1201",
+      "F-1114",
+      "F-C1201"
+     ],
+     "model": "excl/eraser-no-head-lock",
+     "note": "erasure changes the statement maps and rows a commit also writes, without the head lock",
+     "mechanism": "M-03",
+     "model_checks": [
+      "excl-eraser-no-head-lock-as-built",
+      "excl-eraser-no-head-lock-reviewed"
+     ]
+    },
+    {
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/Eraser.cls:47-260; iris_src/src/Graph/KG/GraphStores.cls:26-133",
+     "model": "removal/rows-adjacency-temporal",
+     "mechanism": "M-05",
+     "model_checks": [
+      "removal-rows-adjacency-temporal-as-built",
+      "removal-rows-adjacency-temporal-reviewed",
+      "removal-control-C1-store-dropped",
+      "removal-control-C1b-store-dropped-inventory",
+      "removal-control-C2-cross-target",
+      "removal-sharp-removed-other-kept",
+      "removal-sharp-erased-history-kept"
+     ]
+    },
+    {
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/Eraser.cls:113-125",
+     "model": "scope/canonical",
+     "mechanism": "M-09",
+     "model_checks": [
+      "scope-canonical-as-built",
+      "scope-control-C1-key-ignores-name",
+      "scope-control-C2-join-across-graphs",
+      "scope-control-C3-delete-every-graph",
+      "scope-control-C4-graph-blind-match",
+      "scope-sharp-same-id-two-graphs-differ",
+      "scope-sharp-named-write"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-02",
+    "AX-04",
+    "AX-10",
+    "AX-11",
+    "AX-12"
+   ],
+   "hand_rolled": [
+    "M-03"
+   ],
+   "findings": [
+    "F-1114",
+    "F-1201",
+    "F-C1201"
+   ]
+  },
+  {
+   "id": "13/redaction-target",
+   "module": "13",
+   "entity": "redaction target",
+   "ontology": "experiment/playbook-completion/ontology/13-redaction.md:132",
+   "states": [
+    "live",
+    "erased",
+    "redacting",
+    "redacted"
+   ],
+   "commands": [
+    "redact",
+    "redact another target",
+    "commit into it",
+    "write outside the ledger",
+    "retry an old key",
+    "erase"
+   ],
+   "lifecycle": "LC-6",
+   "state_map": {
+    "live": "live",
+    "erased": "erased",
+    "redacting": "redacting",
+    "redacted": "redacted"
+   },
+   "command_map": {
+    "redact": "redact",
+    "redact another target": "redact",
+    "commit into it": "write-into",
+    "write outside the ledger": "write-into",
+    "retry an old key": "write-into",
+    "erase": "erase"
+   },
+   "notes": "redact another target is a redaction of a different scope, here for its effect on this one (F-1303)",
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/LedgerApply.cls:229-233, 252-284",
+     "departs": [
+      "M02-L4"
+     ],
+     "findings": [
+      "F-CS01"
+     ],
+     "model": "retry/zero-record-revision",
+     "note": "a revision whose changeset recorded nothing is never touched by redaction, so its key stays bound",
+     "mechanism": "M-02",
+     "model_checks": [
+      "retry-zero-record-revision-as-built",
+      "retry-zero-record-revision-reviewed"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/LedgerRedact.cls:185-211, 302-330, 384-430",
+     "departs": [
+      "M03-L3",
+      "M03-L4",
+      "M03-L5"
+     ],
+     "findings": [
+      "F-1302",
+      "F-1303",
+      "F-C1350"
+     ],
+     "model": "excl/redaction-marker",
+     "note": "the liveness check is unlocked and the marker is set in the first batch; Final clears the one global marker whoever set it",
+     "mechanism": "M-03",
+     "model_checks": [
+      "excl-redaction-marker-as-built",
+      "excl-redaction-marker-reviewed",
+      "excl-redaction-marker-as-built-F1302-marker",
+      "excl-redaction-marker-as-built-F1302-tomb-live",
+      "excl-control-C1-lock-admits-two",
+      "excl-control-C2-writer-without-lock",
+      "excl-control-C3-check-before-lock",
+      "excl-control-C4-clear-any",
+      "excl-control-C5-tomb-without-check",
+      "excl-sharp-redaction-finishes",
+      "excl-sharp-commit-refused-by-marker",
+      "excl-sharp-run-refused-live"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/legacy.py:606-646; iris_src/src/Graph/KG/LedgerApply.cls:229-233",
+     "departs": [
+      "M05-L1"
+     ],
+     "findings": [
+      "F-C1306",
+      "F-CS01",
+      "F-C1309"
+     ],
+     "model": "removal/history-text",
+     "mechanism": "M-05",
+     "model_checks": [
+      "removal-history-text-as-built",
+      "removal-history-text-reviewed"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/LedgerRedact.cls:89-178",
+     "departs": [
+      "M09-L4"
+     ],
+     "findings": [
+      "F-1304",
+      "F-1305"
+     ],
+     "model": "scope/three-predicates",
+     "mechanism": "M-09",
+     "model_checks": [
+      "scope-three-predicates-as-built",
+      "scope-three-predicates-reviewed"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-02",
+    "AX-04",
+    "AX-06",
+    "AX-10",
+    "AX-11",
+    "AX-12"
+   ],
+   "hand_rolled": [
+    "M-02",
+    "M-03",
+    "M-05",
+    "M-09"
+   ],
+   "findings": [
+    "F-1302",
+    "F-1303",
+    "F-1304",
+    "F-1305",
+    "F-C1306",
+    "F-C1309",
+    "F-C1350",
+    "F-CS01"
+   ]
+  },
+  {
+   "id": "13/redaction-run",
+   "module": "13",
+   "entity": "redaction run",
+   "ontology": "experiment/playbook-completion/ontology/13-redaction.md:133",
+   "states": [
+    "running",
+    "stopped",
+    "finished"
+   ],
+   "commands": [
+    "call again",
+    "stop the process",
+    "disable the ledger"
+   ],
+   "lifecycle": "LC-5",
+   "state_map": {
+    "running": "running",
+    "stopped": "stopped",
+    "finished": "done"
+   },
+   "command_map": {
+    "call again": "resume",
+    "stop the process": "stop",
+    "disable the ledger": "stop"
+   },
+   "mechanisms": [
+    {
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/LedgerRedact.cls:275-300",
+     "model": "excl/redaction-marker",
+     "note": "each batch is one locked transaction; progress is M-07's",
+     "mechanism": "M-03",
+     "model_checks": [
+      "excl-redaction-marker-as-built",
+      "excl-redaction-marker-reviewed",
+      "excl-redaction-marker-as-built-F1302-marker",
+      "excl-redaction-marker-as-built-F1302-tomb-live",
+      "excl-control-C1-lock-admits-two",
+      "excl-control-C2-writer-without-lock",
+      "excl-control-C3-check-before-lock",
+      "excl-control-C4-clear-any",
+      "excl-control-C5-tomb-without-check",
+      "excl-sharp-redaction-finishes",
+      "excl-sharp-commit-refused-by-marker",
+      "excl-sharp-run-refused-live"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/LedgerRedact.cls:185-240",
+     "departs": [
+      "M07-L4"
+     ],
+     "findings": [
+      "F-C1303"
+     ],
+     "model": "queue/bounded-redaction-resume",
+     "mechanism": "M-07",
+     "model_checks": [
+      "queue-bounded-redaction-resume-as-built",
+      "queue-bounded-redaction-resume-reviewed",
+      "queue-control-C4-restart-scan",
+      "queue-sharp-resume-finishes"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-11",
+    "AX-12",
+    "AX-14"
+   ],
+   "hand_rolled": [
+    "M-07"
+   ],
+   "findings": [
+    "F-C1303"
+   ]
+  },
+  {
+   "id": "14/ledger-view",
+   "module": "14",
+   "entity": "ledger view",
+   "ontology": "experiment/playbook-completion/ontology/14-replay.md:60",
+   "states": [
+    "agreeing",
+    "erased not redacted",
+    "redacting",
+    "redacted",
+    "with unrecorded writes"
+   ],
+   "commands": [
+    "verify",
+    "verify with adoption",
+    "read records",
+    "reconstruct",
+    "export"
+   ],
+   "lifecycle": "LC-6",
+   "state_map": {
+    "agreeing": {
+     "state": "live",
+     "facet": "replay equals the store"
+    },
+    "erased not redacted": "erased",
+    "redacting": "redacting",
+    "redacted": "redacted",
+    "with unrecorded writes": {
+     "state": "live",
+     "facet": "with unrecorded writes"
+    }
+   },
+   "command_map": {
+    "verify": "read",
+    "verify with adoption": "write-into",
+    "read records": "read",
+    "reconstruct": "read",
+    "export": "read"
+   },
+   "notes": "verify with adoption records the unrecorded writes as an adoption revision",
+   "mechanisms": [
+    {
+     "use": "canonical",
+     "where": "iris_vector_graph/ledger/replay.py:155-210",
+     "model": "ledger/commit-core",
+     "note": "replay is the L2 law's fold",
+     "mechanism": "M-01",
+     "model_checks": [
+      "ledger-commit-core-as-built",
+      "ledger-commit-core-reviewed",
+      "ledger-control-C1-two-step-record",
+      "ledger-control-C2-overwrite-record",
+      "ledger-control-C3-ignore-head",
+      "ledger-control-C4-unguarded-bypass"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/ledger (record readers)",
+     "departs": [
+      "M13-L1"
+     ],
+     "findings": [
+      "F-1402"
+     ],
+     "model": "epoch/check-at-start",
+     "mechanism": "M-13",
+     "model_checks": [
+      "epoch-check-at-start-as-built",
+      "epoch-check-at-start-reviewed",
+      "epoch-control-C1-no-end-check",
+      "epoch-sharp-interrupted",
+      "epoch-sharp-new-state-read"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-04",
+    "AX-05",
+    "AX-07",
+    "AX-12"
+   ],
+   "hand_rolled": [
+    "M-13"
+   ],
+   "findings": [
+    "F-1402"
+   ]
+  },
+  {
+   "id": "15/fhir-graph",
+   "module": "15",
+   "entity": "FHIR graph",
+   "ontology": "experiment/playbook-completion/ontology/15-integrations.md:381",
+   "states": [
+    "no tables",
+    "unregistered",
+    "idle",
+    "busy"
+   ],
+   "commands": [
+    "register",
+    "rebuild",
+    "sync",
+    "reinterpret",
+    "status",
+    "schedule",
+    "unschedule",
+    "erase"
+   ],
+   "lifecycle": "LC-3",
+   "state_map": {
+    "no tables": {
+     "state": "absent",
+     "facet": "the FHIR repository tables are missing"
+    },
+    "unregistered": "absent",
+    "idle": "in-force",
+    "busy": {
+     "state": "in-force",
+     "facet": "a sync is running"
+    }
+   },
+   "command_map": {
+    "register": "setup",
+    "rebuild": "consult",
+    "sync": "consult",
+    "reinterpret": "consult",
+    "status": "read",
+    "schedule": "set",
+    "unschedule": "set",
+    "erase": "remove"
+   },
+   "notes": "the sync and rebuild are runs (LC-5, M-07) of this registered integration",
+   "mechanisms": [
+    {
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/FHIRGraph.cls:543-626",
+     "note": "not modelled here: the sync lock against erasure is breadth-c machine M3 (HD-1502..1504)",
+     "mechanism": "M-03",
+     "model_checks": []
+    },
+    {
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/FHIRGraph.cls",
+     "note": "not modelled here: erase against sync is breadth-c M3",
+     "mechanism": "M-05",
+     "model_checks": []
+    },
+    {
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/FHIRGraph.cls:543-626",
+     "note": "not modelled here: the sync job is breadth-c machine M3",
+     "mechanism": "M-07",
+     "model_checks": []
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/FHIRGraph.cls:167-279",
+     "departs": [
+      "M10-L1",
+      "M10-L2"
+     ],
+     "findings": [
+      "F-1511",
+      "F-C1501"
+     ],
+     "model": "unit/no-transaction",
+     "mechanism": "M-10",
+     "model_checks": [
+      "unit-no-transaction-as-built",
+      "unit-no-transaction-reviewed"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-02",
+    "AX-03",
+    "AX-04",
+    "AX-10",
+    "AX-11",
+    "AX-12",
+    "AX-14"
+   ],
+   "hand_rolled": [
+    "M-10"
+   ],
+   "findings": [
+    "F-1511",
+    "F-C1501"
+   ]
+  },
+  {
+   "id": "15/reifier",
+   "module": "15",
+   "entity": "reifier",
+   "ontology": "experiment/playbook-completion/ontology/15-integrations.md:382",
+   "states": [
+    "none",
+    "linked",
+    "orphan"
+   ],
+   "commands": [
+    "reify",
+    "read",
+    "delete",
+    "erase"
+   ],
+   "lifecycle": "LC-1",
+   "state_map": {
+    "none": "absent",
+    "linked": "live",
+    "orphan": {
+     "state": "live",
+     "facet": "orphan: outlived its edge (F-1502)"
+    }
+   },
+   "command_map": {
+    "reify": "create",
+    "read": "read",
+    "delete": "delete",
+    "erase": "erase"
+   },
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/schema.py:3296-3322; iris_src/src/Graph/KG/Eraser.cls:185-189",
+     "departs": [
+      "M05-L1"
+     ],
+     "findings": [
+      "F-1502"
+     ],
+     "model": "removal/reifier-default-graph",
+     "mechanism": "M-05",
+     "model_checks": [
+      "removal-reifier-default-graph-as-built",
+      "removal-reifier-default-graph-reviewed"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/schema.py:3361-3397",
+     "departs": [
+      "M09-L3"
+     ],
+     "findings": [
+      "F-1503"
+     ],
+     "model": "scope/delete-every-graph",
+     "mechanism": "M-09",
+     "model_checks": [
+      "scope-delete-every-graph-as-built",
+      "scope-delete-every-graph-reviewed"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/nodes_edges.py:2176-2199",
+     "departs": [
+      "M10-L1"
+     ],
+     "findings": [
+      "F-C1502"
+     ],
+     "model": "unit/per-statement-commit",
+     "mechanism": "M-10",
+     "model_checks": [
+      "unit-per-statement-commit-as-built",
+      "unit-per-statement-commit-reviewed"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-02",
+    "AX-03",
+    "AX-04",
+    "AX-10",
+    "AX-12"
+   ],
+   "hand_rolled": [
+    "M-05",
+    "M-09",
+    "M-10"
+   ],
+   "findings": [
+    "F-1502",
+    "F-1503",
+    "F-C1502"
+   ]
+  },
+  {
+   "id": "15/rdf-extra",
+   "module": "15",
+   "entity": "rdf extra",
+   "ontology": "experiment/playbook-completion/ontology/15-integrations.md:383",
+   "states": [
+    "rdflib 7",
+    "no rdflib",
+    "rdflib 8"
+   ],
+   "commands": [
+    "export",
+    "cypher export",
+    "shacl check",
+    "prov export"
+   ],
+   "lifecycle": "LC-3",
+   "state_map": {
+    "rdflib 7": "in-force",
+    "no rdflib": "absent",
+    "rdflib 8": {
+     "state": "broken",
+     "facet": "rdflib 8 lacks ConjunctiveGraph"
+    }
+   },
+   "command_map": {
+    "export": "consult",
+    "cypher export": "consult",
+    "shacl check": "consult",
+    "prov export": "consult"
+   },
+   "notes": "an optional dependency of the install",
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/_rdf_utils.py:125-133",
+     "departs": [
+      "M08-L4"
+     ],
+     "findings": [
+      "F-1506"
+     ],
+     "model": "install/unchecked-setting",
+     "note": "rdflib 8 is reported as rdflib absent",
+     "mechanism": "M-08",
+     "model_checks": [
+      "install-unchecked-setting-as-built",
+      "install-unchecked-setting-reviewed"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-03",
+    "AX-09"
+   ],
+   "hand_rolled": [
+    "M-08"
+   ],
+   "findings": [
+    "F-1506"
+   ]
+  },
+  {
+   "id": "15/table-mapping",
+   "module": "15",
+   "entity": "table mapping",
+   "ontology": "experiment/playbook-completion/ontology/15-integrations.md:384",
+   "states": [
+    "unmapped",
+    "mapped"
+   ],
+   "commands": [
+    "map table",
+    "map link",
+    "remove",
+    "attach vectors",
+    "list"
+   ],
+   "lifecycle": "LC-3",
+   "state_map": {
+    "unmapped": "absent",
+    "mapped": "in-force"
+   },
+   "command_map": {
+    "map table": "setup",
+    "map link": "setup",
+    "remove": "remove",
+    "attach vectors": "set",
+    "list": "read"
+   },
+   "mechanisms": [
+    {
+     "use": "canonical",
+     "where": "iris_vector_graph (map_sql_table)",
+     "model": "catalog/canonical",
+     "note": "F-1504 (schema USER) is a functional finding",
+     "mechanism": "M-12",
+     "model_checks": [
+      "catalog-canonical-as-built",
+      "catalog-canonical-reviewed",
+      "catalog-control-C1-unchecked-read",
+      "catalog-control-C2-short-hash",
+      "catalog-control-C3-no-record",
+      "catalog-control-C4-fail-open",
+      "catalog-sharp-three-artifacts"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-01",
+    "AX-02",
+    "AX-08"
+   ],
+   "hand_rolled": [],
+   "findings": []
+  },
+  {
+   "id": "16/cypher-http-call",
+   "module": "16",
+   "entity": "Cypher HTTP call",
+   "ontology": "experiment/playbook-completion/ontology/16-interfaces.md:282",
+   "states": [
+    "key off",
+    "key missing",
+    "key given",
+    "key given read-only"
+   ],
+   "commands": [
+    "health",
+    "cypher read",
+    "cypher write",
+    "admin write",
+    "explain"
+   ],
+   "lifecycle": "LC-7",
+   "state_map": {
+    "key off": {
+     "state": "open",
+     "facet": "no key configured on the server"
+    },
+    "key missing": "refused",
+    "key given": "open",
+    "key given read-only": {
+     "state": "open",
+     "facet": "read-only"
+    }
+   },
+   "command_map": {
+    "health": "use",
+    "cypher read": "use",
+    "cypher write": "use",
+    "admin write": "use",
+    "explain": "use"
+   },
+   "notes": "health needs no key, so key missing refuses every route but health",
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/cypher_api.py:239-268",
+     "departs": [
+      "M02-L1"
+     ],
+     "findings": [
+      "F-C1604"
+     ],
+     "model": "retry/server-rerun",
+     "mechanism": "M-02",
+     "model_checks": [
+      "retry-server-rerun-as-built",
+      "retry-server-rerun-reviewed"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/cypher_api.py:379-410",
+     "departs": [
+      "M10-L1"
+     ],
+     "findings": [
+      "F-1610",
+      "F-1609"
+     ],
+     "model": "unit/per-statement-commit",
+     "mechanism": "M-10",
+     "model_checks": [
+      "unit-per-statement-commit-as-built",
+      "unit-per-statement-commit-reviewed"
+     ]
+    },
+    {
+     "use": "canonical",
+     "where": "iris_vector_graph/cypher_api.py; docs/ADMIN_GUIDE.md:824-840",
+     "model": "cap/http-server",
+     "mechanism": "M-11",
+     "model_checks": [
+      "cap-http-server-as-built",
+      "cap-control-C1-write-without-read-only-check",
+      "cap-control-C2-route-without-key-check",
+      "cap-control-C3-file-route",
+      "cap-sharp-keyed-write"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-03",
+    "AX-04",
+    "AX-06",
+    "AX-12",
+    "AX-13"
+   ],
+   "hand_rolled": [
+    "M-02",
+    "M-10"
+   ],
+   "findings": [
+    "F-1609",
+    "F-1610",
+    "F-C1604"
+   ]
+  },
+  {
+   "id": "16/bolt-session-with-a-key-set",
+   "module": "16",
+   "entity": "Bolt session with a key set",
+   "ontology": "experiment/playbook-completion/ontology/16-interfaces.md:283",
+   "states": [
+    "new",
+    "logged in",
+    "failed"
+   ],
+   "commands": [
+    "hello with key",
+    "hello with wrong key",
+    "run",
+    "reset",
+    "rollback"
+   ],
+   "lifecycle": "LC-7",
+   "state_map": {
+    "new": "new",
+    "logged in": "open",
+    "failed": {
+     "state": "refused",
+     "facet": "login failed"
+    }
+   },
+   "command_map": {
+    "hello with key": "open",
+    "hello with wrong key": "open",
+    "run": "use",
+    "reset": "use",
+    "rollback": "rollback"
+   },
+   "notes": "a hello with a wrong key ends the session refused",
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/bolt_server.py:500-510, 567-622",
+     "departs": [
+      "M10-L1",
+      "M10-L3"
+     ],
+     "findings": [
+      "F-1601"
+     ],
+     "model": "unit/per-statement-commit",
+     "mechanism": "M-10",
+     "model_checks": [
+      "unit-per-statement-commit-as-built",
+      "unit-per-statement-commit-reviewed"
+     ]
+    },
+    {
+     "use": "canonical",
+     "where": "iris_vector_graph/bolt_server.py",
+     "model": "cap/http-server",
+     "note": "keys are checked on HELLO/LOGON; F-C1603 (Bolt listens on every interface unless started by ivg server start) is network exposure, outside this machine's subset (no network model)",
+     "mechanism": "M-11",
+     "model_checks": [
+      "cap-http-server-as-built",
+      "cap-control-C1-write-without-read-only-check",
+      "cap-control-C2-route-without-key-check",
+      "cap-control-C3-file-route",
+      "cap-sharp-keyed-write"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-03",
+    "AX-04",
+    "AX-12",
+    "AX-13"
+   ],
+   "hand_rolled": [
+    "M-10"
+   ],
+   "findings": [
+    "F-1601"
+   ]
+  },
+  {
+   "id": "16/graph-a-caller-names",
+   "module": "16",
+   "entity": "graph a caller names",
+   "ontology": "experiment/playbook-completion/ontology/16-interfaces.md:284",
+   "states": [
+    "default graph",
+    "named graph",
+    "graph with no content"
+   ],
+   "commands": [
+    "GraphQL node read",
+    "FHIR event write",
+    "REST vector search",
+    "Cypher read with USE GRAPH"
+   ],
+   "lifecycle": "LC-6",
+   "state_map": {
+    "default graph": {
+     "state": "live",
+     "facet": "the default graph"
+    },
+    "named graph": {
+     "state": "live",
+     "facet": "a named graph"
+    },
+    "graph with no content": "empty"
+   },
+   "command_map": {
+    "GraphQL node read": "read",
+    "FHIR event write": "write-into",
+    "REST vector search": "read",
+    "Cypher read with USE GRAPH": "read"
+   },
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "api (GraphQL resolvers)",
+     "departs": [
+      "M09-L2"
+     ],
+     "findings": [
+      "F-1603",
+      "F-1604"
+     ],
+     "model": "scope/unscoped-read",
+     "mechanism": "M-09",
+     "model_checks": [
+      "scope-unscoped-read-as-built",
+      "scope-unscoped-read-reviewed"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-02"
+   ],
+   "hand_rolled": [
+    "M-09"
+   ],
+   "findings": [
+    "F-1603",
+    "F-1604"
+   ]
+  },
+  {
+   "id": "16/rest-web-app-path",
+   "module": "16",
+   "entity": "REST web app path",
+   "ontology": "experiment/playbook-completion/ontology/16-interfaces.md:285",
+   "states": [
+    "absent",
+    "IVG app",
+    "other app"
+   ],
+   "commands": [
+    "create web app",
+    "vector search",
+    "walk"
+   ],
+   "lifecycle": "LC-3",
+   "state_map": {
+    "absent": "absent",
+    "IVG app": "in-force",
+    "other app": {
+     "state": "broken",
+     "facet": "another web app holds the path"
+    }
+   },
+   "command_map": {
+    "create web app": "setup",
+    "vector search": "consult",
+    "walk": "consult"
+   },
+   "mechanisms": [
+    {
+     "use": "canonical",
+     "where": "iris_vector_graph (web app setup)",
+     "model": "install/canonical",
+     "mechanism": "M-08",
+     "model_checks": [
+      "install-canonical-as-built",
+      "install-control-C1-first-use-accepts-any",
+      "install-control-C2-unqualified-drop",
+      "install-control-C3-setting-unchecked",
+      "install-control-C4-enable-race-errors",
+      "install-sharp-other-schema-refused",
+      "install-sharp-both-enables-ok"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "src/iris_demo_server/app.py:1-22",
+     "departs": [
+      "M11-L2"
+     ],
+     "findings": [
+      "F-1614"
+     ],
+     "model": "cap/demo-server",
+     "mechanism": "M-11",
+     "model_checks": [
+      "cap-demo-server-as-built",
+      "cap-demo-server-reviewed"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-03",
+    "AX-09",
+    "AX-13"
+   ],
+   "hand_rolled": [
+    "M-11"
+   ],
+   "findings": [
+    "F-1614"
+   ]
+  },
+  {
+   "id": "16/mcp-tool-set",
+   "module": "16",
+   "entity": "MCP tool set",
+   "ontology": "experiment/playbook-completion/ontology/16-interfaces.md:286",
+   "states": [
+    "AI build",
+    "Community build"
+   ],
+   "commands": [
+    "Cypher tool",
+    "SQL tool",
+    "load tool",
+    "vector lookup"
+   ],
+   "lifecycle": "LC-3",
+   "state_map": {
+    "AI build": "in-force",
+    "Community build": {
+     "state": "absent",
+     "facet": "edition: Community has no %AI classes"
+    }
+   },
+   "command_map": {
+    "Cypher tool": "consult",
+    "SQL tool": "consult",
+    "load tool": "consult",
+    "vector lookup": "consult"
+   },
+   "mechanisms": [
+    {
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/MCPToolSet.cls",
+     "model": "install/canonical",
+     "note": "Community has no %AI: the tool set is absent, by edition",
+     "mechanism": "M-08",
+     "model_checks": [
+      "install-canonical-as-built",
+      "install-control-C1-first-use-accepts-any",
+      "install-control-C2-unqualified-drop",
+      "install-control-C3-setting-unchecked",
+      "install-control-C4-enable-race-errors",
+      "install-sharp-other-schema-refused",
+      "install-sharp-both-enables-ok"
+     ]
+    },
+    {
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/MCPTools.cls",
+     "note": "not modelled: %AI classes absent on Community (F-1613 blocked-access)",
+     "mechanism": "M-11",
+     "model_checks": []
+    }
+   ],
+   "axioms": [
+    "AX-03",
+    "AX-09",
+    "AX-13"
+   ],
+   "hand_rolled": [],
+   "findings": []
+  },
+  {
+   "id": "17/link",
+   "module": "17",
+   "entity": "link",
+   "ontology": "experiment/playbook-completion/ontology/17-operations.md:335",
+   "states": [
+    "client",
+    "inside IRIS",
+    "outside IRIS"
+   ],
+   "commands": [
+    "call method",
+    "call percent method",
+    "run SQL",
+    "SQL begin",
+    "commit",
+    "rollback"
+   ],
+   "lifecycle": "LC-7",
+   "state_map": {
+    "client": {
+     "state": "open",
+     "facet": "link kind: client"
+    },
+    "inside IRIS": {
+     "state": "open",
+     "facet": "link kind: inside IRIS"
+    },
+    "outside IRIS": {
+     "state": "open",
+     "facet": "link kind: outside IRIS (no server process)"
+    }
+   },
+   "command_map": {
+    "call method": "use",
+    "call percent method": "use",
+    "run SQL": "use",
+    "SQL begin": "open",
+    "commit": "commit",
+    "rollback": "rollback"
+   },
+   "notes": "open, commit and rollback act on the transaction carried by the link",
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/stores/iris_sql_store.py:1116-1210",
+     "departs": [
+      "M09-L2"
+     ],
+     "findings": [
+      "F-1701"
+     ],
+     "model": "scope/unscoped-read",
+     "mechanism": "M-09",
+     "model_checks": [
+      "scope-unscoped-read-as-built",
+      "scope-unscoped-read-reviewed"
+     ]
+    },
+    {
+     "use": "canonical",
+     "where": "iris_vector_graph/_write_txn.py:15-90",
+     "model": "unit/canonical",
+     "mechanism": "M-10",
+     "model_checks": [
+      "unit-canonical-as-built",
+      "unit-control-C1-per-statement",
+      "unit-control-C2-rollback-all-levels",
+      "unit-control-C3-ok-on-failure",
+      "unit-sharp-refused-inside-caller",
+      "unit-sharp-ok"
+     ]
+    },
+    {
+     "use": "canonical",
+     "where": "iris_vector_graph/_write_txn.py",
+     "model": "cap/http-server",
+     "mechanism": "M-11",
+     "model_checks": [
+      "cap-http-server-as-built",
+      "cap-control-C1-write-without-read-only-check",
+      "cap-control-C2-route-without-key-check",
+      "cap-control-C3-file-route",
+      "cap-sharp-keyed-write"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-02",
+    "AX-03",
+    "AX-04",
+    "AX-12",
+    "AX-13"
+   ],
+   "hand_rolled": [
+    "M-09"
+   ],
+   "findings": [
+    "F-1701"
+   ]
+  },
+  {
+   "id": "17/namespace",
+   "module": "17",
+   "entity": "namespace",
+   "ontology": "experiment/playbook-completion/ontology/17-operations.md:336",
+   "states": [
+    "set up",
+    "refused",
+    "reader role"
+   ],
+   "commands": [
+    "status",
+    "verify sync",
+    "verify and repair",
+    "verify graph"
+   ],
+   "lifecycle": "LC-3",
+   "state_map": {
+    "set up": "in-force",
+    "refused": {
+     "state": "broken",
+     "facet": "refused: the namespace check or schema record does not match"
+    },
+    "reader role": {
+     "state": "in-force",
+     "facet": "read-only role"
+    }
+   },
+   "command_map": {
+    "status": "read",
+    "verify sync": "read",
+    "verify and repair": "consult",
+    "verify graph": "read"
+   },
+   "notes": "verify and repair writes repairs of derived stores",
+   "mechanisms": [
+    {
+     "use": "canonical",
+     "where": "iris_vector_graph/_engine/admin.py",
+     "model": "install/canonical",
+     "mechanism": "M-08",
+     "model_checks": [
+      "install-canonical-as-built",
+      "install-control-C1-first-use-accepts-any",
+      "install-control-C2-unqualified-drop",
+      "install-control-C3-setting-unchecked",
+      "install-control-C4-enable-race-errors",
+      "install-sharp-other-schema-refused",
+      "install-sharp-both-enables-ok"
+     ]
+    },
+    {
+     "use": "canonical",
+     "where": "iris_vector_graph/_engine/admin.py (reader role)",
+     "model": "cap/http-server",
+     "mechanism": "M-11",
+     "model_checks": [
+      "cap-http-server-as-built",
+      "cap-control-C1-write-without-read-only-check",
+      "cap-control-C2-route-without-key-check",
+      "cap-control-C3-file-route",
+      "cap-sharp-keyed-write"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-03",
+    "AX-09",
+    "AX-13"
+   ],
+   "hand_rolled": [],
+   "findings": []
+  },
+  {
+   "id": "17/client-request",
+   "module": "17",
+   "entity": "client request",
+   "ontology": "experiment/playbook-completion/ontology/17-operations.md:337",
+   "states": [
+    "accepted",
+    "key refused",
+    "unreachable",
+    "server error"
+   ],
+   "commands": [
+    "run query",
+    "ping",
+    "read info",
+    "load file"
+   ],
+   "lifecycle": "LC-7",
+   "state_map": {
+    "accepted": "closed",
+    "key refused": "refused",
+    "unreachable": {
+     "state": "errored",
+     "facet": "unreachable: outcome unknown"
+    },
+    "server error": {
+     "state": "errored",
+     "facet": "server error"
+    }
+   },
+   "command_map": {
+    "run query": "use",
+    "ping": "use",
+    "read info": "use",
+    "load file": "use"
+   },
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/sdk.py:209-228",
+     "departs": [
+      "M02-L1"
+     ],
+     "findings": [
+      "F-C1703"
+     ],
+     "model": "retry/client-resend",
+     "mechanism": "M-02",
+     "model_checks": [
+      "retry-client-resend-as-built",
+      "retry-client-resend-reviewed"
+     ]
+    },
+    {
+     "use": "canonical",
+     "where": "iris_vector_graph/sdk.py",
+     "model": "cap/http-server",
+     "note": "401/403 mapping is F-1714 (AX-03)",
+     "mechanism": "M-11",
+     "model_checks": [
+      "cap-http-server-as-built",
+      "cap-control-C1-write-without-read-only-check",
+      "cap-control-C2-route-without-key-check",
+      "cap-control-C3-file-route",
+      "cap-sharp-keyed-write"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-03",
+    "AX-06",
+    "AX-12",
+    "AX-13"
+   ],
+   "hand_rolled": [
+    "M-02"
+   ],
+   "findings": [
+    "F-C1703"
+   ]
+  },
+  {
+   "id": "17/index-handle",
+   "module": "17",
+   "entity": "index handle",
+   "ontology": "experiment/playbook-completion/ontology/17-operations.md:338",
+   "states": [
+    "empty",
+    "built"
+   ],
+   "commands": [
+    "build",
+    "status",
+    "search",
+    "insert",
+    "drop"
+   ],
+   "lifecycle": "LC-2",
+   "state_map": {
+    "empty": "absent",
+    "built": "current"
+   },
+   "command_map": {
+    "build": "build",
+    "status": "read",
+    "search": "read",
+    "insert": "maintain",
+    "drop": "drop"
+   },
+   "notes": "a handle over one named search index (BM25 or IVF): the same store as 07/bm25-index or 06/ivf-index",
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph (index handle, BM25)",
+     "departs": [
+      "M04-L2"
+     ],
+     "findings": [
+      "F-0703"
+     ],
+     "model": "derived/bm25-text-change",
+     "mechanism": "M-04",
+     "model_checks": [
+      "derived-bm25-text-change-as-built-F0703",
+      "derived-bm25-text-change-reviewed"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph (index handle)",
+     "departs": [
+      "M12-L2"
+     ],
+     "findings": [
+      "F-0705"
+     ],
+     "model": "catalog/index-graph-unchecked",
+     "mechanism": "M-12",
+     "model_checks": [
+      "catalog-index-graph-unchecked-as-built",
+      "catalog-index-graph-unchecked-as-built-M12-L1-F-0705",
+      "catalog-index-graph-unchecked-as-built-M12-L2-F-0705",
+      "catalog-index-graph-unchecked-reviewed"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-01",
+    "AX-02",
+    "AX-08"
+   ],
+   "hand_rolled": [
+    "M-04",
+    "M-12"
+   ],
+   "findings": [
+    "F-0703",
+    "F-0705"
+   ]
+  },
+  {
+   "id": "18/namespace",
+   "module": "18",
+   "entity": "namespace",
+   "ontology": "experiment/playbook-completion/ontology/18-snapshot.md:131",
+   "states": [
+    "no ledger",
+    "ledger on",
+    "strict ledger",
+    "caller write open"
+   ],
+   "commands": [
+    "save",
+    "replacing restore",
+    "merge restore"
+   ],
+   "lifecycle": "LC-3",
+   "state_map": {
+    "no ledger": {
+     "state": "in-force",
+     "facet": "no ledger"
+    },
+    "ledger on": {
+     "state": "in-force",
+     "facet": "ledger on"
+    },
+    "strict ledger": {
+     "state": "in-force",
+     "facet": "strict ledger"
+    },
+    "caller write open": {
+     "state": "in-force",
+     "facet": "a caller's write transaction is open"
+    }
+   },
+   "command_map": {
+    "save": "read",
+    "replacing restore": "consult",
+    "merge restore": "consult"
+   },
+   "notes": "the namespace seen by the snapshot commands; save reads it, the restores act on it",
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/snapshot.py:1554-1588",
+     "departs": [
+      "M01-L1"
+     ],
+     "findings": [
+      "F-1801"
+     ],
+     "note": "shown in the snapshot family: snapshot-replacing-restore-as-built (law M06-L2, the restore form of M01-L1: a restore lowers the head)",
+     "mechanism": "M-01",
+     "model_checks": []
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/snapshot.py:1679",
+     "departs": [
+      "M04-L1"
+     ],
+     "findings": [
+      "F-1805"
+     ],
+     "note": "shown in the snapshot family: snapshot-merge-aggregates-as-built (law M06-L3: a merge restore overwrites a derived aggregate)",
+     "mechanism": "M-04",
+     "model_checks": []
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/snapshot.py:1554-1588, 1654-1692, 1679",
+     "departs": [
+      "M06-L2",
+      "M06-L3"
+     ],
+     "findings": [
+      "F-1801",
+      "F-1805",
+      "F-1802",
+      "F-C1850"
+     ],
+     "model": "snapshot/replacing-restore",
+     "mechanism": "M-06",
+     "model_checks": [
+      "snapshot-replacing-restore-as-built",
+      "snapshot-replacing-restore-reviewed"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-04",
+    "AX-05",
+    "AX-07",
+    "AX-08",
+    "AX-10",
+    "AX-12"
+   ],
+   "hand_rolled": [
+    "M-01",
+    "M-04",
+    "M-06"
+   ],
+   "findings": [
+    "F-1801",
+    "F-1802",
+    "F-1805",
+    "F-C1850"
+   ]
+  },
+  {
+   "id": "18/snapshot-archive",
+   "module": "18",
+   "entity": "snapshot archive",
+   "ontology": "experiment/playbook-completion/ontology/18-snapshot.md:132",
+   "states": [
+    "current layout",
+    "no layout note",
+    "other layout"
+   ],
+   "commands": [
+    "replacing restore",
+    "merge restore",
+    "info"
+   ],
+   "lifecycle": "LC-8",
+   "state_map": {
+    "current layout": {
+     "state": "kept",
+     "facet": "current layout"
+    },
+    "no layout note": {
+     "state": "kept",
+     "facet": "no layout note (older archive)"
+    },
+    "other layout": {
+     "state": "kept",
+     "facet": "other layout"
+    }
+   },
+   "command_map": {
+    "replacing restore": "restore",
+    "merge restore": "restore",
+    "info": "read"
+   },
+   "mechanisms": [
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/snapshot.py:387-422",
+     "departs": [
+      "M05-L1"
+     ],
+     "findings": [
+      "F-C1304"
+     ],
+     "model": "removal/snapshot-archives",
+     "mechanism": "M-05",
+     "model_checks": [
+      "removal-snapshot-archives-as-built",
+      "removal-snapshot-archives-reviewed"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/snapshot.py:299-344, 960-1025",
+     "departs": [
+      "M06-L1"
+     ],
+     "findings": [
+      "F-C1804",
+      "F-1803",
+      "F-1804"
+     ],
+     "model": "snapshot/edge-vectors-missing",
+     "mechanism": "M-06",
+     "model_checks": [
+      "snapshot-edge-vectors-missing-as-built",
+      "snapshot-edge-vectors-missing-reviewed",
+      "snapshot-control-C1-store-left-out",
+      "snapshot-control-C2-head-laid-over",
+      "snapshot-control-C3-aggregates-overwritten",
+      "snapshot-sharp-restore-refused",
+      "snapshot-sharp-round-trip"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/Snapshot.cls:4-73",
+     "departs": [
+      "M11-L3"
+     ],
+     "findings": [
+      "F-C1803",
+      "F-1806"
+     ],
+     "model": "cap/snapshot-file-helpers",
+     "mechanism": "M-11",
+     "model_checks": [
+      "cap-snapshot-file-helpers-as-built",
+      "cap-snapshot-file-helpers-reviewed"
+     ]
+    },
+    {
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/snapshot.py:864-1034",
+     "departs": [
+      "M13-L1"
+     ],
+     "findings": [
+      "F-C1801"
+     ],
+     "model": "epoch/no-check",
+     "mechanism": "M-13",
+     "model_checks": [
+      "epoch-no-check-as-built",
+      "epoch-no-check-reviewed"
+     ]
+    }
+   ],
+   "axioms": [
+    "AX-02",
+    "AX-03",
+    "AX-04",
+    "AX-05",
+    "AX-10",
+    "AX-12",
+    "AX-13"
+   ],
+   "hand_rolled": [
+    "M-05",
+    "M-06",
+    "M-11",
+    "M-13"
+   ],
+   "findings": [
+    "F-1803",
+    "F-1804",
+    "F-1806",
+    "F-C1304",
+    "F-C1801",
+    "F-C1803",
+    "F-C1804"
+   ]
+  }
+ ],
+ "counts": {
+  "objects": 62,
+  "with_lifecycle": 60,
+  "with_reason": 2,
+  "with_hand_rolled": 52
+ }
+}

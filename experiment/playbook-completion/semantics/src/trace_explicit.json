@@ -1,0 +1,346 @@
+{
+ "_doc": "Hand placements of semantics/tools/trace_requirements.py (basis explicit), read from each statement's text, Notes and Source. Placed: every I statement and every P statement the rules and finding bases leave without a target, when an axiom, contract clause, domain clause or functional clause of its module covers it. Principle for premises (kind P): an IRIS engine, driver or third-party fact is traced only to an iris-contract clause that decides it; one outside the validated contract subset stays open (a contract coverage gap, CONTRACT.md 'Outside the semantic subset'), with its reason in open_reasons. A premise that is a product or operator obligation supporting an axiom (callers send the fingerprint, an operator fronts the server with TLS) is traced to that axiom. Requirements left open on purpose are listed in open_reasons with the reason.",
+ "statements": {
+  "GID-I5.2": {
+   "targets": [
+    "AX-09"
+   ],
+   "why": "storage layout compatibility across releases: with the mode off the pre-mode layout is kept, so code of either release reads it (version gate)"
+  },
+  "WRT-I5.9": {
+   "targets": [
+    "AX-08"
+   ],
+   "why": "the indexes derived from val's text stay equal to their derivation when the text is unchanged"
+  },
+  "ADJ-I1.1": {
+   "targets": [
+    "AX-08",
+    "AX-04"
+   ],
+   "why": "the out and in halves of the adjacency index are two derived copies of one row, kept equal and written together"
+  },
+  "ADJ-I3.4.1": {
+   "targets": [
+    "DC-FUNC-04"
+   ],
+   "why": "representation rule of the multigraph layout (a single-edge triple is stored as a plain edge): a functional invariant of module 04"
+  },
+  "TMP-I3": {
+   "targets": [
+    "AX-06",
+    "DC-FUNC-05"
+   ],
+   "why": "first write wins at one coordinate (a collision changes nothing: at most once per business identity) and batch order does not change the stores"
+  },
+  "TMP-I4": {
+   "targets": [
+    "DC-FUNC-05"
+   ],
+   "why": "event-time semantics of a temporal edge: a functional rule of module 05"
+  },
+  "TMP-I2.9": {
+   "targets": [
+    "AX-08",
+    "AX-01"
+   ],
+   "why": "marked rows are derived from the temporal index (one direction, one owner)"
+  },
+  "VEC-I2.3": {
+   "targets": [
+    "AX-01"
+   ],
+   "why": "the registry row is the one owner of which table a route is (catalog binding, M-12)"
+  },
+  "VEC-I5.7": {
+   "targets": [
+    "AX-03"
+   ],
+   "why": "a width mismatch must be refused, never silently repaired by reshaping (ADR-0005)"
+  },
+  "VEC-I5.9": {
+   "targets": [
+    "AX-02"
+   ],
+   "why": "a search stays in its graph scope even when it finds nothing"
+  },
+  "VEC-I5.22": {
+   "targets": [
+    "DC-FUNC-06"
+   ],
+   "why": "what the SQL nearest search answers for a routed graph: a functional rule of module 06 (F-0610 is classed FUNC)"
+  },
+  "VEC-I6.11": {
+   "targets": [
+    "AX-13"
+   ],
+   "why": "caller-supplied values never become SQL text (no caller text run as code)"
+  },
+  "VEC-I10.5": {
+   "targets": [
+    "AX-12"
+   ],
+   "why": "the upgrade's counts report what it did: placed plus quarantined equals the old rows"
+  },
+  "TXT-I4": {
+   "targets": [
+    "AX-08"
+   ],
+   "why": "a derived index equals its derivation whichever path built it"
+  },
+  "CYP-I1.4": {
+   "targets": [
+    "AX-01"
+   ],
+   "why": "every write takes the one write path (the SQL path); the native executor never writes"
+  },
+  "CYP-I6.6": {
+   "targets": [
+    "DC-FUNC-08"
+   ],
+   "why": "openCypher semantics of an update after an empty match: a functional rule of module 08"
+  },
+  "NAT-B1.10": {
+   "targets": [
+    "DC-FUNC-09"
+   ],
+   "why": "relationship uniqueness within a match (openCypher): functional rule of module 09"
+  },
+  "NAT-B1.11": {
+   "targets": [
+    "DC-FUNC-09"
+   ],
+   "why": "relationship identity within a match: functional rule of module 09 (F-0902 is classed FUNC)"
+  },
+  "NAT-T1.8": {
+   "targets": [
+    "DC-FUNC-09"
+   ],
+   "why": "the plan's start choice is not observable in the answer: functional rule of module 09"
+  },
+  "LED-B6.2": {
+   "targets": [
+    "AX-05"
+   ],
+   "why": "an identity a kept revision used is never reused: history only grows"
+  },
+  "INT-F1.15": {
+   "targets": [
+    "AX-08"
+   ],
+   "why": "a FHIR graph is derived from its repository; a sync makes it equal to the repository's implication"
+  },
+  "OPS-I4.6.4": {
+   "targets": [
+    "AX-13"
+   ],
+   "why": "a value inlined into SQL text stays a quoted value (no caller text run as code)"
+  },
+  "SNP-I1.1": {
+   "targets": [
+    "AX-01",
+    "AX-12"
+   ],
+   "why": "one store inventory (one owner) is the archive's source, so the archive is complete or says what it leaves out"
+  },
+  "SNP-I2.19": {
+   "targets": [
+    "AX-08"
+   ],
+   "why": "after a restore the derived adjacency equals the restored rows"
+  },
+  "GID-P2.10": {
+   "targets": [
+    "X-ORDER"
+   ],
+   "why": "X-ORDER: canonical-format numbers are numeric subscripts, so the text 0 and the number 0 are one subscript"
+  },
+  "TMP-P5": {
+   "targets": [
+    "AX-09"
+   ],
+   "why": "an install carries its declared dependencies (packaging obligation of the install)"
+  },
+  "OPS-P14": {
+   "targets": [
+    "AX-09"
+   ],
+   "why": "the core install's declared dependencies and Python version (packaging obligation of the install)"
+  },
+  "INT-R1.20": {
+   "targets": [
+    "AX-09"
+   ],
+   "why": "version gate of an optional dependency (rdflib < 8; M-08 instance 15/rdf-extra)"
+  },
+  "VEC-P7.23": {
+   "targets": [
+    "AX-11"
+   ],
+   "why": "the single-consumer premise of the embed queue (HD-0604): an operator obligation that makes queue work serial"
+  },
+  "ALG-P6": {
+   "targets": [
+    "EXC-10",
+    "E-VIS"
+   ],
+   "why": "the documented concurrency contract of algorithm runs (Centrality.cls:25-28, spec 162 FR-021): reads with no lock may mix old and new edges; named exception EXC-10 to AX-12, resting on the engine's dirty reads (E-VIS)"
+  },
+  "LED-P4": {
+   "targets": [
+    "AX-06"
+   ],
+   "why": "the retry binding's fingerprint premise: a caller-side obligation of the retry mechanism"
+  },
+  "LED-P1": {
+   "targets": [
+    "E-PARTIAL",
+    "E-NEST"
+   ],
+   "why": "E-PARTIAL decides it (case sql-row-in-native-level: TROLLBACK 1 undoes SQL rows and globals of the level alike)"
+  },
+  "LED-P5": {
+   "targets": [
+    "AX-13",
+    "AX-05"
+   ],
+   "why": "operator/security premise behind history immutability: only trusted code holds write access to the ledger globals"
+  },
+  "RED-P1": {
+   "targets": [
+    "DC-REPLAY"
+   ],
+   "why": "separability premise of the replay-equals-store theorem (P-1301)"
+  },
+  "RPL-P1": {
+   "targets": [
+    "DC-REPLAY"
+   ],
+   "why": "separability premise of the replay-equals-store theorem (P-1301)"
+  },
+  "RED-P2": {
+   "targets": [
+    "AX-05",
+    "AX-01"
+   ],
+   "why": "the one exception to revision immutability has one writer (the product's own redaction code)"
+  },
+  "RED-P3": {
+   "targets": [
+    "AX-14"
+   ],
+   "why": "progress premise of a redaction run (P-1306, TRUST.md)"
+  },
+  "RED-P4": {
+   "targets": [
+    "AX-10"
+   ],
+   "why": "a named limit of removal: journals, backups and earlier exports are copies redaction cannot reach (the receipt must say so)"
+  },
+  "API-P1.14": {
+   "targets": [
+    "AX-13"
+   ],
+   "why": "operator obligation of least capability on the network: a TLS proxy in front of a reachable server"
+  },
+  "API-P12.2": {
+   "targets": [
+    "AX-09"
+   ],
+   "why": "install obligation: the product's Python package is put into IRIS before the tools run"
+  },
+  "API-P12.3": {
+   "targets": [
+    "AX-13"
+   ],
+   "why": "operator obligation of least capability: who may log in to the MCP web app"
+  },
+  "OPS-P1": {
+   "targets": [
+    "AX-09"
+   ],
+   "why": "supported engine versions: the version gate of the install"
+  },
+  "OPS-P15": {
+   "targets": [
+    "X-NOINDEX"
+   ],
+   "why": "X-NOINDEX decides it: after BUILD INDEX a DB-API duplicate insert raises LIST ERROR instead of -119"
+  },
+  "SNP-P2": {
+   "targets": [
+    "X-VEC"
+   ],
+   "why": "X-VEC decides the vector exception: the Native API cannot read a $VECTOR value"
+  },
+  "SNP-P3": {
+   "targets": [
+    "AX-13"
+   ],
+   "why": "a restore treats its archive as untrusted input (no capability beyond the product's API)"
+  },
+  "TXT-B1.3": {
+   "targets": [
+    "AX-02"
+   ],
+   "why": "Build reads only its graph's nodes and properties: graph scope (spec 230 FR-009)"
+  }
+ },
+ "open_reasons": {
+  "TXT-B4.8": "a cost (performance) rule: no universal axiom or contract clause covers performance",
+  "INT-R1.13": "a memory-bound (resource) rule: no universal axiom or contract clause covers it",
+  "INS-P2.17": "IRIS catalog fact (schema and package name case) outside the validated contract subset",
+  "INS-P2.18": "IRIS class/package projection of SQL schemas: outside the validated contract subset",
+  "INS-P4.5": "edition availability (%AI classes absent on Community): outside the contract subset",
+  "INS-P4.15": "class compiler behaviour: outside the contract subset",
+  "INS-P4.16": "upstream test-session deploy behaviour: not an engine clause",
+  "INS-P5.9": "SQL routine recompile behaviour: outside the contract subset",
+  "INS-P6.15": "grant listing format: outside the contract subset",
+  "INS-P6.16": "revoke semantics: outside the contract subset",
+  "INS-P7.10": "catalog keeps routine and view text: outside the contract subset",
+  "INS-P8.10": "class delete drops the table's rows: outside the contract subset",
+  "INS-P10.12": "SQL privilege checks for dynamic SQL vs global database rights: outside the contract subset (privileges)",
+  "INS-P12": "privilege error text: outside the contract subset",
+  "INS-P13": "default-schema lookup of an unqualified SQL name: outside the contract subset",
+  "GID-P2.11": "an empty subscript is refused: E-GLOBALS does not decide it",
+  "WRT-P5.12": "a SET of an equal text value is not written: outside the contract subset",
+  "ADJ-P5.14.1": "read-only database protection (<PROTECT>): outside the contract subset",
+  "TMP-P4": "global value type preservation: outside the contract subset",
+  "TMP-P6": "string length limit: no capacity clause in the contract",
+  "OPS-P7": "string length limit: no capacity clause in the contract",
+  "OPS-P8": "bound-parameter limit: no capacity clause in the contract",
+  "ALG-P3": "callout argument length limit: no capacity clause in the contract",
+  "VEC-P1": "vector width refusal (SQLCODE -104): X-VEC covers availability and $VECTOR only",
+  "VEC-P2": "vector scoring of different widths: outside X-VEC",
+  "VEC-P3": "LIKE without ESCAPE: outside the contract subset",
+  "VEC-P6": "HNSW build precondition: HNSW maintenance is outside the subset",
+  "VEC-P7": "foreign-key delete refusal (-124): outside the contract subset",
+  "TXT-P1": "the English text analyzer: outside the contract subset",
+  "CYP-P5": "SQL string literal escaping: outside the contract subset",
+  "CYP-P6": "the driver runs one statement per call: outside the contract subset",
+  "NAT-P1": "WorkMgr worker processes: JOB / WorkMgr is outside the subset",
+  "NAT-P3": "a failed class compile breaks later SQL prepare: outside the contract subset",
+  "ALG-P1": "the Arno library's namespace: a third-party library fact",
+  "ALG-P4": "the Arno native PageRank reader's scope: a third-party library fact (sources disagree, F-1001)",
+  "ALG-P5": "networkx semantics: a third-party library fact",
+  "LED-P8": "row triggers for plain SQL update and delete: triggers are outside the contract subset",
+  "LED-P3": "object %OpenId/%Save lock and whole-row write: the object path is outside the contract subset (E-ROWLOCK decides SQL DML only)",
+  "INT-F2.9": "FHIR server schema: FHIR server classes are unavailable and outside the subset",
+  "INT-F9.5": "Task Manager timing: Task Manager is outside the subset",
+  "INT-F12.1": "edition availability (FHIR server only in IRIS for Health)",
+  "INT-F12.2": "server SQL privilege context: outside the contract subset",
+  "INT-F12.3": "FHIR repository storage layout: outside the subset",
+  "INT-F12.4": "FHIR repository soft delete: outside the subset",
+  "INT-S1.12": "pySHACL semantics: a third-party library fact",
+  "API-P11.2": "IRIS web application authentication: outside the contract subset",
+  "API-P12.1": "edition availability (%AI classes)",
+  "OPS-P2": "Community edition core limit: outside the contract subset",
+  "OPS-P3": "edition availability (%AI package)",
+  "OPS-P4": "the Python driver's API surface: a driver fact outside the subset",
+  "OPS-P6": "a third-party package overwriting the iris module: packaging fact outside the subset",
+  "OPS-P11": "INFORMATION_SCHEMA.ROUTINES visibility: outside the contract subset",
+  "OPS-P12": "Python warnings filter semantics: a language fact",
+  "OPS-P13": "embedded Python tool-service crash: outside the contract subset",
+  "OPS-P16": "image availability: not an engine clause (versions/AVAILABILITY.md)"
+ }
+}
