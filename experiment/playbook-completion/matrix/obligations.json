@@ -1337,42 +1337,54 @@
   },
   {
    "cited_runs": [],
-   "evidence": [
-    "experiment/playbook-uplift/ontology/00-system.md (module 00 owns no code or store: it holds the definitions SYS-D*, the universal axioms SYS-I1..I10 and premises SYS-P1..P4, each checked inside the owning modules)"
-   ],
    "gate": "3.3-L1",
    "level": "model",
    "module": "00",
    "product_obligation": "n/a",
-   "remaining": "",
-   "source": "modules/00.json",
+   "reason": "module 00 holds only definitions, axioms and premises and no operations (ontology/00-system.md:46-96; proofs-d1f/PROOFS.md module 00 decision); its system-wide invariants are proved in the composed protocols (proofs/, proofs-d9/)",
    "status": "not-applicable"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "models/breadth-a/src (ins_legacy, ins_setup)"
+   "cited_runs": [
+    "proofs-d1e-baseline"
    ],
+   "evidence": [
+    "run:proofs-d1e-baseline"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-L1",
    "level": "model",
    "module": "01",
-   "product_obligation": "unknown",
-   "remaining": "explorer models state the module's key invariants (see RESULTS.json); no Verus L1",
-   "source": "modules/01.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "stated fails by orchestrator"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1e/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "models/breadth-a/src (gid_mode)"
+   "cited_runs": [
+    "proofs-d1e-baseline"
    ],
+   "evidence": [
+    "run:proofs-d1e-baseline"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-L1",
    "level": "model",
    "module": "02",
-   "product_obligation": "unknown",
-   "remaining": "explorer models state the module's key invariants (see RESULTS.json); no Verus L1",
-   "source": "modules/02.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "stated fails by orchestrator"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1e/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
    "cited_runs": [
@@ -1474,29 +1486,34 @@
    "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "proofs-d1d-r2-baseline"
+   ],
+   "evidence": [
+    "run:proofs-d1d-r2-baseline"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-L1",
    "level": "model",
    "module": "07",
-   "product_obligation": "unknown",
-   "reason": "No Verus L1 model for module 07. Executable explorer models exist (bm25, leg).",
-   "remaining": "Write the L1 for the BM25 index (I1-I3, I5, X2) if module 07 enters proof depth.",
-   "source": "modules/07.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "stated fails by orchestrator"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1d/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
    "cited_runs": [
-    "b-mc-m08-readonly-reviewed",
-    "b-mc-m08-scope-reviewed",
-    "b-mc-m08-txn-reviewed"
+    "proofs-d1d-r2-baseline"
    ],
    "evidence": [
-    "models/breadth-b/src/m08.rs",
-    "m08-txn-reviewed",
-    "m08-scope-reviewed",
-    "m08-readonly-reviewed"
+    "run:proofs-d1d-r2-baseline"
    ],
+   "evidence_grade": "registered-run",
    "findings": [
     "F-0802",
     "F-0805",
@@ -1515,202 +1532,42 @@
      "finding F-0816",
      "finding F-0818",
      "finding F-0819",
-     "finding F-0820"
+     "finding F-0820",
+     "stated fails by orchestrator"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "reason": "Small L1-style explorer models exist for the write transaction (m08-txn-*), graph scope of reads (m08-scope-*) and read-only mode (m08-readonly-*); they are executable models, not Verus L1 specs.",
-   "remaining": "Verus L1 for CYP invariants (I5.5, I5.6, I6.3, I6.4, I8.6, I9.4).",
-   "source": "modules/08.json",
-   "status": "open"
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1d/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
    "cited_runs": [
-    "b-mc-m09-gate-reviewed",
-    "b-mc-m09-mode-reviewed",
-    "b-mc-m09-planc-reviewed",
-    "b-mc-m09-used-reviewed"
+    "proofs-d1d-r2-baseline"
    ],
    "evidence": [
-    "mc:m09-planc-reviewed",
-    "mc:m09-mode-reviewed",
-    "mc:m09-used-reviewed",
-    "mc:m09-gate-reviewed"
+    "run:proofs-d1d-r2-baseline"
    ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-L1",
    "level": "model",
    "module": "09",
-   "product_obligation": "unknown",
-   "reason": "explorer machines state the module's invariants (NAT-I3, T5.16, I5, X12, X11, B5.2, B1.11, I1) over abstract state; no Verus L1",
-   "remaining": "Verus L1 for the plan cache and the native gate",
-   "source": "modules/09.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "stated fails by orchestrator"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1d/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
    "cited_runs": [
-    "b-mc-m10-cache-as-built-pagerank",
-    "b-mc-m10-cache-as-built-ppr",
-    "b-mc-m10-cache-control-no-bump-on-create",
-    "b-mc-m10-cache-control-silent-delete-pagerank",
-    "b-mc-m10-cache-positive-hit",
-    "b-mc-m10-cache-positive-stale-skip",
-    "b-mc-m10-cache-reviewed-pagerank",
-    "b-mc-m10-cache-reviewed-ppr",
-    "b-mc-m10-degree-as-built",
-    "b-mc-m10-degree-control-distinct-out",
-    "b-mc-m10-degree-positive-parallel",
-    "b-mc-m10-degree-reviewed",
-    "b-mc-m10-nkg-as-built-fresh",
-    "b-mc-m10-nkg-as-built-scope",
-    "b-mc-m10-nkg-control-ensure-ignores-stale",
-    "b-mc-m10-nkg-control-walk-merged",
-    "b-mc-m10-nkg-positive-current-read",
-    "b-mc-m10-nkg-positive-refusal",
-    "b-mc-m10-nkg-reviewed",
-    "b-mc-m10-routes-as-built-pagerank-cap",
-    "b-mc-m10-routes-as-built-pagerank-scope",
-    "b-mc-m10-routes-as-built-pagerank-scope-default-only-lib",
-    "b-mc-m10-routes-as-built-walk-empty",
-    "b-mc-m10-routes-control-no-probe",
-    "b-mc-m10-routes-control-owner-cap",
-    "b-mc-m10-routes-positive-native",
-    "b-mc-m10-routes-reviewed",
-    "b-mc-m10-walk-as-built-khop",
-    "b-mc-m10-walk-as-built-one-graph",
-    "b-mc-m10-walk-control-reset-at-shared",
-    "b-mc-m10-walk-positive-two-hops",
-    "b-mc-m10-walk-reviewed"
+    "proofs-d1e-baseline"
    ],
    "evidence": [
-    {
-     "kind": "mc",
-     "ref": "m10-cache-as-built-pagerank"
-    },
-    {
-     "kind": "mc",
-     "ref": "m10-cache-as-built-ppr"
-    },
-    {
-     "kind": "mc",
-     "ref": "m10-cache-control-no-bump-on-create"
-    },
-    {
-     "kind": "mc",
-     "ref": "m10-cache-control-silent-delete-pagerank"
-    },
-    {
-     "kind": "mc",
-     "ref": "m10-cache-positive-hit"
-    },
-    {
-     "kind": "mc",
-     "ref": "m10-cache-positive-stale-skip"
-    },
-    {
-     "kind": "mc",
-     "ref": "m10-cache-reviewed-pagerank"
-    },
-    {
-     "kind": "mc",
-     "ref": "m10-cache-reviewed-ppr"
-    },
-    {
-     "kind": "mc",
-     "ref": "m10-degree-as-built"
-    },
-    {
-     "kind": "mc",
-     "ref": "m10-degree-control-distinct-out"
-    },
-    {
-     "kind": "mc",
-     "ref": "m10-degree-positive-parallel"
-    },
-    {
-     "kind": "mc",
-     "ref": "m10-degree-reviewed"
-    },
-    {
-     "kind": "mc",
-     "ref": "m10-nkg-as-built-fresh"
-    },
-    {
-     "kind": "mc",
-     "ref": "m10-nkg-as-built-scope"
-    },
-    {
-     "kind": "mc",
-     "ref": "m10-nkg-control-ensure-ignores-stale"
-    },
-    {
-     "kind": "mc",
-     "ref": "m10-nkg-control-walk-merged"
-    },
-    {
-     "kind": "mc",
-     "ref": "m10-nkg-positive-current-read"
-    },
-    {
-     "kind": "mc",
-     "ref": "m10-nkg-positive-refusal"
-    },
-    {
-     "kind": "mc",
-     "ref": "m10-nkg-reviewed"
-    },
-    {
-     "kind": "mc",
-     "ref": "m10-routes-as-built-pagerank-cap"
-    },
-    {
-     "kind": "mc",
-     "ref": "m10-routes-as-built-pagerank-scope"
-    },
-    {
-     "kind": "mc",
-     "ref": "m10-routes-as-built-pagerank-scope-default-only-lib"
-    },
-    {
-     "kind": "mc",
-     "ref": "m10-routes-as-built-walk-empty"
-    },
-    {
-     "kind": "mc",
-     "ref": "m10-routes-control-no-probe"
-    },
-    {
-     "kind": "mc",
-     "ref": "m10-routes-control-owner-cap"
-    },
-    {
-     "kind": "mc",
-     "ref": "m10-routes-positive-native"
-    },
-    {
-     "kind": "mc",
-     "ref": "m10-routes-reviewed"
-    },
-    {
-     "kind": "mc",
-     "ref": "m10-walk-as-built-khop"
-    },
-    {
-     "kind": "mc",
-     "ref": "m10-walk-as-built-one-graph"
-    },
-    {
-     "kind": "mc",
-     "ref": "m10-walk-control-reset-at-shared"
-    },
-    {
-     "kind": "mc",
-     "ref": "m10-walk-positive-two-hops"
-    },
-    {
-     "kind": "mc",
-     "ref": "m10-walk-reviewed"
-    }
+    "run:proofs-d1e-baseline"
    ],
    "evidence_grade": "registered-run",
    "gate": "3.3-L1",
@@ -1718,21 +1575,12 @@
    "module": "10",
    "product_basis": {
     "fails": [
-     "run b-mc-m10-cache-as-built-ppr (expected-violation)",
-     "run b-mc-m10-degree-as-built (expected-violation)",
-     "run b-mc-m10-nkg-as-built-fresh (expected-violation)",
-     "run b-mc-m10-nkg-as-built-scope (expected-violation)",
-     "run b-mc-m10-routes-as-built-pagerank-cap (expected-violation)",
-     "run b-mc-m10-routes-as-built-walk-empty (expected-violation)",
-     "run b-mc-m10-walk-as-built-khop (expected-violation)",
-     "run b-mc-m10-walk-as-built-one-graph (expected-violation)"
+     "stated fails by orchestrator"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "reason": "Five small explorer models (cache, nkg, routes, walk, degree) state ALG-I1, ALG-I2, ALG-I3, ALG-I4, ALG-B2.19, ALG-B12.7, ALG-B16.11 as invariants/action properties.",
-   "remaining": "Explorer models are bounded executable L1s, not Verus specs.",
-   "source": "modules/10.json",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1e/PROOFS.md; no code correspondence",
    "status": "closed"
   },
   {
@@ -1901,39 +1749,67 @@
    "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "proofs-d1f-baseline"
+   ],
+   "evidence": [
+    "run:proofs-d1f-baseline"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-L1",
    "level": "model",
    "module": "15",
-   "product_obligation": "unknown",
-   "remaining": "main lane models (explorer models exist; no L1 machine)",
-   "source": "modules/15.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "stated fails by orchestrator"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1f/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "proofs-d1f-baseline"
+   ],
+   "evidence": [
+    "run:proofs-d1f-baseline"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-L1",
    "level": "model",
    "module": "16",
-   "product_obligation": "unknown",
-   "remaining": "explorer models only (models/breadth-c); no Verus L1/L2/refinement for module 16",
-   "source": "modules/16.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "stated fails by orchestrator"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1f/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "models/breadth-c/src/retry.rs"
+   "cited_runs": [
+    "proofs-d1f-baseline"
    ],
+   "evidence": [
+    "run:proofs-d1f-baseline"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-L1",
    "level": "model",
    "module": "17",
-   "product_obligation": "unknown",
-   "remaining": "explorer abstraction only; no Verus L1",
-   "source": "modules/17.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "stated fails by orchestrator"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1f/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
    "cited_runs": [
@@ -1958,42 +1834,54 @@
   },
   {
    "cited_runs": [],
-   "evidence": [
-    "experiment/playbook-uplift/ontology/00-system.md (module 00 owns no code or store: it holds the definitions SYS-D*, the universal axioms SYS-I1..I10 and premises SYS-P1..P4, each checked inside the owning modules)"
-   ],
    "gate": "3.3-L2",
    "level": "model",
    "module": "00",
    "product_obligation": "n/a",
-   "remaining": "",
-   "source": "modules/00.json",
+   "reason": "module 00 holds only definitions, axioms and premises and no operations (ontology/00-system.md:46-96; proofs-d1f/PROOFS.md module 00 decision); its system-wide invariants are proved in the composed protocols (proofs/, proofs-d9/)",
    "status": "not-applicable"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "models/breadth-a/RESULTS.json"
+   "cited_runs": [
+    "proofs-d1e-baseline"
    ],
+   "evidence": [
+    "run:proofs-d1e-baseline"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-L2",
    "level": "model",
    "module": "01",
-   "product_obligation": "unknown",
-   "remaining": "no L2 machine over the real data layout",
-   "source": "modules/01.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "stated fails by orchestrator"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1e/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "models/breadth-a/RESULTS.json"
+   "cited_runs": [
+    "proofs-d1e-baseline"
    ],
+   "evidence": [
+    "run:proofs-d1e-baseline"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-L2",
    "level": "model",
    "module": "02",
-   "product_obligation": "unknown",
-   "remaining": "no L2 machine over the real data layout",
-   "source": "modules/02.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "stated fails by orchestrator"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1e/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
    "cited_runs": [
@@ -2096,23 +1984,10 @@
   },
   {
    "cited_runs": [
-    "b-mc-m07-bm25-as-built-I2",
-    "b-mc-m07-bm25-as-built-X2",
-    "b-mc-m07-bm25-reviewed"
+    "proofs-d1d-r2-baseline"
    ],
    "evidence": [
-    {
-     "kind": "mc",
-     "ref": "m07-bm25-reviewed"
-    },
-    {
-     "kind": "mc",
-     "ref": "m07-bm25-as-built-I2"
-    },
-    {
-     "kind": "mc",
-     "ref": "m07-bm25-as-built-X2"
-    }
+    "run:proofs-d1d-r2-baseline"
    ],
    "evidence_grade": "registered-run",
    "findings": [
@@ -2126,86 +2001,76 @@
     "fails": [
      "finding F-0701",
      "finding F-0704",
-     "run b-mc-m07-bm25-as-built-I2 (expected-violation)",
-     "run b-mc-m07-bm25-as-built-X2 (expected-violation)"
+     "stated fails by orchestrator"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "reason": "The bm25 machine abstracts the real ^BM25Idx layout and every writer step at path:lines (m07.rs header); as-built reproduces F-0701/F-0704 and the reviewed design passes exhaustively within bounds (bounded mc, not a proof).",
-   "remaining": "Bounds: 3 documents, 2 tokens, 1 build, 2 writer ops, 1 drop, 1 upgrade.",
-   "source": "modules/07.json",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1d/PROOFS.md; no code correspondence",
    "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "iris_vector_graph/cypher/translator.py:7090-7772"
+   "cited_runs": [
+    "proofs-d1d-r2-baseline"
    ],
+   "evidence": [
+    "run:proofs-d1d-r2-baseline"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-L2",
    "level": "model",
    "module": "08",
-   "product_obligation": "n/a",
-   "reason": "No L2 machine over the real data layout for a 31,908-line translator at breadth; the translator's statement generation is outside any machine's semantic subset (unrepresentable at this scope).",
-   "remaining": "An L2 for the write transaction protocol (Txn_Begin/End/Undo over rows + ^KG) is feasible and would refine m08-txn.",
-   "source": "modules/08.json",
-   "status": "not-applicable"
+   "product_basis": {
+    "fails": [
+     "stated fails by orchestrator"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1d/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
    "cited_runs": [
-    "b-mc-m09-planc-as-built-collide-binding",
-    "b-mc-m09-planc-as-built-drop-shape"
+    "proofs-d1d-r2-baseline"
    ],
    "evidence": [
-    "mc:m09-planc-as-built-collide-binding",
-    "mc:m09-planc-as-built-drop-shape"
+    "run:proofs-d1d-r2-baseline"
    ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-L2",
    "level": "model",
    "module": "09",
    "product_basis": {
     "fails": [
-     "run b-mc-m09-planc-as-built-collide-binding (expected-violation)",
-     "run b-mc-m09-planc-as-built-drop-shape (expected-violation)"
+     "stated fails by orchestrator"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "reason": "machine planc is over the real layout (entry $LB elements, src lines, per-entry lock, IVGC class, job builds, DropAll steps; Gen.cls cited per action) but explorer-only; the walk itself (Exec.RunA/Walk/Neighbours) is not modelled beyond the used-relationship set",
-   "remaining": "L2 of the walk and of answer parity with the SQL path",
-   "source": "modules/09.json",
-   "status": "open"
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1d/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
    "cited_runs": [
-    "b-mc-m10-cache-as-built-ppr",
-    "b-mc-m10-nkg-as-built-fresh"
+    "proofs-d1e-baseline"
    ],
    "evidence": [
-    {
-     "kind": "mc",
-     "ref": "m10-cache-as-built-ppr"
-    },
-    {
-     "kind": "mc",
-     "ref": "m10-nkg-as-built-fresh"
-    }
+    "run:proofs-d1e-baseline"
    ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-L2",
    "level": "model",
    "module": "10",
    "product_basis": {
     "fails": [
-     "run b-mc-m10-cache-as-built-ppr (expected-violation)",
-     "run b-mc-m10-nkg-as-built-fresh (expected-violation)"
+     "stated fails by orchestrator"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "reason": "",
-   "remaining": "The cache and nkg machines abstract ^IVG.AlgoCache / ^KG / ^NKG marks; no L2 over the full global layout.",
-   "source": "modules/10.json",
-   "status": "open"
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1e/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
    "as_built_findings": [
@@ -2367,37 +2232,67 @@
    "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "proofs-d1f-baseline"
+   ],
+   "evidence": [
+    "run:proofs-d1f-baseline"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-L2",
    "level": "model",
    "module": "15",
-   "product_obligation": "unknown",
-   "remaining": "main lane models (no L2 machine over the real layout)",
-   "source": "modules/15.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "stated fails by orchestrator"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1f/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "proofs-d1f-baseline"
+   ],
+   "evidence": [
+    "run:proofs-d1f-baseline"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-L2",
    "level": "model",
    "module": "16",
-   "product_obligation": "unknown",
-   "remaining": "explorer models only (models/breadth-c); no Verus L1/L2/refinement for module 16",
-   "source": "modules/16.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "stated fails by orchestrator"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1f/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "proofs-d1f-baseline"
+   ],
+   "evidence": [
+    "run:proofs-d1f-baseline"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-L2",
    "level": "model",
    "module": "17",
-   "product_obligation": "unknown",
-   "remaining": "no L2",
-   "source": "modules/17.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "stated fails by orchestrator"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1f/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
    "cited_runs": [
@@ -2422,38 +2317,58 @@
   },
   {
    "cited_runs": [],
-   "evidence": [
-    "experiment/playbook-uplift/ontology/00-system.md (module 00 owns no code or store: it holds the definitions SYS-D*, the universal axioms SYS-I1..I10 and premises SYS-P1..P4, each checked inside the owning modules)"
-   ],
    "gate": "3.3-refinement",
    "level": "model",
    "module": "00",
    "product_obligation": "n/a",
-   "remaining": "",
-   "source": "modules/00.json",
+   "reason": "module 00 holds only definitions, axioms and premises and no operations (ontology/00-system.md:46-96; proofs-d1f/PROOFS.md module 00 decision); its system-wide invariants are proved in the composed protocols (proofs/, proofs-d9/)",
    "status": "not-applicable"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "proofs-d1e-baseline",
+    "proofs-d1e-recheck"
+   ],
+   "evidence": [
+    "run:proofs-d1e-baseline",
+    "run:proofs-d1e-recheck"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-refinement",
    "level": "model",
    "module": "01",
-   "product_obligation": "unknown",
-   "remaining": "no refinement evidence",
-   "source": "modules/01.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "stated fails by orchestrator"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1e/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "proofs-d1e-baseline",
+    "proofs-d1e-recheck"
+   ],
+   "evidence": [
+    "run:proofs-d1e-baseline",
+    "run:proofs-d1e-recheck"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-refinement",
    "level": "model",
    "module": "02",
-   "product_obligation": "unknown",
-   "remaining": "no refinement evidence",
-   "source": "modules/02.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "stated fails by orchestrator"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1e/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
    "cited_runs": [
@@ -2563,56 +2478,96 @@
    "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "proofs-d1d-r2-baseline",
+    "proofs-d1d-recheck"
+   ],
+   "evidence": [
+    "run:proofs-d1d-r2-baseline",
+    "run:proofs-d1d-recheck"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-refinement",
    "level": "model",
    "module": "07",
-   "product_obligation": "unknown",
-   "reason": "No refinement audit (explorer::refinement) between an L1 and the bm25 machine.",
-   "remaining": "Bind the bm25 machine to an L1 with explorer::refinement::audit.",
-   "source": "modules/07.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "stated fails by orchestrator"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1d/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
    "cited_runs": [
-    "b-08-live-footprints"
+    "proofs-d1d-r2-baseline",
+    "proofs-d1d-recheck"
    ],
    "evidence": [
-    "b-08-live-footprints"
+    "run:proofs-d1d-r2-baseline",
+    "run:proofs-d1d-recheck"
    ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-refinement",
    "level": "model",
    "module": "08",
-   "product_obligation": "unknown",
-   "reason": "No refinement audit of an L2 against the models; journal validation shows the as-built write protocol matches the m08-txn as-built design (one level per query, failure net-empty, caller level kept).",
-   "remaining": "Binding from journaled traces to m08-txn (trace replay).",
-   "source": "modules/08.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "stated fails by orchestrator"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1d/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "proofs-d1d-r2-baseline",
+    "proofs-d1d-recheck"
+   ],
+   "evidence": [
+    "run:proofs-d1d-r2-baseline",
+    "run:proofs-d1d-recheck"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-refinement",
    "level": "model",
    "module": "09",
-   "product_obligation": "unknown",
-   "reason": "no refinement audit (explorer::refinement::audit) or proof between an L2 and an L1 for module 09",
-   "remaining": "bind planc to an L1 cache contract",
-   "source": "modules/09.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "stated fails by orchestrator"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1d/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "proofs-d1e-baseline",
+    "proofs-d1e-recheck"
+   ],
+   "evidence": [
+    "run:proofs-d1e-baseline",
+    "run:proofs-d1e-recheck"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-refinement",
    "level": "model",
    "module": "10",
-   "product_obligation": "unknown",
-   "reason": "",
-   "remaining": "No refinement audit or proof of the module 10 operations against an L1.",
-   "source": "modules/10.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "stated fails by orchestrator"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1e/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
    "as_built_findings": [
@@ -2797,37 +2752,73 @@
    "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "proofs-d1f-baseline",
+    "proofs-d1f-recheck"
+   ],
+   "evidence": [
+    "run:proofs-d1f-baseline",
+    "run:proofs-d1f-recheck"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-refinement",
    "level": "model",
    "module": "15",
-   "product_obligation": "unknown",
-   "remaining": "main lane models (no proved refinement)",
-   "source": "modules/15.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "stated fails by orchestrator"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1f/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "proofs-d1f-baseline",
+    "proofs-d1f-recheck"
+   ],
+   "evidence": [
+    "run:proofs-d1f-baseline",
+    "run:proofs-d1f-recheck"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-refinement",
    "level": "model",
    "module": "16",
-   "product_obligation": "unknown",
-   "remaining": "explorer models only (models/breadth-c); no Verus L1/L2/refinement for module 16",
-   "source": "modules/16.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "stated fails by orchestrator"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1f/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "proofs-d1f-baseline",
+    "proofs-d1f-recheck"
+   ],
+   "evidence": [
+    "run:proofs-d1f-baseline",
+    "run:proofs-d1f-recheck"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-refinement",
    "level": "model",
    "module": "17",
-   "product_obligation": "unknown",
-   "remaining": "not proved",
-   "source": "modules/17.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "stated fails by orchestrator"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1f/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
    "cited_runs": [
@@ -2854,42 +2845,142 @@
   },
   {
    "cited_runs": [],
-   "evidence": [
-    "experiment/playbook-uplift/ontology/00-system.md (module 00 owns no code or store: it holds the definitions SYS-D*, the universal axioms SYS-I1..I10 and premises SYS-P1..P4, each checked inside the owning modules)"
-   ],
    "gate": "3.3-controls",
    "level": "model",
    "module": "00",
    "product_obligation": "n/a",
-   "remaining": "",
-   "source": "modules/00.json",
+   "reason": "module 00 holds only definitions, axioms and premises and no operations (ontology/00-system.md:46-96; proofs-d1f/PROOFS.md module 00 decision); its system-wide invariants are proved in the composed protocols (proofs/, proofs-d9/)",
    "status": "not-applicable"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "models/breadth-a/RESULTS.json: ins_setup-control-silent-skip, ins_legacy-control-first-item-only"
+   "cited_runs": [
+    "proofs-d1e-f0101-removed-unchecked",
+    "proofs-d1e-f0102-failure-only-logged",
+    "proofs-d1e-f0103-marker-admits",
+    "proofs-d1e-f0106-keys-join-on-id",
+    "proofs-d1e-f0109-upgrade-default-schema",
+    "proofs-d1e-f0201-ekey0-guard",
+    "proofs-d1e-f0202-writer-skips-name-check",
+    "proofs-d1e-f0206-hydrate-from-default",
+    "proofs-d1e-f0207-set-off-unlocked",
+    "proofs-d1e-f0208-mode-cached-forever",
+    "proofs-d1e-f1003-owner-cap",
+    "proofs-d1e-f1004-create-moves-no-token",
+    "proofs-d1e-f1008-every-graph-mixed",
+    "proofs-d1e-fc1001-read-creates-routines",
+    "proofs-d1e-hd1003-direction-unchecked"
    ],
+   "evidence": [
+    "run:proofs-d1e-f0101-removed-unchecked",
+    "run:proofs-d1e-f0102-failure-only-logged",
+    "run:proofs-d1e-f0103-marker-admits",
+    "run:proofs-d1e-f0106-keys-join-on-id",
+    "run:proofs-d1e-f0109-upgrade-default-schema",
+    "run:proofs-d1e-f0201-ekey0-guard",
+    "run:proofs-d1e-f0202-writer-skips-name-check",
+    "run:proofs-d1e-f0206-hydrate-from-default",
+    "run:proofs-d1e-f0207-set-off-unlocked",
+    "run:proofs-d1e-f0208-mode-cached-forever",
+    "run:proofs-d1e-f1003-owner-cap",
+    "run:proofs-d1e-f1004-create-moves-no-token",
+    "run:proofs-d1e-f1008-every-graph-mixed",
+    "run:proofs-d1e-fc1001-read-creates-routines",
+    "run:proofs-d1e-hd1003-direction-unchecked"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-controls",
    "level": "model",
    "module": "01",
-   "product_obligation": "unknown",
-   "remaining": "controls are explorer mutants (each caught), not proof-level rejections",
-   "source": "modules/01.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "stated fails by orchestrator",
+     "run proofs-d1e-f0101-removed-unchecked (expected-violation)",
+     "run proofs-d1e-f0102-failure-only-logged (expected-violation)",
+     "run proofs-d1e-f0103-marker-admits (expected-violation)",
+     "run proofs-d1e-f0106-keys-join-on-id (expected-violation)",
+     "run proofs-d1e-f0109-upgrade-default-schema (expected-violation)",
+     "run proofs-d1e-f0201-ekey0-guard (expected-violation)",
+     "run proofs-d1e-f0202-writer-skips-name-check (expected-violation)",
+     "run proofs-d1e-f0206-hydrate-from-default (expected-violation)",
+     "run proofs-d1e-f0207-set-off-unlocked (expected-violation)",
+     "run proofs-d1e-f0208-mode-cached-forever (expected-violation)",
+     "run proofs-d1e-f1003-owner-cap (expected-violation)",
+     "run proofs-d1e-f1004-create-moves-no-token (expected-violation)",
+     "run proofs-d1e-f1008-every-graph-mixed (expected-violation)",
+     "run proofs-d1e-fc1001-read-creates-routines (expected-violation)"
+    ],
+    "intent_undecided": [
+     "run proofs-d1e-hd1003-direction-unchecked (expected-violation) of a decision only"
+    ]
+   },
+   "product_obligation": "fails",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1e/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "models/breadth-a/RESULTS.json: gid_mode-control-writers-unlocked"
+   "cited_runs": [
+    "proofs-d1e-f0101-removed-unchecked",
+    "proofs-d1e-f0102-failure-only-logged",
+    "proofs-d1e-f0103-marker-admits",
+    "proofs-d1e-f0106-keys-join-on-id",
+    "proofs-d1e-f0109-upgrade-default-schema",
+    "proofs-d1e-f0201-ekey0-guard",
+    "proofs-d1e-f0202-writer-skips-name-check",
+    "proofs-d1e-f0206-hydrate-from-default",
+    "proofs-d1e-f0207-set-off-unlocked",
+    "proofs-d1e-f0208-mode-cached-forever",
+    "proofs-d1e-f1003-owner-cap",
+    "proofs-d1e-f1004-create-moves-no-token",
+    "proofs-d1e-f1008-every-graph-mixed",
+    "proofs-d1e-fc1001-read-creates-routines",
+    "proofs-d1e-hd1003-direction-unchecked"
    ],
+   "evidence": [
+    "run:proofs-d1e-f0101-removed-unchecked",
+    "run:proofs-d1e-f0102-failure-only-logged",
+    "run:proofs-d1e-f0103-marker-admits",
+    "run:proofs-d1e-f0106-keys-join-on-id",
+    "run:proofs-d1e-f0109-upgrade-default-schema",
+    "run:proofs-d1e-f0201-ekey0-guard",
+    "run:proofs-d1e-f0202-writer-skips-name-check",
+    "run:proofs-d1e-f0206-hydrate-from-default",
+    "run:proofs-d1e-f0207-set-off-unlocked",
+    "run:proofs-d1e-f0208-mode-cached-forever",
+    "run:proofs-d1e-f1003-owner-cap",
+    "run:proofs-d1e-f1004-create-moves-no-token",
+    "run:proofs-d1e-f1008-every-graph-mixed",
+    "run:proofs-d1e-fc1001-read-creates-routines",
+    "run:proofs-d1e-hd1003-direction-unchecked"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-controls",
    "level": "model",
    "module": "02",
-   "product_obligation": "unknown",
-   "remaining": "controls are explorer mutants (each caught), not proof-level rejections",
-   "source": "modules/02.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "stated fails by orchestrator",
+     "run proofs-d1e-f0101-removed-unchecked (expected-violation)",
+     "run proofs-d1e-f0102-failure-only-logged (expected-violation)",
+     "run proofs-d1e-f0103-marker-admits (expected-violation)",
+     "run proofs-d1e-f0106-keys-join-on-id (expected-violation)",
+     "run proofs-d1e-f0109-upgrade-default-schema (expected-violation)",
+     "run proofs-d1e-f0201-ekey0-guard (expected-violation)",
+     "run proofs-d1e-f0202-writer-skips-name-check (expected-violation)",
+     "run proofs-d1e-f0206-hydrate-from-default (expected-violation)",
+     "run proofs-d1e-f0207-set-off-unlocked (expected-violation)",
+     "run proofs-d1e-f0208-mode-cached-forever (expected-violation)",
+     "run proofs-d1e-f1003-owner-cap (expected-violation)",
+     "run proofs-d1e-f1004-create-moves-no-token (expected-violation)",
+     "run proofs-d1e-f1008-every-graph-mixed (expected-violation)",
+     "run proofs-d1e-fc1001-read-creates-routines (expected-violation)"
+    ],
+    "intent_undecided": [
+     "run proofs-d1e-hd1003-direction-unchecked (expected-violation) of a decision only"
+    ]
+   },
+   "product_obligation": "fails",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1e/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
    "cited_runs": [
@@ -3089,132 +3180,317 @@
   },
   {
    "cited_runs": [
-    "b-mc-m07-bm25-control-late-refusal",
-    "b-mc-m07-bm25-control-nolock",
-    "b-mc-m07-leg-control-no-scope-check"
+    "proofs-d1d-r2-f0701-build-in-place",
+    "proofs-d1d-r2-f0702-erase-keeps-index",
+    "proofs-d1d-r2-f0704-late-refusal",
+    "proofs-d1d-r2-f0705-absent-graph-is-default",
+    "proofs-d1d-r2-f0707-no-scope-check",
+    "proofs-d1d-r2-f0801-fail-open",
+    "proofs-d1d-r2-f0801-ttl-window",
+    "proofs-d1d-r2-f0802-shortcut-unscoped",
+    "proofs-d1d-r2-f0805-literal-insert-unguarded",
+    "proofs-d1d-r2-f0810-null-keeps-key",
+    "proofs-d1d-r2-f0816-dblabels-unscoped",
+    "proofs-d1d-r2-f0818-vlp-crosses-graphs",
+    "proofs-d1d-r2-f0901-shared-class-name",
+    "proofs-d1d-r2-f0902-crc-identity",
+    "proofs-d1d-r2-f0906-gate-edge-index-only",
+    "proofs-d1d-r2-f0908-run-unchecked",
+    "proofs-d1d-r2-fc0701-stop-name-accepted",
+    "proofs-d1d-r2-fc0702-bare-trollback",
+    "proofs-d1d-r2-fc0803-top1-copy",
+    "proofs-d1d-r2-fc0901-mark-any-entry",
+    "proofs-d1d-r2-hd0902-shadow-swallows-native-error"
    ],
    "evidence": [
-    {
-     "kind": "mc",
-     "ref": "m07-bm25-control-nolock"
-    },
-    {
-     "kind": "mc",
-     "ref": "m07-bm25-control-late-refusal"
-    },
-    {
-     "kind": "mc",
-     "ref": "m07-leg-control-no-scope-check"
-    }
+    "run:proofs-d1d-r2-f0701-build-in-place",
+    "run:proofs-d1d-r2-f0702-erase-keeps-index",
+    "run:proofs-d1d-r2-f0704-late-refusal",
+    "run:proofs-d1d-r2-f0705-absent-graph-is-default",
+    "run:proofs-d1d-r2-f0707-no-scope-check",
+    "run:proofs-d1d-r2-f0801-fail-open",
+    "run:proofs-d1d-r2-f0801-ttl-window",
+    "run:proofs-d1d-r2-f0802-shortcut-unscoped",
+    "run:proofs-d1d-r2-f0805-literal-insert-unguarded",
+    "run:proofs-d1d-r2-f0810-null-keeps-key",
+    "run:proofs-d1d-r2-f0816-dblabels-unscoped",
+    "run:proofs-d1d-r2-f0818-vlp-crosses-graphs",
+    "run:proofs-d1d-r2-f0901-shared-class-name",
+    "run:proofs-d1d-r2-f0902-crc-identity",
+    "run:proofs-d1d-r2-f0906-gate-edge-index-only",
+    "run:proofs-d1d-r2-f0908-run-unchecked",
+    "run:proofs-d1d-r2-fc0701-stop-name-accepted",
+    "run:proofs-d1d-r2-fc0702-bare-trollback",
+    "run:proofs-d1d-r2-fc0803-top1-copy",
+    "run:proofs-d1d-r2-fc0901-mark-any-entry",
+    "run:proofs-d1d-r2-hd0902-shadow-swallows-native-error"
    ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-controls",
    "level": "model",
    "module": "07",
-   "product_obligation": "unknown",
-   "reason": "No proof-level controls (no Verus L1/L2 for module 07). Explorer-level negative controls caught: m07-bm25-control-nolock (Build without the lock -> TXT-I5), m07-bm25-control-late-refusal (refusal after replacement -> TXT-X2), m07-leg-control-no-scope-check (-> TXT-I7).",
-   "remaining": "",
-   "source": "modules/07.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "stated fails by orchestrator",
+     "run proofs-d1d-r2-f0701-build-in-place (expected-violation)",
+     "run proofs-d1d-r2-f0702-erase-keeps-index (expected-violation)",
+     "run proofs-d1d-r2-f0704-late-refusal (expected-violation)",
+     "run proofs-d1d-r2-f0705-absent-graph-is-default (expected-violation)",
+     "run proofs-d1d-r2-f0707-no-scope-check (expected-violation)",
+     "run proofs-d1d-r2-f0801-fail-open (expected-violation)",
+     "run proofs-d1d-r2-f0801-ttl-window (expected-violation)",
+     "run proofs-d1d-r2-f0802-shortcut-unscoped (expected-violation)",
+     "run proofs-d1d-r2-f0805-literal-insert-unguarded (expected-violation)",
+     "run proofs-d1d-r2-f0810-null-keeps-key (expected-violation)",
+     "run proofs-d1d-r2-f0816-dblabels-unscoped (expected-violation)",
+     "run proofs-d1d-r2-f0818-vlp-crosses-graphs (expected-violation)",
+     "run proofs-d1d-r2-f0901-shared-class-name (expected-violation)",
+     "run proofs-d1d-r2-f0902-crc-identity (expected-violation)",
+     "run proofs-d1d-r2-f0906-gate-edge-index-only (expected-violation)",
+     "run proofs-d1d-r2-f0908-run-unchecked (expected-violation)",
+     "run proofs-d1d-r2-fc0701-stop-name-accepted (expected-violation)",
+     "run proofs-d1d-r2-fc0702-bare-trollback (expected-violation)",
+     "run proofs-d1d-r2-fc0803-top1-copy (expected-violation)",
+     "run proofs-d1d-r2-fc0901-mark-any-entry (expected-violation)"
+    ],
+    "intent_undecided": [
+     "run proofs-d1d-r2-hd0902-shadow-swallows-native-error (expected-violation) of a decision only"
+    ]
+   },
+   "product_obligation": "fails",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1d/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
    "cited_runs": [
-    "b-mc-m08-readonly-control-no-text-check",
-    "b-mc-m08-scope-control-vlp-unscoped",
-    "b-mc-m08-txn-control-commit-per-step",
-    "b-mc-m08-txn-control-rollback-all"
+    "proofs-d1d-r2-f0701-build-in-place",
+    "proofs-d1d-r2-f0702-erase-keeps-index",
+    "proofs-d1d-r2-f0704-late-refusal",
+    "proofs-d1d-r2-f0705-absent-graph-is-default",
+    "proofs-d1d-r2-f0707-no-scope-check",
+    "proofs-d1d-r2-f0801-fail-open",
+    "proofs-d1d-r2-f0801-ttl-window",
+    "proofs-d1d-r2-f0802-shortcut-unscoped",
+    "proofs-d1d-r2-f0805-literal-insert-unguarded",
+    "proofs-d1d-r2-f0810-null-keeps-key",
+    "proofs-d1d-r2-f0816-dblabels-unscoped",
+    "proofs-d1d-r2-f0818-vlp-crosses-graphs",
+    "proofs-d1d-r2-f0901-shared-class-name",
+    "proofs-d1d-r2-f0902-crc-identity",
+    "proofs-d1d-r2-f0906-gate-edge-index-only",
+    "proofs-d1d-r2-f0908-run-unchecked",
+    "proofs-d1d-r2-fc0701-stop-name-accepted",
+    "proofs-d1d-r2-fc0702-bare-trollback",
+    "proofs-d1d-r2-fc0803-top1-copy",
+    "proofs-d1d-r2-fc0901-mark-any-entry",
+    "proofs-d1d-r2-hd0902-shadow-swallows-native-error"
    ],
    "evidence": [
-    "m08-txn-control-rollback-all",
-    "m08-txn-control-commit-per-step",
-    "m08-scope-control-vlp-unscoped",
-    "m08-readonly-control-no-text-check"
+    "run:proofs-d1d-r2-f0701-build-in-place",
+    "run:proofs-d1d-r2-f0702-erase-keeps-index",
+    "run:proofs-d1d-r2-f0704-late-refusal",
+    "run:proofs-d1d-r2-f0705-absent-graph-is-default",
+    "run:proofs-d1d-r2-f0707-no-scope-check",
+    "run:proofs-d1d-r2-f0801-fail-open",
+    "run:proofs-d1d-r2-f0801-ttl-window",
+    "run:proofs-d1d-r2-f0802-shortcut-unscoped",
+    "run:proofs-d1d-r2-f0805-literal-insert-unguarded",
+    "run:proofs-d1d-r2-f0810-null-keeps-key",
+    "run:proofs-d1d-r2-f0816-dblabels-unscoped",
+    "run:proofs-d1d-r2-f0818-vlp-crosses-graphs",
+    "run:proofs-d1d-r2-f0901-shared-class-name",
+    "run:proofs-d1d-r2-f0902-crc-identity",
+    "run:proofs-d1d-r2-f0906-gate-edge-index-only",
+    "run:proofs-d1d-r2-f0908-run-unchecked",
+    "run:proofs-d1d-r2-fc0701-stop-name-accepted",
+    "run:proofs-d1d-r2-fc0702-bare-trollback",
+    "run:proofs-d1d-r2-fc0803-top1-copy",
+    "run:proofs-d1d-r2-fc0901-mark-any-entry",
+    "run:proofs-d1d-r2-hd0902-shadow-swallows-native-error"
    ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-controls",
    "level": "model",
    "module": "08",
-   "product_obligation": "unknown",
-   "reason": "Explorer controls are caught (m08-txn-control-rollback-all, -commit-per-step, m08-scope-control-vlp-unscoped, m08-readonly-control-no-text-check), but the gate asks for rejection by a proof; no Verus proof exists for module 08.",
-   "remaining": "Proof-level controls.",
-   "source": "modules/08.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "stated fails by orchestrator",
+     "run proofs-d1d-r2-f0701-build-in-place (expected-violation)",
+     "run proofs-d1d-r2-f0702-erase-keeps-index (expected-violation)",
+     "run proofs-d1d-r2-f0704-late-refusal (expected-violation)",
+     "run proofs-d1d-r2-f0705-absent-graph-is-default (expected-violation)",
+     "run proofs-d1d-r2-f0707-no-scope-check (expected-violation)",
+     "run proofs-d1d-r2-f0801-fail-open (expected-violation)",
+     "run proofs-d1d-r2-f0801-ttl-window (expected-violation)",
+     "run proofs-d1d-r2-f0802-shortcut-unscoped (expected-violation)",
+     "run proofs-d1d-r2-f0805-literal-insert-unguarded (expected-violation)",
+     "run proofs-d1d-r2-f0810-null-keeps-key (expected-violation)",
+     "run proofs-d1d-r2-f0816-dblabels-unscoped (expected-violation)",
+     "run proofs-d1d-r2-f0818-vlp-crosses-graphs (expected-violation)",
+     "run proofs-d1d-r2-f0901-shared-class-name (expected-violation)",
+     "run proofs-d1d-r2-f0902-crc-identity (expected-violation)",
+     "run proofs-d1d-r2-f0906-gate-edge-index-only (expected-violation)",
+     "run proofs-d1d-r2-f0908-run-unchecked (expected-violation)",
+     "run proofs-d1d-r2-fc0701-stop-name-accepted (expected-violation)",
+     "run proofs-d1d-r2-fc0702-bare-trollback (expected-violation)",
+     "run proofs-d1d-r2-fc0803-top1-copy (expected-violation)",
+     "run proofs-d1d-r2-fc0901-mark-any-entry (expected-violation)"
+    ],
+    "intent_undecided": [
+     "run proofs-d1d-r2-hd0902-shadow-swallows-native-error (expected-violation) of a decision only"
+    ]
+   },
+   "product_obligation": "fails",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1d/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
    "cited_runs": [
-    "b-mc-m09-gate-control-always-open",
-    "b-mc-m09-mode-control-unknown-job",
-    "b-mc-m09-planc-control-drop-nolock",
-    "b-mc-m09-planc-control-shared-name",
-    "b-mc-m09-used-control-type-only"
+    "proofs-d1d-r2-f0701-build-in-place",
+    "proofs-d1d-r2-f0702-erase-keeps-index",
+    "proofs-d1d-r2-f0704-late-refusal",
+    "proofs-d1d-r2-f0705-absent-graph-is-default",
+    "proofs-d1d-r2-f0707-no-scope-check",
+    "proofs-d1d-r2-f0801-fail-open",
+    "proofs-d1d-r2-f0801-ttl-window",
+    "proofs-d1d-r2-f0802-shortcut-unscoped",
+    "proofs-d1d-r2-f0805-literal-insert-unguarded",
+    "proofs-d1d-r2-f0810-null-keeps-key",
+    "proofs-d1d-r2-f0816-dblabels-unscoped",
+    "proofs-d1d-r2-f0818-vlp-crosses-graphs",
+    "proofs-d1d-r2-f0901-shared-class-name",
+    "proofs-d1d-r2-f0902-crc-identity",
+    "proofs-d1d-r2-f0906-gate-edge-index-only",
+    "proofs-d1d-r2-f0908-run-unchecked",
+    "proofs-d1d-r2-fc0701-stop-name-accepted",
+    "proofs-d1d-r2-fc0702-bare-trollback",
+    "proofs-d1d-r2-fc0803-top1-copy",
+    "proofs-d1d-r2-fc0901-mark-any-entry",
+    "proofs-d1d-r2-hd0902-shadow-swallows-native-error"
    ],
    "evidence": [
-    "mc:m09-gate-control-always-open",
-    "mc:m09-mode-control-unknown-job",
-    "mc:m09-planc-control-drop-nolock",
-    "mc:m09-planc-control-shared-name",
-    "mc:m09-used-control-type-only"
+    "run:proofs-d1d-r2-f0701-build-in-place",
+    "run:proofs-d1d-r2-f0702-erase-keeps-index",
+    "run:proofs-d1d-r2-f0704-late-refusal",
+    "run:proofs-d1d-r2-f0705-absent-graph-is-default",
+    "run:proofs-d1d-r2-f0707-no-scope-check",
+    "run:proofs-d1d-r2-f0801-fail-open",
+    "run:proofs-d1d-r2-f0801-ttl-window",
+    "run:proofs-d1d-r2-f0802-shortcut-unscoped",
+    "run:proofs-d1d-r2-f0805-literal-insert-unguarded",
+    "run:proofs-d1d-r2-f0810-null-keeps-key",
+    "run:proofs-d1d-r2-f0816-dblabels-unscoped",
+    "run:proofs-d1d-r2-f0818-vlp-crosses-graphs",
+    "run:proofs-d1d-r2-f0901-shared-class-name",
+    "run:proofs-d1d-r2-f0902-crc-identity",
+    "run:proofs-d1d-r2-f0906-gate-edge-index-only",
+    "run:proofs-d1d-r2-f0908-run-unchecked",
+    "run:proofs-d1d-r2-fc0701-stop-name-accepted",
+    "run:proofs-d1d-r2-fc0702-bare-trollback",
+    "run:proofs-d1d-r2-fc0803-top1-copy",
+    "run:proofs-d1d-r2-fc0901-mark-any-entry",
+    "run:proofs-d1d-r2-hd0902-shadow-swallows-native-error"
    ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-controls",
    "level": "model",
    "module": "09",
-   "product_obligation": "unknown",
-   "reason": "explorer controls caught (m09-planc-control-shared-name, -drop-nolock, m09-mode-control-unknown-job, m09-used-control-type-only, m09-gate-control-always-open); the gate asks for proof-rejected controls",
-   "remaining": "proof-level controls",
-   "source": "modules/09.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "stated fails by orchestrator",
+     "run proofs-d1d-r2-f0701-build-in-place (expected-violation)",
+     "run proofs-d1d-r2-f0702-erase-keeps-index (expected-violation)",
+     "run proofs-d1d-r2-f0704-late-refusal (expected-violation)",
+     "run proofs-d1d-r2-f0705-absent-graph-is-default (expected-violation)",
+     "run proofs-d1d-r2-f0707-no-scope-check (expected-violation)",
+     "run proofs-d1d-r2-f0801-fail-open (expected-violation)",
+     "run proofs-d1d-r2-f0801-ttl-window (expected-violation)",
+     "run proofs-d1d-r2-f0802-shortcut-unscoped (expected-violation)",
+     "run proofs-d1d-r2-f0805-literal-insert-unguarded (expected-violation)",
+     "run proofs-d1d-r2-f0810-null-keeps-key (expected-violation)",
+     "run proofs-d1d-r2-f0816-dblabels-unscoped (expected-violation)",
+     "run proofs-d1d-r2-f0818-vlp-crosses-graphs (expected-violation)",
+     "run proofs-d1d-r2-f0901-shared-class-name (expected-violation)",
+     "run proofs-d1d-r2-f0902-crc-identity (expected-violation)",
+     "run proofs-d1d-r2-f0906-gate-edge-index-only (expected-violation)",
+     "run proofs-d1d-r2-f0908-run-unchecked (expected-violation)",
+     "run proofs-d1d-r2-fc0701-stop-name-accepted (expected-violation)",
+     "run proofs-d1d-r2-fc0702-bare-trollback (expected-violation)",
+     "run proofs-d1d-r2-fc0803-top1-copy (expected-violation)",
+     "run proofs-d1d-r2-fc0901-mark-any-entry (expected-violation)"
+    ],
+    "intent_undecided": [
+     "run proofs-d1d-r2-hd0902-shadow-swallows-native-error (expected-violation) of a decision only"
+    ]
+   },
+   "product_obligation": "fails",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1d/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
    "cited_runs": [
-    "b-mc-m10-cache-control-no-bump-on-create",
-    "b-mc-m10-cache-control-silent-delete-pagerank",
-    "b-mc-m10-degree-control-distinct-out",
-    "b-mc-m10-nkg-control-ensure-ignores-stale",
-    "b-mc-m10-nkg-control-walk-merged",
-    "b-mc-m10-routes-control-no-probe",
-    "b-mc-m10-routes-control-owner-cap",
-    "b-mc-m10-walk-control-reset-at-shared"
+    "proofs-d1e-f0101-removed-unchecked",
+    "proofs-d1e-f0102-failure-only-logged",
+    "proofs-d1e-f0103-marker-admits",
+    "proofs-d1e-f0106-keys-join-on-id",
+    "proofs-d1e-f0109-upgrade-default-schema",
+    "proofs-d1e-f0201-ekey0-guard",
+    "proofs-d1e-f0202-writer-skips-name-check",
+    "proofs-d1e-f0206-hydrate-from-default",
+    "proofs-d1e-f0207-set-off-unlocked",
+    "proofs-d1e-f0208-mode-cached-forever",
+    "proofs-d1e-f1003-owner-cap",
+    "proofs-d1e-f1004-create-moves-no-token",
+    "proofs-d1e-f1008-every-graph-mixed",
+    "proofs-d1e-fc1001-read-creates-routines",
+    "proofs-d1e-hd1003-direction-unchecked"
    ],
    "evidence": [
-    {
-     "kind": "mc",
-     "ref": "m10-cache-control-no-bump-on-create"
-    },
-    {
-     "kind": "mc",
-     "ref": "m10-cache-control-silent-delete-pagerank"
-    },
-    {
-     "kind": "mc",
-     "ref": "m10-degree-control-distinct-out"
-    },
-    {
-     "kind": "mc",
-     "ref": "m10-nkg-control-ensure-ignores-stale"
-    },
-    {
-     "kind": "mc",
-     "ref": "m10-nkg-control-walk-merged"
-    },
-    {
-     "kind": "mc",
-     "ref": "m10-routes-control-no-probe"
-    },
-    {
-     "kind": "mc",
-     "ref": "m10-routes-control-owner-cap"
-    },
-    {
-     "kind": "mc",
-     "ref": "m10-walk-control-reset-at-shared"
-    }
+    "run:proofs-d1e-f0101-removed-unchecked",
+    "run:proofs-d1e-f0102-failure-only-logged",
+    "run:proofs-d1e-f0103-marker-admits",
+    "run:proofs-d1e-f0106-keys-join-on-id",
+    "run:proofs-d1e-f0109-upgrade-default-schema",
+    "run:proofs-d1e-f0201-ekey0-guard",
+    "run:proofs-d1e-f0202-writer-skips-name-check",
+    "run:proofs-d1e-f0206-hydrate-from-default",
+    "run:proofs-d1e-f0207-set-off-unlocked",
+    "run:proofs-d1e-f0208-mode-cached-forever",
+    "run:proofs-d1e-f1003-owner-cap",
+    "run:proofs-d1e-f1004-create-moves-no-token",
+    "run:proofs-d1e-f1008-every-graph-mixed",
+    "run:proofs-d1e-fc1001-read-creates-routines",
+    "run:proofs-d1e-hd1003-direction-unchecked"
    ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-controls",
    "level": "model",
    "module": "10",
-   "product_obligation": "unknown",
-   "reason": "Every explorer control is caught (mc), none by a proof.",
-   "remaining": "Proof-level controls (Verus).",
-   "source": "modules/10.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "stated fails by orchestrator",
+     "run proofs-d1e-f0101-removed-unchecked (expected-violation)",
+     "run proofs-d1e-f0102-failure-only-logged (expected-violation)",
+     "run proofs-d1e-f0103-marker-admits (expected-violation)",
+     "run proofs-d1e-f0106-keys-join-on-id (expected-violation)",
+     "run proofs-d1e-f0109-upgrade-default-schema (expected-violation)",
+     "run proofs-d1e-f0201-ekey0-guard (expected-violation)",
+     "run proofs-d1e-f0202-writer-skips-name-check (expected-violation)",
+     "run proofs-d1e-f0206-hydrate-from-default (expected-violation)",
+     "run proofs-d1e-f0207-set-off-unlocked (expected-violation)",
+     "run proofs-d1e-f0208-mode-cached-forever (expected-violation)",
+     "run proofs-d1e-f1003-owner-cap (expected-violation)",
+     "run proofs-d1e-f1004-create-moves-no-token (expected-violation)",
+     "run proofs-d1e-f1008-every-graph-mixed (expected-violation)",
+     "run proofs-d1e-fc1001-read-creates-routines (expected-violation)"
+    ],
+    "intent_undecided": [
+     "run proofs-d1e-hd1003-direction-unchecked (expected-violation) of a decision only"
+    ]
+   },
+   "product_obligation": "fails",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1e/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
    "as_built_findings": [
@@ -3331,48 +3607,213 @@
   },
   {
    "cited_runs": [
-    "cmc-fhir-ctl-erase-lock",
-    "cmc-register-ctl-upsert"
+    "proofs-d1f-f1511-upsert-before-load",
+    "proofs-d1f-f1601-bolt-run-commits",
+    "proofs-d1f-f1610-tx-commit-per-statement",
+    "proofs-d1f-f1614-app-without-key-gate",
+    "proofs-d1f-f1701-unscoped-merge",
+    "proofs-d1f-f1713-status-parts-short",
+    "proofs-d1f-f1714-unmapped-refusal",
+    "proofs-d1f-fc1501-schedule-untransacted",
+    "proofs-d1f-fc1602-unknown-as-client-error",
+    "proofs-d1f-fc1603-bolt-binds-every-interface",
+    "proofs-d1f-fc1604-server-reruns-write",
+    "proofs-d1f-fc1703-client-resends-write",
+    "proofs-d1f-fc1706-driver-floor",
+    "proofs-d1f-hd1503-erase-ignores-sync-lock",
+    "proofs-d1f-hd1701-read-only-ignored",
+    "proofs-d1f-hd1701-write-reported-failed",
+    "proofs-d1f-progress-rederive-restart"
    ],
    "evidence": [
-    "cmc-fhir-ctl-erase-lock",
-    "cmc-register-ctl-upsert"
+    "run:proofs-d1f-f1511-upsert-before-load",
+    "run:proofs-d1f-f1601-bolt-run-commits",
+    "run:proofs-d1f-f1610-tx-commit-per-statement",
+    "run:proofs-d1f-f1614-app-without-key-gate",
+    "run:proofs-d1f-f1701-unscoped-merge",
+    "run:proofs-d1f-f1713-status-parts-short",
+    "run:proofs-d1f-f1714-unmapped-refusal",
+    "run:proofs-d1f-fc1501-schedule-untransacted",
+    "run:proofs-d1f-fc1602-unknown-as-client-error",
+    "run:proofs-d1f-fc1603-bolt-binds-every-interface",
+    "run:proofs-d1f-fc1604-server-reruns-write",
+    "run:proofs-d1f-fc1703-client-resends-write",
+    "run:proofs-d1f-fc1706-driver-floor",
+    "run:proofs-d1f-hd1503-erase-ignores-sync-lock",
+    "run:proofs-d1f-hd1701-read-only-ignored",
+    "run:proofs-d1f-hd1701-write-reported-failed",
+    "run:proofs-d1f-progress-rederive-restart"
    ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-controls",
    "level": "model",
    "module": "15",
-   "product_obligation": "unknown",
-   "remaining": "main lane models (explorer controls caught; no proof-level controls)",
-   "source": "modules/15.json",
-   "status": "open"
-  },
-  {
-   "cited_runs": [],
-   "evidence": [],
-   "gate": "3.3-controls",
-   "level": "model",
-   "module": "16",
-   "product_obligation": "unknown",
-   "remaining": "explorer models only (models/breadth-c); no Verus L1/L2/refinement for module 16",
-   "source": "modules/16.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "stated fails by orchestrator",
+     "run proofs-d1f-f1511-upsert-before-load (expected-violation)",
+     "run proofs-d1f-f1601-bolt-run-commits (expected-violation)",
+     "run proofs-d1f-f1610-tx-commit-per-statement (expected-violation)",
+     "run proofs-d1f-f1614-app-without-key-gate (expected-violation)",
+     "run proofs-d1f-f1701-unscoped-merge (expected-violation)",
+     "run proofs-d1f-f1713-status-parts-short (expected-violation)",
+     "run proofs-d1f-f1714-unmapped-refusal (expected-violation)",
+     "run proofs-d1f-fc1501-schedule-untransacted (expected-violation)",
+     "run proofs-d1f-fc1602-unknown-as-client-error (expected-violation)",
+     "run proofs-d1f-fc1603-bolt-binds-every-interface (expected-violation)",
+     "run proofs-d1f-fc1604-server-reruns-write (expected-violation)",
+     "run proofs-d1f-fc1703-client-resends-write (expected-violation)",
+     "run proofs-d1f-fc1706-driver-floor (expected-violation)"
+    ],
+    "intent_undecided": [
+     "run proofs-d1f-hd1503-erase-ignores-sync-lock (expected-violation) of a decision only",
+     "run proofs-d1f-hd1701-read-only-ignored (expected-violation) of a decision only",
+     "run proofs-d1f-hd1701-write-reported-failed (expected-violation) of a decision only"
+    ]
+   },
+   "product_obligation": "fails",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1f/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
    "cited_runs": [
-    "cmc-retry-ctl-client",
-    "cmc-retry-ctl-server"
+    "proofs-d1f-f1511-upsert-before-load",
+    "proofs-d1f-f1601-bolt-run-commits",
+    "proofs-d1f-f1610-tx-commit-per-statement",
+    "proofs-d1f-f1614-app-without-key-gate",
+    "proofs-d1f-f1701-unscoped-merge",
+    "proofs-d1f-f1713-status-parts-short",
+    "proofs-d1f-f1714-unmapped-refusal",
+    "proofs-d1f-fc1501-schedule-untransacted",
+    "proofs-d1f-fc1602-unknown-as-client-error",
+    "proofs-d1f-fc1603-bolt-binds-every-interface",
+    "proofs-d1f-fc1604-server-reruns-write",
+    "proofs-d1f-fc1703-client-resends-write",
+    "proofs-d1f-fc1706-driver-floor",
+    "proofs-d1f-hd1503-erase-ignores-sync-lock",
+    "proofs-d1f-hd1701-read-only-ignored",
+    "proofs-d1f-hd1701-write-reported-failed",
+    "proofs-d1f-progress-rederive-restart"
    ],
    "evidence": [
-    "cmc-retry-ctl-client",
-    "cmc-retry-ctl-server"
+    "run:proofs-d1f-f1511-upsert-before-load",
+    "run:proofs-d1f-f1601-bolt-run-commits",
+    "run:proofs-d1f-f1610-tx-commit-per-statement",
+    "run:proofs-d1f-f1614-app-without-key-gate",
+    "run:proofs-d1f-f1701-unscoped-merge",
+    "run:proofs-d1f-f1713-status-parts-short",
+    "run:proofs-d1f-f1714-unmapped-refusal",
+    "run:proofs-d1f-fc1501-schedule-untransacted",
+    "run:proofs-d1f-fc1602-unknown-as-client-error",
+    "run:proofs-d1f-fc1603-bolt-binds-every-interface",
+    "run:proofs-d1f-fc1604-server-reruns-write",
+    "run:proofs-d1f-fc1703-client-resends-write",
+    "run:proofs-d1f-fc1706-driver-floor",
+    "run:proofs-d1f-hd1503-erase-ignores-sync-lock",
+    "run:proofs-d1f-hd1701-read-only-ignored",
+    "run:proofs-d1f-hd1701-write-reported-failed",
+    "run:proofs-d1f-progress-rederive-restart"
    ],
+   "evidence_grade": "registered-run",
+   "gate": "3.3-controls",
+   "level": "model",
+   "module": "16",
+   "product_basis": {
+    "fails": [
+     "stated fails by orchestrator",
+     "run proofs-d1f-f1511-upsert-before-load (expected-violation)",
+     "run proofs-d1f-f1601-bolt-run-commits (expected-violation)",
+     "run proofs-d1f-f1610-tx-commit-per-statement (expected-violation)",
+     "run proofs-d1f-f1614-app-without-key-gate (expected-violation)",
+     "run proofs-d1f-f1701-unscoped-merge (expected-violation)",
+     "run proofs-d1f-f1713-status-parts-short (expected-violation)",
+     "run proofs-d1f-f1714-unmapped-refusal (expected-violation)",
+     "run proofs-d1f-fc1501-schedule-untransacted (expected-violation)",
+     "run proofs-d1f-fc1602-unknown-as-client-error (expected-violation)",
+     "run proofs-d1f-fc1603-bolt-binds-every-interface (expected-violation)",
+     "run proofs-d1f-fc1604-server-reruns-write (expected-violation)",
+     "run proofs-d1f-fc1703-client-resends-write (expected-violation)",
+     "run proofs-d1f-fc1706-driver-floor (expected-violation)"
+    ],
+    "intent_undecided": [
+     "run proofs-d1f-hd1503-erase-ignores-sync-lock (expected-violation) of a decision only",
+     "run proofs-d1f-hd1701-read-only-ignored (expected-violation) of a decision only",
+     "run proofs-d1f-hd1701-write-reported-failed (expected-violation) of a decision only"
+    ]
+   },
+   "product_obligation": "fails",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1f/PROOFS.md; no code correspondence",
+   "status": "closed"
+  },
+  {
+   "cited_runs": [
+    "proofs-d1f-f1511-upsert-before-load",
+    "proofs-d1f-f1601-bolt-run-commits",
+    "proofs-d1f-f1610-tx-commit-per-statement",
+    "proofs-d1f-f1614-app-without-key-gate",
+    "proofs-d1f-f1701-unscoped-merge",
+    "proofs-d1f-f1713-status-parts-short",
+    "proofs-d1f-f1714-unmapped-refusal",
+    "proofs-d1f-fc1501-schedule-untransacted",
+    "proofs-d1f-fc1602-unknown-as-client-error",
+    "proofs-d1f-fc1603-bolt-binds-every-interface",
+    "proofs-d1f-fc1604-server-reruns-write",
+    "proofs-d1f-fc1703-client-resends-write",
+    "proofs-d1f-fc1706-driver-floor",
+    "proofs-d1f-hd1503-erase-ignores-sync-lock",
+    "proofs-d1f-hd1701-read-only-ignored",
+    "proofs-d1f-hd1701-write-reported-failed",
+    "proofs-d1f-progress-rederive-restart"
+   ],
+   "evidence": [
+    "run:proofs-d1f-f1511-upsert-before-load",
+    "run:proofs-d1f-f1601-bolt-run-commits",
+    "run:proofs-d1f-f1610-tx-commit-per-statement",
+    "run:proofs-d1f-f1614-app-without-key-gate",
+    "run:proofs-d1f-f1701-unscoped-merge",
+    "run:proofs-d1f-f1713-status-parts-short",
+    "run:proofs-d1f-f1714-unmapped-refusal",
+    "run:proofs-d1f-fc1501-schedule-untransacted",
+    "run:proofs-d1f-fc1602-unknown-as-client-error",
+    "run:proofs-d1f-fc1603-bolt-binds-every-interface",
+    "run:proofs-d1f-fc1604-server-reruns-write",
+    "run:proofs-d1f-fc1703-client-resends-write",
+    "run:proofs-d1f-fc1706-driver-floor",
+    "run:proofs-d1f-hd1503-erase-ignores-sync-lock",
+    "run:proofs-d1f-hd1701-read-only-ignored",
+    "run:proofs-d1f-hd1701-write-reported-failed",
+    "run:proofs-d1f-progress-rederive-restart"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-controls",
    "level": "model",
    "module": "17",
-   "product_obligation": "unknown",
-   "remaining": "rejected by the explorer, not by a proof",
-   "source": "modules/17.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "stated fails by orchestrator",
+     "run proofs-d1f-f1511-upsert-before-load (expected-violation)",
+     "run proofs-d1f-f1601-bolt-run-commits (expected-violation)",
+     "run proofs-d1f-f1610-tx-commit-per-statement (expected-violation)",
+     "run proofs-d1f-f1614-app-without-key-gate (expected-violation)",
+     "run proofs-d1f-f1701-unscoped-merge (expected-violation)",
+     "run proofs-d1f-f1713-status-parts-short (expected-violation)",
+     "run proofs-d1f-f1714-unmapped-refusal (expected-violation)",
+     "run proofs-d1f-fc1501-schedule-untransacted (expected-violation)",
+     "run proofs-d1f-fc1602-unknown-as-client-error (expected-violation)",
+     "run proofs-d1f-fc1603-bolt-binds-every-interface (expected-violation)",
+     "run proofs-d1f-fc1604-server-reruns-write (expected-violation)",
+     "run proofs-d1f-fc1703-client-resends-write (expected-violation)",
+     "run proofs-d1f-fc1706-driver-floor (expected-violation)"
+    ],
+    "intent_undecided": [
+     "run proofs-d1f-hd1503-erase-ignores-sync-lock (expected-violation) of a decision only",
+     "run proofs-d1f-hd1701-read-only-ignored (expected-violation) of a decision only",
+     "run proofs-d1f-hd1701-write-reported-failed (expected-violation) of a decision only"
+    ]
+   },
+   "product_obligation": "fails",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1f/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
    "cited_runs": [
@@ -26331,13 +26772,13 @@
   }
  ],
  "product_counts": {
-  "fails": 234,
+  "fails": 265,
   "holds-in-model-only": 1,
   "intent-undecided": 2,
-  "n/a": 34,
-  "unknown": 476
+  "n/a": 33,
+  "unknown": 446
  },
- "registry_runs": 796,
+ "registry_runs": 877,
  "starting_inventory": {
   "cells": 904,
   "decisions": 61,
@@ -26349,9 +26790,9 @@
  },
  "status_counts": {
   "blocked": 6,
-  "closed": 182,
-  "not-applicable": 36,
-  "open": 523
+  "closed": 216,
+  "not-applicable": 35,
+  "open": 490
  },
  "submission": "9c3719c1",
  "writer_obligations": [

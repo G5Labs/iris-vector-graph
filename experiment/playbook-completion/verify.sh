@@ -94,6 +94,15 @@ if [[ "$mode" == full || "$mode" == live ]]; then
   if have "$here/proofs-d1c/tools/run_proofs.py"; then mkdir -p "$out/proofs-d1c"
     step proofs-d1c 3600 env PROOFS_OUT_DIR="$out/proofs-d1c" python "$here/proofs-d1c/tools/run_proofs.py"
   fi
+  if have "$here/proofs-d1d/tools/run_proofs.py"; then mkdir -p "$out/proofs-d1d"
+    step proofs-d1d 3600 env PROOFS_OUT_DIR="$out/proofs-d1d" python "$here/proofs-d1d/tools/run_proofs.py"
+  fi
+  if have "$here/proofs-d1e/tools/run_proofs.py"; then mkdir -p "$out/proofs-d1e"
+    step proofs-d1e 3600 env PROOFS_OUT_DIR="$out/proofs-d1e" python "$here/proofs-d1e/tools/run_proofs.py"
+  fi
+  if have "$here/proofs-d1f/tools/run_proofs.py"; then mkdir -p "$out/proofs-d1f"
+    step proofs-d1f 3600 env PROOFS_OUT_DIR="$out/proofs-d1f" python "$here/proofs-d1f/tools/run_proofs.py"
+  fi
   step models-compare 120 python3 "$here/tools/compare_model_results.py" "$out"
   if have "$here/proofs/tools/run_proofs.py"; then mkdir -p "$out/proofs"
     step proofs 7200 env PROOFS_OUT_DIR="$out/proofs" python "$here/proofs/tools/run_proofs.py"  # takes the heavy lock per Verus run itself; writes under $out

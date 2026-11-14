@@ -1,0 +1,52 @@
+[package]
+name = "ivg-d1d-proofs"
+version = "0.1.0"
+edition = "2021"
+description = "Completion audit, PROOFS-D1D lane (proof debt D-1, playbook §3.3): Verus L1 contracts, L2 machines over the stored layout, refinement and broken-implementation controls for module 07 (BM25 text search: one index's writers with the caller's transaction; the namespace's indexes, the stopword node, graph scope and erasure), module 08 (Cypher on the SQL path: write queries under the ledger's strict guard; graph scope of reads) and module 09 (native executor: the compiled-plan cache; a native read against the SQL path)."
+publish = false
+
+[dependencies]
+vstd = { version = "=0.0.0-2026-09-20-0158", features = ["std", "alloc"] }
+actors = { git = "file:///home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/playbook-reference-actors", rev = "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877" }
+
+[patch.crates-io]
+verus_builtin_macros = { git = "file:///home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/playbook-reference-actors", rev = "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877" }
+
+[features]
+# Broken-implementation controls (playbook §3.3 gate). Each replaces one decision of the reviewed design by the pin's
+# behaviour (as reproduced by the audit) and must make verification fail, every error located in the file named here.
+# Module 07, one BM25 index's writers and the caller's transaction:
+control_fc0702_bare_trollback = []           # src/bmw_l2.rs  Insert/Delete's Catch runs `If $TLevel > 0 TRollback`: every level, the caller's too (BM25Index.cls:487, :508)
+control_f0701_build_in_place = []            # src/bmw_l2.rs  Build kills and rewrites the live index with no lock and no transaction; Drop and writers do not wait for it (BM25Index.cls:97-175, :587-591)
+control_f0704_late_refusal = []              # src/bmw_l2.rs  the index handle refuses a 0-row build after Build has replaced the index (vector.py:299-310; BM25Index.cls:99)
+# Module 07, the namespace's indexes (the stopword node, graph scope, erasure):
+control_fc0701_stop_name_accepted = []       # src/bmn_l2.rs  Build/Insert/Drop accept the name __stop__, whose subtree is the stopword list (BM25Index.cls:41-50, :83; _validate.py:163-179)
+control_f0705_absent_graph_is_default = []   # src/bmn_l2.rs  Info answers graph "" for an index with no graph subscript, read as the default graph (BM25Index.cls:608-612; vector.py:164-185)
+control_f0707_no_scope_check = []            # src/bmn_l2.rs  ivg.bm25.search under USE GRAPH does not compare the index's graph (translator.py:3133-3134, 3283-3292)
+control_f0702_erase_keeps_index = []         # src/bmn_l2.rs  a graph erasure does not touch ^BM25Idx (Eraser.cls:138-147; GraphStores.cls:26-133)
+# Module 08, Cypher write queries on the SQL path:
+control_f0801_ttl_window = []                # src/cyw_l2.rs  the ledger guard answers from Meta cached for TTL_SECONDS = 5 (guard.py:20, 38-41)
+control_f0801_fail_open = []                 # src/cyw_l2.rs  a probe that cannot run reads as never-enabled (guard.py:42-56)
+control_f0805_literal_insert_unguarded = []  # src/cyw_l2.rs  CREATE between literal endpoints is a bare INSERT: an existing edge fails the query (translator.py:10212-10248)
+control_fc0803_top1_copy = []                # src/cyw_l2.rs  MERGE ... ON CREATE SET r = a copies (SELECT TOP 1 a.node_id ...) onto every merged relationship (translator.py:12362-12395)
+control_f0810_null_keeps_key = []            # src/cyw_l2.rs  SET n.p = <literal null> updates the row to '' instead of deleting it (translator.py:13655-13665)
+# Module 08, graph scope of reads:
+control_f0802_shortcut_unscoped = []         # src/cys_l2.rs  the count UNION text shortcut counts every graph's rows (query.py:1843-1856)
+control_f0816_dblabels_unscoped = []         # src/cys_l2.rs  db.labels() reads every graph's labels (engine.py:1313-1318)
+control_f0818_vlp_crosses_graphs = []        # src/cys_l2.rs  an all-graphs variable-length walk from a WITH-carried start walks every graph (translator.py:15404-15431)
+# Module 09, the compiled-plan cache:
+control_f0901_shared_class_name = []         # src/planc_l2.rs a build compiles into IVGC.P<$ZCRC(shape,7)>, the class every shape of that hash runs (Gen.cls:69, 183-207)
+control_fc0901_mark_any_entry = []           # src/planc_l2.rs a build marks "ok" whatever entry its hash holds now (Gen.cls:207)
+# Module 09, a native read against the SQL path:
+control_f0902_crc_identity = []              # src/nread_l2.rs the interpreter tells used relationships apart by $ZCRC($LB(src,p,dst,key),7) (Exec.cls:1243-1245)
+control_f0908_run_unchecked = []             # src/nread_l2.rs Exec.Run checks no privilege (Exec.cls:32-72); the check is the engine's (engine.py:559-586)
+control_hd0902_shadow_swallows_native_error = [] # src/nread_l2.rs in shadow mode a native exception yields None: SQL answers, nothing is compared (query.py:2069-2077, 2146-2152)
+control_f0906_gate_edge_index_only = []      # src/nread_l2.rs the native gate opens on the edge index alone (native_plan.py:528-529)
+
+[package.metadata.verus]
+verify = true
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(verus_only)', 'cfg(verus_keep_ghost)', 'cfg(verus_keep_ghost_body)'] }
+
+[workspace]
