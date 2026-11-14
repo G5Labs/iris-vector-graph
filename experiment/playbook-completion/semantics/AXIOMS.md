@@ -9,27 +9,27 @@ The original slice-only semantics (`experiment/playbook-uplift/semantics/SEMANTI
 SYS-I1..SYS-I10 of `ontology/00-system.md`. Here they are repaired and extended to fourteen axioms for the whole product:
 SYS-I3 and SYS-I9 merge into one (the playbook's "explicit, recorded refusals"); SYS-I1, I2, I4..I8 and I10 are kept with
 the repairs stated per axiom; five are new (AX-10..AX-14: removal reach, serialization, truthful outcomes, capability,
-progress), because 77 of the 299 findings in `findings/audit/` break one of them and 51 of those break
+progress), because 77 of the 309 findings in `findings/audit/` break one of them and 51 of those break
 no rule a SYS statement stated. The ontology's SYS-I statements are not edited (ontology lane); the repair is proposed here.
 
-Each finding was classified by hand against the axioms (`src/finding_classes.json`, 299 findings, every one exactly
+Each finding was classified by hand against the axioms (`src/finding_classes.json`, 309 findings, every one exactly
 once; the checker fails when a new finding appears unclassified). Classes outside the axioms: FUNC (a module's own
-functional contract; 59), DOC (document against code; 23), ENV (9), TEST (3), PERF (performance or capacity; 3), NONE (refuted or not reproduced; 5).
-203 of 299 findings break at least one axiom.
+functional contract; 63), DOC (document against code; 23), ENV (10), TEST (3), PERF (performance or capacity; 3), NONE (refuted or not reproduced; 5).
+208 of 309 findings break at least one axiom.
 
 ## The axioms
 
 | Id | Axiom | Rule | Repairs | Mechanisms | Objects (modules) relying | Findings breaking it (S1/S2/S3/S4) | Exceptions |
 |---|---|---|---|---|---|---|---|
-| AX-01 | One writer per fact | Each kind of stored fact has one owning mechanism, and every write of that fact goes through it, with the owner's checks. | SYS-I1 | M-12 | 9 (6) | 21 (2/9/6/4) | - |
+| AX-01 | One writer per fact | Each kind of stored fact has one owning mechanism, and every write of that fact goes through it, with the owner's checks. | SYS-I1 | M-12 | 9 (6) | 23 (2/10/7/4) | - |
 | AX-02 | Graph and tenant scope | A command scoped to a graph or tenant reads and changes only that graph's or tenant's content; an all-graphs read is the union of each graph's own answer; every predicate that names a tenant (erase, liveness, record match) names the same content. | SYS-I2 | M-05, M-09, M-12 | 35 (15) | 42 (18/16/6/2) | EXC-06 |
-| AX-03 | Explicit, inert refusals | A refused or failed command leaves every store as it was (the caller's own earlier writes included) and says why, with a code of the product's error family; a failure is never reported as success, as no rows, or as another error. | SYS-I3, SYS-I9 | M-08, M-10, M-11 | 37 (13) | 34 (2/12/14/6) | - |
+| AX-03 | Explicit, inert refusals | A refused or failed command leaves every store as it was (the caller's own earlier writes included) and says why, with a code of the product's error family; a failure is never reported as success, as no rows, or as another error. | SYS-I3, SYS-I9 | M-08, M-10, M-11 | 37 (13) | 36 (2/12/14/8) | - |
 | AX-04 | All or none across stores | A command that writes several stores writes all of them or none: it is one transaction, or a sequence whose every intermediate state is named and recoverable. | SYS-I4 | M-01, M-05, M-10 | 36 (14) | 13 (2/7/3/1) | EXC-01, EXC-08 |
 | AX-05 | History only grows | The ledger's records and revisions are only appended; a saved record changes only into its tombstone, and the head never moves back. | SYS-I5 | M-01, M-06 | 13 (6) | 3 (2/1/0/0) | EXC-02 |
 | AX-06 | At most once per retry key | A request repeated with the same retry key (or the same business identity) takes effect at most once; a repeat gets the first answer without any further effect, or a clear refusal. | SYS-I6 | M-02 | 7 (6) | 6 (2/3/1/0) | - |
 | AX-07 | A governed change is recorded with it | While the ledger governs a kind of content, every change of that content is saved in the same transaction as its record; a write that cannot be recorded is refused in strict mode. | SYS-I7 | M-01 | 12 (6) | 16 (2/9/4/1) | EXC-03, EXC-04 |
 | AX-08 | Derived stores match or say they are stale | A store built from other stores either equals its derivation from their committed content or carries a staleness signal every reader checks; a rolled-back or interrupted source write never leaves a derived store current and wrong. | SYS-I8 | M-04, M-12 | 22 (12) | 22 (0/16/4/2) | EXC-05, EXC-11 |
-| AX-09 | One install, one schema, one version per namespace | A namespace holds one install of the product under one recorded schema; setup is idempotent, reports every failure, never touches objects outside that schema, and code runs only against the version it expects. | SYS-I10 | M-08 | 13 (7) | 9 (1/4/4/0) | EXC-09 |
+| AX-09 | One install, one schema, one version per namespace | A namespace holds one install of the product under one recorded schema; setup is idempotent, reports every failure, never touches objects outside that schema, and code runs only against the version it expects. | SYS-I10 | M-08 | 13 (7) | 10 (1/4/4/1) | EXC-09 |
 | AX-10 | Removal reaches every store and copy | Erasure followed by redaction removes a target's content from every store that holds it, every derived store and every copy the product makes (indexes, quarantine, snapshots, history text, retry keys), or the receipt names exactly what remains. | new | M-05, M-06 | 14 (7) | 19 (11/4/4/0) | EXC-07 |
 | AX-11 | Conflicting commands serialize | Commands whose footprints overlap behave as if run one at a time: each takes the lock that guards what it reads and writes, a marker is set before the first effect it guards, and only its owner clears it. | new | M-03, M-07 | 13 (10) | 22 (6/9/7/0) | - |
 | AX-12 | Truthful outcomes and committed observations | A command's reported outcome equals its effect: success means the whole effect happened and is kept, counts and receipts report what was done; a read changes no stored state except derived caches, and a read or an archive shows a state some serial order of committed commands produced. | new | M-02, M-03, M-06, M-07, M-10, M-13 | 38 (18) | 24 (4/13/6/1) | EXC-10 |
@@ -47,8 +47,8 @@ functional contract; 59), DOC (document against code; 23), ENV (9), TEST (3), PE
 - Implemented by: M-12; relied on by 9 objects in modules 06, 07, 09, 10, 15, 17
 - Not in the module-00 composition; its laws are checked by the generic machines of M-12
 - As-built findings breaking it, S1: F-0304, F-1114
-- As-built findings breaking it, S2: F-0506, F-0601, F-0602, F-0603, F-1107, F-C0151, F-C0349, F-C0450, F-C1150
-- As-built findings breaking it, S3: F-0404, F-0613, F-C0340, F-C0840, F-C1001, F-C1540
+- As-built findings breaking it, S2: F-0506, F-0601, F-0602, F-0603, F-1107, F-C0151, F-C0349, F-C0350, F-C0450, F-C1150
+- As-built findings breaking it, S3: F-0404, F-0613, F-C0340, F-C0351, F-C0840, F-C1001, F-C1540
 - As-built findings breaking it, S4: F-C0440, F-C0640, F-C1040, F-C1740
 
 ### AX-02 Graph and tenant scope
@@ -75,7 +75,7 @@ functional contract; 59), DOC (document against code; 23), ENV (9), TEST (3), PE
 - As-built findings breaking it, S1: F-0409, F-C0702
 - As-built findings breaking it, S2: F-0307, F-0308, F-0601, F-0608, F-0615, F-0704, F-0803, F-1511, F-C0501, F-C0748, F-C0848, F-C1802
 - As-built findings breaking it, S3: F-0513, F-0614, F-0804, F-0806, F-0807, F-0817, F-0903, F-1509, F-1704, F-1714, F-C0940, F-C1107, F-C1110, F-C1602
-- As-built findings breaking it, S4: F-0306, F-0825, F-1111, F-1506, F-C0841, F-C1109
+- As-built findings breaking it, S4: F-0306, F-0825, F-1111, F-1506, F-C0415, F-C0717, F-C0841, F-C1109
 
 ### AX-04 All or none across stores
 
@@ -149,6 +149,7 @@ functional contract; 59), DOC (document against code; 23), ENV (9), TEST (3), PE
 - As-built findings breaking it, S1: F-C1306
 - As-built findings breaking it, S2: F-0102, F-0309, F-1605, F-C0150
 - As-built findings breaking it, S3: F-0103, F-0105, F-0107, F-0109
+- As-built findings breaking it, S4: F-C0690
 
 ### AX-10 Removal reaches every store and copy
 

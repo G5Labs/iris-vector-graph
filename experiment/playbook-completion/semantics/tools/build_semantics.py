@@ -54,7 +54,7 @@ def all_findings():
         lists = [d] if isinstance(d, list) else [v for v in d.values() if isinstance(v, list)]
         for lst in lists:
             for f in lst:
-                if isinstance(f, dict) and "id" in f:
+                if isinstance(f, dict) and "id" in f and f.get("disposition") != "duplicate":
                     ids.setdefault(f["id"], f)
     return ids
 

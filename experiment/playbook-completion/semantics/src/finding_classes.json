@@ -1,5 +1,5 @@
 {
- "_doc": "Hand classification (semantics lane, steer 7) of every finding in experiment/playbook-completion/findings/audit/*.json by the universal axiom(s) of semantics/axioms.json it violates. Non-axiom classes: FUNC (the module's own functional contract: a wrong answer or effect no universal axiom governs), DOC (a document, comment or spec disagrees with the code; no behaviour axiom), ENV (environment, driver, packaging or engine-version premise), TEST (test code), PERF (performance budget), NONE (refuted or not reproduced; kept for completeness). A finding may carry several classes. Read from each finding's title, intended and observed fields; the checker requires every finding id in findings/audit (all lists, including new_findings) to appear here exactly once and every id here to exist there.",
+ "_doc": "Hand classification (semantics lane, steer 7) of every finding in experiment/playbook-completion/findings/audit/*.json by the universal axiom(s) of semantics/axioms.json it violates. Non-axiom classes: FUNC (the module's own functional contract: a wrong answer or effect no universal axiom governs), DOC (a document, comment or spec disagrees with the code; no behaviour axiom), ENV (environment, driver, packaging or engine-version premise), TEST (test code), PERF (performance budget), NONE (refuted or not reproduced; kept for completeness). A finding may carry several classes. Read from each finding's title, intended and observed fields; the checker requires every finding id in findings/audit (all lists, including new_findings) to appear here exactly once and every id here to exist there, except findings with disposition 'duplicate' (they are not counted: their duplicate_of carries the class).",
  "classes": {
   "F-0101": [
    "AX-12"
@@ -914,9 +914,6 @@
    "AX-10",
    "AX-02"
   ],
-  "F-C1720": [
-   "ENV"
-  ],
   "F-C0340": [
    "AX-01",
    "AX-02",
@@ -946,6 +943,39 @@
   ],
   "F-C1250": [
    "AX-10"
+  ],
+  "F-C0690": [
+   "AX-09"
+  ],
+  "F-C0415": [
+   "AX-03"
+  ],
+  "F-C0615": [
+   "ENV"
+  ],
+  "F-C1715": [
+   "FUNC"
+  ],
+  "F-C1716": [
+   "ENV"
+  ],
+  "F-C0715": [
+   "FUNC"
+  ],
+  "F-C0716": [
+   "FUNC"
+  ],
+  "F-C0717": [
+   "AX-03"
+  ],
+  "F-C1018": [
+   "FUNC"
+  ],
+  "F-C0350": [
+   "AX-01"
+  ],
+  "F-C0351": [
+   "AX-01"
   ]
  }
 }

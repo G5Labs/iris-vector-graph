@@ -58,22 +58,29 @@ def parse_ontology():
 
 
 def contract_ids():
+    """Clause ids of the validated IRIS environment contract: iris-contract/CONTRACT.md (round r6) and the clauses the
+    contract-2 lane validated (contract-2/VALIDATED.json, result pass)."""
     ids = set()
     for line in (ROOT / "iris-contract" / "CONTRACT.md").read_text().splitlines():
         m = re.match(r"^\| \**([EX]-[A-Z0-9-]+)\** \|", line)
         if m:
             ids.add(m.group(1))
+    v2 = ROOT / "contract-2" / "VALIDATED.json"
+    if v2.exists():
+        ids |= {k for k, c in load_json(v2)["clauses"].items() if c.get("result") == "pass"}
     return ids
 
 
 def finding_ids():
+    """Every finding id in findings/audit, except those whose disposition is 'duplicate' (not counted: the finding they
+    duplicate carries the class)."""
     ids = set()
     for p in sorted(glob.glob(str(ROOT / "findings" / "audit" / "*.json"))):
         d = load_json(p)
         lists = [d] if isinstance(d, list) else [v for v in d.values() if isinstance(v, list)]
         for lst in lists:
             for f in lst:
-                if isinstance(f, dict) and "id" in f:
+                if isinstance(f, dict) and "id" in f and f.get("disposition") != "duplicate":
                     ids.add(f["id"])
     return ids
 

@@ -485,8 +485,8 @@ expected-violation).
 
 ## Axiom-breaking findings not attached to a mechanism instance
 
-83 findings break an axiom (`axioms.json`) but are not attached to a mechanism instance above, because the
+88 findings break an axiom (`axioms.json`) but are not attached to a mechanism instance above, because the
 mechanism instances model one representative variant per object and these findings are further variants, or because
 the departure lies outside every machine's subset (network exposure, resource release, error-class mapping, cost):
-F-0101, F-0102, F-0105, F-0106, F-0109, F-0204, F-0206, F-0209, F-0304, F-0308, F-0309, F-0401, F-0403, F-0404, F-0405, F-0505, F-0506, F-0513, F-0608, F-0614, F-0802, F-0803, F-0806, F-0816, F-0825, F-1009, F-1102, F-1103, F-1106, F-1107, F-1111, F-1509, F-1605, F-1611, F-1704, F-1709, F-1714, F-1807, F-C0150, F-C0151, F-C0301, F-C0330, F-C0340, F-C0341, F-C0347, F-C0348, F-C0349, F-C0402, F-C0440, F-C0450, F-C0640, F-C0701, F-C0748, F-C0840, F-C0841, F-C0848, F-C0940, F-C1001, F-C1040, F-C1041, F-C1101, F-C1102, F-C1107, F-C1108, F-C1109, F-C1110, F-C1150, F-C1202, F-C1250, F-C1301, F-C1302, F-C1307, F-C1351, F-C1540, F-C1547, F-C1548, F-C1601, F-C1602, F-C1603, F-C1640, F-C1740, F-C1741, F-C1802.
+F-0101, F-0102, F-0105, F-0106, F-0109, F-0204, F-0206, F-0209, F-0304, F-0308, F-0309, F-0401, F-0403, F-0404, F-0405, F-0505, F-0506, F-0513, F-0608, F-0614, F-0802, F-0803, F-0806, F-0816, F-0825, F-1009, F-1102, F-1103, F-1106, F-1107, F-1111, F-1509, F-1605, F-1611, F-1704, F-1709, F-1714, F-1807, F-C0150, F-C0151, F-C0301, F-C0330, F-C0340, F-C0341, F-C0347, F-C0348, F-C0349, F-C0350, F-C0351, F-C0402, F-C0415, F-C0440, F-C0450, F-C0640, F-C0690, F-C0701, F-C0717, F-C0748, F-C0840, F-C0841, F-C0848, F-C0940, F-C1001, F-C1040, F-C1041, F-C1101, F-C1102, F-C1107, F-C1108, F-C1109, F-C1110, F-C1150, F-C1202, F-C1250, F-C1301, F-C1302, F-C1307, F-C1351, F-C1540, F-C1547, F-C1548, F-C1601, F-C1602, F-C1603, F-C1640, F-C1740, F-C1741, F-C1802.
 They stay counted against their axioms; attaching them (one more trait instance each) is an open part of 3.3a-mechanisms.

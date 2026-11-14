@@ -80,7 +80,23 @@ def contract_clauses():
                 ids.append(first)
     if not ids:
         die("no contract clauses parsed from CONTRACT.md")
+    v2 = COMP / "contract-2" / "VALIDATED.json"
+    if v2.exists():
+        ids += [k for k, c in json.loads(v2.read_text())["clauses"].items() if c.get("result") == "pass" and k not in ids]
     return ids
+
+
+def outside_premises():
+    """Named premises the contract-2 lane holds outside the contract (assumed): P2-* ids from coverage.json families,
+    and P2-ABSENT for its 'absent' family (features absent on IRIS 2026.1 Community)."""
+    cov = COMP / "contract-2" / "coverage.json"
+    if not cov.exists():
+        return set()
+    out = set()
+    for key, fam in json.loads(cov.read_text())["families"].items():
+        m = re.match(r"(P2-[A-Z0-9]+)", fam["premise"])
+        out.add(m.group(1) if m else "P2-" + key.upper())
+    return out
 
 
 def main():
@@ -91,6 +107,7 @@ def main():
     exceptions = [e["id"] for e in ax_src["exceptions"]]
     domain = [d["id"] for d in ax_src["contract_clauses"]["domain"]]
     clauses = contract_clauses()
+    premises = outside_premises()
     known = set(axioms) | set(exceptions) | set(domain) | set(clauses)
     classes = json.loads((SEM / "src" / "finding_classes.json").read_text())["classes"]
     rules = json.loads((SEM / "src" / "trace_rules.json").read_text())["rules"]
@@ -171,7 +188,15 @@ def main():
         if s["id"] in open_reasons:
             if targets:
                 die(f"open_reasons names {s['id']}, which is traced ({targets})")
-            entry["open_reason"] = open_reasons[s["id"]]
+            r = open_reasons[s["id"]]
+            if isinstance(r, dict):
+                entry["open_reason"] = r["reason"]
+                if r.get("premise"):
+                    if r["premise"] not in premises:
+                        die(f"open_reasons {s['id']}: unknown outside premise {r['premise']}")
+                    entry["outside_premise"] = r["premise"]
+            else:
+                entry["open_reason"] = r
         reqs.append(entry)
 
     def cat(t):
@@ -199,6 +224,8 @@ def main():
         "open_by_kind": dict(sorted(Counter(r["kind"] for r in reqs if r["status"] == "open").items())),
         "open_by_module": dict(sorted(Counter(r["module"] for r in reqs if r["status"] == "open").items())),
         "open_with_reason": sum(r["status"] == "open" and "open_reason" in r for r in reqs),
+        "open_with_outside_premise": sum(r["status"] == "open" and "outside_premise" in r for r in reqs),
+        "open_by_outside_premise": dict(sorted(Counter(r.get("outside_premise", "none") for r in reqs if r["status"] == "open").items())),
     }
     bm = defaultdict(lambda: Counter())
     for r in reqs:
@@ -230,6 +257,9 @@ def main():
                       "specs' FR-/SC- ids cover only some modules (no spec for vectors, interfaces or operations), "
                       "and the ontology already cites the FR ids it restates in Source/Notes.",
         "targets_known": {"axioms": axioms, "contract_clauses": clauses, "domain": domain, "exceptions": exceptions},
+        "outside_premises_known": sorted(premises),
+        "contract_sources": ["experiment/playbook-completion/iris-contract/CONTRACT.md (round r6)",
+                             "experiment/playbook-completion/contract-2/VALIDATED.json (contract-2 lane, result pass)"],
         "counts": counts,
         "requirements": reqs,
         "open": [r["id"] for r in reqs if r["status"] == "open"],

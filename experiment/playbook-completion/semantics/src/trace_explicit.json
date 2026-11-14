@@ -1,5 +1,5 @@
 {
- "_doc": "Hand placements of semantics/tools/trace_requirements.py (basis explicit), read from each statement's text, Notes and Source. Placed: every I statement and every P statement the rules and finding bases leave without a target, when an axiom, contract clause, domain clause or functional clause of its module covers it. Principle for premises (kind P): an IRIS engine, driver or third-party fact is traced only to an iris-contract clause that decides it; one outside the validated contract subset stays open (a contract coverage gap, CONTRACT.md 'Outside the semantic subset'), with its reason in open_reasons. A premise that is a product or operator obligation supporting an axiom (callers send the fingerprint, an operator fronts the server with TLS) is traced to that axiom. Requirements left open on purpose are listed in open_reasons with the reason.",
+ "_doc": "Hand placements of semantics/tools/trace_requirements.py (basis explicit), read from each statement's text, Notes and Source. Placed: every I statement and every P statement the rules and finding bases leave without a target, when an axiom, contract clause, domain clause or functional clause of its module covers it. Principle for premises (kind P): an IRIS engine, driver or third-party fact is traced only to an iris-contract clause that decides it; one outside the validated contract subset stays open (a contract coverage gap, CONTRACT.md 'Outside the semantic subset'), with its reason in open_reasons. A premise that is a product or operator obligation supporting an axiom (callers send the fingerprint, an operator fronts the server with TLS) is traced to that axiom. Requirements left open on purpose are listed in open_reasons with the reason. After the contract-2 lane (validated clauses E-1, S-1, X2-*): statements whose IRIS behaviour a contract-2 clause decides gained that clause; each open statement names the contract-2 outside premise (P2-*) that holds it as assumed, or none with the reason.",
  "statements": {
   "GID-I5.2": {
    "targets": [
@@ -284,63 +284,330 @@
     "AX-02"
    ],
    "why": "Build reads only its graph's nodes and properties: graph scope (spec 230 FR-009)"
+  },
+  "CYP-P2": {
+   "targets": [
+    "S-1"
+   ],
+   "why": "S-1 (contract-2): the pin's Txn_Begin / Txn_End / Txn_Undo SQL functions act on the calling connection's process and transaction levels"
+  },
+  "WRT-T2.4": {
+   "targets": [
+    "S-1"
+   ],
+   "why": "S-1: the three server functions open and close the write level on the cursor's own process"
+  },
+  "CYP-T6.1": {
+   "targets": [
+    "S-1"
+   ],
+   "why": "S-1: write_txn's SQL functions open the level the query's SQL runs in"
+  },
+  "OPS-B4.9": {
+   "targets": [
+    "S-1"
+   ],
+   "why": "S-1: Txn_Begin, Txn_End, Txn_Undo nest TSTART levels on the client connection"
+  },
+  "LED-B9.5": {
+   "targets": [
+    "S-1"
+   ],
+   "why": "S-1: the client's Txn_Undo takes back only IVG's level"
+  },
+  "INS-B10.1.91": {
+   "targets": [
+    "S-1"
+   ],
+   "why": "S-1: the forwarders run Graph.KG.Txn in the caller's process and transaction"
+  },
+  "WRT-B92": {
+   "targets": [
+    "X2-TOP"
+   ],
+   "why": "X2-TOP: SELECT TOP n with no ORDER BY may answer any n rows"
+  },
+  "INS-B12.90": {
+   "targets": [
+    "X2-TOP"
+   ],
+   "why": "X2-TOP: SELECT TOP 1 reads at most one row"
+  },
+  "OPS-B3.4": {
+   "targets": [
+    "X2-TOP"
+   ],
+   "why": "X2-TOP: TOP n bounds the rows answered"
+  },
+  "VEC-B3.13": {
+   "targets": [
+    "X2-BATCH"
+   ],
+   "why": "X2-BATCH: DB-API executemany skips a refused row without raising, the reason the batch writer checks lengths first"
+  },
+  "INT-B1.2": {
+   "targets": [
+    "X2-IOU"
+   ],
+   "why": "X2-IOU: INSERT OR UPDATE inserts an absent key and updates a present one"
+  },
+  "SNP-B3.2": {
+   "targets": [
+    "X2-IOU"
+   ],
+   "why": "X2-IOU: INSERT OR UPDATE writes the archive's rows over the ones there"
+  },
+  "ADJ-T2.90": {
+   "targets": [
+    "X2-JSON"
+   ],
+   "why": "X2-JSON: %FromJSON / %Get of the qualifiers read numbers and booleans as written"
+  },
+  "CYP-T11.98": {
+   "targets": [
+    "X2-JSON"
+   ],
+   "why": "X2-JSON: %Set / %ToJSON keep insertion order and write canonical numbers"
+  },
+  "LED-B4.7": {
+   "targets": [
+    "X2-LIST"
+   ],
+   "why": "X2-LIST: the binding $LB(seq, fingerprint) is read back element by element"
+  },
+  "RED-B2.1": {
+   "targets": [
+    "X2-LIST"
+   ],
+   "why": "X2-LIST: the tombstone is a $LB whose elements read back as written"
+  },
+  "NAT-B1.5": {
+   "targets": [
+    "X2-LIST"
+   ],
+   "why": "X2-LIST: $LB(graph, id) members compare as lists, so one id in two graphs counts twice"
   }
  },
  "open_reasons": {
-  "TXT-B4.8": "a cost (performance) rule: no universal axiom or contract clause covers performance",
-  "INT-R1.13": "a memory-bound (resource) rule: no universal axiom or contract clause covers it",
-  "INS-P2.17": "IRIS catalog fact (schema and package name case) outside the validated contract subset",
-  "INS-P2.18": "IRIS class/package projection of SQL schemas: outside the validated contract subset",
-  "INS-P4.5": "edition availability (%AI classes absent on Community): outside the contract subset",
-  "INS-P4.15": "class compiler behaviour: outside the contract subset",
-  "INS-P4.16": "upstream test-session deploy behaviour: not an engine clause",
-  "INS-P5.9": "SQL routine recompile behaviour: outside the contract subset",
-  "INS-P6.15": "grant listing format: outside the contract subset",
-  "INS-P6.16": "revoke semantics: outside the contract subset",
-  "INS-P7.10": "catalog keeps routine and view text: outside the contract subset",
-  "INS-P8.10": "class delete drops the table's rows: outside the contract subset",
-  "INS-P10.12": "SQL privilege checks for dynamic SQL vs global database rights: outside the contract subset (privileges)",
-  "INS-P12": "privilege error text: outside the contract subset",
-  "INS-P13": "default-schema lookup of an unqualified SQL name: outside the contract subset",
-  "GID-P2.11": "an empty subscript is refused: E-GLOBALS does not decide it",
-  "WRT-P5.12": "a SET of an equal text value is not written: outside the contract subset",
-  "ADJ-P5.14.1": "read-only database protection (<PROTECT>): outside the contract subset",
-  "TMP-P4": "global value type preservation: outside the contract subset",
-  "TMP-P6": "string length limit: no capacity clause in the contract",
-  "OPS-P7": "string length limit: no capacity clause in the contract",
-  "OPS-P8": "bound-parameter limit: no capacity clause in the contract",
-  "ALG-P3": "callout argument length limit: no capacity clause in the contract",
-  "VEC-P1": "vector width refusal (SQLCODE -104): X-VEC covers availability and $VECTOR only",
-  "VEC-P2": "vector scoring of different widths: outside X-VEC",
-  "VEC-P3": "LIKE without ESCAPE: outside the contract subset",
-  "VEC-P6": "HNSW build precondition: HNSW maintenance is outside the subset",
-  "VEC-P7": "foreign-key delete refusal (-124): outside the contract subset",
-  "TXT-P1": "the English text analyzer: outside the contract subset",
-  "CYP-P5": "SQL string literal escaping: outside the contract subset",
-  "CYP-P6": "the driver runs one statement per call: outside the contract subset",
-  "NAT-P1": "WorkMgr worker processes: JOB / WorkMgr is outside the subset",
-  "NAT-P3": "a failed class compile breaks later SQL prepare: outside the contract subset",
-  "ALG-P1": "the Arno library's namespace: a third-party library fact",
-  "ALG-P4": "the Arno native PageRank reader's scope: a third-party library fact (sources disagree, F-1001)",
-  "ALG-P5": "networkx semantics: a third-party library fact",
-  "LED-P8": "row triggers for plain SQL update and delete: triggers are outside the contract subset",
-  "LED-P3": "object %OpenId/%Save lock and whole-row write: the object path is outside the contract subset (E-ROWLOCK decides SQL DML only)",
-  "INT-F2.9": "FHIR server schema: FHIR server classes are unavailable and outside the subset",
-  "INT-F9.5": "Task Manager timing: Task Manager is outside the subset",
-  "INT-F12.1": "edition availability (FHIR server only in IRIS for Health)",
-  "INT-F12.2": "server SQL privilege context: outside the contract subset",
-  "INT-F12.3": "FHIR repository storage layout: outside the subset",
-  "INT-F12.4": "FHIR repository soft delete: outside the subset",
-  "INT-S1.12": "pySHACL semantics: a third-party library fact",
-  "API-P11.2": "IRIS web application authentication: outside the contract subset",
-  "API-P12.1": "edition availability (%AI classes)",
-  "OPS-P2": "Community edition core limit: outside the contract subset",
-  "OPS-P3": "edition availability (%AI package)",
-  "OPS-P4": "the Python driver's API surface: a driver fact outside the subset",
-  "OPS-P6": "a third-party package overwriting the iris module: packaging fact outside the subset",
-  "OPS-P11": "INFORMATION_SCHEMA.ROUTINES visibility: outside the contract subset",
-  "OPS-P12": "Python warnings filter semantics: a language fact",
-  "OPS-P13": "embedded Python tool-service crash: outside the contract subset",
-  "OPS-P16": "image availability: not an engine clause (versions/AVAILABILITY.md)"
+  "TXT-B4.8": {
+   "reason": "a cost (performance) rule: no axiom, clause or premise family covers performance",
+   "premise": null
+  },
+  "INT-R1.13": {
+   "reason": "a memory-bound (resource) rule: no axiom, clause or premise family covers it",
+   "premise": null
+  },
+  "INS-P2.17": {
+   "reason": "IRIS catalog fact (schema and package name case) outside the validated contract subset; contract-2 holds it outside the contract as named premise P2-CATALOG (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-CATALOG"
+  },
+  "INS-P2.18": {
+   "reason": "IRIS class/package projection of SQL schemas: outside the validated contract subset; contract-2 holds it outside the contract as named premise P2-DICT (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-DICT"
+  },
+  "INS-P4.5": {
+   "reason": "edition availability (%AI classes absent on Community): outside the contract subset; contract-2 holds it outside the contract as named premise P2-ABSENT (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-ABSENT"
+  },
+  "INS-P4.15": {
+   "reason": "class compiler behaviour: outside the contract subset; contract-2 holds it outside the contract as named premise P2-DICT (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-DICT"
+  },
+  "INS-P4.16": {
+   "reason": "an upstream test-session deploy fact, not an engine behaviour: no contract clause or premise family applies",
+   "premise": null
+  },
+  "INS-P5.9": {
+   "reason": "SQL routine recompile behaviour: outside the contract subset; contract-2 holds it outside the contract as named premise P2-SQLROUTINE (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-SQLROUTINE"
+  },
+  "INS-P6.15": {
+   "reason": "grant listing format: outside the contract subset; contract-2 holds it outside the contract as named premise P2-SEC (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-SEC"
+  },
+  "INS-P6.16": {
+   "reason": "revoke semantics: outside the contract subset; contract-2 holds it outside the contract as named premise P2-SEC (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-SEC"
+  },
+  "INS-P7.10": {
+   "reason": "catalog keeps routine and view text: outside the contract subset; contract-2 holds it outside the contract as named premise P2-CATALOG (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-CATALOG"
+  },
+  "INS-P8.10": {
+   "reason": "class delete drops the table's rows: outside the contract subset; contract-2 holds it outside the contract as named premise P2-DICT (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-DICT"
+  },
+  "INS-P10.12": {
+   "reason": "SQL privilege checks for dynamic SQL vs global database rights: outside the contract subset (privileges); contract-2 holds it outside the contract as named premise P2-SEC (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-SEC"
+  },
+  "INS-P12": {
+   "reason": "privilege error text: outside the contract subset; contract-2 holds it outside the contract as named premise P2-STATUS (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-STATUS"
+  },
+  "INS-P13": {
+   "reason": "default-schema lookup of an unqualified SQL name: outside the contract subset; contract-2 holds it outside the contract as named premise P2-CATALOG (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-CATALOG"
+  },
+  "GID-P2.11": {
+   "reason": "an empty subscript is refused: E-GLOBALS does not decide it; contract-2 holds it outside the contract as named premise P2-NATIVESUB (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-NATIVESUB"
+  },
+  "WRT-P5.12": {
+   "reason": "a SET of an equal text value is not written: no validated clause and no contract-2 premise family covers it",
+   "premise": null
+  },
+  "ADJ-P5.14.1": {
+   "reason": "read-only database protection (<PROTECT>): outside the contract subset; contract-2 holds it outside the contract as named premise P2-SEC (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-SEC"
+  },
+  "TMP-P4": {
+   "reason": "global value type preservation: X2-LIST decides $LB element encodings only; no premise family covers plain global values",
+   "premise": null
+  },
+  "TMP-P6": {
+   "reason": "string length limit: no capacity clause in the contract; contract-2 holds it outside the contract as named premise P2-LIMITS (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-LIMITS"
+  },
+  "OPS-P7": {
+   "reason": "string length limit: no capacity clause in the contract; contract-2 holds it outside the contract as named premise P2-LIMITS (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-LIMITS"
+  },
+  "OPS-P8": {
+   "reason": "bound-parameter limit: no capacity clause in the contract; contract-2 holds it outside the contract as named premise P2-LIMITS (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-LIMITS"
+  },
+  "ALG-P3": {
+   "reason": "callout argument length limit: no capacity clause in the contract; contract-2 holds it outside the contract as named premise P2-LIMITS (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-LIMITS"
+  },
+  "VEC-P1": {
+   "reason": "vector width refusal (SQLCODE -104): X-VEC covers availability and $VECTOR only; contract-2 holds it outside the contract as named premise P2-SQLCODE (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-SQLCODE"
+  },
+  "VEC-P2": {
+   "reason": "vector scoring of different widths: outside X-VEC; contract-2 holds it outside the contract as named premise P2-SQLEXPR (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-SQLEXPR"
+  },
+  "VEC-P3": {
+   "reason": "LIKE without ESCAPE: outside the contract subset; contract-2 holds it outside the contract as named premise P2-SQLEXPR (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-SQLEXPR"
+  },
+  "VEC-P6": {
+   "reason": "HNSW build precondition: HNSW maintenance is outside the subset; contract-2 holds it outside the contract as named premise P2-HNSW (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-HNSW"
+  },
+  "VEC-P7": {
+   "reason": "foreign-key delete refusal (-124): outside the contract subset; contract-2 holds it outside the contract as named premise P2-FK (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-FK"
+  },
+  "TXT-P1": {
+   "reason": "the English text analyzer: outside the contract subset; contract-2 holds it outside the contract as named premise P2-IFIND (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-IFIND"
+  },
+  "CYP-P5": {
+   "reason": "SQL string literal escaping: outside the contract subset; contract-2 holds it outside the contract as named premise P2-SQLTEXT (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-SQLTEXT"
+  },
+  "CYP-P6": {
+   "reason": "the driver runs one statement per call: outside the contract subset; contract-2 holds it outside the contract as named premise P2-SQLTEXT (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-SQLTEXT"
+  },
+  "NAT-P1": {
+   "reason": "WorkMgr worker processes: JOB / WorkMgr is outside the subset; contract-2 holds it outside the contract as named premise P2-JOB (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-JOB"
+  },
+  "NAT-P3": {
+   "reason": "a failed class compile breaks later SQL prepare: outside the contract subset; contract-2 holds it outside the contract as named premise P2-DICT (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-DICT"
+  },
+  "ALG-P1": {
+   "reason": "the Arno library reads the USER namespace: a third-party library fact (P2-ZF covers only that callouts run in the calling process)",
+   "premise": null
+  },
+  "ALG-P4": {
+   "reason": "the Arno native PageRank reader's scope: a third-party library fact; sources disagree (F-1001)",
+   "premise": null
+  },
+  "ALG-P5": {
+   "reason": "networkx semantics: a third-party library fact",
+   "premise": null
+  },
+  "LED-P8": {
+   "reason": "row triggers for plain SQL update and delete: triggers are outside the contract subset; contract-2 holds it outside the contract as named premise P2-TRIGGER (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-TRIGGER"
+  },
+  "LED-P3": {
+   "reason": "object %OpenId/%Save lock and whole-row write: the object path is outside the contract subset (E-ROWLOCK decides SQL DML only); contract-2 holds it outside the contract as named premise P2-OBJ (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-OBJ"
+  },
+  "INT-F2.9": {
+   "reason": "FHIR server schema: FHIR server classes are unavailable and outside the subset; contract-2 holds it outside the contract as named premise P2-ABSENT (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-ABSENT"
+  },
+  "INT-F9.5": {
+   "reason": "Task Manager timing: Task Manager is outside the subset; contract-2 holds it outside the contract as named premise P2-TASK (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-TASK"
+  },
+  "INT-F12.1": {
+   "reason": "edition availability (FHIR server only in IRIS for Health); contract-2 holds it outside the contract as named premise P2-ABSENT (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-ABSENT"
+  },
+  "INT-F12.2": {
+   "reason": "server SQL privilege context: outside the contract subset; contract-2 holds it outside the contract as named premise P2-SEC (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-SEC"
+  },
+  "INT-F12.3": {
+   "reason": "FHIR repository storage layout: outside the subset; contract-2 holds it outside the contract as named premise P2-ABSENT (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-ABSENT"
+  },
+  "INT-F12.4": {
+   "reason": "FHIR repository soft delete: outside the subset; contract-2 holds it outside the contract as named premise P2-ABSENT (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-ABSENT"
+  },
+  "INT-S1.12": {
+   "reason": "pySHACL semantics: a third-party library fact",
+   "premise": null
+  },
+  "API-P11.2": {
+   "reason": "IRIS web application authentication: outside the contract subset; contract-2 holds it outside the contract as named premise P2-WEB (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-WEB"
+  },
+  "API-P12.1": {
+   "reason": "edition availability (%AI classes); contract-2 holds it outside the contract as named premise P2-ABSENT (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-ABSENT"
+  },
+  "OPS-P2": {
+   "reason": "Community edition core limit: outside the contract subset; contract-2 holds it outside the contract as named premise P2-CFG (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-CFG"
+  },
+  "OPS-P3": {
+   "reason": "edition availability (%AI package); contract-2 holds it outside the contract as named premise P2-ABSENT (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-ABSENT"
+  },
+  "OPS-P4": {
+   "reason": "the Python driver's API surface: a driver fact (P2-IRISLIST covers only IRISList decoding)",
+   "premise": null
+  },
+  "OPS-P6": {
+   "reason": "a third-party package overwriting the iris module: a packaging fact",
+   "premise": null
+  },
+  "OPS-P11": {
+   "reason": "INFORMATION_SCHEMA.ROUTINES visibility: outside the contract subset; contract-2 holds it outside the contract as named premise P2-CATALOG (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-CATALOG"
+  },
+  "OPS-P12": {
+   "reason": "Python warnings filter semantics: a language fact outside the IRIS contract",
+   "premise": null
+  },
+  "OPS-P13": {
+   "reason": "embedded Python tool-service crash: outside the contract subset; contract-2 holds it outside the contract as named premise P2-EPY (assumed, not validated; contract-2/coverage.json)",
+   "premise": "P2-EPY"
+  },
+  "OPS-P16": {
+   "reason": "image and kit availability: not an engine clause (versions/AVAILABILITY.md)",
+   "premise": null
+  }
  }
 }

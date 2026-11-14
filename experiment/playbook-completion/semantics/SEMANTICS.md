@@ -36,9 +36,10 @@ run --release -- --out RESULTS.json` in `models/semantics/` (a few seconds).
 Fourteen axioms (`AXIOMS.md`). AX-01..AX-09 repair SYS-I1..SYS-I10 (SYS-I3 and SYS-I9 merge into AX-03, "explicit, inert
 refusals"); AX-10 removal reaches every store and copy, AX-11 conflicting commands serialize, AX-12 truthful outcomes and
 committed observations (with read purity), AX-13 least capability and AX-14 accepted work progresses are new. Every
-finding in `findings/audit/` (299 at this pass, including the uncommitted contract-2 file's F-C1720) is classed by hand
-against them (`src/finding_classes.json`): 203 break at least one axiom, the rest are functional (59), documentation (23),
-environment (9), test (3), performance or capacity (3), or refuted/not reproduced (5, F-C1240 now among them). The checker fails when a finding appears that is not classed,
+finding in `findings/audit/` (309 at this pass; a finding whose disposition is `duplicate`, such as F-C1720 of F-C1743,
+is not counted) is classed by hand against them (`src/finding_classes.json`): 208 break at least one axiom, the rest are
+functional (63), documentation (23), environment (10), test (3), performance or capacity (3), or refuted/not reproduced
+(5, F-C1240 and F-1612 among them). The checker fails when a finding appears that is not classed,
 so a new finding from any lane must be placed under an axiom (a ratchet). Exceptions are named (EXC-01..EXC-11: DDL after
 commit, PurgeAll, post-commit properties, unledgered vectors, the 30 s route memory, the interned snapshot's missing graph
 dimension, tombstone digests, monotone counters, legacy objects, unlocked algorithm reads, and an undeclared adjacency or
@@ -118,14 +119,30 @@ axiom), `kind` (every X statement -> AX-03), `rule:` (regex rules, `src/trace_ru
 `src/trace_explicit.json`), and `fallback:functional` (a B or T statement with no other target traces to its module's
 functional contract DC-FUNC-NN). I, X and P statements have no fallback.
 
-**Result** (`trace.json`, regenerated on the ontology after the ontology-2 lane): 2,939 requirements (B 1,333, T 971,
-X 381, I 149, P 105); 2,884 traced, **55 open** (53 P, 2 I), each with its reason in `src/trace_explicit.json`
-(`open_reasons`). Of the traced: 1,627 to an axiom, 64 to an iris-contract clause, 23 to a named exception, 14 to
-DC-REPLAY, and 1,191 only to a module's functional contract (the weakest trace: it says the statement is a functional rule
-of its module, which no universal axiom governs). The open P statements are IRIS, driver, edition or third-party facts
-outside the validated contract subset (catalog and grants, string and parameter limits, HNSW, Task Manager, FHIR, %AI,
-Arno, networkx); the two open I statements are cost and memory bounds (TXT-B4.8, INT-R1.13), which no axiom covers. Open
-by module: 01: 13, 17: 10, 15: 8, 06: 5, 10: 4, 05/07/08/09/11/16: 2 each, 02/03/04: 1 each.
+**Result** (`trace.json`, regenerated on the ontology after the ontology-2 lane and against the contract extended by
+the contract-2 lane): 2,939 requirements (B 1,333, T 971, X 381, I 149, P 105); 2,884 traced, **55 open** (53 P, 2 I),
+each with its reason in `src/trace_explicit.json` (`open_reasons`). Of the traced: 1,627 to an axiom, 79 to an IRIS
+contract clause (round r6 or contract-2), 23 to a named exception, 14 to DC-REPLAY, and 1,183 only to a module's
+functional contract (the weakest trace: it says the statement is a functional rule of its module, which no universal
+axiom governs). Open by module: 01: 13, 17: 10, 15: 8, 06: 5, 10: 4, 05/07/08/09/11/16: 2 each, 02/03/04: 1 each.
+
+**Re-trace against the contract-2 extension** (clauses E-1, S-1, X2-JSON, X2-LIST, X2-TOP, X2-BATCH, X2-IOU, X2-QUERY,
+X2-MERGE in `contract-2/VALIDATED.json`, all registered pass; the checker and the trace tool now read them as contract
+clauses). None of the 55 open requirements is decided by a new clause: the clauses validate embedded SQL, SQL procedure
+levels, JSON, $LIST, TOP/LIMIT, executemany, INSERT OR UPDATE, $QUERY and MERGE, and no open premise is about those.
+17 already-traced statements whose IRIS behaviour a new clause decides gained it (S-1: CYP-P2, WRT-T2.4, CYP-T6.1,
+OPS-B4.9, LED-B9.5, INS-B10.1.91; X2-TOP: WRT-B92, INS-B12.90, OPS-B3.4; X2-BATCH: VEC-B3.13; X2-IOU: INT-B1.2, SNP-B3.2;
+X2-JSON: ADJ-T2.90, CYP-T11.98; X2-LIST: LED-B4.7, RED-B2.1, NAT-B1.5). All 55 stay outside. 42 of them are held by a named
+contract-2 outside premise (assumed, not validated; `contract-2/coverage.json` families), recorded per statement as
+`outside_premise`: P2-ABSENT 7 (%AI and FHIR server absent on Community), P2-SEC 5 (grants, revoke, privilege checks,
+read-only databases, server SQL rights), P2-CATALOG 4, P2-DICT 4, P2-LIMITS 4 (string length, bound parameters, callout
+heap), P2-SQLEXPR 2, P2-SQLTEXT 2, and one each of P2-CFG, P2-EPY, P2-FK, P2-HNSW, P2-IFIND, P2-JOB, P2-NATIVESUB, P2-OBJ,
+P2-SQLCODE, P2-SQLROUTINE, P2-STATUS, P2-TASK, P2-TRIGGER, P2-WEB. 13 have no clause and no premise family, each with
+its reason: TXT-B4.8 (cost) and INT-R1.13 (memory bound), the two I rules; the third-party library facts ALG-P1, ALG-P4
+(Arno), ALG-P5 (networkx), INT-S1.12 (pySHACL); the driver and packaging facts OPS-P4, OPS-P6; the language fact OPS-P12;
+OPS-P16 (image availability) and INS-P4.16 (an upstream test-session deploy fact), which are not engine behaviour; and
+WRT-P5.12 (an equal-text SET is not written) and TMP-P4 (a global value keeps its number or text type), engine behaviour
+that neither a clause nor a premise family covers.
 
 **Precision of the rule classifier** (`data/trace_sample_review.json`, seed 20261114, 80 rule-traced requirements of the
 2,600 before the ontology-2 additions, one reviewer, the lane itself, not independent): round 1 agree 67, partly 10,
@@ -174,8 +191,10 @@ Current: `sem-mc-all-r2` (272 checks with complements); per family `sem-mc-<fami
 `sem-mc-<family>-reviewed-r2` (pass), `sem-control-<family>-r2` (expected-violation) for ledger, retry, excl, derived,
 removal, snapshot, queue, install, scope, unit, cap, catalog, epoch, sys00 (42 records); `sem-check-r2` (0 violations) and
 `sem-check-selftest-r2` (base clean, 21 of 21 seeded mutations caught); after ten more findings arrived from the
-structural follow-up and contract-2 lanes and were classed, `sem-check-r3` and `sem-check-selftest-r3` (same results).
-Logs under `$RUN_DIR/semantics/r2/` and `r3/`. The first
+structural follow-up and contract-2 lanes and were classed, `sem-check-r3` and `sem-check-selftest-r3` (same results);
+after eleven more (refusals, writesets, product-gates) were classed, duplicates were left uncounted and the trace was
+re-run against the contract-2 clauses, `sem-check-r4` and `sem-check-selftest-r4`. Logs under `$RUN_DIR/semantics/r2/`,
+`r3/` and `r4/`. The first
 pass's records (`sem-mc-all`, `sem-mc-<family>-*`, `sem-control-<family>`, `sem-check`, `sem-check-selftest`, logs under
 `$RUN_DIR/semantics/r1/`) stay registered and are superseded.
 
@@ -188,9 +207,10 @@ pass's records (`sem-mc-all`, `sem-mc-<family>-*`, `sem-control-<family>`, `sem-
 
 ## 8. Open obligations (exact)
 
-1. **Trace:** 55 requirements open (53 P premises outside the validated IRIS-contract subset, 2 I cost/memory rules);
-   1,191 traced only to a module's functional contract, whose L1 models are not checked statement by statement; the rule
-   precision sample predates the 339 ontology-2 statements.
+1. **Trace:** 55 requirements open (53 P premises outside the validated IRIS contract, including contract-2's clauses, of
+   which 42 are held by a named contract-2 premise and 11 by none; 2 I cost/memory rules); 1,183 traced only to a module's
+   functional contract, whose L1 models are not checked statement by statement; the rule precision sample predates the
+   339 ontology-2 statements.
 2. **Mechanisms:** generic lemmas are explorer checks over a trait, not Verus proofs over a trait (D-14); 75 axiom-breaking
    findings not attached to a mechanism instance.
 3. **Axioms:** the repaired wording is not in `ontology/00-system.md` (ontology lane); AX-12's durability half rests on an

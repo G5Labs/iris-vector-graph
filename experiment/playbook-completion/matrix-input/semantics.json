@@ -1,6 +1,6 @@
 {
  "lane": "semantics",
- "source": "semantics/MATRIX-INPUT.json (r2/r3; 3.3-model-check/00 keeps the breadth-c evidence; blocked F-1001 not counted as as-built)",
+ "source": "semantics/MATRIX-INPUT.json (r4; 3.3-model-check/00 keeps the breadth-c evidence; blocked F-1001 not counted as as-built)",
  "cells": [
   {
    "gate": "3.3a-axioms",
@@ -10,8 +10,8 @@
     "experiment/playbook-completion/semantics/AXIOMS.md",
     "experiment/playbook-completion/semantics/axioms.json",
     "experiment/playbook-completion/semantics/src/finding_classes.json",
-    "run:sem-check-r3",
-    "run:sem-check-selftest-r3",
+    "run:sem-check-r4",
+    "run:sem-check-selftest-r4",
     "run:sem-mc-sys00-reviewed-r2",
     "run:sem-mc-sys00-as-built-r2",
     "run:sem-control-sys00-r2"
@@ -19,7 +19,7 @@
    "evidence_grade": "inspected (axioms stated with sources at the pin; every finding classed by hand) + mc (module-00 composition, model-level)",
    "level": "method",
    "product_obligation": "fails",
-   "product_basis": "203 of 299 findings break at least one of the 14 axioms (axioms.json violating_findings); each of the 14 axioms is broken by at least one finding; S1 findings breaking an axiom: 44",
+   "product_basis": "208 of 309 counted findings (duplicates not counted) break at least one of the 14 axioms (axioms.json violating_findings); each of the 14 axioms is broken by at least one finding; S1 findings breaking an axiom: 44",
    "as_built_findings": [
     "F-0304",
     "F-0409",
@@ -115,12 +115,12 @@
     "run:sem-control-scope-r2",
     "run:sem-control-snapshot-r2",
     "run:sem-control-unit-r2",
-    "run:sem-check-r3"
+    "run:sem-check-r4"
    ],
    "evidence_grade": "mc (explorer, exhaustive within declared bounds, none truncated; 243 mechanism checks: one generic machine per mechanism over a trait, one instance per object variant; 48 negative controls, at least one per law, all caught; every Keep check with its complement (all safety laws explored alone)); not proved",
    "level": "model",
    "product_obligation": "fails",
-   "product_basis": "59 of 77 objects hand-roll at least one mechanism; for every modelled instance the laws its as-built model violates equal its declared departures, each with a finding or a named exception (EXC-05, EXC-06, EXC-11), checked by sem-check-r3",
+   "product_basis": "59 of 77 objects hand-roll at least one mechanism; for every modelled instance the laws its as-built model violates equal its declared departures, each with a finding or a named exception (EXC-05, EXC-06, EXC-11), checked by sem-check-r4",
    "as_built_findings": [
     "F-0103",
     "F-0107",
@@ -249,8 +249,8 @@
     "experiment/playbook-completion/semantics/LIFECYCLES.md",
     "experiment/playbook-completion/semantics/lifecycles.json",
     "experiment/playbook-completion/semantics/objects.json",
-    "run:sem-check-r3",
-    "run:sem-check-selftest-r3"
+    "run:sem-check-r4",
+    "run:sem-check-selftest-r4"
    ],
    "evidence_grade": "inspected + check (8 canonical lifecycles, one meaning per id; 77 of 77 objects derived from the ontology's Entity lines: 75 declare a lifecycle with every state and command mapped, 2 carry an explicit reason; every object declares mechanisms and axioms; checker with seeded mutations)",
    "level": "method",
@@ -273,15 +273,17 @@
     "experiment/playbook-completion/semantics/trace.json",
     "experiment/playbook-completion/semantics/data/trace_sample_review.json",
     "experiment/playbook-completion/semantics/SEMANTICS.md",
-    "run:sem-check-r3",
-    "run:sem-check-selftest-r3"
+    "experiment/playbook-completion/contract-2/VALIDATED.json",
+    "experiment/playbook-completion/contract-2/coverage.json",
+    "run:sem-check-r4",
+    "run:sem-check-selftest-r4"
    ],
-   "evidence_grade": "check (mechanical: every B/T/I/X/P ontology statement of 19 modules, 2939, exactly once) + inspected (rule precision by a sample of 80 of the first 2,600: 68 agree, 10 partly, 2 disagree; one reviewer, not independent)",
+   "evidence_grade": "check (mechanical: every B/T/I/X/P ontology statement of 19 modules, 2939, exactly once; contract clauses of round r6 and contract-2) + inspected (rule precision by a sample of 80 of the first 2,600: 68 agree, 10 partly, 2 disagree; one reviewer, not independent)",
    "level": "method",
    "product_obligation": "unknown",
    "product_basis": "a trace is a property of the specification; the product's conformance is in the other cells",
    "as_built_findings": [],
-   "remaining": "55 requirements open (53 P premises outside the validated IRIS-contract subset: catalog/grants, limits, HNSW, Task Manager, FHIR, %AI, Arno, networkx; 2 I cost/memory rules TXT-B4.8, INT-R1.13), listed in trace.json 'open' with reasons; 1191 B/T statements trace only to their module's functional contract (DC-FUNC-NN), whose L1 models are not checked statement by statement; the precision sample predates the 339 ontology-2 statements"
+   "remaining": "55 requirements open after the re-trace against the contract-2 clauses (none of them is decided by E-1, S-1 or an X2 clause; 17 already-traced statements gained one): 42 of the 53 open P premises are held by a named contract-2 outside premise (assumed, not validated; outside_premise in trace.json: P2-ABSENT 7, P2-SEC 5, P2-CATALOG 4, P2-DICT 4, P2-LIMITS 4, P2-SQLEXPR 2, P2-SQLTEXT 2, and 14 families once each); 11 P premises have no clause and no premise family (third-party library facts ALG-P1, ALG-P4, ALG-P5, INT-S1.12; driver and packaging OPS-P4, OPS-P6; language OPS-P12; not engine behaviour OPS-P16, INS-P4.16; engine behaviour no family covers WRT-P5.12, TMP-P4); 2 I cost/memory rules (TXT-B4.8, INT-R1.13); 1183 B/T statements trace only to their module's functional contract (DC-FUNC-NN), whose L1 models are not checked statement by statement; the precision sample predates the 339 ontology-2 statements"
   },
   {
    "gate": "3.3-model-check",
