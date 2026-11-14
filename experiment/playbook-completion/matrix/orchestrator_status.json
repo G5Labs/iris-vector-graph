@@ -1,0 +1,895 @@
+{
+ "_doc": "Orchestrator statuses (product-scope gates and modules 12-14), each citing registered runs. level='reviewed model' marks a result about a model, not the product.",
+ "cells": [
+  {
+   "gate": "3.1-parent",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:ontology-check-final"
+   ]
+  },
+  {
+   "gate": "3.1-grade",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:ontology-check-final"
+   ]
+  },
+  {
+   "gate": "3.1-terms",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:ontology-check-final",
+    "run:ontology-self-test",
+    "run:ontology-independent-recheck"
+   ],
+   "remaining": "system-module terms are not checked across modules (literal rule is per module glossary); maintainer question"
+  },
+  {
+   "gate": "3.1-index",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:ontology-check-final"
+   ]
+  },
+  {
+   "gate": "3.2-library",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:env-contract-r2",
+    "run:env-contract-selftest"
+   ]
+  },
+  {
+   "gate": "3.2-differential",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:env-contract-r2"
+   ]
+  },
+  {
+   "gate": "3.2-sharpness",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:env-contract-r2"
+   ],
+   "remaining": "one freedom kept (INSERT after uncommitted delete)"
+  },
+  {
+   "gate": "3.2-mutants",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:env-contract-r2"
+   ]
+  },
+  {
+   "gate": "3.3-protocol",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:core-proofs-baseline"
+   ],
+   "remaining": "model-level: participant contracts composed with actors Protocol2 in two levels; no code correspondence (see 3.5-handlers)",
+   "level": "reviewed model"
+  },
+  {
+   "gate": "3.3-progress-controls",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:core-proofs-progress-rewind"
+   ],
+   "remaining": "progress premises not discharged against IRIS scheduling",
+   "level": "reviewed model"
+  },
+  {
+   "gate": "3.3-cost",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:core-proofs-baseline"
+   ]
+  },
+  {
+   "gate": "3.3a-axioms",
+   "module": "product",
+   "status": "open",
+   "evidence": [],
+   "remaining": "axioms/mechanisms/lifecycles exist for the worked example only (experiment/playbook-uplift/semantics); not product-wide"
+  },
+  {
+   "gate": "3.3a-mechanisms",
+   "module": "product",
+   "status": "open",
+   "evidence": [],
+   "remaining": "worked example only"
+  },
+  {
+   "gate": "3.3a-lifecycles",
+   "module": "product",
+   "status": "open",
+   "evidence": [],
+   "remaining": "worked example only"
+  },
+  {
+   "gate": "3.3a-domain-contract",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:core-proofs-baseline",
+    "run:trace-conformance-ledger"
+   ],
+   "remaining": "replay-equals-store contract proved for the reviewed model; as-built fails (F-1304/F-1305/F-1306)",
+   "level": "reviewed model"
+  },
+  {
+   "gate": "3.3a-trace",
+   "module": "product",
+   "status": "open",
+   "evidence": [],
+   "remaining": "requirement-to-axiom tracing only for modules 12-14"
+  },
+  {
+   "gate": "3.5-lint",
+   "module": "product",
+   "status": "open",
+   "evidence": [],
+   "remaining": "product linters not run"
+  },
+  {
+   "gate": "3.5-style",
+   "module": "product",
+   "status": "open",
+   "evidence": [],
+   "remaining": "no style review of product code (observation-only)"
+  },
+  {
+   "gate": "3.6-composition",
+   "module": "product",
+   "status": "open",
+   "evidence": [
+    "run:core-proofs-baseline",
+    "run:trace-conformance-ledger"
+   ],
+   "remaining": "composition proved over contracts; committed IRIS transactions checked empirically on one scenario only; no proof over ObjectScript/Python (no frontend)"
+  },
+  {
+   "gate": "3.6-closure",
+   "module": "product",
+   "status": "open",
+   "evidence": [],
+   "remaining": "condition list not written"
+  },
+  {
+   "gate": "3.7-explorers",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:core-m1-reviewed-a",
+    "run:env-contract-selftest"
+   ]
+  },
+  {
+   "gate": "3.7-integration-worlds",
+   "module": "product",
+   "status": "open",
+   "evidence": [
+    "run:live-lost-ack-commit",
+    "run:live-native-rerun-1314"
+   ],
+   "remaining": "instance crash world pending (needs a container restart with all lanes quiet)"
+  },
+  {
+   "gate": "3.7-differential",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:env-contract-r2"
+   ]
+  },
+  {
+   "gate": "3.7-editions",
+   "module": "product",
+   "status": "blocked",
+   "evidence": [],
+   "remaining": "IRIS Enterprise and 2026.3 (and driver 5.4.0) not available locally; operator dependency"
+  },
+  {
+   "gate": "3.7-full-rerun",
+   "module": "product",
+   "status": "open",
+   "evidence": [],
+   "remaining": "final verify.sh run pending"
+  },
+  {
+   "gate": "3.8-status",
+   "module": "product",
+   "status": "open",
+   "evidence": [],
+   "remaining": "STATUS.md pending"
+  },
+  {
+   "gate": "3.8-trust",
+   "module": "product",
+   "status": "open",
+   "evidence": [],
+   "remaining": "trust inventory pending"
+  },
+  {
+   "gate": "3.8-test-reflection",
+   "module": "product",
+   "status": "open",
+   "evidence": [],
+   "remaining": "pending"
+  },
+  {
+   "gate": "3.8-review",
+   "module": "product",
+   "status": "open",
+   "evidence": [],
+   "remaining": "independent review pending"
+  },
+  {
+   "gate": "5-trust-strict",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:core-proofs-baseline"
+   ],
+   "remaining": "proof crate trust inventory empty; contract and models are executable (not proofs)"
+  },
+  {
+   "gate": "5-mutants-located",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:core-proofs-f1302-unlocked-start",
+    "run:env-contract-r2"
+   ]
+  },
+  {
+   "gate": "5-selftests",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:ontology-self-test",
+    "run:env-contract-selftest",
+    "run:decoder-map-ledger",
+    "run:trace-conformance-controls",
+    "run:structural-selftests"
+   ]
+  },
+  {
+   "gate": "5-hygiene",
+   "module": "product",
+   "status": "closed",
+   "evidence": [],
+   "remaining": "locks with timeouts; one recorded lapse (incidents/IVG460SNAP.md)"
+  },
+  {
+   "gate": "5a-proof-debt",
+   "module": "product",
+   "status": "open",
+   "evidence": [],
+   "remaining": "proof-debt list pending"
+  },
+  {
+   "gate": "5a-gate-20min",
+   "module": "product",
+   "status": "open",
+   "evidence": [],
+   "remaining": "verify.sh fast gate not yet timed"
+  },
+  {
+   "gate": "5b-client-entry",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:env-contract-r2"
+   ]
+  },
+  {
+   "gate": "5b-refuse-not-guess",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:env-contract-r2"
+   ]
+  },
+  {
+   "gate": "5c-root-causes",
+   "module": "product",
+   "status": "open",
+   "evidence": [],
+   "remaining": "root-cause grouping pending"
+  },
+  {
+   "gate": "5c-reviewers",
+   "module": "product",
+   "status": "open",
+   "evidence": [],
+   "remaining": "independent review pending"
+  },
+  {
+   "gate": "3.1-cells",
+   "module": "12",
+   "status": "closed",
+   "evidence": [],
+   "remaining": "original gate: cells defined or assigned"
+  },
+  {
+   "gate": "3.1-coverage",
+   "module": "12",
+   "status": "open",
+   "evidence": [],
+   "remaining": "entry-point reconciliation for 12-14 not run"
+  },
+  {
+   "gate": "3.1-intent",
+   "module": "12",
+   "status": "closed",
+   "evidence": [],
+   "remaining": "intent/HD-12xx..14xx records"
+  },
+  {
+   "gate": "3.2-coverage",
+   "module": "12",
+   "status": "closed",
+   "evidence": [
+    "run:env-contract-r2"
+   ],
+   "remaining": "locks, nested txn, dirty reads, row locks, process stop are in the contract"
+  },
+  {
+   "gate": "3.3-L1",
+   "module": "12",
+   "status": "closed",
+   "evidence": [
+    "run:core-proofs-baseline"
+   ],
+   "level": "reviewed model"
+  },
+  {
+   "gate": "3.3-L2",
+   "module": "12",
+   "status": "closed",
+   "evidence": [
+    "run:core-refine-m2-reviewed"
+   ],
+   "level": "reviewed model"
+  },
+  {
+   "gate": "3.3-refinement",
+   "module": "12",
+   "status": "closed",
+   "evidence": [
+    "run:core-refine-m2-reviewed",
+    "run:core-proofs-baseline"
+   ],
+   "remaining": "model to model; as-built fails refinement (core-refine-m2-as-built)",
+   "level": "reviewed model"
+  },
+  {
+   "gate": "3.3-controls",
+   "module": "12",
+   "status": "closed",
+   "evidence": [
+    "run:core-proofs-f1302-unlocked-start"
+   ]
+  },
+  {
+   "gate": "3.3-model-check",
+   "module": "12",
+   "status": "failed",
+   "evidence": [
+    "run:core-m2-as-built-F1201-stmt",
+    "run:live-f1201-reproduced",
+    "run:live-native-rerun-1314"
+   ],
+   "remaining": "as-built violates; reviewed model passes"
+  },
+  {
+   "gate": "3.3a-writesets",
+   "module": "12",
+   "status": "failed",
+   "evidence": [
+    "run:writer-census"
+   ],
+   "remaining": "100 new (invariant, writer) obligations; INV-no-live-tombstone fails with non-serializing bypass writers (F-C1301)"
+  },
+  {
+   "gate": "3.4-statements",
+   "module": "12",
+   "status": "open",
+   "evidence": [],
+   "remaining": "no statement-level correspondence proof for IRIS SQL/ObjectScript (no frontend); trace conformance only"
+  },
+  {
+   "gate": "3.4-ownership",
+   "module": "12",
+   "status": "open",
+   "evidence": [
+    "run:writer-census"
+   ],
+   "remaining": "stores have several writers outside the ledger"
+  },
+  {
+   "gate": "3.4-storage-order",
+   "module": "12",
+   "status": "open",
+   "evidence": [
+    "run:storage-order-scan"
+   ]
+  },
+  {
+   "gate": "3.4-declared-reads",
+   "module": "12",
+   "status": "open",
+   "evidence": [],
+   "remaining": "reads not checked; writes checked by journal frame"
+  },
+  {
+   "gate": "3.5-handlers",
+   "module": "12",
+   "status": "open",
+   "evidence": [
+    "run:trace-conformance-ledger"
+   ],
+   "remaining": "no verifier for ObjectScript/Python; strongest correspondence is journal trace conformance; unchecked: every line outside the traced scenario"
+  },
+  {
+   "gate": "3.5-lockplans",
+   "module": "12",
+   "status": "open",
+   "evidence": [],
+   "remaining": "lock plan not proved; F-1201 shows the eraser's missing head lock"
+  },
+  {
+   "gate": "3.5-decoders",
+   "module": "12",
+   "status": "closed",
+   "evidence": [
+    "run:decoder-map-ledger"
+   ]
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "12",
+   "status": "open",
+   "evidence": [
+    "run:trace-conformance-ledger"
+   ],
+   "remaining": "empirical frame check only"
+  },
+  {
+   "gate": "3.7-trace-replay",
+   "module": "12",
+   "status": "closed",
+   "evidence": [
+    "run:trace-conformance-ledger",
+    "run:trace-conformance-controls"
+   ],
+   "remaining": "one two-tenant scenario"
+  },
+  {
+   "gate": "3.7-lock-log",
+   "module": "12",
+   "status": "open",
+   "evidence": [],
+   "remaining": "no lock event log; lock order inferred from journal and controlled lock probes"
+  },
+  {
+   "gate": "3.7-mutation",
+   "module": "12",
+   "status": "blocked",
+   "evidence": [],
+   "remaining": "observation-only control forbids deploying mutated classes; the original run's 3 killed ObjectScript mutants (9c3719c1) are the only evidence"
+  },
+  {
+   "gate": "3.8-findings-disposed",
+   "module": "12",
+   "status": "closed",
+   "evidence": [],
+   "remaining": "findings/audit/12-14.json: every finding recorded with evidence; product obligations stay failed"
+  },
+  {
+   "gate": "5c-refusals",
+   "module": "12",
+   "status": "failed",
+   "evidence": [
+    "run:live-native-rerun-1314"
+   ],
+   "remaining": "RED-X2 refusal not implemented (F-1304)"
+  },
+  {
+   "gate": "3.1-cells",
+   "module": "13",
+   "status": "closed",
+   "evidence": [],
+   "remaining": "original gate: cells defined or assigned"
+  },
+  {
+   "gate": "3.1-coverage",
+   "module": "13",
+   "status": "open",
+   "evidence": [],
+   "remaining": "entry-point reconciliation for 12-14 not run"
+  },
+  {
+   "gate": "3.1-intent",
+   "module": "13",
+   "status": "closed",
+   "evidence": [],
+   "remaining": "intent/HD-12xx..14xx records"
+  },
+  {
+   "gate": "3.2-coverage",
+   "module": "13",
+   "status": "closed",
+   "evidence": [
+    "run:env-contract-r2"
+   ],
+   "remaining": "locks, nested txn, dirty reads, row locks, process stop are in the contract"
+  },
+  {
+   "gate": "3.3-L1",
+   "module": "13",
+   "status": "closed",
+   "evidence": [
+    "run:core-proofs-baseline"
+   ],
+   "level": "reviewed model"
+  },
+  {
+   "gate": "3.3-L2",
+   "module": "13",
+   "status": "closed",
+   "evidence": [
+    "run:core-refine-m2-reviewed"
+   ],
+   "level": "reviewed model"
+  },
+  {
+   "gate": "3.3-refinement",
+   "module": "13",
+   "status": "closed",
+   "evidence": [
+    "run:core-refine-m2-reviewed",
+    "run:core-proofs-baseline"
+   ],
+   "remaining": "model to model; as-built fails refinement (core-refine-m2-as-built)",
+   "level": "reviewed model"
+  },
+  {
+   "gate": "3.3-controls",
+   "module": "13",
+   "status": "closed",
+   "evidence": [
+    "run:core-proofs-f1302-unlocked-start"
+   ]
+  },
+  {
+   "gate": "3.3-model-check",
+   "module": "13",
+   "status": "failed",
+   "evidence": [
+    "run:core-m2-as-built-F1201-stmt",
+    "run:live-f1201-reproduced",
+    "run:live-native-rerun-1314"
+   ],
+   "remaining": "as-built violates; reviewed model passes"
+  },
+  {
+   "gate": "3.3a-writesets",
+   "module": "13",
+   "status": "failed",
+   "evidence": [
+    "run:writer-census"
+   ],
+   "remaining": "100 new (invariant, writer) obligations; INV-no-live-tombstone fails with non-serializing bypass writers (F-C1301)"
+  },
+  {
+   "gate": "3.4-statements",
+   "module": "13",
+   "status": "open",
+   "evidence": [],
+   "remaining": "no statement-level correspondence proof for IRIS SQL/ObjectScript (no frontend); trace conformance only"
+  },
+  {
+   "gate": "3.4-ownership",
+   "module": "13",
+   "status": "open",
+   "evidence": [
+    "run:writer-census"
+   ],
+   "remaining": "stores have several writers outside the ledger"
+  },
+  {
+   "gate": "3.4-storage-order",
+   "module": "13",
+   "status": "open",
+   "evidence": [
+    "run:storage-order-scan"
+   ]
+  },
+  {
+   "gate": "3.4-declared-reads",
+   "module": "13",
+   "status": "open",
+   "evidence": [],
+   "remaining": "reads not checked; writes checked by journal frame"
+  },
+  {
+   "gate": "3.5-handlers",
+   "module": "13",
+   "status": "open",
+   "evidence": [
+    "run:trace-conformance-ledger"
+   ],
+   "remaining": "no verifier for ObjectScript/Python; strongest correspondence is journal trace conformance; unchecked: every line outside the traced scenario"
+  },
+  {
+   "gate": "3.5-lockplans",
+   "module": "13",
+   "status": "open",
+   "evidence": [],
+   "remaining": "lock plan not proved; F-1201 shows the eraser's missing head lock"
+  },
+  {
+   "gate": "3.5-decoders",
+   "module": "13",
+   "status": "closed",
+   "evidence": [
+    "run:decoder-map-ledger"
+   ]
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "13",
+   "status": "open",
+   "evidence": [
+    "run:trace-conformance-ledger"
+   ],
+   "remaining": "empirical frame check only"
+  },
+  {
+   "gate": "3.7-trace-replay",
+   "module": "13",
+   "status": "closed",
+   "evidence": [
+    "run:trace-conformance-ledger",
+    "run:trace-conformance-controls"
+   ],
+   "remaining": "one two-tenant scenario"
+  },
+  {
+   "gate": "3.7-lock-log",
+   "module": "13",
+   "status": "open",
+   "evidence": [],
+   "remaining": "no lock event log; lock order inferred from journal and controlled lock probes"
+  },
+  {
+   "gate": "3.7-mutation",
+   "module": "13",
+   "status": "blocked",
+   "evidence": [],
+   "remaining": "observation-only control forbids deploying mutated classes; the original run's 3 killed ObjectScript mutants (9c3719c1) are the only evidence"
+  },
+  {
+   "gate": "3.8-findings-disposed",
+   "module": "13",
+   "status": "closed",
+   "evidence": [],
+   "remaining": "findings/audit/12-14.json: every finding recorded with evidence; product obligations stay failed"
+  },
+  {
+   "gate": "5c-refusals",
+   "module": "13",
+   "status": "failed",
+   "evidence": [
+    "run:live-native-rerun-1314"
+   ],
+   "remaining": "RED-X2 refusal not implemented (F-1304)"
+  },
+  {
+   "gate": "3.1-cells",
+   "module": "14",
+   "status": "closed",
+   "evidence": [],
+   "remaining": "original gate: cells defined or assigned"
+  },
+  {
+   "gate": "3.1-coverage",
+   "module": "14",
+   "status": "open",
+   "evidence": [],
+   "remaining": "entry-point reconciliation for 12-14 not run"
+  },
+  {
+   "gate": "3.1-intent",
+   "module": "14",
+   "status": "closed",
+   "evidence": [],
+   "remaining": "intent/HD-12xx..14xx records"
+  },
+  {
+   "gate": "3.2-coverage",
+   "module": "14",
+   "status": "closed",
+   "evidence": [
+    "run:env-contract-r2"
+   ],
+   "remaining": "locks, nested txn, dirty reads, row locks, process stop are in the contract"
+  },
+  {
+   "gate": "3.3-L1",
+   "module": "14",
+   "status": "closed",
+   "evidence": [
+    "run:core-proofs-baseline"
+   ],
+   "level": "reviewed model"
+  },
+  {
+   "gate": "3.3-L2",
+   "module": "14",
+   "status": "closed",
+   "evidence": [
+    "run:core-refine-m2-reviewed"
+   ],
+   "level": "reviewed model"
+  },
+  {
+   "gate": "3.3-refinement",
+   "module": "14",
+   "status": "closed",
+   "evidence": [
+    "run:core-refine-m2-reviewed",
+    "run:core-proofs-baseline"
+   ],
+   "remaining": "model to model; as-built fails refinement (core-refine-m2-as-built)",
+   "level": "reviewed model"
+  },
+  {
+   "gate": "3.3-controls",
+   "module": "14",
+   "status": "closed",
+   "evidence": [
+    "run:core-proofs-f1302-unlocked-start"
+   ]
+  },
+  {
+   "gate": "3.3-model-check",
+   "module": "14",
+   "status": "failed",
+   "evidence": [
+    "run:core-m2-as-built-F1201-stmt",
+    "run:live-f1201-reproduced",
+    "run:live-native-rerun-1314"
+   ],
+   "remaining": "as-built violates; reviewed model passes"
+  },
+  {
+   "gate": "3.3a-writesets",
+   "module": "14",
+   "status": "failed",
+   "evidence": [
+    "run:writer-census"
+   ],
+   "remaining": "100 new (invariant, writer) obligations; INV-no-live-tombstone fails with non-serializing bypass writers (F-C1301)"
+  },
+  {
+   "gate": "3.4-statements",
+   "module": "14",
+   "status": "open",
+   "evidence": [],
+   "remaining": "no statement-level correspondence proof for IRIS SQL/ObjectScript (no frontend); trace conformance only"
+  },
+  {
+   "gate": "3.4-ownership",
+   "module": "14",
+   "status": "open",
+   "evidence": [
+    "run:writer-census"
+   ],
+   "remaining": "stores have several writers outside the ledger"
+  },
+  {
+   "gate": "3.4-storage-order",
+   "module": "14",
+   "status": "open",
+   "evidence": [
+    "run:storage-order-scan"
+   ]
+  },
+  {
+   "gate": "3.4-declared-reads",
+   "module": "14",
+   "status": "open",
+   "evidence": [],
+   "remaining": "reads not checked; writes checked by journal frame"
+  },
+  {
+   "gate": "3.5-handlers",
+   "module": "14",
+   "status": "open",
+   "evidence": [
+    "run:trace-conformance-ledger"
+   ],
+   "remaining": "no verifier for ObjectScript/Python; strongest correspondence is journal trace conformance; unchecked: every line outside the traced scenario"
+  },
+  {
+   "gate": "3.5-lockplans",
+   "module": "14",
+   "status": "open",
+   "evidence": [],
+   "remaining": "lock plan not proved; F-1201 shows the eraser's missing head lock"
+  },
+  {
+   "gate": "3.5-decoders",
+   "module": "14",
+   "status": "closed",
+   "evidence": [
+    "run:decoder-map-ledger"
+   ]
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "14",
+   "status": "open",
+   "evidence": [
+    "run:trace-conformance-ledger"
+   ],
+   "remaining": "empirical frame check only"
+  },
+  {
+   "gate": "3.7-trace-replay",
+   "module": "14",
+   "status": "closed",
+   "evidence": [
+    "run:trace-conformance-ledger",
+    "run:trace-conformance-controls"
+   ],
+   "remaining": "one two-tenant scenario"
+  },
+  {
+   "gate": "3.7-lock-log",
+   "module": "14",
+   "status": "open",
+   "evidence": [],
+   "remaining": "no lock event log; lock order inferred from journal and controlled lock probes"
+  },
+  {
+   "gate": "3.7-mutation",
+   "module": "14",
+   "status": "blocked",
+   "evidence": [],
+   "remaining": "observation-only control forbids deploying mutated classes; the original run's 3 killed ObjectScript mutants (9c3719c1) are the only evidence"
+  },
+  {
+   "gate": "3.8-findings-disposed",
+   "module": "14",
+   "status": "closed",
+   "evidence": [],
+   "remaining": "findings/audit/12-14.json: every finding recorded with evidence; product obligations stay failed"
+  },
+  {
+   "gate": "5c-refusals",
+   "module": "14",
+   "status": "failed",
+   "evidence": [
+    "run:live-native-rerun-1314"
+   ],
+   "remaining": "RED-X2 refusal not implemented (F-1304)"
+  }
+ ]
+}

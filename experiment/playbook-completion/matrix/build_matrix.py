@@ -117,6 +117,11 @@ def main() -> int:
                 c = {"gate": g["id"], "module": nn, "status": "not-applicable", "reason": g["na_reason"]}
             if c is None:
                 c = {"gate": g["id"], "module": nn, "status": "open", "evidence": [], "remaining": "no evidence recorded"}
+            cited = [e[4:] for e in c.get("evidence", []) if isinstance(e, str) and e.startswith("run:")]
+            failing = [i for i in cited if i in reg and (reg[i] or {}).get("result") in ("fail", "blocked", "incomplete")]
+            if c.get("status") == "closed" and failing:
+                c["status"] = "open"
+                c["remaining"] = f"closed claim cites non-passing runs {failing}"
             missing = [e for e in c.get("evidence", []) if isinstance(e, str) and e.startswith("run:") and e[4:] not in reg]
             if missing:
                 c["status"] = "open"
