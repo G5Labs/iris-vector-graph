@@ -1,0 +1,38 @@
+[package]
+name = "ivg-d1b-proofs"
+version = "0.1.0"
+edition = "2021"
+description = "Completion audit, PROOFS-D1B lane (proof debt D-1, playbook §3.3): Verus L1 contracts, L2 machines over the stored layout, refinement and broken-implementation controls for module 18 (snapshot save/restore against the ledger and redaction) and module 06 (IVF index lifecycle against erasure and builds; the embed queue's workers)."
+publish = false
+
+[dependencies]
+vstd = { version = "=0.0.0-2026-09-20-0158", features = ["std", "alloc"] }
+actors = { git = "file:///home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/playbook-reference-actors", rev = "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877" }
+
+[patch.crates-io]
+verus_builtin_macros = { git = "file:///home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/playbook-reference-actors", rev = "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877" }
+
+[features]
+# Broken-implementation controls (playbook §3.3 gate). Each replaces one decision of the reviewed design by the pin's
+# behaviour (as reproduced by the audit) and must make verification fail, every error located in the file named here.
+# Module 18 (snapshot):
+control_f1801_no_prefix_check = []        # src/snap_l2.rs  restore checks layout/strict/caller txn only, then overlays the archive's ledger (snapshot.py:1095-1152, 1554-1588, 1654-1692)
+control_f1801_restore_unredacts = []      # src/snap_l2.rs  restore writes the archive's rows and records with no live redaction re-applied (snapshot.py:1141-1588; no reference to redaction)
+control_fc1304_receipt_omits_archives = []  # src/snap_l2.rs  the redaction receipt's out_of_reach names exports, journals and backups only (LedgerRedact.cls:504-509)
+control_fc1801_dirty_export = []          # src/snap_l2.rs  save_snapshot takes no lock and writers respect no export gate (snapshot.py:864-1034)
+control_fc1802_swallowed_line = []        # src/snap_l2.rs  a global line IRIS refuses is logged at debug and not counted (snapshot.py:1665-1684)
+control_fc1804_edge_routes_omitted = []   # src/snap_l2.rs  the routed export plan keeps node routes only (snapshot.py:299-344, security.py:58-68)
+# Module 06 (vectors):
+control_f0606_erase_keeps_ivf = []        # src/vidx_l2.rs  EraseGraph names no ^IVF (Eraser.cls; GraphStores.cls:28-131)
+control_hd0602_inplace_build = []         # src/vidx_l2.rs  ivf_build kills ^IVF(name) and refills it in place (IVFIndex.cls:8, 237-276; vector.py:2000-2022)
+control_hd0604_two_consumers = []         # src/vq_l2.rs    no claim state or worker exclusion (EmbedQueue.cls:22-25, 112-134, 258-268)
+control_f0604_done_without_vector = []    # src/vq_l2.rs    ProcessBatch sets DONE when no vector was made (EmbedQueue.cls:307-327)
+control_fc0601_no_version_check = []      # src/vq_l2.rs    the mark is unconditional: a re-enqueue meanwhile is overwritten by DONE (EmbedQueue.cls:44-58, 326-327)
+
+[package.metadata.verus]
+verify = true
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(verus_only)', 'cfg(verus_keep_ghost)', 'cfg(verus_keep_ghost_body)'] }
+
+[workspace]

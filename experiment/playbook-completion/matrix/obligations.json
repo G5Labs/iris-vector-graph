@@ -1437,17 +1437,19 @@
    "status": "open"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "models/breadth-a/src (vec_build_publish, vec_ivf, vec_queue, vec_route_batch)"
+   "cited_runs": [
+    "proofs-d1b-baseline"
    ],
+   "evidence": [
+    "run:proofs-d1b-baseline"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-L1",
    "level": "model",
    "module": "06",
-   "product_obligation": "unknown",
-   "remaining": "explorer models state the module's key invariants (see RESULTS.json); no Verus L1",
-   "source": "modules/06.json",
-   "status": "open"
+   "product_obligation": "holds-in-model-only",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1b/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
    "cited_runs": [],
@@ -1912,18 +1914,19 @@
    "status": "open"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "models/breadth-c/src/restore.rs",
-    "models/breadth-c/src/snapcut.rs"
+   "cited_runs": [
+    "proofs-d1b-baseline"
    ],
+   "evidence": [
+    "run:proofs-d1b-baseline"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-L1",
    "level": "model",
    "module": "18",
-   "product_obligation": "unknown",
-   "remaining": "explorer machines are executable abstract models (bounded), not a Verus L1",
-   "source": "modules/18.json",
-   "status": "open"
+   "product_obligation": "holds-in-model-only",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1b/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
    "cited_runs": [],
@@ -2027,17 +2030,19 @@
    "status": "open"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "models/breadth-a/RESULTS.json"
+   "cited_runs": [
+    "proofs-d1b-baseline"
    ],
+   "evidence": [
+    "run:proofs-d1b-baseline"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-L2",
    "level": "model",
    "module": "06",
-   "product_obligation": "unknown",
-   "remaining": "no L2 machine over the real data layout",
-   "source": "modules/06.json",
-   "status": "open"
+   "product_obligation": "holds-in-model-only",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1b/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
    "cited_runs": [
@@ -2345,15 +2350,19 @@
    "status": "open"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "proofs-d1b-baseline"
+   ],
+   "evidence": [
+    "run:proofs-d1b-baseline"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-L2",
    "level": "model",
    "module": "18",
-   "product_obligation": "unknown",
-   "remaining": "no L2 over the archive/ledger storage layout",
-   "source": "modules/18.json",
-   "status": "open"
+   "product_obligation": "holds-in-model-only",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1b/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
    "cited_runs": [],
@@ -2451,15 +2460,21 @@
    "status": "open"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "proofs-d1b-baseline",
+    "proofs-d1b-recheck"
+   ],
+   "evidence": [
+    "run:proofs-d1b-baseline",
+    "run:proofs-d1b-recheck"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-refinement",
    "level": "model",
    "module": "06",
-   "product_obligation": "unknown",
-   "remaining": "no refinement evidence",
-   "source": "modules/06.json",
-   "status": "open"
+   "product_obligation": "holds-in-model-only",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1b/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
    "cited_runs": [],
@@ -2729,15 +2744,21 @@
    "status": "open"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "proofs-d1b-baseline",
+    "proofs-d1b-recheck"
+   ],
+   "evidence": [
+    "run:proofs-d1b-baseline",
+    "run:proofs-d1b-recheck"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-refinement",
    "level": "model",
    "module": "18",
-   "product_obligation": "unknown",
-   "remaining": "not proved",
-   "source": "modules/18.json",
-   "status": "open"
+   "product_obligation": "holds-in-model-only",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1b/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
    "cited_runs": [],
@@ -2848,17 +2869,56 @@
    "status": "open"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "models/breadth-a/RESULTS.json: vec_queue-control-two-consumers, vec_ivf-control-count-every, vec_build_publish-control-early-publish, vec_route_batch-control-first-item-only"
+   "cited_runs": [
+    "proofs-d1b-f0604-done-without-vector",
+    "proofs-d1b-f0606-erase-keeps-ivf",
+    "proofs-d1b-f1801-no-prefix-check",
+    "proofs-d1b-f1801-restore-unredacts",
+    "proofs-d1b-fc0601-no-version-check",
+    "proofs-d1b-fc1304-receipt-omits-archives",
+    "proofs-d1b-fc1801-dirty-export",
+    "proofs-d1b-fc1802-swallowed-line",
+    "proofs-d1b-fc1804-edge-routes-omitted",
+    "proofs-d1b-hd0602-inplace-build",
+    "proofs-d1b-hd0604-two-consumers"
    ],
+   "evidence": [
+    "run:proofs-d1b-f0604-done-without-vector",
+    "run:proofs-d1b-f0606-erase-keeps-ivf",
+    "run:proofs-d1b-f1801-no-prefix-check",
+    "run:proofs-d1b-f1801-restore-unredacts",
+    "run:proofs-d1b-fc0601-no-version-check",
+    "run:proofs-d1b-fc1304-receipt-omits-archives",
+    "run:proofs-d1b-fc1801-dirty-export",
+    "run:proofs-d1b-fc1802-swallowed-line",
+    "run:proofs-d1b-fc1804-edge-routes-omitted",
+    "run:proofs-d1b-hd0602-inplace-build",
+    "run:proofs-d1b-hd0604-two-consumers"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-controls",
    "level": "model",
    "module": "06",
-   "product_obligation": "unknown",
-   "remaining": "controls are explorer mutants (each caught), not proof-level rejections",
-   "source": "modules/06.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "run proofs-d1b-f0604-done-without-vector (expected-violation)",
+     "run proofs-d1b-f0606-erase-keeps-ivf (expected-violation)",
+     "run proofs-d1b-f1801-no-prefix-check (expected-violation)",
+     "run proofs-d1b-f1801-restore-unredacts (expected-violation)",
+     "run proofs-d1b-fc0601-no-version-check (expected-violation)",
+     "run proofs-d1b-fc1304-receipt-omits-archives (expected-violation)",
+     "run proofs-d1b-fc1801-dirty-export (expected-violation)",
+     "run proofs-d1b-fc1802-swallowed-line (expected-violation)",
+     "run proofs-d1b-fc1804-edge-routes-omitted (expected-violation)"
+    ],
+    "intent_undecided": [
+     "run proofs-d1b-hd0602-inplace-build (expected-violation) of a decision only",
+     "run proofs-d1b-hd0604-two-consumers (expected-violation) of a decision only"
+    ]
+   },
+   "product_obligation": "fails",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1b/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
    "cited_runs": [
@@ -3149,20 +3209,55 @@
   },
   {
    "cited_runs": [
-    "cmc-restore-ctl-marks",
-    "cmc-snap-ctl-gate"
+    "proofs-d1b-f0604-done-without-vector",
+    "proofs-d1b-f0606-erase-keeps-ivf",
+    "proofs-d1b-f1801-no-prefix-check",
+    "proofs-d1b-f1801-restore-unredacts",
+    "proofs-d1b-fc0601-no-version-check",
+    "proofs-d1b-fc1304-receipt-omits-archives",
+    "proofs-d1b-fc1801-dirty-export",
+    "proofs-d1b-fc1802-swallowed-line",
+    "proofs-d1b-fc1804-edge-routes-omitted",
+    "proofs-d1b-hd0602-inplace-build",
+    "proofs-d1b-hd0604-two-consumers"
    ],
    "evidence": [
-    "cmc-restore-ctl-marks",
-    "cmc-snap-ctl-gate"
+    "run:proofs-d1b-f0604-done-without-vector",
+    "run:proofs-d1b-f0606-erase-keeps-ivf",
+    "run:proofs-d1b-f1801-no-prefix-check",
+    "run:proofs-d1b-f1801-restore-unredacts",
+    "run:proofs-d1b-fc0601-no-version-check",
+    "run:proofs-d1b-fc1304-receipt-omits-archives",
+    "run:proofs-d1b-fc1801-dirty-export",
+    "run:proofs-d1b-fc1802-swallowed-line",
+    "run:proofs-d1b-fc1804-edge-routes-omitted",
+    "run:proofs-d1b-hd0602-inplace-build",
+    "run:proofs-d1b-hd0604-two-consumers"
    ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-controls",
    "level": "model",
    "module": "18",
-   "product_obligation": "unknown",
-   "remaining": "controls are rejected by the explorer, not by a proof",
-   "source": "modules/18.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "run proofs-d1b-f0604-done-without-vector (expected-violation)",
+     "run proofs-d1b-f0606-erase-keeps-ivf (expected-violation)",
+     "run proofs-d1b-f1801-no-prefix-check (expected-violation)",
+     "run proofs-d1b-f1801-restore-unredacts (expected-violation)",
+     "run proofs-d1b-fc0601-no-version-check (expected-violation)",
+     "run proofs-d1b-fc1304-receipt-omits-archives (expected-violation)",
+     "run proofs-d1b-fc1801-dirty-export (expected-violation)",
+     "run proofs-d1b-fc1802-swallowed-line (expected-violation)",
+     "run proofs-d1b-fc1804-edge-routes-omitted (expected-violation)"
+    ],
+    "intent_undecided": [
+     "run proofs-d1b-hd0602-inplace-build (expected-violation) of a decision only",
+     "run proofs-d1b-hd0604-two-consumers (expected-violation) of a decision only"
+    ]
+   },
+   "product_obligation": "fails",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1b/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
    "as_built_findings": [
@@ -25992,13 +26087,13 @@
   }
  ],
  "product_counts": {
-  "fails": 217,
-  "holds-in-model-only": 1,
+  "fails": 219,
+  "holds-in-model-only": 7,
   "intent-undecided": 2,
   "n/a": 34,
-  "unknown": 493
+  "unknown": 485
  },
- "registry_runs": 775,
+ "registry_runs": 776,
  "starting_inventory": {
   "cells": 904,
   "decisions": 61,
@@ -26010,9 +26105,9 @@
  },
  "status_counts": {
   "blocked": 6,
-  "closed": 165,
+  "closed": 173,
   "not-applicable": 36,
-  "open": 540
+  "open": 532
  },
  "submission": "9c3719c1",
  "writer_obligations": [
