@@ -1,0 +1,147 @@
+[
+ {
+  "id": "F-C1106",
+  "module": "11",
+  "title": "Relationships the wire schema admits are refused once s+p+o exceed an undocumented key-length limit",
+  "intended": "specs/213-graph-revision-ledger/contracts/changeset.schema.json:7-8 (NodeId maxLength 256, Name128 maxLength 128 for the tuple's s, o and p); Graph_KG.rdf_edges declares s, o_id VARCHAR(256) and p VARCHAR(128) (iris_vector_graph/schema.py:37-39).",
+  "observed": "Live AUDITC (corr-capacity): a commit of create_relationship with s = o of 194 characters and p of 97 commits; with s = o of 195 and p of 97 (and with 256/128) it is refused with failed_op 'insert relationship failed: ... <SUBSCRIPT>%SQLInsert+21^Graph.KG.rdfedges.1 ^t52S.BWr6.3(...)': the table's own unique index u_spo_graph_ekey (schema.py:44) cannot hold the key. The refusal is clean (nothing written). The ledger's tuple index ^IVG.Ledger(\"tuple\", s, p, o, graphKey) would overflow one character later (s = o = 195, p = 97 still fits a read; read-only probe), so widening the table index would move the failure into AllocStmt (LedgerApply.cls:165) and genesis Capture (LedgerGenesis.cls:47). A ledger-bypassing create_edge is refused by the same index (SQLCODE -415).",
+  "disposition": "reproduced-live",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "corr-capacity"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/schema.py:33-45"
+   },
+   {
+    "kind": "inspected",
+    "ref": "specs/213-graph-revision-ledger/contracts/changeset.schema.json:7-10"
+   }
+  ],
+  "gates": [
+   "3.6-capacity",
+   "3.5-decoders"
+  ],
+  "severity": "S3",
+  "confidence": "high",
+  "remedy": "Document one combined key-length limit for (s, p, o, graph) that every store holding the tuple as subscripts can carry (rdf_edges' unique index, ^KG(\"out\"/\"in\"), ^IVG.Ledger(\"tuple\")), validate it before the transaction (client and ApplyAll) with its own error, and align the wire schema; or key the indexes by a hash of long values.",
+  "notes": "Clean failure, no corruption: availability and contract. Reproduce: experiment/playbook-completion/correspondence/tools/capacity.py."
+ },
+ {
+  "id": "F-C1107",
+  "module": "11",
+  "title": "The commit does not enforce the wire schema's length limits, and reports violations as a ledger inconsistency",
+  "intended": "changeset.schema.json: message maxLength 4000 (:189), idempotency_key maxLength 256 (:193), qualifier values maxLength 4000 (:46); errors.py:87-88 LedgerInconsistencyError 'The ledger's own structures disagree with each other'; CommitError codes (changeset.schema.json:288-311).",
+  "observed": "Live AUDITC (corr-capacity), every refusal clean (no state change): idempotency_key of 257 characters -> inconsistent 'revision row save failed: ERROR #7201 Datatype value ...' (LedgerRevision MAXLEN, Ledger.cls:554-555); of 600 -> inconsistent '<SUBSCRIPT> CommitInTxn+35^Graph.KG.Ledger.1 ^IVG.Ledger(\"idem\",...)' (Ledger.cls:457); message of 4,001 -> inconsistent #7201; a qualifier value of 4,000,000 -> inconsistent '<MAXSTRING> %GetNext+30^%Iterator.Object.1'. Each surfaces in Python as LedgerInconsistencyError. Conversely a qualifier value of 1,000,000 characters (schema maximum 4000) is accepted and recorded.",
+  "disposition": "reproduced-live",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "corr-capacity"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/Ledger.cls:451-528"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/ledger/errors.py:87-88"
+   }
+  ],
+  "gates": [
+   "3.5-decoders",
+   "3.6-capacity"
+  ],
+  "severity": "S3",
+  "confidence": "high",
+  "remedy": "Validate the changeset and its metadata against the published limits before TSTART (and in Changeset.validate), refusing with a validation code (failed_op with op_index, or a new code) instead of 'inconsistent'; keep 'inconsistent' for disagreements of the ledger's own structures.",
+  "notes": "Operators alerting on LedgerInconsistencyError would page on an over-long idempotency key."
+ },
+ {
+  "id": "F-C1108",
+  "module": "11",
+  "title": "A detach delete assigns statement ids to unrecorded incident edges in storage order",
+  "intended": "specs/213 FR-011 (detach cascades in statement-id order); playbook \u00a73.4 storage-order / \u00a73.6 row-permutation: results must not depend on row insertion order.",
+  "observed": "Live AUDITC (corr-row-permutation): a recorded node pm|1 with three unrecorded (ledger-bypassing) edges to pm|a, pm|b, pm|c inserted in the orders abc, cba, bca; delete_node(pm|1, detach) records the same three delete_rel records each time, but statement ids 1, 2, 3 go to the edges in insertion order (LedgerApply.cls:385-398: incident edges from a SELECT without ORDER BY; AllocStmt in cursor order). Recorded content without the ids is identical.",
+  "disposition": "reproduced-live",
+  "outcome": "intent-undecided",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "corr-row-permutation"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/LedgerApply.cls:384-410"
+   }
+  ],
+  "gates": [
+   "3.4-storage-order",
+   "3.6-row-permutation"
+  ],
+  "severity": "S4",
+  "confidence": "high",
+  "remedy": "Order the incident-edge SELECT by (s, p, o_id, graph_id) before allocating ids, if statement identity is meant to be a function of the logical state.",
+  "notes": "Working assumption: harmless (replay compares content; ids are internal), recorded because identical logical states give different histories."
+ },
+ {
+  "id": "F-C1109",
+  "module": "11",
+  "title": "Every node_not_found refusal is decoded as a create_relationship failure with relationship-only advice",
+  "intended": "errors.py:91-92 (NodeNotFoundError: 'A relationship operation references a node that does not exist'); the server emits node_not_found also for add_label, remove_label, set_prop, remove_prop and delete_node (LedgerApply.cls:290, 299, 315, 325, 380) besides create_rel (:459-460); FR-008 asks for the failing op's index and reason.",
+  "observed": "Live AUDITC (corr-trace-ext, op commit-failed-op): a changeset whose add_label names a missing node is refused with failed_op/node_not_found; the client raises NodeNotFoundError 'create_relationship failed: node 'nope|1' does not exist. Add upsert_node('nope|1') to the changeset, or set auto_stub_missing_nodes=True' (errors.py:120-125, from_commit_error :187-193). op_index and reason are kept; the message names the wrong operation and advice (auto_stub_missing_nodes only stubs relationship endpoints, changeset.py:205-209) that cannot fix a node operation.",
+  "disposition": "reproduced-live",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "trace",
+    "ref": "corr-trace-ext"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/ledger/errors.py:91-128"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/ledger/errors.py:175-199"
+   }
+  ],
+  "gates": [
+   "3.5-decoders"
+  ],
+  "severity": "S4",
+  "confidence": "high",
+  "remedy": "Build the message from the op index and the server's reason (or narrow NodeNotFoundError to create_rel/upsert_rel refusals).",
+  "notes": "The orchestrator's decoder-map-ledger check verifies the code -> exception map, not the message."
+ },
+ {
+  "id": "F-C1204",
+  "module": "12",
+  "title": "EraseNodes fails on a prefix longer than the subscript limit instead of erasing nothing",
+  "intended": "Eraser.cls:307-321 (EraseNodes removes every node whose id starts with the prefix; 0 means nothing matched); the redaction of the same target answers complete with nothing matched.",
+  "observed": "Live AUDITC (corr-capacity): EraseNodes(\"\", <10,000 characters>) throws 'erase failed on cursor ivgErasePrefix with SQLCODE -400 (<SUBSCRIPT> ... ^t52S.XCFT.4(...))' (Eraser.cls:333-339); nothing changes. LedgerRedact.Redact with a 10,000-character prefix answers ok.",
+  "disposition": "reproduced-live",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "corr-capacity"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/Eraser.cls:322-351"
+   }
+  ],
+  "gates": [
+   "3.6-capacity"
+  ],
+  "severity": "S4",
+  "confidence": "high",
+  "remedy": "Return 0 for a prefix longer than any node_id can be (256), or validate the prefix length up front.",
+  "notes": "No id can match such a prefix (node_id VARCHAR(256))."
+ }
+]

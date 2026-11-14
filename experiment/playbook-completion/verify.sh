@@ -59,7 +59,8 @@ step storage-order-selftest 60 python3 "$here/tools/storage_order_check.py" --se
 step writer-census-selftest 120 python3 "$here/tools/writer_census.py" --self-test
 step contract-build       900 env CARGO_TARGET_DIR="$T/iris-contract" cargo build --release --offline --manifest-path "$here/iris-contract/Cargo.toml"
 step contract-selftest    600 "$T/iris-contract/release/iris-contract" selftest
-step contract-recheck-r2  600 "$T/iris-contract/release/iris-contract" check "$RUN_DIR/env/r2/cases.json" "$RUN_DIR/env/r2/observed.json"
+round="$(cat "$here/iris-contract/VALIDATED_ROUND" 2>/dev/null || echo r2)"   # the latest round that met the gate
+step contract-recheck-round 600 "$T/iris-contract/release/iris-contract" check "$RUN_DIR/env/$round/cases.json" "$RUN_DIR/env/$round/observed.json"
 step conformance-recheck  600 python "$here/traces/conformance.py" --check "$RUN_DIR/traces/conf2/trace.json"
 step conformance-controls 600 python "$here/traces/conformance.py" --self-test "$RUN_DIR/traces/conf2/trace.json"
 step lostack-oracle-selftest 60 python "$here/traces/lost_ack.py" --self-test-oracle
