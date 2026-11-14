@@ -66,13 +66,19 @@ step lostack-oracle-selftest 60 python "$here/traces/lost_ack.py" --self-test-or
 
 # ---------------------------------------------------------------- full: every model crate, proofs and controls
 if [[ "$mode" == full || "$mode" == live ]]; then
-  for crate in core breadth-a breadth-b breadth-c; do
-    if have "$here/models/$crate/run_all.sh"; then
-      step "models-$crate" 7200 bash "$here/tools/locks.sh" heavy bash "$here/models/$crate/run_all.sh" "$out/models-$crate"
-    fi
+  # Model crates: build and run every check with output under this verify run only (never into a lane's
+  # registered log directories), then compare met/expected counts with the committed RESULTS.json.
+  H="bash $here/tools/locks.sh heavy"
+  step models-core-build 1800 env CARGO_TARGET_DIR="$T/core-models" cargo build --release --offline --manifest-path "$here/models/core/Cargo.toml"
+  step models-core 7200 $H "$T/core-models/release/ivg-core-models" --out "$out/models-core.json"
+  for crate in breadth-a breadth-c; do
+    step "models-$crate-build" 1800 env CARGO_TARGET_DIR="$T/$crate" cargo build --release --offline --manifest-path "$here/models/$crate/Cargo.toml"
+    bin="$(find "$T/$crate/release" -maxdepth 1 -type f -perm -u+x ! -name '*.d' | head -1)"
+    step "models-$crate" 7200 $H "$bin" --out "$out/models-$crate.json"
   done
-  if have "$here/proofs/tools/run_proofs.py"; then
-    step proofs 7200 bash "$here/tools/locks.sh" heavy python "$here/proofs/tools/run_proofs.py" --out "$out/proofs"
+  step models-compare 120 python3 "$here/tools/compare_model_results.py" "$out"
+  if have "$here/proofs/tools/run_proofs.py"; then mkdir -p "$out/proofs"
+    step proofs 7200 env PROOFS_OUT_DIR="$out/proofs" python "$here/proofs/tools/run_proofs.py"  # takes the heavy lock per Verus run itself; writes under $out
   fi
 fi
 

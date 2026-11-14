@@ -1,0 +1,32 @@
+[package]
+name = "ivg-core-proofs"
+version = "0.1.0"
+edition = "2021"
+description = "Completion audit, CORE-PROOFS lane: participant contracts (ledger, store, redactor), two nested Protocol2 compositions, an outer business contract, progress under named fairness, and broken-implementation controls (playbook §3.3)."
+publish = false
+
+[dependencies]
+vstd = { version = "=0.0.0-2026-09-20-0158", features = ["std", "alloc"] }
+actors = { git = "file:///home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/playbook-reference-actors", rev = "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877" }
+
+[patch.crates-io]
+verus_builtin_macros = { git = "file:///home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/playbook-reference-actors", rev = "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877" }
+
+[features]
+# Broken-implementation controls (playbook §3.3 gate): each replaces one coordination decision of the reviewed
+# protocol by the pin's behaviour and must make a refinement proof fail in the file named here.
+control_f1302_unlocked_start = []   # src/protocol_rl.rs   (Start checks without the lock, marker set by the first tombstone)
+control_f1303_other_marker = []     # src/protocol_rl.rs   (Final runs under another target's marker)
+control_f1201_erase_unlocked = []   # src/protocol_sys.rs  (the eraser does not take the ledger head lock)
+control_f1306_replay_reapplies = [] # src/protocol_sys.rs  (a replayed retry re-applies its post-commit properties)
+# Progress-only control: a resume rewinds the run's cursor to the first record (the pin's Redact restarts its scan,
+# LedgerRedact.cls:213). Every safety proof must still verify; the progress proof must fail in src/progress.rs.
+control_progress_rewind = []
+
+[package.metadata.verus]
+verify = true
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(verus_only)', 'cfg(verus_keep_ghost)', 'cfg(verus_keep_ghost_body)'] }
+
+[workspace]

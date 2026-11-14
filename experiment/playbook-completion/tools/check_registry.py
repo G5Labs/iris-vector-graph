@@ -51,6 +51,15 @@ def main() -> int:
             print("self-test", "PASS" if ok else "FAIL", probs)
             return 0 if ok else 1
     probs = check(ROOT / "evidence" / "runs", run_dir)
+    sup = json.loads((ROOT / "incidents" / "superseded-logs.json").read_text()).get("superseded", {}) \
+        if (ROOT / "incidents" / "superseded-logs.json").exists() else {}
+    known = [x for x in probs if x.split(":")[0] in sup and "log hash differs" in x]
+    probs = [x for x in probs if x not in known]
+    unresolved = [k for k, v in sup.items() if not (ROOT / "evidence" / "runs" / f"{v['by']}.json").exists()]
+    probs += [f"{k}: superseded but its rerun {sup[k]['by']} is not registered" for k in unresolved]
+    for x in known:
+        k = x.split(":")[0]
+        print(f"  superseded {k} (log overwritten; reproduced by {sup[k]['by']}; incidents/superseded-logs.json)")
     n = len(list((ROOT / "evidence" / "runs").glob("*.json")))
     print(f"{n} registered runs; {len(probs)} problem(s)")
     for x in probs:
