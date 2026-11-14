@@ -33,6 +33,9 @@ import subprocess
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "tools"))
+from verus_json import parse_verus_json  # noqa: E402  (cold builds print dependency summaries before the JSON)
+
 PROOFS = Path(__file__).resolve().parent.parent
 COMPLETION = PROOFS.parent
 REPO = COMPLETION.parent.parent
@@ -179,7 +182,7 @@ def verify(tag: str, features: str = "") -> dict:
            "error_locations": locations(text),
            "resource_limit": bool(re.search(r"rlimit|resource limit|Resource limit", text))}
     try:
-        d = json.loads(js.read_text())
+        d = parse_verus_json(js.read_text())
     except (json.JSONDecodeError, OSError):
         d = None
     if d:

@@ -94,6 +94,7 @@ step contract-recheck-round 600 "$T/iris-contract/release/iris-contract" check "
 step conformance-recheck  600 python "$here/traces/conformance.py" --check "$RUN_DIR/traces/conf2/trace.json"
 step conformance-controls 600 python "$here/traces/conformance.py" --self-test "$RUN_DIR/traces/conf2/trace.json"
 step lostack-oracle-selftest 60 python "$here/traces/lost_ack.py" --self-test-oracle
+step verus-json-selftest  60 python3 "$here/tools/verus_json.py" --self-test
 
 # ---------------------------------------------------------------- full: every model crate, proofs and controls
 if [[ "$mode" == full || "$mode" == live ]]; then
