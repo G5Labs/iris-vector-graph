@@ -69,6 +69,8 @@ step storage-order-selftest 60 python3 "$here/tools/storage_order_check.py" --se
 step writer-census-selftest 120 python3 "$here/tools/writer_census.py" --self-test
 step intent-check         120 python3 "$here/tools/intent_check.py"
 step intent-selftest      300 python3 "$here/tools/intent_check.py" --self-test
+step status-numbers      120 python3 "$here/tools/status_numbers.py" --check
+step status-numbers-selftest 300 python3 "$here/tools/status_numbers.py" --self-test
 step coverage-reconcile   600 python3 "$here/ontology/tools/coverage_reconcile.py" --require-zero
 step coverage-selftest    900 python3 "$here/ontology/tools/coverage_reconcile.py" --self-test
 step writesets-check      300 python3 "$here/writesets/tools/check_discharges.py"
