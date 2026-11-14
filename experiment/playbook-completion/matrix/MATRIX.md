@@ -52,13 +52,13 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 3.7-explorers | model | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0 |
 | 3.7-integration-worlds | product | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
 | 3.7-differential | method | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
-| 3.7-e2e | product | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
+| 3.7-e2e | product | 0 | 0 | 0 | 1 | 0 | 1 | 0 | 0 | 0 | 0 |
 | 3.7-trace-replay | product | 3 | 0 | 14 | 1 | 1 | 9 | 0 | 0 | 9 | 1 |
 | 3.7-lock-log | product | 4 | 0 | 11 | 1 | 3 | 4 | 0 | 0 | 12 | 3 |
 | 3.7-mutation | product | 0 | 0 | 15 | 3 | 1 | 1 | 0 | 0 | 17 | 1 |
-| 3.7-perf | product | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
+| 3.7-perf | product | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
 | 3.7-failure-controls | product | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
-| 3.7-suites | product | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
+| 3.7-suites | product | 0 | 0 | 0 | 1 | 0 | 1 | 0 | 0 | 0 | 0 |
 | 3.7-editions | product | 0 | 0 | 0 | 1 | 0 | 1 | 0 | 0 | 0 | 0 |
 | 3.7-full-rerun | product | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.8-status | method | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
@@ -78,7 +78,7 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 5c-root-causes | method | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 5c-reviewers | method | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
 
-Totals: {'closed': 216, 'not-applicable': 35, 'open': 490, 'blocked': 6}; evidence grade of closed cells: {'registered-run': 183, 'inspected': 33}; product: {'unknown': 446, 'n/a': 33, 'fails': 265, 'intent-undecided': 2, 'holds-in-model-only': 1}
+Totals: {'closed': 217, 'not-applicable': 35, 'open': 487, 'blocked': 8}; evidence grade of closed cells: {'registered-run': 184, 'inspected': 33}; product: {'unknown': 446, 'n/a': 33, 'fails': 265, 'intent-undecided': 2, 'holds-in-model-only': 1}
 
 ## Writer census obligations (review R2-02)
 

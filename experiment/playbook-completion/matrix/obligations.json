@@ -10710,8 +10710,28 @@
    "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "as_built_findings": [
+    "F-C1002",
+    "F-C0502",
+    "F-C1706"
+   ],
+   "cited_runs": [
+    "val-e2e-1-c00",
+    "val-gated-1",
+    "val-mp-existing-1",
+    "val-mp-existing-2",
+    "val-mp-existing-3",
+    "val-perf-committer-n3-1"
+   ],
+   "evidence": [
+    "run:val-e2e-1-c00",
+    "run:val-gated-1",
+    "run:val-mp-existing-1",
+    "run:val-mp-existing-2",
+    "run:val-mp-existing-3",
+    "run:val-perf-committer-n3-1",
+    "validation/SUITES.md"
+   ],
    "findings": [
     "F-0821",
     "F-0909",
@@ -10732,13 +10752,14 @@
      "finding F-C0502",
      "finding F-C1002",
      "finding F-C1702",
-     "finding F-C1706"
+     "finding F-C1706",
+     "run val-gated-1 (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "no evidence recorded",
-   "status": "open"
+   "remaining": "one application process: the e2e suites (gate off and gated subsets) ran with triage; N processes: test_ledger_us03/us04/us09 (15 passed in each of 3 runs) and 3 committer processes during 2 redactions of 100,000 records (0 errors, verify equal); multi-node is blocked-access: one container, no second IRIS instance, no ECP data server or mirror member, and a licence enabling ECP or mirroring is needed",
+   "status": "blocked"
   },
   {
    "cited_runs": [],
@@ -11658,8 +11679,31 @@
    "status": "open"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "as_built_findings": [
+    "F-C0606"
+   ],
+   "cited_runs": [
+    "val-perf-algos-1",
+    "val-perf-committer-n1-1",
+    "val-perf-committer-n1-2",
+    "val-perf-committer-n3-1",
+    "val-perf-default-1",
+    "val-perf-ledger-1",
+    "val-perf-sc256-upstream-1",
+    "val-perf-sc256-upstream-2"
+   ],
+   "evidence": [
+    "run:val-perf-sc256-upstream-1",
+    "run:val-perf-sc256-upstream-2",
+    "run:val-perf-committer-n1-1",
+    "run:val-perf-committer-n1-2",
+    "run:val-perf-committer-n3-1",
+    "run:val-perf-ledger-1",
+    "run:val-perf-algos-1",
+    "run:val-perf-default-1",
+    "validation/SUITES.md"
+   ],
+   "evidence_grade": "registered-run",
    "findings": [
     "F-C0606"
    ],
@@ -11668,13 +11712,15 @@
    "module": "product",
    "product_basis": {
     "fails": [
-     "finding F-C0606"
+     "finding F-C0606",
+     "run val-perf-algos-1 (fail)",
+     "run val-perf-default-1 (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "no evidence recorded",
-   "status": "open"
+   "remaining": "A/B of the existing baseline configurations that can run here (Community 2026.1, 2 CPUs, driver 5.3.2 vs 5.4.0): SC-002 verify equal (2 runs); SC-003 1.42/1.41 s for 100,000 records, longest batch 39/31 ms, and committer-side longest overlapping commit 311/55/57 and 253/39/28 ms; spec 227 SC-010 exceeds its 1.1x budget in 6 of 6 runs (F-C0606). SC-003's stated target environment (an Enterprise laptop container) is not available (3.7-editions, blocked); Neo4j/GDS/Memgraph legs, LDBC SNB and the Arno/Enterprise benchmark scripts were not run (blocked-access)",
+   "status": "closed"
   },
   {
    "cited_runs": [],
@@ -11687,10 +11733,72 @@
    "status": "open"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "as_built_findings": [
+    "F-C1706",
+    "F-C0502",
+    "F-C1002"
+   ],
+   "cited_runs": [
+    "val-alt-1",
+    "val-contract-optin-1",
+    "val-docs-run-1",
+    "val-e2e-1-c00",
+    "val-gated-1",
+    "val-integration-1-c00",
+    "val-integration-1-c01",
+    "val-integration-1-c02",
+    "val-integration-1-c03",
+    "val-integration-1-c04",
+    "val-integration-1-c05",
+    "val-oracle-1-c00",
+    "val-python-1",
+    "val-regression-2",
+    "val-schema-contract-1",
+    "val-scratch-1",
+    "val-scratch-236-1",
+    "val-tck-1",
+    "val-unit-3-c00",
+    "val-unit-3-c01",
+    "val-unit-3-c02",
+    "val-unit-3-c03",
+    "val-unit-3-c04",
+    "val-unit-3-c05",
+    "val-unit-3-c06",
+    "val-unit-3-c07"
+   ],
+   "evidence": [
+    "run:val-unit-3-c00",
+    "run:val-unit-3-c01",
+    "run:val-unit-3-c02",
+    "run:val-unit-3-c03",
+    "run:val-unit-3-c04",
+    "run:val-unit-3-c05",
+    "run:val-unit-3-c06",
+    "run:val-unit-3-c07",
+    "run:val-integration-1-c00",
+    "run:val-integration-1-c01",
+    "run:val-integration-1-c02",
+    "run:val-integration-1-c03",
+    "run:val-integration-1-c04",
+    "run:val-integration-1-c05",
+    "run:val-e2e-1-c00",
+    "run:val-gated-1",
+    "run:val-oracle-1-c00",
+    "run:val-tck-1",
+    "run:val-docs-run-1",
+    "run:val-contract-optin-1",
+    "run:val-regression-2",
+    "run:val-python-1",
+    "run:val-schema-contract-1",
+    "run:val-alt-1",
+    "run:val-scratch-1",
+    "run:val-scratch-236-1",
+    "validation/SUITES.md"
+   ],
    "findings": [
     "F-1112",
+    "F-C0502",
+    "F-C1002",
     "F-C1706"
    ],
    "gate": "3.7-suites",
@@ -11699,17 +11807,61 @@
    "product_basis": {
     "fails": [
      "finding F-1112",
-     "finding F-C1706"
+     "finding F-C0502",
+     "finding F-C1002",
+     "finding F-C1706",
+     "run val-contract-optin-1 (fail)",
+     "run val-docs-run-1 (fail)",
+     "run val-gated-1 (fail)",
+     "run val-integration-1-c00 (fail)",
+     "run val-integration-1-c01 (fail)",
+     "run val-integration-1-c03 (fail)",
+     "run val-integration-1-c04 (fail)",
+     "run val-integration-1-c05 (fail)",
+     "run val-oracle-1-c00 (fail)",
+     "run val-regression-2 (fail)",
+     "run val-schema-contract-1 (fail)",
+     "run val-tck-1 (fail)",
+     "run val-unit-3-c04 (fail)",
+     "run val-unit-3-c05 (fail)",
+     "run val-unit-3-c06 (fail)",
+     "run val-unit-3-c07 (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "no evidence recorded",
-   "status": "open"
+   "remaining": "every existing suite (unit, integration, e2e gated and ungated, oracle, TCK, docs, contract, regression, python, schema contract, scratch fixtures) ran on an unchanged clean clone of the pin with every failure triaged (validation/SUITES.md, triage.py); blocked-access for the rest: the spec 236 scratch suites (22 integration files) and the 8-writer ledger cases need more than the 8 licence units of IRIS Community (an Enterprise licence); the scratch-236 attempts hit licence exhaustion and are recorded as infrastructure, not results",
+   "status": "blocked"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "as_built_findings": [
+    "F-C1705",
+    "F-C1706"
+   ],
+   "cited_runs": [
+    "val-driver532-1",
+    "val-driver540-1",
+    "ver-arno-callout",
+    "ver-avail-iris-2026.3",
+    "ver-e261-d532",
+    "ver-e261-d540",
+    "ver-e262-d532-full",
+    "ver-e262-d540-full",
+    "ver-matrix-compare"
+   ],
+   "evidence": [
+    "run:ver-e261-d532",
+    "run:ver-e261-d540",
+    "run:ver-e262-d532-full",
+    "run:ver-e262-d540-full",
+    "run:ver-matrix-compare",
+    "run:ver-avail-iris-2026.3",
+    "run:ver-arno-callout",
+    "run:val-driver540-1",
+    "run:val-driver532-1",
+    "versions/AVAILABILITY.md",
+    "versions/VERSIONS.md"
+   ],
    "findings": [
     "F-C1705",
     "F-C1706"
@@ -11720,12 +11872,16 @@
    "product_basis": {
     "fails": [
      "finding F-C1705",
-     "finding F-C1706"
+     "finding F-C1706",
+     "run val-driver532-1 (fail)",
+     "run val-driver540-1 (fail)",
+     "run ver-e261-d540 (fail)",
+     "run ver-e262-d540-full (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "IRIS Enterprise and 2026.3 (and driver 5.4.0) not available locally; operator dependency",
+   "remaining": "compared: IRIS Community 2026.1 and 2026.2 with drivers 5.3.2 and 5.4.0 (SQL COMMIT/ROLLBACK end one level on both engines and drivers, F-C1705; driver 5.3.2 defects, F-C1706). Blocked-access (attempts recorded in versions/AVAILABILITY.md): an IRIS 2026.3 engine (no public tag; irishealth:2026.3.0AI is on an internal registry), an Enterprise or IRIS for Health image and licence, and an x86_64 libarno_callout.so",
    "status": "blocked"
   },
   {
@@ -11771,17 +11927,20 @@
   {
    "cited_runs": [
     "independent-review-1",
-    "independent-review-2-final"
+    "independent-review-2-final",
+    "independent-review-3"
    ],
    "evidence": [
     "run:independent-review-1",
-    "run:independent-review-2-final"
+    "run:independent-review-2-final",
+    "run:independent-review-3",
+    "review/REVIEW-3.md"
    ],
    "gate": "3.8-review",
    "level": "method",
    "module": "product",
    "product_obligation": "unknown",
-   "remaining": "no sign-off; remaining: operator scope ruling (R2-07); R2-11 and R2-12 addressed after the final review text (F-1201 restored, errata, tombstone-of-live control corr-abstraction-selftest-r3); a third review pass would confirm",
+   "remaining": "no sign-off in three passes; the third pass's conditions A-1..A-4 were applied; the remaining sign-off condition is the operator's scope ruling O-1/R2-07 (compiling the non-pin 4.5.1 release through the pinned fixture for F-C1306, and IVGDev helper classes in %SYS); the newest crates (proofs-d1c..d1f) and the steer-7 lanes are not yet reviewed (queue Q17f)",
    "status": "open"
   },
   {
@@ -12446,12 +12605,17 @@
   },
   {
    "cited_runs": [],
-   "evidence": [],
+   "evidence": [
+    "tools/locks.sh",
+    "incidents/IVG460SNAP.md",
+    "incidents/HEALTH-ALERT-0119.md",
+    "incidents/superseded-logs.json"
+   ],
    "gate": "5-hygiene",
    "level": "method",
    "module": "product",
    "product_obligation": "unknown",
-   "remaining": "closed claim cites no registered run or committed artifact",
+   "remaining": "tools/locks.sh enforces one heavy job and one IRIS user at a time (flock) with a 3 h wait timeout, and verify.sh caps every step with timeout; but lock holds are not logged, so per-job time caps and stop-by-PID are not mechanically auditable, and the disk floor is checked by hand (151 GB free on 2026-11-14). Recorded lapses: uncoordinated connections 23:02:53-23:03:40 UTC (IVG460SNAP), a heavy-lock deadlock from wrapping a self-locking proof runner (stopped by PID), licence exhaustion by the scratch-236 suites (HEALTH-ALERT-0119), and overwritten proof logs (superseded-logs.json). Not claimed closed.",
    "status": "open"
   },
   {
@@ -26789,10 +26953,10 @@
   "writer_obligations": 83
  },
  "status_counts": {
-  "blocked": 6,
-  "closed": 216,
+  "blocked": 8,
+  "closed": 217,
   "not-applicable": 35,
-  "open": 490
+  "open": 487
  },
  "submission": "9c3719c1",
  "writer_obligations": [
