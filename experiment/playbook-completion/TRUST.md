@@ -42,3 +42,23 @@ The proof inventory is empty of trusted items; every other row is executable evi
 | Durability of an acknowledged commit: a revision the ledger reports as committed survives an instance crash, which needs IRIS `SynchCommit=1` or a journal flush before the acknowledgement | readers of spec 213's "the returned revision exists"; the crash world | **not met in the tested configuration**: the audit container runs `SynchCommit=0` (the IRIS default; `env-synchcommit-setting`, iris.cpf line 325), and an acknowledged 36,000-operation commit was absent after SIGKILL and journal recovery (`live-crash-world-r2`, one trial per world; F-C1102, intent-undecided: no IVG document states the premise). `SynchCommit=1` untested. Every durability result of this audit holds for `SynchCommit=0` only (review R2-04, R2-08) |
 | P-A3: an eraser of graph g overlaps no writer of g | `proofs-breadth` (modules 04 and 11; `inv_procs`, explorer restriction: the eraser's row deletes wait on writer row locks) | **violated at the pin**: EraseGraph takes no ledger head lock, and a ledger commit into G lands between its row delete and its statement cleanup (F-1201's interleaving, live 8/8, `live-f1201-reproduced`; the overlap is observed even though F-1201's intent is undecided); EraseGraph's adjacency kill drops an edge committed after its row delete (F-C1202, core model `core-m2-as-built-F1201-adjacency`). Not established for inserts of new rows. Omitted from `proofs-breadth/PROOFS.md` "Premises the pin violates" (P-L4, P-L6, P-A4 there); recorded here (review R2-06) Since steer 7: no longer a premise of `proofs-pa3` (modules 04 and 11 re-proved with the erase interleaving its graph's writers). What replaces it under the reviewed guards (review R4-05): module 04: a weakened form, `theorem_pa3_from_guard` (under R04-5 a writer and an eraser of one graph are open together only while the eraser has not passed TSTART and the writer is a lock-less one already in flight, whose row then blocks the eraser's DELETE); module 11: `er_ok` excludes only ledger commits during an open erasure (R11-7), while ledger-bypassing writes of new rows still overlap (`witness_erase`, an unrecorded write). The pin has neither guard (`proofs-pa3-f1201-erase-no-head-lock`, `proofs-pa3-fc1202-erase-unguarded`) |
 | Embedded SQL (`&sql`) behaves as dynamic SQL for the clauses used | contract (E-1) | **validated** for the pin's own compiled embedded SQL in AUDITCORE (nothing compiled by the audit): 67 cases, 0 outside the permitted sets, 14/14 mutants (`env2-e1-r1`); journal equality of embedded and dynamic writes (`env2-e1-r1-journal`); `Txn_Begin`/`Txn_End`/`Txn_Undo` act on the caller's transaction (`env2-e1-r2`, 54 cases, 8/8 mutants). Residual by analogy: embedded UPDATE and long cursors |
+
+## Log provenance
+
+Each registered run record (`evidence/runs/*.json`) carries the SHA-256 of its primary log; `tools/check_registry.py`
+re-hashes every log and the fast gate runs it. Independent checks of these digests:
+
+| Check | Records | Current digest matches | Not original | Source |
+|---|---|---|---|---|
+| Operator, after the account switch (2026-11-14) | 1,237 primary log records | 1,231 | 6 | operator message to the orchestrator (recorded in `LANES.md`) |
+| Fourth independent review | 221 records added since `1f7f22fd` | 221 | 0 | `review/REVIEW-4.md` section 2 |
+| Third independent review | 782 logs | 776 | 6 (the same six) | `review/REVIEW-3.md` |
+
+The six are the original `proofs/` gate logs (`core-proofs-baseline` and five control runs) that the orchestrator's
+recheck overwrote on 2026-11-14 ~00:40 UTC (`incidents/superseded-logs.json`). Their records were not rewritten; each
+names an explicitly superseding rerun (`core-proofs-recheck-*`) whose digest matches its own log, on the same sources
+with the same result (88 verified, 0 errors; each control failing at its located line). They are **superseded**, not
+original log matches: the original logs of those six runs are lost, and nothing in this audit relabels them. The cause
+(a shared output directory) is fixed (`PROOFS_OUT_DIR`; every verify run writes under its own directory).
+Separately, a few records were corrected in place before their first commit; each is disclosed in
+`evidence/errata.json` (in-place corrections) together with all other errata.
