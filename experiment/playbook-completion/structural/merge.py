@@ -19,7 +19,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 PC = HERE.parent
-SUBS = ["capkeys", "ownership", "order", "frame", "reads"]
+SUBS = ["capkeys", "ownership", "order", "frame", "reads", "susp"]
 GATES = {g["id"] for g in json.loads((PC / "matrix" / "gates.json").read_text())["gates"]}
 RUNS = {p.stem for p in (PC / "evidence" / "runs").glob("*.json")}
 
@@ -70,7 +70,15 @@ def main() -> int:
     if "--check" in sys.argv:
         return 1 if problems else 0
     (HERE / "MATRIX-INPUT.json").write_text(json.dumps({"lane": "structural", "cells": cells}, indent=1) + "\n")
-    (PC / "findings" / "audit" / "zz-structural.json").write_text(json.dumps(findings, indent=1) + "\n")
+    # a record already in zz-structural.json wins: the orchestrator may have updated it (e.g. F-C1240 refuted)
+    zz = PC / "findings" / "audit" / "zz-structural.json"
+    if zz.exists():
+        old = json.loads(zz.read_text())
+        old = old["findings"] if isinstance(old, dict) else old
+        kept = {f["id"]: f for f in old}
+        findings = [kept.get(f["id"], f) for f in findings] + [f for f in old if f["id"] not in {x["id"] for x in findings}]
+        findings.sort(key=lambda f: f["id"])
+    zz.write_text(json.dumps(findings, indent=1) + "\n")
     return 1 if problems else 0
 
 

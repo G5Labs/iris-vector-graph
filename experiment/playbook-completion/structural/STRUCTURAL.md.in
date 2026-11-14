@@ -168,6 +168,24 @@ cell's `remaining`.
 
 <!-- OPEN -->
 
+## Follow-up: ontology-2's possible findings (sub-directory `susp/`)
+
+Each candidate from `$RUN_DIR/ontology-2/proposals/*.json` (`possible_findings`) named by the orchestrator was decided
+on AUDITD with scratch data through the product's own entry points (`susp/susp.py`; a stand-in replaced only the
+`mcp` transport, which is not installed, and the networkx loader's container connection factory), or by inspection
+where asked. Findings in `susp/findings-proposed.json`, merged into `findings/audit/zz-structural.json`.
+
+| Candidate | Decision | Id, severity | Run / evidence |
+|---|---|---|---|
+| networkx-loader --clear-existing deletes every graph's rows by raw SQL | reproduced-live: every graph's edges, labels, properties gone, nodes, temporal edges and vectors left, strict mode on, no revision | F-C0340, S3 | `st-live-susp-loader-clear` |
+| ^NKG class methods called directly answer all graphs merged | reproduced-live: ClosenessGlobal answers both graphs' nodes as one graph, BetweennessGlobal the named graph's; kg_Closeness refuses | F-C1041, S3 | `st-live-susp-nkg-merged` |
+| stdio MCP LoadGraph reports 0 nodes and 0 edges | reproduced-live: nodesLoaded 0, edgesLoaded 0 after writing 3 nodes, 2 edges | F-C1640, S4 | `st-live-susp-mcp-load` |
+| generated GraphQL `properties` always [] | reproduced-live: [] beside typed fields name, colour | F-C1641, S3 | `st-live-susp-gql-props` |
+| IVG.CypherEngine.Scalar answers its default on a failed read | confirmed-source; live input (a failing count answers error, rows []); the call itself blocked: no pydantic in the container's embedded Python | F-C0940, S3 | `st-live-susp-scalar` (blocked) |
+| range() with a run-time step of 0 answers [] | reproduced-live: [] with no error; the literal 0 raises NumberOutOfRange | F-C0841, S4 | `st-live-susp-range-step` |
+| get_json_field_values pastes the field into SQL | reproduced-live: a quote breaks the statement; a crafted field reads another key's row (read-only) | F-C0341, S2 | `st-live-susp-json-field` |
+| enterprise web gateway recipe: management from any address, _SYSTEM/SYS | confirmed-source (inspection only, not deployed) | F-C1741, S3 | `docker/enterprise/webgateway-init.sh:12-31`, `docker-compose-2026.yml:5-6, 28-29` |
+
 ## Not findings, reported for decision
 
 - Lock escalation across graphs (capkeys): one caller transaction with more than about 1,000 row writes per table

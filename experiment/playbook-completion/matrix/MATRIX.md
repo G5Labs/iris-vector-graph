@@ -12,7 +12,7 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 3.1-index | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.1-cells | method | 18 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 18 | 1 |
 | 3.1-coverage | method | 24 | 0 | 5 | 0 | 0 | 5 | 5 | 0 | 0 | 0 | 19 | 0 |
-| 3.1-intent | method | 19 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 18 | 0 |
+| 3.1-intent | method | 19 | 0 | 0 | 0 | 0 | 5 | 0 | 0 | 0 | 0 | 14 | 0 |
 | 3.2-library | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.2-differential | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.2-sharpness | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
@@ -78,7 +78,7 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 5c-root-causes | method | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 5c-reviewers | method | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 |
 
-Totals: {'closed': 545, 'not-applicable': 35, 'open': 162, 'blocked': 10}; evidence grade of closed cells: {'registered-run': 435, 'inspected': 110}; product: {'unknown': 202, 'n/a': 33, 'fails': 396, 'intent-undecided': 6, 'holds-in-model-only': 1, 'holds-live': 29, 'holds-inspected': 85}
+Totals: {'closed': 545, 'not-applicable': 35, 'open': 162, 'blocked': 10}; evidence grade of closed cells: {'registered-run': 429, 'inspected': 116}; product: {'unknown': 198, 'n/a': 33, 'fails': 400, 'intent-undecided': 6, 'holds-in-model-only': 1, 'holds-live': 29, 'holds-inspected': 85}
 
 ## Writer census obligations (review R2-02)
 

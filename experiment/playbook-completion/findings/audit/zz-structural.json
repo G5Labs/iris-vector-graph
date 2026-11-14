@@ -1,5 +1,63 @@
 [
  {
+  "id": "F-C0340",
+  "module": "03",
+  "title": "networkx-loader's --clear-existing deletes every graph's edges, labels and properties by raw SQL and leaves their nodes, temporal edges and vectors, with strict mode on",
+  "intended": "A clear of graph data goes through the eraser, which removes a graph's rows and every derived store together (Graph.KG.Eraser, Graph.KG.GraphStores.Inventory; 12-erasure.md Scope); every content write is refused while ledger strict mode is on (11-ledger.md strict mode; WRT-T1.82 notes this loader's clear as built); one graph's operation does not touch another graph (SYS-I2).",
+  "observed": "Live AUDITD (st-live-susp-loader-clear): NetworkXIRISLoader.import_graph(G, clear_existing=True) runs DELETE FROM Graph_KG.rdf_edges / rdf_labels / rdf_props with no graph filter (scripts/ingest/networkx_loader.py:279-283) and answers success with strict mode on. Afterwards graph sgB has no edges, labels or properties but keeps both node rows (get_node answers labels []), its temporal edge (window read 1) and the default graph's vector row remains; the default graph's earlier edges (including one the ledger committed), labels and properties are gone too, and no revision records the deletion.",
+  "disposition": "reproduced-live",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "st-live-susp-loader-clear"
+   },
+   {
+    "kind": "inspected",
+    "ref": "scripts/ingest/networkx_loader.py:264-283"
+   },
+   {
+    "kind": "inspected",
+    "ref": "pyproject.toml:178"
+   }
+  ],
+  "gates": [
+   "3.4-ownership",
+   "3.6-fk",
+   "3.6-frame"
+  ],
+  "severity": "S3",
+  "confidence": "high",
+  "remedy": "Clear through the product's eraser (erase_graph per graph, or EraseAll for a whole-namespace reset) and refuse while strict mode is on; or remove the option.",
+  "notes": "The connection was injected (the loader's own factory needs iris_devtester's container). The script is declared as the networkx-loader console script, which cannot run from an install (F-C1701), so the impact is on users running it from the repository. Found by ontology-2's source reading; decided live by the structural lane."
+ },
+ {
+  "id": "F-C0341",
+  "module": "03",
+  "title": "get_json_field_values pastes the field name into its SQL text, so a field name can change the statement",
+  "intended": "SQL text carries only constants and identifiers the code controls, values are bound (the product's own pattern elsewhere: _validate, sanitize_identifier; F-0815 for the same class of defect in Cypher); get_json_field_values(key, field) answers the field's values inside the key's blobs (iris_vector_graph/_engine/nodes_edges.py:916-930).",
+  "observed": "Live AUDITD (st-live-susp-json-field), scratch rows jf:1 'meta' = {\"color\": \"red\"} and jf:2 'private' = {\"color\": \"blue\"}: get_json_field_values('meta', 'color') answers ['red']; a field containing one quote makes the statement fail ('Incorrect number of parameters'); a crafted field ending in ... WHERE \"key\" <> ? AND (1 = 1 OR val LIKE ?) -- turns the statement into a read of every other key and answers ['blue'] from the 'private' row. The field is formatted into a string literal of the select list (nodes_edges.py:921-922) and into the LIKE pattern (:926). The query also has no graph predicate.",
+  "disposition": "reproduced-live",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "st-live-susp-json-field"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/nodes_edges.py:916-930"
+   }
+  ],
+  "gates": [
+   "3.4-declared-reads"
+  ],
+  "severity": "S2",
+  "confidence": "high",
+  "remedy": "Bind the field: build the marker with a parameter (SELECT $PIECE($PIECE(val, ?, 2), '\"', 1) ... with the bound text '\"' + field + '\": \"'), escape % and _ in the LIKE pattern with an ESCAPE clause, or validate field against a strict identifier pattern; add a graph predicate.",
+  "notes": "Only read-only crafted text was used; nothing was written. The statement runs with the caller's own SQL privileges, so the effect is reading rows or tables the caller's code did not ask for when field comes from an end user. No product caller of this public engine method was found."
+ },
+ {
   "id": "F-C0348",
   "module": "03",
   "title": "Racing create_edge calls on a new edge whose endpoint is new can all lose: some answer False ('already exists') and no edge is written",
@@ -216,6 +274,36 @@
   "notes": "Not run here. Routed node tables carry a foreign key onto nodes (iris_vector_graph/_engine/schema.py:255-263, fk_{short}), so a DETACH DELETE of a node holding a routed vector may be refused whole or leave the vector, as F-0618 shows for the ledger's node delete; a live check would decide."
  },
  {
+  "id": "F-C0841",
+  "module": "08",
+  "title": "Cypher range() with a step of 0 known only at run time answers [] instead of raising NumberOutOfRange",
+  "intended": "openCypher: range() with a step of 0 raises ArgumentError NumberOutOfRange at run time (vendor/opencypher/tck/features/expressions/list/List11.feature:115-130); the translator itself refuses a literal step of 0 with that error (iris_vector_graph/cypher/translator.py:29055-29099).",
+  "observed": "Live AUDITD (st-live-susp-range-step): RETURN range(1, 3, 0) raises ValueError 'range() step cannot be zero (NumberOutOfRange)'; UNWIND [0] AS s RETURN range(1, 3, s) and WITH 0 AS s RETURN range(1, 3, s) answer [] with no error (a run-time step of 1 answers [1, 2, 3]). The run-time path goes to CypherFn IVGRANGE, which returns \"[]\" for a step of 0 (iris_src/src/Graph/KG/CypherFn.cls:255-257).",
+  "disposition": "reproduced-live",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "st-live-susp-range-step"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/CypherFn.cls:255-257"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/cypher/translator.py:29055-29122"
+   }
+  ],
+  "gates": [
+   "3.1-intent"
+  ],
+  "severity": "S4",
+  "confidence": "high",
+  "remedy": "Raise from IVGRANGE for a step of 0 (an SQL error the engine maps to NumberOutOfRange), as the literal path does.",
+  "notes": "Stated as built in CYP-T11.103. The TCK tests only literals, so the conformance harness does not see it."
+ },
+ {
   "id": "F-C0848",
   "module": "08",
   "title": "A Cypher CREATE or MERGE with literal or parameter endpoint ids drops a parameter-bound relationship property without an error",
@@ -277,6 +365,36 @@
   "notes": "translator.py:10415-10418 says stage columns are spliced raw because some are already JSON; a plain string column is not. Which code path built this statement was inferred from the stored text, not traced."
  },
  {
+  "id": "F-C0940",
+  "module": "09",
+  "title": "IVG.CypherEngine.Scalar answers the caller's default when the read fails, so a failed COUNT reads as 0",
+  "intended": "IVG.CypherEngine's contract is {columns, rows, error}: 'a bad query is an error value, not a throw' (iris_src/src/IVG/CypherEngine.cls:12, :110; QueryJson :97-127 passes the error); execute_cypher answers a failed read with IVGResult.error and no rows (iris_vector_graph/_engine/query.py:1755-1757).",
+  "observed": "Inspected at the pin: Scalar (CypherEngine.cls:140-150) iterates r.rows and returns the default when there is none, without reading r.error. Live AUDITD (st-live-susp-scalar): execute_cypher('MATCH (n) RETURN count(n) / 0 AS c') answers error SQLCODE -149 and rows [] without raising, which is exactly the input on which Scalar returns its default ('0' for a count). Scalar itself could not be called here: the container's embedded Python lacks pydantic, so IVG.CypherEngine.Local() raises ModuleNotFoundError.",
+  "disposition": "confirmed-source",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/IVG/CypherEngine.cls:140-150"
+   },
+   {
+    "kind": "live",
+    "ref": "st-live-susp-scalar"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/query.py:1745-1760"
+   }
+  ],
+  "gates": [
+   "3.1-intent"
+  ],
+  "severity": "S3",
+  "confidence": "high",
+  "remedy": "Raise (or return a distinguishable value) when r.error is set, as QueryJson reports it; document the behaviour.",
+  "notes": "Blocked for a direct live call: IRIS's embedded Python in this container has no pydantic (a dependency of iris_vector_graph); installing it would change the container, which this lane does not do."
+ },
+ {
   "id": "F-C0948",
   "module": "09",
   "title": "Compiled native plan classes have no bound: one class per plan shape accumulates until a deploy",
@@ -327,6 +445,36 @@
   "confidence": "high",
   "remedy": "Bump the token through the adjacency module (one method that also keeps the degree generation rules), and name the Arno bridge as its caller.",
   "notes": "An extra increment only invalidates caches; no wrong answer follows from this write alone."
+ },
+ {
+  "id": "F-C1041",
+  "module": "10",
+  "title": "The ^NKG centrality class methods called directly answer every graph merged; only the SQL functions refuse",
+  "intended": "An answer about a graph holds only that graph's data (SYS-I2); the product's own refusal says an algorithm over ^NKG with a named graph's edges present 'would be every graph's merged' (iris_src/src/Graph/KG/NKGAccel.cls:208-223, RefuseMergedGraphs; called by the kg_* SQL functions, iris_vector_graph/schema.py:2644-2665).",
+  "observed": "Live AUDITD (st-live-susp-nkg-merged): with nd:1->nd:2 in the default graph and ng:1->ng:2->ng:3->ng:4 in graph sgN and ^NKG built by engine.sync(), Graph.KG.NKGAccelCentrality.ClosenessGlobal over the Native API answers all six nodes of both graphs as one graph (ng:1 1.833, ng:2 1.5, nd:1 1, ...) and BetweennessGlobal answers ng:2 and ng:3 of graph sgN; SQL Graph_KG.kg_Closeness refuses the same state; engine.closeness_centrality() answers nd:1 and nd:2 only. Inspected: EigenvectorGlobal, BetweennessGlobalParallel, BetweennessNeighborhood and ClosenessGlobalMSBFS (NKGAccelCentrality.cls:95, 351, 487, 608) and Communities' TriangleCountJson, KCoreJson and SCCJson (Communities.cls:56, 111, 186) have no refusal either.",
+  "disposition": "reproduced-live",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "st-live-susp-nkg-merged"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/NKGAccel.cls:208-223"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/NKGAccelCentrality.cls:4-10"
+   }
+  ],
+  "gates": [
+   "3.4-declared-reads"
+  ],
+  "severity": "S3",
+  "confidence": "high",
+  "remedy": "Call RefuseMergedGraphs inside the class methods (or key ^NKG by graph), so every entry point refuses or answers per graph.",
+  "notes": "Same defect class as F-1013 (PageRankEmbedded); stated as built in ALG-B7.90. EigenvectorGlobal did not converge on this acyclic test graph, so only closeness and betweenness were shown live."
  },
  {
   "id": "F-C1240",
@@ -475,6 +623,62 @@
   "notes": "prov_as_dict's docstring says the whole window is read; it does not say the call fails past the string limit. The whole-window prov_export failure is the documented INT-V1.6 cap (its raising instead of logging is F-1501)."
  },
  {
+  "id": "F-C1640",
+  "module": "16",
+  "title": "The stdio MCP server's LoadGraph always reports 0 nodes and 0 edges loaded",
+  "intended": "LoadGraph 'Returns node and edge counts' (scripts/mcp/ivg_mcp_server.py:52-58).",
+  "observed": "Live AUDITD (st-live-susp-mcp-load): call_tool('LoadGraph') on a GraphML file of 3 nodes and 2 edges (the mcp transport replaced by a stand-in, the module's connection set to AUDITD) answers nodesLoaded 0, edgesLoaded 0, buildKGCompleted true, while 3 node rows and 2 edge rows were written. The handler reads stats['nodes_created'] / ['edges_created'] (ivg_mcp_server.py:124-125); engine.load_networkx returns nodes, edges, skipped_nodes, skipped_edges (snapshot.py:547-552, observed live).",
+  "disposition": "reproduced-live",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "st-live-susp-mcp-load"
+   },
+   {
+    "kind": "inspected",
+    "ref": "scripts/mcp/ivg_mcp_server.py:102-128"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/snapshot.py:547-552"
+   }
+  ],
+  "gates": [
+   "3.1-intent"
+  ],
+  "severity": "S4",
+  "confidence": "high",
+  "remedy": "Read stats['nodes'] and stats['edges'] (and the OBO loader's keys).",
+  "notes": "Repository script, not shipped. The same program connects as SuperUser/SYS by default (ivg_mcp_server.py:15-19) and has no read-only gate; not part of this decision."
+ },
+ {
+  "id": "F-C1641",
+  "module": "16",
+  "title": "The generated GraphQL server's Node.properties always answers an empty list",
+  "intended": "The Node interface's properties field lists the node's key/value pairs (iris_vector_graph/gql/schema.py:13-16, 30-37); the generic node type returns them (gql/resolvers.py:205-207).",
+  "observed": "Live AUDITD (st-live-susp-gql-props): node gq:1 with label Gqx and properties name=alpha, colour=red; create_app over the engine, queried in-process: node(id: \"gq:1\") answers properties [] while the typed fields name 'alpha' and colour 'red' come back; nodes(label: \"Gqx\") answers properties [] too. Node.properties returns [] (schema.py:35-37) and every generated type inherits it.",
+  "disposition": "reproduced-live",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "st-live-susp-gql-props"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/gql/schema.py:30-37"
+   }
+  ],
+  "gates": [
+   "3.1-intent"
+  ],
+  "severity": "S3",
+  "confidence": "high",
+  "remedy": "Resolve properties from the node's stored properties (as GenericNode does), or drop the field from the interface.",
+  "notes": "tests/e2e/test_gql_node_queries.py:27-43 asks for the field and checks nothing. Stated as built in API-T10.90."
+ },
+ {
   "id": "F-C1642",
   "module": "16",
   "title": "The generated GraphQL server pages nodes(label) over an unordered id list",
@@ -530,6 +734,36 @@
   "confidence": "high",
   "remedy": "Delete through the owners (the eraser's node erase, which already reaches documents and routes) and state in OPS-B5.6 what the delete removes.",
   "notes": "The SQL path is the fallback when the erasure server code is absent (OPS-T5.6.1, 17-operations.md:190)."
+ },
+ {
+  "id": "F-C1741",
+  "module": "17",
+  "title": "The enterprise web gateway recipe lets any address manage the gateway and connects to IRIS as _SYSTEM with the stock password",
+  "intended": "A deploy recipe does not expose an administration surface to every address with known credentials (deploy/README.md and docs/ADMIN_GUIDE.md treat credentials and network exposure as operator settings; F-1710 for the other docker recipe).",
+  "observed": "Inspected at the pin (not deployed): docker/enterprise/webgateway-init.sh:12-31 writes CSP.ini with System_Manager=*.*.*.* (the gateway's management pages from any client address) and [LOCAL] Username=_SYSTEM, Password=]]]U1lT (the gateway's obfuscated form of 'SYS'); docker/enterprise/docker-compose-2026.yml:28-29 publishes the gateway on host port 64780 and :5-6 IRIS's superserver on 4972, both on every host interface; merge.cpf:4 keeps _SYSTEM's password from ever expiring or being forced to change. Only .iris-dev.toml refers to the recipe.",
+  "disposition": "confirmed-source",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "inspected",
+    "ref": "docker/enterprise/webgateway-init.sh:12-31"
+   },
+   {
+    "kind": "inspected",
+    "ref": "docker/enterprise/docker-compose-2026.yml:1-45"
+   },
+   {
+    "kind": "inspected",
+    "ref": "docker/enterprise/merge.cpf:1-5"
+   }
+  ],
+  "gates": [
+   "3.1-intent"
+  ],
+  "severity": "S3",
+  "confidence": "high",
+  "remedy": "Restrict System_Manager to the loopback/container network, bind published ports to 127.0.0.1, take the IRIS credentials from a secret and require a password change, and label the recipe as a local developer setup.",
+  "notes": "A licensed developer recipe; inspection only, as asked (not deployed). The compose file's ./docker/enterprise/ mount paths resolve against its own directory (ontology-2's separate note), so it may not start as written."
  },
  {
   "id": "F-C1742",

@@ -1159,10 +1159,19 @@
     "intent/HD-0804.md"
    ],
    "evidence_grade": "registered-run",
+   "findings": [
+    "F-C0841"
+   ],
    "gate": "3.1-intent",
    "level": "method",
    "module": "08",
-   "product_obligation": "unknown",
+   "product_basis": {
+    "fails": [
+     "finding F-C0841"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
    "remaining": "intent recovered independently for HD-0801, HD-0802, HD-0803, HD-0804 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided",
    "status": "closed"
   },
@@ -1180,10 +1189,19 @@
     "intent/HD-0904.md"
    ],
    "evidence_grade": "registered-run",
+   "findings": [
+    "F-C0940"
+   ],
    "gate": "3.1-intent",
    "level": "method",
    "module": "09",
-   "product_obligation": "unknown",
+   "product_basis": {
+    "fails": [
+     "finding F-C0940"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
    "remaining": "intent recovered independently for HD-0901, HD-0902, HD-0903, HD-0904 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided",
    "status": "closed"
   },
@@ -1333,10 +1351,21 @@
     "intent/HD-1605.md"
    ],
    "evidence_grade": "registered-run",
+   "findings": [
+    "F-C1640",
+    "F-C1641"
+   ],
    "gate": "3.1-intent",
    "level": "method",
    "module": "16",
-   "product_obligation": "unknown",
+   "product_basis": {
+    "fails": [
+     "finding F-C1640",
+     "finding F-C1641"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
    "remaining": "intent recovered independently for HD-1601, HD-1602, HD-1603, HD-1604, HD-1605 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided",
    "status": "closed"
   },
@@ -1355,10 +1384,19 @@
     "intent/HD-1705.md"
    ],
    "evidence_grade": "registered-run",
+   "findings": [
+    "F-C1741"
+   ],
    "gate": "3.1-intent",
    "level": "method",
    "module": "17",
-   "product_obligation": "unknown",
+   "product_basis": {
+    "fails": [
+     "finding F-C1741"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
    "remaining": "intent recovered independently for HD-1701, HD-1702, HD-1703, HD-1704, HD-1705 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided",
    "status": "closed"
   },
@@ -1749,7 +1787,8 @@
    "findings": [
     "F-1705",
     "F-C1704",
-    "F-C1705"
+    "F-C1705",
+    "F-C1720"
    ],
    "gate": "3.2-coverage",
    "level": "method",
@@ -1758,7 +1797,8 @@
     "fails": [
      "finding F-1705",
      "finding F-C1704",
-     "finding F-C1705"
+     "finding F-C1705",
+     "finding F-C1720"
     ],
     "intent_undecided": []
    },
@@ -7296,7 +7336,8 @@
    "evidence_grade": "inspected",
    "findings": [
     "F-C0151",
-    "F-C0450"
+    "F-C0450",
+    "F-C1250"
    ],
    "gate": "3.3a-writesets",
    "level": "product",
@@ -7305,6 +7346,7 @@
     "fails": [
      "finding F-C0151",
      "finding F-C0450",
+     "finding F-C1250",
      "stated fails by matrix-input/writesets.json",
      "run ws-live-stmt-collision (fail)",
      "run ws-live-stmt-purge (fail)"
@@ -8082,7 +8124,8 @@
    "findings": [
     "F-1502",
     "F-1503",
-    "F-1604"
+    "F-1604",
+    "F-C0340"
    ],
    "findings_undecided": [
     "F-0503"
@@ -8095,6 +8138,7 @@
      "finding F-1502",
      "finding F-1503",
      "finding F-1604",
+     "finding F-C0340",
      "stated fails by matrix-input/structural.json",
      "run st-check-own-census (fail)"
     ],
@@ -9306,11 +9350,15 @@
     "experiment/playbook-completion/structural/reads/noninterference.py"
    ],
    "evidence_grade": "live",
+   "findings": [
+    "F-C0341"
+   ],
    "gate": "3.4-declared-reads",
    "level": "product",
    "module": "03",
    "product_basis": {
     "fails": [
+     "finding F-C0341",
      "run st-live-reads-a (fail)"
     ],
     "intent_undecided": []
@@ -9545,7 +9593,8 @@
    ],
    "evidence_grade": "live",
    "findings": [
-    "F-1006"
+    "F-1006",
+    "F-C1041"
    ],
    "gate": "3.4-declared-reads",
    "level": "product",
@@ -9553,6 +9602,7 @@
    "product_basis": {
     "fails": [
      "finding F-1006",
+     "finding F-C1041",
      "run st-live-reads-b (fail)"
     ],
     "intent_undecided": []
@@ -11539,11 +11589,15 @@
     "experiment/playbook-completion/structural/frame/method.json"
    ],
    "evidence_grade": "live",
+   "findings": [
+    "F-C0340"
+   ],
    "gate": "3.6-frame",
    "level": "product",
    "module": "03",
    "product_basis": {
     "fails": [
+     "finding F-C0340",
      "run st-check-frame-aggregate (fail)",
      "run st-live-frame-r8 (fail)"
     ],
@@ -13100,6 +13154,7 @@
    ],
    "evidence_grade": "registered-run",
    "findings": [
+    "F-C0340",
     "F-C0348"
    ],
    "gate": "3.6-fk",
@@ -13107,6 +13162,7 @@
    "module": "03",
    "product_basis": {
     "fails": [
+     "finding F-C0340",
      "finding F-C0348",
      "run st-live-fk (fail)",
      "run st-live-keys-race-edge (fail)"
@@ -14116,6 +14172,7 @@
    "evidence_grade": "live",
    "findings": [
     "F-C1203",
+    "F-C1250",
     "F-C1303",
     "F-C1306",
     "F-C1307",
@@ -14134,6 +14191,7 @@
    "product_basis": {
     "fails": [
      "finding F-C1203",
+     "finding F-C1250",
      "finding F-C1303",
      "finding F-C1306",
      "finding F-C1307",
@@ -15631,7 +15689,8 @@
     "F-1112",
     "F-C0502",
     "F-C1002",
-    "F-C1706"
+    "F-C1706",
+    "F-C1720"
    ],
    "gate": "3.7-suites",
    "level": "product",
@@ -15642,6 +15701,7 @@
      "finding F-C0502",
      "finding F-C1002",
      "finding F-C1706",
+     "finding F-C1720",
      "run val-contract-optin-1 (fail)",
      "run val-docs-run-1 (fail)",
      "run val-gated-1 (fail)",
@@ -16261,7 +16321,8 @@
     "F-1201",
     "F-C1201",
     "F-C1202",
-    "F-C1203"
+    "F-C1203",
+    "F-C1250"
    ],
    "gate": "3.8-findings-disposed",
    "level": "method",
@@ -16271,7 +16332,8 @@
      "finding F-1201",
      "finding F-C1201",
      "finding F-C1202",
-     "finding F-C1203"
+     "finding F-C1203",
+     "finding F-C1250"
     ],
     "intent_undecided": []
    },
@@ -16386,7 +16448,8 @@
    ],
    "findings": [
     "F-C1705",
-    "F-C1706"
+    "F-C1706",
+    "F-C1720"
    ],
    "gate": "3.8-findings-disposed",
    "level": "method",
@@ -16394,7 +16457,8 @@
    "product_basis": {
     "fails": [
      "finding F-C1705",
-     "finding F-C1706"
+     "finding F-C1706",
+     "finding F-C1720"
     ],
     "intent_undecided": []
    },
@@ -17409,7 +17473,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-live",
-   "remaining": "discharged by guard (live): seq is the table's unique IdKey (SeqIdx) and UPDATE/DELETE are refused by RejectUpdate/RejectDelete, so an SQL INSERT can neither replace nor rewrite the row of a revision that has records; a new row's seq has no record (records are written with their row in one commit), so no tombstone sits under its text. Live: INSERT of the redacted seq refused SQLCODE -119 (SeqIdx), UPDATE refused -132, the text stays cleared. Side effect recorded separately: an INSERT of head+1 wedges every later commit (F-C1150, ws-live-sql-insert-wedge), an availability defect, not an INV-text break.",
+   "remaining": "discharged by guard (live): seq is the table's unique IdKey (SeqIdx) and UPDATE/DELETE are refused by RejectUpdate/RejectDelete, so an SQL INSERT can neither replace nor rewrite the row of a revision that has records; a new row's seq has no record (records are written with their row in one commit), so no tombstone sits under its text. Live: INSERT of the redacted seq refused SQLCODE -119 (SeqIdx), UPDATE refused -132, the text stays cleared. Side effect recorded separately: an INSERT of head+1 made the next ledger commit fail (F-C1150, ws-live-sql-insert-wedge), an availability defect, not an INV-text break.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -17509,7 +17573,8 @@
     "iris_src/src/Graph/KG/Adjacency.cls:623-645",
     "iris_vector_graph/ledger/replay.py:588-642",
     "iris_vector_graph/ledger/replay.py:645-698",
-    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90"
+    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90",
+    "iris_vector_graph/ledger/guard.py:69-80"
    ],
    "discharge_grade": "live",
    "discharge_source": "writesets/DISCHARGES.json",
@@ -17518,7 +17583,8 @@
     "iris_src/src/Graph/KG/Adjacency.cls",
     "iris_vector_graph/ledger/replay.py",
     "iris_vector_graph/ledger/replay.py",
-    "experiment/playbook-uplift/semantics/WRITESETS.md"
+    "experiment/playbook-uplift/semantics/WRITESETS.md",
+    "iris_vector_graph/ledger/guard.py"
    ],
    "evidence_grade": "registered-run",
    "gate": "3.3a-writesets",
@@ -17532,7 +17598,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-live",
-   "remaining": "discharged by lemma (live): INV-replay holds under 'no unrecorded writes' (RPL-B3). The writer writes content rows and no ledger record, so every effect it has is an unrecorded write: compare() either sees it and classifies it unrecorded_writes (RPL-B7.1), or the write is outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) and replay still equals the store in that abstraction. The writer cannot make replay disagree with the store unseen. Live: the writer's process wrote content and no ^IVG.Ledger node (journal); verify() went equal -> diverges, classification unrecorded_writes. (ws-live-stmt-collision: diverges, unrecorded_writes after the deletion.)",
+   "remaining": "discharged by lemma (live): Holds as detection, not as preservation (review R4-07). The writer writes content rows and no ledger record, so it breaks RPL-B3's premise ('no unrecorded writes') and replay no longer equals the store; what holds is that the divergence is reported: compare() sees the write and classifies it unrecorded_writes (RPL-B7.1), or the write lies outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) where replay still equals the store. The writer cannot make replay disagree with the store unseen. The product permits such writes on a non-strict ledger (the strict-mode guard refuses them only when strict, ledger/guard.py:69-80) and classifies them in verify() (replay.py:645-649), so this is a lemma (detection), not a finding. Live (the cited run has no journal section): verify() went equal -> diverges, classification unrecorded_writes, and its differences name this writer's deletion.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -17690,7 +17756,8 @@
     "iris_src/src/Graph/KG/Adjacency.cls:650-688",
     "iris_vector_graph/ledger/replay.py:588-642",
     "iris_vector_graph/ledger/replay.py:645-698",
-    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90"
+    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90",
+    "iris_vector_graph/ledger/guard.py:69-80"
    ],
    "discharge_grade": "live",
    "discharge_source": "writesets/DISCHARGES.json",
@@ -17699,7 +17766,8 @@
     "iris_src/src/Graph/KG/Adjacency.cls",
     "iris_vector_graph/ledger/replay.py",
     "iris_vector_graph/ledger/replay.py",
-    "experiment/playbook-uplift/semantics/WRITESETS.md"
+    "experiment/playbook-uplift/semantics/WRITESETS.md",
+    "iris_vector_graph/ledger/guard.py"
    ],
    "evidence_grade": "registered-run",
    "gate": "3.3a-writesets",
@@ -17713,7 +17781,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-live",
-   "remaining": "discharged by lemma (live): INV-replay holds under 'no unrecorded writes' (RPL-B3). The writer writes content rows and no ledger record, so every effect it has is an unrecorded write: compare() either sees it and classifies it unrecorded_writes (RPL-B7.1), or the write is outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) and replay still equals the store in that abstraction. The writer cannot make replay disagree with the store unseen. Live: the writer's process wrote content and no ^IVG.Ledger node (journal); verify() went equal -> diverges, classification unrecorded_writes.",
+   "remaining": "discharged by lemma (live): Holds as detection, not as preservation (review R4-07). The writer writes content rows and no ledger record, so it breaks RPL-B3's premise ('no unrecorded writes') and replay no longer equals the store; what holds is that the divergence is reported: compare() sees the write and classifies it unrecorded_writes (RPL-B7.1), or the write lies outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) where replay still equals the store. The writer cannot make replay disagree with the store unseen. The product permits such writes on a non-strict ledger (the strict-mode guard refuses them only when strict, ledger/guard.py:69-80) and classifies them in verify() (replay.py:645-649), so this is a lemma (detection), not a finding. Live (the cited run has no journal section): verify() went equal -> diverges, classification unrecorded_writes, and its differences name this writer's deletion. The run reached the deletion through RetractTemporalRows' fallback (RetractTemporalRow, Adjacency.cls:677-679), not its own %STARTSWITH DELETE.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -17904,7 +17972,8 @@
     "iris_src/src/Graph/KG/EdgeScan.cls:247-258",
     "iris_vector_graph/ledger/replay.py:588-642",
     "iris_vector_graph/ledger/replay.py:645-698",
-    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90"
+    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90",
+    "iris_vector_graph/ledger/guard.py:69-80"
    ],
    "discharge_grade": "live",
    "discharge_source": "writesets/DISCHARGES.json",
@@ -17914,7 +17983,8 @@
     "iris_src/src/Graph/KG/EdgeScan.cls",
     "iris_vector_graph/ledger/replay.py",
     "iris_vector_graph/ledger/replay.py",
-    "experiment/playbook-uplift/semantics/WRITESETS.md"
+    "experiment/playbook-uplift/semantics/WRITESETS.md",
+    "iris_vector_graph/ledger/guard.py"
    ],
    "evidence_grade": "registered-run",
    "gate": "3.3a-writesets",
@@ -17928,7 +17998,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-live",
-   "remaining": "discharged by lemma (live): INV-replay holds under 'no unrecorded writes' (RPL-B3). The writer writes content rows and no ledger record, so every effect it has is an unrecorded write: compare() either sees it and classifies it unrecorded_writes (RPL-B7.1), or the write is outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) and replay still equals the store in that abstraction. The writer cannot make replay disagree with the store unseen. Live: the writer's process wrote content and no ^IVG.Ledger node (journal); verify() went equal -> diverges, classification unrecorded_writes.",
+   "remaining": "discharged by lemma (live): Holds as detection, not as preservation (review R4-07). The writer writes content rows and no ledger record, so it breaks RPL-B3's premise ('no unrecorded writes') and replay no longer equals the store; what holds is that the divergence is reported: compare() sees the write and classifies it unrecorded_writes (RPL-B7.1), or the write lies outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) where replay still equals the store. The writer cannot make replay disagree with the store unseen. The product permits such writes on a non-strict ledger (the strict-mode guard refuses them only when strict, ledger/guard.py:69-80) and classifies them in verify() (replay.py:645-649), so this is a lemma (detection), not a finding. Live: the writer's process wrote content and no ^IVG.Ledger node (journal of the cited run); verify() went equal -> diverges, classification unrecorded_writes.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -18100,7 +18170,8 @@
     "iris_src/src/Graph/KG/EdgeScan.cls:247-258",
     "iris_vector_graph/ledger/replay.py:588-642",
     "iris_vector_graph/ledger/replay.py:645-698",
-    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90"
+    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90",
+    "iris_vector_graph/ledger/guard.py:69-80"
    ],
    "discharge_grade": "live",
    "discharge_source": "writesets/DISCHARGES.json",
@@ -18110,7 +18181,8 @@
     "iris_src/src/Graph/KG/EdgeScan.cls",
     "iris_vector_graph/ledger/replay.py",
     "iris_vector_graph/ledger/replay.py",
-    "experiment/playbook-uplift/semantics/WRITESETS.md"
+    "experiment/playbook-uplift/semantics/WRITESETS.md",
+    "iris_vector_graph/ledger/guard.py"
    ],
    "evidence_grade": "registered-run",
    "gate": "3.3a-writesets",
@@ -18124,7 +18196,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-live",
-   "remaining": "discharged by lemma (live): INV-replay holds under 'no unrecorded writes' (RPL-B3). The writer writes content rows and no ledger record, so every effect it has is an unrecorded write: compare() either sees it and classifies it unrecorded_writes (RPL-B7.1), or the write is outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) and replay still equals the store in that abstraction. The writer cannot make replay disagree with the store unseen. Live: the writer's process wrote content and no ^IVG.Ledger node (journal); verify() went equal -> diverges, classification unrecorded_writes.",
+   "remaining": "discharged by lemma (live): Holds as detection, not as preservation (review R4-07). The writer writes content rows and no ledger record, so it breaks RPL-B3's premise ('no unrecorded writes') and replay no longer equals the store; what holds is that the divergence is reported: compare() sees the write and classifies it unrecorded_writes (RPL-B7.1), or the write lies outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) where replay still equals the store. The writer cannot make replay disagree with the store unseen. The product permits such writes on a non-strict ledger (the strict-mode guard refuses them only when strict, ledger/guard.py:69-80) and classifies them in verify() (replay.py:645-649), so this is a lemma (detection), not a finding. Live: the writer's process wrote content and no ^IVG.Ledger node (journal of the cited run); verify() went equal -> diverges, classification unrecorded_writes.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -18291,7 +18363,8 @@
     "iris_src/src/Graph/KG/EdgeScan.cls:247-258",
     "iris_vector_graph/ledger/replay.py:588-642",
     "iris_vector_graph/ledger/replay.py:645-698",
-    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90"
+    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90",
+    "iris_vector_graph/ledger/guard.py:69-80"
    ],
    "discharge_grade": "live",
    "discharge_source": "writesets/DISCHARGES.json",
@@ -18300,7 +18373,8 @@
     "iris_src/src/Graph/KG/EdgeScan.cls",
     "iris_vector_graph/ledger/replay.py",
     "iris_vector_graph/ledger/replay.py",
-    "experiment/playbook-uplift/semantics/WRITESETS.md"
+    "experiment/playbook-uplift/semantics/WRITESETS.md",
+    "iris_vector_graph/ledger/guard.py"
    ],
    "evidence_grade": "registered-run",
    "gate": "3.3a-writesets",
@@ -18314,7 +18388,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-live",
-   "remaining": "discharged by lemma (live): INV-replay holds under 'no unrecorded writes' (RPL-B3). The writer writes content rows and no ledger record, so every effect it has is an unrecorded write: compare() either sees it and classifies it unrecorded_writes (RPL-B7.1), or the write is outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) and replay still equals the store in that abstraction. The writer cannot make replay disagree with the store unseen. Live: the writer's process wrote content and no ^IVG.Ledger node (journal); verify() went equal -> diverges, classification unrecorded_writes.",
+   "remaining": "discharged by lemma (live): Holds as detection, not as preservation (review R4-07). The writer writes content rows and no ledger record, so it breaks RPL-B3's premise ('no unrecorded writes') and replay no longer equals the store; what holds is that the divergence is reported: compare() sees the write and classifies it unrecorded_writes (RPL-B7.1), or the write lies outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) where replay still equals the store. The writer cannot make replay disagree with the store unseen. The product permits such writes on a non-strict ledger (the strict-mode guard refuses them only when strict, ledger/guard.py:69-80) and classifies them in verify() (replay.py:645-649), so this is a lemma (detection), not a finding. Live: the writer's process wrote content and no ^IVG.Ledger node (journal of the cited run); verify() went equal -> diverges, classification unrecorded_writes.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -18490,7 +18564,8 @@
     "iris_src/src/Graph/KG/Eraser.cls:1208-1248",
     "iris_vector_graph/ledger/replay.py:588-642",
     "iris_vector_graph/ledger/replay.py:645-698",
-    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90"
+    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90",
+    "iris_vector_graph/ledger/guard.py:69-80"
    ],
    "discharge_grade": "live",
    "discharge_source": "writesets/DISCHARGES.json",
@@ -18500,7 +18575,8 @@
     "iris_src/src/Graph/KG/Eraser.cls",
     "iris_vector_graph/ledger/replay.py",
     "iris_vector_graph/ledger/replay.py",
-    "experiment/playbook-uplift/semantics/WRITESETS.md"
+    "experiment/playbook-uplift/semantics/WRITESETS.md",
+    "iris_vector_graph/ledger/guard.py"
    ],
    "evidence_grade": "registered-run",
    "gate": "3.3a-writesets",
@@ -18514,7 +18590,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-live",
-   "remaining": "discharged by lemma (live): INV-replay holds under 'no unrecorded writes' (RPL-B3). The writer writes content rows and no ledger record, so every effect it has is an unrecorded write: compare() either sees it and classifies it unrecorded_writes (RPL-B7.1), or the write is outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) and replay still equals the store in that abstraction. The writer cannot make replay disagree with the store unseen. Live: the writer's process wrote content and no ^IVG.Ledger node (journal); verify() went equal -> diverges, classification unrecorded_writes.",
+   "remaining": "discharged by lemma (live): Holds as detection, not as preservation (review R4-07). The writer writes content rows and no ledger record, so it breaks RPL-B3's premise ('no unrecorded writes') and replay no longer equals the store; what holds is that the divergence is reported: compare() sees the write and classifies it unrecorded_writes (RPL-B7.1), or the write lies outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) where replay still equals the store. The writer cannot make replay disagree with the store unseen. The product permits such writes on a non-strict ledger (the strict-mode guard refuses them only when strict, ledger/guard.py:69-80) and classifies them in verify() (replay.py:645-649), so this is a lemma (detection), not a finding. Live (the cited run has no journal section): verify() went equal -> diverges, classification unrecorded_writes, and its differences name this writer's deletion. (its deletions there were the 2 recorded endpoints DropRows retired through it).",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -18648,7 +18724,8 @@
     "iris_src/src/Graph/KG/FHIRGraph.cls:2585-2599",
     "iris_vector_graph/ledger/replay.py:588-642",
     "iris_vector_graph/ledger/replay.py:645-698",
-    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90"
+    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90",
+    "iris_vector_graph/ledger/guard.py:69-80"
    ],
    "discharge_grade": "inspected",
    "discharge_source": "writesets/DISCHARGES.json",
@@ -18656,7 +18733,8 @@
     "iris_src/src/Graph/KG/FHIRGraph.cls",
     "iris_vector_graph/ledger/replay.py",
     "iris_vector_graph/ledger/replay.py",
-    "experiment/playbook-uplift/semantics/WRITESETS.md"
+    "experiment/playbook-uplift/semantics/WRITESETS.md",
+    "iris_vector_graph/ledger/guard.py"
    ],
    "evidence_grade": "inspected",
    "gate": "3.3a-writesets",
@@ -18670,7 +18748,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-inspected",
-   "remaining": "discharged by lemma (inspected): INV-replay holds under 'no unrecorded writes' (RPL-B3). The writer writes content rows and no ledger record, so every effect it has is an unrecorded write: compare() either sees it and classifies it unrecorded_writes (RPL-B7.1), or the write is outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) and replay still equals the store in that abstraction. The writer cannot make replay disagree with the store unseen. Inspected only for this writer.",
+   "remaining": "discharged by lemma (inspected): Holds as detection, not as preservation (review R4-07). The writer writes content rows and no ledger record, so it breaks RPL-B3's premise ('no unrecorded writes') and replay no longer equals the store; what holds is that the divergence is reported: compare() sees the write and classifies it unrecorded_writes (RPL-B7.1), or the write lies outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) where replay still equals the store. The writer cannot make replay disagree with the store unseen. The product permits such writes on a non-strict ledger (the strict-mode guard refuses them only when strict, ledger/guard.py:69-80) and classifies them in verify() (replay.py:645-649), so this is a lemma (detection), not a finding. Inspected only for this writer.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -18850,7 +18928,8 @@
     "iris_src/src/Graph/KG/FHIRGraph.cls:1923-1978",
     "iris_vector_graph/ledger/replay.py:588-642",
     "iris_vector_graph/ledger/replay.py:645-698",
-    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90"
+    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90",
+    "iris_vector_graph/ledger/guard.py:69-80"
    ],
    "discharge_grade": "inspected",
    "discharge_source": "writesets/DISCHARGES.json",
@@ -18859,7 +18938,8 @@
     "iris_src/src/Graph/KG/FHIRGraph.cls",
     "iris_vector_graph/ledger/replay.py",
     "iris_vector_graph/ledger/replay.py",
-    "experiment/playbook-uplift/semantics/WRITESETS.md"
+    "experiment/playbook-uplift/semantics/WRITESETS.md",
+    "iris_vector_graph/ledger/guard.py"
    ],
    "evidence_grade": "inspected",
    "gate": "3.3a-writesets",
@@ -18873,7 +18953,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-inspected",
-   "remaining": "discharged by lemma (inspected): INV-replay holds under 'no unrecorded writes' (RPL-B3). The writer writes content rows and no ledger record, so every effect it has is an unrecorded write: compare() either sees it and classifies it unrecorded_writes (RPL-B7.1), or the write is outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) and replay still equals the store in that abstraction. The writer cannot make replay disagree with the store unseen. Inspected only for this writer.",
+   "remaining": "discharged by lemma (inspected): Holds as detection, not as preservation (review R4-07). The writer writes content rows and no ledger record, so it breaks RPL-B3's premise ('no unrecorded writes') and replay no longer equals the store; what holds is that the divergence is reported: compare() sees the write and classifies it unrecorded_writes (RPL-B7.1), or the write lies outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) where replay still equals the store. The writer cannot make replay disagree with the store unseen. The product permits such writes on a non-strict ledger (the strict-mode guard refuses them only when strict, ledger/guard.py:69-80) and classifies them in verify() (replay.py:645-649), so this is a lemma (detection), not a finding. Inspected only for this writer.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -19032,7 +19112,8 @@
     "iris_src/src/Graph/KG/FHIRGraph.cls:2602-2618",
     "iris_vector_graph/ledger/replay.py:588-642",
     "iris_vector_graph/ledger/replay.py:645-698",
-    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90"
+    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90",
+    "iris_vector_graph/ledger/guard.py:69-80"
    ],
    "discharge_grade": "inspected",
    "discharge_source": "writesets/DISCHARGES.json",
@@ -19040,7 +19121,8 @@
     "iris_src/src/Graph/KG/FHIRGraph.cls",
     "iris_vector_graph/ledger/replay.py",
     "iris_vector_graph/ledger/replay.py",
-    "experiment/playbook-uplift/semantics/WRITESETS.md"
+    "experiment/playbook-uplift/semantics/WRITESETS.md",
+    "iris_vector_graph/ledger/guard.py"
    ],
    "evidence_grade": "inspected",
    "gate": "3.3a-writesets",
@@ -19054,7 +19136,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-inspected",
-   "remaining": "discharged by lemma (inspected): INV-replay holds under 'no unrecorded writes' (RPL-B3). The writer writes content rows and no ledger record, so every effect it has is an unrecorded write: compare() either sees it and classifies it unrecorded_writes (RPL-B7.1), or the write is outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) and replay still equals the store in that abstraction. The writer cannot make replay disagree with the store unseen. Inspected only for this writer.",
+   "remaining": "discharged by lemma (inspected): Holds as detection, not as preservation (review R4-07). The writer writes content rows and no ledger record, so it breaks RPL-B3's premise ('no unrecorded writes') and replay no longer equals the store; what holds is that the divergence is reported: compare() sees the write and classifies it unrecorded_writes (RPL-B7.1), or the write lies outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) where replay still equals the store. The writer cannot make replay disagree with the store unseen. The product permits such writes on a non-strict ledger (the strict-mode guard refuses them only when strict, ledger/guard.py:69-80) and classifies them in verify() (replay.py:645-649), so this is a lemma (detection), not a finding. Inspected only for this writer.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -19219,7 +19301,8 @@
     "iris_src/src/Graph/KG/FHIRGraph.cls:2216-2240",
     "iris_vector_graph/ledger/replay.py:588-642",
     "iris_vector_graph/ledger/replay.py:645-698",
-    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90"
+    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90",
+    "iris_vector_graph/ledger/guard.py:69-80"
    ],
    "discharge_grade": "inspected",
    "discharge_source": "writesets/DISCHARGES.json",
@@ -19228,7 +19311,8 @@
     "iris_src/src/Graph/KG/FHIRGraph.cls",
     "iris_vector_graph/ledger/replay.py",
     "iris_vector_graph/ledger/replay.py",
-    "experiment/playbook-uplift/semantics/WRITESETS.md"
+    "experiment/playbook-uplift/semantics/WRITESETS.md",
+    "iris_vector_graph/ledger/guard.py"
    ],
    "evidence_grade": "inspected",
    "gate": "3.3a-writesets",
@@ -19242,7 +19326,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-inspected",
-   "remaining": "discharged by lemma (inspected): INV-replay holds under 'no unrecorded writes' (RPL-B3). The writer writes content rows and no ledger record, so every effect it has is an unrecorded write: compare() either sees it and classifies it unrecorded_writes (RPL-B7.1), or the write is outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) and replay still equals the store in that abstraction. The writer cannot make replay disagree with the store unseen. Inspected only for this writer.",
+   "remaining": "discharged by lemma (inspected): Holds as detection, not as preservation (review R4-07). The writer writes content rows and no ledger record, so it breaks RPL-B3's premise ('no unrecorded writes') and replay no longer equals the store; what holds is that the divergence is reported: compare() sees the write and classifies it unrecorded_writes (RPL-B7.1), or the write lies outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) where replay still equals the store. The writer cannot make replay disagree with the store unseen. The product permits such writes on a non-strict ledger (the strict-mode guard refuses them only when strict, ledger/guard.py:69-80) and classifies them in verify() (replay.py:645-649), so this is a lemma (detection), not a finding. Inspected only for this writer.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -19408,7 +19492,8 @@
     "iris_vector_graph/schema.py:411-418",
     "iris_vector_graph/ledger/replay.py:588-642",
     "iris_vector_graph/ledger/replay.py:645-698",
-    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90"
+    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90",
+    "iris_vector_graph/ledger/guard.py:69-80"
    ],
    "discharge_grade": "inspected",
    "discharge_source": "writesets/DISCHARGES.json",
@@ -19417,7 +19502,8 @@
     "iris_vector_graph/schema.py",
     "iris_vector_graph/ledger/replay.py",
     "iris_vector_graph/ledger/replay.py",
-    "experiment/playbook-uplift/semantics/WRITESETS.md"
+    "experiment/playbook-uplift/semantics/WRITESETS.md",
+    "iris_vector_graph/ledger/guard.py"
    ],
    "evidence_grade": "inspected",
    "gate": "3.3a-writesets",
@@ -19431,7 +19517,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-inspected",
-   "remaining": "discharged by lemma (inspected): INV-replay holds under 'no unrecorded writes' (RPL-B3). The writer writes content rows and no ledger record, so every effect it has is an unrecorded write: compare() either sees it and classifies it unrecorded_writes (RPL-B7.1), or the write is outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) and replay still equals the store in that abstraction. The writer cannot make replay disagree with the store unseen. Inspected only for this writer.",
+   "remaining": "discharged by lemma (inspected): Holds as detection, not as preservation (review R4-07). The writer writes content rows and no ledger record, so it breaks RPL-B3's premise ('no unrecorded writes') and replay no longer equals the store; what holds is that the divergence is reported: compare() sees the write and classifies it unrecorded_writes (RPL-B7.1), or the write lies outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) where replay still equals the store. The writer cannot make replay disagree with the store unseen. The product permits such writes on a non-strict ledger (the strict-mode guard refuses them only when strict, ledger/guard.py:69-80) and classifies them in verify() (replay.py:645-649), so this is a lemma (detection), not a finding. Inspected only for this writer.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -20350,7 +20436,8 @@
     "iris_src/src/Graph/KG/TemporalPolicy.cls:124-228",
     "iris_vector_graph/ledger/replay.py:588-642",
     "iris_vector_graph/ledger/replay.py:645-698",
-    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90"
+    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90",
+    "iris_vector_graph/ledger/guard.py:69-80"
    ],
    "discharge_grade": "live",
    "discharge_source": "writesets/DISCHARGES.json",
@@ -20359,7 +20446,8 @@
     "iris_src/src/Graph/KG/TemporalPolicy.cls",
     "iris_vector_graph/ledger/replay.py",
     "iris_vector_graph/ledger/replay.py",
-    "experiment/playbook-uplift/semantics/WRITESETS.md"
+    "experiment/playbook-uplift/semantics/WRITESETS.md",
+    "iris_vector_graph/ledger/guard.py"
    ],
    "evidence_grade": "registered-run",
    "gate": "3.3a-writesets",
@@ -20373,7 +20461,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-live",
-   "remaining": "discharged by lemma (live): INV-replay holds under 'no unrecorded writes' (RPL-B3). The writer writes content rows and no ledger record, so every effect it has is an unrecorded write: compare() either sees it and classifies it unrecorded_writes (RPL-B7.1), or the write is outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) and replay still equals the store in that abstraction. The writer cannot make replay disagree with the store unseen. Live: the writer's process wrote content and no ^IVG.Ledger node (journal); verify() went equal -> diverges, classification unrecorded_writes.",
+   "remaining": "discharged by lemma (live): Holds as detection, not as preservation (review R4-07). The writer writes content rows and no ledger record, so it breaks RPL-B3's premise ('no unrecorded writes') and replay no longer equals the store; what holds is that the divergence is reported: compare() sees the write and classifies it unrecorded_writes (RPL-B7.1), or the write lies outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) where replay still equals the store. The writer cannot make replay disagree with the store unseen. The product permits such writes on a non-strict ledger (the strict-mode guard refuses them only when strict, ledger/guard.py:69-80) and classifies them in verify() (replay.py:645-649), so this is a lemma (detection), not a finding. Live (the cited run has no journal section): verify() went equal -> diverges, classification unrecorded_writes, and its differences name this writer's deletion.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -20481,7 +20569,7 @@
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "discharged by finding (live): F-C1306's live run went through this writer (initialize_schema(schema_prefix='RAG') -> ledger_history_copied, the 7+1 rows): it copies Graph_KG.ledger_revisions into the IVG Schema and leaves the originals; ClearRevision clears only the copy, so after a complete redaction the Graph_KG rows of the tombstoned revisions keep message, source, correlation id and key.",
+   "remaining": "discharged by finding (live): F-C1306's live run went through this writer (initialize_schema(schema_prefix='RAG') -> ledger_history_copied, the 7+1 rows): it copies Graph_KG.ledger_revisions into the IVG Schema and leaves the originals; ClearRevision clears only the copy, so after a complete redaction the Graph_KG rows of the tombstoned revisions keep message, source, correlation id and key. Depends on the operator's ruling O-1 (review R2-07): fc1306-legacy-ledger-rows compiled a non-pin release (v4.5.1) into a scratch namespace; if O-1 rules that out of scope, this discharge falls back to inspected (legacy.py:606-646, LedgerRedact.cls:353-378).",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -20622,7 +20710,8 @@
     "iris_vector_graph/schema.py:411-418",
     "iris_vector_graph/ledger/replay.py:588-642",
     "iris_vector_graph/ledger/replay.py:645-698",
-    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90"
+    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90",
+    "iris_vector_graph/ledger/guard.py:69-80"
    ],
    "discharge_grade": "inspected",
    "discharge_source": "writesets/DISCHARGES.json",
@@ -20632,7 +20721,8 @@
     "iris_vector_graph/schema.py",
     "iris_vector_graph/ledger/replay.py",
     "iris_vector_graph/ledger/replay.py",
-    "experiment/playbook-uplift/semantics/WRITESETS.md"
+    "experiment/playbook-uplift/semantics/WRITESETS.md",
+    "iris_vector_graph/ledger/guard.py"
    ],
    "evidence_grade": "inspected",
    "gate": "3.3a-writesets",
@@ -20646,7 +20736,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-inspected",
-   "remaining": "discharged by lemma (inspected): INV-replay holds under 'no unrecorded writes' (RPL-B3). The writer writes content rows and no ledger record, so every effect it has is an unrecorded write: compare() either sees it and classifies it unrecorded_writes (RPL-B7.1), or the write is outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) and replay still equals the store in that abstraction. The writer cannot make replay disagree with the store unseen. Inspected only for this writer.",
+   "remaining": "discharged by lemma (inspected): Holds as detection, not as preservation (review R4-07). The writer writes content rows and no ledger record, so it breaks RPL-B3's premise ('no unrecorded writes') and replay no longer equals the store; what holds is that the divergence is reported: compare() sees the write and classifies it unrecorded_writes (RPL-B7.1), or the write lies outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) where replay still equals the store. The writer cannot make replay disagree with the store unseen. The product permits such writes on a non-strict ledger (the strict-mode guard refuses them only when strict, ledger/guard.py:69-80) and classifies them in verify() (replay.py:645-649), so this is a lemma (detection), not a finding. Inspected only for this writer.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -20816,7 +20906,8 @@
     "iris_vector_graph/_engine/nodes_edges.py:1873-2017",
     "iris_vector_graph/ledger/replay.py:588-642",
     "iris_vector_graph/ledger/replay.py:645-698",
-    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90"
+    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90",
+    "iris_vector_graph/ledger/guard.py:69-80"
    ],
    "discharge_grade": "live",
    "discharge_source": "writesets/DISCHARGES.json",
@@ -20826,7 +20917,8 @@
     "iris_vector_graph/_engine/nodes_edges.py",
     "iris_vector_graph/ledger/replay.py",
     "iris_vector_graph/ledger/replay.py",
-    "experiment/playbook-uplift/semantics/WRITESETS.md"
+    "experiment/playbook-uplift/semantics/WRITESETS.md",
+    "iris_vector_graph/ledger/guard.py"
    ],
    "evidence_grade": "registered-run",
    "gate": "3.3a-writesets",
@@ -20840,7 +20932,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-live",
-   "remaining": "discharged by lemma (live): INV-replay holds under 'no unrecorded writes' (RPL-B3). The writer writes content rows and no ledger record, so every effect it has is an unrecorded write: compare() either sees it and classifies it unrecorded_writes (RPL-B7.1), or the write is outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) and replay still equals the store in that abstraction. The writer cannot make replay disagree with the store unseen. Its adopt UPDATE (qualifiers NULL on a marked row) also hits a ledger relationship whose qualifiers hold temporal=1 (F-C0450's predicate); that change is an unrecorded write verify classifies. Live: the writer's process wrote content and no ^IVG.Ledger node (journal); verify() went equal -> diverges, classification unrecorded_writes.",
+   "remaining": "discharged by lemma (live): Holds as detection, not as preservation (review R4-07). The writer writes content rows and no ledger record, so it breaks RPL-B3's premise ('no unrecorded writes') and replay no longer equals the store; what holds is that the divergence is reported: compare() sees the write and classifies it unrecorded_writes (RPL-B7.1), or the write lies outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) where replay still equals the store. The writer cannot make replay disagree with the store unseen. The product permits such writes on a non-strict ledger (the strict-mode guard refuses them only when strict, ledger/guard.py:69-80) and classifies them in verify() (replay.py:645-649), so this is a lemma (detection), not a finding. Its adopt UPDATE (qualifiers NULL on a marked row) also hits a ledger relationship whose qualifiers hold temporal=1 (F-C0450's predicate); that change is an unrecorded write verify classifies. Live: the writer's process wrote content and no ^IVG.Ledger node (journal of the cited run); verify() went equal -> diverges, classification unrecorded_writes.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -21007,7 +21099,8 @@
     "iris_vector_graph/_engine/nodes_edges.py:2019-2132",
     "iris_vector_graph/ledger/replay.py:588-642",
     "iris_vector_graph/ledger/replay.py:645-698",
-    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90"
+    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90",
+    "iris_vector_graph/ledger/guard.py:69-80"
    ],
    "discharge_grade": "live",
    "discharge_source": "writesets/DISCHARGES.json",
@@ -21016,7 +21109,8 @@
     "iris_vector_graph/_engine/nodes_edges.py",
     "iris_vector_graph/ledger/replay.py",
     "iris_vector_graph/ledger/replay.py",
-    "experiment/playbook-uplift/semantics/WRITESETS.md"
+    "experiment/playbook-uplift/semantics/WRITESETS.md",
+    "iris_vector_graph/ledger/guard.py"
    ],
    "evidence_grade": "registered-run",
    "gate": "3.3a-writesets",
@@ -21030,7 +21124,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-live",
-   "remaining": "discharged by lemma (live): INV-replay holds under 'no unrecorded writes' (RPL-B3). The writer writes content rows and no ledger record, so every effect it has is an unrecorded write: compare() either sees it and classifies it unrecorded_writes (RPL-B7.1), or the write is outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) and replay still equals the store in that abstraction. The writer cannot make replay disagree with the store unseen. Live: the writer's process wrote content and no ^IVG.Ledger node (journal); verify() went equal -> diverges, classification unrecorded_writes.",
+   "remaining": "discharged by lemma (live): Holds as detection, not as preservation (review R4-07). The writer writes content rows and no ledger record, so it breaks RPL-B3's premise ('no unrecorded writes') and replay no longer equals the store; what holds is that the divergence is reported: compare() sees the write and classifies it unrecorded_writes (RPL-B7.1), or the write lies outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) where replay still equals the store. The writer cannot make replay disagree with the store unseen. The product permits such writes on a non-strict ledger (the strict-mode guard refuses them only when strict, ledger/guard.py:69-80) and classifies them in verify() (replay.py:645-649), so this is a lemma (detection), not a finding. Live: the writer's process wrote content and no ^IVG.Ledger node (journal of the cited run); verify() went equal -> diverges, classification unrecorded_writes.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -21152,7 +21246,8 @@
     "iris_vector_graph/_engine/nodes_edges.py:1306-1380",
     "iris_vector_graph/ledger/replay.py:588-642",
     "iris_vector_graph/ledger/replay.py:645-698",
-    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90"
+    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90",
+    "iris_vector_graph/ledger/guard.py:69-80"
    ],
    "discharge_grade": "inspected",
    "discharge_source": "writesets/DISCHARGES.json",
@@ -21160,7 +21255,8 @@
     "iris_vector_graph/_engine/nodes_edges.py",
     "iris_vector_graph/ledger/replay.py",
     "iris_vector_graph/ledger/replay.py",
-    "experiment/playbook-uplift/semantics/WRITESETS.md"
+    "experiment/playbook-uplift/semantics/WRITESETS.md",
+    "iris_vector_graph/ledger/guard.py"
    ],
    "evidence_grade": "inspected",
    "gate": "3.3a-writesets",
@@ -21174,7 +21270,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-inspected",
-   "remaining": "discharged by lemma (inspected): INV-replay holds under 'no unrecorded writes' (RPL-B3). The writer writes content rows and no ledger record, so every effect it has is an unrecorded write: compare() either sees it and classifies it unrecorded_writes (RPL-B7.1), or the write is outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) and replay still equals the store in that abstraction. The writer cannot make replay disagree with the store unseen. Inspected only for this writer.",
+   "remaining": "discharged by lemma (inspected): Holds as detection, not as preservation (review R4-07). The writer writes content rows and no ledger record, so it breaks RPL-B3's premise ('no unrecorded writes') and replay no longer equals the store; what holds is that the divergence is reported: compare() sees the write and classifies it unrecorded_writes (RPL-B7.1), or the write lies outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) where replay still equals the store. The writer cannot make replay disagree with the store unseen. The product permits such writes on a non-strict ledger (the strict-mode guard refuses them only when strict, ledger/guard.py:69-80) and classifies them in verify() (replay.py:645-649), so this is a lemma (detection), not a finding. Inspected only for this writer.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -21344,7 +21440,8 @@
     "iris_vector_graph/_engine/nodes_edges.py:1106-1150",
     "iris_vector_graph/ledger/replay.py:588-642",
     "iris_vector_graph/ledger/replay.py:645-698",
-    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90"
+    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90",
+    "iris_vector_graph/ledger/guard.py:69-80"
    ],
    "discharge_grade": "live",
    "discharge_source": "writesets/DISCHARGES.json",
@@ -21354,7 +21451,8 @@
     "iris_vector_graph/_engine/nodes_edges.py",
     "iris_vector_graph/ledger/replay.py",
     "iris_vector_graph/ledger/replay.py",
-    "experiment/playbook-uplift/semantics/WRITESETS.md"
+    "experiment/playbook-uplift/semantics/WRITESETS.md",
+    "iris_vector_graph/ledger/guard.py"
    ],
    "evidence_grade": "registered-run",
    "gate": "3.3a-writesets",
@@ -21368,7 +21466,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-live",
-   "remaining": "discharged by lemma (live): INV-replay holds under 'no unrecorded writes' (RPL-B3). The writer writes content rows and no ledger record, so every effect it has is an unrecorded write: compare() either sees it and classifies it unrecorded_writes (RPL-B7.1), or the write is outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) and replay still equals the store in that abstraction. The writer cannot make replay disagree with the store unseen. Live: the writer's process wrote content and no ^IVG.Ledger node (journal); verify() went equal -> diverges, classification unrecorded_writes.",
+   "remaining": "discharged by lemma (live): Holds as detection, not as preservation (review R4-07). The writer writes content rows and no ledger record, so it breaks RPL-B3's premise ('no unrecorded writes') and replay no longer equals the store; what holds is that the divergence is reported: compare() sees the write and classifies it unrecorded_writes (RPL-B7.1), or the write lies outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) where replay still equals the store. The writer cannot make replay disagree with the store unseen. The product permits such writes on a non-strict ledger (the strict-mode guard refuses them only when strict, ledger/guard.py:69-80) and classifies them in verify() (replay.py:645-649), so this is a lemma (detection), not a finding. Live: the writer's process wrote content and no ^IVG.Ledger node (journal of the cited run); verify() went equal -> diverges, classification unrecorded_writes.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -21535,7 +21633,8 @@
     "iris_vector_graph/_engine/nodes_edges.py:2393-2530",
     "iris_vector_graph/ledger/replay.py:588-642",
     "iris_vector_graph/ledger/replay.py:645-698",
-    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90"
+    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90",
+    "iris_vector_graph/ledger/guard.py:69-80"
    ],
    "discharge_grade": "live",
    "discharge_source": "writesets/DISCHARGES.json",
@@ -21544,7 +21643,8 @@
     "iris_vector_graph/_engine/nodes_edges.py",
     "iris_vector_graph/ledger/replay.py",
     "iris_vector_graph/ledger/replay.py",
-    "experiment/playbook-uplift/semantics/WRITESETS.md"
+    "experiment/playbook-uplift/semantics/WRITESETS.md",
+    "iris_vector_graph/ledger/guard.py"
    ],
    "evidence_grade": "registered-run",
    "gate": "3.3a-writesets",
@@ -21558,7 +21658,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-live",
-   "remaining": "discharged by lemma (live): INV-replay holds under 'no unrecorded writes' (RPL-B3). The writer writes content rows and no ledger record, so every effect it has is an unrecorded write: compare() either sees it and classifies it unrecorded_writes (RPL-B7.1), or the write is outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) and replay still equals the store in that abstraction. The writer cannot make replay disagree with the store unseen. Live: the writer's process wrote content and no ^IVG.Ledger node (journal); verify() went equal -> diverges, classification unrecorded_writes.",
+   "remaining": "discharged by lemma (live): Holds as detection, not as preservation (review R4-07). The writer writes content rows and no ledger record, so it breaks RPL-B3's premise ('no unrecorded writes') and replay no longer equals the store; what holds is that the divergence is reported: compare() sees the write and classifies it unrecorded_writes (RPL-B7.1), or the write lies outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) where replay still equals the store. The writer cannot make replay disagree with the store unseen. The product permits such writes on a non-strict ledger (the strict-mode guard refuses them only when strict, ledger/guard.py:69-80) and classifies them in verify() (replay.py:645-649), so this is a lemma (detection), not a finding. Live: the writer's process wrote content and no ^IVG.Ledger node (journal of the cited run); verify() went equal -> diverges, classification unrecorded_writes.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -21729,24 +21829,26 @@
   },
   {
    "cited_runs": [
-    "ws-live-fc1301-delete-reification"
+    "ws-live-replay-delete_reification"
    ],
    "discharge": "lemma",
    "discharge_evidence": [
-    "run:ws-live-fc1301-delete-reification",
+    "run:ws-live-replay-delete_reification",
     "iris_vector_graph/_engine/schema.py:3361-3397",
     "iris_vector_graph/ledger/replay.py:588-642",
     "iris_vector_graph/ledger/replay.py:645-698",
-    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90"
+    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90",
+    "iris_vector_graph/ledger/guard.py:69-80"
    ],
    "discharge_grade": "live",
    "discharge_source": "writesets/DISCHARGES.json",
    "evidence": [
-    "run:ws-live-fc1301-delete-reification",
+    "run:ws-live-replay-delete_reification",
     "iris_vector_graph/_engine/schema.py",
     "iris_vector_graph/ledger/replay.py",
     "iris_vector_graph/ledger/replay.py",
-    "experiment/playbook-uplift/semantics/WRITESETS.md"
+    "experiment/playbook-uplift/semantics/WRITESETS.md",
+    "iris_vector_graph/ledger/guard.py"
    ],
    "evidence_grade": "registered-run",
    "gate": "3.3a-writesets",
@@ -21760,7 +21862,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-live",
-   "remaining": "discharged by lemma (live): INV-replay holds under 'no unrecorded writes' (RPL-B3). The writer writes content rows and no ledger record, so every effect it has is an unrecorded write: compare() either sees it and classifies it unrecorded_writes (RPL-B7.1), or the write is outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) and replay still equals the store in that abstraction. The writer cannot make replay disagree with the store unseen. Live: the writer's process wrote content and no ^IVG.Ledger node (journal); verify() went equal -> diverges, classification unrecorded_writes.",
+   "remaining": "discharged by lemma (live): Holds as detection, not as preservation (review R4-07). The writer writes content rows and no ledger record, so it breaks RPL-B3's premise ('no unrecorded writes') and replay no longer equals the store; what holds is that the divergence is reported: compare() sees the write and classifies it unrecorded_writes (RPL-B7.1), or the write lies outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) where replay still equals the store. The writer cannot make replay disagree with the store unseen. The product permits such writes on a non-strict ledger (the strict-mode guard refuses them only when strict, ledger/guard.py:69-80) and classifies them in verify() (replay.py:645-649), so this is a lemma (detection), not a finding. Live: the writer's process wrote content and no ^IVG.Ledger node (journal of the cited run); verify() went equal -> diverges, classification unrecorded_writes.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -21894,7 +21996,8 @@
     "iris_vector_graph/_engine/schema.py:2966-3183",
     "iris_vector_graph/ledger/replay.py:588-642",
     "iris_vector_graph/ledger/replay.py:645-698",
-    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90"
+    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90",
+    "iris_vector_graph/ledger/guard.py:69-80"
    ],
    "discharge_grade": "inspected",
    "discharge_source": "writesets/DISCHARGES.json",
@@ -21902,7 +22005,8 @@
     "iris_vector_graph/_engine/schema.py",
     "iris_vector_graph/ledger/replay.py",
     "iris_vector_graph/ledger/replay.py",
-    "experiment/playbook-uplift/semantics/WRITESETS.md"
+    "experiment/playbook-uplift/semantics/WRITESETS.md",
+    "iris_vector_graph/ledger/guard.py"
    ],
    "evidence_grade": "inspected",
    "gate": "3.3a-writesets",
@@ -21916,7 +22020,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-inspected",
-   "remaining": "discharged by lemma (inspected): INV-replay holds under 'no unrecorded writes' (RPL-B3). The writer writes content rows and no ledger record, so every effect it has is an unrecorded write: compare() either sees it and classifies it unrecorded_writes (RPL-B7.1), or the write is outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) and replay still equals the store in that abstraction. The writer cannot make replay disagree with the store unseen. Inspected only for this writer.",
+   "remaining": "discharged by lemma (inspected): Holds as detection, not as preservation (review R4-07). The writer writes content rows and no ledger record, so it breaks RPL-B3's premise ('no unrecorded writes') and replay no longer equals the store; what holds is that the divergence is reported: compare() sees the write and classifies it unrecorded_writes (RPL-B7.1), or the write lies outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) where replay still equals the store. The writer cannot make replay disagree with the store unseen. The product permits such writes on a non-strict ledger (the strict-mode guard refuses them only when strict, ledger/guard.py:69-80) and classifies them in verify() (replay.py:645-649), so this is a lemma (detection), not a finding. Inspected only for this writer.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -22081,7 +22185,8 @@
     "iris_vector_graph/_engine/schema.py:3264-3332",
     "iris_vector_graph/ledger/replay.py:588-642",
     "iris_vector_graph/ledger/replay.py:645-698",
-    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90"
+    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90",
+    "iris_vector_graph/ledger/guard.py:69-80"
    ],
    "discharge_grade": "live",
    "discharge_source": "writesets/DISCHARGES.json",
@@ -22090,7 +22195,8 @@
     "iris_vector_graph/_engine/schema.py",
     "iris_vector_graph/ledger/replay.py",
     "iris_vector_graph/ledger/replay.py",
-    "experiment/playbook-uplift/semantics/WRITESETS.md"
+    "experiment/playbook-uplift/semantics/WRITESETS.md",
+    "iris_vector_graph/ledger/guard.py"
    ],
    "evidence_grade": "registered-run",
    "gate": "3.3a-writesets",
@@ -22104,7 +22210,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-live",
-   "remaining": "discharged by lemma (live): INV-replay holds under 'no unrecorded writes' (RPL-B3). The writer writes content rows and no ledger record, so every effect it has is an unrecorded write: compare() either sees it and classifies it unrecorded_writes (RPL-B7.1), or the write is outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) and replay still equals the store in that abstraction. The writer cannot make replay disagree with the store unseen. Live: the writer's process wrote content and no ^IVG.Ledger node (journal); verify() went equal -> diverges, classification unrecorded_writes.",
+   "remaining": "discharged by lemma (live): Holds as detection, not as preservation (review R4-07). The writer writes content rows and no ledger record, so it breaks RPL-B3's premise ('no unrecorded writes') and replay no longer equals the store; what holds is that the divergence is reported: compare() sees the write and classifies it unrecorded_writes (RPL-B7.1), or the write lies outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) where replay still equals the store. The writer cannot make replay disagree with the store unseen. The product permits such writes on a non-strict ledger (the strict-mode guard refuses them only when strict, ledger/guard.py:69-80) and classifies them in verify() (replay.py:645-649), so this is a lemma (detection), not a finding. Live: the writer's process wrote content and no ^IVG.Ledger node (journal of the cited run); verify() went equal -> diverges, classification unrecorded_writes.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -22246,7 +22352,8 @@
     "iris_vector_graph/_engine/schema.py:61",
     "iris_vector_graph/ledger/replay.py:588-642",
     "iris_vector_graph/ledger/replay.py:645-698",
-    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90"
+    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90",
+    "iris_vector_graph/ledger/guard.py:69-80"
    ],
    "discharge_grade": "live",
    "discharge_source": "writesets/DISCHARGES.json",
@@ -22256,7 +22363,8 @@
     "iris_vector_graph/_engine/schema.py",
     "iris_vector_graph/ledger/replay.py",
     "iris_vector_graph/ledger/replay.py",
-    "experiment/playbook-uplift/semantics/WRITESETS.md"
+    "experiment/playbook-uplift/semantics/WRITESETS.md",
+    "iris_vector_graph/ledger/guard.py"
    ],
    "evidence_grade": "registered-run",
    "gate": "3.3a-writesets",
@@ -22270,7 +22378,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-live",
-   "remaining": "discharged by lemma (live): INV-replay holds under 'no unrecorded writes' (RPL-B3). The writer writes content rows and no ledger record, so every effect it has is an unrecorded write: compare() either sees it and classifies it unrecorded_writes (RPL-B7.1), or the write is outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) and replay still equals the store in that abstraction. The writer cannot make replay disagree with the store unseen. Live: the writer's process wrote content and no ^IVG.Ledger node (journal); verify() went equal -> diverges, classification unrecorded_writes.",
+   "remaining": "discharged by lemma (live): Holds as detection, not as preservation (review R4-07). The writer writes content rows and no ledger record, so it breaks RPL-B3's premise ('no unrecorded writes') and replay no longer equals the store; what holds is that the divergence is reported: compare() sees the write and classifies it unrecorded_writes (RPL-B7.1), or the write lies outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) where replay still equals the store. The writer cannot make replay disagree with the store unseen. The product permits such writes on a non-strict ledger (the strict-mode guard refuses them only when strict, ledger/guard.py:69-80) and classifies them in verify() (replay.py:645-649), so this is a lemma (detection), not a finding. Live (the cited run has no journal section): verify() went equal -> diverges, classification unrecorded_writes, and its differences name this writer's deletion.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -22442,24 +22550,26 @@
   },
   {
    "cited_runs": [
-    "ws-live-ins-import_rdf"
+    "ws-live-replay-import_rdf"
    ],
    "discharge": "lemma",
    "discharge_evidence": [
-    "run:ws-live-ins-import_rdf",
+    "run:ws-live-replay-import_rdf",
     "iris_vector_graph/_engine/snapshot.py:557-795",
     "iris_vector_graph/ledger/replay.py:588-642",
     "iris_vector_graph/ledger/replay.py:645-698",
-    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90"
+    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90",
+    "iris_vector_graph/ledger/guard.py:69-80"
    ],
    "discharge_grade": "live",
    "discharge_source": "writesets/DISCHARGES.json",
    "evidence": [
-    "run:ws-live-ins-import_rdf",
+    "run:ws-live-replay-import_rdf",
     "iris_vector_graph/_engine/snapshot.py",
     "iris_vector_graph/ledger/replay.py",
     "iris_vector_graph/ledger/replay.py",
-    "experiment/playbook-uplift/semantics/WRITESETS.md"
+    "experiment/playbook-uplift/semantics/WRITESETS.md",
+    "iris_vector_graph/ledger/guard.py"
    ],
    "evidence_grade": "registered-run",
    "gate": "3.3a-writesets",
@@ -22473,7 +22583,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-live",
-   "remaining": "discharged by lemma (live): INV-replay holds under 'no unrecorded writes' (RPL-B3). The writer writes content rows and no ledger record, so every effect it has is an unrecorded write: compare() either sees it and classifies it unrecorded_writes (RPL-B7.1), or the write is outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) and replay still equals the store in that abstraction. The writer cannot make replay disagree with the store unseen. Live: the writer's process wrote content and no ^IVG.Ledger node (journal); verify() went equal -> diverges, classification unrecorded_writes.",
+   "remaining": "discharged by lemma (live): Holds as detection, not as preservation (review R4-07). The writer writes content rows and no ledger record, so it breaks RPL-B3's premise ('no unrecorded writes') and replay no longer equals the store; what holds is that the divergence is reported: compare() sees the write and classifies it unrecorded_writes (RPL-B7.1), or the write lies outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) where replay still equals the store. The writer cannot make replay disagree with the store unseen. The product permits such writes on a non-strict ledger (the strict-mode guard refuses them only when strict, ledger/guard.py:69-80) and classifies them in verify() (replay.py:645-649), so this is a lemma (detection), not a finding. The INV-replay sub-check of ws-live-ins-import_rdf did not start from an equal baseline (a %NOINDEX edge left by the previous case, F-C1250; erratum) and is not cited; ws-live-replay-import_rdf re-ran it from an equal baseline. Live: the writer's process wrote content and no ^IVG.Ledger node (journal of the cited run); verify() went equal -> diverges, classification unrecorded_writes.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -22640,7 +22750,8 @@
     "iris_vector_graph/_engine/temporal.py:304-332",
     "iris_vector_graph/ledger/replay.py:588-642",
     "iris_vector_graph/ledger/replay.py:645-698",
-    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90"
+    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90",
+    "iris_vector_graph/ledger/guard.py:69-80"
    ],
    "discharge_grade": "inspected",
    "discharge_source": "writesets/DISCHARGES.json",
@@ -22649,7 +22760,8 @@
     "iris_vector_graph/_engine/temporal.py",
     "iris_vector_graph/ledger/replay.py",
     "iris_vector_graph/ledger/replay.py",
-    "experiment/playbook-uplift/semantics/WRITESETS.md"
+    "experiment/playbook-uplift/semantics/WRITESETS.md",
+    "iris_vector_graph/ledger/guard.py"
    ],
    "evidence_grade": "inspected",
    "gate": "3.3a-writesets",
@@ -22663,7 +22775,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-inspected",
-   "remaining": "discharged by lemma (inspected): INV-replay holds under 'no unrecorded writes' (RPL-B3). The writer writes content rows and no ledger record, so every effect it has is an unrecorded write: compare() either sees it and classifies it unrecorded_writes (RPL-B7.1), or the write is outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) and replay still equals the store in that abstraction. The writer cannot make replay disagree with the store unseen. Inspected only for this writer.",
+   "remaining": "discharged by lemma (inspected): Holds as detection, not as preservation (review R4-07). The writer writes content rows and no ledger record, so it breaks RPL-B3's premise ('no unrecorded writes') and replay no longer equals the store; what holds is that the divergence is reported: compare() sees the write and classifies it unrecorded_writes (RPL-B7.1), or the write lies outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) where replay still equals the store. The writer cannot make replay disagree with the store unseen. The product permits such writes on a non-strict ledger (the strict-mode guard refuses them only when strict, ledger/guard.py:69-80) and classifies them in verify() (replay.py:645-649), so this is a lemma (detection), not a finding. Inspected only for this writer.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -22830,7 +22942,8 @@
     "iris_vector_graph/_engine/temporal.py:390-476",
     "iris_vector_graph/ledger/replay.py:588-642",
     "iris_vector_graph/ledger/replay.py:645-698",
-    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90"
+    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90",
+    "iris_vector_graph/ledger/guard.py:69-80"
    ],
    "discharge_grade": "live",
    "discharge_source": "writesets/DISCHARGES.json",
@@ -22839,7 +22952,8 @@
     "iris_vector_graph/_engine/temporal.py",
     "iris_vector_graph/ledger/replay.py",
     "iris_vector_graph/ledger/replay.py",
-    "experiment/playbook-uplift/semantics/WRITESETS.md"
+    "experiment/playbook-uplift/semantics/WRITESETS.md",
+    "iris_vector_graph/ledger/guard.py"
    ],
    "evidence_grade": "registered-run",
    "gate": "3.3a-writesets",
@@ -22853,7 +22967,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-live",
-   "remaining": "discharged by lemma (live): INV-replay holds under 'no unrecorded writes' (RPL-B3). The writer writes content rows and no ledger record, so every effect it has is an unrecorded write: compare() either sees it and classifies it unrecorded_writes (RPL-B7.1), or the write is outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) and replay still equals the store in that abstraction. The writer cannot make replay disagree with the store unseen. Live: the writer's process wrote content and no ^IVG.Ledger node (journal); verify() went equal -> diverges, classification unrecorded_writes.",
+   "remaining": "discharged by lemma (live): Holds as detection, not as preservation (review R4-07). The writer writes content rows and no ledger record, so it breaks RPL-B3's premise ('no unrecorded writes') and replay no longer equals the store; what holds is that the divergence is reported: compare() sees the write and classifies it unrecorded_writes (RPL-B7.1), or the write lies outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) where replay still equals the store. The writer cannot make replay disagree with the store unseen. The product permits such writes on a non-strict ledger (the strict-mode guard refuses them only when strict, ledger/guard.py:69-80) and classifies them in verify() (replay.py:645-649), so this is a lemma (detection), not a finding. Live: the writer's process wrote content and no ^IVG.Ledger node (journal of the cited run); verify() went equal -> diverges, classification unrecorded_writes.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -23023,7 +23137,8 @@
     "iris_src/src/Graph/KG/TemporalIndex.cls:104-114",
     "iris_vector_graph/ledger/replay.py:588-642",
     "iris_vector_graph/ledger/replay.py:645-698",
-    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90"
+    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90",
+    "iris_vector_graph/ledger/guard.py:69-80"
    ],
    "discharge_grade": "live",
    "discharge_source": "writesets/DISCHARGES.json",
@@ -23033,7 +23148,8 @@
     "iris_src/src/Graph/KG/TemporalIndex.cls",
     "iris_vector_graph/ledger/replay.py",
     "iris_vector_graph/ledger/replay.py",
-    "experiment/playbook-uplift/semantics/WRITESETS.md"
+    "experiment/playbook-uplift/semantics/WRITESETS.md",
+    "iris_vector_graph/ledger/guard.py"
    ],
    "evidence_grade": "registered-run",
    "gate": "3.3a-writesets",
@@ -23047,7 +23163,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-live",
-   "remaining": "discharged by lemma (live): INV-replay holds under 'no unrecorded writes' (RPL-B3). The writer writes content rows and no ledger record, so every effect it has is an unrecorded write: compare() either sees it and classifies it unrecorded_writes (RPL-B7.1), or the write is outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) and replay still equals the store in that abstraction. The writer cannot make replay disagree with the store unseen. Live: the writer's process wrote content and no ^IVG.Ledger node (journal); verify() went equal -> diverges, classification unrecorded_writes.",
+   "remaining": "discharged by lemma (live): Holds as detection, not as preservation (review R4-07). The writer writes content rows and no ledger record, so it breaks RPL-B3's premise ('no unrecorded writes') and replay no longer equals the store; what holds is that the divergence is reported: compare() sees the write and classifies it unrecorded_writes (RPL-B7.1), or the write lies outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) where replay still equals the store. The writer cannot make replay disagree with the store unseen. The product permits such writes on a non-strict ledger (the strict-mode guard refuses them only when strict, ledger/guard.py:69-80) and classifies them in verify() (replay.py:645-649), so this is a lemma (detection), not a finding. Live: the writer's process wrote content and no ^IVG.Ledger node (journal of the cited run); verify() went equal -> diverges, classification unrecorded_writes.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -23206,24 +23322,29 @@
   },
   {
    "cited_runs": [
-    "ws-live-ins-bulkloader_load_edges"
+    "ws-live-ins-bulkloader_load_edges",
+    "ws-live-noindex-erase"
    ],
    "discharge": "lemma",
    "discharge_evidence": [
     "run:ws-live-ins-bulkloader_load_edges",
+    "run:ws-live-noindex-erase",
     "iris_vector_graph/bulk_loader.py:201-228",
     "iris_vector_graph/ledger/replay.py:588-642",
     "iris_vector_graph/ledger/replay.py:645-698",
-    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90"
+    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90",
+    "iris_vector_graph/ledger/guard.py:69-80"
    ],
    "discharge_grade": "live",
    "discharge_source": "writesets/DISCHARGES.json",
    "evidence": [
     "run:ws-live-ins-bulkloader_load_edges",
+    "run:ws-live-noindex-erase",
     "iris_vector_graph/bulk_loader.py",
     "iris_vector_graph/ledger/replay.py",
     "iris_vector_graph/ledger/replay.py",
-    "experiment/playbook-uplift/semantics/WRITESETS.md"
+    "experiment/playbook-uplift/semantics/WRITESETS.md",
+    "iris_vector_graph/ledger/guard.py"
    ],
    "evidence_grade": "registered-run",
    "gate": "3.3a-writesets",
@@ -23237,7 +23358,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-live",
-   "remaining": "discharged by lemma (live): INV-replay holds under 'no unrecorded writes' (RPL-B3). The writer writes content rows and no ledger record, so every effect it has is an unrecorded write: compare() either sees it and classifies it unrecorded_writes (RPL-B7.1), or the write is outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) and replay still equals the store in that abstraction. The writer cannot make replay disagree with the store unseen. Live: the writer's process wrote content and no ^IVG.Ledger node (journal); verify() went equal -> diverges, classification unrecorded_writes.",
+   "remaining": "discharged by lemma (live): Holds as detection, not as preservation (review R4-07). The writer writes content rows and no ledger record, so it breaks RPL-B3's premise ('no unrecorded writes') and replay no longer equals the store; what holds is that the divergence is reported: compare() sees the write and classifies it unrecorded_writes (RPL-B7.1), or the write lies outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) where replay still equals the store. The writer cannot make replay disagree with the store unseen. The product permits such writes on a non-strict ledger (the strict-mode guard refuses them only when strict, ledger/guard.py:69-80) and classifies them in verify() (replay.py:645-649), so this is a lemma (detection), not a finding. In ws-live-ins-bulkloader_load_edges the baseline was equal and the write was classified; the record's 'equal again after erasing' is wrong (erratum: the loader's %NOINDEX edge survived the erase, F-C1250). ws-live-noindex-erase shows the same classification (nodes the writer registered and the edge) from a clean namespace. Live: the writer's process wrote content and no ^IVG.Ledger node (journal of the cited run); verify() went equal -> diverges, classification unrecorded_writes.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -23371,7 +23492,8 @@
     "iris_vector_graph/schema.py:3112-3285",
     "iris_vector_graph/ledger/replay.py:588-642",
     "iris_vector_graph/ledger/replay.py:645-698",
-    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90"
+    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90",
+    "iris_vector_graph/ledger/guard.py:69-80"
    ],
    "discharge_grade": "inspected",
    "discharge_source": "writesets/DISCHARGES.json",
@@ -23379,7 +23501,8 @@
     "iris_vector_graph/schema.py",
     "iris_vector_graph/ledger/replay.py",
     "iris_vector_graph/ledger/replay.py",
-    "experiment/playbook-uplift/semantics/WRITESETS.md"
+    "experiment/playbook-uplift/semantics/WRITESETS.md",
+    "iris_vector_graph/ledger/guard.py"
    ],
    "evidence_grade": "inspected",
    "gate": "3.3a-writesets",
@@ -23393,7 +23516,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-inspected",
-   "remaining": "discharged by lemma (inspected): INV-replay holds under 'no unrecorded writes' (RPL-B3). The writer writes content rows and no ledger record, so every effect it has is an unrecorded write: compare() either sees it and classifies it unrecorded_writes (RPL-B7.1), or the write is outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) and replay still equals the store in that abstraction. The writer cannot make replay disagree with the store unseen. Inspected only for this writer.",
+   "remaining": "discharged by lemma (inspected): Holds as detection, not as preservation (review R4-07). The writer writes content rows and no ledger record, so it breaks RPL-B3's premise ('no unrecorded writes') and replay no longer equals the store; what holds is that the divergence is reported: compare() sees the write and classifies it unrecorded_writes (RPL-B7.1), or the write lies outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) where replay still equals the store. The writer cannot make replay disagree with the store unseen. The product permits such writes on a non-strict ledger (the strict-mode guard refuses them only when strict, ledger/guard.py:69-80) and classifies them in verify() (replay.py:645-649), so this is a lemma (detection), not a finding. Inspected only for this writer.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -23559,7 +23682,8 @@
     "iris_vector_graph/_engine/schema.py:2513-2514",
     "iris_vector_graph/ledger/replay.py:588-642",
     "iris_vector_graph/ledger/replay.py:645-698",
-    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90"
+    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90",
+    "iris_vector_graph/ledger/guard.py:69-80"
    ],
    "discharge_grade": "inspected",
    "discharge_source": "writesets/DISCHARGES.json",
@@ -23569,7 +23693,8 @@
     "iris_vector_graph/_engine/schema.py",
     "iris_vector_graph/ledger/replay.py",
     "iris_vector_graph/ledger/replay.py",
-    "experiment/playbook-uplift/semantics/WRITESETS.md"
+    "experiment/playbook-uplift/semantics/WRITESETS.md",
+    "iris_vector_graph/ledger/guard.py"
    ],
    "evidence_grade": "inspected",
    "gate": "3.3a-writesets",
@@ -23583,7 +23708,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-inspected",
-   "remaining": "discharged by lemma (inspected): INV-replay holds under 'no unrecorded writes' (RPL-B3). The writer writes content rows and no ledger record, so every effect it has is an unrecorded write: compare() either sees it and classifies it unrecorded_writes (RPL-B7.1), or the write is outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) and replay still equals the store in that abstraction. The writer cannot make replay disagree with the store unseen. The move changes a node row's graph, which the graph-blind node map of read_canonical (replay.py:597-600) does not see; replay equals the store in that abstraction (the blindness itself is F-1304/F-1305's). Inspected only for this writer.",
+   "remaining": "discharged by lemma (inspected): Holds as detection, not as preservation (review R4-07). The writer writes content rows and no ledger record, so it breaks RPL-B3's premise ('no unrecorded writes') and replay no longer equals the store; what holds is that the divergence is reported: compare() sees the write and classifies it unrecorded_writes (RPL-B7.1), or the write lies outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) where replay still equals the store. The writer cannot make replay disagree with the store unseen. The product permits such writes on a non-strict ledger (the strict-mode guard refuses them only when strict, ledger/guard.py:69-80) and classifies them in verify() (replay.py:645-649), so this is a lemma (detection), not a finding. The move changes a node row's graph, which the graph-blind node map of read_canonical (replay.py:597-600) does not see; replay equals the store in that abstraction (the blindness itself is F-1304/F-1305's). Inspected only for this writer.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -23633,12 +23758,9 @@
    "writer": "iris_vector_graph/schema.py::add_graph_id_to_nodes"
   },
   {
-   "cited_runs": [
-    "ws-live-migrations"
-   ],
+   "cited_runs": [],
    "discharge": "lemma",
    "discharge_evidence": [
-    "run:ws-live-migrations",
     "iris_vector_graph/schema.py:1107-1157",
     "iris_vector_graph/schema.py:1090-1104",
     "iris_src/src/Graph/KG/LedgerRedact.cls:149-178",
@@ -23647,13 +23769,12 @@
    "discharge_grade": "inspected",
    "discharge_source": "writesets/DISCHARGES.json",
    "evidence": [
-    "run:ws-live-migrations",
     "iris_vector_graph/schema.py",
     "iris_vector_graph/schema.py",
     "iris_src/src/Graph/KG/LedgerRedact.cls",
     "iris_src/src/Graph/KG/LedgerRedact.cls"
    ],
-   "evidence_grade": "registered-run",
+   "evidence_grade": "inspected",
    "gate": "3.3a-writesets",
    "invariant": "INV-marker",
    "kind": "WS-OBL",
@@ -23665,7 +23786,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-inspected",
-   "remaining": "discharged by lemma (inspected): The writer only sets rdf_edges.ekey 0 where it is NULL (an upgraded table). LiveRows counts rows by (COALESCE(graph_id, ''), id prefix) and record membership (Matches) reads only ledger globals, so an update that keeps every row's id and COALESCE'd graph changes neither whether a target is live nor which records are a target's; the writer adds no record.",
+   "remaining": "discharged by lemma (inspected): The writer only sets rdf_edges.ekey 0 where it is NULL (an upgraded table). LiveRows counts rows by (COALESCE(graph_id, ''), id prefix) and record membership (Matches) reads only ledger globals, so an update that keeps every row's id and COALESCE'd graph changes neither whether a target is live nor which records are a target's; the writer adds no record. Context only, not evidence (review R4-07): ws-live-migrations ran this writer while a marker existed and it was a no-op there (rows_repaired 0 / already at 234 / backfilled 0), so the target stayed not live and the records unchanged; it exercised nothing this lemma rests on.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -23674,12 +23795,9 @@
    "writer": "iris_vector_graph/schema.py::ensure_ekey"
   },
   {
-   "cited_runs": [
-    "ws-live-migrations"
-   ],
+   "cited_runs": [],
    "discharge": "lemma",
    "discharge_evidence": [
-    "run:ws-live-migrations",
     "iris_vector_graph/schema.py:1107-1157",
     "iris_vector_graph/schema.py:1090-1104",
     "iris_src/src/Graph/KG/LedgerRedact.cls:149-178",
@@ -23688,13 +23806,12 @@
    "discharge_grade": "inspected",
    "discharge_source": "writesets/DISCHARGES.json",
    "evidence": [
-    "run:ws-live-migrations",
     "iris_vector_graph/schema.py",
     "iris_vector_graph/schema.py",
     "iris_src/src/Graph/KG/LedgerRedact.cls",
     "iris_src/src/Graph/KG/LedgerRedact.cls"
    ],
-   "evidence_grade": "registered-run",
+   "evidence_grade": "inspected",
    "gate": "3.3a-writesets",
    "invariant": "INV-no-live-tombstone",
    "kind": "WS-OBL",
@@ -23706,7 +23823,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-inspected",
-   "remaining": "discharged by lemma (inspected): The writer only sets rdf_edges.ekey 0 where it is NULL (an upgraded table). LiveRows counts rows by (COALESCE(graph_id, ''), id prefix) and record membership (Matches) reads only ledger globals, so an update that keeps every row's id and COALESCE'd graph changes neither whether a target is live nor which records are a target's; the writer adds no record.",
+   "remaining": "discharged by lemma (inspected): The writer only sets rdf_edges.ekey 0 where it is NULL (an upgraded table). LiveRows counts rows by (COALESCE(graph_id, ''), id prefix) and record membership (Matches) reads only ledger globals, so an update that keeps every row's id and COALESCE'd graph changes neither whether a target is live nor which records are a target's; the writer adds no record. Context only, not evidence (review R4-07): ws-live-migrations ran this writer while a marker existed and it was a no-op there (rows_repaired 0 / already at 234 / backfilled 0), so the target stayed not live and the records unchanged; it exercised nothing this lemma rests on.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -23722,7 +23839,8 @@
     "iris_vector_graph/schema.py:1090-1104",
     "iris_vector_graph/ledger/replay.py:588-642",
     "iris_vector_graph/ledger/replay.py:645-698",
-    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90"
+    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90",
+    "iris_vector_graph/ledger/guard.py:69-80"
    ],
    "discharge_grade": "inspected",
    "discharge_source": "writesets/DISCHARGES.json",
@@ -23731,7 +23849,8 @@
     "iris_vector_graph/schema.py",
     "iris_vector_graph/ledger/replay.py",
     "iris_vector_graph/ledger/replay.py",
-    "experiment/playbook-uplift/semantics/WRITESETS.md"
+    "experiment/playbook-uplift/semantics/WRITESETS.md",
+    "iris_vector_graph/ledger/guard.py"
    ],
    "evidence_grade": "inspected",
    "gate": "3.3a-writesets",
@@ -23745,7 +23864,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-inspected",
-   "remaining": "discharged by lemma (inspected): INV-replay holds under 'no unrecorded writes' (RPL-B3). The writer writes content rows and no ledger record, so every effect it has is an unrecorded write: compare() either sees it and classifies it unrecorded_writes (RPL-B7.1), or the write is outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) and replay still equals the store in that abstraction. The writer cannot make replay disagree with the store unseen. Inspected only for this writer.",
+   "remaining": "discharged by lemma (inspected): Holds as detection, not as preservation (review R4-07). The writer writes content rows and no ledger record, so it breaks RPL-B3's premise ('no unrecorded writes') and replay no longer equals the store; what holds is that the divergence is reported: compare() sees the write and classifies it unrecorded_writes (RPL-B7.1), or the write lies outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) where replay still equals the store. The writer cannot make replay disagree with the store unseen. The product permits such writes on a non-strict ledger (the strict-mode guard refuses them only when strict, ledger/guard.py:69-80) and classifies them in verify() (replay.py:645-649), so this is a lemma (detection), not a finding. Inspected only for this writer.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -23793,12 +23912,9 @@
    "writer": "iris_vector_graph/schema.py::ensure_ekey"
   },
   {
-   "cited_runs": [
-    "ws-live-migrations"
-   ],
+   "cited_runs": [],
    "discharge": "lemma",
    "discharge_evidence": [
-    "run:ws-live-migrations",
     "iris_vector_graph/schema.py:904-975",
     "iris_src/src/Graph/KG/LedgerRedact.cls:149-178",
     "iris_src/src/Graph/KG/LedgerRedact.cls:89-112"
@@ -23806,12 +23922,11 @@
    "discharge_grade": "inspected",
    "discharge_source": "writesets/DISCHARGES.json",
    "evidence": [
-    "run:ws-live-migrations",
     "iris_vector_graph/schema.py",
     "iris_src/src/Graph/KG/LedgerRedact.cls",
     "iris_src/src/Graph/KG/LedgerRedact.cls"
    ],
-   "evidence_grade": "registered-run",
+   "evidence_grade": "inspected",
    "gate": "3.3a-writesets",
    "invariant": "INV-marker",
    "kind": "WS-OBL",
@@ -23823,7 +23938,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-inspected",
-   "remaining": "discharged by lemma (inspected): The writer only runs UPDATE rdf_props SET val = val (recomputes the val_key column). LiveRows counts rows by (COALESCE(graph_id, ''), id prefix) and record membership (Matches) reads only ledger globals, so an update that keeps every row's id and COALESCE'd graph changes neither whether a target is live nor which records are a target's; the writer adds no record.",
+   "remaining": "discharged by lemma (inspected): The writer only runs UPDATE rdf_props SET val = val (recomputes the val_key column). LiveRows counts rows by (COALESCE(graph_id, ''), id prefix) and record membership (Matches) reads only ledger globals, so an update that keeps every row's id and COALESCE'd graph changes neither whether a target is live nor which records are a target's; the writer adds no record. Context only, not evidence (review R4-07): ws-live-migrations ran this writer while a marker existed and it was a no-op there (rows_repaired 0 / already at 234 / backfilled 0), so the target stayed not live and the records unchanged; it exercised nothing this lemma rests on.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -23832,12 +23947,9 @@
    "writer": "iris_vector_graph/schema.py::ensure_props_value_key"
   },
   {
-   "cited_runs": [
-    "ws-live-migrations"
-   ],
+   "cited_runs": [],
    "discharge": "lemma",
    "discharge_evidence": [
-    "run:ws-live-migrations",
     "iris_vector_graph/schema.py:904-975",
     "iris_src/src/Graph/KG/LedgerRedact.cls:149-178",
     "iris_src/src/Graph/KG/LedgerRedact.cls:89-112"
@@ -23845,12 +23957,11 @@
    "discharge_grade": "inspected",
    "discharge_source": "writesets/DISCHARGES.json",
    "evidence": [
-    "run:ws-live-migrations",
     "iris_vector_graph/schema.py",
     "iris_src/src/Graph/KG/LedgerRedact.cls",
     "iris_src/src/Graph/KG/LedgerRedact.cls"
    ],
-   "evidence_grade": "registered-run",
+   "evidence_grade": "inspected",
    "gate": "3.3a-writesets",
    "invariant": "INV-no-live-tombstone",
    "kind": "WS-OBL",
@@ -23862,7 +23973,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-inspected",
-   "remaining": "discharged by lemma (inspected): The writer only runs UPDATE rdf_props SET val = val (recomputes the val_key column). LiveRows counts rows by (COALESCE(graph_id, ''), id prefix) and record membership (Matches) reads only ledger globals, so an update that keeps every row's id and COALESCE'd graph changes neither whether a target is live nor which records are a target's; the writer adds no record.",
+   "remaining": "discharged by lemma (inspected): The writer only runs UPDATE rdf_props SET val = val (recomputes the val_key column). LiveRows counts rows by (COALESCE(graph_id, ''), id prefix) and record membership (Matches) reads only ledger globals, so an update that keeps every row's id and COALESCE'd graph changes neither whether a target is live nor which records are a target's; the writer adds no record. Context only, not evidence (review R4-07): ws-live-migrations ran this writer while a marker existed and it was a no-op there (rows_repaired 0 / already at 234 / backfilled 0), so the target stayed not live and the records unchanged; it exercised nothing this lemma rests on.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -23877,7 +23988,8 @@
     "iris_vector_graph/schema.py:904-975",
     "iris_vector_graph/ledger/replay.py:588-642",
     "iris_vector_graph/ledger/replay.py:645-698",
-    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90"
+    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90",
+    "iris_vector_graph/ledger/guard.py:69-80"
    ],
    "discharge_grade": "inspected",
    "discharge_source": "writesets/DISCHARGES.json",
@@ -23885,7 +23997,8 @@
     "iris_vector_graph/schema.py",
     "iris_vector_graph/ledger/replay.py",
     "iris_vector_graph/ledger/replay.py",
-    "experiment/playbook-uplift/semantics/WRITESETS.md"
+    "experiment/playbook-uplift/semantics/WRITESETS.md",
+    "iris_vector_graph/ledger/guard.py"
    ],
    "evidence_grade": "inspected",
    "gate": "3.3a-writesets",
@@ -23899,7 +24012,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-inspected",
-   "remaining": "discharged by lemma (inspected): INV-replay holds under 'no unrecorded writes' (RPL-B3). The writer writes content rows and no ledger record, so every effect it has is an unrecorded write: compare() either sees it and classifies it unrecorded_writes (RPL-B7.1), or the write is outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) and replay still equals the store in that abstraction. The writer cannot make replay disagree with the store unseen. Inspected only for this writer.",
+   "remaining": "discharged by lemma (inspected): Holds as detection, not as preservation (review R4-07). The writer writes content rows and no ledger record, so it breaks RPL-B3's premise ('no unrecorded writes') and replay no longer equals the store; what holds is that the divergence is reported: compare() sees the write and classifies it unrecorded_writes (RPL-B7.1), or the write lies outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) where replay still equals the store. The writer cannot make replay disagree with the store unseen. The product permits such writes on a non-strict ledger (the strict-mode guard refuses them only when strict, ledger/guard.py:69-80) and classifies them in verify() (replay.py:645-649), so this is a lemma (detection), not a finding. Inspected only for this writer.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -23945,12 +24058,9 @@
    "writer": "iris_vector_graph/schema.py::ensure_props_value_key"
   },
   {
-   "cited_runs": [
-    "ws-live-migrations"
-   ],
+   "cited_runs": [],
    "discharge": "lemma",
    "discharge_evidence": [
-    "run:ws-live-migrations",
     "iris_vector_graph/schema.py:1230-1338",
     "iris_src/src/Graph/KG/LedgerRedact.cls:149-178",
     "iris_src/src/Graph/KG/LedgerRedact.cls:89-112"
@@ -23958,12 +24068,11 @@
    "discharge_grade": "inspected",
    "discharge_source": "writesets/DISCHARGES.json",
    "evidence": [
-    "run:ws-live-migrations",
     "iris_vector_graph/schema.py",
     "iris_src/src/Graph/KG/LedgerRedact.cls",
     "iris_src/src/Graph/KG/LedgerRedact.cls"
    ],
-   "evidence_grade": "registered-run",
+   "evidence_grade": "inspected",
    "gate": "3.3a-writesets",
    "invariant": "INV-marker",
    "kind": "WS-OBL",
@@ -23975,7 +24084,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-inspected",
-   "remaining": "discharged by lemma (inspected): The writer only sets graph_id '' where it is NULL, which COALESCE(graph_id, '') already reads as ''. LiveRows counts rows by (COALESCE(graph_id, ''), id prefix) and record membership (Matches) reads only ledger globals, so an update that keeps every row's id and COALESCE'd graph changes neither whether a target is live nor which records are a target's; the writer adds no record.",
+   "remaining": "discharged by lemma (inspected): The writer only sets graph_id '' where it is NULL, which COALESCE(graph_id, '') already reads as ''. LiveRows counts rows by (COALESCE(graph_id, ''), id prefix) and record membership (Matches) reads only ledger globals, so an update that keeps every row's id and COALESCE'd graph changes neither whether a target is live nor which records are a target's; the writer adds no record. Context only, not evidence (review R4-07): ws-live-migrations ran this writer while a marker existed and it was a no-op there (rows_repaired 0 / already at 234 / backfilled 0), so the target stayed not live and the records unchanged; it exercised nothing this lemma rests on.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -23984,12 +24093,9 @@
    "writer": "iris_vector_graph/schema.py::tighten_graph_id_column"
   },
   {
-   "cited_runs": [
-    "ws-live-migrations"
-   ],
+   "cited_runs": [],
    "discharge": "lemma",
    "discharge_evidence": [
-    "run:ws-live-migrations",
     "iris_vector_graph/schema.py:1230-1338",
     "iris_src/src/Graph/KG/LedgerRedact.cls:149-178",
     "iris_src/src/Graph/KG/LedgerRedact.cls:89-112"
@@ -23997,12 +24103,11 @@
    "discharge_grade": "inspected",
    "discharge_source": "writesets/DISCHARGES.json",
    "evidence": [
-    "run:ws-live-migrations",
     "iris_vector_graph/schema.py",
     "iris_src/src/Graph/KG/LedgerRedact.cls",
     "iris_src/src/Graph/KG/LedgerRedact.cls"
    ],
-   "evidence_grade": "registered-run",
+   "evidence_grade": "inspected",
    "gate": "3.3a-writesets",
    "invariant": "INV-no-live-tombstone",
    "kind": "WS-OBL",
@@ -24014,7 +24119,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-inspected",
-   "remaining": "discharged by lemma (inspected): The writer only sets graph_id '' where it is NULL, which COALESCE(graph_id, '') already reads as ''. LiveRows counts rows by (COALESCE(graph_id, ''), id prefix) and record membership (Matches) reads only ledger globals, so an update that keeps every row's id and COALESCE'd graph changes neither whether a target is live nor which records are a target's; the writer adds no record.",
+   "remaining": "discharged by lemma (inspected): The writer only sets graph_id '' where it is NULL, which COALESCE(graph_id, '') already reads as ''. LiveRows counts rows by (COALESCE(graph_id, ''), id prefix) and record membership (Matches) reads only ledger globals, so an update that keeps every row's id and COALESCE'd graph changes neither whether a target is live nor which records are a target's; the writer adds no record. Context only, not evidence (review R4-07): ws-live-migrations ran this writer while a marker existed and it was a no-op there (rows_repaired 0 / already at 234 / backfilled 0), so the target stayed not live and the records unchanged; it exercised nothing this lemma rests on.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -24029,7 +24134,8 @@
     "iris_vector_graph/schema.py:1230-1338",
     "iris_vector_graph/ledger/replay.py:588-642",
     "iris_vector_graph/ledger/replay.py:645-698",
-    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90"
+    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90",
+    "iris_vector_graph/ledger/guard.py:69-80"
    ],
    "discharge_grade": "inspected",
    "discharge_source": "writesets/DISCHARGES.json",
@@ -24037,7 +24143,8 @@
     "iris_vector_graph/schema.py",
     "iris_vector_graph/ledger/replay.py",
     "iris_vector_graph/ledger/replay.py",
-    "experiment/playbook-uplift/semantics/WRITESETS.md"
+    "experiment/playbook-uplift/semantics/WRITESETS.md",
+    "iris_vector_graph/ledger/guard.py"
    ],
    "evidence_grade": "inspected",
    "gate": "3.3a-writesets",
@@ -24051,7 +24158,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-inspected",
-   "remaining": "discharged by lemma (inspected): INV-replay holds under 'no unrecorded writes' (RPL-B3). The writer writes content rows and no ledger record, so every effect it has is an unrecorded write: compare() either sees it and classifies it unrecorded_writes (RPL-B7.1), or the write is outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) and replay still equals the store in that abstraction. The writer cannot make replay disagree with the store unseen. Inspected only for this writer.",
+   "remaining": "discharged by lemma (inspected): Holds as detection, not as preservation (review R4-07). The writer writes content rows and no ledger record, so it breaks RPL-B3's premise ('no unrecorded writes') and replay no longer equals the store; what holds is that the divergence is reported: compare() sees the write and classifies it unrecorded_writes (RPL-B7.1), or the write lies outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) where replay still equals the store. The writer cannot make replay disagree with the store unseen. The product permits such writes on a non-strict ledger (the strict-mode guard refuses them only when strict, ledger/guard.py:69-80) and classifies them in verify() (replay.py:645-649), so this is a lemma (detection), not a finding. Inspected only for this writer.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -24183,7 +24290,8 @@
     "iris_vector_graph/stores/iris_sql_store.py:1363-1418",
     "iris_vector_graph/ledger/replay.py:588-642",
     "iris_vector_graph/ledger/replay.py:645-698",
-    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90"
+    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90",
+    "iris_vector_graph/ledger/guard.py:69-80"
    ],
    "discharge_grade": "inspected",
    "discharge_source": "writesets/DISCHARGES.json",
@@ -24191,7 +24299,8 @@
     "iris_vector_graph/stores/iris_sql_store.py",
     "iris_vector_graph/ledger/replay.py",
     "iris_vector_graph/ledger/replay.py",
-    "experiment/playbook-uplift/semantics/WRITESETS.md"
+    "experiment/playbook-uplift/semantics/WRITESETS.md",
+    "iris_vector_graph/ledger/guard.py"
    ],
    "evidence_grade": "inspected",
    "gate": "3.3a-writesets",
@@ -24205,7 +24314,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-inspected",
-   "remaining": "discharged by lemma (inspected): INV-replay holds under 'no unrecorded writes' (RPL-B3). The writer writes content rows and no ledger record, so every effect it has is an unrecorded write: compare() either sees it and classifies it unrecorded_writes (RPL-B7.1), or the write is outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) and replay still equals the store in that abstraction. The writer cannot make replay disagree with the store unseen. Inspected only for this writer.",
+   "remaining": "discharged by lemma (inspected): Holds as detection, not as preservation (review R4-07). The writer writes content rows and no ledger record, so it breaks RPL-B3's premise ('no unrecorded writes') and replay no longer equals the store; what holds is that the divergence is reported: compare() sees the write and classifies it unrecorded_writes (RPL-B7.1), or the write lies outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) where replay still equals the store. The writer cannot make replay disagree with the store unseen. The product permits such writes on a non-strict ledger (the strict-mode guard refuses them only when strict, ledger/guard.py:69-80) and classifies them in verify() (replay.py:645-649), so this is a lemma (detection), not a finding. Inspected only for this writer.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -24342,7 +24451,8 @@
     "iris_vector_graph/stores/iris_sql_store.py:1474-1518",
     "iris_vector_graph/ledger/replay.py:588-642",
     "iris_vector_graph/ledger/replay.py:645-698",
-    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90"
+    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90",
+    "iris_vector_graph/ledger/guard.py:69-80"
    ],
    "discharge_grade": "inspected",
    "discharge_source": "writesets/DISCHARGES.json",
@@ -24350,7 +24460,8 @@
     "iris_vector_graph/stores/iris_sql_store.py",
     "iris_vector_graph/ledger/replay.py",
     "iris_vector_graph/ledger/replay.py",
-    "experiment/playbook-uplift/semantics/WRITESETS.md"
+    "experiment/playbook-uplift/semantics/WRITESETS.md",
+    "iris_vector_graph/ledger/guard.py"
    ],
    "evidence_grade": "inspected",
    "gate": "3.3a-writesets",
@@ -24364,7 +24475,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-inspected",
-   "remaining": "discharged by lemma (inspected): INV-replay holds under 'no unrecorded writes' (RPL-B3). The writer writes content rows and no ledger record, so every effect it has is an unrecorded write: compare() either sees it and classifies it unrecorded_writes (RPL-B7.1), or the write is outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) and replay still equals the store in that abstraction. The writer cannot make replay disagree with the store unseen. Inspected only for this writer.",
+   "remaining": "discharged by lemma (inspected): Holds as detection, not as preservation (review R4-07). The writer writes content rows and no ledger record, so it breaks RPL-B3's premise ('no unrecorded writes') and replay no longer equals the store; what holds is that the divergence is reported: compare() sees the write and classifies it unrecorded_writes (RPL-B7.1), or the write lies outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) where replay still equals the store. The writer cannot make replay disagree with the store unseen. The product permits such writes on a non-strict ledger (the strict-mode guard refuses them only when strict, ledger/guard.py:69-80) and classifies them in verify() (replay.py:645-649), so this is a lemma (detection), not a finding. Inspected only for this writer.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -24532,7 +24643,8 @@
     "iris_vector_graph/stores/iris_sql_store.py:1253-1301",
     "iris_vector_graph/ledger/replay.py:588-642",
     "iris_vector_graph/ledger/replay.py:645-698",
-    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90"
+    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90",
+    "iris_vector_graph/ledger/guard.py:69-80"
    ],
    "discharge_grade": "live",
    "discharge_source": "writesets/DISCHARGES.json",
@@ -24541,7 +24653,8 @@
     "iris_vector_graph/stores/iris_sql_store.py",
     "iris_vector_graph/ledger/replay.py",
     "iris_vector_graph/ledger/replay.py",
-    "experiment/playbook-uplift/semantics/WRITESETS.md"
+    "experiment/playbook-uplift/semantics/WRITESETS.md",
+    "iris_vector_graph/ledger/guard.py"
    ],
    "evidence_grade": "registered-run",
    "gate": "3.3a-writesets",
@@ -24555,7 +24668,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-live",
-   "remaining": "discharged by lemma (live): INV-replay holds under 'no unrecorded writes' (RPL-B3). The writer writes content rows and no ledger record, so every effect it has is an unrecorded write: compare() either sees it and classifies it unrecorded_writes (RPL-B7.1), or the write is outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) and replay still equals the store in that abstraction. The writer cannot make replay disagree with the store unseen. Live: the writer's process wrote content and no ^IVG.Ledger node (journal); verify() went equal -> diverges, classification unrecorded_writes.",
+   "remaining": "discharged by lemma (live): Holds as detection, not as preservation (review R4-07). The writer writes content rows and no ledger record, so it breaks RPL-B3's premise ('no unrecorded writes') and replay no longer equals the store; what holds is that the divergence is reported: compare() sees the write and classifies it unrecorded_writes (RPL-B7.1), or the write lies outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) where replay still equals the store. The writer cannot make replay disagree with the store unseen. The product permits such writes on a non-strict ledger (the strict-mode guard refuses them only when strict, ledger/guard.py:69-80) and classifies them in verify() (replay.py:645-649), so this is a lemma (detection), not a finding. Live: the writer's process wrote content and no ^IVG.Ledger node (journal of the cited run); verify() went equal -> diverges, classification unrecorded_writes.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -24720,7 +24833,8 @@
     "iris_vector_graph/stores/iris_sql_store.py:1214-1251",
     "iris_vector_graph/ledger/replay.py:588-642",
     "iris_vector_graph/ledger/replay.py:645-698",
-    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90"
+    "experiment/playbook-uplift/semantics/WRITESETS.md:88-90",
+    "iris_vector_graph/ledger/guard.py:69-80"
    ],
    "discharge_grade": "live",
    "discharge_source": "writesets/DISCHARGES.json",
@@ -24729,7 +24843,8 @@
     "iris_vector_graph/stores/iris_sql_store.py",
     "iris_vector_graph/ledger/replay.py",
     "iris_vector_graph/ledger/replay.py",
-    "experiment/playbook-uplift/semantics/WRITESETS.md"
+    "experiment/playbook-uplift/semantics/WRITESETS.md",
+    "iris_vector_graph/ledger/guard.py"
    ],
    "evidence_grade": "registered-run",
    "gate": "3.3a-writesets",
@@ -24743,7 +24858,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-live",
-   "remaining": "discharged by lemma (live): INV-replay holds under 'no unrecorded writes' (RPL-B3). The writer writes content rows and no ledger record, so every effect it has is an unrecorded write: compare() either sees it and classifies it unrecorded_writes (RPL-B7.1), or the write is outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) and replay still equals the store in that abstraction. The writer cannot make replay disagree with the store unseen. Live: the writer's process wrote content and no ^IVG.Ledger node (journal); verify() went equal -> diverges, classification unrecorded_writes.",
+   "remaining": "discharged by lemma (live): Holds as detection, not as preservation (review R4-07). The writer writes content rows and no ledger record, so it breaks RPL-B3's premise ('no unrecorded writes') and replay no longer equals the store; what holds is that the divergence is reported: compare() sees the write and classifies it unrecorded_writes (RPL-B7.1), or the write lies outside the replay abstraction (a temporal-marked row, a node's graph, a reserved property, ekey) where replay still equals the store. The writer cannot make replay disagree with the store unseen. The product permits such writes on a non-strict ledger (the strict-mode guard refuses them only when strict, ledger/guard.py:69-80) and classifies them in verify() (replay.py:645-649), so this is a lemma (detection), not a finding. Live: the writer's process wrote content and no ^IVG.Ledger node (journal of the cited run); verify() went equal -> diverges, classification unrecorded_writes.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -24879,7 +24994,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-inspected",
-   "remaining": "discharged by lemma (inspected): Resolved: no product code calls insert_vector (its only call is the docstring example on RAG.SourceDocuments, dbapi_utils.py:16); the run-time table is the caller's, so no product path names a content or ledger table and the condition of this obligation never holds at the pin. A caller who passes a content table is an arbitrary SQL client writing that table (the census's '<any SQL client>' surface).",
+   "remaining": "discharged by lemma (inspected): Resolved: no product code calls insert_vector (its only call is the docstring example on RAG.SourceDocuments, dbapi_utils.py:16); the run-time table is the caller's, so no product path names a content or ledger table and the condition of this obligation never holds at the pin. A caller who passes a content table is an arbitrary SQL client writing that table (the census's '<any SQL client>' surface). holds_as vacuous: at the pin this writer writes no content store the replay reads (no product caller, a statement that matches no row on the pin's schema, or embedding tables only), so there is nothing to detect.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -25066,7 +25181,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-inspected",
-   "remaining": "discharged by lemma (inspected): Resolved: _backfill_graph_id runs UPDATE <table> SET graph_id = ... WHERE graph_id IS NULL. The run-time table is rdf_labels or rdf_props (the 4.0.0 statement list, graph_scoped_embeddings.py:672-689). On the pin's schema graph_id is NOT NULL and (graph_id, s, label|key) is the primary key (schema.py:403-418), so the statement matches no row; it changes rows only on a 3.2.0-shaped install, which predates the ledger (no record, marker or statement exists for the invariant to read). It writes no ledger node and no rdf_edges row.",
+   "remaining": "discharged by lemma (inspected): Resolved: _backfill_graph_id runs UPDATE <table> SET graph_id = ... WHERE graph_id IS NULL. The run-time table is rdf_labels or rdf_props (the 4.0.0 statement list, graph_scoped_embeddings.py:672-689). On the pin's schema graph_id is NOT NULL and (graph_id, s, label|key) is the primary key (schema.py:403-418), so the statement matches no row; it changes rows only on a 3.2.0-shaped install, which predates the ledger (no record, marker or statement exists for the invariant to read). It writes no ledger node and no rdf_edges row. holds_as vacuous: at the pin this writer writes no content store the replay reads (no product caller, a statement that matches no row on the pin's schema, or embedding tables only), so there is nothing to detect.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -25255,7 +25370,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-inspected",
-   "remaining": "discharged by lemma (inspected): Resolved: _dedupe deletes exact duplicates of (graph_id, s, label|key), keeping the lowest %ID. The run-time table is rdf_labels or rdf_props (the 4.0.0 statement list, graph_scoped_embeddings.py:672-689). On the pin's schema graph_id is NOT NULL and (graph_id, s, label|key) is the primary key (schema.py:403-418), so the statement matches no row; it changes rows only on a 3.2.0-shaped install, which predates the ledger (no record, marker or statement exists for the invariant to read). It writes no ledger node and no rdf_edges row.",
+   "remaining": "discharged by lemma (inspected): Resolved: _dedupe deletes exact duplicates of (graph_id, s, label|key), keeping the lowest %ID. The run-time table is rdf_labels or rdf_props (the 4.0.0 statement list, graph_scoped_embeddings.py:672-689). On the pin's schema graph_id is NOT NULL and (graph_id, s, label|key) is the primary key (schema.py:403-418), so the statement matches no row; it changes rows only on a 3.2.0-shaped install, which predates the ledger (no record, marker or statement exists for the invariant to read). It writes no ledger node and no rdf_edges row. holds_as vacuous: at the pin this writer writes no content store the replay reads (no product caller, a statement that matches no row on the pin's schema, or embedding tables only), so there is nothing to detect.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -25432,7 +25547,7 @@
     "run:followup-writer-census"
    ],
    "product_obligation": "holds-inspected",
-   "remaining": "discharged by lemma (inspected): Resolved: the run-time table is a SOURCE_TABLES member (kg_NodeEmbeddings, kg_NodeEmbeddings_optimized, graph_scoped_embeddings.py:73, 303-314); embedding tables are none of the stores this invariant reads (content = nodes, rdf_labels, rdf_props, rdf_edges; ledger globals and ledger_revisions).",
+   "remaining": "discharged by lemma (inspected): Resolved: the run-time table is a SOURCE_TABLES member (kg_NodeEmbeddings, kg_NodeEmbeddings_optimized, graph_scoped_embeddings.py:73, 303-314); embedding tables are none of the stores this invariant reads (content = nodes, rdf_labels, rdf_props, rdf_edges; ledger globals and ledger_revisions). holds_as vacuous: at the pin this writer writes no content store the replay reads (no product caller, a statement that matches no row on the pin's schema, or embedding tables only), so there is nothing to detect.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -33997,6 +34112,47 @@
    "severity": "S3"
   },
   {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "run",
+     "ref": "env2-fc1720-query-nodes"
+    },
+    {
+     "kind": "run",
+     "ref": "env2-fc1720-query-nodes-d540"
+    },
+    {
+     "kind": "run",
+     "ref": "env2-fetchfirst-probe"
+    },
+    {
+     "kind": "run",
+     "ref": "env2-fetchfirst-probe-d540"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/stores/iris_sql_store.py:1162-1181"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/engine.py:726-840"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/query.py:2286-2340"
+    }
+   ],
+   "gates": [
+    "3.2-coverage",
+    "3.7-suites",
+    "3.8-findings-disposed"
+   ],
+   "id": "F-C1720",
+   "severity": "S2"
+  },
+  {
    "confidence": "medium",
    "disposition": "confirmed-source",
    "evidence": [
@@ -34173,6 +34329,50 @@
    "evidence": [
     {
      "kind": "live",
+     "ref": "st-live-susp-loader-clear"
+    },
+    {
+     "kind": "inspected",
+     "ref": "scripts/ingest/networkx_loader.py:264-283"
+    },
+    {
+     "kind": "inspected",
+     "ref": "pyproject.toml:178"
+    }
+   ],
+   "gates": [
+    "3.4-ownership",
+    "3.6-fk",
+    "3.6-frame"
+   ],
+   "id": "F-C0340",
+   "severity": "S3"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "st-live-susp-json-field"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/nodes_edges.py:916-930"
+    }
+   ],
+   "gates": [
+    "3.4-declared-reads"
+   ],
+   "id": "F-C0341",
+   "severity": "S2"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
      "ref": "st-live-keys-race-edge"
     },
     {
@@ -34340,6 +34540,29 @@
    "evidence": [
     {
      "kind": "live",
+     "ref": "st-live-susp-range-step"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/CypherFn.cls:255-257"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher/translator.py:29055-29122"
+    }
+   ],
+   "gates": [
+    "3.1-intent"
+   ],
+   "id": "F-C0841",
+   "severity": "S4"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
      "ref": "st-live-cypher-relprop"
     },
     {
@@ -34382,6 +34605,29 @@
    "severity": "S3"
   },
   {
+   "confidence": "high",
+   "disposition": "confirmed-source",
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/IVG/CypherEngine.cls:140-150"
+    },
+    {
+     "kind": "live",
+     "ref": "st-live-susp-scalar"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/query.py:1745-1760"
+    }
+   ],
+   "gates": [
+    "3.1-intent"
+   ],
+   "id": "F-C0940",
+   "severity": "S3"
+  },
+  {
    "confidence": "medium",
    "disposition": "confirmed-source",
    "evidence": [
@@ -34418,6 +34664,29 @@
    ],
    "id": "F-C1040",
    "severity": "S4"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "st-live-susp-nkg-merged"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/NKGAccel.cls:208-223"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/NKGAccelCentrality.cls:4-10"
+    }
+   ],
+   "gates": [
+    "3.4-declared-reads"
+   ],
+   "id": "F-C1041",
+   "severity": "S3"
   },
   {
    "confidence": "high",
@@ -34536,6 +34805,48 @@
    "evidence": [
     {
      "kind": "live",
+     "ref": "st-live-susp-mcp-load"
+    },
+    {
+     "kind": "inspected",
+     "ref": "scripts/mcp/ivg_mcp_server.py:102-128"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/snapshot.py:547-552"
+    }
+   ],
+   "gates": [
+    "3.1-intent"
+   ],
+   "id": "F-C1640",
+   "severity": "S4"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "st-live-susp-gql-props"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/gql/schema.py:30-37"
+    }
+   ],
+   "gates": [
+    "3.1-intent"
+   ],
+   "id": "F-C1641",
+   "severity": "S3"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
      "ref": "st-live-so-confirm"
     },
     {
@@ -34572,6 +34883,29 @@
    ],
    "id": "F-C1740",
    "severity": "S4"
+  },
+  {
+   "confidence": "high",
+   "disposition": "confirmed-source",
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "docker/enterprise/webgateway-init.sh:12-31"
+    },
+    {
+     "kind": "inspected",
+     "ref": "docker/enterprise/docker-compose-2026.yml:1-45"
+    },
+    {
+     "kind": "inspected",
+     "ref": "docker/enterprise/merge.cpf:1-5"
+    }
+   ],
+   "gates": [
+    "3.1-intent"
+   ],
+   "id": "F-C1741",
+   "severity": "S3"
   },
   {
    "confidence": "high",
@@ -35156,6 +35490,40 @@
     "3.8-findings-disposed"
    ],
    "id": "F-C1351",
+   "severity": "S1"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "ws-live-noindex-erase"
+    },
+    {
+     "kind": "live",
+     "ref": "ws-live-ins-bulkloader_load_edges"
+    },
+    {
+     "kind": "live",
+     "ref": "ws-live-ins-import_rdf"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Eraser.cls:777-779"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/bulk_loader.py:380-400"
+    }
+   ],
+   "gates": [
+    "3.3a-writesets",
+    "3.4-frame",
+    "3.7-integration-worlds",
+    "3.8-findings-disposed"
+   ],
+   "id": "F-C1250",
    "severity": "S1"
   }
  ],
@@ -35895,15 +36263,15 @@
   }
  ],
  "product_counts": {
-  "fails": 396,
+  "fails": 400,
   "holds-in-model-only": 1,
   "holds-inspected": 85,
   "holds-live": 29,
   "intent-undecided": 6,
   "n/a": 33,
-  "unknown": 202
+  "unknown": 198
  },
- "registry_runs": 1152,
+ "registry_runs": 1204,
  "starting_inventory": {
   "cells": 904,
   "decisions": 61,
