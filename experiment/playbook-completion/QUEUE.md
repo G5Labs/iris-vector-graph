@@ -26,7 +26,11 @@ status, evidence level and product obligation per cell). Reconciled 2026-11-14 0
 | Q13b | review | Second review pass | done: no sign-off (`independent-review-2`); conditions 1-5, 7 addressed (review/RESPONSE-2.md); 6 needs an operator ruling; 8 items now exist for review |
 | Q14 | orchestrator | verify.sh on a candidate commit; STATUS, phase verdict | done: candidate 0eec4df8, `verify.sh --live` 33/33 steps, 708 s (`verify-final-candidate`) |
 | Q15 | proofs-breadth / versions | Verus for modules 11 and 04; version, privilege and availability lane | done (proofs-breadth-*, ver-*) |
-| Q16 | next | Verus refinement for the other 15 modules (D-1); a randomized simulator through the real product (5c); a third review pass | todo |
+| Q16a | proofs-d9 | D-9: erase/redact protocol proofs with three predicates, bypass writers and erasure rollback (model-level) | doing |
+| Q16b | simulator | §5c randomized simulator through the real product, invariants after every commit (AUDITA) | doing |
+| Q16c | proofs-d1b | D-1: Verus for modules 18 (snapshot) and 06 (vectors) | doing |
+| Q16d | review | Third review pass; operator scope ruling R2-07 | todo |
+| Q16e | next | D-1 for the remaining 13 modules | todo |
 | I-1..I-4 | orchestrator | Incidents: IVG460SNAP, USER-REDEPLOY-08, superseded proof logs, health alert | recorded in `incidents/` |
 
 Genuinely unavailable (attempts in `versions/AVAILABILITY.md`): an IRIS 2026.3 engine (no public tag; the cited
