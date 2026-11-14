@@ -2881,7 +2881,8 @@
     "F-0902",
     "F-0903",
     "F-0905",
-    "F-0906"
+    "F-0906",
+    "F-C0901"
    ],
    "gate": "3.3-model-check",
    "level": "model",
@@ -3082,7 +3083,8 @@
     "F-1102",
     "F-1103",
     "F-1104",
-    "F-1108"
+    "F-1108",
+    "F-C1101"
    ],
    "gate": "3.3-model-check",
    "level": "model",
@@ -3862,7 +3864,8 @@
    "findings": [
     "F-0805",
     "F-0813",
-    "F-0823"
+    "F-0823",
+    "F-C0803"
    ],
    "gate": "3.4-statements",
    "level": "product",
@@ -4162,7 +4165,8 @@
     }
    ],
    "findings": [
-    "F-0706"
+    "F-0706",
+    "F-C0701"
    ],
    "gate": "3.4-ownership",
    "level": "product",
@@ -4207,10 +4211,13 @@
    "evidence": [
     "footprints/10.json"
    ],
+   "findings": [
+    "F-C1001"
+   ],
    "gate": "3.4-ownership",
    "level": "product",
    "module": "10",
-   "product_obligation": "unknown",
+   "product_obligation": "fails",
    "reason": "^IVG.AlgoCache: written by AlgoCache.Put, killed by AlgoCache.Invalidate* and Eraser.InvalidateDerived (documented, ALG-B16.10). ^NKG: BuildNKG (spec 260 D-NKG-WRITER) plus Adjacency.Put interning, Eraser DropNKG and ArnoAccel.BumpVersion's $meta version: several writers. ^KG(\"degc\") (module 04's degree cache) is filled by module 10 reads (Adj.cls:64-79). ^IVG.Deploy(\"routines\") (setup's record) is written by a read path (F-C1001).",
    "remaining": "A mechanical single-owner check with a self-test over these globals.",
    "source": "modules/10.json",
@@ -4499,6 +4506,9 @@
      "ref": "b-07-f0709"
     }
    ],
+   "findings": [
+    "F-C0703"
+   ],
    "gate": "3.4-storage-order",
    "level": "product",
    "module": "07",
@@ -4518,6 +4528,10 @@
     "modules/08.json storage_order"
    ],
    "evidence_grade": "registered-run",
+   "findings": [
+    "F-C0802",
+    "F-C0803"
+   ],
    "gate": "3.4-storage-order",
    "level": "product",
    "module": "08",
@@ -5107,7 +5121,8 @@
    "findings": [
     "F-0704",
     "F-0707",
-    "F-0710"
+    "F-0710",
+    "F-C0702"
    ],
    "gate": "3.5-handlers",
    "level": "product",
@@ -5127,7 +5142,8 @@
    ],
    "findings": [
     "F-0801",
-    "F-0814"
+    "F-0814",
+    "F-C0802"
    ],
    "gate": "3.5-handlers",
    "level": "product",
@@ -5219,7 +5235,8 @@
     "F-1008",
     "F-1009",
     "F-1010",
-    "F-1013"
+    "F-1013",
+    "F-C1001"
    ],
    "gate": "3.5-handlers",
    "level": "product",
@@ -5558,7 +5575,8 @@
     "mc:m09-planc-reviewed"
    ],
    "findings": [
-    "F-0905"
+    "F-0905",
+    "F-C0901"
    ],
    "gate": "3.5-lockplans",
    "level": "product",
@@ -5596,7 +5614,8 @@
    "findings": [
     "F-1102",
     "F-1104",
-    "F-1114"
+    "F-1114",
+    "F-C1101"
    ],
    "gate": "3.5-lockplans",
    "level": "as-built (pin 3eaa79cf), AUDITC traces",
@@ -5873,7 +5892,8 @@
    ],
    "findings": [
     "F-0705",
-    "F-0706"
+    "F-0706",
+    "F-C0701"
    ],
    "gate": "3.5-decoders",
    "level": "product",
@@ -6520,6 +6540,9 @@
      "ref": "F-C0703"
     }
    ],
+   "findings": [
+    "F-C0703"
+   ],
    "gate": "3.6-row-permutation",
    "level": "product",
    "module": "07",
@@ -6537,6 +6560,10 @@
     "b-08-live-storage-order"
    ],
    "evidence_grade": "registered-run",
+   "findings": [
+    "F-C0802",
+    "F-C0803"
+   ],
    "gate": "3.6-row-permutation",
    "level": "product",
    "module": "08",
@@ -8081,10 +8108,13 @@
   {
    "cited_runs": [],
    "evidence": [],
+   "findings": [
+    "F-C1001"
+   ],
    "gate": "3.7-lock-log",
    "level": "product",
    "module": "10",
-   "product_obligation": "unknown",
+   "product_obligation": "fails",
    "reason": "",
    "remaining": "No statement/lock log checked against the lock plan.",
    "source": "modules/10.json",
@@ -8808,7 +8838,8 @@
     "F-1111",
     "F-1112",
     "F-1113",
-    "F-1114"
+    "F-1114",
+    "F-C1101"
    ],
    "gate": "3.8-findings-disposed",
    "level": "method",
@@ -16503,6 +16534,254 @@
    "disposition": "reproduced-live",
    "evidence": [
     {
+     "kind": "live",
+     "ref": "b-07-f0706"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/BM25Index.cls:41-50"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/BM25Index.cls:79-86"
+    }
+   ],
+   "gates": [
+    "3.4-ownership",
+    "3.5-decoders"
+   ],
+   "id": "F-C0701",
+   "severity": "S2"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-07-fc0702-nested-rollback"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/BM25Index.cls:486-490"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/BM25Index.cls:507-511"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_write_txn.py:1-30"
+    }
+   ],
+   "gates": [
+    "3.5-handlers",
+    "3.6-composition",
+    "3.2-env-contract"
+   ],
+   "id": "F-C0702",
+   "severity": "S1"
+  },
+  {
+   "confidence": "high",
+   "disposition": "confirmed-source",
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/vector.py:1041-1046"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/vector.py:979-1003"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/schema.py:2484-2578"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/text_search.py:111-233"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/vector.py:1438-1452"
+    },
+    {
+     "kind": "live",
+     "ref": "b-07-f0709"
+    }
+   ],
+   "gates": [
+    "3.4-storage-order",
+    "3.6-row-permutation"
+   ],
+   "id": "F-C0703",
+   "severity": "S3"
+  },
+  {
+   "confidence": "medium",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-08-live-fc0801-rollback-nkg"
+    },
+    {
+     "kind": "live",
+     "ref": "b-08-live-footprints"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Adjacency.cls:95-107"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/admin.py:808-816"
+    },
+    {
+     "kind": "live",
+     "ref": "b-08-live-fc0801-rollback-nkg-rerun"
+    },
+    {
+     "kind": "live",
+     "ref": "b-08-live-footprints-rerun"
+    }
+   ],
+   "gates": [
+    "3.3a-writesets (^NKG counters written by every edge writer)",
+    "3.2-env-contract ($INCREMENT vs TROLLBACK)"
+   ],
+   "id": "F-C0801",
+   "severity": "S4"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-08-live-storage-order"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/engine.py:1333-1400"
+    },
+    {
+     "kind": "inspected",
+     "ref": "$RUN_DIR/checks/storage-order.json"
+    }
+   ],
+   "gates": [
+    "3.4-storage-order",
+    "3.6-row-permutation",
+    "3.5-handlers"
+   ],
+   "id": "F-C0802",
+   "severity": "S3"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-08-live-storage-order"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher/translator.py:12362-12395"
+    },
+    {
+     "kind": "inspected",
+     "ref": "$RUN_DIR/checks/storage-order.json"
+    }
+   ],
+   "gates": [
+    "3.4-storage-order",
+    "3.6-row-permutation",
+    "3.4-statements"
+   ],
+   "id": "F-C0803",
+   "severity": "S2"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-09-f0901-collision"
+    },
+    {
+     "kind": "mc",
+     "ref": "m09-planc-as-built-collide-binding"
+    },
+    {
+     "kind": "mc",
+     "ref": "m09-planc-reviewed"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Cypher/Gen.cls:175-182"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Cypher/Gen.cls:207"
+    }
+   ],
+   "gates": [
+    "3.5-lockplans",
+    "3.3-model-check"
+   ],
+   "id": "F-C0901",
+   "severity": "S2"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-10-live-fp"
+    },
+    {
+     "kind": "live",
+     "ref": "b-10-live-fp-detail"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/stores/iris_sql_store.py:3977-3988"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/stores/arno_bridge.py:658-694"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/stores/arno_bridge.py:106-136"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/stores/arno_bridge.py:360-378"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/routine_record.py:93-95"
+    }
+   ],
+   "gates": [
+    "3.4-ownership",
+    "3.5-handlers",
+    "3.7-lock-log"
+   ],
+   "id": "F-C1001",
+   "severity": "S3"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
      "kind": "run",
      "ref": "live-crash-world-r2"
     }
@@ -16513,6 +16792,35 @@
    ],
    "id": "F-C1102",
    "severity": "S2"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-11-live-f1102-txn"
+    },
+    {
+     "kind": "mc",
+     "ref": "m11-stats-as-built-caller-txn"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/LedgerStats.cls:51-88"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Ledger.cls:559-565"
+    }
+   ],
+   "gates": [
+    "3.3-model-check",
+    "3.5-lockplans",
+    "3.8-findings-disposed"
+   ],
+   "id": "F-C1101",
+   "severity": "S3"
   },
   {
    "confidence": "high",
@@ -18081,7 +18389,7 @@
    "source": "TRUST.md"
   }
  ],
- "registry_runs": 579,
+ "registry_runs": 605,
  "starting_inventory": {
   "cells": 904,
   "decisions": 61,

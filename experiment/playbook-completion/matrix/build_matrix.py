@@ -120,7 +120,7 @@ def main() -> int:
             explicit[(c["gate"], c.get("module", "product"))] = {**c, "source": f"matrix-input/{f.name}"}
     audits_by_mod = defaultdict(list)
     for stem, recs in audits.items():
-        for r in (recs if isinstance(recs, list) else recs.get("findings", [])):
+        for r in (recs if isinstance(recs, list) else recs.get("findings", []) + recs.get("new_findings", [])):
             audits_by_mod[str(r.get("module") or stem)[:2]].append(r)
     reproduced = ("reproduced-live", "reproduced-test", "reproduced-model", "confirmed-source", "product-defect")
     for g in gates:
@@ -180,7 +180,7 @@ def main() -> int:
 
     audited = {}
     for nn, recs in audits.items():
-        for r in recs if isinstance(recs, list) else recs.get("findings", []):
+        for r in recs if isinstance(recs, list) else recs.get("findings", []) + recs.get("new_findings", []):
             audited[r["id"]] = {k: r.get(k) for k in ("disposition", "severity", "confidence", "gates", "evidence")}
     findings = [{**f, "audit": audited.get(f["id"])} for f in inv["findings"]]
     new_findings = [{"id": i, **v} for i, v in audited.items() if not any(f["id"] == i for f in inv["findings"])]

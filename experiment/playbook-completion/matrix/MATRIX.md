@@ -33,7 +33,7 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 3.3a-writesets | model | 8 | 0 | 10 | 0 | 1 | 16 | 0 | 2 | 1 |
 | 3.3a-trace | model | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.4-statements | product | 0 | 0 | 16 | 0 | 3 | 5 | 0 | 13 | 1 |
-| 3.4-ownership | product | 7 | 0 | 11 | 0 | 1 | 11 | 0 | 7 | 1 |
+| 3.4-ownership | product | 7 | 0 | 11 | 0 | 1 | 12 | 0 | 6 | 1 |
 | 3.4-storage-order | product | 4 | 0 | 14 | 0 | 1 | 5 | 0 | 13 | 1 |
 | 3.4-declared-reads | product | 6 | 0 | 12 | 0 | 1 | 10 | 0 | 8 | 1 |
 | 3.4-generator | method | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 1 |
@@ -54,7 +54,7 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 3.7-differential | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.7-e2e | product | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.7-trace-replay | product | 3 | 0 | 14 | 1 | 1 | 7 | 0 | 11 | 1 |
-| 3.7-lock-log | product | 3 | 0 | 12 | 1 | 3 | 3 | 0 | 13 | 3 |
+| 3.7-lock-log | product | 3 | 0 | 12 | 1 | 3 | 4 | 0 | 12 | 3 |
 | 3.7-mutation | product | 0 | 0 | 15 | 3 | 1 | 1 | 0 | 17 | 1 |
 | 3.7-perf | product | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.7-failure-controls | product | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
@@ -78,4 +78,4 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 5c-root-causes | method | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 5c-reviewers | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 
-Totals: {'closed': 137, 'not-applicable': 36, 'open': 377, 'blocked': 7}; evidence grade of closed cells: {'registered-run': 98, 'inspected': 39}; product: {'unknown': 346, 'n/a': 34, 'fails': 171, 'holds-in-model-only': 6}
+Totals: {'closed': 137, 'not-applicable': 36, 'open': 377, 'blocked': 7}; evidence grade of closed cells: {'registered-run': 98, 'inspected': 39}; product: {'unknown': 344, 'n/a': 34, 'fails': 173, 'holds-in-model-only': 6}
