@@ -6,7 +6,7 @@
 Run only while holding the IRIS lock AND while no other lane uses the container: every trial SIGKILLs the whole
 container (traces/crash_world.py crash_and_restart) and restarts it. Reuses crash_world.py's client, observation and
 oracle unchanged (same N, same FR-047 / head / stmt-tuple / verify / retry checks); adds only repetition and a
-record of the SynchCommit value actually in force (read from iris.cpf and from Config.Journal in %SYS) before every
+record of the SynchCommit value actually in force (read from iris.cpf [Miscellaneous] and from Config.Miscellaneous in %SYS) before every
 trial. Refuses to run if the setting differs from --expect-synchcommit, so a result is always attributed to the
 setting it ran under.
 """
@@ -28,7 +28,7 @@ from iris_conn import Conn, version  # noqa: E402
 def synchcommit() -> dict:
     cpf = subprocess.run(["docker", "exec", cw.CONTAINER, "grep", "-n", "^SynchCommit=", "/usr/irissys/iris.cpf"],
                          capture_output=True, text=True).stdout.strip()
-    script = ' set sc=##class(Config.Journal).Get(.p) write "SC=",$get(p("SynchCommit")),! halt\n'
+    script = ' set sc=##class(Config.Miscellaneous).Get(.p) write "SC=",$get(p("SynchCommit")),! halt\n'
     live = subprocess.run(["docker", "exec", "-i", cw.CONTAINER, "iris", "session", "IRIS", "-U", "%SYS"],
                           input=script, capture_output=True, text=True).stdout
     val = None

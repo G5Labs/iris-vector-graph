@@ -1,0 +1,15 @@
+{
+  "command": "locks.sh iris timeout 5400 python experiment/playbook-completion/traces/crash_world_repeat.py $RUN_DIR/crash-repeat/sc0 --trials 3 --expect-synchcommit 0",
+  "experiment_head": "747f31a5e2982600bc8148ef36f2128c3543ff37",
+  "id": "live-crash-repeat-sc0",
+  "kind": "live",
+  "lane": "orchestrator",
+  "log": "$RUN_DIR/crash-repeat/sc0/run.log",
+  "log_bytes": 10682,
+  "log_sha256": "70fde8b3eb28d54206065e9a54c94cd2bbf614e63648f3b38ec2560b7cfd28fd",
+  "observes": "Instance-crash world repeated under SynchCommit=0 (iris.cpf [Miscellaneous] SynchCommit=0 and Config.Miscellaneous 0, read before every trial): 3 in-flight trials (container SIGKILLed while a 36,000-operation ledger commit ran) each left all-or-nothing state after journal recovery (no partial revision, head equals revision rows, statements have tuples, verify equal); 3 acknowledged trials (SIGKILL right after the client received the committed revision) each lost the acknowledged commit after recovery; every same-key retry afterwards left exactly one revision with the content and no violation. Confirms F-C1102 (intent-undecided) with 3 of 3 trials, for SynchCommit=0 only. Container healthy after the last restart",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T16:31:50+00:00",
+  "result": "fail"
+}
