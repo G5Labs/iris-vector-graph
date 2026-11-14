@@ -1,6 +1,6 @@
 # Lane checkpoint (orchestrator; read by the hourly monitor)
 
-Updated: 2026-11-14 ~20:45 UTC: candidate committed; clean live gate running; fifth review to follow.
+Updated: 2026-11-14 ~22:20 UTC: clean live gate PASSED on candidate 25ba22dd (verify-clean-25ba22dd, 73/73); fifth review and proofs-env (D-7) running.
 previous account is live: `ListAgents` empty, no audit process running, IRIS and heavy locks free, container healthy,
 product scope check passes). Last checkpoint commit before the switch: `1564a673`.
 
@@ -20,7 +20,7 @@ product scope check passes). Last checkpoint commit before the switch: `1564a673
 | orchestrator: crash world, SynchCommit=1 | **done**: `live-crash-repeat-sc1` (0/3 acknowledged lost; SynchCommit=0 restored, healthy) | `$RUN_DIR/crash-repeat/` | — |
 | (old row) crash world, SynchCommit=1 | **running** since ~16:45 UTC: `bash tools/locks.sh iris timeout 7000 bash $RUN_DIR/crash-repeat/sc1-procedure.sh` (log `$RUN_DIR/crash-repeat/sc1-procedure.log`; it restores SynchCommit=0 itself) | `$RUN_DIR/crash-repeat/sc1/` | (1) `docker exec -i $IVG_TEST_CONTAINER iris session IRIS -U %SYS < $RUN_DIR/crash-repeat/set-synchcommit-1.script` under `tools/locks.sh iris`; (2) `docker restart $IVG_TEST_CONTAINER`, wait healthy; (3) `bash tools/locks.sh iris timeout 5400 python traces/crash_world_repeat.py $RUN_DIR/crash-repeat/sc1 --trials 3 --expect-synchcommit 1`; (4) restore with `set-synchcommit-0.script`, restart, confirm `iris.cpf` line `SynchCommit=0` and Docker healthy; record in `incidents/` (alerts from the deliberate crashes are expected; preserve them, do not clear) |
 | orchestrator: S6 licence refusal | **done**: `live-licence-world` (F-C1795) | — | design: hold idle connections up to the 8-unit cap, then drive a product operation that needs a new connection; record refusal handling and that nothing partial is written |
-| orchestrator: account and closure | candidate = the commit that adds this line; fast gate 38/38 before it (`$RUN_DIR/verify/20261114T203822Z`); **running**: `bash verify.sh --live --clean` (log `$RUN_DIR/checks/steer11/verify-clean-candidate.log`); next: register it, then the fifth independent review (with O-1) | — | register the gate; review |
+| orchestrator: account and closure | clean live gate **passed** on 25ba22dd (`verify-clean-25ba22dd`, d0375bae); fifth independent review **running** (told the gate stamp); proofs-env (D-7, steer 12) **running** | `review/REVIEW-5.md`, `proofs-env/` | integrate review 5 and D-7; if D-7 changes inputs, rerun the fast gate (and the full gate for the new crate) |
 
 | structural final follow-up | **done** (82027430; integrated by the orchestrator from the idle parent's artifacts with its merge3.py) | `structural/MATRIX-INPUT-3.json` | — |
 
