@@ -1,0 +1,672 @@
+{
+ "module": "06",
+ "code": "VEC",
+ "live_run": "rx-live-06",
+ "statements": [
+  {
+   "id": "VEC-X1.5",
+   "text": "An empty model name is refused. A writer with no model gives no model key instead.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/schema.py:1127-1127",
+    "iris_vector_graph/embedding_identity.py:59-72"
+   ],
+   "evidence": [
+    "run:rx-live-06"
+   ],
+   "live_cases": [
+    "set_embedding_identity with a blank model key -> ValueError"
+   ],
+   "notes": "set_embedding_identity normalizes the offered key; normalize_model_key raises ValueError for a blank key; 0 journal records. A writer with no model offers the undeclared identity (identity_from_config(None): mechanism and model_key None, observation in the log)."
+  },
+  {
+   "id": "VEC-X1.6",
+   "text": "A way of making vectors that is not one of the three known ways is refused.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/schema.py:1122-1125",
+    "iris_vector_graph/embedding_identity.py:147-151"
+   ],
+   "evidence": [
+    "run:rx-live-06"
+   ],
+   "live_cases": [
+    "set_embedding_identity with mechanism 'word2vec' -> ValueError",
+    "IRISGraphEngine path: identity_from_config(mechanism='word2vec') -> ValueError"
+   ],
+   "notes": "Both entry points refuse 'word2vec' with ValueError naming the closed set; 0 journal records."
+  },
+  {
+   "id": "VEC-X1.13",
+   "text": "A write is refused when its identity clashes with its registry row. Nothing is written then.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/schema.py:1383-1396",
+    "iris_vector_graph/_engine/embeddings.py:1064-1073",
+    "iris_vector_graph/_engine/embeddings.py:973-987"
+   ],
+   "evidence": [
+    "run:rx-live-06"
+   ],
+   "live_cases": [
+    "store_embeddings batch at width 5 into a width-4 route -> EmbeddingIdentityConflict, names the graph, writes nothing",
+    "store_embedding by an embedding_config writer into a route claimed by sentence-transformers -> EmbeddingIdentityConflict, writes nothing"
+   ],
+   "notes": "A width clash (batch of 5-wide vectors into a 4-wide route) and a mechanism clash (sentence-transformers claim vs an embedding_config writer of the same model name) both raise EmbeddingIdentityConflict before any INSERT; the width case names graph 'rx06g13'; 0 journal records in both windows."
+  },
+  {
+   "id": "VEC-X1.16",
+   "text": "A write is refused when the registry is there but cannot be read.",
+   "outcome": "product-defect",
+   "implementing_code": [
+    "iris_vector_graph/_engine/schema.py:1042-1061",
+    "iris_vector_graph/_engine/schema.py:1383-1385"
+   ],
+   "evidence": [
+    "run:breadth-a-probe-local-0101-0601",
+    "run:rx-probe-06-local"
+   ],
+   "finding": "F-0601",
+   "notes": "Not implemented: get_embedding_identity answers None for any read error (schema.py:1054-1056), and enforce_embedding_identity then lets the write through (1383-1385). Shown on pin code with a stand-in cursor raising SQLCODE -99 (breadth-a probe; again in rx-probe-06-local: returned None, write proceeds). Not triggerable live here: a present-but-unreadable registry needs a second IRIS user without SELECT on it (the versions lane's least-privilege user is disabled and not this lane's to enable)."
+  },
+  {
+   "id": "VEC-X1.19",
+   "text": "Setting another model on a claimed row is refused.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/schema.py:1209-1216"
+   ],
+   "evidence": [
+    "run:rx-live-06"
+   ],
+   "live_cases": [
+    "set_embedding_identity rx06-m2 on a row claimed for rx06-m1 -> EmbeddingIdentityConflict"
+   ],
+   "notes": "A row claimed for rx06-m1 refuses rx06-m2 with EmbeddingIdentityConflict; registry row unchanged; 0 journal records."
+  },
+  {
+   "id": "VEC-X1.21",
+   "text": "Setting an identity with no model is refused. Only adopting writes a row with no model key.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/schema.py:1117-1121"
+   ],
+   "evidence": [
+    "run:rx-live-06"
+   ],
+   "live_cases": [
+    "set_embedding_identity with the undeclared identity -> ValueError",
+    "set_embedding_identity(None) -> ValueError"
+   ],
+   "notes": "Undeclared identity and None both refused with ValueError; 0 journal records."
+  },
+  {
+   "id": "VEC-X1.22",
+   "text": "An identity can be set only on a table that holds node vectors. Any other table is refused.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/schema.py:1109-1113",
+    "iris_vector_graph/security.py:58-68"
+   ],
+   "evidence": [
+    "run:rx-live-06"
+   ],
+   "live_cases": [
+    "set_embedding_identity on table 'nodes' -> ValueError",
+    "set_embedding_identity on an edge route name kg_eemb_<16 hex> -> ValueError"
+   ],
+   "notes": "'nodes' and an edge route name kg_eemb_<16 hex> both refused with ValueError; 0 journal records."
+  },
+  {
+   "id": "VEC-X1.29",
+   "text": "Setup will not change the width of an empty vector table unless asked. It never changes the width of a table that holds vectors.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/schema.py:2276-2281",
+    "iris_vector_graph/_engine/schema.py:1564-1599",
+    "iris_vector_graph/_engine/schema.py:1517-1537"
+   ],
+   "evidence": [
+    "run:rx-live-06"
+   ],
+   "live_cases": [
+    "initialize_schema at width 6 over empty width-4 columns, no rewidth -> EmbeddingIdentityConflict before setup writes",
+    "initialize_schema(rewidth=True) at width 6 while kg_NodeEmbeddings holds a vector -> EmbeddingIdentityConflict before setup writes"
+   ],
+   "notes": "initialize_schema at width 6 over empty width-4 columns (no rewidth) and with rewidth=True while kg_NodeEmbeddings holds a vector: both raise EmbeddingIdentityConflict before setup writes (0 journal records); column widths stay 4."
+  },
+  {
+   "id": "VEC-X2.8",
+   "text": "Making a new route is refused inside a transaction the caller opened.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/embeddings.py:493-499"
+   ],
+   "evidence": [
+    "run:rx-live-06"
+   ],
+   "live_cases": [
+    "store_embedding into an unrouted pair inside the caller's transaction -> CallerTransactionOpenError, no route made"
+   ],
+   "notes": "Inside a caller transaction (START TRANSACTION + INSERT, $TLEVEL 1) a write needing a new route raises CallerTransactionOpenError; 0 journal records; no route after the rollback."
+  },
+  {
+   "id": "VEC-X2.11",
+   "text": "A route table that outlived its row at another width is refused, and no row is added.",
+   "outcome": "holds-run",
+   "implementing_code": [
+    "iris_vector_graph/_engine/embeddings.py:589-633"
+   ],
+   "evidence": [
+    "run:val-unit-3-c00",
+    "run:val-unit-2"
+   ],
+   "log_contains": {
+    "run:val-unit-3-c00": "tests/unit/test_227_route_reuse_width.py::TestWidthConflictIsRefused::test_orphan_table_at_another_width_refuses_the_route PASSED",
+    "run:val-unit-2": "tests/unit/test_227_route_reuse_width.py::TestWidthConflictIsRefused::test_a_refused_route_records_nothing PASSED"
+   },
+   "notes": "Upstream unit tests (stand-in cursor) PASSED here. Not probed live: a routed table that outlived its registry row arises only from an interrupted writer, a lost race or a direct registry edit; this lane does not edit product tables to stage it."
+  },
+  {
+   "id": "VEC-X2.16",
+   "text": "Any other failed registry read raises. It never falls back to the legacy table.",
+   "outcome": "holds-run",
+   "implementing_code": [
+    "iris_vector_graph/_engine/embeddings.py:423-434"
+   ],
+   "evidence": [
+    "run:val-unit-3-c02",
+    "run:val-unit-2",
+    "run:rx-probe-06-local"
+   ],
+   "log_contains": {
+    "run:val-unit-3-c02": "tests/unit/test_460_r161_read_route_absent_only.py::test_any_other_failure_raises[denied] PASSED",
+    "run:val-unit-2": "tests/unit/test_460_r161_read_route_absent_only.py::test_a_named_graph_read_does_not_fall_back_to_the_legacy_table[denied] PASSED"
+   },
+   "notes": "Upstream unit tests PASSED here; rx-probe-06-local also shows _read_route raising on a SQLCODE -99 registry read (pin code, stand-in cursor). Not live: needs a user who may not read the registry."
+  },
+  {
+   "id": "VEC-X3.1",
+   "text": "Storing a node's vector is refused when the node is not in that graph.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/embeddings.py:967-967",
+    "iris_vector_graph/_engine/nodes_edges.py:532-557"
+   ],
+   "evidence": [
+    "run:rx-live-06"
+   ],
+   "live_cases": [
+    "store_embedding for a node that exists only in another graph -> ValueError",
+    "store_embedding for a node in no graph -> ValueError"
+   ],
+   "notes": "A node present only in the default graph, stored for graph rx06g31, and a node in no graph: ValueError 'Node does not exist in graph'; 0 journal records."
+  },
+  {
+   "id": "VEC-X3.2",
+   "text": "A vector whose width differs from its route's width is refused, and the error names the graph.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/schema.py:1383-1396",
+    "iris_vector_graph/_engine/embeddings.py:973-987"
+   ],
+   "evidence": [
+    "run:rx-live-06"
+   ],
+   "live_cases": [
+    "store_embedding 5-wide into graph rx06g32's 4-wide route -> refused, error names the graph"
+   ],
+   "notes": "5-wide vector into graph rx06g32's 4-wide route: EmbeddingIdentityConflict naming graph 'rx06g32'; route row count unchanged; 0 journal records."
+  },
+  {
+   "id": "VEC-X3.7",
+   "text": "A batch that holds two widths is refused before anything is written.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/embeddings.py:1050-1059"
+   ],
+   "evidence": [
+    "run:rx-live-06"
+   ],
+   "live_cases": [
+    "store_embeddings with widths 4 and 5 -> ValueError before anything (no route made)"
+   ],
+   "notes": "Batch with widths [4, 5]: ValueError before any route or row; 0 journal records."
+  },
+  {
+   "id": "VEC-X3.9",
+   "text": "A batch refused for a missing node leaves no new route behind.",
+   "outcome": "product-defect",
+   "implementing_code": [
+    "iris_vector_graph/_engine/embeddings.py:1064-1084"
+   ],
+   "evidence": [
+    "run:rx-live-06"
+   ],
+   "live_cases": [
+    "store_embeddings into an unrouted pair with one missing node -> refused, no new route left"
+   ],
+   "notes": "Reproduced live: the batch is refused (ValueError for the missing node) after _route_for_write made the new route: the journal shows a new embedding_registry row (kg_emb_..., graph rx06g39, set_by routed) and the routed table's class storage (^oddTSQL); 90 records. F-0615.",
+   "finding": "F-0615"
+  },
+  {
+   "id": "VEC-X3.16",
+   "text": "The tool that fills the second legacy table checks the identity too. It must not skip it.",
+   "outcome": "product-defect",
+   "implementing_code": [
+    "iris_vector_graph/vector_utils.py:151-280"
+   ],
+   "evidence": [
+    "run:rx-live-06"
+   ],
+   "live_cases": [
+    "VectorOptimizer.migrate_to_optimized copies rx06-src vectors into a table claimed for rx06-dst -> refused by the identity check"
+   ],
+   "notes": "Not implemented: migrate_to_optimized has no identity check (F-0613, source). Live on IRIS 2026.1 the tool cannot reach its copy loop: its CREATE INDEX IF NOT EXISTS ... AS HNSW is rejected (SQLCODE -1, 'ON expected'), so it returns success False with that SQL error and copies nothing - a failure for another reason, not the stated identity refusal (F-C0615).",
+   "finding": "F-0613"
+  },
+  {
+   "id": "VEC-X4.5",
+   "text": "A failed count or listing raises. It never answers zero or an empty list instead.",
+   "outcome": "holds-run",
+   "implementing_code": [
+    "iris_vector_graph/_engine/embeddings.py:2156-2162",
+    "iris_vector_graph/_engine/embeddings.py:904-939"
+   ],
+   "evidence": [
+    "run:val-unit-3-c03",
+    "run:val-unit-3-c05",
+    "run:rx-probe-06-local"
+   ],
+   "log_contains": {
+    "run:val-unit-3-c03": "tests/unit/test_460_r276_except_audit.py::test_embedding_count_raises_when_it_cannot_count PASSED",
+    "run:val-unit-3-c05": "tests/unit/test_embedded_wgproto.py::TestNewEngineAPIs::test_embedding_count_raises_on_another_error PASSED"
+   },
+   "notes": "embedding_count re-raises any failure but a missing table (2156-2162); get_unembedded_nodes has no except at all (917-939), so a failed listing raises. Upstream unit tests PASSED here; rx-probe-06-local shows embedding_count raising on SQLCODE -99. A failing count cannot be produced live without a restricted user."
+  },
+  {
+   "id": "VEC-X5.5",
+   "text": "A query vector whose width differs from the route's is refused before any search runs. The error names both widths.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/vector.py:455-502"
+   ],
+   "evidence": [
+    "run:rx-live-06"
+   ],
+   "live_cases": [
+    "kg_KNN_VEC with a 5-wide query on a 4-wide route -> ValueError naming both widths",
+    "search_nodes_by_vector with a 5-wide query on a 4-wide route -> ValueError"
+   ],
+   "notes": "kg_KNN_VEC and search_nodes_by_vector with a 5-wide query on a 4-wide route: ValueError naming 5 and 4 before any search statement; 0 journal records."
+  },
+  {
+   "id": "VEC-X5.11",
+   "text": "A search that names a graph or a model is refused when only an IVF index could answer it.",
+   "outcome": "blocked-access",
+   "implementing_code": [
+    "iris_vector_graph/_engine/vector.py:779-790"
+   ],
+   "evidence": [
+    "run:rx-live-06"
+   ],
+   "dependency": "an IRIS server without native VECTOR_COSINE (before 2024.1); this 2026.1 server has it (_probe_native_vec True), so search_nodes_by_vector never reaches its IVF branch",
+   "notes": "Corroboration only (SIMULATED, not counted as live): with the engine's cached native-vector probe forced to False on the real engine, search_nodes_by_vector naming a graph or a model raised ValueError with 0 journal records (cases 'SIMULATED no-VECTOR_COSINE ...' in rx-live-06)."
+  },
+  {
+   "id": "VEC-X5.15",
+   "text": "A table search of a route with no graph named is refused before it runs.",
+   "outcome": "product-defect",
+   "implementing_code": [
+    "iris_vector_graph/_engine/vector.py:1209-1220"
+   ],
+   "evidence": [
+    "run:rx-live-06"
+   ],
+   "live_cases": [
+    "vector_search on a node route (kg_emb_) with no graph -> ValueError",
+    "vector_search on an edge route (kg_eemb_) with no graph -> ValueError"
+   ],
+   "notes": "Holds for a node route (kg_emb_: ValueError); not for an edge route: vector_search over kg_eemb_ with no graph ran and returned a row ('rx06:s1', score 1) - the name test checks only the kg_emb_ prefix (vector.py:1212). Live reproduction of the kg_eemb_ half of F-0612 (disposition confirmed-source until now).",
+   "finding": "F-0612"
+  },
+  {
+   "id": "VEC-X6.7",
+   "text": "An identity clash during a bulk embed is raised to the caller, not only counted.",
+   "outcome": "product-defect",
+   "implementing_code": [
+    "iris_vector_graph/_engine/embeddings.py:1462-1480"
+   ],
+   "evidence": [
+    "run:rx-live-06"
+   ],
+   "live_cases": [
+    "embed_nodes whose batch clashes with the route's width -> EmbeddingIdentityConflict raised"
+   ],
+   "notes": "Reproduced live: embed_nodes over graph rx06g67 with 5-wide vectors into a 4-wide route returned {'embedded': 0, 'errors': 2, ...} and logged the EmbeddingIdentityConflict; only CallerTransactionOpenError is re-raised (1472-1473). F-0614.",
+   "finding": "F-0614"
+  },
+  {
+   "id": "VEC-X7.2",
+   "text": "Queuing a node that already waits for another graph is refused. The count of queued items shows it.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/EmbedQueue.cls:35-50",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:64-78"
+   ],
+   "evidence": [
+    "run:rx-live-06"
+   ],
+   "live_cases": [
+    "enqueue the same node for rx06qb while pending for rx06qa -> count 0, entry unchanged"
+   ],
+   "notes": "Node pending for rx06qa; enqueue for rx06qb answers 0 and leaves the entry (graph rx06qa, PENDING); 0 journal records."
+  },
+  {
+   "id": "VEC-X7.5",
+   "text": "Work for a model that the registry refuses is not queued. Nothing is queued then.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/embeddings.py:1837-1842"
+   ],
+   "evidence": [
+    "run:rx-live-06"
+   ],
+   "live_cases": [
+    "enqueue_for_embedding with a config the kg_NodeEmbeddings row refuses -> EmbeddingIdentityConflict, nothing queued"
+   ],
+   "notes": "kg_NodeEmbeddings claimed for rx06-qm; enqueue with config rx06-other raises EmbeddingIdentityConflict; nothing queued (entry absent); 0 journal records."
+  },
+  {
+   "id": "VEC-X7.10",
+   "text": "An entry that asks for a model other than the worker's is marked failed, with the reason. The rest of the batch goes on.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/embeddings.py:1928-1942",
+    "iris_vector_graph/_engine/embeddings.py:1987-2016"
+   ],
+   "evidence": [
+    "run:rx-live-06"
+   ],
+   "live_cases": [
+    "process_embed_queue: entry for another model marked ERROR with the reason, the other entry DONE (writes by design: queue status, the honoured vector and its route)"
+   ],
+   "notes": "Worker with model rx06-worker: the entry asking rx06-other is marked ERROR with the conflict reason, the other entry is DONE and its vector stored ({'processed': 1, 'errors': 1}); no vector for the refused node. The statement says the entry is marked, so queue and route writes are expected (the case allows them and checks the outcome)."
+  },
+  {
+   "id": "VEC-X7.16",
+   "text": "The server worker marks an entry failed when its node is not in its graph, or the graph has no route.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/EmbedQueue.cls:270-305"
+   ],
+   "evidence": [
+    "run:rx-live-06"
+   ],
+   "live_cases": [
+    "server ProcessBatch: node not in its graph, and a graph with no route -> both ERROR, no vector written (only the queue entries change)"
+   ],
+   "notes": "Server Graph.KG.EmbedQueue.ProcessBatch: node not in its queued graph -> ERROR 'is not in graph'; node in a graph with no route -> ERROR 'no embedding route'; {'processed': 0, 'errors': 2}; the journal shows writes to ^EmbedQueue only (no vector table, no registry)."
+  },
+  {
+   "id": "VEC-X8.4",
+   "text": "An inventory that cannot read a registry that is there raises. It does not give an empty report.",
+   "outcome": "intent-undecided",
+   "implementing_code": [
+    "iris_vector_graph/_engine/schema.py:1743-1745",
+    "iris_vector_graph/_engine/schema.py:1819-1827"
+   ],
+   "evidence": [
+    "run:rx-probe-06-local"
+   ],
+   "finding": "F-0601",
+   "notes": "The pin answers [] (rx-probe-06-local: embedding_inventory returned [] for a SQLCODE -99 registry read). The statement (uplift ontology, cites ADMIN_GUIDE.md:1131-1145, which does not state it) says it raises; the pin's own docstring says 'An unreadable registry yields []... a status command must not raise on one' (schema.py:1738-1739). F-0601's text covers the write path only; the inventory half is a documented choice of the code, so the intent is undecided. Not triggerable live without a restricted user."
+  },
+  {
+   "id": "VEC-X9.2",
+   "text": "Listing by an unknown reason is refused, not answered empty.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/schema.py:1928-1932"
+   ],
+   "evidence": [
+    "run:rx-live-06"
+   ],
+   "live_cases": [
+    "list_quarantine(reason='rx06-bogus') -> ValueError, not []"
+   ],
+   "notes": "list_quarantine(reason='rx06-bogus'): ValueError listing the reasons; 0 journal records."
+  },
+  {
+   "id": "VEC-X9.5",
+   "text": "Placing is refused when the graph and model have no route. It never makes one.",
+   "outcome": "holds-run",
+   "implementing_code": [
+    "iris_vector_graph/_engine/schema.py:2001-2007"
+   ],
+   "evidence": [
+    "run:val-unit-3-c00",
+    "run:val-unit-2"
+   ],
+   "log_contains": {
+    "run:val-unit-3-c00": "tests/unit/test_227_quarantine_api.py::test_an_unrouted_pair_is_refused PASSED",
+    "run:val-unit-2": "tests/unit/test_227_quarantine_api.py::test_no_route_is_created_on_the_operators_behalf PASSED"
+   },
+   "notes": "Upstream unit tests PASSED here. Not live: a quarantined row exists only after the 4.0.0 upgrade quarantines a legacy vector (pinned 3.2.0/4.5.1 fixture), and EraseAll leaves the quarantine; this lane does not insert rows into it."
+  },
+  {
+   "id": "VEC-X9.6",
+   "text": "Placing is refused when the row's width or number type differs from the route's.",
+   "outcome": "holds-run",
+   "implementing_code": [
+    "iris_vector_graph/_engine/schema.py:2012-2042"
+   ],
+   "evidence": [
+    "run:val-unit-3-c00",
+    "run:val-unit-2"
+   ],
+   "log_contains": {
+    "run:val-unit-3-c00": "tests/unit/test_227_quarantine_api.py::test_a_width_the_route_does_not_declare_is_refused PASSED",
+    "run:val-unit-2": "tests/unit/test_227_quarantine_api.py::test_a_dtype_the_route_does_not_declare_is_refused PASSED"
+   },
+   "notes": "Upstream unit tests PASSED here; not live for the reason given at VEC-X9.5."
+  },
+  {
+   "id": "VEC-X9.7",
+   "text": "Placing is refused when the node is not in that graph.",
+   "outcome": "holds-run",
+   "implementing_code": [
+    "iris_vector_graph/_engine/schema.py:2043-2048"
+   ],
+   "evidence": [
+    "run:val-unit-3-c00"
+   ],
+   "log_contains": {
+    "run:val-unit-3-c00": "tests/unit/test_227_quarantine_api.py::test_a_node_that_is_not_in_that_graph_is_refused PASSED"
+   },
+   "notes": "Upstream unit test PASSED here; not live for the reason given at VEC-X9.5."
+  },
+  {
+   "id": "VEC-X10.4",
+   "text": "A chooser that names a graph not holding the node has declined, and the row goes to the quarantine.",
+   "outcome": "holds-run",
+   "implementing_code": [
+    "iris_vector_graph/migrations/graph_scoped_embeddings.py:895-918"
+   ],
+   "evidence": [
+    "run:val-e2e-1-c00"
+   ],
+   "log_contains": {
+    "run:val-e2e-1-c00": "tests/e2e/test_227_migration.py::test_a_resolver_naming_a_graph_that_does_not_hold_the_node_has_declined PASSED"
+   },
+   "notes": "Upstream e2e test (live IRIS, validation lane) PASSED here. Not probed in AUDITE: an ambiguous legacy row needs a 3.2.0-shaped embedding table (the pinned upgrade fixture)."
+  },
+  {
+   "id": "VEC-X10.9",
+   "text": "The upgrade is refused when the caller has a transaction open.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/migrations/graph_scoped_embeddings.py:257-258",
+    "iris_vector_graph/migrations/docs_and_edge_vectors.py:495-498",
+    "iris_vector_graph/migrations/kg_node_stores.py:142-143",
+    "iris_vector_graph/migrations/_commit.py:18-22"
+   ],
+   "evidence": [
+    "run:rx-live-06"
+   ],
+   "live_cases": [
+    "migrate_to_graph_scoped_embeddings inside the caller's transaction -> CallerTransactionOpenError",
+    "migrate_docs_and_edge_vectors inside the caller's transaction -> CallerTransactionOpenError",
+    "rekey_kg_node_stores inside the caller's transaction -> CallerTransactionOpenError"
+   ],
+   "notes": "Each of the three upgrade steps, called inside a caller transaction ($TLEVEL 1), raised CallerTransactionOpenError with 0 journal records."
+  },
+  {
+   "id": "VEC-X10.10",
+   "text": "If the node tables cannot be keyed by graph without a guess, the upgrade moves no vectors and says why.",
+   "outcome": "holds-run",
+   "implementing_code": [
+    "iris_vector_graph/migrations/graph_scoped_embeddings.py:199-206",
+    "iris_vector_graph/migrations/graph_scoped_embeddings.py:291-321"
+   ],
+   "evidence": [
+    "run:val-unit-3-c06"
+   ],
+   "log_contains": {
+    "run:val-unit-3-c06": "tests/unit/test_rekey_resume_dedupe_legacy_keys.py::test_props_that_disagree_on_the_value_refuse_the_rekey[different-values] PASSED"
+   },
+   "notes": "Upstream unit tests PASSED here: a refused re-key reports key_conflicts / node_key_blockers and writes nothing. That the pass then moves no vectors is read in source: writing = not dry_run and not rekey.refused (299), and with writing False no drain/reshape/redistribute runs and the predicted report carries the blockers (308-321). Not live: needs a pre-4.0 node layout. Also PASSED in val-unit-3-c06: tests/unit/test_rekey_resume_dedupe_legacy_keys.py::test_a_legacy_key_that_is_the_idkey_refuses_the_rekey PASSED. Also PASSED in val-unit-3-c06: tests/unit/test_rekey_resume_dedupe_legacy_keys.py::test_an_unknown_foreign_key_holding_the_legacy_key_refuses_the_rekey PASSED."
+  },
+  {
+   "id": "VEC-X10.17",
+   "text": "The node store step checks first. If a source table has no graph column, or a rebuild step is missing, it stops and drops nothing.",
+   "outcome": "holds-run",
+   "implementing_code": [
+    "iris_vector_graph/migrations/kg_node_stores.py:144-144",
+    "iris_vector_graph/migrations/kg_node_stores.py:195-233",
+    "iris_vector_graph/migrations/kg_node_stores.py:299-317"
+   ],
+   "evidence": [
+    "run:val-unit-3-c01",
+    "run:val-unit-2"
+   ],
+   "log_contains": {
+    "run:val-unit-3-c01": "tests/unit/test_230_rekey_compile_order.py::TestTheColumnCheckStillComesFirst::test_an_unscoped_source_refuses_before_any_compile PASSED",
+    "run:val-unit-2": "tests/unit/test_230_rekey_compile_order.py::TestAMissingEntryPointRefusesBeforeTheKill::test_the_refusal_names_the_class_and_the_method PASSED"
+   },
+   "notes": "Upstream unit tests PASSED here. Not live: AUDITE's sources declare graph_id and the rebuild entry points are compiled, so neither refused condition exists here. Also PASSED in val-unit-3-c01: tests/unit/test_230_rekey_compile_order.py::TestARefusalNamesWhatIsActuallyWrong::test_an_absent_source_still_says_nothing_was_dropped PASSED."
+  },
+  {
+   "id": "VEC-X10.92",
+   "text": "A new run refuses a staging or quarantine table for edge vectors that holds rows at another width. An empty one is made again at the new width.",
+   "outcome": "holds-run",
+   "implementing_code": [
+    "iris_vector_graph/migrations/docs_and_edge_vectors.py:224-256"
+   ],
+   "evidence": [
+    "run:val-unit-3-c05"
+   ],
+   "log_contains": {
+    "run:val-unit-3-c05": "tests/unit/test_edge_vector_resume_width.py::test_a_wrong_width_table_that_holds_rows_is_refused_not_dropped PASSED"
+   },
+   "notes": "Upstream unit tests PASSED here. Not live: needs a staging/quarantine table left by a failed 4.0.0 edge-vector pass at another width. Also PASSED in val-unit-3-c05: tests/unit/test_edge_vector_resume_width.py::test_an_empty_table_at_the_wrong_width_is_dropped_so_prepare_rebuilds_it PASSED."
+  },
+  {
+   "id": "VEC-X11.1",
+   "text": "Asking for an index name the engine does not know is refused, and the error lists the known names.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/vector.py:227-238",
+    "iris_vector_graph/errors.py:37-48"
+   ],
+   "evidence": [
+    "run:rx-live-06"
+   ],
+   "live_cases": [
+    "engine.index('rx06-nosuch') -> IndexNotFoundError listing the known names"
+   ],
+   "notes": "engine.index('rx06-nosuch'): IndexNotFoundError with 'Known indexes: [...]'; 0 journal records."
+  },
+  {
+   "id": "VEC-X11.3",
+   "text": "Building or searching a neighborhood vector index is refused, since it is not built yet.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/vector.py:322-328",
+    "iris_vector_graph/index_protocol.py:92-95"
+   ],
+   "evidence": [
+    "run:rx-live-06"
+   ],
+   "live_cases": [
+    "neighborhood_vector index build -> NotImplementedError",
+    "neighborhood_vector index search -> NotImplementedError"
+   ],
+   "notes": "build raises NotImplementedError; search is refused earlier by Index.search's status check with IndexNotBuiltError (not NotImplementedError as the ontology note says; the statement text does not name the exception); 0 journal records."
+  },
+  {
+   "id": "VEC-X11.7",
+   "text": "Building an IVF index is refused when the graph and model have no route, or the route has no vectors.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/vector.py:1937-1967"
+   ],
+   "evidence": [
+    "run:rx-live-06"
+   ],
+   "live_cases": [
+    "ivf_build for a pair with no route -> ValueError",
+    "ivf_build for a route with no vectors -> ValueError"
+   ],
+   "notes": "No route: ValueError 'no embedding table is routed'; a route with no vectors: ValueError 'no vectors found'; 0 journal records."
+  },
+  {
+   "id": "VEC-X11.13",
+   "text": "Adding to an IVF index that does not exist is refused.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/vector.py:2040-2050",
+    "iris_src/src/Graph/KG/IVFIndex.cls:180-183"
+   ],
+   "evidence": [
+    "run:rx-live-06"
+   ],
+   "live_cases": [
+    "ivf_insert into an IVF index that does not exist -> ValueError"
+   ],
+   "notes": "IVFIndex.Insert answers -1 before any SET when the index has no nlist; ivf_insert raises ValueError; 0 journal records."
+  },
+  {
+   "id": "VEC-X11.20",
+   "text": "A tree index refuses a measure it cannot compute. It writes nothing then.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/vector.py:1564-1565",
+    "iris_src/src/Graph/KG/VecIndex.cls:26-46"
+   ],
+   "evidence": [
+    "run:rx-live-06"
+   ],
+   "live_cases": [
+    "vec_create_index(metric='mahalanobis') -> ValueError, nothing written",
+    "server Graph.KG.VecIndex.Create(metric='mahalanobis') -> throws, nothing written"
+   ],
+   "notes": "Python vec_create_index and the server VecIndex.Create both refuse 'mahalanobis' before any ^VecIdx SET; 0 journal records."
+  },
+  {
+   "id": "VEC-X11.25",
+   "text": "A PLAID build with one word vector of another width is refused. Nothing is written.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/vector.py:1664-1674"
+   ],
+   "evidence": [
+    "run:rx-live-06"
+   ],
+   "live_cases": [
+    "plaid_build with one token of another width -> ValueError, nothing written"
+   ],
+   "notes": "A document with a 5-wide token among 4-wide ones: ValueError before numpy or any write; 0 journal records."
+  }
+ ]
+}

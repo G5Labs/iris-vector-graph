@@ -1,0 +1,254 @@
+{
+ "OPS-X1.8.1": {
+  "outcome": "holds-live",
+  "code": [
+   "iris_vector_graph/cli.py:212-232",
+   "iris_vector_graph/cypher_api.py:578-593",
+   "iris_vector_graph/_engine/schema.py:1564-1580"
+  ],
+  "notes": "Cypher HTTP server on AUDITE (vector columns at the width PyOps reports, empty) and `ivg --url ... schema init --embedding-dim <width+3>`: the server's initialize_schema raised EmbeddingIdentityConflict before writing (_refuse_width_change is read-only), the server answered 409, the CLI printed 'Schema init refused (409)' and 'run it again with --rewidth', exit 1; no net change in AUDITE (table ID counters allowed, none changed); width unchanged after."
+ },
+ "OPS-X1.10.2": {
+  "outcome": "holds-live",
+  "code": [
+   "iris_vector_graph/cli.py:39-44",
+   "iris_vector_graph/cli.py:266-277",
+   "iris_vector_graph/cli.py:303-314"
+  ],
+  "notes": "`ivg embeddings inventory` and `ivg fhir status rx17g` with IRIS_HOST unset (child env): exit 1, stderr 'No IRIS connection: set IRIS_HOST (and IRIS_PORT / IRIS_NAMESPACE / IRIS_PASSWORD) or pass --iris-host.'; 0 journal records. The ivg script ran the pin's worktree package (observation)."
+ },
+ "OPS-X1.11.1": {
+  "outcome": "holds-live",
+  "code": [
+   "iris_vector_graph/cli.py:350-361"
+  ],
+  "notes": "`ivg fhir sync rx17g --iris-host 127.0.0.1 --iris-port 9` (an unreachable address, so an engine call would end in 'fhir: <connection error>', exit 1): click UsageError, exit 2, 'use `ivg fhir schedule`, or pass --once', no 'fhir:' line, 0 journal records."
+ },
+ "OPS-X1.11.3": {
+  "outcome": "holds-live",
+  "code": [
+   "iris_vector_graph/cli.py:330-334"
+  ],
+  "notes": "`ivg fhir register --no-links --link Library.relatedArtifact` (unreachable IRIS address): UsageError '--no-links and --link cannot be combined', exit 2, engine not called, 0 journal records."
+ },
+ "OPS-X1.12.4": {
+  "outcome": "holds-live",
+  "code": [
+   "iris_vector_graph/cli.py:418-441"
+  ],
+  "notes": "`ivg server start` in a child Python whose import of uvicorn fails (sys.modules['uvicorn'] = None; the web package absent): prints \"uvicorn required: pip install 'iris-vector-graph[full]'\" to stderr, exit 1; nothing bound, 0 journal records."
+ },
+ "OPS-X2.1.1": {
+  "outcome": "product-defect",
+  "code": [
+   "iris_vector_graph/schema_name.py:217-232",
+   "iris_vector_graph/schema_name.py:322-349",
+   "iris_vector_graph/schema_name.py:376-377",
+   "iris_vector_graph/engine.py:384-390",
+   "iris_vector_graph/engine.py:414-416",
+   "iris_vector_graph/engine.py:1850-1868",
+   "iris_vector_graph/stores/iris_sql_store.py:4278-4279"
+  ],
+  "notes": "Engine with schema_prefix RX17ALT on AUDITE (records Graph_KG): construction answers, then create_node, get_node, node_count, execute_cypher and the store's get_nodes raise IVGSchemaError at entry, 0 journal records (the refusal holds); status() and remove_legacy_objects(dry_run=True) run (EXEMPT_METHODS, schema_name.py:376-377). The close clause does not hold: IRISGraphEngine has no close method (EXEMPT_METHODS names one the engine lacks), and the store's close() (a no-op, iris_sql_store.py:4278-4279) is guarded without exemptions (engine.py:390) and raises IVGSchemaError. Setup (initialize_schema) was not run on the refused engine: on a mismatched record it would refuse (refuse_other_record) and a failure of that check would deploy a second schema into the shared namespace; exemption inspected (schema_name.py:376-377). New finding F-C1715 (S4).",
+  "finding": "F-C1715"
+ },
+ "OPS-X3.2.1": {
+  "outcome": "holds-live",
+  "code": [
+   "iris_vector_graph/_engine/admin.py:885-887",
+   "iris_vector_graph/_validate.py:19-49"
+  ],
+  "notes": "engine.verify_graph('0'), ('a\\x01b'), (42): ValueError from validate_graph_name, the method's first statement (before the Native API call at :888); 0 journal records."
+ },
+ "OPS-X3.4.1": {
+  "outcome": "holds-live",
+  "code": [
+   "iris_vector_graph/_engine/admin.py:938-951"
+  ],
+  "notes": "list_active_queries has no handler: any failure propagates. Live: an engine's connection closed under it -> ProgrammingError (<COMMUNICATION LINK ERROR>) raised, not []; control on an open connection answered rows. A failed SQL listing (the unit test's case) is not producible here without a refused statement; the closed connection exercises the same no-handler path."
+ },
+ "OPS-X3.5.1": {
+  "outcome": "holds-live",
+  "code": [
+   "iris_vector_graph/_engine/admin.py:957-969"
+  ],
+  "notes": "kill_query('999999999') and kill_query('not-a-process'): returned False with a logged warning, not raised; 0 journal records. Observation: IRIS answers the statement with SQLCODE -359 ('User defined SQL function %SYSTEM.SYS.KILLPROCESS does not exist'), so every call takes this branch: kill_query on the lane's own scratch process (pid 140416, killable) also answered False and the process was still alive. The refusal holds as stated; kill_query cannot end any process here (new finding F-C1716, outside the refusal)."
+ },
+ "OPS-X3.8.1": {
+  "outcome": "holds-live",
+  "code": [
+   "iris_vector_graph/_engine/admin.py:386-393",
+   "iris_vector_graph/_write_txn.py:90-99"
+  ],
+  "notes": "START TRANSACTION + INSERT ($TLEVEL 1): remove_legacy_objects(dry_run=False) -> CallerTransactionOpenError, 0 journal records, $TLEVEL still 1, the caller's row still pending; dry_run=True in the same transaction answered a list (allowed, as stated)."
+ },
+ "OPS-X4.2": {
+  "outcome": "holds-live",
+  "code": [
+   "iris_vector_graph/host.py:33-41",
+   "iris_vector_graph/host.py:151-156"
+  ],
+  "notes": "host_for(connection) (ClientHost): call('Graph.KG.Snapshot','%New'), call_large(same), call('Graph.KG.Meta','%ExistsId','1') -> HostError naming the method, before _call; 0 journal records. InProcessHost shares Host.call/call_large (host.py:151-156); it needs embedded IRIS and was not built here."
+ },
+ "OPS-X4.6.1": {
+  "outcome": "holds-live",
+  "code": [
+   "iris_vector_graph/embedded.py:132-150",
+   "iris_vector_graph/embedded.py:166-185",
+   "iris_vector_graph/embedded.py:308-313"
+  ],
+  "notes": "Child Python (not irispython; the iris-embedded-python-wrapper answers with MagicMocks): IRISGraphEngine(EmbeddedConnection()) and EmbeddedConnection().cursor().execute('SELECT 1') each raise EmbeddedUnavailableError (an ImportError) whose message names iris.connect(host, port, namespace, user, password). The cursor object itself is created lazily; the refusal comes at its first use (as the upstream test test_a_cursor_says_so_too checks)."
+ },
+ "OPS-X4.8.2": {
+  "outcome": "product-defect",
+  "code": [
+   "iris_vector_graph/stores/iris_sql_store.py:827-838"
+  ],
+  "notes": "IVG_STRICT_NAMESPACE=1, IRISGraphStore(AUDITE connection, namespace='USER'), first class-method call: no exception (it answered AUDITE); a NamespaceMismatchWarning is issued (warnings.warn, :837-838), not raised. Existing finding F-1703, reproduced again.",
+  "finding": "F-1703"
+ },
+ "OPS-X4.84": {
+  "outcome": "holds-run",
+  "code": [
+   "iris_vector_graph/engine.py:1800-1803"
+  ],
+  "notes": "_detect_capabilities re-raises ClassesUnreadable instead of answering 'not deployed'. Evidence: upstream unit tests (a refused dictionary read, ClassesUnreadable) passed here in val-unit-3-c02. Not triggered live: it needs a login refused read on the routines database/class dictionary (a second IRIS user/role: container security configuration, not available to this lane).",
+  "evidence": [
+   "run:val-unit-3-c02"
+  ],
+  "log_contains": {
+   "run:val-unit-3-c02": "test_460_r050_routines_refused.py::test_khop_raises_instead_of_answering_no_nodes PASSED"
+  }
+ },
+ "OPS-X5.4.1": {
+  "outcome": "holds-live",
+  "code": [
+   "iris_vector_graph/stores/iris_sql_store.py:1214-1250",
+   "iris_vector_graph/errors.py:117-159"
+  ],
+  "notes": "IRISGraphStore.write_nodes([rx17:w1, rx17:<300 x>]): the second INSERT fails (SQLCODE -104, node_id over 256), txn.rollback(), GraphWriteError('store.write_nodes', 'nothing written'); rx17:w1 absent after. Journal net change only in the table ID counters and ^KG(\"__version\"), which the nodes write advances with $Increment outside the transaction (a rollback does not take a counter back; noted as allowed patterns, not content)."
+ },
+ "OPS-X5.6.2": {
+  "outcome": "holds-live",
+  "code": [
+   "iris_vector_graph/stores/iris_sql_store.py:1340-1343"
+  ],
+  "notes": "IRISGraphStore.delete_nodes(['rx17:d1'], graph='0' / 'g\\x01'): ValueError from validate_graph_name (:1343) before any statement (the eraser call is after it); 0 journal records."
+ },
+ "OPS-X5.7": {
+  "outcome": "holds-live",
+  "code": [
+   "iris_vector_graph/stores/iris_sql_store.py:1435-1440"
+  ],
+  "notes": "IRISGraphStore.delete_nodes_by_prefix('') and (None): ValueError naming erase_graph; 0 journal records; rx17 rows unchanged."
+ },
+ "OPS-X5.7.1": {
+  "outcome": "holds-run",
+  "code": [
+   "iris_vector_graph/stores/iris_sql_store.py:1442-1446"
+  ],
+  "notes": "RuntimeError when Graph.KG.Eraser.EraseNodes is not deployed. Evidence: the upstream unit test passed here (val-unit-3-c05: that chunk's run is 'fail' for other tests; this test's line is PASSED). Not triggered live: AUDITE has the eraser deployed and the lane has no namespace without product classes (AUDITENV is the orchestrator's); removing a class is out of scope.",
+  "evidence": [
+   "run:val-unit-3-c05"
+  ],
+  "log_contains": {
+   "run:val-unit-3-c05": "test_delete_nodes_graph_scope.py::test_prefix_erase_needs_the_eraser PASSED"
+  }
+ },
+ "OPS-X5.10.1": {
+  "outcome": "holds-live",
+  "code": [
+   "iris_vector_graph/stores/iris_sql_store.py:1580-1583",
+   "iris_vector_graph/stores/iris_sql_store.py:1811-1818"
+  ],
+  "notes": "IRISGraphStore.execute_transaction([INSERT rx17:t1, INSERT into a missing table]): SQLCODE -30 on the second, rollback, GraphWriteError; rx17:t1 absent; journal net change only in table ID counters."
+ },
+ "OPS-X5.10.2": {
+  "outcome": "holds-live",
+  "code": [
+   "iris_vector_graph/stores/iris_sql_store.py:56-59",
+   "iris_vector_graph/stores/iris_sql_store.py:1746-1757",
+   "iris_vector_graph/stores/iris_sql_store.py:1776-1784",
+   "iris_vector_graph/stores/iris_sql_store.py:1811-1818"
+  ],
+  "notes": "engine.execute_cypher(\"MATCH (n {node_id: 'rx17:d1'}) DELETE n\") with an edge rx17:d1-R->rx17:d2: GraphWriteError 'ConstraintVerificationFailed: Cannot delete node with existing relationships. Use DETACH DELETE.' after the rollback; node and edge still there; journal net change only in counters. Control: DETACH DELETE removed it."
+ },
+ "OPS-X5.19.1": {
+  "outcome": "holds-live",
+  "code": [
+   "iris_vector_graph/stores/lazy_kg.py:126-128",
+   "iris_vector_graph/_validate.py:52-73"
+  ],
+  "notes": "LazyKG(conn, graph='0') and graph='g\\x02': ValueError at construction (graph_index_key); 0 journal records."
+ },
+ "OPS-X6.2": {
+  "outcome": "product-defect",
+  "code": [
+   "iris_vector_graph/sdk.py:195-207",
+   "iris_vector_graph/sdk.py:209-215",
+   "iris_vector_graph/sdk.py:166-182"
+  ],
+  "notes": "Server with IVG_API_KEY, client with a wrong key: execute_cypher (query), stats and schema (reads) -> IVGClientError http_code 401 (hold); explain (a query, POST /admin/explain) and load_ndjson -> httpx.HTTPStatusError, not IVGClientError (they call raise_for_status without _refused, sdk.py:166-182). Read-only server (IVG_READ_ONLY=true): a CREATE via execute_cypher -> IVGClientError 403 (holds); load_ndjson -> HTTPStatusError 403. Existing finding F-1714 (reproduced again; the async client was not re-probed).",
+  "finding": "F-1714"
+ },
+ "OPS-X6.4.1": {
+  "outcome": "holds-live",
+  "code": [
+   "iris_vector_graph/sdk.py:209-228"
+  ],
+  "notes": "IVGClient('http://127.0.0.1:9', max_retries=2).execute_cypher: IVGClientError 'Failed after 2 attempts: [Errno 111] Connection refused', http_code None; 0 journal records."
+ },
+ "OPS-X6.5.1": {
+  "outcome": "holds-live",
+  "code": [
+   "iris_vector_graph/sdk.py:152-160"
+  ],
+  "notes": "IVGClient(nothing listening).node_count('0') / ('g\\x03'): ValueError from validate_graph_name immediately; a request would have ended in IVGClientError (connection refused), so none was attempted; 0 journal records."
+ },
+ "OPS-X6.7": {
+  "outcome": "holds-live",
+  "code": [
+   "iris_vector_graph/sdk.py:5-10",
+   "iris_vector_graph/sdk.py:95-96",
+   "iris_vector_graph/sdk.py:238-239"
+  ],
+  "notes": "Child Python whose import of httpx fails (sys.modules['httpx'] = None): IVGClient(...) and AsyncIVGClient(...) each raise ImportError 'httpx is required for ...: pip install httpx'."
+ },
+ "OPS-X7.3": {
+  "outcome": "holds-live",
+  "code": [
+   "iris_vector_graph/errors.py:175-190",
+   "iris_vector_graph/_write_txn.py:90-99"
+  ],
+  "notes": "The refusal of remove_legacy_objects(dry_run=False) in a caller transaction holding a write says 'Nothing was done, and the caller's transaction is still open'; it is: $TLEVEL 1 and the caller's row still pending, 0 journal records. Same through initialize_schema() (CallerTransactionOpenError 'Nothing was done', $TLEVEL 1). Other calls with this refusal (restore_snapshot, ledger enable) are probed under SNP-X2.2 and LED-B1.10."
+ },
+ "OPS-X8.1": {
+  "outcome": "holds-live",
+  "code": [
+   "iris_vector_graph/index_protocol.py:92-95",
+   "iris_vector_graph/errors.py:51-60"
+  ],
+  "notes": "engine.create_index(VectorIndexConfig(name='rx17idx', method='ivf', nlist=4)).search(...) before build: IndexNotBuiltError \"Index 'rx17idx' is empty (0 rows indexed). Call engine.index(name).build() ...\"; 0 journal records."
+ },
+ "OPS-X8.2": {
+  "outcome": "holds-live",
+  "code": [
+   "iris_vector_graph/index_config.py:11-35"
+  ],
+  "notes": "VectorIndexConfig with an unknown field (extra forbid), nlist 0, empty name, metric 'manhattan', and FulltextIndexConfig b=2: pydantic ValidationError each; 0 journal records."
+ },
+ "OPS-X10.4.1": {
+  "outcome": "holds-live",
+  "code": [
+   "iris_src/src/Graph/KG/PyOps.cls:236-261"
+  ],
+  "notes": "Graph.KG.PyOps.VectorSearch over the Native API (embedded Python runs in the container) with a %DynamicArray one wider than getExpectedDimension: <PYTHON EXCEPTION> ValueError 'Query embedding dimension N does not match expected M' from vectorToJson; 0 journal records."
+ },
+ "OPS-X10.4.2": {
+  "outcome": "holds-live",
+  "code": [
+   "iris_src/src/Graph/KG/PyOps.cls:321-332"
+  ],
+  "notes": "Registry rows inserted by SQL (data any IVG-Schema writer can insert, as the method's comment says): graph rx17g naming table 'nodes' -> ValueError \"... names 'nodes', which is not a node route\"; graph rx17h naming a route-shaped table with dtype 'DOUBLE),(1' -> ValueError 'unknown element type'; neither name reached SQL; 0 journal records in the call. Rows deleted afterwards (outside the windows)."
+ }
+}

@@ -1,0 +1,186 @@
+{
+ "module": "18",
+ "code": "SNP",
+ "lane": "refusals",
+ "statements": [
+  {
+   "id": "SNP-X1.3",
+   "text": "A table or native index that cannot be read stops the save. The error names it, and no file is written.",
+   "outcome": "holds-run",
+   "implementing_code": [
+    "iris_vector_graph/_engine/snapshot.py:17-25",
+    "iris_vector_graph/_engine/snapshot.py:905-910",
+    "iris_vector_graph/_engine/snapshot.py:939-940",
+    "iris_vector_graph/_engine/snapshot.py:955-956",
+    "iris_vector_graph/_engine/snapshot.py:969-970",
+    "iris_vector_graph/_engine/snapshot.py:976-985",
+    "iris_vector_graph/_engine/snapshot.py:1013-1026",
+    "iris_vector_graph/_engine/snapshot.py:1035-1041"
+   ],
+   "evidence": [
+    "run:val-unit-3-c02",
+    "run:rx-live-18"
+   ],
+   "notes": "Every read error of a table, the vector tables, the registry, a routed table (other than SQLCODE -30) or a global raises SnapshotReadError naming it; the ZIP is opened for writing only after every read (:1035). Evidence: the upstream unit test (fake cursor refusing each table with SQLCODE -99) passed here in val-unit-3-c02. Not triggered live: the condition needs a login refused SELECT on a Graph_KG table (a second IRIS user/role, container security configuration, not available to this lane); the upstream live test tests/e2e/test_460_r271_snapshot_unreadable_table_e2e.py was SKIPPED in the validation e2e run. rx-live-18 records only the readable-namespace context (archive written).",
+   "log_contains": {
+    "run:val-unit-3-c02": "test_460_r271_snapshot_raises.py::test_a_refused_table_raises_and_writes_nothing[Graph_KG.rdf_props] PASSED"
+   }
+  },
+  {
+   "id": "SNP-X1.9.1",
+   "text": "The server helpers for vector values refuse any global but those three.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/Snapshot.cls:79-106"
+   ],
+   "evidence": [
+    "run:rx-live-18"
+   ],
+   "notes": "NodeValueJSON and SetNodeJSON both resolve the node through NodeRef, which throws 'not a vector-index global' unless the global is ^IVF, ^PLAID or ^VecIdx. Live over the Native API: reads of ^KG, ^IVG.Ledger, ^IVGAuditRX18 and writes of ^IVGAuditRX18, ^KG refused, 0 journal records; control: ^IVF answers.",
+   "live_cases": [
+    "NodeValueJSON ^KG refused",
+    "NodeValueJSON ^IVG.Ledger refused",
+    "NodeValueJSON ^IVGAuditRX18 refused",
+    "SetNodeJSON ^IVGAuditRX18 refused",
+    "SetNodeJSON ^KG refused"
+   ]
+  },
+  {
+   "id": "SNP-X2.1",
+   "text": "A restore is refused in strict ledger mode.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/snapshot.py:1095",
+    "iris_vector_graph/_engine/ledger.py:72-79",
+    "iris_vector_graph/ledger/guard.py:73-80"
+   ],
+   "evidence": [
+    "run:rx-live-18"
+   ],
+   "notes": "restore_snapshot's first statement is the strict-mode check; LedgerStrictModeError live, also for a path that does not exist (so before the file is read). The journal shows only the stats row bump (^Graph.KG.LedgerStatsD rej_strict_block), which guard.py:77 does by design.",
+   "live_cases": [
+    "restore_snapshot in strict ledger mode -> LedgerStrictModeError",
+    "restore_snapshot in strict ledger mode of a missing file -> refused before the file is read"
+   ]
+  },
+  {
+   "id": "SNP-X2.2",
+   "text": "A restore is refused while the caller's own transaction holds a write.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/snapshot.py:1096-1102",
+    "iris_vector_graph/_write_txn.py:90-99"
+   ],
+   "evidence": [
+    "run:rx-live-18"
+   ],
+   "notes": "START TRANSACTION + INSERT on the engine's connection ($TLEVEL 1): CallerTransactionOpenError, 0 journal records, $TLEVEL still 1 and the caller's row still pending afterwards.",
+   "live_cases": [
+    "restore_snapshot with a caller write open -> CallerTransactionOpenError"
+   ]
+  },
+  {
+   "id": "SNP-X2.3",
+   "text": "A snapshot archive with another layout note is refused. Nothing is erased first.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/snapshot.py:1104-1129",
+    "iris_vector_graph/_engine/snapshot.py:1145-1152"
+   ],
+   "evidence": [
+    "run:rx-live-18"
+   ],
+   "notes": "A real archive with metadata layout rewritten to 'flat' / 'pre-223', replacing restore (merge=False): ValueError naming the layout, raised before erase_all (:1152); 0 journal records, rx18 rows unchanged.",
+   "live_cases": [
+    "replacing restore of an archive with layout 'flat' -> ValueError, nothing erased",
+    "replacing restore of an archive with layout 'pre-223' -> ValueError, nothing erased"
+   ]
+  },
+  {
+   "id": "SNP-X2.9",
+   "text": "A row whose column name is not a plain name is refused and counted.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/snapshot.py:368-378",
+    "iris_vector_graph/_engine/snapshot.py:1261",
+    "iris_vector_graph/_engine/snapshot.py:1298-1311"
+   ],
+   "evidence": [
+    "run:rx-live-18"
+   ],
+   "notes": "Crafted archive rows whose keys are SQL text (\"node_id) VALUES ('rx18:inj'); --\" in nodes, a quoted key in rdf_props): merge restore answered failed_rows 1 for the table, the row not inserted, 0 journal records.",
+   "live_cases": [
+    "merge restore of a nodes row with a non-identifier column -> refused, counted",
+    "merge restore of an rdf_props row with a quoted/injected column -> refused, counted"
+   ]
+  },
+  {
+   "id": "SNP-X2.12",
+   "text": "Vector text that is not numbers is refused and counted.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/security.py:163-173",
+    "iris_vector_graph/_engine/snapshot.py:1336-1363",
+    "iris_vector_graph/_engine/snapshot.py:1521-1546"
+   ],
+   "evidence": [
+    "run:rx-live-18"
+   ],
+   "notes": "Node vector text carrying a quote and SQL, and edge vector text 'not numbers': vector_text raises, failed_rows 1 for kg_NodeEmbeddings / kg_EdgeEmbeddings, nothing inserted, 0 journal records. (The routed-table path, :1472, uses the same vector_text; not probed separately.)",
+   "live_cases": [
+    "merge restore of a node vector whose text is not numbers -> refused, counted",
+    "merge restore of an edge vector whose text is not numbers -> refused, counted"
+   ]
+  },
+  {
+   "id": "SNP-X2.13",
+   "text": "A native index that is not on the restore allow-list is not written. Its lines count as failed.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/snapshot.py:416-422",
+    "iris_vector_graph/_engine/snapshot.py:1563-1572"
+   ],
+   "evidence": [
+    "run:rx-live-18"
+   ],
+   "notes": "Archive with globals/IVGAuditRX18.ndjson (2 lines): failed_rows {'^IVGAuditRX18': 2}, not in restored_globals, ^IVGAuditRX18 undefined after. The journal shows only the version floors restore's finally always sets (^KG(\"__version\"), ^NKG(\"$meta\",\"version\"); snapshot.py:1587-1591, ArnoAccel.cls:299-303).",
+   "live_cases": [
+    "merge restore of an archive holding ^IVGAuditRX18 -> not written, 2 lines failed"
+   ]
+  },
+  {
+   "id": "SNP-X2.14",
+   "text": "A native index that cannot be written stops the restore. The error says what is done and what is not.",
+   "outcome": "product-defect",
+   "implementing_code": [
+    "iris_vector_graph/_engine/snapshot.py:1573-1582",
+    "iris_vector_graph/_engine/snapshot.py:1654-1692"
+   ],
+   "evidence": [
+    "run:rx-live-18"
+   ],
+   "notes": "The RuntimeError exists only for an exception escaping _import_global_from_ndjson; that function catches every per-line failure with logger.debug (:1665-1684) and does not count it. Live: ^IVG.GraphMode lines with subscripts [\"\"] and [\"rx18y\",\"\"] (each <SUBSCRIPT> when set directly) beside a good line: merge restore returned failed_rows {}, restored_globals ['IVG.GraphMode'], no error; the good line written. Stated refusal not implemented for an unwritable line (existing finding F-C1802, reproduced again).",
+   "finding": "F-C1802",
+   "live_cases": [
+    "merge restore with ^IVG.GraphMode lines that cannot be written -> RuntimeError"
+   ]
+  },
+  {
+   "id": "SNP-X5.1",
+   "text": "Every way to load globals keeps to the restore allow-list.",
+   "outcome": "product-defect",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/Snapshot.cls:24-35",
+    "iris_vector_graph/_engine/snapshot.py:1563-1572"
+   ],
+   "evidence": [
+    "run:rx-live-18"
+   ],
+   "notes": "restore_snapshot keeps to restorable_globals (SNP-X2.13 holds), but Graph.KG.Snapshot.ImportGlobals runs $System.OBJ.Load on every *.gof in a directory with no list. Live: the product's own ExportGlobals wrote ^IVGAuditRX18.gof to a scratch /tmp dir; the global was killed; ImportGlobals answered {\"imported\":1} and set ^IVGAuditRX18(\"a\") (journal), a global outside the allow-list. Scratch dir removed. Existing finding F-1806 (reproduced again).",
+   "finding": "F-1806",
+   "live_cases": [
+    "ImportGlobals of a dir holding ^IVGAuditRX18.gof -> refused (not on the allow-list)"
+   ]
+  }
+ ]
+}

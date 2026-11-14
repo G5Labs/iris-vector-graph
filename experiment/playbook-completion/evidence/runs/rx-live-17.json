@@ -1,0 +1,15 @@
+{
+  "command": "bash experiment/playbook-completion/tools/locks.sh iris timeout 1500 python experiment/playbook-completion/refusals/live_17.py (AUDITE; reset by Eraser.EraseAll + Ledger.PurgeAll before/after; journal oracle per case; Cypher HTTP server uvicorn iris_vector_graph.cypher_api:app on 127.0.0.1:18917 with IVG_API_KEY and :18918 with IVG_READ_ONLY=true; ivg console script and child Pythons with PYTHONPATH = the pin worktree)",
+  "experiment_head": "9b25b729e63cc187e9bd3e9216ba400d81f2676d",
+  "id": "rx-live-17",
+  "kind": "live",
+  "lane": "refusals",
+  "log": "$RUN_DIR/refusals/17/results.json",
+  "log_bytes": 86835,
+  "log_sha256": "57bf848e7362cd8d679312fb9b0d218ee0821be684118ef384010f687aac80ee",
+  "observes": "module 17 stated refusals: 28 OPS X statements probed in 59 journal-windowed cases + 15 observations, oracle control ok; 54 cases hold (refused as stated, no net change outside table ID counters and, for write_nodes, ^KG(\"__version\")), 5 do not: OPS-X2.1.1 the refused engine (schema RX17ALT vs recorded Graph_KG) refuses create_node/get_node/node_count/execute_cypher with IVGSchemaError and still runs status() and remove_legacy_objects(dry_run=True), but IRISGraphEngine has no close() and its store close() is refused (IVGSchemaError); OPS-X4.8.2 IVG_STRICT_NAMESPACE=1 with namespace=USER on an AUDITE connection: no exception (F-1703); OPS-X6.2 wrong key: execute_cypher/stats/schema IVGClientError 401 hold, explain and load_ndjson raise httpx.HTTPStatusError 401; read-only server: CREATE via execute_cypher IVGClientError 403 holds, load_ndjson HTTPStatusError 403 (F-1714). Also observed: kill_query answers False for every pid incl. the lane own scratch process 140416 (still alive), SQLCODE -359 %SYSTEM.SYS.KILLPROCESS does not exist as an SQL function; schema init at width 7 vs columns VECTOR(DOUBLE,4): 409, CLI exit 1 naming --rewidth, width unchanged; EmbeddedConnection outside IRIS: engine and cursor.execute raise EmbeddedUnavailableError naming iris.connect; PyOps.VectorSearch width 5 vs 4 and registry rows naming nodes / dtype DOUBLE),(1 refused by ValueError",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T14:54:55+00:00",
+  "result": "fail"
+}

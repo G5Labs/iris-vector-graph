@@ -1,0 +1,15 @@
+{
+  "command": "bash experiment/playbook-completion/tools/locks.sh iris timeout 1500 python experiment/playbook-completion/refusals/live_10.py --out results-rebuild-wait.json b12_wait (namespace AUDITE; EraseAll+PurgeAll before and after)",
+  "experiment_head": "9b25b729e63cc187e9bd3e9216ba400d81f2676d",
+  "id": "rx-live-10-rebuild-wait",
+  "kind": "live",
+  "lane": "refusals",
+  "log": "$RUN_DIR/refusals/10/results-rebuild-wait.json",
+  "log_bytes": 2943,
+  "log_sha256": "3a4434af7c29c612714d8a822764b373954a4063aa13da5ea8c75c1e7bb9f94a",
+  "observes": "ALG-B12.3 and ALG-B12.8, live: a second process held ^IVG.NKGBuild; Graph.KG.Traversal.BuildNKG (third process) and engine.sync() (main process) both still waited after 20 s and both raised after 900.0 s (NKGBUILDWAIT): BuildNKG \"<THROW> ... ERROR #5001: BuildNKG: another ^NKG build held ^IVG.NKGBuild for 900 seconds\" (its process: 0 journal records); sync RuntimeError \"Graph.KG.Traversal.BuildKG failed: ERROR #5001: BuildKG rebuilt ^KG but not ^NKG: ERROR #5001: BuildNKG: another ^NKG build held ^IVG.NKGBuild for 900 seconds\" (its process: 14 records, net change only to ^KG nodes, the BuildKG rewrite, allowed for that case). 2 cases, 2 hold; journal positive control ok. In the window a process not opened by the probe (pid 134015) also wrote 26 records to AUDITE; verdicts are attributed per process.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T15:02:09+00:00",
+  "result": "pass"
+}

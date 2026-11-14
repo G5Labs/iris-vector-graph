@@ -11637,11 +11637,26 @@
    "status": "closed"
   },
   {
+   "as_built_findings": [
+    "F-0705",
+    "F-C0715",
+    "F-C0716",
+    "F-C0717"
+   ],
    "cited_runs": [
     "b-07-f0705-f0707",
-    "b-07-f0709"
+    "b-07-f0709",
+    "rx-dec-live-07",
+    "rx-dec-map",
+    "rx-dec-selftest",
+    "rx-dec-unit"
    ],
    "evidence": [
+    "run:rx-dec-map",
+    "run:rx-dec-selftest",
+    "run:rx-dec-live-07",
+    "run:rx-dec-unit",
+    "refusals/decoders/decoders.json",
     {
      "kind": "live",
      "ref": "b-07-f0705-f0707"
@@ -11651,6 +11666,7 @@
      "ref": "b-07-f0709"
     }
    ],
+   "evidence_grade": "registered-run",
    "findings": [
     "F-0705",
     "F-0706",
@@ -11670,16 +11686,17 @@
      "finding F-C0715",
      "finding F-C0716",
      "finding F-C0717",
+     "stated fails by matrix-input/refusals.json",
      "run b-07-f0705-f0707 (fail)",
-     "run b-07-f0709 (fail)"
+     "run b-07-f0709 (fail)",
+     "run rx-dec-live-07 (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "reason": "Info's JSON maps an absent graph to '' (F-0705); bm25_search's parser patches '.5' numbers (vector.py:1816-1819); kg_TXT LIKE fallback scores 1.0. Not proved.",
-   "remaining": "Info answers null for an absent graph; decoder unit tests.",
-   "source": "modules/07.json",
-   "status": "open"
+   "remaining": "the /hybridSearch HTTP status map (needs a CSP web application on the container) and kg_TXT's non-iFind fallback branches (-359/-151/-149, need the iFind index removed) not driven live",
+   "source": "matrix-input/refusals.json",
+   "status": "closed"
   },
   {
    "cited_runs": [
@@ -11785,15 +11802,29 @@
    "status": "closed"
   },
   {
+   "as_built_findings": [
+    "F-C1018"
+   ],
    "cited_runs": [
-    "b-10-run-unit"
+    "b-10-run-unit",
+    "rx-dec-live-10",
+    "rx-dec-map",
+    "rx-dec-selftest",
+    "rx-dec-unit"
    ],
    "evidence": [
+    "run:rx-dec-map",
+    "run:rx-dec-selftest",
+    "run:rx-dec-live-10",
+    "run:rx-dec-unit",
+    "run:b-10-run-unit",
+    "refusals/decoders/decoders.json",
     {
      "kind": "run",
      "ref": "b-10-run-unit"
     }
    ],
+   "evidence_grade": "registered-run",
    "findings": [
     "F-C1018"
    ],
@@ -11802,15 +11833,16 @@
    "module": "10",
    "product_basis": {
     "fails": [
-     "finding F-C1018"
+     "finding F-C1018",
+     "stated fails by matrix-input/refusals.json",
+     "run rx-dec-live-10 (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "reason": "JSON decoders (_scored_node_rows, UnreadableResultShape) and error maps (_raise_store_error, ALG-I5) are unit-tested (349 passed here).",
-   "remaining": "Not verified.",
-   "source": "modules/10.json",
-   "status": "open"
+   "remaining": "Native Reader (ArnoAccel) decoders blocked-access (x86_64 libarno_callout.so, F-1001); the degree fallback, _refused_work_area and _runjson_failure branches not exercised live (need a missing deployed class, a read-only login or pre-4.6 classes; token and text shapes checked statically)",
+   "source": "matrix-input/refusals.json",
+   "status": "closed"
   },
   {
    "cited_runs": [
@@ -12000,11 +12032,30 @@
    "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [
+   "as_built_findings": [
     "F-1804",
     "F-C1802"
    ],
+   "cited_runs": [
+    "c18-live-swallowed-lines",
+    "c18-live-value-types",
+    "rx-dec-live-18",
+    "rx-dec-map",
+    "rx-dec-selftest",
+    "rx-dec-unit"
+   ],
+   "evidence": [
+    "run:rx-dec-map",
+    "run:rx-dec-selftest",
+    "run:rx-dec-live-18",
+    "run:rx-dec-unit",
+    "run:c18-live-value-types",
+    "run:c18-live-swallowed-lines",
+    "refusals/decoders/decoders.json",
+    "F-1804",
+    "F-C1802"
+   ],
+   "evidence_grade": "registered-run",
    "findings": [
     "F-1804",
     "F-C1802"
@@ -12016,14 +12067,17 @@
     "fails": [
      "finding F-1804",
      "finding F-C1802",
-     "lane status failed (modules/18.json)"
+     "stated fails by matrix-input/refusals.json",
+     "run c18-live-swallowed-lines (fail)",
+     "run c18-live-value-types (fail)",
+     "run rx-dec-live-18 (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "closed claim cites no registered run or committed artifact",
-   "source": "modules/18.json",
-   "status": "open"
+   "remaining": "the SnapshotReadError mapping for a refused table is unit-tested only (rx-dec-unit; needs a least-privilege login)",
+   "source": "matrix-input/refusals.json",
+   "status": "closed"
   },
   {
    "as_built_findings": [
@@ -17415,17 +17469,54 @@
    "status": "not-applicable"
   },
   {
-   "cited_runs": [],
+   "cited_runs": [
+    "rx-audit",
+    "rx-audit-selftest",
+    "rx-live-01",
+    "val-gated-rag-1",
+    "val-scratch-1",
+    "val-unit-3-c00",
+    "val-unit-3-c01",
+    "val-unit-3-c02",
+    "val-unit-3-c03",
+    "val-unit-3-c04",
+    "val-unit-3-c05",
+    "val-unit-3-c06"
+   ],
    "evidence": [
+    "run:rx-live-01",
+    "run:val-gated-rag-1",
+    "run:val-scratch-1",
+    "run:val-unit-3-c00",
+    "run:val-unit-3-c01",
+    "run:val-unit-3-c02",
+    "run:val-unit-3-c03",
+    "run:val-unit-3-c04",
+    "run:val-unit-3-c05",
+    "run:val-unit-3-c06",
+    "run:rx-audit",
+    "run:rx-audit-selftest",
+    "refusals/audit.json",
+    "refusals/REFUSALS.md",
     "findings/audit/01.json"
    ],
+   "evidence_grade": "registered-run",
    "gate": "5c-refusals",
-   "level": "method",
+   "level": "product",
    "module": "01",
-   "product_obligation": "unknown",
-   "remaining": "X statements not audited mechanically",
-   "source": "modules/01.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "run val-gated-rag-1 (fail)",
+     "run val-unit-3-c04 (fail)",
+     "run val-unit-3-c05 (fail)",
+     "run val-unit-3-c06 (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "INS-X2.10 blocked-access (needs a namespace with no schema record holding the product's tables in another schema; the only fixture, tests/e2e/test_262_record.py, was skipped in every validation run, and no scratch namespace was created); 13 statements evidenced by upstream tests passed here (val-*), not live (no-record namespace, least-privilege user, foreign classes in a schema package, v3.2.0 tables, refused mid-upgrade commit); INS-X5.6 and INS-X6.13 inspected only (X6.13's function driven live)",
+   "source": "matrix-input/refusals.json",
+   "status": "closed"
   },
   {
    "cited_runs": [],
@@ -17480,26 +17571,44 @@
    "status": "closed"
   },
   {
-   "cited_runs": [],
+   "as_built_findings": [
+    "F-C0415"
+   ],
+   "cited_runs": [
+    "rx-audit",
+    "rx-audit-selftest",
+    "rx-live-04",
+    "val-integration-1-c05"
+   ],
    "evidence": [
+    "run:rx-live-04",
+    "run:val-integration-1-c05",
+    "run:rx-audit",
+    "run:rx-audit-selftest",
+    "refusals/audit.json",
+    "refusals/REFUSALS.md",
     "findings/audit/04.json"
    ],
+   "evidence_grade": "registered-run",
    "findings": [
     "F-C0415"
    ],
    "gate": "5c-refusals",
-   "level": "method",
+   "level": "product",
    "module": "04",
    "product_basis": {
     "fails": [
-     "finding F-C0415"
+     "finding F-C0415",
+     "stated fails by matrix-input/refusals.json",
+     "run rx-live-04 (fail)",
+     "run val-integration-1-c05 (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "X statements not audited mechanically",
-   "source": "modules/04.json",
-   "status": "open"
+   "remaining": "ADJ-X4.7 fails: a refused erase/rebuild (writer lock not granted) leaves ^IVG.AdjNoLock(g), ^KG gen/version counters and rdf_props iFind words behind, and the refusal comes after 5 s per deleted edge row (F-C0415)",
+   "source": "matrix-input/refusals.json",
+   "status": "closed"
   },
   {
    "cited_runs": [],
@@ -17528,26 +17637,79 @@
    "status": "closed"
   },
   {
-   "cited_runs": [],
+   "as_built_findings": [
+    "F-0601",
+    "F-0612",
+    "F-0613",
+    "F-0614",
+    "F-0615"
+   ],
+   "cited_runs": [
+    "breadth-a-probe-local-0101-0601",
+    "rx-audit",
+    "rx-audit-selftest",
+    "rx-live-06",
+    "rx-probe-06-local",
+    "val-e2e-1-c00",
+    "val-unit-2",
+    "val-unit-3-c00",
+    "val-unit-3-c01",
+    "val-unit-3-c02",
+    "val-unit-3-c03",
+    "val-unit-3-c05",
+    "val-unit-3-c06"
+   ],
    "evidence": [
+    "run:breadth-a-probe-local-0101-0601",
+    "run:rx-live-06",
+    "run:rx-probe-06-local",
+    "run:val-e2e-1-c00",
+    "run:val-unit-2",
+    "run:val-unit-3-c00",
+    "run:val-unit-3-c01",
+    "run:val-unit-3-c02",
+    "run:val-unit-3-c03",
+    "run:val-unit-3-c05",
+    "run:val-unit-3-c06",
+    "run:rx-audit",
+    "run:rx-audit-selftest",
+    "refusals/audit.json",
+    "refusals/REFUSALS.md",
     "findings/audit/06.json"
    ],
+   "evidence_grade": "registered-run",
    "findings": [
+    "F-0601",
+    "F-0612",
+    "F-0613",
+    "F-0614",
+    "F-0615",
     "F-C0615"
    ],
    "gate": "5c-refusals",
-   "level": "method",
+   "level": "product",
    "module": "06",
    "product_basis": {
     "fails": [
-     "finding F-C0615"
+     "finding F-0601",
+     "finding F-0612",
+     "finding F-0613",
+     "finding F-0614",
+     "finding F-0615",
+     "finding F-C0615",
+     "stated fails by matrix-input/refusals.json",
+     "run breadth-a-probe-local-0101-0601 (fail)",
+     "run rx-live-06 (fail)",
+     "run rx-probe-06-local (fail)",
+     "run val-unit-3-c05 (fail)",
+     "run val-unit-3-c06 (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "X statements not audited mechanically",
-   "source": "modules/06.json",
-   "status": "open"
+   "remaining": "product defects VEC-X1.16 (F-0601), X3.9 (F-0615), X3.16 (F-0613), X5.15 (F-0612, edge-route half now live), X6.7 (F-0614); VEC-X8.4 intent-undecided (pin docstring answers [] for an unreadable registry); VEC-X5.11 blocked-access (needs an IRIS without native VECTOR_COSINE, before 2024.1); 10 statements by upstream tests passed here only (restricted user or legacy/upgrade states: the O-1 4.5.1 fixture namespace could make the quarantine/migration ones live)",
+   "source": "matrix-input/refusals.json",
+   "status": "closed"
   },
   {
    "cited_runs": [
@@ -17656,9 +17818,20 @@
   {
    "cited_runs": [
     "b-10-live-refusals",
-    "b-10-run-unit"
+    "b-10-run-unit",
+    "rx-audit",
+    "rx-audit-selftest",
+    "rx-live-10",
+    "rx-live-10-rebuild-wait"
    ],
    "evidence": [
+    "run:b-10-run-unit",
+    "run:rx-live-10",
+    "run:rx-live-10-rebuild-wait",
+    "run:rx-audit",
+    "run:rx-audit-selftest",
+    "refusals/audit.json",
+    "refusals/REFUSALS.md",
     {
      "kind": "live",
      "ref": "b-10-live-refusals"
@@ -17668,44 +17841,61 @@
      "ref": "b-10-run-unit"
     }
    ],
+   "evidence_grade": "registered-run",
    "gate": "5c-refusals",
-   "level": "method",
+   "level": "product",
    "module": "10",
+   "product_basis": "34 X statements audited mechanically (rx-audit): blocked-access 2, holds-live 27, holds-run 5; no refusal found not implemented as stated, but not every one is evidenced live",
    "product_obligation": "unknown",
-   "reason": "30 X statements: 17 upstream-tested, 13 inspected only at the uplift; live here: holds ['ALG-B1.5', 'ALG-B10.6', 'ALG-B2.10', 'ALG-B2.13', 'ALG-B2.2', 'ALG-B2.8', 'ALG-B2.9', 'ALG-B5.10', 'ALG-B5.17', 'ALG-B5.22', 'ALG-B5.3', 'ALG-B6.7', 'ALG-B8.10'], not holding []; ALG-B7 refusal seen live (b-10-live-nkg).",
-   "remaining": "ALG-B5.5, B5.21 (store without a method), B9.3 (read-only login), B12.3 (concurrent rebuild wait), B12.8 (failing rebuild), B13.3, B15.x (gate) are not exercised live.",
-   "source": "modules/10.json",
-   "status": "open"
+   "remaining": "ALG-B9.3 blocked-access (a login that cannot write AUDITE's globals: IVGAUDIT_RO exists but is disabled, grants only in AUDITB; enabling is the operator's); ALG-B6.95 library branches blocked-access (x86_64 libarno_callout.so 1.2.1, F-1001); ALG-B1.13, B15.2, B15.3, B15.10, B15.11 by upstream tests/gate functions only (B1.13 mocked path)",
+   "source": "matrix-input/refusals.json",
+   "status": "closed"
   },
   {
+   "as_built_findings": [
+    "F-1107"
+   ],
    "cited_runs": [
     "b-11-live-findings",
     "b-11-live-footprints-1",
-    "b-11-run-unit"
+    "b-11-run-unit",
+    "rx-audit",
+    "rx-audit-selftest",
+    "rx-live-11",
+    "rx-live-11-r2"
    ],
    "evidence": [
+    "run:rx-live-11",
+    "run:rx-live-11-r2",
+    "run:rx-audit",
+    "run:rx-audit-selftest",
+    "refusals/audit.json",
+    "refusals/REFUSALS.md",
     "live:b-11-live-findings",
     "live:b-11-live-footprints-1",
     "run:b-11-run-unit",
     "finding:F-1107"
    ],
+   "evidence_grade": "registered-run",
    "findings": [
     "F-1107"
    ],
    "gate": "5c-refusals",
-   "level": "method",
+   "level": "product",
    "module": "11",
    "product_basis": {
     "fails": [
-     "finding F-1107"
+     "finding F-1107",
+     "stated fails by matrix-input/refusals.json",
+     "run b-11-live-findings (fail)",
+     "run rx-live-11 (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "reason": "Evidenced live here: LED-B4.8 (stale head), LED-B4.9 (empty), LED-B4.9.1 (too_large), LED-B5.4 (node_exists), LED-B11.5 for create_node; LED-B4.9.2 broken (F-1107).",
-   "remaining": "Audit every LED X statement mechanically (32).",
-   "source": "modules/11.json",
-   "status": "open"
+   "remaining": "LED-B4.9.2 fails (any revision kind is accepted and stored, F-1107, live again); LED-B3.4 inspected only (enabled with head 0 is unreachable through any entry point)",
+   "source": "matrix-input/refusals.json",
+   "status": "closed"
   },
   {
    "as_built_findings": [
@@ -17789,95 +17979,179 @@
    "status": "closed"
   },
   {
+   "as_built_findings": [
+    "F-1506"
+   ],
    "cited_runs": [
     "c15-live-refusals",
     "c15-live-register",
-    "c15-run-unit"
+    "c15-run-unit",
+    "rx-audit",
+    "rx-audit-selftest",
+    "rx-live-15",
+    "val-unit-3-c01"
    ],
    "evidence": [
+    "run:rx-live-15",
+    "run:val-unit-3-c01",
+    "run:rx-audit",
+    "run:rx-audit-selftest",
+    "refusals/audit.json",
+    "refusals/REFUSALS.md",
     "c15-live-refusals",
     "c15-live-register",
     "c15-run-unit",
     "modules/15.json refusals"
    ],
-   "gate": "5c-refusals",
-   "level": "method",
-   "module": "15",
-   "product_obligation": "unknown",
-   "remaining": "25 of 37 X statements hold live (refused with 0 journal writes), 8 blocked on the FHIR repository, 4 evidenced by upstream unit tests / inspection / a finding (F-1506 for INT-R1.19).",
-   "source": "modules/15.json",
-   "status": "open"
-  },
-  {
-   "cited_runs": [
-    "c16-s1-cypher-http"
-   ],
-   "evidence": [
-    "c16-s1-cypher-http"
-   ],
-   "gate": "5c-refusals",
-   "level": "method",
-   "module": "16",
-   "product_obligation": "unknown",
-   "remaining": "audited live: X1.5 (missing key 401), X3.2 (read-only admin 403, explain 200), X8.6.2 (read-only Cypher 403), X9.3/X9.4 (Bolt Unauthorized, AccessMode); other X statements (X7.3, X11.4, X13.6) inspected only",
-   "source": "modules/16.json",
-   "status": "open"
-  },
-  {
-   "cited_runs": [],
-   "evidence": [
-    "F-1703 (strict namespace warns, X statement says raise)",
-    "F-1714"
-   ],
+   "evidence_grade": "registered-run",
    "findings": [
-    "F-1703",
-    "F-C1715",
-    "F-C1716"
+    "F-1506"
    ],
    "gate": "5c-refusals",
-   "level": "method",
-   "module": "17",
+   "level": "product",
+   "module": "15",
    "product_basis": {
     "fails": [
-     "finding F-1703",
-     "finding F-C1715",
-     "finding F-C1716"
+     "finding F-1506",
+     "stated fails by matrix-input/refusals.json",
+     "run rx-live-15 (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "the remaining OPS X statements not audited one by one",
-   "source": "modules/17.json",
-   "status": "open"
+   "remaining": "INT-R1.19 fails (F-1506, first live reproduction with an rdflib-8 stand-in in the probe process); 8 statements (INT-F1.5, F1.14, F1.20, F2.3, F2.4, F3.3, F3.4, F9.2) blocked-access on HS.FHIRServer classes and a FHIR repository (IRIS for Health), parts reachable without one probed live; INT-X80.86 inspected only (AUDITE has the functional adjacency index); INT-F5.8 by an upstream test",
+   "source": "matrix-input/refusals.json",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
+   "cited_runs": [
+    "c16-s1-cypher-http",
+    "rx-audit",
+    "rx-audit-selftest",
+    "rx-live-16",
+    "val-gated-rag-1"
+   ],
    "evidence": [
+    "run:rx-live-16",
+    "run:val-gated-rag-1",
+    "run:rx-audit",
+    "run:rx-audit-selftest",
+    "refusals/audit.json",
+    "refusals/REFUSALS.md",
+    "c16-s1-cypher-http"
+   ],
+   "evidence_grade": "registered-run",
+   "gate": "5c-refusals",
+   "level": "product",
+   "module": "16",
+   "product_basis": {
+    "fails": [
+     "run c16-s1-cypher-http (fail)",
+     "run val-gated-rag-1 (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "API-X11.4 by the pinned e2e test only (val-gated-rag-1), not re-probed (a defect would reconfigure a system web application on the shared container); API-X13.6/X13.106 probed with inert stand-ins for torch and structlog",
+   "source": "matrix-input/refusals.json",
+   "status": "closed"
+  },
+  {
+   "as_built_findings": [
+    "F-1703",
+    "F-1714",
+    "F-C1715"
+   ],
+   "cited_runs": [
+    "rx-audit",
+    "rx-audit-selftest",
+    "rx-live-17",
+    "val-unit-3-c02",
+    "val-unit-3-c05"
+   ],
+   "evidence": [
+    "run:rx-live-17",
+    "run:val-unit-3-c02",
+    "run:val-unit-3-c05",
+    "run:rx-audit",
+    "run:rx-audit-selftest",
+    "refusals/audit.json",
+    "refusals/REFUSALS.md",
+    "F-1703 (strict namespace warns, X statement says raise)",
+    "F-1714"
+   ],
+   "evidence_grade": "registered-run",
+   "findings": [
+    "F-1703",
+    "F-1714",
+    "F-C1715",
+    "F-C1716"
+   ],
+   "gate": "5c-refusals",
+   "level": "product",
+   "module": "17",
+   "product_basis": {
+    "fails": [
+     "finding F-1703",
+     "finding F-1714",
+     "finding F-C1715",
+     "finding F-C1716",
+     "stated fails by matrix-input/refusals.json",
+     "run rx-live-17 (fail)",
+     "run val-unit-3-c05 (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "OPS-X4.8.2 (F-1703), OPS-X6.2 (F-1714, explain and load_ndjson raise httpx.HTTPStatusError), OPS-X2.1.1 (close does not run, F-C1715) fail; OPS-X4.84 and OPS-X5.7.1 by upstream unit tests only (need a least-privilege login, a namespace without Graph.KG.Eraser); async client not re-probed for OPS-X6.2",
+   "source": "matrix-input/refusals.json",
+   "status": "closed"
+  },
+  {
+   "as_built_findings": [
+    "F-1806",
+    "F-C1802"
+   ],
+   "cited_runs": [
+    "rx-audit",
+    "rx-audit-selftest",
+    "rx-live-18",
+    "val-unit-3-c02"
+   ],
+   "evidence": [
+    "run:rx-live-18",
+    "run:val-unit-3-c02",
+    "run:rx-audit",
+    "run:rx-audit-selftest",
+    "refusals/audit.json",
+    "refusals/REFUSALS.md",
     "SNP-X2.1/X2.2: c18-live-refusals",
     "SNP-X2.14: F-C1802",
     "SNP-X5.1: F-1806"
    ],
+   "evidence_grade": "registered-run",
    "findings": [
     "F-1806",
     "F-C1802",
     "F-C1803"
    ],
    "gate": "5c-refusals",
-   "level": "method",
+   "level": "product",
    "module": "18",
    "product_basis": {
     "fails": [
      "finding F-1806",
      "finding F-C1802",
      "finding F-C1803",
-     "lane status failed (modules/18.json)"
+     "stated fails by matrix-input/refusals.json",
+     "run rx-live-18 (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "closed claim cites no registered run or committed artifact",
-   "source": "modules/18.json",
-   "status": "open"
+   "remaining": "SNP-X2.14 (F-C1802) and SNP-X5.1 (F-1806) fail, reproduced live; SNP-X1.3 by upstream unit test only (needs a login refused SELECT)",
+   "source": "matrix-input/refusals.json",
+   "status": "closed"
   },
   {
    "as_built_findings": [
@@ -28714,6 +28988,10 @@
      {
       "kind": "inspected",
       "ref": "iris_vector_graph/_engine/vector.py:366-391"
+     },
+     {
+      "kind": "live",
+      "ref": "rx-live-06"
      }
     ],
     "gates": [
@@ -29059,6 +29337,10 @@
      {
       "kind": "inspected",
       "ref": "iris_vector_graph/cypher/translator.py:3125-3142"
+     },
+     {
+      "kind": "live",
+      "ref": "rx-dec-live-07"
      }
     ],
     "gates": [
@@ -31334,6 +31616,10 @@
      {
       "kind": "inspected",
       "ref": "iris_src/src/Graph/KG/Ledger.cls:488-498"
+     },
+     {
+      "kind": "live",
+      "ref": "rx-live-11"
      }
     ],
     "gates": [
@@ -31723,7 +32009,7 @@
   {
    "audit": {
     "confidence": "medium",
-    "disposition": "confirmed-source",
+    "disposition": "reproduced-test",
     "evidence": [
      {
       "kind": "probe",
@@ -31736,6 +32022,10 @@
      {
       "kind": "assumed",
       "ref": "P-1507"
+     },
+     {
+      "kind": "run",
+      "ref": "rx-live-15"
      }
     ],
     "gates": [
@@ -32412,6 +32702,10 @@
      {
       "kind": "inspected",
       "ref": "iris_vector_graph/stores/iris_sql_store.py:815-838"
+     },
+     {
+      "kind": "live",
+      "ref": "rx-live-17"
      }
     ],
     "gates": [
@@ -32684,6 +32978,10 @@
      {
       "kind": "inspected",
       "ref": "iris_vector_graph/sdk.py:166-182, 254-281"
+     },
+     {
+      "kind": "live",
+      "ref": "rx-live-17"
      }
     ],
     "gates": [
@@ -32819,6 +33117,10 @@
      {
       "kind": "inspected",
       "ref": "iris_vector_graph/_engine/snapshot.py:1644-1646, 1679"
+     },
+     {
+      "kind": "live",
+      "ref": "rx-dec-live-18"
      }
     ],
     "gates": [
@@ -32870,6 +33172,10 @@
      {
       "kind": "live",
       "ref": "ws-live-snap-importglobals"
+     },
+     {
+      "kind": "live",
+      "ref": "rx-live-18"
      }
     ],
     "gates": [
@@ -34667,6 +34973,10 @@
     {
      "kind": "inspected",
      "ref": "tests/unit/test_460_r271_snapshot_raises.py:156-163"
+    },
+    {
+     "kind": "live",
+     "ref": "rx-live-18"
     }
    ],
    "gates": [
@@ -37556,14 +37866,14 @@
   }
  ],
  "product_counts": {
-  "fails": 404,
+  "fails": 407,
   "holds-as-detection": 36,
   "holds-in-model-only": 1,
   "holds-inspected": 69,
   "holds-live": 9,
   "intent-undecided": 6,
   "n/a": 33,
-  "unknown": 194
+  "unknown": 191
  },
  "registry_runs": 1269,
  "starting_inventory": {
@@ -37577,9 +37887,9 @@
  },
  "status_counts": {
   "blocked": 25,
-  "closed": 586,
+  "closed": 598,
   "not-applicable": 35,
-  "open": 106
+  "open": 94
  },
  "submission": "9c3719c1",
  "writer_obligations": [

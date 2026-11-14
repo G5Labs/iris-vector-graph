@@ -1,0 +1,15 @@
+{
+  "command": "LOCK_WAIT_SECONDS=7000 bash experiment/playbook-completion/tools/locks.sh iris timeout 1200 python experiment/playbook-completion/refusals/live_06.py --out results.json (AUDITE; product EraseAll+PurgeAll before each case; journal oracle per case; oracle positive control passed)",
+  "experiment_head": "9b25b729e63cc187e9bd3e9216ba400d81f2676d",
+  "id": "rx-live-06",
+  "kind": "live",
+  "lane": "refusals",
+  "log": "$RUN_DIR/refusals/06/results.json",
+  "log_bytes": 67558,
+  "log_sha256": "1787f175181cbb9ddda39e93be376d1a452893b24655de2cf210e40bfaaa2b50",
+  "observes": "module 06 VEC kind X: 43 refusal cases over 29 statements in AUDITE, journal-checked: 39 hold (refused as stated, no net journal change outside what the statement says is written); 4 do not: VEC-X3.9 refused but left a new embedding_registry row and routed table (90 journal records; F-0615), VEC-X3.16 VectorOptimizer.migrate_to_optimized answered success False for an unrelated SQLCODE -1 on CREATE INDEX IF NOT EXISTS, no identity check (F-0613, F-C0615), VEC-X5.15 vector_search over an edge route kg_eemb_ with no graph returned a row (F-0612; the node-route case holds), VEC-X6.7 embed_nodes returned errors=2 instead of raising EmbeddingIdentityConflict (F-0614); VEC-X5.11 cases are SIMULATED (native-vector probe forced off) and not counted live; vector widths 4 at start and end, 0 pending queue entries left",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T14:55:06+00:00",
+  "result": "fail"
+}

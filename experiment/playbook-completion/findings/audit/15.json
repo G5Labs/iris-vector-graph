@@ -173,12 +173,12 @@
     "3.2",
     "3.5"
    ],
-   "notes": "Live check against a real rdflib 8 is blocked-access: rdflib 8 is not published. The [rdf] extra pins rdflib<8 (pyproject.toml:79,90), so the case needs an environment that overrode the pin.",
+   "notes": "Live check against a real rdflib 8 is blocked-access: rdflib 8 is not published. The [rdf] extra pins rdflib<8 (pyproject.toml:79,90), so the case needs an environment that overrode the pin. Reproduced since steer 9 through the product's real export_rdf and validate_shacl calls with an rdflib 8 stand-in lacking ConjunctiveGraph (rx-live-15, statement INT-R1.19; refusals lane); graded reproduced-test, not live, because the library is a stand-in, not an installed rdflib 8.",
    "id": "F-1506",
    "title": "With rdflib lacking ConjunctiveGraph (rdflib 8 per KNOWN_ISSUES), export and SHACL report 'rdflib is required'",
    "intended": "SYS-I9 (every refusal says why); INT-R1.19.",
    "observed": "Probe (c15-probe-noiris): with rdflib 7.6.0 importable but its ConjunctiveGraph attribute removed in the process, _build_rdflib_graph raised ImportError 'rdflib is required for RDF operations. Install with: pip install iris-vector-graph[rdf]' (cause: cannot import name 'ConjunctiveGraph'). The real rdflib 8 could not be installed: PyPI lists no rdflib 8 release (latest 7.6.0, checked 2026-11-13), so premise P-1507 ('rdflib 8 removes ConjunctiveGraph', docs/KNOWN_ISSUES.md 'The RDF extra needs rdflib 7') is unverified.",
-   "disposition": "confirmed-source",
+   "disposition": "reproduced-test",
    "evidence": [
     {
      "kind": "probe",
@@ -191,6 +191,10 @@
     {
      "kind": "assumed",
      "ref": "P-1507"
+    },
+    {
+     "kind": "run",
+     "ref": "rx-live-15"
     }
    ],
    "severity": "S4",

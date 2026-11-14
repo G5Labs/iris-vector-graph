@@ -1,0 +1,15 @@
+{
+  "command": "bash experiment/playbook-completion/tools/locks.sh iris timeout 1500 python experiment/playbook-completion/refusals/decoders/live_decoders.py 10",
+  "experiment_head": "14678055cebaefe0428ff71328d82cd51162eb1c",
+  "id": "rx-dec-live-10",
+  "kind": "live",
+  "lane": "refusals",
+  "log": "$RUN_DIR/refusals/decoders/10/live-10.json",
+  "log_bytes": 10328,
+  "log_sha256": "3d1fd1e5d44fe58009aebfc19e28aa973094349383e5f6efc4833c64782083e7",
+  "observes": "module 10 decoders driven live in AUDITE (oracle control ok): 10 cases, 7 match, 2 mismatch, 1 not decided. Match: PageRank.RunJson -> _scored_node_rows (4 scored rows equal; engine adds 0.0 rows for the 5 unscored nodes); PageRankGlobalJson (9 rows equal); WCC max_iterations=1 on a 4-node chain: server throws, store result carries the error, kg_WCC raises RuntimeError 'did not converge' (ALG-I5); SubgraphJson -> kg_SUBGRAPH (3 nodes, 2 edges, properties, labels equal); DegreeCentralityJson -> store rows (8 equal); BFSFastJson -> khop edges equal; driver error texts '<CLASS DOES NOT EXIST>XDCall+11^%SYS.DBSRV.1 *<class>' and '<METHOD DOES NOT EXIST>... *<method>,<class>' have the shapes _RUNJSON_MISSING keys on (near-miss names not matched; the degree fallback token DBSRV is in both). Mismatch: a default-graph node named 'largest': Algorithms.WCCJson and CDLPJson answer a valid node->label map, the store's _membership_rows refuses it as an accelerated summary (error 'a summary, not a node->component_id map: it carries [largest]'), kg_WCC/kg_CDLP mask it by calling the Owner again and answer the wire (F-C1018). Not decided: ArnoAccel.PageRankNativeJson answers '<THROW> ... arno kg_pagerank_global reads USER only, not AUDITE' (Native Reader blocked: libarno_callout.so for x86_64, F-1001)",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T15:15:41+00:00",
+  "result": "fail"
+}

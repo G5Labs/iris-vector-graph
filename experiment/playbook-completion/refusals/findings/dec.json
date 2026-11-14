@@ -1,0 +1,146 @@
+[
+ {
+  "id": "F-C0715",
+  "module": "07",
+  "title": "bm25_search rewrites document ids: its leading-dot patch runs over the whole answer, so an id holding ':.5', ',.7' or '[.9' comes back as ':0.5', ',0.7', '[0.9'",
+  "intended": "TXT-B2 (search returns each best document with its node id and score); TXT-B2.13 (each id and score in the answer is valid JSON, ids included); CHANGELOG.md:463-467 (4.6.3: 'Search answers keep a node id with a quote or a backslash', each answer escaped as RFC 8259 asks); docs/USER_GUIDE.md:859-866 (bm25_search and CALL ivg.bm25.search answer the same nodes); tests/e2e/test_463_search_id_escaping_e2e.py:57-71 asserts the Python and Cypher answers agree id for id.",
+  "observed": "Live (rx-dec-live-07, case 'ids containing ...'): graph rxdg, nodes rxd:a, rxd:.5x, rxd,.7y, rxd[.9z, rxd:b with the word zebra, index rxdidx. Graph.KG.BM25Index.Search's raw answer is valid JSON with the ids exactly as stored and every score already written with a leading 0 (no '\"score\":.' in the wire); bm25_search answered ('rxd:0.5x', ...), ('rxd,0.7y', ...), ('rxd[0.9z', ...) for 3 of the 5 rows, and bm25_search(report=True) the same; CALL ivg.bm25.search (JSON_TABLE over the same wire) answered the ids unchanged. Cause: _parse applies re.sub(r'(?<=[:\\[,])(\\.\\d)', r'0\\1', raw) to the whole JSON text, string values included (iris_vector_graph/_engine/vector.py:1817-1819); the patch is redundant since BM25Index.SearchCore writes the leading 0 itself (iris_src/src/Graph/KG/BM25Index.cls:361-365). The static check lists the pattern as not token-aware (rx-dec-map).",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "rx-dec-live-07"
+   },
+   {
+    "kind": "check",
+    "ref": "rx-dec-map"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/vector.py:1817-1819"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/BM25Index.cls:361-365"
+   }
+  ],
+  "gates": [
+   "3.5-decoders"
+  ],
+  "severity": "S2",
+  "confidence": "high",
+  "remedy": "Drop the text patch (the server already writes a leading 0), or apply it to number tokens only by parsing with json.loads(parse_float=...) after a token-aware scan; add an id with ':.5' to the 4.6.3 id-escaping test.",
+  "notes": "An altered id can name another existing node (rxd:0.5x) or none; the Cypher path is unaffected. The number fix the patch guards (TXT-B2.13, '.5' written as '0.5' since 4.2) is done server-side."
+ },
+ {
+  "id": "F-C0716",
+  "module": "07",
+  "title": "The engine's index registry mis-decodes BM25Index.List: an index name holding a comma or a leading/trailing space is split or trimmed, so the real index is missing and phantom names appear",
+  "intended": "TXT-B9 (List names every BM25 index); TXT-B1.10 and the list_indexes/index docstrings (iris_vector_graph/_engine/vector.py:227-242, 260-266: the registry holds the indexes found when the engine starts; index(name) raises IndexNotFoundError for a name not in it). bm25_build and bm25_insert accept such names (BM25BuildInput only requires a non-empty name, iris_vector_graph/_validate.py:163-179; bm25_insert validates nothing).",
+  "observed": "Live (rx-dec-live-07, case 'index names holding the separator or a leading space'): bm25_insert('rxd,comma', ...) and bm25_insert(' rxdspace', ...) both created indexes; Graph.KG.BM25Index.List answered ' rxdspace,rxd,comma,rxdidx,rxdins'; _build_index_registry (Native API path: split(',') then strip(), iris_vector_graph/_engine/vector.py:106-118) gave bm25 names ['comma', 'rxd', 'rxdidx', 'rxdins', 'rxdspace']: the indexes 'rxd,comma' and ' rxdspace' are missing and 'rxd', 'comma', 'rxdspace' are phantoms (bm25_info on them answers no index). A fresh engine's registry, which list_indexes, index() and the RRF leg choice read, is the same.",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "rx-dec-live-07"
+   },
+   {
+    "kind": "check",
+    "ref": "rx-dec-map"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/BM25Index.cls:626-633"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/vector.py:106-118"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_validate.py:163-179"
+   }
+  ],
+  "gates": [
+   "3.5-decoders"
+  ],
+  "severity": "S4",
+  "confidence": "high",
+  "remedy": "Answer List as a JSON array (or $List) and decode it as such; or refuse ',' and surrounding spaces in index names in BM25BuildInput and bm25_insert.",
+  "notes": "The embedded-Python path (iris.gref walk) is not affected; this audit ran the Native API path the client takes over a remote connection."
+ },
+ {
+  "id": "F-C0717",
+  "module": "07",
+  "title": "BM25Index.Build and Info write the graph name into their JSON escaping only backslash and quote: a graph name with a control character makes bm25_build raise JSONDecodeError after the index was rebuilt, and the index's graph can no longer be read",
+  "intended": "TXT-B1.10 / TXT-D9 (the index records its graph and the engine reads it back through Info); RFC 8259 escaping as CHANGELOG.md:463-467 states for the search answers (the jsonEsc helper, iris_src/src/Graph/KG/TraversalBFS.cls:15-33); graph names with control characters are refused elsewhere (validate_graph_name, iris_vector_graph/_validate.py:19-49; ADR-0003), but bm25_build does not call it.",
+  "observed": "Live (rx-dec-live-07, case 'graph name with a tab'): bm25_build('rxdctl', ['name'], graph='rxd\\tg') ran Build (^BM25Idx('rxdctl','cfg','graph') = 'rxd\\tg' stored) and then raised JSONDecodeError 'Invalid control character'; Graph.KG.BM25Index.Info('rxdctl') answers '{\"N\":0,...,\"graph\":\"rxd<TAB>g\",\"schema\":2}', which json.loads refuses; bm25_info raises JSONDecodeError and _index_graph swallows it and answers None (unknown). Build kills any index of that name before it writes (BM25Index.cls:99).",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "rx-dec-live-07"
+   },
+   {
+    "kind": "check",
+    "ref": "rx-dec-map"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/BM25Index.cls:172-174"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/BM25Index.cls:608-614"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/vector.py:1777-1785"
+   }
+  ],
+  "gates": [
+   "3.5-decoders"
+  ],
+  "severity": "S4",
+  "confidence": "high",
+  "remedy": "Validate the graph with validate_graph_name in bm25_build before calling Build; escape with jsonEsc (or build the answer with %DynamicObject) in Build and Info.",
+  "notes": "Only an invalid graph name reaches it, so the impact is a confusing error after a destructive rebuild; recorded because the encoder/decoder pair disagrees on a value the server accepted."
+ },
+ {
+  "id": "F-C1018",
+  "module": "10",
+  "title": "The store's membership decoder refuses the Owner's components and label-propagation answers when a default-graph node is named 'components', 'communities' or 'largest' (read as an accelerated summary); the engine masks it by calling the Owner a second time",
+  "intended": "ALG-B3 (connected components group the default graph's nodes; Graph.KG.Algorithms.WCCJson answers a node->component map, iris_src/src/Graph/KG/Algorithms.cls:6-90); the decoder's own contract (iris_vector_graph/stores/iris_sql_store.py:662-676 docstring: Graph.KG.Algorithms answers with a map, which is a readable shape; only the accelerated summary is refused); spec 230 FR-017 (an unreadable shape raises, a readable one is read). A node id is any string; nothing reserves these three.",
+  "observed": "Live (rx-dec-live-10, cases 'a default-graph node named largest'): default graph rxda->rxdb->rxdc->rxda, rxdc->largest, chain rxdx1..rxdx4, rxdd alone. Graph.KG.Algorithms.WCCJson answered the valid map {'largest':'largest','rxda':'largest',...,'rxdx4':'rxdx1'}; IRISGraphStore._execute_wcc answered rows [] with error \"a summary, not a node\u2192component_id map: it carries ['largest']\" (AcceleratedSummaryShape from _membership_rows, iris_sql_store.py:670-675, _SUMMARY_KEYS iris_sql_store.py:636); CDLPJson likewise ('node\u2192community_id'). kg_WCC and kg_CDLP still answered the wire map: on a store error they call the Owner again (iris_vector_graph/_engine/algorithms.py:816-828, 842-849).",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "rx-dec-live-10"
+   },
+   {
+    "kind": "check",
+    "ref": "rx-dec-map"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/stores/iris_sql_store.py:636"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/stores/iris_sql_store.py:662-676"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/algorithms.py:816-828"
+   }
+  ],
+  "gates": [
+   "3.5-decoders"
+  ],
+  "severity": "S4",
+  "confidence": "high",
+  "remedy": "Tell the shapes apart by producer (the Owner path never answers a summary) or by structure (a summary's 'components' is a number and 'largest' a list; a component label is a node id string), not by the presence of a key that can be a node id.",
+  "notes": "User-visible answers stay right through the engine's second Owner call; the store result (and anything reading the store directly) reports a false error, and every such call runs the algorithm twice."
+ }
+]

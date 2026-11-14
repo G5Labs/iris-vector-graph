@@ -1,0 +1,285 @@
+[
+ {
+  "id": "F-C0415",
+  "module": "04",
+  "title": "A refused erase or adjacency rebuild (writer lock not granted) still leaves writes behind: the graph's no-lock mark, source generations and ^KG(\"__version\")",
+  "intended": "ADJ-X4.7 (ontology/04-adjacency.md, stated refusal): 'Removing a graph, removing all graphs and starting an adjacency rebuild are refused when the lock is not granted in 5 seconds. Nothing is written.' (implementing code iris_src/src/Graph/KG/Adjacency.cls:428-434, 452-458, 814-821; callers Eraser.cls:234-235, 788-789, TraversalBuild.cls:37-38). The erase contract: 'Erasure either completes or leaves the graph untouched' (iris_vector_graph/_engine/nodes_edges.py:1500-1507).",
+  "observed": "rx-live-04 (AUDITE, journal oracle, a second process holding ^IVG.AdjW exclusively, shown in ^$LOCK): erase_graph('rx04g') raised 'Adjacency.RemoveGraph: the writer lock for graph rx04g was not granted in 5 seconds' after 15.07 s, erase_all() raised the RemoveAll message after 20.07 s, sync() raised the BeginRebuild message after 5.00 s. Rows and ^KG out entries were restored (5 nodes, 3 edges, 10 out entries before and after), but the journal shows net changes that the rollback did not take back: ^IVG.AdjNoLock(\"rx04g\") (and ^IVG.AdjNoLock(0) for erase_all), ^KG(\"gen\",\"rx04g\",\"rx04:a\"|\"rx04:b\") (and (\"gen\",0,\"rx04:d\")), ^KG(\"__version\"), and IRIS %iFind word entries ^t52S.DMCe.7(\"W\",...) of rdf_props' idx_props_val_ifind; the refused BuildKG leaves ^KG(\"__version\") bumped. Cause (source): the Eraser deletes the graph's rows before it calls RemoveGraph/RemoveAll (EraseGraph Eraser.cls:47-234, EraseAll Eraser.cls:709-788), the rows' adjacency hook (Graph.KG.AdjIndex -> Adjacency.Remove) calls WriterLock, which waits 5 s per row, then writes without the lock and raises the no-lock mark with $Increment (Adjacency.cls:51-73, documented as not undone by a rollback: ontology ADJ-T4.6.1), together with $Increment of ^KG(\"gen\") and ^KG(\"__version\"); BuildKG's Catch bumps ^KG(\"__version\") (TraversalBuild.cls:155-163). Consequences: after a refused erase the graph keeps the no-lock mark, so readers store no degree for it until sync() or a later successful erase (ADJ-B4.6.5); the time to refusal is 5 s per deleted edge row plus 5 s (15 s for 2 edges, 20 s for 3), not 5 s. Content is not changed.",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "rx-live-04"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/Adjacency.cls:51-73"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/Adjacency.cls:428-458"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/Eraser.cls:225-235"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/TraversalBuild.cls:30-40"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/TraversalBuild.cls:155-163"
+   }
+  ],
+  "gates": [
+   "5c-refusals",
+   "3.6-frame"
+  ],
+  "severity": "S4",
+  "confidence": "high",
+  "remedy": "Either take the graph's (or the parent's) writer lock in the Eraser and in BuildKG before any row is deleted or any counter is bumped, so the 5-second refusal comes first and writes nothing; or state the refusal as it is built: the content is untouched, but the no-lock mark, the source generations and the version stamp move, and the refusal comes after 5 seconds per row. Clearing the no-lock mark is a separate decision (it disables the graph's degree cache until a rebuild).",
+  "notes": "Exercised with an artificial long exclusive hold of ^IVG.AdjW by a second process; in the product only a reader's no-wait exclusive probe takes that lock exclusively, so the refusal is rare in practice. The %iFind word entries are IRIS's own index bookkeeping, listed for completeness, not attributed to IVG code. Not a duplicate: F-0409 (a failed rebuild in a caller transaction rolls back the caller's work) and F-C0402 (two rebuilds at once) are different defects."
+ },
+ {
+  "id": "F-C0615",
+  "module": "06",
+  "title": "VectorOptimizer.migrate_to_optimized cannot run on IRIS 2026.1: its CREATE INDEX IF NOT EXISTS ... AS HNSW is rejected, so it copies nothing and answers success False",
+  "intended": "README.md:12 and :21 ('Any IRIS 2025.1 or later works'); the method's own contract (iris_vector_graph/vector_utils.py:150-162: migrate the source table's vectors into kg_NodeEmbeddings_optimized and return migration results), and ADR-0006 as stated by VEC-X3.16 (the tool that fills the second legacy table checks the identity too).",
+  "observed": "Live in AUDITE (IRIS 2026.1 Community Build 234U, run rx-live-06, case 'VectorOptimizer.migrate_to_optimized copies rx06-src vectors into a table claimed for rx06-dst -> refused by the identity check'): with one vector in kg_NodeEmbeddings, migrate_to_optimized() returned {'success': False, 'reason': 'Migration error: <SQL ERROR>; Details: [SQLCODE: <-1>:<Invalid SQL statement>] ... < ON expected, NOT found ^ CREATE INDEX IF NOT>'} and copied nothing (kg_NodeEmbeddings_optimized 0 rows; journal: no net change). The statement at vector_utils.py:194-199 runs before the copy loop (vector_utils.py:205-249) and IRIS 2026.1 does not accept IF NOT EXISTS on CREATE INDEX, so the method fails on every call on this engine, whatever the data. As a consequence the missing identity check of F-0613 (no enforce_embedding_identity in the copy loop) cannot be observed live here: the tool fails earlier for an unrelated reason.",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "rx-live-06"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/vector_utils.py:194-199"
+   },
+   {
+    "kind": "inspected",
+    "ref": "README.md:12-21"
+   }
+  ],
+  "gates": [
+   "5c-refusals",
+   "3.7-suites"
+  ],
+  "severity": "S4",
+  "confidence": "high",
+  "remedy": "Use a CREATE INDEX form every supported engine accepts (or probe for the index and skip the statement when it exists, as other setup code does), and run the identity check of F-0613 before the copy; add a live test of migrate_to_optimized on the oldest supported engine.",
+  "notes": "Found by the refusals lane while probing VEC-X3.16. Version-dependent: an engine that accepts CREATE INDEX IF NOT EXISTS (not available here) would reach the copy loop and then show F-0613's unchecked copy. Related: F-0613 (confirmed-source)."
+ },
+ {
+  "id": "F-C1715",
+  "module": "17",
+  "title": "On a namespace that refuses the engine, close does not run: IRISGraphEngine has no close() and its store's close() is refused",
+  "intended": "OPS-X2.1.1 (ontology/17-operations.md): 'On a namespace that refuses the engine, most calls are refused. Setup, status, legacy removal and close still run.' Source of the exemption: EXEMPT_METHODS = {'initialize_schema', 'status', 'remove_legacy_objects', 'close'} (iris_vector_graph/schema_name.py:376-377, 'What a namespace that refuses an engine still lets it do').",
+  "observed": "Live (rx-live-17, AUDITE recording Graph_KG): IRISGraphEngine(conn, schema_prefix='RX17ALT') is refused at first access; create_node, get_node, node_count, execute_cypher and the store's get_nodes raise IVGSchemaError, status() and remove_legacy_objects(dry_run=True) run, but hasattr(engine, 'close') is False (the exemption names a method the engine does not define), and engine._store.close() raises IVGSchemaError: the store's methods are guarded with no exemptions (engine.py:388-390 guard_methods(self._store)), so its close (a no-op, iris_sql_store.py:4278-4279) is refused. The refusal itself holds; only the close clause does not.",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "rx-live-17"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/schema_name.py:376-377"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/engine.py:384-390"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/engine.py:414-416"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/stores/iris_sql_store.py:4278-4279"
+   }
+  ],
+  "gates": [
+   "5c-refusals"
+  ],
+  "severity": "S4",
+  "confidence": "high",
+  "remedy": "Either give the engine a close() (releasing what it holds) and exempt the store's close from the guard, or drop 'close' from EXEMPT_METHODS and from the stated behaviour.",
+  "notes": "Found by the refusals lane's mechanical audit of OPS X statements. Consequence is small (the store close is a no-op); the defect is the stated exemption."
+ },
+ {
+  "id": "F-C1716",
+  "module": "17",
+  "title": "kill_query cannot end any process on IRIS 2026.1: %SYSTEM.SYS.KillProcess is not an SQL function (SQLCODE -359), so every call answers False",
+  "intended": "docs/API_REFERENCE.md:2686-2692 'kill_query(query_id) ... End the IRIS process with ID query_id (an id from list_active_queries)'; iris_vector_graph/_engine/admin.py:957-962 'Calls %SYSTEM.SYS.KillProcess through SQL. True when the statement ran ...; False when it failed'.",
+  "observed": "Live (rx-live-17, AUDITE, IRIS 2026.1 Community Build 234U, driver 5.3.2): engine.kill_query on the lane's own scratch process (pid 140416, an ordinary killable client process) answered False and logged 'kill_query 140416 failed: [SQLCODE: <-359>:<SQL Function (function stored procedure) not found>] ... User defined SQL function %SYSTEM.SYS.KILLPROCESS does not exist'; the process answered %SYSTEM.SYS.ProcessID afterwards (still alive). The same -359 for pid 999999999. The statement 'SELECT %SYSTEM.SYS.KillProcess(?)' (admin.py:964-965) cannot run, so the documented operation never ends a process; the refusal branch (OPS-X3.5.1: warning, False) is the only reachable one. The upstream unit tests mock the cursor (test_admin_unit.py TestKillQuery), so they cannot see it.",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "rx-live-17"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/admin.py:957-969"
+   },
+   {
+    "kind": "inspected",
+    "ref": "docs/API_REFERENCE.md:2686-2692"
+   }
+  ],
+  "gates": [
+   "5c-refusals",
+   "3.7-suites"
+  ],
+  "severity": "S3",
+  "confidence": "high",
+  "remedy": "Call the class method through the Native API (classMethodValue('%SYSTEM.SYS', 'KillProcess', pid)) or through a projected stored procedure, check its return status, and answer False (or raise) when the process was not ended; add a live test that ends a scratch process.",
+  "notes": "Not tested on Enterprise or 2026.2/2026.3; the %SYSTEM.SYS class is the same in each, but whether any build projects KillProcess as an SQL function was not checked."
+ },
+ {
+  "id": "F-C0715",
+  "module": "07",
+  "title": "bm25_search rewrites document ids: its leading-dot patch runs over the whole answer, so an id holding ':.5', ',.7' or '[.9' comes back as ':0.5', ',0.7', '[0.9'",
+  "intended": "TXT-B2 (search returns each best document with its node id and score); TXT-B2.13 (each id and score in the answer is valid JSON, ids included); CHANGELOG.md:463-467 (4.6.3: 'Search answers keep a node id with a quote or a backslash', each answer escaped as RFC 8259 asks); docs/USER_GUIDE.md:859-866 (bm25_search and CALL ivg.bm25.search answer the same nodes); tests/e2e/test_463_search_id_escaping_e2e.py:57-71 asserts the Python and Cypher answers agree id for id.",
+  "observed": "Live (rx-dec-live-07, case 'ids containing ...'): graph rxdg, nodes rxd:a, rxd:.5x, rxd,.7y, rxd[.9z, rxd:b with the word zebra, index rxdidx. Graph.KG.BM25Index.Search's raw answer is valid JSON with the ids exactly as stored and every score already written with a leading 0 (no '\"score\":.' in the wire); bm25_search answered ('rxd:0.5x', ...), ('rxd,0.7y', ...), ('rxd[0.9z', ...) for 3 of the 5 rows, and bm25_search(report=True) the same; CALL ivg.bm25.search (JSON_TABLE over the same wire) answered the ids unchanged. Cause: _parse applies re.sub(r'(?<=[:\\[,])(\\.\\d)', r'0\\1', raw) to the whole JSON text, string values included (iris_vector_graph/_engine/vector.py:1817-1819); the patch is redundant since BM25Index.SearchCore writes the leading 0 itself (iris_src/src/Graph/KG/BM25Index.cls:361-365). The static check lists the pattern as not token-aware (rx-dec-map).",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "rx-dec-live-07"
+   },
+   {
+    "kind": "check",
+    "ref": "rx-dec-map"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/vector.py:1817-1819"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/BM25Index.cls:361-365"
+   }
+  ],
+  "gates": [
+   "3.5-decoders"
+  ],
+  "severity": "S2",
+  "confidence": "high",
+  "remedy": "Drop the text patch (the server already writes a leading 0), or apply it to number tokens only by parsing with json.loads(parse_float=...) after a token-aware scan; add an id with ':.5' to the 4.6.3 id-escaping test.",
+  "notes": "An altered id can name another existing node (rxd:0.5x) or none; the Cypher path is unaffected. The number fix the patch guards (TXT-B2.13, '.5' written as '0.5' since 4.2) is done server-side."
+ },
+ {
+  "id": "F-C0716",
+  "module": "07",
+  "title": "The engine's index registry mis-decodes BM25Index.List: an index name holding a comma or a leading/trailing space is split or trimmed, so the real index is missing and phantom names appear",
+  "intended": "TXT-B9 (List names every BM25 index); TXT-B1.10 and the list_indexes/index docstrings (iris_vector_graph/_engine/vector.py:227-242, 260-266: the registry holds the indexes found when the engine starts; index(name) raises IndexNotFoundError for a name not in it). bm25_build and bm25_insert accept such names (BM25BuildInput only requires a non-empty name, iris_vector_graph/_validate.py:163-179; bm25_insert validates nothing).",
+  "observed": "Live (rx-dec-live-07, case 'index names holding the separator or a leading space'): bm25_insert('rxd,comma', ...) and bm25_insert(' rxdspace', ...) both created indexes; Graph.KG.BM25Index.List answered ' rxdspace,rxd,comma,rxdidx,rxdins'; _build_index_registry (Native API path: split(',') then strip(), iris_vector_graph/_engine/vector.py:106-118) gave bm25 names ['comma', 'rxd', 'rxdidx', 'rxdins', 'rxdspace']: the indexes 'rxd,comma' and ' rxdspace' are missing and 'rxd', 'comma', 'rxdspace' are phantoms (bm25_info on them answers no index). A fresh engine's registry, which list_indexes, index() and the RRF leg choice read, is the same.",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "rx-dec-live-07"
+   },
+   {
+    "kind": "check",
+    "ref": "rx-dec-map"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/BM25Index.cls:626-633"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/vector.py:106-118"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_validate.py:163-179"
+   }
+  ],
+  "gates": [
+   "3.5-decoders"
+  ],
+  "severity": "S4",
+  "confidence": "high",
+  "remedy": "Answer List as a JSON array (or $List) and decode it as such; or refuse ',' and surrounding spaces in index names in BM25BuildInput and bm25_insert.",
+  "notes": "The embedded-Python path (iris.gref walk) is not affected; this audit ran the Native API path the client takes over a remote connection."
+ },
+ {
+  "id": "F-C0717",
+  "module": "07",
+  "title": "BM25Index.Build and Info write the graph name into their JSON escaping only backslash and quote: a graph name with a control character makes bm25_build raise JSONDecodeError after the index was rebuilt, and the index's graph can no longer be read",
+  "intended": "TXT-B1.10 / TXT-D9 (the index records its graph and the engine reads it back through Info); RFC 8259 escaping as CHANGELOG.md:463-467 states for the search answers (the jsonEsc helper, iris_src/src/Graph/KG/TraversalBFS.cls:15-33); graph names with control characters are refused elsewhere (validate_graph_name, iris_vector_graph/_validate.py:19-49; ADR-0003), but bm25_build does not call it.",
+  "observed": "Live (rx-dec-live-07, case 'graph name with a tab'): bm25_build('rxdctl', ['name'], graph='rxd\\tg') ran Build (^BM25Idx('rxdctl','cfg','graph') = 'rxd\\tg' stored) and then raised JSONDecodeError 'Invalid control character'; Graph.KG.BM25Index.Info('rxdctl') answers '{\"N\":0,...,\"graph\":\"rxd<TAB>g\",\"schema\":2}', which json.loads refuses; bm25_info raises JSONDecodeError and _index_graph swallows it and answers None (unknown). Build kills any index of that name before it writes (BM25Index.cls:99).",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "rx-dec-live-07"
+   },
+   {
+    "kind": "check",
+    "ref": "rx-dec-map"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/BM25Index.cls:172-174"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/BM25Index.cls:608-614"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/vector.py:1777-1785"
+   }
+  ],
+  "gates": [
+   "3.5-decoders"
+  ],
+  "severity": "S4",
+  "confidence": "high",
+  "remedy": "Validate the graph with validate_graph_name in bm25_build before calling Build; escape with jsonEsc (or build the answer with %DynamicObject) in Build and Info.",
+  "notes": "Only an invalid graph name reaches it, so the impact is a confusing error after a destructive rebuild; recorded because the encoder/decoder pair disagrees on a value the server accepted."
+ },
+ {
+  "id": "F-C1018",
+  "module": "10",
+  "title": "The store's membership decoder refuses the Owner's components and label-propagation answers when a default-graph node is named 'components', 'communities' or 'largest' (read as an accelerated summary); the engine masks it by calling the Owner a second time",
+  "intended": "ALG-B3 (connected components group the default graph's nodes; Graph.KG.Algorithms.WCCJson answers a node->component map, iris_src/src/Graph/KG/Algorithms.cls:6-90); the decoder's own contract (iris_vector_graph/stores/iris_sql_store.py:662-676 docstring: Graph.KG.Algorithms answers with a map, which is a readable shape; only the accelerated summary is refused); spec 230 FR-017 (an unreadable shape raises, a readable one is read). A node id is any string; nothing reserves these three.",
+  "observed": "Live (rx-dec-live-10, cases 'a default-graph node named largest'): default graph rxda->rxdb->rxdc->rxda, rxdc->largest, chain rxdx1..rxdx4, rxdd alone. Graph.KG.Algorithms.WCCJson answered the valid map {'largest':'largest','rxda':'largest',...,'rxdx4':'rxdx1'}; IRISGraphStore._execute_wcc answered rows [] with error \"a summary, not a node\u2192component_id map: it carries ['largest']\" (AcceleratedSummaryShape from _membership_rows, iris_sql_store.py:670-675, _SUMMARY_KEYS iris_sql_store.py:636); CDLPJson likewise ('node\u2192community_id'). kg_WCC and kg_CDLP still answered the wire map: on a store error they call the Owner again (iris_vector_graph/_engine/algorithms.py:816-828, 842-849).",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "rx-dec-live-10"
+   },
+   {
+    "kind": "check",
+    "ref": "rx-dec-map"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/stores/iris_sql_store.py:636"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/stores/iris_sql_store.py:662-676"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/algorithms.py:816-828"
+   }
+  ],
+  "gates": [
+   "3.5-decoders"
+  ],
+  "severity": "S4",
+  "confidence": "high",
+  "remedy": "Tell the shapes apart by producer (the Owner path never answers a summary) or by structure (a summary's 'components' is a number and 'largest' a list; a component label is a node id string), not by the presence of a key that can be a node id.",
+  "notes": "User-visible answers stay right through the engine's second Owner call; the store result (and anything reading the store directly) reports a false error, and every such call runs the algorithm twice."
+ }
+]

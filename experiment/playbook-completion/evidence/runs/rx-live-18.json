@@ -1,0 +1,15 @@
+{
+  "command": "bash experiment/playbook-completion/tools/locks.sh iris timeout 1200 python experiment/playbook-completion/refusals/live_18.py --out trial1.json (AUDITE; reset by Eraser.EraseAll + Ledger.PurgeAll before/after; journal oracle per case)",
+  "experiment_head": "9b25b729e63cc187e9bd3e9216ba400d81f2676d",
+  "id": "rx-live-18",
+  "kind": "live",
+  "lane": "refusals",
+  "log": "$RUN_DIR/refusals/18/trial1.json",
+  "log_bytes": 23847,
+  "log_sha256": "297fa2b9f565be905db5f30d5b44a2be4959fe8acaeb3dec05004896a93c4052",
+  "observes": "module 18 stated refusals, 17 journal-windowed cases + 8 observations, oracle control ok: 15 hold (refused as stated, no net change outside named counters): SNP-X1.9.1 x5 (NodeValueJSON on ^KG/^IVG.Ledger/^IVGAuditRX18 and SetNodeJSON on ^IVGAuditRX18/^KG -> \"not a vector-index global\", 0 journal records), SNP-X2.1 x2 (strict ledger: LedgerStrictModeError, also for a missing file; only ^Graph.KG.LedgerStatsD(\"default\") rej_strict_block bumped), SNP-X2.2 (CallerTransactionOpenError, 0 records), SNP-X2.3 x2 (layout flat/pre-223 -> ValueError before erase_all, 0 records), SNP-X2.9 x2 (non-identifier column in nodes/rdf_props rows -> failed_rows 1 each, 0 records), SNP-X2.12 x2 (non-numeric node/edge vector text -> failed_rows 1 each, 0 records), SNP-X2.13 (^IVGAuditRX18 in an archive -> failed_rows 2, not written; only the ^KG(\"__version\")/^NKG(\"$meta\",\"version\") floors set). 2 do not hold: SNP-X2.14 (^IVG.GraphMode lines with subscripts \"\" and (\"rx18y\",\"\") that the Native API refuses with <SUBSCRIPT>: merge restore answered failed_rows {}, restored_globals [IVG.GraphMode], no error, F-C1802); SNP-X5.1 (Graph.KG.Snapshot.ImportGlobals on a dir holding ^IVGAuditRX18.gof written by the product ExportGlobals answered {\"imported\":1} and set ^IVGAuditRX18(\"a\"), a global outside the restore allow-list, F-1806; scratch dir removed). SNP-X1.3 not triggerable here (needs a login refused SELECT); context only",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T14:48:57+00:00",
+  "result": "fail"
+}

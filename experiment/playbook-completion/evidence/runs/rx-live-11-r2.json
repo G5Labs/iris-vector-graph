@@ -1,0 +1,15 @@
+{
+  "command": "LOCK_WAIT_SECONDS=10000 timeout 12000 bash experiment/playbook-completion/tools/locks.sh iris timeout 900 python experiment/playbook-completion/refusals/live_11.py --out=results-r2.json b5_12 (AUDITE; EraseAll + PurgeAll before and after)",
+  "experiment_head": "ac8eb8a9aa124e438f3c7e0c0e765fed162f06d3",
+  "id": "rx-live-11-r2",
+  "kind": "live",
+  "lane": "refusals",
+  "log": "$RUN_DIR/refusals/11/results-r2.json",
+  "log_bytes": 5819,
+  "log_sha256": "fc5e319db33aa9321b7cfdbecb358573162cd21ec4aff4981d0fabf7f0e567c6",
+  "observes": "LED-B5.12 re-run after rx-live-11 with rxlib's non-transactional-increment classification: 3 refusal cases, all hold. A changeset that deletes a node (detach) then sets its property is refused at op 1 ('node rx11:d1 was deleted earlier in this changeset'); delete_relationship then set_qualifier by statement id is refused at op 1 ('statement 1 was deleted earlier in this changeset'); by tuple it is refused at op 1 with 'relationship not found' (the row is gone before the deletedStmt test). Net journal effect outside ledger_stats and ID counters: only nodes written non-transactionally inside the commit's bracket, which the rollback does not undo by IRIS design: ^KG(\"__version\"), ^KG(\"gen\",0,\"rx11:d1\") (all 3 cases) and the rdf_props iFind word node ^t52S.DMCe.7(\"W\",4076) (node case); no node, edge, label, property or ledger row survives (node_rows 1, edge_rows 1 as before). Oracle positive control passed.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T15:22:54+00:00",
+  "result": "pass"
+}

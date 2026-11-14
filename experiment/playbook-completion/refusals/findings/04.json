@@ -1,0 +1,44 @@
+[
+ {
+  "id": "F-C0415",
+  "module": "04",
+  "title": "A refused erase or adjacency rebuild (writer lock not granted) still leaves writes behind: the graph's no-lock mark, source generations and ^KG(\"__version\")",
+  "intended": "ADJ-X4.7 (ontology/04-adjacency.md, stated refusal): 'Removing a graph, removing all graphs and starting an adjacency rebuild are refused when the lock is not granted in 5 seconds. Nothing is written.' (implementing code iris_src/src/Graph/KG/Adjacency.cls:428-434, 452-458, 814-821; callers Eraser.cls:234-235, 788-789, TraversalBuild.cls:37-38). The erase contract: 'Erasure either completes or leaves the graph untouched' (iris_vector_graph/_engine/nodes_edges.py:1500-1507).",
+  "observed": "rx-live-04 (AUDITE, journal oracle, a second process holding ^IVG.AdjW exclusively, shown in ^$LOCK): erase_graph('rx04g') raised 'Adjacency.RemoveGraph: the writer lock for graph rx04g was not granted in 5 seconds' after 15.07 s, erase_all() raised the RemoveAll message after 20.07 s, sync() raised the BeginRebuild message after 5.00 s. Rows and ^KG out entries were restored (5 nodes, 3 edges, 10 out entries before and after), but the journal shows net changes that the rollback did not take back: ^IVG.AdjNoLock(\"rx04g\") (and ^IVG.AdjNoLock(0) for erase_all), ^KG(\"gen\",\"rx04g\",\"rx04:a\"|\"rx04:b\") (and (\"gen\",0,\"rx04:d\")), ^KG(\"__version\"), and IRIS %iFind word entries ^t52S.DMCe.7(\"W\",...) of rdf_props' idx_props_val_ifind; the refused BuildKG leaves ^KG(\"__version\") bumped. Cause (source): the Eraser deletes the graph's rows before it calls RemoveGraph/RemoveAll (EraseGraph Eraser.cls:47-234, EraseAll Eraser.cls:709-788), the rows' adjacency hook (Graph.KG.AdjIndex -> Adjacency.Remove) calls WriterLock, which waits 5 s per row, then writes without the lock and raises the no-lock mark with $Increment (Adjacency.cls:51-73, documented as not undone by a rollback: ontology ADJ-T4.6.1), together with $Increment of ^KG(\"gen\") and ^KG(\"__version\"); BuildKG's Catch bumps ^KG(\"__version\") (TraversalBuild.cls:155-163). Consequences: after a refused erase the graph keeps the no-lock mark, so readers store no degree for it until sync() or a later successful erase (ADJ-B4.6.5); the time to refusal is 5 s per deleted edge row plus 5 s (15 s for 2 edges, 20 s for 3), not 5 s. Content is not changed.",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "rx-live-04"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/Adjacency.cls:51-73"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/Adjacency.cls:428-458"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/Eraser.cls:225-235"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/TraversalBuild.cls:30-40"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/TraversalBuild.cls:155-163"
+   }
+  ],
+  "gates": [
+   "5c-refusals",
+   "3.6-frame"
+  ],
+  "severity": "S4",
+  "confidence": "high",
+  "remedy": "Either take the graph's (or the parent's) writer lock in the Eraser and in BuildKG before any row is deleted or any counter is bumped, so the 5-second refusal comes first and writes nothing; or state the refusal as it is built: the content is untouched, but the no-lock mark, the source generations and the version stamp move, and the refusal comes after 5 seconds per row. Clearing the no-lock mark is a separate decision (it disables the graph's degree cache until a rebuild).",
+  "notes": "Exercised with an artificial long exclusive hold of ^IVG.AdjW by a second process; in the product only a reader's no-wait exclusive probe takes that lock exclusively, so the refusal is rare in practice. The %iFind word entries are IRIS's own index bookkeeping, listed for completeness, not attributed to IVG code. Not a duplicate: F-0409 (a failed rebuild in a caller transaction rolls back the caller's work) and F-C0402 (two rebuilds at once) are different defects."
+ }
+]

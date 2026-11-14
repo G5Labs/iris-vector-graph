@@ -1,0 +1,518 @@
+{
+ "module": "17",
+ "code": "OPS",
+ "lane": "refusals",
+ "statements": [
+  {
+   "id": "OPS-X1.8.1",
+   "text": "When the vector tables have another width, schema init is refused. It says to run again with the rewidth flag.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/cli.py:212-232",
+    "iris_vector_graph/cypher_api.py:578-593",
+    "iris_vector_graph/_engine/schema.py:1564-1580"
+   ],
+   "evidence": [
+    "run:rx-live-17"
+   ],
+   "notes": "Cypher HTTP server on AUDITE (vector columns at the width PyOps reports, empty) and `ivg --url ... schema init --embedding-dim <width+3>`: the server's initialize_schema raised EmbeddingIdentityConflict before writing (_refuse_width_change is read-only), the server answered 409, the CLI printed 'Schema init refused (409)' and 'run it again with --rewidth', exit 1; no net change in AUDITE (table ID counters allowed, none changed); width unchanged after.",
+   "live_cases": [
+    "ivg schema init --embedding-dim 7 (tables at 4) -> 409, exit 1, names --rewidth"
+   ]
+  },
+  {
+   "id": "OPS-X1.10.2",
+   "text": "With no IRIS address given, a direct command is refused and names the settings to set.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/cli.py:39-44",
+    "iris_vector_graph/cli.py:266-277",
+    "iris_vector_graph/cli.py:303-314"
+   ],
+   "evidence": [
+    "run:rx-live-17"
+   ],
+   "notes": "`ivg embeddings inventory` and `ivg fhir status rx17g` with IRIS_HOST unset (child env): exit 1, stderr 'No IRIS connection: set IRIS_HOST (and IRIS_PORT / IRIS_NAMESPACE / IRIS_PASSWORD) or pass --iris-host.'; 0 journal records. The ivg script ran the pin's worktree package (observation).",
+   "live_cases": [
+    "ivg embeddings inventory with no IRIS_HOST -> exit 1 naming IRIS_HOST/--iris-host",
+    "ivg fhir status with no IRIS_HOST -> exit 1 naming IRIS_HOST/--iris-host"
+   ]
+  },
+  {
+   "id": "OPS-X1.11.1",
+   "text": "A sync without the once flag is refused. Repeated sync is the job of the IRIS task manager.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/cli.py:350-361"
+   ],
+   "evidence": [
+    "run:rx-live-17"
+   ],
+   "notes": "`ivg fhir sync rx17g --iris-host 127.0.0.1 --iris-port 9` (an unreachable address, so an engine call would end in 'fhir: <connection error>', exit 1): click UsageError, exit 2, 'use `ivg fhir schedule`, or pass --once', no 'fhir:' line, 0 journal records.",
+   "live_cases": [
+    "ivg fhir sync without --once -> usage error naming ivg fhir schedule, engine not called"
+   ]
+  },
+  {
+   "id": "OPS-X1.11.3",
+   "text": "The register command refuses the no-links flag when a link is also given.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/cli.py:330-334"
+   ],
+   "evidence": [
+    "run:rx-live-17"
+   ],
+   "notes": "`ivg fhir register --no-links --link Library.relatedArtifact` (unreachable IRIS address): UsageError '--no-links and --link cannot be combined', exit 2, engine not called, 0 journal records.",
+   "live_cases": [
+    "ivg fhir register --no-links --link X -> usage error"
+   ]
+  },
+  {
+   "id": "OPS-X1.12.4",
+   "text": "Without the web packages, server start prints how to install them and exits with code 1.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/cli.py:418-441"
+   ],
+   "evidence": [
+    "run:rx-live-17"
+   ],
+   "notes": "`ivg server start` in a child Python whose import of uvicorn fails (sys.modules['uvicorn'] = None; the web package absent): prints \"uvicorn required: pip install 'iris-vector-graph[full]'\" to stderr, exit 1; nothing bound, 0 journal records.",
+   "live_cases": [
+    "ivg server start without uvicorn -> install hint, exit 1"
+   ]
+  },
+  {
+   "id": "OPS-X2.1.1",
+   "text": "On a namespace that refuses the engine, most calls are refused. Setup, status, legacy removal and close still run.",
+   "outcome": "product-defect",
+   "implementing_code": [
+    "iris_vector_graph/schema_name.py:217-232",
+    "iris_vector_graph/schema_name.py:322-349",
+    "iris_vector_graph/schema_name.py:376-377",
+    "iris_vector_graph/engine.py:384-390",
+    "iris_vector_graph/engine.py:414-416",
+    "iris_vector_graph/engine.py:1850-1868",
+    "iris_vector_graph/stores/iris_sql_store.py:4278-4279"
+   ],
+   "evidence": [
+    "run:rx-live-17"
+   ],
+   "notes": "Engine with schema_prefix RX17ALT on AUDITE (records Graph_KG): construction answers, then create_node, get_node, node_count, execute_cypher and the store's get_nodes raise IVGSchemaError at entry, 0 journal records (the refusal holds); status() and remove_legacy_objects(dry_run=True) run (EXEMPT_METHODS, schema_name.py:376-377). The close clause does not hold: IRISGraphEngine has no close method (EXEMPT_METHODS names one the engine lacks), and the store's close() (a no-op, iris_sql_store.py:4278-4279) is guarded without exemptions (engine.py:390) and raises IVGSchemaError. Setup (initialize_schema) was not run on the refused engine: on a mismatched record it would refuse (refuse_other_record) and a failure of that check would deploy a second schema into the shared namespace; exemption inspected (schema_name.py:376-377). New finding F-C1715 (S4).",
+   "live_cases": [
+    "engine on schema RX17ALT: construction answers (the check is pending)",
+    "refused engine: create_node -> IVGSchemaError",
+    "refused engine: get_node -> IVGSchemaError",
+    "refused engine: node_count -> IVGSchemaError",
+    "refused engine: execute_cypher -> IVGSchemaError",
+    "refused engine: status() still runs",
+    "refused engine: remove_legacy_objects(dry_run=True) still runs",
+    "refused engine: its store's close() still runs",
+    "refused engine: its store's get_nodes is refused"
+   ],
+   "finding": "F-C1715"
+  },
+  {
+   "id": "OPS-X3.2.1",
+   "text": "A name that cannot name a graph is refused before IRIS is asked.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/admin.py:885-887",
+    "iris_vector_graph/_validate.py:19-49"
+   ],
+   "evidence": [
+    "run:rx-live-17"
+   ],
+   "notes": "engine.verify_graph('0'), ('a\\x01b'), (42): ValueError from validate_graph_name, the method's first statement (before the Native API call at :888); 0 journal records.",
+   "live_cases": [
+    "verify_graph('0') -> ValueError",
+    "verify_graph('a\\x01b') -> ValueError",
+    "verify_graph(42) -> ValueError"
+   ]
+  },
+  {
+   "id": "OPS-X3.4.1",
+   "text": "A failed listing raises. It does not answer an empty list.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/admin.py:938-951"
+   ],
+   "evidence": [
+    "run:rx-live-17"
+   ],
+   "notes": "list_active_queries has no handler: any failure propagates. Live: an engine's connection closed under it -> ProgrammingError (<COMMUNICATION LINK ERROR>) raised, not []; control on an open connection answered rows. A failed SQL listing (the unit test's case) is not producible here without a refused statement; the closed connection exercises the same no-handler path.",
+   "live_cases": [
+    "list_active_queries on a connection that fails -> raises, not []"
+   ]
+  },
+  {
+   "id": "OPS-X3.5.1",
+   "text": "When IRIS refuses to end the process, kill query logs a warning and returns false.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/admin.py:957-969"
+   ],
+   "evidence": [
+    "run:rx-live-17"
+   ],
+   "notes": "kill_query('999999999') and kill_query('not-a-process'): returned False with a logged warning, not raised; 0 journal records. Observation: IRIS answers the statement with SQLCODE -359 ('User defined SQL function %SYSTEM.SYS.KILLPROCESS does not exist'), so every call takes this branch: kill_query on the lane's own scratch process (pid 140416, killable) also answered False and the process was still alive. The refusal holds as stated; kill_query cannot end any process here (new finding F-C1716, outside the refusal).",
+   "live_cases": [
+    "kill_query('999999999') -> False with a warning, not raised",
+    "kill_query('not-a-process') -> False with a warning, not raised"
+   ]
+  },
+  {
+   "id": "OPS-X3.8.1",
+   "text": "A real removal is refused in a caller transaction that holds a write. Nothing is done.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/admin.py:386-393",
+    "iris_vector_graph/_write_txn.py:90-99"
+   ],
+   "evidence": [
+    "run:rx-live-17"
+   ],
+   "notes": "START TRANSACTION + INSERT ($TLEVEL 1): remove_legacy_objects(dry_run=False) -> CallerTransactionOpenError, 0 journal records, $TLEVEL still 1, the caller's row still pending; dry_run=True in the same transaction answered a list (allowed, as stated).",
+   "live_cases": [
+    "remove_legacy_objects(dry_run=False) with a caller write -> CallerTransactionOpenError",
+    "remove_legacy_objects(dry_run=True) in the same transaction is allowed"
+   ]
+  },
+  {
+   "id": "OPS-X4.2",
+   "text": "The host layer refuses any call to a system method whose name starts with a percent sign.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/host.py:33-41",
+    "iris_vector_graph/host.py:151-156"
+   ],
+   "evidence": [
+    "run:rx-live-17"
+   ],
+   "notes": "host_for(connection) (ClientHost): call('Graph.KG.Snapshot','%New'), call_large(same), call('Graph.KG.Meta','%ExistsId','1') -> HostError naming the method, before _call; 0 journal records. InProcessHost shares Host.call/call_large (host.py:151-156); it needs embedded IRIS and was not built here.",
+   "live_cases": [
+    "host.call of a %-method -> HostError",
+    "host.call_large of a %-method -> HostError",
+    "host.call %ExistsId of a %-method -> HostError"
+   ]
+  },
+  {
+   "id": "OPS-X4.6.1",
+   "text": "In a program outside IRIS, an in-IRIS connection is refused. The error names the network connect call.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/embedded.py:132-150",
+    "iris_vector_graph/embedded.py:166-185",
+    "iris_vector_graph/embedded.py:308-313"
+   ],
+   "evidence": [
+    "run:rx-live-17"
+   ],
+   "notes": "Child Python (not irispython; the iris-embedded-python-wrapper answers with MagicMocks): IRISGraphEngine(EmbeddedConnection()) and EmbeddedConnection().cursor().execute('SELECT 1') each raise EmbeddedUnavailableError (an ImportError) whose message names iris.connect(host, port, namespace, user, password). The cursor object itself is created lazily; the refusal comes at its first use (as the upstream test test_a_cursor_says_so_too checks).",
+   "live_cases": [
+    "EmbeddedConnection outside IRIS: engine and cursor refused naming iris.connect"
+   ]
+  },
+  {
+   "id": "OPS-X4.8.2",
+   "text": "When the strict setting is on, a namespace mismatch is an error.",
+   "outcome": "product-defect",
+   "implementing_code": [
+    "iris_vector_graph/stores/iris_sql_store.py:827-838"
+   ],
+   "evidence": [
+    "run:rx-live-17"
+   ],
+   "notes": "IVG_STRICT_NAMESPACE=1, IRISGraphStore(AUDITE connection, namespace='USER'), first class-method call: no exception (it answered AUDITE); a NamespaceMismatchWarning is issued (warnings.warn, :837-838), not raised. Existing finding F-1703, reproduced again.",
+   "live_cases": [
+    "IVG_STRICT_NAMESPACE=1, store namespace='USER' on an AUDITE connection -> error"
+   ],
+   "finding": "F-1703"
+  },
+  {
+   "id": "OPS-X4.84",
+   "text": "If the class list cannot be read for want of a right, the engine raises. It does not take that as no classes.",
+   "outcome": "holds-run",
+   "implementing_code": [
+    "iris_vector_graph/engine.py:1800-1803"
+   ],
+   "evidence": [
+    "run:val-unit-3-c02"
+   ],
+   "notes": "_detect_capabilities re-raises ClassesUnreadable instead of answering 'not deployed'. Evidence: upstream unit tests (a refused dictionary read, ClassesUnreadable) passed here in val-unit-3-c02. Not triggered live: it needs a login refused read on the routines database/class dictionary (a second IRIS user/role: container security configuration, not available to this lane).",
+   "log_contains": {
+    "run:val-unit-3-c02": "test_460_r050_routines_refused.py::test_khop_raises_instead_of_answering_no_nodes PASSED"
+   }
+  },
+  {
+   "id": "OPS-X5.4.1",
+   "text": "Any other failure undoes the whole write and raises a write error.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/stores/iris_sql_store.py:1214-1250",
+    "iris_vector_graph/errors.py:117-159"
+   ],
+   "evidence": [
+    "run:rx-live-17"
+   ],
+   "notes": "IRISGraphStore.write_nodes([rx17:w1, rx17:<300 x>]): the second INSERT fails (SQLCODE -104, node_id over 256), txn.rollback(), GraphWriteError('store.write_nodes', 'nothing written'); rx17:w1 absent after. Journal net change only in the table ID counters and ^KG(\"__version\"), which the nodes write advances with $Increment outside the transaction (a rollback does not take a counter back; noted as allowed patterns, not content).",
+   "live_cases": [
+    "store.write_nodes: second node id over 256 chars -> GraphWriteError, first undone"
+   ]
+  },
+  {
+   "id": "OPS-X5.6.2",
+   "text": "A bad name for a graph is refused before any statement runs.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/stores/iris_sql_store.py:1340-1343"
+   ],
+   "evidence": [
+    "run:rx-live-17"
+   ],
+   "notes": "IRISGraphStore.delete_nodes(['rx17:d1'], graph='0' / 'g\\x01'): ValueError from validate_graph_name (:1343) before any statement (the eraser call is after it); 0 journal records.",
+   "live_cases": [
+    "store.delete_nodes(graph='0') -> ValueError before any statement",
+    "store.delete_nodes(graph='g\\x01') -> ValueError before any statement"
+   ]
+  },
+  {
+   "id": "OPS-X5.7",
+   "text": "Delete by prefix refuses an empty prefix, which would mean the whole graph.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/stores/iris_sql_store.py:1435-1440"
+   ],
+   "evidence": [
+    "run:rx-live-17"
+   ],
+   "notes": "IRISGraphStore.delete_nodes_by_prefix('') and (None): ValueError naming erase_graph; 0 journal records; rx17 rows unchanged.",
+   "live_cases": [
+    "store.delete_nodes_by_prefix('') -> ValueError naming erase_graph",
+    "store.delete_nodes_by_prefix(None) -> ValueError naming erase_graph"
+   ]
+  },
+  {
+   "id": "OPS-X5.7.1",
+   "text": "Delete by prefix is refused if the erasure code is not in the namespace.",
+   "outcome": "holds-run",
+   "implementing_code": [
+    "iris_vector_graph/stores/iris_sql_store.py:1442-1446"
+   ],
+   "evidence": [
+    "run:val-unit-3-c05"
+   ],
+   "notes": "RuntimeError when Graph.KG.Eraser.EraseNodes is not deployed. Evidence: the upstream unit test passed here (val-unit-3-c05: that chunk's run is 'fail' for other tests; this test's line is PASSED). Not triggered live: AUDITE has the eraser deployed and the lane has no namespace without product classes (AUDITENV is the orchestrator's); removing a class is out of scope.",
+   "log_contains": {
+    "run:val-unit-3-c05": "test_delete_nodes_graph_scope.py::test_prefix_erase_needs_the_eraser PASSED"
+   }
+  },
+  {
+   "id": "OPS-X5.10.1",
+   "text": "If any statement fails, the whole list is undone and a write error is raised.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/stores/iris_sql_store.py:1580-1583",
+    "iris_vector_graph/stores/iris_sql_store.py:1811-1818"
+   ],
+   "evidence": [
+    "run:rx-live-17"
+   ],
+   "notes": "IRISGraphStore.execute_transaction([INSERT rx17:t1, INSERT into a missing table]): SQLCODE -30 on the second, rollback, GraphWriteError; rx17:t1 absent; journal net change only in table ID counters.",
+   "live_cases": [
+    "store.execute_transaction: second statement fails -> GraphWriteError, first undone"
+   ]
+  },
+  {
+   "id": "OPS-X5.10.2",
+   "text": "Deleting a node that still has edges is refused, unless the query detaches them.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/stores/iris_sql_store.py:56-59",
+    "iris_vector_graph/stores/iris_sql_store.py:1746-1757",
+    "iris_vector_graph/stores/iris_sql_store.py:1776-1784",
+    "iris_vector_graph/stores/iris_sql_store.py:1811-1818"
+   ],
+   "evidence": [
+    "run:rx-live-17"
+   ],
+   "notes": "engine.execute_cypher(\"MATCH (n {node_id: 'rx17:d1'}) DELETE n\") with an edge rx17:d1-R->rx17:d2: GraphWriteError 'ConstraintVerificationFailed: Cannot delete node with existing relationships. Use DETACH DELETE.' after the rollback; node and edge still there; journal net change only in counters. Control: DETACH DELETE removed it.",
+   "live_cases": [
+    "Cypher DELETE of a node with an edge -> refused (ConstraintVerificationFailed)"
+   ]
+  },
+  {
+   "id": "OPS-X5.19.1",
+   "text": "A bad name for a graph is refused when the reader is made, not later.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/stores/lazy_kg.py:126-128",
+    "iris_vector_graph/_validate.py:52-73"
+   ],
+   "evidence": [
+    "run:rx-live-17"
+   ],
+   "notes": "LazyKG(conn, graph='0') and graph='g\\x02': ValueError at construction (graph_index_key); 0 journal records.",
+   "live_cases": [
+    "LazyKG(conn, graph='0') -> refused at construction",
+    "LazyKG(conn, graph='g\\x02') -> refused at construction"
+   ]
+  },
+  {
+   "id": "OPS-X6.2",
+   "text": "A refused key or a forbidden request raises a client error with the status code.",
+   "outcome": "product-defect",
+   "implementing_code": [
+    "iris_vector_graph/sdk.py:195-207",
+    "iris_vector_graph/sdk.py:209-215",
+    "iris_vector_graph/sdk.py:166-182"
+   ],
+   "evidence": [
+    "run:rx-live-17"
+   ],
+   "notes": "Server with IVG_API_KEY, client with a wrong key: execute_cypher (query), stats and schema (reads) -> IVGClientError http_code 401 (hold); explain (a query, POST /admin/explain) and load_ndjson -> httpx.HTTPStatusError, not IVGClientError (they call raise_for_status without _refused, sdk.py:166-182). Read-only server (IVG_READ_ONLY=true): a CREATE via execute_cypher -> IVGClientError 403 (holds); load_ndjson -> HTTPStatusError 403. Existing finding F-1714 (reproduced again; the async client was not re-probed).",
+   "live_cases": [
+    "wrong API key: execute_cypher (query) -> IVGClientError 401",
+    "wrong API key: stats (read) -> IVGClientError 401",
+    "wrong API key: schema (read) -> IVGClientError 401",
+    "wrong API key: explain (query) -> IVGClientError 401",
+    "wrong API key: load_ndjson -> IVGClientError 401",
+    "read-only server: CREATE via execute_cypher -> IVGClientError 403",
+    "read-only server: load_ndjson -> IVGClientError 403"
+   ],
+   "finding": "F-1714"
+  },
+  {
+   "id": "OPS-X6.4.1",
+   "text": "When every try fails to connect, the client raises a client error that says how many tries it made.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/sdk.py:209-228"
+   ],
+   "evidence": [
+    "run:rx-live-17"
+   ],
+   "notes": "IVGClient('http://127.0.0.1:9', max_retries=2).execute_cypher: IVGClientError 'Failed after 2 attempts: [Errno 111] Connection refused', http_code None; 0 journal records.",
+   "live_cases": [
+    "every try fails to connect -> IVGClientError naming the 2 tries, http_code None"
+   ]
+  },
+  {
+   "id": "OPS-X6.5.1",
+   "text": "A name that cannot be a graph is refused before any request.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/sdk.py:152-160"
+   ],
+   "evidence": [
+    "run:rx-live-17"
+   ],
+   "notes": "IVGClient(nothing listening).node_count('0') / ('g\\x03'): ValueError from validate_graph_name immediately; a request would have ended in IVGClientError (connection refused), so none was attempted; 0 journal records.",
+   "live_cases": [
+    "IVGClient.node_count('0') -> ValueError before any request",
+    "IVGClient.node_count('g\\x03') -> ValueError before any request"
+   ]
+  },
+  {
+   "id": "OPS-X6.7",
+   "text": "Without the httpx package, making a client raises an import error that says what to install.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/sdk.py:5-10",
+    "iris_vector_graph/sdk.py:95-96",
+    "iris_vector_graph/sdk.py:238-239"
+   ],
+   "evidence": [
+    "run:rx-live-17"
+   ],
+   "notes": "Child Python whose import of httpx fails (sys.modules['httpx'] = None): IVGClient(...) and AsyncIVGClient(...) each raise ImportError 'httpx is required for ...: pip install httpx'.",
+   "live_cases": [
+    "IVGClient / AsyncIVGClient without httpx -> ImportError 'pip install httpx'"
+   ]
+  },
+  {
+   "id": "OPS-X7.3",
+   "text": "Some calls are refused inside a caller transaction that holds a write. The error says nothing was done and the transaction is still open.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/errors.py:175-190",
+    "iris_vector_graph/_write_txn.py:90-99"
+   ],
+   "evidence": [
+    "run:rx-live-17"
+   ],
+   "notes": "The refusal of remove_legacy_objects(dry_run=False) in a caller transaction holding a write says 'Nothing was done, and the caller's transaction is still open'; it is: $TLEVEL 1 and the caller's row still pending, 0 journal records. Same through initialize_schema() (CallerTransactionOpenError 'Nothing was done', $TLEVEL 1). Other calls with this refusal (restore_snapshot, ledger enable) are probed under SNP-X2.2 and LED-B1.10.",
+   "live_cases": [
+    "the refusal says nothing was done and the transaction is still open; it is",
+    "initialize_schema() with a caller write -> CallerTransactionOpenError, nothing done"
+   ]
+  },
+  {
+   "id": "OPS-X8.1",
+   "text": "A search on an empty index is refused with an error that says to build it.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/index_protocol.py:92-95",
+    "iris_vector_graph/errors.py:51-60"
+   ],
+   "evidence": [
+    "run:rx-live-17"
+   ],
+   "notes": "engine.create_index(VectorIndexConfig(name='rx17idx', method='ivf', nlist=4)).search(...) before build: IndexNotBuiltError \"Index 'rx17idx' is empty (0 rows indexed). Call engine.index(name).build() ...\"; 0 journal records.",
+   "live_cases": [
+    "search on an index never built -> IndexNotBuiltError saying to build it"
+   ]
+  },
+  {
+   "id": "OPS-X8.2",
+   "text": "An index setting with an unknown field or a bad value is refused.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/index_config.py:11-35"
+   ],
+   "evidence": [
+    "run:rx-live-17"
+   ],
+   "notes": "VectorIndexConfig with an unknown field (extra forbid), nlist 0, empty name, metric 'manhattan', and FulltextIndexConfig b=2: pydantic ValidationError each; 0 journal records.",
+   "live_cases": [
+    "VectorIndexConfig with unknown field -> ValidationError",
+    "VectorIndexConfig with nlist 0 -> ValidationError",
+    "VectorIndexConfig with empty name -> ValidationError",
+    "VectorIndexConfig with bad metric -> ValidationError",
+    "FulltextIndexConfig b=2 -> ValidationError"
+   ]
+  },
+  {
+   "id": "OPS-X10.4.1",
+   "text": "A vector of the wrong width is refused, naming both widths.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/PyOps.cls:236-261"
+   ],
+   "evidence": [
+    "run:rx-live-17"
+   ],
+   "notes": "Graph.KG.PyOps.VectorSearch over the Native API (embedded Python runs in the container) with a %DynamicArray one wider than getExpectedDimension: <PYTHON EXCEPTION> ValueError 'Query embedding dimension N does not match expected M' from vectorToJson; 0 journal records.",
+   "live_cases": [
+    "VectorSearch with a 5-wide vector (expected 4) -> ValueError naming both"
+   ]
+  },
+  {
+   "id": "OPS-X10.4.2",
+   "text": "A table name that does not look like a vector table is refused before it is put in SQL.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/PyOps.cls:321-332"
+   ],
+   "evidence": [
+    "run:rx-live-17"
+   ],
+   "notes": "Registry rows inserted by SQL (data any IVG-Schema writer can insert, as the method's comment says): graph rx17g naming table 'nodes' -> ValueError \"... names 'nodes', which is not a node route\"; graph rx17h naming a route-shaped table with dtype 'DOUBLE),(1' -> ValueError 'unknown element type'; neither name reached SQL; 0 journal records in the call. Rows deleted afterwards (outside the windows).",
+   "live_cases": [
+    "VectorSearch in graph rx17g: registry names 'nodes' -> refused (nodes)",
+    "VectorSearch in graph rx17h: registry names 'kg_emb_0123456789abcdef' -> refused (element type)"
+   ]
+  }
+ ]
+}
