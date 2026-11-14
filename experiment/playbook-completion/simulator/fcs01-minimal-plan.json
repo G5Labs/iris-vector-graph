@@ -1,0 +1,135 @@
+{
+ "seed": "F-CS01-minimal",
+ "tenants": [
+  {
+   "name": "acme",
+   "shape": "prefix",
+   "graph": null
+  }
+ ],
+ "phases": [
+  {
+   "workers": {
+    "0": {
+     "ops": [
+      {
+       "kind": "commit",
+       "tenant": "acme",
+       "cs": {
+        "actor": "audit:sim:w0",
+        "message": "acme commit min-1",
+        "source": {
+         "tenant": "acme",
+         "n": 1
+        },
+        "correlation_id": "acme-corr-0",
+        "key": "acme-k-min-1",
+        "ops": [
+         {
+          "op": "create_node",
+          "id": "acme|n1",
+          "labels": [
+           "Person"
+          ],
+          "props": {
+           "name": "acme-secret-min"
+          }
+         }
+        ],
+        "pcp": {},
+        "tenant": "acme",
+        "variant": "minimal"
+       },
+       "think": 0.0
+      },
+      {
+       "kind": "commit",
+       "tenant": "acme",
+       "cs": {
+        "actor": "audit:sim:w0",
+        "message": "acme commit min-2",
+        "source": {
+         "tenant": "acme",
+         "n": 2
+        },
+        "correlation_id": "acme-corr-0",
+        "key": "acme-k-min-2",
+        "ops": [
+         {
+          "op": "upsert_node",
+          "id": "acme|n1"
+         },
+         {
+          "op": "add_label",
+          "id": "acme|n1",
+          "label": "Person"
+         }
+        ],
+        "pcp": {},
+        "tenant": "acme",
+        "variant": "minimal"
+       },
+       "think": 0.0
+      },
+      {
+       "kind": "erase",
+       "tenant": "acme",
+       "prefix": "acme|",
+       "graph": null,
+       "think": 0.0
+      },
+      {
+       "kind": "redact",
+       "tenant": "acme",
+       "graph": null,
+       "prefix": "acme",
+       "batch": 2000,
+       "max_batches": 0,
+       "think": 0.0
+      },
+      {
+       "kind": "commit",
+       "tenant": "acme",
+       "cs": {
+        "actor": "audit:sim:w0",
+        "message": "acme commit min-2",
+        "source": {
+         "tenant": "acme",
+         "n": 2
+        },
+        "correlation_id": "acme-corr-0",
+        "key": "acme-k-min-2",
+        "ops": [
+         {
+          "op": "upsert_node",
+          "id": "acme|n1"
+         },
+         {
+          "op": "add_label",
+          "id": "acme|n1",
+          "label": "Person"
+         }
+        ],
+        "pcp": {},
+        "tenant": "acme",
+        "variant": "minimal",
+        "retry_of": "acme-k-min-2"
+       },
+       "retry": "retry",
+       "think": 0.0
+      },
+      {
+       "kind": "verify",
+       "think": 0.0
+      }
+     ]
+    }
+   },
+   "kills": []
+  }
+ ],
+ "n_workers": 1,
+ "probe": false,
+ "kill": false,
+ "template": "minimal"
+}

@@ -10045,7 +10045,8 @@
     "F-C1306",
     "F-C1307",
     "F-C1308",
-    "F-C1703"
+    "F-C1703",
+    "F-CS01"
    ],
    "findings_undecided": [
     "F-C1102"
@@ -10060,7 +10061,8 @@
      "finding F-C1306",
      "finding F-C1307",
      "finding F-C1308",
-     "finding F-C1703"
+     "finding F-C1703",
+     "finding F-CS01"
     ],
     "intent_undecided": [
      "finding F-C1102",
@@ -11661,7 +11663,8 @@
     "F-C1306",
     "F-C1307",
     "F-C1308",
-    "F-C1309"
+    "F-C1309",
+    "F-CS01"
    ],
    "gate": "3.8-findings-disposed",
    "level": "method",
@@ -11682,7 +11685,8 @@
      "finding F-C1306",
      "finding F-C1307",
      "finding F-C1308",
-     "finding F-C1309"
+     "finding F-C1309",
+     "finding F-CS01"
     ],
     "intent_undecided": []
    },
@@ -12365,21 +12369,35 @@
   },
   {
    "cited_runs": [
-    "env-contract-r2",
     "independent-review-1",
-    "independent-review-2"
+    "independent-review-2-final",
+    "sim-main-20261114",
+    "sim-oracle-selftest",
+    "sim-race-20261114"
    ],
    "evidence": [
     "run:independent-review-1",
-    "run:env-contract-r2",
-    "run:independent-review-2"
+    "run:independent-review-2-final",
+    "run:sim-main-20261114",
+    "run:sim-race-20261114",
+    "run:sim-oracle-selftest"
+   ],
+   "evidence_grade": "registered-run",
+   "findings": [
+    "F-CS01"
    ],
    "gate": "5c-reviewers",
    "level": "method",
    "module": "product",
-   "product_obligation": "unknown",
-   "remaining": "open: the mechanical audit, the adversarial review (independent-review-1, independent-review-2: no sign-off) and the randomized differential of the IRIS contract (env-contract-r2) ran; the third reviewer of playbook \u00a75c, a randomized simulator through the real product checking global invariants after every commit, was not run. Not recorded as not-applicable: no source makes it inapplicable to IVG, whose ledger and redaction are exactly the stateful, concurrent code it targets [review-response R2-04]",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "finding F-CS01"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "mechanical evidence audit, adversarial review and a randomized simulator through the real product (304 schedules, invariants after every commit) all ran",
+   "status": "closed"
   },
   {
    "cited_runs": [],
@@ -25097,6 +25115,64 @@
   },
   {
    "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "sim-fcs01-minimal"
+    },
+    {
+     "kind": "live",
+     "ref": "sim-fcs01-ddmin-s1033"
+    },
+    {
+     "kind": "trace",
+     "ref": "sim-main-20261114"
+    },
+    {
+     "kind": "trace",
+     "ref": "sim-race-20261114"
+    },
+    {
+     "kind": "control",
+     "ref": "sim-oracle-selftest"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/LedgerApply.cls:229-233"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/LedgerApply.cls:252-284"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Ledger.cls:488-497"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Ledger.cls:520-525"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/LedgerRedact.cls:332-347"
+    },
+    {
+     "kind": "inspected",
+     "ref": "specs/256-ledger-tenant-redaction/plan.md:25"
+    }
+   ],
+   "gates": [
+    "5c-reviewers",
+    "3.7-integration-worlds",
+    "3.8-spec-intent",
+    "3.8-findings-disposed"
+   ],
+   "id": "F-CS01",
+   "severity": "S2"
+  },
+  {
+   "confidence": "high",
    "disposition": "reproduced-test",
    "evidence": [
     {
@@ -26087,13 +26163,13 @@
   }
  ],
  "product_counts": {
-  "fails": 219,
+  "fails": 220,
   "holds-in-model-only": 7,
   "intent-undecided": 2,
   "n/a": 34,
-  "unknown": 485
+  "unknown": 484
  },
- "registry_runs": 776,
+ "registry_runs": 781,
  "starting_inventory": {
   "cells": 904,
   "decisions": 61,
@@ -26105,9 +26181,9 @@
  },
  "status_counts": {
   "blocked": 6,
-  "closed": 173,
+  "closed": 174,
   "not-applicable": 36,
-  "open": 532
+  "open": 531
  },
  "submission": "9c3719c1",
  "writer_obligations": [

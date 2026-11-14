@@ -76,9 +76,9 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 5b-refuse-not-guess | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 5c-refusals | method | 9 | 0 | 9 | 0 | 1 | 12 | 0 | 0 | 6 | 1 |
 | 5c-root-causes | method | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
-| 5c-reviewers | method | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 5c-reviewers | method | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
 
-Totals: {'closed': 173, 'not-applicable': 36, 'open': 532, 'blocked': 6}; evidence grade of closed cells: {'registered-run': 140, 'inspected': 33}; product: {'unknown': 485, 'n/a': 34, 'fails': 219, 'holds-in-model-only': 7, 'intent-undecided': 2}
+Totals: {'closed': 174, 'not-applicable': 36, 'open': 531, 'blocked': 6}; evidence grade of closed cells: {'registered-run': 141, 'inspected': 33}; product: {'unknown': 484, 'n/a': 34, 'fails': 220, 'holds-in-model-only': 7, 'intent-undecided': 2}
 
 ## Writer census obligations (review R2-02)
 

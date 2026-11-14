@@ -390,13 +390,15 @@
   {
    "gate": "5c-reviewers",
    "module": "product",
-   "status": "open",
+   "status": "closed",
    "evidence": [
     "run:independent-review-1",
-    "run:env-contract-r2",
-    "run:independent-review-2"
+    "run:independent-review-2-final",
+    "run:sim-main-20261114",
+    "run:sim-race-20261114",
+    "run:sim-oracle-selftest"
    ],
-   "remaining": "open: the mechanical audit, the adversarial review (independent-review-1, independent-review-2: no sign-off) and the randomized differential of the IRIS contract (env-contract-r2) ran; the third reviewer of playbook \u00a75c, a randomized simulator through the real product checking global invariants after every commit, was not run. Not recorded as not-applicable: no source makes it inapplicable to IVG, whose ledger and redaction are exactly the stateful, concurrent code it targets [review-response R2-04]"
+   "remaining": "mechanical evidence audit, adversarial review and a randomized simulator through the real product (304 schedules, invariants after every commit) all ran"
   },
   {
    "gate": "3.1-cells",
