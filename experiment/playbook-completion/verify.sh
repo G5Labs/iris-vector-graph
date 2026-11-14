@@ -85,6 +85,9 @@ if [[ "$mode" == full || "$mode" == live ]]; then
   step models-breadth-b-build 1800 env CARGO_TARGET_DIR="$T/breadth-b-verify" cargo build --release --offline --manifest-path "$out/breadth-b-copy/Cargo.toml"
   step models-breadth-b 7200 $H "$T/breadth-b-verify/release/breadth-b"
   cp "$out/breadth-b-copy/RESULTS.json" "$out/models-breadth-b.json" 2>/dev/null || true
+  if have "$here/proofs-d9/tools/run_proofs.py"; then mkdir -p "$out/proofs-d9"
+    step proofs-d9 3600 env PROOFS_OUT_DIR="$out/proofs-d9" python "$here/proofs-d9/tools/run_proofs.py"
+  fi
   step models-compare 120 python3 "$here/tools/compare_model_results.py" "$out"
   if have "$here/proofs/tools/run_proofs.py"; then mkdir -p "$out/proofs"
     step proofs 7200 env PROOFS_OUT_DIR="$out/proofs" python "$here/proofs/tools/run_proofs.py"  # takes the heavy lock per Verus run itself; writes under $out

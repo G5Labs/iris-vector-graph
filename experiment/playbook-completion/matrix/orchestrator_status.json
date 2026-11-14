@@ -90,11 +90,14 @@
    "status": "closed",
    "evidence": [
     "run:core-proofs-baseline",
-    "run:core-proofs-recheck-baseline",
+    "run:core-proofs-f1201-erase-unlocked",
     "run:core-proofs-f1302-unlocked-start",
     "run:core-proofs-f1303-other-marker",
-    "run:core-proofs-f1201-erase-unlocked",
-    "run:core-proofs-f1306-replay-reapplies"
+    "run:core-proofs-f1306-replay-reapplies",
+    "run:core-proofs-recheck-baseline",
+    "run:proofs-d9-baseline",
+    "run:proofs-d9-progress-rewind",
+    "run:proofs-d9-recheck"
    ],
    "remaining": "model-level: participant contracts composed with actors Protocol2 in two levels; no code correspondence (see 3.5-handlers); premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested; as built: the four located controls encode the pin's behaviour (F-1302, F-1303, F-1306; F-1201 intent-undecided) and each has a proved counterexample, and the premises above are violated by reproduced findings, so the product obligation fails [review-response R2-01]",
    "level": "model",
@@ -117,7 +120,10 @@
    "status": "closed",
    "evidence": [
     "run:core-proofs-progress-rewind",
-    "run:core-proofs-recheck-progress_rewind"
+    "run:core-proofs-recheck-progress_rewind",
+    "run:proofs-d9-baseline",
+    "run:proofs-d9-progress-rewind",
+    "run:proofs-d9-recheck"
    ],
    "remaining": "progress premises not discharged against IRIS scheduling; premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
    "level": "model",
