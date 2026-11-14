@@ -1,0 +1,329 @@
+{
+ "sub_lane": "frame2",
+ "cells": [
+  {
+   "gate": "3.6-frame",
+   "module": "01",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-frame2-run",
+    "run:st-control-frame2-selftest",
+    "run:st-check-frame2-census",
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame2/method.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "every statement class in 01's source now observed and held: sql-ddl (F01, setup re-run: 64 DDL statements, no catalog change outside the IVG Schema and the pin's classes), sql-delete-key and sql-update (F01: add_graph_id_to_nodes' UPDATE nodes and DELETE of the __graph property, store-wide by their own WHERE), sql-delete-predicate (F10 retract_inference); the journal classes held in st-live-frame-r8. F01 also moved a node into another graph and deleted its __graph property (F-C0150, a semantic defect inside the declared store-wide frame)",
+   "as_built_findings": [
+    "F-C0150"
+   ],
+   "remaining": "statement level, not run here (class level observed): the pre-4.x upgrade steps (upgrade_to_4_0_0, tighten_graph_id_column, ensure_ekey's backfill, stage_class_owned_rdf_edges, the 3.2.0 rescue) and remove_legacy_objects' DROPs need an older release's schema"
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "02",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-frame2-run",
+    "run:st-control-frame2-selftest",
+    "run:st-check-frame2-census",
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame2/method.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "the only unobserved class was sql-ddl, from the engine's FETCH FIRST probe (engine.py:765-803): F02 creates and drops its two Graph_KG tables and leaves no catalog object, global or data outside them",
+   "as_built_findings": [],
+   "remaining": ""
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "03",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-frame2-run",
+    "run:st-control-frame2-selftest",
+    "run:st-check-frame2-census",
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame2/method.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "sql-ddl (F02, the FETCH FIRST probe) now observed and held; the other classes held in st-live-frame-r8; F11's adoption UPDATE held at key level",
+   "as_built_findings": [],
+   "remaining": ""
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "04",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-frame2-run",
+    "run:st-control-frame2-selftest",
+    "run:st-check-frame2-census",
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame2/method.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "sql-ddl (F03/F04 route DDL of _engine/schema.py, attributed by file owners), sql-delete-predicate (F09 RetractTemporalRow/Rows, F10 retract_inference) and sql-update (F11 adoption UPDATE nodes_edges.py:91) observed and held at key level",
+   "as_built_findings": [],
+   "remaining": "statement level, not run here (class level observed): EdgeScan.cls:359 bulk prop delete and Adjacency.cls bulk retracts over many triples; namespace-wide rebuilds checked at store level only (st-live-frame-r8)"
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "05",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-frame2-run",
+    "run:st-control-frame2-selftest",
+    "run:st-check-frame2-census",
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame2/method.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "the only unobserved class was sql-ddl via the FETCH FIRST probe (F02), now observed and held",
+   "as_built_findings": [],
+   "remaining": ""
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "06",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-frame2-run",
+    "run:st-control-frame2-selftest",
+    "run:st-check-frame2-census",
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame2/method.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "sql-ddl observed and held: F03 node route and F04 edge route creation change only the route table, its HNSW index, its class and storage (and the referenced nodes class's dependency record); F10 retract_inference held",
+   "as_built_findings": [],
+   "remaining": "statement level, not run here (class level observed): registry/quarantine table DDL and ALTER TABLE column adds run only on a namespace missing them"
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "08",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-frame2-run",
+    "run:st-control-frame2-selftest",
+    "run:st-check-frame2-census",
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame2/method.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "sql-ddl: F02 (FETCH FIRST probe) held; Cypher CREATE/DROP INDEX/CONSTRAINT and CREATE FULLTEXT INDEX issue no statement (F06; query.py:1884-1893), so the census lines query.py:1887-1892 are command checks, not DDL",
+   "as_built_findings": [],
+   "remaining": ""
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "10",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-frame2-run",
+    "run:st-control-frame2-selftest",
+    "run:st-check-frame2-census",
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame2/method.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "sql-ddl (F02) observed and held; the module's one product excursion stays F-C1001 (triangle_count writes ^IVG.Deploy, st-live-frame-r8)",
+   "as_built_findings": [
+    "F-C1001"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "11",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-frame2-run",
+    "run:st-control-frame2-selftest",
+    "run:st-check-frame2-census",
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame2/method.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "sql-ddl (Ledger.cls:232 BUILD INDEX via RebuildEdgeIndices, F05): catalog changes only for the four structural tables, data writes only their indexes, ^KG and the iFind transformation global; post-commit DELETE/INSERT (F08) held",
+   "as_built_findings": [],
+   "remaining": ""
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "12",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-frame2-run",
+    "run:st-control-frame2-selftest",
+    "run:st-check-frame2-census",
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame2/method.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "sql-update (nodes_edges.py:91, attributed by file owners) observed under F11 and held at key level; other classes held in st-live-frame-r8",
+   "as_built_findings": [],
+   "remaining": "statement level, not run here (class level observed): Eraser's FHIR side tables, AdjNoLock and RemoveSource branches (no FHIR classes; not reached)"
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "13",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-frame2-run",
+    "run:st-control-frame2-selftest",
+    "run:st-check-frame2-census",
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame2/method.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "sql-delete-key (client.py:473 post-commit property DELETE) observed under F08 and held at key level (3 iFind word/list nodes unattributable to a row)",
+   "as_built_findings": [],
+   "remaining": ""
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "14",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-frame2-run",
+    "run:st-control-frame2-selftest",
+    "run:st-check-frame2-census",
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame2/method.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "sql-ddl (Ledger.cls:232, F05) observed and held; post-commit properties (F08) held",
+   "as_built_findings": [],
+   "remaining": ""
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "17",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-frame2-run",
+    "run:st-control-frame2-selftest",
+    "run:st-check-frame2-census",
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame2/method.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "sql-ddl (dbapi_utils.py:191 create_hnsw_index; create_ivfflat_index answered False on Community) and sql-update (dbapi_utils.py:161 insert_vector upsert) observed on a scratch table and held; utils.py:62-64 are statement-type checks; execute_sql(read_only=True) wrote its INSERT (HD-1701, intent-undecided, ib-HD1701-readonly-flag)",
+   "as_built_findings": [],
+   "remaining": ""
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "07",
+   "status": "open",
+   "evidence": [
+    "run:st-live-frame2-run",
+    "run:st-control-frame2-selftest",
+    "run:st-check-frame2-census",
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame2/method.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "sql-ddl of setup observed under F01 (no change); still unobserved for 07",
+   "as_built_findings": [],
+   "remaining": "sql-insert and sql-update of 07's census are iris_vector_graph/schema.py:3165-3240 (attributed by file owners; the 3.2.0 edge rescue), run only on a 3.2.0 namespace (needs an older release, out of scope); the generated kg_TXT procedures are not re-created by a setup re-run (routines unchanged 58), so their DDL is not observed; bm25_upgrade wrote nothing (index already current)"
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "09",
+   "status": "open",
+   "evidence": [
+    "run:st-live-frame2-run",
+    "run:st-control-frame2-selftest",
+    "run:st-check-frame2-census",
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame2/method.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "Cypher schema commands issue no DDL (F06)",
+   "as_built_findings": [],
+   "remaining": "the global classes (Exec ^IRIS.Temp.IVG.Cypher worker sharing, Gen ^IVG.CypherCompiled) belong to the native executor's compiled plans: Gen.For/Build compile a generated class, which this audit does not trigger; no persistent writer of module 09 exercised"
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "15",
+   "status": "open",
+   "evidence": [
+    "run:st-live-frame2-run",
+    "run:st-control-frame2-selftest",
+    "run:st-check-frame2-census",
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame2/method.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "the dictionary oracle exists (st-control-frame2-selftest) but 15's own DDL is not reachable",
+   "as_built_findings": [],
+   "remaining": "FHIRGraph.cls:1428-1430 (ALTER TABLE fhir_graphs ADD COLUMN interp_version) and the FHIR-graph table DDL need FHIR server classes (absent on Community); the FHIR-graph writers were not run"
+  }
+ ]
+}

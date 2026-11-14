@@ -186,6 +186,27 @@ where asked. Findings in `susp/findings-proposed.json`, merged into `findings/au
 | get_json_field_values pastes the field into SQL | reproduced-live: a quote breaks the statement; a crafted field reads another key's row (read-only) | F-C0341, S2 | `st-live-susp-json-field` |
 | enterprise web gateway recipe: management from any address, _SYSTEM/SYS | confirmed-source (inspection only, not deployed) | F-C1741, S3 | `docker/enterprise/webgateway-init.sh:12-31`, `docker-compose-2026.yml:5-6, 28-29` |
 
+## Second follow-up: DDL/dictionary frame oracle and declared-reads extension (`frame2/`, `reads2/`)
+
+Cells re-decided here are in `MATRIX-INPUT-2.json` (they supersede the same (gate, module) cells of the table above).
+
+- 3.6-frame: `frame2/dictoracle.py` snapshots the SQL catalog (INFORMATION_SCHEMA tables, columns, indexes,
+  constraints, routines), the class dictionary (%Dictionary.CompiledClass, CompiledStorage) and the global directory
+  before and after each action, reads the journal's catalog globals and captures the DDL text the product executes;
+  nothing compiled (only scratch `IVGAudit.*` tables for bystanders and seeds). Self-test `st-control-frame2-selftest`
+  (seeded scratch table, scratch global and second triple caught). 11 DDL-issuing or so-far-unobserved actions
+  (`st-live-frame2-run`): setup re-run, the FETCH FIRST probe, route creation, BUILD INDEX, Cypher schema commands,
+  dbapi_utils index helpers and upserts, post-commit overwrite, temporal-row retracts, retract_inference, adoption
+  UPDATE: all hold. Closed now: 01, 02, 03, 04, 05, 06, 08, 10 (fails, F-C1001), 11, 12, 13, 14, 17. Still open: 07
+  (3.2.0 rescue statements; kg_TXT procedures not re-created by a setup re-run), 09 (native executor plan compilation,
+  out of scope), 15 (FHIR DDL, no FHIR classes).
+- 3.4-declared-reads: the non-interference oracle (`reads2/ni2.py`, self-test `st-control-reads2-selftest`) over the
+  entry points left unchecked: 03 (18 actions), 11 (15 actions), 12, 13, 14, 18 (13 actions) all hold
+  (`st-live-reads2-03-11`, `st-live-reads2-12-18`); 20 pure helpers justified statically (`reads2/static.json`).
+  Closed now: 03 (fails, F-C0341), 11, 12, 13, 14, 18. 10 stays open but fails on F-C1041; 04 and 10 entry points
+  (113 and 200) were not extended.
+- No new findings: setup's __graph move is F-C0150 (writesets lane), execute_sql(read_only=True) writing is HD-1701.
+
 ## Not findings, reported for decision
 
 - Lock escalation across graphs (capkeys): one caller transaction with more than about 1,000 row writes per table

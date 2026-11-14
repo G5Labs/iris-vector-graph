@@ -1,0 +1,629 @@
+{
+ "lane": "structural follow-up (frame2, reads2); earlier evidence kept",
+ "source": "structural/MATRIX-INPUT-2.json",
+ "cells": [
+  {
+   "gate": "3.4-declared-reads",
+   "module": "03",
+   "status": "closed",
+   "evidence": [
+    "run:st-control-reads-selftest",
+    "run:st-live-reads-a",
+    "experiment/playbook-completion/structural/reads/method.json",
+    "experiment/playbook-completion/structural/reads/noninterference.py",
+    "run:st-live-reads2-12-18",
+    "run:st-live-reads2-03-11",
+    "run:st-control-reads2-selftest",
+    "run:st-control-reads-selftest",
+    "experiment/playbook-completion/structural/reads2/method.json",
+    "experiment/playbook-completion/structural/reads2/static.json",
+    "run:st-live-susp-json-field"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "all 43 inventoried read/both entry points checked: 23 in st-live-reads-a, 18 actions (19 entries) in st-live-reads2-03-11, PropWrite.SetVal justified statically (reads only the row it is called for, PropWrite.cls:32-63); all hold under outside perturbations, but get_json_field_values lets its field argument rewrite the statement and read other keys' rows (F-C0341, st-live-susp-json-field)",
+   "as_built_findings": [
+    "F-C0341"
+   ],
+   "remaining": "non-interference sees only reads that reach the answer, under the perturbations listed per action",
+   "sub_lane": "reads2",
+   "supersedes": {
+    "status": "open",
+    "product_obligation": "unknown"
+   }
+  },
+  {
+   "gate": "3.4-declared-reads",
+   "module": "10",
+   "status": "open",
+   "evidence": [
+    "run:st-control-reads-selftest",
+    "run:st-live-reads-b",
+    "experiment/playbook-completion/structural/reads/method.json",
+    "experiment/playbook-completion/structural/reads/noninterference.py",
+    "run:st-live-reads2-12-18",
+    "run:st-live-reads2-03-11",
+    "run:st-control-reads2-selftest",
+    "run:st-control-reads-selftest",
+    "experiment/playbook-completion/structural/reads2/method.json",
+    "experiment/playbook-completion/structural/reads2/static.json",
+    "run:st-live-susp-nkg-merged"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "19 checked actions hold (st-live-reads-b), but the ^NKG centrality class methods called directly answer every graph merged (F-C1041, st-live-susp-nkg-merged)",
+   "as_built_findings": [
+    "F-C1041"
+   ],
+   "remaining": "200 of 219 inventoried read/both entry points not checked: cls:Graph.KG.Algorithms.WCCJson, cls:Graph.KG.Algorithms.CDLPJson, cls:Graph.KG.PageRank.RunJson, cls:Graph.KG.PageRank.CheckArgs, cls:Graph.KG.PageRank.NodeSeeds, cls:Graph.KG.PageRank.WithUnscored, cls:Graph.KG.PageRank.Run, cls:Graph.KG.PageRank.PageRankGlobalJson, cls:Graph.KG.PageRankEmbedded.ComputePageRank, cls:Graph.KG.PageRankEmbedded.ComputePageRankWithMetrics, cls:Graph.KG.Centrality.DegreeCentralityJson, cls:Graph.KG.Communities.TriangleCountJson, cls:Graph.KG.Communities.KCoreJson, cls:Graph.KG.Communities.SCCJson, cls:Graph.KG.Communities.LeidenJson, cls:Graph.KG.Communities.ClosenessJsonPy, cls:Graph.KG.Communities.LeidenJsonPy, cls:Graph.KG.Communities.LeidenJsonAuto, cls:Graph.KG.Subgraph.SubgraphJson, cls:Graph.KG.Subgraph.PPRGuidedJson, cls:Graph.KG.Traversal.DijkstraProc, cls:Graph.KG.Traversal.BuildKG, cls:Graph.KG.Traversal.NKGEdgeCount, cls:Graph.KG.Traversal.NKGNodeCount, cls:Graph.KG.Traversal.NKGLiveNodeCount, cls:Graph.KG.Traversal.BuildNKG, cls:Graph.KG.Traversal.BackfillDegp, cls:Graph.KG.Traversal.Build2HopStats, cls:Graph.KG.Traversal.Build2HopExactStats, cls:Graph.KG.Traversal.KGEdgeCount, cls:Graph.KG.Traversal.NKGPopulated, cls:Graph.KG.Traversal.BFS, cls:Graph.KG.Traversal.BFSFast, cls:Graph.KG.Traversal.BFSJSON, cls:Graph.KG.Traversal.BFSFastJson, cls:Graph.KG.Traversal.BFSFastJsonDirect, cls:Graph.KG.Traversal.BFSFastJsonChunked, cls:Graph.KG.Traversal.BFSFastStream, cls:Graph.KG.Traversal.ReadLargeOutChunk, cls:Graph.KG.Traversal.BFSFastJsonSorted, cls:Graph.KG.Traversal.BFSFastCountDistinct, cls:Graph.KG.Traversal.ShortestPathJson, cls:Graph.KG.Traversal.DijkstraJson, cls:Graph.KG.Traversal.KHopCount, cls:Graph.KG.Traversal.KHopNeighborIds, cls:Graph.KG.Traversal.KHop2Count, cls:Graph.KG.Traversal.KHop2NeighborIds, cls:Graph.KG.Traversal.KHop2CountFast, cls:Graph.KG.Traversal.KHop2CountExact, cls:Graph.KG.TraversalBFS.BFS, cls:Graph.KG.TraversalBFS.BFSFast, cls:Graph.KG.TraversalBFS.BFSJSON, cls:Graph.KG.TraversalBFS.BFSFastJson, cls:Graph.KG.TraversalBFS.BFSFastJsonDirect, cls:Graph.KG.TraversalBFS.BFSFastJsonChunked, cls:Graph.KG.TraversalBFS.BFSFastStream, cls:Graph.KG.TraversalBFS.ReachTypes, cls:Graph.KG.TraversalBFS.ReadLargeOutChunk, cls:Graph.KG.TraversalBFS.BFSFastJsonSorted, cls:Graph.KG.TraversalBFS.BFSFastCountDistinct, cls:Graph.KG.TraversalKHop.KHopCount, cls:Graph.KG.TraversalKHop.KHopNeighborIds, cls:Graph.KG.TraversalKHop.KHop2Count, cls:Graph.KG.TraversalKHop.KHop2NeighborIds, cls:Graph.KG.TraversalKHop.KHop2CountFast, cls:Graph.KG.TraversalKHop.KHop2CountExact, cls:Graph.KG.TraversalPaths.ShortestPathJson, cls:Graph.KG.TraversalPaths.ShortestLength, cls:Graph.KG.TraversalPaths.DijkstraJson, cls:Graph.KG.TraversalPaths.DijkstraCost, cls:Graph.KG.VarLength.Ends, cls:Graph.KG.VarLength.NamedEnds, cls:Graph.KG.VarLength.EndsCount, cls:Graph.KG.VarLength.EndsInto, cls:Graph.KG.VarLength.CPUs, cls:Graph.KG.VarLength.LastLevelPart, cls:Graph.KG.NKGAccel.UseNKG, cls:Graph.KG.NKGAccel.ResetCache, cls:Graph.KG.NKGAccel.Load, cls:Graph.KG.NKGAccel.LoadedPath, cls:Graph.KG.NKGAccel.Unload, cls:Graph.KG.NKGAccel.IsLoaded, cls:Graph.KG.NKGAccel.WarmAdjCache, cls:Graph.KG.NKGAccel.Capabilities, cls:Graph.KG.NKGAccel.BuildNKGRust, cls:Graph.KG.NKGAccel.GetFirstNKGNode, cls:Graph.KG.NKGAccel.ExportAdjacency, cls:Graph.KG.NKGAccel.ReadLargeOutChunk, cls:Graph.KG.NKGAccel.KHopNeighbors, cls:Graph.KG.NKGAccel.KHopNeighborsSorted, cls:Graph.KG.NKGAccel.KHopJson, cls:Graph.KG.NKGAccel.RandomWalkJson, cls:Graph.KG.NKGAccel.BFSJson, cls:Graph.KG.NKGAccel.ShortestPathNKG, cls:Graph.KG.NKGAccel.CountDistinctKHop, cls:Graph.KG.NKGAccel.Build2HopExact, cls:Graph.KG.NKGAccel.ClosenessGlobal, cls:Graph.KG.NKGAccel.ClosenessGlobalMSBFS, cls:Graph.KG.NKGAccel.EigenvectorGlobal, cls:Graph.KG.NKGAccel.BetweennessGlobal, cls:Graph.KG.NKGAccel.BetweennessWorker, cls:Graph.KG.NKGAccel.BetweennessGlobalParallel, cls:Graph.KG.NKGAccel.BetweennessNeighborhood, cls:Graph.KG.NKGAccelAdjacency.ExportAdjacency, cls:Graph.KG.NKGAccelAdjacency.ExportAdjacencyWithPreds, cls:Graph.KG.NKGAccelAdjacency.StoreLargeOut, cls:Graph.KG.NKGAccelAdjacency.ReadLargeOutChunk, cls:Graph.KG.NKGAccelCentrality.ClosenessGlobal, cls:Graph.KG.NKGAccelCentrality.EigenvectorGlobal, cls:Graph.KG.NKGAccelCentrality.BetweennessGlobal, cls:Graph.KG.NKGAccelCentrality.BetweennessWorker, cls:Graph.KG.NKGAccelCentrality.BetweennessGlobalParallel, cls:Graph.KG.NKGAccelCentrality.BetweennessNeighborhood, cls:Graph.KG.NKGAccelCentrality.ClosenessGlobalMSBFS, cls:Graph.KG.NKGAccelLoader.UseNKG, cls:Graph.KG.NKGAccelLoader.ResetCache, cls:Graph.KG.NKGAccelLoader.Load, cls:Graph.KG.NKGAccelLoader.LoadedPath, cls:Graph.KG.NKGAccelLoader.LoadError, cls:Graph.KG.NKGAccelLoader.Unload, cls:Graph.KG.NKGAccelLoader.IsLoaded, cls:Graph.KG.NKGAccelLoader.WarmAdjCache, cls:Graph.KG.NKGAccelLoader.Capabilities, cls:Graph.KG.NKGAccelLoader.BuildNKGRust, cls:Graph.KG.NKGAccelLoader.GetFirstNKGNode, cls:Graph.KG.NKGAccelTraversal.KHopNeighbors, cls:Graph.KG.NKGAccelTraversal.KHopNeighborsSorted, cls:Graph.KG.NKGAccelTraversal.KHopJson, cls:Graph.KG.NKGAccelTraversal.RandomWalkJson, cls:Graph.KG.NKGAccelTraversal.LastBfsPath, cls:Graph.KG.NKGAccelTraversal.LastBfsError, cls:Graph.KG.NKGAccelTraversal.LastBfsChunks, cls:Graph.KG.NKGAccelTraversal.BFSJson, cls:Graph.KG.NKGAccelTraversal.ShortestPathNKG, cls:Graph.KG.NKGAccelTraversal.CountDistinctKHop, cls:Graph.KG.NKGAccelTraversal.StructuralGuard, cls:Graph.KG.NKGAccelTraversal.Build2HopExact, cls:Graph.KG.ArnoAccel.LibPath, cls:Graph.KG.ArnoAccel.TrustedPath, cls:Graph.KG.ArnoAccel.RequireCallout, cls:Graph.KG.ArnoAccel.LoadedPath, cls:Graph.KG.ArnoAccel.LibExists, cls:Graph.KG.ArnoAccel.OpenLibrary, cls:Graph.KG.ArnoAccel.Load, cls:Graph.KG.ArnoAccel.GetLibPath, cls:Graph.KG.ArnoAccel.IsAvailable, cls:Graph.KG.ArnoAccel.ReaderRevisions, cls:Graph.KG.ArnoAccel.LibraryVersion, cls:Graph.KG.ArnoAccel.PageRankNativeJson, cls:Graph.KG.ArnoAccel.PPRNativeJson, cls:Graph.KG.ArnoAccel.WCCNativeJson, cls:Graph.KG.ArnoAccel.CDLPNativeJson, cls:Graph.KG.ArnoAccel.SubgraphNativeJson, cls:Graph.KG.ArnoAccel.BuildGraphJson, cls:Graph.KG.ArnoAccel.PageRankGlobalJson, cls:Graph.KG.ArnoAccel.PPRJson, cls:Graph.KG.ArnoAccel.WCCJson, cls:Graph.KG.ArnoAccel.CDLPJson, cls:Graph.KG.ArnoAccel.SubgraphJson, cls:Graph.KG.ArnoAccel.KhopSampleJson, cls:Graph.KG.ArnoAccel.RandomWalkJson, cls:Graph.KG.ArnoAccel.NeighborAggJson, cls:Graph.KG.AlgoCache.Token, cls:Graph.KG.AlgoCache.Lookup, cls:Graph.KG.AlgoCache.Get, py:iris_vector_graph/stores/arno_bridge.py:resolve_lib_path, py:iris_vector_graph/stores/arno_bridge.py:record_configured_lib_path, py:iris_vector_graph/stores/arno_bridge.py:build_kg_adjacency_json, py:iris_vector_graph/stores/arno_bridge.py:build_kg_adjacency_chunked, py:iris_vector_graph/arno_readers.py:read_reader_report, py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.execute_vl_ends, py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.shortest_path_length, py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.execute_shortest_path, py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.execute_subgraph, py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.execute_degree_centrality, py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.execute_betweenness_neighborhood, eng:IRISGraphEngine.betweenness_centrality_neighborhood, eng:IRISGraphEngine.bfs_vector_rerank, eng:IRISGraphEngine.kg_GRAPH_PATH, eng:IRISGraphEngine.kg_GRAPH_WALK_TVF, eng:IRISGraphEngine.kg_MENTIONS, eng:IRISGraphEngine.kg_PPR, eng:IRISGraphEngine.kg_PPR_GUIDED_SUBGRAPH, eng:IRISGraphEngine.kg_RERANK, eng:IRISGraphEngine.rebuild_nkg, eng:IRISGraphEngine.sync, cypher:ivg.shortestpath.weighted, cypher:gds.pagerank.stream, cypher:gds.betweenness.stream, cypher:gds.shortestpath.dijkstra.stream, cypher:gds.shortestpath.dijkstra, cypher:ivg.degreecentrality, cypher:ivg.betweenness, cypher:ivg.closeness, cypher:ivg.eigenvector, cypher:ivg.leiden, cypher:ivg.trianglecount, cypher:ivg.scc, cypher:ivg.kcore, cypher:ivg.neighbors | undecided: random_walk(a) [default graph]: nodes visited (vacuous: no walk steps without the Arno library (F-1002)) | non-interference sees only reads that reach the answer, and only under the perturbations listed per action in structural/reads/method.json",
+   "sub_lane": "reads2",
+   "supersedes": {
+    "status": "open",
+    "product_obligation": "unknown"
+   }
+  },
+  {
+   "gate": "3.4-declared-reads",
+   "module": "11",
+   "status": "closed",
+   "evidence": [
+    "run:st-control-reads-selftest",
+    "run:st-live-reads-b",
+    "experiment/playbook-completion/structural/reads/method.json",
+    "experiment/playbook-completion/structural/reads/noninterference.py",
+    "run:st-live-reads2-12-18",
+    "run:st-live-reads2-03-11",
+    "run:st-control-reads2-selftest",
+    "run:st-control-reads-selftest",
+    "experiment/playbook-completion/structural/reads2/method.json",
+    "experiment/playbook-completion/structural/reads2/static.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "all 37 inventoried read/both entry points checked: 1 in st-live-reads-b, 15 actions in st-live-reads2-03-11, 19 pure helpers / process-private / caller-statement readers justified statically (reads2/static.json); no violation seen",
+   "as_built_findings": [],
+   "remaining": "non-interference sees only reads that reach the answer, under the perturbations listed per action",
+   "sub_lane": "reads2",
+   "supersedes": {
+    "status": "open",
+    "product_obligation": "unknown"
+   }
+  },
+  {
+   "gate": "3.4-declared-reads",
+   "module": "12",
+   "status": "closed",
+   "evidence": [
+    "run:st-control-reads-selftest",
+    "run:st-live-reads-b",
+    "experiment/playbook-completion/structural/reads/method.json",
+    "experiment/playbook-completion/structural/reads/noninterference.py",
+    "run:st-live-reads2-12-18",
+    "run:st-live-reads2-03-11",
+    "run:st-control-reads2-selftest",
+    "run:st-control-reads-selftest",
+    "experiment/playbook-completion/structural/reads2/method.json",
+    "experiment/playbook-completion/structural/reads2/static.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "all 3 entry points checked (EraseEdges and EraseAll added in st-live-reads2-12-18); no violation seen",
+   "as_built_findings": [],
+   "remaining": "non-interference sees only reads that reach the answer, under the perturbations listed per action",
+   "sub_lane": "reads2",
+   "supersedes": {
+    "status": "open",
+    "product_obligation": "unknown"
+   }
+  },
+  {
+   "gate": "3.4-declared-reads",
+   "module": "13",
+   "status": "closed",
+   "evidence": [
+    "run:st-control-reads-selftest",
+    "run:st-live-reads-b",
+    "experiment/playbook-completion/structural/reads/method.json",
+    "experiment/playbook-completion/structural/reads/noninterference.py",
+    "run:st-live-reads2-12-18",
+    "run:st-live-reads2-03-11",
+    "run:st-control-reads2-selftest",
+    "run:st-control-reads-selftest",
+    "experiment/playbook-completion/structural/reads2/method.json",
+    "experiment/playbook-completion/structural/reads2/static.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "all 3 entry points checked (a bounded redaction and its resume, redaction_in_progress added); no violation seen",
+   "as_built_findings": [],
+   "remaining": "non-interference sees only reads that reach the answer, under the perturbations listed per action",
+   "sub_lane": "reads2",
+   "supersedes": {
+    "status": "open",
+    "product_obligation": "unknown"
+   }
+  },
+  {
+   "gate": "3.4-declared-reads",
+   "module": "14",
+   "status": "closed",
+   "evidence": [
+    "run:st-control-reads-selftest",
+    "run:st-live-reads-b",
+    "experiment/playbook-completion/structural/reads/method.json",
+    "experiment/playbook-completion/structural/reads/noninterference.py",
+    "run:st-live-reads2-12-18",
+    "run:st-live-reads2-03-11",
+    "run:st-control-reads2-selftest",
+    "run:st-control-reads-selftest",
+    "experiment/playbook-completion/structural/reads2/method.json",
+    "experiment/playbook-completion/structural/reads2/static.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "all 7 entry points checked (diff, export_reconstruction, the ledger_records page reader, CanonicalRecord, post-commit properties added); no violation seen",
+   "as_built_findings": [],
+   "remaining": "non-interference sees only reads that reach the answer, under the perturbations listed per action",
+   "sub_lane": "reads2",
+   "supersedes": {
+    "status": "open",
+    "product_obligation": "unknown"
+   }
+  },
+  {
+   "gate": "3.4-declared-reads",
+   "module": "18",
+   "status": "closed",
+   "evidence": [
+    "run:st-control-reads-selftest",
+    "run:st-live-reads-c",
+    "run:st-live-reads-b (module 18 verdict there is a harness artifact, superseded)",
+    "experiment/playbook-completion/structural/reads/method.json",
+    "experiment/playbook-completion/structural/reads/noninterference.py",
+    "run:st-live-reads2-12-18",
+    "run:st-live-reads2-03-11",
+    "run:st-control-reads2-selftest",
+    "run:st-control-reads-selftest",
+    "experiment/playbook-completion/structural/reads2/method.json",
+    "experiment/playbook-completion/structural/reads2/static.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "all 5 entry points checked (snapshot_info, POST /admin/snapshot in-process, Snapshot.NodeValueJSON, the server-file helpers added); no violation seen",
+   "as_built_findings": [],
+   "remaining": "non-interference sees only reads that reach the answer, under the perturbations listed per action",
+   "sub_lane": "reads2",
+   "supersedes": {
+    "status": "open",
+    "product_obligation": "unknown"
+   }
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "01",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-frame2-run",
+    "run:st-control-frame2-selftest",
+    "run:st-check-frame2-census",
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame2/method.json",
+    "experiment/playbook-completion/structural/frame/method.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "every statement class in 01's source now observed and held: sql-ddl (F01, setup re-run: 64 DDL statements, no catalog change outside the IVG Schema and the pin's classes), sql-delete-key and sql-update (F01: add_graph_id_to_nodes' UPDATE nodes and DELETE of the __graph property, store-wide by their own WHERE), sql-delete-predicate (F10 retract_inference); the journal classes held in st-live-frame-r8. F01 also moved a node into another graph and deleted its __graph property (F-C0150, a semantic defect inside the declared store-wide frame)",
+   "as_built_findings": [
+    "F-C0150"
+   ],
+   "remaining": "statement level, not run here (class level observed): the pre-4.x upgrade steps (upgrade_to_4_0_0, tighten_graph_id_column, ensure_ekey's backfill, stage_class_owned_rdf_edges, the 3.2.0 rescue) and remove_legacy_objects' DROPs need an older release's schema",
+   "sub_lane": "frame2",
+   "supersedes": {
+    "status": "open",
+    "product_obligation": "unknown"
+   }
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "02",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-frame2-run",
+    "run:st-control-frame2-selftest",
+    "run:st-check-frame2-census",
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame2/method.json",
+    "experiment/playbook-completion/structural/frame/method.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "the only unobserved class was sql-ddl, from the engine's FETCH FIRST probe (engine.py:765-803): F02 creates and drops its two Graph_KG tables and leaves no catalog object, global or data outside them",
+   "as_built_findings": [],
+   "remaining": "",
+   "sub_lane": "frame2",
+   "supersedes": {
+    "status": "open",
+    "product_obligation": "unknown"
+   }
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "03",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-frame2-run",
+    "run:st-control-frame2-selftest",
+    "run:st-check-frame2-census",
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame2/method.json",
+    "experiment/playbook-completion/structural/frame/method.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "sql-ddl (F02, the FETCH FIRST probe) now observed and held; the other classes held in st-live-frame-r8; F11's adoption UPDATE held at key level",
+   "as_built_findings": [],
+   "remaining": "",
+   "sub_lane": "frame2",
+   "supersedes": {
+    "status": "open",
+    "product_obligation": "unknown"
+   }
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "04",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-frame2-run",
+    "run:st-control-frame2-selftest",
+    "run:st-check-frame2-census",
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame2/method.json",
+    "experiment/playbook-completion/structural/frame/method.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "sql-ddl (F03/F04 route DDL of _engine/schema.py, attributed by file owners), sql-delete-predicate (F09 RetractTemporalRow/Rows, F10 retract_inference) and sql-update (F11 adoption UPDATE nodes_edges.py:91) observed and held at key level",
+   "as_built_findings": [],
+   "remaining": "statement level, not run here (class level observed): EdgeScan.cls:359 bulk prop delete and Adjacency.cls bulk retracts over many triples; namespace-wide rebuilds checked at store level only (st-live-frame-r8)",
+   "sub_lane": "frame2",
+   "supersedes": {
+    "status": "open",
+    "product_obligation": "unknown"
+   }
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "05",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-frame2-run",
+    "run:st-control-frame2-selftest",
+    "run:st-check-frame2-census",
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame2/method.json",
+    "experiment/playbook-completion/structural/frame/method.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "the only unobserved class was sql-ddl via the FETCH FIRST probe (F02), now observed and held",
+   "as_built_findings": [],
+   "remaining": "",
+   "sub_lane": "frame2",
+   "supersedes": {
+    "status": "open",
+    "product_obligation": "unknown"
+   }
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "06",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-frame2-run",
+    "run:st-control-frame2-selftest",
+    "run:st-check-frame2-census",
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame2/method.json",
+    "experiment/playbook-completion/structural/frame/method.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "sql-ddl observed and held: F03 node route and F04 edge route creation change only the route table, its HNSW index, its class and storage (and the referenced nodes class's dependency record); F10 retract_inference held",
+   "as_built_findings": [],
+   "remaining": "statement level, not run here (class level observed): registry/quarantine table DDL and ALTER TABLE column adds run only on a namespace missing them",
+   "sub_lane": "frame2",
+   "supersedes": {
+    "status": "open",
+    "product_obligation": "unknown"
+   }
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "07",
+   "status": "open",
+   "evidence": [
+    "run:st-live-frame2-run",
+    "run:st-control-frame2-selftest",
+    "run:st-check-frame2-census",
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame2/method.json",
+    "experiment/playbook-completion/structural/frame/method.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "sql-ddl of setup observed under F01 (no change); still unobserved for 07",
+   "as_built_findings": [],
+   "remaining": "sql-insert and sql-update of 07's census are iris_vector_graph/schema.py:3165-3240 (attributed by file owners; the 3.2.0 edge rescue), run only on a 3.2.0 namespace (needs an older release, out of scope); the generated kg_TXT procedures are not re-created by a setup re-run (routines unchanged 58), so their DDL is not observed; bm25_upgrade wrote nothing (index already current)",
+   "sub_lane": "frame2",
+   "supersedes": {
+    "status": "open",
+    "product_obligation": "unknown"
+   }
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "08",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-frame2-run",
+    "run:st-control-frame2-selftest",
+    "run:st-check-frame2-census",
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame2/method.json",
+    "experiment/playbook-completion/structural/frame/method.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "sql-ddl: F02 (FETCH FIRST probe) held; Cypher CREATE/DROP INDEX/CONSTRAINT and CREATE FULLTEXT INDEX issue no statement (F06; query.py:1884-1893), so the census lines query.py:1887-1892 are command checks, not DDL",
+   "as_built_findings": [],
+   "remaining": "",
+   "sub_lane": "frame2",
+   "supersedes": {
+    "status": "open",
+    "product_obligation": "unknown"
+   }
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "09",
+   "status": "open",
+   "evidence": [
+    "run:st-live-frame2-run",
+    "run:st-control-frame2-selftest",
+    "run:st-check-frame2-census",
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame2/method.json",
+    "experiment/playbook-completion/structural/frame/method.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "Cypher schema commands issue no DDL (F06)",
+   "as_built_findings": [],
+   "remaining": "the global classes (Exec ^IRIS.Temp.IVG.Cypher worker sharing, Gen ^IVG.CypherCompiled) belong to the native executor's compiled plans: Gen.For/Build compile a generated class, which this audit does not trigger; no persistent writer of module 09 exercised",
+   "sub_lane": "frame2",
+   "supersedes": {
+    "status": "open",
+    "product_obligation": "unknown"
+   }
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "10",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-frame2-run",
+    "run:st-control-frame2-selftest",
+    "run:st-check-frame2-census",
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame2/method.json",
+    "experiment/playbook-completion/structural/frame/method.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "sql-ddl (F02) observed and held; the module's one product excursion stays F-C1001 (triangle_count writes ^IVG.Deploy, st-live-frame-r8)",
+   "as_built_findings": [
+    "F-C1001"
+   ],
+   "remaining": "",
+   "sub_lane": "frame2",
+   "supersedes": {
+    "status": "open",
+    "product_obligation": "fails"
+   }
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "11",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-frame2-run",
+    "run:st-control-frame2-selftest",
+    "run:st-check-frame2-census",
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame2/method.json",
+    "experiment/playbook-completion/structural/frame/method.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "sql-ddl (Ledger.cls:232 BUILD INDEX via RebuildEdgeIndices, F05): catalog changes only for the four structural tables, data writes only their indexes, ^KG and the iFind transformation global; post-commit DELETE/INSERT (F08) held",
+   "as_built_findings": [],
+   "remaining": "",
+   "sub_lane": "frame2",
+   "supersedes": {
+    "status": "open",
+    "product_obligation": "unknown"
+   }
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "12",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-frame2-run",
+    "run:st-control-frame2-selftest",
+    "run:st-check-frame2-census",
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame2/method.json",
+    "experiment/playbook-completion/structural/frame/method.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "sql-update (nodes_edges.py:91, attributed by file owners) observed under F11 and held at key level; other classes held in st-live-frame-r8",
+   "as_built_findings": [],
+   "remaining": "statement level, not run here (class level observed): Eraser's FHIR side tables, AdjNoLock and RemoveSource branches (no FHIR classes; not reached)",
+   "sub_lane": "frame2",
+   "supersedes": {
+    "status": "open",
+    "product_obligation": "unknown"
+   }
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "13",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-frame2-run",
+    "run:st-control-frame2-selftest",
+    "run:st-check-frame2-census",
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame2/method.json",
+    "experiment/playbook-completion/structural/frame/method.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "sql-delete-key (client.py:473 post-commit property DELETE) observed under F08 and held at key level (3 iFind word/list nodes unattributable to a row)",
+   "as_built_findings": [],
+   "remaining": "",
+   "sub_lane": "frame2",
+   "supersedes": {
+    "status": "open",
+    "product_obligation": "unknown"
+   }
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "14",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-frame2-run",
+    "run:st-control-frame2-selftest",
+    "run:st-check-frame2-census",
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame2/method.json",
+    "experiment/playbook-completion/structural/frame/method.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "sql-ddl (Ledger.cls:232, F05) observed and held; post-commit properties (F08) held",
+   "as_built_findings": [],
+   "remaining": "",
+   "sub_lane": "frame2",
+   "supersedes": {
+    "status": "open",
+    "product_obligation": "unknown"
+   }
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "15",
+   "status": "open",
+   "evidence": [
+    "run:st-live-frame2-run",
+    "run:st-control-frame2-selftest",
+    "run:st-check-frame2-census",
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame2/method.json",
+    "experiment/playbook-completion/structural/frame/method.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "the dictionary oracle exists (st-control-frame2-selftest) but 15's own DDL is not reachable",
+   "as_built_findings": [],
+   "remaining": "FHIRGraph.cls:1428-1430 (ALTER TABLE fhir_graphs ADD COLUMN interp_version) and the FHIR-graph table DDL need FHIR server classes (absent on Community); the FHIR-graph writers were not run",
+   "sub_lane": "frame2",
+   "supersedes": {
+    "status": "open",
+    "product_obligation": "unknown"
+   }
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "17",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-frame2-run",
+    "run:st-control-frame2-selftest",
+    "run:st-check-frame2-census",
+    "run:st-live-frame-r8",
+    "run:st-control-frame-selftest",
+    "run:st-check-frame-aggregate",
+    "experiment/playbook-completion/structural/frame2/method.json",
+    "experiment/playbook-completion/structural/frame/method.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "sql-ddl (dbapi_utils.py:191 create_hnsw_index; create_ivfflat_index answered False on Community) and sql-update (dbapi_utils.py:161 insert_vector upsert) observed on a scratch table and held; utils.py:62-64 are statement-type checks; execute_sql(read_only=True) wrote its INSERT (HD-1701, intent-undecided, ib-HD1701-readonly-flag)",
+   "as_built_findings": [],
+   "remaining": "",
+   "sub_lane": "frame2",
+   "supersedes": {
+    "status": "open",
+    "product_obligation": "unknown"
+   }
+  }
+ ]
+}
