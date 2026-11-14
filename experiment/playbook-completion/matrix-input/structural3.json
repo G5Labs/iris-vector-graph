@@ -95,14 +95,14 @@
    "product_obligation": "unknown",
    "product_basis": "no violation seen (live, not a proof): the pin's initialize_schema upgrading a v4.5.1 namespace built by the pinned fixture (O-1) and loaded through v4.5.1's own API (110,058 nodes, 230,054 edges, 320,064 properties, 2,002 vectors, 51 ledger revisions) completes in 14.0 s with 3.3 MB client memory and no string, subscript or SQL lock-escalation failure (only the product's own ^IVG.AdjW/^IVG.NKGBuild global locks during the ^KG rebuild); a run killed after 8 s leaves every content row, key and FK unchanged and the rerun completes (verify_graph ok, ledger verify equal); journal volume 96.9 MB for this content (about 420 bytes per edge, from the ^KG rebuild); setup re-run over the pin's own schema is a no-op on content (st-live-setup-rerun)",
    "as_built_findings": [],
-   "remaining": "the whole-table Python migrations named before (migrations/upgrade.py:441-451, kg_node_stores.py:335-356, docs_and_edge_vectors.py:575, graph_scoped_embeddings.py:1218) belong to upgrade_to_4_0_0, which only a 3.x namespace needs and initialize_schema does not call on a 4.5.1 one; driving them needs the v3.2.0 release fixture, which operator ruling O-1 does not authorize (blocked-access: O-1 scope). Server memory figures are %SYS.ProcessQuery's MemoryPeak/MemoryUsed as reported; journal space at larger scales is extrapolated, not measured Its namespace IVG262CAP rests on the orchestrator's extension of operator clarification O-1 to a second fixture namespace (operator confirmation requested; class inventory o1-cap-inventory).",
+   "remaining": "the whole-table Python migrations named before (migrations/upgrade.py:441-451, kg_node_stores.py:335-356, docs_and_edge_vectors.py:575, graph_scoped_embeddings.py:1218) belong to upgrade_to_4_0_0, which only a 3.x namespace needs and initialize_schema does not call on a 4.5.1 one; driving them needs the v3.2.0 release fixture, which operator ruling O-1 does not authorize (blocked-access: O-1 scope). Server memory figures are %SYS.ProcessQuery's MemoryPeak/MemoryUsed as reported; journal space at larger scales is extrapolated, not measured Its namespace IVG262CAP is authorized setup under operator clarification O-1 (applied to it on 2026-11-14 22:42 UTC; class inventory o1-cap-inventory).",
    "sub_lane": "upgrade",
    "supersedes": {
     "status": "open",
     "product_obligation": "unknown"
    },
    "depends_on": [
-    "O-1 extension to IVG262CAP (incidents/O-1-FIXTURES.md; operator confirmation requested)"
+    "operator clarification O-1, applied to IVG262CAP on 2026-11-14 22:42 UTC (incidents/O-1-FIXTURES.md)"
    ]
   }
  ]

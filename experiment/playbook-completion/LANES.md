@@ -28,7 +28,7 @@ product scope check passes). Last checkpoint commit before the switch: `1564a673
 
 - Not operator-dependent (recorded so the monitor does not count it): the least-privilege login; the disposable user `IVGAUDIT_RO` is authorized setup (versions/PRIVILEGE.md).
 - Operator-dependent: O-2 (product-code mutation testing, `3.7-mutation`; the binding rule says model mutations only).
-- Operator confirmation requested (not blocking): the orchestrator's extension of O-1 to the second fixture namespace `IVG262CAP` (3.6-capacity/01 depends on it).
+- O-1 applied by the operator also to `IVG262CAP` (22:42 UTC); no confirmation outstanding.
   O-1 is resolved by the operator's clarification.
 - Genuinely unavailable (attempts in `versions/AVAILABILITY.md`): IRIS 2026.3, Enterprise / IRIS for Health and its
   licence (more than 8 units), `%AI`, `HS.FHIRServer`, multi-node, x86_64 `libarno_callout.so`.

@@ -44,15 +44,22 @@ not a fixture, and is not claimed under O-1. It was exercised later as product o
 `IVGC.*` classes, 111 compiles, all removed again by the product's `Gen.DropAll`; `tr-replay-09-r2`, `tr-locklog-09`,
 `trace-replay/TRACE-REPLAY.md`).
 
-## Orchestrator's extension of O-1: a second namespace (structural lane, 2026-11-14; operator confirmation requested)
+## IVG262CAP under O-1 (operator application, 2026-11-14 22:42 UTC)
 
-The operator's clarification names the fixture's isolated migration-test namespace in the singular (`IVG262FC1306`). The
-orchestrator read it as covering a second namespace built the same way, `IVG262CAP`: the same pinned fixture, the same
-unchanged v4.5.1 release, an `IVG262*` scratch namespace, used only to load v4.5.1 content through v4.5.1's own API and run
-the pin's upgrade for 3.6-capacity/01. This is the orchestrator's extension, not the operator's words; the cell carries
-`depends_on` this record, and the operator is asked to confirm it. A read-only class inventory after the pin's upgrade
-(`o1-cap-inventory`): 222 non-% classes, 55 equal to the pin's sources, 8 v4.5.1-only, 11 v4.5.1 schema classes or formatting
-differences, 148 generated: the same groups as `IVG262FC1306` with different counts (55/8/11/148 against 54/8/11/178).
+**Operator (verbatim essentials):** O-1 also covers IVG262CAP when it uses the existing pinned migration/capacity fixture to
+deploy the unchanged upstream 4.5.1 release into that isolated namespace; this is the same attributed verification setup,
+and no further confirmation is needed. The unchanged product pin and the separately recorded historical fixture remain the
+assessment inputs. (The orchestrator had first used the fixture there on its own reading of O-1 and asked for this
+confirmation; that history is kept in git and `review/REVIEW-5.md` R5-06.)
+
+| Item | Value |
+|---|---|
+| Version | upstream release v4.5.1 = git tag `v4.5.1`, commit `f60b20c20de13bffb30c2fbb9cdb3a4e73f3a675`, unchanged; then the pin `3eaa79cf`'s own `initialize_schema()` upgrade |
+| Fixture | `scripts/fixtures/build_release_namespace.build('v4.5.1', 'IVG262CAP')` at the pin, called unmodified by `structural/upgrade/upgrade_probe.py build` (19:36:44-19:36:56 UTC); it creates the namespace with `scripts/dev/make_scratch_namespace.py` and runs its setup through `scripts/dev/tcp_setup.py` |
+| Helper classes | `IVGDev.Setup` and `IVGDev.Run` in `%SYS` (already present from the validation suites; equal to the pin's `scripts/dev/objectscript/IVGDev/*.cls`, `o1-fixture-inventory`); nothing else compiled by the audit |
+| Namespace | `IVG262CAP`, database `/usr/irissys/mgr/ivg262cap/`, absent beforehand (checked), kept, never dropped (`incidents/NAMESPACES.md`) |
+| Effects | v4.5.1's own setup compiled v4.5.1's classes (165 non-% classes after the build); content loaded through v4.5.1's API (110,058 nodes, 230,054 edges, 320,064 properties, 2,002 vectors, 51 ledger revisions; `st-live-cap-upgrade-load`); the pin's upgrade (dry run, a run killed mid-way, the completing run; `st-live-cap-upgrade-run`); afterwards 222 non-% classes: 55 equal to the pin's sources, 8 v4.5.1-only, 11 v4.5.1 schema classes or formatting differences, 148 generated (`o1-cap-inventory`) |
+| Used for | 3.6-capacity/01 (the pin's upgrade of a loaded 4.5.1 namespace); the assessment is of the pin's code |
 
 | Setup | Version | Namespace | Classes | Effect |
 |---|---|---|---|---|

@@ -60,4 +60,4 @@ target, edition comparison, more than 8 licence units); `%AI` classes (MCP); FHI
 multi-node ECP/mirror setup; an x86_64 `libarno_callout.so` (F-1001). Set up and used, so not blockers: driver 5.4.0,
 IRIS 2026.2 (isolated container, stopped and kept), a disposable least-privilege user (disabled). Operator ruling O-1
 (review-2 condition 6) given on 2026-11-14: the pinned 4.5.1 fixture and the `IVGDev` helpers are authorized setup
-(`incidents/O-1-FIXTURES.md`); the orchestrator's extension to a second fixture namespace (`IVG262CAP`) awaits confirmation.
+(`incidents/O-1-FIXTURES.md`); the operator applied it also to the second fixture namespace `IVG262CAP` (22:42 UTC).
