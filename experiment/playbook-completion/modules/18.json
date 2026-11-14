@@ -1,0 +1,427 @@
+{
+ "module": "18",
+ "name": "SNP",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "lane": "breadth-c",
+ "entry_points": {
+  "total": 22,
+  "by_kind": {
+   "py-api": 8,
+   "os-method": 13,
+   "http-route": 1
+  },
+  "public": [
+   "IRISGraphEngine.save_snapshot (snapshot.py:797)",
+   "IRISGraphEngine.snapshot_info (:1050)",
+   "IRISGraphEngine.restore_snapshot(merge=False|True) (:1076)",
+   "POST /admin/snapshot (cypher_api.py:668)",
+   "Graph.KG.Snapshot.NodeValueJSON / SetNodeJSON (Snapshot.cls:75-89, used by save/restore)",
+   "Graph.KG.Snapshot.ExportGlobals / ImportGlobals / ReadFileChunk / WriteFileChunk / GetFileSize / DeleteDir / FileExists (Snapshot.cls:4-73, no product caller)"
+  ],
+  "lifecycle_operations": [
+   "save (read-only export)",
+   "replacing restore (erase_all + load)",
+   "merge restore",
+   "info"
+  ],
+  "omissions": [
+   {
+    "name": "Graph.KG.Snapshot file and global helpers have no cell",
+    "file:line": "iris_src/src/Graph/KG/Snapshot.cls:4-73",
+    "why": "stated by SNP-T5 / SNP-X5.1 only; no entity-state x command cell, and their file effects (F-C1803) are stated nowhere"
+   },
+   {
+    "name": "restore_snapshot with merge=True writes the ledger globals when the archive holds them",
+    "file:line": "iris_vector_graph/_engine/snapshot.py:1554-1588",
+    "why": "the ledger cells for merge restore are 'open' (HD-1801) but semantics/writesets.json has no snapshot.restore_merge plan"
+   },
+   {
+    "name": "a restore while other processes write",
+    "file:line": "iris_vector_graph/_engine/snapshot.py:1076-1610",
+    "why": "no statement or cell says what a concurrent writer sees or does during a restore (no lock is taken)"
+   },
+   {
+    "name": "routed edge-vector tables (kg_eemb_*) in save/restore",
+    "file:line": "iris_vector_graph/_engine/snapshot.py:299-344",
+    "why": "no statement says edge routes are archived or left out; they are silently left out (F-C1804)"
+   }
+  ],
+  "cells_without_entry_point": [],
+  "notes": "Every cell command (save, replacing restore, merge restore, info) maps to save_snapshot / restore_snapshot(merge) / snapshot_info; POST /admin/snapshot is a second save entry. import_graph_ndjson, export_graph_ndjson, import_rdf, load_networkx and load_obo live in the same file but the Scope excludes them and no other module owns them (modules/00.json)."
+ },
+ "gates": [
+  {
+   "gate": "3.1 statements/cells",
+   "status": "closed",
+   "reason": "21 cells, two assigned to HD-1801; entry points reconciled (models/breadth-c/inventory.json)",
+   "evidence": [
+    "experiment/playbook-uplift/ontology/18-snapshot.md"
+   ],
+   "remaining": "cells for the Snapshot.cls helpers; a statement for restore under concurrent writers; a statement for routed edge vectors (kg_eemb_) in snapshots (F-C1804)"
+  },
+  {
+   "gate": "3.2 IRIS features relied on",
+   "status": "open",
+   "reason": "env_features below; several checked live",
+   "evidence": [
+    "c18-live-save-footprint",
+    "c18-live-dirty-export",
+    "c18-live-restore-footprint"
+   ],
+   "remaining": "orchestrator's IRIS contract"
+  },
+  {
+   "gate": "3.3 L1/L2/refinement/controls/progress",
+   "status": "open",
+   "reason": "explorer machines M4 (snapcut) and M5 (restore) with as-built violations, reviewed passes, controls and witnesses; no Verus L1/L2/refinement",
+   "evidence": [
+    "models/breadth-c/RESULTS.json cmc-snap-*, cmc-restore-*"
+   ],
+   "remaining": "proofs"
+  },
+  {
+   "gate": "3.3a mechanisms and invariant write-sets",
+   "status": "failed",
+   "reason": "snapshot.restore_replace breaks INV-shape/isolation/text/retry/marker/no-live-tombstone/stmt/replay (F-1801, live); restore_merge is not a declared plan",
+   "evidence": [
+    "experiment/playbook-uplift/semantics/WRITESETS.md",
+    "c18-live-ledger-overlay"
+   ],
+   "remaining": "add the merge plan; product fix per HD-1801"
+  },
+  {
+   "gate": "3.4 statements/ownership/storage-order/declared-reads",
+   "status": "failed",
+   "reason": "merge guard reads the wrong key (F-1802); edge vectors lose their key (F-1803); restore and the file helpers write stores other modules own (F-1801, F-C1803); routed edge vectors are not in the archive at all (F-C1804)",
+   "evidence": [
+    "c18-live-merge-guard",
+    "c18-live-edge-vectors"
+   ],
+   "remaining": "statement proofs not attempted"
+  },
+  {
+   "gate": "3.5 handlers/lock plans/decoders/status maps",
+   "status": "failed",
+   "reason": "no lock plan for save (dirty export, F-C1801) or restore; archive value decoder loses types (F-1804); failed global lines swallowed (F-C1802); HTTP endpoint names files by the second (F-1807); status map: SnapshotReadError for unreadable tables (snapshot.py:17-25), RuntimeError for unwritable tables/globals (:1205-1216, :1573-1582), ValueError for another layout (:1113-1129), CallerTransactionOpenError / ledger strict refusal before any write (:1095-1102, live c18-live-refusals), POST /admin/snapshot maps any exception to 500 (cypher_api.py:676-677)",
+   "evidence": [
+    "c18-live-dirty-export",
+    "c18-live-value-types",
+    "c18-live-swallowed-lines",
+    "c18-live-http-endpoint",
+    "c18-live-refusals"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.6 composition conditions",
+   "status": "failed",
+   "reason": "frame (merge overwrites derived aggregates, F-1805), keys (F-1802, F-1803); FK closed by endpoint registration (inspected + one live restore); capacity open (whole archive in memory)",
+   "evidence": [
+    "c18-live-aggregates"
+   ],
+   "remaining": "capacity measurement"
+  },
+  {
+   "gate": "3.7 validation kinds (crash/reconnect/ambiguous ack, 1 vs N processes)",
+   "status": "open",
+   "reason": "crash mid-restore is stated (SNP-T3.1: partial namespace) but not exercised; save under a concurrent writer exercised live (dirty export) and in M4; restore vs a concurrent second process not exercised; 1 vs N: the HTTP endpoint holds an in-process lock only, so N server processes can save concurrently to the same second-named file",
+   "evidence": [
+    "c18-live-dirty-export",
+    "cmc-snap-as-built-committed"
+   ],
+   "remaining": "kill-during-restore world; two-process save/restore"
+  },
+  {
+   "gate": "3.8 account",
+   "status": "closed",
+   "reason": "every original finding of module 18 (F-1801..F-1807) has an audit record, all reproduced live; new findings F-C1801..F-C1804",
+   "evidence": [
+    "findings/audit/18.json"
+   ],
+   "remaining": ""
+  }
+ ],
+ "env_features": [
+  {
+   "feature": "SQL default isolation READ UNCOMMITTED and uncommitted global reads (SYS-P2)",
+   "source": "iris_vector_graph/_engine/snapshot.py:864-1034",
+   "used_by": "save_snapshot",
+   "checked": "live c18-live-dirty-export"
+  },
+  {
+   "feature": "SELECT * returns columns in declaration order (P-1801)",
+   "source": "iris_vector_graph/_engine/snapshot.py:866-874, 1287-1292",
+   "used_by": "save and the merge guard",
+   "checked": "live c18-live-save-footprint (graph_id first for rdf_edges/rdf_labels/rdf_props, node_id for nodes)"
+  },
+  {
+   "feature": "Native API nextSubscript('' start)/get/set/kill round trip of global values through str() (P-1802)",
+   "source": "iris_vector_graph/_engine/snapshot.py:1612-1692",
+   "used_by": "save/restore of ^KG, ^NKG, ^BM25Idx, ^IVG.Ledger and ledger storage",
+   "checked": "live: numbers come back as strings (c18-live-value-types)"
+  },
+  {
+   "feature": "Native API set refuses a null subscript (<SUBSCRIPT>)",
+   "source": "iris_vector_graph/_engine/snapshot.py:1665-1683",
+   "used_by": "restore global import",
+   "checked": "live c18-live-swallowed-lines"
+  },
+  {
+   "feature": "$Vector / $IsVector / $VectorOp / $VectorDefined, $ListValid / $ListNext, $Name indirection, %DynamicObject JSON",
+   "source": "iris_src/src/Graph/KG/Snapshot.cls:75-162",
+   "used_by": "NodeValueJSON / SetNodeJSON for ^IVF, ^PLAID, ^VecIdx",
+   "checked": "not by lane C"
+  },
+  {
+   "feature": "INSERT ... SELECT ... WHERE NOT EXISTS; INSERT OR UPDATE; TO_VECTOR(text, dtype)",
+   "source": "iris_vector_graph/_engine/snapshot.py:1265-1298, 1341-1356",
+   "used_by": "restore (merge and configuration tables)",
+   "checked": "live (c18-live-merge-guard, c18-live-restore-footprint)"
+  },
+  {
+   "feature": "Runtime DDL: CREATE TABLE (routed vector tables, FHIR tables), HNSW index build, DROP TABLE after TCOMMIT",
+   "source": "iris_vector_graph/_engine/snapshot.py:1239-1248, 1372-1500; Eraser.cls:821-850",
+   "used_by": "restore",
+   "checked": "not by lane C"
+  },
+  {
+   "feature": "TSTART/TCOMMIT/TROLLBACK around Eraser.EraseAll; DB-API autocommit for the restore's INSERTs",
+   "source": "iris_src/src/Graph/KG/Eraser.cls:709-819; snapshot.py:1205-1216",
+   "used_by": "replacing restore",
+   "checked": "live journal c18-live-restore-footprint"
+  },
+  {
+   "feature": "Persistent class IdKey uniqueness (LedgerRevision Seq)",
+   "source": "iris_src/src/Graph/KG/LedgerRevision.cls:44; Ledger.cls:530-556",
+   "used_by": "the ledger after a restore",
+   "checked": "live c18-live-ledger-overlay"
+  },
+  {
+   "feature": "%Library.File, %Stream.FileCharacter, $System.OBJ.Export/Load (.GBL, .gof), %ResultSet %Library.File:FileSet",
+   "source": "iris_src/src/Graph/KG/Snapshot.cls:4-73",
+   "used_by": "the unused helpers",
+   "checked": "live read-only probe c18-live-file-helpers"
+  },
+  {
+   "feature": "Journal (BeginTrans/CommitTrans, SET/KILL with in-transaction flag) as the footprint oracle",
+   "source": "experiment/playbook-completion/traces/journal.py",
+   "used_by": "validation",
+   "checked": "live"
+  }
+ ],
+ "blockers": [
+  "Reading-role reachability of the Snapshot.cls file helpers needs a new IRIS user/role on the audit container (container configuration): blocked-access",
+  "Scope incident during this module's unit-test run: experiment/playbook-completion/live/breadth-c/incident-ivg460snap.json"
+ ],
+ "gates_by_id": {
+  "3.1-cells": {
+   "status": "closed",
+   "evidence": [
+    "experiment/playbook-uplift/ontology/18-snapshot.md ## Cells (21 cells; the two open cells assigned to HD-1801)"
+   ],
+   "remaining": ""
+  },
+  "3.1-coverage": {
+   "status": "closed",
+   "evidence": [
+    "experiment/playbook-completion/models/breadth-c/inventory.json reconciliation.18 (22 entry points; the 8 lexically uncovered are SetNodeJSON (SNP-T1.9), the private helpers IsVector/Encode/Decode/NodeRef, and the plan helpers routed_export_plan/ledger_storage_globals/snapshot_globals/kg_export_subscripts (SNP-B1.7, SNP-I1.1))"
+   ],
+   "remaining": "no cell covers the Snapshot.cls file helpers (stated by SNP-T5/SNP-X5.1 only); import/export NDJSON, import_rdf, load_networkx, load_obo are excluded by the Scope line and owned by no module (modules/00.json); SNP-B1.18/SNP-I1 do not cover routed edge vectors, which the archive omits (F-C1804)"
+  },
+  "3.1-intent": {
+   "status": "closed",
+   "evidence": [
+    "experiment/playbook-completion/decisions.md HD-1801, HD-1802"
+   ],
+   "remaining": ""
+  },
+  "3.2-coverage": {
+   "status": "open",
+   "evidence": [
+    "env_features"
+   ],
+   "remaining": "the IRIS contract must place each feature (uncommitted reads, Native API value round trip, SELECT * order, IdKey uniqueness, autocommit) inside its subset"
+  },
+  "3.3-L1": {
+   "status": "open",
+   "evidence": [
+    "models/breadth-c/src/restore.rs",
+    "models/breadth-c/src/snapcut.rs"
+   ],
+   "remaining": "explorer machines are executable abstract models (bounded), not a Verus L1"
+  },
+  "3.3-L2": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "no L2 over the archive/ledger storage layout"
+  },
+  "3.3-refinement": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "not proved"
+  },
+  "3.3-controls": {
+   "status": "open",
+   "evidence": [
+    "cmc-restore-ctl-marks",
+    "cmc-snap-ctl-gate"
+   ],
+   "remaining": "controls are rejected by the explorer, not by a proof"
+  },
+  "3.3-model-check": {
+   "status": "closed",
+   "evidence": [
+    "cmc-snap-as-built-committed (expected-violation, 36 states, exhaustive within bounds)",
+    "cmc-snap-as-built-dangling (expected-violation, 63 states, exhaustive within bounds)",
+    "cmc-snap-reviewed (pass, 65 states, exhaustive within bounds)",
+    "cmc-snap-ctl-gate (expected-violation, 36 states, exhaustive within bounds)",
+    "cmc-snap-wit (expected-violation, 41 states, exhaustive within bounds)",
+    "cmc-restore-as-built-history (expected-violation, 39 states, exhaustive within bounds)",
+    "cmc-restore-as-built-redaction (expected-violation, 85 states, exhaustive within bounds)",
+    "cmc-restore-as-built-grows (expected-violation, 39 states, exhaustive within bounds)",
+    "cmc-restore-as-built-commit (expected-violation, 1482 states, exhaustive within bounds)",
+    "cmc-restore-reviewed (pass, 891 states, exhaustive within bounds)",
+    "cmc-restore-ctl-marks (expected-violation, 85 states, exhaustive within bounds)",
+    "cmc-restore-wit (expected-violation, 82 states, exhaustive within bounds)"
+   ],
+   "remaining": "merge restore (F-1802/F-1805) is live-reproduced, not modelled"
+  },
+  "3.3a-writesets": {
+   "status": "failed",
+   "evidence": [
+    "experiment/playbook-uplift/semantics/WRITESETS.md (snapshot.restore_replace open for all 8 invariants)",
+    "F-1801",
+    "F-1805"
+   ],
+   "remaining": "snapshot.restore_merge is not a plan in semantics/writesets.json although it writes the ledger globals and ^KG(\"tagg\") (F-1805)"
+  },
+  "3.4-statements": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "not proved"
+  },
+  "3.4-ownership": {
+   "status": "failed",
+   "evidence": [
+    "F-1801",
+    "F-C1803",
+    "F-1806"
+   ],
+   "remaining": "restore sets ^IVG.Ledger and the ledger storage directly (Graph.KG.Ledger is their writer); the file/global helpers write outside every owner"
+  },
+  "3.4-storage-order": {
+   "status": "closed",
+   "evidence": [
+    "$RUN_DIR/checks/storage-order.json: no site in iris_vector_graph/_engine/snapshot.py or Graph/KG/Snapshot.cls"
+   ],
+   "remaining": "column-order reliance (SELECT * first column as the merge key, P-1801) is recorded under F-1802, not row order"
+  },
+  "3.4-declared-reads": {
+   "status": "failed",
+   "evidence": [
+    "F-1802",
+    "F-1803",
+    "F-C1804"
+   ],
+   "remaining": ""
+  },
+  "3.5-handlers": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "not proved"
+  },
+  "3.5-lockplans": {
+   "status": "failed",
+   "evidence": [
+    "F-C1801",
+    "c18-live-dirty-export",
+    "footprints/18.json (restore takes no lock)"
+   ],
+   "remaining": "a lock plan (export gate / restore exclusion) per HD-1802"
+  },
+  "3.5-decoders": {
+   "status": "failed",
+   "evidence": [
+    "F-1804",
+    "F-C1802"
+   ],
+   "remaining": ""
+  },
+  "3.6-frame": {
+   "status": "failed",
+   "evidence": [
+    "F-1805"
+   ],
+   "remaining": ""
+  },
+  "3.6-row-permutation": {
+   "status": "closed",
+   "evidence": [
+    "iris_vector_graph/_engine/snapshot.py:211-239 (RESTORE_TABLE_ORDER puts nodes first; endpoints registered per edge, :1175-1203)"
+   ],
+   "remaining": "inspected only"
+  },
+  "3.6-keys": {
+   "status": "failed",
+   "evidence": [
+    "F-1802",
+    "F-1803"
+   ],
+   "remaining": ""
+  },
+  "3.6-fk": {
+   "status": "closed",
+   "evidence": [
+    "iris_vector_graph/_engine/snapshot.py:1175-1203 (edge endpoints registered in the edge's graph)",
+    "c18-live-restore-footprint"
+   ],
+   "remaining": "inspected plus one live replace restore"
+  },
+  "3.6-capacity": {
+   "status": "open",
+   "evidence": [
+    "iris_vector_graph/_engine/snapshot.py:1103-1110 (every archive member read into memory)",
+    "snapshot.py:862-1041 (whole archive built in memory)"
+   ],
+   "remaining": "no bound or streaming; not measured"
+  },
+  "3.7-trace-replay": {
+   "status": "open",
+   "evidence": [
+    "c18-live-restore-footprint (journal of a replace and a merge restore)"
+   ],
+   "remaining": "the journal trace is not replayed through M5"
+  },
+  "3.7-lock-log": {
+   "status": "open",
+   "evidence": [
+    "c18-live-restore-footprint"
+   ],
+   "remaining": "no lock plan to check against (none taken)"
+  },
+  "3.7-mutation": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "not done"
+  },
+  "3.8-findings-disposed": {
+   "status": "closed",
+   "evidence": [
+    "findings/audit/18.json"
+   ],
+   "remaining": ""
+  },
+  "5c-refusals": {
+   "status": "failed",
+   "evidence": [
+    "SNP-X2.1/X2.2: c18-live-refusals",
+    "SNP-X2.14: F-C1802",
+    "SNP-X5.1: F-1806"
+   ],
+   "remaining": ""
+  }
+ },
+ "findings_summary": {
+  "reproduced-live": 11
+ }
+}

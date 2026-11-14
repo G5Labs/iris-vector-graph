@@ -30,8 +30,15 @@ Product pin `3eaa79cf77d3e0a879b2cced634cf2729d81499e` (tree `b098a6f4`). Origin
   | `AUDITA` / `AUDITB` / `AUDITC` | breadth lanes A / B / C | targeted live checks of their modules |
   | `AUDITIA` / `AUDITIB` | intent lanes A / B | discriminating probes for decisions |
 
-  Use only your namespace. Do not restart, stop or reconfigure the container or create namespaces; ask the
-  orchestrator.
+  Use only your namespace. Do not restart, stop or reconfigure the container; ask the orchestrator.
+- **Scratch namespaces for pinned upstream fixtures (in scope, coordinated).** Some upstream test files under
+  `tests/` (including some under `tests/unit`) create their own scratch namespace (`scripts/dev/make_scratch_namespace.py`)
+  and compile the pin's unmodified classes into it. Running them is within the verification scope: it is the product's
+  own fixture, not a product change. Run such a file only under `tools/locks.sh iris`, record the namespace in
+  `incidents/NAMESPACES.md` (name, database directory, creating command, lane, UTC time) and leave it intact for
+  attribution (do not drop it). A fixture setup that fails (for example `%AI` classes absent on Community) is recorded
+  as a visible result (`incomplete` or `blocked` with the exact dependency), never discarded.
+- Compiling anything other than the pin's own classes through the pin's own deploy path remains out of scope.
 - **Connection cap.** IRIS Community allows 8 connections in total for the whole container, shared by every lane
   (exceeding it fails with "Unable to allocate a license"; the identity probe then reports a mismatch). Therefore
   EVERY command that connects to IRIS runs under `bash experiment/playbook-completion/tools/locks.sh iris <cmd>`,
@@ -52,6 +59,12 @@ Product pin `3eaa79cf77d3e0a879b2cced634cf2729d81499e` (tree `b098a6f4`). Origin
 - Raw logs: `$RUN_DIR/<lane>/...`. Register each decisive run with
   `python experiment/playbook-completion/tools/register_run.py <id> <kind> <result> <log> --lane <lane> --command ... --observes ...`.
   One JSON file per run in `evidence/runs/`.
+- A proved or model-checked **reviewed design** is a statement about a model. Report it as such ("the reviewed model
+  satisfies ...") until a correspondence to the original code is discharged; the product's obligation stays as the
+  as-built evidence says (failed/open). Never describe the product as satisfying a property only its reviewed model has.
+- Decisive failure logs are retained: a rerun gets a new id; the original record and log stay.
+- Journal oracle notes: the journal switches files (e.g. at midnight, compressed `*.z`); `records_since` follows the
+  chain. Vector (`$vector`) values are recorded with `opaque: true` and no value.
 - Evidence grades (keep distinct, never upgrade one into another): `proved` (Verus, decisive, no trusted items),
   `mc` (explorer, bounded; say exhaustive-within-bounds or truncated), `trace` (real execution trace replayed through
   a machine), `live` (observed on the dedicated IRIS), `run` (an existing product test set passed here), `tested`

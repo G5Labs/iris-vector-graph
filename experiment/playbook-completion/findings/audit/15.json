@@ -1,0 +1,415 @@
+{
+ "module": "15",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "lane": "breadth-c",
+ "findings": [
+  {
+   "module": "15",
+   "gates": [
+    "3.1",
+    "3.8"
+   ],
+   "notes": "Behaviour matches the intended 4.6.0 rule; the defect is in the documentation only. The MAXSTRING case (P-1510) was not driven live (needs a window over 3.6M characters); a closed connection exercises the same unguarded call.",
+   "id": "F-1501",
+   "title": "PROV export raises on a failed window read; its docstring and SEMANTIC_LAYER say it logs and writes an empty file",
+   "intended": "The 4.6.0 rule is that a failed read raises (CHANGELOG 4.6.0, commit 2d1d6f46; INT-V1.5). The docstring (iris_vector_graph/_engine/prov.py:114-115 'A failed window read is logged and exports nothing') and docs/SEMANTIC_LAYER.md:267-269 ('logged as a warning and exported as an empty file, not raised') still describe the pre-4.6.0 behaviour.",
+   "observed": "Live: prov_export on an engine whose IRIS connection fails raised RuntimeError '<COMMUNICATION LINK ERROR> Connection closed' and wrote no file (c15-live-rdf, prov_failed_window). The upstream unit test test_get_temporal_edges_window_no_iris_raises (asserting the raise) passed in the module set (c15-run-unit). _get_temporal_edges_window has no try (prov.py:181-207).",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c15-live-rdf"
+    },
+    {
+     "kind": "run",
+     "ref": "c15-run-unit"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/prov.py:107-139"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/prov.py:181-207"
+    },
+    {
+     "kind": "inspected",
+     "ref": "docs/SEMANTIC_LAYER.md:264-269"
+    }
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Correct the prov_export docstring, docs/SEMANTIC_LAYER.md 'Limits of the PROV-O export' and the copy in docs/API_REFERENCE.md to say a failed or too-large window read raises."
+  },
+  {
+   "module": "15",
+   "gates": [
+    "3.3a",
+    "3.4",
+    "3.6",
+    "3.7"
+   ],
+   "notes": "Write-set gap: semantics/writesets.json has no plan for reify_edge or the erase of reifier nodes, so the INV-isolation/erasure obligation for this pair was never generated (see modules/15.json gate 3.3a).",
+   "id": "F-1502",
+   "title": "A reifier node always lands in the default graph, and erasing the edge's graph leaves it (with its properties) live",
+   "intended": "Erasure removes a graph's content from every store (SYS-D26, ADR-0004); content of one graph never shows up in an answer about another graph (SYS-I2); INT-E1.6/INT-E1.7 (a reifier lives with its edge and goes with its graph).",
+   "observed": "Live (c15-live-reify): reify_edge on an edge of named graph c15g1 wrote the reifier node, its label 'Reification' and its properties with graph_id '' (default graph) in one transaction; the edge is in c15g1. erase_graph('c15g1') deleted the edge and its rdf_reifications row (journal: one transaction) but the reifier node, label and properties {'source': 'tenant-c15g1-secret', 'confidence': 0.9} stayed in the default graph and were returned by get_node('c15:reif1') and by a default-graph Cypher MATCH. delete_node removes the reifiers of a node's edges (INT-E1.9), so the two deletion paths disagree. The FHIR sync's DeleteEdge (FHIRGraph.cls:2585-2599) also deletes only the rdf_reifications link, never the reifier node.",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c15-live-reify"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/schema.py:3296-3322"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Eraser.cls:185-189"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/FHIRGraph.cls:2585-2599"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/nodes_edges.py:2176-2199"
+    }
+   ],
+   "severity": "S1",
+   "confidence": "high",
+   "remedy": "Create the reifier in the edge's graph (read graph_id with edge_id) and have every edge-deleting path (Eraser.EraseGraph/EraseNodes, FHIR sync DeleteEdge, direct and Cypher edge deletes) delete the reifier nodes of the edges it removes, in the same transaction; a live test that reifies an edge in G, erases G and finds no reifier in any graph."
+  },
+  {
+   "module": "15",
+   "gates": [
+    "3.3a",
+    "3.4"
+   ],
+   "notes": "Original 'leaves its edges and adjacency without a node row' is not reproducible on a fresh install: the edge FKs exist (they are dropped and re-added by the 3.x->4 graph_id migration, schema.py:1436-1510, so an install whose migration stopped between those steps could still show it).",
+   "id": "F-1503",
+   "title": "delete_reification deletes any id's node, labels and properties in every graph without checking it is a reifier",
+   "intended": "SYS-I2 (graph isolation) and INT-E1.10 ('deleting a reifier should touch only that reifier node, and leave no edge without its node'); the docstring (schema.py:3364-3368) admits 'Not graph-scoped'.",
+   "observed": "Live (c15-live-delreif2): delete_reification('c15:z') on an id that is no reifier (0 rdf_reifications rows) and has no edges deleted its node row, labels, properties and ^KG('label') index entries in BOTH named graph c15g2b and the default graph, in one transaction, and returned True. Sub-claim refuted at the pin (c15-live-delreif): for an id WITH edges the foreign key fk_edges_source (schema.py:42) refuses the node delete (SQLCODE -124) and the whole transaction rolls back, so no edge is left without its node row and ^KG is unchanged; the call raises GraphWriteError naming the FK.",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c15-live-delreif2"
+    },
+    {
+     "kind": "live",
+     "ref": "c15-live-delreif"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/schema.py:3361-3397"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/schema.py:42-43"
+    }
+   ],
+   "severity": "S1",
+   "confidence": "high",
+   "remedy": "Refuse an id with no rdf_reifications row; scope the deletes to the reifier's graph (the default graph at the pin, or the edge's graph once F-1502 is fixed)."
+  },
+  {
+   "module": "15",
+   "gates": [
+    "3.2",
+    "3.5"
+   ],
+   "notes": "Premise P-1509 verified live (default schema SQLUser).",
+   "id": "F-1504",
+   "title": "map_sql_table looks up an unqualified table in schema 'USER' instead of the default schema SQLUser",
+   "intended": "INT-M1.4: a table name with no schema is found in the default SQL schema; IRIS puts an unqualified table in SQLUser (P-1509).",
+   "observed": "Live (c15-live-tablemap): %SYSTEM.SQL.Schema.Default() = 'SQLUser'; INFORMATION_SCHEMA has 0 tables in schema 'USER'; the catalog query map_sql_table runs for an unqualified name uses TABLE_SCHEMA='USER' (fhir.py:113-120) and so refuses every unqualified name ('Table ... not found'), while the qualified IVGAudit.C15Patients mapping succeeds. A real SQLUser table mapped unqualified was not driven: AUDITC has no SQLUser table and the audit may create scratch tables only under IVGAudit.*.",
+   "disposition": "confirmed-source",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c15-live-tablemap"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/fhir.py:112-126"
+    }
+   ],
+   "severity": "S4",
+   "confidence": "high",
+   "remedy": "Use the namespace default schema (SQLUser, or $SYSTEM.SQL.Schema.Default()) for an unqualified name; add a test with an unqualified table."
+  },
+  {
+   "module": "15",
+   "gates": [
+    "3.5",
+    "3.8"
+   ],
+   "notes": "Lane-written probe of product code against a local stub (no IRIS), not an upstream test. Deprecated code (removal in 5.0) still reachable from the Cypher API bridge fallback (cypher_api.py:293-324).",
+   "id": "F-1505",
+   "title": "FHIRSearchTool says it handles pagination; the condition search reads one Bundle page",
+   "intended": "FHIRSearchTool docstring 'Wraps FHIR REST API details (pagination, auth, resource parsing)' (iris_vector_graph/fhir_bridge.py:305-310); INT-B1.8.",
+   "observed": "Probe (c15-probe-noiris): against a local FHIR stub whose first Bundle page (2 Conditions) carries link[relation=next] to a second page (1 Condition), fhir_search_conditions and FHIRSearchTool returned the 2 page-1 codes; the stub logged no page-2 request.",
+   "disposition": "reproduced-test",
+   "evidence": [
+    {
+     "kind": "probe",
+     "ref": "c15-probe-noiris"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/fhir_bridge.py:85-127"
+    }
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Follow next links with a page cap, or correct the docstring."
+  },
+  {
+   "module": "15",
+   "gates": [
+    "3.2",
+    "3.5"
+   ],
+   "notes": "Live check against a real rdflib 8 is blocked-access: rdflib 8 is not published. The [rdf] extra pins rdflib<8 (pyproject.toml:79,90), so the case needs an environment that overrode the pin.",
+   "id": "F-1506",
+   "title": "With rdflib lacking ConjunctiveGraph (rdflib 8 per KNOWN_ISSUES), export and SHACL report 'rdflib is required'",
+   "intended": "SYS-I9 (every refusal says why); INT-R1.19.",
+   "observed": "Probe (c15-probe-noiris): with rdflib 7.6.0 importable but its ConjunctiveGraph attribute removed in the process, _build_rdflib_graph raised ImportError 'rdflib is required for RDF operations. Install with: pip install iris-vector-graph[rdf]' (cause: cannot import name 'ConjunctiveGraph'). The real rdflib 8 could not be installed: PyPI lists no rdflib 8 release (latest 7.6.0, checked 2026-11-13), so premise P-1507 ('rdflib 8 removes ConjunctiveGraph', docs/KNOWN_ISSUES.md 'The RDF extra needs rdflib 7') is unverified.",
+   "disposition": "confirmed-source",
+   "evidence": [
+    {
+     "kind": "probe",
+     "ref": "c15-probe-noiris"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/_rdf_utils.py:125-133"
+    },
+    {
+     "kind": "assumed",
+     "ref": "P-1507"
+    }
+   ],
+   "severity": "S4",
+   "confidence": "medium",
+   "remedy": "Import ConjunctiveGraph in its own try and name the rdflib<8 requirement (or move to Dataset)."
+  },
+  {
+   "module": "15",
+   "gates": [
+    "3.4",
+    "3.6"
+   ],
+   "notes": "Deprecated code (removal in 5.0); the old pipeline then seeds a rank walk that names no graph (INT-B1.10).",
+   "id": "F-1507",
+   "title": "The bridge anchor lookup matches a node of that id in any graph",
+   "intended": "migrate_fhir_bridges_to_crosswalk documents 'Bridges point at default-graph nodes' (fhir_graph.py:650-652); INT-B1.3; SYS-I2.",
+   "observed": "Live (c15-live-bridge): with node c15:anchor only in named graph c15g3 and a bridge row C15CODE1 -> c15:anchor, get_kg_anchors(['C15CODE1']) returned ['c15:anchor'] (JOIN nodes ON node_id only, fhir.py:470-477).",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c15-live-bridge"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/fhir.py:444-481"
+    }
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Add COALESCE(n.graph_id,'') = '' (the bridges' graph) to the join."
+  },
+  {
+   "module": "15",
+   "gates": [
+    "3.5",
+    "3.7"
+   ],
+   "notes": "No HTTP server was started: the FastAPI handler function was invoked directly with the module's engine cache set to the lane's engine; the route logic is the same code.",
+   "id": "F-1508",
+   "title": "The Cypher API answers a failed FHIR-graph anchor read as a bridge lookup",
+   "intended": "Spec 235 FR-021 uses the bridge only when no synced FHIR graph holds the patient; the 4.6.0 rule is that a failed read reaches the caller (CHANGELOG 4.6.0, commit 2d1d6f46); INT-C4.6.",
+   "observed": "Live (c15-live-anchors), the /api/cypher handler called in-process with the identity-checked AUDITC engine: for fhir_graph='fhir:c15:none' engine.fhir_patient_anchors raises FHIRGraphError ('IndexedTokenParams: FHIR graph ... is not registered'), and for fhir_patient_id='bad id!' it raises ValueError; in both cases the handler answered 200 status OK, anchor_source 'fhir_bridge', 0 anchors, and ran the query with $patient_anchors = [] (cypher_api.py:331-336 'except Exception').",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c15-live-anchors"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher_api.py:327-347"
+    }
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Catch only the 'no FHIR graph tables' case (already answered by fhir_patient_anchors) and let other errors reach the response as 400/500."
+  },
+  {
+   "module": "15",
+   "gates": [
+    "3.5"
+   ],
+   "notes": "Lane-written fault-injection probe (no IRIS). Deprecated code (removal in 5.0).",
+   "id": "F-1509",
+   "title": "The old clinical pipeline reports a failed rank walk as 'no graph connectivity'",
+   "intended": "4.6.0 rule: failures reach the caller (CHANGELOG); INT-B1.9. Docstring status list omits fhir_error (fhir_bridge.py:220-227).",
+   "observed": "Probe (c15-probe-noiris): with an autospec of IRISGraphEngine whose kg_PERSONALIZED_PAGERANK raises, unified_clinical_pipeline returned status 'anchors_resolved_but_no_graph_connectivity', the same status as a genuinely empty walk; an unreachable FHIR base returned 'fhir_error', a status the docstring does not list. Upstream tests pin the status for an empty walk (test_pipeline_ppr_empty, passed in c15-run-unit) and record that this except once hid a TypeError (tests/unit/test_231_fhir_bridge_fixes.py:1-8).",
+   "disposition": "reproduced-test",
+   "evidence": [
+    {
+     "kind": "probe",
+     "ref": "c15-probe-noiris"
+    },
+    {
+     "kind": "run",
+     "ref": "c15-run-unit"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/fhir_bridge.py:281-295"
+    }
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Re-raise or return a distinct 'ppr_error' status; document fhir_error."
+  },
+  {
+   "module": "15",
+   "gates": [
+    "3.7",
+    "3.8"
+   ],
+   "notes": "validate_shacl uses the same in-memory graph.",
+   "id": "F-1510",
+   "title": "RDF export claims bounded memory but builds the whole graph in memory",
+   "intended": "rdf_export.py:10-14 'Streaming cursor pattern - memory-bounded for any graph size'; INT-R1.13.",
+   "observed": "Live (c15-live-memory): export_rdf of a 300-node graph (1,200 triples) peaked at 1.80 MB of Python allocations (tracemalloc) and of a 3,000-node graph (12,000 triples) at 18.6 MB: ratio 10.33 for 10x the triples, about 1.5 KB per triple, i.e. linear in graph size (one in-memory ConjunctiveGraph, _rdf_utils.py:135,210-284, serialized at the end, rdf_export.py:143).",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c15-live-memory"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/_rdf_utils.py:102-135"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/rdf_export.py:10-14"
+    }
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Stream N-Triples/N-Quads row by row, or correct the docstring and SEMANTIC_LAYER.md."
+  },
+  {
+   "module": "15",
+   "gates": [
+    "3.3",
+    "3.3a",
+    "3.7"
+   ],
+   "notes": "Model (main lane, explorer, exhaustive within bounds): as-built violates 'a refused register changes nothing' (upsert committed before LoadColumns throws); the links-change path reports 'rebuild pending' as documented (FHIRGraph.cls:262-271, pass); the reviewed design passes and its upsert-outside-transaction control is caught. Live reproduction is blocked-access: HS.FHIRServer.* classes and the HS_FHIRServer SQL schema (an IRIS for Health FHIR repository) are absent on IRIS Community 2026.1 in AUDITC: 0 classes, 0 tables, Register answers 'no FHIR repository' (live c15-live-register).",
+   "id": "F-1511",
+   "title": "A register that fails after its upsert keeps the new settings",
+   "intended": "SYS-I3 (a refused command leaves every store as it was); INT-F3.9.",
+   "observed": "Source: Register upserts Graph_KG.fhir_graphs (FHIRGraph.cls:235-245) with autocommit Exec and no TSTART, then runs Open, LoadColumns (LoadLinks, LoadCompartment, LoadProps, HS.FHIRServer.Schema.LoadSchema) and the json_links UPDATE (:247-258); the Catch (:276-278) returns an error without undoing the upsert. Live on Community (c15-live-register): every refusal reachable without a repository happens before the upsert and wrote 0 journal records, so the defect window cannot be entered here.",
+   "disposition": "reproduced-model",
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/FHIRGraph.cls:167-279"
+    },
+    {
+     "kind": "live",
+     "ref": "c15-live-register"
+    },
+    {
+     "kind": "mc",
+     "ref": "cmc-register-as-built-refusal"
+    },
+    {
+     "kind": "mc",
+     "ref": "cmc-register-as-built-links"
+    },
+    {
+     "kind": "mc",
+     "ref": "cmc-register-reviewed"
+    },
+    {
+     "kind": "control",
+     "ref": "cmc-register-ctl-upsert"
+    },
+    {
+     "kind": "mc",
+     "ref": "cmc-register-wit"
+    }
+   ],
+   "model_hint": "as-built: Register = [validate] -> upsert settings (autocommit) -> Open/LoadColumns may throw -> json_links UPDATE; a throw after the upsert returns error with new settings stored (violates 'refused => stores unchanged'). reviewed (decisions SYS-I3/INT-F3.9): validate and load columns first, then upsert + json_links in one transaction, so a refusal changes nothing. Negative control: reviewed with the upsert moved before validation must be caught.",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Validate and load metadata before writing, then do the upsert and the json_links update in one transaction (or roll back the upsert on failure)."
+  },
+  {
+   "module": "15",
+   "gates": [
+    "3.3a",
+    "3.4",
+    "3.6"
+   ],
+   "notes": "Found by the footprint pass (footprints/15.json). Matters for durable tenant removal (HD-1502): an orphan task keeps re-filling an erased FHIR graph after a 'successful' unschedule.",
+   "id": "F-C1501",
+   "title": "Schedule/Unschedule change the Task Manager task and the fhir_graphs task_id in separate, untransacted steps",
+   "intended": "SYS-I4 (a command that writes to more than one store writes all or none); INT-F9 (one sync task per graph); HD-1502 reviewed design needs an unschedule that verifiably stops refills.",
+   "observed": "Source: Schedule saves the %SYS.Task (FHIRGraph.cls:701, %Save) and only then records its id with a separate autocommit UPDATE Graph_KG.fhir_graphs SET task_id (:703); Unschedule deletes the task (:726) and then clears task_id (:729). No TSTART covers either pair. If the UPDATE fails after Schedule's %Save, a running sync task exists that fhir_graphs does not name: Unschedule then reports success without removing it, and the next Schedule creates a second task. Not run live: HS.FHIRServer.* classes and the HS_FHIRServer SQL schema (an IRIS for Health FHIR repository) are absent on IRIS Community 2026.1 in AUDITC: 0 classes, 0 tables, Register answers 'no FHIR repository' (live c15-live-register).",
+   "disposition": "confirmed-source",
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/FHIRGraph.cls:667-741"
+    }
+   ],
+   "severity": "S3",
+   "confidence": "medium",
+   "remedy": "Wrap the task change and the task_id update in one transaction (IRIS transactions span the IRISSYS and namespace databases), or make Unschedule find tasks by (TaskClass, NameSpace, GraphId) rather than by the stored id."
+  },
+  {
+   "module": "15",
+   "gates": [
+    "3.4",
+    "3.7"
+   ],
+   "notes": "delete_node is module 03's entry point (nodes_edges.py); recorded here because INT-E1.9 is a module-15 statement. The partial outcome is reported (SYS-I9 holds), but a crash between the two transactions leaves orphan reifiers silently (the F-1502 state). Orchestrator may re-home to module 03.",
+   "id": "F-C1502",
+   "title": "delete_node removes the reifier nodes of the node's edges in a second transaction",
+   "intended": "SYS-I4 (all or none across stores); INT-E1.9 (deleting a node also deletes the reifier nodes of its edges).",
+   "observed": "Live (c15-live-reify, delete_node_parity): delete_node('c15:a2', graph='c15g1b') journaled two outermost transactions: the node, its edge and the rdf_reifications row in the first, the reifier node c15:reif2 (default graph) in the second. _delete_in_scope (nodes_edges.py:2176-2199) deletes reifiers after the node delete commits and, on failure, raises GraphWriteError 'the node is deleted; the reifier nodes of its edges (n) are not'.",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c15-live-reify"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/nodes_edges.py:2176-2199"
+    }
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Delete the reifier nodes inside the same transaction as the node and its edges."
+  }
+ ],
+ "summary": {
+  "reproduced-live": 7,
+  "confirmed-source": 3,
+  "reproduced-test": 2,
+  "reproduced-model": 1
+ }
+}

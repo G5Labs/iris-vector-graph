@@ -1,0 +1,648 @@
+{
+ "F-1701": {
+  "fixed_start_label": {
+   "error": null,
+   "metadata": "QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[])",
+   "rows": [],
+   "sql": "SELECT Graph_KG.CY_TYPED(%EXACT(p4.val)) AS t_id\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('c17g2', '')\nJOIN Graph_KG.rdf_edges e3 ON e3.s = n0.node_id AND e3.p = ? AND COALESCE(e3.graph_id, '') = COALESCE('c17g2', '')\nJOIN Graph_KG.nodes n2 ON n2.node_id = e3.o_id AND COALESCE(n2.graph_id, '') = COALESCE('c17g"
+  },
+  "labels_in_g2": {
+   "error": null,
+   "metadata": "QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[])",
+   "rows": [],
+   "sql": "SELECT Graph_KG.CY_TYPED(%EXACT(p2.val)) AS n_id\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('c17g2', '')\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('c17g2', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('c17g2', '') AND 1=1"
+  },
+  "leak_observed": false,
+  "observes": "F-1701: unscoped adapter reads merge graphs; Cypher label start/target filters",
+  "seconds": 0.14,
+  "start_label": {
+   "error": null,
+   "metadata": "QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[])",
+   "rows": [],
+   "sql": "SELECT Graph_KG.CY_TYPED(%EXACT(p4.val)) AS t_id\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('c17g2', '')\nJOIN JSON_TABLE(Graph_KG.CY_VLP_PATHS(n0.node_id, '[]', 'out', 1, 2, 0, 'c17g2', 'Graph_KG.rdf_edges'), '$[*]' COLUMNS(t VARCHAR(512) PATH '$.t', l INTEGER PATH '$.l', n VARCHAR(32000) PATH '$.n', y VARCHAR(3"
+  },
+  "store_get_node_labels": [
+   [
+    "c17:x",
+    "[\"C17A\"]"
+   ]
+  ],
+  "store_get_nodes_no_graph": [
+   [
+    "c17:x",
+    "[\"C17A\"]"
+   ]
+  ],
+  "target_label": {
+   "error": null,
+   "metadata": "QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[])",
+   "rows": [],
+   "sql": "SELECT Graph_KG.CY_TYPED(%EXACT(p4.val)) AS t_id\nFROM Graph_KG.nodes n0\nJOIN JSON_TABLE(Graph_KG.CY_VLP_PATHS(n0.node_id, '[]', 'out', 1, 2, 0, 'c17g2', 'Graph_KG.rdf_edges'), '$[*]' COLUMNS(t VARCHAR(512) PATH '$.t', l INTEGER PATH '$.l', n VARCHAR(32000) PATH '$.n', y VARCHAR(32000) PATH '$.y', r VARCHAR(32000) PATH '$.r', k VARCHAR(32000) PATH '$.k')) vlp1 ON 1=1\nJOIN Graph_KG.nodes n2 ON n2.no"
+  },
+  "utc": "2026-11-13T23:27:11Z"
+ },
+ "F-1703": {
+  "connection_namespace": "AUDITC",
+  "observes": "F-1703: IVG_STRICT_NAMESPACE=1 with a mismatched namespace=",
+  "outcome": "returned",
+  "seconds": 0.0,
+  "utc": "2026-11-13T23:27:12Z",
+  "warnings": [
+   "NamespaceMismatchWarning: Namespace mismatch: connected to 'AUDITC', expected 'USER'. IVG works in the connection's namespace, 'AUDITC': drop namespace= or connect to 'USER'."
+  ]
+ },
+ "F-1705": {
+  "cosine_top1_for_x": [
+   {
+    "id": 2,
+    "score": "1"
+   },
+   {
+    "id": 3,
+    "score": "1"
+   },
+   {
+    "id": 1,
+    "score": null
+   }
+  ],
+  "create_hnsw_index_returned": false,
+  "create_hnsw_index_sql": [
+   "CREATE INDEX C17VHNSW ON IVGAudit.C17V (emb) AS HNSW(M=16, efConstruction=200, Distance='L2')"
+  ],
+  "insert_vector_journal": "not journaled: journal.py fails with <VECTOR> on $vector values",
+  "iris_version": "IRIS for UNIX (Ubuntu Server LTS for x86-64 Containers) 2026.1 (Build 234U) Fri Mar 27 2026 14:07:14 EDT",
+  "l2_all": "ProgrammingError: <SQL ERROR>; Details: [SQLCODE: <-359>:<SQL Function (function stored procedure) not found>]\r\n[Location: <Prepare>]\r\n[%msg: < User defined SQL function 'SQLUSER.VECTOR_L2' does not exist>]",
+  "l2_farthest_first": false,
+  "l2_top1_for_origin": "ProgrammingError: <SQL ERROR>; Details: [SQLCODE: <-359>:<SQL Function (function stored procedure) not found>]\r\n[Location: <Prepare>]\r\n[%msg: < User defined SQL function 'SQLUSER.VECTOR_L2' does not exist>]",
+  "l2_unsupported": true,
+  "observes": "F-1705 (L2 order), F-1706 (HNSW DDL issued), dbapi_utils.insert_vector footprint",
+  "raw_cosine": [
+   [
+    1,
+    null
+   ],
+   [
+    2,
+    1.0
+   ],
+   [
+    3,
+    1.0
+   ]
+  ],
+  "raw_l2": "ProgrammingError: <SQL ERROR>; Details: [SQLCODE: <-359>:<SQL Function (function stored procedure) not found>]\r\n[Location: <Prepare>]\r\n[%msg: < User defined SQL function 'SQLUSER.VECTOR_L2' does not exist>]",
+  "seconds": 0.62,
+  "utc": "2026-11-13T23:49:48Z"
+ },
+ "F-1707": {
+  "SHOW CONSTRAINTS": {
+   "columns": [
+    "name",
+    "type",
+    "entityType",
+    "labelsOrTypes",
+    "properties",
+    "ownedIndex"
+   ],
+   "error": null,
+   "rows": [
+    [
+     "node_id_unique",
+     "UNIQUENESS",
+     "NODE",
+     "['*']",
+     "['node_id']",
+     "pk_nodes"
+    ],
+    [
+     "edge_spo_unique",
+     "UNIQUENESS",
+     "RELATIONSHIP",
+     "['*']",
+     "['s', 'p', 'o_id']",
+     "pk_rdf_edges"
+    ],
+    [
+     "fhir_bridge_unique",
+     "UNIQUENESS",
+     "NODE",
+     "['*']",
+     "['fhir_code', 'kg_node_id']",
+     "pk_bridge"
+    ]
+   ]
+  },
+  "SHOW INDEXES": {
+   "columns": [
+    "name",
+    "type",
+    "entityType",
+    "labelsOrTypes",
+    "properties",
+    "state"
+   ],
+   "error": null,
+   "rows": [
+    [
+     "nkg_adjacency",
+     "ADJACENCY(^NKG)",
+     "RELATIONSHIP",
+     "['*']",
+     "['*']",
+     "NOT_BUILT"
+    ],
+    [
+     "kg_adjacency",
+     "ADJACENCY(^KG)",
+     "RELATIONSHIP",
+     "['*']",
+     "['*']",
+     "ONLINE"
+    ],
+    [
+     "pk_nodes",
+     "UNIQUE",
+     "NODE",
+     "['*']",
+     "['node_id']",
+     "ONLINE"
+    ],
+    [
+     "pk_rdf_edges",
+     "UNIQUE",
+     "RELATIONSHIP",
+     "['*']",
+     "['s', 'p', 'o_id']",
+     "ONLINE"
+    ]
+   ]
+  },
+  "dictionary_constraints": [
+   [
+    "nodes",
+    "pk_nodes_graph",
+    "PRIMARY KEY"
+   ],
+   [
+    "nodes",
+    "uq_nodes_graph_node",
+    "UNIQUE"
+   ],
+   [
+    "rdf_edges",
+    "fk_edges_dest",
+    "FOREIGN KEY"
+   ],
+   [
+    "rdf_edges",
+    "fk_edges_source",
+    "FOREIGN KEY"
+   ],
+   [
+    "rdf_edges",
+    "IDKEY",
+    "UNIQUE"
+   ],
+   [
+    "rdf_edges",
+    "IDKEYField_As_PKey",
+    "PRIMARY KEY"
+   ],
+   [
+    "rdf_edges",
+    "u_spo_graph_ekey",
+    "UNIQUE"
+   ]
+  ],
+  "observes": "F-1707: SHOW CONSTRAINTS / indexes vs the dictionary",
+  "reported_names_absent_from_dictionary": [
+   "edge_spo_unique",
+   "node_id_unique",
+   "pk_nodes",
+   "pk_rdf_edges"
+  ],
+  "seconds": 0.05,
+  "store_list_indexes": [
+   [
+    "pk_nodes",
+    "UNIQUE",
+    "ONLINE"
+   ],
+   [
+    "pk_rdf_edges",
+    "UNIQUE",
+    "ONLINE"
+   ]
+  ],
+  "utc": "2026-11-13T23:27:11Z"
+ },
+ "F-1712": {
+  "in_degree_b": 2,
+  "in_degree_for_predicate_b": 2,
+  "in_degree_undercounts": true,
+  "observes": "F-1712",
+  "out_degree_a": 2,
+  "rows_into_b": 3,
+  "seconds": 0.11,
+  "utc": "2026-11-13T23:27:11Z"
+ },
+ "F-1713": {
+  "STATUS_PARTS": [
+   "graph",
+   "acceleration",
+   "sync",
+   "vector_index",
+   "fulltext_index",
+   "ivf_index",
+   "plaid_index",
+   "ledger"
+  ],
+  "observes": "F-1713; status() is a reader (journal)",
+  "parts_not_in_STATUS_PARTS": [
+   "adjacency",
+   "routines"
+  ],
+  "report_keys": [],
+  "seconds": 0.44,
+  "status_journal": {
+   "autocommit_units": 0,
+   "error": null,
+   "label": "status()",
+   "other_pids_in_window": [],
+   "outermost_transactions": 0,
+   "pid": "11721",
+   "records": 0,
+   "result": "EngineStatus(tables=TableCounts(nodes=5, edges=2, labels=1, props=5, node_embeddings=0, edge_embeddings=0), adjacency=AdjacencyStatus(kg_populated=True, kg_edge_count=2, kg_edge_count_capped=False, nkg_populated=False, kg_predicates_consistent=True, bfs_path='objectscript', index='functional', degree_cache_off=[]), objectscript=ObjectScriptStatus(deployed=True, classes=['Graph.KG.Traversal', 'Graph.KG.PageRank', 'Graph.KG.IVFIndex', 'Graph.KG.BM25Index', 'Graph.KG.ArnoAccel', 'Graph.KG.Snapshot']), arno=ArnoStatus(loaded=False, capabilities={}, version='', lib_path='/usr/irissys/mgr/libarno_callout.so', lib_found=False, disabled=False), indexes=IndexInventory(hnsw_built=False, ivf_indexes=[], bm25_indexes=[], plaid_indexes=[]), embedding_dimension=4, probe_ms=96.10614716075361, errors=[], pending_sync=False, internals=None, ledger=LedgerStatus(state='never-enabled', strict=False, head_seq=0, head_id=None, commits_ok=0, replays_idem=0, rejections={}, last_verify_ms=None, last_verify_result=None), schema='Graph_KG', legacy_objects=0, missing_routines=[], unknown=[])",
+   "seconds": 0.131,
+   "stores_with_nontransactional_increments": [],
+   "stores_written": [],
+   "stores_written_in_txn": [],
+   "stores_written_outside_any_txn": [],
+   "traceback": null,
+   "transactions": []
+  },
+  "unknown": [],
+  "utc": "2026-11-13T23:27:12Z"
+ },
+ "footprints": {
+  "Graph.KG.Meta.Set": {
+   "autocommit_units": 1,
+   "error": null,
+   "label": "Meta.Set",
+   "other_pids_in_window": [],
+   "outermost_transactions": 0,
+   "pid": "11721",
+   "records": 1,
+   "result": 1,
+   "seconds": 0.001,
+   "stores_with_nontransactional_increments": [],
+   "stores_written": [
+    "global:^Graph.KG.Meta"
+   ],
+   "stores_written_in_txn": [],
+   "stores_written_outside_any_txn": [
+    "global:^Graph.KG.Meta"
+   ],
+   "traceback": null,
+   "transactions": []
+  },
+  "observes": "declared write footprints of module 17 entry points",
+  "read_only_insert_landed": 1,
+  "seconds": 1.81,
+  "store.delete_edges": {
+   "autocommit_units": 6,
+   "error": null,
+   "label": "store.delete_edges",
+   "other_pids_in_window": [],
+   "outermost_transactions": 1,
+   "pid": "11721",
+   "records": 25,
+   "result": "IVGResult(columns=['deleted'], rows=[[1]], error=None, metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]), sql=None, params=None, bolt_column_types=[])",
+   "seconds": 0.008,
+   "stores_with_nontransactional_increments": [
+    "global:^KG",
+    "global:^NKG"
+   ],
+   "stores_written": [
+    "global:^KG",
+    "global:^NKG",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "stores_written_in_txn": [
+    "global:^KG",
+    "global:^NKG",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "stores_written_outside_any_txn": [],
+   "traceback": null,
+   "transactions": [
+    {
+     "committed": true,
+     "kind": "txn",
+     "n": 15,
+     "nested_levels": 1,
+     "rolled_back": false,
+     "stores": [
+      "global:^KG",
+      "global:^NKG",
+      "sql:Graph_KG.rdf_edges"
+     ]
+    }
+   ]
+  },
+  "store.delete_nodes": {
+   "autocommit_units": 6,
+   "error": null,
+   "label": "store.delete_nodes",
+   "other_pids_in_window": [],
+   "outermost_transactions": 1,
+   "pid": "11721",
+   "records": 61,
+   "result": "IVGResult(columns=['deleted'], rows=[[2]], error=None, metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]), sql=None, params=None, bolt_column_types=[])",
+   "seconds": 0.017,
+   "stores_with_nontransactional_increments": [
+    "global:^KG",
+    "global:^NKG",
+    "sql:Graph_KG.rdf_props"
+   ],
+   "stores_written": [
+    "global:^KG",
+    "global:^NKG",
+    "sql:Graph_KG.nodes",
+    "sql:Graph_KG.rdf_labels",
+    "sql:Graph_KG.rdf_props"
+   ],
+   "stores_written_in_txn": [
+    "global:^KG",
+    "sql:Graph_KG.nodes",
+    "sql:Graph_KG.rdf_labels",
+    "sql:Graph_KG.rdf_props"
+   ],
+   "stores_written_outside_any_txn": [],
+   "traceback": null,
+   "transactions": [
+    {
+     "committed": true,
+     "kind": "txn",
+     "n": 29,
+     "nested_levels": 12,
+     "rolled_back": false,
+     "stores": [
+      "global:^KG",
+      "sql:Graph_KG.nodes",
+      "sql:Graph_KG.rdf_labels",
+      "sql:Graph_KG.rdf_props"
+     ]
+    }
+   ]
+  },
+  "store.execute_sql(read_only=True) INSERT": {
+   "autocommit_units": 1,
+   "error": null,
+   "label": "execute_sql read_only",
+   "other_pids_in_window": [],
+   "outermost_transactions": 1,
+   "pid": "11721",
+   "records": 6,
+   "result": "<USAGE ERROR>; Details: Either execute has not yet been called, or the previous call of execute did not return a result set",
+   "seconds": 0.01,
+   "stores_with_nontransactional_increments": [
+    "global:^CiPZ.E4G8.1"
+   ],
+   "stores_written": [
+    "global:^CiPZ.E4G8.1",
+    "global:^CiPZ.E4G8.2",
+    "global:^CiPZ.E4G8.3"
+   ],
+   "stores_written_in_txn": [
+    "global:^CiPZ.E4G8.1",
+    "global:^CiPZ.E4G8.2",
+    "global:^CiPZ.E4G8.3"
+   ],
+   "stores_written_outside_any_txn": [],
+   "traceback": null,
+   "transactions": [
+    {
+     "committed": true,
+     "kind": "txn",
+     "n": 3,
+     "nested_levels": 0,
+     "rolled_back": false,
+     "stores": [
+      "global:^CiPZ.E4G8.1",
+      "global:^CiPZ.E4G8.2",
+      "global:^CiPZ.E4G8.3"
+     ]
+    }
+   ]
+  },
+  "store.write_edges": {
+   "autocommit_units": 3,
+   "error": null,
+   "label": "store.write_edges",
+   "other_pids_in_window": [],
+   "outermost_transactions": 1,
+   "pid": "11721",
+   "records": 19,
+   "result": "IVGResult(columns=['written'], rows=[[1]], error=None, metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]), sql=None, params=None, bolt_column_types=[])",
+   "seconds": 0.009,
+   "stores_with_nontransactional_increments": [
+    "global:^KG",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "stores_written": [
+    "global:^KG",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "stores_written_in_txn": [
+    "global:^KG",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "stores_written_outside_any_txn": [],
+   "traceback": null,
+   "transactions": [
+    {
+     "committed": true,
+     "kind": "txn",
+     "n": 12,
+     "nested_levels": 1,
+     "rolled_back": false,
+     "stores": [
+      "global:^KG",
+      "sql:Graph_KG.rdf_edges"
+     ]
+    }
+   ]
+  },
+  "store.write_nodes": {
+   "autocommit_units": 4,
+   "error": null,
+   "label": "store.write_nodes",
+   "other_pids_in_window": [],
+   "outermost_transactions": 1,
+   "pid": "11721",
+   "records": 40,
+   "result": "IVGResult(columns=['written'], rows=[[2]], error=None, metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]), sql=None, params=None, bolt_column_types=[])",
+   "seconds": 0.009,
+   "stores_with_nontransactional_increments": [
+    "global:^KG",
+    "sql:Graph_KG.nodes",
+    "sql:Graph_KG.rdf_labels",
+    "sql:Graph_KG.rdf_props"
+   ],
+   "stores_written": [
+    "global:^KG",
+    "sql:Graph_KG.nodes",
+    "sql:Graph_KG.rdf_labels",
+    "sql:Graph_KG.rdf_props"
+   ],
+   "stores_written_in_txn": [
+    "global:^KG",
+    "sql:Graph_KG.nodes",
+    "sql:Graph_KG.rdf_labels",
+    "sql:Graph_KG.rdf_props"
+   ],
+   "stores_written_outside_any_txn": [],
+   "traceback": null,
+   "transactions": [
+    {
+     "committed": true,
+     "kind": "txn",
+     "n": 26,
+     "nested_levels": 4,
+     "rolled_back": false,
+     "stores": [
+      "global:^KG",
+      "sql:Graph_KG.nodes",
+      "sql:Graph_KG.rdf_labels",
+      "sql:Graph_KG.rdf_props"
+     ]
+    }
+   ]
+  },
+  "store.write_temporal_edge": {
+   "autocommit_units": 13,
+   "error": null,
+   "label": "store.write_temporal_edge",
+   "other_pids_in_window": [],
+   "outermost_transactions": 3,
+   "pid": "11721",
+   "records": 40,
+   "result": "columns=[] rows=[] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql=None params=None bolt_column_types=[]",
+   "seconds": 0.002,
+   "stores_with_nontransactional_increments": [
+    "global:^KG",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "stores_written": [
+    "global:^KG",
+    "sql:Graph_KG.nodes",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "stores_written_in_txn": [
+    "global:^KG",
+    "sql:Graph_KG.nodes",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "stores_written_outside_any_txn": [
+    "global:^KG"
+   ],
+   "traceback": null,
+   "transactions": [
+    {
+     "committed": true,
+     "kind": "txn",
+     "n": 4,
+     "nested_levels": 0,
+     "rolled_back": false,
+     "stores": [
+      "sql:Graph_KG.nodes"
+     ]
+    },
+    {
+     "committed": true,
+     "kind": "txn",
+     "n": 4,
+     "nested_levels": 0,
+     "rolled_back": false,
+     "stores": [
+      "sql:Graph_KG.nodes"
+     ]
+    },
+    {
+     "committed": true,
+     "kind": "txn",
+     "n": 13,
+     "nested_levels": 0,
+     "rolled_back": false,
+     "stores": [
+      "global:^KG",
+      "sql:Graph_KG.rdf_edges"
+     ]
+    }
+   ]
+  },
+  "utc": "2026-11-13T23:27:14Z",
+  "verify_sync()": {
+   "autocommit_units": 0,
+   "error": null,
+   "label": "verify_sync()",
+   "other_pids_in_window": [],
+   "outermost_transactions": 0,
+   "pid": "11721",
+   "records": 0,
+   "result": "SyncReport(in_sync=False, sql_edges=3, global_edges=0, global_nodes=0, pending_sync=False, healed=False, detail='drift: 3 SQL edges vs 0 indexed edges. A write path bypassed adjacency maintenance \u2014 call engine.sync().')",
+   "seconds": 0.003,
+   "stores_with_nontransactional_increments": [],
+   "stores_written": [],
+   "stores_written_in_txn": [],
+   "stores_written_outside_any_txn": [],
+   "traceback": null,
+   "transactions": []
+  }
+ },
+ "server": {
+  "client_answer": {
+   "rows": [
+    [
+     "c17dup-1794613789"
+    ]
+   ]
+  },
+  "client_seconds": 2.52,
+  "duplicate_write": true,
+  "nodes_created_for_one_call": 2,
+  "observes": "F-1714 (401 mapping per SDK call), HD-1702 (client resends a write whose reply was late)",
+  "proxy_requests": 2,
+  "proxy_started": true,
+  "seconds": 5.35,
+  "server_pid": 3828323,
+  "server_stopped": true,
+  "utc": "2026-11-13T23:49:53Z",
+  "wrong_key": {
+   "AsyncIVGClient.execute_cypher": {
+    "class": "HTTPStatusError",
+    "is_IVGClientError": false
+   },
+   "execute_cypher": {
+    "class": "IVGClientError",
+    "is_IVGClientError": true,
+    "module": "iris_vector_graph.sdk",
+    "msg": "Authentication failed \u2014 check api_key"
+   },
+   "explain": {
+    "class": "HTTPStatusError",
+    "is_IVGClientError": false,
+    "module": "httpx",
+    "msg": "Client error '401 Unauthorized' for url 'http://127.0.0.1:18750/admin/explain'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Sta"
+   },
+   "load_ndjson": {
+    "class": "HTTPStatusError",
+    "is_IVGClientError": false,
+    "module": "httpx",
+    "msg": "Client error '401 Unauthorized' for url 'http://127.0.0.1:18750/admin/load'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status"
+   }
+  }
+ }
+}

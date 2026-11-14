@@ -1,0 +1,16 @@
+{
+  "command": "locks.sh iris timeout 600 python experiment/playbook-completion/live/breadth-c/16/s2_bolt_sessions.py",
+  "experiment_head": "bdcea01f41442d1c0b56e0863809df8600990c4a",
+  "id": "c16-s2-bolt-sessions",
+  "kind": "live",
+  "lane": "breadth-c",
+  "log": "$RUN_DIR/breadth-c/16/s2_bolt_sessions.json",
+  "log_bytes": 865,
+  "log_sha256": "04bad6eaa9b226913e2383767de58b0f977bcaed665d6d18bb97c4ada8459734",
+  "observes": "3 sequential Bolt sessions (driver closed each) leave 3 AUDITC IRIS processes alive 20 s later; freed only when the server process stops: each Bolt session leaks its IRIS connection (bolt_server.py:396-422, :918-936 never close self._engine.conn)",
+  "product_defects": "F-C1601",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-13T22:58:05+00:00",
+  "result": "fail"
+}

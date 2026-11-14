@@ -1,0 +1,16 @@
+{
+  "command": "locks.sh iris timeout 900 bash live/breadth-c/16/run_batch.sh s4 s8 (s4_server_retry.py: lost acknowledgement injected after the outermost execute_cypher returned, through the real cypher_api app on AUDITC)",
+  "experiment_head": "dd6ac5832cae4a6616468c566d1577e089b721cf",
+  "id": "c16-s4-server-retry",
+  "kind": "live",
+  "lane": "breadth-c",
+  "log": "$RUN_DIR/breadth-c/16/s4_server_retry.json",
+  "log_bytes": 2405,
+  "log_sha256": "b598f00672dbd89ca9c52876c5d66404ca3577921fbace1f865a85f631018268",
+  "observes": "HD-1603 / F-C1604: one POST /api/cypher SET n.counter = n.counter + 1 moved the counter 1 -> 3 and answered 200 (journal: two outermost commits on two IRIS processes: the server reset its connection and re-ran the committed write); one CREATE without a key left 2 new nodes; control runs without the fault applied once. A first attempt of this script injected the fault inside a nested call (before the commit) and is not used.",
+  "product_defects": "F-C1604",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-13T23:23:21+00:00",
+  "result": "fail"
+}

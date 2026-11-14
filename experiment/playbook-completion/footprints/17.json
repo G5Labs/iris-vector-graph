@@ -1,0 +1,343 @@
+{
+ "module": "17",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "entries": [
+  {
+   "entry": "IRISGraphStore.write_nodes",
+   "role": "writer",
+   "source": "iris_vector_graph/stores/iris_sql_store.py:1214-1251",
+   "reads": [
+    "sql:Graph_KG.nodes (duplicate probe)"
+   ],
+   "writes": [
+    "sql:Graph_KG.nodes",
+    "sql:Graph_KG.rdf_labels",
+    "sql:Graph_KG.rdf_props",
+    "global:^KG"
+   ],
+   "transaction": "one write_txn (Graph.KG.Txn level)",
+   "locks": [],
+   "claims_atomic": {
+    "claims": true,
+    "source": "iris_sql_store.py:1215 'in one transaction'"
+   },
+   "journal": {
+    "run": "c17-live-engine",
+    "stores_written": [
+     "global:^KG",
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_labels",
+     "sql:Graph_KG.rdf_props"
+    ],
+    "stores_written_in_txn": [
+     "global:^KG",
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_labels",
+     "sql:Graph_KG.rdf_props"
+    ],
+    "stores_written_outside_any_txn": [],
+    "outermost_transactions": 1,
+    "error": null,
+    "undeclared_writes": [],
+    "match": true,
+    "mismatch": ""
+   }
+  },
+  {
+   "entry": "IRISGraphStore.write_edges",
+   "role": "writer",
+   "source": "iris_vector_graph/stores/iris_sql_store.py:1253-1302",
+   "reads": [
+    "sql:Graph_KG.nodes"
+   ],
+   "writes": [
+    "sql:Graph_KG.nodes",
+    "sql:Graph_KG.rdf_edges",
+    "global:^KG",
+    "global:^IVG.Ledger"
+   ],
+   "transaction": "one write_txn",
+   "locks": [],
+   "claims_atomic": {
+    "claims": true,
+    "source": "iris_sql_store.py:1254 'in one transaction'"
+   },
+   "journal": {
+    "run": "c17-live-engine",
+    "stores_written": [
+     "global:^KG",
+     "sql:Graph_KG.rdf_edges"
+    ],
+    "stores_written_in_txn": [
+     "global:^KG",
+     "sql:Graph_KG.rdf_edges"
+    ],
+    "stores_written_outside_any_txn": [],
+    "outermost_transactions": 1,
+    "error": null,
+    "undeclared_writes": [],
+    "match": true,
+    "mismatch": ""
+   }
+  },
+  {
+   "entry": "IRISGraphStore.delete_edges",
+   "role": "writer",
+   "source": "iris_vector_graph/stores/iris_sql_store.py:1474-1520 (Graph.KG.Eraser.EraseEdges)",
+   "reads": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "writes": [
+    "sql:Graph_KG.rdf_edges",
+    "sql:Graph_KG.rdf_reifications",
+    "sql:Graph_KG.kg_EdgeEmbeddings",
+    "global:^KG",
+    "global:^NKG"
+   ],
+   "transaction": "Eraser.EraseEdges: one transaction",
+   "locks": [],
+   "claims_atomic": {
+    "claims": true,
+    "source": "Eraser.cls EraseEdges TSTART..TCOMMIT"
+   },
+   "journal": {
+    "run": "c17-live-engine",
+    "stores_written": [
+     "global:^KG",
+     "global:^NKG",
+     "sql:Graph_KG.rdf_edges"
+    ],
+    "stores_written_in_txn": [
+     "global:^KG",
+     "global:^NKG",
+     "sql:Graph_KG.rdf_edges"
+    ],
+    "stores_written_outside_any_txn": [],
+    "outermost_transactions": 1,
+    "error": null,
+    "undeclared_writes": [],
+    "match": true,
+    "mismatch": ""
+   }
+  },
+  {
+   "entry": "IRISGraphStore.delete_nodes",
+   "role": "writer",
+   "source": "iris_vector_graph/stores/iris_sql_store.py:1320-1418 (Graph.KG.Eraser.EraseNodes)",
+   "reads": [
+    "sql:Graph_KG.nodes"
+   ],
+   "writes": [
+    "sql:Graph_KG.nodes",
+    "sql:Graph_KG.rdf_labels",
+    "sql:Graph_KG.rdf_props",
+    "sql:Graph_KG.rdf_edges",
+    "sql:Graph_KG.docs",
+    "sql:Graph_KG.kg_NodeEmbeddings",
+    "global:^KG",
+    "global:^NKG"
+   ],
+   "transaction": "Eraser.EraseNodes: one transaction",
+   "locks": [],
+   "claims_atomic": {
+    "claims": true,
+    "source": "nodes_edges.py:1531 'in one transaction'"
+   },
+   "journal": {
+    "run": "c17-live-engine",
+    "stores_written": [
+     "global:^KG",
+     "global:^NKG",
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_labels",
+     "sql:Graph_KG.rdf_props"
+    ],
+    "stores_written_in_txn": [
+     "global:^KG",
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_labels",
+     "sql:Graph_KG.rdf_props"
+    ],
+    "stores_written_outside_any_txn": [],
+    "outermost_transactions": 1,
+    "error": null,
+    "undeclared_writes": [],
+    "match": true,
+    "mismatch": ""
+   }
+  },
+  {
+   "entry": "IRISGraphStore.write_temporal_edge",
+   "role": "writer",
+   "source": "iris_vector_graph/stores/iris_sql_store.py:2655-2690 (Graph.KG.TemporalIndex)",
+   "reads": [],
+   "writes": [
+    "global:^KG(\"tout\"/\"tin\"/\"bucket\"/\"tagg\"/\"tlast\"/\"edgeprop\")",
+    "sql:Graph_KG.nodes",
+    "sql:Graph_KG.rdf_edges (marked structural row)"
+   ],
+   "transaction": "server-side (TemporalIndex)",
+   "locks": [],
+   "claims_atomic": {
+    "claims": false,
+    "source": ""
+   },
+   "journal": {
+    "run": "c17-live-engine",
+    "stores_written": [
+     "global:^KG",
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_edges"
+    ],
+    "stores_written_in_txn": [
+     "global:^KG",
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_edges"
+    ],
+    "stores_written_outside_any_txn": [
+     "global:^KG"
+    ],
+    "outermost_transactions": 3,
+    "error": null,
+    "undeclared_writes": [],
+    "match": true,
+    "mismatch": ""
+   }
+  },
+  {
+   "entry": "IRISGraphStore.execute_sql(sql, params, read_only=True)",
+   "role": "reader by name; writer in fact",
+   "source": "iris_vector_graph/stores/iris_sql_store.py:1522-1557",
+   "reads": [
+    "any"
+   ],
+   "writes": [
+    "any table the SQL names (read_only is ignored: HD-1701)"
+   ],
+   "transaction": "the statement's own (autocommit)",
+   "locks": [],
+   "claims_atomic": {
+    "claims": false,
+    "source": "store_protocol read_only flag; HD-1701"
+   },
+   "journal": {
+    "run": "c17-live-engine",
+    "stores_written": [
+     "global:^CiPZ.E4G8.1",
+     "global:^CiPZ.E4G8.2",
+     "global:^CiPZ.E4G8.3"
+    ],
+    "stores_written_in_txn": [
+     "global:^CiPZ.E4G8.1",
+     "global:^CiPZ.E4G8.2",
+     "global:^CiPZ.E4G8.3"
+    ],
+    "stores_written_outside_any_txn": [],
+    "outermost_transactions": 1,
+    "error": null,
+    "undeclared_writes": [],
+    "match": true,
+    "mismatch": ""
+   }
+  },
+  {
+   "entry": "dbapi_utils.insert_vector",
+   "role": "writer",
+   "source": "iris_vector_graph/dbapi_utils.py:101-168",
+   "reads": [],
+   "writes": [
+    "the caller's table"
+   ],
+   "transaction": "the caller's cursor (autocommit per statement)",
+   "locks": [],
+   "claims_atomic": {
+    "claims": false,
+    "source": ""
+   },
+   "journal": null,
+   "journal_note": "not journaled: journal.py fails with <VECTOR> on $vector values"
+  },
+  {
+   "entry": "IRISGraphEngine.status()",
+   "role": "reader",
+   "source": "iris_vector_graph/_engine/admin.py:380-760",
+   "reads": [
+    "many (probes)"
+   ],
+   "writes": [],
+   "transaction": "none",
+   "locks": [],
+   "claims_atomic": {
+    "claims": false,
+    "source": ""
+   },
+   "journal": {
+    "run": "c17-live-engine",
+    "stores_written": [],
+    "records": 0,
+    "match": true,
+    "mismatch": ""
+   }
+  },
+  {
+   "entry": "IRISGraphEngine.verify_sync() (repair=False)",
+   "role": "reader",
+   "source": "iris_vector_graph/_engine/admin.py:756-848",
+   "reads": [
+    "sql:Graph_KG.rdf_edges",
+    "global:^KG"
+   ],
+   "writes": [],
+   "transaction": "none",
+   "locks": [],
+   "claims_atomic": {
+    "claims": false,
+    "source": ""
+   },
+   "journal": {
+    "run": "c17-live-engine",
+    "stores_written": [],
+    "stores_written_in_txn": [],
+    "stores_written_outside_any_txn": [],
+    "outermost_transactions": 0,
+    "error": null,
+    "undeclared_writes": [],
+    "match": true,
+    "mismatch": ""
+   }
+  },
+  {
+   "entry": "Graph.KG.Meta.Set / Delete",
+   "role": "writer",
+   "source": "iris_src/src/Graph/KG/Meta.cls:14-28",
+   "reads": [],
+   "writes": [
+    "global:^Graph.KG.Meta"
+   ],
+   "transaction": "none (one SET/KILL)",
+   "locks": [],
+   "claims_atomic": {
+    "claims": false,
+    "source": ""
+   },
+   "journal": {
+    "run": "c17-live-engine",
+    "stores_written": [
+     "global:^Graph.KG.Meta"
+    ],
+    "stores_written_in_txn": [],
+    "stores_written_outside_any_txn": [
+     "global:^Graph.KG.Meta"
+    ],
+    "outermost_transactions": 0,
+    "error": null,
+    "undeclared_writes": [],
+    "match": true,
+    "mismatch": ""
+   }
+  }
+ ],
+ "validated": 9,
+ "mismatches": [],
+ "notes": "Journal classification per live/breadth-c/jcheck.py; execute_sql(read_only=True) writing is HD-1701 (intent-lane probe evidence/runs/ib-HD1701-readonly-flag.json)."
+}

@@ -1,0 +1,477 @@
+{
+ "module": "00",
+ "name": "SYS",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "lane": "breadth-c",
+ "inventory": {
+  "tool": "experiment/playbook-completion/models/breadth-c/tools/inventory.py",
+  "output": "experiment/playbook-completion/models/breadth-c/inventory.json",
+  "method": "files tracked at the pin under iris_vector_graph, iris_src, api, sql, src, deploy, docker, examples, scripts, config plus docker-compose.yml, pyproject.toml, uv.lock (browser_static counted once as a vendored bundle); AST for Python (public functions, public methods of public classes and the engine's SubEngine facades, FastAPI/Starlette routes and include_router mounts, strawberry fields, click commands), regex for ObjectScript (ClassMethod/Method/Query with SqlProc/SqlName/Private/Language=python flags, %CSP.REST UrlMap routes, %SYS.Task.Definition subclasses and %SYS.Task creators), SQL (CREATE PROCEDURE/FUNCTION/TABLE/INDEX), deploy files (compose services, Dockerfiles, shell installers, CPF merges, pyproject console scripts, __main__ blocks). Ownership: RULES in inventory.py, a transcription of every module's Scope line (ontology/NN-*.md, 'Scope:'), with method-level splits for shared files.",
+  "files": 447,
+  "code_files": 435,
+  "entry_points": 3284,
+  "by_kind": {
+   "py-api": 1942,
+   "os-method": 1002,
+   "deploy": 128,
+   "http-route": 60,
+   "graphql-field": 56,
+   "sql-ddl": 39,
+   "cli-command": 23,
+   "sql-routine": 17,
+   "bolt-message": 13,
+   "task": 4
+  },
+  "by_module": {
+   "01": 225,
+   "02": 46,
+   "03": 97,
+   "04": 155,
+   "05": 129,
+   "06": 162,
+   "07": 39,
+   "08": 172,
+   "09": 118,
+   "10": 303,
+   "11": 116,
+   "12": 35,
+   "13": 23,
+   "14": 30,
+   "15": 138,
+   "16": 354,
+   "17": 279,
+   "18": 22
+  },
+  "background_jobs": [
+   {
+    "name": "Graph.KG.FHIRGraphSyncTask (Extends %SYS.Task.Definition)",
+    "source": "iris_src/src/Graph/KG/FHIRGraphSyncTask.cls:6",
+    "owner": "15"
+   },
+   {
+    "name": "Graph.KG.FHIRGraph.Schedule creates/reopens a %SYS.Task",
+    "source": "iris_src/src/Graph/KG/FHIRGraph.cls:667-713",
+    "owner": "15"
+   },
+   {
+    "name": "Graph.KG.EmbedQueueTask (Extends %SYS.Task.Definition)",
+    "source": "iris_src/src/Graph/KG/EmbedQueueTask.cls:7",
+    "owner": "06"
+   },
+   {
+    "name": "Graph.KG.EmbedQueue creates a %SYS.Task and RunNow",
+    "source": "iris_src/src/Graph/KG/EmbedQueue.cls:353-367",
+    "owner": "06"
+   }
+  ]
+ },
+ "reconciliation": {
+  "summary": "180 of 435 code files and 899 of 3284 entry points belong to no module's Scope line. 153 of the files are scripts/ (developer tooling, benchmarks, TCK, coverage), 19 examples/, 4 iris_src/dev classes, 3 package __init__ files and config/mcp-graph.toml. The unowned entry points that matter are product writers and deployment/interface paths listed below; the rest are tooling.",
+  "unowned_product_entry_points": [
+   {
+    "name": "IRISGraphEngine.import_graph_ndjson",
+    "source": "iris_vector_graph/_engine/snapshot.py:1727",
+    "role": "writer",
+    "why_it_matters": "bulk writer of nodes, edges and temporal edges; reachable over HTTP through POST /admin/load (cypher_api.py:628-645, module 16's route, whose body is not stated) and the SDK/CLI `ivg load`; module 18's Scope excludes it explicitly and no other Scope names it"
+   },
+   {
+    "name": "IRISGraphEngine.export_graph_ndjson",
+    "source": "iris_vector_graph/_engine/snapshot.py:1857",
+    "role": "reader",
+    "why_it_matters": "reachable over HTTP through GET /admin/export (cypher_api.py:646-666); excluded by 18's Scope"
+   },
+   {
+    "name": "IRISGraphEngine.import_rdf",
+    "source": "iris_vector_graph/_engine/snapshot.py:557",
+    "role": "writer",
+    "why_it_matters": "bulk writer; excluded by 18's Scope, not named by 15 (RDF export only)"
+   },
+   {
+    "name": "IRISGraphEngine.load_networkx",
+    "source": "iris_vector_graph/_engine/snapshot.py:446",
+    "role": "writer",
+    "why_it_matters": "bulk writer; excluded by 18's Scope"
+   },
+   {
+    "name": "IRISGraphEngine.load_obo",
+    "source": "iris_vector_graph/_engine/snapshot.py:1694",
+    "role": "writer",
+    "why_it_matters": "bulk writer; excluded by 18's Scope"
+   },
+   {
+    "name": "IRISGraphEngine.materialize_inference / retract_inference",
+    "source": "iris_vector_graph/_engine/schema.py:2966, :3186",
+    "role": "writer",
+    "why_it_matters": "write and delete inferred edges ({\"inferred\":true}) and their ^KG adjacency; ledger-checked (_ledger_check, schema.py:2977) but in no module's Scope (01 owns setup in schema.py, 04 sync/rebuild, 06 the registry half, 15 only reification)"
+   },
+   {
+    "name": "IRISGraphEngine.backfill_deg2p_exact",
+    "source": "iris_vector_graph/_engine/schema.py:2952",
+    "role": "writer",
+    "why_it_matters": "rewrites ^KG(\"deg2p_exact\"); 04's Scope names backfill_degp only"
+   },
+   {
+    "name": "IRISGraphEngine.get_labels, get_relationship_types, get_node_count, get_edge_count, get_label_distribution, get_property_keys, node_exists, get_schema_visualization",
+    "source": "iris_vector_graph/_engine/schema.py:440-530, :2772",
+    "role": "reader",
+    "why_it_matters": "schema-introspection reads with graph-scope semantics (HD-0201) owned by no module"
+   },
+   {
+    "name": "setup_tables (module function)",
+    "source": "iris_vector_graph/_engine/schema.py:234",
+    "role": "writer (DDL)",
+    "why_it_matters": "public DDL helper outside 01's named set (initialize_schema and its helpers)"
+   },
+   {
+    "name": "IRISGraphEngine.from_connect / from_wrapper / capabilities",
+    "source": "iris_vector_graph/engine.py:487, :517, :1742, :1758",
+    "role": "construction / reader",
+    "why_it_matters": "the documented ways to obtain an engine; 02 owns only engine.py's graph-scoping parts and 03 its write facade; 17's statements cover connections and the capability matrix (OPS-D1, HD-1703) without naming these"
+   },
+   {
+    "name": "IRISGraphEngine.drop_graph",
+    "source": "iris_vector_graph/_engine/nodes_edges.py:1588-1595",
+    "role": "writer (delegates to erase_graph)",
+    "why_it_matters": "excluded from 03's Scope and not in 12's line range (nodes_edges.py:1473-1560); behaviourally erase_graph, so a Scope omission only"
+   },
+   {
+    "name": "RevisionInfo.from_wire, RedactionReceipt.from_wire / revisions_touched",
+    "source": "iris_vector_graph/ledger/client.py:56, :162, :166",
+    "role": "decoder",
+    "why_it_matters": "the ledger client's wire decoders (gate 3.5-decoders) fall outside 11's and 13's method lists"
+   },
+   {
+    "name": "iris_vector_graph/__init__.py (package exports), _engine/__init__.py, stores/__init__.py",
+    "source": "iris_vector_graph/__init__.py:1-179",
+    "role": "public surface",
+    "why_it_matters": "the exported names define the public API (HD-0705) but no Scope owns the export list"
+   },
+   {
+    "name": "iris_src/dev/*.cls (Graph.KG.BenchFormat, Graph.KG.Benchmark, User.Exec, iris.vector.graph.GraphOperators)",
+    "source": "iris_src/dev/",
+    "role": "dev classes",
+    "why_it_matters": "not deployed by initialize_schema (class_deploy reads iris_src/src only: _engine/class_deploy.py:55); GraphOperators duplicates kg_TXT/kg_KNN_VEC/kg_GRAPH_PATH/kg_RRF_FUSE as an older generation; low risk unless loaded by hand"
+   }
+  ],
+  "unowned_deployment_and_interface_paths": [
+   {
+    "name": "scripts/mcp/ivg_mcp_server.py + config/mcp-graph.toml",
+    "why_it_matters": "a stdio MCP server exposing Cypher and graph-loading tools, connecting as IRIS_USER default 'SuperUser' with password default 'SYS' (ivg_mcp_server.py:15-19); an interface entry point no Scope names (16 covers the %AI MCP classes only)"
+   },
+   {
+    "name": "pyproject.toml [project.scripts] run-tests -> scripts.test:main, networkx-loader -> scripts.ingest.networkx_loader:main",
+    "why_it_matters": "installed console scripts; scripts/test.py does not exist at the pin and scripts/ is not in the wheel (finding F-C1701, module 17)"
+   },
+   {
+    "name": "scripts/deploy_production.py, scripts/deploy_objectscript.py, scripts/deploy_graph_tvfs.py, scripts/setup_iris.py, scripts/setup_security.sql, scripts/install-embedded-deps.sh",
+    "why_it_matters": "operator-facing install paths; HD-0103 treats the legacy deployer as reachable and 01/08 cite deploy_production.py in statements, but no Scope line owns these files; setup_security.sql is the SQL half of ADMIN_GUIDE section 3's least-privilege roles"
+   },
+   {
+    "name": "scripts/migrations/migrate_to_nodepk.py, scripts/backfill_temporal_edges.py, scripts/sweep_bare_nodes_interim.py, scripts/ingest/load_umls_bridges.py, scripts/load_drkg.py, scripts/load_demo_data.py",
+    "why_it_matters": "operator-run writers of product tables outside every module (sweep_bare_nodes_interim is the interim tool for erase_bare_nodes, 05)"
+   },
+   {
+    "name": "examples/domains/biomedical/{types,loaders}.py",
+    "why_it_matters": "imported by the sample API (api/gql/schema.py:78-85); this inventory assigns resolver.py to 16 (cited by API-B6.7) but the loaders and types are equally part of the sample API's runtime"
+   },
+   {
+    "name": "iris_vector_graph/browser_static/**",
+    "why_it_matters": "vendored Neo4j Browser bundle served by GET /browser (cypher_api.py:73-75); excluded from the wheel (pyproject.toml wheel exclude) and mounted only when the directory exists (cypher_api.py:73-75), so a wheel install serves no browser; owned by no Scope"
+   }
+  ],
+  "scope_overlaps": [
+   {
+    "file": "iris_vector_graph/_engine/admin.py",
+    "modules": [
+     "17 (whole file)",
+     "02 (set_multigraph/is_multigraph)",
+     "04 (verify_sync/verify_graph, status().adjacency)"
+    ]
+   },
+   {
+    "file": "iris_vector_graph/stores/iris_sql_store.py",
+    "modules": [
+     "17 (whole file)",
+     "04 (_cached_algorithm)",
+     "08 (execute_transaction)"
+    ]
+   },
+   {
+    "file": "iris_vector_graph/cli.py",
+    "modules": [
+     "17 (whole file)",
+     "15 (ivg fhir)"
+    ]
+   },
+   {
+    "file": "iris_vector_graph/cypher_api.py",
+    "modules": [
+     "16 (whole file)",
+     "18 (POST /admin/snapshot)",
+     "15 (patient anchors)"
+    ]
+   },
+   {
+    "file": "iris_src/src/Graph/KG/PyOps.cls",
+    "modules": [
+     "17 (whole file)",
+     "07 (HybridSearch)"
+    ]
+   },
+   {
+    "file": "iris_src/src/Graph/KG/AlgoCache.cls and iris_vector_graph/algo_cache.py",
+    "modules": [
+     "04",
+     "10"
+    ]
+   }
+  ]
+ },
+ "env_features": [
+  {
+   "feature": "Process death rolls back the open transaction (SYS-P1)",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:397-415",
+   "used_by": "every batch's interruption safety",
+   "checked": "not by lane C"
+  },
+  {
+   "feature": "Uncommitted reads: SQL default isolation READ UNCOMMITTED and global reads (SYS-P2)",
+   "source": "iris_vector_graph/_engine/snapshot.py:864-1034",
+   "used_by": "save_snapshot, readers",
+   "checked": "live: c18-live-dirty-export (an open transaction's node, its props and ^KG label line archived, then rolled back)"
+  },
+  {
+   "feature": "A lock freed inside a transaction is held to its end (SYS-P3)",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:397-404",
+   "used_by": "ledger commit",
+   "checked": "not by lane C"
+  },
+  {
+   "feature": "Process death frees its locks (SYS-P4)",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:440-444",
+   "used_by": "ledger head lock, ^IVG.FHIRGraph(g) sync lock",
+   "checked": "not by lane C"
+  },
+  {
+   "feature": "DB-API connection autocommit is True by default",
+   "source": "iris_vector_graph/_engine/snapshot.py:1205-1216 (_commit per table)",
+   "used_by": "restore_snapshot, every write without write_txn",
+   "checked": "live, unregistered session check: Conn('AUDITC').conn.autocommit == True"
+  },
+  {
+   "feature": "$INCREMENT / ID counters journaled non-transactionally inside a transaction (not rolled back)",
+   "source": "journal of create_node in AUDITC (^t52S.XCFT.1, ^KG(\"__version\"))",
+   "used_by": "journal footprint classification",
+   "checked": "live (lane C smoke, journal)"
+  },
+  {
+   "feature": "IRIS Community connection/licence cap (8 here)",
+   "source": "CONVENTIONS.md Connection cap",
+   "used_by": "servers holding one connection each (Bolt sessions, GraphQL pools)",
+   "checked": "infrastructure fact"
+  },
+  {
+   "feature": "VECTOR_L2 SQL function absent on IRIS Community 2026.1 (SQLCODE -359); VECTOR_COSINE present",
+   "source": "iris_vector_graph/dbapi_utils.py:256-272",
+   "used_by": "vector_similarity_search(metric='L2'), create_hnsw_index(metric='L2')",
+   "checked": "live c17-live-engine (see findings/audit/17.json F-1705, F-C1704)"
+  }
+ ],
+ "gates_by_id": {
+  "3.1-cells": {
+   "status": "not-applicable",
+   "evidence": [
+    "experiment/playbook-uplift/ontology/00-system.md (no ## Cells: the root holds definitions and universal axioms; cells are per module)"
+   ],
+   "remaining": ""
+  },
+  "3.1-coverage": {
+   "status": "open",
+   "evidence": [
+    "experiment/playbook-completion/models/breadth-c/inventory.json",
+    "experiment/playbook-completion/models/breadth-c/tools/inventory.py"
+   ],
+   "remaining": "assign owners (Scope lines) for the unowned product writers (import_graph_ndjson, import_rdf, load_networkx, load_obo, materialize/retract_inference, backfill_deg2p_exact), engine construction, the package export list, the MCP stdio server and the operator scripts listed under reconciliation"
+  },
+  "3.1-intent": {
+   "status": "closed",
+   "evidence": [
+    "experiment/playbook-completion/decisions.md (61 HD entries with working dispositions)"
+   ],
+   "remaining": "orchestrator-owned"
+  },
+  "3.2-coverage": {
+   "status": "open",
+   "evidence": [
+    "env_features above",
+    "modules/15.json, 16.json, 17.json, 18.json env_features"
+   ],
+   "remaining": "orchestrator's IRIS contract must place each listed feature inside its subset or mark it outside"
+  },
+  "3.3-L1": {
+   "status": "not-applicable",
+   "evidence": [
+    "experiment/playbook-uplift/ontology/00-system.md (module 00 owns no code or store: it holds the definitions SYS-D*, the universal axioms SYS-I1..I10 and premises SYS-P1..P4, each checked inside the owning modules)"
+   ],
+   "remaining": ""
+  },
+  "3.3-L2": {
+   "status": "not-applicable",
+   "evidence": [
+    "experiment/playbook-uplift/ontology/00-system.md (module 00 owns no code or store: it holds the definitions SYS-D*, the universal axioms SYS-I1..I10 and premises SYS-P1..P4, each checked inside the owning modules)"
+   ],
+   "remaining": ""
+  },
+  "3.3-refinement": {
+   "status": "not-applicable",
+   "evidence": [
+    "experiment/playbook-uplift/ontology/00-system.md (module 00 owns no code or store: it holds the definitions SYS-D*, the universal axioms SYS-I1..I10 and premises SYS-P1..P4, each checked inside the owning modules)"
+   ],
+   "remaining": ""
+  },
+  "3.3-controls": {
+   "status": "not-applicable",
+   "evidence": [
+    "experiment/playbook-uplift/ontology/00-system.md (module 00 owns no code or store: it holds the definitions SYS-D*, the universal axioms SYS-I1..I10 and premises SYS-P1..P4, each checked inside the owning modules)"
+   ],
+   "remaining": ""
+  },
+  "3.3-model-check": {
+   "status": "open",
+   "evidence": [
+    "experiment/playbook-completion/models/breadth-c/RESULTS.json"
+   ],
+   "remaining": "SYS-I3 (refusal changes nothing), SYS-I4 (all-or-none across stores), SYS-I5 (ledger only grows) and SYS-I6 (retry saves once) are exercised by lane C's machines M1 retry, M2 unit, M5 restore (as-built violations, reviewed designs pass); the other universal axioms by the owning modules' lanes"
+  },
+  "3.3a-writesets": {
+   "status": "not-applicable",
+   "evidence": [
+    "experiment/playbook-uplift/ontology/00-system.md (module 00 owns no code or store: it holds the definitions SYS-D*, the universal axioms SYS-I1..I10 and premises SYS-P1..P4, each checked inside the owning modules)"
+   ],
+   "remaining": ""
+  },
+  "3.4-statements": {
+   "status": "not-applicable",
+   "evidence": [
+    "experiment/playbook-uplift/ontology/00-system.md (module 00 owns no code or store: it holds the definitions SYS-D*, the universal axioms SYS-I1..I10 and premises SYS-P1..P4, each checked inside the owning modules)"
+   ],
+   "remaining": ""
+  },
+  "3.4-ownership": {
+   "status": "not-applicable",
+   "evidence": [
+    "experiment/playbook-uplift/ontology/00-system.md (module 00 owns no code or store: it holds the definitions SYS-D*, the universal axioms SYS-I1..I10 and premises SYS-P1..P4, each checked inside the owning modules)"
+   ],
+   "remaining": ""
+  },
+  "3.4-storage-order": {
+   "status": "not-applicable",
+   "evidence": [
+    "experiment/playbook-uplift/ontology/00-system.md (module 00 owns no code or store: it holds the definitions SYS-D*, the universal axioms SYS-I1..I10 and premises SYS-P1..P4, each checked inside the owning modules)"
+   ],
+   "remaining": ""
+  },
+  "3.4-declared-reads": {
+   "status": "not-applicable",
+   "evidence": [
+    "experiment/playbook-uplift/ontology/00-system.md (module 00 owns no code or store: it holds the definitions SYS-D*, the universal axioms SYS-I1..I10 and premises SYS-P1..P4, each checked inside the owning modules)"
+   ],
+   "remaining": ""
+  },
+  "3.5-handlers": {
+   "status": "not-applicable",
+   "evidence": [
+    "experiment/playbook-uplift/ontology/00-system.md (module 00 owns no code or store: it holds the definitions SYS-D*, the universal axioms SYS-I1..I10 and premises SYS-P1..P4, each checked inside the owning modules)"
+   ],
+   "remaining": ""
+  },
+  "3.5-lockplans": {
+   "status": "not-applicable",
+   "evidence": [
+    "experiment/playbook-uplift/ontology/00-system.md (module 00 owns no code or store: it holds the definitions SYS-D*, the universal axioms SYS-I1..I10 and premises SYS-P1..P4, each checked inside the owning modules)"
+   ],
+   "remaining": ""
+  },
+  "3.5-decoders": {
+   "status": "not-applicable",
+   "evidence": [
+    "experiment/playbook-uplift/ontology/00-system.md (module 00 owns no code or store: it holds the definitions SYS-D*, the universal axioms SYS-I1..I10 and premises SYS-P1..P4, each checked inside the owning modules)"
+   ],
+   "remaining": ""
+  },
+  "3.6-frame": {
+   "status": "not-applicable",
+   "evidence": [
+    "experiment/playbook-uplift/ontology/00-system.md (module 00 owns no code or store: it holds the definitions SYS-D*, the universal axioms SYS-I1..I10 and premises SYS-P1..P4, each checked inside the owning modules)"
+   ],
+   "remaining": ""
+  },
+  "3.6-row-permutation": {
+   "status": "not-applicable",
+   "evidence": [
+    "experiment/playbook-uplift/ontology/00-system.md (module 00 owns no code or store: it holds the definitions SYS-D*, the universal axioms SYS-I1..I10 and premises SYS-P1..P4, each checked inside the owning modules)"
+   ],
+   "remaining": ""
+  },
+  "3.6-keys": {
+   "status": "not-applicable",
+   "evidence": [
+    "experiment/playbook-uplift/ontology/00-system.md (module 00 owns no code or store: it holds the definitions SYS-D*, the universal axioms SYS-I1..I10 and premises SYS-P1..P4, each checked inside the owning modules)"
+   ],
+   "remaining": ""
+  },
+  "3.6-fk": {
+   "status": "not-applicable",
+   "evidence": [
+    "experiment/playbook-uplift/ontology/00-system.md (module 00 owns no code or store: it holds the definitions SYS-D*, the universal axioms SYS-I1..I10 and premises SYS-P1..P4, each checked inside the owning modules)"
+   ],
+   "remaining": ""
+  },
+  "3.6-capacity": {
+   "status": "not-applicable",
+   "evidence": [
+    "experiment/playbook-uplift/ontology/00-system.md (module 00 owns no code or store: it holds the definitions SYS-D*, the universal axioms SYS-I1..I10 and premises SYS-P1..P4, each checked inside the owning modules)"
+   ],
+   "remaining": ""
+  },
+  "3.7-trace-replay": {
+   "status": "not-applicable",
+   "evidence": [
+    "experiment/playbook-uplift/ontology/00-system.md (module 00 owns no code or store: it holds the definitions SYS-D*, the universal axioms SYS-I1..I10 and premises SYS-P1..P4, each checked inside the owning modules)"
+   ],
+   "remaining": ""
+  },
+  "3.7-lock-log": {
+   "status": "not-applicable",
+   "evidence": [
+    "experiment/playbook-uplift/ontology/00-system.md (module 00 owns no code or store: it holds the definitions SYS-D*, the universal axioms SYS-I1..I10 and premises SYS-P1..P4, each checked inside the owning modules)"
+   ],
+   "remaining": ""
+  },
+  "3.7-mutation": {
+   "status": "not-applicable",
+   "evidence": [
+    "experiment/playbook-uplift/ontology/00-system.md (module 00 owns no code or store: it holds the definitions SYS-D*, the universal axioms SYS-I1..I10 and premises SYS-P1..P4, each checked inside the owning modules)"
+   ],
+   "remaining": ""
+  },
+  "3.8-findings-disposed": {
+   "status": "not-applicable",
+   "evidence": [
+    "experiment/playbook-uplift/findings/ has no 00.md"
+   ],
+   "remaining": ""
+  },
+  "5c-refusals": {
+   "status": "not-applicable",
+   "evidence": [
+    "experiment/playbook-uplift/ontology/00-system.md (module 00 owns no code or store: it holds the definitions SYS-D*, the universal axioms SYS-I1..I10 and premises SYS-P1..P4, each checked inside the owning modules)"
+   ],
+   "remaining": ""
+  }
+ },
+ "blockers": [
+  "experiment/playbook-completion/live/breadth-c/incident-ivg460snap.json: lane C ran tests/unit/test_snapshot.py, whose IRIS fixture created namespace IVG460SNAP and compiled the pin's classes there (scope violation, reported to the orchestrator; not cleaned up by the lane)",
+  "Tool limitation for the orchestrator: traces/journal.py's server-side reader stops with <VECTOR> when a journaled value is a $vector (Base64Encode of NewValue), so writes of vector columns cannot be journal-validated (seen in lane C's first ops_live.py run on dbapi_utils.insert_vector)"
+ ]
+}

@@ -1,0 +1,10 @@
+{
+  "lane": "breadth-c",
+  "utc": "2026-11-13T23:02:53Z",
+  "what": "A scope violation by breadth lane C. Running the upstream unit file tests/unit/test_snapshot.py (to collect 'run' evidence for module 18) executed its module fixture snapshot_conn, which needs IRIS although the file sits under tests/unit: scripts/dev/make_scratch_namespace.py make('IVG460SNAP') created namespace IVG460SNAP with a new database /usr/irissys/mgr/ivg460snap/ in the dedicated container, install_ivg and tests.conftest._deploy_objectscript compiled the pin's (unmodified) classes into it (3 MCP classes failed: %AI absent), and the fixture's connection was opened without tools/locks.sh iris.",
+  "rules_broken": ["CONVENTIONS: do not create namespaces", "CONVENTIONS: never compile a class into IRIS", "lane brief: live checks only in AUDITC", "Connection cap: IRIS-connecting command run without locks.sh iris"],
+  "evidence": ["$RUN_DIR/breadth-c/18/unit-snapshot-20261113T230248.log (6 errors: 'ObjectScript deploy into IVG460SNAP failed for 3 class(es)')", "docker exec ls: /usr/irissys/mgr/ivg460snap created 2026-11-13 23:02:53 UTC"],
+  "not_done": "Not cleaned up by the lane (dropping a namespace is a container change reserved to the orchestrator). No product file changed; AUDITC untouched by this run. Results of the 6 errored tests are not used as evidence; the 103 passing tests in the same run are unit tests on stand-ins.",
+  "request": "Orchestrator: decide whether to drop IVG460SNAP (scripts/dev/make_scratch_namespace.py drop() refuses it: not DROPPABLE) and whether any registered result could have been affected by the extra connections at 23:02:53-23:03:40 UTC.",
+  "prevention": "Lane C now runs no file under tests/ without first grepping it for IRIS fixtures (iris_connection, snapshot_conn, make_scratch_namespace); IRIS-needing tests are not run by this lane."
+}

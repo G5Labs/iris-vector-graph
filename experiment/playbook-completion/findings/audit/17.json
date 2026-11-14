@@ -1,0 +1,516 @@
+{
+ "module": "17",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "findings": [
+  {
+   "id": "F-1701",
+   "module": "17",
+   "title": "The SQL adapter's unscoped node and label reads merge graphs",
+   "intended": "A node's labels and properties are its own graph's (CONTEXT.md 'All-graphs read', decided 2026-10-20); the engine's get_nodes is graph-scoped since spec 227 (iris_vector_graph/_engine/nodes_edges.py:621-636); SYS-I2.",
+   "observed": "Live (c17-live-engine, AUDITC): node c17:x labelled C17A in c17g1 and unlabelled in c17g2. IRISGraphStore.get_nodes(['c17:x']) with no graph answered [['c17:x', '[\"C17A\"]']]; get_node_labels answered [['c17:x', '[\"C17A\"]']]. Cypher under USE GRAPH 'c17g2': start-label variable-length {'error': None, 'metadata': 'QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[])', 'rows': [], 'sql': \"SELECT Graph_KG.CY_TYPED(%EXACT(p4.val)) AS t_id\\nFROM Graph_KG.nodes n0\\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('c17g2', '')\\nJOIN JSON_TABLE(Graph_KG.CY_VLP_PATHS(n0.node_id, '[]', 'out', 1, 2, 0, 'c17g2', 'Graph_KG.rdf_edges'), '$[*]' COLUMNS(t VARCHAR(512) PATH '$.t', l INTEGER PATH '$.l', n VARCHAR(32000) PATH '$.n', y VARCHAR(3\"}, target-label {'error': None, 'metadata': 'QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[])', 'rows': [], 'sql': \"SELECT Graph_KG.CY_TYPED(%EXACT(p4.val)) AS t_id\\nFROM Graph_KG.nodes n0\\nJOIN JSON_TABLE(Graph_KG.CY_VLP_PATHS(n0.node_id, '[]', 'out', 1, 2, 0, 'c17g2', 'Graph_KG.rdf_edges'), '$[*]' COLUMNS(t VARCHAR(512) PATH '$.t', l INTEGER PATH '$.l', n VARCHAR(32000) PATH '$.n', y VARCHAR(32000) PATH '$.y', r VARCHAR(32000) PATH '$.r', k VARCHAR(32000) PATH '$.k')) vlp1 ON 1=1\\nJOIN Graph_KG.nodes n2 ON n2.no\"}, fixed-length {'error': None, 'metadata': 'QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[])', 'rows': [], 'sql': \"SELECT Graph_KG.CY_TYPED(%EXACT(p4.val)) AS t_id\\nFROM Graph_KG.nodes n0\\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('c17g2', '')\\nJOIN Graph_KG.rdf_edges e3 ON e3.s = n0.node_id AND e3.p = ? AND COALESCE(e3.graph_id, '') = COALESCE('c17g2', '')\\nJOIN Graph_KG.nodes n2 ON n2.node_id = e3.o_id AND COALESCE(n2.graph_id, '') = COALESCE('c17g\"}, plain label match {'error': None, 'metadata': 'QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[])', 'rows': [], 'sql': 'SELECT Graph_KG.CY_TYPED(%EXACT(p2.val)) AS n_id\\nFROM Graph_KG.nodes n0\\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, \\'\\') = COALESCE(\\'c17g2\\', \\'\\')\\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, \\'\\') = COALESCE(\\'c17g2\\', \\'\\')\\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, \\'\\') = COALESCE(\\'c17g2\\', \\'\\') AND 1=1'}. Source: iris_vector_graph/stores/iris_sql_store.py:1116-1210 (no graph predicate when graph is None; query_nodes has no graph parameter); callers _engine/query.py:245, :266, :3319.",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c17-live-engine"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/stores/iris_sql_store.py:1116-1210"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/query.py:245-275"
+    }
+   ],
+   "gates": [
+    "3.4-declared-reads",
+    "SYS-I2"
+   ],
+   "severity": "S1",
+   "confidence": "medium",
+   "remedy": "Give get_nodes/get_node_labels/query_nodes a graph argument and pass the query's graph from every Cypher caller; a live test with one id in two graphs.",
+   "notes": "Reproduced at the adapter's public reads (IRISGraphStore is exported; an unscoped get_nodes for an id the default graph does not hold answers another graph's labels). The Cypher impact the original claims was NOT observed for the four shapes run under USE GRAPH: each answered [] with graph-scoped SQL (the generated SQL joins rdf_labels with graph_id = 'c17g2', recorded in the live result), so the query.py:245/266/3319 store calls were not reached by these shapes at the pin."
+  },
+  {
+   "id": "F-1702",
+   "module": "17",
+   "title": "A caller transaction cannot be opened through an in-IRIS cursor",
+   "intended": "docs/USER_GUIDE.md 'Writes inside your transaction': after SQL START TRANSACTION the caller's ROLLBACK removes IVG's write; no exception for EmbeddedConnection.",
+   "observed": "EmbeddedCursor.execute returns before sending START TRANSACTION, BEGIN, BEGIN TRANSACTION, COMMIT, ROLLBACK (iris_vector_graph/embedded.py:312-321). Checked through the cursor itself with a recording stand-in for iris.sql (c17-offline: none of the four statements reached it) and the upstream unit test test_transaction_statements_are_noop (c17-run-unit-ops, passed). The irispython E2E (USER_GUIDE example inside IRIS) needs the package installed in the container's embedded Python: blocked-access (installing it would modify the container).",
+   "disposition": "reproduced-test",
+   "evidence": [
+    {
+     "kind": "run",
+     "ref": "c17-run-unit-ops"
+    },
+    {
+     "kind": "check",
+     "ref": "c17-offline"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/embedded.py:312-321"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_write_txn.py:206-207"
+    }
+   ],
+   "gates": [
+    "3.5-handlers",
+    "3.7-e2e"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Map the statements to TSTART/TCOMMIT/TROLLBACK (or pass them through) in EmbeddedCursor, or document the limit; an irispython E2E of the USER_GUIDE example.",
+   "notes": "End-to-end effect inside IRIS: blocked-access (iris_vector_graph not installed in the container's irispython; installing it would change the container)."
+  },
+  {
+   "id": "F-1703",
+   "module": "17",
+   "title": "IVG_STRICT_NAMESPACE warns; two documents say it raises",
+   "intended": "docs/ADMIN_GUIDE.md:1254 ('1 raises'); iris_vector_graph/exceptions.py:19-20 ('Upgrade to a hard error').",
+   "observed": "Live (c17-live-engine): IRISGraphStore(conn to AUDITC, namespace='USER') with IVG_STRICT_NAMESPACE=1: outcome returned; warnings [\"NamespaceMismatchWarning: Namespace mismatch: connected to 'AUDITC', expected 'USER'. IVG works in the connection's namespace, 'AUDITC': drop namespace= or connect to 'USER'.\"]. Source iris_vector_graph/stores/iris_sql_store.py:830-838 (warnings.warn, no raise).",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c17-live-engine"
+    },
+    {
+     "kind": "run",
+     "ref": "c17-run-unit-ops"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/stores/iris_sql_store.py:815-838"
+    }
+   ],
+   "gates": [
+    "3.5-decoders",
+    "5c-refusals"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Raise when strict, or correct ADMIN_GUIDE and the docstring.",
+   "notes": ""
+  },
+  {
+   "id": "F-1704",
+   "module": "17",
+   "title": "The error root does not catch every IVG error",
+   "intended": "iris_vector_graph/errors.py:1-17: every engine-side error descends from IVGError, one catchable root.",
+   "observed": "c17-offline: the nine classes the finding names are not IVGError subclasses (MRO recorded); a mechanical scan of every exception class the package defines finds 26 outside IVGError, e.g. BatchShortfall, _NotALiteral, SnapshotReadError, AQLParseError, AQLTranslationError, _Decline, NativeMismatch, CypherParseError, EntityNotFoundError, TemporalQueryRequiresEngine, _NoFold, EmbeddedUnavailableError.",
+   "disposition": "reproduced-test",
+   "evidence": [
+    {
+     "kind": "check",
+     "ref": "c17-offline"
+    },
+    {
+     "kind": "run",
+     "ref": "c17-run-unit-ops"
+    }
+   ],
+   "gates": [
+    "3.5-decoders"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Re-base the public errors on IVGError (keep current bases as mixins) or narrow the docstring; extend test_all_descend_from_single_root to every exported error.",
+   "notes": ""
+  },
+  {
+   "id": "F-1705",
+   "module": "17",
+   "title": "vector_similarity_search ranks L2 results farthest first",
+   "intended": "A similarity search returns the nearest rows (docstring, dbapi_utils.py:249-252); VECTOR_L2 is a distance (P-1710).",
+   "observed": "Source: metric='L2' maps to VECTOR_L2 and the statement orders score DESC (dbapi_utils.py:256-272). Live (c17-live-vec, IRIS IRIS for UNIX (Ubuntu Server LTS for x86-64 Containers) 2026.1 (Build 234U) Fri Mar 27 2026 14:07:14 EDT, scratch table IVGAudit.C17V rows 1:[0,0], 2:[1,0], 3:[5,0]): vector_similarity_search(metric='L2') -> ProgrammingError: <SQL ERROR>; Details: [SQLCODE: <-359>:<SQL Function (function stored procedure) not found>]\r\n[Location: <Prepare>]\r\n[%msg: < User defined SQL function 'SQLUSER.VECTOR_L2' does not exist>]; raw VECTOR_L2 -> ProgrammingError: <SQL ERROR>; Details: [SQLCODE: <-359>:<SQL Function (function stored procedure) not found>]\r\n[Location: <Prepare>]\r\n[%msg: < User defined SQL function 'SQLUSER.VECTOR_L2' does not exist>]; the same call with COSINE -> [{'id': 2, 'score': '1'}, {'id': 3, 'score': '1'}, {'id': 1, 'score': None}].",
+   "disposition": "confirmed-source",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c17-live-vec"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/dbapi_utils.py:238-275"
+    }
+   ],
+   "gates": [
+    "3.5-handlers",
+    "3.2-coverage"
+   ],
+   "severity": "S3",
+   "confidence": "medium",
+   "remedy": "ORDER BY score ASC for L2 (or negate it); a test with three known vectors.",
+   "notes": "On IRIS Community 2026.1 VECTOR_L2 does not exist (SQLCODE -359 'User defined SQL function SQLUSER.VECTOR_L2 does not exist'), so P-1710 does not hold on the edition this audit runs and the descending order cannot be observed here; the call raises instead (F-C1704). The ordering defect applies wherever VECTOR_L2 exists."
+  },
+  {
+   "id": "F-C1704",
+   "module": "17",
+   "title": "The L2 metric of the vector helpers fails on IRIS Community 2026.1",
+   "intended": "dbapi_utils.vector_similarity_search and create_hnsw_index document metric 'L2' beside COSINE and DOT (dbapi_utils.py:238-275, :170-204); IRIS Community 2026.1 is the exercised target (P-1701).",
+   "observed": "Live (c17-live-vec, IRIS for UNIX (Ubuntu Server LTS for x86-64 Containers) 2026.1 (Build 234U) Fri Mar 27 2026 14:07:14 EDT): vector_similarity_search(metric='L2') -> ProgrammingError: <SQL ERROR>; Details: [SQLCODE: <-359>:<SQL Function (function stored procedure) not found>]\r\n[Location: <Prepare>]\r\n[%msg: < User defined SQL function 'SQLUSER.VECTOR_L2' does not exist>]; raw VECTOR_L2 -> ProgrammingError: <SQL ERROR>; Details: [SQLCODE: <-359>:<SQL Function (function stored procedure) not found>]\r\n[Location: <Prepare>]\r\n[%msg: < User defined SQL function 'SQLUSER.VECTOR_L2' does not exist>]; COSINE works -> [{'id': 2, 'score': '1'}, {'id': 3, 'score': '1'}, {'id': 1, 'score': None}].",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c17-live-vec"
+    }
+   ],
+   "gates": [
+    "3.2-coverage",
+    "3.5-handlers"
+   ],
+   "severity": "S4",
+   "confidence": "high",
+   "remedy": "Refuse metric='L2' on servers without VECTOR_L2 (or compute it), and say which metrics each edition supports.",
+   "notes": "An IRIS environment-contract fact for the orchestrator: VECTOR_L2 is absent on Community 2026.1."
+  },
+  {
+   "id": "F-1706",
+   "module": "17",
+   "title": "create_hnsw_index does not try ACORN first",
+   "intended": "Docstring: 'Tries ACORN=1 first (faster build, IRIS 2025.1+), falls back to standard HNSW' (dbapi_utils.py:181-183).",
+   "observed": "Live (c17-live-vec): the statements create_hnsw_index sent, captured through a recording cursor on AUDITC: [\"CREATE INDEX C17VHNSW ON IVGAudit.C17V (emb) AS HNSW(M=16, efConstruction=200, Distance='L2')\"]; it returned False.",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c17-live-vec"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/dbapi_utils.py:170-204"
+    }
+   ],
+   "gates": [
+    "3.5-handlers"
+   ],
+   "severity": "S4",
+   "confidence": "high",
+   "remedy": "Implement the two-step attempt or correct the docstring.",
+   "notes": ""
+  },
+  {
+   "id": "F-1707",
+   "module": "17",
+   "title": "SHOW CONSTRAINTS and the index lists name keys the schema does not have",
+   "intended": "SHOW CONSTRAINTS reports the namespace's real keys; since spec 227/234 nodes are keyed (node_id, graph_id) and edges u_spo_graph_ekey (iris_vector_graph/schema.py:399-400, :44).",
+   "observed": "Live (c17-live-engine): SHOW CONSTRAINTS answered {'columns': ['name', 'type', 'entityType', 'labelsOrTypes', 'properties', 'ownedIndex'], 'error': None, 'rows': [['node_id_unique', 'UNIQUENESS', 'NODE', \"['*']\", \"['node_id']\", 'pk_nodes'], ['edge_spo_unique', 'UNIQUENESS', 'RELATIONSHIP', \"['*']\", \"['s', 'p', 'o_id']\", 'pk_rdf_edges'], ['fhir_bridge_unique', 'UNIQUENESS', 'NODE', \"['*']\", \"['fhir_code', 'kg_node_id']\", 'pk_bridge']]}; the store's list_indexes [['pk_nodes', 'UNIQUE', 'ONLINE'], ['pk_rdf_edges', 'UNIQUE', 'ONLINE']]; INFORMATION_SCHEMA.TABLE_CONSTRAINTS for nodes/rdf_edges [['nodes', 'pk_nodes_graph', 'PRIMARY KEY'], ['nodes', 'uq_nodes_graph_node', 'UNIQUE'], ['rdf_edges', 'fk_edges_dest', 'FOREIGN KEY'], ['rdf_edges', 'fk_edges_source', 'FOREIGN KEY'], ['rdf_edges', 'IDKEY', 'UNIQUE'], ['rdf_edges', 'IDKEYField_As_PKey', 'PRIMARY KEY'], ['rdf_edges', 'u_spo_graph_ekey', 'UNIQUE']]; reported names absent from the dictionary: ['edge_spo_unique', 'node_id_unique', 'pk_nodes', 'pk_rdf_edges'].",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c17-live-engine"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/admin.py:255-280"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/stores/iris_sql_store.py:3060-3082"
+    }
+   ],
+   "gates": [
+    "3.6-keys",
+    "3.5-decoders"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Read constraints from the dictionary, or list the real names and columns.",
+   "notes": ""
+  },
+  {
+   "id": "F-1708",
+   "module": "17",
+   "title": "The bolt-on installer does not do what deploy/README.md says",
+   "intended": "deploy/README.md:24 (creates namespace, installs schema, prints key and start command) and :85 (ivg_service user with access only to Graph_KG.* tables).",
+   "observed": "Confirmed in source: deploy/bolt-on/install.sh generates a password (:21-22) and writes ivg-config.yml (:72-91) but creates no user or grant; the printed start command (:97) passes --iris-password with no user, and `ivg server start` has no user option (iris_vector_graph/cli.py:419-434: IRIS_USERNAME defaults to _SYSTEM in cypher_api.py:170); the namespace step uses %SYS.Namespace over SQL/Native (:36-49), which ADMIN_GUIDE section 1 says cannot create a namespace; nothing reads ivg-config.yml. Not run: the installer targets a remote instance and would create a namespace (forbidden on the audit container).",
+   "disposition": "confirmed-source",
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "deploy/bolt-on/install.sh:15-100"
+    },
+    {
+     "kind": "inspected",
+     "ref": "deploy/README.md:20-26, 84-101"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cli.py:415-441"
+    }
+   ],
+   "gates": [
+    "3.1-coverage"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Create the user and ADMIN_GUIDE section 3 grants in the installer and pass the user name, or rewrite deploy/README.md path 2.",
+   "notes": ""
+  },
+  {
+   "id": "F-1709",
+   "module": "17",
+   "title": "deploy/README.md promises a refusal the server does not make",
+   "intended": "deploy/README.md:86: the server refuses auth: none with host 0.0.0.0 unless --force-no-auth.",
+   "observed": "Confirmed in source: `ivg server start` defaults --host 0.0.0.0 and has no --force-no-auth (cli.py:419-426); auth is off when IVG_API_KEY is unset (iris_vector_graph/_api_key.py:21-23); no code reads IVG_AUTH_MODE (deploy/docker/compose.yml:34). HD-1705 working decision: local-only default or explicit opt-in.",
+   "disposition": "confirmed-source",
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cli.py:415-441"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_api_key.py:15-30"
+    },
+    {
+     "kind": "inspected",
+     "ref": "deploy/README.md:84-88"
+    }
+   ],
+   "gates": [
+    "3.1-coverage"
+   ],
+   "severity": "S1",
+   "confidence": "high",
+   "remedy": "Per HD-1705: default to 127.0.0.1 or require an explicit opt-in for unauthenticated external binding; align the docs.",
+   "notes": ""
+  },
+  {
+   "id": "F-1710",
+   "module": "17",
+   "title": "The docker deploy recipe cannot build or log in as written",
+   "intended": "deploy/README.md path 1 ('5 minutes').",
+   "observed": "Confirmed in source: deploy/docker/compose.yml:19-22 builds from context ../.. with dockerfile Dockerfile, and the pin has no root Dockerfile (git ls-tree 3eaa79cf); IRIS_USERNAME ivg_service (:31) is created by nothing in the recipe or deploy/docker/cpf/merge.conf; the image is iris-community:latest (:3) while docker-compose.yml pins 2026.1. Not built: a docker build on the audit host is outside the lane's scope.",
+   "disposition": "confirmed-source",
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "deploy/docker/compose.yml:1-40"
+    },
+    {
+     "kind": "inspected",
+     "ref": "deploy/docker/cpf/merge.conf"
+    }
+   ],
+   "gates": [
+    "3.1-coverage"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Add the Dockerfile and a user-creation step (or use _SYSTEM for the demo and say so), and pin the image.",
+   "notes": ""
+  },
+  {
+   "id": "F-1711",
+   "module": "17",
+   "title": "The deploy guide's SDK example reads a field IVGResult does not have",
+   "intended": "deploy/README.md:73-79 iterates result.records.",
+   "observed": "c17-offline: IVGResult fields ['bolt_column_types', 'columns', 'error', 'metadata', 'params', 'rows', 'sql']; result.records -> AttributeError: 'IVGResult' object has no attribute 'records'.",
+   "disposition": "reproduced-test",
+   "evidence": [
+    {
+     "kind": "check",
+     "ref": "c17-offline"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/result.py:9-16"
+    }
+   ],
+   "gates": [
+    "3.5-decoders"
+   ],
+   "severity": "S4",
+   "confidence": "high",
+   "remedy": "Use result.rows/columns in the example, or add a records view.",
+   "notes": ""
+  },
+  {
+   "id": "F-1712",
+   "module": "17",
+   "title": "LazyKG.in_degree collapses parallel edges that degree() counts",
+   "intended": "LazyKG docstring: degree counts parallel edges (stores/lazy_kg.py:215-235); in-direction should count the same edges.",
+   "observed": "Live (c17-live-engine, multigraph c17mg): rows into c17:b = 3 (two parallel a-R->b and c-R->b); out_degree(a) = 2; in_degree(b) = 2; in_degree_for_predicate(b, R) = 2.",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c17-live-engine"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/stores/lazy_kg.py:215-269"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Adjacency.cls:197-209"
+    }
+   ],
+   "gates": [
+    "3.5-handlers"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Count the keyed children for a multigraph triple; a multigraph unit test.",
+   "notes": ""
+  },
+  {
+   "id": "F-1713",
+   "module": "17",
+   "title": "STATUS_PARTS omits two parts that status() marks unknown",
+   "intended": "status.py:10-11 'What EngineStatus.unknown may name'.",
+   "observed": "c17-offline: STATUS_PARTS ['graph', 'acceleration', 'sync', 'vector_index', 'fulltext_index', 'ivf_index', 'plaid_index', 'ledger']; admin.py appends ['adjacency', 'routines'] (admin.py:551, :752-753). Live status() on AUDITC: unknown = []; status() wrote 0 journal records (a reader).",
+   "disposition": "reproduced-test",
+   "evidence": [
+    {
+     "kind": "check",
+     "ref": "c17-offline"
+    },
+    {
+     "kind": "live",
+     "ref": "c17-live-engine"
+    }
+   ],
+   "gates": [
+    "3.5-decoders"
+   ],
+   "severity": "S4",
+   "confidence": "high",
+   "remedy": "Add both names to STATUS_PARTS; test set(status.unknown) <= set(STATUS_PARTS).",
+   "notes": ""
+  },
+  {
+   "id": "F-1714",
+   "module": "17",
+   "title": "Two IVGClient calls and the async client do not map 401/403",
+   "intended": "IVGClient._refused: '401 and 403 as IVGClientError, for every request (R225)' (sdk.py:195-201); IVGClientError docstring (sdk.py:22-25).",
+   "observed": "Live (c17-live-server: Cypher HTTP server on 127.0.0.1:18750 with IVG_API_KEY set, client with a wrong key): {\"AsyncIVGClient.execute_cypher\": {\"class\": \"HTTPStatusError\", \"is_IVGClientError\": false}, \"execute_cypher\": {\"class\": \"IVGClientError\", \"is_IVGClientError\": true, \"module\": \"iris_vector_graph.sdk\", \"msg\": \"Authentication failed \\u2014 check api_key\"}, \"explain\": {\"class\": \"HTTPStatusError\", \"is_IVGClientError\": false, \"module\": \"httpx\", \"msg\": \"Client error '401 Unauthorized' for url 'http://127.0.0.1:18750/admin/explain'\\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Sta\"}, \"load_ndjson\": {\"class\": \"HTTPStatusError\", \"is_IVGClientError\": false, \"module\": \"httpx\", \"msg\": \"Client error '401 Unauthorized' for url 'http://127.0.0.1:18750/admin/load'\\nFor more i.",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c17-live-server"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/sdk.py:166-182, 254-281"
+    }
+   ],
+   "gates": [
+    "3.5-decoders"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Route those calls through _refused; unit tests with a 401 transport.",
+   "notes": ""
+  },
+  {
+   "id": "F-C1703",
+   "module": "17",
+   "title": "One HTTP client call can create a write twice (client resend after a late reply; server re-run after an exception)",
+   "intended": "decisions.md HD-1702 / HD-1603 (working): after an ambiguous outcome retry only a read, a write known not to have run, or one with a verified idempotency key; treat client and server retries as one protocol.",
+   "observed": "Live (c17-live-server): IVGClient(timeout=2 s, max_retries=3) through a proxy that held the first reply 4 s sent one CREATE (n:C17Dup {marker}); the proxy saw 2 requests, the client answered {'rows': [['c17dup-1794613789']]}, and AUDITC holds 2 nodes with that marker. Source: sdk.py:209-228 resends a POST after TimeoutException/ConnectError/5xx whatever the query; IVGServerError.is_retryable is any 5xx (sdk.py:41-42); cypher_api.py:250-268 re-runs execute_cypher on a fresh connection after any exception. Model: cmc-retry-as-built-once (expected-violation), cmc-retry-as-built-honest (expected-violation: a definite failure reported for an applied write), cmc-retry-reviewed (pass), controls cmc-retry-ctl-client/-server.",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c17-live-server"
+    },
+    {
+     "kind": "mc",
+     "ref": "cmc-retry-as-built-once"
+    },
+    {
+     "kind": "mc",
+     "ref": "cmc-retry-as-built-honest"
+    },
+    {
+     "kind": "mc",
+     "ref": "cmc-retry-reviewed"
+    },
+    {
+     "kind": "control",
+     "ref": "cmc-retry-ctl-client"
+    },
+    {
+     "kind": "control",
+     "ref": "cmc-retry-ctl-server"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/sdk.py:41-42, 209-228"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher_api.py:250-268"
+    }
+   ],
+   "gates": [
+    "3.7-integration-worlds",
+    "3.3-model-check",
+    "SYS-I6"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Retry only reads or writes known not to have run (connect error before send); report an unknown outcome for an ambiguous write; or carry an end-to-end idempotency key (the ledger's retry key) through /api/cypher.",
+   "notes": "Intent status: HD-1702/HD-1603 are working assumptions (decisions.md), not maintainer decisions; the duplicate is observed behaviour either way. Shared with module 16 (server half)."
+  },
+  {
+   "id": "F-C1701",
+   "module": "17",
+   "title": "Two declared console scripts cannot run from an install",
+   "intended": "pyproject.toml:176-179 declares console scripts run-tests and networkx-loader beside ivg.",
+   "observed": "c17-offline: run-tests -> {'exit': 1, 'stderr_tail': ['    from scripts.test import main', \"ModuleNotFoundError: No module named 'scripts.test'\"]}; scripts/test.py tracked at the pin: False; the wheel packages only ['iris_vector_graph'] (pyproject.toml wheel config), so scripts.ingest.networkx_loader is absent from a wheel install (it resolved here only because the venv's editable install puts a source checkout on sys.path).",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "check",
+     "ref": "c17-offline"
+    },
+    {
+     "kind": "inspected",
+     "ref": "pyproject.toml:176-196"
+    }
+   ],
+   "gates": [
+    "3.1-coverage"
+   ],
+   "severity": "S4",
+   "confidence": "high",
+   "remedy": "Drop the two entries or ship the modules they name.",
+   "notes": ""
+  },
+  {
+   "id": "F-C1702",
+   "module": "17",
+   "title": "`ivg server start --workers N` (N > 1) exits without serving",
+   "intended": "docs/ADMIN_API.md:20 documents --workers; OPS-B1.12 (uvicorn.run(cypher_api.app, host, port, workers)).",
+   "observed": "Live (c17-live-server-workers): `ivg server start --host 127.0.0.1 --port 18799 --workers 2` printed uvicorn's 'You must pass the application as an import string to enable reload or workers' and exited 1; cli.py:437-438 passes the app object.",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c17-live-server-workers"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cli.py:427-441"
+    }
+   ],
+   "gates": [
+    "3.7-e2e"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Pass the import string 'iris_vector_graph.cypher_api:app' to uvicorn.run, or drop the option; the product's own N-process path then exists for the 1-vs-N validation.",
+   "notes": "Consequence for gate 3.7 (1 vs N application processes): the documented multi-process server path does not start."
+  }
+ ]
+}
