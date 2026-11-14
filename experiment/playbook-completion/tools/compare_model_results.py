@@ -14,14 +14,21 @@ def rows(p):
     return {x.get("id") or x.get("check") or x.get("check_id"): x for x in r}
 
 
+def met_value(x):
+    for k in ("met", "result", "outcome", "verdict"):
+        if k in x:
+            return x[k]
+    return None
+
+
 def met(x):
-    v = x.get("met", x.get("result"))
-    return v is True or v in ("met", "pass", "expected-violation", "MET")
+    v = met_value(x)
+    return v is True or v in ("met", "pass", "expected-violation", "MET", "MATCH")
 
 
 def main():
     out = Path(sys.argv[1]); bad = 0
-    for crate in ("core", "breadth-a", "breadth-c"):
+    for crate in ("core", "breadth-a", "breadth-b", "breadth-c"):
         new_p = out / f"models-{crate}.json"
         if not new_p.exists():
             print(f"{crate}: no rerun output"); bad += 1; continue
