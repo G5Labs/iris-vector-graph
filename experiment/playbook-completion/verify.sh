@@ -14,11 +14,19 @@ set -uo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"
 repo="$(cd "$here/../.." && pwd)"
 cd "$repo"
-mode="${1:-fast}"; mode="${mode#--}"
+mode=fast; clean=0
+for a in "$@"; do case "$a" in --clean) clean=1;; --fast|--full|--live) mode="${a#--}";; *) echo "unknown argument $a" >&2; exit 2;; esac; done
 stamp="$(date -u +%Y%m%dT%H%M%SZ)"
 out="$RUN_DIR/verify/$stamp"; mkdir -p "$out"
 summary="$out/summary.jsonl"; : > "$summary"
 T="$RUN_DIR/target"
+# --clean: every build from empty target directories under this run (model crates: $out/target; proof runners: a
+# private RUN_DIR whose locks/ is the shared lock directory, so the heavy lock still serializes them)
+PRD="$RUN_DIR"; POUT="$out"
+if [[ "$clean" == 1 ]]; then
+  T="$out/target"; PRD="$out/cleanroot"; POUT="$out/cleanroot/proofs-out"
+  mkdir -p "$PRD" "$POUT"; ln -sfn "$RUN_DIR/locks" "$PRD/locks"
+fi
 
 step() {  # step <id> <timeout-seconds> <command...>
   local id="$1" secs="$2"; shift 2
@@ -33,6 +41,8 @@ have() { [[ -e "$1" ]]; }
 
 {
   echo "candidate_commit $(git rev-parse HEAD)"
+  echo "mode $mode clean $clean"
+  echo "worktree_status_lines $(git status --porcelain | wc -l)"
   echo "product_pin 3eaa79cf77d3e0a879b2cced634cf2729d81499e"
   echo "product_tree_at_pin $(git rev-parse 3eaa79cf^{tree})"
   echo "experiment_tree $(git rev-parse HEAD:experiment/playbook-completion)"
@@ -59,6 +69,20 @@ step storage-order-selftest 60 python3 "$here/tools/storage_order_check.py" --se
 step writer-census-selftest 120 python3 "$here/tools/writer_census.py" --self-test
 step intent-check         120 python3 "$here/tools/intent_check.py"
 step intent-selftest      300 python3 "$here/tools/intent_check.py" --self-test
+step coverage-reconcile   600 python3 "$here/ontology/tools/coverage_reconcile.py" --require-zero
+step coverage-selftest    900 python3 "$here/ontology/tools/coverage_reconcile.py" --self-test
+step writesets-check      300 python3 "$here/writesets/tools/check_discharges.py"
+step writesets-selftest   600 python3 "$here/writesets/tools/check_discharges.py" --self-test
+step semantics-check      300 python3 "$here/semantics/tools/check_semantics.py"
+step semantics-selftest   600 python3 "$here/semantics/tools/check_semantics.py" --self-test
+step root-causes-check    300 python3 "$here/reflection/tools/check_root_causes.py"
+step root-causes-selftest 600 python3 "$here/reflection/tools/check_root_causes.py" --self-test
+step premise-map-check    300 python3 "$here/reflection/tools/check_premise_map.py"
+step premise-map-selftest 600 python3 "$here/reflection/tools/check_premise_map.py" --self-test
+step ownership-selftest   600 python "$here/structural/ownership/ownership.py" --self-test
+step crash-oracle-selftest 60 python "$here/traces/crash_world.py" --self-test-oracle
+rm -rf "$out/disconnect-copy"; cp -r "$RUN_DIR/product-gates/disconnect-r1" "$out/disconnect-copy" 2>/dev/null
+step disconnect-oracle-selftest 300 python "$here/product-gates/disconnect_world.py" --self-test-oracle "$out/disconnect-copy"
 step contract-build       900 env CARGO_TARGET_DIR="$T/iris-contract" cargo build --release --offline --manifest-path "$here/iris-contract/Cargo.toml"
 step contract-selftest    600 "$T/iris-contract/release/iris-contract" selftest
 round="$(cat "$here/iris-contract/VALIDATED_ROUND" 2>/dev/null || echo r2)"   # the latest round that met the gate
@@ -79,35 +103,50 @@ if [[ "$mode" == full || "$mode" == live ]]; then
     bin="$(find "$T/$crate/release" -maxdepth 1 -type f -perm -u+x ! -name '*.d' | head -1)"
     step "models-$crate" 7200 $H "$bin" --out "$out/models-$crate.json"
   done
-  if have "$here/proofs-breadth/tools/run_proofs.py"; then mkdir -p "$out/proofs-breadth"
-    step proofs-breadth 3600 env PROOFS_OUT_DIR="$out/proofs-breadth" python "$here/proofs-breadth/tools/run_proofs.py"
+  if have "$here/proofs-breadth/tools/run_proofs.py"; then mkdir -p "$POUT/proofs-breadth"
+    step proofs-breadth 3600 env RUN_DIR="$PRD" PROOFS_OUT_DIR="$POUT/proofs-breadth" python "$here/proofs-breadth/tools/run_proofs.py"
   fi
   # breadth-b writes into its own crate directory (compile-time path): build and run a copy under this run
   rm -rf "$out/breadth-b-copy"; cp -r "$here/models/breadth-b" "$out/breadth-b-copy"; rm -rf "$out/breadth-b-copy/results"
   step models-breadth-b-build 1800 env CARGO_TARGET_DIR="$T/breadth-b-verify" cargo build --release --offline --manifest-path "$out/breadth-b-copy/Cargo.toml"
   step models-breadth-b 7200 $H "$T/breadth-b-verify/release/breadth-b"
   cp "$out/breadth-b-copy/RESULTS.json" "$out/models-breadth-b.json" 2>/dev/null || true
-  if have "$here/proofs-d9/tools/run_proofs.py"; then mkdir -p "$out/proofs-d9"
-    step proofs-d9 3600 env PROOFS_OUT_DIR="$out/proofs-d9" python "$here/proofs-d9/tools/run_proofs.py"
+  if have "$here/proofs-d9/tools/run_proofs.py"; then mkdir -p "$POUT/proofs-d9"
+    step proofs-d9 3600 env RUN_DIR="$PRD" PROOFS_OUT_DIR="$POUT/proofs-d9" python "$here/proofs-d9/tools/run_proofs.py"
   fi
-  if have "$here/proofs-d1b/tools/run_proofs.py"; then mkdir -p "$out/proofs-d1b"
-    step proofs-d1b 3600 env PROOFS_OUT_DIR="$out/proofs-d1b" python "$here/proofs-d1b/tools/run_proofs.py"
+  if have "$here/proofs-d1b/tools/run_proofs.py"; then mkdir -p "$POUT/proofs-d1b"
+    step proofs-d1b 3600 env RUN_DIR="$PRD" PROOFS_OUT_DIR="$POUT/proofs-d1b" python "$here/proofs-d1b/tools/run_proofs.py"
   fi
-  if have "$here/proofs-d1c/tools/run_proofs.py"; then mkdir -p "$out/proofs-d1c"
-    step proofs-d1c 3600 env PROOFS_OUT_DIR="$out/proofs-d1c" python "$here/proofs-d1c/tools/run_proofs.py"
+  if have "$here/proofs-d1c/tools/run_proofs.py"; then mkdir -p "$POUT/proofs-d1c"
+    step proofs-d1c 3600 env RUN_DIR="$PRD" PROOFS_OUT_DIR="$POUT/proofs-d1c" python "$here/proofs-d1c/tools/run_proofs.py"
   fi
-  if have "$here/proofs-d1d/tools/run_proofs.py"; then mkdir -p "$out/proofs-d1d"
-    step proofs-d1d 3600 env PROOFS_OUT_DIR="$out/proofs-d1d" python "$here/proofs-d1d/tools/run_proofs.py"
+  if have "$here/proofs-d1d/tools/run_proofs.py"; then mkdir -p "$POUT/proofs-d1d"
+    step proofs-d1d 3600 env RUN_DIR="$PRD" PROOFS_OUT_DIR="$POUT/proofs-d1d" python "$here/proofs-d1d/tools/run_proofs.py"
   fi
-  if have "$here/proofs-d1e/tools/run_proofs.py"; then mkdir -p "$out/proofs-d1e"
-    step proofs-d1e 3600 env PROOFS_OUT_DIR="$out/proofs-d1e" python "$here/proofs-d1e/tools/run_proofs.py"
+  if have "$here/proofs-d1e/tools/run_proofs.py"; then mkdir -p "$POUT/proofs-d1e"
+    step proofs-d1e 3600 env RUN_DIR="$PRD" PROOFS_OUT_DIR="$POUT/proofs-d1e" python "$here/proofs-d1e/tools/run_proofs.py"
   fi
-  if have "$here/proofs-d1f/tools/run_proofs.py"; then mkdir -p "$out/proofs-d1f"
-    step proofs-d1f 3600 env PROOFS_OUT_DIR="$out/proofs-d1f" python "$here/proofs-d1f/tools/run_proofs.py"
+  if have "$here/proofs-d1f/tools/run_proofs.py"; then mkdir -p "$POUT/proofs-d1f"
+    step proofs-d1f 3600 env RUN_DIR="$PRD" PROOFS_OUT_DIR="$POUT/proofs-d1f" python "$here/proofs-d1f/tools/run_proofs.py"
   fi
+  for crate in proofs-d9b proofs-d9c proofs-pa3 proofs-mech; do
+    if have "$here/$crate/tools/run_proofs.py"; then mkdir -p "$POUT/$crate"
+      step "$crate" 3600 env RUN_DIR="$PRD" PROOFS_OUT_DIR="$POUT/$crate" python "$here/$crate/tools/run_proofs.py"
+    fi
+  done
+  # §3.3a mechanisms (explorer over a trait) and the D-10 partition (pieces only; the two 15-17 GB unpartitioned
+  # runs are registered as m2p-full-* and not repeated here)
+  step models-semantics-build 1800 env CARGO_TARGET_DIR="$T/semantics" cargo build --release --offline --manifest-path "$here/models/semantics/Cargo.toml"
+  step models-semantics 3600 $H "$T/semantics/release/ivg-semantics-models" --out "$out/models-semantics.json"
+  step models-core-partition-build 1800 env CARGO_TARGET_DIR="$T/core-partition" cargo build --release --offline --manifest-path "$here/models/core-partition/Cargo.toml"
+  CP="$T/core-partition/release/ivg-core-partition"
+  step partition-coverage 3000 "$CP" --coverage 2 2
+  for fam in reviewed as-built-isolation-stmt as-built-F1304 as-built-F1305 control-liveness-collapsed control-dropstatements-all-graphs; do
+    step "partition-$fam" 3600 $H "$CP" --family "$fam" 2 2 --out "$out/partition-$fam.json"
+  done
   step models-compare 120 python3 "$here/tools/compare_model_results.py" "$out"
-  if have "$here/proofs/tools/run_proofs.py"; then mkdir -p "$out/proofs"
-    step proofs 7200 env PROOFS_OUT_DIR="$out/proofs" python "$here/proofs/tools/run_proofs.py"  # takes the heavy lock per Verus run itself; writes under $out
+  if have "$here/proofs/tools/run_proofs.py"; then mkdir -p "$POUT/proofs"
+    step proofs 7200 env RUN_DIR="$PRD" PROOFS_OUT_DIR="$POUT/proofs" python "$here/proofs/tools/run_proofs.py"  # takes the heavy lock per Verus run itself; writes under $out
   fi
 fi
 

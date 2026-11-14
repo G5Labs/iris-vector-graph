@@ -28,7 +28,7 @@ def met(x):
 
 def main():
     out = Path(sys.argv[1]); bad = 0
-    for crate in ("core", "breadth-a", "breadth-b", "breadth-c"):
+    for crate in ("core", "breadth-a", "breadth-b", "breadth-c", "semantics"):
         new_p = out / f"models-{crate}.json"
         if not new_p.exists():
             print(f"{crate}: no rerun output"); bad += 1; continue
