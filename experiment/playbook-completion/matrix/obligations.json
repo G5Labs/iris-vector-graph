@@ -12139,19 +12139,30 @@
   {
    "as_built_findings": [
     "F-0801",
-    "F-0511"
+    "F-0511",
+    "F-C0702",
+    "F-C0690"
    ],
    "cited_runs": [
-    "pg-style-review"
+    "pg-style-review",
+    "pg-style-review-r2"
    ],
    "evidence": [
+    "run:pg-style-review-r2",
     "run:pg-style-review",
-    "experiment/playbook-completion/product-gates/STYLE.md"
+    "experiment/playbook-completion/product-gates/STYLE.md",
+    "experiment/playbook-completion/product-gates/style-r2/STYLE-G1.md",
+    "experiment/playbook-completion/product-gates/style-r2/STYLE-G2.md",
+    "experiment/playbook-completion/product-gates/style-r2/STYLE-G3.md",
+    "experiment/playbook-completion/product-gates/style-r2/STYLE-G4.md",
+    "experiment/playbook-completion/product-gates/style-r2/summary.json"
    ],
-   "evidence_grade": "inspected",
+   "evidence_grade": "registered-run",
    "findings": [
     "F-0511",
-    "F-0801"
+    "F-0801",
+    "F-C0690",
+    "F-C0702"
    ],
    "gate": "3.5-style",
    "level": "product",
@@ -12160,15 +12171,18 @@
     "fails": [
      "finding F-0511",
      "finding F-0801",
+     "finding F-C0690",
+     "finding F-C0702",
      "stated fails by matrix-input/product-gates.json",
-     "run pg-style-review (fail)"
+     "run pg-style-review (fail)",
+     "run pg-style-review-r2 (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "Only modules 11-14 were reviewed; the cell is product-wide (modules 00-10 and 15-18 not reviewed). The pin documents no ObjectScript formatting/naming rules and no Python docstring/naming rules, and has no AGENTS.md or CLAUDE.md, so those aspects cannot be judged (documentation gap, not a pass). Five inspected candidates (STYLE.md candidates 3-7: swallowed verify/strict counters, PurgeAll returning OK after a failed %KillExtent, an erase removing stale label entries without a version bump, unchecked embedding and reification deletes in LedgerApply) need a live check before they can be findings.",
+   "remaining": "Files over about 3,000 lines (translator.py, iris_sql_store.py, _engine/schema.py, schema.py, cypher_api.py, _engine/snapshot.py, FHIRGraph.cls) were covered by a convention-driven sweep, not line by line. Undocumented aspects (ObjectScript formatting and naming, Python docstrings and naming) cannot be judged: a documentation gap of the product. 29 inspected-only candidate findings need a live check (STYLE.md round 2), first G1's bulk_ingest_edges temporal-marked row (S1 by analogy with F-0304) and the 3.2.0 rescue staging (S2). C-3 (compile cleanliness) and C-20 (justified indirection) not judged.",
    "source": "matrix-input/product-gates.json",
-   "status": "open"
+   "status": "closed"
   },
   {
    "cited_runs": [
@@ -28076,6 +28090,10 @@
      {
       "kind": "control",
       "ref": "breadth-a-control-tmp_mark"
+     },
+     {
+      "kind": "live",
+      "ref": "ws-live-ba-explicit-survives"
      }
     ],
     "gates": [
@@ -35588,6 +35606,33 @@
   },
   {
    "confidence": "high",
+   "disposition": "confirmed-source",
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/vector_utils.py:22-26"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/vector_utils.py:46-60"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/__init__.py:94"
+    },
+    {
+     "kind": "run",
+     "ref": "pg-style-review-r2"
+    }
+   ],
+   "gates": [
+    "3.5-style"
+   ],
+   "id": "F-C0690",
+   "severity": "S4"
+  },
+  {
+   "confidence": "high",
    "disposition": "reproduced-live",
    "evidence": [
     {
@@ -37930,7 +37975,7 @@
   "n/a": 33,
   "unknown": 191
  },
- "registry_runs": 1274,
+ "registry_runs": 1396,
  "starting_inventory": {
   "cells": 904,
   "decisions": 61,
@@ -37942,9 +37987,9 @@
  },
  "status_counts": {
   "blocked": 25,
-  "closed": 598,
+  "closed": 599,
   "not-applicable": 35,
-  "open": 94
+  "open": 93
  },
  "submission": "9c3719c1",
  "writer_obligations": [

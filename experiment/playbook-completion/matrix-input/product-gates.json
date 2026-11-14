@@ -29,20 +29,28 @@
   {
    "gate": "3.5-style",
    "module": "product",
-   "status": "open",
+   "status": "closed",
    "evidence": [
+    "run:pg-style-review-r2",
     "run:pg-style-review",
-    "experiment/playbook-completion/product-gates/STYLE.md"
+    "experiment/playbook-completion/product-gates/STYLE.md",
+    "experiment/playbook-completion/product-gates/style-r2/STYLE-G1.md",
+    "experiment/playbook-completion/product-gates/style-r2/STYLE-G2.md",
+    "experiment/playbook-completion/product-gates/style-r2/STYLE-G3.md",
+    "experiment/playbook-completion/product-gates/style-r2/STYLE-G4.md",
+    "experiment/playbook-completion/product-gates/style-r2/summary.json"
    ],
    "evidence_grade": "inspected",
    "level": "product",
    "product_obligation": "fails",
-   "product_basis": "Style review of the production files of modules 11-14 against the pin's documented conventions: 23 deviations of 7 conventions (22 of 6 without the secondary-authority research brief): ADR-0008 single owner of the adjacency label store 3 (Eraser.cls:240, 580-585, 793); ADR-0001/0011 no direct ^KG writes outside owners 6 (Eraser.cls); ADR-0002 temporal globals only through TemporalIndex 1 (GraphStores.cls:195-239); ARCHITECTURE.md:203 class headers are the reference, 5 inaccurate headers; CONTEXT.md:173-177 glossary meaning 1 (changeset.py:334-335); TESTING_POLICY.md:291-293 no broad except on a data-changing path 6 (guard.py, _engine/ledger.py, replay.py); status idiom 1 (Ledger.cls:242-248). Two deviations are the documented-convention side of reproduced findings F-0801 (guard fail-open) and F-0511 (insert-mode collision recorded).",
+   "product_basis": "Every module reviewed against the pin's documented conventions (CONTRIBUTING, constitution, CONTEXT, TESTING_POLICY, ADRs 0001-0016, PRE_RELEASE_CHECKLIST, ARCHITECTURE; a research brief at secondary authority, counted apart): 177 deviations across 17 of 19 modules (158 primary, 19 secondary): 00 0, 01 33, 02 3, 03 11, 04 14, 05 12, 06 17, 07 8, 08 2, 09 2, 10 25, 11 9, 12 12, 13 0, 14 2, 15 6, 16 7, 17 7, 18 7. Most frequent: swallowed failures on data-changing paths (TESTING_POLICY.md:291-293), schema hard-coding against ADR-0016, inaccurate class headers (ARCHITECTURE.md:203), direct ^KG writes outside the owners (ADR-0001/0008/0011). Deviations that are reproduced or source-confirmed defects: F-0801, F-0511, F-C0702, F-C0690 (new, S4); 27 more candidates map to existing findings (group files).",
    "as_built_findings": [
     "F-0801",
-    "F-0511"
+    "F-0511",
+    "F-C0702",
+    "F-C0690"
    ],
-   "remaining": "Only modules 11-14 were reviewed; the cell is product-wide (modules 00-10 and 15-18 not reviewed). The pin documents no ObjectScript formatting/naming rules and no Python docstring/naming rules, and has no AGENTS.md or CLAUDE.md, so those aspects cannot be judged (documentation gap, not a pass). Five inspected candidates (STYLE.md candidates 3-7: swallowed verify/strict counters, PurgeAll returning OK after a failed %KillExtent, an erase removing stale label entries without a version bump, unchecked embedding and reification deletes in LedgerApply) need a live check before they can be findings."
+   "remaining": "Files over about 3,000 lines (translator.py, iris_sql_store.py, _engine/schema.py, schema.py, cypher_api.py, _engine/snapshot.py, FHIRGraph.cls) were covered by a convention-driven sweep, not line by line. Undocumented aspects (ObjectScript formatting and naming, Python docstrings and naming) cannot be judged: a documentation gap of the product. 29 inspected-only candidate findings need a live check (STYLE.md round 2), first G1's bulk_ingest_edges temporal-marked row (S1 by analogy with F-0304) and the 3.2.0 rescue staging (S2). C-3 (compile cleanliness) and C-20 (justified indirection) not judged."
   },
   {
    "gate": "3.7-integration-worlds",

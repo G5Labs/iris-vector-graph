@@ -1,0 +1,564 @@
+{
+ "group": "G4",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "report": "experiment/playbook-completion/product-gates/style-r2/STYLE-G4.md",
+ "new_conventions": {
+  "C-40G4-1": {
+   "rule": "iris-vector-rag MUST NOT be a dependency",
+   "source": ".specify/memory/constitution.md:265-267",
+   "result": "conforms"
+  },
+  "C-40G4-2": {
+   "rule": "IVG reads IVG_SCHEMA_PREFIX, never IRIS_SCHEMA_PREFIX",
+   "source": "docs/adr/0016-one-ivg-schema-per-namespace.md:20",
+   "result": "conforms"
+  }
+ },
+ "modules": {
+  "15": {
+   "files_reviewed": [
+    "iris_src/src/Graph/KG/FHIRGraph.cls",
+    "iris_src/src/Graph/KG/FHIRGraphSyncTask.cls",
+    "iris_vector_graph/_engine/fhir.py",
+    "iris_vector_graph/_engine/schema.py:2966-3397 (materialize_inference, retract_inference, reify_edge, get_reifications, delete_reification)",
+    "iris_vector_graph/_engine/rdf_export.py",
+    "iris_vector_graph/_engine/fhir_graph.py",
+    "iris_vector_graph/fhir_bridge.py",
+    "iris_vector_graph/fhir_links.py",
+    "iris_vector_graph/_engine/_rdf_utils.py",
+    "iris_vector_graph/_engine/shacl.py",
+    "iris_vector_graph/_engine/prov.py",
+    "sql/fhir_bridges.sql",
+    "sql/rdf_reifications.sql",
+    "scripts/ingest/load_umls_bridges.py"
+   ],
+   "coverage": {
+    "iris_src/src/Graph/KG/FHIRGraph.cls": "sweep",
+    "iris_src/src/Graph/KG/FHIRGraphSyncTask.cls": "full",
+    "iris_vector_graph/_engine/fhir.py": "full",
+    "iris_vector_graph/_engine/schema.py:2966-3397 (materialize_inference, retract_inference, reify_edge, get_reifications, delete_reification)": "full",
+    "iris_vector_graph/_engine/rdf_export.py": "full",
+    "iris_vector_graph/_engine/fhir_graph.py": "sweep",
+    "iris_vector_graph/fhir_bridge.py": "sweep",
+    "iris_vector_graph/fhir_links.py": "sweep",
+    "iris_vector_graph/_engine/_rdf_utils.py": "sweep",
+    "iris_vector_graph/_engine/shacl.py": "sweep",
+    "iris_vector_graph/_engine/prov.py": "sweep",
+    "sql/fhir_bridges.sql": "full",
+    "sql/rdf_reifications.sql": "full",
+    "scripts/ingest/load_umls_bridges.py": "sweep"
+   },
+   "deviations": [
+    {
+     "id": "D-15-01",
+     "convention": "C-14",
+     "where": "iris_src/src/Graph/KG/FHIRGraph.cls:3-6",
+     "what": "Header says nothing else is copied and properties and codes stay in the repository; SyncProps copies category codes and meta_profile into rdf_props and makes category labels (2496-2570), EnsureNode writes an id property (2612-2615), compartment edges are derived (2212, 2277)"
+    },
+    {
+     "id": "D-15-02",
+     "convention": "C-7",
+     "where": "iris_src/src/Graph/KG/FHIRGraph.cls:2475-2478, 2491, 2560, 2566, 2616",
+     "what": "Sets and kills ^KG(\"label\") itself instead of Adjacency.PutLabel/RemoveLabel (ADR-0008:18-21); 2491, 2566, 2616 run even with the label index declared"
+    },
+    {
+     "id": "D-15-03",
+     "convention": "C-18",
+     "where": "iris_src/src/Graph/KG/FHIRGraph.cls:1724, 1728",
+     "what": "'call Register() first' names a writing call (fhir_graphs upsert 238-244, 259; rebuild 264-265) without saying it writes"
+    },
+    {
+     "id": "D-15-04",
+     "convention": "C-17",
+     "where": "scripts/ingest/load_umls_bridges.py:77-78",
+     "what": "except Exception: conn.commit() swallows a failed CREATE TABLE"
+    },
+    {
+     "id": "D-15-05",
+     "convention": "C-17",
+     "where": "scripts/ingest/load_umls_bridges.py:92-93, 99",
+     "what": "Every refused INSERT counted and reported as a duplicate"
+    },
+    {
+     "id": "D-15-06",
+     "convention": "C-35",
+     "where": "scripts/ingest/load_umls_bridges.py:66, 86",
+     "what": "Creates and fills Graph_KG.fhir_bridges by literal on a plain connection, whatever the namespace's IVG Schema"
+    }
+   ],
+   "deviations_by_convention": {
+    "C-14": 1,
+    "C-7": 1,
+    "C-18": 1,
+    "C-17": 2,
+    "C-35": 1
+   },
+   "deviations_primary": 6,
+   "deviations_secondary": 0,
+   "borderline": 6,
+   "candidates": [
+    {
+     "title": "The FHIR graph build writes the adjacency label index itself (D-15-02)",
+     "where": "iris_src/src/Graph/KG/FHIRGraph.cls:2475-2478, 2491, 2560, 2566, 2616",
+     "existing_finding": "F-C1540",
+     "severity": "S3",
+     "confidence": "medium"
+    },
+    {
+     "title": "The UMLS bridge loader reports every refused INSERT as a duplicate and ignores a failed CREATE TABLE, in the fixed Graph_KG schema (D-15-04/05/06)",
+     "where": "scripts/ingest/load_umls_bridges.py:62-99",
+     "existing_finding": null,
+     "severity": "S4",
+     "confidence": "medium"
+    }
+   ],
+   "conventions_with_no_documented_rule": [
+    "Python docstring, naming and comment style beyond ruff/black/isort/mypy (round 1 L-3)",
+    "ObjectScript indentation, Quit vs Return, p/t prefixes, comment style (round 1 L-2)",
+    "FHIR resource mapping and JSON shapes of the FHIRGraph entry points (the class documents its own)",
+    "production code reading a test fault-injection global (FHIRGraph.cls:1920-1922, 1970)",
+    "RDF/SHACL/PROV output formatting"
+   ]
+  },
+  "16": {
+   "files_reviewed": [
+    "api/main.py",
+    "api/dependencies.py",
+    "api/gql/resolvers/mutation.py",
+    "api/routers/cypher.py",
+    "api/routers/fhir_event.py",
+    "api/models/cypher.py",
+    "api/gql/__init__.py",
+    "api/gql/context.py",
+    "api/gql/schema.py",
+    "api/gql/loaders.py",
+    "api/gql/types.py",
+    "api/gql/core/domain_resolver.py",
+    "api/gql/core/loaders.py",
+    "api/gql/core/resolvers.py",
+    "api/gql/core/types.py",
+    "api/gql/resolvers/query.py",
+    "examples/domains/biomedical/types.py",
+    "examples/domains/biomedical/loaders.py",
+    "iris_vector_graph/gql/__init__.py",
+    "iris_vector_graph/gql/constants.py",
+    "iris_vector_graph/gql/engine.py",
+    "iris_vector_graph/gql/pooling.py",
+    "iris_vector_graph/gql/resolvers.py",
+    "iris_vector_graph/gql/schema.py",
+    "iris_vector_graph/cypher_api.py",
+    "iris_vector_graph/bolt_server.py",
+    "iris_vector_graph/api_auth.py",
+    "iris_vector_graph/_api_key.py",
+    "iris_vector_graph/security.py",
+    "iris_vector_graph/routing.py",
+    "iris_src/src/Graph/KG/Service.cls",
+    "iris_src/src/Graph/KG/MCPService.cls",
+    "iris_src/src/Graph/KG/MCPToolSet.cls",
+    "iris_src/src/Graph/KG/MCPTools.cls",
+    "src/iris_demo_server/app.py",
+    "src/iris_demo_server/models/biomedical.py",
+    "src/iris_demo_server/models/fraud.py",
+    "src/iris_demo_server/models/metrics.py",
+    "src/iris_demo_server/models/session.py",
+    "src/iris_demo_server/objectscript/IVGDemo/FHIRLoad.cls",
+    "src/iris_demo_server/routes/biomedical.py",
+    "src/iris_demo_server/routes/fhir.py",
+    "src/iris_demo_server/routes/fraud.py",
+    "src/iris_demo_server/services/bio_demo_data.py",
+    "src/iris_demo_server/services/fhir_demo_data.py",
+    "src/iris_demo_server/services/fhir_graph_client.py",
+    "src/iris_demo_server/services/fraud_client.py",
+    "src/iris_demo_server/services/iris_biomedical_client.py",
+    "src/iris_fraud_server/__init__.py",
+    "src/iris_fraud_server/__main__.py",
+    "src/iris_fraud_server/app.py",
+    "scripts/mcp/ivg_mcp_server.py",
+    "config/mcp-graph.toml"
+   ],
+   "coverage": {
+    "api/main.py": "full",
+    "api/dependencies.py": "full",
+    "api/gql/resolvers/mutation.py": "full",
+    "api/routers/cypher.py": "sweep",
+    "api/routers/fhir_event.py": "sweep",
+    "api/models/cypher.py": "sweep",
+    "api/gql/__init__.py": "sweep",
+    "api/gql/context.py": "sweep",
+    "api/gql/schema.py": "sweep",
+    "api/gql/loaders.py": "sweep",
+    "api/gql/types.py": "sweep",
+    "api/gql/core/domain_resolver.py": "sweep",
+    "api/gql/core/loaders.py": "sweep",
+    "api/gql/core/resolvers.py": "sweep",
+    "api/gql/core/types.py": "sweep",
+    "api/gql/resolvers/query.py": "sweep",
+    "examples/domains/biomedical/types.py": "sweep",
+    "examples/domains/biomedical/loaders.py": "sweep",
+    "iris_vector_graph/gql/__init__.py": "sweep",
+    "iris_vector_graph/gql/constants.py": "sweep",
+    "iris_vector_graph/gql/engine.py": "sweep",
+    "iris_vector_graph/gql/pooling.py": "sweep",
+    "iris_vector_graph/gql/resolvers.py": "sweep",
+    "iris_vector_graph/gql/schema.py": "sweep",
+    "iris_vector_graph/cypher_api.py": "sweep",
+    "iris_vector_graph/bolt_server.py": "sweep",
+    "iris_vector_graph/api_auth.py": "sweep",
+    "iris_vector_graph/_api_key.py": "sweep",
+    "iris_vector_graph/security.py": "sweep",
+    "iris_vector_graph/routing.py": "sweep",
+    "iris_src/src/Graph/KG/Service.cls": "full",
+    "iris_src/src/Graph/KG/MCPService.cls": "full",
+    "iris_src/src/Graph/KG/MCPToolSet.cls": "full",
+    "iris_src/src/Graph/KG/MCPTools.cls": "full",
+    "src/iris_demo_server/app.py": "sweep",
+    "src/iris_demo_server/models/biomedical.py": "sweep",
+    "src/iris_demo_server/models/fraud.py": "sweep",
+    "src/iris_demo_server/models/metrics.py": "sweep",
+    "src/iris_demo_server/models/session.py": "sweep",
+    "src/iris_demo_server/objectscript/IVGDemo/FHIRLoad.cls": "full",
+    "src/iris_demo_server/routes/biomedical.py": "sweep",
+    "src/iris_demo_server/routes/fhir.py": "sweep",
+    "src/iris_demo_server/routes/fraud.py": "sweep",
+    "src/iris_demo_server/services/bio_demo_data.py": "sweep",
+    "src/iris_demo_server/services/fhir_demo_data.py": "sweep",
+    "src/iris_demo_server/services/fhir_graph_client.py": "sweep",
+    "src/iris_demo_server/services/fraud_client.py": "sweep",
+    "src/iris_demo_server/services/iris_biomedical_client.py": "sweep",
+    "src/iris_fraud_server/__init__.py": "sweep",
+    "src/iris_fraud_server/__main__.py": "sweep",
+    "src/iris_fraud_server/app.py": "sweep",
+    "scripts/mcp/ivg_mcp_server.py": "sweep",
+    "config/mcp-graph.toml": "full"
+   },
+   "deviations": [
+    {
+     "id": "D-16-01",
+     "convention": "C-15",
+     "where": "api/gql/core/resolvers.py:169-171",
+     "what": "Sample API comment calls the IVG Schema qualifier 'the schema prefix' (CONTEXT.md:25)"
+    },
+    {
+     "id": "D-16-02",
+     "convention": "C-35",
+     "where": "api/gql/core/resolvers.py:173, 209-211, 234-235, 250-251, 268; api/gql/loaders.py:30, 38, 85, 93, 139, 147, 193, 232, 262",
+     "what": "Sample API names Graph_KG on the engine's plain connection instead of the engine's IVG Schema"
+    },
+    {
+     "id": "D-16-03",
+     "convention": "C-35",
+     "where": "api/gql/resolvers/query.py:79-92; api/gql/resolvers/mutation.py:47-76, 125-147, 206-228",
+     "what": "Unqualified IVG table names resolve in the default schema (SQLUser); sample resolvers not served (ontology 16-interfaces.md:135)"
+    },
+    {
+     "id": "D-16-04",
+     "convention": "C-35",
+     "where": "src/iris_demo_server/services/iris_biomedical_client.py:61, 83, 122, 135; src/iris_demo_server/services/fhir_graph_client.py:58, 101, 193, 213, 220; src/iris_demo_server/services/bio_demo_data.py:198, 200",
+     "what": "Demo server reads Graph_KG.* by literal; the recorded IVG Schema is never consulted"
+    },
+    {
+     "id": "D-16-05",
+     "convention": "C-35",
+     "where": "scripts/mcp/ivg_mcp_server.py:89-90",
+     "what": "set_schema_prefix(\"Graph_KG\") before translate_to_sql: the answered sql names Graph_KG while the engine (93) uses its own schema"
+    },
+    {
+     "id": "D-16-06",
+     "convention": "C-18",
+     "where": "api/main.py:60",
+     "what": "'run initialize_schema()' names a writing call without saying it writes (sample API)"
+    },
+    {
+     "id": "D-16-07",
+     "convention": "C-17",
+     "where": "api/routers/fhir_event.py:164-165",
+     "what": "Background embedding write: failure is a WARNING log only, after the reply said queued_for_embedding true (sample, deprecated route)"
+    },
+    {
+     "id": "D-16-08",
+     "convention": "C-24",
+     "where": "iris_src/src/Graph/KG/MCPTools.cls:126, 137",
+     "what": "SELECT TOP 10 ... ORDER BY cnt DESC in ObjectScript (secondary authority, BRIEF.md:39-40)"
+    }
+   ],
+   "deviations_by_convention": {
+    "C-15": 1,
+    "C-35": 4,
+    "C-18": 1,
+    "C-17": 1,
+    "C-24": 1
+   },
+   "deviations_primary": 7,
+   "deviations_secondary": 1,
+   "borderline": 6,
+   "candidates": [
+    {
+     "title": "The sample API's nodes field names Graph_KG instead of the engine's schema (D-16-02)",
+     "where": "api/gql/core/resolvers.py:172-274; api/gql/loaders.py:29-263",
+     "existing_finding": "F-1605",
+     "severity": "S2",
+     "confidence": "as filed"
+    },
+    {
+     "title": "The demo server's biomedical and FHIR panels read Graph_KG, not the namespace's IVG Schema (D-16-04)",
+     "where": "src/iris_demo_server/services/iris_biomedical_client.py:61-135; src/iris_demo_server/services/fhir_graph_client.py:58-220; src/iris_demo_server/services/bio_demo_data.py:198-200",
+     "existing_finding": null,
+     "severity": "S4",
+     "confidence": "low"
+    }
+   ],
+   "conventions_with_no_documented_rule": [
+    "Python docstring, naming and comment style beyond ruff/black/isort/mypy (round 1 L-3)",
+    "ObjectScript indentation, Quit vs Return, p/t prefixes, comment style (round 1 L-2)",
+    "HTTP route design, status codes and error-body shape",
+    "GraphQL schema naming",
+    "demo pages' HTML/JS/CSS",
+    "Bolt protocol handling style",
+    "MCP tool naming and result shape"
+   ]
+  },
+  "17": {
+   "files_reviewed": [
+    "iris_vector_graph/stores/iris_sql_store.py",
+    "iris_vector_graph/errors.py",
+    "iris_vector_graph/dbapi_utils.py",
+    "iris_vector_graph/engine.py (construction 277-400, from_connect 487, from_wrapper 517, capabilities 1742-1812)",
+    "iris_vector_graph/_engine/admin.py (module 04 parts excluded)",
+    "iris_vector_graph/cli.py",
+    "iris_vector_graph/status.py",
+    "iris_vector_graph/capabilities.py",
+    "iris_vector_graph/host.py",
+    "iris_vector_graph/embedded.py",
+    "iris_vector_graph/_iris_compat.py",
+    "iris_vector_graph/stores/lazy_kg.py",
+    "iris_vector_graph/store_protocol.py",
+    "iris_vector_graph/sdk.py",
+    "iris_vector_graph/index_config.py",
+    "iris_vector_graph/index_protocol.py",
+    "iris_vector_graph/exceptions.py",
+    "iris_vector_graph/result.py",
+    "iris_vector_graph/utils.py",
+    "iris_vector_graph/constants.py",
+    "iris_vector_graph/models.py",
+    "iris_vector_graph/__init__.py",
+    "iris_vector_graph/_engine/__init__.py",
+    "iris_vector_graph/stores/__init__.py",
+    "iris_src/src/Graph/KG/Meta.cls",
+    "iris_src/src/Graph/KG/PyOps.cls",
+    "iris_src/src/Graph/KG/SQL.cls",
+    "iris_src/src/Graph/KG/JsonKeys.cls",
+    "scripts/setup_security.sql",
+    "scripts/install-embedded-deps.sh",
+    "docker-compose.yml",
+    "docker/enterprise/*",
+    "deploy/*",
+    "pyproject.toml",
+    "uv.lock"
+   ],
+   "coverage": {
+    "iris_vector_graph/stores/iris_sql_store.py": "sweep",
+    "iris_vector_graph/errors.py": "full",
+    "iris_vector_graph/dbapi_utils.py": "sweep",
+    "iris_vector_graph/engine.py (construction 277-400, from_connect 487, from_wrapper 517, capabilities 1742-1812)": "sweep",
+    "iris_vector_graph/_engine/admin.py (module 04 parts excluded)": "sweep",
+    "iris_vector_graph/cli.py": "sweep",
+    "iris_vector_graph/status.py": "sweep",
+    "iris_vector_graph/capabilities.py": "sweep",
+    "iris_vector_graph/host.py": "sweep",
+    "iris_vector_graph/embedded.py": "sweep",
+    "iris_vector_graph/_iris_compat.py": "sweep",
+    "iris_vector_graph/stores/lazy_kg.py": "sweep",
+    "iris_vector_graph/store_protocol.py": "sweep",
+    "iris_vector_graph/sdk.py": "sweep",
+    "iris_vector_graph/index_config.py": "sweep",
+    "iris_vector_graph/index_protocol.py": "sweep",
+    "iris_vector_graph/exceptions.py": "sweep",
+    "iris_vector_graph/result.py": "sweep",
+    "iris_vector_graph/utils.py": "sweep",
+    "iris_vector_graph/constants.py": "sweep",
+    "iris_vector_graph/models.py": "sweep",
+    "iris_vector_graph/__init__.py": "sweep",
+    "iris_vector_graph/_engine/__init__.py": "sweep",
+    "iris_vector_graph/stores/__init__.py": "sweep",
+    "iris_src/src/Graph/KG/Meta.cls": "full",
+    "iris_src/src/Graph/KG/PyOps.cls": "sweep",
+    "iris_src/src/Graph/KG/SQL.cls": "full",
+    "iris_src/src/Graph/KG/JsonKeys.cls": "full",
+    "scripts/setup_security.sql": "full",
+    "scripts/install-embedded-deps.sh": "full",
+    "docker-compose.yml": "sweep",
+    "docker/enterprise/*": "sweep",
+    "deploy/*": "sweep",
+    "pyproject.toml": "sweep",
+    "uv.lock": "sweep"
+   },
+   "deviations": [
+    {
+     "id": "D-17-01",
+     "convention": "C-27",
+     "where": "iris_vector_graph/stores/iris_sql_store.py:2633-2634",
+     "what": "Query vector converted with the 3-argument TO_VECTOR(?, dtype, len(query_vector)) that ADR-0005:16-19 forbids; width is the query's own, so nothing is reshaped"
+    },
+    {
+     "id": "D-17-02",
+     "convention": "C-27",
+     "where": "iris_vector_graph/dbapi_utils.py:253, 268",
+     "what": "vector_similarity_search converts the query with TO_VECTOR(?, dtype, dim), dim = len(query_vector)"
+    },
+    {
+     "id": "D-17-03",
+     "convention": "C-17",
+     "where": "iris_vector_graph/dbapi_utils.py:141-167",
+     "what": "insert_vector answers a refused INSERT/UPDATE with return False (ERROR log)"
+    },
+    {
+     "id": "D-17-04",
+     "convention": "C-17",
+     "where": "iris_vector_graph/dbapi_utils.py:197-204",
+     "what": "create_hnsw_index answers a refused CREATE INDEX with return False, DEBUG log only"
+    },
+    {
+     "id": "D-17-05",
+     "convention": "C-17",
+     "where": "iris_vector_graph/dbapi_utils.py:228-235",
+     "what": "create_ivfflat_index answers a refused CREATE INDEX with return False, DEBUG log only"
+    },
+    {
+     "id": "D-17-06",
+     "convention": "C-17",
+     "where": "iris_vector_graph/stores/iris_sql_store.py:1287-1295",
+     "what": "except Exception: pass around the legacy rdf_edges_adjout INSERT inside write_edges' transaction swallows every error, not only table-absent"
+    },
+    {
+     "id": "D-17-07",
+     "convention": "C-18",
+     "where": "iris_vector_graph/errors.py:86",
+     "what": "IndexNotSyncedError remedy 'Call engine.sync() before querying.' does not say sync() writes"
+    },
+    {
+     "id": "D-17-08",
+     "convention": "C-18",
+     "where": "iris_vector_graph/status.py:273-274, 300, 304",
+     "what": "Status report names initialize_schema() and engine.sync() without saying they write"
+    }
+   ],
+   "deviations_by_convention": {
+    "C-27": 2,
+    "C-17": 4,
+    "C-18": 2
+   },
+   "deviations_primary": 8,
+   "deviations_secondary": 0,
+   "borderline": 8,
+   "candidates": [],
+   "conventions_with_no_documented_rule": [
+    "Python docstring, naming and comment style beyond ruff/black/isort/mypy (round 1 L-3)",
+    "ObjectScript indentation, Quit vs Return, p/t prefixes, comment style (round 1 L-2)",
+    "CLI exit codes and help text",
+    "log levels and format",
+    "shell script, Dockerfile and compose style",
+    "SDK retry policy"
+   ]
+  },
+  "18": {
+   "files_reviewed": [
+    "iris_src/src/Graph/KG/Snapshot.cls",
+    "iris_vector_graph/_engine/snapshot.py (save_snapshot, snapshot_info, restore_snapshot and helpers)",
+    "iris_vector_graph/cypher_api.py:668-678 (POST /admin/snapshot)"
+   ],
+   "coverage": {
+    "iris_src/src/Graph/KG/Snapshot.cls": "full",
+    "iris_vector_graph/_engine/snapshot.py (save_snapshot, snapshot_info, restore_snapshot and helpers)": "sweep",
+    "iris_vector_graph/cypher_api.py:668-678 (POST /admin/snapshot)": "full"
+   },
+   "deviations": [
+    {
+     "id": "D-18-01",
+     "convention": "C-7",
+     "where": "iris_vector_graph/_engine/snapshot.py:1654-1692 (1679), 48-57, 1588",
+     "what": "Without the adjacency index the restore sets ^KG(out/in/label) and the version stamp directly; ADR-0008:18-21 names snapshot restore among the writers that must go through the one module (ADR-0011:12)"
+    },
+    {
+     "id": "D-18-02",
+     "convention": "C-8",
+     "where": "iris_vector_graph/_engine/snapshot.py:1654-1692; 134-135, 148-149, 1689-1691",
+     "what": "Restore sets ^KG(prop/labelset/deg2p/deg2p_exact) and kills ^KG(degw/degc/gen, graph) directly, outside the stores' owners"
+    },
+    {
+     "id": "D-18-03",
+     "convention": "C-9",
+     "where": "iris_vector_graph/_engine/snapshot.py:136-144, 1612-1652, 1654-1692",
+     "what": "The six temporal stores are read and written by ad-hoc global scans outside TemporalIndex (ADR-0002:34-36)"
+    },
+    {
+     "id": "D-18-04",
+     "convention": "C-17",
+     "where": "iris_vector_graph/_engine/snapshot.py:1683-1684",
+     "what": "A global line the restore cannot write is DEBUG-logged and dropped, neither counted nor raised"
+    },
+    {
+     "id": "D-18-05",
+     "convention": "C-17",
+     "where": "iris_vector_graph/_engine/snapshot.py:1200-1203",
+     "what": "_register_endpoints: a refused node INSERT is DEBUG-logged only"
+    },
+    {
+     "id": "D-18-06",
+     "convention": "C-17",
+     "where": "iris_vector_graph/_engine/snapshot.py:1229-1231",
+     "what": "A failed FHIR-table DDL statement is a WARNING and the restore carries on"
+    },
+    {
+     "id": "D-18-07",
+     "convention": "C-17",
+     "where": "iris_vector_graph/_engine/snapshot.py:1505-1508",
+     "what": "A failed route-cache invalidation after recreating routed tables is DEBUG-logged only"
+    },
+    {
+     "id": "D-18-08",
+     "convention": "C-29",
+     "where": "iris_vector_graph/_engine/snapshot.py:394, 1679",
+     "what": "^BM25Idx (cfg N, df, doc, tf) written with plain Native API sets outside BM25Index and its write lock (BM25Index.cls:406, 535; ADR-0007:5, 10)"
+    }
+   ],
+   "deviations_by_convention": {
+    "C-7": 1,
+    "C-8": 1,
+    "C-9": 1,
+    "C-17": 4,
+    "C-29": 1
+   },
+   "deviations_primary": 8,
+   "deviations_secondary": 0,
+   "borderline": 7,
+   "candidates": [
+    {
+     "title": "restore_snapshot drops a global line it cannot write without raising or counting it (D-18-04)",
+     "where": "iris_vector_graph/_engine/snapshot.py:1683-1684",
+     "existing_finding": "F-C1802",
+     "severity": "S2",
+     "confidence": "as filed"
+    },
+    {
+     "title": "A merge restore overwrites temporal aggregates instead of combining them (D-18-03)",
+     "where": "iris_vector_graph/_engine/snapshot.py:1679",
+     "existing_finding": "F-1805",
+     "severity": "S2",
+     "confidence": "as filed"
+    },
+    {
+     "title": "A merge restore overwrites a BM25 index's corpus counters (cfg N, df) with the archive's (D-18-08)",
+     "where": "iris_vector_graph/_engine/snapshot.py:394, 1654-1692 (1679); iris_src/src/Graph/KG/BM25Index.cls:8, 15, 406, 535",
+     "existing_finding": null,
+     "severity": "S3",
+     "confidence": "medium"
+    }
+   ],
+   "conventions_with_no_documented_rule": [
+    "Python docstring, naming and comment style beyond ruff/black/isort/mypy (round 1 L-3)",
+    "ObjectScript indentation, Quit vs Return, p/t prefixes, comment style (round 1 L-2)",
+    "snapshot archive layout and file naming beyond the code's own SNAPSHOT_LAYOUT stamp"
+   ]
+  }
+ }
+}

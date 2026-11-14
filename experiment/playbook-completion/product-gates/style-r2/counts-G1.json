@@ -1,0 +1,624 @@
+{
+ "group": "G1",
+ "pin": "3eaa79cf",
+ "added_conventions": {
+  "C-40G1": ".specify/memory/constitution.md:262-263 (use the existing RDF schema unless a change is approved and documented); conforms where judgeable; approval not judgeable"
+ },
+ "modules": {
+  "01": {
+   "files_reviewed": [
+    "iris_vector_graph/_engine/schema.py",
+    "iris_vector_graph/schema.py",
+    "iris_vector_graph/schema_name.py",
+    "iris_vector_graph/_engine/class_deploy.py",
+    "iris_vector_graph/routine_record.py",
+    "iris_vector_graph/legacy_manifest.py",
+    "iris_vector_graph/legacy_bodies.py",
+    "iris_vector_graph/legacy_text.py",
+    "iris_vector_graph/_engine/legacy.py",
+    "iris_vector_graph/migrations/__init__.py",
+    "iris_vector_graph/migrations/_commit.py",
+    "iris_vector_graph/migrations/statements.py",
+    "iris_vector_graph/migrations/upgrade.py",
+    "iris_src/src/Graph/KG/SqlPrivilege.cls",
+    "iris_src/src/Graph/KG/SqlProcs.cls",
+    "scripts/deploy_production.py",
+    "scripts/deploy_objectscript.py",
+    "scripts/deploy_graph_tvfs.py",
+    "scripts/setup_iris.py",
+    "scripts/migrations/migrate_to_nodepk.py",
+    "sql/** (14 files)"
+   ],
+   "coverage": {
+    "iris_vector_graph/_engine/schema.py:1-325,421-833,2097-2858": "sweep",
+    "iris_vector_graph/schema.py:1-736,904-1639,1843-1949,2030-2062,2144-2781,2782-3360": "sweep",
+    "iris_vector_graph/schema.py:1640-1842": "not-reviewed",
+    "iris_vector_graph/schema_name.py": "full",
+    "iris_vector_graph/_engine/class_deploy.py": "full",
+    "iris_vector_graph/routine_record.py": "full",
+    "iris_vector_graph/legacy_manifest.py": "sweep",
+    "iris_vector_graph/legacy_bodies.py": "full",
+    "iris_vector_graph/legacy_text.py": "full",
+    "iris_vector_graph/_engine/legacy.py": "full",
+    "iris_vector_graph/migrations/__init__.py": "full",
+    "iris_vector_graph/migrations/_commit.py": "full",
+    "iris_vector_graph/migrations/statements.py": "full",
+    "iris_vector_graph/migrations/upgrade.py": "full",
+    "iris_src/src/Graph/KG/SqlPrivilege.cls": "full",
+    "iris_src/src/Graph/KG/SqlProcs.cls": "full",
+    "scripts/deploy_production.py": "full",
+    "scripts/deploy_objectscript.py": "full",
+    "scripts/deploy_graph_tvfs.py": "full",
+    "scripts/setup_iris.py": "full",
+    "scripts/migrations/migrate_to_nodepk.py": "full",
+    "sql/graph_walk_tvf.sql": "full",
+    "sql/operators_fixed.sql": "full",
+    "sql/schema.sql": "full",
+    "sql/fhir_bridges.sql": "full",
+    "sql/rdf_reifications.sql": "full",
+    "sql/migrations/001_add_nodepk_table.sql": "full",
+    "sql/migrations/002_add_fk_constraints.sql": "full",
+    "sql/migrations/001_rollback_nodepk.sql": "full",
+    "sql/procedures/kg_PageRank.sql": "full",
+    "sql/operators.sql": "sweep",
+    "sql/globals_schema.sql": "sweep",
+    "sql/graph_path_globals.sql": "sweep",
+    "sql/migrations/000_base_schema_iris.sql": "sweep",
+    "sql/fraud_sample_data.sql": "sweep",
+    "scripts/setup_security.sql": "not-reviewed",
+    "scripts/setup/__init__.py": "not-reviewed"
+   },
+   "deviations": [
+    {
+     "id": "D-01-01",
+     "convention": "C-17",
+     "where": "iris_vector_graph/_engine/schema.py:592-602",
+     "what": "_try_registry_ddl: broad catch on registry ALTER/CREATE INDEX logs DEBUG and returns False; the only caller (566) drops it"
+    },
+    {
+     "id": "D-01-02",
+     "convention": "C-17",
+     "where": "iris_vector_graph/_engine/schema.py:2700-2703",
+     "what": "commit() after TUNE TABLE inside except Exception: pass"
+    },
+    {
+     "id": "D-01-03",
+     "convention": "C-17",
+     "where": "iris_vector_graph/schema.py:663-704",
+     "what": "ensure_indexes: CREATE INDEX failures become status False with DEBUG or no log; setup discards the status (_engine/schema.py:2514)"
+    },
+    {
+     "id": "D-01-04",
+     "convention": "C-17",
+     "where": "iris_vector_graph/schema.py:714-717",
+     "what": "tighten_graph_id_column exception logged at DEBUG into the discarded status"
+    },
+    {
+     "id": "D-01-05",
+     "convention": "C-17",
+     "where": "iris_vector_graph/schema.py:1077-1079",
+     "what": "_at_234 probe failure: DEBUG and return False, which makes the caller add u_spo_graph (1099-1102); the gate fails toward the DDL"
+    },
+    {
+     "id": "D-01-06",
+     "convention": "C-17",
+     "where": "iris_vector_graph/schema.py:1160-1177",
+     "what": "update_spo_unique_constraint: pass on both DROP CONSTRAINTs, silent return False on the ADD"
+    },
+    {
+     "id": "D-01-07",
+     "convention": "C-17",
+     "where": "iris_vector_graph/schema.py:1180-1187",
+     "what": "add_graph_id_index: silent return False"
+    },
+    {
+     "id": "D-01-08",
+     "convention": "C-17",
+     "where": "iris_vector_graph/schema.py:1190-1200",
+     "what": "add_graph_oid_index: silent return False"
+    },
+    {
+     "id": "D-01-09",
+     "convention": "C-17",
+     "where": "iris_vector_graph/schema.py:1217-1228",
+     "what": "add_graph_id_column: silent return False"
+    },
+    {
+     "id": "D-01-10",
+     "convention": "C-17",
+     "where": "iris_vector_graph/schema.py:1289-1340",
+     "what": "tighten_graph_id_column: UPDATE/ALTER failures at DEBUG only, in a result setup discards"
+    },
+    {
+     "id": "D-01-11",
+     "convention": "C-17",
+     "where": "iris_vector_graph/schema.py:1588-1589, 1627-1628, 1635-1636",
+     "what": "add_graph_id_to_nodes recreate_pk path: pass on the pk probe gating DROP TABLE, on the commit and on the rollback"
+    },
+    {
+     "id": "D-01-12",
+     "convention": "C-17",
+     "where": "iris_vector_graph/schema.py:1882-1886",
+     "what": "upgrade_val_column: silent return False"
+    },
+    {
+     "id": "D-01-13",
+     "convention": "C-17",
+     "where": "iris_vector_graph/schema.py:2931-2934",
+     "what": "deploy: pass around %SYSTEM.OBJ.Delete(stale edge class, 'ef-d')"
+    },
+    {
+     "id": "D-01-14",
+     "convention": "C-17",
+     "where": "iris_vector_graph/schema.py:2937-2941",
+     "what": "deploy: Gen.DropAll failure logged at DEBUG only"
+    },
+    {
+     "id": "D-01-15",
+     "convention": "C-17",
+     "where": "iris_vector_graph/schema.py:3333-3334, 3342-3343",
+     "what": "bootstrap_kg_global: except Exception: return False twice on the probes before BuildKG"
+    },
+    {
+     "id": "D-01-16",
+     "convention": "C-17",
+     "where": "iris_vector_graph/_engine/legacy.py:689-698 with 670-672",
+     "what": "_drop: broad catch around DROP VIEW/FUNCTION logs INFO and returns False; for a view the caller still sets removed = True"
+    },
+    {
+     "id": "D-01-17",
+     "convention": "C-17",
+     "where": "scripts/deploy_production.py:69-82",
+     "what": "broad catch per DDL statement, WARNING naming only the file, continues; ends 'SQL files applied.' with exit 0"
+    },
+    {
+     "id": "D-01-18",
+     "convention": "C-17",
+     "where": "scripts/migrations/migrate_to_nodepk.py:157-160",
+     "what": "bare except: pass around SET SCHEMA Graph_KG"
+    },
+    {
+     "id": "D-01-19",
+     "convention": "C-17",
+     "where": "scripts/migrations/migrate_to_nodepk.py:317-320",
+     "what": "bare except around the final commit rolls back with no log or raise; the count is still reported"
+    },
+    {
+     "id": "D-01-20",
+     "convention": "C-35",
+     "where": "iris_vector_graph/_engine/schema.py:2689 with iris_vector_graph/schema.py:196, 221-222",
+     "what": "repair_ifind_helpers called without schema=; the Graph_KG default is a bound parameter SchemaCursor does not rewrite"
+    },
+    {
+     "id": "D-01-21",
+     "convention": "C-35",
+     "where": "iris_vector_graph/schema.py:656-657",
+     "what": "unqualified DROP INDEX idx_props_key_val"
+    },
+    {
+     "id": "D-01-22",
+     "convention": "C-35",
+     "where": "scripts/deploy_production.py:63-65, 97",
+     "what": "SQL files run under SET SCHEMA {--schema} (default User); operators land outside the IVG Schema; no record read, no rewrite"
+    },
+    {
+     "id": "D-01-23",
+     "convention": "C-35",
+     "where": "scripts/deploy_objectscript.py:72-101, 117-139, 148-154",
+     "what": "kg_PPR created unqualified; class sources loaded with no rewrite_schema_text or refuse_other_record"
+    },
+    {
+     "id": "D-01-24",
+     "convention": "C-35",
+     "where": "scripts/deploy_graph_tvfs.py:182, 203-212 with sql/graph_walk_tvf.sql:8-10, 18, 72, 96-97",
+     "what": "unqualified DROP/CREATE PROCEDURE in the default schema"
+    },
+    {
+     "id": "D-01-25",
+     "convention": "C-35",
+     "where": "scripts/migrations/migrate_to_nodepk.py:155-160",
+     "what": "hard-coded SET SCHEMA Graph_KG, no schema input, unqualified SQL"
+    },
+    {
+     "id": "D-01-26",
+     "convention": "C-33",
+     "where": "scripts/deploy_production.py:22-40",
+     "what": "installs classes and never runs Gen.DropAll (ADR-0014:19-20)"
+    },
+    {
+     "id": "D-01-27",
+     "convention": "C-33",
+     "where": "scripts/deploy_objectscript.py:72-101",
+     "what": "loads and compiles classes, never drops IVGC classes or ^IVG.CypherCompiled"
+    },
+    {
+     "id": "D-01-28",
+     "convention": "C-14",
+     "where": "iris_src/src/Graph/KG/SqlProcs.cls:1-3",
+     "what": "header: forwards 'under the SQL name callers have used since 4.5'; Txn_* (166-181) and Prop_Set (183-190) are later"
+    },
+    {
+     "id": "D-01-29",
+     "convention": "C-16",
+     "where": "iris_vector_graph/_engine/schema.py:500-511",
+     "what": "get_property_keys docstring 'of nodes with it' while the join ignores the graph (CONTEXT.md:38-42)"
+    },
+    {
+     "id": "D-01-30",
+     "convention": "C-16",
+     "where": "iris_vector_graph/_engine/schema.py:2776-2778 against 2790-2802, 2832-2841",
+     "what": "get_schema_visualization says 'one node'/'one edge's endpoints' but reads by node ID across graphs"
+    },
+    {
+     "id": "D-01-31",
+     "convention": "C-18",
+     "where": "iris_vector_graph/_engine/schema.py:2434-2437",
+     "what": "'call store_embedding() first' names a writing call without saying it writes"
+    }
+   ],
+   "deviations_by_convention": {
+    "C-17": 19,
+    "C-35": 6,
+    "C-33": 2,
+    "C-14": 1,
+    "C-16": 2,
+    "C-18": 1
+   },
+   "borderline": 37,
+   "candidates": [
+    {
+     "title": "Legacy removal reports objects removed that may still be there",
+     "where": "iris_vector_graph/_engine/legacy.py:670-672, 689-698",
+     "existing_finding": "F-0101",
+     "severity": "S3",
+     "confidence": "existing"
+    },
+    {
+     "title": "The sql/ files put objects outside the IVG Schema",
+     "where": "scripts/deploy_production.py:63-65, 97",
+     "existing_finding": "F-0105",
+     "severity": "S3",
+     "confidence": "existing"
+    },
+    {
+     "title": "Setup discards ensure_indexes' status, so upgrade-step failures never reach the reply (extends F-0102)",
+     "where": "iris_vector_graph/_engine/schema.py:2514",
+     "existing_finding": "F-0102",
+     "severity": null,
+     "confidence": "existing"
+    },
+    {
+     "title": "Unqualified DROP INDEX idx_props_key_val",
+     "where": "iris_vector_graph/schema.py:656-657",
+     "existing_finding": "F-0107",
+     "severity": null,
+     "confidence": "existing"
+    },
+    {
+     "title": "get_property_keys mixes graphs",
+     "where": "iris_vector_graph/_engine/schema.py:500-511",
+     "existing_finding": "F-0106",
+     "severity": null,
+     "confidence": "existing"
+    },
+    {
+     "title": "Deploy swallows a Gen.DropAll failure (related, not new)",
+     "where": "iris_vector_graph/schema.py:2937-2941",
+     "existing_finding": "F-C0948",
+     "severity": null,
+     "confidence": "related"
+    },
+    {
+     "title": "On a non-default IVG Schema setup's iFind repair checks Graph_KG",
+     "where": "iris_vector_graph/_engine/schema.py:2683-2689; iris_vector_graph/schema.py:196, 221-222",
+     "existing_finding": null,
+     "severity": "S3",
+     "confidence": "low"
+    },
+    {
+     "title": "A failed 3.2.0 rescue staging is followed by deleting the class-owned rdf_edges with its extent",
+     "where": "iris_vector_graph/schema.py:2904-2908, 2929-2932, 2960-2964, 3080-3091",
+     "existing_finding": null,
+     "severity": "S2",
+     "confidence": "medium"
+    },
+    {
+     "title": "A registry route column can fail to be added with only a DEBUG line",
+     "where": "iris_vector_graph/_engine/schema.py:566, 592-602",
+     "existing_finding": null,
+     "severity": "S4",
+     "confidence": "low"
+    },
+    {
+     "title": "get_schema_visualization mixes graphs (same pattern as F-0106)",
+     "where": "iris_vector_graph/_engine/schema.py:2776-2802, 2832-2841",
+     "existing_finding": null,
+     "severity": "S4",
+     "confidence": "medium"
+    },
+    {
+     "title": "deploy_production splits procedures on ';' and reports success after failures",
+     "where": "scripts/deploy_production.py:69, 72-82; sql/operators_fixed.sql:18, 27-29",
+     "existing_finding": null,
+     "severity": "S4",
+     "confidence": "medium"
+    },
+    {
+     "title": "deploy_objectscript loads no class by default, creates kg_PPR outside the IVG Schema, skips the schema-record check",
+     "where": "scripts/deploy_objectscript.py:49, 56-59, 72-101, 117-139, 148-154, 259",
+     "existing_finding": null,
+     "severity": "S4",
+     "confidence": "high"
+    },
+    {
+     "title": "migrate_to_nodepk swallows a failed SET SCHEMA and a failed final commit",
+     "where": "scripts/migrations/migrate_to_nodepk.py:157-160, 317-320",
+     "existing_finding": null,
+     "severity": "S4",
+     "confidence": "medium"
+    }
+   ],
+   "conventions_with_no_documented_rule": [
+    "accuracy of Python docstrings and comments (C-14 covers Graph.KG class headers only)",
+    "log level for a failure",
+    "style of generated SQL/DDL",
+    "ObjectScript inside CREATE FUNCTION bodies beyond C-23..C-26",
+    "ObjectScript indentation and Quit vs Return",
+    "Python naming",
+    "operator-script defaults, credentials, ports, emoji",
+    "which schema a standalone .sql file targets",
+    "retiring unused sql/ files",
+    "ownership of ^IVF"
+   ]
+  },
+  "02": {
+   "files_reviewed": [
+    "iris_src/src/Graph/KG/GraphKey.cls",
+    "iris_src/src/Graph/KG/GraphMode.cls",
+    "iris_vector_graph/_validate.py",
+    "iris_vector_graph/engine.py (graph-scoping parts)",
+    "iris_vector_graph/_engine/admin.py (set_multigraph, is_multigraph)"
+   ],
+   "coverage": {
+    "iris_src/src/Graph/KG/GraphKey.cls": "full",
+    "iris_src/src/Graph/KG/GraphMode.cls": "full",
+    "iris_vector_graph/_validate.py": "full",
+    "iris_vector_graph/engine.py:157-173,442-486,612-639,988-1314": "full",
+    "iris_vector_graph/_engine/admin.py:893-936": "full"
+   },
+   "deviations": [
+    {
+     "id": "D-02-01",
+     "convention": "C-4",
+     "where": "iris_vector_graph/_validate.py:52-71",
+     "what": "graph_index_key derives the ^KG key in Python outside Graph.KG.GraphKey (ADR-0003:17-18, :68); its docstring claims an allowance no convention source grants"
+    },
+    {
+     "id": "D-02-02",
+     "convention": "C-14",
+     "where": "iris_src/src/Graph/KG/GraphKey.cls:6 (and :50)",
+     "what": "header says ForIndex derives the subscript for '^KG / ^NKG'; ^NKG has no graph dimension (ARCHITECTURE.md:113-114; CONTEXT.md:97-101)"
+    },
+    {
+     "id": "D-02-03",
+     "convention": "C-17",
+     "where": "iris_vector_graph/engine.py:464-465",
+     "what": "_probe_column: except Exception: return False; the answer sets _nodes_has_graph_id/_children_have_graph_id in initialize_schema (_engine/schema.py:2522-2526), which decide whether writes name graph_id"
+    }
+   ],
+   "deviations_by_convention": {
+    "C-4": 1,
+    "C-14": 1,
+    "C-17": 1
+   },
+   "borderline": 2,
+   "candidates": [
+    {
+     "title": "The Python name check refuses fewer control characters than the server check (the drift a second derivation home allows)",
+     "where": "iris_vector_graph/_validate.py:43, 52-71; iris_src/src/Graph/KG/GraphKey.cls:44",
+     "existing_finding": "F-0203",
+     "severity": "S4",
+     "confidence": "existing"
+    },
+    {
+     "title": "A failed graph_id probe during setup makes later named-graph node writes land in the default graph",
+     "where": "iris_vector_graph/engine.py:446-465; iris_vector_graph/_engine/schema.py:2522-2526; iris_vector_graph/_engine/nodes_edges.py:1023-1027; iris_vector_graph/schema.py:397, 1809",
+     "existing_finding": null,
+     "severity": "S3",
+     "confidence": "medium (code path); low (likelihood)"
+    }
+   ],
+   "conventions_with_no_documented_rule": [
+    "ObjectScript indentation and Quit vs Return",
+    "accuracy of Python docstrings (engine.py docstrings naming Graph_KG)",
+    "per-engine caching of graph mode"
+   ]
+  },
+  "03": {
+   "files_reviewed": [
+    "iris_vector_graph/_engine/nodes_edges.py (minus erase_graph, delete_nodes_by_prefix, drop_graph)",
+    "iris_vector_graph/engine.py (write facade)",
+    "iris_vector_graph/_write_txn.py",
+    "iris_src/src/Graph/KG/PropWrite.cls",
+    "iris_src/src/Graph/KG/Txn.cls",
+    "iris_src/src/Graph/KG/LabelIndex.cls",
+    "iris_vector_graph/bulk_loader.py",
+    "iris_vector_graph/prop_values.py",
+    "iris_vector_graph/_dictionary.py",
+    "iris_vector_graph/_collation.py",
+    "iris_vector_graph/_batch_check.py",
+    "iris_vector_graph/_engine/snapshot.py (import half)",
+    "scripts/ingest/networkx_loader.py",
+    "scripts/load_drkg.py",
+    "scripts/load_demo_data.py"
+   ],
+   "coverage": {
+    "iris_vector_graph/_engine/nodes_edges.py:1-1472,1565-1587,1597-2625": "full",
+    "iris_vector_graph/engine.py:155-175,248-276,517-557,1894-1944": "full",
+    "iris_vector_graph/_write_txn.py": "full",
+    "iris_src/src/Graph/KG/PropWrite.cls": "full",
+    "iris_src/src/Graph/KG/Txn.cls": "full",
+    "iris_src/src/Graph/KG/LabelIndex.cls": "full",
+    "iris_vector_graph/bulk_loader.py": "full",
+    "iris_vector_graph/prop_values.py": "full",
+    "iris_vector_graph/_dictionary.py": "full",
+    "iris_vector_graph/_collation.py": "full",
+    "iris_vector_graph/_batch_check.py": "full",
+    "iris_vector_graph/_engine/snapshot.py:1-15,381-384,439-796,1694-1904": "full",
+    "scripts/ingest/networkx_loader.py": "full",
+    "scripts/load_drkg.py": "full",
+    "scripts/load_demo_data.py": "full"
+   },
+   "deviations": [
+    {
+     "id": "D-03-01",
+     "convention": "C-17",
+     "where": "iris_vector_graph/_engine/nodes_edges.py:487-490",
+     "what": "bulk_load_session: Build2HopStats in except Exception: pass"
+    },
+    {
+     "id": "D-03-02",
+     "convention": "C-17",
+     "where": "iris_vector_graph/_engine/nodes_edges.py:1262-1272",
+     "what": "_ekey_guard: failed probe logged DEBUG, narrower guard cached for the engine's lifetime (used at 1217, 2099)"
+    },
+    {
+     "id": "D-03-03",
+     "convention": "C-18",
+     "where": "iris_vector_graph/_engine/nodes_edges.py:49-50",
+     "what": "'run initialize_schema() again' without saying it writes"
+    },
+    {
+     "id": "D-03-04",
+     "convention": "C-18",
+     "where": "iris_vector_graph/_write_txn.py:197-201",
+     "what": "WARNING 'Run initialize_schema().' without saying it writes"
+    },
+    {
+     "id": "D-03-05",
+     "convention": "C-30",
+     "where": "iris_vector_graph/_engine/nodes_edges.py:2567-2581",
+     "what": "store_edge does not adopt a temporal-marked row; the marker stays"
+    },
+    {
+     "id": "D-03-06",
+     "convention": "C-30",
+     "where": "iris_vector_graph/_engine/nodes_edges.py:2047-2076, 2092-2103",
+     "what": "bulk_ingest_edges adopts no marked row on either path"
+    },
+    {
+     "id": "D-03-07",
+     "convention": "C-21",
+     "where": "iris_src/src/Graph/KG/LabelIndex.cls:16-23",
+     "what": "UpdateIndex lacks Set tSC = $$$OK first / Quit tSC last (secondary; form only)"
+    },
+    {
+     "id": "D-03-08",
+     "convention": "C-35",
+     "where": "iris_vector_graph/bulk_loader.py:41, 59, 80-81, 697",
+     "what": "BulkLoader defaults to literal Graph_KG; never resolves IVG_SCHEMA_PREFIX or the record; CLI has no schema option"
+    },
+    {
+     "id": "D-03-09",
+     "convention": "C-35",
+     "where": "iris_vector_graph/bulk_loader.py:495",
+     "what": "rebuild_all_indices names Graph.KG.* table classes whatever self.schema is"
+    },
+    {
+     "id": "D-03-10",
+     "convention": "C-35",
+     "where": "scripts/ingest/networkx_loader.py:252-254, 281-283, 294, 315, 338, 380, 386, 411, 415",
+     "what": "every statement names Graph_KG on a raw connection"
+    },
+    {
+     "id": "D-03-11",
+     "convention": "C-35",
+     "where": "scripts/load_demo_data.py:128-136",
+     "what": "summary reads name Graph_KG while the engine resolves IVG_SCHEMA_PREFIX"
+    }
+   ],
+   "deviations_by_convention": {
+    "C-17": 2,
+    "C-18": 2,
+    "C-30": 2,
+    "C-21": 1,
+    "C-35": 4
+   },
+   "borderline": 19,
+   "candidates": [
+    {
+     "title": "Storing an edge over a marked edge does not take the edge over",
+     "where": "iris_vector_graph/_engine/nodes_edges.py:2567-2581",
+     "existing_finding": "F-0304",
+     "severity": "S1",
+     "confidence": "existing (live)"
+    },
+    {
+     "title": "rebuild_all_indices names Graph_KG's table classes whatever the schema",
+     "where": "iris_vector_graph/bulk_loader.py:495",
+     "existing_finding": "F-0309",
+     "severity": null,
+     "confidence": "existing"
+    },
+    {
+     "title": "bulk_ingest_edges does not take over a temporal-marked row (F-0304's mechanism)",
+     "where": "iris_vector_graph/_engine/nodes_edges.py:2047-2076, 2092-2103; iris_src/src/Graph/KG/EdgeScan.cls:296-300",
+     "existing_finding": null,
+     "severity": "S1",
+     "confidence": "medium (S2 if inspected-only candidates are capped)"
+    },
+    {
+     "title": "A failed ekey probe narrows create_edge's duplicate guard for the engine's lifetime",
+     "where": "iris_vector_graph/_engine/nodes_edges.py:1217, 1262-1272, 2099",
+     "existing_finding": null,
+     "severity": "S4",
+     "confidence": "low"
+    },
+    {
+     "title": "BulkLoader writes Graph_KG unless given schema=, ignoring IVG_SCHEMA_PREFIX and the record",
+     "where": "iris_vector_graph/bulk_loader.py:41, 59, 80-81, 697",
+     "existing_finding": null,
+     "severity": "S4",
+     "confidence": "high"
+    },
+    {
+     "title": "networkx_loader and load_demo_data address Graph_KG whatever the IVG Schema",
+     "where": "scripts/ingest/networkx_loader.py:252-415; scripts/load_demo_data.py:128-136",
+     "existing_finding": null,
+     "severity": "S4",
+     "confidence": "high"
+    },
+    {
+     "title": "_rebuild_indices reads a failed %Status as success (if not status)",
+     "where": "iris_vector_graph/bulk_loader.py:240-249",
+     "existing_finding": null,
+     "severity": "S3",
+     "confidence": "medium"
+    },
+    {
+     "title": "import_rdf answers normal counts after BuildKG fails",
+     "where": "iris_vector_graph/_engine/snapshot.py:776-782",
+     "existing_finding": null,
+     "severity": "S4",
+     "confidence": "medium"
+    },
+    {
+     "title": "load_drkg --embeddings passes 'id' where store_embeddings reads 'node_id'",
+     "where": "scripts/load_drkg.py:87; iris_vector_graph/_engine/embeddings.py:1078",
+     "existing_finding": null,
+     "severity": "S4",
+     "confidence": "high"
+    }
+   ],
+   "conventions_with_no_documented_rule": [
+    "accuracy of Python docstrings and comments",
+    "writing a table's storage global past the filer (PropWrite.cls:55)",
+    "duplicate detection by message substring",
+    "%Status checks in Python",
+    "NULL vs '' default-graph spelling",
+    "connection defaults in scripts",
+    "ObjectScript indentation"
+   ]
+  }
+ }
+}

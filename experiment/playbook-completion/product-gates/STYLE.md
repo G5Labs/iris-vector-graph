@@ -1,6 +1,90 @@
 <!-- markdownlint-disable MD013 -->
 
-# 3.5-style: style review of modules 11-14 against IVG's own documented conventions
+# 3.5-style: style review of the product against IVG's own documented conventions
+
+## Round 2: every module (00-18), verdict
+
+**3.5-style: fail. 177 deviations from the product's documented conventions across 17 of 19 modules (158 against
+primary sources, 19 against the secondary research brief); modules 00 and 13 have none.** Every module is reviewed:
+11-14 in round 1 (below), 01-10 and 15-18 in round 2 by four reviewer groups with one brief (`style-r2/BRIEF.txt`), 00
+by the lane. Registered as `pg-style-review-r2` (kind review).
+
+| Module | Deviations | Primary / secondary | By convention | Borderline (not counted) | Detail |
+| --- | --- | --- | --- | --- | --- |
+| 00 system | 0 | 0 / 0 | none |  | lane (below) |
+| 01 install, schema | 33 | 33 / 0 | C-17 20, C-35 7, C-16 2, C-33 2, C-14 1, C-18 1 | 37 | style-r2/STYLE-G1.md |
+| 02 graph identity | 3 | 3 / 0 | C-14 1, C-17 1, C-4 1 | 2 | style-r2/STYLE-G1.md |
+| 03 direct writes | 11 | 10 / 1 | C-35 4, C-17 2, C-18 2, C-30 2, C-21 1 | 19 | style-r2/STYLE-G1.md |
+| 04 adjacency | 14 | 13 / 1 | C-14 5, C-4 2, C-16 1, C-17 1, C-18 1, C-25 1, C-40G2 1, C-7 1, C-8 1 | 11 | style-r2/STYLE-G2.md |
+| 05 temporal | 12 | 8 / 4 | C-25 3, C-4 2, C-14 1, C-16 1, C-17 1, C-2 1, C-22 1, C-35 1, C-9 1 | 7 | style-r2/STYLE-G2.md |
+| 06 vectors | 17 | 14 / 3 | C-17 5, C-14 4, C-27 4, C-25 3, C-35 1 | 4 | style-r2/STYLE-G2.md |
+| 07 text search | 8 | 7 / 1 | C-29 2, C-35 2, C-40G2 2, C-14 1, C-25 1 | 4 | style-r2/STYLE-G2.md |
+| 08 Cypher (SQL path) | 2 | 0 / 2 | C-25 2 | 9 | style-r2/STYLE-G3.md |
+| 09 native executor | 2 | 2 / 0 | C-14 1, C-17 1 | 10 | style-r2/STYLE-G3.md |
+| 10 algorithms | 25 | 20 / 5 | C-25 5, C-4 5, C-14 4, C-17 4, C-32 2, C-8 2, C-31 1, C-35 1, C-5 1 | 10 | style-r2/STYLE-G3.md |
+| 11 ledger | 9 | 8 / 1 | C-17 4, C-14 3, C-16 1, C-21 1 |  | round 1 (below) |
+| 12 erasure | 12 | 12 / 0 | C-8 6, C-7 3, C-14 2, C-9 1 |  | round 1 (below) |
+| 13 redaction | 0 | 0 / 0 | none |  | round 1 (below) |
+| 14 replay | 2 | 2 / 0 | C-17 2 |  | round 1 (below) |
+| 15 integrations | 6 | 6 / 0 | C-17 2, C-14 1, C-18 1, C-35 1, C-7 1 | 6 | style-r2/STYLE-G4.md |
+| 16 interfaces | 7 | 6 / 1 | C-35 4, C-15 1, C-18 1, C-24 1 | 7 | style-r2/STYLE-G4.md |
+| 17 operations | 7 | 7 / 0 | C-17 3, C-18 2, C-27 2 | 9 | style-r2/STYLE-G4.md |
+| 18 snapshot | 7 | 7 / 0 | C-17 3, C-29 1, C-7 1, C-8 1, C-9 1 | 8 | style-r2/STYLE-G4.md |
+
+Conventions: C-1..C-26 as in round 1 (C-1, the tool-checked lint, is not counted; C-3 compile cleanliness and C-20
+justified indirection are not judged; C-21..C-26 come from `docs/dev/notes/research/alt-impl/BRIEF.md` at secondary
+authority). Round 2 adds the ADR rules that did not touch modules 11-14, each with its Decision cited in the group files:
+C-27 ADR-0005 (unlengthed TO_VECTOR for a query vector), C-28 ADR-0006 (embedding identity in the registry), C-29
+ADR-0007 (BM25 counters under the write lock), C-30 ADR-0009 (a temporal edge implies a marked structural row), C-31
+ADR-0010 (degree counted, never stored), C-32 ADR-0012 (generation-validated degree cache), C-33 ADR-0014 (compiled
+native plans owned by Gen), C-34 ADR-0015 (temporal-structural registry through TemporalPolicy), C-35 ADR-0016 (one IVG
+Schema; a `Graph_KG` literal in a deployed class is round 1's B-5, not a deviation). The groups added rules from the same
+sources: C-40G1 (constitution.md:262-263, use the existing RDF schema: conforms), C-40G2 (PRE_RELEASE_CHECKLIST.md:354-356,
+every IVG write is a nested level and never ends its caller's transaction, corroborated by docs/USER_GUIDE.md:266-270;
+3 deviations; the source is a release record rather than a rule section), C-40G4-1/-2 (constitution.md:265-267,
+ADR-0016:20: conform). Where the pin documents no rule (ObjectScript formatting and naming, Python docstrings and
+naming), nothing was judged: a documentation gap, not a pass.
+
+Method and its limits:
+
+- For every in-scope file and every applicable convention, the convention's search ran over the whole file and each hit
+  was read in context; every Graph.KG / IVG class header in scope was read and checked against its class. Files over
+  about 3,000 lines (cypher/translator.py, stores/iris_sql_store.py, _engine/schema.py, schema.py, cypher_api.py,
+  _engine/snapshot.py, FHIRGraph.cls) and some mid-size files were covered by that convention sweep, not read line by
+  line; each group file says which ("sweep" in counts-G*.json).
+- One C-17 calibration for all groups (round 1's rulings): a broad catch on a data-changing path is a deviation when the
+  handler is silent or logs at DEBUG/INFO only, borderline when a WARNING/ERROR line or a result field says what was not
+  done. G2 and G4 had counted seven WARNING/ERROR-logged cases; the lane checked each at the pin and moved them to
+  borderline (D-04-11, D-04-13, D-05-07, D-05-08, D-16-07, D-17-03, D-18-06; `style-r2/aggregate.py`).
+- G1 left three items unreviewed (STYLE-G1.md L-1); the lane closed them: `scripts/setup_security.sql` was reviewed in
+  full by G4 (module 17); `schema.py:1640-1842` conforms (schema rewritten at :1677, :1729; per-index status returned and
+  a WARNING per index not rebuilt at :1764-1771); `scripts/setup/__init__.py` (a repo sample-data loader no scope names,
+  attached to module 01) adds two deviations: D-01-L1 C-17 `:153-157` (failed node INSERTs dropped with `pass`) and
+  D-01-L2 C-35 `:155, 186-192, 212-217` (unqualified `nodes` before the schema is set; `Graph_KG` hard-coded; a failed
+  SET SCHEMA swallowed).
+- Module 00 has no production file of its own (a script checked that every file under iris_vector_graph/ and
+  iris_src/src/ is named by some module scope). System-wide checks: `Kill ^NKG` of the whole global appears only in
+  `GraphIndex.DropNKG` (GraphIndex.cls:22-27; ARCHITECTURE.md:128): conforms. Four `type: ignore` comments in shipped
+  Python (embed_selector.py:35, _engine/query.py:705, _engine/temporal.py:292, stores/iris_sql_store.py:567), each with an
+  error code and no written justification: borderline, since PRE_RELEASE_CHECKLIST.md:146 governs comments a release
+  adds and the pin alone cannot show which were added when.
+- Lane spot checks of reviewer citations, all as cited: G1 3 (_engine/schema.py:2514, engine.py:460-466,
+  bulk_loader.py:240-249), G2 8 (vector_utils.py:22-26/46-50 and the seven calibration cases), G3 8 (Gen.cls:11-15,
+  CypherEngine.cls:100-108, CypherFn.cls:162, arno_bridge.py:403-410, ArnoAccel.cls:299-302, PageRank.cls:233-240,
+  Centrality.cls:78-82, TraversalKHop.cls:13-21), G4 5 (FHIRGraph.cls:3-6, iris_sql_store.py:2633-2634,
+  dbapi_utils.py:268, MCPTools.cls:126, errors.py:86); G1 reports re-checking about 25 of its forks' citations.
+
+Candidate findings from round 2 (58, source reading only): 27 map to existing findings (named in the group files).
+Of the 31 the groups marked new, the lane re-triaged two: G2's N-07-a (a failed `bm25_insert`/`bm25_delete` inside a
+caller's transaction rolls the caller back) is the existing **F-C0702**, and G2's N-06-a is filed as **F-C0690** (S4,
+confirmed-source: the public `VectorOptimizer` hard-codes `Graph_KG`, vector_utils.py:22-26, 46-60;
+`findings/audit/zz-product-gates.json`). The other 29 stay candidates: each needs a live check, or concerns a repo
+script outside the wheel, or is in an existing finding's family (BulkLoader's `Graph_KG` default: F-0309). Two deserve a
+live check first: G1's `bulk_ingest_edges` does not take over a temporal-marked row (S1 by analogy with F-0304,
+nodes_edges.py:2047-2103) and G1's failed 3.2.0 rescue staging followed by deleting the old edge class with its rows
+(S2, schema.py:2904-3091).
+
+## Round 1: modules 11-14
 
 Lane: product-gates. Observation only: nothing in the product was changed, compiled, run or connected to.
 Registered as `pg-style-review` (kind review). Written by a review agent of the lane from the brief in the lane report;
