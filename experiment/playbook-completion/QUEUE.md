@@ -36,14 +36,21 @@ status, evidence level and product obligation per cell). Reconciled 2026-11-14 (
 | Q17b | semantics | §3.3a system-wide: axioms, shared mechanisms with generic controls, canonical lifecycles, per-object declarations, requirement trace; module 00 model check; F-C0605 model (module 06) | done (b0433157): 14 axioms, 13 mechanisms, 266 checks, 8 lifecycles, 2,545/2,600 requirements traced; F-C0670 |
 | Q17c | writesets | 3.3a-writesets: discharge each census obligation (WS-OBL/WS-COND/WS-GAP) by lemma, guard or recorded finding | done (ed0fc784): 185 census obligations, 178 closed, 7 open; F-C1350, F-C1351, F-C1850 (S1) and 4 S2 |
 | Q17d | models-2 | D-10 (M1 2+2 by partition), D-13 (eraser overlapping a writer of the same graph in the module 04/11 proofs) | done (8d11c49c): proofs-pa3 108 verified; core-partition (2+2) exhaustive; model-level |
-| Q17e | product-gates | 3.5-lint/style, disconnect world (3.7-integration-worlds), failure controls | doing |
-| Q17f | review | Fourth review pass over proofs-d1c..d1f and Q17a-h | doing: fourth pass started on the finished lanes |
-| Q17g | structural | 3.4 ownership/storage-order/declared-reads, 3.6 keys/fk/capacity/row-permutation/frame per module (AUDITD) | doing |
-| Q17h | trace-replay | 3.7 trace replay through the breadth machines and lock logs per module (AUDITE) | doing |
+| Q17e | product-gates | 3.5-lint/style, disconnect world (3.7-integration-worlds), failure controls | done (7b72fc52, 32db5be8): lint and style fail; disconnect world 49 trials, 0 violations; 17/20 failure scenarios with controls, S6 blocked |
+| Q17f | review | Fourth review pass over proofs-d1c..d1f and Q17a-h | done: no sign-off (`independent-review-4`, f497a387); R4-01..R4-13 being addressed |
+| Q17g | structural | 3.4 ownership/storage-order/declared-reads, 3.6 keys/fk/capacity/row-permutation/frame per module (AUDITD) | done (7b72fc52, 625194dc): 92 cells, 29 findings; follow-up on DDL frame oracle and declared reads doing |
+| Q17h | trace-replay | 3.7 trace replay through the breadth machines and lock logs per module (AUDITE) | done (e8a3ab67, e4fd212b): 13 modules replayed; 09 open, 15 blocked |
 | Q17i | orchestrator | 3.1-intent per module: structural intent check (`intent-structure-check`, `-selftest`) | done (05a86981) |
-| Q17j | ontology-2 | 3.1-coverage and remaining 3.1-cells | doing |
-| Q17k | contract-2 | 3.2-coverage per module; premise E-1 via the pin's own compiled &sql (AUDITCORE, AUDITENV) | doing |
+| Q17j | ontology-2 | 3.1-coverage and remaining 3.1-cells | done (e4fd212b): 3.1-coverage 0 uncovered; 3.1-cells closed |
+| Q17k | contract-2 | 3.2-coverage per module; premise E-1 via the pin's own compiled &sql (AUDITCORE, AUDITENV) | done (cd45f771): 3.2-coverage closed; E-1 validated |
 | Q17l | reflection | 5c root causes, 3.8 test reflection | done (bad04b31): 33 root causes, 224 premises mapped |
+| Q18a | proofs-d9c | Review R4-01/03/04: guard G-BM, F-C1350 control, F-1306 as direct SQL | done (cd45f771): 158 verified, 14 controls |
+| Q18b | proofs-mech | D-14: mechanism laws proved once over a trait in Verus | doing |
+| Q18c | refusals | 5c-refusals for 01, 04, 06, 10, 11, 15-18; 3.5-decoders 07, 10, 18 (AUDITE) | doing |
+| Q18d | writesets | breadth-a module-invariant pairs for 01, 03-06; 08; 18 restore_merge | doing |
+| Q18e | reflection | root causes and premise map for every new finding and crate; TEST-REFLECTION refresh | todo (after Q18b-d) |
+| Q18f | orchestrator | exclusive-container worlds: repeated crash trials, SynchCommit=1, product-level licence refusal (S6) | todo (when no lane uses IRIS) |
+| Q18g | orchestrator | STATUS/TRUST/PROOF-DEBT refresh; verify.sh --live --clean on a committed tree; fifth review | todo |
 | I-1..I-4 | orchestrator | Incidents: IVG460SNAP, USER-REDEPLOY-08, superseded proof logs, health alert | recorded in `incidents/` |
 
 Genuinely unavailable (attempts in `versions/AVAILABILITY.md`): an IRIS 2026.3 engine (no public tag; the cited

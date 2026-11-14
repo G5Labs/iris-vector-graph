@@ -90,7 +90,7 @@ Pass outcomes: `holds-proved`, `holds-mc`, `holds-live`, `holds-run`, `holds-ins
 ## Finding record (new or audited)
 
 New finding ids per lane (steer 7, to avoid collisions): `F-C<module><nn>` with nn 50-69 writesets, 70-79 semantics,
-80-84 proofs-d9b, 85-89 models-2, 90-99 product-gates, 40-49 structural, 30-39 trace-replay, 20-29 contract-2. Root causes: `RC-NN` (reflection lane only).
+80-84 proofs-d9b, 85-89 models-2, 90-99 product-gates, 40-49 structural, 30-39 trace-replay, 20-29 contract-2, 15-19 refusals (steer 8). Root causes: `RC-NN` (reflection lane only).
 
 JSON object: `id` (keep original `F-NNNN` ids; new ones `F-C<module><nn>`), `module`, `title`, `intended`
 (with source citations), `observed` (with evidence refs), `disposition` (from the taxonomy above or
