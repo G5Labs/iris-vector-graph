@@ -30,7 +30,7 @@ From the validation lane (`validation/SUITES.md`, `validation/results.json`): un
 
 ## C. Does the product's own suite detect the defects this audit reproduced?
 
-Reproduced findings (reproduced-live, reproduced-test, reproduced-model, confirmed-source): **296**. Detected by a product test that is red at the pin because of the defect: **4** (F-C0502, F-C0606, F-C1002, F-C1706). **Not detected by any product test: 292** (by severity S1 43, S2 113, S3 93, S4 43; by disposition confirmed-source 56, reproduced-live 217, reproduced-model 7, reproduced-test 12). 8 further findings are intent-undecided or blocked-access and are not counted either way.
+Reproduced findings (reproduced-live, reproduced-test, reproduced-model, confirmed-source): **297**. Detected by a product test that is red at the pin because of the defect: **4** (F-C0502, F-C0606, F-C1002, F-C1706). **Not detected by any product test: 293** (by severity S1 43, S2 113, S3 93, S4 44; by disposition confirmed-source 56, reproduced-live 218, reproduced-model 7, reproduced-test 12). 8 further findings are intent-undecided or blocked-access and are not counted either way.
 
 The four detected findings are the validation lane's own: they were found by running the suites (`zz-validation.json`), so the suites detected nothing the other lanes found. Every S1 finding that is reproduced (43) is undetected by the product's tests.
 
@@ -95,7 +95,7 @@ Undetected findings by root cause, and the product test that would have detected
 | RC-11 IVG ObjectScript writers roll back their caller's transaction | 2 | 2 | a failing IVG call inside a caller's open transaction, asserting the caller's own write survives |
 | RC-12 Environment premises are asserted, not validated | 12 | 9 | the suites on every supported cell (engine version x edition x driver x optional library), as the validation lane's driver A/B did for 5.3.2 vs 5.4.0 |
 | RC-13 The IVG Schema name is not resolved from one source | 7 | 7 | the suites on a namespace installed with a non-default IVG Schema |
-| RC-14 Failures are swallowed into empty, default or success answers | 16 | 16 | fault-injected reads and writes asserting a raise, not an empty or default answer |
+| RC-14 Failures are swallowed into empty, default or success answers | 17 | 17 | fault-injected reads and writes asserting a raise, not an empty or default answer |
 | RC-15 Refusals are not mapped to one typed error hierarchy at the boundary | 8 | 8 | a test that enumerates exported exception classes and server reason codes against IVGError and the HTTP/SDK maps |
 | RC-16 The Cypher and AQL translators have no reference semantics | 13 | 13 | the typed openCypher TCK on mixed data and a differential oracle per clause shape |
 | RC-17 Stored values carry no type | 7 | 7 | round trips of every value type through every writer and reader |

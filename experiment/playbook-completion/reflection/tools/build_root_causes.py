@@ -165,7 +165,7 @@ RCS = [
      "Enforce the 4.6.0 rule mechanically: no handler returns an empty/default answer from an except clause; every "
      "outcome (removed, DONE, restored counts, health, legs used) is computed from the operation's own result; a lint "
      "over except clauses plus a fault-injection test per reader.",
-     "F-0101 F-0102 F-0209 F-0306 F-0307 F-0511 F-0604 F-0614 F-0709 F-1508 F-1509 F-1611 F-1615 F-C0940 F-C1640 F-C1802"),
+     "F-0101 F-0102 F-0209 F-0306 F-0307 F-0511 F-0604 F-0614 F-0709 F-1508 F-1509 F-1611 F-1615 F-C0940 F-C1640 F-C1795 F-C1802"),
     ("Refusals are not mapped to one typed error hierarchy at the boundary",
      ["SYS-I9"], "errors.py:1-17 (one catchable root IVGError); USER_GUIDE.md:313-318 (CypherParseError, GraphWriteError)",
      "Each layer raises its own exception types and messages: lexer SyntaxError, ValueError from the translator, "

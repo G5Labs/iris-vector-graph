@@ -50,14 +50,14 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 3.6-capacity | product | 17 | 0 | 1 | 0 | 1 | 17 | 0 | 0 | 0 | 0 | 0 | 1 | 1 |
 | 3.6-closure | product | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 3.7-explorers | model | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0 |
-| 3.7-integration-worlds | product | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| 3.7-integration-worlds | product | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 3.7-differential | method | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 3.7-e2e | product | 0 | 0 | 0 | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 3.7-trace-replay | product | 17 | 0 | 0 | 1 | 1 | 15 | 0 | 0 | 0 | 0 | 0 | 3 | 1 |
 | 3.7-lock-log | product | 15 | 0 | 0 | 1 | 3 | 4 | 0 | 0 | 0 | 0 | 0 | 12 | 3 |
 | 3.7-mutation | product | 0 | 0 | 0 | 18 | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 17 | 1 |
 | 3.7-perf | product | 0 | 0 | 0 | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| 3.7-failure-controls | product | 0 | 0 | 0 | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| 3.7-failure-controls | product | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 3.7-suites | product | 0 | 0 | 0 | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 3.7-editions | product | 0 | 0 | 0 | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 3.7-full-rerun | product | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
@@ -78,7 +78,7 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 5c-root-causes | method | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 5c-reviewers | method | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
-Totals: {'closed': 601, 'not-applicable': 35, 'open': 91, 'blocked': 25}; evidence grade of closed cells: {'registered-run': 485, 'inspected': 116}; product: {'unknown': 191, 'n/a': 33, 'fails': 407, 'intent-undecided': 6, 'holds-in-model-only': 1, 'holds-live': 9, 'holds-inspected': 69, 'holds-as-detection': 36}
+Totals: {'closed': 603, 'not-applicable': 35, 'open': 90, 'blocked': 24}; evidence grade of closed cells: {'registered-run': 487, 'inspected': 116}; product: {'unknown': 191, 'n/a': 33, 'fails': 407, 'intent-undecided': 6, 'holds-in-model-only': 1, 'holds-live': 9, 'holds-inspected': 69, 'holds-as-detection': 36}
 
 ## Writer census obligations (review R2-02)
 

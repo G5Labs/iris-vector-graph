@@ -24,5 +24,32 @@
   "confidence": "high",
   "remedy": "Decide whether large caller transactions may block other graphs' writers; if not, document a batch limit below the escalation threshold or configure the threshold for IVG's tables, and say so in the operations guide.",
   "notes": "Filed by the orchestrator from the structural lane's observation (the lane recorded it as intent-undecided without a finding). The st-live-cap-batch record is 'incomplete' overall because its Cypher UNWIND part was undecided (rerun as st-live-cap-batch-r2); the escalation part is decided in its log."
+ },
+ {
+  "id": "F-C1795",
+  "module": "17",
+  "title": "When its dedicated Native API connection is refused (licence units exhausted), the engine silently uses the caller's connection and retries the refused connect on every native call",
+  "intended": "iris_vector_graph/engine.py:1895-1898: the dedicated connection exists because mixing iris.createIRIS() and cursor DDL on the same connection 'permanently corrupts the IRIS Python driver's parameter binding state'; :1913-1918: the caller's connection is used only 'when [the credentials] are not known'. The product's convention against swallowed failures (C-17, product-gates/STYLE.md) asks that a failed step be reported.",
+  "observed": "Live (live-licence-world, AUDITE, IRIS Community 2026.1, 8 licence units): an engine from IRISGraphEngine.from_connect, then 7 idle connections taking every free unit (the 8th refused 'Unable to allocate a license'); the engine's first native call (ledger enable/commit) could not open its dedicated connection; engine._native_conn stayed None and the calls ran on the caller's own connection (engine.py:1940-1941, except Exception: return _create(self.conn)), with no warning or error logged. Each later native call tried the refused connect again: two 150- and 3-operation commits took 2,064 ms and 2,017 ms against 209 ms and 1.6 ms with units free (control world C). The commits stayed all-or-nothing, parameterised reads stayed correct and verify() was equal in this sequence; the driver-state corruption the comment names was not observed. With units exhausted before connecting, from_connect raised the licence error and nothing was written.",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "live-licence-world"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/engine.py:1894-1942"
+   }
+  ],
+  "gates": [
+   "3.7-failure-controls",
+   "3.5-handlers",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S4",
+  "confidence": "high",
+  "remedy": "Log the refused dedicated connect and either raise or record the degraded mode once (do not retry the connect on every native call); if sharing the caller's connection is unsafe, as the comment says, refuse instead of falling back.",
+  "notes": "Failure scenario S6 (licence refusal at product level), run by the orchestrator while no lane used the container; the style lane had read the same lines as a borderline C-17 case from source."
  }
 ]

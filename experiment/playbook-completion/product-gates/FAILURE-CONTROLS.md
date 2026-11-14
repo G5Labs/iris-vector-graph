@@ -75,3 +75,8 @@ property, the oracle must pass over the limit and flag at the limit. Inventory r
   was lost) is provisional: after the rollback a retry commits the same content as a new revision with the same seq
   and a different revision id. This follows the documented caller-transaction contract, not a defect, but a client that logged the provisional id holds an id no revision has (docs/USER_GUIDE.md:260-265 says a
 rollback removes the revision; it does not say the seq is reused).
+
+
+## Orchestrator update (steer 11): S6 ran
+
+With no lane using the container, the orchestrator ran S6 at product level (`traces/licence_world.py`, run `live-licence-world`): control world C (units free: the engine opens its dedicated connection), world X (every free unit taken after the engine connected: the dedicated connect is refused and the engine falls back silently to the caller's connection, retrying the connect on every native call, F-C1795; commits all-or-nothing, verify equal), world R (every unit taken before connecting: `from_connect` refused, nothing written). The gate now has a run with a negative control for every scenario.

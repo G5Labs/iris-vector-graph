@@ -10976,7 +10976,8 @@
     "F-1705",
     "F-1706",
     "F-1712",
-    "F-C1704"
+    "F-C1704",
+    "F-C1795"
    ],
    "gate": "3.5-handlers",
    "level": "product",
@@ -10987,7 +10988,8 @@
      "finding F-1705",
      "finding F-1706",
      "finding F-1712",
-     "finding F-C1704"
+     "finding F-C1704",
+     "finding F-C1795"
     ],
     "intent_undecided": []
    },
@@ -15041,7 +15043,10 @@
   {
    "cited_runs": [
     "env-synchcommit-setting",
+    "live-crash-repeat-sc0",
+    "live-crash-repeat-sc1",
     "live-crash-world-r2",
+    "live-licence-world",
     "live-lost-ack-commit",
     "live-native-rerun-1314",
     "pg-disconnect-commit",
@@ -15074,9 +15079,12 @@
     "run:pg-disconnect-live-controls",
     "experiment/playbook-completion/product-gates/disconnect_world.py",
     "experiment/playbook-completion/product-gates/wireproxy.py",
-    "experiment/playbook-completion/product-gates/DISCONNECT.md"
+    "experiment/playbook-completion/product-gates/DISCONNECT.md",
+    "run:live-crash-repeat-sc0",
+    "run:live-crash-repeat-sc1",
+    "run:live-licence-world"
    ],
-   "evidence_grade": "live",
+   "evidence_grade": "registered-run",
    "findings": [
     "F-C1203",
     "F-C1250",
@@ -15107,17 +15115,19 @@
      "finding F-C1351",
      "finding F-C1703",
      "finding F-CS01",
-     "stated fails by matrix-input/product-gates.json"
+     "stated fails by matrix-input/product-gates.json",
+     "run live-licence-world (fail)"
     ],
     "intent_undecided": [
      "finding F-C1102",
+     "run live-crash-repeat-sc0 (fail) of F-C1102",
      "run live-crash-world-r2 (fail) of F-C1102"
     ]
    },
    "product_obligation": "fails",
-   "remaining": "Crash world: one trial per world (live-crash-world-r2); repeating it needs container SIGKILL and restart, which lanes may not do (operator/orchestrator). SynchCommit=1 untested (needs reconfiguring the container: operator). Multi-node (ECP/mirror) worlds blocked-access (no multi-node setup). Not in the disconnect world: the HTTP API path (its retry worlds are F-C1703, F-C1604), non-ledger writers (create_node, bulk loads), and a crash at the disconnect points.",
+   "remaining": "Crash, lost-acknowledgement and disconnect worlds all ran with controls: lost-ack exactly-once 6/6 (live-lost-ack-commit); disconnect 49 trials at 17 points, 0 violations (pg-disconnect-*); instance crash repeated 3+3 times per setting: in-flight commits all-or-nothing in every trial; acknowledged commits lost 3/3 under SynchCommit=0 (live-crash-repeat-sc0) and 0/3 under SynchCommit=1 (live-crash-repeat-sc1), so F-C1102 (intent-undecided: no IVG document states a durability premise) is attributable to the SynchCommit=0 setting the audit container runs by default; setting restored to 0. Multi-node worlds belong to 3.7-e2e (blocked-access). Orchestrator update, steer 11.",
    "source": "matrix-input/product-gates.json",
-   "status": "open"
+   "status": "closed"
   },
   {
    "cited_runs": [
@@ -16459,7 +16469,11 @@
    "status": "blocked"
   },
   {
+   "as_built_findings": [
+    "F-C1795"
+   ],
    "cited_runs": [
+    "live-licence-world",
     "pg-disconnect-live-controls",
     "pg-disconnect-selftest",
     "pg-failure-controls",
@@ -16486,25 +16500,28 @@
     "run:pg-fc-s17-control",
     "experiment/playbook-completion/product-gates/FAILURE-CONTROLS.md",
     "experiment/playbook-completion/product-gates/check_failure_controls.py",
-    "experiment/playbook-completion/product-gates/fc_controls.py"
+    "experiment/playbook-completion/product-gates/fc_controls.py",
+    "run:live-licence-world"
    ],
-   "evidence_grade": "live",
+   "evidence_grade": "registered-run",
    "findings": [
-    "F-C1743"
+    "F-C1743",
+    "F-C1795"
    ],
    "gate": "3.7-failure-controls",
    "level": "method",
    "module": "product",
    "product_basis": {
     "fails": [
-     "finding F-C1743"
+     "finding F-C1743",
+     "finding F-C1795"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "S6 only: a product-level licence-refusal run (a connection refused in the middle of an operation) needs exclusive use of the container's 8 shared licence units; the orchestrator will run it when the container is exclusive.",
+   "remaining": "All 20 failure scenarios have a registered run with a negative control or are covered by another row's controlled oracle; S6 (licence refusal at product level) ran with the container exclusive (live-licence-world: control world C with units free, world X exhausted before the first native call, world R exhausted before connecting): the product stayed all-or-nothing and refused cleanly at connect, but falls back silently from a refused dedicated connection (F-C1795). Orchestrator update, steer 11.",
    "source": "matrix-input/product-gates.json",
-   "status": "blocked"
+   "status": "closed"
   },
   {
    "as_built_findings": [
@@ -17338,7 +17355,8 @@
    ],
    "findings": [
     "F-C1705",
-    "F-C1706"
+    "F-C1706",
+    "F-C1795"
    ],
    "gate": "3.8-findings-disposed",
    "level": "method",
@@ -17346,7 +17364,8 @@
    "product_basis": {
     "fails": [
      "finding F-C1705",
-     "finding F-C1706"
+     "finding F-C1706",
+     "finding F-C1795"
     ],
     "intent_undecided": []
    },
@@ -35599,6 +35618,27 @@
   },
   {
    "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "live-licence-world"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/engine.py:1894-1942"
+    }
+   ],
+   "gates": [
+    "3.7-failure-controls",
+    "3.5-handlers",
+    "3.8-findings-disposed"
+   ],
+   "id": "F-C1795",
+   "severity": "S4"
+  },
+  {
+   "confidence": "high",
    "disposition": "confirmed-source",
    "evidence": [
     {
@@ -38012,7 +38052,7 @@
   "n/a": 33,
   "unknown": 191
  },
- "registry_runs": 1406,
+ "registry_runs": 1409,
  "starting_inventory": {
   "cells": 904,
   "decisions": 61,
@@ -38023,10 +38063,10 @@
   "writer_obligations": 83
  },
  "status_counts": {
-  "blocked": 25,
-  "closed": 601,
+  "blocked": 24,
+  "closed": 603,
   "not-applicable": 35,
-  "open": 91
+  "open": 90
  },
  "submission": "9c3719c1",
  "writer_obligations": [

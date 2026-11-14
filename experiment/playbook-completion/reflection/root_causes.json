@@ -12,10 +12,10 @@
    "experiment/playbook-completion/findings/audit/*.json"
   ],
   "rule": "one entry per finding id; an id recorded in several audit files takes the last file in sorted order (as matrix/build_matrix.py)",
-  "unique_ids": 310,
+  "unique_ids": 311,
   "original": 197,
-  "new": 113,
-  "audit_records": 313,
+  "new": 114,
+  "audit_records": 314,
   "duplicate_records": {
    "F-0908": [
     "09",
@@ -37,7 +37,7 @@
    "intent-undecided": 6,
    "not-reproduced": 3,
    "refuted": 2,
-   "reproduced-live": 217,
+   "reproduced-live": 218,
    "reproduced-model": 7,
    "reproduced-test": 16
   }
@@ -847,9 +847,9 @@
      "AX-03": 6,
      "AX-07": 1,
      "AX-09": 1,
-     "AX-12": 10
+     "AX-12": 11
     },
-    "members_agreeing": 10
+    "members_agreeing": 11
    },
    "primary": [
     "F-0101",
@@ -867,6 +867,7 @@
     "F-1615",
     "F-C0940",
     "F-C1640",
+    "F-C1795",
     "F-C1802"
    ],
    "secondary": [
@@ -889,7 +890,7 @@
    "severity_counts": {
     "S2": 7,
     "S3": 6,
-    "S4": 3
+    "S4": 4
    },
    "modules": [
     "01",
@@ -901,6 +902,7 @@
     "09",
     "15",
     "16",
+    "17",
     "18"
    ],
    "remedy": "Enforce the 4.6.0 rule mechanically: no handler returns an empty/default answer from an except clause; every outcome (removed, DONE, restored counts, health, legs used) is computed from the operation's own result; a lint over except clauses plus a fault-injection test per reader."
@@ -4663,6 +4665,14 @@
    "module": "17",
    "title": "IRISGraphStore.query_nodes(limit=n) kills the calling Python process (SIGSEGV) on IRIS Community 2026.1 with the locked driver"
   },
+  "F-C1795": {
+   "primary": "RC-14",
+   "secondary": [],
+   "severity": "S4",
+   "disposition": "reproduced-live",
+   "module": "17",
+   "title": "When its dedicated Native API connection is refused (licence units exhausted), the engine silently uses the caller's connection and retries the refused connect on every native call"
+  },
   "F-C1801": {
    "primary": "RC-07",
    "secondary": [],
@@ -4728,7 +4738,7 @@
  },
  "summary": {
   "root_causes": 36,
-  "assigned": 304,
+  "assigned": 305,
   "excluded": 6,
   "conditional": 8,
   "top10": [
@@ -4743,7 +4753,7 @@
    "RC-06",
    "RC-23"
   ],
-  "top10_cover": 143,
+  "top10_cover": 144,
   "no_sys_axiom": [
    "RC-12",
    "RC-16",
