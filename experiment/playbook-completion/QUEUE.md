@@ -37,7 +37,11 @@ status, evidence level and product obligation per cell). Reconciled 2026-11-14 (
 | Q17c | writesets | 3.3a-writesets: discharge each census obligation (WS-OBL/WS-COND/WS-GAP) by lemma, guard or recorded finding | doing |
 | Q17d | models-2 | D-10 (M1 2+2 by partition), D-13 (eraser overlapping a writer of the same graph in the module 04/11 proofs) | doing |
 | Q17e | product-gates | 3.5-lint/style, disconnect world (3.7-integration-worlds), 5a-gate-20min, 5c-root-causes, 3.8-test-reflection | doing |
-| Q17f | review | Fourth review pass over proofs-d1c..d1f and Q17a-e | todo |
+| Q17f | review | Fourth review pass over proofs-d1c..d1f and Q17a-h | todo |
+| Q17g | structural | 3.4 ownership/storage-order/declared-reads, 3.6 keys/fk/capacity/row-permutation/frame per module (AUDITD) | doing |
+| Q17h | trace-replay | 3.7 trace replay through the breadth machines and lock logs per module (AUDITE) | doing |
+| Q17i | orchestrator | 3.1-intent per module: structural intent check (`intent-structure-check`, `-selftest`) | done (05a86981) |
+| Q17j | ontology-2 | 3.1-coverage and remaining 3.1-cells | todo (after a running lane finishes) |
 | I-1..I-4 | orchestrator | Incidents: IVG460SNAP, USER-REDEPLOY-08, superseded proof logs, health alert | recorded in `incidents/` |
 
 Genuinely unavailable (attempts in `versions/AVAILABILITY.md`): an IRIS 2026.3 engine (no public tag; the cited

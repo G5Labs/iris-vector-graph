@@ -31,7 +31,8 @@ Product pin `3eaa79cf77d3e0a879b2cced634cf2729d81499e` (tree `b098a6f4`). Origin
   | `AUDITIA` / `AUDITIB` | intent lanes A / B | discriminating probes for decisions |
 
   Reassigned after their lanes finished (steer 7): `AUDITB` to the writesets lane, `AUDITIA` to the product-gates
-  lane, `AUDITIB` to the semantics lane. `AUDITA` stays with the simulator's evidence (read only).
+  lane, `AUDITIB` to the semantics lane, `AUDITC` to the models-2 lane. `AUDITA` stays with the simulator's evidence
+  (read only). New (steer 7, `incidents/NAMESPACES.md`): `AUDITD` structural lane, `AUDITE` trace-replay lane.
 
   Use only your namespace. Do not restart, stop or reconfigure the container; ask the orchestrator.
 - **Scratch namespaces for pinned upstream fixtures (in scope, coordinated).** Some upstream test files under
@@ -89,7 +90,7 @@ Pass outcomes: `holds-proved`, `holds-mc`, `holds-live`, `holds-run`, `holds-ins
 ## Finding record (new or audited)
 
 New finding ids per lane (steer 7, to avoid collisions): `F-C<module><nn>` with nn 50-69 writesets, 70-79 semantics,
-80-84 proofs-d9b, 85-89 models-2, 90-99 product-gates. Root causes: `RC-NN` (product-gates lane only).
+80-84 proofs-d9b, 85-89 models-2, 90-99 product-gates, 40-49 structural, 30-39 trace-replay. Root causes: `RC-NN` (reflection lane only).
 
 JSON object: `id` (keep original `F-NNNN` ids; new ones `F-C<module><nn>`), `module`, `title`, `intended`
 (with source citations), `observed` (with evidence refs), `disposition` (from the taxonomy above or
