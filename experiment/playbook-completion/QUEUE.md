@@ -29,8 +29,10 @@ status, evidence level and product obligation per cell). Reconciled 2026-11-14 0
 | Q16 | next | Verus refinement for the other 15 modules (D-1); a randomized simulator through the real product (5c); a third review pass | todo |
 | I-1..I-4 | orchestrator | Incidents: IVG460SNAP, USER-REDEPLOY-08, superseded proof logs, health alert | recorded in `incidents/` |
 
-Operator-only dependencies: IRIS 2026.3 engine and driver 5.4.0 (version difference of SQL transaction verbs); an IRIS
-Enterprise image/licence (SC-003 target and edition comparison); `%AI` classes (MCP module); FHIR server classes
-(`HS.FHIRServer`, module 15); a multi-node ECP/mirror setup (multi-node e2e); a second IRIS user/role (least-privilege
-checks, F-0908); the `arno-callout` library (F-1001); more licence connections than Community's 8 (throughput; the
-licence refusals at 01:31-01:47 came from this cap).
+Genuinely unavailable (attempts in `versions/AVAILABILITY.md`): an IRIS 2026.3 engine (no public tag; the cited
+`irishealth:2026.3.0AI.113.0` is on an internal registry); an IRIS Enterprise / IRIS for Health image or licence (SC-003's
+target, edition comparison, more than 8 licence units); `%AI` classes (MCP); FHIR server classes (`HS.FHIRServer`); a
+multi-node ECP/mirror setup; an x86_64 `libarno_callout.so` (F-1001). Set up and used, so not blockers: driver 5.4.0,
+IRIS 2026.2 (isolated container, stopped and kept), a disposable least-privilege user (disabled). Operator ruling still
+requested (review-2 condition 6): compiling the non-pin 4.5.1 release through the pinned fixture (F-C1306 evidence) and
+the suites' `IVGDev` helper classes in `%SYS`.
