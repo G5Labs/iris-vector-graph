@@ -32,7 +32,7 @@ Product pin `3eaa79cf77d3e0a879b2cced634cf2729d81499e` (tree `b098a6f4`). Origin
 
   Reassigned after their lanes finished (steer 7): `AUDITB` to the writesets lane, `AUDITIA` to the product-gates
   lane, `AUDITIB` to the semantics lane, `AUDITC` to the models-2 lane. `AUDITA` stays with the simulator's evidence
-  (read only). New (steer 7, `incidents/NAMESPACES.md`): `AUDITD` structural lane, `AUDITE` trace-replay lane; `AUDITCORE` lent to the contract-2 lane for E-1 (the orchestrator does not use it meanwhile).
+  (read only). New (steer 7, `incidents/NAMESPACES.md`): `AUDITD` structural lane, `AUDITE` trace-replay lane; `AUDITCORE` lent to the contract-2 lane for E-1 (the orchestrator does not use it meanwhile); `AUDITC` to the trace-replay lane for module 09 (steer 9). The native executor's run-time compilation of its own generated plan classes is product operation, recorded per run, not an audit compilation.
 
   Use only your namespace. Do not restart, stop or reconfigure the container; ask the orchestrator.
 - **Scratch namespaces for pinned upstream fixtures (in scope, coordinated).** Some upstream test files under

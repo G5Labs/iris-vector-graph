@@ -1,6 +1,6 @@
 # Lane checkpoint (orchestrator; read by the hourly monitor)
 
-Updated: 2026-11-14 (writesets done; proofs-mech, refusals, structural resumed and running). First written ~14:50 UTC, after the account switch (session resumed on the new account; no subagent of the
+Updated: 2026-11-14, steer 9 (writesets done; proofs-mech, refusals, structural, style and 09 replay running). First written ~14:50 UTC, after the account switch (session resumed on the new account; no subagent of the
 previous account is live: `ListAgents` empty, no audit process running, IRIS and heavy locks free, container healthy,
 product scope check passes). Last checkpoint commit before the switch: `1564a673`.
 
@@ -13,6 +13,8 @@ product scope check passes). Last checkpoint commit before the switch: `1564a673
 | writesets breadth-a pairs | Q18d | **done** (728e18a1) | 561 of 566 pairs discharged, 5 open; F-C0350, F-C0351; ws-check-r3, selftest 45/45 | — |
 | structural frame2 / reads2 (DDL frame oracle; declared reads) | Q18c-d | **interrupted** (quota) | `structural/frame2/` (dictoracle, frame2_live), `structural/reads2/` (ni2, ni_base); no registered run | resume both |
 | reflection | Q18e | waiting for the lanes above | — | classify every new finding; premise map by glob; TEST-REFLECTION refresh |
+| product-gates: style for all modules | — | **running** (steer 9) | `product-gates/STYLE.md` | 3.5-style for 00-10, 15-18 |
+| trace-replay: module 09 | — | **running** (steer 9), namespace AUDITC | `trace-replay/` | replay and lock log through the native executor (its run-time plan compilation is product operation, recorded) |
 | orchestrator: O-1 | — | **done** (this checkpoint) | `incidents/O-1-FIXTURES.md`, run `o1-fixture-inventory`, CONVENTIONS updated, F-C1306 attribution | give the clarification to the next reviewer |
 | orchestrator: exclusive-container worlds | Q18f | todo | `traces/crash_world_repeat.py` (not run) | repeated crash trials, SynchCommit=1, licence refusal S6, when no lane uses IRIS |
 | orchestrator: account, clean verify, review 5 | Q18g | todo | — | STATUS/TRUST/PROOF-DEBT refresh; `verify.sh --live --clean` on a committed candidate; fifth independent review |
