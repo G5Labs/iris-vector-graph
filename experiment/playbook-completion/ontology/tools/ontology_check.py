@@ -54,6 +54,11 @@ EVIDENCE_KINDS = ("proved", "mc", "trace", "live", "run", "ran", "tested", "insp
                   "not-implemented")
 # Completion evidence: evidence kind -> registry kind of experiment/playbook-completion/evidence/runs/<id>.json
 COMPLETION_KINDS = {"mc": "mc", "live": "live", "trace": "trace", "run": "run", "proved": "proof"}
+# Audit dispositions that are evidence about the product (experiment/playbook-completion/findings/audit/*.json). A
+# statement that cites such a finding and also carries proved: or mc: must qualify each of those items [model-only].
+PRODUCT_DISPOSITIONS = {"reproduced-live", "reproduced-test", "confirmed-source"}
+MODEL_KINDS = ("proved", "mc")
+QUALIFIERS = {"model-only"}
 SAME_MEANING_RE = re.compile(r"Same meaning as ([A-Z]{2,4}-[A-Za-z0-9]+(?:\.[A-Za-z0-9]+)*)")
 ID_RE = re.compile(r"^[A-Z]{2,4}-[A-Za-z0-9.]+$")
 SYSTEM = "SYS"
@@ -400,14 +405,40 @@ SOURCE_PATH_RE = re.compile(
 )
 
 
-def evidence_items(ev: str) -> List[Tuple[str, str]]:
+def evidence_quals(ev: str) -> List[Tuple[str, str, List[str]]]:
+    """Evidence items as (kind, ref, qualifiers). A qualifier is a trailing bracket, e.g.
+    'proved:theorem_x [model-only]'."""
     out = []
     for raw in [x.strip() for x in ev.split(";") if x.strip()]:
+        quals: List[str] = []
+        m = re.match(r"^(.*?)\s*\[([a-z-]+)\]$", raw)
+        if m:
+            raw, quals = m.group(1).strip(), [m.group(2)]
         if raw == "not-implemented":
-            out.append(("not-implemented", ""))
+            out.append(("not-implemented", "", quals))
             continue
         kind, _, ref = raw.partition(":")
-        out.append((kind.strip(), ref.strip()))
+        out.append((kind.strip(), ref.strip(), quals))
+    return out
+
+
+def evidence_items(ev: str) -> List[Tuple[str, str]]:
+    return [(k, r) for k, r, _ in evidence_quals(ev)]
+
+
+def load_audit(completion: Path) -> Dict[str, dict]:
+    """Finding records of experiment/playbook-completion/findings/audit/*.json (a list, or an object with
+    'findings' and 'new_findings')."""
+    out: Dict[str, dict] = {}
+    d = completion / "findings" / "audit"
+    if not d.is_dir():
+        return out
+    for p in sorted(d.glob("*.json")):
+        data = json.loads(p.read_text(encoding="utf-8"))
+        items = data if isinstance(data, list) else list(data.get("findings", [])) + list(data.get("new_findings", []))
+        for f in items:
+            if isinstance(f, dict) and f.get("id"):
+                out[f["id"]] = dict(f, _file=p.name)
     return out
 
 
@@ -421,6 +452,7 @@ class Evidence:
         self.trust = ids_in(ctx.original / "TRUST.md", "P")
         self.decisions = human_decisions(ctx.original / "DECISIONS.md")
         self.findings = ids_in(ctx.original / "FINDINGS.md", "F")
+        self.audit = load_audit(ctx.completion)
         self.orig_srcs = proof_sources(ctx.original / "proofs")
         self.orig_proof_body = "\n".join(p.read_text(encoding="utf-8") for p in self.orig_srcs if p.suffix == ".rs")
         self.orig_hash = sources_hash(self.orig_srcs, REPO) if self.orig_srcs else ""
@@ -541,10 +573,37 @@ def check_evidence(s: Statement, tree: Tree, ev: Evidence, errors: List[str]) ->
             errors.append(f"{where}: [evidence] premise {ref} not in TRUST.md")
         elif kind == "open" and ev.decisions.get(ref) != "human":
             errors.append(f"{where}: [evidence] decision {ref} not in DECISIONS.md with Owner: human")
-        elif kind == "finding" and ref not in ev.findings:
+        elif kind == "finding" and ref.startswith("F-C") and ref not in ev.audit:
+            errors.append(f"{where}: [evidence] finding {ref} not in experiment/playbook-completion/findings/audit")
+        elif kind == "finding" and not ref.startswith("F-C") and ref not in ev.findings:
             errors.append(f"{where}: [evidence] finding {ref} not in FINDINGS.md")
         elif kind == "not-implemented" and not s.source.strip():
             errors.append(f"{where}: [evidence] not-implemented needs the intent in Source")
+    check_model_only(s, ev, errors)
+
+
+def product_findings(s: Statement, ev: "Evidence") -> List[str]:
+    """Findings the statement cites whose audit disposition is evidence about the product."""
+    return [ref for kind, ref in evidence_items(s.evidence)
+            if kind == "finding" and ev.audit.get(ref, {}).get("disposition") in PRODUCT_DISPOSITIONS]
+
+
+def check_model_only(s: Statement, ev: "Evidence", errors: List[str]) -> None:
+    where = f"{s.file} {s.id}"
+    for kind, ref, quals in evidence_quals(s.evidence):
+        for q in quals:
+            if q not in QUALIFIERS:
+                errors.append(f"{where}: [evidence] unknown qualifier [{q}] on {kind}:{ref}")
+            elif kind not in MODEL_KINDS:
+                errors.append(f"{where}: [evidence] [{q}] qualifies only proved: or mc:, not {kind}:{ref}")
+    bad = product_findings(s, ev)
+    if not bad:
+        return
+    for kind, ref, quals in evidence_quals(s.evidence):
+        if kind in MODEL_KINDS and "model-only" not in quals:
+            errors.append(f"{where}: [model-only] {kind}:{ref} sits beside {', '.join(bad)} (audit disposition "
+                          f"{', '.join(sorted({ev.audit[b]['disposition'] for b in bad}))}): the product violates "
+                          f"the statement, so mark it '{kind}:{ref} [model-only]'")
 
 
 # --------------------------------------------------------------------------- the literal scope rule
@@ -676,6 +735,10 @@ def check_glossary(modules: List[Module], by_id: Dict[str, Statement], errors: L
                 if s.order <= p.order:
                     errors.append(f"{m.file} {sid}: [restatement] comes before the primary definition {g.primary}")
                     ok = False
+                if " ".join(s.evidence.split()) != " ".join(p.evidence.split()):
+                    errors.append(f"{m.file} {sid}: [restatement] evidence differs from the primary definition "
+                                  f"{g.primary}'s")
+                    ok = False
             if len(set(g.definers)) != len(g.definers):
                 errors.append(f"{m.file}: [glossary-duplicate] term '{g.term}' lists a definer twice")
             if ok:
@@ -759,14 +822,22 @@ def check_cells(modules: List[Module], by_id: Dict[str, Statement], ev: Evidence
 
 # --------------------------------------------------------------------------- index
 
+INDEX_KINDS = ("proved", "proved (model-only)", "mc", "mc (model-only)", "trace", "live", "run", "ran", "tested",
+               "inspected", "assumed", "open", "finding", "not-implemented")
+PRODUCT_KINDS = {"trace", "live", "run", "ran", "tested", "inspected"}
+
+
 def classify(s: Statement) -> Set[str]:
-    kinds = {k for k, _ in evidence_items(s.evidence)}
+    kinds = {f"{k} (model-only)" if k in MODEL_KINDS and "model-only" in q else k
+             for k, _, q in evidence_quals(s.evidence)}
     if any(any(st == "pass" for _, st in TEST_RESULTS.get(ref, [])) for ref in tested_refs(s)):
         kinds.add("ran")
     return kinds
 
 
-def render(modules: List[Module], errors: List[str], by_id: Dict[str, Statement]) -> str:
+def render(modules: List[Module], errors: List[str], by_id: Dict[str, Statement],
+           audit: Optional[Dict[str, dict]] = None) -> str:
+    audit = audit or {}
     out = ["# Ontology index", "",
            "Generated by `experiment/playbook-completion/ontology/tools/ontology_check.py` from the module files in",
            f"this directory. Do not edit. Product pin `{PIN[:8]}`. Evidence without a `C-` prefix resolves against the",
@@ -777,6 +848,11 @@ def render(modules: List[Module], errors: List[str], by_id: Dict[str, Statement]
             "Proofs are about models; where the code at the pin differs from the proved design, the statement also cites a finding.",
             "- **mc**: an explicit-state model check in `model/`, exhaustive only within the bounds the machine declares "
             "(see `MODELS.md`). A model is an executable twin, not the code.",
+            "- **proved (model-only)**, **mc (model-only)**: the item carries `[model-only]` because the statement also "
+            "cites a finding whose audit disposition (reproduced-live, reproduced-test or confirmed-source, in "
+            "`experiment/playbook-completion/findings/audit/`) shows the product at the pin violates it. The proof or "
+            "model check is about a modelled design; it is not evidence that the product holds the statement. The "
+            "checker rejects an unqualified proved:/mc: item beside such a finding.",
             "- **trace**: a real execution trace replayed through a machine (completion runs only).",
             "- **live**: observed on IRIS Community 2026.1 in the dedicated container (logs under `$RUN_DIR`).",
             "- **run**: an upstream test set executed here. **ran**: a cited upstream test (`tested:`) that passed in one of "
@@ -794,7 +870,8 @@ def render(modules: List[Module], errors: List[str], by_id: Dict[str, Statement]
                 f"terms ({n_rest} local restatements). Every parent resolves, every statement reads at grade 8 or "
                 "below, every module glossary term a statement uses is defined by the statement, an ancestor or an "
                 "earlier statement with the same parent (literal rule, HD-0001) and never before its definition, "
-                "every evidence reference resolves, and every cell is defined or assigned to the human.", ""]
+                "every evidence reference resolves, every proof or model-check item beside a finding that shows the product "
+                "violates the statement is marked model-only, and every cell is defined or assigned to the human.", ""]
     out += ["## Modules", "",
             "| Module | File | Statements | R | D | B | T | I | X | P | Q | Terms | Restated | Cells | Open cells | Max grade |",
             "|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|"]
@@ -819,7 +896,7 @@ def render(modules: List[Module], errors: List[str], by_id: Dict[str, Statement]
             "Count of statements carrying each evidence kind (a statement may carry several). Local restatements "
             f"({len(restated)}) repeat their primary definition and its evidence, so they are left out of this table, "
             "the combinations and the listings below.", "",
-            "| Module | " + " | ".join(EVIDENCE_KINDS) + " |", "|---|" + "---:|" * len(EVIDENCE_KINDS)]
+            "| Module | " + " | ".join(INDEX_KINDS) + " |", "|---|" + "---:|" * len(INDEX_KINDS)]
     allc = Counter()
     for m in modules:
         c = Counter()
@@ -827,10 +904,39 @@ def render(modules: List[Module], errors: List[str], by_id: Dict[str, Statement]
             if s.id not in restated:
                 c.update(classify(s))
         allc.update(c)
-        out.append(f"| {m.code} | " + " | ".join(str(c[k]) for k in EVIDENCE_KINDS) + " |")
-    out.append("| **all** | " + " | ".join(str(allc[k]) for k in EVIDENCE_KINDS) + " |")
+        out.append(f"| {m.code} | " + " | ".join(str(c[k]) for k in INDEX_KINDS) + " |")
+    out.append("| **all** | " + " | ".join(str(allc[k]) for k in INDEX_KINDS) + " |")
+    out += ["", "## Model evidence and product evidence", "",
+            "Statements (restatements left out). Product evidence: inspected, tested, ran, run, live or trace. Model "
+            "evidence: proved or mc. A product finding is a cited finding whose audit disposition is reproduced-live, "
+            "reproduced-test or confirmed-source.", "",
+            "| Module | Statements | Product evidence | Model evidence | of which model-only | Model evidence, no product "
+            "evidence | Product finding | Product finding and model evidence |",
+            "|---|---:|---:|---:|---:|---:|---:|---:|"]
+    mt = Counter()
+    for m in modules:
+        c = Counter()
+        for s in m.statements:
+            if s.id in restated:
+                continue
+            k = classify(s)
+            model = {x for x in k if x.startswith(("proved", "mc"))}
+            pf = any(kind == "finding" and audit.get(ref, {}).get("disposition") in PRODUCT_DISPOSITIONS
+                     for kind, ref in evidence_items(s.evidence))
+            c["n"] += 1
+            c["product"] += bool(k & PRODUCT_KINDS)
+            c["model"] += bool(model)
+            c["model-only"] += any(x.endswith("(model-only)") for x in model)
+            c["model-no-product"] += bool(model) and not (k & PRODUCT_KINDS)
+            c["pf"] += pf
+            c["pf-model"] += pf and bool(model)
+        mt.update(c)
+        out.append(f"| {m.code} | {c['n']} | {c['product']} | {c['model']} | {c['model-only']} | "
+                   f"{c['model-no-product']} | {c['pf']} | {c['pf-model']} |")
+    out.append(f"| **all** | {mt['n']} | {mt['product']} | {mt['model']} | {mt['model-only']} | "
+               f"{mt['model-no-product']} | {mt['pf']} | {mt['pf-model']} |")
     out += ["", "## Evidence combinations", "", "| Combination | Statements |", "|---|---:|"]
-    combos = Counter("+".join(k for k in EVIDENCE_KINDS if k in classify(s)) or "(none)" for s in by_id.values()
+    combos = Counter("+".join(k for k in INDEX_KINDS if k in classify(s)) or "(none)" for s in by_id.values()
                      if s.id not in restated)
     for combo, n in sorted(combos.items(), key=lambda x: (-x[1], x[0])):
         out.append(f"| {combo} | {n} |")
@@ -848,11 +954,16 @@ def render(modules: List[Module], errors: List[str], by_id: Dict[str, Statement]
     test_kinds = {"tested", "run", "live", "trace"}
     listing("Proof-only", "Proved, with no test, trace or live observation behind it.",
             lambda s: "proved" in classify(s) and not (classify(s) & test_kinds))
-    listing("Proved and observed live", "Proved and also observed on live IRIS.",
+    listing("Proved and observed live", "Proved (not model-only) and also observed on live IRIS.",
             lambda s: {"proved", "live"} <= classify(s))
+    listing("Model-only proofs and model checks",
+            "Proved or model-checked as a design while a cited finding shows the product at the pin violates the "
+            "statement (items marked [model-only]).",
+            lambda s: any(x.endswith("(model-only)") for x in classify(s)))
     listing("Not implemented", "The intent states it; no code does it.",
             lambda s: "not-implemented" in classify(s))
-    listing("Findings", "The code disagrees with the statement (see the original FINDINGS.md).",
+    listing("Findings", "The code disagrees with the statement (original FINDINGS.md; F-C ids and every audit "
+                        "disposition in experiment/playbook-completion/findings/audit/).",
             lambda s: "finding" in classify(s))
     listing("Open decisions", "Statements waiting on a human decision (see the original DECISIONS.md).",
             lambda s: "open" in classify(s))
@@ -905,7 +1016,7 @@ def run(ctx: Ctx, check_only: bool, only: Optional[List[str]] = None, tree: Opti
             print("GATE:", e)
         print(f"{len(mine)} violation(s) in files {', '.join(only)} (of {len(errors)} overall); INDEX.md not written")
         return 1 if mine else 0
-    text = render(modules, errors, by_id)
+    text = render(modules, errors, by_id, load_audit(ctx.completion))
     idx = ctx.ontology / "INDEX.md"
     if check_only:
         stale = not idx.exists() or idx.read_text(encoding="utf-8") != text
@@ -948,7 +1059,9 @@ Root: SYS-0
 # The positive control. MOD-D1 defines "tomb" for the root's children; MOD-B1 uses it as a later sibling; MOD-B1.1
 # and MOD-B1.2 use it through the local restatement MOD-D1a (an earlier statement with the same parent); MOD-B2 is a
 # child of the definition MOD-D2 and its child MOD-B2.1 uses "out-degree" written with a space and in the plural
-# ("registries" is checked the same way). The C- evidence resolves against the fixture's completion records.
+# ("registries" is checked the same way). The C- evidence resolves against the fixture's completion records. MOD-B4
+# cites a finding reproduced live, so its proof item is marked [model-only]; MOD-B5's finding is reproduced only in a
+# model, so its model check needs no mark.
 GOOD_MOD = """# 01 Mod
 
 Module: MOD
@@ -977,6 +1090,8 @@ Root: MOD-0
 | MOD-B2.1 | MOD-B2 | B | Out degrees are never less than zero. | inspected:CONTEXT.md:4 | CONTEXT.md | |
 | MOD-D3 | MOD-0 | D | A registry is a list of names. | inspected:CONTEXT.md:5 | CONTEXT.md | |
 | MOD-B3 | MOD-D3 | B | Registries are kept in one place. | inspected:CONTEXT.md:5 | CONTEXT.md | |
+| MOD-B4 | MOD-0 | B | A part keeps its own marks. | inspected:CONTEXT.md:6; proved:C-lemma_good [model-only]; finding:F-C9901 | CONTEXT.md | |
+| MOD-B5 | MOD-0 | B | A part keeps its own name. | inspected:CONTEXT.md:7; mc:C-good-mc; finding:F-C9902 | CONTEXT.md | |
 
 ## Cells
 
@@ -1077,6 +1192,20 @@ CONTROLS = [
     ("derived evidence kind 'ran' written by hand", "[evidence]",
      [(MOD, "inspected:CONTEXT.md:3; mc:C-good-mc", "ran:tests/x.py; mc:C-good-mc")]),
     ("duplicate id", "[duplicate-id]", [(MOD, "| MOD-B1.1 | MOD-B1 |", "| MOD-B1 | MOD-B1 |")]),
+    # model evidence versus product evidence
+    ("proved: beside a finding reproduced live, without [model-only]", "[model-only]",
+     [(MOD, "proved:C-lemma_good [model-only]; finding:F-C9901", "proved:C-lemma_good; finding:F-C9901")]),
+    ("mc: beside an original-id finding confirmed in the audit, without [model-only]", "[model-only]",
+     [(MOD, "mc:C-good-mc; finding:F-C9902", "mc:C-good-mc; finding:F-9903")]),
+    ("[model-only] on evidence that is not a proof or a model check", "[evidence] [model-only] qualifies only",
+     [(MOD, "inspected:CONTEXT.md:6; proved", "inspected:CONTEXT.md:6 [model-only]; proved")]),
+    ("unknown qualifier", "[evidence] unknown qualifier",
+     [(MOD, "proved:C-lemma_good [model-only]", "proved:C-lemma_good [model-safe]")]),
+    ("F-C finding not in the findings audit", "[evidence] finding F-C9999",
+     [(MOD, "finding:F-C9901", "finding:F-C9999")]),
+    ("restatement whose evidence differs from the primary", "[restatement] evidence differs",
+     [(MOD, "| MOD-D1a | MOD-B1 | D | A tomb is a mark left where data was. | inspected:CONTEXT.md:2 |",
+       "| MOD-D1a | MOD-B1 | D | A tomb is a mark left where data was. | inspected:CONTEXT.md:3 |")]),
 ]
 
 
@@ -1089,6 +1218,14 @@ def write_fixture(root: Path) -> Ctx:
     orig = root / "original"
     (orig / "evidence").mkdir(parents=True)
     (orig / "evidence" / "runs.json").write_text(json.dumps({"runs": {}}))
+    (orig / "FINDINGS.md").write_text("# Findings\n\n### F-9903 An original finding\n")
+    audit = root / "completion" / "findings" / "audit"
+    audit.mkdir(parents=True)
+    (audit / "13.json").write_text(json.dumps([
+        {"id": "F-C9901", "disposition": "reproduced-live", "intended": "MOD-B4"},
+        {"id": "F-C9902", "disposition": "reproduced-model", "intended": "MOD-B5"}]))
+    (audit / "01.json").write_text(json.dumps({"module": "01", "findings": [
+        {"id": "F-9903", "disposition": "reproduced-test", "intended": "MOD-B5"}], "new_findings": []}))
     comp = root / "completion"
     (comp / "proofs" / "src").mkdir(parents=True)
     (comp / "proofs" / "src" / "lib.rs").write_text(PROOF_RS)
@@ -1150,7 +1287,8 @@ def self_test() -> int:
             print("self-test: POSITIVE CONTROL REJECTED:", *errs, sep="\n  ")
             return 1
         print("self-test: positive control accepted (0 violations; exercises a restatement, a definition parent, "
-              "out degree / registries spellings, mc/live/trace/proved C- evidence)")
+              "out degree / registries spellings, mc/live/trace/proved C- evidence, an F-C finding with a "
+              "[model-only] proof, a model-reproduced finding beside an unmarked model check)")
         for name, tag, edits in CONTROLS:
             saved = {}
             broken = False

@@ -36,9 +36,10 @@ Changed or added:
 | `[cross-module]` | A glossary row whose definer or restatement is in another module (the format does not allow it). |
 | `[foreign-term]` | A statement outside SYS that uses a term of another (non-SYS) module's glossary that its own glossary lacks. This keeps the submitted tool's global check of such terms. |
 | `[glossary-duplicate]` | Two rows for one term, or one definer listed twice. |
-| `[restatement]` | A restatement whose Notes lack "Same meaning as <primary>", whose text differs from the primary's text, that comes before the primary, or a D row citing a same-module "Same meaning as" that the glossary does not list. |
+| `[restatement]` | A restatement whose Notes lack "Same meaning as <primary>", whose text or evidence differs from the primary's, that comes before the primary, or a D row citing a same-module "Same meaning as" that the glossary does not list. |
+| `[model-only]` | A `proved:` or `mc:` item (original or `C-`) without the `[model-only]` qualifier on a statement that cites a finding whose audit disposition is reproduced-live, reproduced-test or confirmed-source (review R-05). |
 | `[parent]` | Also: a parent in another module. |
-| `[evidence]` | Also: completion references (below); a hand-written `ran:` (derived only); `trace:` without `C-`. |
+| `[evidence]` | Also: completion references (below); a hand-written `ran:` (derived only); `trace:` without `C-`; an `F-C` finding not in `../findings/audit/*.json`; a qualifier other than `[model-only]`, or one on a kind other than `proved:`/`mc:`. |
 
 **Matcher.** Case-insensitive whole words with plural s/es and space/hyphen variants, exactly as
 `check-literal-scope.py`, plus: a hyphen inside a term also matches a space ("out degree"), and a final consonant+y
@@ -57,14 +58,25 @@ same kind (`mc`/`live`/`trace`/`run`), `result` = `pass` and `product_pin` = the
 --proof-hash`; register with `--extra proof_fns=a,b sources_sha256=<hash>`). Any other result (`fail`,
 `expected-violation`, ...) or a missing record is rejected. Ids without `C-` resolve against the original registry.
 
+**Findings.** `finding:F-NNNN` resolves against the original `FINDINGS.md`/`findings/*.md`; `finding:F-C...`
+against `experiment/playbook-completion/findings/audit/*.json`. The audit also gives every finding's disposition,
+which drives the `[model-only]` rule.
+
 **INDEX.md.** Restatements are counted in the module table (Restated column) and left out of the evidence tables
-and listings, because they repeat their primary's evidence.
+and listings, because they repeat their primary's evidence. The evidence table splits `proved` and `mc` from
+`proved (model-only)` and `mc (model-only)`; a "Model evidence and product evidence" table counts statements with
+product evidence (inspected, tested, ran, run, live, trace), with model evidence, with model-only evidence, and with
+a product finding; a "Model-only proofs and model checks" listing names them.
 
-## Self-test (`--self-test`, log `$RUN_DIR/ontology/self-test.log`)
+## Self-test (`--self-test`, log `$RUN_DIR/ontology/r05/self-test.log`)
 
-A fixture (SYS, one module with a restatement, a definition parent, "out degree"/"registries" spellings and all four
-`C-` evidence forms, and a second module) must pass with 0 violations; it does. Each of 34 negative controls must be
-rejected with its own rule tag; all 34 are: aunt (ancestor-sibling) definition, later definition (`[order]` and
+A fixture (SYS, one module with a restatement, a definition parent, "out degree"/"registries" spellings, all four
+`C-` evidence forms, an F-C finding reproduced live beside a `[model-only]` proof, a model-reproduced finding beside
+an unmarked model check, and a second module) must pass with 0 violations; it does. Each of 40 negative controls
+must be rejected with its own rule tag; all 40 are. The six added for R-05: `proved:` beside a live-reproduced
+finding without `[model-only]`; `mc:` beside an original-id finding the audit marks reproduced-test; `[model-only]`
+on `inspected:`; an unknown qualifier; an F-C finding missing from the audit; a restatement whose evidence differs.
+The first 34: aunt (ancestor-sibling) definition, later definition (`[order]` and
 `[scope]`), missing parent, parent in another module, grade above 8, non-D definer, definer text without the term,
 definer in another module, foreign term, restatement without the note, with different text, before the primary,
 not listed, duplicate glossary row, y/ies plural out of scope, hyphen written as a space out of scope, completion
@@ -124,6 +136,40 @@ rows keep their id, kind, evidence, Source and Notes and their relative order; p
 those in `repairs.json`; text outside the two tables, the cells included, is unchanged. Mutating one restatement or
 one parent in a scratch copy makes it fail.
 
+## Completion evidence and model-level evidence (review R-05, `tools/add_evidence.py`)
+
+The review found product statements carrying the original `proved:`/`mc:` tags while the audit's own findings show
+the pin violates them. `tools/add_evidence.py` (idempotent; log `evidence-additions.json`) runs after `repair.py`:
+
+1. **Finding tags.** Candidates come from each reproduced finding's `intended` text (the statement ids it names as
+   the violated contract), minus statements the original already tagged with it. Criterion: the observed behaviour
+   contradicts the statement's text in some reachable execution. Each candidate is reviewed into `FINDING_TAGS` or
+   `FINDING_REJECT` (reason recorded); the tool stops on an unreviewed one (it caught F-C1001, added to the audit
+   during this work). Intent-undecided findings are not tagged. Two tags come from the review, not from `intended`:
+   F-C1303 on RED-B8.1 and F-1304 on RPL-B1.1. Universal axioms (SYS-I2, SYS-I3, ...) take findings: one
+   counterexample refutes them.
+2. **Run tags.** A passing `live`/`mc`/`trace` record is tagged only on statements its `observes` text names (lists
+   such as "RED-I1/I2" or "(ALG-B1.5, B2.2, ...)" are expanded); every named id is reviewed into `RUN_TAGS` or
+   `RUN_REJECT`. Confirming runs are not put on SYS axioms; SNP-B3.7 is rejected because it describes the as-built
+   behaviour the reviewed model forbids; runs that say the F-1201 window was not reached are not put on ERS-I3.
+   Conditions go into Notes (sequential profiles only; indexed configuration only; reviewed design, not the pin).
+   No `proved:C-` tag: no completion proof record names a statement or lists proof functions.
+3. **Model-only.** Every `proved:`/`mc:` item of a statement citing a product-disposition finding gets `[model-only]`.
+4. **Restatements** take their primary's new evidence.
+
+| Added | Count |
+|---|---:|
+| `finding:` tags | 40 (on 27 statements; 19 of them on SYS axioms and SYS-D26) |
+| `live:C-` tags | 48 |
+| `mc:C-` tags | 13 |
+| `trace:C-`, `proved:C-` tags | 0 |
+| Statements with `[model-only]` items | 11 (21 items): ERS-I3, RED-B1.1, RED-B4.3, RED-B6.1, RED-B7.1, RED-B8, RED-B8.1, RPL-B1.1, RPL-B3, RPL-I1, SNP-I3.6 |
+| Notes extended with conditions | 6 |
+| Restatements updated | 2 (TXT-D1's) |
+| Reproduced findings left untagged | 24 (19 name no statement; 5 had every named statement rejected) |
+
+Before (`r05/check-before.log`): 14 `[model-only]` violations in 7 statements, the review's cases. After: 0.
+
 ## Left open (none fail the gate)
 
 - **System terms outside SYS are not gated.** The gate checks each statement against its own module's glossary
@@ -136,6 +182,11 @@ one parent in a scratch copy makes it fail.
   restatement of the noun definition, which is harmless but reads oddly in places (e.g. ERS-D4a before ERS-T1).
 - **Reading order.** A restatement can sit between siblings that open with "It" (e.g. ERS-D3a before ERS-B1.2).
   The Parent column still names the referent.
+- **Untagged findings.** 24 reproduced findings tag no statement (listed with reasons in `evidence-additions.json`).
+  Mapping them would need a judgment the finding record does not make; RED-B4 (key re-bound after a restore) is
+  shown only by a model run that is not a passing record and by no finding's text, so it is not tagged.
+- **Moving inputs.** The audit and registry are still growing. `add_evidence.py` stops on any new unreviewed
+  candidate, so a rerun after other lanes add findings or runs fails until they are reviewed.
 - `check-literal-scope.py` reads only the "Defined by" column, so it cannot judge the repaired modules. The
   differential and `independent_recheck.py` cover that.
 
@@ -145,8 +196,9 @@ one parent in a scratch copy makes it fail.
 source experiment/playbook-completion/environment.sh
 T=experiment/playbook-completion/ontology/tools
 python3 $T/ontology_check.py --ontology experiment/playbook-uplift/ontology   # before: 1,406 violations
-python3 $T/repair.py --out /tmp/ontology-regen && for f in /tmp/ontology-regen/*; do cmp "$f" experiment/playbook-completion/ontology/$(basename "$f"); done
+python3 $T/repair.py --out /tmp/ontology-regen && python3 $T/add_evidence.py --ontology /tmp/ontology-regen \
+  && for f in /tmp/ontology-regen/*; do cmp "$f" experiment/playbook-completion/ontology/$(basename "$f"); done
 python3 $T/ontology_check.py --check      # after: 0 violations, index current
-python3 $T/ontology_check.py --self-test  # positive control, 34 negative controls, differential
+python3 $T/ontology_check.py --self-test  # positive control, 40 negative controls, differential
 python3 $T/independent_recheck.py
 ```

@@ -1,0 +1,587 @@
+{
+ "counts": {
+  "finding_tags": 40,
+  "items_model_only": 21,
+  "notes_changed": 6,
+  "restatements_updated": 2,
+  "run_tags_by_kind": {
+   "live": 48,
+   "mc": 13
+  },
+  "statements_model_only": 11,
+  "untagged_reproduced_findings": 24
+ },
+ "findings": {
+  "ADJ-I5.9": {
+   "F-C0401": {
+    "disposition": "reproduced-model",
+    "why": "contradicted (model): a stopped writer lets a reader store a count that saw the undone edge"
+   }
+  },
+  "ALG-I3": {
+   "F-1006": {
+    "disposition": "reproduced-live",
+    "why": "contradicted: a default-graph call reads subgraph vectors of a named graph by node id"
+   },
+   "F-1009": {
+    "disposition": "reproduced-live",
+    "why": "contradicted: a default-graph khop answers a start node that only a named graph holds"
+   }
+  },
+  "ALG-I6": {
+   "F-C1001": {
+    "disposition": "reproduced-live",
+    "why": "contradicted: triangle_count, a read, creates SQL functions and rewrites the deploy record"
+   }
+  },
+  "API-T9.1": {
+   "F-C1603": {
+    "disposition": "reproduced-live",
+    "why": "contradicted: Bolt listens on every interface unless started by ivg server start"
+   }
+  },
+  "CYP-X7.2": {
+   "F-0801": {
+    "disposition": "reproduced-live",
+    "why": "contradicted: strict mode fails open, so a Cypher write is not refused"
+   }
+  },
+  "INT-E1.9": {
+   "F-C1502": {
+    "disposition": "reproduced-live",
+    "why": "contradicted: a stop between the two transactions leaves the reifier nodes"
+   }
+  },
+  "INT-F9": {
+   "F-C1501": {
+    "disposition": "confirmed-source",
+    "why": "contradicted (source): a failure between the steps leaves an orphan sync task"
+   }
+  },
+  "LED-B13.2": {
+   "F-C1101": {
+    "disposition": "reproduced-live",
+    "why": "contradicted: a commit its caller rolled back stays counted"
+   }
+  },
+  "LED-B13.4": {
+   "F-C1101": {
+    "disposition": "reproduced-live",
+    "why": "contradicted: the stats row over-counts outcomes"
+   }
+  },
+  "NAT-I3": {
+   "F-C0901": {
+    "disposition": "reproduced-live",
+    "why": "contradicted: one shape's entry runs another shape's class until a deploy"
+   }
+  },
+  "OPS-B1.12": {
+   "F-C1702": {
+    "disposition": "reproduced-live",
+    "why": "contradicted: with --workers above 1 the command exits without serving"
+   }
+  },
+  "RED-B1.1": {
+   "F-C1201": {
+    "disposition": "reproduced-live",
+    "why": "contradicted: a run completes against an erasure that then rolls back, so tombstoned content is live again"
+   },
+   "F-C1301": {
+    "disposition": "reproduced-model",
+    "why": "contradicted (model): the liveness check reads another writer's uncommitted delete"
+   }
+  },
+  "RED-B8": {
+   "F-C1303": {
+    "disposition": "reproduced-live",
+    "why": "contradicted: repeated bounded calls rescan from the start and never finish"
+   }
+  },
+  "RED-B8.1": {
+   "F-C1303": {
+    "disposition": "reproduced-live",
+    "why": "contradicted (manual, not in intended; review R-05): 60 calls with no commit in between never finished"
+   }
+  },
+  "RPL-B1.1": {
+   "F-1304": {
+    "disposition": "reproduced-live",
+    "why": "contradicted (manual, not in intended; review R-05): redact(None) tombstones another tenant's node records, so replay loses that tenant's nodes too"
+   }
+  },
+  "SNP-B1.18": {
+   "F-C1804": {
+    "disposition": "reproduced-live",
+    "why": "contradicted: a restore loses routed edge vectors"
+   }
+  },
+  "SNP-I1": {
+   "F-C1804": {
+    "disposition": "reproduced-live",
+    "why": "contradicted: routed edge vector tables are neither copied nor listed as left out"
+   }
+  },
+  "SNP-X2.14": {
+   "F-C1802": {
+    "disposition": "reproduced-live",
+    "why": "contradicted: a global line that cannot be written is dropped without an error"
+   }
+  },
+  "SYS-D26": {
+   "F-1502": {
+    "disposition": "reproduced-live",
+    "why": "contradicted: erasing the edge's graph leaves its reifier node and properties"
+   }
+  },
+  "SYS-I1": {
+   "F-1114": {
+    "disposition": "reproduced-live",
+    "why": "contradicted: erasure writes the ledger's statement maps, which the ledger owns"
+   }
+  },
+  "SYS-I2": {
+   "F-0106": {
+    "disposition": "reproduced-live",
+    "why": "contradicted: a label's property keys answer with keys of another graph's nodes"
+   },
+   "F-1002": {
+    "disposition": "reproduced-live",
+    "why": "contradicted: random_walk steps across graphs"
+   },
+   "F-1502": {
+    "disposition": "reproduced-live",
+    "why": "contradicted: the reifier node of a named graph's edge answers in the default graph"
+   },
+   "F-1507": {
+    "disposition": "reproduced-live",
+    "why": "contradicted: the anchor lookup answers a node of that id from any graph"
+   },
+   "F-1603": {
+    "disposition": "reproduced-live",
+    "why": "contradicted: the generated GraphQL server mixes graphs in one answer"
+   },
+   "F-1701": {
+    "disposition": "reproduced-live",
+    "why": "contradicted: the SQL adapter's unscoped node and label reads merge graphs"
+   }
+  },
+  "SYS-I3": {
+   "F-0615": {
+    "disposition": "reproduced-live",
+    "why": "contradicted: a refused embedding batch leaves a new route and registry row"
+   },
+   "F-0704": {
+    "disposition": "reproduced-live",
+    "why": "contradicted: a refused index-handle build has already destroyed the old index"
+   },
+   "F-1511": {
+    "disposition": "reproduced-model",
+    "why": "contradicted (model): a register that fails after its upsert keeps the new settings"
+   },
+   "F-C0702": {
+    "disposition": "reproduced-live",
+    "why": "contradicted: a failed Insert/Delete rolls back the caller's whole transaction"
+   }
+  },
+  "SYS-I4": {
+   "F-1609": {
+    "disposition": "reproduced-live",
+    "why": "contradicted: the FHIR event route's writes are not all-or-nothing"
+   },
+   "F-C1501": {
+    "disposition": "confirmed-source",
+    "why": "contradicted (source): the task and the task id change in separate untransacted steps"
+   },
+   "F-C1502": {
+    "disposition": "reproduced-live",
+    "why": "contradicted: the node and its reifiers go in two transactions"
+   }
+  },
+  "SYS-I5": {
+   "F-1801": {
+    "disposition": "reproduced-live",
+    "why": "contradicted: a replacing restore lays the archive's ledger over the live one"
+   }
+  },
+  "SYS-I8": {
+   "F-1005": {
+    "disposition": "confirmed-source",
+    "why": "contradicted (source, non-indexed configuration): the interned snapshot lacks edges and says nothing"
+   }
+  },
+  "SYS-I9": {
+   "F-1506": {
+    "disposition": "confirmed-source",
+    "why": "contradicted: the refusal names a missing rdflib when rdflib is present"
+   },
+   "F-C1602": {
+    "disposition": "confirmed-source",
+    "why": "contradicted (source): server and connection failures are reported as client syntax errors"
+   }
+  },
+  "TXT-D1": {
+   "F-C0701": {
+    "disposition": "reproduced-live",
+    "why": "contradicted: index-structure words become stopwords of every index"
+   }
+  }
+ },
+ "model_only": {
+  "ERS-I3": {
+   "findings": [
+    "F-1201"
+   ],
+   "items": [
+    "mc:erasure-as-built",
+    "mc:erasure-reviewed",
+    "mc:C-core-m1-as-built-isolation-stmt-a",
+    "mc:C-core-m1-as-built-isolation-stmt-b",
+    "mc:C-core-m1-as-built-isolation-stmt-c"
+   ]
+  },
+  "RED-B1.1": {
+   "findings": [
+    "F-1302",
+    "F-C1201"
+   ],
+   "items": [
+    "mc:redaction-as-built-live",
+    "mc:redaction-reviewed",
+    "proved:theorem_begin_spares_live"
+   ]
+  },
+  "RED-B4.3": {
+   "findings": [
+    "F-1306"
+   ],
+   "items": [
+    "mc:retry-as-built",
+    "mc:retry-reviewed"
+   ]
+  },
+  "RED-B6.1": {
+   "findings": [
+    "F-1303"
+   ],
+   "items": [
+    "mc:redaction-as-built-audit",
+    "proved:theorem_l2_satisfies_l1"
+   ]
+  },
+  "RED-B7.1": {
+   "findings": [
+    "F-1303"
+   ],
+   "items": [
+    "mc:redaction-as-built-audit"
+   ]
+  },
+  "RED-B8": {
+   "findings": [
+    "F-C1303"
+   ],
+   "items": [
+    "proved:theorem_run_can_step"
+   ]
+  },
+  "RED-B8.1": {
+   "findings": [
+    "F-C1303"
+   ],
+   "items": [
+    "proved:theorem_run_bounded"
+   ]
+  },
+  "RPL-B1.1": {
+   "findings": [
+    "F-1304"
+   ],
+   "items": [
+    "proved:lemma_replay_tomb"
+   ]
+  },
+  "RPL-B3": {
+   "findings": [
+    "F-1305"
+   ],
+   "items": [
+    "proved:theorem_erase_then_redact",
+    "mc:redaction-reviewed"
+   ]
+  },
+  "RPL-I1": {
+   "findings": [
+    "F-1402"
+   ],
+   "items": [
+    "mc:readers-as-built",
+    "mc:readers-reviewed"
+   ]
+  },
+  "SNP-I3.6": {
+   "findings": [
+    "F-1801"
+   ],
+   "items": [
+    "mc:C-cmc-restore-reviewed"
+   ]
+  }
+ },
+ "notes": {
+  "ALG-B12.7": {
+   "new": "Timed (temporal) edges are left out until the next sync and no reader compares ^NKG(\"$meta\",\"builtFrom\") with the token (F-1005). Completion: live:C-b-10-live-nkg-f1005 is the indexed (default) configuration; F-1005 stands, by source, where the adjacency index is not declared.",
+   "old": "Timed (temporal) edges are left out until the next sync and no reader compares ^NKG(\"$meta\",\"builtFrom\") with the token (F-1005)."
+  },
+  "ERS-I2": {
+   "new": "ADR-0004's invariant. Checked live after every step of every scenario (L2 check \"live statement without its row\"). Completion: mc:C-core-m1-as-built-isolation-stmt-a/b/c check the as-built model sequentially (no concurrent erasure or commit), profiles a-c, exhaustive within bounds.",
+   "old": "ADR-0004's invariant. Checked live after every step of every scenario (L2 check \"live statement without its row\")."
+  },
+  "ERS-I3": {
+   "new": "The converse of ERS-I2. Fails when a commit into the graph lands between the erasure's row delete and its ledger cleanup: the cleanup kills the new edge's entry and the edge stays live. Completion: mc:C-core-m1-as-built-isolation-stmt-a/b/c check the as-built model sequentially (no concurrent erasure or commit), profiles a-c, exhaustive within bounds.",
+   "old": "The converse of ERS-I2. Fails when a commit into the graph lands between the erasure's row delete and its ledger cleanup: the cleanup kills the new edge's entry and the edge stays live."
+  },
+  "RED-I1": {
+   "new": "L1 shape_ok: each record is its original or that original's tombstone. Live: every position survives, added records belong to redaction revisions. Completion: mc:C-core-m1-as-built-isolation-stmt-a/b/c check the as-built model sequentially (no concurrent erasure or commit), profiles a-c, exhaustive within bounds.",
+   "old": "L1 shape_ok: each record is its original or that original's tombstone. Live: every position survives, added records belong to redaction revisions."
+  },
+  "RED-I2": {
+   "new": "SC-004. Live check is byte-for-byte on every record not matched by an independent oracle of the target rule. Completion: mc:C-core-m1-as-built-isolation-stmt-a/b/c check the as-built model sequentially (no concurrent erasure or commit), profiles a-c, exhaustive within bounds.",
+   "old": "SC-004. Live check is byte-for-byte on every record not matched by an independent oracle of the target rule."
+  },
+  "SNP-I3.6": {
+   "new": "Each archived node is set over the live one; live revisions past the archive's head stay; the next commit reuses their sequence numbers. Completion: mc:C-cmc-restore-reviewed checks the reviewed restore design (refuse divergent histories, keep marks), not the pin.",
+   "old": "Each archived node is set over the live one; live revisions past the archive's head stay; the next commit reuses their sequence numbers."
+  }
+ },
+ "rejected_findings": {
+  "F-0503 RPL-B3": "the cited paraphrase (replay equals the store when every write goes through the ledger) is not RPL-B3's text, which is about verify after erasure and redaction",
+  "F-0703 SYS-I8": "outcome intent-undecided (is a BM25 index a rebuilt store?)",
+  "F-0805 CYP-B6.7.6": "the finding says the matched-endpoint path, which this statement is about, is guarded",
+  "F-0814 CYP-I8.6": "the statement is about reads; the finding is AQL writes that ignore read-only mode",
+  "F-0814 CYP-I9.4": "the statement is about names in a Cypher query reaching SQL; the finding is AQL values pasted into Cypher text",
+  "F-0901 NAT-T5.16": "the statement holds as written (the class named for its own checksum runs); the checksum collision breaks NAT-I3, which already cites the finding",
+  "F-0905 NAT-T5.22": "the drop happens as stated; the race with running builds breaks NAT-I5, which already cites the finding",
+  "F-0909 NAT-T4.7": "the spec's reason is wrong; the statement describes what the code does",
+  "F-1008 ALG-I2": "every-graph mode names no graph; ALG-I2 is about a call that names one (ALG-B11.2 carries the finding)",
+  "F-1013 ALG-I2": "the reproduced branch is a table outside the IVG schema, not a graph mix",
+  "F-1013 ALG-I3": "the reproduced branch is a table outside the IVG schema, not a graph mix",
+  "F-1107 LED-B4.9.1": "cited for context (the size limit); the defect is the revision kind (LED-B4.9.2)",
+  "F-1503 SYS-I2": "SYS-I2 is about answers; the finding is a delete across graphs",
+  "F-C0801 CYP-I6.4": "outcome intent-undecided",
+  "F-C0801 SYS-I8": "outcome intent-undecided",
+  "F-C0901 NAT-T5.16": "the cited paraphrase (the class written for its own shape) differs from the statement's text (the class named for its own checksum), which holds",
+  "F-C1202 ERS-B1.1": "the statement says erasure removes the graph's index entries; the finding is over-removal of a concurrent edge's entries, which the statement does not deny",
+  "F-C1601 API-T8.3": "the statement (each session opens its own connection) holds; the defect is release",
+  "F-C1801 SNP-Q1.17": "a question makes no claim that a finding could contradict"
+ },
+ "rejected_runs": {
+  "b-08-live-footprints CYP-I8.6": "named only as 'I8.6-read'; the run does not say its reads ran in read-only mode, which is what the statement is about",
+  "cmc-register-as-built-links SYS-I3": "a universal axiom; one command's model does not establish it (a finding can refute it, a confirming model cannot prove it)",
+  "cmc-register-reviewed SYS-I3": "a universal axiom; one command's reviewed model does not establish it",
+  "cmc-restore-reviewed SNP-B3.7": "the statement describes as-built behaviour (a restore puts redacted content back) that the reviewed model forbids",
+  "cmc-snap-reviewed SNP-Q1.17": "a question makes no claim; the run checks one reviewed answer",
+  "cmc-snap-reviewed SYS-P2": "a premise the model assumes, not a property it checks",
+  "live-erase-vs-commit-emptygraph ERS-I3": "the run says the F-1201 window was not reached",
+  "live-erase-vs-commit-fk ERS-I3": "the run says the F-1201 window was not reached"
+ },
+ "restatements_updated": [
+  "TXT-D1a",
+  "TXT-D1b"
+ ],
+ "runs": {
+  "ALG-B1.5": [
+   "live:C-b-10-live-refusals"
+  ],
+  "ALG-B10.6": [
+   "live:C-b-10-live-refusals"
+  ],
+  "ALG-B12.7": [
+   "live:C-b-10-live-nkg-f1005"
+  ],
+  "ALG-B2.10": [
+   "live:C-b-10-live-refusals"
+  ],
+  "ALG-B2.13": [
+   "live:C-b-10-live-refusals"
+  ],
+  "ALG-B2.2": [
+   "live:C-b-10-live-refusals"
+  ],
+  "ALG-B2.8": [
+   "live:C-b-10-live-refusals"
+  ],
+  "ALG-B2.9": [
+   "live:C-b-10-live-refusals"
+  ],
+  "ALG-B5.10": [
+   "live:C-b-10-live-refusals"
+  ],
+  "ALG-B5.17": [
+   "live:C-b-10-live-refusals"
+  ],
+  "ALG-B5.22": [
+   "live:C-b-10-live-refusals"
+  ],
+  "ALG-B5.3": [
+   "live:C-b-10-live-refusals"
+  ],
+  "ALG-B6.7": [
+   "live:C-b-10-live-refusals"
+  ],
+  "ALG-B8.10": [
+   "live:C-b-10-live-refusals"
+  ],
+  "CYP-I6.3": [
+   "live:C-b-08-live-footprints"
+  ],
+  "CYP-I6.4": [
+   "live:C-b-08-live-footprints"
+  ],
+  "CYP-X6.5": [
+   "live:C-b-08-live-footprints"
+  ],
+  "ERS-I1": [
+   "live:C-live-erase-vs-commit-fk"
+  ],
+  "ERS-I2": [
+   "mc:C-core-m1-as-built-isolation-stmt-a",
+   "mc:C-core-m1-as-built-isolation-stmt-b",
+   "mc:C-core-m1-as-built-isolation-stmt-c"
+  ],
+  "ERS-I3": [
+   "mc:C-core-m1-as-built-isolation-stmt-a",
+   "mc:C-core-m1-as-built-isolation-stmt-b",
+   "mc:C-core-m1-as-built-isolation-stmt-c"
+  ],
+  "INT-C1.2": [
+   "live:C-c15-live-refusals"
+  ],
+  "INT-C1.7": [
+   "live:C-c15-live-refusals"
+  ],
+  "INT-C3.4": [
+   "live:C-c15-live-refusals"
+  ],
+  "INT-C4.3": [
+   "live:C-c15-live-refusals"
+  ],
+  "INT-C4.5": [
+   "live:C-c15-live-refusals"
+  ],
+  "INT-C5.1": [
+   "live:C-c15-live-refusals"
+  ],
+  "INT-F1.13": [
+   "live:C-c15-live-refusals"
+  ],
+  "INT-F10.5": [
+   "live:C-c15-live-register"
+  ],
+  "INT-F3.2": [
+   "live:C-c15-live-register"
+  ],
+  "INT-F3.5": [
+   "live:C-c15-live-refusals"
+  ],
+  "INT-F3.6": [
+   "live:C-c15-live-refusals"
+  ],
+  "INT-F8.1": [
+   "live:C-c15-live-register"
+  ],
+  "INT-F8.2": [
+   "live:C-c15-live-refusals"
+  ],
+  "INT-F8.4": [
+   "live:C-c15-live-refusals"
+  ],
+  "INT-M1.12": [
+   "live:C-c15-live-refusals"
+  ],
+  "INT-M1.2": [
+   "live:C-c15-live-refusals"
+  ],
+  "INT-M1.3": [
+   "live:C-c15-live-refusals"
+  ],
+  "INT-M1.6": [
+   "live:C-c15-live-refusals"
+  ],
+  "INT-M1.8": [
+   "live:C-c15-live-refusals"
+  ],
+  "INT-R1.18": [
+   "live:C-c15-live-refusals"
+  ],
+  "INT-S1.11": [
+   "live:C-c15-live-refusals"
+  ],
+  "INT-S1.4": [
+   "live:C-c15-live-refusals"
+  ],
+  "INT-S1.6": [
+   "live:C-c15-live-refusals"
+  ],
+  "INT-V1.10": [
+   "live:C-c15-live-refusals"
+  ],
+  "INT-V1.4": [
+   "live:C-c15-live-refusals"
+  ],
+  "RED-I1": [
+   "mc:C-core-m1-as-built-isolation-stmt-a",
+   "mc:C-core-m1-as-built-isolation-stmt-b",
+   "mc:C-core-m1-as-built-isolation-stmt-c"
+  ],
+  "RED-I2": [
+   "mc:C-core-m1-as-built-isolation-stmt-a",
+   "mc:C-core-m1-as-built-isolation-stmt-b",
+   "mc:C-core-m1-as-built-isolation-stmt-c"
+  ],
+  "SNP-I2": [
+   "live:C-c18-live-save-footprint"
+  ],
+  "SNP-I3.6": [
+   "mc:C-cmc-restore-reviewed"
+  ],
+  "SNP-T1.11": [
+   "live:C-c18-live-save-footprint"
+  ],
+  "SNP-T3.1": [
+   "live:C-c18-live-restore-footprint"
+  ],
+  "SNP-X2.1": [
+   "live:C-c18-live-refusals"
+  ],
+  "SNP-X2.2": [
+   "live:C-c18-live-refusals"
+  ]
+ },
+ "untagged_reproduced_findings": {
+  "F-0104": "its intended text names no statement",
+  "F-0110": "its intended text names no statement",
+  "F-0708": "its intended text names no statement",
+  "F-1013": "every statement it names was rejected (FINDING_REJECT)",
+  "F-C0101": "its intended text names no statement",
+  "F-C0301": "its intended text names no statement",
+  "F-C0302": "its intended text names no statement",
+  "F-C0402": "its intended text names no statement",
+  "F-C0501": "its intended text names no statement",
+  "F-C0601": "its intended text names no statement",
+  "F-C0602": "its intended text names no statement",
+  "F-C0603": "its intended text names no statement",
+  "F-C0604": "its intended text names no statement",
+  "F-C0605": "its intended text names no statement",
+  "F-C0801": "every statement it names was rejected (FINDING_REJECT)",
+  "F-C1202": "every statement it names was rejected (FINDING_REJECT)",
+  "F-C1302": "its intended text names no statement",
+  "F-C1601": "every statement it names was rejected (FINDING_REJECT)",
+  "F-C1604": "its intended text names no statement",
+  "F-C1701": "its intended text names no statement",
+  "F-C1703": "its intended text names no statement",
+  "F-C1704": "its intended text names no statement",
+  "F-C1801": "every statement it names was rejected (FINDING_REJECT)",
+  "F-C1803": "its intended text names no statement"
+ }
+}

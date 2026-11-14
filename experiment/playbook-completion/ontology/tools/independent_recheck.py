@@ -8,10 +8,16 @@
    is the statement, an ancestor, or an earlier row with the same parent, and must not come before the primary.
    Run with the pattern of check-literal-scope.py and with a y/ies + hyphen/space superset. Expect 0 and 0.
 2. Each restatement: kind D, same module, text equal to the primary's, Notes "Same meaning as <primary>", after it.
-3. Preservation: every row of experiment/playbook-uplift/ontology is present with the same id, kind, evidence,
-   source and notes, in the same relative order; parent and text differ only where repairs.json says so; the file
-   text outside the Glossary and Statements tables (cells included) is unchanged.
-Exit 0 only if all three hold.
+3. Preservation: every row of experiment/playbook-uplift/ontology is present with the same id, kind and source, in
+   the same relative order; parent and text differ only where repairs.json says so; evidence is the original
+   evidence plus exactly the items evidence-additions.json lists, with [model-only] only where it lists it; notes
+   are unchanged or as evidence-additions.json lists; the file text outside the Glossary and Statements tables
+   (cells included) is unchanged.
+4. Evidence (review R-05), re-derived from the raw audit and registry files: a statement citing a finding whose
+   audit disposition is reproduced-live, reproduced-test or confirmed-source has [model-only] on every proved:/mc:
+   item; every restatement's evidence equals its primary's; every finding id and C- run reference resolves (a C-
+   reference needs a record of the same kind with result pass).
+Exit 0 only if all four hold.
 """
 import json
 import re
@@ -19,6 +25,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[4]
+COMP = ROOT / "experiment" / "playbook-completion"
 NEW = ROOT / "experiment" / "playbook-completion" / "ontology"
 OLD = ROOT / "experiment" / "playbook-uplift" / "ontology"
 
@@ -51,6 +58,50 @@ def superset(t):
         re.escape(last) + r"(?:s|es)?"
     return re.compile(r"(?<![A-Za-z0-9-])" + r"[\s-]+".join([re.escape(x) for x in w[:-1]] + [tail])
                       + r"(?![A-Za-z0-9-])", re.I)
+
+
+def audit_findings():
+    out = {}
+    for p in sorted((COMP / "findings" / "audit").glob("*.json")):
+        data = json.loads(p.read_text(encoding="utf-8"))
+        items = data if isinstance(data, list) else data.get("findings", []) + data.get("new_findings", [])
+        for f in items:
+            out[f["id"]] = f.get("disposition")
+    return out
+
+
+def evidence_checks(mods, every):
+    disp = audit_findings()
+    original = set()
+    old = ROOT / "experiment" / "playbook-uplift"
+    for p in [old / "FINDINGS.md", *sorted((old / "findings").glob("*.md"))]:
+        if p.exists():
+            original |= set(re.findall(r"^#{2,4}\s+(F-\d+[a-z]?)\b", p.read_text(encoding="utf-8"), re.M))
+    runs = {p.stem: json.loads(p.read_text(encoding="utf-8")) for p in (COMP / "evidence" / "runs").glob("*.json")}
+    want = {"mc": "mc", "live": "live", "trace": "trace", "run": "run", "proved": "proof"}
+    out = []
+    for name, g, st in mods:
+        for row in g:
+            for x in [y for y in re.split(r"[ ,]+", row[2]) if y] if len(row) > 2 else []:
+                if every[x][2][4] != every[row[1]][2][4]:
+                    out.append(f"{x}: restatement evidence differs from {row[1]}")
+        for r in st:
+            items = [x.strip() for x in r[4].split(";") if x.strip()]
+            fids = [x[8:] for x in items if x.startswith("finding:")]
+            for f in fids:
+                if f not in disp and f not in original:
+                    out.append(f"{r[0]}: finding {f} resolves nowhere")
+            product = [f for f in fids if disp.get(f) in ("reproduced-live", "reproduced-test", "confirmed-source")]
+            for x in items:
+                kind = x.split(":")[0]
+                if product and kind in ("proved", "mc") and not x.endswith(" [model-only]"):
+                    out.append(f"{r[0]}: {x} beside {product} lacks [model-only]")
+                m = re.match(r"^(mc|live|trace|run|proved):C-([^ ]+)", x)
+                if m and m.group(1) != "proved":
+                    rec = runs.get(m.group(2))
+                    if not rec or rec.get("kind") != want[m.group(1)] or rec.get("result") != "pass":
+                        out.append(f"{r[0]}: {x} has no passing {want[m.group(1)]} record")
+    return out
 
 
 def main():
@@ -98,6 +149,13 @@ def main():
           f"{len(problems)} restatement problem(s); {len(every)} statements")
     for p in problems[:20]:
         print("  ", p)
+    ev_problems = evidence_checks(mods, every)
+    print(f"evidence: {len(ev_problems)} problem(s) (model-only rule, restatement evidence, finding and C- run "
+          f"references)")
+    for p in ev_problems[:20]:
+        print("  ", p)
+    problems += ev_problems
+    adds = json.loads((NEW / "evidence-additions.json").read_text(encoding="utf-8"))
     rep = json.loads((NEW / "repairs.json").read_text(encoding="utf-8"))["statements"]
     moved = {k for k, v in rep.items() if "reparent" in v["change"]}
     reworded = {k for k, v in rep.items() if "reword" in v["change"]}
@@ -114,8 +172,24 @@ def main():
             if d is None:
                 bad.append(f"{k} missing")
                 continue
-            if [r[0], r[2], r[4], r[5], r[6]] != [d[0], d[2], d[4], d[5], d[6]]:
-                bad.append(f"{k}: id/kind/evidence/source/notes changed")
+            if [r[0], r[2], r[5]] != [d[0], d[2], d[5]]:
+                bad.append(f"{k}: id/kind/source changed")
+            old_items = [x.strip() for x in r[4].split(";") if x.strip()]
+            new_items = [x.strip() for x in d[4].split(";") if x.strip()]
+            qualified = set(adds["model_only"].get(k, {}).get("items", []))
+            base = [re.sub(r" \[model-only\]$", "", x) for x in new_items[:len(old_items)]]
+            appended = new_items[len(old_items):]
+            listed = [f"finding:{f}" for f in adds["findings"].get(k, {})] + adds["runs"].get(k, [])
+            if base != old_items:
+                bad.append(f"{k}: original evidence items changed")
+            if sorted(re.sub(r" \[model-only\]$", "", x) for x in appended) != sorted(
+                    x for x in listed if x not in old_items):
+                bad.append(f"{k}: added evidence differs from evidence-additions.json")
+            for x in new_items:
+                if x.endswith("[model-only]") and re.sub(r" \[model-only\]$", "", x) not in qualified:
+                    bad.append(f"{k}: unrecorded [model-only] on {x}")
+            if r[6] != d[6] and adds["notes"].get(k, {}).get("new") != d[6]:
+                bad.append(f"{k}: notes changed without a record")
             if (r[1] != d[1]) != (k in moved) or (r[1] != d[1] and rep[k]["old_parent"] != r[1]):
                 bad.append(f"{k}: parent change not as recorded")
             if (r[3] != d[3]) != (k in reworded) or (r[3] != d[3] and rep[k]["old_text"] != r[3]):

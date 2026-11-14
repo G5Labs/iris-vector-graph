@@ -9,6 +9,7 @@ original submission (`experiment/playbook-uplift/`); `C-` references resolve aga
 
 - **proved**: a Verus proof over the L1/L2 models in `proofs/` (decisive run recorded in `evidence/runs.json`). Proofs are about models; where the code at the pin differs from the proved design, the statement also cites a finding.
 - **mc**: an explicit-state model check in `model/`, exhaustive only within the bounds the machine declares (see `MODELS.md`). A model is an executable twin, not the code.
+- **proved (model-only)**, **mc (model-only)**: the item carries `[model-only]` because the statement also cites a finding whose audit disposition (reproduced-live, reproduced-test or confirmed-source, in `experiment/playbook-completion/findings/audit/`) shows the product at the pin violates it. The proof or model check is about a modelled design; it is not evidence that the product holds the statement. The checker rejects an unqualified proved:/mc: item beside such a finding.
 - **trace**: a real execution trace replayed through a machine (completion runs only).
 - **live**: observed on IRIS Community 2026.1 in the dedicated container (logs under `$RUN_DIR`).
 - **run**: an upstream test set executed here. **ran**: a cited upstream test (`tested:`) that passed in one of those runs. **tested**: an upstream test that asserts the statement; not necessarily run here.
@@ -16,7 +17,7 @@ original submission (`experiment/playbook-uplift/`); `C-` references resolve aga
 
 ## Gate
 
-**PASS**: 3877 statements in 19 modules, 904 cells, 343 glossary terms (860 local restatements). Every parent resolves, every statement reads at grade 8 or below, every module glossary term a statement uses is defined by the statement, an ancestor or an earlier statement with the same parent (literal rule, HD-0001) and never before its definition, every evidence reference resolves, and every cell is defined or assigned to the human.
+**PASS**: 3877 statements in 19 modules, 904 cells, 343 glossary terms (860 local restatements). Every parent resolves, every statement reads at grade 8 or below, every module glossary term a statement uses is defined by the statement, an ancestor or an earlier statement with the same parent (literal rule, HD-0001) and never before its definition, every evidence reference resolves, every proof or model-check item beside a finding that shows the product violates the statement is marked model-only, and every cell is defined or assigned to the human.
 
 ## Modules
 
@@ -47,110 +48,156 @@ original submission (`experiment/playbook-uplift/`); `C-` references resolve aga
 
 Count of statements carrying each evidence kind (a statement may carry several). Local restatements (860) repeat their primary definition and its evidence, so they are left out of this table, the combinations and the listings below.
 
-| Module | proved | mc | trace | live | run | ran | tested | inspected | assumed | open | finding | not-implemented |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| SYS | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 43 | 4 | 0 | 0 | 0 |
-| INS | 0 | 0 | 0 | 0 | 0 | 77 | 87 | 177 | 13 | 3 | 8 | 0 |
-| GID | 0 | 0 | 0 | 0 | 0 | 15 | 38 | 104 | 5 | 2 | 10 | 5 |
-| WRT | 0 | 0 | 0 | 0 | 0 | 16 | 45 | 152 | 10 | 2 | 10 | 0 |
-| ADJ | 0 | 0 | 0 | 0 | 0 | 25 | 94 | 199 | 18 | 2 | 12 | 0 |
-| TMP | 0 | 0 | 0 | 0 | 0 | 28 | 107 | 209 | 9 | 2 | 14 | 0 |
-| VEC | 0 | 0 | 0 | 0 | 0 | 62 | 110 | 238 | 12 | 4 | 22 | 0 |
-| TXT | 0 | 0 | 0 | 0 | 0 | 21 | 71 | 172 | 12 | 5 | 15 | 1 |
-| CYP | 0 | 0 | 0 | 0 | 0 | 81 | 102 | 218 | 11 | 4 | 33 | 0 |
-| NAT | 0 | 0 | 0 | 0 | 0 | 35 | 69 | 169 | 12 | 4 | 9 | 0 |
-| ALG | 0 | 0 | 0 | 0 | 0 | 46 | 79 | 198 | 9 | 4 | 18 | 0 |
-| LED | 0 | 0 | 0 | 0 | 0 | 28 | 91 | 213 | 12 | 5 | 14 | 1 |
-| ERS | 1 | 3 | 0 | 9 | 0 | 2 | 9 | 21 | 2 | 1 | 3 | 0 |
-| RED | 10 | 8 | 0 | 33 | 0 | 21 | 21 | 41 | 7 | 4 | 10 | 0 |
-| RPL | 5 | 2 | 0 | 9 | 0 | 7 | 7 | 18 | 5 | 1 | 4 | 0 |
-| INT | 0 | 0 | 0 | 0 | 0 | 40 | 92 | 235 | 14 | 4 | 12 | 0 |
-| API | 0 | 0 | 0 | 0 | 0 | 46 | 57 | 189 | 13 | 5 | 17 | 1 |
-| OPS | 0 | 0 | 0 | 0 | 0 | 94 | 101 | 243 | 27 | 5 | 15 | 0 |
-| SNP | 0 | 0 | 0 | 0 | 0 | 21 | 40 | 85 | 3 | 3 | 8 | 0 |
-| **all** | 16 | 13 | 0 | 51 | 0 | 665 | 1220 | 2924 | 198 | 60 | 234 | 8 |
+| Module | proved | proved (model-only) | mc | mc (model-only) | trace | live | run | ran | tested | inspected | assumed | open | finding | not-implemented |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| SYS | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 43 | 4 | 0 | 8 | 0 |
+| INS | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 77 | 87 | 177 | 13 | 3 | 8 | 0 |
+| GID | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 15 | 38 | 104 | 5 | 2 | 10 | 5 |
+| WRT | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 16 | 45 | 152 | 10 | 2 | 10 | 0 |
+| ADJ | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 25 | 94 | 199 | 18 | 2 | 12 | 0 |
+| TMP | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 28 | 107 | 209 | 9 | 2 | 14 | 0 |
+| VEC | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 62 | 110 | 238 | 12 | 4 | 22 | 0 |
+| TXT | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 21 | 71 | 172 | 12 | 5 | 16 | 1 |
+| CYP | 0 | 0 | 0 | 0 | 0 | 3 | 0 | 81 | 102 | 218 | 11 | 4 | 34 | 0 |
+| NAT | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 35 | 69 | 169 | 12 | 4 | 9 | 0 |
+| ALG | 0 | 0 | 0 | 0 | 0 | 14 | 0 | 46 | 79 | 198 | 9 | 4 | 19 | 0 |
+| LED | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 28 | 91 | 213 | 12 | 5 | 15 | 1 |
+| ERS | 1 | 0 | 2 | 1 | 0 | 10 | 0 | 2 | 9 | 21 | 2 | 1 | 3 | 0 |
+| RED | 6 | 4 | 6 | 4 | 0 | 33 | 0 | 21 | 21 | 41 | 7 | 4 | 12 | 0 |
+| RPL | 3 | 2 | 0 | 2 | 0 | 9 | 0 | 7 | 7 | 18 | 5 | 1 | 5 | 0 |
+| INT | 0 | 0 | 0 | 0 | 0 | 25 | 0 | 40 | 92 | 235 | 14 | 4 | 14 | 0 |
+| API | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 46 | 57 | 189 | 13 | 5 | 18 | 1 |
+| OPS | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 94 | 101 | 243 | 27 | 5 | 16 | 0 |
+| SNP | 0 | 0 | 0 | 1 | 0 | 5 | 0 | 21 | 40 | 85 | 3 | 3 | 10 | 0 |
+| **all** | 10 | 6 | 8 | 8 | 0 | 99 | 0 | 665 | 1220 | 2924 | 198 | 60 | 255 | 8 |
+
+## Model evidence and product evidence
+
+Statements (restatements left out). Product evidence: inspected, tested, ran, run, live or trace. Model evidence: proved or mc. A product finding is a cited finding whose audit disposition is reproduced-live, reproduced-test or confirmed-source.
+
+| Module | Statements | Product evidence | Model evidence | of which model-only | Model evidence, no product evidence | Product finding | Product finding and model evidence |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| SYS | 47 | 43 | 0 | 0 | 0 | 8 | 0 |
+| INS | 189 | 179 | 0 | 0 | 0 | 8 | 0 |
+| GID | 104 | 104 | 0 | 0 | 0 | 10 | 0 |
+| WRT | 152 | 152 | 0 | 0 | 0 | 10 | 0 |
+| ADJ | 199 | 199 | 0 | 0 | 0 | 10 | 0 |
+| TMP | 209 | 209 | 0 | 0 | 0 | 14 | 0 |
+| VEC | 245 | 238 | 0 | 0 | 0 | 22 | 0 |
+| TXT | 173 | 172 | 0 | 0 | 0 | 16 | 0 |
+| CYP | 218 | 218 | 0 | 0 | 0 | 34 | 0 |
+| NAT | 170 | 169 | 0 | 0 | 0 | 7 | 0 |
+| ALG | 207 | 198 | 0 | 0 | 0 | 18 | 0 |
+| LED | 226 | 213 | 0 | 0 | 0 | 15 | 0 |
+| ERS | 27 | 24 | 4 | 1 | 2 | 3 | 1 |
+| RED | 65 | 59 | 14 | 6 | 2 | 12 | 6 |
+| RPL | 28 | 25 | 6 | 3 | 0 | 5 | 3 |
+| INT | 238 | 235 | 0 | 0 | 0 | 13 | 0 |
+| API | 189 | 189 | 0 | 0 | 0 | 15 | 0 |
+| OPS | 246 | 243 | 0 | 0 | 0 | 16 | 0 |
+| SNP | 85 | 85 | 1 | 1 | 0 | 10 | 1 |
+| **all** | 3017 | 2954 | 25 | 11 | 4 | 246 | 11 |
 
 ## Evidence combinations
 
 | Combination | Statements |
 |---|---:|
-| inspected | 1376 |
-| ran+tested+inspected | 606 |
-| tested+inspected | 522 |
-| inspected+finding | 173 |
+| inspected | 1346 |
+| ran+tested+inspected | 585 |
+| tested+inspected | 512 |
+| inspected+finding | 181 |
 | inspected+assumed | 92 |
 | assumed | 47 |
 | inspected+open | 43 |
-| tested+inspected+assumed | 21 |
-| ran+tested+inspected+finding | 16 |
+| live+ran+tested+inspected | 26 |
+| live+inspected | 25 |
+| ran+tested+inspected+finding | 20 |
+| tested+inspected+assumed | 20 |
 | inspected+assumed+finding | 15 |
-| ran+tested+inspected+assumed | 14 |
+| ran+tested+inspected+assumed | 13 |
 | open | 11 |
-| live+ran+tested+inspected | 10 |
-| tested+inspected+finding | 9 |
-| live+inspected | 6 |
+| tested+inspected+finding | 11 |
+| live+tested+inspected | 9 |
 | inspected+not-implemented | 5 |
 | live+finding | 4 |
-| proved+live+ran+tested | 4 |
 | inspected+finding+not-implemented | 3 |
+| live+inspected+finding | 3 |
 | live+ran+tested | 3 |
-| mc+live+finding | 3 |
-| proved+live+ran+tested+inspected | 3 |
+| mc (model-only)+live+finding | 3 |
 | inspected+open+finding | 2 |
 | live | 2 |
 | live+assumed | 2 |
-| proved+live | 2 |
+| live+ran+tested+inspected+finding | 2 |
+| proved+live+ran+tested | 2 |
+| proved+live+ran+tested+inspected | 2 |
 | ran+tested+assumed | 2 |
-| live+inspected+finding | 1 |
 | live+ran+tested+assumed | 1 |
 | live+ran+tested+finding | 1 |
-| live+ran+tested+inspected+finding | 1 |
+| live+ran+tested+inspected+assumed | 1 |
 | live+tested | 1 |
-| live+tested+inspected | 1 |
-| mc+finding | 1 |
+| live+tested+inspected+assumed | 1 |
+| mc (model-only)+finding | 1 |
+| mc (model-only)+inspected+finding | 1 |
 | mc+inspected | 1 |
 | mc+live | 1 |
 | mc+live+inspected | 1 |
 | mc+open | 1 |
 | open+finding | 1 |
-| proved | 1 |
-| proved+mc+live+assumed+open+finding | 1 |
-| proved+mc+live+finding | 1 |
-| proved+mc+live+ran+tested+assumed+finding | 1 |
+| proved (model-only)+finding | 1 |
+| proved (model-only)+live+ran+tested+finding | 1 |
+| proved (model-only)+live+ran+tested+inspected+finding | 1 |
+| proved (model-only)+mc (model-only)+live+assumed+open+finding | 1 |
+| proved (model-only)+mc (model-only)+live+finding | 1 |
+| proved (model-only)+mc (model-only)+live+ran+tested+assumed+finding | 1 |
+| proved+live | 1 |
+| proved+mc+live | 1 |
+| proved+mc+live+ran+tested | 1 |
 | proved+mc+live+ran+tested+inspected | 1 |
 | proved+mc+open | 1 |
 | proved+ran+tested+inspected | 1 |
 | ran+tested+inspected+assumed+finding | 1 |
 | tested+assumed | 1 |
 
-## Proof-only (2)
+## Proof-only (1)
 
 Proved, with no test, trace or live observation behind it.
 
 | Id | Statement | Evidence |
 |---|---|---|
 | RED-Q1 | Should the opening check and the redaction marker share one locked step? | open:HD-1301; proved:theorem_l2_satisfies_l1; mc:refinement-reviewed |
-| RED-B8.1 | Without new commits, a redaction run takes a bounded number of steps. | proved:theorem_run_bounded |
 
-## Proved and observed live (13)
+## Proved and observed live (8)
 
-Proved and also observed on live IRIS.
+Proved (not model-only) and also observed on live IRIS.
 
 | Id | Statement | Evidence |
 |---|---|---|
 | ERS-B3 | After an erasure alone, a replay of the ledger still holds what was erased. | proved:theorem_erasure_alone_diverges; tested:tests/integration/test_256_ledger_redaction_e2e.py::test_verify_diverges_after_the_erase_alone_and_is_equal_after_the_redaction; live:native-mixed_tenant_flow |
-| RED-B1.1 | Redaction never makes a tombstone of the record of live content. | finding:F-1302; live:native-commit_in_unmarked_window; mc:redaction-as-built-live; mc:redaction-reviewed; proved:theorem_begin_spares_live; assumed:P-1311; open:HD-1201 |
 | RED-B2 | Each record of the redaction target becomes a tombstone in its own place. | inspected:iris_src/src/Graph/KG/LedgerRedact.cls:332-347; tested:tests/integration/test_256_ledger_redaction_e2e.py::test_a_revision_wholly_in_tenant_a_keeps_its_shape_and_loses_its_metadata; live:native-mixed_tenant_flow; proved:theorem_l2_satisfies_l1 |
-| RED-I1 | Redaction keeps each revision and the place of each record. | live:native-mixed_tenant_flow; live:native-killed_at_random; proved:theorem_l2_satisfies_l1 |
-| RED-I2 | A record that no redaction target holds keeps its bytes. | tested:tests/integration/test_256_ledger_redaction_e2e.py::test_tenant_b_records_are_byte_identical; live:native-mixed_tenant_flow; proved:theorem_isolation |
+| RED-I1 | Redaction keeps each revision and the place of each record. | live:native-mixed_tenant_flow; live:native-killed_at_random; proved:theorem_l2_satisfies_l1; mc:C-core-m1-as-built-isolation-stmt-a; mc:C-core-m1-as-built-isolation-stmt-b; mc:C-core-m1-as-built-isolation-stmt-c |
+| RED-I2 | A record that no redaction target holds keeps its bytes. | tested:tests/integration/test_256_ledger_redaction_e2e.py::test_tenant_b_records_are_byte_identical; live:native-mixed_tenant_flow; proved:theorem_isolation; mc:C-core-m1-as-built-isolation-stmt-a; mc:C-core-m1-as-built-isolation-stmt-b; mc:C-core-m1-as-built-isolation-stmt-c |
 | RED-B3 | A revision with any tombstone loses all of its free text. | inspected:iris_src/src/Graph/KG/LedgerRedact.cls:349-378; tested:tests/integration/test_256_ledger_redaction_e2e.py::test_a_spanning_revision_keeps_tenant_b_records_and_loses_its_metadata; live:native-mixed_tenant_flow; proved:theorem_l2_satisfies_l1; mc:redaction-reviewed |
 | RED-B4 | A retry key of a redacted revision can never be used again. | inspected:iris_src/src/Graph/KG/Ledger.cls:466-473; inspected:iris_src/src/Graph/KG/LedgerRedact.cls:359-365; tested:tests/integration/test_256_ledger_redaction_e2e.py::test_a_retry_with_a_redacted_idempotency_key_is_refused; live:native-retries; live:native-mutants; proved:theorem_retry_refused |
-| RED-B6.1 | Two redaction runs of two targets that start at once must not both run. | finding:F-1303; live:native-two_targets_at_once; mc:redaction-as-built-audit; proved:theorem_l2_satisfies_l1 |
-| RED-B8 | Calling the same redaction again finishes a stopped or paused run. | inspected:iris_src/src/Graph/KG/LedgerRedact.cls:182-239; tested:tests/integration/test_256_ledger_redaction_e2e.py::test_a_paused_redaction_is_honoured_and_resumes; live:native-paused_and_resumed; live:native-killed_mid_batch; live:native-disabled_mid_run; proved:theorem_run_can_step |
-| RPL-B1.1 | After a redaction, replay gives what it gave before, less the tenant. | proved:lemma_replay_tomb; live:native-mixed_tenant_flow; tested:tests/integration/test_256_ledger_redaction_e2e.py::test_replay_to_every_seq_holds_no_tenant_a_content |
-| RPL-B3 | Once a tenant is erased and redacted, the verify call says equal again. | proved:theorem_erase_then_redact; tested:tests/integration/test_256_ledger_redaction_e2e.py::test_verify_diverges_after_the_erase_alone_and_is_equal_after_the_redaction; live:native-mixed_tenant_flow; live:native-killed_mid_batch; live:native-killed_at_random; live:native-paused_and_resumed; mc:redaction-reviewed; assumed:P-1310; finding:F-1305 |
 | RPL-B3.1 | Saves outside the tenant between the two steps keep this true. | proved:theorem_commit_between; live:native-paused_and_resumed |
 | RPL-B4 | After erasure alone, the verify call says the two do not match. | proved:theorem_erasure_alone_diverges; tested:tests/integration/test_256_ledger_redaction_e2e.py::test_verify_diverges_after_the_erase_alone_and_is_equal_after_the_redaction; live:native-mixed_tenant_flow |
+
+## Model-only proofs and model checks (11)
+
+Proved or model-checked as a design while a cited finding shows the product at the pin violates the statement (items marked [model-only]).
+
+| Id | Statement | Evidence |
+|---|---|---|
+| ERS-I3 | After an erasure, each live edge the ledger saved still has its statement entry. | finding:F-1201; mc:erasure-as-built [model-only]; mc:erasure-reviewed [model-only]; mc:C-core-m1-as-built-isolation-stmt-a [model-only]; mc:C-core-m1-as-built-isolation-stmt-b [model-only]; mc:C-core-m1-as-built-isolation-stmt-c [model-only] |
+| RED-B1.1 | Redaction never makes a tombstone of the record of live content. | finding:F-1302; live:native-commit_in_unmarked_window; mc:redaction-as-built-live [model-only]; mc:redaction-reviewed [model-only]; proved:theorem_begin_spares_live [model-only]; assumed:P-1311; open:HD-1201; finding:F-C1201; finding:F-C1301 |
+| RED-B4.3 | A retry sent between erasure and redaction must not bring the content back. | finding:F-1306; mc:retry-as-built [model-only]; mc:retry-reviewed [model-only]; live:native-retry_between_erase_and_redact |
+| RED-B6.1 | Two redaction runs of two targets that start at once must not both run. | finding:F-1303; live:native-two_targets_at_once; mc:redaction-as-built-audit [model-only]; proved:theorem_l2_satisfies_l1 [model-only] |
+| RED-B7.1 | Its counts belong to its own redaction target only. | finding:F-1303; live:native-two_targets_at_once; mc:redaction-as-built-audit [model-only] |
+| RED-B8 | Calling the same redaction again finishes a stopped or paused run. | inspected:iris_src/src/Graph/KG/LedgerRedact.cls:182-239; tested:tests/integration/test_256_ledger_redaction_e2e.py::test_a_paused_redaction_is_honoured_and_resumes; live:native-paused_and_resumed; live:native-killed_mid_batch; live:native-disabled_mid_run; proved:theorem_run_can_step [model-only]; finding:F-C1303 |
+| RED-B8.1 | Without new commits, a redaction run takes a bounded number of steps. | proved:theorem_run_bounded [model-only]; finding:F-C1303 |
+| RPL-B1.1 | After a redaction, replay gives what it gave before, less the tenant. | proved:lemma_replay_tomb [model-only]; live:native-mixed_tenant_flow; tested:tests/integration/test_256_ledger_redaction_e2e.py::test_replay_to_every_seq_holds_no_tenant_a_content; finding:F-1304 |
+| RPL-B3 | Once a tenant is erased and redacted, the verify call says equal again. | proved:theorem_erase_then_redact [model-only]; tested:tests/integration/test_256_ledger_redaction_e2e.py::test_verify_diverges_after_the_erase_alone_and_is_equal_after_the_redaction; live:native-mixed_tenant_flow; live:native-killed_mid_batch; live:native-killed_at_random; live:native-paused_and_resumed; mc:redaction-reviewed [model-only]; assumed:P-1310; finding:F-1305 |
+| RPL-I1 | A record reader never returns a view of a redaction that is half done. | finding:F-1402; mc:readers-as-built [model-only]; mc:readers-reviewed [model-only]; live:native-reader_races_redaction |
+| SNP-I3.6 | After a restore, the ledger holds one history. Its records and its latest revision agree. | inspected:iris_src/src/Graph/KG/Ledger.cls:1-15; inspected:iris_src/src/Graph/KG/Ledger.cls:530-556; inspected:iris_vector_graph/_engine/snapshot.py:1679; finding:F-1801; mc:C-cmc-restore-reviewed [model-only] |
 
 ## Not implemented (8)
 
@@ -167,12 +214,20 @@ The intent states it; no code does it.
 | LED-B6.9 | When a graph holds two edges with the same tuple, each has its own statement id. A change can name either one. | not-implemented; inspected:iris_src/src/Graph/KG/LedgerApply.cls:144-157; inspected:iris_src/src/Graph/KG/LedgerApply.cls:159-169; inspected:iris_src/src/Graph/KG/LedgerGenesis.cls:38-48 |
 | API-B15.3 | An execution context would let a session touch one graph only. It is planned and not built. | not-implemented; inspected:api/main.py:118-138; inspected:iris_vector_graph/bolt_server.py:377-394 |
 
-## Findings (234)
+## Findings (255)
 
-The code disagrees with the statement (see the original FINDINGS.md).
+The code disagrees with the statement (original FINDINGS.md; F-C ids and every audit disposition in experiment/playbook-completion/findings/audit/).
 
 | Id | Statement | Evidence |
 |---|---|---|
+| SYS-D26 | Erasure removes a graph's content, or some of its nodes, from every store. | inspected:iris_src/src/Graph/KG/Eraser.cls:1-35; finding:F-1502 |
+| SYS-I1 | Each kind of fact has one owner, and only that owner writes it. | inspected:iris_src/src/Graph/KG/Adjacency.cls:1-20; inspected:iris_src/src/Graph/KG/GraphKey.cls:51-77; inspected:iris_src/src/Graph/KG/Eraser.cls:1-17; finding:F-1114 |
+| SYS-I2 | Content of one graph never shows up in an answer about another graph. | inspected:iris_src/src/Graph/KG/GraphKey.cls:51-77; inspected:iris_src/src/Graph/KG/Eraser.cls:113-125; finding:F-0106; finding:F-1002; finding:F-1502; finding:F-1507; finding:F-1603; finding:F-1701 |
+| SYS-I3 | A refused command leaves every store as it was. | inspected:iris_src/src/Graph/KG/Ledger.cls:397-415; inspected:iris_src/src/Graph/KG/LedgerRedact.cls:185-211; finding:F-0615; finding:F-0704; finding:F-C0702; finding:F-1511 |
+| SYS-I4 | A command that writes to more than one store writes to all of them or to none. | inspected:iris_src/src/Graph/KG/Eraser.cls:47-260; inspected:iris_src/src/Graph/KG/Ledger.cls:397-415; finding:F-C1501; finding:F-C1502; finding:F-1609 |
+| SYS-I5 | The ledger only grows. A saved record changes only when redaction turns it into a tombstone. | inspected:iris_src/src/Graph/KG/LedgerRevision.cls:77-123; inspected:iris_src/src/Graph/KG/LedgerRedact.cls:332-347; finding:F-1801 |
+| SYS-I8 | A store that is built from other stores either matches them or says it is out of date. | inspected:iris_src/src/Graph/KG/Adjacency.cls:20-35; finding:F-1005 |
+| SYS-I9 | Every refusal says why it was refused. | inspected:iris_src/src/Graph/KG/Ledger.cls:61-70; inspected:iris_vector_graph/ledger/errors.py:1-40; finding:F-1506; finding:F-C1602 |
 | INS-B1.12 | Each failure that setup passes over is named in the report's warnings. | inspected:iris_vector_graph/_engine/schema.py:2508-2511; inspected:iris_vector_graph/_engine/schema.py:2675-2681; inspected:iris_vector_graph/_engine/schema.py:1666-1671; finding:F-0102 |
 | INS-I3.4 | A namespace with no schema record serves no engine until setup has run to the end. | inspected:iris_vector_graph/schema_name.py:226-235; tested:tests/e2e/test_463_half_setup_writes_e2e.py::test_the_namespace_is_accepted_and_not_adjacency_indexed; finding:F-0103 |
 | INS-B4.17 | The tests set up a namespace the way setup does. So they can run on each IRIS the product supports. | inspected:iris_vector_graph/_engine/class_deploy.py:78-106; finding:F-0108 |
@@ -206,7 +261,7 @@ The code disagrees with the statement (see the original FINDINGS.md).
 | ADJ-B3.2.2 | Any change of a stored weight moves the graph-version token, also for a shadow or a repeat of the same edge. | inspected:iris_src/src/Graph/KG/Adjacency.cls:133-136; inspected:iris_src/src/Graph/KG/Adjacency.cls:234-237; inspected:iris_src/src/Graph/KG/Adjacency.cls:340; finding:F-0405 |
 | ADJ-T3.6.1 | A weight change takes no writer lock and leaves the source generation alone. It still moves the graph-version token. | inspected:iris_src/src/Graph/KG/Adjacency.cls:327; inspected:iris_src/src/Graph/KG/Adjacency.cls:340; tested:tests/e2e/test_degree_cache_live.py::test_reweight_does_not_move_the_generation; finding:F-0407 |
 | ADJ-B3.9.1 | Erasing a graph removes its index entries in the same transaction as its rows. | inspected:iris_src/src/Graph/KG/Eraser.cls:217-235; tested:tests/e2e/test_252_writer_paths_e2e.py::test_create_edge_in_a_named_graph_then_erase_the_graph; finding:F-0408 |
-| ADJ-I5.9 | A count that saw another process's open write is never stored as current. | inspected:iris_src/src/Graph/KG/Adj.cls:63-80; inspected:iris_src/src/Graph/KG/Adjacency.cls:374-377; inspected:iris_src/src/Graph/KG/Adjacency.cls:435-438; tested:tests/e2e/test_degree_cache_live.py::test_a_write_in_flight_is_seen_but_never_cached_and_rollback_is_clean; finding:F-0401 |
+| ADJ-I5.9 | A count that saw another process's open write is never stored as current. | inspected:iris_src/src/Graph/KG/Adj.cls:63-80; inspected:iris_src/src/Graph/KG/Adjacency.cls:374-377; inspected:iris_src/src/Graph/KG/Adjacency.cls:435-438; tested:tests/e2e/test_degree_cache_live.py::test_a_write_in_flight_is_seen_but_never_cached_and_rollback_is_clean; finding:F-0401; finding:F-C0401 |
 | ADJ-I5.9.1 | A source generation never goes back to a value it had before. | inspected:iris_src/src/Graph/KG/Adjacency.cls:376; inspected:iris_src/src/Graph/KG/Adjacency.cls:437; inspected:iris_src/src/Graph/KG/Adjacency.cls:461; inspected:iris_src/src/Graph/KG/Adjacency.cls:824-830; finding:F-0401 |
 | ADJ-I5.17.5 | Clearing the degree cache never changes an answer. | inspected:iris_src/src/Graph/KG/Adj.cls:207-217; inspected:iris_src/src/Graph/KG/TraversalKHop.cls:13-20; finding:F-0406 |
 | ADJ-I7.3 | A rebuilt store is never current while it holds a write that was rolled back. | inspected:iris_vector_graph/freshness.py:14-16; inspected:iris_src/src/Graph/KG/TraversalBuild.cls:948-992; inspected:iris_src/src/Graph/KG/ArnoAccel.cls:305-316; tested:tests/unit/test_freshness.py::test_a_rolled_back_bump_leaves_the_store_not_current_and_never_wrongly_current; finding:F-0402 |
@@ -249,6 +304,7 @@ The code disagrees with the statement (see the original FINDINGS.md).
 | VEC-B11.4 | When a graph is erased, its nodes leave every vector index. | inspected:iris_src/src/Graph/KG/Eraser.cls:1-35; inspected:iris_src/src/Graph/KG/IVFIndex.cls:6-9; finding:F-0606 |
 | VEC-B11.10 | An IVF index set to cosine scores its hits by cosine. | inspected:iris_src/src/Graph/KG/IVFIndex.cls:75-78; inspected:iris_src/src/Graph/KG/IVFIndex.cls:112-115; finding:F-0607 |
 | VEC-B11.14 | Adding a vector for an id already in an index replaces its old vector. | inspected:iris_src/src/Graph/KG/IVFIndex.cls:212-213; inspected:iris_src/src/Graph/KG/PLAIDSearch.cls:204-231; inspected:iris_src/src/Graph/KG/VecIndex.cls:144-149; finding:F-0608 |
+| TXT-D1 | A stopword is one of 77 common English words. It is never kept as a word of a text or a query. | inspected:iris_src/src/Graph/KG/BM25Index.cls:41-50; inspected:iris_src/src/Graph/KG/BM25Index.cls:79-86; finding:F-C0701 |
 | TXT-B1.11 | Build holds the write lock while it writes, so no other writer mixes in. | inspected:iris_src/src/Graph/KG/BM25Index.cls:97-175; finding:F-0701 |
 | TXT-X2 | A refused build of this kind leaves the old index as it was. | inspected:iris_vector_graph/_engine/vector.py:299-310; inspected:iris_src/src/Graph/KG/BM25Index.cls:99; finding:F-0704 |
 | TXT-I5 | Two writers never change one BM25 index at the same time. | inspected:iris_src/src/Graph/KG/BM25Index.cls:403-410; inspected:iris_src/src/Graph/KG/BM25Index.cls:587-591; finding:F-0701 |
@@ -270,8 +326,8 @@ The code disagrees with the statement (see the original FINDINGS.md).
 | CYP-I4.14 | An approximate count in an all-graphs read counts each graph's nodes apart. | inspected:iris_vector_graph/_engine/query.py:4374-4381; finding:F-0819 |
 | CYP-B4.19 | An expression the translator cannot turn into SQL is refused. It never becomes a null. | inspected:iris_vector_graph/cypher/translator.py:29676-29756; finding:F-0825 |
 | CYP-I5.6 | A variable-length walk in an all-graphs read stays in the graph of the node it starts from. | inspected:iris_vector_graph/cypher/translator.py:15404-15431; inspected:iris_vector_graph/schema.py:2390-2390; finding:F-0818 |
-| CYP-I6.4 | A stepped write is one transaction too. A failure in a later step takes back the earlier steps. | inspected:iris_vector_graph/_engine/query.py:1946-1967; inspected:iris_vector_graph/_engine/query.py:1992-2031; inspected:iris_vector_graph/_engine/query.py:1692-1705; finding:F-0806 |
-| CYP-X6.5 | A write that IRIS or the product refuses raises a write error and leaves the graph as it was. | inspected:iris_vector_graph/stores/iris_sql_store.py:1811-1818; inspected:iris_vector_graph/errors.py:117-159; tested:tests/unit/test_460_r221_refused_write_error_type.py::test_a_statement_iris_refuses_raises_graph_write_error_with_its_sqlcode; finding:F-0807 |
+| CYP-I6.4 | A stepped write is one transaction too. A failure in a later step takes back the earlier steps. | inspected:iris_vector_graph/_engine/query.py:1946-1967; inspected:iris_vector_graph/_engine/query.py:1992-2031; inspected:iris_vector_graph/_engine/query.py:1692-1705; finding:F-0806; live:C-b-08-live-footprints |
+| CYP-X6.5 | A write that IRIS or the product refuses raises a write error and leaves the graph as it was. | inspected:iris_vector_graph/stores/iris_sql_store.py:1811-1818; inspected:iris_vector_graph/errors.py:117-159; tested:tests/unit/test_460_r221_refused_write_error_type.py::test_a_statement_iris_refuses_raises_graph_write_error_with_its_sqlcode; finding:F-0807; live:C-b-08-live-footprints |
 | CYP-T6.7.5 | A number in an edge property written by Cypher is stored as JSON text, not as a JSON number. | inspected:iris_vector_graph/cypher/translator.py:10232-10238; inspected:iris_vector_graph/cypher/translator.py:465-504; finding:F-0813 |
 | CYP-B6.7.7 | The same holds when the query names both nodes by fixed ids. | inspected:iris_vector_graph/cypher/translator.py:10212-10248; finding:F-0805; assumed:P-0804 |
 | CYP-B6.8.4 | On create set and on match set store any value that a later set could store. | inspected:iris_vector_graph/cypher/translator.py:12062-12451; finding:F-0809 |
@@ -279,6 +335,7 @@ The code disagrees with the statement (see the original FINDINGS.md).
 | CYP-B6.9.6 | A float result of set arithmetic reads back as a float, even when it is whole. | inspected:iris_vector_graph/cypher/translator.py:13784-13887; finding:F-0812 |
 | CYP-B6.11.1 | This holds when the list comes from a query parameter or a variable. | inspected:iris_vector_graph/cypher/translator.py:3964-3967; inspected:iris_vector_graph/cypher/translator.py:7262-7291; finding:F-0808 |
 | CYP-B6.11.3 | A create or merge after an unwind of a parameter held in a with stores one node per item. | inspected:iris_vector_graph/cypher/translator.py:7054-7087; finding:F-0822 |
+| CYP-X7.2 | In ledger strict mode, a Cypher write is refused and changes nothing. | inspected:iris_vector_graph/_engine/query.py:2299-2300; inspected:iris_vector_graph/ledger/guard.py:75-80; inspected:iris_vector_graph/_engine/ledger.py:72-80; tested:tests/integration/test_ledger_us05_compat.py::test_every_guarded_api_is_rejected_and_nothing_changes; tested:tests/unit/test_ledger_guard.py::test_raises_only_when_enabled_and_strict; finding:F-0801 |
 | CYP-T7.3 | The check for strict mode reads the ledger setting at most once every five seconds in each engine. | inspected:iris_vector_graph/ledger/guard.py:20-20; inspected:iris_vector_graph/ledger/guard.py:38-59; tested:tests/unit/test_ledger_guard.py::test_cache_honours_ttl_and_refresh; finding:F-0801 |
 | CYP-T7.4 | If that check cannot read the setting, the write goes ahead. | inspected:iris_vector_graph/ledger/guard.py:42-58; inspected:iris_vector_graph/_engine/ledger.py:72-80; tested:tests/unit/test_ledger_guard.py::test_probe_failure_fails_open; finding:F-0801 |
 | CYP-I8.6 | A read in read-only mode changes no data in IRIS. | inspected:iris_vector_graph/cypher/translator.py:29563-29567; inspected:iris_vector_graph/cypher/translator.py:29578-29578; inspected:iris_vector_graph/cypher/ast.py:535-550; finding:F-0815 |
@@ -301,15 +358,16 @@ The code disagrees with the statement (see the original FINDINGS.md).
 | NAT-I1 | Labels are read from the adjacency index only where each label write keeps it up to date. | inspected:iris_vector_graph/cypher/native_plan.py:528-529; inspected:iris_vector_graph/schema.py:769-782; inspected:iris_vector_graph/schema.py:863-899; inspected:iris_src/src/Graph/KG/Adjacency.cls:540-557; finding:F-0906 |
 | NAT-T2.7 | The engine checks table rights, but the server code does not. A user who can call the server code straight reads past table rights. | inspected:iris_src/src/Graph/KG/Cypher/Exec.cls:32-50; inspected:iris_vector_graph/engine.py:559-586; finding:F-0908 |
 | NAT-B4.1 | A read inside the caller's open transaction sees that transaction's own writes. | inspected:iris_vector_graph/_engine/query.py:2202-2209; inspected:iris_vector_graph/engine.py:1894-1942; assumed:P-0002; finding:F-0909 |
-| NAT-I3 | A read never runs code that was written for another plan shape. | inspected:iris_src/src/Graph/KG/Cypher/Gen.cls:69-81; inspected:iris_src/src/Graph/KG/Cypher/Exec.cls:196-202; assumed:P-0901; finding:F-0901 |
+| NAT-I3 | A read never runs code that was written for another plan shape. | inspected:iris_src/src/Graph/KG/Cypher/Gen.cls:69-81; inspected:iris_src/src/Graph/KG/Cypher/Exec.cls:196-202; assumed:P-0901; finding:F-0901; finding:F-C0901 |
 | NAT-X12 | A namespace mode other than job, sync or off is refused, never taken as sync. | inspected:iris_src/src/Graph/KG/Cypher/Gen.cls:41-44; inspected:iris_src/src/Graph/KG/Cypher/Gen.cls:63-64; inspected:iris_src/src/Graph/KG/Cypher/Gen.cls:92-101; finding:F-0903 |
 | NAT-B5.3 | A failed build never stops the reader's own process from running SQL. | inspected:iris_src/src/Graph/KG/Cypher/Gen.cls:101; inspected:iris_src/src/Graph/KG/Cypher/Gen.cls:204-215; assumed:P-0903; finding:F-0904 |
 | NAT-I5 | After a deploy, no compiled plan made before it is left. | inspected:iris_src/src/Graph/KG/Cypher/Gen.cls:224-230; inspected:iris_src/src/Graph/KG/Cypher/Gen.cls:206-210; inspected:iris_src/src/Graph/KG/Cypher/Gen.cls:69-71; assumed:P-0907; finding:F-0905 |
 | NAT-T8.4 | Rows are held to a fixed order only when the read orders them fully, with no ties left open. | inspected:iris_vector_graph/cypher/native_plan.py:179-181; inspected:iris_vector_graph/cypher/native_plan.py:187-194; finding:F-0907 |
 | ALG-I1 | Without the Arno library, each algorithm still gives the same answer. It is only slower. | inspected:iris_vector_graph/stores/iris_sql_store.py:896-910; inspected:iris_vector_graph/arno_readers.py:257-280; tested:tests/unit/test_236_reader_routing.py::test_without_a_sufficient_reader_the_native_call_is_never_made; finding:F-1002 |
-| ALG-I3 | An algorithm that takes no graph answers for the default graph alone. It never mixes in a named graph's edges. | inspected:iris_src/src/Graph/KG/Algorithms.cls:10-12; inspected:iris_src/src/Graph/KG/PageRank.cls:406-410; inspected:iris_src/src/Graph/KG/Subgraph.cls:6-11; tested:tests/integration/test_236_token_write_paths.py::test_26_a_write_in_another_graph_leaves_this_graphs_answers_alone; finding:F-1001; finding:F-1002 |
+| ALG-I3 | An algorithm that takes no graph answers for the default graph alone. It never mixes in a named graph's edges. | inspected:iris_src/src/Graph/KG/Algorithms.cls:10-12; inspected:iris_src/src/Graph/KG/PageRank.cls:406-410; inspected:iris_src/src/Graph/KG/Subgraph.cls:6-11; tested:tests/integration/test_236_token_write_paths.py::test_26_a_write_in_another_graph_leaves_this_graphs_answers_alone; finding:F-1001; finding:F-1002; finding:F-1006; finding:F-1009 |
 | ALG-I4 | A cached answer is used only while its graph-version token is still the current one. | inspected:iris_src/src/Graph/KG/AlgoCache.cls:23-36; inspected:iris_vector_graph/stores/iris_sql_store.py:921-988; tested:tests/integration/test_236_algo_cache.py::test_a_write_makes_the_next_call_a_miss_that_overwrites_the_entry; finding:F-1004 |
 | ALG-I5 | When the code that ran an algorithm fails, the call raises an error. It does not answer an empty result in its place. | inspected:iris_vector_graph/_engine/algorithms.py:84-88; inspected:iris_vector_graph/_engine/algorithms.py:1121-1128; tested:tests/unit/test_463_refused_pagerank_delete_node.py::test_kg_pagerank_wraps_a_driver_refusal; finding:F-1002 |
+| ALG-I6 | A read algorithm changes no content. It may write only its own work areas and caches. | inspected:iris_src/src/Graph/KG/TraversalBFS.cls:432-461; inspected:iris_src/src/Graph/KG/AlgoCache.cls:45-51; finding:F-C1001 |
 | ALG-B1.11 | Global PageRank lists the same nodes whichever way it is worked out. | inspected:iris_src/src/Graph/KG/PageRank.cls:506-520; inspected:iris_vector_graph/stores/iris_sql_store.py:2396-2399; finding:F-1003 |
 | ALG-B2.19 | A cached answer changes when a start node is added to the graph or removed from it. | inspected:iris_vector_graph/stores/iris_sql_store.py:2248-2258; inspected:iris_src/src/Graph/KG/PageRank.cls:91-116; finding:F-1004 |
 | ALG-B5.4 | Degree counts each of several edges of one type between two nodes on its own, in each direction. | inspected:iris_src/src/Graph/KG/Centrality.cls:88-104; inspected:iris_src/src/Graph/KG/Adjacency.cls:203-206; finding:F-1007 |
@@ -319,7 +377,7 @@ The code disagrees with the statement (see the original FINDINGS.md).
 | ALG-B9.5 | A k-hop call from a node that is not in the default graph answers two empty lists. A walk that fails raises an error. | inspected:iris_vector_graph/_engine/algorithms.py:603-626; finding:F-1009 |
 | ALG-B9.9 | Random walks stay inside the default graph. | inspected:iris_vector_graph/_engine/algorithms.py:658-678; inspected:iris_src/src/Graph/KG/NKGAccelTraversal.cls:187-222; finding:F-1002 |
 | ALG-B11.2 | Each walk stays inside one graph, also when it is asked for every graph. | inspected:iris_src/src/Graph/KG/VarLength.cls:44-51; inspected:iris_src/src/Graph/KG/VarLength.cls:126-148; inspected:iris_vector_graph/cypher/translator.py:15404-15428; finding:F-1008 |
-| ALG-B12.7 | A reader of the snapshot sees the same edges as the adjacency index. Or it learns that the snapshot is out of date. | inspected:iris_src/src/Graph/KG/Adjacency.cls:111-140; inspected:iris_src/src/Graph/KG/TraversalBuild.cls:399-424; inspected:iris_vector_graph/freshness.py:1-30; finding:F-1005 |
+| ALG-B12.7 | A reader of the snapshot sees the same edges as the adjacency index. Or it learns that the snapshot is out of date. | inspected:iris_src/src/Graph/KG/Adjacency.cls:111-140; inspected:iris_src/src/Graph/KG/TraversalBuild.cls:399-424; inspected:iris_vector_graph/freshness.py:1-30; finding:F-1005; live:C-b-10-live-nkg-f1005 |
 | ALG-B12.9 | A reader does not build a snapshot that was never built. The engine methods then walk the default graph from Python. | inspected:iris_src/src/Graph/KG/TraversalBuild.cls:392-409; inspected:iris_vector_graph/stores/iris_sql_store.py:3326-3335; finding:F-1011 |
 | ALG-B14.7 | A native reader answers only where no named graph has an edge, since its proof covered no other case. | inspected:iris_vector_graph/arno_readers.py:257-280; inspected:iris_vector_graph/stores/iris_sql_store.py:2388-2400; inspected:scripts/arno_reader_gate.py:73-82; finding:F-1001 |
 | ALG-B15.9 | Each entry of the proof record names the library build it was proven on. | inspected:iris_vector_graph/_arno_gate.py:138-177; finding:F-1012 |
@@ -337,25 +395,30 @@ The code disagrees with the statement (see the original FINDINGS.md).
 | LED-B9.8 | The metrics hook is called once for each commit call, what ever the outcome. | inspected:iris_vector_graph/ledger/client.py:392-396; inspected:iris_vector_graph/ledger/client.py:408-416; finding:F-1111 |
 | LED-B10.5 | A replayed commit changes nothing. That holds for post-commit properties too. | inspected:iris_vector_graph/ledger/client.py:418-443; finding:F-1101 |
 | LED-B11.5 | Every engine method that writes to a governed store is refused while strict mode is on. | inspected:iris_vector_graph/_engine/nodes_edges.py:2301-2339; inspected:api/gql/resolvers/mutation.py:23-66; finding:F-1108 |
-| LED-B13.4 | Each outcome adds exactly one to its count. | inspected:iris_src/src/Graph/KG/LedgerStats.cls:50-88; inspected:iris_src/src/Graph/KG/Ledger.cls:412-413; inspected:iris_src/src/Graph/KG/Ledger.cls:559-565; finding:F-1102 |
-| ERS-I3 | After an erasure, each live edge the ledger saved still has its statement entry. | finding:F-1201; mc:erasure-as-built; mc:erasure-reviewed |
+| LED-B13.2 | Kept revisions are counted in the commit's own transaction. The genesis counts too. | inspected:iris_src/src/Graph/KG/Ledger.cls:559-565; finding:F-C1101 |
+| LED-B13.4 | Each outcome adds exactly one to its count. | inspected:iris_src/src/Graph/KG/LedgerStats.cls:50-88; inspected:iris_src/src/Graph/KG/Ledger.cls:412-413; inspected:iris_src/src/Graph/KG/Ledger.cls:559-565; finding:F-1102; finding:F-C1101 |
+| ERS-I3 | After an erasure, each live edge the ledger saved still has its statement entry. | finding:F-1201; mc:erasure-as-built [model-only]; mc:erasure-reviewed [model-only]; mc:C-core-m1-as-built-isolation-stmt-a [model-only]; mc:C-core-m1-as-built-isolation-stmt-b [model-only]; mc:C-core-m1-as-built-isolation-stmt-c [model-only] |
 | ERS-T2 | A graph erasure takes no ledger lock, so commits into the same graph do not wait for it. | inspected:iris_src/src/Graph/KG/Eraser.cls:47-261; finding:F-1201 |
 | ERS-B6 | A ledger delete of a node removes it from the default graph only. | inspected:iris_src/src/Graph/KG/LedgerApply.cls:374-418; live:native-mixed_tenant_flow; finding:F-1401 |
-| RED-B1.1 | Redaction never makes a tombstone of the record of live content. | finding:F-1302; live:native-commit_in_unmarked_window; mc:redaction-as-built-live; mc:redaction-reviewed; proved:theorem_begin_spares_live; assumed:P-1311; open:HD-1201 |
+| RED-B1.1 | Redaction never makes a tombstone of the record of live content. | finding:F-1302; live:native-commit_in_unmarked_window; mc:redaction-as-built-live [model-only]; mc:redaction-reviewed [model-only]; proved:theorem_begin_spares_live [model-only]; assumed:P-1311; open:HD-1201; finding:F-C1201; finding:F-C1301 |
 | RED-T1 | At the pin, the first liveness check runs before any lock or marker exists. | inspected:iris_src/src/Graph/KG/LedgerRedact.cls:202-216; finding:F-1302 |
 | RED-B1.2 | A tenant whose nodes live in a named graph cannot be redacted by naming its graph alone. | live:native-graph_per_tenant_unprefixed; finding:F-1305 |
 | RED-X2 | Redacting the default graph with no id prefix should not touch nodes that live in a named graph. | finding:F-1304; live:native-default_graph_without_prefix |
 | RED-Q2 | Spec 256 says free text is cleared only when every record is redacted. Which rule stands? | open:HD-1302; finding:F-1301 |
-| RED-B4.3 | A retry sent between erasure and redaction must not bring the content back. | finding:F-1306; mc:retry-as-built; mc:retry-reviewed; live:native-retry_between_erase_and_redact |
+| RED-B4.3 | A retry sent between erasure and redaction must not bring the content back. | finding:F-1306; mc:retry-as-built [model-only]; mc:retry-reviewed [model-only]; live:native-retry_between_erase_and_redact |
 | RED-B6 | Only one redaction target can be redacted at a time. | inspected:iris_src/src/Graph/KG/LedgerRedact.cls:202-205; tested:tests/integration/test_256_ledger_redaction_e2e.py::test_a_paused_redaction_is_honoured_and_resumes; live:native-paused_and_resumed; finding:F-1303 |
-| RED-B6.1 | Two redaction runs of two targets that start at once must not both run. | finding:F-1303; live:native-two_targets_at_once; mc:redaction-as-built-audit; proved:theorem_l2_satisfies_l1 |
-| RED-B7.1 | Its counts belong to its own redaction target only. | finding:F-1303; live:native-two_targets_at_once; mc:redaction-as-built-audit |
+| RED-B6.1 | Two redaction runs of two targets that start at once must not both run. | finding:F-1303; live:native-two_targets_at_once; mc:redaction-as-built-audit [model-only]; proved:theorem_l2_satisfies_l1 [model-only] |
+| RED-B7.1 | Its counts belong to its own redaction target only. | finding:F-1303; live:native-two_targets_at_once; mc:redaction-as-built-audit [model-only] |
+| RED-B8 | Calling the same redaction again finishes a stopped or paused run. | inspected:iris_src/src/Graph/KG/LedgerRedact.cls:182-239; tested:tests/integration/test_256_ledger_redaction_e2e.py::test_a_paused_redaction_is_honoured_and_resumes; live:native-paused_and_resumed; live:native-killed_mid_batch; live:native-disabled_mid_run; proved:theorem_run_can_step [model-only]; finding:F-C1303 |
+| RED-B8.1 | Without new commits, a redaction run takes a bounded number of steps. | proved:theorem_run_bounded [model-only]; finding:F-C1303 |
 | RED-B12 | Once a tenant is erased and redacted, no ledger record, row or reader shows its ids or values. | tested:tests/integration/test_256_ledger_redaction_e2e.py::test_nothing_in_the_ledger_or_its_readers_holds_tenant_a; live:native-mixed_tenant_flow; live:upstream-community-redaction; finding:F-1305 |
-| RPL-B3 | Once a tenant is erased and redacted, the verify call says equal again. | proved:theorem_erase_then_redact; tested:tests/integration/test_256_ledger_redaction_e2e.py::test_verify_diverges_after_the_erase_alone_and_is_equal_after_the_redaction; live:native-mixed_tenant_flow; live:native-killed_mid_batch; live:native-killed_at_random; live:native-paused_and_resumed; mc:redaction-reviewed; assumed:P-1310; finding:F-1305 |
+| RPL-B1.1 | After a redaction, replay gives what it gave before, less the tenant. | proved:lemma_replay_tomb [model-only]; live:native-mixed_tenant_flow; tested:tests/integration/test_256_ledger_redaction_e2e.py::test_replay_to_every_seq_holds_no_tenant_a_content; finding:F-1304 |
+| RPL-B3 | Once a tenant is erased and redacted, the verify call says equal again. | proved:theorem_erase_then_redact [model-only]; tested:tests/integration/test_256_ledger_redaction_e2e.py::test_verify_diverges_after_the_erase_alone_and_is_equal_after_the_redaction; live:native-mixed_tenant_flow; live:native-killed_mid_batch; live:native-killed_at_random; live:native-paused_and_resumed; mc:redaction-reviewed [model-only]; assumed:P-1310; finding:F-1305 |
 | RPL-B3.2 | The world of the upstream test did not match before the erasure. | live:native-mixed_tenant_flow; finding:F-1401 |
-| RPL-I1 | A record reader never returns a view of a redaction that is half done. | finding:F-1402; mc:readers-as-built; mc:readers-reviewed; live:native-reader_races_redaction |
+| RPL-I1 | A record reader never returns a view of a redaction that is half done. | finding:F-1402; mc:readers-as-built [model-only]; mc:readers-reviewed [model-only]; live:native-reader_races_redaction |
 | RPL-B7 | The verify call says equal when every change went through the ledger. | finding:F-1401; live:native-mixed_tenant_flow |
 | INT-F3.9 | A register that fails should leave the settings as they were. | finding:F-1511; inspected:iris_src/src/Graph/KG/FHIRGraph.cls:235-258 |
+| INT-F9 | Schedule makes or updates one FHIR sync task for a graph. Unschedule deletes it and keeps the graph registered. | inspected:iris_src/src/Graph/KG/FHIRGraph.cls:664-741; inspected:iris_vector_graph/_engine/fhir_graph.py:291-310; tested:tests/e2e/test_470_fhir_task_ownership_e2e.py::test_the_graphs_own_task_is_scheduled_and_unscheduled; finding:F-C1501 |
 | INT-C4.6 | When reading the FHIR graphs fails, the Cypher API should return that error, not quietly use the old bridge. | finding:F-1508; inspected:iris_vector_graph/cypher_api.py:331-336 |
 | INT-B1.3 | The bridge anchor lookup should match only nodes in the default graph. | finding:F-1507; inspected:iris_vector_graph/_engine/fhir.py:465-479; inspected:iris_vector_graph/_engine/fhir_graph.py:650-652 |
 | INT-B1.8 | The condition search should read every page of results. | finding:F-1505; inspected:iris_vector_graph/fhir_bridge.py:105-110; inspected:iris_vector_graph/fhir_bridge.py:305-310 |
@@ -365,6 +428,7 @@ The code disagrees with the statement (see the original FINDINGS.md).
 | INT-R1.19 | With rdflib 8, export and SHACL checks should be refused with an error that names the wrong version. | finding:F-1506; inspected:iris_vector_graph/_engine/_rdf_utils.py:125-133; assumed:P-1507 |
 | INT-E1.6 | A reifier node should live in the same graph as the edge it describes. | finding:F-1502; inspected:iris_vector_graph/_engine/schema.py:3304-3310 |
 | INT-E1.7 | Erasing an edge's graph should remove its reifier nodes too. | finding:F-1502; inspected:iris_src/src/Graph/KG/Eraser.cls:185-189 |
+| INT-E1.9 | Deleting a node also deletes the reifier nodes of its edges. | inspected:iris_vector_graph/_engine/nodes_edges.py:2176-2199; tested:tests/e2e/test_reification_e2e.py::TestReificationE2E::test_delete_node_cascades_to_reification; finding:F-C1502 |
 | INT-E1.10 | Deleting a reifier should touch only that reifier node, and leave no edge without its node. | finding:F-1503; inspected:iris_vector_graph/_engine/schema.py:3361-3397 |
 | INT-V1.5 | When the window read fails, PROV export raises the error to the caller. | inspected:iris_vector_graph/_engine/prov.py:181-207; tested:tests/unit/test_admin_rdf_prov_shacl_coverage.py::test_get_temporal_edges_window_no_iris_raises; finding:F-1501 |
 | API-B4.5 | Two calls to the sample API should never use its one IRIS connection at the same time. | inspected:api/main.py:100-113; inspected:api/main.py:140-142; inspected:api/dependencies.py:10-22; finding:F-1608; assumed:P-1605 |
@@ -375,6 +439,7 @@ The code disagrees with the statement (see the original FINDINGS.md).
 | API-B6.7 | The update protein call should change only the node it names, in one graph. | inspected:examples/domains/biomedical/resolver.py:240-278; finding:F-1604 |
 | API-B7.4 | The writes of one call should all happen, or none should. | inspected:api/routers/fhir_event.py:318-346; finding:F-1609 |
 | API-B8.6.1 | If one statement in a batch fails, the batch should undo the others. | inspected:iris_vector_graph/cypher_api.py:391-400; finding:F-1610 |
+| API-T9.1 | The TCP listener binds to the address of the web app, or to one an operator sets, on port 7687. | inspected:iris_vector_graph/cypher_api.py:48-63; inspected:iris_vector_graph/cli.py:427-428; tested:tests/unit/test_460_r225_cli_and_bolt_host.py::test_server_start_gives_the_bolt_listener_its_host; tested:tests/unit/test_460_r225_cli_and_bolt_host.py::test_the_bolt_listener_binds_bolt_tcp_host; finding:F-C1603 |
 | API-B9.10 | A rollback should undo the writes made since the driver began its transaction. | inspected:iris_vector_graph/bolt_server.py:500-510; inspected:iris_vector_graph/bolt_server.py:579-581; finding:F-1601; assumed:P-1612 |
 | API-B9.11 | A pull of some rows should keep the rest for the next pull. | inspected:iris_vector_graph/bolt_server.py:624-660; finding:F-1602; assumed:P-1612 |
 | API-B10.3 | Its reads should keep each graph apart. | inspected:iris_vector_graph/gql/resolvers.py:90-133; inspected:iris_vector_graph/gql/resolvers.py:32-46; inspected:iris_vector_graph/gql/engine.py:32-57; finding:F-1603 |
@@ -384,6 +449,7 @@ The code disagrees with the statement (see the original FINDINGS.md).
 | API-B13.2 | Its routes that write should need the API key, as on the other servers. | inspected:src/iris_demo_server/routes/fhir.py:503-533; inspected:src/iris_demo_server/app.py:1-22; finding:F-1614 |
 | API-B13.7 | The fraud server should read the payer's stored vector. | inspected:src/iris_fraud_server/app.py:246-279; inspected:iris_vector_graph/schema.py:429-437; finding:F-1615 |
 | API-B15.8 | No interface should mix two graphs in one answer or one write. | inspected:iris_vector_graph/gql/resolvers.py:90-133; inspected:api/gql/loaders.py:19-45; inspected:examples/domains/biomedical/resolver.py:240-278; finding:F-1603; finding:F-1604 |
+| OPS-B1.12 | The server start command runs the web server on a chosen address and port. | inspected:iris_vector_graph/cli.py:419-438; tested:tests/unit/test_cli.py::test_server_start_calls_uvicorn; finding:F-C1702 |
 | OPS-Q1.12.5 | Should server start refuse to listen on every address when no API key is set? | open:HD-1705; finding:F-1709; inspected:iris_vector_graph/cli.py:419-441; inspected:iris_vector_graph/_api_key.py:21-23 |
 | OPS-I2.3.3 | The list of parts that can be unknown names every part the report may mark. | finding:F-1713; inspected:iris_vector_graph/status.py:10-11; inspected:iris_vector_graph/_engine/admin.py:551; inspected:iris_vector_graph/_engine/admin.py:752-753 |
 | OPS-B3.7.2 | The constraint and index lists name the keys the tables really have. | finding:F-1707; inspected:iris_vector_graph/_engine/admin.py:261-278; inspected:iris_vector_graph/stores/iris_sql_store.py:3079-3080; inspected:iris_vector_graph/schema.py:399-400; inspected:iris_vector_graph/schema.py:44 |
@@ -399,10 +465,12 @@ The code disagrees with the statement (see the original FINDINGS.md).
 | OPS-B11.4 | The docker recipe starts IRIS and the web server, with an API key and a service user. | finding:F-1710; inspected:deploy/docker/compose.yml:1-46; inspected:deploy/docker/cpf/merge.conf:1-18 |
 | OPS-B11.5 | The bolt-on installer makes the namespace and sets up the product. It makes a service user and a config the server reads. | finding:F-1708; inspected:deploy/bolt-on/install.sh:21-102 |
 | OPS-B11.6 | The server setup guide's client example runs as written. | finding:F-1711; inspected:iris_vector_graph/result.py:9-16; inspected:iris_vector_graph/sdk.py:79-84 |
-| SNP-B1.18 | Vectors of edges keep their graph and their notes through a snapshot archive. | inspected:iris_vector_graph/_engine/snapshot.py:942-956; inspected:iris_vector_graph/_engine/snapshot.py:1510-1552; inspected:iris_vector_graph/schema.py:455-464; finding:F-1803 |
+| SNP-I1 | A snapshot archive copies each store on the store list. Or the export list says why it leaves one out. | inspected:iris_vector_graph/_engine/snapshot.py:87-202; tested:tests/integration/test_snapshot_inventory.py::test_the_snapshot_plan_accounts_for_every_store_in_the_inventory; tested:tests/integration/test_snapshot_inventory.py::test_the_plan_names_no_store_the_inventory_does_not; tested:tests/unit/test_snapshot_inventory.py::test_every_derived_store_carries_a_reason; finding:F-C1804 |
+| SNP-B1.18 | Vectors of edges keep their graph and their notes through a snapshot archive. | inspected:iris_vector_graph/_engine/snapshot.py:942-956; inspected:iris_vector_graph/_engine/snapshot.py:1510-1552; inspected:iris_vector_graph/schema.py:455-464; finding:F-1803; finding:F-C1804 |
 | SNP-T1.20.1 | The HTTP endpoint names each file by the second it was made. | inspected:iris_vector_graph/cypher_api.py:672-673; finding:F-1807 |
+| SNP-X2.14 | A native index that cannot be written stops the restore. The error says what is done and what is not. | inspected:iris_vector_graph/_engine/snapshot.py:1573-1582; tested:tests/unit/test_460_r271_snapshot_raises.py::test_restore_raises_on_a_global_it_cannot_write; finding:F-C1802 |
 | SNP-B2.21 | Values in native indexes come back with the type they had. | inspected:iris_vector_graph/_engine/snapshot.py:1644-1646; inspected:iris_vector_graph/_engine/snapshot.py:1679; inspected:iris_src/src/Graph/KG/TemporalWindow.cls:268-283; finding:F-1804 |
-| SNP-I3.6 | After a restore, the ledger holds one history. Its records and its latest revision agree. | inspected:iris_src/src/Graph/KG/Ledger.cls:1-15; inspected:iris_src/src/Graph/KG/Ledger.cls:530-556; inspected:iris_vector_graph/_engine/snapshot.py:1679; finding:F-1801 |
+| SNP-I3.6 | After a restore, the ledger holds one history. Its records and its latest revision agree. | inspected:iris_src/src/Graph/KG/Ledger.cls:1-15; inspected:iris_src/src/Graph/KG/Ledger.cls:530-556; inspected:iris_vector_graph/_engine/snapshot.py:1679; finding:F-1801; mc:C-cmc-restore-reviewed [model-only] |
 | SNP-B4.1 | A merge restore adds each missing row of the snapshot archive, judged by the row's own key. | inspected:iris_vector_graph/_engine/snapshot.py:1287-1292; inspected:iris_vector_graph/schema.py:34-45; inspected:iris_vector_graph/schema.py:395-418; finding:F-1802 |
 | SNP-B4.2 | A merge restore counts a row as restored only when it adds it. | inspected:iris_vector_graph/_engine/snapshot.py:1287-1298; finding:F-1802 |
 | SNP-B4.6 | After a merge restore, the timed summaries still match the timed events. | inspected:iris_vector_graph/_engine/snapshot.py:1679; inspected:iris_src/src/Graph/KG/TemporalIndex.cls:116-125; finding:F-1805 |
@@ -452,7 +520,7 @@ Statements waiting on a human decision (see the original DECISIONS.md).
 | LED-Q5 | Should a post-commit property be kept as a record in its revision? | open:HD-1105 |
 | LED-Q4 | Should the server enforce strict mode, or should it stay a check in Python? | open:HD-1103 |
 | ERS-Q1 | Should a graph erasure hold the ledger lock so commits into the graph wait? | open:HD-1201; mc:erasure-reviewed |
-| RED-B1.1 | Redaction never makes a tombstone of the record of live content. | finding:F-1302; live:native-commit_in_unmarked_window; mc:redaction-as-built-live; mc:redaction-reviewed; proved:theorem_begin_spares_live; assumed:P-1311; open:HD-1201 |
+| RED-B1.1 | Redaction never makes a tombstone of the record of live content. | finding:F-1302; live:native-commit_in_unmarked_window; mc:redaction-as-built-live [model-only]; mc:redaction-reviewed [model-only]; proved:theorem_begin_spares_live [model-only]; assumed:P-1311; open:HD-1201; finding:F-C1201; finding:F-C1301 |
 | RED-Q1 | Should the opening check and the redaction marker share one locked step? | open:HD-1301; proved:theorem_l2_satisfies_l1; mc:refinement-reviewed |
 | RED-Q2 | Spec 256 says free text is cleared only when every record is redacted. Which rule stands? | open:HD-1302; finding:F-1301 |
 | RED-Q3 | Should an operator be able to drop a redaction run that is not done? | open:HD-1303 |
@@ -566,7 +634,7 @@ Statements that rest on a named premise (see the original TRUST.md).
 | TXT-B12.5 | If the word index is missing, it falls back to plain substring matching and logs a warning. | inspected:iris_vector_graph/_engine/vector.py:1007-1034; assumed:P-0707 |
 | CYP-T5.1 | The name of the graph goes into the SQL as a quoted text value, with each quote mark doubled. | inspected:iris_vector_graph/cypher/translator.py:2085-2086; inspected:iris_vector_graph/cypher/translator.py:1137-1170; tested:tests/unit/test_460_all_graphs_writes.py::test_a_graph_name_is_quoted_as_a_literal; assumed:P-0805 |
 | CYP-B6.2 | Inside a transaction the caller opened, the write joins it. The caller then keeps or undoes both. | inspected:iris_vector_graph/_write_txn.py:1-30; inspected:iris_vector_graph/_write_txn.py:102-121; tested:tests/unit/test_464_write_txn.py::test_inside_the_callers_transaction_commit_leaves_the_callers_level_open; assumed:P-0802 |
-| CYP-I6.3 | A failed write takes back only its own part. The caller's earlier work stays in the open transaction. | inspected:iris_vector_graph/_write_txn.py:102-121; inspected:iris_vector_graph/stores/iris_sql_store.py:1811-1818; tested:tests/unit/test_464_write_txn.py::test_rollback_takes_back_its_own_level_only; tested:tests/e2e/test_464_caller_txn_e2e.py::test_c_a_failed_write_keeps_the_callers_work; assumed:P-0803 |
+| CYP-I6.3 | A failed write takes back only its own part. The caller's earlier work stays in the open transaction. | inspected:iris_vector_graph/_write_txn.py:102-121; inspected:iris_vector_graph/stores/iris_sql_store.py:1811-1818; tested:tests/unit/test_464_write_txn.py::test_rollback_takes_back_its_own_level_only; tested:tests/e2e/test_464_caller_txn_e2e.py::test_c_a_failed_write_keeps_the_callers_work; assumed:P-0803; live:C-b-08-live-footprints |
 | CYP-B6.7.7 | The same holds when the query names both nodes by fixed ids. | inspected:iris_vector_graph/cypher/translator.py:10212-10248; finding:F-0805; assumed:P-0804 |
 | CYP-B6.12 | A Cypher write updates the adjacency index in the same transaction. Indexes set up on the edge and label tables do it. | inspected:iris_vector_graph/schema.py:767-781; inspected:iris_src/src/Graph/KG/AdjIndex.cls:1-26; tested:tests/e2e/test_252_cypher_read_after_write_e2e.py::test_create_is_seen_by_every_reader; tested:tests/e2e/test_252_cypher_read_after_write_e2e.py::test_detach_delete_removes_the_node_s_edges; assumed:P-0801 |
 | CYP-P1 | IRIS runs the code of a declared index inside the row's transaction. A rollback undoes it. | assumed:P-0801; inspected:iris_src/src/Graph/KG/AdjIndex.cls:1-26 |
@@ -579,7 +647,7 @@ Statements that rest on a named premise (see the original TRUST.md).
 | NAT-P2 | Each write of an edge or label row also changes the adjacency index. Both happen in one transaction. | assumed:P-0902 |
 | NAT-T4.6 | A native read takes no lock and no snapshot. It reads what each store holds at that moment. | inspected:iris_src/src/Graph/KG/Cypher/Exec.cls:110-281; inspected:iris_src/src/Graph/KG/Cypher/Props.cls:44-72; assumed:P-0002 |
 | NAT-B4.1 | A read inside the caller's open transaction sees that transaction's own writes. | inspected:iris_vector_graph/_engine/query.py:2202-2209; inspected:iris_vector_graph/engine.py:1894-1942; assumed:P-0002; finding:F-0909 |
-| NAT-I3 | A read never runs code that was written for another plan shape. | inspected:iris_src/src/Graph/KG/Cypher/Gen.cls:69-81; inspected:iris_src/src/Graph/KG/Cypher/Exec.cls:196-202; assumed:P-0901; finding:F-0901 |
+| NAT-I3 | A read never runs code that was written for another plan shape. | inspected:iris_src/src/Graph/KG/Cypher/Gen.cls:69-81; inspected:iris_src/src/Graph/KG/Cypher/Exec.cls:196-202; assumed:P-0901; finding:F-0901; finding:F-C0901 |
 | NAT-T5.6 | Each read works out the running stamp again. So every process judges staleness for itself. | inspected:iris_src/src/Graph/KG/Cypher/Gen.cls:69; inspected:iris_src/src/Graph/KG/Cypher/Gen.cls:134-139; inspected:iris_src/src/Graph/KG/Cypher/Props.cls:14-25; assumed:P-0904 |
 | NAT-T5.7 | Any change to the property table's class makes every compiled plan stale. Even dropping one of its indexes does. | inspected:iris_src/src/Graph/KG/Cypher/Props.cls:105-109; inspected:iris_vector_graph/schema.py:1640-1680; assumed:P-0906 |
 | NAT-T5.8 | Other server code that a compiled plan calls is not in the stamp. The plan calls it each time, so a change there counts at once. | inspected:iris_src/src/Graph/KG/Cypher/Gen.cls:314-322; inspected:iris_src/src/Graph/KG/Cypher/Gen.cls:459-463; inspected:iris_src/src/Graph/KG/Cypher/Gen.cls:536-550; assumed:P-0904 |
@@ -608,16 +676,16 @@ Statements that rest on a named premise (see the original TRUST.md).
 | LED-P2 | Undoing one transaction level leaves the levels under it open. Ending a nested level just lowers the level. | assumed:P-1102 |
 | LED-P7 | A class call made through the caller's own link runs on the caller's server process. | assumed:P-1107 |
 | LED-P3 | A row read from a table holds no lock until it is saved, and the save writes the whole row. | assumed:P-1103 |
-| ERS-I1 | A graph erasure finishes in full or changes nothing. | inspected:iris_src/src/Graph/KG/Eraser.cls:56-261; tested:tests/integration/test_eraser_failures.py::test_a_refused_delete_erases_nothing; assumed:P-0001 |
+| ERS-I1 | A graph erasure finishes in full or changes nothing. | inspected:iris_src/src/Graph/KG/Eraser.cls:56-261; tested:tests/integration/test_eraser_failures.py::test_a_refused_delete_erases_nothing; assumed:P-0001; live:C-live-erase-vs-commit-fk |
 | ERS-P1 | A delete that meets a row another transaction holds waits for that transaction. | assumed:P-1201 |
-| RED-B1.1 | Redaction never makes a tombstone of the record of live content. | finding:F-1302; live:native-commit_in_unmarked_window; mc:redaction-as-built-live; mc:redaction-reviewed; proved:theorem_begin_spares_live; assumed:P-1311; open:HD-1201 |
+| RED-B1.1 | Redaction never makes a tombstone of the record of live content. | finding:F-1302; live:native-commit_in_unmarked_window; mc:redaction-as-built-live [model-only]; mc:redaction-reviewed [model-only]; proved:theorem_begin_spares_live [model-only]; assumed:P-1311; open:HD-1201; finding:F-C1201; finding:F-C1301 |
 | RED-P1 | Every record that touches one node or edge is in a redaction target, or none is. | assumed:P-1301; live:native-mixed_tenant_flow |
 | RED-B2.2 | Anyone who holds the original record can check that a tombstone replaced it. | tested:tests/integration/test_256_ledger_redaction_e2e.py::test_each_tombstone_digest_is_sha256_of_the_canonical_record_it_replaced; live:native-mixed_tenant_flow; assumed:P-1302 |
 | RED-P2 | Only the product's own code sets the value that opens that one update. | assumed:P-1308; tested:tests/unit/test_256_ledger_redaction.py::test_only_ledger_redact_sets_the_exemption_variable |
 | RED-I3 | A redaction run stopped at any point leaves the ledger as it was after its last finished redaction batch. | live:native-killed_mid_batch; live:native-killed_at_random; assumed:P-0001 |
 | RED-P3 | Commits into the ledger pause long enough for a redaction run to reach the last record. | assumed:P-1306 |
 | RED-P4 | Journals, backups and earlier exports keep the content; redaction cannot reach them. | assumed:P-1309 |
-| RPL-B3 | Once a tenant is erased and redacted, the verify call says equal again. | proved:theorem_erase_then_redact; tested:tests/integration/test_256_ledger_redaction_e2e.py::test_verify_diverges_after_the_erase_alone_and_is_equal_after_the_redaction; live:native-mixed_tenant_flow; live:native-killed_mid_batch; live:native-killed_at_random; live:native-paused_and_resumed; mc:redaction-reviewed; assumed:P-1310; finding:F-1305 |
+| RPL-B3 | Once a tenant is erased and redacted, the verify call says equal again. | proved:theorem_erase_then_redact [model-only]; tested:tests/integration/test_256_ledger_redaction_e2e.py::test_verify_diverges_after_the_erase_alone_and_is_equal_after_the_redaction; live:native-mixed_tenant_flow; live:native-killed_mid_batch; live:native-killed_at_random; live:native-paused_and_resumed; mc:redaction-reviewed [model-only]; assumed:P-1310; finding:F-1305 |
 | RPL-P1 | The theorem needs every record of one node or edge to fall in a redaction or none. | assumed:P-1301 |
 | RPL-T1 | The verify call reads records and tables at separate times, with no lock. | inspected:iris_vector_graph/ledger/replay.py:806-835; assumed:P-0002 |
 | RPL-P2 | The verify call is run while nobody writes to the graph. | assumed:P-1401 |
@@ -680,7 +748,7 @@ Statements that rest on a named premise (see the original TRUST.md).
 | SNP-P2 | The client's walk and text form give back every value except vectors. | inspected:iris_vector_graph/_engine/snapshot.py:1626-1652; assumed:P-1802 |
 | SNP-P3 | A snapshot archive is a file anyone can write, so a restore treats it as untrusted. | inspected:iris_vector_graph/_engine/snapshot.py:368-378; inspected:iris_vector_graph/_engine/snapshot.py:412-422; assumed:P-1803 |
 
-## Inspection only (1376)
+## Inspection only (1346)
 
 Supported only by reading production code at the pin.
 
@@ -712,22 +780,14 @@ Supported only by reading production code at the pin.
 | SYS-D23 | A revision is one saved changeset. It has a number, an id, and some free text such as a message. | inspected:iris_src/src/Graph/KG/Ledger.cls:532-567 |
 | SYS-D24 | A record is one change inside a revision. It keeps a fixed place in that revision. | inspected:iris_src/src/Graph/KG/Ledger.cls:7-8 |
 | SYS-D25 | A retry key is a name a caller gives a changeset, so that sending it twice saves it once. | inspected:iris_src/src/Graph/KG/Ledger.cls:454-473 |
-| SYS-D26 | Erasure removes a graph's content, or some of its nodes, from every store. | inspected:iris_src/src/Graph/KG/Eraser.cls:1-35 |
 | SYS-D27 | Redaction removes erased content from the ledger. It keeps the history in its old shape. | inspected:iris_src/src/Graph/KG/LedgerRedact.cls:1-29 |
 | SYS-D28 | A tombstone is what a record becomes after redaction. It keeps its place and holds no content. | inspected:iris_src/src/Graph/KG/LedgerRedact.cls:332-347 |
 | SYS-D29 | A vector is a list of numbers that stands for the meaning of a node, an edge or a text. | inspected:iris_vector_graph/schema.py:429-437 |
 | SYS-D30 | The width of a vector is how many numbers it holds. | inspected:iris_vector_graph/schema.py:2063-2103 |
 | SYS-D31 | A vector table is a table that keeps one vector per row. | inspected:iris_vector_graph/constants.py:27-31 |
 | SYS-D32 | Replay rebuilds nodes and edges by applying the ledger's records in order. | inspected:iris_vector_graph/ledger/replay.py:155-210 |
-| SYS-I1 | Each kind of fact has one owner, and only that owner writes it. | inspected:iris_src/src/Graph/KG/Adjacency.cls:1-20; inspected:iris_src/src/Graph/KG/GraphKey.cls:51-77; inspected:iris_src/src/Graph/KG/Eraser.cls:1-17 |
-| SYS-I2 | Content of one graph never shows up in an answer about another graph. | inspected:iris_src/src/Graph/KG/GraphKey.cls:51-77; inspected:iris_src/src/Graph/KG/Eraser.cls:113-125 |
-| SYS-I3 | A refused command leaves every store as it was. | inspected:iris_src/src/Graph/KG/Ledger.cls:397-415; inspected:iris_src/src/Graph/KG/LedgerRedact.cls:185-211 |
-| SYS-I4 | A command that writes to more than one store writes to all of them or to none. | inspected:iris_src/src/Graph/KG/Eraser.cls:47-260; inspected:iris_src/src/Graph/KG/Ledger.cls:397-415 |
-| SYS-I5 | The ledger only grows. A saved record changes only when redaction turns it into a tombstone. | inspected:iris_src/src/Graph/KG/LedgerRevision.cls:77-123; inspected:iris_src/src/Graph/KG/LedgerRedact.cls:332-347 |
 | SYS-I6 | A retry with the same retry key gets the first answer or a clear refusal. It never saves twice. | inspected:iris_src/src/Graph/KG/Ledger.cls:454-473 |
 | SYS-I7 | Each change the ledger governs is saved in the same transaction as its record. | inspected:iris_src/src/Graph/KG/Ledger.cls:387-415 |
-| SYS-I8 | A store that is built from other stores either matches them or says it is out of date. | inspected:iris_src/src/Graph/KG/Adjacency.cls:20-35 |
-| SYS-I9 | Every refusal says why it was refused. | inspected:iris_src/src/Graph/KG/Ledger.cls:61-70; inspected:iris_vector_graph/ledger/errors.py:1-40 |
 | SYS-I10 | A namespace holds one install of the product, under one schema. | inspected:iris_vector_graph/schema_name.py:1-8 |
 | INS-0 | This module owns setup. Setup builds the schema and its server code in a namespace, and brings older installs up to date. | inspected:iris_vector_graph/_engine/schema.py:2097-2161 |
 | INS-D1 | Setup is the one call that makes a namespace ready for the product. | inspected:iris_vector_graph/_engine/schema.py:2097-2104 |
@@ -1216,7 +1276,6 @@ Supported only by reading production code at the pin.
 | VEC-B11.28 | Dropping an index of any kind removes all its data. | inspected:iris_src/src/Graph/KG/IVFIndex.cls:160-163; inspected:iris_src/src/Graph/KG/VecIndex.cls:54-57; inspected:iris_src/src/Graph/KG/PLAIDSearch.cls:244-247 |
 | VEC-B11.29 | The table check reports a vector column's width from one sample row, and its row count. | inspected:iris_vector_graph/_engine/vector.py:1122-1168 |
 | TXT-0 | This module owns word search over node text and the merging of ranked search lists. | inspected:iris_src/src/Graph/KG/BM25Index.cls:1-34; inspected:iris_vector_graph/fusion.py:1-24; inspected:iris_vector_graph/text_search.py:1-29 |
-| TXT-D1 | A stopword is one of 77 common English words. It is never kept as a word of a text or a query. | inspected:iris_src/src/Graph/KG/BM25Index.cls:41-50; inspected:iris_src/src/Graph/KG/BM25Index.cls:79-86 |
 | TXT-D2 | A BM25 index is a named word index over the nodes of one graph. Each node's text is one document in it. | inspected:iris_src/src/Graph/KG/BM25Index.cls:1-22; inspected:iris_src/src/Graph/KG/BM25Index.cls:93-97 |
 | TXT-D3 | The document frequency of a word is the number of documents that hold it. | inspected:iris_src/src/Graph/KG/BM25Index.cls:15; inspected:iris_src/src/Graph/KG/BM25Index.cls:194-197 |
 | TXT-D4 | A token record is the list of the distinct words of one document. | inspected:iris_src/src/Graph/KG/BM25Index.cls:16; inspected:iris_src/src/Graph/KG/BM25Index.cls:189-200 |
@@ -1458,7 +1517,6 @@ Supported only by reading production code at the pin.
 | ALG-D7 | The interned snapshot is one copy of every graph's edges, with each node id given a number. It has no graph part, so one id in two graphs is one node there. | inspected:iris_src/src/Graph/KG/TraversalBuild.cls:329-360; inspected:iris_src/src/Graph/KG/TraversalBuild.cls:445-485 |
 | ALG-D8 | The graph-version token is a count kept for the whole namespace. Each write that can change an algorithm's answer raises it. | inspected:iris_src/src/Graph/KG/AlgoCache.cls:17-21; inspected:iris_src/src/Graph/KG/Adjacency.cls:90-92 |
 | ALG-D9 | The result cache is a shared store of algorithm answers. Each answer is kept with the graph-version token it was computed under. | inspected:iris_src/src/Graph/KG/AlgoCache.cls:1-15; inspected:iris_vector_graph/algo_cache.py:1-17 |
-| ALG-I6 | A read algorithm changes no content. It may write only its own work areas and caches. | inspected:iris_src/src/Graph/KG/TraversalBFS.cls:432-461; inspected:iris_src/src/Graph/KG/AlgoCache.cls:45-51 |
 | ALG-B1.1 | A node with no edge takes part as a node with no way out. It gets a score like any other node. | inspected:iris_vector_graph/_engine/algorithms.py:781-804; inspected:iris_src/src/Graph/KG/PageRank.cls:428-434 |
 | ALG-B1.2 | A node with no way out spreads its score over every node. Every node also gets an even share of the restart. | inspected:iris_src/src/Graph/KG/PageRank.cls:452-491 |
 | ALG-B1.3 | Global PageRank runs a fixed number of rounds, 20 by default. It stops early only when no score moves at all. | inspected:iris_src/src/Graph/KG/PageRank.cls:452-491; inspected:iris_vector_graph/_engine/algorithms.py:741-750 |
@@ -1474,7 +1532,6 @@ Supported only by reading production code at the pin.
 | ALG-B2.7 | The answer is cut to the top count the caller asks for. Without one, and without left-out edge types, it holds at most 1,000 rows. | inspected:iris_vector_graph/_engine/algorithms.py:291-293; inspected:iris_vector_graph/_engine/algorithms.py:409-421 |
 | ALG-B2.11 | With the two-way option, the walk also follows edges backwards, and a weight scales what they carry. Every path honours it. | inspected:iris_vector_graph/_engine/algorithms.py:303-327; inspected:iris_src/src/Graph/KG/PageRank.cls:252-275 |
 | ALG-B2.12 | The caller can leave out edges by type. A left-out edge counts neither in the walk nor in any node's share. | inspected:iris_src/src/Graph/KG/PageRank.cls:15-21; inspected:iris_vector_graph/_engine/algorithms.py:21-49 |
-| ALG-B2.13 | A badly formed list of left-out edge types is refused. | inspected:iris_vector_graph/_engine/algorithms.py:21-49; inspected:iris_src/src/Graph/KG/PageRank.cls:349-375 |
 | ALG-B2.16 | The short form takes one start node or a list of them and answers a ranked list. A map or a set is refused. | inspected:iris_vector_graph/_engine/algorithms.py:627-657 |
 | ALG-B2.17 | The pair form answers node and score pairs, best first. With no start nodes it answers an empty list. | inspected:iris_vector_graph/_engine/algorithms.py:1028-1042 |
 | ALG-B3 | Connected components group the default graph's nodes that are linked, in either direction. | inspected:iris_src/src/Graph/KG/Algorithms.cls:6-31; inspected:iris_vector_graph/_engine/algorithms.py:805-828 |
@@ -1488,15 +1545,12 @@ Supported only by reading production code at the pin.
 | ALG-B4.4 | The answer is kept in the result cache, keyed by its round limit. | inspected:iris_vector_graph/stores/iris_sql_store.py:2462-2469 |
 | ALG-B5 | Centrality scores rank the nodes of a graph by their place in it. The measures are degree, shortest paths and the scores of neighbours. | inspected:iris_vector_graph/_engine/algorithms.py:1051-1134; inspected:iris_src/src/Graph/KG/Centrality.cls:1-29 |
 | ALG-B5.2 | A node with no edge has a row with degree zero. | inspected:iris_vector_graph/_engine/algorithms.py:1115-1131 |
-| ALG-B5.3 | A direction other than out, in or both is refused before anything is read. | inspected:iris_vector_graph/_validate.py:243-246; inspected:iris_src/src/Graph/KG/Centrality.cls:46; inspected:iris_src/src/Graph/KG/TraversalPaths.cls:348-355 |
 | ALG-B5.5 | A store whose degree method takes no graph fails for a named graph. It never answers the default graph's degrees instead. | inspected:iris_vector_graph/_engine/algorithms.py:1115-1127 |
 | ALG-B5.6 | Betweenness counts how often a node lies on shortest paths between other nodes. A node that scores zero has no row. | inspected:iris_vector_graph/_engine/algorithms.py:1135-1145; inspected:iris_vector_graph/_engine/algorithms.py:1242-1252 |
 | ALG-B5.8 | A sample is the same on every call and every path. It takes the node ids in a fixed hashed order. | inspected:iris_vector_graph/_engine/algorithms.py:1161-1164 |
 | ALG-B5.14 | Neighbourhood betweenness scores the nodes a start node reaches within a few hops. A start node with no edge answers an empty list. | inspected:iris_vector_graph/_engine/algorithms.py:1253-1292 |
 | ALG-B5.16 | Closeness has two formulas. Harmonic adds one over the distance to each node reached. Classical gives zero to a node that does not reach every other node. | inspected:iris_vector_graph/_engine/algorithms.py:1335-1352 |
-| ALG-B5.17 | Closeness has two formulas, harmonic and classical. Any other name is an error. | inspected:iris_vector_graph/_validate.py:257-261 |
 | ALG-B5.21 | A store that lacks a centrality method refuses the call. The error says it is not built. | inspected:iris_vector_graph/_engine/algorithms.py:1096-1100 |
-| ALG-B5.22 | The vector-ranked walk is refused with a not-implemented error. No store the product ships has it. | inspected:iris_vector_graph/_engine/algorithms.py:1293-1334 |
 | ALG-B6 | The community methods group or count the default graph's nodes. They find Leiden communities, triangles, strong components and k-cores, and take no graph. | inspected:iris_vector_graph/_engine/algorithms.py:1527-1546; inspected:iris_src/src/Graph/KG/Communities.cls:1-12 |
 | ALG-B6.1 | A node with no edge gets its own row: its own group, zero triangles or core zero. | inspected:iris_vector_graph/_engine/algorithms.py:1611-1621; inspected:iris_vector_graph/_engine/algorithms.py:1697-1704 |
 | ALG-B6.5 | The top count limits rows on every path. It does not keep whole groups. | inspected:iris_vector_graph/_engine/algorithms.py:1626-1637 |
@@ -1508,7 +1562,6 @@ Supported only by reading production code at the pin.
 | ALG-B8.7 | A request with a list of edge types always goes to the algorithm owner. The native reader has no such filter. | inspected:iris_vector_graph/stores/iris_sql_store.py:2526-2535 |
 | ALG-B8.8 | The guided subgraph adds the best personalized PageRank nodes to the start nodes, then takes the subgraph around them. Nothing is pruned after. | inspected:iris_vector_graph/_engine/algorithms.py:947-985 |
 | ALG-B8.9 | Its node limit is the smaller of the node limit and the PageRank top count. | inspected:iris_vector_graph/_engine/algorithms.py:973-975 |
-| ALG-B8.10 | It refuses damping outside zero to one, or fewer than one round. | inspected:iris_vector_graph/_engine/algorithms.py:961 |
 | ALG-B9 | Walks list the nodes and edges reached from a start node, hop by hop. | inspected:iris_src/src/Graph/KG/TraversalBFS.cls:98-112; inspected:iris_vector_graph/_engine/algorithms.py:698-732 |
 | ALG-B9.1 | The graph walk follows out-edges in the default graph. Its list of edge types gives one type per hop, and the last one repeats. | inspected:iris_vector_graph/_engine/algorithms.py:698-712; inspected:iris_src/src/Graph/KG/TraversalBFS.cls:150-168 |
 | ALG-B9.2 | The graph walk returns at most the result limit, ordered by hop. | inspected:iris_vector_graph/_engine/algorithms.py:713-732; inspected:iris_src/src/Graph/KG/TraversalBFS.cls:432-461 |
@@ -1518,7 +1571,6 @@ Supported only by reading production code at the pin.
 | ALG-B10 | Path search finds the shortest paths between two nodes in one graph. | inspected:iris_src/src/Graph/KG/TraversalPaths.cls:1-7 |
 | ALG-B10.2 | A path from a node to itself has length zero. An empty end answers no path. | inspected:iris_src/src/Graph/KG/TraversalPaths.cls:10-26 |
 | ALG-B10.4 | The plain search walks out-edges or both ways. The store turns an in-edge search into an out-edge search from the far end. | inspected:iris_vector_graph/stores/iris_sql_store.py:2196-2207; inspected:iris_src/src/Graph/KG/TraversalPaths.cls:45-75 |
-| ALG-B10.6 | A weighted search refuses any weight but the stored one, and any direction but out, in or both. | inspected:iris_src/src/Graph/KG/TraversalPaths.cls:256-264; inspected:iris_src/src/Graph/KG/TraversalPaths.cls:348-365 |
 | ALG-B10.7 | A hop limit of zero or less means no limit for a weighted search. | inspected:iris_src/src/Graph/KG/TraversalPaths.cls:250-252 |
 | ALG-B10.8 | Costs are written as decimal numbers, so a weight of one reads back as 1.0. | inspected:iris_src/src/Graph/KG/TraversalPaths.cls:481-494 |
 | ALG-B11.3 | A walk both ways reads a self-loop once. | inspected:iris_src/src/Graph/KG/VarLength.cls:27-32 |
@@ -1646,7 +1698,6 @@ Supported only by reading production code at the pin.
 | LED-B12.1 | Vectors, the text index and the time store are outside the ledger. | inspected:iris_vector_graph/ledger/replay.py:588-641; inspected:iris_src/src/Graph/KG/LedgerApply.cls:357-362 |
 | LED-B12.2 | The mirror row of a time-stamped edge is outside the ledger. The genesis and the store check both skip it. | inspected:iris_src/src/Graph/KG/LedgerGenesis.cls:41-44; inspected:iris_vector_graph/ledger/replay.py:614-619 |
 | LED-B12.5 | Erasure deletes governed rows outside any commit and leaves the records in place. | inspected:iris_src/src/Graph/KG/Eraser.cls:26-33 |
-| LED-B13.2 | Kept revisions are counted in the commit's own transaction. The genesis counts too. | inspected:iris_src/src/Graph/KG/Ledger.cls:559-565 |
 | LED-B13.3 | Some refusals are not counted: an empty changeset, a ledger never on, a fault, and a redaction in progress. | inspected:iris_src/src/Graph/KG/Ledger.cls:446; inspected:iris_src/src/Graph/KG/Ledger.cls:492; inspected:iris_src/src/Graph/KG/Ledger.cls:409-410; inspected:iris_src/src/Graph/KG/Ledger.cls:517 |
 | LED-B13.5 | The client reads zero counts when the stats table cannot be read. | inspected:iris_vector_graph/ledger/client.py:549-563 |
 | LED-B13.6 | The last check result and its time are saved in the stats row in their own transaction. | inspected:iris_src/src/Graph/KG/Ledger.cls:192-210 |
@@ -1752,18 +1803,15 @@ Supported only by reading production code at the pin.
 | INT-F5.9 | Syncing an item also syncs the items whose canonical links name it. It also syncs the items that wait for its key. | inspected:iris_src/src/Graph/KG/FHIRGraph.cls:1948-1966; inspected:iris_src/src/Graph/KG/FHIRGraph.cls:2329-2342 |
 | INT-F6.2 | A FHIR sync task counts a busy answer as success, so its next run picks up the work. | inspected:iris_src/src/Graph/KG/FHIRGraphSyncTask.cls:14-27 |
 | INT-F6.3 | The shell tool exits with code 2 when the graph is busy. | inspected:iris_vector_graph/cli.py:315-317; inspected:iris_vector_graph/cli.py:350-361 |
-| INT-F8.4 | The link report refuses a source that is not a Type/id key. | inspected:iris_vector_graph/_engine/fhir_graph.py:283-289 |
 | INT-F8.5 | A FHIR graph uses the name form of its id in its rows and the index form in the adjacency index. | inspected:iris_src/src/Graph/KG/FHIRGraph.cls:1717-1720 |
 | INT-F9.1 | The sync time is rounded up to whole minutes, and is at least one minute. | inspected:iris_src/src/Graph/KG/FHIRGraph.cls:676-677 |
 | INT-F12 | The namespace is the security line for FHIR graphs, not the graph id. Anyone who can read the namespace's tables can read the graph. | inspected:iris_vector_graph/_engine/nodes_edges.py:1508-1510; inspected:iris_vector_graph/_engine/fhir.py:286-288 |
 | INT-F12.5 | The engine may make the FHIR server calls through a second IRIS login. Then a caller's open transaction does not cover them. | inspected:iris_vector_graph/engine.py:1894-1942; inspected:iris_vector_graph/_engine/fhir_graph.py:183-188 |
 | INT-C1.1 | Expand collects the concepts within some hops in a concept graph. By default it walks edges backward, from parent to child. | inspected:iris_vector_graph/_engine/fhir_graph.py:368-393; inspected:iris_src/src/Graph/KG/FHIRGraph.cls:1474-1545 |
-| INT-C1.2 | Expand refuses hops outside 0 to 10, and an unknown way to walk, before it calls IRIS. | inspected:iris_vector_graph/_engine/fhir_graph.py:386-391 |
 | INT-C1.3 | Resolve finds the FHIR resources whose code param matches a code that the code crosswalk maps to one of the concepts. | inspected:iris_src/src/Graph/KG/FHIRGraph.cls:778-866; inspected:iris_vector_graph/_engine/fhir_graph.py:314-366 |
 | INT-C1.4 | Resolve reads codes from the repository at call time, not from the graph. It can return items the last FHIR sync has not seen. | inspected:iris_src/src/Graph/KG/FHIRGraph.cls:815-866 |
 | INT-C1.5 | The clinical preset uses four code params, less any the repository does not index. The answer can list the params used and dropped. | inspected:iris_vector_graph/_engine/fhir_graph.py:86-90; inspected:iris_vector_graph/_engine/fhir_graph.py:352-357; inspected:iris_src/src/Graph/KG/FHIRGraph.cls:899-936 |
 | INT-C1.6 | A medication that resolves also brings in the orders, uses and hand-outs that point at it. | inspected:iris_src/src/Graph/KG/FHIRGraph.cls:868-889 |
-| INT-C1.7 | Resolve refuses a relation that is not one of the four, and a param that is not a plain name. | inspected:iris_vector_graph/_engine/fhir_graph.py:93-103; inspected:iris_vector_graph/_engine/fhir_graph.py:170-177 |
 | INT-C2 | Grouping by patient sums each patient's item scores over its compartment edges. | inspected:iris_src/src/Graph/KG/FHIRGraph.cls:1597-1708; inspected:iris_vector_graph/_engine/fhir_graph.py:459-473 |
 | INT-C2.1 | Each patient lists its top items, five by default, and its total count of items. | inspected:iris_src/src/Graph/KG/FHIRGraph.cls:1679-1700; inspected:iris_vector_graph/_engine/fhir_graph.py:443-446 |
 | INT-C2.2 | The via filter keeps only the compartment edges reached through one of the named params. | inspected:iris_src/src/Graph/KG/FHIRGraph.cls:1631-1648 |
@@ -1772,21 +1820,15 @@ Supported only by reading production code at the pin.
 | INT-C3 | The coverage report and the gaps report are worked out at call time and never stored. | inspected:iris_vector_graph/_engine/fhir_graph.py:492-561; inspected:iris_src/src/Graph/KG/FHIRGraph.cls:935-940 |
 | INT-C3.1 | The coverage report gives, for each type, the count and the share with a compartment edge. It also gives some keys with no patient, profile counts and the category split. | inspected:iris_src/src/Graph/KG/FHIRGraph.cls:945-1030 |
 | INT-C3.3 | The gaps report lists the most common codes that the code crosswalk does not map, 20 by default. It also counts items with text but no code. | inspected:iris_src/src/Graph/KG/FHIRGraph.cls:1122-1245; inspected:iris_vector_graph/_engine/fhir_graph.py:517-561 |
-| INT-C3.4 | The reports refuse a prefix of ids that is not 1 to 64 id letters. The gaps report refuses a top under 1. | inspected:iris_vector_graph/_engine/fhir_graph.py:149-154; inspected:iris_vector_graph/_engine/fhir_graph.py:533-534 |
 | INT-C4 | A patient's anchors come from every FHIR graph that holds the patient. | inspected:iris_vector_graph/_engine/fhir_graph.py:563-596; inspected:iris_src/src/Graph/KG/FHIRGraph.cls:1249-1312 |
 | INT-C4.1 | Each anchor names its source graph. A graph argument limits the answer to that graph. | inspected:iris_vector_graph/_engine/fhir_graph.py:573-596 |
-| INT-C4.3 | The anchors call refuses a patient id that is not 1 to 64 id letters. | inspected:iris_vector_graph/_engine/fhir_graph.py:571-572 |
 | INT-C4.4 | The Cypher API takes anchors from a FHIR graph that holds the patient, and from the old bridge if none does. It says which one it used. | inspected:iris_vector_graph/cypher_api.py:327-347; inspected:iris_vector_graph/cypher_api.py:355-366 |
-| INT-C4.5 | The Cypher API will not fetch a FHIR base address that a caller sends, unless the operator listed it. | inspected:iris_vector_graph/cypher_api.py:287-308 |
 | INT-B1.2 | A FHIR bridge row is keyed by code and node. Adding it again with another type or system updates that row. | inspected:sql/fhir_bridges.sql:2-10; inspected:iris_vector_graph/_engine/fhir.py:420-425 |
 | INT-B1.4 | A failed anchor query raises. It no longer answers an empty list. | inspected:iris_vector_graph/_engine/fhir.py:444-481 |
 | INT-B1.7 | Code pick-up keeps only ICD-10 codes from Condition items. | inspected:iris_vector_graph/fhir_bridge.py:130-183 |
 | INT-B1.10 | The old pipeline's rank walk names no graph. | inspected:iris_vector_graph/fhir_bridge.py:282-286 |
 | INT-M1.1 | Mapped rows and links are not in the adjacency index, so graph walks and graph algorithms do not see them. | inspected:iris_vector_graph/_engine/fhir.py:96-104 |
-| INT-M1.2 | Mapping refuses a table, column or label name that is not a plain name. | inspected:iris_vector_graph/_engine/fhir.py:106-110 |
 | INT-M1.5 | Mapping a label again updates its row. | inspected:iris_vector_graph/_engine/fhir.py:129-138 |
-| INT-M1.6 | A link mapping needs a foreign key or a join table, and both labels mapped first. | inspected:iris_vector_graph/_engine/fhir.py:165-174 |
-| INT-M1.8 | Removing a label that is not mapped is refused. | inspected:iris_vector_graph/_engine/fhir.py:242-247 |
 | INT-M1.9 | Each engine keeps the mappings in a cache. Reload reads them again after another process changes them. | inspected:iris_vector_graph/_engine/fhir.py:19-83; inspected:iris_vector_graph/_engine/fhir.py:257-265 |
 | INT-M1.10 | A failed cache load leaves the cache empty. Then a label with a mapping reads as having none. | inspected:iris_vector_graph/_engine/fhir.py:46-47; inspected:iris_vector_graph/_engine/fhir.py:82-83 |
 | INT-R1 | RDF export writes a graph's labels, properties and edges to a file. It only reads, and it changes no graph. | inspected:iris_vector_graph/_engine/rdf_export.py:96-157 |
@@ -1812,7 +1854,6 @@ Supported only by reading production code at the pin.
 | INT-S1.7 | The check runs with no inference and does not stop at the first failure. | inspected:iris_vector_graph/_engine/shacl.py:235-240 |
 | INT-S1.8 | Each failure gives the node, shape, message, severity, path and value. A missing severity counts as Violation. | inspected:iris_vector_graph/_engine/shacl.py:151-197 |
 | INT-S1.10 | The check runs after data is written, so a failed check undoes nothing. | inspected:iris_vector_graph/_engine/shacl.py:227-242 |
-| INT-S1.11 | Without rdflib or pySHACL, the check is refused with an error that names the extra. | inspected:iris_vector_graph/_engine/shacl.py:85-104 |
 | INT-V1 | PROV export writes the default graph's temporal edges as PROV activities, one per edge. | inspected:iris_vector_graph/_engine/prov.py:107-139 |
 | INT-V1.1 | Each activity has its start time in UTC. It uses the source as an entity and links the target by the edge type. | inspected:iris_vector_graph/_engine/prov.py:236-268 |
 | INT-V1.2 | A temporal edge has one time, so no activity has an end time. | inspected:iris_src/src/Graph/KG/TemporalIndex.cls:713-716; inspected:iris_vector_graph/_engine/prov.py:204 |
@@ -2042,10 +2083,8 @@ Supported only by reading production code at the pin.
 | SNP-D8 | The failed-row count says how many rows of the snapshot archive each table would not take. | inspected:iris_vector_graph/_engine/snapshot.py:1299-1315 |
 | SNP-D9 | A routed vector table holds the vectors of one graph and model. A row in the list of vector tables names it. | inspected:iris_vector_graph/_engine/snapshot.py:299-344 |
 | SNP-D10 | The restore allow-list names the native indexes a restore may write. | inspected:iris_vector_graph/_engine/snapshot.py:412-422 |
-| SNP-I2 | Saving reads the namespace and writes nothing to it. | inspected:iris_vector_graph/_engine/snapshot.py:797-1048 |
 | SNP-B1.1 | The caller can save just the tables or just the native indexes. | inspected:iris_vector_graph/_engine/snapshot.py:820-821; inspected:iris_vector_graph/_engine/snapshot.py:864; inspected:iris_vector_graph/_engine/snapshot.py:1010 |
 | SNP-T1.6 | Row ids and computed columns are not saved, because a restore cannot write them. | inspected:iris_vector_graph/_engine/snapshot.py:871-874 |
-| SNP-T1.11 | Each native index value is saved as text. | inspected:iris_vector_graph/_engine/snapshot.py:1644-1646 |
 | SNP-B1.16 | Some stores stay out of the snapshot archive: the install record, compiled query code, queued vector work and set-aside vectors. | inspected:iris_vector_graph/_engine/snapshot.py:243-265; inspected:iris_vector_graph/_engine/snapshot.py:387-409 |
 | SNP-B1.20 | The HTTP endpoint saves to a folder named in the environment, else the temp folder. A reboot can delete that. | inspected:iris_vector_graph/cypher_api.py:668-678 |
 | SNP-B1.21 | Saving works in any ledger mode and inside the caller's own work, because it only reads. | inspected:iris_vector_graph/_engine/snapshot.py:797-834 |
@@ -2058,7 +2097,6 @@ Supported only by reading production code at the pin.
 | SNP-T2.16 | A restore clears the cached degree counts of each graph whose adjacency it wrote. | inspected:iris_vector_graph/_engine/snapshot.py:1685-1691 |
 | SNP-T2.18 | A restore skips the old degree counters a snapshot archive may hold. | inspected:iris_vector_graph/_engine/snapshot.py:347-353; inspected:iris_vector_graph/_engine/snapshot.py:1658; inspected:iris_vector_graph/_engine/snapshot.py:1672-1673 |
 | SNP-B2.22 | The result lists the tables and native indexes restored. It also gives the failed-row count and the time of the snapshot archive. | inspected:iris_vector_graph/_engine/snapshot.py:1601-1610 |
-| SNP-T3.1 | The erase and the load are separate steps. A failure part way leaves the namespace empty or partly loaded. | inspected:iris_vector_graph/_engine/snapshot.py:1205-1216; inspected:iris_vector_graph/_engine/snapshot.py:1578-1582 |
 | SNP-B3.3 | A row the snapshot archive does not hold stays in a configuration table. | inspected:iris_vector_graph/_engine/snapshot.py:1265-1275 |
 | SNP-T3.9 | Rows that a restore writes do not pass through the ledger. With the ledger on, verify sees them unless the ledger in the snapshot archive has them. | inspected:iris_vector_graph/_engine/snapshot.py:1293-1297; inspected:iris_vector_graph/ledger/replay.py:806-848 |
 | SNP-T5 | The server class also has file helpers and an old global export and import. The product does not call them. | inspected:iris_src/src/Graph/KG/Snapshot.cls:4-73 |
