@@ -1,0 +1,23 @@
+{
+  "check": "m09-planc-control-shared-name",
+  "command": "CARGO_TARGET_DIR=$RUN_DIR/target/breadth-b cargo build --release && bash experiment/playbook-completion/tools/locks.sh heavy timeout 1800 $RUN_DIR/target/breadth-b/release/breadth-b",
+  "design": "control",
+  "experiment_head": "f3fe3917466f7bae3e46f32f5b0644cfeaff87c8",
+  "full_log": "$RUN_DIR/breadth-b/mc/full-decisive-20261114T012246Z.log",
+  "full_log_sha256": "227f6720d9d86ed75cc8fa7fd71e2d9d31fd6f5ccd627843af4d51997edf4615",
+  "id": "b-mc-m09-planc-control-shared-name",
+  "kind": "control",
+  "lane": "breadth-b",
+  "log": "$RUN_DIR/breadth-b/mc/checks/m09-planc-control-shared-name.log",
+  "log_bytes": 4043,
+  "log_sha256": "20aa6c96dceee7528efd182882d9ce1b1acc21f78f35a8b492ec8dfd027060e0",
+  "module": "09",
+  "observes": "module 09 machine planc design control: expectation violation of 'NAT-I3: a read never runs code written for another plan shape'; result met (found 'NAT-I3: a read never runs code written for another plan shape'); 1542 states, 4354 transitions, depth 10, exhaustive within the model's bounds; covers: mutant: reviewed with the 32-bit shared class name",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T01:23:52+00:00",
+  "result": "expected-violation",
+  "results": "experiment/playbook-completion/models/breadth-b/RESULTS.json",
+  "search": "exhaustive",
+  "states": "1542"
+}

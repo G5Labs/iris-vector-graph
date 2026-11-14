@@ -1,0 +1,23 @@
+{
+  "check": "m07-bm25-control-nolock",
+  "command": "CARGO_TARGET_DIR=$RUN_DIR/target/breadth-b cargo build --release && bash experiment/playbook-completion/tools/locks.sh heavy timeout 1800 $RUN_DIR/target/breadth-b/release/breadth-b",
+  "design": "control",
+  "experiment_head": "f3fe3917466f7bae3e46f32f5b0644cfeaff87c8",
+  "full_log": "$RUN_DIR/breadth-b/mc/full-decisive-20261114T012246Z.log",
+  "full_log_sha256": "227f6720d9d86ed75cc8fa7fd71e2d9d31fd6f5ccd627843af4d51997edf4615",
+  "id": "b-mc-m07-bm25-control-nolock",
+  "kind": "control",
+  "lane": "breadth-b",
+  "log": "$RUN_DIR/breadth-b/mc/checks/m07-bm25-control-nolock.log",
+  "log_bytes": 1332,
+  "log_sha256": "4985d4c588b6f21d15286bcfae33a3a9c20c7f7d7f8afb604b420cc8444fe05f",
+  "module": "07",
+  "observes": "module 07 machine bm25 design control: expectation violation of 'TXT-I5 two writers never change one BM25 index at the same time'; result met (found 'TXT-I5 two writers never change one BM25 index at the same time'); 77 states, 119 transitions, depth 2, exhaustive within the model's bounds; covers: mutant: reviewed Build without the write lock",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T01:23:49+00:00",
+  "result": "expected-violation",
+  "results": "experiment/playbook-completion/models/breadth-b/RESULTS.json",
+  "search": "exhaustive",
+  "states": "77"
+}

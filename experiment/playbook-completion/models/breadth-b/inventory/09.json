@@ -1,0 +1,2649 @@
+{
+ "module": "09",
+ "ontology": "experiment/playbook-uplift/ontology/09-native-executor.md",
+ "scope_file": "experiment/playbook-completion/models/breadth-b/tools/scope/09.json",
+ "generated_by": "experiment/playbook-completion/models/breadth-b/tools/inventory.py",
+ "counts": {
+  "entry_points": 63,
+  "by_kind": {
+   "background-job": 2,
+   "cls": 40,
+   "engine": 1,
+   "engine-internal": 5,
+   "gate-fact-cited": 4,
+   "lifecycle": 4,
+   "py": 7
+  },
+  "statements": 169,
+  "cells": 57,
+  "omissions": 15,
+  "cells_without_entry_point": 0
+ },
+ "entities": {
+  "compiled shape": {
+   "states": [
+    "absent",
+    "building",
+    "abandoned",
+    "ok",
+    "failed",
+    "stale"
+   ],
+   "commands": [
+    "job read",
+    "sync read",
+    "off read",
+    "drop all",
+    "alter props table"
+   ]
+  },
+  "process mode": {
+   "states": [
+    "job",
+    "sync",
+    "off"
+   ],
+   "commands": [
+    "set job",
+    "set sync",
+    "set off",
+    "clear",
+    "set other"
+   ]
+  },
+  "engine native path": {
+   "states": [
+    "on",
+    "off",
+    "shut",
+    "shadow"
+   ],
+   "commands": [
+    "supported read",
+    "declined read",
+    "write"
+   ]
+  }
+ },
+ "omissions": [
+  "cls:Graph.KG.Cypher.Props.GetJson",
+  "cls:Graph.KG.Cypher.Props.LayoutOK",
+  "cls:IVG.CypherEngine.Query",
+  "cls:IVG.CypherEngine.Scalar",
+  "cls:IVG.CypherEngine.GetLabelsJson",
+  "cls:IVG.CypherEngine.GetLabels",
+  "cls:IVG.CypherEngine.GetNodeCount",
+  "cls:IVG.CypherEngine.GetEdgeCount",
+  "cls:IVG.CypherEngine.NodeExists",
+  "cls:IVG.CypherEngine.GetLabelCountsJson",
+  "cls:IVG.CypherEngine.GetLabelCounts",
+  "cls:IVG.CypherEngine.InitSchemaJson",
+  "cls:IVG.CypherEngine.InitSchema",
+  "cls:IVG.CypherEngine.RebuildKG",
+  "cls:IVG.CypherEngine.IsReady"
+ ],
+ "cells_without_entry_point": [],
+ "entry_points_in_no_cell": [
+  "cls:Graph.KG.Cypher.Exec.BuiltAt",
+  "cls:Graph.KG.Cypher.Exec.Part",
+  "cls:Graph.KG.Cypher.Exec.PlanVersion",
+  "cls:Graph.KG.Cypher.Gen.BuiltAt",
+  "cls:Graph.KG.Cypher.Gen.Entries",
+  "cls:Graph.KG.Cypher.Gen.ModeOf",
+  "cls:Graph.KG.Cypher.Gen.Source",
+  "cls:Graph.KG.Cypher.Props.End",
+  "cls:Graph.KG.Cypher.Props.Get",
+  "cls:Graph.KG.Cypher.Props.GetJson",
+  "cls:Graph.KG.Cypher.Props.LayoutOK",
+  "cls:Graph.KG.Cypher.SortKey.Key",
+  "cls:IVG.CypherEngine.EnsureEngine",
+  "cls:IVG.CypherEngine.GetEdgeCount",
+  "cls:IVG.CypherEngine.GetLabelCounts",
+  "cls:IVG.CypherEngine.GetLabelCountsJson",
+  "cls:IVG.CypherEngine.GetLabels",
+  "cls:IVG.CypherEngine.GetLabelsJson",
+  "cls:IVG.CypherEngine.GetNodeCount",
+  "cls:IVG.CypherEngine.InitSchema",
+  "cls:IVG.CypherEngine.InitSchemaJson",
+  "cls:IVG.CypherEngine.IsReady",
+  "cls:IVG.CypherEngine.Local",
+  "cls:IVG.CypherEngine.NodeExists",
+  "cls:IVG.CypherEngine.Query",
+  "cls:IVG.CypherEngine.QueryJson",
+  "cls:IVG.CypherEngine.RebuildKG",
+  "cls:IVG.CypherEngine.Remote",
+  "cls:IVG.CypherEngine.Scalar",
+  "cls:IVG.CypherEngine.SmokeTest",
+  "eng:IRISGraphEngine._names_mapped_label",
+  "eng:IRISGraphEngine._routed_sql",
+  "eng:IRISGraphEngine._run_native_plan",
+  "eng:IRISGraphEngine._shadow_compare",
+  "eng:IRISGraphEngine._try_native",
+  "env:IVG_CYPHER_SHADOW",
+  "env:IVG_NATIVE_CYPHER",
+  "gate:engine._adjacency_indexed",
+  "gate:engine._iris_obj",
+  "gate:engine._native_executor_current",
+  "gate:engine._native_privileges",
+  "global:^IVG.CypherGen(\"mode\")",
+  "job:Graph.KG.Cypher.Exec.Part[worker]",
+  "py:iris_vector_graph/cypher/native_route.py:NativeRoute.__init__",
+  "py:iris_vector_graph/cypher/native_route.py:NativeRoute.next_path",
+  "py:iris_vector_graph/cypher/native_route.py:NativeRoute.record",
+  "py:iris_vector_graph/cypher/native_route.py:NativeRoute.sql_failed",
+  "py:iris_vector_graph/cypher/native_shadow.py:compare"
+ ],
+ "entry_points": [
+  {
+   "id": "cls:Graph.KG.Cypher.Exec.PlanVersion",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Cypher/Exec.cls",
+   "start": 19,
+   "end": 22,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "NAT-D18"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.Exec.BuiltAt",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Cypher/Exec.cls",
+   "start": 25,
+   "end": 29,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "NAT-D9",
+    "NAT-T5.5"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.Exec.Run",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Cypher/Exec.cls",
+   "start": 32,
+   "end": 72,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.Adj.Cached",
+    "Graph.KG.Cypher.Exec.Anchors",
+    "Graph.KG.Cypher.Exec.Bounds",
+    "Graph.KG.Cypher.Exec.BuiltAt",
+    "Graph.KG.Cypher.Exec.CmpKeys",
+    "Graph.KG.Cypher.Exec.Compile",
+    "Graph.KG.Cypher.Exec.CrossFilters",
+    "Graph.KG.Cypher.Exec.Emit",
+    "Graph.KG.Cypher.Exec.EmitGroups",
+    "Graph.KG.Cypher.Exec.EmitSorted",
+    "Graph.KG.Cypher.Exec.Export",
+    "Graph.KG.Cypher.Exec.Fanout",
+    "Graph.KG.Cypher.Exec.GraphKeys",
+    "Graph.KG.Cypher.Exec.Group",
+    "Graph.KG.Cypher.Exec.GroupCount",
+    "Graph.KG.Cypher.Exec.GroupOf",
+    "Graph.KG.Cypher.Exec.GroupRow",
+    "Graph.KG.Cypher.Exec.Head",
+    "Graph.KG.Cypher.Exec.Holds",
+    "Graph.KG.Cypher.Exec.KeyValue",
+    "Graph.KG.Cypher.Exec.KeyValues",
+    "Graph.KG.Cypher.Exec.KeysJSON",
+    "Graph.KG.Cypher.Exec.LabelStats",
+    "Graph.KG.Cypher.Exec.LimitMet",
+    "Graph.KG.Cypher.Exec.LoneEndsCount",
+    "Graph.KG.Cypher.Exec.NamedEnds",
+    "Graph.KG.Cypher.Exec.Neighbours",
+    "Graph.KG.Cypher.Exec.NodeOK",
+    "Graph.KG.Cypher.Exec.OrderKey",
+    "Graph.KG.Cypher.Exec.Out",
+    "Graph.KG.Cypher.Exec.Pairs",
+    "Graph.KG.Cypher.Exec.Parallel",
+    "Graph.KG.Cypher.Exec.ParallelWanted",
+    "Graph.KG.Cypher.Exec.ParallelWantedH1",
+    "Graph.KG.Cypher.Exec.ParallelWantedVL",
+    "Graph.KG.Cypher.Exec.Passing",
+    "Graph.KG.Cypher.Exec.PlanVersion",
+    "Graph.KG.Cypher.Exec.Project",
+    "Graph.KG.Cypher.Exec.PushOut",
+    "Graph.KG.Cypher.Exec.Recall",
+    "Graph.KG.Cypher.Exec.Remember",
+    "Graph.KG.Cypher.Exec.RunA",
+    "Graph.KG.Cypher.Exec.ScanGroups",
+    "Graph.KG.Cypher.Exec.ScanGroupsFlush",
+    "Graph.KG.Cypher.Exec.Seen",
+    "Graph.KG.Cypher.Exec.Smallest",
+    "Graph.KG.Cypher.Exec.SortKey",
+    "Graph.KG.Cypher.Exec.SortRef",
+    "Graph.KG.Cypher.Exec.SpillDistinct",
+    "Graph.KG.Cypher.Exec.Stage2",
+    "Graph.KG.Cypher.Exec.Substring",
+    "Graph.KG.Cypher.Exec.ToList",
+    "Graph.KG.Cypher.Exec.TrimLevel",
+    "Graph.KG.Cypher.Exec.TrimSorted",
+    "Graph.KG.Cypher.Exec.Unchecked",
+    "Graph.KG.Cypher.Exec.Walk",
+    "Graph.KG.Cypher.Gen.Add",
+    "Graph.KG.Cypher.Gen.Build",
+    "Graph.KG.Cypher.Gen.Check",
+    "Graph.KG.Cypher.Gen.Covered",
+    "Graph.KG.Cypher.Gen.Digest",
+    "Graph.KG.Cypher.Gen.Effective",
+    "Graph.KG.Cypher.Gen.Emission",
+    "Graph.KG.Cypher.Gen.For",
+    "Graph.KG.Cypher.Gen.Hop",
+    "Graph.KG.Cypher.Gen.Lines",
+    "Graph.KG.Cypher.Gen.Lit",
+    "Graph.KG.Cypher.Gen.ModeOf",
+    "Graph.KG.Cypher.Gen.Now",
+    "Graph.KG.Cypher.Gen.Shape",
+    "Graph.KG.Cypher.Gen.Stamp",
+    "Graph.KG.Cypher.Gen.Unchecked",
+    "Graph.KG.Cypher.Gen.VarHop",
+    "Graph.KG.Cypher.Props.Begin",
+    "Graph.KG.Cypher.Props.End",
+    "Graph.KG.Cypher.Props.Get",
+    "Graph.KG.Cypher.Props.Layout",
+    "Graph.KG.Cypher.Props.Resolve",
+    "Graph.KG.Cypher.Props.Scalar",
+    "Graph.KG.Cypher.Props.Stamp",
+    "Graph.KG.Cypher.SortKey.Key",
+    "Graph.KG.GraphKey.Canonical",
+    "Graph.KG.GraphKey.ForIndex",
+    "Graph.KG.GraphKey.Validate",
+    "Graph.KG.VarLength.Adjacent",
+    "Graph.KG.VarLength.CPUs",
+    "Graph.KG.VarLength.EndsByDistance",
+    "Graph.KG.VarLength.EndsInto",
+    "Graph.KG.VarLength.EndsTwo",
+    "Graph.KG.VarLength.KeyCount",
+    "Graph.KG.VarLength.LastLevel",
+    "Graph.KG.VarLength.NamedEnds",
+    "Graph.KG.VarLength.Neighbours",
+    "Graph.KG.VarLength.SecondHop",
+    "Graph.KG.VarLength.Setup",
+    "Graph.KG.VarLength.SplitLast"
+   ],
+   "hint": {
+    "globals_written": [
+     "^IRIS.Temp.IVG.Cypher",
+     "^IRIS.Temp.IVG.VL",
+     "^IVG.CypherCompiled",
+     "^KG",
+     "^||IVG.CPUs",
+     "^||IVG.CypherCompiledRuns",
+     "^||IVG.CypherDegreeTally",
+     "^||IVG.CypherEndsCount",
+     "^||IVG.CypherGenFailed",
+     "^||IVG.CypherMemo",
+     "^||IVG.CypherNamedEnds",
+     "^||IVG.CypherOut",
+     "^||IVG.CypherProps",
+     "^||IVG.CypherRun",
+     "^||IVG.CypherTrims",
+     "^||IVG.VLParallelRuns"
+    ],
+    "globals_killed": [
+     "^IRIS.Temp.IVG.Cypher",
+     "^IRIS.Temp.IVG.VL",
+     "^IVG.CypherCompiled",
+     "^||IVG.CypherOut",
+     "^||IVG.CypherProps",
+     "^||IVG.CypherRun"
+    ],
+    "globals_read": [
+     "^IVG.CypherGen",
+     "^KG",
+     "^||IVG.CypherGenMode",
+     "^||IVG.CypherMemo",
+     "^||IVG.CypherProps",
+     "^||IVG.CypherRun",
+     "^||IVG.CypherTrimAt",
+     "^||IVG.VLParallelMin",
+     "^||IVG.VLSharedReads",
+     "^||IVG.VLWorker"
+    ],
+    "locks": [
+     "+^IVG.CypherCompiled",
+     "-^IVG.CypherCompiled"
+    ],
+    "tables_written": [],
+    "tables_read": [
+     "nodes",
+     "rdf_props"
+    ],
+    "flags": [
+     "$INCREMENT",
+     "$ZCRC",
+     "COMPILE",
+     "JOB",
+     "LOCK-TIMEOUT",
+     "TSTART"
+    ]
+   },
+   "covered_by": [
+    "NAT-D3",
+    "NAT-X9",
+    "NAT-T2.7",
+    "NAT-T3",
+    "NAT-I2",
+    "NAT-X10",
+    "NAT-T6.3"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.Exec.Part",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Cypher/Exec.cls",
+   "start": 540,
+   "end": 554,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.Adj.Cached",
+    "Graph.KG.Cypher.Exec.Anchors",
+    "Graph.KG.Cypher.Exec.Bounds",
+    "Graph.KG.Cypher.Exec.BuiltAt",
+    "Graph.KG.Cypher.Exec.CmpKeys",
+    "Graph.KG.Cypher.Exec.Compile",
+    "Graph.KG.Cypher.Exec.CrossFilters",
+    "Graph.KG.Cypher.Exec.Emit",
+    "Graph.KG.Cypher.Exec.EmitGroups",
+    "Graph.KG.Cypher.Exec.EmitSorted",
+    "Graph.KG.Cypher.Exec.Export",
+    "Graph.KG.Cypher.Exec.Fanout",
+    "Graph.KG.Cypher.Exec.GraphKeys",
+    "Graph.KG.Cypher.Exec.Group",
+    "Graph.KG.Cypher.Exec.GroupCount",
+    "Graph.KG.Cypher.Exec.GroupOf",
+    "Graph.KG.Cypher.Exec.GroupRow",
+    "Graph.KG.Cypher.Exec.Holds",
+    "Graph.KG.Cypher.Exec.KeyValue",
+    "Graph.KG.Cypher.Exec.KeyValues",
+    "Graph.KG.Cypher.Exec.KeysJSON",
+    "Graph.KG.Cypher.Exec.LabelStats",
+    "Graph.KG.Cypher.Exec.LimitMet",
+    "Graph.KG.Cypher.Exec.LoneEndsCount",
+    "Graph.KG.Cypher.Exec.NamedEnds",
+    "Graph.KG.Cypher.Exec.Neighbours",
+    "Graph.KG.Cypher.Exec.NodeOK",
+    "Graph.KG.Cypher.Exec.OrderKey",
+    "Graph.KG.Cypher.Exec.Out",
+    "Graph.KG.Cypher.Exec.Pairs",
+    "Graph.KG.Cypher.Exec.Parallel",
+    "Graph.KG.Cypher.Exec.ParallelWanted",
+    "Graph.KG.Cypher.Exec.ParallelWantedH1",
+    "Graph.KG.Cypher.Exec.ParallelWantedVL",
+    "Graph.KG.Cypher.Exec.Passing",
+    "Graph.KG.Cypher.Exec.PlanVersion",
+    "Graph.KG.Cypher.Exec.Project",
+    "Graph.KG.Cypher.Exec.PushOut",
+    "Graph.KG.Cypher.Exec.Recall",
+    "Graph.KG.Cypher.Exec.Remember",
+    "Graph.KG.Cypher.Exec.RunA",
+    "Graph.KG.Cypher.Exec.ScanGroups",
+    "Graph.KG.Cypher.Exec.ScanGroupsFlush",
+    "Graph.KG.Cypher.Exec.Seen",
+    "Graph.KG.Cypher.Exec.Smallest",
+    "Graph.KG.Cypher.Exec.SortKey",
+    "Graph.KG.Cypher.Exec.SortRef",
+    "Graph.KG.Cypher.Exec.SpillDistinct",
+    "Graph.KG.Cypher.Exec.Stage2",
+    "Graph.KG.Cypher.Exec.Substring",
+    "Graph.KG.Cypher.Exec.ToList",
+    "Graph.KG.Cypher.Exec.TrimLevel",
+    "Graph.KG.Cypher.Exec.TrimSorted",
+    "Graph.KG.Cypher.Exec.Unchecked",
+    "Graph.KG.Cypher.Exec.Walk",
+    "Graph.KG.Cypher.Gen.Add",
+    "Graph.KG.Cypher.Gen.Build",
+    "Graph.KG.Cypher.Gen.Check",
+    "Graph.KG.Cypher.Gen.Covered",
+    "Graph.KG.Cypher.Gen.Digest",
+    "Graph.KG.Cypher.Gen.Effective",
+    "Graph.KG.Cypher.Gen.Emission",
+    "Graph.KG.Cypher.Gen.For",
+    "Graph.KG.Cypher.Gen.Hop",
+    "Graph.KG.Cypher.Gen.Lines",
+    "Graph.KG.Cypher.Gen.Lit",
+    "Graph.KG.Cypher.Gen.ModeOf",
+    "Graph.KG.Cypher.Gen.Now",
+    "Graph.KG.Cypher.Gen.Shape",
+    "Graph.KG.Cypher.Gen.Stamp",
+    "Graph.KG.Cypher.Gen.Unchecked",
+    "Graph.KG.Cypher.Gen.VarHop",
+    "Graph.KG.Cypher.Props.Begin",
+    "Graph.KG.Cypher.Props.End",
+    "Graph.KG.Cypher.Props.Get",
+    "Graph.KG.Cypher.Props.Layout",
+    "Graph.KG.Cypher.Props.Resolve",
+    "Graph.KG.Cypher.Props.Scalar",
+    "Graph.KG.Cypher.Props.Stamp",
+    "Graph.KG.Cypher.SortKey.Key",
+    "Graph.KG.GraphKey.Canonical",
+    "Graph.KG.GraphKey.ForIndex",
+    "Graph.KG.GraphKey.Validate",
+    "Graph.KG.VarLength.Adjacent",
+    "Graph.KG.VarLength.CPUs",
+    "Graph.KG.VarLength.EndsByDistance",
+    "Graph.KG.VarLength.EndsInto",
+    "Graph.KG.VarLength.EndsTwo",
+    "Graph.KG.VarLength.KeyCount",
+    "Graph.KG.VarLength.LastLevel",
+    "Graph.KG.VarLength.NamedEnds",
+    "Graph.KG.VarLength.Neighbours",
+    "Graph.KG.VarLength.SecondHop",
+    "Graph.KG.VarLength.Setup",
+    "Graph.KG.VarLength.SplitLast"
+   ],
+   "hint": {
+    "globals_written": [
+     "^IRIS.Temp.IVG.Cypher",
+     "^IRIS.Temp.IVG.VL",
+     "^IVG.CypherCompiled",
+     "^KG",
+     "^||IVG.CPUs",
+     "^||IVG.CypherCompiledRuns",
+     "^||IVG.CypherDegreeTally",
+     "^||IVG.CypherEndsCount",
+     "^||IVG.CypherGenFailed",
+     "^||IVG.CypherMemo",
+     "^||IVG.CypherNamedEnds",
+     "^||IVG.CypherOut",
+     "^||IVG.CypherProps",
+     "^||IVG.CypherRun",
+     "^||IVG.CypherTrims",
+     "^||IVG.VLParallelRuns",
+     "^||IVG.VLWorker"
+    ],
+    "globals_killed": [
+     "^IRIS.Temp.IVG.Cypher",
+     "^IRIS.Temp.IVG.VL",
+     "^IVG.CypherCompiled",
+     "^||IVG.CypherProps",
+     "^||IVG.CypherRun",
+     "^||IVG.VLWorker"
+    ],
+    "globals_read": [
+     "^IVG.CypherGen",
+     "^KG",
+     "^||IVG.CypherGenMode",
+     "^||IVG.CypherMemo",
+     "^||IVG.CypherProps",
+     "^||IVG.CypherRun",
+     "^||IVG.CypherTrimAt",
+     "^||IVG.VLParallelMin",
+     "^||IVG.VLSharedReads",
+     "^||IVG.VLWorker"
+    ],
+    "locks": [
+     "+^IVG.CypherCompiled",
+     "-^IVG.CypherCompiled"
+    ],
+    "tables_written": [],
+    "tables_read": [
+     "nodes",
+     "rdf_props"
+    ],
+    "flags": [
+     "$INCREMENT",
+     "$ZCRC",
+     "COMPILE",
+     "JOB",
+     "LOCK-TIMEOUT",
+     "TSTART"
+    ]
+   },
+   "covered_by": [
+    "NAT-D16",
+    "NAT-T3.14"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.Exec.ReadPage",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Cypher/Exec.cls",
+   "start": 1902,
+   "end": 1910,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [
+     "^||IVG.CypherOut"
+    ],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "NAT-T3.1"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.Exec.Drop",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Cypher/Exec.cls",
+   "start": 1913,
+   "end": 1916,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [
+     "^||IVG.CypherOut"
+    ],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "NAT-T3.1"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.Gen.Mode",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Cypher/Gen.cls",
+   "start": 28,
+   "end": 38,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.Cypher.Gen.Effective"
+   ],
+   "hint": {
+    "globals_written": [
+     "^||IVG.CypherGenMode"
+    ],
+    "globals_killed": [
+     "^||IVG.CypherGenMode"
+    ],
+    "globals_read": [
+     "^IVG.CypherGen",
+     "^||IVG.CypherGenMode"
+    ],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": [
+     "JOB"
+    ]
+   },
+   "covered_by": [
+    "NAT-D10",
+    "NAT-B5.2",
+    "NAT-X11"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.Gen.Effective",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Cypher/Gen.cls",
+   "start": 41,
+   "end": 44,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [
+     "^IVG.CypherGen",
+     "^||IVG.CypherGenMode"
+    ],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": [
+     "JOB"
+    ]
+   },
+   "covered_by": [
+    "NAT-D10",
+    "NAT-B5.2",
+    "NAT-X12"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.Gen.ModeOf",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Cypher/Gen.cls",
+   "start": 47,
+   "end": 50,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.Cypher.Gen.Effective"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [
+     "^IVG.CypherGen",
+     "^||IVG.CypherGenMode"
+    ],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": [
+     "JOB"
+    ]
+   },
+   "covered_by": [
+    "NAT-D10",
+    "NAT-B5.2",
+    "NAT-T5.13"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.Gen.BuiltAt",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Cypher/Gen.cls",
+   "start": 53,
+   "end": 57,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "NAT-D9",
+    "NAT-T5.5"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.Gen.For",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Cypher/Gen.cls",
+   "start": 61,
+   "end": 105,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.Adj.Cached",
+    "Graph.KG.Cypher.Exec.BuiltAt",
+    "Graph.KG.Cypher.Exec.PlanVersion",
+    "Graph.KG.Cypher.Gen.Add",
+    "Graph.KG.Cypher.Gen.Build",
+    "Graph.KG.Cypher.Gen.Check",
+    "Graph.KG.Cypher.Gen.Covered",
+    "Graph.KG.Cypher.Gen.Digest",
+    "Graph.KG.Cypher.Gen.Effective",
+    "Graph.KG.Cypher.Gen.Emission",
+    "Graph.KG.Cypher.Gen.Hop",
+    "Graph.KG.Cypher.Gen.Lines",
+    "Graph.KG.Cypher.Gen.Lit",
+    "Graph.KG.Cypher.Gen.ModeOf",
+    "Graph.KG.Cypher.Gen.Now",
+    "Graph.KG.Cypher.Gen.Shape",
+    "Graph.KG.Cypher.Gen.Stamp",
+    "Graph.KG.Cypher.Gen.Unchecked",
+    "Graph.KG.Cypher.Gen.VarHop",
+    "Graph.KG.GraphKey.Canonical",
+    "Graph.KG.GraphKey.ForIndex",
+    "Graph.KG.GraphKey.Validate",
+    "Graph.KG.VarLength.CPUs",
+    "Graph.KG.VarLength.EndsByDistance",
+    "Graph.KG.VarLength.EndsInto",
+    "Graph.KG.VarLength.EndsTwo",
+    "Graph.KG.VarLength.KeyCount",
+    "Graph.KG.VarLength.LastLevel",
+    "Graph.KG.VarLength.Neighbours",
+    "Graph.KG.VarLength.SecondHop",
+    "Graph.KG.VarLength.Setup",
+    "Graph.KG.VarLength.SplitLast"
+   ],
+   "hint": {
+    "globals_written": [
+     "^IRIS.Temp.IVG.VL",
+     "^IVG.CypherCompiled",
+     "^||IVG.CPUs",
+     "^||IVG.CypherDegreeTally",
+     "^||IVG.CypherEndsCount",
+     "^||IVG.CypherRun",
+     "^||IVG.VLParallelRuns"
+    ],
+    "globals_killed": [
+     "^IRIS.Temp.IVG.VL",
+     "^IVG.CypherCompiled"
+    ],
+    "globals_read": [
+     "^IVG.CypherGen",
+     "^KG",
+     "^||IVG.CypherGenMode",
+     "^||IVG.CypherProps",
+     "^||IVG.VLParallelMin",
+     "^||IVG.VLSharedReads",
+     "^||IVG.VLWorker"
+    ],
+    "locks": [
+     "+^IVG.CypherCompiled",
+     "-^IVG.CypherCompiled"
+    ],
+    "tables_written": [],
+    "tables_read": [
+     "rdf_props"
+    ],
+    "flags": [
+     "$INCREMENT",
+     "$ZCRC",
+     "COMPILE",
+     "JOB",
+     "LOCK-TIMEOUT"
+    ]
+   },
+   "covered_by": [
+    "NAT-D8",
+    "NAT-T4.5",
+    "NAT-T5",
+    "NAT-I3",
+    "NAT-T5.4",
+    "NAT-I4",
+    "NAT-T5.6",
+    "NAT-T5.10",
+    "NAT-T5.11",
+    "NAT-T5.12",
+    "NAT-X12",
+    "NAT-T5.14",
+    "NAT-T5.16",
+    "NAT-T5.17",
+    "NAT-T5.18",
+    "NAT-B5.3",
+    "NAT-T5.20",
+    "NAT-I5",
+    "NAT-T6.2",
+    "NAT-T6.3",
+    "NAT-B6.1"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.Gen.Build",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Cypher/Gen.cls",
+   "start": 163,
+   "end": 222,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.Cypher.Gen.Digest"
+   ],
+   "hint": {
+    "globals_written": [
+     "^IVG.CypherCompiled"
+    ],
+    "globals_killed": [],
+    "globals_read": [
+     "^IVG.CypherGen"
+    ],
+    "locks": [
+     "+^IVG.CypherCompiled",
+     "-^IVG.CypherCompiled"
+    ],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": [
+     "COMPILE",
+     "LOCK-TIMEOUT"
+    ]
+   },
+   "covered_by": [
+    "NAT-D7",
+    "NAT-T5.15",
+    "NAT-T5.16",
+    "NAT-T5.17",
+    "NAT-T5.18",
+    "NAT-P3",
+    "NAT-B5.3",
+    "NAT-T5.20",
+    "NAT-I5"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.Gen.DropAll",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Cypher/Gen.cls",
+   "start": 225,
+   "end": 230,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [
+     "^IVG.CypherCompiled"
+    ],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "NAT-T5.22",
+    "NAT-I5",
+    "NAT-T5.25"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.Gen.Source",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Cypher/Gen.cls",
+   "start": 233,
+   "end": 242,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [
+     "^IVG.CypherCompiled"
+    ],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "NAT-T5.21"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.Gen.Entries",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Cypher/Gen.cls",
+   "start": 245,
+   "end": 254,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [
+     "^IVG.CypherCompiled"
+    ],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "NAT-T5.21"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.Props.Layout",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Cypher/Props.cls",
+   "start": 14,
+   "end": 25,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.Cypher.Props.Resolve",
+    "Graph.KG.Cypher.Props.Scalar",
+    "Graph.KG.Cypher.Props.Stamp"
+   ],
+   "hint": {
+    "globals_written": [
+     "^||IVG.CypherProps"
+    ],
+    "globals_killed": [
+     "^||IVG.CypherProps"
+    ],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "NAT-T4.3",
+    "NAT-T5.6"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.Props.Get",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Cypher/Props.cls",
+   "start": 44,
+   "end": 72,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.Cypher.Props.Layout",
+    "Graph.KG.Cypher.Props.Resolve",
+    "Graph.KG.Cypher.Props.Scalar",
+    "Graph.KG.Cypher.Props.Stamp"
+   ],
+   "hint": {
+    "globals_written": [
+     "^||IVG.CypherProps"
+    ],
+    "globals_killed": [
+     "^||IVG.CypherProps"
+    ],
+    "globals_read": [
+     "^||IVG.CypherProps"
+    ],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [
+     "rdf_props"
+    ],
+    "flags": []
+   },
+   "covered_by": [
+    "NAT-D17",
+    "NAT-T4.2",
+    "NAT-T4.6"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.Props.Begin",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Cypher/Props.cls",
+   "start": 76,
+   "end": 79,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.Cypher.Props.Layout",
+    "Graph.KG.Cypher.Props.Resolve",
+    "Graph.KG.Cypher.Props.Scalar",
+    "Graph.KG.Cypher.Props.Stamp"
+   ],
+   "hint": {
+    "globals_written": [
+     "^||IVG.CypherProps"
+    ],
+    "globals_killed": [
+     "^||IVG.CypherProps"
+    ],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "NAT-T4.3"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.Props.End",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Cypher/Props.cls",
+   "start": 82,
+   "end": 85,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [
+     "^||IVG.CypherProps"
+    ],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "NAT-T4.3"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.Props.GetJson",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Cypher/Props.cls",
+   "start": 88,
+   "end": 97,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.Cypher.Props.Get",
+    "Graph.KG.Cypher.Props.Layout",
+    "Graph.KG.Cypher.Props.Resolve",
+    "Graph.KG.Cypher.Props.Scalar",
+    "Graph.KG.Cypher.Props.Stamp"
+   ],
+   "hint": {
+    "globals_written": [
+     "^||IVG.CypherProps"
+    ],
+    "globals_killed": [
+     "^||IVG.CypherProps"
+    ],
+    "globals_read": [
+     "^||IVG.CypherProps"
+    ],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [
+     "rdf_props"
+    ],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.Props.LayoutOK",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Cypher/Props.cls",
+   "start": 100,
+   "end": 103,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.Cypher.Props.Layout",
+    "Graph.KG.Cypher.Props.Resolve",
+    "Graph.KG.Cypher.Props.Scalar",
+    "Graph.KG.Cypher.Props.Stamp"
+   ],
+   "hint": {
+    "globals_written": [
+     "^||IVG.CypherProps"
+    ],
+    "globals_killed": [
+     "^||IVG.CypherProps"
+    ],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.SortKey.Key",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Cypher/SortKey.cls",
+   "start": 9,
+   "end": 151,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "NAT-D20",
+    "NAT-T9",
+    "NAT-T9.1",
+    "NAT-T9.2",
+    "NAT-T9.3"
+   ]
+  },
+  {
+   "id": "cls:IVG.CypherEngine.Local",
+   "kind": "cls",
+   "path": "iris_src/src/IVG/CypherEngine.cls",
+   "start": 27,
+   "end": 33,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "NAT-T10.1"
+   ]
+  },
+  {
+   "id": "cls:IVG.CypherEngine.Remote",
+   "kind": "cls",
+   "path": "iris_src/src/IVG/CypherEngine.cls",
+   "start": 35,
+   "end": 53,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "NAT-T10.1"
+   ]
+  },
+  {
+   "id": "cls:IVG.CypherEngine.EnsureEngine",
+   "kind": "cls",
+   "path": "iris_src/src/IVG/CypherEngine.cls",
+   "start": 56,
+   "end": 94,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "NAT-T10.1",
+    "NAT-T10.3"
+   ]
+  },
+  {
+   "id": "cls:IVG.CypherEngine.QueryJson",
+   "kind": "cls",
+   "path": "iris_src/src/IVG/CypherEngine.cls",
+   "start": 97,
+   "end": 132,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "NAT-B10.1",
+    "NAT-T10.2",
+    "NAT-T10.3"
+   ]
+  },
+  {
+   "id": "cls:IVG.CypherEngine.Query",
+   "kind": "cls",
+   "path": "iris_src/src/IVG/CypherEngine.cls",
+   "start": 135,
+   "end": 138,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "IVG.CypherEngine.QueryJson"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:IVG.CypherEngine.Scalar",
+   "kind": "cls",
+   "path": "iris_src/src/IVG/CypherEngine.cls",
+   "start": 141,
+   "end": 150,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:IVG.CypherEngine.GetLabelsJson",
+   "kind": "cls",
+   "path": "iris_src/src/IVG/CypherEngine.cls",
+   "start": 153,
+   "end": 158,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:IVG.CypherEngine.GetLabels",
+   "kind": "cls",
+   "path": "iris_src/src/IVG/CypherEngine.cls",
+   "start": 161,
+   "end": 164,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "IVG.CypherEngine.GetLabelsJson"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:IVG.CypherEngine.GetNodeCount",
+   "kind": "cls",
+   "path": "iris_src/src/IVG/CypherEngine.cls",
+   "start": 167,
+   "end": 171,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:IVG.CypherEngine.GetEdgeCount",
+   "kind": "cls",
+   "path": "iris_src/src/IVG/CypherEngine.cls",
+   "start": 174,
+   "end": 178,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:IVG.CypherEngine.NodeExists",
+   "kind": "cls",
+   "path": "iris_src/src/IVG/CypherEngine.cls",
+   "start": 181,
+   "end": 185,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:IVG.CypherEngine.GetLabelCountsJson",
+   "kind": "cls",
+   "path": "iris_src/src/IVG/CypherEngine.cls",
+   "start": 188,
+   "end": 193,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:IVG.CypherEngine.GetLabelCounts",
+   "kind": "cls",
+   "path": "iris_src/src/IVG/CypherEngine.cls",
+   "start": 196,
+   "end": 199,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "IVG.CypherEngine.GetLabelCountsJson"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:IVG.CypherEngine.InitSchemaJson",
+   "kind": "cls",
+   "path": "iris_src/src/IVG/CypherEngine.cls",
+   "start": 202,
+   "end": 208,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:IVG.CypherEngine.InitSchema",
+   "kind": "cls",
+   "path": "iris_src/src/IVG/CypherEngine.cls",
+   "start": 210,
+   "end": 213,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "IVG.CypherEngine.InitSchemaJson"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:IVG.CypherEngine.RebuildKG",
+   "kind": "cls",
+   "path": "iris_src/src/IVG/CypherEngine.cls",
+   "start": 216,
+   "end": 220,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:IVG.CypherEngine.IsReady",
+   "kind": "cls",
+   "path": "iris_src/src/IVG/CypherEngine.cls",
+   "start": 223,
+   "end": 230,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:IVG.CypherEngine.SmokeTest",
+   "kind": "cls",
+   "path": "iris_src/src/IVG/CypherEngine.cls",
+   "start": 233,
+   "end": 246,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "IVG.CypherEngine.Local"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "NAT-T10.4"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/cypher/native_plan.py:plan_query",
+   "kind": "py",
+   "path": "iris_vector_graph/cypher/native_plan.py",
+   "start": 50,
+   "end": 59,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "NAT-D4",
+    "NAT-T1",
+    "NAT-X1"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/cypher/native_plan.py:native_gate",
+   "kind": "py",
+   "path": "iris_vector_graph/cypher/native_plan.py",
+   "start": 524,
+   "end": 536,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "NAT-D12",
+    "NAT-T2",
+    "NAT-T2.1",
+    "NAT-I1",
+    "NAT-T2.2"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/cypher/native_route.py:NativeRoute.__init__",
+   "kind": "py",
+   "path": "iris_vector_graph/cypher/native_route.py",
+   "start": 33,
+   "end": 55,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "NAT-D15"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/cypher/native_route.py:NativeRoute.sql_failed",
+   "kind": "py",
+   "path": "iris_vector_graph/cypher/native_route.py",
+   "start": 71,
+   "end": 74,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "NAT-T7.7"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/cypher/native_route.py:NativeRoute.next_path",
+   "kind": "py",
+   "path": "iris_vector_graph/cypher/native_route.py",
+   "start": 76,
+   "end": 83,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "NAT-T7.2",
+    "NAT-T7.3"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/cypher/native_route.py:NativeRoute.record",
+   "kind": "py",
+   "path": "iris_vector_graph/cypher/native_route.py",
+   "start": 85,
+   "end": 107,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "NAT-T7.2",
+    "NAT-T7.3",
+    "NAT-T7.4",
+    "NAT-T7.5"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/cypher/native_shadow.py:compare",
+   "kind": "py",
+   "path": "iris_vector_graph/cypher/native_shadow.py",
+   "start": 29,
+   "end": 69,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "NAT-B1.9",
+    "NAT-T3.16",
+    "NAT-T8.1",
+    "NAT-T8.2",
+    "NAT-T8.3",
+    "NAT-T9.3"
+   ]
+  },
+  {
+   "id": "eng:IRISGraphEngine.execute_cypher[native]",
+   "kind": "engine",
+   "path": "iris_vector_graph/_engine/query.py",
+   "start": 2032,
+   "end": 2082,
+   "via": "execute_cypher (query.py:1746) -> _execute_parsed: route lookup, _try_native, shadow compare, route record",
+   "hint": {},
+   "covered_by": [
+    "NAT-0",
+    "NAT-D2",
+    "NAT-T7",
+    "NAT-T7.8",
+    "NAT-T8",
+    "NAT-T8.5",
+    "NAT-Q4",
+    "NAT-T10.3"
+   ]
+  },
+  {
+   "id": "eng:IRISGraphEngine._routed_sql",
+   "kind": "engine-internal",
+   "path": "iris_vector_graph/_engine/query.py",
+   "start": 2084,
+   "end": 2110,
+   "hint": {},
+   "covered_by": [
+    "NAT-T7.7",
+    "NAT-T7.9"
+   ]
+  },
+  {
+   "id": "eng:IRISGraphEngine._try_native",
+   "kind": "engine-internal",
+   "path": "iris_vector_graph/_engine/query.py",
+   "start": 2118,
+   "end": 2160,
+   "hint": {},
+   "covered_by": [
+    "NAT-D3",
+    "NAT-D12",
+    "NAT-B1",
+    "NAT-B1.1",
+    "NAT-T1.9",
+    "NAT-X8",
+    "NAT-T2",
+    "NAT-T5.26",
+    "NAT-T6",
+    "NAT-T6.1",
+    "NAT-T8.5"
+   ]
+  },
+  {
+   "id": "eng:IRISGraphEngine._run_native_plan",
+   "kind": "engine-internal",
+   "path": "iris_vector_graph/_engine/query.py",
+   "start": 2202,
+   "end": 2224,
+   "hint": {},
+   "covered_by": [
+    "NAT-T3",
+    "NAT-T3.1",
+    "NAT-I2",
+    "NAT-B4.1"
+   ]
+  },
+  {
+   "id": "eng:IRISGraphEngine._shadow_compare",
+   "kind": "engine-internal",
+   "path": "iris_vector_graph/_engine/query.py",
+   "start": 2226,
+   "end": 2249,
+   "hint": {},
+   "covered_by": [
+    "NAT-D13",
+    "NAT-T8",
+    "NAT-T8.3",
+    "NAT-X14"
+   ]
+  },
+  {
+   "id": "eng:IRISGraphEngine._names_mapped_label",
+   "kind": "engine-internal",
+   "path": "iris_vector_graph/_engine/query.py",
+   "start": 2162,
+   "end": 2184,
+   "hint": {},
+   "covered_by": [
+    "NAT-X7"
+   ]
+  },
+  {
+   "id": "env:IVG_NATIVE_CYPHER",
+   "kind": "lifecycle",
+   "path": "iris_vector_graph/engine.py",
+   "start": 302,
+   "end": 306,
+   "via": "engine constructor switch (native path on/off per engine or environment)",
+   "hint": {},
+   "covered_by": [
+    "NAT-B2.1"
+   ]
+  },
+  {
+   "id": "env:IVG_CYPHER_SHADOW",
+   "kind": "lifecycle",
+   "path": "iris_vector_graph/_engine/query.py",
+   "start": 2112,
+   "end": 2116,
+   "via": "shadow mode per engine (cypher_shadow) or environment",
+   "hint": {},
+   "covered_by": [
+    "NAT-D13",
+    "NAT-B8.1"
+   ]
+  },
+  {
+   "id": "global:^IVG.CypherGen(\"mode\")",
+   "kind": "lifecycle",
+   "path": "iris_src/src/Graph/KG/Cypher/Gen.cls",
+   "start": 41,
+   "end": 44,
+   "via": "namespace compile mode set by a plain global Set (docs/ADMIN_GUIDE.md:774-779), read by Gen.Effective",
+   "hint": {},
+   "covered_by": [
+    "NAT-0",
+    "NAT-D10",
+    "NAT-B5.2",
+    "NAT-X12",
+    "NAT-T5.20"
+   ]
+  },
+  {
+   "id": "lifecycle:deploy-DropAll",
+   "kind": "lifecycle",
+   "path": "iris_vector_graph/schema.py",
+   "start": 2934,
+   "end": 2941,
+   "via": "class deploy (deploy_objectscript_classes) calls Graph.KG.Cypher.Gen.DropAll when it installed classes",
+   "hint": {},
+   "covered_by": [
+    "NAT-D11",
+    "NAT-T5.15",
+    "NAT-T5.17",
+    "NAT-T5.22",
+    "NAT-T5.23",
+    "NAT-T5.24",
+    "NAT-I5"
+   ]
+  },
+  {
+   "id": "job:Graph.KG.Cypher.Gen.Build[job]",
+   "kind": "background-job",
+   "path": "iris_src/src/Graph/KG/Cypher/Gen.cls",
+   "start": 92,
+   "end": 99,
+   "via": "Gen.For in job mode starts a background JOB per new shape",
+   "hint": {},
+   "covered_by": [
+    "NAT-T5.10",
+    "NAT-X12",
+    "NAT-T5.14",
+    "NAT-T6.2"
+   ]
+  },
+  {
+   "id": "job:Graph.KG.Cypher.Exec.Part[worker]",
+   "kind": "background-job",
+   "path": "iris_src/src/Graph/KG/Cypher/Exec.cls",
+   "start": 447,
+   "end": 511,
+   "via": "Exec.Parallel queues Part in %SYSTEM.WorkMgr worker processes",
+   "hint": {},
+   "covered_by": [
+    "NAT-D16",
+    "NAT-T3.14",
+    "NAT-P1",
+    "NAT-T5.13"
+   ]
+  },
+  {
+   "id": "gate:engine._native_privileges",
+   "kind": "gate-fact-cited",
+   "path": "iris_vector_graph/engine.py",
+   "start": 559,
+   "end": 586,
+   "hint": {},
+   "covered_by": [
+    "NAT-T2.3",
+    "NAT-T2.5",
+    "NAT-Q1",
+    "NAT-T2.7"
+   ]
+  },
+  {
+   "id": "gate:engine._native_executor_current",
+   "kind": "gate-fact-cited",
+   "path": "iris_vector_graph/engine.py",
+   "start": 588,
+   "end": 611,
+   "hint": {},
+   "covered_by": [
+    "NAT-T2.4",
+    "NAT-T2.5",
+    "NAT-T2.6"
+   ]
+  },
+  {
+   "id": "gate:engine._adjacency_indexed",
+   "kind": "gate-fact-cited",
+   "path": "iris_vector_graph/engine.py",
+   "start": 703,
+   "end": 724,
+   "hint": {},
+   "covered_by": [
+    "NAT-T2.1",
+    "NAT-T2.5",
+    "NAT-Q1"
+   ]
+  },
+  {
+   "id": "gate:engine._iris_obj",
+   "kind": "gate-fact-cited",
+   "path": "iris_vector_graph/engine.py",
+   "start": 1894,
+   "end": 1942,
+   "hint": {},
+   "covered_by": [
+    "NAT-B4.1",
+    "NAT-T4.7"
+   ]
+  }
+ ],
+ "cells": [
+  {
+   "entity": "compiled shape",
+   "state": "absent",
+   "command": "job read",
+   "outcome": "ok",
+   "statements": "NAT-T5.10",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Exec.Run",
+    "cls:Graph.KG.Cypher.Gen.For",
+    "job:Graph.KG.Cypher.Gen.Build[job]",
+    "eng:IRISGraphEngine.execute_cypher[native]"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "compiled shape",
+   "state": "absent",
+   "command": "sync read",
+   "outcome": "ok",
+   "statements": "NAT-T5.11",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Exec.Run",
+    "cls:Graph.KG.Cypher.Gen.For",
+    "cls:Graph.KG.Cypher.Gen.Build",
+    "eng:IRISGraphEngine.execute_cypher[native]"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "compiled shape",
+   "state": "absent",
+   "command": "off read",
+   "outcome": "no-op",
+   "statements": "NAT-T5.12",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Exec.Run",
+    "cls:Graph.KG.Cypher.Gen.For",
+    "eng:IRISGraphEngine.execute_cypher[native]"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "compiled shape",
+   "state": "absent",
+   "command": "drop all",
+   "outcome": "no-op",
+   "statements": "NAT-T5.22",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Gen.DropAll",
+    "lifecycle:deploy-DropAll"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "compiled shape",
+   "state": "absent",
+   "command": "alter props table",
+   "outcome": "no-op",
+   "statements": "NAT-T5.7",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Props.Begin",
+    "cls:Graph.KG.Cypher.Props.Layout"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "compiled shape",
+   "state": "building",
+   "command": "job read",
+   "outcome": "no-op",
+   "statements": "NAT-T5.14",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Exec.Run",
+    "cls:Graph.KG.Cypher.Gen.For",
+    "job:Graph.KG.Cypher.Gen.Build[job]",
+    "eng:IRISGraphEngine.execute_cypher[native]"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "compiled shape",
+   "state": "building",
+   "command": "sync read",
+   "outcome": "no-op",
+   "statements": "NAT-T5.14",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Exec.Run",
+    "cls:Graph.KG.Cypher.Gen.For",
+    "cls:Graph.KG.Cypher.Gen.Build",
+    "eng:IRISGraphEngine.execute_cypher[native]"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "compiled shape",
+   "state": "building",
+   "command": "off read",
+   "outcome": "no-op",
+   "statements": "NAT-T5.12",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Exec.Run",
+    "cls:Graph.KG.Cypher.Gen.For",
+    "eng:IRISGraphEngine.execute_cypher[native]"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "compiled shape",
+   "state": "building",
+   "command": "drop all",
+   "outcome": "ok",
+   "statements": "NAT-T5.22, NAT-I5",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Gen.DropAll",
+    "lifecycle:deploy-DropAll"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "compiled shape",
+   "state": "building",
+   "command": "alter props table",
+   "outcome": "ok",
+   "statements": "NAT-T5.7, NAT-I4",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Props.Begin",
+    "cls:Graph.KG.Cypher.Props.Layout"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "compiled shape",
+   "state": "abandoned",
+   "command": "job read",
+   "outcome": "ok",
+   "statements": "NAT-T5.14, NAT-T5.10",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Exec.Run",
+    "cls:Graph.KG.Cypher.Gen.For",
+    "job:Graph.KG.Cypher.Gen.Build[job]",
+    "eng:IRISGraphEngine.execute_cypher[native]"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "compiled shape",
+   "state": "abandoned",
+   "command": "sync read",
+   "outcome": "ok",
+   "statements": "NAT-T5.14, NAT-T5.11",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Exec.Run",
+    "cls:Graph.KG.Cypher.Gen.For",
+    "cls:Graph.KG.Cypher.Gen.Build",
+    "eng:IRISGraphEngine.execute_cypher[native]"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "compiled shape",
+   "state": "abandoned",
+   "command": "off read",
+   "outcome": "no-op",
+   "statements": "NAT-T5.12",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Exec.Run",
+    "cls:Graph.KG.Cypher.Gen.For",
+    "eng:IRISGraphEngine.execute_cypher[native]"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "compiled shape",
+   "state": "abandoned",
+   "command": "drop all",
+   "outcome": "ok",
+   "statements": "NAT-T5.22",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Gen.DropAll",
+    "lifecycle:deploy-DropAll"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "compiled shape",
+   "state": "abandoned",
+   "command": "alter props table",
+   "outcome": "ok",
+   "statements": "NAT-T5.7",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Props.Begin",
+    "cls:Graph.KG.Cypher.Props.Layout"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "compiled shape",
+   "state": "ok",
+   "command": "job read",
+   "outcome": "no-op",
+   "statements": "NAT-B5.1, NAT-T5.2",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Exec.Run",
+    "cls:Graph.KG.Cypher.Gen.For",
+    "job:Graph.KG.Cypher.Gen.Build[job]",
+    "eng:IRISGraphEngine.execute_cypher[native]"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "compiled shape",
+   "state": "ok",
+   "command": "sync read",
+   "outcome": "no-op",
+   "statements": "NAT-B5.1, NAT-T5.2",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Exec.Run",
+    "cls:Graph.KG.Cypher.Gen.For",
+    "cls:Graph.KG.Cypher.Gen.Build",
+    "eng:IRISGraphEngine.execute_cypher[native]"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "compiled shape",
+   "state": "ok",
+   "command": "off read",
+   "outcome": "no-op",
+   "statements": "NAT-T5.12",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Exec.Run",
+    "cls:Graph.KG.Cypher.Gen.For",
+    "eng:IRISGraphEngine.execute_cypher[native]"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "compiled shape",
+   "state": "ok",
+   "command": "drop all",
+   "outcome": "ok",
+   "statements": "NAT-T5.22",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Gen.DropAll",
+    "lifecycle:deploy-DropAll"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "compiled shape",
+   "state": "ok",
+   "command": "alter props table",
+   "outcome": "ok",
+   "statements": "NAT-T5.7, NAT-I4",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Props.Begin",
+    "cls:Graph.KG.Cypher.Props.Layout"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "compiled shape",
+   "state": "failed",
+   "command": "job read",
+   "outcome": "no-op",
+   "statements": "NAT-T5.17",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Exec.Run",
+    "cls:Graph.KG.Cypher.Gen.For",
+    "job:Graph.KG.Cypher.Gen.Build[job]",
+    "eng:IRISGraphEngine.execute_cypher[native]"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "compiled shape",
+   "state": "failed",
+   "command": "sync read",
+   "outcome": "no-op",
+   "statements": "NAT-T5.17",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Exec.Run",
+    "cls:Graph.KG.Cypher.Gen.For",
+    "cls:Graph.KG.Cypher.Gen.Build",
+    "eng:IRISGraphEngine.execute_cypher[native]"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "compiled shape",
+   "state": "failed",
+   "command": "off read",
+   "outcome": "no-op",
+   "statements": "NAT-T5.12",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Exec.Run",
+    "cls:Graph.KG.Cypher.Gen.For",
+    "eng:IRISGraphEngine.execute_cypher[native]"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "compiled shape",
+   "state": "failed",
+   "command": "drop all",
+   "outcome": "ok",
+   "statements": "NAT-T5.22",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Gen.DropAll",
+    "lifecycle:deploy-DropAll"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "compiled shape",
+   "state": "failed",
+   "command": "alter props table",
+   "outcome": "ok",
+   "statements": "NAT-T5.7, NAT-T5.17",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Props.Begin",
+    "cls:Graph.KG.Cypher.Props.Layout"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "compiled shape",
+   "state": "stale",
+   "command": "job read",
+   "outcome": "ok",
+   "statements": "NAT-I4, NAT-T5.10",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Exec.Run",
+    "cls:Graph.KG.Cypher.Gen.For",
+    "job:Graph.KG.Cypher.Gen.Build[job]",
+    "eng:IRISGraphEngine.execute_cypher[native]"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "compiled shape",
+   "state": "stale",
+   "command": "sync read",
+   "outcome": "ok",
+   "statements": "NAT-I4, NAT-T5.11",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Exec.Run",
+    "cls:Graph.KG.Cypher.Gen.For",
+    "cls:Graph.KG.Cypher.Gen.Build",
+    "eng:IRISGraphEngine.execute_cypher[native]"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "compiled shape",
+   "state": "stale",
+   "command": "off read",
+   "outcome": "no-op",
+   "statements": "NAT-T5.12",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Exec.Run",
+    "cls:Graph.KG.Cypher.Gen.For",
+    "eng:IRISGraphEngine.execute_cypher[native]"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "compiled shape",
+   "state": "stale",
+   "command": "drop all",
+   "outcome": "ok",
+   "statements": "NAT-T5.22",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Gen.DropAll",
+    "lifecycle:deploy-DropAll"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "compiled shape",
+   "state": "stale",
+   "command": "alter props table",
+   "outcome": "no-op",
+   "statements": "NAT-T5.7",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Props.Begin",
+    "cls:Graph.KG.Cypher.Props.Layout"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "process mode",
+   "state": "job",
+   "command": "set job",
+   "outcome": "no-op",
+   "statements": "NAT-B5.2",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Gen.Mode"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "process mode",
+   "state": "job",
+   "command": "set sync",
+   "outcome": "ok",
+   "statements": "NAT-B5.2",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Gen.Mode"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "process mode",
+   "state": "job",
+   "command": "set off",
+   "outcome": "ok",
+   "statements": "NAT-B5.2",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Gen.Mode"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "process mode",
+   "state": "job",
+   "command": "clear",
+   "outcome": "ok",
+   "statements": "NAT-B5.2, NAT-X11",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Gen.Mode",
+    "cls:Graph.KG.Cypher.Gen.Effective"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "process mode",
+   "state": "job",
+   "command": "set other",
+   "outcome": "refused",
+   "statements": "NAT-X11",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Gen.Mode"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "process mode",
+   "state": "sync",
+   "command": "set job",
+   "outcome": "ok",
+   "statements": "NAT-B5.2",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Gen.Mode"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "process mode",
+   "state": "sync",
+   "command": "set sync",
+   "outcome": "no-op",
+   "statements": "NAT-B5.2",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Gen.Mode"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "process mode",
+   "state": "sync",
+   "command": "set off",
+   "outcome": "ok",
+   "statements": "NAT-B5.2",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Gen.Mode"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "process mode",
+   "state": "sync",
+   "command": "clear",
+   "outcome": "ok",
+   "statements": "NAT-B5.2, NAT-X11",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Gen.Mode",
+    "cls:Graph.KG.Cypher.Gen.Effective"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "process mode",
+   "state": "sync",
+   "command": "set other",
+   "outcome": "refused",
+   "statements": "NAT-X11",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Gen.Mode"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "process mode",
+   "state": "off",
+   "command": "set job",
+   "outcome": "ok",
+   "statements": "NAT-B5.2",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Gen.Mode"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "process mode",
+   "state": "off",
+   "command": "set sync",
+   "outcome": "ok",
+   "statements": "NAT-B5.2",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Gen.Mode"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "process mode",
+   "state": "off",
+   "command": "set off",
+   "outcome": "no-op",
+   "statements": "NAT-B5.2",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Gen.Mode"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "process mode",
+   "state": "off",
+   "command": "clear",
+   "outcome": "ok",
+   "statements": "NAT-B5.2, NAT-X11",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Gen.Mode",
+    "cls:Graph.KG.Cypher.Gen.Effective"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "process mode",
+   "state": "off",
+   "command": "set other",
+   "outcome": "refused",
+   "statements": "NAT-X11",
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.Cypher.Gen.Mode"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "engine native path",
+   "state": "on",
+   "command": "supported read",
+   "outcome": "ok",
+   "statements": "NAT-B1, NAT-T7",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher[native]",
+    "py:iris_vector_graph/cypher/native_plan.py:plan_query",
+    "py:iris_vector_graph/cypher/native_plan.py:native_gate",
+    "cls:Graph.KG.Cypher.Exec.Run",
+    "cls:Graph.KG.Cypher.Exec.ReadPage",
+    "cls:Graph.KG.Cypher.Exec.Drop"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "engine native path",
+   "state": "on",
+   "command": "declined read",
+   "outcome": "ok",
+   "statements": "NAT-T1",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher[native]",
+    "py:iris_vector_graph/cypher/native_plan.py:plan_query"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "engine native path",
+   "state": "on",
+   "command": "write",
+   "outcome": "ok",
+   "statements": "NAT-X1",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher[native]",
+    "py:iris_vector_graph/cypher/native_plan.py:plan_query"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "engine native path",
+   "state": "off",
+   "command": "supported read",
+   "outcome": "ok",
+   "statements": "NAT-B2.1",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher[native]",
+    "py:iris_vector_graph/cypher/native_plan.py:plan_query",
+    "py:iris_vector_graph/cypher/native_plan.py:native_gate",
+    "cls:Graph.KG.Cypher.Exec.Run",
+    "cls:Graph.KG.Cypher.Exec.ReadPage",
+    "cls:Graph.KG.Cypher.Exec.Drop"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "engine native path",
+   "state": "off",
+   "command": "declined read",
+   "outcome": "ok",
+   "statements": "NAT-T1",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher[native]",
+    "py:iris_vector_graph/cypher/native_plan.py:plan_query"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "engine native path",
+   "state": "off",
+   "command": "write",
+   "outcome": "ok",
+   "statements": "NAT-X1",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher[native]",
+    "py:iris_vector_graph/cypher/native_plan.py:plan_query"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "engine native path",
+   "state": "shut",
+   "command": "supported read",
+   "outcome": "ok",
+   "statements": "NAT-T2",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher[native]",
+    "py:iris_vector_graph/cypher/native_plan.py:plan_query",
+    "py:iris_vector_graph/cypher/native_plan.py:native_gate",
+    "cls:Graph.KG.Cypher.Exec.Run",
+    "cls:Graph.KG.Cypher.Exec.ReadPage",
+    "cls:Graph.KG.Cypher.Exec.Drop"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "engine native path",
+   "state": "shut",
+   "command": "declined read",
+   "outcome": "ok",
+   "statements": "NAT-T1",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher[native]",
+    "py:iris_vector_graph/cypher/native_plan.py:plan_query"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "engine native path",
+   "state": "shut",
+   "command": "write",
+   "outcome": "ok",
+   "statements": "NAT-X1",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher[native]",
+    "py:iris_vector_graph/cypher/native_plan.py:plan_query"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "engine native path",
+   "state": "shadow",
+   "command": "supported read",
+   "outcome": "ok",
+   "statements": "NAT-T8, NAT-X13",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher[native]",
+    "py:iris_vector_graph/cypher/native_plan.py:plan_query",
+    "py:iris_vector_graph/cypher/native_plan.py:native_gate",
+    "cls:Graph.KG.Cypher.Exec.Run",
+    "cls:Graph.KG.Cypher.Exec.ReadPage",
+    "cls:Graph.KG.Cypher.Exec.Drop"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "engine native path",
+   "state": "shadow",
+   "command": "declined read",
+   "outcome": "ok",
+   "statements": "NAT-T1, NAT-T7.8",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher[native]",
+    "py:iris_vector_graph/cypher/native_plan.py:plan_query"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "engine native path",
+   "state": "shadow",
+   "command": "write",
+   "outcome": "ok",
+   "statements": "NAT-X1",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher[native]",
+    "py:iris_vector_graph/cypher/native_plan.py:plan_query"
+   ],
+   "unknown_entry_points": []
+  }
+ ]
+}

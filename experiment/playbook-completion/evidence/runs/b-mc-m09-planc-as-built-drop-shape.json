@@ -1,0 +1,23 @@
+{
+  "check": "m09-planc-as-built-drop-shape",
+  "command": "CARGO_TARGET_DIR=$RUN_DIR/target/breadth-b cargo build --release && bash experiment/playbook-completion/tools/locks.sh heavy timeout 1800 $RUN_DIR/target/breadth-b/release/breadth-b",
+  "design": "as-built",
+  "experiment_head": "f3fe3917466f7bae3e46f32f5b0644cfeaff87c8",
+  "full_log": "$RUN_DIR/breadth-b/mc/full-decisive-20261114T012246Z.log",
+  "full_log_sha256": "227f6720d9d86ed75cc8fa7fd71e2d9d31fd6f5ccd627843af4d51997edf4615",
+  "id": "b-mc-m09-planc-as-built-drop-shape",
+  "kind": "mc",
+  "lane": "breadth-b",
+  "log": "$RUN_DIR/breadth-b/mc/checks/m09-planc-as-built-drop-shape.log",
+  "log_bytes": 2247,
+  "log_sha256": "db34f718983ded7bd7fc1b0068f9638cc80321d8949729e6f3c09fc7ef49dc86",
+  "module": "09",
+  "observes": "module 09 machine planc design as-built: expectation violation of 'P-0907: no entry has an undefined element'; result met (found 'P-0907: no entry has an undefined element'); 51 states, 88 transitions, depth 5, exhaustive within the model's bounds; covers: F-0905; P-0907: a build finishing after DropAll re-creates $LB(class,,,\"ok\")",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T01:23:52+00:00",
+  "result": "expected-violation",
+  "results": "experiment/playbook-completion/models/breadth-b/RESULTS.json",
+  "search": "exhaustive",
+  "states": "51"
+}

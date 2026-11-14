@@ -1,0 +1,2261 @@
+{
+ "_doc": "Union of the IRIS engine features modules 07..11 rely on (modules/NN.json env_features), for the orchestrator's\nIRIS environment contract (\u00a73.2 coverage). Writes models/breadth-b/env_features.json: one entry per module feature,\ngrouped under a normalized key, with every module and source line that relies on it. Read-only over the inputs.",
+ "inputs": [
+  "experiment/playbook-completion/modules/07.json",
+  "experiment/playbook-completion/modules/08.json",
+  "experiment/playbook-completion/modules/09.json",
+  "experiment/playbook-completion/modules/10.json",
+  "experiment/playbook-completion/modules/11.json"
+ ],
+ "count_module_features": 122,
+ "count_distinct": 122,
+ "categories": {
+  "compile-codegen": {
+   "modules": [
+    "09"
+   ],
+   "features": 10
+  },
+  "embedded-python-callout": {
+   "modules": [
+    "07",
+    "09",
+    "10"
+   ],
+   "features": 6
+  },
+  "global-order-collation": {
+   "modules": [
+    "07",
+    "08",
+    "09",
+    "10",
+    "11"
+   ],
+   "features": 31
+  },
+  "hash-crypto-time": {
+   "modules": [
+    "07",
+    "08",
+    "09",
+    "10",
+    "11"
+   ],
+   "features": 12
+  },
+  "increment-counters": {
+   "modules": [
+    "07",
+    "08",
+    "09",
+    "10",
+    "11"
+   ],
+   "features": 7
+  },
+  "isolation-visibility": {
+   "modules": [
+    "07",
+    "08",
+    "09",
+    "10",
+    "11"
+   ],
+   "features": 7
+  },
+  "jobs-workers": {
+   "modules": [
+    "09",
+    "10"
+   ],
+   "features": 6
+  },
+  "json": {
+   "modules": [
+    "07",
+    "08",
+    "09",
+    "10",
+    "11"
+   ],
+   "features": 8
+  },
+  "locks": {
+   "modules": [
+    "07",
+    "08",
+    "09",
+    "10",
+    "11"
+   ],
+   "features": 11
+  },
+  "objects-streams": {
+   "modules": [
+    "09",
+    "11"
+   ],
+   "features": 8
+  },
+  "other": {
+   "modules": [
+    "08",
+    "10"
+   ],
+   "features": 3
+  },
+  "process-private-temp": {
+   "modules": [
+    "07",
+    "09",
+    "10",
+    "11"
+   ],
+   "features": 9
+  },
+  "rest-native-api": {
+   "modules": [
+    "07",
+    "08",
+    "09",
+    "10",
+    "11"
+   ],
+   "features": 8
+  },
+  "security-privilege": {
+   "modules": [
+    "07",
+    "08",
+    "09"
+   ],
+   "features": 5
+  },
+  "sql-ddl-schema": {
+   "modules": [
+    "07",
+    "08",
+    "09",
+    "10",
+    "11"
+   ],
+   "features": 19
+  },
+  "sql-runtime": {
+   "modules": [
+    "07",
+    "08",
+    "09",
+    "10",
+    "11"
+   ],
+   "features": 36
+  },
+  "text-ifind": {
+   "modules": [
+    "07",
+    "08"
+   ],
+   "features": 3
+  },
+  "transactions": {
+   "modules": [
+    "07",
+    "08",
+    "09",
+    "10",
+    "11"
+   ],
+   "features": 40
+  }
+ },
+ "features": [
+  {
+   "feature": "$ClassMethod dynamic dispatch",
+   "modules": [
+    "09"
+   ],
+   "uses": [
+    {
+     "module": "09",
+     "used_for": "calling the compiled Walk1",
+     "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:199; iris_src/src/Graph/KG/Cypher/Exec.cls:258"
+    }
+   ],
+   "categories": [
+    "compile-codegen"
+   ]
+  },
+  {
+   "feature": "$Horolog / $ZTimestamp / $ZDateTime",
+   "modules": [
+    "09"
+   ],
+   "uses": [
+    {
+     "module": "09",
+     "used_for": "pending-entry age (120 s), build stamps",
+     "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:141-144; iris_src/src/Graph/KG/Cypher/Gen.cls:55"
+    }
+   ],
+   "categories": [
+    "hash-crypto-time"
+   ]
+  },
+  {
+   "feature": "$INCREMENT is not undone by TROLLBACK",
+   "modules": [
+    "08"
+   ],
+   "uses": [
+    {
+     "module": "08",
+     "used_for": "^KG(gen), ^KG(__version), ^NKG counters (F-C0801)",
+     "source": "iris_src/src/Graph/KG/Adjacency.cls:23-30, 89-107"
+    }
+   ],
+   "categories": [
+    "transactions",
+    "increment-counters"
+   ]
+  },
+  {
+   "feature": "$INCREMENT not undone by rollback",
+   "modules": [
+    "11"
+   ],
+   "uses": [
+    {
+     "module": "11",
+     "used_for": "^KG/^NKG counters reached by commits; ^||IVG.LedgerOutSeq",
+     "source": "iris_src/src/Graph/KG/Ledger.cls:126; Adjacency (module 04)",
+     "in_contract": "yes: '$INCREMENT'"
+    }
+   ],
+   "categories": [
+    "transactions",
+    "increment-counters",
+    "process-private-temp"
+   ]
+  },
+  {
+   "feature": "$Increment on a global as a cross-process version token (^KG(\"__version\"), ^NKG(\"$meta\",\"version\")); atomic, never rolled back (P-1002)",
+   "modules": [
+    "10"
+   ],
+   "uses": [
+    {
+     "module": "10",
+     "used_for": "result-cache token and snapshot version",
+     "source": "iris_src/src/Graph/KG/ArnoAccel.cls:299-303; iris_src/src/Graph/KG/Adjacency.cls:131-136"
+    }
+   ],
+   "categories": [
+    "increment-counters",
+    "global-order-collation"
+   ]
+  },
+  {
+   "feature": "$Increment on globals (atomic, not rolled back)",
+   "modules": [
+    "09"
+   ],
+   "uses": [
+    {
+     "module": "09",
+     "used_for": "result tags, share ids, sequence numbers",
+     "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:35; iris_src/src/Graph/KG/Cypher/Exec.cls:451; iris_src/src/Graph/KG/Cypher/Exec.cls:1889"
+    }
+   ],
+   "categories": [
+    "increment-counters",
+    "global-order-collation",
+    "hash-crypto-time"
+   ]
+  },
+  {
+   "feature": "$LIST semantics: SET $LIST pads undefined elements; $LIST of an undefined element raises <NULL VALUE>; $ListGet does not (P-0907)",
+   "modules": [
+    "09"
+   ],
+   "uses": [
+    {
+     "module": "09",
+     "used_for": "plan entries",
+     "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:71; iris_src/src/Graph/KG/Cypher/Gen.cls:207; iris_src/src/Graph/KG/Cypher/Gen.cls:210; iris_src/src/Graph/KG/Cypher/Gen.cls:248-251"
+    }
+   ],
+   "categories": [
+    "global-order-collation"
+   ]
+  },
+  {
+   "feature": "$ListBuild / $ListGet values",
+   "modules": [
+    "10"
+   ],
+   "uses": [
+    {
+     "module": "10",
+     "used_for": "cache entries $LB(token, payload)",
+     "source": "iris_src/src/Graph/KG/AlgoCache.cls:27-50"
+    }
+   ],
+   "categories": [
+    "global-order-collation"
+   ]
+  },
+  {
+   "feature": "$LISTBUILD type byte ($ASCII($LISTBUILD(v),2)) to recover stored number types",
+   "modules": [
+    "08"
+   ],
+   "uses": [
+    {
+     "module": "08",
+     "used_for": "typed reads (F-0811, F-0812, F-0813)",
+     "source": "iris_vector_graph/schema.py:2203, 2231-2257"
+    }
+   ],
+   "categories": [
+    "global-order-collation"
+   ]
+  },
+  {
+   "feature": "$Order / $Data traversal in subscript collation order (canonical numbers first, then strings)",
+   "modules": [
+    "10"
+   ],
+   "uses": [
+    {
+     "module": "10",
+     "used_for": "deterministic ranking and tie order; cut after ordering (PageRank 10,000 rows)",
+     "source": "iris_src/src/Graph/KG/PageRank.cls:500-521; iris_vector_graph/_engine/algorithms.py:392-420"
+    }
+   ],
+   "categories": [
+    "global-order-collation"
+   ]
+  },
+  {
+   "feature": "$Random",
+   "modules": [
+    "10"
+   ],
+   "uses": [
+    {
+     "module": "10",
+     "used_for": "random walk",
+     "source": "iris_src/src/Graph/KG/NKGAccelTraversal.cls:206-208"
+    }
+   ],
+   "categories": [
+    "hash-crypto-time"
+   ]
+  },
+  {
+   "feature": "$System.Encryption SHA-256 (via LedgerRedact.Sha256Hex)",
+   "modules": [
+    "11"
+   ],
+   "uses": [
+    {
+     "module": "11",
+     "used_for": "redacted retry keys",
+     "source": "iris_src/src/Graph/KG/Ledger.cls:464-470",
+     "in_contract": "no (module 13)"
+    }
+   ],
+   "categories": [
+    "hash-crypto-time"
+   ]
+  },
+  {
+   "feature": "$System.Encryption.SHAHash(256) and Base64Encode",
+   "modules": [
+    "09"
+   ],
+   "uses": [
+    {
+     "module": "09",
+     "used_for": "digest of a plan's lines (R311)",
+     "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:147-157"
+    }
+   ],
+   "categories": [
+    "hash-crypto-time"
+   ]
+  },
+  {
+   "feature": "$SYSTEM.Status / %Status error reporting through the Native API (<THROW>, <PROTECT>)",
+   "modules": [
+    "10"
+   ],
+   "uses": [
+    {
+     "module": "10",
+     "used_for": "refused work-area writes (ALG-B9.3)",
+     "source": "iris_vector_graph/_engine/algorithms.py:100-133"
+    }
+   ],
+   "categories": [
+    "rest-native-api"
+   ]
+  },
+  {
+   "feature": "$System.Util.CreateGUID",
+   "modules": [
+    "11"
+   ],
+   "uses": [
+    {
+     "module": "11",
+     "used_for": "revision ids",
+     "source": "iris_src/src/Graph/KG/Ledger.cls:35-38",
+     "in_contract": "no"
+    }
+   ],
+   "categories": [
+    "hash-crypto-time"
+   ]
+  },
+  {
+   "feature": "$TLEVEL",
+   "modules": [
+    "07"
+   ],
+   "uses": [
+    {
+     "module": "07",
+     "used_for": "Insert/Delete error path; SQL SELECT $TLEVEL probe",
+     "source": "iris_src/src/Graph/KG/BM25Index.cls:487, :508; iris_vector_graph/_write_txn.py:64-85"
+    }
+   ],
+   "categories": [
+    "transactions",
+    "sql-runtime"
+   ]
+  },
+  {
+   "feature": "$TLEVEL test",
+   "modules": [
+    "11"
+   ],
+   "uses": [
+    {
+     "module": "11",
+     "used_for": "Enable refuses an open transaction; client caller_transaction_level",
+     "source": "iris_src/src/Graph/KG/Ledger.cls:261; iris_vector_graph/ledger/client.py:268-279",
+     "in_contract": "yes (nesting cases)"
+    }
+   ],
+   "categories": [
+    "transactions"
+   ]
+  },
+  {
+   "feature": "$ZCRC(string, 7) CRC-32 (equals zlib.crc32, b-09-probe)",
+   "modules": [
+    "09"
+   ],
+   "uses": [
+    {
+     "module": "09",
+     "used_for": "plan entry / class name key; interpreter's used-relationship set; memo and group hash buckets (exact subscripts there)",
+     "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:69; iris_src/src/Graph/KG/Cypher/Exec.cls:1243; iris_src/src/Graph/KG/Cypher/Exec.cls:817; iris_src/src/Graph/KG/Cypher/Exec.cls:828; iris_src/src/Graph/KG/Cypher/Exec.cls:1294; iris_src/src/Graph/KG/Cypher/Exec.cls:1384"
+    }
+   ],
+   "categories": [
+    "global-order-collation",
+    "hash-crypto-time"
+   ]
+  },
+  {
+   "feature": "$ZF(-5) callout library loading and calls, with the $ZF heap limit (34,808 chars at default zfheap, P-1003)",
+   "modules": [
+    "10"
+   ],
+   "uses": [
+    {
+     "module": "10",
+     "used_for": "Arno native readers; BFS size gate ZFMAXCHARS",
+     "source": "iris_src/src/Graph/KG/NKGAccelTraversal.cls:17, :279-286; iris_vector_graph/stores/arno_bridge.py:137-350"
+    }
+   ],
+   "categories": [
+    "embedded-python-callout"
+   ]
+  },
+  {
+   "feature": "$ZTIMESTAMP (UTC)",
+   "modules": [
+    "11"
+   ],
+   "uses": [
+    {
+     "module": "11",
+     "used_for": "committed_ms",
+     "source": "iris_src/src/Graph/KG/Ledger.cls:27-33",
+     "in_contract": "no"
+    }
+   ],
+   "categories": [
+    "transactions",
+    "hash-crypto-time"
+   ]
+  },
+  {
+   "feature": "%CSP.REST routing",
+   "modules": [
+    "07"
+   ],
+   "uses": [
+    {
+     "module": "07",
+     "used_for": "POST /hybridSearch",
+     "source": "iris_src/src/Graph/KG/Service.cls:7-9, :286-302"
+    }
+   ],
+   "categories": [
+    "rest-native-api"
+   ]
+  },
+  {
+   "feature": "%DynamicArray / %DynamicObject JSON (%ToJSON, %FromJSON)",
+   "modules": [
+    "10"
+   ],
+   "uses": [
+    {
+     "module": "10",
+     "used_for": "algorithm answers",
+     "source": "iris_src/src/Graph/KG/PageRank.cls:502-521; iris_src/src/Graph/KG/VarLength.cls:14-25"
+    }
+   ],
+   "categories": [
+    "json"
+   ]
+  },
+  {
+   "feature": "%DynamicObject/%DynamicArray %FromJSON/%ToJSON/%GetTypeOf; %ToJSON key order",
+   "modules": [
+    "11"
+   ],
+   "uses": [
+    {
+     "module": "11",
+     "used_for": "wire answers, stored source text (F-1113)",
+     "source": "iris_src/src/Graph/KG/Ledger.cls:52-121, :521-522",
+     "in_contract": "no"
+    }
+   ],
+   "categories": [
+    "json"
+   ]
+  },
+  {
+   "feature": "%iFind.Index.Basic on rdf_props.val (word dictionary written outside the transaction)",
+   "modules": [
+    "08"
+   ],
+   "uses": [
+    {
+     "module": "08",
+     "used_for": "text predicates; journal shows non-transactional ^t52S.DMCe.7(\"W\",n)",
+     "source": "iris_vector_graph/schema.py:167-178"
+    }
+   ],
+   "categories": [
+    "transactions",
+    "sql-ddl-schema",
+    "text-ifind"
+   ]
+  },
+  {
+   "feature": "%iFind.Utils.Analyze(text,'en',1) tokenizer (P-0701)",
+   "modules": [
+    "07"
+   ],
+   "uses": [
+    {
+     "module": "07",
+     "used_for": "Tokenize",
+     "source": "iris_src/src/Graph/KG/BM25Index.cls:60-64"
+    }
+   ],
+   "categories": [
+    "text-ifind"
+   ]
+  },
+  {
+   "feature": "%KillExtent",
+   "modules": [
+    "11"
+   ],
+   "uses": [
+    {
+     "module": "11",
+     "used_for": "PurgeAll",
+     "source": "iris_src/src/Graph/KG/Ledger.cls:241-248",
+     "in_contract": "no"
+    }
+   ],
+   "categories": [
+    "objects-streams"
+   ]
+  },
+  {
+   "feature": "%Library.DynamicObject / DynamicArray JSON (%FromJSON, %GetTypeOf, %Get(key,,\"json\"))",
+   "modules": [
+    "08"
+   ],
+   "uses": [
+    {
+     "module": "08",
+     "used_for": "edge qualifiers and list/map values",
+     "source": "iris_vector_graph/schema.py:2185-2310; iris_src/src/Graph/KG/CypherFn.cls:28-255"
+    }
+   ],
+   "categories": [
+    "json"
+   ]
+  },
+  {
+   "feature": "%Library.DynamicObject/DynamicArray JSON (%FromJSON/%ToJSON), long strings up to 3.6 MB",
+   "modules": [
+    "09"
+   ],
+   "uses": [
+    {
+     "module": "09",
+     "used_for": "plans in, rows out, paging (FR-015)",
+     "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:34; iris_src/src/Graph/KG/Cypher/Exec.cls:76-87; iris_src/src/Graph/KG/Cypher/Exec.cls:1902-1910"
+    }
+   ],
+   "categories": [
+    "json"
+   ]
+  },
+  {
+   "feature": "%Library.FunctionalIndex callbacks run in the row's process and transaction; TROLLBACK undoes their global SETs (P-0801)",
+   "modules": [
+    "08"
+   ],
+   "uses": [
+    {
+     "module": "08",
+     "used_for": "^KG kept current by Cypher DML",
+     "source": "iris_src/src/Graph/KG/AdjIndex.cls:1-26"
+    }
+   ],
+   "categories": [
+    "transactions",
+    "global-order-collation",
+    "sql-ddl-schema"
+   ]
+  },
+  {
+   "feature": "%OnBeforeSave / %OnDelete object callbacks",
+   "modules": [
+    "11"
+   ],
+   "uses": [
+    {
+     "module": "11",
+     "used_for": "revision immutability on the object path",
+     "source": "iris_src/src/Graph/KG/LedgerRevision.cls:111-123",
+     "in_contract": "no"
+    }
+   ],
+   "categories": [
+    "objects-streams"
+   ]
+  },
+  {
+   "feature": "%Persistent %OpenId/%Save default concurrency: no lock on open, exclusive row lock on save held to the transaction end, ~10 s lock timeout returning an error status",
+   "modules": [
+    "11"
+   ],
+   "uses": [
+    {
+     "module": "11",
+     "used_for": "stats row (F-1102, F-C1101)",
+     "source": "iris_src/src/Graph/KG/LedgerStats.cls:51-88; iris_src/src/Graph/KG/Ledger.cls:559-565",
+     "in_contract": "no (object concurrency outside the subset)"
+    }
+   ],
+   "categories": [
+    "transactions",
+    "locks",
+    "objects-streams"
+   ]
+  },
+  {
+   "feature": "%Regex.Matcher",
+   "modules": [
+    "08"
+   ],
+   "uses": [
+    {
+     "module": "08",
+     "used_for": "=~ (IVGREGEXMATCH)",
+     "source": "iris_src/src/Graph/KG/CypherFn.cls:13-26"
+    }
+   ],
+   "categories": [
+    "other"
+   ]
+  },
+  {
+   "feature": "%SQL.Statement dynamic SQL at default isolation (read uncommitted) with empty parameter bound as NULL (P-0706)",
+   "modules": [
+    "07"
+   ],
+   "uses": [
+    {
+     "module": "07",
+     "used_for": "Build's node/property read",
+     "source": "iris_src/src/Graph/KG/BM25Index.cls:123-131"
+    }
+   ],
+   "categories": [
+    "transactions",
+    "isolation-visibility",
+    "sql-runtime"
+   ]
+  },
+  {
+   "feature": "%Stream.GlobalCharacter",
+   "modules": [
+    "09"
+   ],
+   "uses": [
+    {
+     "module": "09",
+     "used_for": "class source stream for LoadStream",
+     "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:184-203"
+    }
+   ],
+   "categories": [
+    "global-order-collation",
+    "compile-codegen",
+    "objects-streams"
+   ]
+  },
+  {
+   "feature": "%Stream.TmpCharacter",
+   "modules": [
+    "11"
+   ],
+   "uses": [
+    {
+     "module": "11",
+     "used_for": "staged changesets",
+     "source": "iris_src/src/Graph/KG/Ledger.cls:427-436",
+     "in_contract": "no"
+    }
+   ],
+   "categories": [
+    "objects-streams"
+   ]
+  },
+  {
+   "feature": "%SYS.System.WriteToConsoleLog (messages.log)",
+   "modules": [
+    "09"
+   ],
+   "uses": [
+    {
+     "module": "09",
+     "used_for": "build failures, refusals, compile-off notices",
+     "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:177; iris_src/src/Graph/KG/Cypher/Gen.cls:212; iris_src/src/Graph/KG/Cypher/Exec.cls:165"
+    }
+   ],
+   "categories": [
+    "compile-codegen"
+   ]
+  },
+  {
+   "feature": "%SYSTEM.WorkMgr work queues (worker processes with the caller's namespace and roles, WaitForComplete; P-0905)",
+   "modules": [
+    "09"
+   ],
+   "uses": [
+    {
+     "module": "09",
+     "used_for": "parallel native reads",
+     "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:467-476"
+    }
+   ],
+   "categories": [
+    "jobs-workers",
+    "security-privilege"
+   ]
+  },
+  {
+   "feature": "^IRIS.Temp globals (IRISTEMP database, not journaled, shared across processes) and $Increment on them",
+   "modules": [
+    "09"
+   ],
+   "uses": [
+    {
+     "module": "09",
+     "used_for": "worker result shares",
+     "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:451-452; iris_src/src/Graph/KG/Cypher/Exec.cls:578; iris_src/src/Graph/KG/Cypher/Exec.cls:1889"
+    }
+   ],
+   "categories": [
+    "increment-counters",
+    "process-private-temp",
+    "global-order-collation",
+    "jobs-workers",
+    "hash-crypto-time"
+   ]
+  },
+  {
+   "feature": "A class (re)compiled or deleted takes effect at the next call in every process (P-0904)",
+   "modules": [
+    "09"
+   ],
+   "uses": [
+    {
+     "module": "09",
+     "used_for": "a running read meets a rebuilt or deleted class (NAT-T5.26; F-0901 mid-walk)",
+     "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:199; iris_src/src/Graph/KG/Cypher/Exec.cls:258"
+    }
+   ],
+   "categories": [
+    "compile-codegen"
+   ]
+  },
+  {
+   "feature": "A failed compile in a process may leave it unable to prepare new SQL (P-0903, 2026.3; not seen on 2026.1)",
+   "modules": [
+    "09"
+   ],
+   "uses": [
+    {
+     "module": "09",
+     "used_for": "sync mode builds in the reader",
+     "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:101; iris_src/src/Graph/KG/Cypher/Gen.cls:205"
+    }
+   ],
+   "categories": [
+    "sql-runtime",
+    "compile-codegen"
+   ]
+  },
+  {
+   "feature": "Bitmap extent indexes (DDL tables), journaled as BitSET",
+   "modules": [
+    "08"
+   ],
+   "uses": [
+    {
+     "module": "08",
+     "used_for": "row existence; rollback compensation observed",
+     "source": "$RUN_DIR/breadth-b/live/08-footprints.json"
+    }
+   ],
+   "categories": [
+    "transactions",
+    "sql-ddl-schema"
+   ]
+  },
+  {
+   "feature": "BUILD INDEX FOR TABLE",
+   "modules": [
+    "11"
+   ],
+   "uses": [
+    {
+     "module": "11",
+     "used_for": "RebuildEdgeIndices",
+     "source": "iris_src/src/Graph/KG/Ledger.cls:224-239",
+     "in_contract": "no"
+    }
+   ],
+   "categories": [
+    "sql-ddl-schema"
+   ]
+  },
+  {
+   "feature": "Canonical numeric subscript collation (P-0705)",
+   "modules": [
+    "07"
+   ],
+   "uses": [
+    {
+     "module": "07",
+     "used_for": "^||bm25sorted descending walk",
+     "source": "iris_src/src/Graph/KG/BM25Index.cls:300-374"
+    }
+   ],
+   "categories": [
+    "process-private-temp",
+    "global-order-collation"
+   ]
+  },
+  {
+   "feature": "Class dictionary SQL (%Dictionary.CompiledStorage/CompiledStorageIndex/CompiledIndex/CompiledStorageDataValue/CompiledClass.TimeChanged/CompiledProperty) readable by the role",
+   "modules": [
+    "09"
+   ],
+   "uses": [
+    {
+     "module": "09",
+     "used_for": "property reader layout and stamp; val_key presence",
+     "source": "iris_src/src/Graph/KG/Cypher/Props.cls:29-41; iris_src/src/Graph/KG/Cypher/Props.cls:106-110; iris_src/src/Graph/KG/Cypher/Exec.cls:888; iris_src/src/Graph/KG/Cypher/Exec.cls:1103"
+    }
+   ],
+   "categories": [
+    "sql-ddl-schema",
+    "sql-runtime",
+    "compile-codegen",
+    "security-privilege"
+   ]
+  },
+  {
+   "feature": "Collation %EXACT on node_id; default SQLUPPER elsewhere",
+   "modules": [
+    "08"
+   ],
+   "uses": [
+    {
+     "module": "08",
+     "used_for": "id comparisons",
+     "source": "iris_vector_graph/schema.py:396"
+    }
+   ],
+   "categories": [
+    "global-order-collation"
+   ]
+  },
+  {
+   "feature": "CREATE OR REPLACE FUNCTION ... LANGUAGE OBJECTSCRIPT (SQL UDFs) and [SqlProc] class methods projected as SQL functions",
+   "modules": [
+    "08"
+   ],
+   "uses": [
+    {
+     "module": "08",
+     "used_for": "CY_* value functions, CypherFn_* helpers, Txn_Begin/End/Undo",
+     "source": "iris_vector_graph/schema.py:2176-2310; iris_src/src/Graph/KG/SqlProcs.cls:1-20"
+    }
+   ],
+   "categories": [
+    "sql-ddl-schema",
+    "sql-runtime"
+   ]
+  },
+  {
+   "feature": "DB-API driver START TRANSACTION / commit() / rollback() levels",
+   "modules": [
+    "11"
+   ],
+   "uses": [
+    {
+     "module": "11",
+     "used_for": "write_txn, post-commit properties",
+     "source": "iris_vector_graph/ledger/client.py:395-400, :456-487",
+     "in_contract": "yes: SQL COMMIT/ROLLBACK and driver rows"
+    }
+   ],
+   "categories": [
+    "transactions"
+   ]
+  },
+  {
+   "feature": "DB-API driver: autocommit default; with autocommit off the transaction starts at the first write",
+   "modules": [
+    "08"
+   ],
+   "uses": [
+    {
+     "module": "08",
+     "used_for": "caller transaction detection",
+     "source": "iris_vector_graph/_write_txn.py:22-26, 55-62"
+    }
+   ],
+   "categories": [
+    "transactions"
+   ]
+  },
+  {
+   "feature": "Default SQL/global isolation: read uncommitted (no %NOLOCK used; P-0002)",
+   "modules": [
+    "08"
+   ],
+   "uses": [
+    {
+     "module": "08",
+     "used_for": "reads inside and beside open writes",
+     "source": "footprints/08.json (grep %NOLOCK = 0 in translator/query/store)"
+    }
+   ],
+   "categories": [
+    "transactions",
+    "isolation-visibility",
+    "global-order-collation",
+    "sql-runtime"
+   ]
+  },
+  {
+   "feature": "Direct global access to a SQL table's storage (rdf_props data/index globals, $List slot) and name indirection @",
+   "modules": [
+    "09"
+   ],
+   "uses": [
+    {
+     "module": "09",
+     "used_for": "property reads without SQL; generated code reads storage globals by name",
+     "source": "iris_src/src/Graph/KG/Cypher/Props.cls:56-60; iris_src/src/Graph/KG/Cypher/Exec.cls:131-132"
+    }
+   ],
+   "categories": [
+    "global-order-collation",
+    "sql-ddl-schema",
+    "sql-runtime"
+   ]
+  },
+  {
+   "feature": "Dirty visibility of globals set inside another process's open transaction",
+   "modules": [
+    "11"
+   ],
+   "uses": [
+    {
+     "module": "11",
+     "used_for": "State/Head/Meta unlocked reads (F-1104)",
+     "source": "iris_src/src/Graph/KG/Ledger.cls:40-43, :143-164, :254",
+     "in_contract": "yes: 'Visibility'"
+    }
+   ],
+   "categories": [
+    "transactions",
+    "isolation-visibility",
+    "global-order-collation"
+   ]
+  },
+  {
+   "feature": "Dynamic SQL accepts -- comments (no multi-statement per execute; P-0806)",
+   "modules": [
+    "08"
+   ],
+   "uses": [
+    {
+     "module": "08",
+     "used_for": "bounds and enables F-0815",
+     "source": "iris_vector_graph/cypher/translator.py:29578"
+    }
+   ],
+   "categories": [
+    "sql-runtime"
+   ]
+  },
+  {
+   "feature": "Dynamic SQL from ObjectScript (%SQL.Statement %ExecDirect, %Prepare, %SQLCODE) inside a native run",
+   "modules": [
+    "09"
+   ],
+   "uses": [
+    {
+     "module": "09",
+     "used_for": "anchors, named ends, property fallback",
+     "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:866-869; iris_src/src/Graph/KG/Cypher/Exec.cls:897-899; iris_src/src/Graph/KG/Cypher/Exec.cls:1109; iris_src/src/Graph/KG/Cypher/Props.cls:64-70; iris_src/src/Graph/KG/Cypher/Props.cls:112-118"
+    }
+   ],
+   "categories": [
+    "sql-runtime"
+   ]
+  },
+  {
+   "feature": "Embedded Python (Language = python) and iris.gref global walk",
+   "modules": [
+    "07"
+   ],
+   "uses": [
+    {
+     "module": "07",
+     "used_for": "PyOps.HybridSearch; engine index registry in embedded mode",
+     "source": "iris_src/src/Graph/KG/PyOps.cls:370-421; iris_vector_graph/_engine/vector.py:84-104"
+    }
+   ],
+   "categories": [
+    "global-order-collation",
+    "sql-ddl-schema",
+    "embedded-python-callout"
+   ]
+  },
+  {
+   "feature": "embedded Python class methods [Language = python] with iris.sql.exec / iris.cls",
+   "modules": [
+    "10"
+   ],
+   "uses": [
+    {
+     "module": "10",
+     "used_for": "PageRankEmbedded, ClosenessJsonPy, LeidenJsonPy (leidenalg/igraph when installed in mgr/python)",
+     "source": "iris_src/src/Graph/KG/PageRankEmbedded.cls:5-30, :106-131; iris_src/src/Graph/KG/Communities.cls:543, :615"
+    }
+   ],
+   "categories": [
+    "json",
+    "sql-runtime",
+    "embedded-python-callout"
+   ]
+  },
+  {
+   "feature": "Embedded Python methods ([Language = python]) importing the Python package inside IRIS",
+   "modules": [
+    "09"
+   ],
+   "uses": [
+    {
+     "module": "09",
+     "used_for": "IVG.CypherEngine",
+     "source": "iris_src/src/IVG/CypherEngine.cls:56-230"
+    }
+   ],
+   "categories": [
+    "embedded-python-callout"
+   ]
+  },
+  {
+   "feature": "embedded SQL / %SQL.Statement reads of Graph_KG.nodes at default isolation",
+   "modules": [
+    "10"
+   ],
+   "uses": [
+    {
+     "module": "10",
+     "used_for": "seed checks, edgeless nodes",
+     "source": "iris_src/src/Graph/KG/PageRank.cls:87-116; iris_vector_graph/_engine/algorithms.py:619-626"
+    }
+   ],
+   "categories": [
+    "isolation-visibility",
+    "sql-runtime"
+   ]
+  },
+  {
+   "feature": "Foreign keys enforced on rdf_labels/rdf_edges; none on rdf_props",
+   "modules": [
+    "11"
+   ],
+   "uses": [
+    {
+     "module": "11",
+     "used_for": "node ops (F-1105, F-1101)",
+     "source": "iris_src/src/Graph/KG/LedgerApply.cls:253-285; iris_vector_graph/schema.py:411-417",
+     "in_contract": "no"
+    }
+   ],
+   "categories": [
+    "sql-ddl-schema"
+   ]
+  },
+  {
+   "feature": "Functional (adjacency) index maintenance inside SQL DML",
+   "modules": [
+    "11"
+   ],
+   "uses": [
+    {
+     "module": "11",
+     "used_for": "^KG kept in step inside the commit (LED-B4.14.1)",
+     "source": "iris_src/src/Graph/KG/LedgerApply.cls:499-520",
+     "in_contract": "no (index maintenance outside the subset)"
+    }
+   ],
+   "categories": [
+    "transactions",
+    "sql-ddl-schema",
+    "sql-runtime"
+   ]
+  },
+  {
+   "feature": "Functional indexes that maintain ^KG from rdf_edges/rdf_labels row writes in the row's transaction (P-0902)",
+   "modules": [
+    "09"
+   ],
+   "uses": [
+    {
+     "module": "09",
+     "used_for": "adjacency index the native path reads",
+     "source": "iris_vector_graph/engine.py:703-724; iris_vector_graph/schema.py:769-782"
+    }
+   ],
+   "categories": [
+    "transactions",
+    "sql-ddl-schema"
+   ]
+  },
+  {
+   "feature": "Global Kill of a subtree, Set/$Get/$Data/$Order on globals, no transaction (auto-commit per node)",
+   "modules": [
+    "07"
+   ],
+   "uses": [
+    {
+     "module": "07",
+     "used_for": "Build, Drop, Upgrade",
+     "source": "iris_src/src/Graph/KG/BM25Index.cls:99, :542-572, :587-591"
+    }
+   ],
+   "categories": [
+    "transactions",
+    "global-order-collation"
+   ]
+  },
+  {
+   "feature": "Global subscript length limit (<SUBSCRIPT> error)",
+   "modules": [
+    "07"
+   ],
+   "uses": [
+    {
+     "module": "07",
+     "used_for": "document ids and tokens as subscripts",
+     "source": "iris_src/src/Graph/KG/BM25Index.cls:194, :418, :474"
+    }
+   ],
+   "categories": [
+    "global-order-collation"
+   ]
+  },
+  {
+   "feature": "iFind index on docs and %ID %FIND search_index(...) predicate (P-0707)",
+   "modules": [
+    "07"
+   ],
+   "uses": [
+    {
+     "module": "07",
+     "used_for": "kg_TXT engine and SQL procedure",
+     "source": "iris_vector_graph/schema.py:2485-2503; iris_vector_graph/_engine/vector.py:917-1054"
+    }
+   ],
+   "categories": [
+    "sql-ddl-schema",
+    "sql-runtime",
+    "text-ifind"
+   ]
+  },
+  {
+   "feature": "INSERT ... SELECT ... WHERE NOT EXISTS guarded inserts (no lock; unique keys as backstop)",
+   "modules": [
+    "08"
+   ],
+   "uses": [
+    {
+     "module": "08",
+     "used_for": "idempotent CREATE/MERGE of nodes, labels, props, matched edges",
+     "source": "iris_vector_graph/cypher/translator.py:10306-10365"
+    }
+   ],
+   "categories": [
+    "locks"
+   ]
+  },
+  {
+   "feature": "IRISTEMP globals ^IRIS.Temp.* shared across worker processes (not journaled)",
+   "modules": [
+    "10"
+   ],
+   "uses": [
+    {
+     "module": "10",
+     "used_for": "variable-length walk partitions",
+     "source": "iris_src/src/Graph/KG/VarLength.cls:342-404"
+    }
+   ],
+   "categories": [
+    "process-private-temp",
+    "global-order-collation",
+    "jobs-workers",
+    "hash-crypto-time"
+   ]
+  },
+  {
+   "feature": "JOB command (background process, timeout 0, one attempt)",
+   "modules": [
+    "09"
+   ],
+   "uses": [
+    {
+     "module": "09",
+     "used_for": "job-mode plan builds",
+     "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:92-99"
+    }
+   ],
+   "categories": [
+    "jobs-workers"
+   ]
+  },
+  {
+   "feature": "JOB worker processes sized by $System.Util.NumberOfCPUs()",
+   "modules": [
+    "10"
+   ],
+   "uses": [
+    {
+     "module": "10",
+     "used_for": "parallel betweenness, variable-length last level",
+     "source": "iris_src/src/Graph/KG/NKGAccelCentrality.cls:381, :560; iris_src/src/Graph/KG/VarLength.cls:263-270"
+    }
+   ],
+   "categories": [
+    "jobs-workers"
+   ]
+  },
+  {
+   "feature": "Journaling of the database holding ^BM25Idx",
+   "modules": [
+    "07"
+   ],
+   "uses": [
+    {
+     "module": "07",
+     "used_for": "audit oracle; crash recovery of transactions",
+     "source": "experiment/playbook-completion/traces/journal.py"
+    }
+   ],
+   "categories": [
+    "transactions"
+   ]
+  },
+  {
+   "feature": "Journaling of the namespace database (every ^IVG.Ledger/table write journaled with transaction flags)",
+   "modules": [
+    "11"
+   ],
+   "uses": [
+    {
+     "module": "11",
+     "used_for": "journal oracle of this audit; crash consistency",
+     "source": "experiment/playbook-completion/traces/journal.py",
+     "in_contract": "partial: journal restore and crash recovery outside the subset"
+    }
+   ],
+   "categories": [
+    "transactions"
+   ]
+  },
+  {
+   "feature": "JSON_ARRAYAGG, LIST(), %EXACT, %SQLUPPER, %IGNOREINDEX hints, CAST, COALESCE in generated SQL",
+   "modules": [
+    "08"
+   ],
+   "uses": [
+    {
+     "module": "08",
+     "used_for": "projection of labels/props, plan control",
+     "source": "iris_vector_graph/cypher/translator.py:1289, 5941-5945"
+    }
+   ],
+   "categories": [
+    "json",
+    "sql-ddl-schema",
+    "sql-runtime"
+   ]
+  },
+  {
+   "feature": "JSON_TABLE over a SQL function's JSON result",
+   "modules": [
+    "08"
+   ],
+   "uses": [
+    {
+     "module": "08",
+     "used_for": "variable-length walks (CY_VLP_PATHS / CY_VLP_ENDS)",
+     "source": "iris_vector_graph/cypher/translator.py:15421-15431"
+    }
+   ],
+   "categories": [
+    "json",
+    "sql-runtime"
+   ]
+  },
+  {
+   "feature": "Kill of a whole global outside any transaction",
+   "modules": [
+    "10"
+   ],
+   "uses": [
+    {
+     "module": "10",
+     "used_for": "cache invalidation",
+     "source": "iris_src/src/Graph/KG/AlgoCache.cls:54-66; iris_src/src/Graph/KG/Eraser.cls:1052"
+    }
+   ],
+   "categories": [
+    "transactions",
+    "global-order-collation"
+   ]
+  },
+  {
+   "feature": "License-limited connections (IRIS Community: 8 here); a connect can fail 'Unable to allocate a license'",
+   "modules": [
+    "08"
+   ],
+   "uses": [
+    {
+     "module": "08",
+     "used_for": "every engine/connection (observed while auditing)",
+     "source": "$RUN_DIR/breadth-b/live/08-findings.json (_env); live/breadth-b/08_common.py:conn_retry"
+    }
+   ],
+   "categories": [
+    "other"
+   ]
+  },
+  {
+   "feature": "LOCK +^G#\"S\" shared lock with timeout (5 s), held to transaction end when taken inside a transaction",
+   "modules": [
+    "08"
+   ],
+   "uses": [
+    {
+     "module": "08",
+     "used_for": "adjacency writer lock in functional-index callbacks",
+     "source": "iris_src/src/Graph/KG/Adjacency.cls:23-31, 61-74"
+    }
+   ],
+   "categories": [
+    "transactions",
+    "locks",
+    "sql-ddl-schema",
+    "hash-crypto-time"
+   ]
+  },
+  {
+   "feature": "LOCK +^G(sub):0 incremental exclusive lock with zero timeout and $TEST; released on process exit",
+   "modules": [
+    "09"
+   ],
+   "uses": [
+    {
+     "module": "09",
+     "used_for": "one build per entry",
+     "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:166-167; iris_src/src/Graph/KG/Cypher/Gen.cls:172; iris_src/src/Graph/KG/Cypher/Gen.cls:180; iris_src/src/Graph/KG/Cypher/Gen.cls:220"
+    }
+   ],
+   "categories": [
+    "locks"
+   ]
+  },
+  {
+   "feature": "LOCK +name:timeout (incremental exclusive lock with timeout, $TEST)",
+   "modules": [
+    "07"
+   ],
+   "uses": [
+    {
+     "module": "07",
+     "used_for": "BM25 write lock",
+     "source": "iris_src/src/Graph/KG/BM25Index.cls:403-410, :534-539"
+    }
+   ],
+   "categories": [
+    "locks"
+   ]
+  },
+  {
+   "feature": "LOCK +name:timeout with $TEST (exclusive, incremental) on ^IVG.NKGBuild",
+   "modules": [
+    "10"
+   ],
+   "uses": [
+    {
+     "module": "10",
+     "used_for": "one ^NKG rebuild at a time (ALG-B12.3)",
+     "source": "iris_src/src/Graph/KG/TraversalBuild.cls:288-298, :410-424"
+    }
+   ],
+   "categories": [
+    "locks"
+   ]
+  },
+  {
+   "feature": "LOCK +name:timeout with $TEST (head lock, 30 s)",
+   "modules": [
+    "11"
+   ],
+   "uses": [
+    {
+     "module": "11",
+     "used_for": "commit, enable",
+     "source": "iris_src/src/Graph/KG/Ledger.cls:264, :439-443",
+     "in_contract": "partial: 'Lock wait' row; timeout/$TEST outcome not a contract case"
+    }
+   ],
+   "categories": [
+    "transactions",
+    "locks"
+   ]
+  },
+  {
+   "feature": "LOCK released when the owning process ends",
+   "modules": [
+    "07"
+   ],
+   "uses": [
+    {
+     "module": "07",
+     "used_for": "reviewed-design crash safety (premise of the model)",
+     "source": "iris_src/src/Graph/KG/BM25Index.cls:403-410"
+    }
+   ],
+   "categories": [
+    "locks"
+   ]
+  },
+  {
+   "feature": "lock-free global reads concurrent with writers (read-uncommitted visibility of ^KG/^NKG; a long run may see a mix, ALG-P6)",
+   "modules": [
+    "10"
+   ],
+   "uses": [
+    {
+     "module": "10",
+     "used_for": "every algorithm's reads",
+     "source": "iris_src/src/Graph/KG/PageRank.cls:87-116; iris_src/src/Graph/KG/NKGAccelTraversal.cls:187-222"
+    }
+   ],
+   "categories": [
+    "transactions",
+    "locks",
+    "isolation-visibility",
+    "global-order-collation"
+   ]
+  },
+  {
+   "feature": "long strings and the Native API string limit (answers chunked at 9,000 chars into ^||LargeOut; cache payloads up to 1,000,000 chars)",
+   "modules": [
+    "10"
+   ],
+   "uses": [
+    {
+     "module": "10",
+     "used_for": "large algorithm answers",
+     "source": "iris_src/src/Graph/KG/NKGAccelAdjacency.cls:217-228; iris_vector_graph/algo_cache.py:21-28"
+    }
+   ],
+   "categories": [
+    "process-private-temp",
+    "rest-native-api"
+   ]
+  },
+  {
+   "feature": "namespace switch of a process (Arno readers read USER's ^KG whatever namespace calls, P-1001)",
+   "modules": [
+    "10"
+   ],
+   "uses": [
+    {
+     "module": "10",
+     "used_for": "native route only in USER",
+     "source": "iris_vector_graph/stores/iris_sql_store.py:883-894; iris_src/src/Graph/KG/ArnoAccel.cls"
+    }
+   ],
+   "categories": [
+    "other"
+   ]
+  },
+  {
+   "feature": "Native API class call on the caller's DB-API connection runs in that server process (P-1107)",
+   "modules": [
+    "11"
+   ],
+   "uses": [
+    {
+     "module": "11",
+     "used_for": "commit joins the caller transaction",
+     "source": "iris_vector_graph/ledger/client.py:239-252, :402-404",
+     "in_contract": "partial: 'sql-row-in-native-level' case"
+    }
+   ],
+   "categories": [
+    "transactions",
+    "rest-native-api"
+   ]
+  },
+  {
+   "feature": "Native API classMethodValue on the engine's connection (guard probe of Graph.KG.Ledger.Meta)",
+   "modules": [
+    "08"
+   ],
+   "uses": [
+    {
+     "module": "08",
+     "used_for": "strict-mode guard (F-0801)",
+     "source": "iris_vector_graph/ledger/guard.py:38-59"
+    }
+   ],
+   "categories": [
+    "rest-native-api"
+   ]
+  },
+  {
+   "feature": "Native API classMethodValue sharing the DBAPI connection's server process",
+   "modules": [
+    "07"
+   ],
+   "uses": [
+    {
+     "module": "07",
+     "used_for": "engine bm25_* calls run in the caller's process and transaction",
+     "source": "iris_vector_graph/_engine/vector.py:1749-1880"
+    }
+   ],
+   "categories": [
+    "transactions",
+    "sql-runtime",
+    "hash-crypto-time",
+    "rest-native-api"
+   ]
+  },
+  {
+   "feature": "Native API over DB-API connections (classMethodValue; a dedicated connection is another server process)",
+   "modules": [
+    "09"
+   ],
+   "uses": [
+    {
+     "module": "09",
+     "used_for": "engine's native link",
+     "source": "iris_vector_graph/engine.py:1894-1942; iris_vector_graph/_engine/query.py:2206-2224"
+    }
+   ],
+   "categories": [
+    "rest-native-api"
+   ]
+  },
+  {
+   "feature": "Number of CPUs (Graph.KG.VarLength.CPUs) and Community's connection/core limits",
+   "modules": [
+    "09"
+   ],
+   "uses": [
+    {
+     "module": "09",
+     "used_for": "worker count (at most 8)",
+     "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:449-450"
+    }
+   ],
+   "categories": [
+    "jobs-workers"
+   ]
+  },
+  {
+   "feature": "Object %Save of a duplicate IdKey fails (#5805)",
+   "modules": [
+    "11"
+   ],
+   "uses": [
+    {
+     "module": "11",
+     "used_for": "revision seq uniqueness (P-1106)",
+     "source": "iris_src/src/Graph/KG/LedgerRevision.cls:44",
+     "in_contract": "partial: 'Unique keys' covers SQL INSERT -119 only"
+    }
+   ],
+   "categories": [
+    "objects-streams"
+   ]
+  },
+  {
+   "feature": "objectgenerator methods (compile-time constants)",
+   "modules": [
+    "09"
+   ],
+   "uses": [
+    {
+     "module": "09",
+     "used_for": "BuiltAt stamps",
+     "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:25-29; iris_src/src/Graph/KG/Cypher/Gen.cls:53-57"
+    }
+   ],
+   "categories": [
+    "compile-codegen"
+   ]
+  },
+  {
+   "feature": "persistent per-pid work globals killed after use (^bcParSrc, ^bcParScore, ^bcBitAdj; ^ArnoKG(\"bfs_r\"/\"bfs_chunk\"))",
+   "modules": [
+    "10"
+   ],
+   "uses": [
+    {
+     "module": "10",
+     "used_for": "parallel betweenness and BFS staging",
+     "source": "iris_src/src/Graph/KG/NKGAccelCentrality.cls:325, :440, :470, :582; iris_src/src/Graph/KG/TraversalBFS.cls:312-318, :458"
+    }
+   ],
+   "categories": [
+    "global-order-collation"
+   ]
+  },
+  {
+   "feature": "Process stop rolls back every level and releases locks",
+   "modules": [
+    "11"
+   ],
+   "uses": [
+    {
+     "module": "11",
+     "used_for": "abandoned commit",
+     "source": "iris_src/src/Graph/KG/Ledger.cls:397-416",
+     "in_contract": "yes: 'Process stop'"
+    }
+   ],
+   "categories": [
+    "transactions",
+    "sql-runtime"
+   ]
+  },
+  {
+   "feature": "Process-private globals",
+   "modules": [
+    "11"
+   ],
+   "uses": [
+    {
+     "module": "11",
+     "used_for": "^||IVG.LedgerStage, ^||IVG.LedgerOut",
+     "source": "iris_src/src/Graph/KG/Ledger.cls:123-139, :181-185, :427-436",
+     "in_contract": "yes: 'Process-private globals'"
+    }
+   ],
+   "categories": [
+    "process-private-temp",
+    "global-order-collation"
+   ]
+  },
+  {
+   "feature": "Process-private globals ^|| (not journaled, freed at process exit)",
+   "modules": [
+    "09"
+   ],
+   "uses": [
+    {
+     "module": "09",
+     "used_for": "result rows, walk scratch, property layout cache, process compile mode, memo, counters",
+     "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:35-36; iris_src/src/Graph/KG/Cypher/Exec.cls:176; iris_src/src/Graph/KG/Cypher/Props.cls:16-21; iris_src/src/Graph/KG/Cypher/Gen.cls:30-34; iris_src/src/Graph/KG/Cypher/Exec.cls:817"
+    }
+   ],
+   "categories": [
+    "increment-counters",
+    "process-private-temp",
+    "global-order-collation",
+    "compile-codegen"
+   ]
+  },
+  {
+   "feature": "Process-private globals ^|| (P-0704)",
+   "modules": [
+    "07"
+   ],
+   "uses": [
+    {
+     "module": "07",
+     "used_for": "Search scores, sort, skipped terms",
+     "source": "iris_src/src/Graph/KG/BM25Index.cls:223-233, :261"
+    }
+   ],
+   "categories": [
+    "process-private-temp",
+    "global-order-collation"
+   ]
+  },
+  {
+   "feature": "process-private globals ^||name (not journaled, per process)",
+   "modules": [
+    "10"
+   ],
+   "uses": [
+    {
+     "module": "10",
+     "used_for": "work areas (^||PPR, ^||walkNbrs, ^||LargeOut, ^||IVG.CPUs, ^||NKGAccel)",
+     "source": "iris_src/src/Graph/KG/PageRank.cls:506-521; iris_src/src/Graph/KG/NKGAccelTraversal.cls:198-205; iris_src/src/Graph/KG/NKGAccelAdjacency.cls:217-228; iris_src/src/Graph/KG/VarLength.cls:263-270"
+    }
+   ],
+   "categories": [
+    "process-private-temp",
+    "global-order-collation"
+   ]
+  },
+  {
+   "feature": "Read-uncommitted visibility across processes for globals and SQL at default isolation (P-0002)",
+   "modules": [
+    "09"
+   ],
+   "uses": [
+    {
+     "module": "09",
+     "used_for": "native reads take no lock and no snapshot; see a caller's and other writers' uncommitted data (b-09-f0909)",
+     "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:999-1094; iris_vector_graph/_engine/query.py:2202-2224"
+    }
+   ],
+   "categories": [
+    "transactions",
+    "locks",
+    "isolation-visibility",
+    "global-order-collation",
+    "sql-runtime"
+   ]
+  },
+  {
+   "feature": "Rollback restores a node's before-image; does not overwrite another process's later change",
+   "modules": [
+    "11"
+   ],
+   "uses": [
+    {
+     "module": "11",
+     "used_for": "failed second genesis, caller rollback",
+     "source": "iris_src/src/Graph/KG/Ledger.cls:306-314",
+     "in_contract": "yes: 'Rollback over another's write'"
+    }
+   ],
+   "categories": [
+    "transactions",
+    "rest-native-api"
+   ]
+  },
+  {
+   "feature": "Run-time class compilation: %SYSTEM.OBJ LoadStream/Compile/Delete/DeletePackage (not transactional; writes class dictionary and routine globals incl. ^oddDEP)",
+   "modules": [
+    "09"
+   ],
+   "uses": [
+    {
+     "module": "09",
+     "used_for": "compiled plans IVGC.P<h>, DropAll, deploy",
+     "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:184-215; iris_src/src/Graph/KG/Cypher/Gen.cls:225-230; iris_vector_graph/schema.py:2934-2941"
+    }
+   ],
+   "categories": [
+    "transactions",
+    "global-order-collation",
+    "compile-codegen",
+    "objects-streams"
+   ]
+  },
+  {
+   "feature": "runtime CREATE FUNCTION DDL for $ZF wrapper functions",
+   "modules": [
+    "10"
+   ],
+   "uses": [
+    {
+     "module": "10",
+     "used_for": "Arno SQL wrappers",
+     "source": "iris_vector_graph/stores/arno_bridge.py:106-136, :360-378"
+    }
+   ],
+   "categories": [
+    "sql-ddl-schema",
+    "sql-runtime",
+    "embedded-python-callout"
+   ]
+  },
+  {
+   "feature": "SELECT $TLEVEL over SQL",
+   "modules": [
+    "08"
+   ],
+   "uses": [
+    {
+     "module": "08",
+     "used_for": "detecting a caller transaction",
+     "source": "iris_vector_graph/_write_txn.py:64-90"
+    }
+   ],
+   "categories": [
+    "transactions",
+    "sql-runtime"
+   ]
+  },
+  {
+   "feature": "SELECT TOP n ... ORDER BY on the IdKey",
+   "modules": [
+    "11"
+   ],
+   "uses": [
+    {
+     "module": "11",
+     "used_for": "history paging",
+     "source": "iris_vector_graph/ledger/replay.py:342-345",
+     "in_contract": "n/a (SQL semantics)"
+    }
+   ],
+   "categories": [
+    "sql-runtime"
+   ]
+  },
+  {
+   "feature": "SQL COUNT(*) and MAX(%ID) with RowIDs never reused (monotonic row ids)",
+   "modules": [
+    "10"
+   ],
+   "uses": [
+    {
+     "module": "10",
+     "used_for": "global PageRank's node-set cache token (R313); sound only with node deletes raising ^KG(\"__version\")",
+     "source": "iris_vector_graph/_engine/algorithms.py:179-193"
+    }
+   ],
+   "categories": [
+    "global-order-collation",
+    "sql-runtime"
+   ]
+  },
+  {
+   "feature": "SQL privilege check ($SYSTEM.SQL.Security.CheckPrivilege via Graph.KG.SqlPrivilege)",
+   "modules": [
+    "07"
+   ],
+   "uses": [
+    {
+     "module": "07",
+     "used_for": "kg_BM25 RequireSelect on rdf_props",
+     "source": "iris_src/src/Graph/KG/SqlProcs.cls:131-135"
+    }
+   ],
+   "categories": [
+    "sql-runtime",
+    "security-privilege"
+   ]
+  },
+  {
+   "feature": "SQL privilege refusal at Prepare (SQLCODE -99) as the privilege probe",
+   "modules": [
+    "09"
+   ],
+   "uses": [
+    {
+     "module": "09",
+     "used_for": "native gate",
+     "source": "iris_vector_graph/engine.py:559-586"
+    }
+   ],
+   "categories": [
+    "sql-runtime",
+    "security-privilege"
+   ]
+  },
+  {
+   "feature": "SQL procedures/functions (CREATE OR REPLACE PROCEDURE ... LANGUAGE SQL; [SqlProc] class methods), JSON_TABLE over a function result",
+   "modules": [
+    "07"
+   ],
+   "uses": [
+    {
+     "module": "07",
+     "used_for": "kg_TXT, kg_RRF_FUSE, kg_BM25, ivg.bm25.search",
+     "source": "iris_vector_graph/schema.py:2485-2560; iris_src/src/Graph/KG/SqlProcs.cls:131-135; iris_vector_graph/cypher/translator.py:3168-3190"
+    }
+   ],
+   "categories": [
+    "json",
+    "sql-ddl-schema",
+    "sql-runtime"
+   ]
+  },
+  {
+   "feature": "SQL row triggers Foreach=row/object with %ok/%msg; bypass by %NOTRIGGER / TRUNCATE",
+   "modules": [
+    "11"
+   ],
+   "uses": [
+    {
+     "module": "11",
+     "used_for": "revision immutability (P-1108)",
+     "source": "iris_src/src/Graph/KG/LedgerRevision.cls:87-108",
+     "in_contract": "no"
+    }
+   ],
+   "categories": [
+    "sql-runtime",
+    "objects-streams"
+   ]
+  },
+  {
+   "feature": "SQL START TRANSACTION inside a transaction is a no-op; SQL COMMIT/ROLLBACK end every level",
+   "modules": [
+    "08"
+   ],
+   "uses": [
+    {
+     "module": "08",
+     "used_for": "why write_txn avoids SQL transaction verbs",
+     "source": "iris_vector_graph/_write_txn.py:13-20"
+    }
+   ],
+   "categories": [
+    "transactions",
+    "sql-runtime"
+   ]
+  },
+  {
+   "feature": "SQL START TRANSACTION/COMMIT/ROLLBACK end every level (driver autocommit)",
+   "modules": [
+    "07"
+   ],
+   "uses": [
+    {
+     "module": "07",
+     "used_for": "caller transactions around BM25 calls (F-C0702 test)",
+     "source": "iris_vector_graph/_write_txn.py:15-18"
+    }
+   ],
+   "categories": [
+    "transactions",
+    "sql-runtime"
+   ]
+  },
+  {
+   "feature": "SQL string literal escaping by doubling quotes (P-0805)",
+   "modules": [
+    "08"
+   ],
+   "uses": [
+    {
+     "module": "08",
+     "used_for": "inlined graph names and captured ids",
+     "source": "iris_vector_graph/cypher/translator.py:2085-2086"
+    }
+   ],
+   "categories": [
+    "sql-runtime"
+   ]
+  },
+  {
+   "feature": "SQL writes via %SQL.Statement %ExecDirect join the ObjectScript transaction",
+   "modules": [
+    "11"
+   ],
+   "uses": [
+    {
+     "module": "11",
+     "used_for": "LedgerApply ops inside Commit (P-1101)",
+     "source": "iris_src/src/Graph/KG/LedgerApply.cls:74-77",
+     "in_contract": "yes: 'Partial rollback' (globals and SQL rows alike)"
+    }
+   ],
+   "categories": [
+    "transactions",
+    "sql-runtime"
+   ]
+  },
+  {
+   "feature": "SQLCODE map: -23, -104, -119, -149, -359/-428, <PROTECT>/-99",
+   "modules": [
+    "08"
+   ],
+   "uses": [
+    {
+     "module": "08",
+     "used_for": "GraphWriteError text, missing-function fallback, privilege refusals",
+     "source": "iris_vector_graph/_write_txn.py:46-57; iris_vector_graph/stores/iris_sql_store.py:1540-1550"
+    }
+   ],
+   "categories": [
+    "sql-ddl-schema",
+    "sql-runtime",
+    "security-privilege"
+   ]
+  },
+  {
+   "feature": "Statement-level atomicity: a failed SQL statement undoes only itself; the transaction stays open (P-0803)",
+   "modules": [
+    "08"
+   ],
+   "uses": [
+    {
+     "module": "08",
+     "used_for": "CYP-I6.3",
+     "source": "iris_vector_graph/stores/iris_sql_store.py:1552-1553"
+    }
+   ],
+   "categories": [
+    "transactions",
+    "sql-runtime"
+   ]
+  },
+  {
+   "feature": "String collation and the sorts-after operator ]] for sort keys and key ranges",
+   "modules": [
+    "09"
+   ],
+   "uses": [
+    {
+     "module": "09",
+     "used_for": "ORDER BY trimming, scan chunks",
+     "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:250; iris_src/src/Graph/KG/Cypher/SortKey.cls:9-151"
+    }
+   ],
+   "categories": [
+    "global-order-collation",
+    "sql-runtime"
+   ]
+  },
+  {
+   "feature": "TimeChanged of a class moves on every recompile including DDL (P-0906)",
+   "modules": [
+    "09"
+   ],
+   "uses": [
+    {
+     "module": "09",
+     "used_for": "plan stamp invalidation",
+     "source": "iris_src/src/Graph/KG/Cypher/Props.cls:106-110; iris_src/src/Graph/KG/Cypher/Gen.cls:136-139"
+    }
+   ],
+   "categories": [
+    "sql-ddl-schema",
+    "compile-codegen"
+   ]
+  },
+  {
+   "feature": "TROLLBACK undoes Set/Kill but not $Increment (P-0702)",
+   "modules": [
+    "07"
+   ],
+   "uses": [
+    {
+     "module": "07",
+     "used_for": "plain Set counters in Insert/Delete",
+     "source": "iris_src/src/Graph/KG/BM25Index.cls:24-26"
+    }
+   ],
+   "categories": [
+    "transactions",
+    "increment-counters"
+   ]
+  },
+  {
+   "feature": "TSTART nesting; TCOMMIT lowers $TLEVEL; TROLLBACK 1 partial; outer rollback undoes inner",
+   "modules": [
+    "11"
+   ],
+   "uses": [
+    {
+     "module": "11",
+     "used_for": "commit nested in caller transactions",
+     "source": "iris_src/src/Graph/KG/Ledger.cls:397-416",
+     "in_contract": "yes: 'Nesting', 'Partial rollback'"
+    }
+   ],
+   "categories": [
+    "transactions"
+   ]
+  },
+  {
+   "feature": "TSTART/TCOMMIT nesting inside a caller's transaction; TROLLBACK with no argument ends every level",
+   "modules": [
+    "07"
+   ],
+   "uses": [
+    {
+     "module": "07",
+     "used_for": "Insert/Delete atomicity; F-C0702",
+     "source": "iris_src/src/Graph/KG/BM25Index.cls:460-490, :504-511"
+    }
+   ],
+   "categories": [
+    "transactions"
+   ]
+  },
+  {
+   "feature": "TSTART/TCOMMIT/TROLLBACK 1 nesting, reached as SQL functions on the writing cursor (one level per write query, under a caller's SQL START TRANSACTION or driver autocommit-off)",
+   "modules": [
+    "08"
+   ],
+   "uses": [
+    {
+     "module": "08",
+     "used_for": "write_txn atomicity and caller-transaction nesting (CYP-I6.3, CYP-I6.4)",
+     "source": "iris_src/src/Graph/KG/Txn.cls:19-58; iris_vector_graph/_write_txn.py:1-30, 275"
+    }
+   ],
+   "categories": [
+    "transactions",
+    "sql-runtime"
+   ]
+  },
+  {
+   "feature": "Unique index violation SQLCODE -119 writes no row (P-0804)",
+   "modules": [
+    "08"
+   ],
+   "uses": [
+    {
+     "module": "08",
+     "used_for": "duplicate edge handling (F-0805), is_duplicate",
+     "source": "iris_vector_graph/_write_txn.py:46-49"
+    }
+   ],
+   "categories": [
+    "sql-ddl-schema",
+    "sql-runtime"
+   ]
+  },
+  {
+   "feature": "Unlock inside a transaction deferred to the outermost end",
+   "modules": [
+    "11"
+   ],
+   "uses": [
+    {
+     "module": "11",
+     "used_for": "head lock kept to the caller's end (LED-B9.4)",
+     "source": "iris_src/src/Graph/KG/Ledger.cls:388-410",
+     "in_contract": "yes: 'Locks: deferral'"
+    }
+   ],
+   "categories": [
+    "transactions",
+    "locks"
+   ]
+  },
+  {
+   "feature": "unqualified SQL table names resolved in the namespace's default schema (SQLUser) from embedded Python",
+   "modules": [
+    "10"
+   ],
+   "uses": [
+    {
+     "module": "10",
+     "used_for": "PageRankEmbedded (F-1013)",
+     "source": "iris_src/src/Graph/KG/PageRankEmbedded.cls:19-25"
+    }
+   ],
+   "categories": [
+    "sql-runtime",
+    "embedded-python-callout"
+   ]
+  },
+  {
+   "feature": "Visibility of other processes' uncommitted global writes (no read isolation for globals)",
+   "modules": [
+    "07"
+   ],
+   "uses": [
+    {
+     "module": "07",
+     "used_for": "Search/Info during Build or Insert (reader saw N=1 mid-build)",
+     "source": "iris_src/src/Graph/KG/BM25Index.cls:236-374"
+    }
+   ],
+   "categories": [
+    "transactions",
+    "isolation-visibility",
+    "global-order-collation"
+   ]
+  }
+ ]
+}

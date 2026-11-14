@@ -1,0 +1,667 @@
+{
+ "module": "10",
+ "lane": "breadth-b",
+ "pin": "3eaa79cf",
+ "summary": {
+  "original_findings": 13,
+  "by_disposition": {
+   "blocked-access": 1,
+   "reproduced-live": 8,
+   "confirmed-source": 3,
+   "reproduced-test": 1
+  },
+  "by_outcome": {
+   "blocked-access": 1,
+   "product-defect": 12
+  },
+  "new_findings": 1,
+  "new_by_outcome": {
+   "product-defect": 1
+  }
+ },
+ "findings": [
+  {
+   "id": "F-1001",
+   "title": "A native reader answers default-graph calls in a namespace where a named graph has edges",
+   "intended": "spec 236 FR-014a: a native reader 'MUST be used only for the graph scope its proof covers' (specs/236-arno-callout-adoption/spec.md:268-272); ALG-I3 / SYS-I2 (a default-graph answer never mixes in a named graph's edges); the BFS route and the ^NKG tiers probe for named-graph edges (iris_vector_graph/stores/iris_sql_store.py:1842-1858, :3322).",
+   "observed": "Source at the pin: arno_readers.route takes no named-graph input and answers native for graph '' (iris_vector_graph/arno_readers.py:257-280); _execute_pagerank routes with no named_graph_with_edges probe (iris_sql_store.py:2388-2400). Probe b-10-probe-units ran the pin's route(): 'native' for graph '' with no parameter that could carry named-graph edges. Model m10-routes-as-built-pagerank-scope finds the mixed answer only with a library whose reader is graph-blind; with a graph-0-only reader (m10-routes-as-built-pagerank-scope-default-only-lib) it passes: the outcome hinges on the open premise P-1004. Live observation is blocked: the arno-callout library is not loaded in this container (NKGAccel.Capabilities rust_callout false, b-10-live-nkg) and _arno_route answers owner outside the USER namespace (iris_sql_store.py:883-894), which the validation lane owns.",
+   "disposition": "blocked-access",
+   "outcome": "blocked-access",
+   "evidence": [
+    {
+     "kind": "probe",
+     "ref": "b-10-probe-units"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-as-built-pagerank-scope"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-as-built-pagerank-scope-default-only-lib"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-reviewed"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-control-no-probe"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/arno_readers.py:257-280"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/stores/iris_sql_store.py:2388-2400"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/stores/iris_sql_store.py:1842-1858"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/stores/iris_sql_store.py:883-894"
+    },
+    {
+     "kind": "assumed",
+     "ref": "P-1004 (open: sources disagree on what the reader reads)"
+    }
+   ],
+   "gates": [
+    "3.3-model-check",
+    "3.5-handlers",
+    "3.2-coverage"
+   ],
+   "severity": "S1",
+   "confidence": "medium",
+   "remedy": "Route to a native reader only when named_graph_with_edges() is None (as BFS and the ^NKG tiers do), or add a named-graph fixture to the reader gate and record graph scope in the proof; then a live test in USER with arno-callout 1.2.1 loaded and a named graph's edges.",
+   "notes": "Blocked dependency: arno-callout 1.2.1 library build loaded into the USER namespace of an IRIS instance (the proof record names arno-callout 1.2.1+844e5ff75f45, arm64). The missing probe itself is confirmed at the source; whether answers mix graphs depends on P-1004.",
+   "module": "10",
+   "original_ref": "experiment/playbook-uplift/findings/10.md#F-1001"
+  },
+  {
+   "id": "F-1002",
+   "title": "random_walk needs the Arno library for an ObjectScript walk, and walks every graph's edges",
+   "intended": "ALG-I1 / CONTEXT.md:261-264 (IVG answers the same without the library, only slower); ALG-I3 and SYS-I2; decisions.md HD-1001 working answer (assumption): a declared graph scope and an observable unavailable result, never an empty graph inferred from missing acceleration.",
+   "observed": "Live (b-10-live-nkg): engine.random_walk('b10_a') answered [] while b10_a has out-edges and the Arno library is absent (engine._detect_arno() False). With named graph b10g1 holding b10_a -> b10_n beside the default graph's b10_a -> b10_b and ^NKG synced, the walk the engine would call, Graph.KG.NKGAccel.RandomWalkJson (pure ObjectScript), stepped first to ['b10_b', 'b10_n']: the named graph's node b10_n from a default-graph walk. The ^NKG procedure ivg.betweenness refused the same namespace (ALG-B7 holds live). Models: m10-routes-as-built-walk-empty and m10-nkg-as-built-scope reproduce both parts; reviewed designs pass.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-10-live-nkg"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-as-built-walk-empty"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-as-built-scope"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-reviewed"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-control-walk-merged"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/algorithms.py:658-678"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/NKGAccelTraversal.cls:187-222"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/NKGAccel.cls:176-178"
+    },
+    {
+     "kind": "open",
+     "ref": "HD-1001"
+    }
+   ],
+   "gates": [
+    "3.3-model-check",
+    "3.5-handlers",
+    "3.8-findings-disposed"
+   ],
+   "severity": "S1",
+   "confidence": "high",
+   "remedy": "Decide HD-1001; at minimum walk the default graph's ^KG in ObjectScript whatever the library state (or refuse with an explicit unavailable error), call EnsureNKG and refuse when a named graph has edges if ^NKG is kept; a live test with two graphs sharing a node id.",
+   "notes": "Which graph a walk should cover is intent-undecided (HD-1001); the empty answer and the cross-graph step each violate a documented contract (ALG-I1 / CONTEXT.md:261-264; SYS-I2), hence product-defect. RandomWalkJson is a deployed public class method (callable directly over the Native API).",
+   "module": "10",
+   "original_ref": "experiment/playbook-uplift/findings/10.md#F-1002"
+  },
+  {
+   "id": "F-1003",
+   "title": "Global PageRank lists at most 10,000 nodes from its owner and every node from the native reader",
+   "intended": "The method's docstring: every node takes part and the scores sum to 1 over node_count() nodes (iris_vector_graph/_engine/algorithms.py:741-760); decisions.md HD-1004 (assumption): the same result contract on every route, uncapped pending a documented limit, any truncation exposed.",
+   "observed": "Live (b-10-live-cap): with 10051 default-graph nodes (hub b10_h -> 10,050 nodes, pin's bulk API) kg_PAGERANK() on the owner route answered 10000 rows summing to 0.994926; 51 nodes were silently not listed; PageRank.PageRankGlobalJson itself answered 10000 rows. The native route (every node, iris_sql_store.py:2396-2399) is blocked (arno-callout absent). Model m10-routes-as-built-pagerank-cap reproduces the route disagreement.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-10-live-cap"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-as-built-pagerank-cap"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-reviewed"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-control-owner-cap"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/PageRank.cls:506-520"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/stores/iris_sql_store.py:2388-2400"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/stores/iris_sql_store.py:124-129"
+    },
+    {
+     "kind": "open",
+     "ref": "HD-1004"
+    }
+   ],
+   "gates": [
+    "3.6-capacity",
+    "3.5-handlers",
+    "3.3-model-check"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Decide HD-1004; make both routes cut (or not cut) the same way and say so in the answer (a truncation flag or a documented top_k).",
+   "notes": "The native half is blocked-access (arno-callout library). The owner-side truncation contradicts the method's own docstring regardless of HD-1004.",
+   "module": "10",
+   "original_ref": "experiment/playbook-uplift/findings/10.md#F-1003"
+  },
+  {
+   "id": "F-1004",
+   "title": "A cached personalized PageRank answer misses a start node written or removed without an edge",
+   "intended": "ALG-B2.19 (a cached answer changes when a start node is added to the graph or removed from it); ALG-B16.11 (after any write a cached answer equals a fresh computation); ALG-I4.",
+   "observed": "Live (b-10-live-cache): kg_PERSONALIZED_PAGERANK(['b10_x']) answered {} before b10_x existed and the answer was cached (^IVG.AlgoCache(0,'ppr',...)); create_node('b10_x') with no edge wrote only nodes/rdf_props and moved no token; the same call then answered {} from the cache while a fresh run (after AlgoCache.InvalidateAll) answered {'b10_x': 1.0, 'b10_a': 0.0, 'b10_b': 0.0}. Refuted part: deleting the edgeless start node moved ^KG('__version') (7128 -> 7131 for a labelled node; edgeless 7125 -> 7127) because delete_node runs Graph.KG.Eraser.EraseNodeIds, whose InvalidateDerived bumps the token and kills ^IVG.AlgoCache (Eraser.cls:1038-1053); the next call answered {}, equal to a fresh run. Models: m10-cache-as-built-ppr (violation, linearizable property), m10-cache-reviewed-ppr (monotonic node token: pass), m10-cache-control-no-bump-on-create (caught).",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-10-live-cache"
+    },
+    {
+     "kind": "probe",
+     "ref": "b-10-probe-units"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-as-built-ppr"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-reviewed-ppr"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-control-no-bump-on-create"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-as-built-pagerank"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/stores/iris_sql_store.py:2231-2275"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/stores/iris_sql_store.py:921-983"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/AlgoCache.cls:17-50"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Eraser.cls:1038-1053"
+    }
+   ],
+   "gates": [
+    "3.6-keys",
+    "3.3a-writesets",
+    "3.3-model-check"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Put the node-set token in the PPR key (as global PageRank does since R313) or raise a node token on every node write and read it inside AlgoCache.Lookup; a live test that creates an edgeless start node after a cached call.",
+   "notes": "Only the 'written' half reproduces at the pin; the 'removed' half is refuted live (a node delete always raises the token and clears the cache). The global PageRank key (R313, COUNT(*):MAX(%ID)) is sound within the model's bounds only because deletes raise the token: m10-cache-control-silent-delete-pagerank shows the ABA it would otherwise admit (COUNT:MAX returns to an earlier value when the newest node is deleted).",
+   "module": "10",
+   "original_ref": "experiment/playbook-uplift/findings/10.md#F-1004"
+  },
+  {
+   "id": "F-1005",
+   "title": "The interned snapshot can lack edges with nothing saying it is out of date",
+   "intended": "ALG-B12.7 (a snapshot reader sees the same edges as the adjacency index or learns the snapshot is out of date); SYS-I8 and CONTEXT.md:109-114 (a rebuilt store matches its sources or says it is stale).",
+   "observed": "Not reproduced live in the default configuration (b-10-live-nkg-f1005): with ^NKG built from b10_a -> b10_b, create_edge_temporal(b10_b, B10T, b10_c) wrote ['global:^KG', 'global:^NKG', 'sql:Graph_KG.rdf_edges'] (journal): the temporal edge asserted a structural rdf_edges row whose adjacency index wrote ^KG and interned b10_c into ^NKG (interned: True, edgeCount 1 -> 2); betweenness [{'id': 'b10_b', 'score': 1.0}] and closeness answered the same before and after engine.sync() (differs: False). The source shows why: TemporalIndex.InsertEdge calls Adjacency.PutShadow (no interning, no stale mark) only when Graph.KG.Adjacency.Indexed() is false; with the index declared it calls AssertTemporalRow (TemporalIndex.cls:104-112). The finding therefore stands only for a namespace without the adjacency functional index (source + model m10-nkg-as-built-fresh, which models that branch). ^NKG('$meta','builtFrom') still lags the token with no reader comparing them (builtFrom_lags_token True), harmless here because the snapshot was current.",
+   "disposition": "confirmed-source",
+   "outcome": "product-defect",
+   "narrowed": true,
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-10-live-nkg-f1005"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-as-built-fresh"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-reviewed"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-control-ensure-ignores-stale"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/TemporalIndex.cls:104-112"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Adjacency.cls:111-140"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/TraversalBuild.cls:399-424"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/temporal.py:280-286"
+    }
+   ],
+   "gates": [
+    "3.3a-writesets",
+    "3.3-model-check"
+   ],
+   "severity": "S3",
+   "confidence": "medium",
+   "remedy": "Mark ^NKG stale in PutShadow when ^NKG is built (EnsureNKG then rebuilds), or compare builtFrom with the token in EnsureNKG; correct the ADJACENCY CONTRACT docstring (temporal.py:280-286), which still says temporal edges are never interned although the indexed path interns them.",
+   "notes": "Narrowed: the original claim (temporal edges never reach ^NKG) is refuted live for the indexed configuration, the default after initialize_schema at the pin; it holds by source only where the adjacency index is not declared. The first live attempt (b-10-live-nkg) was void (^NKG unbuilt). The docstring at temporal.py:280-286 contradicts the observed indexed behaviour (a documentation defect of module 05).",
+   "module": "10",
+   "original_ref": "experiment/playbook-uplift/findings/10.md#F-1005"
+  },
+  {
+   "id": "F-1006",
+   "title": "Subgraph vectors are read by node id in every graph",
+   "intended": "ALG-I3 (a default-graph call never mixes in a named graph's content); the table is keyed (graph_id, node_id) (iris_vector_graph/schema.py:429-437).",
+   "observed": "Live (b-10-live-scope2; the first run's fixture violated the (graph_id, node_id) foreign key): kg_NodeEmbeddings held rows [['', 'b10_s', '1,0,0,0'], ['b10g1', 'b10_s', '0,0,0,1']] for b10_s (in both graphs); kg_SUBGRAPH(['b10_s'], include_embeddings=True) returned [0.0, 0.0, 0.0, 1.0] (default-graph vector [1.0, 0.0, 0.0, 0.0], named-graph vector [0.0, 0.0, 0.0, 1.0]).",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-10-live-scope2"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/algorithms.py:850-880"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/schema.py:429-437"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Subgraph.cls:6-11"
+    }
+   ],
+   "gates": [
+    "3.5-handlers",
+    "3.4-declared-reads"
+   ],
+   "severity": "S2",
+   "confidence": "medium",
+   "remedy": "Add graph_id = '' to the read, correct the comment that the walk is namespace-wide, and test with two graphs.",
+   "notes": "Needs a named graph's row in kg_NodeEmbeddings (named graphs normally use route tables, KNOWN_ISSUES 702-714); the row was written with SQL for the check. When both rows match, which vector wins depends on row order (the dict keeps the last row): an order-dependent answer.",
+   "module": "10",
+   "original_ref": "experiment/playbook-uplift/findings/10.md#F-1006"
+  },
+  {
+   "id": "F-1007",
+   "title": "Degree centrality counts parallel edges on out-edges but not on in-edges",
+   "intended": "CONTEXT.md:103-108 (parallel edges each count towards degree); ALG-B5.4.",
+   "observed": "Live (b-10-live-scope2; the first run's engine.create_edge kept one edge per triple): named graph b10gm in multigraph mode (engine.set_multigraph, restored after), three parallel b10_p -> b10_q edges by Cypher CREATE and one b10_r -> b10_q (4 edge rows, 1 parallel triple): degree_centrality out {'b10_p': 3, 'b10_r': 1, 'b10_q': 0} (sum 4), in {'b10_q': 2, 'b10_p': 0, 'b10_r': 0} (sum 2). Model m10-degree-as-built violates the handshake invariant; m10-degree-reviewed passes; control caught.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-10-live-scope2"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-degree-as-built"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-degree-reviewed"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-degree-control-distinct-out"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Centrality.cls:88-139"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Adjacency.cls:203-206"
+    }
+   ],
+   "gates": [
+    "3.5-handlers",
+    "3.3-model-check"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Count in-degree from the out mirror's multiplicity; a multigraph test.",
+   "notes": "",
+   "module": "10",
+   "original_ref": "experiment/playbook-uplift/findings/10.md#F-1007"
+  },
+  {
+   "id": "F-1008",
+   "title": "Variable-length expansion's every-graph mode walks across graphs",
+   "intended": "CONTEXT.md:38-43 (an edge meets only nodes of its own graph); ALG-I2.",
+   "observed": "Live (b-10-live-scope): default graph b10_s -> b10_k, named graph b10g1 b10_k -> b10_m (shared id b10_k). Graph.KG.VarLength.Ends('b10_s', '', 'out', 2, 2, pAll=1) answered [{'t': 'b10_m', 'l': 2}]; with pAll=0 (default graph) []. The translator side (Cypher with gall = 1) is module 08's F-0818, reproduced live there (b-08-live-f0818). Model m10-walk-as-built-one-graph reproduces it; m10-walk-reviewed passes.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-10-live-scope"
+    },
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0818"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-walk-as-built-one-graph"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-walk-reviewed"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-walk-control-reset-at-shared"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/VarLength.cls:44-51"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/VarLength.cls:126-148"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher/translator.py:15404-15431"
+    }
+   ],
+   "gates": [
+    "3.5-handlers",
+    "3.3-model-check"
+   ],
+   "severity": "S1",
+   "confidence": "high",
+   "remedy": "Walk each graph separately in the every-graph mode (fix the graph at the first hop); a live test with a parameter source in two graphs.",
+   "notes": "",
+   "module": "10",
+   "original_ref": "experiment/playbook-uplift/findings/10.md#F-1008"
+  },
+  {
+   "id": "F-1009",
+   "title": "khop answers a start node that exists only in a named graph",
+   "intended": "The khop docstring: a missing seed answers two empty lists (_engine/algorithms.py:577-594); ALG-I3.",
+   "observed": "Live (b-10-live-scope): khop('b10_z') for b10_z held only by named graph b10g1 answered {'nodes': ['b10_z'], 'edges': []}; khop of an id in no graph answered {'nodes': [], 'edges': []}. Model m10-walk-as-built-khop reproduces it.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-10-live-scope"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-walk-as-built-khop"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-walk-reviewed"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/algorithms.py:600-626"
+    }
+   ],
+   "gates": [
+    "3.5-handlers"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Add graph_id = '' to _khop_seed_exists.",
+   "notes": "Leaks only the existence of the id, no edges.",
+   "module": "10",
+   "original_ref": "experiment/playbook-uplift/findings/10.md#F-1009"
+  },
+  {
+   "id": "F-1010",
+   "title": "Leiden's server route ignores max_levels and tol",
+   "intended": "leiden_communities documents max_levels and tol as arguments (_engine/algorithms.py:1527-1545).",
+   "observed": "Confirmed at the source: _leiden_serverside calls Graph.KG.Communities.LeidenJsonAuto(10, gamma, 0.0001, top_k, 256, seed) whatever the caller passed (iris_vector_graph/stores/iris_sql_store.py:3765-3790); LeidenJsonPy takes neither (iris_src/src/Graph/KG/Communities.cls:615) and LeidenJson documents tol as unused (Communities.cls:433-443). Not driven live: which server path runs (leidenalg in IRIS Python or the greedy ObjectScript fallback) depends on the instance's Python packages, so an equal answer for two max_levels values would not by itself show the argument was dropped.",
+   "disposition": "confirmed-source",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/stores/iris_sql_store.py:3765-3790"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Communities.cls:615"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Communities.cls:433-443"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/algorithms.py:1527-1545"
+    }
+   ],
+   "gates": [
+    "3.5-handlers"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Pass the caller's values, or document that this route ignores them.",
+   "notes": "",
+   "module": "10",
+   "original_ref": "experiment/playbook-uplift/findings/10.md#F-1010"
+  },
+  {
+   "id": "F-1011",
+   "title": "Documents describe snapshot behaviour the code no longer has",
+   "intended": "docs/ADMIN_GUIDE.md and the method docstrings describe what the code does.",
+   "observed": "Confirmed at the source: ADMIN_GUIDE.md:1271-1272 says algorithms answer [] for every node when ^NKG is not built, but the methods fall back to a Python walk with a warning (iris_sql_store.py:3322-3336; seen live in b-10-live-nkg: betweenness on an unbuilt ^NKG answered from the Python walk) or raise; the triangle_count / strongly_connected_components / k_core docstrings say they read ^NKG while only the default graph has edges (_engine/algorithms.py:1676-1684) but the store methods use the Arno upload of ^KG graph 0 or LazyKG (iris_sql_store.py:3977-4006).",
+   "disposition": "confirmed-source",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "docs/ADMIN_GUIDE.md:1271-1272"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/stores/iris_sql_store.py:3322-3336"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/algorithms.py:1676-1684"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/stores/iris_sql_store.py:3977-4006"
+    },
+    {
+     "kind": "live",
+     "ref": "b-10-live-nkg"
+    }
+   ],
+   "gates": [
+    "3.8-findings-disposed"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Update the troubleshooting entry and the three docstrings.",
+   "notes": "",
+   "module": "10",
+   "original_ref": "experiment/playbook-uplift/findings/10.md#F-1011"
+  },
+  {
+   "id": "F-1012",
+   "title": "The proof record names one library build for entries proven on different builds",
+   "intended": "CONTEXT.md:276-280: the proof record holds the build each reader was proven on.",
+   "observed": "Probe (b-10-probe-units) of the pin's _arno_gate.build_proof: with a previous record proving pagerank on build 1.2.0 and a run that proved only wcc on build 1.3.0, the new record keeps pagerank (True) and names only {'version': '1.3.0', 'sha256': {'lib': 'bbb'}} as its library, with no per-entry build (False). The upstream unit test that asserts the keeping (tests/unit/test_236_reader_gate.py) passed here (b-10-run-unit).",
+   "disposition": "reproduced-test",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "probe",
+     "ref": "b-10-probe-units"
+    },
+    {
+     "kind": "run",
+     "ref": "b-10-run-unit"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_arno_gate.py:138-177"
+    }
+   ],
+   "gates": [
+    "3.8-findings-disposed"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Keep the library identity per entry.",
+   "notes": "The probe calls the product's pure function; no IRIS involved.",
+   "module": "10",
+   "original_ref": "experiment/playbook-uplift/findings/10.md#F-1012"
+  },
+  {
+   "id": "F-1013",
+   "title": "Graph.KG.PageRankEmbedded is deployed and reads every graph",
+   "intended": "ALG-I2/ALG-I3 and the IVG schema boundary (spec 262: the IVG tables live in the IVG schema, Graph_KG here).",
+   "observed": "Live (b-10-live-scope): the deployed class method Graph.KG.PageRankEmbedded.ComputePageRank('b10_%', ...) answered {\"raised\": \"RuntimeError: <THROW> *%Exception.PythonException <PYTHON EXCEPTION> 246 <class 'irisbuiltins.SQLError'>:  Table 'SQLUSER.NODES' not found\"}: its unqualified table names resolve to SQLUser, outside the namespace's IVG schema, so the deployed class cannot run against the IVG tables at all here; where a SQLUser.nodes/rdf_edges exists it reads that table instead. The every-graph part is confirmed at the source only: ComputePageRankCore selects nodes and rdf_edges by node_id LIKE ? with no graph_id predicate (PageRankEmbedded.cls:5-30).",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-10-live-scope"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/PageRankEmbedded.cls:5-30"
+    },
+    {
+     "kind": "inspected",
+     "ref": "docs/ADMIN_GUIDE.md:346"
+    },
+    {
+     "kind": "inspected",
+     "ref": "scripts/deploy_objectscript.py:129"
+    }
+   ],
+   "gates": [
+    "3.1-coverage",
+    "3.5-handlers"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Remove the class or scope it to one graph and the IVG schema (qualified table names).",
+   "notes": "No engine method calls it (inventory: direct-surface-only); reproduced branch: 'a table outside the IVG schema'.",
+   "module": "10",
+   "original_ref": "experiment/playbook-uplift/findings/10.md#F-1013"
+  }
+ ],
+ "new_findings": [
+  {
+   "id": "F-C1001",
+   "module": "10",
+   "title": "triangle_count, a read, creates twelve SQL functions (DDL, class compile, commit) and rewrites the deploy record, with no Arno library",
+   "intended": "ALG-I6: a read algorithm changes no content; it may write only its own work areas and caches (experiment/playbook-uplift/ontology/10-algorithms.md ALG-I6). The routine record ^IVG.Deploy(\"routines\") is setup's record of what it created (iris_vector_graph/routine_record.py:1-21).",
+   "observed": "Live, journal oracle (b-10-live-fp): the first engine.triangle_count() in AUDITB (Arno library absent) wrote ['global:^IVG.Deploy', 'global:^oddDEP', 'global:^oddTSQL'] with no error, then answered from the LazyKG walk. The dictionary shows 16 classes Graph.KG.funcivgarnozf* created at that moment (b-10-live-fp-detail: TimeCreated $H 67888,3446-3447), i.e. the read path ran CREATE OR REPLACE FUNCTION for the $ZF wrappers and committed. A later triangle_count on a new connection rewrote ^IVG.Deploy(\"routines\") again (1 journal record) although nothing was created. Source: execute_triangle_count tries the Arno path unless IVG_DISABLE_ARNO is set (iris_sql_store.py:3977-3988); build_kg_adjacency_chunked probes arno_available (arno_bridge.py:658-694), which runs _ensure_zf_call_function -> _create_routines: DDL + class compile + conn.commit(), refused inside a caller transaction (arno_bridge.py:106-136, :360-378), and RoutineRecord.save() writes the record on every probe (routine_record.py:93-95).",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-10-live-fp"
+    },
+    {
+     "kind": "live",
+     "ref": "b-10-live-fp-detail"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/stores/iris_sql_store.py:3977-3988"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/stores/arno_bridge.py:658-694"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/stores/arno_bridge.py:106-136"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/stores/arno_bridge.py:360-378"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/routine_record.py:93-95"
+    }
+   ],
+   "gates": [
+    "3.4-ownership",
+    "3.5-handlers",
+    "3.7-lock-log"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Create the $ZF wrappers in setup (initialize_schema) only, and have the read path probe availability without DDL (or check IsAvailable first); save the routine record only when something was created.",
+   "notes": "Consequences: a read compiles classes in the reader's process (the compile-failure hazard F-0904 describes for module 09), commits, invalidates cached queries that call the wrappers, needs DDL privileges (a read-only login falls back silently), and inside a caller transaction is refused and falls back. The audit's own triangle_count call thereby compiled these twelve product SQL functions into AUDITB (product behavior, not an audit compile)."
+  }
+ ]
+}

@@ -1,0 +1,177 @@
+{
+ "_doc": "Module 07 scope from experiment/playbook-uplift/ontology/07-text-search.md Scope line. cell_map keys are 'Entity|command' (every state of the command maps to the same entry points).",
+ "cls": {
+  "Graph.KG.BM25Index": ".",
+  "Graph.KG.SqlProcs": "(?i)bm25|txt|rrf",
+  "Graph.KG.PyOps": "^(HybridSearch)$",
+  "Graph.KG.Service": "^HybridSearch$"
+ },
+ "py": {
+  "iris_vector_graph/fusion.py": ".",
+  "iris_vector_graph/text_search.py": ".",
+  "iris_vector_graph/operators.py": "kg_TXT|kg_RRF_FUSE|kg_RERANK"
+ },
+ "engine": {
+  "iris_vector_graph/_engine/vector.py": "^(bm25_|kg_TXT|kg_RRF_FUSE)"
+ },
+ "routes": "hybridSearch|HybridSearch",
+ "cypher": "^ivg\\.(bm25|retrieve)",
+ "sqlfn": "^kg_(TXT|RRF_FUSE|BM25)",
+ "cell_map": {
+  "BM25 index|build": [
+   "eng:IRISGraphEngine.bm25_build",
+   "cls:Graph.KG.BM25Index.Build",
+   "py:iris_vector_graph/index_protocol.py:Index.build[fulltext]"
+  ],
+  "BM25 index|insert": [
+   "eng:IRISGraphEngine.bm25_insert",
+   "cls:Graph.KG.BM25Index.Insert",
+   "py:iris_vector_graph/index_protocol.py:Index.insert[fulltext]"
+  ],
+  "BM25 index|delete": [
+   "eng:IRISGraphEngine.bm25_delete",
+   "cls:Graph.KG.BM25Index.Delete"
+  ],
+  "BM25 index|search": [
+   "eng:IRISGraphEngine.bm25_search",
+   "cls:Graph.KG.BM25Index.Search",
+   "cls:Graph.KG.BM25Index.SearchReport",
+   "cls:Graph.KG.BM25Index.SearchProc",
+   "cls:Graph.KG.SqlProcs.kgBM25",
+   "cypher:ivg.bm25.search",
+   "py:iris_vector_graph/index_protocol.py:Index.search[fulltext]"
+  ],
+  "BM25 index|upgrade": [
+   "eng:IRISGraphEngine.bm25_upgrade",
+   "cls:Graph.KG.BM25Index.Upgrade"
+  ],
+  "BM25 index|drop": [
+   "eng:IRISGraphEngine.bm25_drop",
+   "cls:Graph.KG.BM25Index.Drop",
+   "py:iris_vector_graph/index_protocol.py:Index.drop[fulltext]",
+   "eng:IRISGraphEngine.create_index[replace]"
+  ],
+  "BM25 index|info": [
+   "eng:IRISGraphEngine.bm25_info",
+   "cls:Graph.KG.BM25Index.Info",
+   "cls:Graph.KG.BM25Index.List",
+   "py:iris_vector_graph/index_protocol.py:Index.info[fulltext]",
+   "eng:IRISGraphEngine.list_indexes[bm25 registry]",
+   "py:iris_vector_graph/schema.py:GraphSchema.global_indexes"
+  ],
+  "fused search|engine fusion": [
+   "eng:IRISGraphEngine.kg_RRF_FUSE",
+   "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_RRF_FUSE"
+  ],
+  "fused search|SQL fusion": [
+   "sqlfn:kg_RRF_FUSE"
+  ],
+  "fused search|web hybrid route": [
+   "route:POST /hybridSearch",
+   "cls:Graph.KG.Service.HybridSearch",
+   "cls:Graph.KG.PyOps.HybridSearch"
+  ],
+  "fused search|multi-modal search": [
+   "py:iris_vector_graph/fusion.py:HybridSearchFusion.multi_modal_search"
+  ],
+  "fused search|adaptive search": [
+   "py:iris_vector_graph/fusion.py:HybridSearchFusion.adaptive_search"
+  ],
+  "fused search|retrieve call": [
+   "cypher:ivg.retrieve"
+  ]
+ },
+ "extra": [
+  {
+   "id": "py:iris_vector_graph/index_protocol.py:Index.build[fulltext]",
+   "kind": "py",
+   "path": "iris_vector_graph/index_protocol.py",
+   "start": 83,
+   "end": 84,
+   "names": [
+    "Index.build",
+    "_build_fulltext_index"
+   ],
+   "via": "iris_vector_graph/_engine/vector.py:299-310 (_build_fulltext_index)"
+  },
+  {
+   "id": "py:iris_vector_graph/index_protocol.py:Index.search[fulltext]",
+   "kind": "py",
+   "path": "iris_vector_graph/index_protocol.py",
+   "start": 92,
+   "end": 95,
+   "names": [
+    "Index.search"
+   ],
+   "via": "iris_vector_graph/index_protocol.py:34"
+  },
+  {
+   "id": "py:iris_vector_graph/index_protocol.py:Index.insert[fulltext]",
+   "kind": "py",
+   "path": "iris_vector_graph/index_protocol.py",
+   "start": 97,
+   "end": 98,
+   "names": [
+    "Index.insert"
+   ],
+   "via": "iris_vector_graph/index_protocol.py:41"
+  },
+  {
+   "id": "py:iris_vector_graph/index_protocol.py:Index.drop[fulltext]",
+   "kind": "py",
+   "path": "iris_vector_graph/index_protocol.py",
+   "start": 100,
+   "end": 102,
+   "names": [
+    "Index.drop"
+   ],
+   "via": "iris_vector_graph/index_protocol.py:48"
+  },
+  {
+   "id": "py:iris_vector_graph/index_protocol.py:Index.info[fulltext]",
+   "kind": "py",
+   "path": "iris_vector_graph/index_protocol.py",
+   "start": 104,
+   "end": 105,
+   "names": [
+    "Index.info"
+   ],
+   "via": "iris_vector_graph/index_protocol.py:55"
+  },
+  {
+   "id": "eng:IRISGraphEngine.create_index[replace]",
+   "kind": "engine",
+   "path": "iris_vector_graph/_engine/vector.py",
+   "start": 243,
+   "end": 259,
+   "names": [
+    "create_index"
+   ],
+   "via": "replace=True drops the existing index"
+  },
+  {
+   "id": "eng:IRISGraphEngine.list_indexes[bm25 registry]",
+   "kind": "engine",
+   "path": "iris_vector_graph/_engine/vector.py",
+   "start": 84,
+   "end": 104,
+   "names": [
+    "_build_index_registry",
+    "list_indexes"
+   ],
+   "via": "registry walk of ^BM25Idx first subscripts (embedded gref) or BM25Index.List"
+  },
+  {
+   "id": "py:iris_vector_graph/schema.py:GraphSchema.global_indexes",
+   "kind": "py",
+   "path": "iris_vector_graph/schema.py",
+   "start": 1950,
+   "end": 1966,
+   "names": [
+    "global_indexes",
+    "SHOW INDEXES"
+   ],
+   "via": "SHOW INDEXES / status() list BM25 indexes through BM25Index.List"
+  }
+ ]
+}

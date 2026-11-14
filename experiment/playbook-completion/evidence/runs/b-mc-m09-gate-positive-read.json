@@ -1,0 +1,23 @@
+{
+  "check": "m09-gate-positive-read",
+  "command": "CARGO_TARGET_DIR=$RUN_DIR/target/breadth-b cargo build --release && bash experiment/playbook-completion/tools/locks.sh heavy timeout 1800 $RUN_DIR/target/breadth-b/release/breadth-b",
+  "design": "positive",
+  "experiment_head": "f3fe3917466f7bae3e46f32f5b0644cfeaff87c8",
+  "full_log": "$RUN_DIR/breadth-b/mc/full-decisive-20261114T012246Z.log",
+  "full_log_sha256": "227f6720d9d86ed75cc8fa7fd71e2d9d31fd6f5ccd627843af4d51997edf4615",
+  "id": "b-mc-m09-gate-positive-read",
+  "kind": "mc",
+  "lane": "breadth-b",
+  "log": "$RUN_DIR/breadth-b/mc/checks/m09-gate-positive-read.log",
+  "log_bytes": 838,
+  "log_sha256": "82ca8515eee65f5187ca4fea6899667eb0b93a6ee0a3e12288029b44094d2061",
+  "module": "09",
+  "observes": "module 09 machine gate design positive: expectation violation of 'never: a native read runs with the gate open after a label write'; result met (found 'never: a native read runs with the gate open after a label write'); 16 states, 25 transitions, depth 2, exhaustive within the model's bounds; covers: sharpness: a native read with the gate open after a label write (reviewed)",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T01:23:51+00:00",
+  "result": "expected-violation",
+  "results": "experiment/playbook-completion/models/breadth-b/RESULTS.json",
+  "search": "exhaustive",
+  "states": "16"
+}

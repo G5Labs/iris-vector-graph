@@ -1,0 +1,2093 @@
+{
+ "module": "08",
+ "lane": "breadth-b",
+ "pin": "3eaa79cf",
+ "inventory": "experiment/playbook-completion/models/breadth-b/inventory/08.json",
+ "summary": {
+  "entry_points": 101,
+  "writers": 5,
+  "readers": 36,
+  "journal_validated": 5,
+  "journal_mismatches": 0,
+  "journal_runs": [
+   "b-08-live-footprints",
+   "b-08-live-f0814",
+   "b-08-live-footprints-rerun",
+   "b-08-live-f0814-rerun"
+  ],
+  "atomicity_claim": "USER_GUIDE.md:266-271 / query.py:1946-1966 holds on AUDITB: one outermost transaction per write query, failed query net effect empty; non-transactional records are IRIS $INCREMENT counters and the iFind word dictionary only (and ^NKG counters, F-C0801)"
+ },
+ "entry_points": [
+  {
+   "id": "cls:Graph.KG.CypherFn.IVGREGEXMATCH",
+   "role": "pure (SQL helper function)",
+   "source": "iris_src/src/Graph/KG/CypherFn.cls:13-25",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "static (inventory hint, transitive over callees); no global or table write"
+  },
+  {
+   "id": "cls:Graph.KG.CypherFn.IVGJSONARRAYLENGTH",
+   "role": "pure (SQL helper function)",
+   "source": "iris_src/src/Graph/KG/CypherFn.cls:28-36",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "static (inventory hint, transitive over callees); no global or table write"
+  },
+  {
+   "id": "cls:Graph.KG.CypherFn.IVGJSONVALUE",
+   "role": "pure (SQL helper function)",
+   "source": "iris_src/src/Graph/KG/CypherFn.cls:39-53",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "static (inventory hint, transitive over callees); no global or table write"
+  },
+  {
+   "id": "cls:Graph.KG.CypherFn.IVGJSONKEYS",
+   "role": "pure (SQL helper function)",
+   "source": "iris_src/src/Graph/KG/CypherFn.cls:56-67",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "static (inventory hint, transitive over callees); no global or table write"
+  },
+  {
+   "id": "cls:Graph.KG.CypherFn.IVGLISTREVERSE",
+   "role": "pure (SQL helper function)",
+   "source": "iris_src/src/Graph/KG/CypherFn.cls:70-81",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "static (inventory hint, transitive over callees); no global or table write"
+  },
+  {
+   "id": "cls:Graph.KG.CypherFn.IVGSTRSPLIT",
+   "role": "pure (SQL helper function)",
+   "source": "iris_src/src/Graph/KG/CypherFn.cls:84-97",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "static (inventory hint, transitive over callees); no global or table write"
+  },
+  {
+   "id": "cls:Graph.KG.CypherFn.IVGNEWID",
+   "role": "pure (SQL helper function)",
+   "source": "iris_src/src/Graph/KG/CypherFn.cls:100-103",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "static (inventory hint, transitive over callees); no global or table write (IVGNEWID/IVGRAND: process-local value only)"
+  },
+  {
+   "id": "cls:Graph.KG.CypherFn.IVGRAND",
+   "role": "pure (SQL helper function)",
+   "source": "iris_src/src/Graph/KG/CypherFn.cls:106-109",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "static (inventory hint, transitive over callees); no global or table write (IVGNEWID/IVGRAND: process-local value only)"
+  },
+  {
+   "id": "cls:Graph.KG.CypherFn.IVGLISTHEAD",
+   "role": "pure (SQL helper function)",
+   "source": "iris_src/src/Graph/KG/CypherFn.cls:112-120",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "static (inventory hint, transitive over callees); no global or table write"
+  },
+  {
+   "id": "cls:Graph.KG.CypherFn.IVGLISTLAST",
+   "role": "pure (SQL helper function)",
+   "source": "iris_src/src/Graph/KG/CypherFn.cls:123-131",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "static (inventory hint, transitive over callees); no global or table write"
+  },
+  {
+   "id": "cls:Graph.KG.CypherFn.IVGLISTTAIL",
+   "role": "pure (SQL helper function)",
+   "source": "iris_src/src/Graph/KG/CypherFn.cls:134-144",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "static (inventory hint, transitive over callees); no global or table write"
+  },
+  {
+   "id": "cls:Graph.KG.CypherFn.IVGLISTGET",
+   "role": "pure (SQL helper function)",
+   "source": "iris_src/src/Graph/KG/CypherFn.cls:150-186",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "static (inventory hint, transitive over callees); no global or table write"
+  },
+  {
+   "id": "cls:Graph.KG.CypherFn.IVGTYPEERROR",
+   "role": "pure (SQL helper function)",
+   "source": "iris_src/src/Graph/KG/CypherFn.cls:189-192",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "static (inventory hint, transitive over callees); no global or table write"
+  },
+  {
+   "id": "cls:Graph.KG.CypherFn.IVGMAPGET",
+   "role": "pure (SQL helper function)",
+   "source": "iris_src/src/Graph/KG/CypherFn.cls:195-204",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "static (inventory hint, transitive over callees); no global or table write"
+  },
+  {
+   "id": "cls:Graph.KG.CypherFn.IVGJSONSET",
+   "role": "pure (SQL helper function)",
+   "source": "iris_src/src/Graph/KG/CypherFn.cls:212-239",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "static (inventory hint, transitive over callees); no global or table write"
+  },
+  {
+   "id": "cls:Graph.KG.CypherFn.IVGJSONREMOVE",
+   "role": "pure (SQL helper function)",
+   "source": "iris_src/src/Graph/KG/CypherFn.cls:242-252",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "static (inventory hint, transitive over callees); no global or table write"
+  },
+  {
+   "id": "cls:Graph.KG.CypherFn.IVGRANGE",
+   "role": "pure (SQL helper function)",
+   "source": "iris_src/src/Graph/KG/CypherFn.cls:255-266",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "static (inventory hint, transitive over callees); no global or table write"
+  },
+  {
+   "id": "cls:IVG.Percentile.PDISC",
+   "role": "pure (SQL helper function)",
+   "source": "iris_src/src/IVG/Percentile.cls:6-17",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "static (inventory hint, transitive over callees); no global or table write"
+  },
+  {
+   "id": "cls:IVG.Percentile.PCONT",
+   "role": "pure (SQL helper function)",
+   "source": "iris_src/src/IVG/Percentile.cls:21-36",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "static (inventory hint, transitive over callees); no global or table write"
+  },
+  {
+   "id": "cls:IVG.Percentile.SortArray",
+   "role": "pure (SQL helper function)",
+   "source": "iris_src/src/IVG/Percentile.cls:39-53",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "static (inventory hint, transitive over callees); no global or table write"
+  },
+  {
+   "id": "cls:Graph.KG.SqlProcs.CypherFnIVGREGEXMATCH",
+   "role": "pure (SQL helper function)",
+   "source": "iris_src/src/Graph/KG/SqlProcs.cls:17-20",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "static (inventory hint, transitive over callees); no global or table write"
+  },
+  {
+   "id": "cls:Graph.KG.SqlProcs.CypherFnIVGJSONARRAYLENGTH",
+   "role": "pure (SQL helper function)",
+   "source": "iris_src/src/Graph/KG/SqlProcs.cls:22-25",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "static (inventory hint, transitive over callees); no global or table write"
+  },
+  {
+   "id": "cls:Graph.KG.SqlProcs.CypherFnIVGJSONVALUE",
+   "role": "pure (SQL helper function)",
+   "source": "iris_src/src/Graph/KG/SqlProcs.cls:27-30",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "static (inventory hint, transitive over callees); no global or table write"
+  },
+  {
+   "id": "cls:Graph.KG.SqlProcs.CypherFnIVGJSONKEYS",
+   "role": "pure (SQL helper function)",
+   "source": "iris_src/src/Graph/KG/SqlProcs.cls:32-35",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "static (inventory hint, transitive over callees); no global or table write"
+  },
+  {
+   "id": "cls:Graph.KG.SqlProcs.CypherFnIVGLISTREVERSE",
+   "role": "pure (SQL helper function)",
+   "source": "iris_src/src/Graph/KG/SqlProcs.cls:37-40",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "static (inventory hint, transitive over callees); no global or table write"
+  },
+  {
+   "id": "cls:Graph.KG.SqlProcs.CypherFnIVGSTRSPLIT",
+   "role": "pure (SQL helper function)",
+   "source": "iris_src/src/Graph/KG/SqlProcs.cls:42-45",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "static (inventory hint, transitive over callees); no global or table write"
+  },
+  {
+   "id": "cls:Graph.KG.SqlProcs.CypherFnIVGNEWID",
+   "role": "pure (SQL helper function)",
+   "source": "iris_src/src/Graph/KG/SqlProcs.cls:47-50",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "static (inventory hint, transitive over callees); no global or table write (IVGNEWID/IVGRAND: process-local value only)"
+  },
+  {
+   "id": "cls:Graph.KG.SqlProcs.CypherFnIVGRAND",
+   "role": "pure (SQL helper function)",
+   "source": "iris_src/src/Graph/KG/SqlProcs.cls:52-55",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "static (inventory hint, transitive over callees); no global or table write (IVGNEWID/IVGRAND: process-local value only)"
+  },
+  {
+   "id": "cls:Graph.KG.SqlProcs.CypherFnIVGLISTHEAD",
+   "role": "pure (SQL helper function)",
+   "source": "iris_src/src/Graph/KG/SqlProcs.cls:57-60",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "static (inventory hint, transitive over callees); no global or table write"
+  },
+  {
+   "id": "cls:Graph.KG.SqlProcs.CypherFnIVGLISTLAST",
+   "role": "pure (SQL helper function)",
+   "source": "iris_src/src/Graph/KG/SqlProcs.cls:62-65",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "static (inventory hint, transitive over callees); no global or table write"
+  },
+  {
+   "id": "cls:Graph.KG.SqlProcs.CypherFnIVGLISTTAIL",
+   "role": "pure (SQL helper function)",
+   "source": "iris_src/src/Graph/KG/SqlProcs.cls:67-70",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "static (inventory hint, transitive over callees); no global or table write"
+  },
+  {
+   "id": "cls:Graph.KG.SqlProcs.CypherFnIVGLISTGET",
+   "role": "pure (SQL helper function)",
+   "source": "iris_src/src/Graph/KG/SqlProcs.cls:72-75",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "static (inventory hint, transitive over callees); no global or table write"
+  },
+  {
+   "id": "cls:Graph.KG.SqlProcs.CypherFnIVGTYPEERROR",
+   "role": "pure (SQL helper function)",
+   "source": "iris_src/src/Graph/KG/SqlProcs.cls:77-80",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "static (inventory hint, transitive over callees); no global or table write"
+  },
+  {
+   "id": "cls:Graph.KG.SqlProcs.CypherFnIVGMAPGET",
+   "role": "pure (SQL helper function)",
+   "source": "iris_src/src/Graph/KG/SqlProcs.cls:82-85",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "static (inventory hint, transitive over callees); no global or table write"
+  },
+  {
+   "id": "cls:Graph.KG.SqlProcs.CypherFnIVGJSONSET",
+   "role": "pure (SQL helper function)",
+   "source": "iris_src/src/Graph/KG/SqlProcs.cls:87-90",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "static (inventory hint, transitive over callees); no global or table write"
+  },
+  {
+   "id": "cls:Graph.KG.SqlProcs.CypherFnIVGJSONREMOVE",
+   "role": "pure (SQL helper function)",
+   "source": "iris_src/src/Graph/KG/SqlProcs.cls:92-95",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "static (inventory hint, transitive over callees); no global or table write"
+  },
+  {
+   "id": "cls:Graph.KG.SqlProcs.CypherFnIVGRANGE",
+   "role": "pure (SQL helper function)",
+   "source": "iris_src/src/Graph/KG/SqlProcs.cls:97-100",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "static (inventory hint, transitive over callees); no global or table write"
+  },
+  {
+   "id": "py:iris_vector_graph/cypher/read_only.py:split_statements",
+   "role": "pure (no IRIS access)",
+   "source": "iris_vector_graph/cypher/read_only.py:28-50",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": ""
+  },
+  {
+   "id": "py:iris_vector_graph/cypher/read_only.py:answered_without_parsing",
+   "role": "pure (no IRIS access)",
+   "source": "iris_vector_graph/cypher/read_only.py:53-58",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": ""
+  },
+  {
+   "id": "py:iris_vector_graph/cypher/read_only.py:writes_cypher",
+   "role": "pure (no IRIS access)",
+   "source": "iris_vector_graph/cypher/read_only.py:92-104",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": ""
+  },
+  {
+   "id": "py:iris_vector_graph/cypher/parser.py:parse_query",
+   "role": "pure (no IRIS access)",
+   "source": "iris_vector_graph/cypher/parser.py:1930-1941",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": ""
+  },
+  {
+   "id": "py:iris_vector_graph/cypher/translator.py:set_schema_prefix",
+   "role": "pure (no IRIS access)",
+   "source": "iris_vector_graph/cypher/translator.py:341-352",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "module-level schema prefix: process-global translator state (translator.py:341-358)"
+  },
+  {
+   "id": "py:iris_vector_graph/cypher/translator.py:get_schema_prefix",
+   "role": "pure (no IRIS access)",
+   "source": "iris_vector_graph/cypher/translator.py:355-357",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": ""
+  },
+  {
+   "id": "py:iris_vector_graph/cypher/translator.py:translate_to_sql",
+   "role": "pure (no IRIS access)",
+   "source": "iris_vector_graph/cypher/translator.py:7090-7106",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": ""
+  },
+  {
+   "id": "py:iris_vector_graph/cypher/aql/__init__.py:translate_aql",
+   "role": "pure (no IRIS access)",
+   "source": "iris_vector_graph/cypher/aql/__init__.py:26-34",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": ""
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.__init__",
+   "role": "reader (delegates to the engine)",
+   "source": "iris_vector_graph/operators.py:15-18",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": " operators shim: delegates to engine methods of other modules"
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_KNN_VEC",
+   "role": "reader (delegates to the engine)",
+   "source": "iris_vector_graph/operators.py:20-28",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": " operators shim: delegates to engine methods of other modules"
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_TXT",
+   "role": "reader (delegates to the engine)",
+   "source": "iris_vector_graph/operators.py:30-35",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": " operators shim: delegates to engine methods of other modules"
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_RRF_FUSE",
+   "role": "reader (delegates to the engine)",
+   "source": "iris_vector_graph/operators.py:37-44",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": " operators shim: delegates to engine methods of other modules"
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_GRAPH_PATH",
+   "role": "reader (delegates to the engine)",
+   "source": "iris_vector_graph/operators.py:46-49",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": " operators shim: delegates to engine methods of other modules"
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_GRAPH_WALK",
+   "role": "reader (delegates to the engine)",
+   "source": "iris_vector_graph/operators.py:51-55",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": " operators shim: delegates to engine methods of other modules"
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_GRAPH_WALK_TVF",
+   "role": "reader (delegates to the engine)",
+   "source": "iris_vector_graph/operators.py:57-61",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": " operators shim: delegates to engine methods of other modules"
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_NEIGHBORHOOD_EXPANSION",
+   "role": "reader (delegates to the engine)",
+   "source": "iris_vector_graph/operators.py:63-67",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": " operators shim: delegates to engine methods of other modules"
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_VECTOR_GRAPH_SEARCH",
+   "role": "reader (delegates to the engine)",
+   "source": "iris_vector_graph/operators.py:69-82",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": " operators shim: delegates to engine methods of other modules"
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_PAGERANK",
+   "role": "reader (delegates to the engine)",
+   "source": "iris_vector_graph/operators.py:84-91",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": " operators shim: delegates to engine methods of other modules"
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_WCC",
+   "role": "reader (delegates to the engine)",
+   "source": "iris_vector_graph/operators.py:93-96",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": " operators shim: delegates to engine methods of other modules"
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_CDLP",
+   "role": "reader (delegates to the engine)",
+   "source": "iris_vector_graph/operators.py:98-101",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": " operators shim: delegates to engine methods of other modules"
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_SUBGRAPH",
+   "role": "reader (delegates to the engine)",
+   "source": "iris_vector_graph/operators.py:103-110",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": " operators shim: delegates to engine methods of other modules"
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_PPR_GUIDED_SUBGRAPH",
+   "role": "reader (delegates to the engine)",
+   "source": "iris_vector_graph/operators.py:112-123",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": " operators shim: delegates to engine methods of other modules"
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_NEIGHBORS",
+   "role": "reader (delegates to the engine)",
+   "source": "iris_vector_graph/operators.py:125-131",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": " operators shim: delegates to engine methods of other modules"
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_MENTIONS",
+   "role": "reader (delegates to the engine)",
+   "source": "iris_vector_graph/operators.py:133-136",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": " operators shim: delegates to engine methods of other modules"
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_PPR",
+   "role": "reader (delegates to the engine)",
+   "source": "iris_vector_graph/operators.py:138-141",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": " operators shim: delegates to engine methods of other modules"
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_RERANK",
+   "role": "reader (delegates to the engine)",
+   "source": "iris_vector_graph/operators.py:143-146",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": " operators shim: delegates to engine methods of other modules"
+  },
+  {
+   "id": "py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.execute_sql",
+   "role": "reader",
+   "source": "iris_vector_graph/stores/iris_sql_store.py:1522-1560",
+   "reads": {
+    "tables": [
+     "Graph_KG.nodes",
+     "Graph_KG.rdf_labels",
+     "Graph_KG.rdf_props",
+     "Graph_KG.rdf_edges",
+     "any table the SQL names"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none (driver autocommit)",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/08-footprints.json (read_only_query)",
+    "run_id": "b-08-live-footprints",
+    "declared_stores": [],
+    "observed_stores": [],
+    "match": true,
+    "undeclared": [],
+    "outside_txn": [],
+    "notes": "a MATCH ... RETURN count journals no write",
+    "rerun_id": "b-08-live-footprints-rerun",
+    "rerun_log": "$RUN_DIR/breadth-b/live/08-footprints-rerun.json (read_only_query)",
+    "rerun_matches": true
+   },
+   "notes": "read_only parameter is not used by the body (HD-1701 is module 17's); a dotted-function SELECT can call SQL functions with side effects (F-0815: Txn_Begin raised $TLEVEL)."
+  },
+  {
+   "id": "py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.execute_transaction",
+   "role": "writer",
+   "source": "iris_vector_graph/stores/iris_sql_store.py:1580-1790",
+   "reads": {
+    "tables": [
+     "Graph_KG.nodes",
+     "Graph_KG.rdf_labels",
+     "Graph_KG.rdf_props",
+     "Graph_KG.rdf_edges"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [
+     "Graph_KG.nodes",
+     "Graph_KG.rdf_labels",
+     "Graph_KG.rdf_props",
+     "Graph_KG.rdf_edges"
+    ],
+    "globals": [
+     "^KG",
+     "^NKG via functional indexes"
+    ]
+   },
+   "transaction": "write_txn(conn, schema, cursor): nested level; commit at 1780; rollback + GraphWriteError at 1785-1790",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/08-footprints.json",
+    "run_id": "b-08-live-footprints",
+    "declared_stores": [
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_labels",
+     "sql:Graph_KG.rdf_props",
+     "sql:Graph_KG.rdf_edges",
+     "global:^KG",
+     "global:^NKG"
+    ],
+    "observed_stores": [
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_labels",
+     "sql:Graph_KG.rdf_props",
+     "sql:Graph_KG.rdf_edges",
+     "global:^KG",
+     "global:^NKG",
+     "global:^oddTSQL (IRIS SQL cache, system)"
+    ],
+    "match": true,
+    "undeclared": [],
+    "outside_txn": [
+     "$INCREMENT row-id counters ^t52S.<table>.1 (IRIS, not transactional)",
+     "iFind word dictionary ^t52S.DMCe.7(\"W\",n) of rdf_props.idx_props_val_ifind (IRIS %iFind, not transactional)",
+     "^KG(\"__version\") and ^KG(\"gen\",g,src) $INCREMENT (Adjacency.cls:23-30, 91: survive rollback by design)",
+     "^NKG(-3,src), ^NKG(\"$meta\",\"edgeCount\"|\"version\") $INCREMENT (Adjacency.cls:95-107: survive rollback; F-C0801)"
+    ],
+    "notes": "9 shapes (CREATE node, CREATE edge between literal endpoints, MERGE ON CREATE, SET+label+REMOVE, DELETE edge, DETACH DELETE, FOREACH literal list, a query failing with -119, a read) plus a caller transaction. Every row/index/^KG/^NKG write of one query is inside one outermost transaction (nested Txn_Begin levels); the failed query's net effect is empty (BitSET-aware); the read journals no write; with a caller transaction open, the failure leaves $TLEVEL 1 and the caller's row, and the caller's ROLLBACK removes everything. Declared-but-not-observed stores are may-writes not exercised (DETACH DELETE of an edgeless node; ^NKG only when built).",
+    "rerun_id": "b-08-live-footprints-rerun",
+    "rerun_log": "$RUN_DIR/breadth-b/live/08-footprints-rerun.json",
+    "rerun_matches": true
+   },
+   "notes": "runs pin/capture/snapshot pseudo-statements (__capture_ids__, __pin_stage__, __snapshot_stage__) as reads inside the same level"
+  },
+  {
+   "id": "eng:IRISGraphEngine.execute_aql",
+   "role": "reader+writer",
+   "source": "iris_vector_graph/_engine/query.py:1730-1745; iris_vector_graph/cypher/aql/translator.py:50-58, 154-168",
+   "reads": {
+    "tables": [
+     "Graph_KG.nodes",
+     "Graph_KG.rdf_labels",
+     "Graph_KG.rdf_props",
+     "Graph_KG.rdf_edges"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [
+     "Graph_KG.nodes",
+     "Graph_KG.rdf_labels",
+     "Graph_KG.rdf_props",
+     "Graph_KG.rdf_edges"
+    ],
+    "globals": [
+     "^KG",
+     "^NKG (as execute_cypher)"
+    ]
+   },
+   "transaction": "as execute_cypher (it calls execute_cypher with default options: no read_only)",
+   "locks": [],
+   "nolock": "as execute_cypher",
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/08-findings.json (F-0814.write_payload)",
+    "run_id": "b-08-live-f0814",
+    "declared_stores": [
+     "sql:Graph_KG.rdf_props"
+    ],
+    "observed_stores": [
+     "sql:Graph_KG.rdf_props",
+     "global:^oddTSQL (system)"
+    ],
+    "match": true,
+    "undeclared": [],
+    "outside_txn": [
+     "row-id counters"
+    ],
+    "notes": "an AQL collection name carrying `SET v.pwn = 1` wrote rdf_props rows in graphs b08gA and b08gB",
+    "rerun_id": "b-08-live-f0814-rerun",
+    "rerun_log": "$RUN_DIR/breadth-b/live/08-findings-rerun.json (F-0814.write_payload)",
+    "rerun_matches": true
+   },
+   "notes": "F-0814: literals pasted as \"...\" and collection names joined into the relationship type."
+  },
+  {
+   "id": "eng:IRISGraphEngine.execute_cypher",
+   "role": "reader+writer",
+   "source": "iris_vector_graph/_engine/query.py:1746-1966; iris_vector_graph/_engine/query.py:2286-2340; iris_vector_graph/stores/iris_sql_store.py:1522-1790",
+   "reads": {
+    "tables": [
+     "Graph_KG.nodes",
+     "Graph_KG.rdf_labels",
+     "Graph_KG.rdf_props",
+     "Graph_KG.rdf_edges",
+     "Graph_KG.table_mappings",
+     "Graph_KG.relationship_mappings",
+     "mapped external SQL tables (map_sql_table)",
+     "any table named in a dotted function (F-0815)"
+    ],
+    "globals": [
+     "^KG (native/k-hop/VLP helpers via CY_VLP_* functions)",
+     "^NKG (approx_count_distinct HLL route, query.py:4361-4407)",
+     "^IVG.Ledger(\"meta\") via Graph.KG.Ledger.Meta (strict guard, guard.py:38-59)"
+    ]
+   },
+   "writes": {
+    "tables": [
+     "Graph_KG.nodes",
+     "Graph_KG.rdf_labels",
+     "Graph_KG.rdf_props",
+     "Graph_KG.rdf_edges"
+    ],
+    "globals": [
+     "^KG(out/in/label/gen/__version) via functional indexes idx_edges_adj / idx_labels_adj (AdjIndex.cls:12-26, LabelIndex.cls:10-28)",
+     "^NKG(-1/-2/-3/$NI/$agg/$meta) when ^NKG is built (Adjacency.cls:95-107)"
+    ]
+   },
+   "transaction": "one IVG level per write query: write_txn -> Graph_KG.Txn_Begin (TSTART, nested under a caller transaction), Txn_End (TCOMMIT to the caller's level), Txn_Undo (TROLLBACK 1) on any exception or an error answer (query.py:1946-1966; _write_txn.py; Txn.cls:19-58); execute_transaction opens a nested level per statement set (iris_sql_store.py:1580-1583, 1780-1790). Reads: no transaction (autocommit), default isolation (read uncommitted).",
+   "locks": [
+    {
+     "lock": "^IVG.AdjW(graph)#\"S\"",
+     "mode": "shared, timeout 5 s",
+     "source": "iris_src/src/Graph/KG/Adjacency.cls:23-31, 86-92",
+     "note": "taken inside the row's transaction by the functional index; released at commit/rollback"
+    },
+    {
+     "lock": "unique index u_spo_graph_ekey on rdf_edges",
+     "mode": "SQL unique check (-119)",
+     "source": "iris_vector_graph/schema.py rdf_edges DDL",
+     "note": "F-0805: literal-endpoint INSERT is unguarded"
+    }
+   ],
+   "nolock": "no %NOLOCK in translator/query/store (grep count 0); reads run at the driver's default isolation",
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/08-footprints.json",
+    "run_id": "b-08-live-footprints",
+    "declared_stores": [
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_labels",
+     "sql:Graph_KG.rdf_props",
+     "sql:Graph_KG.rdf_edges",
+     "global:^KG",
+     "global:^NKG"
+    ],
+    "observed_stores": [
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_labels",
+     "sql:Graph_KG.rdf_props",
+     "sql:Graph_KG.rdf_edges",
+     "global:^KG",
+     "global:^NKG",
+     "global:^oddTSQL (IRIS SQL cache, system)"
+    ],
+    "match": true,
+    "undeclared": [],
+    "outside_txn": [
+     "$INCREMENT row-id counters ^t52S.<table>.1 (IRIS, not transactional)",
+     "iFind word dictionary ^t52S.DMCe.7(\"W\",n) of rdf_props.idx_props_val_ifind (IRIS %iFind, not transactional)",
+     "^KG(\"__version\") and ^KG(\"gen\",g,src) $INCREMENT (Adjacency.cls:23-30, 91: survive rollback by design)",
+     "^NKG(-3,src), ^NKG(\"$meta\",\"edgeCount\"|\"version\") $INCREMENT (Adjacency.cls:95-107: survive rollback; F-C0801)"
+    ],
+    "notes": "9 shapes (CREATE node, CREATE edge between literal endpoints, MERGE ON CREATE, SET+label+REMOVE, DELETE edge, DETACH DELETE, FOREACH literal list, a query failing with -119, a read) plus a caller transaction. Every row/index/^KG/^NKG write of one query is inside one outermost transaction (nested Txn_Begin levels); the failed query's net effect is empty (BitSET-aware); the read journals no write; with a caller transaction open, the failure leaves $TLEVEL 1 and the caller's row, and the caller's ROLLBACK removes everything. Declared-but-not-observed stores are may-writes not exercised (DETACH DELETE of an edgeless node; ^NKG only when built).",
+    "rerun_id": "b-08-live-footprints-rerun",
+    "rerun_log": "$RUN_DIR/breadth-b/live/08-footprints-rerun.json",
+    "rerun_matches": true
+   },
+   "notes": "Ledger strict guard checked only on the transactional SQL path (query.py:2299-2301); text shortcuts (query.py:1807-1856), DDL no-ops (1886-1897) and procedure handlers bypass translation."
+  },
+  {
+   "id": "eng:IRISGraphEngine.kg_GRAPH_PATH",
+   "role": "reader",
+   "source": "iris_vector_graph/_engine/algorithms.py:679-697",
+   "reads": {
+    "tables": [
+     "Graph_KG.nodes",
+     "Graph_KG.rdf_edges"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "all-graphs Cypher read, no graph argument (F-0820)"
+  },
+  {
+   "id": "eng:IRISGraphEngine.map_sql_relationship",
+   "role": "writer",
+   "source": "iris_vector_graph/_engine/fhir.py:147-200",
+   "reads": {
+    "tables": [
+     "Graph_KG.relationship_mappings"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [
+     "Graph_KG.relationship_mappings"
+    ],
+    "globals": []
+   },
+   "transaction": "autocommit UPDATE-or-INSERT (fhir.py:179-190)",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "no graph key"
+  },
+  {
+   "id": "eng:IRISGraphEngine.map_sql_table",
+   "role": "writer",
+   "source": "iris_vector_graph/_engine/fhir.py:88-145",
+   "reads": {
+    "tables": [
+     "Graph_KG.table_mappings"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [
+     "Graph_KG.table_mappings"
+    ],
+    "globals": []
+   },
+   "transaction": "autocommit UPDATE-or-INSERT (fhir.py:131-140)",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "namespace-wide mapping, no graph key (HD-0802); per-engine cache (fhir.py:20-70)"
+  },
+  {
+   "id": "cypher:db.labels",
+   "role": "reader",
+   "source": "iris_vector_graph/engine.py:947",
+   "reads": {
+    "tables": [
+     "Graph_KG.rdf_labels"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "namespace-wide: no graph predicate (F-0816)"
+  },
+  {
+   "id": "cypher:db.relationshiptypes",
+   "role": "reader",
+   "source": "iris_vector_graph/engine.py:948",
+   "reads": {
+    "tables": [
+     "Graph_KG.rdf_edges"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "namespace-wide: no graph predicate (F-0816)"
+  },
+  {
+   "id": "cypher:db.schema.visualization",
+   "role": "reader",
+   "source": "iris_vector_graph/engine.py:949",
+   "reads": {
+    "tables": [
+     "Graph_KG.nodes",
+     "Graph_KG.rdf_labels",
+     "Graph_KG.rdf_props",
+     "Graph_KG.rdf_edges"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "namespace-wide: no graph predicate (F-0816)"
+  },
+  {
+   "id": "cypher:db.schema.nodetypeproperties",
+   "role": "reader",
+   "source": "iris_vector_graph/engine.py:950",
+   "reads": {
+    "tables": [
+     "Graph_KG.nodes",
+     "Graph_KG.rdf_labels",
+     "Graph_KG.rdf_props",
+     "Graph_KG.rdf_edges"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "namespace-wide: no graph predicate (F-0816)"
+  },
+  {
+   "id": "cypher:db.schema.reltypeproperties",
+   "role": "reader",
+   "source": "iris_vector_graph/engine.py:951",
+   "reads": {
+    "tables": [
+     "Graph_KG.nodes",
+     "Graph_KG.rdf_labels",
+     "Graph_KG.rdf_props",
+     "Graph_KG.rdf_edges"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "namespace-wide: no graph predicate (F-0816)"
+  },
+  {
+   "id": "cypher:dbms.components",
+   "role": "pure (static answer)",
+   "source": "iris_vector_graph/engine.py:952",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": ""
+  },
+  {
+   "id": "cypher:dbms.procedures",
+   "role": "pure (static answer)",
+   "source": "iris_vector_graph/engine.py:953",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": ""
+  },
+  {
+   "id": "cypher:db.propertykeys",
+   "role": "reader",
+   "source": "iris_vector_graph/engine.py:954",
+   "reads": {
+    "tables": [
+     "Graph_KG.rdf_props"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "namespace-wide: no graph predicate (F-0816)"
+  },
+  {
+   "id": "cypher:dbms.clientconfig",
+   "role": "pure (static answer)",
+   "source": "iris_vector_graph/engine.py:955",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": ""
+  },
+  {
+   "id": "cypher:dbms.security.showcurrentuser",
+   "role": "pure (static answer)",
+   "source": "iris_vector_graph/engine.py:956",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": ""
+  },
+  {
+   "id": "cypher:dbms.showcurrentuser",
+   "role": "pure (static answer)",
+   "source": "iris_vector_graph/engine.py:957",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": ""
+  },
+  {
+   "id": "cypher:dbms.functions",
+   "role": "pure (static answer)",
+   "source": "iris_vector_graph/engine.py:958",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": ""
+  },
+  {
+   "id": "cypher:dbms.queryjmx",
+   "role": "pure (static answer)",
+   "source": "iris_vector_graph/engine.py:959",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": ""
+  },
+  {
+   "id": "cypher:apoc.meta.data",
+   "role": "reader",
+   "source": "iris_vector_graph/engine.py:960",
+   "reads": {
+    "tables": [
+     "Graph_KG.nodes",
+     "Graph_KG.rdf_labels",
+     "Graph_KG.rdf_props",
+     "Graph_KG.rdf_edges"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "namespace-wide: no graph predicate (F-0816)"
+  },
+  {
+   "id": "cypher:apoc.meta.schema",
+   "role": "reader",
+   "source": "iris_vector_graph/engine.py:961",
+   "reads": {
+    "tables": [
+     "Graph_KG.nodes",
+     "Graph_KG.rdf_labels",
+     "Graph_KG.rdf_props",
+     "Graph_KG.rdf_edges"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "namespace-wide: no graph predicate (F-0816)"
+  },
+  {
+   "id": "cypher:gds.pagerank.stream",
+   "role": "reader",
+   "source": "iris_vector_graph/engine.py:962",
+   "reads": {
+    "tables": [
+     "^NKG / ^KG via module 10 algorithms"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "refuses USE GRAPH / named-graph edges (CYP-X10.5, X10.6)"
+  },
+  {
+   "id": "cypher:gds.betweenness.stream",
+   "role": "reader",
+   "source": "iris_vector_graph/engine.py:963",
+   "reads": {
+    "tables": [
+     "^NKG / ^KG via module 10 algorithms"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "refuses USE GRAPH / named-graph edges (CYP-X10.5, X10.6)"
+  },
+  {
+   "id": "cypher:gds.shortestpath.dijkstra.stream",
+   "role": "reader",
+   "source": "iris_vector_graph/engine.py:964",
+   "reads": {
+    "tables": [
+     "^NKG / ^KG via module 10 algorithms"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "refuses USE GRAPH / named-graph edges (CYP-X10.5, X10.6)"
+  },
+  {
+   "id": "cypher:gds.shortestpath.dijkstra",
+   "role": "reader",
+   "source": "iris_vector_graph/engine.py:965",
+   "reads": {
+    "tables": [
+     "^NKG / ^KG via module 10 algorithms"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "refuses USE GRAPH / named-graph edges (CYP-X10.5, X10.6)"
+  },
+  {
+   "id": "cypher:dbms.security.auth_enabled",
+   "role": "not an entry point (dbms.clientconfig answer key)",
+   "source": "iris_vector_graph/engine.py:1504",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "inventory false positive: a configuration key string inside _proc_dbms_clientconfig"
+  },
+  {
+   "id": "cypher:dbms.jvm.heap.initial_size",
+   "role": "not an entry point (dbms.clientconfig answer key)",
+   "source": "iris_vector_graph/engine.py:1609",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "inventory false positive: a configuration key string inside _proc_dbms_clientconfig"
+  },
+  {
+   "id": "cypher:dbms.jvm.heap.max_size",
+   "role": "not an entry point (dbms.clientconfig answer key)",
+   "source": "iris_vector_graph/engine.py:1610",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "inventory false positive: a configuration key string inside _proc_dbms_clientconfig"
+  },
+  {
+   "id": "cypher:dbms.logs.native.size",
+   "role": "not an entry point (dbms.clientconfig answer key)",
+   "source": "iris_vector_graph/engine.py:1611",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "inventory false positive: a configuration key string inside _proc_dbms_clientconfig"
+  },
+  {
+   "id": "cli:ivg query",
+   "role": "caller (HTTP client to the Cypher server)",
+   "source": "iris_vector_graph/cli.py:150-150",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "as execute_cypher",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": ""
+  },
+  {
+   "id": "extra:http POST /api/cypher",
+   "role": "caller (module 16 route)",
+   "source": "iris_vector_graph/cypher_api.py:351-378",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "as execute_cypher",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "module 16 (interfaces); calls execute_cypher"
+  },
+  {
+   "id": "extra:bolt RUN",
+   "role": "caller (module 16)",
+   "source": "iris_vector_graph/bolt_server.py:575-590",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "as execute_cypher",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "module 16; calls execute_cypher"
+  },
+  {
+   "id": "extra:IVG.CypherEngine.Query",
+   "role": "caller (module 09 scope)",
+   "source": "iris_src/src/IVG/CypherEngine.cls:100-150",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "as execute_cypher",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "module 09 scope line; calls execute_cypher"
+  },
+  {
+   "id": "extra:cypher SHOW/EXPLAIN/DDL no-op",
+   "role": "reader",
+   "source": "iris_vector_graph/_engine/query.py:1873-1897",
+   "reads": {
+    "tables": [
+     "Graph_KG.nodes",
+     "Graph_KG.rdf_edges",
+     "Graph_KG.rdf_props",
+     "Graph_KG.rdf_labels"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "08"
+  },
+  {
+   "id": "extra:cypher text shortcuts",
+   "role": "reader",
+   "source": "iris_vector_graph/_engine/query.py:1807-1856",
+   "reads": {
+    "tables": [
+     "Graph_KG.nodes",
+     "Graph_KG.rdf_edges",
+     "Graph_KG.rdf_props",
+     "Graph_KG.rdf_labels"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "08"
+  },
+  {
+   "id": "extra:sql/operators.sql",
+   "role": "not deployed (HD-0803)",
+   "source": "sql/operators.sql:1-1",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": null,
+   "notes": "08 (HD-0803: shipped reference, no standard loader)"
+  },
+  {
+   "id": "extra:Graph_KG.Txn_Begin/Txn_End/Txn_Undo",
+   "role": "transaction control",
+   "source": "iris_src/src/Graph/KG/Txn.cls:1-60",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "TSTART/TCOMMIT/TROLLBACK 1 on the writing cursor's process",
+   "locks": [],
+   "nolock": "none",
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/08-footprints.json",
+    "run_id": "b-08-live-footprints",
+    "declared_stores": [
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_labels",
+     "sql:Graph_KG.rdf_props",
+     "sql:Graph_KG.rdf_edges",
+     "global:^KG",
+     "global:^NKG"
+    ],
+    "observed_stores": [
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_labels",
+     "sql:Graph_KG.rdf_props",
+     "sql:Graph_KG.rdf_edges",
+     "global:^KG",
+     "global:^NKG",
+     "global:^oddTSQL (IRIS SQL cache, system)"
+    ],
+    "match": true,
+    "undeclared": [],
+    "outside_txn": [
+     "$INCREMENT row-id counters ^t52S.<table>.1 (IRIS, not transactional)",
+     "iFind word dictionary ^t52S.DMCe.7(\"W\",n) of rdf_props.idx_props_val_ifind (IRIS %iFind, not transactional)",
+     "^KG(\"__version\") and ^KG(\"gen\",g,src) $INCREMENT (Adjacency.cls:23-30, 91: survive rollback by design)",
+     "^NKG(-3,src), ^NKG(\"$meta\",\"edgeCount\"|\"version\") $INCREMENT (Adjacency.cls:95-107: survive rollback; F-C0801)"
+    ],
+    "notes": "9 shapes (CREATE node, CREATE edge between literal endpoints, MERGE ON CREATE, SET+label+REMOVE, DELETE edge, DETACH DELETE, FOREACH literal list, a query failing with -119, a read) plus a caller transaction. Every row/index/^KG/^NKG write of one query is inside one outermost transaction (nested Txn_Begin levels); the failed query's net effect is empty (BitSET-aware); the read journals no write; with a caller transaction open, the failure leaves $TLEVEL 1 and the caller's row, and the caller's ROLLBACK removes everything. Declared-but-not-observed stores are may-writes not exercised (DETACH DELETE of an edgeless node; ^NKG only when built).",
+    "rerun_id": "b-08-live-footprints-rerun",
+    "rerun_log": "$RUN_DIR/breadth-b/live/08-footprints-rerun.json",
+    "rerun_matches": true
+   },
+   "notes": "module 03 (write txn helper); used by every Cypher write"
+  }
+ ]
+}

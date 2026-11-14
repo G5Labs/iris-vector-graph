@@ -1,0 +1,4960 @@
+{
+ "module": "11",
+ "ontology": "experiment/playbook-uplift/ontology/11-ledger.md",
+ "scope_file": "experiment/playbook-completion/models/breadth-b/tools/scope/11.json",
+ "generated_by": "experiment/playbook-completion/models/breadth-b/tools/inventory.py",
+ "counts": {
+  "entry_points": 123,
+  "by_kind": {
+   "cls": 66,
+   "engine": 2,
+   "guard-sites": 1,
+   "object": 2,
+   "py": 48,
+   "sql-dml": 2,
+   "sql-read": 2
+  },
+  "statements": 226,
+  "cells": 69,
+  "omissions": 19,
+  "cells_without_entry_point": 0
+ },
+ "entities": {
+  "ledger": {
+   "states": [
+    "never-enabled",
+    "enabled",
+    "disabled"
+   ],
+   "commands": [
+    "enable",
+    "disable",
+    "set-strict",
+    "commit",
+    "head"
+   ]
+  },
+  "retry key": {
+   "states": [
+    "free",
+    "bound"
+   ],
+   "commands": [
+    "commit-same",
+    "commit-other",
+    "commit-stale-head"
+   ]
+  },
+  "edge statement": {
+   "states": [
+    "none",
+    "recorded",
+    "unrecorded"
+   ],
+   "commands": [
+    "create-edge",
+    "upsert-edge",
+    "set-qualifier",
+    "delete-edge"
+   ]
+  },
+  "node id": {
+   "states": [
+    "absent",
+    "default-only",
+    "default-linked",
+    "named-only"
+   ],
+   "commands": [
+    "create-node",
+    "upsert-node",
+    "set-property",
+    "add-label",
+    "delete-plain",
+    "delete-detach"
+   ]
+  },
+  "caller transaction": {
+   "states": [
+    "none",
+    "holding-writes",
+    "autocommit-unwritten"
+   ],
+   "commands": [
+    "commit",
+    "enable",
+    "disable",
+    "set-strict"
+   ]
+  }
+ },
+ "omissions": [
+  "cls:Graph.KG.Ledger.NewId",
+  "cls:Graph.KG.Ledger.MetaGet",
+  "cls:Graph.KG.Ledger.ErrLimit",
+  "cls:Graph.KG.Ledger.RevisionObj",
+  "cls:Graph.KG.Ledger.StmtForTuple",
+  "cls:Graph.KG.LedgerApply.EncNull",
+  "cls:Graph.KG.LedgerApply.Rec",
+  "cls:Graph.KG.LedgerApply.IsReserved",
+  "cls:Graph.KG.LedgerApply.Run",
+  "cls:Graph.KG.LedgerApply.ParseQuals",
+  "cls:Graph.KG.LedgerApply.QualsJson",
+  "cls:Graph.KG.LedgerApply.WeightOf",
+  "cls:Graph.KG.LedgerApply.IsNumeric",
+  "cls:Graph.KG.LedgerRevision.BuildCorrelationIndex",
+  "py:iris_vector_graph/ledger/client.py:RevisionInfo.from_wire",
+  "py:iris_vector_graph/ledger/client.py:GraphLedger.__init__",
+  "py:iris_vector_graph/ledger/errors.py:ChangesetTooLargeError.__init__",
+  "py:iris_vector_graph/ledger/errors.py:ReconstructionTooLargeError.__init__",
+  "py:iris_vector_graph/schema.py:GraphSchema.ensure_ledger_index"
+ ],
+ "cells_without_entry_point": [],
+ "entry_points_in_no_cell": [
+  "cls:Graph.KG.Ledger.Count",
+  "cls:Graph.KG.Ledger.Err",
+  "cls:Graph.KG.Ledger.ErrLimit",
+  "cls:Graph.KG.Ledger.GKey",
+  "cls:Graph.KG.Ledger.LargeOut",
+  "cls:Graph.KG.Ledger.Meta",
+  "cls:Graph.KG.Ledger.MetaGet",
+  "cls:Graph.KG.Ledger.NewId",
+  "cls:Graph.KG.Ledger.NowMs",
+  "cls:Graph.KG.Ledger.PurgeAll",
+  "cls:Graph.KG.Ledger.ReadLargeOutChunk",
+  "cls:Graph.KG.Ledger.RebuildEdgeIndices",
+  "cls:Graph.KG.Ledger.RecordVerify",
+  "cls:Graph.KG.Ledger.RevisionObj",
+  "cls:Graph.KG.Ledger.RevisionResponse",
+  "cls:Graph.KG.Ledger.SeqOf",
+  "cls:Graph.KG.Ledger.StageChunk",
+  "cls:Graph.KG.Ledger.State",
+  "cls:Graph.KG.Ledger.StmtForTuple",
+  "cls:Graph.KG.Ledger.WriteRevision",
+  "cls:Graph.KG.LedgerApply.AddLabel",
+  "cls:Graph.KG.LedgerApply.ApplyAll",
+  "cls:Graph.KG.LedgerApply.Enc",
+  "cls:Graph.KG.LedgerApply.EncNull",
+  "cls:Graph.KG.LedgerApply.EnsureEndpoint",
+  "cls:Graph.KG.LedgerApply.FindEdge",
+  "cls:Graph.KG.LedgerApply.IsNumeric",
+  "cls:Graph.KG.LedgerApply.IsReserved",
+  "cls:Graph.KG.LedgerApply.NodeExists",
+  "cls:Graph.KG.LedgerApply.NodeSnapshotJson",
+  "cls:Graph.KG.LedgerApply.OpCreateTemporalEdge",
+  "cls:Graph.KG.LedgerApply.OpRemoveLabel",
+  "cls:Graph.KG.LedgerApply.OpRemoveProp",
+  "cls:Graph.KG.LedgerApply.ParseQuals",
+  "cls:Graph.KG.LedgerApply.PersistQuals",
+  "cls:Graph.KG.LedgerApply.QualsJson",
+  "cls:Graph.KG.LedgerApply.Rec",
+  "cls:Graph.KG.LedgerApply.ResolveRef",
+  "cls:Graph.KG.LedgerApply.Run",
+  "cls:Graph.KG.LedgerApply.SetProp",
+  "cls:Graph.KG.LedgerApply.TupleJson",
+  "cls:Graph.KG.LedgerApply.WeightOf",
+  "cls:Graph.KG.LedgerGenesis.Adopt",
+  "cls:Graph.KG.LedgerRevision.BuildCorrelationIndex",
+  "cls:Graph.KG.LedgerStats.Bump",
+  "cls:Graph.KG.LedgerStats.Ensure",
+  "cls:Graph.KG.LedgerStats.PropertyFor",
+  "cls:Graph.KG.SqlProcs.rebuildedgeindices",
+  "eng:IRISGraphEngine.ledger",
+  "eng:IRISGraphEngine.status[ledger]",
+  "guard:engine writers (_ledger_check call sites)",
+  "obj:Graph.KG.LedgerRevision.%DeleteId",
+  "obj:Graph.KG.LedgerRevision.%Save(existing)",
+  "py:iris_vector_graph/_engine/ledger.py:ledger_check",
+  "py:iris_vector_graph/_engine/ledger.py:ledger_strict",
+  "py:iris_vector_graph/ledger/changeset.py:Changeset.canonical_json",
+  "py:iris_vector_graph/ledger/changeset.py:Changeset.create_temporal_edge",
+  "py:iris_vector_graph/ledger/changeset.py:Changeset.fingerprint",
+  "py:iris_vector_graph/ledger/changeset.py:Changeset.remove_label",
+  "py:iris_vector_graph/ledger/changeset.py:Changeset.remove_property",
+  "py:iris_vector_graph/ledger/changeset.py:Changeset.to_wire",
+  "py:iris_vector_graph/ledger/changeset.py:Changeset.validate",
+  "py:iris_vector_graph/ledger/changeset.py:canonical_dumps",
+  "py:iris_vector_graph/ledger/client.py:GraphLedger.__init__",
+  "py:iris_vector_graph/ledger/client.py:GraphLedger.get_revision",
+  "py:iris_vector_graph/ledger/client.py:GraphLedger.history",
+  "py:iris_vector_graph/ledger/client.py:GraphLedger.meta",
+  "py:iris_vector_graph/ledger/client.py:GraphLedger.register_metrics_hook",
+  "py:iris_vector_graph/ledger/client.py:GraphLedger.stats",
+  "py:iris_vector_graph/ledger/client.py:RevisionInfo.from_wire",
+  "py:iris_vector_graph/ledger/errors.py:ChangesetOperationError.__init__",
+  "py:iris_vector_graph/ledger/errors.py:ChangesetTooLargeError.__init__",
+  "py:iris_vector_graph/ledger/errors.py:NodeNotFoundError.__init__",
+  "py:iris_vector_graph/ledger/errors.py:ReconstructionTooLargeError.__init__",
+  "py:iris_vector_graph/ledger/errors.py:StaleHeadError.__init__",
+  "py:iris_vector_graph/ledger/errors.py:from_commit_error",
+  "py:iris_vector_graph/ledger/guard.py:LedgerGuard.__init__",
+  "py:iris_vector_graph/ledger/guard.py:LedgerGuard.check_structural_write",
+  "py:iris_vector_graph/ledger/guard.py:LedgerGuard.count_rejection",
+  "py:iris_vector_graph/ledger/guard.py:LedgerGuard.is_enabled",
+  "py:iris_vector_graph/ledger/guard.py:LedgerGuard.is_strict",
+  "py:iris_vector_graph/ledger/guard.py:LedgerGuard.refresh",
+  "py:iris_vector_graph/ledger/guard.py:LedgerGuard.state",
+  "py:iris_vector_graph/ledger/replay.py:fetch_history",
+  "py:iris_vector_graph/schema.py:GraphSchema.ensure_ledger_index",
+  "sql:DELETE Graph_KG.ledger_revisions",
+  "sql:SELECT Graph_KG.ledger_revisions",
+  "sql:SELECT Graph_KG.ledger_stats",
+  "sql:UPDATE Graph_KG.ledger_revisions"
+ ],
+ "entry_points": [
+  {
+   "id": "cls:Graph.KG.Ledger.NowMs",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Ledger.cls",
+   "start": 27,
+   "end": 33,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B4.11.6"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.NewId",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Ledger.cls",
+   "start": 35,
+   "end": 38,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.State",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Ledger.cls",
+   "start": 40,
+   "end": 43,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [
+     "^IVG.Ledger"
+    ],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-D1"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.GKey",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Ledger.cls",
+   "start": 47,
+   "end": 50,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.GraphKey.Canonical",
+    "Graph.KG.GraphKey.ForLedger",
+    "Graph.KG.GraphKey.Validate"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B6.8"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.MetaGet",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Ledger.cls",
+   "start": 52,
+   "end": 59,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.Err",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Ledger.cls",
+   "start": 61,
+   "end": 70,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-D14"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.ErrLimit",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Ledger.cls",
+   "start": 72,
+   "end": 82,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.RevisionObj",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Ledger.cls",
+   "start": 85,
+   "end": 108,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.RevisionResponse",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Ledger.cls",
+   "start": 110,
+   "end": 120,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.Ledger.Err",
+    "Graph.KG.Ledger.RevisionObj"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B4.7.8",
+    "LED-B4.12"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.LargeOut",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Ledger.cls",
+   "start": 123,
+   "end": 134,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [
+     "^||IVG.LedgerOut",
+     "^||IVG.LedgerOutSeq"
+    ],
+    "globals_killed": [
+     "^||IVG.LedgerOut"
+    ],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": [
+     "$INCREMENT"
+    ]
+   },
+   "covered_by": [
+    "LED-B4.12.1"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.ReadLargeOutChunk",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Ledger.cls",
+   "start": 136,
+   "end": 139,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [
+     "^||IVG.LedgerOut"
+    ],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B4.12.1"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.Meta",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Ledger.cls",
+   "start": 143,
+   "end": 156,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.Ledger.State"
+   ],
+   "hint": {
+    "globals_written": [
+     "^IVG.Ledger"
+    ],
+    "globals_killed": [],
+    "globals_read": [
+     "^IVG.Ledger"
+    ],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B3",
+    "LED-B3.5",
+    "LED-B3.12"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.Head",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Ledger.cls",
+   "start": 158,
+   "end": 164,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.Ledger.Err",
+    "Graph.KG.Ledger.RevisionObj",
+    "Graph.KG.Ledger.RevisionResponse",
+    "Graph.KG.Ledger.State"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [
+     "^IVG.Ledger"
+    ],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B3.2",
+    "LED-B3.3",
+    "LED-B3.4",
+    "LED-B3.5"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.SeqOf",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Ledger.cls",
+   "start": 166,
+   "end": 173,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.Ledger.Err"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [
+     "^IVG.Ledger"
+    ],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B3.6"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.StmtForTuple",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Ledger.cls",
+   "start": 176,
+   "end": 179,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.GraphKey.Canonical",
+    "Graph.KG.GraphKey.ForLedger",
+    "Graph.KG.GraphKey.Validate",
+    "Graph.KG.Ledger.GKey"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [
+     "^IVG.Ledger"
+    ],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.StageChunk",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Ledger.cls",
+   "start": 181,
+   "end": 185,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [
+     "^||IVG.LedgerStage"
+    ],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B4.12.3"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.Count",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Ledger.cls",
+   "start": 187,
+   "end": 190,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.LedgerStats.Bump",
+    "Graph.KG.LedgerStats.Ensure",
+    "Graph.KG.LedgerStats.PropertyFor"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": [
+     "$TLEVEL",
+     "TCOMMIT",
+     "TROLLBACK",
+     "TSTART"
+    ]
+   },
+   "covered_by": [
+    "LED-B11.6",
+    "LED-B13.7"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.RecordVerify",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Ledger.cls",
+   "start": 192,
+   "end": 210,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.Ledger.NowMs",
+    "Graph.KG.LedgerStats.Ensure"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": [
+     "$TLEVEL",
+     "TCOMMIT",
+     "TROLLBACK",
+     "TSTART"
+    ]
+   },
+   "covered_by": [
+    "LED-B13.6"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.RebuildEdgeIndices",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Ledger.cls",
+   "start": 224,
+   "end": 239,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B15",
+    "LED-B15.1"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.PurgeAll",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Ledger.cls",
+   "start": 242,
+   "end": 248,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [
+     "^IVG.Ledger"
+    ],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B7.5"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.Enable",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Ledger.cls",
+   "start": 252,
+   "end": 329,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.GraphKey.Canonical",
+    "Graph.KG.GraphKey.ForLedger",
+    "Graph.KG.GraphKey.Validate",
+    "Graph.KG.Ledger.Err",
+    "Graph.KG.Ledger.GKey",
+    "Graph.KG.Ledger.NewId",
+    "Graph.KG.Ledger.NowMs",
+    "Graph.KG.Ledger.RevisionObj",
+    "Graph.KG.Ledger.RevisionResponse",
+    "Graph.KG.Ledger.State",
+    "Graph.KG.Ledger.WriteRevision",
+    "Graph.KG.LedgerApply.AllocStmt",
+    "Graph.KG.LedgerApply.IsReserved",
+    "Graph.KG.LedgerApply.ParseQuals",
+    "Graph.KG.LedgerApply.Rec",
+    "Graph.KG.LedgerApply.Run",
+    "Graph.KG.LedgerApply.TupleJson",
+    "Graph.KG.LedgerGenesis.Capture",
+    "Graph.KG.LedgerGenesis.TemporalMarked",
+    "Graph.KG.LedgerStats.Ensure"
+   ],
+   "hint": {
+    "globals_written": [
+     "^IVG.Ledger"
+    ],
+    "globals_killed": [],
+    "globals_read": [
+     "^IVG.Ledger"
+    ],
+    "locks": [
+     "+^IVG.Ledger",
+     "-^IVG.Ledger"
+    ],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": [
+     "$TLEVEL",
+     "LOCK-TIMEOUT",
+     "TCOMMIT",
+     "TROLLBACK",
+     "TSTART"
+    ]
+   },
+   "covered_by": [
+    "LED-D5",
+    "LED-B1",
+    "LED-B1.1",
+    "LED-B1.7",
+    "LED-B1.8",
+    "LED-B1.9",
+    "LED-B1.11",
+    "LED-B1.12",
+    "LED-B1.13",
+    "LED-B1.17",
+    "LED-B1.21",
+    "LED-B1.22",
+    "LED-B2.1",
+    "LED-B6.1"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.Disable",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Ledger.cls",
+   "start": 331,
+   "end": 358,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.Ledger.Err",
+    "Graph.KG.Ledger.NowMs",
+    "Graph.KG.Ledger.State",
+    "Graph.KG.LedgerStats.Ensure"
+   ],
+   "hint": {
+    "globals_written": [
+     "^IVG.Ledger"
+    ],
+    "globals_killed": [],
+    "globals_read": [
+     "^IVG.Ledger"
+    ],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": [
+     "$TLEVEL",
+     "TCOMMIT",
+     "TROLLBACK",
+     "TSTART"
+    ]
+   },
+   "covered_by": [
+    "LED-B1",
+    "LED-B1.14",
+    "LED-B1.15",
+    "LED-B1.16"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.SetStrict",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Ledger.cls",
+   "start": 360,
+   "end": 383,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.Ledger.Err",
+    "Graph.KG.Ledger.State",
+    "Graph.KG.LedgerStats.Ensure"
+   ],
+   "hint": {
+    "globals_written": [
+     "^IVG.Ledger"
+    ],
+    "globals_killed": [],
+    "globals_read": [
+     "^IVG.Ledger"
+    ],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": [
+     "$TLEVEL",
+     "TCOMMIT",
+     "TROLLBACK",
+     "TSTART"
+    ]
+   },
+   "covered_by": [
+    "LED-D12",
+    "LED-B2",
+    "LED-B2.1"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.Commit",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Ledger.cls",
+   "start": 397,
+   "end": 415,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.Adjacency.AssertTemporalRow",
+    "Graph.KG.Adjacency.HeldElsewhere",
+    "Graph.KG.Adjacency.IndexKind",
+    "Graph.KG.Adjacency.Indexed",
+    "Graph.KG.Adjacency.MarkGraphGone",
+    "Graph.KG.Adjacency.Put",
+    "Graph.KG.Adjacency.PutShadow",
+    "Graph.KG.Adjacency.Remove",
+    "Graph.KG.Adjacency.Reweight",
+    "Graph.KG.Adjacency.WriterLock",
+    "Graph.KG.GraphIndex.DeleteIndex",
+    "Graph.KG.GraphIndex.EmptyHLL",
+    "Graph.KG.GraphIndex.InitStructuralLabels",
+    "Graph.KG.GraphIndex.InternLabel",
+    "Graph.KG.GraphIndex.InternNode",
+    "Graph.KG.GraphIndex.UpdateStructuralHLL",
+    "Graph.KG.GraphKey.Canonical",
+    "Graph.KG.GraphKey.ForIndex",
+    "Graph.KG.GraphKey.ForLedger",
+    "Graph.KG.GraphKey.Validate",
+    "Graph.KG.Ledger.CommitInTxn",
+    "Graph.KG.Ledger.Err",
+    "Graph.KG.Ledger.ErrLimit",
+    "Graph.KG.Ledger.GKey",
+    "Graph.KG.Ledger.LargeOut",
+    "Graph.KG.Ledger.MetaGet",
+    "Graph.KG.Ledger.NewId",
+    "Graph.KG.Ledger.NowMs",
+    "Graph.KG.Ledger.RevisionObj",
+    "Graph.KG.Ledger.RevisionResponse",
+    "Graph.KG.Ledger.State",
+    "Graph.KG.Ledger.WriteRevision",
+    "Graph.KG.LedgerApply.AddLabel",
+    "Graph.KG.LedgerApply.AllocStmt",
+    "Graph.KG.LedgerApply.ApplyAll",
+    "Graph.KG.LedgerApply.DeleteNodeRows",
+    "Graph.KG.LedgerApply.DeleteRelInternal",
+    "Graph.KG.LedgerApply.Enc",
+    "Graph.KG.LedgerApply.EncNull",
+    "Graph.KG.LedgerApply.EnsureEndpoint",
+    "Graph.KG.LedgerApply.FindEdge",
+    "Graph.KG.LedgerApply.IsNumeric",
+    "Graph.KG.LedgerApply.IsReserved",
+    "Graph.KG.LedgerApply.MergeQuals",
+    "Graph.KG.LedgerApply.NodeExists",
+    "Graph.KG.LedgerApply.NodeSnapshotJson",
+    "Graph.KG.LedgerApply.OpAddLabel",
+    "Graph.KG.LedgerApply.OpCreateNode",
+    "Graph.KG.LedgerApply.OpCreateRel",
+    "Graph.KG.LedgerApply.OpCreateTemporalEdge",
+    "Graph.KG.LedgerApply.OpDeleteNode",
+    "Graph.KG.LedgerApply.OpDeleteRel",
+    "Graph.KG.LedgerApply.OpQual",
+    "Graph.KG.LedgerApply.OpRemoveLabel",
+    "Graph.KG.LedgerApply.OpRemoveProp",
+    "Graph.KG.LedgerApply.OpSetProp",
+    "Graph.KG.LedgerApply.ParseQuals",
+    "Graph.KG.LedgerApply.PersistQuals",
+    "Graph.KG.LedgerApply.QualsJson",
+    "Graph.KG.LedgerApply.Rec",
+    "Graph.KG.LedgerApply.ResolveRef",
+    "Graph.KG.LedgerApply.Run",
+    "Graph.KG.LedgerApply.SetProp",
+    "Graph.KG.LedgerApply.TupleJson",
+    "Graph.KG.LedgerApply.WeightOf",
+    "Graph.KG.LedgerGenesis.Adopt",
+    "Graph.KG.LedgerRedact.BlocksCommit",
+    "Graph.KG.LedgerRedact.HasPrefix",
+    "Graph.KG.LedgerRedact.Matches",
+    "Graph.KG.LedgerRedact.Sha256Hex",
+    "Graph.KG.LedgerRedact.TupleEnds",
+    "Graph.KG.LedgerStats.Bump",
+    "Graph.KG.LedgerStats.Ensure",
+    "Graph.KG.LedgerStats.PropertyFor",
+    "Graph.KG.TemporalIndex.HLLAdd",
+    "Graph.KG.TemporalIndex.HLLEmpty",
+    "Graph.KG.TemporalIndex.InsertEdge",
+    "Graph.KG.TemporalIndex.NoteLatest",
+    "Graph.KG.TemporalIndex.UpdateHLL",
+    "Graph.KG.TemporalIndex.WriteStores",
+    "Graph.KG.TemporalPolicy.IsStructuralKey"
+   ],
+   "hint": {
+    "globals_written": [
+     "^IVG.AdjNoLock",
+     "^IVG.Ledger",
+     "^KG",
+     "^NKG",
+     "^||IVG.AdjNoLockWarned",
+     "^||IVG.LedgerOut",
+     "^||IVG.LedgerOutSeq"
+    ],
+    "globals_killed": [
+     "^IVG.Ledger",
+     "^KG",
+     "^NKG",
+     "^||IVG.LedgerOut",
+     "^||IVG.LedgerStage"
+    ],
+    "globals_read": [
+     "^IVG.Ledger",
+     "^IVG.TemporalStructural",
+     "^KG",
+     "^NKG",
+     "^||IVG.LedgerStage",
+     "^||IVG.RedactStmt"
+    ],
+    "locks": [
+     "+^IVG.AdjW",
+     "+^IVG.Ledger",
+     "+^NKG",
+     "-^IVG.Ledger",
+     "-^NKG"
+    ],
+    "tables_written": [
+     "nodes",
+     "rdf_edges"
+    ],
+    "tables_read": [],
+    "flags": [
+     "$INCREMENT",
+     "$TLEVEL",
+     "LOCK-TIMEOUT",
+     "TCOMMIT",
+     "TROLLBACK",
+     "TSTART"
+    ]
+   },
+   "covered_by": [
+    "LED-D4",
+    "LED-B4",
+    "LED-B4.2",
+    "LED-B4.3",
+    "LED-B4.12.3",
+    "LED-B4.13",
+    "LED-B4.14",
+    "LED-B4.14.2",
+    "LED-B9.4",
+    "LED-B9.5",
+    "LED-B13.3",
+    "LED-B13.4"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.CommitInTxn",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Ledger.cls",
+   "start": 419,
+   "end": 528,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.Adjacency.AssertTemporalRow",
+    "Graph.KG.Adjacency.HeldElsewhere",
+    "Graph.KG.Adjacency.IndexKind",
+    "Graph.KG.Adjacency.Indexed",
+    "Graph.KG.Adjacency.MarkGraphGone",
+    "Graph.KG.Adjacency.Put",
+    "Graph.KG.Adjacency.PutShadow",
+    "Graph.KG.Adjacency.Remove",
+    "Graph.KG.Adjacency.Reweight",
+    "Graph.KG.Adjacency.WriterLock",
+    "Graph.KG.GraphIndex.DeleteIndex",
+    "Graph.KG.GraphIndex.EmptyHLL",
+    "Graph.KG.GraphIndex.InitStructuralLabels",
+    "Graph.KG.GraphIndex.InternLabel",
+    "Graph.KG.GraphIndex.InternNode",
+    "Graph.KG.GraphIndex.UpdateStructuralHLL",
+    "Graph.KG.GraphKey.Canonical",
+    "Graph.KG.GraphKey.ForIndex",
+    "Graph.KG.GraphKey.ForLedger",
+    "Graph.KG.GraphKey.Validate",
+    "Graph.KG.Ledger.Err",
+    "Graph.KG.Ledger.ErrLimit",
+    "Graph.KG.Ledger.GKey",
+    "Graph.KG.Ledger.MetaGet",
+    "Graph.KG.Ledger.NewId",
+    "Graph.KG.Ledger.NowMs",
+    "Graph.KG.Ledger.RevisionObj",
+    "Graph.KG.Ledger.RevisionResponse",
+    "Graph.KG.Ledger.State",
+    "Graph.KG.Ledger.WriteRevision",
+    "Graph.KG.LedgerApply.AddLabel",
+    "Graph.KG.LedgerApply.AllocStmt",
+    "Graph.KG.LedgerApply.ApplyAll",
+    "Graph.KG.LedgerApply.DeleteNodeRows",
+    "Graph.KG.LedgerApply.DeleteRelInternal",
+    "Graph.KG.LedgerApply.Enc",
+    "Graph.KG.LedgerApply.EncNull",
+    "Graph.KG.LedgerApply.EnsureEndpoint",
+    "Graph.KG.LedgerApply.FindEdge",
+    "Graph.KG.LedgerApply.IsNumeric",
+    "Graph.KG.LedgerApply.IsReserved",
+    "Graph.KG.LedgerApply.MergeQuals",
+    "Graph.KG.LedgerApply.NodeExists",
+    "Graph.KG.LedgerApply.NodeSnapshotJson",
+    "Graph.KG.LedgerApply.OpAddLabel",
+    "Graph.KG.LedgerApply.OpCreateNode",
+    "Graph.KG.LedgerApply.OpCreateRel",
+    "Graph.KG.LedgerApply.OpCreateTemporalEdge",
+    "Graph.KG.LedgerApply.OpDeleteNode",
+    "Graph.KG.LedgerApply.OpDeleteRel",
+    "Graph.KG.LedgerApply.OpQual",
+    "Graph.KG.LedgerApply.OpRemoveLabel",
+    "Graph.KG.LedgerApply.OpRemoveProp",
+    "Graph.KG.LedgerApply.OpSetProp",
+    "Graph.KG.LedgerApply.ParseQuals",
+    "Graph.KG.LedgerApply.PersistQuals",
+    "Graph.KG.LedgerApply.QualsJson",
+    "Graph.KG.LedgerApply.Rec",
+    "Graph.KG.LedgerApply.ResolveRef",
+    "Graph.KG.LedgerApply.Run",
+    "Graph.KG.LedgerApply.SetProp",
+    "Graph.KG.LedgerApply.TupleJson",
+    "Graph.KG.LedgerApply.WeightOf",
+    "Graph.KG.LedgerGenesis.Adopt",
+    "Graph.KG.LedgerRedact.BlocksCommit",
+    "Graph.KG.LedgerRedact.HasPrefix",
+    "Graph.KG.LedgerRedact.Matches",
+    "Graph.KG.LedgerRedact.Sha256Hex",
+    "Graph.KG.LedgerRedact.TupleEnds",
+    "Graph.KG.LedgerStats.Ensure",
+    "Graph.KG.TemporalIndex.HLLAdd",
+    "Graph.KG.TemporalIndex.HLLEmpty",
+    "Graph.KG.TemporalIndex.InsertEdge",
+    "Graph.KG.TemporalIndex.NoteLatest",
+    "Graph.KG.TemporalIndex.UpdateHLL",
+    "Graph.KG.TemporalIndex.WriteStores",
+    "Graph.KG.TemporalPolicy.IsStructuralKey"
+   ],
+   "hint": {
+    "globals_written": [
+     "^IVG.AdjNoLock",
+     "^IVG.Ledger",
+     "^KG",
+     "^NKG",
+     "^||IVG.AdjNoLockWarned"
+    ],
+    "globals_killed": [
+     "^IVG.Ledger",
+     "^KG",
+     "^NKG"
+    ],
+    "globals_read": [
+     "^IVG.Ledger",
+     "^IVG.TemporalStructural",
+     "^KG",
+     "^NKG",
+     "^||IVG.LedgerStage",
+     "^||IVG.RedactStmt"
+    ],
+    "locks": [
+     "+^IVG.AdjW",
+     "+^IVG.Ledger",
+     "+^NKG",
+     "-^NKG"
+    ],
+    "tables_written": [
+     "nodes",
+     "rdf_edges"
+    ],
+    "tables_read": [],
+    "flags": [
+     "$INCREMENT",
+     "LOCK-TIMEOUT"
+    ]
+   },
+   "covered_by": [
+    "LED-D3",
+    "LED-D18",
+    "LED-D19",
+    "LED-D21",
+    "LED-B1.16",
+    "LED-B3.9",
+    "LED-B4.1",
+    "LED-B4.2",
+    "LED-B4.4",
+    "LED-B4.5",
+    "LED-B4.6",
+    "LED-B4.7",
+    "LED-B4.7.1",
+    "LED-B4.7.2",
+    "LED-B4.7.4",
+    "LED-B4.7.5",
+    "LED-B4.7.6",
+    "LED-B4.7.7",
+    "LED-B4.7.8",
+    "LED-B4.7.9",
+    "LED-B4.7.10",
+    "LED-B4.7.11",
+    "LED-B4.8",
+    "LED-B4.8.1",
+    "LED-B4.8.2",
+    "LED-B4.9",
+    "LED-B4.9.1",
+    "LED-B4.9.2",
+    "LED-B4.10.5",
+    "LED-B4.11",
+    "LED-B4.11.1",
+    "LED-B4.11.2",
+    "LED-B4.12",
+    "LED-B4.12.2",
+    "LED-B4.14.4",
+    "LED-B8.11",
+    "LED-B11.4",
+    "LED-B13.3"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.WriteRevision",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Ledger.cls",
+   "start": 532,
+   "end": 567,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.Ledger.Err",
+    "Graph.KG.Ledger.NewId",
+    "Graph.KG.Ledger.NowMs",
+    "Graph.KG.LedgerStats.Ensure"
+   ],
+   "hint": {
+    "globals_written": [
+     "^IVG.Ledger"
+    ],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-D2",
+    "LED-B4.10.3",
+    "LED-B4.11",
+    "LED-B4.11.4",
+    "LED-B4.11.5",
+    "LED-B4.11.7",
+    "LED-B4.11.8",
+    "LED-B4.14",
+    "LED-B7.6",
+    "LED-B13.2",
+    "LED-B13.4"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.ApplyAll",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+   "start": 18,
+   "end": 48,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.Adjacency.AssertTemporalRow",
+    "Graph.KG.Adjacency.HeldElsewhere",
+    "Graph.KG.Adjacency.IndexKind",
+    "Graph.KG.Adjacency.Indexed",
+    "Graph.KG.Adjacency.MarkGraphGone",
+    "Graph.KG.Adjacency.Put",
+    "Graph.KG.Adjacency.PutShadow",
+    "Graph.KG.Adjacency.Remove",
+    "Graph.KG.Adjacency.Reweight",
+    "Graph.KG.Adjacency.WriterLock",
+    "Graph.KG.GraphIndex.DeleteIndex",
+    "Graph.KG.GraphIndex.EmptyHLL",
+    "Graph.KG.GraphIndex.InitStructuralLabels",
+    "Graph.KG.GraphIndex.InternLabel",
+    "Graph.KG.GraphIndex.InternNode",
+    "Graph.KG.GraphIndex.UpdateStructuralHLL",
+    "Graph.KG.GraphKey.Canonical",
+    "Graph.KG.GraphKey.ForIndex",
+    "Graph.KG.GraphKey.ForLedger",
+    "Graph.KG.GraphKey.Validate",
+    "Graph.KG.Ledger.Err",
+    "Graph.KG.Ledger.GKey",
+    "Graph.KG.Ledger.MetaGet",
+    "Graph.KG.LedgerApply.AddLabel",
+    "Graph.KG.LedgerApply.AllocStmt",
+    "Graph.KG.LedgerApply.DeleteNodeRows",
+    "Graph.KG.LedgerApply.DeleteRelInternal",
+    "Graph.KG.LedgerApply.Enc",
+    "Graph.KG.LedgerApply.EncNull",
+    "Graph.KG.LedgerApply.EnsureEndpoint",
+    "Graph.KG.LedgerApply.FindEdge",
+    "Graph.KG.LedgerApply.IsNumeric",
+    "Graph.KG.LedgerApply.IsReserved",
+    "Graph.KG.LedgerApply.MergeQuals",
+    "Graph.KG.LedgerApply.NodeExists",
+    "Graph.KG.LedgerApply.NodeSnapshotJson",
+    "Graph.KG.LedgerApply.OpAddLabel",
+    "Graph.KG.LedgerApply.OpCreateNode",
+    "Graph.KG.LedgerApply.OpCreateRel",
+    "Graph.KG.LedgerApply.OpCreateTemporalEdge",
+    "Graph.KG.LedgerApply.OpDeleteNode",
+    "Graph.KG.LedgerApply.OpDeleteRel",
+    "Graph.KG.LedgerApply.OpQual",
+    "Graph.KG.LedgerApply.OpRemoveLabel",
+    "Graph.KG.LedgerApply.OpRemoveProp",
+    "Graph.KG.LedgerApply.OpSetProp",
+    "Graph.KG.LedgerApply.ParseQuals",
+    "Graph.KG.LedgerApply.PersistQuals",
+    "Graph.KG.LedgerApply.QualsJson",
+    "Graph.KG.LedgerApply.Rec",
+    "Graph.KG.LedgerApply.ResolveRef",
+    "Graph.KG.LedgerApply.Run",
+    "Graph.KG.LedgerApply.SetProp",
+    "Graph.KG.LedgerApply.TupleJson",
+    "Graph.KG.LedgerApply.WeightOf",
+    "Graph.KG.TemporalIndex.HLLAdd",
+    "Graph.KG.TemporalIndex.HLLEmpty",
+    "Graph.KG.TemporalIndex.InsertEdge",
+    "Graph.KG.TemporalIndex.NoteLatest",
+    "Graph.KG.TemporalIndex.UpdateHLL",
+    "Graph.KG.TemporalIndex.WriteStores",
+    "Graph.KG.TemporalPolicy.IsStructuralKey"
+   ],
+   "hint": {
+    "globals_written": [
+     "^IVG.AdjNoLock",
+     "^IVG.Ledger",
+     "^KG",
+     "^NKG",
+     "^||IVG.AdjNoLockWarned"
+    ],
+    "globals_killed": [
+     "^IVG.Ledger",
+     "^KG",
+     "^NKG"
+    ],
+    "globals_read": [
+     "^IVG.Ledger",
+     "^IVG.TemporalStructural",
+     "^KG",
+     "^NKG"
+    ],
+    "locks": [
+     "+^IVG.AdjW",
+     "+^NKG",
+     "-^NKG"
+    ],
+    "tables_written": [
+     "nodes",
+     "rdf_edges"
+    ],
+    "tables_read": [],
+    "flags": [
+     "$INCREMENT",
+     "LOCK-TIMEOUT"
+    ]
+   },
+   "covered_by": [
+    "LED-B4.10",
+    "LED-B5",
+    "LED-B8.12"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.Enc",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+   "start": 52,
+   "end": 55,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B4.10.4"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.EncNull",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+   "start": 57,
+   "end": 60,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.Rec",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+   "start": 62,
+   "end": 66,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.IsReserved",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+   "start": 68,
+   "end": 71,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.Run",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+   "start": 74,
+   "end": 77,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.NodeExists",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+   "start": 79,
+   "end": 84,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.LedgerApply.Run"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B5.2"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.EnsureEndpoint",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+   "start": 97,
+   "end": 110,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.LedgerApply.Run"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B5.19"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.TupleJson",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+   "start": 112,
+   "end": 120,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-D8"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.ParseQuals",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+   "start": 123,
+   "end": 141,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.FindEdge",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+   "start": 144,
+   "end": 157,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.LedgerApply.ParseQuals",
+    "Graph.KG.LedgerApply.Run"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B6.9"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.AllocStmt",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+   "start": 160,
+   "end": 169,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.GraphKey.Canonical",
+    "Graph.KG.GraphKey.ForLedger",
+    "Graph.KG.GraphKey.Validate",
+    "Graph.KG.Ledger.GKey"
+   ],
+   "hint": {
+    "globals_written": [
+     "^IVG.Ledger"
+    ],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-D7",
+    "LED-B4.14.4",
+    "LED-B6",
+    "LED-B6.1",
+    "LED-B6.2",
+    "LED-B6.9"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.ResolveRef",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+   "start": 173,
+   "end": 211,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.GraphKey.Canonical",
+    "Graph.KG.GraphKey.ForLedger",
+    "Graph.KG.GraphKey.Validate",
+    "Graph.KG.Ledger.GKey",
+    "Graph.KG.Ledger.MetaGet",
+    "Graph.KG.LedgerApply.AllocStmt",
+    "Graph.KG.LedgerApply.FindEdge",
+    "Graph.KG.LedgerApply.ParseQuals",
+    "Graph.KG.LedgerApply.Run"
+   ],
+   "hint": {
+    "globals_written": [
+     "^IVG.Ledger"
+    ],
+    "globals_killed": [],
+    "globals_read": [
+     "^IVG.Ledger"
+    ],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B5.12",
+    "LED-B5.27",
+    "LED-B6.5",
+    "LED-B6.6",
+    "LED-B6.7"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.OpCreateNode",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+   "start": 215,
+   "end": 250,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.Ledger.MetaGet",
+    "Graph.KG.LedgerApply.AddLabel",
+    "Graph.KG.LedgerApply.Enc",
+    "Graph.KG.LedgerApply.EncNull",
+    "Graph.KG.LedgerApply.IsReserved",
+    "Graph.KG.LedgerApply.NodeExists",
+    "Graph.KG.LedgerApply.Rec",
+    "Graph.KG.LedgerApply.Run",
+    "Graph.KG.LedgerApply.SetProp"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B5.4",
+    "LED-B5.5",
+    "LED-B5.6",
+    "LED-B5.12"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.AddLabel",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+   "start": 253,
+   "end": 263,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.LedgerApply.Enc",
+    "Graph.KG.LedgerApply.EncNull",
+    "Graph.KG.LedgerApply.Rec",
+    "Graph.KG.LedgerApply.Run"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B4.10.2",
+    "LED-B5.1",
+    "LED-B5.7"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.SetProp",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+   "start": 266,
+   "end": 284,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.LedgerApply.Enc",
+    "Graph.KG.LedgerApply.EncNull",
+    "Graph.KG.LedgerApply.IsReserved",
+    "Graph.KG.LedgerApply.Rec",
+    "Graph.KG.LedgerApply.Run"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B4.10.1",
+    "LED-B4.10.2",
+    "LED-B5.1",
+    "LED-B5.6",
+    "LED-B5.9"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.OpAddLabel",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+   "start": 286,
+   "end": 292,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.Ledger.MetaGet",
+    "Graph.KG.LedgerApply.AddLabel",
+    "Graph.KG.LedgerApply.Enc",
+    "Graph.KG.LedgerApply.EncNull",
+    "Graph.KG.LedgerApply.NodeExists",
+    "Graph.KG.LedgerApply.Rec",
+    "Graph.KG.LedgerApply.Run"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B5.1",
+    "LED-B5.7",
+    "LED-B5.11"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.OpRemoveLabel",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+   "start": 294,
+   "end": 307,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.Ledger.MetaGet",
+    "Graph.KG.LedgerApply.Enc",
+    "Graph.KG.LedgerApply.EncNull",
+    "Graph.KG.LedgerApply.NodeExists",
+    "Graph.KG.LedgerApply.Rec",
+    "Graph.KG.LedgerApply.Run"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B5.1",
+    "LED-B5.8"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.OpSetProp",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+   "start": 309,
+   "end": 317,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.Ledger.MetaGet",
+    "Graph.KG.LedgerApply.Enc",
+    "Graph.KG.LedgerApply.EncNull",
+    "Graph.KG.LedgerApply.IsReserved",
+    "Graph.KG.LedgerApply.NodeExists",
+    "Graph.KG.LedgerApply.Rec",
+    "Graph.KG.LedgerApply.Run",
+    "Graph.KG.LedgerApply.SetProp"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B5.1",
+    "LED-B5.9"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.OpRemoveProp",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+   "start": 319,
+   "end": 334,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.Ledger.MetaGet",
+    "Graph.KG.LedgerApply.Enc",
+    "Graph.KG.LedgerApply.EncNull",
+    "Graph.KG.LedgerApply.IsReserved",
+    "Graph.KG.LedgerApply.NodeExists",
+    "Graph.KG.LedgerApply.Rec",
+    "Graph.KG.LedgerApply.Run"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B5.1",
+    "LED-B5.10"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.NodeSnapshotJson",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+   "start": 337,
+   "end": 351,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.LedgerApply.IsReserved",
+    "Graph.KG.LedgerApply.Run"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B5.1",
+    "LED-B5.15"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.DeleteNodeRows",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+   "start": 354,
+   "end": 371,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.LedgerApply.Enc",
+    "Graph.KG.LedgerApply.EncNull",
+    "Graph.KG.LedgerApply.IsReserved",
+    "Graph.KG.LedgerApply.NodeSnapshotJson",
+    "Graph.KG.LedgerApply.Rec",
+    "Graph.KG.LedgerApply.Run"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B5.1",
+    "LED-B5.3",
+    "LED-B5.15",
+    "LED-B5.16",
+    "LED-B12.1"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.OpDeleteNode",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+   "start": 374,
+   "end": 416,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.Adjacency.HeldElsewhere",
+    "Graph.KG.Adjacency.MarkGraphGone",
+    "Graph.KG.Adjacency.Remove",
+    "Graph.KG.Adjacency.WriterLock",
+    "Graph.KG.GraphIndex.DeleteIndex",
+    "Graph.KG.GraphKey.Canonical",
+    "Graph.KG.GraphKey.ForIndex",
+    "Graph.KG.GraphKey.ForLedger",
+    "Graph.KG.GraphKey.Validate",
+    "Graph.KG.Ledger.GKey",
+    "Graph.KG.Ledger.MetaGet",
+    "Graph.KG.LedgerApply.AllocStmt",
+    "Graph.KG.LedgerApply.DeleteNodeRows",
+    "Graph.KG.LedgerApply.DeleteRelInternal",
+    "Graph.KG.LedgerApply.Enc",
+    "Graph.KG.LedgerApply.EncNull",
+    "Graph.KG.LedgerApply.IsReserved",
+    "Graph.KG.LedgerApply.NodeExists",
+    "Graph.KG.LedgerApply.NodeSnapshotJson",
+    "Graph.KG.LedgerApply.ParseQuals",
+    "Graph.KG.LedgerApply.QualsJson",
+    "Graph.KG.LedgerApply.Rec",
+    "Graph.KG.LedgerApply.Run"
+   ],
+   "hint": {
+    "globals_written": [
+     "^IVG.AdjNoLock",
+     "^IVG.Ledger",
+     "^KG",
+     "^NKG",
+     "^||IVG.AdjNoLockWarned"
+    ],
+    "globals_killed": [
+     "^IVG.Ledger",
+     "^KG",
+     "^NKG"
+    ],
+    "globals_read": [
+     "^IVG.Ledger",
+     "^KG",
+     "^NKG"
+    ],
+    "locks": [
+     "+^IVG.AdjW"
+    ],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": [
+     "$INCREMENT",
+     "LOCK-TIMEOUT"
+    ]
+   },
+   "covered_by": [
+    "LED-B5.3",
+    "LED-B5.13",
+    "LED-B5.14",
+    "LED-B6.6"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.QualsJson",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+   "start": 420,
+   "end": 434,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.WeightOf",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+   "start": 436,
+   "end": 443,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.IsNumeric",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+   "start": 445,
+   "end": 448,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.OpCreateRel",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+   "start": 450,
+   "end": 528,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.Adjacency.IndexKind",
+    "Graph.KG.Adjacency.Indexed",
+    "Graph.KG.Adjacency.Put",
+    "Graph.KG.Adjacency.Reweight",
+    "Graph.KG.Adjacency.WriterLock",
+    "Graph.KG.GraphIndex.EmptyHLL",
+    "Graph.KG.GraphIndex.InitStructuralLabels",
+    "Graph.KG.GraphIndex.InternLabel",
+    "Graph.KG.GraphIndex.InternNode",
+    "Graph.KG.GraphIndex.UpdateStructuralHLL",
+    "Graph.KG.GraphKey.Canonical",
+    "Graph.KG.GraphKey.ForIndex",
+    "Graph.KG.GraphKey.ForLedger",
+    "Graph.KG.GraphKey.Validate",
+    "Graph.KG.Ledger.GKey",
+    "Graph.KG.Ledger.MetaGet",
+    "Graph.KG.LedgerApply.AllocStmt",
+    "Graph.KG.LedgerApply.Enc",
+    "Graph.KG.LedgerApply.EncNull",
+    "Graph.KG.LedgerApply.EnsureEndpoint",
+    "Graph.KG.LedgerApply.FindEdge",
+    "Graph.KG.LedgerApply.IsNumeric",
+    "Graph.KG.LedgerApply.MergeQuals",
+    "Graph.KG.LedgerApply.NodeExists",
+    "Graph.KG.LedgerApply.ParseQuals",
+    "Graph.KG.LedgerApply.PersistQuals",
+    "Graph.KG.LedgerApply.QualsJson",
+    "Graph.KG.LedgerApply.Rec",
+    "Graph.KG.LedgerApply.Run",
+    "Graph.KG.LedgerApply.TupleJson",
+    "Graph.KG.LedgerApply.WeightOf"
+   ],
+   "hint": {
+    "globals_written": [
+     "^IVG.AdjNoLock",
+     "^IVG.Ledger",
+     "^KG",
+     "^NKG",
+     "^||IVG.AdjNoLockWarned"
+    ],
+    "globals_killed": [
+     "^NKG"
+    ],
+    "globals_read": [
+     "^IVG.Ledger",
+     "^KG"
+    ],
+    "locks": [
+     "+^IVG.AdjW",
+     "+^NKG",
+     "-^NKG"
+    ],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": [
+     "$INCREMENT",
+     "LOCK-TIMEOUT"
+    ]
+   },
+   "covered_by": [
+    "LED-B4.14.1",
+    "LED-B5.11",
+    "LED-B5.12",
+    "LED-B5.17",
+    "LED-B5.18",
+    "LED-B5.19",
+    "LED-B5.20",
+    "LED-B5.21",
+    "LED-B5.22",
+    "LED-B6.4",
+    "LED-B6.6"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.MergeQuals",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+   "start": 531,
+   "end": 550,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.Adjacency.Reweight",
+    "Graph.KG.GraphKey.Canonical",
+    "Graph.KG.GraphKey.ForIndex",
+    "Graph.KG.GraphKey.Validate",
+    "Graph.KG.LedgerApply.Enc",
+    "Graph.KG.LedgerApply.EncNull",
+    "Graph.KG.LedgerApply.PersistQuals",
+    "Graph.KG.LedgerApply.QualsJson",
+    "Graph.KG.LedgerApply.Rec",
+    "Graph.KG.LedgerApply.Run",
+    "Graph.KG.LedgerApply.WeightOf"
+   ],
+   "hint": {
+    "globals_written": [
+     "^KG"
+    ],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": [
+     "$INCREMENT"
+    ]
+   },
+   "covered_by": [
+    "LED-B4.10.2"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.PersistQuals",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+   "start": 552,
+   "end": 565,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.Adjacency.Reweight",
+    "Graph.KG.GraphKey.Canonical",
+    "Graph.KG.GraphKey.ForIndex",
+    "Graph.KG.GraphKey.Validate",
+    "Graph.KG.LedgerApply.QualsJson",
+    "Graph.KG.LedgerApply.Run",
+    "Graph.KG.LedgerApply.WeightOf"
+   ],
+   "hint": {
+    "globals_written": [
+     "^KG"
+    ],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": [
+     "$INCREMENT"
+    ]
+   },
+   "covered_by": [
+    "LED-B4.14.1",
+    "LED-B5.28"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.OpQual",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+   "start": 567,
+   "end": 611,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.Adjacency.Reweight",
+    "Graph.KG.GraphKey.Canonical",
+    "Graph.KG.GraphKey.ForIndex",
+    "Graph.KG.GraphKey.ForLedger",
+    "Graph.KG.GraphKey.Validate",
+    "Graph.KG.Ledger.GKey",
+    "Graph.KG.Ledger.MetaGet",
+    "Graph.KG.LedgerApply.AllocStmt",
+    "Graph.KG.LedgerApply.Enc",
+    "Graph.KG.LedgerApply.EncNull",
+    "Graph.KG.LedgerApply.FindEdge",
+    "Graph.KG.LedgerApply.IsNumeric",
+    "Graph.KG.LedgerApply.MergeQuals",
+    "Graph.KG.LedgerApply.ParseQuals",
+    "Graph.KG.LedgerApply.PersistQuals",
+    "Graph.KG.LedgerApply.QualsJson",
+    "Graph.KG.LedgerApply.Rec",
+    "Graph.KG.LedgerApply.ResolveRef",
+    "Graph.KG.LedgerApply.Run",
+    "Graph.KG.LedgerApply.WeightOf"
+   ],
+   "hint": {
+    "globals_written": [
+     "^IVG.Ledger",
+     "^KG"
+    ],
+    "globals_killed": [],
+    "globals_read": [
+     "^IVG.Ledger"
+    ],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": [
+     "$INCREMENT"
+    ]
+   },
+   "covered_by": [
+    "LED-B5.21",
+    "LED-B5.25",
+    "LED-B5.26"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.OpCreateTemporalEdge",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+   "start": 617,
+   "end": 641,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.Adjacency.AssertTemporalRow",
+    "Graph.KG.Adjacency.IndexKind",
+    "Graph.KG.Adjacency.Indexed",
+    "Graph.KG.Adjacency.PutShadow",
+    "Graph.KG.Adjacency.WriterLock",
+    "Graph.KG.GraphKey.Canonical",
+    "Graph.KG.GraphKey.ForIndex",
+    "Graph.KG.GraphKey.Validate",
+    "Graph.KG.Ledger.MetaGet",
+    "Graph.KG.LedgerApply.Enc",
+    "Graph.KG.LedgerApply.EncNull",
+    "Graph.KG.LedgerApply.Rec",
+    "Graph.KG.LedgerApply.TupleJson",
+    "Graph.KG.TemporalIndex.HLLAdd",
+    "Graph.KG.TemporalIndex.HLLEmpty",
+    "Graph.KG.TemporalIndex.InsertEdge",
+    "Graph.KG.TemporalIndex.NoteLatest",
+    "Graph.KG.TemporalIndex.UpdateHLL",
+    "Graph.KG.TemporalIndex.WriteStores",
+    "Graph.KG.TemporalPolicy.IsStructuralKey"
+   ],
+   "hint": {
+    "globals_written": [
+     "^IVG.AdjNoLock",
+     "^KG",
+     "^||IVG.AdjNoLockWarned"
+    ],
+    "globals_killed": [
+     "^KG"
+    ],
+    "globals_read": [
+     "^IVG.TemporalStructural",
+     "^KG"
+    ],
+    "locks": [
+     "+^IVG.AdjW"
+    ],
+    "tables_written": [
+     "nodes",
+     "rdf_edges"
+    ],
+    "tables_read": [],
+    "flags": [
+     "$INCREMENT",
+     "LOCK-TIMEOUT"
+    ]
+   },
+   "covered_by": [
+    "LED-B5.29",
+    "LED-B5.31"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.OpDeleteRel",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+   "start": 643,
+   "end": 648,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.Adjacency.HeldElsewhere",
+    "Graph.KG.Adjacency.MarkGraphGone",
+    "Graph.KG.Adjacency.Remove",
+    "Graph.KG.Adjacency.WriterLock",
+    "Graph.KG.GraphIndex.DeleteIndex",
+    "Graph.KG.GraphKey.Canonical",
+    "Graph.KG.GraphKey.ForIndex",
+    "Graph.KG.GraphKey.ForLedger",
+    "Graph.KG.GraphKey.Validate",
+    "Graph.KG.Ledger.GKey",
+    "Graph.KG.Ledger.MetaGet",
+    "Graph.KG.LedgerApply.AllocStmt",
+    "Graph.KG.LedgerApply.DeleteNodeRows",
+    "Graph.KG.LedgerApply.DeleteRelInternal",
+    "Graph.KG.LedgerApply.Enc",
+    "Graph.KG.LedgerApply.EncNull",
+    "Graph.KG.LedgerApply.FindEdge",
+    "Graph.KG.LedgerApply.IsReserved",
+    "Graph.KG.LedgerApply.NodeExists",
+    "Graph.KG.LedgerApply.NodeSnapshotJson",
+    "Graph.KG.LedgerApply.ParseQuals",
+    "Graph.KG.LedgerApply.QualsJson",
+    "Graph.KG.LedgerApply.Rec",
+    "Graph.KG.LedgerApply.ResolveRef",
+    "Graph.KG.LedgerApply.Run"
+   ],
+   "hint": {
+    "globals_written": [
+     "^IVG.AdjNoLock",
+     "^IVG.Ledger",
+     "^KG",
+     "^NKG",
+     "^||IVG.AdjNoLockWarned"
+    ],
+    "globals_killed": [
+     "^IVG.Ledger",
+     "^KG",
+     "^NKG"
+    ],
+    "globals_read": [
+     "^IVG.Ledger",
+     "^KG",
+     "^NKG"
+    ],
+    "locks": [
+     "+^IVG.AdjW"
+    ],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": [
+     "$INCREMENT",
+     "LOCK-TIMEOUT"
+    ]
+   },
+   "covered_by": [
+    "LED-B5.23"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.DeleteRelInternal",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+   "start": 652,
+   "end": 693,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.Adjacency.HeldElsewhere",
+    "Graph.KG.Adjacency.MarkGraphGone",
+    "Graph.KG.Adjacency.Remove",
+    "Graph.KG.Adjacency.WriterLock",
+    "Graph.KG.GraphIndex.DeleteIndex",
+    "Graph.KG.GraphKey.Canonical",
+    "Graph.KG.GraphKey.ForIndex",
+    "Graph.KG.GraphKey.ForLedger",
+    "Graph.KG.GraphKey.Validate",
+    "Graph.KG.Ledger.GKey",
+    "Graph.KG.LedgerApply.DeleteNodeRows",
+    "Graph.KG.LedgerApply.Enc",
+    "Graph.KG.LedgerApply.EncNull",
+    "Graph.KG.LedgerApply.IsReserved",
+    "Graph.KG.LedgerApply.NodeExists",
+    "Graph.KG.LedgerApply.NodeSnapshotJson",
+    "Graph.KG.LedgerApply.QualsJson",
+    "Graph.KG.LedgerApply.Rec",
+    "Graph.KG.LedgerApply.Run"
+   ],
+   "hint": {
+    "globals_written": [
+     "^IVG.AdjNoLock",
+     "^IVG.Ledger",
+     "^KG",
+     "^NKG",
+     "^||IVG.AdjNoLockWarned"
+    ],
+    "globals_killed": [
+     "^IVG.Ledger",
+     "^KG",
+     "^NKG"
+    ],
+    "globals_read": [
+     "^KG",
+     "^NKG"
+    ],
+    "locks": [
+     "+^IVG.AdjW"
+    ],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": [
+     "$INCREMENT",
+     "LOCK-TIMEOUT"
+    ]
+   },
+   "covered_by": [
+    "LED-B4.14.1",
+    "LED-B5.23",
+    "LED-B5.24",
+    "LED-B6.3"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.LedgerGenesis.Capture",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/LedgerGenesis.cls",
+   "start": 14,
+   "end": 60,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.GraphKey.Canonical",
+    "Graph.KG.GraphKey.ForLedger",
+    "Graph.KG.GraphKey.Validate",
+    "Graph.KG.Ledger.Err",
+    "Graph.KG.Ledger.GKey",
+    "Graph.KG.LedgerApply.AllocStmt",
+    "Graph.KG.LedgerApply.IsReserved",
+    "Graph.KG.LedgerApply.ParseQuals",
+    "Graph.KG.LedgerApply.Rec",
+    "Graph.KG.LedgerApply.Run",
+    "Graph.KG.LedgerApply.TupleJson",
+    "Graph.KG.LedgerGenesis.TemporalMarked"
+   ],
+   "hint": {
+    "globals_written": [
+     "^IVG.Ledger"
+    ],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-D9",
+    "LED-B1.2",
+    "LED-B1.3",
+    "LED-B1.4",
+    "LED-B1.6",
+    "LED-B6.9",
+    "LED-B12.2"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.LedgerGenesis.Adopt",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/LedgerGenesis.cls",
+   "start": 82,
+   "end": 129,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.GraphKey.Canonical",
+    "Graph.KG.GraphKey.ForLedger",
+    "Graph.KG.GraphKey.Validate",
+    "Graph.KG.Ledger.Err",
+    "Graph.KG.Ledger.GKey",
+    "Graph.KG.Ledger.MetaGet",
+    "Graph.KG.LedgerApply.AllocStmt",
+    "Graph.KG.LedgerApply.Rec"
+   ],
+   "hint": {
+    "globals_written": [
+     "^IVG.Ledger"
+    ],
+    "globals_killed": [
+     "^IVG.Ledger"
+    ],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-D11",
+    "LED-B1.19",
+    "LED-B1.20"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.LedgerStats.Ensure",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/LedgerStats.cls",
+   "start": 51,
+   "end": 61,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-D16",
+    "LED-B13",
+    "LED-B13.4",
+    "LED-P3"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.LedgerStats.Bump",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/LedgerStats.cls",
+   "start": 65,
+   "end": 88,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.LedgerStats.Ensure",
+    "Graph.KG.LedgerStats.PropertyFor"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": [
+     "$TLEVEL",
+     "TCOMMIT",
+     "TROLLBACK",
+     "TSTART"
+    ]
+   },
+   "covered_by": [
+    "LED-B4.14.2",
+    "LED-B13.4"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.LedgerStats.PropertyFor",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/LedgerStats.cls",
+   "start": 91,
+   "end": 104,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B13.7"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.LedgerRevision.BuildCorrelationIndex",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/LedgerRevision.cls",
+   "start": 65,
+   "end": 75,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.SqlProcs.rebuildedgeindices",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/SqlProcs.cls",
+   "start": 200,
+   "end": 203,
+   "sqlproc": true,
+   "sqlname": "rebuild_edge_indices",
+   "callees": [
+    "Graph.KG.Ledger.RebuildEdgeIndices"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B15"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/client.py:RevisionInfo.from_wire",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/client.py",
+   "start": 56,
+   "end": 77,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/client.py:GraphLedger.__init__",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/client.py",
+   "start": 227,
+   "end": 229,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/client.py:GraphLedger.enable",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/client.py",
+   "start": 281,
+   "end": 297,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B1",
+    "LED-B1.1",
+    "LED-B1.10",
+    "LED-B1.12",
+    "LED-B1.13",
+    "LED-Q1",
+    "LED-B1.18",
+    "LED-B1.21",
+    "LED-B1.22",
+    "LED-B2.1",
+    "LED-Q3",
+    "LED-B11.2"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/client.py:GraphLedger.disable",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/client.py",
+   "start": 299,
+   "end": 303,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B1",
+    "LED-B1.16",
+    "LED-B1.22",
+    "LED-B9.9",
+    "LED-Q3",
+    "LED-B11.2"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/client.py:GraphLedger.set_strict",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/client.py",
+   "start": 305,
+   "end": 309,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B1.22",
+    "LED-B2",
+    "LED-B9.9"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/client.py:GraphLedger.meta",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/client.py",
+   "start": 311,
+   "end": 312,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-0",
+    "LED-D1",
+    "LED-D12",
+    "LED-B2",
+    "LED-B3",
+    "LED-B3.12",
+    "LED-B4.7.7",
+    "LED-B4.12.2",
+    "LED-B13"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/client.py:GraphLedger.head",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/client.py",
+   "start": 314,
+   "end": 318,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-0",
+    "LED-D2",
+    "LED-D3",
+    "LED-D14",
+    "LED-D18",
+    "LED-B1.8",
+    "LED-B1.11",
+    "LED-B1.12",
+    "LED-B1.16",
+    "LED-B1.17",
+    "LED-B1.20",
+    "LED-B2",
+    "LED-B3",
+    "LED-B3.2",
+    "LED-B3.5",
+    "LED-B4",
+    "LED-B4.1",
+    "LED-B4.2",
+    "LED-B4.3",
+    "LED-B4.4",
+    "LED-B4.7.1",
+    "LED-B4.7.2",
+    "LED-B4.7.3",
+    "LED-B4.7.5",
+    "LED-B4.7.6",
+    "LED-B4.8",
+    "LED-B4.8.1",
+    "LED-B4.8.2",
+    "LED-B4.11",
+    "LED-B4.11.1",
+    "LED-B4.14",
+    "LED-B4.14.2",
+    "LED-B4.14.3",
+    "LED-B4.14.4",
+    "LED-B6.1",
+    "LED-B8",
+    "LED-B9.4",
+    "LED-B13",
+    "LED-B13.8",
+    "LED-B14.1"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/client.py",
+   "start": 381,
+   "end": 400,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": [
+     "TSTART",
+     "write_txn"
+    ]
+   },
+   "covered_by": [
+    "LED-D4",
+    "LED-D10",
+    "LED-D20",
+    "LED-D21",
+    "LED-B1.16",
+    "LED-B1.20",
+    "LED-B4",
+    "LED-B4.1",
+    "LED-B4.2",
+    "LED-B4.3",
+    "LED-B4.4",
+    "LED-B4.5",
+    "LED-B4.6",
+    "LED-B4.7.3",
+    "LED-B4.7.4",
+    "LED-B4.7.6",
+    "LED-B4.7.8",
+    "LED-B4.7.10",
+    "LED-B4.8",
+    "LED-B4.8.2",
+    "LED-B4.9.2",
+    "LED-B4.10",
+    "LED-B4.10.5",
+    "LED-B4.11",
+    "LED-B4.11.8",
+    "LED-B4.12",
+    "LED-B4.12.3",
+    "LED-B4.13",
+    "LED-B4.14",
+    "LED-B4.14.3",
+    "LED-B5.6",
+    "LED-B5.12",
+    "LED-B5.29",
+    "LED-B6.2",
+    "LED-B8.4",
+    "LED-B8.11",
+    "LED-B9",
+    "LED-B9.1",
+    "LED-B9.2",
+    "LED-B9.3",
+    "LED-B9.5",
+    "LED-B9.6",
+    "LED-B9.7",
+    "LED-B9.8",
+    "LED-B10",
+    "LED-B10.1",
+    "LED-B10.2",
+    "LED-B10.3",
+    "LED-B10.4",
+    "LED-Q5",
+    "LED-B10.5",
+    "LED-B12.4",
+    "LED-B12.5",
+    "LED-B13",
+    "LED-B13.2"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/client.py:GraphLedger.register_metrics_hook",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/client.py",
+   "start": 505,
+   "end": 506,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B9.7"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/client.py:GraphLedger.stats",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/client.py",
+   "start": 542,
+   "end": 575,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-D16",
+    "LED-B1.7",
+    "LED-B1.14",
+    "LED-B2",
+    "LED-B4.5",
+    "LED-B4.11",
+    "LED-B7.7",
+    "LED-B11.6",
+    "LED-B13",
+    "LED-B13.5",
+    "LED-B13.6"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/client.py:GraphLedger.history",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/client.py",
+   "start": 585,
+   "end": 629,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B1.14",
+    "LED-B3.7",
+    "LED-B3.9",
+    "LED-B3.11",
+    "LED-B4.7.11",
+    "LED-B4.10.5",
+    "LED-B4.14.4",
+    "LED-B7.4",
+    "LED-B7.6",
+    "LED-B12.5",
+    "LED-B14.8"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/client.py:GraphLedger.get_revision",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/client.py",
+   "start": 695,
+   "end": 704,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B3.11"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/changeset.py:Changeset.create_node",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/changeset.py",
+   "start": 122,
+   "end": 135,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B5",
+    "LED-B5.4"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/changeset.py:Changeset.upsert_node",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/changeset.py",
+   "start": 137,
+   "end": 150,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B5"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/changeset.py:Changeset.delete_node",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/changeset.py",
+   "start": 159,
+   "end": 163,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B5",
+    "LED-B5.3",
+    "LED-B5.13"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/changeset.py:Changeset.add_label",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/changeset.py",
+   "start": 165,
+   "end": 167,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B5",
+    "LED-B5.4"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/changeset.py:Changeset.remove_label",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/changeset.py",
+   "start": 169,
+   "end": 171,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B5"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/changeset.py:Changeset.set_property",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/changeset.py",
+   "start": 173,
+   "end": 184,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B5"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/changeset.py:Changeset.remove_property",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/changeset.py",
+   "start": 186,
+   "end": 190,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B5"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/changeset.py:Changeset.create_relationship",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/changeset.py",
+   "start": 197,
+   "end": 217,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B5",
+    "LED-B8.8",
+    "LED-B8.10"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/changeset.py:Changeset.upsert_relationship",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/changeset.py",
+   "start": 219,
+   "end": 234,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B5",
+    "LED-B8.8",
+    "LED-B8.10"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/changeset.py:Changeset.delete_relationship",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/changeset.py",
+   "start": 236,
+   "end": 240,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B5"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/changeset.py:Changeset.set_qualifier",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/changeset.py",
+   "start": 242,
+   "end": 261,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B5"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/changeset.py:Changeset.replace_qualifiers",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/changeset.py",
+   "start": 263,
+   "end": 278,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B5"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/changeset.py:Changeset.remove_qualifier",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/changeset.py",
+   "start": 280,
+   "end": 286,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B5"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/changeset.py:Changeset.validate",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/changeset.py",
+   "start": 290,
+   "end": 305,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B5",
+    "LED-B8.4"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/changeset.py:Changeset.create_temporal_edge",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/changeset.py",
+   "start": 309,
+   "end": 345,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": [
+     "TSTART"
+    ]
+   },
+   "covered_by": [
+    "LED-B5",
+    "LED-B8.12",
+    "LED-B12.1"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/changeset.py:Changeset.to_wire",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/changeset.py",
+   "start": 347,
+   "end": 360,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B8.11"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/changeset.py:Changeset.canonical_json",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/changeset.py",
+   "start": 362,
+   "end": 363,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B8.5"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/changeset.py:Changeset.fingerprint",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/changeset.py",
+   "start": 365,
+   "end": 385,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-D17",
+    "LED-B4.7",
+    "LED-B4.7.1",
+    "LED-B4.7.3",
+    "LED-B4.7.7",
+    "LED-P4",
+    "LED-B8.6",
+    "LED-B10.5"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/changeset.py:canonical_dumps",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/changeset.py",
+   "start": 388,
+   "end": 390,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B8.5"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/guard.py:LedgerGuard.__init__",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/guard.py",
+   "start": 25,
+   "end": 30,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-D13"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/guard.py:LedgerGuard.refresh",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/guard.py",
+   "start": 34,
+   "end": 36,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-D13",
+    "LED-B11.2"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/guard.py:LedgerGuard.state",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/guard.py",
+   "start": 63,
+   "end": 64,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-D1",
+    "LED-D13",
+    "LED-B1.7",
+    "LED-B1.12",
+    "LED-B1.14",
+    "LED-B1.15",
+    "LED-B1.16",
+    "LED-B2.1",
+    "LED-B3",
+    "LED-B3.12",
+    "LED-B4.1",
+    "LED-B4.7.9",
+    "LED-B11.1",
+    "LED-B11.3",
+    "LED-B13",
+    "LED-B13.8"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/guard.py:LedgerGuard.is_enabled",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/guard.py",
+   "start": 66,
+   "end": 67,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-D13",
+    "LED-B3.12"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/guard.py:LedgerGuard.is_strict",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/guard.py",
+   "start": 69,
+   "end": 71,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-D13",
+    "LED-B3.12"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/guard.py:LedgerGuard.check_structural_write",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/guard.py",
+   "start": 75,
+   "end": 80,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-D13",
+    "LED-B11",
+    "LED-B11.6"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/guard.py:LedgerGuard.count_rejection",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/guard.py",
+   "start": 82,
+   "end": 86,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-D13",
+    "LED-B11.6"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/errors.py:StaleHeadError.__init__",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/errors.py",
+   "start": 33,
+   "end": 35,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B14.1"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/errors.py:ChangesetOperationError.__init__",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/errors.py",
+   "start": 49,
+   "end": 52,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B14.2"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/errors.py:ChangesetTooLargeError.__init__",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/errors.py",
+   "start": 58,
+   "end": 60,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/errors.py:ReconstructionTooLargeError.__init__",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/errors.py",
+   "start": 70,
+   "end": 75,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/errors.py:NodeNotFoundError.__init__",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/errors.py",
+   "start": 109,
+   "end": 126,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B14.3"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/errors.py:from_commit_error",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/errors.py",
+   "start": 175,
+   "end": 199,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-B14",
+    "LED-B14.1",
+    "LED-B14.2",
+    "LED-B14.3",
+    "LED-B14.5"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/_engine/ledger.py:ledger_check",
+   "kind": "py",
+   "path": "iris_vector_graph/_engine/ledger.py",
+   "start": 72,
+   "end": 79,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-D13",
+    "LED-B11"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/_engine/ledger.py:ledger_strict",
+   "kind": "py",
+   "path": "iris_vector_graph/_engine/ledger.py",
+   "start": 82,
+   "end": 87,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-D13",
+    "LED-B11"
+   ]
+  },
+  {
+   "id": "eng:IRISGraphEngine.ledger",
+   "kind": "engine",
+   "path": "iris_vector_graph/_engine/ledger.py",
+   "start": 16,
+   "end": 28,
+   "self_calls": [],
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "LED-0",
+    "LED-D1",
+    "LED-D2",
+    "LED-D4",
+    "LED-D5",
+    "LED-D7",
+    "LED-D8",
+    "LED-D9",
+    "LED-D10",
+    "LED-D11",
+    "LED-D12",
+    "LED-D13",
+    "LED-D14",
+    "LED-D16",
+    "LED-D17",
+    "LED-D19",
+    "LED-D20",
+    "LED-D21",
+    "LED-B1",
+    "LED-B1.1",
+    "LED-B1.3",
+    "LED-B1.6",
+    "LED-B1.7",
+    "LED-B1.8",
+    "LED-B1.9",
+    "LED-B1.10",
+    "LED-B1.11",
+    "LED-B1.12",
+    "LED-B1.13",
+    "LED-Q1",
+    "LED-B1.14",
+    "LED-B1.15",
+    "LED-B1.16",
+    "LED-B1.17",
+    "LED-B1.18",
+    "LED-B1.19",
+    "LED-B1.20",
+    "LED-B1.21",
+    "LED-B1.22",
+    "LED-B2",
+    "LED-B2.1",
+    "LED-B3",
+    "LED-B3.2",
+    "LED-B3.3",
+    "LED-B3.4",
+    "LED-B3.6",
+    "LED-B3.7",
+    "LED-B3.8",
+    "LED-B3.9",
+    "LED-B3.11",
+    "LED-B3.12",
+    "LED-B4.1",
+    "LED-B4.5",
+    "LED-B4.6",
+    "LED-B4.7",
+    "LED-B4.7.1",
+    "LED-B4.7.2",
+    "LED-B4.7.3",
+    "LED-B4.7.4",
+    "LED-B4.7.5",
+    "LED-B4.7.7",
+    "LED-P4",
+    "LED-B4.7.8",
+    "LED-B4.7.9",
+    "LED-B4.7.10",
+    "LED-B4.8.1",
+    "LED-B4.9",
+    "LED-B4.9.1",
+    "LED-B4.9.2",
+    "LED-B4.10",
+    "LED-B4.10.1",
+    "LED-B4.10.3",
+    "LED-B4.10.4",
+    "LED-B4.11.1",
+    "LED-B4.11.4",
+    "LED-B4.11.5",
+    "LED-B4.11.7",
+    "LED-B4.11.8",
+    "LED-B4.12",
+    "LED-B4.12.1",
+    "LED-B4.12.2",
+    "LED-B4.13",
+    "LED-B4.14.3",
+    "LED-B5",
+    "LED-B5.1",
+    "LED-B5.4",
+    "LED-B5.5",
+    "LED-B5.6",
+    "LED-B5.7",
+    "LED-B5.8",
+    "LED-B5.9",
+    "LED-B5.10",
+    "LED-B5.12",
+    "LED-B5.13",
+    "LED-B5.14",
+    "LED-B5.15",
+    "LED-B5.16",
+    "LED-B5.17",
+    "LED-B5.18",
+    "LED-B5.19",
+    "LED-B5.21",
+    "LED-B5.22",
+    "LED-B5.23",
+    "LED-B5.25",
+    "LED-B5.26",
+    "LED-B5.27",
+    "LED-B6",
+    "LED-B6.2",
+    "LED-B6.5",
+    "LED-B6.6",
+    "LED-B6.7",
+    "LED-B6.9",
+    "LED-B7.5",
+    "LED-P5",
+    "LED-B7.7",
+    "LED-B8",
+    "LED-B8.1",
+    "LED-B8.2",
+    "LED-B8.4",
+    "LED-B8.5",
+    "LED-B8.6",
+    "LED-B8.8",
+    "LED-B8.10",
+    "LED-B8.11",
+    "LED-B8.12",
+    "LED-B9",
+    "LED-B9.1",
+    "LED-B9.2",
+    "LED-B9.3",
+    "LED-B9.6",
+    "LED-B9.7",
+    "LED-B9.8",
+    "LED-B9.9",
+    "LED-B10",
+    "LED-B10.1",
+    "LED-B10.2",
+    "LED-B10.3",
+    "LED-B10.4",
+    "LED-B10.5",
+    "LED-B11",
+    "LED-B11.1",
+    "LED-B11.2",
+    "LED-B11.3",
+    "LED-B11.4",
+    "LED-Q4",
+    "LED-B11.6",
+    "LED-B11.7",
+    "LED-B12",
+    "LED-B12.1",
+    "LED-B12.2",
+    "LED-B12.4",
+    "LED-B13",
+    "LED-B13.3",
+    "LED-B13.4",
+    "LED-B13.5",
+    "LED-B13.6",
+    "LED-B13.8",
+    "LED-B14",
+    "LED-B14.1",
+    "LED-B14.2",
+    "LED-B14.3",
+    "LED-B14.5",
+    "LED-B14.6",
+    "LED-B14.7",
+    "LED-B14.8",
+    "LED-B16"
+   ]
+  },
+  {
+   "id": "sql:UPDATE Graph_KG.ledger_revisions",
+   "kind": "sql-dml",
+   "path": "iris_src/src/Graph/KG/LedgerRevision.cls",
+   "start": 87,
+   "end": 102,
+   "via": "row trigger RejectUpdate",
+   "hint": {},
+   "covered_by": [
+    "LED-B3.7",
+    "LED-B7",
+    "LED-B7.1",
+    "LED-P8",
+    "LED-B7.4"
+   ]
+  },
+  {
+   "id": "sql:DELETE Graph_KG.ledger_revisions",
+   "kind": "sql-dml",
+   "path": "iris_src/src/Graph/KG/LedgerRevision.cls",
+   "start": 104,
+   "end": 108,
+   "via": "row trigger RejectDelete",
+   "hint": {},
+   "covered_by": [
+    "LED-B3.7",
+    "LED-B7",
+    "LED-B7.2",
+    "LED-P8"
+   ]
+  },
+  {
+   "id": "obj:Graph.KG.LedgerRevision.%Save(existing)",
+   "kind": "object",
+   "path": "iris_src/src/Graph/KG/LedgerRevision.cls",
+   "start": 111,
+   "end": 117,
+   "via": "object save of a stored revision",
+   "hint": {},
+   "covered_by": [
+    "LED-B7",
+    "LED-B7.3"
+   ]
+  },
+  {
+   "id": "obj:Graph.KG.LedgerRevision.%DeleteId",
+   "kind": "object",
+   "path": "iris_src/src/Graph/KG/LedgerRevision.cls",
+   "start": 120,
+   "end": 123,
+   "via": "object delete",
+   "hint": {},
+   "covered_by": [
+    "LED-B7",
+    "LED-B7.3"
+   ]
+  },
+  {
+   "id": "sql:SELECT Graph_KG.ledger_stats",
+   "kind": "sql-read",
+   "path": "iris_src/src/Graph/KG/LedgerStats.cls",
+   "start": 4,
+   "end": 48,
+   "via": "public table (FR-051)",
+   "hint": {},
+   "covered_by": [
+    "LED-D16",
+    "LED-B7.7",
+    "LED-B13"
+   ]
+  },
+  {
+   "id": "sql:SELECT Graph_KG.ledger_revisions",
+   "kind": "sql-read",
+   "path": "iris_src/src/Graph/KG/LedgerRevision.cls",
+   "start": 1,
+   "end": 60,
+   "via": "public table",
+   "hint": {},
+   "covered_by": [
+    "LED-D6",
+    "LED-P6",
+    "LED-B3.7",
+    "LED-B3.11",
+    "LED-B4.11.8",
+    "LED-B7",
+    "LED-B7.3",
+    "LED-B7.5",
+    "LED-B7.7"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/replay.py:fetch_history",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/replay.py",
+   "start": 299,
+   "end": 352,
+   "via": "GraphLedger.history (client.py:585-631)",
+   "hint": {},
+   "covered_by": [
+    "LED-B1.14",
+    "LED-B3.7",
+    "LED-B3.8",
+    "LED-B3.9",
+    "LED-B3.11",
+    "LED-B4.7.11",
+    "LED-B4.10.5",
+    "LED-B4.14.4",
+    "LED-B7.4",
+    "LED-B7.6",
+    "LED-B12.5",
+    "LED-B14.8"
+   ]
+  },
+  {
+   "id": "eng:IRISGraphEngine.status[ledger]",
+   "kind": "engine",
+   "path": "iris_vector_graph/_engine/ledger.py",
+   "start": 40,
+   "end": 69,
+   "via": "engine.status() (FR-050)",
+   "hint": {},
+   "covered_by": [
+    "LED-B13.8"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/schema.py:GraphSchema.ensure_ledger_index",
+   "kind": "py",
+   "path": "iris_vector_graph/schema.py",
+   "start": 737,
+   "end": 770,
+   "via": "initialize_schema",
+   "hint": {},
+   "covered_by": []
+  },
+  {
+   "id": "guard:engine writers (_ledger_check call sites)",
+   "kind": "guard-sites",
+   "path": "iris_vector_graph/ledger/guard.py",
+   "start": 75,
+   "end": 80,
+   "via": "every guarded engine writer of modules 02/03/05 calls ledger_check; F-1108 lists two paths that do not",
+   "hint": {},
+   "covered_by": [
+    "LED-D13",
+    "LED-B11",
+    "LED-B11.6"
+   ]
+  }
+ ],
+ "cells": [
+  {
+   "entity": "ledger",
+   "state": "never-enabled",
+   "command": "enable",
+   "outcome": "ok",
+   "statements": "LED-B1.1",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.enable",
+    "cls:Graph.KG.Ledger.Enable",
+    "cls:Graph.KG.LedgerGenesis.Capture"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "ledger",
+   "state": "enabled",
+   "command": "enable",
+   "outcome": "no-op",
+   "statements": "LED-B1.8",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.enable",
+    "cls:Graph.KG.Ledger.Enable",
+    "cls:Graph.KG.LedgerGenesis.Capture"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "ledger",
+   "state": "disabled",
+   "command": "enable",
+   "outcome": "ok",
+   "statements": "LED-B1.17, LED-B1.18",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.enable",
+    "cls:Graph.KG.Ledger.Enable",
+    "cls:Graph.KG.LedgerGenesis.Capture"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "ledger",
+   "state": "never-enabled",
+   "command": "disable",
+   "outcome": "no-op",
+   "statements": "LED-B1.15",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.disable",
+    "cls:Graph.KG.Ledger.Disable"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "ledger",
+   "state": "enabled",
+   "command": "disable",
+   "outcome": "ok",
+   "statements": "LED-B1.14",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.disable",
+    "cls:Graph.KG.Ledger.Disable"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "ledger",
+   "state": "disabled",
+   "command": "disable",
+   "outcome": "no-op",
+   "statements": "LED-B1.15",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.disable",
+    "cls:Graph.KG.Ledger.Disable"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "ledger",
+   "state": "never-enabled",
+   "command": "set-strict",
+   "outcome": "refused",
+   "statements": "LED-B2",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.set_strict",
+    "cls:Graph.KG.Ledger.SetStrict"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "ledger",
+   "state": "enabled",
+   "command": "set-strict",
+   "outcome": "ok",
+   "statements": "LED-B2",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.set_strict",
+    "cls:Graph.KG.Ledger.SetStrict"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "ledger",
+   "state": "disabled",
+   "command": "set-strict",
+   "outcome": "ok",
+   "statements": "LED-B2.1",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.set_strict",
+    "cls:Graph.KG.Ledger.SetStrict"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "ledger",
+   "state": "never-enabled",
+   "command": "commit",
+   "outcome": "refused",
+   "statements": "LED-B4.5",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "ledger",
+   "state": "enabled",
+   "command": "commit",
+   "outcome": "ok",
+   "statements": "LED-B4",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "ledger",
+   "state": "disabled",
+   "command": "commit",
+   "outcome": "refused",
+   "statements": "LED-B4.6",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "ledger",
+   "state": "never-enabled",
+   "command": "head",
+   "outcome": "refused",
+   "statements": "LED-B3.2",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.head",
+    "cls:Graph.KG.Ledger.Head"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "ledger",
+   "state": "enabled",
+   "command": "head",
+   "outcome": "no-op",
+   "statements": "LED-B3.2",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.head",
+    "cls:Graph.KG.Ledger.Head"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "ledger",
+   "state": "disabled",
+   "command": "head",
+   "outcome": "no-op",
+   "statements": "LED-B3.3",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.head",
+    "cls:Graph.KG.Ledger.Head"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "retry key",
+   "state": "free",
+   "command": "commit-same",
+   "outcome": "ok",
+   "statements": "LED-B4.7.4",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "retry key",
+   "state": "bound",
+   "command": "commit-same",
+   "outcome": "no-op",
+   "statements": "LED-B4.7",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "retry key",
+   "state": "free",
+   "command": "commit-other",
+   "outcome": "ok",
+   "statements": "LED-B4.7.4",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "retry key",
+   "state": "bound",
+   "command": "commit-other",
+   "outcome": "refused",
+   "statements": "LED-B4.7.1",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "retry key",
+   "state": "free",
+   "command": "commit-stale-head",
+   "outcome": "refused",
+   "statements": "LED-B4.8, LED-B4.7.4",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "retry key",
+   "state": "bound",
+   "command": "commit-stale-head",
+   "outcome": "no-op",
+   "statements": "LED-B4.7.2",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "edge statement",
+   "state": "none",
+   "command": "create-edge",
+   "outcome": "ok",
+   "statements": "LED-B5.17",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.create_relationship",
+    "cls:Graph.KG.LedgerApply.OpCreateRel",
+    "cls:Graph.KG.LedgerApply.AllocStmt",
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "edge statement",
+   "state": "recorded",
+   "command": "create-edge",
+   "outcome": "refused",
+   "statements": "LED-B5.18",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.create_relationship",
+    "cls:Graph.KG.LedgerApply.OpCreateRel",
+    "cls:Graph.KG.LedgerApply.AllocStmt",
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "edge statement",
+   "state": "unrecorded",
+   "command": "create-edge",
+   "outcome": "refused",
+   "statements": "LED-B5.18",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.create_relationship",
+    "cls:Graph.KG.LedgerApply.OpCreateRel",
+    "cls:Graph.KG.LedgerApply.AllocStmt",
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "edge statement",
+   "state": "none",
+   "command": "upsert-edge",
+   "outcome": "ok",
+   "statements": "LED-B5.22",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.upsert_relationship",
+    "cls:Graph.KG.LedgerApply.OpCreateRel",
+    "cls:Graph.KG.LedgerApply.MergeQuals",
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "edge statement",
+   "state": "recorded",
+   "command": "upsert-edge",
+   "outcome": "ok",
+   "statements": "LED-B5.22",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.upsert_relationship",
+    "cls:Graph.KG.LedgerApply.OpCreateRel",
+    "cls:Graph.KG.LedgerApply.MergeQuals",
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "edge statement",
+   "state": "unrecorded",
+   "command": "upsert-edge",
+   "outcome": "ok",
+   "statements": "LED-B5.22, LED-B6.6",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.upsert_relationship",
+    "cls:Graph.KG.LedgerApply.OpCreateRel",
+    "cls:Graph.KG.LedgerApply.MergeQuals",
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "edge statement",
+   "state": "none",
+   "command": "set-qualifier",
+   "outcome": "refused",
+   "statements": "LED-B5.27",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.set_qualifier",
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.replace_qualifiers",
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.remove_qualifier",
+    "cls:Graph.KG.LedgerApply.OpQual",
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "edge statement",
+   "state": "recorded",
+   "command": "set-qualifier",
+   "outcome": "ok",
+   "statements": "LED-B5.25",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.set_qualifier",
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.replace_qualifiers",
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.remove_qualifier",
+    "cls:Graph.KG.LedgerApply.OpQual",
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "edge statement",
+   "state": "unrecorded",
+   "command": "set-qualifier",
+   "outcome": "ok",
+   "statements": "LED-B5.25, LED-B6.6",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.set_qualifier",
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.replace_qualifiers",
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.remove_qualifier",
+    "cls:Graph.KG.LedgerApply.OpQual",
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "edge statement",
+   "state": "none",
+   "command": "delete-edge",
+   "outcome": "refused",
+   "statements": "LED-B5.27",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.delete_relationship",
+    "cls:Graph.KG.LedgerApply.OpDeleteRel",
+    "cls:Graph.KG.LedgerApply.DeleteRelInternal",
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "edge statement",
+   "state": "recorded",
+   "command": "delete-edge",
+   "outcome": "ok",
+   "statements": "LED-B5.23",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.delete_relationship",
+    "cls:Graph.KG.LedgerApply.OpDeleteRel",
+    "cls:Graph.KG.LedgerApply.DeleteRelInternal",
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "edge statement",
+   "state": "unrecorded",
+   "command": "delete-edge",
+   "outcome": "ok",
+   "statements": "LED-B5.23, LED-B6.6",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.delete_relationship",
+    "cls:Graph.KG.LedgerApply.OpDeleteRel",
+    "cls:Graph.KG.LedgerApply.DeleteRelInternal",
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "node id",
+   "state": "absent",
+   "command": "create-node",
+   "outcome": "ok",
+   "statements": "LED-B5.4",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.create_node",
+    "cls:Graph.KG.LedgerApply.OpCreateNode",
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "node id",
+   "state": "default-only",
+   "command": "create-node",
+   "outcome": "refused",
+   "statements": "LED-B5.4",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.create_node",
+    "cls:Graph.KG.LedgerApply.OpCreateNode",
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "node id",
+   "state": "default-linked",
+   "command": "create-node",
+   "outcome": "refused",
+   "statements": "LED-B5.4",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.create_node",
+    "cls:Graph.KG.LedgerApply.OpCreateNode",
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "node id",
+   "state": "named-only",
+   "command": "create-node",
+   "outcome": "refused",
+   "statements": "LED-B5.4, LED-B5.2",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.create_node",
+    "cls:Graph.KG.LedgerApply.OpCreateNode",
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "node id",
+   "state": "absent",
+   "command": "upsert-node",
+   "outcome": "ok",
+   "statements": "LED-B5.5",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.upsert_node",
+    "cls:Graph.KG.LedgerApply.OpCreateNode",
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "node id",
+   "state": "default-only",
+   "command": "upsert-node",
+   "outcome": "ok",
+   "statements": "LED-B5.5",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.upsert_node",
+    "cls:Graph.KG.LedgerApply.OpCreateNode",
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "node id",
+   "state": "default-linked",
+   "command": "upsert-node",
+   "outcome": "ok",
+   "statements": "LED-B5.5",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.upsert_node",
+    "cls:Graph.KG.LedgerApply.OpCreateNode",
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "node id",
+   "state": "named-only",
+   "command": "upsert-node",
+   "outcome": "open",
+   "statements": "",
+   "decision": "HD-1101",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.upsert_node",
+    "cls:Graph.KG.LedgerApply.OpCreateNode",
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "node id",
+   "state": "absent",
+   "command": "set-property",
+   "outcome": "refused",
+   "statements": "LED-B5.11",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.set_property",
+    "cls:Graph.KG.LedgerApply.OpSetProp",
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "node id",
+   "state": "default-only",
+   "command": "set-property",
+   "outcome": "ok",
+   "statements": "LED-B5.9",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.set_property",
+    "cls:Graph.KG.LedgerApply.OpSetProp",
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "node id",
+   "state": "default-linked",
+   "command": "set-property",
+   "outcome": "ok",
+   "statements": "LED-B5.9",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.set_property",
+    "cls:Graph.KG.LedgerApply.OpSetProp",
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "node id",
+   "state": "named-only",
+   "command": "set-property",
+   "outcome": "open",
+   "statements": "",
+   "decision": "HD-1101",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.set_property",
+    "cls:Graph.KG.LedgerApply.OpSetProp",
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "node id",
+   "state": "absent",
+   "command": "add-label",
+   "outcome": "refused",
+   "statements": "LED-B5.11",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.add_label",
+    "cls:Graph.KG.LedgerApply.OpAddLabel",
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "node id",
+   "state": "default-only",
+   "command": "add-label",
+   "outcome": "ok",
+   "statements": "LED-B5.7",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.add_label",
+    "cls:Graph.KG.LedgerApply.OpAddLabel",
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "node id",
+   "state": "default-linked",
+   "command": "add-label",
+   "outcome": "ok",
+   "statements": "LED-B5.7",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.add_label",
+    "cls:Graph.KG.LedgerApply.OpAddLabel",
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "node id",
+   "state": "named-only",
+   "command": "add-label",
+   "outcome": "open",
+   "statements": "",
+   "decision": "HD-1101",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.add_label",
+    "cls:Graph.KG.LedgerApply.OpAddLabel",
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "node id",
+   "state": "absent",
+   "command": "delete-plain",
+   "outcome": "refused",
+   "statements": "LED-B5.11",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.delete_node",
+    "cls:Graph.KG.LedgerApply.OpDeleteNode",
+    "cls:Graph.KG.LedgerApply.DeleteNodeRows",
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "node id",
+   "state": "default-only",
+   "command": "delete-plain",
+   "outcome": "ok",
+   "statements": "LED-B5.13, LED-B5.15",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.delete_node",
+    "cls:Graph.KG.LedgerApply.OpDeleteNode",
+    "cls:Graph.KG.LedgerApply.DeleteNodeRows",
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "node id",
+   "state": "default-linked",
+   "command": "delete-plain",
+   "outcome": "refused",
+   "statements": "LED-B5.13",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.delete_node",
+    "cls:Graph.KG.LedgerApply.OpDeleteNode",
+    "cls:Graph.KG.LedgerApply.DeleteNodeRows",
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "node id",
+   "state": "named-only",
+   "command": "delete-plain",
+   "outcome": "open",
+   "statements": "",
+   "decision": "HD-1101",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.delete_node",
+    "cls:Graph.KG.LedgerApply.OpDeleteNode",
+    "cls:Graph.KG.LedgerApply.DeleteNodeRows",
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "node id",
+   "state": "absent",
+   "command": "delete-detach",
+   "outcome": "refused",
+   "statements": "LED-B5.11",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.delete_node",
+    "cls:Graph.KG.LedgerApply.OpDeleteNode",
+    "cls:Graph.KG.LedgerApply.DeleteNodeRows",
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "node id",
+   "state": "default-only",
+   "command": "delete-detach",
+   "outcome": "ok",
+   "statements": "LED-B5.14",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.delete_node",
+    "cls:Graph.KG.LedgerApply.OpDeleteNode",
+    "cls:Graph.KG.LedgerApply.DeleteNodeRows",
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "node id",
+   "state": "default-linked",
+   "command": "delete-detach",
+   "outcome": "ok",
+   "statements": "LED-B5.14",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.delete_node",
+    "cls:Graph.KG.LedgerApply.OpDeleteNode",
+    "cls:Graph.KG.LedgerApply.DeleteNodeRows",
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "node id",
+   "state": "named-only",
+   "command": "delete-detach",
+   "outcome": "open",
+   "statements": "",
+   "decision": "HD-1101",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/changeset.py:Changeset.delete_node",
+    "cls:Graph.KG.LedgerApply.OpDeleteNode",
+    "cls:Graph.KG.LedgerApply.DeleteNodeRows",
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "caller transaction",
+   "state": "none",
+   "command": "commit",
+   "outcome": "ok",
+   "statements": "LED-B9.1",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "caller transaction",
+   "state": "holding-writes",
+   "command": "commit",
+   "outcome": "ok",
+   "statements": "LED-B9.2",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "caller transaction",
+   "state": "autocommit-unwritten",
+   "command": "commit",
+   "outcome": "ok",
+   "statements": "LED-B9.2, LED-B9.3",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+    "cls:Graph.KG.Ledger.Commit",
+    "cls:Graph.KG.Ledger.CommitInTxn"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "caller transaction",
+   "state": "none",
+   "command": "enable",
+   "outcome": "ok",
+   "statements": "LED-B1.1",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.enable",
+    "cls:Graph.KG.Ledger.Enable"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "caller transaction",
+   "state": "holding-writes",
+   "command": "enable",
+   "outcome": "refused",
+   "statements": "LED-B1.10",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.enable",
+    "cls:Graph.KG.Ledger.Enable"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "caller transaction",
+   "state": "autocommit-unwritten",
+   "command": "enable",
+   "outcome": "ok",
+   "statements": "LED-B1.10",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.enable",
+    "cls:Graph.KG.Ledger.Enable"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "caller transaction",
+   "state": "none",
+   "command": "disable",
+   "outcome": "ok",
+   "statements": "LED-B1.14",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.disable",
+    "cls:Graph.KG.Ledger.Disable"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "caller transaction",
+   "state": "holding-writes",
+   "command": "disable",
+   "outcome": "open",
+   "statements": "",
+   "decision": "HD-1102",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.disable",
+    "cls:Graph.KG.Ledger.Disable"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "caller transaction",
+   "state": "autocommit-unwritten",
+   "command": "disable",
+   "outcome": "ok",
+   "statements": "LED-B9.9",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.disable",
+    "cls:Graph.KG.Ledger.Disable"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "caller transaction",
+   "state": "none",
+   "command": "set-strict",
+   "outcome": "ok",
+   "statements": "LED-B2",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.set_strict",
+    "cls:Graph.KG.Ledger.SetStrict"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "caller transaction",
+   "state": "holding-writes",
+   "command": "set-strict",
+   "outcome": "open",
+   "statements": "",
+   "decision": "HD-1102",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.set_strict",
+    "cls:Graph.KG.Ledger.SetStrict"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "caller transaction",
+   "state": "autocommit-unwritten",
+   "command": "set-strict",
+   "outcome": "ok",
+   "statements": "LED-B9.9",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/ledger/client.py:GraphLedger.set_strict",
+    "cls:Graph.KG.Ledger.SetStrict"
+   ],
+   "unknown_entry_points": []
+  }
+ ]
+}

@@ -1,0 +1,15 @@
+{
+  "command": "bash experiment/playbook-completion/tools/locks.sh iris timeout 900 python experiment/playbook-completion/live/breadth-b/11_concurrency.py",
+  "experiment_head": "307a0a8c38fe9a45d7eff7c64995070f21e00b2c",
+  "id": "b-11-live-f1102-txn",
+  "kind": "live",
+  "lane": "breadth-b",
+  "log": "$RUN_DIR/breadth-b/live/11-conc-F-1102.json",
+  "log_bytes": 2141,
+  "log_sha256": "27381647926393216d644f0b03c9b678b312df971af7a03e3927587ee75c2521",
+  "observes": "F-1102/F-C1101: 2x300 concurrent Count calls all counted (600); a commit nested in process A's caller transaction saved the stats row (commits_ok 2, head_seq 2); process B's Count waited 2.5 s on the row lock, A rolled back, B's save then wrote its dirty copy: commits_ok stays 2 and head_seq 2 while the ledger head is 1 (phantom commit).",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T00:11:40+00:00",
+  "result": "fail"
+}

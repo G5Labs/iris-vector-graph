@@ -23,7 +23,7 @@ import subprocess
 from dataclasses import dataclass
 from typing import Dict, Iterable, List, Optional, Set
 
-SYSTEM_GLOBAL_PREFIXES = ("^rINDEXSQL", "^%", "^oddDEF", "^oddCOM", "^oddPROC", "^rOBJ", "^ROUTINE", "^rMAP",
+SYSTEM_GLOBAL_PREFIXES = ("^rINDEXSQL", "^%", "^oddDEF", "^oddDEP", "^oddCOM", "^oddPROC", "^rOBJ", "^ROUTINE", "^rMAP",
                           "^rINDEX", "^IRIS.", "^ISC.", "^SYS(", "^SYS", "^mtemp", "^CacheTemp", "^IRIS.Temp",
                           "^oddEXT", "^oddMAP", "^oddSQL", "^oddStudio", "^oddPKG", "^SPOOL", "^ERRORS",
                           "^OBJ.DSTIME", "^IRIS.Msg", "^rBACKUP")
@@ -145,13 +145,14 @@ def transactions(recs: List[Dict]) -> List[Dict]:
                 u["committed"] = True
                 u["end"] = r["a"]
                 u["rolled_back"] = bool(u["records"]) and not net_effect(u["records"])
+                u["addresses"] = [x["a"] for x in u["records"]]
                 out.append(u)
             continue
         if r["x"] and p in open_:
             open_[p]["records"].append(r)
         else:
             out.append({"pid": p, "kind": "auto", "records": [r], "committed": True, "rolled_back": False,
-                        "begin": r["a"], "end": r["a"], "nested_levels": 0})
+                        "begin": r["a"], "end": r["a"], "nested_levels": 0, "addresses": [r["a"]]})
     for u in open_.values():
         u["rolled_back"] = False
         out.append(u)  # still open at the end of the capture
@@ -172,7 +173,8 @@ def net_effect(records: List[Dict]) -> Dict[str, Optional[str]]:
             continue
         if g not in first_old:
             first_old[g] = r["o"]
-        last[g] = r["n"] if r["t"] == "SET" else None
+        # SET and BitSET write a value (a BitSET's value is the bit string); KILL and ZKILL remove it
+        last[g] = r["n"] if r["t"].startswith(("SET", "BitSET")) else None
     return {g: v for g, v in last.items() if v != first_old[g]}
 
 

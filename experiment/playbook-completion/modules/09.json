@@ -1,0 +1,1074 @@
+{
+ "module": "09",
+ "lane": "breadth-b",
+ "pin": "3eaa79cf",
+ "gates": [
+  {
+   "gate": "3.1-parent",
+   "status": "closed",
+   "reason": "ontology_index.py --check --only 09: 0 violations (parents, grade, lexical terms)",
+   "evidence": [
+    "run:$RUN_DIR/breadth-b/09-ontology-check.log"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.1-grade",
+   "status": "closed",
+   "reason": "0 grade violations in NAT statements (ontology_index.py --check --only 09)",
+   "evidence": [
+    "run:$RUN_DIR/breadth-b/09-ontology-check.log"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.1-terms",
+   "status": "open",
+   "reason": "decisions.md HD-0001 adopts the literal rule; check-literal-scope.py reports 116 NAT statement/term pairs in 68 statements using a term not defined by an ancestor or an earlier sibling (e.g. NAT-I3 'plan shape', NAT-T5.13 'compile mode')",
+   "evidence": [
+    "run:$RUN_DIR/breadth-b/09-literal-scope.tsv"
+   ],
+   "remaining": "reparent or add local definitions (ontology lane)"
+  },
+  {
+   "gate": "3.1-cells",
+   "status": "closed",
+   "reason": "all 57 cells defined (no open cell); every cell command maps to entry points (inventory cells_without_entry_point = 0). Cell correctness is audited separately: 'compiled shape|building|drop all' (NAT-I5) fails as built (F-0905)",
+   "evidence": [
+    "inspected:experiment/playbook-completion/models/breadth-b/inventory/09.json"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.1-coverage",
+   "status": "open",
+   "reason": "63 entry points derived from source; 15 have no covering statement: IVG.CypherEngine's helpers (Query, Scalar, GetLabels*, GetNodeCount, GetEdgeCount, NodeExists, GetLabelCounts*, InitSchema*, RebuildKG, IsReady; QueryJson/Query/Scalar run writes too, with no read_only) and Props.GetJson/LayoutOK. Background jobs (Gen.Build job, Exec.Part workers), the deploy DropAll and the namespace mode global are inventoried and covered.",
+   "evidence": [
+    "inspected:experiment/playbook-completion/models/breadth-b/inventory/09.json"
+   ],
+   "remaining": "statements for IVG.CypherEngine's helper methods (incl. that Query runs writes and InitSchema/RebuildKG are lifecycle writers) and the property reader's JSON accessor"
+  },
+  {
+   "gate": "3.1-intent",
+   "status": "closed",
+   "reason": "HD-0901..HD-0904 have working dispositions (decisions.md) and intent-lane recovery files",
+   "evidence": [
+    "inspected:experiment/playbook-completion/decisions.md",
+    "inspected:experiment/playbook-completion/intent/HD-0901.md",
+    "inspected:experiment/playbook-completion/intent/HD-0902.md",
+    "inspected:experiment/playbook-completion/intent/HD-0903.md",
+    "inspected:experiment/playbook-completion/intent/HD-0904.md"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.2-coverage",
+   "status": "open",
+   "reason": "29 IRIS engine features listed in env_features with source lines; whether each is inside the orchestrator's IRIS 2026.1 contract is not yet decided here. Two are checked live by this lane: $ZCRC(x,7) = CRC-32 (b-09-probe) and cross-process read-uncommitted visibility (b-09-f0909); P-0903 did not reproduce on 2026.1 (b-09-f0904-sync-failed-build)",
+   "evidence": [
+    "live:b-09-probe",
+    "live:b-09-f0909-txn-visibility"
+   ],
+   "remaining": "map env_features into the IRIS contract (AUDITENV, orchestrator)"
+  },
+  {
+   "gate": "3.3-L1",
+   "status": "open",
+   "reason": "explorer machines state the module's invariants (NAT-I3, T5.16, I5, X12, X11, B5.2, B1.11, I1) over abstract state; no Verus L1",
+   "evidence": [
+    "mc:m09-planc-reviewed",
+    "mc:m09-mode-reviewed",
+    "mc:m09-used-reviewed",
+    "mc:m09-gate-reviewed"
+   ],
+   "remaining": "Verus L1 for the plan cache and the native gate"
+  },
+  {
+   "gate": "3.3-L2",
+   "status": "open",
+   "reason": "machine planc is over the real layout (entry $LB elements, src lines, per-entry lock, IVGC class, job builds, DropAll steps; Gen.cls cited per action) but explorer-only; the walk itself (Exec.RunA/Walk/Neighbours) is not modelled beyond the used-relationship set",
+   "evidence": [
+    "mc:m09-planc-as-built-collide-binding",
+    "mc:m09-planc-as-built-drop-shape"
+   ],
+   "remaining": "L2 of the walk and of answer parity with the SQL path"
+  },
+  {
+   "gate": "3.3-refinement",
+   "status": "open",
+   "reason": "no refinement audit (explorer::refinement::audit) or proof between an L2 and an L1 for module 09",
+   "evidence": [],
+   "remaining": "bind planc to an L1 cache contract"
+  },
+  {
+   "gate": "3.3-controls",
+   "status": "open",
+   "reason": "explorer controls caught (m09-planc-control-shared-name, -drop-nolock, m09-mode-control-unknown-job, m09-used-control-type-only, m09-gate-control-always-open); the gate asks for proof-rejected controls",
+   "evidence": [
+    "mc:m09-gate-control-always-open",
+    "mc:m09-mode-control-unknown-job",
+    "mc:m09-planc-control-drop-nolock",
+    "mc:m09-planc-control-shared-name",
+    "mc:m09-used-control-type-only"
+   ],
+   "remaining": "proof-level controls"
+  },
+  {
+   "gate": "3.3-model-check",
+   "status": "closed",
+   "reason": "26 of 26 checks met their expectation, exhaustive within bounds: as-built violations reproduce F-0901, F-C0901, F-0902, F-0903, F-0905, F-0906; reviewed designs pass incl. AG EF progress; controls caught; sharpness witnesses reachable",
+   "evidence": [
+    "mc:m09-gate-as-built",
+    "mc:m09-gate-control-always-open",
+    "mc:m09-gate-positive-read",
+    "mc:m09-gate-reviewed",
+    "mc:m09-mode-as-built",
+    "mc:m09-mode-as-built-X11-B52",
+    "mc:m09-mode-control-unknown-job",
+    "mc:m09-mode-positive-sync",
+    "mc:m09-mode-reviewed",
+    "mc:m09-planc-as-built-collide-I3",
+    "mc:m09-planc-as-built-collide-binding",
+    "mc:m09-planc-as-built-collide-progress",
+    "mc:m09-planc-as-built-drop-I5",
+    "mc:m09-planc-as-built-drop-progress",
+    "mc:m09-planc-as-built-drop-shape",
+    "mc:m09-planc-as-built-single-pass",
+    "mc:m09-planc-control-drop-nolock",
+    "mc:m09-planc-control-shared-name",
+    "mc:m09-planc-positive-compiled-read",
+    "mc:m09-planc-positive-drop",
+    "mc:m09-planc-positive-ok",
+    "mc:m09-planc-reviewed",
+    "mc:m09-used-as-built",
+    "mc:m09-used-control-type-only",
+    "mc:m09-used-positive-done",
+    "mc:m09-used-reviewed"
+   ],
+   "remaining": "answer parity of the walk with the SQL path is not model-checked (shadow mode and the TCK are its evidence)"
+  },
+  {
+   "gate": "3.3a-writesets",
+   "status": "failed",
+   "reason": "every (invariant, writer plan) pair over the plan cache is listed in invariant_writesets; NAT-I3/T5.16 vs For/Build and NAT-I5 vs DropAll/Build are open by product defects (F-0901, F-C0901, F-0905), NAT-X12 vs the operator mode Set by F-0903",
+   "evidence": [
+    "live:b-09-f0905-dropall-race",
+    "live:b-09-f0903-mode",
+    "mc:m09-planc-reviewed"
+   ],
+   "remaining": "fixes or decisions for F-0901/F-C0901/F-0905/F-0903"
+  },
+  {
+   "gate": "3.4-statements",
+   "status": "open",
+   "reason": "the module's storage statements (entry Sets/Kill/Merge, class compile, Anchors/NamedEnds/Props SQL) are not proved equal to a model's evaluation",
+   "evidence": [],
+   "remaining": ""
+  },
+  {
+   "gate": "3.4-ownership",
+   "status": "closed",
+   "reason": "single write owner: ^IVG.CypherCompiled and package IVGC are written only by Graph.KG.Cypher.Gen (For/Build/DropAll; grep of iris_src and iris_vector_graph at the pin finds no other writer; the deploy calls Gen.DropAll, schema.py:2939); ^IVG.CypherGen is configuration written by operators and tests (documented, docs/ADMIN_GUIDE.md:774-779); journal footprints show no other module's process writing them during module 09 runs",
+   "evidence": [
+    "live:b-09-footprint",
+    "inspected:iris_vector_graph/schema.py:2934-2941"
+   ],
+   "remaining": "a self-test for an ownership checker (none exists for this global)"
+  },
+  {
+   "gate": "3.4-storage-order",
+   "status": "closed",
+   "reason": "1 storage-order site(s) in module 09's own files dispositioned (Exec.cls:1101 cardinality cap: existence-only); query.py sites [151, 588, 1818, 1835, 1837] lie outside the native routing span (2032-2250) and are module 08's; engine.py:576 (gate fact, cited) existence-only",
+   "evidence": [
+    "inspected:$RUN_DIR/checks/storage-order.json"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.4-declared-reads",
+   "status": "failed",
+   "reason": "the native path reads ^KG(\"label\") while its gate checks only the edge index (F-0906): a read from a store the gate does not establish as maintained; no read oracle validates the rest",
+   "evidence": [
+    "mc:m09-gate-as-built"
+   ],
+   "remaining": "gate on both indexes; a read-footprint oracle"
+  },
+  {
+   "gate": "3.5-handlers",
+   "status": "open",
+   "reason": "no handler proofs; Exec.Run's lack of the FR-011 privilege check is recorded (F-0908)",
+   "evidence": [],
+   "remaining": ""
+  },
+  {
+   "gate": "3.5-lockplans",
+   "status": "failed",
+   "reason": "lock plan: Build takes Lock +^IVG.CypherCompiled(h):0; For reads and overwrites entries without it; DropAll takes none. Live and model show the plan insufficient: F-0905 (b-09-f0905-dropall-race), F-C0901/F-0901 (m09-planc-as-built-collide-binding)",
+   "evidence": [
+    "live:b-09-f0905-dropall-race",
+    "mc:m09-planc-as-built-collide-binding",
+    "mc:m09-planc-reviewed"
+   ],
+   "remaining": "DropAll under the entry locks; Build re-check under its lock"
+  },
+  {
+   "gate": "3.5-decoders",
+   "status": "failed",
+   "reason": "status maps: any native exception falls back to SQL with one warning per reason (query.py:2145-2152); NativeMismatch for shadow differences; plan JSON and row JSON decoded by the engine (unit tests b-09-unit). The namespace mode value is decoded unchecked (F-0903, b-09-f0903-mode); shadow's 'ordered' decision mis-classifies tied orders (F-0907, b-09-f0907-shadow-ties)",
+   "evidence": [
+    "run:b-09-unit",
+    "live:b-09-f0903-mode",
+    "live:b-09-f0907-shadow-ties"
+   ],
+   "remaining": "fix F-0903, F-0907"
+  },
+  {
+   "gate": "3.6-frame",
+   "status": "open",
+   "reason": "frame obligations not stated",
+   "evidence": [],
+   "remaining": ""
+  },
+  {
+   "gate": "3.6-row-permutation",
+   "status": "failed",
+   "reason": "native and SQL answers agree as bags (unit tests), but shadow mode compares tied ordered rows positionally and raises on a row permutation the query allows (F-0907)",
+   "evidence": [
+    "live:b-09-f0907-shadow-ties"
+   ],
+   "remaining": "fix F-0907"
+  },
+  {
+   "gate": "3.6-keys",
+   "status": "failed",
+   "reason": "the plan entry key is a 32-bit CRC of the shape: two shapes share a key (P-0901 confirmed CRC-32; F-0901)",
+   "evidence": [
+    "live:b-09-probe",
+    "mc:m09-planc-as-built-collide-I3"
+   ],
+   "remaining": "a collision-free key"
+  },
+  {
+   "gate": "3.6-fk",
+   "status": "failed",
+   "reason": "no SQL foreign keys in module 09's state; the entry -> class reference analogue breaks: an entry naming a class with no shape and a class left after DropAll (F-0905)",
+   "evidence": [
+    "live:b-09-f0905-dropall-race"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.6-capacity",
+   "status": "open",
+   "reason": "rows are paged (1000 per page, strings under 3.6 MB, Exec.cls:76-87, :1902-1910); workers at most 8 (Exec.cls:449-450); routes and translations at most 256 per engine (NAT-T7.9); compiled classes grow by one per new shape and nothing prunes them (NAT-T5.25) \u2014 no capacity bound or test",
+   "evidence": [
+    "inspected:iris_src/src/Graph/KG/Cypher/Exec.cls:449-450"
+   ],
+   "remaining": "a bound or a measured limit for compiled classes"
+  },
+  {
+   "gate": "3.7-trace-replay",
+   "status": "open",
+   "reason": "journal traces captured for the cache writers (b-09-footprint, b-09-f0905-dropall-race) but not replayed through planc",
+   "evidence": [
+    "live:b-09-footprint"
+   ],
+   "remaining": "replay the journaled entry writes through the planc machine"
+  },
+  {
+   "gate": "3.7-lock-log",
+   "status": "open",
+   "reason": "LOCK activity is not journaled; no lock log was captured",
+   "evidence": [],
+   "remaining": "capture ^$LOCK during a build"
+  },
+  {
+   "gate": "3.7-mutation",
+   "status": "open",
+   "reason": "only model mutants (controls); no mutation testing of the product code",
+   "evidence": [],
+   "remaining": ""
+  },
+  {
+   "gate": "3.8-findings-disposed",
+   "status": "closed",
+   "reason": "every original finding F-0901..F-0909 has an audit record with disposition and outcome; one new finding F-C0901",
+   "evidence": [
+    "inspected:experiment/playbook-completion/findings/audit/09.json"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "5c-refusals",
+   "status": "failed",
+   "reason": "X statements: NAT-X12 fails (F-0903, live); NAT-X11 holds (mc m09-mode-as-built-X11-B52; Gen.cls:28-39); NAT-X9 (plan version) and NAT-X13/X14 (shadow raises) and the planner's declines NAT-X1..X8 are covered by upstream unit tests run here (b-09-unit); NAT-X10 (unknown operator) inspected Exec.cls:66-69",
+   "evidence": [
+    "live:b-09-f0903-mode",
+    "run:b-09-unit",
+    "mc:m09-mode-as-built-X11-B52"
+   ],
+   "remaining": "fix F-0903"
+  },
+  {
+   "gate": "3.7-explorers",
+   "status": "closed",
+   "reason": "module 09 explorer checks ran: 26/26 met",
+   "evidence": [
+    "mc:m09-gate-as-built",
+    "mc:m09-gate-control-always-open",
+    "mc:m09-gate-positive-read"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.7-suites",
+   "status": "open",
+   "reason": "Only module 09's upstream unit tests ran here (b-09-unit: 22 files, 419 tests, IRIS unreachable). The IRIS-backed suites (tests/e2e/test_253_*, test_257_*, TCK) were not rerun at the pin by this lane, so the gate cannot close on this evidence. module 09 upstream unit tests (22 files, 419 tests) passed with IRIS unreachable; IRIS-backed e2e (tests/e2e/test_253_*, test_257_*) not run by this lane (their fixture compiles classes)",
+   "evidence": [
+    "run:b-09-unit"
+   ],
+   "remaining": "IRIS-backed e2e/integration/TCK suites for module 09 rerun at the pin with triage (validation lane).",
+   "review_note": "lane B integration review 2026-11-14: downgraded from closed"
+  },
+  {
+   "gate": "3.7-e2e",
+   "status": "open",
+   "reason": "The live checks used several IRIS processes (a dedicated native connection, a second reader inside an open transaction, job builds, worker split: b-09-f0909-txn-visibility, b-09-f0903-mode, b-09-footprint). These are targeted probes, not the end-to-end test runs on 1 and N application processes that the gate asks for. multi-process live checks: a dedicated native connection (separate pid) and a second process reading natively inside an open transaction (b-09-f0909); job builds in another pid (b-09-f0903-mode); worker split (b-09-footprint read_parallel)",
+   "evidence": [
+    "live:b-09-f0909-txn-visibility",
+    "live:b-09-f0903-mode",
+    "live:b-09-footprint"
+   ],
+   "remaining": "end-to-end runs on 1 and N application processes (multi-process distinguished from multi-node)",
+   "review_note": "lane B integration review 2026-11-14: downgraded from closed"
+  },
+  {
+   "gate": "3.3-progress-controls",
+   "status": "open",
+   "reason": "The AG EF progress property fails in as-built designs (m09-planc-as-built-collide-progress, -drop-progress) and holds in the reviewed design (m09-planc-reviewed). No progress-only mutant of the reviewed design was shown to fail only the progress property (the pattern of m08-txn-control-leak-level / -safety). The gate asks for proofs; none exist. AG EF progress fails only in the as-built designs that block recompilation (m09-planc-as-built-collide-progress, -drop-progress) and holds in the reviewed design",
+   "evidence": [
+    "mc:m09-planc-as-built-drop-progress",
+    "mc:m09-planc-reviewed"
+   ],
+   "remaining": "a progress-only control of the reviewed plan-cache design that keeps every safety invariant; Verus progress proofs",
+   "review_note": "lane B integration review 2026-11-14: downgraded from closed"
+  }
+ ],
+ "gates_by_id": {
+  "3.1-parent": {
+   "status": "closed",
+   "reason": "ontology_index.py --check --only 09: 0 violations (parents, grade, lexical terms)",
+   "evidence": [
+    "run:$RUN_DIR/breadth-b/09-ontology-check.log"
+   ],
+   "remaining": ""
+  },
+  "3.1-grade": {
+   "status": "closed",
+   "reason": "0 grade violations in NAT statements (ontology_index.py --check --only 09)",
+   "evidence": [
+    "run:$RUN_DIR/breadth-b/09-ontology-check.log"
+   ],
+   "remaining": ""
+  },
+  "3.1-terms": {
+   "status": "failed",
+   "reason": "Literal rule (HD-0001): 116 NAT statement/term pairs are out of scope (b-check-literal-scope-07-11). decisions.md HD-0001 adopts the literal rule; check-literal-scope.py reports 116 NAT statement/term pairs in 68 statements using a term not defined by an ancestor or an earlier sibling (e.g. NAT-I3 'plan shape', NAT-T5.13 'compile mode')",
+   "evidence": [
+    "run:$RUN_DIR/breadth-b/09-literal-scope.tsv",
+    "check:b-check-literal-scope-07-11"
+   ],
+   "remaining": "reparent or add local definitions (ontology lane)",
+   "review_note": "lane B integration review 2026-11-14: open -> failed (a registered check fails; observation-only, not fixed)"
+  },
+  "3.1-cells": {
+   "status": "closed",
+   "reason": "all 57 cells defined (no open cell); every cell command maps to entry points (inventory cells_without_entry_point = 0). Cell correctness is audited separately: 'compiled shape|building|drop all' (NAT-I5) fails as built (F-0905)",
+   "evidence": [
+    "inspected:experiment/playbook-completion/models/breadth-b/inventory/09.json"
+   ],
+   "remaining": ""
+  },
+  "3.1-coverage": {
+   "status": "open",
+   "reason": "63 entry points derived from source; 15 have no covering statement: IVG.CypherEngine's helpers (Query, Scalar, GetLabels*, GetNodeCount, GetEdgeCount, NodeExists, GetLabelCounts*, InitSchema*, RebuildKG, IsReady; QueryJson/Query/Scalar run writes too, with no read_only) and Props.GetJson/LayoutOK. Background jobs (Gen.Build job, Exec.Part workers), the deploy DropAll and the namespace mode global are inventoried and covered.",
+   "evidence": [
+    "inspected:experiment/playbook-completion/models/breadth-b/inventory/09.json"
+   ],
+   "remaining": "statements for IVG.CypherEngine's helper methods (incl. that Query runs writes and InitSchema/RebuildKG are lifecycle writers) and the property reader's JSON accessor"
+  },
+  "3.1-intent": {
+   "status": "closed",
+   "reason": "HD-0901..HD-0904 have working dispositions (decisions.md) and intent-lane recovery files",
+   "evidence": [
+    "inspected:experiment/playbook-completion/decisions.md",
+    "inspected:experiment/playbook-completion/intent/HD-0901.md",
+    "inspected:experiment/playbook-completion/intent/HD-0902.md",
+    "inspected:experiment/playbook-completion/intent/HD-0903.md",
+    "inspected:experiment/playbook-completion/intent/HD-0904.md"
+   ],
+   "remaining": ""
+  },
+  "3.2-coverage": {
+   "status": "open",
+   "reason": "29 IRIS engine features listed in env_features with source lines; whether each is inside the orchestrator's IRIS 2026.1 contract is not yet decided here. Two are checked live by this lane: $ZCRC(x,7) = CRC-32 (b-09-probe) and cross-process read-uncommitted visibility (b-09-f0909); P-0903 did not reproduce on 2026.1 (b-09-f0904-sync-failed-build)",
+   "evidence": [
+    "live:b-09-probe",
+    "live:b-09-f0909-txn-visibility"
+   ],
+   "remaining": "map env_features into the IRIS contract (AUDITENV, orchestrator)"
+  },
+  "3.3-L1": {
+   "status": "open",
+   "reason": "explorer machines state the module's invariants (NAT-I3, T5.16, I5, X12, X11, B5.2, B1.11, I1) over abstract state; no Verus L1",
+   "evidence": [
+    "mc:m09-planc-reviewed",
+    "mc:m09-mode-reviewed",
+    "mc:m09-used-reviewed",
+    "mc:m09-gate-reviewed"
+   ],
+   "remaining": "Verus L1 for the plan cache and the native gate"
+  },
+  "3.3-L2": {
+   "status": "open",
+   "reason": "machine planc is over the real layout (entry $LB elements, src lines, per-entry lock, IVGC class, job builds, DropAll steps; Gen.cls cited per action) but explorer-only; the walk itself (Exec.RunA/Walk/Neighbours) is not modelled beyond the used-relationship set",
+   "evidence": [
+    "mc:m09-planc-as-built-collide-binding",
+    "mc:m09-planc-as-built-drop-shape"
+   ],
+   "remaining": "L2 of the walk and of answer parity with the SQL path"
+  },
+  "3.3-refinement": {
+   "status": "open",
+   "reason": "no refinement audit (explorer::refinement::audit) or proof between an L2 and an L1 for module 09",
+   "evidence": [],
+   "remaining": "bind planc to an L1 cache contract"
+  },
+  "3.3-controls": {
+   "status": "open",
+   "reason": "explorer controls caught (m09-planc-control-shared-name, -drop-nolock, m09-mode-control-unknown-job, m09-used-control-type-only, m09-gate-control-always-open); the gate asks for proof-rejected controls",
+   "evidence": [
+    "mc:m09-gate-control-always-open",
+    "mc:m09-mode-control-unknown-job",
+    "mc:m09-planc-control-drop-nolock",
+    "mc:m09-planc-control-shared-name",
+    "mc:m09-used-control-type-only"
+   ],
+   "remaining": "proof-level controls"
+  },
+  "3.3-model-check": {
+   "status": "closed",
+   "reason": "26 of 26 checks met their expectation, exhaustive within bounds: as-built violations reproduce F-0901, F-C0901, F-0902, F-0903, F-0905, F-0906; reviewed designs pass incl. AG EF progress; controls caught; sharpness witnesses reachable",
+   "evidence": [
+    "mc:m09-gate-as-built",
+    "mc:m09-gate-control-always-open",
+    "mc:m09-gate-positive-read",
+    "mc:m09-gate-reviewed",
+    "mc:m09-mode-as-built",
+    "mc:m09-mode-as-built-X11-B52",
+    "mc:m09-mode-control-unknown-job",
+    "mc:m09-mode-positive-sync",
+    "mc:m09-mode-reviewed",
+    "mc:m09-planc-as-built-collide-I3",
+    "mc:m09-planc-as-built-collide-binding",
+    "mc:m09-planc-as-built-collide-progress",
+    "mc:m09-planc-as-built-drop-I5",
+    "mc:m09-planc-as-built-drop-progress",
+    "mc:m09-planc-as-built-drop-shape",
+    "mc:m09-planc-as-built-single-pass",
+    "mc:m09-planc-control-drop-nolock",
+    "mc:m09-planc-control-shared-name",
+    "mc:m09-planc-positive-compiled-read",
+    "mc:m09-planc-positive-drop",
+    "mc:m09-planc-positive-ok",
+    "mc:m09-planc-reviewed",
+    "mc:m09-used-as-built",
+    "mc:m09-used-control-type-only",
+    "mc:m09-used-positive-done",
+    "mc:m09-used-reviewed"
+   ],
+   "remaining": "answer parity of the walk with the SQL path is not model-checked (shadow mode and the TCK are its evidence)"
+  },
+  "3.3a-writesets": {
+   "status": "failed",
+   "reason": "every (invariant, writer plan) pair over the plan cache is listed in invariant_writesets; NAT-I3/T5.16 vs For/Build and NAT-I5 vs DropAll/Build are open by product defects (F-0901, F-C0901, F-0905), NAT-X12 vs the operator mode Set by F-0903",
+   "evidence": [
+    "live:b-09-f0905-dropall-race",
+    "live:b-09-f0903-mode",
+    "mc:m09-planc-reviewed"
+   ],
+   "remaining": "fixes or decisions for F-0901/F-C0901/F-0905/F-0903"
+  },
+  "3.4-statements": {
+   "status": "open",
+   "reason": "the module's storage statements (entry Sets/Kill/Merge, class compile, Anchors/NamedEnds/Props SQL) are not proved equal to a model's evaluation",
+   "evidence": [],
+   "remaining": ""
+  },
+  "3.4-ownership": {
+   "status": "closed",
+   "reason": "single write owner: ^IVG.CypherCompiled and package IVGC are written only by Graph.KG.Cypher.Gen (For/Build/DropAll; grep of iris_src and iris_vector_graph at the pin finds no other writer; the deploy calls Gen.DropAll, schema.py:2939); ^IVG.CypherGen is configuration written by operators and tests (documented, docs/ADMIN_GUIDE.md:774-779); journal footprints show no other module's process writing them during module 09 runs",
+   "evidence": [
+    "live:b-09-footprint",
+    "inspected:iris_vector_graph/schema.py:2934-2941"
+   ],
+   "remaining": "a self-test for an ownership checker (none exists for this global)"
+  },
+  "3.4-storage-order": {
+   "status": "closed",
+   "reason": "1 storage-order site(s) in module 09's own files dispositioned (Exec.cls:1101 cardinality cap: existence-only); query.py sites [151, 588, 1818, 1835, 1837] lie outside the native routing span (2032-2250) and are module 08's; engine.py:576 (gate fact, cited) existence-only",
+   "evidence": [
+    "inspected:$RUN_DIR/checks/storage-order.json"
+   ],
+   "remaining": ""
+  },
+  "3.4-declared-reads": {
+   "status": "failed",
+   "reason": "the native path reads ^KG(\"label\") while its gate checks only the edge index (F-0906): a read from a store the gate does not establish as maintained; no read oracle validates the rest",
+   "evidence": [
+    "mc:m09-gate-as-built"
+   ],
+   "remaining": "gate on both indexes; a read-footprint oracle"
+  },
+  "3.5-handlers": {
+   "status": "open",
+   "reason": "no handler proofs; Exec.Run's lack of the FR-011 privilege check is recorded (F-0908)",
+   "evidence": [],
+   "remaining": ""
+  },
+  "3.5-lockplans": {
+   "status": "failed",
+   "reason": "lock plan: Build takes Lock +^IVG.CypherCompiled(h):0; For reads and overwrites entries without it; DropAll takes none. Live and model show the plan insufficient: F-0905 (b-09-f0905-dropall-race), F-C0901/F-0901 (m09-planc-as-built-collide-binding)",
+   "evidence": [
+    "live:b-09-f0905-dropall-race",
+    "mc:m09-planc-as-built-collide-binding",
+    "mc:m09-planc-reviewed"
+   ],
+   "remaining": "DropAll under the entry locks; Build re-check under its lock"
+  },
+  "3.5-decoders": {
+   "status": "failed",
+   "reason": "status maps: any native exception falls back to SQL with one warning per reason (query.py:2145-2152); NativeMismatch for shadow differences; plan JSON and row JSON decoded by the engine (unit tests b-09-unit). The namespace mode value is decoded unchecked (F-0903, b-09-f0903-mode); shadow's 'ordered' decision mis-classifies tied orders (F-0907, b-09-f0907-shadow-ties)",
+   "evidence": [
+    "run:b-09-unit",
+    "live:b-09-f0903-mode",
+    "live:b-09-f0907-shadow-ties"
+   ],
+   "remaining": "fix F-0903, F-0907"
+  },
+  "3.6-frame": {
+   "status": "open",
+   "reason": "frame obligations not stated",
+   "evidence": [],
+   "remaining": ""
+  },
+  "3.6-row-permutation": {
+   "status": "failed",
+   "reason": "native and SQL answers agree as bags (unit tests), but shadow mode compares tied ordered rows positionally and raises on a row permutation the query allows (F-0907)",
+   "evidence": [
+    "live:b-09-f0907-shadow-ties"
+   ],
+   "remaining": "fix F-0907"
+  },
+  "3.6-keys": {
+   "status": "failed",
+   "reason": "the plan entry key is a 32-bit CRC of the shape: two shapes share a key (P-0901 confirmed CRC-32; F-0901)",
+   "evidence": [
+    "live:b-09-probe",
+    "mc:m09-planc-as-built-collide-I3"
+   ],
+   "remaining": "a collision-free key"
+  },
+  "3.6-fk": {
+   "status": "failed",
+   "reason": "no SQL foreign keys in module 09's state; the entry -> class reference analogue breaks: an entry naming a class with no shape and a class left after DropAll (F-0905)",
+   "evidence": [
+    "live:b-09-f0905-dropall-race"
+   ],
+   "remaining": ""
+  },
+  "3.6-capacity": {
+   "status": "open",
+   "reason": "rows are paged (1000 per page, strings under 3.6 MB, Exec.cls:76-87, :1902-1910); workers at most 8 (Exec.cls:449-450); routes and translations at most 256 per engine (NAT-T7.9); compiled classes grow by one per new shape and nothing prunes them (NAT-T5.25) \u2014 no capacity bound or test",
+   "evidence": [
+    "inspected:iris_src/src/Graph/KG/Cypher/Exec.cls:449-450"
+   ],
+   "remaining": "a bound or a measured limit for compiled classes"
+  },
+  "3.7-trace-replay": {
+   "status": "open",
+   "reason": "journal traces captured for the cache writers (b-09-footprint, b-09-f0905-dropall-race) but not replayed through planc",
+   "evidence": [
+    "live:b-09-footprint"
+   ],
+   "remaining": "replay the journaled entry writes through the planc machine"
+  },
+  "3.7-lock-log": {
+   "status": "open",
+   "reason": "LOCK activity is not journaled; no lock log was captured",
+   "evidence": [],
+   "remaining": "capture ^$LOCK during a build"
+  },
+  "3.7-mutation": {
+   "status": "open",
+   "reason": "only model mutants (controls); no mutation testing of the product code",
+   "evidence": [],
+   "remaining": ""
+  },
+  "3.8-findings-disposed": {
+   "status": "closed",
+   "reason": "every original finding F-0901..F-0909 has an audit record with disposition and outcome; one new finding F-C0901",
+   "evidence": [
+    "inspected:experiment/playbook-completion/findings/audit/09.json"
+   ],
+   "remaining": ""
+  },
+  "5c-refusals": {
+   "status": "failed",
+   "reason": "X statements: NAT-X12 fails (F-0903, live); NAT-X11 holds (mc m09-mode-as-built-X11-B52; Gen.cls:28-39); NAT-X9 (plan version) and NAT-X13/X14 (shadow raises) and the planner's declines NAT-X1..X8 are covered by upstream unit tests run here (b-09-unit); NAT-X10 (unknown operator) inspected Exec.cls:66-69",
+   "evidence": [
+    "live:b-09-f0903-mode",
+    "run:b-09-unit",
+    "mc:m09-mode-as-built-X11-B52"
+   ],
+   "remaining": "fix F-0903"
+  },
+  "3.7-explorers": {
+   "status": "closed",
+   "reason": "module 09 explorer checks ran: 26/26 met",
+   "evidence": [
+    "mc:m09-gate-as-built",
+    "mc:m09-gate-control-always-open",
+    "mc:m09-gate-positive-read"
+   ],
+   "remaining": ""
+  },
+  "3.7-suites": {
+   "status": "open",
+   "reason": "Only module 09's upstream unit tests ran here (b-09-unit: 22 files, 419 tests, IRIS unreachable). The IRIS-backed suites (tests/e2e/test_253_*, test_257_*, TCK) were not rerun at the pin by this lane, so the gate cannot close on this evidence.",
+   "evidence": [
+    "run:b-09-unit"
+   ],
+   "remaining": "IRIS-backed e2e/integration/TCK suites for module 09 rerun at the pin with triage (validation lane).",
+   "review_note": "lane B integration review 2026-11-14: downgraded from closed (evidence kept unchanged)"
+  },
+  "3.7-e2e": {
+   "status": "open",
+   "reason": "The live checks used several IRIS processes (a dedicated native connection, a second reader inside an open transaction, job builds, worker split: b-09-f0909-txn-visibility, b-09-f0903-mode, b-09-footprint). These are targeted probes, not the end-to-end test runs on 1 and N application processes that the gate asks for.",
+   "evidence": [
+    "live:b-09-f0909-txn-visibility",
+    "live:b-09-f0903-mode",
+    "live:b-09-footprint"
+   ],
+   "remaining": "end-to-end runs on 1 and N application processes (multi-process distinguished from multi-node)",
+   "review_note": "lane B integration review 2026-11-14: downgraded from closed (evidence kept unchanged)"
+  },
+  "3.3-progress-controls": {
+   "status": "open",
+   "reason": "The AG EF progress property fails in as-built designs (m09-planc-as-built-collide-progress, -drop-progress) and holds in the reviewed design (m09-planc-reviewed). No progress-only mutant of the reviewed design was shown to fail only the progress property (the pattern of m08-txn-control-leak-level / -safety). The gate asks for proofs; none exist.",
+   "evidence": [
+    "mc:m09-planc-as-built-drop-progress",
+    "mc:m09-planc-reviewed"
+   ],
+   "remaining": "a progress-only control of the reviewed plan-cache design that keeps every safety invariant; Verus progress proofs",
+   "review_note": "lane B integration review 2026-11-14: downgraded from closed (evidence kept unchanged)"
+  }
+ },
+ "storage_order": [
+  {
+   "file": "iris_src/src/Graph/KG/Cypher/Exec.cls",
+   "line": 1101,
+   "sql": "Set tSQL = \"SELECT TOP 1001 s FROM Graph_KG.rdf_props WHERE \"\"key\"\" = ? AND val = ?\"",
+   "checker_kind": "candidate",
+   "disposition": "existence-only",
+   "reason": "a cardinality cap, not a prefix of the answer: SELECT TOP 1001 reads the candidates of a named-end walk; the result is used only when it holds at most 1000 rows, i.e. the whole result (Exec.cls:1110-1117 `Quit:tN>1000 0` falls back to the full walk), and the start-node test `Return:tC=pS 0` bails out the same way whichever rows are scanned; no answer depends on scan order"
+  },
+  {
+   "file": "iris_vector_graph/engine.py",
+   "line": 576,
+   "sql": "SELECT TOP 1 1 FROM {}.{} WHERE 1 = 0",
+   "checker_kind": "existence-only",
+   "disposition": "existence-only",
+   "reason": "gate fact cited by module 09 (owned by the engine): SELECT TOP 1 1 ... WHERE 1 = 0 asks only whether the Prepare is allowed (engine.py:559-586)",
+   "owned": false
+  }
+ ],
+ "invariant_writesets": [
+  {
+   "invariant": "NAT-I3 (a read never runs code written for another plan shape)",
+   "reads": [
+    "^IVG.CypherCompiled(h)",
+    "class IVGC.P<h>"
+   ],
+   "plans": [
+    {
+     "plan": "cls:Graph.KG.Cypher.Gen.For",
+     "writes": [
+      "entry",
+      "src"
+     ],
+     "discharge": "finding F-0901 (shared 32-bit name); reviewed mc m09-planc-reviewed"
+    },
+    {
+     "plan": "cls:Graph.KG.Cypher.Gen.Build",
+     "writes": [
+      "entry 1/4",
+      "class"
+     ],
+     "discharge": "finding F-0901, F-C0901; reviewed mc m09-planc-reviewed"
+    },
+    {
+     "plan": "cls:Graph.KG.Cypher.Gen.DropAll",
+     "writes": [
+      "entry",
+      "class"
+     ],
+     "discharge": "mc m09-planc-reviewed (a deleted class fails the run over to SQL, NAT-T5.26)"
+    },
+    {
+     "plan": "lifecycle:deploy-DropAll",
+     "writes": [
+      "entry",
+      "class"
+     ],
+     "discharge": "as DropAll"
+    }
+   ]
+  },
+  {
+   "invariant": "NAT-T5.16 (an ok entry runs only the class compiled from its own shape)",
+   "reads": [
+    "^IVG.CypherCompiled(h)",
+    "class IVGC.P<h>"
+   ],
+   "plans": [
+    {
+     "plan": "cls:Graph.KG.Cypher.Gen.Build",
+     "writes": [
+      "entry 1/4"
+     ],
+     "discharge": "finding F-C0901 (as built); mc m09-planc-reviewed (re-check under the lock)"
+    },
+    {
+     "plan": "cls:Graph.KG.Cypher.Gen.For",
+     "writes": [
+      "entry"
+     ],
+     "discharge": "finding F-0901"
+    }
+   ]
+  },
+  {
+   "invariant": "NAT-I4 (a compiled plan whose stamp is not the running stamp never runs)",
+   "reads": [
+    "entry stamp",
+    "rdf_props TimeChanged",
+    "Exec/Gen BuiltAt"
+   ],
+   "plans": [
+    {
+     "plan": "DDL on rdf_props (other modules)",
+     "writes": [
+      "class TimeChanged"
+     ],
+     "discharge": "inspected: every For compares the stamp (Gen.cls:71) and every run recomputes it (NAT-T5.6); not model-checked"
+    },
+    {
+     "plan": "lifecycle:deploy-DropAll",
+     "writes": [
+      "Exec/Gen BuiltAt"
+     ],
+     "discharge": "inspected"
+    }
+   ]
+  },
+  {
+   "invariant": "NAT-I5 (after a deploy no compiled plan made before it is left) and P-0907 entry shape",
+   "reads": [
+    "entry",
+    "class"
+   ],
+   "plans": [
+    {
+     "plan": "cls:Graph.KG.Cypher.Gen.DropAll",
+     "writes": [
+      "entry",
+      "class"
+     ],
+     "discharge": "finding F-0905 (b-09-f0905-dropall-race; mc m09-planc-as-built-drop-*); reviewed mc m09-planc-reviewed"
+    },
+    {
+     "plan": "cls:Graph.KG.Cypher.Gen.Build",
+     "writes": [
+      "entry 1/4",
+      "class"
+     ],
+     "discharge": "finding F-0905"
+    }
+   ]
+  },
+  {
+   "invariant": "NAT-X12 / NAT-B5.2 (compile mode)",
+   "reads": [
+    "^IVG.CypherGen(\"mode\")",
+    "^||IVG.CypherGenMode"
+   ],
+   "plans": [
+    {
+     "plan": "global:^IVG.CypherGen(\"mode\") (operator Set)",
+     "writes": [
+      "mode"
+     ],
+     "discharge": "finding F-0903 (b-09-f0903-mode; mc m09-mode-as-built)"
+    },
+    {
+     "plan": "cls:Graph.KG.Cypher.Gen.Mode",
+     "writes": [
+      "^||IVG.CypherGenMode"
+     ],
+     "discharge": "guard: Mode validates (Gen.cls:28-39); mc m09-mode-as-built-X11-B52"
+    }
+   ]
+  },
+  {
+   "invariant": "NAT-I1 (labels read from the adjacency index only where label writes keep it)",
+   "reads": [
+    "^KG(\"label\")",
+    "rdf_labels"
+   ],
+   "plans": [
+    {
+     "plan": "label writers (module 02/03) with idx_labels_adj absent",
+     "writes": [
+      "rdf_labels rows only"
+     ],
+     "discharge": "finding F-0906 (mc m09-gate-as-built)"
+    }
+   ]
+  },
+  {
+   "invariant": "NAT-I2 (a read's rows and scratch belong to its process and are cleared)",
+   "reads": [
+    "^||IVG.CypherOut",
+    "^||IVG.CypherRun",
+    "^IRIS.Temp.IVG.Cypher(share)"
+   ],
+   "plans": [
+    {
+     "plan": "cls:Graph.KG.Cypher.Exec.Run / Part",
+     "writes": [
+      "process-private",
+      "IRISTEMP share"
+     ],
+     "discharge": "journal (b-09-footprint): no AUDITB write by reads; inspected kills Exec.cls:39, :176, :284, :474, :505, :1916"
+    }
+   ]
+  }
+ ],
+ "env_features": [
+  {
+   "feature": "$ZCRC(string, 7) CRC-32 (equals zlib.crc32, b-09-probe)",
+   "used_for": "plan entry / class name key; interpreter's used-relationship set; memo and group hash buckets (exact subscripts there)",
+   "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:69; iris_src/src/Graph/KG/Cypher/Exec.cls:1243; iris_src/src/Graph/KG/Cypher/Exec.cls:817; iris_src/src/Graph/KG/Cypher/Exec.cls:828; iris_src/src/Graph/KG/Cypher/Exec.cls:1294; iris_src/src/Graph/KG/Cypher/Exec.cls:1384"
+  },
+  {
+   "feature": "JOB command (background process, timeout 0, one attempt)",
+   "used_for": "job-mode plan builds",
+   "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:92-99"
+  },
+  {
+   "feature": "Run-time class compilation: %SYSTEM.OBJ LoadStream/Compile/Delete/DeletePackage (not transactional; writes class dictionary and routine globals incl. ^oddDEP)",
+   "used_for": "compiled plans IVGC.P<h>, DropAll, deploy",
+   "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:184-215; iris_src/src/Graph/KG/Cypher/Gen.cls:225-230; iris_vector_graph/schema.py:2934-2941"
+  },
+  {
+   "feature": "A class (re)compiled or deleted takes effect at the next call in every process (P-0904)",
+   "used_for": "a running read meets a rebuilt or deleted class (NAT-T5.26; F-0901 mid-walk)",
+   "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:199; iris_src/src/Graph/KG/Cypher/Exec.cls:258"
+  },
+  {
+   "feature": "A failed compile in a process may leave it unable to prepare new SQL (P-0903, 2026.3; not seen on 2026.1)",
+   "used_for": "sync mode builds in the reader",
+   "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:101; iris_src/src/Graph/KG/Cypher/Gen.cls:205"
+  },
+  {
+   "feature": "LOCK +^G(sub):0 incremental exclusive lock with zero timeout and $TEST; released on process exit",
+   "used_for": "one build per entry",
+   "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:166-167; iris_src/src/Graph/KG/Cypher/Gen.cls:172; iris_src/src/Graph/KG/Cypher/Gen.cls:180; iris_src/src/Graph/KG/Cypher/Gen.cls:220"
+  },
+  {
+   "feature": "Process-private globals ^|| (not journaled, freed at process exit)",
+   "used_for": "result rows, walk scratch, property layout cache, process compile mode, memo, counters",
+   "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:35-36; iris_src/src/Graph/KG/Cypher/Exec.cls:176; iris_src/src/Graph/KG/Cypher/Props.cls:16-21; iris_src/src/Graph/KG/Cypher/Gen.cls:30-34; iris_src/src/Graph/KG/Cypher/Exec.cls:817"
+  },
+  {
+   "feature": "%SYSTEM.WorkMgr work queues (worker processes with the caller's namespace and roles, WaitForComplete; P-0905)",
+   "used_for": "parallel native reads",
+   "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:467-476"
+  },
+  {
+   "feature": "^IRIS.Temp globals (IRISTEMP database, not journaled, shared across processes) and $Increment on them",
+   "used_for": "worker result shares",
+   "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:451-452; iris_src/src/Graph/KG/Cypher/Exec.cls:578; iris_src/src/Graph/KG/Cypher/Exec.cls:1889"
+  },
+  {
+   "feature": "$Increment on globals (atomic, not rolled back)",
+   "used_for": "result tags, share ids, sequence numbers",
+   "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:35; iris_src/src/Graph/KG/Cypher/Exec.cls:451; iris_src/src/Graph/KG/Cypher/Exec.cls:1889"
+  },
+  {
+   "feature": "Read-uncommitted visibility across processes for globals and SQL at default isolation (P-0002)",
+   "used_for": "native reads take no lock and no snapshot; see a caller's and other writers' uncommitted data (b-09-f0909)",
+   "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:999-1094; iris_vector_graph/_engine/query.py:2202-2224"
+  },
+  {
+   "feature": "Dynamic SQL from ObjectScript (%SQL.Statement %ExecDirect, %Prepare, %SQLCODE) inside a native run",
+   "used_for": "anchors, named ends, property fallback",
+   "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:866-869; iris_src/src/Graph/KG/Cypher/Exec.cls:897-899; iris_src/src/Graph/KG/Cypher/Exec.cls:1109; iris_src/src/Graph/KG/Cypher/Props.cls:64-70; iris_src/src/Graph/KG/Cypher/Props.cls:112-118"
+  },
+  {
+   "feature": "Class dictionary SQL (%Dictionary.CompiledStorage/CompiledStorageIndex/CompiledIndex/CompiledStorageDataValue/CompiledClass.TimeChanged/CompiledProperty) readable by the role",
+   "used_for": "property reader layout and stamp; val_key presence",
+   "source": "iris_src/src/Graph/KG/Cypher/Props.cls:29-41; iris_src/src/Graph/KG/Cypher/Props.cls:106-110; iris_src/src/Graph/KG/Cypher/Exec.cls:888; iris_src/src/Graph/KG/Cypher/Exec.cls:1103"
+  },
+  {
+   "feature": "Direct global access to a SQL table's storage (rdf_props data/index globals, $List slot) and name indirection @",
+   "used_for": "property reads without SQL; generated code reads storage globals by name",
+   "source": "iris_src/src/Graph/KG/Cypher/Props.cls:56-60; iris_src/src/Graph/KG/Cypher/Exec.cls:131-132"
+  },
+  {
+   "feature": "TimeChanged of a class moves on every recompile including DDL (P-0906)",
+   "used_for": "plan stamp invalidation",
+   "source": "iris_src/src/Graph/KG/Cypher/Props.cls:106-110; iris_src/src/Graph/KG/Cypher/Gen.cls:136-139"
+  },
+  {
+   "feature": "$LIST semantics: SET $LIST pads undefined elements; $LIST of an undefined element raises <NULL VALUE>; $ListGet does not (P-0907)",
+   "used_for": "plan entries",
+   "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:71; iris_src/src/Graph/KG/Cypher/Gen.cls:207; iris_src/src/Graph/KG/Cypher/Gen.cls:210; iris_src/src/Graph/KG/Cypher/Gen.cls:248-251"
+  },
+  {
+   "feature": "Functional indexes that maintain ^KG from rdf_edges/rdf_labels row writes in the row's transaction (P-0902)",
+   "used_for": "adjacency index the native path reads",
+   "source": "iris_vector_graph/engine.py:703-724; iris_vector_graph/schema.py:769-782"
+  },
+  {
+   "feature": "SQL privilege refusal at Prepare (SQLCODE -99) as the privilege probe",
+   "used_for": "native gate",
+   "source": "iris_vector_graph/engine.py:559-586"
+  },
+  {
+   "feature": "objectgenerator methods (compile-time constants)",
+   "used_for": "BuiltAt stamps",
+   "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:25-29; iris_src/src/Graph/KG/Cypher/Gen.cls:53-57"
+  },
+  {
+   "feature": "$ClassMethod dynamic dispatch",
+   "used_for": "calling the compiled Walk1",
+   "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:199; iris_src/src/Graph/KG/Cypher/Exec.cls:258"
+  },
+  {
+   "feature": "%SYS.System.WriteToConsoleLog (messages.log)",
+   "used_for": "build failures, refusals, compile-off notices",
+   "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:177; iris_src/src/Graph/KG/Cypher/Gen.cls:212; iris_src/src/Graph/KG/Cypher/Exec.cls:165"
+  },
+  {
+   "feature": "$System.Encryption.SHAHash(256) and Base64Encode",
+   "used_for": "digest of a plan's lines (R311)",
+   "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:147-157"
+  },
+  {
+   "feature": "%Library.DynamicObject/DynamicArray JSON (%FromJSON/%ToJSON), long strings up to 3.6 MB",
+   "used_for": "plans in, rows out, paging (FR-015)",
+   "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:34; iris_src/src/Graph/KG/Cypher/Exec.cls:76-87; iris_src/src/Graph/KG/Cypher/Exec.cls:1902-1910"
+  },
+  {
+   "feature": "$Horolog / $ZTimestamp / $ZDateTime",
+   "used_for": "pending-entry age (120 s), build stamps",
+   "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:141-144; iris_src/src/Graph/KG/Cypher/Gen.cls:55"
+  },
+  {
+   "feature": "String collation and the sorts-after operator ]] for sort keys and key ranges",
+   "used_for": "ORDER BY trimming, scan chunks",
+   "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:250; iris_src/src/Graph/KG/Cypher/SortKey.cls:9-151"
+  },
+  {
+   "feature": "%Stream.GlobalCharacter",
+   "used_for": "class source stream for LoadStream",
+   "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:184-203"
+  },
+  {
+   "feature": "Embedded Python methods ([Language = python]) importing the Python package inside IRIS",
+   "used_for": "IVG.CypherEngine",
+   "source": "iris_src/src/IVG/CypherEngine.cls:56-230"
+  },
+  {
+   "feature": "Native API over DB-API connections (classMethodValue; a dedicated connection is another server process)",
+   "used_for": "engine's native link",
+   "source": "iris_vector_graph/engine.py:1894-1942; iris_vector_graph/_engine/query.py:2206-2224"
+  },
+  {
+   "feature": "Number of CPUs (Graph.KG.VarLength.CPUs) and Community's connection/core limits",
+   "used_for": "worker count (at most 8)",
+   "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:449-450"
+  }
+ ],
+ "counts": {
+  "entry_points": 63,
+  "omissions": 15,
+  "cells": 57,
+  "cells_without_entry_point": 0,
+  "footprints": 63,
+  "footprints_journal_validated": 15,
+  "footprint_mismatches": 0,
+  "model_checks": 26,
+  "model_checks_met": 26,
+  "model_checks_by_design": {
+   "as-built": {
+    "met": 11,
+    "not_met": 0
+   },
+   "control": {
+    "met": 5,
+    "not_met": 0
+   },
+   "positive": {
+    "met": 6,
+    "not_met": 0
+   },
+   "reviewed": {
+    "met": 4,
+    "not_met": 0
+   }
+  },
+  "findings_original": 9,
+  "findings_new": 1,
+  "storage_order_sites": 2,
+  "env_features": 29,
+  "registered_runs": [
+   "b-09-f0901-collision",
+   "b-09-f0902-collision",
+   "b-09-f0903-mode",
+   "b-09-f0904-sync-failed-build",
+   "b-09-f0905-dropall-race",
+   "b-09-f0906-index-facts",
+   "b-09-f0907-shadow-ties",
+   "b-09-f0909-txn-visibility",
+   "b-09-footprint",
+   "b-09-probe",
+   "b-09-unit"
+  ]
+ },
+ "registered_runs": [
+  "b-09-f0901-collision",
+  "b-09-f0902-collision",
+  "b-09-f0903-mode",
+  "b-09-f0904-sync-failed-build",
+  "b-09-f0905-dropall-race",
+  "b-09-f0906-index-facts",
+  "b-09-f0907-shadow-ties",
+  "b-09-f0909-txn-visibility",
+  "b-09-footprint",
+  "b-09-probe",
+  "b-09-unit"
+ ]
+}

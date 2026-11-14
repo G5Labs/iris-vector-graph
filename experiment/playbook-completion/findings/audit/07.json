@@ -1,0 +1,571 @@
+{
+ "module": "07",
+ "lane": "breadth-b",
+ "pin": "3eaa79cf",
+ "summary": {
+  "original_findings": 11,
+  "by_disposition": {
+   "reproduced-live": 9,
+   "reproduced-test": 2
+  },
+  "by_outcome": {
+   "product-defect": 10,
+   "intent-undecided": 1
+  },
+  "new_findings": 3,
+  "new_by_outcome": {
+   "product-defect": 3
+  }
+ },
+ "findings": [
+  {
+   "id": "F-0701",
+   "title": "BM25 Build and Drop write without the write lock or a transaction",
+   "intended": "ADR-0007 (docs/adr/0007-bm25-df-and-doc-record-schema-2.md:5): schema 2 'does every write under an index-level lock in a transaction'; spec 044 FR-016/FR-018 (specs/044-bm25-index/spec.md:162-164): df, N, totalLen consistent 'at every committed point'; FR-019 (:165) two writers never interleave; decisions.md HD-0701 working answer: serialize index modifications and publish a complete generation or unavailable, including crash.",
+   "observed": "Live (b-07-f0701-race): an Insert from a second process landed during a 3000-node Build; final N=3000/totalLen=12000 against 3001 doc records summing 12003 (TXT-I2 broken, the inserted doc searchable but uncounted); a concurrent reader saw N=1, schema 2 mid-build. Journal: Build 30008 records, none in a transaction; Insert one transaction. Model: m07-bm25-as-built-I2/-I5 (insert during build), m07-bm25-as-built-settle (Drop during Build leaves a header over no postings), m07-bm25-as-built-quiesced-crash (a stopped build then an Insert breaks I2 even with operators keeping writers apart); reviewed design m07-bm25-reviewed passes; controls caught.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-07-f0701-race"
+    },
+    {
+     "kind": "live",
+     "ref": "b-07-fp-writers"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-as-built-I2"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-as-built-I5"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-as-built-settle"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-as-built-quiesced-crash"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-reviewed"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/BM25Index.cls:97-175"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/BM25Index.cls:587-591"
+    }
+   ],
+   "gates": [
+    "3.3-L2",
+    "3.5-lock-plans",
+    "3.7-statement-log-vs-lock-plan",
+    "3.3a-writesets"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Per HD-0701: Build takes the write lock for its run, writes a shadow generation and publishes it in one step (or sets a building flag that writers refuse); Drop takes the lock; a crash leaves the old generation or an explicit unavailable state.",
+   "notes": "Upgrade's schema-1 path (Build or Drop during Upgrade) is covered by the model only: the pin's API cannot create a schema-1 index for a live run.",
+   "module": "07",
+   "original_ref": "experiment/playbook-uplift/findings/07.md#F-0701"
+  },
+  {
+   "id": "F-0702",
+   "title": "Erasure leaves BM25 indexes holding an erased graph's terms and node ids",
+   "intended": "CONTEXT.md:198-208 (erasure removes content from every store that holds it); ADR-0004; Graph.KG.GraphStores comment 'no answer outlives erased content' (iris_src/src/Graph/KG/GraphStores.cls:112-115); TXT-I8.",
+   "observed": "Live (b-07-f0702-f0703): after erase_graph('b07g2') (0 node rows left; journal footprint ^KG, ^NKG, docs, nodes, rdf_labels, rdf_props, no ^BM25Idx), bm25_search on the index built for b07g2 still answers both erased node ids with their scores and the term stays in df; Info unchanged.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-07-f0702-f0703"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Eraser.cls:138-147"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/GraphStores.cls:26-133"
+    }
+   ],
+   "gates": [
+    "3.3a-writesets",
+    "3.6-composition"
+   ],
+   "severity": "S1",
+   "confidence": "high",
+   "remedy": "List ^BM25Idx in GraphStores.Inventory scoped by its recorded graph and drop or prune every index built for the erased graph inside the erase (decisions.md HD-0601 style ownership for graph-owned derived stores).",
+   "notes": "Borders the orchestrator's erasure module (12): the eraser is not in module 07's scope; the BM25 store is.",
+   "module": "07",
+   "original_ref": "experiment/playbook-uplift/findings/07.md#F-0702"
+  },
+  {
+   "id": "F-0703",
+   "title": "A BM25 index goes stale silently when node text changes",
+   "intended": "CONTEXT.md:109-114 (a rebuilt store is current or says it is stale; SYS-I8); TXT-I6.",
+   "observed": "Live (b-07-f0702-f0703): after delete_node('b07_s1') the index built for its graph still answers b07_s1 for its old text; bm25_info is byte-identical before and after (no staleness signal). docs/USER_GUIDE.md:893-894 leaves maintenance to the caller (bm25_insert/bm25_delete).",
+   "disposition": "reproduced-live",
+   "outcome": "intent-undecided",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-07-f0702-f0703"
+    },
+    {
+     "kind": "inspected",
+     "ref": "docs/USER_GUIDE.md:893-894"
+    }
+   ],
+   "gates": [
+    "3.3a-writesets"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Either a staleness signal (graph-version token recorded at build and compared in Info/Search) or a recorded SYS-I8 exemption for caller-maintained indexes.",
+   "notes": "The behaviour is reproduced; whether it is a defect depends on whether a BM25 index is a 'rebuilt store' under SYS-I8 or a caller-maintained index (USER_GUIDE). No decision in decisions.md settles it: working assumption = defect against SYS-I8 unless the exemption is recorded.",
+   "module": "07",
+   "original_ref": "experiment/playbook-uplift/findings/07.md#F-0703"
+  },
+  {
+   "id": "F-0704",
+   "title": "A refused index-handle build has already destroyed the old BM25 index",
+   "intended": "SYS-I3 / TXT-X2: a refused command leaves every store as it was (ontology/07 TXT-X2).",
+   "observed": "Live (b-07-f0704): engine.index('b07h').build(properties=['no_such_property']) raised IndexNotBuiltError after Build had replaced the 2-document index with an empty header (N=0, no doc records); a search then answers []. Model: m07-bm25-as-built-X2(-existing); reviewed (refuse before writing) passes; control m07-bm25-control-late-refusal caught.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-07-f0704"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-as-built-X2-existing"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-reviewed"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/vector.py:299-310"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/BM25Index.cls:99-111"
+    }
+   ],
+   "gates": [
+    "3.5-handlers",
+    "3.3-L2"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Check the property list and the row count before killing, or build under a temporary name and swap.",
+   "notes": "",
+   "module": "07",
+   "original_ref": "experiment/playbook-uplift/findings/07.md#F-0704"
+  },
+  {
+   "id": "F-0705",
+   "title": "An index with no recorded graph is read as the default graph's own index",
+   "intended": "TXT-B8.3 (an index whose graph is not known is never taken as the default graph's own index); decisions.md HD-0703 (never consult another graph's index); CONTEXT.md:27-43 (graph isolation).",
+   "observed": "Live (b-07-f0705-f0707): an index created by bm25_insert has no cfg graph subscript; Info answers graph ''; a fresh engine's _index_graph answers ''; default-graph kg_RRF_FUSE answered node b07_n3, which exists only in graph b07g3; Cypher ivg.bm25.search without USE GRAPH labels its row graph_id ''. Model m07-leg-as-built-fusion-unknown / -label; reviewed passes.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-07-f0705-f0707"
+    },
+    {
+     "kind": "live",
+     "ref": "b-07-fp-writers"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-leg-as-built-fusion-unknown"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-leg-as-built-label"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-leg-reviewed"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/BM25Index.cls:608-612"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/vector.py:164-226"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher/translator.py:3125-3142"
+    }
+   ],
+   "gates": [
+    "3.4-declared-reads",
+    "3.5-decoders"
+   ],
+   "severity": "S1",
+   "confidence": "high",
+   "remedy": "Info answers graph null when the subscript is absent; Insert records the graph (or refuses to create an index); _index_graph treats null as unknown.",
+   "notes": "",
+   "module": "07",
+   "original_ref": "experiment/playbook-uplift/findings/07.md#F-0705"
+  },
+  {
+   "id": "F-0706",
+   "title": "The stopword node __stop__ is listed and writable as a BM25 index",
+   "intended": "decisions.md HD-0704 working answer: reserve the stopword name and reject it at public index-management entry points; spec 044 Edge Cases (specs/044-bm25-index/spec.md:274) names sanitize_identifier.",
+   "observed": "Live (b-07-f0706): bm25_build('__stop__', ...) accepted (BM25BuildInput accepts it, probe b-07-probe-fusion); Info('__stop__') answers an index; bm25_drop('__stop__') deletes the 77-word stopword list (rebuilt by the next tokenize, b-07-fp-writers). The embedded-mode registry walk (vector.py:84-104) was not exercised: it needs iris.gref inside IRIS embedded Python; over the Native API the registry uses BM25Index.List, which skips the name.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-07-f0706"
+    },
+    {
+     "kind": "live",
+     "ref": "b-07-fp-writers"
+    },
+    {
+     "kind": "probe",
+     "ref": "b-07-probe-fusion"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/vector.py:84-104"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_validate.py:163-179"
+    }
+   ],
+   "gates": [
+    "3.5-decoders",
+    "3.4-ownership"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Refuse __stop__ in BM25BuildInput and in Build/Insert/Delete/Drop; skip it in the registry walk; or move the stopwords to their own global.",
+   "notes": "See F-C0701 for a further consequence observed live.",
+   "module": "07",
+   "original_ref": "experiment/playbook-uplift/findings/07.md#F-0706"
+  },
+  {
+   "id": "F-0707",
+   "title": "Under USE GRAPH, BM25 calls do not check that the index was built for that graph",
+   "intended": "TXT-I7 (with a graph in scope, BM25 calls answer only from an index built for that graph); CONTEXT.md:27-43; HD-0703.",
+   "observed": "Live (b-07-f0705-f0707): USE GRAPH 'b07g1' CALL ivg.bm25.search('b07g2idx','pineapple',5) answered b07g2's node b07_g2a (the generated SQL has no graph check on the index; labels/props joined for b07g1 come back empty). ivg.retrieve could not be run live (no embedder configured: blocked-access for that arm). Model m07-leg-as-built-scope; reviewed passes; control m07-leg-control-no-scope-check caught.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-07-f0705-f0707"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-leg-as-built-scope"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-leg-reviewed"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-leg-control-no-scope-check"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher/translator.py:3133-3134"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher/translator.py:3283-3292"
+    }
+   ],
+   "gates": [
+    "3.4-declared-reads",
+    "3.5-handlers"
+   ],
+   "severity": "S1",
+   "confidence": "high",
+   "remedy": "Compare the index's recorded graph with the graph context and refuse a mismatch or an unknown graph, in ivg.bm25.search and ivg.retrieve.",
+   "notes": "ivg.retrieve's arm: inspected and modelled, not live (embedder dependency).",
+   "module": "07",
+   "original_ref": "experiment/playbook-uplift/findings/07.md#F-0707"
+  },
+  {
+   "id": "F-0708",
+   "title": "Spec 044 states behaviour the code no longer has",
+   "intended": "specs/044-bm25-index/spec.md (Status Draft): FR-002 (:148) stored avgdl/idf; FR-010 (:156) Info shape; US2 sc.4 (:78) empty query returns []; US4 sc.2 (:109) warning on a dropped index; Edge Cases (:274) sanitize_identifier; FR-012 (:158) kg_TXT falls back to BM25 'default'.",
+   "observed": "Run (b-07-unit): tests/unit/test_bm25_index.py::TestBM25IndexUnit::test_bm25_search_empty_query_raises_validation_error passes (bm25_search raises on an empty query). Source: schema 2 stores no idf/avgdl (BM25Index.cls:6-22); kg_TXT has no BM25 fallback (vector.py:917-1054); names are not sanitized (F-0706 live).",
+   "disposition": "reproduced-test",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "run",
+     "ref": "b-07-unit"
+    },
+    {
+     "kind": "inspected",
+     "ref": "specs/044-bm25-index/spec.md:78-158"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/BM25Index.cls:6-22"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/vector.py:917-1054"
+    }
+   ],
+   "gates": [
+    "3.1-statements",
+    "3.8-account"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Amend spec 044 to the 4.2/4.6.5 behaviour or implement what it keeps (HD-0703 keeps FR-012 for the matching graph); rename TestBM25IndexE2E::test_kgtxt_returns_bm25_scores_not_like_scores.",
+   "notes": "A documentation conflict (S3): the product disagrees with its own (draft) spec.",
+   "module": "07",
+   "original_ref": "experiment/playbook-uplift/findings/07.md#F-0708"
+  },
+  {
+   "id": "F-0709",
+   "title": "Fused searches can hide a failed leg",
+   "intended": "TXT-B13.7 (the fused search raises and names the leg), TXT-B17.3, TXT-B18.2; spec 044 US7 scenario 9 (text leg contributes); fusion.py:165-168 rationale.",
+   "observed": "Live (b-07-f0709): engine kg_RRF_FUSE for a graph with docs but no BM25 index answered [] with no error while kg_TXT answered two matches; (b-07-f0705-f0707) a vector leg the route refused (0-dim vector) also dropped the text leg, answering []. Probe (b-07-probe-fusion, product code with stub legs): multi_modal_search drops a raising vector leg silently; adaptive_search answers [] when every path fails. Documented in docs/KNOWN_ISSUES.md:172-181 for the engine path (planned 4.7.1).",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-07-f0709"
+    },
+    {
+     "kind": "live",
+     "ref": "b-07-f0705-f0707"
+    },
+    {
+     "kind": "probe",
+     "ref": "b-07-probe-fusion"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/vector.py:1421-1436"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/fusion.py:144-152"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/fusion.py:301-310"
+    }
+   ],
+   "gates": [
+    "3.5-status-maps"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Raise naming the leg on every fusion path (the 4.7.1 plan), or return a field naming the legs that ran.",
+   "notes": "Side observation for module 06: multi_modal_search with query_vector='not-a-vector' got [] from kg_KNN_VEC without an exception (live b-07-f0709 log).",
+   "module": "07",
+   "original_ref": "experiment/playbook-uplift/findings/07.md#F-0709"
+  },
+  {
+   "id": "F-0710",
+   "title": "Weighted fusion's default weights go to legs by position, not by kind",
+   "intended": "iris_vector_graph/fusion.py:216 comment: vector=0.5, text=0.3, graph=0.2.",
+   "observed": "Probe (b-07-probe-fusion): a text-only weighted call with graph expansion scores text 0.625 and graph 0.375 (weights 0.5/0.3 normalized) where the comment's 0.3/0.2 give 0.6/0.4.",
+   "disposition": "reproduced-test",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "probe",
+     "ref": "b-07-probe-fusion"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/fusion.py:214-219"
+    }
+   ],
+   "gates": [
+    "3.5-handlers"
+   ],
+   "severity": "S4",
+   "confidence": "high",
+   "remedy": "Map default weights from search_modes.",
+   "notes": "Reproduced by an audit probe that executes the product's fusion code in-process with stub legs (registry kind probe; not an upstream test, no IRIS). HybridSearchFusion's support status is HD-0705 (assumption: compatibility surface).",
+   "module": "07",
+   "original_ref": "experiment/playbook-uplift/findings/07.md#F-0710"
+  },
+  {
+   "id": "F-0711",
+   "title": "TextSearchEngine answers across graphs and cannot reach iFind",
+   "intended": "TXT-B19.1 (its searches answer from one graph only); CONTEXT.md:27-43; HD-0705 assumption (exported helpers are compatibility surfaces whose scope must be qualified).",
+   "observed": "Live (b-07-f0711): extract_entity_names and search_with_context returned nodes of graphs b07g1 and b07g2 together; search_documents raised SQLCODE -30 on SQLUSER.DOCS (unqualified table) in both the %FIND path and its LIKE fallback and answered []. tests/unit/test_ifind_and_fusion_sql.py (run b-07-unit) documents %FIND(col, ?) as not IRIS syntax.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-07-f0711"
+    },
+    {
+     "kind": "run",
+     "ref": "b-07-unit"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/text_search.py:31-256"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/__init__.py:93-125"
+    }
+   ],
+   "gates": [
+    "3.4-declared-reads"
+   ],
+   "severity": "S1",
+   "confidence": "high",
+   "remedy": "Per HD-0705: add a graph argument and predicate to every query, use %ID %FIND search_index(...) on the schema-qualified docs table, or deprecate the export.",
+   "notes": "",
+   "module": "07",
+   "original_ref": "experiment/playbook-uplift/findings/07.md#F-0711"
+  }
+ ],
+ "new_findings": [
+  {
+   "id": "F-C0701",
+   "title": "An index built under the stopword name makes index-structure words stopwords in every BM25 index",
+   "intended": "TXT-D1 (a stopword is one of 77 common English words); HD-0704 (reserve the stopword name).",
+   "observed": "Live (b-07-f0706): after bm25_build('__stop__', ['name'], graph='b07g1') the words 'doc', 'tf', 'len' (and 'cfg', 'df') are stopwords for every index in the namespace: a rebuild of index b07w drops them (searches for each answer [] where they answered b07_w1 before) because Tokenize's stopword test $Data(^BM25Idx(\"__stop__\", tok)) (BM25Index.cls:83) is true for the index's own subscripts. The effect lasts until the __stop__ index is dropped (which also deletes the stopword list until the next tokenize).",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-07-f0706"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/BM25Index.cls:41-50"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/BM25Index.cls:79-86"
+    }
+   ],
+   "gates": [
+    "3.4-ownership",
+    "3.5-decoders"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Refuse the name (HD-0704) or move the stopword list to its own global.",
+   "notes": "Same root cause as F-0706 (the stopword list shares the index key space); distinct impact: silent wrong answers in other indexes.",
+   "module": "07",
+   "original_ref": null
+  },
+  {
+   "id": "F-C0702",
+   "title": "A BM25 Insert or Delete that fails inside a caller's transaction rolls the caller's transaction back",
+   "intended": "iris_vector_graph/_write_txn.py:1-30 (since 4.6.4 an IVG write nested in a caller's transaction undoes only its own level; TROLLBACK 1 nests, SQL ROLLBACK ends every level); spec 044 FR-019 (a failure leaves the index as it was); SYS-I3.",
+   "observed": "Live (b-07-fc0702-nested-rollback): SQL START TRANSACTION and a caller INSERT into Graph_KG.docs ($TLEVEL 1); bm25_insert with a 604-character document id fails with <SUBSCRIPT> inside Insert's Try; $TLEVEL is then 0 and the caller's uncommitted row is gone, with no error naming the rollback. Control: a valid bm25_insert in the same setting returns to $TLEVEL 1 and keeps the caller's row. Cause: `If $TLevel > 0 TRollback` with no level (BM25Index.cls:487, :508).",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-07-fc0702-nested-rollback"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/BM25Index.cls:486-490"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/BM25Index.cls:507-511"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_write_txn.py:1-30"
+    }
+   ],
+   "gates": [
+    "3.5-handlers",
+    "3.6-composition",
+    "3.2-env-contract"
+   ],
+   "severity": "S1",
+   "confidence": "high",
+   "remedy": "Roll back only the method's own level (TROLLBACK 1, and only when it started one), as _write_txn does; a test that fails an Insert inside a caller transaction.",
+   "notes": "Any error inside the Try reaches it: RequireWritable after an Upgrade started, <SUBSCRIPT> on long ids or tokens, <UNDEFINED> after a concurrent Drop. The same bare TRollback appears once in iris_src/src/Graph/KG/TraversalBuild.cls (module 04, not audited here).",
+   "module": "07",
+   "original_ref": null
+  },
+  {
+   "id": "F-C0703",
+   "title": "Text-search top-k answers and fused ranks depend on scan order",
+   "intended": "Playbook principle 5 / gate 3.4-storage-order (never depend on storage or insertion order); decisions.md HD-0603/HD-0702 (a ranking contract with defined tie behaviour).",
+   "observed": "Source (storage-order check $RUN_DIR/checks/storage-order.json, dispositions in modules/07.json storage_order): engine kg_TXT's LIKE fallback takes `SELECT TOP k d.id, 1.0 AS score ... WHERE <LIKE terms> AND <graph>` with no ORDER BY (iris_vector_graph/_engine/vector.py:1041-1046), so which k matching documents answer, and their ranks, are the scan's; this is the path that ran on AUDITB (every kg_TXT score 1.0 in b-07-f0709, iFind index unusable). The iFind path (vector.py:979-985, :998-1003), the generated kg_TXT procedure (iris_vector_graph/schema.py:2484-2520) and kg_RRF_FUSE's ROW_NUMBER() OVER (ORDER BY score DESC) legs (schema.py:2557-2572) order by a score that ties (an occurrence count), so the TOP cut and the ranks among tied documents are the scan's; the ranks feed fusion (RRF adds 1/(c + rank)). TextSearchEngine's three helper queries order by (score, length) or (score, confidence) only (text_search.py:111-127, :165-178, :212-233). The engine's kg_RRF_FUSE sorts a Python set by score with no tie key (vector.py:1438-1452), so its tie order follows string-hash order, which differs per process.",
+   "disposition": "confirmed-source",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/vector.py:1041-1046"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/vector.py:979-1003"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/schema.py:2484-2578"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/text_search.py:111-233"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/vector.py:1438-1452"
+    },
+    {
+     "kind": "live",
+     "ref": "b-07-f0709"
+    }
+   ],
+   "gates": [
+    "3.4-storage-order",
+    "3.6-row-permutation"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Order every top-k text query by a total key (score DESC, then the node id), give ROW_NUMBER() the same tie key, and break ties in the engine fusion by node id; a test that inserts tied documents in two orders and compares answers.",
+   "notes": "Not demonstrated live (two insertion orders) under the follow-up's no-IRIS instruction; the dependency is visible in the SQL text. The LIKE fallback is documented as unranked (scores 1.0, vector.py:925-930), but which documents survive the cut is not documented.",
+   "module": "07",
+   "original_ref": null
+  }
+ ]
+}

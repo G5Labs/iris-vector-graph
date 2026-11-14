@@ -1,0 +1,214 @@
+{
+ "cls": {
+  "Graph.KG.CypherFn": ".",
+  "IVG.Percentile": ".",
+  "Graph.KG.SqlProcs": "^CypherFn"
+ },
+ "py": {
+  "iris_vector_graph/cypher/read_only.py": ".",
+  "iris_vector_graph/cypher/parser.py": "^parse_query$",
+  "iris_vector_graph/cypher/translator.py": "^(translate_to_sql|set_schema_prefix|get_schema_prefix)$",
+  "iris_vector_graph/cypher/aql/__init__.py": "^translate_aql$",
+  "iris_vector_graph/operators.py": ".",
+  "iris_vector_graph/stores/iris_sql_store.py": "^IRISGraphStore\\.(execute_transaction|execute_sql)$"
+ },
+ "engine": {
+  "iris_vector_graph/_engine/query.py": "^(execute_cypher|execute_aql)$",
+  "iris_vector_graph/_engine/algorithms.py": "^kg_GRAPH_PATH$",
+  "iris_vector_graph/_engine/fhir.py": "^(map_sql_table|map_sql_relationship)$"
+ },
+ "cypher": "^(db|dbms|apoc|gds)\\.",
+ "cli": "^query$",
+ "extra": [
+  {
+   "id": "extra:http POST /api/cypher",
+   "kind": "caller-route",
+   "path": "iris_vector_graph/cypher_api.py",
+   "start": 351,
+   "end": 378,
+   "names": [
+    "/api/cypher"
+   ],
+   "owner": "module 16 (interfaces); calls execute_cypher"
+  },
+  {
+   "id": "extra:bolt RUN",
+   "kind": "caller-protocol",
+   "path": "iris_vector_graph/bolt_server.py",
+   "start": 575,
+   "end": 590,
+   "names": [
+    "bolt_server"
+   ],
+   "owner": "module 16; calls execute_cypher"
+  },
+  {
+   "id": "extra:IVG.CypherEngine.Query",
+   "kind": "caller-objectscript",
+   "path": "iris_src/src/IVG/CypherEngine.cls",
+   "start": 100,
+   "end": 150,
+   "names": [
+    "IVG.CypherEngine",
+    "CypherEngine"
+   ],
+   "owner": "module 09 scope line; calls execute_cypher"
+  },
+  {
+   "id": "extra:cypher SHOW/EXPLAIN/DDL no-op",
+   "kind": "text-shortcut",
+   "path": "iris_vector_graph/_engine/query.py",
+   "start": 1873,
+   "end": 1897,
+   "names": [
+    "CREATE CONSTRAINT",
+    "SHOW "
+   ],
+   "owner": "08"
+  },
+  {
+   "id": "extra:cypher text shortcuts",
+   "kind": "text-shortcut",
+   "path": "iris_vector_graph/_engine/query.py",
+   "start": 1807,
+   "end": 1856,
+   "names": [
+    "text shortcut"
+   ],
+   "owner": "08"
+  },
+  {
+   "id": "extra:sql/operators.sql",
+   "kind": "sql-file-unloaded",
+   "path": "sql/operators.sql",
+   "start": 1,
+   "end": 1,
+   "names": [
+    "sql/operators.sql",
+    "operators.sql"
+   ],
+   "owner": "08 (HD-0803: shipped reference, no standard loader)"
+  },
+  {
+   "id": "extra:Graph_KG.Txn_Begin/Txn_End/Txn_Undo",
+   "kind": "sql-function-used",
+   "path": "iris_src/src/Graph/KG/Txn.cls",
+   "start": 1,
+   "end": 60,
+   "names": [
+    "Txn_Begin",
+    "Txn_Undo",
+    "Txn_End"
+   ],
+   "owner": "module 03 (write txn helper); used by every Cypher write"
+  }
+ ],
+ "cell_map": {
+  "cypher node|create": [
+   "eng:IRISGraphEngine.execute_cypher",
+   "cli:ivg query",
+   "extra:http POST /api/cypher",
+   "extra:bolt RUN"
+  ],
+  "cypher node|merge": [
+   "eng:IRISGraphEngine.execute_cypher",
+   "cli:ivg query",
+   "extra:http POST /api/cypher",
+   "extra:bolt RUN"
+  ],
+  "cypher node|set": [
+   "eng:IRISGraphEngine.execute_cypher",
+   "cli:ivg query",
+   "extra:http POST /api/cypher",
+   "extra:bolt RUN"
+  ],
+  "cypher node|remove": [
+   "eng:IRISGraphEngine.execute_cypher",
+   "cli:ivg query",
+   "extra:http POST /api/cypher",
+   "extra:bolt RUN"
+  ],
+  "cypher node|delete": [
+   "eng:IRISGraphEngine.execute_cypher",
+   "cli:ivg query",
+   "extra:http POST /api/cypher",
+   "extra:bolt RUN"
+  ],
+  "cypher node|detach-delete": [
+   "eng:IRISGraphEngine.execute_cypher",
+   "cli:ivg query",
+   "extra:http POST /api/cypher",
+   "extra:bolt RUN"
+  ],
+  "cypher edge|create": [
+   "eng:IRISGraphEngine.execute_cypher",
+   "cli:ivg query",
+   "extra:http POST /api/cypher",
+   "extra:bolt RUN"
+  ],
+  "cypher edge|merge": [
+   "eng:IRISGraphEngine.execute_cypher",
+   "cli:ivg query",
+   "extra:http POST /api/cypher",
+   "extra:bolt RUN"
+  ],
+  "cypher edge|set": [
+   "eng:IRISGraphEngine.execute_cypher",
+   "cli:ivg query",
+   "extra:http POST /api/cypher",
+   "extra:bolt RUN"
+  ],
+  "cypher edge|delete": [
+   "eng:IRISGraphEngine.execute_cypher",
+   "cli:ivg query",
+   "extra:http POST /api/cypher",
+   "extra:bolt RUN"
+  ],
+  "graph scope|match": [
+   "eng:IRISGraphEngine.execute_cypher",
+   "eng:IRISGraphEngine.execute_aql",
+   "cli:ivg query",
+   "extra:http POST /api/cypher",
+   "extra:bolt RUN"
+  ],
+  "graph scope|create": [
+   "eng:IRISGraphEngine.execute_cypher",
+   "cli:ivg query",
+   "extra:http POST /api/cypher",
+   "extra:bolt RUN"
+  ],
+  "graph scope|merge": [
+   "eng:IRISGraphEngine.execute_cypher",
+   "cli:ivg query",
+   "extra:http POST /api/cypher",
+   "extra:bolt RUN"
+  ],
+  "graph scope|set": [
+   "eng:IRISGraphEngine.execute_cypher",
+   "cli:ivg query",
+   "extra:http POST /api/cypher",
+   "extra:bolt RUN"
+  ],
+  "graph scope|delete": [
+   "eng:IRISGraphEngine.execute_cypher",
+   "cli:ivg query",
+   "extra:http POST /api/cypher",
+   "extra:bolt RUN"
+  ],
+  "cypher call|read": [
+   "eng:IRISGraphEngine.execute_cypher",
+   "eng:IRISGraphEngine.execute_aql",
+   "cli:ivg query"
+  ],
+  "cypher call|write": [
+   "eng:IRISGraphEngine.execute_cypher",
+   "eng:IRISGraphEngine.execute_aql",
+   "cli:ivg query"
+  ],
+  "cypher call|unparsable": [
+   "eng:IRISGraphEngine.execute_cypher",
+   "eng:IRISGraphEngine.execute_aql",
+   "py:iris_vector_graph/cypher/read_only.py:writes_cypher"
+  ]
+ }
+}

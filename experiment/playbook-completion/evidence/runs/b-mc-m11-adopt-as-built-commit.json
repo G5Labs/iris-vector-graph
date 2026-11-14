@@ -1,0 +1,23 @@
+{
+  "check": "m11-adopt-as-built-commit",
+  "command": "CARGO_TARGET_DIR=$RUN_DIR/target/breadth-b cargo build --release && bash experiment/playbook-completion/tools/locks.sh heavy timeout 1800 $RUN_DIR/target/breadth-b/release/breadth-b",
+  "design": "as-built",
+  "experiment_head": "f3fe3917466f7bae3e46f32f5b0644cfeaff87c8",
+  "full_log": "$RUN_DIR/breadth-b/mc/full-decisive-20261114T012246Z.log",
+  "full_log_sha256": "227f6720d9d86ed75cc8fa7fd71e2d9d31fd6f5ccd627843af4d51997edf4615",
+  "id": "b-mc-m11-adopt-as-built-commit",
+  "kind": "mc",
+  "lane": "breadth-b",
+  "log": "$RUN_DIR/breadth-b/mc/checks/m11-adopt-as-built-commit.log",
+  "log_bytes": 974,
+  "log_sha256": "61914fe3c0bc28f2ccc92901388b83a640625ad62547108a42e999140a640d71",
+  "module": "11",
+  "observes": "module 11 machine adopt design as-built: expectation violation of 'LED-B1.20 every fact is recorded at most once'; result met (found 'LED-B1.20 every fact is recorded at most once'); 12 states, 12 transitions, depth 3, exhaustive within the model's bounds; covers: F-1103 (a commit lands between the record read and the store read); LED-B1.20",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T01:23:54+00:00",
+  "result": "expected-violation",
+  "results": "experiment/playbook-completion/models/breadth-b/RESULTS.json",
+  "search": "exhaustive",
+  "states": "12"
+}

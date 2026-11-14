@@ -1,0 +1,3112 @@
+{
+ "module": "08",
+ "ontology": "experiment/playbook-uplift/ontology/08-cypher-sql.md",
+ "scope_file": "experiment/playbook-completion/models/breadth-b/tools/scope/08.json",
+ "generated_by": "experiment/playbook-completion/models/breadth-b/tools/inventory.py",
+ "counts": {
+  "entry_points": 101,
+  "by_kind": {
+   "caller-objectscript": 1,
+   "caller-protocol": 1,
+   "caller-route": 1,
+   "cli": 1,
+   "cls": 37,
+   "cypher-proc": 23,
+   "engine": 5,
+   "py": 28,
+   "sql-file-unloaded": 1,
+   "sql-function-used": 1,
+   "text-shortcut": 2
+  },
+  "statements": 218,
+  "cells": 52,
+  "omissions": 52,
+  "cells_without_entry_point": 0
+ },
+ "entities": {
+  "cypher node": {
+   "states": [
+    "absent",
+    "bare",
+    "linked"
+   ],
+   "commands": [
+    "create",
+    "merge",
+    "set",
+    "remove",
+    "delete",
+    "detach-delete"
+   ]
+  },
+  "cypher edge": {
+   "states": [
+    "absent",
+    "single",
+    "parallel"
+   ],
+   "commands": [
+    "create",
+    "merge",
+    "set",
+    "delete"
+   ]
+  },
+  "cypher call": {
+   "states": [
+    "plain",
+    "read-only",
+    "ledger-on",
+    "ledger-strict"
+   ],
+   "commands": [
+    "read",
+    "write",
+    "unparsable"
+   ]
+  },
+  "graph scope": {
+   "states": [
+    "one-graph",
+    "all-graphs"
+   ],
+   "commands": [
+    "match",
+    "create",
+    "merge",
+    "set",
+    "delete"
+   ]
+  }
+ },
+ "omissions": [
+  "cls:Graph.KG.CypherFn.IVGJSONARRAYLENGTH",
+  "cls:Graph.KG.CypherFn.IVGJSONVALUE",
+  "cls:Graph.KG.CypherFn.IVGJSONKEYS",
+  "cls:Graph.KG.CypherFn.IVGLISTREVERSE",
+  "cls:Graph.KG.CypherFn.IVGSTRSPLIT",
+  "cls:Graph.KG.CypherFn.IVGNEWID",
+  "cls:Graph.KG.CypherFn.IVGRAND",
+  "cls:Graph.KG.CypherFn.IVGLISTHEAD",
+  "cls:Graph.KG.CypherFn.IVGLISTLAST",
+  "cls:Graph.KG.CypherFn.IVGLISTTAIL",
+  "cls:Graph.KG.CypherFn.IVGTYPEERROR",
+  "cls:Graph.KG.CypherFn.IVGMAPGET",
+  "cls:Graph.KG.CypherFn.IVGJSONSET",
+  "cls:Graph.KG.CypherFn.IVGJSONREMOVE",
+  "cls:Graph.KG.CypherFn.IVGRANGE",
+  "cls:Graph.KG.SqlProcs.CypherFnIVGREGEXMATCH",
+  "cls:Graph.KG.SqlProcs.CypherFnIVGJSONARRAYLENGTH",
+  "cls:Graph.KG.SqlProcs.CypherFnIVGJSONVALUE",
+  "cls:Graph.KG.SqlProcs.CypherFnIVGJSONKEYS",
+  "cls:Graph.KG.SqlProcs.CypherFnIVGLISTREVERSE",
+  "cls:Graph.KG.SqlProcs.CypherFnIVGSTRSPLIT",
+  "cls:Graph.KG.SqlProcs.CypherFnIVGNEWID",
+  "cls:Graph.KG.SqlProcs.CypherFnIVGRAND",
+  "cls:Graph.KG.SqlProcs.CypherFnIVGLISTHEAD",
+  "cls:Graph.KG.SqlProcs.CypherFnIVGLISTLAST",
+  "cls:Graph.KG.SqlProcs.CypherFnIVGLISTTAIL",
+  "cls:Graph.KG.SqlProcs.CypherFnIVGLISTGET",
+  "cls:Graph.KG.SqlProcs.CypherFnIVGTYPEERROR",
+  "cls:Graph.KG.SqlProcs.CypherFnIVGMAPGET",
+  "cls:Graph.KG.SqlProcs.CypherFnIVGJSONSET",
+  "cls:Graph.KG.SqlProcs.CypherFnIVGRANGE",
+  "py:iris_vector_graph/cypher/read_only.py:answered_without_parsing",
+  "py:iris_vector_graph/cypher/translator.py:get_schema_prefix",
+  "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_GRAPH_WALK",
+  "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_GRAPH_WALK_TVF",
+  "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_NEIGHBORHOOD_EXPANSION",
+  "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_WCC",
+  "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_CDLP",
+  "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_SUBGRAPH",
+  "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_PPR_GUIDED_SUBGRAPH",
+  "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_NEIGHBORS",
+  "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_MENTIONS",
+  "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_PPR",
+  "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_RERANK",
+  "eng:IRISGraphEngine.map_sql_relationship",
+  "cypher:dbms.security.auth_enabled",
+  "cypher:dbms.jvm.heap.initial_size",
+  "cypher:dbms.jvm.heap.max_size",
+  "cypher:dbms.logs.native.size",
+  "cli:ivg query",
+  "extra:http POST /api/cypher",
+  "extra:IVG.CypherEngine.Query"
+ ],
+ "cells_without_entry_point": [],
+ "entry_points_in_no_cell": [
+  "cls:Graph.KG.CypherFn.IVGJSONARRAYLENGTH",
+  "cls:Graph.KG.CypherFn.IVGJSONKEYS",
+  "cls:Graph.KG.CypherFn.IVGJSONREMOVE",
+  "cls:Graph.KG.CypherFn.IVGJSONSET",
+  "cls:Graph.KG.CypherFn.IVGJSONVALUE",
+  "cls:Graph.KG.CypherFn.IVGLISTGET",
+  "cls:Graph.KG.CypherFn.IVGLISTHEAD",
+  "cls:Graph.KG.CypherFn.IVGLISTLAST",
+  "cls:Graph.KG.CypherFn.IVGLISTREVERSE",
+  "cls:Graph.KG.CypherFn.IVGLISTTAIL",
+  "cls:Graph.KG.CypherFn.IVGMAPGET",
+  "cls:Graph.KG.CypherFn.IVGNEWID",
+  "cls:Graph.KG.CypherFn.IVGRAND",
+  "cls:Graph.KG.CypherFn.IVGRANGE",
+  "cls:Graph.KG.CypherFn.IVGREGEXMATCH",
+  "cls:Graph.KG.CypherFn.IVGSTRSPLIT",
+  "cls:Graph.KG.CypherFn.IVGTYPEERROR",
+  "cls:Graph.KG.SqlProcs.CypherFnIVGJSONARRAYLENGTH",
+  "cls:Graph.KG.SqlProcs.CypherFnIVGJSONKEYS",
+  "cls:Graph.KG.SqlProcs.CypherFnIVGJSONREMOVE",
+  "cls:Graph.KG.SqlProcs.CypherFnIVGJSONSET",
+  "cls:Graph.KG.SqlProcs.CypherFnIVGJSONVALUE",
+  "cls:Graph.KG.SqlProcs.CypherFnIVGLISTGET",
+  "cls:Graph.KG.SqlProcs.CypherFnIVGLISTHEAD",
+  "cls:Graph.KG.SqlProcs.CypherFnIVGLISTLAST",
+  "cls:Graph.KG.SqlProcs.CypherFnIVGLISTREVERSE",
+  "cls:Graph.KG.SqlProcs.CypherFnIVGLISTTAIL",
+  "cls:Graph.KG.SqlProcs.CypherFnIVGMAPGET",
+  "cls:Graph.KG.SqlProcs.CypherFnIVGNEWID",
+  "cls:Graph.KG.SqlProcs.CypherFnIVGRAND",
+  "cls:Graph.KG.SqlProcs.CypherFnIVGRANGE",
+  "cls:Graph.KG.SqlProcs.CypherFnIVGREGEXMATCH",
+  "cls:Graph.KG.SqlProcs.CypherFnIVGSTRSPLIT",
+  "cls:Graph.KG.SqlProcs.CypherFnIVGTYPEERROR",
+  "cls:IVG.Percentile.PCONT",
+  "cls:IVG.Percentile.PDISC",
+  "cls:IVG.Percentile.SortArray",
+  "cypher:apoc.meta.data",
+  "cypher:apoc.meta.schema",
+  "cypher:db.labels",
+  "cypher:db.propertykeys",
+  "cypher:db.relationshiptypes",
+  "cypher:db.schema.nodetypeproperties",
+  "cypher:db.schema.reltypeproperties",
+  "cypher:db.schema.visualization",
+  "cypher:dbms.clientconfig",
+  "cypher:dbms.components",
+  "cypher:dbms.functions",
+  "cypher:dbms.jvm.heap.initial_size",
+  "cypher:dbms.jvm.heap.max_size",
+  "cypher:dbms.logs.native.size",
+  "cypher:dbms.procedures",
+  "cypher:dbms.queryjmx",
+  "cypher:dbms.security.auth_enabled",
+  "cypher:dbms.security.showcurrentuser",
+  "cypher:dbms.showcurrentuser",
+  "cypher:gds.betweenness.stream",
+  "cypher:gds.pagerank.stream",
+  "cypher:gds.shortestpath.dijkstra",
+  "cypher:gds.shortestpath.dijkstra.stream",
+  "eng:IRISGraphEngine.kg_GRAPH_PATH",
+  "eng:IRISGraphEngine.map_sql_relationship",
+  "eng:IRISGraphEngine.map_sql_table",
+  "extra:Graph_KG.Txn_Begin/Txn_End/Txn_Undo",
+  "extra:IVG.CypherEngine.Query",
+  "extra:cypher SHOW/EXPLAIN/DDL no-op",
+  "extra:cypher text shortcuts",
+  "extra:sql/operators.sql",
+  "py:iris_vector_graph/cypher/aql/__init__.py:translate_aql",
+  "py:iris_vector_graph/cypher/parser.py:parse_query",
+  "py:iris_vector_graph/cypher/read_only.py:answered_without_parsing",
+  "py:iris_vector_graph/cypher/read_only.py:split_statements",
+  "py:iris_vector_graph/cypher/translator.py:get_schema_prefix",
+  "py:iris_vector_graph/cypher/translator.py:set_schema_prefix",
+  "py:iris_vector_graph/cypher/translator.py:translate_to_sql",
+  "py:iris_vector_graph/operators.py:IRISGraphOperators.__init__",
+  "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_CDLP",
+  "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_GRAPH_PATH",
+  "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_GRAPH_WALK",
+  "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_GRAPH_WALK_TVF",
+  "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_KNN_VEC",
+  "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_MENTIONS",
+  "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_NEIGHBORHOOD_EXPANSION",
+  "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_NEIGHBORS",
+  "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_PAGERANK",
+  "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_PPR",
+  "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_PPR_GUIDED_SUBGRAPH",
+  "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_RERANK",
+  "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_RRF_FUSE",
+  "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_SUBGRAPH",
+  "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_TXT",
+  "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_VECTOR_GRAPH_SEARCH",
+  "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_WCC",
+  "py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.execute_sql",
+  "py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.execute_transaction"
+ ],
+ "entry_points": [
+  {
+   "id": "cls:Graph.KG.CypherFn.IVGREGEXMATCH",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/CypherFn.cls",
+   "start": 13,
+   "end": 25,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "CYP-T11.4"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.CypherFn.IVGJSONARRAYLENGTH",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/CypherFn.cls",
+   "start": 28,
+   "end": 36,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.CypherFn.IVGJSONVALUE",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/CypherFn.cls",
+   "start": 39,
+   "end": 53,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.CypherFn.IVGJSONKEYS",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/CypherFn.cls",
+   "start": 56,
+   "end": 67,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.CypherFn.IVGLISTREVERSE",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/CypherFn.cls",
+   "start": 70,
+   "end": 81,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.CypherFn.IVGSTRSPLIT",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/CypherFn.cls",
+   "start": 84,
+   "end": 97,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.CypherFn.IVGNEWID",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/CypherFn.cls",
+   "start": 100,
+   "end": 103,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.CypherFn.IVGRAND",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/CypherFn.cls",
+   "start": 106,
+   "end": 109,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.CypherFn.IVGLISTHEAD",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/CypherFn.cls",
+   "start": 112,
+   "end": 120,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.CypherFn.IVGLISTLAST",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/CypherFn.cls",
+   "start": 123,
+   "end": 131,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.CypherFn.IVGLISTTAIL",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/CypherFn.cls",
+   "start": 134,
+   "end": 144,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.CypherFn.IVGLISTGET",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/CypherFn.cls",
+   "start": 150,
+   "end": 186,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "CYP-B11.5"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.CypherFn.IVGTYPEERROR",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/CypherFn.cls",
+   "start": 189,
+   "end": 192,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.CypherFn.IVGMAPGET",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/CypherFn.cls",
+   "start": 195,
+   "end": 204,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.CypherFn.IVGJSONSET",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/CypherFn.cls",
+   "start": 212,
+   "end": 239,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.CypherFn.IVGJSONREMOVE",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/CypherFn.cls",
+   "start": 242,
+   "end": 252,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.CypherFn.IVGRANGE",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/CypherFn.cls",
+   "start": 255,
+   "end": 266,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:IVG.Percentile.PDISC",
+   "kind": "cls",
+   "path": "iris_src/src/IVG/Percentile.cls",
+   "start": 6,
+   "end": 17,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "IVG.Percentile.SortArray"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "CYP-X11.6",
+    "CYP-B11.7",
+    "CYP-T11.8"
+   ]
+  },
+  {
+   "id": "cls:IVG.Percentile.PCONT",
+   "kind": "cls",
+   "path": "iris_src/src/IVG/Percentile.cls",
+   "start": 21,
+   "end": 36,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "IVG.Percentile.SortArray"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "CYP-X11.6",
+    "CYP-B11.7"
+   ]
+  },
+  {
+   "id": "cls:IVG.Percentile.SortArray",
+   "kind": "cls",
+   "path": "iris_src/src/IVG/Percentile.cls",
+   "start": 39,
+   "end": 53,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "CYP-T11.9"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.SqlProcs.CypherFnIVGREGEXMATCH",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/SqlProcs.cls",
+   "start": 17,
+   "end": 20,
+   "sqlproc": true,
+   "sqlname": "CypherFn_IVGREGEXMATCH",
+   "callees": [
+    "Graph.KG.CypherFn.IVGREGEXMATCH"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.SqlProcs.CypherFnIVGJSONARRAYLENGTH",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/SqlProcs.cls",
+   "start": 22,
+   "end": 25,
+   "sqlproc": true,
+   "sqlname": "CypherFn_IVGJSONARRAYLENGTH",
+   "callees": [
+    "Graph.KG.CypherFn.IVGJSONARRAYLENGTH"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.SqlProcs.CypherFnIVGJSONVALUE",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/SqlProcs.cls",
+   "start": 27,
+   "end": 30,
+   "sqlproc": true,
+   "sqlname": "CypherFn_IVGJSONVALUE",
+   "callees": [
+    "Graph.KG.CypherFn.IVGJSONVALUE"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.SqlProcs.CypherFnIVGJSONKEYS",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/SqlProcs.cls",
+   "start": 32,
+   "end": 35,
+   "sqlproc": true,
+   "sqlname": "CypherFn_IVGJSONKEYS",
+   "callees": [
+    "Graph.KG.CypherFn.IVGJSONKEYS"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.SqlProcs.CypherFnIVGLISTREVERSE",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/SqlProcs.cls",
+   "start": 37,
+   "end": 40,
+   "sqlproc": true,
+   "sqlname": "CypherFn_IVGLISTREVERSE",
+   "callees": [
+    "Graph.KG.CypherFn.IVGLISTREVERSE"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.SqlProcs.CypherFnIVGSTRSPLIT",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/SqlProcs.cls",
+   "start": 42,
+   "end": 45,
+   "sqlproc": true,
+   "sqlname": "CypherFn_IVGSTRSPLIT",
+   "callees": [
+    "Graph.KG.CypherFn.IVGSTRSPLIT"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.SqlProcs.CypherFnIVGNEWID",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/SqlProcs.cls",
+   "start": 47,
+   "end": 50,
+   "sqlproc": true,
+   "sqlname": "CypherFn_IVGNEWID",
+   "callees": [
+    "Graph.KG.CypherFn.IVGNEWID"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.SqlProcs.CypherFnIVGRAND",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/SqlProcs.cls",
+   "start": 52,
+   "end": 55,
+   "sqlproc": true,
+   "sqlname": "CypherFn_IVGRAND",
+   "callees": [
+    "Graph.KG.CypherFn.IVGRAND"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.SqlProcs.CypherFnIVGLISTHEAD",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/SqlProcs.cls",
+   "start": 57,
+   "end": 60,
+   "sqlproc": true,
+   "sqlname": "CypherFn_IVGLISTHEAD",
+   "callees": [
+    "Graph.KG.CypherFn.IVGLISTHEAD"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.SqlProcs.CypherFnIVGLISTLAST",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/SqlProcs.cls",
+   "start": 62,
+   "end": 65,
+   "sqlproc": true,
+   "sqlname": "CypherFn_IVGLISTLAST",
+   "callees": [
+    "Graph.KG.CypherFn.IVGLISTLAST"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.SqlProcs.CypherFnIVGLISTTAIL",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/SqlProcs.cls",
+   "start": 67,
+   "end": 70,
+   "sqlproc": true,
+   "sqlname": "CypherFn_IVGLISTTAIL",
+   "callees": [
+    "Graph.KG.CypherFn.IVGLISTTAIL"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.SqlProcs.CypherFnIVGLISTGET",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/SqlProcs.cls",
+   "start": 72,
+   "end": 75,
+   "sqlproc": true,
+   "sqlname": "CypherFn_IVGLISTGET",
+   "callees": [
+    "Graph.KG.CypherFn.IVGLISTGET"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.SqlProcs.CypherFnIVGTYPEERROR",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/SqlProcs.cls",
+   "start": 77,
+   "end": 80,
+   "sqlproc": true,
+   "sqlname": "CypherFn_IVGTYPEERROR",
+   "callees": [
+    "Graph.KG.CypherFn.IVGTYPEERROR"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.SqlProcs.CypherFnIVGMAPGET",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/SqlProcs.cls",
+   "start": 82,
+   "end": 85,
+   "sqlproc": true,
+   "sqlname": "CypherFn_IVGMAPGET",
+   "callees": [
+    "Graph.KG.CypherFn.IVGMAPGET"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.SqlProcs.CypherFnIVGJSONSET",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/SqlProcs.cls",
+   "start": 87,
+   "end": 90,
+   "sqlproc": true,
+   "sqlname": "CypherFn_IVGJSONSET",
+   "callees": [
+    "Graph.KG.CypherFn.IVGJSONSET"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "cls:Graph.KG.SqlProcs.CypherFnIVGJSONREMOVE",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/SqlProcs.cls",
+   "start": 92,
+   "end": 95,
+   "sqlproc": true,
+   "sqlname": "CypherFn_IVGJSONREMOVE",
+   "callees": [
+    "Graph.KG.CypherFn.IVGJSONREMOVE"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "CYP-B6.9.8"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.SqlProcs.CypherFnIVGRANGE",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/SqlProcs.cls",
+   "start": 97,
+   "end": 100,
+   "sqlproc": true,
+   "sqlname": "CypherFn_IVGRANGE",
+   "callees": [
+    "Graph.KG.CypherFn.IVGRANGE"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "py:iris_vector_graph/cypher/read_only.py:split_statements",
+   "kind": "py",
+   "path": "iris_vector_graph/cypher/read_only.py",
+   "start": 28,
+   "end": 50,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "CYP-T3.9",
+    "CYP-B8.2"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/cypher/read_only.py:answered_without_parsing",
+   "kind": "py",
+   "path": "iris_vector_graph/cypher/read_only.py",
+   "start": 53,
+   "end": 58,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "py:iris_vector_graph/cypher/read_only.py:writes_cypher",
+   "kind": "py",
+   "path": "iris_vector_graph/cypher/read_only.py",
+   "start": 92,
+   "end": 104,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "CYP-D5",
+    "CYP-B8.1"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/cypher/parser.py:parse_query",
+   "kind": "py",
+   "path": "iris_vector_graph/cypher/parser.py",
+   "start": 1930,
+   "end": 1941,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "CYP-T1.6"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/cypher/translator.py:set_schema_prefix",
+   "kind": "py",
+   "path": "iris_vector_graph/cypher/translator.py",
+   "start": 341,
+   "end": 352,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "CYP-D1"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/cypher/translator.py:get_schema_prefix",
+   "kind": "py",
+   "path": "iris_vector_graph/cypher/translator.py",
+   "start": 355,
+   "end": 357,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "py:iris_vector_graph/cypher/translator.py:translate_to_sql",
+   "kind": "py",
+   "path": "iris_vector_graph/cypher/translator.py",
+   "start": 7090,
+   "end": 7106,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "CYP-0",
+    "CYP-D3",
+    "CYP-T4"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/cypher/aql/__init__.py:translate_aql",
+   "kind": "py",
+   "path": "iris_vector_graph/cypher/aql/__init__.py",
+   "start": 26,
+   "end": 34,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "CYP-D19",
+    "CYP-B13"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.__init__",
+   "kind": "py",
+   "path": "iris_vector_graph/operators.py",
+   "start": 15,
+   "end": 18,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "CYP-B15"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_KNN_VEC",
+   "kind": "py",
+   "path": "iris_vector_graph/operators.py",
+   "start": 20,
+   "end": 28,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "CYP-B15",
+    "CYP-T15.3"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_TXT",
+   "kind": "py",
+   "path": "iris_vector_graph/operators.py",
+   "start": 30,
+   "end": 35,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "CYP-B15"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_RRF_FUSE",
+   "kind": "py",
+   "path": "iris_vector_graph/operators.py",
+   "start": 37,
+   "end": 44,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "CYP-B15"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_GRAPH_PATH",
+   "kind": "py",
+   "path": "iris_vector_graph/operators.py",
+   "start": 46,
+   "end": 49,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "CYP-B15.1"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_GRAPH_WALK",
+   "kind": "py",
+   "path": "iris_vector_graph/operators.py",
+   "start": 51,
+   "end": 55,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_GRAPH_WALK_TVF",
+   "kind": "py",
+   "path": "iris_vector_graph/operators.py",
+   "start": 57,
+   "end": 61,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_NEIGHBORHOOD_EXPANSION",
+   "kind": "py",
+   "path": "iris_vector_graph/operators.py",
+   "start": 63,
+   "end": 67,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_VECTOR_GRAPH_SEARCH",
+   "kind": "py",
+   "path": "iris_vector_graph/operators.py",
+   "start": 69,
+   "end": 82,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "CYP-B15"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_PAGERANK",
+   "kind": "py",
+   "path": "iris_vector_graph/operators.py",
+   "start": 84,
+   "end": 91,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "CYP-T15.2"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_WCC",
+   "kind": "py",
+   "path": "iris_vector_graph/operators.py",
+   "start": 93,
+   "end": 96,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_CDLP",
+   "kind": "py",
+   "path": "iris_vector_graph/operators.py",
+   "start": 98,
+   "end": 101,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_SUBGRAPH",
+   "kind": "py",
+   "path": "iris_vector_graph/operators.py",
+   "start": 103,
+   "end": 110,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_PPR_GUIDED_SUBGRAPH",
+   "kind": "py",
+   "path": "iris_vector_graph/operators.py",
+   "start": 112,
+   "end": 123,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_NEIGHBORS",
+   "kind": "py",
+   "path": "iris_vector_graph/operators.py",
+   "start": 125,
+   "end": 131,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_MENTIONS",
+   "kind": "py",
+   "path": "iris_vector_graph/operators.py",
+   "start": 133,
+   "end": 136,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_PPR",
+   "kind": "py",
+   "path": "iris_vector_graph/operators.py",
+   "start": 138,
+   "end": 141,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_RERANK",
+   "kind": "py",
+   "path": "iris_vector_graph/operators.py",
+   "start": 143,
+   "end": 146,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.execute_sql",
+   "kind": "py",
+   "path": "iris_vector_graph/stores/iris_sql_store.py",
+   "start": 1522,
+   "end": 1554,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": [
+     "rollback()"
+    ]
+   },
+   "covered_by": [
+    "CYP-T1.5",
+    "CYP-P3",
+    "CYP-P6"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.execute_transaction",
+   "kind": "py",
+   "path": "iris_vector_graph/stores/iris_sql_store.py",
+   "start": 1580,
+   "end": 1818,
+   "hint": {
+    "tables_written": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props"
+    ],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": [
+     "commit()",
+     "rollback()",
+     "write_txn"
+    ]
+   },
+   "covered_by": [
+    "CYP-B6",
+    "CYP-T6.1",
+    "CYP-I6.3",
+    "CYP-X6.5",
+    "CYP-X6.10.1",
+    "CYP-T6.10.4",
+    "CYP-B7",
+    "CYP-X7.2",
+    "CYP-B7.7",
+    "CYP-B7.8"
+   ]
+  },
+  {
+   "id": "eng:IRISGraphEngine.execute_aql",
+   "kind": "engine",
+   "path": "iris_vector_graph/_engine/query.py",
+   "start": 1730,
+   "end": 1744,
+   "self_calls": [
+    "_apply_sql_row_limit",
+    "_approx_counted_exactly",
+    "_approx_hll_read",
+    "_arno_call",
+    "_bfs_with_paths",
+    "_checked_path_neighbours",
+    "_checked_path_starts",
+    "_cypher_shadow",
+    "_detect_arno",
+    "_edge_graphs",
+    "_execute_approx_count_distinct",
+    "_execute_count_create",
+    "_execute_cypher_write",
+    "_execute_parsed",
+    "_execute_parsed_sql",
+    "_execute_row_merge",
+    "_execute_shortest_path_cypher",
+    "_execute_traversal",
+    "_execute_var_length_cypher",
+    "_execute_var_length_labeled",
+    "_execute_var_length_labeled_path_funcs",
+    "_extract_traversal",
+    "_fetch_props_json",
+    "_filter_edges_by_properties",
+    "_filter_nodes_by_post_where",
+    "_handle_show_command",
+    "_hnsw_indexes",
+    "_iris_obj",
+    "_load_table_mapping_cache",
+    "_lookup_shortest_path_endpoints",
+    "_names_mapped_label",
+    "_native_key",
+    "_native_translation",
+    "_nodes_holding",
+    "_probe_if_idle",
+    "_project_checked_paths",
+    "_project_optional_paths",
+    "_project_path_items",
+    "_project_shortest_paths",
+    "_reconnect_if_stale",
+    "_route_var_length",
+    "_route_var_length_each_graph",
+    "_routed_sql",
+    "_run_native_plan",
+    "_shadow_compare",
+    "_shape_shortest_path",
+    "_shortest_path_edges",
+    "_shortest_path_endpoints_by_match",
+    "_show_constraints",
+    "_show_indexes",
+    "_t",
+    "_try_khop_fast_path",
+    "_try_native",
+    "_try_system_procedure",
+    "_unwind_by_index_retry",
+    "_vl_ends",
+    "_vl_no_source",
+    "_vlp_labeled",
+    "_vlp_node_data",
+    "_vlp_qualifiers",
+    "_vlp_walks",
+    "execute_cypher",
+    "get_nodes"
+   ],
+   "hint": {
+    "tables_written": [],
+    "tables_read": [
+     "nodes",
+     "rdf_edges",
+     "rdf_labels",
+     "rdf_props",
+     "table_mappings"
+    ],
+    "globals_named": [
+     "^KG"
+    ],
+    "classmethod_calls": [
+     "Graph.KG.NKGAccel.BFSJson",
+     "Graph.KG.NKGAccel.CountDistinctKHop",
+     "Graph.KG.Traversal.BFSFastJsonSorted",
+     "Graph.KG.Traversal.KGEdgeCount",
+     "Graph.KG.Traversal.KHopCount",
+     "Graph.KG.Traversal.KHopNeighborIds",
+     "Graph.KG.Traversal.NKGPopulated",
+     "Graph.KG.Traversal.ReadBFSResults",
+     "Graph.KG.VarLength.EndsCount"
+    ],
+    "flags": [
+     "$INCREMENT",
+     "JOB",
+     "LOCK-TIMEOUT",
+     "commit()",
+     "rollback()",
+     "write_txn"
+    ],
+    "globals_written": [
+     "^ArnoKG",
+     "^IRIS.Temp.IVG.VL",
+     "^KG",
+     "^||BFS.Results",
+     "^||IVG.CPUs",
+     "^||IVG.VLParallelRuns",
+     "^||NKGAccel",
+     "^||adjWP"
+    ],
+    "globals_killed": [
+     "^ArnoKG",
+     "^IRIS.Temp.IVG.VL",
+     "^KG",
+     "^||BFS.Results"
+    ],
+    "globals_read": [
+     "^ArnoAccel",
+     "^IVG.AdjNoLock",
+     "^KG",
+     "^NKG",
+     "^||BFS.Results",
+     "^||IVG.VLParallelMin",
+     "^||IVG.VLSharedReads",
+     "^||IVG.VLWorker"
+    ],
+    "locks": [
+     "+^IVG.AdjW",
+     "-^IVG.AdjW"
+    ]
+   },
+   "covered_by": [
+    "CYP-D19",
+    "CYP-B13",
+    "CYP-B13.4"
+   ]
+  },
+  {
+   "id": "eng:IRISGraphEngine.execute_cypher",
+   "kind": "engine",
+   "path": "iris_vector_graph/_engine/query.py",
+   "start": 1746,
+   "end": 1943,
+   "self_calls": [
+    "_apply_sql_row_limit",
+    "_approx_counted_exactly",
+    "_approx_hll_read",
+    "_arno_call",
+    "_bfs_with_paths",
+    "_checked_path_neighbours",
+    "_checked_path_starts",
+    "_cypher_shadow",
+    "_detect_arno",
+    "_edge_graphs",
+    "_execute_approx_count_distinct",
+    "_execute_count_create",
+    "_execute_cypher_write",
+    "_execute_parsed",
+    "_execute_parsed_sql",
+    "_execute_row_merge",
+    "_execute_shortest_path_cypher",
+    "_execute_traversal",
+    "_execute_var_length_cypher",
+    "_execute_var_length_labeled",
+    "_execute_var_length_labeled_path_funcs",
+    "_extract_traversal",
+    "_fetch_props_json",
+    "_filter_edges_by_properties",
+    "_filter_nodes_by_post_where",
+    "_handle_show_command",
+    "_hnsw_indexes",
+    "_iris_obj",
+    "_load_table_mapping_cache",
+    "_lookup_shortest_path_endpoints",
+    "_names_mapped_label",
+    "_native_key",
+    "_native_translation",
+    "_nodes_holding",
+    "_probe_if_idle",
+    "_project_checked_paths",
+    "_project_optional_paths",
+    "_project_path_items",
+    "_project_shortest_paths",
+    "_reconnect_if_stale",
+    "_route_var_length",
+    "_route_var_length_each_graph",
+    "_routed_sql",
+    "_run_native_plan",
+    "_shadow_compare",
+    "_shape_shortest_path",
+    "_shortest_path_edges",
+    "_shortest_path_endpoints_by_match",
+    "_show_constraints",
+    "_show_indexes",
+    "_t",
+    "_try_khop_fast_path",
+    "_try_native",
+    "_try_system_procedure",
+    "_unwind_by_index_retry",
+    "_vl_ends",
+    "_vl_no_source",
+    "_vlp_labeled",
+    "_vlp_node_data",
+    "_vlp_qualifiers",
+    "_vlp_walks",
+    "get_nodes"
+   ],
+   "hint": {
+    "tables_written": [],
+    "tables_read": [
+     "nodes",
+     "rdf_edges",
+     "rdf_labels",
+     "rdf_props",
+     "table_mappings"
+    ],
+    "globals_named": [
+     "^KG"
+    ],
+    "classmethod_calls": [
+     "Graph.KG.NKGAccel.BFSJson",
+     "Graph.KG.NKGAccel.CountDistinctKHop",
+     "Graph.KG.Traversal.BFSFastJsonSorted",
+     "Graph.KG.Traversal.KGEdgeCount",
+     "Graph.KG.Traversal.KHopCount",
+     "Graph.KG.Traversal.KHopNeighborIds",
+     "Graph.KG.Traversal.NKGPopulated",
+     "Graph.KG.Traversal.ReadBFSResults",
+     "Graph.KG.VarLength.EndsCount"
+    ],
+    "flags": [
+     "$INCREMENT",
+     "JOB",
+     "LOCK-TIMEOUT",
+     "commit()",
+     "rollback()",
+     "write_txn"
+    ],
+    "globals_written": [
+     "^ArnoKG",
+     "^IRIS.Temp.IVG.VL",
+     "^KG",
+     "^||BFS.Results",
+     "^||IVG.CPUs",
+     "^||IVG.VLParallelRuns",
+     "^||NKGAccel",
+     "^||adjWP"
+    ],
+    "globals_killed": [
+     "^ArnoKG",
+     "^IRIS.Temp.IVG.VL",
+     "^KG",
+     "^||BFS.Results"
+    ],
+    "globals_read": [
+     "^ArnoAccel",
+     "^IVG.AdjNoLock",
+     "^KG",
+     "^NKG",
+     "^||BFS.Results",
+     "^||IVG.VLParallelMin",
+     "^||IVG.VLSharedReads",
+     "^||IVG.VLWorker"
+    ],
+    "locks": [
+     "+^IVG.AdjW",
+     "-^IVG.AdjW"
+    ]
+   },
+   "covered_by": [
+    "CYP-0",
+    "CYP-D2",
+    "CYP-D9",
+    "CYP-D11",
+    "CYP-D16",
+    "CYP-D21",
+    "CYP-B1",
+    "CYP-X1.1",
+    "CYP-T1.2",
+    "CYP-T1.5",
+    "CYP-T1.8",
+    "CYP-B3.7",
+    "CYP-T3.9",
+    "CYP-B3.11",
+    "CYP-B8",
+    "CYP-T9.3",
+    "CYP-B12",
+    "CYP-B14",
+    "CYP-T14.1",
+    "CYP-T14.2",
+    "CYP-T14.3",
+    "CYP-Q14.4",
+    "CYP-B16"
+   ]
+  },
+  {
+   "id": "eng:IRISGraphEngine.kg_GRAPH_PATH",
+   "kind": "engine",
+   "path": "iris_vector_graph/_engine/algorithms.py",
+   "start": 679,
+   "end": 697,
+   "self_calls": [
+    "_apply_sql_row_limit",
+    "_approx_counted_exactly",
+    "_approx_hll_read",
+    "_arno_call",
+    "_bfs_with_paths",
+    "_checked_path_neighbours",
+    "_checked_path_starts",
+    "_cypher_shadow",
+    "_detect_arno",
+    "_edge_graphs",
+    "_execute_approx_count_distinct",
+    "_execute_count_create",
+    "_execute_cypher_write",
+    "_execute_parsed",
+    "_execute_parsed_sql",
+    "_execute_row_merge",
+    "_execute_shortest_path_cypher",
+    "_execute_traversal",
+    "_execute_var_length_cypher",
+    "_execute_var_length_labeled",
+    "_execute_var_length_labeled_path_funcs",
+    "_extract_traversal",
+    "_fetch_props_json",
+    "_filter_edges_by_properties",
+    "_filter_nodes_by_post_where",
+    "_handle_show_command",
+    "_hnsw_indexes",
+    "_iris_obj",
+    "_load_table_mapping_cache",
+    "_lookup_shortest_path_endpoints",
+    "_names_mapped_label",
+    "_native_key",
+    "_native_translation",
+    "_nodes_holding",
+    "_probe_if_idle",
+    "_project_checked_paths",
+    "_project_optional_paths",
+    "_project_path_items",
+    "_project_shortest_paths",
+    "_reconnect_if_stale",
+    "_route_var_length",
+    "_route_var_length_each_graph",
+    "_routed_sql",
+    "_run_native_plan",
+    "_shadow_compare",
+    "_shape_shortest_path",
+    "_shortest_path_edges",
+    "_shortest_path_endpoints_by_match",
+    "_show_constraints",
+    "_show_indexes",
+    "_t",
+    "_try_khop_fast_path",
+    "_try_native",
+    "_try_system_procedure",
+    "_unwind_by_index_retry",
+    "_vl_ends",
+    "_vl_no_source",
+    "_vlp_labeled",
+    "_vlp_node_data",
+    "_vlp_qualifiers",
+    "_vlp_walks",
+    "execute_cypher",
+    "get_nodes"
+   ],
+   "hint": {
+    "tables_written": [],
+    "tables_read": [
+     "nodes",
+     "rdf_edges",
+     "rdf_labels",
+     "rdf_props",
+     "table_mappings"
+    ],
+    "globals_named": [
+     "^KG"
+    ],
+    "classmethod_calls": [
+     "Graph.KG.NKGAccel.BFSJson",
+     "Graph.KG.NKGAccel.CountDistinctKHop",
+     "Graph.KG.Traversal.BFSFastJsonSorted",
+     "Graph.KG.Traversal.KGEdgeCount",
+     "Graph.KG.Traversal.KHopCount",
+     "Graph.KG.Traversal.KHopNeighborIds",
+     "Graph.KG.Traversal.NKGPopulated",
+     "Graph.KG.Traversal.ReadBFSResults",
+     "Graph.KG.VarLength.EndsCount"
+    ],
+    "flags": [
+     "$INCREMENT",
+     "JOB",
+     "LOCK-TIMEOUT",
+     "commit()",
+     "rollback()",
+     "write_txn"
+    ],
+    "globals_written": [
+     "^ArnoKG",
+     "^IRIS.Temp.IVG.VL",
+     "^KG",
+     "^||BFS.Results",
+     "^||IVG.CPUs",
+     "^||IVG.VLParallelRuns",
+     "^||NKGAccel",
+     "^||adjWP"
+    ],
+    "globals_killed": [
+     "^ArnoKG",
+     "^IRIS.Temp.IVG.VL",
+     "^KG",
+     "^||BFS.Results"
+    ],
+    "globals_read": [
+     "^ArnoAccel",
+     "^IVG.AdjNoLock",
+     "^KG",
+     "^NKG",
+     "^||BFS.Results",
+     "^||IVG.VLParallelMin",
+     "^||IVG.VLSharedReads",
+     "^||IVG.VLWorker"
+    ],
+    "locks": [
+     "+^IVG.AdjW",
+     "-^IVG.AdjW"
+    ]
+   },
+   "covered_by": [
+    "CYP-B15.1"
+   ]
+  },
+  {
+   "id": "eng:IRISGraphEngine.map_sql_relationship",
+   "kind": "engine",
+   "path": "iris_vector_graph/_engine/fhir.py",
+   "start": 147,
+   "end": 197,
+   "self_calls": [
+    "_invalidate_mapping_cache",
+    "_load_table_mapping_cache",
+    "get_table_mapping"
+   ],
+   "hint": {
+    "tables_written": [
+     "relationship_mappings"
+    ],
+    "tables_read": [
+     "table_mappings"
+    ],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": [
+     "commit()",
+     "write_txn"
+    ]
+   },
+   "covered_by": []
+  },
+  {
+   "id": "eng:IRISGraphEngine.map_sql_table",
+   "kind": "engine",
+   "path": "iris_vector_graph/_engine/fhir.py",
+   "start": 88,
+   "end": 145,
+   "self_calls": [
+    "_invalidate_mapping_cache"
+   ],
+   "hint": {
+    "tables_written": [
+     "table_mappings"
+    ],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": [
+     "commit()",
+     "write_txn"
+    ]
+   },
+   "covered_by": [
+    "CYP-D20"
+   ]
+  },
+  {
+   "id": "cypher:db.labels",
+   "kind": "cypher-proc",
+   "path": "iris_vector_graph/engine.py",
+   "start": 947,
+   "end": 947,
+   "hint": {},
+   "covered_by": [
+    "CYP-T10.1",
+    "CYP-B10.8"
+   ]
+  },
+  {
+   "id": "cypher:db.relationshiptypes",
+   "kind": "cypher-proc",
+   "path": "iris_vector_graph/engine.py",
+   "start": 948,
+   "end": 948,
+   "hint": {},
+   "covered_by": [
+    "CYP-T10.1"
+   ]
+  },
+  {
+   "id": "cypher:db.schema.visualization",
+   "kind": "cypher-proc",
+   "path": "iris_vector_graph/engine.py",
+   "start": 949,
+   "end": 949,
+   "hint": {},
+   "covered_by": [
+    "CYP-T10.1"
+   ]
+  },
+  {
+   "id": "cypher:db.schema.nodetypeproperties",
+   "kind": "cypher-proc",
+   "path": "iris_vector_graph/engine.py",
+   "start": 950,
+   "end": 950,
+   "hint": {},
+   "covered_by": [
+    "CYP-T10.1"
+   ]
+  },
+  {
+   "id": "cypher:db.schema.reltypeproperties",
+   "kind": "cypher-proc",
+   "path": "iris_vector_graph/engine.py",
+   "start": 951,
+   "end": 951,
+   "hint": {},
+   "covered_by": [
+    "CYP-T10.1"
+   ]
+  },
+  {
+   "id": "cypher:dbms.components",
+   "kind": "cypher-proc",
+   "path": "iris_vector_graph/engine.py",
+   "start": 952,
+   "end": 952,
+   "hint": {},
+   "covered_by": [
+    "CYP-T10.1"
+   ]
+  },
+  {
+   "id": "cypher:dbms.procedures",
+   "kind": "cypher-proc",
+   "path": "iris_vector_graph/engine.py",
+   "start": 953,
+   "end": 953,
+   "hint": {},
+   "covered_by": [
+    "CYP-T10.1"
+   ]
+  },
+  {
+   "id": "cypher:db.propertykeys",
+   "kind": "cypher-proc",
+   "path": "iris_vector_graph/engine.py",
+   "start": 954,
+   "end": 954,
+   "hint": {},
+   "covered_by": [
+    "CYP-T10.1"
+   ]
+  },
+  {
+   "id": "cypher:dbms.clientconfig",
+   "kind": "cypher-proc",
+   "path": "iris_vector_graph/engine.py",
+   "start": 955,
+   "end": 955,
+   "hint": {},
+   "covered_by": [
+    "CYP-T10.1"
+   ]
+  },
+  {
+   "id": "cypher:dbms.security.showcurrentuser",
+   "kind": "cypher-proc",
+   "path": "iris_vector_graph/engine.py",
+   "start": 956,
+   "end": 956,
+   "hint": {},
+   "covered_by": [
+    "CYP-T10.1"
+   ]
+  },
+  {
+   "id": "cypher:dbms.showcurrentuser",
+   "kind": "cypher-proc",
+   "path": "iris_vector_graph/engine.py",
+   "start": 957,
+   "end": 957,
+   "hint": {},
+   "covered_by": [
+    "CYP-T10.1"
+   ]
+  },
+  {
+   "id": "cypher:dbms.functions",
+   "kind": "cypher-proc",
+   "path": "iris_vector_graph/engine.py",
+   "start": 958,
+   "end": 958,
+   "hint": {},
+   "covered_by": [
+    "CYP-T10.1"
+   ]
+  },
+  {
+   "id": "cypher:dbms.queryjmx",
+   "kind": "cypher-proc",
+   "path": "iris_vector_graph/engine.py",
+   "start": 959,
+   "end": 959,
+   "hint": {},
+   "covered_by": [
+    "CYP-T10.1"
+   ]
+  },
+  {
+   "id": "cypher:apoc.meta.data",
+   "kind": "cypher-proc",
+   "path": "iris_vector_graph/engine.py",
+   "start": 960,
+   "end": 960,
+   "hint": {},
+   "covered_by": [
+    "CYP-T10.1"
+   ]
+  },
+  {
+   "id": "cypher:apoc.meta.schema",
+   "kind": "cypher-proc",
+   "path": "iris_vector_graph/engine.py",
+   "start": 961,
+   "end": 961,
+   "hint": {},
+   "covered_by": [
+    "CYP-T10.1"
+   ]
+  },
+  {
+   "id": "cypher:gds.pagerank.stream",
+   "kind": "cypher-proc",
+   "path": "iris_vector_graph/engine.py",
+   "start": 962,
+   "end": 962,
+   "hint": {},
+   "covered_by": [
+    "CYP-T10.1"
+   ]
+  },
+  {
+   "id": "cypher:gds.betweenness.stream",
+   "kind": "cypher-proc",
+   "path": "iris_vector_graph/engine.py",
+   "start": 963,
+   "end": 963,
+   "hint": {},
+   "covered_by": [
+    "CYP-T10.1"
+   ]
+  },
+  {
+   "id": "cypher:gds.shortestpath.dijkstra.stream",
+   "kind": "cypher-proc",
+   "path": "iris_vector_graph/engine.py",
+   "start": 964,
+   "end": 964,
+   "hint": {},
+   "covered_by": [
+    "CYP-T10.1"
+   ]
+  },
+  {
+   "id": "cypher:gds.shortestpath.dijkstra",
+   "kind": "cypher-proc",
+   "path": "iris_vector_graph/engine.py",
+   "start": 965,
+   "end": 965,
+   "hint": {},
+   "covered_by": [
+    "CYP-T10.1"
+   ]
+  },
+  {
+   "id": "cypher:dbms.security.auth_enabled",
+   "kind": "cypher-proc",
+   "path": "iris_vector_graph/engine.py",
+   "start": 1504,
+   "end": 1504,
+   "hint": {},
+   "covered_by": []
+  },
+  {
+   "id": "cypher:dbms.jvm.heap.initial_size",
+   "kind": "cypher-proc",
+   "path": "iris_vector_graph/engine.py",
+   "start": 1609,
+   "end": 1609,
+   "hint": {},
+   "covered_by": []
+  },
+  {
+   "id": "cypher:dbms.jvm.heap.max_size",
+   "kind": "cypher-proc",
+   "path": "iris_vector_graph/engine.py",
+   "start": 1610,
+   "end": 1610,
+   "hint": {},
+   "covered_by": []
+  },
+  {
+   "id": "cypher:dbms.logs.native.size",
+   "kind": "cypher-proc",
+   "path": "iris_vector_graph/engine.py",
+   "start": 1611,
+   "end": 1611,
+   "hint": {},
+   "covered_by": []
+  },
+  {
+   "id": "cli:ivg query",
+   "kind": "cli",
+   "path": "iris_vector_graph/cli.py",
+   "start": 150,
+   "end": 150,
+   "hint": {},
+   "covered_by": []
+  },
+  {
+   "id": "extra:http POST /api/cypher",
+   "kind": "caller-route",
+   "path": "iris_vector_graph/cypher_api.py",
+   "start": 351,
+   "end": 378,
+   "owner": "module 16 (interfaces); calls execute_cypher",
+   "hint": {},
+   "covered_by": []
+  },
+  {
+   "id": "extra:bolt RUN",
+   "kind": "caller-protocol",
+   "path": "iris_vector_graph/bolt_server.py",
+   "start": 575,
+   "end": 590,
+   "owner": "module 16; calls execute_cypher",
+   "hint": {},
+   "covered_by": [
+    "CYP-B8.5"
+   ]
+  },
+  {
+   "id": "extra:IVG.CypherEngine.Query",
+   "kind": "caller-objectscript",
+   "path": "iris_src/src/IVG/CypherEngine.cls",
+   "start": 100,
+   "end": 150,
+   "owner": "module 09 scope line; calls execute_cypher",
+   "hint": {},
+   "covered_by": []
+  },
+  {
+   "id": "extra:cypher SHOW/EXPLAIN/DDL no-op",
+   "kind": "text-shortcut",
+   "path": "iris_vector_graph/_engine/query.py",
+   "start": 1873,
+   "end": 1897,
+   "owner": "08",
+   "hint": {},
+   "covered_by": [
+    "CYP-0",
+    "CYP-D16",
+    "CYP-B1",
+    "CYP-T3.9",
+    "CYP-B3.11",
+    "CYP-T14.1",
+    "CYP-T14.2",
+    "CYP-T14.3",
+    "CYP-Q14.4"
+   ]
+  },
+  {
+   "id": "extra:cypher text shortcuts",
+   "kind": "text-shortcut",
+   "path": "iris_vector_graph/_engine/query.py",
+   "start": 1807,
+   "end": 1856,
+   "owner": "08",
+   "hint": {},
+   "covered_by": [
+    "CYP-0",
+    "CYP-D16",
+    "CYP-B1",
+    "CYP-B14"
+   ]
+  },
+  {
+   "id": "extra:sql/operators.sql",
+   "kind": "sql-file-unloaded",
+   "path": "sql/operators.sql",
+   "start": 1,
+   "end": 1,
+   "owner": "08 (HD-0803: shipped reference, no standard loader)",
+   "hint": {},
+   "covered_by": [
+    "CYP-T15.3",
+    "CYP-Q15.4"
+   ]
+  },
+  {
+   "id": "extra:Graph_KG.Txn_Begin/Txn_End/Txn_Undo",
+   "kind": "sql-function-used",
+   "path": "iris_src/src/Graph/KG/Txn.cls",
+   "start": 1,
+   "end": 60,
+   "owner": "module 03 (write txn helper); used by every Cypher write",
+   "hint": {},
+   "covered_by": [
+    "CYP-T6.1",
+    "CYP-P2"
+   ]
+  }
+ ],
+ "cells": [
+  {
+   "entity": "cypher node",
+   "state": "absent",
+   "command": "create",
+   "outcome": "ok",
+   "statements": "CYP-B6.7, CYP-B6.7.1",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "cli:ivg query",
+    "extra:http POST /api/cypher",
+    "extra:bolt RUN"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher node",
+   "state": "absent",
+   "command": "merge",
+   "outcome": "ok",
+   "statements": "CYP-B6.8",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "cli:ivg query",
+    "extra:http POST /api/cypher",
+    "extra:bolt RUN"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher node",
+   "state": "absent",
+   "command": "set",
+   "outcome": "no-op",
+   "statements": "CYP-I6.6",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "cli:ivg query",
+    "extra:http POST /api/cypher",
+    "extra:bolt RUN"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher node",
+   "state": "absent",
+   "command": "remove",
+   "outcome": "no-op",
+   "statements": "CYP-I6.6",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "cli:ivg query",
+    "extra:http POST /api/cypher",
+    "extra:bolt RUN"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher node",
+   "state": "absent",
+   "command": "delete",
+   "outcome": "no-op",
+   "statements": "CYP-I6.6",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "cli:ivg query",
+    "extra:http POST /api/cypher",
+    "extra:bolt RUN"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher node",
+   "state": "absent",
+   "command": "detach-delete",
+   "outcome": "no-op",
+   "statements": "CYP-I6.6",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "cli:ivg query",
+    "extra:http POST /api/cypher",
+    "extra:bolt RUN"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher node",
+   "state": "bare",
+   "command": "create",
+   "outcome": "ok",
+   "statements": "CYP-B6.7.2",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "cli:ivg query",
+    "extra:http POST /api/cypher",
+    "extra:bolt RUN"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher node",
+   "state": "bare",
+   "command": "merge",
+   "outcome": "ok",
+   "statements": "CYP-B6.8, CYP-B6.8.1",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "cli:ivg query",
+    "extra:http POST /api/cypher",
+    "extra:bolt RUN"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher node",
+   "state": "bare",
+   "command": "set",
+   "outcome": "ok",
+   "statements": "CYP-B6.9",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "cli:ivg query",
+    "extra:http POST /api/cypher",
+    "extra:bolt RUN"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher node",
+   "state": "bare",
+   "command": "remove",
+   "outcome": "ok",
+   "statements": "CYP-B6.9.8",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "cli:ivg query",
+    "extra:http POST /api/cypher",
+    "extra:bolt RUN"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher node",
+   "state": "bare",
+   "command": "delete",
+   "outcome": "ok",
+   "statements": "CYP-B6.10",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "cli:ivg query",
+    "extra:http POST /api/cypher",
+    "extra:bolt RUN"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher node",
+   "state": "bare",
+   "command": "detach-delete",
+   "outcome": "ok",
+   "statements": "CYP-B6.10.2",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "cli:ivg query",
+    "extra:http POST /api/cypher",
+    "extra:bolt RUN"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher node",
+   "state": "linked",
+   "command": "create",
+   "outcome": "ok",
+   "statements": "CYP-B6.7.2",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "cli:ivg query",
+    "extra:http POST /api/cypher",
+    "extra:bolt RUN"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher node",
+   "state": "linked",
+   "command": "merge",
+   "outcome": "ok",
+   "statements": "CYP-B6.8, CYP-B6.8.1",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "cli:ivg query",
+    "extra:http POST /api/cypher",
+    "extra:bolt RUN"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher node",
+   "state": "linked",
+   "command": "set",
+   "outcome": "ok",
+   "statements": "CYP-B6.9",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "cli:ivg query",
+    "extra:http POST /api/cypher",
+    "extra:bolt RUN"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher node",
+   "state": "linked",
+   "command": "remove",
+   "outcome": "ok",
+   "statements": "CYP-B6.9.8",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "cli:ivg query",
+    "extra:http POST /api/cypher",
+    "extra:bolt RUN"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher node",
+   "state": "linked",
+   "command": "delete",
+   "outcome": "refused",
+   "statements": "CYP-X6.10.1",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "cli:ivg query",
+    "extra:http POST /api/cypher",
+    "extra:bolt RUN"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher node",
+   "state": "linked",
+   "command": "detach-delete",
+   "outcome": "ok",
+   "statements": "CYP-B6.10.2",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "cli:ivg query",
+    "extra:http POST /api/cypher",
+    "extra:bolt RUN"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher edge",
+   "state": "absent",
+   "command": "create",
+   "outcome": "ok",
+   "statements": "CYP-B6.7.4",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "cli:ivg query",
+    "extra:http POST /api/cypher",
+    "extra:bolt RUN"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher edge",
+   "state": "absent",
+   "command": "merge",
+   "outcome": "ok",
+   "statements": "CYP-B6.8",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "cli:ivg query",
+    "extra:http POST /api/cypher",
+    "extra:bolt RUN"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher edge",
+   "state": "absent",
+   "command": "set",
+   "outcome": "no-op",
+   "statements": "CYP-I6.6",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "cli:ivg query",
+    "extra:http POST /api/cypher",
+    "extra:bolt RUN"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher edge",
+   "state": "absent",
+   "command": "delete",
+   "outcome": "no-op",
+   "statements": "CYP-I6.6",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "cli:ivg query",
+    "extra:http POST /api/cypher",
+    "extra:bolt RUN"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher edge",
+   "state": "single",
+   "command": "create",
+   "outcome": "no-op",
+   "statements": "CYP-B6.7.6, CYP-B6.7.7",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "cli:ivg query",
+    "extra:http POST /api/cypher",
+    "extra:bolt RUN"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher edge",
+   "state": "single",
+   "command": "merge",
+   "outcome": "ok",
+   "statements": "CYP-B6.8",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "cli:ivg query",
+    "extra:http POST /api/cypher",
+    "extra:bolt RUN"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher edge",
+   "state": "single",
+   "command": "set",
+   "outcome": "ok",
+   "statements": "CYP-B6.9",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "cli:ivg query",
+    "extra:http POST /api/cypher",
+    "extra:bolt RUN"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher edge",
+   "state": "single",
+   "command": "delete",
+   "outcome": "ok",
+   "statements": "CYP-B6.10",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "cli:ivg query",
+    "extra:http POST /api/cypher",
+    "extra:bolt RUN"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher edge",
+   "state": "parallel",
+   "command": "create",
+   "outcome": "ok",
+   "statements": "CYP-B6.7.8",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "cli:ivg query",
+    "extra:http POST /api/cypher",
+    "extra:bolt RUN"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher edge",
+   "state": "parallel",
+   "command": "merge",
+   "outcome": "ok",
+   "statements": "CYP-B6.8.10",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "cli:ivg query",
+    "extra:http POST /api/cypher",
+    "extra:bolt RUN"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher edge",
+   "state": "parallel",
+   "command": "set",
+   "outcome": "ok",
+   "statements": "CYP-B6.9",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "cli:ivg query",
+    "extra:http POST /api/cypher",
+    "extra:bolt RUN"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher edge",
+   "state": "parallel",
+   "command": "delete",
+   "outcome": "ok",
+   "statements": "CYP-B6.10",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "cli:ivg query",
+    "extra:http POST /api/cypher",
+    "extra:bolt RUN"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher call",
+   "state": "plain",
+   "command": "read",
+   "outcome": "ok",
+   "statements": "CYP-B1, CYP-T1.3",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "eng:IRISGraphEngine.execute_aql",
+    "cli:ivg query"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher call",
+   "state": "plain",
+   "command": "write",
+   "outcome": "ok",
+   "statements": "CYP-B6, CYP-T6.1",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "eng:IRISGraphEngine.execute_aql",
+    "cli:ivg query"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher call",
+   "state": "plain",
+   "command": "unparsable",
+   "outcome": "refused",
+   "statements": "CYP-X3.6, CYP-X12.1",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "eng:IRISGraphEngine.execute_aql",
+    "py:iris_vector_graph/cypher/read_only.py:writes_cypher"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher call",
+   "state": "read-only",
+   "command": "read",
+   "outcome": "ok",
+   "statements": "CYP-B8",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "eng:IRISGraphEngine.execute_aql",
+    "cli:ivg query"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher call",
+   "state": "read-only",
+   "command": "write",
+   "outcome": "refused",
+   "statements": "CYP-B8, CYP-B8.1",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "eng:IRISGraphEngine.execute_aql",
+    "cli:ivg query"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher call",
+   "state": "read-only",
+   "command": "unparsable",
+   "outcome": "refused",
+   "statements": "CYP-X8.3",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "eng:IRISGraphEngine.execute_aql",
+    "py:iris_vector_graph/cypher/read_only.py:writes_cypher"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher call",
+   "state": "ledger-on",
+   "command": "read",
+   "outcome": "ok",
+   "statements": "CYP-B1",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "eng:IRISGraphEngine.execute_aql",
+    "cli:ivg query"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher call",
+   "state": "ledger-on",
+   "command": "write",
+   "outcome": "ok",
+   "statements": "CYP-B7, CYP-B7.1",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "eng:IRISGraphEngine.execute_aql",
+    "cli:ivg query"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher call",
+   "state": "ledger-on",
+   "command": "unparsable",
+   "outcome": "refused",
+   "statements": "CYP-X3.6",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "eng:IRISGraphEngine.execute_aql",
+    "py:iris_vector_graph/cypher/read_only.py:writes_cypher"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher call",
+   "state": "ledger-strict",
+   "command": "read",
+   "outcome": "ok",
+   "statements": "CYP-X7.2",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "eng:IRISGraphEngine.execute_aql",
+    "cli:ivg query"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher call",
+   "state": "ledger-strict",
+   "command": "write",
+   "outcome": "refused",
+   "statements": "CYP-X7.2, CYP-T7.3, CYP-T7.4",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "eng:IRISGraphEngine.execute_aql",
+    "cli:ivg query"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "cypher call",
+   "state": "ledger-strict",
+   "command": "unparsable",
+   "outcome": "refused",
+   "statements": "CYP-X3.6",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "eng:IRISGraphEngine.execute_aql",
+    "py:iris_vector_graph/cypher/read_only.py:writes_cypher"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "graph scope",
+   "state": "one-graph",
+   "command": "match",
+   "outcome": "ok",
+   "statements": "CYP-B5",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "eng:IRISGraphEngine.execute_aql",
+    "cli:ivg query",
+    "extra:http POST /api/cypher",
+    "extra:bolt RUN"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "graph scope",
+   "state": "one-graph",
+   "command": "create",
+   "outcome": "ok",
+   "statements": "CYP-B5, CYP-B6.7",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "cli:ivg query",
+    "extra:http POST /api/cypher",
+    "extra:bolt RUN"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "graph scope",
+   "state": "one-graph",
+   "command": "merge",
+   "outcome": "ok",
+   "statements": "CYP-B5, CYP-B6.8",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "cli:ivg query",
+    "extra:http POST /api/cypher",
+    "extra:bolt RUN"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "graph scope",
+   "state": "one-graph",
+   "command": "set",
+   "outcome": "ok",
+   "statements": "CYP-B5, CYP-B6.9",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "cli:ivg query",
+    "extra:http POST /api/cypher",
+    "extra:bolt RUN"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "graph scope",
+   "state": "one-graph",
+   "command": "delete",
+   "outcome": "ok",
+   "statements": "CYP-B5, CYP-B6.10",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "cli:ivg query",
+    "extra:http POST /api/cypher",
+    "extra:bolt RUN"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "graph scope",
+   "state": "all-graphs",
+   "command": "match",
+   "outcome": "ok",
+   "statements": "CYP-B5.4, CYP-I5.5",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "eng:IRISGraphEngine.execute_aql",
+    "cli:ivg query",
+    "extra:http POST /api/cypher",
+    "extra:bolt RUN"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "graph scope",
+   "state": "all-graphs",
+   "command": "create",
+   "outcome": "ok",
+   "statements": "CYP-B6.13.2",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "cli:ivg query",
+    "extra:http POST /api/cypher",
+    "extra:bolt RUN"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "graph scope",
+   "state": "all-graphs",
+   "command": "merge",
+   "outcome": "ok",
+   "statements": "CYP-B6.13.3",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "cli:ivg query",
+    "extra:http POST /api/cypher",
+    "extra:bolt RUN"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "graph scope",
+   "state": "all-graphs",
+   "command": "set",
+   "outcome": "ok",
+   "statements": "CYP-B6.13, CYP-B6.13.4",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "cli:ivg query",
+    "extra:http POST /api/cypher",
+    "extra:bolt RUN"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "graph scope",
+   "state": "all-graphs",
+   "command": "delete",
+   "outcome": "ok",
+   "statements": "CYP-B6.13",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.execute_cypher",
+    "cli:ivg query",
+    "extra:http POST /api/cypher",
+    "extra:bolt RUN"
+   ],
+   "unknown_entry_points": []
+  }
+ ]
+}

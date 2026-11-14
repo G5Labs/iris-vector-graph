@@ -1,0 +1,50 @@
+{
+ "cls": {
+  "Graph.KG.Algorithms": ".", "Graph.KG.PageRank": ".", "Graph.KG.PageRankEmbedded": ".", "Graph.KG.Centrality": ".",
+  "Graph.KG.Communities": ".", "Graph.KG.Subgraph": ".", "Graph.KG.Traversal": ".", "Graph.KG.TraversalBFS": ".",
+  "Graph.KG.TraversalKHop": ".", "Graph.KG.TraversalPaths": ".", "Graph.KG.VarLength": ".", "Graph.KG.NKGAccel": ".",
+  "Graph.KG.NKGAccelAdjacency": ".", "Graph.KG.NKGAccelCentrality": ".", "Graph.KG.NKGAccelLoader": ".",
+  "Graph.KG.NKGAccelTraversal": ".", "Graph.KG.ArnoAccel": ".", "Graph.KG.AlgoCache": "."
+ },
+ "py": {
+  "iris_vector_graph/stores/arno_bridge.py": ".",
+  "iris_vector_graph/arno_readers.py": ".",
+  "iris_vector_graph/_arno_gate.py": ".",
+  "iris_vector_graph/algo_cache.py": ".",
+  "iris_vector_graph/stores/iris_sql_store.py": "^IRISGraphStore\\.(execute_(bfs|vl_ends|shortest_path|ppr|pagerank|wcc|cdlp|subgraph|degree_centrality|betweenness|betweenness_neighborhood|closeness|eigenvector|leiden|triangle_count|scc|k_core)|shortest_path_length)$",
+  "iris_vector_graph/operators.py": "kg_(PAGERANK|WCC|CDLP|SUBGRAPH|PPR|PPR_GUIDED_SUBGRAPH|GRAPH_WALK|GRAPH_WALK_TVF|GRAPH_PATH|NEIGHBORS|MENTIONS)$"
+ },
+ "engine": {
+  "iris_vector_graph/_engine/algorithms.py": ".",
+  "iris_vector_graph/_engine/schema.py": "^(sync|rebuild_nkg)$"
+ },
+ "cypher": "^(gds\\.|ivg\\.(betweenness|closeness|degreecentrality|eigenvector|kcore|leiden|neighbors|ppr|scc|trianglecount|shortestpath))",
+ "extra": [
+  {"id": "ext:IRISGraphEngine.create_edge", "kind": "external-writer", "path": "iris_vector_graph/_engine/nodes_edges.py", "start": 1151, "end": 1300, "names": ["create_edge"], "owner_module": "03", "notes": "edge writer (module 03); raises the graph-version token ^KG(\"__version\") through the adjacency index (module 04)"},
+  {"id": "ext:IRISGraphEngine.create_node", "kind": "external-writer", "path": "iris_vector_graph/_engine/nodes_edges.py", "start": 968, "end": 1150, "names": ["create_node"], "owner_module": "03", "notes": "node writer (module 03); an edgeless node moves no adjacency token (F-1004)"},
+  {"id": "ext:Graph.KG.Eraser.EraseGraph", "kind": "external-writer", "path": "iris_src/src/Graph/KG/Eraser.cls", "start": 47, "end": 306, "names": ["Eraser.EraseGraph", "EraseGraph"], "owner_module": "12", "notes": "graph eraser (module 12); invalidates AlgoCache and marks ^NKG"},
+  {"id": "ext:Graph.KG.Adjacency.PutShadow", "kind": "external-writer", "path": "iris_src/src/Graph/KG/Adjacency.cls", "start": 121, "end": 140, "names": ["PutShadow"], "owner_module": "04/05", "notes": "temporal structural shadow into ^KG; never interned into ^NKG (F-1005)"},
+  {"id": "ext:Graph.KG.TraversalBuild.EnsureNKG", "kind": "external-maintainer", "path": "iris_src/src/Graph/KG/TraversalBuild.cls", "start": 399, "end": 424, "names": ["EnsureNKG"], "owner_module": "04", "notes": "rebuilds ^NKG when marked invalidated/stale; called by ^NKG readers of module 10"},
+  {"id": "ext:Graph.KG.TraversalBuild.BuildNKG", "kind": "external-maintainer", "path": "iris_src/src/Graph/KG/TraversalBuild.cls", "start": 288, "end": 398, "names": ["TraversalBuild.BuildNKG"], "owner_module": "04", "notes": "^NKG builder behind engine.sync"}
+ ],
+ "cell_map": {
+  "interned snapshot|sync": ["eng:IRISGraphEngine.sync", "eng:IRISGraphEngine.rebuild_nkg", "ext:Graph.KG.TraversalBuild.BuildNKG"],
+  "interned snapshot|centrality method": ["eng:IRISGraphEngine.betweenness_centrality", "eng:IRISGraphEngine.closeness_centrality", "eng:IRISGraphEngine.eigenvector_centrality", "eng:IRISGraphEngine.leiden_communities", "eng:IRISGraphEngine.betweenness_centrality_neighborhood", "eng:IRISGraphEngine.triangle_count", "eng:IRISGraphEngine.strongly_connected_components", "eng:IRISGraphEngine.k_core"],
+  "interned snapshot|snapshot procedure": ["cypher:ivg.betweenness", "cypher:ivg.closeness", "cypher:ivg.eigenvector", "cypher:ivg.leiden", "cypher:ivg.trianglecount", "cypher:ivg.scc", "cypher:ivg.kcore"],
+  "interned snapshot|random walk": ["eng:IRISGraphEngine.random_walk", "cls:Graph.KG.NKGAccelTraversal.RandomWalkJson"],
+  "result cache entry|run algorithm": ["eng:IRISGraphEngine.kg_PAGERANK", "eng:IRISGraphEngine.kg_PERSONALIZED_PAGERANK", "eng:IRISGraphEngine.ppr", "eng:IRISGraphEngine.kg_PPR", "eng:IRISGraphEngine.kg_WCC", "eng:IRISGraphEngine.kg_CDLP", "cls:Graph.KG.AlgoCache.Lookup", "cls:Graph.KG.AlgoCache.Store"],
+  "result cache entry|write edge": ["ext:IRISGraphEngine.create_edge"],
+  "result cache entry|write edgeless node": ["ext:IRISGraphEngine.create_node"],
+  "result cache entry|erase graph": ["ext:Graph.KG.Eraser.EraseGraph", "cls:Graph.KG.AlgoCache.InvalidateGraph", "cls:Graph.KG.AlgoCache.InvalidateAll"],
+  "native route|default-graph call": ["py:iris_vector_graph/arno_readers.py:route", "eng:IRISGraphEngine.kg_PAGERANK", "eng:IRISGraphEngine.kg_WCC", "eng:IRISGraphEngine.kg_CDLP", "eng:IRISGraphEngine.kg_PERSONALIZED_PAGERANK"],
+  "native route|named-graph call": ["py:iris_vector_graph/arno_readers.py:route", "eng:IRISGraphEngine.kg_PERSONALIZED_PAGERANK"],
+  "native route|other-namespace call": ["py:iris_vector_graph/arno_readers.py:route", "cls:Graph.KG.ArnoAccel.NativeResult", "cls:Graph.KG.ArnoAccel.ReadsUser"],
+  "default-graph algorithm call|global pagerank": ["eng:IRISGraphEngine.kg_PAGERANK", "py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.execute_pagerank", "cls:Graph.KG.PageRank.PageRankGlobalJson"],
+  "default-graph algorithm call|components": ["eng:IRISGraphEngine.kg_WCC", "eng:IRISGraphEngine.kg_CDLP"],
+  "default-graph algorithm call|centrality method": ["eng:IRISGraphEngine.degree_centrality", "eng:IRISGraphEngine.betweenness_centrality", "eng:IRISGraphEngine.closeness_centrality", "eng:IRISGraphEngine.eigenvector_centrality", "eng:IRISGraphEngine.leiden_communities"],
+  "default-graph algorithm call|snapshot procedure": ["cypher:ivg.betweenness", "cypher:ivg.closeness", "cypher:ivg.eigenvector", "cypher:ivg.leiden", "cypher:ivg.trianglecount", "cypher:ivg.scc", "cypher:ivg.kcore"],
+  "default-graph algorithm call|random walk": ["eng:IRISGraphEngine.random_walk"],
+  "default-graph algorithm call|subgraph": ["eng:IRISGraphEngine.kg_SUBGRAPH", "cls:Graph.KG.Subgraph.SubgraphJson"],
+  "default-graph algorithm call|khop": ["eng:IRISGraphEngine.khop"]
+ }
+}

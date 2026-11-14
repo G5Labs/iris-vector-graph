@@ -1,0 +1,1352 @@
+{
+ "module": "11",
+ "lane": "breadth-b",
+ "pin": "3eaa79cf",
+ "gates": [
+  {
+   "gate": "3.1-parent",
+   "status": "closed",
+   "evidence": [
+    "check:experiment/playbook-uplift/tools/ontology_index.py --check (3015 statements, 0 violations, index current; run 2026-11-14 in this lane)"
+   ],
+   "remaining": "",
+   "reason": "Index gate (parent ids, grade, lexical terms) passes for the whole ontology including LED."
+  },
+  {
+   "gate": "3.1-grade",
+   "status": "closed",
+   "evidence": [
+    "check:experiment/playbook-uplift/tools/ontology_index.py --check"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.1-terms",
+   "status": "open",
+   "evidence": [
+    "check:experiment/playbook-completion/check-literal-scope.py experiment/playbook-uplift --details: 183 LED statement/term pairs in 109 statements fail the literal rule (HD-0001)"
+   ],
+   "remaining": "Rewrite or reparent the LED term uses under the literal rule (ontology lane)."
+  },
+  {
+   "gate": "3.1-index",
+   "status": "closed",
+   "evidence": [
+    "check:experiment/playbook-uplift/tools/ontology_index.py --check"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.1-cells",
+   "status": "closed",
+   "evidence": [
+    "inventory:experiment/playbook-completion/models/breadth-b/inventory/11.json",
+    "inspected:experiment/playbook-uplift/ontology/11-ledger.md (Cells)"
+   ],
+   "remaining": "Resolve the 7 open cells to the working answers once HD-1101/HD-1102 are decided.",
+   "reason": "69 cells over 5 entities; 62 defined, 7 open and assigned to human decisions HD-1101 (named-only node id x upsert/set-property/add-label/delete-plain/delete-detach) and HD-1102 (holding-writes x disable/set-strict), each with a working disposition in decisions.md. Every cell command maps to entry points (cell_map); 0 cells without an entry point."
+  },
+  {
+   "gate": "3.1-coverage",
+   "status": "open",
+   "evidence": [
+    "inventory:experiment/playbook-completion/models/breadth-b/inventory/11.json"
+   ],
+   "remaining": "Add statements for StmtForTuple (statement lookup by tuple used by verify; Ledger.cls:176-179) and for the correlation index lifecycle (LedgerRevision.BuildCorrelationIndex :65-85, schema.py ensure_ledger_index :737-770); state that LedgerApply/CommitInTxn/WriteRevision are public class methods callable outside a commit (premise P-1105).",
+   "reason": "123 entry points derived mechanically (66 ObjectScript class methods, 48 Python, 2 engine, 2 SQL DML, 2 SQL reads, 2 object paths, 1 guard-site set); 19 have no covering statement: 3 real omissions (StmtForTuple, BuildCorrelationIndex, ensure_ledger_index), 12 internal helpers that are public only by visibility (NewId, MetaGet, ErrLimit, RevisionObj, EncNull, Rec, IsReserved, Run, ParseQuals, QualsJson, WeightOf, IsNumeric), 4 trivial Python constructors/decoders."
+  },
+  {
+   "gate": "3.1-intent",
+   "status": "closed",
+   "evidence": [
+    "inspected:experiment/playbook-completion/intent/HD-1101.md",
+    "inspected:experiment/playbook-completion/intent/HD-1102.md",
+    "inspected:experiment/playbook-completion/intent/HD-1103.md",
+    "inspected:experiment/playbook-completion/intent/HD-1104.md",
+    "inspected:experiment/playbook-completion/intent/HD-1105.md",
+    "live:ib-HD1101-namedonly",
+    "live:ib-HD1102-txn-rollback",
+    "live:ib-HD1103-guard-ttl",
+    "live:ib-HD1104-settings",
+    "live:ib-HD1105-replay-reapplies"
+   ],
+   "remaining": "Maintainer decisions remain open (HD-1101..1105); working dispositions in decisions.md.",
+   "reason": "Intent lane B recovered intent for every LED decision (files above) with discriminating probes."
+  },
+  {
+   "gate": "3.2-coverage",
+   "status": "open",
+   "evidence": [
+    "inspected:experiment/playbook-completion/iris-contract/CONTRACT.md"
+   ],
+   "remaining": "Add to the IRIS contract: object concurrency of %OpenId/%Save (no lock on open; %Save row lock held to the outermost transaction end; 10 s lock timeout returning an error status), LOCK with timeout and $TEST, SQL row triggers and their bypasses (%NOTRIGGER, TRUNCATE; P-1108), %OnBeforeSave/%OnDelete, %KillExtent, object %Save duplicate IdKey (#5805), foreign-key enforcement on rdf_labels vs none on rdf_props, %DynamicObject %ToJSON key order (F-1113), functional-index maintenance inside SQL statements.",
+   "reason": "27 IRIS features listed in env_features: 10 inside the contract's subset, 4 partly (lock timeout/$TEST, object duplicate IdKey, native-on-caller-connection, journaling), 13 outside it."
+  },
+  {
+   "gate": "3.3-L1",
+   "status": "closed",
+   "evidence": [
+    "mc:m11-enable-as-built-consistency",
+    "mc:m11-enable-reviewed",
+    "mc:m11-adopt-reviewed",
+    "mc:m11-stats-reviewed",
+    "mc:m11-guard-reviewed",
+    "mc:m11-retry-reviewed",
+    "mc:m11-commit-as-built"
+   ],
+   "remaining": "Verus L1 (proof) for LED not built; explorer models only.",
+   "reason": "Six small explorer machines carry LED business invariants (LED-B1.7, B1.12, B1.20, B4.3, B4.7.5, B4.7.8, B4.11.2, B10.5, B13.4, the shared strict-mode invariant SG); exhaustive within bounds."
+  },
+  {
+   "gate": "3.3-L2",
+   "status": "open",
+   "evidence": [
+    "mc:m11-commit-as-built",
+    "mc:m11-enable-as-built",
+    "mc:m11-stats-as-built-caller-txn"
+   ],
+   "remaining": "An L2 machine over the full ^IVG.Ledger layout (rec/stmt/tuple/idem/revById/idBySeq) and the four governed tables with refinement to L1.",
+   "reason": "The machines abstract the real globals/rows each finding needs (state, head, revision row, stats row, statement maps, guard cache), not the full layout."
+  },
+  {
+   "gate": "3.3-refinement",
+   "status": "open",
+   "evidence": [],
+   "remaining": "Refinement of an L2 over the real layout to the L1 (explorer::refinement::audit or Verus).",
+   "reason": "Not built for module 11."
+  },
+  {
+   "gate": "3.3-controls",
+   "status": "open",
+   "evidence": [
+    "mc:m11-enable-control-nolock",
+    "mc:m11-adopt-control-nocheck",
+    "mc:m11-stats-control-split",
+    "mc:m11-guard-control-failopen",
+    "mc:m11-retry-control-reapply",
+    "mc:m11-commit-control-unlock",
+    "mc:m11-commit-control-unlock-chain"
+   ],
+   "remaining": "Proof-level controls (the gate asks for rejection by a proof).",
+   "reason": "7 explorer controls (mutants of the reviewed/pin designs) each caught by the expected invariant."
+  },
+  {
+   "gate": "3.3-model-check",
+   "status": "closed",
+   "evidence": [
+    "mc:m11-enable-as-built",
+    "mc:m11-adopt-as-built-commit",
+    "mc:m11-adopt-as-built-two-enables",
+    "mc:m11-stats-as-built-rmw",
+    "mc:m11-stats-as-built-caller-txn",
+    "mc:m11-guard-as-built-ttl",
+    "mc:m11-guard-as-built-failopen",
+    "mc:m11-guard-as-built-unguarded",
+    "mc:m11-retry-as-built-pcp",
+    "mc:m11-retry-as-built-governed",
+    "mc:m11-retry-as-built-stmt-ids",
+    "mc:m11-enable-as-built-consistency",
+    "mc:m11-enable-reviewed",
+    "mc:m11-adopt-reviewed",
+    "mc:m11-stats-reviewed",
+    "mc:m11-guard-reviewed",
+    "mc:m11-retry-reviewed",
+    "mc:m11-commit-as-built",
+    "mc:m11-enable-control-nolock",
+    "mc:m11-adopt-control-nocheck",
+    "mc:m11-stats-control-split",
+    "mc:m11-guard-control-failopen",
+    "mc:m11-retry-control-reapply",
+    "mc:m11-commit-control-unlock",
+    "mc:m11-commit-control-unlock-chain",
+    "mc:m11-enable-positive",
+    "mc:m11-adopt-positive",
+    "mc:m11-stats-positive",
+    "mc:m11-guard-positive",
+    "mc:m11-retry-positive",
+    "mc:m11-commit-positive-replay",
+    "mc:m11-commit-positive-rollback"
+   ],
+   "remaining": "",
+   "reason": "32 checks, all met: 11 as-built violations reproducing F-1101, F-1102, F-1103, F-1104, F-1106, F-1108, F-0801 (shared guard); 7 passes (5 reviewed designs, the commit core and LED-B1.7 at the pin); 7 controls caught; 7 sharpness witnesses; AG EF progress in enable, adopt, stats, guard, commit. Exhaustive within bounds."
+  },
+  {
+   "gate": "3.3a-writesets",
+   "status": "failed",
+   "evidence": [
+    "footprints:experiment/playbook-completion/footprints/11.json",
+    "check:writer-census",
+    "finding:F-1114",
+    "finding:F-1102",
+    "finding:F-1103",
+    "finding:F-1105",
+    "finding:F-1101"
+   ],
+   "remaining": "Discharge the open pairs once the findings are fixed; the orchestrator's writer census lists 25 more writer methods for INV-* stores.",
+   "reason": "Every (LED invariant, writer plan) pair is dispositioned in invariant_writesets; 6 pairs are broken by product defects (F-1101, F-1102/F-C1101, F-1103, F-1105, F-1107, F-1114)."
+  },
+  {
+   "gate": "3.4-statements",
+   "status": "open",
+   "evidence": [],
+   "remaining": "Prove (or differentially test) each ledger storage statement against a model evaluation.",
+   "reason": "Not attempted for module 11."
+  },
+  {
+   "gate": "3.4-ownership",
+   "status": "failed",
+   "evidence": [
+    "live:b-11-live-footprints-2",
+    "live:live-f1201-reproduced",
+    "check:writer-census",
+    "finding:F-1114"
+   ],
+   "remaining": "Single ownership of ^IVG.Ledger('stmt'/'tuple') (or a shared lock protocol) and a self-tested ownership check.",
+   "reason": "^IVG.Ledger statement maps have two writers: the commit path under the head lock and Graph.KG.Eraser without it (observed via bulk_delete_adjacency -> EraseEdges and by the orchestrator's F-1201 run)."
+  },
+  {
+   "gate": "3.4-storage-order",
+   "status": "closed",
+   "evidence": [
+    "check:storage-order-scan",
+    "inspected:iris_vector_graph/ledger/replay.py:342-345"
+   ],
+   "remaining": "",
+   "reason": "1 flagged site in module 11 files (replay.py:342, history; reported twice) is a false positive: ORDER BY seq is appended in a separate literal at replay.py:345 and seq is the unique IdKey (LedgerRevision.cls:44). Ledger*.cls, client.py, changeset.py, guard.py and _engine/ledger.py have no flagged site."
+  },
+  {
+   "gate": "3.4-declared-reads",
+   "status": "open",
+   "evidence": [
+    "footprints:experiment/playbook-completion/footprints/11.json"
+   ],
+   "remaining": "A mechanical declared-reads check with a self-test (the journal records writes only).",
+   "reason": "Reads are declared from source; not validated mechanically."
+  },
+  {
+   "gate": "3.5-handlers",
+   "status": "open",
+   "evidence": [
+    "run:b-11-run-unit"
+   ],
+   "remaining": "Handler proofs (performs(spec_step)) for Enable/Disable/SetStrict/Commit/client.commit.",
+   "reason": "Not proved; 174 upstream unit tests of the client, guard, changeset and error mapping pass here."
+  },
+  {
+   "gate": "3.5-lockplans",
+   "status": "failed",
+   "evidence": [
+    "live:b-11-live-f1104",
+    "live:b-11-live-f1102-locktimeout",
+    "live:b-11-live-f1102-contention",
+    "mc:m11-enable-as-built",
+    "mc:m11-stats-as-built-rmw",
+    "mc:m11-commit-as-built",
+    "finding:F-1104",
+    "finding:F-1102",
+    "finding:F-1114"
+   ],
+   "remaining": "Fix the three lock-plan defects; then prove each handler's lock plan.",
+   "reason": "Head-lock plan of Commit holds (deferred unlock; m11-commit-as-built, contract rows 30/36); Enable reads state before the lock (F-1104), the stats row is updated read-modify-write with no lock and blocks 10 s behind caller transactions (F-1102, F-C1101), the eraser writes statement maps without the head lock (F-1114)."
+  },
+  {
+   "gate": "3.5-decoders",
+   "status": "closed",
+   "evidence": [
+    "check:decoder-map-ledger",
+    "run:b-11-run-unit"
+   ],
+   "remaining": "Wire contract text (F-1110) and replay answer content (F-1106) are recorded findings, not decoder defects.",
+   "reason": "Error-code -> exception map complete (15 server codes, 0 unmapped, 0 dead; orchestrator check decoder-map-ledger); test_ledger_error_contract / test_ledger_errors pass here."
+  },
+  {
+   "gate": "3.6-frame",
+   "status": "open",
+   "evidence": [],
+   "remaining": "Frame obligations per statement shape.",
+   "reason": "Not attempted."
+  },
+  {
+   "gate": "3.6-row-permutation",
+   "status": "open",
+   "evidence": [
+    "inspected:iris_src/src/Graph/KG/LedgerGenesis.cls:14-63"
+   ],
+   "remaining": "Show genesis/verify results are independent of row order (Capture uses ORDER BY).",
+   "reason": "Not checked."
+  },
+  {
+   "gate": "3.6-keys",
+   "status": "open",
+   "evidence": [
+    "live:b-11-live-f1104",
+    "mc:m11-commit-as-built"
+   ],
+   "remaining": "Prove LED-B6.2 (statement ids never reused) and the seq/IdKey invariants over all writers incl. PurgeAll and restore.",
+   "reason": "Revision seq uniqueness enforced by the IdKey (observed: ERROR #5805 on a second genesis, P-1106); chain/key invariants model-checked for the commit core."
+  },
+  {
+   "gate": "3.6-fk",
+   "status": "failed",
+   "evidence": [
+    "live:b-11-live-findings",
+    "finding:F-1105"
+   ],
+   "remaining": "Decide HD-1101 and give ledger node ops a default-graph existence check.",
+   "reason": "A committed ledger set_prop wrote an rdf_props row with no node row (no FK on rdf_props); add_label on the same id failed fk_labels_node."
+  },
+  {
+   "gate": "3.6-capacity",
+   "status": "open",
+   "evidence": [
+    "inspected:iris_src/src/Graph/KG/Ledger.cls:123-139",
+    "inspected:iris_src/src/Graph/KG/LedgerRevision.cls:20"
+   ],
+   "remaining": "Exercise the >1M-character staging path, max_ops, message 4,000 and Kind 16-character limits.",
+   "reason": "Only max_ops was exercised (b-11-live-findings)."
+  },
+  {
+   "gate": "3.7-trace-replay",
+   "status": "open",
+   "evidence": [
+    "trace:trace-conformance-ledger",
+    "live:b-11-live-footprints-1"
+   ],
+   "remaining": "Replay journal traces of enable/disable/strict/stats/adoption through the m11 machines.",
+   "reason": "The orchestrator replayed a journal trace of 4 ledger commits through spec step rules (0 violations); this lane's journal footprints check transaction boundaries but are not replayed through a machine."
+  },
+  {
+   "gate": "3.7-lock-log",
+   "status": "open",
+   "evidence": [
+    "live:b-11-live-f1102-locktimeout",
+    "live:b-11-live-f1104"
+   ],
+   "remaining": "Capture LOCK activity (not in the journal) and check it against the lock plan.",
+   "reason": "Lock behaviour observed indirectly (waits, timeouts)."
+  },
+  {
+   "gate": "3.7-mutation",
+   "status": "open",
+   "evidence": [],
+   "remaining": "Mutation testing of the unverified Python/ObjectScript layers.",
+   "reason": "Model mutants only."
+  },
+  {
+   "gate": "3.8-findings-disposed",
+   "status": "closed",
+   "evidence": [
+    "findings:experiment/playbook-completion/findings/audit/11.json"
+   ],
+   "remaining": "Maintainer fixes or decisions.",
+   "reason": "All 14 original findings audited (13 reproduced-live, 1 reproduced-test; 14 product-defect) plus F-C1101."
+  },
+  {
+   "gate": "5c-refusals",
+   "status": "open",
+   "evidence": [
+    "live:b-11-live-findings",
+    "live:b-11-live-footprints-1",
+    "run:b-11-run-unit",
+    "finding:F-1107"
+   ],
+   "remaining": "Audit every LED X statement mechanically (32).",
+   "reason": "Evidenced live here: LED-B4.8 (stale head), LED-B4.9 (empty), LED-B4.9.1 (too_large), LED-B5.4 (node_exists), LED-B11.5 for create_node; LED-B4.9.2 broken (F-1107)."
+  },
+  {
+   "gate": "3.7-explorers",
+   "status": "closed",
+   "evidence": [
+    "mc:m11-*"
+   ],
+   "remaining": "",
+   "reason": "Module 11's explorer run: 32 of 32 met (RESULTS.json after integration)."
+  },
+  {
+   "gate": "3.7-e2e",
+   "status": "open",
+   "evidence": [
+    "live:b-11-live-f1104",
+    "live:b-11-live-f1102-contention",
+    "live:b-11-live-f1103"
+   ],
+   "remaining": "Upstream e2e ledger suites were not run (fixtures compile classes).",
+   "reason": "Multi-process behaviour exercised with up to 5 IRIS processes; single node only."
+  },
+  {
+   "gate": "3.7-suites",
+   "status": "open",
+   "evidence": [
+    "run:b-11-run-unit"
+   ],
+   "remaining": "Integration/e2e ledger tests (validation lane).",
+   "reason": "174 IRIS-free ledger unit tests pass."
+  },
+  {
+   "gate": "5-hygiene",
+   "status": "closed",
+   "evidence": [],
+   "remaining": "",
+   "reason": "Every IRIS command under tools/locks.sh iris (+ lane lock); ledger reset by the pin's PurgeAll before/after; <= 5 connections; waits time out."
+  }
+ ],
+ "gates_by_id": {
+  "3.1-parent": {
+   "status": "closed",
+   "evidence": [
+    "check:experiment/playbook-uplift/tools/ontology_index.py --check (3015 statements, 0 violations, index current; run 2026-11-14 in this lane)"
+   ],
+   "remaining": "",
+   "reason": "Index gate (parent ids, grade, lexical terms) passes for the whole ontology including LED."
+  },
+  "3.1-grade": {
+   "status": "closed",
+   "evidence": [
+    "check:experiment/playbook-uplift/tools/ontology_index.py --check"
+   ],
+   "remaining": ""
+  },
+  "3.1-terms": {
+   "status": "failed",
+   "evidence": [
+    "check:experiment/playbook-completion/check-literal-scope.py experiment/playbook-uplift --details: 183 LED statement/term pairs in 109 statements fail the literal rule (HD-0001)",
+    "check:b-check-literal-scope-07-11"
+   ],
+   "remaining": "Rewrite or reparent the LED term uses under the literal rule (ontology lane).",
+   "reason": "Literal rule (HD-0001): 183 LED statement/term pairs are out of scope (b-check-literal-scope-07-11). ",
+   "review_note": "lane B integration review 2026-11-14: open -> failed (a registered check fails; observation-only, not fixed)"
+  },
+  "3.1-index": {
+   "status": "closed",
+   "evidence": [
+    "check:experiment/playbook-uplift/tools/ontology_index.py --check"
+   ],
+   "remaining": ""
+  },
+  "3.1-cells": {
+   "status": "closed",
+   "evidence": [
+    "inventory:experiment/playbook-completion/models/breadth-b/inventory/11.json",
+    "inspected:experiment/playbook-uplift/ontology/11-ledger.md (Cells)"
+   ],
+   "remaining": "Resolve the 7 open cells to the working answers once HD-1101/HD-1102 are decided.",
+   "reason": "69 cells over 5 entities; 62 defined, 7 open and assigned to human decisions HD-1101 (named-only node id x upsert/set-property/add-label/delete-plain/delete-detach) and HD-1102 (holding-writes x disable/set-strict), each with a working disposition in decisions.md. Every cell command maps to entry points (cell_map); 0 cells without an entry point."
+  },
+  "3.1-coverage": {
+   "status": "open",
+   "evidence": [
+    "inventory:experiment/playbook-completion/models/breadth-b/inventory/11.json"
+   ],
+   "remaining": "Add statements for StmtForTuple (statement lookup by tuple used by verify; Ledger.cls:176-179) and for the correlation index lifecycle (LedgerRevision.BuildCorrelationIndex :65-85, schema.py ensure_ledger_index :737-770); state that LedgerApply/CommitInTxn/WriteRevision are public class methods callable outside a commit (premise P-1105).",
+   "reason": "123 entry points derived mechanically (66 ObjectScript class methods, 48 Python, 2 engine, 2 SQL DML, 2 SQL reads, 2 object paths, 1 guard-site set); 19 have no covering statement: 3 real omissions (StmtForTuple, BuildCorrelationIndex, ensure_ledger_index), 12 internal helpers that are public only by visibility (NewId, MetaGet, ErrLimit, RevisionObj, EncNull, Rec, IsReserved, Run, ParseQuals, QualsJson, WeightOf, IsNumeric), 4 trivial Python constructors/decoders."
+  },
+  "3.1-intent": {
+   "status": "closed",
+   "evidence": [
+    "inspected:experiment/playbook-completion/intent/HD-1101.md",
+    "inspected:experiment/playbook-completion/intent/HD-1102.md",
+    "inspected:experiment/playbook-completion/intent/HD-1103.md",
+    "inspected:experiment/playbook-completion/intent/HD-1104.md",
+    "inspected:experiment/playbook-completion/intent/HD-1105.md",
+    "live:ib-HD1101-namedonly",
+    "live:ib-HD1102-txn-rollback",
+    "live:ib-HD1103-guard-ttl",
+    "live:ib-HD1104-settings",
+    "live:ib-HD1105-replay-reapplies"
+   ],
+   "remaining": "Maintainer decisions remain open (HD-1101..1105); working dispositions in decisions.md.",
+   "reason": "Intent lane B recovered intent for every LED decision (files above) with discriminating probes."
+  },
+  "3.2-coverage": {
+   "status": "open",
+   "evidence": [
+    "inspected:experiment/playbook-completion/iris-contract/CONTRACT.md"
+   ],
+   "remaining": "Add to the IRIS contract: object concurrency of %OpenId/%Save (no lock on open; %Save row lock held to the outermost transaction end; 10 s lock timeout returning an error status), LOCK with timeout and $TEST, SQL row triggers and their bypasses (%NOTRIGGER, TRUNCATE; P-1108), %OnBeforeSave/%OnDelete, %KillExtent, object %Save duplicate IdKey (#5805), foreign-key enforcement on rdf_labels vs none on rdf_props, %DynamicObject %ToJSON key order (F-1113), functional-index maintenance inside SQL statements.",
+   "reason": "27 IRIS features listed in env_features: 10 inside the contract's subset, 4 partly (lock timeout/$TEST, object duplicate IdKey, native-on-caller-connection, journaling), 13 outside it."
+  },
+  "3.3-L1": {
+   "status": "closed",
+   "evidence": [
+    "mc:m11-enable-as-built-consistency",
+    "mc:m11-enable-reviewed",
+    "mc:m11-adopt-reviewed",
+    "mc:m11-stats-reviewed",
+    "mc:m11-guard-reviewed",
+    "mc:m11-retry-reviewed",
+    "mc:m11-commit-as-built"
+   ],
+   "remaining": "Verus L1 (proof) for LED not built; explorer models only.",
+   "reason": "Six small explorer machines carry LED business invariants (LED-B1.7, B1.12, B1.20, B4.3, B4.7.5, B4.7.8, B4.11.2, B10.5, B13.4, the shared strict-mode invariant SG); exhaustive within bounds."
+  },
+  "3.3-L2": {
+   "status": "open",
+   "evidence": [
+    "mc:m11-commit-as-built",
+    "mc:m11-enable-as-built",
+    "mc:m11-stats-as-built-caller-txn"
+   ],
+   "remaining": "An L2 machine over the full ^IVG.Ledger layout (rec/stmt/tuple/idem/revById/idBySeq) and the four governed tables with refinement to L1.",
+   "reason": "The machines abstract the real globals/rows each finding needs (state, head, revision row, stats row, statement maps, guard cache), not the full layout."
+  },
+  "3.3-refinement": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "Refinement of an L2 over the real layout to the L1 (explorer::refinement::audit or Verus).",
+   "reason": "Not built for module 11."
+  },
+  "3.3-controls": {
+   "status": "open",
+   "evidence": [
+    "mc:m11-enable-control-nolock",
+    "mc:m11-adopt-control-nocheck",
+    "mc:m11-stats-control-split",
+    "mc:m11-guard-control-failopen",
+    "mc:m11-retry-control-reapply",
+    "mc:m11-commit-control-unlock",
+    "mc:m11-commit-control-unlock-chain"
+   ],
+   "remaining": "Proof-level controls (the gate asks for rejection by a proof).",
+   "reason": "7 explorer controls (mutants of the reviewed/pin designs) each caught by the expected invariant."
+  },
+  "3.3-model-check": {
+   "status": "closed",
+   "evidence": [
+    "mc:m11-enable-as-built",
+    "mc:m11-adopt-as-built-commit",
+    "mc:m11-adopt-as-built-two-enables",
+    "mc:m11-stats-as-built-rmw",
+    "mc:m11-stats-as-built-caller-txn",
+    "mc:m11-guard-as-built-ttl",
+    "mc:m11-guard-as-built-failopen",
+    "mc:m11-guard-as-built-unguarded",
+    "mc:m11-retry-as-built-pcp",
+    "mc:m11-retry-as-built-governed",
+    "mc:m11-retry-as-built-stmt-ids",
+    "mc:m11-enable-as-built-consistency",
+    "mc:m11-enable-reviewed",
+    "mc:m11-adopt-reviewed",
+    "mc:m11-stats-reviewed",
+    "mc:m11-guard-reviewed",
+    "mc:m11-retry-reviewed",
+    "mc:m11-commit-as-built",
+    "mc:m11-enable-control-nolock",
+    "mc:m11-adopt-control-nocheck",
+    "mc:m11-stats-control-split",
+    "mc:m11-guard-control-failopen",
+    "mc:m11-retry-control-reapply",
+    "mc:m11-commit-control-unlock",
+    "mc:m11-commit-control-unlock-chain",
+    "mc:m11-enable-positive",
+    "mc:m11-adopt-positive",
+    "mc:m11-stats-positive",
+    "mc:m11-guard-positive",
+    "mc:m11-retry-positive",
+    "mc:m11-commit-positive-replay",
+    "mc:m11-commit-positive-rollback"
+   ],
+   "remaining": "",
+   "reason": "32 checks, all met: 11 as-built violations reproducing F-1101, F-1102, F-1103, F-1104, F-1106, F-1108, F-0801 (shared guard); 7 passes (5 reviewed designs, the commit core and LED-B1.7 at the pin); 7 controls caught; 7 sharpness witnesses; AG EF progress in enable, adopt, stats, guard, commit. Exhaustive within bounds."
+  },
+  "3.3a-writesets": {
+   "status": "failed",
+   "evidence": [
+    "footprints:experiment/playbook-completion/footprints/11.json",
+    "check:writer-census",
+    "finding:F-1114",
+    "finding:F-1102",
+    "finding:F-1103",
+    "finding:F-1105",
+    "finding:F-1101"
+   ],
+   "remaining": "Discharge the open pairs once the findings are fixed; the orchestrator's writer census lists 25 more writer methods for INV-* stores.",
+   "reason": "Every (LED invariant, writer plan) pair is dispositioned in invariant_writesets; 6 pairs are broken by product defects (F-1101, F-1102/F-C1101, F-1103, F-1105, F-1107, F-1114)."
+  },
+  "3.4-statements": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "Prove (or differentially test) each ledger storage statement against a model evaluation.",
+   "reason": "Not attempted for module 11."
+  },
+  "3.4-ownership": {
+   "status": "failed",
+   "evidence": [
+    "live:b-11-live-footprints-2",
+    "live:live-f1201-reproduced",
+    "check:writer-census",
+    "finding:F-1114"
+   ],
+   "remaining": "Single ownership of ^IVG.Ledger('stmt'/'tuple') (or a shared lock protocol) and a self-tested ownership check.",
+   "reason": "^IVG.Ledger statement maps have two writers: the commit path under the head lock and Graph.KG.Eraser without it (observed via bulk_delete_adjacency -> EraseEdges and by the orchestrator's F-1201 run)."
+  },
+  "3.4-storage-order": {
+   "status": "closed",
+   "evidence": [
+    "check:storage-order-scan",
+    "inspected:iris_vector_graph/ledger/replay.py:342-345"
+   ],
+   "remaining": "",
+   "reason": "1 flagged site in module 11 files (replay.py:342, history; reported twice) is a false positive: ORDER BY seq is appended in a separate literal at replay.py:345 and seq is the unique IdKey (LedgerRevision.cls:44). Ledger*.cls, client.py, changeset.py, guard.py and _engine/ledger.py have no flagged site."
+  },
+  "3.4-declared-reads": {
+   "status": "open",
+   "evidence": [
+    "footprints:experiment/playbook-completion/footprints/11.json"
+   ],
+   "remaining": "A mechanical declared-reads check with a self-test (the journal records writes only).",
+   "reason": "Reads are declared from source; not validated mechanically."
+  },
+  "3.5-handlers": {
+   "status": "open",
+   "evidence": [
+    "run:b-11-run-unit"
+   ],
+   "remaining": "Handler proofs (performs(spec_step)) for Enable/Disable/SetStrict/Commit/client.commit.",
+   "reason": "Not proved; 174 upstream unit tests of the client, guard, changeset and error mapping pass here."
+  },
+  "3.5-lockplans": {
+   "status": "failed",
+   "evidence": [
+    "live:b-11-live-f1104",
+    "live:b-11-live-f1102-locktimeout",
+    "live:b-11-live-f1102-contention",
+    "mc:m11-enable-as-built",
+    "mc:m11-stats-as-built-rmw",
+    "mc:m11-commit-as-built",
+    "finding:F-1104",
+    "finding:F-1102",
+    "finding:F-1114"
+   ],
+   "remaining": "Fix the three lock-plan defects; then prove each handler's lock plan.",
+   "reason": "Head-lock plan of Commit holds (deferred unlock; m11-commit-as-built, contract rows 30/36); Enable reads state before the lock (F-1104), the stats row is updated read-modify-write with no lock and blocks 10 s behind caller transactions (F-1102, F-C1101), the eraser writes statement maps without the head lock (F-1114)."
+  },
+  "3.5-decoders": {
+   "status": "closed",
+   "evidence": [
+    "check:decoder-map-ledger",
+    "run:b-11-run-unit"
+   ],
+   "remaining": "Wire contract text (F-1110) and replay answer content (F-1106) are recorded findings, not decoder defects.",
+   "reason": "Error-code -> exception map complete (15 server codes, 0 unmapped, 0 dead; orchestrator check decoder-map-ledger); test_ledger_error_contract / test_ledger_errors pass here."
+  },
+  "3.6-frame": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "Frame obligations per statement shape.",
+   "reason": "Not attempted."
+  },
+  "3.6-row-permutation": {
+   "status": "open",
+   "evidence": [
+    "inspected:iris_src/src/Graph/KG/LedgerGenesis.cls:14-63"
+   ],
+   "remaining": "Show genesis/verify results are independent of row order (Capture uses ORDER BY).",
+   "reason": "Not checked."
+  },
+  "3.6-keys": {
+   "status": "open",
+   "evidence": [
+    "live:b-11-live-f1104",
+    "mc:m11-commit-as-built"
+   ],
+   "remaining": "Prove LED-B6.2 (statement ids never reused) and the seq/IdKey invariants over all writers incl. PurgeAll and restore.",
+   "reason": "Revision seq uniqueness enforced by the IdKey (observed: ERROR #5805 on a second genesis, P-1106); chain/key invariants model-checked for the commit core."
+  },
+  "3.6-fk": {
+   "status": "failed",
+   "evidence": [
+    "live:b-11-live-findings",
+    "finding:F-1105"
+   ],
+   "remaining": "Decide HD-1101 and give ledger node ops a default-graph existence check.",
+   "reason": "A committed ledger set_prop wrote an rdf_props row with no node row (no FK on rdf_props); add_label on the same id failed fk_labels_node."
+  },
+  "3.6-capacity": {
+   "status": "open",
+   "evidence": [
+    "inspected:iris_src/src/Graph/KG/Ledger.cls:123-139",
+    "inspected:iris_src/src/Graph/KG/LedgerRevision.cls:20"
+   ],
+   "remaining": "Exercise the >1M-character staging path, max_ops, message 4,000 and Kind 16-character limits.",
+   "reason": "Only max_ops was exercised (b-11-live-findings)."
+  },
+  "3.7-trace-replay": {
+   "status": "open",
+   "evidence": [
+    "trace:trace-conformance-ledger",
+    "live:b-11-live-footprints-1"
+   ],
+   "remaining": "Replay journal traces of enable/disable/strict/stats/adoption through the m11 machines.",
+   "reason": "The orchestrator replayed a journal trace of 4 ledger commits through spec step rules (0 violations); this lane's journal footprints check transaction boundaries but are not replayed through a machine."
+  },
+  "3.7-lock-log": {
+   "status": "open",
+   "evidence": [
+    "live:b-11-live-f1102-locktimeout",
+    "live:b-11-live-f1104"
+   ],
+   "remaining": "Capture LOCK activity (not in the journal) and check it against the lock plan.",
+   "reason": "Lock behaviour observed indirectly (waits, timeouts)."
+  },
+  "3.7-mutation": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "Mutation testing of the unverified Python/ObjectScript layers.",
+   "reason": "Model mutants only."
+  },
+  "3.8-findings-disposed": {
+   "status": "closed",
+   "evidence": [
+    "findings:experiment/playbook-completion/findings/audit/11.json"
+   ],
+   "remaining": "Maintainer fixes or decisions.",
+   "reason": "All 14 original findings audited (13 reproduced-live, 1 reproduced-test; 14 product-defect) plus F-C1101."
+  },
+  "5c-refusals": {
+   "status": "open",
+   "evidence": [
+    "live:b-11-live-findings",
+    "live:b-11-live-footprints-1",
+    "run:b-11-run-unit",
+    "finding:F-1107"
+   ],
+   "remaining": "Audit every LED X statement mechanically (32).",
+   "reason": "Evidenced live here: LED-B4.8 (stale head), LED-B4.9 (empty), LED-B4.9.1 (too_large), LED-B5.4 (node_exists), LED-B11.5 for create_node; LED-B4.9.2 broken (F-1107)."
+  },
+  "3.7-explorers": {
+   "status": "closed",
+   "evidence": [
+    "mc:m11-*"
+   ],
+   "remaining": "",
+   "reason": "Module 11's explorer run: 32 of 32 met (RESULTS.json after integration)."
+  },
+  "3.7-e2e": {
+   "status": "open",
+   "evidence": [
+    "live:b-11-live-f1104",
+    "live:b-11-live-f1102-contention",
+    "live:b-11-live-f1103"
+   ],
+   "remaining": "Upstream e2e ledger suites were not run (fixtures compile classes).",
+   "reason": "Multi-process behaviour exercised with up to 5 IRIS processes; single node only."
+  },
+  "3.7-suites": {
+   "status": "open",
+   "evidence": [
+    "run:b-11-run-unit"
+   ],
+   "remaining": "Integration/e2e ledger tests (validation lane).",
+   "reason": "174 IRIS-free ledger unit tests pass."
+  },
+  "5-hygiene": {
+   "status": "closed",
+   "evidence": [],
+   "remaining": "",
+   "reason": "Every IRIS command under tools/locks.sh iris (+ lane lock); ledger reset by the pin's PurgeAll before/after; <= 5 connections; waits time out."
+  }
+ },
+ "storage_order": [
+  {
+   "file": "iris_vector_graph/ledger/replay.py",
+   "line": 342,
+   "sql": "SELECT TOP {} {} FROM {}.ledger_revisions",
+   "disposition": "false-positive",
+   "reason": "ORDER BY seq ASC/DESC appended in a separate literal at iris_vector_graph/ledger/replay.py:345; seq is the unique IdKey (iris_src/src/Graph/KG/LedgerRevision.cls:44), so the page is a deterministic prefix",
+   "occurrences": 2
+  }
+ ],
+ "invariant_writesets": [
+  {
+   "invariant": "LED-B1.7 genesis is one transaction",
+   "reads": [
+    "^IVG.Ledger(meta,head,rec,stmt)",
+    "ledger_revisions",
+    "ledger_stats"
+   ],
+   "plans": [
+    {
+     "plan": "cls:Graph.KG.Ledger.Enable",
+     "writes": [
+      "^IVG.Ledger",
+      "ledger_revisions",
+      "ledger_stats"
+     ],
+     "discharge": "mc:m11-enable-as-built-consistency; live:b-11-live-footprints-1 (one transaction)"
+    },
+    {
+     "plan": "cls:Graph.KG.Ledger.PurgeAll",
+     "writes": [
+      "^IVG.Ledger",
+      "ledger_revisions",
+      "ledger_stats"
+     ],
+     "discharge": "named exception: test/admin reset (LED-B7.5)"
+    }
+   ]
+  },
+  {
+   "invariant": "LED-B1.12 concurrent enables both answer the genesis",
+   "reads": [
+    "^IVG.Ledger(meta,head)",
+    "ledger_revisions"
+   ],
+   "plans": [
+    {
+     "plan": "cls:Graph.KG.Ledger.Enable",
+     "writes": [
+      "^IVG.Ledger",
+      "ledger_revisions"
+     ],
+     "discharge": "finding:F-1104 (live:b-11-live-f1104; reviewed mc:m11-enable-reviewed)"
+    }
+   ]
+  },
+  {
+   "invariant": "LED-B1.20 an adoption records only its own unrecorded writes",
+   "reads": [
+    "^IVG.Ledger(rec)",
+    "governed tables"
+   ],
+   "plans": [
+    {
+     "plan": "py:GraphLedger.enable -> verify(adopt=True)",
+     "writes": [
+      "^IVG.Ledger",
+      "ledger_revisions"
+     ],
+     "discharge": "finding:F-1103 (live:b-11-live-f1103; reviewed mc:m11-adopt-reviewed)"
+    },
+    {
+     "plan": "cls:Graph.KG.Ledger.Commit kind=adoption (any caller)",
+     "writes": [
+      "^IVG.Ledger",
+      "ledger_revisions"
+     ],
+     "discharge": "finding:F-1107 (ghost adoption, live:b-11-live-findings)"
+    },
+    {
+     "plan": "cls:Graph.KG.Ledger.Commit kind=changeset",
+     "writes": [
+      "^IVG.Ledger",
+      "governed tables"
+     ],
+     "discharge": "mc:m11-adopt-reviewed (a commit may interleave; only the adoption must re-check)"
+    }
+   ]
+  },
+  {
+   "invariant": "LED-B4.3/B4.11.2 one chain, no commit on an open head",
+   "reads": [
+    "^IVG.Ledger(head,idBySeq)",
+    "ledger_revisions"
+   ],
+   "plans": [
+    {
+     "plan": "cls:Graph.KG.Ledger.Commit (incl. nested in a caller transaction)",
+     "writes": [
+      "^IVG.Ledger(head)",
+      "ledger_revisions"
+     ],
+     "discharge": "mc:m11-commit-as-built; contract rows 'Locks: deferral' and 'Nesting'"
+    },
+    {
+     "plan": "cls:Graph.KG.Ledger.Enable",
+     "writes": [
+      "^IVG.Ledger(head)",
+      "ledger_revisions"
+     ],
+     "discharge": "mc:m11-enable-as-built-consistency (rollback restores head)"
+    },
+    {
+     "plan": "cls:Graph.KG.Ledger.PurgeAll",
+     "writes": [
+      "^IVG.Ledger",
+      "ledger_revisions"
+     ],
+     "discharge": "named exception"
+    },
+    {
+     "plan": "snapshot.restore_replace (module 18)",
+     "writes": [
+      "^IVG.Ledger",
+      "ledger_revisions"
+     ],
+     "discharge": "finding:F-1801 (orchestrator / module 18)"
+    }
+   ]
+  },
+  {
+   "invariant": "LED-B4.7.5 one revision per retry key",
+   "reads": [
+    "^IVG.Ledger(idem)",
+    "ledger_revisions"
+   ],
+   "plans": [
+    {
+     "plan": "cls:Graph.KG.Ledger.Commit",
+     "writes": [
+      "^IVG.Ledger(idem)"
+     ],
+     "discharge": "mc:m11-commit-as-built (key read under the head lock, LED-B4.7.6)"
+    },
+    {
+     "plan": "redact.batch (module 13)",
+     "writes": [
+      "^IVG.Ledger(idem,idemRedacted)"
+     ],
+     "discharge": "orchestrator INV-retry (experiment/playbook-uplift/semantics/writesets.json)"
+    }
+   ]
+  },
+  {
+   "invariant": "LED-B4.14 commit atomic across globals and tables",
+   "reads": [
+    "^IVG.Ledger",
+    "governed tables",
+    "^KG"
+   ],
+   "plans": [
+    {
+     "plan": "cls:Graph.KG.Ledger.Commit",
+     "writes": [
+      "^IVG.Ledger",
+      "governed tables",
+      "^KG",
+      "ledger_revisions",
+      "ledger_stats"
+     ],
+     "discharge": "live:b-11-live-footprints-1 (one outermost transaction; only $Increment counters outside)"
+    },
+    {
+     "plan": "py:GraphLedger.commit post-commit properties",
+     "writes": [
+      "rdf_props"
+     ],
+     "discharge": "by design separate (LED-B4.14.3, HD-1105); finding:F-1101 on replay"
+    }
+   ]
+  },
+  {
+   "invariant": "LED-B4.14.4 only head-lock holders change the statement maps",
+   "reads": [
+    "^IVG.Ledger(stmt,tuple,stmtNext)"
+   ],
+   "plans": [
+    {
+     "plan": "cls:Graph.KG.Ledger.Commit / LedgerApply / LedgerGenesis.Adopt",
+     "writes": [
+      "^IVG.Ledger(stmt,tuple,stmtNext)"
+     ],
+     "discharge": "guard: head lock Ledger.cls:439"
+    },
+    {
+     "plan": "cls:Graph.KG.Ledger.Enable (genesis Capture)",
+     "writes": [
+      "^IVG.Ledger(stmt,tuple,stmtNext)"
+     ],
+     "discharge": "guard: head lock Ledger.cls:264"
+    },
+    {
+     "plan": "Graph.KG.Eraser EraseGraph/EraseNodes/EraseAll/EraseEdges (incl. engine.bulk_delete_adjacency)",
+     "writes": [
+      "^IVG.Ledger(stmt,tuple)"
+     ],
+     "discharge": "finding:F-1114 (live:b-11-live-footprints-2, live:live-f1201-reproduced)"
+    },
+    {
+     "plan": "redact.final (module 13)",
+     "writes": [
+      "^IVG.Ledger(stmt)"
+     ],
+     "discharge": "orchestrator INV-stmt"
+    },
+    {
+     "plan": "LedgerApply public class methods called directly",
+     "writes": [
+      "^IVG.Ledger(stmt,tuple,stmtNext)"
+     ],
+     "discharge": "assumed:P-1105 (only trusted code)"
+    }
+   ]
+  },
+  {
+   "invariant": "LED-B5.3 a node delete record only when a row was deleted",
+   "reads": [
+    "^IVG.Ledger(rec)",
+    "nodes"
+   ],
+   "plans": [
+    {
+     "plan": "cls:Graph.KG.LedgerApply.OpDeleteNode",
+     "writes": [
+      "nodes",
+      "^IVG.Ledger(rec)"
+     ],
+     "discharge": "finding:F-1105 (live:b-11-live-findings)"
+    }
+   ]
+  },
+  {
+   "invariant": "LED-B7 a saved revision row never changes",
+   "reads": [
+    "ledger_revisions"
+   ],
+   "plans": [
+    {
+     "plan": "sql UPDATE/DELETE ledger_revisions",
+     "writes": [
+      "ledger_revisions"
+     ],
+     "discharge": "guard: triggers LedgerRevision.cls:87-108 (tested upstream; %NOTRIGGER/TRUNCATE open, P-1108)"
+    },
+    {
+     "plan": "object save/delete",
+     "writes": [
+      "ledger_revisions"
+     ],
+     "discharge": "guard: LedgerRevision.cls:111-123"
+    },
+    {
+     "plan": "redaction clear of free text (module 13)",
+     "writes": [
+      "ledger_revisions"
+     ],
+     "discharge": "orchestrator (exemption)"
+    },
+    {
+     "plan": "cls:Graph.KG.Ledger.PurgeAll",
+     "writes": [
+      "ledger_revisions"
+     ],
+     "discharge": "named exception (LED-B7.5)"
+    }
+   ]
+  },
+  {
+   "invariant": "LED-B10.5 a replayed commit changes nothing",
+   "reads": [
+    "governed tables"
+   ],
+   "plans": [
+    {
+     "plan": "py:GraphLedger.commit (replay branch)",
+     "writes": [
+      "rdf_props"
+     ],
+     "discharge": "finding:F-1101 (live:b-11-live-findings; mc:m11-retry-as-built-pcp)"
+    }
+   ]
+  },
+  {
+   "invariant": "LED-B13.4 each outcome adds exactly one",
+   "reads": [
+    "ledger_stats"
+   ],
+   "plans": [
+    {
+     "plan": "cls:Graph.KG.LedgerStats.Bump / Ledger.Count / guard count_rejection",
+     "writes": [
+      "ledger_stats"
+     ],
+     "discharge": "finding:F-1102 (live:b-11-live-f1102-contention, -locktimeout)"
+    },
+    {
+     "plan": "cls:Graph.KG.Ledger.WriteRevision (commit, genesis)",
+     "writes": [
+      "ledger_stats"
+     ],
+     "discharge": "finding:F-C1101 (live:b-11-live-f1102-txn)"
+    },
+    {
+     "plan": "Enable/Disable/SetStrict/RecordVerify whole-row saves",
+     "writes": [
+      "ledger_stats"
+     ],
+     "discharge": "finding:F-1102 (same whole-row %Save)"
+    }
+   ]
+  },
+  {
+   "invariant": "SG (shared with module 08) in strict mode every governed write is recorded or refused",
+   "reads": [
+    "^IVG.Ledger(meta)",
+    "governed tables"
+   ],
+   "plans": [
+    {
+     "plan": "guarded engine writers and Cypher writes (cached guard)",
+     "writes": [
+      "governed tables"
+     ],
+     "discharge": "finding:F-0801 (mc:m11-guard-as-built-ttl, -failopen; live:b-08-live-f0801, ib-HD1103-guard-ttl)"
+    },
+    {
+     "plan": "engine.bulk_delete_adjacency, GraphQL mutations",
+     "writes": [
+      "rdf_edges",
+      "nodes",
+      "rdf_labels",
+      "rdf_props",
+      "kg_NodeEmbeddings"
+     ],
+     "discharge": "finding:F-1108 (live:b-11-live-footprints-2; mc:m11-guard-as-built-unguarded)"
+    },
+    {
+     "plan": "BulkLoader, raw SQL",
+     "writes": [
+      "governed tables"
+     ],
+     "discharge": "named exception: ledger-api.md:93 (HD-0301)"
+    }
+   ]
+  }
+ ],
+ "env_features": [
+  {
+   "feature": "LOCK +name:timeout with $TEST (head lock, 30 s)",
+   "used_for": "commit, enable",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:264, :439-443",
+   "in_contract": "partial: 'Lock wait' row; timeout/$TEST outcome not a contract case"
+  },
+  {
+   "feature": "Unlock inside a transaction deferred to the outermost end",
+   "used_for": "head lock kept to the caller's end (LED-B9.4)",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:388-410",
+   "in_contract": "yes: 'Locks: deferral'"
+  },
+  {
+   "feature": "TSTART nesting; TCOMMIT lowers $TLEVEL; TROLLBACK 1 partial; outer rollback undoes inner",
+   "used_for": "commit nested in caller transactions",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:397-416",
+   "in_contract": "yes: 'Nesting', 'Partial rollback'"
+  },
+  {
+   "feature": "$TLEVEL test",
+   "used_for": "Enable refuses an open transaction; client caller_transaction_level",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:261; iris_vector_graph/ledger/client.py:268-279",
+   "in_contract": "yes (nesting cases)"
+  },
+  {
+   "feature": "Dirty visibility of globals set inside another process's open transaction",
+   "used_for": "State/Head/Meta unlocked reads (F-1104)",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:40-43, :143-164, :254",
+   "in_contract": "yes: 'Visibility'"
+  },
+  {
+   "feature": "SQL writes via %SQL.Statement %ExecDirect join the ObjectScript transaction",
+   "used_for": "LedgerApply ops inside Commit (P-1101)",
+   "source": "iris_src/src/Graph/KG/LedgerApply.cls:74-77",
+   "in_contract": "yes: 'Partial rollback' (globals and SQL rows alike)"
+  },
+  {
+   "feature": "Rollback restores a node's before-image; does not overwrite another process's later change",
+   "used_for": "failed second genesis, caller rollback",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:306-314",
+   "in_contract": "yes: 'Rollback over another's write'"
+  },
+  {
+   "feature": "%Persistent %OpenId/%Save default concurrency: no lock on open, exclusive row lock on save held to the transaction end, ~10 s lock timeout returning an error status",
+   "used_for": "stats row (F-1102, F-C1101)",
+   "source": "iris_src/src/Graph/KG/LedgerStats.cls:51-88; iris_src/src/Graph/KG/Ledger.cls:559-565",
+   "in_contract": "no (object concurrency outside the subset)"
+  },
+  {
+   "feature": "Object %Save of a duplicate IdKey fails (#5805)",
+   "used_for": "revision seq uniqueness (P-1106)",
+   "source": "iris_src/src/Graph/KG/LedgerRevision.cls:44",
+   "in_contract": "partial: 'Unique keys' covers SQL INSERT -119 only"
+  },
+  {
+   "feature": "SQL row triggers Foreach=row/object with %ok/%msg; bypass by %NOTRIGGER / TRUNCATE",
+   "used_for": "revision immutability (P-1108)",
+   "source": "iris_src/src/Graph/KG/LedgerRevision.cls:87-108",
+   "in_contract": "no"
+  },
+  {
+   "feature": "%OnBeforeSave / %OnDelete object callbacks",
+   "used_for": "revision immutability on the object path",
+   "source": "iris_src/src/Graph/KG/LedgerRevision.cls:111-123",
+   "in_contract": "no"
+  },
+  {
+   "feature": "%KillExtent",
+   "used_for": "PurgeAll",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:241-248",
+   "in_contract": "no"
+  },
+  {
+   "feature": "$INCREMENT not undone by rollback",
+   "used_for": "^KG/^NKG counters reached by commits; ^||IVG.LedgerOutSeq",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:126; Adjacency (module 04)",
+   "in_contract": "yes: '$INCREMENT'"
+  },
+  {
+   "feature": "Process-private globals",
+   "used_for": "^||IVG.LedgerStage, ^||IVG.LedgerOut",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:123-139, :181-185, :427-436",
+   "in_contract": "yes: 'Process-private globals'"
+  },
+  {
+   "feature": "Foreign keys enforced on rdf_labels/rdf_edges; none on rdf_props",
+   "used_for": "node ops (F-1105, F-1101)",
+   "source": "iris_src/src/Graph/KG/LedgerApply.cls:253-285; iris_vector_graph/schema.py:411-417",
+   "in_contract": "no"
+  },
+  {
+   "feature": "Functional (adjacency) index maintenance inside SQL DML",
+   "used_for": "^KG kept in step inside the commit (LED-B4.14.1)",
+   "source": "iris_src/src/Graph/KG/LedgerApply.cls:499-520",
+   "in_contract": "no (index maintenance outside the subset)"
+  },
+  {
+   "feature": "%DynamicObject/%DynamicArray %FromJSON/%ToJSON/%GetTypeOf; %ToJSON key order",
+   "used_for": "wire answers, stored source text (F-1113)",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:52-121, :521-522",
+   "in_contract": "no"
+  },
+  {
+   "feature": "%Stream.TmpCharacter",
+   "used_for": "staged changesets",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:427-436",
+   "in_contract": "no"
+  },
+  {
+   "feature": "$ZTIMESTAMP (UTC)",
+   "used_for": "committed_ms",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:27-33",
+   "in_contract": "no"
+  },
+  {
+   "feature": "$System.Util.CreateGUID",
+   "used_for": "revision ids",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:35-38",
+   "in_contract": "no"
+  },
+  {
+   "feature": "$System.Encryption SHA-256 (via LedgerRedact.Sha256Hex)",
+   "used_for": "redacted retry keys",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:464-470",
+   "in_contract": "no (module 13)"
+  },
+  {
+   "feature": "BUILD INDEX FOR TABLE",
+   "used_for": "RebuildEdgeIndices",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:224-239",
+   "in_contract": "no"
+  },
+  {
+   "feature": "Native API class call on the caller's DB-API connection runs in that server process (P-1107)",
+   "used_for": "commit joins the caller transaction",
+   "source": "iris_vector_graph/ledger/client.py:239-252, :402-404",
+   "in_contract": "partial: 'sql-row-in-native-level' case"
+  },
+  {
+   "feature": "DB-API driver START TRANSACTION / commit() / rollback() levels",
+   "used_for": "write_txn, post-commit properties",
+   "source": "iris_vector_graph/ledger/client.py:395-400, :456-487",
+   "in_contract": "yes: SQL COMMIT/ROLLBACK and driver rows"
+  },
+  {
+   "feature": "Process stop rolls back every level and releases locks",
+   "used_for": "abandoned commit",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:397-416",
+   "in_contract": "yes: 'Process stop'"
+  },
+  {
+   "feature": "SELECT TOP n ... ORDER BY on the IdKey",
+   "used_for": "history paging",
+   "source": "iris_vector_graph/ledger/replay.py:342-345",
+   "in_contract": "n/a (SQL semantics)"
+  },
+  {
+   "feature": "Journaling of the namespace database (every ^IVG.Ledger/table write journaled with transaction flags)",
+   "used_for": "journal oracle of this audit; crash consistency",
+   "source": "experiment/playbook-completion/traces/journal.py",
+   "in_contract": "partial: journal restore and crash recovery outside the subset"
+  }
+ ],
+ "counts": {
+  "entry_points": 123,
+  "omissions": 19,
+  "real_omissions": 3,
+  "cells": 69,
+  "cells_without_entry_point": 0,
+  "footprints": 123,
+  "footprints_journal_validated": 12,
+  "footprint_mismatches": 1,
+  "model_checks": 32,
+  "model_checks_met": 32,
+  "model_by_design": {
+   "as-built (violation)": 11,
+   "as-built (pass at the pin)": 2,
+   "reviewed": 5,
+   "control": 7,
+   "positive": 7
+  },
+  "findings_original": 14,
+  "findings_new": 1,
+  "env_features": 27,
+  "env_features_in_contract": 10,
+  "storage_order_sites": 2,
+  "literal_scope_pairs": 183
+ },
+ "real_omissions": [
+  "cls:Graph.KG.Ledger.StmtForTuple",
+  "cls:Graph.KG.LedgerRevision.BuildCorrelationIndex",
+  "py:iris_vector_graph/schema.py:GraphSchema.ensure_ledger_index"
+ ],
+ "registered_runs": [
+  "b-11-live-f1102-contention",
+  "b-11-live-f1102-locktimeout",
+  "b-11-live-f1102-txn",
+  "b-11-live-f1103",
+  "b-11-live-f1103-reenable-race",
+  "b-11-live-f1104",
+  "b-11-live-f1113",
+  "b-11-live-findings",
+  "b-11-live-footprints-1",
+  "b-11-live-footprints-2",
+  "b-11-probe-schema",
+  "b-11-run-unit"
+ ],
+ "models": {
+  "crate": "experiment/playbook-completion/models/breadth-b",
+  "file": "src/m11.rs",
+  "checks": [
+   "m11-enable-as-built",
+   "m11-adopt-as-built-commit",
+   "m11-adopt-as-built-two-enables",
+   "m11-stats-as-built-rmw",
+   "m11-stats-as-built-caller-txn",
+   "m11-guard-as-built-ttl",
+   "m11-guard-as-built-failopen",
+   "m11-guard-as-built-unguarded",
+   "m11-retry-as-built-pcp",
+   "m11-retry-as-built-governed",
+   "m11-retry-as-built-stmt-ids",
+   "m11-enable-as-built-consistency",
+   "m11-enable-reviewed",
+   "m11-adopt-reviewed",
+   "m11-stats-reviewed",
+   "m11-guard-reviewed",
+   "m11-retry-reviewed",
+   "m11-commit-as-built",
+   "m11-enable-control-nolock",
+   "m11-adopt-control-nocheck",
+   "m11-stats-control-split",
+   "m11-guard-control-failopen",
+   "m11-retry-control-reapply",
+   "m11-commit-control-unlock",
+   "m11-commit-control-unlock-chain",
+   "m11-enable-positive",
+   "m11-adopt-positive",
+   "m11-stats-positive",
+   "m11-guard-positive",
+   "m11-retry-positive",
+   "m11-commit-positive-replay",
+   "m11-commit-positive-rollback"
+  ],
+  "dev_log": "$RUN_DIR/breadth-b/mc/11-dev.log"
+ }
+}

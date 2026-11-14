@@ -1,0 +1,1351 @@
+{
+ "module": "07",
+ "pin": "3eaa79cf",
+ "inventory": "experiment/playbook-completion/models/breadth-b/inventory/07.json",
+ "oracle": "experiment/playbook-completion/traces/journal.py via live/breadth-b/blive.capture on AUDITB",
+ "summary": {
+  "entry_points": 48,
+  "writers": 14,
+  "readers": 30,
+  "pure": 4,
+  "journal_validated": 15,
+  "journal_validated_distinct_operations": [
+   "Build",
+   "Delete",
+   "Drop",
+   "Info",
+   "Insert-new",
+   "Search",
+   "Search-rebuilds-stopwords",
+   "SearchReport",
+   "Upgrade-schema2"
+  ],
+  "store_mismatches": 0,
+  "writes_outside_a_transaction_claimed_atomic": [
+   "cls:Graph.KG.BM25Index.Build (F-0701)",
+   "cls:Graph.KG.BM25Index.Drop (F-0701)"
+  ],
+  "additional_journal_runs": {
+   "b-07-f0701-race": {
+    "A-build": {
+     "txn": 0,
+     "auto": 30008,
+     "records": 30008
+    },
+    "B-insert": {
+     "txn": 1,
+     "auto": 0,
+     "records": 17
+    }
+   },
+   "b-07-fc0702-nested-rollback": {
+    "control-valid-insert": [
+     {
+      "pid": "7484",
+      "kind": "txn",
+      "committed": false,
+      "rolled_back": false,
+      "nested_levels": 0,
+      "n": 10,
+      "stores": [
+       "global:^BM25Idx"
+      ]
+     }
+    ],
+    "failing-insert": [
+     {
+      "pid": "7484",
+      "kind": "txn",
+      "committed": true,
+      "rolled_back": false,
+      "nested_levels": 0,
+      "n": 10,
+      "stores": [
+       "sql:Graph_KG.docs"
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "entry_points": [
+  {
+   "id": "cls:Graph.KG.BM25Index.Build",
+   "role": "writer",
+   "source": "iris_src/src/Graph/KG/BM25Index.cls:97-175 (IndexDoc :178-204, Tokenize :56-87, InitStopwords :41-50)",
+   "reads": {
+    "tables": [
+     "Graph_KG.nodes",
+     "Graph_KG.rdf_props"
+    ],
+    "globals": [
+     "^BM25Idx(\"__stop__\")"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "^BM25Idx(name) (Kill :99, tf/df/doc/len :194-201, cfg N/totalLen/k1/b/vocab_size/graph/schema :160-170)",
+     "^BM25Idx(\"__stop__\",word) (InitStopwords, only when ^BM25Idx(\"__stop__\",\"the\") is missing)"
+    ]
+   },
+   "transaction": "none: no TSTART; every write auto-committed one by one (journal: 106 of 106 records outside a transaction; race run: 30008 of 30008)",
+   "locks": [],
+   "nolock": [
+    "SQL read through %SQL.Statement at default isolation (read uncommitted, P-0002); no %NOLOCK hint"
+   ],
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/07-fp-writers.json#Build",
+    "run_id": "b-07-fp-writers",
+    "declared_stores": [
+     "global:^BM25Idx"
+    ],
+    "observed_stores": [
+     "global:^BM25Idx"
+    ],
+    "match": true,
+    "undeclared": [],
+    "records": 106,
+    "outside_txn": 106,
+    "transaction_units": [
+     "auto"
+    ],
+    "notes": "matches the source; the writes outside a transaction contradict ADR-0007 'every write under an index-level lock in a transaction' and spec 044 FR-016/FR-018 'at every committed point' (F-0701)"
+   },
+   "notes": "Takes no write lock (F-0701). Schema set last (:170)."
+  },
+  {
+   "id": "cls:Graph.KG.BM25Index.Search",
+   "role": "reader",
+   "source": "iris_src/src/Graph/KG/BM25Index.cls:215-218 -> SearchCore :236-374",
+   "reads": {
+    "tables": [],
+    "globals": [
+     "^BM25Idx(name,cfg/df/tf/len/idf/avgdl)",
+     "^BM25Idx(\"__stop__\")"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "^||bm25scores, ^||bm25sorted, ^||bm25skip, ^||bm25fallback (process-private, not journaled)",
+     "^BM25Idx(\"__stop__\",word) (InitStopwords, only when ^BM25Idx(\"__stop__\",\"the\") is missing)"
+    ]
+   },
+   "transaction": "none (reads committed and uncommitted data alike; a Search during a Build sees the build's partial state)",
+   "locks": [],
+   "nolock": [
+    "no lock (spec 044 FR-019: Search takes no lock)"
+   ],
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/07-fp-writers.json#Search-rebuilds-stopwords",
+    "run_id": "b-07-fp-writers",
+    "declared_stores": [
+     "global:^BM25Idx"
+    ],
+    "observed_stores": [
+     "global:^BM25Idx"
+    ],
+    "match": true,
+    "undeclared": [],
+    "records": 77,
+    "outside_txn": 77,
+    "transaction_units": [
+     "auto"
+    ],
+    "notes": "a Search of an existing index re-creates a missing stopword list: 77 SETs outside a transaction; a Search of a missing index returns before tokenizing (no write)"
+   },
+   "notes": "Returns [] when N is 0 or absent (:241) before tokenizing."
+  },
+  {
+   "id": "cls:Graph.KG.BM25Index.SearchReport",
+   "role": "reader",
+   "source": "iris_src/src/Graph/KG/BM25Index.cls:221-234",
+   "reads": {
+    "tables": [],
+    "globals": [
+     "as Search"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "^||bm25skip, ^||bm25fallback (process-private)",
+     "^BM25Idx(\"__stop__\",word) (InitStopwords, only when ^BM25Idx(\"__stop__\",\"the\") is missing)"
+    ]
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/07-fp-writers.json#SearchReport",
+    "run_id": "b-07-fp-writers",
+    "declared_stores": [],
+    "observed_stores": [],
+    "match": true,
+    "undeclared": [],
+    "records": 0,
+    "outside_txn": 0,
+    "transaction_units": [],
+    "notes": "no journaled write (stopword list present)"
+   },
+   "notes": ""
+  },
+  {
+   "id": "cls:Graph.KG.BM25Index.Insert",
+   "role": "writer",
+   "source": "iris_src/src/Graph/KG/BM25Index.cls:442-493 (RemoveDoc :416-437, RequireWritable :385-394, LockWrite :403-410)",
+   "reads": {
+    "tables": [],
+    "globals": [
+     "^BM25Idx(name,cfg N/upgrading/schema/lock_timeout/vocab_size/totalLen, doc, len, df)",
+     "^BM25Idx(\"__stop__\")"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "^BM25Idx(name, cfg N/totalLen/vocab_size/schema, tf, df, doc, len)",
+     "^BM25Idx(\"__stop__\",word) (InitStopwords, only when ^BM25Idx(\"__stop__\",\"the\") is missing) (Tokenize runs before the lock and the transaction, :447)"
+    ]
+   },
+   "transaction": "own TSTART/TCOMMIT iris_src/src/Graph/KG/BM25Index.cls:460-485 nested in any caller transaction; on error `If $TLevel > 0 TRollback` (:487) with no level ends EVERY level, the caller's too (F-C0702, live)",
+   "locks": [
+    {
+     "lock": "^BM25Idx(name,\"lock\")",
+     "mode": "Lock + (exclusive, incremental)",
+     "timeout": "^BM25Idx(name,\"cfg\",\"lock_timeout\") else LOCKTIMEOUT=30 s",
+     "source": "iris_src/src/Graph/KG/BM25Index.cls:380-410"
+    }
+   ],
+   "nolock": [],
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/07-fp-writers.json#Insert-new",
+    "run_id": "b-07-fp-writers",
+    "declared_stores": [
+     "global:^BM25Idx"
+    ],
+    "observed_stores": [
+     "global:^BM25Idx"
+    ],
+    "match": true,
+    "undeclared": [],
+    "records": 12,
+    "outside_txn": 0,
+    "transaction_units": [
+     "txn"
+    ],
+    "notes": "one transaction per Insert (Insert-replace: 19 records in 1 transaction; Insert creating a missing index: 14 records, no cfg graph written, F-0705)"
+   },
+   "notes": "A first Insert creates a schema 2 header with no recorded graph (:461-466)."
+  },
+  {
+   "id": "cls:Graph.KG.BM25Index.Delete",
+   "role": "writer",
+   "source": "iris_src/src/Graph/KG/BM25Index.cls:496-514",
+   "reads": {
+    "tables": [],
+    "globals": [
+     "^BM25Idx(name,cfg N/upgrading/schema, doc, len, df)"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "^BM25Idx(name, tf, df, doc, len, cfg N/totalLen/vocab_size)"
+    ]
+   },
+   "transaction": "own TSTART/TCOMMIT iris_src/src/Graph/KG/BM25Index.cls:504-506; error path `If $TLevel > 0 TRollback` (:508) ends every level (F-C0702 pattern)",
+   "locks": [
+    {
+     "lock": "^BM25Idx(name,\"lock\")",
+     "mode": "Lock + (exclusive, incremental)",
+     "timeout": "^BM25Idx(name,\"cfg\",\"lock_timeout\") else LOCKTIMEOUT=30 s",
+     "source": "iris_src/src/Graph/KG/BM25Index.cls:380-410"
+    }
+   ],
+   "nolock": [],
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/07-fp-writers.json#Delete",
+    "run_id": "b-07-fp-writers",
+    "declared_stores": [
+     "global:^BM25Idx"
+    ],
+    "observed_stores": [
+     "global:^BM25Idx"
+    ],
+    "match": true,
+    "undeclared": [],
+    "records": 7,
+    "outside_txn": 0,
+    "transaction_units": [
+     "txn"
+    ],
+    "notes": "7 records in one transaction; Delete of an absent document writes nothing"
+   },
+   "notes": "Checks N before the lock (:498): a Delete that passed it before a concurrent Build's Kill runs RemoveDoc with $Get defaults (N can go negative; model only)."
+  },
+  {
+   "id": "cls:Graph.KG.BM25Index.Upgrade",
+   "role": "writer",
+   "source": "iris_src/src/Graph/KG/BM25Index.cls:526-581",
+   "reads": {
+    "tables": [],
+    "globals": [
+     "^BM25Idx(name,cfg, tf, len)"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "^BM25Idx(name, cfg upgrading/N/totalLen/vocab_size/schema/avgdl, df, doc, idf)"
+    ]
+   },
+   "transaction": "none: flag, lock, one pass of plain SETs/KILLs with no TSTART (:533-578); 'safe to re-run after an interruption' (:524)",
+   "locks": [
+    {
+     "lock": "^BM25Idx(name,\"lock\")",
+     "mode": "Lock + (exclusive, incremental)",
+     "timeout": "^BM25Idx(name,\"cfg\",\"lock_timeout\") else LOCKTIMEOUT=30 s",
+     "source": "iris_src/src/Graph/KG/BM25Index.cls:380-410"
+    }
+   ],
+   "nolock": [],
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/07-fp-writers.json#Upgrade-schema2",
+    "run_id": "b-07-fp-writers",
+    "declared_stores": [],
+    "observed_stores": [],
+    "match": true,
+    "undeclared": [],
+    "records": 0,
+    "outside_txn": 0,
+    "transaction_units": [],
+    "notes": "only the no-op path (schema 2: {upgraded:0, already:1}) is validated: no journaled write. The schema 1 -> 2 path needs a schema-1 index, which the pin's API cannot create (Build and Insert write schema 2); writing one directly would write a product global, outside CONVENTIONS' scratch rule. Not validated live."
+   },
+   "notes": "Sets the upgrading flag before taking the lock (:533-535)."
+  },
+  {
+   "id": "cls:Graph.KG.BM25Index.Drop",
+   "role": "writer",
+   "source": "iris_src/src/Graph/KG/BM25Index.cls:587-591",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "^BM25Idx(name) (one Kill)"
+    ]
+   },
+   "transaction": "none (one KILL, auto-committed)",
+   "locks": [],
+   "nolock": [
+    "no lock: does not wait for a writer that holds the write lock (TXT-B7.1, F-0701)"
+   ],
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/07-fp-writers.json#Drop",
+    "run_id": "b-07-fp-writers",
+    "declared_stores": [
+     "global:^BM25Idx"
+    ],
+    "observed_stores": [
+     "global:^BM25Idx"
+    ],
+    "match": true,
+    "undeclared": [],
+    "records": 1,
+    "outside_txn": 1,
+    "transaction_units": [
+     "auto"
+    ],
+    "notes": "one KILL outside a transaction; Drop('__stop__') is accepted and kills the stopword list (F-0706)"
+   },
+   "notes": ""
+  },
+  {
+   "id": "cls:Graph.KG.BM25Index.Info",
+   "role": "reader",
+   "source": "iris_src/src/Graph/KG/BM25Index.cls:597-615",
+   "reads": {
+    "tables": [],
+    "globals": [
+     "^BM25Idx(name,cfg N/schema/totalLen/avgdl/vocab_size/graph)"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [
+    "no lock"
+   ],
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/07-fp-writers.json#Info",
+    "run_id": "b-07-fp-writers",
+    "declared_stores": [],
+    "observed_stores": [],
+    "match": true,
+    "undeclared": [],
+    "records": 0,
+    "outside_txn": 0,
+    "transaction_units": [],
+    "notes": "no write"
+   },
+   "notes": "Answers graph \"\" when the cfg graph subscript is absent (:612), F-0705."
+  },
+  {
+   "id": "cls:Graph.KG.BM25Index.SearchProc",
+   "role": "reader",
+   "source": "iris_src/src/Graph/KG/BM25Index.cls:621-624",
+   "reads": {
+    "tables": [],
+    "globals": [
+     "as Search"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "^BM25Idx(\"__stop__\",word) (InitStopwords, only when ^BM25Idx(\"__stop__\",\"the\") is missing)"
+    ]
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "Search with k only."
+  },
+  {
+   "id": "cls:Graph.KG.BM25Index.List",
+   "role": "reader",
+   "source": "iris_src/src/Graph/KG/BM25Index.cls:628-633",
+   "reads": {
+    "tables": [],
+    "globals": [
+     "^BM25Idx first subscripts"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "Skips __stop__."
+  },
+  {
+   "id": "cls:Graph.KG.SqlProcs.kgBM25",
+   "role": "reader",
+   "source": "iris_src/src/Graph/KG/SqlProcs.cls:131-135",
+   "reads": {
+    "tables": [
+     "(privilege check on rdf_props)"
+    ],
+    "globals": [
+     "as Search"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "^BM25Idx(\"__stop__\",word) (InitStopwords, only when ^BM25Idx(\"__stop__\",\"the\") is missing)"
+    ]
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "SQL function kg_BM25; RequireSelect on rdf_props (Graph.KG.SqlPrivilege) before reading the global (TXT-X10)."
+  },
+  {
+   "id": "cls:Graph.KG.PyOps.HybridSearch",
+   "role": "reader",
+   "source": "iris_src/src/Graph/KG/PyOps.cls:370-421",
+   "reads": {
+    "tables": [
+     "Graph_KG.kg_RRF_FUSE / kg_KNN_VEC / kg_TXT (procedures)",
+     "Graph_KG.docs",
+     "Graph_KG.kg_NodeEmbeddings or the graph's vector route"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none (embedded Python, SQL reads through ReadRows, PyOps.cls:200-219)",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": ""
+  },
+  {
+   "id": "cls:Graph.KG.Service.HybridSearch",
+   "role": "reader",
+   "source": "iris_src/src/Graph/KG/Service.cls:286-302",
+   "reads": {
+    "tables": [
+     "as PyOps.HybridSearch"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "REST POST /hybridSearch body: vector, text, k, c, graph."
+  },
+  {
+   "id": "route:POST /hybridSearch",
+   "role": "reader",
+   "source": "iris_src/src/Graph/KG/Service.cls:8",
+   "reads": {
+    "tables": [
+     "as PyOps.HybridSearch"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "%CSP.REST route."
+  },
+  {
+   "id": "py:iris_vector_graph/fusion.py:RRFFusion.fuse_results",
+   "role": "pure",
+   "source": "iris_vector_graph/fusion.py:27-64",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "n/a",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "Missing item adds 0 (HD-0702)."
+  },
+  {
+   "id": "py:iris_vector_graph/fusion.py:RRFFusion.weighted_fusion",
+   "role": "pure",
+   "source": "iris_vector_graph/fusion.py:67-97",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "n/a",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "Normalizes weights."
+  },
+  {
+   "id": "py:iris_vector_graph/fusion.py:HybridSearchFusion.__init__",
+   "role": "pure",
+   "source": "iris_vector_graph/fusion.py:105-107",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "n/a",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": ""
+  },
+  {
+   "id": "py:iris_vector_graph/fusion.py:HybridSearchFusion.multi_modal_search",
+   "role": "reader",
+   "source": "iris_vector_graph/fusion.py:109-252",
+   "reads": {
+    "tables": [
+     "via engine.kg_KNN_VEC (kg_NodeEmbeddings / route), engine.kg_TXT (docs), engine.kg_NEIGHBORHOOD_EXPANSION (rdf_edges)"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "Vector and graph legs swallowed on error (:144-152, :193-195); text leg raises (:158-168)."
+  },
+  {
+   "id": "py:iris_vector_graph/fusion.py:HybridSearchFusion.adaptive_search",
+   "role": "reader",
+   "source": "iris_vector_graph/fusion.py:254-310",
+   "reads": {
+    "tables": [
+     "as multi_modal_search; kg_TXT fallback"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "Answers [] when every path fails (:301-310)."
+  },
+  {
+   "id": "py:iris_vector_graph/text_search.py:TextSearchEngine.__init__",
+   "role": "pure",
+   "source": "iris_vector_graph/text_search.py:22-29",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "n/a",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": ""
+  },
+  {
+   "id": "py:iris_vector_graph/text_search.py:TextSearchEngine.search_documents",
+   "role": "reader",
+   "source": "iris_vector_graph/text_search.py:31-94",
+   "reads": {
+    "tables": [
+     "docs (unqualified: resolves to SQLUSER.DOCS, SQLCODE -30 live)"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "%FIND(text, ?) is not IRIS syntax; fallback LIKE on the same unqualified table; [] on any error."
+  },
+  {
+   "id": "py:iris_vector_graph/text_search.py:TextSearchEngine.search_entity_qualifiers",
+   "role": "reader",
+   "source": "iris_vector_graph/text_search.py:96-148",
+   "reads": {
+    "tables": [
+     "Graph_KG.rdf_edges (no graph_id predicate)"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "F-0711."
+  },
+  {
+   "id": "py:iris_vector_graph/text_search.py:TextSearchEngine.extract_entity_names",
+   "role": "reader",
+   "source": "iris_vector_graph/text_search.py:150-194",
+   "reads": {
+    "tables": [
+     "Graph_KG.rdf_props (no graph_id predicate)"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "F-0711 (live: both graphs)."
+  },
+  {
+   "id": "py:iris_vector_graph/text_search.py:TextSearchEngine.search_with_context",
+   "role": "reader",
+   "source": "iris_vector_graph/text_search.py:196-256",
+   "reads": {
+    "tables": [
+     "Graph_KG.rdf_props, Graph_KG.rdf_labels (label join on s alone)"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "F-0711 (live: both graphs)."
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_TXT",
+   "role": "reader",
+   "source": "iris_vector_graph/operators.py:30-35",
+   "reads": {
+    "tables": [
+     "as engine.kg_TXT"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "Shim."
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_RRF_FUSE",
+   "role": "reader",
+   "source": "iris_vector_graph/operators.py:37-44",
+   "reads": {
+    "tables": [
+     "as engine.kg_RRF_FUSE"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "Shim."
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_RERANK",
+   "role": "reader",
+   "source": "iris_vector_graph/operators.py:143-146",
+   "reads": {
+    "tables": [
+     "as engine kg_RERANK (fused leg rerank)"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": ""
+  },
+  {
+   "id": "eng:IRISGraphEngine.bm25_build",
+   "role": "writer",
+   "source": "iris_vector_graph/_engine/vector.py:1749-1785",
+   "reads": {
+    "tables": [
+     "as Build"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "as Build"
+    ]
+   },
+   "transaction": "as Build (none)",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/07-fp-writers.json#Build",
+    "run_id": "b-07-fp-writers",
+    "declared_stores": [
+     "global:^BM25Idx"
+    ],
+    "observed_stores": [
+     "global:^BM25Idx"
+    ],
+    "match": true,
+    "undeclared": [],
+    "records": 106,
+    "outside_txn": 106,
+    "transaction_units": [
+     "auto"
+    ],
+    "notes": "captured through the engine call (same IRIS process)"
+   },
+   "notes": "Validates with BM25BuildInput (blank name only; __stop__ accepted, F-0706)."
+  },
+  {
+   "id": "eng:IRISGraphEngine.bm25_delete",
+   "role": "writer",
+   "source": "iris_vector_graph/_engine/vector.py:1849-1855",
+   "reads": {
+    "tables": [],
+    "globals": [
+     "as Delete"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "as Delete"
+    ]
+   },
+   "transaction": "as Delete",
+   "locks": [
+    {
+     "lock": "^BM25Idx(name,\"lock\")",
+     "mode": "Lock + (exclusive, incremental)",
+     "timeout": "^BM25Idx(name,\"cfg\",\"lock_timeout\") else LOCKTIMEOUT=30 s",
+     "source": "iris_src/src/Graph/KG/BM25Index.cls:380-410"
+    }
+   ],
+   "nolock": [],
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/07-fp-writers.json#Delete",
+    "run_id": "b-07-fp-writers",
+    "declared_stores": [
+     "global:^BM25Idx"
+    ],
+    "observed_stores": [
+     "global:^BM25Idx"
+    ],
+    "match": true,
+    "undeclared": [],
+    "records": 7,
+    "outside_txn": 0,
+    "transaction_units": [
+     "txn"
+    ],
+    "notes": ""
+   },
+   "notes": ""
+  },
+  {
+   "id": "eng:IRISGraphEngine.bm25_drop",
+   "role": "writer",
+   "source": "iris_vector_graph/_engine/vector.py:1868-1870",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "as Drop"
+    ]
+   },
+   "transaction": "as Drop (none)",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/07-fp-writers.json#Drop",
+    "run_id": "b-07-fp-writers",
+    "declared_stores": [
+     "global:^BM25Idx"
+    ],
+    "observed_stores": [
+     "global:^BM25Idx"
+    ],
+    "match": true,
+    "undeclared": [],
+    "records": 1,
+    "outside_txn": 1,
+    "transaction_units": [
+     "auto"
+    ],
+    "notes": ""
+   },
+   "notes": ""
+  },
+  {
+   "id": "eng:IRISGraphEngine.bm25_info",
+   "role": "reader",
+   "source": "iris_vector_graph/_engine/vector.py:1871-1879",
+   "reads": {
+    "tables": [],
+    "globals": [
+     "as Info"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/07-fp-writers.json#Info",
+    "run_id": "b-07-fp-writers",
+    "declared_stores": [],
+    "observed_stores": [],
+    "match": true,
+    "undeclared": [],
+    "records": 0,
+    "outside_txn": 0,
+    "transaction_units": [],
+    "notes": ""
+   },
+   "notes": ""
+  },
+  {
+   "id": "eng:IRISGraphEngine.bm25_insert",
+   "role": "writer",
+   "source": "iris_vector_graph/_engine/vector.py:1840-1848",
+   "reads": {
+    "tables": [],
+    "globals": [
+     "as Insert"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "as Insert"
+    ]
+   },
+   "transaction": "as Insert; inside a caller's transaction a failure ends the caller's transaction (F-C0702, run b-07-fc0702-nested-rollback)",
+   "locks": [
+    {
+     "lock": "^BM25Idx(name,\"lock\")",
+     "mode": "Lock + (exclusive, incremental)",
+     "timeout": "^BM25Idx(name,\"cfg\",\"lock_timeout\") else LOCKTIMEOUT=30 s",
+     "source": "iris_src/src/Graph/KG/BM25Index.cls:380-410"
+    }
+   ],
+   "nolock": [],
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/07-fp-writers.json#Insert-new",
+    "run_id": "b-07-fp-writers",
+    "declared_stores": [
+     "global:^BM25Idx"
+    ],
+    "observed_stores": [
+     "global:^BM25Idx"
+    ],
+    "match": true,
+    "undeclared": [],
+    "records": 12,
+    "outside_txn": 0,
+    "transaction_units": [
+     "txn"
+    ],
+    "notes": ""
+   },
+   "notes": ""
+  },
+  {
+   "id": "eng:IRISGraphEngine.bm25_search",
+   "role": "reader",
+   "source": "iris_vector_graph/_engine/vector.py:1786-1839",
+   "reads": {
+    "tables": [],
+    "globals": [
+     "as Search/SearchReport"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "^BM25Idx(\"__stop__\",word) (InitStopwords, only when ^BM25Idx(\"__stop__\",\"the\") is missing)"
+    ]
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/07-fp-writers.json#Search",
+    "run_id": "b-07-fp-writers",
+    "declared_stores": [],
+    "observed_stores": [],
+    "match": true,
+    "undeclared": [],
+    "records": 0,
+    "outside_txn": 0,
+    "transaction_units": [],
+    "notes": ""
+   },
+   "notes": "Refuses blank query (BM25SearchInput) contrary to spec 044 US2 sc.4 (F-0708)."
+  },
+  {
+   "id": "eng:IRISGraphEngine.bm25_upgrade",
+   "role": "writer",
+   "source": "iris_vector_graph/_engine/vector.py:1857-1866",
+   "reads": {
+    "tables": [],
+    "globals": [
+     "as Upgrade"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "as Upgrade"
+    ]
+   },
+   "transaction": "as Upgrade (none)",
+   "locks": [
+    {
+     "lock": "^BM25Idx(name,\"lock\")",
+     "mode": "Lock + (exclusive, incremental)",
+     "timeout": "^BM25Idx(name,\"cfg\",\"lock_timeout\") else LOCKTIMEOUT=30 s",
+     "source": "iris_src/src/Graph/KG/BM25Index.cls:380-410"
+    }
+   ],
+   "nolock": [],
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/07-fp-writers.json#Upgrade-schema2",
+    "run_id": "b-07-fp-writers",
+    "declared_stores": [],
+    "observed_stores": [],
+    "match": true,
+    "undeclared": [],
+    "records": 0,
+    "outside_txn": 0,
+    "transaction_units": [],
+    "notes": ""
+   },
+   "notes": ""
+  },
+  {
+   "id": "eng:IRISGraphEngine.kg_RRF_FUSE",
+   "role": "reader",
+   "source": "iris_vector_graph/_engine/vector.py:1382-1452",
+   "reads": {
+    "tables": [
+     "kg_NodeEmbeddings / IVF (^IVF) / route (VEC module)",
+     "^BM25Idx via bm25_search and bm25_info"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "^BM25Idx(\"__stop__\",word) (InitStopwords, only when ^BM25Idx(\"__stop__\",\"the\") is missing)"
+    ]
+   },
+   "transaction": "none; both legs inside one try (:1421-1436): a failure logs and drops the remaining legs",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "Leg index chosen by recorded graph (_fusion_leg_index :187-226); Info's \"\" for an absent graph is read as the default graph (F-0705)."
+  },
+  {
+   "id": "eng:IRISGraphEngine.kg_TXT",
+   "role": "reader",
+   "source": "iris_vector_graph/_engine/vector.py:917-1054",
+   "reads": {
+    "tables": [
+     "Graph_KG.docs (iFind idx_docs_text_ifind, else LIKE)"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "No BM25 fallback (spec 044 FR-012, HD-0703)."
+  },
+  {
+   "id": "cypher:ivg.bm25.search",
+   "role": "reader",
+   "source": "iris_vector_graph/cypher/translator.py:3145-3200 (graph rows :3125-3142)",
+   "reads": {
+    "tables": [
+     "kg_BM25 SQL function -> ^BM25Idx; rdf_labels, rdf_props for the node"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "^BM25Idx(\"__stop__\",word) (InitStopwords, only when ^BM25Idx(\"__stop__\",\"the\") is missing)"
+    ]
+   },
+   "transaction": "the Cypher statement's (read)",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "Under USE GRAPH no index-graph check (F-0707)."
+  },
+  {
+   "id": "cypher:ivg.retrieve",
+   "role": "reader",
+   "source": "iris_vector_graph/cypher/translator.py:3248-3360",
+   "reads": {
+    "tables": [
+     "kg_BM25 (^BM25Idx bm25_name), the graph's vector table"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "^BM25Idx(\"__stop__\",word) (InitStopwords, only when ^BM25Idx(\"__stop__\",\"the\") is missing)"
+    ]
+   },
+   "transaction": "the Cypher statement's (read)",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "BM25 arm reads bm25_name with no graph check (F-0707)."
+  },
+  {
+   "id": "sqlfn:kg_TXT",
+   "role": "reader",
+   "source": "iris_vector_graph/schema.py:2485-2503",
+   "reads": {
+    "tables": [
+     "Graph_KG.docs via idx_docs_text_ifind (%ID %FIND search_index)"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "Generated SQL procedure."
+  },
+  {
+   "id": "sqlfn:kg_RRF_FUSE",
+   "role": "reader",
+   "source": "iris_vector_graph/schema.py:2526-2560",
+   "reads": {
+    "tables": [
+     "kg_KNN_VEC, kg_TXT (docs)"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "Missing rank at 10^9 (HD-0702)."
+  },
+  {
+   "id": "py:iris_vector_graph/index_protocol.py:Index.build[fulltext]",
+   "role": "writer",
+   "source": "iris_vector_graph/index_protocol.py:83-84 -> iris_vector_graph/_engine/vector.py:299-310",
+   "reads": {
+    "tables": [
+     "as Build"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "as Build"
+    ]
+   },
+   "transaction": "as Build; raises IndexNotBuiltError after Build already replaced the index (F-0704, live b-07-f0704)",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": ""
+  },
+  {
+   "id": "py:iris_vector_graph/index_protocol.py:Index.search[fulltext]",
+   "role": "reader",
+   "source": "iris_vector_graph/index_protocol.py:92-95",
+   "reads": {
+    "tables": [],
+    "globals": [
+     "as Info then Search"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": ""
+  },
+  {
+   "id": "py:iris_vector_graph/index_protocol.py:Index.insert[fulltext]",
+   "role": "writer",
+   "source": "iris_vector_graph/index_protocol.py:97-98",
+   "reads": {
+    "tables": [],
+    "globals": [
+     "as Insert"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "as Insert"
+    ]
+   },
+   "transaction": "as Insert",
+   "locks": [
+    {
+     "lock": "^BM25Idx(name,\"lock\")",
+     "mode": "Lock + (exclusive, incremental)",
+     "timeout": "^BM25Idx(name,\"cfg\",\"lock_timeout\") else LOCKTIMEOUT=30 s",
+     "source": "iris_src/src/Graph/KG/BM25Index.cls:380-410"
+    }
+   ],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": ""
+  },
+  {
+   "id": "py:iris_vector_graph/index_protocol.py:Index.drop[fulltext]",
+   "role": "writer",
+   "source": "iris_vector_graph/index_protocol.py:100-102",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "as Drop"
+    ]
+   },
+   "transaction": "as Drop (none)",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": ""
+  },
+  {
+   "id": "py:iris_vector_graph/index_protocol.py:Index.info[fulltext]",
+   "role": "reader",
+   "source": "iris_vector_graph/index_protocol.py:104-105",
+   "reads": {
+    "tables": [],
+    "globals": [
+     "as Info"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": ""
+  },
+  {
+   "id": "eng:IRISGraphEngine.create_index[replace]",
+   "role": "writer",
+   "source": "iris_vector_graph/_engine/vector.py:243-259",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "as Drop when replace=True"
+    ]
+   },
+   "transaction": "as Drop (none)",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": ""
+  },
+  {
+   "id": "eng:IRISGraphEngine.list_indexes[bm25 registry]",
+   "role": "reader",
+   "source": "iris_vector_graph/_engine/vector.py:84-120",
+   "reads": {
+    "tables": [],
+    "globals": [
+     "^BM25Idx first subscripts (embedded gref walk, no __stop__ skip) or BM25Index.List"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "F-0706 (embedded mode only)."
+  },
+  {
+   "id": "py:iris_vector_graph/schema.py:GraphSchema.global_indexes",
+   "role": "reader",
+   "source": "iris_vector_graph/schema.py:1950-1966",
+   "reads": {
+    "tables": [],
+    "globals": [
+     "BM25Index.List"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "SHOW INDEXES / status()."
+  }
+ ]
+}

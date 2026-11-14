@@ -1,0 +1,2104 @@
+{
+ "module": "07",
+ "ontology": "experiment/playbook-uplift/ontology/07-text-search.md",
+ "scope_file": "experiment/playbook-completion/models/breadth-b/tools/scope/07.json",
+ "generated_by": "experiment/playbook-completion/models/breadth-b/tools/inventory.py",
+ "counts": {
+  "entry_points": 48,
+  "by_kind": {
+   "cls": 13,
+   "cypher-proc": 2,
+   "engine": 11,
+   "py": 19,
+   "route": 1,
+   "sql-procedure": 2
+  },
+  "statements": 173,
+  "cells": 53,
+  "omissions": 7,
+  "cells_without_entry_point": 0
+ },
+ "entities": {
+  "BM25 index": {
+   "states": [
+    "missing",
+    "building",
+    "schema 1",
+    "upgrading",
+    "schema 2"
+   ],
+   "commands": [
+    "build",
+    "insert",
+    "delete",
+    "search",
+    "upgrade",
+    "drop",
+    "info"
+   ]
+  },
+  "fused search": {
+   "states": [
+    "legs answer",
+    "vector leg fails",
+    "text leg fails"
+   ],
+   "commands": [
+    "engine fusion",
+    "SQL fusion",
+    "web hybrid route",
+    "multi-modal search",
+    "adaptive search",
+    "retrieve call"
+   ]
+  }
+ },
+ "omissions": [
+  "py:iris_vector_graph/fusion.py:HybridSearchFusion.__init__",
+  "py:iris_vector_graph/index_protocol.py:Index.build[fulltext]",
+  "py:iris_vector_graph/index_protocol.py:Index.search[fulltext]",
+  "py:iris_vector_graph/index_protocol.py:Index.insert[fulltext]",
+  "py:iris_vector_graph/index_protocol.py:Index.drop[fulltext]",
+  "py:iris_vector_graph/index_protocol.py:Index.info[fulltext]",
+  "eng:IRISGraphEngine.create_index[replace]"
+ ],
+ "cells_without_entry_point": [],
+ "entry_points_in_no_cell": [
+  "eng:IRISGraphEngine.kg_TXT",
+  "py:iris_vector_graph/fusion.py:HybridSearchFusion.__init__",
+  "py:iris_vector_graph/fusion.py:RRFFusion.fuse_results",
+  "py:iris_vector_graph/fusion.py:RRFFusion.weighted_fusion",
+  "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_RERANK",
+  "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_TXT",
+  "py:iris_vector_graph/text_search.py:TextSearchEngine.__init__",
+  "py:iris_vector_graph/text_search.py:TextSearchEngine.extract_entity_names",
+  "py:iris_vector_graph/text_search.py:TextSearchEngine.search_documents",
+  "py:iris_vector_graph/text_search.py:TextSearchEngine.search_entity_qualifiers",
+  "py:iris_vector_graph/text_search.py:TextSearchEngine.search_with_context",
+  "sqlfn:kg_TXT"
+ ],
+ "entry_points": [
+  {
+   "id": "cls:Graph.KG.BM25Index.Build",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/BM25Index.cls",
+   "start": 97,
+   "end": 175,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.BM25Index.IndexDoc",
+    "Graph.KG.BM25Index.InitStopwords",
+    "Graph.KG.BM25Index.Tokenize"
+   ],
+   "hint": {
+    "globals_written": [
+     "^BM25Idx"
+    ],
+    "globals_killed": [
+     "^BM25Idx"
+    ],
+    "globals_read": [
+     "^BM25Idx"
+    ],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [
+     "nodes",
+     "rdf_props"
+    ],
+    "flags": []
+   },
+   "covered_by": [
+    "TXT-D2",
+    "TXT-D9",
+    "TXT-B1",
+    "TXT-B1.1",
+    "TXT-B1.2",
+    "TXT-B1.3",
+    "TXT-B1.4",
+    "TXT-B1.7",
+    "TXT-B1.8",
+    "TXT-B1.9",
+    "TXT-B1.11",
+    "TXT-Q1",
+    "TXT-X2",
+    "TXT-Q4"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.BM25Index.Search",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/BM25Index.cls",
+   "start": 215,
+   "end": 218,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.BM25Index.InitStopwords",
+    "Graph.KG.BM25Index.SearchCore",
+    "Graph.KG.BM25Index.Tokenize",
+    "Graph.KG.TraversalBFS.jsonEsc"
+   ],
+   "hint": {
+    "globals_written": [
+     "^BM25Idx",
+     "^||bm25fallback",
+     "^||bm25scores",
+     "^||bm25skip",
+     "^||bm25sorted"
+    ],
+    "globals_killed": [
+     "^||bm25fallback",
+     "^||bm25scores",
+     "^||bm25skip",
+     "^||bm25sorted"
+    ],
+    "globals_read": [
+     "^BM25Idx"
+    ],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "TXT-D8",
+    "TXT-B2",
+    "TXT-B3"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.BM25Index.SearchReport",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/BM25Index.cls",
+   "start": 221,
+   "end": 234,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.BM25Index.InitStopwords",
+    "Graph.KG.BM25Index.SearchCore",
+    "Graph.KG.BM25Index.Tokenize",
+    "Graph.KG.TraversalBFS.jsonEsc"
+   ],
+   "hint": {
+    "globals_written": [
+     "^BM25Idx",
+     "^||bm25fallback",
+     "^||bm25scores",
+     "^||bm25skip",
+     "^||bm25sorted"
+    ],
+    "globals_killed": [
+     "^||bm25fallback",
+     "^||bm25scores",
+     "^||bm25skip",
+     "^||bm25sorted"
+    ],
+    "globals_read": [
+     "^BM25Idx"
+    ],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "TXT-B3.4"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.BM25Index.Insert",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/BM25Index.cls",
+   "start": 442,
+   "end": 493,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.BM25Index.InitStopwords",
+    "Graph.KG.BM25Index.LockTimeout",
+    "Graph.KG.BM25Index.LockWrite",
+    "Graph.KG.BM25Index.RemoveDoc",
+    "Graph.KG.BM25Index.RequireWritable",
+    "Graph.KG.BM25Index.Tokenize"
+   ],
+   "hint": {
+    "globals_written": [
+     "^BM25Idx"
+    ],
+    "globals_killed": [
+     "^BM25Idx"
+    ],
+    "globals_read": [
+     "^BM25Idx"
+    ],
+    "locks": [
+     "+^BM25Idx",
+     "-^BM25Idx"
+    ],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": [
+     "$TLEVEL",
+     "LOCK-TIMEOUT",
+     "TCOMMIT",
+     "TROLLBACK",
+     "TSTART"
+    ]
+   },
+   "covered_by": [
+    "TXT-B4",
+    "TXT-B4.1",
+    "TXT-B4.2",
+    "TXT-B4.3",
+    "TXT-B4.4",
+    "TXT-B4.5",
+    "TXT-B4.6",
+    "TXT-B4.7",
+    "TXT-B4.8",
+    "TXT-B4.9",
+    "TXT-B4.10",
+    "TXT-I1",
+    "TXT-I2",
+    "TXT-I4",
+    "TXT-I6"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.BM25Index.Delete",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/BM25Index.cls",
+   "start": 496,
+   "end": 514,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.BM25Index.LockTimeout",
+    "Graph.KG.BM25Index.LockWrite",
+    "Graph.KG.BM25Index.RemoveDoc",
+    "Graph.KG.BM25Index.RequireWritable"
+   ],
+   "hint": {
+    "globals_written": [
+     "^BM25Idx"
+    ],
+    "globals_killed": [
+     "^BM25Idx"
+    ],
+    "globals_read": [
+     "^BM25Idx"
+    ],
+    "locks": [
+     "+^BM25Idx",
+     "-^BM25Idx"
+    ],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": [
+     "$TLEVEL",
+     "LOCK-TIMEOUT",
+     "TCOMMIT",
+     "TROLLBACK",
+     "TSTART"
+    ]
+   },
+   "covered_by": [
+    "TXT-B5",
+    "TXT-B5.1",
+    "TXT-B5.2",
+    "TXT-X8",
+    "TXT-I6"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.BM25Index.Upgrade",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/BM25Index.cls",
+   "start": 526,
+   "end": 581,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.BM25Index.LockTimeout"
+   ],
+   "hint": {
+    "globals_written": [
+     "^BM25Idx"
+    ],
+    "globals_killed": [
+     "^BM25Idx"
+    ],
+    "globals_read": [
+     "^BM25Idx"
+    ],
+    "locks": [
+     "+^BM25Idx",
+     "-^BM25Idx"
+    ],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": [
+     "LOCK-TIMEOUT"
+    ]
+   },
+   "covered_by": [
+    "TXT-D7",
+    "TXT-I3",
+    "TXT-B6",
+    "TXT-B6.1",
+    "TXT-B6.2",
+    "TXT-B6.3",
+    "TXT-B6.5",
+    "TXT-B6.6",
+    "TXT-B6.7",
+    "TXT-B6.9",
+    "TXT-X9"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.BM25Index.Drop",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/BM25Index.cls",
+   "start": 587,
+   "end": 591,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [
+     "^BM25Idx"
+    ],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "TXT-I5",
+    "TXT-B7",
+    "TXT-B7.1"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.BM25Index.Info",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/BM25Index.cls",
+   "start": 597,
+   "end": 615,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [
+     "^BM25Idx"
+    ],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "TXT-B8",
+    "TXT-B8.1",
+    "TXT-B8.2"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.BM25Index.SearchProc",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/BM25Index.cls",
+   "start": 621,
+   "end": 624,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.BM25Index.InitStopwords",
+    "Graph.KG.BM25Index.Search",
+    "Graph.KG.BM25Index.SearchCore",
+    "Graph.KG.BM25Index.Tokenize",
+    "Graph.KG.TraversalBFS.jsonEsc"
+   ],
+   "hint": {
+    "globals_written": [
+     "^BM25Idx",
+     "^||bm25fallback",
+     "^||bm25scores",
+     "^||bm25skip",
+     "^||bm25sorted"
+    ],
+    "globals_killed": [
+     "^||bm25fallback",
+     "^||bm25scores",
+     "^||bm25skip",
+     "^||bm25sorted"
+    ],
+    "globals_read": [
+     "^BM25Idx"
+    ],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "TXT-B3.6",
+    "TXT-B10"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.BM25Index.List",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/BM25Index.cls",
+   "start": 628,
+   "end": 633,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [
+     "^BM25Idx"
+    ],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "TXT-B9"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.SqlProcs.kgBM25",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/SqlProcs.cls",
+   "start": 131,
+   "end": 135,
+   "sqlproc": true,
+   "sqlname": "kg_BM25",
+   "callees": [
+    "Graph.KG.BM25Index.InitStopwords",
+    "Graph.KG.BM25Index.Search",
+    "Graph.KG.BM25Index.SearchCore",
+    "Graph.KG.BM25Index.SearchProc",
+    "Graph.KG.BM25Index.Tokenize",
+    "Graph.KG.SqlPrivilege.Holds",
+    "Graph.KG.SqlPrivilege.RequireSelect",
+    "Graph.KG.SqlProcs.Table",
+    "Graph.KG.TraversalBFS.jsonEsc"
+   ],
+   "hint": {
+    "globals_written": [
+     "^BM25Idx",
+     "^||bm25fallback",
+     "^||bm25scores",
+     "^||bm25skip",
+     "^||bm25sorted"
+    ],
+    "globals_killed": [
+     "^||bm25fallback",
+     "^||bm25scores",
+     "^||bm25skip",
+     "^||bm25sorted"
+    ],
+    "globals_read": [
+     "^BM25Idx"
+    ],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [],
+    "flags": []
+   },
+   "covered_by": [
+    "TXT-B3.6",
+    "TXT-B10",
+    "TXT-X10",
+    "TXT-B11"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.PyOps.HybridSearch",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/PyOps.cls",
+   "start": 370,
+   "end": 421,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [
+     "kg_RRF_FUSE",
+     "kg_TXT"
+    ],
+    "flags": []
+   },
+   "covered_by": [
+    "TXT-B14.4"
+   ]
+  },
+  {
+   "id": "cls:Graph.KG.Service.HybridSearch",
+   "kind": "cls",
+   "path": "iris_src/src/Graph/KG/Service.cls",
+   "start": 286,
+   "end": 302,
+   "sqlproc": false,
+   "sqlname": null,
+   "callees": [
+    "Graph.KG.PyOps.HybridSearch",
+    "Graph.KG.Service.ReadJSON",
+    "Graph.KG.Service.WriteError",
+    "Graph.KG.Service.WriteJSON"
+   ],
+   "hint": {
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [],
+    "locks": [],
+    "tables_written": [],
+    "tables_read": [
+     "kg_RRF_FUSE",
+     "kg_TXT"
+    ],
+    "flags": []
+   },
+   "covered_by": [
+    "TXT-B14.4"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/fusion.py:RRFFusion.fuse_results",
+   "kind": "py",
+   "path": "iris_vector_graph/fusion.py",
+   "start": 27,
+   "end": 64,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "TXT-D11",
+    "TXT-B16"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/fusion.py:RRFFusion.weighted_fusion",
+   "kind": "py",
+   "path": "iris_vector_graph/fusion.py",
+   "start": 67,
+   "end": 97,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "TXT-B16.1",
+    "TXT-X17"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/fusion.py:HybridSearchFusion.__init__",
+   "kind": "py",
+   "path": "iris_vector_graph/fusion.py",
+   "start": 105,
+   "end": 107,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": []
+  },
+  {
+   "id": "py:iris_vector_graph/fusion.py:HybridSearchFusion.multi_modal_search",
+   "kind": "py",
+   "path": "iris_vector_graph/fusion.py",
+   "start": 109,
+   "end": 252,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "TXT-D12",
+    "TXT-B17",
+    "TXT-B17.1",
+    "TXT-B17.2",
+    "TXT-B17.3",
+    "TXT-B17.4",
+    "TXT-B17.5",
+    "TXT-X18",
+    "TXT-X19"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/fusion.py:HybridSearchFusion.adaptive_search",
+   "kind": "py",
+   "path": "iris_vector_graph/fusion.py",
+   "start": 254,
+   "end": 310,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "TXT-B18",
+    "TXT-B18.1",
+    "TXT-B18.2"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/text_search.py:TextSearchEngine.__init__",
+   "kind": "py",
+   "path": "iris_vector_graph/text_search.py",
+   "start": 22,
+   "end": 29,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "TXT-0",
+    "TXT-B19"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/text_search.py:TextSearchEngine.search_documents",
+   "kind": "py",
+   "path": "iris_vector_graph/text_search.py",
+   "start": 31,
+   "end": 66,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "TXT-B19",
+    "TXT-B19.2",
+    "TXT-B19.3",
+    "TXT-X20"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/text_search.py:TextSearchEngine.search_entity_qualifiers",
+   "kind": "py",
+   "path": "iris_vector_graph/text_search.py",
+   "start": 96,
+   "end": 148,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [
+     "rdf_edges"
+    ],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "TXT-B19",
+    "TXT-B19.1"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/text_search.py:TextSearchEngine.extract_entity_names",
+   "kind": "py",
+   "path": "iris_vector_graph/text_search.py",
+   "start": 150,
+   "end": 194,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [
+     "rdf_props"
+    ],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "TXT-B19",
+    "TXT-B19.1"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/text_search.py:TextSearchEngine.search_with_context",
+   "kind": "py",
+   "path": "iris_vector_graph/text_search.py",
+   "start": 196,
+   "end": 256,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [
+     "rdf_labels",
+     "rdf_props"
+    ],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "TXT-B19",
+    "TXT-B19.1"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_TXT",
+   "kind": "py",
+   "path": "iris_vector_graph/operators.py",
+   "start": 30,
+   "end": 35,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "TXT-0",
+    "TXT-B12",
+    "TXT-B12.9",
+    "TXT-B13.9",
+    "TXT-B19.2"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_RRF_FUSE",
+   "kind": "py",
+   "path": "iris_vector_graph/operators.py",
+   "start": 37,
+   "end": 44,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "TXT-B13.9",
+    "TXT-B14"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_RERANK",
+   "kind": "py",
+   "path": "iris_vector_graph/operators.py",
+   "start": 143,
+   "end": 146,
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "TXT-B13.10"
+   ]
+  },
+  {
+   "id": "eng:IRISGraphEngine.bm25_build",
+   "kind": "engine",
+   "path": "iris_vector_graph/_engine/vector.py",
+   "start": 1749,
+   "end": 1785,
+   "self_calls": [
+    "_iris_obj"
+   ],
+   "hint": {
+    "tables_written": [],
+    "tables_read": [
+     "nodes",
+     "rdf_props"
+    ],
+    "globals_named": [],
+    "classmethod_calls": [
+     "Graph.KG.BM25Index.Build"
+    ],
+    "flags": [],
+    "globals_written": [
+     "^BM25Idx"
+    ],
+    "globals_killed": [
+     "^BM25Idx"
+    ],
+    "globals_read": [
+     "^BM25Idx"
+    ],
+    "locks": []
+   },
+   "covered_by": [
+    "TXT-B1",
+    "TXT-B1.4",
+    "TXT-B1.10",
+    "TXT-X1",
+    "TXT-X2"
+   ]
+  },
+  {
+   "id": "eng:IRISGraphEngine.bm25_delete",
+   "kind": "engine",
+   "path": "iris_vector_graph/_engine/vector.py",
+   "start": 1849,
+   "end": 1855,
+   "self_calls": [
+    "_iris_obj"
+   ],
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [
+     "Graph.KG.BM25Index.Delete"
+    ],
+    "flags": [
+     "$TLEVEL",
+     "LOCK-TIMEOUT",
+     "TCOMMIT",
+     "TROLLBACK",
+     "TSTART"
+    ],
+    "globals_written": [
+     "^BM25Idx"
+    ],
+    "globals_killed": [
+     "^BM25Idx"
+    ],
+    "globals_read": [
+     "^BM25Idx"
+    ],
+    "locks": [
+     "+^BM25Idx",
+     "-^BM25Idx"
+    ]
+   },
+   "covered_by": [
+    "TXT-B5"
+   ]
+  },
+  {
+   "id": "eng:IRISGraphEngine.bm25_drop",
+   "kind": "engine",
+   "path": "iris_vector_graph/_engine/vector.py",
+   "start": 1868,
+   "end": 1870,
+   "self_calls": [
+    "_iris_obj"
+   ],
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [
+     "Graph.KG.BM25Index.Drop"
+    ],
+    "flags": [],
+    "globals_written": [],
+    "globals_killed": [
+     "^BM25Idx"
+    ],
+    "globals_read": [],
+    "locks": []
+   },
+   "covered_by": [
+    "TXT-B7"
+   ]
+  },
+  {
+   "id": "eng:IRISGraphEngine.bm25_info",
+   "kind": "engine",
+   "path": "iris_vector_graph/_engine/vector.py",
+   "start": 1871,
+   "end": 1879,
+   "self_calls": [
+    "_iris_obj"
+   ],
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [
+     "Graph.KG.BM25Index.Info"
+    ],
+    "flags": [],
+    "globals_written": [],
+    "globals_killed": [],
+    "globals_read": [
+     "^BM25Idx"
+    ],
+    "locks": []
+   },
+   "covered_by": [
+    "TXT-B8",
+    "TXT-B8.1"
+   ]
+  },
+  {
+   "id": "eng:IRISGraphEngine.bm25_insert",
+   "kind": "engine",
+   "path": "iris_vector_graph/_engine/vector.py",
+   "start": 1840,
+   "end": 1848,
+   "self_calls": [
+    "_iris_obj"
+   ],
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [
+     "Graph.KG.BM25Index.Insert"
+    ],
+    "flags": [
+     "$TLEVEL",
+     "LOCK-TIMEOUT",
+     "TCOMMIT",
+     "TROLLBACK",
+     "TSTART"
+    ],
+    "globals_written": [
+     "^BM25Idx"
+    ],
+    "globals_killed": [
+     "^BM25Idx"
+    ],
+    "globals_read": [
+     "^BM25Idx"
+    ],
+    "locks": [
+     "+^BM25Idx",
+     "-^BM25Idx"
+    ]
+   },
+   "covered_by": [
+    "TXT-B4"
+   ]
+  },
+  {
+   "id": "eng:IRISGraphEngine.bm25_search",
+   "kind": "engine",
+   "path": "iris_vector_graph/_engine/vector.py",
+   "start": 1786,
+   "end": 1839,
+   "self_calls": [
+    "_iris_obj"
+   ],
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [
+     "Graph.KG.BM25Index.Search",
+     "Graph.KG.BM25Index.SearchReport"
+    ],
+    "flags": [],
+    "globals_written": [
+     "^BM25Idx",
+     "^||bm25fallback",
+     "^||bm25scores",
+     "^||bm25skip",
+     "^||bm25sorted"
+    ],
+    "globals_killed": [
+     "^||bm25fallback",
+     "^||bm25scores",
+     "^||bm25skip",
+     "^||bm25sorted"
+    ],
+    "globals_read": [
+     "^BM25Idx"
+    ],
+    "locks": []
+   },
+   "covered_by": [
+    "TXT-B2",
+    "TXT-B2.13",
+    "TXT-X3",
+    "TXT-B3",
+    "TXT-B3.4",
+    "TXT-X4",
+    "TXT-X11",
+    "TXT-B12.9"
+   ]
+  },
+  {
+   "id": "eng:IRISGraphEngine.bm25_upgrade",
+   "kind": "engine",
+   "path": "iris_vector_graph/_engine/vector.py",
+   "start": 1857,
+   "end": 1866,
+   "self_calls": [
+    "_iris_obj"
+   ],
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [
+     "Graph.KG.BM25Index.Upgrade"
+    ],
+    "flags": [
+     "LOCK-TIMEOUT"
+    ],
+    "globals_written": [
+     "^BM25Idx"
+    ],
+    "globals_killed": [
+     "^BM25Idx"
+    ],
+    "globals_read": [
+     "^BM25Idx"
+    ],
+    "locks": [
+     "+^BM25Idx",
+     "-^BM25Idx"
+    ]
+   },
+   "covered_by": [
+    "TXT-B6"
+   ]
+  },
+  {
+   "id": "eng:IRISGraphEngine.kg_RRF_FUSE",
+   "kind": "engine",
+   "path": "iris_vector_graph/_engine/vector.py",
+   "start": 1382,
+   "end": 1452,
+   "self_calls": [
+    "_assert_query_width",
+    "_cache_route",
+    "_cached_route",
+    "_catalog_width",
+    "_fusion_leg_index",
+    "_index_graph",
+    "_iris_obj",
+    "_is_default_pair",
+    "_kg_KNN_VEC_client_side",
+    "_kg_KNN_VEC_python_optimized",
+    "_legacy_table_for",
+    "_offered_embedding_identity",
+    "_raise_width_mismatch",
+    "_read_route",
+    "_registry_table",
+    "_route_cache_key",
+    "_route_for_read",
+    "_t",
+    "bm25_info",
+    "bm25_search",
+    "ivf_search",
+    "kg_KNN_VEC"
+   ],
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [
+     "Graph.KG.BM25Index.Info",
+     "Graph.KG.BM25Index.Search",
+     "Graph.KG.BM25Index.SearchReport",
+     "Graph.KG.IVFIndex.Search"
+    ],
+    "flags": [],
+    "globals_written": [
+     "^BM25Idx",
+     "^||bm25fallback",
+     "^||bm25scores",
+     "^||bm25skip",
+     "^||bm25sorted",
+     "^||ivfCentScore",
+     "^||ivfRanked",
+     "^||ivfScores",
+     "^||ivfSelected"
+    ],
+    "globals_killed": [
+     "^||bm25fallback",
+     "^||bm25scores",
+     "^||bm25skip",
+     "^||bm25sorted",
+     "^||ivfCentScore",
+     "^||ivfRanked",
+     "^||ivfScores",
+     "^||ivfSelected"
+    ],
+    "globals_read": [
+     "^BM25Idx",
+     "^IVF"
+    ],
+    "locks": []
+   },
+   "covered_by": [
+    "TXT-D12",
+    "TXT-B13",
+    "TXT-B13.3",
+    "TXT-B13.4",
+    "TXT-B13.5",
+    "TXT-B13.6",
+    "TXT-B13.7",
+    "TXT-B13.8",
+    "TXT-Q2",
+    "TXT-B14"
+   ]
+  },
+  {
+   "id": "eng:IRISGraphEngine.kg_TXT",
+   "kind": "engine",
+   "path": "iris_vector_graph/_engine/vector.py",
+   "start": 917,
+   "end": 1054,
+   "self_calls": [
+    "_t"
+   ],
+   "hint": {
+    "tables_written": [],
+    "tables_read": [],
+    "globals_named": [],
+    "classmethod_calls": [],
+    "flags": []
+   },
+   "covered_by": [
+    "TXT-0",
+    "TXT-B12",
+    "TXT-B12.1",
+    "TXT-B12.2",
+    "TXT-B12.3",
+    "TXT-B12.4",
+    "TXT-B12.5",
+    "TXT-B12.6",
+    "TXT-B12.7",
+    "TXT-B12.9",
+    "TXT-Q3",
+    "TXT-B13.9",
+    "TXT-B19.2"
+   ]
+  },
+  {
+   "id": "route:POST /hybridSearch",
+   "kind": "route",
+   "path": "iris_src/src/Graph/KG/Service.cls",
+   "start": 8,
+   "end": 8,
+   "hint": {},
+   "covered_by": [
+    "TXT-Q2",
+    "TXT-B14.4"
+   ]
+  },
+  {
+   "id": "cypher:ivg.bm25.search",
+   "kind": "cypher-proc",
+   "path": "iris_vector_graph/cypher/translator.py",
+   "start": 3151,
+   "end": 3151,
+   "hint": {},
+   "covered_by": [
+    "TXT-B11",
+    "TXT-X11",
+    "TXT-X12",
+    "TXT-I7"
+   ]
+  },
+  {
+   "id": "cypher:ivg.retrieve",
+   "kind": "cypher-proc",
+   "path": "iris_vector_graph/cypher/translator.py",
+   "start": 3248,
+   "end": 3248,
+   "hint": {},
+   "covered_by": [
+    "TXT-I7",
+    "TXT-Q2",
+    "TXT-B15"
+   ]
+  },
+  {
+   "id": "sqlfn:kg_TXT",
+   "kind": "sql-procedure",
+   "path": "iris_vector_graph/schema.py",
+   "start": 2485,
+   "end": 2485,
+   "hint": {},
+   "covered_by": [
+    "TXT-0",
+    "TXT-B12",
+    "TXT-B12.8",
+    "TXT-B12.9",
+    "TXT-B13.9",
+    "TXT-B19.2"
+   ]
+  },
+  {
+   "id": "sqlfn:kg_RRF_FUSE",
+   "kind": "sql-procedure",
+   "path": "iris_vector_graph/schema.py",
+   "start": 2526,
+   "end": 2526,
+   "hint": {},
+   "covered_by": [
+    "TXT-B14"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/index_protocol.py:Index.build[fulltext]",
+   "kind": "py",
+   "path": "iris_vector_graph/index_protocol.py",
+   "start": 83,
+   "end": 84,
+   "via": "iris_vector_graph/_engine/vector.py:299-310 (_build_fulltext_index)",
+   "hint": {},
+   "covered_by": []
+  },
+  {
+   "id": "py:iris_vector_graph/index_protocol.py:Index.search[fulltext]",
+   "kind": "py",
+   "path": "iris_vector_graph/index_protocol.py",
+   "start": 92,
+   "end": 95,
+   "via": "iris_vector_graph/index_protocol.py:34",
+   "hint": {},
+   "covered_by": []
+  },
+  {
+   "id": "py:iris_vector_graph/index_protocol.py:Index.insert[fulltext]",
+   "kind": "py",
+   "path": "iris_vector_graph/index_protocol.py",
+   "start": 97,
+   "end": 98,
+   "via": "iris_vector_graph/index_protocol.py:41",
+   "hint": {},
+   "covered_by": []
+  },
+  {
+   "id": "py:iris_vector_graph/index_protocol.py:Index.drop[fulltext]",
+   "kind": "py",
+   "path": "iris_vector_graph/index_protocol.py",
+   "start": 100,
+   "end": 102,
+   "via": "iris_vector_graph/index_protocol.py:48",
+   "hint": {},
+   "covered_by": []
+  },
+  {
+   "id": "py:iris_vector_graph/index_protocol.py:Index.info[fulltext]",
+   "kind": "py",
+   "path": "iris_vector_graph/index_protocol.py",
+   "start": 104,
+   "end": 105,
+   "via": "iris_vector_graph/index_protocol.py:55",
+   "hint": {},
+   "covered_by": []
+  },
+  {
+   "id": "eng:IRISGraphEngine.create_index[replace]",
+   "kind": "engine",
+   "path": "iris_vector_graph/_engine/vector.py",
+   "start": 243,
+   "end": 259,
+   "via": "replace=True drops the existing index",
+   "hint": {},
+   "covered_by": []
+  },
+  {
+   "id": "eng:IRISGraphEngine.list_indexes[bm25 registry]",
+   "kind": "engine",
+   "path": "iris_vector_graph/_engine/vector.py",
+   "start": 84,
+   "end": 104,
+   "via": "registry walk of ^BM25Idx first subscripts (embedded gref) or BM25Index.List",
+   "hint": {},
+   "covered_by": [
+    "TXT-B9.1"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph/schema.py:GraphSchema.global_indexes",
+   "kind": "py",
+   "path": "iris_vector_graph/schema.py",
+   "start": 1950,
+   "end": 1966,
+   "via": "SHOW INDEXES / status() list BM25 indexes through BM25Index.List",
+   "hint": {},
+   "covered_by": [
+    "TXT-B9"
+   ]
+  }
+ ],
+ "cells": [
+  {
+   "entity": "BM25 index",
+   "state": "missing",
+   "command": "build",
+   "outcome": "ok",
+   "statements": "TXT-B1, TXT-B1.1",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.bm25_build",
+    "cls:Graph.KG.BM25Index.Build",
+    "py:iris_vector_graph/index_protocol.py:Index.build[fulltext]"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "BM25 index",
+   "state": "missing",
+   "command": "insert",
+   "outcome": "ok",
+   "statements": "TXT-B4.1",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.bm25_insert",
+    "cls:Graph.KG.BM25Index.Insert",
+    "py:iris_vector_graph/index_protocol.py:Index.insert[fulltext]"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "BM25 index",
+   "state": "missing",
+   "command": "delete",
+   "outcome": "no-op",
+   "statements": "TXT-B5.1",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.bm25_delete",
+    "cls:Graph.KG.BM25Index.Delete"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "BM25 index",
+   "state": "missing",
+   "command": "search",
+   "outcome": "no-op",
+   "statements": "TXT-B2.11",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.bm25_search",
+    "cls:Graph.KG.BM25Index.Search",
+    "cls:Graph.KG.BM25Index.SearchReport",
+    "cls:Graph.KG.BM25Index.SearchProc",
+    "cls:Graph.KG.SqlProcs.kgBM25",
+    "cypher:ivg.bm25.search",
+    "py:iris_vector_graph/index_protocol.py:Index.search[fulltext]"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "BM25 index",
+   "state": "missing",
+   "command": "upgrade",
+   "outcome": "no-op",
+   "statements": "TXT-B6.7",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.bm25_upgrade",
+    "cls:Graph.KG.BM25Index.Upgrade"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "BM25 index",
+   "state": "missing",
+   "command": "drop",
+   "outcome": "no-op",
+   "statements": "TXT-B7",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.bm25_drop",
+    "cls:Graph.KG.BM25Index.Drop",
+    "py:iris_vector_graph/index_protocol.py:Index.drop[fulltext]",
+    "eng:IRISGraphEngine.create_index[replace]"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "BM25 index",
+   "state": "missing",
+   "command": "info",
+   "outcome": "no-op",
+   "statements": "TXT-B8.1",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.bm25_info",
+    "cls:Graph.KG.BM25Index.Info",
+    "cls:Graph.KG.BM25Index.List",
+    "py:iris_vector_graph/index_protocol.py:Index.info[fulltext]",
+    "eng:IRISGraphEngine.list_indexes[bm25 registry]",
+    "py:iris_vector_graph/schema.py:GraphSchema.global_indexes"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "BM25 index",
+   "state": "building",
+   "command": "build",
+   "outcome": "open",
+   "statements": "",
+   "decision": "HD-0701",
+   "entry_points": [
+    "eng:IRISGraphEngine.bm25_build",
+    "cls:Graph.KG.BM25Index.Build",
+    "py:iris_vector_graph/index_protocol.py:Index.build[fulltext]"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "BM25 index",
+   "state": "building",
+   "command": "insert",
+   "outcome": "open",
+   "statements": "",
+   "decision": "HD-0701",
+   "entry_points": [
+    "eng:IRISGraphEngine.bm25_insert",
+    "cls:Graph.KG.BM25Index.Insert",
+    "py:iris_vector_graph/index_protocol.py:Index.insert[fulltext]"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "BM25 index",
+   "state": "building",
+   "command": "delete",
+   "outcome": "no-op",
+   "statements": "TXT-B5.1",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.bm25_delete",
+    "cls:Graph.KG.BM25Index.Delete"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "BM25 index",
+   "state": "building",
+   "command": "search",
+   "outcome": "no-op",
+   "statements": "TXT-B2.10",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.bm25_search",
+    "cls:Graph.KG.BM25Index.Search",
+    "cls:Graph.KG.BM25Index.SearchReport",
+    "cls:Graph.KG.BM25Index.SearchProc",
+    "cls:Graph.KG.SqlProcs.kgBM25",
+    "cypher:ivg.bm25.search",
+    "py:iris_vector_graph/index_protocol.py:Index.search[fulltext]"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "BM25 index",
+   "state": "building",
+   "command": "upgrade",
+   "outcome": "no-op",
+   "statements": "TXT-B6.7",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.bm25_upgrade",
+    "cls:Graph.KG.BM25Index.Upgrade"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "BM25 index",
+   "state": "building",
+   "command": "drop",
+   "outcome": "open",
+   "statements": "",
+   "decision": "HD-0701",
+   "entry_points": [
+    "eng:IRISGraphEngine.bm25_drop",
+    "cls:Graph.KG.BM25Index.Drop",
+    "py:iris_vector_graph/index_protocol.py:Index.drop[fulltext]",
+    "eng:IRISGraphEngine.create_index[replace]"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "BM25 index",
+   "state": "building",
+   "command": "info",
+   "outcome": "no-op",
+   "statements": "TXT-B8.1",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.bm25_info",
+    "cls:Graph.KG.BM25Index.Info",
+    "cls:Graph.KG.BM25Index.List",
+    "py:iris_vector_graph/index_protocol.py:Index.info[fulltext]",
+    "eng:IRISGraphEngine.list_indexes[bm25 registry]",
+    "py:iris_vector_graph/schema.py:GraphSchema.global_indexes"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "BM25 index",
+   "state": "schema 1",
+   "command": "build",
+   "outcome": "ok",
+   "statements": "TXT-B1.1",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.bm25_build",
+    "cls:Graph.KG.BM25Index.Build",
+    "py:iris_vector_graph/index_protocol.py:Index.build[fulltext]"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "BM25 index",
+   "state": "schema 1",
+   "command": "insert",
+   "outcome": "refused",
+   "statements": "TXT-X5",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.bm25_insert",
+    "cls:Graph.KG.BM25Index.Insert",
+    "py:iris_vector_graph/index_protocol.py:Index.insert[fulltext]"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "BM25 index",
+   "state": "schema 1",
+   "command": "delete",
+   "outcome": "refused",
+   "statements": "TXT-X8",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.bm25_delete",
+    "cls:Graph.KG.BM25Index.Delete"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "BM25 index",
+   "state": "schema 1",
+   "command": "search",
+   "outcome": "ok",
+   "statements": "TXT-B2.5",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.bm25_search",
+    "cls:Graph.KG.BM25Index.Search",
+    "cls:Graph.KG.BM25Index.SearchReport",
+    "cls:Graph.KG.BM25Index.SearchProc",
+    "cls:Graph.KG.SqlProcs.kgBM25",
+    "cypher:ivg.bm25.search",
+    "py:iris_vector_graph/index_protocol.py:Index.search[fulltext]"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "BM25 index",
+   "state": "schema 1",
+   "command": "upgrade",
+   "outcome": "ok",
+   "statements": "TXT-B6",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.bm25_upgrade",
+    "cls:Graph.KG.BM25Index.Upgrade"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "BM25 index",
+   "state": "schema 1",
+   "command": "drop",
+   "outcome": "ok",
+   "statements": "TXT-B7",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.bm25_drop",
+    "cls:Graph.KG.BM25Index.Drop",
+    "py:iris_vector_graph/index_protocol.py:Index.drop[fulltext]",
+    "eng:IRISGraphEngine.create_index[replace]"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "BM25 index",
+   "state": "schema 1",
+   "command": "info",
+   "outcome": "ok",
+   "statements": "TXT-B8",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.bm25_info",
+    "cls:Graph.KG.BM25Index.Info",
+    "cls:Graph.KG.BM25Index.List",
+    "py:iris_vector_graph/index_protocol.py:Index.info[fulltext]",
+    "eng:IRISGraphEngine.list_indexes[bm25 registry]",
+    "py:iris_vector_graph/schema.py:GraphSchema.global_indexes"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "BM25 index",
+   "state": "upgrading",
+   "command": "build",
+   "outcome": "open",
+   "statements": "",
+   "decision": "HD-0701",
+   "entry_points": [
+    "eng:IRISGraphEngine.bm25_build",
+    "cls:Graph.KG.BM25Index.Build",
+    "py:iris_vector_graph/index_protocol.py:Index.build[fulltext]"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "BM25 index",
+   "state": "upgrading",
+   "command": "insert",
+   "outcome": "refused",
+   "statements": "TXT-X6",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.bm25_insert",
+    "cls:Graph.KG.BM25Index.Insert",
+    "py:iris_vector_graph/index_protocol.py:Index.insert[fulltext]"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "BM25 index",
+   "state": "upgrading",
+   "command": "delete",
+   "outcome": "refused",
+   "statements": "TXT-X8",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.bm25_delete",
+    "cls:Graph.KG.BM25Index.Delete"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "BM25 index",
+   "state": "upgrading",
+   "command": "search",
+   "outcome": "ok",
+   "statements": "TXT-B6.4",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.bm25_search",
+    "cls:Graph.KG.BM25Index.Search",
+    "cls:Graph.KG.BM25Index.SearchReport",
+    "cls:Graph.KG.BM25Index.SearchProc",
+    "cls:Graph.KG.SqlProcs.kgBM25",
+    "cypher:ivg.bm25.search",
+    "py:iris_vector_graph/index_protocol.py:Index.search[fulltext]"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "BM25 index",
+   "state": "upgrading",
+   "command": "upgrade",
+   "outcome": "ok",
+   "statements": "TXT-B6.5, TXT-X9",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.bm25_upgrade",
+    "cls:Graph.KG.BM25Index.Upgrade"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "BM25 index",
+   "state": "upgrading",
+   "command": "drop",
+   "outcome": "open",
+   "statements": "",
+   "decision": "HD-0701",
+   "entry_points": [
+    "eng:IRISGraphEngine.bm25_drop",
+    "cls:Graph.KG.BM25Index.Drop",
+    "py:iris_vector_graph/index_protocol.py:Index.drop[fulltext]",
+    "eng:IRISGraphEngine.create_index[replace]"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "BM25 index",
+   "state": "upgrading",
+   "command": "info",
+   "outcome": "ok",
+   "statements": "TXT-B8",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.bm25_info",
+    "cls:Graph.KG.BM25Index.Info",
+    "cls:Graph.KG.BM25Index.List",
+    "py:iris_vector_graph/index_protocol.py:Index.info[fulltext]",
+    "eng:IRISGraphEngine.list_indexes[bm25 registry]",
+    "py:iris_vector_graph/schema.py:GraphSchema.global_indexes"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "BM25 index",
+   "state": "schema 2",
+   "command": "build",
+   "outcome": "ok",
+   "statements": "TXT-B1.1",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.bm25_build",
+    "cls:Graph.KG.BM25Index.Build",
+    "py:iris_vector_graph/index_protocol.py:Index.build[fulltext]"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "BM25 index",
+   "state": "schema 2",
+   "command": "insert",
+   "outcome": "ok",
+   "statements": "TXT-B4",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.bm25_insert",
+    "cls:Graph.KG.BM25Index.Insert",
+    "py:iris_vector_graph/index_protocol.py:Index.insert[fulltext]"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "BM25 index",
+   "state": "schema 2",
+   "command": "delete",
+   "outcome": "ok",
+   "statements": "TXT-B5",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.bm25_delete",
+    "cls:Graph.KG.BM25Index.Delete"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "BM25 index",
+   "state": "schema 2",
+   "command": "search",
+   "outcome": "ok",
+   "statements": "TXT-B2.4",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.bm25_search",
+    "cls:Graph.KG.BM25Index.Search",
+    "cls:Graph.KG.BM25Index.SearchReport",
+    "cls:Graph.KG.BM25Index.SearchProc",
+    "cls:Graph.KG.SqlProcs.kgBM25",
+    "cypher:ivg.bm25.search",
+    "py:iris_vector_graph/index_protocol.py:Index.search[fulltext]"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "BM25 index",
+   "state": "schema 2",
+   "command": "upgrade",
+   "outcome": "no-op",
+   "statements": "TXT-B6.6",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.bm25_upgrade",
+    "cls:Graph.KG.BM25Index.Upgrade"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "BM25 index",
+   "state": "schema 2",
+   "command": "drop",
+   "outcome": "ok",
+   "statements": "TXT-B7",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.bm25_drop",
+    "cls:Graph.KG.BM25Index.Drop",
+    "py:iris_vector_graph/index_protocol.py:Index.drop[fulltext]",
+    "eng:IRISGraphEngine.create_index[replace]"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "BM25 index",
+   "state": "schema 2",
+   "command": "info",
+   "outcome": "ok",
+   "statements": "TXT-B8",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.bm25_info",
+    "cls:Graph.KG.BM25Index.Info",
+    "cls:Graph.KG.BM25Index.List",
+    "py:iris_vector_graph/index_protocol.py:Index.info[fulltext]",
+    "eng:IRISGraphEngine.list_indexes[bm25 registry]",
+    "py:iris_vector_graph/schema.py:GraphSchema.global_indexes"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "fused search",
+   "state": "legs answer",
+   "command": "engine fusion",
+   "outcome": "ok",
+   "statements": "TXT-B13",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.kg_RRF_FUSE",
+    "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_RRF_FUSE"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "fused search",
+   "state": "legs answer",
+   "command": "SQL fusion",
+   "outcome": "ok",
+   "statements": "TXT-B14",
+   "decision": "",
+   "entry_points": [
+    "sqlfn:kg_RRF_FUSE"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "fused search",
+   "state": "legs answer",
+   "command": "web hybrid route",
+   "outcome": "ok",
+   "statements": "TXT-B14.4",
+   "decision": "",
+   "entry_points": [
+    "route:POST /hybridSearch",
+    "cls:Graph.KG.Service.HybridSearch",
+    "cls:Graph.KG.PyOps.HybridSearch"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "fused search",
+   "state": "legs answer",
+   "command": "multi-modal search",
+   "outcome": "ok",
+   "statements": "TXT-B17",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/fusion.py:HybridSearchFusion.multi_modal_search"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "fused search",
+   "state": "legs answer",
+   "command": "adaptive search",
+   "outcome": "ok",
+   "statements": "TXT-B18",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/fusion.py:HybridSearchFusion.adaptive_search"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "fused search",
+   "state": "legs answer",
+   "command": "retrieve call",
+   "outcome": "ok",
+   "statements": "TXT-B15",
+   "decision": "",
+   "entry_points": [
+    "cypher:ivg.retrieve"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "fused search",
+   "state": "vector leg fails",
+   "command": "engine fusion",
+   "outcome": "no-op",
+   "statements": "TXT-B13.7",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.kg_RRF_FUSE",
+    "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_RRF_FUSE"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "fused search",
+   "state": "vector leg fails",
+   "command": "SQL fusion",
+   "outcome": "refused",
+   "statements": "TXT-B14.3, TXT-X13",
+   "decision": "",
+   "entry_points": [
+    "sqlfn:kg_RRF_FUSE"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "fused search",
+   "state": "vector leg fails",
+   "command": "web hybrid route",
+   "outcome": "refused",
+   "statements": "TXT-X14",
+   "decision": "",
+   "entry_points": [
+    "route:POST /hybridSearch",
+    "cls:Graph.KG.Service.HybridSearch",
+    "cls:Graph.KG.PyOps.HybridSearch"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "fused search",
+   "state": "vector leg fails",
+   "command": "multi-modal search",
+   "outcome": "ok",
+   "statements": "TXT-B17.3",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/fusion.py:HybridSearchFusion.multi_modal_search"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "fused search",
+   "state": "vector leg fails",
+   "command": "adaptive search",
+   "outcome": "n/a",
+   "statements": "TXT-B18.1",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/fusion.py:HybridSearchFusion.adaptive_search"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "fused search",
+   "state": "vector leg fails",
+   "command": "retrieve call",
+   "outcome": "refused",
+   "statements": "TXT-B15.3",
+   "decision": "",
+   "entry_points": [
+    "cypher:ivg.retrieve"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "fused search",
+   "state": "text leg fails",
+   "command": "engine fusion",
+   "outcome": "ok",
+   "statements": "TXT-B13.7",
+   "decision": "",
+   "entry_points": [
+    "eng:IRISGraphEngine.kg_RRF_FUSE",
+    "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_RRF_FUSE"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "fused search",
+   "state": "text leg fails",
+   "command": "SQL fusion",
+   "outcome": "refused",
+   "statements": "TXT-B14.3",
+   "decision": "",
+   "entry_points": [
+    "sqlfn:kg_RRF_FUSE"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "fused search",
+   "state": "text leg fails",
+   "command": "web hybrid route",
+   "outcome": "refused",
+   "statements": "TXT-X14",
+   "decision": "",
+   "entry_points": [
+    "route:POST /hybridSearch",
+    "cls:Graph.KG.Service.HybridSearch",
+    "cls:Graph.KG.PyOps.HybridSearch"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "fused search",
+   "state": "text leg fails",
+   "command": "multi-modal search",
+   "outcome": "refused",
+   "statements": "TXT-B17.2",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/fusion.py:HybridSearchFusion.multi_modal_search"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "fused search",
+   "state": "text leg fails",
+   "command": "adaptive search",
+   "outcome": "no-op",
+   "statements": "TXT-B18.2",
+   "decision": "",
+   "entry_points": [
+    "py:iris_vector_graph/fusion.py:HybridSearchFusion.adaptive_search"
+   ],
+   "unknown_entry_points": []
+  },
+  {
+   "entity": "fused search",
+   "state": "text leg fails",
+   "command": "retrieve call",
+   "outcome": "refused",
+   "statements": "TXT-B15.3",
+   "decision": "",
+   "entry_points": [
+    "cypher:ivg.retrieve"
+   ],
+   "unknown_entry_points": []
+  }
+ ]
+}

@@ -1,0 +1,3646 @@
+{
+ "module": "11",
+ "lane": "breadth-b",
+ "pin": "3eaa79cf",
+ "inventory": "experiment/playbook-completion/models/breadth-b/inventory/11.json",
+ "method": "Declared footprints read at the pin (path:lines) for every writer and the main readers; other entry points carry the static transitive hint of tools/inventory.py. Validated independently with the IRIS journal (traces/journal.py via live/breadth-b/blive.capture, pid-filtered) on AUDITB: b-11-live-footprints-1, b-11-live-footprints-2; concurrency facts from b-11-live-f1102-*, b-11-live-f1104.",
+ "counts": {
+  "total": 123,
+  "journal_validated": 12,
+  "mismatches": 1,
+  "writers": 47,
+  "mismatch_ids": [
+   "guard:engine writers (_ledger_check call sites)"
+  ]
+ },
+ "entry_points": [
+  {
+   "id": "cls:Graph.KG.Ledger.NowMs",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:27-33",
+   "role": "reader/helper",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.NewId",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:35-38",
+   "role": "reader/helper",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.State",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:40-43",
+   "role": "reader",
+   "reads": {
+    "tables": [],
+    "globals": [
+     "^IVG.Ledger(...)"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [
+    "no lock (LED-B3.5): sees uncommitted head/state of an open commit or genesis"
+   ],
+   "notes": "",
+   "journal_validation": null
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.GKey",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:47-50",
+   "role": "reader/helper",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.MetaGet",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:52-59",
+   "role": "reader/helper",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.Err",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:61-70",
+   "role": "reader/helper",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.ErrLimit",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:72-82",
+   "role": "reader/helper",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.RevisionObj",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:85-108",
+   "role": "reader/helper",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.RevisionResponse",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:110-120",
+   "role": "reader/helper",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.LargeOut",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:123-134",
+   "role": "writer",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "^||IVG.LedgerOut, ^||IVG.LedgerOutSeq (process-private)"
+    ]
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "notes": "",
+   "journal_validation": null
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.ReadLargeOutChunk",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:136-139",
+   "role": "reader",
+   "reads": {
+    "tables": [],
+    "globals": [
+     "^||IVG.LedgerOut"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [
+    "no lock (LED-B3.5): sees uncommitted head/state of an open commit or genesis"
+   ],
+   "notes": "",
+   "journal_validation": null
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.Meta",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:143-156",
+   "role": "reader",
+   "reads": {
+    "tables": [],
+    "globals": [
+     "^IVG.Ledger(...)"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [
+    "no lock (LED-B3.5): sees uncommitted head/state of an open commit or genesis"
+   ],
+   "notes": "",
+   "journal_validation": null
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.Head",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:158-164",
+   "role": "reader",
+   "reads": {
+    "tables": [
+     "ledger_revisions"
+    ],
+    "globals": [
+     "^IVG.Ledger(...)"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [
+    "no lock (LED-B3.5): sees uncommitted head/state of an open commit or genesis"
+   ],
+   "notes": "",
+   "journal_validation": null
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.SeqOf",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:166-174",
+   "role": "reader",
+   "reads": {
+    "tables": [],
+    "globals": [
+     "^IVG.Ledger(...)"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [
+    "no lock (LED-B3.5): sees uncommitted head/state of an open commit or genesis"
+   ],
+   "notes": "",
+   "journal_validation": null
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.StmtForTuple",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:176-179",
+   "role": "reader",
+   "reads": {
+    "tables": [],
+    "globals": [
+     "^IVG.Ledger(...)"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [
+    "no lock (LED-B3.5): sees uncommitted head/state of an open commit or genesis"
+   ],
+   "notes": "",
+   "journal_validation": null
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.StageChunk",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:181-185",
+   "role": "writer",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "^||IVG.LedgerStage (process-private)"
+    ]
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "notes": "LED-B4.12.3",
+   "journal_validation": null
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.Count",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:187-190 -> LedgerStats.cls:65-88",
+   "role": "writer",
+   "reads": {
+    "tables": [
+     "ledger_stats"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [
+     "ledger_stats"
+    ],
+    "globals": []
+   },
+   "transaction": "Bump's own TSTART/TCOMMIT (LedgerStats.cls:72-83)",
+   "locks": [
+    {
+     "lock": "ledger_stats row (%Save concurrency)",
+     "mode": "exclusive during %Save; to the outermost transaction end",
+     "timeout": "10 s observed (status error, ignored by callers)",
+     "source": "LedgerStats.cls:76-77"
+    }
+   ],
+   "nolock": [
+    "%OpenId (LedgerStats.cls:53) reads the row with no lock: read-modify-write (F-1102: 135/4000 lost, b-11-live-f1102-contention)"
+   ],
+   "notes": "Any caller can bump any known counter (LED-B13.7).",
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/11-footprints-1.json, 11-footprints-2.json",
+    "run_id": "b-11-live-footprints-1",
+    "captures": [
+     "commit_refused_stale"
+    ],
+    "declared_stores": [
+     "sql:Graph_KG.ledger_stats"
+    ],
+    "observed_stores": [
+     "sql:Graph_KG.ledger_stats"
+    ],
+    "match": true,
+    "undeclared": [],
+    "outside_txn": [],
+    "notes": "outside_txn entries are $Increment / id counters (classified by reading the code), not governed rows"
+   }
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.RecordVerify",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:192-210",
+   "role": "writer",
+   "reads": {
+    "tables": [
+     "ledger_stats"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [
+     "ledger_stats"
+    ],
+    "globals": []
+   },
+   "transaction": "own TSTART :196 / TCOMMIT :203",
+   "locks": [],
+   "nolock": [
+    "whole-row %Save (F-1102)"
+   ],
+   "notes": "Captured inside the re-enable capture (one ledger_stats-only transaction).",
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/11-footprints-1.json, 11-footprints-2.json",
+    "run_id": "b-11-live-footprints-2",
+    "captures": [
+     "reenable_with_adoption"
+    ],
+    "declared_stores": [
+     "global:^IVG.Ledger",
+     "sql:Graph_KG.ledger_revisions",
+     "sql:Graph_KG.ledger_stats"
+    ],
+    "observed_stores": [
+     "global:^IVG.Ledger",
+     "sql:Graph_KG.ledger_revisions",
+     "sql:Graph_KG.ledger_stats"
+    ],
+    "match": true,
+    "undeclared": [],
+    "outside_txn": [],
+    "notes": "outside_txn entries are $Increment / id counters (classified by reading the code), not governed rows"
+   }
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.RebuildEdgeIndices",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:224-239",
+   "role": "writer",
+   "reads": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [
+     "index globals of nodes, rdf_labels, rdf_props, rdf_edges"
+    ],
+    "globals": [
+     "^KG (functional index purge + rebuild: Adjacency.RemoveAll)"
+    ]
+   },
+   "transaction": "none (BUILD INDEX per table)",
+   "locks": [],
+   "nolock": [
+    "readers see too few edges while it runs (doc :214-217)"
+   ],
+   "notes": "LED-B15; module 04 owns ^KG.",
+   "journal_validation": null
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.PurgeAll",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:241-248",
+   "role": "writer",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [
+     "ledger_revisions (%KillExtent)",
+     "ledger_stats (%KillExtent)"
+    ],
+    "globals": [
+     "^IVG.Ledger (Kill)"
+    ]
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [
+    "no head lock: test/admin reset (LED-B7.5)"
+   ],
+   "notes": "Used by this lane only to reset AUDITB (b-11-live-*); touches nothing else (read before use).",
+   "journal_validation": null
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.Enable",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:252-329",
+   "role": "writer",
+   "reads": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_stats"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"meta\",\"state\") (unlocked, :254, before the lock)",
+     "^IVG.Ledger(\"head\")"
+    ]
+   },
+   "writes": {
+    "tables": [
+     "ledger_revisions",
+     "ledger_stats"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"meta\",state|strict|maxOps|reconBound)",
+     "^IVG.Ledger(\"head\")",
+     "^IVG.Ledger(\"stmtNext\")",
+     "^IVG.Ledger(\"rec\",1,*)",
+     "^IVG.Ledger(\"stmt\"|\"tuple\")",
+     "^IVG.Ledger(\"revById\"|\"idBySeq\")"
+    ]
+   },
+   "transaction": "own TSTART (Ledger.cls:263) / TCOMMIT (:317) or TROLLBACK 1 (:269, :306, :313, :325-326); refused when $TLEVEL>0 (:261) except on the enabled fast path (:255-260)",
+   "locks": [
+    {
+     "lock": "^IVG.Ledger(\"head\")",
+     "mode": "exclusive (+)",
+     "timeout": "30 s (LOCKTIMEOUT, :21)",
+     "source": "Ledger.cls:264 taken after the unlocked state read; released :278/:316 before TCOMMIT (deferred to the transaction end)"
+    }
+   ],
+   "nolock": [
+    "the enabled branch answers the head with no lock (:255-260): a dirty read of another genesis (F-1104, b-11-live-f1104)"
+   ],
+   "notes": "Genesis reads the governed tables through LedgerGenesis.Capture (LedgerGenesis.cls:14-63) and writes no governed row (LED-B1.6). Re-enable branch writes meta state/strict and ledger_stats only (:271-286); its adoption is a separate commit (client).",
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/11-footprints-1.json, 11-footprints-2.json",
+    "run_id": "b-11-live-footprints-1",
+    "captures": [
+     "enable_genesis"
+    ],
+    "declared_stores": [
+     "global:^IVG.Ledger",
+     "sql:Graph_KG.ledger_revisions",
+     "sql:Graph_KG.ledger_stats"
+    ],
+    "observed_stores": [
+     "global:^IVG.Ledger",
+     "sql:Graph_KG.ledger_revisions",
+     "sql:Graph_KG.ledger_stats"
+    ],
+    "match": true,
+    "undeclared": [],
+    "outside_txn": [],
+    "notes": "outside_txn entries are $Increment / id counters (classified by reading the code), not governed rows"
+   }
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.Disable",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:331-358",
+   "role": "writer",
+   "reads": {
+    "tables": [
+     "ledger_stats"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"meta\",\"state\")"
+    ]
+   },
+   "writes": {
+    "tables": [
+     "ledger_stats"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"meta\",\"state\")"
+    ]
+   },
+   "transaction": "own TSTART :341 / TCOMMIT :350; nested in the caller's transaction when called on the caller's process (HD-1102)",
+   "locks": [],
+   "nolock": [
+    "no head lock (LED-B1.16): a commit past its state check can finish after disable returns"
+   ],
+   "notes": "",
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/11-footprints-1.json, 11-footprints-2.json",
+    "run_id": "b-11-live-footprints-2",
+    "captures": [
+     "disable"
+    ],
+    "declared_stores": [
+     "global:^IVG.Ledger",
+     "sql:Graph_KG.ledger_stats"
+    ],
+    "observed_stores": [
+     "global:^IVG.Ledger",
+     "sql:Graph_KG.ledger_stats"
+    ],
+    "match": true,
+    "undeclared": [],
+    "outside_txn": [],
+    "notes": "outside_txn entries are $Increment / id counters (classified by reading the code), not governed rows"
+   }
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.SetStrict",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:360-381",
+   "role": "writer",
+   "reads": {
+    "tables": [
+     "ledger_stats"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"meta\",\"state\")"
+    ]
+   },
+   "writes": {
+    "tables": [
+     "ledger_stats"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"meta\",\"strict\")"
+    ]
+   },
+   "transaction": "own TSTART :364 / TCOMMIT :373",
+   "locks": [],
+   "nolock": [
+    "no head lock"
+   ],
+   "notes": "Refused on a never-enabled ledger (:362).",
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/11-footprints-1.json, 11-footprints-2.json",
+    "run_id": "b-11-live-footprints-2",
+    "captures": [
+     "set_strict_on",
+     "set_strict_off"
+    ],
+    "declared_stores": [
+     "global:^IVG.Ledger",
+     "sql:Graph_KG.ledger_stats"
+    ],
+    "observed_stores": [
+     "global:^IVG.Ledger",
+     "sql:Graph_KG.ledger_stats"
+    ],
+    "match": true,
+    "undeclared": [],
+    "outside_txn": [],
+    "notes": "outside_txn entries are $Increment / id counters (classified by reading the code), not governed rows"
+   }
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.Commit",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:397-528 (+ WriteRevision :532-566, LedgerApply.cls:18-695, LedgerGenesis.Adopt :82-129)",
+   "role": "writer",
+   "reads": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"meta\"...)",
+     "^IVG.Ledger(\"head\"|\"idBySeq\"|\"revById\"|\"idem\"|\"idemRedacted\"|\"redacting\"|\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^||IVG.LedgerStage"
+    ]
+   },
+   "writes": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings",
+     "kg_NodeEmbeddings_optimized (deletes)"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"rec\",seq,*)",
+     "^IVG.Ledger(\"head\")",
+     "^IVG.Ledger(\"revById\"|\"idBySeq\")",
+     "^IVG.Ledger(\"idem\",key)",
+     "^IVG.Ledger(\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^KG (adjacency via the rdf_edges/rdf_labels functional indexes; weight ^KG(\"out\",g,...) LedgerApply.cls:499-520; temporal store for create_temporal_edge)",
+     "^NKG counters (incremental, non-transactional)",
+     "^||IVG.LedgerOut (large answers)"
+    ]
+   },
+   "transaction": "TSTART :401 (a level nested in the caller's transaction when $TLEVEL>0); TCOMMIT or TROLLBACK 1 :404; any fault: TROLLBACK to the entry level :406. Stats Bump of refusals/replays runs after the transaction and after the unlock, in Bump's own transaction (:414-415, LED-B4.14.2).",
+   "locks": [
+    {
+     "lock": "^IVG.Ledger(\"head\")",
+     "mode": "exclusive (+)",
+     "timeout": "30 s",
+     "source": "CommitInTxn :439 inside the transaction; Lock - :403 before TCOMMIT is deferred to the outermost transaction end (comment :388-396; P-1102)"
+    }
+   ],
+   "nolock": [
+    "Graph_KG.ledger_stats row: %OpenId with no lock, whole-row %Save (WriteRevision :559-565); its row lock lasts to the outermost transaction end (observed: b-11-live-f1102-locktimeout)"
+   ],
+   "notes": "Every governed row, record, head, map and the retry key are written inside the one outermost transaction (LED-B4.14 holds on the journal). Non-transactional journal entries are $Increment counters and id counters only: ^KG(\"__version\"), ^KG(\"gen\",g,s) (degree generation), ^NKG(\"$meta\",...) and ^NKG(-3,..) (incremental snapshot counters, module 04/10 code reached through rdf_edges' functional index), row-id counters ^t52S.*.1 and rdf_props index 7 (\"W\",n) nodes; none is a governed row. They are not undone when a commit rolls back (cf. module 08's F-C0801 for ^NKG).",
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/11-footprints-1.json, 11-footprints-2.json",
+    "run_id": "b-11-live-footprints-1",
+    "captures": [
+     "commit_node_ops",
+     "commit_create_rel",
+     "commit_set_qual",
+     "commit_delete_rel_node",
+     "commit_refused_stale"
+    ],
+    "declared_stores": [
+     "global:^IVG.Ledger",
+     "global:^KG",
+     "global:^NKG",
+     "sql:Graph_KG.ledger_revisions",
+     "sql:Graph_KG.ledger_stats",
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_edges",
+     "sql:Graph_KG.rdf_labels",
+     "sql:Graph_KG.rdf_props"
+    ],
+    "observed_stores": [
+     "global:^IVG.Ledger",
+     "global:^KG",
+     "global:^NKG",
+     "sql:Graph_KG.ledger_revisions",
+     "sql:Graph_KG.ledger_stats",
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_edges",
+     "sql:Graph_KG.rdf_labels",
+     "sql:Graph_KG.rdf_props"
+    ],
+    "match": true,
+    "undeclared": [],
+    "outside_txn": [
+     "^KG(\"__version\")",
+     "^KG(\"gen\",0,\"b11_a\")",
+     "^NKG(\"$meta\",\"edgeCount\")",
+     "^NKG(\"$meta\",\"labelCount\")",
+     "^NKG(\"$meta\",\"nodeCount\")",
+     "^NKG(\"$meta\",\"version\")",
+     "^NKG(-3,37)",
+     "^t52S.BWr6.1",
+     "^t52S.CLwA.1",
+     "^t52S.DMCe.1",
+     "^t52S.DMCe.7(\"W\",53)",
+     "^t52S.DMCe.7(\"W\",6266)",
+     "^t52S.XCFT.1"
+    ],
+    "notes": "outside_txn entries are $Increment / id counters (classified by reading the code), not governed rows"
+   }
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.CommitInTxn",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:419-528",
+   "reads": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"meta\"...)",
+     "^IVG.Ledger(\"head\"|\"idBySeq\"|\"revById\"|\"idem\"|\"idemRedacted\"|\"redacting\"|\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^||IVG.LedgerStage"
+    ]
+   },
+   "writes": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings",
+     "kg_NodeEmbeddings_optimized (deletes)"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"rec\",seq,*)",
+     "^IVG.Ledger(\"head\")",
+     "^IVG.Ledger(\"revById\"|\"idBySeq\")",
+     "^IVG.Ledger(\"idem\",key)",
+     "^IVG.Ledger(\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^KG (adjacency via the rdf_edges/rdf_labels functional indexes; weight ^KG(\"out\",g,...) LedgerApply.cls:499-520; temporal store for create_temporal_edge)",
+     "^NKG counters (incremental, non-transactional)",
+     "^||IVG.LedgerOut (large answers)"
+    ]
+   },
+   "transaction": "TSTART :401 (a level nested in the caller's transaction when $TLEVEL>0); TCOMMIT or TROLLBACK 1 :404; any fault: TROLLBACK to the entry level :406. Stats Bump of refusals/replays runs after the transaction and after the unlock, in Bump's own transaction (:414-415, LED-B4.14.2).",
+   "locks": [
+    {
+     "lock": "^IVG.Ledger(\"head\")",
+     "mode": "exclusive (+)",
+     "timeout": "30 s",
+     "source": "CommitInTxn :439 inside the transaction; Lock - :403 before TCOMMIT is deferred to the outermost transaction end (comment :388-396; P-1102)"
+    }
+   ],
+   "nolock": [
+    "Graph_KG.ledger_stats row: %OpenId with no lock, whole-row %Save (WriteRevision :559-565); its row lock lasts to the outermost transaction end (observed: b-11-live-f1102-locktimeout)"
+   ],
+   "role": "writer",
+   "notes": "Public: callable outside Commit, i.e. with no transaction of its own and with the head lock left held (Commit releases it). Trusted-code premise P-1105.",
+   "journal_validation": null
+  },
+  {
+   "id": "cls:Graph.KG.Ledger.WriteRevision",
+   "source": "iris_src/src/Graph/KG/Ledger.cls:532-566",
+   "reads": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"meta\"...)",
+     "^IVG.Ledger(\"head\"|\"idBySeq\"|\"revById\"|\"idem\"|\"idemRedacted\"|\"redacting\"|\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^||IVG.LedgerStage"
+    ]
+   },
+   "writes": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings",
+     "kg_NodeEmbeddings_optimized (deletes)"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"rec\",seq,*)",
+     "^IVG.Ledger(\"head\")",
+     "^IVG.Ledger(\"revById\"|\"idBySeq\")",
+     "^IVG.Ledger(\"idem\",key)",
+     "^IVG.Ledger(\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^KG (adjacency via the rdf_edges/rdf_labels functional indexes; weight ^KG(\"out\",g,...) LedgerApply.cls:499-520; temporal store for create_temporal_edge)",
+     "^NKG counters (incremental, non-transactional)",
+     "^||IVG.LedgerOut (large answers)"
+    ]
+   },
+   "transaction": "TSTART :401 (a level nested in the caller's transaction when $TLEVEL>0); TCOMMIT or TROLLBACK 1 :404; any fault: TROLLBACK to the entry level :406. Stats Bump of refusals/replays runs after the transaction and after the unlock, in Bump's own transaction (:414-415, LED-B4.14.2).",
+   "locks": [
+    {
+     "lock": "^IVG.Ledger(\"head\")",
+     "mode": "exclusive (+)",
+     "timeout": "30 s",
+     "source": "CommitInTxn :439 inside the transaction; Lock - :403 before TCOMMIT is deferred to the outermost transaction end (comment :388-396; P-1102)"
+    }
+   ],
+   "nolock": [
+    "Graph_KG.ledger_stats row: %OpenId with no lock, whole-row %Save (WriteRevision :559-565); its row lock lasts to the outermost transaction end (observed: b-11-live-f1102-locktimeout)"
+   ],
+   "role": "writer",
+   "notes": "Records, revision row, head, maps, stats; caller holds lock and transaction (public, P-1105).",
+   "journal_validation": null
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.ApplyAll",
+   "source": "iris_src/src/Graph/KG/LedgerApply.cls (see inventory span)",
+   "reads": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"meta\"...)",
+     "^IVG.Ledger(\"head\"|\"idBySeq\"|\"revById\"|\"idem\"|\"idemRedacted\"|\"redacting\"|\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^||IVG.LedgerStage"
+    ]
+   },
+   "writes": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings",
+     "kg_NodeEmbeddings_optimized (deletes)"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"rec\",seq,*)",
+     "^IVG.Ledger(\"head\")",
+     "^IVG.Ledger(\"revById\"|\"idBySeq\")",
+     "^IVG.Ledger(\"idem\",key)",
+     "^IVG.Ledger(\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^KG (adjacency via the rdf_edges/rdf_labels functional indexes; weight ^KG(\"out\",g,...) LedgerApply.cls:499-520; temporal store for create_temporal_edge)",
+     "^NKG counters (incremental, non-transactional)",
+     "^||IVG.LedgerOut (large answers)"
+    ]
+   },
+   "transaction": "TSTART :401 (a level nested in the caller's transaction when $TLEVEL>0); TCOMMIT or TROLLBACK 1 :404; any fault: TROLLBACK to the entry level :406. Stats Bump of refusals/replays runs after the transaction and after the unlock, in Bump's own transaction (:414-415, LED-B4.14.2).",
+   "locks": [
+    {
+     "lock": "^IVG.Ledger(\"head\")",
+     "mode": "exclusive (+)",
+     "timeout": "30 s",
+     "source": "CommitInTxn :439 inside the transaction; Lock - :403 before TCOMMIT is deferred to the outermost transaction end (comment :388-396; P-1102)"
+    }
+   ],
+   "nolock": [
+    "Graph_KG.ledger_stats row: %OpenId with no lock, whole-row %Save (WriteRevision :559-565); its row lock lasts to the outermost transaction end (observed: b-11-live-f1102-locktimeout)"
+   ],
+   "role": "writer",
+   "notes": "Public class method writing governed rows and/or statement maps with no transaction or head lock of its own; inside a commit it runs under Commit's lock and transaction. Called directly it is an unrecorded writer outside every guard (trusted-code premise P-1105, LED-B4.14.4).",
+   "journal_validation": null
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.Enc",
+   "source": "iris_src/src/Graph/KG/LedgerApply.cls:52-55",
+   "role": "reader/helper",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.EncNull",
+   "source": "iris_src/src/Graph/KG/LedgerApply.cls:57-60",
+   "role": "reader/helper",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.Rec",
+   "source": "iris_src/src/Graph/KG/LedgerApply.cls:62-66",
+   "role": "reader/helper",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.IsReserved",
+   "source": "iris_src/src/Graph/KG/LedgerApply.cls:68-71",
+   "role": "reader/helper",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.Run",
+   "source": "iris_src/src/Graph/KG/LedgerApply.cls:74-77",
+   "role": "reader/helper",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.NodeExists",
+   "source": "iris_src/src/Graph/KG/LedgerApply.cls:79-84",
+   "role": "reader/helper",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.EnsureEndpoint",
+   "source": "iris_src/src/Graph/KG/LedgerApply.cls (see inventory span)",
+   "reads": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"meta\"...)",
+     "^IVG.Ledger(\"head\"|\"idBySeq\"|\"revById\"|\"idem\"|\"idemRedacted\"|\"redacting\"|\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^||IVG.LedgerStage"
+    ]
+   },
+   "writes": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings",
+     "kg_NodeEmbeddings_optimized (deletes)"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"rec\",seq,*)",
+     "^IVG.Ledger(\"head\")",
+     "^IVG.Ledger(\"revById\"|\"idBySeq\")",
+     "^IVG.Ledger(\"idem\",key)",
+     "^IVG.Ledger(\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^KG (adjacency via the rdf_edges/rdf_labels functional indexes; weight ^KG(\"out\",g,...) LedgerApply.cls:499-520; temporal store for create_temporal_edge)",
+     "^NKG counters (incremental, non-transactional)",
+     "^||IVG.LedgerOut (large answers)"
+    ]
+   },
+   "transaction": "TSTART :401 (a level nested in the caller's transaction when $TLEVEL>0); TCOMMIT or TROLLBACK 1 :404; any fault: TROLLBACK to the entry level :406. Stats Bump of refusals/replays runs after the transaction and after the unlock, in Bump's own transaction (:414-415, LED-B4.14.2).",
+   "locks": [
+    {
+     "lock": "^IVG.Ledger(\"head\")",
+     "mode": "exclusive (+)",
+     "timeout": "30 s",
+     "source": "CommitInTxn :439 inside the transaction; Lock - :403 before TCOMMIT is deferred to the outermost transaction end (comment :388-396; P-1102)"
+    }
+   ],
+   "nolock": [
+    "Graph_KG.ledger_stats row: %OpenId with no lock, whole-row %Save (WriteRevision :559-565); its row lock lasts to the outermost transaction end (observed: b-11-live-f1102-locktimeout)"
+   ],
+   "role": "writer",
+   "notes": "Public class method writing governed rows and/or statement maps with no transaction or head lock of its own; inside a commit it runs under Commit's lock and transaction. Called directly it is an unrecorded writer outside every guard (trusted-code premise P-1105, LED-B4.14.4).",
+   "journal_validation": null
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.TupleJson",
+   "source": "iris_src/src/Graph/KG/LedgerApply.cls:112-120",
+   "role": "reader/helper",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.ParseQuals",
+   "source": "iris_src/src/Graph/KG/LedgerApply.cls:123-141",
+   "role": "reader/helper",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.FindEdge",
+   "source": "iris_src/src/Graph/KG/LedgerApply.cls:144-157",
+   "role": "reader/helper",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.AllocStmt",
+   "source": "iris_src/src/Graph/KG/LedgerApply.cls (see inventory span)",
+   "reads": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"meta\"...)",
+     "^IVG.Ledger(\"head\"|\"idBySeq\"|\"revById\"|\"idem\"|\"idemRedacted\"|\"redacting\"|\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^||IVG.LedgerStage"
+    ]
+   },
+   "writes": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings",
+     "kg_NodeEmbeddings_optimized (deletes)"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"rec\",seq,*)",
+     "^IVG.Ledger(\"head\")",
+     "^IVG.Ledger(\"revById\"|\"idBySeq\")",
+     "^IVG.Ledger(\"idem\",key)",
+     "^IVG.Ledger(\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^KG (adjacency via the rdf_edges/rdf_labels functional indexes; weight ^KG(\"out\",g,...) LedgerApply.cls:499-520; temporal store for create_temporal_edge)",
+     "^NKG counters (incremental, non-transactional)",
+     "^||IVG.LedgerOut (large answers)"
+    ]
+   },
+   "transaction": "TSTART :401 (a level nested in the caller's transaction when $TLEVEL>0); TCOMMIT or TROLLBACK 1 :404; any fault: TROLLBACK to the entry level :406. Stats Bump of refusals/replays runs after the transaction and after the unlock, in Bump's own transaction (:414-415, LED-B4.14.2).",
+   "locks": [
+    {
+     "lock": "^IVG.Ledger(\"head\")",
+     "mode": "exclusive (+)",
+     "timeout": "30 s",
+     "source": "CommitInTxn :439 inside the transaction; Lock - :403 before TCOMMIT is deferred to the outermost transaction end (comment :388-396; P-1102)"
+    }
+   ],
+   "nolock": [
+    "Graph_KG.ledger_stats row: %OpenId with no lock, whole-row %Save (WriteRevision :559-565); its row lock lasts to the outermost transaction end (observed: b-11-live-f1102-locktimeout)"
+   ],
+   "role": "writer",
+   "notes": "Public class method writing governed rows and/or statement maps with no transaction or head lock of its own; inside a commit it runs under Commit's lock and transaction. Called directly it is an unrecorded writer outside every guard (trusted-code premise P-1105, LED-B4.14.4).",
+   "journal_validation": null
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.ResolveRef",
+   "source": "iris_src/src/Graph/KG/LedgerApply.cls:173-211",
+   "role": "writer (helper)",
+   "reads": {
+    "tables": [],
+    "globals": [
+     "^IVG.Ledger"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "^IVG.Ledger"
+    ]
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.OpCreateNode",
+   "source": "iris_src/src/Graph/KG/LedgerApply.cls (see inventory span)",
+   "reads": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"meta\"...)",
+     "^IVG.Ledger(\"head\"|\"idBySeq\"|\"revById\"|\"idem\"|\"idemRedacted\"|\"redacting\"|\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^||IVG.LedgerStage"
+    ]
+   },
+   "writes": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings",
+     "kg_NodeEmbeddings_optimized (deletes)"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"rec\",seq,*)",
+     "^IVG.Ledger(\"head\")",
+     "^IVG.Ledger(\"revById\"|\"idBySeq\")",
+     "^IVG.Ledger(\"idem\",key)",
+     "^IVG.Ledger(\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^KG (adjacency via the rdf_edges/rdf_labels functional indexes; weight ^KG(\"out\",g,...) LedgerApply.cls:499-520; temporal store for create_temporal_edge)",
+     "^NKG counters (incremental, non-transactional)",
+     "^||IVG.LedgerOut (large answers)"
+    ]
+   },
+   "transaction": "TSTART :401 (a level nested in the caller's transaction when $TLEVEL>0); TCOMMIT or TROLLBACK 1 :404; any fault: TROLLBACK to the entry level :406. Stats Bump of refusals/replays runs after the transaction and after the unlock, in Bump's own transaction (:414-415, LED-B4.14.2).",
+   "locks": [
+    {
+     "lock": "^IVG.Ledger(\"head\")",
+     "mode": "exclusive (+)",
+     "timeout": "30 s",
+     "source": "CommitInTxn :439 inside the transaction; Lock - :403 before TCOMMIT is deferred to the outermost transaction end (comment :388-396; P-1102)"
+    }
+   ],
+   "nolock": [
+    "Graph_KG.ledger_stats row: %OpenId with no lock, whole-row %Save (WriteRevision :559-565); its row lock lasts to the outermost transaction end (observed: b-11-live-f1102-locktimeout)"
+   ],
+   "role": "writer",
+   "notes": "Public class method writing governed rows and/or statement maps with no transaction or head lock of its own; inside a commit it runs under Commit's lock and transaction. Called directly it is an unrecorded writer outside every guard (trusted-code premise P-1105, LED-B4.14.4).",
+   "journal_validation": null
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.AddLabel",
+   "source": "iris_src/src/Graph/KG/LedgerApply.cls (see inventory span)",
+   "reads": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"meta\"...)",
+     "^IVG.Ledger(\"head\"|\"idBySeq\"|\"revById\"|\"idem\"|\"idemRedacted\"|\"redacting\"|\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^||IVG.LedgerStage"
+    ]
+   },
+   "writes": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings",
+     "kg_NodeEmbeddings_optimized (deletes)"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"rec\",seq,*)",
+     "^IVG.Ledger(\"head\")",
+     "^IVG.Ledger(\"revById\"|\"idBySeq\")",
+     "^IVG.Ledger(\"idem\",key)",
+     "^IVG.Ledger(\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^KG (adjacency via the rdf_edges/rdf_labels functional indexes; weight ^KG(\"out\",g,...) LedgerApply.cls:499-520; temporal store for create_temporal_edge)",
+     "^NKG counters (incremental, non-transactional)",
+     "^||IVG.LedgerOut (large answers)"
+    ]
+   },
+   "transaction": "TSTART :401 (a level nested in the caller's transaction when $TLEVEL>0); TCOMMIT or TROLLBACK 1 :404; any fault: TROLLBACK to the entry level :406. Stats Bump of refusals/replays runs after the transaction and after the unlock, in Bump's own transaction (:414-415, LED-B4.14.2).",
+   "locks": [
+    {
+     "lock": "^IVG.Ledger(\"head\")",
+     "mode": "exclusive (+)",
+     "timeout": "30 s",
+     "source": "CommitInTxn :439 inside the transaction; Lock - :403 before TCOMMIT is deferred to the outermost transaction end (comment :388-396; P-1102)"
+    }
+   ],
+   "nolock": [
+    "Graph_KG.ledger_stats row: %OpenId with no lock, whole-row %Save (WriteRevision :559-565); its row lock lasts to the outermost transaction end (observed: b-11-live-f1102-locktimeout)"
+   ],
+   "role": "writer",
+   "notes": "Public class method writing governed rows and/or statement maps with no transaction or head lock of its own; inside a commit it runs under Commit's lock and transaction. Called directly it is an unrecorded writer outside every guard (trusted-code premise P-1105, LED-B4.14.4).",
+   "journal_validation": null
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.SetProp",
+   "source": "iris_src/src/Graph/KG/LedgerApply.cls (see inventory span)",
+   "reads": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"meta\"...)",
+     "^IVG.Ledger(\"head\"|\"idBySeq\"|\"revById\"|\"idem\"|\"idemRedacted\"|\"redacting\"|\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^||IVG.LedgerStage"
+    ]
+   },
+   "writes": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings",
+     "kg_NodeEmbeddings_optimized (deletes)"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"rec\",seq,*)",
+     "^IVG.Ledger(\"head\")",
+     "^IVG.Ledger(\"revById\"|\"idBySeq\")",
+     "^IVG.Ledger(\"idem\",key)",
+     "^IVG.Ledger(\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^KG (adjacency via the rdf_edges/rdf_labels functional indexes; weight ^KG(\"out\",g,...) LedgerApply.cls:499-520; temporal store for create_temporal_edge)",
+     "^NKG counters (incremental, non-transactional)",
+     "^||IVG.LedgerOut (large answers)"
+    ]
+   },
+   "transaction": "TSTART :401 (a level nested in the caller's transaction when $TLEVEL>0); TCOMMIT or TROLLBACK 1 :404; any fault: TROLLBACK to the entry level :406. Stats Bump of refusals/replays runs after the transaction and after the unlock, in Bump's own transaction (:414-415, LED-B4.14.2).",
+   "locks": [
+    {
+     "lock": "^IVG.Ledger(\"head\")",
+     "mode": "exclusive (+)",
+     "timeout": "30 s",
+     "source": "CommitInTxn :439 inside the transaction; Lock - :403 before TCOMMIT is deferred to the outermost transaction end (comment :388-396; P-1102)"
+    }
+   ],
+   "nolock": [
+    "Graph_KG.ledger_stats row: %OpenId with no lock, whole-row %Save (WriteRevision :559-565); its row lock lasts to the outermost transaction end (observed: b-11-live-f1102-locktimeout)"
+   ],
+   "role": "writer",
+   "notes": "Public class method writing governed rows and/or statement maps with no transaction or head lock of its own; inside a commit it runs under Commit's lock and transaction. Called directly it is an unrecorded writer outside every guard (trusted-code premise P-1105, LED-B4.14.4).",
+   "journal_validation": null
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.OpAddLabel",
+   "source": "iris_src/src/Graph/KG/LedgerApply.cls (see inventory span)",
+   "reads": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"meta\"...)",
+     "^IVG.Ledger(\"head\"|\"idBySeq\"|\"revById\"|\"idem\"|\"idemRedacted\"|\"redacting\"|\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^||IVG.LedgerStage"
+    ]
+   },
+   "writes": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings",
+     "kg_NodeEmbeddings_optimized (deletes)"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"rec\",seq,*)",
+     "^IVG.Ledger(\"head\")",
+     "^IVG.Ledger(\"revById\"|\"idBySeq\")",
+     "^IVG.Ledger(\"idem\",key)",
+     "^IVG.Ledger(\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^KG (adjacency via the rdf_edges/rdf_labels functional indexes; weight ^KG(\"out\",g,...) LedgerApply.cls:499-520; temporal store for create_temporal_edge)",
+     "^NKG counters (incremental, non-transactional)",
+     "^||IVG.LedgerOut (large answers)"
+    ]
+   },
+   "transaction": "TSTART :401 (a level nested in the caller's transaction when $TLEVEL>0); TCOMMIT or TROLLBACK 1 :404; any fault: TROLLBACK to the entry level :406. Stats Bump of refusals/replays runs after the transaction and after the unlock, in Bump's own transaction (:414-415, LED-B4.14.2).",
+   "locks": [
+    {
+     "lock": "^IVG.Ledger(\"head\")",
+     "mode": "exclusive (+)",
+     "timeout": "30 s",
+     "source": "CommitInTxn :439 inside the transaction; Lock - :403 before TCOMMIT is deferred to the outermost transaction end (comment :388-396; P-1102)"
+    }
+   ],
+   "nolock": [
+    "Graph_KG.ledger_stats row: %OpenId with no lock, whole-row %Save (WriteRevision :559-565); its row lock lasts to the outermost transaction end (observed: b-11-live-f1102-locktimeout)"
+   ],
+   "role": "writer",
+   "notes": "Public class method writing governed rows and/or statement maps with no transaction or head lock of its own; inside a commit it runs under Commit's lock and transaction. Called directly it is an unrecorded writer outside every guard (trusted-code premise P-1105, LED-B4.14.4).",
+   "journal_validation": null
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.OpRemoveLabel",
+   "source": "iris_src/src/Graph/KG/LedgerApply.cls (see inventory span)",
+   "reads": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"meta\"...)",
+     "^IVG.Ledger(\"head\"|\"idBySeq\"|\"revById\"|\"idem\"|\"idemRedacted\"|\"redacting\"|\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^||IVG.LedgerStage"
+    ]
+   },
+   "writes": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings",
+     "kg_NodeEmbeddings_optimized (deletes)"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"rec\",seq,*)",
+     "^IVG.Ledger(\"head\")",
+     "^IVG.Ledger(\"revById\"|\"idBySeq\")",
+     "^IVG.Ledger(\"idem\",key)",
+     "^IVG.Ledger(\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^KG (adjacency via the rdf_edges/rdf_labels functional indexes; weight ^KG(\"out\",g,...) LedgerApply.cls:499-520; temporal store for create_temporal_edge)",
+     "^NKG counters (incremental, non-transactional)",
+     "^||IVG.LedgerOut (large answers)"
+    ]
+   },
+   "transaction": "TSTART :401 (a level nested in the caller's transaction when $TLEVEL>0); TCOMMIT or TROLLBACK 1 :404; any fault: TROLLBACK to the entry level :406. Stats Bump of refusals/replays runs after the transaction and after the unlock, in Bump's own transaction (:414-415, LED-B4.14.2).",
+   "locks": [
+    {
+     "lock": "^IVG.Ledger(\"head\")",
+     "mode": "exclusive (+)",
+     "timeout": "30 s",
+     "source": "CommitInTxn :439 inside the transaction; Lock - :403 before TCOMMIT is deferred to the outermost transaction end (comment :388-396; P-1102)"
+    }
+   ],
+   "nolock": [
+    "Graph_KG.ledger_stats row: %OpenId with no lock, whole-row %Save (WriteRevision :559-565); its row lock lasts to the outermost transaction end (observed: b-11-live-f1102-locktimeout)"
+   ],
+   "role": "writer",
+   "notes": "Public class method writing governed rows and/or statement maps with no transaction or head lock of its own; inside a commit it runs under Commit's lock and transaction. Called directly it is an unrecorded writer outside every guard (trusted-code premise P-1105, LED-B4.14.4).",
+   "journal_validation": null
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.OpSetProp",
+   "source": "iris_src/src/Graph/KG/LedgerApply.cls (see inventory span)",
+   "reads": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"meta\"...)",
+     "^IVG.Ledger(\"head\"|\"idBySeq\"|\"revById\"|\"idem\"|\"idemRedacted\"|\"redacting\"|\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^||IVG.LedgerStage"
+    ]
+   },
+   "writes": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings",
+     "kg_NodeEmbeddings_optimized (deletes)"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"rec\",seq,*)",
+     "^IVG.Ledger(\"head\")",
+     "^IVG.Ledger(\"revById\"|\"idBySeq\")",
+     "^IVG.Ledger(\"idem\",key)",
+     "^IVG.Ledger(\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^KG (adjacency via the rdf_edges/rdf_labels functional indexes; weight ^KG(\"out\",g,...) LedgerApply.cls:499-520; temporal store for create_temporal_edge)",
+     "^NKG counters (incremental, non-transactional)",
+     "^||IVG.LedgerOut (large answers)"
+    ]
+   },
+   "transaction": "TSTART :401 (a level nested in the caller's transaction when $TLEVEL>0); TCOMMIT or TROLLBACK 1 :404; any fault: TROLLBACK to the entry level :406. Stats Bump of refusals/replays runs after the transaction and after the unlock, in Bump's own transaction (:414-415, LED-B4.14.2).",
+   "locks": [
+    {
+     "lock": "^IVG.Ledger(\"head\")",
+     "mode": "exclusive (+)",
+     "timeout": "30 s",
+     "source": "CommitInTxn :439 inside the transaction; Lock - :403 before TCOMMIT is deferred to the outermost transaction end (comment :388-396; P-1102)"
+    }
+   ],
+   "nolock": [
+    "Graph_KG.ledger_stats row: %OpenId with no lock, whole-row %Save (WriteRevision :559-565); its row lock lasts to the outermost transaction end (observed: b-11-live-f1102-locktimeout)"
+   ],
+   "role": "writer",
+   "notes": "Public class method writing governed rows and/or statement maps with no transaction or head lock of its own; inside a commit it runs under Commit's lock and transaction. Called directly it is an unrecorded writer outside every guard (trusted-code premise P-1105, LED-B4.14.4).",
+   "journal_validation": null
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.OpRemoveProp",
+   "source": "iris_src/src/Graph/KG/LedgerApply.cls (see inventory span)",
+   "reads": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"meta\"...)",
+     "^IVG.Ledger(\"head\"|\"idBySeq\"|\"revById\"|\"idem\"|\"idemRedacted\"|\"redacting\"|\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^||IVG.LedgerStage"
+    ]
+   },
+   "writes": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings",
+     "kg_NodeEmbeddings_optimized (deletes)"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"rec\",seq,*)",
+     "^IVG.Ledger(\"head\")",
+     "^IVG.Ledger(\"revById\"|\"idBySeq\")",
+     "^IVG.Ledger(\"idem\",key)",
+     "^IVG.Ledger(\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^KG (adjacency via the rdf_edges/rdf_labels functional indexes; weight ^KG(\"out\",g,...) LedgerApply.cls:499-520; temporal store for create_temporal_edge)",
+     "^NKG counters (incremental, non-transactional)",
+     "^||IVG.LedgerOut (large answers)"
+    ]
+   },
+   "transaction": "TSTART :401 (a level nested in the caller's transaction when $TLEVEL>0); TCOMMIT or TROLLBACK 1 :404; any fault: TROLLBACK to the entry level :406. Stats Bump of refusals/replays runs after the transaction and after the unlock, in Bump's own transaction (:414-415, LED-B4.14.2).",
+   "locks": [
+    {
+     "lock": "^IVG.Ledger(\"head\")",
+     "mode": "exclusive (+)",
+     "timeout": "30 s",
+     "source": "CommitInTxn :439 inside the transaction; Lock - :403 before TCOMMIT is deferred to the outermost transaction end (comment :388-396; P-1102)"
+    }
+   ],
+   "nolock": [
+    "Graph_KG.ledger_stats row: %OpenId with no lock, whole-row %Save (WriteRevision :559-565); its row lock lasts to the outermost transaction end (observed: b-11-live-f1102-locktimeout)"
+   ],
+   "role": "writer",
+   "notes": "Public class method writing governed rows and/or statement maps with no transaction or head lock of its own; inside a commit it runs under Commit's lock and transaction. Called directly it is an unrecorded writer outside every guard (trusted-code premise P-1105, LED-B4.14.4).",
+   "journal_validation": null
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.NodeSnapshotJson",
+   "source": "iris_src/src/Graph/KG/LedgerApply.cls:337-351",
+   "role": "reader/helper",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.DeleteNodeRows",
+   "source": "iris_src/src/Graph/KG/LedgerApply.cls (see inventory span)",
+   "reads": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"meta\"...)",
+     "^IVG.Ledger(\"head\"|\"idBySeq\"|\"revById\"|\"idem\"|\"idemRedacted\"|\"redacting\"|\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^||IVG.LedgerStage"
+    ]
+   },
+   "writes": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings",
+     "kg_NodeEmbeddings_optimized (deletes)"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"rec\",seq,*)",
+     "^IVG.Ledger(\"head\")",
+     "^IVG.Ledger(\"revById\"|\"idBySeq\")",
+     "^IVG.Ledger(\"idem\",key)",
+     "^IVG.Ledger(\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^KG (adjacency via the rdf_edges/rdf_labels functional indexes; weight ^KG(\"out\",g,...) LedgerApply.cls:499-520; temporal store for create_temporal_edge)",
+     "^NKG counters (incremental, non-transactional)",
+     "^||IVG.LedgerOut (large answers)"
+    ]
+   },
+   "transaction": "TSTART :401 (a level nested in the caller's transaction when $TLEVEL>0); TCOMMIT or TROLLBACK 1 :404; any fault: TROLLBACK to the entry level :406. Stats Bump of refusals/replays runs after the transaction and after the unlock, in Bump's own transaction (:414-415, LED-B4.14.2).",
+   "locks": [
+    {
+     "lock": "^IVG.Ledger(\"head\")",
+     "mode": "exclusive (+)",
+     "timeout": "30 s",
+     "source": "CommitInTxn :439 inside the transaction; Lock - :403 before TCOMMIT is deferred to the outermost transaction end (comment :388-396; P-1102)"
+    }
+   ],
+   "nolock": [
+    "Graph_KG.ledger_stats row: %OpenId with no lock, whole-row %Save (WriteRevision :559-565); its row lock lasts to the outermost transaction end (observed: b-11-live-f1102-locktimeout)"
+   ],
+   "role": "writer",
+   "notes": "Public class method writing governed rows and/or statement maps with no transaction or head lock of its own; inside a commit it runs under Commit's lock and transaction. Called directly it is an unrecorded writer outside every guard (trusted-code premise P-1105, LED-B4.14.4).",
+   "journal_validation": null
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.OpDeleteNode",
+   "source": "iris_src/src/Graph/KG/LedgerApply.cls (see inventory span)",
+   "reads": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"meta\"...)",
+     "^IVG.Ledger(\"head\"|\"idBySeq\"|\"revById\"|\"idem\"|\"idemRedacted\"|\"redacting\"|\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^||IVG.LedgerStage"
+    ]
+   },
+   "writes": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings",
+     "kg_NodeEmbeddings_optimized (deletes)"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"rec\",seq,*)",
+     "^IVG.Ledger(\"head\")",
+     "^IVG.Ledger(\"revById\"|\"idBySeq\")",
+     "^IVG.Ledger(\"idem\",key)",
+     "^IVG.Ledger(\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^KG (adjacency via the rdf_edges/rdf_labels functional indexes; weight ^KG(\"out\",g,...) LedgerApply.cls:499-520; temporal store for create_temporal_edge)",
+     "^NKG counters (incremental, non-transactional)",
+     "^||IVG.LedgerOut (large answers)"
+    ]
+   },
+   "transaction": "TSTART :401 (a level nested in the caller's transaction when $TLEVEL>0); TCOMMIT or TROLLBACK 1 :404; any fault: TROLLBACK to the entry level :406. Stats Bump of refusals/replays runs after the transaction and after the unlock, in Bump's own transaction (:414-415, LED-B4.14.2).",
+   "locks": [
+    {
+     "lock": "^IVG.Ledger(\"head\")",
+     "mode": "exclusive (+)",
+     "timeout": "30 s",
+     "source": "CommitInTxn :439 inside the transaction; Lock - :403 before TCOMMIT is deferred to the outermost transaction end (comment :388-396; P-1102)"
+    }
+   ],
+   "nolock": [
+    "Graph_KG.ledger_stats row: %OpenId with no lock, whole-row %Save (WriteRevision :559-565); its row lock lasts to the outermost transaction end (observed: b-11-live-f1102-locktimeout)"
+   ],
+   "role": "writer",
+   "notes": "Public class method writing governed rows and/or statement maps with no transaction or head lock of its own; inside a commit it runs under Commit's lock and transaction. Called directly it is an unrecorded writer outside every guard (trusted-code premise P-1105, LED-B4.14.4).",
+   "journal_validation": null
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.QualsJson",
+   "source": "iris_src/src/Graph/KG/LedgerApply.cls:420-434",
+   "role": "reader/helper",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.WeightOf",
+   "source": "iris_src/src/Graph/KG/LedgerApply.cls:436-443",
+   "role": "reader/helper",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.IsNumeric",
+   "source": "iris_src/src/Graph/KG/LedgerApply.cls:445-448",
+   "role": "reader/helper",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.OpCreateRel",
+   "source": "iris_src/src/Graph/KG/LedgerApply.cls (see inventory span)",
+   "reads": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"meta\"...)",
+     "^IVG.Ledger(\"head\"|\"idBySeq\"|\"revById\"|\"idem\"|\"idemRedacted\"|\"redacting\"|\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^||IVG.LedgerStage"
+    ]
+   },
+   "writes": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings",
+     "kg_NodeEmbeddings_optimized (deletes)"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"rec\",seq,*)",
+     "^IVG.Ledger(\"head\")",
+     "^IVG.Ledger(\"revById\"|\"idBySeq\")",
+     "^IVG.Ledger(\"idem\",key)",
+     "^IVG.Ledger(\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^KG (adjacency via the rdf_edges/rdf_labels functional indexes; weight ^KG(\"out\",g,...) LedgerApply.cls:499-520; temporal store for create_temporal_edge)",
+     "^NKG counters (incremental, non-transactional)",
+     "^||IVG.LedgerOut (large answers)"
+    ]
+   },
+   "transaction": "TSTART :401 (a level nested in the caller's transaction when $TLEVEL>0); TCOMMIT or TROLLBACK 1 :404; any fault: TROLLBACK to the entry level :406. Stats Bump of refusals/replays runs after the transaction and after the unlock, in Bump's own transaction (:414-415, LED-B4.14.2).",
+   "locks": [
+    {
+     "lock": "^IVG.Ledger(\"head\")",
+     "mode": "exclusive (+)",
+     "timeout": "30 s",
+     "source": "CommitInTxn :439 inside the transaction; Lock - :403 before TCOMMIT is deferred to the outermost transaction end (comment :388-396; P-1102)"
+    }
+   ],
+   "nolock": [
+    "Graph_KG.ledger_stats row: %OpenId with no lock, whole-row %Save (WriteRevision :559-565); its row lock lasts to the outermost transaction end (observed: b-11-live-f1102-locktimeout)"
+   ],
+   "role": "writer",
+   "notes": "Public class method writing governed rows and/or statement maps with no transaction or head lock of its own; inside a commit it runs under Commit's lock and transaction. Called directly it is an unrecorded writer outside every guard (trusted-code premise P-1105, LED-B4.14.4).",
+   "journal_validation": null
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.MergeQuals",
+   "source": "iris_src/src/Graph/KG/LedgerApply.cls (see inventory span)",
+   "reads": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"meta\"...)",
+     "^IVG.Ledger(\"head\"|\"idBySeq\"|\"revById\"|\"idem\"|\"idemRedacted\"|\"redacting\"|\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^||IVG.LedgerStage"
+    ]
+   },
+   "writes": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings",
+     "kg_NodeEmbeddings_optimized (deletes)"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"rec\",seq,*)",
+     "^IVG.Ledger(\"head\")",
+     "^IVG.Ledger(\"revById\"|\"idBySeq\")",
+     "^IVG.Ledger(\"idem\",key)",
+     "^IVG.Ledger(\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^KG (adjacency via the rdf_edges/rdf_labels functional indexes; weight ^KG(\"out\",g,...) LedgerApply.cls:499-520; temporal store for create_temporal_edge)",
+     "^NKG counters (incremental, non-transactional)",
+     "^||IVG.LedgerOut (large answers)"
+    ]
+   },
+   "transaction": "TSTART :401 (a level nested in the caller's transaction when $TLEVEL>0); TCOMMIT or TROLLBACK 1 :404; any fault: TROLLBACK to the entry level :406. Stats Bump of refusals/replays runs after the transaction and after the unlock, in Bump's own transaction (:414-415, LED-B4.14.2).",
+   "locks": [
+    {
+     "lock": "^IVG.Ledger(\"head\")",
+     "mode": "exclusive (+)",
+     "timeout": "30 s",
+     "source": "CommitInTxn :439 inside the transaction; Lock - :403 before TCOMMIT is deferred to the outermost transaction end (comment :388-396; P-1102)"
+    }
+   ],
+   "nolock": [
+    "Graph_KG.ledger_stats row: %OpenId with no lock, whole-row %Save (WriteRevision :559-565); its row lock lasts to the outermost transaction end (observed: b-11-live-f1102-locktimeout)"
+   ],
+   "role": "writer",
+   "notes": "Public class method writing governed rows and/or statement maps with no transaction or head lock of its own; inside a commit it runs under Commit's lock and transaction. Called directly it is an unrecorded writer outside every guard (trusted-code premise P-1105, LED-B4.14.4).",
+   "journal_validation": null
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.PersistQuals",
+   "source": "iris_src/src/Graph/KG/LedgerApply.cls (see inventory span)",
+   "reads": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"meta\"...)",
+     "^IVG.Ledger(\"head\"|\"idBySeq\"|\"revById\"|\"idem\"|\"idemRedacted\"|\"redacting\"|\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^||IVG.LedgerStage"
+    ]
+   },
+   "writes": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings",
+     "kg_NodeEmbeddings_optimized (deletes)"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"rec\",seq,*)",
+     "^IVG.Ledger(\"head\")",
+     "^IVG.Ledger(\"revById\"|\"idBySeq\")",
+     "^IVG.Ledger(\"idem\",key)",
+     "^IVG.Ledger(\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^KG (adjacency via the rdf_edges/rdf_labels functional indexes; weight ^KG(\"out\",g,...) LedgerApply.cls:499-520; temporal store for create_temporal_edge)",
+     "^NKG counters (incremental, non-transactional)",
+     "^||IVG.LedgerOut (large answers)"
+    ]
+   },
+   "transaction": "TSTART :401 (a level nested in the caller's transaction when $TLEVEL>0); TCOMMIT or TROLLBACK 1 :404; any fault: TROLLBACK to the entry level :406. Stats Bump of refusals/replays runs after the transaction and after the unlock, in Bump's own transaction (:414-415, LED-B4.14.2).",
+   "locks": [
+    {
+     "lock": "^IVG.Ledger(\"head\")",
+     "mode": "exclusive (+)",
+     "timeout": "30 s",
+     "source": "CommitInTxn :439 inside the transaction; Lock - :403 before TCOMMIT is deferred to the outermost transaction end (comment :388-396; P-1102)"
+    }
+   ],
+   "nolock": [
+    "Graph_KG.ledger_stats row: %OpenId with no lock, whole-row %Save (WriteRevision :559-565); its row lock lasts to the outermost transaction end (observed: b-11-live-f1102-locktimeout)"
+   ],
+   "role": "writer",
+   "notes": "Public class method writing governed rows and/or statement maps with no transaction or head lock of its own; inside a commit it runs under Commit's lock and transaction. Called directly it is an unrecorded writer outside every guard (trusted-code premise P-1105, LED-B4.14.4).",
+   "journal_validation": null
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.OpQual",
+   "source": "iris_src/src/Graph/KG/LedgerApply.cls (see inventory span)",
+   "reads": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"meta\"...)",
+     "^IVG.Ledger(\"head\"|\"idBySeq\"|\"revById\"|\"idem\"|\"idemRedacted\"|\"redacting\"|\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^||IVG.LedgerStage"
+    ]
+   },
+   "writes": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings",
+     "kg_NodeEmbeddings_optimized (deletes)"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"rec\",seq,*)",
+     "^IVG.Ledger(\"head\")",
+     "^IVG.Ledger(\"revById\"|\"idBySeq\")",
+     "^IVG.Ledger(\"idem\",key)",
+     "^IVG.Ledger(\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^KG (adjacency via the rdf_edges/rdf_labels functional indexes; weight ^KG(\"out\",g,...) LedgerApply.cls:499-520; temporal store for create_temporal_edge)",
+     "^NKG counters (incremental, non-transactional)",
+     "^||IVG.LedgerOut (large answers)"
+    ]
+   },
+   "transaction": "TSTART :401 (a level nested in the caller's transaction when $TLEVEL>0); TCOMMIT or TROLLBACK 1 :404; any fault: TROLLBACK to the entry level :406. Stats Bump of refusals/replays runs after the transaction and after the unlock, in Bump's own transaction (:414-415, LED-B4.14.2).",
+   "locks": [
+    {
+     "lock": "^IVG.Ledger(\"head\")",
+     "mode": "exclusive (+)",
+     "timeout": "30 s",
+     "source": "CommitInTxn :439 inside the transaction; Lock - :403 before TCOMMIT is deferred to the outermost transaction end (comment :388-396; P-1102)"
+    }
+   ],
+   "nolock": [
+    "Graph_KG.ledger_stats row: %OpenId with no lock, whole-row %Save (WriteRevision :559-565); its row lock lasts to the outermost transaction end (observed: b-11-live-f1102-locktimeout)"
+   ],
+   "role": "writer",
+   "notes": "Public class method writing governed rows and/or statement maps with no transaction or head lock of its own; inside a commit it runs under Commit's lock and transaction. Called directly it is an unrecorded writer outside every guard (trusted-code premise P-1105, LED-B4.14.4).",
+   "journal_validation": null
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.OpCreateTemporalEdge",
+   "source": "iris_src/src/Graph/KG/LedgerApply.cls (see inventory span)",
+   "reads": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"meta\"...)",
+     "^IVG.Ledger(\"head\"|\"idBySeq\"|\"revById\"|\"idem\"|\"idemRedacted\"|\"redacting\"|\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^||IVG.LedgerStage"
+    ]
+   },
+   "writes": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings",
+     "kg_NodeEmbeddings_optimized (deletes)"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"rec\",seq,*)",
+     "^IVG.Ledger(\"head\")",
+     "^IVG.Ledger(\"revById\"|\"idBySeq\")",
+     "^IVG.Ledger(\"idem\",key)",
+     "^IVG.Ledger(\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^KG (adjacency via the rdf_edges/rdf_labels functional indexes; weight ^KG(\"out\",g,...) LedgerApply.cls:499-520; temporal store for create_temporal_edge)",
+     "^NKG counters (incremental, non-transactional)",
+     "^||IVG.LedgerOut (large answers)"
+    ]
+   },
+   "transaction": "TSTART :401 (a level nested in the caller's transaction when $TLEVEL>0); TCOMMIT or TROLLBACK 1 :404; any fault: TROLLBACK to the entry level :406. Stats Bump of refusals/replays runs after the transaction and after the unlock, in Bump's own transaction (:414-415, LED-B4.14.2).",
+   "locks": [
+    {
+     "lock": "^IVG.Ledger(\"head\")",
+     "mode": "exclusive (+)",
+     "timeout": "30 s",
+     "source": "CommitInTxn :439 inside the transaction; Lock - :403 before TCOMMIT is deferred to the outermost transaction end (comment :388-396; P-1102)"
+    }
+   ],
+   "nolock": [
+    "Graph_KG.ledger_stats row: %OpenId with no lock, whole-row %Save (WriteRevision :559-565); its row lock lasts to the outermost transaction end (observed: b-11-live-f1102-locktimeout)"
+   ],
+   "role": "writer",
+   "notes": "Public class method writing governed rows and/or statement maps with no transaction or head lock of its own; inside a commit it runs under Commit's lock and transaction. Called directly it is an unrecorded writer outside every guard (trusted-code premise P-1105, LED-B4.14.4).",
+   "journal_validation": null
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.OpDeleteRel",
+   "source": "iris_src/src/Graph/KG/LedgerApply.cls (see inventory span)",
+   "reads": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"meta\"...)",
+     "^IVG.Ledger(\"head\"|\"idBySeq\"|\"revById\"|\"idem\"|\"idemRedacted\"|\"redacting\"|\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^||IVG.LedgerStage"
+    ]
+   },
+   "writes": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings",
+     "kg_NodeEmbeddings_optimized (deletes)"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"rec\",seq,*)",
+     "^IVG.Ledger(\"head\")",
+     "^IVG.Ledger(\"revById\"|\"idBySeq\")",
+     "^IVG.Ledger(\"idem\",key)",
+     "^IVG.Ledger(\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^KG (adjacency via the rdf_edges/rdf_labels functional indexes; weight ^KG(\"out\",g,...) LedgerApply.cls:499-520; temporal store for create_temporal_edge)",
+     "^NKG counters (incremental, non-transactional)",
+     "^||IVG.LedgerOut (large answers)"
+    ]
+   },
+   "transaction": "TSTART :401 (a level nested in the caller's transaction when $TLEVEL>0); TCOMMIT or TROLLBACK 1 :404; any fault: TROLLBACK to the entry level :406. Stats Bump of refusals/replays runs after the transaction and after the unlock, in Bump's own transaction (:414-415, LED-B4.14.2).",
+   "locks": [
+    {
+     "lock": "^IVG.Ledger(\"head\")",
+     "mode": "exclusive (+)",
+     "timeout": "30 s",
+     "source": "CommitInTxn :439 inside the transaction; Lock - :403 before TCOMMIT is deferred to the outermost transaction end (comment :388-396; P-1102)"
+    }
+   ],
+   "nolock": [
+    "Graph_KG.ledger_stats row: %OpenId with no lock, whole-row %Save (WriteRevision :559-565); its row lock lasts to the outermost transaction end (observed: b-11-live-f1102-locktimeout)"
+   ],
+   "role": "writer",
+   "notes": "Public class method writing governed rows and/or statement maps with no transaction or head lock of its own; inside a commit it runs under Commit's lock and transaction. Called directly it is an unrecorded writer outside every guard (trusted-code premise P-1105, LED-B4.14.4).",
+   "journal_validation": null
+  },
+  {
+   "id": "cls:Graph.KG.LedgerApply.DeleteRelInternal",
+   "source": "iris_src/src/Graph/KG/LedgerApply.cls (see inventory span)",
+   "reads": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"meta\"...)",
+     "^IVG.Ledger(\"head\"|\"idBySeq\"|\"revById\"|\"idem\"|\"idemRedacted\"|\"redacting\"|\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^||IVG.LedgerStage"
+    ]
+   },
+   "writes": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats",
+     "kg_NodeEmbeddings",
+     "kg_NodeEmbeddings_optimized (deletes)"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"rec\",seq,*)",
+     "^IVG.Ledger(\"head\")",
+     "^IVG.Ledger(\"revById\"|\"idBySeq\")",
+     "^IVG.Ledger(\"idem\",key)",
+     "^IVG.Ledger(\"stmt\"|\"tuple\"|\"stmtNext\")",
+     "^KG (adjacency via the rdf_edges/rdf_labels functional indexes; weight ^KG(\"out\",g,...) LedgerApply.cls:499-520; temporal store for create_temporal_edge)",
+     "^NKG counters (incremental, non-transactional)",
+     "^||IVG.LedgerOut (large answers)"
+    ]
+   },
+   "transaction": "TSTART :401 (a level nested in the caller's transaction when $TLEVEL>0); TCOMMIT or TROLLBACK 1 :404; any fault: TROLLBACK to the entry level :406. Stats Bump of refusals/replays runs after the transaction and after the unlock, in Bump's own transaction (:414-415, LED-B4.14.2).",
+   "locks": [
+    {
+     "lock": "^IVG.Ledger(\"head\")",
+     "mode": "exclusive (+)",
+     "timeout": "30 s",
+     "source": "CommitInTxn :439 inside the transaction; Lock - :403 before TCOMMIT is deferred to the outermost transaction end (comment :388-396; P-1102)"
+    }
+   ],
+   "nolock": [
+    "Graph_KG.ledger_stats row: %OpenId with no lock, whole-row %Save (WriteRevision :559-565); its row lock lasts to the outermost transaction end (observed: b-11-live-f1102-locktimeout)"
+   ],
+   "role": "writer",
+   "notes": "Public class method writing governed rows and/or statement maps with no transaction or head lock of its own; inside a commit it runs under Commit's lock and transaction. Called directly it is an unrecorded writer outside every guard (trusted-code premise P-1105, LED-B4.14.4).",
+   "journal_validation": null
+  },
+  {
+   "id": "cls:Graph.KG.LedgerGenesis.Capture",
+   "source": "iris_src/src/Graph/KG/LedgerGenesis.cls:14-63",
+   "role": "writer",
+   "reads": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "^IVG.Ledger(\"stmt\"|\"tuple\"|\"stmtNext\") via AllocStmt"
+    ]
+   },
+   "transaction": "caller's (Enable)",
+   "locks": [],
+   "nolock": [],
+   "notes": "Records built in a local array; written by WriteRevision. Not captured on its own: it runs inside Enable's transaction, whose journal capture (b-11-live-footprints-1, enable_genesis) matches Enable's declared stores.",
+   "journal_validation": null
+  },
+  {
+   "id": "cls:Graph.KG.LedgerGenesis.Adopt",
+   "source": "iris_src/src/Graph/KG/LedgerGenesis.cls:82-129",
+   "role": "writer",
+   "reads": {
+    "tables": [],
+    "globals": [
+     "^IVG.Ledger(\"tuple\"|\"stmt\")"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "^IVG.Ledger(\"stmt\"|\"tuple\"|\"stmtNext\")"
+    ]
+   },
+   "transaction": "caller's (Commit, kind adoption)",
+   "locks": [],
+   "nolock": [],
+   "notes": "Writes the client's items as records without checking them against the stores (F-1107 ghost adoption, F-1103).",
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/11-footprints-1.json, 11-footprints-2.json",
+    "run_id": "b-11-live-footprints-2",
+    "captures": [
+     "reenable_with_adoption"
+    ],
+    "declared_stores": [
+     "global:^IVG.Ledger",
+     "sql:Graph_KG.ledger_revisions",
+     "sql:Graph_KG.ledger_stats"
+    ],
+    "observed_stores": [
+     "global:^IVG.Ledger",
+     "sql:Graph_KG.ledger_revisions",
+     "sql:Graph_KG.ledger_stats"
+    ],
+    "match": true,
+    "undeclared": [],
+    "outside_txn": [],
+    "notes": "outside_txn entries are $Increment / id counters (classified by reading the code), not governed rows; captured within the enclosing adoption commit (Commit kind adoption), whose declared stores are listed"
+   }
+  },
+  {
+   "id": "cls:Graph.KG.LedgerStats.Ensure",
+   "source": "iris_src/src/Graph/KG/LedgerStats.cls:51-61",
+   "role": "writer",
+   "reads": {
+    "tables": [
+     "ledger_stats"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [
+     "ledger_stats (insert of the singleton row when absent)"
+    ],
+    "globals": []
+   },
+   "transaction": "caller's (no TSTART of its own)",
+   "locks": [],
+   "nolock": [
+    "%OpenId at default concurrency"
+   ],
+   "notes": "",
+   "journal_validation": null
+  },
+  {
+   "id": "cls:Graph.KG.LedgerStats.Bump",
+   "source": "iris_src/src/Graph/KG/LedgerStats.cls:65-88",
+   "reads": {
+    "tables": [
+     "ledger_stats"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [
+     "ledger_stats"
+    ],
+    "globals": []
+   },
+   "transaction": "Bump's own TSTART/TCOMMIT (LedgerStats.cls:72-83)",
+   "locks": [
+    {
+     "lock": "ledger_stats row (%Save concurrency)",
+     "mode": "exclusive during %Save; to the outermost transaction end",
+     "timeout": "10 s observed (status error, ignored by callers)",
+     "source": "LedgerStats.cls:76-77"
+    }
+   ],
+   "nolock": [
+    "%OpenId (LedgerStats.cls:53) reads the row with no lock: read-modify-write (F-1102: 135/4000 lost, b-11-live-f1102-contention)"
+   ],
+   "role": "writer",
+   "notes": "",
+   "journal_validation": null
+  },
+  {
+   "id": "cls:Graph.KG.LedgerStats.PropertyFor",
+   "source": "iris_src/src/Graph/KG/LedgerStats.cls:91-104",
+   "role": "reader/helper",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "cls:Graph.KG.LedgerRevision.BuildCorrelationIndex",
+   "source": "iris_src/src/Graph/KG/LedgerRevision.cls:65-85",
+   "role": "writer",
+   "reads": {
+    "tables": [
+     "ledger_revisions"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [
+     "ledger_revisions index idx_ledger_correlation"
+    ],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "notes": "setup (schema.py:737-770)",
+   "journal_validation": null
+  },
+  {
+   "id": "cls:Graph.KG.SqlProcs.rebuildedgeindices",
+   "source": "iris_src/src/Graph/KG/SqlProcs.cls:200-203",
+   "reads": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [
+     "index globals of nodes, rdf_labels, rdf_props, rdf_edges"
+    ],
+    "globals": [
+     "^KG (functional index purge + rebuild: Adjacency.RemoveAll)"
+    ]
+   },
+   "transaction": "none (BUILD INDEX per table)",
+   "locks": [],
+   "nolock": [
+    "readers see too few edges while it runs (doc :214-217)"
+   ],
+   "role": "writer",
+   "notes": "SQL procedure rebuild_edge_indices",
+   "journal_validation": null
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/client.py:RevisionInfo.from_wire",
+   "source": "iris_vector_graph/ledger/client.py:56-77",
+   "role": "pure",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/client.py:GraphLedger.__init__",
+   "source": "iris_vector_graph/ledger/client.py:227-229",
+   "role": "pure",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/client.py:GraphLedger.enable",
+   "source": "iris_vector_graph/ledger/client.py:281-297",
+   "role": "writer",
+   "reads": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions"
+    ],
+    "globals": [
+     "^IVG.Ledger (records via ledger_records)"
+    ]
+   },
+   "writes": {
+    "tables": [
+     "ledger_revisions",
+     "ledger_stats"
+    ],
+    "globals": [
+     "^IVG.Ledger"
+    ]
+   },
+   "transaction": "Enable's own; on re-enable then verify(adopt=True) commits an adoption in a separate transaction (two steps, LED-B1.21)",
+   "locks": [
+    {
+     "lock": "^IVG.Ledger(\"head\")",
+     "mode": "via Enable / Commit",
+     "timeout": "30 s",
+     "source": "Ledger.cls:264, :439"
+    }
+   ],
+   "nolock": [
+    "refuses a caller transaction holding a write (client.py:268-279)"
+   ],
+   "notes": "",
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/11-footprints-1.json, 11-footprints-2.json",
+    "run_id": "b-11-live-footprints-2",
+    "captures": [
+     "enable_genesis",
+     "reenable_with_adoption"
+    ],
+    "declared_stores": [
+     "global:^IVG.Ledger",
+     "sql:Graph_KG.ledger_revisions",
+     "sql:Graph_KG.ledger_stats"
+    ],
+    "observed_stores": [
+     "global:^IVG.Ledger",
+     "sql:Graph_KG.ledger_revisions",
+     "sql:Graph_KG.ledger_stats"
+    ],
+    "match": true,
+    "undeclared": [],
+    "outside_txn": [],
+    "notes": "outside_txn entries are $Increment / id counters (classified by reading the code), not governed rows"
+   }
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/client.py:GraphLedger.disable",
+   "source": "iris_vector_graph/ledger/client.py:299-303",
+   "reads": {
+    "tables": [
+     "ledger_stats"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"meta\",\"state\")"
+    ]
+   },
+   "writes": {
+    "tables": [
+     "ledger_stats"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"meta\",\"state\")"
+    ]
+   },
+   "transaction": "own TSTART :341 / TCOMMIT :350; nested in the caller's transaction when called on the caller's process (HD-1102)",
+   "locks": [],
+   "nolock": [
+    "no head lock (LED-B1.16): a commit past its state check can finish after disable returns"
+   ],
+   "role": "writer",
+   "notes": "Runs on engine._iris_obj(): the caller's process or another (HD-1102).",
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/11-footprints-1.json, 11-footprints-2.json",
+    "run_id": "b-11-live-footprints-2",
+    "captures": [
+     "disable"
+    ],
+    "declared_stores": [
+     "global:^IVG.Ledger",
+     "sql:Graph_KG.ledger_stats"
+    ],
+    "observed_stores": [
+     "global:^IVG.Ledger",
+     "sql:Graph_KG.ledger_stats"
+    ],
+    "match": true,
+    "undeclared": [],
+    "outside_txn": [],
+    "notes": "outside_txn entries are $Increment / id counters (classified by reading the code), not governed rows"
+   }
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/client.py:GraphLedger.set_strict",
+   "source": "iris_vector_graph/ledger/client.py:305-309",
+   "reads": {
+    "tables": [
+     "ledger_stats"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"meta\",\"state\")"
+    ]
+   },
+   "writes": {
+    "tables": [
+     "ledger_stats"
+    ],
+    "globals": [
+     "^IVG.Ledger(\"meta\",\"strict\")"
+    ]
+   },
+   "transaction": "own TSTART :364 / TCOMMIT :373",
+   "locks": [],
+   "nolock": [
+    "no head lock"
+   ],
+   "role": "writer",
+   "notes": "Refreshes only this engine's guard cache (LED-B11.2).",
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/11-footprints-1.json, 11-footprints-2.json",
+    "run_id": "b-11-live-footprints-2",
+    "captures": [
+     "set_strict_on",
+     "set_strict_off"
+    ],
+    "declared_stores": [
+     "global:^IVG.Ledger",
+     "sql:Graph_KG.ledger_stats"
+    ],
+    "observed_stores": [
+     "global:^IVG.Ledger",
+     "sql:Graph_KG.ledger_stats"
+    ],
+    "match": true,
+    "undeclared": [],
+    "outside_txn": [],
+    "notes": "outside_txn entries are $Increment / id counters (classified by reading the code), not governed rows"
+   }
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/client.py:GraphLedger.meta",
+   "source": "iris_vector_graph/ledger/client.py:311-312",
+   "role": "pure",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/client.py:GraphLedger.head",
+   "source": "iris_vector_graph/ledger/client.py:314-318",
+   "role": "pure",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+   "source": "iris_vector_graph/ledger/client.py:381-487",
+   "role": "writer",
+   "reads": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [
+     "nodes",
+     "rdf_labels",
+     "rdf_props",
+     "rdf_edges",
+     "ledger_revisions",
+     "ledger_stats"
+    ],
+    "globals": [
+     "^IVG.Ledger",
+     "^KG",
+     "^NKG"
+    ]
+   },
+   "transaction": "Graph.KG.Ledger.Commit's (nested in the caller's via write_txn when one is open, client.py:395-400); post-commit properties: a second WriteTxn level (DELETE+INSERT rdf_props, client.py:458-480) after the commit, outside the head lock, also after a replay (F-1101)",
+   "locks": [
+    {
+     "lock": "^IVG.Ledger(\"head\")",
+     "mode": "via Commit",
+     "timeout": "30 s",
+     "source": "Ledger.cls:439"
+    }
+   ],
+   "nolock": [
+    "post-commit properties take no ledger lock"
+   ],
+   "notes": "Replay capture: Bump transaction (ledger_stats) then the post-commit properties transaction (rdf_props): a replayed commit writes a governed table (F-1101). Non-transactional journal entries are $Increment counters and id counters only: ^KG(\"__version\"), ^KG(\"gen\",g,s) (degree generation), ^NKG(\"$meta\",...) and ^NKG(-3,..) (incremental snapshot counters, module 04/10 code reached through rdf_edges' functional index), row-id counters ^t52S.*.1 and rdf_props index 7 (\"W\",n) nodes; none is a governed row. They are not undone when a commit rolls back (cf. module 08's F-C0801 for ^NKG).",
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/11-footprints-1.json, 11-footprints-2.json",
+    "run_id": "b-11-live-footprints-1",
+    "captures": [
+     "commit_node_ops",
+     "commit_create_rel",
+     "commit_set_qual",
+     "commit_delete_rel_node",
+     "commit_refused_stale",
+     "commit_replayed_with_pcp"
+    ],
+    "declared_stores": [
+     "global:^IVG.Ledger",
+     "global:^KG",
+     "global:^NKG",
+     "sql:Graph_KG.ledger_revisions",
+     "sql:Graph_KG.ledger_stats",
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_edges",
+     "sql:Graph_KG.rdf_labels",
+     "sql:Graph_KG.rdf_props"
+    ],
+    "observed_stores": [
+     "global:^IVG.Ledger",
+     "global:^KG",
+     "global:^NKG",
+     "sql:Graph_KG.ledger_revisions",
+     "sql:Graph_KG.ledger_stats",
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_edges",
+     "sql:Graph_KG.rdf_labels",
+     "sql:Graph_KG.rdf_props"
+    ],
+    "match": true,
+    "undeclared": [],
+    "outside_txn": [
+     "^KG(\"__version\")",
+     "^KG(\"gen\",0,\"b11_a\")",
+     "^NKG(\"$meta\",\"edgeCount\")",
+     "^NKG(\"$meta\",\"labelCount\")",
+     "^NKG(\"$meta\",\"nodeCount\")",
+     "^NKG(\"$meta\",\"version\")",
+     "^NKG(-3,37)",
+     "^t52S.BWr6.1",
+     "^t52S.CLwA.1",
+     "^t52S.DMCe.1",
+     "^t52S.DMCe.7(\"W\",53)",
+     "^t52S.DMCe.7(\"W\",6266)",
+     "^t52S.DMCe.7(\"W\",6267)",
+     "^t52S.DMCe.7(\"W\",6268)",
+     "^t52S.XCFT.1"
+    ],
+    "notes": "outside_txn entries are $Increment / id counters (classified by reading the code), not governed rows"
+   }
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/client.py:GraphLedger.register_metrics_hook",
+   "source": "iris_vector_graph/ledger/client.py:505-506",
+   "role": "pure",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/client.py:GraphLedger.stats",
+   "source": "iris_vector_graph/ledger/client.py:542-577",
+   "role": "reader",
+   "reads": {
+    "tables": [
+     "ledger_stats"
+    ],
+    "globals": [
+     "^IVG.Ledger via Meta"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [
+    "zeros when the table cannot be read (LED-B13.5)"
+   ],
+   "notes": "",
+   "journal_validation": null
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/client.py:GraphLedger.history",
+   "source": "iris_vector_graph/ledger/client.py:585-631 -> replay.py:299-352",
+   "role": "reader",
+   "reads": {
+    "tables": [
+     "ledger_revisions"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none (DB-API read, read uncommitted)",
+   "locks": [],
+   "nolock": [
+    "SELECT TOP n ... ORDER BY seq (replay.py:342-345)"
+   ],
+   "notes": "",
+   "journal_validation": null
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/client.py:GraphLedger.get_revision",
+   "source": "iris_vector_graph/ledger/client.py:695-704",
+   "role": "pure",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/changeset.py:Changeset.create_node",
+   "source": "iris_vector_graph/ledger/changeset.py:122-135",
+   "role": "pure",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/changeset.py:Changeset.upsert_node",
+   "source": "iris_vector_graph/ledger/changeset.py:137-150",
+   "role": "pure",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/changeset.py:Changeset.delete_node",
+   "source": "iris_vector_graph/ledger/changeset.py:159-163",
+   "role": "pure",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/changeset.py:Changeset.add_label",
+   "source": "iris_vector_graph/ledger/changeset.py:165-167",
+   "role": "pure",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/changeset.py:Changeset.remove_label",
+   "source": "iris_vector_graph/ledger/changeset.py:169-171",
+   "role": "pure",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/changeset.py:Changeset.set_property",
+   "source": "iris_vector_graph/ledger/changeset.py:173-184",
+   "role": "pure",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/changeset.py:Changeset.remove_property",
+   "source": "iris_vector_graph/ledger/changeset.py:186-190",
+   "role": "pure",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/changeset.py:Changeset.create_relationship",
+   "source": "iris_vector_graph/ledger/changeset.py:197-217",
+   "role": "pure",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/changeset.py:Changeset.upsert_relationship",
+   "source": "iris_vector_graph/ledger/changeset.py:219-234",
+   "role": "pure",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/changeset.py:Changeset.delete_relationship",
+   "source": "iris_vector_graph/ledger/changeset.py:236-240",
+   "role": "pure",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/changeset.py:Changeset.set_qualifier",
+   "source": "iris_vector_graph/ledger/changeset.py:242-261",
+   "role": "pure",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/changeset.py:Changeset.replace_qualifiers",
+   "source": "iris_vector_graph/ledger/changeset.py:263-278",
+   "role": "pure",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/changeset.py:Changeset.remove_qualifier",
+   "source": "iris_vector_graph/ledger/changeset.py:280-286",
+   "role": "pure",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/changeset.py:Changeset.validate",
+   "source": "iris_vector_graph/ledger/changeset.py:290-305",
+   "role": "pure",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/changeset.py:Changeset.create_temporal_edge",
+   "source": "iris_vector_graph/ledger/changeset.py:309-345",
+   "role": "pure",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "own TSTART (static hint)",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/changeset.py:Changeset.to_wire",
+   "source": "iris_vector_graph/ledger/changeset.py:347-360",
+   "role": "pure",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/changeset.py:Changeset.canonical_json",
+   "source": "iris_vector_graph/ledger/changeset.py:362-363",
+   "role": "pure",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/changeset.py:Changeset.fingerprint",
+   "source": "iris_vector_graph/ledger/changeset.py:365-385",
+   "role": "pure",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/changeset.py:canonical_dumps",
+   "source": "iris_vector_graph/ledger/changeset.py:388-390",
+   "role": "pure",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/guard.py:LedgerGuard.__init__",
+   "source": "iris_vector_graph/ledger/guard.py:25-30",
+   "role": "pure",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/guard.py:LedgerGuard.refresh",
+   "source": "iris_vector_graph/ledger/guard.py:34-36",
+   "role": "pure",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/guard.py:LedgerGuard.state",
+   "source": "iris_vector_graph/ledger/guard.py:63-64",
+   "role": "pure",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/guard.py:LedgerGuard.is_enabled",
+   "source": "iris_vector_graph/ledger/guard.py:66-67",
+   "role": "pure",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/guard.py:LedgerGuard.is_strict",
+   "source": "iris_vector_graph/ledger/guard.py:69-71",
+   "role": "pure",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/guard.py:LedgerGuard.check_structural_write",
+   "source": "iris_vector_graph/ledger/guard.py:38-86",
+   "role": "reader+writer",
+   "reads": {
+    "tables": [
+     "%Dictionary.CompiledClass (once)"
+    ],
+    "globals": [
+     "^IVG.Ledger(meta, head) via Meta, cached 5 s per engine"
+    ]
+   },
+   "writes": {
+    "tables": [
+     "ledger_stats (Count rej_strict_block on refusal)"
+    ],
+    "globals": []
+   },
+   "transaction": "Bump's own",
+   "locks": [],
+   "nolock": [
+    "cached probe; fail-open (F-0801)"
+   ],
+   "notes": "Refusal count can block 10 s behind another process's caller transaction (b-11-live-f1102-locktimeout).",
+   "journal_validation": null
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/guard.py:LedgerGuard.count_rejection",
+   "source": "iris_vector_graph/ledger/guard.py:82-86",
+   "reads": {
+    "tables": [
+     "ledger_stats"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [
+     "ledger_stats"
+    ],
+    "globals": []
+   },
+   "transaction": "Bump's own TSTART/TCOMMIT (LedgerStats.cls:72-83)",
+   "locks": [
+    {
+     "lock": "ledger_stats row (%Save concurrency)",
+     "mode": "exclusive during %Save; to the outermost transaction end",
+     "timeout": "10 s observed (status error, ignored by callers)",
+     "source": "LedgerStats.cls:76-77"
+    }
+   ],
+   "nolock": [
+    "%OpenId (LedgerStats.cls:53) reads the row with no lock: read-modify-write (F-1102: 135/4000 lost, b-11-live-f1102-contention)"
+   ],
+   "role": "writer",
+   "notes": "exceptions swallowed",
+   "journal_validation": null
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/errors.py:StaleHeadError.__init__",
+   "source": "iris_vector_graph/ledger/errors.py:33-35",
+   "role": "pure",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/errors.py:ChangesetOperationError.__init__",
+   "source": "iris_vector_graph/ledger/errors.py:49-52",
+   "role": "pure",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/errors.py:ChangesetTooLargeError.__init__",
+   "source": "iris_vector_graph/ledger/errors.py:58-60",
+   "role": "pure",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/errors.py:ReconstructionTooLargeError.__init__",
+   "source": "iris_vector_graph/ledger/errors.py:70-75",
+   "role": "pure",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/errors.py:NodeNotFoundError.__init__",
+   "source": "iris_vector_graph/ledger/errors.py:109-126",
+   "role": "pure",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/errors.py:from_commit_error",
+   "source": "iris_vector_graph/ledger/errors.py:175-199",
+   "role": "pure",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "py:iris_vector_graph/_engine/ledger.py:ledger_check",
+   "source": "iris_vector_graph/_engine/ledger.py:72-79",
+   "role": "pure",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "py:iris_vector_graph/_engine/ledger.py:ledger_strict",
+   "source": "iris_vector_graph/_engine/ledger.py:82-87",
+   "role": "pure",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "eng:IRISGraphEngine.ledger",
+   "source": "iris_vector_graph/_engine/ledger.py:16-28",
+   "role": "reader/helper",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "sql:UPDATE Graph_KG.ledger_revisions",
+   "source": "iris_src/src/Graph/KG/LedgerRevision.cls:87-102",
+   "role": "writer (refused)",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "statement",
+   "locks": [],
+   "nolock": [],
+   "notes": "Row trigger sets %ok=0 except the redaction exemption (modules 13).",
+   "journal_validation": null
+  },
+  {
+   "id": "sql:DELETE Graph_KG.ledger_revisions",
+   "source": "iris_src/src/Graph/KG/LedgerRevision.cls:104-108",
+   "role": "writer (refused)",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "statement",
+   "locks": [],
+   "nolock": [],
+   "notes": "",
+   "journal_validation": null
+  },
+  {
+   "id": "obj:Graph.KG.LedgerRevision.%Save(existing)",
+   "source": "iris_src/src/Graph/KG/LedgerRevision.cls:111-117",
+   "role": "reader/helper",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "obj:Graph.KG.LedgerRevision.%DeleteId",
+   "source": "iris_src/src/Graph/KG/LedgerRevision.cls:120-123",
+   "role": "reader/helper",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "sql:SELECT Graph_KG.ledger_stats",
+   "source": "iris_src/src/Graph/KG/LedgerStats.cls:4-48",
+   "role": "reader/helper",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "sql:SELECT Graph_KG.ledger_revisions",
+   "source": "iris_src/src/Graph/KG/LedgerRevision.cls:1-60",
+   "role": "reader/helper",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/replay.py:fetch_history",
+   "source": "iris_vector_graph/ledger/replay.py:299-352",
+   "role": "pure",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "eng:IRISGraphEngine.status[ledger]",
+   "source": "iris_vector_graph/_engine/ledger.py:40-69",
+   "role": "reader/helper",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "py:iris_vector_graph/schema.py:GraphSchema.ensure_ledger_index",
+   "source": "iris_vector_graph/schema.py:737-770",
+   "role": "pure",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none of its own",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "static hint from tools/inventory.py (transitive over callees); not reviewed individually"
+  },
+  {
+   "id": "guard:engine writers (_ledger_check call sites)",
+   "source": "iris_vector_graph/ledger/guard.py:75-80",
+   "role": "writer (other modules)",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "",
+   "locks": [],
+   "nolock": [],
+   "notes": "Observed under strict: engine.create_node refused; engine.bulk_delete_adjacency (nodes_edges.py:2301-2339, unguarded) wrote rdf_edges, ^KG, ^NKG and killed ^IVG.Ledger(\"stmt\"/\"tuple\") in Graph.KG.Eraser.EraseEdges' own transaction without the head lock (b-11-live-footprints-2): F-1108 and the F-1114 mechanism reached from a non-erase entry point.",
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/11-footprints-2.json",
+    "run_id": "b-11-live-footprints-2",
+    "captures": [
+     "F-1108 bulk_delete_adjacency"
+    ],
+    "declared_stores": [],
+    "observed_stores": [
+     "global:^IVG.Ledger",
+     "global:^KG",
+     "global:^NKG",
+     "sql:Graph_KG.rdf_edges"
+    ],
+    "match": false,
+    "undeclared": [
+     "sql:Graph_KG.rdf_edges (under strict mode)",
+     "global:^IVG.Ledger stmt/tuple without the head lock"
+    ],
+    "outside_txn": [],
+    "notes": "finding F-1108 / F-1114"
+   }
+  }
+ ]
+}

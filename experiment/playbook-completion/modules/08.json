@@ -1,0 +1,1646 @@
+{
+ "module": "08",
+ "lane": "breadth-b",
+ "pin": "3eaa79cf",
+ "gates": [
+  {
+   "gate": "3.1-statements",
+   "status": "failed",
+   "reason": "Original index gate re-run here: parent ids resolve, Flesch-Kincaid <= 8, term scope; 218 CYP statements (77 B, 21 D, 9 I, 6 P, 4 Q, 64 T, 36 X).",
+   "evidence": [
+    "b-08-check-ontology-index",
+    "experiment/playbook-uplift/ontology/08-cypher-sql.md"
+   ],
+   "remaining": "Statements contradicted by live evidence keep their finding tags (F-0802..F-0824).",
+   "review_note": "lane B integration review 2026-11-14: literal-rule check b-check-literal-scope-07-11 finds 54 CYP pairs"
+  },
+  {
+   "gate": "3.1-cells",
+   "status": "closed",
+   "reason": "52 cells (4 entities), every (state, command) row present with an outcome and statements; no 'open' cell. Cells map to entry points through tools/scope/08.json cell_map: 0 cells without an entry point.",
+   "evidence": [
+    "experiment/playbook-completion/models/breadth-b/inventory/08.json"
+   ],
+   "remaining": "Cells encode intended outcomes; F-0805 contradicts 'cypher edge|single|create = no-op' for the literal-endpoint form."
+  },
+  {
+   "gate": "3.1-entry-points",
+   "status": "open",
+   "reason": "Mechanical inventory: 101 entry points; 52 not named by any statement, classified: covered at class level by CYP-D17/CYP-B11/CYP-T11.3 (CypherFn.cls:1-11 cited, per-function semantics not stated): 31; operators shim methods of other modules' operators (kg_GRAPH_WALK, kg_WCC, kg_CDLP, kg_SUBGRAPH, kg_PPR*, kg_NEIGHBORS, kg_MENTIONS, kg_RERANK, kg_NEIGHBORHOOD_EXPANSION): no CYP statement names them (real omission of the shim's contract; behaviour owned by modules 06/07/10): 11; inventory false positives (dbms.clientconfig answer keys, not procedures): 4; callers owned by other modules (16 interfaces / 09 native) that reach execute_cypher: 3; real omissions (no statement covers): 3",
+   "evidence": [
+    "experiment/playbook-completion/models/breadth-b/tools/inventory.py",
+    "experiment/playbook-completion/models/breadth-b/tools/scope/08.json"
+   ],
+   "remaining": "Add statements for answered_without_parsing (read-only verdict of shortcut texts), map_sql_relationship (namespace-wide, no graph key) and the operators shim contract; per-function CypherFn semantics."
+  },
+  {
+   "gate": "3.2-env-contract",
+   "status": "open",
+   "reason": "Module 08 relies on the IRIS features listed in env_features; several were observed live here (nested TSTART levels under a caller transaction, -119 writes nothing, functional-index writes undone by TROLLBACK 1, $INCREMENT survives TROLLBACK, one statement per execute bounding F-0815), but no environment contract with differential validation and mutants exists for them in this lane.",
+   "evidence": [
+    "b-08-live-footprints",
+    "b-08-live-f0805",
+    "b-08-live-fc0801-rollback-nkg"
+   ],
+   "remaining": "Orchestrator's IRIS environment contract (AUDITENV) to cover env_features with sharpness tests."
+  },
+  {
+   "gate": "3.3-L1",
+   "status": "open",
+   "reason": "Small L1-style explorer models exist for the write transaction (m08-txn-*), graph scope of reads (m08-scope-*) and read-only mode (m08-readonly-*); they are executable models, not Verus L1 specs.",
+   "evidence": [
+    "models/breadth-b/src/m08.rs",
+    "m08-txn-reviewed",
+    "m08-scope-reviewed",
+    "m08-readonly-reviewed"
+   ],
+   "remaining": "Verus L1 for CYP invariants (I5.5, I5.6, I6.3, I6.4, I8.6, I9.4)."
+  },
+  {
+   "gate": "3.3-L2",
+   "status": "not-applicable",
+   "reason": "No L2 machine over the real data layout for a 31,908-line translator at breadth; the translator's statement generation is outside any machine's semantic subset (unrepresentable at this scope).",
+   "evidence": [
+    "iris_vector_graph/cypher/translator.py:7090-7772"
+   ],
+   "remaining": "An L2 for the write transaction protocol (Txn_Begin/End/Undo over rows + ^KG) is feasible and would refine m08-txn."
+  },
+  {
+   "gate": "3.3-refinement",
+   "status": "open",
+   "reason": "No refinement audit of an L2 against the models; journal validation shows the as-built write protocol matches the m08-txn as-built design (one level per query, failure net-empty, caller level kept).",
+   "evidence": [
+    "b-08-live-footprints"
+   ],
+   "remaining": "Binding from journaled traces to m08-txn (trace replay)."
+  },
+  {
+   "gate": "3.3-controls",
+   "status": "closed",
+   "reason": "Every m08 machine has a negative control the checker catches: m08-txn-control-rollback-all, m08-txn-control-commit-per-step, m08-scope-control-vlp-unscoped, m08-readonly-control-no-text-check.",
+   "evidence": [
+    "models/breadth-b/RESULTS.json"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.3-progress",
+   "status": "closed",
+   "reason": "AG EF 'the write's transaction level can always close' holds for as-built and reviewed m08-txn; the progress control m08-txn-control-leak-level fails only that goal (m08-txn-control-leak-level-safety passes).",
+   "evidence": [
+    "m08-txn-as-built-atomic",
+    "m08-txn-reviewed",
+    "m08-txn-control-leak-level",
+    "m08-txn-control-leak-level-safety"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.3a-mechanisms",
+   "status": "open",
+   "reason": "Mechanisms used: nested transaction level (write_txn), unique-key backstop, functional-index derived stores, client-side guard (module 11). No mechanism library declared for them.",
+   "evidence": [
+    "iris_vector_graph/_write_txn.py:1-30",
+    "iris_src/src/Graph/KG/AdjIndex.cls:1-26"
+   ],
+   "remaining": "Declare the write-transaction mechanism with its laws once (shared with modules 03/11)."
+  },
+  {
+   "gate": "3.3a-writesets",
+   "status": "open",
+   "reason": "See invariant_writesets: every module-08 invariant's read set is written by the Cypher write plan and by other modules' writers; graph-coherence obligations for non-Cypher writers are not discharged here.",
+   "evidence": [
+    "invariant_writesets"
+   ],
+   "remaining": "Discharge or record each (invariant, plan) pair for other modules' writers."
+  },
+  {
+   "gate": "3.4-statements",
+   "status": "not-applicable",
+   "reason": "Statements are generated at run time by the translator from the query; no fixed statement set to prove equal to a model evaluation at this pin.",
+   "evidence": [
+    "iris_vector_graph/cypher/translator.py:7090"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.4-ownership",
+   "status": "open",
+   "reason": "Ownership is documented (Scope line; ADR-0008/0011: Adjacency is the one writer of ^KG); no self-tested ownership check exists for the graph tables Cypher writes.",
+   "evidence": [
+    "experiment/playbook-uplift/ontology/08-cypher-sql.md:5"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.4-storage-order",
+   "status": "failed",
+   "reason": "26 distinct module-08 sites from $RUN_DIR/checks/storage-order.json (query.py non-native lines, translator.py, engine.py handlers; operators.py none): F-C0802: 4, F-C0803: 1, existence-only: 5, false-positive: 16. Two answers depend on storage order (live): F-C0802 (schema procedures sample one row), F-C0803 (SET r = a copies the first row onto every merged relationship).",
+   "evidence": [
+    "b-08-live-storage-order",
+    "$RUN_DIR/checks/storage-order.json",
+    "modules/08.json storage_order"
+   ],
+   "remaining": "Fix F-C0802 / F-C0803; no self-test of the storage-order check in this lane."
+  },
+  {
+   "gate": "3.4-declared-reads",
+   "status": "failed",
+   "reason": "Graph-scoped reads read outside their declared graph: F-0802, F-0815, F-0816, F-0818, F-0819, F-0820 (live).",
+   "evidence": [
+    "b-08-live-f0802",
+    "b-08-live-f0815",
+    "b-08-live-f0816",
+    "b-08-live-f0818",
+    "b-08-live-f0819",
+    "b-08-live-f0820"
+   ],
+   "remaining": "Product fixes; then a declared-reads check per route."
+  },
+  {
+   "gate": "3.5-handlers",
+   "status": "open",
+   "reason": "execute_cypher/execute_aql are not proved handlers; live and model evidence only.",
+   "evidence": [
+    "b-08-live-footprints"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.5-lock-plans",
+   "status": "open",
+   "reason": "Lock plan per write: shared ^IVG.AdjW(graph) held to transaction end inside functional-index callbacks (Adjacency.cls:23-31, 61-74), unique keys as backstop; no lock between guarded NOT EXISTS inserts. Journal shows the writes inside one transaction; lock acquisition itself is not journaled.",
+   "evidence": [
+    "iris_src/src/Graph/KG/Adjacency.cls:61-74",
+    "b-08-live-footprints"
+   ],
+   "remaining": "Concurrent-writer interleavings of guarded INSERT ... WHERE NOT EXISTS were not exercised."
+  },
+  {
+   "gate": "3.5-decoders",
+   "status": "failed",
+   "reason": "Parser/AQL decoders accept input they should refuse or mis-decode: F-0803, F-0814, F-0815, F-0824; value decoders F-0811, F-0812.",
+   "evidence": [
+    "b-08-live-f0803",
+    "b-08-live-f0814",
+    "b-08-live-f0815",
+    "b-08-live-f0824",
+    "b-08-live-f0811",
+    "b-08-live-f0812"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.5-status-maps",
+   "status": "failed",
+   "reason": "Error type/text map disagrees with USER_GUIDE: F-0804, F-0806, F-0807, F-0817, F-0822 (live).",
+   "evidence": [
+    "b-08-live-f0804",
+    "b-08-live-f0806",
+    "b-08-live-f0807",
+    "b-08-live-f0817",
+    "b-08-live-f0822"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.6-composition",
+   "status": "open",
+   "reason": "Composition conditions consumed by other modules: (1) strict mode refuses Cypher writes (F-0801, live: a Cypher write 0.28 s after another process set strict mode was accepted and unrecorded) - modules 12-14 rely on it; (2) a Cypher write's rollback restores derived stores (F-C0801: ^NKG counters do not roll back); (3) graph isolation of reads (failed, see 3.4-declared-reads).",
+   "evidence": [
+    "findings/audit/08.json",
+    "b-08-live-f0801"
+   ],
+   "remaining": "Orchestrator composition list."
+  },
+  {
+   "gate": "3.7-explorers",
+   "status": "closed",
+   "reason": "24 m08 checks (as-built x9, reviewed x3, control x5 incl. progress, positive x4 plus safety of the progress mutant) met their expectation, exhaustive within bounds.",
+   "evidence": [
+    "models/breadth-b/RESULTS.json",
+    "$RUN_DIR/breadth-b/mc/08-dev.log"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.7-integration-worlds",
+   "status": "open",
+   "reason": "Caller transaction world exercised live (failure keeps caller level and row; caller ROLLBACK removes all). Crash, lost acknowledgement and disconnect worlds not exercised.",
+   "evidence": [
+    "b-08-live-footprints"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.7-differential",
+   "status": "not-applicable",
+   "reason": "No reference implementation run here (openCypher TCK is IRIS-backed and out of this lane's rules; F-0821).",
+   "evidence": [],
+   "remaining": ""
+  },
+  {
+   "gate": "3.7-e2e",
+   "status": "open",
+   "reason": "Upstream e2e/TCK not run (IRIS-backed fixture compiles classes); live reproductions on AUDITB stand in for the finding cases.",
+   "evidence": [
+    "b-08-live-f0802"
+   ],
+   "remaining": "Run upstream e2e in a lane whose namespace may be deployed by the fixture."
+  },
+  {
+   "gate": "3.7-trace-replay",
+   "status": "open",
+   "reason": "Journal traces captured (08-footprints.json) and checked against declared footprints and transaction structure; not replayed through a machine.",
+   "evidence": [
+    "b-08-live-footprints"
+   ],
+   "remaining": "Replay journal traces through m08-txn."
+  },
+  {
+   "gate": "3.7-statement-log-vs-lock-plan",
+   "status": "open",
+   "reason": "Journal statement log shows transaction boundaries match the plan (one level per query); lock acquisition is not in the journal.",
+   "evidence": [
+    "b-08-live-footprints"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.7-mutation",
+   "status": "open",
+   "reason": "Model mutants only (controls); no mutation testing of translator code.",
+   "evidence": [
+    "m08-*-control-*"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.7-perf-ab",
+   "status": "not-applicable",
+   "reason": "No structural change made (observation-only audit).",
+   "evidence": [],
+   "remaining": ""
+  },
+  {
+   "gate": "3.7-failure-scenarios",
+   "status": "closed",
+   "reason": "Failure scenarios each with a check: duplicate-key failure (live + model), failing read step after a write (live + model), caller transaction failure (live + model), progress mutant (model).",
+   "evidence": [
+    "b-08-live-f0805",
+    "b-08-live-f0806",
+    "b-08-live-footprints",
+    "m08-txn-control-leak-level"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.8-account",
+   "status": "open",
+   "reason": "Findings audited (25 original + 1 new) with evidence; STATUS/trust/test-reflection updates are the orchestrator's.",
+   "evidence": [
+    "findings/audit/08.json"
+   ],
+   "remaining": ""
+  }
+ ],
+ "entry_point_omissions": {
+  "covered at class level by CYP-D17/CYP-B11/CYP-T11.3 (CypherFn.cls:1-11 cited, per-function semantics not stated)": [
+   "cls:Graph.KG.CypherFn.IVGJSONARRAYLENGTH",
+   "cls:Graph.KG.CypherFn.IVGJSONVALUE",
+   "cls:Graph.KG.CypherFn.IVGJSONKEYS",
+   "cls:Graph.KG.CypherFn.IVGLISTREVERSE",
+   "cls:Graph.KG.CypherFn.IVGSTRSPLIT",
+   "cls:Graph.KG.CypherFn.IVGNEWID",
+   "cls:Graph.KG.CypherFn.IVGRAND",
+   "cls:Graph.KG.CypherFn.IVGLISTHEAD",
+   "cls:Graph.KG.CypherFn.IVGLISTLAST",
+   "cls:Graph.KG.CypherFn.IVGLISTTAIL",
+   "cls:Graph.KG.CypherFn.IVGTYPEERROR",
+   "cls:Graph.KG.CypherFn.IVGMAPGET",
+   "cls:Graph.KG.CypherFn.IVGJSONSET",
+   "cls:Graph.KG.CypherFn.IVGJSONREMOVE",
+   "cls:Graph.KG.CypherFn.IVGRANGE",
+   "cls:Graph.KG.SqlProcs.CypherFnIVGREGEXMATCH",
+   "cls:Graph.KG.SqlProcs.CypherFnIVGJSONARRAYLENGTH",
+   "cls:Graph.KG.SqlProcs.CypherFnIVGJSONVALUE",
+   "cls:Graph.KG.SqlProcs.CypherFnIVGJSONKEYS",
+   "cls:Graph.KG.SqlProcs.CypherFnIVGLISTREVERSE",
+   "cls:Graph.KG.SqlProcs.CypherFnIVGSTRSPLIT",
+   "cls:Graph.KG.SqlProcs.CypherFnIVGNEWID",
+   "cls:Graph.KG.SqlProcs.CypherFnIVGRAND",
+   "cls:Graph.KG.SqlProcs.CypherFnIVGLISTHEAD",
+   "cls:Graph.KG.SqlProcs.CypherFnIVGLISTLAST",
+   "cls:Graph.KG.SqlProcs.CypherFnIVGLISTTAIL",
+   "cls:Graph.KG.SqlProcs.CypherFnIVGLISTGET",
+   "cls:Graph.KG.SqlProcs.CypherFnIVGTYPEERROR",
+   "cls:Graph.KG.SqlProcs.CypherFnIVGMAPGET",
+   "cls:Graph.KG.SqlProcs.CypherFnIVGJSONSET",
+   "cls:Graph.KG.SqlProcs.CypherFnIVGRANGE"
+  ],
+  "operators shim methods of other modules' operators (kg_GRAPH_WALK, kg_WCC, kg_CDLP, kg_SUBGRAPH, kg_PPR*, kg_NEIGHBORS, kg_MENTIONS, kg_RERANK, kg_NEIGHBORHOOD_EXPANSION): no CYP statement names them (real omission of the shim's contract; behaviour owned by modules 06/07/10)": [
+   "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_GRAPH_WALK",
+   "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_GRAPH_WALK_TVF",
+   "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_NEIGHBORHOOD_EXPANSION",
+   "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_WCC",
+   "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_CDLP",
+   "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_SUBGRAPH",
+   "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_PPR_GUIDED_SUBGRAPH",
+   "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_NEIGHBORS",
+   "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_MENTIONS",
+   "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_PPR",
+   "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_RERANK"
+  ],
+  "inventory false positives (dbms.clientconfig answer keys, not procedures)": [
+   "cypher:dbms.security.auth_enabled",
+   "cypher:dbms.jvm.heap.initial_size",
+   "cypher:dbms.jvm.heap.max_size",
+   "cypher:dbms.logs.native.size"
+  ],
+  "callers owned by other modules (16 interfaces / 09 native) that reach execute_cypher": [
+   "cli:ivg query",
+   "extra:http POST /api/cypher",
+   "extra:IVG.CypherEngine.Query"
+  ],
+  "real omissions (no statement covers)": [
+   "py:iris_vector_graph/cypher/read_only.py:answered_without_parsing",
+   "py:iris_vector_graph/cypher/translator.py:get_schema_prefix",
+   "eng:IRISGraphEngine.map_sql_relationship"
+  ]
+ },
+ "invariant_writesets": [
+  {
+   "invariant": "CYP-I5.5 / CYP-I5.6 / SYS-I2 (an answer about graph g holds only g's data; an edge meets only nodes of its own graph)",
+   "reads": [
+    "Graph_KG.nodes.graph_id",
+    "Graph_KG.rdf_edges.graph_id",
+    "Graph_KG.rdf_labels.graph_id",
+    "Graph_KG.rdf_props.graph_id",
+    "^KG(out/in, graph, ...)",
+    "^NKG (graph-blind)"
+   ],
+   "plans": [
+    {
+     "plan": "cypher.write",
+     "writes": [
+      "nodes",
+      "rdf_edges",
+      "rdf_labels",
+      "rdf_props",
+      "^KG",
+      "^NKG"
+     ],
+     "discharge": "inspected: edge INSERT takes _graph_of(context) and matched endpoints are graph-correlated (translator.py:10212-10248, 10306-10365); live setup created per-graph rows (08-findings _setup)"
+    },
+    {
+     "plan": "engine.direct_write / bulk_loader / fhir sync / raw SQL",
+     "writes": [
+      "graph tables"
+     ],
+     "discharge": "open: other modules' writers (02/03/15)"
+    },
+    {
+     "plan": "^NKG build/intern (Adjacency.Put, BuildNKG)",
+     "writes": [
+      "^NKG"
+     ],
+     "discharge": "finding: ^NKG has no graph key; readers that use it under all-graphs reads leak (F-0819)"
+    }
+   ]
+  },
+  {
+   "invariant": "CYP-I6.3 / CYP-I6.4 / CYP-X6.5 (a failed write takes back its own part only)",
+   "reads": [
+    "graph tables",
+    "^KG",
+    "^NKG",
+    "$TLEVEL"
+   ],
+   "plans": [
+    {
+     "plan": "cypher.write",
+     "writes": [
+      "graph tables",
+      "^KG",
+      "^NKG"
+     ],
+     "discharge": "live: b-08-live-footprints (net effect empty on failure, caller level kept); mc: m08-txn-as-built-atomic"
+    },
+    {
+     "plan": "Adjacency counters ($INCREMENT)",
+     "writes": [
+      "^KG(gen,__version)",
+      "^NKG(-3,$meta)"
+     ],
+     "discharge": "named exception for ^KG(gen) (Adjacency.cls:23-30); finding F-C0801 for ^NKG counters"
+    }
+   ]
+  },
+  {
+   "invariant": "CYP-I8.6 (read-only changes nothing)",
+   "reads": [
+    "all tables and globals"
+   ],
+   "plans": [
+    {
+     "plan": "execute_cypher(read_only=True)",
+     "writes": [
+      "none by clause"
+     ],
+     "discharge": "finding: F-0815 (pasted SQL can call side-effect functions)"
+    },
+    {
+     "plan": "execute_aql",
+     "writes": [
+      "graph tables"
+     ],
+     "discharge": "finding: F-0814 (no read_only)"
+    }
+   ]
+  },
+  {
+   "invariant": "CYP-I9.4 (names reach SQL only bound or checked)",
+   "reads": [
+    "query text"
+   ],
+   "plans": [
+    {
+     "plan": "translator / AQL translator",
+     "writes": [
+      "SQL text"
+     ],
+     "discharge": "finding: F-0815, F-0814"
+    }
+   ]
+  },
+  {
+   "invariant": "CYP-I4.14 (approx count per graph)",
+   "reads": [
+    "^NKG"
+   ],
+   "plans": [
+    {
+     "plan": "^NKG build",
+     "writes": [
+      "^NKG"
+     ],
+     "discharge": "finding: F-0819"
+    }
+   ]
+  },
+  {
+   "invariant": "CYP-I1.4 (a write never runs natively)",
+   "reads": [
+    "query AST"
+   ],
+   "plans": [
+    {
+     "plan": "execute_cypher",
+     "writes": [],
+     "discharge": "inspected: writes go to _execute_cypher_write before any native route (query.py:1801-1802)"
+    }
+   ]
+  },
+  {
+   "invariant": "CYP-I6.6 (a write after an empty match changes nothing)",
+   "reads": [
+    "graph tables"
+   ],
+   "plans": [
+    {
+     "plan": "cypher.write",
+     "writes": [
+      "graph tables"
+     ],
+     "discharge": "tested upstream (not run here); not re-checked live"
+    }
+   ]
+  }
+ ],
+ "env_features": [
+  {
+   "feature": "TSTART/TCOMMIT/TROLLBACK 1 nesting, reached as SQL functions on the writing cursor (one level per write query, under a caller's SQL START TRANSACTION or driver autocommit-off)",
+   "used_for": "write_txn atomicity and caller-transaction nesting (CYP-I6.3, CYP-I6.4)",
+   "source": "iris_src/src/Graph/KG/Txn.cls:19-58; iris_vector_graph/_write_txn.py:1-30, 275"
+  },
+  {
+   "feature": "SQL START TRANSACTION inside a transaction is a no-op; SQL COMMIT/ROLLBACK end every level",
+   "used_for": "why write_txn avoids SQL transaction verbs",
+   "source": "iris_vector_graph/_write_txn.py:13-20"
+  },
+  {
+   "feature": "SELECT $TLEVEL over SQL",
+   "used_for": "detecting a caller transaction",
+   "source": "iris_vector_graph/_write_txn.py:64-90"
+  },
+  {
+   "feature": "Statement-level atomicity: a failed SQL statement undoes only itself; the transaction stays open (P-0803)",
+   "used_for": "CYP-I6.3",
+   "source": "iris_vector_graph/stores/iris_sql_store.py:1552-1553"
+  },
+  {
+   "feature": "Unique index violation SQLCODE -119 writes no row (P-0804)",
+   "used_for": "duplicate edge handling (F-0805), is_duplicate",
+   "source": "iris_vector_graph/_write_txn.py:46-49"
+  },
+  {
+   "feature": "%Library.FunctionalIndex callbacks run in the row's process and transaction; TROLLBACK undoes their global SETs (P-0801)",
+   "used_for": "^KG kept current by Cypher DML",
+   "source": "iris_src/src/Graph/KG/AdjIndex.cls:1-26"
+  },
+  {
+   "feature": "$INCREMENT is not undone by TROLLBACK",
+   "used_for": "^KG(gen), ^KG(__version), ^NKG counters (F-C0801)",
+   "source": "iris_src/src/Graph/KG/Adjacency.cls:23-30, 89-107"
+  },
+  {
+   "feature": "LOCK +^G#\"S\" shared lock with timeout (5 s), held to transaction end when taken inside a transaction",
+   "used_for": "adjacency writer lock in functional-index callbacks",
+   "source": "iris_src/src/Graph/KG/Adjacency.cls:23-31, 61-74"
+  },
+  {
+   "feature": "Default SQL/global isolation: read uncommitted (no %NOLOCK used; P-0002)",
+   "used_for": "reads inside and beside open writes",
+   "source": "footprints/08.json (grep %NOLOCK = 0 in translator/query/store)"
+  },
+  {
+   "feature": "INSERT ... SELECT ... WHERE NOT EXISTS guarded inserts (no lock; unique keys as backstop)",
+   "used_for": "idempotent CREATE/MERGE of nodes, labels, props, matched edges",
+   "source": "iris_vector_graph/cypher/translator.py:10306-10365"
+  },
+  {
+   "feature": "JSON_TABLE over a SQL function's JSON result",
+   "used_for": "variable-length walks (CY_VLP_PATHS / CY_VLP_ENDS)",
+   "source": "iris_vector_graph/cypher/translator.py:15421-15431"
+  },
+  {
+   "feature": "JSON_ARRAYAGG, LIST(), %EXACT, %SQLUPPER, %IGNOREINDEX hints, CAST, COALESCE in generated SQL",
+   "used_for": "projection of labels/props, plan control",
+   "source": "iris_vector_graph/cypher/translator.py:1289, 5941-5945"
+  },
+  {
+   "feature": "CREATE OR REPLACE FUNCTION ... LANGUAGE OBJECTSCRIPT (SQL UDFs) and [SqlProc] class methods projected as SQL functions",
+   "used_for": "CY_* value functions, CypherFn_* helpers, Txn_Begin/End/Undo",
+   "source": "iris_vector_graph/schema.py:2176-2310; iris_src/src/Graph/KG/SqlProcs.cls:1-20"
+  },
+  {
+   "feature": "%Library.DynamicObject / DynamicArray JSON (%FromJSON, %GetTypeOf, %Get(key,,\"json\"))",
+   "used_for": "edge qualifiers and list/map values",
+   "source": "iris_vector_graph/schema.py:2185-2310; iris_src/src/Graph/KG/CypherFn.cls:28-255"
+  },
+  {
+   "feature": "$LISTBUILD type byte ($ASCII($LISTBUILD(v),2)) to recover stored number types",
+   "used_for": "typed reads (F-0811, F-0812, F-0813)",
+   "source": "iris_vector_graph/schema.py:2203, 2231-2257"
+  },
+  {
+   "feature": "%Regex.Matcher",
+   "used_for": "=~ (IVGREGEXMATCH)",
+   "source": "iris_src/src/Graph/KG/CypherFn.cls:13-26"
+  },
+  {
+   "feature": "Dynamic SQL accepts -- comments (no multi-statement per execute; P-0806)",
+   "used_for": "bounds and enables F-0815",
+   "source": "iris_vector_graph/cypher/translator.py:29578"
+  },
+  {
+   "feature": "%iFind.Index.Basic on rdf_props.val (word dictionary written outside the transaction)",
+   "used_for": "text predicates; journal shows non-transactional ^t52S.DMCe.7(\"W\",n)",
+   "source": "iris_vector_graph/schema.py:167-178"
+  },
+  {
+   "feature": "Bitmap extent indexes (DDL tables), journaled as BitSET",
+   "used_for": "row existence; rollback compensation observed",
+   "source": "$RUN_DIR/breadth-b/live/08-footprints.json"
+  },
+  {
+   "feature": "SQL string literal escaping by doubling quotes (P-0805)",
+   "used_for": "inlined graph names and captured ids",
+   "source": "iris_vector_graph/cypher/translator.py:2085-2086"
+  },
+  {
+   "feature": "Collation %EXACT on node_id; default SQLUPPER elsewhere",
+   "used_for": "id comparisons",
+   "source": "iris_vector_graph/schema.py:396"
+  },
+  {
+   "feature": "SQLCODE map: -23, -104, -119, -149, -359/-428, <PROTECT>/-99",
+   "used_for": "GraphWriteError text, missing-function fallback, privilege refusals",
+   "source": "iris_vector_graph/_write_txn.py:46-57; iris_vector_graph/stores/iris_sql_store.py:1540-1550"
+  },
+  {
+   "feature": "DB-API driver: autocommit default; with autocommit off the transaction starts at the first write",
+   "used_for": "caller transaction detection",
+   "source": "iris_vector_graph/_write_txn.py:22-26, 55-62"
+  },
+  {
+   "feature": "Native API classMethodValue on the engine's connection (guard probe of Graph.KG.Ledger.Meta)",
+   "used_for": "strict-mode guard (F-0801)",
+   "source": "iris_vector_graph/ledger/guard.py:38-59"
+  },
+  {
+   "feature": "License-limited connections (IRIS Community: 8 here); a connect can fail 'Unable to allocate a license'",
+   "used_for": "every engine/connection (observed while auditing)",
+   "source": "$RUN_DIR/breadth-b/live/08-findings.json (_env); live/breadth-b/08_common.py:conn_retry"
+  }
+ ],
+ "counts": {
+  "entry_points": 101,
+  "omissions": 52,
+  "real_omissions": 3,
+  "cells": 52,
+  "cells_without_entry_point": 0,
+  "footprints": 101,
+  "footprints_journal_validated": 5,
+  "journal_mismatches": 0,
+  "model_checks": 24,
+  "original_findings": 25,
+  "new_findings": 3,
+  "env_features": 25,
+  "storage_order_sites": 26,
+  "storage_order_by_disposition": {
+   "existence-only": 5,
+   "false-positive": 16,
+   "F-C0802": 4,
+   "F-C0803": 1
+  },
+  "gates_by_id": {
+   "closed": 11,
+   "open": 20,
+   "not-applicable": 3,
+   "failed": 5
+  }
+ },
+ "incidents": [
+  {
+   "what": "An IRIS-backed upstream test (tests/unit/test_r115_read_only_verdict_independent.py::TestLiveIRIS) was run without IVG_NAMESPACE; its session fixture called tests/conftest.py:_deploy_objectscript against namespace USER (validation lane), LoadStream-compiling the pin's own classes (sources unchanged) and failing on the three MCP classes.",
+   "evidence": "$RUN_DIR/breadth-b/live/08-incident-user-deploy.json; $RUN_DIR/breadth-b/live/08-unit-tests-incident.log",
+   "effect": "USER Graph.KG classes probably recompiled from identical pin sources around IRIS time 67887,82908-82910; MCP class definitions re-saved uncompiled. No AUDITB effect. The decisive unit run b-08-run-unit excludes that file."
+  },
+  {
+   "what": "F-0801 check changed the AUDITB ledger from never-enabled to disabled (genesis revision seq 1 recorded, strict off) after waiting 20 minutes for module 11 to move it first.",
+   "evidence": "$RUN_DIR/breadth-b/live/08-strict-window.json; $RUN_DIR/breadth-b/live/08-strict-wait.log",
+   "effect": "Module 11 first-enable checks (F-1104) on AUDITB now need Graph.KG.Ledger PurgeAll or another namespace. Since then module 11 returned it to never-enabled; the F-0801 rerun (b-08-live-f0801-rerun) found never-enabled and restored it with Graph.KG.Ledger.PurgeAll (Ledger.cls:241-248): Meta never-enabled, strict false, head_seq 0."
+  }
+ ],
+ "storage_order": [
+  {
+   "file": "iris_vector_graph/_engine/query.py",
+   "line": 151,
+   "sql": "SELECT TOP 1 n.node_id FROM {}.nodes n WHERE n.node_id = ?",
+   "checker_kind": "candidate",
+   "disposition": "existence-only",
+   "reason": "node_with_labels answers a boolean: does the id exist (in the graph) carrying the labels (query.py:145-160)"
+  },
+  {
+   "file": "iris_vector_graph/_engine/query.py",
+   "line": 588,
+   "sql": "(docstring of _extract_sql_row_limit)",
+   "checker_kind": "candidate",
+   "disposition": "false-positive (query.py:586-592)",
+   "reason": "docstring text naming FETCH FIRST / TOP, not a statement"
+  },
+  {
+   "file": "iris_vector_graph/_engine/query.py",
+   "line": 1818,
+   "sql": "SELECT DISTINCT TOP 1000 \"key\" FROM {}.rdf_props ORDER BY \"key\"",
+   "checker_kind": "candidate",
+   "disposition": "false-positive (query.py:1818)",
+   "reason": "ORDER BY \"key\" on the same line; the text shortcut itself is F-0802"
+  },
+  {
+   "file": "iris_vector_graph/_engine/query.py",
+   "line": 1835,
+   "sql": "SELECT TOP 25 node_id FROM {}.nodes",
+   "checker_kind": "candidate",
+   "disposition": "F-C0802",
+   "reason": "the 'entity' text shortcut answers the first 25 node ids in storage order (also F-0802)"
+  },
+  {
+   "file": "iris_vector_graph/_engine/query.py",
+   "line": 1837,
+   "sql": "SELECT DISTINCT TOP 25 p FROM {}.rdf_edges",
+   "checker_kind": "candidate",
+   "disposition": "F-C0802",
+   "reason": "first 25 relationship types in storage order (also F-0802)"
+  },
+  {
+   "file": "iris_vector_graph/cypher/translator.py",
+   "line": 2926,
+   "sql": "SELECT TOP {} e.node_id AS node, ... CAST(... AS DOUBLE) AS score ...",
+   "checker_kind": "candidate",
+   "disposition": "false-positive (translator.py:2938)",
+   "reason": "ORDER BY score DESC appended at translator.py:2938; ties at the cut are module 06's ranking contract (HD-0603)"
+  },
+  {
+   "file": "iris_vector_graph/cypher/translator.py",
+   "line": 3330,
+   "sql": "SELECT TOP {vec_limit} e.node_id AS node, CAST(VECTOR_COSINE(...) AS DOUBLE) AS score",
+   "checker_kind": "candidate",
+   "disposition": "false-positive (translator.py:3332-3333)",
+   "reason": "ORDER BY score DESC in the same CTE"
+  },
+  {
+   "file": "iris_vector_graph/cypher/translator.py",
+   "line": 3343,
+   "sql": "SELECT TOP {limit} node, node AS node_id, CAST(SUM(rrf_score) AS DOUBLE) AS rrf_score ...",
+   "checker_kind": "candidate",
+   "disposition": "false-positive (translator.py:3351-3352)",
+   "reason": "GROUP BY node ORDER BY rrf_score DESC in the same CTE"
+  },
+  {
+   "file": "iris_vector_graph/cypher/translator.py",
+   "line": 4433,
+   "sql": "SELECT TOP 9223372036854775807 {rn}.* FROM {rn} WHERE __rn > skip AND __rn <= skip+limit ORDER BY __rn",
+   "checker_kind": "candidate",
+   "disposition": "false-positive (translator.py:4433-4436)",
+   "reason": "TOP of the largest integer cuts nothing (it only lets IRIS accept ORDER BY in a CTE); rows are cut by ROW_NUMBER over the query's own ORDER BY"
+  },
+  {
+   "file": "iris_vector_graph/cypher/translator.py",
+   "line": 4440,
+   "sql": "SELECT TOP {limit} * FROM ({sql}) __ob ORDER BY {order_by_items}",
+   "checker_kind": "candidate",
+   "disposition": "false-positive (translator.py:4440)",
+   "reason": "ORDER BY applied before the cut; ties at the cut are what openCypher's ORDER BY ... LIMIT allows. The has_join branch (translator.py:4441-4448) cuts an unordered Cypher LIMIT, whose rows openCypher leaves unspecified"
+  },
+  {
+   "file": "iris_vector_graph/cypher/translator.py",
+   "line": 4460,
+   "sql": "SELECT TOP 9223372036854775807 {rn}.* FROM {rn} WHERE __rn > skip ORDER BY __rn",
+   "checker_kind": "candidate",
+   "disposition": "false-positive (translator.py:4460-4464)",
+   "reason": "no cut (largest integer); ordered by __rn"
+  },
+  {
+   "file": "iris_vector_graph/cypher/translator.py",
+   "line": 4482,
+   "sql": "SELECT TOP 9223372036854775807 * FROM ({sql}) __ob ORDER BY ...",
+   "checker_kind": "candidate",
+   "disposition": "false-positive (translator.py:4482)",
+   "reason": "no cut; ORDER BY on the same line"
+  },
+  {
+   "file": "iris_vector_graph/cypher/translator.py",
+   "line": 5809,
+   "sql": "(docstring of _null_row_cut)",
+   "checker_kind": "candidate",
+   "disposition": "false-positive (translator.py:5805-5812)",
+   "reason": "docstring text"
+  },
+  {
+   "file": "iris_vector_graph/cypher/translator.py",
+   "line": 8176,
+   "sql": "SELECT TOP {limit} * FROM ({sql}) __ob ORDER BY ...",
+   "checker_kind": "candidate",
+   "disposition": "false-positive (translator.py:8176)",
+   "reason": "ORDER BY applied; the else branch (translator.py:8177-8182) cuts an unordered Cypher LIMIT, whose rows openCypher leaves unspecified"
+  },
+  {
+   "file": "iris_vector_graph/cypher/translator.py",
+   "line": 11141,
+   "sql": "SELECT TOP 1 {typed_sql} FROM <preceding clauses>",
+   "checker_kind": "candidate",
+   "disposition": "false-positive (translator.py:11123-11135)",
+   "reason": "_merge_action_value_sql documents 'the value is taken from the first of those rows - ON CREATE fires once, for the row that created the node'; the probed per-row shape was refused before reaching it (<ARGUMENT ERROR>, b-08-live-storage-order); row order without ORDER BY is unspecified in openCypher. Residual risk noted under F-C0803"
+  },
+  {
+   "file": "iris_vector_graph/cypher/translator.py",
+   "line": 11175,
+   "sql": "SELECT TOP 1 {expr_sql} FROM <preceding clauses>",
+   "checker_kind": "candidate",
+   "disposition": "false-positive (translator.py:11123-11135)",
+   "reason": "same function and reason as translator.py:11141"
+  },
+  {
+   "file": "iris_vector_graph/cypher/translator.py",
+   "line": 12386,
+   "sql": "(SELECT '{' || LIST(...) || '}' FROM rdf_props WHERE s = (SELECT TOP 1 a.node_id FROM ...))",
+   "checker_kind": "candidate",
+   "disposition": "F-C0803",
+   "reason": "SET r = a copies the first preceding row's node onto every merged relationship (live: both relationships got b08_p1's properties)"
+  },
+  {
+   "file": "iris_vector_graph/engine.py",
+   "line": 576,
+   "sql": "SELECT TOP 1 1 FROM {}.{} WHERE 1 = 0",
+   "checker_kind": "existence-only",
+   "disposition": "existence-only",
+   "reason": "privilege probe (engine.py:570-580; module 09's gate fact): returns no row by construction"
+  },
+  {
+   "file": "iris_vector_graph/engine.py",
+   "line": 624,
+   "sql": "SELECT TOP 1 graph_id FROM {}.nodes",
+   "checker_kind": "candidate",
+   "disposition": "existence-only",
+   "reason": "_more_than_one_graph: any first row, then whether a graph above or below it exists (engine.py:615-638); the answer is independent of which row comes first"
+  },
+  {
+   "file": "iris_vector_graph/engine.py",
+   "line": 634,
+   "sql": "SELECT TOP 1 graph_id FROM {}.nodes WHERE graph_id {op} ?",
+   "checker_kind": "candidate",
+   "disposition": "existence-only",
+   "reason": "existence of another graph id (engine.py:634-636)"
+  },
+  {
+   "file": "iris_vector_graph/engine.py",
+   "line": 784,
+   "sql": "FETCH FIRST 0/1 ROWS ONLY on two scratch tables (subprocess probe)",
+   "checker_kind": "candidate",
+   "disposition": "existence-only",
+   "reason": "_detect_fetch_first_unsafe: only whether the statement raises matters (engine.py:776-815)"
+  },
+  {
+   "file": "iris_vector_graph/engine.py",
+   "line": 1340,
+   "sql": "SELECT TOP 1 rl.s FROM {}.rdf_labels rl WHERE rl.label = ?",
+   "checker_kind": "candidate",
+   "disposition": "F-C0802",
+   "reason": "db.schema.nodeTypeProperties samples one node per label in storage order (live: k1 missing)"
+  },
+  {
+   "file": "iris_vector_graph/engine.py",
+   "line": 1346,
+   "sql": "SELECT DISTINCT TOP 20 \"key\" FROM {}.rdf_props WHERE s = ? ORDER BY \"key\"",
+   "checker_kind": "candidate",
+   "disposition": "false-positive (engine.py:1347)",
+   "reason": "ORDER BY \"key\"; the sampled node is the F-C0802 site at engine.py:1340"
+  },
+  {
+   "file": "iris_vector_graph/engine.py",
+   "line": 1382,
+   "sql": "SELECT TOP 1 qualifiers FROM {}.rdf_edges WHERE p = ? AND qualifiers IS NOT NULL",
+   "checker_kind": "candidate",
+   "disposition": "F-C0802",
+   "reason": "db.schema.relTypeProperties samples one edge per type in storage order (live: qb missing)"
+  },
+  {
+   "file": "iris_vector_graph/engine.py",
+   "line": 1491,
+   "sql": "SELECT DISTINCT TOP 1000 \"key\" FROM {}.rdf_props ORDER BY \"key\"",
+   "checker_kind": "candidate",
+   "disposition": "false-positive (engine.py:1491)",
+   "reason": "ORDER BY \"key\" on the same line; the silent 1000-key cap is deterministic"
+  },
+  {
+   "file": "iris_vector_graph/engine.py",
+   "line": 1624,
+   "sql": "SELECT DISTINCT TOP 20 \"key\" FROM rdf_props rp JOIN rdf_labels rl ... WHERE rl.label = ? ORDER BY \"key\"",
+   "checker_kind": "candidate",
+   "disposition": "false-positive (engine.py:1627)",
+   "reason": "ORDER BY \"key\"; deterministic 20-key cap"
+  }
+ ],
+ "refusals_audit": [
+  {
+   "id": "CYP-X1.1",
+   "uplift_evidence": [
+    "inspected",
+    "tested"
+   ],
+   "findings": [],
+   "live_here": null,
+   "holds": "not re-checked"
+  },
+  {
+   "id": "CYP-X2.6",
+   "uplift_evidence": [
+    "finding",
+    "inspected",
+    "tested"
+   ],
+   "findings": [
+    "F-0804"
+   ],
+   "live_here": "b-08-live-f0804 (refused with line and column; type is F-0804)",
+   "holds": "yes (live)"
+  },
+  {
+   "id": "CYP-X2.7",
+   "uplift_evidence": [
+    "inspected",
+    "tested"
+   ],
+   "findings": [],
+   "live_here": "b-08-live-f0804",
+   "holds": "yes (live)"
+  },
+  {
+   "id": "CYP-X3.4",
+   "uplift_evidence": [
+    "inspected",
+    "tested"
+   ],
+   "findings": [],
+   "live_here": null,
+   "holds": "not re-checked"
+  },
+  {
+   "id": "CYP-X3.5",
+   "uplift_evidence": [
+    "inspected",
+    "tested"
+   ],
+   "findings": [],
+   "live_here": null,
+   "holds": "not re-checked"
+  },
+  {
+   "id": "CYP-X3.6",
+   "uplift_evidence": [
+    "inspected",
+    "tested"
+   ],
+   "findings": [],
+   "live_here": null,
+   "holds": "not re-checked"
+  },
+  {
+   "id": "CYP-X3.8",
+   "uplift_evidence": [
+    "finding",
+    "inspected"
+   ],
+   "findings": [
+    "F-0803"
+   ],
+   "live_here": "F-0803 (b-08-live-f0803)",
+   "holds": "no"
+  },
+  {
+   "id": "CYP-X4.9",
+   "uplift_evidence": [
+    "inspected",
+    "tested"
+   ],
+   "findings": [],
+   "live_here": null,
+   "holds": "not re-checked"
+  },
+  {
+   "id": "CYP-X4.10",
+   "uplift_evidence": [
+    "inspected",
+    "tested"
+   ],
+   "findings": [],
+   "live_here": null,
+   "holds": "not re-checked"
+  },
+  {
+   "id": "CYP-X4.11",
+   "uplift_evidence": [
+    "inspected",
+    "tested"
+   ],
+   "findings": [],
+   "live_here": null,
+   "holds": "not re-checked"
+  },
+  {
+   "id": "CYP-X6.5",
+   "uplift_evidence": [
+    "finding",
+    "inspected",
+    "tested"
+   ],
+   "findings": [
+    "F-0807"
+   ],
+   "live_here": "b-08-live-f0807 (nothing written; type is F-0807)",
+   "holds": "yes (live)"
+  },
+  {
+   "id": "CYP-X6.7.10",
+   "uplift_evidence": [
+    "inspected"
+   ],
+   "findings": [],
+   "live_here": null,
+   "holds": "not re-checked"
+  },
+  {
+   "id": "CYP-X6.7.11",
+   "uplift_evidence": [
+    "inspected",
+    "tested"
+   ],
+   "findings": [],
+   "live_here": null,
+   "holds": "not re-checked"
+  },
+  {
+   "id": "CYP-X6.7.13",
+   "uplift_evidence": [
+    "inspected"
+   ],
+   "findings": [],
+   "live_here": "b-08-live-f0807",
+   "holds": "yes (live)"
+  },
+  {
+   "id": "CYP-X6.8.5",
+   "uplift_evidence": [
+    "inspected",
+    "tested"
+   ],
+   "findings": [],
+   "live_here": "b-08-live-f0807",
+   "holds": "yes (live)"
+  },
+  {
+   "id": "CYP-X6.8.6",
+   "uplift_evidence": [
+    "inspected",
+    "tested"
+   ],
+   "findings": [],
+   "live_here": null,
+   "holds": "not re-checked"
+  },
+  {
+   "id": "CYP-X6.8.7",
+   "uplift_evidence": [
+    "inspected"
+   ],
+   "findings": [],
+   "live_here": "b-08-live-f0807",
+   "holds": "yes (live)"
+  },
+  {
+   "id": "CYP-X6.9.3",
+   "uplift_evidence": [
+    "inspected",
+    "tested"
+   ],
+   "findings": [],
+   "live_here": null,
+   "holds": "not re-checked"
+  },
+  {
+   "id": "CYP-X6.9.7",
+   "uplift_evidence": [
+    "inspected"
+   ],
+   "findings": [],
+   "live_here": "b-08-live-f0807",
+   "holds": "yes (live)"
+  },
+  {
+   "id": "CYP-X6.10.1",
+   "uplift_evidence": [
+    "inspected",
+    "tested"
+   ],
+   "findings": [],
+   "live_here": null,
+   "holds": "not re-checked"
+  },
+  {
+   "id": "CYP-X6.10.5",
+   "uplift_evidence": [
+    "inspected"
+   ],
+   "findings": [],
+   "live_here": null,
+   "holds": "not re-checked"
+  },
+  {
+   "id": "CYP-X7.2",
+   "uplift_evidence": [
+    "inspected",
+    "tested"
+   ],
+   "findings": [],
+   "live_here": "F-0801 (b-08-live-f0801, -rerun)",
+   "holds": "no"
+  },
+  {
+   "id": "CYP-X8.3",
+   "uplift_evidence": [
+    "inspected",
+    "tested"
+   ],
+   "findings": [],
+   "live_here": null,
+   "holds": "not re-checked"
+  },
+  {
+   "id": "CYP-X9.2",
+   "uplift_evidence": [
+    "inspected",
+    "tested"
+   ],
+   "findings": [],
+   "live_here": null,
+   "holds": "not re-checked"
+  },
+  {
+   "id": "CYP-X10.2",
+   "uplift_evidence": [
+    "finding",
+    "inspected",
+    "tested"
+   ],
+   "findings": [
+    "F-0817"
+   ],
+   "live_here": "F-0817 (b-08-live-f0817)",
+   "holds": "no"
+  },
+  {
+   "id": "CYP-X10.4",
+   "uplift_evidence": [
+    "inspected",
+    "tested"
+   ],
+   "findings": [],
+   "live_here": null,
+   "holds": "not re-checked"
+  },
+  {
+   "id": "CYP-X10.5",
+   "uplift_evidence": [
+    "inspected",
+    "tested"
+   ],
+   "findings": [],
+   "live_here": null,
+   "holds": "not re-checked"
+  },
+  {
+   "id": "CYP-X10.6",
+   "uplift_evidence": [
+    "inspected"
+   ],
+   "findings": [],
+   "live_here": null,
+   "holds": "not re-checked"
+  },
+  {
+   "id": "CYP-X10.7",
+   "uplift_evidence": [
+    "inspected",
+    "tested"
+   ],
+   "findings": [],
+   "live_here": null,
+   "holds": "not re-checked"
+  },
+  {
+   "id": "CYP-X10.9",
+   "uplift_evidence": [
+    "inspected",
+    "tested"
+   ],
+   "findings": [],
+   "live_here": null,
+   "holds": "not re-checked"
+  },
+  {
+   "id": "CYP-X11.1",
+   "uplift_evidence": [
+    "inspected",
+    "tested"
+   ],
+   "findings": [],
+   "live_here": null,
+   "holds": "not re-checked"
+  },
+  {
+   "id": "CYP-X11.6",
+   "uplift_evidence": [
+    "inspected",
+    "tested"
+   ],
+   "findings": [],
+   "live_here": null,
+   "holds": "not re-checked"
+  },
+  {
+   "id": "CYP-X12.1",
+   "uplift_evidence": [
+    "finding",
+    "inspected"
+   ],
+   "findings": [
+    "F-0804"
+   ],
+   "live_here": "F-0804 (b-08-live-f0804)",
+   "holds": "no"
+  },
+  {
+   "id": "CYP-X12.2",
+   "uplift_evidence": [
+    "inspected"
+   ],
+   "findings": [],
+   "live_here": null,
+   "holds": "not re-checked"
+  },
+  {
+   "id": "CYP-X13.2",
+   "uplift_evidence": [
+    "inspected",
+    "tested"
+   ],
+   "findings": [],
+   "live_here": null,
+   "holds": "not re-checked"
+  },
+  {
+   "id": "CYP-X13.3",
+   "uplift_evidence": [
+    "inspected",
+    "tested"
+   ],
+   "findings": [],
+   "live_here": null,
+   "holds": "not re-checked"
+  }
+ ],
+ "gates_by_id": {
+  "3.1-parent": {
+   "status": "closed",
+   "reason": "ontology_index.py --check: every CYP parent id resolves (whole ontology 3015 statements, 0 violations).",
+   "evidence": [
+    "b-08-check-ontology-index"
+   ],
+   "remaining": ""
+  },
+  "3.1-grade": {
+   "status": "closed",
+   "reason": "ontology_index.py --check: every CYP statement at Flesch-Kincaid grade <= 8.",
+   "evidence": [
+    "b-08-check-ontology-index"
+   ],
+   "remaining": ""
+  },
+  "3.1-terms": {
+   "status": "failed",
+   "reason": "Under the literal rule HD-0001 adopts (decisions.md HD-0001), 54 CYP statement/term pairs use a glossary term not defined by an ancestor or an earlier same-parent statement (b-check-literal-scope-07-11). ontology_index.py --check passes because it implements the lexical reading (ancestor siblings), which HD-0001 rejects as a method change.",
+   "evidence": [
+    "check:b-check-literal-scope-07-11",
+    "inspected:experiment/playbook-completion/decisions.md:15-17"
+   ],
+   "remaining": "Reparent or add D statements for the 54 CYP pairs (observation-only: recorded, not fixed).",
+   "review_note": "lane B integration review 2026-11-14: changed from closed (the cited check implements the lexical reading)"
+  },
+  "3.1-index": {
+   "status": "closed",
+   "reason": "INDEX.md current (ontology_index.py --check).",
+   "evidence": [
+    "b-08-check-ontology-index"
+   ],
+   "remaining": ""
+  },
+  "3.1-cells": {
+   "status": "closed",
+   "reason": "52 cells (4 entities), every (state, command) row present with an outcome and statements; no 'open' cell. Cells map to entry points through tools/scope/08.json cell_map: 0 cells without an entry point.",
+   "evidence": [
+    "experiment/playbook-completion/models/breadth-b/inventory/08.json"
+   ],
+   "remaining": "Cells encode intended outcomes; F-0805 contradicts 'cypher edge|single|create = no-op' for the literal-endpoint form."
+  },
+  "3.1-coverage": {
+   "status": "open",
+   "reason": "Mechanical inventory: 101 entry points; 52 not named by any statement, classified: covered at class level by CYP-D17/CYP-B11/CYP-T11.3 (CypherFn.cls:1-11 cited, per-function semantics not stated): 31; operators shim methods of other modules' operators (kg_GRAPH_WALK, kg_WCC, kg_CDLP, kg_SUBGRAPH, kg_PPR*, kg_NEIGHBORS, kg_MENTIONS, kg_RERANK, kg_NEIGHBORHOOD_EXPANSION): no CYP statement names them (real omission of the shim's contract; behaviour owned by modules 06/07/10): 11; inventory false positives (dbms.clientconfig answer keys, not procedures): 4; callers owned by other modules (16 interfaces / 09 native) that reach execute_cypher: 3; real omissions (no statement covers): 3",
+   "evidence": [
+    "experiment/playbook-completion/models/breadth-b/inventory/08.json",
+    "experiment/playbook-completion/models/breadth-b/tools/scope/08.json"
+   ],
+   "remaining": "Add statements for answered_without_parsing (read-only verdict of shortcut texts), map_sql_relationship (namespace-wide, no graph key) and the operators shim contract; per-function CypherFn semantics."
+  },
+  "3.1-intent": {
+   "status": "open",
+   "reason": "HD-0801..HD-0804 carry working dispositions in decisions.md (assumptions, not maintainer decisions); F-0801's mechanism question (CYP-Q7.6) and mapped labels (CYP-Q4.17) remain human decisions.",
+   "evidence": [
+    "experiment/playbook-completion/decisions.md"
+   ],
+   "remaining": "Maintainer decisions for HD-0801..0804 (intent lanes)."
+  },
+  "3.2-coverage": {
+   "status": "open",
+   "reason": "Module 08 relies on the IRIS features listed in env_features; several were observed live here (nested TSTART levels under a caller transaction, -119 writes nothing, functional-index writes undone by TROLLBACK 1, $INCREMENT survives TROLLBACK, one statement per execute bounding F-0815), but no environment contract with differential validation and mutants exists for them in this lane. 25 features listed in env_features.",
+   "evidence": [
+    "modules/08.json env_features",
+    "b-08-live-footprints",
+    "b-08-live-fc0801-rollback-nkg"
+   ],
+   "remaining": "Orchestrator's IRIS environment contract (AUDITENV) to cover env_features with sharpness tests."
+  },
+  "3.3-L1": {
+   "status": "open",
+   "reason": "Small L1-style explorer models exist for the write transaction (m08-txn-*), graph scope of reads (m08-scope-*) and read-only mode (m08-readonly-*); they are executable models, not Verus L1 specs.",
+   "evidence": [
+    "models/breadth-b/src/m08.rs",
+    "m08-txn-reviewed",
+    "m08-scope-reviewed",
+    "m08-readonly-reviewed"
+   ],
+   "remaining": "Verus L1 for CYP invariants (I5.5, I5.6, I6.3, I6.4, I8.6, I9.4)."
+  },
+  "3.3-L2": {
+   "status": "not-applicable",
+   "reason": "No L2 machine over the real data layout for a 31,908-line translator at breadth; the translator's statement generation is outside any machine's semantic subset (unrepresentable at this scope).",
+   "evidence": [
+    "iris_vector_graph/cypher/translator.py:7090-7772"
+   ],
+   "remaining": "An L2 for the write transaction protocol (Txn_Begin/End/Undo over rows + ^KG) is feasible and would refine m08-txn."
+  },
+  "3.3-refinement": {
+   "status": "open",
+   "reason": "No refinement audit of an L2 against the models; journal validation shows the as-built write protocol matches the m08-txn as-built design (one level per query, failure net-empty, caller level kept).",
+   "evidence": [
+    "b-08-live-footprints"
+   ],
+   "remaining": "Binding from journaled traces to m08-txn (trace replay)."
+  },
+  "3.3-controls": {
+   "status": "open",
+   "reason": "Explorer controls are caught (m08-txn-control-rollback-all, -commit-per-step, m08-scope-control-vlp-unscoped, m08-readonly-control-no-text-check), but the gate asks for rejection by a proof; no Verus proof exists for module 08.",
+   "evidence": [
+    "m08-txn-control-rollback-all",
+    "m08-txn-control-commit-per-step",
+    "m08-scope-control-vlp-unscoped",
+    "m08-readonly-control-no-text-check"
+   ],
+   "remaining": "Proof-level controls."
+  },
+  "3.3-model-check": {
+   "status": "closed",
+   "reason": "24 m08 explorer checks met (exhaustive within bounds): as-built reproduces F-0805, F-0806, F-0802, F-0815, F-0816, F-0818, F-0819, F-0820, F-0814/F-0815 (read-only), HD-0802; reviewed designs pass; 4 negative controls and a progress mutant caught; sharpness witnesses reached.",
+   "evidence": [
+    "models/breadth-b/RESULTS.json",
+    "m08-txn-reviewed",
+    "m08-scope-reviewed",
+    "m08-readonly-reviewed"
+   ],
+   "remaining": ""
+  },
+  "3.3-progress-controls": {
+   "status": "closed",
+   "reason": "AG EF 'the write's transaction level can always close' holds for as-built and reviewed m08-txn; the progress control m08-txn-control-leak-level fails only that goal (m08-txn-control-leak-level-safety passes).",
+   "evidence": [
+    "m08-txn-as-built-atomic",
+    "m08-txn-reviewed",
+    "m08-txn-control-leak-level",
+    "m08-txn-control-leak-level-safety"
+   ],
+   "remaining": ""
+  },
+  "3.3a-writesets": {
+   "status": "open",
+   "reason": "See invariant_writesets: every module-08 invariant's read set is written by the Cypher write plan and by other modules' writers; graph-coherence obligations for non-Cypher writers are not discharged here.",
+   "evidence": [
+    "modules/08.json invariant_writesets"
+   ],
+   "remaining": "Discharge or record each (invariant, plan) pair for other modules' writers."
+  },
+  "3.4-statements": {
+   "status": "not-applicable",
+   "reason": "Statements are generated at run time by the translator from the query; no fixed statement set to prove equal to a model evaluation at this pin.",
+   "evidence": [
+    "iris_vector_graph/cypher/translator.py:7090"
+   ],
+   "remaining": ""
+  },
+  "3.4-ownership": {
+   "status": "open",
+   "reason": "Ownership is documented (Scope line; ADR-0008/0011: Adjacency is the one writer of ^KG); no self-tested ownership check exists for the graph tables Cypher writes.",
+   "evidence": [
+    "experiment/playbook-uplift/ontology/08-cypher-sql.md:5"
+   ],
+   "remaining": "Self-tested ownership check over the writer census."
+  },
+  "3.4-storage-order": {
+   "status": "failed",
+   "reason": "26 distinct module-08 sites from $RUN_DIR/checks/storage-order.json (query.py non-native lines, translator.py, engine.py handlers; operators.py none): F-C0802: 4, F-C0803: 1, existence-only: 5, false-positive: 16. Two answers depend on storage order (live): F-C0802 (schema procedures sample one row), F-C0803 (SET r = a copies the first row onto every merged relationship).",
+   "evidence": [
+    "b-08-live-storage-order",
+    "$RUN_DIR/checks/storage-order.json",
+    "modules/08.json storage_order"
+   ],
+   "remaining": "Fix F-C0802 / F-C0803; no self-test of the storage-order check in this lane."
+  },
+  "3.4-declared-reads": {
+   "status": "failed",
+   "reason": "Graph-scoped reads read outside their declared graph: F-0802, F-0815, F-0816, F-0818, F-0819, F-0820 (live).",
+   "evidence": [
+    "b-08-live-f0802",
+    "b-08-live-f0815",
+    "b-08-live-f0816",
+    "b-08-live-f0818",
+    "b-08-live-f0819",
+    "b-08-live-f0820",
+    "b-08-live-f0818-rerun"
+   ],
+   "remaining": "Product fixes; then a declared-reads check per route."
+  },
+  "3.5-handlers": {
+   "status": "open",
+   "reason": "execute_cypher/execute_aql are not proved handlers; live and model evidence only.",
+   "evidence": [
+    "b-08-live-footprints"
+   ],
+   "remaining": "Handler proofs."
+  },
+  "3.5-lockplans": {
+   "status": "open",
+   "reason": "Lock plan per write: shared ^IVG.AdjW(graph) held to transaction end inside functional-index callbacks (Adjacency.cls:23-31, 61-74), unique keys as backstop; no lock between guarded NOT EXISTS inserts. Journal shows the writes inside one transaction; lock acquisition itself is not journaled.",
+   "evidence": [
+    "iris_src/src/Graph/KG/Adjacency.cls:61-74",
+    "b-08-live-footprints"
+   ],
+   "remaining": "Concurrent-writer interleavings of guarded INSERT ... WHERE NOT EXISTS were not exercised."
+  },
+  "3.5-decoders": {
+   "status": "failed",
+   "reason": "Parser/AQL decoders accept input they should refuse or mis-decode: F-0803, F-0814, F-0815, F-0824; value decoders F-0811, F-0812. Status maps: Error type/text map disagrees with USER_GUIDE: F-0804, F-0806, F-0807, F-0817, F-0822 (live).",
+   "evidence": [
+    "b-08-live-f0803",
+    "b-08-live-f0814",
+    "b-08-live-f0815",
+    "b-08-live-f0824",
+    "b-08-live-f0811",
+    "b-08-live-f0812",
+    "b-08-live-f0804",
+    "b-08-live-f0806",
+    "b-08-live-f0807",
+    "b-08-live-f0817",
+    "b-08-live-f0822"
+   ],
+   "remaining": ""
+  },
+  "3.6-composition": {
+   "status": "open",
+   "reason": "Composition conditions consumed by other modules: (1) strict mode refuses Cypher writes (F-0801, live: a Cypher write 0.28 s after another process set strict mode was accepted and unrecorded) - modules 12-14 rely on it; (2) a Cypher write's rollback restores derived stores (F-C0801: ^NKG counters do not roll back); (3) graph isolation of reads (failed, see 3.4-declared-reads).",
+   "evidence": [
+    "findings/audit/08.json",
+    "b-08-live-f0801"
+   ],
+   "remaining": "Orchestrator composition list."
+  },
+  "3.6-frame": {
+   "status": "open",
+   "reason": "Frame per statement shape not stated: a Cypher write may touch nodes/rdf_labels/rdf_props/rdf_edges, ^KG and ^NKG (journal: no undeclared store), but no per-shape frame obligation is discharged.",
+   "evidence": [
+    "b-08-live-footprints",
+    "b-08-live-footprints-rerun"
+   ],
+   "remaining": "Frame lemma per translator statement class."
+  },
+  "3.6-row-permutation": {
+   "status": "failed",
+   "reason": "Answers that change under row permutation: F-C0802 (schema procedures sample one row), F-C0803 (SET r = a takes the first row's node); unordered LIMIT/ORDER BY ties are permitted by openCypher.",
+   "evidence": [
+    "b-08-live-storage-order"
+   ],
+   "remaining": "Fix F-C0802, F-C0803."
+  },
+  "3.6-keys": {
+   "status": "open",
+   "reason": "Unique keys relied on: rdf_edges u_spo_graph_ekey (-119 observed live, F-0805), nodes pk (graph_id,node_id); guarded INSERT ... WHERE NOT EXISTS has no lock, so concurrent CREATEs fall back to the unique key (not exercised).",
+   "evidence": [
+    "b-08-live-f0805",
+    "iris_vector_graph/cypher/translator.py:10306-10365"
+   ],
+   "remaining": "Concurrent CREATE/MERGE interleavings against the unique keys."
+  },
+  "3.6-fk": {
+   "status": "not-applicable",
+   "reason": "The graph tables Cypher writes declare no foreign keys (rdf_props has none to nodes: iris_vector_graph/schema.py:411-417); endpoint existence is the translator's own NOT EXISTS / MATCH logic.",
+   "evidence": [
+    "iris_vector_graph/schema.py:396-440"
+   ],
+   "remaining": ""
+  },
+  "3.6-capacity": {
+   "status": "open",
+   "reason": "Capacity bounds stated: count-only CREATE refused over 100,000 rows (query.py:1980-1985, live), walks refused over 20,000 paths (CYP-X4.11), node_id VARCHAR(256) (live -104 on a 404-char id), silent 1000-key cap in db.propertyKeys (engine.py:1491) and 20-key caps in schema procedures; no capacity test of string/subscript limits for qualifiers JSON (VARCHAR(32000) functions).",
+   "evidence": [
+    "b-08-live-f0807",
+    "b-08-live-f0806"
+   ],
+   "remaining": "Capacity tests for qualifiers / property values near IRIS string limits."
+  },
+  "3.7-explorers": {
+   "status": "closed",
+   "reason": "24 m08 checks (as-built x9, reviewed x3, control x5 incl. progress, positive x4 plus safety of the progress mutant) met their expectation, exhaustive within bounds.",
+   "evidence": [
+    "models/breadth-b/RESULTS.json",
+    "$RUN_DIR/breadth-b/mc/08-dev.log"
+   ],
+   "remaining": ""
+  },
+  "3.7-integration-worlds": {
+   "status": "open",
+   "reason": "Caller transaction world exercised live (failure keeps caller level and row; caller ROLLBACK removes all). Crash, lost acknowledgement and disconnect worlds not exercised.",
+   "evidence": [
+    "b-08-live-footprints"
+   ],
+   "remaining": ""
+  },
+  "3.7-e2e": {
+   "status": "open",
+   "reason": "Upstream e2e/TCK not run (IRIS-backed fixture compiles classes); live reproductions on AUDITB stand in for the finding cases. Two-process (multi-process) check run: b-08-live-f0801 / -rerun.",
+   "evidence": [
+    "b-08-live-f0802",
+    "b-08-live-f0801-rerun"
+   ],
+   "remaining": "Run upstream e2e in a lane whose namespace may be deployed by the fixture."
+  },
+  "3.7-trace-replay": {
+   "status": "open",
+   "reason": "Journal traces captured (08-footprints.json) and checked against declared footprints and transaction structure; not replayed through a machine.",
+   "evidence": [
+    "b-08-live-footprints",
+    "b-08-live-footprints-rerun"
+   ],
+   "remaining": "Replay journal traces through m08-txn."
+  },
+  "3.7-lock-log": {
+   "status": "open",
+   "reason": "Journal statement log shows transaction boundaries match the plan (one level per query); lock acquisition is not in the journal.",
+   "evidence": [
+    "b-08-live-footprints",
+    "b-08-live-footprints-rerun"
+   ],
+   "remaining": "Lock acquisition log (e.g. ^$LOCK sampling) against the lock plan."
+  },
+  "3.7-mutation": {
+   "status": "open",
+   "reason": "Model mutants only (controls); no mutation testing of translator code.",
+   "evidence": [
+    "m08-txn-control-rollback-all",
+    "m08-scope-control-vlp-unscoped",
+    "m08-readonly-control-no-text-check"
+   ],
+   "remaining": "Mutation testing of translator/query code."
+  },
+  "3.7-suites": {
+   "status": "open",
+   "reason": "699 IRIS-free module-08 unit tests passed (14 files) with IRIS unreachable in the rerun; IRIS-backed upstream suites (e2e, TCK) not run by this lane (their fixture compiles classes).",
+   "evidence": [
+    "b-08-run-unit",
+    "b-08-run-unit-rerun"
+   ],
+   "remaining": "IRIS-backed suites in the validation lane."
+  },
+  "3.7-failure-controls": {
+   "status": "closed",
+   "reason": "Failure scenarios each with a check: duplicate-key failure (live + model), failing read step after a write (live + model), caller transaction failure (live + model), progress mutant (model).",
+   "evidence": [
+    "b-08-live-f0805",
+    "b-08-live-f0806",
+    "b-08-live-footprints",
+    "m08-txn-control-leak-level"
+   ],
+   "remaining": ""
+  },
+  "3.8-findings-disposed": {
+   "status": "closed",
+   "reason": "Every original finding F-0801..F-0825 has an audit record with disposition and outcome (23 reproduced-live, 2 confirmed-source; all product-defect); 3 new (F-C0801..F-C0803); every live run rerun after the incident window, all matched.",
+   "evidence": [
+    "experiment/playbook-completion/findings/audit/08.json"
+   ],
+   "remaining": ""
+  },
+  "5c-refusals": {
+   "status": "failed",
+   "reason": "36 CYP X statements audited mechanically (refusals_audit): uplift evidence inspected+tested for 27, inspected only for 9; live here: 7 hold, 4 do not (CYP-X3.8, CYP-X7.2, CYP-X10.2, CYP-X12.1: findings F-0803, F-0801, F-0817, F-0804).",
+   "evidence": [
+    "modules/08.json refusals_audit",
+    "b-08-live-f0803",
+    "b-08-live-f0801",
+    "b-08-live-f0817",
+    "b-08-live-f0804",
+    "b-08-live-f0807"
+   ],
+   "remaining": "Fix the four failing refusals; re-check the 'inspected only' ones live."
+  },
+  "5b-client-entry": {
+   "status": "closed",
+   "reason": "All module-08 live claims measured through the product's own entry points (engine.execute_cypher / execute_aql / kg_GRAPH_PATH over the DB-API connection and its Native API handle).",
+   "evidence": [
+    "b-08-live-f0802-rerun",
+    "b-08-live-footprints-rerun"
+   ],
+   "remaining": ""
+  }
+ },
+ "reruns": {
+  "window": "2026-11-13 23:02:53-23:03:40 UTC",
+  "rule": "every IRIS command under locks.sh iris, <= 6 connections",
+  "ids": [
+   "b-08-live-f0801..f0824-rerun (22)",
+   "b-08-live-fc0801-rollback-nkg-rerun",
+   "b-08-live-footprints-rerun",
+   "b-08-run-unit-rerun",
+   "b-08-probe-tck-provenance-rerun"
+  ],
+  "all_matched": true
+ }
+}

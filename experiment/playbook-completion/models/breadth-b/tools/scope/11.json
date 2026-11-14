@@ -1,0 +1,274 @@
+{
+ "_doc": "Module 11 (ledger core) scope, from the Scope line of experiment/playbook-uplift/ontology/11-ledger.md. Ledger.cls minus the record readers (CanonicalRecord, Records*) and the spec 256 redaction checks owned by modules 12-14; client.py minus redact, the record readers and verify.",
+ "cls": {
+  "Graph.KG.Ledger": "^(?!CanonicalRecord$|Records(Execute|Fetch|Close)$)",
+  "Graph.KG.LedgerApply": ".",
+  "Graph.KG.LedgerGenesis": ".",
+  "Graph.KG.LedgerStats": ".",
+  "Graph.KG.LedgerRevision": ".",
+  "Graph.KG.SqlProcs": "^rebuildedgeindices$"
+ },
+ "py": {
+  "iris_vector_graph/ledger/client.py": "^(GraphLedger\\.(__init__|enable|disable|set_strict|meta|head|commit|history|stats|register_metrics_hook|get_revision)|RevisionInfo\\.|CommitResult\\.|LedgerCounters\\.|HistoryPage\\.)",
+  "iris_vector_graph/ledger/changeset.py": ".",
+  "iris_vector_graph/ledger/guard.py": ".",
+  "iris_vector_graph/ledger/errors.py": ".",
+  "iris_vector_graph/ledger/__init__.py": ".",
+  "iris_vector_graph/_engine/ledger.py": "^ledger_"
+ },
+ "engine": {
+  "iris_vector_graph/_engine/ledger.py": "^ledger$"
+ },
+ "extra": [
+  {
+   "id": "sql:UPDATE Graph_KG.ledger_revisions",
+   "kind": "sql-dml",
+   "path": "iris_src/src/Graph/KG/LedgerRevision.cls",
+   "start": 87,
+   "end": 102,
+   "names": [
+    "RejectUpdate",
+    "ledger_revisions"
+   ],
+   "via": "row trigger RejectUpdate"
+  },
+  {
+   "id": "sql:DELETE Graph_KG.ledger_revisions",
+   "kind": "sql-dml",
+   "path": "iris_src/src/Graph/KG/LedgerRevision.cls",
+   "start": 104,
+   "end": 108,
+   "names": [
+    "RejectDelete",
+    "ledger_revisions"
+   ],
+   "via": "row trigger RejectDelete"
+  },
+  {
+   "id": "obj:Graph.KG.LedgerRevision.%Save(existing)",
+   "kind": "object",
+   "path": "iris_src/src/Graph/KG/LedgerRevision.cls",
+   "start": 111,
+   "end": 117,
+   "names": [
+    "%OnBeforeSave"
+   ],
+   "via": "object save of a stored revision"
+  },
+  {
+   "id": "obj:Graph.KG.LedgerRevision.%DeleteId",
+   "kind": "object",
+   "path": "iris_src/src/Graph/KG/LedgerRevision.cls",
+   "start": 120,
+   "end": 123,
+   "names": [
+    "%OnDelete"
+   ],
+   "via": "object delete"
+  },
+  {
+   "id": "sql:SELECT Graph_KG.ledger_stats",
+   "kind": "sql-read",
+   "path": "iris_src/src/Graph/KG/LedgerStats.cls",
+   "start": 4,
+   "end": 48,
+   "names": [
+    "ledger_stats"
+   ],
+   "via": "public table (FR-051)"
+  },
+  {
+   "id": "sql:SELECT Graph_KG.ledger_revisions",
+   "kind": "sql-read",
+   "path": "iris_src/src/Graph/KG/LedgerRevision.cls",
+   "start": 1,
+   "end": 60,
+   "names": [
+    "ledger_revisions",
+    "revision table"
+   ],
+   "via": "public table"
+  },
+  {
+   "id": "py:iris_vector_graph/ledger/replay.py:fetch_history",
+   "kind": "py",
+   "path": "iris_vector_graph/ledger/replay.py",
+   "start": 299,
+   "end": 352,
+   "names": [
+    "fetch_history",
+    "history"
+   ],
+   "via": "GraphLedger.history (client.py:585-631)"
+  },
+  {
+   "id": "eng:IRISGraphEngine.status[ledger]",
+   "kind": "engine",
+   "path": "iris_vector_graph/_engine/ledger.py",
+   "start": 40,
+   "end": 69,
+   "names": [
+    "_ledger_status",
+    "LedgerStatus"
+   ],
+   "via": "engine.status() (FR-050)"
+  },
+  {
+   "id": "py:iris_vector_graph/schema.py:GraphSchema.ensure_ledger_index",
+   "kind": "py",
+   "path": "iris_vector_graph/schema.py",
+   "start": 737,
+   "end": 770,
+   "names": [
+    "ensure_ledger_index",
+    "idx_ledger_correlation"
+   ],
+   "via": "initialize_schema"
+  },
+  {
+   "id": "guard:engine writers (_ledger_check call sites)",
+   "kind": "guard-sites",
+   "path": "iris_vector_graph/ledger/guard.py",
+   "start": 75,
+   "end": 80,
+   "names": [
+    "_ledger_check",
+    "check_structural_write"
+   ],
+   "via": "every guarded engine writer of modules 02/03/05 calls ledger_check; F-1108 lists two paths that do not"
+  }
+ ],
+ "cell_map": {
+  "ledger|enable": [
+   "py:iris_vector_graph/ledger/client.py:GraphLedger.enable",
+   "cls:Graph.KG.Ledger.Enable",
+   "cls:Graph.KG.LedgerGenesis.Capture"
+  ],
+  "ledger|disable": [
+   "py:iris_vector_graph/ledger/client.py:GraphLedger.disable",
+   "cls:Graph.KG.Ledger.Disable"
+  ],
+  "ledger|set-strict": [
+   "py:iris_vector_graph/ledger/client.py:GraphLedger.set_strict",
+   "cls:Graph.KG.Ledger.SetStrict"
+  ],
+  "ledger|commit": [
+   "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+   "cls:Graph.KG.Ledger.Commit",
+   "cls:Graph.KG.Ledger.CommitInTxn"
+  ],
+  "ledger|head": [
+   "py:iris_vector_graph/ledger/client.py:GraphLedger.head",
+   "cls:Graph.KG.Ledger.Head"
+  ],
+  "retry key|commit-same": [
+   "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+   "cls:Graph.KG.Ledger.Commit",
+   "cls:Graph.KG.Ledger.CommitInTxn"
+  ],
+  "retry key|commit-other": [
+   "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+   "cls:Graph.KG.Ledger.Commit",
+   "cls:Graph.KG.Ledger.CommitInTxn"
+  ],
+  "retry key|commit-stale-head": [
+   "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+   "cls:Graph.KG.Ledger.Commit",
+   "cls:Graph.KG.Ledger.CommitInTxn"
+  ],
+  "edge statement|create-edge": [
+   "py:iris_vector_graph/ledger/changeset.py:Changeset.create_relationship",
+   "cls:Graph.KG.LedgerApply.OpCreateRel",
+   "cls:Graph.KG.LedgerApply.AllocStmt",
+   "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+   "cls:Graph.KG.Ledger.Commit",
+   "cls:Graph.KG.Ledger.CommitInTxn"
+  ],
+  "edge statement|upsert-edge": [
+   "py:iris_vector_graph/ledger/changeset.py:Changeset.upsert_relationship",
+   "cls:Graph.KG.LedgerApply.OpCreateRel",
+   "cls:Graph.KG.LedgerApply.MergeQuals",
+   "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+   "cls:Graph.KG.Ledger.Commit",
+   "cls:Graph.KG.Ledger.CommitInTxn"
+  ],
+  "edge statement|set-qualifier": [
+   "py:iris_vector_graph/ledger/changeset.py:Changeset.set_qualifier",
+   "py:iris_vector_graph/ledger/changeset.py:Changeset.replace_qualifiers",
+   "py:iris_vector_graph/ledger/changeset.py:Changeset.remove_qualifier",
+   "cls:Graph.KG.LedgerApply.OpQual",
+   "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+   "cls:Graph.KG.Ledger.Commit",
+   "cls:Graph.KG.Ledger.CommitInTxn"
+  ],
+  "edge statement|delete-edge": [
+   "py:iris_vector_graph/ledger/changeset.py:Changeset.delete_relationship",
+   "cls:Graph.KG.LedgerApply.OpDeleteRel",
+   "cls:Graph.KG.LedgerApply.DeleteRelInternal",
+   "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+   "cls:Graph.KG.Ledger.Commit",
+   "cls:Graph.KG.Ledger.CommitInTxn"
+  ],
+  "node id|create-node": [
+   "py:iris_vector_graph/ledger/changeset.py:Changeset.create_node",
+   "cls:Graph.KG.LedgerApply.OpCreateNode",
+   "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+   "cls:Graph.KG.Ledger.Commit",
+   "cls:Graph.KG.Ledger.CommitInTxn"
+  ],
+  "node id|upsert-node": [
+   "py:iris_vector_graph/ledger/changeset.py:Changeset.upsert_node",
+   "cls:Graph.KG.LedgerApply.OpCreateNode",
+   "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+   "cls:Graph.KG.Ledger.Commit",
+   "cls:Graph.KG.Ledger.CommitInTxn"
+  ],
+  "node id|set-property": [
+   "py:iris_vector_graph/ledger/changeset.py:Changeset.set_property",
+   "cls:Graph.KG.LedgerApply.OpSetProp",
+   "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+   "cls:Graph.KG.Ledger.Commit",
+   "cls:Graph.KG.Ledger.CommitInTxn"
+  ],
+  "node id|add-label": [
+   "py:iris_vector_graph/ledger/changeset.py:Changeset.add_label",
+   "cls:Graph.KG.LedgerApply.OpAddLabel",
+   "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+   "cls:Graph.KG.Ledger.Commit",
+   "cls:Graph.KG.Ledger.CommitInTxn"
+  ],
+  "node id|delete-plain": [
+   "py:iris_vector_graph/ledger/changeset.py:Changeset.delete_node",
+   "cls:Graph.KG.LedgerApply.OpDeleteNode",
+   "cls:Graph.KG.LedgerApply.DeleteNodeRows",
+   "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+   "cls:Graph.KG.Ledger.Commit",
+   "cls:Graph.KG.Ledger.CommitInTxn"
+  ],
+  "node id|delete-detach": [
+   "py:iris_vector_graph/ledger/changeset.py:Changeset.delete_node",
+   "cls:Graph.KG.LedgerApply.OpDeleteNode",
+   "cls:Graph.KG.LedgerApply.DeleteNodeRows",
+   "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+   "cls:Graph.KG.Ledger.Commit",
+   "cls:Graph.KG.Ledger.CommitInTxn"
+  ],
+  "caller transaction|commit": [
+   "py:iris_vector_graph/ledger/client.py:GraphLedger.commit",
+   "cls:Graph.KG.Ledger.Commit",
+   "cls:Graph.KG.Ledger.CommitInTxn"
+  ],
+  "caller transaction|enable": [
+   "py:iris_vector_graph/ledger/client.py:GraphLedger.enable",
+   "cls:Graph.KG.Ledger.Enable"
+  ],
+  "caller transaction|disable": [
+   "py:iris_vector_graph/ledger/client.py:GraphLedger.disable",
+   "cls:Graph.KG.Ledger.Disable"
+  ],
+  "caller transaction|set-strict": [
+   "py:iris_vector_graph/ledger/client.py:GraphLedger.set_strict",
+   "cls:Graph.KG.Ledger.SetStrict"
+  ]
+ }
+}

@@ -1,0 +1,23 @@
+{
+  "check": "m10-routes-control-owner-cap",
+  "command": "CARGO_TARGET_DIR=$RUN_DIR/target/breadth-b cargo build --release && bash experiment/playbook-completion/tools/locks.sh heavy timeout 1800 $RUN_DIR/target/breadth-b/release/breadth-b",
+  "design": "control",
+  "experiment_head": "f3fe3917466f7bae3e46f32f5b0644cfeaff87c8",
+  "full_log": "$RUN_DIR/breadth-b/mc/full-decisive-20261114T012246Z.log",
+  "full_log_sha256": "227f6720d9d86ed75cc8fa7fd71e2d9d31fd6f5ccd627843af4d51997edf4615",
+  "id": "b-mc-m10-routes-control-owner-cap",
+  "kind": "control",
+  "lane": "breadth-b",
+  "log": "$RUN_DIR/breadth-b/mc/checks/m10-routes-control-owner-cap.log",
+  "log_bytes": 855,
+  "log_sha256": "1d967eabe5947407d0a55787d92f3165830a33c1b048c7c6333ee8df18aa063c",
+  "module": "10",
+  "observes": "module 10 machine routes design control: expectation violation of 'every route answers the default graph's reference result (ALG-I1, ALG-I3, HD-1004)'; result met (found \"every route answers the default graph's reference result (ALG-I1, ALG-I3, HD-1004)\"); 46 states, 90 transitions, depth 2, exhaustive within the model's bounds; covers: control: reviewed routing with the owner's 10,000-row cap kept",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T01:23:54+00:00",
+  "result": "expected-violation",
+  "results": "experiment/playbook-completion/models/breadth-b/RESULTS.json",
+  "search": "exhaustive",
+  "states": "46"
+}

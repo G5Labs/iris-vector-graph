@@ -1,0 +1,23 @@
+{
+  "check": "m07-bm25-positive-insert-after-build",
+  "command": "CARGO_TARGET_DIR=$RUN_DIR/target/breadth-b cargo build --release && bash experiment/playbook-completion/tools/locks.sh heavy timeout 1800 $RUN_DIR/target/breadth-b/release/breadth-b",
+  "design": "positive",
+  "experiment_head": "f3fe3917466f7bae3e46f32f5b0644cfeaff87c8",
+  "full_log": "$RUN_DIR/breadth-b/mc/full-decisive-20261114T012246Z.log",
+  "full_log_sha256": "227f6720d9d86ed75cc8fa7fd71e2d9d31fd6f5ccd627843af4d51997edf4615",
+  "id": "b-mc-m07-bm25-positive-insert-after-build",
+  "kind": "mc",
+  "lane": "breadth-b",
+  "log": "$RUN_DIR/breadth-b/mc/checks/m07-bm25-positive-insert-after-build.log",
+  "log_bytes": 1991,
+  "log_sha256": "e39cf81b3bf60711e50b9a0fca40ac7730e1b6d4e9d066aee84d8722203bf465",
+  "module": "07",
+  "observes": "module 07 machine bm25 design positive: expectation violation of 'witness: never an insert that waited for a build and landed in its generation'; result met (found 'witness: never an insert that waited for a build and landed in its generation'); 395 states, 943 transitions, depth 5, exhaustive within the model's bounds; covers: sharpness: an insert serialized after a build lands",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T01:23:49+00:00",
+  "result": "expected-violation",
+  "results": "experiment/playbook-completion/models/breadth-b/RESULTS.json",
+  "search": "exhaustive",
+  "states": "395"
+}

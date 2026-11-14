@@ -1,0 +1,23 @@
+{
+  "check": "m09-planc-control-drop-nolock",
+  "command": "CARGO_TARGET_DIR=$RUN_DIR/target/breadth-b cargo build --release && bash experiment/playbook-completion/tools/locks.sh heavy timeout 1800 $RUN_DIR/target/breadth-b/release/breadth-b",
+  "design": "control",
+  "experiment_head": "f3fe3917466f7bae3e46f32f5b0644cfeaff87c8",
+  "full_log": "$RUN_DIR/breadth-b/mc/full-decisive-20261114T012246Z.log",
+  "full_log_sha256": "227f6720d9d86ed75cc8fa7fd71e2d9d31fd6f5ccd627843af4d51997edf4615",
+  "id": "b-mc-m09-planc-control-drop-nolock",
+  "kind": "control",
+  "lane": "breadth-b",
+  "log": "$RUN_DIR/breadth-b/mc/checks/m09-planc-control-drop-nolock.log",
+  "log_bytes": 2039,
+  "log_sha256": "fa9ec6dc4100a52d449270e47d77d3d4c798fac24773bc0c9cc5e43d0af367ad",
+  "module": "09",
+  "observes": "module 09 machine planc design control: expectation violation of 'NAT-I5: after a DropAll no plan written before it is left'; result met (found 'NAT-I5: after a DropAll no plan written before it is left'); 145 states, 256 transitions, depth 4, exhaustive within the model's bounds; covers: mutant: reviewed with an unlocked DropAll",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T01:23:52+00:00",
+  "result": "expected-violation",
+  "results": "experiment/playbook-completion/models/breadth-b/RESULTS.json",
+  "search": "exhaustive",
+  "states": "145"
+}

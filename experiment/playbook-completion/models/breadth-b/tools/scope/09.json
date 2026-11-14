@@ -1,0 +1,38 @@
+{
+ "_doc": "Module 09 (native Cypher executor) scope, from experiment/playbook-uplift/ontology/09-native-executor.md Scope line. Owned: Graph.KG.Cypher.Exec/Gen/Props/SortKey, IVG.CypherEngine; cypher/native_plan.py, native_route.py, native_shadow.py; the native routing methods of _engine/query.py (extra entries with spans). Engine gate facts (engine.py) are cited by the gate entries, not owned. cell_map keys 'Entity|command'.",
+ "cls": {"Graph.KG.Cypher.Exec": ".", "Graph.KG.Cypher.Gen": ".", "Graph.KG.Cypher.Props": ".", "Graph.KG.Cypher.SortKey": ".", "IVG.CypherEngine": "."},
+ "py": {"iris_vector_graph/cypher/native_plan.py": ".", "iris_vector_graph/cypher/native_route.py": ".", "iris_vector_graph/cypher/native_shadow.py": "."},
+ "extra": [
+  {"id": "eng:IRISGraphEngine.execute_cypher[native]", "kind": "engine", "path": "iris_vector_graph/_engine/query.py", "start": 2032, "end": 2082, "names": ["_execute_parsed", "execute_cypher"], "via": "execute_cypher (query.py:1746) -> _execute_parsed: route lookup, _try_native, shadow compare, route record"},
+  {"id": "eng:IRISGraphEngine._routed_sql", "kind": "engine-internal", "path": "iris_vector_graph/_engine/query.py", "start": 2084, "end": 2110, "names": ["_routed_sql"]},
+  {"id": "eng:IRISGraphEngine._try_native", "kind": "engine-internal", "path": "iris_vector_graph/_engine/query.py", "start": 2118, "end": 2160, "names": ["_try_native"]},
+  {"id": "eng:IRISGraphEngine._run_native_plan", "kind": "engine-internal", "path": "iris_vector_graph/_engine/query.py", "start": 2202, "end": 2224, "names": ["_run_native_plan"]},
+  {"id": "eng:IRISGraphEngine._shadow_compare", "kind": "engine-internal", "path": "iris_vector_graph/_engine/query.py", "start": 2226, "end": 2249, "names": ["_shadow_compare"]},
+  {"id": "eng:IRISGraphEngine._names_mapped_label", "kind": "engine-internal", "path": "iris_vector_graph/_engine/query.py", "start": 2162, "end": 2184, "names": ["_names_mapped_label"]},
+  {"id": "env:IVG_NATIVE_CYPHER", "kind": "lifecycle", "path": "iris_vector_graph/engine.py", "start": 302, "end": 306, "names": ["IVG_NATIVE_CYPHER", "native_cypher"], "via": "engine constructor switch (native path on/off per engine or environment)"},
+  {"id": "env:IVG_CYPHER_SHADOW", "kind": "lifecycle", "path": "iris_vector_graph/_engine/query.py", "start": 2112, "end": 2116, "names": ["IVG_CYPHER_SHADOW", "cypher_shadow"], "via": "shadow mode per engine (cypher_shadow) or environment"},
+  {"id": "global:^IVG.CypherGen(\"mode\")", "kind": "lifecycle", "path": "iris_src/src/Graph/KG/Cypher/Gen.cls", "start": 41, "end": 44, "names": ["^IVG.CypherGen", "CypherGen(\"mode\")"], "via": "namespace compile mode set by a plain global Set (docs/ADMIN_GUIDE.md:774-779), read by Gen.Effective"},
+  {"id": "lifecycle:deploy-DropAll", "kind": "lifecycle", "path": "iris_vector_graph/schema.py", "start": 2934, "end": 2941, "names": ["DropAll"], "via": "class deploy (deploy_objectscript_classes) calls Graph.KG.Cypher.Gen.DropAll when it installed classes"},
+  {"id": "job:Graph.KG.Cypher.Gen.Build[job]", "kind": "background-job", "path": "iris_src/src/Graph/KG/Cypher/Gen.cls", "start": 92, "end": 99, "names": ["Job ##class(Graph.KG.Cypher.Gen).Build"], "via": "Gen.For in job mode starts a background JOB per new shape"},
+  {"id": "job:Graph.KG.Cypher.Exec.Part[worker]", "kind": "background-job", "path": "iris_src/src/Graph/KG/Cypher/Exec.cls", "start": 447, "end": 511, "names": ["Parallel", "WorkMgr"], "via": "Exec.Parallel queues Part in %SYSTEM.WorkMgr worker processes"},
+  {"id": "gate:engine._native_privileges", "kind": "gate-fact-cited", "path": "iris_vector_graph/engine.py", "start": 559, "end": 586, "names": ["_native_privileges"]},
+  {"id": "gate:engine._native_executor_current", "kind": "gate-fact-cited", "path": "iris_vector_graph/engine.py", "start": 588, "end": 611, "names": ["_native_executor_current"]},
+  {"id": "gate:engine._adjacency_indexed", "kind": "gate-fact-cited", "path": "iris_vector_graph/engine.py", "start": 703, "end": 724, "names": ["_adjacency_indexed"]},
+  {"id": "gate:engine._iris_obj", "kind": "gate-fact-cited", "path": "iris_vector_graph/engine.py", "start": 1894, "end": 1942, "names": ["_iris_obj"]}
+ ],
+ "cell_map": {
+  "compiled shape|job read": ["cls:Graph.KG.Cypher.Exec.Run", "cls:Graph.KG.Cypher.Gen.For", "job:Graph.KG.Cypher.Gen.Build[job]", "eng:IRISGraphEngine.execute_cypher[native]"],
+  "compiled shape|sync read": ["cls:Graph.KG.Cypher.Exec.Run", "cls:Graph.KG.Cypher.Gen.For", "cls:Graph.KG.Cypher.Gen.Build", "eng:IRISGraphEngine.execute_cypher[native]"],
+  "compiled shape|off read": ["cls:Graph.KG.Cypher.Exec.Run", "cls:Graph.KG.Cypher.Gen.For", "eng:IRISGraphEngine.execute_cypher[native]"],
+  "compiled shape|drop all": ["cls:Graph.KG.Cypher.Gen.DropAll", "lifecycle:deploy-DropAll"],
+  "compiled shape|alter props table": ["cls:Graph.KG.Cypher.Props.Begin", "cls:Graph.KG.Cypher.Props.Layout"],
+  "process mode|set job": ["cls:Graph.KG.Cypher.Gen.Mode"],
+  "process mode|set sync": ["cls:Graph.KG.Cypher.Gen.Mode"],
+  "process mode|set off": ["cls:Graph.KG.Cypher.Gen.Mode"],
+  "process mode|clear": ["cls:Graph.KG.Cypher.Gen.Mode", "cls:Graph.KG.Cypher.Gen.Effective"],
+  "process mode|set other": ["cls:Graph.KG.Cypher.Gen.Mode"],
+  "engine native path|supported read": ["eng:IRISGraphEngine.execute_cypher[native]", "py:iris_vector_graph/cypher/native_plan.py:plan_query", "py:iris_vector_graph/cypher/native_plan.py:native_gate", "cls:Graph.KG.Cypher.Exec.Run", "cls:Graph.KG.Cypher.Exec.ReadPage", "cls:Graph.KG.Cypher.Exec.Drop"],
+  "engine native path|declined read": ["eng:IRISGraphEngine.execute_cypher[native]", "py:iris_vector_graph/cypher/native_plan.py:plan_query"],
+  "engine native path|write": ["eng:IRISGraphEngine.execute_cypher[native]", "py:iris_vector_graph/cypher/native_plan.py:plan_query"]
+ }
+}
