@@ -46,7 +46,7 @@ status, evidence level and product obligation per cell). Reconciled 2026-11-14 (
 | Q17l | reflection | 5c root causes, 3.8 test reflection | done (bad04b31): 33 root causes, 224 premises mapped |
 | Q18a | proofs-d9c | Review R4-01/03/04: guard G-BM, F-C1350 control, F-1306 as direct SQL | done (cd45f771): 158 verified, 14 controls |
 | Q18b | proofs-mech | D-14: mechanism laws proved once over a trait in Verus | doing |
-| Q18c | refusals | 5c-refusals for 01, 04, 06, 10, 11, 15-18; 3.5-decoders 07, 10, 18 (AUDITE) | doing |
+| Q18c | refusals | 5c-refusals for 01, 04, 06, 10, 11, 15-18; 3.5-decoders 07, 10, 18 (AUDITE) | done (1529a141); least-privilege follow-up doing |
 | Q18d | writesets | breadth-a module-invariant pairs for 01, 03-06; 08; 18 restore_merge | done (728e18a1): 561/566, 5 open |
 | Q18e | reflection | root causes and premise map for every new finding and crate; TEST-REFLECTION refresh | todo (after Q18b-d) |
 | Q18f | orchestrator | exclusive-container worlds: repeated crash trials, SynchCommit=1, product-level licence refusal (S6) | todo (when no lane uses IRIS) |

@@ -9,7 +9,7 @@ product scope check passes). Last checkpoint commit before the switch: `1564a673
 | Lane | Queue | State | Artifacts | Next |
 |---|---|---|---|---|
 | proofs-mech (D-14, mechanism laws over a trait in Verus) | Q18b | **interrupted** (quota) during fork integration | `proofs-mech/src` (m01/m02/m05/m11/m12/m13 traits, i*/ctl*/cx* instances and controls), forks in `$RUN_DIR/proofs-mech/fork-a..e`; no runner, no registered run | resume from the artifacts: assemble, add the gate runner, run baseline/controls/recheck |
-| refusals (5c-refusals, 3.5-decoders 07/10/18) | Q18c | **interrupted** (quota) mid live probes | `refusals/` extraction (`x-statements.json`), `rx_audit.py`, `live_*.py` per module, decoder checks; no registered run | resume: run the per-module probes under the IRIS lock (AUDITE), register, write REFUSALS.md |
+| refusals (5c-refusals, 3.5-decoders 07/10/18) | Q18c | **done** (1529a141); follow-up **running**: six privilege-dependent refusals live with the disposable least-privilege user (operator-authorized, not a blocker) | 244 X statements: 181 live, 33 run, 13 defects, 12 blocked; 8 new findings | integrate the privilege follow-up |
 | writesets breadth-a pairs | Q18d | **done** (728e18a1) | 561 of 566 pairs discharged, 5 open; F-C0350, F-C0351; ws-check-r3, selftest 45/45 | — |
 | structural frame2 / reads2 (DDL frame oracle; declared reads) | Q18c-d | **done** (a6892eb4) | 3.6-frame 13 more closed (07, 09, 15 open); 3.4-declared-reads 6 more closed (04, 10 open); no new findings | — |
 | reflection | Q18e | waiting for the lanes above | — | classify every new finding; premise map by glob; TEST-REFLECTION refresh |
@@ -21,6 +21,7 @@ product scope check passes). Last checkpoint commit before the switch: `1564a673
 
 ## Blockers
 
+- Not operator-dependent (recorded so the monitor does not count it): the least-privilege login; the disposable user `IVGAUDIT_RO` is authorized setup (versions/PRIVILEGE.md).
 - Operator-dependent: O-2 (product-code mutation testing, `3.7-mutation`; the binding rule says model mutations only).
   O-1 is resolved by the operator's clarification.
 - Genuinely unavailable (attempts in `versions/AVAILABILITY.md`): IRIS 2026.3, Enterprise / IRIS for Health and its
