@@ -1,97 +1,147 @@
 {
- "_doc": "Writesets lane proposals for the module-level 3.3a-writesets cells (keys as matrix/gates.json). The 185 per-obligation census cells are in writesets/DISCHARGES.json (to be applied by build_matrix.py). evidence_grade is the weakest grade among the cell's discharges (DISCHARGES.json grades each). Module 08 is unchanged (its open pairs are outside the census). Review R4 (fourth pass): RUN-PAIRS.json maps each cited run to the (invariant, writer) pairs it exercised; lemma/guard cells list the failed runs they cite in failed_runs_other_pairs (their failure is on another pair).",
+ "_doc": "Writesets lane proposals for the module-level 3.3a-writesets cells (keys as matrix/gates.json). The 185 per-obligation census cells are in writesets/DISCHARGES.json (to be applied by build_matrix.py). evidence_grade is the weakest grade among the cell's discharges (DISCHARGES.json grades each). Module 08 is unchanged (its open pairs are outside the census). Review R4 (fourth pass): RUN-PAIRS.json maps each cited run to the (invariant, writer) pairs it exercised; lemma/guard cells list the failed runs they cite in failed_runs_other_pairs (their failure is on another pair). Breadth-a follow-up: BREADTH-A-DISCHARGES.json discharges the 553 open breadth-a module-invariant pairs (modules 01, 03-06), module 08's open plan item and snapshot.restore_merge (module 18).",
  "cells": [
   {
    "gate": "3.3a-writesets",
    "module": "01",
-   "status": "open",
+   "status": "closed",
    "evidence": [
+    "experiment/playbook-completion/writesets/BREADTH-A-DISCHARGES.json",
     "experiment/playbook-completion/writesets/DISCHARGES.json",
-    "run:followup-writer-census"
+    "run:ws-check-r3"
    ],
    "evidence_grade": "inspected",
    "level": "product",
    "product_obligation": "fails",
-   "product_basis": "census cells of module 01 discharged by findings where the as-built writer breaks the invariant (F-C0150, F-C0151, F-C1306) (grade is the weakest of the cell's discharges; DISCHARGES.json grades each, many live)",
+   "product_basis": "breadth-a pairs of module 01: finding 9, guard 2, lemma 101; census cells of module 01 all discharged; findings that discharge pairs: F-0401, F-0402, F-C0401 (grade is the weakest of the cell's discharges; mc and live where BREADTH-A-DISCHARGES.json says so)",
    "as_built_findings": [
-    "F-C0150",
-    "F-C0151",
-    "F-C1306"
+    "F-0401",
+    "F-0402",
+    "F-C0401"
    ],
-   "remaining": "census part done (29 cells, 0 open); still open: 112 (module invariant, writer) pairs with status open in experiment/playbook-completion/models/breadth-a/writesets.json (module invariants, not the 8 manifest invariants), not addressed by the writesets lane"
+   "remaining": ""
   },
   {
    "gate": "3.3a-writesets",
    "module": "03",
    "status": "open",
    "evidence": [
+    "experiment/playbook-completion/writesets/BREADTH-A-DISCHARGES.json",
     "experiment/playbook-completion/writesets/DISCHARGES.json",
-    "run:followup-writer-census"
+    "run:ws-check-r3",
+    "run:ws-live-ba-noindex-parallel",
+    "run:ws-live-ba-explicit-survives",
+    "run:ws-live-ba-marker-qualifier",
+    "run:ws-live-ba-vec-node-delete"
    ],
    "evidence_grade": "inspected",
    "level": "product",
    "product_obligation": "fails",
-   "product_basis": "census cells of module 03 discharged by findings where the as-built writer breaks the invariant (F-C1307, F-C1350, F-C1301) (grade is the weakest of the cell's discharges; DISCHARGES.json grades each, many live)",
+   "product_basis": "breadth-a pairs of module 03: finding 32, guard 1, lemma 63, open 1; census cells of module 03 all discharged; findings that discharge pairs: F-0304, F-0401, F-0402, F-0606, F-1201, F-C0350, F-C0351, F-C0401 (grade is the weakest of the cell's discharges; mc and live where BREADTH-A-DISCHARGES.json says so)",
    "as_built_findings": [
-    "F-C1307",
-    "F-C1350",
-    "F-C1301"
+    "F-0304",
+    "F-0401",
+    "F-0402",
+    "F-0606",
+    "F-1201",
+    "F-C0350",
+    "F-C0351",
+    "F-C0401"
    ],
-   "remaining": "census part done (28 cells, 0 open); still open: 97 (module invariant, writer) pairs with status open in experiment/playbook-completion/models/breadth-a/writesets.json (module invariants, not the 8 manifest invariants), not addressed by the writesets lane"
+   "remaining": "open breadth-a pairs: 03|GID-I4.10|py:IRISGraphEngine.bulk_load_session (bulk_load_session disables index maintenance; not probed)"
   },
   {
    "gate": "3.3a-writesets",
    "module": "04",
-   "status": "open",
+   "status": "closed",
    "evidence": [
+    "experiment/playbook-completion/writesets/BREADTH-A-DISCHARGES.json",
     "experiment/playbook-completion/writesets/DISCHARGES.json",
-    "run:followup-writer-census"
+    "run:ws-check-r3",
+    "run:ws-live-ba-noindex-parallel",
+    "run:ws-live-ba-explicit-survives",
+    "run:ws-live-ba-marker-qualifier",
+    "run:ws-live-ba-vec-node-delete"
    ],
    "evidence_grade": "inspected",
    "level": "product",
    "product_obligation": "fails",
-   "product_basis": "census cells of module 04 discharged by findings where the as-built writer breaks the invariant (F-C0450, F-C1307, F-C1350) (grade is the weakest of the cell's discharges; DISCHARGES.json grades each, many live)",
+   "product_basis": "breadth-a pairs of module 04: finding 77, guard 3, lemma 45; census cells of module 04 all discharged; findings that discharge pairs: F-0304, F-0401, F-0402, F-C0401, F-C0450 (grade is the weakest of the cell's discharges; mc and live where BREADTH-A-DISCHARGES.json says so)",
    "as_built_findings": [
-    "F-C0450",
-    "F-C1307",
-    "F-C1350"
+    "F-0304",
+    "F-0401",
+    "F-0402",
+    "F-C0401",
+    "F-C0450"
    ],
-   "remaining": "census part done (20 cells, 0 open); still open: 125 (module invariant, writer) pairs with status open in experiment/playbook-completion/models/breadth-a/writesets.json (module invariants, not the 8 manifest invariants), not addressed by the writesets lane"
+   "remaining": ""
   },
   {
    "gate": "3.3a-writesets",
    "module": "05",
    "status": "open",
    "evidence": [
+    "experiment/playbook-completion/writesets/BREADTH-A-DISCHARGES.json",
     "experiment/playbook-completion/writesets/DISCHARGES.json",
-    "run:followup-writer-census"
+    "run:ws-check-r3"
    ],
    "evidence_grade": "inspected",
    "level": "product",
    "product_obligation": "fails",
-   "product_basis": "census cells of module 05 discharged by findings where the as-built writer breaks the invariant (F-C0450, F-C1307, F-C1350, F-C1301) (grade is the weakest of the cell's discharges; DISCHARGES.json grades each, many live)",
+   "product_basis": "breadth-a pairs of module 05: finding 58, guard 11, lemma 98, open 4; census cells of module 05 all discharged; findings that discharge pairs: F-0201, F-0401, F-0402, F-0501, F-0505, F-C0401, F-C0450 (grade is the weakest of the cell's discharges; mc and live where BREADTH-A-DISCHARGES.json says so)",
    "as_built_findings": [
-    "F-C0450",
-    "F-C1307",
-    "F-C1350",
-    "F-C1301"
+    "F-0201",
+    "F-0401",
+    "F-0402",
+    "F-0501",
+    "F-0505",
+    "F-C0401",
+    "F-C0450"
    ],
-   "remaining": "census part done (16 cells, 0 open); still open: 171 (module invariant, writer) pairs with status open in experiment/playbook-completion/models/breadth-a/writesets.json (module invariants, not the 8 manifest invariants), not addressed by the writesets lane"
+   "remaining": "open breadth-a pairs: 05|TMP-B1.7|cls:Graph.KG.TemporalIndex.PurgeBefore; 05|TMP-B1.7|cls:Graph.KG.TemporalIndex.PurgeBucketRange; 05|TMP-B1.7|cls:Graph.KG.TemporalIndex.PurgeRawBefore; 05|TMP-B1.7|py:IRISGraphEngine.purge_before (TMP-B1.7 against purges: documented exception, intent-undecided)"
   },
   {
    "gate": "3.3a-writesets",
    "module": "06",
-   "status": "open",
+   "status": "closed",
    "evidence": [
+    "experiment/playbook-completion/writesets/BREADTH-A-DISCHARGES.json",
     "experiment/playbook-completion/writesets/DISCHARGES.json",
-    "run:followup-writer-census"
+    "run:ws-check-r3"
    ],
    "evidence_grade": "inspected",
    "level": "product",
    "product_obligation": "fails",
-   "product_basis": "lane status failed (modules/06.json); the module's 15 census cells (graph_scoped_embeddings conditional writers) are lemmas (resolved run-time names)",
-   "as_built_findings": [],
-   "remaining": "census part done (15 cells, 0 open); still open: 48 (module invariant, writer) pairs with status open in experiment/playbook-completion/models/breadth-a/writesets.json (module invariants, not the 8 manifest invariants), not addressed by the writesets lane"
+   "product_basis": "breadth-a pairs of module 06: finding 5, lemma 43; census cells of module 06 all discharged; findings that discharge pairs: F-0401, F-0402, F-0604, F-0608 (grade is the weakest of the cell's discharges; mc and live where BREADTH-A-DISCHARGES.json says so)",
+   "as_built_findings": [
+    "F-0401",
+    "F-0402",
+    "F-0604",
+    "F-0608"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.3a-writesets",
+   "module": "08",
+   "status": "closed",
+   "evidence": [
+    "experiment/playbook-completion/writesets/BREADTH-A-DISCHARGES.json",
+    "experiment/playbook-completion/modules/08.json",
+    "run:ws-live-fk-guard",
+    "run:ws-check-r3"
+   ],
+   "evidence_grade": "inspected",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "the open plan item (CYP-I5.5/CYP-I5.6/SYS-I2 against engine.direct_write, bulk_loader, fhir sync, raw SQL) has 4 discharges (guard 3: composite foreign keys, live for raw SQL; lemma 1: the bulk loader registers endpoints in its own graph); module 08's other pairs were dispositioned in modules/08.json, where F-C0801, F-0814, F-0815, F-0819 remain",
+   "as_built_findings": [
+    "F-C0801",
+    "F-0814",
+    "F-0815",
+    "F-0819"
+   ],
+   "remaining": ""
   },
   {
    "gate": "3.3a-writesets",
@@ -237,22 +287,30 @@
   {
    "gate": "3.3a-writesets",
    "module": "18",
-   "status": "open",
+   "status": "closed",
    "evidence": [
-    "experiment/playbook-completion/writesets/DISCHARGES.json"
+    "experiment/playbook-completion/writesets/DISCHARGES.json",
+    "experiment/playbook-completion/writesets/BREADTH-A-DISCHARGES.json",
+    "run:ws-live-ba-restore-merge",
+    "run:ws-live-gap-restore",
+    "run:ws-live-gap-marker",
+    "run:ws-live-snap-importglobals",
+    "run:ws-live-snap-setnodejson",
+    "run:ws-check-r3"
    ],
    "evidence_grade": "inspected",
    "level": "product",
    "product_obligation": "fails",
-   "product_basis": "census obligations of this module's writers discharged by findings where the as-built writer breaks the invariant (grade is the weakest of the cell's discharges; DISCHARGES.json grades each, many live)",
+   "product_basis": "all 23 module-18 census cells discharged (WS-GAP-001..003 by F-C1850, live); snapshot.restore_merge, not a plan, has 9 discharges: INV-text, INV-retry, INV-marker by F-C1850 (live, merge=True), INV-shape/isolation/no-live-tombstone/replay/stmt by F-1801's overlay (inspected), TMP-B1.7 by F-1805",
    "as_built_findings": [
-    "F-1806",
-    "F-C1850",
     "F-1801",
+    "F-1805",
+    "F-1806",
     "F-C1307",
-    "F-C1350"
+    "F-C1350",
+    "F-C1850"
    ],
-   "remaining": "census part done (all 23 module-18 census cells discharged, WS-GAP-001..003 included); outside the census: snapshot.restore_merge is not a plan though it writes the ledger globals and ^KG(\"tagg\") (F-1805)"
+   "remaining": ""
   }
  ]
 }

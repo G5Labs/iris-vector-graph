@@ -114,7 +114,7 @@
   "severity": "S2",
   "confidence": "high",
   "remedy": "Mark derived rows with something a governed relationship cannot carry (a reserved qualifier key the ledger and every writer refuse, or a separate column), and make every marker test use the same predicate; or have the temporal retraction refuse a row that has a live statement.",
-  "notes": "A user qualifier named 'temporal' is unusual but unrestricted; the same row is also adopted (qualifiers set to NULL) by bulk_create_edges' _ADOPT_TEMPORAL_ROW_SQL if it matches _TEMPORAL_MARKED_ROW."
+  "notes": "A user qualifier named 'temporal' is unusual but unrestricted; the same row is also adopted (qualifiers set to NULL) by bulk_create_edges' _ADOPT_TEMPORAL_ROW_SQL if it matches _TEMPORAL_MARKED_ROW. Same predicate defect as F-0505 (reproduced-live: an explicit edge with temporal:1 is deleted by the temporal delete); F-C0450 adds the ledger-statement consequence and the DropRows and purge paths."
  },
  {
   "id": "F-C0151",
@@ -314,5 +314,58 @@
   "confidence": "high",
   "remedy": "Have the erasure paths read without the indexes a %NOINDEX load leaves stale (or refuse while an index build is pending), and have the bulk loader rebuild its indices before it returns; an erase that leaves a row of an erased tenant should say so.",
   "notes": "The loader's docstring tells its caller to run rebuild_all_indices() after loading (bulk_loader.py:393-395, 'needs index rebuild ... Call rebuild_all_indices() after loading'); until then the window is open. Same root as F-C1351 (the redaction liveness check reads through the same indexes). The record ws-live-ins-bulkloader_load_edges wrongly says verify was 'equal again after erasing wsd10', and ws-live-ins-import_rdf's INV-replay sub-check did not start from an equal baseline because of this residue (errata). The disappearance of the control prefix's row before the import_rdf case is not explained by a registered observation."
+ },
+ {
+  "id": "F-C0350",
+  "module": "03",
+  "title": "BulkLoader.load_edges' INSERT %NOINDEX %NOCHECK lets a graph whose mode is off hold two rows of one triple at the same edge key, and the index rebuild accepts them",
+  "intended": "specs/234-multigraph-parallel-edges/spec.md:32-35, 225-226 and GID-I4.10 (experiment/playbook-uplift/ontology: a graph whose mode is off never holds parallel edges, whatever engine or path writes to it); iris_vector_graph/schema.py:34-44 (u_spo_graph_ekey UNIQUE (s, p, o_id, graph_id, ekey)); iris_vector_graph/bulk_loader.py:396 (skip_existing 'avoids UNIQUE violations').",
+  "observed": "Live in AUDITB (ws-live-ba-noindex-parallel), default graph, mode off: BulkLoader.load_edges([('wsgp|a','R','wsgp|b',None)]) with its default use_noindex=True wrote one row at ekey 0 that the indexes do not hold; engine.create_edge of the same triple returned True and wrote a second row, also at ekey 0 (its guard and the unique key read the index); BulkLoader.rebuild_all_indices answered True for every index with both rows of key (wsgp|a, R, wsgp|b, '', 0) in place. Two load_edges calls with skip_existing=False wrote two rows of another triple, both ekey 0, and the rebuild again answered True.",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "ws-live-ba-noindex-parallel"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/bulk_loader.py:456-460"
+   }
+  ],
+  "gates": [
+   "3.3a-writesets",
+   "3.4-keys",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S2",
+  "confidence": "high",
+  "remedy": "Do not combine %NOCHECK with %NOINDEX for rdf_edges (or check the triple against every row with a %NOINDEX-aware read and within the batch whatever skip_existing says), and rebuild the indices before load_edges returns; validate the unique key when rebuilding it.",
+  "notes": "Same root as F-C1250 and F-C1351 (rows the indexes do not hold until rebuild_all_indices). Census writer pairs: GID-I4.10 x BulkLoader.load_edges / load_networkx (models/breadth-a/writesets.json)."
+ },
+ {
+  "id": "F-C0351",
+  "module": "03",
+  "title": "Explicit edge writers store the temporal marker {\"temporal\": true} given as a caller qualifier: the row is a marked row with no timestamp, and verify() does not see the relationship",
+  "intended": "docs/adr/0009-a-temporal-edge-implies-a-structural-edge.md:38-42 (the marker distinguishes a temporal edge's derived row; a row an explicit write asserted is unmarked) and ADR-0009/TMP-B9.13 marked-needs-time (a marked row exists only while its triple has a timestamp); experiment/playbook-uplift/ontology/14-replay.md:51 (RPL-B7.1: verify names a change made outside the ledger an unrecorded write).",
+  "observed": "Live in AUDITB (ws-live-ba-marker-qualifier), no temporal edge in the namespace: engine.store_edge, engine.create_edge and BulkLoader.load_edges (use_noindex False), each given qualifiers {'temporal': True}, wrote rows stored {\"temporal\": true}; their triples have no timestamp. verify() then reported diverges on the six endpoint nodes only: the three relationships are not among its differences, because read_canonical skips rows whose temporal qualifier is JSON true (iris_vector_graph/ledger/replay.py:617-620).",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "ws-live-ba-marker-qualifier"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/ledger/replay.py:613-620"
+   }
+  ],
+  "gates": [
+   "3.3a-writesets",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S3",
+  "confidence": "high",
+  "remedy": "Reserve the marker key: refuse (or strip) a caller qualifier named 'temporal' in every explicit writer, as the ledger reserves 'id' and '__graph', so the marker can only come from the temporal side.",
+  "notes": "A caller has to pass the marker key; the effect is a row the temporal side treats as its own (a later create_edge adopts it, the purge never retracts it since its triple has no timestamp) and an explicit, unrecorded relationship invisible to verify(). Related to F-0505 and F-C0450 (the marker is user data)."
  }
 ]

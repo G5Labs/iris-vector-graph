@@ -24,6 +24,18 @@ Checks (every one is exercised by a seeded mutation in --self-test):
       shows that run failing only on other pairs (a run that failed on this very pair makes the cell fail);
   C11 failed_runs_other_pairs lists only cited runs whose registered result is fail, each with a reason;
   C12 every run in RUN-PAIRS.json and every context_runs id is registered (review R4-02).
+
+BREADTH-A-DISCHARGES.json (breadth-a module-invariant pairs, models/breadth-a/writesets.json, plus m08|/m18| pairs):
+  B0  equals build_breadth_a.py's output (file and BREADTH-A-RUN-PAIRS.json);
+  B1  every breadth-a pair with status 'open' has exactly one entry (key module|invariant|writer); the only other
+      keys are _doc and m08|... / m18|... entries;
+  B2  module, invariant and writer of an entry equal its key and its breadth-a pair;
+  B3  discharge and grade as C3 (lemma/finding may also be graded mc), non-empty reason;
+  B4  as C4; B5 as C5; B6 as C6; B8 as C8;
+  B9  a `live` grade cites a run that exercised the pair (BREADTH-A-RUN-PAIRS.json); an `mc` grade cites at least one
+      registered run of kind mc (a breadth-a model check);
+  B10 a lemma or guard that cites a failed run attributes it in failed_runs_other_pairs, and the run did not fail on
+      this pair.
 """
 from __future__ import annotations
 
@@ -39,6 +51,11 @@ REPO = PC.parents[1]
 PIN = "3eaa79cf77d3e0a879b2cced634cf2729d81499e"
 DISCHARGES = PC / "writesets" / "DISCHARGES.json"
 RUNPAIRS = PC / "writesets" / "RUN-PAIRS.json"
+BADIS = PC / "writesets" / "BREADTH-A-DISCHARGES.json"
+BAPAIRS = PC / "writesets" / "BREADTH-A-RUN-PAIRS.json"
+BAFILE = PC / "models" / "breadth-a" / "writesets.json"
+BA_GRADES = {"lemma": {"proved", "mc", "trace", "live", "inspected"}, "guard": {"live", "inspected"},
+             "finding": {"live", "inspected", "mc", "model"}, "open": {"open"}}
 CENSUS = PC / "matrix-input" / "writer-census-obligations.json"
 OBLIGATIONS = PC / "matrix" / "obligations.json"
 GRADES = {"lemma": {"proved", "mc", "trace", "live", "inspected"}, "guard": {"live", "inspected"},
@@ -216,6 +233,157 @@ def run_check(text: str, ins, pairs=None) -> list:
     return check(data, *a)
 
 
+# ------------------------------------------------------------------------------------------- breadth-a checks
+
+def ba_inputs():
+    pairs = {f"{p['module']}|{p['invariant']}|{p['writer']}": p for p in json.loads(BAFILE.read_text())["pairs"]
+             if p["status"] == "open"}
+    kinds = {p.stem: json.loads(p.read_text()).get("kind") for p in (PC / "evidence" / "runs").glob("*.json")}
+    runpairs = json.loads(BAPAIRS.read_text())["runs"] if BAPAIRS.exists() else {}
+    return pairs, kinds, runpairs
+
+
+def check_ba(data: dict, pairs: dict, findex: dict, runs: dict, kinds: dict, runpairs: dict) -> list:
+    errs = []
+    for k in sorted(set(pairs) - set(data)):
+        errs.append(f"B1 missing discharge for breadth-a pair {k}")
+    for k in sorted(set(data) - set(pairs) - {"_doc"}):
+        if not k.startswith(("m08|", "m18|")):
+            errs.append(f"B1 unexpected key {k}")
+    for k, e in sorted(data.items()):
+        if k == "_doc":
+            continue
+        if not isinstance(e, dict):
+            errs.append(f"B3 {k}: entry is not an object")
+            continue
+        m, inv, w = (k.split("|", 2) + ["", ""])[:3]
+        want = {"module": m, "invariant": inv, "writer": w}
+        if k.startswith("m08|"):
+            want["module"] = "08"
+        if k.startswith("m18|"):
+            want["module"] = "18"
+        for f, v in want.items():
+            if e.get(f) != v:
+                errs.append(f"B2 {k}: {f} {e.get(f)!r} != {v!r}")
+        if k in pairs and (pairs[k]["module"], pairs[k]["invariant"], pairs[k]["writer"]) != (e.get("module"), e.get("invariant"), e.get("writer")):
+            errs.append(f"B2 {k}: entry does not match its breadth-a pair")
+        kind, grade = e.get("discharge"), e.get("grade")
+        if kind not in BA_GRADES:
+            errs.append(f"B3 {k}: discharge {kind!r}")
+        elif grade not in BA_GRADES[kind]:
+            errs.append(f"B3 {k}: grade {grade!r} not allowed for {kind}")
+        if not str(e.get("reason", "")).strip():
+            errs.append(f"B3 {k}: empty reason")
+        fs = e.get("findings", [])
+        if kind == "finding" and not fs:
+            errs.append(f"B4 {k}: finding discharge cites no finding")
+        for fid in fs:
+            disp = findex.get(fid)
+            if disp is None:
+                errs.append(f"B4 {k}: finding {fid} not in findings/audit")
+            elif not any(d.startswith("reproduced-") or d == "intent-undecided" for d in disp):
+                errs.append(f"B4 {k}: finding {fid} disposition {sorted(disp)}")
+        ev = e.get("evidence", [])
+        if kind != "open" and not ev:
+            errs.append(f"B8 {k}: no evidence")
+        cited = []
+        for item in ev:
+            if item.startswith("run:"):
+                cited.append(item[4:])
+                if item[4:] not in runs:
+                    errs.append(f"B5 {k}: run {item[4:]} not registered")
+                continue
+            mm = REF.match(item)
+            if mm:
+                a, b = int(mm["a"]), int(mm["b"] or mm["a"])
+                n = line_count(mm["path"])
+                if n is None:
+                    errs.append(f"B6 {k}: {mm['path']} not found")
+                elif not (1 <= a <= b <= n):
+                    errs.append(f"B6 {k}: {item} outside 1..{n}")
+                continue
+            if line_count(item) is None:
+                errs.append(f"B6 {k}: evidence {item!r} is neither run:<id>, path:lines nor an existing file")
+        pair = (e.get("invariant"), e.get("writer"))
+
+        def outcomes(rid):
+            return [x["outcome"] for x in runpairs.get(rid, []) if (x["invariant"], x["writer"]) == pair]
+        if grade == "live" and not any(outcomes(r) for r in cited):
+            errs.append(f"B9 {k}: graded live but no cited run exercised the pair")
+        if grade == "mc" and not any(kinds.get(r) == "mc" for r in cited):
+            errs.append(f"B9 {k}: graded mc but cites no model-check run")
+        if kind in ("lemma", "guard"):
+            frop = e.get("failed_runs_other_pairs", [])
+            for rid in cited:
+                if runs.get(rid) != "fail":
+                    continue
+                if "fail" in outcomes(rid):
+                    errs.append(f"B10 {k}: cites {rid}, which failed on this very pair: the cell must fail")
+                elif rid not in frop:
+                    errs.append(f"B10 {k}: cites failed run {rid} without attributing it to another pair")
+    return errs
+
+
+def run_check_ba(text: str, ins, bains, runpairs=None) -> list:
+    try:
+        data = load_text(text)
+    except Dup as d:
+        return [f"B1 duplicate key {d.args[0]}"]
+    pairs, kinds, rp = bains
+    return check_ba(data, pairs, ins[1], ins[2], kinds, rp if runpairs is None else runpairs)
+
+
+def self_test_ba(ins) -> dict:
+    bains = ba_inputs()
+    text = BADIS.read_text()
+    base = load_text(text)
+    res = {"B unmutated passes": not run_check_ba(text, ins, bains)}
+    keys = sorted(k for k in base if k != "_doc" and not k.startswith(("m08|", "m18|")))
+    lem = next(k for k in keys if base[k]["discharge"] == "lemma")
+    fin = next(k for k in keys if base[k]["discharge"] == "finding")
+    live = next(k for k in keys if base[k]["grade"] == "live")
+    mc = next(k for k in keys if base[k]["grade"] == "mc")
+    pref = next((k, i) for k in keys for i, x in enumerate(base[k]["evidence"]) if REF.match(x) and not x.startswith("experiment/"))
+    failed_run = next(r for r, v in sorted(ins[2].items()) if v == "fail" and r.startswith("ws-live-ins-"))
+    bad_disp = next(fid for fid, d in ins[1].items() if not any(x.startswith("reproduced-") or x == "intent-undecided" for x in d))
+
+    def mut(fn):
+        d = copy.deepcopy(base)
+        fn(d)
+        return json.dumps(d)
+
+    def set_(k, f, v):
+        return lambda d: d[k].__setitem__(f, v)
+    muts = {
+        "B1 missing pair": (mut(lambda d: d.pop(keys[0])), "B1"),
+        "B1 duplicate key": (text.replace(f'"{keys[0]}": {{', f'"{keys[0]}": {{}}, "{keys[0]}": {{', 1), "B1"),
+        "B1 unknown key": (mut(lambda d: d.__setitem__("09|X|y", copy.deepcopy(d[lem]))), "B1"),
+        "B2 module changed": (mut(set_(lem, "module", "99")), "B2"),
+        "B2 writer changed": (mut(set_(lem, "writer", "py:nobody")), "B2"),
+        "B3 bad kind": (mut(set_(lem, "discharge", "waived")), "B3"),
+        "B3 bad grade": (mut(set_(lem, "grade", "assumed")), "B3"),
+        "B3 empty reason": (mut(set_(lem, "reason", "")), "B3"),
+        "B4 finding without finding": (mut(set_(fin, "findings", [])), "B4"),
+        "B4 unknown finding": (mut(set_(fin, "findings", ["F-C9999"])), "B4"),
+        "B4 not-reproduced finding": (mut(set_(fin, "findings", [bad_disp])), "B4"),
+        "B5 unregistered run": (mut(lambda d: d[lem]["evidence"].append("run:ws-no-such-run")), "B5"),
+        "B6 line past end": (mut(lambda d: d[pref[0]]["evidence"].__setitem__(
+            pref[1], REF.match(d[pref[0]]["evidence"][pref[1]])["path"] + ":999999")), "B6"),
+        "B8 no evidence": (mut(set_(lem, "evidence", [])), "B8"),
+        "B9 live without exercising run": (mut(lambda d: d[live].__setitem__(
+            "evidence", [x for x in d[live]["evidence"] if not x.startswith("run:")] + ["run:ws-deploy-auditb"])), "B9"),
+        "B9 mc without model run": (mut(lambda d: d[mc].__setitem__(
+            "evidence", [x for x in d[mc]["evidence"] if not x.startswith("run:")])), "B9"),
+        "B10 lemma citing an unattributed failed run": (mut(lambda d: d[lem]["evidence"].append(f"run:{failed_run}")), "B10"),
+    }
+    for name, (t, tag) in muts.items():
+        errs = run_check_ba(t, ins, bains)
+        res[name] = any(e.startswith(tag) for e in errs)
+        if not res[name]:
+            print(f"NOT CAUGHT: {name}: {errs[:3]}")
+    return res
+
+
 def self_test() -> int:
     ins = inputs()
     base_text = DISCHARGES.read_text()
@@ -310,11 +478,13 @@ def self_test() -> int:
         results[name] = any(e.startswith(tag) for e in errs)
         if not results[name]:
             print(f"NOT CAUGHT: {name}: {errs[:3]}")
+    results.update(self_test_ba(ins))
     print(json.dumps(results, indent=1))
-    caught = sum(1 for k, v in results.items() if k != "unmutated_passes" and v)
-    total = len(results) - 1
-    print(f"self-test: unmutated passes={results['unmutated_passes']}, {caught}/{total} seeded mutations caught")
-    return 0 if results["unmutated_passes"] and caught == total else 1
+    caught = sum(1 for k, v in results.items() if k not in ("unmutated_passes", "B unmutated passes") and v)
+    total = len(results) - 2
+    print(f"self-test: unmutated passes={results['unmutated_passes']} (DISCHARGES) and {results['B unmutated passes']} "
+          f"(BREADTH-A), {caught}/{total} seeded mutations caught")
+    return 0 if results["unmutated_passes"] and results["B unmutated passes"] and caught == total else 1
 
 
 def main() -> int:
@@ -327,6 +497,20 @@ def main() -> int:
                          capture_output=True)
     if gen.returncode != 0:
         errs.append("C0 DISCHARGES.json or RUN-PAIRS.json differs from build_discharges.py's output")
+    bains = ba_inputs()
+    errs += run_check_ba(BADIS.read_text(), ins, bains)
+    gen_ba = subprocess.run([sys.executable, str(PC / "writesets" / "tools" / "build_breadth_a.py"), "--check"],
+                            capture_output=True)
+    if gen_ba.returncode != 0:
+        errs.append("B0 BREADTH-A-DISCHARGES.json or BREADTH-A-RUN-PAIRS.json differs from build_breadth_a.py's output")
+    badata = load_text(BADIS.read_text())
+    bn = {}
+    for k, v in badata.items():
+        if k != "_doc":
+            bn[(v["discharge"], v["grade"])] = bn.get((v["discharge"], v["grade"]), 0) + 1
+    print(f"breadth-a: open pairs {len(bains[0])}, entries {sum(1 for k in badata if k != '_doc')} "
+          f"(m08 {sum(1 for k in badata if k.startswith('m08|'))}, m18 {sum(1 for k in badata if k.startswith('m18|'))}); "
+          "by (discharge, grade): " + json.dumps({f"{a}/{b}": c for (a, b), c in sorted(bn.items())}))
     data = load_text(text)
     n = {}
     for k, v in data.items():

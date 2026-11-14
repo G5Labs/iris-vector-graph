@@ -30,7 +30,7 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 3.3a-mechanisms | model | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 3.3a-lifecycles | model | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 3.3a-domain-contract | model | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| 3.3a-writesets | model | 185 | 0 | 18 | 0 | 1 | 82 | 0 | 9 | 69 | 36 | 0 | 7 | 1 |
+| 3.3a-writesets | model | 190 | 0 | 13 | 0 | 1 | 82 | 0 | 9 | 69 | 36 | 0 | 7 | 1 |
 | 3.3a-trace | model | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.4-statements | product | 0 | 0 | 16 | 0 | 3 | 5 | 0 | 0 | 0 | 0 | 0 | 13 | 1 |
 | 3.4-ownership | product | 18 | 0 | 0 | 0 | 1 | 18 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
@@ -78,7 +78,7 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 5c-root-causes | method | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 5c-reviewers | method | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
-Totals: {'closed': 560, 'not-applicable': 35, 'open': 132, 'blocked': 25}; evidence grade of closed cells: {'registered-run': 444, 'inspected': 116}; product: {'unknown': 198, 'n/a': 33, 'fails': 400, 'intent-undecided': 6, 'holds-in-model-only': 1, 'holds-live': 9, 'holds-inspected': 69, 'holds-as-detection': 36}
+Totals: {'closed': 565, 'not-applicable': 35, 'open': 127, 'blocked': 25}; evidence grade of closed cells: {'registered-run': 449, 'inspected': 116}; product: {'unknown': 198, 'n/a': 33, 'fails': 400, 'intent-undecided': 6, 'holds-in-model-only': 1, 'holds-live': 9, 'holds-inspected': 69, 'holds-as-detection': 36}
 
 ## Writer census obligations (review R2-02)
 

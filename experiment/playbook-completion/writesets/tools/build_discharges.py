@@ -514,6 +514,13 @@ W["iris_vector_graph/_engine/legacy.py::copy_ledger_history"] = {
                   "inspected (legacy.py:606-646, LedgerRedact.cls:353-378)."),
 }
 W["iris_vector_graph/_engine/legacy.py::copy_ledger_history"]["INV-text"]["depends_on"] = ["O-1"]
+W["iris_vector_graph/_engine/legacy.py::copy_ledger_history"]["INV-text"]["depends_on_status"] = {
+    "O-1": "satisfied: operator clarification recorded in experiment/playbook-completion/incidents/O-1-FIXTURES.md "
+           "(the fixture setup behind fc1306-legacy-ledger-rows is authorized verification setup)"}
+W["iris_vector_graph/_engine/legacy.py::copy_ledger_history"]["INV-text"]["evidence"].append(
+    "experiment/playbook-completion/incidents/O-1-FIXTURES.md")
+W["iris_vector_graph/_engine/legacy.py::copy_ledger_history"]["INV-text"]["reason"] += (
+    " O-1 is now answered (incidents/O-1-FIXTURES.md): the setup is authorized and the live grade stands.")
 W["<any SQL client>::INSERT INTO Graph_KG.ledger_revisions"] = {
     "INV-text": D("guard", "live", ["run:ws-live-sql-guard", "iris_src/src/Graph/KG/LedgerRevision.cls:1-5",
                                     "iris_src/src/Graph/KG/LedgerRevision.cls:44",
@@ -605,19 +612,44 @@ def module_entries(census_ids_by_module, open_ids_by_module):
     BA = "experiment/playbook-completion/models/breadth-a/writesets.json"
     ba_open = {"01": 112, "03": 97, "04": 125, "05": 171, "06": 48}
     out = {}
+    BAD = PC / "writesets" / "BREADTH-A-DISCHARGES.json"
+    bad = json.loads(BAD.read_text()) if BAD.exists() else {}
+    BADREL = "experiment/playbook-completion/writesets/BREADTH-A-DISCHARGES.json"
+
+    def ba_summary(m, prefix=None):
+        es = [v for k, v in bad.items() if k != "_doc" and (k.startswith(prefix) if prefix else
+                                                               (v.get("module") == m and "|" in k and not k.startswith("m")))]
+        kinds = {}
+        for v in es:
+            kinds[v["discharge"]] = kinds.get(v["discharge"], 0) + 1
+        opn = sorted(k for k, v in bad.items() if k != "_doc" and v in es and v["discharge"] == "open")
+        fs = sorted({f for v in es for f in v.get("findings", [])})
+        grades = {v["grade"] for v in es if v["discharge"] != "open"}
+        return len(es), kinds, opn, fs, grades
+
     for m in ("01", "03", "04", "05", "06"):
+        n, kinds, opn, fs, grades = ba_summary(m)
+        census_open = opened(m)
+        st = "open" if (opn or census_open) else "finding" if fs else "lemma"
         out[f"module:{m}"] = {
-            "discharge": "open", "grade": "open", "evidence": [BA, "experiment/playbook-completion/writesets/DISCHARGES.json"],
-            "findings": [],
-            "reason": (f"The census part is done: {len(ids(m))} census cells of module {m} each have one discharge in "
-                       f"DISCHARGES.json ({len(opened(m))} of them open: {', '.join(opened(m)) or 'none'}). Still open: "
-                       f"{ba_open[m]} (module invariant, writer) pairs of {BA} with status 'open' (module invariants "
-                       "ADJ/GID/TMP/VEC/..., not the 8 manifest invariants); this lane did not discharge them."),
+            "discharge": st, "grade": "open" if st == "open" else ("inspected" if "inspected" in grades else sorted(grades)[0]),
+            "evidence": [BADREL, BA, "experiment/playbook-completion/writesets/DISCHARGES.json"],
+            "findings": fs,
+            "reason": (f"{len(ids(m))} census cells of module {m}, each with one discharge in DISCHARGES.json "
+                       f"({len(census_open)} open). The {ba_open[m]} open breadth-a (module invariant, writer) pairs of {BA} "
+                       f"each have one discharge in BREADTH-A-DISCHARGES.json ({n} entries: "
+                       + ", ".join(f"{k} {v}" for k, v in sorted(kinds.items())) + "); "
+                       + (f"open: {'; '.join(opn)}." if opn else "none is open.")
+                       + " The product fails where a finding discharges a pair."),
         }
-    out["module:08"] = {"discharge": "open", "grade": "open", "evidence": ["experiment/playbook-completion/modules/08.json"],
-                        "findings": [], "reason": "Not in the census: module 08's graph-coherence invariants (CYP-I5.5/I5.6, "
-                        "SYS-I2) against other modules' writers (02/03/15) are still undischarged (modules/08.json "
-                        "invariant_writesets); this lane did not address them."}
+    n8, k8, o8, f8, g8 = ba_summary("08", "m08|")
+    out["module:08"] = {"discharge": "open" if o8 else "guard", "grade": "inspected", "findings": f8,
+                        "evidence": [BADREL, "experiment/playbook-completion/modules/08.json", "run:ws-live-fk-guard"],
+                        "reason": f"Module 08's open plan item (CYP-I5.5/CYP-I5.6/SYS-I2 against other modules' writers: "
+                                  f"engine.direct_write, bulk_loader, fhir sync, raw SQL) has {n8} discharges in "
+                                  f"BREADTH-A-DISCHARGES.json (m08|...: " + ", ".join(f"{k} {v}" for k, v in sorted(k8.items()))
+                                  + "): the composite foreign keys (live for raw SQL) and the bulk loader's endpoint "
+                                  "registration. Module 08's other pairs were already dispositioned (modules/08.json)."}
     out["module:10"] = {"discharge": "open", "grade": "open", "evidence": ["experiment/playbook-completion/modules/10.json"],
                         "findings": [], "reason": "Not in the census: module 10's cell is open because its closed claim "
                         "cites no registered run or committed artifact; this lane did not address it."}
@@ -667,15 +699,18 @@ def module_entries(census_ids_by_module, open_ids_by_module):
                "are open (unreached at the pin's deploy); insert_vector's conditional cells are resolved (no product "
                "caller)."),
         "18": ("Snapshot.ImportGlobals: finding F-1806 (live), Snapshot.SetNodeJSON: guard (live), import_rdf live, "
-               "restore's three write-set gaps live (F-C1850). Still open in module 18's cell and outside the census: "
-               "snapshot.restore_merge is not a plan though it writes the ledger globals and ^KG(\"tagg\") (F-1805)."),
+               "restore's three write-set gaps live (F-C1850). snapshot.restore_merge (not a plan) now has 9 discharges "
+               "in BREADTH-A-DISCHARGES.json (m18|...): INV-text/INV-retry/INV-marker live (F-C1850 with merge=True, "
+               "ws-live-ba-restore-merge), the other five INV-* by F-1801's overlay (inspected), TMP-B1.7 by F-1805."),
     }
     for m in ("15", "17", "18"):
         op = opened(m)
+        closed18 = (m == "18" and not op)
         out[f"module:{m}"] = {
-            "discharge": "open", "grade": "open",
-            "evidence": ["experiment/playbook-completion/writesets/DISCHARGES.json"],
-            "findings": [],
+            "discharge": "finding" if closed18 else "open", "grade": "inspected" if closed18 else "open",
+            "evidence": ["experiment/playbook-completion/writesets/DISCHARGES.json"]
+                        + (["experiment/playbook-completion/writesets/BREADTH-A-DISCHARGES.json"] if m == "18" else []),
+            "findings": ["F-1806", "F-C1850", "F-1801", "F-1805"] if closed18 else [],
             "reason": (f"{len(ids(m))} census cells of module {m}, each with one discharge in DISCHARGES.json; "
                        f"{len(op)} of them open ({', '.join(op) or 'none'}). " + rest[m]),
         }

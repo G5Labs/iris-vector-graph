@@ -7264,39 +7264,49 @@
   },
   {
    "as_built_findings": [
-    "F-C0150",
-    "F-C0151",
-    "F-C1306"
+    "F-0401",
+    "F-0402",
+    "F-C0401"
    ],
    "cited_runs": [
-    "followup-writer-census"
+    "followup-writer-census",
+    "ws-check-r3"
    ],
    "evidence": [
+    "experiment/playbook-completion/writesets/BREADTH-A-DISCHARGES.json",
     "experiment/playbook-completion/writesets/DISCHARGES.json",
+    "run:ws-check-r3",
     "run:followup-writer-census"
    ],
-   "evidence_grade": "inspected",
+   "evidence_grade": "registered-run",
    "findings": [
+    "F-0402",
     "F-C0150",
     "F-C0151",
-    "F-C1306"
+    "F-C0401"
+   ],
+   "findings_undecided": [
+    "F-0401"
    ],
    "gate": "3.3a-writesets",
    "level": "product",
    "module": "01",
    "product_basis": {
     "fails": [
+     "finding F-0402",
      "finding F-C0150",
      "finding F-C0151",
-     "finding F-C1306",
+     "finding F-C0401",
      "stated fails by matrix-input/writesets.json"
     ],
-    "intent_undecided": []
+    "intent_undecided": [
+     "finding F-0401"
+    ]
    },
    "product_obligation": "fails",
-   "remaining": "census part done (29 cells, 0 open); still open: 112 (module invariant, writer) pairs with status open in experiment/playbook-completion/models/breadth-a/writesets.json (module invariants, not the 8 manifest invariants), not addressed by the writesets lane Census reopen lifted: every census cell of this module is discharged (writesets/DISCHARGES.json). Corrected census (followup-writer-census): 29 open per-obligation cells of this gate in module 01 (WS-OBL 29; matrix-input/writer-census-obligations.json) [review-response R2-02].",
+   "remaining": "Census reopen lifted: every census cell of this module is discharged (writesets/DISCHARGES.json). Corrected census (followup-writer-census): 29 open per-obligation cells of this gate in module 01 (WS-OBL 29; matrix-input/writer-census-obligations.json) [review-response R2-02].",
    "source": "matrix-input/writesets.json",
-   "status": "open",
+   "status": "closed",
    "supplemented_by": [
     "matrix-input/review-response-2.json"
    ]
@@ -7328,15 +7338,31 @@
   },
   {
    "as_built_findings": [
-    "F-C1301",
-    "F-C1307",
-    "F-C1350"
+    "F-0304",
+    "F-0401",
+    "F-0402",
+    "F-0606",
+    "F-1201",
+    "F-C0350",
+    "F-C0351",
+    "F-C0401"
    ],
    "cited_runs": [
-    "followup-writer-census"
+    "followup-writer-census",
+    "ws-check-r3",
+    "ws-live-ba-explicit-survives",
+    "ws-live-ba-marker-qualifier",
+    "ws-live-ba-noindex-parallel",
+    "ws-live-ba-vec-node-delete"
    ],
    "evidence": [
+    "experiment/playbook-completion/writesets/BREADTH-A-DISCHARGES.json",
     "experiment/playbook-completion/writesets/DISCHARGES.json",
+    "run:ws-check-r3",
+    "run:ws-live-ba-noindex-parallel",
+    "run:ws-live-ba-explicit-survives",
+    "run:ws-live-ba-marker-qualifier",
+    "run:ws-live-ba-vec-node-delete",
     "run:followup-writer-census"
    ],
    "evidence_grade": "inspected",
@@ -7344,10 +7370,16 @@
     "F-0301",
     "F-0303",
     "F-0304",
+    "F-0402",
+    "F-0606",
+    "F-1201",
     "F-C0330",
-    "F-C1301",
-    "F-C1307",
-    "F-C1350"
+    "F-C0350",
+    "F-C0351",
+    "F-C0401"
+   ],
+   "findings_undecided": [
+    "F-0401"
    ],
    "gate": "3.3a-writesets",
    "level": "product",
@@ -7357,16 +7389,25 @@
      "finding F-0301",
      "finding F-0303",
      "finding F-0304",
+     "finding F-0402",
+     "finding F-0606",
+     "finding F-1201",
      "finding F-C0330",
-     "finding F-C1301",
-     "finding F-C1307",
-     "finding F-C1350",
-     "stated fails by matrix-input/writesets.json"
+     "finding F-C0350",
+     "finding F-C0351",
+     "finding F-C0401",
+     "stated fails by matrix-input/writesets.json",
+     "run ws-live-ba-explicit-survives (fail)",
+     "run ws-live-ba-marker-qualifier (fail)",
+     "run ws-live-ba-noindex-parallel (fail)",
+     "run ws-live-ba-vec-node-delete (fail)"
     ],
-    "intent_undecided": []
+    "intent_undecided": [
+     "finding F-0401"
+    ]
    },
    "product_obligation": "fails",
-   "remaining": "census part done (28 cells, 0 open); still open: 97 (module invariant, writer) pairs with status open in experiment/playbook-completion/models/breadth-a/writesets.json (module invariants, not the 8 manifest invariants), not addressed by the writesets lane Census reopen lifted: every census cell of this module is discharged (writesets/DISCHARGES.json). Corrected census (followup-writer-census): 28 open per-obligation cells of this gate in module 03 (WS-OBL 28; matrix-input/writer-census-obligations.json) [review-response R2-02].",
+   "remaining": "open breadth-a pairs: 03|GID-I4.10|py:IRISGraphEngine.bulk_load_session (bulk_load_session disables index maintenance; not probed) Census reopen lifted: every census cell of this module is discharged (writesets/DISCHARGES.json). Corrected census (followup-writer-census): 28 open per-obligation cells of this gate in module 03 (WS-OBL 28; matrix-input/writer-census-obligations.json) [review-response R2-02].",
    "source": "matrix-input/writesets.json",
    "status": "open",
    "supplemented_by": [
@@ -7375,25 +7416,38 @@
   },
   {
    "as_built_findings": [
-    "F-C0450",
-    "F-C1307",
-    "F-C1350"
+    "F-0304",
+    "F-0401",
+    "F-0402",
+    "F-C0401",
+    "F-C0450"
    ],
    "cited_runs": [
-    "followup-writer-census"
+    "followup-writer-census",
+    "ws-check-r3",
+    "ws-live-ba-explicit-survives",
+    "ws-live-ba-marker-qualifier",
+    "ws-live-ba-noindex-parallel",
+    "ws-live-ba-vec-node-delete"
    ],
    "evidence": [
+    "experiment/playbook-completion/writesets/BREADTH-A-DISCHARGES.json",
     "experiment/playbook-completion/writesets/DISCHARGES.json",
+    "run:ws-check-r3",
+    "run:ws-live-ba-noindex-parallel",
+    "run:ws-live-ba-explicit-survives",
+    "run:ws-live-ba-marker-qualifier",
+    "run:ws-live-ba-vec-node-delete",
     "run:followup-writer-census"
    ],
-   "evidence_grade": "inspected",
+   "evidence_grade": "registered-run",
    "findings": [
+    "F-0304",
     "F-0402",
     "F-0405",
     "F-0406",
-    "F-C0450",
-    "F-C1307",
-    "F-C1350"
+    "F-C0401",
+    "F-C0450"
    ],
    "findings_undecided": [
     "F-0401"
@@ -7403,20 +7457,93 @@
    "module": "04",
    "product_basis": {
     "fails": [
+     "finding F-0304",
      "finding F-0402",
      "finding F-0405",
      "finding F-0406",
+     "finding F-C0401",
      "finding F-C0450",
-     "finding F-C1307",
-     "finding F-C1350",
-     "stated fails by matrix-input/writesets.json"
+     "stated fails by matrix-input/writesets.json",
+     "run ws-live-ba-explicit-survives (fail)",
+     "run ws-live-ba-marker-qualifier (fail)",
+     "run ws-live-ba-noindex-parallel (fail)",
+     "run ws-live-ba-vec-node-delete (fail)"
     ],
     "intent_undecided": [
      "finding F-0401"
     ]
    },
    "product_obligation": "fails",
-   "remaining": "census part done (20 cells, 0 open); still open: 125 (module invariant, writer) pairs with status open in experiment/playbook-completion/models/breadth-a/writesets.json (module invariants, not the 8 manifest invariants), not addressed by the writesets lane Census reopen lifted: every census cell of this module is discharged (writesets/DISCHARGES.json). Corrected census (followup-writer-census): 20 open per-obligation cells of this gate in module 04 (WS-OBL 20; matrix-input/writer-census-obligations.json) [review-response R2-02].",
+   "remaining": "Census reopen lifted: every census cell of this module is discharged (writesets/DISCHARGES.json). Corrected census (followup-writer-census): 20 open per-obligation cells of this gate in module 04 (WS-OBL 20; matrix-input/writer-census-obligations.json) [review-response R2-02].",
+   "source": "matrix-input/writesets.json",
+   "status": "closed",
+   "supplemented_by": [
+    "matrix-input/review-response-2.json"
+   ]
+  },
+  {
+   "as_built_findings": [
+    "F-0201",
+    "F-0401",
+    "F-0402",
+    "F-0501",
+    "F-0505",
+    "F-C0401",
+    "F-C0450"
+   ],
+   "cited_runs": [
+    "followup-writer-census",
+    "ws-check-r3"
+   ],
+   "evidence": [
+    "experiment/playbook-completion/writesets/BREADTH-A-DISCHARGES.json",
+    "experiment/playbook-completion/writesets/DISCHARGES.json",
+    "run:ws-check-r3",
+    "run:followup-writer-census"
+   ],
+   "evidence_grade": "inspected",
+   "findings": [
+    "F-0201",
+    "F-0402",
+    "F-0501",
+    "F-0504",
+    "F-0505",
+    "F-0506",
+    "F-0507",
+    "F-0511",
+    "F-C0401",
+    "F-C0450",
+    "F-C0501"
+   ],
+   "findings_undecided": [
+    "F-0401",
+    "F-0503"
+   ],
+   "gate": "3.3a-writesets",
+   "level": "product",
+   "module": "05",
+   "product_basis": {
+    "fails": [
+     "finding F-0201",
+     "finding F-0402",
+     "finding F-0501",
+     "finding F-0504",
+     "finding F-0505",
+     "finding F-0506",
+     "finding F-0507",
+     "finding F-0511",
+     "finding F-C0401",
+     "finding F-C0450",
+     "finding F-C0501",
+     "stated fails by matrix-input/writesets.json"
+    ],
+    "intent_undecided": [
+     "finding F-0401",
+     "finding F-0503"
+    ]
+   },
+   "product_obligation": "fails",
+   "remaining": "open breadth-a pairs: 05|TMP-B1.7|cls:Graph.KG.TemporalIndex.PurgeBefore; 05|TMP-B1.7|cls:Graph.KG.TemporalIndex.PurgeBucketRange; 05|TMP-B1.7|cls:Graph.KG.TemporalIndex.PurgeRawBefore; 05|TMP-B1.7|py:IRISGraphEngine.purge_before (TMP-B1.7 against purges: documented exception, intent-undecided) Census reopen lifted: every census cell of this module is discharged (writesets/DISCHARGES.json). Corrected census (followup-writer-census): 16 open per-obligation cells of this gate in module 05 (WS-OBL 16; matrix-input/writer-census-obligations.json) [review-response R2-02].",
    "source": "matrix-input/writesets.json",
    "status": "open",
    "supplemented_by": [
@@ -7425,97 +7552,56 @@
   },
   {
    "as_built_findings": [
-    "F-C0450",
-    "F-C1301",
-    "F-C1307",
-    "F-C1350"
+    "F-0401",
+    "F-0402",
+    "F-0604",
+    "F-0608"
    ],
    "cited_runs": [
-    "followup-writer-census"
+    "followup-writer-census",
+    "ws-check-r3"
    ],
    "evidence": [
+    "experiment/playbook-completion/writesets/BREADTH-A-DISCHARGES.json",
     "experiment/playbook-completion/writesets/DISCHARGES.json",
+    "run:ws-check-r3",
     "run:followup-writer-census"
    ],
-   "evidence_grade": "inspected",
+   "evidence_grade": "registered-run",
    "findings": [
-    "F-0501",
-    "F-0504",
-    "F-0505",
-    "F-0506",
-    "F-0507",
-    "F-0511",
-    "F-C0450",
-    "F-C0501",
-    "F-C1301",
-    "F-C1307",
-    "F-C1350"
-   ],
-   "findings_undecided": [
-    "F-0503"
-   ],
-   "gate": "3.3a-writesets",
-   "level": "product",
-   "module": "05",
-   "product_basis": {
-    "fails": [
-     "finding F-0501",
-     "finding F-0504",
-     "finding F-0505",
-     "finding F-0506",
-     "finding F-0507",
-     "finding F-0511",
-     "finding F-C0450",
-     "finding F-C0501",
-     "finding F-C1301",
-     "finding F-C1307",
-     "finding F-C1350",
-     "stated fails by matrix-input/writesets.json"
-    ],
-    "intent_undecided": [
-     "finding F-0503"
-    ]
-   },
-   "product_obligation": "fails",
-   "remaining": "census part done (16 cells, 0 open); still open: 171 (module invariant, writer) pairs with status open in experiment/playbook-completion/models/breadth-a/writesets.json (module invariants, not the 8 manifest invariants), not addressed by the writesets lane Census reopen lifted: every census cell of this module is discharged (writesets/DISCHARGES.json). Corrected census (followup-writer-census): 16 open per-obligation cells of this gate in module 05 (WS-OBL 16; matrix-input/writer-census-obligations.json) [review-response R2-02].",
-   "source": "matrix-input/writesets.json",
-   "status": "open",
-   "supplemented_by": [
-    "matrix-input/review-response-2.json"
-   ]
-  },
-  {
-   "cited_runs": [
-    "followup-writer-census"
-   ],
-   "evidence": [
-    "experiment/playbook-completion/writesets/DISCHARGES.json",
-    "run:followup-writer-census"
-   ],
-   "evidence_grade": "inspected",
-   "findings": [
+    "F-0402",
     "F-0603",
+    "F-0604",
     "F-0606",
+    "F-0608",
     "F-0615",
     "F-0618"
+   ],
+   "findings_undecided": [
+    "F-0401"
    ],
    "gate": "3.3a-writesets",
    "level": "product",
    "module": "06",
    "product_basis": {
     "fails": [
+     "finding F-0402",
      "finding F-0603",
+     "finding F-0604",
      "finding F-0606",
+     "finding F-0608",
      "finding F-0615",
      "finding F-0618",
      "stated fails by matrix-input/writesets.json"
     ],
-    "intent_undecided": []
+    "intent_undecided": [
+     "finding F-0401"
+    ]
    },
    "product_obligation": "fails",
-   "remaining": "census part done (15 cells, 0 open); still open: 48 (module invariant, writer) pairs with status open in experiment/playbook-completion/models/breadth-a/writesets.json (module invariants, not the 8 manifest invariants), not addressed by the writesets lane Census reopen lifted: every census cell of this module is discharged (writesets/DISCHARGES.json). Corrected census (followup-writer-census): 15 open per-obligation cells of this gate in module 06 (WS-COND 15; matrix-input/writer-census-obligations.json) [review-response R2-02].",
+   "remaining": "Census reopen lifted: every census cell of this module is discharged (writesets/DISCHARGES.json). Corrected census (followup-writer-census): 15 open per-obligation cells of this gate in module 06 (WS-COND 15; matrix-input/writer-census-obligations.json) [review-response R2-02].",
    "source": "matrix-input/writesets.json",
-   "status": "open",
+   "status": "closed",
    "supplemented_by": [
     "matrix-input/review-response-2.json"
    ]
@@ -7567,27 +7653,46 @@
    "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "modules/08.json invariant_writesets"
+   "as_built_findings": [
+    "F-C0801",
+    "F-0814",
+    "F-0815",
+    "F-0819"
    ],
+   "cited_runs": [
+    "ws-check-r3",
+    "ws-live-fk-guard"
+   ],
+   "evidence": [
+    "experiment/playbook-completion/writesets/BREADTH-A-DISCHARGES.json",
+    "experiment/playbook-completion/modules/08.json",
+    "run:ws-live-fk-guard",
+    "run:ws-check-r3"
+   ],
+   "evidence_grade": "registered-run",
    "findings": [
+    "F-0814",
+    "F-0815",
+    "F-0819",
     "F-C0801"
    ],
    "gate": "3.3a-writesets",
-   "level": "model",
+   "level": "product",
    "module": "08",
    "product_basis": {
     "fails": [
-     "finding F-C0801"
+     "finding F-0814",
+     "finding F-0815",
+     "finding F-0819",
+     "finding F-C0801",
+     "stated fails by matrix-input/writesets.json"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "reason": "See invariant_writesets: every module-08 invariant's read set is written by the Cypher write plan and by other modules' writers; graph-coherence obligations for non-Cypher writers are not discharged here.",
-   "remaining": "Discharge or record each (invariant, plan) pair for other modules' writers.",
-   "source": "modules/08.json",
-   "status": "open"
+   "remaining": "",
+   "source": "matrix-input/writesets.json",
+   "status": "closed"
   },
   {
    "cited_runs": [
@@ -8002,21 +8107,36 @@
   {
    "as_built_findings": [
     "F-1801",
+    "F-1805",
     "F-1806",
     "F-C1307",
     "F-C1350",
     "F-C1850"
    ],
    "cited_runs": [
-    "followup-writer-census"
+    "followup-writer-census",
+    "ws-check-r3",
+    "ws-live-ba-restore-merge",
+    "ws-live-gap-marker",
+    "ws-live-gap-restore",
+    "ws-live-snap-importglobals",
+    "ws-live-snap-setnodejson"
    ],
    "evidence": [
     "experiment/playbook-completion/writesets/DISCHARGES.json",
+    "experiment/playbook-completion/writesets/BREADTH-A-DISCHARGES.json",
+    "run:ws-live-ba-restore-merge",
+    "run:ws-live-gap-restore",
+    "run:ws-live-gap-marker",
+    "run:ws-live-snap-importglobals",
+    "run:ws-live-snap-setnodejson",
+    "run:ws-check-r3",
     "run:followup-writer-census"
    ],
-   "evidence_grade": "inspected",
+   "evidence_grade": "registered-run",
    "findings": [
     "F-1801",
+    "F-1805",
     "F-1806",
     "F-C1307",
     "F-C1350",
@@ -8029,19 +8149,24 @@
    "product_basis": {
     "fails": [
      "finding F-1801",
+     "finding F-1805",
      "finding F-1806",
      "finding F-C1307",
      "finding F-C1350",
      "finding F-C1804",
      "finding F-C1850",
-     "stated fails by matrix-input/writesets.json"
+     "stated fails by matrix-input/writesets.json",
+     "run ws-live-ba-restore-merge (fail)",
+     "run ws-live-gap-marker (fail)",
+     "run ws-live-gap-restore (fail)",
+     "run ws-live-snap-importglobals (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "census part done (all 23 module-18 census cells discharged, WS-GAP-001..003 included); outside the census: snapshot.restore_merge is not a plan though it writes the ledger globals and ^KG(\"tagg\") (F-1805) Census reopen lifted: every census cell of this module is discharged (writesets/DISCHARGES.json). Write-set gaps of the corrected census (followup-writer-census): restore_snapshot, through _import_global_from_ndjson (snapshot.py:1679), writes marker, idemRedacted and redactedRev, which plan snapshot.restore_replace does not declare (INV-marker, INV-retry, INV-text): open cells WS-GAP-001..003, violated as built (F-1801). Module 18 also has 20 census obligation cells (Snapshot.ImportGlobals, Snapshot.SetNodeJSON, snapshot.import_rdf) [review-response R2-02].",
+   "remaining": "Census reopen lifted: every census cell of this module is discharged (writesets/DISCHARGES.json). Write-set gaps of the corrected census (followup-writer-census): restore_snapshot, through _import_global_from_ndjson (snapshot.py:1679), writes marker, idemRedacted and redactedRev, which plan snapshot.restore_replace does not declare (INV-marker, INV-retry, INV-text): open cells WS-GAP-001..003, violated as built (F-1801). Module 18 also has 20 census obligation cells (Snapshot.ImportGlobals, Snapshot.SetNodeJSON, snapshot.import_rdf) [review-response R2-02].",
    "source": "matrix-input/writesets.json",
-   "status": "open",
+   "status": "closed",
    "supplemented_by": [
     "matrix-input/review-response-2.json"
    ]
@@ -16326,7 +16451,9 @@
     "F-0308",
     "F-0309",
     "F-C0301",
-    "F-C0302"
+    "F-C0302",
+    "F-C0350",
+    "F-C0351"
    ],
    "findings_undecided": [
     "F-C0347"
@@ -16346,7 +16473,9 @@
      "finding F-0308",
      "finding F-0309",
      "finding F-C0301",
-     "finding F-C0302"
+     "finding F-C0302",
+     "finding F-C0350",
+     "finding F-C0351"
     ],
     "intent_undecided": [
      "finding F-C0347"
@@ -20954,7 +21083,8 @@
     "run:fc1306-legacy-ledger-rows",
     "iris_vector_graph/_engine/legacy.py:606-646",
     "iris_vector_graph/_engine/schema.py:2308",
-    "iris_src/src/Graph/KG/LedgerRedact.cls:333-378"
+    "iris_src/src/Graph/KG/LedgerRedact.cls:333-378",
+    "experiment/playbook-completion/incidents/O-1-FIXTURES.md"
    ],
    "discharge_grade": "live",
    "discharge_source": "writesets/DISCHARGES.json",
@@ -20962,7 +21092,8 @@
     "run:fc1306-legacy-ledger-rows",
     "iris_vector_graph/_engine/legacy.py",
     "iris_vector_graph/_engine/schema.py",
-    "iris_src/src/Graph/KG/LedgerRedact.cls"
+    "iris_src/src/Graph/KG/LedgerRedact.cls",
+    "experiment/playbook-completion/incidents/O-1-FIXTURES.md"
    ],
    "evidence_grade": "registered-run",
    "findings": [
@@ -20986,7 +21117,7 @@
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "discharged by finding (live; its evidence uses fixture setup authorized by operator clarification O-1 (incidents/O-1-FIXTURES.md)): F-C1306's live run went through this writer (initialize_schema(schema_prefix='RAG') -> ledger_history_copied, the 7+1 rows): it copies Graph_KG.ledger_revisions into the IVG Schema and leaves the originals; ClearRevision clears only the copy, so after a complete redaction the Graph_KG rows of the tombstoned revisions keep message, source, correlation id and key. Depends on the operator's ruling O-1 (review R2-07): fc1306-legacy-ledger-rows compiled a non-pin release (v4.5.1) into a scratch namespace; if O-1 rules that out of scope, this discharge falls back to inspected (legacy.py:606-646, LedgerRedact.cls:353-378).",
+   "remaining": "discharged by finding (live; its evidence uses fixture setup authorized by operator clarification O-1 (incidents/O-1-FIXTURES.md)): F-C1306's live run went through this writer (initialize_schema(schema_prefix='RAG') -> ledger_history_copied, the 7+1 rows): it copies Graph_KG.ledger_revisions into the IVG Schema and leaves the originals; ClearRevision clears only the copy, so after a complete redaction the Graph_KG rows of the tombstoned revisions keep message, source, correlation id and key. Depends on the operator's ruling O-1 (review R2-07): fc1306-legacy-ledger-rows compiled a non-pin release (v4.5.1) into a scratch namespace; if O-1 rules that out of scope, this discharge falls back to inspected (legacy.py:606-646, LedgerRedact.cls:353-378). O-1 is now answered (incidents/O-1-FIXTURES.md): the setup is authorized and the live grade stands.",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -36089,6 +36220,47 @@
    ],
    "id": "F-C1250",
    "severity": "S1"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "ws-live-ba-noindex-parallel"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/bulk_loader.py:456-460"
+    }
+   ],
+   "gates": [
+    "3.3a-writesets",
+    "3.4-keys",
+    "3.8-findings-disposed"
+   ],
+   "id": "F-C0350",
+   "severity": "S2"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "ws-live-ba-marker-qualifier"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/ledger/replay.py:613-620"
+    }
+   ],
+   "gates": [
+    "3.3a-writesets",
+    "3.8-findings-disposed"
+   ],
+   "id": "F-C0351",
+   "severity": "S3"
   }
  ],
  "not_implemented": [
@@ -36836,7 +37008,7 @@
   "n/a": 33,
   "unknown": 198
  },
- "registry_runs": 1238,
+ "registry_runs": 1242,
  "starting_inventory": {
   "cells": 904,
   "decisions": 61,
@@ -36848,9 +37020,9 @@
  },
  "status_counts": {
   "blocked": 25,
-  "closed": 560,
+  "closed": 565,
   "not-applicable": 35,
-  "open": 132
+  "open": 127
  },
  "submission": "9c3719c1",
  "writer_obligations": [

@@ -1,0 +1,17 @@
+{
+  "command": "locks.sh iris timeout 1200 python experiment/playbook-completion/writesets/live/ws_probes.py ba-noindex-parallel ba-explicit-survives ba-marker-qualifier ba-vec-node-delete ba-restore-merge (AUDITB)",
+  "experiment_head": "1564a673ea1737c0d9e32fe8f30a1d0d04bcf910",
+  "finding": "F-0304",
+  "id": "ws-live-ba-explicit-survives",
+  "kind": "live",
+  "lane": "writesets",
+  "log": "$RUN_DIR/writesets/ba-explicit-survives.json",
+  "log_bytes": 2743,
+  "log_sha256": "d54e520dbab0ebe94158753e6a869ce68080a912a080d22a553943a1f6b11a42",
+  "namespace": "AUDITB",
+  "observes": "ADR-0009/HD-0302 (a temporal delete never removes an explicitly written edge). Per writer, from a reset namespace: engine.create_edge_temporal(a, RX, b, ts) asserted the marked row {\"temporal\":true}; the writer wrote the same triple explicitly; engine.delete_edge_temporal removed the timestamp. create_edge and bulk_create_edges adopted the row (qualifiers NULL) and it survived; bulk_ingest_edges (server path, EdgeScan.BulkIngestEdgesSQL), BulkLoader.load_edges and store_edge (the F-0304 control) left it marked, and the temporal delete deleted it: the explicitly written edge is gone.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T13:19:16+00:00",
+  "result": "fail"
+}

@@ -26,6 +26,9 @@ Cases (each writes $RUN_DIR/writesets/<case>.json and starts and ends with Erase
   migrations     ensure_indexes' migrations while a redaction marker exists, and add_graph_id_to_nodes.
   replay-delete_reification, replay-import_rdf
                  INV-replay sub-checks re-run alone (review R4-02, R4-06): committed delete; equal baseline.
+  ba-noindex-parallel, ba-explicit-survives, ba-marker-qualifier, ba-vec-node-delete, ba-restore-merge
+                 breadth-a module-invariant pairs (GID-I4.10, ADR-0009 HD-0302 / TMP-B9.13, VEC-B11.4) and
+                 snapshot.restore_merge (INV-text, INV-retry, INV-marker).
   noindex-erase  The %NOINDEX edge row of BulkLoader.load_edges against delete_nodes_by_prefix and EraseAll+PurgeAll.
   noindex        BulkLoader.load_nodes' %NOINDEX rows against LiveRows (outside the census cells).
   fhir-blocked   Graph.KG.FHIRGraph.Register here (no FHIR repository: the FHIR writers are not runnable).
@@ -1052,6 +1055,200 @@ def case_noindex_erase(c: Conn) -> dict:
     return out
 
 
+# ------------------------------------------------------------------------------- breadth-a module-invariant pairs
+
+def _triple_rows(c: Conn, s_, p_, o_, graph: str = ""):
+    return c.sql("SELECT %ID, ekey, qualifiers FROM %IGNOREINDEX * Graph_KG.rdf_edges WHERE s = ? AND p = ? AND o_id = ? "
+                 "AND COALESCE(graph_id, '') = ?", s_, p_, o_, graph)
+
+
+def case_ba_noindex_parallel(c: Conn) -> dict:
+    """GID-I4.10 (a mode-off graph never holds parallel edges) for BulkLoader.load_edges' INSERT %NOINDEX %NOCHECK:
+    (a) a %NOINDEX edge row, then create_edge and store_edge of the same triple; (b) two loads with
+    skip_existing=False."""
+    from iris_vector_graph.bulk_loader import BulkLoader
+    reset(c)
+    e = eng(c)
+    out = {"residue_fullscan_after_reset": fullscan(c),
+           "mode_default_graph": err(lambda: e.is_multigraph(None) if hasattr(e, "is_multigraph") else "n/a")}
+    out["a_load_edges"] = err(lambda: str(BulkLoader(c.conn).load_edges([("wsgp|a", "R", "wsgp|b", None)])))
+    c.conn.commit()
+    out["a_rows_after_load"] = _triple_rows(c, "wsgp|a", "R", "wsgp|b")
+    out["a_create_edge"] = err(lambda: e.create_edge("wsgp|a", "R", "wsgp|b"))
+    c.conn.commit()
+    out["a_rows_after_create_edge"] = _triple_rows(c, "wsgp|a", "R", "wsgp|b")
+    out["a_store_edge"] = err(lambda: e.store_edge("wsgp|a", "R", "wsgp|b"))
+    c.conn.commit()
+    out["a_rows_after_store_edge"] = _triple_rows(c, "wsgp|a", "R", "wsgp|b")
+    out["a_rebuild_all_indices"] = err(lambda: str(BulkLoader(c.conn).rebuild_all_indices())[:300])
+    c.conn.commit()
+    out["a_rows_after_rebuild"] = _triple_rows(c, "wsgp|a", "R", "wsgp|b")
+    reset(c)
+    out["b_load1"] = err(lambda: str(BulkLoader(c.conn).load_edges([("wsgq|a", "R", "wsgq|b", None)], skip_existing=False)))
+    c.conn.commit()
+    out["b_load2"] = err(lambda: str(BulkLoader(c.conn).load_edges([("wsgq|a", "R", "wsgq|b", None)], skip_existing=False)))
+    c.conn.commit()
+    out["b_rows"] = _triple_rows(c, "wsgq|a", "R", "wsgq|b")
+    out["b_rebuild_all_indices"] = err(lambda: str(BulkLoader(c.conn).rebuild_all_indices())[:300])
+    c.conn.commit()
+    reset(c)
+    out["after_final_reset_fullscan_all"] = fullscan(c)
+    out["verdict"] = {
+        "a_parallel_rows_in_mode_off_graph": max(len(out["a_rows_after_create_edge"]), len(out["a_rows_after_store_edge"])) >= 2,
+        "a_rows_after_create_edge": len(out["a_rows_after_create_edge"]),
+        "a_rows_after_store_edge": len(out["a_rows_after_store_edge"]),
+        "b_rows_two_loads_skip_existing_false": len(out["b_rows"]),
+        "clean_after": sum(out["after_final_reset_fullscan_all"].values()) == 0,
+    }
+    return out
+
+
+def case_ba_explicit_survives(c: Conn) -> dict:
+    """ADR-0009/HD-0302 (a temporal delete never removes an explicitly written edge): a temporal edge's marked row,
+    an explicit write of the same triple by each writer, then the temporal edge's deletion."""
+    from iris_vector_graph.bulk_loader import BulkLoader
+    writers = {
+        "create_edge (control: adopts)": lambda e, cc, a, b: e.create_edge(a, "RX", b),
+        "bulk_create_edges (control: adopts)": lambda e, cc, a, b: e.bulk_create_edges(
+            [{"source_id": a, "predicate": "RX", "target_id": b}], auto_sync=False),
+        "bulk_ingest_edges (BulkIngestEdgesSQL)": lambda e, cc, a, b: e.bulk_ingest_edges([(a, b, "RX")], auto_sync=False),
+        "BulkLoader.load_edges": lambda e, cc, a, b: BulkLoader(cc.conn).load_edges([(a, "RX", b, None)]),
+        "store_edge (F-0304 control)": lambda e, cc, a, b: e.store_edge(a, "RX", b),
+    }
+    out = {}
+    for i, (name, w) in enumerate(writers.items()):
+        reset(c)
+        e = eng(c)
+        a, b = f"wsx{i}|a", f"wsx{i}|b"
+        r = {"temporal": err(lambda: e.create_edge_temporal(a, "RX", b, timestamp=TS))}
+        c.conn.commit()
+        r["row_after_temporal"] = _triple_rows(c, a, "RX", b)
+        r["explicit_write"] = err(lambda: str(w(e, c, a, b))[:200])
+        c.conn.commit()
+        r["row_after_explicit"] = _triple_rows(c, a, "RX", b)
+        r["delete_edge_temporal"] = err(lambda: e.delete_edge_temporal(a, "RX", b, TS))
+        c.conn.commit()
+        r["row_after_temporal_delete"] = _triple_rows(c, a, "RX", b)
+        r["explicit_edge_survived"] = bool(r["row_after_temporal_delete"])
+        out[name] = r
+    reset(c)
+    out["verdict"] = {k: v["explicit_edge_survived"] for k, v in out.items() if isinstance(v, dict)}
+    return out
+
+
+def case_ba_marker_qualifier(c: Conn) -> dict:
+    """ADR-0009/TMP-B9.13 (a marked row exists only while its triple has a timestamp): explicit writers given the
+    marker {"temporal": true} as a caller qualifier."""
+    from iris_vector_graph.bulk_loader import BulkLoader
+    reset(c)
+    e = eng(c)
+    e.ledger.enable()
+    out = {}
+    for name, (fn, trip) in {
+        "store_edge": (lambda: e.store_edge("wsm|a", "RM", "wsm|b", qualifiers={"temporal": True}), ("wsm|a", "RM", "wsm|b")),
+        "create_edge": (lambda: e.create_edge("wsm|c", "RM", "wsm|d", qualifiers={"temporal": True}), ("wsm|c", "RM", "wsm|d")),
+        "BulkLoader.load_edges": (lambda: BulkLoader(c.conn).load_edges([("wsm|e", "RM", "wsm|f", {"temporal": True})],
+                                                                         use_noindex=False), ("wsm|e", "RM", "wsm|f")),
+    }.items():
+        r = {"write": err(lambda: str(fn())[:200])}
+        c.conn.commit()
+        r["rows"] = _triple_rows(c, *trip)
+        r["tout_entries"] = sum(1 for _ in c.o.iterator("^KG", "tout", 0).items()) if c.o.isDefined("^KG", "tout", 0) else 0
+        r["marked_without_timestamp"] = any('"temporal"' in str(x[2]) and "true" in str(x[2]) for x in r["rows"]) and r["tout_entries"] == 0
+        out[name] = r
+    out["verify"] = verify(e)
+    reset(c)
+    out["verdict"] = {k: v["marked_without_timestamp"] for k, v in out.items() if isinstance(v, dict) and "rows" in v}
+    out["verdict"]["verify"] = out["verify"].get("value", {}).get("result")
+    return out
+
+
+def case_ba_vec_node_delete(c: Conn) -> dict:
+    """VEC-B11.4/HD-0601 (the index lists only ids with a live vector) for node deleters other than erase_graph
+    (F-0606): an IVF index over graph g's vectors, then delete_node and bulk_delete_nodes."""
+    reset(c)
+    e = eng(c)
+    g, name = "wsvg", "wsvivf"
+    out = {}
+    items = []
+    for i in range(4):
+        e.create_node(f"wsv|n{i}", graph=g)
+        items.append({"node_id": f"wsv|n{i}", "embedding": [1.0 + i, 0.5, 0.25, 0.1 * i]})
+    out["store_embeddings"] = err(lambda: str(e.store_embeddings(items, graph=g))[:200])
+    out["ivf_build"] = err(lambda: str(e.ivf_build(name, nlist=2, graph=g))[:300])
+    out["search_before"] = err(lambda: [x[0] for x in e.ivf_search(name, [1.0, 0.5, 0.25, 0.0], k=4)])
+    out["delete_node"] = err(lambda: e.delete_node("wsv|n0", graph=g))
+    out["bulk_delete_nodes"] = err(lambda: str(e.bulk_delete_nodes(["wsv|n1"], graph=g)))
+    c.conn.commit()
+    out["node_rows_after"] = c.sql("SELECT node_id FROM Graph_KG.nodes WHERE graph_id = ? ORDER BY node_id", g)
+    out["search_after"] = err(lambda: [x[0] for x in e.ivf_search(name, [1.0, 0.5, 0.25, 0.0], k=4)])
+    out["ivf_list_n0_n1"] = {n: any(c.o.isDefined("^IVF", name, "list", cell, n) for cell in ("0", "1", 0, 1))
+                             for n in ("wsv|n0", "wsv|n1")}
+    out["ivf_drop"] = err(lambda: e.ivf_drop(name))
+    reset(c)
+    after = out["search_after"].get("value") or []
+    out["verdict"] = {"delete_node_id_still_answered": "wsv|n0" in after,
+                      "bulk_delete_nodes_id_still_answered": "wsv|n1" in after,
+                      "ivf_lists": out["ivf_list_n0_n1"]}
+    return out
+
+
+def case_ba_restore_merge(c: Conn) -> dict:
+    """snapshot.restore_merge (merge=True) against INV-text, INV-retry and INV-marker: the gap-restore and gap-marker
+    sequences with a merging restore."""
+    reset(c)
+    e = eng(c)
+    e.ledger.enable()
+    out = {}
+    r = e.ledger.commit(Changeset(actor="audit:writesets", actor_type="ingest", message="wsrm secret message",
+                                  idempotency_key="wsrm-k1").create_node("wsrm|n1", labels=["G"],
+                                                                         properties={"secret": "wsrm-s"}))
+    seq = r.revision.seq
+    arch = str(OUT / f"restore-merge-{int(time.time())}.ivgsnap")
+    out["save"] = err(lambda: str(e.save_snapshot(arch))[:200])
+    e.delete_nodes_by_prefix("wsrm|")
+    c.conn.commit()
+    out["redact1"] = err(lambda: receipt_dict(e.ledger.redact(None, prefix="wsrm")))
+    out["restore_merge"] = err(lambda: str(e.restore_snapshot(arch, merge=True))[:300])
+    c.conn.commit()
+    out["after_restore"] = {"row": c.sql("SELECT seq, message, idempotency_key FROM Graph_KG.ledger_revisions WHERE seq = ?", seq),
+                            "recs": [x for x in ledger_recs(c) if x["seq"] == str(seq)],
+                            "redactedRev": c.o.isDefined("^IVG.Ledger", "redactedRev", seq),
+                            "idem_live": c.o.isDefined("^IVG.Ledger", "idem", "wsrm-k1")}
+    e.delete_nodes_by_prefix("wsrm|")
+    c.conn.commit()
+    out["redact2"] = err(lambda: receipt_dict(e.ledger.redact(None, prefix="wsrm")))
+    out["after_redact2"] = {"row": c.sql("SELECT seq, message, idempotency_key FROM Graph_KG.ledger_revisions WHERE seq = ?", seq),
+                            "recs": [x for x in ledger_recs(c) if x["seq"] == str(seq)],
+                            "idem_live": c.o.isDefined("^IVG.Ledger", "idem", "wsrm-k1"), "marker": marker(c)}
+    # marker part
+    reset(c)
+    e.ledger.enable()
+    for i in range(2):
+        e.ledger.commit(Changeset(actor="audit:writesets", actor_type="ingest", message=f"wsrn {i}")
+                        .create_node(f"wsrn|n{i}", labels=["G"], properties={"secret": f"wsrn-s{i}"}))
+    arch2 = str(OUT / f"restore-merge-marker-{int(time.time())}.ivgsnap")
+    e.save_snapshot(arch2)
+    e.delete_nodes_by_prefix("wsrn|")
+    c.conn.commit()
+    out["bounded_run"] = err(lambda: receipt_dict(e.ledger.redact(None, prefix="wsrn", batch_size=1, max_batches=1)))
+    out["restore_merge_2"] = err(lambda: str(e.restore_snapshot(arch2, merge=True))[:200])
+    c.conn.commit()
+    out["marker_after_merge"] = marker(c)
+    out["live_after_merge"] = live_rows(c, "wsrn")
+    reset(c)
+    a2 = out["after_redact2"]
+    tomb = bool(a2["recs"]) and all(x["op"] == "redacted" for x in a2["recs"])
+    out["verdict"] = {
+        "restore_merge_brought_records_back": bool(out["after_restore"]["recs"]) and not all(
+            x["op"] == "redacted" for x in out["after_restore"]["recs"]),
+        "INV_text_violated": tomb and bool(a2["row"]) and a2["row"][0][1] not in (None, ""),
+        "INV_retry_violated": tomb and bool(a2["idem_live"]),
+        "INV_marker_violated": bool(out["marker_after_merge"].get("in_progress")) and sum(out["live_after_merge"].values()) > 0,
+    }
+    return out
+
+
 CASES = {f"ins-{k}": (lambda k: (lambda c: case_ins(c, k)))(k) for k in WRITERS}
 CASES.update({"fk-guard": case_fk_guard, "rb-delete_reification": case_rb_delete_reification,
               "stmt-collision": case_stmt_collision, "snap-helpers": case_snap_helpers,
@@ -1059,7 +1256,10 @@ CASES.update({"fk-guard": case_fk_guard, "rb-delete_reification": case_rb_delete
               "gap-marker": case_gap_marker, "snap-setnodejson": case_snap_setnodejson,
               "stmt-purge": case_stmt_purge, "migrations": case_migrations, "fhir-blocked": case_fhir_blocked,
               "noindex": case_noindex, "replay-delete_reification": case_replay_delete_reification,
-              "replay-import_rdf": case_replay_import_rdf, "noindex-erase": case_noindex_erase})
+              "replay-import_rdf": case_replay_import_rdf, "noindex-erase": case_noindex_erase,
+              "ba-noindex-parallel": case_ba_noindex_parallel, "ba-explicit-survives": case_ba_explicit_survives,
+              "ba-marker-qualifier": case_ba_marker_qualifier, "ba-vec-node-delete": case_ba_vec_node_delete,
+              "ba-restore-merge": case_ba_restore_merge})
 
 
 def main() -> int:
