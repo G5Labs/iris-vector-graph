@@ -1,0 +1,16 @@
+{
+  "command": "python experiment/playbook-completion/tools/writer_census.py --json $RUN_DIR/followup/writer-census.json; --self-test PASS (original + planted dynamic writers); control: the original census (HEAD) misses the 3 planted dynamic writers ($RUN_DIR/followup/writer-census.log)",
+  "experiment_head": "f3fe3917466f7bae3e46f32f5b0644cfeaff87c8",
+  "id": "followup-writer-census",
+  "kind": "check",
+  "lane": "followup",
+  "log": "$RUN_DIR/followup/writer-census.json",
+  "log_bytes": 140881,
+  "log_sha256": "c8269ff41f9abf69045ff58cbc23e1f9c0f995fc1e62873f2a4dbb759253c59a",
+  "observes": "R-02 corrected census (run-time table/global names: Python f-string/format/concat/% and table-name calls, ObjectScript concatenation into %ExecDirect, indirection Set/Kill/Merge @, $System.OBJ.Load, ^IVG.Ledger(meta) state, Native API variable-name globals, SQL INSERT surface of ledger_revisions; docstrings skipped, sites de-duplicated, nested helpers owned by their enclosing function, Python callees resolved same-file first and DB-API names not followed): 269 sites (267 lines): 48 inside the 15 plan ranges, 138 reached by call from a plan, 83 outside; 46 writer methods no plan declares (was 25: 23 new incl. Snapshot.ImportGlobals, Snapshot.SetNodeJSON, Ledger.Disable/SetStrict, legacy.copy_ledger_history, the SQL INSERT surface of ledger_revisions, BulkLoader._register_endpoints, temporal create_edge_temporal/bulk_create_edges_temporal/_mirror_node, store_edge, set_edge_weight, reify_edge/delete_reification, import_rdf, tighten_graph_id_column, insert_vector, three 4.0.0 migration helpers; 2 renamed); 162 (invariant, writer) obligations (was 100: 62 new pairs, 8 re-attributed); 20 conditional obligations for 4 writers with unresolved run-time table names; 3 write-set-gap obligations: restore_snapshot (via _import_global_from_ndjson, snapshot.py:1679) writes marker, idemRedacted and redactedRev that plan snapshot.restore_replace does not declare (INV-marker, INV-retry, INV-text). Translator: 86 sites, all reached by call from cypher.write. Lexical census; unresolved names and by-name reach remain limits.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T01:35:55+00:00",
+  "result": "incomplete",
+  "superseded_counts": "checks/writer-census.json 104/31+25/48, 25 writers, 100 obligations"
+}

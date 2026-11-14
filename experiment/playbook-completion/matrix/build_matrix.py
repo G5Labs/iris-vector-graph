@@ -118,7 +118,10 @@ def main() -> int:
         data = load(f, [])
         for c in (data if isinstance(data, list) else data.get("cells", [])):
             explicit[(c["gate"], c.get("module", "product"))] = {**c, "source": f"matrix-input/{f.name}"}
-    audits_by_mod = {nn: (recs if isinstance(recs, list) else recs.get("findings", [])) for nn, recs in audits.items()}
+    audits_by_mod = defaultdict(list)
+    for stem, recs in audits.items():
+        for r in (recs if isinstance(recs, list) else recs.get("findings", [])):
+            audits_by_mod[str(r.get("module") or stem)[:2]].append(r)
     reproduced = ("reproduced-live", "reproduced-test", "reproduced-model", "confirmed-source", "product-defect")
     for g in gates:
         targets = ["product"] if g["scope"] == "product" else nns

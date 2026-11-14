@@ -1,0 +1,17 @@
+{
+  "command": "locks.sh iris timeout 900 python experiment/playbook-completion/followup/probes.py r04 r03 r01a (AUDITA; check r01a)",
+  "experiment_head": "f3fe3917466f7bae3e46f32f5b0644cfeaff87c8",
+  "finding": "F-C1304",
+  "id": "fu-r01a-snapshot-copies",
+  "kind": "live",
+  "lane": "followup",
+  "log": "$RUN_DIR/followup/r01a.json",
+  "log_bytes": 7628,
+  "log_sha256": "dd859cd9343bb1f33d92d47d5fdde77f529559a162e1e56ce9bd8331431a8801",
+  "namespace": "AUDITA",
+  "observes": "R-01(a), F-C1304: ledger enabled, tenant fu1|x (secret, message, source, correlation id, idempotency key) committed; engine.save_snapshot (the call POST /admin/snapshot makes, cypher_api.py:668-678) before erase, after erase and after redaction; delete_nodes_by_prefix + ledger.redact(None, prefix='fu1') complete (3 records, metadata cleared, verify equal; SC-001 scan of ^IVG.Ledger and Graph_KG.ledger_* finds none of 6 tenant tokens). The pre-erase archive holds the tenant in sql/Graph_KG_nodes|rdf_labels|rdf_props, globals/IVG.Ledger and globals/Graph.KG.LedgerRevisionD (message, source, correlation id, idempotency key); the after-erase archive holds the whole history; the after-redaction archive none. Receipt out_of_reach names only exports, journals, backups. restore_snapshot(pre-erase archive) puts back the node, secret property, the records and the revision row's message/correlation/idempotency key (SC-001 scan non-zero again). Contradicts FR-008 / ADR-0013 'Together they cover everything IVG can reach'.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T01:35:36+00:00",
+  "result": "fail"
+}

@@ -17,7 +17,7 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 3.2-differential | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.2-sharpness | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.2-mutants | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
-| 3.2-coverage | method | 3 | 0 | 15 | 1 | 0 | 4 | 0 | 15 | 0 |
+| 3.2-coverage | method | 3 | 0 | 15 | 1 | 0 | 5 | 0 | 14 | 0 |
 | 3.3-L1 | model | 3 | 0 | 15 | 0 | 1 | 1 | 0 | 17 | 1 |
 | 3.3-L2 | model | 3 | 0 | 15 | 0 | 1 | 1 | 0 | 17 | 1 |
 | 3.3-refinement | model | 3 | 0 | 15 | 0 | 1 | 1 | 0 | 17 | 1 |
@@ -33,20 +33,20 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 3.3a-writesets | model | 8 | 0 | 10 | 0 | 1 | 16 | 0 | 2 | 1 |
 | 3.3a-trace | model | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.4-statements | product | 0 | 0 | 17 | 0 | 2 | 5 | 0 | 13 | 1 |
-| 3.4-ownership | product | 3 | 0 | 15 | 0 | 1 | 8 | 0 | 10 | 1 |
-| 3.4-storage-order | product | 3 | 0 | 15 | 0 | 1 | 2 | 0 | 16 | 1 |
+| 3.4-ownership | product | 3 | 0 | 15 | 0 | 1 | 9 | 0 | 9 | 1 |
+| 3.4-storage-order | product | 3 | 0 | 15 | 0 | 1 | 3 | 0 | 15 | 1 |
 | 3.4-declared-reads | product | 5 | 0 | 13 | 0 | 1 | 10 | 0 | 8 | 1 |
 | 3.4-generator | method | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 1 |
 | 3.5-handlers | product | 1 | 0 | 17 | 0 | 1 | 8 | 0 | 10 | 1 |
-| 3.5-lockplans | product | 5 | 0 | 13 | 0 | 1 | 8 | 0 | 10 | 1 |
+| 3.5-lockplans | product | 5 | 0 | 13 | 0 | 1 | 9 | 0 | 9 | 1 |
 | 3.5-decoders | product | 14 | 0 | 4 | 0 | 1 | 14 | 0 | 4 | 1 |
 | 3.5-lint | product | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.5-style | product | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.6-composition | product | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.6-frame | product | 0 | 0 | 17 | 0 | 2 | 1 | 0 | 16 | 2 |
-| 3.6-row-permutation | product | 0 | 0 | 18 | 0 | 1 | 2 | 0 | 16 | 1 |
-| 3.6-keys | product | 2 | 0 | 15 | 0 | 2 | 6 | 0 | 11 | 2 |
-| 3.6-fk | product | 2 | 0 | 14 | 0 | 3 | 3 | 0 | 13 | 3 |
+| 3.6-row-permutation | product | 0 | 0 | 18 | 0 | 1 | 3 | 0 | 15 | 1 |
+| 3.6-keys | product | 2 | 0 | 15 | 0 | 2 | 7 | 0 | 10 | 2 |
+| 3.6-fk | product | 2 | 0 | 13 | 0 | 4 | 3 | 0 | 12 | 4 |
 | 3.6-capacity | product | 3 | 0 | 15 | 0 | 1 | 4 | 0 | 14 | 1 |
 | 3.6-closure | product | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.7-explorers | model | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0 |
@@ -54,7 +54,7 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 3.7-differential | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.7-e2e | product | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.7-trace-replay | product | 3 | 0 | 14 | 1 | 1 | 7 | 0 | 11 | 1 |
-| 3.7-lock-log | product | 0 | 0 | 15 | 1 | 3 | 2 | 0 | 14 | 3 |
+| 3.7-lock-log | product | 0 | 0 | 15 | 1 | 3 | 3 | 0 | 13 | 3 |
 | 3.7-mutation | product | 0 | 0 | 15 | 3 | 1 | 1 | 0 | 17 | 1 |
 | 3.7-perf | product | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.7-failure-controls | product | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
@@ -74,8 +74,8 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 5a-gate-20min | method | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 5b-client-entry | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 5b-refuse-not-guess | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
-| 5c-refusals | method | 7 | 0 | 11 | 0 | 1 | 10 | 0 | 8 | 1 |
+| 5c-refusals | method | 7 | 0 | 11 | 0 | 1 | 11 | 0 | 7 | 1 |
 | 5c-root-causes | method | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 5c-reviewers | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 
-Totals: {'closed': 110, 'not-applicable': 31, 'open': 409, 'blocked': 7}; evidence grade of closed cells: {'registered-run': 73, 'inspected': 37}; product: {'unknown': 374, 'n/a': 30, 'fails': 148, 'holds-in-model-only': 5}
+Totals: {'closed': 110, 'not-applicable': 32, 'open': 408, 'blocked': 7}; evidence grade of closed cells: {'registered-run': 73, 'inspected': 37}; product: {'unknown': 365, 'n/a': 31, 'fails': 156, 'holds-in-model-only': 5}

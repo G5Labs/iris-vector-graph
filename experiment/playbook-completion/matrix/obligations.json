@@ -172,12 +172,19 @@
   },
   {
    "cited_runs": [],
-   "evidence": [],
+   "evidence": [
+    {
+     "kind": "inventory",
+     "ref": "models/breadth-b/inventory/07.json"
+    }
+   ],
    "gate": "3.1-cells",
    "level": "method",
    "module": "07",
    "product_obligation": "unknown",
-   "remaining": "no evidence recorded",
+   "reason": "All 53 cells are defined or open; 4 cells are open on HD-0701 (building x build/insert/drop, upgrading x build/drop: 5 rows) whose working answer (serialize, complete-or-unavailable) the reviewed model now covers. The docs-table text search (kg_TXT engine/SQL/operators) and TextSearchEngine have no entity in Cells.",
+   "remaining": "Add cells for kg_TXT (docs table: iFind present/absent x graph) and TextSearchEngine; resolve the HD-0701 cells to the reviewed outcome.",
+   "source": "modules/07.json",
    "status": "open"
   },
   {
@@ -424,12 +431,19 @@
   },
   {
    "cited_runs": [],
-   "evidence": [],
+   "evidence": [
+    {
+     "kind": "inventory",
+     "ref": "models/breadth-b/inventory/07.json"
+    }
+   ],
    "gate": "3.1-coverage",
    "level": "method",
    "module": "07",
    "product_obligation": "unknown",
-   "remaining": "no evidence recorded",
+   "reason": "48 entry points derived mechanically; 0 cell commands lack an entry point; 7 entry points no statement covers: the Index handle's fulltext build/search/insert/drop/info (index_protocol.py:83-105; Index.build reaches TXT-X2 only via vector.py:299-310), create_index(replace=True)'s drop (vector.py:243-259) and HybridSearchFusion.__init__ (pure). 12 entry points are in no cell (kg_TXT x3, TextSearchEngine x5, RRFFusion x2, kg_RERANK, HybridSearchFusion.__init__).",
+   "remaining": "Add statements for the Index handle fulltext path and create_index(replace=True).",
+   "source": "modules/07.json",
    "status": "open"
   },
   {
@@ -679,12 +693,19 @@
   },
   {
    "cited_runs": [],
-   "evidence": [],
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "experiment/playbook-completion/decisions.md:93-111"
+    }
+   ],
    "gate": "3.1-intent",
    "level": "method",
    "module": "07",
    "product_obligation": "unknown",
-   "remaining": "no evidence recorded",
+   "reason": "HD-0701..HD-0705 carry working assumptions (decisions.md:93-111), not maintainer decisions; F-0703 is intent-undecided (SYS-I8 status of a caller-maintained BM25 index).",
+   "remaining": "Owned by the intent lanes.",
+   "source": "modules/07.json",
    "status": "open"
   },
   {
@@ -995,12 +1016,19 @@
   },
   {
    "cited_runs": [],
-   "evidence": [],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-07-fc0702-nested-rollback"
+    }
+   ],
    "gate": "3.2-coverage",
    "level": "method",
    "module": "07",
    "product_obligation": "unknown",
-   "remaining": "no evidence recorded",
+   "reason": "20 IRIS features listed in env_features; none yet inside the orchestrator's IRIS contract. F-C0702 shows TROLLBACK-level semantics (bare TROLLBACK ends every level) matter to this module.",
+   "remaining": "IRIS environment contract (AUDITENV) to cover or exclude each env feature.",
+   "source": "modules/07.json",
    "status": "open"
   },
   {
@@ -1050,10 +1078,13 @@
    "evidence": [
     "inspected:experiment/playbook-completion/iris-contract/CONTRACT.md"
    ],
+   "findings": [
+    "F-C1102"
+   ],
    "gate": "3.2-coverage",
    "level": "method",
    "module": "11",
-   "product_obligation": "unknown",
+   "product_obligation": "fails",
    "reason": "27 IRIS features listed in env_features: 10 inside the contract's subset, 4 partly (lock timeout/$TEST, object duplicate IdKey, native-on-caller-connection, journaling), 13 outside it.",
    "remaining": "Add to the IRIS contract: object concurrency of %OpenId/%Save (no lock on open; %Save row lock held to the outermost transaction end; 10 s lock timeout returning an error status), LOCK with timeout and $TEST, SQL row triggers and their bypasses (%NOTRIGGER, TRUNCATE; P-1108), %OnBeforeSave/%OnDelete, %KillExtent, object %Save duplicate IdKey (#5805), foreign-key enforcement on rdf_labels vs none on rdf_props, %DynamicObject %ToJSON key order (F-1113), functional-index maintenance inside SQL statements.",
    "source": "modules/11.json",
@@ -1278,7 +1309,9 @@
    "level": "model",
    "module": "07",
    "product_obligation": "unknown",
-   "remaining": "no evidence recorded",
+   "reason": "No Verus L1 model for module 07. Executable explorer models exist (bm25, leg).",
+   "remaining": "Write the L1 for the BM25 index (I1-I3, I5, X2) if module 07 enters proof depth.",
+   "source": "modules/07.json",
    "status": "open"
   },
   {
@@ -1682,7 +1715,20 @@
   },
   {
    "cited_runs": [],
-   "evidence": [],
+   "evidence": [
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-reviewed"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-as-built-I2"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-as-built-X2"
+    }
+   ],
    "findings": [
     "F-0701",
     "F-0704"
@@ -1691,7 +1737,9 @@
    "level": "model",
    "module": "07",
    "product_obligation": "fails",
-   "remaining": "no evidence recorded",
+   "reason": "The bm25 machine abstracts the real ^BM25Idx layout and every writer step at path:lines (m07.rs header); as-built reproduces F-0701/F-0704 and the reviewed design passes exhaustively within bounds (bounded mc, not a proof).",
+   "remaining": "closed claim cites no registered run or committed artifact",
+   "source": "modules/07.json",
    "status": "open"
   },
   {
@@ -1951,7 +1999,9 @@
    "level": "model",
    "module": "07",
    "product_obligation": "unknown",
-   "remaining": "no evidence recorded",
+   "reason": "No refinement audit (explorer::refinement) between an L1 and the bm25 machine.",
+   "remaining": "Bind the bm25 machine to an L1 with explorer::refinement::audit.",
+   "source": "modules/07.json",
    "status": "open"
   },
   {
@@ -2209,12 +2259,27 @@
   },
   {
    "cited_runs": [],
-   "evidence": [],
+   "evidence": [
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-control-nolock"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-control-late-refusal"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-leg-control-no-scope-check"
+    }
+   ],
    "gate": "3.3-controls",
    "level": "model",
    "module": "07",
    "product_obligation": "unknown",
-   "remaining": "no evidence recorded",
+   "reason": "No proof-level controls (no Verus L1/L2 for module 07). Explorer-level negative controls caught: m07-bm25-control-nolock (Build without the lock -> TXT-I5), m07-bm25-control-late-refusal (refusal after replacement -> TXT-X2), m07-leg-control-no-scope-check (-> TXT-I7).",
+   "remaining": "",
+   "source": "modules/07.json",
    "status": "open"
   },
   {
@@ -2633,12 +2698,87 @@
   },
   {
    "cited_runs": [],
-   "evidence": [],
+   "evidence": [
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-as-built-I2"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-as-built-I5"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-as-built-X2"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-as-built-X2-existing"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-as-built-quiesced-crash"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-as-built-settle"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-control-late-refusal"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-control-nolock"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-positive-complete"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-positive-crash-then-insert"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-positive-insert-after-build"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-reviewed"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-leg-as-built-fusion-unknown"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-leg-as-built-label"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-leg-as-built-scope"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-leg-control-no-scope-check"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-leg-positive-scoped"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-leg-reviewed"
+    }
+   ],
    "gate": "3.3-model-check",
    "level": "model",
    "module": "07",
    "product_obligation": "unknown",
-   "remaining": "no evidence recorded",
+   "reason": "18 explorer checks, all met and exhaustive within bounds: as-built reproduces F-0701, F-0704, F-0705, F-0707; reviewed (HD-0701, HD-0703) passes incl. AG EF; 3 negative controls caught; 4 sharpness witnesses.",
+   "remaining": "closed claim cites no registered run or committed artifact",
+   "source": "modules/07.json",
    "status": "open"
   },
   {
@@ -3308,7 +3448,20 @@
   },
   {
    "cited_runs": [],
-   "evidence": [],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-07-f0701-race"
+    },
+    {
+     "kind": "live",
+     "ref": "b-07-f0702-f0703"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-reviewed"
+    }
+   ],
    "findings": [
     "F-0701",
     "F-0702",
@@ -3318,7 +3471,9 @@
    "level": "model",
    "module": "07",
    "product_obligation": "fails",
-   "remaining": "no evidence recorded",
+   "reason": "Invariant/plan pairs computed below: TXT-I1/I2 x Build, Drop (F-0701, product defect, live), TXT-I8 x eraser.erase_graph (F-0702), TXT-B8.3/I7 x Insert-created index (F-0705). Remaining pairs discharged by guard (lock+transaction) or mc.",
+   "remaining": "closed claim cites no registered run or committed artifact",
+   "source": "modules/07.json",
    "status": "open"
   },
   {
@@ -3414,7 +3569,8 @@
     "run:writer-census"
    ],
    "findings": [
-    "F-C1301"
+    "F-C1301",
+    "F-C1308"
    ],
    "gate": "3.3a-writesets",
    "level": "model",
@@ -3624,12 +3780,19 @@
   },
   {
    "cited_runs": [],
-   "evidence": [],
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/BM25Index.cls:97-591"
+    }
+   ],
    "gate": "3.4-statements",
    "level": "product",
    "module": "07",
    "product_obligation": "unknown",
-   "remaining": "no evidence recorded",
+   "reason": "No storage statement (ObjectScript global operations on ^BM25Idx, the kg_TXT/kg_RRF_FUSE SQL) is proved against an IRIS contract; the bm25 machine abstracts the global operations at path:lines but is bounded mc, not a statement proof.",
+   "remaining": "Statement lemmas against the IRIS environment contract.",
+   "source": "modules/07.json",
    "status": "open"
   },
   {
@@ -3867,7 +4030,16 @@
   },
   {
    "cited_runs": [],
-   "evidence": [],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-07-f0706"
+    },
+    {
+     "kind": "live",
+     "ref": "b-07-f0702-f0703"
+    }
+   ],
    "findings": [
     "F-0706"
    ],
@@ -3875,7 +4047,9 @@
    "level": "product",
    "module": "07",
    "product_obligation": "fails",
-   "remaining": "no evidence recorded",
+   "reason": "^BM25Idx('__stop__') (stopword list) shares the index key space and any index-management call can write it (F-0706, F-C0701 live); ^BM25Idx is written only by Graph.KG.BM25Index (grep), but erasure does not own its graph-scoped content (F-0702).",
+   "remaining": "closed claim cites no registered run or committed artifact",
+   "source": "modules/07.json",
    "status": "open"
   },
   {
@@ -3912,7 +4086,7 @@
    "level": "product",
    "module": "10",
    "product_obligation": "unknown",
-   "reason": "^IVG.AlgoCache: written by AlgoCache.Put, killed by AlgoCache.Invalidate* and Eraser.InvalidateDerived (documented, ALG-B16.10). ^NKG: BuildNKG (spec 260 D-NKG-WRITER) plus Adjacency.Put interning, Eraser DropNKG and ArnoAccel.BumpVersion's $meta version: several writers.",
+   "reason": "^IVG.AlgoCache: written by AlgoCache.Put, killed by AlgoCache.Invalidate* and Eraser.InvalidateDerived (documented, ALG-B16.10). ^NKG: BuildNKG (spec 260 D-NKG-WRITER) plus Adjacency.Put interning, Eraser DropNKG and ArnoAccel.BumpVersion's $meta version: several writers. ^KG(\"degc\") (module 04's degree cache) is filled by module 10 reads (Adj.cls:64-79). ^IVG.Deploy(\"routines\") (setup's record) is written by a read path (F-C1001).",
    "remaining": "A mechanical single-owner check with a self-test over these globals.",
    "source": "modules/10.json",
    "status": "open"
@@ -3955,10 +4129,13 @@
    "evidence": [
     "run:writer-census"
    ],
+   "findings": [
+    "F-C1304"
+   ],
    "gate": "3.4-ownership",
    "level": "product",
    "module": "13",
-   "product_obligation": "unknown",
+   "product_obligation": "fails",
    "remaining": "stores have several writers outside the ledger",
    "status": "open"
   },
@@ -4166,12 +4343,27 @@
   },
   {
    "cited_runs": [],
-   "evidence": [],
+   "evidence": [
+    {
+     "kind": "finding",
+     "ref": "F-C0703"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/vector.py:1041-1046"
+    },
+    {
+     "kind": "live",
+     "ref": "b-07-f0709"
+    }
+   ],
    "gate": "3.4-storage-order",
    "level": "product",
    "module": "07",
-   "product_obligation": "unknown",
-   "remaining": "no evidence recorded",
+   "product_obligation": "fails",
+   "reason": "Storage-order scanner ($RUN_DIR/checks/storage-order.json): 11 flagged records in module-07 code plus 3 reviewed unflagged sites; dispositions {'F-C0703': 11, 'F-0711': 1, 'false-positive': 1, 'unique-key': 1}; 16 other vector.py records are module 06's (adjacent_sites_not_owned). Top-k text answers and fused ranks follow scan order (F-C0703).",
+   "remaining": "closed claim cites no registered run or committed artifact",
+   "source": "modules/07.json",
    "status": "open"
   },
   {
@@ -4441,7 +4633,16 @@
   },
   {
    "cited_runs": [],
-   "evidence": [],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-07-f0705-f0707"
+    },
+    {
+     "kind": "live",
+     "ref": "b-07-f0711"
+    }
+   ],
    "findings": [
     "F-0705",
     "F-0707",
@@ -4451,7 +4652,9 @@
    "level": "product",
    "module": "07",
    "product_obligation": "fails",
-   "remaining": "no evidence recorded",
+   "reason": "Reads not scoped to the declared graph: ivg.bm25.search/ivg.retrieve under USE GRAPH (F-0707), insert-created/legacy indexes read as the default graph's (F-0705), TextSearchEngine (F-0711): all reproduced live.",
+   "remaining": "closed claim cites no registered run or committed artifact",
+   "source": "modules/07.json",
    "status": "open"
   },
   {
@@ -4714,7 +4917,20 @@
   },
   {
    "cited_runs": [],
-   "evidence": [],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-07-f0704"
+    },
+    {
+     "kind": "live",
+     "ref": "b-07-fc0702-nested-rollback"
+    },
+    {
+     "kind": "probe",
+     "ref": "b-07-probe-fusion"
+    }
+   ],
    "findings": [
     "F-0704",
     "F-0707",
@@ -4724,7 +4940,9 @@
    "level": "product",
    "module": "07",
    "product_obligation": "fails",
-   "remaining": "no evidence recorded",
+   "reason": "Handler contracts broken live: refused rebuild destroys (F-0704); failing Insert inside a caller transaction rolls it back (F-C0702); positional default weights (F-0710).",
+   "remaining": "closed claim cites no registered run or committed artifact",
+   "source": "modules/07.json",
    "status": "open"
   },
   {
@@ -4808,6 +5026,10 @@
     {
      "kind": "finding",
      "ref": "F-1013"
+    },
+    {
+     "kind": "finding",
+     "ref": "F-C1001"
     }
    ],
    "findings": [
@@ -4824,7 +5046,7 @@
    "level": "product",
    "module": "10",
    "product_obligation": "fails",
-   "reason": "Several handlers do not perform their stated step (F-1002, F-1003, F-1004, F-1005, F-1006, F-1007, F-1008, F-1009, F-1010, F-1013).",
+   "reason": "Several handlers do not perform their stated step (F-1002, F-1003, F-1004, F-1005 narrowed, F-1006, F-1007, F-1008, F-1009, F-1010, F-1013) or write beyond a read's footprint (F-C1001).",
    "remaining": "closed claim cites no registered run or committed artifact",
    "source": "modules/10.json",
    "status": "open"
@@ -5087,12 +5309,23 @@
   },
   {
    "cited_runs": [],
-   "evidence": [],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-07-fp-writers"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-as-built-I5"
+    }
+   ],
    "gate": "3.5-lockplans",
    "level": "product",
    "module": "07",
-   "product_obligation": "unknown",
-   "remaining": "no evidence recorded",
+   "product_obligation": "fails",
+   "reason": "Lock plan: Insert/Delete/Upgrade take Lock +^BM25Idx(name,'lock'):timeout; Build and Drop take none (journal: no transaction, model TXT-I5 violation); Upgrade sets its flag before the lock (by design).",
+   "remaining": "closed claim cites no registered run or committed artifact",
+   "source": "modules/07.json",
    "status": "open"
   },
   {
@@ -5392,7 +5625,16 @@
   },
   {
    "cited_runs": [],
-   "evidence": [],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-07-f0705-f0707"
+    },
+    {
+     "kind": "live",
+     "ref": "b-07-f0709"
+    }
+   ],
    "findings": [
     "F-0705",
     "F-0706"
@@ -5401,7 +5643,9 @@
    "level": "product",
    "module": "07",
    "product_obligation": "fails",
-   "remaining": "no evidence recorded",
+   "reason": "Info's JSON maps an absent graph to '' (F-0705); bm25_search's parser patches '.5' numbers (vector.py:1816-1819); kg_TXT LIKE fallback scores 1.0. Not proved.",
+   "remaining": "Info answers null for an absent graph; decoder unit tests.",
+   "source": "modules/07.json",
    "status": "open"
   },
   {
@@ -5740,7 +5984,9 @@
    "level": "product",
    "module": "07",
    "product_obligation": "unknown",
-   "remaining": "no evidence recorded",
+   "reason": "No frame obligation per statement shape for the ^BM25Idx writers (the model frames by construction only).",
+   "remaining": "Frame lemmas: Build/Insert/Delete/Upgrade/Drop touch only ^BM25Idx(name) and the stopword node.",
+   "source": "modules/07.json",
    "status": "open"
   },
   {
@@ -5964,12 +6210,19 @@
   },
   {
    "cited_runs": [],
-   "evidence": [],
+   "evidence": [
+    {
+     "kind": "finding",
+     "ref": "F-C0703"
+    }
+   ],
    "gate": "3.6-row-permutation",
    "level": "product",
    "module": "07",
-   "product_obligation": "unknown",
-   "remaining": "no evidence recorded",
+   "product_obligation": "fails",
+   "reason": "Top-k text answers and fused ranks change with row order (F-C0703: kg_TXT LIKE fallback has no ORDER BY; score-only orderings tie).",
+   "remaining": "closed claim cites no registered run or committed artifact",
+   "source": "modules/07.json",
    "status": "open"
   },
   {
@@ -6208,12 +6461,23 @@
   },
   {
    "cited_runs": [],
-   "evidence": [],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-07-f0705-f0707"
+    },
+    {
+     "kind": "live",
+     "ref": "b-07-f0706"
+    }
+   ],
    "gate": "3.6-keys",
    "level": "product",
    "module": "07",
-   "product_obligation": "unknown",
-   "remaining": "no evidence recorded",
+   "product_obligation": "fails",
+   "reason": "^BM25Idx is keyed by index name alone: the graph is a config value an Insert-created index lacks (F-0705), and the stopword list shares the index key space (F-0706, F-C0701), all live.",
+   "remaining": "closed claim cites no registered run or committed artifact",
+   "source": "modules/07.json",
    "status": "open"
   },
   {
@@ -6469,13 +6733,24 @@
   },
   {
    "cited_runs": [],
-   "evidence": [],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-07-fp-writers"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/BM25Index.cls:97-591"
+    }
+   ],
    "gate": "3.6-fk",
    "level": "product",
    "module": "07",
-   "product_obligation": "unknown",
-   "remaining": "no evidence recorded",
-   "status": "open"
+   "product_obligation": "n/a",
+   "reason": "Module 07 writes no SQL row: every journaled write of its writers is in ^BM25Idx (b-07-fp-writers footprint; BM25Index.cls has no INSERT/UPDATE/DELETE), and its SQL is read-only (kg_TXT, kg_RRF_FUSE, TextSearchEngine). No foreign key is involved.",
+   "remaining": "",
+   "source": "modules/07.json",
+   "status": "not-applicable"
   },
   {
    "cited_runs": [],
@@ -6511,7 +6786,7 @@
    "level": "product",
    "module": "10",
    "product_obligation": "n/a",
-   "reason": "Module 10 writes no SQL row (journal: only globals ^IVG.AlgoCache, ^NKG, ^KG via sync, work areas); no foreign key is involved.",
+   "reason": "Module 10 writes no SQL data row (journal b-10-live-fp: globals ^IVG.AlgoCache, ^NKG, ^KG, work areas; sync's %BuildIndices writes only index storage of rdf_edges/rdf_labels); no foreign key is involved.",
    "remaining": "",
    "source": "modules/10.json",
    "status": "not-applicable"
@@ -6718,12 +6993,23 @@
   },
   {
    "cited_runs": [],
-   "evidence": [],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-07-fc0702-nested-rollback"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/BM25Index.cls:194"
+    }
+   ],
    "gate": "3.6-capacity",
    "level": "product",
    "module": "07",
    "product_obligation": "unknown",
-   "remaining": "no evidence recorded",
+   "reason": "Subscript capacity: document ids and tokens are global subscripts; a 604-character id raised <SUBSCRIPT> inside Insert (b-07-fc0702-nested-rollback), which also triggered F-C0702. Not checked: a token longer than a subscript in Build, which writes outside a transaction (would leave a partial index, cf. F-0701); lock-table limits not exercised.",
+   "remaining": "Live check of an over-long token in Build; document the id/token length limits.",
+   "source": "modules/07.json",
    "status": "open"
   },
   {
@@ -6756,6 +7042,10 @@
     {
      "kind": "finding",
      "ref": "F-1003"
+    },
+    {
+     "kind": "live",
+     "ref": "b-10-live-cap"
     }
    ],
    "findings": [
@@ -7059,12 +7349,23 @@
   },
   {
    "cited_runs": [],
-   "evidence": [],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-07-fp-writers"
+    },
+    {
+     "kind": "live",
+     "ref": "b-07-f0701-race"
+    }
+   ],
    "gate": "3.7-trace-replay",
    "level": "product",
    "module": "07",
    "product_obligation": "unknown",
-   "remaining": "no evidence recorded",
+   "reason": "Journal traces of the writers exist (b-07-fp-writers, b-07-f0701-race) but are not replayed through the bm25 machine.",
+   "remaining": "Replay journal records as bm25 machine steps.",
+   "source": "modules/07.json",
    "status": "open"
   },
   {
@@ -7303,12 +7604,23 @@
   },
   {
    "cited_runs": [],
-   "evidence": [],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-07-fp-writers"
+    },
+    {
+     "kind": "live",
+     "ref": "b-07-f0701-race"
+    }
+   ],
    "gate": "3.7-lock-log",
    "level": "product",
    "module": "07",
-   "product_obligation": "unknown",
-   "remaining": "no evidence recorded",
+   "product_obligation": "fails",
+   "reason": "Journal vs lock plan: Insert/Delete each one transaction under the lock (match); Build 106/106 and 30008/30008 records outside any transaction and with no lock while a concurrent Insert committed (mismatch with ADR-0007).",
+   "remaining": "closed claim cites no registered run or committed artifact",
+   "source": "modules/07.json",
    "status": "open"
   },
   {
@@ -7530,12 +7842,19 @@
   },
   {
    "cited_runs": [],
-   "evidence": [],
+   "evidence": [
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-control-nolock"
+    }
+   ],
    "gate": "3.7-mutation",
    "level": "product",
    "module": "07",
    "product_obligation": "unknown",
-   "remaining": "no evidence recorded",
+   "reason": "Model mutants only (controls); no mutation testing of BM25Index.cls or fusion.py.",
+   "remaining": "Mutation testing of the unverified layers.",
+   "source": "modules/07.json",
    "status": "open"
   },
   {
@@ -7951,12 +8270,19 @@
   },
   {
    "cited_runs": [],
-   "evidence": [],
+   "evidence": [
+    {
+     "kind": "ref",
+     "ref": "experiment/playbook-completion/findings/audit/07.json"
+    }
+   ],
    "gate": "3.8-findings-disposed",
    "level": "method",
    "module": "07",
    "product_obligation": "unknown",
-   "remaining": "no evidence recorded",
+   "reason": "Every original finding F-0701..F-0711 and the 3 new ones has a recorded disposition, outcome and evidence in findings/audit/07.json (observation-only: the product obligations stay failed in their gates).",
+   "remaining": "every finding is recorded with evidence and a disposition; a fix or a maintainer decision per finding is outside this observation-only audit",
+   "source": "modules/07.json",
    "status": "open"
   },
   {
@@ -8000,7 +8326,7 @@
    "level": "method",
    "module": "10",
    "product_obligation": "fails",
-   "reason": "All 13 original findings carry a disposition with evidence ({'blocked-access': 1, 'reproduced-live': 5, 'confirmed-source': 5, 'reproduced-model': 1, 'reproduced-test': 1}); 0 new.",
+   "reason": "All 13 original findings carry a disposition with evidence ({'blocked-access': 1, 'reproduced-live': 8, 'confirmed-source': 3, 'reproduced-test': 1}); 1 new.",
    "remaining": "every finding is recorded with evidence and a disposition; a fix or a maintainer decision per finding is outside this observation-only audit",
    "source": "modules/10.json",
    "status": "open"
@@ -8041,7 +8367,8 @@
    "findings": [
     "F-1201",
     "F-C1201",
-    "F-C1202"
+    "F-C1202",
+    "F-C1203"
    ],
    "gate": "3.8-findings-disposed",
    "level": "method",
@@ -8062,7 +8389,13 @@
     "F-1306",
     "F-C1303",
     "F-C1301",
-    "F-C1302"
+    "F-C1302",
+    "F-C1304",
+    "F-C1305",
+    "F-C1306",
+    "F-C1307",
+    "F-C1308",
+    "F-C1309"
    ],
    "gate": "3.8-findings-disposed",
    "level": "method",
@@ -8360,12 +8693,31 @@
   },
   {
    "cited_runs": [],
-   "evidence": [],
+   "evidence": [
+    {
+     "kind": "run",
+     "ref": "b-07-unit"
+    },
+    {
+     "kind": "live",
+     "ref": "b-07-f0704"
+    },
+    {
+     "kind": "live",
+     "ref": "b-07-f0709"
+    },
+    {
+     "kind": "probe",
+     "ref": "b-07-probe-fusion"
+    }
+   ],
    "gate": "5c-refusals",
    "level": "method",
    "module": "07",
-   "product_obligation": "unknown",
-   "remaining": "no evidence recorded",
+   "product_obligation": "fails",
+   "reason": "25 refusal statements (kind X): 4 run here and held (TXT-X3, X4, X12, X15 via b-07-unit); 4 broken live (TXT-X2 by F-0704; TXT-B13.7, B17.3, B18.2 by F-0709); 10 upstream-tested but not run here (X5-X9, X13, X17-X20); 7 inspected only (X1, X10, X11, X14, X16, B12.7, B15.3).",
+   "remaining": "closed claim cites no registered run or committed artifact",
+   "source": "modules/07.json",
    "status": "open"
   },
   {
@@ -11035,7 +11387,19 @@
      },
      {
       "kind": "mc",
-      "ref": "m11-guard-* (module 11 guard machine)"
+      "ref": "b-mc-m11-guard-as-built-ttl"
+     },
+     {
+      "kind": "mc",
+      "ref": "b-mc-m11-guard-as-built-failopen"
+     },
+     {
+      "kind": "mc",
+      "ref": "b-mc-m11-guard-reviewed"
+     },
+     {
+      "kind": "control",
+      "ref": "b-mc-m11-guard-control-failopen"
      }
     ],
     "gates": [
@@ -12222,9 +12586,13 @@
   },
   {
    "audit": {
-    "confidence": "medium",
-    "disposition": "confirmed-source",
+    "confidence": "high",
+    "disposition": "reproduced-live",
     "evidence": [
+     {
+      "kind": "live",
+      "ref": "b-10-live-cap"
+     },
      {
       "kind": "mc",
       "ref": "m10-routes-as-built-pagerank-cap"
@@ -12373,8 +12741,12 @@
   {
    "audit": {
     "confidence": "medium",
-    "disposition": "confirmed-source",
+    "disposition": "reproduced-live",
     "evidence": [
+     {
+      "kind": "live",
+      "ref": "b-10-live-scope2"
+     },
      {
       "kind": "inspected",
       "ref": "iris_vector_graph/_engine/algorithms.py:850-880"
@@ -12400,9 +12772,13 @@
   },
   {
    "audit": {
-    "confidence": "medium",
-    "disposition": "reproduced-model",
+    "confidence": "high",
+    "disposition": "reproduced-live",
     "evidence": [
+     {
+      "kind": "live",
+      "ref": "b-10-live-scope2"
+     },
      {
       "kind": "mc",
       "ref": "m10-degree-as-built"
@@ -15542,6 +15918,22 @@
    "evidence": [
     {
      "kind": "run",
+     "ref": "live-crash-world-r2"
+    }
+   ],
+   "gates": [
+    "3.7-integration-worlds",
+    "3.2-coverage"
+   ],
+   "id": "F-C1102",
+   "severity": "S2"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "run",
      "ref": "ib-HD1201-open-erasure"
     }
    ],
@@ -16015,6 +16407,243 @@
    ],
    "id": "F-C1804",
    "severity": "S1"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "fu-r01a-snapshot-copies"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher_api.py:668-678"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/snapshot.py:387-422"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/snapshot.py:1035"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/LedgerRedact.cls:504-508"
+    },
+    {
+     "kind": "live",
+     "ref": "c18-live-ledger-overlay"
+    }
+   ],
+   "gates": [
+    "3.8-spec-intent",
+    "3.8-findings-disposed",
+    "3.4-ownership"
+   ],
+   "id": "F-C1304",
+   "severity": "S2"
+  },
+  {
+   "confidence": "high",
+   "disposition": "confirmed-source",
+   "evidence": [
+    {
+     "kind": "run",
+     "ref": "fu-r01b-quarantine-erase-plan"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Eraser.cls:300-302"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Eraser.cls:752-758"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/schema.py:205-227"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/migrations/graph_scoped_embeddings.py:955-968"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/LedgerRedact.cls:504-508"
+    }
+   ],
+   "gates": [
+    "3.8-spec-intent",
+    "3.8-findings-disposed"
+   ],
+   "id": "F-C1305",
+   "severity": "S3"
+  },
+  {
+   "confidence": "medium",
+   "disposition": "confirmed-source",
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/legacy.py:606-646"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/schema.py:2223-2226"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/schema.py:2308"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/class_deploy.py:109-119"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/LedgerRedact.cls:351-376"
+    },
+    {
+     "kind": "inspected",
+     "ref": "docs/migration/v4.6.0.md:240-252"
+    },
+    {
+     "kind": "tested",
+     "ref": "tests/e2e/test_460_upgrade_ledger_history_e2e.py:1-60"
+    }
+   ],
+   "gates": [
+    "3.8-spec-intent",
+    "3.8-findings-disposed",
+    "3.7-integration-worlds"
+   ],
+   "id": "F-C1306",
+   "severity": "S1"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "fu-r03-marker-held-open"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/LedgerRedact.cls:202-211"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/LedgerRedact.cls:393-441"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/ledger/client.py:682-693"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher_api.py:628-643"
+    }
+   ],
+   "gates": [
+    "3.3-progress-controls",
+    "3.7-integration-worlds",
+    "3.8-findings-disposed"
+   ],
+   "id": "F-C1307",
+   "severity": "S2"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "fu-r04-temporal-only-live-b"
+    },
+    {
+     "kind": "live",
+     "ref": "fu-r04-temporal-only-live-a"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/LedgerRedact.cls:85-111"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/LedgerRedact.cls:149-178"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/LedgerApply.cls:617-639"
+    },
+    {
+     "kind": "inspected",
+     "ref": "docs/adr/0015-temporal-structural-rows-opt-out.md:10-14"
+    }
+   ],
+   "gates": [
+    "3.3a-writesets",
+    "3.7-integration-worlds",
+    "3.8-spec-intent",
+    "3.8-findings-disposed"
+   ],
+   "id": "F-C1308",
+   "severity": "S1"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "fu-r04-temporal-only-live-b"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Eraser.cls:322-348"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Eraser.cls:590-610"
+    }
+   ],
+   "gates": [
+    "3.7-integration-worlds",
+    "3.8-findings-disposed"
+   ],
+   "id": "F-C1203",
+   "severity": "S1"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "check",
+     "ref": "fu-r10-target-digest"
+    },
+    {
+     "kind": "live",
+     "ref": "fu-r01a-snapshot-copies"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/LedgerRedact.cls:56-59"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/LedgerRedact.cls:418-441"
+    }
+   ],
+   "gates": [
+    "3.8-spec-intent",
+    "3.8-findings-disposed"
+   ],
+   "id": "F-C1309",
+   "severity": "S3"
   }
  ],
  "not_implemented": [
@@ -16752,7 +17381,7 @@
    "source": "TRUST.md"
   }
  ],
- "registry_runs": 385,
+ "registry_runs": 552,
  "starting_inventory": {
   "cells": 904,
   "decisions": 61,
@@ -16765,8 +17394,8 @@
  "status_counts": {
   "blocked": 7,
   "closed": 110,
-  "not-applicable": 31,
-  "open": 409
+  "not-applicable": 32,
+  "open": 408
  },
  "submission": "9c3719c1",
  "writer_obligations": [
