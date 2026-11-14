@@ -11654,7 +11654,10 @@
    "findings": [
     "F-0705",
     "F-0706",
-    "F-C0701"
+    "F-C0701",
+    "F-C0715",
+    "F-C0716",
+    "F-C0717"
    ],
    "gate": "3.5-decoders",
    "level": "product",
@@ -11664,6 +11667,9 @@
      "finding F-0705",
      "finding F-0706",
      "finding F-C0701",
+     "finding F-C0715",
+     "finding F-C0716",
+     "finding F-C0717",
      "run b-07-f0705-f0707 (fail)",
      "run b-07-f0709 (fail)"
     ],
@@ -11788,10 +11794,19 @@
      "ref": "b-10-run-unit"
     }
    ],
+   "findings": [
+    "F-C1018"
+   ],
    "gate": "3.5-decoders",
    "level": "product",
    "module": "10",
-   "product_obligation": "unknown",
+   "product_basis": {
+    "fails": [
+     "finding F-C1018"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
    "reason": "JSON decoders (_scored_node_rows, UnreadableResultShape) and error maps (_raise_store_error, ALG-I5) are unit-tested (349 passed here).",
    "remaining": "Not verified.",
    "source": "modules/10.json",
@@ -12294,11 +12309,15 @@
     "experiment/playbook-completion/structural/frame/method.json"
    ],
    "evidence_grade": "registered-run",
+   "findings": [
+    "F-C0415"
+   ],
    "gate": "3.6-frame",
    "level": "product",
    "module": "04",
    "product_basis": {
     "fails": [
+     "finding F-C0415",
      "run st-check-frame-aggregate (fail)",
      "run st-live-frame-r8 (fail)"
     ],
@@ -15410,26 +15429,42 @@
    "status": "closed"
   },
   {
+   "as_built_findings": [
+    "F-0903"
+   ],
    "cited_runs": [
     "tr-controls-09",
+    "tr-controls-09-r2",
     "tr-oracle-selftest",
-    "tr-replay-09"
+    "tr-replay-09",
+    "tr-replay-09-r2"
    ],
    "evidence": [
+    "run:tr-replay-09-r2",
+    "run:tr-controls-09-r2",
     "run:tr-replay-09",
     "run:tr-controls-09",
     "run:tr-oracle-selftest",
     "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#09"
    ],
-   "evidence_grade": "trace",
+   "evidence_grade": "registered-run",
+   "findings": [
+    "F-0903"
+   ],
    "gate": "3.7-trace-replay",
    "level": "product",
    "module": "09",
-   "product_basis": "tr-replay-09: the gate machine matched a native/SQL comparison trace with no violation; the compiled-plan writer is not driven",
-   "product_obligation": "unknown",
-   "remaining": "planc, mode and used not driven: their steps compile generated IVGC classes at run time, which this lane does not trigger; F-0906's edge-only gate state needs DDL. Limits: sequential traces of one scenario per family (plus the caller-transaction interleavings named); bitmap chunks and ^odd* not replayed; a pass means the as-built machine matched these traces, not that the handler performs its step on every input.",
+   "product_basis": {
+    "fails": [
+     "finding F-0903",
+     "stated fails by matrix-input/trace-replay.json"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "F-0901 (two shapes on one 32-bit hash, needs a collision and a race), F-0905 (DropAll against a running build) and F-0902 (machine used: relationship-hash collision) not produced; F-0906 edge-only gate state needs DDL. Limits: sequential traces of one scenario per family (plus the caller-transaction interleavings named); bitmap chunks and ^odd*/routine globals not replayed; a pass means the as-built machine matched these traces, not that the handler performs its step on every input.",
    "source": "matrix-input/trace-replay.json",
-   "status": "open"
+   "status": "closed"
   },
   {
    "as_built_findings": [
@@ -15883,11 +15918,15 @@
    "status": "closed"
   },
   {
-   "cited_runs": [],
+   "cited_runs": [
+    "tr-locklog-09"
+   ],
    "evidence": [
+    "run:tr-locklog-09",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#09",
     "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#gaps"
    ],
-   "evidence_grade": "open",
+   "evidence_grade": "registered-run",
    "findings": [
     "F-0905"
    ],
@@ -15901,9 +15940,9 @@
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "^IVG.CypherCompiled(h) X:0 (Gen.cls:166-167) is taken only when the native executor compiles a plan class in job/sync mode; this lane does not trigger run-time class compilation, so the lock was not logged.",
+   "remaining": "DropAll takes no lock (as planned at the pin, F-0905) and was not logged against a running build. Lock polling sees holds of at least one poll period. Erratum to tr-locklog-09 observes: the cause of the 844 sync iterations that built nothing (\"the engine route then answered by SQL\") was not established.",
    "source": "matrix-input/trace-replay.json",
-   "status": "open"
+   "status": "closed"
   },
   {
    "cited_runs": [
@@ -16429,8 +16468,10 @@
    "findings": [
     "F-1112",
     "F-C0502",
+    "F-C0615",
     "F-C1002",
-    "F-C1706"
+    "F-C1706",
+    "F-C1716"
    ],
    "gate": "3.7-suites",
    "level": "product",
@@ -16439,8 +16480,10 @@
     "fails": [
      "finding F-1112",
      "finding F-C0502",
+     "finding F-C0615",
      "finding F-C1002",
      "finding F-C1706",
+     "finding F-C1716",
      "run val-contract-optin-1 (fail)",
      "run val-docs-run-1 (fail)",
      "run val-gated-1 (fail)",
@@ -17441,10 +17484,19 @@
    "evidence": [
     "findings/audit/04.json"
    ],
+   "findings": [
+    "F-C0415"
+   ],
    "gate": "5c-refusals",
    "level": "method",
    "module": "04",
-   "product_obligation": "unknown",
+   "product_basis": {
+    "fails": [
+     "finding F-C0415"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
    "remaining": "X statements not audited mechanically",
    "source": "modules/04.json",
    "status": "open"
@@ -17480,10 +17532,19 @@
    "evidence": [
     "findings/audit/06.json"
    ],
+   "findings": [
+    "F-C0615"
+   ],
    "gate": "5c-refusals",
    "level": "method",
    "module": "06",
-   "product_obligation": "unknown",
+   "product_basis": {
+    "fails": [
+     "finding F-C0615"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
    "remaining": "X statements not audited mechanically",
    "source": "modules/06.json",
    "status": "open"
@@ -17769,14 +17830,18 @@
     "F-1714"
    ],
    "findings": [
-    "F-1703"
+    "F-1703",
+    "F-C1715",
+    "F-C1716"
    ],
    "gate": "5c-refusals",
    "level": "method",
    "module": "17",
    "product_basis": {
     "fails": [
-     "finding F-1703"
+     "finding F-1703",
+     "finding F-C1715",
+     "finding F-C1716"
     ],
     "intent_undecided": []
    },
@@ -35161,6 +35226,241 @@
    "disposition": "reproduced-live",
    "evidence": [
     {
+     "kind": "live",
+     "ref": "rx-live-04"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Adjacency.cls:51-73"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Adjacency.cls:428-458"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Eraser.cls:225-235"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/TraversalBuild.cls:30-40"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/TraversalBuild.cls:155-163"
+    }
+   ],
+   "gates": [
+    "5c-refusals",
+    "3.6-frame"
+   ],
+   "id": "F-C0415",
+   "severity": "S4"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "rx-live-06"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/vector_utils.py:194-199"
+    },
+    {
+     "kind": "inspected",
+     "ref": "README.md:12-21"
+    }
+   ],
+   "gates": [
+    "5c-refusals",
+    "3.7-suites"
+   ],
+   "id": "F-C0615",
+   "severity": "S4"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "rx-live-17"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/schema_name.py:376-377"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/engine.py:384-390"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/engine.py:414-416"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/stores/iris_sql_store.py:4278-4279"
+    }
+   ],
+   "gates": [
+    "5c-refusals"
+   ],
+   "id": "F-C1715",
+   "severity": "S4"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "rx-live-17"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/admin.py:957-969"
+    },
+    {
+     "kind": "inspected",
+     "ref": "docs/API_REFERENCE.md:2686-2692"
+    }
+   ],
+   "gates": [
+    "5c-refusals",
+    "3.7-suites"
+   ],
+   "id": "F-C1716",
+   "severity": "S3"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "rx-dec-live-07"
+    },
+    {
+     "kind": "check",
+     "ref": "rx-dec-map"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/vector.py:1817-1819"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/BM25Index.cls:361-365"
+    }
+   ],
+   "gates": [
+    "3.5-decoders"
+   ],
+   "id": "F-C0715",
+   "severity": "S2"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "rx-dec-live-07"
+    },
+    {
+     "kind": "check",
+     "ref": "rx-dec-map"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/BM25Index.cls:626-633"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/vector.py:106-118"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_validate.py:163-179"
+    }
+   ],
+   "gates": [
+    "3.5-decoders"
+   ],
+   "id": "F-C0716",
+   "severity": "S4"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "rx-dec-live-07"
+    },
+    {
+     "kind": "check",
+     "ref": "rx-dec-map"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/BM25Index.cls:172-174"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/BM25Index.cls:608-614"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/vector.py:1777-1785"
+    }
+   ],
+   "gates": [
+    "3.5-decoders"
+   ],
+   "id": "F-C0717",
+   "severity": "S4"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "rx-dec-live-10"
+    },
+    {
+     "kind": "check",
+     "ref": "rx-dec-map"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/stores/iris_sql_store.py:636"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/stores/iris_sql_store.py:662-676"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/algorithms.py:816-828"
+    }
+   ],
+   "gates": [
+    "3.5-decoders"
+   ],
+   "id": "F-C1018",
+   "severity": "S4"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
      "kind": "inspected",
      "ref": "iris_src/src/Graph/KG/EmbedQueue.cls:112-134"
     },
@@ -37256,16 +37556,16 @@
   }
  ],
  "product_counts": {
-  "fails": 400,
+  "fails": 404,
   "holds-as-detection": 36,
   "holds-in-model-only": 1,
   "holds-inspected": 69,
   "holds-live": 9,
   "intent-undecided": 6,
   "n/a": 33,
-  "unknown": 198
+  "unknown": 194
  },
- "registry_runs": 1262,
+ "registry_runs": 1269,
  "starting_inventory": {
   "cells": 904,
   "decisions": 61,
@@ -37277,9 +37577,9 @@
  },
  "status_counts": {
   "blocked": 25,
-  "closed": 584,
+  "closed": 586,
   "not-applicable": 35,
-  "open": 108
+  "open": 106
  },
  "submission": "9c3719c1",
  "writer_obligations": [

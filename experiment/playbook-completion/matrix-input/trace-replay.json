@@ -174,8 +174,10 @@
   {
    "gate": "3.7-trace-replay",
    "module": "09",
-   "status": "open",
+   "status": "closed",
    "evidence": [
+    "run:tr-replay-09-r2",
+    "run:tr-controls-09-r2",
     "run:tr-replay-09",
     "run:tr-controls-09",
     "run:tr-oracle-selftest",
@@ -183,10 +185,12 @@
    ],
    "evidence_grade": "trace",
    "level": "product",
-   "product_obligation": "unknown",
-   "product_basis": "tr-replay-09: the gate machine matched a native/SQL comparison trace with no violation; the compiled-plan writer is not driven",
-   "as_built_findings": [],
-   "remaining": "planc, mode and used not driven: their steps compile generated IVGC classes at run time, which this lane does not trigger; F-0906's edge-only gate state needs DDL. Limits: sequential traces of one scenario per family (plus the caller-transaction interleavings named); bitmap chunks and ^odd* not replayed; a pass means the as-built machine matched these traces, not that the handler performs its step on every input."
+   "product_obligation": "fails",
+   "product_basis": "tr-replay-09-r2 (AUDITC): planc matched a sync/job/DropAll trace (26 actions, every generated class equal to its entry lines); mode: a read under the unknown namespace mode OFF built its plan class in the reader (NAT-X12 violated, F-0903 reproduced); gate matched (AUDITE)",
+   "as_built_findings": [
+    "F-0903"
+   ],
+   "remaining": "F-0901 (two shapes on one 32-bit hash, needs a collision and a race), F-0905 (DropAll against a running build) and F-0902 (machine used: relationship-hash collision) not produced; F-0906 edge-only gate state needs DDL. Limits: sequential traces of one scenario per family (plus the caller-transaction interleavings named); bitmap chunks and ^odd*/routine globals not replayed; a pass means the as-built machine matched these traces, not that the handler performs its step on every input."
   },
   {
    "gate": "3.7-trace-replay",
@@ -459,16 +463,18 @@
   {
    "gate": "3.7-lock-log",
    "module": "09",
-   "status": "open",
+   "status": "closed",
    "evidence": [
+    "run:tr-locklog-09",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#09",
     "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#gaps"
    ],
-   "evidence_grade": "open",
+   "evidence_grade": "live",
    "level": "product",
    "product_obligation": "unknown",
-   "product_basis": "not observed",
+   "product_basis": "tr-locklog-09 (AUDITC): the build lock ^IVG.CypherCompiled(h) is held exclusively by the builder (the reader in sync mode, the job in job mode) and taken with no wait (Lock :0): a sync read meeting it held elsewhere compiles nothing and answers (observed in sampled runs; the plan adequacy is a separate question)",
    "as_built_findings": [],
-   "remaining": "^IVG.CypherCompiled(h) X:0 (Gen.cls:166-167) is taken only when the native executor compiles a plan class in job/sync mode; this lane does not trigger run-time class compilation, so the lock was not logged."
+   "remaining": "DropAll takes no lock (as planned at the pin, F-0905) and was not logged against a running build. Lock polling sees holds of at least one poll period. Erratum to tr-locklog-09 observes: the cause of the 844 sync iterations that built nothing (\"the engine route then answered by SQL\") was not established."
   },
   {
    "gate": "3.7-lock-log",

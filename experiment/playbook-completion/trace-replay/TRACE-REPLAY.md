@@ -1,6 +1,6 @@
 # Trace replay through the breadth machines, and lock logs against the lock plans (playbook §3.7)
 
-Lane: trace-replay (steer 7, Q17h). Namespace AUDITE only (deployed by the pin's own `initialize_schema`, 11:17 UTC).
+Lane: trace-replay (steer 7, Q17h). Namespace AUDITE (deployed by the pin's own `initialize_schema`, 11:17 UTC); module 09's compiled-plan follow-up ran in AUDITC, as the orchestrator assigned.
 Product pin `3eaa79cf`, unchanged; nothing compiled into IRIS by the lane (the only writes are the product's own,
 through its public API or deployed `Graph.KG` class methods, plus the lane's resets and the two harness steps named
 below). Raw traces, reports and logs: `$RUN_DIR/trace-replay/`.
@@ -59,9 +59,10 @@ after the release. The plan is the `locks` entries of `footprints/NN.json` and t
 ### Limits (apply to every module)
 - One scenario per family; sequential steps (plus the open-caller-transaction interleavings named per module). A
   replay pass says the as-built machine matched these traces, not that the handler performs its step on every input.
-- Bitmap index chunks (`BitSET` records: the journal reader reports the bit's value, not its position) and the SQL
-  class dictionary (`^odd*`, written by the product's own DDL for routed tables) are not replayed; every other node of
-  AUDITE is.
+- Bitmap index chunks (`BitSET` records: the journal reader reports the bit's value, not its position), the SQL
+  class dictionary (`^odd*`, written by the product's own DDL for routed tables) and the routine globals a class
+  compile writes (`^rMAC`, `^rINC`, `^rOBJ`, `^rMAP`, `^rINDEX`, `^ROUTINE`; module 09's plan classes) are not
+  replayed; every other node of the namespace is.
 - Values the Native API cannot read as bytes (`$vector`) are compared by presence only.
 - Lock polling sees a lock held at least one poll period (20-60 µs); shorter holds (Degree's exclusive probe, the
   release between two redaction batches) are not seen; the block probes cover those cases where it matters.
@@ -273,13 +274,45 @@ Run ids: `tr-replay-NN` (the replay of all the module's scenarios, as built and 
   exclusively a CREATE waited 5.0 s at WriterLock holding its node, label, property, edge and unique-index row locks,
   then completed. Holds.
 
-### 09 native executor — `gate` (m09.rs:460-516)
+### 09 native executor — `gate` (m09.rs:460-516), `planc`, `mode`
 - `gate`: native count read (process compile mode "off") compared with the SQL path, SET n:TRL, read, REMOVE n:TRL,
   read. 5 steps, 29 records, 5 actions; matches; no finding expected (both indexes declared, so F-0906's edge-only
   state is not reached without DDL). Controls 3/3.
-- `planc`, `mode`, `used` not driven: in job/sync mode the executor compiles generated classes (IVGC.P<h>) into the
-  namespace at run time, which this lane does not trigger. For the same reason the lock log (`^IVG.CypherCompiled(h)`
-  X:0, Gen.cls:166-167) was not taken.
+- Follow-up in **AUDITC** (orchestrator scope decision: the native executor compiling its own generated plan classes
+  IVGC.P<h> at run time is the product's normal operation, run through the product's real entry points; not a product
+  change and not an audit helper). Machines `planc` (m09.rs:73-306) and `mode` (m09.rs:334-397) transcribed in
+  `families_09.py`; scenarios in `m09.py` (`TR_NAMESPACE=AUDITC`). The generated classes are observed with a read-only
+  `%Dictionary` query (class names, and each class's Walk1 text compared with its entry's lines) before and after
+  every step.
+- `planc` (`tr-replay-09-r2`): shape T9A read in sync mode (built in the reader), read again (compiled, no write),
+  shape T9B read in job mode (the default; built by a background job, process 146325, identified as the other writer
+  of that read's entry in the step's journal window: Gen.For starts it with Job, Gen.cls:96, and it exits before the
+  lock or process tables can be read), read again, `Gen.DropAll` (what a deploy runs), T9A in sync mode again.
+  6 steps, 151 records, 26 actions; matches as built (every class's Walk1 equal to its entry's lines), replay equals
+  engine, no invariant violated (sequential, distinct hashes: F-0901 needs two shapes on one 32-bit hash and a race,
+  F-0905 a DropAll during a build); reviewed design does not diverge on this trace. Controls 3/3
+  (`tr-controls-09-r2`): the dropped record is a plan line, named by `m09.CONTROL_PAIRS`, because the default first SET
+  (For's "pending") is overwritten by its build in the same step with no journaled old value, a loss no oracle can see.
+- `mode` (`tr-replay-09-r2`): one reader process; namespace mode `^IVG.CypherGen("mode")` set to "OFF" (a plain global
+  Set, as an operator configures it, docs/ADMIN_GUIDE.md:774-779), then "off", then unset; process mode "sync" through
+  `Gen.Mode`, then "OFF" (refused). 11 steps, 203 records, 11 actions; matches as built. **F-0903 reproduced**: under
+  the unknown namespace value "OFF" the read built its plan class in the reader (NAT-X12); "off" built nothing; unset
+  built in a job; sync built in the reader; the refused "OFF" left the process mode sync (NAT-X11 holds). Reviewed
+  diverges at the "OFF" read (it builds nothing). Controls 3/3.
+- Generated classes the product compiled into AUDITC in this follow-up (all deleted again by `Gen.DropAll`; none left
+  at the end, read-only check `classes_after_dropall` = {}): IVGC.P1545987341 (shape T9A), IVGC.P1700612173 (T9B),
+  IVGC.P1878188304 (T9M1, built under "OFF"), IVGC.P1101146256 (T9M3, job), IVGC.P612046544 (T9M4), IVGC.P861106704
+  (T9M5), IVGC.P2934912205 (T9L, lock log). Compiles: planc 3 and mode 4 per capture, captured twice (the first
+  capture was superseded after a fix of the harness's line decoding and job-pid attribution: 14), and the lock log
+  97 (1 setup + 11 sync + 85 job builds): 111 compiles of 7 class names.
+- Lock log (`tr-locklog-09`): DropAll + sync read in a loop (855 iterations, 11 of which built a class): the reader
+  held only `^IVG.CypherCompiled(2934912205)` exclusively while compiling (the scan also saw the class-dictionary lock
+  of the compile); DropAll + job read (91 iterations, 85 builds): the reader held no build lock and 85 build jobs (one
+  process each) held it exclusively; with the lock held by a probe a sync read did not wait (Lock :0,
+  Gen.cls:166-167), compiled nothing, left the entry pending and answered in 0.055 s. Holds. Erratum: the run
+  record's "(11 built: the engine route then answered by SQL)" states a cause that was not established; only the
+  count is observed.
+- `used` (F-0902, a relationship-hash collision in the interpreter) not driven.
 
 ### 10 algorithms — `cache` (m10.rs:99-303), `degree` (m10.rs:653-697)
 - `cache`: PPR from tr10x before the node exists, create_node with no edge, PPR, delete_node, PPR, delete_edge, PPR.
@@ -307,11 +340,9 @@ Run ids: `tr-replay-NN` (the replay of all the module's scenarios, as built and 
 - 11: `stats` (F-1102) and the concurrent cases of enable (F-1104) and adopt (F-1103) not produced.
 - 15: blocked-access (FHIR server classes) and unrepresentable (reification has no machine).
 - 16: TCP/WebSocket Bolt transports; 17: the server-side re-run (F-C1604); 18: snapcut's commit and delete paths.
-- 07: bm25 Upgrade/Crash and the I5 race (F-0701); Leg Fusion/Retrieve. 08: Txn CallerRollback; a model-detectable
-  reorder control for 08/readonly. 10: nkg, routes, walk; concurrent cache interleavings.
-- 09: `planc`/`mode`/`used` replay and the lock log of `^IVG.CypherCompiled(h)` X:0: both need the native executor's
-  job/sync mode, which compiles generated classes at run time (not triggered by this lane); F-0906's edge-only state
-  needs DDL.
+- 07: bm25 Upgrade/Crash and the I5 race (F-0701); Leg Fusion/Retrieve. 08: Txn CallerRollback. 10: nkg, routes, walk; concurrent cache interleavings.
+- 09: F-0901 (shape-hash collision with a race), F-0905 (DropAll against a running build) and the `used` machine
+  (F-0902) not produced; F-0906's edge-only state needs DDL.
 - Every replay: sequential traces of one scenario per family.
 - Footprint-file gaps found by the frame check (files, not product): `footprints/03.json` delete_node omits
   `^IVG.Ledger`, `^NKG`, `^IVG.AlgoCache`; create_node omits `Graph_KG.ledger_stats` (a strict-mode refusal's counter);
@@ -325,6 +356,8 @@ Run ids: `tr-replay-NN` (the replay of all the module's scenarios, as built and 
 (control; pass, 08 fail as above); `tr-locklog-01, 02, 03, 04, 05, 06, 08, 10, 13, 13b, 18` (live, pass).
 Follow-up (after commit e8a3ab67): `tr-replay-01-r2` (trace, pass), `tr-controls-01-r2` (control, pass),
 `tr-controls-08-r2` (control, pass; supersedes `tr-controls-08`, which stays as recorded).
+Module 09 follow-up (AUDITC): `tr-replay-09-r2` (trace, pass), `tr-controls-09-r2` (control, pass), `tr-locklog-09`
+(live, pass). The ids `tr-replay-09` and `tr-controls-09` were already registered for the gate scenario and are kept.
 New finding: F-C0330 (`findings/audit/zz-trace-replay.json`).
 
 ## 6. Files

@@ -1,0 +1,15 @@
+{
+  "command": "TR_NAMESPACE=AUDITC trace-replay/run.py capture 09 planc mode (locks.sh iris); run.py check 09",
+  "experiment_head": "ac8eb8a9aa124e438f3c7e0c0e765fed162f06d3",
+  "id": "tr-replay-09-r2",
+  "kind": "trace",
+  "lane": "trace-replay",
+  "log": "$RUN_DIR/trace-replay/logs/tr-replay-09-r2.log",
+  "log_bytes": 2345,
+  "log_sha256": "cab3faeee4cb4d144bea2c9e8da45f630acfafd30e65e2d76e773afcef85a4da",
+  "observes": "Module 09 compiled plans in AUDITC (orchestrator scope decision: the native executor compiling its own generated plan classes at run time is the product normal operation). planc (6 steps, 151 journal records): shape T9A read in sync mode (built in the reader: IVGC.P1545987341), read again (compiled, no write), shape T9B read in job mode (built by the job process 146325, found as the other writer of that entry in the step journal window: IVGC.P1700612173), read again, Gen.DropAll (both classes deleted, entries killed), T9A in sync mode again (IVGC.P1545987341 compiled anew); replayed through planc (breadth-b, as built): 26 actions all enabled and matching, each class Walk1 text equal to its entry lines, replay equals the engine, no invariant violated (sequential, no collision; F-0901/F-0905 need a collision or a race), reviewed design no divergence. mode (11 steps, 203 records), one reader process: namespace mode OFF then off then unset, process mode sync then OFF (refused by Gen.Mode); replayed through mode (as built): 11 actions matching; under namespace mode OFF the read built its plan class in the reader (IVGC.P1878188304): NAT-X12 violated, F-0903 reproduced; off built nothing; unset built in a job (IVGC.P1101146256, pid 146499); sync built in the reader (IVGC.P612046544, IVGC.P861106704); the refused OFF left the process mode sync (NAT-X11 holds). Gate scenario (AUDITE) unchanged",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T15:22:59+00:00",
+  "result": "pass"
+}

@@ -136,6 +136,26 @@ ITEMS: Dict[str, List[Tuple[str, Callable[[Dict], Tuple[bool, str]]]]] = {
          lambda L: (P(L, "rebuild_nkg vs ^IVG.NKGBuild held exclusively")["waited"],
                     f"wait at {P(L, 'rebuild_nkg vs ^IVG.NKGBuild held exclusively')['wait_at']}, x {P(L, 'rebuild_nkg vs ^IVG.NKGBuild held exclusively')['x']}")),
     ],
+    "09": [
+        ("sync builds: the reader holds ^IVG.CypherCompiled(h) exclusively while it compiles (Gen.cls:166, released "
+         ":172/:180/:220) and no other polled IVG lock",
+         lambda L: (lambda w: (any(n.startswith("^IVG.CypherCompiled(") and m == "X" for n, m in w["summary"]["held"])
+                               and all(n.startswith("^IVG.CypherCompiled(") for n, _ in w["summary"]["held"])
+                               and w["work"]["builds_ok"] >= 1,
+                               f"held {w['summary']['held']}, builds {w['work']['builds_ok']}/{w['work']['iterations']}, "
+                               f"others {w['held_by_other_processes']}"))(W(L, "DropAll + read (sync)"))),
+        ("job builds: the build lock is held by another process (the job), never by the reader",
+         lambda L: (lambda w: (not any(n.startswith("^IVG.CypherCompiled") for n, _ in w["summary"]["held"])
+                               and any(n.startswith("^IVG.CypherCompiled(") and m == "X" for n, m, _ in w["held_by_other_processes"])
+                               and w["work"]["builds_ok"] >= 1,
+                               f"reader held {w['summary']['held']}, held by others {w['held_by_other_processes']}, "
+                               f"builds {w['work']['builds_ok']}/{w['work']['iterations']}"))(W(L, "DropAll + read (job)"))),
+        ("with ^IVG.CypherCompiled(h) held by another process, a sync read does not wait (Lock :0), compiles nothing, "
+         "leaves the entry pending and is answered",
+         lambda L: (lambda p: (not p["waited"] and "error" not in p["x"] and "'status': 'pending'" in p["x"].get("result", "")
+                               and "'classes': 0" in p["x"].get("result", ""),
+                               f"waited {p['waited']}, x {p['x']}"))(P(L, "sync read vs ^IVG.CypherCompiled(h) held exclusively"))),
+    ],
     "13": [
         ("the redaction holds ^IVG.Ledger(\"head\") exclusively and no other IVG lock (poll and scan)",
          lambda L: (all(n == '^IVG.Ledger("head")' and m == "X" for n, m in W(L, "Redact batch=1")["summary"]["held"])

@@ -48,8 +48,10 @@ for p in (str(ROOT / "tools"), str(ROOT / "traces"), str(REPO)):
 
 import journal  # noqa: E402
 
-NS = "AUDITE"
-DB = "/usr/irissys/mgr/audite/"
+# the lane's namespace (AUDITE); a follow-up may name another one the orchestrator assigned (TR_NAMESPACE=AUDITC
+# for module 09's compiled plans)
+NS = os.environ.get("TR_NAMESPACE", "AUDITE")
+DB = f"/usr/irissys/mgr/{NS.lower()}/"
 OPAQUE = "<opaque>"
 LANE = "trace-replay"
 
@@ -196,12 +198,15 @@ def _looks_like_list(raw: bytes) -> bool:
 
 # ------------------------------------------------------------------------------------------------ live capture
 
+CATALOG_ROOTS = ("^odd", "^rMAC", "^rINC", "^rOBJ", "^rMAP", "^rINDEX", "^ROUTINE", "^mtemp")
+
+
 def roots_of(c) -> List[str]:
     rows = c.sql(f"SELECT Name FROM %SYS.GlobalQuery_NameSpaceList('{NS}','*',0)")
     out = []
     for (name,) in rows:
         g = "^" + str(name)
-        if g.startswith(journal.SYSTEM_GLOBAL_PREFIXES):
+        if g.startswith(journal.SYSTEM_GLOBAL_PREFIXES) or g.startswith(CATALOG_ROOTS):
             continue
         out.append(g)
     return sorted(out)
@@ -403,7 +408,9 @@ class Store:
 BITMAP = "<bitmap>"
 # class-dictionary globals a product DDL statement writes (traces/journal.py's system list lacks ^oddTSQL): the SQL
 # catalog, not data any machine reads; dropped from the replay like the other system globals
-CATALOG = ("^odd",)
+CATALOG = ("^odd", "^rMAC", "^rINC", "^rOBJ", "^rMAP", "^rINDEX", "^ROUTINE", "^mtemp")
+# (the code globals were added for module 09: the native executor compiles its generated plan classes IVGC.P<h> at
+# run time, which writes the class dictionary and the routine globals of the namespace)
 
 
 def apply(d: Dict[Tuple, str], rec: Dict) -> None:
@@ -642,7 +649,7 @@ def check(trace: Dict, families: List[Family], footprint: Dict[str, set], quiet:
     bitmaps = {k for k, v in store.d.items() if v == BITMAP}
     rep["bitmap_nodes_not_replayed"] = len(bitmaps)
     for k in set(store.d) | set(final):
-        if k[0] not in roots or k in bitmaps:
+        if k[0] not in roots or k in bitmaps or k[0].startswith(CATALOG):
             continue
         a, b = store.d.get(k), final.get(k)
         if a == b:
@@ -665,7 +672,9 @@ def check(trace: Dict, families: List[Family], footprint: Dict[str, set], quiet:
 # ------------------------------------------------------------------------------------------------ controls
 
 def mutate(trace: Dict, kind: str, families: List[Family], footprint: Dict[str, set],
-           pair: Optional[Tuple[int, int]] = None) -> Tuple[Dict, str]:
+           pair: Optional[Any] = None) -> Tuple[Dict, str]:
+    """`pair`: for reordered-transaction the two steps to swap; for dropped-record a substring the dropped record's
+    global reference must contain (both named by a scenario, CONTROL_PAIRS; default: the first candidate)."""
     """Seeded trace defects. Returns (mutated trace, description). Raises LookupError when not applicable."""
     t = copy.deepcopy(trace)
     for f in families:
@@ -675,7 +684,7 @@ def mutate(trace: Dict, kind: str, families: List[Family], footprint: Dict[str, 
     if kind == "dropped-record":
         for i, seg in enumerate(segs):
             for j, r in enumerate(seg):
-                if rel(r) and r["t"].startswith("SET") and not r.get("opaque"):
+                if rel(r) and r["t"].startswith("SET") and not r.get("opaque") and (pair is None or pair in r["g"]):
                     del seg[j]
                     t["_segments"] = segs
                     return t, f"dropped record {r['a']} {r['t']} {r['g'][:80]} of step {i} {t['steps'][i]['op']}"

@@ -384,7 +384,71 @@ def m01() -> Dict:
     return res
 
 
-RUNS = {"01": m01, "13b": m13b, "02": m02, "03": m03, "04": m04, "05": m05, "06": m06, "08": m08, "10": m10, "13": m13, "18": m18}
+def m09() -> Dict:
+    """Compiled-plan build lock ^IVG.CypherCompiled(h) X:0 (Gen.cls:166-167), in AUDITC (TR_NAMESPACE=AUDITC; the
+    orchestrator's scope decision: the executor compiling its own plan classes at run time is the product's normal
+    operation). Each workload iteration runs Gen.DropAll (what a deploy runs) and a native read of one shape, so the
+    shape is built again: in sync mode by the reader, in job mode by a background job."""
+    import m09 as M
+    reset()
+    before = M._data(["T9L"])
+    c = Conn(trlib.NS)
+    try:
+        c.call("Graph.KG.Cypher.Gen", "Mode", "sync")
+        engine(c).execute_cypher(M.q_of("T9L"))
+        h = [k for k, v in M.entries(c).items() if v[2] == "ok"][0]
+        compiled_once = M.ivgc(c)
+        c.call("Graph.KG.Cypher.Gen", "DropAll")
+    finally:
+        c.close()
+    names = [f"^IVG.CypherCompiled({h})", "^IVG.CypherCompiled", '^IVG.Ledger("head")', "^IVG.AdjW"]
+    res = {"plan_names": names, "workloads": {}, "probes": {}, "hash": h, "classes_before": before,
+           "compiled_in_setup": compiled_once}
+
+    def builds(mode):
+        def work(x, deadline):
+            e = engine(x)
+            done, oks = 0, 0
+            while time.time() < deadline:
+                x.call("Graph.KG.Cypher.Gen", "DropAll")
+                x.call("Graph.KG.Cypher.Gen", "Mode", mode)
+                e.execute_cypher(M.q_of("T9L"))
+                t0 = time.time()
+                while time.time() - t0 < 60:
+                    st = M.entries(x).get(h, (None, None, None))[2]
+                    if st != "pending":
+                        break
+                    time.sleep(0.02)
+                oks += int(st == "ok")
+                done += 1
+            return {"iterations": done, "builds_ok": oks, "classes_now": M.ivgc(x)}
+        return work
+    for mode in ("sync", "job"):
+        w = locklog.run_workload(names, 8, builds(mode))
+        others = sorted({(e["name"], e["mode"], e["owner"]) for e in w["log"]["events"]
+                         if e["mode"] and e["owner"] and e["owner"] != w["pid"]})
+        w["held_by_other_processes"] = [list(x) for x in others]
+        res["workloads"][f"DropAll + read ({mode})"] = w
+
+    def blocked_read(x):
+        x.call("Graph.KG.Cypher.Gen", "DropAll")
+        x.call("Graph.KG.Cypher.Gen", "Mode", "sync")
+        r = engine(x).execute_cypher(M.q_of("T9L"))
+        return {"rows": [list(y) for y in (r.rows or [])], "status": M.entries(x).get(h, (None, None, None))[2],
+                "classes": len(M.ivgc(x))}
+    res["probes"]["sync read vs ^IVG.CypherCompiled(h) held exclusively"] = locklog.block_probe(
+        ["^IVG.CypherCompiled", h], "", blocked_read, hold=4.0)
+    c = Conn(trlib.NS)
+    try:
+        c.call("Graph.KG.Cypher.Gen", "DropAll")
+        c.call("Graph.KG.Cypher.Gen", "Mode", "")
+        res["classes_after_dropall"] = M.ivgc(c)
+    finally:
+        c.close()
+    return res
+
+
+RUNS = {"09": m09, "01": m01, "13b": m13b, "02": m02, "03": m03, "04": m04, "05": m05, "06": m06, "08": m08, "10": m10, "13": m13, "18": m18}
 
 
 def main() -> int:
