@@ -1,0 +1,165 @@
+{
+ "lane": "models-2 (orchestrator merged the lane's cell proposals as supplements so earlier evidence stays cited)",
+ "sources": [
+  "proofs-pa3/MATRIX-INPUT.json",
+  "models/core-partition/MATRIX-CELLS.json"
+ ],
+ "supplements": [
+  {
+   "gate": "3.3-refinement",
+   "module": "11",
+   "add_evidence": [
+    "run:proofs-pa3-baseline",
+    "run:proofs-pa3-recheck",
+    "run:proofs-breadth-baseline",
+    "experiment/playbook-completion/proofs-pa3/PROOFS.md"
+   ],
+   "as_built_findings": [
+    "F-0801",
+    "F-1108",
+    "F-1201",
+    "F-C1101"
+   ],
+   "add_remaining": "[proofs-pa3] model-level only: no proof connects the ObjectScript/Python to the L2 machines (D-2, D-3); P-A3 is no longer a premise (D-13 paid at model level: in the reviewed model it is the proved invariant er_ok under R11-7); premises the pin violates: P-L4, P-L6; one erasure at a time (P-E1), erasures inside a caller transaction, EraseNodes/EraseIdSet/EraseAll not modelled; L1 admits an erasure that commits after strict mode is switched on (SetStrict takes no lock)"
+  },
+  {
+   "gate": "3.3-controls",
+   "module": "11",
+   "add_evidence": [
+    "run:proofs-pa3-f0801-ttl-cache",
+    "run:proofs-pa3-f0801-fail-open",
+    "run:proofs-pa3-f1108-unguarded-bulk-delete",
+    "run:proofs-pa3-fc1101-stats-whole-row",
+    "run:proofs-pa3-f1201-erase-no-head-lock",
+    "run:proofs-pa3-recheck",
+    "experiment/playbook-completion/proofs-pa3/PROOFS.md"
+   ],
+   "as_built_findings": [
+    "F-0801",
+    "F-1108",
+    "F-1201",
+    "F-C1101"
+   ],
+   "add_remaining": "[proofs-pa3] model-level only: no proof connects the ObjectScript/Python to the L2 machines (D-2, D-3); F-1102's lost updates have no separate counterexample (as in proofs-breadth)"
+  },
+  {
+   "gate": "3.3-refinement",
+   "module": "04",
+   "add_evidence": [
+    "run:proofs-pa3-baseline",
+    "run:proofs-pa3-recheck",
+    "run:proofs-breadth-baseline",
+    "experiment/playbook-completion/proofs-pa3/PROOFS.md"
+   ],
+   "as_built_findings": [
+    "F-0401",
+    "F-C0401",
+    "F-C1202"
+   ],
+   "add_remaining": "[proofs-pa3] model-level only: no proof connects the ObjectScript/Python to the L2 machines (D-2, D-3); premises the pin violates: P-A4 (rebuilds, F-C0402); one eraser per graph (P-E1, a consequence of R04-5 in the reviewed model); the row DELETE's functional-index effect not modelled (P-E3); F-C1202 not reproduced live; progress of R04-5 (exclusive lock vs a writer's row lock) not modelled"
+  },
+  {
+   "gate": "3.3-controls",
+   "module": "04",
+   "add_evidence": [
+    "run:proofs-pa3-fc0401-write-before-gen",
+    "run:proofs-pa3-hd0401-erase-kills-gen",
+    "run:proofs-pa3-hd0401-rebuild-kills-gen",
+    "run:proofs-pa3-fc1202-erase-unguarded",
+    "run:proofs-pa3-recheck",
+    "experiment/playbook-completion/proofs-pa3/PROOFS.md"
+   ],
+   "as_built_findings": [
+    "F-0401",
+    "F-C0401",
+    "F-C1202"
+   ],
+   "add_remaining": "[proofs-pa3] model-level only: no proof connects the ObjectScript/Python to the L2 machines (D-2, D-3); two concurrent rebuilds (F-C0402) are still not a control here (L2 admits one rebuild)"
+  },
+  {
+   "gate": "3.3-controls",
+   "module": "12",
+   "add_evidence": [
+    "run:proofs-pa3-f1201-erase-no-head-lock",
+    "run:proofs-pa3-fc1202-erase-unguarded",
+    "run:proofs-pa3-recheck",
+    "experiment/playbook-completion/proofs-pa3/PROOFS.md"
+   ],
+   "as_built_findings": [
+    "F-1201",
+    "F-C1202"
+   ],
+   "add_remaining": "[proofs-pa3] model-level only: no proof connects the ObjectScript/Python to the L2 machines (D-2, D-3); the two modules' L2s are separate machines of the same EraseGraph (no single composed machine; the core lane's M2 explorer model composes them, bounded)"
+  },
+  {
+   "gate": "3.3-cost",
+   "module": "product",
+   "add_evidence": [
+    "run:proofs-pa3-baseline",
+    "experiment/playbook-completion/proofs-pa3/PROOFS.md"
+   ],
+   "add_remaining": ""
+  },
+  {
+   "gate": "3.3-model-check",
+   "module": "13",
+   "add_evidence": [
+    "run:m2p-reviewed-22",
+    "run:m2p-as-built-F1304-22",
+    "run:m2p-as-built-F1305-22",
+    "run:m2p-as-built-isolation-stmt-22",
+    "run:m2p-control-liveness-collapsed-22",
+    "run:m2p-control-dropstatements-all-graphs-22",
+    "run:m2p-coverage-keys",
+    "run:m2p-coverage-keys-control",
+    "run:m2p-union-a-reviewed",
+    "run:m2p-union-b-reviewed",
+    "run:m2p-union-b-as-built",
+    "run:m2p-union-c-reviewed",
+    "run:m2p-union-control",
+    "run:m2p-fidelity",
+    "run:m2p-full-reviewed-22",
+    "run:m2p-full-as-built-isolation-stmt-22",
+    "experiment/playbook-completion/models/core-partition/MODELS.md"
+   ],
+   "as_built_findings": [
+    "F-1304",
+    "F-1305"
+   ],
+   "add_remaining": "[proofs-pa3] M1 profiles beyond (2, 2) and (0, 3), e.g. (1, 3), (2, 3); M1's world (three ids, two graphs, three edges; no temporal edges; labels and properties folded into node rows); concurrency is M2's (bounded separately); no code-to-model correspondence (PROOF-DEBT D-2, D-3)."
+  },
+  {
+   "gate": "3.3-model-check",
+   "module": "12",
+   "add_evidence": [
+    "run:m2p-reviewed-22",
+    "run:m2p-as-built-isolation-stmt-22",
+    "run:m2p-control-dropstatements-all-graphs-22",
+    "run:m2p-coverage-keys",
+    "run:m2p-full-reviewed-22",
+    "run:m2p-full-as-built-isolation-stmt-22",
+    "experiment/playbook-completion/models/core-partition/MODELS.md"
+   ],
+   "as_built_findings": [
+    "F-1201",
+    "F-C1202"
+   ],
+   "add_remaining": "[proofs-pa3] as module 13; erasure under concurrency is M2's bounded check and D-13 (proofs-pa3), not M1's."
+  },
+  {
+   "gate": "3.3-model-check",
+   "module": "14",
+   "add_evidence": [
+    "run:m2p-reviewed-22",
+    "run:m2p-full-reviewed-22",
+    "run:m2p-coverage-keys",
+    "experiment/playbook-completion/models/core-partition/MODELS.md"
+   ],
+   "as_built_findings": [
+    "F-1304",
+    "F-1305"
+   ],
+   "add_remaining": "[proofs-pa3] as module 13; the as-built RPL-B3 violation was not re-run per piece (its registered run uses the (2, 3) violation bound)."
+  }
+ ]
+}

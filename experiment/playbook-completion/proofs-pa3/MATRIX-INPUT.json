@@ -1,0 +1,212 @@
+{
+  "lane": "models-2",
+  "items": {
+    "D-13": "proofs-pa3 (cells 1-6)",
+    "D-10": "models/core-partition (cells from models/core-partition/MATRIX-CELLS.json, merged unchanged)"
+  },
+  "note": "Proposals only. Every result is about models; no reviewed guard (R11-7, R04-5, HD-1303/HD-1304) exists at the pin.",
+  "cells": [
+    {
+      "gate": "3.3-refinement",
+      "module": "11",
+      "status": "closed",
+      "evidence": [
+        "run:proofs-pa3-baseline",
+        "run:proofs-pa3-recheck",
+        "run:proofs-breadth-baseline",
+        "experiment/playbook-completion/proofs-pa3/PROOFS.md"
+      ],
+      "evidence_grade": "proved (Verus --no-cheating, empty trust inventory; about models)",
+      "level": "model",
+      "product_obligation": "fails",
+      "product_basis": "the reviewed L2 (now with EraseGraph's steps EStart/ERows/EClean/ECommit/EAbort interleaving with ledger commits, nested commits and engine writes) refines L1 for all 16 labels under guard R11-7 (EraseGraph holds the ledger head lock from before its row DELETE to its end), which the pin lacks (Eraser.cls:47-261 takes no lock). As built, the module-11 controls encode the pin's behaviour, each with a proved counterexample; F-0801, F-1108, F-C1101 and F-1201 are reproduced live (F-1201: live-f1201-reproduced, 8/8)",
+      "as_built_findings": [
+        "F-0801",
+        "F-1108",
+        "F-C1101",
+        "F-1201"
+      ],
+      "remaining": "model-level only: no proof connects the ObjectScript/Python to the L2 machines (D-2, D-3); P-A3 is no longer a premise (D-13 paid at model level: in the reviewed model it is the proved invariant er_ok under R11-7); premises the pin violates: P-L4, P-L6; one erasure at a time (P-E1), erasures inside a caller transaction, EraseNodes/EraseIdSet/EraseAll not modelled; L1 admits an erasure that commits after strict mode is switched on (SetStrict takes no lock)"
+    },
+    {
+      "gate": "3.3-controls",
+      "module": "11",
+      "status": "closed",
+      "evidence": [
+        "run:proofs-pa3-f0801-ttl-cache",
+        "run:proofs-pa3-f0801-fail-open",
+        "run:proofs-pa3-f1108-unguarded-bulk-delete",
+        "run:proofs-pa3-fc1101-stats-whole-row",
+        "run:proofs-pa3-f1201-erase-no-head-lock",
+        "run:proofs-pa3-recheck",
+        "experiment/playbook-completion/proofs-pa3/PROOFS.md"
+      ],
+      "evidence_grade": "proved (each control rejected by Verus in src/ledger_l2.rs only, with a proved counterexample)",
+      "level": "model",
+      "product_obligation": "fails",
+      "product_basis": "new control control_f1201_erase_no_head_lock (the pin's EraseGraph without the head lock) is rejected at src/ledger_l2.rs:1070 (lemma_head_lock); its proved 6-step counterexample (graph empty, a ledger commit of a new edge between the erasure's DELETE and EraseLedgerFor) ends with no transaction open and a committed, recorded edge whose row is live and which has no statement entry (ERS-I3; !inv2), the state reproduced live 8/8 (live-f1201-reproduced). The four copied controls are rejected at the same functions as in proofs-breadth",
+      "as_built_findings": [
+        "F-0801",
+        "F-1108",
+        "F-C1101",
+        "F-1201"
+      ],
+      "remaining": "model-level only: no proof connects the ObjectScript/Python to the L2 machines (D-2, D-3); F-1102's lost updates have no separate counterexample (as in proofs-breadth)"
+    },
+    {
+      "gate": "3.3-refinement",
+      "module": "04",
+      "status": "closed",
+      "evidence": [
+        "run:proofs-pa3-baseline",
+        "run:proofs-pa3-recheck",
+        "run:proofs-breadth-baseline",
+        "experiment/playbook-completion/proofs-pa3/PROOFS.md"
+      ],
+      "evidence_grade": "proved (Verus --no-cheating, empty trust inventory; about models)",
+      "level": "model",
+      "product_obligation": "fails",
+      "product_basis": "the reviewed L2 (EraseGraph = ELock, ERows (row DELETE, P-1201 row locks), RemoveGraph, ECommit{g,del}/EAbort, interleaving with adjacency writers of the same graph) refines L1 for all 26 labels under guard R04-5 (EraseGraph takes ^IVG.AdjW(g) exclusively before its DELETE and writers of g wait for it), which the pin lacks (Eraser.cls:47-261 takes no lock; RemoveGraph's lock is shared, Adjacency.cls:431). P-A3 is the proved theorem_pa3_from_guard, not a premise. As built, the module-04 controls each have a proved counterexample (F-C0401 and F-C1202 reproduced in models; F-0401/HD-0401 intent-undecided); the eraser/writer overlap F-C1202 needs is observed live (F-1201's journal order)",
+      "as_built_findings": [
+        "F-C0401",
+        "F-0401",
+        "F-C1202"
+      ],
+      "remaining": "model-level only: no proof connects the ObjectScript/Python to the L2 machines (D-2, D-3); premises the pin violates: P-A4 (rebuilds, F-C0402); one eraser per graph (P-E1, a consequence of R04-5 in the reviewed model); the row DELETE's functional-index effect not modelled (P-E3); F-C1202 not reproduced live; progress of R04-5 (exclusive lock vs a writer's row lock) not modelled"
+    },
+    {
+      "gate": "3.3-controls",
+      "module": "04",
+      "status": "closed",
+      "evidence": [
+        "run:proofs-pa3-fc0401-write-before-gen",
+        "run:proofs-pa3-hd0401-erase-kills-gen",
+        "run:proofs-pa3-hd0401-rebuild-kills-gen",
+        "run:proofs-pa3-fc1202-erase-unguarded",
+        "run:proofs-pa3-recheck",
+        "experiment/playbook-completion/proofs-pa3/PROOFS.md"
+      ],
+      "evidence_grade": "proved (each control rejected by Verus in src/adj_l2.rs only, with a proved counterexample)",
+      "level": "model",
+      "product_obligation": "fails",
+      "product_basis": "new control control_fc1202_erase_unguarded (the pin's EraseGraph: no lock before the DELETE, shared RemoveGraph lock) is rejected at src/adj_l2.rs:572 (lemma_erase_guard); its proved 17-step counterexample (a writer inserts a new edge of g after the erasure's DELETE and commits; RemoveGraph kills out; the erase commits) ends with a committed edge with no adjacency entry and, after a Degree call, a current cache entry (3, 0) against committed degree 1 (the store is not an L1 step; !inv1, ADJ-I5.9). The three copied controls are rejected at the same functions as in proofs-breadth (cx_hd0401_erase gained the ERows step)",
+      "as_built_findings": [
+        "F-C0401",
+        "F-0401",
+        "F-C1202"
+      ],
+      "remaining": "model-level only: no proof connects the ObjectScript/Python to the L2 machines (D-2, D-3); two concurrent rebuilds (F-C0402) are still not a control here (L2 admits one rebuild)"
+    },
+    {
+      "gate": "3.3-controls",
+      "module": "12",
+      "status": "closed",
+      "evidence": [
+        "run:proofs-pa3-f1201-erase-no-head-lock",
+        "run:proofs-pa3-fc1202-erase-unguarded",
+        "run:proofs-pa3-recheck",
+        "experiment/playbook-completion/proofs-pa3/PROOFS.md"
+      ],
+      "evidence_grade": "proved (additional evidence for the existing closed cell: EraseGraph's as-built lock plan rejected by proof against writers of modules 11 and 04)",
+      "level": "model",
+      "product_obligation": "fails",
+      "product_basis": "EraseGraph (module 12) without the ledger head lock or an exclusive adjacency lock makes the module-11 and module-04 refinements fail at one located line each, with proved counterexamples reaching a committed edge without its statement entry (F-1201, live 8/8) and a committed edge without its adjacency entry (F-C1202, model)",
+      "as_built_findings": [
+        "F-1201",
+        "F-C1202"
+      ],
+      "remaining": "model-level only: no proof connects the ObjectScript/Python to the L2 machines (D-2, D-3); the two modules' L2s are separate machines of the same EraseGraph (no single composed machine; the core lane's M2 explorer model composes them, bounded)"
+    },
+    {
+      "gate": "3.3-cost",
+      "module": "product",
+      "status": "closed",
+      "evidence": [
+        "run:proofs-pa3-baseline",
+        "experiment/playbook-completion/proofs-pa3/PROOFS.md"
+      ],
+      "evidence_grade": "proved (measured Verus cost of crate proofs-pa3)",
+      "level": "method",
+      "product_obligation": "n/a",
+      "product_basis": "proofs-pa3: 108 functions, Verus 7.4 s, SMT 9.8 s, 25.3 M rlimit, wall 7.9 s, 0.62 GB; module 11 61 functions 8.63 M rlimit, module 04 47 functions 16.68 M rlimit; no rlimit raised; removing P-A3 cost +14 functions, +2.7 s SMT, +6.8 M rlimit over proofs-breadth",
+      "as_built_findings": [],
+      "remaining": ""
+    },
+    {
+      "gate": "3.3-model-check",
+      "module": "13",
+      "status": "closed",
+      "evidence": [
+        "run:m2p-reviewed-22",
+        "run:m2p-as-built-F1304-22",
+        "run:m2p-as-built-F1305-22",
+        "run:m2p-as-built-isolation-stmt-22",
+        "run:m2p-control-liveness-collapsed-22",
+        "run:m2p-control-dropstatements-all-graphs-22",
+        "run:m2p-coverage-keys",
+        "run:m2p-coverage-keys-control",
+        "run:m2p-union-a-reviewed",
+        "run:m2p-union-b-reviewed",
+        "run:m2p-union-b-as-built",
+        "run:m2p-union-c-reviewed",
+        "run:m2p-union-control",
+        "run:m2p-fidelity",
+        "run:m2p-full-reviewed-22",
+        "run:m2p-full-as-built-isolation-stmt-22",
+        "experiment/playbook-completion/models/core-partition/MODELS.md"
+      ],
+      "evidence_grade": "mc (exhaustive-within-bounds; the (2 pre-enable writes, 2 commits) profile as a 43-piece partition by pre-enable world with a checked coverage argument, and unpartitioned)",
+      "level": "model",
+      "product_obligation": "fails",
+      "product_basis": "as-built M1 violates RED-B1.1/RED-X2 (F-1304) from every one of the 43 pre-enable worlds and RED-B12/SC-001 (F-1305) from exactly the 22 worlds with a node row of n in G (m2p-as-built-F1304-22, m2p-as-built-F1305-22); both findings are reproduced live (live-native-rerun-1314). The reviewed M1 (HD-1303 + HD-1304 working assumptions, not present at the pin) passes every property and AG EF on the whole (2, 2) space (21,355,762 states).",
+      "as_built_findings": [
+        "F-1304",
+        "F-1305"
+      ],
+      "remaining": "M1 profiles beyond (2, 2) and (0, 3), e.g. (1, 3), (2, 3); M1's world (three ids, two graphs, three edges; no temporal edges; labels and properties folded into node rows); concurrency is M2's (bounded separately); no code-to-model correspondence (PROOF-DEBT D-2, D-3)."
+    },
+    {
+      "gate": "3.3-model-check",
+      "module": "12",
+      "status": "closed",
+      "evidence": [
+        "run:m2p-reviewed-22",
+        "run:m2p-as-built-isolation-stmt-22",
+        "run:m2p-control-dropstatements-all-graphs-22",
+        "run:m2p-coverage-keys",
+        "run:m2p-full-reviewed-22",
+        "run:m2p-full-as-built-isolation-stmt-22",
+        "experiment/playbook-completion/models/core-partition/MODELS.md"
+      ],
+      "evidence_grade": "mc (exhaustive-within-bounds, (2, 2) profile, partitioned and unpartitioned)",
+      "level": "model",
+      "product_obligation": "fails",
+      "product_basis": "sequentially (M1, no concurrency) the as-built EraseGraph/EraseNodes and DropStatements keep ERS-I2/I3 on the whole (2, 2) space (m2p-as-built-isolation-stmt-22); the module's failing obligation comes from the concurrent case, unchanged by this lane: F-1201 (core-m2-as-built-F1201-stmt, live-f1201-reproduced) and F-C1202 (core-m2-as-built-F1201-adjacency).",
+      "as_built_findings": [
+        "F-1201",
+        "F-C1202"
+      ],
+      "remaining": "as module 13; erasure under concurrency is M2's bounded check and D-13 (proofs-pa3), not M1's."
+    },
+    {
+      "gate": "3.3-model-check",
+      "module": "14",
+      "status": "closed",
+      "evidence": [
+        "run:m2p-reviewed-22",
+        "run:m2p-full-reviewed-22",
+        "run:m2p-coverage-keys",
+        "experiment/playbook-completion/models/core-partition/MODELS.md"
+      ],
+      "evidence_grade": "mc (exhaustive-within-bounds, (2, 2) profile)",
+      "level": "model",
+      "product_obligation": "fails",
+      "product_basis": "the reviewed M1 keeps RPL-B3 (replay equals the store after the documented procedure) on the whole (2, 2) space; at the pin RPL-B3 fails (core-m1-as-built-replay, expected-violation, via F-1304/F-1305; not re-run in the partition).",
+      "as_built_findings": [
+        "F-1304",
+        "F-1305"
+      ],
+      "remaining": "as module 13; the as-built RPL-B3 violation was not re-run per piece (its registered run uses the (2, 3) violation bound)."
+    }
+  ]
+}

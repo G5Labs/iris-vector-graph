@@ -1,0 +1,49 @@
+{
+  "lane": "models-2 (D-10, core M1 partition)",
+  "note": "Proposals only, for the orchestrator to merge into models-2's MATRIX-INPUT.json. Every result is about the M1 model; level model. These cells add evidence to the existing closed 3.3-model-check cells of modules 12, 13 and 14 and pay PROOF-DEBT D-10 at model level.",
+  "cells": [
+    {
+      "gate": "3.3-model-check",
+      "module": "13",
+      "status": "closed",
+      "evidence": ["run:m2p-reviewed-22", "run:m2p-as-built-F1304-22", "run:m2p-as-built-F1305-22", "run:m2p-as-built-isolation-stmt-22",
+                   "run:m2p-control-liveness-collapsed-22", "run:m2p-control-dropstatements-all-graphs-22", "run:m2p-coverage-keys",
+                   "run:m2p-coverage-keys-control", "run:m2p-union-a-reviewed", "run:m2p-union-b-reviewed", "run:m2p-union-b-as-built",
+                   "run:m2p-union-c-reviewed", "run:m2p-union-control", "run:m2p-fidelity", "run:m2p-full-reviewed-22",
+                   "run:m2p-full-as-built-isolation-stmt-22", "experiment/playbook-completion/models/core-partition/MODELS.md"],
+      "evidence_grade": "mc (exhaustive-within-bounds; the (2 pre-enable writes, 2 commits) profile as a 43-piece partition by pre-enable world with a checked coverage argument, and unpartitioned)",
+      "level": "model",
+      "product_obligation": "fails",
+      "product_basis": "as-built M1 violates RED-B1.1/RED-X2 (F-1304) from every one of the 43 pre-enable worlds and RED-B12/SC-001 (F-1305) from exactly the 22 worlds with a node row of n in G (m2p-as-built-F1304-22, m2p-as-built-F1305-22); both findings are reproduced live (live-native-rerun-1314). The reviewed M1 (HD-1303 + HD-1304 working assumptions, not present at the pin) passes every property and AG EF on the whole (2, 2) space (21,355,762 states).",
+      "as_built_findings": ["F-1304", "F-1305"],
+      "remaining": "M1 profiles beyond (2, 2) and (0, 3), e.g. (1, 3), (2, 3); M1's world (three ids, two graphs, three edges; no temporal edges; labels and properties folded into node rows); concurrency is M2's (bounded separately); no code-to-model correspondence (PROOF-DEBT D-2, D-3)."
+    },
+    {
+      "gate": "3.3-model-check",
+      "module": "12",
+      "status": "closed",
+      "evidence": ["run:m2p-reviewed-22", "run:m2p-as-built-isolation-stmt-22", "run:m2p-control-dropstatements-all-graphs-22",
+                   "run:m2p-coverage-keys", "run:m2p-full-reviewed-22", "run:m2p-full-as-built-isolation-stmt-22",
+                   "experiment/playbook-completion/models/core-partition/MODELS.md"],
+      "evidence_grade": "mc (exhaustive-within-bounds, (2, 2) profile, partitioned and unpartitioned)",
+      "level": "model",
+      "product_obligation": "fails",
+      "product_basis": "sequentially (M1, no concurrency) the as-built EraseGraph/EraseNodes and DropStatements keep ERS-I2/I3 on the whole (2, 2) space (m2p-as-built-isolation-stmt-22); the module's failing obligation comes from the concurrent case, unchanged by this lane: F-1201 (core-m2-as-built-F1201-stmt, live-f1201-reproduced) and F-C1202 (core-m2-as-built-F1201-adjacency).",
+      "as_built_findings": ["F-1201", "F-C1202"],
+      "remaining": "as module 13; erasure under concurrency is M2's bounded check and D-13 (proofs-pa3), not M1's."
+    },
+    {
+      "gate": "3.3-model-check",
+      "module": "14",
+      "status": "closed",
+      "evidence": ["run:m2p-reviewed-22", "run:m2p-full-reviewed-22", "run:m2p-coverage-keys",
+                   "experiment/playbook-completion/models/core-partition/MODELS.md"],
+      "evidence_grade": "mc (exhaustive-within-bounds, (2, 2) profile)",
+      "level": "model",
+      "product_obligation": "fails",
+      "product_basis": "the reviewed M1 keeps RPL-B3 (replay equals the store after the documented procedure) on the whole (2, 2) space; at the pin RPL-B3 fails (core-m1-as-built-replay, expected-violation, via F-1304/F-1305; not re-run in the partition).",
+      "as_built_findings": ["F-1304", "F-1305"],
+      "remaining": "as module 13; the as-built RPL-B3 violation was not re-run per piece (its registered run uses the (2, 3) violation bound)."
+    }
+  ]
+}

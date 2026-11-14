@@ -484,7 +484,8 @@ def main() -> int:
             cells.append(finish(c, g["id"], nn))
     gate_ids = {g["id"] for g in gates}
     # write-set discharges (writesets lane, queue Q17c): one entry per census obligation id
-    dis = load(DISCHARGES, {}) if DISCHARGES.exists() else {}
+    dis = load(DISCHARGES, {}) if DISCHARGES.exists() and not os.environ.get("MATRIX_SKIP_DISCHARGES") else {}
+    dis = {k: v for k, v in dis.items() if not str(k).startswith("_")}
     applied = set()
     for i, c in enumerate(extra):
         d = dis.get(c.get("obligation_id")) if c["gate"] == "3.3a-writesets" else None

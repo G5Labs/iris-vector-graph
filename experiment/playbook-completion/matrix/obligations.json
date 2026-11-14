@@ -2513,21 +2513,28 @@
   },
   {
    "as_built_findings": [
-    "F-C0401",
     "F-0401",
-    "F-C0402"
+    "F-C0401",
+    "F-C0402",
+    "F-C1202"
    ],
    "cited_runs": [
     "proofs-breadth-baseline",
-    "proofs-breadth-recheck"
+    "proofs-breadth-recheck",
+    "proofs-pa3-baseline",
+    "proofs-pa3-recheck"
    ],
    "evidence": [
     "run:proofs-breadth-baseline",
-    "run:proofs-breadth-recheck"
+    "run:proofs-breadth-recheck",
+    "run:proofs-pa3-baseline",
+    "run:proofs-pa3-recheck",
+    "experiment/playbook-completion/proofs-pa3/PROOFS.md"
    ],
    "evidence_grade": "registered-run",
    "findings": [
-    "F-C0401"
+    "F-C0401",
+    "F-C1202"
    ],
    "findings_undecided": [
     "F-0401",
@@ -2538,7 +2545,8 @@
    "module": "04",
    "product_basis": {
     "fails": [
-     "finding F-C0401"
+     "finding F-C0401",
+     "finding F-C1202"
     ],
     "intent_undecided": [
      "finding F-0401",
@@ -2546,8 +2554,11 @@
     ]
    },
    "product_obligation": "fails",
-   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence; as built: the module-04 controls encode the pin's behaviour and each has a proved counterexample (F-C0401, reproduced in the model; F-0401/HD-0401 and F-C0402 intent-undecided), so the product obligation fails; the violated premises also include P-A3 (an eraser of g overlaps no writer of g: F-1201's live interleaving, F-C1202 in the core model; review R2-06), recorded in TRUST.md [review-response R2-01]",
-   "status": "closed"
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence; as built: the module-04 controls encode the pin's behaviour and each has a proved counterexample (F-C0401, reproduced in the model; F-0401/HD-0401 and F-C0402 intent-undecided), so the product obligation fails; the violated premises also include P-A3 (an eraser of g overlaps no writer of g: F-1201's live interleaving, F-C1202 in the core model; review R2-06), recorded in TRUST.md [review-response R2-01] [proofs-pa3] model-level only: no proof connects the ObjectScript/Python to the L2 machines (D-2, D-3); premises the pin violates: P-A4 (rebuilds, F-C0402); one eraser per graph (P-E1, a consequence of R04-5 in the reviewed model); the row DELETE's functional-index effect not modelled (P-E3); F-C1202 not reproduced live; progress of R04-5 (exclusive lock vs a writer's row lock) not modelled",
+   "status": "closed",
+   "supplemented_by": [
+    "matrix-input/models-2.json"
+   ]
   },
   {
    "cited_runs": [
@@ -2691,20 +2702,27 @@
    "as_built_findings": [
     "F-0801",
     "F-1108",
+    "F-1201",
     "F-C1101"
    ],
    "cited_runs": [
     "proofs-breadth-baseline",
-    "proofs-breadth-recheck"
+    "proofs-breadth-recheck",
+    "proofs-pa3-baseline",
+    "proofs-pa3-recheck"
    ],
    "evidence": [
     "run:proofs-breadth-baseline",
-    "run:proofs-breadth-recheck"
+    "run:proofs-breadth-recheck",
+    "run:proofs-pa3-baseline",
+    "run:proofs-pa3-recheck",
+    "experiment/playbook-completion/proofs-pa3/PROOFS.md"
    ],
    "evidence_grade": "registered-run",
    "findings": [
     "F-0801",
     "F-1108",
+    "F-1201",
     "F-C1101"
    ],
    "gate": "3.3-refinement",
@@ -2714,13 +2732,17 @@
     "fails": [
      "finding F-0801",
      "finding F-1108",
+     "finding F-1201",
      "finding F-C1101"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence; as built: the module-11 controls encode the pin's behaviour and each has a proved counterexample, and F-0801, F-1108 and F-C1101 are reproduced live, so the product obligation fails [review-response R2-01]",
-   "status": "closed"
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence; as built: the module-11 controls encode the pin's behaviour and each has a proved counterexample, and F-0801, F-1108 and F-C1101 are reproduced live, so the product obligation fails [review-response R2-01] [proofs-pa3] model-level only: no proof connects the ObjectScript/Python to the L2 machines (D-2, D-3); P-A3 is no longer a premise (D-13 paid at model level: in the reviewed model it is the proved invariant er_ok under R11-7); premises the pin violates: P-L4, P-L6; one erasure at a time (P-E1), erasures inside a caller transaction, EraseNodes/EraseIdSet/EraseAll not modelled; L1 admits an erasure that commits after strict mode is switched on (SetStrict takes no lock)",
+   "status": "closed",
+   "supplemented_by": [
+    "matrix-input/models-2.json"
+   ]
   },
   {
    "as_built_findings": [
@@ -3152,23 +3174,36 @@
   },
   {
    "as_built_findings": [
-    "F-C0401",
     "F-0401",
-    "F-C0402"
+    "F-C0401",
+    "F-C0402",
+    "F-C1202"
    ],
    "cited_runs": [
     "proofs-breadth-fc0401-write-before-gen",
     "proofs-breadth-hd0401-erase-kills-gen",
-    "proofs-breadth-hd0401-rebuild-kills-gen"
+    "proofs-breadth-hd0401-rebuild-kills-gen",
+    "proofs-pa3-fc0401-write-before-gen",
+    "proofs-pa3-fc1202-erase-unguarded",
+    "proofs-pa3-hd0401-erase-kills-gen",
+    "proofs-pa3-hd0401-rebuild-kills-gen",
+    "proofs-pa3-recheck"
    ],
    "evidence": [
     "run:proofs-breadth-fc0401-write-before-gen",
     "run:proofs-breadth-hd0401-erase-kills-gen",
-    "run:proofs-breadth-hd0401-rebuild-kills-gen"
+    "run:proofs-breadth-hd0401-rebuild-kills-gen",
+    "run:proofs-pa3-fc0401-write-before-gen",
+    "run:proofs-pa3-hd0401-erase-kills-gen",
+    "run:proofs-pa3-hd0401-rebuild-kills-gen",
+    "run:proofs-pa3-fc1202-erase-unguarded",
+    "run:proofs-pa3-recheck",
+    "experiment/playbook-completion/proofs-pa3/PROOFS.md"
    ],
    "evidence_grade": "registered-run",
    "findings": [
-    "F-C0401"
+    "F-C0401",
+    "F-C1202"
    ],
    "findings_undecided": [
     "F-0401",
@@ -3180,18 +3215,26 @@
    "product_basis": {
     "fails": [
      "finding F-C0401",
-     "run proofs-breadth-fc0401-write-before-gen (expected-violation)"
+     "finding F-C1202",
+     "run proofs-breadth-fc0401-write-before-gen (expected-violation)",
+     "run proofs-pa3-fc0401-write-before-gen (expected-violation)",
+     "run proofs-pa3-fc1202-erase-unguarded (expected-violation)"
     ],
     "intent_undecided": [
      "finding F-0401",
      "finding F-C0402",
      "run proofs-breadth-hd0401-erase-kills-gen (expected-violation) of F-0401",
-     "run proofs-breadth-hd0401-rebuild-kills-gen (expected-violation) of a decision only"
+     "run proofs-breadth-hd0401-rebuild-kills-gen (expected-violation) of a decision only",
+     "run proofs-pa3-hd0401-erase-kills-gen (expected-violation) of F-0401",
+     "run proofs-pa3-hd0401-rebuild-kills-gen (expected-violation) of a decision only"
     ]
    },
    "product_obligation": "fails",
-   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence; as built: the module-04 controls encode the pin's behaviour and each has a proved counterexample (F-C0401, reproduced in the model; F-0401/HD-0401 and F-C0402 intent-undecided), so the product obligation fails; the violated premises also include P-A3 (an eraser of g overlaps no writer of g: F-1201's live interleaving, F-C1202 in the core model; review R2-06), recorded in TRUST.md [review-response R2-01]",
-   "status": "closed"
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence; as built: the module-04 controls encode the pin's behaviour and each has a proved counterexample (F-C0401, reproduced in the model; F-0401/HD-0401 and F-C0402 intent-undecided), so the product obligation fails; the violated premises also include P-A3 (an eraser of g overlaps no writer of g: F-1201's live interleaving, F-C1202 in the core model; review R2-06), recorded in TRUST.md [review-response R2-01] [proofs-pa3] model-level only: no proof connects the ObjectScript/Python to the L2 machines (D-2, D-3); two concurrent rebuilds (F-C0402) are still not a control here (L2 admits one rebuild)",
+   "status": "closed",
+   "supplemented_by": [
+    "matrix-input/models-2.json"
+   ]
   },
   {
    "cited_runs": [
@@ -3614,24 +3657,39 @@
    "as_built_findings": [
     "F-0801",
     "F-1108",
+    "F-1201",
     "F-C1101"
    ],
    "cited_runs": [
     "proofs-breadth-f0801-fail-open",
     "proofs-breadth-f0801-ttl-cache",
     "proofs-breadth-f1108-unguarded-bulk-delete",
-    "proofs-breadth-fc1101-stats-whole-row"
+    "proofs-breadth-fc1101-stats-whole-row",
+    "proofs-pa3-f0801-fail-open",
+    "proofs-pa3-f0801-ttl-cache",
+    "proofs-pa3-f1108-unguarded-bulk-delete",
+    "proofs-pa3-f1201-erase-no-head-lock",
+    "proofs-pa3-fc1101-stats-whole-row",
+    "proofs-pa3-recheck"
    ],
    "evidence": [
     "run:proofs-breadth-f0801-ttl-cache",
     "run:proofs-breadth-f0801-fail-open",
     "run:proofs-breadth-f1108-unguarded-bulk-delete",
-    "run:proofs-breadth-fc1101-stats-whole-row"
+    "run:proofs-breadth-fc1101-stats-whole-row",
+    "run:proofs-pa3-f0801-ttl-cache",
+    "run:proofs-pa3-f0801-fail-open",
+    "run:proofs-pa3-f1108-unguarded-bulk-delete",
+    "run:proofs-pa3-fc1101-stats-whole-row",
+    "run:proofs-pa3-f1201-erase-no-head-lock",
+    "run:proofs-pa3-recheck",
+    "experiment/playbook-completion/proofs-pa3/PROOFS.md"
    ],
    "evidence_grade": "registered-run",
    "findings": [
     "F-0801",
     "F-1108",
+    "F-1201",
     "F-C1101"
    ],
    "gate": "3.3-controls",
@@ -3641,39 +3699,71 @@
     "fails": [
      "finding F-0801",
      "finding F-1108",
+     "finding F-1201",
      "finding F-C1101",
      "run proofs-breadth-f0801-fail-open (expected-violation)",
      "run proofs-breadth-f0801-ttl-cache (expected-violation)",
      "run proofs-breadth-f1108-unguarded-bulk-delete (expected-violation)",
-     "run proofs-breadth-fc1101-stats-whole-row (expected-violation)"
+     "run proofs-breadth-fc1101-stats-whole-row (expected-violation)",
+     "run proofs-pa3-f0801-fail-open (expected-violation)",
+     "run proofs-pa3-f0801-ttl-cache (expected-violation)",
+     "run proofs-pa3-f1108-unguarded-bulk-delete (expected-violation)",
+     "run proofs-pa3-f1201-erase-no-head-lock (expected-violation)",
+     "run proofs-pa3-fc1101-stats-whole-row (expected-violation)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence; as built: the module-11 controls encode the pin's behaviour and each has a proved counterexample, and F-0801, F-1108 and F-C1101 are reproduced live, so the product obligation fails [review-response R2-01]",
-   "status": "closed"
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence; as built: the module-11 controls encode the pin's behaviour and each has a proved counterexample, and F-0801, F-1108 and F-C1101 are reproduced live, so the product obligation fails [review-response R2-01] [proofs-pa3] model-level only: no proof connects the ObjectScript/Python to the L2 machines (D-2, D-3); F-1102's lost updates have no separate counterexample (as in proofs-breadth)",
+   "status": "closed",
+   "supplemented_by": [
+    "matrix-input/models-2.json"
+   ]
   },
   {
+   "as_built_findings": [
+    "F-1201",
+    "F-C1202"
+   ],
    "cited_runs": [
     "core-proofs-f1302-unlocked-start",
-    "core-proofs-recheck-f1302_unlocked_start"
+    "core-proofs-recheck-f1302_unlocked_start",
+    "proofs-pa3-f1201-erase-no-head-lock",
+    "proofs-pa3-fc1202-erase-unguarded",
+    "proofs-pa3-recheck"
    ],
    "evidence": [
     "run:core-proofs-f1302-unlocked-start",
-    "run:core-proofs-recheck-f1302_unlocked_start"
+    "run:core-proofs-recheck-f1302_unlocked_start",
+    "run:proofs-pa3-f1201-erase-no-head-lock",
+    "run:proofs-pa3-fc1202-erase-unguarded",
+    "run:proofs-pa3-recheck",
+    "experiment/playbook-completion/proofs-pa3/PROOFS.md"
    ],
    "evidence_grade": "registered-run",
+   "findings": [
+    "F-1201",
+    "F-C1202"
+   ],
    "gate": "3.3-controls",
    "level": "model",
    "module": "12",
    "product_basis": {
     "fails": [
-     "run core-proofs-f1302-unlocked-start (expected-violation)"
+     "finding F-1201",
+     "finding F-C1202",
+     "run core-proofs-f1302-unlocked-start (expected-violation)",
+     "run proofs-pa3-f1201-erase-no-head-lock (expected-violation)",
+     "run proofs-pa3-fc1202-erase-unguarded (expected-violation)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "status": "closed"
+   "remaining": "[proofs-pa3] model-level only: no proof connects the ObjectScript/Python to the L2 machines (D-2, D-3); the two modules' L2s are separate machines of the same EraseGraph (no single composed machine; the core lane's M2 explorer model composes them, bounded)",
+   "status": "closed",
+   "supplemented_by": [
+    "matrix-input/models-2.json"
+   ]
   },
   {
    "cited_runs": [
@@ -4091,11 +4181,14 @@
   {
    "cited_runs": [
     "core-proofs-baseline",
-    "core-proofs-recheck-baseline"
+    "core-proofs-recheck-baseline",
+    "proofs-pa3-baseline"
    ],
    "evidence": [
     "run:core-proofs-baseline",
-    "run:core-proofs-recheck-baseline"
+    "run:core-proofs-recheck-baseline",
+    "run:proofs-pa3-baseline",
+    "experiment/playbook-completion/proofs-pa3/PROOFS.md"
    ],
    "evidence_grade": "registered-run",
    "gate": "3.3-cost",
@@ -4103,7 +4196,10 @@
    "level_detail": "proof cost per crate: a property of the verification, not of the product",
    "module": "product",
    "product_obligation": "unknown",
-   "status": "closed"
+   "status": "closed",
+   "supplemented_by": [
+    "matrix-input/models-2.json"
+   ]
   },
   {
    "cited_runs": [],
@@ -4285,7 +4381,8 @@
     "F-0608",
     "F-0615",
     "F-C0601",
-    "F-C0605"
+    "F-C0605",
+    "F-C0670"
    ],
    "gate": "3.3-model-check",
    "level": "model",
@@ -4297,7 +4394,8 @@
      "finding F-0608",
      "finding F-0615",
      "finding F-C0601",
-     "finding F-C0605"
+     "finding F-C0605",
+     "finding F-C0670"
     ],
     "intent_undecided": []
    },
@@ -4919,15 +5017,32 @@
    "status": "closed"
   },
   {
+   "as_built_findings": [
+    "F-1201",
+    "F-C1202"
+   ],
    "cited_runs": [
     "core-m2-as-built-F1201-stmt",
     "live-f1201-reproduced",
-    "live-native-rerun-1314"
+    "live-native-rerun-1314",
+    "m2p-as-built-isolation-stmt-22",
+    "m2p-control-dropstatements-all-graphs-22",
+    "m2p-coverage-keys",
+    "m2p-full-as-built-isolation-stmt-22",
+    "m2p-full-reviewed-22",
+    "m2p-reviewed-22"
    ],
    "evidence": [
     "run:core-m2-as-built-F1201-stmt",
     "run:live-f1201-reproduced",
-    "run:live-native-rerun-1314"
+    "run:live-native-rerun-1314",
+    "run:m2p-reviewed-22",
+    "run:m2p-as-built-isolation-stmt-22",
+    "run:m2p-control-dropstatements-all-graphs-22",
+    "run:m2p-coverage-keys",
+    "run:m2p-full-reviewed-22",
+    "run:m2p-full-as-built-isolation-stmt-22",
+    "experiment/playbook-completion/models/core-partition/MODELS.md"
    ],
    "evidence_grade": "registered-run",
    "findings": [
@@ -4949,19 +5064,59 @@
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "as-built violates; reviewed model passes",
-   "status": "closed"
+   "remaining": "as-built violates; reviewed model passes [proofs-pa3] as module 13; erasure under concurrency is M2's bounded check and D-13 (proofs-pa3), not M1's.",
+   "status": "closed",
+   "supplemented_by": [
+    "matrix-input/models-2.json"
+   ]
   },
   {
+   "as_built_findings": [
+    "F-1304",
+    "F-1305"
+   ],
    "cited_runs": [
     "core-m2-as-built-F1201-stmt",
     "live-f1201-reproduced",
-    "live-native-rerun-1314"
+    "live-native-rerun-1314",
+    "m2p-as-built-F1304-22",
+    "m2p-as-built-F1305-22",
+    "m2p-as-built-isolation-stmt-22",
+    "m2p-control-dropstatements-all-graphs-22",
+    "m2p-control-liveness-collapsed-22",
+    "m2p-coverage-keys",
+    "m2p-coverage-keys-control",
+    "m2p-fidelity",
+    "m2p-full-as-built-isolation-stmt-22",
+    "m2p-full-reviewed-22",
+    "m2p-reviewed-22",
+    "m2p-union-a-reviewed",
+    "m2p-union-b-as-built",
+    "m2p-union-b-reviewed",
+    "m2p-union-c-reviewed",
+    "m2p-union-control"
    ],
    "evidence": [
     "run:core-m2-as-built-F1201-stmt",
     "run:live-f1201-reproduced",
-    "run:live-native-rerun-1314"
+    "run:live-native-rerun-1314",
+    "run:m2p-reviewed-22",
+    "run:m2p-as-built-F1304-22",
+    "run:m2p-as-built-F1305-22",
+    "run:m2p-as-built-isolation-stmt-22",
+    "run:m2p-control-liveness-collapsed-22",
+    "run:m2p-control-dropstatements-all-graphs-22",
+    "run:m2p-coverage-keys",
+    "run:m2p-coverage-keys-control",
+    "run:m2p-union-a-reviewed",
+    "run:m2p-union-b-reviewed",
+    "run:m2p-union-b-as-built",
+    "run:m2p-union-c-reviewed",
+    "run:m2p-union-control",
+    "run:m2p-fidelity",
+    "run:m2p-full-reviewed-22",
+    "run:m2p-full-as-built-isolation-stmt-22",
+    "experiment/playbook-completion/models/core-partition/MODELS.md"
    ],
    "evidence_grade": "registered-run",
    "findings": [
@@ -4986,27 +5141,45 @@
      "finding F-C1301",
      "finding F-C1302",
      "run core-m2-as-built-F1201-stmt (expected-violation)",
-     "run live-f1201-reproduced (fail)"
+     "run live-f1201-reproduced (fail)",
+     "run m2p-as-built-F1304-22 (expected-violation)",
+     "run m2p-as-built-F1305-22 (expected-violation)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "as-built violates; reviewed model passes",
-   "status": "closed"
+   "remaining": "as-built violates; reviewed model passes [proofs-pa3] M1 profiles beyond (2, 2) and (0, 3), e.g. (1, 3), (2, 3); M1's world (three ids, two graphs, three edges; no temporal edges; labels and properties folded into node rows); concurrency is M2's (bounded separately); no code-to-model correspondence (PROOF-DEBT D-2, D-3).",
+   "status": "closed",
+   "supplemented_by": [
+    "matrix-input/models-2.json"
+   ]
   },
   {
+   "as_built_findings": [
+    "F-1304",
+    "F-1305"
+   ],
    "cited_runs": [
     "core-m2-as-built-F1201-stmt",
     "live-f1201-reproduced",
-    "live-native-rerun-1314"
+    "live-native-rerun-1314",
+    "m2p-coverage-keys",
+    "m2p-full-reviewed-22",
+    "m2p-reviewed-22"
    ],
    "evidence": [
     "run:core-m2-as-built-F1201-stmt",
     "run:live-f1201-reproduced",
-    "run:live-native-rerun-1314"
+    "run:live-native-rerun-1314",
+    "run:m2p-reviewed-22",
+    "run:m2p-full-reviewed-22",
+    "run:m2p-coverage-keys",
+    "experiment/playbook-completion/models/core-partition/MODELS.md"
    ],
    "evidence_grade": "registered-run",
    "findings": [
+    "F-1304",
+    "F-1305",
     "F-1401",
     "F-1402"
    ],
@@ -5015,6 +5188,8 @@
    "module": "14",
    "product_basis": {
     "fails": [
+     "finding F-1304",
+     "finding F-1305",
      "finding F-1401",
      "finding F-1402",
      "run core-m2-as-built-F1201-stmt (expected-violation)",
@@ -5023,8 +5198,11 @@
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "as-built violates; reviewed model passes",
-   "status": "closed"
+   "remaining": "as-built violates; reviewed model passes [proofs-pa3] as module 13; the as-built RPL-B3 violation was not re-run per piece (its registered run uses the (2, 3) violation bound).",
+   "status": "closed",
+   "supplemented_by": [
+    "matrix-input/models-2.json"
+   ]
   },
   {
    "cited_runs": [
@@ -5243,10 +5421,19 @@
   {
    "cited_runs": [],
    "evidence": [],
+   "findings": [
+    "F-C0670"
+   ],
    "gate": "3.3a-mechanisms",
    "level": "model",
    "module": "product",
-   "product_obligation": "unknown",
+   "product_basis": {
+    "fails": [
+     "finding F-C0670"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
    "remaining": "worked example only",
    "status": "open"
   },
@@ -5324,11 +5511,17 @@
     "models/breadth-a/writesets.json",
     "run:followup-writer-census"
    ],
+   "findings": [
+    "F-C0150",
+    "F-C0151"
+   ],
    "gate": "3.3a-writesets",
    "level": "model",
    "module": "01",
    "product_basis": {
     "fails": [
+     "finding F-C0150",
+     "finding F-C0151",
      "lane status failed (modules/01.json)"
     ],
     "intent_undecided": []
@@ -5412,7 +5605,8 @@
    "findings": [
     "F-0402",
     "F-0405",
-    "F-0406"
+    "F-0406",
+    "F-C0450"
    ],
    "findings_undecided": [
     "F-0401"
@@ -5425,6 +5619,7 @@
      "finding F-0402",
      "finding F-0405",
      "finding F-0406",
+     "finding F-C0450",
      "lane status failed (modules/04.json)"
     ],
     "intent_undecided": [
@@ -5668,7 +5863,8 @@
     "F-1103",
     "F-1105",
     "F-1108",
-    "F-1114"
+    "F-1114",
+    "F-C1150"
    ],
    "gate": "3.3a-writesets",
    "level": "model",
@@ -5680,6 +5876,7 @@
      "finding F-1105",
      "finding F-1108",
      "finding F-1114",
+     "finding F-C1150",
      "lane status failed (modules/11.json)"
     ],
     "intent_undecided": []
@@ -5735,7 +5932,8 @@
    ],
    "findings": [
     "F-C1301",
-    "F-C1308"
+    "F-C1308",
+    "F-C1350"
    ],
    "gate": "3.3a-writesets",
    "level": "model",
@@ -5743,7 +5941,8 @@
    "product_basis": {
     "fails": [
      "finding F-C1301",
-     "finding F-C1308"
+     "finding F-C1308",
+     "finding F-C1350"
     ],
     "intent_undecided": []
    },
@@ -5877,7 +6076,8 @@
    ],
    "findings": [
     "F-1801",
-    "F-C1804"
+    "F-C1804",
+    "F-C1850"
    ],
    "gate": "3.3a-writesets",
    "level": "model",
@@ -5886,6 +6086,7 @@
     "fails": [
      "finding F-1801",
      "finding F-C1804",
+     "finding F-C1850",
      "lane status failed (modules/18.json)"
     ],
     "intent_undecided": []
@@ -10783,6 +10984,7 @@
     "F-C1306",
     "F-C1307",
     "F-C1308",
+    "F-C1350",
     "F-C1703",
     "F-CS01"
    ],
@@ -10799,6 +11001,7 @@
      "finding F-C1306",
      "finding F-C1307",
      "finding F-C1308",
+     "finding F-C1350",
      "finding F-C1703",
      "finding F-CS01"
     ],
@@ -12112,7 +12315,9 @@
     "F-0108",
     "F-0109",
     "F-0110",
-    "F-C0101"
+    "F-C0101",
+    "F-C0150",
+    "F-C0151"
    ],
    "gate": "3.8-findings-disposed",
    "level": "method",
@@ -12129,7 +12334,9 @@
      "finding F-0108",
      "finding F-0109",
      "finding F-0110",
-     "finding F-C0101"
+     "finding F-C0101",
+     "finding F-C0150",
+     "finding F-C0151"
     ],
     "intent_undecided": []
    },
@@ -12235,7 +12442,8 @@
     "F-0407",
     "F-0408",
     "F-0409",
-    "F-C0401"
+    "F-C0401",
+    "F-C0450"
    ],
    "findings_undecided": [
     "F-0401",
@@ -12254,7 +12462,8 @@
      "finding F-0407",
      "finding F-0408",
      "finding F-0409",
-     "finding F-C0401"
+     "finding F-C0401",
+     "finding F-C0450"
     ],
     "intent_undecided": [
      "finding F-0401",
@@ -12352,7 +12561,8 @@
     "F-C0603",
     "F-C0604",
     "F-C0605",
-    "F-C0606"
+    "F-C0606",
+    "F-C0670"
    ],
    "gate": "3.8-findings-disposed",
    "level": "method",
@@ -12382,7 +12592,8 @@
      "finding F-C0603",
      "finding F-C0604",
      "finding F-C0605",
-     "finding F-C0606"
+     "finding F-C0606",
+     "finding F-C0670"
     ],
     "intent_undecided": []
    },
@@ -12496,7 +12707,8 @@
     "F-1113",
     "F-1114",
     "F-C1101",
-    "F-C1110"
+    "F-C1110",
+    "F-C1150"
    ],
    "gate": "3.8-findings-disposed",
    "level": "method",
@@ -12518,7 +12730,8 @@
      "finding F-1113",
      "finding F-1114",
      "finding F-C1101",
-     "finding F-C1110"
+     "finding F-C1110",
+     "finding F-C1150"
     ],
     "intent_undecided": []
    },
@@ -12572,6 +12785,7 @@
     "F-C1307",
     "F-C1308",
     "F-C1309",
+    "F-C1350",
     "F-CS01"
    ],
    "gate": "3.8-findings-disposed",
@@ -12594,6 +12808,7 @@
      "finding F-C1307",
      "finding F-C1308",
      "finding F-C1309",
+     "finding F-C1350",
      "finding F-CS01"
     ],
     "intent_undecided": []
@@ -12678,10 +12893,19 @@
    "evidence": [
     "findings/audit/18.json"
    ],
+   "findings": [
+    "F-C1850"
+   ],
    "gate": "3.8-findings-disposed",
    "level": "method",
    "module": "18",
-   "product_obligation": "unknown",
+   "product_basis": {
+    "fails": [
+     "finding F-C1850"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
    "remaining": "every finding is recorded with evidence and a disposition; a fix or a maintainer decision per finding is outside this observation-only audit",
    "source": "modules/18.json",
    "status": "open"
@@ -26154,6 +26378,39 @@
    "disposition": "reproduced-live",
    "evidence": [
     {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/EmbedQueue.cls:112-134"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/EmbedQueue.cls:258-268"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/embeddings.py:1912-1915"
+    },
+    {
+     "kind": "live",
+     "ref": "intent-a-hd0604-queue-claim"
+    },
+    {
+     "kind": "mc",
+     "ref": "sem-mc-queue-as-built"
+    }
+   ],
+   "gates": [
+    "3.3a-mechanisms",
+    "3.3-model-check",
+    "3.8-findings-disposed"
+   ],
+   "id": "F-C0670",
+   "severity": "S3"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
      "kind": "live",
      "ref": "sim-fcs01-minimal"
     },
@@ -26461,6 +26718,215 @@
    ],
    "id": "F-C1705",
    "severity": "S3"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "ws-live-ins-store_node"
+    },
+    {
+     "kind": "live",
+     "ref": "ws-live-ins-store_edge"
+    },
+    {
+     "kind": "live",
+     "ref": "ws-live-ins-bulk_create_nodes"
+    },
+    {
+     "kind": "live",
+     "ref": "ws-live-ins-bulk_ingest_edges"
+    },
+    {
+     "kind": "live",
+     "ref": "ws-live-ins-bulk_create_edges"
+    },
+    {
+     "kind": "live",
+     "ref": "ws-live-ins-store_write_nodes"
+    },
+    {
+     "kind": "live",
+     "ref": "ws-live-ins-store_write_edges"
+    },
+    {
+     "kind": "live",
+     "ref": "ws-live-ins-create_edge_temporal"
+    },
+    {
+     "kind": "live",
+     "ref": "ws-live-ins-bulk_create_edges_temporal"
+    },
+    {
+     "kind": "live",
+     "ref": "ws-live-ins-reify_edge"
+    },
+    {
+     "kind": "live",
+     "ref": "ws-live-ins-bulkloader_load_edges"
+    },
+    {
+     "kind": "live",
+     "ref": "ws-live-ins-import_rdf"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/LedgerRedact.cls:302-330"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/LedgerRedact.cls:202-211"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/LedgerRedact.cls:409-416"
+    }
+   ],
+   "gates": [
+    "3.3a-writesets",
+    "3.7-integration-worlds",
+    "3.8-findings-disposed"
+   ],
+   "id": "F-C1350",
+   "severity": "S1"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "ws-live-stmt-collision"
+    },
+    {
+     "kind": "live",
+     "ref": "ws-live-stmt-purge"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Adjacency.cls:736-748"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/LedgerApply.cls:420-434"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/TemporalPolicy.cls:124-228"
+    }
+   ],
+   "gates": [
+    "3.3a-writesets",
+    "3.8-findings-disposed"
+   ],
+   "id": "F-C0450",
+   "severity": "S2"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "ws-live-stmt-collision"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/schema.py:3186-3259"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/schema.py:61"
+    }
+   ],
+   "gates": [
+    "3.3a-writesets",
+    "3.8-findings-disposed"
+   ],
+   "id": "F-C0151",
+   "severity": "S2"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "ws-live-migrations"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/schema.py:1514-1637"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/schema.py:704-722"
+    }
+   ],
+   "gates": [
+    "3.3a-writesets",
+    "3.8-findings-disposed"
+   ],
+   "id": "F-C0150",
+   "severity": "S2"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "ws-live-sql-insert-wedge"
+    },
+    {
+     "kind": "live",
+     "ref": "ws-live-sql-guard"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/LedgerRevision.cls:44"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/LedgerRevision.cls:87-108"
+    }
+   ],
+   "gates": [
+    "3.3a-writesets",
+    "3.8-findings-disposed"
+   ],
+   "id": "F-C1150",
+   "severity": "S2"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "ws-live-gap-restore"
+    },
+    {
+     "kind": "live",
+     "ref": "ws-live-gap-marker"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/snapshot.py:1654-1692"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/LedgerRedact.cls:333-378"
+    }
+   ],
+   "gates": [
+    "3.3a-writesets",
+    "3.8-findings-disposed"
+   ],
+   "id": "F-C1850",
+   "severity": "S1"
   }
  ],
  "not_implemented": [
@@ -27199,13 +27665,13 @@
   }
  ],
  "product_counts": {
-  "fails": 266,
+  "fails": 268,
   "holds-in-model-only": 1,
   "intent-undecided": 2,
   "n/a": 33,
-  "unknown": 445
+  "unknown": 443
  },
- "registry_runs": 956,
+ "registry_runs": 969,
  "starting_inventory": {
   "cells": 904,
   "decisions": 61,
