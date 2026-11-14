@@ -53,7 +53,7 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 3.7-integration-worlds | product | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
 | 3.7-differential | method | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
 | 3.7-e2e | product | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
-| 3.7-trace-replay | product | 3 | 0 | 14 | 1 | 1 | 8 | 1 | 0 | 9 | 1 |
+| 3.7-trace-replay | product | 3 | 0 | 14 | 1 | 1 | 9 | 0 | 0 | 9 | 1 |
 | 3.7-lock-log | product | 4 | 0 | 11 | 1 | 3 | 4 | 0 | 0 | 12 | 3 |
 | 3.7-mutation | product | 0 | 0 | 15 | 3 | 1 | 1 | 0 | 0 | 17 | 1 |
 | 3.7-perf | product | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
@@ -78,7 +78,7 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 5c-root-causes | method | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 5c-reviewers | method | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 
-Totals: {'closed': 165, 'not-applicable': 36, 'open': 540, 'blocked': 6}; evidence grade of closed cells: {'registered-run': 132, 'inspected': 33}; product: {'unknown': 493, 'n/a': 34, 'fails': 216, 'intent-undecided': 3, 'holds-in-model-only': 1}
+Totals: {'closed': 165, 'not-applicable': 36, 'open': 540, 'blocked': 6}; evidence grade of closed cells: {'registered-run': 132, 'inspected': 33}; product: {'unknown': 493, 'n/a': 34, 'fails': 217, 'intent-undecided': 2, 'holds-in-model-only': 1}
 
 ## Writer census obligations (review R2-02)
 

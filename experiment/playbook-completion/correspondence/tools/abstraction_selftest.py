@@ -45,6 +45,7 @@ def main() -> int:
     print("unmutated:", "clean" if not base else base[:3])
     ok &= not base
     controls = {}
+    expect_rule = {}
     for k in conformance.CONTROLS:
         controls[k] = conformance.mutate(t0, k)
     t = copy.deepcopy(t0)
@@ -80,9 +81,25 @@ def main() -> int:
         o = next(o for o in t["ops"] if o.get("label") == "erase-nodes")
         o["rows_after"]["nodes"] = o["rows_after"]["nodes"] + [r for r in o["rows_before"]["nodes"] if r[0].startswith("x|")][:1]
         controls["erase-leaves-row"] = t
+        # tombstone-of-live-content (added after review-2 R2-12): the target's node rows are live again before every
+        # redaction step (rows_before), so each tombstone is of live content; only that rule may reject it.
+        t = copy.deepcopy(e0)
+        er = next(o for o in t["ops"] if o.get("label") == "erase-nodes")
+        target_rows = [r for r in er["rows_before"]["nodes"] if r[0].startswith("x|")]
+        hit = 0
+        for o in t["ops"]:
+            if str(o.get("op", "")).startswith("redact") or str(o.get("label", "")).startswith("redact"):
+                o["rows_before"]["nodes"] = o["rows_before"]["nodes"] + target_rows
+                o["rows_after"]["nodes"] = o["rows_after"]["nodes"] + target_rows
+                hit += 1
+        if hit:
+            controls["tombstone-of-live-content"] = t
+            expect_rule["tombstone-of-live-content"] = "tombstone of live content"
     expect_not = {"frame-violation"}
     for k, t in controls.items():
         hits = caught(t)
+        if k in expect_rule:
+            hits = [h for h in hits if expect_rule[k] in str(h)]   # the kill counts only at the expected rule
         good = bool(hits) != (k in expect_not)
         ok &= good
         print(f"control {k}: {'REJECTED' if hits else 'not caught'}{' (expected: a frame property)' if k in expect_not else ''}"

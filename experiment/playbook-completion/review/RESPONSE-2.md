@@ -1,3 +1,5 @@
+> Author: the orchestrator's review-response lane (not the independent reviewer). It answers REVIEW-2's conditions.
+
 # Response to the second independent review (review/REVIEW-2.md, section 5)
 
 Lane: review-response. Product pin `3eaa79cf` unchanged (`check-product-scope.sh` passes); no IRIS connection, no

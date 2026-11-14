@@ -85,6 +85,27 @@
    "id": "live-f1201-reproduced",
    "correction": "The finding it evidences, F-1201, is now classified intent-undecided (review R-11/R2-08): the observed interleaving (8/8) stands; its intent (ERS-I3) rests on HD-1201, an Assumption, because ADR-0004 states only the converse (ERS-I2). The overlap of an eraser with a same-graph writer is recorded as the violated breadth premise P-A3 (TRUST.md).",
    "evidence": []
+  },
+  {
+   "id": "corr-trace-conf",
+   "correction": "Store-side contract steps (Store.EraseRows, EraseIndex, Apply) were checked only on the ext trace, the one trace with per-operation row snapshots; on the conf trace the abstraction reported 'trace has no per-operation row snapshots (ledger-side checks only)', so its result covers ledger-side checks only.",
+   "evidence": [
+    "corr-abstraction-selftest-r3"
+   ]
+  },
+  {
+   "id": "correspondence/CORRESPONDENCE.md (controls)",
+   "correction": "The abstraction self-test rejected 9 of its 10 controls and, as designed, did not catch the frame control (frame is not an abstraction property); it did not test the tombstone-of-live-content rule. A control for that rule was added afterwards: 10 rejected plus 1 expected not caught.",
+   "evidence": [
+    "corr-abstraction-selftest-r3"
+   ]
+  },
+  {
+   "id": "independent-review-2",
+   "correction": "Registered from the reviewer's unfinished draft (empty evidence section). The final second-pass text is independent-review-2-final.",
+   "evidence": [
+    "independent-review-2-final"
+   ]
   }
  ]
 }

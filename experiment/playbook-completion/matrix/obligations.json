@@ -3209,13 +3209,12 @@
      "finding F-1305",
      "finding F-C1201",
      "finding F-C1301",
+     "run core-proofs-f1201-erase-unlocked (expected-violation)",
      "run core-proofs-f1302-unlocked-start (expected-violation)",
      "run core-proofs-f1303-other-marker (expected-violation)",
      "run core-proofs-f1306-replay-reapplies (expected-violation)"
     ],
-    "intent_undecided": [
-     "run core-proofs-f1201-erase-unlocked (expected-violation) of F-1201"
-    ]
+    "intent_undecided": []
    },
    "product_obligation": "fails",
    "remaining": "model-level: participant contracts composed with actors Protocol2 in two levels; no code correspondence (see 3.5-handlers); premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested; as built: the four located controls encode the pin's behaviour (F-1302, F-1303, F-1306; F-1201 intent-undecided) and each has a proved counterexample, and the premises above are violated by reproduced findings, so the product obligation fails [review-response R2-01]",
@@ -4098,25 +4097,22 @@
    ],
    "evidence_grade": "registered-run",
    "findings": [
+    "F-1201",
     "F-C1201",
     "F-C1202"
-   ],
-   "findings_undecided": [
-    "F-1201"
    ],
    "gate": "3.3-model-check",
    "level": "model",
    "module": "12",
    "product_basis": {
     "fails": [
+     "finding F-1201",
      "finding F-C1201",
      "finding F-C1202",
+     "run core-m2-as-built-F1201-stmt (expected-violation)",
      "run live-f1201-reproduced (fail)"
     ],
-    "intent_undecided": [
-     "finding F-1201",
-     "run core-m2-as-built-F1201-stmt (expected-violation) of F-1201"
-    ]
+    "intent_undecided": []
    },
    "product_obligation": "fails",
    "remaining": "as-built violates; reviewed model passes",
@@ -4155,11 +4151,10 @@
      "finding F-1306",
      "finding F-C1301",
      "finding F-C1302",
+     "run core-m2-as-built-F1201-stmt (expected-violation)",
      "run live-f1201-reproduced (fail)"
     ],
-    "intent_undecided": [
-     "run core-m2-as-built-F1201-stmt (expected-violation) of F-1201"
-    ]
+    "intent_undecided": []
    },
    "product_obligation": "fails",
    "remaining": "as-built violates; reviewed model passes",
@@ -4188,11 +4183,10 @@
     "fails": [
      "finding F-1401",
      "finding F-1402",
+     "run core-m2-as-built-F1201-stmt (expected-violation)",
      "run live-f1201-reproduced (fail)"
     ],
-    "intent_undecided": [
-     "run core-m2-as-built-F1201-stmt (expected-violation) of F-1201"
-    ]
+    "intent_undecided": []
    },
    "product_obligation": "fails",
    "remaining": "as-built violates; reviewed model passes",
@@ -5682,11 +5676,10 @@
    "product_basis": {
     "fails": [
      "lane status failed (matrix-input/correspondence_status.json)",
-     "run corr-closure-scan (fail)"
+     "run corr-closure-scan (fail)",
+     "run corr-trace-f1201 (fail)"
     ],
-    "intent_undecided": [
-     "run corr-trace-f1201 (fail) of F-1201"
-    ]
+    "intent_undecided": []
    },
    "product_obligation": "fails",
    "remaining": "The eraser writes the statement maps beside commits without the head lock (F-1114, F-1201); content tables have 25 census writers outside the ledger (writer-census). Corrected census: 46 undeclared writer methods (followup-writer-census, superseding writer-census's 25) [review-response R2-02].",
@@ -7443,11 +7436,10 @@
    "product_basis": {
     "fails": [
      "lane status failed (matrix-input/correspondence_status.json)",
+     "run corr-trace-f1201 (fail)",
      "run live-f1201-reproduced (fail)"
     ],
-    "intent_undecided": [
-     "run corr-trace-f1201 (fail) of F-1201"
-    ]
+    "intent_undecided": []
    },
    "product_obligation": "fails",
    "remaining": "F-1201/F-1114: the eraser takes no head lock (observed: EraseNodes/EraseGraph finish while it is held); reviewed design HD-1201 holds it.",
@@ -8188,10 +8180,8 @@
    "findings": [
     "F-0702",
     "F-0801",
+    "F-1201",
     "F-C0702"
-   ],
-   "findings_undecided": [
-    "F-1201"
    ],
    "gate": "3.6-composition",
    "level": "product",
@@ -8200,11 +8190,10 @@
     "fails": [
      "finding F-0702",
      "finding F-0801",
+     "finding F-1201",
      "finding F-C0702"
     ],
-    "intent_undecided": [
-     "finding F-1201"
-    ]
+    "intent_undecided": []
    },
    "product_obligation": "fails",
    "remaining": "composition proved over contracts; committed IRIS transactions checked empirically on one scenario only; no proof over ObjectScript/Python (no frontend)",
@@ -10289,19 +10278,19 @@
     "run:trace-conformance-controls"
    ],
    "evidence_grade": "registered-run",
-   "findings_undecided": [
+   "findings": [
     "F-1201"
    ],
    "gate": "3.7-trace-replay",
    "level": "product",
    "module": "12",
    "product_basis": {
-    "fails": [],
-    "intent_undecided": [
+    "fails": [
      "finding F-1201"
-    ]
+    ],
+    "intent_undecided": []
    },
-   "product_obligation": "intent-undecided",
+   "product_obligation": "fails",
    "remaining": "one two-tenant scenario Limits of the alpha contract-step check (review R2-05): alpha (correspondence/CORRESPONDENCE.md section 2) maps create_temporal_edge to no content and excludes temporal-marked rows, as replay.py does, and its 'tombstone of live content' check (correspondence/tools/abstraction.py:466-472) folds a record's keys against alpha's rows, so a live temporal-only edge is never 'live' and F-C1308's failure passes the check by construction (temporal hole); the redaction step check covers soundness, counts, digests and the marker but not completeness at Final (every live record of the target tombstoned; theorem_final_effect in proofs/), so F-1305 / F-C1302-class outcomes pass (completeness hole); every checked trace is sequential apart from the F-1201 pair. A pass means no violation of the checked contract was seen on the traced inputs, not that the handler performs its step. The orchestrator's trace-conformance-ledger step rules have the same two holes: they check that tombstones are only of target records (soundness), not that Final leaves no live record of the target untombstoned, and its two-tenant scenario contains no temporal-only edge. [review-response R2-05]",
    "status": "closed",
    "supplemented_by": [
@@ -11064,17 +11053,17 @@
   {
    "cited_runs": [
     "independent-review-1",
-    "independent-review-2"
+    "independent-review-2-final"
    ],
    "evidence": [
     "run:independent-review-1",
-    "run:independent-review-2"
+    "run:independent-review-2-final"
    ],
    "gate": "3.8-review",
    "level": "method",
    "module": "product",
    "product_obligation": "unknown",
-   "remaining": "no sign-off in either pass (review/REVIEW.md, review/REVIEW-2.md section 5); response to conditions 1-5 and 7 in review/RESPONSE-2.md; condition 6 needs an operator ruling, condition 8 the pending runs",
+   "remaining": "no sign-off; remaining: operator scope ruling (R2-07); R2-11 and R2-12 addressed after the final review text (F-1201 restored, errata, tombstone-of-live control corr-abstraction-selftest-r3); a third review pass would confirm",
    "status": "open"
   },
   {
@@ -11526,25 +11515,22 @@
    "cited_runs": [],
    "evidence": [],
    "findings": [
+    "F-1201",
     "F-C1201",
     "F-C1202",
     "F-C1203"
-   ],
-   "findings_undecided": [
-    "F-1201"
    ],
    "gate": "3.8-findings-disposed",
    "level": "method",
    "module": "12",
    "product_basis": {
     "fails": [
+     "finding F-1201",
      "finding F-C1201",
      "finding F-C1202",
      "finding F-C1203"
     ],
-    "intent_undecided": [
-     "finding F-1201"
-    ]
+    "intent_undecided": []
    },
    "product_obligation": "fails",
    "remaining": "every finding is recorded with evidence and a disposition; a fix or a maintainer decision per finding is outside this observation-only audit",
@@ -22802,7 +22788,7 @@
   {
    "audit": {
     "confidence": "high",
-    "disposition": "intent-undecided",
+    "disposition": "reproduced-live",
     "evidence": [
      {
       "kind": "run",
@@ -25994,13 +25980,13 @@
   }
  ],
  "product_counts": {
-  "fails": 216,
+  "fails": 217,
   "holds-in-model-only": 1,
-  "intent-undecided": 3,
+  "intent-undecided": 2,
   "n/a": 34,
   "unknown": 493
  },
- "registry_runs": 751,
+ "registry_runs": 753,
  "starting_inventory": {
   "cells": 904,
   "decisions": 61,

@@ -1,7 +1,7 @@
 {
  "review": "independent reviewer, second pass (playbook §3.8 / §5c)",
  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
- "audit_head": "3d1095e3 (+ uncommitted lane work)",
+ "audit_head": "3d1095e3 (sections 1-3) and 739ddb8e (section 4)",
  "date": "2026-11-14",
  "decision": "no sign-off",
  "responses": {
@@ -32,7 +32,8 @@
     "experiment/playbook-completion/matrix/obligations.json cells 08/3.3-model-check, product/3.3a-domain-contract, product/3.3-progress-controls",
     "experiment/playbook-completion/matrix/MATRIX.md totals"
    ],
-   "recommendation": "Normalise level; attach findings to product-scope cells by gate; derive fails from as-built expected violations; wire m07-m11 refs to b-mc-* ids; add a --check that rejects 'as-built fails' text beside a non-fails label."
+   "recommendation": "Normalise level; attach findings to product-scope cells by gate; derive fails from as-built expected violations; wire m07-m11 refs to b-mc-* ids; add a --check that rejects 'as-built fails' text beside a non-fails label.",
+   "status_after_739ddb8e": "met by 0eec4df8 (verified: levels normalised; 08/15 3.3-model-check, 3.3a-domain-contract, 3.3-progress-controls, 3.3-protocol, 11/3.3-L1 now fails with basis; build_matrix.py --check 0 problems)"
   },
   {
    "id": "R2-02",
@@ -46,7 +47,8 @@
     "experiment/playbook-completion/followup/FOLLOWUP.md 'For the orchestrator'",
     "$RUN_DIR/followup/writer-census.json"
    ],
-   "recommendation": "Add the obligations and gaps as open cells; reconcile corr-closure-scan with the census."
+   "recommendation": "Add the obligations and gaps as open cells; reconcile corr-closure-scan with the census.",
+   "status_after_739ddb8e": "met by 0eec4df8 (13/3.3a-writesets cites followup-writer-census; module 18 restore write-set gaps open; 3.6-closure reconciliation recorded)"
   },
   {
    "id": "R2-03",
@@ -61,7 +63,8 @@
     "git log f3fe3917, 78e7a5e8",
     "registry:core-m3-as-built-F1801-keys"
    ],
-   "recommendation": "Cite the new findings; extend the checker to flag statements named in a reproduced finding's intended field that do not cite it."
+   "recommendation": "Cite the new findings; extend the checker to flag statements named in a reproduced finding's intended field that do not cite it.",
+   "status_after_739ddb8e": "met by 0eec4df8 (F-C1304..F-C1309, F-C1203 cited; RED-B4 [model-only] + F-1801; RED-B7/B12/B1.1 cite F-C1309/F-C1306/F-C1308); new checker rule's control not opened by the reviewer"
   },
   {
    "id": "R2-04",
@@ -78,7 +81,8 @@
     "experiment/playbook-completion/validation/SUITES.md 'Product-defect findings'",
     "experiment/playbook-completion/TRUST.md"
    ],
-   "recommendation": "Reconcile each artefact with the matrix; reopen 5c-reviewers or mark the simulator not applicable with a reason; file validation findings."
+   "recommendation": "Reconcile each artefact with the matrix; reopen 5c-reviewers or mark the simulator not applicable with a reason; file validation findings.",
+   "status_after_739ddb8e": "met by 0eec4df8 (STATUS §3.1 open; 5c-reviewers open; F-C1706/F-C0502/F-C1002/F-C0606 filed; TRUST premises added)"
   },
   {
    "id": "R2-05",
@@ -91,7 +95,8 @@
     "experiment/playbook-completion/correspondence/CORRESPONDENCE.md §2",
     "experiment/playbook-completion/correspondence/tools/abstraction.py:440-505"
    ],
-   "recommendation": "Add temporal content to alpha and a Final completeness check; state both limits on the 3.5-handlers and 3.7-trace-replay cells."
+   "recommendation": "Add temporal content to alpha and a Final completeness check; state both limits on the 3.5-handlers and 3.7-trace-replay cells.",
+   "status_after_739ddb8e": "recorded as a limit on the 3.7-trace-replay cells; checks not extended"
   },
   {
    "id": "R2-06",
@@ -105,7 +110,8 @@
     "experiment/playbook-completion/PROOF-DEBT.md",
     "experiment/playbook-completion/proofs-breadth/PROOFS.md §4, 'Premises the pin violates'"
    ],
-   "recommendation": "Add the D-2 control or list it as debt; add P-A3 to the violated premises."
+   "recommendation": "Add the D-2 control or list it as debt; add P-A3 to the violated premises.",
+   "status_after_739ddb8e": "recorded as PROOF-DEBT D-12, D-13 and TRUST P-A3"
   },
   {
    "id": "R2-07",
@@ -120,7 +126,8 @@
     "experiment/playbook-completion/CONVENTIONS.md 'Scope control'",
     "experiment/playbook-completion/validation/SUITES.md 'Upstream side effects'"
    ],
-   "recommendation": "Obtain and record an operator ruling (from the user/operator, not an agent), or re-grade the evidence as outside the conventions."
+   "recommendation": "Obtain and record an operator ruling (from the user/operator, not an agent), or re-grade the evidence as outside the conventions.",
+   "status_after_739ddb8e": "open: needs an operator ruling"
   },
   {
    "id": "R2-08",
@@ -134,7 +141,8 @@
     "registry:live-crash-world-r2",
     "experiment/playbook-completion/CONVENTIONS.md outcome taxonomy"
    ],
-   "recommendation": "Grade intent-undecided/conditional; record the SynchCommit premise in TRUST.md."
+   "recommendation": "Grade intent-undecided/conditional; record the SynchCommit premise in TRUST.md.",
+   "status_after_739ddb8e": "met (F-0401, F-0503, F-C1102 intent-undecided; SynchCommit evidenced) with one over-correction (R2-11)"
   },
   {
    "id": "R2-09",
@@ -146,7 +154,8 @@
    "evidence": [
     "git log/diff of evidence/runs/trace-conformance-ledger.json and writer-census.json"
    ],
-   "recommendation": "Keep the first registered_utc and add erratum_utc."
+   "recommendation": "Keep the first registered_utc and add erratum_utc.",
+   "status_after_739ddb8e": "met (first registered_utc kept; evidence/errata.json)"
   },
   {
    "id": "R2-10",
@@ -161,12 +170,75 @@
     "iris_src/src/Graph/KG/Eraser.cls:806",
     "iris_vector_graph/schema.py:50-54,2976-3013"
    ],
-   "recommendation": "Record as reach obligations or findings; name them in the receipt question to the maintainer."
+   "recommendation": "Record as reach obligations or findings; name them in the receipt question to the maintainer.",
+   "status_after_739ddb8e": "recorded as 5 reach obligations (STATUS 3.1-coverage)"
+  },
+  {
+   "id": "R2-11",
+   "angle": [
+    1
+   ],
+   "severity": "S3",
+   "claim": "0eec4df8 moved F-1201 to intent-undecided, but ADR-0004 (Accepted) settles the defect: 'Every deletion path funnels through the Eraser's transaction, so a write path that touches one store without the others is a bug rather than a documented mode.' EraseGraph kills the statement/tuple entries of an edge whose row it did not delete (uv_edge_live true, uv_live_stmt false, 4/4 in verify-final-candidate's f1201-live.log). Only the remedy (which lock, HD-1201) is undecided.",
+   "evidence": [
+    "docs/adr/0004-erasure-removes-content-not-history.md Consequences",
+    "experiment/playbook-completion/findings/audit/12.json F-1201 notes",
+    "$RUN_DIR/verify/20261114T055410Z/f1201-live.log",
+    "registry:live-f1201-reproduced"
+   ],
+   "recommendation": "Restore reproduced-live grounded in ADR-0004's Consequences; keep the serialization remedy conditional on HD-1201, or record why the clause does not apply.",
+   "status_after_739ddb8e": "open"
+  },
+  {
+   "id": "R2-12",
+   "angle": [
+    5
+   ],
+   "severity": "S3",
+   "claim": "Only the ext trace has per-operation row snapshots; conf, f1201-1, f1201-2 and lostack record 'skipped: trace has no per-operation row snapshots (ledger-side checks only)', so alpha's store-side steps ran on one trace. corr-trace-conf's observes claims Store.EraseRows+EraseIndex checked (contradicted); CORRESPONDENCE.md:23 says 10/10 negative controls rejected while the self-test rejects 9 and marks the frame mutation out of scope; no control exercises the tombstone-of-live-content check. independent-review-2 registers an unfinished draft of this review.",
+   "evidence": [
+    "$RUN_DIR/correspondence/checks/trace-conf.json abstraction.skipped",
+    "$RUN_DIR/correspondence/checks/trace-f1201.json",
+    "$RUN_DIR/correspondence/checks/abstraction-selftest-r2.log",
+    "experiment/playbook-completion/correspondence/CORRESPONDENCE.md:23",
+    "registry:independent-review-2 ($RUN_DIR/review/REVIEW-2.md, 05:14 draft)"
+   ],
+   "recommendation": "Erratum for corr-trace-conf and corrected CORRESPONDENCE.md statements; add or disclaim a liveness-check control; register the final REVIEW-2.md under a new id and mark independent-review-2 superseded.",
+   "status_after_739ddb8e": "open"
   }
  ],
  "not_reviewed": [
   "iris-contract/ (no VALIDATED_ROUND)",
   "versions/ (no VERSIONS.md)"
  ],
- "evidence_audit": null
+ "evidence_audit": {
+  "registry_records_hashed": 711,
+  "sha_ok": 705,
+  "sha_mismatch": 6,
+  "sha_mismatch_note": "the 6 disclosed superseded core-proofs originals",
+  "sample_read": 39,
+  "sample_sha_ok": 39,
+  "match": 30,
+  "partial": 6,
+  "mismatch": 3,
+  "mismatch_ids": [
+   "live-crash-world-r1-invalid (erratum filed)",
+   "corr-trace-conf",
+   "independent-review-2 (draft registered)"
+  ],
+  "partial_ids": [
+   "fu-r01b-quarantine-erase-plan",
+   "live-crash-world-r2 (erratum filed)",
+   "corr-trace-f1201",
+   "corr-capacity",
+   "proofs-breadth-baseline",
+   "ontology-r05-check"
+  ]
+ },
+ "conditions": [
+  "R2-07: operator ruling (user/operator, not an agent) on compiling v4.5.1 and the IVGDev.Setup helper into %SYS via a pinned fixture, or F-C1306's evidence re-graded as outside the conventions; CONVENTIONS.md to state the rule",
+  "R2-12: erratum for corr-trace-conf and corrected CORRESPONDENCE.md (alpha store side on ext only; 9/9 alpha controls, frame out of scope; liveness-check control added or disclaimed); final REVIEW-2.md registered under a new id, independent-review-2 superseded",
+  "R2-11: F-1201 re-grounded in ADR-0004 Consequences and restored to reproduced-live, remedy conditional on HD-1201, or a recorded reason why the clause does not apply",
+  "Beyond these, the §3.8 second clause (every finding a fix or recorded decision) needs the maintainer"
+ ]
 }
