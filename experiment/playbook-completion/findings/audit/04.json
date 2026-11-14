@@ -44,10 +44,10 @@
      "ref": "iris_src/src/Graph/KG/Adj.cls:51-90"
     }
    ],
-   "notes": "adj_degree-as-built-F0401-erase gives the finding's trace; the refinement audit against L1 'degree = committed out count' fails as built and passes for the reviewed design. Live provocation is unrepresentable with the public surface: the window lies between the probe and the count inside one Adj.Degree call.",
+   "notes": "adj_degree-as-built-F0401-erase gives the finding's trace; the refinement audit against L1 'degree = committed out count' fails as built and passes for the reviewed design. Live provocation is unrepresentable with the public surface: the window lies between the probe and the count inside one Adj.Degree call. Review-response reclassification (review R2-08 / R-11, condition 5; 2026-11-14): disposition changed from reproduced-model to intent-undecided. The intended behaviour rests only on HD-0401, an Assumption (decisions.md: 'invalidation can never make an old degree-cache value valid again' is the working choice; a per-source generation is named as an alternative) and on ADJ-I5.9, which restates it; no authoritative source settles it. The observed behaviour is unchanged and kept: as-built model breadth-a-mc-adj_degree-as-built and the located control proofs-breadth-hd0401-erase-kills-gen reproduce the trace (model-level; not provoked live). Conditional on HD-0401: a defect if the maintainer adopts it.",
    "module": "04",
    "observed": "Adj.Degree's four steps (iris_src/src/Graph/KG/Adj.cls:51-90) against RemoveSource/RemoveGraph/RemoveAll killing ^KG('gen') (Adjacency.cls:376-377, 437-438, 461-462) and a rolled-back erase.",
-   "disposition": "reproduced-model"
+   "disposition": "intent-undecided"
   },
   {
    "id": "F-0402",
@@ -438,10 +438,10 @@
      "ref": "iris_src/src/Graph/KG/Adjacency.cls:809-822"
     }
    ],
-   "notes": "New. Check adj_rebuild_txn-concurrent-as-built-HD0402 violates ADJ-Q8.10; the reviewed exclusive design passes; control early-release is caught. Intent rests on HD-0402, an assumption.",
+   "notes": "New. Check adj_rebuild_txn-concurrent-as-built-HD0402 violates ADJ-Q8.10; the reviewed exclusive design passes; control early-release is caught. Intent rests on HD-0402, an assumption. Review-response reclassification (review R2-08 / R-11, condition 5; 2026-11-14): disposition changed from reproduced-model to intent-undecided. The record's own intent rests on HD-0402, an Assumption ('a proven concurrent generation swap would also satisfy the objective', decisions.md); the ADMIN_GUIDE naming a single rebuild does not forbid two. Observed behaviour kept: adj_rebuild_txn-concurrent-as-built-HD0402 violates ADJ-Q8.10 in the model. Conditional on HD-0402. The overlap itself stays recorded as the violated breadth-proof premise P-A4.",
    "module": "04",
    "observed": "Adjacency.BeginRebuild takes ^IVG.AdjW in shared mode (iris_src/src/Graph/KG/Adjacency.cls:814-822), which a second rebuild's shared request does not conflict with (P-0403).",
-   "disposition": "reproduced-model"
+   "disposition": "intent-undecided"
   },
   {
    "id": "F-C0403",

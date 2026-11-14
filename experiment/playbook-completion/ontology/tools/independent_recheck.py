@@ -14,9 +14,11 @@
    are unchanged or as evidence-additions.json lists; the file text outside the Glossary and Statements tables
    (cells included) is unchanged.
 4. Evidence (review R-05), re-derived from the raw audit and registry files: a statement citing a finding whose
-   audit disposition is reproduced-live, reproduced-test or confirmed-source has [model-only] on every proved:/mc:
-   item; every restatement's evidence equals its primary's; every finding id and C- run reference resolves (a C-
-   reference needs a record of the same kind with result pass).
+   audit disposition is reproduced-live, reproduced-test or confirmed-source, or intent-undecided with live, run or
+   trace evidence (review R2-08), has [model-only] on every proved:/mc: item; every restatement's evidence equals
+   its primary's; every finding id and C- run reference resolves (a C- reference needs a record of the same kind with
+   result pass); no statement that a reproduced finding's `intended` text names carries proved: without citing that
+   finding (review R2-03).
 Exit 0 only if all four hold.
 """
 import json
@@ -60,18 +62,31 @@ def superset(t):
                       + r"(?![A-Za-z0-9-])", re.I)
 
 
-def audit_findings():
+def audit_findings(full=False):
     out = {}
     for p in sorted((COMP / "findings" / "audit").glob("*.json")):
         data = json.loads(p.read_text(encoding="utf-8"))
         items = data if isinstance(data, list) else data.get("findings", []) + data.get("new_findings", [])
         for f in items:
-            out[f["id"]] = f.get("disposition")
+            out[f["id"]] = f if full else f.get("disposition")
     return out
+
+
+def about_product(f):
+    """Written apart from ontology_check.observed_on_product: product dispositions, or intent-undecided with a live,
+    run or trace evidence item."""
+    if f is None:
+        return False
+    d = f.get("disposition")
+    if d in ("reproduced-live", "reproduced-test", "confirmed-source"):
+        return True
+    kinds = [e.get("kind") for e in (f.get("evidence") or []) if isinstance(e, dict)]
+    return d == "intent-undecided" and bool({"live", "run", "trace"} & set(kinds))
 
 
 def evidence_checks(mods, every):
     disp = audit_findings()
+    full = audit_findings(full=True)
     original = set()
     old = ROOT / "experiment" / "playbook-uplift"
     for p in [old / "FINDINGS.md", *sorted((old / "findings").glob("*.md"))]:
@@ -91,7 +106,7 @@ def evidence_checks(mods, every):
             for f in fids:
                 if f not in disp and f not in original:
                     out.append(f"{r[0]}: finding {f} resolves nowhere")
-            product = [f for f in fids if disp.get(f) in ("reproduced-live", "reproduced-test", "confirmed-source")]
+            product = [f for f in fids if about_product(full.get(f))]
             for x in items:
                 kind = x.split(":")[0]
                 if product and kind in ("proved", "mc") and not x.endswith(" [model-only]"):
@@ -101,6 +116,19 @@ def evidence_checks(mods, every):
                     rec = runs.get(m.group(2))
                     if not rec or rec.get("kind") != want[m.group(1)] or rec.get("result") != "pass":
                         out.append(f"{r[0]}: {x} has no passing {want[m.group(1)]} record")
+    # review R2-03: a reproduced finding's intended text names a statement with proved: that does not cite it
+    rows = {r[0]: r for _, _, st in mods for r in st}
+    for fid, f in sorted(full.items()):
+        if f.get("disposition") not in ("reproduced-live", "reproduced-test", "reproduced-model", "confirmed-source"):
+            continue
+        for sid in re.findall(r"\b([A-Z]{2,4}-[A-Z]*[0-9]+(?:\.[0-9]+)*[a-z]?)(?![A-Za-z0-9])", str(f.get("intended", ""))):
+            r = rows.get(sid)
+            if r is None:
+                continue
+            items = [x.strip() for x in r[4].split(";") if x.strip()]
+            if any(x.startswith("proved:") for x in items) and f"finding:{fid}" not in [
+                    re.sub(r" \[model-only\]$", "", x) for x in items]:
+                out.append(f"{sid}: proved: item, named by {fid}'s intended text, without finding:{fid}")
     return out
 
 

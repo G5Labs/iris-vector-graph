@@ -1,0 +1,231 @@
+{
+ "_doc": "Review-response lane (second independent review, review/REVIEW-2.md conditions 1, 2, 3, 4, 5 and 7). 'supplements' add evidence or text to the cell they name, whatever its source; 'extra_cells' are the reach obligations of review R2-10 (open, inspected only). See review/RESPONSE-2.md.",
+ "supplements": [
+  {
+   "gate": "3.3-model-check",
+   "module": "08",
+   "add_evidence": [
+    "run:b-mc-m08-readonly-as-built",
+    "run:b-mc-m08-readonly-control-no-text-check",
+    "run:b-mc-m08-readonly-positive-read",
+    "run:b-mc-m08-readonly-reviewed",
+    "run:b-mc-m08-scope-as-built-dblabels",
+    "run:b-mc-m08-scope-as-built-dotted",
+    "run:b-mc-m08-scope-as-built-graphpath",
+    "run:b-mc-m08-scope-as-built-hll",
+    "run:b-mc-m08-scope-as-built-mapped",
+    "run:b-mc-m08-scope-as-built-shortcut",
+    "run:b-mc-m08-scope-as-built-vlp",
+    "run:b-mc-m08-scope-control-vlp-unscoped",
+    "run:b-mc-m08-scope-positive-walk",
+    "run:b-mc-m08-scope-reviewed",
+    "run:b-mc-m08-txn-as-built-atomic",
+    "run:b-mc-m08-txn-as-built-dup",
+    "run:b-mc-m08-txn-as-built-msg",
+    "run:b-mc-m08-txn-control-commit-per-step",
+    "run:b-mc-m08-txn-control-leak-level",
+    "run:b-mc-m08-txn-control-leak-level-safety",
+    "run:b-mc-m08-txn-control-rollback-all",
+    "run:b-mc-m08-txn-positive-caller-kept",
+    "run:b-mc-m08-txn-positive-commit",
+    "run:b-mc-m08-txn-reviewed"
+   ],
+   "add_remaining": "The lane cell cited only the three reviewed runs; all 24 registered b-mc-m08-* checks are now cited, so the as-built expected violations its reason lists are evidence [review-response R2-01]."
+  },
+  {
+   "gate": "3.3a-writesets",
+   "module": "18",
+   "add_evidence": [
+    "run:followup-writer-census"
+   ],
+   "add_remaining": "Write-set gaps of the corrected census (followup-writer-census): restore_snapshot, through _import_global_from_ndjson (snapshot.py:1679), writes marker, idemRedacted and redactedRev, which plan snapshot.restore_replace does not declare (INV-marker, INV-retry, INV-text): open cells WS-GAP-001..003, violated as built (F-1801). Module 18 also has 20 census obligation cells (Snapshot.ImportGlobals, Snapshot.SetNodeJSON, snapshot.import_rdf) [review-response R2-02].",
+   "reopen": "the corrected census (followup-writer-census) leaves restore's three write-set gaps and module 18's 20 (invariant, writer) obligations undischarged (open per-obligation cells; review R2-02)"
+  },
+  {
+   "gate": "3.3a-writesets",
+   "module": "01",
+   "add_evidence": [
+    "run:followup-writer-census"
+   ],
+   "add_remaining": "Corrected census (followup-writer-census): 29 open per-obligation cells of this gate in module 01 (WS-OBL 29; matrix-input/writer-census-obligations.json) [review-response R2-02].",
+   "reopen": "the corrected census (followup-writer-census) leaves this module's (invariant, writer) obligations undischarged (open per-obligation cells; review R2-02), so the gate's 'every pair has a preservation lemma, guard or recorded finding' is not met"
+  },
+  {
+   "gate": "3.3a-writesets",
+   "module": "03",
+   "add_evidence": [
+    "run:followup-writer-census"
+   ],
+   "add_remaining": "Corrected census (followup-writer-census): 28 open per-obligation cells of this gate in module 03 (WS-OBL 28; matrix-input/writer-census-obligations.json) [review-response R2-02].",
+   "reopen": "the corrected census (followup-writer-census) leaves this module's (invariant, writer) obligations undischarged (open per-obligation cells; review R2-02), so the gate's 'every pair has a preservation lemma, guard or recorded finding' is not met"
+  },
+  {
+   "gate": "3.3a-writesets",
+   "module": "04",
+   "add_evidence": [
+    "run:followup-writer-census"
+   ],
+   "add_remaining": "Corrected census (followup-writer-census): 20 open per-obligation cells of this gate in module 04 (WS-OBL 20; matrix-input/writer-census-obligations.json) [review-response R2-02].",
+   "reopen": "the corrected census (followup-writer-census) leaves this module's (invariant, writer) obligations undischarged (open per-obligation cells; review R2-02), so the gate's 'every pair has a preservation lemma, guard or recorded finding' is not met"
+  },
+  {
+   "gate": "3.3a-writesets",
+   "module": "05",
+   "add_evidence": [
+    "run:followup-writer-census"
+   ],
+   "add_remaining": "Corrected census (followup-writer-census): 16 open per-obligation cells of this gate in module 05 (WS-OBL 16; matrix-input/writer-census-obligations.json) [review-response R2-02].",
+   "reopen": "the corrected census (followup-writer-census) leaves this module's (invariant, writer) obligations undischarged (open per-obligation cells; review R2-02), so the gate's 'every pair has a preservation lemma, guard or recorded finding' is not met"
+  },
+  {
+   "gate": "3.3a-writesets",
+   "module": "06",
+   "add_evidence": [
+    "run:followup-writer-census"
+   ],
+   "add_remaining": "Corrected census (followup-writer-census): 15 open per-obligation cells of this gate in module 06 (WS-COND 15; matrix-input/writer-census-obligations.json) [review-response R2-02].",
+   "reopen": "the corrected census (followup-writer-census) leaves this module's (invariant, writer) obligations undischarged (open per-obligation cells; review R2-02), so the gate's 'every pair has a preservation lemma, guard or recorded finding' is not met"
+  },
+  {
+   "gate": "3.3a-writesets",
+   "module": "11",
+   "add_evidence": [
+    "run:followup-writer-census"
+   ],
+   "add_remaining": "Corrected census (followup-writer-census): 1 open per-obligation cells of this gate in module 11 (WS-OBL 1; matrix-input/writer-census-obligations.json) [review-response R2-02].",
+   "reopen": "the corrected census (followup-writer-census) leaves this module's (invariant, writer) obligations undischarged (open per-obligation cells; review R2-02), so the gate's 'every pair has a preservation lemma, guard or recorded finding' is not met"
+  },
+  {
+   "gate": "3.3a-writesets",
+   "module": "15",
+   "add_evidence": [
+    "run:followup-writer-census"
+   ],
+   "add_remaining": "Corrected census (followup-writer-census): 28 open per-obligation cells of this gate in module 15 (WS-OBL 28; matrix-input/writer-census-obligations.json) [review-response R2-02].",
+   "reopen": "the corrected census (followup-writer-census) leaves this module's (invariant, writer) obligations undischarged (open per-obligation cells; review R2-02), so the gate's 'every pair has a preservation lemma, guard or recorded finding' is not met"
+  },
+  {
+   "gate": "3.3a-writesets",
+   "module": "17",
+   "add_evidence": [
+    "run:followup-writer-census"
+   ],
+   "add_remaining": "Corrected census (followup-writer-census): 21 open per-obligation cells of this gate in module 17 (WS-COND 5, WS-OBL 16; matrix-input/writer-census-obligations.json) [review-response R2-02].",
+   "reopen": "the corrected census (followup-writer-census) leaves this module's (invariant, writer) obligations undischarged (open per-obligation cells; review R2-02), so the gate's 'every pair has a preservation lemma, guard or recorded finding' is not met"
+  },
+  {
+   "gate": "3.4-ownership",
+   "module": "12",
+   "add_evidence": [
+    "run:followup-writer-census"
+   ],
+   "add_remaining": "Corrected census: 46 undeclared writer methods (followup-writer-census, superseding writer-census's 25) [review-response R2-02]."
+  },
+  {
+   "gate": "3.5-handlers",
+   "module": "11",
+   "add_remaining": "Limits of the alpha contract-step check (review R2-05): alpha (correspondence/CORRESPONDENCE.md section 2) maps create_temporal_edge to no content and excludes temporal-marked rows, as replay.py does, and its 'tombstone of live content' check (correspondence/tools/abstraction.py:466-472) folds a record's keys against alpha's rows, so a live temporal-only edge is never 'live' and F-C1308's failure passes the check by construction (temporal hole); the redaction step check covers soundness, counts, digests and the marker but not completeness at Final (every live record of the target tombstoned; theorem_final_effect in proofs/), so F-1305 / F-C1302-class outcomes pass (completeness hole); every checked trace is sequential apart from the F-1201 pair. A pass means no violation of the checked contract was seen on the traced inputs, not that the handler performs its step. [review-response R2-05]"
+  },
+  {
+   "gate": "3.7-trace-replay",
+   "module": "11",
+   "add_remaining": "Limits of the alpha contract-step check (review R2-05): alpha (correspondence/CORRESPONDENCE.md section 2) maps create_temporal_edge to no content and excludes temporal-marked rows, as replay.py does, and its 'tombstone of live content' check (correspondence/tools/abstraction.py:466-472) folds a record's keys against alpha's rows, so a live temporal-only edge is never 'live' and F-C1308's failure passes the check by construction (temporal hole); the redaction step check covers soundness, counts, digests and the marker but not completeness at Final (every live record of the target tombstoned; theorem_final_effect in proofs/), so F-1305 / F-C1302-class outcomes pass (completeness hole); every checked trace is sequential apart from the F-1201 pair. A pass means no violation of the checked contract was seen on the traced inputs, not that the handler performs its step. [review-response R2-05]"
+  },
+  {
+   "gate": "3.5-handlers",
+   "module": "12",
+   "add_remaining": "Limits of the alpha contract-step check (review R2-05): alpha (correspondence/CORRESPONDENCE.md section 2) maps create_temporal_edge to no content and excludes temporal-marked rows, as replay.py does, and its 'tombstone of live content' check (correspondence/tools/abstraction.py:466-472) folds a record's keys against alpha's rows, so a live temporal-only edge is never 'live' and F-C1308's failure passes the check by construction (temporal hole); the redaction step check covers soundness, counts, digests and the marker but not completeness at Final (every live record of the target tombstoned; theorem_final_effect in proofs/), so F-1305 / F-C1302-class outcomes pass (completeness hole); every checked trace is sequential apart from the F-1201 pair. A pass means no violation of the checked contract was seen on the traced inputs, not that the handler performs its step. [review-response R2-05]"
+  },
+  {
+   "gate": "3.7-trace-replay",
+   "module": "12",
+   "add_remaining": "Limits of the alpha contract-step check (review R2-05): alpha (correspondence/CORRESPONDENCE.md section 2) maps create_temporal_edge to no content and excludes temporal-marked rows, as replay.py does, and its 'tombstone of live content' check (correspondence/tools/abstraction.py:466-472) folds a record's keys against alpha's rows, so a live temporal-only edge is never 'live' and F-C1308's failure passes the check by construction (temporal hole); the redaction step check covers soundness, counts, digests and the marker but not completeness at Final (every live record of the target tombstoned; theorem_final_effect in proofs/), so F-1305 / F-C1302-class outcomes pass (completeness hole); every checked trace is sequential apart from the F-1201 pair. A pass means no violation of the checked contract was seen on the traced inputs, not that the handler performs its step. The orchestrator's trace-conformance-ledger step rules have the same two holes: they check that tombstones are only of target records (soundness), not that Final leaves no live record of the target untombstoned, and its two-tenant scenario contains no temporal-only edge. [review-response R2-05]"
+  },
+  {
+   "gate": "3.5-handlers",
+   "module": "13",
+   "add_remaining": "Limits of the alpha contract-step check (review R2-05): alpha (correspondence/CORRESPONDENCE.md section 2) maps create_temporal_edge to no content and excludes temporal-marked rows, as replay.py does, and its 'tombstone of live content' check (correspondence/tools/abstraction.py:466-472) folds a record's keys against alpha's rows, so a live temporal-only edge is never 'live' and F-C1308's failure passes the check by construction (temporal hole); the redaction step check covers soundness, counts, digests and the marker but not completeness at Final (every live record of the target tombstoned; theorem_final_effect in proofs/), so F-1305 / F-C1302-class outcomes pass (completeness hole); every checked trace is sequential apart from the F-1201 pair. A pass means no violation of the checked contract was seen on the traced inputs, not that the handler performs its step. [review-response R2-05]"
+  },
+  {
+   "gate": "3.7-trace-replay",
+   "module": "13",
+   "add_remaining": "Limits of the alpha contract-step check (review R2-05): alpha (correspondence/CORRESPONDENCE.md section 2) maps create_temporal_edge to no content and excludes temporal-marked rows, as replay.py does, and its 'tombstone of live content' check (correspondence/tools/abstraction.py:466-472) folds a record's keys against alpha's rows, so a live temporal-only edge is never 'live' and F-C1308's failure passes the check by construction (temporal hole); the redaction step check covers soundness, counts, digests and the marker but not completeness at Final (every live record of the target tombstoned; theorem_final_effect in proofs/), so F-1305 / F-C1302-class outcomes pass (completeness hole); every checked trace is sequential apart from the F-1201 pair. A pass means no violation of the checked contract was seen on the traced inputs, not that the handler performs its step. The orchestrator's trace-conformance-ledger step rules have the same two holes: they check that tombstones are only of target records (soundness), not that Final leaves no live record of the target untombstoned, and its two-tenant scenario contains no temporal-only edge. [review-response R2-05]"
+  },
+  {
+   "gate": "3.5-handlers",
+   "module": "14",
+   "add_remaining": "Limits of the alpha contract-step check (review R2-05): alpha (correspondence/CORRESPONDENCE.md section 2) maps create_temporal_edge to no content and excludes temporal-marked rows, as replay.py does, and its 'tombstone of live content' check (correspondence/tools/abstraction.py:466-472) folds a record's keys against alpha's rows, so a live temporal-only edge is never 'live' and F-C1308's failure passes the check by construction (temporal hole); the redaction step check covers soundness, counts, digests and the marker but not completeness at Final (every live record of the target tombstoned; theorem_final_effect in proofs/), so F-1305 / F-C1302-class outcomes pass (completeness hole); every checked trace is sequential apart from the F-1201 pair. A pass means no violation of the checked contract was seen on the traced inputs, not that the handler performs its step. [review-response R2-05]"
+  },
+  {
+   "gate": "3.7-trace-replay",
+   "module": "14",
+   "add_remaining": "Limits of the alpha contract-step check (review R2-05): alpha (correspondence/CORRESPONDENCE.md section 2) maps create_temporal_edge to no content and excludes temporal-marked rows, as replay.py does, and its 'tombstone of live content' check (correspondence/tools/abstraction.py:466-472) folds a record's keys against alpha's rows, so a live temporal-only edge is never 'live' and F-C1308's failure passes the check by construction (temporal hole); the redaction step check covers soundness, counts, digests and the marker but not completeness at Final (every live record of the target tombstoned; theorem_final_effect in proofs/), so F-1305 / F-C1302-class outcomes pass (completeness hole); every checked trace is sequential apart from the F-1201 pair. A pass means no violation of the checked contract was seen on the traced inputs, not that the handler performs its step. The orchestrator's trace-conformance-ledger step rules have the same two holes: they check that tombstones are only of target records (soundness), not that Final leaves no live record of the target untombstoned, and its two-tenant scenario contains no temporal-only edge. [review-response R2-05]"
+  }
+ ],
+ "extra_cells": [
+  {
+   "gate": "3.1-coverage",
+   "module": "13",
+   "kind": "reach-obligation",
+   "obligation_id": "REACH-1",
+   "store": "^EmbedQueue(reqId, text | node_id | result | graph)",
+   "status": "open",
+   "evidence": [
+    "inspected:iris_src/src/Graph/KG/EmbedQueue.cls:2-20",
+    "inspected:iris_src/src/Graph/KG/EmbedQueue.cls:181-195"
+   ],
+   "remaining": "Entries keep the text to embed, the node id, the result vector and the graph until ClearDone, which removes DONE entries only (PENDING and ERROR stay); no erase or redaction path names ^EmbedQueue (Eraser.cls, LedgerRedact.cls, nodes_edges.py). reach obligation (review R2-10): a tenant's content can stay here after the documented removal (erase_graph and delete_nodes_by_prefix, then redact); either the tenant procedure removes it or the redaction receipt's out_of_reach (LedgerRedact.cls:504-508: exports, journals and backups only) names it (spec 256 US1 and FR-008, ADR-0013:47-48). Inspected only (the reviewer's reading, spot-checked by the review-response lane at the cited lines); not run live; whether this store counts as content IVG can reach is a maintainer question (STATUS residual question 1)."
+  },
+  {
+   "gate": "3.1-coverage",
+   "module": "13",
+   "kind": "reach-obligation",
+   "obligation_id": "REACH-2",
+   "store": "Graph_KG.docs_quarantine",
+   "status": "open",
+   "evidence": [
+    "inspected:iris_vector_graph/migrations/statements.py:74-100"
+   ],
+   "remaining": "Created and filled by the docs migration with rows it could not place; no erase or redaction path names it. reach obligation (review R2-10): a tenant's content can stay here after the documented removal (erase_graph and delete_nodes_by_prefix, then redact); either the tenant procedure removes it or the redaction receipt's out_of_reach (LedgerRedact.cls:504-508: exports, journals and backups only) names it (spec 256 US1 and FR-008, ADR-0013:47-48). Inspected only (the reviewer's reading, spot-checked by the review-response lane at the cited lines); not run live; whether this store counts as content IVG can reach is a maintainer question (STATUS residual question 1)."
+  },
+  {
+   "gate": "3.1-coverage",
+   "module": "13",
+   "kind": "reach-obligation",
+   "obligation_id": "REACH-3",
+   "store": "Graph_KG.edge_vector_quarantine",
+   "status": "open",
+   "evidence": [
+    "inspected:iris_vector_graph/migrations/statements.py:159-245"
+   ],
+   "remaining": "Created and filled by the edge-vector migration (s, p, o_id, reason, emb); no erase or redaction path names it. reach obligation (review R2-10): a tenant's content can stay here after the documented removal (erase_graph and delete_nodes_by_prefix, then redact); either the tenant procedure removes it or the redaction receipt's out_of_reach (LedgerRedact.cls:504-508: exports, journals and backups only) names it (spec 256 US1 and FR-008, ADR-0013:47-48). Inspected only (the reviewer's reading, spot-checked by the review-response lane at the cited lines); not run live; whether this store counts as content IVG can reach is a maintainer question (STATUS residual question 1)."
+  },
+  {
+   "gate": "3.1-coverage",
+   "module": "13",
+   "kind": "reach-obligation",
+   "obligation_id": "REACH-4",
+   "store": "^ArnoKG (stale whole-database snapshot)",
+   "status": "open",
+   "evidence": [
+    "inspected:iris_src/src/Graph/KG/ArnoAccel.cls:299-303",
+    "inspected:iris_src/src/Graph/KG/Eraser.cls:806",
+    "inspected:iris_src/src/Graph/KG/GraphStores.cls:131"
+   ],
+   "remaining": "A whole-database JSON snapshot with no graph dimension, invalidated by comparing ^KG(\"__version\") rather than by content; only EraseAll kills it (Eraser.cls:806). reach obligation (review R2-10): a tenant's content can stay here after the documented removal (erase_graph and delete_nodes_by_prefix, then redact); either the tenant procedure removes it or the redaction receipt's out_of_reach (LedgerRedact.cls:504-508: exports, journals and backups only) names it (spec 256 US1 and FR-008, ADR-0013:47-48). Inspected only (the reviewer's reading, spot-checked by the review-response lane at the cited lines); not run live; whether this store counts as content IVG can reach is a maintainer question (STATUS residual question 1)."
+  },
+  {
+   "gate": "3.1-coverage",
+   "module": "13",
+   "kind": "reach-obligation",
+   "obligation_id": "REACH-5",
+   "store": "Graph_KG.rdf_edges__ivg400rescue / rdf_edges__ivg400unplaced",
+   "status": "open",
+   "evidence": [
+    "inspected:iris_vector_graph/schema.py:50-54",
+    "inspected:iris_vector_graph/schema.py:2976-3013"
+   ],
+   "remaining": "Copies of edge content made by the 3.2.0 rescue during an upgrade; an operator may find one left behind (schema.py:48-54). reach obligation (review R2-10): a tenant's content can stay here after the documented removal (erase_graph and delete_nodes_by_prefix, then redact); either the tenant procedure removes it or the redaction receipt's out_of_reach (LedgerRedact.cls:504-508: exports, journals and backups only) names it (spec 256 US1 and FR-008, ADR-0013:47-48). Inspected only (the reviewer's reading, spot-checked by the review-response lane at the cited lines); not run live; whether this store counts as content IVG can reach is a maintainer question (STATUS residual question 1)."
+  }
+ ]
+}

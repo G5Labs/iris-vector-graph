@@ -67,7 +67,7 @@
   "title": "A detach delete assigns statement ids to unrecorded incident edges in storage order",
   "intended": "specs/213 FR-011 (detach cascades in statement-id order); playbook \u00a73.4 storage-order / \u00a73.6 row-permutation: results must not depend on row insertion order.",
   "observed": "Live AUDITC (corr-row-permutation): a recorded node pm|1 with three unrecorded (ledger-bypassing) edges to pm|a, pm|b, pm|c inserted in the orders abc, cba, bca; delete_node(pm|1, detach) records the same three delete_rel records each time, but statement ids 1, 2, 3 go to the edges in insertion order (LedgerApply.cls:385-398: incident edges from a SELECT without ORDER BY; AllocStmt in cursor order). Recorded content without the ids is identical.",
-  "disposition": "reproduced-live",
+  "disposition": "intent-undecided",
   "outcome": "intent-undecided",
   "evidence": [
    {
@@ -86,7 +86,7 @@
   "severity": "S4",
   "confidence": "high",
   "remedy": "Order the incident-edge SELECT by (s, p, o_id, graph_id) before allocating ids, if statement identity is meant to be a function of the logical state.",
-  "notes": "Working assumption: harmless (replay compares content; ids are internal), recorded because identical logical states give different histories."
+  "notes": "Working assumption: harmless (replay compares content; ids are internal), recorded because identical logical states give different histories. Review-response reclassification (review R2-08 / R-11, condition 5; 2026-11-14): disposition changed from reproduced-live to intent-undecided, to agree with the audit's own erratum for corr-row-permutation (evidence/errata.json: 'an order dependence whose intent is undecided; it is not a confirmed defect') and the correspondence matrix cell ('F-C1108 (intent-undecided)'); the record's notes take 'harmless' as a working assumption. Observed behaviour kept and still live (corr-row-permutation)."
  },
  {
   "id": "F-C1109",

@@ -57,6 +57,12 @@ COMPLETION_KINDS = {"mc": "mc", "live": "live", "trace": "trace", "run": "run", 
 # Audit dispositions that are evidence about the product (experiment/playbook-completion/findings/audit/*.json). A
 # statement that cites such a finding and also carries proved: or mc: must qualify each of those items [model-only].
 PRODUCT_DISPOSITIONS = {"reproduced-live", "reproduced-test", "confirmed-source"}
+# An intent-undecided finding whose evidence includes a run on the product (live, run or trace) is also evidence about
+# the product: the behaviour is observed there; only its intent is open (review R2-08). It drives [model-only] too.
+UNDECIDED_DISPOSITIONS = {"intent-undecided"}
+PRODUCT_EVIDENCE_KINDS = {"live", "run", "trace"}
+# Findings whose `intended` names a statement that carries proved: without citing the finding (review R2-03).
+REPRODUCED_DISPOSITIONS = {"reproduced-live", "reproduced-test", "reproduced-model", "confirmed-source"}
 MODEL_KINDS = ("proved", "mc")
 QUALIFIERS = {"model-only"}
 SAME_MEANING_RE = re.compile(r"Same meaning as ([A-Z]{2,4}-[A-Za-z0-9]+(?:\.[A-Za-z0-9]+)*)")
@@ -582,10 +588,22 @@ def check_evidence(s: Statement, tree: Tree, ev: Evidence, errors: List[str]) ->
     check_model_only(s, ev, errors)
 
 
+def observed_on_product(f: Optional[dict]) -> bool:
+    """A finding record that is evidence about the product: its disposition is reproduced-live, reproduced-test or
+    confirmed-source, or it is intent-undecided and its own evidence includes a live, run or trace item."""
+    if not f:
+        return False
+    if f.get("disposition") in PRODUCT_DISPOSITIONS:
+        return True
+    if f.get("disposition") in UNDECIDED_DISPOSITIONS:
+        return any(isinstance(e, dict) and e.get("kind") in PRODUCT_EVIDENCE_KINDS for e in f.get("evidence") or [])
+    return False
+
+
 def product_findings(s: Statement, ev: "Evidence") -> List[str]:
-    """Findings the statement cites whose audit disposition is evidence about the product."""
+    """Findings the statement cites that are evidence about the product (observed_on_product)."""
     return [ref for kind, ref in evidence_items(s.evidence)
-            if kind == "finding" and ev.audit.get(ref, {}).get("disposition") in PRODUCT_DISPOSITIONS]
+            if kind == "finding" and observed_on_product(ev.audit.get(ref))]
 
 
 def check_model_only(s: Statement, ev: "Evidence", errors: List[str]) -> None:
@@ -682,7 +700,31 @@ def check(ctx: Ctx, tree: Tree) -> Tuple[List[Module], List[str], Dict[str, Stat
             check_evidence(s, tree, ev, errors)
     check_glossary(modules, by_id, errors)
     check_cells(modules, by_id, ev, errors)
+    check_uncited_findings(modules, by_id, ev, errors)
     return modules, errors, by_id
+
+
+def check_uncited_findings(modules: List[Module], by_id: Dict[str, Statement], ev: "Evidence",
+                           errors: List[str]) -> None:
+    """[uncited-finding] (review R2-03): a statement that a reproduced finding's `intended` field names as the
+    contract it violates, that carries a proved: item and does not cite the finding. The [model-only] rule fires only
+    on cited findings, so a missing citation would otherwise keep a proof tag on a contradicted statement unmarked."""
+    codes = sorted({m.code for m in modules}, key=len, reverse=True)
+    if not codes:
+        return
+    sid = re.compile(rf"(?<![A-Za-z0-9-])((?:{'|'.join(map(re.escape, codes))})-[A-Z]*\d+(?:\.\d+)*[a-z]?)(?![A-Za-z0-9])")
+    for fid, f in sorted(ev.audit.items()):
+        if f.get("disposition") not in REPRODUCED_DISPOSITIONS:
+            continue
+        for name in dict.fromkeys(sid.findall(str(f.get("intended", "")))):
+            s = by_id.get(name)
+            if s is None:
+                continue
+            items = evidence_items(s.evidence)
+            if any(k == "proved" for k, _ in items) and not any(k == "finding" and r == fid for k, r in items):
+                errors.append(f"{s.file} {s.id}: [uncited-finding] {fid} ({f.get('disposition')}) names {s.id} in "
+                              f"its intended contract and the statement carries proved: without citing it; cite "
+                              f"finding:{fid} (its proof items then need [model-only]) or correct the finding")
 
 
 def check_glossary(modules: List[Module], by_id: Dict[str, Statement], errors: List[str]) -> None:
@@ -909,7 +951,8 @@ def render(modules: List[Module], errors: List[str], by_id: Dict[str, Statement]
     out += ["", "## Model evidence and product evidence", "",
             "Statements (restatements left out). Product evidence: inspected, tested, ran, run, live or trace. Model "
             "evidence: proved or mc. A product finding is a cited finding whose audit disposition is reproduced-live, "
-            "reproduced-test or confirmed-source.", "",
+            "reproduced-test or confirmed-source, or intent-undecided with live, run or trace evidence (observed on "
+            "the product; its intent is open).", "",
             "| Module | Statements | Product evidence | Model evidence | of which model-only | Model evidence, no product "
             "evidence | Product finding | Product finding and model evidence |",
             "|---|---:|---:|---:|---:|---:|---:|---:|"]
@@ -921,7 +964,7 @@ def render(modules: List[Module], errors: List[str], by_id: Dict[str, Statement]
                 continue
             k = classify(s)
             model = {x for x in k if x.startswith(("proved", "mc"))}
-            pf = any(kind == "finding" and audit.get(ref, {}).get("disposition") in PRODUCT_DISPOSITIONS
+            pf = any(kind == "finding" and observed_on_product(audit.get(ref))
                      for kind, ref in evidence_items(s.evidence))
             c["n"] += 1
             c["product"] += bool(k & PRODUCT_KINDS)
@@ -1206,6 +1249,11 @@ CONTROLS = [
     ("restatement whose evidence differs from the primary", "[restatement] evidence differs",
      [(MOD, "| MOD-D1a | MOD-B1 | D | A tomb is a mark left where data was. | inspected:CONTEXT.md:2 |",
        "| MOD-D1a | MOD-B1 | D | A tomb is a mark left where data was. | inspected:CONTEXT.md:3 |")]),
+    # review R2-03 / R2-08
+    ("proved: on a statement a reproduced finding's intended names, the finding not cited", "[uncited-finding]",
+     [("completion/findings/audit/13.json", '"intended": "MOD-B4"', '"intended": "MOD-B4; MOD-B1.2"')]),
+    ("mc: beside an intent-undecided finding observed live, without [model-only]", "[model-only]",
+     [(MOD, "inspected:CONTEXT.md:3; mc:C-good-mc | CONTEXT.md", "inspected:CONTEXT.md:3; mc:C-good-mc; finding:F-C9904 | CONTEXT.md")]),
 ]
 
 
@@ -1223,7 +1271,9 @@ def write_fixture(root: Path) -> Ctx:
     audit.mkdir(parents=True)
     (audit / "13.json").write_text(json.dumps([
         {"id": "F-C9901", "disposition": "reproduced-live", "intended": "MOD-B4"},
-        {"id": "F-C9902", "disposition": "reproduced-model", "intended": "MOD-B5"}]))
+        {"id": "F-C9902", "disposition": "reproduced-model", "intended": "MOD-B5"},
+        {"id": "F-C9904", "disposition": "intent-undecided", "intended": "",
+         "evidence": [{"kind": "live", "ref": "good-live"}]}]))
     (audit / "01.json").write_text(json.dumps({"module": "01", "findings": [
         {"id": "F-9903", "disposition": "reproduced-test", "intended": "MOD-B5"}], "new_findings": []}))
     comp = root / "completion"

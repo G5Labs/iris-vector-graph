@@ -16,8 +16,9 @@ already cited). Idempotent: running it again changes nothing. Steps:
 2. live:C-/mc:C-/trace:C- on the statements a passing completion run plainly concerns (RUN_TAGS): its `observes`
    text names the statement id (abbreviated lists such as "RED-I1/I2" are expanded). Every named id is reviewed into
    RUN_TAGS or RUN_REJECT. No proved:C- tag: no completion proof record names a statement.
-3. [model-only] on every proved:/mc: item of a statement that cites a finding whose audit disposition is
-   reproduced-live, reproduced-test or confirmed-source.
+3. [model-only] on every proved:/mc: item of a statement that cites a finding that is evidence about the product
+   (ontology_check.observed_on_product: reproduced-live, reproduced-test or confirmed-source, or intent-undecided
+   with live/run/trace evidence).
 4. Restatements get their primary definition's evidence again (the checker requires equal evidence).
 Writes ontology/evidence-additions.json (what was added, qualified, rejected and left untagged, with reasons).
 """
@@ -85,10 +86,35 @@ FINDING_TAGS: Dict[str, Dict[str, str]] = {
     "F-C1603": {"API-T9.1": f"{C}: Bolt listens on every interface unless started by ivg server start"},
     "F-1701": {"SYS-I2": f"{C}: the SQL adapter's unscoped node and label reads merge graphs"},
     "F-C1702": {"OPS-B1.12": f"{C}: with --workers above 1 the command exits without serving"},
-    "F-1801": {"SYS-I5": f"{C}: a replacing restore lays the archive's ledger over the live one"},
+    "F-1801": {"SYS-I5": f"{C}: a replacing restore lays the archive's ledger over the live one",
+               "RED-B4": f"{C} (manual, review R2-03): a replacing restore binds a redacted revision's retry key again "
+                         "(model core-m3-as-built-F1801-keys; the restore overlay itself is live, c18-live-ledger-overlay)"},
     "F-C1802": {"SNP-X2.14": f"{C}: a global line that cannot be written is dropped without an error"},
     "F-C1804": {"SNP-I1": f"{C}: routed edge vector tables are neither copied nor listed as left out",
                 "SNP-B1.18": f"{C}: a restore loses routed edge vectors"},
+    # review R2-03: the follow-up findings on the statements they contradict ("manual" = not named in `intended`)
+    "F-C1308": {"RED-B1.1": f"{C}: redaction tombstones the record of a temporal-only edge that is still live "
+                            "(get_edges_in_window returns it after the run; fu-r04-temporal-only-live-b)",
+                "RED-B1": f"{C} (manual, review R2-03): a run completes while the target's temporal-only edge is live, "
+                          "because the liveness check counts only nodes, labels, props and edge rows"},
+    "F-C1309": {"RED-B7": f"{C} (manual, review R2-03): the audit revision holds SHA-256 of the target's name, which a "
+                          "dictionary of names recovers in 0.13 s (fu-r10-target-digest)"},
+    "F-C1306": {"RED-B12": f"{C} (manual, review R2-03): after a supported 4.5.x upgrade, Graph_KG.ledger_revisions keeps "
+                           "the erased and redacted tenant's messages, sources and keys (fc1306-legacy-ledger-rows)"},
+    "F-C1304": {"RED-B10": f"{C} (manual, review R2-03): the receipt names exports, journals and backups as out of reach, "
+                           "while server-side snapshot archives keep and restore the tenant (fu-r01a-snapshot-copies)"},
+    "F-C1305": {"RED-B10": f"{C} (source; manual, review R2-03): the receipt does not name the embedding quarantine, "
+                           "whose rows survive every erasure and redaction"},
+    "F-C1307": {"RED-B8": f"{C} (manual, review R2-03): while a writer outside the ledger re-creates a row of the "
+                          "target, calling the redaction again is refused at its entry check and the run never "
+                          "finishes (fu-r03-marker-held-open)"},
+    "F-C1203": {"ERS-B2": f"{C} (manual, review R2-03): after delete_nodes_by_prefix the prefix's temporal-only edge is "
+                          "still returned by get_edges_in_window (fu-r04-temporal-only-live-b)"},
+    # review R2-04: validation's product defects (findings/audit/zz-validation.json)
+    "F-C1706": {"OPS-B5.4": f"{C} under the driver the pin's uv.lock installs (5.3.2): a duplicate node raises "
+                            "GraphWriteError and writes nothing (val-driver532-1; passes under 5.4.0, val-driver540-1/-2)"},
+    "F-C0502": {"TMP-B2.13": f"{C} under driver 5.3.2: with the flag on, create_edge_temporal raises 'Cursor closed' "
+                             "at temporal.py:188-189 and writes no marked row (val-e2e-1-c20, val-rerun-3)"},
 }
 FINDING_REJECT: Dict[Tuple[str, str], str] = {
     ("F-0503", "RPL-B3"): "the cited paraphrase (replay equals the store when every write goes through the ledger) "
@@ -117,12 +143,21 @@ FINDING_REJECT: Dict[Tuple[str, str], str] = {
     ("F-1503", "SYS-I2"): "SYS-I2 is about answers; the finding is a delete across graphs",
     ("F-C1601", "API-T8.3"): "the statement (each session opens its own connection) holds; the defect is release",
     ("F-C1801", "SNP-Q1.17"): "a question makes no claim that a finding could contradict",
+    ("F-C0803", "CYP-B6.8"): "the statement is find-or-create, which held (one relationship created per row); the "
+                             "defect is the ON CREATE SET value taken from another row",
 }
 
 # run -> {statement: condition to add to Notes, or ""}. Each id is named in the run's observes text.
 SEQ = ("Completion: mc:C-core-m1-as-built-isolation-stmt-a/b/c check the as-built model sequentially (no "
        "concurrent erasure or commit), profiles a-c, exhaustive within bounds.")
 REFUSALS = ""
+
+
+def as_built(rid: str, cond: str = "") -> str:
+    return (f"Completion: mc:C-{rid} checks the as-built model{cond} within its bounds (model-level; no code "
+            "correspondence).")
+
+
 RUN_TAGS: Dict[str, Dict[str, str]] = {
     "b-08-live-footprints": {"CYP-I6.3": "", "CYP-I6.4": "", "CYP-X6.5": ""},
     "b-10-live-nkg-f1005": {"ALG-B12.7": "Completion: live:C-b-10-live-nkg-f1005 is the indexed (default) "
@@ -145,7 +180,20 @@ RUN_TAGS: Dict[str, Dict[str, str]] = {
     "core-m1-as-built-isolation-stmt-b": {"RED-I1": SEQ, "RED-I2": SEQ, "ERS-I2": SEQ, "ERS-I3": SEQ},
     "core-m1-as-built-isolation-stmt-c": {"RED-I1": SEQ, "RED-I2": SEQ, "ERS-I2": SEQ, "ERS-I3": SEQ},
     "live-erase-vs-commit-fk": {"ERS-I1": ""},
+    # breadth-B as-built model checks that pass (review-response lane): each names these statements as holding as built
+    "b-mc-m08-txn-as-built-atomic": {k: as_built("b-mc-m08-txn-as-built-atomic") for k in
+                                     ("CYP-I6.3", "CYP-I6.4", "CYP-X6.5")},
+    "b-mc-m09-mode-as-built-X11-B52": {k: as_built("b-mc-m09-mode-as-built-X11-B52") for k in ("NAT-X11", "NAT-B5.2")},
+    "b-mc-m09-planc-as-built-single-pass": {"NAT-T5.16": as_built("b-mc-m09-planc-as-built-single-pass",
+                                                                  " for one plan shape, with no collision or drop")},
+    "b-mc-m10-cache-as-built-pagerank": {"ALG-B1.12": as_built("b-mc-m10-cache-as-built-pagerank",
+                                                               " of global PageRank's node-token key")},
+    "b-mc-m11-commit-as-built": {k: as_built("b-mc-m11-commit-as-built", " with the deferred unlock") for k in
+                                 ("LED-B4.3", "LED-B4.11.2", "LED-B4.7.5", "LED-B9.4")},
+    "b-mc-m11-enable-as-built-consistency": {"LED-B1.7": as_built("b-mc-m11-enable-as-built-consistency")},
 }
+REVIEWED = ("a reviewed design (the remedy), not the pin: a passing reviewed model does not show that the product's "
+            "statement holds; it is reported at model level in the matrix (3.3-model-check)")
 RUN_REJECT: Dict[Tuple[str, str], str] = {
     ("b-08-live-footprints", "CYP-I8.6"): "named only as 'I8.6-read'; the run does not say its reads ran in "
                                           "read-only mode, which is what the statement is about",
@@ -158,6 +206,50 @@ RUN_REJECT: Dict[Tuple[str, str], str] = {
     ("cmc-snap-reviewed", "SYS-P2"): "a premise the model assumes, not a property it checks",
     ("live-erase-vs-commit-emptygraph", "ERS-I3"): "the run says the F-1201 window was not reached",
     ("live-erase-vs-commit-fk", "ERS-I3"): "the run says the F-1201 window was not reached",
+    # breadth-B checks registered after the R-05 pass, reviewed by the review-response lane
+    ("b-mc-m07-bm25-reviewed", "TXT-I1"): REVIEWED,
+    ("b-mc-m07-bm25-reviewed", "TXT-I2"): REVIEWED,
+    ("b-mc-m07-bm25-reviewed", "TXT-I3"): REVIEWED,
+    ("b-mc-m07-bm25-reviewed", "TXT-X2"): REVIEWED,
+    ("b-mc-m07-bm25-reviewed", "TXT-I5"): REVIEWED,
+    ("b-mc-m07-leg-reviewed", "TXT-I7"): REVIEWED,
+    ("b-mc-m07-leg-reviewed", "TXT-B8.3"): REVIEWED,
+    ("b-mc-m08-readonly-reviewed", "CYP-I8.6"): REVIEWED,
+    ("b-mc-m08-scope-reviewed", "SYS-I2"): REVIEWED,
+    ("b-mc-m08-scope-reviewed", "CYP-I5.5"): REVIEWED,
+    ("b-mc-m08-scope-reviewed", "CYP-I5.6"): REVIEWED,
+    ("b-mc-m08-scope-reviewed", "CYP-I4.14"): REVIEWED,
+    ("b-mc-m08-txn-reviewed", "CYP-I6.3"): REVIEWED,
+    ("b-mc-m08-txn-reviewed", "CYP-I6.4"): REVIEWED,
+    ("b-mc-m08-txn-reviewed", "CYP-X6.5"): REVIEWED,
+    ("b-mc-m08-txn-reviewed", "CYP-B6.7.7"): REVIEWED,
+    ("b-mc-m09-mode-reviewed", "NAT-X12"): REVIEWED,
+    ("b-mc-m09-mode-reviewed", "NAT-X11"): REVIEWED,
+    ("b-mc-m09-mode-reviewed", "NAT-B5.2"): REVIEWED,
+    ("b-mc-m09-planc-reviewed", "NAT-I3"): REVIEWED,
+    ("b-mc-m09-planc-reviewed", "NAT-T5.16"): REVIEWED,
+    ("b-mc-m09-planc-reviewed", "NAT-I5"): REVIEWED,
+    ("b-mc-m10-cache-reviewed-pagerank", "ALG-I4"): REVIEWED,
+    ("b-mc-m10-cache-reviewed-pagerank", "ALG-B16.2"): REVIEWED,
+    ("b-mc-m10-cache-reviewed-ppr", "ALG-I4"): REVIEWED,
+    ("b-mc-m10-cache-reviewed-ppr", "ALG-B2.19"): REVIEWED,
+    ("b-mc-m10-cache-reviewed-ppr", "ALG-B16.11"): REVIEWED,
+    ("b-mc-m10-nkg-reviewed", "ALG-B12.7"): REVIEWED,
+    ("b-mc-m10-nkg-reviewed", "ALG-I3"): REVIEWED,
+    ("b-mc-m10-routes-reviewed", "ALG-I1"): REVIEWED,
+    ("b-mc-m10-routes-reviewed", "ALG-I3"): REVIEWED,
+    ("b-mc-m10-walk-reviewed", "ALG-I2"): REVIEWED,
+    ("b-mc-m10-walk-reviewed", "ALG-I3"): REVIEWED,
+    ("b-mc-m11-adopt-reviewed", "LED-B1.20"): REVIEWED,
+    ("b-mc-m11-enable-reviewed", "LED-B1.12"): REVIEWED,
+    ("b-mc-m11-enable-reviewed", "LED-B1.7"): REVIEWED,
+    ("b-mc-m11-stats-reviewed", "LED-B13.4"): REVIEWED,
+    ("b-mc-m09-planc-as-built-single-pass", "NAT-I3"): "one plan shape only; the statement is contradicted when "
+                                                     "two shapes collide (F-0901, F-C0901)",
+    ("b-mc-m09-planc-as-built-single-pass", "NAT-I5"): "no DropAll in the run; the statement is contradicted when "
+                                                     "a DropAll races a build (F-0905)",
+    ("b-mc-m10-cache-as-built-pagerank", "ALG-I4"): "the general cache rule; the run covers global PageRank only, "
+                                                  "and F-1004 contradicts the rule for personalized PageRank",
 }
 
 
@@ -308,7 +400,7 @@ def main() -> int:
         if sid in restated:
             continue
         prod = [bare(x)[8:] for x in items if bare(x).startswith("finding:")
-                and audit.get(bare(x)[8:], {}).get("disposition") in oc.PRODUCT_DISPOSITIONS]
+                and oc.observed_on_product(audit.get(bare(x)[8:]))]
         if not prod:
             continue
         for k, x in enumerate(items):

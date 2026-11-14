@@ -48,6 +48,43 @@
    "id": "ver-e262-d540",
    "correction": "result 'fail' is the driver-5.4.0 autocommit difference (one case outside the pre-revision contract); not an IVG defect.",
    "evidence": []
+  },
+  {
+   "id": "trace-conformance-ledger",
+   "correction": "registered_utc restored to the first registration, 2026-11-13T23:23:31+00:00 (git dbcb7e14); the in-place correction (17 transactions, its erratum field) was made at 2026-11-14T01:06:23+00:00 (git a51ab506), which had overwritten registered_utc and experiment_head (first experiment_head dd6ac5832cae4a6616468c566d1577e089b721cf). Review R2-09.",
+   "erratum_utc": "2026-11-14T01:06:23+00:00",
+   "first_registered_utc": "2026-11-13T23:23:31+00:00",
+   "first_experiment_head": "dd6ac5832cae4a6616468c566d1577e089b721cf",
+   "evidence": []
+  },
+  {
+   "id": "writer-census",
+   "correction": "registered_utc restored to the first registration, 2026-11-13T23:05:38+00:00 (git dd6ac583); the in-place correction (31/25/48, its erratum field) was made at 2026-11-14T01:06:23+00:00 (git a51ab506), which had overwritten registered_utc and experiment_head (first experiment_head d1b7d06ca56597d0993ea11733d67c0a08add141). Review R2-09.",
+   "erratum_utc": "2026-11-14T01:06:23+00:00",
+   "first_registered_utc": "2026-11-13T23:05:38+00:00",
+   "first_experiment_head": "d1b7d06ca56597d0993ea11733d67c0a08add141",
+   "evidence": [
+    "followup-writer-census"
+   ]
+  },
+  {
+   "id": "corr-closure-scan",
+   "correction": "'all but one belong to a modelled action' (also correspondence/CORRESPONDENCE.md section 4.7) holds for the scan's 44 literal-name sites only. The corrected census lists 8 ledger writers outside the ledger classes: it agrees on EraseAll, EraseEdgeRow, EraseLedgerFor (erasure owner actions, F-1114) and restore (_import_global_from_ndjson, snapshot.py:1679 = the scan's restore_snapshot, snapshot.py:403; F-1801), and adds 4 the scan does not see because they use run-time names or a client surface: Snapshot.ImportGlobals (Snapshot.cls:31), Snapshot.SetNodeJSON (Snapshot.cls:90), legacy.copy_ledger_history (legacy.py:642; F-C1306) and the SQL INSERT surface of Graph_KG.ledger_revisions. Correct statement: 5 ledger writers lie outside every modelled action. Review R2-04; matrix cell 3.6-closure/product.",
+   "evidence": [
+    "followup-writer-census"
+   ]
+  },
+  {
+   "id": "live-crash-world-r2",
+   "correction": "The finding it evidences, F-C1102, is now classified intent-undecided (review R2-08): the observation (an acknowledged commit lost with SynchCommit=0) stands; no IVG document states the durability premise. The premise is in TRUST.md.",
+   "evidence": [
+    "env-synchcommit-setting"
+   ]
+  },
+  {
+   "id": "live-f1201-reproduced",
+   "correction": "The finding it evidences, F-1201, is now classified intent-undecided (review R-11/R2-08): the observed interleaving (8/8) stands; its intent (ERS-I3) rests on HD-1201, an Assumption, because ADR-0004 states only the converse (ERS-I2). The overlap of an eraser with a same-graph writer is recorded as the violated breadth premise P-A3 (TRUST.md).",
+   "evidence": []
   }
  ]
 }

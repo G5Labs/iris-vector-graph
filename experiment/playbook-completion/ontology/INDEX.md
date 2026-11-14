@@ -55,25 +55,25 @@ Count of statements carrying each evidence kind (a statement may carry several).
 | GID | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 15 | 38 | 104 | 5 | 2 | 10 | 5 |
 | WRT | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 16 | 45 | 152 | 10 | 2 | 10 | 0 |
 | ADJ | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 25 | 94 | 199 | 18 | 2 | 12 | 0 |
-| TMP | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 28 | 107 | 209 | 9 | 2 | 14 | 0 |
+| TMP | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 28 | 107 | 209 | 9 | 2 | 15 | 0 |
 | VEC | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 62 | 110 | 238 | 12 | 4 | 22 | 0 |
 | TXT | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 21 | 71 | 172 | 12 | 5 | 16 | 1 |
-| CYP | 0 | 0 | 0 | 0 | 0 | 3 | 0 | 81 | 102 | 218 | 11 | 4 | 34 | 0 |
-| NAT | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 35 | 69 | 169 | 12 | 4 | 9 | 0 |
-| ALG | 0 | 0 | 0 | 0 | 0 | 14 | 0 | 46 | 79 | 198 | 9 | 4 | 19 | 0 |
-| LED | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 28 | 91 | 213 | 12 | 5 | 15 | 1 |
-| ERS | 1 | 0 | 2 | 1 | 0 | 10 | 0 | 2 | 9 | 21 | 2 | 1 | 3 | 0 |
-| RED | 6 | 4 | 6 | 4 | 0 | 33 | 0 | 21 | 21 | 41 | 7 | 4 | 12 | 0 |
+| CYP | 0 | 0 | 1 | 2 | 0 | 3 | 0 | 81 | 102 | 218 | 11 | 4 | 34 | 0 |
+| NAT | 0 | 0 | 3 | 0 | 0 | 0 | 0 | 35 | 69 | 169 | 12 | 4 | 9 | 0 |
+| ALG | 0 | 0 | 1 | 0 | 0 | 14 | 0 | 46 | 79 | 198 | 9 | 4 | 19 | 0 |
+| LED | 0 | 0 | 5 | 0 | 0 | 0 | 0 | 28 | 91 | 213 | 12 | 5 | 15 | 1 |
+| ERS | 1 | 0 | 2 | 1 | 0 | 10 | 0 | 2 | 9 | 21 | 2 | 1 | 4 | 0 |
+| RED | 5 | 5 | 6 | 4 | 0 | 33 | 0 | 21 | 21 | 41 | 7 | 4 | 16 | 0 |
 | RPL | 3 | 2 | 0 | 2 | 0 | 9 | 0 | 7 | 7 | 18 | 5 | 1 | 5 | 0 |
 | INT | 0 | 0 | 0 | 0 | 0 | 25 | 0 | 40 | 92 | 235 | 14 | 4 | 14 | 0 |
 | API | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 46 | 57 | 189 | 13 | 5 | 18 | 1 |
-| OPS | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 94 | 101 | 243 | 27 | 5 | 16 | 0 |
+| OPS | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 94 | 101 | 243 | 27 | 5 | 17 | 0 |
 | SNP | 0 | 0 | 0 | 1 | 0 | 5 | 0 | 21 | 40 | 85 | 3 | 3 | 10 | 0 |
-| **all** | 10 | 6 | 8 | 8 | 0 | 99 | 0 | 665 | 1220 | 2924 | 198 | 60 | 255 | 8 |
+| **all** | 9 | 7 | 18 | 10 | 0 | 99 | 0 | 665 | 1220 | 2924 | 198 | 60 | 262 | 8 |
 
 ## Model evidence and product evidence
 
-Statements (restatements left out). Product evidence: inspected, tested, ran, run, live or trace. Model evidence: proved or mc. A product finding is a cited finding whose audit disposition is reproduced-live, reproduced-test or confirmed-source.
+Statements (restatements left out). Product evidence: inspected, tested, ran, run, live or trace. Model evidence: proved or mc. A product finding is a cited finding whose audit disposition is reproduced-live, reproduced-test or confirmed-source, or intent-undecided with live, run or trace evidence (observed on the product; its intent is open).
 
 | Module | Statements | Product evidence | Model evidence | of which model-only | Model evidence, no product evidence | Product finding | Product finding and model evidence |
 |---|---:|---:|---:|---:|---:|---:|---:|
@@ -82,37 +82,37 @@ Statements (restatements left out). Product evidence: inspected, tested, ran, ru
 | GID | 104 | 104 | 0 | 0 | 0 | 10 | 0 |
 | WRT | 152 | 152 | 0 | 0 | 0 | 10 | 0 |
 | ADJ | 199 | 199 | 0 | 0 | 0 | 10 | 0 |
-| TMP | 209 | 209 | 0 | 0 | 0 | 14 | 0 |
+| TMP | 209 | 209 | 0 | 0 | 0 | 15 | 0 |
 | VEC | 245 | 238 | 0 | 0 | 0 | 22 | 0 |
 | TXT | 173 | 172 | 0 | 0 | 0 | 16 | 0 |
-| CYP | 218 | 218 | 0 | 0 | 0 | 34 | 0 |
-| NAT | 170 | 169 | 0 | 0 | 0 | 7 | 0 |
-| ALG | 207 | 198 | 0 | 0 | 0 | 18 | 0 |
-| LED | 226 | 213 | 0 | 0 | 0 | 15 | 0 |
-| ERS | 27 | 24 | 4 | 1 | 2 | 3 | 1 |
-| RED | 65 | 59 | 14 | 6 | 2 | 12 | 6 |
+| CYP | 218 | 218 | 3 | 2 | 0 | 34 | 2 |
+| NAT | 170 | 169 | 3 | 0 | 0 | 7 | 0 |
+| ALG | 207 | 198 | 1 | 0 | 0 | 18 | 0 |
+| LED | 226 | 213 | 5 | 0 | 0 | 15 | 0 |
+| ERS | 27 | 24 | 4 | 1 | 2 | 4 | 1 |
+| RED | 65 | 59 | 14 | 7 | 2 | 16 | 7 |
 | RPL | 28 | 25 | 6 | 3 | 0 | 5 | 3 |
 | INT | 238 | 235 | 0 | 0 | 0 | 13 | 0 |
 | API | 189 | 189 | 0 | 0 | 0 | 15 | 0 |
-| OPS | 246 | 243 | 0 | 0 | 0 | 16 | 0 |
+| OPS | 246 | 243 | 0 | 0 | 0 | 17 | 0 |
 | SNP | 85 | 85 | 1 | 1 | 0 | 10 | 1 |
-| **all** | 3017 | 2954 | 25 | 11 | 4 | 246 | 11 |
+| **all** | 3017 | 2954 | 37 | 14 | 4 | 253 | 14 |
 
 ## Evidence combinations
 
 | Combination | Statements |
 |---|---:|
-| inspected | 1346 |
-| ran+tested+inspected | 585 |
-| tested+inspected | 512 |
-| inspected+finding | 181 |
+| inspected | 1343 |
+| ran+tested+inspected | 581 |
+| tested+inspected | 508 |
+| inspected+finding | 182 |
 | inspected+assumed | 92 |
 | assumed | 47 |
 | inspected+open | 43 |
-| live+ran+tested+inspected | 26 |
-| live+inspected | 25 |
-| ran+tested+inspected+finding | 20 |
-| tested+inspected+assumed | 20 |
+| live+inspected | 24 |
+| live+ran+tested+inspected | 24 |
+| ran+tested+inspected+finding | 22 |
+| tested+inspected+assumed | 19 |
 | inspected+assumed+finding | 15 |
 | ran+tested+inspected+assumed | 13 |
 | open | 11 |
@@ -120,36 +120,41 @@ Statements (restatements left out). Product evidence: inspected, tested, ran, ru
 | live+tested+inspected | 9 |
 | inspected+not-implemented | 5 |
 | live+finding | 4 |
+| mc+tested+inspected | 4 |
 | inspected+finding+not-implemented | 3 |
 | live+inspected+finding | 3 |
 | live+ran+tested | 3 |
+| live+ran+tested+inspected+finding | 3 |
 | mc (model-only)+live+finding | 3 |
+| mc+inspected | 3 |
 | inspected+open+finding | 2 |
 | live | 2 |
 | live+assumed | 2 |
-| live+ran+tested+inspected+finding | 2 |
+| mc+ran+tested+inspected | 2 |
+| proved (model-only)+live+ran+tested+inspected+finding | 2 |
 | proved+live+ran+tested | 2 |
-| proved+live+ran+tested+inspected | 2 |
 | ran+tested+assumed | 2 |
 | live+ran+tested+assumed | 1 |
 | live+ran+tested+finding | 1 |
-| live+ran+tested+inspected+assumed | 1 |
 | live+tested | 1 |
 | live+tested+inspected+assumed | 1 |
 | mc (model-only)+finding | 1 |
 | mc (model-only)+inspected+finding | 1 |
-| mc+inspected | 1 |
+| mc (model-only)+live+inspected+finding | 1 |
+| mc (model-only)+live+ran+tested+inspected+finding | 1 |
 | mc+live | 1 |
 | mc+live+inspected | 1 |
+| mc+live+ran+tested+inspected+assumed | 1 |
 | mc+open | 1 |
+| mc+tested+inspected+assumed | 1 |
 | open+finding | 1 |
 | proved (model-only)+finding | 1 |
 | proved (model-only)+live+ran+tested+finding | 1 |
-| proved (model-only)+live+ran+tested+inspected+finding | 1 |
 | proved (model-only)+mc (model-only)+live+assumed+open+finding | 1 |
 | proved (model-only)+mc (model-only)+live+finding | 1 |
 | proved (model-only)+mc (model-only)+live+ran+tested+assumed+finding | 1 |
 | proved+live | 1 |
+| proved+live+ran+tested+inspected | 1 |
 | proved+mc+live | 1 |
 | proved+mc+live+ran+tested | 1 |
 | proved+mc+live+ran+tested+inspected | 1 |
@@ -166,7 +171,7 @@ Proved, with no test, trace or live observation behind it.
 |---|---|---|
 | RED-Q1 | Should the opening check and the redaction marker share one locked step? | open:HD-1301; proved:theorem_l2_satisfies_l1; mc:refinement-reviewed |
 
-## Proved and observed live (8)
+## Proved and observed live (7)
 
 Proved (not model-only) and also observed on live IRIS.
 
@@ -177,22 +182,24 @@ Proved (not model-only) and also observed on live IRIS.
 | RED-I1 | Redaction keeps each revision and the place of each record. | live:native-mixed_tenant_flow; live:native-killed_at_random; proved:theorem_l2_satisfies_l1; mc:C-core-m1-as-built-isolation-stmt-a; mc:C-core-m1-as-built-isolation-stmt-b; mc:C-core-m1-as-built-isolation-stmt-c |
 | RED-I2 | A record that no redaction target holds keeps its bytes. | tested:tests/integration/test_256_ledger_redaction_e2e.py::test_tenant_b_records_are_byte_identical; live:native-mixed_tenant_flow; proved:theorem_isolation; mc:C-core-m1-as-built-isolation-stmt-a; mc:C-core-m1-as-built-isolation-stmt-b; mc:C-core-m1-as-built-isolation-stmt-c |
 | RED-B3 | A revision with any tombstone loses all of its free text. | inspected:iris_src/src/Graph/KG/LedgerRedact.cls:349-378; tested:tests/integration/test_256_ledger_redaction_e2e.py::test_a_spanning_revision_keeps_tenant_b_records_and_loses_its_metadata; live:native-mixed_tenant_flow; proved:theorem_l2_satisfies_l1; mc:redaction-reviewed |
-| RED-B4 | A retry key of a redacted revision can never be used again. | inspected:iris_src/src/Graph/KG/Ledger.cls:466-473; inspected:iris_src/src/Graph/KG/LedgerRedact.cls:359-365; tested:tests/integration/test_256_ledger_redaction_e2e.py::test_a_retry_with_a_redacted_idempotency_key_is_refused; live:native-retries; live:native-mutants; proved:theorem_retry_refused |
 | RPL-B3.1 | Saves outside the tenant between the two steps keep this true. | proved:theorem_commit_between; live:native-paused_and_resumed |
 | RPL-B4 | After erasure alone, the verify call says the two do not match. | proved:theorem_erasure_alone_diverges; tested:tests/integration/test_256_ledger_redaction_e2e.py::test_verify_diverges_after_the_erase_alone_and_is_equal_after_the_redaction; live:native-mixed_tenant_flow |
 
-## Model-only proofs and model checks (11)
+## Model-only proofs and model checks (14)
 
 Proved or model-checked as a design while a cited finding shows the product at the pin violates the statement (items marked [model-only]).
 
 | Id | Statement | Evidence |
 |---|---|---|
+| CYP-I6.4 | A stepped write is one transaction too. A failure in a later step takes back the earlier steps. | inspected:iris_vector_graph/_engine/query.py:1946-1967; inspected:iris_vector_graph/_engine/query.py:1992-2031; inspected:iris_vector_graph/_engine/query.py:1692-1705; finding:F-0806; live:C-b-08-live-footprints; mc:C-b-mc-m08-txn-as-built-atomic [model-only] |
+| CYP-X6.5 | A write that IRIS or the product refuses raises a write error and leaves the graph as it was. | inspected:iris_vector_graph/stores/iris_sql_store.py:1811-1818; inspected:iris_vector_graph/errors.py:117-159; tested:tests/unit/test_460_r221_refused_write_error_type.py::test_a_statement_iris_refuses_raises_graph_write_error_with_its_sqlcode; finding:F-0807; live:C-b-08-live-footprints; mc:C-b-mc-m08-txn-as-built-atomic [model-only] |
 | ERS-I3 | After an erasure, each live edge the ledger saved still has its statement entry. | finding:F-1201; mc:erasure-as-built [model-only]; mc:erasure-reviewed [model-only]; mc:C-core-m1-as-built-isolation-stmt-a [model-only]; mc:C-core-m1-as-built-isolation-stmt-b [model-only]; mc:C-core-m1-as-built-isolation-stmt-c [model-only] |
-| RED-B1.1 | Redaction never makes a tombstone of the record of live content. | finding:F-1302; live:native-commit_in_unmarked_window; mc:redaction-as-built-live [model-only]; mc:redaction-reviewed [model-only]; proved:theorem_begin_spares_live [model-only]; assumed:P-1311; open:HD-1201; finding:F-C1201; finding:F-C1301 |
+| RED-B1.1 | Redaction never makes a tombstone of the record of live content. | finding:F-1302; live:native-commit_in_unmarked_window; mc:redaction-as-built-live [model-only]; mc:redaction-reviewed [model-only]; proved:theorem_begin_spares_live [model-only]; assumed:P-1311; open:HD-1201; finding:F-C1201; finding:F-C1301; finding:F-C1308 |
+| RED-B4 | A retry key of a redacted revision can never be used again. | inspected:iris_src/src/Graph/KG/Ledger.cls:466-473; inspected:iris_src/src/Graph/KG/LedgerRedact.cls:359-365; tested:tests/integration/test_256_ledger_redaction_e2e.py::test_a_retry_with_a_redacted_idempotency_key_is_refused; live:native-retries; live:native-mutants; proved:theorem_retry_refused [model-only]; finding:F-1801 |
 | RED-B4.3 | A retry sent between erasure and redaction must not bring the content back. | finding:F-1306; mc:retry-as-built [model-only]; mc:retry-reviewed [model-only]; live:native-retry_between_erase_and_redact |
 | RED-B6.1 | Two redaction runs of two targets that start at once must not both run. | finding:F-1303; live:native-two_targets_at_once; mc:redaction-as-built-audit [model-only]; proved:theorem_l2_satisfies_l1 [model-only] |
 | RED-B7.1 | Its counts belong to its own redaction target only. | finding:F-1303; live:native-two_targets_at_once; mc:redaction-as-built-audit [model-only] |
-| RED-B8 | Calling the same redaction again finishes a stopped or paused run. | inspected:iris_src/src/Graph/KG/LedgerRedact.cls:182-239; tested:tests/integration/test_256_ledger_redaction_e2e.py::test_a_paused_redaction_is_honoured_and_resumes; live:native-paused_and_resumed; live:native-killed_mid_batch; live:native-disabled_mid_run; proved:theorem_run_can_step [model-only]; finding:F-C1303 |
+| RED-B8 | Calling the same redaction again finishes a stopped or paused run. | inspected:iris_src/src/Graph/KG/LedgerRedact.cls:182-239; tested:tests/integration/test_256_ledger_redaction_e2e.py::test_a_paused_redaction_is_honoured_and_resumes; live:native-paused_and_resumed; live:native-killed_mid_batch; live:native-disabled_mid_run; proved:theorem_run_can_step [model-only]; finding:F-C1303; finding:F-C1307 |
 | RED-B8.1 | Without new commits, a redaction run takes a bounded number of steps. | proved:theorem_run_bounded [model-only]; finding:F-C1303 |
 | RPL-B1.1 | After a redaction, replay gives what it gave before, less the tenant. | proved:lemma_replay_tomb [model-only]; live:native-mixed_tenant_flow; tested:tests/integration/test_256_ledger_redaction_e2e.py::test_replay_to_every_seq_holds_no_tenant_a_content; finding:F-1304 |
 | RPL-B3 | Once a tenant is erased and redacted, the verify call says equal again. | proved:theorem_erase_then_redact [model-only]; tested:tests/integration/test_256_ledger_redaction_e2e.py::test_verify_diverges_after_the_erase_alone_and_is_equal_after_the_redaction; live:native-mixed_tenant_flow; live:native-killed_mid_batch; live:native-killed_at_random; live:native-paused_and_resumed; mc:redaction-reviewed [model-only]; assumed:P-1310; finding:F-1305 |
@@ -214,7 +221,7 @@ The intent states it; no code does it.
 | LED-B6.9 | When a graph holds two edges with the same tuple, each has its own statement id. A change can name either one. | not-implemented; inspected:iris_src/src/Graph/KG/LedgerApply.cls:144-157; inspected:iris_src/src/Graph/KG/LedgerApply.cls:159-169; inspected:iris_src/src/Graph/KG/LedgerGenesis.cls:38-48 |
 | API-B15.3 | An execution context would let a session touch one graph only. It is planned and not built. | not-implemented; inspected:api/main.py:118-138; inspected:iris_vector_graph/bolt_server.py:377-394 |
 
-## Findings (255)
+## Findings (262)
 
 The code disagrees with the statement (original FINDINGS.md; F-C ids and every audit disposition in experiment/playbook-completion/findings/audit/).
 
@@ -275,6 +282,7 @@ The code disagrees with the statement (original FINDINGS.md; F-C ids and every a
 | TMP-B1.21 | In the millisecond index, the current time is also in milliseconds. This holds for writes and for reads of recent activity. | inspected:iris_src/src/Graph/KG/TemporalIndex.cls:51; inspected:iris_src/src/Graph/KG/TemporalIndex.cls:170; inspected:iris_src/src/Graph/KG/TemporalIndex.cls:757-778; finding:F-0510 |
 | TMP-B2.10 | With no edge index, a temporal write adds just an entry in the adjacency. A temporal-only predicate gets none at all. | inspected:iris_src/src/Graph/KG/TemporalIndex.cls:109-115; inspected:iris_vector_graph/_engine/temporal.py:309-331; inspected:iris_vector_graph/_engine/temporal.py:453-475; finding:F-0506 |
 | TMP-T2.11 | A row counts as marked only when its temporal tag is the JSON value true. | inspected:iris_src/src/Graph/KG/LedgerGenesis.cls:62-75; inspected:iris_vector_graph/ledger/replay.py:610-620; inspected:iris_src/src/Graph/KG/Adjacency.cls:735-748; finding:F-0505 |
+| TMP-B2.13 | An older engine flag makes the Python side write and remove the marked row instead. | inspected:iris_vector_graph/_engine/temporal.py:166-236; inspected:iris_vector_graph/_engine/temporal.py:374-388; tested:tests/unit/test_temporal_structural_rows.py::test_flag_on_without_graph_inserts_one_marked_row; tested:tests/unit/test_temporal_structural_rows.py::test_delete_keeps_the_row_when_the_window_read_fails; finding:F-C0502 |
 | TMP-B8.10 | Burst finding counts only the edge type it is given. | inspected:iris_src/src/Graph/KG/TemporalIndex.cls:772-806; inspected:iris_vector_graph/_engine/temporal.py:882-903; finding:F-0508 |
 | TMP-B9.13 | Wiping the whole temporal index also removes the marked rows it held up. | inspected:iris_src/src/Graph/KG/TemporalIndex.cls:808-811; inspected:iris_src/src/Graph/KG/TemporalIndex.cls:379-391; finding:F-0507 |
 | TMP-B11.6 | The Python migration reads a graph of any size. | inspected:iris_vector_graph/migrations/temporal_structural_rows.py:55-63; inspected:iris_vector_graph/_engine/temporal.py:502-504; finding:F-0514 |
@@ -326,8 +334,8 @@ The code disagrees with the statement (original FINDINGS.md; F-C ids and every a
 | CYP-I4.14 | An approximate count in an all-graphs read counts each graph's nodes apart. | inspected:iris_vector_graph/_engine/query.py:4374-4381; finding:F-0819 |
 | CYP-B4.19 | An expression the translator cannot turn into SQL is refused. It never becomes a null. | inspected:iris_vector_graph/cypher/translator.py:29676-29756; finding:F-0825 |
 | CYP-I5.6 | A variable-length walk in an all-graphs read stays in the graph of the node it starts from. | inspected:iris_vector_graph/cypher/translator.py:15404-15431; inspected:iris_vector_graph/schema.py:2390-2390; finding:F-0818 |
-| CYP-I6.4 | A stepped write is one transaction too. A failure in a later step takes back the earlier steps. | inspected:iris_vector_graph/_engine/query.py:1946-1967; inspected:iris_vector_graph/_engine/query.py:1992-2031; inspected:iris_vector_graph/_engine/query.py:1692-1705; finding:F-0806; live:C-b-08-live-footprints |
-| CYP-X6.5 | A write that IRIS or the product refuses raises a write error and leaves the graph as it was. | inspected:iris_vector_graph/stores/iris_sql_store.py:1811-1818; inspected:iris_vector_graph/errors.py:117-159; tested:tests/unit/test_460_r221_refused_write_error_type.py::test_a_statement_iris_refuses_raises_graph_write_error_with_its_sqlcode; finding:F-0807; live:C-b-08-live-footprints |
+| CYP-I6.4 | A stepped write is one transaction too. A failure in a later step takes back the earlier steps. | inspected:iris_vector_graph/_engine/query.py:1946-1967; inspected:iris_vector_graph/_engine/query.py:1992-2031; inspected:iris_vector_graph/_engine/query.py:1692-1705; finding:F-0806; live:C-b-08-live-footprints; mc:C-b-mc-m08-txn-as-built-atomic [model-only] |
+| CYP-X6.5 | A write that IRIS or the product refuses raises a write error and leaves the graph as it was. | inspected:iris_vector_graph/stores/iris_sql_store.py:1811-1818; inspected:iris_vector_graph/errors.py:117-159; tested:tests/unit/test_460_r221_refused_write_error_type.py::test_a_statement_iris_refuses_raises_graph_write_error_with_its_sqlcode; finding:F-0807; live:C-b-08-live-footprints; mc:C-b-mc-m08-txn-as-built-atomic [model-only] |
 | CYP-T6.7.5 | A number in an edge property written by Cypher is stored as JSON text, not as a JSON number. | inspected:iris_vector_graph/cypher/translator.py:10232-10238; inspected:iris_vector_graph/cypher/translator.py:465-504; finding:F-0813 |
 | CYP-B6.7.7 | The same holds when the query names both nodes by fixed ids. | inspected:iris_vector_graph/cypher/translator.py:10212-10248; finding:F-0805; assumed:P-0804 |
 | CYP-B6.8.4 | On create set and on match set store any value that a later set could store. | inspected:iris_vector_graph/cypher/translator.py:12062-12451; finding:F-0809 |
@@ -397,21 +405,26 @@ The code disagrees with the statement (original FINDINGS.md; F-C ids and every a
 | LED-B11.5 | Every engine method that writes to a governed store is refused while strict mode is on. | inspected:iris_vector_graph/_engine/nodes_edges.py:2301-2339; inspected:api/gql/resolvers/mutation.py:23-66; finding:F-1108 |
 | LED-B13.2 | Kept revisions are counted in the commit's own transaction. The genesis counts too. | inspected:iris_src/src/Graph/KG/Ledger.cls:559-565; finding:F-C1101 |
 | LED-B13.4 | Each outcome adds exactly one to its count. | inspected:iris_src/src/Graph/KG/LedgerStats.cls:50-88; inspected:iris_src/src/Graph/KG/Ledger.cls:412-413; inspected:iris_src/src/Graph/KG/Ledger.cls:559-565; finding:F-1102; finding:F-C1101 |
+| ERS-B2 | A node erasure removes the matching nodes and every edge that touches them in that graph. | inspected:iris_src/src/Graph/KG/Eraser.cls:353-389; live:native-mixed_tenant_flow; finding:F-C1203 |
 | ERS-I3 | After an erasure, each live edge the ledger saved still has its statement entry. | finding:F-1201; mc:erasure-as-built [model-only]; mc:erasure-reviewed [model-only]; mc:C-core-m1-as-built-isolation-stmt-a [model-only]; mc:C-core-m1-as-built-isolation-stmt-b [model-only]; mc:C-core-m1-as-built-isolation-stmt-c [model-only] |
 | ERS-T2 | A graph erasure takes no ledger lock, so commits into the same graph do not wait for it. | inspected:iris_src/src/Graph/KG/Eraser.cls:47-261; finding:F-1201 |
 | ERS-B6 | A ledger delete of a node removes it from the default graph only. | inspected:iris_src/src/Graph/KG/LedgerApply.cls:374-418; live:native-mixed_tenant_flow; finding:F-1401 |
-| RED-B1.1 | Redaction never makes a tombstone of the record of live content. | finding:F-1302; live:native-commit_in_unmarked_window; mc:redaction-as-built-live [model-only]; mc:redaction-reviewed [model-only]; proved:theorem_begin_spares_live [model-only]; assumed:P-1311; open:HD-1201; finding:F-C1201; finding:F-C1301 |
+| RED-B1 | Redaction runs only on a redaction target that is no longer live. | inspected:iris_src/src/Graph/KG/LedgerRedact.cls:206-210; finding:F-C1308 |
+| RED-B1.1 | Redaction never makes a tombstone of the record of live content. | finding:F-1302; live:native-commit_in_unmarked_window; mc:redaction-as-built-live [model-only]; mc:redaction-reviewed [model-only]; proved:theorem_begin_spares_live [model-only]; assumed:P-1311; open:HD-1201; finding:F-C1201; finding:F-C1301; finding:F-C1308 |
 | RED-T1 | At the pin, the first liveness check runs before any lock or marker exists. | inspected:iris_src/src/Graph/KG/LedgerRedact.cls:202-216; finding:F-1302 |
 | RED-B1.2 | A tenant whose nodes live in a named graph cannot be redacted by naming its graph alone. | live:native-graph_per_tenant_unprefixed; finding:F-1305 |
 | RED-X2 | Redacting the default graph with no id prefix should not touch nodes that live in a named graph. | finding:F-1304; live:native-default_graph_without_prefix |
 | RED-Q2 | Spec 256 says free text is cleared only when every record is redacted. Which rule stands? | open:HD-1302; finding:F-1301 |
+| RED-B4 | A retry key of a redacted revision can never be used again. | inspected:iris_src/src/Graph/KG/Ledger.cls:466-473; inspected:iris_src/src/Graph/KG/LedgerRedact.cls:359-365; tested:tests/integration/test_256_ledger_redaction_e2e.py::test_a_retry_with_a_redacted_idempotency_key_is_refused; live:native-retries; live:native-mutants; proved:theorem_retry_refused [model-only]; finding:F-1801 |
 | RED-B4.3 | A retry sent between erasure and redaction must not bring the content back. | finding:F-1306; mc:retry-as-built [model-only]; mc:retry-reviewed [model-only]; live:native-retry_between_erase_and_redact |
 | RED-B6 | Only one redaction target can be redacted at a time. | inspected:iris_src/src/Graph/KG/LedgerRedact.cls:202-205; tested:tests/integration/test_256_ledger_redaction_e2e.py::test_a_paused_redaction_is_honoured_and_resumes; live:native-paused_and_resumed; finding:F-1303 |
 | RED-B6.1 | Two redaction runs of two targets that start at once must not both run. | finding:F-1303; live:native-two_targets_at_once; mc:redaction-as-built-audit [model-only]; proved:theorem_l2_satisfies_l1 [model-only] |
+| RED-B7 | The audit revision lists the redacted revisions by number. It holds no content of the target. | inspected:iris_src/src/Graph/KG/LedgerRedact.cls:420-441; tested:tests/integration/test_256_ledger_redaction_e2e.py::test_the_redaction_revision_is_content_free; live:native-mixed_tenant_flow; finding:F-C1309 |
 | RED-B7.1 | Its counts belong to its own redaction target only. | finding:F-1303; live:native-two_targets_at_once; mc:redaction-as-built-audit [model-only] |
-| RED-B8 | Calling the same redaction again finishes a stopped or paused run. | inspected:iris_src/src/Graph/KG/LedgerRedact.cls:182-239; tested:tests/integration/test_256_ledger_redaction_e2e.py::test_a_paused_redaction_is_honoured_and_resumes; live:native-paused_and_resumed; live:native-killed_mid_batch; live:native-disabled_mid_run; proved:theorem_run_can_step [model-only]; finding:F-C1303 |
+| RED-B8 | Calling the same redaction again finishes a stopped or paused run. | inspected:iris_src/src/Graph/KG/LedgerRedact.cls:182-239; tested:tests/integration/test_256_ledger_redaction_e2e.py::test_a_paused_redaction_is_honoured_and_resumes; live:native-paused_and_resumed; live:native-killed_mid_batch; live:native-disabled_mid_run; proved:theorem_run_can_step [model-only]; finding:F-C1303; finding:F-C1307 |
 | RED-B8.1 | Without new commits, a redaction run takes a bounded number of steps. | proved:theorem_run_bounded [model-only]; finding:F-C1303 |
-| RED-B12 | Once a tenant is erased and redacted, no ledger record, row or reader shows its ids or values. | tested:tests/integration/test_256_ledger_redaction_e2e.py::test_nothing_in_the_ledger_or_its_readers_holds_tenant_a; live:native-mixed_tenant_flow; live:upstream-community-redaction; finding:F-1305 |
+| RED-B10 | The redaction receipt counts tombstones and cleared revisions and names what it could not reach. | inspected:iris_src/src/Graph/KG/LedgerRedact.cls:482-511; tested:tests/integration/test_256_ledger_redaction_e2e.py::test_the_receipt_counts_what_it_did_and_names_what_is_out_of_reach; live:native-mixed_tenant_flow; finding:F-C1304; finding:F-C1305 |
+| RED-B12 | Once a tenant is erased and redacted, no ledger record, row or reader shows its ids or values. | tested:tests/integration/test_256_ledger_redaction_e2e.py::test_nothing_in_the_ledger_or_its_readers_holds_tenant_a; live:native-mixed_tenant_flow; live:upstream-community-redaction; finding:F-1305; finding:F-C1306 |
 | RPL-B1.1 | After a redaction, replay gives what it gave before, less the tenant. | proved:lemma_replay_tomb [model-only]; live:native-mixed_tenant_flow; tested:tests/integration/test_256_ledger_redaction_e2e.py::test_replay_to_every_seq_holds_no_tenant_a_content; finding:F-1304 |
 | RPL-B3 | Once a tenant is erased and redacted, the verify call says equal again. | proved:theorem_erase_then_redact [model-only]; tested:tests/integration/test_256_ledger_redaction_e2e.py::test_verify_diverges_after_the_erase_alone_and_is_equal_after_the_redaction; live:native-mixed_tenant_flow; live:native-killed_mid_batch; live:native-killed_at_random; live:native-paused_and_resumed; mc:redaction-reviewed [model-only]; assumed:P-1310; finding:F-1305 |
 | RPL-B3.2 | The world of the upstream test did not match before the erasure. | live:native-mixed_tenant_flow; finding:F-1401 |
@@ -457,6 +470,7 @@ The code disagrees with the statement (original FINDINGS.md; F-C ids and every a
 | OPS-X4.8.2 | When the strict setting is on, a namespace mismatch is an error. | finding:F-1703; inspected:iris_vector_graph/stores/iris_sql_store.py:836-838; inspected:iris_vector_graph/exceptions.py:14-22; assumed:P-1712; tested:tests/unit/test_namespace_aware.py::test_probe_strict_message_contains_both_namespaces |
 | OPS-B5.3 | A node read that names no graph keeps each graph's node apart. | finding:F-1701; inspected:iris_vector_graph/stores/iris_sql_store.py:1116-1154; inspected:iris_vector_graph/_engine/nodes_edges.py:621-636 |
 | OPS-B5.3.1 | A label lookup that starts or filters a path reads only the graph the query is in. | finding:F-1701; inspected:iris_vector_graph/stores/iris_sql_store.py:1156-1210; inspected:iris_vector_graph/_engine/query.py:245; inspected:iris_vector_graph/_engine/query.py:266; inspected:iris_vector_graph/_engine/query.py:3319 |
+| OPS-B5.4 | Write nodes puts in node rows, labels and properties in one transaction. A duplicate is skipped and keeps its old value. | inspected:iris_vector_graph/stores/iris_sql_store.py:1214-1246; tested:tests/unit/test_store_protocol.py::test_write_nodes_commits; finding:F-C1706 |
 | OPS-B5.19.3 | The reader counts each edge into a node, parallel edges too, as it does for edges out. | finding:F-1712; inspected:iris_vector_graph/stores/lazy_kg.py:215-269; inspected:iris_src/src/Graph/KG/Adjacency.cls:197-209; tested:tests/unit/test_lazy_kg_coverage.py::test_in_degree_basic |
 | OPS-B6.2.1 | Each request of the client turns a refused key into a client error. That holds for file loads and explain calls too. | finding:F-1714; inspected:iris_vector_graph/sdk.py:166-182; inspected:iris_vector_graph/sdk.py:254-281 |
 | OPS-B7 | The product's own errors share one error root, so one catch takes them all. | finding:F-1704; inspected:iris_vector_graph/errors.py:1-17; inspected:iris_vector_graph/sdk.py:17-19; inspected:iris_vector_graph/exceptions.py:100-157; inspected:iris_vector_graph/schema_name.py:38; tested:tests/unit/test_error_model.py::test_all_descend_from_single_root |
@@ -520,7 +534,7 @@ Statements waiting on a human decision (see the original DECISIONS.md).
 | LED-Q5 | Should a post-commit property be kept as a record in its revision? | open:HD-1105 |
 | LED-Q4 | Should the server enforce strict mode, or should it stay a check in Python? | open:HD-1103 |
 | ERS-Q1 | Should a graph erasure hold the ledger lock so commits into the graph wait? | open:HD-1201; mc:erasure-reviewed |
-| RED-B1.1 | Redaction never makes a tombstone of the record of live content. | finding:F-1302; live:native-commit_in_unmarked_window; mc:redaction-as-built-live [model-only]; mc:redaction-reviewed [model-only]; proved:theorem_begin_spares_live [model-only]; assumed:P-1311; open:HD-1201; finding:F-C1201; finding:F-C1301 |
+| RED-B1.1 | Redaction never makes a tombstone of the record of live content. | finding:F-1302; live:native-commit_in_unmarked_window; mc:redaction-as-built-live [model-only]; mc:redaction-reviewed [model-only]; proved:theorem_begin_spares_live [model-only]; assumed:P-1311; open:HD-1201; finding:F-C1201; finding:F-C1301; finding:F-C1308 |
 | RED-Q1 | Should the opening check and the redaction marker share one locked step? | open:HD-1301; proved:theorem_l2_satisfies_l1; mc:refinement-reviewed |
 | RED-Q2 | Spec 256 says free text is cleared only when every record is redacted. Which rule stands? | open:HD-1302; finding:F-1301 |
 | RED-Q3 | Should an operator be able to drop a redaction run that is not done? | open:HD-1303 |
@@ -634,7 +648,7 @@ Statements that rest on a named premise (see the original TRUST.md).
 | TXT-B12.5 | If the word index is missing, it falls back to plain substring matching and logs a warning. | inspected:iris_vector_graph/_engine/vector.py:1007-1034; assumed:P-0707 |
 | CYP-T5.1 | The name of the graph goes into the SQL as a quoted text value, with each quote mark doubled. | inspected:iris_vector_graph/cypher/translator.py:2085-2086; inspected:iris_vector_graph/cypher/translator.py:1137-1170; tested:tests/unit/test_460_all_graphs_writes.py::test_a_graph_name_is_quoted_as_a_literal; assumed:P-0805 |
 | CYP-B6.2 | Inside a transaction the caller opened, the write joins it. The caller then keeps or undoes both. | inspected:iris_vector_graph/_write_txn.py:1-30; inspected:iris_vector_graph/_write_txn.py:102-121; tested:tests/unit/test_464_write_txn.py::test_inside_the_callers_transaction_commit_leaves_the_callers_level_open; assumed:P-0802 |
-| CYP-I6.3 | A failed write takes back only its own part. The caller's earlier work stays in the open transaction. | inspected:iris_vector_graph/_write_txn.py:102-121; inspected:iris_vector_graph/stores/iris_sql_store.py:1811-1818; tested:tests/unit/test_464_write_txn.py::test_rollback_takes_back_its_own_level_only; tested:tests/e2e/test_464_caller_txn_e2e.py::test_c_a_failed_write_keeps_the_callers_work; assumed:P-0803; live:C-b-08-live-footprints |
+| CYP-I6.3 | A failed write takes back only its own part. The caller's earlier work stays in the open transaction. | inspected:iris_vector_graph/_write_txn.py:102-121; inspected:iris_vector_graph/stores/iris_sql_store.py:1811-1818; tested:tests/unit/test_464_write_txn.py::test_rollback_takes_back_its_own_level_only; tested:tests/e2e/test_464_caller_txn_e2e.py::test_c_a_failed_write_keeps_the_callers_work; assumed:P-0803; live:C-b-08-live-footprints; mc:C-b-mc-m08-txn-as-built-atomic |
 | CYP-B6.7.7 | The same holds when the query names both nodes by fixed ids. | inspected:iris_vector_graph/cypher/translator.py:10212-10248; finding:F-0805; assumed:P-0804 |
 | CYP-B6.12 | A Cypher write updates the adjacency index in the same transaction. Indexes set up on the edge and label tables do it. | inspected:iris_vector_graph/schema.py:767-781; inspected:iris_src/src/Graph/KG/AdjIndex.cls:1-26; tested:tests/e2e/test_252_cypher_read_after_write_e2e.py::test_create_is_seen_by_every_reader; tested:tests/e2e/test_252_cypher_read_after_write_e2e.py::test_detach_delete_removes_the_node_s_edges; assumed:P-0801 |
 | CYP-P1 | IRIS runs the code of a declared index inside the row's transaction. A rollback undoes it. | assumed:P-0801; inspected:iris_src/src/Graph/KG/AdjIndex.cls:1-26 |
@@ -667,7 +681,7 @@ Statements that rest on a named premise (see the original TRUST.md).
 | LED-P6 | A new revision row with a seq that is already taken fails to save. | assumed:P-1106 |
 | LED-B3.5 | Meta and head take no lock. They can show a head that a caller transaction has not yet kept. | inspected:iris_src/src/Graph/KG/Ledger.cls:143-164; assumed:P-0002 |
 | LED-B4.2 | A commit opens a transaction and takes the head lock in it. It frees the lock just before the transaction ends. | inspected:iris_src/src/Graph/KG/Ledger.cls:400-405; inspected:iris_src/src/Graph/KG/Ledger.cls:440; assumed:P-0003 |
-| LED-B4.3 | No other commit can build on a head until the transaction that moved it has ended. | inspected:iris_src/src/Graph/KG/Ledger.cls:390-405; assumed:P-0003; tested:tests/e2e/test_470_ledger_caller_txn_e2e.py::test_the_head_lock_is_held_until_the_callers_transaction_ends |
+| LED-B4.3 | No other commit can build on a head until the transaction that moved it has ended. | inspected:iris_src/src/Graph/KG/Ledger.cls:390-405; assumed:P-0003; tested:tests/e2e/test_470_ledger_caller_txn_e2e.py::test_the_head_lock_is_held_until_the_callers_transaction_ends; mc:C-b-mc-m11-commit-as-built |
 | LED-B4.7.6 | Another process reads a key only once it holds the head lock. So it sees a key bound in a caller transaction only after that transaction ends. | inspected:iris_src/src/Graph/KG/Ledger.cls:440-458; assumed:P-0003 |
 | LED-P4 | Callers send the fingerprint that the Python changeset works out. | assumed:P-1104 |
 | LED-P1 | SQL writes made inside an open server transaction are part of it, and its undo takes them back. | assumed:P-1101 |
@@ -678,7 +692,7 @@ Statements that rest on a named premise (see the original TRUST.md).
 | LED-P3 | A row read from a table holds no lock until it is saved, and the save writes the whole row. | assumed:P-1103 |
 | ERS-I1 | A graph erasure finishes in full or changes nothing. | inspected:iris_src/src/Graph/KG/Eraser.cls:56-261; tested:tests/integration/test_eraser_failures.py::test_a_refused_delete_erases_nothing; assumed:P-0001; live:C-live-erase-vs-commit-fk |
 | ERS-P1 | A delete that meets a row another transaction holds waits for that transaction. | assumed:P-1201 |
-| RED-B1.1 | Redaction never makes a tombstone of the record of live content. | finding:F-1302; live:native-commit_in_unmarked_window; mc:redaction-as-built-live [model-only]; mc:redaction-reviewed [model-only]; proved:theorem_begin_spares_live [model-only]; assumed:P-1311; open:HD-1201; finding:F-C1201; finding:F-C1301 |
+| RED-B1.1 | Redaction never makes a tombstone of the record of live content. | finding:F-1302; live:native-commit_in_unmarked_window; mc:redaction-as-built-live [model-only]; mc:redaction-reviewed [model-only]; proved:theorem_begin_spares_live [model-only]; assumed:P-1311; open:HD-1201; finding:F-C1201; finding:F-C1301; finding:F-C1308 |
 | RED-P1 | Every record that touches one node or edge is in a redaction target, or none is. | assumed:P-1301; live:native-mixed_tenant_flow |
 | RED-B2.2 | Anyone who holds the original record can check that a tombstone replaced it. | tested:tests/integration/test_256_ledger_redaction_e2e.py::test_each_tombstone_digest_is_sha256_of_the_canonical_record_it_replaced; live:native-mixed_tenant_flow; assumed:P-1302 |
 | RED-P2 | Only the product's own code sets the value that opens that one update. | assumed:P-1308; tested:tests/unit/test_256_ledger_redaction.py::test_only_ledger_redact_sets_the_exemption_variable |
@@ -748,7 +762,7 @@ Statements that rest on a named premise (see the original TRUST.md).
 | SNP-P2 | The client's walk and text form give back every value except vectors. | inspected:iris_vector_graph/_engine/snapshot.py:1626-1652; assumed:P-1802 |
 | SNP-P3 | A snapshot archive is a file anyone can write, so a restore treats it as untrusted. | inspected:iris_vector_graph/_engine/snapshot.py:368-378; inspected:iris_vector_graph/_engine/snapshot.py:412-422; assumed:P-1803 |
 
-## Inspection only (1346)
+## Inspection only (1343)
 
 Supported only by reading production code at the pin.
 
@@ -1486,7 +1500,6 @@ Supported only by reading production code at the pin.
 | NAT-T5.5 | The stamp holds three build times: the property table's, the interpreter's and the generator's. | inspected:iris_src/src/Graph/KG/Cypher/Gen.cls:134-139; inspected:iris_src/src/Graph/KG/Cypher/Gen.cls:52-57; inspected:iris_src/src/Graph/KG/Cypher/Exec.cls:24-29; inspected:iris_src/src/Graph/KG/Cypher/Props.cls:105-109 |
 | NAT-T5.9 | The generator writes the property storage names into the code. The stamp is what keeps those names right. | inspected:iris_src/src/Graph/KG/Cypher/Gen.cls:496-527; inspected:iris_src/src/Graph/KG/Cypher/Gen.cls:545-571 |
 | NAT-T5.11 | In sync mode, a new shape is built in the reader's own process before the read runs. | inspected:iris_src/src/Graph/KG/Cypher/Gen.cls:101-104 |
-| NAT-X11 | A process mode other than job, sync or off is refused. | inspected:iris_src/src/Graph/KG/Cypher/Gen.cls:28-39 |
 | NAT-T5.14 | A shape being built is left to its job for two minutes. After that, the next read claims it again. | inspected:iris_src/src/Graph/KG/Cypher/Gen.cls:74-76; inspected:iris_src/src/Graph/KG/Cypher/Gen.cls:92-94 |
 | NAT-T5.15 | Two builds of one shape never run at once. A build that finds the shape locked leaves it alone. | inspected:iris_src/src/Graph/KG/Cypher/Gen.cls:163-175 |
 | NAT-T5.20 | Three test switches in the namespace setting can force these failures. A user who can write that setting can slow reads down. | inspected:iris_src/src/Graph/KG/Cypher/Gen.cls:78-79; inspected:iris_src/src/Graph/KG/Cypher/Gen.cls:197-199; inspected:iris_src/src/Graph/KG/Cypher/Gen.cls:266-267 |
@@ -1628,7 +1641,6 @@ Supported only by reading production code at the pin.
 | LED-D21 | A replayed commit is a retry that gets back the first revision and saves nothing. | inspected:iris_src/src/Graph/KG/Ledger.cls:457-462 |
 | LED-B1 | An operator turns the ledger on and off. Each namespace has its own ledger. | inspected:iris_src/src/Graph/KG/Ledger.cls:250-358; inspected:iris_vector_graph/ledger/client.py:281-303 |
 | LED-B1.3 | The genesis reads node rows from every graph as if they were all in the default graph. | inspected:iris_src/src/Graph/KG/LedgerGenesis.cls:17-36 |
-| LED-B1.7 | Enable writes the genesis, the ledger state and the stats row in one transaction. A failure leaves the ledger never enabled. | inspected:iris_src/src/Graph/KG/Ledger.cls:262-328 |
 | LED-B1.13 | The genesis fixes the size limit and the rebuild bound. No later call changes them. | inspected:iris_src/src/Graph/KG/Ledger.cls:289-292; inspected:iris_src/src/Graph/KG/Ledger.cls:271-276 |
 | LED-B1.16 | Disable does not take the head lock. A commit that has passed its state check can still finish after disable returns. | inspected:iris_src/src/Graph/KG/Ledger.cls:340-357; inspected:iris_src/src/Graph/KG/Ledger.cls:440-450 |
 | LED-B1.17 | Enable on a ledger that is off turns it on. It asks the client to look for unrecorded writes. | inspected:iris_src/src/Graph/KG/Ledger.cls:271-286 |
@@ -1730,7 +1742,6 @@ Supported only by reading production code at the pin.
 | RED-D10 | An audit revision is the note a redaction run saves about itself at the end. | inspected:iris_src/src/Graph/KG/LedgerRedact.cls:420-441 |
 | RED-D11 | A redaction receipt is the answer a redaction run gives about what it did. | inspected:iris_src/src/Graph/KG/LedgerRedact.cls:482-511 |
 | RED-D13 | A post-commit property is a node property the Python client writes after a commit. It has no record. | inspected:iris_vector_graph/ledger/client.py:430-487 |
-| RED-B1 | Redaction runs only on a redaction target that is no longer live. | inspected:iris_src/src/Graph/KG/LedgerRedact.cls:206-210 |
 | RED-T3 | Each redaction batch holds the ledger lock and commits on its own. | inspected:iris_src/src/Graph/KG/LedgerRedact.cls:275-300 |
 | RED-T3.1 | A redaction batch waits for the ledger lock like a commit. It gives up with an error after 30 seconds. | inspected:iris_src/src/Graph/KG/LedgerRedact.cls:282-286 |
 | RED-T3.2 | Commits wait for at most one redaction batch at a time. | inspected:iris_src/src/Graph/KG/LedgerRedact.cls:275-300 |

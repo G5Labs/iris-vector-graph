@@ -2,7 +2,8 @@
 
 Product pin `3eaa79cf77d3e0a879b2cced634cf2729d81499e` (tree `b098a6f4`), unchanged: `check-product-scope.sh` passes at
 every commit. Original submission `9c3719c1` unchanged and still attributable. Engine: InterSystems IRIS 2026.1
-Community (Build 234U), dedicated container, client `intersystems_irispython 5.3.2` (the product's `uv.lock` pin).
+Community (Build 234U), dedicated container, client `intersystems_irispython 5.3.2` (the product's `uv.lock` pin, on
+which the product misbehaves: F-C1706; driver 5.4.0 compared in the validation lane).
 PGspec not used. Observation-only: defects are recorded, never fixed. One verification entry point: `verify.sh`.
 
 **Verdict: not complete.** The audit took every module through the playbook's phases and closed many gates with
@@ -18,21 +19,23 @@ counts as a product result: reviewed designs that are proved or model-checked ar
 
 | Phase | Baseline (submission 9c3719c1, per baseline-audit.md) | Now | Gate |
 |---|---|---|---|
-| §3.1 ontology | lexical-scope reading; 1,392 literal-rule pairs in 1,002 statements | literal rule enforced by a strengthened checker (40 negative controls, differential equal to the independent script); repaired ontology 3,877 statements, 0 violations; completion evidence tagged; 11 statements' proofs marked model-only (`ontology-r05-*`) | **closed** (method). Open: system-module terms are not checked across modules (maintainer question) |
+| §3.1 ontology | lexical-scope reading; 1,392 literal-rule pairs in 1,002 statements | literal rule enforced by a strengthened checker (42 negative controls, differential equal to the independent script); repaired ontology 3,877 statements, 0 violations; completion and follow-up findings cited (51 finding tags on 35 statements); 14 statements' model evidence marked model-only; a reproduced finding's named statement can no longer keep an uncited proof tag (`rr2-ontology-*`) | **open**. Closed: the four product-scope gates (3.1-parent, -grade, -terms, -index). Open in the matrix: 3.1-cells 10 of 19 module cells, 3.1-coverage 19 of 19 module cells plus 5 reach obligations (review R2-10), 3.1-intent 17 of 19. Also open: system-module terms are not checked across modules (maintainer question) |
 | §3.2 environment | four IRIS behaviours sampled; no contract | reusable executable IRIS contract; round r2: 283 cases, 0 outside, 282 single-outcome cases, 17/17 mutants (`env-contract-r2`); extension lane: see "Environment extension" | **closed** for the validated subset; outside-subset features keep module `3.2-coverage` cells open |
-| §3.3 models, protocols, progress | one combined L1/L2 proof (53 verified), 11 explorer checks; no Protocol2; no progress-only control | core: 82 explorer checks (three predicates, concurrency, retry, readers), reviewed M2 refines an executable L1; `Protocol2` composition in two levels, 88 verified/0 errors, 4 located design controls, a progress-only control failing only `progress.rs:165` (model-level); breadth: 145+ bounded checks with controls for modules 00-11, 15-18 | **closed at model level**; Verus refinement for modules 00-11 and 15-18 is proof debt (D-1); the proofs' premises are false at the pin (PROOFS.md) |
-| §3.3a semantics | worked example only; 83 obligations from a hand manifest | source-derived writer census: 269 sites, 46 undeclared writers, 162 (invariant, writer) obligations (`followup-writer-census`) | **open**: obligations not discharged; product fails INV-no-live-tombstone (F-C1301, F-C1308) |
-| §3.4-3.6 storage, handlers, composition | not done | correspondence for modules 11-14: 13 of 15 actions trace-checked against an executable abstraction to the proof models; unchecked lines listed exactly (281/1,760 ObjectScript, 181/690 Python); frame/keys/FK/integrity/capacity per module; 18 lock-plan probes match source; decoder map 15/15 (`corr-*`, `decoder-map-ledger`) | **open**: statement and handler proofs need a verifier that does not exist (D-2, D-3); several conditions failed (F-1801 keys, F-1306 FK) |
-| §3.7 validation | 14 scenarios, upstream spec-256 suite; no crash/lost-ack matrix, no perf | journal-oracled trace conformance (controls); F-1201 reproduced live 8/8; lost-ack world exactly-once in 6/6; instance crash world: all-or-nothing recovery, acknowledged commit lost with SynchCommit=0 (F-C1102); fresh rerun of 10 original scenarios; suites, perf and SC-002/003: see "Validation" | **open**: editions blocked; multi-node blocked; see Validation |
-| §3.8 account | review signed off the worked example | STATUS, TRUST, PROOF-DEBT, matrix; independent review: **no sign-off** (`independent-review-1`), dispositions applied | **open** |
+| §3.3 models, protocols, progress | one combined L1/L2 proof (53 verified), 11 explorer checks; no Protocol2; no progress-only control | core: 82 explorer checks (three predicates, concurrency, retry, readers), reviewed M2 refines an executable L1; `Protocol2` composition in two levels, 88 verified/0 errors, 4 located design controls, a progress-only control failing only `progress.rs:165` (model-level); breadth: 145+ bounded checks with controls for modules 00-11, 15-18 | **closed at model level**; Verus refinement for modules 00-11 and 15-18 is proof debt (D-1); the proofs' premises are false at the pin (PROOFS.md, TRUST.md: P-C02, P-A3); no D-2 progress control (D-12). Product: every closed proof cell of modules 04 and 11-14 and the protocol cells show `fails` (located controls encode the pin's behaviour; reproduced findings) |
+| §3.3a semantics | worked example only; 83 obligations from a hand manifest | source-derived writer census: 269 sites, 46 undeclared writers, 162 (invariant, writer) obligations, 20 conditional, 3 write-set gaps (`followup-writer-census`), each now an open matrix cell (`matrix-input/writer-census-obligations.json`) | **open**: obligations not discharged (3.3a-writesets: 199 open cells); product fails INV-no-live-tombstone (F-C1301, F-C1308) and restore's write-set gaps (F-1801) |
+| §3.4-3.6 storage, handlers, composition | not done | correspondence for modules 11-14: 13 of 15 actions trace-checked against an executable abstraction to the proof models; unchecked lines listed exactly (281/1,760 ObjectScript, 181/690 Python); frame/keys/FK/integrity/capacity per module; 18 lock-plan probes match source; decoder map 15/15 (`corr-*`, `decoder-map-ledger`) | **open**: statement and handler proofs need a verifier that does not exist (D-2, D-3); several conditions failed (F-1801 keys, F-1306 FK); the abstraction check is blind to temporal-only edges and to completeness at Final (stated on the 3.5-handlers and 3.7-trace-replay cells); 5 ledger writers lie outside every modelled action, not 1 (closure scan reconciled with the census) |
+| §3.7 validation | 14 scenarios, upstream spec-256 suite; no crash/lost-ack matrix, no perf | journal-oracled trace conformance (controls); F-1201 reproduced live 8/8; lost-ack world exactly-once in 6/6; instance crash world: all-or-nothing recovery, acknowledged commit lost with SynchCommit=0 (F-C1102, intent-undecided); fresh rerun of 10 original scenarios; suites, perf and SC-002/003: see "Validation"; validation's product defects filed as F-C1706, F-C0502, F-C1002, F-C0606 (`findings/audit/zz-validation.json`) | **open**: editions blocked; multi-node blocked; see Validation |
+| §3.8 account | review signed off the worked example | STATUS, TRUST, PROOF-DEBT, matrix; independent review: **no sign-off** in either pass (`independent-review-1`, `independent-review-2`); conditions 1-5 and 7 of the second pass answered in `review/RESPONSE-2.md`; condition 6 needs an operator ruling; §5c's randomized simulator through the real product not run (`5c-reviewers` open) | **open** |
 
 ## What changed since the baseline (each with evidence)
 
 - F-1201 moved from model-only to **reproduced live** (`live-f1201-reproduced`), with the journal as an independent
   oracle of the interleaving.
-- All 197 original findings have a disposition with fresh evidence on the pin: 140 reproduced live, 36 confirmed from
-  source, 12 by an upstream test, 4 by model, 2 not reproduced, 2 blocked on access, 1 refuted
-  (`findings/audit/*.json`). 53 new findings (8 S1, 20 S2, 13 S3, 12 S4; 37 reproduced live).
+- All 197 original findings have a disposition with fresh evidence on the pin: 139 reproduced live, 35 confirmed from
+  source, 12 by an upstream test, 3 by model, 3 intent-undecided (F-0401, F-0503, F-1201: the behaviour is observed,
+  the intent rests only on an Assumption HD; review R-11, R2-08), 2 not reproduced, 2 blocked on access, 1 refuted
+  (`findings/audit/*.json`, as the matrix counts them). 59 new findings (8 S1, 22 S2, 16 S3, 13 S4; 36 reproduced live,
+  4 by an upstream test run here, 5 by model, 10 from source, 3 intent-undecided: F-C0402, F-C1102, F-C1108).
 - The three targeting predicates, graph-blind node provenance, overlapping ids, statement/tuple maps, post-commit
   replay, per-target counters, marker ownership/absence, concurrent erase/start, abort and recovery are each modelled
   (`models/core/MODELS.md`).
@@ -61,8 +64,11 @@ counts as a product result: reviewed designs that are proved or model-checked ar
 | F-C1804 | snapshots carry no routed edge vectors: after a restore the registry says present and search returns nothing | breadth C (`findings/audit/18.json`) |
 
 Others of note: F-C1303 (a bounded redaction resume never finishes, live), F-C1307 (one writer keeps a redaction open
-and blocks every tenant, live), F-C1102 (acknowledged commit lost on crash with SynchCommit=0, live), F-1801 (restoring
-an older archive breaks every later commit).
+and blocks every tenant, live), F-1801 (restoring an older archive breaks every later commit), F-C1706 (the pin's own
+uv.lock installs a driver on which scores come back as Decimal, duplicate skips raise and list parameters fail, S2).
+Observed but intent-undecided: F-C1102 (acknowledged commit lost on crash with SynchCommit=0, live; no IVG document
+states a durability premise) and F-1201 (a graph erasure removes the statement entry of a concurrent commit's edge,
+live 8/8; its intent rests on HD-1201).
 
 ## Remaining blockers (exact)
 
@@ -75,9 +81,11 @@ an older archive breaks every later commit).
 
 ## Assumptions carried (named, with status in TRUST.md)
 
-Progress premises (fair scheduling, operator re-runs, ledger re-enabled, no write outside the ledger) are assumed;
-the reviewed protocol's safety premises are false at the pin (PROOFS.md); embedded SQL assumed equal to dynamic SQL
-for the contract's clauses; durability results are for SynchCommit=0 only.
+Progress premises (fair scheduling, operator re-runs, ledger re-enabled) are assumed; the fourth, no writer makes a
+marked target live (P-C02 for progress), is false at the pin (F-C1307). The reviewed protocol's safety premises are
+false at the pin (PROOFS.md), and so is the breadth proofs' P-A3 (an eraser overlaps no writer of its graph). Embedded
+SQL is assumed equal to dynamic SQL for the contract's clauses; durability results are for SynchCommit=0 only (the
+tested setting, `env-synchcommit-setting`). All of these are rows of TRUST.md's premise table.
 
 ## Residual maintainer questions, by consequence (working answer / best alternative)
 

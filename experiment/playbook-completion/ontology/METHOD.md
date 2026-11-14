@@ -37,7 +37,8 @@ Changed or added:
 | `[foreign-term]` | A statement outside SYS that uses a term of another (non-SYS) module's glossary that its own glossary lacks. This keeps the submitted tool's global check of such terms. |
 | `[glossary-duplicate]` | Two rows for one term, or one definer listed twice. |
 | `[restatement]` | A restatement whose Notes lack "Same meaning as <primary>", whose text or evidence differs from the primary's, that comes before the primary, or a D row citing a same-module "Same meaning as" that the glossary does not list. |
-| `[model-only]` | A `proved:` or `mc:` item (original or `C-`) without the `[model-only]` qualifier on a statement that cites a finding whose audit disposition is reproduced-live, reproduced-test or confirmed-source (review R-05). |
+| `[model-only]` | A `proved:` or `mc:` item (original or `C-`) without the `[model-only]` qualifier on a statement that cites a finding whose audit disposition is reproduced-live, reproduced-test or confirmed-source (review R-05), or intent-undecided with a live, run or trace evidence item (behaviour observed on the product, intent open; review R2-08). |
+| `[uncited-finding]` | A statement that a reproduced finding's `intended` field names (disposition reproduced-live, -test, -model or confirmed-source), that carries a `proved:` item and does not cite that finding (review R2-03: the `[model-only]` rule fires only on cited findings, so it could not catch a missing citation). |
 | `[parent]` | Also: a parent in another module. |
 | `[evidence]` | Also: completion references (below); a hand-written `ran:` (derived only); `trace:` without `C-`; an `F-C` finding not in `../findings/audit/*.json`; a qualifier other than `[model-only]`, or one on a kind other than `proved:`/`mc:`. |
 
@@ -72,8 +73,10 @@ a product finding; a "Model-only proofs and model checks" listing names them.
 
 A fixture (SYS, one module with a restatement, a definition parent, "out degree"/"registries" spellings, all four
 `C-` evidence forms, an F-C finding reproduced live beside a `[model-only]` proof, a model-reproduced finding beside
-an unmarked model check, and a second module) must pass with 0 violations; it does. Each of 40 negative controls
-must be rejected with its own rule tag; all 40 are. The six added for R-05: `proved:` beside a live-reproduced
+an unmarked model check, an intent-undecided finding with live evidence, and a second module) must pass with 0
+violations; it does. Each of 42 negative controls must be rejected with its own rule tag; all 42 are. The two added
+for the second review: a reproduced finding's `intended` names a statement with `proved:` that does not cite it
+(`[uncited-finding]`); `mc:` beside an intent-undecided finding observed live, without `[model-only]`. The six added for R-05: `proved:` beside a live-reproduced
 finding without `[model-only]`; `mc:` beside an original-id finding the audit marks reproduced-test; `[model-only]`
 on `inspected:`; an unknown qualifier; an F-C finding missing from the audit; a restatement whose evidence differs.
 The first 34: aunt (ancestor-sibling) definition, later definition (`[order]` and
@@ -159,14 +162,14 @@ the pin violates them. `tools/add_evidence.py` (idempotent; log `evidence-additi
 
 | Added | Count |
 |---|---:|
-| `finding:` tags | 40 (on 27 statements; 19 of them on SYS axioms and SYS-D26) |
+| `finding:` tags | 51 (on 35 statements); 40 on 27 after R-05, 11 more after the second review (below) |
 | `live:C-` tags | 48 |
-| `mc:C-` tags | 13 |
+| `mc:C-` tags | 25 (13 after R-05; 12 as-built passes of breadth B after the second review) |
 | `trace:C-`, `proved:C-` tags | 0 |
-| Statements with `[model-only]` items | 11 (21 items): ERS-I3, RED-B1.1, RED-B4.3, RED-B6.1, RED-B7.1, RED-B8, RED-B8.1, RPL-B1.1, RPL-B3, RPL-I1, SNP-I3.6 |
-| Notes extended with conditions | 6 |
+| Statements with `[model-only]` items | 14 (24 items): CYP-I6.4, CYP-X6.5, ERS-I3, RED-B1.1, RED-B4, RED-B4.3, RED-B6.1, RED-B7.1, RED-B8, RED-B8.1, RPL-B1.1, RPL-B3, RPL-I1, SNP-I3.6 |
+| Notes extended with conditions | 18 |
 | Restatements updated | 2 (TXT-D1's) |
-| Reproduced findings left untagged | 24 (19 name no statement; 5 had every named statement rejected) |
+| Reproduced findings left untagged | 34 (each with its reason in `evidence-additions.json`) |
 
 Before (`r05/check-before.log`): 14 `[model-only]` violations in 7 statements, the review's cases. After: 0.
 
@@ -182,9 +185,10 @@ Before (`r05/check-before.log`): 14 `[model-only]` violations in 7 statements, t
   restatement of the noun definition, which is harmless but reads oddly in places (e.g. ERS-D4a before ERS-T1).
 - **Reading order.** A restatement can sit between siblings that open with "It" (e.g. ERS-D3a before ERS-B1.2).
   The Parent column still names the referent.
-- **Untagged findings.** 24 reproduced findings tag no statement (listed with reasons in `evidence-additions.json`).
-  Mapping them would need a judgment the finding record does not make; RED-B4 (key re-bound after a restore) is
-  shown only by a model run that is not a passing record and by no finding's text, so it is not tagged.
+- **Untagged findings.** 34 reproduced findings tag no statement (listed with reasons in `evidence-additions.json`).
+  Mapping them would need a judgment the finding record does not make. Of the validation findings, F-C1002 (Leiden
+  partition quality) and F-C0606 (SC-010 latency) contradict no statement: none states a partition quality or a
+  latency budget.
 - **Moving inputs.** The audit and registry are still growing. `add_evidence.py` stops on any new unreviewed
   candidate, so a rerun after other lanes add findings or runs fails until they are reviewed.
 - `check-literal-scope.py` reads only the "Defined by" column, so it cannot judge the repaired modules. The
@@ -202,3 +206,31 @@ python3 $T/ontology_check.py --check      # after: 0 violations, index current
 python3 $T/ontology_check.py --self-test  # positive control, 40 negative controls, differential
 python3 $T/independent_recheck.py
 ```
+
+## Second review (review/REVIEW-2.md R2-03, R2-08; review-response lane)
+
+The R-05 re-tag preceded the follow-up, so no follow-up finding was cited. Now (`tools/add_evidence.py`, reviewed
+tags in `FINDING_TAGS`, each with its reason; "manual" = the finding's `intended` does not name the statement):
+
+| Finding | Statement | |
+|---|---|---|
+| F-C1308 | RED-B1.1 (from `intended`), RED-B1 (manual) | temporal-only edge live while its record is tombstoned |
+| F-C1309 | RED-B7 (manual) | the audit revision's target digest is the guessable name's SHA-256 |
+| F-C1306 | RED-B12 (manual) | legacy Graph_KG.ledger_revisions keeps the tenant's text after erase and redaction |
+| F-1801 | RED-B4 (manual; its `proved:theorem_retry_refused` is now `[model-only]`) | a replacing restore binds a redacted retry key again |
+| F-C1304, F-C1305 | RED-B10 (manual) | the receipt's out-of-reach list omits snapshot archives and the embedding quarantine |
+| F-C1307 | RED-B8 (manual) | a writer outside the ledger keeps the run from ever finishing |
+| F-C1203 | ERS-B2 (manual) | a prefix erasure leaves the tenant's temporal-only edge |
+| F-C1706 | OPS-B5.4 | under the locked driver a duplicate raises instead of being skipped |
+| F-C0502 | TMP-B2.13 | under the locked driver the flag's marked-row write fails |
+
+F-C1102 is not tagged: it is now intent-undecided (review R2-08), and intent-undecided findings are not tagged.
+F-C0803's candidate CYP-B6.8 is rejected with its reason. The 52 run candidates of the breadth-B checks registered
+after R-05 are reviewed: 12 candidates of 6 as-built passes are tagged (`mc:C-b-mc-*`, Notes "checks the as-built
+model ... within its bounds (model-level; no code correspondence)"); the 37 reviewed-design candidates, and 3 as-built
+candidates whose run excludes the case a finding shows, are rejected with reasons (`RUN_REJECT`). The `[model-only]` rule now also fires for an
+intent-undecided finding with live, run or trace evidence (F-1201 on ERS-I3 keeps its marks after F-1201 became
+intent-undecided), and `[uncited-finding]` is new. `independent_recheck.py` re-derives both rules without shared code.
+Before the tags, `[uncited-finding]` reported exactly F-C1308 on RED-B1.1 (and F-0503 on RPL-B3, a reviewed rejection,
+before F-0503 became intent-undecided); after, 0. Registry: `rr2-ontology-check`, `rr2-ontology-self-test`,
+`rr2-ontology-independent-recheck` (lane review-response).

@@ -1,15 +1,15 @@
 {
  "counts": {
-  "finding_tags": 40,
-  "items_model_only": 21,
-  "notes_changed": 6,
+  "finding_tags": 51,
+  "items_model_only": 24,
+  "notes_changed": 18,
   "restatements_updated": 2,
   "run_tags_by_kind": {
    "live": 48,
-   "mc": 13
+   "mc": 25
   },
-  "statements_model_only": 11,
-  "untagged_reproduced_findings": 24
+  "statements_model_only": 14,
+  "untagged_reproduced_findings": 34
  },
  "findings": {
   "ADJ-I5.9": {
@@ -44,6 +44,12 @@
    "F-0801": {
     "disposition": "reproduced-live",
     "why": "contradicted: strict mode fails open, so a Cypher write is not refused"
+   }
+  },
+  "ERS-B2": {
+   "F-C1203": {
+    "disposition": "reproduced-live",
+    "why": "contradicted (manual, review R2-03): after delete_nodes_by_prefix the prefix's temporal-only edge is still returned by get_edges_in_window (fu-r04-temporal-only-live-b)"
    }
   },
   "INT-E1.9": {
@@ -82,6 +88,18 @@
     "why": "contradicted: with --workers above 1 the command exits without serving"
    }
   },
+  "OPS-B5.4": {
+   "F-C1706": {
+    "disposition": "reproduced-test",
+    "why": "contradicted under the driver the pin's uv.lock installs (5.3.2): a duplicate node raises GraphWriteError and writes nothing (val-driver532-1; passes under 5.4.0, val-driver540-1/-2)"
+   }
+  },
+  "RED-B1": {
+   "F-C1308": {
+    "disposition": "reproduced-live",
+    "why": "contradicted (manual, review R2-03): a run completes while the target's temporal-only edge is live, because the liveness check counts only nodes, labels, props and edge rows"
+   }
+  },
   "RED-B1.1": {
    "F-C1201": {
     "disposition": "reproduced-live",
@@ -90,12 +108,48 @@
    "F-C1301": {
     "disposition": "reproduced-model",
     "why": "contradicted (model): the liveness check reads another writer's uncommitted delete"
+   },
+   "F-C1308": {
+    "disposition": "reproduced-live",
+    "why": "contradicted: redaction tombstones the record of a temporal-only edge that is still live (get_edges_in_window returns it after the run; fu-r04-temporal-only-live-b)"
+   }
+  },
+  "RED-B10": {
+   "F-C1304": {
+    "disposition": "reproduced-live",
+    "why": "contradicted (manual, review R2-03): the receipt names exports, journals and backups as out of reach, while server-side snapshot archives keep and restore the tenant (fu-r01a-snapshot-copies)"
+   },
+   "F-C1305": {
+    "disposition": "confirmed-source",
+    "why": "contradicted (source; manual, review R2-03): the receipt does not name the embedding quarantine, whose rows survive every erasure and redaction"
+   }
+  },
+  "RED-B12": {
+   "F-C1306": {
+    "disposition": "reproduced-live",
+    "why": "contradicted (manual, review R2-03): after a supported 4.5.x upgrade, Graph_KG.ledger_revisions keeps the erased and redacted tenant's messages, sources and keys (fc1306-legacy-ledger-rows)"
+   }
+  },
+  "RED-B4": {
+   "F-1801": {
+    "disposition": "reproduced-live",
+    "why": "contradicted (manual, review R2-03): a replacing restore binds a redacted revision's retry key again (model core-m3-as-built-F1801-keys; the restore overlay itself is live, c18-live-ledger-overlay)"
+   }
+  },
+  "RED-B7": {
+   "F-C1309": {
+    "disposition": "reproduced-live",
+    "why": "contradicted (manual, review R2-03): the audit revision holds SHA-256 of the target's name, which a dictionary of names recovers in 0.13 s (fu-r10-target-digest)"
    }
   },
   "RED-B8": {
    "F-C1303": {
     "disposition": "reproduced-live",
     "why": "contradicted: repeated bounded calls rescan from the start and never finish"
+   },
+   "F-C1307": {
+    "disposition": "reproduced-live",
+    "why": "contradicted (manual, review R2-03): while a writer outside the ledger re-creates a row of the target, calling the redaction again is refused at its entry check and the run never finishes (fu-r03-marker-held-open)"
    }
   },
   "RED-B8.1": {
@@ -220,6 +274,12 @@
     "why": "contradicted (source): server and connection failures are reported as client syntax errors"
    }
   },
+  "TMP-B2.13": {
+   "F-C0502": {
+    "disposition": "reproduced-test",
+    "why": "contradicted under driver 5.3.2: with the flag on, create_edge_temporal raises 'Cursor closed' at temporal.py:188-189 and writes no marked row (val-e2e-1-c20, val-rerun-3)"
+   }
+  },
   "TXT-D1": {
    "F-C0701": {
     "disposition": "reproduced-live",
@@ -228,6 +288,22 @@
   }
  },
  "model_only": {
+  "CYP-I6.4": {
+   "findings": [
+    "F-0806"
+   ],
+   "items": [
+    "mc:C-b-mc-m08-txn-as-built-atomic"
+   ]
+  },
+  "CYP-X6.5": {
+   "findings": [
+    "F-0807"
+   ],
+   "items": [
+    "mc:C-b-mc-m08-txn-as-built-atomic"
+   ]
+  },
   "ERS-I3": {
    "findings": [
     "F-1201"
@@ -243,12 +319,21 @@
   "RED-B1.1": {
    "findings": [
     "F-1302",
-    "F-C1201"
+    "F-C1201",
+    "F-C1308"
    ],
    "items": [
     "mc:redaction-as-built-live",
     "mc:redaction-reviewed",
     "proved:theorem_begin_spares_live"
+   ]
+  },
+  "RED-B4": {
+   "findings": [
+    "F-1801"
+   ],
+   "items": [
+    "proved:theorem_retry_refused"
    ]
   },
   "RED-B4.3": {
@@ -279,7 +364,8 @@
   },
   "RED-B8": {
    "findings": [
-    "F-C1303"
+    "F-C1303",
+    "F-C1307"
    ],
    "items": [
     "proved:theorem_run_can_step"
@@ -329,9 +415,25 @@
   }
  },
  "notes": {
+  "ALG-B1.12": {
+   "new": "Node token \"count:max(%ID)\" (4.6.0 R313). Unit test with a mock store; e2e needs live IRIS. Completion: mc:C-b-mc-m10-cache-as-built-pagerank checks the as-built model of global PageRank's node-token key within its bounds (model-level; no code correspondence).",
+   "old": "Node token \"count:max(%ID)\" (4.6.0 R313). Unit test with a mock store; e2e needs live IRIS."
+  },
   "ALG-B12.7": {
    "new": "Timed (temporal) edges are left out until the next sync and no reader compares ^NKG(\"$meta\",\"builtFrom\") with the token (F-1005). Completion: live:C-b-10-live-nkg-f1005 is the indexed (default) configuration; F-1005 stands, by source, where the adjacency index is not declared.",
    "old": "Timed (temporal) edges are left out until the next sync and no reader compares ^NKG(\"$meta\",\"builtFrom\") with the token (F-1005)."
+  },
+  "CYP-I6.3": {
+   "new": "e2e/integration tests need live IRIS; unit tests inspect Python or SQL text only. Completion: mc:C-b-mc-m08-txn-as-built-atomic checks the as-built model within its bounds (model-level; no code correspondence).",
+   "old": "e2e/integration tests need live IRIS; unit tests inspect Python or SQL text only."
+  },
+  "CYP-I6.4": {
+   "new": "The rollback holds (4.6.4), but _raise_if_step_failed still says 'the rows of the steps before it are written' (F-0806). Completion: mc:C-b-mc-m08-txn-as-built-atomic checks the as-built model within its bounds (model-level; no code correspondence).",
+   "old": "The rollback holds (4.6.4), but _raise_if_step_failed still says 'the rows of the steps before it are written' (F-0806)."
+  },
+  "CYP-X6.5": {
+   "new": "GraphWriteError (a RuntimeError, with sqlcode), whatever raise_on_error says. Some refusals raise ValueError or SyntaxError instead (F-0807). Unit test. Completion: mc:C-b-mc-m08-txn-as-built-atomic checks the as-built model within its bounds (model-level; no code correspondence).",
+   "old": "GraphWriteError (a RuntimeError, with sqlcode), whatever raise_on_error says. Some refusals raise ValueError or SyntaxError instead (F-0807). Unit test."
   },
   "ERS-I2": {
    "new": "ADR-0004's invariant. Checked live after every step of every scenario (L2 check \"live statement without its row\"). Completion: mc:C-core-m1-as-built-isolation-stmt-a/b/c check the as-built model sequentially (no concurrent erasure or commit), profiles a-c, exhaustive within bounds.",
@@ -340,6 +442,38 @@
   "ERS-I3": {
    "new": "The converse of ERS-I2. Fails when a commit into the graph lands between the erasure's row delete and its ledger cleanup: the cleanup kills the new edge's entry and the edge stays live. Completion: mc:C-core-m1-as-built-isolation-stmt-a/b/c check the as-built model sequentially (no concurrent erasure or commit), profiles a-c, exhaustive within bounds.",
    "old": "The converse of ERS-I2. Fails when a commit into the graph lands between the erasure's row delete and its ledger cleanup: the cleanup kills the new edge's entry and the edge stays live."
+  },
+  "LED-B1.7": {
+   "new": "Any error: Lock -, TROLLBACK 1, answer inconsistent (or the genesis scan's error). Completion: mc:C-b-mc-m11-enable-as-built-consistency checks the as-built model within its bounds (model-level; no code correspondence).",
+   "old": "Any error: Lock -, TROLLBACK 1, answer inconsistent (or the genesis scan's error)."
+  },
+  "LED-B4.11.2": {
+   "new": "Both tests need live IRIS; the first is marked slow. Completion: mc:C-b-mc-m11-commit-as-built checks the as-built model with the deferred unlock within its bounds (model-level; no code correspondence).",
+   "old": "Both tests need live IRIS; the first is marked slow."
+  },
+  "LED-B4.3": {
+   "new": "The e2e test (live IRIS) shows a second process cannot take the lock until the caller rolls back. Completion: mc:C-b-mc-m11-commit-as-built checks the as-built model with the deferred unlock within its bounds (model-level; no code correspondence).",
+   "old": "The e2e test (live IRIS) shows a second process cannot take the lock until the caller rolls back."
+  },
+  "LED-B4.7.5": {
+   "new": "The key is read only under the head lock. Live test with two spawned processes. Completion: mc:C-b-mc-m11-commit-as-built checks the as-built model with the deferred unlock within its bounds (model-level; no code correspondence).",
+   "old": "The key is read only under the head lock. Live test with two spawned processes."
+  },
+  "LED-B9.4": {
+   "new": "Redaction batches wait too. Live e2e test. Completion: mc:C-b-mc-m11-commit-as-built checks the as-built model with the deferred unlock within its bounds (model-level; no code correspondence).",
+   "old": "Redaction batches wait too. Live e2e test."
+  },
+  "NAT-B5.2": {
+   "new": "Gen.Mode(m) per process; ^IVG.CypherGen(\"mode\") for the namespace; Gen.Effective() shows it. Completion: mc:C-b-mc-m09-mode-as-built-X11-B52 checks the as-built model within its bounds (model-level; no code correspondence).",
+   "old": "Gen.Mode(m) per process; ^IVG.CypherGen(\"mode\") for the namespace; Gen.Effective() shows it."
+  },
+  "NAT-T5.16": {
+   "new": "4.6.0 R311 (commit:7c050614): a database writer can no longer plant code another user's process compiles. Unit tests read source text only. Completion: mc:C-b-mc-m09-planc-as-built-single-pass checks the as-built model for one plan shape, with no collision or drop within its bounds (model-level; no code correspondence).",
+   "old": "4.6.0 R311 (commit:7c050614): a database writer can no longer plant code another user's process compiles. Unit tests read source text only."
+  },
+  "NAT-X11": {
+   "new": "Gen.Mode throws \"unknown mode\"; Mode(\"\") clears the process setting. Completion: mc:C-b-mc-m09-mode-as-built-X11-B52 checks the as-built model within its bounds (model-level; no code correspondence).",
+   "old": "Gen.Mode throws \"unknown mode\"; Mode(\"\") clears the process setting."
   },
   "RED-I1": {
    "new": "L1 shape_ok: each record is its original or that original's tombstone. Live: every position survives, added records belong to redaction revisions. Completion: mc:C-core-m1-as-built-isolation-stmt-a/b/c check the as-built model sequentially (no concurrent erasure or commit), profiles a-c, exhaustive within bounds.",
@@ -370,6 +504,7 @@
   "F-1503 SYS-I2": "SYS-I2 is about answers; the finding is a delete across graphs",
   "F-C0801 CYP-I6.4": "outcome intent-undecided",
   "F-C0801 SYS-I8": "outcome intent-undecided",
+  "F-C0803 CYP-B6.8": "the statement is find-or-create, which held (one relationship created per row); the defect is the ON CREATE SET value taken from another row",
   "F-C0901 NAT-T5.16": "the cited paraphrase (the class written for its own shape) differs from the statement's text (the class named for its own checksum), which holds",
   "F-C1202 ERS-B1.1": "the statement says erasure removes the graph's index entries; the finding is over-removal of a concurrent edge's entries, which the statement does not deny",
   "F-C1601 API-T8.3": "the statement (each session opens its own connection) holds; the defect is release",
@@ -377,6 +512,46 @@
  },
  "rejected_runs": {
   "b-08-live-footprints CYP-I8.6": "named only as 'I8.6-read'; the run does not say its reads ran in read-only mode, which is what the statement is about",
+  "b-mc-m07-bm25-reviewed TXT-I1": "a reviewed design (the remedy), not the pin: a passing reviewed model does not show that the product's statement holds; it is reported at model level in the matrix (3.3-model-check)",
+  "b-mc-m07-bm25-reviewed TXT-I2": "a reviewed design (the remedy), not the pin: a passing reviewed model does not show that the product's statement holds; it is reported at model level in the matrix (3.3-model-check)",
+  "b-mc-m07-bm25-reviewed TXT-I3": "a reviewed design (the remedy), not the pin: a passing reviewed model does not show that the product's statement holds; it is reported at model level in the matrix (3.3-model-check)",
+  "b-mc-m07-bm25-reviewed TXT-I5": "a reviewed design (the remedy), not the pin: a passing reviewed model does not show that the product's statement holds; it is reported at model level in the matrix (3.3-model-check)",
+  "b-mc-m07-bm25-reviewed TXT-X2": "a reviewed design (the remedy), not the pin: a passing reviewed model does not show that the product's statement holds; it is reported at model level in the matrix (3.3-model-check)",
+  "b-mc-m07-leg-reviewed TXT-B8.3": "a reviewed design (the remedy), not the pin: a passing reviewed model does not show that the product's statement holds; it is reported at model level in the matrix (3.3-model-check)",
+  "b-mc-m07-leg-reviewed TXT-I7": "a reviewed design (the remedy), not the pin: a passing reviewed model does not show that the product's statement holds; it is reported at model level in the matrix (3.3-model-check)",
+  "b-mc-m08-readonly-reviewed CYP-I8.6": "a reviewed design (the remedy), not the pin: a passing reviewed model does not show that the product's statement holds; it is reported at model level in the matrix (3.3-model-check)",
+  "b-mc-m08-scope-reviewed CYP-I4.14": "a reviewed design (the remedy), not the pin: a passing reviewed model does not show that the product's statement holds; it is reported at model level in the matrix (3.3-model-check)",
+  "b-mc-m08-scope-reviewed CYP-I5.5": "a reviewed design (the remedy), not the pin: a passing reviewed model does not show that the product's statement holds; it is reported at model level in the matrix (3.3-model-check)",
+  "b-mc-m08-scope-reviewed CYP-I5.6": "a reviewed design (the remedy), not the pin: a passing reviewed model does not show that the product's statement holds; it is reported at model level in the matrix (3.3-model-check)",
+  "b-mc-m08-scope-reviewed SYS-I2": "a reviewed design (the remedy), not the pin: a passing reviewed model does not show that the product's statement holds; it is reported at model level in the matrix (3.3-model-check)",
+  "b-mc-m08-txn-reviewed CYP-B6.7.7": "a reviewed design (the remedy), not the pin: a passing reviewed model does not show that the product's statement holds; it is reported at model level in the matrix (3.3-model-check)",
+  "b-mc-m08-txn-reviewed CYP-I6.3": "a reviewed design (the remedy), not the pin: a passing reviewed model does not show that the product's statement holds; it is reported at model level in the matrix (3.3-model-check)",
+  "b-mc-m08-txn-reviewed CYP-I6.4": "a reviewed design (the remedy), not the pin: a passing reviewed model does not show that the product's statement holds; it is reported at model level in the matrix (3.3-model-check)",
+  "b-mc-m08-txn-reviewed CYP-X6.5": "a reviewed design (the remedy), not the pin: a passing reviewed model does not show that the product's statement holds; it is reported at model level in the matrix (3.3-model-check)",
+  "b-mc-m09-mode-reviewed NAT-B5.2": "a reviewed design (the remedy), not the pin: a passing reviewed model does not show that the product's statement holds; it is reported at model level in the matrix (3.3-model-check)",
+  "b-mc-m09-mode-reviewed NAT-X11": "a reviewed design (the remedy), not the pin: a passing reviewed model does not show that the product's statement holds; it is reported at model level in the matrix (3.3-model-check)",
+  "b-mc-m09-mode-reviewed NAT-X12": "a reviewed design (the remedy), not the pin: a passing reviewed model does not show that the product's statement holds; it is reported at model level in the matrix (3.3-model-check)",
+  "b-mc-m09-planc-as-built-single-pass NAT-I3": "one plan shape only; the statement is contradicted when two shapes collide (F-0901, F-C0901)",
+  "b-mc-m09-planc-as-built-single-pass NAT-I5": "no DropAll in the run; the statement is contradicted when a DropAll races a build (F-0905)",
+  "b-mc-m09-planc-reviewed NAT-I3": "a reviewed design (the remedy), not the pin: a passing reviewed model does not show that the product's statement holds; it is reported at model level in the matrix (3.3-model-check)",
+  "b-mc-m09-planc-reviewed NAT-I5": "a reviewed design (the remedy), not the pin: a passing reviewed model does not show that the product's statement holds; it is reported at model level in the matrix (3.3-model-check)",
+  "b-mc-m09-planc-reviewed NAT-T5.16": "a reviewed design (the remedy), not the pin: a passing reviewed model does not show that the product's statement holds; it is reported at model level in the matrix (3.3-model-check)",
+  "b-mc-m10-cache-as-built-pagerank ALG-I4": "the general cache rule; the run covers global PageRank only, and F-1004 contradicts the rule for personalized PageRank",
+  "b-mc-m10-cache-reviewed-pagerank ALG-B16.2": "a reviewed design (the remedy), not the pin: a passing reviewed model does not show that the product's statement holds; it is reported at model level in the matrix (3.3-model-check)",
+  "b-mc-m10-cache-reviewed-pagerank ALG-I4": "a reviewed design (the remedy), not the pin: a passing reviewed model does not show that the product's statement holds; it is reported at model level in the matrix (3.3-model-check)",
+  "b-mc-m10-cache-reviewed-ppr ALG-B16.11": "a reviewed design (the remedy), not the pin: a passing reviewed model does not show that the product's statement holds; it is reported at model level in the matrix (3.3-model-check)",
+  "b-mc-m10-cache-reviewed-ppr ALG-B2.19": "a reviewed design (the remedy), not the pin: a passing reviewed model does not show that the product's statement holds; it is reported at model level in the matrix (3.3-model-check)",
+  "b-mc-m10-cache-reviewed-ppr ALG-I4": "a reviewed design (the remedy), not the pin: a passing reviewed model does not show that the product's statement holds; it is reported at model level in the matrix (3.3-model-check)",
+  "b-mc-m10-nkg-reviewed ALG-B12.7": "a reviewed design (the remedy), not the pin: a passing reviewed model does not show that the product's statement holds; it is reported at model level in the matrix (3.3-model-check)",
+  "b-mc-m10-nkg-reviewed ALG-I3": "a reviewed design (the remedy), not the pin: a passing reviewed model does not show that the product's statement holds; it is reported at model level in the matrix (3.3-model-check)",
+  "b-mc-m10-routes-reviewed ALG-I1": "a reviewed design (the remedy), not the pin: a passing reviewed model does not show that the product's statement holds; it is reported at model level in the matrix (3.3-model-check)",
+  "b-mc-m10-routes-reviewed ALG-I3": "a reviewed design (the remedy), not the pin: a passing reviewed model does not show that the product's statement holds; it is reported at model level in the matrix (3.3-model-check)",
+  "b-mc-m10-walk-reviewed ALG-I2": "a reviewed design (the remedy), not the pin: a passing reviewed model does not show that the product's statement holds; it is reported at model level in the matrix (3.3-model-check)",
+  "b-mc-m10-walk-reviewed ALG-I3": "a reviewed design (the remedy), not the pin: a passing reviewed model does not show that the product's statement holds; it is reported at model level in the matrix (3.3-model-check)",
+  "b-mc-m11-adopt-reviewed LED-B1.20": "a reviewed design (the remedy), not the pin: a passing reviewed model does not show that the product's statement holds; it is reported at model level in the matrix (3.3-model-check)",
+  "b-mc-m11-enable-reviewed LED-B1.12": "a reviewed design (the remedy), not the pin: a passing reviewed model does not show that the product's statement holds; it is reported at model level in the matrix (3.3-model-check)",
+  "b-mc-m11-enable-reviewed LED-B1.7": "a reviewed design (the remedy), not the pin: a passing reviewed model does not show that the product's statement holds; it is reported at model level in the matrix (3.3-model-check)",
+  "b-mc-m11-stats-reviewed LED-B13.4": "a reviewed design (the remedy), not the pin: a passing reviewed model does not show that the product's statement holds; it is reported at model level in the matrix (3.3-model-check)",
   "cmc-register-as-built-links SYS-I3": "a universal axiom; one command's model does not establish it (a finding can refute it, a confirming model cannot prove it)",
   "cmc-register-reviewed SYS-I3": "a universal axiom; one command's reviewed model does not establish it",
   "cmc-restore-reviewed SNP-B3.7": "the statement describes as-built behaviour (a restore puts redacted content back) that the reviewed model forbids",
@@ -390,6 +565,9 @@
   "TXT-D1b"
  ],
  "runs": {
+  "ALG-B1.12": [
+   "mc:C-b-mc-m10-cache-as-built-pagerank"
+  ],
   "ALG-B1.5": [
    "live:C-b-10-live-refusals"
   ],
@@ -433,13 +611,16 @@
    "live:C-b-10-live-refusals"
   ],
   "CYP-I6.3": [
-   "live:C-b-08-live-footprints"
+   "live:C-b-08-live-footprints",
+   "mc:C-b-mc-m08-txn-as-built-atomic"
   ],
   "CYP-I6.4": [
-   "live:C-b-08-live-footprints"
+   "live:C-b-08-live-footprints",
+   "mc:C-b-mc-m08-txn-as-built-atomic"
   ],
   "CYP-X6.5": [
-   "live:C-b-08-live-footprints"
+   "live:C-b-08-live-footprints",
+   "mc:C-b-mc-m08-txn-as-built-atomic"
   ],
   "ERS-I1": [
    "live:C-live-erase-vs-commit-fk"
@@ -529,6 +710,30 @@
   "INT-V1.4": [
    "live:C-c15-live-refusals"
   ],
+  "LED-B1.7": [
+   "mc:C-b-mc-m11-enable-as-built-consistency"
+  ],
+  "LED-B4.11.2": [
+   "mc:C-b-mc-m11-commit-as-built"
+  ],
+  "LED-B4.3": [
+   "mc:C-b-mc-m11-commit-as-built"
+  ],
+  "LED-B4.7.5": [
+   "mc:C-b-mc-m11-commit-as-built"
+  ],
+  "LED-B9.4": [
+   "mc:C-b-mc-m11-commit-as-built"
+  ],
+  "NAT-B5.2": [
+   "mc:C-b-mc-m09-mode-as-built-X11-B52"
+  ],
+  "NAT-T5.16": [
+   "mc:C-b-mc-m09-planc-as-built-single-pass"
+  ],
+  "NAT-X11": [
+   "mc:C-b-mc-m09-mode-as-built-X11-B52"
+  ],
   "RED-I1": [
    "mc:C-core-m1-as-built-isolation-stmt-a",
    "mc:C-core-m1-as-built-isolation-stmt-b",
@@ -566,21 +771,31 @@
   "F-C0101": "its intended text names no statement",
   "F-C0301": "its intended text names no statement",
   "F-C0302": "its intended text names no statement",
-  "F-C0402": "its intended text names no statement",
   "F-C0501": "its intended text names no statement",
   "F-C0601": "its intended text names no statement",
   "F-C0602": "its intended text names no statement",
   "F-C0603": "its intended text names no statement",
   "F-C0604": "its intended text names no statement",
   "F-C0605": "its intended text names no statement",
+  "F-C0606": "its intended text names no statement",
+  "F-C0703": "its intended text names no statement",
   "F-C0801": "every statement it names was rejected (FINDING_REJECT)",
+  "F-C0802": "its intended text names no statement",
+  "F-C0803": "every statement it names was rejected (FINDING_REJECT)",
+  "F-C1002": "its intended text names no statement",
+  "F-C1106": "its intended text names no statement",
+  "F-C1107": "its intended text names no statement",
+  "F-C1109": "its intended text names no statement",
+  "F-C1110": "its intended text names no statement",
   "F-C1202": "every statement it names was rejected (FINDING_REJECT)",
+  "F-C1204": "its intended text names no statement",
   "F-C1302": "its intended text names no statement",
   "F-C1601": "every statement it names was rejected (FINDING_REJECT)",
   "F-C1604": "its intended text names no statement",
   "F-C1701": "its intended text names no statement",
   "F-C1703": "its intended text names no statement",
   "F-C1704": "its intended text names no statement",
+  "F-C1705": "its intended text names no statement",
   "F-C1801": "every statement it names was rejected (FINDING_REJECT)",
   "F-C1803": "its intended text names no statement"
  }

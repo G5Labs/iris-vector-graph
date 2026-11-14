@@ -6,7 +6,8 @@
    "module": "product",
    "status": "closed",
    "evidence": [
-    "run:ontology-check-final"
+    "run:ontology-check-final",
+    "run:rr2-ontology-check"
    ]
   },
   {
@@ -14,7 +15,8 @@
    "module": "product",
    "status": "closed",
    "evidence": [
-    "run:ontology-check-final"
+    "run:ontology-check-final",
+    "run:rr2-ontology-check"
    ]
   },
   {
@@ -24,7 +26,10 @@
    "evidence": [
     "run:ontology-check-final",
     "run:ontology-self-test",
-    "run:ontology-independent-recheck"
+    "run:ontology-independent-recheck",
+    "run:rr2-ontology-check",
+    "run:rr2-ontology-self-test",
+    "run:rr2-ontology-independent-recheck"
    ],
    "remaining": "system-module terms are not checked across modules (literal rule is per module glossary); maintainer question"
   },
@@ -33,7 +38,8 @@
    "module": "product",
    "status": "closed",
    "evidence": [
-    "run:ontology-check-final"
+    "run:ontology-check-final",
+    "run:rr2-ontology-check"
    ]
   },
   {
@@ -84,14 +90,25 @@
    "status": "closed",
    "evidence": [
     "run:core-proofs-baseline",
-    "run:core-proofs-recheck-baseline"
+    "run:core-proofs-recheck-baseline",
+    "run:core-proofs-f1302-unlocked-start",
+    "run:core-proofs-f1303-other-marker",
+    "run:core-proofs-f1201-erase-unlocked",
+    "run:core-proofs-f1306-replay-reapplies"
    ],
-   "remaining": "model-level: participant contracts composed with actors Protocol2 in two levels; no code correspondence (see 3.5-handlers); premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
-   "level": "reviewed model",
+   "remaining": "model-level: participant contracts composed with actors Protocol2 in two levels; no code correspondence (see 3.5-handlers); premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested; as built: the four located controls encode the pin's behaviour (F-1302, F-1303, F-1306; F-1201 intent-undecided) and each has a proved counterexample, and the premises above are violated by reproduced findings, so the product obligation fails [review-response R2-01]",
+   "level": "model",
    "premises_refuted_at_pin": [
     "no-bypass-writes",
     "single-target-predicate",
     "erasure-never-rolls-back"
+   ],
+   "level_detail": "reviewed model",
+   "as_built_findings": [
+    "F-C1301",
+    "F-1304",
+    "F-1305",
+    "F-C1201"
    ]
   },
   {
@@ -103,12 +120,13 @@
     "run:core-proofs-recheck-progress_rewind"
    ],
    "remaining": "progress premises not discharged against IRIS scheduling; premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
-   "level": "reviewed model",
+   "level": "model",
    "premises_refuted_at_pin": [
     "no-bypass-writes",
     "single-target-predicate",
     "erasure-never-rolls-back"
-   ]
+   ],
+   "level_detail": "reviewed model"
   },
   {
    "gate": "3.3-cost",
@@ -117,7 +135,9 @@
    "evidence": [
     "run:core-proofs-baseline",
     "run:core-proofs-recheck-baseline"
-   ]
+   ],
+   "level": "method",
+   "level_detail": "proof cost per crate: a property of the verification, not of the product"
   },
   {
    "gate": "3.3a-axioms",
@@ -150,11 +170,17 @@
     "run:trace-conformance-ledger"
    ],
    "remaining": "replay-equals-store contract proved for the reviewed model; as-built fails (F-1304/F-1305/F-1306); premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
-   "level": "reviewed model",
+   "level": "model",
    "premises_refuted_at_pin": [
     "no-bypass-writes",
     "single-target-predicate",
     "erasure-never-rolls-back"
+   ],
+   "level_detail": "reviewed model",
+   "as_built_findings": [
+    "F-1304",
+    "F-1305",
+    "F-1306"
    ]
   },
   {
@@ -193,8 +219,11 @@
    "gate": "3.6-closure",
    "module": "product",
    "status": "open",
-   "evidence": [],
-   "remaining": "condition list not written"
+   "evidence": [
+    "run:corr-closure-scan",
+    "run:followup-writer-census"
+   ],
+   "remaining": "condition list not written. Ledger-state writers outside any modelled action, reconciled (review R2-04): corr-closure-scan finds 1 of 44 literal-name sites (restore_snapshot, snapshot.py:403; F-1801); followup-writer-census lists 8 ledger writers outside the ledger classes, of which it agrees on 4 (EraseAll, EraseEdgeRow, EraseLedgerFor: erasure owner actions without the head lock, F-1114; restore via _import_global_from_ndjson, snapshot.py:1679, the same writer as the scan's snapshot.py:403) and adds 4 the scan does not see because they use run-time names or a client surface: Snapshot.ImportGlobals (Snapshot.cls:31, $System.OBJ.Load), Snapshot.SetNodeJSON (Snapshot.cls:90, Set @ indirection), legacy.copy_ledger_history (legacy.py:642; F-C1306) and the SQL INSERT surface of Graph_KG.ledger_revisions (the triggers cover UPDATE and DELETE only). So 5 ledger writers lie outside every modelled action, not 1 (erratum for corr-closure-scan in evidence/errata.json)"
   },
   {
    "gate": "3.7-explorers",
@@ -211,9 +240,11 @@
    "status": "open",
    "evidence": [
     "run:live-lost-ack-commit",
-    "run:live-native-rerun-1314"
+    "run:live-native-rerun-1314",
+    "run:live-crash-world-r2",
+    "run:env-synchcommit-setting"
    ],
-   "remaining": "instance crash world pending (needs a container restart with all lanes quiet)"
+   "remaining": "lost-ack world (6/6 exactly once) and native rerun ran; the instance crash world ran once per world (live-crash-world-r2: in-flight commit all-or-nothing; an acknowledged commit lost with SynchCommit=0, env-synchcommit-setting; F-C1102 intent-undecided); SynchCommit=1, repeated trials and multi-node worlds not run"
   },
   {
    "gate": "3.7-differential",
@@ -244,14 +275,14 @@
    "module": "product",
    "status": "open",
    "evidence": [],
-   "remaining": "STATUS.md pending"
+   "remaining": "STATUS.md written; open until the account is signed off (review/REVIEW-2.md: no sign-off)"
   },
   {
    "gate": "3.8-trust",
    "module": "product",
    "status": "open",
    "evidence": [],
-   "remaining": "trust inventory pending"
+   "remaining": "TRUST.md written (trust inventory empty for the proof crates; premise table completed for P-C02 progress, durability/SynchCommit and P-A3 after review R2-04/R2-06); open until signed off"
   },
   {
    "gate": "3.8-test-reflection",
@@ -265,9 +296,10 @@
    "module": "product",
    "status": "open",
    "evidence": [
-    "run:independent-review-1"
+    "run:independent-review-1",
+    "run:independent-review-2"
    ],
-   "remaining": "no sign-off; conditions in review/REVIEW.md"
+   "remaining": "no sign-off in either pass (review/REVIEW.md, review/REVIEW-2.md section 5); response to conditions 1-5 and 7 in review/RESPONSE-2.md; condition 6 needs an operator ruling, condition 8 the pending runs"
   },
   {
    "gate": "5-trust-strict",
@@ -313,7 +345,7 @@
    "module": "product",
    "status": "open",
    "evidence": [],
-   "remaining": "proof-debt list pending"
+   "remaining": "PROOF-DEBT.md written (D-1..D-13); open: the debt is not paid"
   },
   {
    "gate": "5a-gate-20min",
@@ -352,12 +384,13 @@
   {
    "gate": "5c-reviewers",
    "module": "product",
-   "status": "closed",
+   "status": "open",
    "evidence": [
     "run:independent-review-1",
-    "run:env-contract-r2"
+    "run:env-contract-r2",
+    "run:independent-review-2"
    ],
-   "remaining": "mechanical audit, adversarial review and randomized differential ran; a randomized simulator through the real product with global invariants after every commit was not run"
+   "remaining": "open: the mechanical audit, the adversarial review (independent-review-1, independent-review-2: no sign-off) and the randomized differential of the IRIS contract (env-contract-r2) ran; the third reviewer of playbook §5c, a randomized simulator through the real product checking global invariants after every commit, was not run. Not recorded as not-applicable: no source makes it inapplicable to IVG, whose ledger and redaction are exactly the stateful, concurrent code it targets [review-response R2-04]"
   },
   {
    "gate": "3.1-cells",
@@ -397,12 +430,19 @@
     "run:core-proofs-baseline",
     "run:core-proofs-recheck-baseline"
    ],
-   "level": "reviewed model",
+   "level": "model",
    "remaining": "premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
    "premises_refuted_at_pin": [
     "no-bypass-writes",
     "single-target-predicate",
     "erasure-never-rolls-back"
+   ],
+   "level_detail": "reviewed model",
+   "as_built_findings": [
+    "F-C1301",
+    "F-1304",
+    "F-1305",
+    "F-C1201"
    ]
   },
   {
@@ -412,12 +452,19 @@
    "evidence": [
     "run:core-refine-m2-reviewed"
    ],
-   "level": "reviewed model",
+   "level": "model",
    "remaining": "premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
    "premises_refuted_at_pin": [
     "no-bypass-writes",
     "single-target-predicate",
     "erasure-never-rolls-back"
+   ],
+   "level_detail": "reviewed model",
+   "as_built_findings": [
+    "F-C1301",
+    "F-1304",
+    "F-1305",
+    "F-C1201"
    ]
   },
   {
@@ -427,14 +474,22 @@
    "evidence": [
     "run:core-refine-m2-reviewed",
     "run:core-proofs-baseline",
-    "run:core-proofs-recheck-baseline"
+    "run:core-proofs-recheck-baseline",
+    "run:core-refine-m2-as-built"
    ],
    "remaining": "model to model; as-built fails refinement (core-refine-m2-as-built); premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
-   "level": "reviewed model",
+   "level": "model",
    "premises_refuted_at_pin": [
     "no-bypass-writes",
     "single-target-predicate",
     "erasure-never-rolls-back"
+   ],
+   "level_detail": "reviewed model",
+   "as_built_findings": [
+    "F-C1301",
+    "F-1304",
+    "F-1305",
+    "F-C1201"
    ]
   },
   {
@@ -455,18 +510,20 @@
     "run:live-f1201-reproduced",
     "run:live-native-rerun-1314"
    ],
-   "remaining": "as-built violates; reviewed model passes",
-   "product_obligation": "fails"
+   "remaining": "as-built violates; reviewed model passes"
   },
   {
    "gate": "3.3a-writesets",
    "module": "12",
    "status": "open",
    "evidence": [
-    "run:writer-census"
+    "run:writer-census",
+    "run:followup-writer-census"
    ],
-   "remaining": "100 new (invariant, writer) obligations; INV-no-live-tombstone fails with non-serializing bypass writers (F-C1301)",
-   "product_obligation": "fails"
+   "remaining": "corrected census (followup-writer-census, superseding writer-census's 100): 162 (invariant, writer) obligations, 20 conditional obligations and 3 write-set gaps, each an open cell of this gate in the writer's module (matrix-input/writer-census-obligations.json; 01: 29, 03: 28, 04: 20, 05: 16, 06: 15, 11: 1, 12: 4, 15: 28, 17: 21, 18: 23; module 12: 4); INV-no-live-tombstone fails with non-serializing bypass writers (F-C1301) [review-response R2-02]",
+   "as_built_findings": [
+    "F-C1301"
+   ]
   },
   {
    "gate": "3.4-statements",
@@ -571,7 +628,9 @@
     "run:live-native-rerun-1314"
    ],
    "remaining": "RED-X2 refusal not implemented (F-1304)",
-   "product_obligation": "fails"
+   "as_built_findings": [
+    "F-1304"
+   ]
   },
   {
    "gate": "3.1-cells",
@@ -611,12 +670,19 @@
     "run:core-proofs-baseline",
     "run:core-proofs-recheck-baseline"
    ],
-   "level": "reviewed model",
+   "level": "model",
    "remaining": "premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
    "premises_refuted_at_pin": [
     "no-bypass-writes",
     "single-target-predicate",
     "erasure-never-rolls-back"
+   ],
+   "level_detail": "reviewed model",
+   "as_built_findings": [
+    "F-C1301",
+    "F-1304",
+    "F-1305",
+    "F-C1201"
    ]
   },
   {
@@ -626,12 +692,19 @@
    "evidence": [
     "run:core-refine-m2-reviewed"
    ],
-   "level": "reviewed model",
+   "level": "model",
    "remaining": "premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
    "premises_refuted_at_pin": [
     "no-bypass-writes",
     "single-target-predicate",
     "erasure-never-rolls-back"
+   ],
+   "level_detail": "reviewed model",
+   "as_built_findings": [
+    "F-C1301",
+    "F-1304",
+    "F-1305",
+    "F-C1201"
    ]
   },
   {
@@ -641,14 +714,22 @@
    "evidence": [
     "run:core-refine-m2-reviewed",
     "run:core-proofs-baseline",
-    "run:core-proofs-recheck-baseline"
+    "run:core-proofs-recheck-baseline",
+    "run:core-refine-m2-as-built"
    ],
    "remaining": "model to model; as-built fails refinement (core-refine-m2-as-built); premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
-   "level": "reviewed model",
+   "level": "model",
    "premises_refuted_at_pin": [
     "no-bypass-writes",
     "single-target-predicate",
     "erasure-never-rolls-back"
+   ],
+   "level_detail": "reviewed model",
+   "as_built_findings": [
+    "F-C1301",
+    "F-1304",
+    "F-1305",
+    "F-C1201"
    ]
   },
   {
@@ -669,18 +750,20 @@
     "run:live-f1201-reproduced",
     "run:live-native-rerun-1314"
    ],
-   "remaining": "as-built violates; reviewed model passes",
-   "product_obligation": "fails"
+   "remaining": "as-built violates; reviewed model passes"
   },
   {
    "gate": "3.3a-writesets",
    "module": "13",
    "status": "open",
    "evidence": [
-    "run:writer-census"
+    "run:writer-census",
+    "run:followup-writer-census"
    ],
-   "remaining": "100 new (invariant, writer) obligations; INV-no-live-tombstone fails with non-serializing bypass writers (F-C1301)",
-   "product_obligation": "fails"
+   "remaining": "corrected census (followup-writer-census, superseding writer-census's 100): 162 (invariant, writer) obligations, 20 conditional obligations and 3 write-set gaps, each an open cell of this gate in the writer's module (matrix-input/writer-census-obligations.json; 01: 29, 03: 28, 04: 20, 05: 16, 06: 15, 11: 1, 12: 4, 15: 28, 17: 21, 18: 23; module 13: 0); INV-no-live-tombstone fails with non-serializing bypass writers (F-C1301) [review-response R2-02]",
+   "as_built_findings": [
+    "F-C1301"
+   ]
   },
   {
    "gate": "3.4-statements",
@@ -785,7 +868,9 @@
     "run:live-native-rerun-1314"
    ],
    "remaining": "RED-X2 refusal not implemented (F-1304)",
-   "product_obligation": "fails"
+   "as_built_findings": [
+    "F-1304"
+   ]
   },
   {
    "gate": "3.1-cells",
@@ -825,12 +910,19 @@
     "run:core-proofs-baseline",
     "run:core-proofs-recheck-baseline"
    ],
-   "level": "reviewed model",
+   "level": "model",
    "remaining": "premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
    "premises_refuted_at_pin": [
     "no-bypass-writes",
     "single-target-predicate",
     "erasure-never-rolls-back"
+   ],
+   "level_detail": "reviewed model",
+   "as_built_findings": [
+    "F-C1301",
+    "F-1304",
+    "F-1305",
+    "F-C1201"
    ]
   },
   {
@@ -840,12 +932,19 @@
    "evidence": [
     "run:core-refine-m2-reviewed"
    ],
-   "level": "reviewed model",
+   "level": "model",
    "remaining": "premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
    "premises_refuted_at_pin": [
     "no-bypass-writes",
     "single-target-predicate",
     "erasure-never-rolls-back"
+   ],
+   "level_detail": "reviewed model",
+   "as_built_findings": [
+    "F-C1301",
+    "F-1304",
+    "F-1305",
+    "F-C1201"
    ]
   },
   {
@@ -855,14 +954,22 @@
    "evidence": [
     "run:core-refine-m2-reviewed",
     "run:core-proofs-baseline",
-    "run:core-proofs-recheck-baseline"
+    "run:core-proofs-recheck-baseline",
+    "run:core-refine-m2-as-built"
    ],
    "remaining": "model to model; as-built fails refinement (core-refine-m2-as-built); premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
-   "level": "reviewed model",
+   "level": "model",
    "premises_refuted_at_pin": [
     "no-bypass-writes",
     "single-target-predicate",
     "erasure-never-rolls-back"
+   ],
+   "level_detail": "reviewed model",
+   "as_built_findings": [
+    "F-C1301",
+    "F-1304",
+    "F-1305",
+    "F-C1201"
    ]
   },
   {
@@ -883,18 +990,20 @@
     "run:live-f1201-reproduced",
     "run:live-native-rerun-1314"
    ],
-   "remaining": "as-built violates; reviewed model passes",
-   "product_obligation": "fails"
+   "remaining": "as-built violates; reviewed model passes"
   },
   {
    "gate": "3.3a-writesets",
    "module": "14",
    "status": "open",
    "evidence": [
-    "run:writer-census"
+    "run:writer-census",
+    "run:followup-writer-census"
    ],
-   "remaining": "100 new (invariant, writer) obligations; INV-no-live-tombstone fails with non-serializing bypass writers (F-C1301)",
-   "product_obligation": "fails"
+   "remaining": "corrected census (followup-writer-census, superseding writer-census's 100): 162 (invariant, writer) obligations, 20 conditional obligations and 3 write-set gaps, each an open cell of this gate in the writer's module (matrix-input/writer-census-obligations.json; 01: 29, 03: 28, 04: 20, 05: 16, 06: 15, 11: 1, 12: 4, 15: 28, 17: 21, 18: 23; module 14: 0); INV-no-live-tombstone fails with non-serializing bypass writers (F-C1301) [review-response R2-02]",
+   "as_built_findings": [
+    "F-C1301"
+   ]
   },
   {
    "gate": "3.4-statements",
@@ -999,7 +1108,9 @@
     "run:live-native-rerun-1314"
    ],
    "remaining": "RED-X2 refusal not implemented (F-1304)",
-   "product_obligation": "fails"
+   "as_built_findings": [
+    "F-1304"
+   ]
   },
   {
    "gate": "3.3-L1",
@@ -1009,7 +1120,12 @@
     "run:proofs-breadth-baseline"
    ],
    "level": "model",
-   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence"
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence; as built: the module-04 controls encode the pin's behaviour and each has a proved counterexample (F-C0401, reproduced in the model; F-0401/HD-0401 and F-C0402 intent-undecided), so the product obligation fails; the violated premises also include P-A3 (an eraser of g overlaps no writer of g: F-1201's live interleaving, F-C1202 in the core model; review R2-06), recorded in TRUST.md [review-response R2-01]",
+   "as_built_findings": [
+    "F-C0401",
+    "F-0401",
+    "F-C0402"
+   ]
   },
   {
    "gate": "3.3-L2",
@@ -1019,7 +1135,12 @@
     "run:proofs-breadth-baseline"
    ],
    "level": "model",
-   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence"
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence; as built: the module-04 controls encode the pin's behaviour and each has a proved counterexample (F-C0401, reproduced in the model; F-0401/HD-0401 and F-C0402 intent-undecided), so the product obligation fails; the violated premises also include P-A3 (an eraser of g overlaps no writer of g: F-1201's live interleaving, F-C1202 in the core model; review R2-06), recorded in TRUST.md [review-response R2-01]",
+   "as_built_findings": [
+    "F-C0401",
+    "F-0401",
+    "F-C0402"
+   ]
   },
   {
    "gate": "3.3-refinement",
@@ -1030,23 +1151,29 @@
     "run:proofs-breadth-recheck"
    ],
    "level": "model",
-   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence"
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence; as built: the module-04 controls encode the pin's behaviour and each has a proved counterexample (F-C0401, reproduced in the model; F-0401/HD-0401 and F-C0402 intent-undecided), so the product obligation fails; the violated premises also include P-A3 (an eraser of g overlaps no writer of g: F-1201's live interleaving, F-C1202 in the core model; review R2-06), recorded in TRUST.md [review-response R2-01]",
+   "as_built_findings": [
+    "F-C0401",
+    "F-0401",
+    "F-C0402"
+   ]
   },
   {
    "gate": "3.3-controls",
    "module": "04",
    "status": "closed",
    "evidence": [
-    "run:proofs-breadth-f0801-fail-open",
-    "run:proofs-breadth-hd0401-erase-kills-gen",
-    "run:proofs-breadth-fc1101-stats-whole-row",
     "run:proofs-breadth-fc0401-write-before-gen",
-    "run:proofs-breadth-f1108-unguarded-bulk-delete",
-    "run:proofs-breadth-hd0401-rebuild-kills-gen",
-    "run:proofs-breadth-f0801-ttl-cache"
+    "run:proofs-breadth-hd0401-erase-kills-gen",
+    "run:proofs-breadth-hd0401-rebuild-kills-gen"
    ],
    "level": "model",
-   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence"
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence; as built: the module-04 controls encode the pin's behaviour and each has a proved counterexample (F-C0401, reproduced in the model; F-0401/HD-0401 and F-C0402 intent-undecided), so the product obligation fails; the violated premises also include P-A3 (an eraser of g overlaps no writer of g: F-1201's live interleaving, F-C1202 in the core model; review R2-06), recorded in TRUST.md [review-response R2-01]",
+   "as_built_findings": [
+    "F-C0401",
+    "F-0401",
+    "F-C0402"
+   ]
   },
   {
    "gate": "3.3-L1",
@@ -1056,7 +1183,12 @@
     "run:proofs-breadth-baseline"
    ],
    "level": "model",
-   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence"
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence; as built: the module-11 controls encode the pin's behaviour and each has a proved counterexample, and F-0801, F-1108 and F-C1101 are reproduced live, so the product obligation fails [review-response R2-01]",
+   "as_built_findings": [
+    "F-0801",
+    "F-1108",
+    "F-C1101"
+   ]
   },
   {
    "gate": "3.3-L2",
@@ -1066,7 +1198,12 @@
     "run:proofs-breadth-baseline"
    ],
    "level": "model",
-   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence"
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence; as built: the module-11 controls encode the pin's behaviour and each has a proved counterexample, and F-0801, F-1108 and F-C1101 are reproduced live, so the product obligation fails [review-response R2-01]",
+   "as_built_findings": [
+    "F-0801",
+    "F-1108",
+    "F-C1101"
+   ]
   },
   {
    "gate": "3.3-refinement",
@@ -1077,23 +1214,30 @@
     "run:proofs-breadth-recheck"
    ],
    "level": "model",
-   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence"
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence; as built: the module-11 controls encode the pin's behaviour and each has a proved counterexample, and F-0801, F-1108 and F-C1101 are reproduced live, so the product obligation fails [review-response R2-01]",
+   "as_built_findings": [
+    "F-0801",
+    "F-1108",
+    "F-C1101"
+   ]
   },
   {
    "gate": "3.3-controls",
    "module": "11",
    "status": "closed",
    "evidence": [
+    "run:proofs-breadth-f0801-ttl-cache",
     "run:proofs-breadth-f0801-fail-open",
-    "run:proofs-breadth-hd0401-erase-kills-gen",
-    "run:proofs-breadth-fc1101-stats-whole-row",
-    "run:proofs-breadth-fc0401-write-before-gen",
     "run:proofs-breadth-f1108-unguarded-bulk-delete",
-    "run:proofs-breadth-hd0401-rebuild-kills-gen",
-    "run:proofs-breadth-f0801-ttl-cache"
+    "run:proofs-breadth-fc1101-stats-whole-row"
    ],
    "level": "model",
-   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence"
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence; as built: the module-11 controls encode the pin's behaviour and each has a proved counterexample, and F-0801, F-1108 and F-C1101 are reproduced live, so the product obligation fails [review-response R2-01]",
+   "as_built_findings": [
+    "F-0801",
+    "F-1108",
+    "F-C1101"
+   ]
   },
   {
    "gate": "3.2-coverage",
