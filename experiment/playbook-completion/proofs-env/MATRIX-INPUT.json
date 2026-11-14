@@ -1,0 +1,95 @@
+{
+ "lane": "proofs-env",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "cells": [
+  {
+   "gate": "3.2-library",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-env-baseline",
+    "run:proofs-env-differential-r3",
+    "run:proofs-env-mutants-r3",
+    "run:env-dml-single",
+    "run:env-estop-gap",
+    "run:proofs-env-differential-r2",
+    "run:proofs-env-mutants-r2",
+    "run:proofs-env-differential",
+    "run:proofs-env-mutants",
+    "run:proofs-env-recheck-baseline",
+    "run:proofs-env-recheck-differential",
+    "experiment/playbook-completion/proofs-env/PROOFS.md",
+    "experiment/playbook-completion/proofs-env/src/spec.rs",
+    "experiment/playbook-completion/proofs-env/src/exec.rs",
+    "experiment/playbook-completion/proofs-env/RESULTS.json"
+   ],
+   "evidence_grade": "proved (model: the contract's Verus subset and its exec model, 305 verified, --no-cheating, trust empty) + registered-run (differential, no IRIS)",
+   "level": "model",
+   "product_obligation": "n/a",
+   "product_basis": "supplement to the existing iris-contract library: its clauses the proof crates rely on are now a reusable Verus specification (spec.rs) with the contract's permitted-outcome structure, and an exec model verified against it agrees with iris-contract / contract-2 on every recorded case in the subset (1,191 recorded cases of rounds r2, r4, r5, r6, estop-gap, dml-single, contract-2 e1-r2 and x2-r1, named schedules repeating across rounds with fresh observations; r2 and r6 also against contract-2's binary), 0 disagreements, 0 observations outside",
+   "as_built_findings": [],
+   "remaining": "Verus subset excludes the r6 extension clauses (X-FX, X-NOINDEX, X-DDL, X-NULL, INSERT ... SELECT, X-ORDER, X-STAR, X-TLEVEL-SQL, X-VEC, X-ZSTRIP), contract-2's E-1 and X2 (executable evidence only). Verus-model mutants: all 29 killed (proofs-env-mutants-r3), after the orchestrator's targeted rounds env-estop-gap (E-STOP's every-level reading) and env-dml-single (single-row autocommit-off DML); the probe freedom-waits-only stays alive by design (the Freedom's proceeding branch is unobserved)"
+  },
+  {
+   "gate": "3.6-closure",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-env-mutants-r3",
+    "run:proofs-env-premise-map-r2",
+    "run:env-estop-gap",
+    "run:proofs-env-mutants-r2",
+    "run:proofs-env-premise-map",
+    "run:proofs-env-baseline",
+    "run:proofs-env-ctl-unlock-immediate",
+    "run:proofs-env-ctl-stop-commits",
+    "run:proofs-env-ctl-stop-top-level-only",
+    "run:proofs-env-ctl-kill-not-logged",
+    "run:proofs-env-ctl-dml-ignores-row-locks",
+    "run:proofs-env-ctl-row-lock-statement-only",
+    "run:proofs-env-ctl-insert-dup-waits",
+    "run:proofs-env-ctl-freedom-wait-only",
+    "run:proofs-env-ctl-no-dirty-reads",
+    "run:proofs-env-ctl-select-committed-only",
+    "run:proofs-env-ctl-rollback-physical",
+    "run:proofs-env-ctl-incr-rolled-back",
+    "run:proofs-env-ctl-rollback-one-undoes-all",
+    "run:proofs-env-ctl-sql-commit-ends-all",
+    "run:proofs-env-ctl-lock-wait-never-granted",
+    "run:proofs-env-ctl-flat-lock-names",
+    "run:proofs-env-ctl-shared-conflicts-shared",
+    "run:proofs-env-recheck-baseline",
+    "experiment/playbook-completion/proofs-env/premise_map.json",
+    "experiment/playbook-completion/proofs-env/src/premises.rs",
+    "experiment/playbook-completion/proofs-env/PROOFS.md"
+   ],
+   "evidence_grade": "proved (model) for the engine premises' link; inspected for the verdicts outside the contract",
+   "level": "model",
+   "product_obligation": "unknown",
+   "product_basis": "supplement: every proof-premise condition of reflection/closure.json (72) and 7 PROOFS.md premises it does not list now have a checked verdict against the contract's Verus specification instead of an inspection link: closure rows proved 9, proved-in-part 10, proved under the product's discipline 5, shown false 3 (Txn.cls:8, P-C5, P-U2), outside the contract 9, progress 36; plus P-C04 permitted-not-implied (an abort is always permitted). Each proved premise names the clause it needs: 17 located controls, each with a verified counterexample. The head-lock premises (P-C01, P-D9-1, P-L3, P-S1) are proved under the discipline 'disc' (writes to the ledger globals only by the exclusive head-lock holder inside its transaction): an inductive invariant over every operation of every process plus the holder's all-or-none / stop-leaves-nothing theorem. Corrections the proofs make to the premises as worded: P-D9-2 for an INSERT of a key an open bypass inserted is an immediate -119, not a wait; P-D9-2 over an erasure's uncommitted delete and P-C04 are not implied (both outcomes permitted); P-A6 restores before-images only of nodes nobody wrote since (E-ROLLBACK-OTHER). P-0001 and the nested-commit cases of P-C01 / P-D9-1 now rest on an observation of E-STOP's every-level reading (env-estop-gap; mutant stop-rolls-back-top-level-only killed, proofs-env-mutants-r2)",
+   "as_built_findings": [
+    "F-1201",
+    "F-C1201",
+    "F-C0402",
+    "F-C1705"
+   ],
+   "remaining": "the discipline 'disc' against the product's code (D-3/D-4; violated by EraseGraph at the pin, F-1201); progress premises (36 rows) not implied by any clause; outside-contract premises (CreateGUID, sha256, caller identity, durability, statement granularity, %ID, multi-row DELETE scan, embedded SQL) stay assumed or executable-only; several locks / regions are linked premise by premise, not composed into one invariant"
+  }
+ ],
+ "proof_debt_proposals": [
+  {
+   "row": "D-7",
+   "proposed_text": "The IRIS environment contract as a Verus specification linked to the participant contracts: **paid at model level for the contract's Verus subset** by `proofs-env` (305 verified, 0 errors, `--no-cheating`, empty trust inventory, `proofs-env-baseline`; recheck `proofs-env-recheck-*`): the clauses the proof crates rely on (nesting and partial rollback, SQL / driver verbs ending one or every level, stop rolls back every level, deferred unlock, lock names / modes / counts / waits, row locks with waits and -119, READ UNCOMMITTED for globals and SQL, value-based rollback, $INCREMENT) as a step function with the contract's permitted-outcome structure (the Freedom); an exec model verified against it agrees with iris-contract r6 / contract-2 on every recorded in-subset case, incl. the targeted rounds env-estop-gap and env-dml-single, 0 observations outside (`proofs-env-differential-r3`); all 29 Verus-model mutants killed by observations (`proofs-env-mutants-r3`); every proof-premise condition of CLOSURE.md mapped to a theorem or a verdict (`proofs-env-premise-map`), 17 located controls each with a verified counterexample. Head-lock premises (P-C01, P-D9-1, P-L3, P-S1) proved under the product discipline `disc` (an inductive invariant over every operation of every process plus the all-or-none / stop-leaves-nothing holder theorem)",
+   "still_open": "the discipline `disc` against the code (D-3/D-4); the extension clauses (incl. INSERT ... SELECT), E-1 and X2 outside the Verus subset; progress premises; several locks / regions not composed into one invariant; the Freedom's proceeding branch unobserved",
+   "evidence": [
+    "run:proofs-env-baseline",
+    "run:proofs-env-differential-r3",
+    "run:proofs-env-mutants-r3",
+    "run:env-estop-gap",
+    "run:env-dml-single",
+    "run:proofs-env-premise-map-r2",
+    "run:proofs-env-recheck-baseline"
+   ]
+  }
+ ]
+}

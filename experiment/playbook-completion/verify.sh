@@ -26,6 +26,8 @@ PRD="$RUN_DIR"; POUT="$out"
 if [[ "$clean" == 1 ]]; then
   T="$out/target"; PRD="$out/cleanroot"; POUT="$out/cleanroot/proofs-out"
   mkdir -p "$PRD" "$POUT"; ln -sfn "$RUN_DIR/locks" "$PRD/locks"
+  # recorded contract rounds read by proofs-env's differential (inputs, not build outputs)
+  ln -sfn "$RUN_DIR/env" "$PRD/env"; ln -sfn "$RUN_DIR/contract-2" "$PRD/contract-2"
 fi
 
 step() {  # step <id> <timeout-seconds> <command...>
@@ -136,7 +138,7 @@ if [[ "$mode" == full || "$mode" == live ]]; then
   if have "$here/proofs-d1f/tools/run_proofs.py"; then mkdir -p "$POUT/proofs-d1f"
     step proofs-d1f 3600 env RUN_DIR="$PRD" PROOFS_OUT_DIR="$POUT/proofs-d1f" python "$here/proofs-d1f/tools/run_proofs.py"
   fi
-  for crate in proofs-d9b proofs-d9c proofs-pa3 proofs-mech; do
+  for crate in proofs-d9b proofs-d9c proofs-pa3 proofs-mech proofs-env; do
     if have "$here/$crate/tools/run_proofs.py"; then mkdir -p "$POUT/$crate"
       step "$crate" 3600 env RUN_DIR="$PRD" PROOFS_OUT_DIR="$POUT/$crate" python "$here/$crate/tools/run_proofs.py"
     fi

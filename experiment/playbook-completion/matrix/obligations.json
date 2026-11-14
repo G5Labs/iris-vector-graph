@@ -1424,20 +1424,50 @@
     "env-contract-r2",
     "env-contract-r6-recheck",
     "env-contract-selftest",
-    "env-ext-r6"
+    "env-dml-single",
+    "env-estop-gap",
+    "env-ext-r6",
+    "proofs-env-baseline",
+    "proofs-env-differential",
+    "proofs-env-differential-r2",
+    "proofs-env-differential-r3",
+    "proofs-env-mutants",
+    "proofs-env-mutants-r2",
+    "proofs-env-mutants-r3",
+    "proofs-env-recheck-baseline",
+    "proofs-env-recheck-differential"
    ],
    "evidence": [
     "run:env-contract-r2",
     "run:env-contract-r6-recheck",
     "run:env-contract-selftest",
-    "run:env-ext-r6"
+    "run:env-ext-r6",
+    "run:proofs-env-baseline",
+    "run:proofs-env-differential-r3",
+    "run:proofs-env-mutants-r3",
+    "run:env-dml-single",
+    "run:env-estop-gap",
+    "run:proofs-env-differential-r2",
+    "run:proofs-env-mutants-r2",
+    "run:proofs-env-differential",
+    "run:proofs-env-mutants",
+    "run:proofs-env-recheck-baseline",
+    "run:proofs-env-recheck-differential",
+    "experiment/playbook-completion/proofs-env/PROOFS.md",
+    "experiment/playbook-completion/proofs-env/src/spec.rs",
+    "experiment/playbook-completion/proofs-env/src/exec.rs",
+    "experiment/playbook-completion/proofs-env/RESULTS.json"
    ],
    "evidence_grade": "registered-run",
    "gate": "3.2-library",
    "level": "method",
    "module": "product",
    "product_obligation": "unknown",
-   "status": "closed"
+   "remaining": "[proofs-env, D-7] Verus subset excludes the r6 extension clauses (X-FX, X-NOINDEX, X-DDL, X-NULL, INSERT ... SELECT, X-ORDER, X-STAR, X-TLEVEL-SQL, X-VEC, X-ZSTRIP), contract-2's E-1 and X2 (executable evidence only). Verus-model mutants: all 29 killed (proofs-env-mutants-r3), after the orchestrator's targeted rounds env-estop-gap (E-STOP's every-level reading) and env-dml-single (single-row autocommit-off DML); the probe freedom-waits-only stays alive by design (the Freedom's proceeding branch is unobserved)",
+   "status": "closed",
+   "supplemented_by": [
+    "matrix-input/proofs-env.json"
+   ]
   },
   {
    "cited_runs": [
@@ -15032,15 +15062,39 @@
   },
   {
    "as_built_findings": [
-    "F-C1743",
-    "F-C1705",
     "F-0402",
-    "F-C1801",
-    "F-C1307"
+    "F-C1307",
+    "F-C1705",
+    "F-C1743",
+    "F-C1801"
    ],
    "cited_runs": [
     "corr-closure-scan",
+    "env-estop-gap",
     "followup-writer-census",
+    "proofs-env-baseline",
+    "proofs-env-ctl-dml-ignores-row-locks",
+    "proofs-env-ctl-flat-lock-names",
+    "proofs-env-ctl-freedom-wait-only",
+    "proofs-env-ctl-incr-rolled-back",
+    "proofs-env-ctl-insert-dup-waits",
+    "proofs-env-ctl-kill-not-logged",
+    "proofs-env-ctl-lock-wait-never-granted",
+    "proofs-env-ctl-no-dirty-reads",
+    "proofs-env-ctl-rollback-one-undoes-all",
+    "proofs-env-ctl-rollback-physical",
+    "proofs-env-ctl-row-lock-statement-only",
+    "proofs-env-ctl-select-committed-only",
+    "proofs-env-ctl-shared-conflicts-shared",
+    "proofs-env-ctl-sql-commit-ends-all",
+    "proofs-env-ctl-stop-commits",
+    "proofs-env-ctl-stop-top-level-only",
+    "proofs-env-ctl-unlock-immediate",
+    "proofs-env-mutants-r2",
+    "proofs-env-mutants-r3",
+    "proofs-env-premise-map",
+    "proofs-env-premise-map-r2",
+    "proofs-env-recheck-baseline",
     "rf-closure-check-r3",
     "rf-closure-selftest-r3",
     "rf-premise-map-check-r3"
@@ -15052,7 +15106,34 @@
     "run:corr-closure-scan",
     "run:followup-writer-census",
     "experiment/playbook-completion/reflection/CLOSURE.md",
-    "experiment/playbook-completion/reflection/closure.json"
+    "experiment/playbook-completion/reflection/closure.json",
+    "run:proofs-env-mutants-r3",
+    "run:proofs-env-premise-map-r2",
+    "run:env-estop-gap",
+    "run:proofs-env-mutants-r2",
+    "run:proofs-env-premise-map",
+    "run:proofs-env-baseline",
+    "run:proofs-env-ctl-unlock-immediate",
+    "run:proofs-env-ctl-stop-commits",
+    "run:proofs-env-ctl-stop-top-level-only",
+    "run:proofs-env-ctl-kill-not-logged",
+    "run:proofs-env-ctl-dml-ignores-row-locks",
+    "run:proofs-env-ctl-row-lock-statement-only",
+    "run:proofs-env-ctl-insert-dup-waits",
+    "run:proofs-env-ctl-freedom-wait-only",
+    "run:proofs-env-ctl-no-dirty-reads",
+    "run:proofs-env-ctl-select-committed-only",
+    "run:proofs-env-ctl-rollback-physical",
+    "run:proofs-env-ctl-incr-rolled-back",
+    "run:proofs-env-ctl-rollback-one-undoes-all",
+    "run:proofs-env-ctl-sql-commit-ends-all",
+    "run:proofs-env-ctl-lock-wait-never-granted",
+    "run:proofs-env-ctl-flat-lock-names",
+    "run:proofs-env-ctl-shared-conflicts-shared",
+    "run:proofs-env-recheck-baseline",
+    "experiment/playbook-completion/proofs-env/premise_map.json",
+    "experiment/playbook-completion/proofs-env/src/premises.rs",
+    "experiment/playbook-completion/proofs-env/PROOFS.md"
    ],
    "evidence_grade": "registered-run",
    "findings": [
@@ -15077,9 +15158,12 @@
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "65 assumed and 51 partly validated conditions keep their consequences; none of their missing tests was run; the ledger-state writers outside every modelled action (corr-closure-scan, followup-writer-census; F-1801, F-1114) stay as the existing cell records",
+   "remaining": "65 assumed and 51 partly validated conditions keep their consequences; none of their missing tests was run; the ledger-state writers outside every modelled action (corr-closure-scan, followup-writer-census; F-1801, F-1114) stay as the existing cell records [proofs-env, D-7] the discipline 'disc' against the product's code (D-3/D-4; violated by EraseGraph at the pin, F-1201); progress premises (36 rows) not implied by any clause; outside-contract premises (CreateGUID, sha256, caller identity, durability, statement granularity, %ID, multi-row DELETE scan, embedded SQL) stay assumed or executable-only; several locks / regions are linked premise by premise, not composed into one invariant",
    "source": "matrix-input/reflection.json",
-   "status": "closed"
+   "status": "closed",
+   "supplemented_by": [
+    "matrix-input/proofs-env.json"
+   ]
   },
   {
    "cited_runs": [
