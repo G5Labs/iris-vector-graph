@@ -1,0 +1,15 @@
+{
+  "command": "locks.sh iris timeout 1200 python experiment/playbook-completion/structural/reads3/ni3.py --modules 10 --out $RUN_DIR/structural/reads3/final/r-10.json",
+  "experiment_head": "e3118ecade016d16ac2b8194d0c94f25ad6f1d6f",
+  "id": "st-live-reads3-10",
+  "kind": "live",
+  "lane": "structural",
+  "log": "$RUN_DIR/structural/reads3/final/r-10.json",
+  "log_bytes": 805090,
+  "log_sha256": "9422dc788133b80e2e6585b9db046ec60b8f3ef8b67ba5b33986974d98a4db69",
+  "observes": "AUDITD, non-interference (reads3, self-test st-control-reads3-selftest), module 10: 19 cases, 241 keyed answers: 197 hold, 32 violate, 6 undecided-error, 6 undecided-vacuous; no setup error; engines with native_cypher=False (no plan class compiled). Violations (answer changed when the same ids and edges were written in named graphs, the call naming no graph): the ^NKG class methods called directly after sync, NKGAccelCentrality and NKGAccel ClosenessGlobal/ClosenessGlobalMSBFS/EigenvectorGlobal/BetweennessGlobal/BetweennessGlobalParallel/BetweennessNeighborhood and Communities TriangleCountJson/KCoreJson/SCCJson/LeidenJson/LeidenJsonAuto (F-C1041); NKGAccelTraversal and NKGAccel KHopNeighbors/KHopNeighborsSorted/KHopJson (node d of the named graphs listed at dist 1), ShortestPathNKG (a to d: -1 becomes 1), CountDistinctKHop (estimate 3 becomes 4); RandomWalkJson (visits d; F-1002); PageRankEmbedded.ComputePageRank and ComputePageRankWithMetrics (num_nodes 3 / num_edges 4 become 11 / 14: every graph rows; F-1013); engine kg_GRAPH_PATH (named-graph two-hop paths a-R-c, a-R-d; F-0820). None changed under edgeless nodes / properties alone. Holds: ^KG readers in default and G1 (TraversalBFS/Traversal BFS family, ReachTypes, TraversalPaths, KHop family, VarLength Ends/EndsCount incl. a 600-node frontier that ran 2 parallel LastLevelPart levels, PageRank RunJson/NodeSeeds/WithUnscored/PageRankGlobalJson/CheckArgs, Algorithms WCC/CDLP, Subgraph, Centrality, ArnoAccel delegates, store and engine methods, kg_RERANK), the snapshot readers/loaders/counters, builders, Cypher procedures (USE GRAPH G1/default; the seven ^NKG procedures without USE GRAPH). Undecided: ArnoAccel PageRank/PPR/WCC/CDLP/SubgraphNativeJson refuse outside USER, KhopSample/RandomWalk/NeighborAggJson answer empty markers, arno_bridge.build_kg_adjacency_chunked raises (library absent), random_walk [] (no library), Communities LeidenJsonPy/ClosenessJsonPy PYUNAVAIL (igraph absent)",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T20:10:07+00:00",
+  "result": "fail"
+}

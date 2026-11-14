@@ -24,7 +24,7 @@
   {
    "gate": "3.3a-writesets",
    "module": "03",
-   "status": "open",
+   "status": "closed",
    "evidence": [
     "experiment/playbook-completion/writesets/BREADTH-A-DISCHARGES.json",
     "experiment/playbook-completion/writesets/DISCHARGES.json",
@@ -32,7 +32,9 @@
     "run:ws-live-ba-noindex-parallel",
     "run:ws-live-ba-explicit-survives",
     "run:ws-live-ba-marker-qualifier",
-    "run:ws-live-ba-vec-node-delete"
+    "run:ws-live-ba-vec-node-delete",
+    "run:st-live-bls-session",
+    "run:ws-check-r4"
    ],
    "evidence_grade": "inspected",
    "level": "product",
@@ -48,7 +50,7 @@
     "F-C0351",
     "F-C0401"
    ],
-   "remaining": "open breadth-a pairs: 03|GID-I4.10|py:IRISGraphEngine.bulk_load_session (bulk_load_session disables index maintenance; not probed)"
+   "remaining": "census part (28 cells) and all 97 breadth-a module-invariant pairs discharged; the last open pair 03|GID-I4.10|bulk_load_session holds live (st-live-bls-session: rows written inside a session are seen by the unique key and the writers' existence checks; the F-C0350 control does duplicate). Orchestrator update, steer 11."
   },
   {
    "gate": "3.3a-writesets",

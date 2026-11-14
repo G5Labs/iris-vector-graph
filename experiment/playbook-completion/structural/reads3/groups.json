@@ -1,0 +1,125 @@
+{
+ "_doc": "Entry points covered through a group: each member shares the read path of a representative that was checked live (run and case named), by a cited argument. A Private class method has no entry but its callers (the Native API refuses it), and a method with a ByRef/Output array parameter cannot be called over the Native API (an IRISReference for an array parameter crashed the client: smoke log, not registered); their reads happen only inside the representative's call, on the same arguments or on the arguments the representative derives. Delegation groups list wrappers whose body is one call of the target with the same arguments; there both members were also run live.",
+ "groups": [
+  {
+   "id": "G04-remove-helpers",
+   "module": "04",
+   "members": ["cls:Graph.KG.Adjacency.HeldElsewhere", "cls:Graph.KG.Adjacency.MarkGraphGone"],
+   "shared_read_path": "Private helpers of the one writer's removals: HeldElsewhere reads ^KG(\"out\", every other graph, s, p, o) only to decide whether the merged ^NKG entry (no graph dimension) is still held; MarkGraphGone reads ^KG(\"out\", pGraph) and ^NKG(\"$NI\") to mark ^NKG stale. Neither result reaches the graph's own ^KG entries.",
+   "citation": ["iris_src/src/Graph/KG/Adjacency.cls:174-195", "iris_src/src/Graph/KG/Adjacency.cls:161-165 (Remove calls both)", "iris_src/src/Graph/KG/Adjacency.cls:384-389 (RemoveSource calls both)", "iris_src/src/Graph/KG/Adjacency.cls:94 and :162 ('^NKG is merged across graphs')"],
+   "representative": [{"run": "st-live-reads3-04", "key": "cls:Graph.KG.Adjacency.Remove", "note": "with ^NKG populated (prep sync) and the outside perturbation 'the same edge a-R-b in the other graphs (HeldElsewhere)': G1's state unchanged"},
+                      {"run": "st-live-reads3-04", "key": "cls:Graph.KG.Adjacency.RemoveSource"}, {"run": "st-live-reads3-04", "key": "cls:Graph.KG.Adjacency.RemoveNode"},
+                      {"run": "st-live-reads3-04", "key": "cls:Graph.KG.EdgeScan.DeleteAdjacency"}],
+   "result": "holds"
+  },
+  {
+   "id": "G04-keyed-helpers",
+   "module": "04",
+   "members": ["cls:Graph.KG.Adjacency.KeyCount", "cls:Graph.KG.Adjacency.OtherEdgeKeys", "cls:Graph.KG.Adjacency.SetLeafFromLowest"],
+   "shared_read_path": "Private helpers of the multigraph writer: KeyCount and SetLeafFromLowest read ^KG(\"out\", pGraph, s, p, o, *) of the caller's graph; OtherEdgeKeys reads the rdf_edges rows of the triple WHERE COALESCE(graph_id,'') = the caller's graph.",
+   "citation": ["iris_src/src/Graph/KG/Adjacency.cls:798-808", "iris_src/src/Graph/KG/Adjacency.cls:874-902", "iris_src/src/Graph/KG/Adjacency.cls:231, 255, 257 (PutKeyed)", "iris_src/src/Graph/KG/Adjacency.cls:285, 295, 298 (RemoveKeyed)", "iris_src/src/Graph/KG/Adjacency.cls:526 (RowUpdate)"],
+   "representative": [{"run": "st-live-reads3-04", "key": "cls:Graph.KG.Adjacency.PutKeyed"}, {"run": "st-live-reads3-04", "key": "cls:Graph.KG.Adjacency.RemoveKeyed"},
+                      {"run": "st-live-reads3-04", "key": "cls:Graph.KG.Adjacency.RowUpdate#multigraph"}, {"run": "st-live-reads3-04", "key": "cls:Graph.KG.EdgeScan.WriteAdjacencyKeyed"},
+                      {"run": "st-live-reads3-04", "key": "cls:Graph.KG.EdgeScan.DeleteAdjacencyKeyed"}],
+   "note": "multigraph G1 with two rows of a-R-b (ekeys 0, 1); outside: the same triple with three rows in other multigraphs; inside: a third G1 row (changed the answer)",
+   "result": "holds"
+  },
+  {
+   "id": "G04-buildkg-fill",
+   "module": "04",
+   "members": ["cls:Graph.KG.TraversalBuild.BuildKGKeyed", "cls:Graph.KG.Adjacency.FillTriple"],
+   "shared_read_path": "BuildKG's multigraph pass: BuildKGKeyed (Private) reads every rdf_edges row ordered by graph and hands each graph's rows of one triple to FillTriple under that row's own graph key (GraphKey.ForIndex(graph_id)); FillTriple (ByRef pEdges) reads ^IVG.GraphMode(pGraph) and the rows passed.",
+   "citation": ["iris_src/src/Graph/KG/TraversalBuild.cls:98 (BuildKG calls BuildKGKeyed)", "iris_src/src/Graph/KG/TraversalBuild.cls:174-214", "iris_src/src/Graph/KG/Adjacency.cls:837-855"],
+   "representative": [{"run": "st-live-reads3-04", "key": "cls:Graph.KG.TraversalBuild.BuildKG", "note": "base: G1 in multigraph mode; answer: G1's rows and ^KG afterwards; outside: same ids/edges in the other graphs, labelled/edgeless nodes in the other graphs"},
+                      {"run": "st-live-reads3-04", "key": "py:IRISGraphEngine.rebuild_kg"}, {"run": "st-live-reads3-04", "key": "py:IRISGraphEngine.sync"}],
+   "result": "holds"
+  },
+  {
+   "id": "G04-buildnkg-rewrite",
+   "module": "04",
+   "members": ["cls:Graph.KG.TraversalBuild.RewriteNKG", "cls:Graph.KG.TraversalBuild.RewritePass", "cls:Graph.KG.TraversalBuild.GuardCounters", "cls:Graph.KG.TraversalBuild.WalkSource",
+               "cls:Graph.KG.TraversalBuild.SweepEdges", "cls:Graph.KG.TraversalBuild.SweepEdge", "cls:Graph.KG.TraversalBuild.SweepMirrors", "cls:Graph.KG.TraversalBuild.SweepDegrees",
+               "cls:Graph.KG.TraversalBuild.SweepSketches", "cls:Graph.KG.TraversalBuild.SweepNodes", "cls:Graph.KG.TraversalBuild.PutNodeBack", "cls:Graph.KG.TraversalBuild.RetireNode",
+               "cls:Graph.KG.TraversalBuild.SweepLabels", "cls:Graph.KG.TraversalBuild.PutLabelBack", "cls:Graph.KG.TraversalBuild.ArnoCapabilities", "cls:Graph.KG.TraversalBuild.HeldAnywhere",
+               "cls:Graph.KG.TraversalBuild.FirstWeight", "cls:Graph.KG.TraversalBuild.MergedDegree", "cls:Graph.KG.TraversalBuild.IsSource", "cls:Graph.KG.TraversalBuild.NodeInKG",
+               "cls:Graph.KG.TraversalBuild.LabelInKG", "cls:Graph.KG.TraversalBuild.SketchOf"],
+   "shared_read_path": "Private steps of BuildNKG's in-place rewrite of ^NKG: every graph's ^KG out/in (merged into ^NKG, which has no graph key, by design) and ^NKG's own dictionaries; ArnoCapabilities reads ^ArnoAccel(\"lib_path\") through ArnoAccel.IsAvailable for DictSweepAllowed.",
+   "citation": ["iris_src/src/Graph/KG/TraversalBuild.cls:288-312 (BuildNKG -> RewriteNKG :298)", "iris_src/src/Graph/KG/TraversalBuild.cls:315-380 (RewriteNKG -> RewritePass :318 -> DictSweepAllowed :332, GuardCounters :338, WalkSource :349, SweepEdges :359, SweepMirrors :361, SweepDegrees :362, SweepSketches :363, SweepNodes :364, SweepLabels :365)",
+                "iris_src/src/Graph/KG/TraversalBuild.cls:447-482 (WalkSource -> HeldAnywhere :470, MergedDegree :476)", "iris_src/src/Graph/KG/TraversalBuild.cls:504, 533, 537 (SweepEdges -> SweepEdge -> FirstWeight, HeldAnywhere)",
+                "iris_src/src/Graph/KG/TraversalBuild.cls:584-585 (SweepDegrees -> IsSource, MergedDegree)", "iris_src/src/Graph/KG/TraversalBuild.cls:605 (SweepSketches -> SketchOf)",
+                "iris_src/src/Graph/KG/TraversalBuild.cls:628-645 (SweepNodes -> PutNodeBack, RetireNode, NodeInKG)", "iris_src/src/Graph/KG/TraversalBuild.cls:718-730 (SweepLabels -> PutLabelBack, LabelInKG)",
+                "iris_src/src/Graph/KG/TraversalBuild.cls:767-795 (DictSweepAllowed -> ArnoCapabilities)", "iris_src/src/Graph/KG/Adjacency.cls:94; NKGAccel.cls:213-223 (^NKG holds every graph's edges with no graph key)"],
+   "representative": [{"run": "st-live-reads3-04", "key": "cls:Graph.KG.TraversalBuild.BuildNKG", "note": "rewrite in place over an ^NKG built by sync; answer: ^NKG by name; outside: edgeless/labelled nodes with properties in every graph (unchanged); declared inside: another named graph's edges (changed, as declared)"},
+                      {"run": "st-live-reads3-04", "key": "cls:Graph.KG.TraversalBuild.EnsureNKG", "note": "G2's last edge removed (MarkGraphGone marks stale), EnsureNKG rebuilds and retires x, y (SweepNodes/RetireNode path)"},
+                      {"run": "st-live-reads3-04", "key": "py:IRISGraphEngine.rebuild_nkg"}, {"run": "st-live-reads3-10", "key": "cls:Graph.KG.Traversal.BuildNKG"}, {"run": "st-live-reads3-10", "key": "eng:IRISGraphEngine.rebuild_nkg"}],
+   "result": "holds (against the declared every-graph footprint of the snapshot; the per-graph question is the readers', see module 10)"
+  },
+  {
+   "id": "G04-edgescan-scan",
+   "module": "04",
+   "members": ["cls:Graph.KG.EdgeScan.ScanOneGraph"],
+   "shared_read_path": "Private: the scan of one graph key's ^KG(\"out\") that MatchEdges (the graph passed) and MatchEdgesAllGraphs (each graph in turn) call.",
+   "citation": ["iris_src/src/Graph/KG/EdgeScan.cls:46-61", "iris_src/src/Graph/KG/EdgeScan.cls:69-84", "iris_src/src/Graph/KG/EdgeScan.cls:93-147"],
+   "representative": [{"run": "st-live-reads3-04", "key": "cls:Graph.KG.EdgeScan.MatchEdges"}, {"run": "st-live-reads3-04", "key": "cls:Graph.KG.EdgeScan.MatchEdges#default"}, {"run": "st-live-reads3-04", "key": "cls:Graph.KG.EdgeScan.MatchEdgesAllGraphs"}],
+   "result": "holds"
+  },
+  {
+   "id": "G04-edgeless-scan",
+   "module": "04",
+   "members": ["cls:Graph.KG.Edgeless.Scan", "cls:Graph.KG.Edgeless.HasOther"],
+   "shared_read_path": "Private: the nodes rows of the graph (COALESCE(graph_id,'') = pGraph) and that graph key's ^KG out/in entries; called by Loners and LonersJson with the caller's graph.",
+   "citation": ["iris_src/src/Graph/KG/Edgeless.cls:15-39", "iris_src/src/Graph/KG/Edgeless.cls:43-85"],
+   "representative": [{"run": "st-live-reads-a", "key": "Edgeless.LonersJson(Graph_KG, G1)"}, {"run": "st-live-reads3-04", "key": "cls:Graph.KG.Edgeless.Loners (through SQL kg_DegreeCentrality, which calls it)"},
+                      {"run": "st-live-reads3-04", "key": "py:iris_vector_graph._edgeless.loners"}],
+   "result": "holds"
+  },
+  {
+   "id": "G10-pagerank-run",
+   "module": "10",
+   "members": ["cls:Graph.KG.PageRank.Run"],
+   "shared_read_path": "Run (Output ranks, an array: not callable over the Native API) is RunJson's body: RunJson calls Run with its own arguments and serializes ranks.",
+   "citation": ["iris_src/src/Graph/KG/PageRank.cls:33-72 (RunJson; :36 'Return:'..Run(seedJson, alpha, maxIter, bidir, revWeight, pGraph, pExclude, .ranks, pTol) \"[]\"')", "iris_src/src/Graph/KG/PageRank.cls:170-346"],
+   "representative": [{"run": "st-live-reads3-10", "key": "cls:Graph.KG.PageRank.RunJson", "note": "default graph and graph G1 cases"}, {"run": "st-live-reads3-10", "key": "cls:Graph.KG.ArnoAccel.PPRJson"}],
+   "result": "holds"
+  },
+  {
+   "id": "G10-varlength-endsinto",
+   "module": "10",
+   "members": ["cls:Graph.KG.VarLength.EndsInto", "cls:Graph.KG.VarLength.NamedEnds"],
+   "shared_read_path": "EndsInto (Output pEnds) is called by Ends and EndsCount with the same arguments; NamedEnds (ByRef pCands, Output pEnds; called by the native executor) selects its graphs through the same Setup with pAll=0 and its pGraph, and reads them through Adjacent, as EndsInto does for pAll=0.",
+   "citation": ["iris_src/src/Graph/KG/VarLength.cls:14-25 (Ends -> EndsInto :16)", "iris_src/src/Graph/KG/VarLength.cls:152-156 (EndsCount -> EndsInto :154)", "iris_src/src/Graph/KG/VarLength.cls:33-58 (Setup: pAll ? every graph : ForIndex(pGraph))", "iris_src/src/Graph/KG/VarLength.cls:65-122 (NamedEnds: Setup(.pTypes, pDir, 0, .pGraph, ...) :69)", "iris_src/src/Graph/KG/VarLength.cls:126-149 (Adjacent)"],
+   "representative": [{"run": "st-live-reads3-10", "key": "cls:Graph.KG.VarLength.Ends", "note": "pAll=0, default graph and G1"}, {"run": "st-live-reads3-10", "key": "cls:Graph.KG.VarLength.EndsCount"},
+                      {"run": "st-live-reads3-10", "key": "cls:Graph.KG.VarLength.Ends#pAll=1", "note": "every graph by its docstring"}],
+   "result": "holds (EndsInto: same arguments; NamedEnds: same graph selection, its candidate filter not exercised live)"
+  },
+  {
+   "id": "G10-betweenness-worker",
+   "module": "10",
+   "members": ["cls:Graph.KG.NKGAccelCentrality.BetweennessWorker", "cls:Graph.KG.NKGAccel.BetweennessWorker"],
+   "shared_read_path": "The %SYSTEM.WorkMgr worker BetweennessGlobalParallel queues (and BetweennessNeighborhoodOS): reads ^NKG and the parent's ^bcBitAdj/^bcParSrc work areas, writes ^bcParScore; NKGAccel.BetweennessWorker delegates with the same arguments.",
+   "citation": ["iris_src/src/Graph/KG/NKGAccelCentrality.cls:224-320", "iris_src/src/Graph/KG/NKGAccelCentrality.cls:419-431 (queue.Queue(\"##class(Graph.KG.NKGAccel).BetweennessWorker\", parentPid, ...))", "iris_src/src/Graph/KG/NKGAccelCentrality.cls:566-570", "iris_src/src/Graph/KG/NKGAccel.cls:228-231"],
+   "representative": [{"run": "st-live-reads3-10", "key": "cls:Graph.KG.NKGAccelCentrality.BetweennessGlobalParallel", "note": "numJobs 1: answer changed when named-graph edges were merged into ^NKG (violation, F-C1041)"},
+                      {"run": "st-live-reads3-10", "key": "cls:Graph.KG.NKGAccel.BetweennessGlobalParallel"}],
+   "result": "violation (F-C1041)"
+  },
+  {
+   "id": "G10-random-walk",
+   "module": "10",
+   "members": ["eng:IRISGraphEngine.random_walk"],
+   "shared_read_path": "With the Arno library loaded the engine answers from Graph.KG.NKGAccel.RandomWalkJson(seed, length, num_walks) (the same arguments, as text); without it it answers [] and reads no graph (vacuous here).",
+   "citation": ["iris_vector_graph/_engine/algorithms.py:658-678 (:664-670 the call)"],
+   "representative": [{"run": "st-live-reads3-10", "key": "cls:Graph.KG.NKGAccel.RandomWalkJson", "note": "visits node d of the named graphs from a default-graph seed (violation, F-1002)"},
+                      {"run": "st-live-reads3-10", "key": "eng:IRISGraphEngine.random_walk", "note": "undecided-vacuous: [] without the library"}],
+   "result": "violation through its representative (F-1002); the engine call itself vacuous without the library"
+  },
+  {
+   "id": "G10-delegations",
+   "module": "10",
+   "members": ["cls:Graph.KG.Traversal.* (32 wrappers in the inventory)", "cls:Graph.KG.NKGAccel.* (wrappers of NKGAccelLoader/NKGAccelAdjacency/NKGAccelTraversal/NKGAccelCentrality)", "cls:Graph.KG.ArnoAccel.PageRankGlobalJson/PPRJson/WCCJson/CDLPJson/SubgraphJson", "eng:IRISGraphEngine.kg_GRAPH_WALK_TVF", "eng:IRISGraphEngine.kg_MENTIONS", "eng:IRISGraphEngine.kg_PPR"],
+   "shared_read_path": "Each body is one call of its target with the same arguments.",
+   "citation": ["iris_src/src/Graph/KG/Traversal.cls:11-184", "iris_src/src/Graph/KG/NKGAccel.cls:107-239", "iris_src/src/Graph/KG/ArnoAccel.cls:373-400", "iris_vector_graph/_engine/algorithms.py:733-740 (kg_GRAPH_WALK_TVF -> kg_GRAPH_WALK)", "iris_vector_graph/_engine/algorithms.py:1024-1027 (kg_MENTIONS -> kg_NEIGHBORS)", "iris_vector_graph/_engine/algorithms.py:1028-1042 (kg_PPR -> kg_PERSONALIZED_PAGERANK)"],
+   "representative": "both wrapper and target were run live on the same states in st-live-reads3-10 (keys of the same name); the wrapper's verdict equals its target's in every case",
+   "result": "as the target"
+  }
+ ]
+}

@@ -3187,15 +3187,16 @@
   "classes": [
    "OPEN_SESSION"
   ],
-  "discharge": "open",
+  "discharge": "lemma",
   "evidence": [
+   "run:st-live-bls-session",
    "iris_vector_graph/_engine/nodes_edges.py:370-502"
   ],
   "findings": [],
-  "grade": "open",
+  "grade": "live",
   "invariant": "GID-I4.10",
   "module": "03",
-  "reason": "[GID-I4.10 via OPEN_SESSION; writing functions: none listed] open: not decided. bulk_load_session disables index maintenance for the whole session and rebuilds at the end (nodes_edges.py:382-386); whether the unique key and the writers' existence guards still see rows written inside the session (the F-C0350 failure mode) was not probed.",
+  "reason": "[GID-I4.10 via OPEN_SESSION; writing functions: none listed] Holds live (orchestrator, steer 11, from the structural lane's probe st-live-bls-session): inside a bulk_load_session (index maintenance disabled; plain and inside a caller transaction) repeated add_nodes/add_edges over one triple leave 1 row at ekey 0, the same engine's and a second connection's create_edge answer False, and the key oracle (%IGNOREINDEX duplicate scan, ^KG = rows) finds no violation; the F-C0350 control (BulkLoader.load_edges %NOINDEX %NOCHECK, then create_edge) does produce the duplicate. Live for this writer: st-live-bls-session.",
   "writer": "py:IRISGraphEngine.bulk_load_session"
  },
  "03|GID-I4.10|py:IRISGraphEngine.create_node": {

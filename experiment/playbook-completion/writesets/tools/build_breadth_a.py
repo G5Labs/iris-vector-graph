@@ -462,11 +462,13 @@ REBUILDERS = ["py:iris_vector_graph.schema.GraphSchema.bootstrap_kg_global", "py
 for inv in ("GID-I4.10", "INV-stmt", "ADR-0009/HD-0302 explicit-survives", "ADR-0009/TMP-B9.13 marked-needs-time"):
     ovr(inv, REBUILDERS, "REB")
 ovr("GID-I4.10", ["py:IRISGraphEngine.bulk_load_session"], "OPEN_SESSION")
-CLASSES["GID-I4.10"]["OPEN_SESSION"] = ("open", "open", [], [cite(NE, "bulk_load_session")],
-                                         "open: not decided. bulk_load_session disables index maintenance for the whole "
-                                         "session and rebuilds at the end (nodes_edges.py:382-386); whether the unique key "
-                                         "and the writers' existence guards still see rows written inside the session "
-                                         "(the F-C0350 failure mode) was not probed.")
+CLASSES["GID-I4.10"]["OPEN_SESSION"] = ("lemma", "live", [], ["run:st-live-bls-session", cite(NE, "bulk_load_session")],
+                                         "Holds live (orchestrator, steer 11, from the structural lane's probe st-live-bls-session): "
+                                         "inside a bulk_load_session (index maintenance disabled; plain and inside a caller "
+                                         "transaction) repeated add_nodes/add_edges over one triple leave 1 row at ekey 0, the same "
+                                         "engine's and a second connection's create_edge answer False, and the key oracle "
+                                         "(%IGNOREINDEX duplicate scan, ^KG = rows) finds no violation; the F-C0350 control "
+                                         "(BulkLoader.load_edges %NOINDEX %NOCHECK, then create_edge) does produce the duplicate.")
 MIGR = ["py:iris_vector_graph.migrations.upgrade.upgrade_to_4_0_0",
         "py:iris_vector_graph.migrations.kg_node_stores.rekey_kg_node_stores"]
 CLASSES["ADJ-I5.9"]["MIGR"] = ("finding", "inspected", ["F-0401"], [cite("iris_vector_graph/migrations/kg_node_stores.py",
@@ -539,6 +541,7 @@ ovr("ADR-0009/TMP-B9.13 marked-needs-time", ["py:IRISGraphEngine.erase_all"], "D
 # live-decided pairs
 for w in ("py:iris_vector_graph.bulk_loader.BulkLoader.load_edges",):
     live("GID-I4.10", w, "ws-live-ba-noindex-parallel", "fail")
+live("GID-I4.10", "py:IRISGraphEngine.bulk_load_session", "st-live-bls-session", "pass")
 ovr("GID-I4.10", ["py:iris_vector_graph.bulk_loader.BulkLoader.load_networkx"], "BL", grade="inspected",
     note=" load_networkx runs load_edges with use_noindex (default True) before its index rebuild (bulk_loader.py:575-587); not run itself.")
 for w, run in (("py:IRISGraphEngine.bulk_ingest_edges", "ws-live-ba-explicit-survives"),

@@ -1,0 +1,105 @@
+{
+ "lane": "structural third follow-up (upgrade capacity via O-1 fixture; declared reads 04/10); merged by the orchestrator from the lane's merge3.py output, earlier evidence kept",
+ "source": "structural/MATRIX-INPUT-3.json",
+ "cells": [
+  {
+   "gate": "3.4-declared-reads",
+   "module": "04",
+   "status": "closed",
+   "evidence": [
+    "run:st-control-reads3-selftest",
+    "run:st-live-reads3-04",
+    "run:st-control-reads-selftest",
+    "run:st-live-reads-a",
+    "experiment/playbook-completion/structural/reads3/method.json",
+    "experiment/playbook-completion/structural/reads3/groups.json",
+    "experiment/playbook-completion/structural/reads3/static.json",
+    "experiment/playbook-completion/structural/reads3/ni3.py",
+    "experiment/playbook-completion/structural/reads3/ni3core.py",
+    "experiment/playbook-completion/structural/reads3/ni3_04.py",
+    "experiment/playbook-completion/structural/reads/method.json",
+    "experiment/playbook-completion/structural/reads/noninterference.py"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "all 116 inventoried read/both entry points covered: 3 in st-live-reads-a; 81 live in st-live-reads3-04 (54 cases, 92 keyed answers, all hold); 32 Private/ByRef helpers through groups whose live representatives hold (groups.json G04-*); no violation seen",
+   "as_built_findings": [],
+   "remaining": "none uncovered. Limits: non-interference sees only reads that reach the answer, under the perturbations listed per key in reads3/method.json; the 32 helpers covered by a group were not run on their own; the inside perturbation left 16 keys unchanged (sensitivity not shown): cls:Graph.KG.Adj.AllWarm, cls:Graph.KG.Adj.HasEdges, cls:Graph.KG.Adj.WarmFill, cls:Graph.KG.AlgoCache.Token, cls:Graph.KG.EdgeScan.BulkDeleteAdjacency, cls:Graph.KG.EdgeScan.DeleteAdjacencyAllGraphs, cls:Graph.KG.EdgeScan.MatchEdges#default, cls:Graph.KG.GraphIndex.DropNKG, cls:Graph.KG.GraphIndex.GetLabelIdx, cls:Graph.KG.GraphIndex.InitStructuralLabels, cls:Graph.KG.GraphIndex.InternLabel, cls:Graph.KG.TraversalBuild.DictSweepAllowed, cls:Graph.KG.TraversalBuild.NKGPopulated, py:IRISGraphEngine.bulk_delete_adjacency, py:iris_vector_graph.engine.IRISGraphEngine._adjacency_indexed, py:iris_vector_graph.stores.iris_sql_store.IRISGraphStore._cached_algorithm",
+   "sub_lane": "reads3",
+   "supersedes": {
+    "status": "open",
+    "product_obligation": "unknown"
+   }
+  },
+  {
+   "gate": "3.4-declared-reads",
+   "module": "10",
+   "status": "open",
+   "evidence": [
+    "run:st-control-reads3-selftest",
+    "run:st-live-reads3-10",
+    "run:st-control-reads-selftest",
+    "run:st-live-reads-b",
+    "experiment/playbook-completion/structural/reads3/method.json",
+    "experiment/playbook-completion/structural/reads3/groups.json",
+    "experiment/playbook-completion/structural/reads3/static.json",
+    "experiment/playbook-completion/structural/reads3/ni3.py",
+    "experiment/playbook-completion/structural/reads3/ni3core.py",
+    "experiment/playbook-completion/structural/reads3/ni3_10.py",
+    "experiment/playbook-completion/structural/reads/method.json",
+    "experiment/playbook-completion/structural/reads/noninterference.py",
+    "run:st-live-reads2-12-18",
+    "run:st-live-reads2-03-11",
+    "run:st-control-reads2-selftest",
+    "experiment/playbook-completion/structural/reads2/method.json",
+    "experiment/playbook-completion/structural/reads2/static.json",
+    "run:st-live-susp-nkg-merged"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "of 219 inventoried read/both entry points, 17 hold in st-live-reads-b; the 200 it left unchecked plus cypher:ivg.ppr (counted there by a short-name match with engine.ppr) and random_walk (undecided there), 202 in all: 184 live in st-live-reads3-10 (19 cases, 241 keyed answers), 6 through groups, 1 static, 3 undecided live and bounded by inspection, 8 not covered. Violations (37 entry points): the ^NKG class methods called directly answer every graph merged (F-C1041 centrality/communities; F-C1046 k-hop, shortest path, distinct k-hop; F-1002 random walk), PageRankEmbedded reads every graph's rows (F-1013, live here), kg_GRAPH_PATH answers named-graph paths (F-0820)",
+   "as_built_findings": [
+    "F-C1041",
+    "F-0820",
+    "F-1002",
+    "F-1013",
+    "F-C1046"
+   ],
+   "remaining": "not covered (8): cls:Graph.KG.ArnoAccel.PageRankNativeJson, cls:Graph.KG.ArnoAccel.PPRNativeJson, cls:Graph.KG.ArnoAccel.WCCNativeJson, cls:Graph.KG.ArnoAccel.CDLPNativeJson, cls:Graph.KG.ArnoAccel.SubgraphNativeJson, cls:Graph.KG.ArnoAccel.KhopSampleJson, cls:Graph.KG.ArnoAccel.RandomWalkJson, cls:Graph.KG.ArnoAccel.NeighborAggJson -- in this namespace each refuses or answers an empty marker before any read (observed live); the read that matters is the arno-callout library's walk of USER's ^KG, whose source is not at the pin and whose binary is absent from this container (F-1001, blocked-access; USER is the validation lane's). Undecided live but bounded statically: build_kg_adjacency_chunked (raises without the library; its walk reads ^KG(out/in, 0) only), Communities.ClosenessJsonPy / LeidenJsonPy (PYUNAVAIL: igraph absent; inspected to read the merged ^NKG, F-C1041). Group-only (not run on their own): PageRank.Run, VarLength.EndsInto / NamedEnds, BetweennessWorker x2, random_walk (its library path is NKGAccel.RandomWalkJson, F-1002). Intent note: kg_MENTIONS holds against ALG-B9.10's every-graph footprint but reads named graphs under HD-0201's working assumption (F-0820's pattern; intent-undecided). Limits: non-interference sees only reads that reach the answer under the listed perturbations; the inside perturbation left 75 holding keys unchanged.",
+   "sub_lane": "reads3",
+   "supersedes": {
+    "status": "open",
+    "product_obligation": "unknown"
+   }
+  },
+  {
+   "gate": "3.6-capacity",
+   "module": "01",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-cap-upgrade-run",
+    "run:st-live-cap-upgrade-load",
+    "run:st-live-cap-upgrade-build",
+    "run:st-live-setup-rerun",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/incidents/O-1-FIXTURES.md",
+    "experiment/playbook-completion/structural/upgrade/upgrade_probe.py",
+    "run:st-live-keys",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "no violation seen (live, not a proof): the pin's initialize_schema upgrading a v4.5.1 namespace built by the pinned fixture (O-1) and loaded through v4.5.1's own API (110,058 nodes, 230,054 edges, 320,064 properties, 2,002 vectors, 51 ledger revisions) completes in 14.0 s with 3.3 MB client memory and no string, subscript or SQL lock-escalation failure (only the product's own ^IVG.AdjW/^IVG.NKGBuild global locks during the ^KG rebuild); a run killed after 8 s leaves every content row, key and FK unchanged and the rerun completes (verify_graph ok, ledger verify equal); journal volume 96.9 MB for this content (about 420 bytes per edge, from the ^KG rebuild); setup re-run over the pin's own schema is a no-op on content (st-live-setup-rerun)",
+   "as_built_findings": [],
+   "remaining": "the whole-table Python migrations named before (migrations/upgrade.py:441-451, kg_node_stores.py:335-356, docs_and_edge_vectors.py:575, graph_scoped_embeddings.py:1218) belong to upgrade_to_4_0_0, which only a 3.x namespace needs and initialize_schema does not call on a 4.5.1 one; driving them needs the v3.2.0 release fixture, which operator ruling O-1 does not authorize (blocked-access: O-1 scope). Server memory figures are %SYS.ProcessQuery's MemoryPeak/MemoryUsed as reported; journal space at larger scales is extrapolated, not measured",
+   "sub_lane": "upgrade",
+   "supersedes": {
+    "status": "open",
+    "product_obligation": "unknown"
+   }
+  }
+ ]
+}

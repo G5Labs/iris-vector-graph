@@ -477,6 +477,51 @@
   "notes": "Same defect class as F-1013 (PageRankEmbedded); stated as built in ALG-B7.90. EigenvectorGlobal did not converge on this acyclic test graph, so only closeness and betweenness were shown live."
  },
  {
+  "id": "F-C1046",
+  "module": "10",
+  "title": "The ^NKG traversal class methods called directly (k-hop neighbours, shortest path, distinct k-hop count) answer every graph merged",
+  "intended": "An algorithm that takes no graph answers for the default graph alone and never mixes in a named graph's edges (ALG-I3, experiment/playbook-uplift/ontology/10-algorithms.md:45, citing docs/USER_GUIDE.md:767-775 and CONTEXT.md:97-101; SYS-I2). The product's own guard states why a reader of ^NKG cannot answer one graph: ^NKG holds every graph's edges with no graph key, and the ^NKG SQL functions refuse once a named graph has an edge so that plain SQL cannot get a mixed answer (iris_src/src/Graph/KG/NKGAccel.cls:213-223; ALG-B7, ALG-B7.2, 10-algorithms.md:129-131).",
+  "observed": "Live, AUDITD (st-live-reads3-10, oracle self-tested by st-control-reads3-selftest): default graph a-R->b, b-R->c, a-S->c, c-R->a; the same ids with edges a-R->c, c-R->a, a-R->d, d-R->b, b-S->a written in graphs stg1 and stg2, then engine.sync() (^NKG merges them). Over the Native API, with no graph argument: Graph.KG.NKGAccelTraversal.KHopNeighbors('a', 2, 1000) and its NKGAccel wrapper, KHopJson and KHopNeighborsSorted list node d (which exists only in the named graphs) at dist 1, totalNodes 3 -> 4; ShortestPathNKG('a', 'd', 10) answers {\"hops\":1} instead of {\"hops\":-1}; CountDistinctKHop('a', '', 2, 'out'|'both') estimate 3 -> 4. None of them changed when only edgeless nodes with labels/properties were added in the named graphs and properties on the default graph's nodes, so the change comes from the named graphs' edges. Their bodies read ^NKG(-1, ...) and ^NKG(\"$NI\") with no graph key and no refusal (NKGAccelTraversal.cls:20-186, 366-553). In the same run BFSJson, which without the library answers from the default graph's ^KG (Traversal.BFSFastJsonSorted with graph \"\"), did not change.",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "st-live-reads3-10"
+   },
+   {
+    "kind": "control",
+    "ref": "st-control-reads3-selftest"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/NKGAccelTraversal.cls:20-186"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/NKGAccelTraversal.cls:366-553"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/NKGAccel.cls:164-191"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/NKGAccel.cls:213-223"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/query.py:4361-4404"
+   }
+  ],
+  "gates": [
+   "3.4-declared-reads"
+  ],
+  "severity": "S3",
+  "confidence": "high",
+  "remedy": "Give these readers the refusal the ^NKG SQL functions have (NKGAccel.RefuseMergedGraphs before reading ^NKG), or a graph argument that restricts the walk to one graph's edges; until then document that they answer every graph merged. Add a test with the same ids and edges in a named graph.",
+  "notes": "Companion of F-C1041 (centrality and community class methods, same mechanism) and F-1002 (RandomWalkJson). CountDistinctKHop is also reached by the product's Cypher approx_count_distinct route (query.py:4361-4404), which refuses USE GRAPH but checks no named graph; whether that public answer is wrong for an all-graphs read (CONTEXT.md All-graphs read: union of each graph's own answer) was not run here (module 08's surface), so the severity is kept at F-C1041's S3 for the direct class-method calls observed."
+ },
+ {
   "id": "F-C1240",
   "module": "12",
   "title": "EraseAll kills ^ArnoKG, a store the erase plan (GraphStores.Inventory) does not list",

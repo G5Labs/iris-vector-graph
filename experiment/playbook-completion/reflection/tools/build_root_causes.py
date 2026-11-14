@@ -37,7 +37,7 @@ RCS = [
      "'') and join on (graph_id, id); refuse unscoped calls; give every reader's tests a two-graph fixture with one id "
      "held by both graphs.",
      "F-0106 F-0206 F-0616 F-0707 F-0711 F-0816 F-0818 F-0819 F-0820 F-1001 F-1002 F-1006 F-1008 F-1009 F-1013 "
-     "F-1503 F-1507 F-1603 F-1604 F-1701 F-C1041 F-C1547"),
+     "F-1503 F-1507 F-1603 F-1604 F-1701 F-C1041 F-C1046 F-C1547"),
     ("Stored facts whose key omits the graph",
      ["SYS-I2"], "SYS-D3 (each piece of data belongs to one graph); ADR-0013/plan.md:9-10 (node records are graph-blind by design)",
      "Several stores key a fact without its graph: ledger node records (genesis and LedgerApply record nodes "

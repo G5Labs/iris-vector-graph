@@ -30,7 +30,7 @@ From the validation lane (`validation/SUITES.md`, `validation/results.json`): un
 
 ## C. Does the product's own suite detect the defects this audit reproduced?
 
-Reproduced findings (reproduced-live, reproduced-test, reproduced-model, confirmed-source): **297**. Detected by a product test that is red at the pin because of the defect: **4** (F-C0502, F-C0606, F-C1002, F-C1706). **Not detected by any product test: 293** (by severity S1 43, S2 113, S3 93, S4 44; by disposition confirmed-source 56, reproduced-live 218, reproduced-model 7, reproduced-test 12). 8 further findings are intent-undecided or blocked-access and are not counted either way.
+Reproduced findings (reproduced-live, reproduced-test, reproduced-model, confirmed-source): **298**. Detected by a product test that is red at the pin because of the defect: **4** (F-C0502, F-C0606, F-C1002, F-C1706). **Not detected by any product test: 294** (by severity S1 43, S2 113, S3 94, S4 44; by disposition confirmed-source 56, reproduced-live 219, reproduced-model 7, reproduced-test 12). 8 further findings are intent-undecided or blocked-access and are not counted either way.
 
 The four detected findings are the validation lane's own: they were found by running the suites (`zz-validation.json`), so the suites detected nothing the other lanes found. Every S1 finding that is reproduced (43) is undetected by the product's tests.
 
@@ -82,7 +82,7 @@ Undetected findings by root cause, and the product test that would have detected
 
 | Root cause | Findings | Not detected | Test that should exist |
 |---|---|---|---|
-| RC-01 Graph scope is added by hand to each statement | 22 | 21 | a two-graph fixture with one id held by both graphs, run through every reader and writer (USE GRAPH, all-graphs, default graph) |
+| RC-01 Graph scope is added by hand to each statement | 23 | 22 | a two-graph fixture with one id held by both graphs, run through every reader and writer (USE GRAPH, all-graphs, default graph) |
 | RC-02 Stored facts whose key omits the graph | 8 | 8 | the same fixture for ownership checks: redaction targets, node deletes, verify(), index use under a graph, snapshot round trip of named-graph rows |
 | RC-03 Removal reach is not derived from a declared store inventory | 12 | 12 | an inventory-driven residue scan after erase + redact over every store, field and copy (indexes, temporal globals, routes, quarantine, legacy rows, archives), as the simulator's SC-001 scan does for the ledger |
 | RC-04 Erase, ledger commits and redaction start are not serialized on the ledger head lock | 10 | 10 | two-process interleaving tests at the eraser / commit / redaction-start boundaries with a held lock to force the window (as live-f1201-reproduced and ib-HD1201-open-erasure) |

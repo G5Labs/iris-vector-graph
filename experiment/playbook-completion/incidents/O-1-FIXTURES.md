@@ -41,3 +41,9 @@ or written in IRIS), compared by `incidents/o1/compare_classes.py` with the pin'
 Compiling anything else (new or modified classes, other releases, the audit's own helpers) stays out of scope. The
 native executor compiling generated plan classes at run time (trace-replay cell 09) is the product's own behaviour,
 not a fixture; it was not exercised and is not claimed under O-1.
+
+## Further use under O-1 (structural lane, 2026-11-14)
+
+| Setup | Version | Namespace | Classes | Effect |
+|---|---|---|---|---|
+| v4.5.1 release built by the pinned fixture `scripts/fixtures/build_release_namespace.build('v4.5.1', 'IVG262CAP')` (default schema `Graph_KG`), called unmodified by `structural/upgrade/upgrade_probe.py build` (19:36:44-19:36:56 UTC) | v4.5.1 = `f60b20c2` | `IVG262CAP` (database `/usr/irissys/mgr/ivg262cap/`) | 165 non-% classes after the build (85 `Graph.KG.*`, 37 `User.*`, 2 `IVG.*`, 1 `iris.vector.*`, 40 generated `INFORMATION.SCHEMA.*`; `$RUN_DIR/structural/upgrade/build.json`) | content written through v4.5.1's own API (`structural/upgrade/load451_child.py`: BulkLoader.load_networkx, bulk_create_nodes/edges, bulk_create_edges_temporal, store_embeddings, ledger commits), then the pin's own `initialize_schema()` upgrade (dry run, a run killed mid-way, the completing run) for 3.6-capacity/01; the namespace then holds the pin's classes over v4.5.1 residue; kept, never dropped |

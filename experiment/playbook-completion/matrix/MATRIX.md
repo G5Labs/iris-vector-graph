@@ -30,12 +30,12 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 3.3a-mechanisms | model | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 3.3a-lifecycles | model | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 3.3a-domain-contract | model | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| 3.3a-writesets | model | 190 | 0 | 13 | 0 | 1 | 82 | 0 | 9 | 69 | 36 | 0 | 7 | 1 |
+| 3.3a-writesets | model | 191 | 0 | 12 | 0 | 1 | 82 | 0 | 9 | 69 | 36 | 0 | 7 | 1 |
 | 3.3a-trace | model | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.4-statements | product | 0 | 0 | 16 | 0 | 3 | 5 | 0 | 0 | 0 | 0 | 0 | 13 | 1 |
 | 3.4-ownership | product | 18 | 0 | 0 | 0 | 1 | 18 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | 3.4-storage-order | product | 18 | 0 | 0 | 0 | 1 | 7 | 0 | 0 | 0 | 0 | 0 | 11 | 1 |
-| 3.4-declared-reads | product | 16 | 0 | 2 | 0 | 1 | 18 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| 3.4-declared-reads | product | 17 | 0 | 1 | 0 | 1 | 18 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | 3.4-generator | method | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | 3.5-handlers | product | 2 | 0 | 16 | 0 | 1 | 9 | 0 | 0 | 0 | 0 | 0 | 9 | 1 |
 | 3.5-lockplans | product | 11 | 0 | 7 | 0 | 1 | 12 | 0 | 0 | 0 | 0 | 0 | 6 | 1 |
@@ -47,7 +47,7 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 3.6-row-permutation | product | 18 | 0 | 0 | 0 | 1 | 7 | 1 | 0 | 0 | 0 | 0 | 10 | 1 |
 | 3.6-keys | product | 17 | 0 | 0 | 0 | 2 | 14 | 0 | 0 | 0 | 0 | 0 | 3 | 2 |
 | 3.6-fk | product | 13 | 0 | 0 | 0 | 6 | 9 | 0 | 0 | 0 | 0 | 0 | 4 | 6 |
-| 3.6-capacity | product | 17 | 0 | 1 | 0 | 1 | 17 | 0 | 0 | 0 | 0 | 0 | 1 | 1 |
+| 3.6-capacity | product | 18 | 0 | 0 | 0 | 1 | 17 | 0 | 0 | 0 | 0 | 0 | 1 | 1 |
 | 3.6-closure | product | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 3.7-explorers | model | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0 |
 | 3.7-integration-worlds | product | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
@@ -78,7 +78,7 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 5c-root-causes | method | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 5c-reviewers | method | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
-Totals: {'closed': 606, 'not-applicable': 35, 'open': 87, 'blocked': 24}; evidence grade of closed cells: {'registered-run': 490, 'inspected': 116}; product: {'unknown': 191, 'n/a': 33, 'fails': 407, 'intent-undecided': 6, 'holds-in-model-only': 1, 'holds-live': 9, 'holds-inspected': 69, 'holds-as-detection': 36}
+Totals: {'closed': 609, 'not-applicable': 35, 'open': 84, 'blocked': 24}; evidence grade of closed cells: {'registered-run': 493, 'inspected': 116}; product: {'unknown': 191, 'n/a': 33, 'fails': 407, 'intent-undecided': 6, 'holds-in-model-only': 1, 'holds-live': 9, 'holds-inspected': 69, 'holds-as-detection': 36}
 
 ## Writer census obligations (review R2-02)
 

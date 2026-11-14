@@ -4,19 +4,19 @@ Lane reflection of the completion audit, product pin `3eaa79cf`. Level: **method
 
 ## Corpus and rule
 
-- Findings: every id in the original submission (`experiment/playbook-uplift/FINDINGS.md`, `findings/*.md`: 197 ids) and every audit record in `findings/audit/*.json` (314 records, 311 distinct ids: 197 original, 114 new). Ids recorded twice take the later file's record, as the matrix does: F-0908 (09 then zz-versions), F-1001 (10 then zz-versions), F-C1803 (18 then zz-versions).
-- Dispositions in the corpus: blocked-access 2, confirmed-source 56, duplicate 1, intent-undecided 6, not-reproduced 3, refuted 2, reproduced-live 218, reproduced-model 7, reproduced-test 16.
+- Findings: every id in the original submission (`experiment/playbook-uplift/FINDINGS.md`, `findings/*.md`: 197 ids) and every audit record in `findings/audit/*.json` (315 records, 312 distinct ids: 197 original, 115 new). Ids recorded twice take the later file's record, as the matrix does: F-0908 (09 then zz-versions), F-1001 (10 then zz-versions), F-C1803 (18 then zz-versions).
+- Dispositions in the corpus: blocked-access 2, confirmed-source 56, duplicate 1, intent-undecided 6, not-reproduced 3, refuted 2, reproduced-live 219, reproduced-model 7, reproduced-test 16.
 - Each finding has exactly one **primary** root cause; **secondary** causes are listed where another rule is also broken. Refuted, not-reproduced and duplicate findings are listed separately and count to no root cause (6). Intent-undecided and blocked-access findings are assigned but marked *conditional* (8): the behaviour is observed or confirmed in source, the intent or the live reproduction is not settled.
 - A root cause is a missing or violated shared rule or mechanism. 'Violates' names the original ontology's universal axioms SYS-I1..SYS-I10 (`experiment/playbook-uplift/ontology/00-system.md`) where one applies, and otherwise the playbook principle or product document it breaks.
 - Cross-reference to the semantics lane (`semantics/axioms.json`, `semantics/mechanisms.json`): final ids: each root cause names the axioms (AX-NN) it violates and the mechanism (M-NN) its remedy needs; member_classes counts the semantics lane's own classes of its members. The checker verifies every AX/M id against the final files; 'agreeing' counts the members the semantics lane itself classed under one of the root cause's axioms (an independent classification of the same findings, `semantics/src/finding_classes.json`).
 
-**Result: 311 findings -> 305 assigned to 36 root causes, 6 excluded.** The ten largest root causes cover 144 of the 305 assigned findings (47%).
+**Result: 312 findings -> 306 assigned to 36 root causes, 6 excluded.** The ten largest root causes cover 145 of the 306 assigned findings (47%).
 
 ## Root causes (ordered by findings covered, then S1 count)
 
 | Rank | Id | Root cause | Violates | Findings | S1 | S2 | S3 | S4 | Highest | Conditional | Secondary |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | RC-01 | Graph scope is added by hand to each statement | SYS-I2 | 22 | 12 | 7 | 3 | 0 | S1 | 1 | 9 |
+| 1 | RC-01 | Graph scope is added by hand to each statement | SYS-I2 | 23 | 12 | 7 | 4 | 0 | S1 | 1 | 9 |
 | 2 | RC-33 | Stated refusals, options and protocol verbs are accepted and ignored | SYS-I9 | 18 | 0 | 6 | 8 | 4 | S2 | 1 | 2 |
 | 3 | RC-14 | Failures are swallowed into empty, default or success answers | SYS-I9 | 17 | 0 | 7 | 6 | 4 | S2 | 0 | 13 |
 | 4 | RC-31 | Descriptions are written by hand and not checked against the code | (none of SYS-I1..I10) | 16 | 0 | 0 | 13 | 3 | S3 | 0 | 12 |
@@ -55,7 +55,7 @@ Lane reflection of the completion audit, product pin `3eaa79cf`. Level: **method
 
 ## Top 10 (findings covered, then severity)
 
-1. **RC-01 Graph scope is added by hand to each statement** — 22 findings (12 S1, 7 S2, 3 S3), highest S1. Remedy: Route every read and write through one graph-scoped access layer whose statements always bind graph_id (default '') and join on (graph_id, id); refuse unscoped calls; give every reader's tests a two-graph fixture with one id held by both graphs.
+1. **RC-01 Graph scope is added by hand to each statement** — 23 findings (12 S1, 7 S2, 4 S3), highest S1. Remedy: Route every read and write through one graph-scoped access layer whose statements always bind graph_id (default '') and join on (graph_id, id); refuse unscoped calls; give every reader's tests a two-graph fixture with one id held by both graphs.
 2. **RC-33 Stated refusals, options and protocol verbs are accepted and ignored** — 18 findings (6 S2, 8 S3, 4 S4), highest S2. Remedy: Audit every documented refusal, parameter and protocol verb mechanically (a list generated from the docs and specs), implement it or refuse it with a named error, and test each.
 3. **RC-14 Failures are swallowed into empty, default or success answers** — 17 findings (7 S2, 6 S3, 4 S4), highest S2. Remedy: Enforce the 4.6.0 rule mechanically: no handler returns an empty/default answer from an except clause; every outcome (removed, DONE, restored counts, health, legs used) is computed from the operation's own result; a lint over except clauses plus a fault-injection test per reader.
 4. **RC-31 Descriptions are written by hand and not checked against the code** — 16 findings (13 S3, 3 S4), highest S3. Remedy: Generate or test every description: execute documentation examples (tests/docs), check spec and ADR status lines in CI, generate the wire schema, constraint lists and status parts from the code, and keep evidence claims tied to commits of this repository.
@@ -70,7 +70,7 @@ Lane reflection of the completion audit, product pin `3eaa79cf`. Level: **method
 
 - S1 findings (44 assigned) concentrate in few causes: RC-01 12, RC-03 6, RC-04 5, RC-02 4, RC-09 2, RC-11 2, RC-19 2, RC-20 2, RC-22 2, RC-25 2, RC-35 2, RC-07 1, RC-08 1, RC-16 1.
 - 17 of 36 root causes break no SYS-I axiom of the original ontology (RC-12, RC-16, RC-17, RC-18, RC-19, RC-20, RC-21, RC-22, RC-23, RC-24, RC-26, RC-28, RC-29, RC-30, RC-31, RC-32, RC-36). The semantics lane's fourteen axioms (AX-01..AX-14) cover some of them (authorization AX-13, progress AX-14, vector identity and derived marks AX-01, wire answers AX-12); 11 root causes map to none of AX-01..AX-14 either (RC-16, RC-17, RC-18, RC-19, RC-21, RC-23, RC-24, RC-28, RC-29, RC-31, RC-32): candidates for further axioms or for the lane's FUNC/DOC/ENV/TEST classes.
-- Shared-mechanism view (playbook: '12 shared mechanisms closed 90%'): one graph-scoped access layer (RC-01, RC-02), one store inventory (RC-03), one ledger head-lock protocol and server-side write gate (RC-04, RC-08), one staleness epoch (RC-06, RC-07), one write-transaction wrapper (RC-10, RC-11), one outcome/error rule (RC-14, RC-15, RC-33), an executable environment contract (RC-12) and one owner per store with current indexes (RC-34, RC-35) would address the root causes of 155 of the 305 assigned findings. This is a statement about the grouping, not a claim that the remedies are correct or sufficient: each remedy is prose, nothing was implemented or tested here.
+- Shared-mechanism view (playbook: '12 shared mechanisms closed 90%'): one graph-scoped access layer (RC-01, RC-02), one store inventory (RC-03), one ledger head-lock protocol and server-side write gate (RC-04, RC-08), one staleness epoch (RC-06, RC-07), one write-transaction wrapper (RC-10, RC-11), one outcome/error rule (RC-14, RC-15, RC-33), an executable environment contract (RC-12) and one owner per store with current indexes (RC-34, RC-35) would address the root causes of 156 of the 306 assigned findings. This is a statement about the grouping, not a claim that the remedies are correct or sufficient: each remedy is prose, nothing was implemented or tested here.
 
 ## Root-cause details
 
@@ -79,9 +79,9 @@ Lane reflection of the completion audit, product pin `3eaa79cf`. Level: **method
 - Statement: Graph isolation is a column or first subscript that every query, join, walk, procedure and writer must add for itself; there is no graph-scoped access layer. Readers and writers that omit the predicate (all-graphs walks, joins by id across graphs, schema procedures under USE GRAPH, the SQL adapter, sample servers, native readers, reifier deletion) answer with, or change, another graph's content.
 - Violates: SYS-I2; SYS-D3/SYS-D4 (each datum belongs to one graph; a call that names no graph uses the default graph); CONTEXT.md:38-43 (an all-graphs read is the union of each graph's own answer).
 - Highest severity S1; modules 01, 02, 06, 07, 08, 10, 15, 16, 17.
-- Semantics lane: axioms AX-02; mechanism M-09; 22 of 22 members classed under one of these axioms by the semantics lane; its classes of the members: AX-02 22.
+- Semantics lane: axioms AX-02; mechanism M-09; 23 of 23 members classed under one of these axioms by the semantics lane; its classes of the members: AX-02 23.
 - Remedy (prose only): Route every read and write through one graph-scoped access layer whose statements always bind graph_id (default '') and join on (graph_id, id); refuse unscoped calls; give every reader's tests a two-graph fixture with one id held by both graphs.
-- Findings (22):
+- Findings (23):
   - F-0106 [S2, reproduced-live] Property keys of a label mix graphs
   - F-0206 [S2, reproduced-live] Some Python readers join one graph's ids with another graph's data
   - F-0616 [S2, reproduced-live] The embed selector's label filter crosses graphs, and its exclude pattern escapes without ESCAPE
@@ -103,6 +103,7 @@ Lane reflection of the completion audit, product pin `3eaa79cf`. Level: **method
   - F-1604 [S1, reproduced-live] The sample API's biomedical fields and its update mutation ignore graphs
   - F-1701 [S1, reproduced-live] The SQL adapter's unscoped node and label reads merge graphs
   - F-C1041 [S3, reproduced-live] The ^NKG centrality class methods called directly answer every graph merged; only the SQL functions refuse
+  - F-C1046 [S3, reproduced-live] The ^NKG traversal class methods called directly (k-hop neighbours, shortest path, distinct k-hop count) answer every graph merged
   - F-C1547 [S2, reproduced-live] get_reifications reads the reifier's properties from every graph
 - Also a secondary cause of: F-0209, F-0507, F-0705, F-0802, F-0815, F-1105, F-C0340, F-C1642, F-C1742
 

@@ -25,3 +25,11 @@ release built by a pinned upstream fixture. None is dropped: they stay for attri
 Note (steer 8): AUDITCORE was lent to the contract-2 lane for premise E-1 (the pin's own compiled embedded SQL; nothing compiled). It has no test rows left; the pin's adjacency index left its non-transactional counters `^KG("gen","env2e1g",...)`, `^KG("gen",0,"env2e1-n5"|"env2e1-n6")` and increments of `^KG("__version")`. They are product-written globals and are kept for attribution; the crash world resets AUDITCORE with the product's own EraseAll/PurgeAll before its trials.
 
 Note (steer 9): during `rx-live-10-rebuild-wait` (window ending ~14:51 UTC, AUDITE) a process the probe did not open (pid 134015) wrote 26 journal records to AUDITE's database; by 15:14 it was gone (`$RUN_DIR/refusals/10/pid-134015.out`). Not attributed. Candidates: a background process the product itself starts (the case holds `^IVG.NKGBuild` to make a rebuild wait), or a process of another lane (none was assigned AUDITE then; the trace-replay library defaults to AUDITE when `TR_NAMESPACE` is unset). The run's verdicts are attributed per process, so a foreign write can only cause a false failure, never a false pass; the run passed.
+
+Note (structural lane, O-1 use): `IVG262CAP`, database `/usr/irissys/mgr/ivg262cap/`, created 2026-11-14 19:36:44-19:36:56 UTC by
+`locks.sh iris timeout 1800 python experiment/playbook-completion/structural/upgrade/upgrade_probe.py build`, which calls the
+pinned fixture unmodified: `scripts/fixtures/build_release_namespace.build("v4.5.1", "IVG262CAP")` (`make_scratch_namespace.recreate`
+on an absent name, then v4.5.1's own `initialize_schema` and the fixture's seed). 165 non-% classes after the build (85 `Graph.KG.*`,
+37 `User.*`, 2 `IVG.*`, 1 `iris.vector.*`, 40 IRIS-generated `INFORMATION.SCHEMA.*`; list in `$RUN_DIR/structural/upgrade/build.json`).
+Then content through v4.5.1's own API (`structural/upgrade/load451_child.py`) and the pin's `initialize_schema()` upgrade (3.6-capacity/01,
+runs `st-live-cap-upgrade-*`). Kept for attribution; never dropped.

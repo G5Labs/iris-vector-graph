@@ -7355,7 +7355,9 @@
    ],
    "cited_runs": [
     "followup-writer-census",
+    "st-live-bls-session",
     "ws-check-r3",
+    "ws-check-r4",
     "ws-live-ba-explicit-survives",
     "ws-live-ba-marker-qualifier",
     "ws-live-ba-noindex-parallel",
@@ -7369,9 +7371,11 @@
     "run:ws-live-ba-explicit-survives",
     "run:ws-live-ba-marker-qualifier",
     "run:ws-live-ba-vec-node-delete",
+    "run:st-live-bls-session",
+    "run:ws-check-r4",
     "run:followup-writer-census"
    ],
-   "evidence_grade": "inspected",
+   "evidence_grade": "registered-run",
    "findings": [
     "F-0301",
     "F-0303",
@@ -7413,9 +7417,9 @@
     ]
    },
    "product_obligation": "fails",
-   "remaining": "open breadth-a pairs: 03|GID-I4.10|py:IRISGraphEngine.bulk_load_session (bulk_load_session disables index maintenance; not probed) Census reopen lifted: every census cell of this module is discharged (writesets/DISCHARGES.json). Corrected census (followup-writer-census): 28 open per-obligation cells of this gate in module 03 (WS-OBL 28; matrix-input/writer-census-obligations.json) [review-response R2-02].",
+   "remaining": "census part (28 cells) and all 97 breadth-a module-invariant pairs discharged; the last open pair 03|GID-I4.10|bulk_load_session holds live (st-live-bls-session: rows written inside a session are seen by the unique key and the writers' existence checks; the F-C0350 control does duplicate). Orchestrator update, steer 11. Census reopen lifted: every census cell of this module is discharged (writesets/DISCHARGES.json). Corrected census (followup-writer-census): 28 open per-obligation cells of this gate in module 03 (WS-OBL 28; matrix-input/writer-census-obligations.json) [review-response R2-02].",
    "source": "matrix-input/writesets.json",
-   "status": "open",
+   "status": "closed",
    "supplemented_by": [
     "matrix-input/review-response-2.json"
    ]
@@ -9927,15 +9931,25 @@
   {
    "cited_runs": [
     "st-control-reads-selftest",
-    "st-live-reads-a"
+    "st-control-reads3-selftest",
+    "st-live-reads-a",
+    "st-live-reads3-04"
    ],
    "evidence": [
+    "run:st-control-reads3-selftest",
+    "run:st-live-reads3-04",
     "run:st-control-reads-selftest",
     "run:st-live-reads-a",
+    "experiment/playbook-completion/structural/reads3/method.json",
+    "experiment/playbook-completion/structural/reads3/groups.json",
+    "experiment/playbook-completion/structural/reads3/static.json",
+    "experiment/playbook-completion/structural/reads3/ni3.py",
+    "experiment/playbook-completion/structural/reads3/ni3core.py",
+    "experiment/playbook-completion/structural/reads3/ni3_04.py",
     "experiment/playbook-completion/structural/reads/method.json",
     "experiment/playbook-completion/structural/reads/noninterference.py"
    ],
-   "evidence_grade": "live",
+   "evidence_grade": "registered-run",
    "gate": "3.4-declared-reads",
    "level": "product",
    "module": "04",
@@ -9946,10 +9960,14 @@
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "113 of 116 inventoried read/both entry points not checked: cls:Graph.KG.Adjacency.Put, cls:Graph.KG.Adjacency.PutShadow, cls:Graph.KG.Adjacency.Remove, cls:Graph.KG.Adjacency.Reweight, cls:Graph.KG.TraversalBuild.BuildKG, py:IRISGraphEngine.sync, cls:Graph.KG.Adj.WarmAll, cls:Graph.KG.Adj.WarmCache, cls:Graph.KG.Adj.WarmFill, cls:Graph.KG.AdjIndex.DeleteIndex, cls:Graph.KG.AdjIndex.InsertIndex, cls:Graph.KG.AdjIndex.UpdateIndex, cls:Graph.KG.Adjacency.AssertTemporalRow, cls:Graph.KG.Adjacency.EndRebuild, cls:Graph.KG.Adjacency.FillTriple, cls:Graph.KG.Adjacency.MarkGraphGone, cls:Graph.KG.Adjacency.PutKeyed, cls:Graph.KG.Adjacency.RemoveKeyed, cls:Graph.KG.Adjacency.RemoveNode, cls:Graph.KG.Adjacency.RemoveSource, cls:Graph.KG.Adjacency.RetractTemporalRow, cls:Graph.KG.Adjacency.RetractTemporalRows, cls:Graph.KG.Adjacency.RetractTemporalShadows, cls:Graph.KG.Adjacency.RowPut, cls:Graph.KG.Adjacency.RowRemove, cls:Graph.KG.Adjacency.RowUpdate, cls:Graph.KG.Adjacency.SetLeafFromLowest, cls:Graph.KG.Adjacency.WriterLock, cls:Graph.KG.EdgeScan.BulkDeleteAdjacency, cls:Graph.KG.EdgeScan.BulkIngestEdgesFile, cls:Graph.KG.EdgeScan.BulkIngestEdgesSQL, cls:Graph.KG.EdgeScan.BulkIngestNodesSQL, cls:Graph.KG.EdgeScan.DeleteAdjacency, cls:Graph.KG.EdgeScan.DeleteAdjacencyAllGraphs, cls:Graph.KG.EdgeScan.DeleteAdjacencyKeyed, cls:Graph.KG.EdgeScan.RegisterDefaultNode, cls:Graph.KG.EdgeScan.WriteAdjacency, cls:Graph.KG.EdgeScan.WriteAdjacencyKeyed, cls:Graph.KG.GraphIndex.DeleteIndex, cls:Graph.KG.GraphIndex.DropNKG, cls:Graph.KG.GraphIndex.InitStructuralLabels, cls:Graph.KG.GraphIndex.InternLabel, cls:Graph.KG.GraphIndex.InternNode, cls:Graph.KG.GraphIndex.UpdateStructuralHLL, cls:Graph.KG.TraversalBuild.ArnoCapabilities, cls:Graph.KG.TraversalBuild.BackfillDegp, cls:Graph.KG.TraversalBuild.Build2HopExactStats, cls:Graph.KG.TraversalBuild.Build2HopStats, cls:Graph.KG.TraversalBuild.BuildKGKeyed, cls:Graph.KG.TraversalBuild.BuildNKG, cls:Graph.KG.TraversalBuild.DictSweepAllowed, cls:Graph.KG.TraversalBuild.EnsureNKG, cls:Graph.KG.TraversalBuild.GuardCounters, cls:Graph.KG.TraversalBuild.InitNKGSkeleton, cls:Graph.KG.TraversalBuild.MergedDegree, cls:Graph.KG.TraversalBuild.PutLabelBack, cls:Graph.KG.TraversalBuild.PutNodeBack, cls:Graph.KG.TraversalBuild.RetireNode, cls:Graph.KG.TraversalBuild.RewriteNKG, cls:Graph.KG.TraversalBuild.RewritePass, cls:Graph.KG.TraversalBuild.SweepDegrees, cls:Graph.KG.TraversalBuild.SweepEdge, cls:Graph.KG.TraversalBuild.SweepEdges, cls:Graph.KG.TraversalBuild.SweepLabels, cls:Graph.KG.TraversalBuild.SweepMirrors, cls:Graph.KG.TraversalBuild.SweepNodes, cls:Graph.KG.TraversalBuild.SweepSketches, cls:Graph.KG.TraversalBuild.WalkSource, py:IRISGraphEngine.backfill_2hop_exact, py:IRISGraphEngine.backfill_deg2p_exact, py:IRISGraphEngine.bulk_delete_adjacency, py:IRISGraphEngine.rebuild_kg, py:IRISGraphEngine.rebuild_nkg, py:IRISGraphEngine.status, py:IRISGraphEngine.verify_sync, rest:GET /metrics, rest:GET /server, rest:POST /admin/indexes/rebuild, cls:Graph.KG.Adj.AllWarm, cls:Graph.KG.Adj.Cached, cls:Graph.KG.Adj.Count, cls:Graph.KG.Adj.HasEdges, cls:Graph.KG.Adj.NextSource, cls:Graph.KG.Adjacency.HeldElsewhere, cls:Graph.KG.Adjacency.KeyCount, cls:Graph.KG.Adjacency.OtherEdgeKeys, cls:Graph.KG.AlgoCache.Get, cls:Graph.KG.AlgoCache.Lookup, cls:Graph.KG.AlgoCache.Token, cls:Graph.KG.EdgeScan.MatchEdges, cls:Graph.KG.EdgeScan.MatchEdgesAllGraphs, cls:Graph.KG.EdgeScan.ScanOneGraph, cls:Graph.KG.Edgeless.HasOther, cls:Graph.KG.Edgeless.Loners, cls:Graph.KG.Edgeless.Scan, cls:Graph.KG.GraphIndex.GetLabelIdx, cls:Graph.KG.GraphIndex.GetNodeIdx, cls:Graph.KG.GraphVerify.VerifyGraph, cls:Graph.KG.TraversalBuild.FirstWeight, cls:Graph.KG.TraversalBuild.HeldAnywhere, cls:Graph.KG.TraversalBuild.IsSource, cls:Graph.KG.TraversalBuild.KGEdgeCount, cls:Graph.KG.TraversalBuild.LabelInKG, cls:Graph.KG.TraversalBuild.NKGEdgeCount, cls:Graph.KG.TraversalBuild.NKGLiveNodeCount, cls:Graph.KG.TraversalBuild.NKGNodeCount, cls:Graph.KG.TraversalBuild.NKGPopulated, cls:Graph.KG.TraversalBuild.NodeInKG, cls:Graph.KG.TraversalBuild.SketchOf, py:iris_vector_graph._edgeless.loners, py:iris_vector_graph._edgeless.loners_sql, py:iris_vector_graph.engine.IRISGraphEngine._adjacency_indexed, py:iris_vector_graph.stores.iris_sql_store.IRISGraphStore._cached_algorithm | non-interference sees only reads that reach the answer, and only under the perturbations listed per action in structural/reads/method.json",
-   "source": "matrix-input/structural.json",
-   "status": "open",
-   "sub_lane": "reads"
+   "remaining": "none uncovered. Limits: non-interference sees only reads that reach the answer, under the perturbations listed per key in reads3/method.json; the 32 helpers covered by a group were not run on their own; the inside perturbation left 16 keys unchanged (sensitivity not shown): cls:Graph.KG.Adj.AllWarm, cls:Graph.KG.Adj.HasEdges, cls:Graph.KG.Adj.WarmFill, cls:Graph.KG.AlgoCache.Token, cls:Graph.KG.EdgeScan.BulkDeleteAdjacency, cls:Graph.KG.EdgeScan.DeleteAdjacencyAllGraphs, cls:Graph.KG.EdgeScan.MatchEdges#default, cls:Graph.KG.GraphIndex.DropNKG, cls:Graph.KG.GraphIndex.GetLabelIdx, cls:Graph.KG.GraphIndex.InitStructuralLabels, cls:Graph.KG.GraphIndex.InternLabel, cls:Graph.KG.TraversalBuild.DictSweepAllowed, cls:Graph.KG.TraversalBuild.NKGPopulated, py:IRISGraphEngine.bulk_delete_adjacency, py:iris_vector_graph.engine.IRISGraphEngine._adjacency_indexed, py:iris_vector_graph.stores.iris_sql_store.IRISGraphStore._cached_algorithm",
+   "source": "matrix-input/structural3.json",
+   "status": "closed",
+   "sub_lane": "reads3",
+   "supersedes": {
+    "product_obligation": "unknown",
+    "status": "open"
+   }
   },
   {
    "as_built_findings": [
@@ -10137,52 +10155,74 @@
   },
   {
    "as_built_findings": [
-    "F-C1041"
+    "F-C1041",
+    "F-0820",
+    "F-1002",
+    "F-1013",
+    "F-C1046"
    ],
    "cited_runs": [
     "st-control-reads-selftest",
     "st-control-reads2-selftest",
+    "st-control-reads3-selftest",
     "st-live-reads-b",
     "st-live-reads2-03-11",
     "st-live-reads2-12-18",
+    "st-live-reads3-10",
     "st-live-susp-nkg-merged"
    ],
    "evidence": [
+    "run:st-control-reads3-selftest",
+    "run:st-live-reads3-10",
     "run:st-control-reads-selftest",
     "run:st-live-reads-b",
+    "experiment/playbook-completion/structural/reads3/method.json",
+    "experiment/playbook-completion/structural/reads3/groups.json",
+    "experiment/playbook-completion/structural/reads3/static.json",
+    "experiment/playbook-completion/structural/reads3/ni3.py",
+    "experiment/playbook-completion/structural/reads3/ni3core.py",
+    "experiment/playbook-completion/structural/reads3/ni3_10.py",
     "experiment/playbook-completion/structural/reads/method.json",
     "experiment/playbook-completion/structural/reads/noninterference.py",
     "run:st-live-reads2-12-18",
     "run:st-live-reads2-03-11",
     "run:st-control-reads2-selftest",
-    "run:st-control-reads-selftest",
     "experiment/playbook-completion/structural/reads2/method.json",
     "experiment/playbook-completion/structural/reads2/static.json",
     "run:st-live-susp-nkg-merged"
    ],
    "evidence_grade": "live",
    "findings": [
+    "F-0820",
+    "F-1002",
     "F-1006",
-    "F-C1041"
+    "F-1013",
+    "F-C1041",
+    "F-C1046"
    ],
    "gate": "3.4-declared-reads",
    "level": "product",
    "module": "10",
    "product_basis": {
     "fails": [
+     "finding F-0820",
+     "finding F-1002",
      "finding F-1006",
+     "finding F-1013",
      "finding F-C1041",
-     "stated fails by matrix-input/structural2.json",
+     "finding F-C1046",
+     "stated fails by matrix-input/structural3.json",
      "run st-live-reads-b (fail)",
+     "run st-live-reads3-10 (fail)",
      "run st-live-susp-nkg-merged (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "200 of 219 inventoried read/both entry points not checked: cls:Graph.KG.Algorithms.WCCJson, cls:Graph.KG.Algorithms.CDLPJson, cls:Graph.KG.PageRank.RunJson, cls:Graph.KG.PageRank.CheckArgs, cls:Graph.KG.PageRank.NodeSeeds, cls:Graph.KG.PageRank.WithUnscored, cls:Graph.KG.PageRank.Run, cls:Graph.KG.PageRank.PageRankGlobalJson, cls:Graph.KG.PageRankEmbedded.ComputePageRank, cls:Graph.KG.PageRankEmbedded.ComputePageRankWithMetrics, cls:Graph.KG.Centrality.DegreeCentralityJson, cls:Graph.KG.Communities.TriangleCountJson, cls:Graph.KG.Communities.KCoreJson, cls:Graph.KG.Communities.SCCJson, cls:Graph.KG.Communities.LeidenJson, cls:Graph.KG.Communities.ClosenessJsonPy, cls:Graph.KG.Communities.LeidenJsonPy, cls:Graph.KG.Communities.LeidenJsonAuto, cls:Graph.KG.Subgraph.SubgraphJson, cls:Graph.KG.Subgraph.PPRGuidedJson, cls:Graph.KG.Traversal.DijkstraProc, cls:Graph.KG.Traversal.BuildKG, cls:Graph.KG.Traversal.NKGEdgeCount, cls:Graph.KG.Traversal.NKGNodeCount, cls:Graph.KG.Traversal.NKGLiveNodeCount, cls:Graph.KG.Traversal.BuildNKG, cls:Graph.KG.Traversal.BackfillDegp, cls:Graph.KG.Traversal.Build2HopStats, cls:Graph.KG.Traversal.Build2HopExactStats, cls:Graph.KG.Traversal.KGEdgeCount, cls:Graph.KG.Traversal.NKGPopulated, cls:Graph.KG.Traversal.BFS, cls:Graph.KG.Traversal.BFSFast, cls:Graph.KG.Traversal.BFSJSON, cls:Graph.KG.Traversal.BFSFastJson, cls:Graph.KG.Traversal.BFSFastJsonDirect, cls:Graph.KG.Traversal.BFSFastJsonChunked, cls:Graph.KG.Traversal.BFSFastStream, cls:Graph.KG.Traversal.ReadLargeOutChunk, cls:Graph.KG.Traversal.BFSFastJsonSorted, cls:Graph.KG.Traversal.BFSFastCountDistinct, cls:Graph.KG.Traversal.ShortestPathJson, cls:Graph.KG.Traversal.DijkstraJson, cls:Graph.KG.Traversal.KHopCount, cls:Graph.KG.Traversal.KHopNeighborIds, cls:Graph.KG.Traversal.KHop2Count, cls:Graph.KG.Traversal.KHop2NeighborIds, cls:Graph.KG.Traversal.KHop2CountFast, cls:Graph.KG.Traversal.KHop2CountExact, cls:Graph.KG.TraversalBFS.BFS, cls:Graph.KG.TraversalBFS.BFSFast, cls:Graph.KG.TraversalBFS.BFSJSON, cls:Graph.KG.TraversalBFS.BFSFastJson, cls:Graph.KG.TraversalBFS.BFSFastJsonDirect, cls:Graph.KG.TraversalBFS.BFSFastJsonChunked, cls:Graph.KG.TraversalBFS.BFSFastStream, cls:Graph.KG.TraversalBFS.ReachTypes, cls:Graph.KG.TraversalBFS.ReadLargeOutChunk, cls:Graph.KG.TraversalBFS.BFSFastJsonSorted, cls:Graph.KG.TraversalBFS.BFSFastCountDistinct, cls:Graph.KG.TraversalKHop.KHopCount, cls:Graph.KG.TraversalKHop.KHopNeighborIds, cls:Graph.KG.TraversalKHop.KHop2Count, cls:Graph.KG.TraversalKHop.KHop2NeighborIds, cls:Graph.KG.TraversalKHop.KHop2CountFast, cls:Graph.KG.TraversalKHop.KHop2CountExact, cls:Graph.KG.TraversalPaths.ShortestPathJson, cls:Graph.KG.TraversalPaths.ShortestLength, cls:Graph.KG.TraversalPaths.DijkstraJson, cls:Graph.KG.TraversalPaths.DijkstraCost, cls:Graph.KG.VarLength.Ends, cls:Graph.KG.VarLength.NamedEnds, cls:Graph.KG.VarLength.EndsCount, cls:Graph.KG.VarLength.EndsInto, cls:Graph.KG.VarLength.CPUs, cls:Graph.KG.VarLength.LastLevelPart, cls:Graph.KG.NKGAccel.UseNKG, cls:Graph.KG.NKGAccel.ResetCache, cls:Graph.KG.NKGAccel.Load, cls:Graph.KG.NKGAccel.LoadedPath, cls:Graph.KG.NKGAccel.Unload, cls:Graph.KG.NKGAccel.IsLoaded, cls:Graph.KG.NKGAccel.WarmAdjCache, cls:Graph.KG.NKGAccel.Capabilities, cls:Graph.KG.NKGAccel.BuildNKGRust, cls:Graph.KG.NKGAccel.GetFirstNKGNode, cls:Graph.KG.NKGAccel.ExportAdjacency, cls:Graph.KG.NKGAccel.ReadLargeOutChunk, cls:Graph.KG.NKGAccel.KHopNeighbors, cls:Graph.KG.NKGAccel.KHopNeighborsSorted, cls:Graph.KG.NKGAccel.KHopJson, cls:Graph.KG.NKGAccel.RandomWalkJson, cls:Graph.KG.NKGAccel.BFSJson, cls:Graph.KG.NKGAccel.ShortestPathNKG, cls:Graph.KG.NKGAccel.CountDistinctKHop, cls:Graph.KG.NKGAccel.Build2HopExact, cls:Graph.KG.NKGAccel.ClosenessGlobal, cls:Graph.KG.NKGAccel.ClosenessGlobalMSBFS, cls:Graph.KG.NKGAccel.EigenvectorGlobal, cls:Graph.KG.NKGAccel.BetweennessGlobal, cls:Graph.KG.NKGAccel.BetweennessWorker, cls:Graph.KG.NKGAccel.BetweennessGlobalParallel, cls:Graph.KG.NKGAccel.BetweennessNeighborhood, cls:Graph.KG.NKGAccelAdjacency.ExportAdjacency, cls:Graph.KG.NKGAccelAdjacency.ExportAdjacencyWithPreds, cls:Graph.KG.NKGAccelAdjacency.StoreLargeOut, cls:Graph.KG.NKGAccelAdjacency.ReadLargeOutChunk, cls:Graph.KG.NKGAccelCentrality.ClosenessGlobal, cls:Graph.KG.NKGAccelCentrality.EigenvectorGlobal, cls:Graph.KG.NKGAccelCentrality.BetweennessGlobal, cls:Graph.KG.NKGAccelCentrality.BetweennessWorker, cls:Graph.KG.NKGAccelCentrality.BetweennessGlobalParallel, cls:Graph.KG.NKGAccelCentrality.BetweennessNeighborhood, cls:Graph.KG.NKGAccelCentrality.ClosenessGlobalMSBFS, cls:Graph.KG.NKGAccelLoader.UseNKG, cls:Graph.KG.NKGAccelLoader.ResetCache, cls:Graph.KG.NKGAccelLoader.Load, cls:Graph.KG.NKGAccelLoader.LoadedPath, cls:Graph.KG.NKGAccelLoader.LoadError, cls:Graph.KG.NKGAccelLoader.Unload, cls:Graph.KG.NKGAccelLoader.IsLoaded, cls:Graph.KG.NKGAccelLoader.WarmAdjCache, cls:Graph.KG.NKGAccelLoader.Capabilities, cls:Graph.KG.NKGAccelLoader.BuildNKGRust, cls:Graph.KG.NKGAccelLoader.GetFirstNKGNode, cls:Graph.KG.NKGAccelTraversal.KHopNeighbors, cls:Graph.KG.NKGAccelTraversal.KHopNeighborsSorted, cls:Graph.KG.NKGAccelTraversal.KHopJson, cls:Graph.KG.NKGAccelTraversal.RandomWalkJson, cls:Graph.KG.NKGAccelTraversal.LastBfsPath, cls:Graph.KG.NKGAccelTraversal.LastBfsError, cls:Graph.KG.NKGAccelTraversal.LastBfsChunks, cls:Graph.KG.NKGAccelTraversal.BFSJson, cls:Graph.KG.NKGAccelTraversal.ShortestPathNKG, cls:Graph.KG.NKGAccelTraversal.CountDistinctKHop, cls:Graph.KG.NKGAccelTraversal.StructuralGuard, cls:Graph.KG.NKGAccelTraversal.Build2HopExact, cls:Graph.KG.ArnoAccel.LibPath, cls:Graph.KG.ArnoAccel.TrustedPath, cls:Graph.KG.ArnoAccel.RequireCallout, cls:Graph.KG.ArnoAccel.LoadedPath, cls:Graph.KG.ArnoAccel.LibExists, cls:Graph.KG.ArnoAccel.OpenLibrary, cls:Graph.KG.ArnoAccel.Load, cls:Graph.KG.ArnoAccel.GetLibPath, cls:Graph.KG.ArnoAccel.IsAvailable, cls:Graph.KG.ArnoAccel.ReaderRevisions, cls:Graph.KG.ArnoAccel.LibraryVersion, cls:Graph.KG.ArnoAccel.PageRankNativeJson, cls:Graph.KG.ArnoAccel.PPRNativeJson, cls:Graph.KG.ArnoAccel.WCCNativeJson, cls:Graph.KG.ArnoAccel.CDLPNativeJson, cls:Graph.KG.ArnoAccel.SubgraphNativeJson, cls:Graph.KG.ArnoAccel.BuildGraphJson, cls:Graph.KG.ArnoAccel.PageRankGlobalJson, cls:Graph.KG.ArnoAccel.PPRJson, cls:Graph.KG.ArnoAccel.WCCJson, cls:Graph.KG.ArnoAccel.CDLPJson, cls:Graph.KG.ArnoAccel.SubgraphJson, cls:Graph.KG.ArnoAccel.KhopSampleJson, cls:Graph.KG.ArnoAccel.RandomWalkJson, cls:Graph.KG.ArnoAccel.NeighborAggJson, cls:Graph.KG.AlgoCache.Token, cls:Graph.KG.AlgoCache.Lookup, cls:Graph.KG.AlgoCache.Get, py:iris_vector_graph/stores/arno_bridge.py:resolve_lib_path, py:iris_vector_graph/stores/arno_bridge.py:record_configured_lib_path, py:iris_vector_graph/stores/arno_bridge.py:build_kg_adjacency_json, py:iris_vector_graph/stores/arno_bridge.py:build_kg_adjacency_chunked, py:iris_vector_graph/arno_readers.py:read_reader_report, py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.execute_vl_ends, py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.shortest_path_length, py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.execute_shortest_path, py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.execute_subgraph, py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.execute_degree_centrality, py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.execute_betweenness_neighborhood, eng:IRISGraphEngine.betweenness_centrality_neighborhood, eng:IRISGraphEngine.bfs_vector_rerank, eng:IRISGraphEngine.kg_GRAPH_PATH, eng:IRISGraphEngine.kg_GRAPH_WALK_TVF, eng:IRISGraphEngine.kg_MENTIONS, eng:IRISGraphEngine.kg_PPR, eng:IRISGraphEngine.kg_PPR_GUIDED_SUBGRAPH, eng:IRISGraphEngine.kg_RERANK, eng:IRISGraphEngine.rebuild_nkg, eng:IRISGraphEngine.sync, cypher:ivg.shortestpath.weighted, cypher:gds.pagerank.stream, cypher:gds.betweenness.stream, cypher:gds.shortestpath.dijkstra.stream, cypher:gds.shortestpath.dijkstra, cypher:ivg.degreecentrality, cypher:ivg.betweenness, cypher:ivg.closeness, cypher:ivg.eigenvector, cypher:ivg.leiden, cypher:ivg.trianglecount, cypher:ivg.scc, cypher:ivg.kcore, cypher:ivg.neighbors | undecided: random_walk(a) [default graph]: nodes visited (vacuous: no walk steps without the Arno library (F-1002)) | non-interference sees only reads that reach the answer, and only under the perturbations listed per action in structural/reads/method.json",
-   "source": "matrix-input/structural2.json",
+   "remaining": "not covered (8): cls:Graph.KG.ArnoAccel.PageRankNativeJson, cls:Graph.KG.ArnoAccel.PPRNativeJson, cls:Graph.KG.ArnoAccel.WCCNativeJson, cls:Graph.KG.ArnoAccel.CDLPNativeJson, cls:Graph.KG.ArnoAccel.SubgraphNativeJson, cls:Graph.KG.ArnoAccel.KhopSampleJson, cls:Graph.KG.ArnoAccel.RandomWalkJson, cls:Graph.KG.ArnoAccel.NeighborAggJson -- in this namespace each refuses or answers an empty marker before any read (observed live); the read that matters is the arno-callout library's walk of USER's ^KG, whose source is not at the pin and whose binary is absent from this container (F-1001, blocked-access; USER is the validation lane's). Undecided live but bounded statically: build_kg_adjacency_chunked (raises without the library; its walk reads ^KG(out/in, 0) only), Communities.ClosenessJsonPy / LeidenJsonPy (PYUNAVAIL: igraph absent; inspected to read the merged ^NKG, F-C1041). Group-only (not run on their own): PageRank.Run, VarLength.EndsInto / NamedEnds, BetweennessWorker x2, random_walk (its library path is NKGAccel.RandomWalkJson, F-1002). Intent note: kg_MENTIONS holds against ALG-B9.10's every-graph footprint but reads named graphs under HD-0201's working assumption (F-0820's pattern; intent-undecided). Limits: non-interference sees only reads that reach the answer under the listed perturbations; the inside perturbation left 75 holding keys unchanged.",
+   "source": "matrix-input/structural3.json",
    "status": "open",
-   "sub_lane": "reads2",
+   "sub_lane": "reads3",
    "supersedes": {
     "product_obligation": "unknown",
     "status": "open"
@@ -14386,16 +14426,24 @@
   {
    "cited_runs": [
     "st-control-capkeys-selftest",
+    "st-live-cap-upgrade-build",
+    "st-live-cap-upgrade-load",
+    "st-live-cap-upgrade-run",
     "st-live-keys",
     "st-live-setup-rerun"
    ],
    "evidence": [
+    "run:st-live-cap-upgrade-run",
+    "run:st-live-cap-upgrade-load",
+    "run:st-live-cap-upgrade-build",
     "run:st-live-setup-rerun",
-    "run:st-live-keys",
     "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/incidents/O-1-FIXTURES.md",
+    "experiment/playbook-completion/structural/upgrade/upgrade_probe.py",
+    "run:st-live-keys",
     "experiment/playbook-completion/structural/STRUCTURAL.md"
    ],
-   "evidence_grade": "live",
+   "evidence_grade": "registered-run",
    "gate": "3.6-capacity",
    "level": "product",
    "module": "01",
@@ -14406,10 +14454,14 @@
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "setup's size-dependent statements are the legacy upgrade steps (iris_vector_graph/migrations/upgrade.py:441-451, statements.py:331, kg_node_stores.py:335-356, docs_and_edge_vectors.py:575: whole-table fetchall); they run only on a pre-4.6 namespace, which needs the pinned release fixture (scripts/fixtures/build_release_namespace) in a scratch namespace; not driven here",
-   "source": "matrix-input/structural.json",
-   "status": "open",
-   "sub_lane": "capkeys"
+   "remaining": "the whole-table Python migrations named before (migrations/upgrade.py:441-451, kg_node_stores.py:335-356, docs_and_edge_vectors.py:575, graph_scoped_embeddings.py:1218) belong to upgrade_to_4_0_0, which only a 3.x namespace needs and initialize_schema does not call on a 4.5.1 one; driving them needs the v3.2.0 release fixture, which operator ruling O-1 does not authorize (blocked-access: O-1 scope). Server memory figures are %SYS.ProcessQuery's MemoryPeak/MemoryUsed as reported; journal space at larger scales is extrapolated, not measured",
+   "source": "matrix-input/structural3.json",
+   "status": "closed",
+   "sub_lane": "upgrade",
+   "supersedes": {
+    "product_obligation": "unknown",
+    "status": "open"
+   }
   },
   {
    "cited_runs": [],
@@ -36427,6 +36479,45 @@
   },
   {
    "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "st-live-reads3-10"
+    },
+    {
+     "kind": "control",
+     "ref": "st-control-reads3-selftest"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/NKGAccelTraversal.cls:20-186"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/NKGAccelTraversal.cls:366-553"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/NKGAccel.cls:164-191"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/NKGAccel.cls:213-223"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/query.py:4361-4404"
+    }
+   ],
+   "gates": [
+    "3.4-declared-reads"
+   ],
+   "id": "F-C1046",
+   "severity": "S3"
+  },
+  {
+   "confidence": "high",
    "disposition": "refuted",
    "evidence": [
     {
@@ -38078,7 +38169,7 @@
   "n/a": 33,
   "unknown": 191
  },
- "registry_runs": 1411,
+ "registry_runs": 1419,
  "starting_inventory": {
   "cells": 904,
   "decisions": 61,
@@ -38090,9 +38181,9 @@
  },
  "status_counts": {
   "blocked": 24,
-  "closed": 606,
+  "closed": 609,
   "not-applicable": 35,
-  "open": 87
+  "open": 84
  },
  "submission": "9c3719c1",
  "writer_obligations": [
