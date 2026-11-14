@@ -1,0 +1,50 @@
+[
+ {
+  "id": "F-C1720",
+  "module": "17",
+  "title": "IRISGraphStore.query_nodes(limit=n) without a label filter kills the calling Python process (SIGSEGV) on the pin's locked driver 5.3.2: it sends FETCH FIRST n ROWS ONLY, which the product's own FETCH FIRST guard is never asked about",
+  "intended": "iris_vector_graph/stores/iris_sql_store.py:1162-1181 (IRISGraphStore.query_nodes, public method of the store adapter) answers an IVGResult; its comment (lines 1177-1178) states the driver segfault on FETCH FIRST is the ARM64 driver's with a parameter placeholder and is avoided by inlining the limit as a literal. The product knows FETCH FIRST can crash the client: iris_vector_graph/engine.py:726-840 (_fetch_first_unsafe) runs a FETCH FIRST probe in a subprocess 'because the crash is a hard SIGSEGV - uncatchable in-process' and falls back to TOP; engine.py:794-795 records Community 2026.1 as taking FETCH FIRST (refusing only an ORDER BY of an aggregate). The pin's uv.lock installs intersystems-irispython 5.3.2 (F-C1706).",
+  "observed": "IRIS 2026.1 Community (Build 234U), x86_64, driver 5.3.2: every FETCH FIRST form (FETCH FIRST 0 / 2 ROWS ONLY with and without ORDER BY, OFFSET ... FETCH NEXT) ends the client Python process with SIGSEGV (returncode -11) in a child process while TOP and LIMIT answer and the server logs nothing (env2-fetchfirst-probe). Through the pin (AUDITCORE, the pin's deployed classes and schema, each call in a child process): IRISGraphStore(conn, namespace).query_nodes(limit=2) with no label filter ended the process with SIGSEGV; the control query_nodes(label_filter=..., limit=2) (no FETCH FIRST) answered; execute_cypher with LIMIT answered (env2-fc1720-query-nodes). With driver 5.4.0 every FETCH FIRST form answers and query_nodes(limit=2) returns (env2-fetchfirst-probe-d540, env2-fc1720-query-nodes-d540): the crash is the locked driver's, the SQL is accepted by the engine.",
+  "disposition": "duplicate",
+  "evidence": [
+   {
+    "kind": "run",
+    "ref": "env2-fc1720-query-nodes"
+   },
+   {
+    "kind": "run",
+    "ref": "env2-fc1720-query-nodes-d540"
+   },
+   {
+    "kind": "run",
+    "ref": "env2-fetchfirst-probe"
+   },
+   {
+    "kind": "run",
+    "ref": "env2-fetchfirst-probe-d540"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/stores/iris_sql_store.py:1162-1181"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/engine.py:726-840"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/query.py:2286-2340"
+   }
+  ],
+  "gates": [
+   "3.2-coverage",
+   "3.7-suites",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S2",
+  "confidence": "high",
+  "remedy": "Do not emit FETCH FIRST from query_nodes: use TOP n (as the engine's own readers do, nodes_edges.py:810, 882), or consult the engine's _fetch_first_unsafe guard; with the driver floor F-C1706 asks for (5.4.0 or later) the statement is also safe. Correct the comment at iris_sql_store.py:1177-1178 and the 2026.1 note at engine.py:794-795, which do not describe this driver.",
+  "notes": "Reachability: query_nodes is a public method of the SQL store adapter; the engine reaches it only for stores without the native_sql capability (_engine/query.py:2286-2340), so the IRIS engine's own Cypher path does not (both execute_cypher probes answered). The process dies, not just the call: an API server or MCP process using the adapter this way stops serving every request. Distinct from F-C1706 (same driver, different symptom: a crash rather than wrong types or errors). Found by the contract-2 lane's TOP / LIMIT / FETCH FIRST coverage (X2-TOP); FETCH FIRST stays outside the contract (P2-FETCH). The product's engine.py probe classifies this build as unsafe for a different reason than the one it logs (it would log the SIGSEGV branch, naming AI builds and a JOIN). Duplicate of F-C1743 (structural lane, filed first); its evidence is merged there. Not counted separately.",
+  "duplicate_of": "F-C1743"
+ }
+]

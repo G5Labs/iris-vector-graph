@@ -17,7 +17,7 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 3.2-differential | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.2-sharpness | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.2-mutants | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
-| 3.2-coverage | method | 4 | 0 | 15 | 0 | 0 | 5 | 0 | 0 | 0 | 0 | 0 | 14 | 0 |
+| 3.2-coverage | method | 19 | 0 | 0 | 0 | 0 | 5 | 0 | 0 | 0 | 0 | 0 | 14 | 0 |
 | 3.3-L1 | model | 18 | 0 | 0 | 0 | 1 | 18 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | 3.3-L2 | model | 18 | 0 | 0 | 0 | 1 | 18 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | 3.3-refinement | model | 18 | 0 | 0 | 0 | 1 | 18 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
@@ -55,7 +55,7 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 3.7-e2e | product | 0 | 0 | 0 | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 3.7-trace-replay | product | 16 | 0 | 1 | 1 | 1 | 14 | 0 | 0 | 0 | 0 | 0 | 4 | 1 |
 | 3.7-lock-log | product | 14 | 0 | 1 | 1 | 3 | 4 | 0 | 0 | 0 | 0 | 0 | 12 | 3 |
-| 3.7-mutation | product | 0 | 0 | 15 | 3 | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 17 | 1 |
+| 3.7-mutation | product | 0 | 0 | 0 | 18 | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 17 | 1 |
 | 3.7-perf | product | 0 | 0 | 0 | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 3.7-failure-controls | product | 0 | 0 | 0 | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 3.7-suites | product | 0 | 0 | 0 | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
@@ -78,7 +78,7 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 5c-root-causes | method | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 5c-reviewers | method | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
-Totals: {'closed': 545, 'not-applicable': 35, 'open': 162, 'blocked': 10}; evidence grade of closed cells: {'registered-run': 429, 'inspected': 116}; product: {'unknown': 198, 'n/a': 33, 'fails': 400, 'intent-undecided': 6, 'holds-in-model-only': 1, 'holds-live': 9, 'holds-inspected': 69, 'holds-as-detection': 36}
+Totals: {'closed': 560, 'not-applicable': 35, 'open': 132, 'blocked': 25}; evidence grade of closed cells: {'registered-run': 444, 'inspected': 116}; product: {'unknown': 198, 'n/a': 33, 'fails': 400, 'intent-undecided': 6, 'holds-in-model-only': 1, 'holds-live': 9, 'holds-inspected': 69, 'holds-as-detection': 36}
 
 ## Writer census obligations (review R2-02)
 
@@ -88,11 +88,11 @@ From `followup-writer-census` via `matrix-input/writer-census-obligations.json`:
 
 | Cell | Store | Status | Product |
 |---|---|---|---|
-| 3.1-coverage/13/REACH-1 | ^EmbedQueue | closed | intent-undecided |
-| 3.1-coverage/13/REACH-2 | Graph_KG.docs_quarantine | closed | intent-undecided |
-| 3.1-coverage/13/REACH-3 | Graph_KG.edge_vector_quarantine | closed | intent-undecided |
-| 3.1-coverage/13/REACH-4 | ^ArnoKG | closed | intent-undecided |
-| 3.1-coverage/13/REACH-5 | Graph_KG.rdf_edges__ivg400rescue / __ivg400unplaced | closed | intent-undecided |
+| 3.1-coverage/13/REACH-1-stated | ^EmbedQueue | closed | intent-undecided |
+| 3.1-coverage/13/REACH-2-stated | Graph_KG.docs_quarantine | closed | intent-undecided |
+| 3.1-coverage/13/REACH-3-stated | Graph_KG.edge_vector_quarantine | closed | intent-undecided |
+| 3.1-coverage/13/REACH-4-stated | ^ArnoKG | closed | intent-undecided |
+| 3.1-coverage/13/REACH-5-stated | Graph_KG.rdf_edges__ivg400rescue / __ivg400unplaced | closed | intent-undecided |
 | 3.1-coverage/13/REACH-1 | ^EmbedQueue(reqId, text \| node_id \| result \| graph) | open | unknown |
 | 3.1-coverage/13/REACH-2 | Graph_KG.docs_quarantine | open | unknown |
 | 3.1-coverage/13/REACH-3 | Graph_KG.edge_vector_quarantine | open | unknown |

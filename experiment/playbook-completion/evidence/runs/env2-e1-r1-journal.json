@@ -1,0 +1,15 @@
+{
+  "command": "python contract-2/tools/e1_journal.py $RUN_DIR/contract-2/e1-r1 (journal oracle traces/journal.py records of the case processes in /usr/irissys/mgr/auditcore/)",
+  "experiment_head": "f9e4c64b86f4261c926f274f754f2cc5f1b1e5d0",
+  "id": "env2-e1-r1-journal",
+  "kind": "check",
+  "lane": "contract-2",
+  "log": "$RUN_DIR/contract-2/e1-r1/journal-summary.json",
+  "log_bytes": 6131,
+  "log_sha256": "80c9baa525b050f4b2b4e7bfb75b2884d7fcee7e9ef6f56ad57754db1699ffef",
+  "observes": "Journal oracle for env2-e1-r1: footprints of 6 pin methods match their tables (RegisterDefaultNode: Graph_KG.nodes only; AssertTemporalRow gk 0: nodes, rdf_edges, ^KG; gk \"\": nothing written; VerifyGraph and VectorRouteGuard: nothing written; RetractTemporalRows: rdf_edges and ^KG); the embedded nodes INSERT and the embedded rdf_edges DELETE inside a transaction have the same journal signature (record types, in-transaction flags, stores, statement-level BeginTrans/CommitTrans Pending with level markers) as the dynamic DB-API statement on the same table; 15 named cases: every row write of an embedded statement issued in an open transaction is journaled in-transaction (0 outside); non-transactional writes are only row-id counters and the AdjIndex $Increment counters ^KG(\"gen\",g,s), ^KG(\"__version\")",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T12:23:07+00:00",
+  "result": "pass"
+}

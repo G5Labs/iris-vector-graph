@@ -1,0 +1,44 @@
+[package]
+name = "ivg-proofs-d9c"
+version = "0.1.0"
+edition = "2021"
+description = "Completion audit, PROOFS-D9C lane (review-4 R4-01, R4-03, R4-04, R4-14 on a copy of proofs-d9b): a copy of proofs-d9 (three target predicates, ledger-bypassing writers, erasure rollback) extended with revision metadata and zero-record revisions (F-CS01), retry-key movement to idemRedacted, statement history, record readers racing a redaction (F-1402), the scan-bound progress-only control (D-12) and the re-run of the F-1302/F-1303/F-1306 controls (proof debts D-9, D-12)."
+publish = false
+
+[dependencies]
+vstd = { version = "=0.0.0-2026-09-20-0158", features = ["std", "alloc"] }
+actors = { git = "file:///home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/playbook-reference-actors", rev = "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877" }
+
+[patch.crates-io]
+verus_builtin_macros = { git = "file:///home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/playbook-reference-actors", rev = "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877" }
+
+[features]
+# Safety controls for the NEW guards (D-9). Each removes one guard of the reviewed protocol and must make a refinement
+# proof fail in the file named here; each has a proved counterexample (src/cx_*.rs, compiled only with its feature).
+control_bypass_start = []      # src/protocol_top.rs  Start does not wait for open ledger-bypassing transactions
+control_bypass_erase = []      # src/protocol_top.rs  the eraser does not wait for open bypass transactions on its target
+control_liveness_dirty = []    # src/protocol_sys.rs  the liveness check runs at the call, unlocked, on uncommitted rows
+control_unaligned_rm = []      # src/protocol_sys.rs  a target whose record match is not inside its liveness predicate
+control_unaligned_sc = []      # src/protocol_sys.rs  a target whose statement cleanup is not inside its record match
+# Regression of an original guard in the generalised model (erasure is now four steps with rollback).
+control_f1201_erase_unlocked = []  # src/protocol_sys.rs  the eraser takes no ledger head lock
+# D-9b safety controls (each must fail only in the file named here, with a proved counterexample src/cx_*.rs).
+control_fcs01_noop_unrecorded = []    # src/protocol_rl.rs  as built: a no-op operation leaves no record; the revision row and key binding are written anyway (F-CS01)
+control_f1302_unlocked_start = []     # src/protocol_rl.rs  re-run: Start checks without the head lock; the first tombstone writes the marker (F-1302)
+control_f1303_other_marker = []       # src/protocol_rl.rs  re-run: Final runs under whatever marker exists (F-1303)
+control_f1306_replay_direct_sql = []  # src/protocol_top.rs D-9c (R4-03): a replayed retry is followed by the client's direct-SQL post-commit write, a Writer step that reads no marker (F-1306)
+control_f1350_bypass_ignores_marker = [] # src/protocol_top.rs D-9c (R4-01): a ledger-bypassing writer writes a marked target's rows (F-C1350)
+control_sc_narrow = []                # src/protocol_sys.rs Start accepts a target whose statement cleanup misses edges its record match owns
+control_f1402_reader_no_recheck = []  # src/protocol_rd.rs  as built: a reader checks the marker before reading only (F-1402)
+control_reader_marker_recheck_only = [] # src/protocol_rd.rs a reader re-checks the marker after reading but compares no epoch (HD-1401 b1)
+# Progress-only controls: every safety proof must still verify; the progress proof must fail in src/progress.rs.
+control_progress_rewind = []          # a resume rewinds the run's cursor to the first record (LedgerRedact.cls:213)
+control_bound_follows_tail = []       # D-12: the run's scan bound follows the tail, as the pin's scan does (LedgerRedact.cls:308-313)
+
+[package.metadata.verus]
+verify = true
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(verus_only)', 'cfg(verus_keep_ghost)', 'cfg(verus_keep_ghost_body)'] }
+
+[workspace]

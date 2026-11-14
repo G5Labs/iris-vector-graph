@@ -1,0 +1,17 @@
+{
+  "command": "bash contract-2/run-e1.sh $RUN_DIR/contract-2/e1-r1 7177 40 --journal (cases_e1.py --seed 7177 --random 40; driver_e1.py in 4 chunks under locks.sh iris, AUDITCORE); iris-contract(contract-2) check e1-r1/cases.json e1-r1/observed.json --mutants emb-,maxlen,sql-select-committed,rollback-one-undoes-all,dml-ignores-row-locks,stop-commits,sql-rollback-ends-all,driver-rollback-one-level,autocommit-on-keeps-txn,failed-dml-opens-nothing",
+  "experiment_head": "f9e4c64b86f4261c926f274f754f2cc5f1b1e5d0",
+  "id": "env2-e1-r1",
+  "kind": "check",
+  "lane": "contract-2",
+  "log": "$RUN_DIR/contract-2/e1-r1/report.json",
+  "log_bytes": 2841,
+  "log_sha256": "11bf19b060221ece14a7a06ba21dc5404c6823e1f6d750ca54d91b9f8f9f927f",
+  "namespace": "AUDITCORE",
+  "observes": "Premise E-1 on IRIS 2026.1 (Build 234U) Community, AUDITCORE, the pin's own compiled embedded SQL called through the Native API on the DB-API connection: 67 cases (27 named + 40 random rand-e1, seed 7177) over EdgeScan.RegisterDefaultNode (embedded SELECT INTO + INSERT on Graph_KG.nodes), Adjacency.RetractTemporalRows (embedded DELETE on rdf_edges), GraphVerify.VerifyGraph (embedded cursor), GraphStores.VectorRouteGuard (embedded SELECT TOP 1 INTO), Adjacency.AssertTemporalRow (embedded INSERT ... SELECT WHERE NOT EXISTS); 0 outcomes outside the contract permitted sets (clauses E-NEST, E-PARTIAL, E-SQL-END, E-DRV, E-AUTOCOMMIT, E-VIS, E-ROWLOCK, E-UNIQUE, E-STOP, X-STMT, X-NULL; SQLCODE -104 and -108), 67 singleton permitted sets; 14/14 mutants killed (7 E-1 mutants: emb-select-committed-only, emb-ignores-driver-autocommit, emb-empty-host-var-empty, emb-ignores-row-locks, emb-own-txn, maxlen-not-enforced, sql-select-committed-only; and 7 r2 clause mutants); cleanup left 0 test rows (non-transactional ^KG(\"gen\",...) and ^KG(\"__version\") counters the AdjIndex bumps remain, by design of the pin)",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T12:23:07+00:00",
+  "result": "pass",
+  "seed": "7177"
+}

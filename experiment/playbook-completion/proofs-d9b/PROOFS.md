@@ -111,6 +111,14 @@ epoch).
   ledger-api.md:26).
 - Every D-9 theorem (no tombstone of live content, per-target audit, marker ownership, statements match, replay =
   store once settled, Start reads committed state, pending needs cover, marked target aligned) re-verified unchanged.
+- **Qualification (doc fix after review-4 R4-01; not in the sources hash).** `theorem_no_tombstone_of_live` holds for
+  **recorded content only** (`!rec_content`): this reviewed design admits a ledger-bypassing writer re-creating target
+  content after the entry check (a bypass `BBegin` is admitted while the marker exists, `biz.rs:70`), whose history the
+  batches then tombstone — F-C1350, live (`ws-live-ins-store_node` and 11 sibling runs). F-C1350's working answer reads
+  RED-B1.1/FR-005 as the product's own checks do (any content row of the target is live); under that reading this
+  design does not exclude F-C1350, and the recorded-content reading is **intent-undecided** against it (maintainer
+  question in review-4 §5). `proofs-d9c` adds the guard G-BM (bypass writers honour the marker) and proves the theorem
+  for content of any provenance.
 
 ## 5. Premises (named; D-9's P-D9-1..P-D9-5 and PF-1..PF-6 carried unchanged)
 
@@ -165,7 +173,7 @@ error lines. Logs: `$RUN_DIR/proofs-d9b/run-20261114T120856Z/<feature>.log`.
 | **`control_fcs01_noop_unrecorded`** (R-1; **F-CS01**, as built Ledger.cls:489-492, 520-525, LedgerApply.cls:229-233, 252-263) | `protocol_rl.rs:389` `lemma_p1_binds` | `cx_fcs01` (12, the live minimal schedule: commit A's node with key 1; commit a no-op changeset on A's node with key 2 — **no record**, row with text and key 2, key 2 bound; erase A; open; start; 3 scans; ToFinal; Final ok): revision 0 redacted and key 1 in idemRedacted, but revision 1, attributable to A, keeps its text and key 2, key 2 still bound, and `Replay{key: 2}` is a step after the complete redaction (**INV-retry broken**: replayed instead of refused); `!meta_redacted(z12, 1)`; `!biz_inv` from the zero-record commit on | 158 / 1 | `proofs-d9b-fcs01-noop-unrecorded` |
 | **`control_f1302_unlocked_start`** (HD-1301 locked Start; **F-1302**, re-run) | `protocol_rl.rs:389`, `:393` `lemma_p1_binds`, `:407` `lemma_p1_enabled` | `cx_f1302` (8: commit A's edge; erase A (3 steps); open; start writes no marker; commit re-creates A; the first batch tombstones A's record while its key holds recorded content and only then writes the marker); `!biz_inv` | 157 / 2 | `proofs-d9b-f1302-unlocked-start` |
 | **`control_f1303_other_marker`** (Final under its own marker; **F-1303**, re-run) | `protocol_rl.rs:389` `lemma_p1_binds` | `cx_f1303` (17: B committed and erased; p0 redacts A to Final; p2 resumes A to Final; p0 finishes; p1 marks B and tombstones B's record; p2's Final runs under B's marker: `Audit{A, 1}` counting B's record, B's marker removed while B's run is in Batches) | 158 / 1 | `proofs-d9b-f1303-other-marker` |
-| **`control_f1306_replay_reapplies`** (HD-1305; **F-1306**, re-run) | `protocol_sys.rs:122` `lemma_p2_binds`, `:132` `lemma_p2_enabled` | `cx_f1306` (7: commit A with key 9; erase A; open; start marks A; replay of 9 writes A's content again: A holds recorded content while marked); `!biz_inv` | 157 / 2 | `proofs-d9b-f1306-replay-reapplies` |
+| **`control_f1306_replay_reapplies`** (HD-1305; **F-1306**, re-run) | `protocol_sys.rs:122` `lemma_p2_binds`, `:132` `lemma_p2_enabled` | `cx_f1306` (7: commit A with key 9; erase A; open; start marks A; replay of 9 writes A's content again: A holds recorded content while marked); `!biz_inv`. **Qualified (doc fix after review-4 R4-03):** this control models the replayed post-commit properties as *recorded* content (a store Apply, `cx_f1306.rs:41`); the pin writes them by direct SQL without a ledger record (`client.py:445-481`), so the location is that of the recorded-content encoding, not of the pin's write. `proofs-d9c` re-encodes it as a Writer step (`proofs-d9c-f1306-replay-direct-sql`) | 157 / 2 | `proofs-d9b-f1306-replay-reapplies` |
 | **`control_sc_narrow`** (G-P `rm ⊆ sc` on edges; design control, no pin finding) | `protocol_sys.rs:122` `lemma_p2_binds` | `cx_sc_narrow` (10: A's edge created then deleted — closed entry; the redaction of A with a cleanup that misses the edge tombstones both records and completes; the closed statement entry of A's edge survives); `!biz_inv` at the marking | 158 / 1 | `proofs-d9b-sc-narrow` |
 | **`control_f1402_reader_no_recheck`** (reviewed reader re-check; **F-1402**, as built client.py:720-728, replay.py:231-269) | `protocol_rd.rs:265` `lemma_rd_binds` | `cx_reader` (14: two commits of A; a reader finds no marker and reads revision 0; a whole redaction of A runs (open, start, 4 scans, ToFinal, Final); the reader reads revision 1 and returns `[[Live a1], [Tomb a2]]`: revision 0 as before the redaction, revision 1 as after it — neither history; marker absent at both ends, epoch 0 → 2) | 158 / 1 | `proofs-d9b-f1402-reader-no-recheck` |
 | **`control_reader_marker_recheck_only`** (epoch; HD-1401 alternative (b1)) | `protocol_rd.rs:265` `lemma_rd_binds` | the same `cx_reader`: the post-read marker re-check passes (no marker), only the epoch detects it (live `ib-HD1401-reader-full-race`) | 158 / 1 | `proofs-d9b-reader-marker-recheck-only` |
@@ -238,15 +246,19 @@ base. Declared empty.
 
 ## Premises the pin violates (read before citing any result)
 
-None of the reviewed guards exists at the pin, so the product's obligations stay failed as the as-built evidence says:
+None of the reviewed guards exists at the pin, so the product's obligations stay failed as the as-built evidence says
+(rows for P-D9-3, P-LV, F-C1301 live and F-C1350 added after review-4 R4-04; doc only, not in the sources hash):
 
 | Reviewed element | At the pin | Evidence |
 |---|---|---|
 | R-1: every operation leaves a record | a no-op operation leaves none; the revision row and key binding are written anyway | F-CS01, live `sim-fcs01-minimal` (control `proofs-d9b-fcs01-noop-unrecorded`) |
 | locked Start that writes its marker; Final under its own marker | unlocked opening checks, late marker; Final removes any marker | F-1302, F-1303, live (controls `proofs-d9b-f1302-unlocked-start`, `-f1303-other-marker`) |
-| a replay applies nothing | a replay re-applies post-commit properties | F-1306, live `ib-HD1305-retry-revives` (control `proofs-d9b-f1306-replay-reapplies`) |
+| a replay applies nothing | a replay re-applies post-commit properties, by direct SQL without a ledger record (client.py:445-481) | F-1306, live `ib-HD1305-retry-revives` (control `proofs-d9b-f1306-replay-reapplies`, which encodes the write as recorded content; see section 7) |
 | readers re-check marker and epoch | one marker check before a lazy paged read; no epoch exists | F-1402, live `ib-HD1401-reader-full-race` (controls `proofs-d9b-f1402-reader-no-recheck`, `-reader-marker-recheck-only`) |
-| G-L, G-P, G-B, G-BE, eraser head lock | absent | F-C1201, F-1304, F-C1308, F-1201 live; F-C1301 model (D-9 controls) |
+| G-L, G-P, G-B, G-BE, eraser head lock | absent | F-C1201, F-1304, F-C1308, F-1201 live; F-C1301 **live** (`ws-live-fc1301-delete-reification`: a nested delete_reification's uncommitted delete passed the liveness check, its rollback restored rows under tombstones); F-C1350 live (`ws-live-ins-*`, 12 writers): no writer serializes with, or honours, the marker, the missing G-B side (D-9 controls) |
+| P-D9-3: bypass writers write content rows only, never ledger globals | restore and ImportGlobals write records, marker, idemRedacted and redactedRev; a plain SQL INSERT into ledger_revisions is accepted | **violated**: `followup-writer-census` (5 ledger writers outside the modelled actions), F-C1850 live (`ws-live-gap-restore`, `ws-live-gap-marker`), F-C1150 live (`ws-live-sql-insert-wedge`) |
+| (named here) P-LV: the liveness check sees every row of the target | LiveRows' indexed COUNT(*) misses rows a `%NOINDEX` bulk load wrote | **violated**: F-C1351 live (`ws-live-noindex`: the redaction completed while the tenant's rows existed; they reappeared at the index rebuild) |
+| the no-tombstone theorem's reading: recorded content only | the product's own checks count any content row of the target as live | F-C1350 (live); intent-undecided; closed in the model by G-BM in `proofs-d9c` |
 | D-1 cursor kept with the marker; D-2 bound fixed at marking | the cursor is process-local and a re-run rescans; the scan bound follows the tail | F-C1303 live; LedgerRedact.cls:213-226, 308-313 (inspected) |
 | PF-6 (the target is eventually not live at Final) | a non-strict writer keeps a marked target live | F-C1307 live |
 

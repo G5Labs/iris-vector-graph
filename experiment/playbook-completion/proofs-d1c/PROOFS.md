@@ -198,7 +198,7 @@ transaction are F-0305 (loader chunks), F-C0301 (the adopt) and F-C0501 (the tem
 | P-L1 | one graph; the ledger is enabled and not strict; a changeset op is one atomic step; ops by tuple only (not stmt_id/op_ref) | modelling restriction (strict mode refuses delete_edge, so F-0303 needs non-strict) |
 | P-L2 | an edge erase overlaps no ledger commit | **violated**: F-1201 (live: a graph erasure removes the statement entry of an edge a concurrent ledger commit creates) |
 | P-L3 | statement ids and edge_ids are fresh (stmtNext and the %ID counter only grow) | assumed |
-| P-B1 | a batch of two chunks, one bulk call at a time, no other writer of its rows | modelling restriction; not enforced |
+| P-B1 | a batch of two chunks, one bulk call at a time, no other writer of its rows | modelling restriction; not enforced, and **violated** live: F-C0349 (`st-live-keys`, `findings/audit/zz-structural.json`): two bulk loaders of the same 50 ids started together each write all 50 nodes, leaving duplicate node, label, property and edge keys (doc fix after review-4 §5 "next pass"; not in this crate's sources hash) |
 | P-B2 | nested transactions: an inner TCOMMIT only lowers $TLEVEL and an outer rollback undoes inner work | holds by the validated IRIS contract (iris-contract E-NEST); R03-5 relies on it |
 | P-B3 | the server-loader path only (objectscript_deployed, default graph); the SQL fallback commits or rolls back as one step | modelling restriction |
 | P-T1 | one bucket of one triple (tagg is per (g, b, s, p) across targets, the counter per (g, b, s) across predicates) | modelling restriction |
@@ -207,10 +207,11 @@ transaction are F-0305 (loader chunks), F-C0301 (the adopt) and F-C0501 (the tem
 
 ## Premises the pin violates
 
-Three premises of these models are false at pin `3eaa79cf` by this audit's own evidence: P-E5 (calls are atomic:
-F-C0501 live, F-C0301 in source), P-E6 (an eraser overlaps a writer of its graph: F-1201, F-C1202) and P-L2 (an erase
-overlaps a ledger commit: F-1201). Six more are not enforced by the pin, with no observed violation: P-E1, P-E2, P-E3,
-P-E4, P-E7, P-B1. Every reviewed-design element R03-1..R03-5, R05-1..R05-4 and R12-1 is absent at the pin (section 5),
+Four premises of these models are false at pin `3eaa79cf` by this audit's own evidence: P-E5 (calls are atomic:
+F-C0501 live, F-C0301 in source), P-E6 (an eraser overlaps a writer of its graph: F-1201, F-C1202), P-L2 (an erase
+overlaps a ledger commit: F-1201) and P-B1 (one bulk call at a time, no other writer of its rows: F-C0349 live,
+`st-live-keys`, two loaders at once write duplicate keys; doc fix after review-4). Five more are not enforced by the
+pin, with no observed violation: P-E1, P-E2, P-E3, P-E4, P-E7. Every reviewed-design element R03-1..R03-5, R05-1..R05-4 and R12-1 is absent at the pin (section 5),
 and each control shows the corresponding as-built decision violating the model's contract on a reachable run. R03-3
 rests on HD-0302's working answer, an assumption that a maintainer test contradicts. So no safety result here transfers
 to the product. What transfers is the negative: each as-built decision of section 6 breaks the contract on a reachable

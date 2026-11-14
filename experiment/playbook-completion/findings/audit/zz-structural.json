@@ -816,6 +816,34 @@
    {
     "kind": "inspected",
     "ref": "iris_vector_graph/stores/iris_sql_store.py:1176-1181"
+   },
+   {
+    "kind": "run",
+    "ref": "env2-fc1720-query-nodes"
+   },
+   {
+    "kind": "run",
+    "ref": "env2-fc1720-query-nodes-d540"
+   },
+   {
+    "kind": "run",
+    "ref": "env2-fetchfirst-probe"
+   },
+   {
+    "kind": "run",
+    "ref": "env2-fetchfirst-probe-d540"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/stores/iris_sql_store.py:1162-1181"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/engine.py:726-840"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/query.py:2286-2340"
    }
   ],
   "gates": [
@@ -825,7 +853,7 @@
   "severity": "S2",
   "confidence": "high",
   "remedy": "Use TOP n (as the translator does for joins and the engine does when _fetch_first_unsafe is set) or consult _fetch_first_unsafe in the adapter; a test that runs query_nodes(limit=n) on the supported driver.",
-  "notes": "Tested with driver 5.3.2 (the pin's uv.lock) only; 5.4.0 not tried. A segfault is uncatchable in-process: every caller of the adapter (LazyKG, the store protocol's users) loses the process."
+  "notes": "Tested with driver 5.3.2 (the pin's uv.lock) only; 5.4.0 not tried. A segfault is uncatchable in-process: every caller of the adapter (LazyKG, the store protocol's users) loses the process. Merged (orchestrator, steer 8): the contract-2 lane filed the same defect independently as F-C1720 and added the cause and a driver control: the call sends FETCH FIRST n ROWS ONLY (iris_sql_store.py:1162-1181) without consulting the product's own FETCH FIRST guard (engine.py:726-840); every FETCH FIRST form crashes driver 5.3.2 (env2-fetchfirst-probe) and none crashes 5.4.0 (env2-fetchfirst-probe-d540, env2-fc1720-query-nodes-d540); the code comment's ARM64-only explanation is wrong here."
  },
  {
   "id": "F-C1848",

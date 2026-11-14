@@ -223,3 +223,20 @@ Every guard this model needs is absent at the pin: Start's liveness check is unl
 eraser (G-B, G-BE; F-C1301), and `redact(None)` without a prefix violates `rm ⊆ lv` (G-P; F-1304, live), as do targets
 whose temporal-only edges LiveRows ignores (F-C1308, live). PF-6 is violated live (F-C1307). The product's obligations
 stay failed/open as the as-built evidence says.
+
+Added after review-4 R4-04 (documentation only; this file is not in the crate's sources hash, so the registered runs
+are unaffected):
+- **F-C1301 is live**, not model only: `ws-live-fc1301-delete-reification` (a nested delete_reification's uncommitted
+  delete passed the liveness check; another connection's redaction completed; the rollback restored the rows under
+  tombstoned records).
+- **F-C1350 (live, `ws-live-ins-*`, 12 writers)** is further evidence for the missing G-B side: no ledger-bypassing
+  writer reads the marker or serializes with the run, so a writer re-creates target content after the entry check and
+  the batches tombstone its history. `theorem_no_tombstone_of_live` here concludes only `!rec_content` (recorded
+  content); under F-C1350's reading (any content row of the target is live) this design does not exclude it, and the
+  recorded-content reading is intent-undecided (review-4 R4-01; `proofs-d9c` adds the guard G-BM).
+- **P-D9-3 is violated** (bypass writers write content rows only): `followup-writer-census` (5 ledger writers outside
+  the modelled actions), F-C1850 (live: a replacing restore leaves marker, redactedRev and idemRedacted in place),
+  F-C1150 (live: a plain SQL INSERT into ledger_revisions is accepted and wedges the next commit).
+- **The liveness check sees every row of the target** (a premise this model uses without naming it; P-LV in
+  `proofs-d9c`) **is violated**: F-C1351 (live `ws-live-noindex`: rows a `%NOINDEX` bulk load wrote are invisible to
+  LiveRows' indexed counts; the redaction completed and they reappeared at the index rebuild).

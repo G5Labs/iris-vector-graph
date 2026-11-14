@@ -1,0 +1,130 @@
+{
+ "_doc": "Supplements from lane proofs-d9c (review-4 R4-01, R4-03, R4-04, R4-14). Model-level only; product obligations stay failed. Merge add_evidence and add_remaining into the existing cells.",
+ "doc_fixes": {
+  "proofs-d9b/PROOFS.md": "R4-01 qualification (recorded content only, intent-undecided vs F-C1350), R4-03 qualification of the F-1306 control, R4-04 rows (P-D9-3, P-LV/F-C1351, F-C1301 live, F-C1350); not in its sources hash (f07f7c4d unchanged)",
+  "proofs-d9/PROOFS.md": "R4-04 paragraph (F-C1301 live, F-C1350, P-D9-3, liveness check sees every row/F-C1351); not in its sources hash (b779916f unchanged)",
+  "proofs-d1c/PROOFS.md": "P-B1 violated live (F-C0349, st-live-keys) at the premise row and the 'Premises the pin violates' paragraph; not in its sources hash (2a16c6b0 unchanged)"
+ },
+ "proposed_elsewhere": {
+  "STATUS.md:63, TRUST.md:29": "F-C1301 model -> live (ws-live-fc1301-delete-reification) (R4-04)",
+  "PROOF-DEBT.md D-9": "add proofs-d9c (158 verified, 14 located safety controls, recheck proofs-d9c-recheck): G-BM closes F-C1350 in the model; the recorded-content reading of proofs-d9/d9b's theorem is intent-undecided"
+ },
+ "cells": [
+  {
+   "gate": "3.3-protocol",
+   "module": "product",
+   "add_evidence": [
+    "run:proofs-d9c-baseline",
+    "run:proofs-d9c-recheck",
+    "run:proofs-d9c-f1350-bypass-ignores-marker",
+    "run:proofs-d9c-f1306-replay-direct-sql",
+    "experiment/playbook-completion/proofs-d9c/PROOFS.md",
+    "experiment/playbook-completion/proofs-d9c/RESULTS.json"
+   ],
+   "as_built_findings": [
+    "F-C1350",
+    "F-C1351",
+    "F-C1850",
+    "F-C1150",
+    "F-C1301"
+   ],
+   "add_remaining": "R4-01 fix (b): reviewed guard G-BM (bypass writers honour the marker; intent Ledger.cls:514 'nothing may be written into its target') makes theorem_no_tombstone_of_live hold for content of any provenance (proofs-d9c only; proofs-d9/proofs-d9b remain recorded-content-only, documented in their PROOFS.md); the mechanism is a working assumption and the RED-B1.1 reading behind F-C1350 is a maintainer question; F-1306 re-encoded as the pin's direct-SQL Writer step (R4-03): located at protocol_top.rs:114/:124/:125 for the marked case only, the unmarked case is a permitted unrecorded write in the model; P-LV (liveness check sees every row, F-C1351) and P-D9-3 (F-C1850, F-C1150) violated at the pin and not modelled"
+  },
+  {
+   "gate": "3.3-progress-controls",
+   "module": "product",
+   "add_evidence": [
+    "run:proofs-d9c-progress-rewind",
+    "run:proofs-d9c-bound-follows-tail",
+    "run:proofs-d9c-recheck"
+   ],
+   "as_built_findings": [
+    "F-C1307",
+    "F-C1350"
+   ],
+   "add_remaining": "G-BM discharges PF-6 for bypass writers in the model (only ledger commits into lv \\ rm remain under PF-6); at the pin writers keep a marked target live (F-C1307, F-C1350)"
+  },
+  {
+   "gate": "3.3-L1",
+   "module": "13",
+   "add_evidence": [
+    "run:proofs-d9c-baseline",
+    "run:proofs-d9c-recheck",
+    "experiment/playbook-completion/proofs-d9c/PROOFS.md"
+   ],
+   "as_built_findings": [
+    "F-C1350",
+    "F-C1351"
+   ],
+   "add_remaining": "invariant C4 (a marked target's record match holds no content of any provenance) and the strengthened no-tombstone theorem in proofs-d9c; R4-01 fix (b): reviewed guard G-BM (bypass writers honour the marker; intent Ledger.cls:514 'nothing may be written into its target') makes theorem_no_tombstone_of_live hold for content of any provenance (proofs-d9c only; proofs-d9/proofs-d9b remain recorded-content-only, documented in their PROOFS.md); the mechanism is a working assumption and the RED-B1.1 reading behind F-C1350 is a maintainer question"
+  },
+  {
+   "gate": "3.3-refinement",
+   "module": "13",
+   "add_evidence": [
+    "run:proofs-d9c-baseline",
+    "run:proofs-d9c-recheck",
+    "experiment/playbook-completion/proofs-d9c/PROOFS.md"
+   ],
+   "as_built_findings": [
+    "F-C1350"
+   ],
+   "add_remaining": "level-3 labels now p3_lab_m/p3_lab_w (the F-1306 control's hook); step_binds/step_enabled re-proved at all four protocols"
+  },
+  {
+   "gate": "3.3-controls",
+   "module": "13",
+   "add_evidence": [
+    "run:proofs-d9c-f1350-bypass-ignores-marker",
+    "run:proofs-d9c-f1306-replay-direct-sql",
+    "run:proofs-d9c-fcs01-noop-unrecorded",
+    "run:proofs-d9c-f1302-unlocked-start",
+    "run:proofs-d9c-f1303-other-marker",
+    "run:proofs-d9c-bypass-start",
+    "run:proofs-d9c-unaligned-rm",
+    "run:proofs-d9c-unaligned-sc",
+    "run:proofs-d9c-sc-narrow",
+    "experiment/playbook-completion/proofs-d9c/PROOFS.md",
+    "experiment/playbook-completion/proofs-d9c/RESULTS.json"
+   ],
+   "as_built_findings": [
+    "F-C1350",
+    "F-1306",
+    "F-CS01",
+    "F-1302",
+    "F-1303",
+    "F-C1301",
+    "F-1304"
+   ],
+   "add_remaining": "F-C1350 control at protocol_top.rs:114 with cx_f1350 (12 steps, the live schedule); F-1306 control re-encoded (direct SQL, Writer step) at protocol_top.rs:114, :124, :125 with cx_f1306 (9 steps, marked case); proofs-d9b-f1306-replay-reapplies encodes the write as recorded content (qualified in proofs-d9b/PROOFS.md)"
+  },
+  {
+   "gate": "3.3-controls",
+   "module": "12",
+   "add_evidence": [
+    "run:proofs-d9c-f1201-erase-unlocked",
+    "run:proofs-d9c-liveness-dirty",
+    "run:proofs-d9c-bypass-erase",
+    "run:proofs-d9c-recheck"
+   ],
+   "as_built_findings": [
+    "F-1201",
+    "F-C1201"
+   ],
+   "add_remaining": "unchanged from proofs-d9b; re-verified in proofs-d9c"
+  },
+  {
+   "gate": "3.3-controls",
+   "module": "14",
+   "add_evidence": [
+    "run:proofs-d9c-f1402-reader-no-recheck",
+    "run:proofs-d9c-reader-marker-recheck-only",
+    "run:proofs-d9c-recheck"
+   ],
+   "as_built_findings": [
+    "F-1402"
+   ],
+   "add_remaining": "unchanged from proofs-d9b; re-verified in proofs-d9c"
+  }
+ ]
+}

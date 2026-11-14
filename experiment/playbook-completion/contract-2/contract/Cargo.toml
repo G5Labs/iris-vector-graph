@@ -1,0 +1,20 @@
+[package]
+name = "iris-contract"
+version = "0.1.0"
+edition = "2021"
+description = "Executable permitted-outcome contract of the InterSystems IRIS 2026.1 semantics IVG relies on (transactions, globals, SQL rows, locks, processes), validated differentially against the dedicated engine."
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+name = "iris-contract"
+path = "src/main.rs"
+
+[dependencies]
+explorer = { git = "file:///home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/playbook-reference-actors", rev = "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[workspace]
