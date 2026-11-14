@@ -1,6 +1,6 @@
 # Lane checkpoint (orchestrator; read by the hourly monitor)
 
-Updated: 2026-11-14 ~22:20 UTC: clean live gate PASSED on candidate 25ba22dd (verify-clean-25ba22dd, 73/73); fifth review and proofs-env (D-7) running.
+Updated: 2026-11-14 ~22:20 UTC: review 5 (no sign-off; text/commit conditions) answered in 76fb07ce; fresh-checkout fast gate 40/40 (7d054f25); sixth review pass running; proofs-env (D-7) running.
 previous account is live: `ListAgents` empty, no audit process running, IRIS and heavy locks free, container healthy,
 product scope check passes). Last checkpoint commit before the switch: `1564a673`.
 
@@ -20,7 +20,7 @@ product scope check passes). Last checkpoint commit before the switch: `1564a673
 | orchestrator: crash world, SynchCommit=1 | **done**: `live-crash-repeat-sc1` (0/3 acknowledged lost; SynchCommit=0 restored, healthy) | `$RUN_DIR/crash-repeat/` | — |
 | (old row) crash world, SynchCommit=1 | **running** since ~16:45 UTC: `bash tools/locks.sh iris timeout 7000 bash $RUN_DIR/crash-repeat/sc1-procedure.sh` (log `$RUN_DIR/crash-repeat/sc1-procedure.log`; it restores SynchCommit=0 itself) | `$RUN_DIR/crash-repeat/sc1/` | (1) `docker exec -i $IVG_TEST_CONTAINER iris session IRIS -U %SYS < $RUN_DIR/crash-repeat/set-synchcommit-1.script` under `tools/locks.sh iris`; (2) `docker restart $IVG_TEST_CONTAINER`, wait healthy; (3) `bash tools/locks.sh iris timeout 5400 python traces/crash_world_repeat.py $RUN_DIR/crash-repeat/sc1 --trials 3 --expect-synchcommit 1`; (4) restore with `set-synchcommit-0.script`, restart, confirm `iris.cpf` line `SynchCommit=0` and Docker healthy; record in `incidents/` (alerts from the deliberate crashes are expected; preserve them, do not clear) |
 | orchestrator: S6 licence refusal | **done**: `live-licence-world` (F-C1795) | — | design: hold idle connections up to the 8-unit cap, then drive a product operation that needs a new connection; record refusal handling and that nothing partial is written |
-| orchestrator: account and closure | clean live gate **passed** on 25ba22dd (`verify-clean-25ba22dd`, d0375bae); fifth independent review **running** (told the gate stamp); proofs-env (D-7, steer 12) **running** | `review/REVIEW-5.md`, `proofs-env/` | integrate review 5 and D-7; if D-7 changes inputs, rerun the fast gate (and the full gate for the new crate) |
+| orchestrator: account and closure | clean live gate passed on 25ba22dd (`verify-clean-25ba22dd`); review 5 answered (`review/RESPONSE-5.md`, 76fb07ce); fast gate from a fresh checkout of 76fb07ce 40/40 (`verify-fast-export-76fb07ce-r2`; a fresh worktree needs the product's pinned submodule `vendor/opencypher` initialized); **running**: review pass 6 on 76fb07ce; proofs-env (D-7) | `review/` | integrate review 6 and D-7 |
 
 | structural final follow-up | **done** (82027430; integrated by the orchestrator from the idle parent's artifacts with its merge3.py) | `structural/MATRIX-INPUT-3.json` | — |
 
