@@ -1,0 +1,15 @@
+{
+  "command": "locks.sh iris python traces/crash_world.py $RUN_DIR/traces/crash-r1-invalid (N=20000 relationships)",
+  "experiment_head": "44636dd111c8e83319ca155b0232c86d2fe3ecf2",
+  "id": "live-crash-world-r1-invalid",
+  "kind": "live",
+  "lane": "orchestrator",
+  "log": "$RUN_DIR/traces/crash-r1-invalid/results.json",
+  "log_bytes": 1502,
+  "log_sha256": "ba22ff988026bfb624ae74087c48f05276d43ea1cbd7a7eb8bbf03c06972cbae",
+  "observes": "INVALID AS A CRASH TEST (harness error): the 20,000-relationship changeset with auto-stubbed endpoints is 60,000 operations; the ledger refused it before any write (ChangesetTooLargeError: max_ops is 50000; confirmed by a manual retry), so no commit was in flight when the container was killed. Two container kill/restart cycles did complete (16.8 s, 12.9 s; healthy, connectable) and the ledger was consistent after each (head 1, one revision row, verify equal). Rerun with a valid size: live-crash-world-r2.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T01:05:58+00:00",
+  "result": "incomplete"
+}

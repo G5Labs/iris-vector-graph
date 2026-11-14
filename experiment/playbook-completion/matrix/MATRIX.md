@@ -2,78 +2,80 @@
 
 Starting inventory: {'modules': 19, 'findings': 197, 'decisions': 61, 'premises': 138, 'not_implemented': 8, 'cells': 904, 'writer_obligations': 83} (expected {'modules': 19, 'cells': 904, 'decisions': 61, 'premises': 138, 'findings': 197, 'not_implemented': 8, 'writer_obligations': 83}).
 
-| Gate | closed | failed | open | blocked | not-applicable |
-|---|---:|---:|---:|---:|---:|
-| 3.1-parent | 1 | 0 | 0 | 0 | 0 |
-| 3.1-grade | 1 | 0 | 0 | 0 | 0 |
-| 3.1-terms | 1 | 0 | 0 | 0 | 0 |
-| 3.1-index | 1 | 0 | 0 | 0 | 0 |
-| 3.1-cells | 14 | 0 | 4 | 0 | 1 |
-| 3.1-coverage | 1 | 0 | 18 | 0 | 0 |
-| 3.1-intent | 9 | 0 | 10 | 0 | 0 |
-| 3.2-library | 1 | 0 | 0 | 0 | 0 |
-| 3.2-differential | 1 | 0 | 0 | 0 | 0 |
-| 3.2-sharpness | 1 | 0 | 0 | 0 | 0 |
-| 3.2-mutants | 1 | 0 | 0 | 0 | 0 |
-| 3.2-coverage | 3 | 0 | 15 | 1 | 0 |
-| 3.3-L1 | 5 | 0 | 13 | 0 | 1 |
-| 3.3-L2 | 3 | 0 | 15 | 0 | 1 |
-| 3.3-refinement | 3 | 0 | 15 | 0 | 1 |
-| 3.3-controls | 3 | 0 | 15 | 0 | 1 |
-| 3.3-protocol | 1 | 0 | 0 | 0 | 0 |
-| 3.3-progress-controls | 1 | 0 | 0 | 0 | 0 |
-| 3.3-cost | 1 | 0 | 0 | 0 | 0 |
-| 3.3-model-check | 12 | 3 | 4 | 0 | 0 |
-| 3.3a-axioms | 0 | 0 | 1 | 0 | 0 |
-| 3.3a-mechanisms | 0 | 0 | 1 | 0 | 0 |
-| 3.3a-lifecycles | 0 | 0 | 1 | 0 | 0 |
-| 3.3a-domain-contract | 1 | 0 | 0 | 0 | 0 |
-| 3.3a-writesets | 0 | 15 | 3 | 0 | 1 |
-| 3.3a-trace | 0 | 0 | 1 | 0 | 0 |
-| 3.4-statements | 0 | 0 | 17 | 0 | 2 |
-| 3.4-ownership | 1 | 5 | 12 | 0 | 1 |
-| 3.4-storage-order | 9 | 0 | 9 | 0 | 1 |
-| 3.4-declared-reads | 0 | 7 | 11 | 0 | 1 |
-| 3.4-generator | 0 | 0 | 0 | 0 | 1 |
-| 3.5-handlers | 0 | 2 | 16 | 0 | 1 |
-| 3.5-lockplans | 0 | 7 | 11 | 0 | 1 |
-| 3.5-decoders | 4 | 11 | 3 | 0 | 1 |
-| 3.5-lint | 0 | 0 | 1 | 0 | 0 |
-| 3.5-style | 0 | 0 | 1 | 0 | 0 |
-| 3.6-composition | 0 | 0 | 1 | 0 | 0 |
-| 3.6-frame | 0 | 1 | 16 | 0 | 2 |
-| 3.6-row-permutation | 1 | 1 | 16 | 0 | 1 |
-| 3.6-keys | 0 | 6 | 11 | 0 | 2 |
-| 3.6-fk | 2 | 3 | 11 | 0 | 3 |
-| 3.6-capacity | 0 | 4 | 14 | 0 | 1 |
-| 3.6-closure | 0 | 0 | 1 | 0 | 0 |
-| 3.7-explorers | 1 | 0 | 0 | 0 | 0 |
-| 3.7-integration-worlds | 0 | 0 | 1 | 0 | 0 |
-| 3.7-differential | 1 | 0 | 0 | 0 | 0 |
-| 3.7-e2e | 0 | 0 | 1 | 0 | 0 |
-| 3.7-trace-replay | 3 | 0 | 14 | 1 | 1 |
-| 3.7-lock-log | 0 | 0 | 15 | 1 | 3 |
-| 3.7-mutation | 0 | 0 | 15 | 3 | 1 |
-| 3.7-perf | 0 | 0 | 1 | 0 | 0 |
-| 3.7-failure-controls | 0 | 0 | 1 | 0 | 0 |
-| 3.7-suites | 0 | 0 | 1 | 0 | 0 |
-| 3.7-editions | 0 | 0 | 0 | 1 | 0 |
-| 3.7-full-rerun | 0 | 0 | 1 | 0 | 0 |
-| 3.8-status | 0 | 0 | 1 | 0 | 0 |
-| 3.8-trust | 0 | 0 | 1 | 0 | 0 |
-| 3.8-test-reflection | 0 | 0 | 1 | 0 | 0 |
-| 3.8-review | 0 | 0 | 1 | 0 | 0 |
-| 3.8-findings-disposed | 16 | 0 | 2 | 0 | 1 |
-| 5-trust-strict | 1 | 0 | 0 | 0 | 0 |
-| 5-mutants-located | 1 | 0 | 0 | 0 | 0 |
-| 5-selftests | 1 | 0 | 0 | 0 | 0 |
-| 5-hygiene | 1 | 0 | 0 | 0 | 0 |
-| 5a-proof-debt | 0 | 0 | 1 | 0 | 0 |
-| 5a-gate-20min | 0 | 0 | 1 | 0 | 0 |
-| 5b-client-entry | 1 | 0 | 0 | 0 | 0 |
-| 5b-refuse-not-guess | 1 | 0 | 0 | 0 | 0 |
-| 5c-refusals | 0 | 8 | 10 | 0 | 1 |
-| 5c-root-causes | 0 | 0 | 1 | 0 | 0 |
-| 5c-reviewers | 0 | 0 | 1 | 0 | 0 |
+Two separate questions per cell. **Status**: was the verification step done with adequate evidence (closed needs a registered passing run, or is graded `inspected` when it rests on a committed analysis). **Product obligation**: does the product at the pin meet it — `fails` (a reproduced finding cites the gate), `holds-in-model-only` (only a model result supports it; the code correspondence is not discharged), `unknown`. **Level**: what the evidence is about (method, model, product).
 
-Totals: {'closed': 109, 'not-applicable': 31, 'open': 337, 'blocked': 7, 'failed': 73}
+| Gate | Level | closed | failed | open | blocked | not-applicable | product fails | product holds-in-model-only | product unknown | product n/a |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 3.1-parent | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 3.1-grade | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 3.1-terms | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 3.1-index | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 3.1-cells | method | 7 | 0 | 11 | 0 | 1 | 0 | 0 | 18 | 1 |
+| 3.1-coverage | method | 0 | 0 | 19 | 0 | 0 | 5 | 0 | 14 | 0 |
+| 3.1-intent | method | 1 | 0 | 18 | 0 | 0 | 1 | 0 | 18 | 0 |
+| 3.2-library | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 3.2-differential | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 3.2-sharpness | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 3.2-mutants | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 3.2-coverage | method | 3 | 0 | 15 | 1 | 0 | 4 | 0 | 15 | 0 |
+| 3.3-L1 | model | 3 | 0 | 15 | 0 | 1 | 1 | 0 | 17 | 1 |
+| 3.3-L2 | model | 3 | 0 | 15 | 0 | 1 | 1 | 0 | 17 | 1 |
+| 3.3-refinement | model | 3 | 0 | 15 | 0 | 1 | 1 | 0 | 17 | 1 |
+| 3.3-controls | model | 3 | 0 | 15 | 0 | 1 | 1 | 2 | 15 | 1 |
+| 3.3-protocol | model | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 3.3-progress-controls | model | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 3.3-cost | model | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0 |
+| 3.3-model-check | model | 11 | 0 | 8 | 0 | 0 | 15 | 1 | 3 | 0 |
+| 3.3a-axioms | model | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 3.3a-mechanisms | model | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 3.3a-lifecycles | model | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 3.3a-domain-contract | model | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 3.3a-writesets | model | 8 | 0 | 10 | 0 | 1 | 16 | 0 | 2 | 1 |
+| 3.3a-trace | model | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 3.4-statements | product | 0 | 0 | 17 | 0 | 2 | 5 | 0 | 13 | 1 |
+| 3.4-ownership | product | 3 | 0 | 15 | 0 | 1 | 8 | 0 | 10 | 1 |
+| 3.4-storage-order | product | 3 | 0 | 15 | 0 | 1 | 2 | 0 | 16 | 1 |
+| 3.4-declared-reads | product | 5 | 0 | 13 | 0 | 1 | 10 | 0 | 8 | 1 |
+| 3.4-generator | method | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 1 |
+| 3.5-handlers | product | 1 | 0 | 17 | 0 | 1 | 8 | 0 | 10 | 1 |
+| 3.5-lockplans | product | 5 | 0 | 13 | 0 | 1 | 8 | 0 | 10 | 1 |
+| 3.5-decoders | product | 14 | 0 | 4 | 0 | 1 | 14 | 0 | 4 | 1 |
+| 3.5-lint | product | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 3.5-style | product | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 3.6-composition | product | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 3.6-frame | product | 0 | 0 | 17 | 0 | 2 | 1 | 0 | 16 | 2 |
+| 3.6-row-permutation | product | 0 | 0 | 18 | 0 | 1 | 2 | 0 | 16 | 1 |
+| 3.6-keys | product | 2 | 0 | 15 | 0 | 2 | 6 | 0 | 11 | 2 |
+| 3.6-fk | product | 2 | 0 | 14 | 0 | 3 | 3 | 0 | 13 | 3 |
+| 3.6-capacity | product | 3 | 0 | 15 | 0 | 1 | 4 | 0 | 14 | 1 |
+| 3.6-closure | product | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 3.7-explorers | model | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0 |
+| 3.7-integration-worlds | product | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 3.7-differential | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 3.7-e2e | product | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 3.7-trace-replay | product | 3 | 0 | 14 | 1 | 1 | 7 | 0 | 11 | 1 |
+| 3.7-lock-log | product | 0 | 0 | 15 | 1 | 3 | 2 | 0 | 14 | 3 |
+| 3.7-mutation | product | 0 | 0 | 15 | 3 | 1 | 1 | 0 | 17 | 1 |
+| 3.7-perf | product | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 3.7-failure-controls | product | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 3.7-suites | product | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 3.7-editions | product | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 0 |
+| 3.7-full-rerun | product | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 3.8-status | method | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 3.8-trust | method | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 3.8-test-reflection | method | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 3.8-review | method | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 3.8-findings-disposed | method | 0 | 0 | 18 | 0 | 1 | 12 | 0 | 6 | 1 |
+| 5-trust-strict | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 5-mutants-located | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 5-selftests | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 5-hygiene | method | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 5a-proof-debt | method | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 5a-gate-20min | method | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 5b-client-entry | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 5b-refuse-not-guess | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 5c-refusals | method | 7 | 0 | 11 | 0 | 1 | 10 | 0 | 8 | 1 |
+| 5c-root-causes | method | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 5c-reviewers | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
+
+Totals: {'closed': 110, 'not-applicable': 31, 'open': 409, 'blocked': 7}; evidence grade of closed cells: {'registered-run': 73, 'inspected': 37}; product: {'unknown': 374, 'n/a': 30, 'fails': 148, 'holds-in-model-only': 5}

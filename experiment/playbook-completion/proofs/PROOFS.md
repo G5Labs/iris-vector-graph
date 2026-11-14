@@ -149,8 +149,12 @@ Environmental premises (they justify `productive_fairness`; none is assumed insi
 **Progress-only control** `control_progress_rewind`: a resume rewinds the run's cursor to the first record (the pin's
 re-run rescans, `LedgerRedact.cls:213`), changed consistently in RL and level 1. Result: 87 verified, 1 error at
 `src/progress.rs:165` (`RunProgress::nonincreasing`, the resume case); every function of every other module verifies
-(`safety_still_verifies: true`; registry `core-proofs-progress-rewind`). So the pin's rescanning resume is safe, and
-its progress needs the stronger premise that eventually one run is not stopped.
+(`safety_still_verifies: true`; registry `core-proofs-progress-rewind`). So, **in the reviewed model**, adding the
+pin's rescanning resume breaks only progress: the model's safety properties still hold with it, and its progress would
+need the stronger premise that eventually one run is not stopped. This is not a statement about the product: the
+product's other defects (F-1302, F-1303, F-1304, F-1305, F-C1201) violate safety at the pin, and the pin's bounded
+resume does not progress at all when the scan cap is exhausted by non-target records (F-C1303, reproduced live:
+`live-fc1303-bounded-resume`).
 
 ## 6. Broken-implementation controls
 

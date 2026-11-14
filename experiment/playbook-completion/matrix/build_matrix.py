@@ -87,6 +87,15 @@ def inventories() -> dict:
     return out
 
 
+def level_of(gate: str) -> str:
+    """What a gate's evidence is about: the verification method, a model, or the product."""
+    if gate.startswith(("3.3-", "3.3a-")) or gate in ("3.7-explorers",):
+        return "model"
+    if gate.startswith(("3.1-", "3.2-", "3.8-", "5")) or gate in ("3.4-generator", "3.7-differential"):
+        return "method"
+    return "product"
+
+
 def runs() -> dict:
     return {p.stem: load(p) for p in sorted((ROOT / "evidence" / "runs").glob("*.json"))}
 
@@ -109,6 +118,8 @@ def main() -> int:
         data = load(f, [])
         for c in (data if isinstance(data, list) else data.get("cells", [])):
             explicit[(c["gate"], c.get("module", "product"))] = {**c, "source": f"matrix-input/{f.name}"}
+    audits_by_mod = {nn: (recs if isinstance(recs, list) else recs.get("findings", [])) for nn, recs in audits.items()}
+    reproduced = ("reproduced-live", "reproduced-test", "reproduced-model", "confirmed-source", "product-defect")
     for g in gates:
         targets = ["product"] if g["scope"] == "product" else nns
         for nn in targets:
@@ -122,15 +133,46 @@ def main() -> int:
                 c = {"gate": g["id"], "module": nn, "status": "not-applicable", "reason": g["na_reason"]}
             if c is None:
                 c = {"gate": g["id"], "module": nn, "status": "open", "evidence": [], "remaining": "no evidence recorded"}
-            cited = [e[4:] for e in c.get("evidence", []) if isinstance(e, str) and e.startswith("run:")]
-            failing = [i for i in cited if i in reg and (reg[i] or {}).get("result") in ("fail", "blocked", "incomplete")]
-            if c.get("status") == "closed" and failing:
-                c["status"] = "open"
-                c["remaining"] = f"closed claim cites non-passing runs {failing}"
-            missing = [e for e in c.get("evidence", []) if isinstance(e, str) and e.startswith("run:") and e[4:] not in reg]
-            if missing:
-                c["status"] = "open"
-                c["remaining"] = f"cited runs missing from the registry: {missing}"
+            c = dict(c)
+            c.setdefault("level", level_of(g["id"]))
+            ev = [str(e) for e in c.get("evidence", [])]
+            ids = sorted({x for e in ev for x in reg if (e == x or e == "run:" + x or e.endswith("/" + x) or e.endswith(x + ".json"))})
+            # decisive: the run settled something (a pass, an expected violation, or a product failure)
+            passing = [i for i in ids if (reg[i] or {}).get("result") in ("pass", "expected-violation", "fail")]
+            if c.get("level") != "method" and any((reg[i] or {}).get("result") == "fail" for i in ids):
+                c["product_obligation"] = "fails"
+            nonpass = [i for i in ids if i not in passing]
+            files = [e for e in ev if (ROOT / e).exists() or (ROOT.parent.parent / e).exists()]
+            # product obligation, separate from the verification status
+            hits = [f["id"] for f in audits_by_mod.get(nn, []) if g["id"] in (f.get("gates") or [])
+                    and f.get("disposition") in reproduced]
+            st = c.get("status", "open")
+            if st == "failed":            # lanes' "failed" = a product defect: the verification itself is done
+                st = "closed"
+                c["product_obligation"] = "fails"
+            if hits:
+                c["product_obligation"] = "fails"
+                c["findings"] = hits
+            if g["id"] == "3.8-findings-disposed" and st == "closed":
+                st = "open"
+                c["remaining"] = ("every finding is recorded with evidence and a disposition; a fix or a maintainer "
+                                  "decision per finding is outside this observation-only audit")
+            if st == "closed":
+                if passing:
+                    c["evidence_grade"] = "registered-run"
+                elif files:
+                    c["evidence_grade"] = "inspected"
+                else:
+                    st = "open"
+                    c["remaining"] = "closed claim cites no registered run or committed artifact"
+                if nonpass and not passing:
+                    st = "open"
+                    c["remaining"] = f"closed claim cites only non-decisive runs {nonpass}"
+            if c.get("level") == "model" and st == "closed":
+                c.setdefault("product_obligation", "holds-in-model-only")
+            c.setdefault("product_obligation", "unknown" if st != "not-applicable" else "n/a")
+            c["status"] = st
+            c["cited_runs"] = ids
             cells.append(c)
 
     audited = {}
@@ -156,17 +198,31 @@ def main() -> int:
         return 0 if ok else 1
     target.write_text(text)
     by_gate = defaultdict(Counter)
+    prod = defaultdict(Counter)
     for c in cells:
         by_gate[c["gate"]][c["status"]] += 1
+        prod[c["gate"]][c.get("product_obligation")] += 1
+    PO = ["fails", "holds-in-model-only", "unknown", "n/a"]
     lines = ["# Obligation matrix (generated by build_matrix.py; do not edit)", "",
              f"Starting inventory: {counts} (expected {EXPECTED}).", "",
-             "| Gate | " + " | ".join(STATUSES) + " |", "|---|" + "---:|" * len(STATUSES)]
+             "Two separate questions per cell. **Status**: was the verification step done with adequate evidence "
+             "(closed needs a registered passing run, or is graded `inspected` when it rests on a committed analysis). "
+             "**Product obligation**: does the product at the pin meet it — `fails` (a reproduced finding cites the "
+             "gate), `holds-in-model-only` (only a model result supports it; the code correspondence is not "
+             "discharged), `unknown`. **Level**: what the evidence is about (method, model, product).", "",
+             "| Gate | Level | " + " | ".join(STATUSES) + " | " + " | ".join("product " + p for p in PO) + " |",
+             "|---|---|" + "---:|" * (len(STATUSES) + len(PO))]
     for g in gates:
-        lines.append(f"| {g['id']} | " + " | ".join(str(by_gate[g['id']].get(s, 0)) for s in STATUSES) + " |")
-    lines += ["", f"Totals: {dict(Counter(c['status'] for c in cells))}"]
+        lines.append(f"| {g['id']} | {level_of(g['id'])} | " + " | ".join(str(by_gate[g['id']].get(s, 0)) for s in STATUSES)
+                     + " | " + " | ".join(str(prod[g['id']].get(p, 0)) for p in PO) + " |")
+    lines += ["", f"Totals: {dict(Counter(c['status'] for c in cells))}; evidence grade of closed cells: "
+              f"{dict(Counter(c.get('evidence_grade') for c in cells if c['status'] == 'closed'))}; product: "
+              f"{dict(Counter(c.get('product_obligation') for c in cells))}"]
     (HERE / "MATRIX.md").write_text("\n".join(lines) + "\n")
-    print(json.dumps({"inventory": counts, "matches": obligations["inventory_matches"],
-                      "status_counts": obligations["status_counts"], "parse_errors": len(inv["parse_errors"])}))
+    print(json.dumps({"inventory_matches": all(obligations["inventory_matches"].values()),
+                      "status_counts": obligations["status_counts"],
+                      "closed_grades": dict(Counter(c.get("evidence_grade") for c in cells if c["status"] == "closed")),
+                      "product": dict(Counter(c.get("product_obligation") for c in cells))}))
     return 0
 
 

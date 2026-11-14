@@ -1,15 +1,16 @@
 {
   "command": "python tools/writer_census.py --json; --self-test PASS",
-  "experiment_head": "d1b7d06ca56597d0993ea11733d67c0a08add141",
+  "erratum": "the first registration said 56 inside plans and 23 by call; the census JSON says 31 inside plan ranges, 25 by call (56 covered in total), 48 outside (independent review)",
+  "experiment_head": "44636dd111c8e83319ca155b0232c86d2fe3ecf2",
   "id": "writer-census",
   "kind": "check",
   "lane": "orchestrator",
   "log": "$RUN_DIR/checks/writer-census.json",
   "log_bytes": 46030,
   "log_sha256": "bda9249d96bc5f5918486f10239117e6e593b7fe7ea6d88a2f54768bc9eb7d32",
-  "observes": "source-derived writers of the 8 ledger/redaction invariant stores: 104 sites; 56 inside the original manifest's 15 plans, 23 more reached by call from a plan; 25 writer methods no plan declares (bulk ingest, FHIR sync, temporal policy, store/inference/migration writers), giving 100 new (invariant, writer) obligations, none of them consulting the redaction marker",
+  "observes": "source-derived writers of the 8 ledger/redaction invariant stores: 104 sites; 31 inside the original manifest's 15 plan line ranges, 25 more reached by call from a plan, 48 outside; 25 writer methods no plan declares (bulk ingest, FHIR sync, temporal policy, store/inference/migration writers), giving 100 new (invariant, writer) obligations, none of them consulting the redaction marker",
   "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
   "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
-  "registered_utc": "2026-11-13T23:05:38+00:00",
+  "registered_utc": "2026-11-14T01:06:23+00:00",
   "result": "incomplete"
 }
