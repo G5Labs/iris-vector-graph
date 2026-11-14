@@ -138,8 +138,8 @@ fn instance_checks<O: SnapshotObject>(o: &O) -> Vec<Outcome> {
     let ab = Machine { o, c: o.as_built() };
     let rv = Machine { o, c: o.reviewed() };
     vec![
-        check(&format!("snapshot-{n}-as-built"), meta("M-06", "snapshot", n, o.objects(), "as-built", "safety", law, f, ""), Expect::Violation(law), &Keep::only(&ab, &[law])),
-        check(&format!("snapshot-{n}-reviewed"), meta("M-06", "snapshot", n, o.objects(), "reviewed", "safety", "all", &[], ""), Expect::Pass, &Keep::safety(&rv)),
+        check_keep(&format!("snapshot-{n}-as-built"), meta("M-06", "snapshot", n, o.objects(), "as-built", "safety", law, f, ""), Expect::Violation(law), &Keep::only(&ab, &[law])),
+        check_keep(&format!("snapshot-{n}-reviewed"), meta("M-06", "snapshot", n, o.objects(), "reviewed", "safety", "all", &[], ""), Expect::Pass, &Keep::safety(&rv)),
     ]
 }
 
@@ -152,7 +152,7 @@ pub fn checks() -> Vec<Outcome> {
     let r = o.reviewed();
     let ctl = |id: &str, law: &'static str, c: Cfg| {
         let m = Machine { o, c };
-        check(id, meta("M-06", "snapshot", "edge-vectors-missing", o.objects(), "control", "safety", law, &[], ""), Expect::Violation(law), &Keep::only(&m, &[law]))
+        check_keep(id, meta("M-06", "snapshot", "edge-vectors-missing", o.objects(), "control", "safety", law, &[], ""), Expect::Violation(law), &Keep::only(&m, &[law]))
     };
     out.push(ctl("snapshot-control-C1-store-left-out", L1, Cfg { carried: 0b0111, ..r }));
     out.push(ctl("snapshot-control-C2-head-laid-over", L2, Cfg { head: Head::Lays, ..r }));

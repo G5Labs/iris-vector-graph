@@ -151,6 +151,183 @@
     "tr-locklog-13b"
    ],
    "added": "2026-11-14 (steer 7), reported by the trace-replay lane"
+  },
+  {
+   "id": "ws-live-ins-bulkloader_load_edges",
+   "correction": "The observes says verify() was 'equal again after erasing wsd10'. The log shows verify_after_erasing_D = diverges (unrecorded_writes) on the relationship wsd10|n1 -R-> wsd10|n2. BulkLoader.load_edges wrote that edge row with %NOINDEX, and delete_nodes_by_prefix('wsd10|') deleted both endpoint nodes but not the row (F-C1250, ws-live-noindex-erase). The live-row counts after the write also missed it (rdf_edges 0). Correct statement: on control prefix wsd10 the loader's process wrote node and edge rows and no ^IVG.Ledger node (journal); verify() went equal -> diverges (unrecorded_writes); after erasing wsd10 it still diverged on the loader's %NOINDEX edge row. The interleave part (7 tombstones after the writer's commit, Final refused, marker held) is unchanged.",
+   "evidence": [
+    "ws-live-noindex-erase"
+   ],
+   "added": "2026-11-14 (steer 7), review R4-06/R4-14, text from the writesets lane"
+  },
+  {
+   "id": "ws-live-ins-import_rdf",
+   "correction": "The observes says verify() 'went equal -> diverges ... equal again after erasing wsd11'. The log shows verify_baseline = diverges and verify_after_erasing_D = diverges, both on the relationship wst10|n1 -R-> wst10|n2, a %NOINDEX bulk-load row the previous case left after its closing EraseAll+PurgeAll (F-C1250). The target was urn:wst11 with separator ':', not 'wst11'. Correct statement: the INV-replay sub-check did not start from an equal baseline; verify() after the write listed import_rdf's nodes, property and relationship (urn:wsd11:*) as unrecorded writes on top of the leftover row. The sub-check was re-run from an equal baseline as ws-live-replay-import_rdf. The interleave part is unchanged.",
+   "evidence": [
+    "ws-live-replay-import_rdf",
+    "ws-live-noindex-erase"
+   ],
+   "added": "2026-11-14 (steer 7), review R4-06/R4-14, text from the writesets lane"
+  },
+  {
+   "id": "ws-deploy-auditb",
+   "correction": "The observes clause 'namespace empty before the writesets probes' is not in this run's log, which holds only initialize_schema's summary and the class list. The emptiness was seen by an unregistered query before the deploy and is not evidence. Each probe case starts with EraseAll+PurgeAll, and the R4 reruns record an index-free (%IGNOREINDEX) full scan of 0 content rows after that reset.",
+   "evidence": [
+    "ws-live-replay-delete_reification",
+    "ws-live-replay-import_rdf",
+    "ws-live-noindex-erase"
+   ],
+   "added": "2026-11-14 (steer 7), review R4-06/R4-14, text from the writesets lane"
+  },
+  {
+   "id": "sem-mc-cap-as-built",
+   "correction": "The record says each expected violation is 'a violation of exactly its named law'. That is an artefact of Keep::only, which keeps only the attributed law: each check does violate its attributed law (shortest counterexample), but with the other laws kept too, 1 of them also violate another law (cap-snapshot-file-helpers-as-built (M11-L3) also M11-L2). Measured by review 4 (review/review-4/semantics/specificity.txt); the rerun with the harness complement check records every violated law per check (RESULTS.json violates/also_violates) and the undeclared departures are now declared in mechanisms.json.",
+   "evidence": [
+    "sem-mc-cap-as-built-r2",
+    "sem-mc-all-r2",
+    "sem-check-r2"
+   ],
+   "added": "2026-11-14 (steer 7), review R4-08, text from the semantics lane"
+  },
+  {
+   "id": "sem-mc-catalog-as-built",
+   "correction": "The record says each expected violation is 'a violation of exactly its named law'. That is an artefact of Keep::only, which keeps only the attributed law: each check does violate its attributed law (shortest counterexample), but with the other laws kept too, 2 of them also violate another law (catalog-index-graph-unchecked-as-built-M12-L1-F-0705 (M12-L1) also M12-L2; catalog-index-graph-unchecked-as-built-M12-L2-F-0705 (M12-L2) also M12-L1). Measured by review 4 (review/review-4/semantics/specificity.txt); the rerun with the harness complement check records every violated law per check (RESULTS.json violates/also_violates) and the undeclared departures are now declared in mechanisms.json.",
+   "evidence": [
+    "sem-mc-catalog-as-built-r2",
+    "sem-mc-all-r2",
+    "sem-check-r2"
+   ],
+   "added": "2026-11-14 (steer 7), review R4-08, text from the semantics lane"
+  },
+  {
+   "id": "sem-control-catalog",
+   "correction": "The record says each control is 'a violation of exactly its law'. That is an artefact of Keep::only, which keeps only the attributed law: each check does violate its attributed law (shortest counterexample), but with the other laws kept too, 1 of them also violate another law (catalog-control-C3-no-record (M12-L1) also M12-L2). Measured by review 4 (review/review-4/semantics/specificity.txt); the rerun with the harness complement check records every violated law per check (RESULTS.json violates/also_violates) and the undeclared departures are now declared in mechanisms.json.",
+   "evidence": [
+    "sem-control-catalog-r2",
+    "sem-mc-all-r2",
+    "sem-check-r2"
+   ],
+   "added": "2026-11-14 (steer 7), review R4-08, text from the semantics lane"
+  },
+  {
+   "id": "sem-mc-derived-as-built",
+   "correction": "The record says each expected violation is 'a violation of exactly its named law'. That is an artefact of Keep::only, which keeps only the attributed law: each check does violate its attributed law (shortest counterexample), but with the other laws kept too, 14 of them also violate another law (derived-degree-cache-as-built-F0402 (M04-L1) also M04-L4; derived-degree-cache-as-built-FC0401 (M04-L1) also M04-L4; derived-degree-cache-as-built-F0406 (M04-L1) also M04-L4; derived-algo-cache-edgeless-as-built-F1004 (M04-L2) also M04-L1; derived-interned-snapshot-as-built-F1005 (M04-L2) also M04-L1; derived-interned-snapshot-as-built-FC0801 (M04-L1) also M04-L4; derived-bm25-text-change-as-built-F0703 (M04-L2) also M04-L1; derived-statement-map-direct-delete-as-built-F0303 (M04-L2) also M04-L1; derived-bucket-aggregate-update-as-built-F0501 (M04-L1) also M04-L4; derived-engine-mode-cache-as-built-F0208 (M04-L2) also M04-L1; derived-ttl-cache-as-built-F0302 (M04-L2) also M04-L1; derived-ttl-cache-as-built-EXC05 (M04-L2) also M04-L1; derived-native-gate-label-index-as-built-F0906 (M04-L4) also M04-L2; derived-ivf-erase-as-built-F0606 (M04-L2) also M04-L1). Measured by review 4 (review/review-4/semantics/specificity.txt); the rerun with the harness complement check records every violated law per check (RESULTS.json violates/also_violates) and the undeclared departures are now declared in mechanisms.json.",
+   "evidence": [
+    "sem-mc-derived-as-built-r2",
+    "sem-mc-all-r2",
+    "sem-check-r2"
+   ],
+   "added": "2026-11-14 (steer 7), review R4-08, text from the semantics lane"
+  },
+  {
+   "id": "sem-control-derived",
+   "correction": "The record says each control is 'a violation of exactly its law'. That is an artefact of Keep::only, which keeps only the attributed law: each check does violate its attributed law (shortest counterexample), but with the other laws kept too, 4 of them also violate another law (derived-control-C1-unmaintained-path (M04-L2) also M04-L1; derived-control-C2-token-after-compute (M04-L1) also M04-L4; derived-control-C3-rebuild-stamp-only (M04-L3) also M04-L1; derived-control-C5-probe-late (M04-L1) also M04-L4). Measured by review 4 (review/review-4/semantics/specificity.txt); the rerun with the harness complement check records every violated law per check (RESULTS.json violates/also_violates) and the undeclared departures are now declared in mechanisms.json.",
+   "evidence": [
+    "sem-control-derived-r2",
+    "sem-mc-all-r2",
+    "sem-check-r2"
+   ],
+   "added": "2026-11-14 (steer 7), review R4-08, text from the semantics lane"
+  },
+  {
+   "id": "sem-mc-excl-as-built",
+   "correction": "The record says each expected violation is 'a violation of exactly its named law'. That is an artefact of Keep::only, which keeps only the attributed law: each check does violate its attributed law (shortest counterexample), but with the other laws kept too, 3 of them also violate another law (excl-redaction-marker-as-built (M03-L4) also M03-L3; excl-redaction-marker-as-built-F1302-marker (M03-L3) also M03-L5; excl-redaction-marker-as-built-F1302-tomb-live (M03-L5) also M03-L3). Measured by review 4 (review/review-4/semantics/specificity.txt); the rerun with the harness complement check records every violated law per check (RESULTS.json violates/also_violates) and the undeclared departures are now declared in mechanisms.json.",
+   "evidence": [
+    "sem-mc-excl-as-built-r2",
+    "sem-mc-all-r2",
+    "sem-check-r2"
+   ],
+   "added": "2026-11-14 (steer 7), review R4-08, text from the semantics lane"
+  },
+  {
+   "id": "sem-control-excl",
+   "correction": "The record says each control is 'a violation of exactly its law'. That is an artefact of Keep::only, which keeps only the attributed law: each check does violate its attributed law (shortest counterexample), but with the other laws kept too, 3 of them also violate another law (excl-control-C2-writer-without-lock (M03-L2) also M03-L3; excl-control-C3-check-before-lock (M03-L3) also M03-L5; excl-control-C5-tomb-without-check (M03-L5) also M03-L3). Measured by review 4 (review/review-4/semantics/specificity.txt); the rerun with the harness complement check records every violated law per check (RESULTS.json violates/also_violates) and the undeclared departures are now declared in mechanisms.json.",
+   "evidence": [
+    "sem-control-excl-r2",
+    "sem-mc-all-r2",
+    "sem-check-r2"
+   ],
+   "added": "2026-11-14 (steer 7), review R4-08, text from the semantics lane"
+  },
+  {
+   "id": "sem-mc-queue-as-built",
+   "correction": "The record says each expected violation is 'a violation of exactly its named law'. That is an artefact of Keep::only, which keeps only the attributed law: each check does violate its attributed law (shortest counterexample), but with the other laws kept too, 1 of them also violate another law (queue-embed-queue-as-built-HD0604 (M07-L2) also M07-L1). Measured by review 4 (review/review-4/semantics/specificity.txt); the rerun with the harness complement check records every violated law per check (RESULTS.json violates/also_violates) and the undeclared departures are now declared in mechanisms.json.",
+   "evidence": [
+    "sem-mc-queue-as-built-r2",
+    "sem-mc-all-r2",
+    "sem-check-r2"
+   ],
+   "added": "2026-11-14 (steer 7), review R4-08, text from the semantics lane"
+  },
+  {
+   "id": "sem-control-queue",
+   "correction": "The record says each control is 'a violation of exactly its law'. That is an artefact of Keep::only, which keeps only the attributed law: each check does violate its attributed law (shortest counterexample), but with the other laws kept too, 1 of them also violate another law (queue-control-C2-two-consumers (M07-L2) also M07-L1). Measured by review 4 (review/review-4/semantics/specificity.txt); the rerun with the harness complement check records every violated law per check (RESULTS.json violates/also_violates) and the undeclared departures are now declared in mechanisms.json.",
+   "evidence": [
+    "sem-control-queue-r2",
+    "sem-mc-all-r2",
+    "sem-check-r2"
+   ],
+   "added": "2026-11-14 (steer 7), review R4-08, text from the semantics lane"
+  },
+  {
+   "id": "sem-mc-removal-as-built",
+   "correction": "The record says each expected violation is 'a violation of exactly its named law'. That is an artefact of Keep::only, which keeps only the attributed law: each check does violate its attributed law (shortest counterexample), but with the other laws kept too, 10 of them also violate another law (removal-bm25-as-built (M05-L1) also M05-L3; removal-bm25-as-built-M05-L3 (M05-L3) also M05-L1; removal-vector-indexes-as-built (M05-L1) also M05-L3; removal-vector-indexes-as-built-M05-L3 (M05-L3) also M05-L1; removal-quarantine-as-built (M05-L1) also M05-L3; removal-snapshot-archives-as-built (M05-L1) also M05-L3; removal-reifier-default-graph-as-built (M05-L1) also M05-L3; removal-temporal-only-prefix-as-built (M05-L1) also M05-L3; removal-history-text-as-built (M05-L1) also M05-L3; removal-default-routed-vectors-as-built (M05-L1) also M05-L3). Measured by review 4 (review/review-4/semantics/specificity.txt); the rerun with the harness complement check records every violated law per check (RESULTS.json violates/also_violates) and the undeclared departures are now declared in mechanisms.json.",
+   "evidence": [
+    "sem-mc-removal-as-built-r2",
+    "sem-mc-all-r2",
+    "sem-check-r2"
+   ],
+   "added": "2026-11-14 (steer 7), review R4-08, text from the semantics lane"
+  },
+  {
+   "id": "sem-control-removal",
+   "correction": "The record says each control is 'a violation of exactly its law'. That is an artefact of Keep::only, which keeps only the attributed law: each check does violate its attributed law (shortest counterexample), but with the other laws kept too, 2 of them also violate another law (removal-control-C1-store-dropped (M05-L1) also M05-L3; removal-control-C1b-store-dropped-inventory (M05-L3) also M05-L1). Measured by review 4 (review/review-4/semantics/specificity.txt); the rerun with the harness complement check records every violated law per check (RESULTS.json violates/also_violates) and the undeclared departures are now declared in mechanisms.json.",
+   "evidence": [
+    "sem-control-removal-r2",
+    "sem-mc-all-r2",
+    "sem-check-r2"
+   ],
+   "added": "2026-11-14 (steer 7), review R4-08, text from the semantics lane"
+  },
+  {
+   "id": "sem-mc-retry-as-built",
+   "correction": "The record says each expected violation is 'a violation of exactly its named law'. That is an artefact of Keep::only, which keeps only the attributed law: each check does violate its attributed law (shortest counterexample), but with the other laws kept too, 1 of them also violate another law (retry-ledger-key-as-built (M02-L2) also M02-L1). Measured by review 4 (review/review-4/semantics/specificity.txt); the rerun with the harness complement check records every violated law per check (RESULTS.json violates/also_violates) and the undeclared departures are now declared in mechanisms.json.",
+   "evidence": [
+    "sem-mc-retry-as-built-r2",
+    "sem-mc-all-r2",
+    "sem-check-r2"
+   ],
+   "added": "2026-11-14 (steer 7), review R4-08, text from the semantics lane"
+  },
+  {
+   "id": "sem-control-retry",
+   "correction": "The record says each control is 'a violation of exactly its law'. That is an artefact of Keep::only, which keeps only the attributed law: each check does violate its attributed law (shortest counterexample), but with the other laws kept too, 2 of them also violate another law (retry-control-C2-post-on-replay (M02-L2) also M02-L1; retry-control-C3-apply-conflict (M02-L3) also M02-L1). Measured by review 4 (review/review-4/semantics/specificity.txt); the rerun with the harness complement check records every violated law per check (RESULTS.json violates/also_violates) and the undeclared departures are now declared in mechanisms.json.",
+   "evidence": [
+    "sem-control-retry-r2",
+    "sem-mc-all-r2",
+    "sem-check-r2"
+   ],
+   "added": "2026-11-14 (steer 7), review R4-08, text from the semantics lane"
+  },
+  {
+   "id": "sem-mc-sys00-as-built",
+   "correction": "The record says each expected violation is 'a violation of exactly its named axiom'. That is an artefact of Keep::only, which keeps only the attributed axiom: each check does violate its attributed axiom (shortest counterexample), but with the other axioms kept too, 6 of them also violate another axiom (sys00-as-built-ax-06 (AX-06) also AX-08; sys00-as-built-ax-07 (AX-07) also AX-08; sys00-as-built-ax-08 (AX-08) also AX-11; sys00-as-built-ax-10 (AX-10) also AX-08; sys00-as-built-ax-11 (AX-11) also AX-08; sys00-as-built-ax-11-marker (AX-11) also AX-08). Measured by review 4 (review/review-4/semantics/specificity.txt); the rerun with the harness complement check records every violated axiom per check (RESULTS.json violates/also_violates).",
+   "evidence": [
+    "sem-mc-sys00-as-built-r2",
+    "sem-mc-all-r2",
+    "sem-check-r2"
+   ],
+   "added": "2026-11-14 (steer 7), review R4-08, text from the semantics lane"
+  },
+  {
+   "id": "sem-control-sys00",
+   "correction": "The record says each control is 'a violation of exactly its axiom'. That is an artefact of Keep::only, which keeps only the attributed axiom: each check does violate its attributed axiom (shortest counterexample), but with the other axioms kept too, 6 of them also violate another axiom (sys00-control-ax02-tomb-both-tenants (AX-02) also AX-07; sys00-control-ax03-refusal-writes (AX-03) also AX-07; sys00-control-ax06-post-on-replay (AX-06) also AX-11; sys00-control-ax08-erase-skips-derived (AX-08) also AX-10; sys00-control-ax11-check-before-lock (AX-11) also AX-11; sys00-control-ax12-receipt-early (AX-12) also AX-10). Measured by review 4 (review/review-4/semantics/specificity.txt); the rerun with the harness complement check records every violated axiom per check (RESULTS.json violates/also_violates).",
+   "evidence": [
+    "sem-control-sys00-r2",
+    "sem-mc-all-r2",
+    "sem-check-r2"
+   ],
+   "added": "2026-11-14 (steer 7), review R4-08, text from the semantics lane"
   }
  ]
 }

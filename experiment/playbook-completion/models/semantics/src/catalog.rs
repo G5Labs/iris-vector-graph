@@ -109,12 +109,16 @@ macro_rules! object {
 
 fn v(cfg: Cfg, law: &'static str, findings: &'static [&'static str]) -> Variant { Variant { cfg, law, findings } }
 
-object!(IndexGraphUnchecked, "index-graph-unchecked", ["07/bm25-index", "06/ivf-index", "17/index-handle"],
-        [v(Cfg { read_checked: false, ..CANON }, L2, &["F-0707", "F-0609"]), v(Cfg { records: false, ..CANON }, L1, &["F-0705"]),
+// BM25 indexes (and the index handle over them): read under USE GRAPH without checking the graph they were built for
+// (F-0707); an index with no recorded graph is read as the default graph's (F-0705).
+object!(Bm25IndexGraphUnchecked, "bm25-index-graph-unchecked", ["07/bm25-index", "17/index-handle"],
+        [v(Cfg { read_checked: false, ..CANON }, L2, &["F-0707"]), v(Cfg { records: false, ..CANON }, L1, &["F-0705"]),
          v(Cfg { records: false, ..CANON }, L2, &["F-0705"])]);
+// IVF indexes: the fused search may read an IVF index built for another graph (F-0609).
+object!(IvfIndexGraphUnchecked, "ivf-index-graph-unchecked", ["06/ivf-index"], [v(Cfg { read_checked: false, ..CANON }, L2, &["F-0609"])]);
 object!(IdentityFailOpen, "identity-fail-open", ["06/registry-row"], [v(Cfg { fail_open: true, ..CANON }, L2, &["F-0601", "F-0602", "F-0603", "F-0613"])]);
 object!(ShortHashName, "short-hash-name", ["09/compiled-shape"], [v(Cfg { naming: Naming::ShortHash, ..CANON }, L3, &["F-0901", "F-C0901"])]);
-object!(Canonical, "canonical", ["06/route", "15/table-mapping", "10/native-route"], [v(CANON, "", &[])]);
+object!(Canonical, "canonical", ["06/route", "15/table-mapping", "10/native-route", "15/code-crosswalk"], [v(CANON, "", &[])]);
 
 fn instance_checks<O: CatalogObject>(o: &O) -> Vec<Outcome> {
     let n = o.name();
@@ -123,26 +127,27 @@ fn instance_checks<O: CatalogObject>(o: &O) -> Vec<Outcome> {
         let m = Machine { o, c: var.cfg };
         let id = if k == 0 { format!("catalog-{n}-as-built") } else { format!("catalog-{n}-as-built-{}-{}", &var.law[..6], var.findings[0]) };
         if var.law.is_empty() {
-            out.push(check(&id, meta("M-12", "catalog", n, o.objects(), "as-built", "safety", "all", var.findings, ""), Expect::Pass, &Keep::safety(&m)));
+            out.push(check_keep(&id, meta("M-12", "catalog", n, o.objects(), "as-built", "safety", "all", var.findings, ""), Expect::Pass, &Keep::safety(&m)));
         } else {
-            out.push(check(&id, meta("M-12", "catalog", n, o.objects(), "as-built", "safety", var.law, var.findings, ""), Expect::Violation(var.law), &Keep::only(&m, &[var.law])));
+            out.push(check_keep(&id, meta("M-12", "catalog", n, o.objects(), "as-built", "safety", var.law, var.findings, ""), Expect::Violation(var.law), &Keep::only(&m, &[var.law])));
         }
     }
     let rv = Machine { o, c: CANON };
-    out.push(check(&format!("catalog-{n}-reviewed"), meta("M-12", "catalog", n, o.objects(), "reviewed", "safety", "all", &[], ""), Expect::Pass, &Keep::safety(&rv)));
+    out.push(check_keep(&format!("catalog-{n}-reviewed"), meta("M-12", "catalog", n, o.objects(), "reviewed", "safety", "all", &[], ""), Expect::Pass, &Keep::safety(&rv)));
     out
 }
 
 pub fn checks() -> Vec<Outcome> {
     let mut out = vec![];
-    out.extend(instance_checks(&IndexGraphUnchecked));
+    out.extend(instance_checks(&Bm25IndexGraphUnchecked));
+    out.extend(instance_checks(&IvfIndexGraphUnchecked));
     out.extend(instance_checks(&IdentityFailOpen));
     out.extend(instance_checks(&ShortHashName));
     out.extend(instance_checks(&Canonical));
     let o = &Canonical;
     let ctl = |id: &str, law: &'static str, c: Cfg| {
         let m = Machine { o, c };
-        check(id, meta("M-12", "catalog", "canonical", o.objects(), "control", "safety", law, &[], ""), Expect::Violation(law), &Keep::only(&m, &[law]))
+        check_keep(id, meta("M-12", "catalog", "canonical", o.objects(), "control", "safety", law, &[], ""), Expect::Violation(law), &Keep::only(&m, &[law]))
     };
     out.push(ctl("catalog-control-C1-unchecked-read", L2, Cfg { read_checked: false, ..CANON }));
     out.push(ctl("catalog-control-C2-short-hash", L3, Cfg { naming: Naming::ShortHash, ..CANON }));

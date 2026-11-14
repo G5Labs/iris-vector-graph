@@ -132,7 +132,7 @@ object!(FirstUseNoRecord, "first-use-no-record", ["01/namespace"], Cfg { first_u
 object!(UnqualifiedDrop, "unqualified-drop", ["01/setup-routine"], Cfg { drop_unqualified: true, ..CANON }, L3, ["F-0107"]);
 object!(UncheckedSetting, "unchecked-setting", ["09/process-mode", "15/rdf-extra"], Cfg { invalid_setting_accepted: true, ..CANON }, L4, ["F-0903", "F-1506"]);
 object!(ConcurrentFirstEnable, "concurrent-first-enable", ["11/ledger"], Cfg { enable_race_errors: true, ..CANON }, L2, ["F-1104"]);
-object!(Canonical, "canonical", ["01/class-set", "01/legacy-object", "16/rest-web-app-path", "16/mcp-tool-set", "17/namespace", "03/ledger-state"], CANON, "", []);
+object!(Canonical, "canonical", ["01/class-set", "01/legacy-object", "16/rest-web-app-path", "16/mcp-tool-set", "17/namespace", "03/ledger-state", "15/prefix-registry", "15/ivg-fhir-cli"], CANON, "", []);
 
 fn instance_checks<O: InstallObject>(o: &O) -> Vec<Outcome> {
     let (law, f) = o.departs();
@@ -141,10 +141,10 @@ fn instance_checks<O: InstallObject>(o: &O) -> Vec<Outcome> {
     let rv = Machine { o, c: CANON };
     let mut out = vec![];
     if law.is_empty() {
-        out.push(check(&format!("install-{n}-as-built"), meta("M-08", "install", n, o.objects(), "as-built", "safety", "all", f, ""), Expect::Pass, &Keep::safety(&ab)));
+        out.push(check_keep(&format!("install-{n}-as-built"), meta("M-08", "install", n, o.objects(), "as-built", "safety", "all", f, ""), Expect::Pass, &Keep::safety(&ab)));
     } else {
-        out.push(check(&format!("install-{n}-as-built"), meta("M-08", "install", n, o.objects(), "as-built", "safety", law, f, ""), Expect::Violation(law), &Keep::only(&ab, &[law])));
-        out.push(check(&format!("install-{n}-reviewed"), meta("M-08", "install", n, o.objects(), "reviewed", "safety", "all", &[], ""), Expect::Pass, &Keep::safety(&rv)));
+        out.push(check_keep(&format!("install-{n}-as-built"), meta("M-08", "install", n, o.objects(), "as-built", "safety", law, f, ""), Expect::Violation(law), &Keep::only(&ab, &[law])));
+        out.push(check_keep(&format!("install-{n}-reviewed"), meta("M-08", "install", n, o.objects(), "reviewed", "safety", "all", &[], ""), Expect::Pass, &Keep::safety(&rv)));
     }
     out
 }
@@ -159,7 +159,7 @@ pub fn checks() -> Vec<Outcome> {
     let o = &Canonical;
     let ctl = |id: &str, law: &'static str, c: Cfg| {
         let m = Machine { o, c };
-        check(id, meta("M-08", "install", "canonical", o.objects(), "control", "safety", law, &[], ""), Expect::Violation(law), &Keep::only(&m, &[law]))
+        check_keep(id, meta("M-08", "install", "canonical", o.objects(), "control", "safety", law, &[], ""), Expect::Violation(law), &Keep::only(&m, &[law]))
     };
     out.push(ctl("install-control-C1-first-use-accepts-any", L1, Cfg { first_use_accepts_unrecorded: true, ..CANON }));
     out.push(ctl("install-control-C2-unqualified-drop", L3, Cfg { drop_unqualified: true, ..CANON }));

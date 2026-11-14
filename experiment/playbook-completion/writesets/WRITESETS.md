@@ -7,7 +7,8 @@ WS-COND, 3 WS-GAP = 185 cells). Live work only in `AUDITB` (the pin by its own `
 through the product's own entry points. Raw logs: `$RUN_DIR/writesets/`. Nothing compiled, no product file changed
 (`check-product-scope.sh` passed before every registration).
 
-Files: `DISCHARGES.json` (one entry per census obligation id and per open module cell, `module:NN`),
+Files: `DISCHARGES.json` (one entry per census obligation id and per open module cell, `module:NN`), `RUN-PAIRS.json`
+(the machine-readable map: for each cited run, the (invariant, writer) pairs it exercised and the outcome on each),
 `tools/build_discharges.py` (the per-writer analysis that generates it), `tools/check_discharges.py` (checker and
 self-test), `live/ws_probes.py` (probes), `MATRIX-INPUT.json` (module cells), `../findings/audit/zz-writesets.json`
 (new findings).
@@ -63,18 +64,26 @@ self-test), `live/ws_probes.py` (probes), `MATRIX-INPUT.json` (module cells), `.
 | `ws-live-snap-importglobals` | fail | ImportGlobals overwrites ^IVG.Ledger rec/head/meta with another history's export |
 | `ws-live-snap-setnodejson` | pass | SetNodeJSON refuses every invariant store (40 calls), writes nothing |
 | `ws-live-sql-guard` | pass | INSERT of an existing seq refused (SeqIdx), UPDATE refused (trigger), text stays cleared |
-| `ws-live-sql-insert-wedge` | fail | an SQL INSERT of seq head+1 is accepted and every later commit fails |
+| `ws-live-sql-insert-wedge` | fail | an SQL INSERT of seq head+1 is accepted and the next ledger commit fails |
 | `ws-live-gap-restore` | fail | after a replacing restore, a second redaction keeps the revision's text and live retry key; a retry replays it |
 | `ws-live-gap-marker` | fail | a marker survives a replacing restore that brings the target back live |
 | `ws-live-migrations` | fail | three migrations leave a marked target untouched; add_graph_id_to_nodes moves a '__graph' node into it |
 | `ws-live-fhir-blocked` | blocked | no FHIR repository in AUDITB (HS_FHIRServer absent): FHIR writers not runnable |
 | `ws-live-noindex` | fail | (outside the census) %NOINDEX bulk-load rows invisible to LiveRows: redaction completes on a live tenant |
-| `ws-check`, `ws-check-selftest` | pass | this checker on DISCHARGES.json; 19/19 seeded mutations caught |
+| `ws-live-replay-delete_reification` | pass | (R4-02) WS-OBL-093 re-run with a committed delete: verify() equal -> diverges, unrecorded_writes; journal: deletes committed, no ledger node |
+| `ws-live-replay-import_rdf` | pass | (R4-06) import_rdf's INV-replay sub-check from an equal baseline (full-scan residue 0): diverges, unrecorded_writes; equal again after the erase |
+| `ws-live-noindex-erase` | fail | (R4-06) a %NOINDEX bulk-load edge survives delete_nodes_by_prefix of both endpoints and EraseAll+PurgeAll (F-C1250) |
+| `ws-check`, `ws-check-selftest` | pass | first pass: this checker on DISCHARGES.json; 19/19 seeded mutations |
+| `ws-check-r2`, `ws-check-selftest-r2` | pass | after review R4: C9-C12 added; 28/28 seeded mutations |
+
+Errata (given to the orchestrator for `evidence/errata.json`): `ws-live-ins-bulkloader_load_edges` ("equal again after
+erasing wsd10" is wrong), `ws-live-ins-import_rdf` (its INV-replay sub-check did not start from an equal baseline),
+`ws-deploy-auditb` ("namespace empty before the probes" is not in its log). See "Review R4 response".
 
 ## Counts
 
 185 census obligations: **lemma 105** (inspected 85, live 20), **finding 64** (live 41, inspected 23), **guard 9** (live 9),
-**open 7**.
+**open 7**. 18 lemma/guard cells cite a failed run whose failure is on another pair (`failed_runs_other_pairs`).
 
 | Invariant | lemma | guard | finding | open |
 |---|---|---|---|---|
@@ -91,7 +100,8 @@ S1 invariants (INV-text, INV-isolation, INV-no-live-tombstone, INV-marker; 96 ce
 
 ## Per writer
 
-L lemma, G guard, F finding, O open; live / insp(ected).
+L lemma, G guard, F finding, O open; live / insp(ected). Every INV-replay L holds as detection (or vacuous for the 4
+conditional writers), not as preservation: see Review R4 response.
 
 | Writer | Mod | INV-marker | INV-no-live-tombstone | INV-replay | INV-stmt | other |
 |---|---|---|---|---|---|---|
@@ -161,7 +171,8 @@ L lemma, G guard, F finding, O open; live / insp(ected).
 | F-C0450 | A ledger relationship whose qualifiers hold temporal=1 is deleted as a temporal edge's derived row; its statement stays live | S2, high | `ws-live-stmt-collision`, `ws-live-stmt-purge` |
 | F-C0151 | retract_inference deletes a ledger relationship with an 'inferred' qualifier key; its statement stays live | S2, high | `ws-live-stmt-collision` |
 | F-C0150 | initialize_schema moves a node with a '__graph' property into that graph (also into a marked graph); the engine still writes such a property | S2, high | `ws-live-migrations` |
-| F-C1150 | An SQL INSERT into Graph_KG.ledger_revisions is accepted; a row at head+1 makes every later commit fail | S2, high | `ws-live-sql-insert-wedge`, `ws-live-sql-guard` |
+| F-C1150 | An SQL INSERT into Graph_KG.ledger_revisions is accepted; a row at head+1 made the next ledger commit fail | S2, high | `ws-live-sql-insert-wedge`, `ws-live-sql-guard` |
+| F-C1250 | A %NOINDEX bulk-load edge row survives delete_nodes_by_prefix of both endpoints and EraseAll+PurgeAll until the indices are rebuilt; its endpoint nodes are deleted under it | S1, high | `ws-live-noindex-erase` (outside the census; explains the two errata) |
 
 ## Existing findings this lane's runs extend (the orchestrator may add the runs to their records)
 
@@ -169,6 +180,32 @@ L lemma, G guard, F finding, O open; live / insp(ected).
 - **F-C1307**: the same defect live for 12 more writers (`ws-live-ins-*`); FHIR writers by inspection.
 - **F-1806**: ImportGlobals shown overwriting the ledger global (`ws-live-snap-importglobals`); its record showed only
   that the method is callable.
+
+## Review R4 response (fourth pass, `review/REVIEW-4.md` section 5)
+
+- **R4-02.** WS-OBL-093 (delete_reification, INV-replay) now cites `ws-live-replay-delete_reification`, a committed
+  delete; `ws-live-fc1301-delete-reification` is no longer cited for it (its deletes were rolled back). `RUN-PAIRS.json`
+  records, per cited run, the pairs it exercised and the outcome. Each lemma or guard cell that cites a failed run lists
+  that run in `failed_runs_other_pairs` with the pairs it failed on (`failed_runs_other_pairs_reason`); 18 cells do. The
+  builder refuses a lemma/guard that cites a run failing on its own pair. `check_discharges.py` adds C9 (a `live` grade
+  cites a run that exercised the pair), C10 (every failed run a lemma/guard cites is attributed to another pair), C11
+  (attributions name cited failed runs, with a reason), C12 (map and context runs registered); self-test 28/28.
+- **R4-06.** Errata for the two records (below); import_rdf's sub-check re-run from an equal baseline
+  (`ws-live-replay-import_rdf`, now WS-OBL-109's evidence); the %NOINDEX residue recorded as **F-C1250** with
+  `ws-live-noindex-erase`. WS-OBL-125 keeps the bulkloader run (its baseline was equal and the write was classified)
+  plus `ws-live-noindex-erase`.
+- **R4-07.** The 40 INV-replay lemma cells carry `holds_as`: 36 `detection` (the writer breaks RPL-B3's
+  no-unrecorded-writes premise; verify() classifies the write, RPL-B7.1, or it lies outside the replay abstraction; the
+  product permits such writes on a non-strict ledger, `ledger/guard.py:69-80`, so a lemma of detection, not a finding)
+  and 4 `vacuous` (the conditional writers insert_vector, _backfill_graph_id, _dedupe, _redistribute write no content
+  store at the pin; "detection" would misdescribe them). None was turned into a finding: each writer's divergence is
+  reported, which is the product's documented handling. The "(journal)" clause is gone where the cited run has no
+  journal (WS-OBL-004, 008, 024, 064, 105); 008 notes that the purge reached the deletion through RetractTemporalRows'
+  fallback RetractTemporalRow. `ws-live-migrations` is `context_runs` (not evidence) for the six migration cells
+  (tighten_graph_id_column, ensure_ekey, ensure_props_value_key x INV-marker, INV-no-live-tombstone): it was a no-op for them.
+- **R4-14/R4-15.** F-C1150 now says what was observed (the next commit failed; one was attempted). WS-OBL-066 carries
+  `depends_on: ["O-1"]` (fc1306-legacy-ledger-rows compiled v4.5.1 into a scratch namespace, R2-07); if O-1 rules it out
+  the cell falls back to inspected.
 
 ## Observations for the orchestrator
 
@@ -189,7 +226,8 @@ L lemma, G guard, F finding, O open; live / insp(ected).
         python experiment/playbook-completion/writesets/live/ws_probes.py ins-all
     bash experiment/playbook-completion/tools/locks.sh iris timeout 900 \
         python experiment/playbook-completion/writesets/live/ws_probes.py rb-delete_reification stmt-collision stmt-purge \
-        snap-helpers snap-setnodejson sql-guard sql-insert gap-restore gap-marker migrations fhir-blocked fk-guard noindex
+        snap-helpers snap-setnodejson sql-guard sql-insert gap-restore gap-marker migrations fhir-blocked fk-guard noindex \
+        replay-delete_reification replay-import_rdf noindex-erase
     python experiment/playbook-completion/writesets/tools/build_discharges.py
     python experiment/playbook-completion/writesets/tools/check_discharges.py
     python experiment/playbook-completion/writesets/tools/check_discharges.py --self-test

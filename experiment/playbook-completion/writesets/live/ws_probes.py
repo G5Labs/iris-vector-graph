@@ -24,6 +24,9 @@ Cases (each writes $RUN_DIR/writesets/<case>.json and starts and ends with Erase
                  TemporalPolicy.DropRows, retract_inference): INV-stmt (live statement without its row).
   stmt-purge     INV-stmt for RetractTemporalRows (the purge path) with a marker-key qualifier.
   migrations     ensure_indexes' migrations while a redaction marker exists, and add_graph_id_to_nodes.
+  replay-delete_reification, replay-import_rdf
+                 INV-replay sub-checks re-run alone (review R4-02, R4-06): committed delete; equal baseline.
+  noindex-erase  The %NOINDEX edge row of BulkLoader.load_edges against delete_nodes_by_prefix and EraseAll+PurgeAll.
   noindex        BulkLoader.load_nodes' %NOINDEX rows against LiveRows (outside the census cells).
   fhir-blocked   Graph.KG.FHIRGraph.Register here (no FHIR repository: the FHIR writers are not runnable).
   snap-helpers   Graph.KG.Snapshot.ImportGlobals over the ledger global (and SetNodeJSON's refusal of it).
@@ -901,13 +904,162 @@ def case_noindex(c: Conn) -> dict:
     return out
 
 
+# ----------------------------------------------------------------------------------- review R4-02 / R4-06 reruns
+
+def fullscan(c: Conn, prefix: str | None = None) -> dict:
+    """Row counts read without any index (%IGNOREINDEX *), whole table or for one id prefix."""
+    out = {}
+    for t, cols in (("nodes", ("node_id",)), ("rdf_labels", ("s",)), ("rdf_props", ("s",)), ("rdf_edges", ("s", "o_id"))):
+        q = f"SELECT COUNT(*) FROM %IGNOREINDEX * Graph_KG.{t}"
+        if prefix is None:
+            out[t] = c.sql(q)[0][0]
+        else:
+            w = " OR ".join(f"{col} %STARTSWITH ?" for col in cols)
+            out[t] = c.sql(q + f" WHERE {w}", *([prefix] * len(cols)))[0][0]
+    return out
+
+
+def case_replay_delete_reification(c: Conn) -> dict:
+    """INV-replay for delete_reification with a committed delete (review R4-02): no caller transaction."""
+    reset(c)
+    smap = journal.storage_map(c)
+    out = {"residue_fullscan_after_reset": fullscan(c)}
+    e = eng(c)
+    e.ledger.enable()
+    cs = Changeset(actor="audit:writesets", actor_type="ingest", message="control")
+    cs.create_node("wsctl|n1", labels=["C"], properties={"k": "v"})
+    e.ledger.commit(cs)
+    T = "wsrd"
+    e.ledger.commit(Changeset(actor="audit:writesets", actor_type="ingest", message="wsrd content")
+                    .create_node(f"{T}|n1", labels=["T"], properties={"secret": "wsrd-s1"}))
+    out["verify_baseline"] = verify(e)
+    cW = Conn(NS)
+    try:
+        eW = eng(cW)
+        out["tlevel_before"] = cW.sql("SELECT $TLEVEL")[0][0]
+        m = journal.mark()
+        out["delete_reification"] = err(lambda: eW.delete_reification(f"{T}|n1"))
+        out["tlevel_after"] = cW.sql("SELECT $TLEVEL")[0][0]
+        recs = jrecs(m, [cW.pid])
+        out["journal"] = {"content_writes": content_writes(recs, smap, cW.pid),
+                          "ledger_writes": ledger_writes(recs, cW.pid),
+                          "transactions": [{k: u[k] for k in ("kind", "committed", "rolled_back")}
+                                           for u in journal.transactions(recs)]}
+    finally:
+        cW.close()
+    out["live_rows_after"] = live_rows(c, T)
+    out["verify_after"] = verify(e)
+    reset(c)
+    v = out["verify_after"].get("value", {})
+    out["verdict"] = {
+        "baseline_equal": out["verify_baseline"].get("value", {}).get("result") == "equal",
+        "delete_committed_no_caller_txn": out["tlevel_before"] == 0 and out["tlevel_after"] == 0
+        and all(t["committed"] and not t["rolled_back"] for t in out["journal"]["transactions"]),
+        "writer_wrote_content": bool(out["journal"]["content_writes"]),
+        "writer_wrote_no_ledger_node": not out["journal"]["ledger_writes"],
+        "verify_after": v.get("result"), "classification": v.get("classification"),
+        "differences_name_the_deleted_node": any(f"{T}|n1" in x for x in v.get("differences", [])),
+    }
+    return out
+
+
+def case_replay_import_rdf(c: Conn) -> dict:
+    """INV-replay for import_rdf from an equal baseline (review R4-06): residue checked first."""
+    reset(c)
+    smap = journal.storage_map(c)
+    out = {"residue_fullscan_after_reset": fullscan(c)}
+    e = eng(c)
+    e.ledger.enable()
+    cs = Changeset(actor="audit:writesets", actor_type="ingest", message="control")
+    cs.create_node("wsctl|n1", labels=["C"], properties={"k": "v"})
+    e.ledger.commit(cs)
+    out["verify_baseline"] = verify(e)
+    D = "wsri"
+    cW = Conn(NS)
+    try:
+        eW = eng(cW)
+        m = journal.mark()
+        out["import_rdf"] = err(lambda: str(eW.import_rdf(_rdf_file(D))))
+        cW.conn.commit()
+        recs = jrecs(m, [cW.pid])
+        out["journal"] = {"content_writes": content_writes(recs, smap, cW.pid),
+                          "ledger_writes": ledger_writes(recs, cW.pid)}
+    finally:
+        cW.close()
+    out["verify_after_write"] = verify(e)
+    out["erase"] = err(lambda: erase_form(e, c, "urn", D))
+    out["fullscan_D_after_erase"] = fullscan(c, f"urn:{D}:")
+    out["verify_after_erase"] = verify(e)
+    reset(c)
+    v = out["verify_after_write"].get("value", {})
+    out["verdict"] = {
+        "baseline_equal": out["verify_baseline"].get("value", {}).get("result") == "equal",
+        "writer_wrote_content": bool(out["journal"]["content_writes"]),
+        "writer_wrote_no_ledger_node": not out["journal"]["ledger_writes"],
+        "verify_after_write": v.get("result"), "classification": v.get("classification"),
+        "differences_name_imported_ids": any(f"urn:{D}:" in x for x in v.get("differences", [])),
+        "verify_after_erase": out["verify_after_erase"].get("value", {}).get("result"),
+    }
+    return out
+
+
+def case_noindex_erase(c: Conn) -> dict:
+    """The %NOINDEX edge row a BulkLoader.load_edges writes, against delete_nodes_by_prefix and EraseAll+PurgeAll
+    (review R4-06: the residue seen in ws-live-ins-bulkloader_load_edges / -import_rdf)."""
+    from iris_vector_graph.bulk_loader import BulkLoader
+    reset(c)
+    out = {"residue_fullscan_after_reset": fullscan(c)}
+    e = eng(c)
+    e.ledger.enable()
+    P = "wse"
+    cL = Conn(NS)
+    try:
+        out["load_edges"] = err(lambda: str(BulkLoader(cL.conn).load_edges([(f"{P}|a", "R", f"{P}|b", None)])))
+        cL.conn.commit()
+    finally:
+        cL.close()
+    out["after_load"] = {"indexed": live_rows(c, P), "fullscan": fullscan(c, f"{P}|")}
+    out["verify_after_load"] = verify(e)
+    out["delete_nodes_by_prefix"] = err(lambda: e.delete_nodes_by_prefix(f"{P}|"))
+    c.conn.commit()
+    out["after_prefix_erase"] = {"indexed": live_rows(c, P), "fullscan": fullscan(c, f"{P}|"),
+                                 "edge_row": c.sql("SELECT %ID, s, p, o_id, graph_id FROM %IGNOREINDEX * "
+                                                   "Graph_KG.rdf_edges WHERE s %STARTSWITH ?", f"{P}|")}
+    out["verify_after_prefix_erase"] = verify(e)
+    out["erase_all"] = err(lambda: str(c.call("Graph.KG.Eraser", "EraseAll")))
+    out["purge_all"] = err(lambda: str(c.call("Graph.KG.Ledger", "PurgeAll")))
+    c.conn.commit()
+    out["after_eraseall_purgeall"] = {"indexed": live_rows(c, P), "fullscan": fullscan(c, f"{P}|"),
+                                      "fullscan_all": fullscan(c)}
+    e.ledger.enable()
+    out["verify_after_eraseall_reenable"] = verify(e)
+    out["rebuild_all_indices"] = err(lambda: str(BulkLoader(c.conn).rebuild_all_indices())[:200])
+    c.conn.commit()
+    out["after_rebuild"] = {"indexed": live_rows(c, P), "fullscan": fullscan(c, f"{P}|")}
+    reset(c)
+    out["after_final_reset_fullscan_all"] = fullscan(c)
+    ape, aea = out["after_prefix_erase"], out["after_eraseall_purgeall"]
+    out["verdict"] = {
+        "edge_row_unindexed_after_load": out["after_load"]["indexed"]["rdf_edges"] == 0
+        and out["after_load"]["fullscan"]["rdf_edges"] == 1,
+        "prefix_erase_removed_nodes": ape["fullscan"]["nodes"] == 0,
+        "edge_row_survives_prefix_erase": ape["fullscan"]["rdf_edges"] == 1,
+        "edge_row_survives_eraseall_purgeall": aea["fullscan"]["rdf_edges"] == 1,
+        "verify_after_eraseall_reenable": out["verify_after_eraseall_reenable"].get("value", {}).get("result"),
+        "visible_after_rebuild": out["after_rebuild"]["indexed"]["rdf_edges"],
+        "clean_after_rebuild_and_reset": sum(out["after_final_reset_fullscan_all"].values()) == 0,
+    }
+    return out
+
+
 CASES = {f"ins-{k}": (lambda k: (lambda c: case_ins(c, k)))(k) for k in WRITERS}
 CASES.update({"fk-guard": case_fk_guard, "rb-delete_reification": case_rb_delete_reification,
               "stmt-collision": case_stmt_collision, "snap-helpers": case_snap_helpers,
               "sql-insert": case_sql_insert, "sql-guard": lambda c: case_sql_insert(c, wedge=False), "gap-restore": case_gap_restore,
               "gap-marker": case_gap_marker, "snap-setnodejson": case_snap_setnodejson,
               "stmt-purge": case_stmt_purge, "migrations": case_migrations, "fhir-blocked": case_fhir_blocked,
-              "noindex": case_noindex})
+              "noindex": case_noindex, "replay-delete_reification": case_replay_delete_reification,
+              "replay-import_rdf": case_replay_import_rdf, "noindex-erase": case_noindex_erase})
 
 
 def main() -> int:

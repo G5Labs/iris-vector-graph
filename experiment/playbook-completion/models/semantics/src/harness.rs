@@ -53,6 +53,11 @@ pub struct Outcome {
     pub truncated: bool,
     pub seconds: f64,
     pub trace: String,
+    /// complement check (review 4, R4-08): every kept-class safety law (invariant or action property) of the
+    /// underlying model that is violated within bounds, each explored alone; None when not applicable (progress,
+    /// liveness and sharpness checks, which are not attributed by `Keep`).
+    pub violates: Option<Vec<String>>,
+    pub complement_truncated: bool,
 }
 
 pub fn show<S: Debug, A: Debug>(c: &Counterexample<S, A>) -> String {
@@ -76,11 +81,38 @@ pub fn judge<S: Debug, A: Debug>(id: &str, meta: Meta, expect: Expect, rep: Repo
         expect: match &expect { Expect::Pass => "exhaustive pass".into(), Expect::Violation(p) => format!("violation of '{p}'") },
         met, found, states: rep.states, transitions: rep.transitions, depth: rep.depth, truncated: capped,
         seconds: rep.seconds, trace: rep.violation.as_ref().map(|c| show(c)).unwrap_or_default(),
+        violates: None, complement_truncated: false,
     }
 }
 
 pub fn check<M: Model>(id: &str, meta: Meta, expect: Expect, m: &M) -> Outcome {
     judge(id, meta, expect, explore(m, limits()))
+}
+
+/// Every safety law of `m` (invariants and action properties) that some reachable state or step violates within the
+/// bounds, each law explored alone; and whether any of those explorations was truncated.
+pub fn all_violations<M: Model>(m: &M) -> (Vec<String>, bool) {
+    let mut names: Vec<&'static str> = m.invariants().iter().map(|i| i.name).collect();
+    names.extend(m.action_properties().iter().map(|p| p.name));
+    let mut out = vec![];
+    let mut trunc = false;
+    for n in names {
+        let k = Keep { m, inv: Some(vec![n]), ap: Some(vec![n]), ag: Some(vec![]) };
+        let r = explore(&k, limits());
+        trunc |= r.truncated;
+        if r.violation.is_some() && !out.contains(&n.to_string()) { out.push(n.to_string()); }
+    }
+    (out, trunc)
+}
+
+/// A check through `Keep` (attribution to the kept laws) that also runs the complement: the full set of the
+/// underlying model's violated safety laws is recorded with the outcome.
+pub fn check_keep<M: Model>(id: &str, meta: Meta, expect: Expect, k: &Keep<M>) -> Outcome {
+    let mut o = judge(id, meta, expect, explore(k, limits()));
+    let (v, t) = all_violations(k.m);
+    o.violates = Some(v);
+    o.complement_truncated = t;
+    o
 }
 
 /// Keep only some properties of a model. `None` keeps all of that class; `Some(vec![])` keeps none.

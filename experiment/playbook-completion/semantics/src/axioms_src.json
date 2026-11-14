@@ -141,7 +141,8 @@
     "iris_src/src/Graph/KG/Adjacency.cls:20-35"
    ],
    "exceptions": [
-    "EXC-05"
+    "EXC-05",
+    "EXC-11"
    ]
   },
   {
@@ -327,6 +328,16 @@
    "rule": "Algorithms read the edges with no lock; a write during a long run can give a mix of old and new edges (ALG-P6; the concurrency contract of Neo4j GDS, spec 162 FR-021).",
    "sources": [
     "iris_src/src/Graph/KG/Centrality.cls:25-28"
+   ]
+  },
+  {
+   "id": "EXC-11",
+   "axiom": "AX-08",
+   "name": "Undeclared adjacency or label index",
+   "rule": "Where the adjacency or label index is not declared on its table, only the engine's own writers and a rebuild keep it; any other write leaves it stale, and its declaration flag (Graph.KG.Adjacency.Indexed) is the signal readers must check (CONTEXT.md, Adjacency Index).",
+   "sources": [
+    "CONTEXT.md:88-96",
+    "iris_src/src/Graph/KG/Adjacency.cls:20-35"
    ]
   }
  ],

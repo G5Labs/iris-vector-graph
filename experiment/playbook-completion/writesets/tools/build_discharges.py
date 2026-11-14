@@ -23,6 +23,7 @@ from pathlib import Path
 
 PC = Path(__file__).resolve().parents[2]          # experiment/playbook-completion
 OUT = PC / "writesets" / "DISCHARGES.json"
+PAIRS = PC / "writesets" / "RUN-PAIRS.json"
 CENSUS = PC / "matrix-input" / "writer-census-obligations.json"
 
 # --------------------------------------------------------------------------------------------- shared citations
@@ -54,6 +55,9 @@ R_COLL = "run:ws-live-stmt-collision"
 R_PURGE = "run:ws-live-stmt-purge"
 R_MIG = "run:ws-live-migrations"
 R_FHIR = "run:ws-live-fhir-blocked"
+R_RDEL = "run:ws-live-replay-delete_reification"
+R_RIMP = "run:ws-live-replay-import_rdf"
+R_NIE = "run:ws-live-noindex-erase"
 M_FC1301 = ["run:core-m2-as-built-bypass-rollback", "run:core-m2-as-built-commit-rollback"]
 
 
@@ -102,17 +106,29 @@ def nlt_inserter(sites, run=None, note=""):
              "this writer (graded inspected)." + note)
 
 
-def replay_lemma(sites, run=None, note=""):
-    ev = ([run] if run else []) + sites + [REPLAY_CANON, REPLAY_COMPARE, ORIG_REPLAY]
-    reason = ("INV-replay holds under 'no unrecorded writes' (RPL-B3). The writer writes content rows and no ledger "
-              "record, so every effect it has is an unrecorded write: compare() either sees it and classifies it "
-              "unrecorded_writes (RPL-B7.1), or the write is outside the replay abstraction (a temporal-marked row, a "
-              "node's graph, a reserved property, ekey) and replay still equals the store in that abstraction. The "
-              "writer cannot make replay disagree with the store unseen." + note)
-    if run:
-        return D("lemma", "live", ev, [], reason + " Live: the writer's process wrote content and no ^IVG.Ledger "
-                 "node (journal); verify() went equal -> diverges, classification unrecorded_writes.")
-    return D("lemma", "inspected", ev, [], reason + " Inspected only for this writer.")
+JOURNAL_LIVE = (" Live: the writer's process wrote content and no ^IVG.Ledger node (journal of the cited run); "
+                "verify() went equal -> diverges, classification unrecorded_writes.")
+NOJ_LIVE = (" Live (the cited run has no journal section): verify() went equal -> diverges, classification "
+            "unrecorded_writes, and its differences name this writer's deletion.")
+
+
+def replay_lemma(sites, run=None, note="", live=JOURNAL_LIVE):
+    runs = [run] if isinstance(run, str) else list(run or [])
+    ev = runs + sites + [REPLAY_CANON, REPLAY_COMPARE, ORIG_REPLAY, "iris_vector_graph/ledger/guard.py:69-80"]
+    reason = ("Holds as detection, not as preservation (review R4-07). The writer writes content rows and no ledger "
+              "record, so it breaks RPL-B3's premise ('no unrecorded writes') and replay no longer equals the store; "
+              "what holds is that the divergence is reported: compare() sees the write and classifies it "
+              "unrecorded_writes (RPL-B7.1), or the write lies outside the replay abstraction (a temporal-marked row, "
+              "a node's graph, a reserved property, ekey) where replay still equals the store. The writer cannot make "
+              "replay disagree with the store unseen. The product permits such writes on a non-strict ledger (the "
+              "strict-mode guard refuses them only when strict, ledger/guard.py:69-80) and classifies them in verify() "
+              "(replay.py:645-649), so this is a lemma (detection), not a finding." + note)
+    if runs:
+        d = D("lemma", "live", ev, [], reason + live)
+    else:
+        d = D("lemma", "inspected", ev, [], reason + " Inspected only for this writer.")
+    d["holds_as"] = "detection"
+    return d
 
 
 def stmt_lemma_rows(sites, what, note=""):
@@ -135,10 +151,17 @@ def fk_lemma(sites, what, extra_runs=(), note=""):
 
 
 def nonkey_lemma(sites, what, extra_runs=(), note=""):
-    return D("lemma", "inspected", list(extra_runs) + sites + [LR_LIVEROWS, LR_MATCHES],
-             [], f"{what} LiveRows counts rows by (COALESCE(graph_id, ''), id prefix) and record membership "
-             "(Matches) reads only ledger globals, so an update that keeps every row's id and COALESCE'd graph "
-             "changes neither whether a target is live nor which records are a target's; the writer adds no record." + note)
+    d = D("lemma", "inspected", sites + [LR_LIVEROWS, LR_MATCHES],
+          [], f"{what} LiveRows counts rows by (COALESCE(graph_id, ''), id prefix) and record membership "
+          "(Matches) reads only ledger globals, so an update that keeps every row's id and COALESCE'd graph "
+          "changes neither whether a target is live nor which records are a target's; the writer adds no record." + note)
+    if extra_runs:
+        d["context_runs"] = [r[4:] for r in extra_runs]
+        d["reason"] += (" Context only, not evidence (review R4-07): ws-live-migrations ran this writer while a "
+                        "marker existed and it was a no-op there (rows_repaired 0 / already at 234 / backfilled 0), "
+                        "so the target stayed not live and the records unchanged; it exercised nothing this lemma "
+                        "rests on.")
+    return d
 
 
 def fc1301(sites, run=None, note=""):
@@ -173,11 +196,11 @@ GS = "iris_vector_graph/schema.py"
 KG = "iris_src/src/Graph/KG/"
 
 
-def inserter(writer, sites, run, stmt_what, note_marker="", note_nlt="", note_replay=""):
+def inserter(writer, sites, run, stmt_what, note_marker="", note_nlt="", note_replay="", replay_runs=None):
     W[writer] = {
         "INV-marker": marker_inserter(sites, run, note_marker),
         "INV-no-live-tombstone": nlt_inserter(sites, run, note_nlt),
-        "INV-replay": replay_lemma(sites, run, note_replay),
+        "INV-replay": replay_lemma(sites, run if replay_runs is None else replay_runs, note_replay),
         "INV-stmt": stmt_lemma_rows(sites, stmt_what),
     }
 
@@ -226,7 +249,11 @@ W[f"{KG}FHIRGraph.cls::SyncProps"]["INV-no-live-tombstone"]["evidence"].append(R
 inserter(f"{SC}::reify_edge", [f"{SC}:3264-3332"], ins_run("reify_edge"),
          "The writer writes the reifier's node, label, property and rdf_reifications rows (no rdf_edges row).")
 inserter(f"{SN}::import_rdf", [f"{SN}:557-795"], ins_run("import_rdf"),
-         "The writer inserts node, property and rdf_edges rows no statement names, skipping tuples already present.")
+         "The writer inserts node, property and rdf_edges rows no statement names, skipping tuples already present.",
+         replay_runs=[R_RIMP],
+         note_replay=" The INV-replay sub-check of ws-live-ins-import_rdf did not start from an equal baseline (a "
+                     "%NOINDEX edge left by the previous case, F-C1250; erratum) and is not cited; ws-live-replay-import_rdf "
+                     "re-ran it from an equal baseline.")
 inserter(f"{TM}::_mirror_node", [f"{TM}:98-118", f"{TM}:304-332"], None,
          "The writer inserts a node row only.",
          note_marker=" Its branch runs without the adjacency index (temporal.py:308); with the index the same entry "
@@ -244,7 +271,12 @@ inserter(f"{TM}::create_edge_temporal", [f"{TM}:246-332", f"{KG}TemporalIndex.cl
 inserter(f"{TM}::bulk_create_edges_temporal", [f"{TM}:390-476"], ins_run("bulk_create_edges_temporal"),
          "The writer inserts temporal-marked rdf_edges rows (and endpoint nodes) no statement names.")
 inserter("iris_vector_graph/bulk_loader.py::_register_endpoints", ["iris_vector_graph/bulk_loader.py:201-228"],
-         ins_run("bulkloader_load_edges"), "The writer inserts node rows only.")
+         ins_run("bulkloader_load_edges"), "The writer inserts node rows only.",
+         replay_runs=[ins_run("bulkloader_load_edges"), R_NIE],
+         note_replay=" In ws-live-ins-bulkloader_load_edges the baseline was equal and the write was classified; the "
+                     "record's 'equal again after erasing' is wrong (erratum: the loader's %NOINDEX edge survived the "
+                     "erase, F-C1250). ws-live-noindex-erase shows the same classification (nodes the writer registered "
+                     "and the edge) from a clean namespace.")
 inserter(f"{ST}::write_nodes", [f"{ST}:1214-1251"], ins_run("store_write_nodes"),
          "The writer writes node, label and property rows only.")
 inserter(f"{ST}::write_edges", [f"{ST}:1253-1301"], ins_run("store_write_edges"),
@@ -272,12 +304,12 @@ for inv in ("INV-marker", "INV-no-live-tombstone"):
 # Edge-only or non-identity writers -----------------------------------------------------------------------------
 
 def no_row_writer(writer, sites, what_marker, stmt_what, kind="fk", extra_runs=(), replay_run=None, stmt=None,
-                  note_replay=""):
+                  note_replay="", replay_live=JOURNAL_LIVE):
     f = fk_lemma if kind == "fk" else nonkey_lemma
     W[writer] = {
         "INV-marker": f(sites, what_marker, extra_runs),
         "INV-no-live-tombstone": f(sites, what_marker, extra_runs),
-        "INV-replay": replay_lemma(sites, replay_run, note_replay),
+        "INV-replay": replay_lemma(sites, replay_run, note_replay, live=replay_live),
         "INV-stmt": stmt if stmt is not None else stmt_lemma_rows(sites, stmt_what),
     }
 
@@ -306,16 +338,16 @@ no_row_writer(f"{GS}::tighten_graph_id_column", [f"{GS}:1230-1338"],
 COLL = [ISMARKED, QUALSJSON, "iris_src/src/Graph/KG/LedgerApply.cls:68-71", "docs/adr/0009-a-temporal-edge-implies-a-structural-edge.md:38-42"]
 no_row_writer(f"{KG}Adjacency.cls::RetractTemporalRow", [f"{KG}Adjacency.cls:623-645"],
               "The writer deletes only rdf_edges rows (temporal-marked ones of one triple).", "",
-              replay_run=R_COLL,
+              replay_run=R_COLL, replay_live=NOJ_LIVE,
               stmt=D("finding", "live", [R_COLL, f"{KG}Adjacency.cls:623-645", f"{KG}TemporalIndex.cls:325-343"] + COLL,
                      ["F-C0450"], "Live: a ledger relationship whose qualifiers hold temporal=1 (stored {\"temporal\":\"1\"}, "
                      "IsTemporalMarked accepts it) and a temporal edge on the same triple; deleting the temporal edge "
                      "(engine.delete_edge_temporal -> DeleteTemporalEdge -> RetractTemporalRow) deleted the ledger's "
                      "row and left its statement live: INV-stmt fails (F-C0450)."))
-W[f"{KG}Adjacency.cls::RetractTemporalRow"]["INV-replay"]["reason"] += " (ws-live-stmt-collision: diverges, unrecorded_writes after the deletion.)"
 no_row_writer(f"{KG}Adjacency.cls::RetractTemporalRows", [f"{KG}Adjacency.cls:650-688"],
               "The writer deletes only rdf_edges rows (temporal-marked ones of a set of triples).", "",
-              replay_run=R_PURGE,
+              replay_run=R_PURGE, replay_live=NOJ_LIVE + " The run reached the deletion through RetractTemporalRows' "
+              "fallback (RetractTemporalRow, Adjacency.cls:677-679), not its own %STARTSWITH DELETE.",
               stmt=D("finding", "live", [R_PURGE, f"{KG}Adjacency.cls:650-688", f"{KG}TemporalIndex.cls:944-1046"] + COLL,
                      ["F-C0450"], "Live: the purge (engine.purge_before -> RetireExpired -> RetractTemporalRows) on a "
                      "ledger relationship with qualifiers {\"temporal\":\"1\"}: the %STARTSWITH marker test misses, the "
@@ -323,7 +355,7 @@ no_row_writer(f"{KG}Adjacency.cls::RetractTemporalRows", [f"{KG}Adjacency.cls:65
                      "stays live (F-C0450)."))
 no_row_writer(f"{SC}::retract_inference", [f"{SC}:3186-3259", f"{SC}:61"],
               "The writer deletes only rdf_edges rows (qualifiers LIKE '%\"inferred\":%').", "",
-              replay_run=R_COLL,
+              replay_run=R_COLL, replay_live=NOJ_LIVE,
               stmt=D("finding", "live", [R_COLL, f"{SC}:3186-3259", f"{SC}:61", QUALSJSON], ["F-C0151"],
                      "Live: engine.retract_inference() deleted a ledger relationship whose qualifiers hold a user key "
                      "'inferred' (stored {\"inferred\":\"user\"}) and its statement stays live: INV-stmt fails (F-C0151)."))
@@ -338,17 +370,16 @@ no_row_writer(f"{KG}FHIRGraph.cls::DeleteEdge", [f"{KG}FHIRGraph.cls:2585-2599"]
 
 # Node-row deleters ---------------------------------------------------------------------------------------------
 
-def deleter(writer, sites, run, stmt, note="", replay_run=None):
+def deleter(writer, sites, run, stmt, note="", replay_run=None, replay_live=JOURNAL_LIVE):
     W[writer] = {
         "INV-marker": fc1301(sites, run, note),
         "INV-no-live-tombstone": fc1301(sites, run, note),
-        "INV-replay": replay_lemma(sites, replay_run or run),
+        "INV-replay": replay_lemma(sites, replay_run, live=replay_live),
         "INV-stmt": stmt,
     }
 
 
-deleter(f"{SC}::delete_reification", [f"{SC}:3361-3397"], R_FC1301,
-        stmt_lemma_rows([f"{SC}:3361-3397"], "The writer deletes rdf_reifications, property, label and node rows of "
+deleter(f"{SC}::delete_reification", [f"{SC}:3361-3397"], R_FC1301, replay_run=R_RDEL, stmt=stmt_lemma_rows([f"{SC}:3361-3397"], "The writer deletes rdf_reifications, property, label and node rows of "
                         "an id; a node row with an edge cannot go (fk_edges_source/dest refuse the DELETE and the call "
                         "rolls back), so no edge row is removed."))
 deleter(f"{KG}Eraser.cls::DeleteBareSet", [f"{KG}Eraser.cls:1260-1315", f"{KG}Eraser.cls:1208-1248"], None,
@@ -356,7 +387,8 @@ deleter(f"{KG}Eraser.cls::DeleteBareSet", [f"{KG}Eraser.cls:1260-1315", f"{KG}Er
                         "and the foreign keys refuse a node with a dependant), so no edge row is removed."),
         note=" Its batches are TSTART ... TCOMMIT with TROLLBACK on error (Eraser.cls:1272-1313) and nest in a "
              "caller's transaction; it deletes ledger-recorded bare nodes (ws-live-stmt-collision: DropRows retired "
-             "the 2 recorded endpoints through it).", replay_run=R_COLL)
+             "the 2 recorded endpoints through it).", replay_run=R_COLL,
+        replay_live=NOJ_LIVE + " (its deletions there were the 2 recorded endpoints DropRows retired through it).")
 deleter(f"{KG}FHIRGraph.cls::DropNode", [f"{KG}FHIRGraph.cls:2402-2494", f"{KG}FHIRGraph.cls:1923-1978"], None,
         open_("blocked-access (HS_FHIRServer classes absent: ws-live-fhir-blocked). Inspected: DropNode first deletes "
               "every rdf_edges row of the FHIR graph that names the key as source or target through DeleteEdge "
@@ -374,7 +406,7 @@ deleter(f"{KG}TemporalPolicy.cls::DropRows", [f"{KG}TemporalPolicy.cls:124-228"]
           "nodes; the statement stays live without its row (F-C0450)."),
         note=" Its edge deletes alone cannot take a target from live to not live, but it also retires the endpoints "
              "it leaves bare (RetireBareNodes -> DeleteBareSet), in batches of TSTART ... TCOMMIT with TROLLBACK on "
-             "error (TemporalPolicy.cls:173-219).", replay_run=R_COLL)
+             "error (TemporalPolicy.cls:173-219).", replay_run=R_COLL, replay_live=NOJ_LIVE)
 deleter(f"{NE}::_drop_orphaned_props", [f"{NE}:1617-1646", f"{NE}:1761-1866", PROPS_NOFK], None,
         stmt_lemma_rows([f"{NE}:1617-1646"], "The writer deletes rdf_props rows only."),
         note=" It deletes only property rows whose node row is absent, which LiveRows still counts; it runs in "
@@ -476,8 +508,12 @@ W["iris_vector_graph/_engine/legacy.py::copy_ledger_history"] = {
                   "F-C1306's live run went through this writer (initialize_schema(schema_prefix='RAG') -> "
                   "ledger_history_copied, the 7+1 rows): it copies Graph_KG.ledger_revisions into the IVG Schema and "
                   "leaves the originals; ClearRevision clears only the copy, so after a complete redaction the "
-                  "Graph_KG rows of the tombstoned revisions keep message, source, correlation id and key."),
+                  "Graph_KG rows of the tombstoned revisions keep message, source, correlation id and key. Depends "
+                  "on the operator's ruling O-1 (review R2-07): fc1306-legacy-ledger-rows compiled a non-pin release "
+                  "(v4.5.1) into a scratch namespace; if O-1 rules that out of scope, this discharge falls back to "
+                  "inspected (legacy.py:606-646, LedgerRedact.cls:353-378)."),
 }
+W["iris_vector_graph/_engine/legacy.py::copy_ledger_history"]["INV-text"]["depends_on"] = ["O-1"]
 W["<any SQL client>::INSERT INTO Graph_KG.ledger_revisions"] = {
     "INV-text": D("guard", "live", ["run:ws-live-sql-guard", "iris_src/src/Graph/KG/LedgerRevision.cls:1-5",
                                     "iris_src/src/Graph/KG/LedgerRevision.cls:44",
@@ -486,7 +522,7 @@ W["<any SQL client>::INSERT INTO Graph_KG.ledger_revisions"] = {
                   "so an SQL INSERT can neither replace nor rewrite the row of a revision that has records; a new row's "
                   "seq has no record (records are written with their row in one commit), so no tombstone sits under "
                   "its text. Live: INSERT of the redacted seq refused SQLCODE -119 (SeqIdx), UPDATE refused -132, the "
-                  "text stays cleared. Side effect recorded separately: an INSERT of head+1 wedges every later commit "
+                  "text stays cleared. Side effect recorded separately: an INSERT of head+1 made the next ledger commit fail "
                   "(F-C1150, ws-live-sql-insert-wedge), an availability defect, not an INV-text break."),
 }
 
@@ -615,12 +651,14 @@ def module_entries(census_ids_by_module, open_ids_by_module):
                         "evidence": ["experiment/playbook-completion/writesets/DISCHARGES.json"] +
                         [ins_run(n) for n in ("store_node", "import_rdf")] + [R_COLL, "run:ws-live-snap-importglobals"],
                         "findings": ["F-1806"],
-                        "reason": "INV-replay is module 14's: of the 42 census INV-replay obligations (4 conditional), 40 "
-                        "are discharged by the RPL-B3 premise lemma (no unrecorded writes) with verify()'s "
-                        "classification observed live for 20 writers (diverges, unrecorded_writes), SetNodeJSON's by "
-                        "guard, and Snapshot.ImportGlobals' by finding F-1806 (imported ledger records no longer replay "
-                        "to the store). Verification cell closes at the weakest grade (inspected); the product's other "
-                        "replay findings (F-1305, F-C1308, F-1401) are outside these writer obligations."}
+                        "reason": "INV-replay is module 14's: of the 42 census INV-replay obligations (4 conditional), 40 are "
+                        "lemmas that hold as detection, not preservation (review R4-07): 36 writers make unrecorded "
+                        "content writes, breaking RPL-B3's no-unrecorded-writes premise, and verify() classifies them "
+                        "(RPL-B7.1; live for 20 writers) or they lie outside the replay abstraction; 4 conditional "
+                        "writers write no content store at the pin (holds_as vacuous). SetNodeJSON's cell is a guard and "
+                        "Snapshot.ImportGlobals' a finding (F-1806: imported ledger records no longer replay to the "
+                        "store). Verification cell closes at the weakest grade (inspected); the product's other replay "
+                        "findings (F-1305, F-C1308, F-1401) are outside these writer obligations."}
     rest = {
         "15": ("FHIR writers: live blocked (ws-live-fhir-blocked), discharged at inspected grade or open; reify_edge "
                "live, delete_reification live. Still open in module 15's cell and outside the census: the (invariant, "
@@ -642,6 +680,144 @@ def module_entries(census_ids_by_module, open_ids_by_module):
                        f"{len(op)} of them open ({', '.join(op) or 'none'}). " + rest[m]),
         }
     return out
+
+
+# ------------------------------------------------------------------------------------- runs -> exercised pairs
+# Machine-readable map (written to writesets/RUN-PAIRS.json, checked by check_discharges.py C9-C12): for each lane run
+# a census discharge cites, the (invariant, writer) pairs it exercised and the outcome on each ("fail": the product
+# broke the invariant for that writer in the run; "pass": the run observed the invariant hold or the guard refuse),
+# plus what else the run failed on when that is not a census pair, and runs that are context for a pair (cited, but
+# they exercised nothing the discharge rests on).
+
+def _w(name):
+    return {
+        "store_node": f"{NE}::store_node", "store_edge": f"{NE}::store_edge",
+        "bulk_create_edges": f"{NE}::bulk_create_edges", "bulk_ingest_edges": f"{NE}::bulk_ingest_edges",
+        "BulkIngestEdgesSQL": f"{KG}EdgeScan.cls::BulkIngestEdgesSQL", "BulkIngestNodesSQL": f"{KG}EdgeScan.cls::BulkIngestNodesSQL",
+        "RegisterDefaultNode": f"{KG}EdgeScan.cls::RegisterDefaultNode", "write_nodes": f"{ST}::write_nodes",
+        "write_edges": f"{ST}::write_edges", "create_edge_temporal": f"{TM}::create_edge_temporal",
+        "bulk_create_edges_temporal": f"{TM}::bulk_create_edges_temporal", "reify_edge": f"{SC}::reify_edge",
+        "_register_endpoints": "iris_vector_graph/bulk_loader.py::_register_endpoints", "import_rdf": f"{SN}::import_rdf",
+        "delete_reification": f"{SC}::delete_reification", "RetractTemporalRow": f"{KG}Adjacency.cls::RetractTemporalRow",
+        "RetractTemporalRows": f"{KG}Adjacency.cls::RetractTemporalRows", "DropRows": f"{KG}TemporalPolicy.cls::DropRows",
+        "retract_inference": f"{SC}::retract_inference", "DeleteBareSet": f"{KG}Eraser.cls::DeleteBareSet",
+        "ImportGlobals": f"{KG}Snapshot.cls::ImportGlobals", "SetNodeJSON": f"{KG}Snapshot.cls::SetNodeJSON",
+        "sql": "<any SQL client>::INSERT INTO Graph_KG.ledger_revisions",
+        "gap": f"{SN}::_import_global_from_ndjson", "add_graph_id_to_nodes": f"{GS}::add_graph_id_to_nodes",
+        "copy_ledger_history": "iris_vector_graph/_engine/legacy.py::copy_ledger_history",
+        "tighten_graph_id_column": f"{GS}::tighten_graph_id_column", "ensure_ekey": f"{GS}::ensure_ekey",
+        "ensure_props_value_key": f"{GS}::ensure_props_value_key",
+    }[name]
+
+
+def _ex(inv, name, outcome, note=""):
+    return {"invariant": inv, "writer": _w(name), "outcome": outcome, **({"note": note} if note else {})}
+
+
+INS_WRITERS = {
+    "store_node": ["store_node"], "store_edge": ["store_edge"],
+    "bulk_create_nodes": ["BulkIngestNodesSQL", "RegisterDefaultNode"],
+    "bulk_ingest_edges": ["BulkIngestEdgesSQL", "RegisterDefaultNode", "bulk_ingest_edges"],
+    "bulk_create_edges": ["bulk_create_edges"], "store_write_nodes": ["write_nodes"],
+    "store_write_edges": ["write_edges"], "create_edge_temporal": ["create_edge_temporal"],
+    "bulk_create_edges_temporal": ["bulk_create_edges_temporal"], "reify_edge": ["reify_edge"],
+    "bulkloader_load_edges": ["_register_endpoints"], "import_rdf": ["import_rdf"],
+}
+RUN_PAIRS = {}
+for _run, _ws in INS_WRITERS.items():
+    ex = []
+    for _n in _ws:
+        note = ("entry point engine.bulk_ingest_edges, server path (BulkIngestEdgesSQL); the census site, the row-by-row "
+                "fallback, did not execute") if _n == "bulk_ingest_edges" else ""
+        if _run != "import_rdf":
+            ex.append(_ex("INV-replay", _n, "pass", note or ("verify() classified the write (equal -> diverges, "
+                          "unrecorded_writes); the record's 'equal again after erasing' is wrong (erratum)"
+                          if _run == "bulkloader_load_edges" else "")))
+        ex.append(_ex("INV-marker", _n, "fail", note))
+        ex.append(_ex("INV-no-live-tombstone", _n, "fail", note))
+    RUN_PAIRS[f"ws-live-ins-{_run}"] = {
+        "exercised": ex, "journal": True,
+        "not_exercised": (["INV-replay of import_rdf: the baseline was not equal (a %NOINDEX edge row left by the "
+                           "previous case, F-C1250); re-run as ws-live-replay-import_rdf"] if _run == "import_rdf" else [])}
+RUN_PAIRS.update({
+    "ws-live-fc1301-delete-reification": {"journal": True, "exercised": [
+        _ex("INV-marker", "delete_reification", "fail"), _ex("INV-no-live-tombstone", "delete_reification", "fail")],
+        "not_exercised": ["INV-replay of delete_reification: both phases' deletes were rolled back; the diverges "
+                          "it shows is a completed redaction over restored content (review R4-02)"]},
+    "ws-live-replay-delete_reification": {"journal": True, "exercised": [
+        _ex("INV-replay", "delete_reification", "pass", "committed delete, no caller transaction")]},
+    "ws-live-replay-import_rdf": {"journal": True, "exercised": [
+        _ex("INV-replay", "import_rdf", "pass", "equal baseline, full-scan residue check 0")]},
+    "ws-live-stmt-collision": {"journal": False, "exercised": [
+        _ex("INV-stmt", "RetractTemporalRow", "fail"), _ex("INV-stmt", "DropRows", "fail"),
+        _ex("INV-stmt", "retract_inference", "fail"),
+        _ex("INV-replay", "RetractTemporalRow", "pass", "one verify() after all three writers; its differences name rel 1"),
+        _ex("INV-replay", "DropRows", "pass", "differences name rel 2"),
+        _ex("INV-replay", "retract_inference", "pass", "differences name rel 3"),
+        _ex("INV-replay", "DeleteBareSet", "pass", "differences name nodes wsq|c, wsq|d (retired through DropRows)")]},
+    "ws-live-stmt-purge": {"journal": False, "exercised": [
+        _ex("INV-stmt", "RetractTemporalRows", "fail", "through its fallback RetractTemporalRow"),
+        _ex("INV-replay", "RetractTemporalRows", "pass", "through its fallback RetractTemporalRow")]},
+    "ws-live-snap-importglobals": {"journal": True, "exercised": [
+        _ex("INV-shape", "ImportGlobals", "fail"), _ex("INV-replay", "ImportGlobals", "fail")]},
+    "ws-live-snap-setnodejson": {"journal": True, "exercised": [
+        _ex(i, "SetNodeJSON", "pass") for i in ("INV-shape", "INV-isolation", "INV-text", "INV-retry", "INV-marker",
+                                                "INV-no-live-tombstone", "INV-replay", "INV-stmt")]},
+    "ws-live-sql-guard": {"journal": False, "exercised": [_ex("INV-text", "sql", "pass")]},
+    "ws-live-sql-insert-wedge": {"journal": False, "exercised": [_ex("INV-text", "sql", "pass")],
+                                 "failed_other": ["F-C1150: the planted head+1 row made the next ledger commit fail "
+                                                  "(availability, not an INV-text break)"]},
+    "ws-live-gap-restore": {"journal": False, "exercised": [_ex("INV-text", "gap", "fail"), _ex("INV-retry", "gap", "fail")]},
+    "ws-live-gap-marker": {"journal": False, "exercised": [_ex("INV-marker", "gap", "fail")]},
+    "ws-live-migrations": {"journal": False, "exercised": [_ex("INV-marker", "add_graph_id_to_nodes", "fail")],
+                           "context_for": [[i, _w(n)] for n in ("tighten_graph_id_column", "ensure_ekey",
+                                                                 "ensure_props_value_key")
+                                           for i in ("INV-marker", "INV-no-live-tombstone")]},
+    "ws-live-noindex-erase": {"journal": False, "exercised": [
+        _ex("INV-replay", "_register_endpoints", "pass", "verify() after BulkLoader.load_edges named the 2 registered "
+            "nodes and the edge (unrecorded_writes)")],
+        "failed_other": ["F-C1250: the loader's %NOINDEX edge row survived delete_nodes_by_prefix of both endpoints "
+                         "and EraseAll+PurgeAll (an erasure defect, not a census pair)"]},
+    "fc1306-legacy-ledger-rows": {"journal": False, "exercised": [_ex("INV-text", "copy_ledger_history", "fail")],
+                                  "lane": "fc1306"},
+})
+
+
+def _reg(rid):
+    p = PC / "evidence" / "runs" / f"{rid}.json"
+    return json.loads(p.read_text()) if p.exists() else {}
+
+
+def attribute_failed_runs(entries):
+    """lemma/guard entries: every cited failed run must have failed on another pair; record which (R4-02)."""
+    for oid, e in entries.items():
+        if e["discharge"] not in ("lemma", "guard"):
+            continue
+        other, why = [], {}
+        for ev in e["evidence"]:
+            if not ev.startswith("run:"):
+                continue
+            rid = ev[4:]
+            if _reg(rid).get("result") != "fail":
+                continue
+            m = RUN_PAIRS.get(rid)
+            if m is None:
+                raise SystemExit(f"{oid}: cites failed run {rid} with no RUN_PAIRS entry")
+            mine = [x for x in m["exercised"] if x["invariant"] == e["invariant"] and x["writer"] == e["writer"]]
+            if any(x["outcome"] == "fail" for x in mine):
+                raise SystemExit(f"{oid}: cites {rid}, which failed on this very pair: the cell must fail")
+            fails = [f"({x['invariant']}, {x['writer'].split('::')[-1]})" for x in m["exercised"] if x["outcome"] == "fail"]
+            fails += m.get("failed_other", [])
+            other.append(rid)
+            why[rid] = "failed on other pairs only: " + "; ".join(fails)
+        if other:
+            e["failed_runs_other_pairs"] = other
+            e["failed_runs_other_pairs_reason"] = why
+        if e["discharge"] == "lemma" and e["invariant"] == "INV-replay" and "holds_as" not in e:
+            e["holds_as"] = "vacuous"
+            e["reason"] += (" holds_as vacuous: at the pin this writer writes no content store the replay reads (no "
+                            "product caller, a statement that matches no row on the pin's schema, or embedding tables "
+                            "only), so there is nothing to detect.")
 
 
 # ------------------------------------------------------------------------------------------------------ build
@@ -670,6 +846,7 @@ def build() -> dict:
                 open_by_mod.setdefault("_mnlt", []).append(oid)
     if missing:
         raise SystemExit(f"no discharge for {len(missing)} census obligations: {missing[:5]}")
+    attribute_failed_runs(out)
     obl = json.loads((PC / "matrix" / "obligations.json").read_text())
     open_modules = {c["module"] for c in obl["cells"] if c.get("gate") == "3.3a-writesets"
                     and "obligation_id" not in c
@@ -692,9 +869,15 @@ def build() -> dict:
 def main() -> int:
     data = build()
     text = json.dumps(data, indent=1, sort_keys=True) + "\n"
+    pairs = json.dumps({"_doc": "Runs cited by census discharges -> the (invariant, writer) pairs each exercised, with "
+                                "the outcome; failed_other: what else the run failed on; context_for: pairs the run is "
+                                "cited for as context only. Generated by writesets/tools/build_discharges.py.",
+                        "runs": RUN_PAIRS}, indent=1, sort_keys=True) + "\n"
     if "--check" in sys.argv:
-        return 0 if OUT.exists() and OUT.read_text() == text else 1
+        ok = OUT.exists() and OUT.read_text() == text and PAIRS.exists() and PAIRS.read_text() == pairs
+        return 0 if ok else 1
     OUT.write_text(text)
+    PAIRS.write_text(pairs)
     n = {}
     for k, v in data.items():
         if k.startswith(("WS-OBL", "WS-COND", "WS-GAP")):

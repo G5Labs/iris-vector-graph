@@ -178,25 +178,25 @@ pub fn checks() -> Vec<Outcome> {
     let rv_entry = EntryCfg { mark: Mark::IfMade, cas: true, single: true };
     // 1. entry
     let e = |c: EntryCfg| Entry { o: q, c };
-    out.push(check("queue-embed-queue-as-built-F0604", mq("as-built", "safety", L1, &["F-0604"]), Expect::Violation(L1),
+    out.push(check_keep("queue-embed-queue-as-built-F0604", mq("as-built", "safety", L1, &["F-0604"]), Expect::Violation(L1),
                    &Keep::only(&e(EntryCfg { mark: Mark::Always, cas: true, single: true }), &[L1])));
-    out.push(check("queue-embed-queue-as-built-FC0601", mq("as-built", "safety", L1, &["F-C0601"]), Expect::Violation(L1),
+    out.push(check_keep("queue-embed-queue-as-built-FC0601", mq("as-built", "safety", L1, &["F-C0601"]), Expect::Violation(L1),
                    &Keep::only(&e(EntryCfg { mark: Mark::IfMade, cas: false, single: true }), &[L1])));
-    out.push(check("queue-embed-queue-as-built-HD0604", mq("as-built", "safety", L2, &["F-C0670"]), Expect::Violation(L2),
+    out.push(check_keep("queue-embed-queue-as-built-HD0604", mq("as-built", "safety", L2, &["F-C0670"]), Expect::Violation(L2),
                    &Keep::only(&e(EntryCfg { mark: Mark::Always, cas: false, single: false }), &[L2])));
-    out.push(check("queue-embed-queue-reviewed-entry", mq("reviewed", "safety", "all", &[]), Expect::Pass, &Keep::safety(&e(rv_entry))));
-    out.push(check("queue-control-C2-two-consumers", mq("control", "safety", L2, &[]), Expect::Violation(L2), &Keep::only(&e(EntryCfg { single: false, ..rv_entry }), &[L2])));
-    out.push(check("queue-control-C3-mark-always", mq("control", "safety", L1, &[]), Expect::Violation(L1), &Keep::only(&e(EntryCfg { mark: Mark::Always, ..rv_entry }), &[L1])));
+    out.push(check_keep("queue-embed-queue-reviewed-entry", mq("reviewed", "safety", "all", &[]), Expect::Pass, &Keep::safety(&e(rv_entry))));
+    out.push(check_keep("queue-control-C2-two-consumers", mq("control", "safety", L2, &[]), Expect::Violation(L2), &Keep::only(&e(EntryCfg { single: false, ..rv_entry }), &[L2])));
+    out.push(check_keep("queue-control-C3-mark-always", mq("control", "safety", L1, &[]), Expect::Violation(L1), &Keep::only(&e(EntryCfg { mark: Mark::Always, ..rv_entry }), &[L1])));
     // 2. order (F-C0605)
     let ab = OrderM { o: q, order: Order::MinId };
     let rv = OrderM { o: q, order: Order::Fifo };
     let ct = OrderM { o: q, order: Order::Lifo };
-    out.push(check("queue-embed-queue-as-built-FC0605-overtaking", mq("as-built", "safety", L3, &["F-C0605"]), Expect::Violation(L3), &Keep::only(&ab, &[L3])));
+    out.push(check_keep("queue-embed-queue-as-built-FC0605-overtaking", mq("as-built", "safety", L3, &["F-C0605"]), Expect::Violation(L3), &Keep::only(&ab, &[L3])));
     out.push(lasso("queue-embed-queue-as-built-FC0605-fair-lasso", mq("as-built", "liveness", L4, &["F-C0605"]), Expect::Violation(L4), &ab));
     out.push(check("queue-embed-queue-as-built-FC0605-agef-blind", mq("as-built", "progress", AGEF, &["F-C0605"]), Expect::Pass, &Keep::progress(&ab)));
-    out.push(check("queue-embed-queue-reviewed-overtaking", mq("reviewed", "safety", L3, &[]), Expect::Pass, &Keep::only(&rv, &[L3])));
+    out.push(check_keep("queue-embed-queue-reviewed-overtaking", mq("reviewed", "safety", L3, &[]), Expect::Pass, &Keep::only(&rv, &[L3])));
     out.push(lasso("queue-embed-queue-reviewed-fair-lasso", mq("reviewed", "liveness", L4, &[]), Expect::Pass, &rv));
-    out.push(check("queue-control-C1-lifo-overtaking", mq("control", "safety", L3, &[]), Expect::Violation(L3), &Keep::only(&ct, &[L3])));
+    out.push(check_keep("queue-control-C1-lifo-overtaking", mq("control", "safety", L3, &[]), Expect::Violation(L3), &Keep::only(&ct, &[L3])));
     out.push(lasso("queue-control-C1b-lifo-fair-lasso", mq("control", "liveness", L4, &[]), Expect::Violation(L4), &ct));
     out.push(reach("queue-sharp-fifo-serves-high", mq("reviewed", "sharpness", "", &[]), &rv, "never: id 2 served after waiting behind two others",
                    |s: &OS| s.served_high && s.queue.len() == 2));

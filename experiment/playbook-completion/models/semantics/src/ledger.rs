@@ -191,11 +191,11 @@ fn instance_checks<O: LedgerObject>(o: &O) -> Vec<Outcome> {
     let n = o.name();
     let mut out = vec![];
     if law.is_empty() {
-        out.push(check(&format!("ledger-{n}-as-built"), meta("M-01", "ledger", n, o.objects(), "as-built", "safety", "all", f, ""), Expect::Pass, &Keep::safety(&ab)));
+        out.push(check_keep(&format!("ledger-{n}-as-built"), meta("M-01", "ledger", n, o.objects(), "as-built", "safety", "all", f, ""), Expect::Pass, &Keep::safety(&ab)));
     } else {
-        out.push(check(&format!("ledger-{n}-as-built"), meta("M-01", "ledger", n, o.objects(), "as-built", "safety", law, f, ""), Expect::Violation(law), &Keep::only(&ab, &[law])));
+        out.push(check_keep(&format!("ledger-{n}-as-built"), meta("M-01", "ledger", n, o.objects(), "as-built", "safety", law, f, ""), Expect::Violation(law), &Keep::only(&ab, &[law])));
     }
-    out.push(check(&format!("ledger-{n}-reviewed"), meta("M-01", "ledger", n, o.objects(), "reviewed", "safety", "all", &[], ""), Expect::Pass, &Keep::safety(&rv)));
+    out.push(check_keep(&format!("ledger-{n}-reviewed"), meta("M-01", "ledger", n, o.objects(), "reviewed", "safety", "all", &[], ""), Expect::Pass, &Keep::safety(&rv)));
     out
 }
 
@@ -210,7 +210,7 @@ pub fn checks() -> Vec<Outcome> {
     let o = &CommitCore;
     let ctl = |id: &str, law: &'static str, paths: Vec<Path>| {
         let m = Machine { o, paths };
-        check(id, meta("M-01", "ledger", "commit-core", o.objects(), "control", "safety", law, &[], ""), Expect::Violation(law), &Keep::only(&m, &[law]))
+        check_keep(id, meta("M-01", "ledger", "commit-core", o.objects(), "control", "safety", law, &[], ""), Expect::Violation(law), &Keep::only(&m, &[law]))
     };
     out.push(ctl("ledger-control-C1-two-step-record", L2, vec![Path::CommitTwoStep]));
     out.push(ctl("ledger-control-C2-overwrite-record", L1, vec![Path::Commit, Path::CommitOverwrite]));

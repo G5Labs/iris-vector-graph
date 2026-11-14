@@ -1,5 +1,5 @@
 {
- "_doc": "Writesets lane proposals for the module-level 3.3a-writesets cells (keys as matrix/gates.json). The 185 per-obligation census cells are in writesets/DISCHARGES.json (to be applied by build_matrix.py). evidence_grade is the weakest grade among the cell's discharges (DISCHARGES.json grades each). Module 08 is unchanged (its open pairs are outside the census).",
+ "_doc": "Writesets lane proposals for the module-level 3.3a-writesets cells (keys as matrix/gates.json). The 185 per-obligation census cells are in writesets/DISCHARGES.json (to be applied by build_matrix.py). evidence_grade is the weakest grade among the cell's discharges (DISCHARGES.json grades each). Module 08 is unchanged (its open pairs are outside the census). Review R4 (fourth pass): RUN-PAIRS.json maps each cited run to the (invariant, writer) pairs it exercised; lemma/guard cells list the failed runs they cite in failed_runs_other_pairs (their failure is on another pair).",
  "cells": [
   {
    "gate": "3.3a-writesets",
@@ -109,7 +109,7 @@
    "evidence_grade": "live",
    "level": "product",
    "product_obligation": "fails",
-   "product_basis": "module 11's census cell WS-OBL-001 (SQL INSERT surface, INV-text) is a guard confirmed live; module 11's own pairs were dispositioned (modules/11.json). By invariant ownership (INV-shape/isolation/text/retry) the product fails: Snapshot.ImportGlobals (F-1806, live), copy_ledger_history (F-C1306), restore's undeclared redaction stores (F-C1850); the INSERT surface wedges the ledger (F-C1150)",
+   "product_basis": "module 11's census cell WS-OBL-001 (SQL INSERT surface, INV-text) is a guard confirmed live; module 11's own pairs were dispositioned (modules/11.json). By invariant ownership (INV-shape/isolation/text/retry) the product fails: Snapshot.ImportGlobals (F-1806, live), copy_ledger_history (F-C1306), restore's undeclared redaction stores (F-C1850); an SQL INSERT at head+1 made the next ledger commit fail (F-C1150)",
    "as_built_findings": [
     "F-1806",
     "F-C1306",
@@ -127,15 +127,17 @@
     "experiment/playbook-completion/writesets/DISCHARGES.json",
     "run:ws-live-stmt-collision",
     "run:ws-live-stmt-purge",
-    "run:ws-live-fhir-blocked"
+    "run:ws-live-fhir-blocked",
+    "run:ws-live-noindex-erase"
    ],
    "evidence_grade": "inspected",
    "level": "product",
    "product_obligation": "fails",
-   "product_basis": "INV-stmt (ERS-I2/I3) census obligations: temporal/inferred marker predicates delete ledger relationships and leave live statements (F-C0450, F-C0151, live) (grade is the weakest of the cell's discharges; DISCHARGES.json grades each, many live)",
+   "product_basis": "INV-stmt (ERS-I2/I3) census obligations: temporal/inferred marker predicates delete ledger relationships and leave live statements (F-C0450, F-C0151, live) (grade is the weakest of the cell's discharges; DISCHARGES.json grades each, many live); outside the census, a %NOINDEX bulk-load edge row survives delete_nodes_by_prefix of its endpoints and EraseAll+PurgeAll (F-C1250, live)",
    "as_built_findings": [
+    "F-C0151",
     "F-C0450",
-    "F-C0151"
+    "F-C1250"
    ],
    "remaining": "open INV-stmt census cells: WS-OBL-029, WS-OBL-033, WS-OBL-041, WS-OBL-150, WS-OBL-154 (FHIR DropNode/DeleteEdge/ResyncKey: blocked-access, HS_FHIRServer absent; iris_sql_store SQL fallbacks of _delete_nodes_sql/delete_edges: unreached at the pin's deploy)"
   },
@@ -183,14 +185,15 @@
    "status": "closed",
    "evidence": [
     "experiment/playbook-completion/writesets/DISCHARGES.json",
-    "run:ws-live-ins-store_node",
-    "run:ws-live-stmt-collision",
+    "experiment/playbook-completion/writesets/RUN-PAIRS.json",
+    "run:ws-live-replay-delete_reification",
+    "run:ws-live-replay-import_rdf",
     "run:ws-live-snap-importglobals"
    ],
    "evidence_grade": "inspected",
    "level": "product",
    "product_obligation": "fails",
-   "product_basis": "INV-replay census obligations: 40 by the RPL-B3 premise lemma (no unrecorded writes; verify() classified the writes unrecorded_writes live for 20 writers), SetNodeJSON by guard; Snapshot.ImportGlobals breaks it (F-1806: imported ledger records no longer replay to the store) (grade is the weakest of the cell's discharges; DISCHARGES.json grades each, many live)",
+   "product_basis": "INV-replay census obligations: 40 lemma cells hold as detection, not preservation (review R4-07): 36 writers make unrecorded content writes, breaking RPL-B3's no-unrecorded-writes premise, and verify() classifies them unrecorded_writes (RPL-B7.1; live for 20 writers, each cited run exercised the pair: writesets/RUN-PAIRS.json) or they lie outside the replay abstraction; 4 conditional writers write no content store at the pin (vacuous); SetNodeJSON by guard; Snapshot.ImportGlobals breaks it (F-1806: imported ledger records no longer replay to the store) (grade is the weakest of the cell's discharges)",
    "as_built_findings": [
     "F-1806"
    ],

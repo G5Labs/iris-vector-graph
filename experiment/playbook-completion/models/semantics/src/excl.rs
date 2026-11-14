@@ -163,9 +163,14 @@ object!(EraserNoHeadLock, "eraser-no-head-lock", ["12/graph-content"], [true, fa
         vec![vec![Erase(0), Write], commit_into(0)],
         vec![vec![LockX, Erase(0), Write, Unlock], commit_into(0)], L2, ["F-1201", "F-1114", "F-C1201"]);
 // The adjacency writer lock: writers shared (or marked after 5 s), rebuild exclusive; Reweight takes none (F-0407).
-object!(AdjacencyWriterLock, "adjacency-writer-lock", ["04/graph-writer-lock", "04/no-lock-mark"], [true, false],
+object!(AdjacencyWriterLock, "adjacency-writer-lock", ["04/graph-writer-lock"], [true, false],
         vec![vec![LockSOrMark, Write, Unlock], vec![Write], vec![LockX, Write, Unlock]],
         vec![vec![LockSOrMark, Write, Unlock], vec![LockSOrMark, Write, Unlock], vec![LockX, Write, Unlock]], L2, ["F-0407"]);
+// The no-lock mark alone: writers that time out on the shared lock write and set the mark (Adjacency.cls:55-75),
+// the rebuild holds the lock exclusively; no lock-free writer (Reweight belongs to the graph writer lock above).
+object!(AdjacencyNoLockMark, "adjacency-no-lock-mark", ["04/no-lock-mark"], [true, false],
+        vec![vec![LockSOrMark, Write, Unlock], vec![LockSOrMark, Write, Unlock], vec![LockX, Write, Unlock]],
+        vec![vec![LockSOrMark, Write, Unlock], vec![LockSOrMark, Write, Unlock], vec![LockX, Write, Unlock]], "", []);
 // BM25: Insert takes the index write lock; Build and Drop write without it (BM25Index.cls:97-175, 587-591; F-0701).
 object!(Bm25WriteLock, "bm25-write-lock", ["07/bm25-index"], [true, false],
         vec![vec![LockX, Write, Unlock], vec![Write, Write]],
@@ -186,11 +191,11 @@ fn instance_checks<O: ExclObject>(o: &O) -> Vec<Outcome> {
     let rv = Machine { o, progs: o.reviewed() };
     let mut out = vec![];
     if law.is_empty() {
-        out.push(check(&format!("excl-{n}-as-built"), meta("M-03", "excl", n, o.objects(), "as-built", "safety", "all", f, ""), Expect::Pass, &Keep::safety(&ab)));
+        out.push(check_keep(&format!("excl-{n}-as-built"), meta("M-03", "excl", n, o.objects(), "as-built", "safety", "all", f, ""), Expect::Pass, &Keep::safety(&ab)));
     } else {
-        out.push(check(&format!("excl-{n}-as-built"), meta("M-03", "excl", n, o.objects(), "as-built", "safety", law, f, ""), Expect::Violation(law), &Keep::only(&ab, &[law])));
+        out.push(check_keep(&format!("excl-{n}-as-built"), meta("M-03", "excl", n, o.objects(), "as-built", "safety", law, f, ""), Expect::Violation(law), &Keep::only(&ab, &[law])));
     }
-    out.push(check(&format!("excl-{n}-reviewed"), meta("M-03", "excl", n, o.objects(), "reviewed", "safety", "all", &[], ""), Expect::Pass, &Keep::safety(&rv)));
+    out.push(check_keep(&format!("excl-{n}-reviewed"), meta("M-03", "excl", n, o.objects(), "reviewed", "safety", "all", &[], ""), Expect::Pass, &Keep::safety(&rv)));
     out
 }
 
@@ -202,13 +207,14 @@ pub fn checks() -> Vec<Outcome> {
     {
         let o = &RedactionMarker;
         let ab = Machine { o, progs: o.as_built() };
-        out.push(check("excl-redaction-marker-as-built-F1302-marker", meta("M-03", "excl", "redaction-marker", o.objects(), "as-built", "safety", L3, &["F-1302"], ""),
+        out.push(check_keep("excl-redaction-marker-as-built-F1302-marker", meta("M-03", "excl", "redaction-marker", o.objects(), "as-built", "safety", L3, &["F-1302"], ""),
                        Expect::Violation(L3), &Keep::only(&ab, &[L3])));
-        out.push(check("excl-redaction-marker-as-built-F1302-tomb-live", meta("M-03", "excl", "redaction-marker", o.objects(), "as-built", "safety", L5, &["F-1302"], ""),
+        out.push(check_keep("excl-redaction-marker-as-built-F1302-tomb-live", meta("M-03", "excl", "redaction-marker", o.objects(), "as-built", "safety", L5, &["F-1302"], ""),
                        Expect::Violation(L5), &Keep::only(&ab, &[L5])));
     }
     out.extend(instance_checks(&EraserNoHeadLock));
     out.extend(instance_checks(&AdjacencyWriterLock));
+    out.extend(instance_checks(&AdjacencyNoLockMark));
     out.extend(instance_checks(&Bm25WriteLock));
     out.extend(instance_checks(&PlanBuildLock));
     out.extend(instance_checks(&ModeSwitch));
@@ -216,7 +222,7 @@ pub fn checks() -> Vec<Outcome> {
     let o = &RedactionMarker;
     let ctl = |id: &str, law: &'static str, progs: Progs| {
         let m = Machine { o, progs };
-        check(id, meta("M-03", "excl", "redaction-marker", o.objects(), "control", "safety", law, &[], ""), Expect::Violation(law), &Keep::only(&m, &[law]))
+        check_keep(id, meta("M-03", "excl", "redaction-marker", o.objects(), "control", "safety", law, &[], ""), Expect::Violation(law), &Keep::only(&m, &[law]))
     };
     let bad_lock = vec![vec![LockXBad, Write, Unlock], vec![LockX, Write, Unlock]];
     out.push(ctl("excl-control-C1-lock-admits-two", L1, bad_lock));

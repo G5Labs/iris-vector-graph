@@ -1197,6 +1197,281 @@
     "merge restore": "restore",
     "info": "read"
    }
+  },
+  "07/docs-table-search": {
+   "lifecycle": "LC-7",
+   "state_map": {
+    "word index and default graph": {
+     "state": "open",
+     "facet": "word index; default graph"
+    },
+    "word index and named graph": {
+     "state": "open",
+     "facet": "word index; named graph"
+    },
+    "no word index and default graph": {
+     "state": "open",
+     "facet": "no word index; default graph"
+    },
+    "no word index and named graph": {
+     "state": "open",
+     "facet": "no word index; named graph"
+    }
+   },
+   "command_map": {
+    "engine search": "use",
+    "operators search": "use",
+    "SQL procedure": "use"
+   },
+   "notes": "a search request over the documents table (TXT-B12); the SQL procedure without a word index is refused (TXT-B12.91)"
+  },
+  "07/older-text-search": {
+   "lifecycle": "LC-3",
+   "state_map": {
+    "tables readable": "in-force",
+    "reads fail": "broken"
+   },
+   "command_map": {
+    "set up": "setup",
+    "document search": "consult",
+    "edge search": "consult",
+    "name search": "consult",
+    "context search": "consult"
+   },
+   "notes": "the older TextSearchEngine class (TXT-B19) as a setting whose searches depend on readable tables"
+  },
+  "12/whole-namespace": {
+   "lifecycle": "LC-6",
+   "state_map": {
+    "holds content": "live",
+    "empty": "empty"
+   },
+   "command_map": {
+    "erase everything": "erase",
+    "erase one graph": "erase"
+   }
+  },
+  "12/node-in-a-sweep": {
+   "lifecycle": "LC-1",
+   "state_map": {
+    "holds nothing": {
+     "state": "live",
+     "facet": "holds no edge, label, property, document or vector"
+    },
+    "holds an edge or data": {
+     "state": "live",
+     "facet": "holds an edge or data"
+    }
+   },
+   "command_map": {
+    "sweep the graph": "delete",
+    "count only": "read"
+   },
+   "notes": "the sweep deletes nodes that hold nothing (ERS-B94)"
+  },
+  "15/code-crosswalk": {
+   "lifecycle": "LC-1",
+   "state_map": {
+    "no row": "absent",
+    "row present": "live"
+   },
+   "command_map": {
+    "add row": "create",
+    "migrate bridges": "update"
+   }
+  },
+  "15/fhir-bridge": {
+   "lifecycle": "LC-1",
+   "state_map": {
+    "no row": "absent",
+    "row present": "live"
+   },
+   "command_map": {
+    "add bridge": "create",
+    "anchor lookup": "read"
+   }
+  },
+  "15/concept-pipeline": {
+   "lifecycle": "LC-7",
+   "state_map": {
+    "registered graph": {
+     "state": "open",
+     "facet": "registered FHIR graph"
+    },
+    "unregistered graph": {
+     "state": "open",
+     "facet": "unregistered graph: the reads are refused"
+    },
+    "no tables": {
+     "state": "open",
+     "facet": "no FHIR tables"
+    }
+   },
+   "command_map": {
+    "expand": "use",
+    "resolve": "use",
+    "rank": "use",
+    "coverage report": "use",
+    "gaps report": "use",
+    "patient anchors": "use"
+   }
+  },
+  "15/prefix-registry": {
+   "lifecycle": "LC-3",
+   "state_map": {
+    "prefix absent": "absent",
+    "prefix present": "in-force"
+   },
+   "command_map": {
+    "save prefix": "set",
+    "list prefixes": "read"
+   }
+  },
+  "15/fhir-sync-task": {
+   "lifecycle": "LC-5",
+   "state_map": {
+    "idle graph": "pending",
+    "busy graph": "running",
+    "unreadable item": "failed",
+    "erased graph": {
+     "state": "absent",
+     "facet": "the graph was erased"
+    },
+    "unregistered graph": {
+     "state": "absent",
+     "facet": "the graph is not registered"
+    }
+   },
+   "command_map": {
+    "task run": "work"
+   }
+  },
+  "15/ivg-fhir-cli": {
+   "lifecycle": "LC-3",
+   "state_map": {
+    "no IRIS address": "broken",
+    "unregistered": "absent",
+    "idle": "in-force",
+    "busy": {
+     "state": "in-force",
+     "facet": "a sync is running"
+    }
+   },
+   "command_map": {
+    "register": "setup",
+    "rebuild": "upgrade",
+    "sync once": "consult",
+    "sync": "consult",
+    "status": "read",
+    "links": "read",
+    "schedule": "set",
+    "unschedule": "set"
+   }
+  },
+  "15/cypher-anchors": {
+   "lifecycle": "LC-7",
+   "state_map": {
+    "in a FHIR graph": {
+     "state": "open",
+     "facet": "the anchor is in a FHIR graph"
+    },
+    "in no FHIR graph": {
+     "state": "open",
+     "facet": "the anchor is in no FHIR graph"
+    },
+    "graph read fails": "errored"
+   },
+   "command_map": {
+    "query": "use",
+    "query with unlisted base": "use"
+   }
+  },
+  "16/bolt-explicit-transaction": {
+   "lifecycle": "LC-7",
+   "state_map": {
+    "idle": "new",
+    "after begin": "open",
+    "rows waiting": {
+     "state": "open",
+     "facet": "rows waiting"
+    },
+    "rows waiting after begin": {
+     "state": "open",
+     "facet": "rows waiting, after begin"
+    }
+   },
+   "command_map": {
+    "begin": "open",
+    "run": "use",
+    "pull all": "use",
+    "pull some": "use",
+    "discard": "use",
+    "commit": "commit",
+    "rollback": "rollback"
+   }
+  },
+  "16/generated-graphql-call": {
+   "lifecycle": "LC-7",
+   "state_map": {
+    "key off": {
+     "state": "open",
+     "facet": "no key configured"
+    },
+    "key missing": "refused",
+    "key given": "open",
+    "key given read-only": {
+     "state": "open",
+     "facet": "read-only"
+    }
+   },
+   "command_map": {
+    "health": "use",
+    "node read": "use",
+    "cypher read": "use",
+    "cypher write": "use",
+    "deep query": "use"
+   }
+  },
+  "16/demo-server-call": {
+   "lifecycle": "LC-7",
+   "state_map": {
+    "backends up": "open",
+    "backends down": {
+     "state": "open",
+     "facet": "backends down: searches refused"
+    },
+    "key set": {
+     "state": "open",
+     "facet": "key set (not checked)"
+    }
+   },
+   "command_map": {
+    "page": "use",
+    "bio search": "use",
+    "fhir search": "use",
+    "live add": "use",
+    "fraud score": "use"
+   }
+  },
+  "16/fraud-server-call": {
+   "lifecycle": "LC-7",
+   "state_map": {
+    "key off": {
+     "state": "open",
+     "facet": "no key configured"
+    },
+    "key missing": "refused",
+    "key given": "open",
+    "key given no model file": {
+     "state": "open",
+     "facet": "no model file"
+    }
+   },
+   "command_map": {
+    "score": "use",
+    "subgraph score": "use",
+    "health": "use"
+   }
   }
  }
 }

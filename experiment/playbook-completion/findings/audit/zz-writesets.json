@@ -179,9 +179,9 @@
  {
   "id": "F-C1150",
   "module": "11",
-  "title": "A plain SQL INSERT into Graph_KG.ledger_revisions is accepted, and a row planted at head+1 makes every later ledger commit fail",
+  "title": "A plain SQL INSERT into Graph_KG.ledger_revisions is accepted, and a row planted at head+1 made the next ledger commit fail",
   "intended": "iris_src/src/Graph/KG/LedgerRevision.cls:1-5 ('one immutable row per committed revision ... Written only by Graph.KG.Ledger.Commit inside the commit transaction'; UPDATE and DELETE are rejected, FR-023).",
-  "observed": "Live in AUDITB (ws-live-sql-insert-wedge): with head seq 3, an SQL INSERT of a row with seq 4 and every required column was accepted (the table has UPDATE and DELETE triggers, no INSERT trigger); the next engine.ledger.commit failed LedgerInconsistencyError 'revision row save failed: ERROR #5805: ID key not unique ... ^Graph.KG.LedgerRevisionD(4) exists'; verify() still answered equal. An INSERT of an existing seq is refused (SeqIdx) and UPDATE is refused (trigger) (ws-live-sql-guard), so the INSERT cannot rewrite history; it blocks the ledger.",
+  "observed": "Live in AUDITB (ws-live-sql-insert-wedge): with head seq 3, an SQL INSERT of a row with seq 4 and every required column was accepted (the table has UPDATE and DELETE triggers, no INSERT trigger); the next engine.ledger.commit (the only one attempted after the INSERT) failed LedgerInconsistencyError 'revision row save failed: ERROR #5805: ID key not unique ... ^Graph.KG.LedgerRevisionD(4) exists'; verify() still answered equal. An INSERT of an existing seq is refused (SeqIdx) and UPDATE is refused (trigger) (ws-live-sql-guard), so the INSERT cannot rewrite history; it blocks the ledger.",
   "disposition": "reproduced-live",
   "evidence": [
    {
@@ -208,7 +208,7 @@
   "severity": "S2",
   "confidence": "high",
   "remedy": "Add an INSERT trigger (or %OnBeforeSave check) that refuses a row outside Ledger.Commit's transaction, as for UPDATE and DELETE; and have verify() report a revision row with no records.",
-  "notes": "The census's '<any SQL client>::INSERT INTO Graph_KG.ledger_revisions' writer (review R-02's inferred revision-insert wedge, not probed before). Any SQL user with INSERT on the table can do this; the effect is the same wedge F-1801 reaches through restore."
+  "notes": "The census's '<any SQL client>::INSERT INTO Graph_KG.ledger_revisions' writer (review R-02's inferred revision-insert wedge, not probed before). Any SQL user with INSERT on the table can do this; whether later commits keep failing was not observed (one commit was attempted); F-1801's restore reaches the same ID-key collision, and its record states the ledger 'can never commit again' from the model (Ledger.cls:530-556)."
  },
  {
   "id": "F-C1850",
@@ -274,5 +274,45 @@
   "confidence": "high",
   "remedy": "Count liveness without relying on indexes a %NOINDEX load leaves stale (%IGNOREINDEX on LiveRows' counts, or refuse a redaction while an index build is pending for the content tables), or have the bulk loader rebuild the indices before it returns.",
   "notes": "Outside the census's 185 cells: BulkLoader.load_nodes is not one of its uncovered writers. The window lasts from the load until rebuild_all_indices (load_networkx runs it as phase 5; load_nodes and load_edges called on their own do not). The same probe family showed load_edges' %NOINDEX edge row uncounted (ws-live-ins-bulkloader_load_edges: rdf_edges 0 while the journal shows the write)."
+ },
+ {
+  "id": "F-C1250",
+  "module": "12",
+  "title": "An rdf_edges row a %NOINDEX bulk load wrote survives delete_nodes_by_prefix of both its endpoints and EraseAll+PurgeAll until the indices are rebuilt; its endpoint nodes are deleted under it",
+  "intended": "docs/adr/0004-erasure-removes-content-not-history.md (erasure removes the content); iris_src/src/Graph/KG/Eraser.cls:699-709 (EraseAll: 'Remove every graph's content from every store'); iris_vector_graph/schema.py:34-44 (fk_edges_source / fk_edges_dest: an edge row needs its endpoint node rows).",
+  "observed": "Live in AUDITB (ws-live-noindex-erase): BulkLoader.load_edges with its default use_noindex=True registered 2 endpoint nodes (indexed) and wrote the edge row with INSERT %NOINDEX %NOCHECK (bulk_loader.py:456-460): indexed counts saw nodes 2, edges 0; a %IGNOREINDEX full scan saw nodes 2, edges 1. engine.delete_nodes_by_prefix('wse|') answered 2 and deleted both node rows; the edge row stayed (the foreign keys did not refuse deleting nodes the unindexed edge references). Graph.KG.Eraser.EraseAll answered 0 and Ledger.PurgeAll ran: the full scan still found the row (the only content row left); verify() after re-enabling reported it as an unrecorded relationship. Only BulkLoader.rebuild_all_indices made it visible, after which EraseAll removed it. The same residue is in two earlier logs: in ws-live-ins-bulkloader_load_edges the control prefix's loaded edge survived delete_nodes_by_prefix (verify after the erase: diverges on that relationship), and the target's loaded edge survived the case's closing EraseAll+PurgeAll and made the next case's baseline diverge (ws-live-ins-import_rdf).",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "ws-live-noindex-erase"
+   },
+   {
+    "kind": "live",
+    "ref": "ws-live-ins-bulkloader_load_edges"
+   },
+   {
+    "kind": "live",
+    "ref": "ws-live-ins-import_rdf"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/Eraser.cls:777-779"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/bulk_loader.py:380-400"
+   }
+  ],
+  "gates": [
+   "3.3a-writesets",
+   "3.4-frame",
+   "3.7-integration-worlds",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S1",
+  "confidence": "high",
+  "remedy": "Have the erasure paths read without the indexes a %NOINDEX load leaves stale (or refuse while an index build is pending), and have the bulk loader rebuild its indices before it returns; an erase that leaves a row of an erased tenant should say so.",
+  "notes": "The loader's docstring tells its caller to run rebuild_all_indices() after loading (bulk_loader.py:393-395, 'needs index rebuild ... Call rebuild_all_indices() after loading'); until then the window is open. Same root as F-C1351 (the redaction liveness check reads through the same indexes). The record ws-live-ins-bulkloader_load_edges wrongly says verify was 'equal again after erasing wsd10', and ws-live-ins-import_rdf's INV-replay sub-check did not start from an equal baseline because of this residue (errata). The disappearance of the control prefix's row before the import_rdf case is not explained by a registered observation."
  }
 ]

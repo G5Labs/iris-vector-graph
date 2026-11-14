@@ -112,7 +112,7 @@ fn c(paths: Vec<u8>, inventory: u8, redact: u8, receipt: u8, cross: u8) -> Cfg {
 fn v(law: &'static str, findings: &'static [&'static str]) -> Variant { Variant { law, findings } }
 
 // stores: 1 rows, 2 adjacency, 4 temporal, 8 statement maps, 16 history (records)
-object!(RowsAdjacencyTemporal, "rows-adjacency-temporal", ["12/graph-content"], ["rows", "adjacency", "temporal", "stmt", "history"],
+object!(RowsAdjacencyTemporal, "rows-adjacency-temporal", ["12/graph-content", "12/whole-namespace", "12/node-in-a-sweep"], ["rows", "adjacency", "temporal", "stmt", "history"],
         c(vec![1 | 2 | 8 | 16, 4 | 1 | 16], 1 | 2 | 4 | 8, 16, 0, 0), c(vec![1 | 2 | 8 | 16, 4 | 1 | 16], 1 | 2 | 4 | 8, 16, 0, 0), []);
 // stores: 1 rows, 2 BM25 index, 4 history. Erasure does not reach BM25 indexes (Eraser.cls:138-147; F-0702).
 object!(Bm25, "bm25", ["07/bm25-index"], ["rows", "bm25", "history"],
@@ -152,13 +152,13 @@ fn instance_checks<O: RemovalObject>(o: &O) -> Vec<Outcome> {
     let mut out = vec![];
     let ds = o.departs();
     if ds.is_empty() {
-        out.push(check(&format!("removal-{n}-as-built"), meta("M-05", "removal", n, o.objects(), "as-built", "safety", "all", &[], ""), Expect::Pass, &Keep::safety(&ab)));
+        out.push(check_keep(&format!("removal-{n}-as-built"), meta("M-05", "removal", n, o.objects(), "as-built", "safety", "all", &[], ""), Expect::Pass, &Keep::safety(&ab)));
     }
     for (k, d) in ds.iter().enumerate() {
         let id = if k == 0 { format!("removal-{n}-as-built") } else { format!("removal-{n}-as-built-{}", &d.law[..6]) };
-        out.push(check(&id, meta("M-05", "removal", n, o.objects(), "as-built", "safety", d.law, d.findings, ""), Expect::Violation(d.law), &Keep::only(&ab, &[d.law])));
+        out.push(check_keep(&id, meta("M-05", "removal", n, o.objects(), "as-built", "safety", d.law, d.findings, ""), Expect::Violation(d.law), &Keep::only(&ab, &[d.law])));
     }
-    out.push(check(&format!("removal-{n}-reviewed"), meta("M-05", "removal", n, o.objects(), "reviewed", "safety", "all", &[], ""), Expect::Pass, &Keep::safety(&rv)));
+    out.push(check_keep(&format!("removal-{n}-reviewed"), meta("M-05", "removal", n, o.objects(), "reviewed", "safety", "all", &[], ""), Expect::Pass, &Keep::safety(&rv)));
     out
 }
 
@@ -178,7 +178,7 @@ pub fn checks() -> Vec<Outcome> {
     let r = o.reviewed();
     let ctl = |id: &str, law: &'static str, c: Cfg| {
         let m = Machine { o, c };
-        check(id, meta("M-05", "removal", "rows-adjacency-temporal", o.objects(), "control", "safety", law, &[], ""), Expect::Violation(law), &Keep::only(&m, &[law]))
+        check_keep(id, meta("M-05", "removal", "rows-adjacency-temporal", o.objects(), "control", "safety", law, &[], ""), Expect::Violation(law), &Keep::only(&m, &[law]))
     };
     out.push(ctl("removal-control-C1-store-dropped", L1, Cfg { inventory: r.inventory & !2, ..r.clone() }));
     out.push(ctl("removal-control-C1b-store-dropped-inventory", L3, Cfg { inventory: r.inventory & !2, ..r.clone() }));

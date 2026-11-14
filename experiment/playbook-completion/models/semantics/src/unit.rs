@@ -98,10 +98,10 @@ macro_rules! object {
 
 object!(PerChunkCommit, "per-chunk-commit", ["03/caller-transaction"], Cfg { commit: Commit::PerStatement, ..CANON }, L1, ["F-0305"]);
 object!(RollbackAllLevels, "rollback-all-levels", ["07/bm25-index", "04/adjacency-entry"], Cfg { undo: Undo::AllLevels, ..CANON }, L2, ["F-C0702", "F-0704", "F-0409"]);
-object!(PerStatementCommit, "per-statement-commit", ["16/bolt-session-with-a-key-set", "16/cypher-http-call", "15/reifier"], Cfg { commit: Commit::PerStatement, ..CANON }, L1, ["F-1601", "F-1610", "F-1609", "F-C1502"]);
+object!(PerStatementCommit, "per-statement-commit", ["16/bolt-session-with-a-key-set", "16/cypher-http-call", "15/reifier", "16/bolt-explicit-transaction"], Cfg { commit: Commit::PerStatement, ..CANON }, L1, ["F-1601", "F-1610", "F-1609", "F-C1502"]);
 object!(NoTransaction, "no-transaction", ["15/fhir-graph", "06/route", "05/temporal-coordinates"], Cfg { commit: Commit::NoTxn, ..CANON }, L1, ["F-1511", "F-C1501", "F-0615", "F-C0501"]);
 object!(WrongReply, "wrong-reply", ["08/cypher-call"], Cfg { reply: Reply::WrongClass, ..CANON }, L3, ["F-0807", "F-0804", "F-0817"]);
-object!(HiddenFailure, "hidden-failure", ["03/node-in-one-graph", "07/fused-search"], Cfg { reply: Reply::OkOnFailure, ..CANON }, L3, ["F-0306", "F-0307", "F-0709"]);
+object!(HiddenFailure, "hidden-failure", ["03/node-in-one-graph", "07/fused-search", "15/cypher-anchors", "16/fraud-server-call"], Cfg { reply: Reply::OkOnFailure, ..CANON }, L3, ["F-0306", "F-0307", "F-0709", "F-1508", "F-1615"]);
 object!(Canonical, "canonical", ["11/caller-transaction", "17/link"], CANON, "", []);
 
 fn instance_checks<O: UnitObject>(o: &O) -> Vec<Outcome> {
@@ -111,10 +111,10 @@ fn instance_checks<O: UnitObject>(o: &O) -> Vec<Outcome> {
     let rv = Machine { o, c: CANON };
     let mut out = vec![];
     if law.is_empty() {
-        out.push(check(&format!("unit-{n}-as-built"), meta("M-10", "unit", n, o.objects(), "as-built", "safety", "all", f, ""), Expect::Pass, &Keep::safety(&ab)));
+        out.push(check_keep(&format!("unit-{n}-as-built"), meta("M-10", "unit", n, o.objects(), "as-built", "safety", "all", f, ""), Expect::Pass, &Keep::safety(&ab)));
     } else {
-        out.push(check(&format!("unit-{n}-as-built"), meta("M-10", "unit", n, o.objects(), "as-built", "safety", law, f, ""), Expect::Violation(law), &Keep::only(&ab, &[law])));
-        out.push(check(&format!("unit-{n}-reviewed"), meta("M-10", "unit", n, o.objects(), "reviewed", "safety", "all", &[], ""), Expect::Pass, &Keep::safety(&rv)));
+        out.push(check_keep(&format!("unit-{n}-as-built"), meta("M-10", "unit", n, o.objects(), "as-built", "safety", law, f, ""), Expect::Violation(law), &Keep::only(&ab, &[law])));
+        out.push(check_keep(&format!("unit-{n}-reviewed"), meta("M-10", "unit", n, o.objects(), "reviewed", "safety", "all", &[], ""), Expect::Pass, &Keep::safety(&rv)));
     }
     out
 }
@@ -131,7 +131,7 @@ pub fn checks() -> Vec<Outcome> {
     let o = &Canonical;
     let ctl = |id: &str, law: &'static str, c: Cfg| {
         let m = Machine { o, c };
-        check(id, meta("M-10", "unit", "canonical", o.objects(), "control", "safety", law, &[], ""), Expect::Violation(law), &Keep::only(&m, &[law]))
+        check_keep(id, meta("M-10", "unit", "canonical", o.objects(), "control", "safety", law, &[], ""), Expect::Violation(law), &Keep::only(&m, &[law]))
     };
     out.push(ctl("unit-control-C1-per-statement", L1, Cfg { commit: Commit::PerStatement, ..CANON }));
     out.push(ctl("unit-control-C2-rollback-all-levels", L2, Cfg { undo: Undo::AllLevels, ..CANON }));

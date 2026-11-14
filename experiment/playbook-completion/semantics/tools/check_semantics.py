@@ -172,18 +172,26 @@ def check(d, skip_sources=False):
         for i in m["instances"]:
             if i["object"] not in {o["id"] for o in d["objects"]["objects"]}:
                 E("object-ref", f"mechanism {m['id']} instance {i['object']}")
-            for law in i.get("departs", []):
-                if law not in laws[m["id"]]:
-                    E("law-ref", f"{m['id']} {i['object']} departs from unknown law {law}")
-            for f in i.get("findings", []):
+            deps = i.get("departures", [])
+            for dp in deps:
+                if dp["law"] not in laws[m["id"]]:
+                    E("law-ref", f"{m['id']} {i['object']} departs from unknown law {dp['law']}")
+                for f in dp.get("findings", []):
+                    if f not in findings:
+                        E("finding-ref", f"{m['id']} {i['object']} cites finding {f}")
+                if dp.get("exception") and dp["exception"] not in exc:
+                    E("exception-ref", f"{m['id']} {i['object']} exception {dp['exception']}")
+                if not (dp.get("findings") or dp.get("exception")):
+                    E("departure", f"{m['id']} {i['object']} departs from {dp['law']} with no finding or exception")
+            for f in i.get("related_findings", []):
                 if f not in findings:
                     E("finding-ref", f"{m['id']} {i['object']} cites finding {f}")
-            if i.get("exception") and i["exception"] not in exc:
-                E("exception-ref", f"{m['id']} {i['object']} exception {i['exception']}")
-            if i.get("departs") and not (i.get("findings") or i.get("exception")):
-                E("departure", f"{m['id']} {i['object']} departs from {i['departs']} with no finding or exception")
-            if i["use"] == "canonical" and i.get("departs"):
+            if i.get("exception_note") and i["exception_note"] not in exc:
+                E("exception-ref", f"{m['id']} {i['object']} exception {i['exception_note']}")
+            if i["use"] == "canonical" and deps:
                 E("departure", f"{m['id']} {i['object']} is canonical but departs")
+            if i["use"] == "hand-rolled" and not deps and not i.get("note"):
+                E("departure", f"{m['id']} {i['object']} is hand-rolled with no departure and no note")
             if i["use"] not in ("canonical", "hand-rolled"):
                 E("departure", f"{m['id']} {i['object']} use {i['use']}")
             if i.get("model"):
@@ -193,13 +201,27 @@ def check(d, skip_sources=False):
                 for c in mc:
                     if c not in checks or checks[c]["result"] != "met" or checks[c]["scope"] != "exhaustive":
                         E("model", f"{m['id']} {i['object']} check {c} missing, not met or truncated")
-                if i.get("departs"):
-                    shown = [c for c in mc if checks.get(c, {}).get("design") in ("as-built", "exception")
-                             and checks[c]["expectation"].startswith("violation") and any(checks[c]["law"].startswith(x) for x in i["departs"])]
-                    if not shown:
-                        E("model", f"{m['id']} {i['object']} departs from {i['departs']} but no as-built check shows it")
+                # complement (review 4, R4-08): the laws the as-built model violates are exactly the declared ones
+                violated = set()
+                for c in mc:
+                    cc = checks.get(c, {})
+                    if cc.get("design") not in ("as-built", "exception"):
+                        continue
+                    if cc.get("complement_scope") == "truncated":
+                        E("complement", f"check {c}: complement truncated")
+                    violated |= {v.split(" ")[0] for v in (cc.get("violates") or [])}
+                    if cc.get("expectation", "").startswith("violation") and cc.get("violates") is None:
+                        violated.add(cc["law"].split(" ")[0])
+                declared = {dp["law"] for dp in deps}
+                for law in sorted(violated - declared):
+                    E("departure-undeclared", f"{m['id']} {i['object']}: its as-built model violates {law}, which it does not declare")
+                for law in sorted(declared - violated):
+                    E("departure-unshown", f"{m['id']} {i['object']}: declares {law}, which no as-built check of its model violates")
             elif not i.get("note"):
                 E("model", f"{m['id']} {i['object']} has neither a model nor a reason")
+    for c in d["results"]["checks"]:
+        if c["design"] == "reviewed" and c.get("violates"):
+            E("complement", f"reviewed check {c['id']} violates {c['violates']}")
 
     # objects
     ent_ids = [e["id"] for e in d["entities"]]
@@ -298,12 +320,15 @@ MUTATIONS = [
     ("dangling axiom reference", "axiom-ref", lambda d: d["objects"]["objects"][0]["axioms"].append("AX-99")),
     ("dangling mechanism reference", "mechanism-ref", lambda d: d["objects"]["objects"][0]["mechanisms"].append({"mechanism": "M-99"})),
     ("dangling contract clause", "clause-ref", lambda d: d["trace"]["requirements"][0]["targets"].append("E-NOPE")),
-    ("dangling law reference", "law-ref", lambda d: next(i for i in d["mechanisms"]["mechanisms"][0]["instances"] if i.get("departs"))["departs"].append("M01-L9")),
-    ("finding id that does not exist", "finding-ref", lambda d: d["mechanisms"]["mechanisms"][0]["instances"][1]["findings"].append("F-9999")),
+    ("dangling law reference", "law-ref", lambda d: next(i for i in d["mechanisms"]["mechanisms"][0]["instances"] if i.get("departures"))["departures"].append({"law": "M01-L9", "findings": ["F-1105"]})),
+    ("finding id that does not exist", "finding-ref", lambda d: next(i for i in d["mechanisms"]["mechanisms"][0]["instances"] if i.get("departures"))["departures"][0]["findings"].append("F-9999")),
     ("finding id in the trace that does not exist", "finding-ref", lambda d: d["trace"]["requirements"][0]["bases"].append("finding:F-C9999")),
     ("dangling exception", "exception-ref", lambda d: d["axioms"]["axioms"][0]["exceptions"].append("EXC-99")),
     ("law without a control", "control", lambda d: d["mechanisms"]["mechanisms"][0]["laws"][0].update(controls=[])),
-    ("departure with no finding", "departure", lambda d: (lambda i: i.update(findings=[]) or i.pop("exception", None))(next(i for i in d["mechanisms"]["mechanisms"][0]["instances"] if i.get("departs")))),
+    ("departure with no finding", "departure", lambda d: next(i for i in d["mechanisms"]["mechanisms"][0]["instances"] if i.get("departures"))["departures"][0].update(findings=[])),
+    ("undeclared departure (a law the as-built model violates)", "departure-undeclared", lambda d: next(i for i in d["mechanisms"]["mechanisms"][3]["instances"] if len(i.get("departures", [])) > 1)["departures"].pop()),
+    ("declared departure no check shows", "departure-unshown", lambda d: next(i for i in d["mechanisms"]["mechanisms"][0]["instances"] if i.get("departures") and i.get("model"))["departures"].append({"law": "M01-L3", "findings": ["F-1105"]})),
+    ("reviewed check whose complement finds a violation", "complement", lambda d: next(c for c in d["results"]["checks"] if c["design"] == "reviewed" and c.get("violates") is not None).update(violates=["M01-L1 history only grows"])),
     ("state not mapped", "lifecycle", lambda d: d["objects"]["objects"][0]["state_map"].popitem()),
     ("object with no mechanism", "object-mechanism", lambda d: d["objects"]["objects"][0].update(mechanisms=[])),
     ("object missing from the derived list", "objects-derived", lambda d: d["objects"]["objects"].pop()),

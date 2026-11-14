@@ -142,13 +142,13 @@ macro_rules! object {
 
 object!(NameCheckMissing, "name-check-missing", ["02/graph-name"], Cfg { key: Key::Unvalidated, ..CANON }, L1, ["F-0202", "F-0203"], "");
 object!(AllGraphsWalk, "all-graphs-walk", ["08/graph-scope"], Cfg { read: Read::Merged, ..CANON }, L2, ["F-0818", "F-0819", "F-0820"], "");
-object!(UnscopedRead, "unscoped-read", ["10/default-graph-algorithm-call", "16/graph-a-caller-names", "17/link", "07/fused-search", "06/route", "10/native-route"],
+object!(UnscopedRead, "unscoped-read", ["10/default-graph-algorithm-call", "16/graph-a-caller-names", "17/link", "07/fused-search", "06/route", "10/native-route", "07/older-text-search", "15/fhir-bridge", "16/generated-graphql-call"],
         Cfg { read: Read::JoinAny, ..CANON }, L2,
-        ["F-1002", "F-1006", "F-1008", "F-1013", "F-1001", "F-1603", "F-1604", "F-1701", "F-0609", "F-0711", "F-0605", "F-0616"], "");
+        ["F-1002", "F-1006", "F-1008", "F-1013", "F-1001", "F-1603", "F-1604", "F-1701", "F-0609", "F-0711", "F-0605", "F-0616", "F-1507"], "");
 object!(InternedNoGraph, "interned-no-graph-dimension", ["10/interned-snapshot"], Cfg { read: Read::Merged, ..CANON }, L2, [], "EXC-06");
 object!(DeleteEveryGraph, "delete-every-graph", ["15/reifier"], Cfg { del: Del::EveryGraph, ..CANON }, L3, ["F-1503"], "");
 object!(ThreePredicates, "three-predicates", ["13/redaction-target", "11/node-id"], Cfg { match_blind: true, ..CANON }, L4, ["F-1304", "F-1305", "F-1105", "F-1401"], "");
-object!(Canonical, "canonical", ["03/node-in-one-graph", "03/edge-in-one-graph", "05/temporal-coordinates", "08/cypher-node", "08/cypher-edge", "12/graph-content"], CANON, "", [], "");
+object!(Canonical, "canonical", ["03/node-in-one-graph", "03/edge-in-one-graph", "05/temporal-coordinates", "08/cypher-node", "08/cypher-edge", "12/graph-content", "07/docs-table-search"], CANON, "", [], "");
 
 fn instance_checks<O: ScopeObject>(o: &O) -> Vec<Outcome> {
     let (law, f, exc) = o.departs();
@@ -157,11 +157,11 @@ fn instance_checks<O: ScopeObject>(o: &O) -> Vec<Outcome> {
     let rv = Machine { o, c: CANON };
     let mut out = vec![];
     if law.is_empty() {
-        out.push(check(&format!("scope-{n}-as-built"), meta("M-09", "scope", n, o.objects(), "as-built", "safety", "all", f, ""), Expect::Pass, &Keep::safety(&ab)));
+        out.push(check_keep(&format!("scope-{n}-as-built"), meta("M-09", "scope", n, o.objects(), "as-built", "safety", "all", f, ""), Expect::Pass, &Keep::safety(&ab)));
     } else {
         let design = if exc.is_empty() { "as-built" } else { "exception" };
-        out.push(check(&format!("scope-{n}-as-built"), meta("M-09", "scope", n, o.objects(), design, "safety", law, f, exc), Expect::Violation(law), &Keep::only(&ab, &[law])));
-        out.push(check(&format!("scope-{n}-reviewed"), meta("M-09", "scope", n, o.objects(), "reviewed", "safety", "all", &[], ""), Expect::Pass, &Keep::safety(&rv)));
+        out.push(check_keep(&format!("scope-{n}-as-built"), meta("M-09", "scope", n, o.objects(), design, "safety", law, f, exc), Expect::Violation(law), &Keep::only(&ab, &[law])));
+        out.push(check_keep(&format!("scope-{n}-reviewed"), meta("M-09", "scope", n, o.objects(), "reviewed", "safety", "all", &[], ""), Expect::Pass, &Keep::safety(&rv)));
     }
     out
 }
@@ -178,7 +178,7 @@ pub fn checks() -> Vec<Outcome> {
     let o = &Canonical;
     let ctl = |id: &str, law: &'static str, c: Cfg| {
         let m = Machine { o, c };
-        check(id, meta("M-09", "scope", "canonical", o.objects(), "control", "safety", law, &[], ""), Expect::Violation(law), &Keep::only(&m, &[law]))
+        check_keep(id, meta("M-09", "scope", "canonical", o.objects(), "control", "safety", law, &[], ""), Expect::Violation(law), &Keep::only(&m, &[law]))
     };
     out.push(ctl("scope-control-C1-key-ignores-name", L1, Cfg { key: Key::IgnoresName, ..CANON }));
     out.push(ctl("scope-control-C2-join-across-graphs", L2, Cfg { read: Read::JoinAny, ..CANON }));

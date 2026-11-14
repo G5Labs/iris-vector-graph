@@ -59,7 +59,7 @@ EXPECTED = {"modules": 19, "cells": 904, "decisions": 61, "premises": 138, "find
             "writer_obligations": 83}
 STATUSES = ["closed", "failed", "open", "blocked", "not-applicable"]
 LEVELS = ("method", "model", "product")
-PO = ["fails", "intent-undecided", "holds-live", "holds-inspected", "holds-in-model-only", "unknown", "n/a"]
+PO = ["fails", "intent-undecided", "holds-live", "holds-inspected", "holds-as-detection", "holds-in-model-only", "unknown", "n/a"]
 REPRODUCED = ("reproduced-live", "reproduced-test", "reproduced-model", "confirmed-source", "product-defect")
 UNDECIDED = ("intent-undecided",)
 AS_BUILT_TEXT = re.compile(r"as-built (fails|reproduc\w*|violates?\b)", re.I)
@@ -383,10 +383,14 @@ def main() -> int:
             basis.append(f"lane status failed ({c.get('source') or 'orchestrator'})")
         if c.get("_explicit_po") == "fails":
             basis.append(f"stated fails by {c.get('source') or 'orchestrator'}")
-        # a lemma/guard discharge of one write-set pair cites runs for the pair it judged preserved; a cited run that
-        # failed on another invariant (or another writer's pair) is not as-built evidence against this pair
-        if c["level"] != "method" and c.get("discharge") not in ("lemma", "guard"):
+        # a lemma/guard discharge of one write-set pair may cite a run that failed on ANOTHER pair; only runs the
+        # discharge names in failed_runs_other_pairs (with a reason; writesets/RUN-PAIRS.json) are ignored here
+        # (review R4-02): any other failed run still makes the cell fail
+        other = set(c.get("failed_runs_other_pairs") or [])
+        if c["level"] != "method":
             for rid in c["cited_runs"]:
+                if rid in other:
+                    continue
                 rec = reg.get(rid) or {}
                 if not (rec.get("result") == "fail" or as_built_run(rid, rec)):
                     continue
@@ -492,6 +496,9 @@ def main() -> int:
         applied.add(c["obligation_id"])
         kind = d.get("discharge")
         c = {**c, "discharge": kind, "discharge_grade": d.get("grade"), "discharge_source": "writesets/DISCHARGES.json"}
+        for k in ("failed_runs_other_pairs", "failed_runs_other_pairs_reason", "holds_as", "depends_on", "context_runs"):
+            if d.get(k):
+                c[k] = d[k]
         refs = [str(e) for e in d.get("evidence", [])]
         for r in refs:
             if resolve(r, reg) is None:
@@ -505,18 +512,22 @@ def main() -> int:
         # runs that did not decide anything (e.g. a blocked live attempt) are context, not discharge evidence
         ctx = [r for r in refs if resolve(r, reg) and (reg[resolve(r, reg)] or {}).get("result")
                not in ("pass", "fail", "expected-violation")]
+        ctx += [r for r in refs if str(r).replace("run:", "") in set(d.get("context_runs") or [])]
         if ctx and d.get("grade") == "inspected":
             c["evidence"] = [e for e in c["evidence"] if e not in ctx]
             c["context_runs"] = ctx
         if kind in ("lemma", "guard"):
             # a per-pair discharge about the pin's own writer code: product level, graded by its evidence
             c["level"] = "product"
-            c["product_obligation"] = "holds-live" if d.get("grade") == "live" else "holds-inspected"
+            c["product_obligation"] = ("holds-as-detection" if d.get("holds_as") == "detection"
+                                       else "holds-live" if d.get("grade") == "live" else "holds-inspected")
         if kind in ("lemma", "guard", "finding"):
             c["status"] = "closed"
             if kind == "finding":
                 c["as_built_findings"] = sorted(set(c.get("as_built_findings", [])) | set(d.get("findings", [])))
-            c["remaining"] = f"discharged by {kind} ({d.get('grade')}): {d.get('reason', '')}".strip()
+            how = f", holds as {d['holds_as']}" if d.get("holds_as") else ""
+            dep = f"; depends on operator ruling {', '.join(d['depends_on'])}" if d.get("depends_on") else ""
+            c["remaining"] = f"discharged by {kind} ({d.get('grade')}{how}{dep}): {d.get('reason', '')}".strip()
         elif kind == "open":
             c["remaining"] = "open after the writesets lane: " + str(d.get("reason", ""))
         else:
@@ -626,6 +637,8 @@ def main() -> int:
              "`intent-undecided` (the behaviour is observed but only findings whose intent is undecided show it), "
              "`holds-live` / `holds-inspected` (only for single write-set pairs the writesets lane discharged at the pin "
              "by a preservation lemma or guard, observed live or read in the pin's code; the weakest product grades), "
+             "`holds-as-detection` (such a pair whose writer breaks the invariant's premise but verify() reports the "
+             "effect: detected, not prevented; review R4-07), "
              "`holds-in-model-only` (only a model result supports it; the code correspondence is not discharged), "
              "`unknown`. **Level**: what the evidence is about (method, model, product; the input's wording is kept "
              "as `level_detail`). Rows count every cell, including the per-obligation census and reach cells below.", "",

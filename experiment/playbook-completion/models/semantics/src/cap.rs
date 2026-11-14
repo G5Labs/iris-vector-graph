@@ -81,9 +81,9 @@ macro_rules! object {
 }
 
 // The HTTP server with IVG_API_KEY and IVG_READ_ONLY set: every route checks both (ADMIN_GUIDE.md:824-840).
-object!(HttpServer, "http-server", ["16/cypher-http-call", "16/bolt-session-with-a-key-set", "17/client-request", "17/namespace", "17/link"], [R_READ, R_WRITE], "", []);
+object!(HttpServer, "http-server", ["16/cypher-http-call", "16/bolt-session-with-a-key-set", "17/client-request", "17/namespace", "17/link", "16/generated-graphql-call", "16/fraud-server-call"], [R_READ, R_WRITE], "", []);
 // The demo server's write routes need no key (src/iris_demo_server/app.py:1-22, F-1614).
-object!(DemoServer, "demo-server", ["16/rest-web-app-path"], [R_READ, Route { key_check: false, ..R_WRITE }], L2, ["F-1614"]);
+object!(DemoServer, "demo-server", ["16/rest-web-app-path", "16/demo-server-call"], [R_READ, Route { key_check: false, ..R_WRITE }], L2, ["F-1614"]);
 // execute_aql ignores read-only (aql/translator.py:50-58, 154-168, F-0814).
 object!(Aql, "aql", ["08/cypher-call"], [R_READ, Route { ro_check: false, ..R_WRITE }], L1, ["F-0814"]);
 // AQL text and a dotted function name pasted into Cypher / SQL text: caller text runs as code (F-0815).
@@ -100,10 +100,10 @@ fn instance_checks<O: CapObject>(o: &O) -> Vec<Outcome> {
     let rv = Machine { o, routes: vec![R_READ, R_WRITE] };
     let mut out = vec![];
     if law.is_empty() {
-        out.push(check(&format!("cap-{n}-as-built"), meta("M-11", "cap", n, o.objects(), "as-built", "safety", "all", f, ""), Expect::Pass, &Keep::safety(&ab)));
+        out.push(check_keep(&format!("cap-{n}-as-built"), meta("M-11", "cap", n, o.objects(), "as-built", "safety", "all", f, ""), Expect::Pass, &Keep::safety(&ab)));
     } else {
-        out.push(check(&format!("cap-{n}-as-built"), meta("M-11", "cap", n, o.objects(), "as-built", "safety", law, f, ""), Expect::Violation(law), &Keep::only(&ab, &[law])));
-        out.push(check(&format!("cap-{n}-reviewed"), meta("M-11", "cap", n, o.objects(), "reviewed", "safety", "all", &[], ""), Expect::Pass, &Keep::safety(&rv)));
+        out.push(check_keep(&format!("cap-{n}-as-built"), meta("M-11", "cap", n, o.objects(), "as-built", "safety", law, f, ""), Expect::Violation(law), &Keep::only(&ab, &[law])));
+        out.push(check_keep(&format!("cap-{n}-reviewed"), meta("M-11", "cap", n, o.objects(), "reviewed", "safety", "all", &[], ""), Expect::Pass, &Keep::safety(&rv)));
     }
     out
 }
@@ -119,7 +119,7 @@ pub fn checks() -> Vec<Outcome> {
     let o = &HttpServer;
     let ctl = |id: &str, law: &'static str, routes: Vec<Route>| {
         let m = Machine { o, routes };
-        check(id, meta("M-11", "cap", "http-server", o.objects(), "control", "safety", law, &[], ""), Expect::Violation(law), &Keep::only(&m, &[law]))
+        check_keep(id, meta("M-11", "cap", "http-server", o.objects(), "control", "safety", law, &[], ""), Expect::Violation(law), &Keep::only(&m, &[law]))
     };
     out.push(ctl("cap-control-C1-write-without-read-only-check", L1, vec![R_READ, Route { ro_check: false, ..R_WRITE }]));
     out.push(ctl("cap-control-C2-route-without-key-check", L2, vec![Route { key_check: false, ..R_WRITE }]));

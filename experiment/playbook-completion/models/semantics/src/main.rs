@@ -70,14 +70,29 @@ fn main() {
             println!("{}", o.trace);
         }
         let objs = m.objects.iter().map(|x| format!("\"{x}\"")).collect::<Vec<_>>().join(", ");
+        let (violates, also) = match &o.violates {
+            None => ("null".to_string(), "null".to_string()),
+            Some(v) => {
+                let all = v.iter().map(|x| format!("\"{}\"", esc(x))).collect::<Vec<_>>().join(", ");
+                let others = v.iter().filter(|x| x.as_str() != o.found).map(|x| format!("\"{}\"", esc(x))).collect::<Vec<_>>().join(", ");
+                (format!("[{all}]"), format!("[{others}]"))
+            }
+        };
+        if let Some(v) = &o.violates {
+            if v.iter().any(|x| x.as_str() != o.found) {
+                println!("    complement: the model also violates {:?}{}", v.iter().filter(|x| x.as_str() != o.found).collect::<Vec<_>>(),
+                         if o.complement_truncated { " (truncated)" } else { "" });
+            }
+        }
         let fs = m.findings.iter().map(|x| format!("\"{x}\"")).collect::<Vec<_>>().join(", ");
         json += &format!(
             "    {{\"id\": \"{}\", \"mechanism\": \"{}\", \"family\": \"{}\", \"instance\": \"{}\", \"objects\": [{}], \"design\": \"{}\", \"kind\": \"{}\", \
 \"law\": \"{}\", \"findings\": [{}], \"exception\": \"{}\", \"expectation\": \"{}\", \"result\": \"{}\", \"found\": \"{}\", \"states\": {}, \
-\"transitions\": {}, \"depth\": {}, \"scope\": \"{}\", \"seconds\": {:.3}, \"counterexample\": \"{}\"}}{}\n",
+\"transitions\": {}, \"depth\": {}, \"scope\": \"{}\", \"seconds\": {:.3}, \"violates\": {}, \"also_violates\": {}, \"complement_scope\": \"{}\", \"counterexample\": \"{}\"}}{}\n",
             esc(&o.id), m.mechanism, m.family, esc(&m.instance), objs, m.design, m.kind, esc(m.law), fs, m.exception,
             esc(&o.expect), if o.met { "met" } else { "not-met" }, esc(&o.found), o.states, o.transitions, o.depth,
-            if o.truncated { "truncated" } else { "exhaustive" }, o.seconds, esc(&o.trace),
+            if o.truncated { "truncated" } else { "exhaustive" }, o.seconds, violates, also,
+            if o.violates.is_none() { "n/a" } else if o.complement_truncated { "truncated" } else { "exhaustive" }, esc(&o.trace),
             if i + 1 < res.len() { "," } else { "" });
     }
     json += "  ]\n}\n";

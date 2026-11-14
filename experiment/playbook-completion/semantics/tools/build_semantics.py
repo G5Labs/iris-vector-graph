@@ -66,6 +66,7 @@ def build():
     fclass = load(SEM / "src" / "finding_classes.json")["classes"]
     res = load(ROOT / "models" / "semantics" / "RESULTS.json")
     checks = res["checks"]
+    by_check = {c["id"]: c for c in checks}
     findings = all_findings()
 
     # objects (mechanical list) with their mechanism uses
@@ -84,23 +85,40 @@ def build():
         if mp.get("notes"):
             o["notes"] = mp["notes"]
         o["mechanisms"] = []
+    lawid = lambda name: name.split(" ")[0]
     for m in mech["mechanisms"]:
         fam = m["family"]
         for inst in m["instances"]:
             inst_checks = []
-            if "model" in inst:
-                f, n = inst["model"].split("/", 1)
-                inst_checks = [c["id"] for c in checks if c["family"] == f and c["instance"] == n and inst["object"] in c["objects"]]
+            models = inst.get("model", [])
+            models = [models] if isinstance(models, str) else models
+            for ref in models:
+                f, n = ref.split("/", 1)
+                inst_checks += [c["id"] for c in checks if c["family"] == f and c["instance"] == n and inst["object"] in c["objects"]]
             inst["model_checks"] = inst_checks
-            use = {k: inst[k] for k in ("use", "where", "departs", "findings", "exception", "model", "note") if k in inst}
+            # laws the instance's as-built model violates: the complement sets of its Keep checks, plus the attributed
+            # law of its as-built progress or liveness violations (not run through Keep)
+            ab = [cid_ for cid_ in inst_checks if by_check[cid_]["design"] in ("as-built", "exception")]
+            violated = set()
+            for cid_ in ab:
+                c = by_check[cid_]
+                violated |= {lawid(v) for v in (c.get("violates") or [])}
+                if c["expectation"].startswith("violation") and c.get("violates") is None:
+                    violated.add(lawid(c["law"]))
+            inst["violated_laws"] = sorted(violated) if models else None
+            inst["departs"] = sorted({d["law"] for d in inst.get("departures", [])})
+            inst["findings"] = sorted({f for d in inst.get("departures", []) for f in d.get("findings", [])} | set(inst.get("related_findings", [])))
+            use = {k: inst[k] for k in ("use", "where", "departures", "departs", "findings", "exception_note", "model", "note", "violated_laws") if k in inst}
             use["mechanism"] = m["id"]
             use["model_checks"] = inst_checks
             if inst["object"] in by_id:
                 by_id[inst["object"]]["mechanisms"].append(use)
         for law in m["laws"]:
-            law["controls"] = [c["id"] for c in checks if c["family"] == fam and c["design"] == "control" and c["law"].startswith(law["id"])]
+            law["controls"] = [c["id"] for c in checks if c["family"] == fam and c["design"] == "control" and c["law"].startswith(law["id"] + " ")]
             law["as_built_violations"] = [c["id"] for c in checks if c["family"] == fam and c["design"] in ("as-built", "exception")
-                                          and c["law"].startswith(law["id"]) and c["expectation"].startswith("violation")]
+                                          and c["law"].startswith(law["id"] + " ") and c["expectation"].startswith("violation")]
+            law["also_violated_by"] = [c["id"] for c in checks if c["family"] == fam and c["design"] in ("as-built", "exception", "control")
+                                       and not c["law"].startswith(law["id"] + " ") and any(lawid(v) == law["id"] for v in (c.get("violates") or []))]
             law["sharpness"] = [c["id"] for c in checks if c["family"] == fam and c["kind"] == "sharpness"]
         m["model"] = {"crate": "experiment/playbook-completion/models/semantics", "family": fam,
                       "checks": len([c for c in checks if c["family"] == fam]),
@@ -135,7 +153,9 @@ def build():
         "_doc": "Shared mechanisms of IVG (playbook 3.3a step 2). Built by semantics/tools/build_semantics.py from src/mechanisms_src.json and models/semantics/RESULTS.json. Each law lists its negative controls and the as-built checks that violate it; each instance lists the model checks run for that object.",
         "pin": PIN, "mechanisms": mech["mechanisms"], "unattached_objects": mech.get("unattached_objects", {}),
         "results": {"checks": len(checks), "met": len([c for c in checks if c["result"] == "met"]),
-                    "truncated": len([c for c in checks if c["scope"] != "exhaustive"])},
+                    "truncated": len([c for c in checks if c["scope"] != "exhaustive"]),
+                    "violation_checks_with_complement": len([c for c in checks if c["expectation"].startswith("violation") and c.get("violates") is not None]),
+                    "of_which_also_violate_another_law": len([c for c in checks if c["expectation"].startswith("violation") and c.get("also_violates")])},
     }
     obj_out = {
         "_doc": "Every object (ontology Entity line) of every module, with its canonical lifecycle (lifecycles.json), the state and command mapping (src/objects_map.json), the mechanisms it uses (src/mechanisms_src.json instances) and the axioms those implement. Built by semantics/tools/build_semantics.py; the object list is derived from the ontology, not by hand. Module 00 declares no entity (its statements are the axioms' sources).",

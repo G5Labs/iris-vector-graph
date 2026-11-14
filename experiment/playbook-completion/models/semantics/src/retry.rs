@@ -193,11 +193,11 @@ fn instance_checks<O: RetryObject>(o: &O) -> Vec<Outcome> {
     let rv = Machine { o, p: o.reviewed() };
     let mut out = vec![];
     if law.is_empty() {
-        out.push(check(&format!("retry-{n}-as-built"), meta("M-02", "retry", n, o.objects(), "as-built", "safety", "all", f, ""), Expect::Pass, &Keep::safety(&ab)));
+        out.push(check_keep(&format!("retry-{n}-as-built"), meta("M-02", "retry", n, o.objects(), "as-built", "safety", "all", f, ""), Expect::Pass, &Keep::safety(&ab)));
     } else {
-        out.push(check(&format!("retry-{n}-as-built"), meta("M-02", "retry", n, o.objects(), "as-built", "safety", law, f, ""), Expect::Violation(law), &Keep::only(&ab, &[law])));
+        out.push(check_keep(&format!("retry-{n}-as-built"), meta("M-02", "retry", n, o.objects(), "as-built", "safety", law, f, ""), Expect::Violation(law), &Keep::only(&ab, &[law])));
     }
-    out.push(check(&format!("retry-{n}-reviewed"), meta("M-02", "retry", n, o.objects(), "reviewed", "safety", "all", &[], ""), Expect::Pass, &Keep::safety(&rv)));
+    out.push(check_keep(&format!("retry-{n}-reviewed"), meta("M-02", "retry", n, o.objects(), "reviewed", "safety", "all", &[], ""), Expect::Pass, &Keep::safety(&rv)));
     out
 }
 
@@ -211,7 +211,7 @@ pub fn checks() -> Vec<Outcome> {
     let o = &LedgerKey;
     let ctl = |id: &str, law: &'static str, p: Policy| {
         let m = Machine { o, p };
-        check(id, meta("M-02", "retry", "ledger-key", o.objects(), "control", "safety", law, &[], ""), Expect::Violation(law), &Keep::only(&m, &[law]))
+        check_keep(id, meta("M-02", "retry", "ledger-key", o.objects(), "control", "safety", law, &[], ""), Expect::Violation(law), &Keep::only(&m, &[law]))
     };
     out.push(ctl("retry-control-C1-bind-after-effect", L1, Policy { dedup: Dedup::TwoStep, ..LEDGER_RV }));
     out.push(ctl("retry-control-C2-post-on-replay", L2, Policy { post: Post::Always, ..LEDGER_RV }));

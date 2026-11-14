@@ -221,10 +221,13 @@ object!(AdjacencyFunctional, "adjacency-functional", ["04/adjacency-entry", "05/
         [var("canonical", cfg(vec![SYNC], Fill::Off, Clear::NoClear, Gate::Checked), "", &[])]);
 // Degree cache and result cache: the writer bumps after its write; a reader fill stores dirty counts (F-0402); a
 // writer stopped between write and bump (F-C0401); clearing the cache keeps the warm stamp (F-0406).
-object!(DegreeCache, "degree-cache", ["04/degree-cache-entry", "04/result-cache-entry"],
+object!(DegreeCache, "degree-cache", ["04/degree-cache-entry"],
         [var("F0402", cfg(vec![POST_ONLY], Fill::Plain, Clear::NoClear, Gate::Checked), L1, &["F-0402"]),
          var("FC0401", cfg(vec![POST_ONLY], Fill::Probe, Clear::NoClear, Gate::Checked), L1, &["F-C0401"]),
          var("F0406", cfg(vec![TOKEN], Fill::Probe, Clear::KeepStamp, Gate::Checked), L1, &["F-0406"])]);
+// The result cache read through the adjacency token (AlgoCache.cls:1-50): a build stores dirty answers (F-0402).
+object!(ResultCache04, "result-cache-04", ["04/result-cache-entry"],
+        [var("F0402", cfg(vec![POST_ONLY], Fill::Plain, Clear::NoClear, Gate::Checked), L1, &["F-0402"])]);
 // Algorithm cache: a node written without an edge moves no token (F-1004).
 object!(AlgoCacheEdgeless, "algo-cache-edgeless", ["10/result-cache-entry"],
         [var("F1004", cfg(vec![TOKEN, NONE], Fill::Probe, Clear::NoClear, Gate::Checked), L2, &["F-1004"])]);
@@ -263,14 +266,14 @@ fn instance_checks<O: DerivedObject>(o: &O) -> Vec<Outcome> {
         let m = Machine { o, c: v.cfg.clone() };
         let id = if v.label == "canonical" { format!("derived-{n}-as-built") } else { format!("derived-{n}-as-built-{}", v.label) };
         if v.law.is_empty() {
-            out.push(check(&id, meta("M-04", "derived", n, o.objects(), "as-built", "safety", "all", v.findings, ""), Expect::Pass, &Keep::safety(&m)));
+            out.push(check_keep(&id, meta("M-04", "derived", n, o.objects(), "as-built", "safety", "all", v.findings, ""), Expect::Pass, &Keep::safety(&m)));
         } else {
             let design = if v.exception.is_empty() { "as-built" } else { "exception" };
-            out.push(check(&id, meta("M-04", "derived", n, o.objects(), design, "safety", v.law, v.findings, v.exception), Expect::Violation(v.law), &Keep::only(&m, &[v.law])));
+            out.push(check_keep(&id, meta("M-04", "derived", n, o.objects(), design, "safety", v.law, v.findings, v.exception), Expect::Violation(v.law), &Keep::only(&m, &[v.law])));
         }
     }
     let rv = Machine { o, c: o.reviewed() };
-    out.push(check(&format!("derived-{n}-reviewed"), meta("M-04", "derived", n, o.objects(), "reviewed", "safety", "all", &[], ""), Expect::Pass, &Keep::safety(&rv)));
+    out.push(check_keep(&format!("derived-{n}-reviewed"), meta("M-04", "derived", n, o.objects(), "reviewed", "safety", "all", &[], ""), Expect::Pass, &Keep::safety(&rv)));
     out
 }
 
@@ -278,6 +281,7 @@ pub fn checks() -> Vec<Outcome> {
     let mut out = vec![];
     out.extend(instance_checks(&AdjacencyFunctional));
     out.extend(instance_checks(&DegreeCache));
+    out.extend(instance_checks(&ResultCache04));
     out.extend(instance_checks(&AlgoCacheEdgeless));
     out.extend(instance_checks(&InternedSnapshot));
     out.extend(instance_checks(&Bm25TextChange));
@@ -290,7 +294,7 @@ pub fn checks() -> Vec<Outcome> {
     let o = &DegreeCache;
     let ctl = |id: &str, law: &'static str, c: Cfg| {
         let m = Machine { o, c };
-        check(id, meta("M-04", "derived", "degree-cache", o.objects(), "control", "safety", law, &[], ""), Expect::Violation(law), &Keep::only(&m, &[law]))
+        check_keep(id, meta("M-04", "derived", "degree-cache", o.objects(), "control", "safety", law, &[], ""), Expect::Violation(law), &Keep::only(&m, &[law]))
     };
     let r = reviewed_cfg();
     out.push(ctl("derived-control-C1-unmaintained-path", L2, Cfg { paths: vec![TOKEN, NONE], ..r.clone() }));

@@ -17,7 +17,13 @@ Checks (every one is exercised by a seeded mutation in --self-test):
       experiment/ paths in the working tree; a bare path must be an existing file;
   C7  one module:NN entry for every module whose 3.3a-writesets cell is open in matrix/obligations.json, and no
       other module:NN key;
-  C8  every non-open discharge cites at least one evidence item.
+  C8  every non-open discharge cites at least one evidence item;
+  C9  a census discharge graded `live` cites at least one run that exercised this (invariant, writer) pair
+      (writesets/RUN-PAIRS.json, the machine-readable map of what each lane run exercised);
+  C10 every failed run a lemma or guard discharge cites is attributed in its failed_runs_other_pairs, and the map
+      shows that run failing only on other pairs (a run that failed on this very pair makes the cell fail);
+  C11 failed_runs_other_pairs lists only cited runs whose registered result is fail, each with a reason;
+  C12 every run in RUN-PAIRS.json and every context_runs id is registered (review R4-02).
 """
 from __future__ import annotations
 
@@ -32,6 +38,7 @@ PC = Path(__file__).resolve().parents[2]
 REPO = PC.parents[1]
 PIN = "3eaa79cf77d3e0a879b2cced634cf2729d81499e"
 DISCHARGES = PC / "writesets" / "DISCHARGES.json"
+RUNPAIRS = PC / "writesets" / "RUN-PAIRS.json"
 CENSUS = PC / "matrix-input" / "writer-census-obligations.json"
 OBLIGATIONS = PC / "matrix" / "obligations.json"
 GRADES = {"lemma": {"proved", "mc", "trace", "live", "inspected"}, "guard": {"live", "inspected"},
@@ -93,8 +100,11 @@ def open_module_cells() -> set:
             and (c.get("status") == "open" or c.get("source") == "matrix-input/writesets.json")}
 
 
-def check(data: dict, census_cells: list, findex: dict, runs: set, open_modules: set) -> list:
+def check(data: dict, census_cells: list, findex: dict, runs: dict, open_modules: set, pairs: dict) -> list:
     errs = []
+    for rid in sorted(pairs):
+        if rid not in runs:
+            errs.append(f"C12 RUN-PAIRS run {rid} not registered")
     want = {c["obligation_id"]: c for c in census_cells}
     have = {k for k in data if k.startswith("WS-")}
     for k in sorted(set(want) - have):
@@ -138,6 +148,37 @@ def check(data: dict, census_cells: list, findex: dict, runs: set, open_modules:
         ev = e.get("evidence", [])
         if kind != "open" and not ev:
             errs.append(f"C8 {k}: no evidence")
+        for rid in e.get("context_runs", []):
+            if rid not in runs:
+                errs.append(f"C12 {k}: context run {rid} not registered")
+        if k.startswith("WS-"):
+            pair = (e.get("invariant"), e.get("writer"))
+            cited = [x[4:] for x in ev if x.startswith("run:")]
+
+            def outcomes(rid):
+                return [x["outcome"] for x in pairs.get(rid, {}).get("exercised", [])
+                        if (x["invariant"], x["writer"]) == pair]
+            if grade == "live" and not any(outcomes(r) for r in cited):
+                errs.append(f"C9 {k}: graded live but no cited run exercised {pair[0]} x {str(pair[1]).split('::')[-1]}")
+            frop = e.get("failed_runs_other_pairs", [])
+            why = e.get("failed_runs_other_pairs_reason", {})
+            for rid in frop:
+                if rid not in cited:
+                    errs.append(f"C11 {k}: failed_runs_other_pairs names {rid}, which it does not cite")
+                elif runs.get(rid) != "fail":
+                    errs.append(f"C11 {k}: failed_runs_other_pairs names {rid}, whose result is {runs.get(rid)}")
+                if not str(why.get(rid, "")).strip():
+                    errs.append(f"C11 {k}: no reason for failed run {rid}")
+            if kind in ("lemma", "guard"):
+                for rid in cited:
+                    if runs.get(rid) != "fail":
+                        continue
+                    if "fail" in outcomes(rid):
+                        errs.append(f"C10 {k}: cites {rid}, which failed on this very pair: the cell must fail")
+                    elif rid not in frop:
+                        errs.append(f"C10 {k}: cites failed run {rid} without attributing it to another pair")
+                    elif rid not in pairs:
+                        errs.append(f"C10 {k}: failed run {rid} has no RUN-PAIRS entry")
         for item in ev:
             if item.startswith("run:"):
                 if item[4:] not in runs:
@@ -159,16 +200,20 @@ def check(data: dict, census_cells: list, findex: dict, runs: set, open_modules:
 
 def inputs():
     census = json.loads(CENSUS.read_text())["extra_cells"]
-    runs = {p.stem for p in (PC / "evidence" / "runs").glob("*.json")}
-    return census, findings_index(), runs, open_module_cells()
+    runs = {p.stem: json.loads(p.read_text()).get("result") for p in (PC / "evidence" / "runs").glob("*.json")}
+    pairs = json.loads(RUNPAIRS.read_text())["runs"] if RUNPAIRS.exists() else {}
+    return census, findings_index(), runs, open_module_cells(), pairs
 
 
-def run_check(text: str, ins) -> list:
+def run_check(text: str, ins, pairs=None) -> list:
     try:
         data = load_text(text)
     except Dup as d:
         return [f"C1 duplicate key {d.args[0]}"]
-    return check(data, *ins)
+    a = list(ins)
+    if pairs is not None:
+        a[4] = pairs
+    return check(data, *a)
 
 
 def self_test() -> int:
@@ -221,6 +266,45 @@ def self_test() -> int:
         "C7 module entry extra": (mut(lambda d: d.__setitem__("module:02", copy.deepcopy(d[lem]))), "C7"),
         "C8 no evidence": (mut(set_(lem, "evidence", [])), "C8"),
     }
+    live_lem = next(k for k in ids if base[k]["discharge"] == "lemma" and base[k]["grade"] == "live"
+                    and not base[k].get("failed_runs_other_pairs"))
+    attributed = next(k for k in ids if base[k].get("failed_runs_other_pairs"))
+    live_fin = next(k for k in ids if base[k]["discharge"] == "finding" and base[k]["grade"] == "live"
+                    and any(x.startswith("run:") and ins[2].get(x[4:]) == "fail" for x in base[k]["evidence"]))
+    fin_run = next(x[4:] for x in base[live_fin]["evidence"] if x.startswith("run:") and ins[2].get(x[4:]) == "fail")
+    pass_run = next(r for r, res in sorted(ins[2].items()) if res == "pass" and r.startswith("ws-deploy"))
+
+    def lemma_from_failing(d):
+        d[live_fin]["discharge"] = "lemma"
+        d[live_fin]["findings"] = []
+        d[live_fin]["failed_runs_other_pairs"] = [fin_run]
+        d[live_fin]["failed_runs_other_pairs_reason"] = {fin_run: "seeded"}
+
+    mutations.update({
+        "C9 live without exercising run": (mut(lambda d: d[live_lem].__setitem__(
+            "evidence", [x for x in d[live_lem]["evidence"] if not x.startswith("run:")] + [f"run:{pass_run}"])), "C9"),
+        "C10 unattributed failed run": (mut(lambda d: d[attributed].pop("failed_runs_other_pairs")), "C10"),
+        "C10 lemma on a run that failed on this pair": (mut(lemma_from_failing), "C10"),
+        "C11 attribution without reason": (mut(lambda d: d[attributed].__setitem__("failed_runs_other_pairs_reason", {})), "C11"),
+        "C11 attributes an uncited run": (mut(lambda d: d[attributed]["failed_runs_other_pairs"].append("ws-live-noindex")), "C11"),
+        "C11 attributes a passing run": (mut(lambda d: (d[live_lem].__setitem__("failed_runs_other_pairs", [pass_run]),
+                                                        d[live_lem]["evidence"].append(f"run:{pass_run}"),
+                                                        d[live_lem].__setitem__("failed_runs_other_pairs_reason",
+                                                                                {pass_run: "seeded"}))), "C11"),
+        "C12 context run not registered": (mut(lambda d: d[lem].__setitem__("context_runs", ["ws-no-such-run"])), "C12"),
+    })
+    pairs_mut = copy.deepcopy(ins[4])
+    pairs_mut["ws-no-such-run"] = {"exercised": []}
+    errs = run_check(base_text, ins, pairs_mut)
+    results["C12 RUN-PAIRS run not registered"] = any(e.startswith("C12") for e in errs)
+    pairs_mut2 = copy.deepcopy(ins[4])
+    for rid in base[live_lem]["evidence"]:
+        if rid.startswith("run:") and rid[4:] in pairs_mut2:
+            pairs_mut2[rid[4:]]["exercised"] = [x for x in pairs_mut2[rid[4:]]["exercised"]
+                                                if (x["invariant"], x["writer"]) != (base[live_lem]["invariant"],
+                                                                                     base[live_lem]["writer"])]
+    errs = run_check(base_text, ins, pairs_mut2)
+    results["C9 map no longer lists the pair"] = any(e.startswith("C9") for e in errs)
     for name, (text, tag) in mutations.items():
         errs = run_check(text, ins)
         results[name] = any(e.startswith(tag) for e in errs)
@@ -228,8 +312,9 @@ def self_test() -> int:
             print(f"NOT CAUGHT: {name}: {errs[:3]}")
     print(json.dumps(results, indent=1))
     caught = sum(1 for k, v in results.items() if k != "unmutated_passes" and v)
-    print(f"self-test: unmutated passes={results['unmutated_passes']}, {caught}/{len(mutations)} seeded mutations caught")
-    return 0 if results["unmutated_passes"] and caught == len(mutations) else 1
+    total = len(results) - 1
+    print(f"self-test: unmutated passes={results['unmutated_passes']}, {caught}/{total} seeded mutations caught")
+    return 0 if results["unmutated_passes"] and caught == total else 1
 
 
 def main() -> int:
@@ -241,7 +326,7 @@ def main() -> int:
     gen = subprocess.run([sys.executable, str(PC / "writesets" / "tools" / "build_discharges.py"), "--check"],
                          capture_output=True)
     if gen.returncode != 0:
-        errs.append("C0 DISCHARGES.json differs from build_discharges.py's output")
+        errs.append("C0 DISCHARGES.json or RUN-PAIRS.json differs from build_discharges.py's output")
     data = load_text(text)
     n = {}
     for k, v in data.items():

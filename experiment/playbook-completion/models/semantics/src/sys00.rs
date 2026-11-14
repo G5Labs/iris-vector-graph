@@ -256,7 +256,7 @@ pub fn checks() -> Vec<Outcome> {
     let mut out = vec![];
     let rv = Sys { d: reviewed() };
     let ab = Sys { d: as_built() };
-    out.push(check("sys00-reviewed-all-axioms", m00("reviewed", "safety", "all", &[]), Expect::Pass, &Keep::safety(&rv)));
+    out.push(check_keep("sys00-reviewed-all-axioms", m00("reviewed", "safety", "all", &[]), Expect::Pass, &Keep::safety(&rv)));
     out.push(check("sys00-reviewed-progress", m00("reviewed", "progress", AX14, &[]), Expect::Pass, &Keep::progress(&rv)));
     // as built: each axiom alone
     let expect_ab: [(&str, &[&str], bool); 12] = [
@@ -269,9 +269,9 @@ pub fn checks() -> Vec<Outcome> {
         if *law == AX14 {
             out.push(check(&id, m00("as-built", "progress", law, f), Expect::Pass, &Keep::progress(&ab)));
         } else if *viol {
-            out.push(check(&id, m00("as-built", "safety", law, f), Expect::Violation(law), &Keep::only(&ab, &[law])));
+            out.push(check_keep(&id, m00("as-built", "safety", law, f), Expect::Violation(law), &Keep::only(&ab, &[law])));
         } else {
-            out.push(check(&id, m00("as-built", "safety", law, f), Expect::Pass, &Keep::only(&ab, &[law])));
+            out.push(check_keep(&id, m00("as-built", "safety", law, f), Expect::Pass, &Keep::only(&ab, &[law])));
         }
     }
     // controls: one mutant of the reviewed composition per axiom
@@ -280,7 +280,7 @@ pub fn checks() -> Vec<Outcome> {
         if law == AX14 {
             out.push(check(id, m00("control", "progress", law, &[]), Expect::Violation(law), &Keep::progress(&m)));
         } else {
-            out.push(check(id, m00("control", "safety", law, &[]), Expect::Violation(law), &Keep::only(&m, &[law])));
+            out.push(check_keep(id, m00("control", "safety", law, &[]), Expect::Violation(law), &Keep::only(&m, &[law])));
         }
     };
     let mut d = reviewed(); d.progs[R][3] = TombAllAny; ctl("sys00-control-ax02-tomb-both-tenants", AX02, d);

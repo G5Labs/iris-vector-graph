@@ -84,9 +84,9 @@ fn instance_checks<O: EpochObject>(o: &O) -> Vec<Outcome> {
     let (law, f) = o.departs();
     let n = o.name();
     vec![
-        check(&format!("epoch-{n}-as-built"), meta("M-13", "epoch", n, o.objects(), "as-built", "safety", law, f, ""), Expect::Violation(law),
+        check_keep(&format!("epoch-{n}-as-built"), meta("M-13", "epoch", n, o.objects(), "as-built", "safety", law, f, ""), Expect::Violation(law),
               &Keep::only(&Machine { o, reader: o.as_built() }, &[law])),
-        check(&format!("epoch-{n}-reviewed"), meta("M-13", "epoch", n, o.objects(), "reviewed", "safety", "all", &[], ""), Expect::Pass,
+        check_keep(&format!("epoch-{n}-reviewed"), meta("M-13", "epoch", n, o.objects(), "reviewed", "safety", "all", &[], ""), Expect::Pass,
               &Keep::safety(&Machine { o, reader: Reader::CheckStartEnd })),
     ]
 }
@@ -96,7 +96,7 @@ pub fn checks() -> Vec<Outcome> {
     out.extend(instance_checks(&CheckAtStart));
     out.extend(instance_checks(&NoCheckReader));
     let o = &CheckAtStart;
-    out.push(check("epoch-control-C1-no-end-check", meta("M-13", "epoch", "check-at-start", o.objects(), "control", "safety", L1, &[], ""), Expect::Violation(L1),
+    out.push(check_keep("epoch-control-C1-no-end-check", meta("M-13", "epoch", "check-at-start", o.objects(), "control", "safety", L1, &[], ""), Expect::Violation(L1),
                    &Keep::only(&Machine { o, reader: Reader::CheckStart }, &[L1])));
     let rv = Machine { o, reader: Reader::CheckStartEnd };
     let sm = || meta("M-13", "epoch", "check-at-start", CheckAtStart.objects(), "reviewed", "sharpness", "", &[], "");
