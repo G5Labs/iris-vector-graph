@@ -143,5 +143,85 @@
   "confidence": "high",
   "remedy": "Do not reapply post-commit properties on an idempotent replay (or record their completion atomically with the revision) and route them through the marker check.",
   "notes": ""
+ },
+ {
+  "id": "F-C1303",
+  "module": "13",
+  "title": "A bounded redaction (max_batches) restarts its scan at the first record and may never finish",
+  "intended": "LedgerRedact.cls:178-180: 'pMaxBatches > 0 stops after that many batches and leaves the run in progress; running the same target again resumes it.' RED-B8 (a stopped run resumes); spec 256 SC-003 (batching).",
+  "observed": "Live on the pin: 60 calls with batch 1 and max_batches 1 each re-scanned the first 20 records (batch x SCANFACTOR cap, :306-310) from the start (:213), tombstoned nothing and returned complete=false; 9 target records remained. The same world completes with max_batches 0. Model: core M2 paced-resume progress mutant and AG EF failure.",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "run",
+    "ref": "live-fc1303-bounded-resume"
+   },
+   {
+    "kind": "run",
+    "ref": "core-m2-as-built-paced-resume"
+   }
+  ],
+  "gates": [
+   "3.3-progress-controls",
+   "3.7-integration-worlds",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S2",
+  "confidence": "high",
+  "remedy": "Persist the scan cursor with the marker (or start each call after the last tombstoned position) so a resumed call continues where the previous one stopped.",
+  "notes": "With the default batch 2000 the cap is 40,000 records: a ledger with more non-target records before the target's never progresses under max_batches. The core proofs lane's reviewed model keeps the cursor across stops for this reason (model-level)."
+ },
+ {
+  "id": "F-C1301",
+  "module": "13",
+  "title": "The redaction liveness check reads any writer's uncommitted delete",
+  "intended": "RED-B1.1: never tombstone content that is live after the run.",
+  "observed": "Model only (core M2, 5 steps): a stopped ledger commit or a rolled-back ledger-bypassing write that deleted target rows lets LiveRows (READ UNCOMMITTED) see the target empty; the run tombstones content that is live again after the rollback. Even the reviewed locked start fails against a bypass writer that does not serialize (4 steps). The IRIS contract permits both premises (dirty reads, rollback restores rows). Live analogue for erasure: F-C1201 (reproduced).",
+  "disposition": "reproduced-model",
+  "evidence": [
+   {
+    "kind": "run",
+    "ref": "core-m2-as-built-commit-rollback"
+   },
+   {
+    "kind": "run",
+    "ref": "core-m2-as-built-bypass-rollback"
+   },
+   {
+    "kind": "run",
+    "ref": "core-m2-reviewed-bypass-nonserializing"
+   }
+  ],
+  "gates": [
+   "3.3-model-check",
+   "3.3a-writesets",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S1",
+  "confidence": "medium",
+  "remedy": "Serialize every content writer of a target with redaction start (or check liveness against committed state only).",
+  "notes": "Contradicts the original discharge in experiment/playbook-uplift/semantics/WRITESETS.md:62."
+ },
+ {
+  "id": "F-C1302",
+  "module": "13",
+  "title": "Final trusts a scan that ended before it took the lock",
+  "intended": "A complete receipt means no record of the target remains unredacted.",
+  "observed": "Model only (core M2, 20 steps; low likelihood): a record committed and then erased between the last batch and Final stays unredacted while the call reports complete.",
+  "disposition": "reproduced-model",
+  "evidence": [
+   {
+    "kind": "run",
+    "ref": "core-m2-as-built-F1302-commit-after-check"
+   }
+  ],
+  "gates": [
+   "3.3-model-check",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S2",
+  "confidence": "medium",
+  "remedy": "Have Final check that the scan reached the head it holds the lock on, or rescan the tail under the lock.",
+  "notes": "Evidence id to be re-pointed if the core lane registered this trace under another id."
  }
 ]

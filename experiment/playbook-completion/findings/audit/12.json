@@ -57,5 +57,27 @@
   "confidence": "high",
   "remedy": "Make the redaction's liveness check and marker one step that cannot observe an uncommitted erasure (e.g. both take one lock the erasure also holds until commit), or refuse redaction while any erasure transaction of the target is open.",
   "notes": "Counterexample to premise P-1311 of the original proof; the reviewed design's proof assumed it."
+ },
+ {
+  "id": "F-C1202",
+  "module": "12",
+  "title": "EraseGraph's adjacency kill can drop the adjacency of an edge committed after its row delete",
+  "intended": "Adjacency (^KG out/in) matches live edge rows (ADR-0012, ERS-B1.1).",
+  "observed": "Model only (core M2, 6 steps), same root cause as F-1201 (no serialization with commits). In the 8 native F-1201 trials the adjacency survived (kg_out_G_defined), so this interleaving was not hit live.",
+  "disposition": "reproduced-model",
+  "evidence": [
+   {
+    "kind": "run",
+    "ref": "core-m2-as-built-F1201-adjacency"
+   }
+  ],
+  "gates": [
+   "3.3-model-check",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S2",
+  "confidence": "medium",
+  "remedy": "As F-1201.",
+  "notes": ""
  }
 ]

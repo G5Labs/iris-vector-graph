@@ -1,0 +1,15 @@
+{
+  "command": "locks.sh iris python traces/fc1303_resume.py $RUN_DIR/traces/fc1303",
+  "experiment_head": "dbced6e7170e49ec8a6cf65ecb405956f2ca4459",
+  "id": "live-fc1303-bounded-resume",
+  "kind": "live",
+  "lane": "orchestrator",
+  "log": "$RUN_DIR/traces/fc1303/result.json",
+  "log_bytes": 6529,
+  "log_sha256": "72c862d661868ecba15e22d59afb77d5697991ef39960682a4ee48dfa5951d7d",
+  "observes": "F-C1303 reproduced on the pin: ledger of 30 revisions of tenant zeta then 3 of tenant acme (9 records), acme erased; 60 calls of Graph.KG.LedgerRedact.Redact('', 'acme', '|', ..., batch 1, max_batches 1) each scanned the first 20 records (batch x SCANFACTOR) from the start of the ledger, tombstoned 0 and returned complete=false; 9 acme records remain. Control: the same world with max_batches 0 completes in one call (9 tombstoned, 14 batches). Contradicts LedgerRedact.cls:178-180 'running the same target again resumes it'.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T00:30:41+00:00",
+  "result": "fail"
+}

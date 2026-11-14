@@ -5422,7 +5422,7 @@
    ],
    "gate": "3.8-findings-disposed",
    "module": "10",
-   "reason": "All 13 original findings carry a disposition with evidence ({'blocked-access': 1, 'reproduced-live': 2, 'confirmed-source': 7, 'reproduced-model': 2, 'reproduced-test': 1}); 0 new.",
+   "reason": "All 13 original findings carry a disposition with evidence ({'blocked-access': 1, 'reproduced-live': 5, 'confirmed-source': 5, 'reproduced-model': 1, 'reproduced-test': 1}); 0 new.",
    "remaining": "",
    "source": "modules/10.json",
    "status": "closed"
@@ -5672,7 +5672,7 @@
    ],
    "gate": "5c-refusals",
    "module": "10",
-   "reason": "30 X statements: 17 upstream-tested, 13 inspected only at the uplift; live here: holds [], not holding []; ALG-B7 refusal seen live (b-10-live-nkg).",
+   "reason": "30 X statements: 17 upstream-tested, 13 inspected only at the uplift; live here: holds ['ALG-B1.5', 'ALG-B10.6', 'ALG-B2.10', 'ALG-B2.13', 'ALG-B2.2', 'ALG-B2.8', 'ALG-B2.9', 'ALG-B5.10', 'ALG-B5.17', 'ALG-B5.22', 'ALG-B5.3', 'ALG-B6.7', 'ALG-B8.10'], not holding []; ALG-B7 refusal seen live (b-10-live-nkg).",
    "remaining": "ALG-B5.5, B5.21 (store without a method), B9.3 (read-only login), B12.3 (concurrent rebuild wait), B12.8 (failing rebuild), B13.3, B15.x (gate) are not exercised live.",
    "source": "modules/10.json",
    "status": "open"
@@ -9364,6 +9364,10 @@
     "disposition": "reproduced-live",
     "evidence": [
      {
+      "kind": "live",
+      "ref": "b-10-live-nkg"
+     },
+     {
       "kind": "mc",
       "ref": "m10-routes-as-built-walk-empty"
      },
@@ -9528,6 +9532,10 @@
      },
      {
       "kind": "inspected",
+      "ref": "iris_src/src/Graph/KG/TemporalIndex.cls:104-112"
+     },
+     {
+      "kind": "inspected",
       "ref": "iris_src/src/Graph/KG/Adjacency.cls:111-140"
      },
      {
@@ -9536,19 +9544,14 @@
      },
      {
       "kind": "inspected",
-      "ref": "iris_vector_graph/freshness.py:29-30"
-     },
-     {
-      "kind": "inspected",
       "ref": "iris_vector_graph/_engine/temporal.py:280-286"
      }
     ],
     "gates": [
      "3.3a-writesets",
-     "3.3-model-check",
-     "3.5-handlers"
+     "3.3-model-check"
     ],
-    "severity": "S2"
+    "severity": "S3"
    },
    "id": "F-1005",
    "module": "10",
@@ -9620,8 +9623,8 @@
   },
   {
    "audit": {
-    "confidence": "medium",
-    "disposition": "reproduced-model",
+    "confidence": "high",
+    "disposition": "reproduced-live",
     "evidence": [
      {
       "kind": "live",
@@ -9664,8 +9667,8 @@
   },
   {
    "audit": {
-    "confidence": "medium",
-    "disposition": "confirmed-source",
+    "confidence": "high",
+    "disposition": "reproduced-live",
     "evidence": [
      {
       "kind": "mc",
@@ -9740,6 +9743,10 @@
      {
       "kind": "inspected",
       "ref": "iris_vector_graph/stores/iris_sql_store.py:3977-4006"
+     },
+     {
+      "kind": "live",
+      "ref": "b-10-live-nkg"
      }
     ],
     "gates": [
@@ -9780,8 +9787,8 @@
   },
   {
    "audit": {
-    "confidence": "medium",
-    "disposition": "confirmed-source",
+    "confidence": "high",
+    "disposition": "reproduced-live",
     "evidence": [
      {
       "kind": "inspected",
@@ -12723,6 +12730,84 @@
   },
   {
    "confidence": "medium",
+   "disposition": "reproduced-model",
+   "evidence": [
+    {
+     "kind": "run",
+     "ref": "core-m2-as-built-F1201-adjacency"
+    }
+   ],
+   "gates": [
+    "3.3-model-check",
+    "3.8-findings-disposed"
+   ],
+   "id": "F-C1202",
+   "severity": "S2"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "run",
+     "ref": "live-fc1303-bounded-resume"
+    },
+    {
+     "kind": "run",
+     "ref": "core-m2-as-built-paced-resume"
+    }
+   ],
+   "gates": [
+    "3.3-progress-controls",
+    "3.7-integration-worlds",
+    "3.8-findings-disposed"
+   ],
+   "id": "F-C1303",
+   "severity": "S2"
+  },
+  {
+   "confidence": "medium",
+   "disposition": "reproduced-model",
+   "evidence": [
+    {
+     "kind": "run",
+     "ref": "core-m2-as-built-commit-rollback"
+    },
+    {
+     "kind": "run",
+     "ref": "core-m2-as-built-bypass-rollback"
+    },
+    {
+     "kind": "run",
+     "ref": "core-m2-reviewed-bypass-nonserializing"
+    }
+   ],
+   "gates": [
+    "3.3-model-check",
+    "3.3a-writesets",
+    "3.8-findings-disposed"
+   ],
+   "id": "F-C1301",
+   "severity": "S1"
+  },
+  {
+   "confidence": "medium",
+   "disposition": "reproduced-model",
+   "evidence": [
+    {
+     "kind": "run",
+     "ref": "core-m2-as-built-F1302-commit-after-check"
+    }
+   ],
+   "gates": [
+    "3.3-model-check",
+    "3.8-findings-disposed"
+   ],
+   "id": "F-C1302",
+   "severity": "S2"
+  },
+  {
+   "confidence": "medium",
    "disposition": "confirmed-source",
    "evidence": [
     {
@@ -13842,7 +13927,7 @@
    "source": "TRUST.md"
   }
  ],
- "registry_runs": 367,
+ "registry_runs": 371,
  "starting_inventory": {
   "cells": 904,
   "decisions": 61,

@@ -104,6 +104,11 @@ def main() -> int:
     cells = []
     nns = [m["nn"] for m in inv["modules"]]
     explicit = {(c["gate"], c.get("module", "product")): c for c in orch.get("cells", [])}
+    # lane inputs (e.g. matrix-input/correspondence_status.json) take precedence for the cells they state
+    for f in sorted((ROOT / "matrix-input").glob("*.json")):
+        data = load(f, [])
+        for c in (data if isinstance(data, list) else data.get("cells", [])):
+            explicit[(c["gate"], c.get("module", "product"))] = {**c, "source": f"matrix-input/{f.name}"}
     for g in gates:
         targets = ["product"] if g["scope"] == "product" else nns
         for nn in targets:
