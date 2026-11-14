@@ -3,7 +3,7 @@
 Ordered by value. Status: `todo`, `doing`, `done` (registered evidence ids / commit), `open` (stopped, with reason),
 `blocked` (exact dependency). A successor resumes from the first non-done row. Lanes own disjoint paths
 (`CONVENTIONS.md`); the orchestrator commits. Gate status lives in `matrix/obligations.json` (generated; verification
-status, evidence level and product obligation per cell). Reconciled 2026-11-14 02:20 UTC against the committed tree.
+status, evidence level and product obligation per cell). Reconciled 2026-11-14 (steer 7) against the committed tree `1f7f22fd`.
 
 | # | Lane | Item | Status |
 |---|---|---|---|
@@ -29,9 +29,15 @@ status, evidence level and product obligation per cell). Reconciled 2026-11-14 0
 | Q16a | proofs-d9 | D-9 protocol proofs with three predicates, bypass writers, erasure rollback | done: 115 verified (proofs-d9-*, recheck), model-level |
 | Q16b | simulator | §5c randomized simulator through the real product | done: 304 schedules, 13,282 commits checked; new F-CS01 (sim-*) |
 | Q16c | proofs-d1b | D-1 for modules 18 and 06 | done: 92 verified (proofs-d1b-*, recheck), model-level |
-| Q16d | review | Third review pass; operator scope ruling R2-07 | todo |
+| Q16d | review | Third review pass; operator scope ruling R2-07 | done: no sign-off (`independent-review-3`); A-1..A-4 applied; operator ruling R2-07/O-1 still requested |
 | Q16e | proofs-d1c | D-1 for modules 03 and 05 | done: 111 verified (proofs-d1c-*, recheck), model-level |
 | Q16f | proofs-d1d/e/f | D-1 for 07-09, 01-02+10, 15-17 (+00) | done: 118, 115, 115 verified (rechecks), model-level; module 00 not applicable |
+| Q17a | proofs-d9b | D-9 remainder: readers/verify racing a redaction, statement history, Decision 2, retry-key movement, F-1306, F-CS01 (empty revision), original F-1302/F-1303/F-1306 controls; D-12 progress-only control | doing |
+| Q17b | semantics | §3.3a system-wide: axioms, shared mechanisms with generic controls, canonical lifecycles, per-object declarations, requirement trace; module 00 model check; F-C0605 model (module 06) | doing |
+| Q17c | writesets | 3.3a-writesets: discharge each census obligation (WS-OBL/WS-COND/WS-GAP) by lemma, guard or recorded finding | doing |
+| Q17d | models-2 | D-10 (M1 2+2 by partition), D-13 (eraser overlapping a writer of the same graph in the module 04/11 proofs) | doing |
+| Q17e | product-gates | 3.5-lint/style, disconnect world (3.7-integration-worlds), 5a-gate-20min, 5c-root-causes, 3.8-test-reflection | doing |
+| Q17f | review | Fourth review pass over proofs-d1c..d1f and Q17a-e | todo |
 | I-1..I-4 | orchestrator | Incidents: IVG460SNAP, USER-REDEPLOY-08, superseded proof logs, health alert | recorded in `incidents/` |
 
 Genuinely unavailable (attempts in `versions/AVAILABILITY.md`): an IRIS 2026.3 engine (no public tag; the cited

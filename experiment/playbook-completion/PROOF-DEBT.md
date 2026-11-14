@@ -1,7 +1,8 @@
 # Proof debt (playbook §5a): every unproved obligation, with where it stands
 
-"Proved" in this audit means a decisive Verus run of `proofs/` (88 verified, 0 errors, `--no-cheating`, empty trust
-inventory) or of the original `experiment/playbook-uplift/proofs` (53 verified). Everything else below is debt. Each
+"Proved" in this audit means a decisive Verus run (0 errors, `--no-cheating`, empty trust inventory) of one of the
+audit's crates (`proofs/` 88 verified, `proofs-d9` 115, `proofs-breadth` 94, `proofs-d1b`..`proofs-d1f` 92+111+118+115+115)
+or of the original `experiment/playbook-uplift/proofs` (53 verified); every such result is about a model. Everything else below is debt. Each
 row says what evidence exists instead and why the proof is missing. Nothing in this table is reported as proved.
 
 | # | Obligation | Scope | Evidence instead | Why unproved |

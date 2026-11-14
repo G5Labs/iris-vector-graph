@@ -30,6 +30,9 @@ Product pin `3eaa79cf77d3e0a879b2cced634cf2729d81499e` (tree `b098a6f4`). Origin
   | `AUDITA` / `AUDITB` / `AUDITC` | breadth lanes A / B / C | targeted live checks of their modules |
   | `AUDITIA` / `AUDITIB` | intent lanes A / B | discriminating probes for decisions |
 
+  Reassigned after their lanes finished (steer 7): `AUDITB` to the writesets lane, `AUDITIA` to the product-gates
+  lane, `AUDITIB` to the semantics lane. `AUDITA` stays with the simulator's evidence (read only).
+
   Use only your namespace. Do not restart, stop or reconfigure the container; ask the orchestrator.
 - **Scratch namespaces for pinned upstream fixtures (in scope, coordinated).** Some upstream test files under
   `tests/` (including some under `tests/unit`) create their own scratch namespace (`scripts/dev/make_scratch_namespace.py`)
@@ -84,6 +87,9 @@ Pass outcomes: `holds-proved`, `holds-mc`, `holds-live`, `holds-run`, `holds-ins
 (only with a cited source reason).
 
 ## Finding record (new or audited)
+
+New finding ids per lane (steer 7, to avoid collisions): `F-C<module><nn>` with nn 50-69 writesets, 70-79 semantics,
+80-84 proofs-d9b, 85-89 models-2, 90-99 product-gates. Root causes: `RC-NN` (product-gates lane only).
 
 JSON object: `id` (keep original `F-NNNN` ids; new ones `F-C<module><nn>`), `module`, `title`, `intended`
 (with source citations), `observed` (with evidence refs), `disposition` (from the taxonomy above or
