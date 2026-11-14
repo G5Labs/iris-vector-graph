@@ -16690,24 +16690,39 @@
    "status": "open"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "status-numbers-check"
+   ],
+   "evidence": [
+    "run:status-numbers-check",
+    "experiment/playbook-completion/STATUS.md"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.8-status",
    "level": "method",
    "module": "product",
    "product_obligation": "unknown",
-   "remaining": "STATUS.md written; open until the account is signed off (review/REVIEW-2.md: no sign-off)",
-   "status": "open"
+   "remaining": "STATUS.md gives each phase's level, status and conditions, the blockers and the ranked maintainer questions; its numbers are generated from the artifacts and checked by the fast gate (tools/status_numbers.py). The verdict is 'not complete'.",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "rf-closure-check-r3",
+    "rf-premise-map-check-r3"
+   ],
+   "evidence": [
+    "run:rf-premise-map-check-r3",
+    "run:rf-closure-check-r3",
+    "experiment/playbook-completion/TRUST.md",
+    "experiment/playbook-completion/reflection/CLOSURE.md"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.8-trust",
    "level": "method",
    "module": "product",
    "product_obligation": "unknown",
-   "remaining": "TRUST.md written (trust inventory empty for the proof crates; premise table completed for P-C02 progress, durability/SynchCommit and P-A3 after review R2-04/R2-06); open until signed off",
-   "status": "open"
+   "remaining": "TRUST.md lists the trusted items (Verus/vstd, actors/explorer, the executable contract, the journal oracle, harnesses, upstream fixtures), the premises whose status changed, the premises the proofs introduce, and log provenance (six superseded proof logs, never relabelled); every premise is mapped to a test (reflection/premise_tests.json) and every environment condition to its validation or assumption (CLOSURE.md).",
+   "status": "closed"
   },
   {
    "cited_runs": [
@@ -17469,23 +17484,34 @@
    "status": "open"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "rf-premise-map-check-r3"
+   ],
+   "evidence": [
+    "run:rf-premise-map-check-r3",
+    "experiment/playbook-completion/PROOF-DEBT.md"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "5a-proof-debt",
    "level": "method",
    "module": "product",
    "product_obligation": "unknown",
-   "remaining": "PROOF-DEBT.md written (D-1..D-13); open: the debt is not paid",
-   "status": "open"
+   "remaining": "PROOF-DEBT.md lists every unproved obligation (D-1..D-14) with the evidence that stands instead and why the proof is missing; paid rows name their decisive runs; nothing is reported as proved without a decisive Verus run with an empty trust inventory. Open debt: D-2..D-8, D-11.",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "verify-clean-a42f10c8"
+   ],
+   "evidence": [
+    "run:verify-clean-a42f10c8",
+    "experiment/playbook-completion/verify.sh"
+   ],
    "gate": "5a-gate-20min",
    "level": "method",
    "module": "product",
    "product_obligation": "unknown",
-   "remaining": "verify.sh fast gate not yet timed",
+   "remaining": "The fast gate runs well under 20 minutes; per-gate times in the clean run verify-clean-a42f10c8: proofs-mech 2,110 s (above the 20-minute single-gate target), the next slowest partition-as-built-isolation-stmt 474 s and partition-reviewed 421 s; the whole clean live run took 4,896 s. Meeting the target needs proofs-mech split into per-mechanism gates (its 120 controls at ~17 s each).",
    "status": "open"
   },
   {
@@ -38052,7 +38078,7 @@
   "n/a": 33,
   "unknown": 191
  },
- "registry_runs": 1409,
+ "registry_runs": 1411,
  "starting_inventory": {
   "cells": 904,
   "decisions": 61,
@@ -38064,9 +38090,9 @@
  },
  "status_counts": {
   "blocked": 24,
-  "closed": 603,
+  "closed": 606,
   "not-applicable": 35,
-  "open": 90
+  "open": 87
  },
  "submission": "9c3719c1",
  "writer_obligations": [
