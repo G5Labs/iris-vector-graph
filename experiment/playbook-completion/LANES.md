@@ -14,7 +14,7 @@ product scope check passes). Last checkpoint commit before the switch: `1564a673
 | structural frame2 / reads2 (DDL frame oracle; declared reads) | Q18c-d | **done** (a6892eb4) | 3.6-frame 13 more closed (07, 09, 15 open); 3.4-declared-reads 6 more closed (04, 10 open); no new findings | — |
 | reflection | Q18e | waiting for the lanes above | — | classify every new finding; premise map by glob; TEST-REFLECTION refresh |
 | product-gates: style for all modules | — | **running** (steer 9) | `product-gates/STYLE.md` | 3.5-style for 00-10, 15-18 |
-| trace-replay: module 09 | — | **running** (steer 9), namespace AUDITC | `trace-replay/` | replay and lock log through the native executor (its run-time plan compilation is product operation, recorded) |
+| trace-replay: module 09 | — | **done** (eb492c1c) | 3.7-trace-replay/09 and 3.7-lock-log/09 closed; F-0903 reproduced; 7 generated classes recorded and dropped | — |
 | orchestrator: O-1 | — | **done** (this checkpoint) | `incidents/O-1-FIXTURES.md`, run `o1-fixture-inventory`, CONVENTIONS updated, F-C1306 attribution | give the clarification to the next reviewer |
 | orchestrator: exclusive-container worlds | Q18f | todo | `traces/crash_world_repeat.py` (not run) | repeated crash trials, SynchCommit=1, licence refusal S6, when no lane uses IRIS |
 | orchestrator: account, clean verify, review 5 | Q18g | todo | — | STATUS/TRUST/PROOF-DEBT refresh; `verify.sh --live --clean` on a committed candidate; fifth independent review |
