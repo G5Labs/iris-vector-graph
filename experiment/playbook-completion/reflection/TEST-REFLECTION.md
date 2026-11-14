@@ -406,7 +406,7 @@ No row of PROOF-DEBT.md is paid by these tests: they sample the obligation on th
 
 ## G. Environment closure
 
-The environment conditions the proofs and models rely on are listed exactly in `CLOSURE.md` (gate 3.6-closure): 170 conditions, validated 47, validated-in-part 51, assumed 65, shown-false 7. It joins this map's engine and progress premises with the IRIS contract's clauses (r6 and contract-2) and contract-2's outside-premise families, each with its validating run or its consequence.
+The environment conditions the proofs and models rely on are listed exactly in `CLOSURE.md` (gate 3.6-closure): 177 conditions, validated 47, validated-in-part 55, assumed 67, shown-false 8. It joins this map's engine and progress premises with the IRIS contract's clauses (r6 and contract-2) and contract-2's outside-premise families, each with its validating run or its consequence.
 
 ## H. Limits
 
