@@ -6578,6 +6578,7 @@
     "F-0301",
     "F-0303",
     "F-0304",
+    "F-C0330",
     "F-C1301",
     "F-C1307",
     "F-C1350"
@@ -6590,6 +6591,7 @@
      "finding F-0301",
      "finding F-0303",
      "finding F-0304",
+     "finding F-C0330",
      "finding F-C1301",
      "finding F-C1307",
      "finding F-C1350",
@@ -9530,10 +9532,19 @@
   {
    "cited_runs": [],
    "evidence": [],
+   "findings": [
+    "F-C0330"
+   ],
    "gate": "3.5-handlers",
    "level": "product",
    "module": "03",
-   "product_obligation": "unknown",
+   "product_basis": {
+    "fails": [
+     "finding F-C0330"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
    "remaining": "no handler proved",
    "source": "modules/03.json",
    "status": "open"
@@ -13916,234 +13927,421 @@
    "status": "not-applicable"
   },
   {
+   "as_built_findings": [
+    "F-0103"
+   ],
    "cited_runs": [
-    "breadth-a-journal-footprints"
+    "tr-controls-01",
+    "tr-oracle-selftest",
+    "tr-replay-01"
    ],
    "evidence": [
-    "footprints/01.json#journal_validation",
-    "breadth-a-journal-footprints"
+    "run:tr-replay-01",
+    "run:tr-controls-01",
+    "run:tr-oracle-selftest",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#01"
+   ],
+   "evidence_grade": "trace",
+   "findings": [
+    "F-0103"
    ],
    "gate": "3.7-trace-replay",
    "level": "product",
    "module": "01",
    "product_basis": {
     "fails": [
-     "run breadth-a-journal-footprints (fail)"
+     "finding F-0103",
+     "stated fails by matrix-input/trace-replay.json"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "1 journal traces captured and compared with footprints; not replayed through the models",
-   "source": "modules/01.json",
+   "remaining": "initialize_schema's own steps (Tables, Marker, Classes, Kg, Record) are not trace-replayed (the journal read would transfer the whole class compile); ins_legacy not replayed. Limits: sequential traces of one scenario per family (plus the caller-transaction interleavings named); bitmap chunks and ^odd* not replayed; a pass means the as-built machine matched these traces, not that the handler performs its step on every input.",
+   "source": "matrix-input/trace-replay.json",
    "status": "open"
   },
   {
+   "as_built_findings": [
+    "F-0201",
+    "F-0208"
+   ],
    "cited_runs": [
-    "breadth-a-journal-footprints"
+    "tr-controls-02",
+    "tr-oracle-selftest",
+    "tr-replay-02"
    ],
    "evidence": [
-    "footprints/02.json#journal_validation",
-    "breadth-a-journal-footprints"
+    "run:tr-replay-02",
+    "run:tr-controls-02",
+    "run:tr-oracle-selftest",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#02"
+   ],
+   "evidence_grade": "registered-run",
+   "findings": [
+    "F-0201",
+    "F-0208"
    ],
    "gate": "3.7-trace-replay",
    "level": "product",
    "module": "02",
    "product_basis": {
     "fails": [
-     "run breadth-a-journal-footprints (fail)"
+     "finding F-0201",
+     "finding F-0208",
+     "stated fails by matrix-input/trace-replay.json"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "1 journal traces captured and compared with footprints; not replayed through the models",
-   "source": "modules/02.json",
-   "status": "open"
+   "remaining": "F-0207's count/kill interleaving not produced. Limits: sequential traces of one scenario per family (plus the caller-transaction interleavings named); bitmap chunks and ^odd* not replayed; a pass means the as-built machine matched these traces, not that the handler performs its step on every input.",
+   "source": "matrix-input/trace-replay.json",
+   "status": "closed"
   },
   {
+   "as_built_findings": [
+    "F-0303",
+    "F-0304",
+    "F-0305",
+    "F-C0330"
+   ],
    "cited_runs": [
-    "breadth-a-journal-footprints"
+    "tr-controls-03",
+    "tr-oracle-selftest",
+    "tr-replay-03"
    ],
    "evidence": [
-    "footprints/03.json#journal_validation",
-    "breadth-a-journal-footprints"
+    "run:tr-replay-03",
+    "run:tr-controls-03",
+    "run:tr-oracle-selftest",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#03"
    ],
+   "evidence_grade": "registered-run",
    "findings": [
-    "F-0305"
+    "F-0303",
+    "F-0304",
+    "F-0305",
+    "F-C0330"
    ],
    "gate": "3.7-trace-replay",
    "level": "product",
    "module": "03",
    "product_basis": {
     "fails": [
+     "finding F-0303",
+     "finding F-0304",
      "finding F-0305",
-     "run breadth-a-journal-footprints (fail)"
+     "finding F-C0330",
+     "stated fails by matrix-input/trace-replay.json"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "9 journal traces captured and compared with footprints; not replayed through the models",
-   "source": "modules/03.json",
-   "status": "open"
+   "remaining": "footprints/03.json delete_node omits ^IVG.Ledger, ^NKG (and ^IVG.AlgoCache, tr-replay-10). Limits: sequential traces of one scenario per family (plus the caller-transaction interleavings named); bitmap chunks and ^odd* not replayed; a pass means the as-built machine matched these traces, not that the handler performs its step on every input.",
+   "source": "matrix-input/trace-replay.json",
+   "status": "closed"
   },
   {
+   "as_built_findings": [
+    "F-0402",
+    "F-0409"
+   ],
    "cited_runs": [
-    "breadth-a-journal-footprints"
+    "tr-controls-04",
+    "tr-oracle-selftest",
+    "tr-replay-04"
    ],
    "evidence": [
-    "footprints/04.json#journal_validation",
-    "breadth-a-journal-footprints"
+    "run:tr-replay-04",
+    "run:tr-controls-04",
+    "run:tr-oracle-selftest",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#04"
+   ],
+   "evidence_grade": "registered-run",
+   "findings": [
+    "F-0402",
+    "F-0409"
    ],
    "gate": "3.7-trace-replay",
    "level": "product",
    "module": "04",
    "product_basis": {
     "fails": [
-     "run breadth-a-journal-footprints (fail)"
+     "finding F-0402",
+     "finding F-0409",
+     "stated fails by matrix-input/trace-replay.json"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "4 journal traces captured and compared with footprints; not replayed through the models",
-   "source": "modules/04.json",
-   "status": "open"
+   "remaining": "F-0401/F-C0401 (reader in flight across a rollback or erase) and adj_rebuild_txn part 2 (F-C0402) not produced. Limits: sequential traces of one scenario per family (plus the caller-transaction interleavings named); bitmap chunks and ^odd* not replayed; a pass means the as-built machine matched these traces, not that the handler performs its step on every input.",
+   "source": "matrix-input/trace-replay.json",
+   "status": "closed"
   },
   {
+   "as_built_findings": [
+    "F-0501",
+    "F-0505",
+    "F-0507"
+   ],
    "cited_runs": [
-    "breadth-a-journal-footprints"
+    "tr-controls-05",
+    "tr-oracle-selftest",
+    "tr-replay-05"
    ],
    "evidence": [
-    "footprints/05.json#journal_validation",
-    "breadth-a-journal-footprints"
+    "run:tr-replay-05",
+    "run:tr-controls-05",
+    "run:tr-oracle-selftest",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#05"
+   ],
+   "evidence_grade": "registered-run",
+   "findings": [
+    "F-0501",
+    "F-0505",
+    "F-0507"
    ],
    "gate": "3.7-trace-replay",
    "level": "product",
    "module": "05",
    "product_basis": {
     "fails": [
-     "run breadth-a-journal-footprints (fail)"
+     "finding F-0501",
+     "finding F-0505",
+     "finding F-0507",
+     "stated fails by matrix-input/trace-replay.json"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "4 journal traces captured and compared with footprints; not replayed through the models",
-   "source": "modules/05.json",
-   "status": "open"
+   "remaining": "Limits: sequential traces of one scenario per family (plus the caller-transaction interleavings named); bitmap chunks and ^odd* not replayed; a pass means the as-built machine matched these traces, not that the handler performs its step on every input.",
+   "source": "matrix-input/trace-replay.json",
+   "status": "closed"
   },
   {
+   "as_built_findings": [
+    "F-0606",
+    "F-0608",
+    "F-0615"
+   ],
    "cited_runs": [
-    "breadth-a-journal-footprints"
+    "tr-controls-06",
+    "tr-oracle-selftest",
+    "tr-replay-06"
    ],
    "evidence": [
-    "footprints/06.json#journal_validation",
-    "breadth-a-journal-footprints"
+    "run:tr-replay-06",
+    "run:tr-controls-06",
+    "run:tr-oracle-selftest",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#06"
+   ],
+   "evidence_grade": "registered-run",
+   "findings": [
+    "F-0606",
+    "F-0608",
+    "F-0615"
    ],
    "gate": "3.7-trace-replay",
    "level": "product",
    "module": "06",
    "product_basis": {
     "fails": [
-     "run breadth-a-journal-footprints (fail)"
+     "finding F-0606",
+     "finding F-0608",
+     "finding F-0615",
+     "stated fails by matrix-input/trace-replay.json"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "4 journal traces captured and compared with footprints; not replayed through the models",
-   "source": "modules/06.json",
-   "status": "open"
+   "remaining": "vec_queue (F-0604, IRIS worker ProcessBatch) and vec_build_publish not replayed. Limits: sequential traces of one scenario per family (plus the caller-transaction interleavings named); bitmap chunks and ^odd* not replayed; a pass means the as-built machine matched these traces, not that the handler performs its step on every input.",
+   "source": "matrix-input/trace-replay.json",
+   "status": "closed"
   },
   {
+   "as_built_findings": [
+    "F-0704",
+    "F-0705",
+    "F-0707"
+   ],
    "cited_runs": [
-    "b-07-f0701-race",
-    "b-07-fp-writers"
+    "tr-controls-07",
+    "tr-oracle-selftest",
+    "tr-replay-07"
    ],
    "evidence": [
-    {
-     "kind": "live",
-     "ref": "b-07-fp-writers"
-    },
-    {
-     "kind": "live",
-     "ref": "b-07-f0701-race"
-    }
+    "run:tr-replay-07",
+    "run:tr-controls-07",
+    "run:tr-oracle-selftest",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#07"
+   ],
+   "evidence_grade": "registered-run",
+   "findings": [
+    "F-0704",
+    "F-0705",
+    "F-0707"
    ],
    "gate": "3.7-trace-replay",
    "level": "product",
    "module": "07",
    "product_basis": {
     "fails": [
-     "run b-07-f0701-race (fail)"
+     "finding F-0704",
+     "finding F-0705",
+     "finding F-0707",
+     "stated fails by matrix-input/trace-replay.json"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "reason": "Journal traces of the writers exist (b-07-fp-writers, b-07-f0701-race) but are not replayed through the bm25 machine.",
-   "remaining": "Replay journal records as bm25 machine steps.",
-   "source": "modules/07.json",
-   "status": "open"
+   "remaining": "bm25 Upgrade/Crash and the concurrent I5 race (F-0701) not driven; Leg Fusion/Retrieve not driven. Limits: sequential traces of one scenario per family (plus the caller-transaction interleavings named); bitmap chunks and ^odd* not replayed; a pass means the as-built machine matched these traces, not that the handler performs its step on every input.",
+   "source": "matrix-input/trace-replay.json",
+   "status": "closed"
   },
   {
+   "as_built_findings": [
+    "F-0805",
+    "F-0806",
+    "F-0814",
+    "F-0815"
+   ],
    "cited_runs": [
-    "b-08-live-footprints",
-    "b-08-live-footprints-rerun"
+    "tr-controls-08",
+    "tr-oracle-selftest",
+    "tr-replay-08"
    ],
    "evidence": [
-    "b-08-live-footprints",
-    "b-08-live-footprints-rerun"
+    "run:tr-replay-08",
+    "run:tr-controls-08",
+    "run:tr-oracle-selftest",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#08"
+   ],
+   "evidence_grade": "trace",
+   "findings": [
+    "F-0805",
+    "F-0806",
+    "F-0814",
+    "F-0815"
    ],
    "gate": "3.7-trace-replay",
    "level": "product",
    "module": "08",
-   "product_obligation": "unknown",
-   "reason": "Journal traces captured (08-footprints.json) and checked against declared footprints and transaction structure; not replayed through a machine.",
-   "remaining": "Replay journal traces through m08-txn.",
-   "source": "modules/08.json",
+   "product_basis": {
+    "fails": [
+     "finding F-0805",
+     "finding F-0806",
+     "finding F-0814",
+     "finding F-0815",
+     "stated fails by matrix-input/trace-replay.json",
+     "run tr-controls-08 (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "Orchestrator: kept open because tr-controls-08 failed one criterion (the readonly scenario's reordered-transaction control was caught by no model rule: the swapped steps are two identical AqlWrite actions); a reorder control a model rule can detect is needed before this cell closes. tr-controls-08 fails one criterion: in 08/readonly the reordered-transaction control (two identical AqlWrite steps) was flagged only by faithfulness and foreign-process, not by a model rule; Txn CallerRollback not driven. Limits: sequential traces of one scenario per family (plus the caller-transaction interleavings named); bitmap chunks and ^odd* not replayed; a pass means the as-built machine matched these traces, not that the handler performs its step on every input.",
+   "source": "matrix-input/trace-replay.json",
    "status": "open"
   },
   {
    "cited_runs": [
-    "b-09-footprint"
+    "tr-controls-09",
+    "tr-oracle-selftest",
+    "tr-replay-09"
    ],
    "evidence": [
-    "live:b-09-footprint"
+    "run:tr-replay-09",
+    "run:tr-controls-09",
+    "run:tr-oracle-selftest",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#09"
    ],
+   "evidence_grade": "trace",
    "gate": "3.7-trace-replay",
    "level": "product",
    "module": "09",
+   "product_basis": "tr-replay-09: the gate machine matched a native/SQL comparison trace with no violation; the compiled-plan writer is not driven",
    "product_obligation": "unknown",
-   "reason": "journal traces captured for the cache writers (b-09-footprint, b-09-f0905-dropall-race) but not replayed through planc",
-   "remaining": "replay the journaled entry writes through the planc machine",
-   "source": "modules/09.json",
+   "remaining": "planc, mode and used not driven: their steps compile generated IVGC classes at run time, which this lane does not trigger; F-0906's edge-only gate state needs DDL. Limits: sequential traces of one scenario per family (plus the caller-transaction interleavings named); bitmap chunks and ^odd* not replayed; a pass means the as-built machine matched these traces, not that the handler performs its step on every input.",
+   "source": "matrix-input/trace-replay.json",
    "status": "open"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "as_built_findings": [
+    "F-1004",
+    "F-1007"
+   ],
+   "cited_runs": [
+    "tr-controls-10",
+    "tr-oracle-selftest",
+    "tr-replay-10"
+   ],
+   "evidence": [
+    "run:tr-replay-10",
+    "run:tr-controls-10",
+    "run:tr-oracle-selftest",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#10"
+   ],
+   "evidence_grade": "registered-run",
+   "findings": [
+    "F-1004",
+    "F-1007"
+   ],
    "gate": "3.7-trace-replay",
    "level": "product",
    "module": "10",
-   "product_obligation": "unknown",
-   "reason": "",
-   "remaining": "Live traces (b-10-live-cache, b-10-live-nkg-f1005) are not replayed through the machines.",
-   "source": "modules/10.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "finding F-1004",
+     "finding F-1007",
+     "stated fails by matrix-input/trace-replay.json"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "nkg, routes and walk machines not driven; concurrent cache interleavings not produced. Limits: sequential traces of one scenario per family (plus the caller-transaction interleavings named); bitmap chunks and ^odd* not replayed; a pass means the as-built machine matched these traces, not that the handler performs its step on every input.",
+   "source": "matrix-input/trace-replay.json",
+   "status": "closed"
   },
   {
+   "as_built_findings": [
+    "F-0801",
+    "F-1101",
+    "F-1106",
+    "F-1108"
+   ],
    "cited_runs": [
-    "b-11-live-footprints-1",
-    "trace-conformance-ledger"
+    "tr-controls-11",
+    "tr-oracle-selftest",
+    "tr-replay-11"
    ],
    "evidence": [
-    "trace:trace-conformance-ledger",
-    "live:b-11-live-footprints-1"
+    "run:tr-replay-11",
+    "run:tr-controls-11",
+    "run:tr-oracle-selftest",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#11"
+   ],
+   "evidence_grade": "registered-run",
+   "findings": [
+    "F-0801",
+    "F-1101",
+    "F-1106",
+    "F-1108"
    ],
    "gate": "3.7-trace-replay",
    "level": "product",
    "module": "11",
-   "product_obligation": "unknown",
-   "reason": "The orchestrator replayed a journal trace of 4 ledger commits through spec step rules (0 violations); this lane's journal footprints check transaction boundaries but are not replayed through a machine.",
-   "remaining": "Replay journal traces of enable/disable/strict/stats/adoption through the m11 machines. Limits of the alpha contract-step check (review R2-05): alpha (correspondence/CORRESPONDENCE.md section 2) maps create_temporal_edge to no content and excludes temporal-marked rows, as replay.py does, and its 'tombstone of live content' check (correspondence/tools/abstraction.py:466-472) folds a record's keys against alpha's rows, so a live temporal-only edge is never 'live' and F-C1308's failure passes the check by construction (temporal hole); the redaction step check covers soundness, counts, digests and the marker but not completeness at Final (every live record of the target tombstoned; theorem_final_effect in proofs/), so F-1305 / F-C1302-class outcomes pass (completeness hole); every checked trace is sequential apart from the F-1201 pair. A pass means no violation of the checked contract was seen on the traced inputs, not that the handler performs its step. [review-response R2-05]",
-   "source": "modules/11.json",
-   "status": "open",
+   "product_basis": {
+    "fails": [
+     "finding F-0801",
+     "finding F-1101",
+     "finding F-1106",
+     "finding F-1108",
+     "stated fails by matrix-input/trace-replay.json"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "stats (F-1102) not replayed; F-1104 and F-1103 need concurrent enables / a commit inside an adoption, not produced; disable/re-enable is covered only through adoption. Limits: sequential traces of one scenario per family (plus the caller-transaction interleavings named); bitmap chunks and ^odd* not replayed; a pass means the as-built machine matched these traces, not that the handler performs its step on every input. Limits of the alpha contract-step check (review R2-05): alpha (correspondence/CORRESPONDENCE.md section 2) maps create_temporal_edge to no content and excludes temporal-marked rows, as replay.py does, and its 'tombstone of live content' check (correspondence/tools/abstraction.py:466-472) folds a record's keys against alpha's rows, so a live temporal-only edge is never 'live' and F-C1308's failure passes the check by construction (temporal hole); the redaction step check covers soundness, counts, digests and the marker but not completeness at Final (every live record of the target tombstoned; theorem_final_effect in proofs/), so F-1305 / F-C1302-class outcomes pass (completeness hole); every checked trace is sequential apart from the F-1201 pair. A pass means no violation of the checked contract was seen on the traced inputs, not that the handler performs its step. [review-response R2-05]",
+   "source": "matrix-input/trace-replay.json",
+   "status": "closed",
    "supplemented_by": [
     "matrix-input/review-response-2.json"
    ]
@@ -14218,64 +14416,132 @@
    ]
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "tr-oracle-selftest",
+    "tr-replay-15"
+   ],
+   "evidence": [
+    "run:tr-replay-15",
+    "run:tr-oracle-selftest",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#15"
+   ],
+   "evidence_grade": "blocked-access",
    "gate": "3.7-trace-replay",
    "level": "product",
    "module": "15",
+   "product_basis": "tr-replay-15 (blocked): FHIRGraph.Register refuses on Community; reify/delete_reification match no machine",
    "product_obligation": "unknown",
-   "remaining": "No FHIR sync trace can be recorded on Community (HS.FHIRServer.* / HS_FHIRServer SQL schema (IRIS for Health FHIR repository) absent on IRIS Community 2026.1 in AUDITC (live c15-live-register: 0 classes, 0 tables, Register refuses 'no FHIR repository')); reify/erase journal traces exist (c15-live-reify) but no module-15 machine to replay them through.",
-   "source": "modules/15.json",
+   "remaining": "blocked-access: HS.FHIRServer.* / HS_FHIRServer SQL schema (IRIS for Health FHIR repository) absent on IRIS Community 2026.1, so fhir.rs and register.rs cannot be driven; unrepresentable: reify_edge and delete_reification have no breadth-c machine.",
+   "source": "matrix-input/trace-replay.json",
    "status": "blocked"
   },
   {
-   "cited_runs": [],
+   "as_built_findings": [
+    "F-1601",
+    "F-1610"
+   ],
+   "cited_runs": [
+    "tr-controls-16",
+    "tr-oracle-selftest",
+    "tr-replay-16"
+   ],
    "evidence": [
-    "footprints/16.json (journal traces)"
+    "run:tr-replay-16",
+    "run:tr-controls-16",
+    "run:tr-oracle-selftest",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#16"
+   ],
+   "evidence_grade": "registered-run",
+   "findings": [
+    "F-1601",
+    "F-1610"
    ],
    "gate": "3.7-trace-replay",
    "level": "product",
    "module": "16",
-   "product_obligation": "unknown",
-   "remaining": "journal traces captured; replay through the main lane's machines pending",
-   "source": "modules/16.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "finding F-1601",
+     "finding F-1610",
+     "stated fails by matrix-input/trace-replay.json"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "Bolt TCP/WebSocket transports not exercised (in-process dispatch only). Limits: sequential traces of one scenario per family (plus the caller-transaction interleavings named); bitmap chunks and ^odd* not replayed; a pass means the as-built machine matched these traces, not that the handler performs its step on every input.",
+   "source": "matrix-input/trace-replay.json",
+   "status": "closed"
   },
   {
+   "as_built_findings": [
+    "F-C1703"
+   ],
    "cited_runs": [
-    "c17-live-engine"
+    "tr-controls-17",
+    "tr-oracle-selftest",
+    "tr-replay-17"
    ],
    "evidence": [
-    "c17-live-engine journals"
+    "run:tr-replay-17",
+    "run:tr-controls-17",
+    "run:tr-oracle-selftest",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#17"
+   ],
+   "evidence_grade": "registered-run",
+   "findings": [
+    "F-C1703"
    ],
    "gate": "3.7-trace-replay",
    "level": "product",
    "module": "17",
    "product_basis": {
     "fails": [
-     "run c17-live-engine (fail)"
+     "finding F-C1703",
+     "stated fails by matrix-input/trace-replay.json"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "not replayed through a machine",
-   "source": "modules/17.json",
-   "status": "open"
+   "remaining": "the server-side re-run after an exception (F-C1604) not injected. Limits: sequential traces of one scenario per family (plus the caller-transaction interleavings named); bitmap chunks and ^odd* not replayed; a pass means the as-built machine matched these traces, not that the handler performs its step on every input.",
+   "source": "matrix-input/trace-replay.json",
+   "status": "closed"
   },
   {
+   "as_built_findings": [
+    "F-1801",
+    "F-C1801"
+   ],
    "cited_runs": [
-    "c18-live-restore-footprint"
+    "tr-controls-18",
+    "tr-oracle-selftest",
+    "tr-replay-18"
    ],
    "evidence": [
-    "c18-live-restore-footprint (journal of a replace and a merge restore)"
+    "run:tr-replay-18",
+    "run:tr-controls-18",
+    "run:tr-oracle-selftest",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#18"
+   ],
+   "evidence_grade": "registered-run",
+   "findings": [
+    "F-1801",
+    "F-C1801"
    ],
    "gate": "3.7-trace-replay",
    "level": "product",
    "module": "18",
-   "product_obligation": "unknown",
-   "remaining": "the journal trace is not replayed through M5",
-   "source": "modules/18.json",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "finding F-1801",
+     "finding F-C1801",
+     "stated fails by matrix-input/trace-replay.json"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "snapcut's commit and delete paths not exercised; model gaps: the pin's redaction revision mapped as Redact plus an unkeyed Commit, genesis taken from the abstraction. Limits: sequential traces of one scenario per family (plus the caller-transaction interleavings named); bitmap chunks and ^odd* not replayed; a pass means the as-built machine matched these traces, not that the handler performs its step on every input.",
+   "source": "matrix-input/trace-replay.json",
+   "status": "closed"
   },
   {
    "cited_runs": [],
@@ -14291,70 +14557,112 @@
    "status": "not-applicable"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "tr-locklog-01"
+   ],
+   "evidence": [
+    "run:tr-locklog-01",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#01"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.7-lock-log",
    "level": "product",
    "module": "01",
+   "product_basis": "tr-locklog-01: one initialize_schema() held only the parent ^IVG.AdjW S (in the plan); no ledger head lock (observed in sampled runs; the plan's adequacy is a separate question)",
    "product_obligation": "unknown",
-   "remaining": "not done in this lane",
-   "source": "modules/01.json",
-   "status": "open"
+   "remaining": "the plan entries ^IVG.AdjW(g) E:0 and ^IVG.NKGBuild X were not exercised by the one setup run. Lock polling sees holds of at least one poll period (20-60 us); a sampled log is evidence about these runs, not a proof of the plan.",
+   "source": "matrix-input/trace-replay.json",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "tr-locklog-02"
+   ],
+   "evidence": [
+    "run:tr-locklog-02",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#02"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.7-lock-log",
    "level": "product",
    "module": "02",
+   "product_basis": "tr-locklog-02: 5,048 set_multigraph calls held no IVG lock; Set(off) did not wait on ^IVG.AdjW(g): consistent with the plan (no lock), the premise of F-0207 (observed in sampled runs; the plan's adequacy is a separate question)",
    "product_obligation": "unknown",
-   "remaining": "not done in this lane",
-   "source": "modules/02.json",
-   "status": "open"
+   "remaining": "Lock polling sees holds of at least one poll period (20-60 us); a sampled log is evidence about these runs, not a proof of the plan.",
+   "source": "matrix-input/trace-replay.json",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "tr-locklog-03"
+   ],
+   "evidence": [
+    "run:tr-locklog-03",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#03"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.7-lock-log",
    "level": "product",
    "module": "03",
+   "product_basis": "tr-locklog-03: direct edge writers hold ^IVG.AdjW(g) S only, row locks first, fail-open after 5 s with ^IVG.AdjNoLock as planned (observed in sampled runs; the plan's adequacy is a separate question)",
    "product_obligation": "unknown",
-   "remaining": "not done in this lane",
-   "source": "modules/03.json",
-   "status": "open"
+   "remaining": "Lock polling sees holds of at least one poll period (20-60 us); a sampled log is evidence about these runs, not a proof of the plan.",
+   "source": "matrix-input/trace-replay.json",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "tr-locklog-04"
+   ],
+   "evidence": [
+    "run:tr-locklog-04",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#04"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.7-lock-log",
    "level": "product",
    "module": "04",
+   "product_basis": "tr-locklog-04: Degree does not wait (E:0), sync holds the parent ^IVG.AdjW S and ^IVG.NKGBuild X and waits/fails at BeginRebuild when the parent is held (observed in sampled runs; the plan's adequacy is a separate question)",
    "product_obligation": "unknown",
-   "remaining": "not done in this lane",
-   "source": "modules/04.json",
-   "status": "open"
+   "remaining": "Degree's own exclusive probe is shorter than the poll period (seen only through the block probe); ^IVG.AdjW and ^IVG.NKGBuild show no consistent nesting order inside sync (2 of 209 intervals nested each way; no conflict follows since the parent lock is shared). Lock polling sees holds of at least one poll period (20-60 us); a sampled log is evidence about these runs, not a proof of the plan.",
+   "source": "matrix-input/trace-replay.json",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "tr-locklog-05"
+   ],
+   "evidence": [
+    "run:tr-locklog-05",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#05"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.7-lock-log",
    "level": "product",
    "module": "05",
+   "product_basis": "tr-locklog-05: temporal writers hold ^IVG.AdjW(g) S only through the row hook; tout/tin/bucket written before it (observed in sampled runs; the plan's adequacy is a separate question)",
    "product_obligation": "unknown",
-   "remaining": "not done in this lane",
-   "source": "modules/05.json",
-   "status": "open"
+   "remaining": "Lock polling sees holds of at least one poll period (20-60 us); a sampled log is evidence about these runs, not a proof of the plan.",
+   "source": "matrix-input/trace-replay.json",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "tr-locklog-06"
+   ],
+   "evidence": [
+    "run:tr-locklog-06",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#06"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.7-lock-log",
    "level": "product",
    "module": "06",
+   "product_basis": "tr-locklog-06: vector writers take no IVG lock and do not wait on the ledger head or ^IVG.AdjW(g), as planned (observed in sampled runs; the plan's adequacy is a separate question)",
    "product_obligation": "unknown",
-   "remaining": "not done in this lane",
-   "source": "modules/06.json",
-   "status": "open"
+   "remaining": "Lock polling sees holds of at least one poll period (20-60 us); a sampled log is evidence about these runs, not a proof of the plan.",
+   "source": "matrix-input/trace-replay.json",
+   "status": "closed"
   },
   {
    "cited_runs": [
@@ -14390,25 +14698,28 @@
   },
   {
    "cited_runs": [
-    "b-08-live-footprints",
-    "b-08-live-footprints-rerun"
+    "tr-locklog-08"
    ],
    "evidence": [
-    "b-08-live-footprints",
-    "b-08-live-footprints-rerun"
+    "run:tr-locklog-08",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#08"
    ],
+   "evidence_grade": "registered-run",
    "gate": "3.7-lock-log",
    "level": "product",
    "module": "08",
+   "product_basis": "tr-locklog-08: Cypher writes hold ^IVG.AdjW(g) S through the row hook, row locks first, as planned (observed in sampled runs; the plan's adequacy is a separate question)",
    "product_obligation": "unknown",
-   "reason": "Journal statement log shows transaction boundaries match the plan (one level per query); lock acquisition is not in the journal.",
-   "remaining": "Lock acquisition log (e.g. ^$LOCK sampling) against the lock plan.",
-   "source": "modules/08.json",
-   "status": "open"
+   "remaining": "Lock polling sees holds of at least one poll period (20-60 us); a sampled log is evidence about these runs, not a proof of the plan.",
+   "source": "matrix-input/trace-replay.json",
+   "status": "closed"
   },
   {
    "cited_runs": [],
-   "evidence": [],
+   "evidence": [
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#gaps"
+   ],
+   "evidence_grade": "open",
    "findings": [
     "F-0905"
    ],
@@ -14422,14 +14733,19 @@
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "reason": "LOCK activity is not journaled; no lock log was captured",
-   "remaining": "capture ^$LOCK during a build",
-   "source": "modules/09.json",
+   "remaining": "^IVG.CypherCompiled(h) X:0 (Gen.cls:166-167) is taken only when the native executor compiles a plan class in job/sync mode; this lane does not trigger run-time class compilation, so the lock was not logged.",
+   "source": "matrix-input/trace-replay.json",
    "status": "open"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "tr-locklog-10"
+   ],
+   "evidence": [
+    "run:tr-locklog-10",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#10"
+   ],
+   "evidence_grade": "registered-run",
    "findings": [
     "F-C1001"
    ],
@@ -14443,10 +14759,9 @@
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "reason": "",
-   "remaining": "No statement/lock log checked against the lock plan.",
-   "source": "modules/10.json",
-   "status": "open"
+   "remaining": "routes/walk readers not logged. Lock polling sees holds of at least one poll period (20-60 us); a sampled log is evidence about these runs, not a proof of the plan.",
+   "source": "matrix-input/trace-replay.json",
+   "status": "closed"
   },
   {
    "cited_runs": [
@@ -14493,19 +14808,23 @@
   },
   {
    "cited_runs": [
-    "corr-lockplan"
+    "tr-locklog-13",
+    "tr-locklog-13b"
    ],
    "evidence": [
-    "run:corr-lockplan"
+    "run:tr-locklog-13",
+    "run:tr-locklog-13b",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#13"
    ],
+   "evidence_grade": "registered-run",
    "gate": "3.7-lock-log",
    "level": "product",
-   "level_detail": "as-built (pin 3eaa79cf), AUDITC traces",
    "module": "13",
+   "product_basis": "tr-locklog-13, tr-locklog-13b: Batch's head lock (:282) and Final's head lock (:390) each observed by a block probe; Final waits after the tombstones and before its revision and head (observed in sampled runs; the plan's adequacy is a separate question)",
    "product_obligation": "unknown",
-   "remaining": "Batch's head lock observed at LedgerRedact.cls:282 with no write before it; Final's head lock (:390) not isolated by a probe (same code shape, executed in every completed redaction).",
-   "source": "matrix-input/correspondence_status.json",
-   "status": "open"
+   "remaining": "tr-locklog-13's observes text also describes the 13b probe, whose check is in tr-locklog-13b's log (erratum). Lock polling sees holds of at least one poll period (20-60 us); a sampled log is evidence about these runs, not a proof of the plan.",
+   "source": "matrix-input/trace-replay.json",
+   "status": "closed"
   },
   {
    "cited_runs": [
@@ -14525,14 +14844,20 @@
    "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "tr-replay-15"
+   ],
+   "evidence": [
+    "run:tr-replay-15"
+   ],
+   "evidence_grade": "blocked-access",
    "gate": "3.7-lock-log",
    "level": "product",
    "module": "15",
+   "product_basis": "not observable",
    "product_obligation": "unknown",
-   "remaining": "The sync lock is only taken on a registered FHIR graph: HS.FHIRServer.* / HS_FHIRServer SQL schema (IRIS for Health FHIR repository) absent on IRIS Community 2026.1 in AUDITC (live c15-live-register: 0 classes, 0 tables, Register refuses 'no FHIR repository').",
-   "source": "modules/15.json",
+   "remaining": "The sync lock ^IVG.FHIRGraph(g) is taken only on a registered FHIR graph: HS.FHIRServer.* / HS_FHIRServer absent on IRIS Community 2026.1 (FHIRGraph.Register refuses, tr-replay-15).",
+   "source": "matrix-input/trace-replay.json",
    "status": "blocked"
   },
   {
@@ -14561,18 +14886,21 @@
   },
   {
    "cited_runs": [
-    "c18-live-restore-footprint"
+    "tr-locklog-18"
    ],
    "evidence": [
-    "c18-live-restore-footprint"
+    "run:tr-locklog-18",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#18"
    ],
+   "evidence_grade": "registered-run",
    "gate": "3.7-lock-log",
    "level": "product",
    "module": "18",
+   "product_basis": "tr-locklog-18: restore never takes or waits for the ledger head lock (as the plan says); it holds the parent ^IVG.AdjW S inherited from erase_all, which the declared plan omits (plan gap) (observed in sampled runs; the plan's adequacy is a separate question)",
    "product_obligation": "unknown",
-   "remaining": "no lock plan to check against (none taken)",
-   "source": "modules/18.json",
-   "status": "open"
+   "remaining": "footprints/18.json lock plan omits ^IVG.AdjW S from erase_all (Adjacency.RemoveAll). Lock polling sees holds of at least one poll period (20-60 us); a sampled log is evidence about these runs, not a proof of the plan.",
+   "source": "matrix-input/trace-replay.json",
+   "status": "closed"
   },
   {
    "cited_runs": [],
@@ -33856,6 +34184,31 @@
   },
   {
    "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "trace",
+     "ref": "tr-replay-03"
+    },
+    {
+     "kind": "source",
+     "ref": "iris_vector_graph/_engine/nodes_edges.py:1715-1757"
+    },
+    {
+     "kind": "source",
+     "ref": "iris_vector_graph/_batch_check.py:68-80"
+    }
+   ],
+   "gates": [
+    "3.7-trace-replay",
+    "3.5-handlers",
+    "3.3a-writesets"
+   ],
+   "id": "F-C0330",
+   "severity": "S2"
+  },
+  {
+   "confidence": "high",
    "disposition": "reproduced-test",
    "evidence": [
     {
@@ -35080,15 +35433,15 @@
   }
  ],
  "product_counts": {
-  "fails": 390,
+  "fails": 396,
   "holds-in-model-only": 1,
   "holds-inspected": 85,
   "holds-live": 29,
   "intent-undecided": 1,
   "n/a": 33,
-  "unknown": 208
+  "unknown": 202
  },
- "registry_runs": 1080,
+ "registry_runs": 1122,
  "starting_inventory": {
   "cells": 904,
   "decisions": 61,
@@ -35100,9 +35453,9 @@
  },
  "status_counts": {
   "blocked": 8,
-  "closed": 495,
+  "closed": 516,
   "not-applicable": 35,
-  "open": 209
+  "open": 188
  },
  "submission": "9c3719c1",
  "writer_obligations": [

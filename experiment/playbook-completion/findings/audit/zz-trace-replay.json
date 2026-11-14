@@ -1,0 +1,20 @@
+[
+ {
+  "id": "F-C0330",
+  "module": "03",
+  "title": "A failed server-loader bulk_create_nodes answers 'nothing written' while its first 1,000 nodes stay committed",
+  "intended": "docs/USER_GUIDE.md:238-241: with no caller transaction 'each write (... the bulk loaders ...) is a transaction of its own'; iris_vector_graph/_batch_check.py:68-80 (raise_if_missing: 'a writer raises it before its rollback, so nothing of the batch is written'); a GraphWriteError's text says what stayed written (4.7.0 row 14; the same rule F-0806 applies to Cypher).",
+  "observed": "Trace 03/bulk (tr-replay-03): bulk_create_nodes of 2,000 nodes on a from_connect engine (two 1,000-node chunks to Graph.KG.EdgeScan.BulkIngestNodesSQL on the engine's own Native API process, iris_vector_graph/_engine/nodes_edges.py:1715-1757), the last node carrying a 70,000-character property value (wider than rdf_props.val VARCHAR(64000), schema.py:415; _check_create_nodes checks id, label and key widths only, nodes_edges.py:243-262). The journal shows the loader process commit chunk 1 (1,000 node rows) in its own transaction, chunk 2 rolled back (TROLLBACK 1 after SQLCODE -104 'property blob of tr03bk_1999'), and the SQL fallback on the cursor's process rolled back; the call raised GraphWriteError 'bulk_create_nodes failed, nothing written: IRIS refused 1 property row(s) of the batch ...' and a later SELECT counted 1,000 committed nodes. Replayed through wrt_bulk_atomic (as built) the trace ends in Raised with committed = (chunk 1, not chunk 2), violating WRT-B3.19; the reviewed design diverges at the first chunk's commit.",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {"kind": "trace", "ref": "tr-replay-03"},
+   {"kind": "source", "ref": "iris_vector_graph/_engine/nodes_edges.py:1715-1757"},
+   {"kind": "source", "ref": "iris_vector_graph/_batch_check.py:68-80"}
+  ],
+  "gates": ["3.7-trace-replay", "3.5-handlers", "3.3a-writesets"],
+  "severity": "S2",
+  "confidence": "high",
+  "remedy": "Run the loader chunks on the caller's process inside the WriteTxn (txn.native() in every case, the F-0305 fix), so a failed batch leaves nothing; until then, a failure after a committed chunk must say how many nodes stayed committed instead of 'nothing written'.",
+  "notes": "Same mechanism as F-0305 (chunks committed by another process); F-0305's recorded observation is a successful call whose partial state another process could see mid-call. This is the failure path: the end state is partial and the reply states the opposite. Found by the trace-replay lane (AUDITE)."
+ }
+]

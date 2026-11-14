@@ -1,0 +1,15 @@
+{
+  "command": "trace-replay/lockrun.py 03 (locks.sh iris, AUDITE) then lockcheck.py 03",
+  "experiment_head": "7b72fc52c878c31e143452a8cc8452cc4a6c198f",
+  "id": "tr-locklog-03",
+  "kind": "live",
+  "lane": "trace-replay",
+  "log": "$RUN_DIR/trace-replay/logs/tr-locklog-03.log",
+  "log_bytes": 1408,
+  "log_sha256": "2da8a8ebe5d611a77a1f59ebaff1c79ceccaa1929ed40548fbb1b6993b4a03b7",
+  "observes": "781 create_edge+delete_edge pairs held ^IVG.AdjW(\"tr03lk\") shared only (1,544 episodes; plus SQL row locks of their rows); 690 create_node held no adjacency lock; with ^IVG.AdjW(g) held exclusively, create_edge waited 5.0 s at WriterLock (+629^Graph.KG.Adjacency.1, Adjacency.cls:60-64) already holding its node, edge and unique-index row locks, then incremented ^IVG.AdjNoLock(g) and wrote ^KG out/in/gen without the lock (the plan fail-open path): matches the plan",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T12:40:52+00:00",
+  "result": "pass"
+}
