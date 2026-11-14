@@ -235,3 +235,18 @@ Verus's trusted base. Gate status: **declared empty**.
   over all past audit revisions.
 - The reviewed design is a working assumption (HD-1201, HD-1301, HD-1305 are `Assumption` in `decisions.md`), and
   D-1, D-2 are this lane's design choices; none is a maintainer decision.
+
+
+## Premises the pin violates (added after the independent review, R-06)
+
+Every theorem here is about the reviewed model. Three premises of the model are false at the product pin, by this
+audit's own evidence, so none of the safety results transfers to the product:
+
+| Premise of the model | Evidence that the pin violates it |
+|---|---|
+| Content changes only through the ledger (no ledger-bypassing writer) | writer census: 25 undeclared writer methods, more per review R-02 (`writer-census`); F-C1301 (model) |
+| One target predicate serves erasure, liveness, record matching and statement cleanup | the three predicates differ (`core-m1-as-built-F1304`, `core-m1-as-built-F1305`); F-1304/F-1305 live (`live-native-rerun-1314`) |
+| An erasure seen by the liveness check never rolls back | F-C1201 live (`ib-HD1201-open-erasure`); IRIS contract clause "Visibility" permits it |
+
+Progress further assumes fair scheduling of enabled steps, an operator who re-runs after a stop, a ledger that is
+re-enabled, and no write outside the ledger; none of these is derived or tested against IRIS.
