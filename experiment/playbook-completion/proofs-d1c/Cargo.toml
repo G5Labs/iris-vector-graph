@@ -1,0 +1,39 @@
+[package]
+name = "ivg-d1c-proofs"
+version = "0.1.0"
+edition = "2021"
+description = "Completion audit, PROOFS-D1C lane (proof debt D-1, playbook §3.3): Verus L1 contracts, L2 machines over the stored layout, refinement and broken-implementation controls for module 03 (direct writes: the structural row, the ledger's statement link, bulk atomicity) and module 05 (temporal writes, deletes and purges against the structural row; bucket aggregates), which share the structural-versus-temporal edge invariant (ADR-0009, ADR-0015), with the prefix erase of module 12 over the same layout."
+publish = false
+
+[dependencies]
+vstd = { version = "=0.0.0-2026-09-20-0158", features = ["std", "alloc"] }
+actors = { git = "file:///home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/playbook-reference-actors", rev = "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877" }
+
+[patch.crates-io]
+verus_builtin_macros = { git = "file:///home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/playbook-reference-actors", rev = "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877" }
+
+[features]
+# Broken-implementation controls (playbook §3.3 gate). Each replaces one decision of the reviewed design by the pin's
+# behaviour (as reproduced by the audit) and must make verification fail, every error located in the file named here.
+# The structural-versus-temporal edge (modules 03 and 05; module 12's prefix erase):
+control_f0304_store_no_adopt = []          # src/edge_l2.rs  store_edge swallows the duplicate and never adopts a marked row (nodes_edges.py:2560-2588)
+control_f0505_marker_predicate = []        # src/edge_l2.rs  the deleters' marker test is %Get("temporal") = 1: JSON true, 1 and "1" (Adjacency.cls:736-748)
+control_f0507_purge_keeps_rows = []        # src/edge_l2.rs  TemporalIndex.Purge = EraseAll: the temporal globals go, no row is retracted (TemporalIndex.cls:381-392, 808-811)
+control_fc0501_refused_write_partial = []  # src/edge_l2.rs  WriteStores writes tout/tin/bucket before AssertTemporalRow, with no transaction (TemporalIndex.cls:80-111; Adjacency.cls:597-608)
+control_hd0302_delete_removes_row = []     # src/edge_l2.rs  delete_edge deletes the triple's row, marked or adopted, while timestamps remain (nodes_edges.py:1414-1433)
+control_fc1203_prefix_from_node_rows = []  # src/edge_l2.rs  EraseNodes selects the prefix's ids from Graph_KG.nodes only (Eraser.cls:322-348)
+control_fc0301_adopt_after_commit = []     # src/edge_l2.rs  create_edge commits the guarded insert, then adopts in a statement of its own (nodes_edges.py:1236-1252)
+# Module 03, the ledger's statement link:
+control_f0303_direct_delete_keeps_stmt = [] # src/stmt_l2.rs  delete_edge is a plain SQL DELETE: ^IVG.Ledger("stmt") and ("tuple") stay (nodes_edges.py:1414-1433)
+# Module 03, bulk atomicity:
+control_f0305_chunks_commit_alone = []     # src/bulk_l2.rs  the server loader runs on the engine's Native API connection (another process): each chunk's TCOMMIT is durable (nodes_edges.py:1715-1757; EdgeScan.cls:352, 424)
+# Module 05, bucket aggregates:
+control_f0501_update_counted_again = []    # src/tagg_l2.rs  an update-mode write $Increments bucket, tagg count and sum again (TemporalIndex.cls:80-118)
+
+[package.metadata.verus]
+verify = true
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(verus_only)', 'cfg(verus_keep_ghost)', 'cfg(verus_keep_ghost_body)'] }
+
+[workspace]

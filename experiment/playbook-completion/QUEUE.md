@@ -30,7 +30,8 @@ status, evidence level and product obligation per cell). Reconciled 2026-11-14 0
 | Q16b | simulator | §5c randomized simulator through the real product | done: 304 schedules, 13,282 commits checked; new F-CS01 (sim-*) |
 | Q16c | proofs-d1b | D-1 for modules 18 and 06 | done: 92 verified (proofs-d1b-*, recheck), model-level |
 | Q16d | review | Third review pass; operator scope ruling R2-07 | todo |
-| Q16e | next | D-1 for the remaining 13 modules | todo |
+| Q16e | proofs-d1c | D-1 for modules 03 and 05 | done: 111 verified (proofs-d1c-*, recheck), model-level |
+| Q16f | next | D-1 for the remaining 11 modules (00-02, 07-10, 15-17) | todo |
 | I-1..I-4 | orchestrator | Incidents: IVG460SNAP, USER-REDEPLOY-08, superseded proof logs, health alert | recorded in `incidents/` |
 
 Genuinely unavailable (attempts in `versions/AVAILABILITY.md`): an IRIS 2026.3 engine (no public tag; the cited
