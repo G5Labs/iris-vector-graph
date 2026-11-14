@@ -15,7 +15,14 @@ here="$(cd "$(dirname "$0")" && pwd)"
 repo="$(cd "$here/../.." && pwd)"
 cd "$repo"
 mode=fast; clean=0
-for a in "$@"; do case "$a" in --clean) clean=1;; --fast|--full|--live) mode="${a#--}";; *) echo "unknown argument $a" >&2; exit 2;; esac; done
+for a in "$@"; do case "$a" in --clean) clean=1;; --fast|--full|--live|--merge) mode="${a#--}";; *) echo "unknown argument $a" >&2; exit 2;; esac; done
+# --merge: the bounded merge gate (playbook "One gate = one build on one machine, at most 20 minutes"): one run under a
+# hard 1200-second envelope; hitting it fails the gate. Spec and trust checks, Verus on changed crates only, a fixed
+# native-IRIS canary set and the touched slices' trace replay; every crate's Verus with its controls and the full live
+# rounds stay in the periodic full verification (--live --clean).
+if [[ "$mode" == merge && -z "${VERIFY_ENVELOPED:-}" ]]; then
+  exec timeout --kill-after=10 1200 env VERIFY_ENVELOPED=1 bash "$0" "$@"
+fi
 stamp="$(date -u +%Y%m%dT%H%M%SZ)"
 out="$RUN_DIR/verify/$stamp"; mkdir -p "$out"
 summary="$out/summary.jsonl"; : > "$summary"
@@ -99,6 +106,37 @@ step conformance-recheck  600 python "$here/traces/conformance.py" --check "$RUN
 step conformance-controls 600 python "$here/traces/conformance.py" --self-test "$RUN_DIR/traces/conf2/trace.json"
 step lostack-oracle-selftest 60 python "$here/traces/lost_ack.py" --self-test-oracle
 step verus-json-selftest  60 python3 "$here/tools/verus_json.py" --self-test
+
+# ---------------------------------------------------------------- merge: the bounded merge gate (hard 1200 s)
+if [[ "$mode" == merge ]]; then
+  MG="python3 $here/tools/merge_gate.py"
+  BASE="${MERGE_BASE:-$($MG base)}"; echo "merge_base $BASE" >> "$out/inputs.txt"
+  echo "changed_crates $($MG changed-crates "$BASE")" >> "$out/inputs.txt"
+  echo "touched_modules $($MG touched-modules "$BASE")" >> "$out/inputs.txt"
+  step merge-selftest      60  $MG --self-test
+  step merge-trust-scan    120 $MG trust-scan
+  step merge-cache-check   300 $MG cache-check "$BASE"
+  for crate in $($MG changed-crates "$BASE"); do
+    step "merge-verus-$crate" 900 $MG verus "$crate" "$out/verus-$crate"
+  done
+  # fixed canary set on the dedicated IRIS (native counterparts of the playbook's real-database canaries)
+  L="bash $here/tools/locks.sh iris"
+  N="$here/iris-contract/native"
+  step canary-contract-named 600 $L bash -c "python '$N/cases.py' '$out/canary-cases.json' --random-per-family 0 --ext-per-family 0 && python '$N/driver.py' '$out/canary-cases.json' '$out/canary-observed.json' && { '$T/iris-contract/release/iris-contract' check '$out/canary-cases.json' '$out/canary-observed.json' > '$out/canary-check.txt' 2>&1; $MG contract-outside '$out/canary-check.txt'; }"
+  step canary-conformance  300 $L python "$here/traces/conformance.py" "$out/conformance" --batch 1
+  step canary-f1201        300 $L python "$here/traces/f1201_native.py" "$out/f1201" --trials 2 --seed other
+  # touched slices: each touched module's trace replay through its machines, captured into a private RUN_DIR so no
+  # registered trace is overwritten (modules 12-14 are the ledger slice of the conformance and F-1201 canaries; 15 has
+  # no FHIR server here)
+  MRD="$out/mergeroot"; mkdir -p "$MRD"; ln -sfn "$RUN_DIR/locks" "$MRD/locks"
+  for nn in $($MG touched-modules "$BASE"); do
+    if [[ -f "$here/trace-replay/m$nn.py" ]]; then
+      step "slice-$nn" 600 $L env RUN_DIR="$MRD" TR_NAMESPACE=AUDITE bash -c "cd '$here/trace-replay' && python run.py capture $nn && python run.py check $nn"
+    else
+      echo "slice-$nn: no trace-replay scenario (12-14: covered by the ledger canaries; 15: blocked, no FHIR server)" >> "$out/inputs.txt"
+    fi
+  done
+fi
 
 # ---------------------------------------------------------------- full: every model crate, proofs and controls
 if [[ "$mode" == full || "$mode" == live ]]; then

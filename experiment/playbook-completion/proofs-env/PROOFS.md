@@ -169,6 +169,15 @@ Each theorem is one call of a generic lemma (`src/gen.rs`) whose precondition is
   (PF-1..PF-6, MA-1..MA-4, P-1306, PM-1, PM-2, the d1f PFs): the contract has no liveness clause.
 - **Sharpenings the contract does not give**: P-D9-2's wait over an uncommitted delete (Freedom), P-C04 (no abort).
 
+## 4a. This crate's own premises
+
+| Id | Premise | Status |
+|---|---|---|
+| ENV-1 | The recorded rounds are faithful observations of IRIS 2026.1 (the contract driver reports what the engine did) | the driver's self-test and the contract's 42 mutants (`env-contract-selftest`, `env-ext-r6`); the exec model agrees with the contract binary on every in-subset case (`proofs-env-differential-r3`) |
+| ENV-2 | The Verus subset covers the clauses the proof premises use; clauses outside it (r6 extensions, E-1, X2) are executable evidence only | stated; the premise map gives each premise a verdict (`proofs-env-premise-map`) |
+| ENV-3 | The product discipline `disc` (only the exclusive head-lock holder writes the ledger's globals, inside its transaction) | a hypothesis of the head-lock theorems; violated at the pin by EraseGraph (F-1201) |
+| ENV-4 | No liveness clause: the progress premises (PF-1..PF-6 of `proofs`, `proofs-d9*`; MA-*, PM-*) are not implied by the contract | stated; they stay assumed (PROOF-DEBT D-8) |
+
 ## 5. Controls (each weakens one clause in `validated()`; must fail exactly at its located premises)
 
 All 17 rejected at their located lines, every other function verifying as in the baseline, the counterexample verified
