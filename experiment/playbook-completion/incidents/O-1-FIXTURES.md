@@ -40,9 +40,19 @@ or written in IRIS), compared by `incidents/o1/compare_classes.py` with the pin'
 
 Compiling anything else (new or modified classes, other releases, the audit's own helpers) stays out of scope. The
 native executor compiling generated plan classes at run time (trace-replay cell 09) is the product's own behaviour,
-not a fixture; it was not exercised and is not claimed under O-1.
+not a fixture, and is not claimed under O-1. It was exercised later as product operation in AUDITC (steer 9: 7 generated
+`IVGC.*` classes, 111 compiles, all removed again by the product's `Gen.DropAll`; `tr-replay-09-r2`, `tr-locklog-09`,
+`trace-replay/TRACE-REPLAY.md`).
 
-## Further use under O-1 (structural lane, 2026-11-14)
+## Orchestrator's extension of O-1: a second namespace (structural lane, 2026-11-14; operator confirmation requested)
+
+The operator's clarification names the fixture's isolated migration-test namespace in the singular (`IVG262FC1306`). The
+orchestrator read it as covering a second namespace built the same way, `IVG262CAP`: the same pinned fixture, the same
+unchanged v4.5.1 release, an `IVG262*` scratch namespace, used only to load v4.5.1 content through v4.5.1's own API and run
+the pin's upgrade for 3.6-capacity/01. This is the orchestrator's extension, not the operator's words; the cell carries
+`depends_on` this record, and the operator is asked to confirm it. A read-only class inventory after the pin's upgrade
+(`o1-cap-inventory`): 222 non-% classes, 55 equal to the pin's sources, 8 v4.5.1-only, 11 v4.5.1 schema classes or formatting
+differences, 148 generated: the same composition as `IVG262FC1306`.
 
 | Setup | Version | Namespace | Classes | Effect |
 |---|---|---|---|---|

@@ -1,0 +1,28 @@
+{
+ "doc": "F-0308: BulkLoader.load_edges stores a NaN qualifier as bare JSON NaN; a later Cypher relationship read of the\n    graph then fails. create_edge refuses the same value (4.6.0 R307).",
+ "id": "p0308_loader_nan_breaks_reads",
+ "log": "$RUN_DIR/breadth-a/live/03-all-20261113T224729.log",
+ "module": "03",
+ "observed": {
+  "create_edge_nan": "refused ValueError",
+  "cypher_read": [
+   "error",
+   "<SQL ERROR>; Details: [SQLCODE: <-149>:<SQL Function encountered an error>]\r\n[Location: <ServerLoop - Query Fetch>]\r\n[%msg: <SQL Function GRAPH_KG.CY_REL_PROP failed with error:  SQLCODE=-400,%msg=>]"
+  ],
+  "stored_qualifiers": [
+   [
+    "b",
+    "{\"w\": NaN}"
+   ],
+   [
+    "c",
+    "{\"w\": 1.0}"
+   ]
+  ]
+ },
+ "oracle": "a stored edge never makes a relationship read fail (R307 refuses NaN on create_edge)",
+ "reproduced": true,
+ "seconds": 0.29,
+ "started": "2026-11-13T22:47:30",
+ "verdict": "loader stored NaN and the Cypher read failed"
+}

@@ -57,6 +57,8 @@ have() { [[ -e "$1" ]]; }
 
 # ---------------------------------------------------------------- fast offline gate
 step product-scope        60  bash "$here/check-product-scope.sh"
+step ignored-files        60  python3 "$here/tools/ignored_check.py"
+step ignored-selftest     60  python3 "$here/tools/ignored_check.py" --self-test
 step registry             300 python3 "$here/tools/check_registry.py"
 step registry-selftest    60  python3 "$here/tools/check_registry.py" --self-test
 step ontology-gate        600 python3 "$here/ontology/tools/ontology_check.py" --check

@@ -1,0 +1,19 @@
+{
+ "doc": "F-0405: Adjacency.PutShadow on an existing edge with a new weight moves neither the source generation nor the\n    graph-version token. Oracle: CONTEXT.md:116-119 (every write path that can change an algorithm's answer moves\n    the token).",
+ "id": "p0405_weight_refresh_token",
+ "log": "$RUN_DIR/breadth-a/live/04-all-20261113T224336.log",
+ "module": "04",
+ "observed": {
+  "cleanup_out_left": 0,
+  "gen_after_first": "1",
+  "gen_after_second": "1",
+  "token_after_first": 120,
+  "token_after_second": 120,
+  "weight_after_second": "5.0"
+ },
+ "oracle": "a stored weight change moves the graph-version token",
+ "reproduced": true,
+ "seconds": 0.06,
+ "started": "2026-11-13T22:43:37",
+ "verdict": "weight changed 1.0 -> 5.0 with token and generation unchanged"
+}

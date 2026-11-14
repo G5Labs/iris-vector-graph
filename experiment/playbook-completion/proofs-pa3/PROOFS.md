@@ -43,8 +43,7 @@ The **reviewed design** adds one guard per module. Neither exists at the pin.
 | R04-5 | EraseGraph takes `^IVG.AdjW(g)` **exclusively** before its row DELETE and holds it to its commit or rollback, so it waits for writers of g that hold the shared lock. A writer of g waits for it instead of writing without the lock (`WriterLock`'s 5 s fallback, `Adjacency.cls:61-73`, is not taken against an eraser). | 04 | HD-1201 working answer, applied to the adjacency writers (ledger-bypassing writers write adjacency too, so the head lock alone does not cover module 04) | no: RemoveGraph's lock is shared, taken after the DELETE; F-C1202 |
 
 Under these guards, P-A3 is no longer a premise; what is proved in its place is weaker than P-A3 itself (orchestrator correction after review R4-05):
-`theorem_pa3_from_guard` (module 04): a writer and an eraser of one graph are open together only while the eraser has
-not passed TSTART and the writer is a lock-less one already in flight. Its row then blocks the eraser's DELETE, and the
+`theorem_pa3_from_guard` (module 04): a writer and an eraser of one graph are open together only while the eraser has passed TSTART but not executed its DELETE and the writer is a lock-less one already in flight. Its row then blocks the eraser's DELETE, and the
 witness `witness_overlap` shows such a run. Module 11: `er_ok` (part of the inductive invariant) says that while an
 erasure is open no nested commit is open and no ledger commit has run since it started. A ledger-bypassing engine write
 of a new row of gr may land in the middle (witness `witness_erase`); it is an unrecorded write (`drift`).
@@ -144,7 +143,7 @@ index does not cover them.
 | P-L4 | Disable waits while a nested commit holds the head lock | **violated** (unchanged) |
 | P-L6 | strict mode covers every governed writer | **violated** (unchanged) |
 | P-A1, P-A2, P-A5, P-A6 | as in `proofs-breadth/PROOFS.md` | unchanged |
-| **P-A3** | an eraser of g overlaps no writer of g | **removed as a premise.** Reviewed: replaced by weaker proved statements, module 04 `theorem_pa3_from_guard` (overlap only before the eraser's TSTART, with a lock-less writer already in flight) and module 11 `er_ok` (no ledger commit during an open erasure; ledger-bypassing new rows still overlap) (review R4-05). As built: false at the pin (F-1201 live; both new controls) |
+| **P-A3** | an eraser of g overlaps no writer of g | **removed as a premise.** Reviewed: replaced by weaker proved statements, module 04 `theorem_pa3_from_guard` (overlap only after the eraser's TSTART but before its DELETE, with a lock-less writer already in flight) and module 11 `er_ok` (no ledger commit during an open erasure; ledger-bypassing new rows still overlap) (review R4-05). As built: false at the pin (F-1201 live; both new controls) |
 | P-A4 | a rebuild overlaps no writer, eraser or second rebuild | **violated** (unchanged; F-C0402) |
 | P-E1 | at most one open erasure per graph (module 04) and at most one at a time (module 11) | reviewed: a consequence of the guards (the exclusive lock and the head lock exclude a second eraser); as built: a restriction of the control models only (fewer behaviours, so their counterexamples stand) |
 | P-E2 | an erasure's DELETE of a graph's rows is one step | the row DELETEs serialize with each writer through row locks (P-1201), so an insert during the scan is equivalent to one before or after it; not checked against IRIS's scan order |

@@ -1,0 +1,56 @@
+{
+ "doc": "F-0606 (HD-0601): after erase_graph(g), an IVF index built over g's vectors still answers g's node ids and\n    ^IVF still holds their vectors.",
+ "id": "p0606_erase_leaves_ivf",
+ "log": "$RUN_DIR/breadth-a/live/06-all-20261113T230626.log",
+ "module": "06",
+ "observed": {
+  "erase_graph": 4,
+  "ivf_build": {
+   "dim": 4,
+   "indexed": 4,
+   "metric": "cosine",
+   "nlist": 2
+  },
+  "ivf_info_after_erase": {
+   "dim": 4,
+   "indexed": 4,
+   "metric": "cosine",
+   "nlist": 2,
+   "type": "ivf"
+  },
+  "rows_after_erase": 0,
+  "search_after_erase": [
+   [
+    "n3",
+    4.3125
+   ],
+   [
+    "n2",
+    3.3125
+   ],
+   [
+    "n1",
+    2.3125
+   ]
+  ],
+  "search_before": [
+   [
+    "n3",
+    4.3125
+   ],
+   [
+    "n2",
+    3.3125
+   ],
+   [
+    "n1",
+    2.3125
+   ]
+  ]
+ },
+ "oracle": "HD-0601 (assumption): erasure leaves no graph-owned index answering the erased graph's ids",
+ "reproduced": true,
+ "seconds": 2.21,
+ "started": "2026-11-13T23:06:27",
+ "verdict": "IVF still answers 3 erased ids"
+}

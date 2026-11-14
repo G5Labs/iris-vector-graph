@@ -1,0 +1,17 @@
+{
+ "doc": "F-0407: Adjacency.Reweight changes a weight without the writer lock and without moving the source generation\n    (ADR-0012:31 says every adjacency write bumps the generation and holds the shared lock; the code exempts it on\n    purpose). Observed through the public set_edge_weight (default graph).",
+ "id": "p0407_reweight_generation",
+ "log": "$RUN_DIR/breadth-a/live/04-all-20261113T224336.log",
+ "module": "04",
+ "observed": {
+  "gen_after": "1",
+  "gen_before": "1",
+  "set_edge_weight": true,
+  "weight_after": "7.0"
+ },
+ "oracle": "ADR-0012:31 / spec 252 FR-004 as written: every index change moves the source's generation",
+ "reproduced": true,
+ "seconds": 0.23,
+ "started": "2026-11-13T22:43:37",
+ "verdict": "weight changed, generation unchanged (docs over-state the rule)"
+}

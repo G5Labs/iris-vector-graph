@@ -1,0 +1,35 @@
+{
+ "doc": "F-0503 (HD-0501): a governed changeset whose temporal op names endpoints with no node op creates node rows\n    (Adjacency.AssertTemporalRow) that no record names; verify() then diverges though every write went through the\n    ledger.",
+ "id": "p0503_changeset_temporal_endpoint",
+ "log": "$RUN_DIR/breadth-a/live/ledger-all-20261113T232600.log",
+ "module": "ledger",
+ "observed": {
+  "commit": "RevisionInfo(seq=4, revision_id='965533d7dfb911f1b3edf277e9aab529', parent_id='96540f04dfb911f1b3edf277e9aab529', kind='changeset', actor='breadth-a', actor_typ",
+  "node_rows": [
+   [
+    "bato232559"
+   ],
+   [
+    "bats232559"
+   ]
+  ],
+  "verify_after": {
+   "classification": "unrecorded_writes",
+   "differences_naming_endpoints": [
+    "DiffEntry(entity_kind='node', entity_id='bato232559', attr='', before=None, after='')",
+    "DiffEntry(entity_kind='node', entity_id='bats232559', attr='', before=None, after='')"
+   ],
+   "differences_total": 2,
+   "result": "diverges"
+  },
+  "verify_before": {
+   "differences": 0,
+   "result": "equal"
+  }
+ },
+ "oracle": "with every write made through the ledger, verify() answers equal (RPL-B3, INV-replay)",
+ "reproduced": true,
+ "seconds": 0.02,
+ "started": "2026-11-13T23:26:00",
+ "verdict": "verify diverges on node rows the changeset's temporal op created"
+}

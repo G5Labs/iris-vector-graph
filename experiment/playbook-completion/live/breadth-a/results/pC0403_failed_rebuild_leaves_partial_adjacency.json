@@ -1,0 +1,27 @@
+{
+ "doc": "New candidate (journal J12 + source): with the adjacency index declared, BuildKG purges and refills ^KG out/in by\n    %BuildIndices after its TCommit, in parallel jobs (TraversalBuild.cls:120-131), while its comment (:46-55) says the\n    kill sits inside the transaction so that a row it cannot process leaves the old adjacency, never a destroyed one.\n    Here a row the rebuild refuses (graph_id '0', made as the upstream test makes it) fails sync(); the graph's 400\n    committed edges are then counted in ^KG(\"out\").",
+ "id": "pC0403_failed_rebuild_leaves_partial_adjacency",
+ "log": "$RUN_DIR/breadth-a/live/04-pC0403_failed_rebuild_leaves_partial_adjacency-20261113T233431.log",
+ "module": "04",
+ "observed": {
+  "cleanup_sync": "ok",
+  "out_sources_after_failed_sync": 400,
+  "out_sources_before": 400,
+  "rows": 400,
+  "sync": "RuntimeError: Graph.KG.Traversal.BuildKG failed: ERROR #5001: graph name \"0\" is reserved: IRIS canonicalizes the subscript \"0\" to the integer 0 that keys the default graph",
+  "verify_after": {
+   "counts": {
+    "cacheEntries": 0,
+    "inEdges": 400,
+    "outEdges": 400,
+    "sqlEdges": 400
+   },
+   "ok": 1
+  }
+ },
+ "oracle": "TraversalBuild.cls:46-55: a row the rebuild cannot process leaves the adjacency as it was",
+ "reproduced": false,
+ "seconds": 2.53,
+ "started": "2026-11-13T23:34:31",
+ "verdict": "adjacency intact after the failed rebuild"
+}

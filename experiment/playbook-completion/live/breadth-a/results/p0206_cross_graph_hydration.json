@@ -1,0 +1,23 @@
+{
+ "doc": "F-0206 (and F-0106's family): get_nodes_by_label takes ids from every graph and hydrates them from the\n    default graph. Oracle: USER_GUIDE.md:466-467 and SYS-I2 (one graph's content never answers about another).",
+ "id": "p0206_cross_graph_hydration",
+ "log": "$RUN_DIR/breadth-a/live/02-all-20261113T224011.log",
+ "module": "02",
+ "observed": {
+  "get_nodes_by_label": [
+   {
+    "id": "baid224011",
+    "labels": [
+     "Other"
+    ],
+    "p_id": "baid224011",
+    "where": "default"
+   }
+  ]
+ },
+ "oracle": "every node answered for label L holds L (and its properties) in its own graph",
+ "reproduced": true,
+ "seconds": 0.42,
+ "started": "2026-11-13T22:40:13",
+ "verdict": "answered the default graph's node, which lacks the label"
+}

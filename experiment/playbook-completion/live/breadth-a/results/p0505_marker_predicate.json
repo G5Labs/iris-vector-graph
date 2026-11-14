@@ -1,0 +1,19 @@
+{
+ "doc": "F-0505: an explicit create_edge with qualifiers {\"temporal\": 1} is deleted by the last temporal delete on its\n    triple (IsTemporalMarked accepts 1); the ledger and create_edge's adopt treat only JSON true as the mark.",
+ "id": "p0505_marker_predicate",
+ "log": "$RUN_DIR/breadth-a/live/05-all-20261113T224508.log",
+ "module": "05",
+ "observed": {
+  "explicit_row": [
+   [
+    "{\"temporal\": 1}"
+   ]
+  ],
+  "row_after_last_temporal_delete": []
+ },
+ "oracle": "an explicitly written edge (not JSON-true marked) survives the temporal side (ADR-0009)",
+ "reproduced": true,
+ "seconds": 0.18,
+ "started": "2026-11-13T22:45:10",
+ "verdict": "explicit edge with temporal:1 deleted by the temporal delete"
+}

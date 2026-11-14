@@ -1,0 +1,3 @@
+ kill  set dir="/tmp/o1capexport/" do ##class(%File).RemoveDirectoryTree(dir) do ##class(%File).CreateDirectoryChain(dir_"SYS/") do ##class(%File).CreateDirectoryChain(dir_"FC/")
+ zn "IVG262CAP" set c="" for { set c=$order(^oddDEF(c)) quit:c=""  if $extract(c)'="%" { set sc=$system.OBJ.ExportUDL(c_".cls",dir_"FC/"_c_".cls",,,"UTF8") write "CAP ",c," ",$select(sc=1:1,1:0),! } }
+ halt

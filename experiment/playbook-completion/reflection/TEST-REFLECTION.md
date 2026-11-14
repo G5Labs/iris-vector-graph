@@ -4,11 +4,11 @@ Lane reflection, product pin `3eaa79cf`, IRIS 2026.1 Community in the dedicated 
 
 ## A. The audit's own tests that this reflection cites
 
-206 distinct registered runs are cited below (premise tests, proof-debt coverage, detections), by kind and result:
+208 distinct registered runs are cited below (premise tests, proof-debt coverage, detections), by kind and result:
 
 | Kind | Runs | Results |
 |---|---|---|
-| live | 73 | fail 57, pass 16 |
+| live | 75 | fail 58, pass 17 |
 | probe | 38 | blocked 1, expected-violation 7, fail 14, pass 16 |
 | run | 28 | fail 19, pass 9 |
 | check | 22 | fail 3, incomplete 2, pass 17 |
@@ -210,7 +210,7 @@ Contract features outside the validated subset are summarised after the table.
 | Premise | Statement | Verdict | Partial evidence | Test that should exist |
 |---|---|---|---|---|
 | TRUST:changed:P-1201 a SQL delete waits for a row another transaction holds | a DELETE/UPDATE waits for a row another open transaction inserted or updated | tested-partial | env-contract-r2, env-ext-r6, corr-lockplan | An INSERT of a key whose row another open transaction deleted is the contract's unsharpened Freedom; a forced schedule repeated until both branches or one source-settled branch is seen would close it. |
-| TRUST:new:Durability of an acknowledged commit: a revision the ledger reports as committed survives an instance crash, which needs IRIS SynchCommit=1 or a journal flush before the acknowledgement | an acknowledged revision survives an instance crash | tested-partial | live-crash-world-r2, env-synchcommit-setting | SynchCommit=1 is untested: the same crash world on an instance configured with SynchCommit=1 (a container reconfiguration the operator must allow) would test the premise as stated. |
+| TRUST:new:Durability of an acknowledged commit: a revision the ledger reports as committed survives an instance crash, which needs IRIS SynchCommit=1 or a journal flush before the acknowledgement | an acknowledged revision survives an instance crash | tested-partial | live-crash-world-r2, env-synchcommit-setting, live-crash-repeat-sc0 | More trials and other crash points under SynchCommit=1 (three trials are evidence, not proof), and a journal-flush variant; the product's intent (F-C1102) is undecided. |
 | TRUST:new:Enabled steps are eventually scheduled; the operator re-runs after a stop; the ledger is (re-)enabled; every erasure releases its lock | progress premises of proofs/src/progress.rs | tested-partial | env-contract-r2, live-fc1303-bounded-resume | Fair scheduling and operator behaviour are untested: a soak with N committer processes, repeated redaction re-runs and injected stops, asserting completion within a bound, would test the conjunction at the product. |
 | TRUST:new:M07-L4 progress: the queue worker is weakly fair; a stopped run is resumed 3 - cursor more times | M07-L4 fairness premises of proofs-mech | tested-partial | live-fc1303-bounded-resume | A steady-enqueue soak for the queue and a resume count with a persisted cursor (absent at the pin); weak fairness of IRIS scheduling itself is not testable here. |
 | TRUST:new:Writers go quiet, the operator resumes, nothing is stopped forever, erasure may be repeated | the core models' AG EF premises | tested-partial | fu-r03-marker-held-open, sim-race-20261114 | That writers do go quiet is a usage premise the product does not enforce; a test would be the soak above plus an enforced quiet mode, which does not exist at the pin. |

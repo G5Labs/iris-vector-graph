@@ -38,7 +38,7 @@ status, evidence level and product obligation per cell). Reconciled 2026-11-14 (
 | Q17d | models-2 | D-10 (M1 2+2 by partition), D-13 (eraser overlapping a writer of the same graph in the module 04/11 proofs) | done (8d11c49c): proofs-pa3 108 verified; core-partition (2+2) exhaustive; model-level |
 | Q17e | product-gates | 3.5-lint/style, disconnect world (3.7-integration-worlds), failure controls | done (7b72fc52, 32db5be8): lint and style fail; disconnect world 49 trials, 0 violations; 17/20 failure scenarios with controls, S6 blocked |
 | Q17f | review | Fourth review pass over proofs-d1c..d1f and Q17a-h | done: no sign-off (`independent-review-4`, f497a387); R4-01..R4-13 being addressed |
-| Q17g | structural | 3.4 ownership/storage-order/declared-reads, 3.6 keys/fk/capacity/row-permutation/frame per module (AUDITD) | done (7b72fc52, 625194dc): 92 cells, 29 findings; follow-up on DDL frame oracle and declared reads doing |
+| Q17g | structural | 3.4 ownership/storage-order/declared-reads, 3.6 keys/fk/capacity/row-permutation/frame per module (AUDITD) | done (7b72fc52, 625194dc, a6892eb4, 82027430) |
 | Q17h | trace-replay | 3.7 trace replay through the breadth machines and lock logs per module (AUDITE) | done (e8a3ab67, e4fd212b): 13 modules replayed; 09 open, 15 blocked |
 | Q17i | orchestrator | 3.1-intent per module: structural intent check (`intent-structure-check`, `-selftest`) | done (05a86981) |
 | Q17j | ontology-2 | 3.1-coverage and remaining 3.1-cells | done (e4fd212b): 3.1-coverage 0 uncovered; 3.1-cells closed |
@@ -46,7 +46,7 @@ status, evidence level and product obligation per cell). Reconciled 2026-11-14 (
 | Q17l | reflection | 5c root causes, 3.8 test reflection | done (bad04b31): 33 root causes, 224 premises mapped |
 | Q18a | proofs-d9c | Review R4-01/03/04: guard G-BM, F-C1350 control, F-1306 as direct SQL | done (cd45f771): 158 verified, 14 controls |
 | Q18b | proofs-mech | D-14: mechanism laws proved once over a trait in Verus | done (e9041b19) |
-| Q18c | refusals | 5c-refusals for 01, 04, 06, 10, 11, 15-18; 3.5-decoders 07, 10, 18 (AUDITE) | done (1529a141); least-privilege follow-up doing |
+| Q18c | refusals | 5c-refusals for 01, 04, 06, 10, 11, 15-18; 3.5-decoders 07, 10, 18 (AUDITE) | done (1529a141, 95abaf5f) |
 | Q18d | writesets | breadth-a module-invariant pairs for 01, 03-06; 08; 18 restore_merge | done (728e18a1): 561/566, 5 open |
 | Q18e | reflection | root causes and premise map for every new finding and crate; TEST-REFLECTION refresh | done (3d75a633) |
 | Q18f | orchestrator | exclusive-container worlds: repeated crash trials, SynchCommit=1, product-level licence refusal (S6) | done: live-crash-repeat-sc0, -sc1, live-licence-world |
@@ -58,6 +58,6 @@ Genuinely unavailable (attempts in `versions/AVAILABILITY.md`): an IRIS 2026.3 e
 `irishealth:2026.3.0AI.113.0` is on an internal registry); an IRIS Enterprise / IRIS for Health image or licence (SC-003's
 target, edition comparison, more than 8 licence units); `%AI` classes (MCP); FHIR server classes (`HS.FHIRServer`); a
 multi-node ECP/mirror setup; an x86_64 `libarno_callout.so` (F-1001). Set up and used, so not blockers: driver 5.4.0,
-IRIS 2026.2 (isolated container, stopped and kept), a disposable least-privilege user (disabled). Operator ruling still
-requested (review-2 condition 6): compiling the non-pin 4.5.1 release through the pinned fixture (F-C1306 evidence) and
-the suites' `IVGDev` helper classes in `%SYS`.
+IRIS 2026.2 (isolated container, stopped and kept), a disposable least-privilege user (disabled). Operator ruling O-1
+(review-2 condition 6) given on 2026-11-14: the pinned 4.5.1 fixture and the `IVGDev` helpers are authorized setup
+(`incidents/O-1-FIXTURES.md`); the orchestrator's extension to a second fixture namespace (`IVG262CAP`) awaits confirmation.

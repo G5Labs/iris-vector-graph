@@ -1,0 +1,29 @@
+{
+ "doc": "F-0101: remove_legacy_objects marks a view removed when DROP VIEW failed, and marks every later item of a class\n    removed when the class delete failed. Oracle: data-model.md:50-60 (`removed` is whether it was dropped).",
+ "id": "local_f0101",
+ "log": "$RUN_DIR/breadth-a/live/local-20261113T225331.log",
+ "module": "01",
+ "observed": {
+  "every_drop_and_delete_failed": true,
+  "removed": [
+   [
+    "view",
+    "User.kgoldview",
+    true
+   ],
+   [
+    "procedure",
+    "User.CypherFn",
+    false
+   ],
+   [
+    "procedure",
+    "User.CypherFn",
+    true
+   ]
+  ]
+ },
+ "oracle": "removed is True only for an object that was dropped or deleted",
+ "reproduced": true,
+ "verdict": "view and second SqlProc item reported removed although every drop/delete failed"
+}

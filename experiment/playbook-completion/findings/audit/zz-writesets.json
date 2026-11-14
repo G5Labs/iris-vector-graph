@@ -340,7 +340,7 @@
   "severity": "S2",
   "confidence": "high",
   "remedy": "Do not combine %NOCHECK with %NOINDEX for rdf_edges (or check the triple against every row with a %NOINDEX-aware read and within the batch whatever skip_existing says), and rebuild the indices before load_edges returns; validate the unique key when rebuilding it.",
-  "notes": "Same root as F-C1250 and F-C1351 (rows the indexes do not hold until rebuild_all_indices). Census writer pairs: GID-I4.10 x BulkLoader.load_edges / load_networkx (models/breadth-a/writesets.json)."
+  "notes": "Same root as F-C1250 and F-C1351 (rows the indexes do not hold until rebuild_all_indices). Census writer pairs: GID-I4.10 x BulkLoader.load_edges / load_networkx (models/breadth-a/writesets.json). Part (b), duplicate edge keys from two load_edges(skip_existing=False) calls, is the same behaviour as F-C0349 (zz-structural.json, st-live-keys); part (a), a default load followed by create_edge, is new here."
  },
  {
   "id": "F-C0351",

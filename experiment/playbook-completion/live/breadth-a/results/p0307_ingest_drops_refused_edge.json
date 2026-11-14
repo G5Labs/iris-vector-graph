@@ -1,0 +1,20 @@
+{
+ "doc": "F-0307: bulk_ingest_edges on the server path drops an edge IRIS refuses (a 129-character predicate) and returns a\n    smaller count with no error; its SQL path raises GraphWriteError for the same row.",
+ "id": "p0307_ingest_drops_refused_edge",
+ "log": "$RUN_DIR/breadth-a/live/03-all-20261113T224729.log",
+ "module": "03",
+ "observed": {
+  "count": 1,
+  "objectscript_deployed": true,
+  "rows": [
+   [
+    "OK"
+   ]
+  ]
+ },
+ "oracle": "a refused row raises (4.7.0 row 14 for every other bulk writer; the SQL path raises)",
+ "reproduced": true,
+ "seconds": 0.29,
+ "started": "2026-11-13T22:47:30",
+ "verdict": "the too-wide edge was dropped, count 1, no error"
+}

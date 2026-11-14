@@ -210,7 +210,7 @@
    "source": "experiment/playbook-completion/TRUST.md",
    "id": "Durability of an acknowledged commit: a revision the ledger reports as committed survives an instance crash, which needs IRIS SynchCommit=1 or a journal flush before the acknowledgement",
    "premise": "an acknowledged revision survives an instance crash",
-   "pin_status": "not met with SynchCommit=0",
+   "pin_status": "not met with SynchCommit=0 (the container default); met in 3 of 3 trials with SynchCommit=1",
    "class": "engine",
    "tests": [
     {
@@ -222,10 +222,20 @@
      "kind": "run",
      "ref": "env-synchcommit-setting",
      "what": "the container runs SynchCommit=0"
+    },
+    {
+     "kind": "run",
+     "ref": "live-crash-repeat-sc0",
+     "what": "3+3 crash trials under SynchCommit=0: in-flight all-or-nothing; 3 of 3 acknowledged commits lost"
+    },
+    {
+     "kind": "run",
+     "ref": "live-crash-repeat-sc1",
+     "what": "3+3 crash trials under SynchCommit=1 (set, then restored to 0): 0 of 3 acknowledged commits lost"
     }
    ],
    "verdict": "tested-partial",
-   "should_exist": "SynchCommit=1 is untested: the same crash world on an instance configured with SynchCommit=1 (a container reconfiguration the operator must allow) would test the premise as stated."
+   "should_exist": "More trials and other crash points under SynchCommit=1 (three trials are evidence, not proof), and a journal-flush variant; the product's intent (F-C1102) is undecided."
   },
   {
    "key": "TRUST:new:Embedded SQL (&sql) behaves as dynamic SQL for the clauses used",

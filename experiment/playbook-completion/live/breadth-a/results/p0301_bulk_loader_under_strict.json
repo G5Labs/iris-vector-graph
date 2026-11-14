@@ -1,0 +1,16 @@
+{
+ "doc": "F-0301 (HD-0301 supported: the loader is excluded): with strict on, create_node is refused and BulkLoader still\n    writes. Recorded as the documented exclusion; the USER_GUIDE text says \"and the other methods\".",
+ "id": "p0301_bulk_loader_under_strict",
+ "log": "$RUN_DIR/breadth-a/live/ledger-all-20261113T232600.log",
+ "module": "ledger",
+ "observed": {
+  "bulk_loader": "{'nodes': 1, 'labels': 0, 'props': 2, 'elapsed_s': 0.0}",
+  "create_node_under_strict": "refused LedgerStrictModeError",
+  "rows": 1
+ },
+ "oracle": "Spec 213 API contract: bulk loader and raw SQL are outside strict mode (HD-0301)",
+ "reproduced": true,
+ "seconds": 5.53,
+ "started": "2026-11-13T23:26:01",
+ "verdict": "loader wrote under strict mode (contract exception; docs say otherwise)"
+}

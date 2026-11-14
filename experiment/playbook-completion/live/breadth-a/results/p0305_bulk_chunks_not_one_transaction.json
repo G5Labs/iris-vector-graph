@@ -1,0 +1,48 @@
+{
+ "doc": "F-0305: on a from_connect engine, bulk_create_nodes sends 1,000-node chunks to EdgeScan.BulkIngestNodesSQL through\n    the engine's own Native API connection (another server process), each chunk its own TSTART/TCOMMIT, outside the\n    WriteTxn opened on the cursor. Observation: chunk 2's nodes carry a label and a second connection holds a table lock\n    on rdf_labels, so the call stalls inside chunk 2; meanwhile a third connection at READ COMMITTED counts the batch's\n    committed nodes. The lock is then released (before IRIS's lock timeout) and the call completes. The journal is the\n    independent oracle for which process committed what, in how many transactions.\n    Oracle: USER_GUIDE.md:238-241 (each bulk write is a transaction of its own): no other process may see part of it.",
+ "id": "p0305_bulk_chunks_not_one_transaction",
+ "log": "$RUN_DIR/breadth-a/live/03-p0305_bulk_chunks_not_one_transaction-20261113T225713.log",
+ "module": "03",
+ "observed": {
+  "blocker_pid": "7438",
+  "call": {
+   "result": "returned 2000 ids",
+   "seconds": 5.2
+  },
+  "call_still_running_at_4s": true,
+  "cleanup_left": 0,
+  "committed_nodes_visible_to_another_process_mid_call": 1001,
+  "cursor_pid": "7437",
+  "journal_node_transactions": [
+   {
+    "committed": true,
+    "pid": "7440",
+    "records": 15000,
+    "rolled_back": false,
+    "stores": [
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_props"
+    ]
+   },
+   {
+    "committed": true,
+    "pid": "7440",
+    "records": 22000,
+    "rolled_back": false,
+    "stores": [
+     "global:^KG",
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_labels",
+     "sql:Graph_KG.rdf_props"
+    ]
+   }
+  ],
+  "nodes_committed_after_call": 2000,
+  "objectscript_deployed": true
+ },
+ "oracle": "no other process sees part of one bulk write; its writes are one transaction of the caller's",
+ "reproduced": true,
+ "seconds": 14.23,
+ "started": "2026-11-13T22:57:13",
+ "verdict": "1001 of 2000 nodes committed and visible to another process while the call ran; 2 node-writing transactions, pids ['7440'] (cursor pid 7437)"
+}

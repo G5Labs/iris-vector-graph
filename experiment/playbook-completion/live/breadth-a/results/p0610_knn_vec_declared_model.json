@@ -1,0 +1,31 @@
+{
+ "doc": "F-0610: SQL kg_KNN_VEC answers no rows, without error, for a named graph whose vectors sit in a route with a\n    declared model key. Oracle: KNOWN_ISSUES.md:702-714 (such a call raises) and 4.6.0 R265 (no silent empty).",
+ "id": "p0610_knn_vec_declared_model",
+ "log": "$RUN_DIR/breadth-a/live/06-all-20261113T230626.log",
+ "module": "06",
+ "observed": {
+  "engine_search_nodes_by_vector": [
+   [
+    "v1",
+    1.0
+   ]
+  ],
+  "kg_KNN_VEC": [
+   "ok",
+   []
+  ],
+  "registry": [
+   [
+    "kg_emb_0cd4b06f37fd16f1",
+    "bakv230626",
+    "ba-model",
+    4
+   ]
+  ]
+ },
+ "oracle": "the SQL procedure answers the graph's vectors or raises; never an empty answer over held vectors",
+ "reproduced": true,
+ "seconds": 1.1,
+ "started": "2026-11-13T23:06:31",
+ "verdict": "empty answer, no error"
+}

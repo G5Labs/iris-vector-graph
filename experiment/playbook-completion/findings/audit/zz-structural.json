@@ -29,7 +29,7 @@
   "severity": "S3",
   "confidence": "high",
   "remedy": "Clear through the product's eraser (erase_graph per graph, or EraseAll for a whole-namespace reset) and refuse while strict mode is on; or remove the option.",
-  "notes": "The connection was injected (the loader's own factory needs iris_devtester's container). The script is declared as the networkx-loader console script, which cannot run from an install (F-C1701), so the impact is on users running it from the repository. Found by ontology-2's source reading; decided live by the structural lane."
+  "notes": "The connection was injected (the loader's own factory needs iris_devtester's container). The script is declared as the networkx-loader console script, which cannot run from an install (F-C1701), so the impact is on users running it from the repository. Found by ontology-2's source reading; decided live by the structural lane. Review R5-09: in st-live-susp-loader-clear verify() already reported diverges before the probe, and the log has no ledger read after it; 'no ledger revision recording the deleted edge' is from source reading, not from that log."
  },
  {
   "id": "F-C0341",
@@ -898,7 +898,7 @@
   "severity": "S2",
   "confidence": "high",
   "remedy": "Use TOP n (as the translator does for joins and the engine does when _fetch_first_unsafe is set) or consult _fetch_first_unsafe in the adapter; a test that runs query_nodes(limit=n) on the supported driver.",
-  "notes": "Tested with driver 5.3.2 (the pin's uv.lock) only; 5.4.0 not tried. A segfault is uncatchable in-process: every caller of the adapter (LazyKG, the store protocol's users) loses the process. Merged (orchestrator, steer 8): the contract-2 lane filed the same defect independently as F-C1720 and added the cause and a driver control: the call sends FETCH FIRST n ROWS ONLY (iris_sql_store.py:1162-1181) without consulting the product's own FETCH FIRST guard (engine.py:726-840); every FETCH FIRST form crashes driver 5.3.2 (env2-fetchfirst-probe) and none crashes 5.4.0 (env2-fetchfirst-probe-d540, env2-fc1720-query-nodes-d540); the code comment's ARM64-only explanation is wrong here."
+  "notes": "The structural lane tested driver 5.3.2 (the pin's uv.lock) only; the contract-2 lane's runs merged below add the 5.4.0 control (no crash). A segfault is uncatchable in-process: every caller of the adapter (LazyKG, the store protocol's users) loses the process. Merged (orchestrator, steer 8): the contract-2 lane filed the same defect independently as F-C1720 and added the cause and a driver control: the call sends FETCH FIRST n ROWS ONLY (iris_sql_store.py:1162-1181) without consulting the product's own FETCH FIRST guard (engine.py:726-840); every FETCH FIRST form crashes driver 5.3.2 (env2-fetchfirst-probe) and none crashes 5.4.0 (env2-fetchfirst-probe-d540, env2-fc1720-query-nodes-d540); the code comment's ARM64-only explanation is wrong here."
  },
  {
   "id": "F-C1848",

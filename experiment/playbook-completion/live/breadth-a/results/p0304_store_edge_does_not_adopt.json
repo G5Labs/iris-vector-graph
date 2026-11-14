@@ -1,0 +1,45 @@
+{
+ "doc": "F-0304 with its discriminating control: over a temporal (marked) row, create_edge adopts (clears the mark) and\n    the edge survives the last temporal delete; store_edge swallows the duplicate, keeps the mark, and the edge is\n    deleted. Oracle: ADR-0009 (an explicit structural create takes the edge over).",
+ "id": "p0304_store_edge_does_not_adopt",
+ "log": "$RUN_DIR/breadth-a/live/05-all-20261113T224508.log",
+ "module": "05",
+ "observed": {
+  "paths": {
+   "create_edge": {
+    "after_explicit_write": [
+     [
+      null
+     ]
+    ],
+    "after_last_temporal_delete": [
+     [
+      null
+     ]
+    ],
+    "marked_row": [
+     [
+      "{\"temporal\":true}"
+     ]
+    ]
+   },
+   "store_edge": {
+    "after_explicit_write": [
+     [
+      "{\"temporal\":true}"
+     ]
+    ],
+    "after_last_temporal_delete": [],
+    "marked_row": [
+     [
+      "{\"temporal\":true}"
+     ]
+    ]
+   }
+  }
+ },
+ "oracle": "an explicitly written edge survives the last temporal delete (ADR-0009, CONTEXT.md:66-73)",
+ "reproduced": true,
+ "seconds": 0.33,
+ "started": "2026-11-13T22:45:10",
+ "verdict": "create_edge's edge survives (control), store_edge's edge is deleted"
+}

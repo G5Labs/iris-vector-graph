@@ -1,0 +1,23 @@
+{
+ "doc": "F-0103: with the schema record ^IVG.Deploy(\"schema\") absent and the 4.6.0 marker class present, the first-use\n    check accepts the namespace. Spec 262 FR-006a (spec.md:245) requires a refusal when the namespace has no schema\n    record. The record is saved and restored byte for byte around the check.",
+ "id": "p0103_no_record_marker_accepted",
+ "log": "$RUN_DIR/breadth-a/live/01-p0103_no_record_marker_accepted-p0106_property_keys_cross_graph-p0107_unqualified_drop_index-20261113T232555.log",
+ "module": "01",
+ "observed": {
+  "check_first_access": "accepted",
+  "record_before": [
+   "Graph_KG",
+   "2026-11-13 22:24:04 UTC 4.7.0"
+  ],
+  "record_during": "None",
+  "record_restored": [
+   "Graph_KG",
+   "2026-11-13 22:24:04 UTC 4.7.0"
+  ]
+ },
+ "oracle": "FR-006a: an engine refuses a namespace with no schema record (setup exempt)",
+ "reproduced": true,
+ "seconds": 0.94,
+ "started": "2026-11-13T23:25:55",
+ "verdict": "accepted with no record (marker class present)"
+}

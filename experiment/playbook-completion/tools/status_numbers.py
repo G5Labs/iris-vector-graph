@@ -77,6 +77,22 @@ def block(root: Path) -> str:
                  "; ".join(f"`{p['crate']}` {p['verified']}/{p['errors']}/{p['controls']}" for p in pr) + " |")
     lines.append("| Explorer crates (checks in RESULTS.json) | " +
                  "; ".join(f"`{m['crate']}` {m['checks']}" for m in mo) + " |")
+    ws = json.loads((root / "writesets" / "DISCHARGES.json").read_text()) if (root / "writesets" / "DISCHARGES.json").exists() else {}
+    ba = json.loads((root / "writesets" / "BREADTH-A-DISCHARGES.json").read_text()) if (root / "writesets" / "BREADTH-A-DISCHARGES.json").exists() else {}
+    if ws or ba:
+        cen = collections.Counter(v.get("discharge") for k, v in ws.items() if not k.startswith(("_", "module:")))
+        bac = collections.Counter(v.get("discharge") for k, v in ba.items() if not k.startswith("_"))
+        lines.append("| Write-set discharges (census obligations; breadth-a module-invariant pairs) | census " +
+                     f"{sum(cen.values())}: " + ", ".join(f"{k} {v}" for k, v in sorted(cen.items())) + "; breadth-a " +
+                     f"{sum(bac.values())}: " + ", ".join(f"{k} {v}" for k, v in sorted(bac.items())) + " |")
+    cov = root / "contract-2" / "coverage.json"
+    if cov.exists():
+        mods = json.loads(cov.read_text())["modules"]
+        tot = collections.Counter()
+        for m in mods.values():
+            tot.update(m.get("counts", {}))
+        lines.append(f"| IRIS features used by the product's code, all {len(mods)} modules (contract-2) | " +
+                     ", ".join(f"{k} {tot[k]}" for k in ("inside", "validated", "outside", "unclassified")) + " |")
     lines.append("| Matrix cells by status | " + ", ".join(f"{k} {v}" for k, v in sorted(ob["status_counts"].items())) + " |")
     lines.append("| Matrix cells by product obligation | " +
                  ", ".join(f"{k} {v}" for k, v in sorted(ob["product_counts"].items())) + " |")

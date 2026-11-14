@@ -1,0 +1,41 @@
+{
+ "doc": "New: a Cypher relationship pattern with an inline property, [r:R {k: 0}], fails with SQLCODE -149\n    (Graph_KG.JSON_VALUE <INVALID OREF>) when a candidate edge has NULL qualifiers, which is what create_edge writes for\n    an edge with no properties. The WHERE form of the same filter answers. Oracle: the two forms are equivalent\n    openCypher; a filter on a missing property is false/null, not an error.",
+ "id": "pC0101_inline_rel_prop_null_qualifiers",
+ "log": "$RUN_DIR/breadth-a/live/02-p0201_mode_off_lone_ekey1-pC0101_inline_rel_prop_null_qualifiers-20261113T224152.log",
+ "module": "02",
+ "observed": {
+  "cypher": {
+   "inline_delete": [
+    "error",
+    "tion encountered an error>]\r\n[Location: <ServerLoop>]\r\n[%msg: <SQL Function GRAPH_KG.JSON_VALUE failed with error:  SQLCODE=-400,%msg=ERROR #5002: ObjectScript error: <INVALID OREF>zJSONVALUE+1^Graph.KG.funcJSONVALUE.1>]"
+   ],
+   "inline_form": [
+    "error",
+    "ed an error>]\r\n[Location: <ServerLoop - Query Fetch>]\r\n[%msg: <SQL Function GRAPH_KG.JSON_VALUE failed with error:  SQLCODE=-400,%msg=ERROR #5002: ObjectScript error: <INVALID OREF>zJSONVALUE+1^Graph.KG.funcJSONVALUE.1>]"
+   ],
+   "merge_inline": [
+    "ok",
+    [
+     [
+      1
+     ]
+    ]
+   ],
+   "where_form": [
+    "ok",
+    []
+   ]
+  },
+  "json_value_null": "ion: <ServerLoop - Query Open()>]\r\n[%msg: <SQL Function GRAPH_KG.JSON_VALUE failed with error:  SQLCODE=-400,%msg=ERROR #5002: ObjectScript error: <INVALID OREF>zJSONVALUE+1^Graph.KG.funcJSONVALUE.1>]",
+  "qualifiers": [
+   [
+    null
+   ]
+  ]
+ },
+ "oracle": "an inline relationship property filter answers like the equivalent WHERE filter",
+ "reproduced": true,
+ "seconds": 0.35,
+ "started": "2026-11-13T22:41:53",
+ "verdict": "inline form raises SQLCODE -149 on NULL qualifiers"
+}

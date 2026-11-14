@@ -62,7 +62,7 @@ its key holds **no content of any provenance** (`!any_content`: no visible row a
 transactions would leave), before and after the step, in addition to D-9's `!rec_content`.
 
 **Control** `control_f1350_bypass_ignores_marker` removes G-BM (as at the pin): rejected at `protocol_top.rs:114`
-(`lemma_p3_binds`). Counterexample `cx_f1350` (12 steps, F-C1350's live schedule): commit A's edge; erase A (3 steps);
+(`lemma_p3_binds`). Counterexample `cx_f1350` (12 steps, F-C1350's outcome under the reviewed, locked Start (in the live runs the bypass write lands after the entry check while the redaction waits for the head lock, before the pin sets its marker in BatchInLock; the reviewed design excludes that order with the locked Start, HD-1301, and G-BM; this counterexample places the write after the marker)): commit A's edge; erase A (3 steps);
 open; start (entry check passes, A marked); a bypass writer writes A's row and commits (unrecorded, live); the first
 batch tombstones A's record while its key holds that content (`any_content`); the run reaches its final step, which can
 only be refused (`forall y. !sys_step(.., Final{ok: true}, y)`), and the marker stays (F-C1307); `!biz_inv` from the

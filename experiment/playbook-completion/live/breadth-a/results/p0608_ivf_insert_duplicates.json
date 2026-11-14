@@ -1,0 +1,41 @@
+{
+ "doc": "F-0608: IVFIndex.Insert of an id already indexed adds it to another cell without removing the old entry and\n    counts it again; the stale vector still answers.",
+ "id": "p0608_ivf_insert_duplicates",
+ "log": "$RUN_DIR/breadth-a/live/06-all-20261113T230626.log",
+ "module": "06",
+ "observed": {
+  "cells_holding_a": [
+   "0",
+   "1"
+  ],
+  "info_after_reinsert": {
+   "dim": 4,
+   "indexed": 3,
+   "metric": "dot",
+   "nlist": 2,
+   "type": "ivf"
+  },
+  "info_before": {
+   "dim": 4,
+   "indexed": 2,
+   "metric": "dot",
+   "nlist": 2,
+   "type": "ivf"
+  },
+  "search_old_direction": [
+   [
+    "a",
+    1.0
+   ],
+   [
+    "b",
+    0.0
+   ]
+  ]
+ },
+ "oracle": "an id lives in at most one cell; indexed counts distinct ids",
+ "reproduced": true,
+ "seconds": 0.91,
+ "started": "2026-11-13T23:06:30",
+ "verdict": "a in cells ['0', '1'], indexed 3"
+}

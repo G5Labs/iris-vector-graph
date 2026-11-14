@@ -395,6 +395,334 @@
     "rf-premise-map-check-r3"
    ],
    "added": "2026-11-14, from the reflection lane (review R4-14)"
+  },
+  {
+   "id": "env2-coverage-selftest",
+   "correction": "The record says 'all 14 JSON features of module 11'; the log's c_json_features_of_module_11 lists 15. The seeded feature names are not in the log, which records booleans only.",
+   "evidence": [
+    "env2-coverage-selftest"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
+  },
+  {
+   "id": "live-licence-world",
+   "correction": "The control-world timing '0.2 s' comes from the failed, unregistered first attempt (r1: 209 ms and 1.6 ms). The registered log (r2) shows world C at 47.3 ms and 1.46 ms and world X at 2,062.6 ms and 2,017.0 ms; the qualitative claim (each native call retries the refused connect, ~2 s) holds more strongly. F-C1795's text is corrected.",
+   "evidence": [
+    "live-licence-world"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
+  },
+  {
+   "id": "ws-live-ba-explicit-survives",
+   "correction": "For BulkLoader.load_edges the 'explicit write' answered edges: 0 (it skipped the existing row), so the run does not show load_edges writing the triple explicitly or losing it; the loss is shown for bulk_ingest_edges (and store_edge, the control). F-0304's note is corrected.",
+   "evidence": [
+    "ws-live-ba-explicit-survives"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
+  },
+  {
+   "id": "st-live-susp-loader-clear",
+   "correction": "verify() already reported 'diverges' before the probe, which the record does not say; 'no ledger revision recording the deleted committed edge' is from source reading, not from this log (no ledger read after the clear). F-C0340's note is corrected.",
+   "evidence": [
+    "st-live-susp-loader-clear"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
+  },
+  {
+   "id": "sem-check-r3",
+   "correction": "The finding counts in the record (r3: 299 classed / 203 break an axiom; r4: 309 / 208) are not in the log, which is byte-identical to sem-check-r2's; they are taken from the committed semantics/src/finding_classes.json.",
+   "evidence": [
+    "sem-check-r3"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
+  },
+  {
+   "id": "sem-check-r4",
+   "correction": "The finding counts in the record (r3: 299 classed / 203 break an axiom; r4: 309 / 208) are not in the log, which is byte-identical to sem-check-r2's; they are taken from the committed semantics/src/finding_classes.json.",
+   "evidence": [
+    "sem-check-r4"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
+  },
+  {
+   "id": "env2-fetchfirst-probe",
+   "correction": "The log records no driver version (\"driver\": \"?\"); the 5.3.2 attribution comes from the lane's environment (the pin's uv.lock venv), and 'no server-side error in messages.log' is not in the log.",
+   "evidence": [
+    "env2-fetchfirst-probe"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
+  },
+  {
+   "id": "env2-fc1720-query-nodes",
+   "correction": "The log records no driver version (\"driver\": \"?\"); the 5.3.2 attribution comes from the lane's environment (the pin's uv.lock venv), and 'no server-side error in messages.log' is not in the log.",
+   "evidence": [
+    "env2-fc1720-query-nodes"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
+  },
+  {
+   "id": "ont2-coverage",
+   "correction": "The headline figures match the log (3,580 entries, 0 uncovered; 4,216 statements, 0 violations); the breakdowns the record states beyond them (1,856 uncovered before, the 899/180 split, tag and cell counts) are not in the log.",
+   "evidence": [
+    "ont2-coverage"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
+  },
+  {
+   "id": "ont2-coverage-r2",
+   "correction": "The headline figures match the log (3,580 entries, 0 uncovered; 4,216 statements, 0 violations); the breakdowns the record states beyond them (1,856 uncovered before, the 899/180 split, tag and cell counts) are not in the log.",
+   "evidence": [
+    "ont2-coverage-r2"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
+  },
+  {
+   "id": "ont2-ontology-check",
+   "correction": "The headline figures match the log (3,580 entries, 0 uncovered; 4,216 statements, 0 violations); the breakdowns the record states beyond them (1,856 uncovered before, the 899/180 split, tag and cell counts) are not in the log.",
+   "evidence": [
+    "ont2-ontology-check"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
+  },
+  {
+   "id": "ont2-ontology-check-r2",
+   "correction": "The headline figures match the log (3,580 entries, 0 uncovered; 4,216 statements, 0 violations); the breakdowns the record states beyond them (1,856 uncovered before, the 899/180 split, tag and cell counts) are not in the log.",
+   "evidence": [
+    "ont2-ontology-check-r2"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
+  },
+  {
+   "id": "proofs-d9c-f1302-unlocked-start",
+   "correction": "'N errors' counts failing functions, not error locations (the record lists more locations than errors); see the general erratum below.",
+   "evidence": [
+    "proofs-d9c-f1302-unlocked-start"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
+  },
+  {
+   "id": "proofs-d9c-f1306-replay-direct-sql",
+   "correction": "'N errors' counts failing functions, not error locations (the record lists more locations than errors); see the general erratum below.",
+   "evidence": [
+    "proofs-d9c-f1306-replay-direct-sql"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
+  },
+  {
+   "id": "(general) Verus 'errors' counts",
+   "correction": "Across the proof crates' run records, 'N errors' is Verus's count of functions that failed verification, not the number of error locations; a control can fail one function at several lines. proofs-d9c/PROOFS.md:23-26 defines it.",
+   "evidence": [
+    "proofs-d9c-f1302-unlocked-start"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
+  },
+  {
+   "id": "proofs-d1d-baseline",
+   "correction": "Round r1 of proofs-d1d, superseded by the decisive round r2 (the record proofs-d1d-r2-baseline); RESULTS.json and the matrix cite r2. The r1 record and its log are kept for attribution.",
+   "evidence": [
+    "proofs-d1d-r2-baseline"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
+  },
+  {
+   "id": "proofs-d1d-f0701-build-in-place",
+   "correction": "Round r1 of proofs-d1d, superseded by the decisive round r2 (the record proofs-d1d-r2-f0701-build-in-place); RESULTS.json and the matrix cite r2. The r1 record and its log are kept for attribution.",
+   "evidence": [
+    "proofs-d1d-r2-f0701-build-in-place"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
+  },
+  {
+   "id": "proofs-d1d-f0702-erase-keeps-index",
+   "correction": "Round r1 of proofs-d1d, superseded by the decisive round r2 (the record proofs-d1d-r2-f0702-erase-keeps-index); RESULTS.json and the matrix cite r2. The r1 record and its log are kept for attribution.",
+   "evidence": [
+    "proofs-d1d-r2-f0702-erase-keeps-index"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
+  },
+  {
+   "id": "proofs-d1d-f0704-late-refusal",
+   "correction": "Round r1 of proofs-d1d, superseded by the decisive round r2 (the record proofs-d1d-r2-f0704-late-refusal); RESULTS.json and the matrix cite r2. The r1 record and its log are kept for attribution.",
+   "evidence": [
+    "proofs-d1d-r2-f0704-late-refusal"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
+  },
+  {
+   "id": "proofs-d1d-f0705-absent-graph-is-default",
+   "correction": "Round r1 of proofs-d1d, superseded by the decisive round r2 (the record proofs-d1d-r2-f0705-absent-graph-is-default); RESULTS.json and the matrix cite r2. The r1 record and its log are kept for attribution.",
+   "evidence": [
+    "proofs-d1d-r2-f0705-absent-graph-is-default"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
+  },
+  {
+   "id": "proofs-d1d-f0707-no-scope-check",
+   "correction": "Round r1 of proofs-d1d, superseded by the decisive round r2 (the record proofs-d1d-r2-f0707-no-scope-check); RESULTS.json and the matrix cite r2. The r1 record and its log are kept for attribution.",
+   "evidence": [
+    "proofs-d1d-r2-f0707-no-scope-check"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
+  },
+  {
+   "id": "proofs-d1d-f0801-fail-open",
+   "correction": "Round r1 of proofs-d1d, superseded by the decisive round r2 (the record proofs-d1d-r2-f0801-fail-open); RESULTS.json and the matrix cite r2. The r1 record and its log are kept for attribution.",
+   "evidence": [
+    "proofs-d1d-r2-f0801-fail-open"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
+  },
+  {
+   "id": "proofs-d1d-f0801-ttl-window",
+   "correction": "Round r1 of proofs-d1d, superseded by the decisive round r2 (the record proofs-d1d-r2-f0801-ttl-window); RESULTS.json and the matrix cite r2. The r1 record and its log are kept for attribution.",
+   "evidence": [
+    "proofs-d1d-r2-f0801-ttl-window"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
+  },
+  {
+   "id": "proofs-d1d-f0802-shortcut-unscoped",
+   "correction": "Round r1 of proofs-d1d, superseded by the decisive round r2 (the record proofs-d1d-r2-f0802-shortcut-unscoped); RESULTS.json and the matrix cite r2. The r1 record and its log are kept for attribution.",
+   "evidence": [
+    "proofs-d1d-r2-f0802-shortcut-unscoped"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
+  },
+  {
+   "id": "proofs-d1d-f0805-literal-insert-unguarded",
+   "correction": "Round r1 of proofs-d1d, superseded by the decisive round r2 (the record proofs-d1d-r2-f0805-literal-insert-unguarded); RESULTS.json and the matrix cite r2. The r1 record and its log are kept for attribution.",
+   "evidence": [
+    "proofs-d1d-r2-f0805-literal-insert-unguarded"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
+  },
+  {
+   "id": "proofs-d1d-f0810-null-keeps-key",
+   "correction": "Round r1 of proofs-d1d, superseded by the decisive round r2 (the record proofs-d1d-r2-f0810-null-keeps-key); RESULTS.json and the matrix cite r2. The r1 record and its log are kept for attribution.",
+   "evidence": [
+    "proofs-d1d-r2-f0810-null-keeps-key"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
+  },
+  {
+   "id": "proofs-d1d-f0816-dblabels-unscoped",
+   "correction": "Round r1 of proofs-d1d, superseded by the decisive round r2 (the record proofs-d1d-r2-f0816-dblabels-unscoped); RESULTS.json and the matrix cite r2. The r1 record and its log are kept for attribution.",
+   "evidence": [
+    "proofs-d1d-r2-f0816-dblabels-unscoped"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
+  },
+  {
+   "id": "proofs-d1d-f0818-vlp-crosses-graphs",
+   "correction": "Round r1 of proofs-d1d, superseded by the decisive round r2 (the record proofs-d1d-r2-f0818-vlp-crosses-graphs); RESULTS.json and the matrix cite r2. The r1 record and its log are kept for attribution.",
+   "evidence": [
+    "proofs-d1d-r2-f0818-vlp-crosses-graphs"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
+  },
+  {
+   "id": "proofs-d1d-f0901-shared-class-name",
+   "correction": "Round r1 of proofs-d1d, superseded by the decisive round r2 (the record proofs-d1d-r2-f0901-shared-class-name); RESULTS.json and the matrix cite r2. The r1 record and its log are kept for attribution.",
+   "evidence": [
+    "proofs-d1d-r2-f0901-shared-class-name"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
+  },
+  {
+   "id": "proofs-d1d-f0902-crc-identity",
+   "correction": "Round r1 of proofs-d1d, superseded by the decisive round r2 (the record proofs-d1d-r2-f0902-crc-identity); RESULTS.json and the matrix cite r2. The r1 record and its log are kept for attribution.",
+   "evidence": [
+    "proofs-d1d-r2-f0902-crc-identity"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
+  },
+  {
+   "id": "proofs-d1d-f0906-gate-edge-index-only",
+   "correction": "Round r1 of proofs-d1d, superseded by the decisive round r2 (the record proofs-d1d-r2-f0906-gate-edge-index-only); RESULTS.json and the matrix cite r2. The r1 record and its log are kept for attribution.",
+   "evidence": [
+    "proofs-d1d-r2-f0906-gate-edge-index-only"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
+  },
+  {
+   "id": "proofs-d1d-f0908-run-unchecked",
+   "correction": "Round r1 of proofs-d1d, superseded by the decisive round r2 (the record proofs-d1d-r2-f0908-run-unchecked); RESULTS.json and the matrix cite r2. The r1 record and its log are kept for attribution.",
+   "evidence": [
+    "proofs-d1d-r2-f0908-run-unchecked"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
+  },
+  {
+   "id": "proofs-d1d-fc0701-stop-name-accepted",
+   "correction": "Round r1 of proofs-d1d, superseded by the decisive round r2 (the record proofs-d1d-r2-fc0701-stop-name-accepted); RESULTS.json and the matrix cite r2. The r1 record and its log are kept for attribution.",
+   "evidence": [
+    "proofs-d1d-r2-fc0701-stop-name-accepted"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
+  },
+  {
+   "id": "proofs-d1d-fc0702-bare-trollback",
+   "correction": "Round r1 of proofs-d1d, superseded by the decisive round r2 (the record proofs-d1d-r2-fc0702-bare-trollback); RESULTS.json and the matrix cite r2. The r1 record and its log are kept for attribution.",
+   "evidence": [
+    "proofs-d1d-r2-fc0702-bare-trollback"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
+  },
+  {
+   "id": "proofs-d1d-fc0803-top1-copy",
+   "correction": "Round r1 of proofs-d1d, superseded by the decisive round r2 (the record proofs-d1d-r2-fc0803-top1-copy); RESULTS.json and the matrix cite r2. The r1 record and its log are kept for attribution.",
+   "evidence": [
+    "proofs-d1d-r2-fc0803-top1-copy"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
+  },
+  {
+   "id": "proofs-d1d-fc0901-mark-any-entry",
+   "correction": "Round r1 of proofs-d1d, superseded by the decisive round r2 (the record proofs-d1d-r2-fc0901-mark-any-entry); RESULTS.json and the matrix cite r2. The r1 record and its log are kept for attribution.",
+   "evidence": [
+    "proofs-d1d-r2-fc0901-mark-any-entry"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
+  },
+  {
+   "id": "proofs-d1d-hd0902-shadow-swallows-native-error",
+   "correction": "Round r1 of proofs-d1d, superseded by the decisive round r2 (the record proofs-d1d-r2-hd0902-shadow-swallows-native-error); RESULTS.json and the matrix cite r2. The r1 record and its log are kept for attribution.",
+   "evidence": [
+    "proofs-d1d-r2-hd0902-shadow-swallows-native-error"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
+  },
+  {
+   "id": "proofs-d1c-recheck",
+   "correction": "The record states no counts; its log and RESULTS show the recheck reproduced the baseline: 111 verified, 0 errors, every one of the 10 controls rejected at its located line, same sources hash.",
+   "evidence": [
+    "proofs-d1c-recheck"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
+  },
+  {
+   "id": "proofs-d1d-recheck",
+   "correction": "The record states no counts; its log and RESULTS show the recheck reproduced the baseline: 118 verified, 0 errors, every one of the 21 controls rejected at its located line, same sources hash.",
+   "evidence": [
+    "proofs-d1d-recheck"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
+  },
+  {
+   "id": "proofs-d1e-recheck",
+   "correction": "The record states no counts; its log and RESULTS show the recheck reproduced the baseline: 115 verified, 0 errors, every one of the 15 controls rejected at its located line, same sources hash.",
+   "evidence": [
+    "proofs-d1e-recheck"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
+  },
+  {
+   "id": "proofs-d1f-recheck",
+   "correction": "The record states no counts; its log and RESULTS show the recheck reproduced the baseline: 115 verified, 0 errors, every one of the 17 controls rejected at its located line, same sources hash.",
+   "evidence": [
+    "proofs-d1f-recheck"
+   ],
+   "added": "2026-11-14, review R5-09/R5-10 (fifth pass), orchestrator"
   }
  ]
 }

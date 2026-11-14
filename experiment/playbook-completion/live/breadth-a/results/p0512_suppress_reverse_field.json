@@ -1,0 +1,16 @@
+{
+ "doc": "F-0512: BulkInsertCounts with the spec's field name suppress_reverse still writes the reverse index; only\n    \"sri\" suppresses it.",
+ "id": "p0512_suppress_reverse_field",
+ "log": "$RUN_DIR/breadth-a/live/05-all-20261113T224508.log",
+ "module": "05",
+ "observed": {
+  "result": "2:0:0",
+  "tin_written_with_sri": 0,
+  "tin_written_with_suppress_reverse": 1
+ },
+ "oracle": "spec 204 FR-009: suppress_reverse suppresses the reverse index",
+ "reproduced": true,
+ "seconds": 0.07,
+ "started": "2026-11-13T22:45:10",
+ "verdict": "suppress_reverse ignored; reverse index written"
+}

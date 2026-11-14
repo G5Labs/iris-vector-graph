@@ -1,0 +1,13 @@
+{
+ "doc": "F-0601: get_embedding_identity answers None (nothing recorded) for any failure of the registry read, so\n    enforce_embedding_identity lets the write through; a privilege error (SQLCODE -99) is not a missing registry.\n    Oracle: ADR-0006 (refusable before it happens) and FR-014 (not opt-in).",
+ "id": "local_f0601",
+ "log": "$RUN_DIR/breadth-a/live/local-20261113T225331.log",
+ "module": "06",
+ "observed": {
+  "enforce_embedding_identity": "returned None (write proceeds)",
+  "get_embedding_identity": "None"
+ },
+ "oracle": "a registry read that fails for any reason but absence refuses the write",
+ "reproduced": true,
+ "verdict": "privilege error on the registry read turned the identity check off"
+}

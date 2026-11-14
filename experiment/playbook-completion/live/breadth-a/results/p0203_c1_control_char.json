@@ -1,0 +1,17 @@
+{
+ "doc": "F-0203 / P-0202: Python's name check accepts U+0085 (a C1 control); the server's $ZStrip(,\"*C\") check refuses\n    it, so the write fails on the server with an IRIS error instead of the Python ValueError.",
+ "id": "p0203_c1_control_char",
+ "log": "$RUN_DIR/breadth-a/live/02-all-20261113T224011.log",
+ "module": "02",
+ "observed": {
+  "create_edge": "GraphWriteError: create_edge failed (SQLCODE -400), nothing written: <SQL ERROR>; Details: [SQLCODE: <-400>:<Fatal error occurred>]\r\n[Location: <ServerLoop>]\r\n[%msg: <ERROR #5001: graph name contains a control character, which cannot be used as a subscript>]",
+  "python_validate": "'ba\\x85bac1224011'",
+  "rows_left_in_c1_graph": 0,
+  "server_validate_error_text": "ERROR #5001: graph name contains a control character, which cannot be used as a subscript"
+ },
+ "oracle": "the Python mirror refuses every name the server refuses (CHANGELOG.md:4618-4620)",
+ "reproduced": true,
+ "seconds": 0.2,
+ "started": "2026-11-13T22:40:13",
+ "verdict": "Python accepts, server refuses"
+}

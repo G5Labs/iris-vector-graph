@@ -1,0 +1,18 @@
+{
+ "doc": "F-0106: get_property_keys(label) joins labels to properties by id alone, so a key held only by a same-id node of\n    another graph is listed as the label's key. Oracle: CONTEXT.md:38-43 / SYS-I2.",
+ "id": "p0106_property_keys_cross_graph",
+ "log": "$RUN_DIR/breadth-a/live/01-p0103_no_record_marker_accepted-p0106_property_keys_cross_graph-p0107_unqualified_drop_index-20261113T232555.log",
+ "module": "01",
+ "observed": {
+  "get_property_keys": [
+   "baonlyB232555",
+   "id",
+   "own"
+  ]
+ },
+ "oracle": "every key listed for label L is held by a node with L in its own graph",
+ "reproduced": true,
+ "seconds": 0.14,
+ "started": "2026-11-13T23:25:56",
+ "verdict": "graph B's key listed under graph A's label"
+}

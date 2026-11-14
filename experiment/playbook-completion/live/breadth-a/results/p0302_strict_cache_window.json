@@ -1,0 +1,16 @@
+{
+ "doc": "F-0302: engine E1 has cached \"not strict\"; E2 turns strict on; E1's direct write within the 5 s TTL succeeds.\n    Oracle: USER_GUIDE.md:1107-1121 (strict mode refuses the writes; no window stated).",
+ "id": "p0302_strict_cache_window",
+ "log": "$RUN_DIR/breadth-a/live/ledger-all-20261113T232600.log",
+ "module": "ledger",
+ "observed": {
+  "e1_write_after_strict": true,
+  "e2_write": "refused LedgerStrictModeError",
+  "elapsed_s": 0.0
+ },
+ "oracle": "once strict is on, every engine refuses the guarded writes",
+ "reproduced": true,
+ "seconds": 0.08,
+ "started": "2026-11-13T23:26:01",
+ "verdict": "another engine wrote within its cache window"
+}

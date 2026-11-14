@@ -45,7 +45,9 @@ Product pin `3eaa79cf77d3e0a879b2cced634cf2729d81499e` (tree `b098a6f4`). Origin
 - Compiling anything other than the pin's own classes through the pin's own deploy path remains out of scope, with
   one operator-authorized exception (O-1, 2026-11-14, `incidents/O-1-FIXTURES.md`): the existing pinned upstream
   fixture's unchanged 4.5.1 release in its isolated migration-test namespace (`IVG262FC1306`) and the repository's
-  unchanged `IVGDev` test helpers in `%SYS` are authorized verification setup. Record versions, namespaces, classes and
+  unchanged `IVGDev` test helpers in `%SYS` are authorized verification setup. The orchestrator extended this to a
+  second namespace built the same way, `IVG262CAP` (same fixture, same unchanged release; 3.6-capacity/01), and asks the
+  operator to confirm that reading (`incidents/O-1-FIXTURES.md`). Record versions, namespaces, classes and
   effects for any such use; it authorizes test setup only, never repairs or weakened oracles.
 - **Connection cap.** IRIS Community allows 8 connections in total for the whole container, shared by every lane
   (exceeding it fails with "Unable to allocate a license"; the identity probe then reports a mismatch). Therefore

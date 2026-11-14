@@ -99,7 +99,7 @@
     "run:proofs-d9-progress-rewind",
     "run:proofs-d9-recheck"
    ],
-   "remaining": "model-level: participant contracts composed with actors Protocol2 in two levels; no code correspondence (see 3.5-handlers); premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested; as built: the four located controls encode the pin's behaviour (F-1302, F-1303, F-1306; F-1201 intent-undecided) and each has a proved counterexample, and the premises above are violated by reproduced findings, so the product obligation fails [review-response R2-01]; proofs-d9 premise P-D9-3 (bypass writers never write ledger globals) is false at the pin (census: restore, ImportGlobals, Disable/SetStrict, copy_ledger_history, SQL INSERT into ledger_revisions)",
+   "remaining": "model-level: participant contracts composed with actors Protocol2 in two levels; no code correspondence (see 3.5-handlers); premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 46 undeclared writers (corrected census); F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested; as built: the four located controls encode the pin's behaviour (F-1302, F-1303, F-1306; F-1201 intent-undecided) and each has a proved counterexample, and the premises above are violated by reproduced findings, so the product obligation fails [review-response R2-01]; proofs-d9 premise P-D9-3 (bypass writers never write ledger globals) is false at the pin (census: restore, ImportGlobals, Disable/SetStrict, copy_ledger_history, SQL INSERT into ledger_revisions)",
    "level": "model",
    "premises_refuted_at_pin": [
     "no-bypass-writes",
@@ -125,7 +125,7 @@
     "run:proofs-d9-progress-rewind",
     "run:proofs-d9-recheck"
    ],
-   "remaining": "progress premises not discharged against IRIS scheduling; premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
+   "remaining": "progress premises not discharged against IRIS scheduling; premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 46 undeclared writers (corrected census); F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
    "level": "model",
    "premises_refuted_at_pin": [
     "no-bypass-writes",
@@ -175,7 +175,7 @@
     "run:core-proofs-recheck-baseline",
     "run:trace-conformance-ledger"
    ],
-   "remaining": "replay-equals-store contract proved for the reviewed model; as-built fails (F-1304/F-1305/F-1306); premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
+   "remaining": "replay-equals-store contract proved for the reviewed model; as-built fails (F-1304/F-1305/F-1306); premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 46 undeclared writers (corrected census); F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
    "level": "model",
    "premises_refuted_at_pin": [
     "no-bypass-writes",
@@ -338,9 +338,11 @@
     "run:independent-review-1",
     "run:independent-review-2-final",
     "run:independent-review-3",
-    "review/REVIEW-3.md"
+    "run:independent-review-4",
+    "run:independent-review-5",
+    "review/REVIEW-5.md"
    ],
-   "remaining": "no sign-off in three passes; the third pass's conditions A-1..A-4 were applied; the remaining sign-off condition is the operator's scope ruling O-1/R2-07 (compiling the non-pin 4.5.1 release through the pinned fixture for F-C1306, and IVGDev helper classes in %SYS); the newest crates (proofs-d1c..d1f) and the steer-7 lanes are not yet reviewed (queue Q17f)"
+   "remaining": "No sign-off in five passes. O-1 is resolved by the operator's clarification (incidents/O-1-FIXTURES.md). The fifth pass (candidate 25ba22dd) found R4-01..R4-08 and R4-10..R4-12 met and set text and commit conditions R5-01..R5-06 (blocking) and R5-07..R5-11; the orchestrator's response is in review/RESPONSE-5.md; a further pass confirms or not."
   },
   {
    "gate": "5-trust-strict",
@@ -494,7 +496,7 @@
     "run:core-proofs-recheck-baseline"
    ],
    "level": "model",
-   "remaining": "premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
+   "remaining": "premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 46 undeclared writers (corrected census); F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
    "premises_refuted_at_pin": [
     "no-bypass-writes",
     "single-target-predicate",
@@ -516,7 +518,7 @@
     "run:core-refine-m2-reviewed"
    ],
    "level": "model",
-   "remaining": "premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
+   "remaining": "premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 46 undeclared writers (corrected census); F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
    "premises_refuted_at_pin": [
     "no-bypass-writes",
     "single-target-predicate",
@@ -540,7 +542,7 @@
     "run:core-proofs-recheck-baseline",
     "run:core-refine-m2-as-built"
    ],
-   "remaining": "model to model; as-built fails refinement (core-refine-m2-as-built); premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
+   "remaining": "model to model; as-built fails refinement (core-refine-m2-as-built); premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 46 undeclared writers (corrected census); F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
    "level": "model",
    "premises_refuted_at_pin": [
     "no-bypass-writes",
@@ -743,7 +745,7 @@
     "run:core-proofs-recheck-baseline"
    ],
    "level": "model",
-   "remaining": "premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
+   "remaining": "premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 46 undeclared writers (corrected census); F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
    "premises_refuted_at_pin": [
     "no-bypass-writes",
     "single-target-predicate",
@@ -765,7 +767,7 @@
     "run:core-refine-m2-reviewed"
    ],
    "level": "model",
-   "remaining": "premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
+   "remaining": "premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 46 undeclared writers (corrected census); F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
    "premises_refuted_at_pin": [
     "no-bypass-writes",
     "single-target-predicate",
@@ -789,7 +791,7 @@
     "run:core-proofs-recheck-baseline",
     "run:core-refine-m2-as-built"
    ],
-   "remaining": "model to model; as-built fails refinement (core-refine-m2-as-built); premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
+   "remaining": "model to model; as-built fails refinement (core-refine-m2-as-built); premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 46 undeclared writers (corrected census); F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
    "level": "model",
    "premises_refuted_at_pin": [
     "no-bypass-writes",
@@ -988,7 +990,7 @@
     "run:core-proofs-recheck-baseline"
    ],
    "level": "model",
-   "remaining": "premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
+   "remaining": "premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 46 undeclared writers (corrected census); F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
    "premises_refuted_at_pin": [
     "no-bypass-writes",
     "single-target-predicate",
@@ -1010,7 +1012,7 @@
     "run:core-refine-m2-reviewed"
    ],
    "level": "model",
-   "remaining": "premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
+   "remaining": "premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 46 undeclared writers (corrected census); F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
    "premises_refuted_at_pin": [
     "no-bypass-writes",
     "single-target-predicate",
@@ -1034,7 +1036,7 @@
     "run:core-proofs-recheck-baseline",
     "run:core-refine-m2-as-built"
    ],
-   "remaining": "model to model; as-built fails refinement (core-refine-m2-as-built); premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
+   "remaining": "model to model; as-built fails refinement (core-refine-m2-as-built); premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 46 undeclared writers (corrected census); F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
    "level": "model",
    "premises_refuted_at_pin": [
     "no-bypass-writes",

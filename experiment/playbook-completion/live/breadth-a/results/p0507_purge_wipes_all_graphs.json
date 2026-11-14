@@ -1,0 +1,45 @@
+{
+ "doc": "F-0507: Graph.KG.TemporalIndex.Purge() kills every graph's temporal stores and retracts no marked row; the\n    rows then outlive every timestamp and purge_before cannot find them.",
+ "id": "p0507_purge_wipes_all_graphs",
+ "log": "$RUN_DIR/breadth-a/live/05-p0507_purge_wipes_all_graphs-p0513_validation_paths-20261113T224520.log",
+ "module": "05",
+ "observed": {
+  "out_g1_after": 1,
+  "purge_before_removed": 0,
+  "rows_after_purge": [
+   [
+    "bapa224520",
+    "{\"temporal\":true}"
+   ],
+   [
+    "bapb224520",
+    "{\"temporal\":true}"
+   ]
+  ],
+  "rows_after_purge_before": [
+   [
+    "bapa224520"
+   ],
+   [
+    "bapb224520"
+   ]
+  ],
+  "rows_before": [
+   [
+    "bapa224520",
+    "{\"temporal\":true}"
+   ],
+   [
+    "bapb224520",
+    "{\"temporal\":true}"
+   ]
+  ],
+  "tout_g1_after": 0,
+  "tout_g2_after": 0
+ },
+ "oracle": "ADR-0009 amendment: the marked row goes when the triple's last timestamp goes, in every graph",
+ "reproduced": true,
+ "seconds": 0.83,
+ "started": "2026-11-13T22:45:20",
+ "verdict": "both graphs' temporal stores wiped; marked rows and adjacency survive every purge"
+}

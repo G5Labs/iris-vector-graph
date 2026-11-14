@@ -1,0 +1,2448 @@
+{
+ "_doc": "Hand review of the rule classifier of semantics/tools/trace_requirements.py (basis rule:<id>). Sample: Python random.Random(20261114).sample(pool, 80), pool = the requirements whose bases include a rule: basis, sorted by id. Verdict on the rule-derived targets only (finding, kind, repairs and explicit bases are not under review): agree = every rule target fits the statement; partly = at least one fits and at least one does not or fits only loosely; disagree = none fits. Judged by the semantics lane (one reviewer, reading the statement text; Notes and Source consulted where the text was unclear); not an independent review. Round 1 precision met the bar (disagree 3/80); its three systematic false-positive patterns were still fixed (read-purity 'reads only' read as scope; 'recorded graph' as a ledger record; redaction verbs and cost statements as removal reach; 'schema 2' as a version gate), the trace regenerated and the same-seed sample drawn again (round 2; 39 of its 80 items were also in round 1 with unchanged rule targets, whose round-1 verdicts are reused). trace.json corresponds to round 2.",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "seed": 20261114,
+ "rounds": [
+  {
+   "round": "round 1",
+   "rules": "rules before the round-1 fixes",
+   "pool": 1047,
+   "sample": 80,
+   "summary": {
+    "agree": 67,
+    "partly": 10,
+    "disagree": 3,
+    "disagree_rate": 0.0375,
+    "agree_rate": 0.8375
+   },
+   "items": [
+    {
+     "id": "ALG-B12.2",
+     "kind": "B",
+     "statement": "A rebuild changes the snapshot in place. A reader never sees it empty, only a mix of old and new rows.",
+     "targets": [
+      "AX-08"
+     ],
+     "rules": [
+      "rule:R-AX08-derived"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "a rebuilt (derived) snapshot and what its readers see"
+    },
+    {
+     "id": "INT-F5.6",
+     "kind": "T",
+     "statement": "When the interpretation version is missing or old, the sync first redoes the derived parts of all items. Then it sets the version.",
+     "targets": [
+      "AX-08"
+     ],
+     "rules": [
+      "rule:R-AX08-derived"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "the FHIR graph's derived parts are redone when their version is old"
+    },
+    {
+     "id": "VEC-T2.13",
+     "kind": "T",
+     "statement": "An engine may reuse a route it read up to 30 seconds ago without asking the registry again.",
+     "targets": [
+      "EXC-05"
+     ],
+     "rules": [
+      "rule:R-EXC05-route-memory"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "exactly the documented 30 s route memory"
+    },
+    {
+     "id": "WRT-T4.12",
+     "kind": "T",
+     "statement": "Storing an edge writes rows only. IRIS keeps the adjacency index for it, or a later rebuild does.",
+     "targets": [
+      "AX-08"
+     ],
+     "rules": [
+      "rule:R-AX08-derived"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "the adjacency index is derived from the rows, kept by IRIS or a rebuild"
+    },
+    {
+     "id": "CYP-B5.3",
+     "kind": "B",
+     "statement": "A use graph with an empty name scopes the query to the default graph.",
+     "targets": [
+      "AX-02"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph",
+      "rule:R-AX02-scope-terms"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "graph scope of USE GRAPH ''"
+    },
+    {
+     "id": "WRT-B4.30",
+     "kind": "B",
+     "statement": "The fast edge ingest raises on any row IRIS refuses, on both of its paths.",
+     "targets": [
+      "AX-03"
+     ],
+     "rules": [
+      "rule:R-AX03-refusal-words"
+     ],
+     "other_bases": [
+      "finding:F-0307"
+     ],
+     "verdict": "agree",
+     "note": "an IRIS refusal is raised, not dropped"
+    },
+    {
+     "id": "ADJ-B7.8",
+     "kind": "B",
+     "statement": "The interned snapshot has no graph part. It gives the default graph's answer only while no named graph has an edge.",
+     "targets": [
+      "AX-02",
+      "EXC-06"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph",
+      "rule:R-EXC06-interned-no-graph"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "the named exception to graph scope, and the axiom it excepts"
+    },
+    {
+     "id": "TXT-B6",
+     "kind": "B",
+     "statement": "Upgrade turns a schema 1 index into schema 2 in one pass.",
+     "targets": [
+      "AX-09"
+     ],
+     "rules": [
+      "rule:R-AX09-index-schema"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "index layout upgrade: the index's version gate"
+    },
+    {
+     "id": "INT-F3.7",
+     "kind": "T",
+     "statement": "Register run again keeps the sync watermarks. It updates the settings.",
+     "targets": [
+      "AX-06"
+     ],
+     "rules": [
+      "rule:R-AX06-retry"
+     ],
+     "other_bases": [],
+     "verdict": "partly",
+     "note": "re-registering is a deliberate update, not a retry; AX-06 fits only as 'running again keeps state'"
+    },
+    {
+     "id": "TXT-B2.4",
+     "kind": "T",
+     "statement": "On schema 2, a word's weight is worked out at each search. It uses the current number of documents and document frequency.",
+     "targets": [
+      "AX-09"
+     ],
+     "rules": [
+      "rule:R-AX09-index-schema"
+     ],
+     "other_bases": [],
+     "verdict": "disagree",
+     "note": "a scoring rule under layout 2 (functional); 'schema 2' made it look like a version-gate rule"
+    },
+    {
+     "id": "ERS-P1",
+     "kind": "P",
+     "statement": "A delete that meets a row another transaction holds waits for that transaction.",
+     "targets": [
+      "E-ROWLOCK"
+     ],
+     "rules": [
+      "rule:R-C-rowlock"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "E-ROWLOCK decides it"
+    },
+    {
+     "id": "ADJ-B8.2",
+     "kind": "B",
+     "statement": "With the row hook declared, the rebuild purges the index and fills it again through the hook.",
+     "targets": [
+      "AX-08",
+      "AX-10",
+      "X-FX"
+     ],
+     "rules": [
+      "rule:R-AX08-derived",
+      "rule:R-AX10-removal",
+      "rule:R-C-fx"
+     ],
+     "other_bases": [],
+     "verdict": "partly",
+     "note": "AX-08 and X-FX fit; AX-10 does not (the rebuild 'purges' the index, it removes no target's content)"
+    },
+    {
+     "id": "TMP-T9.14",
+     "kind": "T",
+     "statement": "A purge that retires rows costs about 40 microseconds per purged edge.",
+     "targets": [
+      "AX-10"
+     ],
+     "rules": [
+      "rule:R-AX10-removal"
+     ],
+     "other_bases": [],
+     "verdict": "disagree",
+     "note": "a cost figure for purges; no removal-reach content"
+    },
+    {
+     "id": "SNP-B2.20",
+     "kind": "B",
+     "statement": "A restored timed event stays in its own graph.",
+     "targets": [
+      "AX-02"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "a restored event stays in its graph"
+    },
+    {
+     "id": "TMP-B11",
+     "kind": "B",
+     "statement": "The layout move puts a flat, pre-graph temporal index into the default graph, all at once or not at all.",
+     "targets": [
+      "AX-02"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph"
+     ],
+     "other_bases": [],
+     "verdict": "partly",
+     "note": "it places content into the default graph (scope), but it is mainly a migration (AX-09) done all or nothing (AX-04), which the rules missed"
+    },
+    {
+     "id": "LED-B4.14",
+     "kind": "I",
+     "statement": "A commit makes all its governed store changes in one transaction, under the head lock. Its records, the head, the id maps and its retry key go in the same one.",
+     "targets": [
+      "AX-04",
+      "AX-06",
+      "AX-07",
+      "AX-11"
+     ],
+     "rules": [
+      "rule:R-AX04-one-transaction",
+      "rule:R-AX06-retry",
+      "rule:R-AX07-recorded",
+      "rule:R-AX11-concurrency"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "one transaction (AX-04), the retry key in it (AX-06), records (AX-07), head lock (AX-11)"
+    },
+    {
+     "id": "INS-I8.4",
+     "kind": "I",
+     "statement": "Rows put back, folded and kept aside add up to the rows saved. Otherwise setup raises and keeps the side table.",
+     "targets": [
+      "AX-09"
+     ],
+     "rules": [
+      "rule:R-AX09-install"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "a setup migration that accounts for its rows or raises"
+    },
+    {
+     "id": "INT-F4.3",
+     "kind": "T",
+     "statement": "A rebuild drops the nodes of items that are deleted or gone, each drop in its own transaction.",
+     "targets": [
+      "AX-04",
+      "AX-08"
+     ],
+     "rules": [
+      "rule:R-AX04-one-transaction",
+      "rule:R-AX08-derived"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "rebuild of a derived FHIR graph, one transaction per drop"
+    },
+    {
+     "id": "VEC-B11.6",
+     "kind": "B",
+     "statement": "Building an IVF index reads one graph's route, groups its vectors and writes the index, replacing one of that name.",
+     "targets": [
+      "AX-02"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "an IVF build reads one graph's route"
+    },
+    {
+     "id": "ERS-B2",
+     "kind": "B",
+     "statement": "A node erasure removes the matching nodes and every edge that touches them in that graph.",
+     "targets": [
+      "AX-02",
+      "AX-10"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph",
+      "rule:R-AX02-scope-terms",
+      "rule:R-AX10-removal"
+     ],
+     "other_bases": [
+      "finding:F-C1203"
+     ],
+     "verdict": "agree",
+     "note": "node erasure's reach within its graph"
+    },
+    {
+     "id": "INS-B8.8",
+     "kind": "B",
+     "statement": "Null and the old zero mark both read as the default graph when edges are saved.",
+     "targets": [
+      "AX-02"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "both default-graph spellings read as the default graph"
+    },
+    {
+     "id": "RED-T1",
+     "kind": "T",
+     "statement": "At the pin, the first liveness check runs before any lock or marker exists.",
+     "targets": [
+      "AX-11"
+     ],
+     "rules": [
+      "rule:R-AX11-concurrency",
+      "rule:R-AX11-marker"
+     ],
+     "other_bases": [
+      "finding:F-1302"
+     ],
+     "verdict": "agree",
+     "note": "the unlocked liveness check before the marker (serialization)"
+    },
+    {
+     "id": "INS-B3.1",
+     "kind": "B",
+     "statement": "The first-use check reads the schema record through the native call interface. It sends no SQL.",
+     "targets": [
+      "AX-09"
+     ],
+     "rules": [
+      "rule:R-AX09-install"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "how the first-use gate reads the schema record"
+    },
+    {
+     "id": "TMP-B1.14",
+     "kind": "B",
+     "statement": "A write that IRIS refuses raises an error that says what the write left behind.",
+     "targets": [
+      "AX-03"
+     ],
+     "rules": [
+      "rule:R-AX03-refusal-words"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "a refusal that says what it left"
+    },
+    {
+     "id": "VEC-P4",
+     "kind": "P",
+     "statement": "A table made inside a transaction is undone when that transaction rolls back.",
+     "targets": [
+      "X-DDL"
+     ],
+     "rules": [
+      "rule:R-C-ddl"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "X-DDL decides it"
+    },
+    {
+     "id": "NAT-B1.4",
+     "kind": "B",
+     "statement": "A read that names one graph reads only that graph.",
+     "targets": [
+      "AX-02",
+      "AX-12"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph",
+      "rule:R-AX12-outcome"
+     ],
+     "other_bases": [],
+     "verdict": "partly",
+     "note": "AX-02 fits; AX-12 came from the read-purity pattern 'reads only', which here means scope"
+    },
+    {
+     "id": "API-T8.9",
+     "kind": "T",
+     "statement": "The server and metrics routes report counts over every graph.",
+     "targets": [
+      "AX-02",
+      "AX-12"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph",
+      "rule:R-AX12-outcome"
+     ],
+     "other_bases": [],
+     "verdict": "partly",
+     "note": "AX-02 fits (counts merge graphs); AX-12 ('report') is weak: these are read answers, not command outcome reports"
+    },
+    {
+     "id": "INS-B10.5",
+     "kind": "B",
+     "statement": "Each SQL routine that writes around SQL rights first checks the insert, update or delete right it needs.",
+     "targets": [
+      "AX-13"
+     ],
+     "rules": [
+      "rule:R-AX13-capability"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "a right is checked before a write around SQL rights"
+    },
+    {
+     "id": "RED-B10",
+     "kind": "B",
+     "statement": "The redaction receipt counts tombstones and cleared revisions and names what it could not reach.",
+     "targets": [
+      "AX-05",
+      "AX-10",
+      "AX-12"
+     ],
+     "rules": [
+      "rule:R-AX05-history",
+      "rule:R-AX10-removal",
+      "rule:R-AX12-outcome"
+     ],
+     "other_bases": [
+      "finding:F-C1304",
+      "finding:F-C1305"
+     ],
+     "verdict": "partly",
+     "note": "AX-10 and AX-12 fit the receipt; AX-05 (from 'tombstones') does not"
+    },
+    {
+     "id": "INS-B1.14",
+     "kind": "B",
+     "statement": "A failed deploy does not stop setup. Its reason goes into the warnings and the tables stay.",
+     "targets": [
+      "AX-09",
+      "AX-12"
+     ],
+     "rules": [
+      "rule:R-AX09-install",
+      "rule:R-AX12-outcome"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "setup failures go into the warnings"
+    },
+    {
+     "id": "VEC-B2.15",
+     "kind": "B",
+     "statement": "When the registry is not there, the install does not route. Reads and writes then use the legacy table.",
+     "targets": [
+      "AX-09"
+     ],
+     "rules": [
+      "rule:R-AX09-install"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "the install's registry presence decides routing"
+    },
+    {
+     "id": "TMP-T6.13",
+     "kind": "T",
+     "statement": "A prefix of only digits, dots and dashes is checked source by source. IRIS sorts numbers before text.",
+     "targets": [
+      "X-ORDER"
+     ],
+     "rules": [
+      "rule:R-C-order"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "X-ORDER decides the numbers-before-text collation"
+    },
+    {
+     "id": "CYP-T1.8",
+     "kind": "T",
+     "statement": "A query may name an edge type kept only in the time index. When it answers no rows, the engine logs a warning.",
+     "targets": [
+      "AX-12"
+     ],
+     "rules": [
+      "rule:R-AX12-outcome"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "an empty answer is flagged with a warning (truthful outcome)"
+    },
+    {
+     "id": "ALG-B16.9",
+     "kind": "T",
+     "statement": "A large answer is also kept inside the process. It is checked against the token on every use, and at most eight are kept.",
+     "targets": [
+      "AX-08"
+     ],
+     "rules": [
+      "rule:R-AX08-derived"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "an in-process cached answer checked against the token"
+    },
+    {
+     "id": "INS-I7.1",
+     "kind": "I",
+     "statement": "The legacy list never matches by pattern. An object whose name is not on it is never listed or removed.",
+     "targets": [
+      "AX-09"
+     ],
+     "rules": [
+      "rule:R-AX09-install"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "the legacy manifest of the install"
+    },
+    {
+     "id": "INS-B10.10",
+     "kind": "B",
+     "statement": "The index rebuild routine takes a schema name. It refuses a name that is not plain, and rebuilds the indexes of four tables.",
+     "targets": [
+      "AX-03",
+      "AX-08",
+      "AX-09"
+     ],
+     "rules": [
+      "rule:R-AX03-refusal-words",
+      "rule:R-AX08-derived",
+      "rule:R-AX09-install"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "a schema-scoped rebuild routine with a refusal"
+    },
+    {
+     "id": "API-T12.7",
+     "kind": "T",
+     "statement": "The stats tool counts every graph together.",
+     "targets": [
+      "AX-02"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "the stats tool merges graphs (scope)"
+    },
+    {
+     "id": "RED-B6",
+     "kind": "B",
+     "statement": "Only one redaction target can be redacted at a time.",
+     "targets": [
+      "AX-10",
+      "AX-11"
+     ],
+     "rules": [
+      "rule:R-AX10-removal",
+      "rule:R-AX11-concurrency"
+     ],
+     "other_bases": [
+      "finding:F-1303"
+     ],
+     "verdict": "partly",
+     "note": "AX-11 fits; AX-10 came from the verb 'redacted' with no removal content"
+    },
+    {
+     "id": "INS-B1.17",
+     "kind": "B",
+     "statement": "A preview of setup lists the tables, routines and classes a run would make, and the record it would save.",
+     "targets": [
+      "AX-09"
+     ],
+     "rules": [
+      "rule:R-AX09-install"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "setup preview"
+    },
+    {
+     "id": "OPS-I2.3",
+     "kind": "I",
+     "statement": "A failed probe never makes the status report fail. It adds an error and marks that part unknown.",
+     "targets": [
+      "AX-12"
+     ],
+     "rules": [
+      "rule:R-AX12-outcome"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "a failed probe is reported, the part marked unknown"
+    },
+    {
+     "id": "CYP-P3",
+     "kind": "P",
+     "statement": "In IRIS, a failed SQL statement takes back only its own work. The open transaction stays.",
+     "targets": [
+      "X-STMT"
+     ],
+     "rules": [
+      "rule:R-C-stmt"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "X-STMT decides it"
+    },
+    {
+     "id": "LED-B5.2",
+     "kind": "T",
+     "statement": "A node counts as there when any graph holds a row with its id.",
+     "targets": [
+      "AX-02"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "graph-blind node presence (scope)"
+    },
+    {
+     "id": "INS-B1.11",
+     "kind": "B",
+     "statement": "Setup answers with a report of what it did. It names the tables and routines it made and the classes it compiled, skipped or failed.",
+     "targets": [
+      "AX-09",
+      "AX-12"
+     ],
+     "rules": [
+      "rule:R-AX09-install",
+      "rule:R-AX12-outcome"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "setup reports what it did"
+    },
+    {
+     "id": "ERS-B1.5",
+     "kind": "B",
+     "statement": "Erasing one graph leaves every other graph as it was.",
+     "targets": [
+      "AX-02",
+      "AX-10"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph",
+      "rule:R-AX10-removal"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "erasure leaves other graphs as they were"
+    },
+    {
+     "id": "RPL-T1",
+     "kind": "T",
+     "statement": "The verify call reads records and tables at separate times, with no lock.",
+     "targets": [
+      "AX-11",
+      "DC-REPLAY"
+     ],
+     "rules": [
+      "rule:R-AX11-concurrency",
+      "rule:R-DC-replay"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "verify (the replay comparison) reads without a lock"
+    },
+    {
+     "id": "LED-B2.1",
+     "kind": "T",
+     "statement": "Set strict on a disabled ledger saves the flag, but the next enable writes its own value over it.",
+     "targets": [
+      "AX-07"
+     ],
+     "rules": [
+      "rule:R-AX07-recorded"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "the strict-mode setting's lifecycle"
+    },
+    {
+     "id": "CYP-T8.4",
+     "kind": "T",
+     "statement": "The verdict comes from a parse of its own, so a cached tree cannot change it.",
+     "targets": [
+      "AX-08"
+     ],
+     "rules": [
+      "rule:R-AX08-derived"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "a cached tree cannot change the read-only verdict"
+    },
+    {
+     "id": "INS-T4.8",
+     "kind": "T",
+     "statement": "The deploy loads every class first and then compiles them in three groups. Index types go first, and the forwarder class goes last.",
+     "targets": [
+      "AX-09"
+     ],
+     "rules": [
+      "rule:R-AX09-install"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "deploy order"
+    },
+    {
+     "id": "INS-B1.20",
+     "kind": "B",
+     "statement": "Setup makes the ledger's lookup index after the deploy compiles the ledger table. A failure there is a warning.",
+     "targets": [
+      "AX-09",
+      "AX-12"
+     ],
+     "rules": [
+      "rule:R-AX09-install",
+      "rule:R-AX12-outcome"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "a setup step whose failure is a warning"
+    },
+    {
+     "id": "ALG-B10.1",
+     "kind": "B",
+     "statement": "The caller names the graph. No name means the default graph.",
+     "targets": [
+      "AX-02"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "no graph named means the default graph"
+    },
+    {
+     "id": "ERS-B3",
+     "kind": "B",
+     "statement": "After an erasure alone, a replay of the ledger still holds what was erased.",
+     "targets": [
+      "AX-10",
+      "DC-REPLAY"
+     ],
+     "rules": [
+      "rule:R-AX10-removal",
+      "rule:R-DC-replay"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "erasure alone vs replay"
+    },
+    {
+     "id": "TXT-B1.3",
+     "kind": "I",
+     "statement": "Build reads only the nodes and properties of the graph it is given.",
+     "targets": [
+      "AX-12"
+     ],
+     "rules": [
+      "rule:R-AX12-outcome"
+     ],
+     "other_bases": [],
+     "verdict": "disagree",
+     "note": "AX-12 from 'reads only'; the statement is graph scope (AX-02), which no rule gave"
+    },
+    {
+     "id": "VEC-I10.13",
+     "kind": "I",
+     "statement": "Edge vectors that the upgrade places in a named graph can be found by edge search in that graph.",
+     "targets": [
+      "AX-02",
+      "AX-09"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph",
+      "rule:R-AX02-scope-terms",
+      "rule:R-AX09-install"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "upgrade placement found in its graph"
+    },
+    {
+     "id": "WRT-T3.27",
+     "kind": "T",
+     "statement": "Each graph's node delete is one server call that owns its transaction and reaches every store.",
+     "targets": [
+      "AX-02"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "a per-graph node delete (scope); the transaction and reach parts went untraced but nothing is wrong"
+    },
+    {
+     "id": "TXT-B11.1",
+     "kind": "B",
+     "statement": "With no graph in scope, the call tags its rows with the index's recorded graph.",
+     "targets": [
+      "AX-02",
+      "AX-07"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph",
+      "rule:R-AX07-recorded"
+     ],
+     "other_bases": [],
+     "verdict": "partly",
+     "note": "AX-02 fits; AX-07 came from 'recorded graph', which is the index's catalog entry, not a ledger record"
+    },
+    {
+     "id": "RED-B1.2",
+     "kind": "B",
+     "statement": "A tenant whose nodes live in a named graph cannot be redacted by naming its graph alone.",
+     "targets": [
+      "AX-02",
+      "AX-10"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph",
+      "rule:R-AX02-tenant",
+      "rule:R-AX10-removal"
+     ],
+     "other_bases": [
+      "finding:F-1305"
+     ],
+     "verdict": "agree",
+     "note": "tenant scope and removal reach"
+    },
+    {
+     "id": "SYS-I6",
+     "kind": "I",
+     "statement": "A retry with the same retry key gets the first answer or a clear refusal. It never saves twice.",
+     "targets": [
+      "AX-03",
+      "AX-06"
+     ],
+     "rules": [
+      "rule:R-AX03-refusal-words",
+      "rule:R-AX06-retry"
+     ],
+     "other_bases": [
+      "repairs"
+     ],
+     "verdict": "agree",
+     "note": "first answer or a clear refusal"
+    },
+    {
+     "id": "ERS-B4",
+     "kind": "B",
+     "statement": "Erasure alone is not a privacy step: the ledger still names the erased ids.",
+     "targets": [
+      "AX-10"
+     ],
+     "rules": [
+      "rule:R-AX10-removal"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "erasure's limited reach without redaction"
+    },
+    {
+     "id": "OPS-B7.8",
+     "kind": "B",
+     "statement": "A query result counts as true when it holds no error. Asking it for a key with get is refused.",
+     "targets": [
+      "AX-03"
+     ],
+     "rules": [
+      "rule:R-AX03-refusal-words"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "a misuse is refused"
+    },
+    {
+     "id": "OPS-T6.4",
+     "kind": "T",
+     "statement": "A query is sent again after a server error, a failed connect or a time out. It tries three times, with a growing wait.",
+     "targets": [
+      "AX-06"
+     ],
+     "rules": [
+      "rule:R-AX06-retry"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "the client's resend layer"
+    },
+    {
+     "id": "RED-B4.3",
+     "kind": "B",
+     "statement": "A retry sent between erasure and redaction must not bring the content back.",
+     "targets": [
+      "AX-06",
+      "AX-10"
+     ],
+     "rules": [
+      "rule:R-AX06-retry",
+      "rule:R-AX10-removal"
+     ],
+     "other_bases": [
+      "finding:F-1306"
+     ],
+     "verdict": "agree",
+     "note": "a retry must not revive erased content"
+    },
+    {
+     "id": "INS-B6.9",
+     "kind": "B",
+     "statement": "Setup takes EXECUTE on each library wrapper outside the schema away from all but full-rights holders. The functions stay.",
+     "targets": [
+      "AX-09",
+      "AX-13"
+     ],
+     "rules": [
+      "rule:R-AX09-install",
+      "rule:R-AX13-capability"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "setup removes EXECUTE outside the schema"
+    },
+    {
+     "id": "WRT-B3.1",
+     "kind": "B",
+     "statement": "Creating a node writes its row, labels and properties in one graph, all together.",
+     "targets": [
+      "AX-02",
+      "AX-04"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph",
+      "rule:R-AX04-one-transaction"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "a node write in one graph, all together"
+    },
+    {
+     "id": "WRT-B4.10",
+     "kind": "B",
+     "statement": "Storing an edge writes its row and end nodes in one graph. An edge already there is not an error.",
+     "targets": [
+      "AX-02"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "an edge write in one graph"
+    },
+    {
+     "id": "ERS-T2",
+     "kind": "T",
+     "statement": "A graph erasure takes no ledger lock, so commits into the same graph do not wait for it.",
+     "targets": [
+      "AX-02",
+      "AX-10",
+      "AX-11",
+      "E-LOCK-WAIT"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph",
+      "rule:R-AX10-removal",
+      "rule:R-AX11-concurrency",
+      "rule:R-C-lock-wait"
+     ],
+     "other_bases": [
+      "finding:F-1201"
+     ],
+     "verdict": "partly",
+     "note": "AX-11 and AX-10 fit; AX-02 ('the same graph') is incidental and E-LOCK-WAIT is weak (no lock is taken)"
+    },
+    {
+     "id": "OPS-B3.3",
+     "kind": "B",
+     "statement": "Each graph is a multigraph or not. Turning that off is refused while the graph still has parallel edges.",
+     "targets": [
+      "AX-02",
+      "AX-03"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph",
+      "rule:R-AX03-refusal-words"
+     ],
+     "other_bases": [],
+     "verdict": "partly",
+     "note": "AX-03 fits; AX-02 ('each graph is') is a per-graph setting, weak scope"
+    },
+    {
+     "id": "WRT-B4.1",
+     "kind": "B",
+     "statement": "Creating an edge adds any missing end node to the edge's graph, in the same transaction.",
+     "targets": [
+      "AX-04"
+     ],
+     "rules": [
+      "rule:R-AX04-one-transaction"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "end nodes in the same transaction"
+    },
+    {
+     "id": "API-T8.2",
+     "kind": "T",
+     "statement": "It keeps one engine on one IRIS connection, and lets one call use them at a time.",
+     "targets": [
+      "AX-11"
+     ],
+     "rules": [
+      "rule:R-AX11-concurrency"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "one call at a time"
+    },
+    {
+     "id": "VEC-B3.13",
+     "kind": "B",
+     "statement": "A batch writer checks label, key, id and value lengths first. A row that is too long is refused, by name, with nothing written.",
+     "targets": [
+      "AX-03"
+     ],
+     "rules": [
+      "rule:R-AX03-refusal-words"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "refused by name, nothing written"
+    },
+    {
+     "id": "INT-F6.1",
+     "kind": "T",
+     "statement": "A second caller does not wait. It gets a busy answer, and nothing changes.",
+     "targets": [
+      "AX-11"
+     ],
+     "rules": [
+      "rule:R-AX11-concurrency"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "busy answer instead of a concurrent run"
+    },
+    {
+     "id": "TXT-B6.1",
+     "kind": "T",
+     "statement": "Upgrade sets the upgrade flag first, then waits for the write lock.",
+     "targets": [
+      "AX-09",
+      "AX-11"
+     ],
+     "rules": [
+      "rule:R-AX09-index-schema",
+      "rule:R-AX11-concurrency"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "upgrade waits for the write lock"
+    },
+    {
+     "id": "RPL-B2",
+     "kind": "B",
+     "statement": "The verify call looks at checked content and nothing else.",
+     "targets": [
+      "DC-REPLAY"
+     ],
+     "rules": [
+      "rule:R-DC-replay"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "what verify compares"
+    },
+    {
+     "id": "LED-B10.2",
+     "kind": "B",
+     "statement": "A failed post-commit property is reported in the result. The revision stays.",
+     "targets": [
+      "AX-12",
+      "EXC-03"
+     ],
+     "rules": [
+      "rule:R-AX12-outcome",
+      "rule:R-EXC03-post-commit"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "post-commit failure reported; the named exception"
+    },
+    {
+     "id": "INS-B6.14",
+     "kind": "B",
+     "statement": "A preview lists the rights it would copy, give and take away, and grants nothing.",
+     "targets": [
+      "AX-13"
+     ],
+     "rules": [
+      "rule:R-AX13-capability"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "a rights preview grants nothing"
+    },
+    {
+     "id": "WRT-B4.18",
+     "kind": "B",
+     "statement": "Deleting an edge removes it from one graph, the default graph when none is named.",
+     "targets": [
+      "AX-02"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "edge delete in one graph"
+    },
+    {
+     "id": "VEC-B11.4",
+     "kind": "B",
+     "statement": "When a graph is erased, its nodes leave every vector index.",
+     "targets": [
+      "AX-10"
+     ],
+     "rules": [
+      "rule:R-AX10-removal"
+     ],
+     "other_bases": [
+      "finding:F-0606"
+     ],
+     "verdict": "agree",
+     "note": "erasure's reach into vector indexes"
+    },
+    {
+     "id": "INS-B4.11",
+     "kind": "B",
+     "statement": "A deploy that compiled drops every compiled query class. So no class built on old names can run.",
+     "targets": [
+      "AX-09"
+     ],
+     "rules": [
+      "rule:R-AX09-install"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "a deploy discards compiled classes"
+    },
+    {
+     "id": "ADJ-B8.5",
+     "kind": "B",
+     "statement": "A rebuild lets go of the lock, then leaves the degree cache warm.",
+     "targets": [
+      "AX-08",
+      "AX-11"
+     ],
+     "rules": [
+      "rule:R-AX08-derived",
+      "rule:R-AX11-concurrency"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "rebuild, lock release, warm cache"
+    },
+    {
+     "id": "SNP-I2",
+     "kind": "I",
+     "statement": "Saving reads the namespace and writes nothing to it.",
+     "targets": [
+      "AX-12"
+     ],
+     "rules": [
+      "rule:R-AX12-outcome"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "saving writes nothing (read purity)"
+    },
+    {
+     "id": "OPS-B5.19",
+     "kind": "B",
+     "statement": "The lazy graph reader reads one graph's edges when asked and keeps what it read.",
+     "targets": [
+      "AX-02"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "a one-graph reader that keeps what it read"
+    }
+   ]
+  },
+  {
+   "round": "round 2",
+   "rules": "the committed src/trace_rules.json",
+   "pool": 1039,
+   "sample": 80,
+   "summary": {
+    "agree": 68,
+    "partly": 10,
+    "disagree": 2,
+    "disagree_rate": 0.025,
+    "agree_rate": 0.85
+   },
+   "items": [
+    {
+     "id": "ALG-B12.2",
+     "kind": "B",
+     "statement": "A rebuild changes the snapshot in place. A reader never sees it empty, only a mix of old and new rows.",
+     "targets": [
+      "AX-08"
+     ],
+     "rules": [
+      "rule:R-AX08-derived"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "a rebuilt (derived) snapshot and what its readers see"
+    },
+    {
+     "id": "INT-F5.6",
+     "kind": "T",
+     "statement": "When the interpretation version is missing or old, the sync first redoes the derived parts of all items. Then it sets the version.",
+     "targets": [
+      "AX-08"
+     ],
+     "rules": [
+      "rule:R-AX08-derived"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "the FHIR graph's derived parts are redone when their version is old"
+    },
+    {
+     "id": "WRT-B3.17",
+     "kind": "B",
+     "statement": "A bulk node write is one transaction. Its rows are read back, and one missing row fails the whole call.",
+     "targets": [
+      "AX-04"
+     ],
+     "rules": [
+      "rule:R-AX04-one-transaction"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "a bulk node write is one transaction"
+    },
+    {
+     "id": "WRT-T7.4",
+     "kind": "T",
+     "statement": "A load session writes its edges to the default graph only.",
+     "targets": [
+      "AX-02"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "a load session writes the default graph only (scope)"
+    },
+    {
+     "id": "CYP-B5.3",
+     "kind": "B",
+     "statement": "A use graph with an empty name scopes the query to the default graph.",
+     "targets": [
+      "AX-02"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph",
+      "rule:R-AX02-scope-terms"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "graph scope of USE GRAPH ''"
+    },
+    {
+     "id": "WRT-P2.14",
+     "kind": "P",
+     "statement": "Other connections can read a direct write before it commits.",
+     "targets": [
+      "E-VIS"
+     ],
+     "rules": [
+      "rule:R-C-visibility"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "E-VIS decides it"
+    },
+    {
+     "id": "ADJ-B7.8",
+     "kind": "B",
+     "statement": "The interned snapshot has no graph part. It gives the default graph's answer only while no named graph has an edge.",
+     "targets": [
+      "AX-02",
+      "EXC-06"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph",
+      "rule:R-EXC06-interned-no-graph"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "the named exception to graph scope, and the axiom it excepts"
+    },
+    {
+     "id": "TXT-B6.8",
+     "kind": "B",
+     "statement": "Scores of an index that had inserts on schema 1 may change after the upgrade.",
+     "targets": [
+      "AX-09"
+     ],
+     "rules": [
+      "rule:R-AX09-index-schema"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "an observable effect of the index layout upgrade (version gate)"
+    },
+    {
+     "id": "INT-F3.7",
+     "kind": "T",
+     "statement": "Register run again keeps the sync watermarks. It updates the settings.",
+     "targets": [
+      "AX-06"
+     ],
+     "rules": [
+      "rule:R-AX06-retry"
+     ],
+     "other_bases": [],
+     "verdict": "partly",
+     "note": "re-registering is a deliberate update, not a retry; AX-06 fits only as 'running again keeps state'"
+    },
+    {
+     "id": "TXT-B3.5",
+     "kind": "B",
+     "statement": "On schema 1 the cutoff is ignored and nothing is reported as dropped.",
+     "targets": [
+      "AX-12"
+     ],
+     "rules": [
+      "rule:R-AX12-outcome"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "what the search reports as dropped (truthful report)"
+    },
+    {
+     "id": "ERS-P1",
+     "kind": "P",
+     "statement": "A delete that meets a row another transaction holds waits for that transaction.",
+     "targets": [
+      "E-ROWLOCK"
+     ],
+     "rules": [
+      "rule:R-C-rowlock"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "E-ROWLOCK decides it"
+    },
+    {
+     "id": "ADJ-B8.2",
+     "kind": "B",
+     "statement": "With the row hook declared, the rebuild purges the index and fills it again through the hook.",
+     "targets": [
+      "AX-08",
+      "AX-10",
+      "X-FX"
+     ],
+     "rules": [
+      "rule:R-AX08-derived",
+      "rule:R-AX10-removal",
+      "rule:R-C-fx"
+     ],
+     "other_bases": [],
+     "verdict": "partly",
+     "note": "AX-08 and X-FX fit; AX-10 does not (the rebuild 'purges' the index, it removes no target's content)"
+    },
+    {
+     "id": "TXT-B1.4",
+     "kind": "B",
+     "statement": "When no graph is named, Build uses the default graph, never every graph.",
+     "targets": [
+      "AX-02"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "no graph named means the default graph"
+    },
+    {
+     "id": "SNP-B2.7",
+     "kind": "B",
+     "statement": "An empty graph value in an old snapshot archive is read as the default graph.",
+     "targets": [
+      "AX-02"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "an old archive's empty graph value is the default graph"
+    },
+    {
+     "id": "TMP-B11.6",
+     "kind": "B",
+     "statement": "The Python migration reads a graph of any size.",
+     "targets": [
+      "AX-09"
+     ],
+     "rules": [
+      "rule:R-AX09-install"
+     ],
+     "other_bases": [],
+     "verdict": "partly",
+     "note": "the subject is a migration (AX-09) but the rule is a capacity requirement, which no axiom covers"
+    },
+    {
+     "id": "LED-B4.14.1",
+     "kind": "T",
+     "statement": "The edge index in globals is kept in step inside the same transaction.",
+     "targets": [
+      "AX-04",
+      "AX-08"
+     ],
+     "rules": [
+      "rule:R-AX04-one-transaction",
+      "rule:R-AX08-derived"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "the derived edge index kept in step in the same transaction"
+    },
+    {
+     "id": "INS-I8.4",
+     "kind": "I",
+     "statement": "Rows put back, folded and kept aside add up to the rows saved. Otherwise setup raises and keeps the side table.",
+     "targets": [
+      "AX-09"
+     ],
+     "rules": [
+      "rule:R-AX09-install"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "a setup migration that accounts for its rows or raises"
+    },
+    {
+     "id": "INT-F4.3",
+     "kind": "T",
+     "statement": "A rebuild drops the nodes of items that are deleted or gone, each drop in its own transaction.",
+     "targets": [
+      "AX-04",
+      "AX-08"
+     ],
+     "rules": [
+      "rule:R-AX04-one-transaction",
+      "rule:R-AX08-derived"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "rebuild of a derived FHIR graph, one transaction per drop"
+    },
+    {
+     "id": "VEC-B2.9",
+     "kind": "B",
+     "statement": "When two writers make one route at once, one table and one row result. The loser takes the winner's route and width.",
+     "targets": [
+      "AX-11"
+     ],
+     "rules": [
+      "rule:R-AX11-concurrency"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "two writers racing to make one route converge"
+    },
+    {
+     "id": "ERS-B2",
+     "kind": "B",
+     "statement": "A node erasure removes the matching nodes and every edge that touches them in that graph.",
+     "targets": [
+      "AX-02",
+      "AX-10"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph",
+      "rule:R-AX02-scope-terms",
+      "rule:R-AX10-removal"
+     ],
+     "other_bases": [
+      "finding:F-C1203"
+     ],
+     "verdict": "agree",
+     "note": "node erasure's reach within its graph"
+    },
+    {
+     "id": "INS-B8.8",
+     "kind": "B",
+     "statement": "Null and the old zero mark both read as the default graph when edges are saved.",
+     "targets": [
+      "AX-02"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "both default-graph spellings read as the default graph"
+    },
+    {
+     "id": "RED-T3.2",
+     "kind": "T",
+     "statement": "Commits wait for at most one redaction batch at a time.",
+     "targets": [
+      "AX-11"
+     ],
+     "rules": [
+      "rule:R-AX11-concurrency"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "commits serialize with redaction batches"
+    },
+    {
+     "id": "INS-B3.1",
+     "kind": "B",
+     "statement": "The first-use check reads the schema record through the native call interface. It sends no SQL.",
+     "targets": [
+      "AX-09"
+     ],
+     "rules": [
+      "rule:R-AX09-install"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "how the first-use gate reads the schema record"
+    },
+    {
+     "id": "TMP-B10.1",
+     "kind": "B",
+     "statement": "Erasing all graphs empties the temporal index. The interned label sets are left for the eraser.",
+     "targets": [
+      "AX-02",
+      "AX-10"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph",
+      "rule:R-AX10-removal"
+     ],
+     "other_bases": [],
+     "verdict": "partly",
+     "note": "AX-10 fits the erase-all; AX-02 ('all graphs') is incidental"
+    },
+    {
+     "id": "VEC-T2.17",
+     "kind": "T",
+     "statement": "When two registry rows answer one graph and model, the legacy table wins.",
+     "targets": [
+      "AX-02",
+      "AX-09"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph",
+      "rule:R-AX09-install"
+     ],
+     "other_bases": [],
+     "verdict": "partly",
+     "note": "a catalog conflict-resolution rule (M-12); AX-02 and AX-09 ('legacy') fit only loosely"
+    },
+    {
+     "id": "NAT-B1.5",
+     "kind": "B",
+     "statement": "Each node is known by its graph and its id together. A distinct count counts one id in two graphs twice.",
+     "targets": [
+      "AX-02"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "a node is its graph and id together"
+    },
+    {
+     "id": "API-T8.9",
+     "kind": "T",
+     "statement": "The server and metrics routes report counts over every graph.",
+     "targets": [
+      "AX-02",
+      "AX-12"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph",
+      "rule:R-AX12-outcome"
+     ],
+     "other_bases": [],
+     "verdict": "partly",
+     "note": "AX-02 fits (counts merge graphs); AX-12 ('report') is weak: these are read answers, not command outcome reports"
+    },
+    {
+     "id": "INS-B10.5",
+     "kind": "B",
+     "statement": "Each SQL routine that writes around SQL rights first checks the insert, update or delete right it needs.",
+     "targets": [
+      "AX-13"
+     ],
+     "rules": [
+      "rule:R-AX13-capability"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "a right is checked before a write around SQL rights"
+    },
+    {
+     "id": "RED-B2",
+     "kind": "B",
+     "statement": "Each record of the redaction target becomes a tombstone in its own place.",
+     "targets": [
+      "AX-05"
+     ],
+     "rules": [
+      "rule:R-AX05-history"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "a record becomes a tombstone in place"
+    },
+    {
+     "id": "INS-B1.14",
+     "kind": "B",
+     "statement": "A failed deploy does not stop setup. Its reason goes into the warnings and the tables stay.",
+     "targets": [
+      "AX-09",
+      "AX-12"
+     ],
+     "rules": [
+      "rule:R-AX09-install",
+      "rule:R-AX12-outcome"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "setup failures go into the warnings"
+    },
+    {
+     "id": "VEC-B3.15",
+     "kind": "B",
+     "statement": "A node deleted through the ledger loses its vectors in every route of its graph.",
+     "targets": [
+      "AX-07"
+     ],
+     "rules": [
+      "rule:R-AX07-recorded"
+     ],
+     "other_bases": [
+      "finding:F-0618"
+     ],
+     "verdict": "partly",
+     "note": "the content is removal reach (AX-10, which the finding basis gives); AX-07 from 'through the ledger' is weak"
+    },
+    {
+     "id": "TXT-B1",
+     "kind": "B",
+     "statement": "Build makes a BM25 index from the chosen properties of every node in one graph.",
+     "targets": [
+      "AX-02"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "a BM25 build over one graph"
+    },
+    {
+     "id": "CYP-T1.8",
+     "kind": "T",
+     "statement": "A query may name an edge type kept only in the time index. When it answers no rows, the engine logs a warning.",
+     "targets": [
+      "AX-12"
+     ],
+     "rules": [
+      "rule:R-AX12-outcome"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "an empty answer is flagged with a warning (truthful outcome)"
+    },
+    {
+     "id": "ALG-B16.9",
+     "kind": "T",
+     "statement": "A large answer is also kept inside the process. It is checked against the token on every use, and at most eight are kept.",
+     "targets": [
+      "AX-08"
+     ],
+     "rules": [
+      "rule:R-AX08-derived"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "an in-process cached answer checked against the token"
+    },
+    {
+     "id": "INS-I7.1",
+     "kind": "I",
+     "statement": "The legacy list never matches by pattern. An object whose name is not on it is never listed or removed.",
+     "targets": [
+      "AX-09"
+     ],
+     "rules": [
+      "rule:R-AX09-install"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "the legacy manifest of the install"
+    },
+    {
+     "id": "INS-B10.10",
+     "kind": "B",
+     "statement": "The index rebuild routine takes a schema name. It refuses a name that is not plain, and rebuilds the indexes of four tables.",
+     "targets": [
+      "AX-03",
+      "AX-08",
+      "AX-09"
+     ],
+     "rules": [
+      "rule:R-AX03-refusal-words",
+      "rule:R-AX08-derived",
+      "rule:R-AX09-install"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "a schema-scoped rebuild routine with a refusal"
+    },
+    {
+     "id": "API-T12.7",
+     "kind": "T",
+     "statement": "The stats tool counts every graph together.",
+     "targets": [
+      "AX-02"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "the stats tool merges graphs (scope)"
+    },
+    {
+     "id": "RED-B7.2",
+     "kind": "B",
+     "statement": "A redaction that finds nothing to do saves no audit revision. It reports zero.",
+     "targets": [
+      "AX-12"
+     ],
+     "rules": [
+      "rule:R-AX12-outcome"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "a no-op redaction saves nothing and reports zero"
+    },
+    {
+     "id": "INS-B1.17",
+     "kind": "B",
+     "statement": "A preview of setup lists the tables, routines and classes a run would make, and the record it would save.",
+     "targets": [
+      "AX-09"
+     ],
+     "rules": [
+      "rule:R-AX09-install"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "setup preview"
+    },
+    {
+     "id": "OPS-I5.1",
+     "kind": "I",
+     "statement": "Each adapter call first passes the engine's schema check. So a refused namespace refuses the adapter too.",
+     "targets": [
+      "AX-03"
+     ],
+     "rules": [
+      "rule:R-AX03-refusal-words"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "a refused namespace refuses the adapter too"
+    },
+    {
+     "id": "CYP-P3",
+     "kind": "P",
+     "statement": "In IRIS, a failed SQL statement takes back only its own work. The open transaction stays.",
+     "targets": [
+      "X-STMT"
+     ],
+     "rules": [
+      "rule:R-C-stmt"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "X-STMT decides it"
+    },
+    {
+     "id": "LED-B5.28",
+     "kind": "T",
+     "statement": "A weight change also sets the weight in the edge index of that edge's own graph.",
+     "targets": [
+      "AX-02"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "a weight change stays in the edge's own graph"
+    },
+    {
+     "id": "INS-B1.11",
+     "kind": "B",
+     "statement": "Setup answers with a report of what it did. It names the tables and routines it made and the classes it compiled, skipped or failed.",
+     "targets": [
+      "AX-09",
+      "AX-12"
+     ],
+     "rules": [
+      "rule:R-AX09-install",
+      "rule:R-AX12-outcome"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "setup reports what it did"
+    },
+    {
+     "id": "ERS-B1.5",
+     "kind": "B",
+     "statement": "Erasing one graph leaves every other graph as it was.",
+     "targets": [
+      "AX-02",
+      "AX-10"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph",
+      "rule:R-AX10-removal"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "erasure leaves other graphs as they were"
+    },
+    {
+     "id": "SNP-B1.14",
+     "kind": "B",
+     "statement": "The snapshot archive holds the per-graph settings: which edge types make no rows, and which graphs allow repeated edges.",
+     "targets": [
+      "AX-02"
+     ],
+     "rules": [
+      "rule:R-AX02-scope-terms"
+     ],
+     "other_bases": [],
+     "verdict": "partly",
+     "note": "archive completeness (AX-12) is the content; AX-02 from 'per-graph' is incidental"
+    },
+    {
+     "id": "LED-B3",
+     "kind": "B",
+     "statement": "Meta tells the ledger state, strict mode, the limits and the head. It never refuses.",
+     "targets": [
+      "AX-03",
+      "AX-07"
+     ],
+     "rules": [
+      "rule:R-AX03-refusal-words",
+      "rule:R-AX07-recorded"
+     ],
+     "other_bases": [],
+     "verdict": "disagree",
+     "note": "a functional description of the meta read; 'never refuses' and 'strict mode' matched words, not an axiom instance"
+    },
+    {
+     "id": "CYP-T8.4",
+     "kind": "T",
+     "statement": "The verdict comes from a parse of its own, so a cached tree cannot change it.",
+     "targets": [
+      "AX-08"
+     ],
+     "rules": [
+      "rule:R-AX08-derived"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "a cached tree cannot change the read-only verdict"
+    },
+    {
+     "id": "INS-T4.8",
+     "kind": "T",
+     "statement": "The deploy loads every class first and then compiles them in three groups. Index types go first, and the forwarder class goes last.",
+     "targets": [
+      "AX-09"
+     ],
+     "rules": [
+      "rule:R-AX09-install"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "deploy order"
+    },
+    {
+     "id": "INS-B1.20",
+     "kind": "B",
+     "statement": "Setup makes the ledger's lookup index after the deploy compiles the ledger table. A failure there is a warning.",
+     "targets": [
+      "AX-09",
+      "AX-12"
+     ],
+     "rules": [
+      "rule:R-AX09-install",
+      "rule:R-AX12-outcome"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "a setup step whose failure is a warning"
+    },
+    {
+     "id": "ALG-B10.1",
+     "kind": "B",
+     "statement": "The caller names the graph. No name means the default graph.",
+     "targets": [
+      "AX-02"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "no graph named means the default graph"
+    },
+    {
+     "id": "ERS-B3",
+     "kind": "B",
+     "statement": "After an erasure alone, a replay of the ledger still holds what was erased.",
+     "targets": [
+      "AX-10",
+      "DC-REPLAY"
+     ],
+     "rules": [
+      "rule:R-AX10-removal",
+      "rule:R-DC-replay"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "erasure alone vs replay"
+    },
+    {
+     "id": "TXT-B12",
+     "kind": "B",
+     "statement": "The docs table search gives up to k node ids and scores from one graph, best first.",
+     "targets": [
+      "AX-02"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "the docs search answers from one graph"
+    },
+    {
+     "id": "VEC-P5",
+     "kind": "P",
+     "statement": "An update that tests for no model key holds the row, so a second updater sees the first one's value.",
+     "targets": [
+      "E-ROWLOCK"
+     ],
+     "rules": [
+      "rule:R-C-rowlock"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "E-ROWLOCK decides it (an UPDATE waits for a row another transaction updated)"
+    },
+    {
+     "id": "WRT-T7.3",
+     "kind": "T",
+     "statement": "With no caller transaction, a load session retries a step up to three times when its connection drops.",
+     "targets": [
+      "AX-06"
+     ],
+     "rules": [
+      "rule:R-AX06-retry"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "a load session's retry layer"
+    },
+    {
+     "id": "TXT-B13.10",
+     "kind": "B",
+     "statement": "The rerank call fuses the two lists for the default graph only, each searched twice as deep.",
+     "targets": [
+      "AX-02"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "the rerank reads the default graph only"
+    },
+    {
+     "id": "RED-B12",
+     "kind": "B",
+     "statement": "Once a tenant is erased and redacted, no ledger record, row or reader shows its ids or values.",
+     "targets": [
+      "AX-02",
+      "AX-10"
+     ],
+     "rules": [
+      "rule:R-AX02-tenant",
+      "rule:R-AX10-removal"
+     ],
+     "other_bases": [
+      "finding:F-1305",
+      "finding:F-C1306",
+      "finding:F-CS01"
+     ],
+     "verdict": "agree",
+     "note": "tenant removal reaches every record, row and reader"
+    },
+    {
+     "id": "SYS-I9",
+     "kind": "I",
+     "statement": "Every refusal says why it was refused.",
+     "targets": [
+      "AX-03"
+     ],
+     "rules": [
+      "rule:R-AX03-refusal-words"
+     ],
+     "other_bases": [
+      "repairs",
+      "finding:F-1506",
+      "finding:F-C1602"
+     ],
+     "verdict": "agree",
+     "note": "the refusal axiom itself"
+    },
+    {
+     "id": "ERS-B4",
+     "kind": "B",
+     "statement": "Erasure alone is not a privacy step: the ledger still names the erased ids.",
+     "targets": [
+      "AX-10"
+     ],
+     "rules": [
+      "rule:R-AX10-removal"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "erasure's limited reach without redaction"
+    },
+    {
+     "id": "OPS-I1.10.1",
+     "kind": "I",
+     "statement": "The embeddings list command only reads. It never makes a new vector table.",
+     "targets": [
+      "AX-12"
+     ],
+     "rules": [
+      "rule:R-AX12-outcome"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "a list command only reads (read purity)"
+    },
+    {
+     "id": "OPS-T7.2.1",
+     "kind": "T",
+     "statement": "A write refused for the schema's age is also a schema error, so both kinds of catch take it.",
+     "targets": [
+      "AX-03",
+      "AX-09"
+     ],
+     "rules": [
+      "rule:R-AX03-refusal-words",
+      "rule:R-AX09-install"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "a schema-age refusal is a schema error"
+    },
+    {
+     "id": "RED-B5.2",
+     "kind": "B",
+     "statement": "A write that skips the ledger is not stopped by the redaction marker.",
+     "targets": [
+      "AX-11"
+     ],
+     "rules": [
+      "rule:R-AX11-marker"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "a ledger bypass is not serialized by the marker"
+    },
+    {
+     "id": "INS-B6.9",
+     "kind": "B",
+     "statement": "Setup takes EXECUTE on each library wrapper outside the schema away from all but full-rights holders. The functions stay.",
+     "targets": [
+      "AX-09",
+      "AX-13"
+     ],
+     "rules": [
+      "rule:R-AX09-install",
+      "rule:R-AX13-capability"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "setup removes EXECUTE outside the schema"
+    },
+    {
+     "id": "WRT-B3.29",
+     "kind": "B",
+     "statement": "The old adjacency delete removes every edge of the given nodes, in all graphs. The nodes stay.",
+     "targets": [
+      "AX-02"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "a delete that acts in all graphs (scope)"
+    },
+    {
+     "id": "WRT-B4.30",
+     "kind": "B",
+     "statement": "The fast edge ingest raises on any row IRIS refuses, on both of its paths.",
+     "targets": [
+      "AX-03"
+     ],
+     "rules": [
+      "rule:R-AX03-refusal-words"
+     ],
+     "other_bases": [
+      "finding:F-0307"
+     ],
+     "verdict": "agree",
+     "note": "an IRIS refusal is raised, not dropped"
+    },
+    {
+     "id": "ERS-T2",
+     "kind": "T",
+     "statement": "A graph erasure takes no ledger lock, so commits into the same graph do not wait for it.",
+     "targets": [
+      "AX-02",
+      "AX-10",
+      "AX-11",
+      "E-LOCK-WAIT"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph",
+      "rule:R-AX10-removal",
+      "rule:R-AX11-concurrency",
+      "rule:R-C-lock-wait"
+     ],
+     "other_bases": [
+      "finding:F-1201"
+     ],
+     "verdict": "partly",
+     "note": "AX-11 and AX-10 fit; AX-02 ('the same graph') is incidental and E-LOCK-WAIT is weak (no lock is taken)"
+    },
+    {
+     "id": "OPS-B3.6",
+     "kind": "B",
+     "statement": "The warning readers list what past algorithm runs left behind, oldest first, up to a limit.",
+     "targets": [
+      "AX-12"
+     ],
+     "rules": [
+      "rule:R-AX12-outcome"
+     ],
+     "other_bases": [],
+     "verdict": "partly",
+     "note": "a listing of warnings; AX-12 ('warning') fits only loosely"
+    },
+    {
+     "id": "WRT-B4.28",
+     "kind": "B",
+     "statement": "The fast edge ingest writes the default graph only, and refuses an edge that names a graph.",
+     "targets": [
+      "AX-02",
+      "AX-03"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph",
+      "rule:R-AX03-refusal-words"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "default graph only, and a refusal"
+    },
+    {
+     "id": "API-T8.2",
+     "kind": "T",
+     "statement": "It keeps one engine on one IRIS connection, and lets one call use them at a time.",
+     "targets": [
+      "AX-11"
+     ],
+     "rules": [
+      "rule:R-AX11-concurrency"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "one call at a time"
+    },
+    {
+     "id": "VEC-B4.3",
+     "kind": "B",
+     "statement": "A count with a graph or a model key counts that route in that graph, and zero when there is no route.",
+     "targets": [
+      "AX-02"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph",
+      "rule:R-AX02-scope-terms"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "a count in that graph's route"
+    },
+    {
+     "id": "INT-F6.1",
+     "kind": "T",
+     "statement": "A second caller does not wait. It gets a busy answer, and nothing changes.",
+     "targets": [
+      "AX-11"
+     ],
+     "rules": [
+      "rule:R-AX11-concurrency"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "busy answer instead of a concurrent run"
+    },
+    {
+     "id": "TXT-B6.9",
+     "kind": "B",
+     "statement": "Upgrade of a whole index gives the same index as a fresh build.",
+     "targets": [
+      "AX-09"
+     ],
+     "rules": [
+      "rule:R-AX09-index-schema"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "upgrade equals a fresh build (version gate; derived equality)"
+    },
+    {
+     "id": "RPL-B3.2",
+     "kind": "B",
+     "statement": "The world of the upstream test did not match before the erasure.",
+     "targets": [
+      "AX-10"
+     ],
+     "rules": [
+      "rule:R-AX10-removal"
+     ],
+     "other_bases": [
+      "finding:F-1401"
+     ],
+     "verdict": "disagree",
+     "note": "a statement about an upstream test world; 'erasure' matched incidentally"
+    },
+    {
+     "id": "LED-B10.2",
+     "kind": "B",
+     "statement": "A failed post-commit property is reported in the result. The revision stays.",
+     "targets": [
+      "AX-12",
+      "EXC-03"
+     ],
+     "rules": [
+      "rule:R-AX12-outcome",
+      "rule:R-EXC03-post-commit"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "post-commit failure reported; the named exception"
+    },
+    {
+     "id": "INS-B6.14",
+     "kind": "B",
+     "statement": "A preview lists the rights it would copy, give and take away, and grants nothing.",
+     "targets": [
+      "AX-13"
+     ],
+     "rules": [
+      "rule:R-AX13-capability"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "a rights preview grants nothing"
+    },
+    {
+     "id": "WRT-B7.14",
+     "kind": "B",
+     "statement": "A row IRIS refuses for a reason other than a repeat stops the load with an error.",
+     "targets": [
+      "AX-03"
+     ],
+     "rules": [
+      "rule:R-AX03-refusal-words"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "an IRIS refusal stops the load with an error"
+    },
+    {
+     "id": "VEC-B2.5",
+     "kind": "B",
+     "statement": "The one exception is the default graph with no model key. Its vectors are in the legacy table, with or without a row.",
+     "targets": [
+      "AX-02",
+      "AX-09"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph",
+      "rule:R-AX09-install"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "the named default-graph exception and the legacy table"
+    },
+    {
+     "id": "INS-B4.11",
+     "kind": "B",
+     "statement": "A deploy that compiled drops every compiled query class. So no class built on old names can run.",
+     "targets": [
+      "AX-09"
+     ],
+     "rules": [
+      "rule:R-AX09-install"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "a deploy discards compiled classes"
+    },
+    {
+     "id": "ADJ-B8.5",
+     "kind": "B",
+     "statement": "A rebuild lets go of the lock, then leaves the degree cache warm.",
+     "targets": [
+      "AX-08",
+      "AX-11"
+     ],
+     "rules": [
+      "rule:R-AX08-derived",
+      "rule:R-AX11-concurrency"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "rebuild, lock release, warm cache"
+    },
+    {
+     "id": "SNP-T1.5",
+     "kind": "T",
+     "statement": "Only a missing-table error means the table is missing. A refusal to read is an error.",
+     "targets": [
+      "AX-03"
+     ],
+     "rules": [
+      "rule:R-AX03-refusal-words"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "a refusal to read is an error, not 'missing'"
+    },
+    {
+     "id": "OPS-B5.19.4",
+     "kind": "B",
+     "statement": "The graph list names each graph that holds an edge, with the empty name for the default graph.",
+     "targets": [
+      "AX-02"
+     ],
+     "rules": [
+      "rule:R-AX02-qualified-graph"
+     ],
+     "other_bases": [],
+     "verdict": "agree",
+     "note": "the graph list and the default graph's empty name"
+    }
+   ]
+  }
+ ]
+}

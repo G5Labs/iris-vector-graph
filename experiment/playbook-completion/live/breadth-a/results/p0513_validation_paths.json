@@ -1,0 +1,17 @@
+{
+ "doc": "F-0513: a negative weight is refused by create_edge_temporal (with a timestamp) and stored by the batch path\n    and by create_edge_temporal without a timestamp.",
+ "id": "p0513_validation_paths",
+ "log": "$RUN_DIR/breadth-a/live/05-p0507_purge_wipes_all_graphs-p0513_validation_paths-20261113T224520.log",
+ "module": "05",
+ "observed": {
+  "batch": "TemporalWriteCount(written=1, collisions=0, skipped=0)",
+  "batch_weight_stored": "-1.0",
+  "single_with_ts": "ValidationError",
+  "single_without_ts": "stored"
+ },
+ "oracle": "every temporal write path refuses weight < 0 (TemporalEdgeInput, _validate.py:207-227)",
+ "reproduced": true,
+ "seconds": 0.09,
+ "started": "2026-11-13T22:45:20",
+ "verdict": "refused with a timestamp; stored without one and on the batch path"
+}
