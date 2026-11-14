@@ -37,7 +37,7 @@ RCS = [
      "'') and join on (graph_id, id); refuse unscoped calls; give every reader's tests a two-graph fixture with one id "
      "held by both graphs.",
      "F-0106 F-0206 F-0616 F-0707 F-0711 F-0816 F-0818 F-0819 F-0820 F-1001 F-1002 F-1006 F-1008 F-1009 F-1013 "
-     "F-1503 F-1507 F-1603 F-1604 F-1701"),
+     "F-1503 F-1507 F-1603 F-1604 F-1701 F-C1041 F-C1547"),
     ("Stored facts whose key omits the graph",
      ["SYS-I2"], "SYS-D3 (each piece of data belongs to one graph); ADR-0013/plan.md:9-10 (node records are graph-blind by design)",
      "Several stores key a fact without its graph: ledger node records (genesis and LedgerApply record nodes "
@@ -58,7 +58,7 @@ RCS = [
      "Declare one store inventory (each store and field with its owning graph/tenant key and its erase, redact, export "
      "and liveness hooks) and generate erasure, LiveRows/Matches, the snapshot plan and the receipt's out_of_reach "
      "list from it; check mechanically that every writer's target store is in the inventory.",
-     "F-0606 F-0618 F-0702 F-C1203 F-C1304 F-C1305 F-C1306 F-C1308 F-C1309 F-C1804 F-CS01"),
+     "F-0606 F-0618 F-0702 F-C1203 F-C1304 F-C1305 F-C1306 F-C1308 F-C1309 F-C1548 F-C1804 F-CS01"),
     ("Erase, ledger commits and redaction start are not serialized on the ledger head lock",
      ["SYS-I1", "SYS-I3"], "LED-B4.14.4 (only the head-lock holder changes the statement maps); RED-B1.1 (never tombstone live content); premises P-1311, P-C01, P-A3 (false at the pin)",
      "The eraser deletes rows and kills statement-map entries without ^IVG.Ledger(\"head\"); redaction reads its "
@@ -79,7 +79,7 @@ RCS = [
      "Give every handler a lock plan: each read-modify-write of a shared fact holds the owner's exclusive lock across "
      "the read and the write, or uses an atomic primitive ($Increment, unique names, a version-checked write); one "
      "two-process interleaving test per handler.",
-     "F-0207 F-0701 F-0905 F-1102 F-1807 F-C0402 F-C0601 F-C1101"),
+     "F-0207 F-0701 F-0905 F-1102 F-1807 F-C0348 F-C0402 F-C0601 F-C0670 F-C1101"),
     ("Derived stores and caches have no reliable staleness signal",
      ["SYS-I8"], "CONTEXT.md:109-120 (graph-version token); ADR-0012; AlgoCache.cls:5-7 ('never wrongly fresh')",
      "Caches and rebuilt stores (degree cache, algorithm cache, BM25 indexes, the interned snapshot ^NKG, temporal "
@@ -109,7 +109,7 @@ RCS = [
      "Enforce ownership in the server: one write gate (Txn_Begin or the content tables' row hooks) that every content "
      "writer passes, which refuses ungoverned writes under strict mode and writes into a marked target, decided per "
      "write and fail-closed; the writer census becomes its test list.",
-     "F-0301 F-0302 F-0303 F-0503 F-0504 F-0801 F-1108 F-C1307"),
+     "F-0301 F-0302 F-0303 F-0503 F-0504 F-0801 F-1108 F-C1150 F-C1307 F-C1350"),
     ("Retries re-execute effects the idempotency record does not cover",
      ["SYS-I6"], "spec 213 ledger-api.md:26 (a replay returns the original outcome); HD-1305, HD-1603, HD-1702",
      "Idempotency covers only the revision: post-commit properties are a separate write that a replay applies again, a "
@@ -128,7 +128,7 @@ RCS = [
      "One write-transaction wrapper used by every entry point: validate the whole request first, then perform every "
      "write of the command in one transaction (nesting with TROLLBACK 1), never committing inside it; a failure test "
      "per entry that asserts no store changed.",
-     "F-0305 F-0615 F-0704 F-1511 F-1609 F-1610 F-C0501 F-C1501 F-C1502"),
+     "F-0305 F-0615 F-0704 F-1511 F-1609 F-1610 F-C0330 F-C0415 F-C0501 F-C0748 F-C1501 F-C1502"),
     ("IVG ObjectScript writers roll back their caller's transaction",
      ["SYS-I3"], "CHANGELOG 4.6.4 and _write_txn.py:1-30 (an IVG write nested in a caller's transaction undoes only its own level); IRIS contract E-PARTIAL",
      "Some ObjectScript writers (adjacency sync/rebuild, BM25 Insert/Delete) handle a failure with TROLLBACK, which "
@@ -147,7 +147,7 @@ RCS = [
      "An executable environment contract for every supported (engine, edition, driver, optional library) cell, run in "
      "CI, plus run-time capability probes that refuse with a named reason instead of assuming; a driver floor in "
      "pyproject.toml with a refreshed uv.lock.",
-     "F-1012 F-1504 F-C0502 F-C1001 F-C1102 F-C1110 F-C1704 F-C1705 F-C1706"),
+     "F-1012 F-1504 F-C0502 F-C0615 F-C1001 F-C1102 F-C1110 F-C1704 F-C1705 F-C1706 F-C1716 F-C1743"),
     ("The IVG Schema name is not resolved from one source",
      ["SYS-I10"], "ADR-0016 (the schema chosen at install is followed by everything); spec 262 FR-001/FR-006a/FR-007",
      "The namespace's schema record is the intended single source of the IVG Schema name, but legacy SQL files, the "
@@ -155,7 +155,7 @@ RCS = [
      "unqualified names, and the first-use check accepts a namespace with no record.",
      "Derive every SQL name through one qualifier from the deploy record (engine._ivg_schema); refuse a namespace with "
      "no record; retire or regenerate the legacy SQL files; run the suites on a non-default-schema namespace.",
-     "F-0103 F-0105 F-0107 F-0109 F-0309 F-1605"),
+     "F-0103 F-0105 F-0107 F-0109 F-0309 F-1605 F-C0690"),
     ("Failures are swallowed into empty, default or success answers",
      ["SYS-I9"], "CHANGELOG 4.6.0 rule 'a failed read raises'; 4.7.0 row 14 (every bulk writer raises for a refused row); 4.6.0 R265 (no silent empty answer)",
      "Handlers catch failures and answer as if nothing happened: [] for a failed read, False ('exists') for a refused "
@@ -165,7 +165,7 @@ RCS = [
      "Enforce the 4.6.0 rule mechanically: no handler returns an empty/default answer from an except clause; every "
      "outcome (removed, DONE, restored counts, health, legs used) is computed from the operation's own result; a lint "
      "over except clauses plus a fault-injection test per reader.",
-     "F-0101 F-0102 F-0209 F-0306 F-0307 F-0511 F-0604 F-0614 F-0709 F-1508 F-1509 F-1611 F-1615 F-C1802"),
+     "F-0101 F-0102 F-0209 F-0306 F-0307 F-0511 F-0604 F-0614 F-0709 F-1508 F-1509 F-1611 F-1615 F-C0940 F-C1640 F-C1802"),
     ("Refusals are not mapped to one typed error hierarchy at the boundary",
      ["SYS-I9"], "errors.py:1-17 (one catchable root IVGError); USER_GUIDE.md:313-318 (CypherParseError, GraphWriteError)",
      "Each layer raises its own exception types and messages: lexer SyntaxError, ValueError from the translator, "
@@ -184,7 +184,7 @@ RCS = [
      "Drive the translators from a reference semantics: the typed openCypher TCK at the pin on every supported engine, "
      "a differential oracle per clause shape against a reference evaluator, and a refusal for every shape outside the "
      "covered set.",
-     "F-0802 F-0805 F-0808 F-0809 F-0810 F-0822 F-0823 F-0824 F-C0101 F-C0803"),
+     "F-0802 F-0805 F-0808 F-0809 F-0810 F-0822 F-0823 F-0824 F-C0101 F-C0803 F-C0841 F-C0848 F-C0849"),
     ("Stored values carry no type",
      [], "playbook §1 principle 7 (typed ids and values); spec 255 (a value comes back with the type it was written with); spec 204 FR-012",
      "Property and qualifier values are stored as JSON text or native subscripts with no type tag and no single "
@@ -209,7 +209,7 @@ RCS = [
      "text rewrites the query (and execute_aql has no read-only switch).",
      "Bind every literal as a parameter, validate identifiers against a grammar or an allow-list, and apply read_only "
      "at every query entry including execute_aql.",
-     "F-0814 F-0815"),
+     "F-0814 F-0815 F-C0341"),
     ("No server-side authorization or exposure boundary",
      [], "no SYS-I axiom covers it (an ontology gap); HD-1601 (the namespace is the authorization boundary); ADMIN_GUIDE.md:450-473 (least-privilege reading role); deploy/README.md:86",
      "Protection rests on documentation, client flags or the start-up path: file and global helpers are callable by a "
@@ -220,7 +220,7 @@ RCS = [
      "roles, loopback default bind and a refusal of unauthenticated external binds in the app itself, the key "
      "middleware on every server, a privilege check in the executor (or a documented resource boundary), an installer "
      "that creates the least-privilege user.",
-     "F-0908 F-1614 F-1709 F-1806 F-C1603 F-C1803"),
+     "F-0908 F-1614 F-1709 F-1806 F-C1603 F-C1741 F-C1803"),
     ("Edge identity for parallel edges is not one rule",
      [], "spec 234 FR-002/FR-007/FR-012/FR-013, SC-005; CONTEXT.md:103-108 (parallel edges each count)",
      "Multigraph support (spec 234) was implemented on some paths only: single-edge writers guard the triple only when "
@@ -229,14 +229,16 @@ RCS = [
      "One edge identity (s, p, o, ekey) used by rows, adjacency counts, the ledger, Bolt ids, degree and verify, with "
      "spec 234's ambiguous-tuple refusal where only a triple is given; a multigraph fixture in each reader's tests.",
      "F-0201 F-0204 F-0205 F-0403 F-1007 F-1712"),
-    ("The temporal mark has no single predicate and adoption step",
-     [], "ADR-0009 and its amendment; HD-0302; ADR-0015",
-     "Whether an edge row is temporal-backed (marked) is decided by different predicates in the deleters, the ledger "
-     "and the Python mirror, and the adopt/retract step runs on some writers only (store_edge does not adopt; Purge "
-     "leaves marked rows; create_edge adopts after its commit).",
-     "One shared mark predicate (JSON boolean true) and one adopt/retract step called by every writer and deleter "
-     "inside its own transaction.",
-     "F-0304 F-0505 F-0506 F-0507 F-C0301"),
+    ("Derived-row marks are ordinary qualifier keys with no single predicate",
+     [], "ADR-0009 and its amendment; HD-0302; ADR-0015; schema.py:3187 (retract_inference deletes only what materialize_inference wrote)",
+     "Whether an edge row is derived (temporal-backed, or inferred) is recorded as an ordinary qualifier key that any "
+     "caller, the ledger included, can also write ('temporal', 'inferred'), and is tested by different predicates in "
+     "the deleters, the ledger and the Python mirror; the adopt/retract step runs on some writers only (store_edge "
+     "does not adopt; Purge leaves marked rows; create_edge adopts after its commit). Governed and explicit rows are "
+     "therefore deleted as derived ones, and derived rows survive as explicit ones.",
+     "One shared mark that no caller can write (a reserved key refused by every writer and the ledger, or a column), "
+     "one predicate, and one adopt/retract step called by every writer and deleter inside its own transaction.",
+     "F-0304 F-0505 F-0506 F-0507 F-C0151 F-C0301 F-C0351 F-C0450"),
     ("Results depend on storage order or join multiplicity",
      [], "playbook §1 principle 5 (never depend on storage or insertion order, only on keys and explicit orderings); gate 3.4-storage-order",
      "Result prefixes (TOP n) without a total ORDER BY, TOP 1 over several qualifying rows, statement-id allocation in "
@@ -244,7 +246,7 @@ RCS = [
      "node make answers a function of storage order or join shape.",
      "Order every result prefix and every allocation by a total key, use EXISTS for filters, and close the "
      "storage-order scan's candidate list (order or document each).",
-     "F-0907 F-C0302 F-C0602 F-C0603 F-C0604 F-C0703 F-C0802 F-C1108"),
+     "F-0907 F-C0302 F-C0602 F-C0603 F-C0604 F-C0642 F-C0703 F-C0802 F-C1108 F-C1642 F-C1742"),
     ("Identity by a non-injective checksum",
      [], "ADR-0014:19 (a compiled class answers exactly as the interpreter does); NAT-B1.11; NAT-I3",
      "Compiled plan classes and the interpreter's used-relationship set are keyed by a 32-bit $ZCRC, so two shapes "
@@ -260,7 +262,7 @@ RCS = [
      "Restore through the owners: refuse an archive whose ledger history does not extend the live one before any "
      "mutation, rebuild derived stores (adjacency, aggregates) from restored rows, and guard each merged table on its "
      "primary or unique key.",
-     "F-0404 F-1801 F-1802 F-1805"),
+     "F-0404 F-1801 F-1802 F-1805 F-C1850"),
     ("Vector identity is enforced per seam and fails open",
      [], "ADR-0006 (every seam that writes vectors consults the registry); spec 226 FR-014 (enforcement is not opt-in); spec 227",
      "Each vector-writing seam (engine writes, Python embedder fallback, the IRIS queue worker, VectorOptimizer, "
@@ -275,7 +277,7 @@ RCS = [
      "the reserved stopword name and the wire schema's length limits are checked on some paths and not others.",
      "One validator per input kind at the shared write boundary (the server), the Python mirror generated from it, and "
      "a refusal with a validation code before the transaction starts.",
-     "F-0202 F-0203 F-0513 F-0608 F-0706 F-C0701 F-C1107"),
+     "F-0202 F-0203 F-0513 F-0608 F-0706 F-C0150 F-C0701 F-C1107"),
     ("Resource bounds are not declared",
      [], "playbook §3.6 (capacity condition); SC budgets in specs 227 and 236",
      "Limits exist but are neither declared nor checked at the boundary: a combined key length for (s, p, o, graph), "
@@ -283,7 +285,7 @@ RCS = [
      "bounded, a Bolt session's IRIS connection, a latency budget.",
      "Declare every bound (key lengths, prefix length, row caps, memory, connections, latency) in the contract, check "
      "it at the boundary with a named refusal, and test each at the limit.",
-     "F-0514 F-1510 F-C0606 F-C1106 F-C1204 F-C1601"),
+     "F-0514 F-1510 F-C0347 F-C0606 F-C0948 F-C1106 F-C1204 F-C1549 F-C1601 F-C1848"),
     ("Parallel implementations of one operation diverge",
      [], "ALG-I1 (IVG answers the same without the library); ADR-0014:19; API-B5.8; spec 236 FR-014a",
      "One operation has several implementations (owner vs native PageRank, Arno vs fallback Leiden, the engine vs the "
@@ -315,7 +317,7 @@ RCS = [
      "docker recipe do not do what the README says, declared console scripts cannot run.",
      "CI that installs from the built package, runs the deploy recipes and console scripts on Community, and fixtures "
      "that call the product's own setup and read its real keys.",
-     "F-0108 F-1112 F-1708 F-1710 F-C1701"),
+     "F-0108 F-1112 F-1708 F-1710 F-C0090 F-C1701"),
     ("Stated refusals, options and protocol verbs are accepted and ignored",
      ["SYS-I9"], "playbook §5 lesson 'a refusal written in the spec is not a refusal'; CYP-X3.8, CYP-X10.2, CYP-X12.x; Bolt protocol (P-1612)",
      "Interfaces accept inputs whose documented meaning they do not implement, instead of refusing them: a WHERE after "
@@ -325,7 +327,37 @@ RCS = [
      "outcome, the MCP query text.",
      "Audit every documented refusal, parameter and protocol verb mechanically (a list generated from the docs and "
      "specs), implement it or refuse it with a named error, and test each.",
-     "F-0508 F-0512 F-0803 F-0817 F-0825 F-1010 F-1111 F-1505 F-1601 F-1602 F-1606 F-1613 F-1702 F-1703 F-1706 F-C1702"),
+     "F-0508 F-0512 F-0803 F-0817 F-0825 F-1010 F-1111 F-1505 F-1601 F-1602 F-1606 F-1613 F-1702 F-1703 F-1706 F-C1641 F-C1702 F-C1715"),
+    ("Stores have no enforced single write owner",
+     ["SYS-I1"], "playbook §3.4 (each store has a single write owner); ADR-0011 (one adjacency writer); module Scope sections of the ontology",
+     "Outside the ledger, stores owned by one module are written directly by others: ^KG(\"prop\") has no owner and "
+     "four writers, the Arno bridge moves the adjacency token, the vector module kills a sub-store of ^NKG, the Cypher "
+     "DELETE and the SQL adapter delete vector, document and reification rows themselves, the FHIR build writes the "
+     "label index and vector rows, a loader clears content tables by raw SQL. Each direct writer skips the owner's "
+     "rules (routes, tokens, graph scope, strict mode).",
+     "Name one owner per store (as GraphStores.Inventory does for erasure) and route every other writer through the "
+     "owner's method; a mechanical census (as the structural lane's st-check-own-census) that fails on a write to a "
+     "store outside its owner.",
+     "F-C0340 F-C0440 F-C0640 F-C0840 F-C1040 F-C1540 F-C1740"),
+    ("Bulk loads bypass the indexes and key checks every other path relies on",
+     ["SYS-I8", "SYS-I1"], "schema.py:34-44, 396-419 (unique keys); GID-I4.10; spec 256 FR-005 (refuse while any row of the target is live); ADR-0004",
+     "BulkLoader writes with INSERT %NOINDEX %NOCHECK by default: the rows it writes are in no index and pass no unique "
+     "check until the indexes are rebuilt. Readers, the liveness check, erasure and the key invariants all read "
+     "through those indexes, so duplicate keys are stored, a mode-off graph holds parallel rows, erasure leaves the "
+     "loaded edge, and redaction completes while the tenant's loaded rows exist.",
+     "Make the bulk loader leave the indexes current before it returns (rebuild inside the load, or no %NOINDEX on "
+     "key-carrying tables) and drop %NOCHECK for unique keys; until then refuse erasure and redaction while an index "
+     "build is pending.",
+     "F-C0349 F-C0350 F-C1250 F-C1351"),
+    ("Server answers are hand-encoded text decoded by patterns",
+     [], "TXT-B2.13 (each id and score in the answer is valid JSON); RFC 8259 escaping (CHANGELOG.md:463-467); the decoders' own docstrings",
+     "Several ObjectScript methods answer Python with hand-built text (comma lists, partly escaped JSON, shape-sniffed "
+     "maps), and the Python side repairs or decodes it by text patterns: a leading-dot patch rewrites ids, comma "
+     "splitting breaks names, an unescaped control character breaks the JSON, a node named 'components' is read as a "
+     "summary.",
+     "One wire encoding for every server answer (%DynamicObject / JSON arrays built by the library, never by "
+     "concatenation) decoded by json.loads only, with no text repair; a round-trip test with hostile names and ids.",
+     "F-C0715 F-C0716 F-C0717 F-C1018"),
 ]
 
 # secondary causes: finding -> [RC numbers]
@@ -345,19 +377,27 @@ SECONDARY = {
     "F-1702": [10], "F-C1108": [8], "F-C1204": [27], "F-C1306": [13], "F-0103": [33], "F-0105": [31],
     "F-0108": [12], "F-0203": [29], "F-0205": [31], "F-0407": [5], "F-0506": [8], "F-0511": [10], "F-0617": [26],
     "F-1505": [31], "F-1111": [31], "F-1706": [31], "F-1703": [31], "F-1602": [14],
+    # findings added after the first pass (r3)
+    "F-C0330": [14], "F-C0340": [8, 3, 1], "F-C0348": [14], "F-C0349": [27], "F-C0350": [21], "F-C0351": [27],
+    "F-C0450": [8], "F-C0151": [8], "F-C0748": [28], "F-C0840": [3], "F-C0849": [17], "F-C1716": [14],
+    "F-C1743": [29], "F-C1350": [4], "F-C1351": [3, 4], "F-C1250": [3], "F-C1850": [3], "F-C0717": [27],
+    "F-C0150": [8], "F-C1547": [2], "F-C1041": [29], "F-C0690": [14], "F-C1642": [1], "F-C1742": [1],
+    "F-C1741": [32], "F-C1641": [14], "F-C0615": [10],
 }
 
-# Tentative cross-reference to the semantics lane's DRAFT ids (semantics/src/axioms_src.json AX-NN,
-# mechanisms_src.json M-NN, read 2026-11-14 ~11:35 UTC). Not final: semantics_xref stays empty until the lane's
-# axioms.json / mechanisms.json exist; then semantics_xref() fills it with the ids below that the final files contain.
-TENTATIVE_XREF = {
-    1: (["AX-02"], ["M-09"]), 2: (["AX-02"], ["M-09", "M-12"]), 3: (["AX-10"], ["M-05"]), 4: (["AX-11", "AX-01"], ["M-03"]),
-    5: (["AX-11", "AX-01"], ["M-03"]), 6: (["AX-08"], ["M-04"]), 7: (["AX-12"], ["M-13"]), 8: (["AX-01", "AX-07"], ["M-01"]),
-    9: (["AX-06"], ["M-02"]), 10: (["AX-04", "AX-03"], ["M-10"]), 11: (["AX-04"], ["M-10"]), 12: (["AX-09"], ["M-08"]),
-    13: (["AX-09"], ["M-08"]), 14: (["AX-12"], []), 15: (["AX-03"], []), 16: ([], []), 17: ([], []), 18: ([], []),
-    19: ([], []), 20: (["AX-13"], ["M-11"]), 21: (["AX-01"], []), 22: (["AX-01"], []), 23: ([], []), 24: ([], []),
-    25: (["AX-05", "AX-01"], ["M-06"]), 26: (["AX-01"], ["M-12"]), 27: (["AX-03"], ["M-10"]), 28: ([], []), 29: ([], []),
-    30: (["AX-14"], ["M-07"]), 31: ([], []), 32: ([], []), 33: (["AX-03"], []),
+# Cross-reference to the semantics lane's FINAL ids (semantics/axioms.json AX-NN, semantics/mechanisms.json M-NN):
+# the axioms each root cause violates and the mechanism that would implement its remedy. The checker verifies every
+# id exists in those files; member_classes (computed) shows how the semantics lane classed this root cause's members.
+XREF = {
+    1: (["AX-02"], ["M-09"]), 2: (["AX-02", "AX-01"], ["M-09", "M-12"]), 3: (["AX-10"], ["M-05", "M-06"]),
+    4: (["AX-11"], ["M-03"]), 5: (["AX-11"], ["M-03", "M-07"]), 6: (["AX-08"], ["M-04"]), 7: (["AX-12"], ["M-13"]),
+    8: (["AX-07", "AX-01"], ["M-01"]), 9: (["AX-06"], ["M-02"]), 10: (["AX-04", "AX-03"], ["M-10"]),
+    11: (["AX-03"], ["M-10"]), 12: (["AX-09"], ["M-08"]), 13: (["AX-09"], ["M-08"]), 14: (["AX-12"], ["M-10"]),
+    15: (["AX-03"], []), 16: ([], []), 17: ([], []), 18: ([], []), 19: ([], []), 20: (["AX-13"], ["M-11"]),
+    21: ([], []), 22: (["AX-01"], []), 23: ([], []), 24: ([], []), 25: (["AX-05", "AX-10"], ["M-06"]),
+    26: (["AX-01"], ["M-12"]), 27: (["AX-03"], ["M-10"]), 28: ([], []), 29: ([], []), 30: (["AX-14"], ["M-07"]),
+    31: ([], []), 32: ([], []), 33: (["AX-03"], []), 34: (["AX-01"], ["M-12"]), 35: (["AX-08", "AX-01"], ["M-04"]),
+    36: (["AX-12"], []),
 }
 
 EXCLUDED_REASONS = {
@@ -365,6 +405,8 @@ EXCLUDED_REASONS = {
     "F-0904": "not reproduced (b-09-f0904-sync-failed-build): a sync-mode failed build compiled in the reader's process, but the process still answered and prepared SQL on Community 2026.1; the harsher effect is a 2026.3 premise (P-0903); the compile-cost mechanism is source-confirmed (findings/audit/09.json)",
     "F-1608": "not reproduced (c16-s3-graphql-sample-api): two threads and one query thread on the shared connection gave 0 wrong answers in 12 s on 2026.1 with driver 5.3.2; the missing lock is source-confirmed and the premise stays open (findings/audit/16.json)",
     "F-C0403": "candidate, not reproduced: a sync() that failed on a row with graph '0' left all 400 sources in ^KG and verify_graph ok (findings/audit/04.json)",
+    "F-C1240": "refuted (zz-structural.json, orchestrator from the ontology-2 correction): GraphStores.Inventory does list ^ArnoKG (GraphStores.cls:131, one line past the cited range); the Kill in EraseAll is the right effect",
+    "F-C1720": "duplicate of F-C1743 (zz-contract-2.json): the same query_nodes FETCH FIRST crash; counted once, under F-C1743",
 }
 
 
@@ -372,24 +414,39 @@ def semantics_xref() -> dict:
     sem = ROOT / "semantics"
     paths = {k: sem / f"{k}.json" for k in ("axioms", "mechanisms")}
     present = {k: p.exists() for k, p in paths.items()}
-    out = {"checked_utc": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-           "paths": {k: str(p.relative_to(ROOT.parent.parent)) for k, p in paths.items()}, "present": present}
-    out["status"] = "available" if all(present.values()) else (
-        "pending: the semantics lane's axioms.json / mechanisms.json did not exist when this map was built; each root "
-        "cause's semantics_xref is left empty for the orchestrator to fill once they exist")
+    out = {"paths": {k: str(p.relative_to(ROOT.parent.parent)) for k, p in paths.items()}, "present": present,
+           "classes_source": "experiment/playbook-completion/semantics/src/finding_classes.json (+ axioms.json violating_findings)"}
+    out["status"] = ("final ids: each root cause names the axioms (AX-NN) it violates and the mechanism (M-NN) its remedy "
+                     "needs; member_classes counts the semantics lane's own classes of its members"
+                     if all(present.values()) else "pending: the semantics lane's final files are absent")
     return out
 
 
-def final_xref(n: int) -> dict:
-    """Ids of the semantics lane's FINAL files (empty while they do not exist)."""
-    out = {"axioms": [], "mechanisms": []}
-    for kind, fname, ids in (("axioms", "axioms.json", TENTATIVE_XREF[n][0]),
-                             ("mechanisms", "mechanisms.json", TENTATIVE_XREF[n][1])):
-        p = ROOT / "semantics" / fname
-        if p.exists():
-            text = p.read_text()
-            out[kind] = [i for i in ids if f'"{i}"' in text]
+def semantics_classes() -> dict:
+    """finding id -> the semantics lane's classes (AX-NN from axioms.json violating_findings; FUNC/DOC/ENV/... from
+    its hand classification semantics/src/finding_classes.json)."""
+    out = {}
+    src = ROOT / "semantics" / "src" / "finding_classes.json"
+    if src.exists():
+        for f, cl in json.loads(src.read_text()).get("classes", {}).items():
+            out[f] = list(cl or [])
+    ax = ROOT / "semantics" / "axioms.json"
+    if ax.exists():
+        for a in json.loads(ax.read_text()).get("axioms", []):
+            for f in a.get("violating_findings") or []:
+                fid = f if isinstance(f, str) else f.get("id")
+                out.setdefault(fid, [])
+                if a["id"] not in out[fid]:
+                    out[fid].append(a["id"])
     return out
+
+
+def final_xref(n: int, members: list, classes: dict) -> dict:
+    axioms, mechs = XREF[n]
+    mc = Counter(c for f in members for c in classes.get(f, ["unclassed"]))
+    agree = [f for f in members if set(classes.get(f, [])) & set(axioms)]
+    return {"axioms": axioms, "mechanisms": mechs, "member_classes": dict(sorted(mc.items())),
+            "members_agreeing": len(agree) if axioms else None}
 
 
 def main() -> int:
@@ -397,6 +454,7 @@ def main() -> int:
     recs = corpus["records"]
     ids = set(recs)
     rcs, assignments = [], {}
+    classes = semantics_classes()
     prim_of = {}
     for n, (title, axioms, other, statement, remedy, members) in enumerate(RCS, 1):
         rid = f"RC-{n:02d}"
@@ -411,8 +469,7 @@ def main() -> int:
         hi = min(sev, key=lambda s: SEV_ORDER[s])
         rcs.append({"id": rid, "title": title, "statement": statement,
                     "violates": {"axioms": axioms, "other": other},
-                    "semantics_xref": final_xref(n),
-                    "tentative_xref_from_drafts": {"axioms": TENTATIVE_XREF[n][0], "mechanisms": TENTATIVE_XREF[n][1]},
+                    "semantics_xref": final_xref(n, prim, classes),
                     "primary": prim, "secondary": [],
                     "conditional": sorted(f for f in prim if recs[f]["disposition"] in CONDITIONAL_DISPOSITIONS),
                     "highest_severity": hi,
@@ -461,7 +518,8 @@ def main() -> int:
         "summary": {"root_causes": len(rcs), "assigned": len(prim_of), "excluded": len(excluded),
                     "conditional": sum(len(rc["conditional"]) for rc in rcs), "top10": top,
                     "top10_cover": sum(len(rcs[int(t[3:]) - 1]["primary"]) for t in top),
-                    "no_sys_axiom": [rc["id"] for rc in rcs if not rc["violates"]["axioms"]]},
+                    "no_sys_axiom": [rc["id"] for rc in rcs if not rc["violates"]["axioms"]],
+                    "no_semantics_axiom": [rc["id"] for rc in rcs if not rc["semantics_xref"]["axioms"]]},
     }
     MAP.write_text(json.dumps(out, indent=1, sort_keys=False) + "\n")
     MD.write_text(render_md(out, recs))
@@ -479,8 +537,8 @@ def render_md(m: dict, recs: dict) -> str:
     w("# Findings grouped by root cause (gate 5c-root-causes)\n")
     w("Lane reflection of the completion audit, product pin `3eaa79cf`. Level: **method** (an analysis of the "
       "findings; no new product finding, no product claim). Machine-readable twin: `root_causes.json`, generated by "
-      "`tools/build_root_causes.py`, checked by `tools/check_root_causes.py` (registered as `rf-root-causes-check`, "
-      "self-test `rf-root-causes-selftest`). Playbook lesson (verification-playbook.txt §5, 'Count root causes, not "
+      "`tools/build_root_causes.py`, checked by `tools/check_root_causes.py` (registered as `rf-root-causes-check-r3`, "
+      "self-test `rf-root-causes-selftest-r3`; earlier passes `rf-root-causes-check`, `-r2`). Playbook lesson (verification-playbook.txt §5, 'Count root causes, not "
       "findings'): findings fall to a handful of shared mechanisms once grouped by the rule they break.\n")
     w("## Corpus and rule\n")
     w(f"- Findings: every id in the original submission (`experiment/playbook-uplift/FINDINGS.md`, `findings/*.md`: "
@@ -489,7 +547,7 @@ def render_md(m: dict, recs: dict) -> str:
       f"file's record, as the matrix does: " + ", ".join(f"{k} ({' then '.join(v)})" for k, v in sorted(c['duplicate_records'].items())) + ".")
     w("- Dispositions in the corpus: " + ", ".join(f"{k} {v}" for k, v in c["dispositions"].items()) + ".")
     w(f"- Each finding has exactly one **primary** root cause; **secondary** causes are listed where another rule is "
-      f"also broken. Refuted and not-reproduced findings are listed separately and count to no root cause "
+      f"also broken. Refuted, not-reproduced and duplicate findings are listed separately and count to no root cause "
       f"({s['excluded']}). Intent-undecided and blocked-access findings are assigned but marked *conditional* "
       f"({s['conditional']}): the behaviour is observed or confirmed in source, the intent or the live reproduction "
       f"is not settled.")
@@ -498,9 +556,9 @@ def render_md(m: dict, recs: dict) -> str:
       "otherwise the playbook principle or product document it breaks.")
     xs = m["semantics_xref"]
     w(f"- Cross-reference to the semantics lane (`semantics/axioms.json`, `semantics/mechanisms.json`): "
-      f"{xs['status']} (checked {xs['checked_utc']}). The lane's drafts (`semantics/src/axioms_src.json` AX-01..AX-14, "
-      f"`mechanisms_src.json` M-01..M-13) were read for a tentative mapping, recorded per root cause as "
-      f"`tentative_xref_from_drafts` and shown below as 'tentative'; it is not a cross-reference to final ids.\n")
+      f"{xs['status']}. The checker verifies every AX/M id against the final files; 'agreeing' counts the members the "
+      f"semantics lane itself classed under one of the root cause's axioms (an independent classification of the same "
+      f"findings, `semantics/src/finding_classes.json`).\n")
     w(f"**Result: {c['unique_ids']} findings -> {s['assigned']} assigned to {s['root_causes']} root causes, "
       f"{s['excluded']} excluded.** The ten largest root causes cover {s['top10_cover']} of the {s['assigned']} "
       f"assigned findings ({100 * s['top10_cover'] / s['assigned']:.0f}%).\n")
@@ -530,15 +588,17 @@ def render_md(m: dict, recs: dict) -> str:
     cons = ", ".join(f"{r} {n}" for r, n in s1.most_common() if n)
     w(f"- S1 findings ({tot_s1} assigned) concentrate in few causes: {cons}.")
     w(f"- {len(s['no_sys_axiom'])} of {s['root_causes']} root causes break no SYS-I axiom of the original ontology "
-      f"({', '.join(s['no_sys_axiom'])}): environment premises, translation semantics, typed values and units, query "
-      f"construction, authorization, edge identity, the temporal mark, ordering, identity digests, vector identity, "
-      f"capacity, divergent implementations, progress, documentation, tooling. The original's ten universal axioms "
-      f"do not state these rules; they are candidates for the semantics lane's axiom and mechanism lists.")
+      f"({', '.join(s['no_sys_axiom'])}). The semantics lane's fourteen axioms (AX-01..AX-14) cover some of them "
+      f"(authorization AX-13, progress AX-14, vector identity and derived marks AX-01, wire answers AX-12); "
+      f"{len(s['no_semantics_axiom'])} root causes map to none of AX-01..AX-14 either "
+      f"({', '.join(s['no_semantics_axiom'])}): candidates for further axioms or for the lane's FUNC/DOC/ENV/TEST "
+      f"classes.")
     w("- Shared-mechanism view (playbook: '12 shared mechanisms closed 90%'): one graph-scoped access layer (RC-01, "
       "RC-02), one store inventory (RC-03), one ledger head-lock protocol and server-side write gate (RC-04, RC-08), "
       "one staleness epoch (RC-06, RC-07), one write-transaction wrapper (RC-10, RC-11), one outcome/error rule "
-      "(RC-14, RC-15, RC-33) and an executable environment contract (RC-12) would address the root causes of "
-      + str(sum(len(rcs[i - 1]['primary']) for i in (1, 2, 3, 4, 6, 7, 8, 10, 11, 12, 14, 15, 33))) +
+      "(RC-14, RC-15, RC-33), an executable environment contract (RC-12) and one owner per store with current indexes "
+      "(RC-34, RC-35) would address the root causes of "
+      + str(sum(len(rcs[i - 1]['primary']) for i in (1, 2, 3, 4, 6, 7, 8, 10, 11, 12, 14, 15, 33, 34, 35))) +
       f" of the {s['assigned']} assigned findings. This is a statement about the grouping, not a claim that the remedies "
       "are correct or sufficient: each remedy is prose, nothing was implemented or tested here.")
     w("")
@@ -548,9 +608,11 @@ def render_md(m: dict, recs: dict) -> str:
         w(f"- Statement: {rc['statement']}")
         w(f"- Violates: {', '.join(rc['violates']['axioms']) or 'none of SYS-I1..SYS-I10'}; {rc['violates']['other']}.")
         w(f"- Highest severity {rc['highest_severity']}; modules {', '.join(rc['modules'])}.")
-        t = rc["tentative_xref_from_drafts"]
-        w(f"- Semantics lane ids: final {rc['semantics_xref']['axioms'] + rc['semantics_xref']['mechanisms'] or 'pending'}; "
-          f"tentative from drafts {', '.join(t['axioms'] + t['mechanisms']) or 'none'}.")
+        x = rc["semantics_xref"]
+        agree = (f"; {x['members_agreeing']} of {len(rc['primary'])} members classed under one of these axioms by the "
+                 f"semantics lane" if x["members_agreeing"] is not None else "")
+        w(f"- Semantics lane: axioms {', '.join(x['axioms']) or 'none'}; mechanism {', '.join(x['mechanisms']) or 'none'}"
+          f"{agree}; its classes of the members: {', '.join(f'{k} {v}' for k, v in x['member_classes'].items())}.")
         w(f"- Remedy (prose only): {rc['remedy']}")
         w(f"- Findings ({len(rc['primary'])}):")
         for f in rc["primary"]:
@@ -560,7 +622,7 @@ def render_md(m: dict, recs: dict) -> str:
         if rc["secondary"]:
             w(f"- Also a secondary cause of: {', '.join(rc['secondary'])}")
         w("")
-    w("## Excluded (refuted or not reproduced; no root cause)\n")
+    w("## Excluded (refuted, not reproduced or duplicate; no root cause)\n")
     w("| Id | Disposition | Severity | Title | Reason |")
     w("|---|---|---|---|---|")
     for e in m["excluded"]:

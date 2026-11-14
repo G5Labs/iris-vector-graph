@@ -1,0 +1,2702 @@
+{
+ "lane": "reflection",
+ "gate": "3.6-closure",
+ "level": "method",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "generated_by": "experiment/playbook-completion/reflection/tools/build_closure.py",
+ "checked_by": "experiment/playbook-completion/reflection/tools/check_closure.py",
+ "statuses": {
+  "validated": "a registered passing run decides the condition on the audit's engine",
+  "validated-in-part": "a registered run decides part of it; the rest is named in consequence",
+  "shown-false": "a registered run shows it false at the pin; consequence names what does not transfer",
+  "assumed": "no run validates it; consequence names what rests on it"
+ },
+ "conditions": [
+  {
+   "id": "contract-r6:E-GLOBALS",
+   "group": "contract-r6",
+   "ref": "E-GLOBALS",
+   "condition": "Globals: SET / KILL subtree / `$GET` / `$DATA`; a rollback restores a killed subtree",
+   "status": "validated",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6",
+    "env-contract-r6-recheck",
+    "env2-regress"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "every ^KG / ^IVG writer",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/iris-contract/CONTRACT.md"
+  },
+  {
+   "id": "contract-r6:E-NEST",
+   "group": "contract-r6",
+   "ref": "E-NEST",
+   "condition": "Nesting: `TSTART` nests; inner `TCOMMIT` only lowers `$TLEVEL`; a later outer rollback undoes inner work",
+   "status": "validated",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6",
+    "env-contract-r6-recheck",
+    "env2-regress"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "Graph.KG.Txn, Ledger.Commit (Ledger.cls:390-418)",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/iris-contract/CONTRACT.md"
+  },
+  {
+   "id": "contract-r6:E-PARTIAL",
+   "group": "contract-r6",
+   "ref": "E-PARTIAL",
+   "condition": "Partial rollback: `TROLLBACK 1` undoes only the top level, globals and SQL rows alike",
+   "status": "validated",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6",
+    "env-contract-r6-recheck",
+    "env2-regress"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "Txn.Undo, `_write_txn`",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/iris-contract/CONTRACT.md"
+  },
+  {
+   "id": "contract-r6:E-INCR",
+   "group": "contract-r6",
+   "ref": "E-INCR",
+   "condition": "`$INCREMENT`: not undone by rollback",
+   "status": "validated",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6",
+    "env-contract-r6-recheck",
+    "env2-regress"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "Adjacency.cls:57 (^IVG.AdjNoLock), LedgerRedact.cls:342",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/iris-contract/CONTRACT.md"
+  },
+  {
+   "id": "contract-r6:E-PPG",
+   "group": "contract-r6",
+   "ref": "E-PPG",
+   "condition": "Process-private globals: not undone by rollback; invisible to other processes",
+   "status": "validated",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6",
+    "env-contract-r6-recheck",
+    "env2-regress"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "^\\",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/iris-contract/CONTRACT.md"
+  },
+  {
+   "id": "contract-r6:E-VIS",
+   "group": "contract-r6",
+   "ref": "E-VIS",
+   "condition": "Visibility: no isolation for globals; SQL SELECT reads uncommitted rows (READ UNCOMMITTED)",
+   "status": "validated",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6",
+    "env-contract-r6-recheck",
+    "env2-regress"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "liveness checks (LiveRows), readers, verify, save_snapshot",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/iris-contract/CONTRACT.md"
+  },
+  {
+   "id": "contract-r6:E-ROLLBACK-OTHER",
+   "group": "contract-r6",
+   "ref": "E-ROLLBACK-OTHER",
+   "condition": "Rollback over another's write: a rollback does not overwrite a node another process changed after this process wrote it",
+   "status": "validated",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6",
+    "env-contract-r6-recheck",
+    "env2-regress"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "concurrent writers without locks",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/iris-contract/CONTRACT.md"
+  },
+  {
+   "id": "contract-r6:E-SQL-START",
+   "group": "contract-r6",
+   "ref": "E-SQL-START",
+   "condition": "SQL `START TRANSACTION`: does nothing when any level is open; else opens level 1",
+   "status": "validated",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6",
+    "env-contract-r6-recheck",
+    "env2-regress"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "`_write_txn` plain path",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/iris-contract/CONTRACT.md"
+  },
+  {
+   "id": "contract-r6:E-SQL-END",
+   "group": "contract-r6",
+   "ref": "E-SQL-END",
+   "condition": "SQL `COMMIT` / `ROLLBACK` statements: end one level",
+   "status": "validated",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6",
+    "env-contract-r6-recheck",
+    "env2-regress"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "`_write_txn` plain path; see version note",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/iris-contract/CONTRACT.md"
+  },
+  {
+   "id": "contract-r6:E-DRV",
+   "group": "contract-r6",
+   "ref": "E-DRV",
+   "condition": "Driver `commit()` / `rollback()`: `commit()` ends one level; `rollback()` ends every level",
+   "status": "validated",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6",
+    "env-contract-r6-recheck",
+    "env2-regress"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "autocommit-off callers (`_write_txn.py:23-25`)",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/iris-contract/CONTRACT.md"
+  },
+  {
+   "id": "contract-r6:E-AUTOCOMMIT",
+   "group": "contract-r6",
+   "ref": "E-AUTOCOMMIT",
+   "condition": "Autocommit: default on; with it off the first DML opens a level SQL owns; turning it on while a level is open commits one level, as `commit()` does, whether it was off or already on and whoever opened the level (revised after round r4; env/explore-9); turning it off inside a transaction is outside the subset",
+   "status": "validated",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6",
+    "env-contract-r6-recheck",
+    "env2-regress"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "`_driver_autocommit_off`; callers toggling autocommit around writes",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/iris-contract/CONTRACT.md"
+  },
+  {
+   "id": "contract-r6:E-LOCK-DEFER",
+   "group": "contract-r6",
+   "ref": "E-LOCK-DEFER",
+   "condition": "Locks: deferral: an unlock inside a transaction, including release-all and a lock taken before it, takes effect when the outermost transaction ends; an immediate unlock releases at once",
+   "status": "validated",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6",
+    "env-contract-r6-recheck",
+    "env2-regress"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "head lock (Ledger.cls:394-396, LedgerRedact.cls:289), AdjW",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/iris-contract/CONTRACT.md"
+  },
+  {
+   "id": "contract-r6:E-LOCK-LIFE",
+   "group": "contract-r6",
+   "ref": "E-LOCK-LIFE",
+   "condition": "Locks: lifetime: a lock not unlocked survives the commit",
+   "status": "validated",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6",
+    "env-contract-r6-recheck",
+    "env2-regress"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "\u2014",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/iris-contract/CONTRACT.md"
+  },
+  {
+   "id": "contract-r6:E-LOCK-NAMES",
+   "group": "contract-r6",
+   "ref": "E-LOCK-NAMES",
+   "condition": "Locks: names: hierarchical: a name conflicts with ancestors and descendants; siblings do not",
+   "status": "validated",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6",
+    "env-contract-r6-recheck",
+    "env2-regress"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "^IVG.AdjW vs ^IVG.AdjW(g) (Adjacency.cls:449-455)",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/iris-contract/CONTRACT.md"
+  },
+  {
+   "id": "contract-r6:E-LOCK-MODES",
+   "group": "contract-r6",
+   "ref": "E-LOCK-MODES",
+   "condition": "Locks: modes: shared locks are compatible; exclusive conflicts with shared, incl. across the hierarchy",
+   "status": "validated",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6",
+    "env-contract-r6-recheck",
+    "env2-regress"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "AdjW `#\"S\"` writers vs `#\"E\"` (Adj.cls:68,144)",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/iris-contract/CONTRACT.md"
+  },
+  {
+   "id": "contract-r6:E-LOCK-COUNT",
+   "group": "contract-r6",
+   "ref": "E-LOCK-COUNT",
+   "condition": "Locks: counts: incremental",
+   "status": "validated",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6",
+    "env-contract-r6-recheck",
+    "env2-regress"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "nested lock/unlock pairs",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/iris-contract/CONTRACT.md"
+  },
+  {
+   "id": "contract-r6:E-LOCK-NONINC",
+   "group": "contract-r6",
+   "ref": "E-LOCK-NONINC",
+   "condition": "Non-incremental `LOCK`: releases every held lock first, then locks",
+   "status": "validated",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6",
+    "env-contract-r6-recheck",
+    "env2-regress"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "`lock ^IVG.NKGBuild`, `lock ^IVG.AdjW`",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/iris-contract/CONTRACT.md"
+  },
+  {
+   "id": "contract-r6:E-LOCK-WAIT",
+   "group": "contract-r6",
+   "ref": "E-LOCK-WAIT",
+   "condition": "Lock wait: a waiting lock is granted when the holder releases; timeout 0 answers `$TEST`",
+   "status": "validated",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6",
+    "env-contract-r6-recheck",
+    "env2-regress"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "head lock waits (30 s), AdjW (5 s)",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/iris-contract/CONTRACT.md"
+  },
+  {
+   "id": "contract-r6:E-ROWLOCK",
+   "group": "contract-r6",
+   "ref": "E-ROWLOCK",
+   "condition": "Row locks: a DELETE/UPDATE waits for a row another open transaction inserted or updated; after that transaction rolls back it affects nothing; an autocommit statement holds no row lock afterwards; a global SET takes no lock",
+   "status": "validated",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6",
+    "env-contract-r6-recheck",
+    "env2-regress"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "eraser's DELETEs vs concurrent writers (P-1201)",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/iris-contract/CONTRACT.md"
+  },
+  {
+   "id": "contract-r6:E-UNIQUE",
+   "group": "contract-r6",
+   "ref": "E-UNIQUE",
+   "condition": "Unique keys: INSERT of a key another transaction inserted fails at once (-119)",
+   "status": "validated",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6",
+    "env-contract-r6-recheck",
+    "env2-regress"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "`_write_txn.is_duplicate`",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/iris-contract/CONTRACT.md"
+  },
+  {
+   "id": "contract-r6:E-STOP",
+   "group": "contract-r6",
+   "ref": "E-STOP",
+   "condition": "Process stop: rolls back every level and releases every lock; a waiter proceeds",
+   "status": "validated",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6",
+    "env-contract-r6-recheck",
+    "env2-regress"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "P-0001, interrupted redaction",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/iris-contract/CONTRACT.md"
+  },
+  {
+   "id": "contract-r6:E-CALLER",
+   "group": "contract-r6",
+   "ref": "E-CALLER",
+   "condition": "Caller identity: SQL on a cursor and the Native API on the same connection run in one server process (same `$JOB`)",
+   "status": "validated-in-part",
+   "runs": [
+    "env2-e1-r2"
+   ],
+   "observed": [],
+   "consequence": "decided by an unregistered exploratory probe (env/explore-2.log test 7); S-1 (env2-e1-r2) shows the pin's compiled SQL functions run on the calling connection's process, and b-09-f0909-txn-visibility shows a from_connect engine runs SQL and Native API calls in two processes, so results that rely on one process per connection hold for connection-object engines only",
+   "relied_on_by": "`_write_txn` docstring, Txn_Begin",
+   "missing_test": "a named differential case for the clause in the next contract round",
+   "source": "experiment/playbook-completion/iris-contract/CONTRACT.md"
+  },
+  {
+   "id": "contract-r6:X-FX",
+   "group": "contract-r6",
+   "ref": "X-FX",
+   "condition": "Functional index in the row's transaction: the index entries of a row are written by the row's own statement, in its process and transaction: visible at once to other processes (READ UNCOMMITTED), undone with the row by `TROLLBACK`, `TROLLBACK 1` (inner level only), SQL `ROLLBACK`, driver `rollback()` and process stop; an UPDATE moves the entry, a DELETE removes it, and their rollbacks restore it;",
+   "status": "validated",
+   "runs": [
+    "env-ext-r6",
+    "env-contract-r6-recheck",
+    "env2-regress"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "Graph.KG.LabelIndex / AdjIndex `InsertIndex` / `DeleteIndex` (LabelIndex.cls:10-25, AdjIndex.cls:12-23); P-0801, P-0902; modules 03, 04, 08, 09, 11, 15",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/iris-contract/CONTRACT.md"
+  },
+  {
+   "id": "contract-r6:X-NOINDEX",
+   "group": "contract-r6",
+   "ref": "X-NOINDEX",
+   "condition": "`%NOINDEX`, `%NOCHECK`, `BUILD INDEX`: `INSERT %NOINDEX` writes the row and no index entry at all: the functional index does not list it and the unique index does not hold its key, so a plain INSERT of that key is not refused and writes a second row; `%NOINDEX` alone still checks uniqueness (-119); `INSERT %NOCHECK` skips the unique check (a second row); `BUILD INDEX FOR TABLE` purges and rebuilds",
+   "status": "validated",
+   "runs": [
+    "env-ext-r6",
+    "env-contract-r6-recheck",
+    "env2-regress"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "bulk_loader.py:8-11, 157-183 (`%NOINDEX %NOCHECK`, rebuild after); schema.py:1782-1788, 3051-3056; BUILD INDEX (module 11)",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/iris-contract/CONTRACT.md"
+  },
+  {
+   "id": "contract-r6:X-DDL",
+   "group": "contract-r6",
+   "ref": "X-DDL",
+   "condition": "DDL and transactions: CREATE / DROP TABLE and ALTER TABLE ADD COLUMN take effect at once and are visible to other processes before commit; issued inside a transaction they are undone by its rollback (catalog, columns, and a dropped table's rows), on both client paths, while the transaction stays open and its earlier writes are still undone; DDL at level 0 with autocommit off opens no transaction; ",
+   "status": "validated",
+   "runs": [
+    "env-ext-r6",
+    "env-contract-r6-recheck",
+    "env2-regress"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "schema init and migrations (schema.py, embeddings.py:254, vector_utils.py:195); DROP TABLE after TCOMMIT (module 18); modules 01, 03, 04, 06, 18",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/iris-contract/CONTRACT.md"
+  },
+  {
+   "id": "contract-r6:X-NULL",
+   "group": "contract-r6",
+   "ref": "X-NULL",
+   "condition": "NULL and the empty string: a DB-API parameter `''` (and `'\\x00'`) is stored as the SQL empty string, `None` as NULL; an ObjectScript `%ExecDirect` parameter `\"\"` is stored as NULL (P-0706) and `$C(0)` as the empty string; literals `''` / `NULL` alike on both paths; the DB-API reads `''` / `None`, an ObjectScript result set reads the empty string as `$C(0)` and NULL as `\"\"`; `COALESCE(v, '') = COAL",
+   "status": "validated",
+   "runs": [
+    "env-ext-r6",
+    "env-contract-r6-recheck",
+    "env2-regress"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "GraphKey.cls:34-84 ($Char(0) transport), VarLength.cls:35-36, TraversalPaths.cls:281; graph guards `COALESCE(graph_id, '') = COALESCE(?, '')` (schema.py, spec 230 FR-005); P-0706",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/iris-contract/CONTRACT.md"
+  },
+  {
+   "id": "contract-r6:X-STMT",
+   "group": "contract-r6",
+   "ref": "X-STMT",
+   "condition": "Statement atomicity: a failing multi-row `INSERT ... SELECT` leaves none of its own rows (-119), at level 0 and inside a transaction, which stays open; with autocommit off at level 0 a DML statement that fails still opens the transaction, one that finds no row does not",
+   "status": "validated",
+   "runs": [
+    "env-ext-r6",
+    "env-contract-r6-recheck",
+    "env2-regress"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "P-0803 (`_write_txn`), INSERT ... SELECT guards (module 08)",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/iris-contract/CONTRACT.md"
+  },
+  {
+   "id": "contract-r6:X-ORDER",
+   "group": "contract-r6",
+   "ref": "X-ORDER",
+   "condition": "Subscript collation: `$ORDER` and the Native API's `nextSubscript` visit canonical-format numbers first, in numeric order, whatever their magnitude (observed to 41 characters), then every other string by code point (`\"01\"`, `\"1.0\"`, `\"+1\"`, `\"-0\"`, `\".5\"` vs `\"0.5\"`, `\"1E2\"` are strings); `nextSubscript` answers canonical strings",
+   "status": "validated",
+   "runs": [
+    "env-ext-r6",
+    "env-contract-r6-recheck",
+    "env2-regress"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "P-0705, snapshot.py:1612-1692 (P-1802); modules 03-07, 09, 10",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/iris-contract/CONTRACT.md"
+  },
+  {
+   "id": "contract-r6:X-STAR",
+   "group": "contract-r6",
+   "ref": "X-STAR",
+   "condition": "`SELECT *`: lists the declared columns in declaration order, without the row id; `ALTER TABLE ADD COLUMN` appends",
+   "status": "validated",
+   "runs": [
+    "env-ext-r6",
+    "env-contract-r6-recheck",
+    "env2-regress"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "snapshot.py:866-874, 1287-1292 (P-1801)",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/iris-contract/CONTRACT.md"
+  },
+  {
+   "id": "contract-r6:X-TLEVEL-SQL",
+   "group": "contract-r6",
+   "ref": "X-TLEVEL-SQL",
+   "condition": "`SELECT $TLEVEL`: reports the process's level (both paths); a query (`SELECT`, `SELECT $TLEVEL`) with autocommit off opens no transaction",
+   "status": "validated",
+   "runs": [
+    "env-ext-r6",
+    "env-contract-r6-recheck",
+    "env2-regress"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "`caller_transaction_level` (_write_txn.py:64-90)",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/iris-contract/CONTRACT.md"
+  },
+  {
+   "id": "contract-r6:X-VEC",
+   "group": "contract-r6",
+   "ref": "X-VEC",
+   "condition": "Vectors (availability) and `$VECTOR`: `VECTOR_COSINE` and `VECTOR_DOT_PRODUCT` exist (0.6 for (1,0)\u00b7(0.6,0.8)), `VECTOR_L2` does not (-359), with `TO_VECTOR(text, DOUBLE)`; a `$VECTOR` element SET in a global reads back, is undone by a rollback, and the Native API cannot read the value (`get` raises `<LIST ERROR>`, `isDefined` answers 1)",
+   "status": "validated",
+   "runs": [
+    "env-ext-r6",
+    "env-contract-r6-recheck",
+    "env2-regress"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "dbapi_utils.py:256-272 (metric `L2` -> `VECTOR_L2`); modules 00, 06, 16, 17, 18",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/iris-contract/CONTRACT.md"
+  },
+  {
+   "id": "contract-r6:X-ZSTRIP",
+   "group": "contract-r6",
+   "ref": "X-ZSTRIP",
+   "condition": "`$ZSTRIP`: class C = code points 0-31 and 127-159; class W = 9, 32 and 160 only (LF, VT, FF, CR are not whitespace); actions `*` all, `<` leading, `>` trailing, `=` contiguous repeats of one character reduced to one; extra characters as the third argument",
+   "status": "validated",
+   "runs": [
+    "env-ext-r6",
+    "env-contract-r6-recheck",
+    "env2-regress"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "GraphKey.cls:44, Gen.cls:621 (`*C`); SqlPrivilege.cls:24, EmbedQueue.cls:222,251, FHIRGraph.cls:1781 (`<>W`, `<=>W`); SortKey.cls:91-93 (`<`/`>` with \"0\")",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/iris-contract/CONTRACT.md"
+  },
+  {
+   "id": "contract-2:E-1",
+   "group": "contract-2",
+   "ref": "E-1",
+   "condition": "the pin's compiled embedded SQL (SELECT INTO, cursor, INSERT, INSERT ... SELECT WHERE NOT EXISTS, DELETE) has the dynamic statement's permitted outcomes for E-NEST, E-PARTIAL, E-SQL-END, E-DRV, E-AUTOCOMMIT, E-VIS, E-ROWLOCK, E-UNIQUE, E-STOP, X-STMT, X-NULL; -104, -108",
+   "status": "validated",
+   "runs": [
+    "env2-e1-r1",
+    "env2-e1-r1-journal"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/contract-2/VALIDATED.json"
+  },
+  {
+   "id": "contract-2:S-1",
+   "group": "contract-2",
+   "ref": "S-1",
+   "condition": "the pin's compiled SQL functions Txn_Begin / Txn_End / Txn_Undo act on the calling connection's process and transaction",
+   "status": "validated",
+   "runs": [
+    "env2-e1-r2"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/contract-2/VALIDATED.json"
+  },
+  {
+   "id": "contract-2:X2-JSON",
+   "group": "contract-2",
+   "ref": "X2-JSON",
+   "condition": "%DynamicObject %Set / %Get / %GetTypeOf / %IsDefined / %Remove / %ToJSON / %FromJSON",
+   "status": "validated",
+   "runs": [
+    "env2-x2-r1"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/contract-2/VALIDATED.json"
+  },
+  {
+   "id": "contract-2:X2-LIST",
+   "group": "contract-2",
+   "ref": "X2-LIST",
+   "condition": "$LIST / $LISTBUILD / $LISTGET / $LISTDATA / $LISTLENGTH / $LISTNEXT / $LISTFIND / $LISTSAME / $LISTTOSTRING / $LISTFROMSTRING; IRISList decode",
+   "status": "validated",
+   "runs": [
+    "env2-x2-r1"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/contract-2/VALIDATED.json"
+  },
+  {
+   "id": "contract-2:X2-TOP",
+   "group": "contract-2",
+   "ref": "X2-TOP",
+   "condition": "TOP n, LIMIT n [OFFSET m] over ORDER BY (SQLUPPER default, DESC, %EXACT) and unordered",
+   "status": "validated",
+   "runs": [
+    "env2-x2-r1"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/contract-2/VALIDATED.json"
+  },
+  {
+   "id": "contract-2:X2-BATCH",
+   "group": "contract-2",
+   "ref": "X2-BATCH",
+   "condition": "DB-API executemany: a refused row of several skipped silently; one row raises",
+   "status": "validated",
+   "runs": [
+    "env2-x2-r1"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/contract-2/VALIDATED.json"
+  },
+  {
+   "id": "contract-2:X2-IOU",
+   "group": "contract-2",
+   "ref": "X2-IOU",
+   "condition": "INSERT OR UPDATE: inserts / updates; waits for a held row; -109 if it is gone",
+   "status": "validated",
+   "runs": [
+    "env2-x2-r1"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/contract-2/VALIDATED.json"
+  },
+  {
+   "id": "contract-2:X2-QUERY",
+   "group": "contract-2",
+   "ref": "X2-QUERY",
+   "condition": "$QUERY forward and reverse, $QLENGTH, $QSUBSCRIPT in $ORDER collation",
+   "status": "validated",
+   "runs": [
+    "env2-x2-r1"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/contract-2/VALIDATED.json"
+  },
+  {
+   "id": "contract-2:X2-MERGE",
+   "group": "contract-2",
+   "ref": "X2-MERGE",
+   "condition": "MERGE (copy, onto existing, rolled back) and ZKILL (value only, rolled back)",
+   "status": "validated",
+   "runs": [
+    "env2-x2-r1"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/contract-2/VALIDATED.json"
+  },
+  {
+   "id": "outside:pure",
+   "group": "outside",
+   "ref": "pure",
+   "condition": "P2-PURE: ObjectScript and SQL value built-ins compute their documented value inside the calling process and touch no shared state",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "no transaction, lock, visibility, durability or concurrency result depends on them; value-level statements (key and name encodings, parsing, numeric canonical forms, string building) rest on the documented semantics and on the module's own live and run evidence on this engine, not on the contract",
+   "relied_on_by": "modules 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12, 13, 14, 15, 16, 17",
+   "missing_test": "a contract clause for family 'pure' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:sqlexpr",
+   "group": "outside",
+   "ref": "sqlexpr",
+   "condition": "P2-SQLEXPR: SQL scalar and aggregate functions, predicates, joins, grouping, ordering and subqueries compute their documented answer over the rows the statement reads (which rows it reads, and what it locks, is the contract's: E-VIS, E-ROWLOCK, X-NOINDEX)",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "query answers of readers and the filters of writers (e.g. COALESCE graph guards are X-NULL; %EXACT and %SQLUPPER collation of string comparisons, %STARTSWITH, %INLIST, LIKE are not) rest on the documented semantics; no contract result changes, but a reader result that depends on collation or on a function's edge case is evidenced only by the module's live/run tests",
+   "relied_on_by": "modules 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12, 13, 14, 15, 16, 17, 18",
+   "missing_test": "a contract clause for family 'sqlexpr' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:plan",
+   "group": "outside",
+   "ref": "plan",
+   "condition": "P2-PLAN: plan hints (named %IGNOREINDEX, %PARALLEL, %FIRSTTABLE, %NOFLATTEN, %PROFILE, ...) change the plan only, not the rows a statement reads or writes (the documented exception, %NOINDEX rows, is X-NOINDEX)",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "readers that force a plan (EdgeScan's %IGNOREINDEX on labels/props, eraser scans) are assumed to read the same rows as without the hint; X-NOINDEX shows a by-key statement on a key with a %NOINDEX duplicate may reach different rows by plan, so that combination stays outside",
+   "relied_on_by": "modules 01, 04, 08",
+   "missing_test": "a contract clause for family 'plan' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:clock",
+   "group": "outside",
+   "ref": "clock",
+   "condition": "P2-CLOCK: clocks advance and are not used to order events between processes",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "time windows (lock timeouts in seconds, HANG, minimum-age purges, cache windows such as the strict-mode 5 s window HD-0801, timestamps in receipts) are untimed in every model and in the contract (wait/no-wait only); a result that depends on elapsed time holds only as observed on this container",
+   "relied_on_by": "modules 01, 05, 06, 09, 10, 11, 13, 14, 15, 16",
+   "missing_test": "a contract clause for family 'clock' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:random",
+   "group": "outside",
+   "ref": "random",
+   "condition": "P2-RANDOM: $RANDOM and generated GUIDs are arbitrary values",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "values drawn from them are treated as arbitrary; no result depends on their distribution or uniqueness beyond what the product checks itself",
+   "relied_on_by": "modules 01, 06, 08, 10",
+   "missing_test": "a contract clause for family 'random' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:hash",
+   "group": "outside",
+   "ref": "hash",
+   "condition": "P2-HASH: $SYSTEM.Encryption digests, encodings and $ZCRC compute their documented functions",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "receipts' and digests' equality checks compare outputs of the same function; their value as a commitment is assumed",
+   "relied_on_by": "modules 04, 05, 09, 10, 12, 13",
+   "missing_test": "a contract clause for family 'hash' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:status",
+   "group": "outside",
+   "ref": "status",
+   "condition": "P2-STATUS: an error inside a method reaches its caller as a %Status or exception whose text carries the cause (SQLCODE, error name); %Status handling is ObjectScript language semantics",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "how product errors surface in Python and are classified (by text or SQLCODE) is evidenced by the modules' live tests and by E-1 (env2-e1-r1: a %Status from AssertTemporalRow carried SQLCODE -108 to the Native API caller), not by a clause; the r6 note that a DB-API error carries the connection's last ObjectScript error (env/explore-8) applies",
+   "relied_on_by": "modules 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12, 14, 15, 16, 17, 18",
+   "missing_test": "a contract clause for family 'status' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:dict",
+   "group": "outside",
+   "ref": "dict",
+   "condition": "P2-DICT: the pin's classes are compiled as the pin's own deploy path leaves them, and run-time dispatch by name ($CLASSMETHOD, $PROPERTY, %Dictionary reads) reaches them",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "deploy, upgrade and introspection results (modules 01, 17, 18) rest on the compiled state observed in the audit's namespaces; run-time compilation ($SYSTEM.OBJ, objectgenerator code) is out of the audit's scope and is evidenced only by the product's own suites (validation lane)",
+   "relied_on_by": "modules 01, 03, 04, 06, 07, 08, 09, 10, 11, 15, 16, 17, 18",
+   "missing_test": "a contract clause for family 'dict' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:sqlroutine",
+   "group": "outside",
+   "ref": "sqlroutine",
+   "condition": "P2-SQLROUTINE: a compiled SQL routine ([SqlProc], CREATE FUNCTION/PROCEDURE, CALL) runs its ObjectScript in the calling connection's server process and transaction",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "SQL-callable entry points other than Txn_Begin/End/Undo (validated as S-1 when env2-e1-r2 passes) are assumed to behave as their ObjectScript body called from that process",
+   "relied_on_by": "modules 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12, 13, 14, 15, 16, 17",
+   "missing_test": "a contract clause for family 'sqlroutine' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:epy",
+   "group": "outside",
+   "ref": "epy",
+   "condition": "P2-EPY: embedded Python methods run in the calling IRIS process, sharing its transaction and locks",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "embedded Python is not driven by the contract (it needs irispython in the container); results of modules whose writers run as embedded Python rest on the premise",
+   "relied_on_by": "modules 01, 07, 09, 10, 16, 17, 18",
+   "missing_test": "a contract clause for family 'epy' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:job",
+   "group": "outside",
+   "ref": "job",
+   "condition": "P2-JOB: a JOB or WorkMgr worker is a separate server process with its own transactions and locks, started outside the caller's transaction",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "parallel builds and algorithms (modules 04, 09, 10) are modelled, where at all, as independent writers; WorkMgr queueing, worker reuse, error propagation and the caller's waiting are not modelled; a caller's rollback does not undo a worker's writes (assumed)",
+   "relied_on_by": "modules 09, 10",
+   "missing_test": "a contract clause for family 'job' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:temp",
+   "group": "outside",
+   "ref": "temp",
+   "condition": "P2-TEMP: IRISTEMP globals (^IRIS.Temp*, ^CacheTemp*, ^mtemp) are not journaled, not undone by a rollback, lost at restart and shared by every process of the instance",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "scratch state kept there is treated as non-durable and non-transactional; any reasoning that a rollback or a crash restores it would be wrong; not testable within the audit's scratch-global rule (^IVGAudit*)",
+   "relied_on_by": "modules 09, 10",
+   "missing_test": "a contract clause for family 'temp' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:sysglobal",
+   "group": "outside",
+   "ref": "sysglobal",
+   "condition": "P2-SYSGLOBAL: system globals and structured system variables (^$LOCK, ^$GLOBAL, ^%..., ^ROUTINE, ^rINDEX) report the engine's current state",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "introspection results (lock-table reads, routine and index inventories) are observations of this engine only",
+   "relied_on_by": "modules 10",
+   "missing_test": "a contract clause for family 'sysglobal' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:ns",
+   "group": "outside",
+   "ref": "ns",
+   "condition": "P2-NS: namespaces have the default mappings: ^KG, ^NKG, ^IVG.* and the IVG schema's tables live in the namespace's own database; switching namespace changes only the default database",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "every result is per namespace; a site with package or global mappings (e.g. ^KG mapped to a shared database) is not covered",
+   "relied_on_by": "modules 04, 06, 07, 09, 10, 15, 16",
+   "missing_test": "a contract clause for family 'ns' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:security",
+   "group": "outside",
+   "ref": "security",
+   "condition": "P2-SEC: the caller has the privileges the product needs (the audit runs as _SYSTEM)",
+   "status": "assumed",
+   "runs": [],
+   "observed": [
+    "ver-priv-r3"
+   ],
+   "consequence": "results do not cover least-privilege callers except where the validation lane ran one; web dispatch (%CSP.REST), roles and SQL privileges are not modelled",
+   "relied_on_by": "modules 01, 07, 11, 14, 16, 17",
+   "missing_test": "a contract clause for family 'security' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:mgmt",
+   "group": "outside",
+   "ref": "mgmt",
+   "condition": "P2-MGMT: management APIs (%SYS.ProcessQuery, %SYSTEM.Process other than Terminate, %SYSTEM.Version, console log, %SYSTEM.Util) report the engine's state and act as documented",
+   "status": "assumed",
+   "runs": [],
+   "observed": [
+    "rx-live-17"
+   ],
+   "consequence": "process enumeration, version checks and logging by the product are observed live only; process stop is E-STOP",
+   "relied_on_by": "modules 01, 04, 06, 07, 08, 09, 10, 11, 14, 15, 16, 17",
+   "missing_test": "a contract clause for family 'mgmt' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:task",
+   "group": "outside",
+   "ref": "task",
+   "condition": "P2-TASK: Task Manager tasks run in their own process at their schedule",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "scheduled work (modules 06, 15) is not modelled; its writes are those of an independent writer",
+   "relied_on_by": "modules 06, 15",
+   "missing_test": "a contract clause for family 'task' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:stream",
+   "group": "outside",
+   "ref": "stream",
+   "condition": "P2-STREAM: stream data is stored in globals written in the caller's transaction like any global",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "stream columns and properties (docs, snapshots, ledger payloads if any) are assumed to roll back with the transaction; not validated",
+   "relied_on_by": "modules 01, 04, 09, 11, 14, 15, 18",
+   "missing_test": "a contract clause for family 'stream' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:file",
+   "group": "outside",
+   "ref": "file",
+   "condition": "P2-FILE: files and devices are outside transactions and journaling: a rollback does not undo a file write, and file I/O is not observed by the journal oracle",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "snapshot files (module 18, F-C1803) and any export/load through files are covered only by the module's live tests; no rollback or crash result covers file contents",
+   "relied_on_by": "modules 07, 10, 16, 18",
+   "missing_test": "a contract clause for family 'file' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:device",
+   "group": "outside",
+   "ref": "device",
+   "condition": "P2-DEVICE: output to the principal device in a method called through the Native API is not part of the call's result",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "diagnostic WRITEs do not affect any result",
+   "relied_on_by": "modules 07, 09, 16",
+   "missing_test": "a contract clause for family 'device' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:zf",
+   "group": "outside",
+   "ref": "zf",
+   "condition": "P2-ZF: $ZF callouts run native code in the calling process",
+   "status": "assumed",
+   "runs": [],
+   "observed": [
+    "ver-arno-callout"
+   ],
+   "consequence": "results that depend on the Arno callout (module 10, F-1001) are outside the contract; the x86_64 library is unavailable here",
+   "relied_on_by": "modules 04, 10",
+   "missing_test": "a contract clause for family 'zf' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:vecop",
+   "group": "outside",
+   "ref": "vecop",
+   "condition": "P2-VECOP: $VECTOROP computes its documented element-wise and aggregate operations",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "vector math in ObjectScript (similarity, normalisation) rests on the documentation; $VECTOR set/get and rollback is X-VEC",
+   "relied_on_by": "modules 06, 18",
+   "missing_test": "a contract clause for family 'vecop' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:hnsw",
+   "group": "outside",
+   "ref": "hnsw",
+   "condition": "P2-HNSW: an HNSW index is maintained by the row's statement and answers approximate nearest neighbours",
+   "status": "assumed",
+   "runs": [],
+   "observed": [
+    "rx-live-06"
+   ],
+   "consequence": "vector-search answers (modules 06, 17, 18) and their recall are observations only; HNSW maintenance in transactions and build effects are not modelled",
+   "relied_on_by": "modules 01, 02, 04, 06, 07, 15, 16, 17",
+   "missing_test": "a contract clause for family 'hnsw' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:ifind",
+   "group": "outside",
+   "ref": "ifind",
+   "condition": "P2-IFIND: iFind tokenisation, the word dictionary and ranking behave as documented (only the per-row entries' transaction behaviour is X-FX)",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "full-text search answers (modules 01, 03, 06, 07, 08) rest on the tokenizer and ranking; the word dictionary is written outside the transaction (a rolled-back word stays in the dictionary but finds no row)",
+   "relied_on_by": "modules 01, 07",
+   "missing_test": "a contract clause for family 'ifind' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:embedding",
+   "group": "outside",
+   "ref": "embedding",
+   "condition": "P2-EMBEDDING: EMBEDDING() and %Embedding configurations compute vectors as configured",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "embedding generation (module 06) is not modelled; vectors are opaque values",
+   "relied_on_by": "modules 01, 06, 08",
+   "missing_test": "a contract clause for family 'embedding' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:absent",
+   "group": "outside",
+   "ref": "absent",
+   "condition": "absent on IRIS 2026.1 Community (%AI classes, InterSystems FHIR server storage)",
+   "status": "assumed",
+   "runs": [],
+   "observed": [
+    "tr-replay-15",
+    "val-scratch-236-1"
+   ],
+   "consequence": "every result that depends on these classes is blocked-access (versions/AVAILABILITY.md)",
+   "relied_on_by": "modules 15, 16",
+   "missing_test": "a contract clause for family 'absent' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:fk",
+   "group": "outside",
+   "ref": "fk",
+   "condition": "P2-FK: foreign keys refuse a child row without its parent (-121) and a parent delete with children (-124); under concurrency the check's visibility and locking are as documented (the parent row is checked with a shared lock unless %NOLOCK)",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "the product's FK-based guards (rdf_edges -> nodes, labels/props/embeddings -> nodes; AssertTemporalRow's -121 retry) rest on the premise; E-1 observed -121 only as a code the product maps, not its concurrency",
+   "relied_on_by": "modules 01, 04, 06, 07, 15",
+   "missing_test": "a contract clause for family 'fk' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:trigger",
+   "group": "outside",
+   "ref": "trigger",
+   "condition": "P2-TRIGGER: triggers and object callbacks run in the row's statement and transaction",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "trigger-maintained state (system %OBJJRN*/%OBJGUID triggers on DDL tables; any product trigger) is assumed to roll back with the row",
+   "relied_on_by": "modules 11",
+   "missing_test": "a contract clause for family 'trigger' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:persistent",
+   "group": "outside",
+   "ref": "persistent",
+   "condition": "P2-OBJ: object filing (%Save, %OpenId, %DeleteId, %ExistsId, %KillExtent, %BuildIndices) writes the same rows, indexes and locks as the equivalent SQL",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "results about persistent classes (ledger revision classes in module 11, FHIR/registry classes in 15, snapshot bookkeeping in 18) rest on this; object concurrency modes are not modelled",
+   "relied_on_by": "modules 01, 03, 04, 06, 07, 09, 10, 11, 14, 15, 16, 17, 18",
+   "missing_test": "a contract clause for family 'persistent' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:iou",
+   "group": "outside",
+   "ref": "iou",
+   "condition": "P2-IOU (residual after X2-IOU): INSERT OR UPDATE of a key whose row another open transaction deleted, and upserts on keys with several rows, behave as documented",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "X2-IOU (env2-x2-r1) shows an upsert waits for a row another transaction holds and fails with SQLCODE -109 when that transaction rolls back an insert of the key; upserts in modules 06, 15, 18 can therefore surface -109 under a concurrent rolled-back writer; the deleted-key case is outside",
+   "relied_on_by": "modules 06, 15, 18",
+   "missing_test": "a contract clause for family 'iou' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:top",
+   "group": "outside",
+   "ref": "top",
+   "condition": "P2-TOP (residual after X2-TOP): TOP / LIMIT over keys equal under SQLUPPER (case variants), over %NOINDEX duplicates, or ordered by expressions other than a column, behave as documented",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "X2-TOP (env2-x2-r1) decides TOP n / LIMIT n [OFFSET m] over ORDER BY a VARCHAR column (SQLUPPER string order: 1, 10, 2, ...; not numeric), DESC and %EXACT; paged and 'first row' readers rest on the residual only for the forms listed",
+   "relied_on_by": "modules 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 12, 14, 15, 16, 17",
+   "missing_test": "a contract clause for family 'top' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:ddl-other",
+   "group": "outside",
+   "ref": "ddl-other",
+   "condition": "P2-DDL: DDL forms other than CREATE/DROP TABLE and ALTER TABLE ADD COLUMN (CREATE/DROP INDEX, CREATE VIEW, other ALTER TABLE forms, TRUNCATE) take effect at once and are undone by a rollback that covers them, as X-DDL is",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "schema-migration results (modules 01, 17) for those forms rest on the analogy with X-DDL",
+   "relied_on_by": "modules 01, 04, 06, 07, 08, 09, 15, 16, 17",
+   "missing_test": "a contract clause for family 'ddl-other' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:catalog",
+   "group": "outside",
+   "ref": "catalog",
+   "condition": "P2-CATALOG: catalog views other than INFORMATION_SCHEMA.TABLES / COLUMNS, %Dictionary through SQL and default-schema resolution answer the current definitions",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "introspection (schema detection, route discovery, version probes) is observed only",
+   "relied_on_by": "modules 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 15, 16, 17",
+   "missing_test": "a contract clause for family 'catalog' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:isolation",
+   "group": "outside",
+   "ref": "isolation",
+   "condition": "P2-ISO: SQL isolation-level / commit-mode settings other than the default are not used at run time",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "if a caller sets READ COMMITTED or %COMMITMODE, the contract's E-VIS and E-AUTOCOMMIT do not apply",
+   "relied_on_by": "no module feature (defined, unused)",
+   "missing_test": "a contract clause for family 'isolation' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:lock-esc",
+   "group": "outside",
+   "ref": "lock-esc",
+   "condition": "P2-ESC: lock escalation: a process holding more than the threshold (default 1,000) row locks on one table in one transaction takes a table lock; #\"E\" names the escalating lock type",
+   "status": "assumed",
+   "runs": [],
+   "observed": [
+    "st-live-cap-batch"
+   ],
+   "consequence": "bulk transactions over one table (EraseGraph / EraseAll deletes, bulk loads in a caller's transaction) can block every other writer of that table, of every graph; the structural lane observes it live (structural/capkeys/cap_batch.py case 03); the contract treats #\"E\" as exclusive and models no escalation",
+   "relied_on_by": "modules 04",
+   "missing_test": "a contract clause for family 'lock-esc' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:lock-local",
+   "group": "outside",
+   "ref": "lock-local",
+   "condition": "P2-LOCKNAME: lock names without a caret and indirect lock names are lock-table entries with the same semantics as global names (E-LOCK-*)",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "lock plans that use them are read as E-LOCK-* plans; not exercised by the contract's cases",
+   "relied_on_by": "modules 03, 04",
+   "missing_test": "a contract clause for family 'lock-local' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:query",
+   "group": "outside",
+   "ref": "query",
+   "condition": "P2-QUERY (residual after X2-QUERY): $NAME and $QUERY over references with quoted or very long subscripts behave as documented",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "walkers that build names with $NAME (eraser roots, snapshot export) rest on the residual",
+   "relied_on_by": "modules 03, 05, 09, 12, 18",
+   "missing_test": "a contract clause for family 'query' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:merge",
+   "group": "outside",
+   "ref": "merge",
+   "condition": "P2-MERGE (residual after X2-MERGE): MERGE between overlapping subtrees and MERGE with local variables behave as documented",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "X2-MERGE (env2-x2-r1) decides MERGE copy / onto existing / rollback and ZKILL value-only / rollback",
+   "relied_on_by": "modules 05, 09, 10, 13, 15",
+   "missing_test": "a contract clause for family 'merge' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:seq",
+   "group": "outside",
+   "ref": "seq",
+   "condition": "P2-SEQ: $SEQUENCE allocates values unique across processes, increasing per process, in ranges, not undone by a rollback (observed in env2-x2-explore, not validated)",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "id allocation with $SEQUENCE is assumed unique; the global's stored value can run ahead of the values returned, so readers of the global must not treat it as a count",
+   "relied_on_by": "no module feature (defined, unused)",
+   "missing_test": "a contract clause for family 'seq' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:list",
+   "group": "outside",
+   "ref": "list",
+   "condition": "P2-LIST (residual after X2-LIST): $LISTVALID, $LISTUPDATE, SET $LIST(...), non-canonical numeric literals ($LB(1.0) is encoded as 10E-1), exponents and non-ASCII string elements behave as documented",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "list-encoded keys, payloads and snapshot records rest on the residual for those forms; X2-LIST (env2-x2-r1) decides the read functions and the driver's IRISList decode",
+   "relied_on_by": "modules 01, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12, 13, 14, 15, 16, 17, 18",
+   "missing_test": "a contract clause for family 'list' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:buildindices",
+   "group": "outside",
+   "ref": "buildindices",
+   "condition": "P2-BUILDIDX: %BuildIndices / %PurgeIndices (also with parallel jobs, whose workers are WorkMgr processes) rebuild the named indexes from the rows outside the caller's transaction, as BUILD INDEX does (X-NOINDEX), and leave other connections' cached code consistent",
+   "status": "assumed",
+   "runs": [],
+   "observed": [
+    "env-ext-explore-10",
+    "ws-live-noindex"
+   ],
+   "consequence": "BuildKG's parallel adjacency rebuild (TraversalBuild.cls:129-133), schema rebuilds and the P-1715 <LIST ERROR> after another connection's %BuildIndices (utils.py:114-130) rest on it; X-NOINDEX shows BUILD INDEX is outside the caller's transaction and needs the extent lock",
+   "relied_on_by": "modules 03, 04, 11, 12, 17",
+   "missing_test": "a contract clause for family 'buildindices' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:limits",
+   "group": "outside",
+   "ref": "limits",
+   "condition": "P2-LIMITS: engine limits (long strings up to 3,641,144 characters, subscript length, bound-parameter count, $ZF heap) are not reached by the module's inputs",
+   "status": "assumed",
+   "runs": [],
+   "observed": [
+    "corr-capacity",
+    "st-live-cap-bm25",
+    "st-live-cap-batch-r2"
+   ],
+   "consequence": "inputs near a limit (large property values, long ids, wide IN lists, big snapshot lines) fail with <MAXSTRING>, <SUBSCRIPT> or a parameter-count error; the module's live tests cover only the sizes they used; capacity lanes (structural/capkeys) observe some limits live",
+   "relied_on_by": "modules 07, 09, 10, 15, 17",
+   "missing_test": "a contract clause for family 'limits' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:oracle",
+   "group": "outside",
+   "ref": "oracle",
+   "condition": "P2-JOURNAL: the IRIS journal records every global write of a journaled database with its process and transaction markers (the audit's oracle, traces/journal.py; not a contract clause)",
+   "status": "validated-in-part",
+   "runs": [
+    "trace-conformance-controls",
+    "sim-oracle-selftest",
+    "env2-e1-r1-journal"
+   ],
+   "observed": [],
+   "consequence": "self-tested oracles (controls caught) and journal equality for E-1; the journal's completeness itself is not a contract clause. journal-oracled results (footprints, trace conformance, env2-e1-r1-journal) rest on the journal's completeness; non-journaled writes (IRISTEMP, %NOJOURN) are invisible to it",
+   "relied_on_by": "modules 07, 11, 18",
+   "missing_test": "a contract clause for family 'oracle' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:sqlparse",
+   "group": "outside",
+   "ref": "sqlparse",
+   "condition": "P2-SQLTEXT: the SQL text the module builds (comments, multi-statement text, literal escaping, identifier quoting) is parsed by IRIS as the module intends",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "generated SQL (Cypher translation, module 08) is evidenced by the product's suites and TCK runs, not by the contract",
+   "relied_on_by": "modules 08",
+   "missing_test": "a contract clause for family 'sqlparse' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:bitmap",
+   "group": "outside",
+   "ref": "bitmap",
+   "condition": "P2-EXTENT: the bitmap extent and index-driven full-table DML reach every row the statement names (env/explore-4 A11: DELETE without WHERE misses %NOINDEX rows)",
+   "status": "assumed",
+   "runs": [],
+   "observed": [
+    "ws-live-noindex-erase"
+   ],
+   "consequence": "full-table deletes over tables loaded with %NOINDEX (bulk loads before their rebuild) can leave rows",
+   "relied_on_by": "modules 08",
+   "missing_test": "a contract clause for family 'bitmap' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:subscript",
+   "group": "outside",
+   "ref": "subscript",
+   "condition": "P2-NATIVESUB: the Native API validates subscripts as ObjectScript does (null subscripts refused)",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "Native API walks and writes with empty-string subscripts (snapshot import/export, module 18) rest on it",
+   "relied_on_by": "modules 18",
+   "missing_test": "a contract clause for family 'subscript' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:fetchfirst",
+   "group": "outside",
+   "ref": "fetchfirst",
+   "condition": "P2-FETCH: FETCH FIRST / OFFSET ... FETCH NEXT is not used against this engine",
+   "status": "shown-false",
+   "runs": [
+    "env2-fetchfirst-probe",
+    "env2-fc1720-query-nodes"
+   ],
+   "observed": [],
+   "consequence": "the product does send FETCH FIRST (IRISGraphStore.query_nodes, F-C1743): on driver 5.3.2 the client process ends with SIGSEGV. on IRIS 2026.1 Community with the locked driver 5.3.2 every FETCH FIRST form probed (with and without ORDER BY, FETCH FIRST 0, OFFSET ... FETCH NEXT) killed the Python client process with SIGSEGV while TOP and LIMIT answered (env2-fetchfirst-probe); the product runs its FETCH FIRST probe in a subprocess and falls back to TOP on a crash (engine.py:726-840), so query results use TOP; any FETCH FIRST path that bypasses the probe would crash the client",
+   "relied_on_by": "modules 01, 02, 03, 04, 05, 06, 08, 10, 17",
+   "missing_test": "a contract clause for family 'fetchfirst' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:json",
+   "group": "outside",
+   "ref": "json",
+   "condition": "P2-JSON: the %DynamicObject / %DynamicArray members and forms not exercised by env2-x2-r1 (%GetIterator, %Size, %Push, JSON literal constructors with content, a %Library.DynamicObject-typed column, SQL JSON functions) behave as documented",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "JSON payloads (ledger changesets, qualifiers, reports) rest on the documentation; the product's prefix test on serialised qualifiers ('{\"temporal\":true', Adjacency.cls:661) depends on %ToJSON's output form",
+   "relied_on_by": "modules 01, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12, 13, 14, 15, 16, 17, 18",
+   "missing_test": "a contract clause for family 'json' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:indirection",
+   "group": "outside",
+   "ref": "indirection",
+   "condition": "P2-INDIR: name indirection (@) and XECUTE resolve to the same references as the literal text",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "writers through indirection (RetractTemporalRows' @pRoot@, eraser roots, generic loaders) are attributed by the writer census's resolution, not by the contract",
+   "relied_on_by": "modules 03, 04, 05, 09, 11, 12, 18",
+   "missing_test": "a contract clause for family 'indirection' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:rowid",
+   "group": "outside",
+   "ref": "rowid",
+   "condition": "P2-ROWID: row ids (%ID, IDENTITY, IDKEY) are unique, stable while the row exists, and allocated outside the transaction (the journal shows the id counter SET outside the transaction, env2-e1-r1-journal)",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "lookups and deletes by %ID (RetractTemporalRow) and id-based paging rest on it; ids are not reused after a rollback (gaps)",
+   "relied_on_by": "modules 01, 03, 04, 06, 07, 08, 10, 11, 12, 15",
+   "missing_test": "a contract clause for family 'rowid' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:batch",
+   "group": "outside",
+   "ref": "batch",
+   "condition": "P2-BATCH (residual after X2-BATCH): executemany over keys another process holds behaves per row as execute does",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "X2-BATCH (env2-x2-r1) confirms the product's premise (_batch_check.py:1-4): a refused row of several is skipped without an error and rowcount counts the written rows; one refused row raises",
+   "relied_on_by": "modules 01, 03, 16",
+   "missing_test": "a contract clause for family 'batch' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:irislist",
+   "group": "outside",
+   "ref": "irislist",
+   "condition": "P2-IRISLIST (residual after X2-LIST): the driver's getIRISList / classMethodIRISList paths decode as IRISList(bytes) does",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "X2-LIST (env2-x2-r1) decides IRISList over bytes read by getBytes; other driver entry points are assumed equal",
+   "relied_on_by": "no module feature (defined, unused)",
+   "missing_test": "a contract clause for family 'irislist' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:sqlcode",
+   "group": "outside",
+   "ref": "sqlcode",
+   "condition": "P2-SQLCODE: SQLCODEs other than the contract's observed ones (-30, -104, -108, -110, -119, -201, -359, -400) are reported for the documented conditions",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "the product's error mapping for these codes (e.g. -121 FK, -124, -114/-110 lock timeouts, -1/-12 syntax, -29/-30 names, -99 privilege, -149 function errors, -428/-461 etc.) is evidenced only by their own tests; a misclassification would change an error surface, not stored data",
+   "relied_on_by": "modules 01, 02, 03, 04, 06, 07, 08, 10, 12, 15, 17",
+   "missing_test": "a contract clause for family 'sqlcode' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:config",
+   "group": "outside",
+   "ref": "config",
+   "condition": "P2-CFG: the deployment configuration (cpf merge files, compose files, install scripts) yields an instance equivalent to the audit container",
+   "status": "assumed",
+   "runs": [],
+   "observed": [
+    "env-synchcommit-setting",
+    "live-crash-world-r2"
+   ],
+   "consequence": "results hold for the audit container's configuration (IRIS 2026.1 Community defaults, SynchCommit=0); settings the deploy files change (licences, services, memory, journal settings) are not covered",
+   "relied_on_by": "modules 17",
+   "missing_test": "a contract clause for family 'config' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:esql-other",
+   "group": "outside",
+   "ref": "esql-other",
+   "condition": "P2-ESQL: embedded SQL forms not exercised by E-1 (cursor FETCH loops over many rows, embedded UPDATE, embedded statements with %INLIST / %STARTSWITH / named %IGNOREINDEX) behave as their dynamic forms",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "E-1 (env2-e1-r1) validated embedded SELECT INTO, a DECLARE/OPEN/FETCH cursor read, INSERT, INSERT ... SELECT WHERE NOT EXISTS and DELETE against the contract; other embedded forms rest on the same premise by analogy",
+   "relied_on_by": "modules 01, 02, 03, 04, 05, 06, 08, 10, 12, 17",
+   "missing_test": "a contract clause for family 'esql-other' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:web",
+   "group": "outside",
+   "ref": "web",
+   "condition": "P2-WEB: web dispatch (%CSP.REST, &js/&html) serves requests in a CSP server process",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "REST and web surfaces (modules 07, 09, 16) are observed through their HTTP behaviour only",
+   "relied_on_by": "modules 07, 16",
+   "missing_test": "a contract clause for family 'web' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "outside:language",
+   "group": "outside",
+   "ref": "language",
+   "condition": "P2-LANG: ObjectScript language features (dynamic dispatch on objects, %New, object references, Try/Catch) behave as documented",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "no environment result depends on them",
+   "relied_on_by": "modules 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12, 13, 14, 15, 16, 17, 18",
+   "missing_test": "a contract clause for family 'language' (named cases, mutants, a differential round on a fresh seed, as contract-2 did for X2-*)",
+   "source": "experiment/playbook-completion/contract-2/coverage.json"
+  },
+  {
+   "id": "proof-premise:TRUST:changed:P-0001 steps are transactions (rollback on stop)",
+   "group": "proof-premise",
+   "ref": "TRUST:changed:P-0001 steps are transactions (rollback on stop)",
+   "condition": "a stopped process's open transaction is rolled back (every level) [engine]",
+   "status": "validated",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "TRUST.md",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:TRUST:changed:P-0003 unlock inside a transaction is deferred",
+   "group": "proof-premise",
+   "ref": "TRUST:changed:P-0003 unlock inside a transaction is deferred",
+   "condition": "an unlock inside a transaction takes effect at the outermost end [engine]",
+   "status": "validated",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "TRUST.md",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:TRUST:changed:P-1201 a SQL delete waits for a row another transaction holds",
+   "group": "proof-premise",
+   "ref": "TRUST:changed:P-1201 a SQL delete waits for a row another transaction holds",
+   "condition": "a DELETE/UPDATE waits for a row another open transaction inserted or updated [engine]",
+   "status": "validated-in-part",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6",
+    "corr-lockplan"
+   ],
+   "observed": [],
+   "consequence": "results of playbook-completion that rest on it hold only where it holds; missing test: An INSERT of a key whose row another open transaction deleted is the contract's unsharpened Freedom; a forced schedule repeated until both branches or one source-settled branch is seen would close it.",
+   "relied_on_by": "TRUST.md",
+   "missing_test": "An INSERT of a key whose row another open transaction deleted is the contract's unsharpened Freedom; a forced schedule repeated until both branches or one source-settled branch is seen would close it.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:TRUST:changed:Txn.cls:8 / _write_txn.py:15: SQL COMMIT and ROLLBACK end every level",
+   "group": "proof-premise",
+   "ref": "TRUST:changed:Txn.cls:8 / _write_txn.py:15: SQL COMMIT and ROLLBACK end every level",
+   "condition": "product premise 'measured on 2026.3': SQL COMMIT/ROLLBACK end every level [engine]",
+   "status": "shown-false",
+   "runs": [
+    "env-contract-r2",
+    "ver-sql-entry-probe-e261",
+    "ver-sql-entry-probe-e262",
+    "ver-matrix-compare",
+    "ver-avail-iris-2026.3"
+   ],
+   "observed": [],
+   "consequence": "false at the pin: results of playbook-completion that rest on it do not transfer to the product (see its 'Premises the pin violates')",
+   "relied_on_by": "TRUST.md",
+   "missing_test": "The premise's own configuration (IRIS 2026.3) is blocked-access; the same 113 cases on a 2026.3 engine would settle it there.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:TRUST:new:Durability of an acknowledged commit: a revision the ledger reports as committed survives an instance crash, which needs IRIS SynchCommit=1 or a journal flush before the acknowledgement",
+   "group": "proof-premise",
+   "ref": "TRUST:new:Durability of an acknowledged commit: a revision the ledger reports as committed survives an instance crash, which needs IRIS SynchCommit=1 or a journal flush before the acknowledgement",
+   "condition": "an acknowledged revision survives an instance crash [engine]",
+   "status": "validated-in-part",
+   "runs": [
+    "live-crash-world-r2",
+    "env-synchcommit-setting"
+   ],
+   "observed": [],
+   "consequence": "results of playbook-completion that rest on it hold only where it holds; missing test: SynchCommit=1 is untested: the same crash world on an instance configured with SynchCommit=1 (a container reconfiguration the operator must allow) would test the premise as stated.",
+   "relied_on_by": "TRUST.md",
+   "missing_test": "SynchCommit=1 is untested: the same crash world on an instance configured with SynchCommit=1 (a container reconfiguration the operator must allow) would test the premise as stated.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:TRUST:new:Embedded SQL (&sql) behaves as dynamic SQL for the clauses used",
+   "group": "proof-premise",
+   "ref": "TRUST:new:Embedded SQL (&sql) behaves as dynamic SQL for the clauses used",
+   "condition": "embedded SQL obeys the contract's dynamic-SQL clauses [engine]",
+   "status": "validated",
+   "runs": [
+    "env2-e1-r1",
+    "env2-e1-r1-journal",
+    "env2-e1-r2"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "TRUST.md",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:TRUST:new:Enabled steps are eventually scheduled; the operator re-runs after a stop; the ledger is (re-)enabled; every erasure releases its lock",
+   "group": "proof-premise",
+   "ref": "TRUST:new:Enabled steps are eventually scheduled; the operator re-runs after a stop; the ledger is (re-)enabled; every erasure releases its lock",
+   "condition": "progress premises of proofs/src/progress.rs [progress]",
+   "status": "validated-in-part",
+   "runs": [
+    "env-contract-r2",
+    "live-fc1303-bounded-resume"
+   ],
+   "observed": [],
+   "consequence": "results of playbook-completion that rest on it hold only where it holds; missing test: Fair scheduling and operator behaviour are untested: a soak with N committer processes, repeated redaction re-runs and injected stops, asserting completion within a bound, would test the conjunction at the product.",
+   "relied_on_by": "TRUST.md",
+   "missing_test": "Fair scheduling and operator behaviour are untested: a soak with N committer processes, repeated redaction re-runs and injected stops, asserting completion within a bound, would test the conjunction at the product.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:TRUST:new:M07-L4 progress: the queue worker is weakly fair; a stopped run is resumed 3 - cursor more times",
+   "group": "proof-premise",
+   "ref": "TRUST:new:M07-L4 progress: the queue worker is weakly fair; a stopped run is resumed 3 - cursor more times",
+   "condition": "M07-L4 fairness premises of proofs-mech [progress]",
+   "status": "validated-in-part",
+   "runs": [
+    "live-fc1303-bounded-resume"
+   ],
+   "observed": [],
+   "consequence": "results of playbook-completion that rest on it hold only where it holds; missing test: A steady-enqueue soak for the queue and a resume count with a persisted cursor (absent at the pin); weak fairness of IRIS scheduling itself is not testable here.",
+   "relied_on_by": "TRUST.md",
+   "missing_test": "A steady-enqueue soak for the queue and a resume count with a persisted cursor (absent at the pin); weak fairness of IRIS scheduling itself is not testable here.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:TRUST:new:Writers go quiet, the operator resumes, nothing is stopped forever, erasure may be repeated",
+   "group": "proof-premise",
+   "ref": "TRUST:new:Writers go quiet, the operator resumes, nothing is stopped forever, erasure may be repeated",
+   "condition": "the core models' AG EF premises [progress]",
+   "status": "validated-in-part",
+   "runs": [
+    "fu-r03-marker-held-open",
+    "sim-race-20261114"
+   ],
+   "observed": [],
+   "consequence": "results of playbook-completion that rest on it hold only where it holds; missing test: That writers do go quiet is a usage premise the product does not enforce; a test would be the soak above plus an enforced quiet mode, which does not exist at the pin.",
+   "relied_on_by": "TRUST.md",
+   "missing_test": "That writers do go quiet is a usage premise the product does not enforce; a test would be the soak above plus an enforced quiet mode, which does not exist at the pin.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:TRUST:trusted:IRIS environment contract",
+   "group": "proof-premise",
+   "ref": "TRUST:trusted:IRIS environment contract",
+   "condition": "the executable IRIS contract is trusted only inside its stated semantic subset [engine]",
+   "status": "validated",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6",
+    "env-contract-r6-recheck",
+    "ver-e262-d532-full"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "TRUST.md",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:models-core:MA-1",
+   "group": "proof-premise",
+   "ref": "models-core:MA-1",
+   "condition": "Writers become quiet: the AG EF path adds no commit or bypass write during a redaction [progress]",
+   "status": "validated-in-part",
+   "runs": [
+    "val-perf-committer-n3-1",
+    "fu-r03-marker-held-open"
+   ],
+   "observed": [],
+   "consequence": "results of core that rest on it hold only where it holds; missing test: Missing: a redaction under a sustained commit rate into other tenants above the batch scan rate (tail-following scan, P-1306) and under bypass writes into other tenants, measuring whether it finishes.",
+   "relied_on_by": "models/core/MODELS.md",
+   "missing_test": "Missing: a redaction under a sustained commit rate into other tenants above the batch scan rate (tail-following scan, P-1306) and under bypass writes into other tenants, measuring whether it finishes.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:models-core:MA-2",
+   "group": "proof-premise",
+   "ref": "models-core:MA-2",
+   "condition": "The operator resumes stopped or paused runs (calls are unbounded) [progress]",
+   "status": "validated-in-part",
+   "runs": [
+    "live-native-rerun-1314",
+    "tests/integration/test_256_ledger_redaction_e2e.py::TestBatchesAndMarker::test_a_paused_redaction_is_honoured_and_resumes",
+    "live-fc1303-bounded-resume"
+   ],
+   "observed": [],
+   "consequence": "results of core that rest on it hold only where it holds; missing test: Operator side is outside the product. Missing: a product test that resumed bounded runs finish (fails at the pin, F-C1303) and that an unfinished run is reported where an operator looks (receipt, verify).",
+   "relied_on_by": "models/core/MODELS.md",
+   "missing_test": "Operator side is outside the product. Missing: a product test that resumed bounded runs finish (fails at the pin, F-C1303) and that an unfinished run is reported where an operator looks (receipt, verify).",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:models-core:MA-3",
+   "group": "proof-premise",
+   "ref": "models-core:MA-3",
+   "condition": "No process is stopped forever: the AG EF path contains no stop [progress]",
+   "status": "validated-in-part",
+   "runs": [
+    "live-native-rerun-1314",
+    "env-contract-r2"
+   ],
+   "observed": [],
+   "consequence": "results of core that rest on it hold only where it holds; missing test: Repeated-stop test: stop each run after k batches n times and measure whether total progress grows (the pin rescans on resume), plus stops of a committer and an eraser while a run waits on them.",
+   "relied_on_by": "models/core/MODELS.md",
+   "missing_test": "Repeated-stop test: stop each run after k batches n times and measure whether total progress grows (the pin rescans on resume), plus stops of a committer and an eraser while a run waits on them.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:models-core:MA-4",
+   "group": "proof-premise",
+   "ref": "models-core:MA-4",
+   "condition": "The operator may erase a target again when a write made it live (erasures unbounded) [progress]",
+   "status": "validated-in-part",
+   "runs": [
+    "fu-r03-marker-held-open",
+    "fu-r04-temporal-only-live-b"
+   ],
+   "observed": [],
+   "consequence": "results of core that rest on it hold only where it holds; missing test: Operator side is outside the product. Missing: repeated erase plus re-run while a writer keeps writing into the target (fu-r03 wrote once), showing whether the loop converges.",
+   "relied_on_by": "models/core/MODELS.md",
+   "missing_test": "Operator side is outside the product. Missing: repeated erase plus re-run while a writer keeps writing into the target (fu-r03 wrote once), showing whether the loop converges.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:models-core:MA-5",
+   "group": "proof-premise",
+   "ref": "models-core:MA-5",
+   "condition": "IRIS semantics (dirty reads, value rollback, row-lock waits, stop rollback and lock release) come from the validated contract [engine]",
+   "status": "validated-in-part",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6",
+    "env-contract-r6-recheck",
+    "ver-e262-d532-full"
+   ],
+   "observed": [],
+   "consequence": "results of core that rest on it hold only where it holds; missing test: Contract checked on scratch tables via dynamic SQL. Missing: premise E-1, the same named cases through compiled embedded SQL (&sql, e.g. Eraser.cls DELETEs) on product tables; 2026.3 is blocked.",
+   "relied_on_by": "models/core/MODELS.md",
+   "missing_test": "Contract checked on scratch tables via dynamic SQL. Missing: premise E-1, the same named cases through compiled embedded SQL (&sql, e.g. Eraser.cls DELETEs) on product tables; 2026.3 is blocked.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:models-core:MA-6",
+   "group": "proof-premise",
+   "ref": "models-core:MA-6",
+   "condition": "The delete case of dirty reads (a reader sees another txn's uncommitted DELETE) is the general Visibility clause; only inserts are decided cases [engine]",
+   "status": "validated",
+   "runs": [
+    "ib-HD1201-open-erasure",
+    "env-ext-r6",
+    "env-contract-r2"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "models/core/MODELS.md",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:models-core:P-1306",
+   "group": "proof-premise",
+   "ref": "models-core:P-1306",
+   "condition": "Commits pause long enough for a redaction run to reach the last record (the scan follows the tail) [progress]",
+   "status": "validated-in-part",
+   "runs": [
+    "val-perf-committer-n3-1",
+    "val-perf-committer-n1-1"
+   ],
+   "observed": [],
+   "consequence": "results of core that rest on it hold only where it holds; missing test: A redaction against committers whose commit rate into other tenants exceeds the batch scan rate, measuring termination; plus a target writer's uncommitted delete rolled back mid-run (the TRUST narrowing).",
+   "relied_on_by": "models/core/MODELS.md",
+   "missing_test": "A redaction against committers whose commit rate into other tenants exceeds the batch scan rate, measuring termination; plus a target writer's uncommitted delete rolled back mid-run (the TRUST narrowing).",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-breadth:P-A2",
+   "group": "proof-premise",
+   "ref": "proofs-breadth:P-A2",
+   "condition": "No two open writer transactions on one edge row (the edge row's lock serializes them). [engine]",
+   "status": "validated-in-part",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6"
+   ],
+   "observed": [],
+   "consequence": "results of proofs-breadth that rest on it hold only where it holds; missing test: Two processes with open transactions on the same edge through the product (create_edge/create_edge, delete_edge then create_edge); check -119 or wait and ^KG out; settle the insert-over-uncommitted-delete Freedom.",
+   "relied_on_by": "proofs-breadth/PROOFS.md",
+   "missing_test": "Two processes with open transactions on the same edge through the product (create_edge/create_edge, delete_edge then create_edge); check -119 or wait and ^KG out; settle the insert-over-uncommitted-delete Freedom.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-breadth:P-A6",
+   "group": "proof-premise",
+   "ref": "proofs-breadth:P-A6",
+   "condition": "A rollback restores the before-images of the nodes its transaction set or killed; $Increment is not undone. [engine]",
+   "status": "validated-in-part",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6",
+    "b-11-live-footprints-1",
+    "b-08-live-fc0801-rollback-nkg",
+    "breadth-a-live-04-adjacency",
+    "tests/integration/test_236_token_write_paths.py::test_25_a_rolled_back_bump_is_not_undone"
+   ],
+   "observed": [],
+   "consequence": "results of proofs-breadth that rest on it hold only where it holds; missing test: Contract case and adjacency probe: an open eraser or rebuild kills ^KG(degc,g,s), another process's Degree stores it, the txn rolls back; the L2 overwrites the store, E-ROLLBACK-OTHER says it survives.",
+   "relied_on_by": "proofs-breadth/PROOFS.md",
+   "missing_test": "Contract case and adjacency probe: an open eraser or rebuild kills ^KG(degc,g,s), another process's Degree stores it, the txn rolls back; the L2 overwrites the store, E-ROLLBACK-OTHER says it survives.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-breadth:P-L1",
+   "group": "proof-premise",
+   "ref": "proofs-breadth:P-L1",
+   "condition": "A new ledger revision id is fresh: CreateGUID never returns an id an existing revision already carries. [engine]",
+   "status": "validated-in-part",
+   "runs": [
+    "corr-frame-keys-fk"
+   ],
+   "observed": [],
+   "consequence": "results of proofs-breadth that rest on it hold only where it holds; missing test: Check every RevisionId distinct and revById a bijection over the large histories (perf-sc256's 10,000 revisions, sim-main's 8,170 commits); GUID generation is outside the IRIS contract subset.",
+   "relied_on_by": "proofs-breadth/PROOFS.md",
+   "missing_test": "Check every RevisionId distinct and revById a bijection over the large histories (perf-sc256's 10,000 revisions, sim-main's 8,170 commits); GUID generation is outside the IRIS contract subset.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-breadth:P-L3",
+   "group": "proof-premise",
+   "ref": "proofs-breadth:P-L3",
+   "condition": "Every L2 step is one transaction under the locks the code takes, with IRIS nesting, deferred unlock, stop rollback and dirty reads. [engine]",
+   "status": "validated-in-part",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6",
+    "b-11-live-footprints-1",
+    "b-11-live-footprints-2",
+    "corr-lockplan",
+    "b-11-live-f1104"
+   ],
+   "observed": [],
+   "consequence": "results of proofs-breadth that rest on it hold only where it holds; missing test: Journal conformance mapping each modelled L2 step (Enable/re-enable, CommitNested, CallerEnd, BumpRead/BumpSave, GuardProbe) to exactly one product transaction under its locks; Enable is not one locked step at the pin.",
+   "relied_on_by": "proofs-breadth/PROOFS.md",
+   "missing_test": "Journal conformance mapping each modelled L2 step (Enable/re-enable, CommitNested, CallerEnd, BumpRead/BumpSave, GuardProbe) to exactly one product transaction under its locks; Enable is not one locked step at the pin.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-breadth:P-L5",
+   "group": "proof-premise",
+   "ref": "proofs-breadth:P-L5",
+   "condition": "A governed write waits for the row locks of an open nested ledger commit. [engine]",
+   "status": "validated-in-part",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6",
+    "b-11-live-f1102-locktimeout"
+   ],
+   "observed": [],
+   "consequence": "results of proofs-breadth that rest on it hold only where it holds; missing test: A holds a ledger commit nested in an open caller transaction; B makes governed engine writes on the same rows (create_node same id, set_property, delete_edge); record wait or -119 and outcomes after A ends.",
+   "relied_on_by": "proofs-breadth/PROOFS.md",
+   "missing_test": "A holds a ledger commit nested in an open caller transaction; B makes governed engine writes on the same rows (create_node same id, set_property, delete_edge); record wait or -119 and outcomes after A ends.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-d1b:P-S7",
+   "group": "proof-premise",
+   "ref": "proofs-d1b:P-S7",
+   "condition": "Revision ids identify revisions (CreateGUID is fresh), so the prefix check over ids compares histories [engine]",
+   "status": "validated-in-part",
+   "runs": [
+    "corr-frame-keys-fk"
+   ],
+   "observed": [],
+   "consequence": "results of proofs-d1b that rest on it hold only where it holds; missing test: Missing: freshness across namespaces, restores and many processes: commit >=10^5 revisions from N processes and archives of another namespace, assert no revision id repeats.",
+   "relied_on_by": "proofs-d1b/PROOFS.md",
+   "missing_test": "Missing: freshness across namespaces, restores and many processes: commit >=10^5 revisions from N processes and archives of another namespace, assert no revision id repeats.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-d1c:P-B2",
+   "group": "proof-premise",
+   "ref": "proofs-d1c:P-B2",
+   "condition": "Nested transactions: an inner TCOMMIT only lowers $TLEVEL and an outer rollback undoes inner work [engine]",
+   "status": "validated",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6",
+    "env-contract-r6-recheck",
+    "ib-HD1201-open-erasure"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "proofs-d1c/PROOFS.md",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-d1c:P-L3",
+   "group": "proof-premise",
+   "ref": "proofs-d1c:P-L3",
+   "condition": "Statement ids and edge_ids are fresh (stmtNext and the %ID counter only grow) [engine]",
+   "status": "validated-in-part",
+   "runs": [
+    "corr-frame-keys-fk",
+    "b-11-live-footprints-1"
+   ],
+   "observed": [],
+   "consequence": "results of proofs-d1c that rest on it hold only where it holds; missing test: Covered: stmtNext. Missing: rdf_edges %ID freshness across rollbacks, process stops and restores (row-id allocation is outside the contract subset).",
+   "relied_on_by": "proofs-d1c/PROOFS.md",
+   "missing_test": "Covered: stmtNext. Missing: rdf_edges %ID freshness across rollbacks, process stops and restores (row-id allocation is outside the contract subset).",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-d1c:P-T3",
+   "group": "proof-premise",
+   "ref": "proofs-d1c:P-T3",
+   "condition": "The bucket's writes are not rolled back [engine]",
+   "status": "validated",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6",
+    "breadth-a-live-05-partial"
+   ],
+   "observed": [],
+   "consequence": "",
+   "relied_on_by": "proofs-d1c/PROOFS.md",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-d1d:P-R3",
+   "group": "proof-premise",
+   "ref": "proofs-d1d:P-R3",
+   "condition": "A process's caller identity is its Native API session's user. [engine]",
+   "status": "validated-in-part",
+   "runs": [
+    "ver-priv-r2",
+    "ver-priv-r3"
+   ],
+   "observed": [],
+   "consequence": "results of proofs-d1d that rest on it hold only where it holds; missing test: Read $USERNAME and $ROLES in the server process for each connection kind (iris.connect, from_connect's dedicated Native API connection) and compare with the login user.",
+   "relied_on_by": "proofs-d1d/PROOFS.md",
+   "missing_test": "Read $USERNAME and $ROLES in the server process for each connection kind (iris.connect, from_connect's dedicated Native API connection) and compare with the login user.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-d1e:P-C5",
+   "group": "proof-premise",
+   "ref": "proofs-d1e:P-C5",
+   "condition": "Writes commit as they are made: no reader sees an uncommitted write and none is rolled back. [engine]",
+   "status": "shown-false",
+   "runs": [
+    "breadth-a-live-04-adjacency",
+    "env-contract-r2",
+    "b-08-live-fc0801-rollback-nkg"
+   ],
+   "observed": [],
+   "consequence": "false at the pin: results of proofs-d1e that rest on it do not transfer to the product (see its 'Premises the pin violates')",
+   "relied_on_by": "proofs-d1e/PROOFS.md",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-d1e:P-M2",
+   "group": "proof-premise",
+   "ref": "proofs-d1e:P-M2",
+   "condition": "Each SQL statement and global operation is one atomic step; a Cypher statement reads the graph mode once. [engine]",
+   "status": "validated-in-part",
+   "runs": [
+    "env-ext-r6",
+    "env-contract-r2"
+   ],
+   "observed": [],
+   "consequence": "results of proofs-d1e that rest on it hold only where it holds; missing test: A Cypher multigraph write while another process runs GraphMode.Set mid-statement (hook between its SQL statements); check the statement used one mode value throughout (source-only today).",
+   "relied_on_by": "proofs-d1e/PROOFS.md",
+   "missing_test": "A Cypher multigraph write while another process runs GraphMode.Set mid-statement (hook between its SQL statements); check the statement used one mode value throughout (source-only today).",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-d1f:P-F4",
+   "group": "proof-premise",
+   "ref": "proofs-d1f:P-F4",
+   "condition": "The sync lock admits one sync (or rebuild/redo) per FHIR graph; a killed holder's lock is freed by IRIS (SYS-P4) [engine]",
+   "status": "validated-in-part",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6",
+    "tests/e2e/test_231_fhir_graph_sync_e2e.py::test_busy",
+    "tests/e2e/test_fhirgraph_failures_e2e.py::test_rebuild_sync_and_reinterpret_answer_busy_while_another_process_holds_the_graph",
+    "tests/unit/test_231_fhir_graph_engine.py::TestGraphOps::test_busy_is_returned_not_raised"
+   ],
+   "observed": [],
+   "consequence": "results of proofs-d1f that rest on it hold only where it holds; missing test: Missing: the product's use of the lock. On a FHIR-capable namespace run test_busy, then SIGKILL a process holding ^IVG.FHIRGraph(g) mid-batch; check the next SyncOnce gets the lock and resumes from wm.",
+   "relied_on_by": "proofs-d1f/PROOFS.md",
+   "missing_test": "Missing: the product's use of the lock. On a FHIR-capable namespace run test_busy, then SIGKILL a process holding ^IVG.FHIRGraph(g) mid-batch; check the next SyncOnce gets the lock and resumes from wm.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-d1f:P-U2",
+   "group": "proof-premise",
+   "ref": "proofs-d1f:P-U2",
+   "condition": "Readers see committed state only, so a reviewed unit of work is visible whole [engine]",
+   "status": "shown-false",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6",
+    "c18-live-dirty-export",
+    "intent-a-hd0903-native-read-open-txn",
+    "b-09-f0909-txn-visibility"
+   ],
+   "observed": [],
+   "consequence": "false at the pin: results of proofs-d1f that rest on it do not transfer to the product (see its 'Premises the pin violates')",
+   "relied_on_by": "proofs-d1f/PROOFS.md",
+   "missing_test": "",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-d1f:PF-1",
+   "group": "proof-premise",
+   "ref": "proofs-d1f:PF-1",
+   "condition": "FHIR progress: no erase or durable removal of the watched graph happens during the watch [progress]",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "results of proofs-d1f that rest on it hold only where it holds; missing test: FHIR-capable namespace: start SyncOnce over N resources, erase_graph(g) from another process mid-sync; check the erase is not refused and whether wm reaches n0 with every cohort key projected later.",
+   "relied_on_by": "proofs-d1f/PROOFS.md",
+   "missing_test": "FHIR-capable namespace: start SyncOnce over N resources, erase_graph(g) from another process mid-sync; check the erase is not refused and whether wm reaches n0 with every cohort key projected later.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-d1f:PF-2",
+   "group": "proof-premise",
+   "ref": "proofs-d1f:PF-2",
+   "condition": "FHIR progress: a sync is started again after each stop (by the task, which counts busy as success, INT-F6.2, or by an operator) [progress]",
+   "status": "assumed",
+   "runs": [],
+   "observed": [
+    "tests/unit/test_231_fhir_sync_task.py::test_on_task_runs_one_sync",
+    "tests/e2e/test_231_fhir_graph_sync_e2e.py::test_schedule_and_task"
+   ],
+   "consequence": "results of proofs-d1f that rest on it hold only where it holds; missing test: FHIR-capable namespace with Task Manager: schedule a graph, SIGKILL a running sync mid-batch (and once while another process holds the lock); check the next task tick restarts a sync from the stored wm.",
+   "relied_on_by": "proofs-d1f/PROOFS.md",
+   "missing_test": "FHIR-capable namespace with Task Manager: schedule a graph, SIGKILL a running sync mid-batch (and once while another process holds the lock); check the next task tick restarts a sync from the stored wm.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-d1f:PF-3",
+   "group": "proof-premise",
+   "ref": "proofs-d1f:PF-3",
+   "condition": "FHIR progress: the next key is readable, or an operator repairs it (a failed batch never advances, HD-1504) [progress]",
+   "status": "assumed",
+   "runs": [],
+   "observed": [
+    "tests/e2e/test_231_fhir_graph_sync_e2e.py::test_crash_before_commit_leaves_nothing"
+   ],
+   "consequence": "results of proofs-d1f that rest on it hold only where it holds; missing test: FHIR-capable namespace: store a resource that makes RunBatch throw (walk limit); run SyncOnce repeatedly; check wm stays before it, last_error names it, and progress resumes only after repair or json_links=[].",
+   "relied_on_by": "proofs-d1f/PROOFS.md",
+   "missing_test": "FHIR-capable namespace: store a resource that makes RunBatch throw (walk limit); run SyncOnce repeatedly; check wm stays before it, last_error names it, and progress resumes only after repair or json_links=[].",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-d1f:PF-4",
+   "group": "proof-premise",
+   "ref": "proofs-d1f:PF-4",
+   "condition": "FHIR progress: a process with an enabled step (sync start, batch, pass, task tick) is eventually scheduled [progress]",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "results of proofs-d1f that rest on it hold only where it holds; missing test: FHIR-capable namespace: a stale-interpretation graph whose re-derivation pass is SIGKILLed at each batch and restarted (expect no progress at the pin); and N concurrent task-driven syncs that must all finish.",
+   "relied_on_by": "proofs-d1f/PROOFS.md",
+   "missing_test": "FHIR-capable namespace: a stale-interpretation graph whose re-derivation pass is SIGKILLed at each batch and restarted (expect no progress at the pin); and N concurrent task-driven syncs that must all finish.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-d9:P-D9-1",
+   "group": "proof-premise",
+   "ref": "proofs-d9:P-D9-1",
+   "condition": "Commits, replays, Start, batches, Final: one atomic head-locked txn each (a stopped one leaves nothing); erasures and bypass writes stay open and may roll back [engine]",
+   "status": "validated-in-part",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6",
+    "corr-lockplan",
+    "trace-conformance-ledger",
+    "live-native-rerun-1314",
+    "ib-HD1201-open-erasure"
+   ],
+   "observed": [],
+   "consequence": "results of proofs-d9 that rest on it hold only where it holds; missing test: Missing: a journal+lock trace showing replay and Final each as one head-locked transaction and a stop inside each leaving nothing; Start is one locked step only under G-L, which the pin lacks.",
+   "relied_on_by": "proofs-d9/PROOFS.md",
+   "missing_test": "Missing: a journal+lock trace showing replay and Final each as one head-locked transaction and a stop inside each leaving nothing; Start is one locked step only under G-L, which the pin lacks.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-d9:P-D9-2",
+   "group": "proof-premise",
+   "ref": "proofs-d9:P-D9-2",
+   "condition": "A ledger commit waits for a row an open bypass txn wrote; a bypass write waits for a row the open erasure deleted (insert over uncommitted delete: a Freedom) [engine]",
+   "status": "validated-in-part",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6",
+    "live-erase-vs-commit-fk"
+   ],
+   "observed": [],
+   "consequence": "results of proofs-d9 that rest on it hold only where it holds; missing test: Live probe on product tables: an open bypass txn writes a row and a ledger commit writes the same row (wait or -119?); a bypass INSERT of a key an open erasure deleted (decide the Freedom: wait or new row).",
+   "relied_on_by": "proofs-d9/PROOFS.md",
+   "missing_test": "Live probe on product tables: an open bypass txn writes a row and a ledger commit writes the same row (wait or -119?); a bypass INSERT of a key an open erasure deleted (decide the Freedom: wait or new row).",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-d9:PF-1",
+   "group": "proof-premise",
+   "ref": "proofs-d9:PF-1",
+   "condition": "The operator re-runs the redaction after a stop (as in proofs/) [progress]",
+   "status": "validated-in-part",
+   "runs": [
+    "live-native-rerun-1314",
+    "tests/integration/test_256_ledger_redaction_e2e.py::TestBatchesAndMarker::test_a_paused_redaction_is_honoured_and_resumes",
+    "fu-r03-marker-held-open",
+    "live-fc1303-bounded-resume"
+   ],
+   "observed": [],
+   "consequence": "results of proofs-d9 that rest on it hold only where it holds; missing test: Operator side cannot be tested on the product. Missing: a bounded re-run after each stop finishing in work bounded by the ledger size (fails at the pin, F-C1303), with bypass writers quiet.",
+   "relied_on_by": "proofs-d9/PROOFS.md",
+   "missing_test": "Operator side cannot be tested on the product. Missing: a bounded re-run after each stop finishing in work bounded by the ledger size (fails at the pin, F-C1303), with bypass writers quiet.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-d9:PF-2",
+   "group": "proof-premise",
+   "ref": "proofs-d9:PF-2",
+   "condition": "The ledger is enabled (re-enabled after a disable) while the run needs it [progress]",
+   "status": "validated-in-part",
+   "runs": [
+    "live-native-rerun-1314",
+    "tests/integration/test_256_ledger_redaction_e2e.py::TestUS3Refusals::test_a_disabled_ledger_is_refused_and_nothing_changes"
+   ],
+   "observed": [],
+   "consequence": "results of proofs-d9 that rest on it hold only where it holds; missing test: Operator premise. Missing: disable and re-enable during an unfinished run with commits, bypass writes and adoption in between, then resume: the run must still finish with its target kept.",
+   "relied_on_by": "proofs-d9/PROOFS.md",
+   "missing_test": "Operator premise. Missing: disable and re-enable during an unfinished run with commits, bypass writes and adoption in between, then resume: the run must still finish with its target kept.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-d9:PF-3",
+   "group": "proof-premise",
+   "ref": "proofs-d9:PF-3",
+   "condition": "Every erasure ends: its commit or rollback releases the head lock [progress]",
+   "status": "validated-in-part",
+   "runs": [
+    "env-contract-r2",
+    "corr-lockplan",
+    "ib-HD1201-open-erasure"
+   ],
+   "observed": [],
+   "consequence": "results of proofs-d9 that rest on it hold only where it holds; missing test: Engine part holds. Missing: a probe that erase_graph inside a long-lived caller transaction is refused or bounded, and that a waiting Start proceeds after the eraser commits, rolls back or is terminated.",
+   "relied_on_by": "proofs-d9/PROOFS.md",
+   "missing_test": "Engine part holds. Missing: a probe that erase_graph inside a long-lived caller transaction is refused or bounded, and that a waiting Start proceeds after the eraser commits, rolls back or is terminated.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-d9:PF-4",
+   "group": "proof-premise",
+   "ref": "proofs-d9:PF-4",
+   "condition": "An enabled step is eventually scheduled (as in proofs/) [progress]",
+   "status": "validated-in-part",
+   "runs": [
+    "env-contract-r2",
+    "val-perf-committer-n3-1"
+   ],
+   "observed": [],
+   "consequence": "results of proofs-d9 that rest on it hold only where it holds; missing test: Lock-fairness stress test: more than 2 processes (commits, bypass writers, erasers, batches, Final) contending for minutes, recording each process's longest wait and timeouts.",
+   "relied_on_by": "proofs-d9/PROOFS.md",
+   "missing_test": "Lock-fairness stress test: more than 2 processes (commits, bypass writers, erasers, batches, Final) contending for minutes, recording each process's longest wait and timeouts.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-d9:PF-5",
+   "group": "proof-premise",
+   "ref": "proofs-d9:PF-5",
+   "condition": "Every bypass transaction ends (a resume's Start waits for them, G-B) [progress]",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "results of proofs-d9 that rest on it hold only where it holds; missing test: Live probe: a bypass writer holds a caller transaction open while a redaction starts; check whether anything bounds it and that a Start waiting on it (G-B) proceeds once it commits, rolls back or is terminated.",
+   "relied_on_by": "proofs-d9/PROOFS.md",
+   "missing_test": "Live probe: a bypass writer holds a caller transaction open while a redaction starts; check whether anything bounds it and that a Start waiting on it (G-B) proceeds once it commits, rolls back or is terminated.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-d9:PF-6",
+   "group": "proof-premise",
+   "ref": "proofs-d9:PF-6",
+   "condition": "Eventually nothing t.lv selects is live when Final runs (no bypass writer or commit into lv minus rm keeps it live), or the operator erases t again [progress]",
+   "status": "shown-false",
+   "runs": [
+    "fu-r03-marker-held-open"
+   ],
+   "observed": [],
+   "consequence": "false at the pin: results of proofs-d9 that rest on it do not transfer to the product (see its 'Premises the pin violates')",
+   "relied_on_by": "proofs-d9/PROOFS.md",
+   "missing_test": "Not covered: a ledger commit into lv minus rm (BlocksCommit refuses only rm) keeping the target live during a run.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-d9b:P-D9b-2",
+   "group": "proof-premise",
+   "ref": "proofs-d9b:P-D9b-2",
+   "condition": "idemRedacted is keyed by sha256(key), modelled by the key itself (no collision) [engine]",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "results of proofs-d9b that rest on it hold only where it holds; missing test: Read ^IVG.Ledger idemRedacted after a redaction and compare its subscript with sha256 of the retry key (collision resistance itself is a cryptographic assumption no test settles).",
+   "relied_on_by": "proofs-d9b/PROOFS.md",
+   "missing_test": "Read ^IVG.Ledger idemRedacted after a redaction and compare its subscript with sha256 of the retry key (collision resistance itself is a cryptographic assumption no test settles).",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-d9b:PF-1",
+   "group": "proof-premise",
+   "ref": "proofs-d9b:PF-1",
+   "condition": "The operator re-runs the redaction after a stop (as in proofs/) [progress]",
+   "status": "validated-in-part",
+   "runs": [
+    "live-native-rerun-1314",
+    "tests/integration/test_256_ledger_redaction_e2e.py::TestBatchesAndMarker::test_a_paused_redaction_is_honoured_and_resumes",
+    "fu-r03-marker-held-open",
+    "live-fc1303-bounded-resume"
+   ],
+   "observed": [],
+   "consequence": "results of proofs-d9b that rest on it hold only where it holds; missing test: Operator side cannot be tested on the product. Missing: a bounded re-run after each stop finishing in work bounded by the ledger size (fails at the pin, F-C1303), with bypass writers quiet.",
+   "relied_on_by": "proofs-d9b/PROOFS.md",
+   "missing_test": "Operator side cannot be tested on the product. Missing: a bounded re-run after each stop finishing in work bounded by the ledger size (fails at the pin, F-C1303), with bypass writers quiet.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-d9b:PF-2",
+   "group": "proof-premise",
+   "ref": "proofs-d9b:PF-2",
+   "condition": "The ledger is enabled (re-enabled after a disable) while the run needs it [progress]",
+   "status": "validated-in-part",
+   "runs": [
+    "live-native-rerun-1314",
+    "tests/integration/test_256_ledger_redaction_e2e.py::TestUS3Refusals::test_a_disabled_ledger_is_refused_and_nothing_changes"
+   ],
+   "observed": [],
+   "consequence": "results of proofs-d9b that rest on it hold only where it holds; missing test: Operator premise. Missing: disable and re-enable during an unfinished run with commits, bypass writes and adoption in between, then resume: the run must still finish with its target kept.",
+   "relied_on_by": "proofs-d9b/PROOFS.md",
+   "missing_test": "Operator premise. Missing: disable and re-enable during an unfinished run with commits, bypass writes and adoption in between, then resume: the run must still finish with its target kept.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-d9b:PF-3",
+   "group": "proof-premise",
+   "ref": "proofs-d9b:PF-3",
+   "condition": "Every erasure ends: its commit or rollback releases the head lock [progress]",
+   "status": "validated-in-part",
+   "runs": [
+    "env-contract-r2",
+    "corr-lockplan",
+    "ib-HD1201-open-erasure"
+   ],
+   "observed": [],
+   "consequence": "results of proofs-d9b that rest on it hold only where it holds; missing test: Engine part holds. Missing: a probe that erase_graph inside a long-lived caller transaction is refused or bounded, and that a waiting Start proceeds after the eraser commits, rolls back or is terminated.",
+   "relied_on_by": "proofs-d9b/PROOFS.md",
+   "missing_test": "Engine part holds. Missing: a probe that erase_graph inside a long-lived caller transaction is refused or bounded, and that a waiting Start proceeds after the eraser commits, rolls back or is terminated.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-d9b:PF-4",
+   "group": "proof-premise",
+   "ref": "proofs-d9b:PF-4",
+   "condition": "An enabled step is eventually scheduled (as in proofs/) [progress]",
+   "status": "validated-in-part",
+   "runs": [
+    "env-contract-r2",
+    "val-perf-committer-n3-1"
+   ],
+   "observed": [],
+   "consequence": "results of proofs-d9b that rest on it hold only where it holds; missing test: Lock-fairness stress test: more than 2 processes (commits, bypass writers, erasers, batches, Final) contending for minutes, recording each process's longest wait and timeouts.",
+   "relied_on_by": "proofs-d9b/PROOFS.md",
+   "missing_test": "Lock-fairness stress test: more than 2 processes (commits, bypass writers, erasers, batches, Final) contending for minutes, recording each process's longest wait and timeouts.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-d9b:PF-5",
+   "group": "proof-premise",
+   "ref": "proofs-d9b:PF-5",
+   "condition": "Every bypass transaction ends (a resume's Start waits for them, G-B) [progress]",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "results of proofs-d9b that rest on it hold only where it holds; missing test: Live probe: a bypass writer holds a caller transaction open while a redaction starts; check whether anything bounds it and that a Start waiting on it (G-B) proceeds once it commits, rolls back or is terminated.",
+   "relied_on_by": "proofs-d9b/PROOFS.md",
+   "missing_test": "Live probe: a bypass writer holds a caller transaction open while a redaction starts; check whether anything bounds it and that a Start waiting on it (G-B) proceeds once it commits, rolls back or is terminated.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-d9b:PF-6",
+   "group": "proof-premise",
+   "ref": "proofs-d9b:PF-6",
+   "condition": "Eventually nothing t.lv selects is live when Final runs (no bypass writer or commit into lv minus rm keeps it live), or the operator erases t again [progress]",
+   "status": "shown-false",
+   "runs": [
+    "fu-r03-marker-held-open"
+   ],
+   "observed": [],
+   "consequence": "false at the pin: results of proofs-d9b that rest on it do not transfer to the product (see its 'Premises the pin violates')",
+   "relied_on_by": "proofs-d9b/PROOFS.md",
+   "missing_test": "Not covered: a ledger commit into lv minus rm (BlocksCommit refuses only rm) keeping the target live during a run.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-d9c:P-D9-1",
+   "group": "proof-premise",
+   "ref": "proofs-d9c:P-D9-1",
+   "condition": "Commits, replays, Start, batches, Final: one atomic head-locked txn each (a stopped one leaves nothing); erasures and bypass writes stay open and may roll back [engine]",
+   "status": "validated-in-part",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6",
+    "corr-lockplan",
+    "trace-conformance-ledger",
+    "live-native-rerun-1314",
+    "ib-HD1201-open-erasure"
+   ],
+   "observed": [],
+   "consequence": "results of proofs-d9c that rest on it hold only where it holds; missing test: Missing: a journal+lock trace showing replay and Final each as one head-locked transaction and a stop inside each leaving nothing; Start is one locked step only under G-L, which the pin lacks.",
+   "relied_on_by": "proofs-d9c/PROOFS.md",
+   "missing_test": "Missing: a journal+lock trace showing replay and Final each as one head-locked transaction and a stop inside each leaving nothing; Start is one locked step only under G-L, which the pin lacks.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-d9c:P-D9-2",
+   "group": "proof-premise",
+   "ref": "proofs-d9c:P-D9-2",
+   "condition": "A ledger commit waits for a row an open bypass txn wrote; a bypass write waits for a row the open erasure deleted (insert over uncommitted delete: a Freedom) [engine]",
+   "status": "validated-in-part",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6",
+    "live-erase-vs-commit-fk"
+   ],
+   "observed": [],
+   "consequence": "results of proofs-d9c that rest on it hold only where it holds; missing test: Live probe on product tables: an open bypass txn writes a row and a ledger commit writes the same row (wait or -119?); a bypass INSERT of a key an open erasure deleted (decide the Freedom: wait or new row).",
+   "relied_on_by": "proofs-d9c/PROOFS.md",
+   "missing_test": "Live probe on product tables: an open bypass txn writes a row and a ledger commit writes the same row (wait or -119?); a bypass INSERT of a key an open erasure deleted (decide the Freedom: wait or new row).",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-d9c:P-D9b-2",
+   "group": "proof-premise",
+   "ref": "proofs-d9c:P-D9b-2",
+   "condition": "idemRedacted is keyed by sha256(key), modelled by the key itself (no collision) [engine]",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "results of proofs-d9c that rest on it hold only where it holds; missing test: Read ^IVG.Ledger idemRedacted after a redaction and compare its subscript with sha256 of the retry key (collision resistance itself is a cryptographic assumption no test settles).",
+   "relied_on_by": "proofs-d9c/PROOFS.md",
+   "missing_test": "Read ^IVG.Ledger idemRedacted after a redaction and compare its subscript with sha256 of the retry key (collision resistance itself is a cryptographic assumption no test settles).",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-d9c:PF-1",
+   "group": "proof-premise",
+   "ref": "proofs-d9c:PF-1",
+   "condition": "The operator re-runs the redaction after a stop (as in proofs/) [progress]",
+   "status": "validated-in-part",
+   "runs": [
+    "live-native-rerun-1314",
+    "tests/integration/test_256_ledger_redaction_e2e.py::TestBatchesAndMarker::test_a_paused_redaction_is_honoured_and_resumes",
+    "fu-r03-marker-held-open",
+    "live-fc1303-bounded-resume"
+   ],
+   "observed": [],
+   "consequence": "results of proofs-d9c that rest on it hold only where it holds; missing test: Operator side cannot be tested on the product. Missing: a bounded re-run after each stop finishing in work bounded by the ledger size (fails at the pin, F-C1303), with bypass writers quiet.",
+   "relied_on_by": "proofs-d9c/PROOFS.md",
+   "missing_test": "Operator side cannot be tested on the product. Missing: a bounded re-run after each stop finishing in work bounded by the ledger size (fails at the pin, F-C1303), with bypass writers quiet.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-d9c:PF-2",
+   "group": "proof-premise",
+   "ref": "proofs-d9c:PF-2",
+   "condition": "The ledger is enabled (re-enabled after a disable) while the run needs it [progress]",
+   "status": "validated-in-part",
+   "runs": [
+    "live-native-rerun-1314",
+    "tests/integration/test_256_ledger_redaction_e2e.py::TestUS3Refusals::test_a_disabled_ledger_is_refused_and_nothing_changes"
+   ],
+   "observed": [],
+   "consequence": "results of proofs-d9c that rest on it hold only where it holds; missing test: Operator premise. Missing: disable and re-enable during an unfinished run with commits, bypass writes and adoption in between, then resume: the run must still finish with its target kept.",
+   "relied_on_by": "proofs-d9c/PROOFS.md",
+   "missing_test": "Operator premise. Missing: disable and re-enable during an unfinished run with commits, bypass writes and adoption in between, then resume: the run must still finish with its target kept.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-d9c:PF-3",
+   "group": "proof-premise",
+   "ref": "proofs-d9c:PF-3",
+   "condition": "Every erasure ends: its commit or rollback releases the head lock [progress]",
+   "status": "validated-in-part",
+   "runs": [
+    "env-contract-r2",
+    "corr-lockplan",
+    "ib-HD1201-open-erasure"
+   ],
+   "observed": [],
+   "consequence": "results of proofs-d9c that rest on it hold only where it holds; missing test: Engine part holds. Missing: a probe that erase_graph inside a long-lived caller transaction is refused or bounded, and that a waiting Start proceeds after the eraser commits, rolls back or is terminated.",
+   "relied_on_by": "proofs-d9c/PROOFS.md",
+   "missing_test": "Engine part holds. Missing: a probe that erase_graph inside a long-lived caller transaction is refused or bounded, and that a waiting Start proceeds after the eraser commits, rolls back or is terminated.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-d9c:PF-4",
+   "group": "proof-premise",
+   "ref": "proofs-d9c:PF-4",
+   "condition": "An enabled step is eventually scheduled (as in proofs/) [progress]",
+   "status": "validated-in-part",
+   "runs": [
+    "env-contract-r2",
+    "val-perf-committer-n3-1"
+   ],
+   "observed": [],
+   "consequence": "results of proofs-d9c that rest on it hold only where it holds; missing test: Lock-fairness stress test: more than 2 processes (commits, bypass writers, erasers, batches, Final) contending for minutes, recording each process's longest wait and timeouts.",
+   "relied_on_by": "proofs-d9c/PROOFS.md",
+   "missing_test": "Lock-fairness stress test: more than 2 processes (commits, bypass writers, erasers, batches, Final) contending for minutes, recording each process's longest wait and timeouts.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-d9c:PF-5",
+   "group": "proof-premise",
+   "ref": "proofs-d9c:PF-5",
+   "condition": "Every bypass transaction ends (a resume's Start waits for them, G-B) [progress]",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "results of proofs-d9c that rest on it hold only where it holds; missing test: Live probe: a bypass writer holds a caller transaction open while a redaction starts; check whether anything bounds it and that a Start waiting on it (G-B) proceeds once it commits, rolls back or is terminated.",
+   "relied_on_by": "proofs-d9c/PROOFS.md",
+   "missing_test": "Live probe: a bypass writer holds a caller transaction open while a redaction starts; check whether anything bounds it and that a Start waiting on it (G-B) proceeds once it commits, rolls back or is terminated.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-d9c:PF-6",
+   "group": "proof-premise",
+   "ref": "proofs-d9c:PF-6",
+   "condition": "Eventually nothing t.lv selects is live when Final runs (no bypass writer or commit into lv minus rm keeps it live), or the operator erases t again [progress]",
+   "status": "shown-false",
+   "runs": [
+    "fu-r03-marker-held-open"
+   ],
+   "observed": [],
+   "consequence": "false at the pin: results of proofs-d9c that rest on it do not transfer to the product (see its 'Premises the pin violates')",
+   "relied_on_by": "proofs-d9c/PROOFS.md",
+   "missing_test": "Not covered: a ledger commit into lv minus rm (BlocksCommit refuses only rm) keeping the target live during a run.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-mech:PM-1",
+   "group": "proof-premise",
+   "ref": "proofs-mech:PM-1",
+   "condition": "M07-L4 fair service: the queue worker is weakly fair (whenever an entry is pending, some later step serves) [progress]",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "results of proofs-mech that rest on it hold only where it holds; missing test: A steady-enqueue soak through EmbedQueue.ProcessBatch with low-collating ids arriving continuously, asserting every entry is served within a bound.",
+   "relied_on_by": "proofs-mech/PROOFS.md",
+   "missing_test": "A steady-enqueue soak through EmbedQueue.ProcessBatch with low-collating ids arriving continuously, asserting every entry is served within a bound.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-mech:PM-2",
+   "group": "proof-premise",
+   "ref": "proofs-mech:PM-2",
+   "condition": "M07-L4 resumed run: a stopped bounded run is resumed 3 - cursor more times [progress]",
+   "status": "validated-in-part",
+   "runs": [
+    "live-fc1303-bounded-resume"
+   ],
+   "observed": [],
+   "consequence": "results of proofs-mech that rest on it hold only where it holds; missing test: That an operator resumes enough times is an operator premise; with a persisted cursor a test would count the calls a resumed run needs (none exists at the pin).",
+   "relied_on_by": "proofs-mech/PROOFS.md",
+   "missing_test": "That an operator resumes enough times is an operator premise; with a persisted cursor a test would count the calls a resumed run needs (none exists at the pin).",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-pa3:P-A2",
+   "group": "proof-premise",
+   "ref": "proofs-pa3:P-A2",
+   "condition": "No two open writer transactions on one edge row (the edge row's lock serializes them). [engine]",
+   "status": "validated-in-part",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6"
+   ],
+   "observed": [],
+   "consequence": "results of proofs-pa3 that rest on it hold only where it holds; missing test: Two processes with open transactions on the same edge through the product (create_edge/create_edge, delete_edge then create_edge); check -119 or wait and ^KG out; settle the insert-over-uncommitted-delete Freedom.",
+   "relied_on_by": "proofs-pa3/PROOFS.md",
+   "missing_test": "Two processes with open transactions on the same edge through the product (create_edge/create_edge, delete_edge then create_edge); check -119 or wait and ^KG out; settle the insert-over-uncommitted-delete Freedom.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-pa3:P-A6",
+   "group": "proof-premise",
+   "ref": "proofs-pa3:P-A6",
+   "condition": "A rollback restores the before-images of the nodes its transaction set or killed; $Increment is not undone. [engine]",
+   "status": "validated-in-part",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6",
+    "b-11-live-footprints-1",
+    "b-08-live-fc0801-rollback-nkg",
+    "breadth-a-live-04-adjacency",
+    "tests/integration/test_236_token_write_paths.py::test_25_a_rolled_back_bump_is_not_undone"
+   ],
+   "observed": [],
+   "consequence": "results of proofs-pa3 that rest on it hold only where it holds; missing test: Contract case and adjacency probe: an open eraser or rebuild kills ^KG(degc,g,s), another process's Degree stores it, the txn rolls back; the L2 overwrites the store, E-ROLLBACK-OTHER says it survives.",
+   "relied_on_by": "proofs-pa3/PROOFS.md",
+   "missing_test": "Contract case and adjacency probe: an open eraser or rebuild kills ^KG(degc,g,s), another process's Degree stores it, the txn rolls back; the L2 overwrites the store, E-ROLLBACK-OTHER says it survives.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-pa3:P-E2",
+   "group": "proof-premise",
+   "ref": "proofs-pa3:P-E2",
+   "condition": "an erasure's DELETE of a graph's rows is one step (row locks serialize each insert before or after it) [engine]",
+   "status": "validated-in-part",
+   "runs": [
+    "env-contract-r2",
+    "live-erase-vs-commit-fk"
+   ],
+   "observed": [],
+   "consequence": "results of proofs-pa3 that rest on it hold only where it holds; missing test: An insert of a new row into g while EraseGraph's DELETE scan is in progress (many rows, the insert timed mid-scan), checking the outcome equals an insert before or after the DELETE.",
+   "relied_on_by": "proofs-pa3/PROOFS.md",
+   "missing_test": "An insert of a new row into g while EraseGraph's DELETE scan is in progress (many rows, the insert timed mid-scan), checking the outcome equals an insert before or after the DELETE.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-pa3:P-L1",
+   "group": "proof-premise",
+   "ref": "proofs-pa3:P-L1",
+   "condition": "A new ledger revision id is fresh: CreateGUID never returns an id an existing revision already carries. [engine]",
+   "status": "validated-in-part",
+   "runs": [
+    "corr-frame-keys-fk"
+   ],
+   "observed": [],
+   "consequence": "results of proofs-pa3 that rest on it hold only where it holds; missing test: Check every RevisionId distinct and revById a bijection over the large histories (perf-sc256's 10,000 revisions, sim-main's 8,170 commits); GUID generation is outside the IRIS contract subset.",
+   "relied_on_by": "proofs-pa3/PROOFS.md",
+   "missing_test": "Check every RevisionId distinct and revById a bijection over the large histories (perf-sc256's 10,000 revisions, sim-main's 8,170 commits); GUID generation is outside the IRIS contract subset.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-pa3:P-L3",
+   "group": "proof-premise",
+   "ref": "proofs-pa3:P-L3",
+   "condition": "Every L2 step is one transaction under the locks the code takes, with IRIS nesting, deferred unlock, stop rollback and dirty reads. [engine]",
+   "status": "validated-in-part",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6",
+    "b-11-live-footprints-1",
+    "b-11-live-footprints-2",
+    "corr-lockplan",
+    "b-11-live-f1104"
+   ],
+   "observed": [],
+   "consequence": "results of proofs-pa3 that rest on it hold only where it holds; missing test: Journal conformance mapping each modelled L2 step (Enable/re-enable, CommitNested, CallerEnd, BumpRead/BumpSave, GuardProbe) to exactly one product transaction under its locks; Enable is not one locked step at the pin.",
+   "relied_on_by": "proofs-pa3/PROOFS.md",
+   "missing_test": "Journal conformance mapping each modelled L2 step (Enable/re-enable, CommitNested, CallerEnd, BumpRead/BumpSave, GuardProbe) to exactly one product transaction under its locks; Enable is not one locked step at the pin.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-pa3:P-L5",
+   "group": "proof-premise",
+   "ref": "proofs-pa3:P-L5",
+   "condition": "A governed write waits for the row locks of an open nested ledger commit. [engine]",
+   "status": "validated-in-part",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6",
+    "b-11-live-f1102-locktimeout"
+   ],
+   "observed": [],
+   "consequence": "results of proofs-pa3 that rest on it hold only where it holds; missing test: A holds a ledger commit nested in an open caller transaction; B makes governed engine writes on the same rows (create_node same id, set_property, delete_edge); record wait or -119 and outcomes after A ends.",
+   "relied_on_by": "proofs-pa3/PROOFS.md",
+   "missing_test": "A holds a ledger commit nested in an open caller transaction; B makes governed engine writes on the same rows (create_node same id, set_property, delete_edge); record wait or -119 and outcomes after A ends.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs:P-C01",
+   "group": "proof-premise",
+   "ref": "proofs:P-C01",
+   "condition": "Each step (commit, replay, Start, batch, Final) is one atomic txn holding the head lock; erasure is one open transaction; a stop loses only its own state [engine]",
+   "status": "validated-in-part",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6",
+    "corr-lockplan",
+    "trace-conformance-ledger",
+    "live-native-rerun-1314",
+    "tests/e2e/test_470_ledger_caller_txn_e2e.py::test_the_head_lock_is_held_until_the_callers_transaction_ends"
+   ],
+   "observed": [],
+   "consequence": "results of proofs that rest on it hold only where it holds; missing test: Engine clauses and commit/batch atomicity are observed. Missing: Start is not one locked step at the pin and erasure holds no head lock (corr-lockplan); a journal+lock trace of replay and Final; killed_mid_batch rerun.",
+   "relied_on_by": "proofs/PROOFS.md",
+   "missing_test": "Engine clauses and commit/batch atomicity are observed. Missing: Start is not one locked step at the pin and erasure holds no head lock (corr-lockplan); a journal+lock trace of replay and Final; killed_mid_batch rerun.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs:PF-1",
+   "group": "proof-premise",
+   "ref": "proofs:PF-1",
+   "condition": "The operator re-runs the redaction after a stop (Redact is re-invoked; HD-1303 'resume the same target') [progress]",
+   "status": "validated-in-part",
+   "runs": [
+    "live-native-rerun-1314",
+    "tests/integration/test_256_ledger_redaction_e2e.py::TestBatchesAndMarker::test_a_paused_redaction_is_honoured_and_resumes",
+    "live-fc1303-bounded-resume"
+   ],
+   "observed": [],
+   "consequence": "results of proofs that rest on it hold only where it holds; missing test: Operator side cannot be tested on the product; product side partly covered. Missing: a bounded re-run after each stop finishing in work bounded by the ledger size (fails at the pin, F-C1303).",
+   "relied_on_by": "proofs/PROOFS.md",
+   "missing_test": "Operator side cannot be tested on the product; product side partly covered. Missing: a bounded re-run after each stop finishing in work bounded by the ledger size (fails at the pin, F-C1303).",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs:PF-2",
+   "group": "proof-premise",
+   "ref": "proofs:PF-2",
+   "condition": "The ledger is enabled again and stays enabled long enough (BatchInLock/FinalInLock refuse while it is disabled) [progress]",
+   "status": "validated-in-part",
+   "runs": [
+    "live-native-rerun-1314",
+    "tests/integration/test_256_ledger_redaction_e2e.py::TestUS3Refusals::test_a_disabled_ledger_is_refused_and_nothing_changes"
+   ],
+   "observed": [],
+   "consequence": "results of proofs that rest on it hold only where it holds; missing test: Operator premise. Missing: disable and re-enable during an unfinished run with commits and adoption in between (F-1103 territory), then resume: the run must still finish with its target and bound kept.",
+   "relied_on_by": "proofs/PROOFS.md",
+   "missing_test": "Operator premise. Missing: disable and re-enable during an unfinished run with commits and adoption in between (F-1103 territory), then resume: the run must still finish with its target and bound kept.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs:PF-3",
+   "group": "proof-premise",
+   "ref": "proofs:PF-3",
+   "condition": "Every erasure ends (releases the head lock); a lock waiter proceeds when the holder releases; a stopped holder's locks are released [progress]",
+   "status": "validated-in-part",
+   "runs": [
+    "env-contract-r2",
+    "env-ext-r6",
+    "corr-lockplan",
+    "ib-HD1201-open-erasure"
+   ],
+   "observed": [],
+   "consequence": "results of proofs that rest on it hold only where it holds; missing test: Engine part holds. Missing: a probe that erase_graph inside a long-lived caller transaction is refused or bounded, and that a redaction waiting on it proceeds when the eraser commits, rolls back or is terminated.",
+   "relied_on_by": "proofs/PROOFS.md",
+   "missing_test": "Engine part holds. Missing: a probe that erase_graph inside a long-lived caller transaction is refused or bounded, and that a redaction waiting on it proceeds when the eraser commits, rolls back or is terminated.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs:PF-4",
+   "group": "proof-premise",
+   "ref": "proofs:PF-4",
+   "condition": "A process with an enabled step is eventually scheduled and its transaction commits (IRIS Locks: deferral, Nesting) [progress]",
+   "status": "validated-in-part",
+   "runs": [
+    "env-contract-r2",
+    "val-perf-committer-n3-1",
+    "val-mp-existing-1"
+   ],
+   "observed": [],
+   "consequence": "results of proofs that rest on it hold only where it holds; missing test: Lock-fairness stress test: more than 2 processes contending for ^IVG.Ledger(head) (commits, batches, Final) for minutes, recording each process's longest wait and timeouts; queue fairness is outside the contract.",
+   "relied_on_by": "proofs/PROOFS.md",
+   "missing_test": "Lock-fairness stress test: more than 2 processes contending for ^IVG.Ledger(head) (commits, batches, Final) for minutes, recording each process's longest wait and timeouts; queue fairness is outside the contract.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  }
+ ],
+ "summary": {
+  "conditions": 170,
+  "by_group": {
+   "contract-r6": {
+    "validated": 31,
+    "validated-in-part": 1
+   },
+   "contract-2": {
+    "validated": 9
+   },
+   "outside": {
+    "assumed": 55,
+    "validated-in-part": 1,
+    "shown-false": 1
+   },
+   "proof-premise": {
+    "validated": 7,
+    "validated-in-part": 49,
+    "shown-false": 6,
+    "assumed": 10
+   }
+  },
+  "by_status": {
+   "validated": 47,
+   "validated-in-part": 51,
+   "assumed": 65,
+   "shown-false": 7
+  }
+ }
+}

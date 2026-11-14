@@ -97,6 +97,11 @@
    "tests": [
     {
      "kind": "run",
+     "ref": "ws-live-fc1301-delete-reification",
+     "what": "F-C1301 live: a bypass writer's uncommitted delete read by the liveness check, then rolled back"
+    },
+    {
+     "kind": "run",
      "ref": "ib-HD1201-open-erasure",
      "what": "live: an open erasure's uncommitted delete is read as not live by the liveness check, then rolls back (F-C1201)"
     },
@@ -112,7 +117,7 @@
     }
    ],
    "verdict": "tested-violated",
-   "should_exist": "F-C1301 (a ledger-bypassing writer's uncommitted delete read by LiveRows, then rolled back) is model-only; a live probe with a held-open bypass delete during redaction start would test that case."
+   "should_exist": ""
   },
   {
    "key": "TRUST:changed:P-1310 one target predicate stands for three scopes",
@@ -227,11 +232,27 @@
    "source": "experiment/playbook-completion/TRUST.md",
    "id": "Embedded SQL (&sql) behaves as dynamic SQL for the clauses used",
    "premise": "embedded SQL obeys the contract's dynamic-SQL clauses",
-   "pin_status": "untested",
+   "pin_status": "validated (env2-e1-r1)",
    "class": "engine",
-   "tests": [],
-   "verdict": "untested",
-   "should_exist": "Run the contract's named clause cases through compiled &sql methods of a scratch class in a scratch namespace; compiling a non-product class is outside this audit's scope rule, so it needs an operator ruling."
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "env2-e1-r1",
+     "what": "67 cases of the pin's compiled embedded SQL, 0 outside, 14/14 mutants"
+    },
+    {
+     "kind": "run",
+     "ref": "env2-e1-r1-journal",
+     "what": "journal footprints of 6 pin methods match"
+    },
+    {
+     "kind": "run",
+     "ref": "env2-e1-r2",
+     "what": "S-1: the pin's compiled SQL functions act on the calling connection's transaction"
+    }
+   ],
+   "verdict": "tested-holds",
+   "should_exist": ""
   },
   {
    "key": "TRUST:new:Enabled steps are eventually scheduled; the operator re-runs after a stop; the ledger is (re-)enabled; every erasure releases its lock",
@@ -254,6 +275,23 @@
    ],
    "verdict": "tested-partial",
    "should_exist": "Fair scheduling and operator behaviour are untested: a soak with N committer processes, repeated redaction re-runs and injected stops, asserting completion within a bound, would test the conjunction at the product."
+  },
+  {
+   "key": "TRUST:new:M07-L4 progress: the queue worker is weakly fair; a stopped run is resumed 3 - cursor more times",
+   "source": "experiment/playbook-completion/TRUST.md",
+   "id": "new:M07-L4 progress: the queue worker is weakly fair; a stopped run is resumed 3 - cursor more times",
+   "premise": "M07-L4 fairness premises of proofs-mech",
+   "pin_status": "assumed: hypotheses of the progress theorems",
+   "class": "progress",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "live-fc1303-bounded-resume",
+     "what": "the pin's bounded redaction does not progress when re-run"
+    }
+   ],
+   "verdict": "tested-partial",
+   "should_exist": "A steady-enqueue soak for the queue and a resume count with a persisted cursor (absent at the pin); weak fairness of IRIS scheduling itself is not testable here."
   },
   {
    "key": "TRUST:new:P-A3: an eraser of graph g overlaps no writer of g",
@@ -522,11 +560,27 @@
    "source": "experiment/playbook-completion/iris-contract/CONTRACT.md",
    "id": "E-1",
    "premise": "embedded SQL (&sql) compiled into classes behaves as dynamic SQL for the contract's clauses",
-   "pin_status": "assumed, untested",
+   "pin_status": "validated by contract-2 (env2-e1-r1)",
    "class": "engine",
-   "tests": [],
-   "verdict": "untested",
-   "should_exist": "The contract's named cases run through compiled &sql in a scratch class (needs compiling a non-product class: an operator ruling under the scope rule)."
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "env2-e1-r1",
+     "what": "67 cases of the pin's compiled embedded SQL, 0 outside, 14/14 mutants"
+    },
+    {
+     "kind": "run",
+     "ref": "env2-e1-r1-journal",
+     "what": "journal footprints of 6 pin methods match"
+    },
+    {
+     "kind": "run",
+     "ref": "env2-e1-r2",
+     "what": "S-1: the pin's compiled SQL functions act on the calling connection's transaction"
+    }
+   ],
+   "verdict": "tested-holds",
+   "should_exist": ""
   },
   {
    "key": "iris-contract:E-AUTOCOMMIT",
@@ -1204,11 +1258,17 @@
    "source": "experiment/playbook-completion/iris-contract/CONTRACT.md",
    "id": "$LIST semantics, $NAME, $LISTVALID",
    "premise": "an IRIS feature the modules rely on that lies outside the contract's validated subset",
-   "pin_status": "outside the semantic subset (refused, never claimed)",
+   "pin_status": "outside the r6 subset; covered by contract-2 (contract-2/VALIDATED.json)",
    "class": "engine",
-   "tests": [],
-   "verdict": "untested",
-   "should_exist": "a contract clause with named cases and mutants for this feature, validated differentially like the others; until then the modules that rely on it keep 3.2-coverage open (COVERAGE.json)"
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "env2-x2-r1",
+     "what": "contract-2 clause X2-LIST ($LIST family, IRISList decode), 0 outside"
+    }
+   ],
+   "verdict": "tested-partial",
+   "should_exist": "$NAME and $LISTVALID remain outside (contract-2 family 'list' residual)."
   },
   {
    "key": "iris-contract:OUT:$ZF callouts; %Regex; EMBEDDING(); SQL text parsing; generat",
@@ -1226,11 +1286,17 @@
    "source": "experiment/playbook-completion/iris-contract/CONTRACT.md",
    "id": "%DynamicObject / JSON functions",
    "premise": "an IRIS feature the modules rely on that lies outside the contract's validated subset",
-   "pin_status": "outside the semantic subset (refused, never claimed)",
+   "pin_status": "outside the r6 subset; covered by contract-2 (contract-2/VALIDATED.json)",
    "class": "engine",
-   "tests": [],
-   "verdict": "untested",
-   "should_exist": "a contract clause with named cases and mutants for this feature, validated differentially like the others; until then the modules that rely on it keep 3.2-coverage open (COVERAGE.json)"
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "env2-x2-r1",
+     "what": "contract-2 clause X2-JSON (%Set/%Get/%GetTypeOf/%IsDefined/%Remove/%ToJSON/%FromJSON), 0 outside"
+    }
+   ],
+   "verdict": "tested-partial",
+   "should_exist": "SQL JSON functions (JSON_VALUE and the like) remain outside (contract-2 family 'json' residual)."
   },
   {
    "key": "iris-contract:OUT:HNSW vector index maintenance and build",
@@ -1248,11 +1314,17 @@
    "source": "experiment/playbook-completion/iris-contract/CONTRACT.md",
    "id": "INSERT OR UPDATE",
    "premise": "an IRIS feature the modules rely on that lies outside the contract's validated subset",
-   "pin_status": "outside the semantic subset (refused, never claimed)",
+   "pin_status": "outside the r6 subset; covered by contract-2 (contract-2/VALIDATED.json)",
    "class": "engine",
-   "tests": [],
-   "verdict": "untested",
-   "should_exist": "a contract clause with named cases and mutants for this feature, validated differentially like the others; until then the modules that rely on it keep 3.2-coverage open (COVERAGE.json)"
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "env2-x2-r1",
+     "what": "contract-2 clause X2-IOU: inserts/updates, waits for a held row, -109 if gone"
+    }
+   ],
+   "verdict": "tested-holds",
+   "should_exist": ""
   },
   {
    "key": "iris-contract:OUT:IRISTEMP globals",
@@ -1358,11 +1430,22 @@
    "source": "experiment/playbook-completion/iris-contract/CONTRACT.md",
    "id": "embedded SQL (&sql) compiled into classes: assumed equal to ",
    "premise": "an IRIS feature the modules rely on that lies outside the contract's validated subset",
-   "pin_status": "outside the semantic subset (refused, never claimed)",
+   "pin_status": "outside the r6 subset; covered by contract-2 (contract-2/VALIDATED.json)",
    "class": "engine",
-   "tests": [],
-   "verdict": "untested",
-   "should_exist": "a contract clause with named cases and mutants for this feature, validated differentially like the others; until then the modules that rely on it keep 3.2-coverage open (COVERAGE.json)"
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "env2-e1-r1",
+     "what": "contract-2 premise E-1 validated: 67 cases of the pin's compiled embedded SQL, 0 outside"
+    },
+    {
+     "kind": "run",
+     "ref": "env2-e1-r2",
+     "what": "S-1: compiled SQL functions act on the calling connection's transaction"
+    }
+   ],
+   "verdict": "tested-holds",
+   "should_exist": ""
   },
   {
    "key": "iris-contract:OUT:engine limits (long strings, subscript length, bound-paramet",
@@ -1446,11 +1529,22 @@
    "source": "experiment/playbook-completion/iris-contract/CONTRACT.md",
    "id": "result-prefix queries (TOP / LIMIT / FETCH FIRST)",
    "premise": "an IRIS feature the modules rely on that lies outside the contract's validated subset",
-   "pin_status": "outside the semantic subset (refused, never claimed)",
+   "pin_status": "outside the r6 subset; covered by contract-2 (contract-2/VALIDATED.json)",
    "class": "engine",
-   "tests": [],
-   "verdict": "untested",
-   "should_exist": "a contract clause with named cases and mutants for this feature, validated differentially like the others; until then the modules that rely on it keep 3.2-coverage open (COVERAGE.json)"
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "env2-x2-r1",
+     "what": "contract-2 clause X2-TOP: TOP n, LIMIT n [OFFSET m] ordered and unordered"
+    },
+    {
+     "kind": "run",
+     "ref": "env2-fetchfirst-probe",
+     "what": "FETCH FIRST ends the client process (SIGSEGV) on driver 5.3.2 (F-C1743/F-C1720)"
+    }
+   ],
+   "verdict": "tested-partial",
+   "should_exist": "FETCH FIRST is not a clause: on driver 5.3.2 it crashes the client (env2-fetchfirst-probe); a clause per driver would close it."
   },
   {
    "key": "iris-contract:OUT:streams",
@@ -1710,6 +1804,75 @@
    "should_exist": ""
   },
   {
+   "key": "models-core-partition:MP-1",
+   "source": "experiment/playbook-completion/models/core-partition/MODELS.md",
+   "id": "MP-1",
+   "premise": "M1's world: three ids, two graphs, three edges, no temporal edges, labels and properties folded into node rows",
+   "pin_status": "modelling restriction",
+   "class": "modelling-restriction",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "live-native-rerun-1314",
+     "what": "targeting scenarios beyond M1's world on the product (F-1304/F-1305)"
+    },
+    {
+     "kind": "run",
+     "ref": "fu-r04-temporal-only-live-b",
+     "what": "temporal-only edges, outside M1, break redaction live (F-C1308)"
+    }
+   ],
+   "verdict": "tested-partial",
+   "should_exist": "Temporal edges and multi-hop worlds are outside M1; the live runs show the excluded temporal case fails at the pin. A model with temporal edges, or live targeting samples over generated worlds, would cover the rest.",
+   "anchor": "three ids, two graphs, three edges, no temporal edges"
+  },
+  {
+   "key": "models-core-partition:MP-2",
+   "source": "experiment/playbook-completion/models/core-partition/MODELS.md",
+   "id": "MP-2",
+   "premise": "bounds: at most 2 pre-enable writes, 2 ledger commits, 1 ledger-bypassing write; erasures and redactions unbounded",
+   "pin_status": "modelling restriction (exhaustive within it)",
+   "class": "modelling-restriction",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "sim-main-20261114",
+     "what": "204 random schedules through the product beyond these bounds, invariants after every commit"
+    }
+   ],
+   "verdict": "tested-partial",
+   "should_exist": "Profiles (2, 3), (1, 3) and larger are not model-checked; the simulator samples them through the product without enumerating them.",
+   "anchor": "at most 2 pre-enable writes, at most 2 ledger commits, at most 1 ledger-bypassing write"
+  },
+  {
+   "key": "models-core-partition:MP-3",
+   "source": "experiment/playbook-completion/models/core-partition/MODELS.md",
+   "id": "MP-3",
+   "premise": "the explorer is executable and unproved",
+   "pin_status": "trusted (TRUST.md)",
+   "class": "tool",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "m2p-union-b-reviewed",
+     "what": "the union of the partition's pieces equals an independent breadth-first search of the full space"
+    },
+    {
+     "kind": "run",
+     "ref": "m2p-union-control",
+     "what": "dropping one piece is caught"
+    },
+    {
+     "kind": "run",
+     "ref": "m2p-coverage-keys",
+     "what": "pre-enable worlds equal an explorer-free enumeration"
+    }
+   ],
+   "verdict": "tested-partial",
+   "should_exist": "The explorer's own exhaustiveness is cross-checked only on the profiles above; a differential against an independent enumerator on the (2, 2) profile itself would extend it.",
+   "anchor": "the explorer is executable and unproved"
+  },
+  {
    "key": "models-core:MA-1",
    "source": "experiment/playbook-completion/models/core/MODELS.md",
    "id": "MA-1",
@@ -1730,7 +1893,7 @@
    ],
    "verdict": "tested-partial",
    "should_exist": "Missing: a redaction under a sustained commit rate into other tenants above the batch scan rate (tail-following scan, P-1306) and under bypass writes into other tenants, measuring whether it finishes.",
-   "anchor": "writers become quiet (the path adds no commit"
+   "anchor": "writers become quiet (the path adds no commit or bypass write)"
   },
   {
    "key": "models-core:MA-10",
@@ -1792,7 +1955,7 @@
    ],
    "verdict": "tested-partial",
    "should_exist": "Operator side is outside the product. Missing: a product test that resumed bounded runs finish (fails at the pin, F-C1303) and that an unfinished run is reported where an operator looks (receipt, verify).",
-   "anchor": "the operator resumes stopped or paused runs"
+   "anchor": "the operator resumes stopped or paused runs (calls are\nunbounded)"
   },
   {
    "key": "models-core:MA-3",
@@ -1838,7 +2001,7 @@
    ],
    "verdict": "tested-partial",
    "should_exist": "Operator side is outside the product. Missing: repeated erase plus re-run while a writer keeps writing into the target (fu-r03 wrote once), showing whether the loop converges.",
-   "anchor": "the operator may erase a target again when a"
+   "anchor": "the operator may erase a target again when a\nwrite made it live"
   },
   {
    "key": "models-core:MA-5",
@@ -1898,7 +2061,7 @@
     }
    ],
    "verdict": "tested-holds",
-   "anchor": "the delete case of dirty reads is the"
+   "anchor": "the delete case of dirty reads is the\n  general Visibility clause"
   },
   {
    "key": "models-core:MA-7",
@@ -1931,7 +2094,7 @@
    ],
    "verdict": "tested-partial",
    "should_exist": "Per census writer: a live race probe against a redaction (uncommitted write or delete read by LiveRows, then rollback; a write between batches and before Final) confirming it acts as W, with its journal footprint.",
-   "anchor": "what matters about a writer is only (1) which"
+   "anchor": "what matters about a writer is only (1)"
   },
   {
    "key": "models-core:MA-8",
@@ -5155,6 +5318,1095 @@
    "verdict": "tested-violated"
   },
   {
+   "key": "proofs-d9b:P-D9b-1",
+   "source": "experiment/playbook-completion/proofs-d9b/PROOFS.md",
+   "id": "P-D9b-1",
+   "premise": "a revision's free text and idempotency key may name the tenant of any entity its changeset addresses; attribution is by those keys, not by content analysis",
+   "pin_status": "modelling premise (the simulator's oracle attributes metadata the same way)",
+   "class": "modelling-restriction",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "sim-fcs01-minimal",
+     "what": "a zero-record revision keeps the tenant's message, source, correlation id and key after a complete redaction (F-CS01)"
+    },
+    {
+     "kind": "run",
+     "ref": "fu-r01a-snapshot-copies",
+     "what": "revision text and key of a tenant observed through history() and archives"
+    }
+   ],
+   "verdict": "tested-partial",
+   "should_exist": "Free text naming entities the changeset does not address (content analysis) is not covered: a live SC-001 scan with a message that names another tenant's id would show what the receipt attributes."
+  },
+  {
+   "key": "proofs-d9b:P-D9b-2",
+   "source": "experiment/playbook-completion/proofs-d9b/PROOFS.md",
+   "id": "P-D9b-2",
+   "premise": "idemRedacted is keyed by sha256(key), modelled by the key itself (no collision)",
+   "pin_status": "assumed (SHA-256)",
+   "class": "engine",
+   "tests": [],
+   "verdict": "untested",
+   "should_exist": "Read ^IVG.Ledger idemRedacted after a redaction and compare its subscript with sha256 of the retry key (collision resistance itself is a cryptographic assumption no test settles)."
+  },
+  {
+   "key": "proofs-d9b:P-D9b-3",
+   "source": "experiment/playbook-completion/proofs-d9b/PROOFS.md",
+   "id": "P-D9b-3",
+   "premise": "one statement-history key per edge stands for every (\"stmt\") id of that edge; EraseLedgerFor and DropStatements select ids by graph and endpoints",
+   "pin_status": "by inspection (Eraser.cls:1117-1144, LedgerRedact.cls:446-471)",
+   "class": "product-behaviour",
+   "tests": [],
+   "verdict": "untested",
+   "should_exist": "A live trace that deletes and re-creates one edge through the ledger, then erases its graph and redacts, checking with the journal that every (\"stmt\") id of the edge's key is removed."
+  },
+  {
+   "key": "proofs-d9b:P-D9b-4",
+   "source": "experiment/playbook-completion/proofs-d9b/PROOFS.md",
+   "id": "P-D9b-4",
+   "premise": "readers read ledger globals only, unisolated; one page is one revision",
+   "pin_status": "by inspection; verify()'s table read is outside the model",
+   "class": "product-behaviour",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "ib-HD1401-reader-full-race",
+     "what": "a reader across pages while a whole redaction runs between its pages"
+    },
+    {
+     "kind": "run",
+     "ref": "live-native-rerun-1314",
+     "what": "reader racing a redaction returns a half-redacted view (F-1402)"
+    }
+   ],
+   "verdict": "tested-partial",
+   "should_exist": "verify()'s table read racing a redaction (outside the model) has no test: run verify() while a bounded redaction advances between its reads."
+  },
+  {
+   "key": "proofs-d9b:PF-1",
+   "source": "experiment/playbook-completion/proofs-d9b/PROOFS.md",
+   "id": "PF-1",
+   "premise": "The operator re-runs the redaction after a stop (as in proofs/)",
+   "pin_status": "carried unchanged into proofs-d9b; as proofs-d9:PF-1: named premise; not derived or tested against IRIS scheduling (section 7)",
+   "class": "progress",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "live-native-rerun-1314",
+     "what": "killed_at_random: after >=5 stops the re-invoked run completes"
+    },
+    {
+     "kind": "upstream",
+     "ref": "tests/integration/test_256_ledger_redaction_e2e.py::TestBatchesAndMarker::test_a_paused_redaction_is_honoured_and_resumes",
+     "ran_here": true,
+     "what": "passed here (integration-1-c01): a paused run reports incomplete and the re-run completes"
+    },
+    {
+     "kind": "run",
+     "ref": "fu-r03-marker-held-open",
+     "what": "a re-run is refused target_live at its entry check while a bypass write keeps the target live"
+    },
+    {
+     "kind": "run",
+     "ref": "live-fc1303-bounded-resume",
+     "what": "F-C1303: a bounded re-run rescans from the first record and may never finish"
+    },
+    {
+     "kind": "model",
+     "ref": "proofs-d9-progress-rewind",
+     "what": "progress-only control: the pin's rescanning resume breaks only progress (model only)"
+    }
+   ],
+   "verdict": "tested-partial",
+   "should_exist": "Operator side cannot be tested on the product. Missing: a bounded re-run after each stop finishing in work bounded by the ledger size (fails at the pin, F-C1303), with bypass writers quiet."
+  },
+  {
+   "key": "proofs-d9b:PF-2",
+   "source": "experiment/playbook-completion/proofs-d9b/PROOFS.md",
+   "id": "PF-2",
+   "premise": "The ledger is enabled (re-enabled after a disable) while the run needs it",
+   "pin_status": "carried unchanged into proofs-d9b; as proofs-d9:PF-2: named premise; not derived or tested against IRIS scheduling (section 7)",
+   "class": "progress",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "live-native-rerun-1314",
+     "what": "disabled_mid_run: refused while disabled, changes nothing; after re-enable the same target resumes and completes"
+    },
+    {
+     "kind": "upstream",
+     "ref": "tests/integration/test_256_ledger_redaction_e2e.py::TestUS3Refusals::test_a_disabled_ledger_is_refused_and_nothing_changes",
+     "ran_here": true,
+     "what": "passed here (integration-1-c01): a redaction on a disabled ledger is refused, nothing changes"
+    }
+   ],
+   "verdict": "tested-partial",
+   "should_exist": "Operator premise. Missing: disable and re-enable during an unfinished run with commits, bypass writes and adoption in between, then resume: the run must still finish with its target kept."
+  },
+  {
+   "key": "proofs-d9b:PF-3",
+   "source": "experiment/playbook-completion/proofs-d9b/PROOFS.md",
+   "id": "PF-3",
+   "premise": "Every erasure ends: its commit or rollback releases the head lock",
+   "pin_status": "carried unchanged into proofs-d9b; as proofs-d9:PF-3: named premise; not derived or tested against IRIS scheduling (section 7)",
+   "class": "progress",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "env-contract-r2",
+     "what": "E-LOCK-WAIT and E-STOP validated: a stop rolls back every level and releases every lock; a waiter proceeds"
+    },
+    {
+     "kind": "run",
+     "ref": "corr-lockplan",
+     "what": "at the pin erasers take no head lock; nested in a caller txn, locks stay held until the caller's COMMIT"
+    },
+    {
+     "kind": "run",
+     "ref": "ib-HD1201-open-erasure",
+     "what": "an erasure nested in a caller transaction stays open until the caller ends it (here by rollback)"
+    }
+   ],
+   "verdict": "tested-partial",
+   "should_exist": "Engine part holds. Missing: a probe that erase_graph inside a long-lived caller transaction is refused or bounded, and that a waiting Start proceeds after the eraser commits, rolls back or is terminated."
+  },
+  {
+   "key": "proofs-d9b:PF-4",
+   "source": "experiment/playbook-completion/proofs-d9b/PROOFS.md",
+   "id": "PF-4",
+   "premise": "An enabled step is eventually scheduled (as in proofs/)",
+   "pin_status": "carried unchanged into proofs-d9b; as proofs-d9:PF-4: named premise; not derived or tested against IRIS scheduling (section 7)",
+   "class": "progress",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "env-contract-r2",
+     "what": "E-LOCK-WAIT, E-LOCK-DEFER validated (lock grant and deferral; no fairness or timing clause)"
+    },
+    {
+     "kind": "run",
+     "ref": "val-perf-committer-n3-1",
+     "what": "3 committer processes during 2 redactions: ~370 commits each, longest 36 ms, 0 errors: no starvation seen"
+    }
+   ],
+   "verdict": "tested-partial",
+   "should_exist": "Lock-fairness stress test: more than 2 processes (commits, bypass writers, erasers, batches, Final) contending for minutes, recording each process's longest wait and timeouts."
+  },
+  {
+   "key": "proofs-d9b:PF-5",
+   "source": "experiment/playbook-completion/proofs-d9b/PROOFS.md",
+   "id": "PF-5",
+   "premise": "Every bypass transaction ends (a resume's Start waits for them, G-B)",
+   "pin_status": "carried unchanged into proofs-d9b; as proofs-d9:PF-5: new; not derived or tested against IRIS scheduling; G-B is not at the pin",
+   "class": "progress",
+   "tests": [],
+   "verdict": "untested",
+   "should_exist": "Live probe: a bypass writer holds a caller transaction open while a redaction starts; check whether anything bounds it and that a Start waiting on it (G-B) proceeds once it commits, rolls back or is terminated."
+  },
+  {
+   "key": "proofs-d9b:PF-6",
+   "source": "experiment/playbook-completion/proofs-d9b/PROOFS.md",
+   "id": "PF-6",
+   "premise": "Eventually nothing t.lv selects is live when Final runs (no bypass writer or commit into lv minus rm keeps it live), or the operator erases t again",
+   "pin_status": "carried unchanged into proofs-d9b; as proofs-d9:PF-6: violated live (F-C1307); Final and a resume's Start are refused while t is live",
+   "class": "progress",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "fu-r03-marker-held-open",
+     "what": "F-C1307: a bypass create_node keeps the target live: re-run refused target_live, Final refused; only erasing again clears it"
+    }
+   ],
+   "verdict": "tested-violated",
+   "should_exist": "Not covered: a ledger commit into lv minus rm (BlocksCommit refuses only rm) keeping the target live during a run."
+  },
+  {
+   "key": "proofs-d9b:design",
+   "source": "experiment/playbook-completion/proofs-d9b/PROOFS.md",
+   "id": "design",
+   "premise": "reviewed elements R-1 (no-op records), strengthened G-P, the redaction epoch and reader protocol, plus D-9's guards",
+   "pin_status": "none is at the pin",
+   "class": "design",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "sim-fcs01-minimal",
+     "what": "R-1 absent: a no-op revision keeps tenant metadata"
+    },
+    {
+     "kind": "run",
+     "ref": "ib-HD1401-reader-full-race",
+     "what": "no epoch: a reader accepts a view across a redaction"
+    },
+    {
+     "kind": "run",
+     "ref": "ib-HD1201-open-erasure",
+     "what": "G-L absent: redaction against an open erasure"
+    },
+    {
+     "kind": "run",
+     "ref": "live-f1201-reproduced",
+     "what": "the eraser takes no head lock"
+    }
+   ],
+   "verdict": "tested-violated",
+   "should_exist": ""
+  },
+  {
+   "key": "proofs-d9c:P-D9-1",
+   "source": "experiment/playbook-completion/proofs-d9c/PROOFS.md",
+   "id": "P-D9-1",
+   "premise": "Commits, replays, Start, batches, Final: one atomic head-locked txn each (a stopped one leaves nothing); erasures and bypass writes stay open and may roll back",
+   "pin_status": "carried unchanged into proofs-d9c; as proofs-d9:P-D9-1: P-C01 narrowed (it covered erasure too); IRIS E-NEST, E-LOCK-DEFER, E-STOP",
+   "class": "engine",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "env-contract-r2",
+     "what": "E-NEST, E-LOCK-DEFER, E-STOP validated: 283 cases, 0 outside the contract, 17/17 mutants killed"
+    },
+    {
+     "kind": "run",
+     "ref": "env-ext-r6",
+     "what": "all clauses re-validated on a fresh seed: 516 cases, 0 outside, 42/42 mutants killed"
+    },
+    {
+     "kind": "run",
+     "ref": "corr-lockplan",
+     "what": "commit holds the head lock in its txn; Batch locks at :282 after unlocked opening reads (Start is not one locked step at the pin)"
+    },
+    {
+     "kind": "run",
+     "ref": "trace-conformance-ledger",
+     "what": "journal: one outermost transaction per commit and per redaction batch; Final writes one revision"
+    },
+    {
+     "kind": "run",
+     "ref": "live-native-rerun-1314",
+     "what": "killed_at_random: process stops mid-run leave the L2 invariants intact"
+    },
+    {
+     "kind": "run",
+     "ref": "ib-HD1201-open-erasure",
+     "what": "an erasure stays open across a whole redaction and then rolls back (the non-atomic erasure the model allows)"
+    }
+   ],
+   "verdict": "tested-partial",
+   "should_exist": "Missing: a journal+lock trace showing replay and Final each as one head-locked transaction and a stop inside each leaving nothing; Start is one locked step only under G-L, which the pin lacks."
+  },
+  {
+   "key": "proofs-d9c:P-D9-2",
+   "source": "experiment/playbook-completion/proofs-d9c/PROOFS.md",
+   "id": "P-D9-2",
+   "premise": "A ledger commit waits for a row an open bypass txn wrote; a bypass write waits for a row the open erasure deleted (insert over uncommitted delete: a Freedom)",
+   "pin_status": "carried unchanged into proofs-d9c; as proofs-d9:P-D9-2: new; E-ROWLOCK and E-UNIQUE decide inserted/updated rows; other cases are the contract Freedom, modelled as a wait",
+   "class": "engine",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "env-contract-r2",
+     "what": "E-ROWLOCK (DELETE/UPDATE waits for another open txn's inserted/updated row) and E-UNIQUE (-119 at once) validated on scratch tables"
+    },
+    {
+     "kind": "run",
+     "ref": "env-ext-r6",
+     "what": "re-validated; INSERT of a key another open txn deleted stays a Freedom (only the waiting branch ever observed)"
+    },
+    {
+     "kind": "run",
+     "ref": "live-erase-vs-commit-fk",
+     "what": "product tables: eraser vs a concurrent ledger commit: the eraser's node DELETE fails with FK -124 and rolls back (8/8)"
+    }
+   ],
+   "verdict": "tested-partial",
+   "should_exist": "Live probe on product tables: an open bypass txn writes a row and a ledger commit writes the same row (wait or -119?); a bypass INSERT of a key an open erasure deleted (decide the Freedom: wait or new row)."
+  },
+  {
+   "key": "proofs-d9c:P-D9-3",
+   "source": "experiment/playbook-completion/proofs-d9c/PROOFS.md",
+   "id": "P-D9-3",
+   "premise": "Bypass writers write content rows only, never ledger globals (records, statement index, marker)",
+   "pin_status": "carried unchanged into proofs-d9c; as proofs-d9:P-D9-3: false at the pin (review-3 A-1): restore_snapshot, ImportGlobals, Disable/SetStrict, copy_ledger_history",
+   "class": "product-behaviour",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "followup-writer-census",
+     "what": "corrected census: ledger writers outside the modelled actions (Snapshot.ImportGlobals, Ledger.Disable/SetStrict, copy_ledger_history)"
+    },
+    {
+     "kind": "run",
+     "ref": "corr-closure-scan",
+     "what": "44 ledger write sites: restore_snapshot writes the archive's ^IVG.Ledger outside any modelled action (F-1801)"
+    },
+    {
+     "kind": "run",
+     "ref": "c18-live-ledger-overlay",
+     "what": "F-1801 live: a replacing restore overwrites the ledger head and records; the next commit is refused"
+    },
+    {
+     "kind": "run",
+     "ref": "ib-HD1801-merge-restore",
+     "what": "merge restore writes ^IVG.Ledger and ledger storage node by node: head 2 with records 3,4 left; commits refused"
+    },
+    {
+     "kind": "run",
+     "ref": "fc1306-legacy-ledger-rows",
+     "what": "upgrade copies v4.5.1 ledger_revisions rows into the pin's ledger (ledger_history_copied)"
+    }
+   ],
+   "verdict": "tested-violated"
+  },
+  {
+   "key": "proofs-d9c:P-D9-4",
+   "source": "experiment/playbook-completion/proofs-d9c/PROOFS.md",
+   "id": "P-D9-4",
+   "premise": "An erasure's row deletion and its statement cleanup select the same keys (EraseGraph's SQL and EraseLedgerFor, both by graph)",
+   "pin_status": "carried unchanged into proofs-d9c; as proofs-d9:P-D9-4: the eraser's part of P-C03; EraseNodes/EraseEdges/EraseAll not modelled",
+   "class": "product-behaviour",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "corr-trace-ext",
+     "what": "journal trace incl. EraseEdges and erase_graph on a quiet ledger: 0 alpha contract-step violations"
+    },
+    {
+     "kind": "run",
+     "ref": "trace-conformance-ledger",
+     "what": "EraseNodes(default graph, acme|): the erasure keeps records and adds no statements (0 violations)"
+    },
+    {
+     "kind": "run",
+     "ref": "live-f1201-reproduced",
+     "what": "with a concurrent commit, EraseLedgerFor kills the statement of an edge the row delete never saw (by graph, at a later moment)"
+    },
+    {
+     "kind": "run",
+     "ref": "b-11-live-footprints-2",
+     "what": "unmodelled variant: bulk_delete_adjacency (Eraser.EraseEdges) kills the edge's stmt/tuple in its own transaction"
+    },
+    {
+     "kind": "upstream",
+     "ref": "tests/integration/test_edgescan_ledger_erase.py::test_erasing_a_graph_removes_its_ledger_statements_and_leaves_other_graphs",
+     "ran_here": false,
+     "what": "spec-236 scratch file: skipped/errored here, not decisive"
+    }
+   ],
+   "verdict": "tested-partial",
+   "should_exist": "Per eraser (EraseGraph, EraseNodes, EraseEdges, EraseAll, prefix): a journal test that the statement entries killed are exactly those of the rows deleted, on a quiet graph and with a concurrent commit."
+  },
+  {
+   "key": "proofs-d9c:P-D9-5",
+   "source": "experiment/playbook-completion/proofs-d9c/PROOFS.md",
+   "id": "P-D9-5",
+   "premise": "Record keys are the ghost keys of the rows they describe (graph-blind node records carry the ghost graph); replay alike; verify graph-blind compare outside",
+   "pin_status": "carried unchanged into proofs-d9c; as proofs-d9:P-D9-5: as in proofs/ (modelling device; verify()'s graph-blind comparison, F-1401, is outside the model)",
+   "class": "modelling-restriction",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "ib-HD1303-nopfx-default",
+     "what": "genesis writes node records with graph '' for named-graph nodes: a record does not name the row it describes"
+    },
+    {
+     "kind": "run",
+     "ref": "ib-HD1101-namedonly",
+     "what": "ids only in a named graph: graph-blind node records (F-1105) and orphan default-graph rows; verify diverges"
+    },
+    {
+     "kind": "run",
+     "ref": "live-native-rerun-1314",
+     "what": "F-1401: verify's graph-blind node comparison diverges after a detach delete with named-graph edges"
+    },
+    {
+     "kind": "model",
+     "ref": "core-m3-readers-as-built-F1401",
+     "what": "M3-readers: the pin's verify differs from the governed-identity oracle (model only)"
+    }
+   ],
+   "verdict": "tested-partial",
+   "should_exist": "With the same ids in the default and a named graph: a test that each node record maps to exactly one row (its ghost key) from record plus history, and that replay and verify use that key."
+  },
+  {
+   "key": "proofs-d9c:P-D9b-1",
+   "source": "experiment/playbook-completion/proofs-d9c/PROOFS.md",
+   "id": "P-D9b-1",
+   "premise": "a revision's free text and idempotency key may name the tenant of any entity its changeset addresses; attribution is by those keys, not by content analysis",
+   "pin_status": "carried unchanged from proofs-d9b",
+   "class": "modelling-restriction",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "sim-fcs01-minimal",
+     "what": "a zero-record revision keeps the tenant's message, source, correlation id and key after a complete redaction (F-CS01)"
+    },
+    {
+     "kind": "run",
+     "ref": "fu-r01a-snapshot-copies",
+     "what": "revision text and key of a tenant observed through history() and archives"
+    }
+   ],
+   "verdict": "tested-partial",
+   "should_exist": "Free text naming entities the changeset does not address (content analysis) is not covered: a live SC-001 scan with a message that names another tenant's id would show what the receipt attributes."
+  },
+  {
+   "key": "proofs-d9c:P-D9b-2",
+   "source": "experiment/playbook-completion/proofs-d9c/PROOFS.md",
+   "id": "P-D9b-2",
+   "premise": "idemRedacted is keyed by sha256(key), modelled by the key itself (no collision)",
+   "pin_status": "carried unchanged into proofs-d9c; as proofs-d9b:P-D9b-2: assumed (SHA-256)",
+   "class": "engine",
+   "tests": [],
+   "verdict": "untested",
+   "should_exist": "Read ^IVG.Ledger idemRedacted after a redaction and compare its subscript with sha256 of the retry key (collision resistance itself is a cryptographic assumption no test settles)."
+  },
+  {
+   "key": "proofs-d9c:P-D9b-3",
+   "source": "experiment/playbook-completion/proofs-d9c/PROOFS.md",
+   "id": "P-D9b-3",
+   "premise": "one statement-history key per edge stands for every (\"stmt\") id of that edge; EraseLedgerFor and DropStatements select ids by graph and endpoints",
+   "pin_status": "carried unchanged into proofs-d9c; as proofs-d9b:P-D9b-3: by inspection (Eraser.cls:1117-1144, LedgerRedact.cls:446-471)",
+   "class": "product-behaviour",
+   "tests": [],
+   "verdict": "untested",
+   "should_exist": "A live trace that deletes and re-creates one edge through the ledger, then erases its graph and redacts, checking with the journal that every (\"stmt\") id of the edge's key is removed."
+  },
+  {
+   "key": "proofs-d9c:P-D9b-4",
+   "source": "experiment/playbook-completion/proofs-d9c/PROOFS.md",
+   "id": "P-D9b-4",
+   "premise": "readers read ledger globals only, unisolated; one page is one revision",
+   "pin_status": "carried unchanged into proofs-d9c; as proofs-d9b:P-D9b-4: by inspection; verify()'s table read is outside the model",
+   "class": "product-behaviour",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "ib-HD1401-reader-full-race",
+     "what": "a reader across pages while a whole redaction runs between its pages"
+    },
+    {
+     "kind": "run",
+     "ref": "live-native-rerun-1314",
+     "what": "reader racing a redaction returns a half-redacted view (F-1402)"
+    }
+   ],
+   "verdict": "tested-partial",
+   "should_exist": "verify()'s table read racing a redaction (outside the model) has no test: run verify() while a bounded redaction advances between its reads."
+  },
+  {
+   "key": "proofs-d9c:P-LV",
+   "source": "experiment/playbook-completion/proofs-d9c/PROOFS.md",
+   "id": "P-LV",
+   "premise": "the liveness check sees every row of the target (LiveRows counts every content row its predicate selects)",
+   "pin_status": "false at the pin (F-C1351)",
+   "class": "product-behaviour",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "ws-live-noindex",
+     "what": "rows a %NOINDEX bulk load wrote are not counted by LiveRows; the redaction completes while they exist (F-C1351)"
+    },
+    {
+     "kind": "run",
+     "ref": "fu-r04-temporal-only-live-b",
+     "what": "LiveRows ignores live temporal-only edges (F-C1308)"
+    }
+   ],
+   "verdict": "tested-violated",
+   "should_exist": ""
+  },
+  {
+   "key": "proofs-d9c:PF-1",
+   "source": "experiment/playbook-completion/proofs-d9c/PROOFS.md",
+   "id": "PF-1",
+   "premise": "The operator re-runs the redaction after a stop (as in proofs/)",
+   "pin_status": "carried unchanged into proofs-d9c; as proofs-d9:PF-1: named premise; not derived or tested against IRIS scheduling (section 7)",
+   "class": "progress",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "live-native-rerun-1314",
+     "what": "killed_at_random: after >=5 stops the re-invoked run completes"
+    },
+    {
+     "kind": "upstream",
+     "ref": "tests/integration/test_256_ledger_redaction_e2e.py::TestBatchesAndMarker::test_a_paused_redaction_is_honoured_and_resumes",
+     "ran_here": true,
+     "what": "passed here (integration-1-c01): a paused run reports incomplete and the re-run completes"
+    },
+    {
+     "kind": "run",
+     "ref": "fu-r03-marker-held-open",
+     "what": "a re-run is refused target_live at its entry check while a bypass write keeps the target live"
+    },
+    {
+     "kind": "run",
+     "ref": "live-fc1303-bounded-resume",
+     "what": "F-C1303: a bounded re-run rescans from the first record and may never finish"
+    },
+    {
+     "kind": "model",
+     "ref": "proofs-d9-progress-rewind",
+     "what": "progress-only control: the pin's rescanning resume breaks only progress (model only)"
+    }
+   ],
+   "verdict": "tested-partial",
+   "should_exist": "Operator side cannot be tested on the product. Missing: a bounded re-run after each stop finishing in work bounded by the ledger size (fails at the pin, F-C1303), with bypass writers quiet."
+  },
+  {
+   "key": "proofs-d9c:PF-2",
+   "source": "experiment/playbook-completion/proofs-d9c/PROOFS.md",
+   "id": "PF-2",
+   "premise": "The ledger is enabled (re-enabled after a disable) while the run needs it",
+   "pin_status": "carried unchanged into proofs-d9c; as proofs-d9:PF-2: named premise; not derived or tested against IRIS scheduling (section 7)",
+   "class": "progress",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "live-native-rerun-1314",
+     "what": "disabled_mid_run: refused while disabled, changes nothing; after re-enable the same target resumes and completes"
+    },
+    {
+     "kind": "upstream",
+     "ref": "tests/integration/test_256_ledger_redaction_e2e.py::TestUS3Refusals::test_a_disabled_ledger_is_refused_and_nothing_changes",
+     "ran_here": true,
+     "what": "passed here (integration-1-c01): a redaction on a disabled ledger is refused, nothing changes"
+    }
+   ],
+   "verdict": "tested-partial",
+   "should_exist": "Operator premise. Missing: disable and re-enable during an unfinished run with commits, bypass writes and adoption in between, then resume: the run must still finish with its target kept."
+  },
+  {
+   "key": "proofs-d9c:PF-3",
+   "source": "experiment/playbook-completion/proofs-d9c/PROOFS.md",
+   "id": "PF-3",
+   "premise": "Every erasure ends: its commit or rollback releases the head lock",
+   "pin_status": "carried unchanged into proofs-d9c; as proofs-d9:PF-3: named premise; not derived or tested against IRIS scheduling (section 7)",
+   "class": "progress",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "env-contract-r2",
+     "what": "E-LOCK-WAIT and E-STOP validated: a stop rolls back every level and releases every lock; a waiter proceeds"
+    },
+    {
+     "kind": "run",
+     "ref": "corr-lockplan",
+     "what": "at the pin erasers take no head lock; nested in a caller txn, locks stay held until the caller's COMMIT"
+    },
+    {
+     "kind": "run",
+     "ref": "ib-HD1201-open-erasure",
+     "what": "an erasure nested in a caller transaction stays open until the caller ends it (here by rollback)"
+    }
+   ],
+   "verdict": "tested-partial",
+   "should_exist": "Engine part holds. Missing: a probe that erase_graph inside a long-lived caller transaction is refused or bounded, and that a waiting Start proceeds after the eraser commits, rolls back or is terminated."
+  },
+  {
+   "key": "proofs-d9c:PF-4",
+   "source": "experiment/playbook-completion/proofs-d9c/PROOFS.md",
+   "id": "PF-4",
+   "premise": "An enabled step is eventually scheduled (as in proofs/)",
+   "pin_status": "carried unchanged into proofs-d9c; as proofs-d9:PF-4: named premise; not derived or tested against IRIS scheduling (section 7)",
+   "class": "progress",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "env-contract-r2",
+     "what": "E-LOCK-WAIT, E-LOCK-DEFER validated (lock grant and deferral; no fairness or timing clause)"
+    },
+    {
+     "kind": "run",
+     "ref": "val-perf-committer-n3-1",
+     "what": "3 committer processes during 2 redactions: ~370 commits each, longest 36 ms, 0 errors: no starvation seen"
+    }
+   ],
+   "verdict": "tested-partial",
+   "should_exist": "Lock-fairness stress test: more than 2 processes (commits, bypass writers, erasers, batches, Final) contending for minutes, recording each process's longest wait and timeouts."
+  },
+  {
+   "key": "proofs-d9c:PF-5",
+   "source": "experiment/playbook-completion/proofs-d9c/PROOFS.md",
+   "id": "PF-5",
+   "premise": "Every bypass transaction ends (a resume's Start waits for them, G-B)",
+   "pin_status": "carried unchanged into proofs-d9c; as proofs-d9:PF-5: new; not derived or tested against IRIS scheduling; G-B is not at the pin",
+   "class": "progress",
+   "tests": [],
+   "verdict": "untested",
+   "should_exist": "Live probe: a bypass writer holds a caller transaction open while a redaction starts; check whether anything bounds it and that a Start waiting on it (G-B) proceeds once it commits, rolls back or is terminated."
+  },
+  {
+   "key": "proofs-d9c:PF-6",
+   "source": "experiment/playbook-completion/proofs-d9c/PROOFS.md",
+   "id": "PF-6",
+   "premise": "Eventually nothing t.lv selects is live when Final runs (no bypass writer or commit into lv minus rm keeps it live), or the operator erases t again",
+   "pin_status": "carried unchanged into proofs-d9c; as proofs-d9:PF-6: violated live (F-C1307); Final and a resume's Start are refused while t is live",
+   "class": "progress",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "fu-r03-marker-held-open",
+     "what": "F-C1307: a bypass create_node keeps the target live: re-run refused target_live, Final refused; only erasing again clears it"
+    }
+   ],
+   "verdict": "tested-violated",
+   "should_exist": "Not covered: a ledger commit into lv minus rm (BlocksCommit refuses only rm) keeping the target live during a run."
+  },
+  {
+   "key": "proofs-d9c:design",
+   "source": "experiment/playbook-completion/proofs-d9c/PROOFS.md",
+   "id": "design",
+   "premise": "G-BM (bypass writers honour the marker) with D-9/D-9b's guards",
+   "pin_status": "none is at the pin",
+   "class": "design",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "ws-live-ins-store_node",
+     "what": "a ledger-bypassing writer writes into a marked target unrefused (F-C1350)"
+    },
+    {
+     "kind": "run",
+     "ref": "ws-live-fc1301-delete-reification",
+     "what": "a bypass delete read by the liveness check, then rolled back (F-C1301 live)"
+    },
+    {
+     "kind": "run",
+     "ref": "ib-HD1201-open-erasure",
+     "what": "G-L absent"
+    }
+   ],
+   "verdict": "tested-violated",
+   "should_exist": ""
+  },
+  {
+   "key": "proofs-mech:PM-1",
+   "source": "experiment/playbook-completion/proofs-mech/PROOFS.md",
+   "id": "PM-1",
+   "premise": "M07-L4 fair service: the queue worker is weakly fair (whenever an entry is pending, some later step serves)",
+   "pin_status": "hypothesis of the progress theorem; the pin's node-id service order is refuted under it (F-C0605)",
+   "class": "progress",
+   "tests": [
+    {
+     "kind": "model",
+     "ref": "sem-mc-queue-as-built-r2",
+     "what": "model: the as-built queue order starves an entry"
+    }
+   ],
+   "verdict": "untested",
+   "should_exist": "A steady-enqueue soak through EmbedQueue.ProcessBatch with low-collating ids arriving continuously, asserting every entry is served within a bound.",
+   "anchor": "the worker is weakly fair"
+  },
+  {
+   "key": "proofs-mech:PM-2",
+   "source": "experiment/playbook-completion/proofs-mech/PROOFS.md",
+   "id": "PM-2",
+   "premise": "M07-L4 resumed run: a stopped bounded run is resumed 3 - cursor more times",
+   "pin_status": "hypothesis of the progress theorem; the pin's restarting resume never finishes (F-C1303)",
+   "class": "progress",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "live-fc1303-bounded-resume",
+     "what": "60 bounded calls each re-scan from the first record: re-runs do not progress at the pin"
+    }
+   ],
+   "verdict": "tested-partial",
+   "should_exist": "That an operator resumes enough times is an operator premise; with a persisted cursor a test would count the calls a resumed run needs (none exists at the pin).",
+   "anchor": "the premise is that the run is resumed that many more times"
+  },
+  {
+   "key": "proofs-mech:PM-3",
+   "source": "experiment/playbook-completion/proofs-mech/PROOFS.md",
+   "id": "PM-3",
+   "premise": "mechanism domains kept as in the explorer: two targets, two graphs, two ids, three records, fixed derivations",
+   "pin_status": "modelling restriction",
+   "class": "modelling-restriction",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "sim-main-20261114",
+     "what": "random schedules through the real product with more tenants, ids and records than the mechanism domains"
+    }
+   ],
+   "verdict": "tested-partial",
+   "should_exist": "Larger-domain instances of each mechanism law, or a correspondence argument that the laws are domain-generic for the instances that keep them fixed.",
+   "anchor": "Kept as in the explorer (not generalised)"
+  },
+  {
+   "key": "proofs-pa3:P-A1",
+   "source": "experiment/playbook-completion/proofs-pa3/PROOFS.md",
+   "id": "P-A1",
+   "premise": "One edge per writer transaction; degree readers run outside their writers' transactions.",
+   "pin_status": "carried into proofs-pa3; as proofs-breadth:P-A1: modelling restriction: multi-edge caller transactions and a reader inside its writer's transaction not modelled",
+   "class": "modelling-restriction",
+   "tests": [
+    {
+     "kind": "upstream",
+     "ref": "tests/e2e/test_degree_cache_live.py::test_a_reader_inside_the_writers_own_transaction_is_rolled_back_with_it",
+     "ran_here": false,
+     "what": "gated test: skipped in e2e-1 (gate off) and not in the gated subset that ran"
+    }
+   ],
+   "verdict": "untested",
+   "should_exist": "Live: a caller transaction writes several edges of one source while another process and the writer itself call Degree, then rolls back; compare degc entries with a recount (and run the gated test_degree_cache_live)."
+  },
+  {
+   "key": "proofs-pa3:P-A2",
+   "source": "experiment/playbook-completion/proofs-pa3/PROOFS.md",
+   "id": "P-A2",
+   "premise": "No two open writer transactions on one edge row (the edge row's lock serializes them).",
+   "pin_status": "carried into proofs-pa3; as proofs-breadth:P-A2: row lock on the edge row",
+   "class": "engine",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "env-contract-r2",
+     "what": "E-UNIQUE: INSERT of a key another open txn inserted fails at once (-119); E-ROWLOCK: DELETE/UPDATE of it waits"
+    },
+    {
+     "kind": "run",
+     "ref": "env-ext-r6",
+     "what": "same clauses re-validated; INSERT over another's uncommitted DELETE is a Freedom (both outcomes permitted)"
+    }
+   ],
+   "verdict": "tested-partial",
+   "should_exist": "Two processes with open transactions on the same edge through the product (create_edge/create_edge, delete_edge then create_edge); check -119 or wait and ^KG out; settle the insert-over-uncommitted-delete Freedom."
+  },
+  {
+   "key": "proofs-pa3:P-A3",
+   "source": "experiment/playbook-completion/proofs-pa3/PROOFS.md",
+   "id": "P-A3",
+   "premise": "an eraser of g overlaps no writer of g",
+   "pin_status": "removed as a premise in proofs-pa3 (replaced by proved weaker statements); the overlap it excluded happens at the pin",
+   "class": "product-behaviour",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "live-f1201-reproduced",
+     "what": "a ledger commit into G lands between EraseGraph's row delete and its statement cleanup, 8/8"
+    },
+    {
+     "kind": "run",
+     "ref": "live-erase-vs-commit-fk",
+     "what": "the eraser paused inside its DELETE while a commit into G lands"
+    }
+   ],
+   "verdict": "tested-violated",
+   "should_exist": ""
+  },
+  {
+   "key": "proofs-pa3:P-A4",
+   "source": "experiment/playbook-completion/proofs-pa3/PROOFS.md",
+   "id": "P-A4",
+   "premise": "An adjacency rebuild overlaps no writer, eraser or second rebuild.",
+   "pin_status": "carried into proofs-pa3; as proofs-breadth:P-A4: violated: BeginRebuild takes ^IVG.AdjW#S (Adjacency.cls:814-822), which excludes none of them (F-C0402)",
+   "class": "product-behaviour",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "intent-a-hd0402-two-rebuilds",
+     "what": "with conn A holding BeginRebuild's ^IVG.AdjW#S, conn B's BuildKG completed in 0.075 s: two ^KG rebuilds overlap"
+    },
+    {
+     "kind": "model",
+     "ref": "breadth-a-mc-adj_rebuild_txn-as-built",
+     "what": "model: concurrent rebuilds break ADJ-Q8.10/HD-0402"
+    }
+   ],
+   "verdict": "tested-violated",
+   "should_exist": "Also a rebuild paused after BeginRebuild while create_edge and erase_graph of the same graph run, then a recount: overlap with writers and erasers is not observed live yet."
+  },
+  {
+   "key": "proofs-pa3:P-A5",
+   "source": "experiment/playbook-completion/proofs-pa3/PROOFS.md",
+   "id": "P-A5",
+   "premise": "The whole-graph / all-graph generation step and the rebuild's fill are each one atomic step.",
+   "pin_status": "carried into proofs-pa3; as proofs-breadth:P-A5: reviewed design elements (R04-2, R04-3); no such step exists at the pin",
+   "class": "design",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "intent-a-hd0401-gen-return",
+     "what": "erase_graph/delete_node kill ^KG(gen) instead of stepping it; rewriting two edges brings gen back to 2 (ABA)"
+    }
+   ],
+   "verdict": "tested-violated",
+   "should_exist": "After the remedy (HD-0401 option C, a graph epoch): a reader paused mid-count across erase_graph and BuildKG of its graph never validates a count under a current generation; the rebuild-fill part is untested."
+  },
+  {
+   "key": "proofs-pa3:P-A6",
+   "source": "experiment/playbook-completion/proofs-pa3/PROOFS.md",
+   "id": "P-A6",
+   "premise": "A rollback restores the before-images of the nodes its transaction set or killed; $Increment is not undone.",
+   "pin_status": "carried into proofs-pa3; as proofs-breadth:P-A6: IRIS contract P-0408, P-0401 (journal-confirmed by lane A)",
+   "class": "engine",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "env-contract-r2",
+     "what": "E-GLOBALS, E-PARTIAL, E-INCR hold; E-ROLLBACK-OTHER: a rollback keeps a node another process changed since (physical mutant killed)"
+    },
+    {
+     "kind": "run",
+     "ref": "env-ext-r6",
+     "what": "all clauses re-validated on a fresh seed (516 cases, 0 outside)"
+    },
+    {
+     "kind": "run",
+     "ref": "b-11-live-footprints-1",
+     "what": "journal: ^KG gen/__version and ^NKG $Increment counters are non-transactional in ledger commits"
+    },
+    {
+     "kind": "run",
+     "ref": "b-08-live-fc0801-rollback-nkg",
+     "what": "a rolled-back Cypher edge write leaves ^NKG $Increment counters raised and no edge row"
+    },
+    {
+     "kind": "run",
+     "ref": "breadth-a-live-04-adjacency",
+     "what": "F-0402: an answer cached under an open write's token is served after its rollback (token not undone)"
+    },
+    {
+     "kind": "upstream",
+     "ref": "tests/integration/test_236_token_write_paths.py::test_25_a_rolled_back_bump_is_not_undone",
+     "ran_here": false,
+     "what": "spec-236 scratch file: skipped / errored (licence), not decisive"
+    }
+   ],
+   "verdict": "tested-partial",
+   "should_exist": "Contract case and adjacency probe: an open eraser or rebuild kills ^KG(degc,g,s), another process's Degree stores it, the txn rolls back; the L2 overwrites the store, E-ROLLBACK-OTHER says it survives."
+  },
+  {
+   "key": "proofs-pa3:P-E1",
+   "source": "experiment/playbook-completion/proofs-pa3/PROOFS.md",
+   "id": "P-E1",
+   "premise": "at most one open erasure per graph (module 04) and at most one at a time (module 11)",
+   "pin_status": "reviewed: a consequence of the guards; as built: a restriction of the control models only",
+   "class": "product-behaviour",
+   "tests": [],
+   "verdict": "untested",
+   "should_exist": "Two concurrent EraseGraph calls on one graph and on two graphs, with the journal as oracle, to see whether the pin admits overlapping erasers and what they leave."
+  },
+  {
+   "key": "proofs-pa3:P-E2",
+   "source": "experiment/playbook-completion/proofs-pa3/PROOFS.md",
+   "id": "P-E2",
+   "premise": "an erasure's DELETE of a graph's rows is one step (row locks serialize each insert before or after it)",
+   "pin_status": "not checked against IRIS's scan order",
+   "class": "engine",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "env-contract-r2",
+     "what": "E-ROWLOCK: a DELETE waits for a row another open transaction inserted"
+    },
+    {
+     "kind": "run",
+     "ref": "live-erase-vs-commit-fk",
+     "what": "a commit into G while EraseGraph's DELETE is paused"
+    }
+   ],
+   "verdict": "tested-partial",
+   "should_exist": "An insert of a new row into g while EraseGraph's DELETE scan is in progress (many rows, the insert timed mid-scan), checking the outcome equals an insert before or after the DELETE."
+  },
+  {
+   "key": "proofs-pa3:P-E3",
+   "source": "experiment/playbook-completion/proofs-pa3/PROOFS.md",
+   "id": "P-E3",
+   "premise": "the DELETE's per-row adjacency effect and EraseLedgerFor's per-tuple kill are modelled by graph; readers' probe exclusion over-restricts as built",
+   "pin_status": "modelling choices, stated",
+   "class": "modelling-restriction",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "tr-replay-04",
+     "what": "adjacency traces replayed through module 04's as-built machines (degree, rebuild, token)"
+    }
+   ],
+   "verdict": "tested-partial",
+   "should_exist": "A trace of EraseGraph itself replayed through module 04 and 11's as-built machines with the per-row index effects and per-tuple kills."
+  },
+  {
+   "key": "proofs-pa3:P-L1",
+   "source": "experiment/playbook-completion/proofs-pa3/PROOFS.md",
+   "id": "P-L1",
+   "premise": "A new ledger revision id is fresh: CreateGUID never returns an id an existing revision already carries.",
+   "pin_status": "carried into proofs-pa3; as proofs-breadth:P-L1: assumed (step guard in the L2)",
+   "class": "engine",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "corr-frame-keys-fk",
+     "what": "5 journal traces: ledger_revisions seqs exactly 1..head with idBySeq/revById agreeing, so no revision id repeated there"
+    }
+   ],
+   "verdict": "tested-partial",
+   "should_exist": "Check every RevisionId distinct and revById a bijection over the large histories (perf-sc256's 10,000 revisions, sim-main's 8,170 commits); GUID generation is outside the IRIS contract subset."
+  },
+  {
+   "key": "proofs-pa3:P-L2",
+   "source": "experiment/playbook-completion/proofs-pa3/PROOFS.md",
+   "id": "P-L2",
+   "premise": "Genesis (LedgerGenesis.Capture) records exactly the governed rows present when the ledger is first enabled.",
+   "pin_status": "carried into proofs-pa3; as proofs-breadth:P-L2: assumed",
+   "class": "product-behaviour",
+   "tests": [
+    {
+     "kind": "upstream",
+     "ref": "tests/integration/test_ledger_us01_commit_head.py::TestUS1CommitHead::test_genesis_on_prepopulated_graph_describes_it_and_leaves_view_unchanged",
+     "ran_here": true,
+     "what": "passed (integration-1-c03): genesis over 5 nodes/4 edges has exactly 19 records, one statement per edge, tables unchanged"
+    },
+    {
+     "kind": "run",
+     "ref": "corr-trace-ext",
+     "what": "journal trace: genesis over pre-enable rows replayed faithfully (0 spec-step violations), verify equal at the end"
+    },
+    {
+     "kind": "run",
+     "ref": "ib-HD1101-namedonly",
+     "what": "named-graph-only ids: genesis node records carry graph '' (graph-blind); later ledger ops on them diverge (F-1105)"
+    }
+   ],
+   "verdict": "tested-partial",
+   "should_exist": "Genesis over rows of several named graphs with ids shared across graphs, comparing each record with its row per (graph, id); and genesis while a bypass writer is open (Capture reads dirty, E-VIS)."
+  },
+  {
+   "key": "proofs-pa3:P-L3",
+   "source": "experiment/playbook-completion/proofs-pa3/PROOFS.md",
+   "id": "P-L3",
+   "premise": "Every L2 step is one transaction under the locks the code takes, with IRIS nesting, deferred unlock, stop rollback and dirty reads.",
+   "pin_status": "carried into proofs-pa3; as proofs-breadth:P-L3: IRIS contract, validated differentially (env-contract-r2)",
+   "class": "engine",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "env-contract-r2",
+     "what": "E-NEST, E-LOCK-DEFER, E-STOP, E-VIS validated: 283 cases, 0 outside the contract, 17/17 mutants killed"
+    },
+    {
+     "kind": "run",
+     "ref": "env-ext-r6",
+     "what": "all clauses re-validated on a fresh seed: 516 cases, 0 outside, 42/42 mutants killed"
+    },
+    {
+     "kind": "run",
+     "ref": "b-11-live-footprints-1",
+     "what": "journal: genesis enable and each commit kind write their stores in one outermost transaction; only $Increment counters outside"
+    },
+    {
+     "kind": "run",
+     "ref": "b-11-live-footprints-2",
+     "what": "journal: set_strict and disable are each one transaction on ^IVG.Ledger and ledger_stats"
+    },
+    {
+     "kind": "run",
+     "ref": "corr-lockplan",
+     "what": "18 probes: commit waits for the head lock inside its transaction; a nested commit keeps head/AdjW locks to the caller's COMMIT"
+    },
+    {
+     "kind": "run",
+     "ref": "b-11-live-f1104",
+     "what": "Enable reads the state on an unlocked fast path: 2 first enables at once, 8/8 one answers inconsistent (F-1104; R11-6 absent)"
+    }
+   ],
+   "verdict": "tested-partial",
+   "should_exist": "Journal conformance mapping each modelled L2 step (Enable/re-enable, CommitNested, CallerEnd, BumpRead/BumpSave, GuardProbe) to exactly one product transaction under its locks; Enable is not one locked step at the pin."
+  },
+  {
+   "key": "proofs-pa3:P-L4",
+   "source": "experiment/playbook-completion/proofs-pa3/PROOFS.md",
+   "id": "P-L4",
+   "premise": "Disable waits while a nested commit holds the ledger head lock.",
+   "pin_status": "carried into proofs-pa3; as proofs-breadth:P-L4: violated: Disable takes no head lock (Ledger.cls:331-358)",
+   "class": "product-behaviour",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "corr-lockplan",
+     "what": "probe head-disable: with ^IVG.Ledger('head') held exclusively by the probe, Disable finished in 0.001 s (state disabled)"
+    },
+    {
+     "kind": "run",
+     "ref": "ib-HD1102-txn-rollback",
+     "what": "disable()/set_strict() inside an open caller transaction accepted on both topologies; other processes dirty-read 'disabled'"
+    }
+   ],
+   "verdict": "tested-violated"
+  },
+  {
+   "key": "proofs-pa3:P-L5",
+   "source": "experiment/playbook-completion/proofs-pa3/PROOFS.md",
+   "id": "P-L5",
+   "premise": "A governed write waits for the row locks of an open nested ledger commit.",
+   "pin_status": "carried into proofs-pa3; as proofs-breadth:P-L5: IRIS row locks (not checked here)",
+   "class": "engine",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "env-contract-r2",
+     "what": "E-ROWLOCK: DELETE/UPDATE waits for a row another open txn inserted/updated; E-UNIQUE: duplicate INSERT fails at once (-119)"
+    },
+    {
+     "kind": "run",
+     "ref": "env-ext-r6",
+     "what": "E-ROWLOCK/E-UNIQUE re-validated; an INSERT over another's uncommitted DELETE stays a contract Freedom"
+    },
+    {
+     "kind": "run",
+     "ref": "b-11-live-f1102-locktimeout",
+     "what": "a commit nested in A's caller transaction held the stats row lock; B's Count blocked 10 s and failed (row lock to caller end)"
+    }
+   ],
+   "verdict": "tested-partial",
+   "should_exist": "A holds a ledger commit nested in an open caller transaction; B makes governed engine writes on the same rows (create_node same id, set_property, delete_edge); record wait or -119 and outcomes after A ends."
+  },
+  {
+   "key": "proofs-pa3:P-L6",
+   "source": "experiment/playbook-completion/proofs-pa3/PROOFS.md",
+   "id": "P-L6",
+   "premise": "Strict mode covers the engine's governed writers, and nothing else writes the governed content outside the ledger.",
+   "pin_status": "carried into proofs-pa3; as proofs-breadth:P-L6: violated: writer census (25+ undeclared writer methods), GraphQL mutations (F-1108), server writers",
+   "class": "product-behaviour",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "b-11-live-footprints-2",
+     "what": "F-1108: strict on, bulk_delete_adjacency deleted a recorded edge through EraseEdges; verify diverges"
+    },
+    {
+     "kind": "run",
+     "ref": "ib-HD1103-bulk-delete-adjacency",
+     "what": "strict on: bulk_delete_adjacency accepted and deleted the edge row; verify reports unrecorded_writes"
+    },
+    {
+     "kind": "run",
+     "ref": "ib-HD1103-guard-ttl",
+     "what": "strict on: a raw SQL INSERT was written; another engine's cached guard let create_node write within the TTL"
+    },
+    {
+     "kind": "run",
+     "ref": "writer-census",
+     "what": "source census: 25 writer methods of the content tables outside every write plan, none consulting the marker"
+    },
+    {
+     "kind": "run",
+     "ref": "followup-writer-census",
+     "what": "corrected census: 46 undeclared writer methods, incl. ledger writers (Snapshot.ImportGlobals, Disable/SetStrict)"
+    },
+    {
+     "kind": "upstream",
+     "ref": "tests/integration/test_ledger_us09_verify.py::TestUS9Verify::test_legacy_and_raw_sql_writes_are_unrecorded",
+     "ran_here": true,
+     "what": "passed (integration-1-c03, mp-existing-1..3): raw SQL and legacy writes land and verify reports them unrecorded"
+    }
+   ],
+   "verdict": "tested-violated"
+  },
+  {
    "key": "proofs:P-C01",
    "source": "experiment/playbook-completion/proofs/PROOFS.md",
    "id": "P-C01",
@@ -5770,6 +7022,37 @@
     }
    ],
    "not_covered": "Inserts of new rows overlapping an eraser of the same graph; the breadth L2 models nothing of the overlap."
+  },
+  {
+   "id": "D-14",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "ws-live-ins-store_node",
+     "what": "M-01/M-03 departure live: a bypass writer writes into a marked target"
+    },
+    {
+     "kind": "run",
+     "ref": "fu-r03-marker-held-open",
+     "what": "M-03 marker not binding live"
+    },
+    {
+     "kind": "run",
+     "ref": "live-fc1303-bounded-resume",
+     "what": "M07-L4 resume departs live"
+    },
+    {
+     "kind": "run",
+     "ref": "ib-HD1401-reader-full-race",
+     "what": "M-13 read epoch absent live"
+    },
+    {
+     "kind": "model",
+     "ref": "sem-mc-queue-as-built-r2",
+     "what": "explorer checks of the mechanisms (sem-mc-*) alongside"
+    }
+   ],
+   "not_covered": "No test links the code to the mechanism instances (D-2/D-3); mechanisms are not composed; the fixed small domains; M07-L4's fairness premise; laws the pin keeps are not tested on the product beyond the findings' runs."
   }
  ],
  "detection": {
@@ -5798,29 +7081,29 @@
    "temporal-structural-cursor": "F-C0502"
   },
   "counts": {
-   "findings": 257,
-   "reproduced": 246,
+   "findings": 310,
+   "reproduced": 296,
    "detected": 4,
-   "not_detected": 242,
+   "not_detected": 292,
    "not_detected_by_severity": {
-    "S1": 39,
-    "S2": 99,
-    "S3": 78,
-    "S4": 26
+    "S1": 43,
+    "S2": 113,
+    "S3": 93,
+    "S4": 43
    },
    "not_detected_by_disposition": {
-    "confirmed-source": 45,
-    "reproduced-live": 177,
-    "reproduced-model": 8,
+    "confirmed-source": 56,
+    "reproduced-live": 217,
+    "reproduced-model": 7,
     "reproduced-test": 12
    },
-   "intent_undecided_or_blocked": 7,
+   "intent_undecided_or_blocked": 8,
    "cited_test_relations": {
     "context": 2,
     "detects": 5,
     "enshrines": 7,
-    "is-defect": 3,
-    "misses": 9
+    "is-defect": 5,
+    "misses": 11
    }
   },
   "detected": [
@@ -5864,11 +7147,15 @@
    "F-C0702",
    "F-C1201",
    "F-C1203",
+   "F-C1250",
    "F-C1301",
    "F-C1306",
    "F-C1308",
+   "F-C1350",
+   "F-C1351",
    "F-C1803",
-   "F-C1804"
+   "F-C1804",
+   "F-C1850"
   ],
   "findings": {
    "F-0101": {
@@ -6184,7 +7471,7 @@
     "cited_upstream_tests": {}
    },
    "F-0601": {
-    "disposition": "reproduced-test",
+    "disposition": "reproduced-live",
     "severity": "S2",
     "detected_by_product_suite": false,
     "cited_upstream_tests": {}
@@ -6833,7 +8120,7 @@
     "cited_upstream_tests": {}
    },
    "F-1506": {
-    "disposition": "confirmed-source",
+    "disposition": "reproduced-test",
     "severity": "S4",
     "detected_by_product_suite": false,
     "cited_upstream_tests": {}
@@ -7086,7 +8373,28 @@
     "detected_by_product_suite": false,
     "cited_upstream_tests": {}
    },
+   "F-C0090": {
+    "disposition": "confirmed-source",
+    "severity": "S4",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {
+     "tests/unit/test_coverage_boost.py": "is-defect",
+     "tests/unit/test_engine_deep.py": "is-defect"
+    }
+   },
    "F-C0101": {
+    "disposition": "reproduced-live",
+    "severity": "S2",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C0150": {
+    "disposition": "reproduced-live",
+    "severity": "S2",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C0151": {
     "disposition": "reproduced-live",
     "severity": "S2",
     "detected_by_product_suite": false,
@@ -7101,6 +8409,54 @@
    "F-C0302": {
     "disposition": "confirmed-source",
     "severity": "S4",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C0330": {
+    "disposition": "reproduced-live",
+    "severity": "S2",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C0340": {
+    "disposition": "reproduced-live",
+    "severity": "S3",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C0341": {
+    "disposition": "reproduced-live",
+    "severity": "S2",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C0347": {
+    "disposition": "intent-undecided",
+    "severity": "S3",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C0348": {
+    "disposition": "reproduced-live",
+    "severity": "S2",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C0349": {
+    "disposition": "reproduced-live",
+    "severity": "S2",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C0350": {
+    "disposition": "reproduced-live",
+    "severity": "S2",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C0351": {
+    "disposition": "reproduced-live",
+    "severity": "S3",
     "detected_by_product_suite": false,
     "cited_upstream_tests": {}
    },
@@ -7119,6 +8475,24 @@
    "F-C0403": {
     "disposition": "not-reproduced",
     "severity": "S4",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C0415": {
+    "disposition": "reproduced-live",
+    "severity": "S4",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C0440": {
+    "disposition": "confirmed-source",
+    "severity": "S4",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C0450": {
+    "disposition": "reproduced-live",
+    "severity": "S2",
     "detected_by_product_suite": false,
     "cited_upstream_tests": {}
    },
@@ -7200,6 +8574,36 @@
      ]
     }
    },
+   "F-C0615": {
+    "disposition": "reproduced-live",
+    "severity": "S4",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C0640": {
+    "disposition": "confirmed-source",
+    "severity": "S4",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C0642": {
+    "disposition": "reproduced-live",
+    "severity": "S3",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C0670": {
+    "disposition": "reproduced-live",
+    "severity": "S3",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C0690": {
+    "disposition": "confirmed-source",
+    "severity": "S4",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
    "F-C0701": {
     "disposition": "reproduced-live",
     "severity": "S2",
@@ -7215,6 +8619,32 @@
    "F-C0703": {
     "disposition": "confirmed-source",
     "severity": "S3",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C0715": {
+    "disposition": "reproduced-live",
+    "severity": "S2",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {
+     "tests/e2e/test_463_search_id_escaping_e2e.py": "misses"
+    }
+   },
+   "F-C0716": {
+    "disposition": "reproduced-live",
+    "severity": "S4",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C0717": {
+    "disposition": "reproduced-live",
+    "severity": "S4",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C0748": {
+    "disposition": "reproduced-live",
+    "severity": "S2",
     "detected_by_product_suite": false,
     "cited_upstream_tests": {}
    },
@@ -7236,9 +8666,45 @@
     "detected_by_product_suite": false,
     "cited_upstream_tests": {}
    },
+   "F-C0840": {
+    "disposition": "confirmed-source",
+    "severity": "S3",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C0841": {
+    "disposition": "reproduced-live",
+    "severity": "S4",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C0848": {
+    "disposition": "reproduced-live",
+    "severity": "S2",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C0849": {
+    "disposition": "reproduced-live",
+    "severity": "S3",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
    "F-C0901": {
     "disposition": "reproduced-live",
     "severity": "S2",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C0940": {
+    "disposition": "confirmed-source",
+    "severity": "S3",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C0948": {
+    "disposition": "confirmed-source",
+    "severity": "S4",
     "detected_by_product_suite": false,
     "cited_upstream_tests": {}
    },
@@ -7269,6 +8735,24 @@
       "tests.e2e.test_communities_e2e.TestLeidenCommunities::test_leiden_karate_club_ari"
      ]
     }
+   },
+   "F-C1018": {
+    "disposition": "reproduced-live",
+    "severity": "S4",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C1040": {
+    "disposition": "confirmed-source",
+    "severity": "S4",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C1041": {
+    "disposition": "reproduced-live",
+    "severity": "S3",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
    },
    "F-C1101": {
     "disposition": "reproduced-live",
@@ -7312,6 +8796,12 @@
     "detected_by_product_suite": false,
     "cited_upstream_tests": {}
    },
+   "F-C1150": {
+    "disposition": "reproduced-live",
+    "severity": "S2",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
    "F-C1201": {
     "disposition": "reproduced-live",
     "severity": "S1",
@@ -7336,8 +8826,20 @@
     "detected_by_product_suite": false,
     "cited_upstream_tests": {}
    },
+   "F-C1240": {
+    "disposition": "refuted",
+    "severity": "S4",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C1250": {
+    "disposition": "reproduced-live",
+    "severity": "S1",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
    "F-C1301": {
-    "disposition": "reproduced-model",
+    "disposition": "reproduced-live",
     "severity": "S1",
     "detected_by_product_suite": false,
     "cited_upstream_tests": {}
@@ -7394,6 +8896,18 @@
     "detected_by_product_suite": false,
     "cited_upstream_tests": {}
    },
+   "F-C1350": {
+    "disposition": "reproduced-live",
+    "severity": "S1",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C1351": {
+    "disposition": "reproduced-live",
+    "severity": "S1",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
    "F-C1501": {
     "disposition": "confirmed-source",
     "severity": "S3",
@@ -7401,6 +8915,30 @@
     "cited_upstream_tests": {}
    },
    "F-C1502": {
+    "disposition": "reproduced-live",
+    "severity": "S3",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C1540": {
+    "disposition": "confirmed-source",
+    "severity": "S3",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C1547": {
+    "disposition": "reproduced-live",
+    "severity": "S2",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C1548": {
+    "disposition": "reproduced-live",
+    "severity": "S3",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C1549": {
     "disposition": "reproduced-live",
     "severity": "S3",
     "detected_by_product_suite": false,
@@ -7427,6 +8965,26 @@
    "F-C1604": {
     "disposition": "reproduced-live",
     "severity": "S2",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C1640": {
+    "disposition": "reproduced-live",
+    "severity": "S4",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C1641": {
+    "disposition": "reproduced-live",
+    "severity": "S3",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {
+     "tests/e2e/test_gql_node_queries.py": "misses"
+    }
+   },
+   "F-C1642": {
+    "disposition": "reproduced-live",
+    "severity": "S4",
     "detected_by_product_suite": false,
     "cited_upstream_tests": {}
    },
@@ -7501,6 +9059,48 @@
      ]
     }
    },
+   "F-C1715": {
+    "disposition": "reproduced-live",
+    "severity": "S4",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C1716": {
+    "disposition": "reproduced-live",
+    "severity": "S3",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C1720": {
+    "disposition": "duplicate",
+    "severity": "S2",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C1740": {
+    "disposition": "confirmed-source",
+    "severity": "S4",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C1741": {
+    "disposition": "confirmed-source",
+    "severity": "S3",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C1742": {
+    "disposition": "confirmed-source",
+    "severity": "S4",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C1743": {
+    "disposition": "reproduced-live",
+    "severity": "S2",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
    "F-C1801": {
     "disposition": "reproduced-live",
     "severity": "S2",
@@ -7522,6 +9122,18 @@
     "cited_upstream_tests": {}
    },
    "F-C1804": {
+    "disposition": "reproduced-live",
+    "severity": "S1",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C1848": {
+    "disposition": "reproduced-live",
+    "severity": "S3",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C1850": {
     "disposition": "reproduced-live",
     "severity": "S1",
     "detected_by_product_suite": false,

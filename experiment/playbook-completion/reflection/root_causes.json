@@ -12,10 +12,10 @@
    "experiment/playbook-completion/findings/audit/*.json"
   ],
   "rule": "one entry per finding id; an id recorded in several audit files takes the last file in sorted order (as matrix/build_matrix.py)",
-  "unique_ids": 257,
+  "unique_ids": 310,
   "original": 197,
-  "new": 60,
-  "audit_records": 260,
+  "new": 113,
+  "audit_records": 313,
   "duplicate_records": {
    "F-0908": [
     "09",
@@ -32,27 +32,28 @@
   },
   "dispositions": {
    "blocked-access": 2,
-   "confirmed-source": 45,
-   "intent-undecided": 5,
+   "confirmed-source": 56,
+   "duplicate": 1,
+   "intent-undecided": 6,
    "not-reproduced": 3,
-   "refuted": 1,
-   "reproduced-live": 177,
-   "reproduced-model": 8,
+   "refuted": 2,
+   "reproduced-live": 217,
+   "reproduced-model": 7,
    "reproduced-test": 16
   }
  },
  "axioms_source": "experiment/playbook-uplift/ontology/00-system.md (SYS-I1..SYS-I10, universal axioms U1..U10)",
  "semantics_xref": {
-  "checked_utc": "2026-11-14T11:51:47Z",
   "paths": {
    "axioms": "experiment/playbook-completion/semantics/axioms.json",
    "mechanisms": "experiment/playbook-completion/semantics/mechanisms.json"
   },
   "present": {
-   "axioms": false,
-   "mechanisms": false
+   "axioms": true,
+   "mechanisms": true
   },
-  "status": "pending: the semantics lane's axioms.json / mechanisms.json did not exist when this map was built; each root cause's semantics_xref is left empty for the orchestrator to fill once they exist"
+  "classes_source": "experiment/playbook-completion/semantics/src/finding_classes.json (+ axioms.json violating_findings)",
+  "status": "final ids: each root cause names the axioms (AX-NN) it violates and the mechanism (M-NN) its remedy needs; member_classes counts the semantics lane's own classes of its members"
  },
  "root_causes": [
   {
@@ -66,16 +67,16 @@
     "other": "SYS-D3/SYS-D4 (each datum belongs to one graph; a call that names no graph uses the default graph); CONTEXT.md:38-43 (an all-graphs read is the union of each graph's own answer)"
    },
    "semantics_xref": {
-    "axioms": [],
-    "mechanisms": []
-   },
-   "tentative_xref_from_drafts": {
     "axioms": [
      "AX-02"
     ],
     "mechanisms": [
      "M-09"
-    ]
+    ],
+    "member_classes": {
+     "AX-02": 22
+    },
+    "members_agreeing": 22
    },
    "primary": [
     "F-0106",
@@ -97,7 +98,9 @@
     "F-1507",
     "F-1603",
     "F-1604",
-    "F-1701"
+    "F-1701",
+    "F-C1041",
+    "F-C1547"
    ],
    "secondary": [
     "F-0209",
@@ -105,7 +108,10 @@
     "F-0705",
     "F-0802",
     "F-0815",
-    "F-1105"
+    "F-1105",
+    "F-C0340",
+    "F-C1642",
+    "F-C1742"
    ],
    "conditional": [
     "F-1001"
@@ -113,8 +119,8 @@
    "highest_severity": "S1",
    "severity_counts": {
     "S1": 12,
-    "S2": 6,
-    "S3": 2
+    "S2": 7,
+    "S3": 3
    },
    "modules": [
     "01",
@@ -140,17 +146,21 @@
     "other": "SYS-D3 (each piece of data belongs to one graph); ADR-0013/plan.md:9-10 (node records are graph-blind by design)"
    },
    "semantics_xref": {
-    "axioms": [],
-    "mechanisms": []
-   },
-   "tentative_xref_from_drafts": {
     "axioms": [
-     "AX-02"
+     "AX-02",
+     "AX-01"
     ],
     "mechanisms": [
      "M-09",
      "M-12"
-    ]
+    ],
+    "member_classes": {
+     "AX-02": 8,
+     "AX-07": 1,
+     "AX-10": 2,
+     "AX-12": 2
+    },
+    "members_agreeing": 8
    },
    "primary": [
     "F-0609",
@@ -165,7 +175,8 @@
    "secondary": [
     "F-0606",
     "F-0611",
-    "F-0707"
+    "F-0707",
+    "F-C1547"
    ],
    "conditional": [],
    "highest_severity": "S1",
@@ -195,16 +206,21 @@
     "other": "SYS-D26 (erasure removes content from every store); ADR-0004; spec 256 US1/SC-001 and FR-008 (the receipt names what it does not reach)"
    },
    "semantics_xref": {
-    "axioms": [],
-    "mechanisms": []
-   },
-   "tentative_xref_from_drafts": {
     "axioms": [
      "AX-10"
     ],
     "mechanisms": [
-     "M-05"
-    ]
+     "M-05",
+     "M-06"
+    ],
+    "member_classes": {
+     "AX-04": 1,
+     "AX-06": 1,
+     "AX-09": 1,
+     "AX-10": 11,
+     "AX-12": 1
+    },
+    "members_agreeing": 11
    },
    "primary": [
     "F-0606",
@@ -216,6 +232,7 @@
     "F-C1306",
     "F-C1308",
     "F-C1309",
+    "F-C1548",
     "F-C1804",
     "F-CS01"
    ],
@@ -224,20 +241,26 @@
     "F-1305",
     "F-1502",
     "F-1803",
-    "F-C1502"
+    "F-C0340",
+    "F-C0840",
+    "F-C1250",
+    "F-C1351",
+    "F-C1502",
+    "F-C1850"
    ],
    "conditional": [],
    "highest_severity": "S1",
    "severity_counts": {
     "S1": 6,
     "S2": 3,
-    "S3": 2
+    "S3": 3
    },
    "modules": [
     "06",
     "07",
     "12",
     "13",
+    "15",
     "18"
    ],
    "remedy": "Declare one store inventory (each store and field with its owning graph/tenant key and its erase, redact, export and liveness hooks) and generate erasure, LiveRows/Matches, the snapshot plan and the receipt's out_of_reach list from it; check mechanically that every writer's target store is in the inventory."
@@ -254,17 +277,19 @@
     "other": "LED-B4.14.4 (only the head-lock holder changes the statement maps); RED-B1.1 (never tombstone live content); premises P-1311, P-C01, P-A3 (false at the pin)"
    },
    "semantics_xref": {
-    "axioms": [],
-    "mechanisms": []
-   },
-   "tentative_xref_from_drafts": {
     "axioms": [
-     "AX-11",
-     "AX-01"
+     "AX-11"
     ],
     "mechanisms": [
      "M-03"
-    ]
+    ],
+    "member_classes": {
+     "AX-01": 1,
+     "AX-08": 1,
+     "AX-11": 10,
+     "AX-12": 1
+    },
+    "members_agreeing": 10
    },
    "primary": [
     "F-1103",
@@ -279,7 +304,9 @@
     "F-C1302"
    ],
    "secondary": [
-    "F-C1307"
+    "F-C1307",
+    "F-C1350",
+    "F-C1351"
    ],
    "conditional": [],
    "highest_severity": "S1",
@@ -306,17 +333,20 @@
     "other": "playbook \u00a71 principle 3 (concurrency control lives in the database; lock plans are proved per handler)"
    },
    "semantics_xref": {
-    "axioms": [],
-    "mechanisms": []
-   },
-   "tentative_xref_from_drafts": {
     "axioms": [
-     "AX-11",
-     "AX-01"
+     "AX-11"
     ],
     "mechanisms": [
-     "M-03"
-    ]
+     "M-03",
+     "M-07"
+    ],
+    "member_classes": {
+     "AX-04": 1,
+     "AX-08": 1,
+     "AX-11": 9,
+     "AX-12": 1
+    },
+    "members_agreeing": 9
    },
    "primary": [
     "F-0207",
@@ -324,8 +354,10 @@
     "F-0905",
     "F-1102",
     "F-1807",
+    "F-C0348",
     "F-C0402",
     "F-C0601",
+    "F-C0670",
     "F-C1101"
    ],
    "secondary": [
@@ -337,11 +369,12 @@
    ],
    "highest_severity": "S2",
    "severity_counts": {
-    "S2": 3,
-    "S3": 5
+    "S2": 4,
+    "S3": 6
    },
    "modules": [
     "02",
+    "03",
     "04",
     "06",
     "07",
@@ -362,16 +395,16 @@
     "other": "CONTEXT.md:109-120 (graph-version token); ADR-0012; AlgoCache.cls:5-7 ('never wrongly fresh')"
    },
    "semantics_xref": {
-    "axioms": [],
-    "mechanisms": []
-   },
-   "tentative_xref_from_drafts": {
     "axioms": [
      "AX-08"
     ],
     "mechanisms": [
      "M-04"
-    ]
+    ],
+    "member_classes": {
+     "AX-08": 11
+    },
+    "members_agreeing": 11
    },
    "primary": [
     "F-0208",
@@ -421,16 +454,16 @@
     "other": "HD-1401 (a reader returns a consistent view or the documented in-progress result); HD-1802 (a consistent snapshot needs quiet writers or an epoch); IRIS contract E-VIS"
    },
    "semantics_xref": {
-    "axioms": [],
-    "mechanisms": []
-   },
-   "tentative_xref_from_drafts": {
     "axioms": [
      "AX-12"
     ],
     "mechanisms": [
      "M-13"
-    ]
+    ],
+    "member_classes": {
+     "AX-12": 2
+    },
+    "members_agreeing": 2
    },
    "primary": [
     "F-1402",
@@ -461,17 +494,23 @@
     "other": "spec 213 FR-047; premises P-C02 and P-L6 (false at the pin); HD-1103 (strict mode is client-side)"
    },
    "semantics_xref": {
-    "axioms": [],
-    "mechanisms": []
-   },
-   "tentative_xref_from_drafts": {
     "axioms": [
-     "AX-01",
-     "AX-07"
+     "AX-07",
+     "AX-01"
     ],
     "mechanisms": [
      "M-01"
-    ]
+    ],
+    "member_classes": {
+     "AX-01": 1,
+     "AX-02": 1,
+     "AX-05": 1,
+     "AX-07": 8,
+     "AX-08": 2,
+     "AX-11": 1,
+     "AX-14": 1
+    },
+    "members_agreeing": 9
    },
    "primary": [
     "F-0301",
@@ -481,21 +520,28 @@
     "F-0504",
     "F-0801",
     "F-1108",
-    "F-C1307"
+    "F-C1150",
+    "F-C1307",
+    "F-C1350"
    ],
    "secondary": [
     "F-0404",
     "F-0506",
     "F-1306",
+    "F-C0150",
+    "F-C0151",
+    "F-C0340",
+    "F-C0450",
     "F-C1108",
     "F-C1301"
    ],
    "conditional": [
     "F-0503"
    ],
-   "highest_severity": "S2",
+   "highest_severity": "S1",
    "severity_counts": {
-    "S2": 6,
+    "S1": 1,
+    "S2": 7,
     "S3": 2
    },
    "modules": [
@@ -518,16 +564,17 @@
     "other": "spec 213 ledger-api.md:26 (a replay returns the original outcome); HD-1305, HD-1603, HD-1702"
    },
    "semantics_xref": {
-    "axioms": [],
-    "mechanisms": []
-   },
-   "tentative_xref_from_drafts": {
     "axioms": [
      "AX-06"
     ],
     "mechanisms": [
      "M-02"
-    ]
+    ],
+    "member_classes": {
+     "AX-06": 5,
+     "AX-10": 1
+    },
+    "members_agreeing": 5
    },
    "primary": [
     "F-1101",
@@ -564,17 +611,19 @@
     "other": "USER_GUIDE.md:238-241 (each bulk write is a transaction); Neo4j commit-route and Bolt transaction semantics (P-1612)"
    },
    "semantics_xref": {
-    "axioms": [],
-    "mechanisms": []
-   },
-   "tentative_xref_from_drafts": {
     "axioms": [
      "AX-04",
      "AX-03"
     ],
     "mechanisms": [
      "M-10"
-    ]
+    ],
+    "member_classes": {
+     "AX-03": 6,
+     "AX-04": 7,
+     "AX-12": 1
+    },
+    "members_agreeing": 12
    },
    "primary": [
     "F-0305",
@@ -583,7 +632,10 @@
     "F-1511",
     "F-1609",
     "F-1610",
+    "F-C0330",
+    "F-C0415",
     "F-C0501",
+    "F-C0748",
     "F-C1501",
     "F-C1502"
    ],
@@ -595,17 +647,20 @@
     "F-1601",
     "F-1702",
     "F-C0301",
+    "F-C0615",
     "F-C0702",
     "F-C1101"
    ],
    "conditional": [],
    "highest_severity": "S2",
    "severity_counts": {
-    "S2": 7,
-    "S3": 2
+    "S2": 9,
+    "S3": 2,
+    "S4": 1
    },
    "modules": [
     "03",
+    "04",
     "05",
     "06",
     "07",
@@ -625,16 +680,17 @@
     "other": "CHANGELOG 4.6.4 and _write_txn.py:1-30 (an IVG write nested in a caller's transaction undoes only its own level); IRIS contract E-PARTIAL"
    },
    "semantics_xref": {
-    "axioms": [],
-    "mechanisms": []
-   },
-   "tentative_xref_from_drafts": {
     "axioms": [
-     "AX-04"
+     "AX-03"
     ],
     "mechanisms": [
      "M-10"
-    ]
+    ],
+    "member_classes": {
+     "AX-03": 2,
+     "AX-04": 2
+    },
+    "members_agreeing": 2
    },
    "primary": [
     "F-0409",
@@ -661,27 +717,35 @@
     "other": "playbook \u00a71 principle 2 (model the environment's freedom; state each narrower premise and test it); SYS-P1..SYS-P4 are stated premises"
    },
    "semantics_xref": {
-    "axioms": [],
-    "mechanisms": []
-   },
-   "tentative_xref_from_drafts": {
     "axioms": [
      "AX-09"
     ],
     "mechanisms": [
      "M-08"
-    ]
+    ],
+    "member_classes": {
+     "AX-01": 1,
+     "AX-03": 1,
+     "AX-12": 2,
+     "DOC": 2,
+     "ENV": 8,
+     "FUNC": 1
+    },
+    "members_agreeing": 0
    },
    "primary": [
     "F-1012",
     "F-1504",
     "F-C0502",
+    "F-C0615",
     "F-C1001",
     "F-C1102",
     "F-C1110",
     "F-C1704",
     "F-C1705",
-    "F-C1706"
+    "F-C1706",
+    "F-C1716",
+    "F-C1743"
    ],
    "secondary": [
     "F-0108",
@@ -693,12 +757,13 @@
    ],
    "highest_severity": "S2",
    "severity_counts": {
-    "S2": 3,
-    "S3": 4,
-    "S4": 2
+    "S2": 4,
+    "S3": 5,
+    "S4": 3
    },
    "modules": [
     "05",
+    "06",
     "10",
     "11",
     "15",
@@ -717,16 +782,17 @@
     "other": "ADR-0016 (the schema chosen at install is followed by everything); spec 262 FR-001/FR-006a/FR-007"
    },
    "semantics_xref": {
-    "axioms": [],
-    "mechanisms": []
-   },
-   "tentative_xref_from_drafts": {
     "axioms": [
      "AX-09"
     ],
     "mechanisms": [
      "M-08"
-    ]
+    ],
+    "member_classes": {
+     "AX-09": 7,
+     "DOC": 1
+    },
+    "members_agreeing": 7
    },
    "primary": [
     "F-0103",
@@ -734,7 +800,8 @@
     "F-0107",
     "F-0109",
     "F-0309",
-    "F-1605"
+    "F-1605",
+    "F-C0690"
    ],
    "secondary": [
     "F-0711",
@@ -747,11 +814,13 @@
    "highest_severity": "S2",
    "severity_counts": {
     "S2": 2,
-    "S3": 4
+    "S3": 4,
+    "S4": 1
    },
    "modules": [
     "01",
     "03",
+    "06",
     "16"
    ],
    "remedy": "Derive every SQL name through one qualifier from the deploy record (engine._ivg_schema); refuse a namespace with no record; retire or regenerate the legacy SQL files; run the suites on a non-default-schema namespace."
@@ -767,14 +836,20 @@
     "other": "CHANGELOG 4.6.0 rule 'a failed read raises'; 4.7.0 row 14 (every bulk writer raises for a refused row); 4.6.0 R265 (no silent empty answer)"
    },
    "semantics_xref": {
-    "axioms": [],
-    "mechanisms": []
-   },
-   "tentative_xref_from_drafts": {
     "axioms": [
      "AX-12"
     ],
-    "mechanisms": []
+    "mechanisms": [
+     "M-10"
+    ],
+    "member_classes": {
+     "AX-02": 1,
+     "AX-03": 6,
+     "AX-07": 1,
+     "AX-09": 1,
+     "AX-12": 10
+    },
+    "members_agreeing": 10
    },
    "primary": [
     "F-0101",
@@ -790,6 +865,8 @@
     "F-1509",
     "F-1611",
     "F-1615",
+    "F-C0940",
+    "F-C1640",
     "F-C1802"
    ],
    "secondary": [
@@ -800,14 +877,19 @@
     "F-1003",
     "F-1602",
     "F-1802",
+    "F-C0330",
+    "F-C0348",
+    "F-C0690",
+    "F-C1641",
+    "F-C1716",
     "F-C1804"
    ],
    "conditional": [],
    "highest_severity": "S2",
    "severity_counts": {
     "S2": 7,
-    "S3": 5,
-    "S4": 2
+    "S3": 6,
+    "S4": 3
    },
    "modules": [
     "01",
@@ -816,6 +898,7 @@
     "05",
     "06",
     "07",
+    "09",
     "15",
     "16",
     "18"
@@ -833,14 +916,14 @@
     "other": "errors.py:1-17 (one catchable root IVGError); USER_GUIDE.md:313-318 (CypherParseError, GraphWriteError)"
    },
    "semantics_xref": {
-    "axioms": [],
-    "mechanisms": []
-   },
-   "tentative_xref_from_drafts": {
     "axioms": [
      "AX-03"
     ],
-    "mechanisms": []
+    "mechanisms": [],
+    "member_classes": {
+     "AX-03": 8
+    },
+    "members_agreeing": 8
    },
    "primary": [
     "F-0804",
@@ -881,11 +964,13 @@
    },
    "semantics_xref": {
     "axioms": [],
-    "mechanisms": []
-   },
-   "tentative_xref_from_drafts": {
-    "axioms": [],
-    "mechanisms": []
+    "mechanisms": [],
+    "member_classes": {
+     "AX-02": 1,
+     "AX-03": 2,
+     "FUNC": 11
+    },
+    "members_agreeing": null
    },
    "primary": [
     "F-0802",
@@ -897,15 +982,19 @@
     "F-0823",
     "F-0824",
     "F-C0101",
-    "F-C0803"
+    "F-C0803",
+    "F-C0841",
+    "F-C0848",
+    "F-C0849"
    ],
    "secondary": [],
    "conditional": [],
    "highest_severity": "S1",
    "severity_counts": {
     "S1": 1,
-    "S2": 5,
-    "S3": 4
+    "S2": 6,
+    "S3": 5,
+    "S4": 1
    },
    "modules": [
     "01",
@@ -923,11 +1012,13 @@
    },
    "semantics_xref": {
     "axioms": [],
-    "mechanisms": []
-   },
-   "tentative_xref_from_drafts": {
-    "axioms": [],
-    "mechanisms": []
+    "mechanisms": [],
+    "member_classes": {
+     "AX-03": 1,
+     "AX-12": 1,
+     "FUNC": 5
+    },
+    "members_agreeing": null
    },
    "primary": [
     "F-0308",
@@ -938,7 +1029,9 @@
     "F-1113",
     "F-1804"
    ],
-   "secondary": [],
+   "secondary": [
+    "F-C0849"
+   ],
    "conditional": [],
    "highest_severity": "S2",
    "severity_counts": {
@@ -964,11 +1057,13 @@
    },
    "semantics_xref": {
     "axioms": [],
-    "mechanisms": []
-   },
-   "tentative_xref_from_drafts": {
-    "axioms": [],
-    "mechanisms": []
+    "mechanisms": [],
+    "member_classes": {
+     "AX-01": 1,
+     "AX-03": 1,
+     "FUNC": 5
+    },
+    "members_agreeing": null
    },
    "primary": [
     "F-0502",
@@ -1007,15 +1102,16 @@
    },
    "semantics_xref": {
     "axioms": [],
-    "mechanisms": []
-   },
-   "tentative_xref_from_drafts": {
-    "axioms": [],
-    "mechanisms": []
+    "mechanisms": [],
+    "member_classes": {
+     "AX-13": 3
+    },
+    "members_agreeing": null
    },
    "primary": [
     "F-0814",
-    "F-0815"
+    "F-0815",
+    "F-C0341"
    ],
    "secondary": [
     "F-0616"
@@ -1023,9 +1119,11 @@
    "conditional": [],
    "highest_severity": "S1",
    "severity_counts": {
-    "S1": 2
+    "S1": 2,
+    "S2": 1
    },
    "modules": [
+    "03",
     "08"
    ],
    "remedy": "Bind every literal as a parameter, validate identifiers against a grammar or an allow-list, and apply read_only at every query entry including execute_aql."
@@ -1039,16 +1137,17 @@
     "other": "no SYS-I axiom covers it (an ontology gap); HD-1601 (the namespace is the authorization boundary); ADMIN_GUIDE.md:450-473 (least-privilege reading role); deploy/README.md:86"
    },
    "semantics_xref": {
-    "axioms": [],
-    "mechanisms": []
-   },
-   "tentative_xref_from_drafts": {
     "axioms": [
      "AX-13"
     ],
     "mechanisms": [
      "M-11"
-    ]
+    ],
+    "member_classes": {
+     "AX-13": 7,
+     "DOC": 1
+    },
+    "members_agreeing": 7
    },
    "primary": [
     "F-0908",
@@ -1056,6 +1155,7 @@
     "F-1709",
     "F-1806",
     "F-C1603",
+    "F-C1741",
     "F-C1803"
    ],
    "secondary": [
@@ -1068,7 +1168,7 @@
    "severity_counts": {
     "S1": 2,
     "S2": 3,
-    "S3": 1
+    "S3": 2
    },
    "modules": [
     "09",
@@ -1088,13 +1188,13 @@
    },
    "semantics_xref": {
     "axioms": [],
-    "mechanisms": []
-   },
-   "tentative_xref_from_drafts": {
-    "axioms": [
-     "AX-01"
-    ],
-    "mechanisms": []
+    "mechanisms": [],
+    "member_classes": {
+     "AX-08": 2,
+     "DOC": 1,
+     "FUNC": 4
+    },
+    "members_agreeing": null
    },
    "primary": [
     "F-0201",
@@ -1106,7 +1206,8 @@
    ],
    "secondary": [
     "F-0207",
-    "F-0208"
+    "F-0208",
+    "F-C0350"
    ],
    "conditional": [],
    "highest_severity": "S2",
@@ -1123,42 +1224,52 @@
   },
   {
    "id": "RC-22",
-   "title": "The temporal mark has no single predicate and adoption step",
-   "statement": "Whether an edge row is temporal-backed (marked) is decided by different predicates in the deleters, the ledger and the Python mirror, and the adopt/retract step runs on some writers only (store_edge does not adopt; Purge leaves marked rows; create_edge adopts after its commit).",
+   "title": "Derived-row marks are ordinary qualifier keys with no single predicate",
+   "statement": "Whether an edge row is derived (temporal-backed, or inferred) is recorded as an ordinary qualifier key that any caller, the ledger included, can also write ('temporal', 'inferred'), and is tested by different predicates in the deleters, the ledger and the Python mirror; the adopt/retract step runs on some writers only (store_edge does not adopt; Purge leaves marked rows; create_edge adopts after its commit). Governed and explicit rows are therefore deleted as derived ones, and derived rows survive as explicit ones.",
    "violates": {
     "axioms": [],
-    "other": "ADR-0009 and its amendment; HD-0302; ADR-0015"
+    "other": "ADR-0009 and its amendment; HD-0302; ADR-0015; schema.py:3187 (retract_inference deletes only what materialize_inference wrote)"
    },
    "semantics_xref": {
-    "axioms": [],
-    "mechanisms": []
-   },
-   "tentative_xref_from_drafts": {
     "axioms": [
      "AX-01"
     ],
-    "mechanisms": []
+    "mechanisms": [],
+    "member_classes": {
+     "AX-01": 5,
+     "AX-02": 1,
+     "AX-04": 1,
+     "AX-07": 3,
+     "AX-10": 1
+    },
+    "members_agreeing": 5
    },
    "primary": [
     "F-0304",
     "F-0505",
     "F-0506",
     "F-0507",
-    "F-C0301"
+    "F-C0151",
+    "F-C0301",
+    "F-C0351",
+    "F-C0450"
    ],
    "secondary": [],
    "conditional": [],
    "highest_severity": "S1",
    "severity_counts": {
     "S1": 2,
-    "S2": 2,
+    "S2": 4,
+    "S3": 1,
     "S4": 1
    },
    "modules": [
+    "01",
     "03",
+    "04",
     "05"
    ],
-   "remedy": "One shared mark predicate (JSON boolean true) and one adopt/retract step called by every writer and deleter inside its own transaction."
+   "remedy": "One shared mark that no caller can write (a reserved key refused by every writer and the ledger, or a column), one predicate, and one adopt/retract step called by every writer and deleter inside its own transaction."
   },
   {
    "id": "RC-23",
@@ -1170,11 +1281,12 @@
    },
    "semantics_xref": {
     "axioms": [],
-    "mechanisms": []
-   },
-   "tentative_xref_from_drafts": {
-    "axioms": [],
-    "mechanisms": []
+    "mechanisms": [],
+    "member_classes": {
+     "AX-07": 1,
+     "FUNC": 10
+    },
+    "members_agreeing": null
    },
    "primary": [
     "F-0907",
@@ -1182,9 +1294,12 @@
     "F-C0602",
     "F-C0603",
     "F-C0604",
+    "F-C0642",
     "F-C0703",
     "F-C0802",
-    "F-C1108"
+    "F-C1108",
+    "F-C1642",
+    "F-C1742"
    ],
    "secondary": [],
    "conditional": [
@@ -1193,8 +1308,8 @@
    "highest_severity": "S2",
    "severity_counts": {
     "S2": 1,
-    "S3": 2,
-    "S4": 5
+    "S3": 3,
+    "S4": 7
    },
    "modules": [
     "03",
@@ -1202,7 +1317,9 @@
     "07",
     "08",
     "09",
-    "11"
+    "11",
+    "16",
+    "17"
    ],
    "remedy": "Order every result prefix and every allocation by a total key, use EXISTS for filters, and close the storage-order scan's candidate list (order or document each)."
   },
@@ -1216,11 +1333,12 @@
    },
    "semantics_xref": {
     "axioms": [],
-    "mechanisms": []
-   },
-   "tentative_xref_from_drafts": {
-    "axioms": [],
-    "mechanisms": []
+    "mechanisms": [],
+    "member_classes": {
+     "AX-08": 2,
+     "FUNC": 1
+    },
+    "members_agreeing": null
    },
    "primary": [
     "F-0901",
@@ -1250,23 +1368,28 @@
     "other": "spec 213 FR-043 (the ledger survives a snapshot); ADR-0011 (one adjacency writer); SNP-B4.x (merge by the row's own key)"
    },
    "semantics_xref": {
-    "axioms": [],
-    "mechanisms": []
-   },
-   "tentative_xref_from_drafts": {
     "axioms": [
      "AX-05",
-     "AX-01"
+     "AX-10"
     ],
     "mechanisms": [
      "M-06"
-    ]
+    ],
+    "member_classes": {
+     "AX-01": 1,
+     "AX-05": 2,
+     "AX-08": 1,
+     "AX-10": 1,
+     "AX-12": 1
+    },
+    "members_agreeing": 2
    },
    "primary": [
     "F-0404",
     "F-1801",
     "F-1802",
-    "F-1805"
+    "F-1805",
+    "F-C1850"
    ],
    "secondary": [
     "F-C1802"
@@ -1274,7 +1397,7 @@
    "conditional": [],
    "highest_severity": "S1",
    "severity_counts": {
-    "S1": 1,
+    "S1": 2,
     "S2": 2,
     "S3": 1
    },
@@ -1293,16 +1416,20 @@
     "other": "ADR-0006 (every seam that writes vectors consults the registry); spec 226 FR-014 (enforcement is not opt-in); spec 227"
    },
    "semantics_xref": {
-    "axioms": [],
-    "mechanisms": []
-   },
-   "tentative_xref_from_drafts": {
     "axioms": [
      "AX-01"
     ],
     "mechanisms": [
      "M-12"
-    ]
+    ],
+    "member_classes": {
+     "AX-01": 4,
+     "AX-02": 1,
+     "AX-03": 1,
+     "AX-12": 1,
+     "FUNC": 2
+    },
+    "members_agreeing": 4
    },
    "primary": [
     "F-0601",
@@ -1345,16 +1472,20 @@
     "other": "ADR-0003:119-121 (the validator rejects '0'); CHANGELOG.md:4618-4620 (the Python mirror refuses what the server refuses); changeset.schema.json limits"
    },
    "semantics_xref": {
-    "axioms": [],
-    "mechanisms": []
-   },
-   "tentative_xref_from_drafts": {
     "axioms": [
      "AX-03"
     ],
     "mechanisms": [
      "M-10"
-    ]
+    ],
+    "member_classes": {
+     "AX-02": 4,
+     "AX-03": 3,
+     "AX-07": 1,
+     "AX-09": 1,
+     "FUNC": 1
+    },
+    "members_agreeing": 3
    },
    "primary": [
     "F-0202",
@@ -1362,6 +1493,7 @@
     "F-0513",
     "F-0608",
     "F-0706",
+    "F-C0150",
     "F-C0701",
     "F-C1107"
    ],
@@ -1369,17 +1501,21 @@
     "F-0307",
     "F-0308",
     "F-1503",
+    "F-C0349",
+    "F-C0351",
+    "F-C0717",
     "F-C1106",
     "F-C1204"
    ],
    "conditional": [],
    "highest_severity": "S2",
    "severity_counts": {
-    "S2": 4,
+    "S2": 5,
     "S3": 2,
     "S4": 1
    },
    "modules": [
+    "01",
     "02",
     "05",
     "06",
@@ -1398,39 +1534,53 @@
    },
    "semantics_xref": {
     "axioms": [],
-    "mechanisms": []
-   },
-   "tentative_xref_from_drafts": {
-    "axioms": [],
-    "mechanisms": []
+    "mechanisms": [],
+    "member_classes": {
+     "AX-02": 1,
+     "AX-14": 2,
+     "DOC": 1,
+     "FUNC": 4,
+     "PERF": 3
+    },
+    "members_agreeing": null
    },
    "primary": [
     "F-0514",
     "F-1510",
+    "F-C0347",
     "F-C0606",
+    "F-C0948",
     "F-C1106",
     "F-C1204",
-    "F-C1601"
+    "F-C1549",
+    "F-C1601",
+    "F-C1848"
    ],
    "secondary": [
     "F-0209",
     "F-1003",
+    "F-C0748",
     "F-C1107"
    ],
-   "conditional": [],
+   "conditional": [
+    "F-C0347"
+   ],
    "highest_severity": "S2",
    "severity_counts": {
     "S2": 2,
-    "S3": 2,
-    "S4": 2
+    "S3": 5,
+    "S4": 3
    },
    "modules": [
+    "03",
     "05",
     "06",
+    "09",
     "11",
     "12",
     "15",
-    "16"
+    "16",
+    "18"
    ],
    "remedy": "Declare every bound (key lengths, prefix length, row caps, memory, connections, latency) in the contract, check it at the boundary with a named refusal, and test each at the limit."
   },
@@ -1444,11 +1594,12 @@
    },
    "semantics_xref": {
     "axioms": [],
-    "mechanisms": []
-   },
-   "tentative_xref_from_drafts": {
-    "axioms": [],
-    "mechanisms": []
+    "mechanisms": [],
+    "member_classes": {
+     "AX-08": 1,
+     "FUNC": 4
+    },
+    "members_agreeing": null
    },
    "primary": [
     "F-0612",
@@ -1468,7 +1619,9 @@
     "F-1305",
     "F-1401",
     "F-1712",
-    "F-C0603"
+    "F-C0603",
+    "F-C1041",
+    "F-C1743"
    ],
    "conditional": [],
    "highest_severity": "S2",
@@ -1493,16 +1646,16 @@
     "other": "LedgerRedact.cls:178-180 (running the same target again resumes it); progress premises PF-1..PF-4; HD-0604"
    },
    "semantics_xref": {
-    "axioms": [],
-    "mechanisms": []
-   },
-   "tentative_xref_from_drafts": {
     "axioms": [
      "AX-14"
     ],
     "mechanisms": [
      "M-07"
-    ]
+    ],
+    "member_classes": {
+     "AX-14": 2
+    },
+    "members_agreeing": 2
    },
    "primary": [
     "F-C0605",
@@ -1533,11 +1686,14 @@
    },
    "semantics_xref": {
     "axioms": [],
-    "mechanisms": []
-   },
-   "tentative_xref_from_drafts": {
-    "axioms": [],
-    "mechanisms": []
+    "mechanisms": [],
+    "member_classes": {
+     "AX-08": 1,
+     "AX-11": 1,
+     "DOC": 13,
+     "FUNC": 2
+    },
+    "members_agreeing": null
    },
    "primary": [
     "F-0104",
@@ -1602,28 +1758,34 @@
    },
    "semantics_xref": {
     "axioms": [],
-    "mechanisms": []
-   },
-   "tentative_xref_from_drafts": {
-    "axioms": [],
-    "mechanisms": []
+    "mechanisms": [],
+    "member_classes": {
+     "DOC": 2,
+     "ENV": 1,
+     "TEST": 3
+    },
+    "members_agreeing": null
    },
    "primary": [
     "F-0108",
     "F-1112",
     "F-1708",
     "F-1710",
+    "F-C0090",
     "F-C1701"
    ],
-   "secondary": [],
+   "secondary": [
+    "F-C1741"
+   ],
    "conditional": [],
    "highest_severity": "S2",
    "severity_counts": {
     "S2": 1,
     "S3": 1,
-    "S4": 3
+    "S4": 4
    },
    "modules": [
+    "00",
     "01",
     "11",
     "17"
@@ -1641,14 +1803,19 @@
     "other": "playbook \u00a75 lesson 'a refusal written in the spec is not a refusal'; CYP-X3.8, CYP-X10.2, CYP-X12.x; Bolt protocol (P-1612)"
    },
    "semantics_xref": {
-    "axioms": [],
-    "mechanisms": []
-   },
-   "tentative_xref_from_drafts": {
     "axioms": [
      "AX-03"
     ],
-    "mechanisms": []
+    "mechanisms": [],
+    "member_classes": {
+     "AX-03": 4,
+     "AX-04": 1,
+     "AX-12": 1,
+     "DOC": 2,
+     "ENV": 1,
+     "FUNC": 10
+    },
+    "members_agreeing": 4
    },
    "primary": [
     "F-0508",
@@ -1666,7 +1833,9 @@
     "F-1702",
     "F-1703",
     "F-1706",
-    "F-C1702"
+    "F-C1641",
+    "F-C1702",
+    "F-C1715"
    ],
    "secondary": [
     "F-0103",
@@ -1678,8 +1847,8 @@
    "highest_severity": "S2",
    "severity_counts": {
     "S2": 6,
-    "S3": 7,
-    "S4": 3
+    "S3": 8,
+    "S4": 4
    },
    "modules": [
     "05",
@@ -1691,6 +1860,143 @@
     "17"
    ],
    "remedy": "Audit every documented refusal, parameter and protocol verb mechanically (a list generated from the docs and specs), implement it or refuse it with a named error, and test each."
+  },
+  {
+   "id": "RC-34",
+   "title": "Stores have no enforced single write owner",
+   "statement": "Outside the ledger, stores owned by one module are written directly by others: ^KG(\"prop\") has no owner and four writers, the Arno bridge moves the adjacency token, the vector module kills a sub-store of ^NKG, the Cypher DELETE and the SQL adapter delete vector, document and reification rows themselves, the FHIR build writes the label index and vector rows, a loader clears content tables by raw SQL. Each direct writer skips the owner's rules (routes, tokens, graph scope, strict mode).",
+   "violates": {
+    "axioms": [
+     "SYS-I1"
+    ],
+    "other": "playbook \u00a73.4 (each store has a single write owner); ADR-0011 (one adjacency writer); module Scope sections of the ontology"
+   },
+   "semantics_xref": {
+    "axioms": [
+     "AX-01"
+    ],
+    "mechanisms": [
+     "M-12"
+    ],
+    "member_classes": {
+     "AX-01": 7,
+     "AX-02": 1,
+     "AX-07": 1,
+     "AX-10": 1
+    },
+    "members_agreeing": 7
+   },
+   "primary": [
+    "F-C0340",
+    "F-C0440",
+    "F-C0640",
+    "F-C0840",
+    "F-C1040",
+    "F-C1540",
+    "F-C1740"
+   ],
+   "secondary": [],
+   "conditional": [],
+   "highest_severity": "S3",
+   "severity_counts": {
+    "S3": 3,
+    "S4": 4
+   },
+   "modules": [
+    "03",
+    "04",
+    "06",
+    "08",
+    "10",
+    "15",
+    "17"
+   ],
+   "remedy": "Name one owner per store (as GraphStores.Inventory does for erasure) and route every other writer through the owner's method; a mechanical census (as the structural lane's st-check-own-census) that fails on a write to a store outside its owner."
+  },
+  {
+   "id": "RC-35",
+   "title": "Bulk loads bypass the indexes and key checks every other path relies on",
+   "statement": "BulkLoader writes with INSERT %NOINDEX %NOCHECK by default: the rows it writes are in no index and pass no unique check until the indexes are rebuilt. Readers, the liveness check, erasure and the key invariants all read through those indexes, so duplicate keys are stored, a mode-off graph holds parallel rows, erasure leaves the loaded edge, and redaction completes while the tenant's loaded rows exist.",
+   "violates": {
+    "axioms": [
+     "SYS-I8",
+     "SYS-I1"
+    ],
+    "other": "schema.py:34-44, 396-419 (unique keys); GID-I4.10; spec 256 FR-005 (refuse while any row of the target is live); ADR-0004"
+   },
+   "semantics_xref": {
+    "axioms": [
+     "AX-08",
+     "AX-01"
+    ],
+    "mechanisms": [
+     "M-04"
+    ],
+    "member_classes": {
+     "AX-01": 2,
+     "AX-02": 1,
+     "AX-10": 2,
+     "AX-11": 1
+    },
+    "members_agreeing": 2
+   },
+   "primary": [
+    "F-C0349",
+    "F-C0350",
+    "F-C1250",
+    "F-C1351"
+   ],
+   "secondary": [],
+   "conditional": [],
+   "highest_severity": "S1",
+   "severity_counts": {
+    "S1": 2,
+    "S2": 2
+   },
+   "modules": [
+    "03",
+    "12",
+    "13"
+   ],
+   "remedy": "Make the bulk loader leave the indexes current before it returns (rebuild inside the load, or no %NOINDEX on key-carrying tables) and drop %NOCHECK for unique keys; until then refuse erasure and redaction while an index build is pending."
+  },
+  {
+   "id": "RC-36",
+   "title": "Server answers are hand-encoded text decoded by patterns",
+   "statement": "Several ObjectScript methods answer Python with hand-built text (comma lists, partly escaped JSON, shape-sniffed maps), and the Python side repairs or decodes it by text patterns: a leading-dot patch rewrites ids, comma splitting breaks names, an unescaped control character breaks the JSON, a node named 'components' is read as a summary.",
+   "violates": {
+    "axioms": [],
+    "other": "TXT-B2.13 (each id and score in the answer is valid JSON); RFC 8259 escaping (CHANGELOG.md:463-467); the decoders' own docstrings"
+   },
+   "semantics_xref": {
+    "axioms": [
+     "AX-12"
+    ],
+    "mechanisms": [],
+    "member_classes": {
+     "AX-03": 1,
+     "FUNC": 3
+    },
+    "members_agreeing": 0
+   },
+   "primary": [
+    "F-C0715",
+    "F-C0716",
+    "F-C0717",
+    "F-C1018"
+   ],
+   "secondary": [],
+   "conditional": [],
+   "highest_severity": "S2",
+   "severity_counts": {
+    "S2": 1,
+    "S4": 3
+   },
+   "modules": [
+    "07",
+    "10"
+   ],
+   "remedy": "One wire encoding for every server answer (%DynamicObject / JSON arrays built by the library, never by concatenation) decoded by json.loads only, with no text repair; a round-trip test with hostile names and ids."
   }
  ],
  "excluded": [
@@ -1721,6 +2027,20 @@
    "severity": "S4",
    "title": "Candidate: with the adjacency index declared, a failed rebuild could leave part of the adjacency missing",
    "reason": "candidate, not reproduced: a sync() that failed on a row with graph '0' left all 400 sources in ^KG and verify_graph ok (findings/audit/04.json)"
+  },
+  {
+   "id": "F-C1240",
+   "disposition": "refuted",
+   "severity": "S4",
+   "title": "EraseAll kills ^ArnoKG, a store the erase plan (GraphStores.Inventory) does not list",
+   "reason": "refuted (zz-structural.json, orchestrator from the ontology-2 correction): GraphStores.Inventory does list ^ArnoKG (GraphStores.cls:131, one line past the cited range); the Kill in EraseAll is the right effect"
+  },
+  {
+   "id": "F-C1720",
+   "disposition": "duplicate",
+   "severity": "S2",
+   "title": "IRISGraphStore.query_nodes(limit=n) without a label filter kills the calling Python process (SIGSEGV) on the pin's locked driver 5.3.2: it sends FETCH FIRST n ROWS ONLY, which the product's own FETCH FIRST guard is never asked about",
+   "reason": "duplicate of F-C1743 (zz-contract-2.json): the same query_nodes FETCH FIRST crash; counted once, under F-C1743"
   }
  ],
  "assignments": {
@@ -2180,7 +2500,7 @@
     "RC-14"
    ],
    "severity": "S2",
-   "disposition": "reproduced-test",
+   "disposition": "reproduced-live",
    "module": "06",
    "title": "A registry read that fails for any reason lets a vector write through unchecked"
   },
@@ -3083,7 +3403,7 @@
    "primary": "RC-15",
    "secondary": [],
    "severity": "S4",
-   "disposition": "confirmed-source",
+   "disposition": "reproduced-test",
    "module": "15",
    "title": "With rdflib lacking ConjunctiveGraph (rdflib 8 per KNOWN_ISSUES), export and SHACL report 'rdflib is required'"
   },
@@ -3425,6 +3745,14 @@
    "module": "18",
    "title": "The HTTP snapshot endpoint can write two snapshots to one path"
   },
+  "F-C0090": {
+   "primary": "RC-32",
+   "secondary": [],
+   "severity": "S4",
+   "disposition": "confirmed-source",
+   "module": "00",
+   "title": "Four unit tests never run: each is shadowed by a later method of the same name in its test class (lint warning F811)"
+  },
   "F-C0101": {
    "primary": "RC-16",
    "secondary": [],
@@ -3432,6 +3760,26 @@
    "disposition": "reproduced-live",
    "module": "01",
    "title": "An inline relationship property in a Cypher pattern fails on an edge with no properties"
+  },
+  "F-C0150": {
+   "primary": "RC-27",
+   "secondary": [
+    "RC-08"
+   ],
+   "severity": "S2",
+   "disposition": "reproduced-live",
+   "module": "01",
+   "title": "Every initialize_schema moves a node with a '__graph' property into that graph (add_graph_id_to_nodes), and the engine still writes such a property: an unrecorded cross-graph move, also into a graph whose redaction is in progress"
+  },
+  "F-C0151": {
+   "primary": "RC-22",
+   "secondary": [
+    "RC-08"
+   ],
+   "severity": "S2",
+   "disposition": "reproduced-live",
+   "module": "01",
+   "title": "retract_inference deletes any relationship whose qualifiers contain a key named 'inferred', a ledger relationship included, leaving its statement live"
   },
   "F-C0301": {
    "primary": "RC-22",
@@ -3451,6 +3799,84 @@
    "module": "03",
    "title": "Property lookups with a limit return a storage-order subset"
   },
+  "F-C0330": {
+   "primary": "RC-10",
+   "secondary": [
+    "RC-14"
+   ],
+   "severity": "S2",
+   "disposition": "reproduced-live",
+   "module": "03",
+   "title": "A failed server-loader bulk_create_nodes answers 'nothing written' while its first 1,000 nodes stay committed"
+  },
+  "F-C0340": {
+   "primary": "RC-34",
+   "secondary": [
+    "RC-01",
+    "RC-03",
+    "RC-08"
+   ],
+   "severity": "S3",
+   "disposition": "reproduced-live",
+   "module": "03",
+   "title": "networkx-loader's --clear-existing deletes every graph's edges, labels and properties by raw SQL and leaves their nodes, temporal edges and vectors, with strict mode on"
+  },
+  "F-C0341": {
+   "primary": "RC-19",
+   "secondary": [],
+   "severity": "S2",
+   "disposition": "reproduced-live",
+   "module": "03",
+   "title": "get_json_field_values pastes the field name into its SQL text, so a field name can change the statement"
+  },
+  "F-C0347": {
+   "primary": "RC-28",
+   "secondary": [],
+   "severity": "S3",
+   "disposition": "intent-undecided",
+   "module": "03",
+   "title": "A caller transaction with more than about 1,000 row writes to a table escalates to a table lock; every other process's write to that table, in any graph, then waits 10 s and fails with SQLCODE -110"
+  },
+  "F-C0348": {
+   "primary": "RC-05",
+   "secondary": [
+    "RC-14"
+   ],
+   "severity": "S2",
+   "disposition": "reproduced-live",
+   "module": "03",
+   "title": "Racing create_edge calls on a new edge whose endpoint is new can all lose: some answer False ('already exists') and no edge is written"
+  },
+  "F-C0349": {
+   "primary": "RC-35",
+   "secondary": [
+    "RC-27"
+   ],
+   "severity": "S2",
+   "disposition": "reproduced-live",
+   "module": "03",
+   "title": "The bulk loader writes duplicate node, label, property and edge keys: an id twice in one batch, a load with skip_existing=False, or two loaders at once"
+  },
+  "F-C0350": {
+   "primary": "RC-35",
+   "secondary": [
+    "RC-21"
+   ],
+   "severity": "S2",
+   "disposition": "reproduced-live",
+   "module": "03",
+   "title": "BulkLoader.load_edges' INSERT %NOINDEX %NOCHECK lets a graph whose mode is off hold two rows of one triple at the same edge key, and the index rebuild accepts them"
+  },
+  "F-C0351": {
+   "primary": "RC-22",
+   "secondary": [
+    "RC-27"
+   ],
+   "severity": "S3",
+   "disposition": "reproduced-live",
+   "module": "03",
+   "title": "Explicit edge writers store the temporal marker {\"temporal\": true} given as a caller qualifier: the row is a marked row with no timestamp, and verify() does not see the relationship"
+  },
   "F-C0401": {
    "primary": "RC-06",
    "secondary": [],
@@ -3466,6 +3892,32 @@
    "disposition": "intent-undecided",
    "module": "04",
    "title": "Two adjacency rebuilds can run at once"
+  },
+  "F-C0415": {
+   "primary": "RC-10",
+   "secondary": [],
+   "severity": "S4",
+   "disposition": "reproduced-live",
+   "module": "04",
+   "title": "A refused erase or adjacency rebuild (writer lock not granted) still leaves writes behind: the graph's no-lock mark, source generations and ^KG(\"__version\")"
+  },
+  "F-C0440": {
+   "primary": "RC-34",
+   "secondary": [],
+   "severity": "S4",
+   "disposition": "confirmed-source",
+   "module": "04",
+   "title": "^KG(\"prop\") has no owning module, and four modules write it"
+  },
+  "F-C0450": {
+   "primary": "RC-22",
+   "secondary": [
+    "RC-08"
+   ],
+   "severity": "S2",
+   "disposition": "reproduced-live",
+   "module": "04",
+   "title": "A ledger relationship whose qualifiers hold temporal=1 is deleted as a temporal edge's derived row, and its statement stays live"
   },
   "F-C0501": {
    "primary": "RC-10",
@@ -3536,6 +3988,50 @@
    "module": "06",
    "title": "The graph-scoped vector search exceeds spec 227 SC-010's 1.1x latency budget in every run"
   },
+  "F-C0615": {
+   "primary": "RC-12",
+   "secondary": [
+    "RC-10"
+   ],
+   "severity": "S4",
+   "disposition": "reproduced-live",
+   "module": "06",
+   "title": "VectorOptimizer.migrate_to_optimized cannot run on IRIS 2026.1: its CREATE INDEX IF NOT EXISTS ... AS HNSW is rejected, so it copies nothing and answers success False"
+  },
+  "F-C0640": {
+   "primary": "RC-34",
+   "secondary": [],
+   "severity": "S4",
+   "disposition": "confirmed-source",
+   "module": "06",
+   "title": "Dropping a neighborhood_vector index handle kills ^NKG(\"q\") in the interned snapshot"
+  },
+  "F-C0642": {
+   "primary": "RC-23",
+   "secondary": [],
+   "severity": "S3",
+   "disposition": "reproduced-live",
+   "module": "06",
+   "title": "Vector top-k searches cut equal scores in storage order"
+  },
+  "F-C0670": {
+   "primary": "RC-05",
+   "secondary": [],
+   "severity": "S3",
+   "disposition": "reproduced-live",
+   "module": "06",
+   "title": "Two embed-queue workers can work the same entry at once: the single-consumer premise is neither enforced nor documented"
+  },
+  "F-C0690": {
+   "primary": "RC-13",
+   "secondary": [
+    "RC-14"
+   ],
+   "severity": "S4",
+   "disposition": "confirmed-source",
+   "module": "06",
+   "title": "VectorOptimizer, a public class, hard-codes the Graph_KG schema, so in a namespace whose IVG Schema has another name it reads and writes the wrong tables"
+  },
   "F-C0701": {
    "primary": "RC-27",
    "secondary": [],
@@ -3562,6 +4058,42 @@
    "module": "07",
    "title": "Text-search top-k answers and fused ranks depend on scan order"
   },
+  "F-C0715": {
+   "primary": "RC-36",
+   "secondary": [],
+   "severity": "S2",
+   "disposition": "reproduced-live",
+   "module": "07",
+   "title": "bm25_search rewrites document ids: its leading-dot patch runs over the whole answer, so an id holding ':.5', ',.7' or '[.9' comes back as ':0.5', ',0.7', '[0.9'"
+  },
+  "F-C0716": {
+   "primary": "RC-36",
+   "secondary": [],
+   "severity": "S4",
+   "disposition": "reproduced-live",
+   "module": "07",
+   "title": "The engine's index registry mis-decodes BM25Index.List: an index name holding a comma or a leading/trailing space is split or trimmed, so the real index is missing and phantom names appear"
+  },
+  "F-C0717": {
+   "primary": "RC-36",
+   "secondary": [
+    "RC-27"
+   ],
+   "severity": "S4",
+   "disposition": "reproduced-live",
+   "module": "07",
+   "title": "BM25Index.Build and Info write the graph name into their JSON escaping only backslash and quote: a graph name with a control character makes bm25_build raise JSONDecodeError after the index was rebuilt, and the index's graph can no longer be read"
+  },
+  "F-C0748": {
+   "primary": "RC-10",
+   "secondary": [
+    "RC-28"
+   ],
+   "severity": "S2",
+   "disposition": "reproduced-live",
+   "module": "07",
+   "title": "One token longer than the subscript limit in any document makes bm25_build fail after it has emptied the index, and searches then answer nothing"
+  },
   "F-C0801": {
    "primary": "RC-06",
    "secondary": [],
@@ -3586,6 +4118,42 @@
    "module": "08",
    "title": "MERGE ... ON CREATE SET r = a gives every merged relationship the first row's properties"
   },
+  "F-C0840": {
+   "primary": "RC-34",
+   "secondary": [
+    "RC-03"
+   ],
+   "severity": "S3",
+   "disposition": "confirmed-source",
+   "module": "08",
+   "title": "A Cypher DELETE deletes vector rows and reification rows itself, and only from the legacy vector table"
+  },
+  "F-C0841": {
+   "primary": "RC-16",
+   "secondary": [],
+   "severity": "S4",
+   "disposition": "reproduced-live",
+   "module": "08",
+   "title": "Cypher range() with a step of 0 known only at run time answers [] instead of raising NumberOutOfRange"
+  },
+  "F-C0848": {
+   "primary": "RC-16",
+   "secondary": [],
+   "severity": "S2",
+   "disposition": "reproduced-live",
+   "module": "08",
+   "title": "A Cypher CREATE or MERGE with literal or parameter endpoint ids drops a parameter-bound relationship property without an error"
+  },
+  "F-C0849": {
+   "primary": "RC-16",
+   "secondary": [
+    "RC-17"
+   ],
+   "severity": "S3",
+   "disposition": "reproduced-live",
+   "module": "08",
+   "title": "A relationship property bound by a WITH before a literal-endpoint CREATE is stored as text that is not JSON"
+  },
   "F-C0901": {
    "primary": "RC-24",
    "secondary": [
@@ -3595,6 +4163,22 @@
    "disposition": "reproduced-live",
    "module": "09",
    "title": "A build marks whatever entry its hash holds as ok, so one shape's entry can run another shape's class for good"
+  },
+  "F-C0940": {
+   "primary": "RC-14",
+   "secondary": [],
+   "severity": "S3",
+   "disposition": "confirmed-source",
+   "module": "09",
+   "title": "IVG.CypherEngine.Scalar answers the caller's default when the read fails, so a failed COUNT reads as 0"
+  },
+  "F-C0948": {
+   "primary": "RC-28",
+   "secondary": [],
+   "severity": "S4",
+   "disposition": "confirmed-source",
+   "module": "09",
+   "title": "Compiled native plan classes have no bound: one class per plan shape accumulates until a deploy"
   },
   "F-C1001": {
    "primary": "RC-12",
@@ -3613,6 +4197,32 @@
    "disposition": "reproduced-test",
    "module": "10",
    "title": "Leiden on Zachary's karate club gives ARI 0.072 on the non-Arno path, against the product's 0.75 threshold"
+  },
+  "F-C1018": {
+   "primary": "RC-36",
+   "secondary": [],
+   "severity": "S4",
+   "disposition": "reproduced-live",
+   "module": "10",
+   "title": "The store's membership decoder refuses the Owner's components and label-propagation answers when a default-graph node is named 'components', 'communities' or 'largest' (read as an accelerated summary); the engine masks it by calling the Owner a second time"
+  },
+  "F-C1040": {
+   "primary": "RC-34",
+   "secondary": [],
+   "severity": "S4",
+   "disposition": "confirmed-source",
+   "module": "10",
+   "title": "Graph.KG.ArnoAccel.BumpVersion moves the adjacency module's graph-version token"
+  },
+  "F-C1041": {
+   "primary": "RC-01",
+   "secondary": [
+    "RC-29"
+   ],
+   "severity": "S3",
+   "disposition": "reproduced-live",
+   "module": "10",
+   "title": "The ^NKG centrality class methods called directly answer every graph merged; only the SQL functions refuse"
   },
   "F-C1101": {
    "primary": "RC-05",
@@ -3681,6 +4291,14 @@
    "module": "11",
    "title": "After a BUILD INDEX, a duplicate-key insert raises <LIST ERROR>, which the duplicate check does not recognise"
   },
+  "F-C1150": {
+   "primary": "RC-08",
+   "secondary": [],
+   "severity": "S2",
+   "disposition": "reproduced-live",
+   "module": "11",
+   "title": "A plain SQL INSERT into Graph_KG.ledger_revisions is accepted, and a row planted at head+1 made the next ledger commit fail"
+  },
   "F-C1201": {
    "primary": "RC-04",
    "secondary": [],
@@ -3715,13 +4333,23 @@
    "module": "12",
    "title": "EraseNodes fails on a prefix longer than the subscript limit instead of erasing nothing"
   },
+  "F-C1250": {
+   "primary": "RC-35",
+   "secondary": [
+    "RC-03"
+   ],
+   "severity": "S1",
+   "disposition": "reproduced-live",
+   "module": "12",
+   "title": "An rdf_edges row a %NOINDEX bulk load wrote survives delete_nodes_by_prefix of both its endpoints and EraseAll+PurgeAll until the indices are rebuilt; its endpoint nodes are deleted under it"
+  },
   "F-C1301": {
    "primary": "RC-04",
    "secondary": [
     "RC-08"
    ],
    "severity": "S1",
-   "disposition": "reproduced-model",
+   "disposition": "reproduced-live",
    "module": "13",
    "title": "The redaction liveness check reads any writer's uncommitted delete"
   },
@@ -3796,6 +4424,27 @@
    "module": "13",
    "title": "The redaction's audit revision stores an unsalted SHA-256 of the tenant's name: a guessed tenant is confirmable from history"
   },
+  "F-C1350": {
+   "primary": "RC-08",
+   "secondary": [
+    "RC-04"
+   ],
+   "severity": "S1",
+   "disposition": "reproduced-live",
+   "module": "13",
+   "title": "Redaction batches tombstone the history of content a ledger-bypassing writer made live after the run's entry check"
+  },
+  "F-C1351": {
+   "primary": "RC-35",
+   "secondary": [
+    "RC-03",
+    "RC-04"
+   ],
+   "severity": "S1",
+   "disposition": "reproduced-live",
+   "module": "13",
+   "title": "The redaction's liveness check misses rows a bulk load wrote with %NOINDEX: the redaction completes while the tenant's rows exist, and they reappear at the next index rebuild"
+  },
   "F-C1501": {
    "primary": "RC-10",
    "secondary": [],
@@ -3813,6 +4462,40 @@
    "disposition": "reproduced-live",
    "module": "15",
    "title": "delete_node removes the reifier nodes of the node's edges in a second transaction"
+  },
+  "F-C1540": {
+   "primary": "RC-34",
+   "secondary": [],
+   "severity": "S3",
+   "disposition": "confirmed-source",
+   "module": "15",
+   "title": "The FHIR graph build writes the adjacency label index and the vector and document rows itself"
+  },
+  "F-C1547": {
+   "primary": "RC-01",
+   "secondary": [
+    "RC-02"
+   ],
+   "severity": "S2",
+   "disposition": "reproduced-live",
+   "module": "15",
+   "title": "get_reifications reads the reifier's properties from every graph"
+  },
+  "F-C1548": {
+   "primary": "RC-03",
+   "secondary": [],
+   "severity": "S3",
+   "disposition": "reproduced-live",
+   "module": "15",
+   "title": "Deleting a relationship with delete_edge or Cypher DELETE leaves its reification rows pointing at an edge that no longer exists"
+  },
+  "F-C1549": {
+   "primary": "RC-28",
+   "secondary": [],
+   "severity": "S3",
+   "disposition": "reproduced-live",
+   "module": "15",
+   "title": "A one-edge PROV lookup fails once the default graph's temporal history no longer fits one IRIS string"
   },
   "F-C1601": {
    "primary": "RC-28",
@@ -3845,6 +4528,34 @@
    "disposition": "reproduced-live",
    "module": "16",
    "title": "The Cypher HTTP server runs a query again after any failure, writes included"
+  },
+  "F-C1640": {
+   "primary": "RC-14",
+   "secondary": [],
+   "severity": "S4",
+   "disposition": "reproduced-live",
+   "module": "16",
+   "title": "The stdio MCP server's LoadGraph always reports 0 nodes and 0 edges loaded"
+  },
+  "F-C1641": {
+   "primary": "RC-33",
+   "secondary": [
+    "RC-14"
+   ],
+   "severity": "S3",
+   "disposition": "reproduced-live",
+   "module": "16",
+   "title": "The generated GraphQL server's Node.properties always answers an empty list"
+  },
+  "F-C1642": {
+   "primary": "RC-23",
+   "secondary": [
+    "RC-01"
+   ],
+   "severity": "S4",
+   "disposition": "reproduced-live",
+   "module": "16",
+   "title": "The generated GraphQL server pages nodes(label) over an unordered id list"
   },
   "F-C1701": {
    "primary": "RC-32",
@@ -3896,6 +4607,62 @@
    "module": "17",
    "title": "The pin's uv.lock installs intersystems-irispython 5.3.2, on which IVG answers scores as Decimal or text, raises on duplicate rows and refuses list parameters"
   },
+  "F-C1715": {
+   "primary": "RC-33",
+   "secondary": [],
+   "severity": "S4",
+   "disposition": "reproduced-live",
+   "module": "17",
+   "title": "On a namespace that refuses the engine, close does not run: IRISGraphEngine has no close() and its store's close() is refused"
+  },
+  "F-C1716": {
+   "primary": "RC-12",
+   "secondary": [
+    "RC-14"
+   ],
+   "severity": "S3",
+   "disposition": "reproduced-live",
+   "module": "17",
+   "title": "kill_query cannot end any process on IRIS 2026.1: %SYSTEM.SYS.KillProcess is not an SQL function (SQLCODE -359), so every call answers False"
+  },
+  "F-C1740": {
+   "primary": "RC-34",
+   "secondary": [],
+   "severity": "S4",
+   "disposition": "confirmed-source",
+   "module": "17",
+   "title": "The SQL adapter's node delete removes document and reification rows by its own SQL"
+  },
+  "F-C1741": {
+   "primary": "RC-20",
+   "secondary": [
+    "RC-32"
+   ],
+   "severity": "S3",
+   "disposition": "confirmed-source",
+   "module": "17",
+   "title": "The enterprise web gateway recipe lets any address manage the gateway and connects to IRIS as _SYSTEM with the stock password"
+  },
+  "F-C1742": {
+   "primary": "RC-23",
+   "secondary": [
+    "RC-01"
+   ],
+   "severity": "S4",
+   "disposition": "confirmed-source",
+   "module": "17",
+   "title": "IRISGraphStore.query_nodes(limit=n) cuts an unordered node scan"
+  },
+  "F-C1743": {
+   "primary": "RC-12",
+   "secondary": [
+    "RC-29"
+   ],
+   "severity": "S2",
+   "disposition": "reproduced-live",
+   "module": "17",
+   "title": "IRISGraphStore.query_nodes(limit=n) kills the calling Python process (SIGSEGV) on IRIS Community 2026.1 with the locked driver"
+  },
   "F-C1801": {
    "primary": "RC-07",
    "secondary": [],
@@ -3932,6 +4699,24 @@
    "module": "18",
    "title": "A snapshot carries no routed edge vectors (kg_eemb_ tables): a restore loses them silently"
   },
+  "F-C1848": {
+   "primary": "RC-28",
+   "secondary": [],
+   "severity": "S3",
+   "disposition": "reproduced-live",
+   "module": "18",
+   "title": "save_snapshot and restore_snapshot hold the whole archive in client memory: about 11 MB per 1,000 edges, 190 times the archive's size"
+  },
+  "F-C1850": {
+   "primary": "RC-25",
+   "secondary": [
+    "RC-03"
+   ],
+   "severity": "S1",
+   "disposition": "reproduced-live",
+   "module": "18",
+   "title": "A replacing restore leaves the live ledger's redaction stores in place: a marked target comes back live, and a second redaction of a restored tenant keeps its revision text and retry key"
+  },
   "F-CS01": {
    "primary": "RC-03",
    "secondary": [],
@@ -3942,23 +4727,23 @@
   }
  },
  "summary": {
-  "root_causes": 33,
-  "assigned": 253,
-  "excluded": 4,
-  "conditional": 7,
+  "root_causes": 36,
+  "assigned": 304,
+  "excluded": 6,
+  "conditional": 8,
   "top10": [
    "RC-01",
    "RC-33",
-   "RC-31",
    "RC-14",
-   "RC-03",
-   "RC-06",
-   "RC-04",
+   "RC-31",
    "RC-16",
+   "RC-03",
    "RC-10",
-   "RC-12"
+   "RC-12",
+   "RC-06",
+   "RC-23"
   ],
-  "top10_cover": 126,
+  "top10_cover": 143,
   "no_sys_axiom": [
    "RC-12",
    "RC-16",
@@ -3974,6 +4759,20 @@
    "RC-28",
    "RC-29",
    "RC-30",
+   "RC-31",
+   "RC-32",
+   "RC-36"
+  ],
+  "no_semantics_axiom": [
+   "RC-16",
+   "RC-17",
+   "RC-18",
+   "RC-19",
+   "RC-21",
+   "RC-23",
+   "RC-24",
+   "RC-28",
+   "RC-29",
    "RC-31",
    "RC-32"
   ]

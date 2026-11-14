@@ -18,12 +18,14 @@ LANE = HERE.parent
 ROOT = LANE.parent
 OUT = LANE / "TEST-REFLECTION.md"
 
-SRC_LABEL = {"TRUST": "TRUST.md (trusted items and premise tables)", "proofs": "proofs/PROOFS.md",
-             "proofs-d9": "proofs-d9/PROOFS.md", "proofs-breadth": "proofs-breadth/PROOFS.md",
-             "proofs-d1b": "proofs-d1b/PROOFS.md", "proofs-d1c": "proofs-d1c/PROOFS.md",
-             "proofs-d1d": "proofs-d1d/PROOFS.md", "proofs-d1e": "proofs-d1e/PROOFS.md",
-             "proofs-d1f": "proofs-d1f/PROOFS.md", "models-core": "models/core/MODELS.md (stated assumptions)",
-             "iris-contract": "iris-contract/CONTRACT.md (clauses, E-1, Freedom, outside-subset features)"}
+def src_label(src: str) -> str:
+    if src == "TRUST":
+        return "TRUST.md (trusted items and premise tables)"
+    if src == "iris-contract":
+        return "iris-contract/CONTRACT.md (clauses, E-1, Freedom, outside-subset features)"
+    if src.startswith("models-"):
+        return f"models/{src[len('models-'):]}/MODELS.md (stated assumptions)"
+    return f"{src}/PROOFS.md" + (" (prose premises)" if src == "proofs-mech" else "")
 
 # per root cause: the product test that would have detected its findings (from the remedy's test clause)
 RC_TESTS = {
@@ -48,7 +50,7 @@ RC_TESTS = {
     "RC-19": "hostile literals and identifiers at every query entry, with read_only set",
     "RC-20": "calls as the documented least-privilege role and from a non-loopback address, asserting refusal",
     "RC-21": "a multigraph fixture through every reader, writer and verifier",
-    "RC-22": "every writer and deleter over a marked row, asserting one shared predicate",
+    "RC-22": "every writer, deleter and the ledger over rows carrying 'temporal' / 'inferred' qualifiers, asserting one shared predicate and a reserved key",
     "RC-23": "row-permutation tests: the same logical state inserted in different orders gives the same answers",
     "RC-24": "a birthday-collision fixture (the audit's b-09 search) in the native-plan tests",
     "RC-25": "restore tests against a live ledger that moved on, with overlapping merges and derived stores",
@@ -60,6 +62,9 @@ RC_TESTS = {
     "RC-31": "executed documentation examples and generated contracts (wire schema, constraint lists, status parts) compared in CI",
     "RC-32": "CI that installs from the package and runs the deploy recipes, console scripts and fixtures as shipped",
     "RC-33": "a mechanically generated list of documented refusals, parameters and protocol verbs, each with a test",
+    "RC-34": "a store-ownership census in CI (as st-check-own-census) that fails on a write outside the owner",
+    "RC-35": "a bulk load followed at once by erase, redaction and duplicate inserts, asserting the indexes see the rows",
+    "RC-36": "round trips of hostile ids and names (commas, spaces, control characters, '.5') through every server answer",
 }
 
 
@@ -76,23 +81,32 @@ def render() -> str:
       "**method**. What the completion audit's proofs and models rely on, which test checks each premise, what "
       "testing covers for each unpaid proof-debt row, and whether the product's own suites detect the defects this "
       "audit reproduced. Machine-readable twin: `premise_tests.json`, checked by `tools/check_premise_map.py` "
-      "(registered `rf-premise-map-check`, self-test `rf-premise-map-selftest`); this file is rendered from it by "
+      "(registered `rf-premise-map-check-r3`, self-test `rf-premise-map-selftest-r3`; first pass `rf-premise-map-check`); this file is rendered from it by "
       "`tools/build_test_reflection.py`. The original submission's `experiment/playbook-uplift/TEST-REFLECTION.md` "
       "(sections A-E) is the model for the structure; its premise table (section D) covered the worked example only.\n")
 
-    w("## A. The audit's own tests (what the registry holds)\n")
-    reg = defaultdict(Counter)
+    w("## A. The audit's own tests that this reflection cites\n")
+    regd = {}
     for p in (ROOT / "evidence" / "runs").glob("*.json"):
         d = json.loads(p.read_text())
-        reg[d["kind"]][d["result"]] += 1
+        regd[d["id"]] = (d["kind"], d["result"])
+    cited = {t["ref"] for e in prem for t in e["tests"] if t["kind"] in ("run", "model")}
+    cited |= {t["ref"] for d in pm["proof_debt"] for t in d["tests"] if t["kind"] in ("run", "model")}
+    cited |= {r for f in det["detected"] for r in det["findings"][f]["detection"]["runs"]}
+    reg = defaultdict(Counter)
+    for r in cited:
+        if r in regd:
+            reg[regd[r][0]][regd[r][1]] += 1
+    w(f"{len(cited)} distinct registered runs are cited below (premise tests, proof-debt coverage, detections), by kind "
+      "and result:\n")
     w("| Kind | Runs | Results |")
     w("|---|---|---|")
     for k in sorted(reg, key=lambda k: -sum(reg[k].values())):
         w(f"| {k} | {sum(reg[k].values())} | {', '.join(f'{r} {n}' for r, n in sorted(reg[k].items()))} |")
     w("")
     w("Only `live`, `probe`, `run`, `trace` and `check` runs observe IRIS or the product; `mc`, `proof` and `control` "
-      "runs are about models (a model result never counts as a test of a product premise below). The run counts "
-      "are those of the registry when this file was rendered.\n")
+      "runs are about models (cited as context, never counted as a test of a product or engine premise, except for "
+      "premises about the audit's own tools). A failing run here usually shows a premise false at the pin.\n")
 
     w("## B. The product's own suites at the pin\n")
     w("From the validation lane (`validation/SUITES.md`, `validation/results.json`): unit 24,794 passed, integration "
@@ -171,10 +185,10 @@ def render() -> str:
     w("| Source | Premises | " + " | ".join(vs) + " |")
     w("|---|---|" + "---|" * len(vs))
     tot = Counter()
-    for s in SRC_LABEL:
-        c = by_src.get(s, Counter())
+    for s in sorted(by_src, key=lambda x: (x != "TRUST", x.startswith("iris-contract"), x)):
+        c = by_src[s]
         tot.update(c)
-        w(f"| {SRC_LABEL[s]} | {sum(c.values())} | " + " | ".join(str(c.get(v, 0)) for v in vs) + " |")
+        w(f"| {src_label(s)} | {sum(c.values())} | " + " | ".join(str(c.get(v, 0)) for v in vs) + " |")
     w(f"| **total** | **{sum(tot.values())}** | " + " | ".join(f"**{tot.get(v, 0)}**" for v in vs) + " |")
     w("")
     w("### D.1 Premises shown false at the pin (tested-violated)\n")
@@ -217,14 +231,20 @@ def render() -> str:
     w("- The crash world with `SynchCommit=1` (needs the container reconfigured; the audit may not reconfigure it).")
     w("- The transaction-verb cases on IRIS 2026.3, the product premise's engine (`ver-avail-iris-2026.3`, "
       "blocked-access), on Enterprise / IRIS for Health and on a multi-node ECP or mirror setup (blocked-access).")
-    w("- Embedded SQL (`&sql`) against the contract's clauses (premise E-1): needs compiling a scratch class, outside "
-      "the scope rule without an operator ruling.")
+    w("- (Done since the first pass: premise E-1, embedded SQL, was validated by the contract-2 lane on the pin's own "
+      "compiled classes, `env2-e1-r1`, without compiling anything.)")
     w("- The spec-236 scratch suites (more than 8 licence units) and the %AI-dependent MCP cases.")
     w("- A fairness soak for the progress premises (PF-1..PF-6, MA-1..MA-4): long schedules with committers, "
       "stops and operator re-runs, asserting completion within a bound; feasible here but not run (the pin's "
       "bounded resume already fails progress: `live-fc1303-bounded-resume`).\n")
 
-    w("## G. Limits\n")
+    w("## G. Environment closure\n")
+    cl = json.loads((LANE / "closure.json").read_text())["summary"]
+    w(f"The environment conditions the proofs and models rely on are listed exactly in `CLOSURE.md` (gate 3.6-closure): "
+      f"{cl['conditions']} conditions, " + ", ".join(f"{k} {v}" for k, v in cl["by_status"].items()) +
+      ". It joins this map's engine and progress premises with the IRIS contract's clauses (r6 and contract-2) and "
+      "contract-2's outside-premise families, each with its validating run or its consequence.\n")
+    w("## H. Limits\n")
     w("- A premise's test is named from the registry and the findings' evidence; the checker verifies that every "
       "named run exists and is not a model run, that every upstream file exists at the pin, and that every "
       "premise has an entry. It does not re-judge whether the run really observes the premise.")

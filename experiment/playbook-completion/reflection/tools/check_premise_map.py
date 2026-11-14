@@ -27,7 +27,8 @@ or an untested/partial verdict without should_exist; [anchor] a MODELS.md anchor
 not in the file; [debt] a debt row without tests or without should_exist; [detection] the detection section differs
 from the one computed from the findings corpus and validation/results.json; [rule] a product-defect triage rule of
 the validation lane is not mapped to a finding, or maps to an unknown finding; [cited-test] a finding cites an
-upstream test file but has no relation entry, or a relation names a file the finding does not cite.
+upstream test file but has no relation entry, or a relation names a file the finding does not cite; [md] (main run
+only) TEST-REFLECTION.md is not the current rendering (build_test_reflection.py).
 """
 from __future__ import annotations
 
@@ -51,11 +52,19 @@ from check_root_causes import load_corpus  # noqa: E402
 VERDICTS = ("tested-holds", "tested-violated", "tested-partial", "untested")
 MODEL_KINDS = ("mc", "proof", "control")
 REPRODUCED = ("reproduced-live", "reproduced-test", "reproduced-model", "confirmed-source")
-PROOF_CRATES = ("proofs", "proofs-d9", "proofs-breadth", "proofs-d1b", "proofs-d1c", "proofs-d1d", "proofs-d1e",
-                "proofs-d1f")
+# every proof crate is read by glob (proofs*/PROOFS.md); none is listed by hand (review R4-09)
 
-# Stated assumptions of models/core/MODELS.md (prose, no ids there): id -> anchor (verbatim substring of the file).
-MODELS_ASSUMPTIONS = {
+
+def proof_crates() -> list:
+    return sorted(p.parent.name for p in ROOT.glob("proofs*/PROOFS.md"))
+
+
+def model_dirs() -> list:
+    return sorted(p.parent.name for p in (ROOT / "models").glob("*/MODELS.md"))
+
+# Stated assumptions of each models/<dir>/MODELS.md (prose, no ids there): dir -> {id -> anchor (verbatim substring)}.
+# A MODELS.md with no entry here fails the check ([missing]): its assumptions must be named before it is mapped.
+MODELS_ASSUMPTIONS = {"core": {
     "MA-1": "writers become quiet (the path adds no commit or bypass write)",
     "MA-2": "the operator resumes stopped or paused runs (calls are\nunbounded)",
     "MA-3": "no process is stopped forever (the path contains no stop)",
@@ -66,7 +75,32 @@ MODELS_ASSUMPTIONS = {
     "MA-8": "the census writers write content tables only",
     "MA-9": "batches of one record",
     "MA-10": "lock timeouts modelled as waits",
-}
+}, "core-partition": {
+    "MP-1": "three ids, two graphs, three edges, no temporal edges",
+    "MP-2": "at most 2 pre-enable writes, at most 2 ledger commits, at most 1 ledger-bypassing write",
+    "MP-3": "the explorer is executable and unproved",
+}}
+
+# Proof crates whose premises are stated in prose instead of a `| Id | Premise |` table: crate -> {id -> anchor}.
+# A crate with neither a premise table nor an entry here fails the check ([missing]).
+PROSE_PREMISES = {"proofs-mech": {
+    "PM-1": "the worker is weakly fair",
+    "PM-2": "the premise is that the run is resumed that many more times",
+    "PM-3": "Kept as in the explorer (not generalised)",
+}}
+RANGE = re.compile(r"^(.*?)(\d+)\.\.(.*?)(\d+)$")
+
+
+def expand_ids(cell: str) -> list:
+    """'P-L1..P-L3, P-L5' -> [P-L1, P-L2, P-L3, P-L5]; 'P-D9-1..P-D9-5' -> [P-D9-1 .. P-D9-5]."""
+    out = []
+    for tok in [re.sub(r"\s*\(.*\)$", "", t.strip()) for t in cell.split(",") if t.strip()]:
+        m = RANGE.match(tok)
+        if m and m.group(1) == m.group(3) and int(m.group(2)) <= int(m.group(4)):
+            out += [f"{m.group(1)}{n}" for n in range(int(m.group(2)), int(m.group(4)) + 1)]
+        else:
+            out.append(tok)
+    return out
 
 # Validation-lane triage rules that are product defects (validation/results.json `rules`), and the audit finding each
 # rule reproduces. Test-stale / test-isolation rules are the suite's own staleness, not product findings.
@@ -108,6 +142,9 @@ TEST_RELATIONS = {
     "F-C0502": {"tests/e2e/test_temporal_structural_row_live.py": "detects"},
     "F-C1002": {"tests/e2e/test_communities_e2e.py": "detects", "tests/perf/test_leiden_four_way.py": "context"},
     "F-C0606": {"tests/perf/test_227_single_graph_latency.py": "detects"},
+    "F-C0090": {"tests/unit/test_coverage_boost.py": "is-defect", "tests/unit/test_engine_deep.py": "is-defect"},
+    "F-C0715": {"tests/e2e/test_463_search_id_escaping_e2e.py": "misses"},
+    "F-C1641": {"tests/e2e/test_gql_node_queries.py": "misses"},
 }
 TEST_PATH = re.compile(r"\btests/[\w/.-]+\.py\b")
 
@@ -147,26 +184,29 @@ def source_premises() -> dict:
                             ("new", "New premises introduced", "| Premise |")):
         for c in table_rows(section(trust, title), hdr):
             out[f"TRUST:{tag}:{_clean(c)}"] = "experiment/playbook-completion/TRUST.md"
-    for crate in PROOF_CRATES:
-        p = ROOT / crate / "PROOFS.md"
-        text = p.read_text()
+    for crate in proof_crates():
+        text = (ROOT / crate / "PROOFS.md").read_text()
         rel = f"experiment/playbook-completion/{crate}/PROOFS.md"
-        for c in table_rows(text, "| Id | Premise |"):
-            cid = _clean(c)
-            m = re.match(r"^PF-(\d+)\.\.PF-(\d+)$", cid)
-            if m:
-                for n in range(int(m.group(1)), int(m.group(2)) + 1):
-                    out[f"{crate}:PF-{n}"] = rel
-            else:
+        rows = table_rows(text, "| Id | Premise |")
+        for c in rows:
+            for cid in expand_ids(_clean(c)):
                 out[f"{crate}:{cid}"] = rel
-        for n in sorted(set(re.findall(r"\bPF-(\d+)\b", text)), key=int):
+        for a, b in re.findall(r"\bPF-(\d+)\.\.PF-(\d+)\b", text):
+            for n in range(int(a), int(b) + 1):
+                out[f"{crate}:PF-{n}"] = rel
+        for n in set(re.findall(r"\bPF-(\d+)\b", text)):
             out[f"{crate}:PF-{n}"] = rel
-    models = (ROOT / "models" / "core" / "MODELS.md").read_text()
-    rel = "experiment/playbook-completion/models/core/MODELS.md"
-    for pid in sorted(set(re.findall(r"\bP-\d{4}\b", models))):
-        out[f"models-core:{pid}"] = rel
-    for mid in MODELS_ASSUMPTIONS:
-        out[f"models-core:{mid}"] = rel
+        for pid in PROSE_PREMISES.get(crate, {}):
+            out[f"{crate}:{pid}"] = rel
+        if not rows and crate not in PROSE_PREMISES:
+            out[f"{crate}:(no premise table and no named prose premises)"] = rel
+    for d in model_dirs():
+        models = (ROOT / "models" / d / "MODELS.md").read_text()
+        rel = f"experiment/playbook-completion/models/{d}/MODELS.md"
+        for pid in sorted(set(re.findall(r"\bP-\d{4}\b", models))):
+            out[f"models-{d}:{pid}"] = rel
+        for mid in MODELS_ASSUMPTIONS.get(d, {"(no named assumptions)": None}):
+            out[f"models-{d}:{mid}"] = rel
     contract = (ROOT / "iris-contract" / "CONTRACT.md").read_text()
     rel = "experiment/playbook-completion/iris-contract/CONTRACT.md"
     for c in table_rows(section(contract, "Clauses (validated)"), "| Id | Clause |"):
@@ -183,6 +223,14 @@ def source_premises() -> dict:
 def debt_rows() -> list:
     text = (ROOT / "PROOF-DEBT.md").read_text()
     return [_clean(c) for c in table_rows(text, "| # | Obligation |")]
+
+
+def anchor_for(key: str):
+    """The named anchor for a prose premise key, else None."""
+    head, _, pid = key.partition(":")
+    if head.startswith("models-"):
+        return MODELS_ASSUMPTIONS.get(head[len("models-"):], {}).get(pid)
+    return PROSE_PREMISES.get(head, {}).get(pid)
 
 
 def registry() -> dict:
@@ -260,8 +308,13 @@ def detection(corpus: dict) -> dict:
 
 
 # ---------------------------------------------------------------------------------------------- check
+def md_render() -> str:
+    from build_test_reflection import render  # noqa: E402  (rendering of the committed JSON files)
+    return render()
+
+
 def check(m: dict, sources: dict, debts: list, reg: dict, paths: set, models_text: str, det: dict,
-          corpus: dict) -> list:
+          corpus: dict, md: str | None = None) -> list:
     probs = []
     entries = m.get("premises", [])
     keys = Counter(e.get("key") for e in entries)
@@ -301,10 +354,11 @@ def check(m: dict, sources: dict, debts: list, reg: dict, paths: set, models_tex
                     probs.append(f"[upstream] {k}: {ref} is not a test file at the pin")
             else:
                 probs.append(f"[verdict] {k}: unknown test kind {kind}")
-        if str(k).startswith("models-core:MA-"):
+        want = anchor_for(k)
+        if want is not None:
             anchor = e.get("anchor") or ""
-            if not anchor or anchor not in models_text:
-                probs.append(f"[anchor] {k}: anchor not found in MODELS.md")
+            if anchor != want or anchor not in (REPO / e.get("source", "")).read_text():
+                probs.append(f"[anchor] {k}: anchor not found in its source or not the named one")
     dmap = {d.get("id"): d for d in m.get("proof_debt", [])}
     for d in debts:
         e = dmap.get(d)
@@ -342,6 +396,8 @@ def check(m: dict, sources: dict, debts: list, reg: dict, paths: set, models_tex
         for t, v in row["cited_upstream_tests"].items():
             if v == "unclassified":
                 probs.append(f"[cited-test] {f} cites {t} with no relation entry")
+    if md is not None and md != md_render():
+        probs.append("[md] TEST-REFLECTION.md is not the rendering of premise_tests.json, root_causes.json and closure.json")
     if m.get("detection") != det:
         a, b = m.get("detection") or {}, det
         diff = [k for k in set(a) | set(b) if a.get(k) != b.get(k)]
@@ -437,7 +493,29 @@ def self_test() -> int:
         caught += hit
         ok &= hit
         print(f"mutation {fn.__name__:24s} expects [{tag}]: {'CAUGHT' if hit else 'MISSED'} ({len(probs)} problems)")
-    print(f"self-test: {caught}/{len(muts)} seeded mutations caught; unmutated {'clean' if not p0 else 'NOT clean'}")
+    # extractor ratchets: ranges expand, every proofs*/PROOFS.md and models/*/MODELS.md is read, and a crate or
+    # model whose premises are not named fails as [missing]
+    ext = [("expand_ids", expand_ids("P-L1..P-L3, P-L5") == ["P-L1", "P-L2", "P-L3", "P-L5"]
+            and expand_ids("P-D9-1..P-D9-3") == ["P-D9-1", "P-D9-2", "P-D9-3"] and expand_ids("P-LV (named here)") == ["P-LV"]),
+           ("every crate read", {k.split(":")[0] for k in sources if k.startswith("proofs")} == set(proof_crates())),
+           ("every model read", {k.split(":")[0][len("models-"):] for k in sources if k.startswith("models-")} == set(model_dirs()))]
+    for name, pop in (("unnamed model assumptions", ("models", "core-partition")), ("unnamed prose premises", ("prose", "proofs-mech"))):
+        table = MODELS_ASSUMPTIONS if pop[0] == "models" else PROSE_PREMISES
+        saved = table.pop(pop[1])
+        try:
+            s2 = source_premises()
+            probs = check(base, s2, debts, reg, paths, models, det, corpus)
+            ext.append((name, any(p.startswith("[missing]") and "(no " in p for p in probs)))
+        finally:
+            table[pop[1]] = saved
+    stale = md_render() + "edited by hand\n"
+    ext.append(("stale TEST-REFLECTION.md", any(p.startswith("[md]") for p in
+                                                check(base, sources, debts, reg, paths, models, det, corpus, stale))))
+    for name, hit in ext:
+        print(f"extractor {name:28s}: {'CAUGHT/OK' if hit else 'FAILED'}")
+        ok &= hit
+        caught += hit
+    print(f"self-test: {caught}/{len(muts) + len(ext)} seeded mutations and extractor checks passed; unmutated {'clean' if not p0 else 'NOT clean'}")
     print("SELF-TEST PASS" if ok else "SELF-TEST FAIL")
     return 0 if ok else 1
 
@@ -450,13 +528,26 @@ def main() -> int:
         return 0
     m = json.loads(MAP.read_text())
     sources, debts, reg, paths, models, det, corpus = context()
-    probs = check(m, sources, debts, reg, paths, models, det, corpus)
+    tr = LANE / "TEST-REFLECTION.md"
+    probs = check(m, sources, debts, reg, paths, models, det, corpus, tr.read_text() if tr.exists() else "")
     v = Counter(e.get("verdict") for e in m.get("premises", []))
     by_src = Counter(e.get("key").split(":")[0] for e in m.get("premises", []))
-    print(f"premises in sources: {len(sources)}; entries: {len(m.get('premises', []))} {dict(sorted(by_src.items()))}; "
-          f"verdicts {dict(sorted(v.items()))}; debt rows {len(debts)}; "
-          f"reproduced findings {det['counts']['reproduced']}, detected by a product test {det['counts']['detected']}, "
-          f"not detected {det['counts']['not_detected']}")
+    print(f"proof crates read by glob ({len(proof_crates())}): {', '.join(proof_crates())}")
+    print(f"models read by glob ({len(model_dirs())}): {', '.join(model_dirs())}")
+    print(f"premises in sources: {len(sources)}; entries: {len(m.get('premises', []))}")
+    for src_name, n in sorted(by_src.items()):
+        vv = Counter(e["verdict"] for e in m["premises"] if e["key"].split(":")[0] == src_name)
+        print(f"  {src_name:22s} {n:3d}  " + ", ".join(f"{k} {vv.get(k, 0)}" for k in VERDICTS))
+    print("verdicts: " + ", ".join(f"{k} {v.get(k, 0)}" for k in VERDICTS))
+    print(f"debt rows ({len(debts)}): {', '.join(debts)}")
+    c = det["counts"]
+    print(f"findings {c['findings']}; reproduced {c['reproduced']}; detected by a red product test {c['detected']} "
+          f"({', '.join(det['detected'])}); not detected {c['not_detected']} (by severity "
+          f"{', '.join(f'{k} {n}' for k, n in c['not_detected_by_severity'].items())}); reproduced S1 not detected "
+          f"{len(det['not_detected_s1'])}; intent-undecided or blocked {c['intent_undecided_or_blocked']}")
+    print(f"product-defect triage rules mapped: {len(det['product_defect_rules'])} "
+          f"({', '.join(f'{r}->{f}' for r, f in det['rule_to_finding'].items())}); cited upstream test relations: "
+          + ", ".join(f"{k} {n}" for k, n in c["cited_test_relations"].items()))
     for p in probs:
         print("PROBLEM", p)
     print("CHECK PASS" if not probs else f"CHECK FAIL ({len(probs)} problems)")

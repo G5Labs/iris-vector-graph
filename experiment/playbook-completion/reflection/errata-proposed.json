@@ -1,0 +1,40 @@
+{
+ "_doc": "Proposed errata (reflection lane, r3) for evidence/errata.json, after review R4-14: rf-* observes texts that state figures their logs do not show. Each superseding -r3 run's log prints every figure its observes states.",
+ "errata": [
+  {
+   "id": "rf-root-causes-check",
+   "correction": "The observes text states figures the log does not show: '260 audit records', the 'last file wins for F-0908, F-1001, F-C1803' list, the excluded ids and dispositions, and '7 conditional (5 intent-undecided, 2 blocked-access)'. The log shows only 257 finding ids (197 original, 60 new), 33 root causes, 253 assigned, 4 excluded and CHECK PASS. The other figures were computed by the same loader into root_causes.json but are not evidenced by this log. Superseded by rf-root-causes-check-r3, whose log prints them.",
+   "evidence": [
+    "rf-root-causes-check",
+    "rf-root-causes-check-r3"
+   ],
+   "added": "2026-11-14, reported by the reflection lane (review R4-14)"
+  },
+  {
+   "id": "rf-root-causes-check-r2",
+   "correction": "The observes text states figures the log does not show: '260 audit records in 25 files', the excluded ids and dispositions, '7 conditional', and that the semantics files were absent and draft ids recorded. The log shows only 257 finding ids (197 original, 60 new), 33 root causes, 253 assigned, 4 excluded and CHECK PASS. Superseded by rf-root-causes-check-r3.",
+   "evidence": [
+    "rf-root-causes-check-r2",
+    "rf-root-causes-check-r3"
+   ],
+   "added": "2026-11-14, reported by the reflection lane (review R4-14)"
+  },
+  {
+   "id": "rf-premise-map-check",
+   "correction": "The observes text goes beyond its log and misdescribes the extraction: it says premises were extracted from 'proofs*/PROOFS.md premise tables', but the checker read eight hand-listed crates (PROOF_CRATES), so proofs-d9b and proofs-pa3 premises were never checked (review R4-09). The log does not show the breakdown of the 224 premises by kind (21 TRUST rows, 4 P-ids + 10 MODELS.md assumptions, 32 clauses, E-1, Freedom, 25 outside features), that every cited run is registered and none a model run, that every upstream file exists at the pin, the four detected finding ids, '39 S1' or '7 product-defect triage rules'. The log shows 224 premises and entries with counts per source, the four verdict counts, 13 debt rows, 246 reproduced, 4 detected, 242 not detected and CHECK PASS. Superseded by rf-premise-map-check-r3 (glob over every proofs*/PROOFS.md; the log prints each stated figure).",
+   "evidence": [
+    "rf-premise-map-check",
+    "rf-premise-map-check-r3"
+   ],
+   "added": "2026-11-14, reported by the reflection lane (review R4-09, R4-14)"
+  },
+  {
+   "id": "rf-premise-map-check-r3",
+   "correction": "'TEST-REFLECTION.md current' is shown by the log's CHECK PASS only (the check includes the [md] rule, which would print a PROBLEM line if the file were stale); the log does not print the currency of TEST-REFLECTION.md as a separate line.",
+   "evidence": [
+    "rf-premise-map-check-r3"
+   ],
+   "added": "2026-11-14, reported by the reflection lane (self-correction)"
+  }
+ ]
+}

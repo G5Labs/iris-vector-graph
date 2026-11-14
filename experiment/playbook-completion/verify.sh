@@ -81,6 +81,8 @@ step root-causes-check    300 python3 "$here/reflection/tools/check_root_causes.
 step root-causes-selftest 600 python3 "$here/reflection/tools/check_root_causes.py" --self-test
 step premise-map-check    300 python3 "$here/reflection/tools/check_premise_map.py"
 step premise-map-selftest 600 python3 "$here/reflection/tools/check_premise_map.py" --self-test
+step closure-check       300 python3 "$here/reflection/tools/check_closure.py"
+step closure-selftest    600 python3 "$here/reflection/tools/check_closure.py" --self-test
 step ownership-selftest   600 python "$here/structural/ownership/ownership.py" --self-test
 step crash-oracle-selftest 60 python "$here/traces/crash_world.py" --self-test-oracle
 rm -rf "$out/disconnect-copy"; cp -r "$RUN_DIR/product-gates/disconnect-r1" "$out/disconnect-copy" 2>/dev/null

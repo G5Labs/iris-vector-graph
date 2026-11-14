@@ -16,7 +16,8 @@ Rules (each problem carries a tag; the self-test asserts the tag):
   [twice]          an id appears more than once across primary lists and the excluded list
   [unknown-id]     an id named anywhere (primary, secondary, excluded, assignments) is not in the corpus
   [orig-unaudited] an original F-NNNN id has no audit record
-  [excluded]       an excluded id is not refuted/not-reproduced in the corpus, or a refuted/not-reproduced id is primary
+  [excluded]       an excluded id is not refuted/not-reproduced/duplicate in the corpus, or such an id is primary
+  [xref]           a root cause names an AX-NN / M-NN id absent from semantics/axioms.json / mechanisms.json
   [severity]       highest_severity or severity_counts of a root cause differ from its primary members' severities
   [secondary]      a root cause lists as secondary a finding whose primary is that same root cause
   [assignment]     the per-finding assignments disagree with the root-cause lists
@@ -44,7 +45,7 @@ UPLIFT = ROOT.parent / "playbook-uplift"
 MAP = LANE / "root_causes.json"
 MD = LANE / "ROOT-CAUSES.md"
 SEV_ORDER = {"S1": 1, "S2": 2, "S3": 3, "S4": 4}
-EXCLUDED_DISPOSITIONS = ("refuted", "not-reproduced")
+EXCLUDED_DISPOSITIONS = ("refuted", "not-reproduced", "duplicate")
 CONDITIONAL_DISPOSITIONS = ("intent-undecided", "blocked-access")
 
 
@@ -75,6 +76,16 @@ def axiom_ids() -> set:
     return set(re.findall(r"^\|\s*(SYS-I\d+)\s*\|", text, re.M))
 
 
+def semantics_ids() -> tuple:
+    """(axiom ids, mechanism ids) of the semantics lane's final files; None when a file is absent."""
+    sem = ROOT / "semantics"
+    out = []
+    for fname, key in (("axioms.json", "axioms"), ("mechanisms.json", "mechanisms")):
+        p = sem / fname
+        out.append({x["id"] for x in json.loads(p.read_text())[key]} if p.exists() else None)
+    return tuple(out)
+
+
 def top10(rcs: list) -> list:
     def key(rc):
         sev = Counter(rc["severity_counts"])
@@ -82,7 +93,7 @@ def top10(rcs: list) -> list:
     return [rc["id"] for rc in sorted(rcs, key=key)[:10]]
 
 
-def check(rcmap: dict, corpus: dict, md_text: str | None, axioms: set) -> list:
+def check(rcmap: dict, corpus: dict, md_text: str | None, axioms: set, sem: tuple = (None, None)) -> list:
     problems = []
     recs = corpus["records"]
     ids = set(recs)
@@ -108,6 +119,11 @@ def check(rcmap: dict, corpus: dict, md_text: str | None, axioms: set) -> list:
         for a in rc.get("violates", {}).get("axioms", []):
             if a not in axioms:
                 problems.append(f"[axiom] {rc.get('id')} names {a}, not an axiom of 00-system.md")
+        x = rc.get("semantics_xref") or {}
+        for kind, known in (("axioms", sem[0]), ("mechanisms", sem[1])):
+            for i in x.get(kind, []):
+                if known is None or i not in known:
+                    problems.append(f"[xref] {rc.get('id')} names {i}, not in semantics/{kind}.json")
         for f in rc.get("primary", []):
             seen[f] += 1
             if f not in ids:
@@ -207,8 +223,9 @@ def self_test() -> int:
     corpus = load_corpus()
     md = MD.read_text()
     ax = axiom_ids()
+    sem = semantics_ids()
     ok = True
-    p0 = check(base, corpus, md, ax)
+    p0 = check(base, corpus, md, ax, sem)
     print(f"unmutated: {len(p0)} problems")
     if p0:
         ok = False
@@ -276,6 +293,15 @@ def self_test() -> int:
     def m_summary(m, c):
         m["summary"]["top10"] = list(reversed(m["summary"]["top10"]))
 
+    def m_xref(m, c):
+        r = next(x for x in m["root_causes"] if x["semantics_xref"]["mechanisms"])
+        r["semantics_xref"]["mechanisms"].append("M-99")
+
+    def m_duplicate_assigned(m, c):
+        e = next(x for x in m["excluded"] if x["disposition"] == "duplicate")
+        m["excluded"].remove(e)
+        m["root_causes"][0]["primary"].append(e["id"])
+
     def m_md(m, c):
         return md.replace(f"| {big['id']} |", f"| {big['id']}x |", 1)
 
@@ -283,13 +309,14 @@ def self_test() -> int:
                  ("excluded", m_excluded_assigned), ("excluded", m_excluded_wrong), ("severity", m_severity),
                  ("severity", m_severity_counts), ("secondary", m_secondary), ("assignment", m_assignment),
                  ("rc-id", m_rcid), ("fields", m_fields), ("axiom", m_axiom), ("missing", m_corpus_new),
-                 ("excluded", m_corpus_disp), ("conditional", m_conditional), ("summary", m_summary), ("md", m_md)]
+                 ("excluded", m_corpus_disp), ("conditional", m_conditional), ("summary", m_summary), ("md", m_md), ("xref", m_xref),
+                 ("excluded", m_duplicate_assigned)]
     caught = 0
     for tag, fn in mutations:
         m = copy.deepcopy(base)
         c = copy.deepcopy(corpus)
         md2 = fn(m, c)
-        probs = check(m, c, md2 if isinstance(md2, str) else md, ax)
+        probs = check(m, c, md2 if isinstance(md2, str) else md, ax, sem)
         hit = any(p.startswith(f"[{tag}]") for p in probs)
         caught += hit
         print(f"mutation {fn.__name__:22s} expects [{tag}]: {'CAUGHT' if hit else 'MISSED'} ({len(probs)} problems)")
@@ -304,11 +331,31 @@ def main() -> int:
         return self_test()
     rcmap = json.loads(MAP.read_text())
     corpus = load_corpus()
-    probs = check(rcmap, corpus, MD.read_text() if MD.exists() else "", axiom_ids())
+    sem = semantics_ids()
+    probs = check(rcmap, corpus, MD.read_text() if MD.exists() else "", axiom_ids(), sem)
     recs = corpus["records"]
-    print(f"corpus: {len(recs)} finding ids ({len(corpus['original'])} original, {len(set(recs) - set(corpus['original']))} new); "
-          f"root causes: {len(rcmap['root_causes'])}; assigned {sum(len(r['primary']) for r in rcmap['root_causes'])}; "
-          f"excluded {len(rcmap['excluded'])}")
+    nfiles = len(list((ROOT / "findings" / "audit").glob("*.json")))
+    nrecs = sum(len(v) for v in corpus["files"].values())
+    rcs = rcmap["root_causes"]
+    disp = Counter(r.get("disposition") for r in recs.values())
+    print(f"corpus: {nrecs} audit records in {nfiles} files; {len(recs)} finding ids ({len(corpus['original'])} original, "
+          f"{len(set(recs) - set(corpus['original']))} new); ids recorded in several files (last file wins): "
+          f"{', '.join(f'{k} ({chr(32).join(v)})' for k, v in sorted(corpus['files'].items()) if len(v) > 1)}")
+    print("dispositions: " + ", ".join(f"{k} {v}" for k, v in sorted(disp.items())))
+    print(f"root causes: {len(rcs)}; assigned (primary) {sum(len(r['primary']) for r in rcs)}; "
+          f"conditional {sum(len(r.get('conditional', [])) for r in rcs)}; excluded {len(rcmap['excluded'])}: "
+          + ", ".join(f"{e['id']} {e['disposition']}" for e in rcmap["excluded"]))
+    sev = Counter(recs[f]["severity"] for r in rcs for f in r["primary"])
+    print("assigned by severity: " + ", ".join(f"{k} {sev[k]}" for k in ("S1", "S2", "S3", "S4")))
+    for r in rcs:
+        sc = r.get("severity_counts", {})
+        print(f"  {r['id']} {len(r['primary']):3d} findings, highest {r.get('highest_severity')}, "
+              f"S1..S4 {[sc.get(k, 0) for k in ('S1', 'S2', 'S3', 'S4')]}, conditional {len(r.get('conditional', []))}, "
+              f"secondary {len(r.get('secondary', []))}, axioms {r['violates']['axioms'] + r.get('semantics_xref', {}).get('axioms', [])}, "
+              f"mechanisms {r.get('semantics_xref', {}).get('mechanisms', [])}")
+    print(f"top10: {', '.join(rcmap['summary'].get('top10', []))} (covering {rcmap['summary'].get('top10_cover')})")
+    print(f"semantics final ids present: axioms {sem[0] is not None} ({len(sem[0] or [])}), "
+          f"mechanisms {sem[1] is not None} ({len(sem[1] or [])})")
     for p in probs:
         print("PROBLEM", p)
     print("CHECK PASS" if not probs else f"CHECK FAIL ({len(probs)} problems)")

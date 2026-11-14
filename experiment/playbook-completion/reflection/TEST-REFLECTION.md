@@ -1,22 +1,24 @@
 # Test reflection (completion audit, playbook §3.8)
 
-Lane reflection, product pin `3eaa79cf`, IRIS 2026.1 Community in the dedicated audit container. Level: **method**. What the completion audit's proofs and models rely on, which test checks each premise, what testing covers for each unpaid proof-debt row, and whether the product's own suites detect the defects this audit reproduced. Machine-readable twin: `premise_tests.json`, checked by `tools/check_premise_map.py` (registered `rf-premise-map-check`, self-test `rf-premise-map-selftest`); this file is rendered from it by `tools/build_test_reflection.py`. The original submission's `experiment/playbook-uplift/TEST-REFLECTION.md` (sections A-E) is the model for the structure; its premise table (section D) covered the worked example only.
+Lane reflection, product pin `3eaa79cf`, IRIS 2026.1 Community in the dedicated audit container. Level: **method**. What the completion audit's proofs and models rely on, which test checks each premise, what testing covers for each unpaid proof-debt row, and whether the product's own suites detect the defects this audit reproduced. Machine-readable twin: `premise_tests.json`, checked by `tools/check_premise_map.py` (registered `rf-premise-map-check-r3`, self-test `rf-premise-map-selftest-r3`; first pass `rf-premise-map-check`); this file is rendered from it by `tools/build_test_reflection.py`. The original submission's `experiment/playbook-uplift/TEST-REFLECTION.md` (sections A-E) is the model for the structure; its premise table (section D) covered the worked example only.
 
-## A. The audit's own tests (what the registry holds)
+## A. The audit's own tests that this reflection cites
+
+206 distinct registered runs are cited below (premise tests, proof-debt coverage, detections), by kind and result:
 
 | Kind | Runs | Results |
 |---|---|---|
-| mc | 233 | expected-violation 159, pass 74 |
-| live | 195 | blocked 1, fail 161, incomplete 2, pass 31 |
-| control | 192 | expected-violation 183, pass 9 |
-| run | 139 | blocked 23, fail 60, incomplete 2, pass 54 |
-| probe | 78 | blocked 2, expected-violation 9, fail 30, incomplete 2, pass 35 |
-| check | 70 | fail 25, incomplete 3, pass 42 |
-| proof | 17 | pass 17 |
-| trace | 7 | fail 3, pass 4 |
-| review | 5 | fail 4, pass 1 |
+| live | 73 | fail 57, pass 16 |
+| probe | 38 | blocked 1, expected-violation 7, fail 14, pass 16 |
+| run | 28 | fail 19, pass 9 |
+| check | 22 | fail 3, incomplete 2, pass 17 |
+| mc | 20 | expected-violation 19, pass 1 |
+| control | 13 | expected-violation 10, pass 3 |
+| trace | 8 | fail 3, pass 5 |
+| proof | 3 | pass 3 |
+| review | 1 | pass 1 |
 
-Only `live`, `probe`, `run`, `trace` and `check` runs observe IRIS or the product; `mc`, `proof` and `control` runs are about models (a model result never counts as a test of a product premise below). The run counts are those of the registry when this file was rendered.
+Only `live`, `probe`, `run`, `trace` and `check` runs observe IRIS or the product; `mc`, `proof` and `control` runs are about models (cited as context, never counted as a test of a product or engine premise, except for premises about the audit's own tools). A failing run here usually shows a premise false at the pin.
 
 ## B. The product's own suites at the pin
 
@@ -28,9 +30,9 @@ From the validation lane (`validation/SUITES.md`, `validation/results.json`): un
 
 ## C. Does the product's own suite detect the defects this audit reproduced?
 
-Reproduced findings (reproduced-live, reproduced-test, reproduced-model, confirmed-source): **246**. Detected by a product test that is red at the pin because of the defect: **4** (F-C0502, F-C0606, F-C1002, F-C1706). **Not detected by any product test: 242** (by severity S1 39, S2 99, S3 78, S4 26; by disposition confirmed-source 45, reproduced-live 177, reproduced-model 8, reproduced-test 12). 7 further findings are intent-undecided or blocked-access and are not counted either way.
+Reproduced findings (reproduced-live, reproduced-test, reproduced-model, confirmed-source): **296**. Detected by a product test that is red at the pin because of the defect: **4** (F-C0502, F-C0606, F-C1002, F-C1706). **Not detected by any product test: 292** (by severity S1 43, S2 113, S3 93, S4 43; by disposition confirmed-source 56, reproduced-live 217, reproduced-model 7, reproduced-test 12). 8 further findings are intent-undecided or blocked-access and are not counted either way.
 
-The four detected findings are the validation lane's own: they were found by running the suites (`zz-validation.json`), so the suites detected nothing the other lanes found. Every S1 finding that is reproduced (39) is undetected by the product's tests.
+The four detected findings are the validation lane's own: they were found by running the suites (`zz-validation.json`), so the suites detected nothing the other lanes found. Every S1 finding that is reproduced (43) is undetected by the product's tests.
 
 | Detected finding | Triage rules | Product tests (examples) | Registered runs |
 |---|---|---|---|
@@ -39,7 +41,7 @@ The four detected findings are the validation lane's own: they were found by run
 | F-C1002 | leiden-karate-ari | tests.e2e.test_communities_e2e.TestLeidenCommunities::test_leiden_karate_club_ari | val-driver532-1, val-driver540-1, val-driver540-2 |
 | F-C1706 | decimal-score, duplicate-listerror, list-param-count, rrf-score-string | tests.integration.test_algorithms_new_paths.TestAlgorithmCypherWrappers::test_closeness_via_cypher; tests.integration.test_algorithms_new_paths.TestAlgorithmCypherWrappers::test_degree_centrality_via_cypher; tests.e2e.test_460_proc_yield_alias_e2e::test_the_value_under_its_alias[ppr] | val-docs-run-1, val-docs-run-2, val-driver532-1, val-gated-2, val-gated-3, val-gated-4 |
 
-Upstream tests the findings themselves cite, by relation to the defect (context 2, detects 5, enshrines 7, is-defect 3, misses 9):
+Upstream tests the findings themselves cite, by relation to the defect (context 2, detects 5, enshrines 7, is-defect 5, misses 11):
 
 | Finding | Upstream test | Relation |
 |---|---|---|
@@ -60,12 +62,16 @@ Upstream tests the findings themselves cite, by relation to the defect (context 
 | F-1112 | `tests/e2e/test_460_r281_ledger_post_commit_graph_e2e.py` | is-defect |
 | F-1112 | `tests/e2e/test_460_r290_ledger_node_ops_graph_e2e.py` | is-defect |
 | F-1509 | `tests/unit/test_231_fhir_bridge_fixes.py` | misses |
+| F-C0090 | `tests/unit/test_coverage_boost.py` | is-defect |
+| F-C0090 | `tests/unit/test_engine_deep.py` | is-defect |
 | F-C0502 | `tests/e2e/test_temporal_structural_row_live.py` | detects |
 | F-C0606 | `tests/perf/test_227_single_graph_latency.py` | detects |
+| F-C0715 | `tests/e2e/test_463_search_id_escaping_e2e.py` | misses |
 | F-C1002 | `tests/e2e/test_communities_e2e.py` | detects |
 | F-C1002 | `tests/perf/test_leiden_four_way.py` | context |
 | F-C1305 | `tests/unit/test_227_erase_plan.py` | enshrines |
 | F-C1306 | `tests/e2e/test_460_upgrade_ledger_history_e2e.py` | misses |
+| F-C1641 | `tests/e2e/test_gql_node_queries.py` | misses |
 | F-C1706 | `tests/e2e/test_460_proc_yield_alias_e2e.py` | detects |
 | F-C1706 | `tests/e2e/test_460_r284_retrieve_rrf_score_e2e.py` | detects |
 | F-C1802 | `tests/unit/test_460_r271_snapshot_raises.py` | misses |
@@ -76,39 +82,42 @@ Undetected findings by root cause, and the product test that would have detected
 
 | Root cause | Findings | Not detected | Test that should exist |
 |---|---|---|---|
-| RC-01 Graph scope is added by hand to each statement | 20 | 19 | a two-graph fixture with one id held by both graphs, run through every reader and writer (USE GRAPH, all-graphs, default graph) |
+| RC-01 Graph scope is added by hand to each statement | 22 | 21 | a two-graph fixture with one id held by both graphs, run through every reader and writer (USE GRAPH, all-graphs, default graph) |
 | RC-02 Stored facts whose key omits the graph | 8 | 8 | the same fixture for ownership checks: redaction targets, node deletes, verify(), index use under a graph, snapshot round trip of named-graph rows |
-| RC-03 Removal reach is not derived from a declared store inventory | 11 | 11 | an inventory-driven residue scan after erase + redact over every store, field and copy (indexes, temporal globals, routes, quarantine, legacy rows, archives), as the simulator's SC-001 scan does for the ledger |
+| RC-03 Removal reach is not derived from a declared store inventory | 12 | 12 | an inventory-driven residue scan after erase + redact over every store, field and copy (indexes, temporal globals, routes, quarantine, legacy rows, archives), as the simulator's SC-001 scan does for the ledger |
 | RC-04 Erase, ledger commits and redaction start are not serialized on the ledger head lock | 10 | 10 | two-process interleaving tests at the eraser / commit / redaction-start boundaries with a held lock to force the window (as live-f1201-reproduced and ib-HD1201-open-erasure) |
-| RC-05 Unlocked read-modify-write of shared facts outside the ledger | 8 | 7 | a two-process interleaving test per read-modify-write handler (mode switch, BM25 build, rebuild, DropAll, queue claim, counters) |
+| RC-05 Unlocked read-modify-write of shared facts outside the ledger | 10 | 9 | a two-process interleaving test per read-modify-write handler (mode switch, BM25 build, rebuild, DropAll, queue claim, counters) |
 | RC-06 Derived stores and caches have no reliable staleness signal | 11 | 10 | per derived store: write, roll back, read; and write on every path (weights, node-only, temporal), then read the cache |
 | RC-07 Multi-call readers have no consistency protocol | 2 | 2 | a reader paused between pages while a redaction runs; an export while a writer holds an open transaction |
-| RC-08 The ledger is not the single writer of governed content | 8 | 7 | strict mode and a redaction marker against every writer of the census (not only the engine's guarded calls) |
+| RC-08 The ledger is not the single writer of governed content | 10 | 9 | strict mode and a redaction marker against every writer of the census (not only the engine's guarded calls) |
 | RC-09 Retries re-execute effects the idempotency record does not cover | 5 | 5 | lost-acknowledgement retries of commits with post-commit properties, and of HTTP writes through the client and server |
-| RC-10 A command's writes are not one validated, all-or-nothing unit | 9 | 9 | fault injection after the first write of each multi-step command, asserting no store changed |
+| RC-10 A command's writes are not one validated, all-or-nothing unit | 12 | 12 | fault injection after the first write of each multi-step command, asserting no store changed |
 | RC-11 IVG ObjectScript writers roll back their caller's transaction | 2 | 2 | a failing IVG call inside a caller's open transaction, asserting the caller's own write survives |
-| RC-12 Environment premises are asserted, not validated | 9 | 6 | the suites on every supported cell (engine version x edition x driver x optional library), as the validation lane's driver A/B did for 5.3.2 vs 5.4.0 |
-| RC-13 The IVG Schema name is not resolved from one source | 6 | 6 | the suites on a namespace installed with a non-default IVG Schema |
-| RC-14 Failures are swallowed into empty, default or success answers | 14 | 14 | fault-injected reads and writes asserting a raise, not an empty or default answer |
+| RC-12 Environment premises are asserted, not validated | 12 | 9 | the suites on every supported cell (engine version x edition x driver x optional library), as the validation lane's driver A/B did for 5.3.2 vs 5.4.0 |
+| RC-13 The IVG Schema name is not resolved from one source | 7 | 7 | the suites on a namespace installed with a non-default IVG Schema |
+| RC-14 Failures are swallowed into empty, default or success answers | 16 | 16 | fault-injected reads and writes asserting a raise, not an empty or default answer |
 | RC-15 Refusals are not mapped to one typed error hierarchy at the boundary | 8 | 8 | a test that enumerates exported exception classes and server reason codes against IVGError and the HTTP/SDK maps |
-| RC-16 The Cypher and AQL translators have no reference semantics | 10 | 10 | the typed openCypher TCK on mixed data and a differential oracle per clause shape |
+| RC-16 The Cypher and AQL translators have no reference semantics | 13 | 13 | the typed openCypher TCK on mixed data and a differential oracle per clause shape |
 | RC-17 Stored values carry no type | 7 | 7 | round trips of every value type through every writer and reader |
 | RC-18 Domain codes, units and metrics are untyped | 7 | 7 | one test per enum value, unit and metric (refusal of unknown values; normalisation and sort direction) |
-| RC-19 Query text is built by pasting values | 2 | 2 | hostile literals and identifiers at every query entry, with read_only set |
-| RC-20 No server-side authorization or exposure boundary | 6 | 6 | calls as the documented least-privilege role and from a non-loopback address, asserting refusal |
+| RC-19 Query text is built by pasting values | 3 | 3 | hostile literals and identifiers at every query entry, with read_only set |
+| RC-20 No server-side authorization or exposure boundary | 7 | 7 | calls as the documented least-privilege role and from a non-loopback address, asserting refusal |
 | RC-21 Edge identity for parallel edges is not one rule | 6 | 6 | a multigraph fixture through every reader, writer and verifier |
-| RC-22 The temporal mark has no single predicate and adoption step | 5 | 5 | every writer and deleter over a marked row, asserting one shared predicate |
-| RC-23 Results depend on storage order or join multiplicity | 8 | 7 | row-permutation tests: the same logical state inserted in different orders gives the same answers |
+| RC-22 Derived-row marks are ordinary qualifier keys with no single predicate | 8 | 8 | every writer, deleter and the ledger over rows carrying 'temporal' / 'inferred' qualifiers, asserting one shared predicate and a reserved key |
+| RC-23 Results depend on storage order or join multiplicity | 11 | 10 | row-permutation tests: the same logical state inserted in different orders gives the same answers |
 | RC-24 Identity by a non-injective checksum | 3 | 3 | a birthday-collision fixture (the audit's b-09 search) in the native-plan tests |
-| RC-25 Restore writes stores directly instead of through their owners | 4 | 4 | restore tests against a live ledger that moved on, with overlapping merges and derived stores |
+| RC-25 Restore writes stores directly instead of through their owners | 5 | 5 | restore tests against a live ledger that moved on, with overlapping merges and derived stores |
 | RC-26 Vector identity is enforced per seam and fails open | 7 | 7 | every vector-writing seam against a declared model of another identity and width, and with the registry unreadable |
-| RC-27 Input validation is per entry point, not at the shared write boundary | 7 | 7 | boundary inputs (reserved names, control characters, negative timestamps, wrong widths, schema limits) at every entry |
-| RC-28 Resource bounds are not declared | 6 | 5 | each declared bound at and beyond its limit |
+| RC-27 Input validation is per entry point, not at the shared write boundary | 8 | 8 | boundary inputs (reserved names, control characters, negative timestamps, wrong widths, schema limits) at every entry |
+| RC-28 Resource bounds are not declared | 10 | 8 | each declared bound at and beyond its limit |
 | RC-29 Parallel implementations of one operation diverge | 5 | 4 | differential tests that run every route of one operation on the same fixtures |
 | RC-30 Progress is not designed for resumable or queued work | 2 | 2 | progress tests: a bounded run finishes in finitely many calls; a queue serves every entry under steady load |
 | RC-31 Descriptions are written by hand and not checked against the code | 16 | 16 | executed documentation examples and generated contracts (wire schema, constraint lists, status parts) compared in CI |
-| RC-32 Test, packaging and deploy tooling diverges from the product | 5 | 5 | CI that installs from the package and runs the deploy recipes, console scripts and fixtures as shipped |
-| RC-33 Stated refusals, options and protocol verbs are accepted and ignored | 16 | 15 | a mechanically generated list of documented refusals, parameters and protocol verbs, each with a test |
+| RC-32 Test, packaging and deploy tooling diverges from the product | 6 | 6 | CI that installs from the package and runs the deploy recipes, console scripts and fixtures as shipped |
+| RC-33 Stated refusals, options and protocol verbs are accepted and ignored | 18 | 17 | a mechanically generated list of documented refusals, parameters and protocol verbs, each with a test |
+| RC-34 Stores have no enforced single write owner | 7 | 7 | a store-ownership census in CI (as st-check-own-census) that fails on a write outside the owner |
+| RC-35 Bulk loads bypass the indexes and key checks every other path relies on | 4 | 4 | a bulk load followed at once by erase, redaction and duplicate inserts, asserting the indexes see the rows |
+| RC-36 Server answers are hand-encoded text decoded by patterns | 4 | 4 | round trips of hostile ids and names (commas, spaces, control characters, '.5') through every server answer |
 
 ## D. Premises and their tests
 
@@ -116,24 +125,29 @@ Every premise named in the sources below has an entry (the checker extracts them
 
 | Source | Premises | tested-holds | tested-violated | tested-partial | untested |
 |---|---|---|---|---|---|
-| TRUST.md (trusted items and premise tables) | 21 | 5 | 7 | 7 | 2 |
+| TRUST.md (trusted items and premise tables) | 22 | 6 | 7 | 8 | 1 |
+| models/core/MODELS.md (stated assumptions) | 14 | 1 | 4 | 9 | 0 |
+| models/core-partition/MODELS.md (stated assumptions) | 3 | 0 | 0 | 3 | 0 |
 | proofs/PROOFS.md | 8 | 0 | 3 | 5 | 0 |
-| proofs-d9/PROOFS.md | 12 | 0 | 3 | 8 | 1 |
 | proofs-breadth/PROOFS.md | 12 | 0 | 5 | 6 | 1 |
 | proofs-d1b/PROOFS.md | 14 | 0 | 6 | 5 | 3 |
 | proofs-d1c/PROOFS.md | 18 | 2 | 4 | 12 | 0 |
 | proofs-d1d/PROOFS.md | 20 | 0 | 4 | 13 | 3 |
 | proofs-d1e/PROOFS.md | 24 | 0 | 5 | 9 | 10 |
 | proofs-d1f/PROOFS.md | 22 | 0 | 3 | 10 | 9 |
-| models/core/MODELS.md (stated assumptions) | 14 | 1 | 4 | 9 | 0 |
-| iris-contract/CONTRACT.md (clauses, E-1, Freedom, outside-subset features) | 59 | 31 | 0 | 2 | 26 |
-| **total** | **224** | **39** | **44** | **86** | **55** |
+| proofs-d9/PROOFS.md | 12 | 0 | 3 | 8 | 1 |
+| proofs-d9b/PROOFS.md | 11 | 0 | 2 | 6 | 3 |
+| proofs-d9c/PROOFS.md | 17 | 0 | 4 | 10 | 3 |
+| proofs-mech/PROOFS.md (prose premises) | 3 | 0 | 0 | 2 | 1 |
+| proofs-pa3/PROOFS.md | 15 | 0 | 5 | 8 | 2 |
+| iris-contract/CONTRACT.md (clauses, E-1, Freedom, outside-subset features) | 59 | 34 | 0 | 5 | 20 |
+| **total** | **274** | **43** | **55** | **119** | **57** |
 
 ### D.1 Premises shown false at the pin (tested-violated)
 
 | Premise | Statement | Test (registered run) |
 |---|---|---|
-| TRUST:changed:P-1306 writers quiet during a run | writers are quiet during a redaction run; narrowed: quiet is not enough | ib-HD1201-open-erasure, fu-r03-marker-held-open |
+| TRUST:changed:P-1306 writers quiet during a run | writers are quiet during a redaction run; narrowed: quiet is not enough | ws-live-fc1301-delete-reification, ib-HD1201-open-erasure, fu-r03-marker-held-open |
 | TRUST:changed:P-1310 one target predicate stands for three scopes | Matches, LiveRows and the eraser's selection are one predicate | live-native-rerun-1314, ib-HD1303-nopfx-default, ib-HD1304-graph-per-tenant |
 | TRUST:changed:P-1311 no erasure open at redaction start | no erasure is open when a redaction starts | ib-HD1201-open-erasure |
 | TRUST:changed:Txn.cls:8 / _write_txn.py:15: SQL COMMIT and ROLLBACK end every level | product premise 'measured on 2026.3': SQL COMMIT/ROLLBACK end every level | env-contract-r2, ver-sql-entry-probe-e261, ver-sql-entry-probe-e262, ver-matrix-compare |
@@ -174,6 +188,17 @@ Every premise named in the sources below has an entry (the checker extracts them
 | proofs-d9:P-D9-3 | Bypass writers write content rows only, never ledger globals (records, statement index, marker) | followup-writer-census, corr-closure-scan, c18-live-ledger-overlay, ib-HD1801-merge-restore |
 | proofs-d9:PF-6 | Eventually nothing t.lv selects is live when Final runs (no bypass writer or commit into lv minus rm keeps it live), or the operator erases t again | fu-r03-marker-held-open |
 | proofs-d9:design | Reviewed guards G-L (HD-1201+HD-1301), G-P (HD-1303/HD-1304 answers), G-B and G-BE (F-C1301 remedy; HD-1201 extended to every same-target writer) | corr-lockplan, ib-HD1201-open-erasure, live-f1201-reproduced, ib-HD1303-nopfx-default |
+| proofs-d9b:PF-6 | Eventually nothing t.lv selects is live when Final runs (no bypass writer or commit into lv minus rm keeps it live), or the operator erases t again | fu-r03-marker-held-open |
+| proofs-d9b:design | reviewed elements R-1 (no-op records), strengthened G-P, the redaction epoch and reader protocol, plus D-9's guards | sim-fcs01-minimal, ib-HD1401-reader-full-race, ib-HD1201-open-erasure, live-f1201-reproduced |
+| proofs-d9c:P-D9-3 | Bypass writers write content rows only, never ledger globals (records, statement index, marker) | followup-writer-census, corr-closure-scan, c18-live-ledger-overlay, ib-HD1801-merge-restore |
+| proofs-d9c:P-LV | the liveness check sees every row of the target (LiveRows counts every content row its predicate selects) | ws-live-noindex, fu-r04-temporal-only-live-b |
+| proofs-d9c:PF-6 | Eventually nothing t.lv selects is live when Final runs (no bypass writer or commit into lv minus rm keeps it live), or the operator erases t again | fu-r03-marker-held-open |
+| proofs-d9c:design | G-BM (bypass writers honour the marker) with D-9/D-9b's guards | ws-live-ins-store_node, ws-live-fc1301-delete-reification, ib-HD1201-open-erasure |
+| proofs-pa3:P-A3 | an eraser of g overlaps no writer of g | live-f1201-reproduced, live-erase-vs-commit-fk |
+| proofs-pa3:P-A4 | An adjacency rebuild overlaps no writer, eraser or second rebuild. | intent-a-hd0402-two-rebuilds |
+| proofs-pa3:P-A5 | The whole-graph / all-graph generation step and the rebuild's fill are each one atomic step. | intent-a-hd0401-gen-return |
+| proofs-pa3:P-L4 | Disable waits while a nested commit holds the ledger head lock. | corr-lockplan, ib-HD1102-txn-rollback |
+| proofs-pa3:P-L6 | Strict mode covers the engine's governed writers, and nothing else writes the governed content outside the ledger. | b-11-live-footprints-2, ib-HD1103-bulk-delete-adjacency, ib-HD1103-guard-ttl, writer-census |
 | proofs:P-C02 | Every write to the modelled content goes through a ledger commit or an erasure (no ledger-bypassing writes; a first commit's post-commit properties are outside) | writer-census, followup-writer-census, fu-r03-marker-held-open, corr-trace-ext |
 | proofs:P-C03 | Target membership is a property of the replay key (separability); one predicate stands for the Eraser's SQL, LiveRows and Matches | live-native-rerun-1314, ib-HD1303-nopfx-default, ib-HD1304-graph-per-tenant, fu-r04-temporal-only-live-b |
 | proofs:P-C04 | An erasure is not rolled back between its two steps (no abort modelled) | ib-HD1201-open-erasure, env-contract-r2 |
@@ -186,16 +211,18 @@ Contract features outside the validated subset are summarised after the table.
 |---|---|---|---|---|
 | TRUST:changed:P-1201 a SQL delete waits for a row another transaction holds | a DELETE/UPDATE waits for a row another open transaction inserted or updated | tested-partial | env-contract-r2, env-ext-r6, corr-lockplan | An INSERT of a key whose row another open transaction deleted is the contract's unsharpened Freedom; a forced schedule repeated until both branches or one source-settled branch is seen would close it. |
 | TRUST:new:Durability of an acknowledged commit: a revision the ledger reports as committed survives an instance crash, which needs IRIS SynchCommit=1 or a journal flush before the acknowledgement | an acknowledged revision survives an instance crash | tested-partial | live-crash-world-r2, env-synchcommit-setting | SynchCommit=1 is untested: the same crash world on an instance configured with SynchCommit=1 (a container reconfiguration the operator must allow) would test the premise as stated. |
-| TRUST:new:Embedded SQL (&sql) behaves as dynamic SQL for the clauses used | embedded SQL obeys the contract's dynamic-SQL clauses | untested | - | Run the contract's named clause cases through compiled &sql methods of a scratch class in a scratch namespace; compiling a non-product class is outside this audit's scope rule, so it needs an operator ruling. |
 | TRUST:new:Enabled steps are eventually scheduled; the operator re-runs after a stop; the ledger is (re-)enabled; every erasure releases its lock | progress premises of proofs/src/progress.rs | tested-partial | env-contract-r2, live-fc1303-bounded-resume | Fair scheduling and operator behaviour are untested: a soak with N committer processes, repeated redaction re-runs and injected stops, asserting completion within a bound, would test the conjunction at the product. |
+| TRUST:new:M07-L4 progress: the queue worker is weakly fair; a stopped run is resumed 3 - cursor more times | M07-L4 fairness premises of proofs-mech | tested-partial | live-fc1303-bounded-resume | A steady-enqueue soak for the queue and a resume count with a persisted cursor (absent at the pin); weak fairness of IRIS scheduling itself is not testable here. |
 | TRUST:new:Writers go quiet, the operator resumes, nothing is stopped forever, erasure may be repeated | the core models' AG EF premises | tested-partial | fu-r03-marker-held-open, sim-race-20261114 | That writers do go quiet is a usage premise the product does not enforce; a test would be the soak above plus an enforced quiet mode, which does not exist at the pin. |
 | TRUST:trusted:Harness drivers | the audit's drivers and probes do what they say (test code) | tested-partial | trace-conformance-controls, corr-abstraction-selftest-r3, sim-oracle-selftest | Lane live/ probe scripts other than these oracles have no self-test; a test would plant a known violation per probe (for example a mutated expected value) and require each probe to report it. |
 | TRUST:trusted:Upstream fixtures and tests | the product's own fixtures and tests; the Community deploy path replaces only the %AI-dependent deploy function | tested-partial | val-harness-check-1, val-triage-final | The replacement deploy is checked once; a test would diff the classes the upstream fixture would compile against those initialize_schema compiled, per run (the %AI classes only). |
 | TRUST:trusted:Verus toolchain 0.2026.10.04.426d8b0 and vstd | the verifier and its library are sound; vstd's admitted lemmas are trusted | untested | - | Verus's own soundness suite is upstream; here only located controls show the verifier is not vacuous. A test would rerun the upstream Verus test suite at the pinned toolchain. |
 | TRUST:trusted:actors / explorer at c03f9fa | the generic theorems (verified in the same build) and the unproved executable explorer | tested-partial | env-contract-selftest, env-ext-selftest-r6 | explorer self-tests and per-model controls show it finds planted violations; its exhaustiveness claim is untested: a differential run of one model against an independent enumerator would test it. |
-| iris-contract:E-1 | embedded SQL (&sql) compiled into classes behaves as dynamic SQL for the contract's clauses | untested | - | The contract's named cases run through compiled &sql in a scratch class (needs compiling a non-product class: an operator ruling under the scope rule). |
 | iris-contract:E-CALLER | SQL on a cursor and the Native API on one connection run in one server process | tested-partial | b-09-f0909-txn-visibility | The clause was decided by an unregistered exploratory probe (env/explore-2.log test 7); a named differential case (same $JOB for cursor SQL and Native API on one connection) in the next contract round would test it. |
 | iris-contract:Freedom | an INSERT of a key whose row another open transaction deleted may wait or proceed (both permitted) | tested-partial | env-ext-r6 | A forced schedule (DELETE held open by one process, INSERT of the same key by another) repeated until the second branch is witnessed, or a source reading of the filer, to sharpen the clause. |
+| models-core-partition:MP-1 | M1's world: three ids, two graphs, three edges, no temporal edges, labels and properties folded into node rows | tested-partial | live-native-rerun-1314, fu-r04-temporal-only-live-b | Temporal edges and multi-hop worlds are outside M1; the live runs show the excluded temporal case fails at the pin. A model with temporal edges, or live targeting samples over generated worlds, would cover the rest. |
+| models-core-partition:MP-2 | bounds: at most 2 pre-enable writes, 2 ledger commits, 1 ledger-bypassing write; erasures and redactions unbounded | tested-partial | sim-main-20261114 | Profiles (2, 3), (1, 3) and larger are not model-checked; the simulator samples them through the product without enumerating them. |
+| models-core-partition:MP-3 | the explorer is executable and unproved | tested-partial | m2p-union-b-reviewed, m2p-union-control, m2p-coverage-keys | The explorer's own exhaustiveness is cross-checked only on the profiles above; a differential against an independent enumerator on the (2, 2) profile itself would extend it. |
 | models-core:MA-1 | Writers become quiet: the AG EF path adds no commit or bypass write during a redaction | tested-partial | val-perf-committer-n3-1, fu-r03-marker-held-open | Missing: a redaction under a sustained commit rate into other tenants above the batch scan rate (tail-following scan, P-1306) and under bypass writes into other tenants, measuring whether it finishes. |
 | models-core:MA-2 | The operator resumes stopped or paused runs (calls are unbounded) | tested-partial | live-native-rerun-1314, tests/integration/test_256_ledger_redaction_e2e.py::TestBatchesAndMarker::test_a_paused_redaction_is_honoured_and_resumes, live-fc1303-bounded-resume | Operator side is outside the product. Missing: a product test that resumed bounded runs finish (fails at the pin, F-C1303) and that an unfinished run is reported where an operator looks (receipt, verify). |
 | models-core:MA-3 | No process is stopped forever: the AG EF path contains no stop | tested-partial | live-native-rerun-1314, env-contract-r2 | Repeated-stop test: stop each run after k batches n times and measure whether total progress grows (the pin rescans on resume), plus stops of a committer and an eraser while a run waits on them. |
@@ -295,13 +322,48 @@ Contract features outside the validated subset are summarised after the table.
 | proofs-d9:PF-3 | Every erasure ends: its commit or rollback releases the head lock | tested-partial | env-contract-r2, corr-lockplan, ib-HD1201-open-erasure | Engine part holds. Missing: a probe that erase_graph inside a long-lived caller transaction is refused or bounded, and that a waiting Start proceeds after the eraser commits, rolls back or is terminated. |
 | proofs-d9:PF-4 | An enabled step is eventually scheduled (as in proofs/) | tested-partial | env-contract-r2, val-perf-committer-n3-1 | Lock-fairness stress test: more than 2 processes (commits, bypass writers, erasers, batches, Final) contending for minutes, recording each process's longest wait and timeouts. |
 | proofs-d9:PF-5 | Every bypass transaction ends (a resume's Start waits for them, G-B) | untested | - | Live probe: a bypass writer holds a caller transaction open while a redaction starts; check whether anything bounds it and that a Start waiting on it (G-B) proceeds once it commits, rolls back or is terminated. |
+| proofs-d9b:P-D9b-1 | a revision's free text and idempotency key may name the tenant of any entity its changeset addresses; attribution is by those keys, not by content analysis | tested-partial | sim-fcs01-minimal, fu-r01a-snapshot-copies | Free text naming entities the changeset does not address (content analysis) is not covered: a live SC-001 scan with a message that names another tenant's id would show what the receipt attributes. |
+| proofs-d9b:P-D9b-2 | idemRedacted is keyed by sha256(key), modelled by the key itself (no collision) | untested | - | Read ^IVG.Ledger idemRedacted after a redaction and compare its subscript with sha256 of the retry key (collision resistance itself is a cryptographic assumption no test settles). |
+| proofs-d9b:P-D9b-3 | one statement-history key per edge stands for every ("stmt") id of that edge; EraseLedgerFor and DropStatements select ids by graph and endpoints | untested | - | A live trace that deletes and re-creates one edge through the ledger, then erases its graph and redacts, checking with the journal that every ("stmt") id of the edge's key is removed. |
+| proofs-d9b:P-D9b-4 | readers read ledger globals only, unisolated; one page is one revision | tested-partial | ib-HD1401-reader-full-race, live-native-rerun-1314 | verify()'s table read racing a redaction (outside the model) has no test: run verify() while a bounded redaction advances between its reads. |
+| proofs-d9b:PF-1 | The operator re-runs the redaction after a stop (as in proofs/) | tested-partial | live-native-rerun-1314, tests/integration/test_256_ledger_redaction_e2e.py::TestBatchesAndMarker::test_a_paused_redaction_is_honoured_and_resumes, fu-r03-marker-held-open | Operator side cannot be tested on the product. Missing: a bounded re-run after each stop finishing in work bounded by the ledger size (fails at the pin, F-C1303), with bypass writers quiet. |
+| proofs-d9b:PF-2 | The ledger is enabled (re-enabled after a disable) while the run needs it | tested-partial | live-native-rerun-1314, tests/integration/test_256_ledger_redaction_e2e.py::TestUS3Refusals::test_a_disabled_ledger_is_refused_and_nothing_changes | Operator premise. Missing: disable and re-enable during an unfinished run with commits, bypass writes and adoption in between, then resume: the run must still finish with its target kept. |
+| proofs-d9b:PF-3 | Every erasure ends: its commit or rollback releases the head lock | tested-partial | env-contract-r2, corr-lockplan, ib-HD1201-open-erasure | Engine part holds. Missing: a probe that erase_graph inside a long-lived caller transaction is refused or bounded, and that a waiting Start proceeds after the eraser commits, rolls back or is terminated. |
+| proofs-d9b:PF-4 | An enabled step is eventually scheduled (as in proofs/) | tested-partial | env-contract-r2, val-perf-committer-n3-1 | Lock-fairness stress test: more than 2 processes (commits, bypass writers, erasers, batches, Final) contending for minutes, recording each process's longest wait and timeouts. |
+| proofs-d9b:PF-5 | Every bypass transaction ends (a resume's Start waits for them, G-B) | untested | - | Live probe: a bypass writer holds a caller transaction open while a redaction starts; check whether anything bounds it and that a Start waiting on it (G-B) proceeds once it commits, rolls back or is terminated. |
+| proofs-d9c:P-D9-1 | Commits, replays, Start, batches, Final: one atomic head-locked txn each (a stopped one leaves nothing); erasures and bypass writes stay open and may roll back | tested-partial | env-contract-r2, env-ext-r6, corr-lockplan | Missing: a journal+lock trace showing replay and Final each as one head-locked transaction and a stop inside each leaving nothing; Start is one locked step only under G-L, which the pin lacks. |
+| proofs-d9c:P-D9-2 | A ledger commit waits for a row an open bypass txn wrote; a bypass write waits for a row the open erasure deleted (insert over uncommitted delete: a Freedom) | tested-partial | env-contract-r2, env-ext-r6, live-erase-vs-commit-fk | Live probe on product tables: an open bypass txn writes a row and a ledger commit writes the same row (wait or -119?); a bypass INSERT of a key an open erasure deleted (decide the Freedom: wait or new row). |
+| proofs-d9c:P-D9-4 | An erasure's row deletion and its statement cleanup select the same keys (EraseGraph's SQL and EraseLedgerFor, both by graph) | tested-partial | corr-trace-ext, trace-conformance-ledger, live-f1201-reproduced | Per eraser (EraseGraph, EraseNodes, EraseEdges, EraseAll, prefix): a journal test that the statement entries killed are exactly those of the rows deleted, on a quiet graph and with a concurrent commit. |
+| proofs-d9c:P-D9-5 | Record keys are the ghost keys of the rows they describe (graph-blind node records carry the ghost graph); replay alike; verify graph-blind compare outside | tested-partial | ib-HD1303-nopfx-default, ib-HD1101-namedonly, live-native-rerun-1314 | With the same ids in the default and a named graph: a test that each node record maps to exactly one row (its ghost key) from record plus history, and that replay and verify use that key. |
+| proofs-d9c:P-D9b-1 | a revision's free text and idempotency key may name the tenant of any entity its changeset addresses; attribution is by those keys, not by content analysis | tested-partial | sim-fcs01-minimal, fu-r01a-snapshot-copies | Free text naming entities the changeset does not address (content analysis) is not covered: a live SC-001 scan with a message that names another tenant's id would show what the receipt attributes. |
+| proofs-d9c:P-D9b-2 | idemRedacted is keyed by sha256(key), modelled by the key itself (no collision) | untested | - | Read ^IVG.Ledger idemRedacted after a redaction and compare its subscript with sha256 of the retry key (collision resistance itself is a cryptographic assumption no test settles). |
+| proofs-d9c:P-D9b-3 | one statement-history key per edge stands for every ("stmt") id of that edge; EraseLedgerFor and DropStatements select ids by graph and endpoints | untested | - | A live trace that deletes and re-creates one edge through the ledger, then erases its graph and redacts, checking with the journal that every ("stmt") id of the edge's key is removed. |
+| proofs-d9c:P-D9b-4 | readers read ledger globals only, unisolated; one page is one revision | tested-partial | ib-HD1401-reader-full-race, live-native-rerun-1314 | verify()'s table read racing a redaction (outside the model) has no test: run verify() while a bounded redaction advances between its reads. |
+| proofs-d9c:PF-1 | The operator re-runs the redaction after a stop (as in proofs/) | tested-partial | live-native-rerun-1314, tests/integration/test_256_ledger_redaction_e2e.py::TestBatchesAndMarker::test_a_paused_redaction_is_honoured_and_resumes, fu-r03-marker-held-open | Operator side cannot be tested on the product. Missing: a bounded re-run after each stop finishing in work bounded by the ledger size (fails at the pin, F-C1303), with bypass writers quiet. |
+| proofs-d9c:PF-2 | The ledger is enabled (re-enabled after a disable) while the run needs it | tested-partial | live-native-rerun-1314, tests/integration/test_256_ledger_redaction_e2e.py::TestUS3Refusals::test_a_disabled_ledger_is_refused_and_nothing_changes | Operator premise. Missing: disable and re-enable during an unfinished run with commits, bypass writes and adoption in between, then resume: the run must still finish with its target kept. |
+| proofs-d9c:PF-3 | Every erasure ends: its commit or rollback releases the head lock | tested-partial | env-contract-r2, corr-lockplan, ib-HD1201-open-erasure | Engine part holds. Missing: a probe that erase_graph inside a long-lived caller transaction is refused or bounded, and that a waiting Start proceeds after the eraser commits, rolls back or is terminated. |
+| proofs-d9c:PF-4 | An enabled step is eventually scheduled (as in proofs/) | tested-partial | env-contract-r2, val-perf-committer-n3-1 | Lock-fairness stress test: more than 2 processes (commits, bypass writers, erasers, batches, Final) contending for minutes, recording each process's longest wait and timeouts. |
+| proofs-d9c:PF-5 | Every bypass transaction ends (a resume's Start waits for them, G-B) | untested | - | Live probe: a bypass writer holds a caller transaction open while a redaction starts; check whether anything bounds it and that a Start waiting on it (G-B) proceeds once it commits, rolls back or is terminated. |
+| proofs-mech:PM-1 | M07-L4 fair service: the queue worker is weakly fair (whenever an entry is pending, some later step serves) | untested | - | A steady-enqueue soak through EmbedQueue.ProcessBatch with low-collating ids arriving continuously, asserting every entry is served within a bound. |
+| proofs-mech:PM-2 | M07-L4 resumed run: a stopped bounded run is resumed 3 - cursor more times | tested-partial | live-fc1303-bounded-resume | That an operator resumes enough times is an operator premise; with a persisted cursor a test would count the calls a resumed run needs (none exists at the pin). |
+| proofs-mech:PM-3 | mechanism domains kept as in the explorer: two targets, two graphs, two ids, three records, fixed derivations | tested-partial | sim-main-20261114 | Larger-domain instances of each mechanism law, or a correspondence argument that the laws are domain-generic for the instances that keep them fixed. |
+| proofs-pa3:P-A1 | One edge per writer transaction; degree readers run outside their writers' transactions. | untested | tests/e2e/test_degree_cache_live.py::test_a_reader_inside_the_writers_own_transaction_is_rolled_back_with_it | Live: a caller transaction writes several edges of one source while another process and the writer itself call Degree, then rolls back; compare degc entries with a recount (and run the gated test_degree_cache_live). |
+| proofs-pa3:P-A2 | No two open writer transactions on one edge row (the edge row's lock serializes them). | tested-partial | env-contract-r2, env-ext-r6 | Two processes with open transactions on the same edge through the product (create_edge/create_edge, delete_edge then create_edge); check -119 or wait and ^KG out; settle the insert-over-uncommitted-delete Freedom. |
+| proofs-pa3:P-A6 | A rollback restores the before-images of the nodes its transaction set or killed; $Increment is not undone. | tested-partial | env-contract-r2, env-ext-r6, b-11-live-footprints-1 | Contract case and adjacency probe: an open eraser or rebuild kills ^KG(degc,g,s), another process's Degree stores it, the txn rolls back; the L2 overwrites the store, E-ROLLBACK-OTHER says it survives. |
+| proofs-pa3:P-E1 | at most one open erasure per graph (module 04) and at most one at a time (module 11) | untested | - | Two concurrent EraseGraph calls on one graph and on two graphs, with the journal as oracle, to see whether the pin admits overlapping erasers and what they leave. |
+| proofs-pa3:P-E2 | an erasure's DELETE of a graph's rows is one step (row locks serialize each insert before or after it) | tested-partial | env-contract-r2, live-erase-vs-commit-fk | An insert of a new row into g while EraseGraph's DELETE scan is in progress (many rows, the insert timed mid-scan), checking the outcome equals an insert before or after the DELETE. |
+| proofs-pa3:P-E3 | the DELETE's per-row adjacency effect and EraseLedgerFor's per-tuple kill are modelled by graph; readers' probe exclusion over-restricts as built | tested-partial | tr-replay-04 | A trace of EraseGraph itself replayed through module 04 and 11's as-built machines with the per-row index effects and per-tuple kills. |
+| proofs-pa3:P-L1 | A new ledger revision id is fresh: CreateGUID never returns an id an existing revision already carries. | tested-partial | corr-frame-keys-fk | Check every RevisionId distinct and revById a bijection over the large histories (perf-sc256's 10,000 revisions, sim-main's 8,170 commits); GUID generation is outside the IRIS contract subset. |
+| proofs-pa3:P-L2 | Genesis (LedgerGenesis.Capture) records exactly the governed rows present when the ledger is first enabled. | tested-partial | tests/integration/test_ledger_us01_commit_head.py::TestUS1CommitHead::test_genesis_on_prepopulated_graph_describes_it_and_leaves_view_unchanged, corr-trace-ext, ib-HD1101-namedonly | Genesis over rows of several named graphs with ids shared across graphs, comparing each record with its row per (graph, id); and genesis while a bypass writer is open (Capture reads dirty, E-VIS). |
+| proofs-pa3:P-L3 | Every L2 step is one transaction under the locks the code takes, with IRIS nesting, deferred unlock, stop rollback and dirty reads. | tested-partial | env-contract-r2, env-ext-r6, b-11-live-footprints-1 | Journal conformance mapping each modelled L2 step (Enable/re-enable, CommitNested, CallerEnd, BumpRead/BumpSave, GuardProbe) to exactly one product transaction under its locks; Enable is not one locked step at the pin. |
+| proofs-pa3:P-L5 | A governed write waits for the row locks of an open nested ledger commit. | tested-partial | env-contract-r2, env-ext-r6, b-11-live-f1102-locktimeout | A holds a ledger commit nested in an open caller transaction; B makes governed engine writes on the same rows (create_node same id, set_property, delete_edge); record wait or -119 and outcomes after A ends. |
 | proofs:P-C01 | Each step (commit, replay, Start, batch, Final) is one atomic txn holding the head lock; erasure is one open transaction; a stop loses only its own state | tested-partial | env-contract-r2, env-ext-r6, corr-lockplan | Engine clauses and commit/batch atomicity are observed. Missing: Start is not one locked step at the pin and erasure holds no head lock (corr-lockplan); a journal+lock trace of replay and Final; killed_mid_batch rerun. |
 | proofs:PF-1 | The operator re-runs the redaction after a stop (Redact is re-invoked; HD-1303 'resume the same target') | tested-partial | live-native-rerun-1314, tests/integration/test_256_ledger_redaction_e2e.py::TestBatchesAndMarker::test_a_paused_redaction_is_honoured_and_resumes, live-fc1303-bounded-resume | Operator side cannot be tested on the product; product side partly covered. Missing: a bounded re-run after each stop finishing in work bounded by the ledger size (fails at the pin, F-C1303). |
 | proofs:PF-2 | The ledger is enabled again and stays enabled long enough (BatchInLock/FinalInLock refuse while it is disabled) | tested-partial | live-native-rerun-1314, tests/integration/test_256_ledger_redaction_e2e.py::TestUS3Refusals::test_a_disabled_ledger_is_refused_and_nothing_changes | Operator premise. Missing: disable and re-enable during an unfinished run with commits and adoption in between (F-1103 territory), then resume: the run must still finish with its target and bound kept. |
 | proofs:PF-3 | Every erasure ends (releases the head lock); a lock waiter proceeds when the holder releases; a stopped holder's locks are released | tested-partial | env-contract-r2, env-ext-r6, corr-lockplan | Engine part holds. Missing: a probe that erase_graph inside a long-lived caller transaction is refused or bounded, and that a redaction waiting on it proceeds when the eraser commits, rolls back or is terminated. |
 | proofs:PF-4 | A process with an enabled step is eventually scheduled and its transaction commits (IRIS Locks: deferral, Nesting) | tested-partial | env-contract-r2, val-perf-committer-n3-1, val-mp-existing-1 | Lock-fairness stress test: more than 2 processes contending for ^IVG.Ledger(head) (commits, batches, Final) for minutes, recording each process's longest wait and timeouts; queue fairness is outside the contract. |
 
-Outside the contract's validated subset (25 features, all untested as engine clauses; the modules relying on each are listed in `iris-contract/CONTRACT.md`): $LIST semantics, $NAME, $LISTVALID; $ZF callouts; %Regex; EMBEDDING(); SQL text parsing; generat; %DynamicObject / JSON functions; HNSW vector index maintenance and build; INSERT OR UPDATE; IRISTEMP globals; JOB / WorkMgr processes; SQLCODEs other than -30, -110, -119, -201, -359, -400; Task Manager; absent on Community 2026.1: InterSystems FHIR server storage; catalog views other than TABLES / COLUMNS, default-schema re; class dictionary and run-time compilation (compiling is out ; compiled SQL routines (CREATE FUNCTION / PROCEDURE, [SqlProc; embedded Python (needs irispython in the container); embedded SQL (&sql) compiled into classes: assumed equal to ; engine limits (long strings, subscript length, bound-paramet; iFind search semantics (tokenizer %iFind.Utils.Analyze, word; journaling (the audit's oracle, not a clause); management APIs (%SYS.ProcessQuery, KillProcess, GetVersion,; named-index %IGNOREINDEX forms (only %IGNOREINDEX * is exerc; object filing (%OpenId / %Save concurrency), triggers, forei; pure functions and clocks ($ZCRC, SHA, GUID, $RANDOM, $HOROL; result-prefix queries (TOP / LIMIT / FETCH FIRST); streams; web dispatch, roles and SQL privileges. Test that should exist for each: a contract clause with named cases and mutants for this feature, validated differentially like the others; until then the modules that rely on it keep 3.2-coverage open (COVERAGE.json).
+Outside the contract's validated subset (23 features, all untested as engine clauses; the modules relying on each are listed in `iris-contract/CONTRACT.md`): $LIST semantics, $NAME, $LISTVALID; $ZF callouts; %Regex; EMBEDDING(); SQL text parsing; generat; %DynamicObject / JSON functions; HNSW vector index maintenance and build; IRISTEMP globals; JOB / WorkMgr processes; SQLCODEs other than -30, -110, -119, -201, -359, -400; Task Manager; absent on Community 2026.1: InterSystems FHIR server storage; catalog views other than TABLES / COLUMNS, default-schema re; class dictionary and run-time compilation (compiling is out ; compiled SQL routines (CREATE FUNCTION / PROCEDURE, [SqlProc; embedded Python (needs irispython in the container); engine limits (long strings, subscript length, bound-paramet; iFind search semantics (tokenizer %iFind.Utils.Analyze, word; journaling (the audit's oracle, not a clause); management APIs (%SYS.ProcessQuery, KillProcess, GetVersion,; named-index %IGNOREINDEX forms (only %IGNOREINDEX * is exerc; object filing (%OpenId / %Save concurrency), triggers, forei; pure functions and clocks ($ZCRC, SHA, GUID, $RANDOM, $HOROL; result-prefix queries (TOP / LIMIT / FETCH FIRST); streams; web dispatch, roles and SQL privileges. Test that should exist for each: $NAME and $LISTVALID remain outside (contract-2 family 'list' residual)..
 
 ## E. Proof debt: what testing covers instead
 
@@ -320,6 +382,7 @@ Outside the contract's validated subset (25 features, all untested as engine cla
 | D-11 | `live-native-rerun-1314` | The original L2 refinement covers the reviewed design only; the pin violates it (F-1302, F-1303), so no product test can confirm it. |
 | D-12 | `live-fc1303-bounded-resume`, `core-m2-as-built-paced-resume` (model) | That D-2 (scan bound fixed at marking) is necessary for progress is a proof-level question; no product test can show it because the pin does not have D-2. |
 | D-13 | `live-f1201-reproduced`, `live-erase-vs-commit-fk`, `live-erase-vs-commit-emptygraph`, `corr-trace-f1201` | Inserts of new rows overlapping an eraser of the same graph; the breadth L2 models nothing of the overlap. |
+| D-14 | `ws-live-ins-store_node`, `fu-r03-marker-held-open`, `live-fc1303-bounded-resume`, `ib-HD1401-reader-full-race`, `sem-mc-queue-as-built-r2` (model) | No test links the code to the mechanism instances (D-2/D-3); mechanisms are not composed; the fixed small domains; M07-L4's fairness premise; laws the pin keeps are not tested on the product beyond the findings' runs. |
 
 No row of PROOF-DEBT.md is paid by these tests: they sample the obligation on the product, they do not prove it.
 
@@ -327,11 +390,15 @@ No row of PROOF-DEBT.md is paid by these tests: they sample the obligation on th
 
 - The crash world with `SynchCommit=1` (needs the container reconfigured; the audit may not reconfigure it).
 - The transaction-verb cases on IRIS 2026.3, the product premise's engine (`ver-avail-iris-2026.3`, blocked-access), on Enterprise / IRIS for Health and on a multi-node ECP or mirror setup (blocked-access).
-- Embedded SQL (`&sql`) against the contract's clauses (premise E-1): needs compiling a scratch class, outside the scope rule without an operator ruling.
+- (Done since the first pass: premise E-1, embedded SQL, was validated by the contract-2 lane on the pin's own compiled classes, `env2-e1-r1`, without compiling anything.)
 - The spec-236 scratch suites (more than 8 licence units) and the %AI-dependent MCP cases.
 - A fairness soak for the progress premises (PF-1..PF-6, MA-1..MA-4): long schedules with committers, stops and operator re-runs, asserting completion within a bound; feasible here but not run (the pin's bounded resume already fails progress: `live-fc1303-bounded-resume`).
 
-## G. Limits
+## G. Environment closure
+
+The environment conditions the proofs and models rely on are listed exactly in `CLOSURE.md` (gate 3.6-closure): 170 conditions, validated 47, validated-in-part 51, assumed 65, shown-false 7. It joins this map's engine and progress premises with the IRIS contract's clauses (r6 and contract-2) and contract-2's outside-premise families, each with its validating run or its consequence.
+
+## H. Limits
 
 - A premise's test is named from the registry and the findings' evidence; the checker verifies that every named run exists and is not a model run, that every upstream file exists at the pin, and that every premise has an entry. It does not re-judge whether the run really observes the premise.
 - 'Not detected' means no product test was red at the pin because of the defect among the suites that ran here (section B); it does not mean no product test touches the code.
