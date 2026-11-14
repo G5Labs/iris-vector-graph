@@ -16732,14 +16732,28 @@
    "status": "blocked"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "verify-clean-25ba22dd",
+    "verify-clean-a42f10c8"
+   ],
+   "evidence": [
+    "run:verify-clean-25ba22dd",
+    "run:verify-clean-a42f10c8",
+    "experiment/playbook-completion/verify.sh"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.7-full-rerun",
    "level": "product",
    "module": "product",
-   "product_obligation": "unknown",
-   "remaining": "final verify.sh run pending",
-   "status": "open"
+   "product_basis": {
+    "fails": [
+     "run verify-clean-a42f10c8 (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "A full rerun from clean builds on candidate 25ba22dd (verify.sh --live --clean: every model crate in an empty target, every proof runner with a private RUN_DIR, live rounds on the dedicated IRIS): 73 of 73 steps exit 0, each result recorded in $RUN_DIR/verify/20261114T203920Z (summary.jsonl, per-step logs with SHA-256, versions, inputs). The earlier clean run on a42f10c8 failed nine proof readers and is kept. Commits after 25ba22dd are queue, review and new-lane artifacts, not inputs of these steps.",
+   "status": "closed"
   },
   {
    "cited_runs": [
@@ -17553,9 +17567,11 @@
   },
   {
    "cited_runs": [
+    "verify-clean-25ba22dd",
     "verify-clean-a42f10c8"
    ],
    "evidence": [
+    "run:verify-clean-25ba22dd",
     "run:verify-clean-a42f10c8",
     "experiment/playbook-completion/verify.sh"
    ],
@@ -17563,7 +17579,7 @@
    "level": "method",
    "module": "product",
    "product_obligation": "unknown",
-   "remaining": "The fast gate runs well under 20 minutes; per-gate times in the clean run verify-clean-a42f10c8: proofs-mech 2,110 s (above the 20-minute single-gate target), the next slowest partition-as-built-isolation-stmt 474 s and partition-reviewed 421 s; the whole clean live run took 4,896 s. Meeting the target needs proofs-mech split into per-mechanism gates (its 120 controls at ~17 s each).",
+   "remaining": "The fast gate runs in minutes; in the clean run verify-clean-25ba22dd every step but one is under 20 minutes (next slowest partition families ~7-8 min); proofs-mech takes 2,230 s, above the 20-minute single-gate target; the whole clean live run takes 5,119 s. Meeting the target needs proofs-mech split into per-mechanism gates (120 controls at ~17 s each).",
    "status": "open"
   },
   {
@@ -38160,16 +38176,16 @@
   }
  ],
  "product_counts": {
-  "fails": 407,
+  "fails": 408,
   "holds-as-detection": 36,
   "holds-in-model-only": 1,
   "holds-inspected": 69,
   "holds-live": 9,
   "intent-undecided": 6,
   "n/a": 33,
-  "unknown": 191
+  "unknown": 190
  },
- "registry_runs": 1419,
+ "registry_runs": 1420,
  "starting_inventory": {
   "cells": 904,
   "decisions": 61,
@@ -38181,9 +38197,9 @@
  },
  "status_counts": {
   "blocked": 24,
-  "closed": 609,
+  "closed": 610,
   "not-applicable": 35,
-  "open": 84
+  "open": 83
  },
  "submission": "9c3719c1",
  "writer_obligations": [
