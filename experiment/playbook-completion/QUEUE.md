@@ -50,6 +50,7 @@ status, evidence level and product obligation per cell). Reconciled 2026-11-14 (
 | Q18d | writesets | breadth-a module-invariant pairs for 01, 03-06; 08; 18 restore_merge | done (728e18a1): 561/566, 5 open |
 | Q18e | reflection | root causes and premise map for every new finding and crate; TEST-REFLECTION refresh | done (3d75a633) |
 | Q18f | orchestrator | exclusive-container worlds: repeated crash trials, SynchCommit=1, product-level licence refusal (S6) | done: live-crash-repeat-sc0, -sc1, live-licence-world |
+| Q18h | proofs-env | D-7: the IRIS environment contract as a Verus specification, premises linked, differential link to the executable contract | doing (steer 12) |
 | Q18g | orchestrator | STATUS/TRUST/PROOF-DEBT refresh; verify.sh --live --clean on a committed tree; fifth review | doing: account refreshed (1dff8e3c, 82027430); clean gate on the candidate running |
 | I-1..I-4 | orchestrator | Incidents: IVG460SNAP, USER-REDEPLOY-08, superseded proof logs, health alert | recorded in `incidents/` |
 
