@@ -10066,19 +10066,10 @@
   {
    "cited_runs": [],
    "evidence": [],
-   "findings": [
-    "F-C0090"
-   ],
    "gate": "3.5-lint",
    "level": "product",
    "module": "product",
-   "product_basis": {
-    "fails": [
-     "finding F-C0090"
-    ],
-    "intent_undecided": []
-   },
-   "product_obligation": "fails",
+   "product_obligation": "unknown",
    "remaining": "product linters not run",
    "status": "open"
   },
@@ -13147,19 +13138,11 @@
     "experiment/playbook-completion/reflection/premise_tests.json"
    ],
    "evidence_grade": "registered-run",
-   "findings": [
-    "F-C0090"
-   ],
    "gate": "3.8-test-reflection",
    "level": "method",
    "module": "product",
-   "product_basis": {
-    "fails": [
-     "finding F-C0090"
-    ],
-    "intent_undecided": []
-   },
-   "product_obligation": "fails",
+   "product_basis": "every premise named in TRUST.md, the 8 PROOFS.md premise tables, models/core/MODELS.md and the IRIS contract maps to a test or to a named missing test: 224 premises, 39 tested and holding, 44 shown false at the pin (their findings fail their own cells), 86 partial, 55 untested; the product's own suites detect 4 of 246 reproduced findings (242 undetected, incl. every reproduced S1). Whether the product meets the premises that are untested or partial is open.",
+   "product_obligation": "unknown",
    "remaining": "the tests named in should_exist are not run (55 untested, 86 partial premises); needing the operator or an unavailable dependency: the SynchCommit=1 crash world, embedded SQL (E-1, scope ruling), IRIS 2026.3 / Enterprise / multi-node (blocked-access), the spec-236 scratch suites (licence); breadth model crates' restrictions (modules/NN.json) are outside this map",
    "source": "matrix-input/reflection.json",
    "status": "closed"
@@ -31278,50 +31261,6 @@
   },
   {
    "confidence": "high",
-   "disposition": "confirmed-source",
-   "evidence": [
-    {
-     "kind": "run",
-     "ref": "pg-lint-ruff"
-    },
-    {
-     "kind": "run",
-     "ref": "pg-lint-summary"
-    },
-    {
-     "kind": "log",
-     "ref": "$RUN_DIR/product-gates/lint-r1/shadowed-collect.txt"
-    },
-    {
-     "kind": "inspected",
-     "ref": "tests/unit/test_coverage_boost.py:234-256"
-    },
-    {
-     "kind": "inspected",
-     "ref": "tests/unit/test_coverage_boost.py:307-335"
-    },
-    {
-     "kind": "inspected",
-     "ref": "tests/unit/test_engine_deep.py:367-375"
-    },
-    {
-     "kind": "inspected",
-     "ref": "tests/unit/test_engine_deep.py:399-404"
-    },
-    {
-     "kind": "inspected",
-     "ref": "tests/unit/test_engine_deep.py:1132-1144"
-    }
-   ],
-   "gates": [
-    "3.5-lint",
-    "3.8-test-reflection"
-   ],
-   "id": "F-C0090",
-   "severity": "S4"
-  },
-  {
-   "confidence": "high",
    "disposition": "reproduced-live",
    "evidence": [
     {
@@ -32637,15 +32576,15 @@
   }
  ],
  "product_counts": {
-  "fails": 334,
+  "fails": 332,
   "holds-in-model-only": 1,
   "holds-inspected": 85,
   "holds-live": 29,
   "intent-undecided": 2,
   "n/a": 33,
-  "unknown": 263
+  "unknown": 265
  },
- "registry_runs": 1060,
+ "registry_runs": 1064,
  "starting_inventory": {
   "cells": 904,
   "decisions": 61,
