@@ -139,7 +139,8 @@ def verus(c: str, out: str) -> int:
     o = Path(out)
     o.mkdir(parents=True, exist_ok=True)
     m = runner(c)
-    env = m.env() if hasattr(m, "env") else dict(os.environ)
+    # a per-crate target directory of the merge gate (warm after its first run; the crate itself is cleaned below)
+    env = dict(os.environ, CARGO_TARGET_DIR=str(Path(os.environ["RUN_DIR"]) / "target" / f"merge-{c}"))
     pkg = re.search(r'^name\s*=\s*"([^"]+)"', (PC / c / "Cargo.toml").read_text(), re.M).group(1)
     subprocess.run(["cargo", "clean", "-p", pkg], cwd=PC / c, env=env, capture_output=True)
     js, log = o / "baseline.json", o / "baseline.log"

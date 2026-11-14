@@ -1560,12 +1560,14 @@
    "status": "validated-in-part",
    "runs": [
     "live-crash-world-r2",
-    "env-synchcommit-setting"
+    "env-synchcommit-setting",
+    "live-crash-repeat-sc0",
+    "live-crash-repeat-sc1"
    ],
    "observed": [],
-   "consequence": "results of playbook-completion that rest on it hold only where it holds; missing test: SynchCommit=1 is untested: the same crash world on an instance configured with SynchCommit=1 (a container reconfiguration the operator must allow) would test the premise as stated.",
+   "consequence": "results of playbook-completion that rest on it hold only where it holds; missing test: More trials and other crash points under SynchCommit=1 (three trials are evidence, not proof), and a journal-flush variant; the product's intent (F-C1102) is undecided.",
    "relied_on_by": "TRUST.md",
-   "missing_test": "SynchCommit=1 is untested: the same crash world on an instance configured with SynchCommit=1 (a container reconfiguration the operator must allow) would test the premise as stated.",
+   "missing_test": "More trials and other crash points under SynchCommit=1 (three trials are evidence, not proof), and a journal-flush variant; the product's intent (F-C1102) is undecided.",
    "source": "experiment/playbook-completion/reflection/premise_tests.json"
   },
   {
@@ -2668,10 +2670,120 @@
    "relied_on_by": "proofs/PROOFS.md",
    "missing_test": "Lock-fairness stress test: more than 2 processes contending for ^IVG.Ledger(head) (commits, batches, Final) for minutes, recording each process's longest wait and timeouts; queue fairness is outside the contract.",
    "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-env:ENV-4",
+   "group": "proof-premise",
+   "ref": "proofs-env:ENV-4",
+   "condition": "no liveness clause: the progress premises are not implied by the contract [progress]",
+   "status": "assumed",
+   "runs": [],
+   "observed": [
+    "proofs-env-premise-map"
+   ],
+   "consequence": "results of proofs-env that rest on it hold only where it holds; missing test: Progress tests under IRIS scheduling (D-8).",
+   "relied_on_by": "proofs-env/PROOFS.md",
+   "missing_test": "Progress tests under IRIS scheduling (D-8).",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-env:PF-1",
+   "group": "proof-premise",
+   "ref": "proofs-env:PF-1",
+   "condition": "The operator re-runs the redaction after a stop (as in proofs/) [progress]",
+   "status": "validated-in-part",
+   "runs": [
+    "live-native-rerun-1314",
+    "tests/integration/test_256_ledger_redaction_e2e.py::TestBatchesAndMarker::test_a_paused_redaction_is_honoured_and_resumes",
+    "fu-r03-marker-held-open",
+    "live-fc1303-bounded-resume"
+   ],
+   "observed": [],
+   "consequence": "results of proofs-env that rest on it hold only where it holds; missing test: Operator side cannot be tested on the product. Missing: a bounded re-run after each stop finishing in work bounded by the ledger size (fails at the pin, F-C1303), with bypass writers quiet.",
+   "relied_on_by": "proofs-env/PROOFS.md",
+   "missing_test": "Operator side cannot be tested on the product. Missing: a bounded re-run after each stop finishing in work bounded by the ledger size (fails at the pin, F-C1303), with bypass writers quiet.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-env:PF-2",
+   "group": "proof-premise",
+   "ref": "proofs-env:PF-2",
+   "condition": "The ledger is enabled (re-enabled after a disable) while the run needs it [progress]",
+   "status": "validated-in-part",
+   "runs": [
+    "live-native-rerun-1314",
+    "tests/integration/test_256_ledger_redaction_e2e.py::TestUS3Refusals::test_a_disabled_ledger_is_refused_and_nothing_changes"
+   ],
+   "observed": [],
+   "consequence": "results of proofs-env that rest on it hold only where it holds; missing test: Operator premise. Missing: disable and re-enable during an unfinished run with commits, bypass writes and adoption in between, then resume: the run must still finish with its target kept.",
+   "relied_on_by": "proofs-env/PROOFS.md",
+   "missing_test": "Operator premise. Missing: disable and re-enable during an unfinished run with commits, bypass writes and adoption in between, then resume: the run must still finish with its target kept.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-env:PF-3",
+   "group": "proof-premise",
+   "ref": "proofs-env:PF-3",
+   "condition": "Every erasure ends: its commit or rollback releases the head lock [progress]",
+   "status": "validated-in-part",
+   "runs": [
+    "env-contract-r2",
+    "corr-lockplan",
+    "ib-HD1201-open-erasure"
+   ],
+   "observed": [],
+   "consequence": "results of proofs-env that rest on it hold only where it holds; missing test: Engine part holds. Missing: a probe that erase_graph inside a long-lived caller transaction is refused or bounded, and that a waiting Start proceeds after the eraser commits, rolls back or is terminated.",
+   "relied_on_by": "proofs-env/PROOFS.md",
+   "missing_test": "Engine part holds. Missing: a probe that erase_graph inside a long-lived caller transaction is refused or bounded, and that a waiting Start proceeds after the eraser commits, rolls back or is terminated.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-env:PF-4",
+   "group": "proof-premise",
+   "ref": "proofs-env:PF-4",
+   "condition": "An enabled step is eventually scheduled (as in proofs/) [progress]",
+   "status": "validated-in-part",
+   "runs": [
+    "env-contract-r2",
+    "val-perf-committer-n3-1"
+   ],
+   "observed": [],
+   "consequence": "results of proofs-env that rest on it hold only where it holds; missing test: Lock-fairness stress test: more than 2 processes (commits, bypass writers, erasers, batches, Final) contending for minutes, recording each process's longest wait and timeouts.",
+   "relied_on_by": "proofs-env/PROOFS.md",
+   "missing_test": "Lock-fairness stress test: more than 2 processes (commits, bypass writers, erasers, batches, Final) contending for minutes, recording each process's longest wait and timeouts.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-env:PF-5",
+   "group": "proof-premise",
+   "ref": "proofs-env:PF-5",
+   "condition": "Every bypass transaction ends (a resume's Start waits for them, G-B) [progress]",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "results of proofs-env that rest on it hold only where it holds; missing test: Live probe: a bypass writer holds a caller transaction open while a redaction starts; check whether anything bounds it and that a Start waiting on it (G-B) proceeds once it commits, rolls back or is terminated.",
+   "relied_on_by": "proofs-env/PROOFS.md",
+   "missing_test": "Live probe: a bypass writer holds a caller transaction open while a redaction starts; check whether anything bounds it and that a Start waiting on it (G-B) proceeds once it commits, rolls back or is terminated.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-env:PF-6",
+   "group": "proof-premise",
+   "ref": "proofs-env:PF-6",
+   "condition": "Eventually nothing t.lv selects is live when Final runs (no bypass writer or commit into lv minus rm keeps it live), or the operator erases t again [progress]",
+   "status": "shown-false",
+   "runs": [
+    "fu-r03-marker-held-open"
+   ],
+   "observed": [],
+   "consequence": "false at the pin: results of proofs-env that rest on it do not transfer to the product (see its 'Premises the pin violates')",
+   "relied_on_by": "proofs-env/PROOFS.md",
+   "missing_test": "Not covered: a ledger commit into lv minus rm (BlocksCommit refuses only rm) keeping the target live during a run.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
   }
  ],
  "summary": {
-  "conditions": 170,
+  "conditions": 177,
   "by_group": {
    "contract-r6": {
     "validated": 31,
@@ -2687,16 +2799,16 @@
    },
    "proof-premise": {
     "validated": 7,
-    "validated-in-part": 49,
-    "shown-false": 6,
-    "assumed": 10
+    "validated-in-part": 53,
+    "shown-false": 7,
+    "assumed": 12
    }
   },
   "by_status": {
    "validated": 47,
-   "validated-in-part": 51,
-   "assumed": 65,
-   "shown-false": 7
+   "validated-in-part": 55,
+   "assumed": 67,
+   "shown-false": 8
   }
  }
 }

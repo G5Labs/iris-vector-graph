@@ -212,5 +212,8 @@ import json, sys
 rows = [json.loads(l) for l in open(sys.argv[1])]
 bad = [r["step"] for r in rows if r["exit"] != 0]
 print(f"{len(rows)} steps; {len(rows) - len(bad)} exit 0; nonzero: {bad}")
+sys.exit(1 if bad else 0)
 EOF
+rc=$?
 echo "logs: $out"
+exit $rc
