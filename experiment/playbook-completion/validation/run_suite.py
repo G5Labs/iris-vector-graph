@@ -44,6 +44,17 @@ from pathlib import Path
 
 REPO = Path.cwd()
 sys.path.insert(0, str(REPO))
+# Driver comparison (operator ruling 2026-11-14 03:16Z): VALIDATION_DRIVER_SITE names a site-packages holding another
+# intersystems-irispython (5.4.0); it goes first on sys.path and on PYTHONPATH (for spawned workers), before anything
+# imports `iris`. Unset: the venv's driver (5.3.2, the pin's uv.lock).
+DRIVER_SITE = os.environ.get("VALIDATION_DRIVER_SITE", "")
+if DRIVER_SITE:
+    sys.path.insert(0, DRIVER_SITE)
+    os.environ["PYTHONPATH"] = DRIVER_SITE + os.pathsep + os.environ.get("PYTHONPATH", "")
+import importlib.metadata as _md  # noqa: E402
+import iris as _iris_driver  # noqa: E402
+DRIVER = {"version": _md.version("intersystems-irispython"), "module": str(Path(_iris_driver.__file__).parent)}
+print(f"[run_suite] driver intersystems-irispython {DRIVER['version']} from {DRIVER['module']}", flush=True)
 PIN = "3eaa79cf77d3e0a879b2cced634cf2729d81499e"
 
 import pytest  # noqa: E402
@@ -209,7 +220,7 @@ def main() -> int:
             "conftest_blob": _blob("tests/conftest.py"),
         },
         "deploy_calls": DEPLOY_CALLS, "deploy_delegated": DELEGATED, "guard_hits": GUARD_HITS,
-        "scratch_mode": SCRATCH, "scratch_namespace_calls": MADE,
+        "scratch_mode": SCRATCH, "scratch_namespace_calls": MADE, "driver": DRIVER,
         "env": {k: os.environ.get(k) for k in ("IVG_TEST_CONTAINER", "IVG_PORT", "IVG_NAMESPACE", "SKIP_IRIS_TESTS",
                                                "IVG_GATE_NAMESPACES", "IVG_GATE", "PYTEST_ADDOPTS",
                                                "IVG_AUTO_START_CONTAINER")},

@@ -1,6 +1,6 @@
 {
  "lane": "validation",
- "generated_utc": "2026-11-14T03:45:34Z",
+ "generated_utc": "2026-11-14T05:09:53Z",
  "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
  "pin_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
  "checkout": "$RUN_DIR/validation/checkout: git clone --shared --no-checkout of the local repository, checkout --detach at the pin (tree b098a6f4), submodule vendor/opencypher 677cbafa from the local module store; made go+rX at 2026-11-14 01:31 UTC (see rule clone-perms)",
@@ -71,12 +71,8 @@
  ],
  "blocked": [
   {
-   "lane": "e2e gated files (234 files, ~12,000 skipped cases)",
-   "dependency": "~45 scratch namespaces made by tests/e2e/gate.py (22 with IVG installed, plus RAG/split/empty/name-only groups, several building older releases from git tags). Allowed by the operator ruling under the lock, but not run: gate setup and several gated files hold many connections at once (r464txn/r470txn open transactions on several connections), which the 8-unit licence cannot carry without repeating the 01:31 licence alerts"
-  },
-  {
-   "lane": "tests/docs/test_docs_run.py (16 documents)",
-   "dependency": "scratch namespace IVG460DOC made beforehand by `python scripts/dev/make_scratch_namespace.py IVG460DOC` (a manual prerequisite, not a fixture)"
+   "lane": "e2e gated files not in the bounded subset (234 gated files; subset run: the 102 primary-only and 44 rag-only files without threads, worker processes or extra users)",
+   "dependency": "the other 88 need several scratch namespaces per session (53 further gate groups, 28 of them name-only groups whose files make their own namespaces, several building older releases from git tags), or hold many connections at once (13 primary-only and 3 rag-only files with threads, worker processes or extra users; r464txn/r470txn open transactions on several connections): not run, to stay within the 8-unit licence after the 01:31 licence alerts"
   },
   {
    "lane": "spec 236 scratch suites (22 integration files)",
@@ -107,10 +103,6 @@
    "dependency": "Enterprise IRIS container (ivg-iris-enterprise) with libarno"
   },
   {
-   "lane": "driver 5.4.x comparison (for the Decimal and LIST ERROR classes)",
-   "dependency": "intersystems-irispython 5.4.0/5.4.1 wheels: only 5.3.2 is in the local caches; pip install would need the network (not done)"
-  },
-  {
    "lane": "tests/python REST cases",
    "dependency": "IRIS web server /kg application on localhost:52773 (the audit container publishes only the superserver)"
   },
@@ -132,6 +124,11 @@
   "tests/oracle": "library only (compare.py, reference.py, ...), exercised by the r306/r307/r308 e2e files",
   "tests/benchmarks": "scripts (bench.py etc.), run as bench-1/bench-2",
   "tests/fixtures, tests/helpers, tests/support": "helpers"
+ },
+ "non_decisive": {
+  "docs-run-540-1": "not a driver-5.4.0 measurement: tests/docs/harness.py:553-554 builds the per-document worker's environment with PYTHONPATH=<repo>, so the worker imported the venv's 5.3.2 driver despite VALIDATION_DRIVER_SITE; its result equals docs-run-1",
+  "scratch-236-1, scratch-236-2a/2b": "licence exhaustion (infrastructure)",
+  "unit-1, unit-2, docs-1, regression-1, harness-check-1, perf-smoke-1": "attempts / harness checks (see SUITES.md)"
  },
  "rules": [
   {
@@ -166,8 +163,8 @@
   },
   {
    "id": "decimal-score",
-   "category": "product-defect",
-   "reason": "CALL ivg.closeness / ivg.degreeCentrality YIELD score returns decimal.Decimal under the driver the pin's uv.lock installs (intersystems-irispython 5.3.2), where the test (and networkx comparison) expects a float; tests/e2e/test_460_proc_yield_alias_e2e.py:108 asserts a YIELDed ppr score is int/float and gets Decimal('0.3759...'); the r306 algorithm oracle (run in USER with the documented IVG_ORACLE_USER=1) fails the same way: degreeCentrality/closeness/community scores come back as Decimal('0.571428571') against the reference's float 0.571428571 (unequal in Python); ivg.ppr's values are within the oracle's 1e-4 tolerance (~6e-7 off), so only the type fails. All 252 oracle failures are Cypher CALL ivg.* YIELD columns (ivg.ppr, ivg.degreeCentrality, ivg.closeness, community procedures), on both the arno and no_arno variants; the Python-API cases (kg_PERSONALIZED_PAGERANK, degree_centrality, ...) all pass. docs/dev/driver-drift.md shows 5.4.0 also decodes a decimal as Decimal, so the type is not obviously a 5.3.2 artefact. docs/dev/driver-drift.md says IVG decodes property values typed so answers do not depend on the driver; score columns are not covered. Driver dependence not excluded: 5.4.x is not available offline here. Severity S4, confidence medium."
+   "category": "product-defect (driver 5.3.2 from the pin's uv.lock)",
+   "reason": "CALL ivg.closeness / ivg.degreeCentrality YIELD score returns decimal.Decimal under the driver the pin's uv.lock installs (intersystems-irispython 5.3.2), where the test (and networkx comparison) expects a float; tests/e2e/test_460_proc_yield_alias_e2e.py:108 asserts a YIELDed ppr score is int/float and gets Decimal('0.3759...'); the r306 algorithm oracle (run in USER with the documented IVG_ORACLE_USER=1) fails the same way: degreeCentrality/closeness/community scores come back as Decimal('0.571428571') against the reference's float 0.571428571 (unequal in Python); ivg.ppr's values are within the oracle's 1e-4 tolerance (~6e-7 off), so only the type fails. All 252 oracle failures are Cypher CALL ivg.* YIELD columns (ivg.ppr, ivg.degreeCentrality, ivg.closeness, community procedures), on both the arno and no_arno variants; the Python-API cases (kg_PERSONALIZED_PAGERANK, degree_centrality, ...) all pass. docs/dev/driver-drift.md shows 5.4.0 also decodes a decimal as Decimal, so the type is not obviously a 5.3.2 artefact. docs/dev/driver-drift.md says IVG decodes property values typed so answers do not depend on the driver; score columns are not covered. Driver dependence not excluded: 5.4.x is not available offline here. Severity S4, confidence medium. DRIVER A/B (operator ruling 03:16Z): the same files under intersystems-irispython 5.4.0 ($RUN_DIR/availability/driver-5.4.0-venv) pass: driver540-1 (237 passed; only leiden-karate-ari fails) and driver540-oracle-1 (960/960, against 34 failures on 5.3.2 in oracle-1-c00). pyproject.toml:42 asks only intersystems-iris>=1.0.0, and uv.lock:1358-1371 resolves it to intersystems-iris 5.3.3 / irispython 5.3.2, so a `uv sync` of the pin installs the driver on which this fails; CI tests a fresh resolution instead (.github/workflows/ci.yml)."
   },
   {
    "id": "gref-logging",
@@ -211,8 +208,8 @@
   },
   {
    "id": "duplicate-listerror",
-   "category": "intermittent",
-   "reason": "IRISGraphStore.write_nodes / write_edges document 'A duplicate row is skipped' (iris_vector_graph/stores/iris_sql_store.py:1215-1220; _skip_duplicate :756-762 skips only what is_duplicate() recognises). On this stack (IRIS Community 2026.1, intersystems-irispython 5.3.2 from the pin's uv.lock) the duplicate INSERT inside write_txn surfaces as DataError '<LIST ERROR> Incorrect list format, unsupported type for IRISList; type detected : 0' instead of SQLCODE -119, so a re-ingest of an existing node raises GraphWriteError and writes nothing. Reproduced in both runs but not on the same cases (integration-1: 3 cases; rerun-1: 4, one of which passed in integration-1), so the class is reproducible and the case intermittent: a lead for a product-defect (is_duplicate, iris_vector_graph/_write_txn.py:46-49, recognises only 'unique'/-119 text); driver dependence not excluded (5.4.x unavailable offline). Same class in e2e: tests/e2e/test_create_edge_atomic_e2e.py:91-102 expects the server's <SUBSCRIPT> error for a too-long endpoint pair and gets GraphWriteError carrying the driver's <LIST ERROR> instead (nothing written either way)."
+   "category": "product-defect (driver 5.3.2 from the pin's uv.lock)",
+   "reason": "IRISGraphStore.write_nodes / write_edges document 'A duplicate row is skipped' (iris_vector_graph/stores/iris_sql_store.py:1215-1220; _skip_duplicate :756-762 skips only what is_duplicate() recognises). On this stack (IRIS Community 2026.1, intersystems-irispython 5.3.2 from the pin's uv.lock) the duplicate INSERT inside write_txn surfaces as DataError '<LIST ERROR> Incorrect list format, unsupported type for IRISList; type detected : 0' instead of SQLCODE -119, so a re-ingest of an existing node raises GraphWriteError and writes nothing. Reproduced in both runs but not on the same cases (integration-1: 3 cases; rerun-1: 4, one of which passed in integration-1), so the class is reproducible and the case intermittent: a lead for a product-defect (is_duplicate, iris_vector_graph/_write_txn.py:46-49, recognises only 'unique'/-119 text); driver dependence not excluded (5.4.x unavailable offline). Same class in e2e: tests/e2e/test_create_edge_atomic_e2e.py:91-102 expects the server's <SUBSCRIPT> error for a too-long endpoint pair and gets GraphWriteError carrying the driver's <LIST ERROR> instead (nothing written either way). DRIVER A/B (operator ruling 03:16Z): the same files under intersystems-irispython 5.4.0 ($RUN_DIR/availability/driver-5.4.0-venv) pass: driver540-1 (237 passed; only leiden-karate-ari fails) and driver540-oracle-1 (960/960, against 34 failures on 5.3.2 in oracle-1-c00). pyproject.toml:42 asks only intersystems-iris>=1.0.0, and uv.lock:1358-1371 resolves it to intersystems-iris 5.3.3 / irispython 5.3.2, so a `uv sync` of the pin installs the driver on which this fails; CI tests a fresh resolution instead (.github/workflows/ci.yml)."
   },
   {
    "id": "clone-perms",
@@ -256,8 +253,8 @@
   },
   {
    "id": "temporal-structural-cursor",
-   "category": "product-defect",
-   "reason": "Spec 246: with IRISGraphEngine(temporal_structural_rows=True), create_edge_temporal must give a temporal-only edge a marked structural row (tests/e2e/test_temporal_structural_row_live.py:53-90). It raises ProgrammingError 'Cursor closed; DataRow is inaccessible' at iris_vector_graph/_engine/temporal.py:189 (_own_structural_row -> _select_structural_row fetchone) in both e2e-1-c20 and rerun-3 (fresh session, file first): deterministic. Driver dependence (5.3.2) not excluded. Severity S2 (the opt-in write path fails), confidence medium."
+   "category": "product-defect (driver 5.3.2 from the pin's uv.lock)",
+   "reason": "Spec 246: with IRISGraphEngine(temporal_structural_rows=True), create_edge_temporal must give a temporal-only edge a marked structural row (tests/e2e/test_temporal_structural_row_live.py:53-90). It raises ProgrammingError 'Cursor closed; DataRow is inaccessible' at iris_vector_graph/_engine/temporal.py:189 (_own_structural_row -> _select_structural_row fetchone) in both e2e-1-c20 and rerun-3 (fresh session, file first): deterministic. Driver dependence (5.3.2) not excluded. Severity S2 (the opt-in write path fails), confidence medium. DRIVER A/B (operator ruling 03:16Z): the same files under intersystems-irispython 5.4.0 ($RUN_DIR/availability/driver-5.4.0-venv) pass: driver540-1 (237 passed; only leiden-karate-ari fails) and driver540-oracle-1 (960/960, against 34 failures on 5.3.2 in oracle-1-c00). pyproject.toml:42 asks only intersystems-iris>=1.0.0, and uv.lock:1358-1371 resolves it to intersystems-iris 5.3.3 / irispython 5.3.2, so a `uv sync` of the pin installs the driver on which this fails; CI tests a fresh resolution instead (.github/workflows/ci.yml)."
   },
   {
    "id": "schema-contract-stale",
@@ -273,6 +270,41 @@
    "id": "sc010-latency",
    "category": "product-defect",
    "reason": "Spec 227 SC-010 (tests/perf/test_227_single_graph_latency.py, interleaved medians: the test's own A/B design): the graph-scoped kg_KNN_VEC must stay within 1.1x of the 3.2.0 unscoped scan on the same 300 rows. Measured 1.169x (2.05 vs 1.75 ms), 1.145x (1.85 vs 1.61 ms), 1.205x (3.00 vs 2.48 ms) in perf-default-1/2/3: over budget in every run here. Severity S4 (about 0.3 ms per call), confidence medium: Community 2-CPU container, not the author's laptop; the ratio, not the absolute time, is the criterion."
+  },
+  {
+   "id": "leiden-10k-timing",
+   "category": "environment (timing, unconfirmed)",
+   "reason": "Spec 163 NFR-004 gate in tests/e2e/test_communities_perf.py: Leiden on ER(10,000, 0.001) under 60 s; 62.04 s here on the non-Arno path (no libarno on Community) on a 2-CPU container. The file's docstring calls the gate a wide upper bound for the fallback path; missed by 3% on non-reference hardware: a lead, not decidable here."
+  },
+  {
+   "id": "embedded-callin-denied",
+   "category": "environment",
+   "reason": "The test runs the setup script inside the container with its embedded Python (/usr/irissys/bin/irispython via docker exec); IrisStart answers IRIS_ACCESSDENIED (-15): the container's callin access for that OS user is not granted (Community image default; changing %Service_CallIn would reconfigure the shared container). The refusal under test is never reached."
+  },
+  {
+   "id": "list-param-count",
+   "category": "product-defect (driver 5.3.2 from the pin's uv.lock)",
+   "reason": "Cypher with list values bound as parameters or list concatenation (UNWIND $list, two list parameters, size($l1 + $l2), TCK Unwind1 [3] `UNWIND (first + second)`) fails in the driver's parameter binding: '<PARAMETER ERROR> Invalid number of parameters' / '<ARGUMENT ERROR> Incorrect number of parameters'. Under intersystems-irispython 5.4.0 the TCK unwind area passes 14/14 (driver540-tck-unwind-1) against 13/14 on 5.3.2 (tck-1, tck-unwind-rerun-1), and the 7 gated e2e files holding these and the Decimal cases pass 138/138 under 5.4.0 (gated-540-1) against 19 failures under 5.3.2 right after (gated-532-1)."
+  },
+  {
+   "id": "rrf-score-string",
+   "category": "product-defect (driver 5.3.2 from the pin's uv.lock)",
+   "reason": "tests/e2e/test_460_r284_retrieve_rrf_score_e2e.py asserts the retrieve() rrf_score is a float with the hand-worked value; it comes back as the text '.032522474881015332737' (a VARCHAR-typed column decoded as str). Same family as decimal-score (numeric result columns not typed as float). Driver A/B: passes under 5.4.0 (gated-rag-540-1, 2/2) and fails under 5.3.2 right after (gated-rag-532-1, 0/2)."
+  },
+  {
+   "id": "readonly-worktree",
+   "category": "harness",
+   "reason": "unit-1 only: the audit worktree is read-only for this lane and FastHTML writes .sesskey into the cwd at import; fixed by running every suite from the clean writable clone (unit-3)."
+  },
+  {
+   "id": "arno-lib-unrecorded",
+   "category": "environment",
+   "reason": "The native case needs ^ArnoAccel(\"lib_path\") copied from USER into the scratch namespace (tests/conftest.py:1486-1489); no Arno library is deployed on this container, so none is recorded. Seen only in a licence-degraded, non-decisive run."
+  },
+  {
+   "id": "embedded-python-deps-236",
+   "category": "environment",
+   "reason": "As embedded-python-deps: the container's embedded Python has no pydantic. Seen only in a licence-degraded run."
   },
   {
    "id": "kgtxt-prefix",
@@ -571,19 +603,24 @@
      "license_failure": false,
      "namespaces_unchanged": true,
      "guard_hits": [],
-     "triage": {},
-     "untriaged": [
-      [
-       "errors",
-       "::tests.unit.test_demo_pages",
-       "collection failure"
-      ]
-     ],
+     "triage": {
+      "readonly-worktree": {
+       "category": "harness",
+       "count": 1,
+       "nodes": [
+        "::tests.unit.test_demo_pages"
+       ],
+       "nodes_total": 1
+      }
+     },
+     "untriaged": [],
      "skip_reasons_top": {}
     },
     {
      "id": "unit-2",
-     "status": "running"
+     "status": "incomplete (stopped at 42%)",
+     "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/validation/unit-2/run.log",
+     "log_sha256": "a6d855422adf8764550b285f12c502760ce363aa297df48fef59f63145b1dbbf"
     }
    ]
   },
@@ -764,7 +801,7 @@
        "nodes_total": 9
       },
       "decimal-score": {
-       "category": "product-defect",
+       "category": "product-defect (driver 5.3.2 from the pin's uv.lock)",
        "count": 2,
        "nodes": [
         "tests.integration.test_algorithms_new_paths.TestAlgorithmCypherWrappers::test_closeness_via_cypher",
@@ -801,7 +838,7 @@
        "nodes_total": 1
       },
       "duplicate-listerror": {
-       "category": "intermittent",
+       "category": "product-defect (driver 5.3.2 from the pin's uv.lock)",
        "count": 3,
        "nodes": [
         "tests.integration.test_sql_store_paths.TestWriteNodesErrorPaths::test_write_nodes_label_non_unique_error",
@@ -1021,7 +1058,7 @@
      "guard_hits": [],
      "triage": {
       "duplicate-listerror": {
-       "category": "intermittent",
+       "category": "product-defect (driver 5.3.2 from the pin's uv.lock)",
        "count": 4,
        "nodes": [
         "tests.integration.test_store_write_paths.TestStoreWriteNodes::test_write_nodes_duplicate_silently_skipped",
@@ -1032,7 +1069,7 @@
        "nodes_total": 4
       },
       "decimal-score": {
-       "category": "product-defect",
+       "category": "product-defect (driver 5.3.2 from the pin's uv.lock)",
        "count": 2,
        "nodes": [
         "tests.integration.test_algorithms_new_paths.TestAlgorithmCypherWrappers::test_closeness_via_cypher",
@@ -1385,7 +1422,7 @@
        "nodes_total": 1
       },
       "decimal-score": {
-       "category": "product-defect",
+       "category": "product-defect (driver 5.3.2 from the pin's uv.lock)",
        "count": 2,
        "nodes": [
         "tests.e2e.test_460_proc_yield_alias_e2e::test_the_value_under_its_alias[ppr]",
@@ -1402,7 +1439,7 @@
        "nodes_total": 1
       },
       "duplicate-listerror": {
-       "category": "intermittent",
+       "category": "product-defect (driver 5.3.2 from the pin's uv.lock)",
        "count": 2,
        "nodes": [
         "tests.e2e.test_create_edge_atomic_e2e::test_create_edge_with_a_long_name_pair_raises_and_leaves_no_node_rows",
@@ -1447,7 +1484,7 @@
        "nodes_total": 1
       },
       "temporal-structural-cursor": {
-       "category": "product-defect",
+       "category": "product-defect (driver 5.3.2 from the pin's uv.lock)",
        "count": 2,
        "nodes": [
         "tests.e2e.test_temporal_structural_row_live.TestTemporalStructuralRowLive::test_flag_on_makes_a_temporal_only_edge_visible",
@@ -1553,7 +1590,7 @@
        "nodes_total": 1
       },
       "duplicate-listerror": {
-       "category": "intermittent",
+       "category": "product-defect (driver 5.3.2 from the pin's uv.lock)",
        "count": 2,
        "nodes": [
         "tests.e2e.test_create_edge_atomic_e2e::test_create_edge_with_a_long_name_pair_raises_and_leaves_no_node_rows",
@@ -1562,7 +1599,7 @@
        "nodes_total": 2
       },
       "decimal-score": {
-       "category": "product-defect",
+       "category": "product-defect (driver 5.3.2 from the pin's uv.lock)",
        "count": 2,
        "nodes": [
         "tests.e2e.test_460_proc_yield_alias_e2e::test_the_value_under_its_alias[ppr]",
@@ -1611,7 +1648,7 @@
      "guard_hits": [],
      "triage": {
       "temporal-structural-cursor": {
-       "category": "product-defect",
+       "category": "product-defect (driver 5.3.2 from the pin's uv.lock)",
        "count": 2,
        "nodes": [
         "tests.e2e.test_temporal_structural_row_live.TestTemporalStructuralRowLive::test_flag_on_makes_a_temporal_only_edge_visible",
@@ -1766,7 +1803,7 @@
      "guard_hits": [],
      "triage": {
       "decimal-score": {
-       "category": "product-defect",
+       "category": "product-defect (driver 5.3.2 from the pin's uv.lock)",
        "count": 252,
        "nodes": [
         "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_ivg_ppr[seed0-arno]",
@@ -2259,7 +2296,7 @@
   },
   {
    "suite": "tests/perf default selection (spec 227 SC-010 latency gate)",
-   "meant_to_run": "default addopts -m 'not perf' leaves the 3 test_227 cases (interleaved medians)",
+   "meant_to_run": "default addopts -m 'not perf' leaves the 3 test_227 cases (interleaved medians); -540 runs use driver 5.4.0",
    "decisive": [
     {
      "id": "perf-default-1",
@@ -2389,9 +2426,139 @@
      "skip_reasons_top": {
       "set IVG_HEADTOHEAD=1 to run the head-to-head benchmark": 1
      }
+    },
+    {
+     "id": "perf-default-4",
+     "status": "done",
+     "counts": {
+      "failed": 1,
+      "passed": 1,
+      "skipped": 1,
+      "deselected": 7,
+      "pytest_seconds": 10.44
+     },
+     "chunks": [
+      {
+       "id": "perf-default-4",
+       "exit": "1",
+       "counts": {
+        "failed": 1,
+        "passed": 1,
+        "skipped": 1,
+        "deselected": 7,
+        "pytest_seconds": 10.44
+       },
+       "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/validation/perf-default-4/run.log",
+       "log_sha256": "0202c189de812b966f7274b6f7edd2619b6c5035485e2a3a4769252a7361bed5"
+      }
+     ],
+     "license_failure": false,
+     "namespaces_unchanged": true,
+     "guard_hits": [],
+     "triage": {
+      "sc010-latency": {
+       "category": "product-defect",
+       "count": 1,
+       "nodes": [
+        "tests.perf.test_227_single_graph_latency::test_the_scoped_search_stays_within_the_budget"
+       ],
+       "nodes_total": 1
+      }
+     },
+     "untriaged": [],
+     "skip_reasons_top": {
+      "set IVG_HEADTOHEAD=1 to run the head-to-head benchmark": 1
+     }
     }
    ],
-   "supporting": []
+   "supporting": [
+    {
+     "id": "perf-default-540-1",
+     "status": "done",
+     "counts": {
+      "failed": 1,
+      "passed": 1,
+      "skipped": 1,
+      "deselected": 7,
+      "pytest_seconds": 10.84
+     },
+     "chunks": [
+      {
+       "id": "perf-default-540-1",
+       "exit": "1",
+       "counts": {
+        "failed": 1,
+        "passed": 1,
+        "skipped": 1,
+        "deselected": 7,
+        "pytest_seconds": 10.84
+       },
+       "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/validation/perf-default-540-1/run.log",
+       "log_sha256": "e2ee81e71276f19a3c4ea192ae2d569076d4f1498c7836a58dc0c5d96d7cd0f3"
+      }
+     ],
+     "license_failure": false,
+     "namespaces_unchanged": true,
+     "guard_hits": [],
+     "triage": {
+      "sc010-latency": {
+       "category": "product-defect",
+       "count": 1,
+       "nodes": [
+        "tests.perf.test_227_single_graph_latency::test_the_scoped_search_stays_within_the_budget"
+       ],
+       "nodes_total": 1
+      }
+     },
+     "untriaged": [],
+     "skip_reasons_top": {
+      "set IVG_HEADTOHEAD=1 to run the head-to-head benchmark": 1
+     }
+    },
+    {
+     "id": "perf-default-540-2",
+     "status": "done",
+     "counts": {
+      "failed": 1,
+      "passed": 1,
+      "skipped": 1,
+      "deselected": 7,
+      "pytest_seconds": 10.58
+     },
+     "chunks": [
+      {
+       "id": "perf-default-540-2",
+       "exit": "1",
+       "counts": {
+        "failed": 1,
+        "passed": 1,
+        "skipped": 1,
+        "deselected": 7,
+        "pytest_seconds": 10.58
+       },
+       "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/validation/perf-default-540-2/run.log",
+       "log_sha256": "0ac993d3d5f08dfd0edd58bfb1dc7c9e18af75a10d98fad73bcc09f35eaef0f6"
+      }
+     ],
+     "license_failure": false,
+     "namespaces_unchanged": true,
+     "guard_hits": [],
+     "triage": {
+      "sc010-latency": {
+       "category": "product-defect",
+       "count": 1,
+       "nodes": [
+        "tests.perf.test_227_single_graph_latency::test_the_scoped_search_stays_within_the_budget"
+       ],
+       "nodes_total": 1
+      }
+     },
+     "untriaged": [],
+     "skip_reasons_top": {
+      "set IVG_HEADTOHEAD=1 to run the head-to-head benchmark": 1
+     }
+    }
+   ]
   },
   {
    "suite": "scratch-namespace fixtures (operator ruling 2026-11-14)",
@@ -2689,6 +2856,15 @@
        ],
        "nodes_total": 1
       },
+      "arno-lib-unrecorded": {
+       "category": "environment",
+       "count": 2,
+       "nodes": [
+        "tests.integration.test_236_bfs_size_gate::test_bfs_is_correct_and_takes_the_right_path_at_each_size[34794-native]",
+        "tests.integration.test_236_bfs_size_gate::test_bfs_is_correct_and_takes_the_right_path_at_each_size[34795-native]"
+       ],
+       "nodes_total": 2
+      },
       "licence-236": {
        "category": "environment",
        "count": 126,
@@ -2755,25 +2931,17 @@
         "tests.integration.test_236_algo_cache::test_a_large_result_is_held_in_front_and_a_write_still_invalidates_it"
        ],
        "nodes_total": 126
+      },
+      "embedded-python-deps-236": {
+       "category": "environment",
+       "count": 1,
+       "nodes": [
+        "tests.integration.test_cypher_engine_objectscript::test_query_returns_named_columns_and_rows"
+       ],
+       "nodes_total": 1
       }
      },
-     "untriaged": [
-      [
-       "failures",
-       "tests.integration.test_236_bfs_size_gate::test_bfs_is_correct_and_takes_the_right_path_at_each_size[34794-native]",
-       "AssertionError: the scratch namespace has no library recorded"
-      ],
-      [
-       "failures",
-       "tests.integration.test_236_bfs_size_gate::test_bfs_is_correct_and_takes_the_right_path_at_each_size[34795-native]",
-       "AssertionError: the scratch namespace has no library recorded"
-      ],
-      [
-       "failures",
-       "tests.integration.test_cypher_engine_objectscript::test_query_returns_named_columns_and_rows",
-       "RuntimeError: IVG236VAL: line 3: <PYTHON EXCEPTION> 246 <class 'ModuleNotFoundError'>: No module named 'pydantic'"
-      ]
-     ],
+     "untriaged": [],
      "skip_reasons_top": {}
     },
     {
@@ -2999,6 +3167,887 @@
    ]
   },
   {
+   "suite": "tests/docs/test_docs_run.py in IVG460DOC (operator ruling)",
+   "meant_to_run": "ci-parity.sh: IVG_NAMESPACE=IVG460DOC pytest tests/docs/test_docs_run.py after make_scratch_namespace.py IVG460DOC",
+   "decisive": [
+    {
+     "id": "docs-run-1",
+     "status": "done",
+     "counts": {
+      "failed": 1,
+      "passed": 15,
+      "pytest_seconds": 79.58
+     },
+     "chunks": [
+      {
+       "id": "docs-run-1",
+       "exit": "1",
+       "counts": {
+        "failed": 1,
+        "passed": 15,
+        "pytest_seconds": 79.58
+       },
+       "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/validation/docs-run-1/run.log",
+       "log_sha256": "8b69e0e66e9e2a2232760f5870e9e9b3a42455140eb61e099478203cf8f10109"
+      }
+     ],
+     "license_failure": false,
+     "namespaces_unchanged": true,
+     "guard_hits": [],
+     "triage": {
+      "decimal-score": {
+       "category": "product-defect (driver 5.3.2 from the pin's uv.lock)",
+       "count": 1,
+       "nodes": [
+        "tests.docs.test_docs_run::test_doc_runs[docs/USER_GUIDE.md]"
+       ],
+       "nodes_total": 1
+      }
+     },
+     "untriaged": [],
+     "skip_reasons_top": {}
+    },
+    {
+     "id": "docs-run-2",
+     "status": "done",
+     "counts": {
+      "failed": 1,
+      "passed": 15,
+      "pytest_seconds": 75.01
+     },
+     "chunks": [
+      {
+       "id": "docs-run-2",
+       "exit": "1",
+       "counts": {
+        "failed": 1,
+        "passed": 15,
+        "pytest_seconds": 75.01
+       },
+       "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/validation/docs-run-2/run.log",
+       "log_sha256": "6a8e67dcf74b42b3239b8523c46c5f87979c93069183c139069ff694ce5e429c"
+      }
+     ],
+     "license_failure": false,
+     "namespaces_unchanged": true,
+     "guard_hits": [],
+     "triage": {
+      "decimal-score": {
+       "category": "product-defect (driver 5.3.2 from the pin's uv.lock)",
+       "count": 1,
+       "nodes": [
+        "tests.docs.test_docs_run::test_doc_runs[docs/USER_GUIDE.md]"
+       ],
+       "nodes_total": 1
+      }
+     },
+     "untriaged": [],
+     "skip_reasons_top": {}
+    }
+   ],
+   "supporting": [
+    {
+     "id": "docs-run-540-1",
+     "status": "done",
+     "counts": {
+      "failed": 1,
+      "passed": 15,
+      "pytest_seconds": 75.57
+     },
+     "chunks": [
+      {
+       "id": "docs-run-540-1",
+       "exit": "1",
+       "counts": {
+        "failed": 1,
+        "passed": 15,
+        "pytest_seconds": 75.57
+       },
+       "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/validation/docs-run-540-1/run.log",
+       "log_sha256": "6bbcbde2e02704936765a6aeeb05aee39ae08d5238fcd2d61cb626d8273fe993"
+      }
+     ],
+     "license_failure": false,
+     "namespaces_unchanged": true,
+     "guard_hits": [],
+     "triage": {
+      "decimal-score": {
+       "category": "product-defect (driver 5.3.2 from the pin's uv.lock)",
+       "count": 1,
+       "nodes": [
+        "tests.docs.test_docs_run::test_doc_runs[docs/USER_GUIDE.md]"
+       ],
+       "nodes_total": 1
+      }
+     },
+     "untriaged": [],
+     "skip_reasons_top": {}
+    }
+   ]
+  },
+  {
+   "suite": "IVG262ALT-dependent files (operator ruling)",
+   "meant_to_run": "IVG_NS_IVG262ALT=IVG262ALT: tests/e2e/test_262_alt_schema_paths.py (its fixture sets IVG262ALT up), tests/integration/test_grant_copy.py, tests/integration/test_cypher_advanced.py",
+   "decisive": [
+    {
+     "id": "alt-1",
+     "status": "done",
+     "counts": {
+      "passed": 39,
+      "pytest_seconds": 34.24
+     },
+     "chunks": [
+      {
+       "id": "alt-1",
+       "exit": "0",
+       "counts": {
+        "passed": 39,
+        "pytest_seconds": 34.24
+       },
+       "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/validation/alt-1/run.log",
+       "log_sha256": "b9938b77b8877d585515c34de1c174aef88295a6d834b07fc8ad69fe83cb3285"
+      }
+     ],
+     "license_failure": false,
+     "namespaces_unchanged": false,
+     "guard_hits": [],
+     "triage": {},
+     "untriaged": [],
+     "skip_reasons_top": {}
+    }
+   ],
+   "supporting": []
+  },
+  {
+   "suite": "e2e gated subset, gate on (operator ruling)",
+   "meant_to_run": "run_gated.sh: IVG_GATE_NAMESPACES=1 + scratch mode; the 102 primary-only and 44 rag-only gated files without threads/processes/extra users, one gate namespace per batch (made and dropped by the gate)",
+   "decisive": [
+    {
+     "id": "gated-1",
+     "status": "done",
+     "counts": {
+      "failed": 4,
+      "passed": 682,
+      "skipped": 75,
+      "pytest_seconds": 140.98
+     },
+     "chunks": [
+      {
+       "id": "gated-1",
+       "exit": "1",
+       "counts": {
+        "failed": 4,
+        "passed": 682,
+        "skipped": 75,
+        "pytest_seconds": 140.98
+       },
+       "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/validation/gated-1/run.log",
+       "log_sha256": "d95901fe84a750db925db67ab5c3d0331af29f62ef213213159f4e1ba7d4b30e"
+      }
+     ],
+     "license_failure": false,
+     "namespaces_unchanged": true,
+     "guard_hits": [],
+     "triage": {
+      "embedded-callin-denied": {
+       "category": "environment",
+       "count": 4,
+       "nodes": [
+        "tests.e2e.test_460_r185_container_script_refusal_e2e::test_a_namespace_recorded_as_rag_is_refused[compile-all]",
+        "tests.e2e.test_460_r185_container_script_refusal_e2e::test_a_namespace_recorded_as_rag_is_refused[compile]",
+        "tests.e2e.test_460_r197_test_container_refusal_e2e::test_a_namespace_recorded_as_rag_is_refused[compile-all]",
+        "tests.e2e.test_460_r197_test_container_refusal_e2e::test_a_namespace_recorded_as_rag_is_refused[compile]"
+       ],
+       "nodes_total": 4
+      }
+     },
+     "untriaged": [],
+     "skip_reasons_top": {
+      "the Arno library is not loaded on this container: there is no second route to compare": 57,
+      "/tmp/libarno_callout.so is not on the server": 6,
+      "IRIS's embedded Python has no igraph/leidenalg in this container": 6,
+      "the Arno library is not loaded on this container: BFSJson has no native path to check": 3,
+      "Arno is not loaded in this container": 3
+     }
+    },
+    {
+     "id": "gated-2",
+     "status": "done",
+     "counts": {
+      "failed": 6,
+      "passed": 670,
+      "skipped": 12,
+      "pytest_seconds": 148.6
+     },
+     "chunks": [
+      {
+       "id": "gated-2",
+       "exit": "1",
+       "counts": {
+        "failed": 6,
+        "passed": 670,
+        "skipped": 12,
+        "pytest_seconds": 148.6
+       },
+       "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/validation/gated-2/run.log",
+       "log_sha256": "3cb42891abc99d34034d8c899d6b732acfd060ff2e73f0371af696e5562078fa"
+      }
+     ],
+     "license_failure": false,
+     "namespaces_unchanged": true,
+     "guard_hits": [],
+     "triage": {
+      "list-param-count": {
+       "category": "product-defect (driver 5.3.2 from the pin's uv.lock)",
+       "count": 6,
+       "nodes": [
+        "tests.e2e.test_460_r262_list_values_e2e::test_a_list_holds_its_values_with_their_types[a parameter holding two lists-native]",
+        "tests.e2e.test_460_r262_list_values_e2e::test_a_list_holds_its_values_with_their_types[a parameter holding two lists-sql]",
+        "tests.e2e.test_460_r273_list_types_e2e::test_a_list_value_keeps_its_type[UNWIND of an integer parameter-native]",
+        "tests.e2e.test_460_r273_list_types_e2e::test_a_list_value_keeps_its_type[UNWIND of an integer parameter-sql]",
+        "tests.e2e.test_460_r273_list_types_e2e::test_a_list_value_keeps_its_type[UNWIND of a float parameter-native]",
+        "tests.e2e.test_460_r273_list_types_e2e::test_a_list_value_keeps_its_type[UNWIND of a float parameter-sql]"
+       ],
+       "nodes_total": 6
+      }
+     },
+     "untriaged": [],
+     "skip_reasons_top": {
+      "IRIS's embedded Python has no igraph/leidenalg in this container": 8,
+      "Arno is not loaded in this container": 4
+     }
+    },
+    {
+     "id": "gated-3",
+     "status": "done",
+     "counts": {
+      "failed": 265,
+      "passed": 7945,
+      "pytest_seconds": 252.93
+     },
+     "chunks": [
+      {
+       "id": "gated-3",
+       "exit": "1",
+       "counts": {
+        "failed": 265,
+        "passed": 7945,
+        "pytest_seconds": 252.93
+       },
+       "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/validation/gated-3/run.log",
+       "log_sha256": "33fc233b4755d4432bf23fb3d07be42589f145590e22c909f5550fdc03402565"
+      }
+     ],
+     "license_failure": false,
+     "namespaces_unchanged": true,
+     "guard_hits": [],
+     "triage": {
+      "decimal-score": {
+       "category": "product-defect (driver 5.3.2 from the pin's uv.lock)",
+       "count": 261,
+       "nodes": [
+        "tests.e2e.test_460_r306_algorithm_fixes_e2e::test_1_degree_and_closeness_count_every_node[arno]",
+        "tests.e2e.test_460_r306_algorithm_fixes_e2e::test_1_degree_and_closeness_count_every_node[no_arno]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_ivg_ppr[seed0-arno]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_community_procedures[seed0-arno-ivg.triangleCount-triangles, lcc-10000]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_community_procedures[seed0-arno-ivg.triangleCount-triangles, lcc-3]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_ivg_ppr[seed0-no_arno]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_community_procedures[seed0-no_arno-ivg.triangleCount-triangles, lcc-10000]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_community_procedures[seed0-no_arno-ivg.triangleCount-triangles, lcc-3]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_ivg_ppr[seed1-no_arno]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_ivg_degree_centrality[seed1-no_arno-10000]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_ivg_degree_centrality[seed1-no_arno-3]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_ivg_ppr[seed1-arno]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_ivg_degree_centrality[seed1-arno-10000]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_ivg_degree_centrality[seed1-arno-3]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_ivg_ppr[seed2-no_arno]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_community_procedures[seed2-no_arno-ivg.triangleCount-triangles, lcc-10000]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_community_procedures[seed2-no_arno-ivg.triangleCount-triangles, lcc-3]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_ivg_ppr[seed2-arno]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_community_procedures[seed2-arno-ivg.triangleCount-triangles, lcc-10000]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_community_procedures[seed2-arno-ivg.triangleCount-triangles, lcc-3]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_ivg_ppr[seed3-no_arno]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_ivg_degree_centrality[seed3-no_arno-10000]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_ivg_degree_centrality[seed3-no_arno-3]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_ivg_ppr[seed3-arno]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_ivg_degree_centrality[seed3-arno-10000]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_ivg_degree_centrality[seed3-arno-3]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_ivg_ppr[seed4-no_arno]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_ivg_degree_centrality[seed4-no_arno-10000]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_ivg_degree_centrality[seed4-no_arno-3]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_ivg_ppr[seed4-arno]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_ivg_degree_centrality[seed4-arno-10000]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_ivg_degree_centrality[seed4-arno-3]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_ivg_ppr[seed5-no_arno]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_community_procedures[seed5-no_arno-ivg.triangleCount-triangles, lcc-10000]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_community_procedures[seed5-no_arno-ivg.triangleCount-triangles, lcc-3]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_ivg_ppr[seed5-arno]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_community_procedures[seed5-arno-ivg.triangleCount-triangles, lcc-10000]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_community_procedures[seed5-arno-ivg.triangleCount-triangles, lcc-3]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_ivg_ppr[seed6-no_arno]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_community_procedures[seed6-no_arno-ivg.triangleCount-triangles, lcc-10000]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_community_procedures[seed6-no_arno-ivg.triangleCount-triangles, lcc-3]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_ivg_ppr[seed6-arno]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_community_procedures[seed6-arno-ivg.triangleCount-triangles, lcc-10000]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_community_procedures[seed6-arno-ivg.triangleCount-triangles, lcc-3]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_ivg_ppr[seed7-no_arno]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_ivg_ppr[seed7-arno]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_ivg_ppr[seed8-no_arno]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_community_procedures[seed8-no_arno-ivg.triangleCount-triangles, lcc-10000]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_community_procedures[seed8-no_arno-ivg.triangleCount-triangles, lcc-3]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_ivg_ppr[seed8-arno]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_community_procedures[seed8-arno-ivg.triangleCount-triangles, lcc-10000]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_community_procedures[seed8-arno-ivg.triangleCount-triangles, lcc-3]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_ivg_ppr[seed9-no_arno]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_ivg_degree_centrality[seed9-no_arno-10000]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_ivg_degree_centrality[seed9-no_arno-3]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_ivg_ppr[seed9-arno]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_ivg_degree_centrality[seed9-arno-10000]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_ivg_degree_centrality[seed9-arno-3]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_ivg_ppr[seed10-no_arno]",
+        "tests.e2e.test_460_r306_algorithm_oracle_e2e::test_ivg_ppr[seed10-arno]"
+       ],
+       "nodes_total": 261
+      },
+      "list-param-count": {
+       "category": "product-defect (driver 5.3.2 from the pin's uv.lock)",
+       "count": 4,
+       "nodes": [
+        "tests.e2e.test_463_unwind_known_lists_e2e::test_a_known_list_keeps_its_empty_strings[RETURN size($l1 + $l2) AS c-default]",
+        "tests.e2e.test_463_unwind_known_lists_e2e::test_a_known_list_keeps_its_empty_strings[RETURN size($l1 + $l2) AS c-sql]",
+        "tests.e2e.test_463_unwind_known_lists_e2e::test_a_long_parameter_list_keeps_its_empty_string[default]",
+        "tests.e2e.test_463_unwind_known_lists_e2e::test_a_long_parameter_list_keeps_its_empty_string[sql]"
+       ],
+       "nodes_total": 4
+      }
+     },
+     "untriaged": [],
+     "skip_reasons_top": {}
+    },
+    {
+     "id": "gated-4",
+     "status": "done",
+     "counts": {
+      "failed": 33,
+      "passed": 470,
+      "skipped": 6,
+      "xfailed": 3,
+      "pytest_seconds": 82.77
+     },
+     "chunks": [
+      {
+       "id": "gated-4",
+       "exit": "1",
+       "counts": {
+        "failed": 33,
+        "passed": 470,
+        "skipped": 6,
+        "xfailed": 3,
+        "pytest_seconds": 82.77
+       },
+       "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/validation/gated-4/run.log",
+       "log_sha256": "d5fdbe33c02772ff4df1c2f33d88988ce9f4fb9db289750d7945ffa3ed2b8688"
+      }
+     ],
+     "license_failure": false,
+     "namespaces_unchanged": true,
+     "guard_hits": [],
+     "triage": {
+      "decimal-score": {
+       "category": "product-defect (driver 5.3.2 from the pin's uv.lock)",
+       "count": 28,
+       "nodes": [
+        "tests.e2e.test_470_ppr_limit_e2e::test_order_by_score_desc_limit[1-default]",
+        "tests.e2e.test_470_ppr_limit_e2e::test_order_by_score_desc_limit[1-sql]",
+        "tests.e2e.test_470_ppr_limit_e2e::test_order_by_score_desc_limit[2-default]",
+        "tests.e2e.test_470_ppr_limit_e2e::test_order_by_score_desc_limit[2-sql]",
+        "tests.e2e.test_470_ppr_limit_e2e::test_order_by_score_desc_limit[3-default]",
+        "tests.e2e.test_470_ppr_limit_e2e::test_order_by_score_desc_limit[3-sql]",
+        "tests.e2e.test_470_ppr_limit_e2e::test_order_by_score_desc_limit[5-default]",
+        "tests.e2e.test_470_ppr_limit_e2e::test_order_by_score_desc_limit[5-sql]",
+        "tests.e2e.test_470_ppr_limit_e2e::test_order_by_score_desc_limit[10-default]",
+        "tests.e2e.test_470_ppr_limit_e2e::test_order_by_score_desc_limit[10-sql]",
+        "tests.e2e.test_470_ppr_limit_e2e::test_order_by_score_desc_limit[20-default]",
+        "tests.e2e.test_470_ppr_limit_e2e::test_order_by_score_desc_limit[20-sql]",
+        "tests.e2e.test_470_ppr_limit_e2e::test_limit_without_order_by[1-default]",
+        "tests.e2e.test_470_ppr_limit_e2e::test_limit_without_order_by[1-sql]",
+        "tests.e2e.test_470_ppr_limit_e2e::test_limit_without_order_by[4-default]",
+        "tests.e2e.test_470_ppr_limit_e2e::test_limit_without_order_by[4-sql]",
+        "tests.e2e.test_470_ppr_limit_e2e::test_limit_without_order_by[10-default]",
+        "tests.e2e.test_470_ppr_limit_e2e::test_limit_without_order_by[10-sql]",
+        "tests.e2e.test_470_ppr_limit_e2e::test_limit_without_order_by[15-default]",
+        "tests.e2e.test_470_ppr_limit_e2e::test_limit_without_order_by[15-sql]",
+        "tests.e2e.test_470_ppr_limit_e2e::test_skip_and_limit[default]",
+        "tests.e2e.test_470_ppr_limit_e2e::test_skip_and_limit[sql]",
+        "tests.e2e.test_470_ppr_limit_e2e::test_a_parameter_limit[default]",
+        "tests.e2e.test_470_ppr_limit_e2e::test_a_parameter_limit[sql]",
+        "tests.e2e.test_470_ppr_limit_e2e::test_a_shape_that_keeps_the_full_answer_still_answers_right[default]",
+        "tests.e2e.test_470_ppr_limit_e2e::test_a_shape_that_keeps_the_full_answer_still_answers_right[sql]",
+        "tests.e2e.test_470_row8b_e2e::test_call_ivg_ppr_from_a_seed_outside_the_graph[default]",
+        "tests.e2e.test_470_row8b_e2e::test_call_ivg_ppr_from_a_seed_outside_the_graph[sql]"
+       ],
+       "nodes_total": 28
+      },
+      "mcp-ai-classes": {
+       "category": "environment",
+       "count": 1,
+       "nodes": [
+        "tests.e2e.test_470_row8b_e2e::test_mcp_pprwalk_answers_its_results"
+       ],
+       "nodes_total": 1
+      },
+      "list-param-count": {
+       "category": "product-defect (driver 5.3.2 from the pin's uv.lock)",
+       "count": 4,
+       "nodes": [
+        "tests.e2e.test_470_unwind_param_rewrite_e2e::test_a_list_of_one_kind_reads_as_before[default]",
+        "tests.e2e.test_470_unwind_param_rewrite_e2e::test_a_list_of_one_kind_reads_as_before[sql]",
+        "tests.e2e.test_470_unwind_wrong_node_e2e::test_a_list_of_one_kind_deletes_each_of_its_nodes[default]",
+        "tests.e2e.test_470_unwind_wrong_node_e2e::test_a_list_of_one_kind_deletes_each_of_its_nodes[sql]"
+       ],
+       "nodes_total": 4
+      }
+     },
+     "untriaged": [],
+     "skip_reasons_top": {
+      "IVG_OLD_NAMESPACE must name an IVG470* namespace set up by an older IVG and never upgraded": 4,
+      "igraph and leidenalg are not installed in this IRIS's embedded Python": 2,
+      "Older than 4.7.0 (4.6.5 and row 22's parent answer the same rows): a map property in a boolean context (CASE WHEN input.fixed) is translated as JSON_VALUE(..) = 'true', and Graph_KG.JSON_VALUE answers '1' for a JSON true": 2,
+      "reduce(s = 0, x IN <list> | s + x) fails SQLCODE -23 in a RETURN too (the translation names re<N>.x.x); listed for 4.7.1": 1
+     }
+    },
+    {
+     "id": "gated-rag-1",
+     "status": "done",
+     "counts": {
+      "failed": 2,
+      "passed": 127,
+      "skipped": 9,
+      "pytest_seconds": 92.66
+     },
+     "chunks": [
+      {
+       "id": "gated-rag-1",
+       "exit": "1",
+       "counts": {
+        "failed": 2,
+        "passed": 127,
+        "skipped": 9,
+        "pytest_seconds": 92.66
+       },
+       "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/validation/gated-rag-1/run.log",
+       "log_sha256": "a120a86c24567f812f9dddb1cf5ae4b62fbb3c7dbb8ea740b4e85ffc0a6d51f3"
+      }
+     ],
+     "license_failure": false,
+     "namespaces_unchanged": true,
+     "guard_hits": [],
+     "triage": {
+      "rrf-score-string": {
+       "category": "product-defect (driver 5.3.2 from the pin's uv.lock)",
+       "count": 2,
+       "nodes": [
+        "tests.e2e.test_460_r284_retrieve_rrf_score_e2e::test_rrf_score_is_a_float_with_the_hand_worked_value[]",
+        "tests.e2e.test_460_r284_retrieve_rrf_score_e2e::test_rrf_score_is_a_float_with_the_hand_worked_value[ ORDER BY rrf_score DESC]"
+       ],
+       "nodes_total": 2
+      }
+     },
+     "untriaged": [],
+     "skip_reasons_top": {
+      "/tmp/libarno_callout.so is not on the server": 5,
+      "no Arno library at /usr/irissys/mgr/libarno_callout.so on the server": 4
+     }
+    },
+    {
+     "id": "gated-rag-2",
+     "status": "done",
+     "counts": {
+      "passed": 228,
+      "xfailed": 1,
+      "pytest_seconds": 83.93
+     },
+     "chunks": [
+      {
+       "id": "gated-rag-2",
+       "exit": "0",
+       "counts": {
+        "passed": 228,
+        "xfailed": 1,
+        "pytest_seconds": 83.93
+       },
+       "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/validation/gated-rag-2/run.log",
+       "log_sha256": "1c12b26b0b57970d27ab8a9bf9e25c090c0794971aba8d8cfc43f81faa121ecb"
+      }
+     ],
+     "license_failure": false,
+     "namespaces_unchanged": true,
+     "guard_hits": [],
+     "triage": {},
+     "untriaged": [],
+     "skip_reasons_top": {
+      "docs/KNOWN_ISSUES.md, 'A stored string that spells a boolean, a list or a map reads as one': the string '[3, 4]' is stored as text (the test above) but r.t reads back as the list [3, 4]": 1
+     }
+    }
+   ],
+   "supporting": []
+  },
+  {
+   "suite": "driver A/B: 5.3.2 (pin uv.lock) vs 5.4.0, same 8 files, alternating",
+   "meant_to_run": "A = earlier 5.3.2 runs (integration-1, e2e-1, rerun-1..3) and driver532-1; B = driver540-1/-2 with VALIDATION_DRIVER_SITE=$RUN_DIR/availability/driver-5.4.0-venv site-packages",
+   "decisive": [
+    {
+     "id": "driver532-1",
+     "status": "done",
+     "counts": {
+      "failed": 14,
+      "passed": 224,
+      "skipped": 2,
+      "pytest_seconds": 203.72
+     },
+     "chunks": [
+      {
+       "id": "driver532-1",
+       "exit": "1",
+       "counts": {
+        "failed": 14,
+        "passed": 224,
+        "skipped": 2,
+        "pytest_seconds": 203.72
+       },
+       "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/validation/driver532-1/run.log",
+       "log_sha256": "6d5290f273db54efff2de7d404d5565d84d06219a573162aeedcc56d3a833495"
+      }
+     ],
+     "license_failure": false,
+     "namespaces_unchanged": true,
+     "guard_hits": [],
+     "triage": {
+      "decimal-score": {
+       "category": "product-defect (driver 5.3.2 from the pin's uv.lock)",
+       "count": 4,
+       "nodes": [
+        "tests.integration.test_algorithms_new_paths.TestAlgorithmCypherWrappers::test_closeness_via_cypher",
+        "tests.integration.test_algorithms_new_paths.TestAlgorithmCypherWrappers::test_degree_centrality_via_cypher",
+        "tests.e2e.test_460_proc_yield_alias_e2e::test_the_value_under_its_alias[ppr]",
+        "tests.e2e.test_460_r270_ppr_networkx_e2e::test_sql_function_and_call"
+       ],
+       "nodes_total": 4
+      },
+      "duplicate-listerror": {
+       "category": "product-defect (driver 5.3.2 from the pin's uv.lock)",
+       "count": 7,
+       "nodes": [
+        "tests.integration.test_store_write_paths.TestStoreWriteNodes::test_write_nodes_duplicate_silently_skipped",
+        "tests.integration.test_sql_store_paths.TestWriteNodesErrorPaths::test_write_nodes_label_non_unique_error",
+        "tests.integration.test_sql_store_paths.TestWriteNodesErrorPaths::test_write_nodes_prop_non_unique_error",
+        "tests.integration.test_sql_store_paths.TestWriteEdgesErrorPath::test_write_edges_non_unique_error",
+        "tests.e2e.test_create_edge_atomic_e2e::test_create_edge_with_a_long_name_pair_raises_and_leaves_no_node_rows",
+        "tests.e2e.test_create_edge_atomic_e2e::test_create_edge_in_a_named_graph_with_a_long_pair_raises_and_leaves_no_node_rows",
+        "tests.e2e.test_create_edge_atomic_e2e::test_store_write_edges_with_a_long_pair_raises_and_writes_nothing"
+       ],
+       "nodes_total": 7
+      },
+      "temporal-structural-cursor": {
+       "category": "product-defect (driver 5.3.2 from the pin's uv.lock)",
+       "count": 2,
+       "nodes": [
+        "tests.e2e.test_temporal_structural_row_live.TestTemporalStructuralRowLive::test_flag_on_makes_a_temporal_only_edge_visible",
+        "tests.e2e.test_temporal_structural_row_live.TestTemporalStructuralRowLive::test_flag_on_delete_removes_the_row_and_the_match"
+       ],
+       "nodes_total": 2
+      },
+      "leiden-karate-ari": {
+       "category": "product-defect",
+       "count": 1,
+       "nodes": [
+        "tests.e2e.test_communities_e2e.TestLeidenCommunities::test_leiden_karate_club_ari"
+       ],
+       "nodes_total": 1
+      }
+     },
+     "untriaged": [],
+     "skip_reasons_top": {
+      "the Arno library is not loaded on this container": 1,
+      "libarno_callout.so not loaded \u2014 cross-check requires both paths active": 1
+     }
+    },
+    {
+     "id": "driver540-1",
+     "status": "done",
+     "counts": {
+      "failed": 1,
+      "passed": 237,
+      "skipped": 2,
+      "pytest_seconds": 335.39
+     },
+     "chunks": [
+      {
+       "id": "driver540-1",
+       "exit": "1",
+       "counts": {
+        "failed": 1,
+        "passed": 237,
+        "skipped": 2,
+        "pytest_seconds": 335.39
+       },
+       "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/validation/driver540-1/run.log",
+       "log_sha256": "8157674a27871c8ed60c42a60f78363145e1ae3c524c5b41b42c14b0f71c76c9"
+      }
+     ],
+     "license_failure": false,
+     "namespaces_unchanged": true,
+     "guard_hits": [],
+     "triage": {
+      "leiden-karate-ari": {
+       "category": "product-defect",
+       "count": 1,
+       "nodes": [
+        "tests.e2e.test_communities_e2e.TestLeidenCommunities::test_leiden_karate_club_ari"
+       ],
+       "nodes_total": 1
+      }
+     },
+     "untriaged": [],
+     "skip_reasons_top": {
+      "the Arno library is not loaded on this container": 1,
+      "libarno_callout.so not loaded \u2014 cross-check requires both paths active": 1
+     }
+    },
+    {
+     "id": "driver540-2",
+     "status": "done",
+     "counts": {
+      "failed": 1,
+      "passed": 237,
+      "skipped": 2,
+      "pytest_seconds": 198.87
+     },
+     "chunks": [
+      {
+       "id": "driver540-2",
+       "exit": "1",
+       "counts": {
+        "failed": 1,
+        "passed": 237,
+        "skipped": 2,
+        "pytest_seconds": 198.87
+       },
+       "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/validation/driver540-2/run.log",
+       "log_sha256": "c3869c61347493e5c8ee61485ffda984acd1e2672f65aba64d3c444dc3897732"
+      }
+     ],
+     "license_failure": false,
+     "namespaces_unchanged": true,
+     "guard_hits": [],
+     "triage": {
+      "leiden-karate-ari": {
+       "category": "product-defect",
+       "count": 1,
+       "nodes": [
+        "tests.e2e.test_communities_e2e.TestLeidenCommunities::test_leiden_karate_club_ari"
+       ],
+       "nodes_total": 1
+      }
+     },
+     "untriaged": [],
+     "skip_reasons_top": {
+      "the Arno library is not loaded on this container": 1,
+      "libarno_callout.so not loaded \u2014 cross-check requires both paths active": 1
+     }
+    },
+    {
+     "id": "gated-540-1",
+     "status": "done",
+     "counts": {
+      "passed": 138,
+      "pytest_seconds": 27.93
+     },
+     "chunks": [
+      {
+       "id": "gated-540-1",
+       "exit": "0",
+       "counts": {
+        "passed": 138,
+        "pytest_seconds": 27.93
+       },
+       "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/validation/gated-540-1/run.log",
+       "log_sha256": "9dfacdd7552d99b909e5be40646100f1e8363f00312082bc80bcfc66277ca70e"
+      }
+     ],
+     "license_failure": false,
+     "namespaces_unchanged": true,
+     "guard_hits": [],
+     "triage": {},
+     "untriaged": [],
+     "skip_reasons_top": {}
+    },
+    {
+     "id": "gated-532-1",
+     "status": "done",
+     "counts": {
+      "failed": 19,
+      "passed": 119,
+      "pytest_seconds": 29.06
+     },
+     "chunks": [
+      {
+       "id": "gated-532-1",
+       "exit": "1",
+       "counts": {
+        "failed": 19,
+        "passed": 119,
+        "pytest_seconds": 29.06
+       },
+       "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/validation/gated-532-1/run.log",
+       "log_sha256": "41c9bd80e9ebf1f7c9b84c5b17df516b6e9e644d982e17878b782839a66ff596"
+      }
+     ],
+     "license_failure": false,
+     "namespaces_unchanged": true,
+     "guard_hits": [],
+     "triage": {
+      "list-param-count": {
+       "category": "product-defect (driver 5.3.2 from the pin's uv.lock)",
+       "count": 10,
+       "nodes": [
+        "tests.e2e.test_460_r262_list_values_e2e::test_a_list_holds_its_values_with_their_types[a parameter holding two lists-native]",
+        "tests.e2e.test_460_r262_list_values_e2e::test_a_list_holds_its_values_with_their_types[a parameter holding two lists-sql]",
+        "tests.e2e.test_460_r273_list_types_e2e::test_a_list_value_keeps_its_type[UNWIND of an integer parameter-native]",
+        "tests.e2e.test_460_r273_list_types_e2e::test_a_list_value_keeps_its_type[UNWIND of an integer parameter-sql]",
+        "tests.e2e.test_460_r273_list_types_e2e::test_a_list_value_keeps_its_type[UNWIND of a float parameter-native]",
+        "tests.e2e.test_460_r273_list_types_e2e::test_a_list_value_keeps_its_type[UNWIND of a float parameter-sql]",
+        "tests.e2e.test_463_unwind_known_lists_e2e::test_a_known_list_keeps_its_empty_strings[RETURN size($l1 + $l2) AS c-default]",
+        "tests.e2e.test_463_unwind_known_lists_e2e::test_a_known_list_keeps_its_empty_strings[RETURN size($l1 + $l2) AS c-sql]",
+        "tests.e2e.test_463_unwind_known_lists_e2e::test_a_long_parameter_list_keeps_its_empty_string[default]",
+        "tests.e2e.test_463_unwind_known_lists_e2e::test_a_long_parameter_list_keeps_its_empty_string[sql]"
+       ],
+       "nodes_total": 10
+      },
+      "decimal-score": {
+       "category": "product-defect (driver 5.3.2 from the pin's uv.lock)",
+       "count": 9,
+       "nodes": [
+        "tests.e2e.test_463_json_id_escaping_e2e::test_degree[arno-out]",
+        "tests.e2e.test_463_json_id_escaping_e2e::test_degree[arno-in]",
+        "tests.e2e.test_463_json_id_escaping_e2e::test_degree[arno-both]",
+        "tests.e2e.test_463_json_id_escaping_e2e::test_degree[no_arno-out]",
+        "tests.e2e.test_463_json_id_escaping_e2e::test_degree[no_arno-in]",
+        "tests.e2e.test_463_json_id_escaping_e2e::test_degree[no_arno-both]",
+        "tests.e2e.test_463_search_id_escaping_e2e::test_bm25_search_answers_the_ids_exactly",
+        "tests.e2e.test_465_positional_procedures_e2e::test_ivg_ppr_still_answers_a_correct_ranking_with_positional_arguments",
+        "tests.e2e.test_465_procedure_options_e2e::test_degree_centrality_reads_its_options"
+       ],
+       "nodes_total": 9
+      }
+     },
+     "untriaged": [],
+     "skip_reasons_top": {}
+    },
+    {
+     "id": "gated-rag-540-1",
+     "status": "done",
+     "counts": {
+      "passed": 2,
+      "pytest_seconds": 14.93
+     },
+     "chunks": [
+      {
+       "id": "gated-rag-540-1",
+       "exit": "0",
+       "counts": {
+        "passed": 2,
+        "pytest_seconds": 14.93
+       },
+       "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/validation/gated-rag-540-1/run.log",
+       "log_sha256": "dd739d8b97b66b498503e21b3a45b55ac5de2764dcd969f9261dd8edf4b4c1c4"
+      }
+     ],
+     "license_failure": false,
+     "namespaces_unchanged": true,
+     "guard_hits": [],
+     "triage": {},
+     "untriaged": [],
+     "skip_reasons_top": {}
+    },
+    {
+     "id": "gated-rag-532-1",
+     "status": "done",
+     "counts": {
+      "failed": 2,
+      "pytest_seconds": 14.94
+     },
+     "chunks": [
+      {
+       "id": "gated-rag-532-1",
+       "exit": "1",
+       "counts": {
+        "failed": 2,
+        "pytest_seconds": 14.94
+       },
+       "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/validation/gated-rag-532-1/run.log",
+       "log_sha256": "36f01dea821e771650ce68374ae164e1fbc3358b7b0350afae8b9af4805cb695"
+      }
+     ],
+     "license_failure": false,
+     "namespaces_unchanged": true,
+     "guard_hits": [],
+     "triage": {
+      "rrf-score-string": {
+       "category": "product-defect (driver 5.3.2 from the pin's uv.lock)",
+       "count": 2,
+       "nodes": [
+        "tests.e2e.test_460_r284_retrieve_rrf_score_e2e::test_rrf_score_is_a_float_with_the_hand_worked_value[]",
+        "tests.e2e.test_460_r284_retrieve_rrf_score_e2e::test_rrf_score_is_a_float_with_the_hand_worked_value[ ORDER BY rrf_score DESC]"
+       ],
+       "nodes_total": 2
+      }
+     },
+     "untriaged": [],
+     "skip_reasons_top": {}
+    }
+   ],
+   "supporting": [
+    {
+     "id": "driver540-oracle-1",
+     "status": "done",
+     "counts": {
+      "passed": 960,
+      "pytest_seconds": 17.01
+     },
+     "chunks": [
+      {
+       "id": "driver540-oracle-1",
+       "exit": "0",
+       "counts": {
+        "passed": 960,
+        "pytest_seconds": 17.01
+       },
+       "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/validation/driver540-oracle-1/run.log",
+       "log_sha256": "da2765df2af300d8a1846c22882c92565e2a84bdbc34f2473eb141f3b3e382a3"
+      }
+     ],
+     "license_failure": false,
+     "namespaces_unchanged": true,
+     "guard_hits": [],
+     "triage": {},
+     "untriaged": [],
+     "skip_reasons_top": {}
+    },
+    {
+     "id": "driver540-tck-unwind-1",
+     "status": "done",
+     "summary": [
+      "14 / 14 eligible (0 ignored upstream; 14 scenarios in total)",
+      "failed 0, skipped by harness 0",
+      "environment-dependent failures: 0 (tests/tck/environment_dependent.txt)"
+     ],
+     "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/validation/driver540-tck-unwind-1/driver.log",
+     "log_sha256": "d61fdb66a1c45dd26c1e7fbfebbb6c8ceea0631fce2417768525186c63731069"
+    }
+   ]
+  },
+  {
    "suite": "multi-process (existing ledger concurrency cases)",
    "meant_to_run": "tests/integration/test_ledger_us03/us04/us09: separate OS processes, own DB-API connections",
    "decisive": [
@@ -3126,7 +4175,33 @@
     },
     {
      "id": "perf-sc256-upstream-2",
-     "status": "pending"
+     "status": "done",
+     "counts": {
+      "passed": 2,
+      "pytest_seconds": 178.8
+     },
+     "chunks": [
+      {
+       "id": "perf-sc256-upstream-2",
+       "exit": "0",
+       "counts": {
+        "passed": 2,
+        "pytest_seconds": 178.8
+       },
+       "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/validation/perf-sc256-upstream-2/run.log",
+       "log_sha256": "4b2d0561908b762cec1a044571f250885d49ee017a1e833980c34221598c2cb6"
+      }
+     ],
+     "license_failure": false,
+     "namespaces_unchanged": true,
+     "guard_hits": [],
+     "triage": {},
+     "untriaged": [],
+     "skip_reasons_top": {},
+     "sc_lines": [
+      "SC-002: 10000 revisions built in 19.7s; redacted 4181 records in 1045 revisions in 0.99s (max batch 557 ms); verify 1.9s equal",
+      "SC-003: 100000 records (19.7s to build) redacted in 1.41s, 52 batches, longest 31 ms, 10 revisions"
+     ]
     }
    ]
   },
@@ -3302,7 +4377,170 @@
     },
     {
      "id": "perf-committer-n1-2",
-     "status": "pending"
+     "status": "done",
+     "counts": {
+      "passed": 3,
+      "pytest_seconds": 551.3
+     },
+     "chunks": [
+      {
+       "id": "perf-committer-n1-2",
+       "exit": "0",
+       "counts": {
+        "passed": 3,
+        "pytest_seconds": 551.3
+       },
+       "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/validation/perf-committer-n1-2/run.log",
+       "log_sha256": "e360927c431cca7346f5b7557146bc283f739cf38a3423e1d7abeb2af77cf51e"
+      }
+     ],
+     "license_failure": false,
+     "namespaces_unchanged": true,
+     "guard_hits": [],
+     "triage": {},
+     "untriaged": [],
+     "skip_reasons_top": {},
+     "sc_lines": [],
+     "committer_cycles": [
+      {
+       "build_s": 129.8,
+       "commit_errors": [],
+       "commit_latency_A_after": {
+        "max_ms": 4.0,
+        "mean_ms": 1.02,
+        "n": 7764,
+        "p50_ms": 0.98,
+        "p95_ms": 1.28
+       },
+       "commit_latency_A_before": {
+        "max_ms": 24.4,
+        "mean_ms": 0.98,
+        "n": 8060,
+        "p50_ms": 0.92,
+        "p95_ms": 1.27
+       },
+       "commit_latency_B_during": {
+        "max_ms": 252.7,
+        "mean_ms": 13.51,
+        "n": 119,
+        "p50_ms": 1.11,
+        "p95_ms": 26.47
+       },
+       "commits_ok": 15943,
+       "committers": 1,
+       "cycle": 0,
+       "history": {
+        "contiguous": true,
+        "head_seq": 15956,
+        "revisions": 15956,
+        "single_parent": true
+       },
+       "live_committer_nodes": 15943,
+       "receipt": {
+        "batches": 52,
+        "complete": true,
+        "max_batch_ms": 251,
+        "records_tombstoned": 100000,
+        "revisions_touched": 10
+       },
+       "records_target": 100000,
+       "redact_s": 1.61,
+       "verify": "equal",
+       "verify_s": 3.0
+      },
+      {
+       "build_s": 19.2,
+       "commit_errors": [],
+       "commit_latency_A_after": {
+        "max_ms": 3.5,
+        "mean_ms": 0.98,
+        "n": 8126,
+        "p50_ms": 0.93,
+        "p95_ms": 1.27
+       },
+       "commit_latency_A_before": {
+        "max_ms": 24.1,
+        "mean_ms": 0.99,
+        "n": 8035,
+        "p50_ms": 0.93,
+        "p95_ms": 1.26
+       },
+       "commit_latency_B_during": {
+        "max_ms": 38.5,
+        "mean_ms": 6.63,
+        "n": 227,
+        "p50_ms": 1.0,
+        "p95_ms": 26.04
+       },
+       "commits_ok": 16388,
+       "committers": 1,
+       "cycle": 1,
+       "history": {
+        "contiguous": true,
+        "head_seq": 16401,
+        "revisions": 16401,
+        "single_parent": true
+       },
+       "live_committer_nodes": 16388,
+       "receipt": {
+        "batches": 52,
+        "complete": true,
+        "max_batch_ms": 38,
+        "records_tombstoned": 100000,
+        "revisions_touched": 10
+       },
+       "records_target": 100000,
+       "redact_s": 1.51,
+       "verify": "equal",
+       "verify_s": 3.0
+      },
+      {
+       "build_s": 19.4,
+       "commit_errors": [],
+       "commit_latency_A_after": {
+        "max_ms": 2.3,
+        "mean_ms": 0.95,
+        "n": 8347,
+        "p50_ms": 0.91,
+        "p95_ms": 1.25
+       },
+       "commit_latency_A_before": {
+        "max_ms": 23.8,
+        "mean_ms": 1.03,
+        "n": 7680,
+        "p50_ms": 0.94,
+        "p95_ms": 1.27
+       },
+       "commit_latency_B_during": {
+        "max_ms": 28.4,
+        "mean_ms": 6.24,
+        "n": 237,
+        "p50_ms": 0.99,
+        "p95_ms": 25.98
+       },
+       "commits_ok": 16264,
+       "committers": 1,
+       "cycle": 2,
+       "history": {
+        "contiguous": true,
+        "head_seq": 16277,
+        "revisions": 16277,
+        "single_parent": true
+       },
+       "live_committer_nodes": 16264,
+       "receipt": {
+        "batches": 52,
+        "complete": true,
+        "max_batch_ms": 28,
+        "records_tombstoned": 100000,
+        "revisions_touched": 10
+       },
+       "records_target": 100000,
+       "redact_s": 1.48,
+       "verify": "equal",
+       "verify_s": 3.0
+      }
+     ]
     }
    ]
   },
@@ -3311,7 +4549,124 @@
    "runs": [
     {
      "id": "perf-committer-n3-1",
-     "status": "pending"
+     "status": "done",
+     "counts": {
+      "passed": 2,
+      "pytest_seconds": 301.1
+     },
+     "chunks": [
+      {
+       "id": "perf-committer-n3-1",
+       "exit": "0",
+       "counts": {
+        "passed": 2,
+        "pytest_seconds": 301.1
+       },
+       "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/validation/perf-committer-n3-1/run.log",
+       "log_sha256": "9d5c5a06a043109cde937cdd95cf653bb45ee7e335df5fd01ba23158965e2477"
+      }
+     ],
+     "license_failure": false,
+     "namespaces_unchanged": true,
+     "guard_hits": [],
+     "triage": {},
+     "untriaged": [],
+     "skip_reasons_top": {},
+     "sc_lines": [],
+     "committer_cycles": [
+      {
+       "build_s": 19.9,
+       "commit_errors": [],
+       "commit_latency_A_after": {
+        "max_ms": 7.6,
+        "mean_ms": 2.4,
+        "n": 9952,
+        "p50_ms": 2.26,
+        "p95_ms": 3.37
+       },
+       "commit_latency_A_before": {
+        "max_ms": 43.0,
+        "mean_ms": 2.37,
+        "n": 10094,
+        "p50_ms": 2.34,
+        "p95_ms": 2.61
+       },
+       "commit_latency_B_during": {
+        "max_ms": 36.4,
+        "mean_ms": 13.2,
+        "n": 368,
+        "p50_ms": 3.55,
+        "p95_ms": 28.57
+       },
+       "commits_ok": 20415,
+       "committers": 3,
+       "cycle": 0,
+       "history": {
+        "contiguous": true,
+        "head_seq": 20428,
+        "revisions": 20428,
+        "single_parent": true
+       },
+       "live_committer_nodes": 20415,
+       "receipt": {
+        "batches": 52,
+        "complete": true,
+        "max_batch_ms": 36,
+        "records_tombstoned": 100000,
+        "revisions_touched": 10
+       },
+       "records_target": 100000,
+       "redact_s": 1.62,
+       "verify": "equal",
+       "verify_s": 3.3
+      },
+      {
+       "build_s": 19.4,
+       "commit_errors": [],
+       "commit_latency_A_after": {
+        "max_ms": 5.0,
+        "mean_ms": 2.23,
+        "n": 10728,
+        "p50_ms": 2.21,
+        "p95_ms": 2.48
+       },
+       "commit_latency_A_before": {
+        "max_ms": 45.5,
+        "mean_ms": 2.3,
+        "n": 10381,
+        "p50_ms": 2.28,
+        "p95_ms": 2.53
+       },
+       "commit_latency_B_during": {
+        "max_ms": 30.6,
+        "mean_ms": 12.75,
+        "n": 373,
+        "p50_ms": 3.65,
+        "p95_ms": 27.53
+       },
+       "commits_ok": 21483,
+       "committers": 3,
+       "cycle": 1,
+       "history": {
+        "contiguous": true,
+        "head_seq": 21496,
+        "revisions": 21496,
+        "single_parent": true
+       },
+       "live_committer_nodes": 21483,
+       "receipt": {
+        "batches": 52,
+        "complete": true,
+        "max_batch_ms": 30,
+        "records_tombstoned": 100000,
+        "revisions_touched": 10
+       },
+       "records_target": 100000,
+       "redact_s": 1.58,
+       "verify": "equal",
+       "verify_s": 3.6
+      }
+     ]
     }
    ]
   },
@@ -3442,7 +4797,65 @@
    "runs": [
     {
      "id": "perf-algos-1",
-     "status": "running"
+     "status": "done",
+     "counts": {
+      "failed": 1,
+      "passed": 10,
+      "deselected": 3,
+      "errors": 13,
+      "pytest_seconds": 2198.02
+     },
+     "chunks": [
+      {
+       "id": "perf-algos-1",
+       "exit": "1",
+       "counts": {
+        "failed": 1,
+        "passed": 10,
+        "deselected": 3,
+        "errors": 13,
+        "pytest_seconds": 2198.02
+       },
+       "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/validation/perf-algos-1/run.log",
+       "log_sha256": "cfd0d50a571fd3860fd2919c94e41a451efc6282dd479aed3d527291ef3a5e03"
+      }
+     ],
+     "license_failure": false,
+     "namespaces_unchanged": true,
+     "guard_hits": [],
+     "triage": {
+      "leiden-10k-timing": {
+       "category": "environment (timing, unconfirmed)",
+       "count": 1,
+       "nodes": [
+        "tests.e2e.test_communities_perf::test_nfr_004_leiden_under_60s_on_10k[10000-0.001]"
+       ],
+       "nodes_total": 1
+      },
+      "width-refusal": {
+       "category": "product-defect (test-stale)",
+       "count": 13,
+       "nodes": [
+        "tests.unit.test_cypher_benchmark.TestCypherBenchmark::test_01_point_lookup",
+        "tests.unit.test_cypher_benchmark.TestCypherBenchmark::test_02_label_filter",
+        "tests.unit.test_cypher_benchmark.TestCypherBenchmark::test_03_in_list",
+        "tests.unit.test_cypher_benchmark.TestCypherBenchmark::test_04_1hop_traversal",
+        "tests.unit.test_cypher_benchmark.TestCypherBenchmark::test_05_2hop_traversal",
+        "tests.unit.test_cypher_benchmark.TestCypherBenchmark::test_06_aggregation_count",
+        "tests.unit.test_cypher_benchmark.TestCypherBenchmark::test_07_degree_count",
+        "tests.unit.test_cypher_benchmark.TestCypherBenchmark::test_08_varlength_bfs",
+        "tests.unit.test_cypher_benchmark.TestCypherBenchmark::test_09_where_label_and_prop",
+        "tests.unit.test_cypher_benchmark.TestCypherBenchmark::test_10_with_having",
+        "tests.unit.test_cypher_benchmark.TestCypherBenchmark::test_11_set_map_merge",
+        "tests.unit.test_cypher_benchmark.TestCypherBenchmark::test_12_union",
+        "tests.unit.test_cypher_benchmark.TestCypherBenchmark::test_summary"
+       ],
+       "nodes_total": 13
+      }
+     },
+     "untriaged": [],
+     "skip_reasons_top": {},
+     "sc_lines": []
     }
    ]
   },
@@ -3451,7 +4864,32 @@
    "runs": [
     {
      "id": "perf-performance-1",
-     "status": "pending"
+     "status": "done",
+     "counts": {
+      "xfailed": 2,
+      "pytest_seconds": 4.03
+     },
+     "chunks": [
+      {
+       "id": "perf-performance-1",
+       "exit": "0",
+       "counts": {
+        "xfailed": 2,
+        "pytest_seconds": 4.03
+       },
+       "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/validation/perf-performance-1/run.log",
+       "log_sha256": "01335181e4bfe7db6ac729808e7ccbe2bd6822a7a54647dd15088224344995e1"
+      }
+     ],
+     "license_failure": false,
+     "namespaces_unchanged": true,
+     "guard_hits": [],
+     "triage": {},
+     "untriaged": [],
+     "skip_reasons_top": {
+      "License exhaustion under concurrent container load; pre-existing environment constraint": 2
+     },
+     "sc_lines": []
     }
    ]
   },
@@ -3460,11 +4898,21 @@
    "runs": [
     {
      "id": "bench-1",
-     "status": "pending"
+     "status": "done",
+     "exit": "1",
+     "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/validation/bench-1/run.log",
+     "log_sha256": "6b111f43a3e422d46b35ba0895629a825029e1b547e6d06f8266206c3406d2a6",
+     "result_file": null,
+     "result": null
     },
     {
      "id": "bench-2",
-     "status": "pending"
+     "status": "done",
+     "exit": "1",
+     "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/validation/bench-2/run.log",
+     "log_sha256": "9393a67d031b835bbbcd0decaf8706d80e72d828bfb09aa1458d4db8782f8415",
+     "result_file": null,
+     "result": null
     }
    ]
   }

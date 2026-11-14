@@ -80,6 +80,10 @@ def main():
                     "(Unwind1 [3] '<ARGUMENT ERROR> Incorrect number of parameters', reproduced by tck-unwind-rerun-1).")
                 continue
             if rid.startswith("scratch-236"):
+                continue
+            if rid == "docs-run-540-1":
+                register_pytest(rid, s["suite"], "NON-DECISIVE for the driver comparison: tests/docs/harness.py:553-554 "
+                                "resets the worker's PYTHONPATH, so the document worker used the venv's 5.3.2 driver. ")
                 continue  # registered by hand as blocked (licence exhaustion): val-scratch-236-1, val-scratch-236-1-rerun-*
             register_pytest(rid, s["suite"])
     for s in res["perf"]:
@@ -89,7 +93,10 @@ def main():
             rid = r["id"]
             if rid.startswith("bench-"):
                 reg(rid, "pass" if r["exit"] == "0" else "fail", Path(r["log"]), command_of(Path(r["log"])),
-                    f"{s['measurement']}: result file {r.get('result_file')}")
+                    f"{s['measurement']}: exit {r['exit']}; result file {r.get('result_file')}. "
+                    "Triage: product-defect (test-stale benchmark): tests/benchmarks/bench_utils.py:11 runs "
+                    "DELETE FROM SQLUser.<table> before loading, SQLCODE -30 because 4.6.0 removed the SQLUser views "
+                    "(CHANGELOG.md:786-789); no measurement was produced.")
                 continue
             note = ""
             if r.get("sc_lines"):

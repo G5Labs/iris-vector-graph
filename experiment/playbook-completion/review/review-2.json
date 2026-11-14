@@ -1,0 +1,172 @@
+{
+ "review": "independent reviewer, second pass (playbook §3.8 / §5c)",
+ "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "audit_head": "3d1095e3 (+ uncommitted lane work)",
+ "date": "2026-11-14",
+ "decision": "no sign-off",
+ "responses": {
+  "R-01": "addressed: F-C1304 (S2 live), F-C1305 (S3 confirmed-source), F-C1306 (S1 live; scope deviation R2-07)",
+  "R-02": "tool addressed (269 sites, 46 undeclared writers, 162 obligations); not carried into the matrix (R2-02); PropWrite, migration statement lists, rescue tables still unseen (marginal)",
+  "R-03": "addressed: F-C1307 (S2 live); P-C02 named as progress premise in PROOFS.md and PROOF-DEBT D-8, missing in TRUST.md",
+  "R-04": "addressed: F-C1308 (S1 live), F-C1203 (S1 live); r04.json checked by the reviewer",
+  "R-05": "partly addressed: status/product/level split, findings gate open, PROOFS.md:152 fixed, 11 statements [model-only]; product column under-reports (R2-01), ontology stale and RED-B4 (R2-03), account inconsistencies (R2-04)",
+  "R-06": "addressed for the account (premises_refuted_at_pin, PROOFS.md section); D-2 control absent and unlisted; breadth P-A3 omitted (R2-06)",
+  "R-07": "addressed: closed needs a decisive registered run or is graded inspected; breadth-B registered from a decisive full run (132/132)",
+  "R-08": "addressed by errata; records edited in place (R2-09); 16 first-pass partials not revisited",
+  "R-09": "partly addressed by correspondence alpha check and line coverage; alpha blind to temporal edges and completeness (R2-05)",
+  "R-10": "addressed: F-C1309 (S3 live), maintainer question",
+  "R-11": "not addressed; F-C1102 repeats the pattern (R2-08)",
+  "R-12": "accepted as disclosed debt (PROOF-DEBT D-9, D-10)",
+  "R-13": "addressed: incident-window reruns registered with identical outcomes"
+ },
+ "findings": [
+  {
+   "id": "R2-01",
+   "angle": [
+    4
+   ],
+   "severity": "S2",
+   "claim": "The matrix product column under-reports failures: holds-in-model-only requires level=='model' but 12 orchestrator cells say 'reviewed model' (so 'unknown', incl. 3.3a-domain-contract whose remaining says as-built fails); product-scope cells never receive findings (3.3-progress-controls 'unknown' though F-C1303 lists the gate); 08 and 15 3.3-model-check are holds-in-model-only while their own reason text lists as-built reproductions; 04/11 proof cells holds-in-model-only while their controls reproduce the pin and F-0801/F-1108/F-C1101 are live.",
+   "evidence": [
+    "experiment/playbook-completion/matrix/build_matrix.py:121-124,150-151,174-175",
+    "experiment/playbook-completion/matrix/obligations.json cells 08/3.3-model-check, product/3.3a-domain-contract, product/3.3-progress-controls",
+    "experiment/playbook-completion/matrix/MATRIX.md totals"
+   ],
+   "recommendation": "Normalise level; attach findings to product-scope cells by gate; derive fails from as-built expected violations; wire m07-m11 refs to b-mc-* ids; add a --check that rejects 'as-built fails' text beside a non-fails label."
+  },
+  {
+   "id": "R2-02",
+   "angle": [
+    2
+   ],
+   "severity": "S2",
+   "claim": "The corrected census (followup-writer-census: 162 obligations, 20 conditional, 3 write-set gaps) is cited nowhere in the matrix; 3.3a-writesets cells still cite writer-census with 100 obligations; writer_obligations stays 83; module 18's restore write-set gaps absent. STATUS quotes the corrected numbers.",
+   "evidence": [
+    "experiment/playbook-completion/matrix/obligations.json",
+    "experiment/playbook-completion/followup/FOLLOWUP.md 'For the orchestrator'",
+    "$RUN_DIR/followup/writer-census.json"
+   ],
+   "recommendation": "Add the obligations and gaps as open cells; reconcile corr-closure-scan with the census."
+  },
+  {
+   "id": "R2-03",
+   "angle": [
+    4
+   ],
+   "severity": "S3",
+   "claim": "The ontology re-tag preceded the follow-up: none of F-C1304..F-C1309, F-C1203, F-C1102 is cited; RED-B7 (vs F-C1309), RED-B12 (vs F-C1306), RED-B1.1 (vs F-C1308) keep uncited tags; RED-B4 still carries proved:theorem_retry_refused without [model-only] or F-1801. The [model-only] rule only fires on cited findings.",
+   "evidence": [
+    "experiment/playbook-completion/ontology/13-redaction.md:54,79,94,127",
+    "experiment/playbook-completion/ontology/METHOD.md:40",
+    "git log f3fe3917, 78e7a5e8",
+    "registry:core-m3-as-built-F1801-keys"
+   ],
+   "recommendation": "Cite the new findings; extend the checker to flag statements named in a reproduced finding's intended field that do not cite it."
+  },
+  {
+   "id": "R2-04",
+   "angle": [
+    4,
+    5
+   ],
+   "severity": "S3",
+   "claim": "Account inconsistencies: STATUS marks §3.1 closed while 3.1-cells/coverage/intent have 10/19/18 open cells; 5c-reviewers is closed while its remaining says the randomized simulator was not run; corr-closure-scan says all but one ledger write site belong to a modelled action while the census lists four more ledger writers outside the ledger classes; validation's product defects are in no findings file; TRUST's premise table omits P-C02 (progress) and SynchCommit.",
+   "evidence": [
+    "experiment/playbook-completion/STATUS.md phase table",
+    "experiment/playbook-completion/matrix/obligations.json 5c-reviewers",
+    "experiment/playbook-completion/correspondence/CORRESPONDENCE.md §4.7",
+    "experiment/playbook-completion/validation/SUITES.md 'Product-defect findings'",
+    "experiment/playbook-completion/TRUST.md"
+   ],
+   "recommendation": "Reconcile each artefact with the matrix; reopen 5c-reviewers or mark the simulator not applicable with a reason; file validation findings."
+  },
+  {
+   "id": "R2-05",
+   "angle": [
+    4
+   ],
+   "severity": "S3",
+   "claim": "The correspondence alpha maps create_temporal_edge to no content and excludes temporal-marked rows, so its tombstone-of-live-content check cannot see F-C1308 by construction; the redaction step check has no completeness check at Final (F-1305/F-C1302 class pass); traces are sequential except the F-1201 pair.",
+   "evidence": [
+    "experiment/playbook-completion/correspondence/CORRESPONDENCE.md §2",
+    "experiment/playbook-completion/correspondence/tools/abstraction.py:440-505"
+   ],
+   "recommendation": "Add temporal content to alpha and a Final completeness check; state both limits on the 3.5-handlers and 3.7-trace-replay cells."
+  },
+  {
+   "id": "R2-06",
+   "angle": [
+    3
+   ],
+   "severity": "S3",
+   "claim": "No progress-only control for D-2 (fixed scan bound) and it is not in PROOF-DEBT; proofs-breadth 'Premises the pin violates' omits P-A3 (an eraser overlaps no writer) although F-C1202 (model) and F-1201 (live) show the overlap at the pin.",
+   "evidence": [
+    "experiment/playbook-completion/proofs/PROOFS.md:145-147,190",
+    "experiment/playbook-completion/PROOF-DEBT.md",
+    "experiment/playbook-completion/proofs-breadth/PROOFS.md §4, 'Premises the pin violates'"
+   ],
+   "recommendation": "Add the D-2 control or list it as debt; add P-A3 to the violated premises."
+  },
+  {
+   "id": "R2-07",
+   "angle": [
+    "process"
+   ],
+   "severity": "S3",
+   "claim": "F-C1306's probe compiled v4.5.1 classes into scratch namespace IVG262FC1306 and possibly the IVGDev.Setup helper into %SYS; CONVENTIONS allows only the pin's classes and was not amended; no operator ruling for it was found.",
+   "evidence": [
+    "experiment/playbook-completion/fc1306/RESULT.md 'Scope notes'",
+    "experiment/playbook-completion/incidents/NAMESPACES.md IVG262FC1306",
+    "experiment/playbook-completion/CONVENTIONS.md 'Scope control'",
+    "experiment/playbook-completion/validation/SUITES.md 'Upstream side effects'"
+   ],
+   "recommendation": "Obtain and record an operator ruling (from the user/operator, not an agent), or re-grade the evidence as outside the conventions."
+  },
+  {
+   "id": "R2-08",
+   "angle": [
+    1
+   ],
+   "severity": "S3",
+   "claim": "R-11 unchanged (F-0401, F-0503, F-1201); F-C1102 (S2, live-crash-world-r2) has intended 'No IVG document states a durability premise' and notes 'Environment premise rather than a code defect' yet is reproduced-live S2 driving fails cells; one trial per world, SynchCommit=1 untested.",
+   "evidence": [
+    "experiment/playbook-completion/findings/audit/11-orchestrator.json F-C1102",
+    "registry:live-crash-world-r2",
+    "experiment/playbook-completion/CONVENTIONS.md outcome taxonomy"
+   ],
+   "recommendation": "Grade intent-undecided/conditional; record the SynchCommit premise in TRUST.md."
+  },
+  {
+   "id": "R2-09",
+   "angle": [
+    5
+   ],
+   "severity": "S4",
+   "claim": "The two errata rewrote their records in place, replacing registered_utc (23:23:31 and 23:05:38 on 2026-11-13) with 2026-11-14T01:06:23; history recoverable only from git.",
+   "evidence": [
+    "git log/diff of evidence/runs/trace-conformance-ledger.json and writer-census.json"
+   ],
+   "recommendation": "Keep the first registered_utc and add erratum_utc."
+  },
+  {
+   "id": "R2-10",
+   "angle": [
+    6
+   ],
+   "severity": "S3",
+   "claim": "Tenant copies still in no finding: ^EmbedQueue text/node_id/result/graph (kept until ClearDone, DONE only; no erase path touches it), docs_quarantine, edge_vector_quarantine, the stale ^ArnoKG snapshot until EraseAll, the 3.2.0 rescue/unplaced edge tables. Inspected only.",
+   "evidence": [
+    "iris_src/src/Graph/KG/EmbedQueue.cls:2-20,181-195",
+    "iris_src/src/Graph/KG/ArnoAccel.cls:299-303",
+    "iris_src/src/Graph/KG/Eraser.cls:806",
+    "iris_vector_graph/schema.py:50-54,2976-3013"
+   ],
+   "recommendation": "Record as reach obligations or findings; name them in the receipt question to the maintainer."
+  }
+ ],
+ "not_reviewed": [
+  "iris-contract/ (no VALIDATED_ROUND)",
+  "versions/ (no VERSIONS.md)"
+ ],
+ "evidence_audit": null
+}

@@ -39,7 +39,7 @@ RULES = [
      "Static budgets in tests/regression (cyclomatic complexity, 2,000-line modules, 800-line classes, "
      "engine_api_baseline.json) are exceeded or stale at the pin (translator.py 31,908 lines; API grew graph= params). "
      "Not run by CI (.github/workflows/ci.yml runs tests/unit only)."),
-    ("decimal-score", "product-defect", r"test_algorithms_new_paths|test_460_proc_yield_alias|test_460_r270_ppr_networkx|test_460_r306_algorithm",
+    ("decimal-score", "product-defect (driver 5.3.2 from the pin's uv.lock)", r".",
      r"unsupported operand type\(s\) for -: 'float' and 'decimal.Decimal'|'decimal.Decimal' and 'float'|Decimal\('",
      "CALL ivg.closeness / ivg.degreeCentrality YIELD score returns decimal.Decimal under the driver the pin's uv.lock "
      "installs (intersystems-irispython 5.3.2), where the test (and networkx comparison) expects a float; tests/e2e/test_460_proc_yield_alias_e2e.py:108 "
@@ -53,7 +53,8 @@ RULES = [
      "Decimal, so the type is not obviously a 5.3.2 artefact. "
      "docs/dev/driver-drift.md says IVG decodes property values typed so answers do not depend on the driver; score "
      "columns are not covered. Driver dependence not excluded: 5.4.x is not available offline here. Severity S4, "
-     "confidence medium."),
+     "confidence medium."
+     " DRIVER A/B (operator ruling 03:16Z): the same files under intersystems-irispython 5.4.0 ($RUN_DIR/availability/driver-5.4.0-venv) pass: driver540-1 (237 passed; only leiden-karate-ari fails) and driver540-oracle-1 (960/960, against 34 failures on 5.3.2 in oracle-1-c00). pyproject.toml:42 asks only intersystems-iris>=1.0.0, and uv.lock:1358-1371 resolves it to intersystems-iris 5.3.3 / irispython 5.3.2, so a `uv sync` of the pin installs the driver on which this fails; CI tests a fresh resolution instead (.github/workflows/ci.yml)."),
     ("gref-logging", "environment", r"test_setup_logging", r"gref|Class or mo",
      "iris-embedded-python-wrapper logs \"Class or module 'gref' not found in iris_embedded_python\" when no embedded "
      "IRIS runtime is configured (client-only Python on this VM); the test asserts no unexpected log lines. Same "
@@ -70,7 +71,7 @@ RULES = [
     ("alt-namespace-grant", "environment", r"test_grant_copy", r"Access Denied",
      "tests/integration/test_grant_copy.py:20 connects to IVG_NS_IVG262ALT (default IVG262ALT); absent, and this "
      "lane may not create it."),
-    ("mcp-ai-classes", "environment", r".", r"CLASS DOES NOT EXIST> \*Graph\.KG\.MCP",
+    ("mcp-ai-classes", "environment", r".", r"CLASS DOES NOT EXIST>.*\*Graph\.KG\.MCP",
      "Graph.KG.MCPTools / MCPToolSet / MCPService extend %AI.Tool / %AI.ToolSet / %AI.MCP.Service, which IRIS "
      "Community 2026.1 does not have (env-probe/license.log); the pin's initialize_schema skips them and says so."),
     ("var-length-raises", "product-defect (test-stale)", r"test_query_deep", r"var-length walk \(BFSFastJsonSorted\)",
@@ -80,7 +81,7 @@ RULES = [
      "The fixture (tests/integration/test_nodepk_migration.py:55-61) inserts fixed ids SAMPLE:node1.. into the "
      "unqualified `nodes`, i.e. the legacy SQLUser.nodes this file creates (:198, :477); a row left by an earlier use "
      "fails the unique check. Test-side isolation defect; the file also leaves SQLUser tables in the namespace."),
-    ("duplicate-listerror", "intermittent", r".",
+    ("duplicate-listerror", "product-defect (driver 5.3.2 from the pin's uv.lock)", r".",
      r"LIST ERROR> Incorrect list format, unsupported type for IRISList",
      "IRISGraphStore.write_nodes / write_edges document 'A duplicate row is skipped' "
      "(iris_vector_graph/stores/iris_sql_store.py:1215-1220; _skip_duplicate :756-762 skips only what is_duplicate() "
@@ -92,7 +93,8 @@ RULES = [
      "lead for a product-defect (is_duplicate, iris_vector_graph/_write_txn.py:46-49, recognises only 'unique'/-119 "
      "text); driver dependence not excluded (5.4.x unavailable offline). Same class in e2e: "
      "tests/e2e/test_create_edge_atomic_e2e.py:91-102 expects the server's <SUBSCRIPT> error for a too-long endpoint "
-     "pair and gets GraphWriteError carrying the driver's <LIST ERROR> instead (nothing written either way)."),
+     "pair and gets GraphWriteError carrying the driver's <LIST ERROR> instead (nothing written either way)."
+     " DRIVER A/B (operator ruling 03:16Z): the same files under intersystems-irispython 5.4.0 ($RUN_DIR/availability/driver-5.4.0-venv) pass: driver540-1 (237 passed; only leiden-karate-ari fails) and driver540-oracle-1 (960/960, against 34 failures on 5.3.2 in oracle-1-c00). pyproject.toml:42 asks only intersystems-iris>=1.0.0, and uv.lock:1358-1371 resolves it to intersystems-iris 5.3.3 / irispython 5.3.2, so a `uv sync` of the pin installs the driver on which this fails; CI tests a fresh resolution instead (.github/workflows/ci.yml)."),
     ("clone-perms", "harness", r"test_460_embed_queue_worker_routes_e2e", r"ivgtest_USER/IVGTest\.FakeEmbedding\.cls",
      "Harness: the clean clone was checked out under umask 077, so tests/e2e/fixtures/IVGTest.FakeEmbedding.cls was "
      "0600; `docker cp` keeps the mode and owner and irisowner could not read it, so %SYSTEM.OBJ.Load failed. The clone "
@@ -135,14 +137,15 @@ RULES = [
      "(tests/e2e/test_stress_ingest.py:148-177: 13,123 e/s there); the same test skips the bound on a shared host "
      "(IVG_GATE_PARALLEL=1, citing 5,375 e/s). Here 6,765 e/s (e2e-1-c20) and 5,807 e/s (rerun-3) on a 2-CPU Community "
      "container on a shared VM. The ingest itself succeeded."),
-    ("temporal-structural-cursor", "product-defect", r"test_temporal_structural_row_live",
+    ("temporal-structural-cursor", "product-defect (driver 5.3.2 from the pin's uv.lock)", r"test_temporal_structural_row_live",
      r"Cursor closed; Details: DataRow is inaccessible",
      "Spec 246: with IRISGraphEngine(temporal_structural_rows=True), create_edge_temporal must give a temporal-only "
      "edge a marked structural row (tests/e2e/test_temporal_structural_row_live.py:53-90). It raises "
      "ProgrammingError 'Cursor closed; DataRow is inaccessible' at iris_vector_graph/_engine/temporal.py:189 "
      "(_own_structural_row -> _select_structural_row fetchone) in both e2e-1-c20 and rerun-3 (fresh session, file "
      "first): deterministic. Driver dependence (5.3.2) not excluded. Severity S2 (the opt-in write path fails), "
-     "confidence medium."),
+     "confidence medium."
+     " DRIVER A/B (operator ruling 03:16Z): the same files under intersystems-irispython 5.4.0 ($RUN_DIR/availability/driver-5.4.0-venv) pass: driver540-1 (237 passed; only leiden-karate-ari fails) and driver540-oracle-1 (960/960, against 34 failures on 5.3.2 in oracle-1-c00). pyproject.toml:42 asks only intersystems-iris>=1.0.0, and uv.lock:1358-1371 resolves it to intersystems-iris 5.3.3 / irispython 5.3.2, so a `uv sync` of the pin installs the driver on which this fails; CI tests a fresh resolution instead (.github/workflows/ci.yml)."),
     ("schema-contract-stale", "product-defect (test-stale)", r"test_schema_contract", r"has UNEXPECTED columns",
      "tests/test_schema_contract.py's EXPECTED_COLUMNS predate columns the pin's DDL adds (docs.graph_id, "
      "embedding_registry.kind, kg_EdgeEmbeddings.emb_rowid/graph_id/metadata, rdf_edges.ekey, rdf_props.val_key); the "
@@ -159,6 +162,38 @@ RULES = [
      "1.169x (2.05 vs 1.75 ms), 1.145x (1.85 vs 1.61 ms), 1.205x (3.00 vs 2.48 ms) in perf-default-1/2/3: over budget "
      "in every run here. Severity S4 (about 0.3 ms per call), confidence medium: Community 2-CPU container, not the "
      "author's laptop; the ratio, not the absolute time, is the criterion."),
+    ("leiden-10k-timing", "environment (timing, unconfirmed)", r"test_communities_perf.*leiden", r"Leiden on 10000 nodes",
+     "Spec 163 NFR-004 gate in tests/e2e/test_communities_perf.py: Leiden on ER(10,000, 0.001) under 60 s; 62.04 s "
+     "here on the non-Arno path (no libarno on Community) on a 2-CPU container. The file's docstring calls the gate a "
+     "wide upper bound for the fallback path; missed by 3% on non-reference hardware: a lead, not decidable here."),
+    ("embedded-callin-denied", "environment", r"test_460_r185_container_script_refusal_e2e|test_460_r197_test_container_refusal_e2e",
+     r"IrisStart failed: IRIS_ACCESSDENIED",
+     "The test runs the setup script inside the container with its embedded Python (/usr/irissys/bin/irispython "
+     "via docker exec); IrisStart answers IRIS_ACCESSDENIED (-15): the container's callin access for that OS user is "
+     "not granted (Community image default; changing %Service_CallIn would reconfigure the shared container). The "
+     "refusal under test is never reached."),
+    ("list-param-count", "product-defect (driver 5.3.2 from the pin's uv.lock)", r".",
+     r"PARAMETER ERROR>; Details: Invalid number of parameters|ARGUMENT ERROR> Bad argument given; Details: Incorrect number of parameters",
+     "Cypher with list values bound as parameters or list concatenation (UNWIND $list, two list parameters, "
+     "size($l1 + $l2), TCK Unwind1 [3] `UNWIND (first + second)`) fails in the driver's parameter binding: "
+     "'<PARAMETER ERROR> Invalid number of parameters' / '<ARGUMENT ERROR> Incorrect number of parameters'. Under "
+     "intersystems-irispython 5.4.0 the TCK unwind area passes 14/14 (driver540-tck-unwind-1) against 13/14 on 5.3.2 "
+     "(tck-1, tck-unwind-rerun-1), and the 7 gated e2e files holding these and the Decimal cases pass 138/138 under 5.4.0 (gated-540-1) against 19 failures under 5.3.2 right after (gated-532-1)."),
+    ("rrf-score-string", "product-defect (driver 5.3.2 from the pin's uv.lock)", r"test_460_r284_retrieve_rrf_score_e2e",
+     r"\('ret1', '\.0",
+     "tests/e2e/test_460_r284_retrieve_rrf_score_e2e.py asserts the retrieve() rrf_score is a float with the hand-worked "
+     "value; it comes back as the text '.032522474881015332737' (a VARCHAR-typed column decoded as str). Same family "
+     "as decimal-score (numeric result columns not typed as float). Driver A/B: passes under 5.4.0 (gated-rag-540-1, "
+     "2/2) and fails under 5.3.2 right after (gated-rag-532-1, 0/2)."),
+    ("readonly-worktree", "harness", r"test_demo_pages", r"collection failure|Read-only file system",
+     "unit-1 only: the audit worktree is read-only for this lane and FastHTML writes .sesskey into the cwd at import; "
+     "fixed by running every suite from the clean writable clone (unit-3)."),
+    ("arno-lib-unrecorded", "environment", r"test_236_bfs_size_gate", r"the scratch namespace has no library recorded",
+     "The native case needs ^ArnoAccel(\"lib_path\") copied from USER into the scratch namespace "
+     "(tests/conftest.py:1486-1489); no Arno library is deployed on this container, so none is recorded. Seen only in a "
+     "licence-degraded, non-decisive run."),
+    ("embedded-python-deps-236", "environment", r"test_cypher_engine_objectscript", r"No module named 'pydantic'",
+     "As embedded-python-deps: the container's embedded Python has no pydantic. Seen only in a licence-degraded run."),
     ("kgtxt-prefix", "intermittent", r"test_kg_txt_e2e", r"kg_TXT did not return cancer doc",
      "Test-side: cancer_docs = [d for d in doc_ids if 'd1' in d or 'd4' in d] (tests/integration/"
      "test_kg_txt_e2e.py:70) matches the random hex prefix too (kgtxt_608d49_d2 contains 'd4'), so a non-cancer doc "

@@ -69,12 +69,8 @@
  ],
  "blocked": [
   {
-   "lane": "e2e gated files (234 files, ~12,000 skipped cases)",
-   "dependency": "~45 scratch namespaces made by tests/e2e/gate.py (22 with IVG installed, plus RAG/split/empty/name-only groups, several building older releases from git tags). Allowed by the operator ruling under the lock, but not run: gate setup and several gated files hold many connections at once (r464txn/r470txn open transactions on several connections), which the 8-unit licence cannot carry without repeating the 01:31 licence alerts"
-  },
-  {
-   "lane": "tests/docs/test_docs_run.py (16 documents)",
-   "dependency": "scratch namespace IVG460DOC made beforehand by `python scripts/dev/make_scratch_namespace.py IVG460DOC` (a manual prerequisite, not a fixture)"
+   "lane": "e2e gated files not in the bounded subset (234 gated files; subset run: the 102 primary-only and 44 rag-only files without threads, worker processes or extra users)",
+   "dependency": "the other 88 need several scratch namespaces per session (53 further gate groups, 28 of them name-only groups whose files make their own namespaces, several building older releases from git tags), or hold many connections at once (13 primary-only and 3 rag-only files with threads, worker processes or extra users; r464txn/r470txn open transactions on several connections): not run, to stay within the 8-unit licence after the 01:31 licence alerts"
   },
   {
    "lane": "spec 236 scratch suites (22 integration files)",
@@ -105,10 +101,6 @@
    "dependency": "Enterprise IRIS container (ivg-iris-enterprise) with libarno"
   },
   {
-   "lane": "driver 5.4.x comparison (for the Decimal and LIST ERROR classes)",
-   "dependency": "intersystems-irispython 5.4.0/5.4.1 wheels: only 5.3.2 is in the local caches; pip install would need the network (not done)"
-  },
-  {
    "lane": "tests/python REST cases",
    "dependency": "IRIS web server /kg application on localhost:52773 (the audit container publishes only the superserver)"
   },
@@ -130,5 +122,10 @@
   "tests/oracle": "library only (compare.py, reference.py, ...), exercised by the r306/r307/r308 e2e files",
   "tests/benchmarks": "scripts (bench.py etc.), run as bench-1/bench-2",
   "tests/fixtures, tests/helpers, tests/support": "helpers"
+ },
+ "non_decisive": {
+  "docs-run-540-1": "not a driver-5.4.0 measurement: tests/docs/harness.py:553-554 builds the per-document worker's environment with PYTHONPATH=<repo>, so the worker imported the venv's 5.3.2 driver despite VALIDATION_DRIVER_SITE; its result equals docs-run-1",
+  "scratch-236-1, scratch-236-2a/2b": "licence exhaustion (infrastructure)",
+  "unit-1, unit-2, docs-1, regression-1, harness-check-1, perf-smoke-1": "attempts / harness checks (see SUITES.md)"
  }
 }

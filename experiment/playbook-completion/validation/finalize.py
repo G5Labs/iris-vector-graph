@@ -41,12 +41,25 @@ FUNCTIONAL = [
     ("tests/regression", ["regression-2"], ["regression-1"], "plain pytest, static budgets; not in CI"),
     ("tests/python", ["python-1"], [], "plain pytest against the container (+ REST on :52773)"),
     ("tests/test_schema_contract.py", ["schema-contract-1"], [], "plain pytest against the container"),
-    ("tests/perf default selection (spec 227 SC-010 latency gate)", ["perf-default-1", "perf-default-2", "perf-default-3"],
-     [], "default addopts -m 'not perf' leaves the 3 test_227 cases (interleaved medians)"),
+    ("tests/perf default selection (spec 227 SC-010 latency gate)", ["perf-default-1", "perf-default-2", "perf-default-3",
+     "perf-default-4"], ["perf-default-540-1", "perf-default-540-2"],
+     "default addopts -m 'not perf' leaves the 3 test_227 cases (interleaved medians); -540 runs use driver 5.4.0"),
     ("scratch-namespace fixtures (operator ruling 2026-11-14)", ["scratch-1"], [],
      "VALIDATION_SCRATCH_NS=1, IVG_NS_IVG460SNAP=IVG460SNAPVAL: the unit/integration files the guard had refused"),
     ("spec 236 scratch suites (IVG_NS_IVG236=IVG236VAL)", ["scratch-236-1"], ["scratch-236-2a", "scratch-236-2b"],
      "22 integration files using tests/conftest.py::ivg_236_scratch; blocked by the 8-unit licence"),
+    ("tests/docs/test_docs_run.py in IVG460DOC (operator ruling)", ["docs-run-1", "docs-run-2"], ["docs-run-540-1"],
+     "ci-parity.sh: IVG_NAMESPACE=IVG460DOC pytest tests/docs/test_docs_run.py after make_scratch_namespace.py IVG460DOC"),
+    ("IVG262ALT-dependent files (operator ruling)", ["alt-1"], [],
+     "IVG_NS_IVG262ALT=IVG262ALT: tests/e2e/test_262_alt_schema_paths.py (its fixture sets IVG262ALT up), "
+     "tests/integration/test_grant_copy.py, tests/integration/test_cypher_advanced.py"),
+    ("e2e gated subset, gate on (operator ruling)", ["gated-1", "gated-2", "gated-3", "gated-4", "gated-rag-1", "gated-rag-2"], [],
+     "run_gated.sh: IVG_GATE_NAMESPACES=1 + scratch mode; the 102 primary-only and 44 rag-only gated files "
+     "without threads/processes/extra users, one gate namespace per batch (made and dropped by the gate)"),
+    ("driver A/B: 5.3.2 (pin uv.lock) vs 5.4.0, same 8 files, alternating", ["driver532-1", "driver540-1", "driver540-2", "gated-540-1", "gated-532-1", "gated-rag-540-1", "gated-rag-532-1"],
+     ["driver540-oracle-1", "driver540-tck-unwind-1"],
+     "A = earlier 5.3.2 runs (integration-1, e2e-1, rerun-1..3) and driver532-1; B = driver540-1/-2 with "
+     "VALIDATION_DRIVER_SITE=$RUN_DIR/availability/driver-5.4.0-venv site-packages"),
     ("multi-process (existing ledger concurrency cases)", ["mp-existing-1", "mp-existing-2", "mp-existing-3"], [],
      "tests/integration/test_ledger_us03/us04/us09: separate OS processes, own DB-API connections"),
 ]
@@ -69,6 +82,9 @@ def sha(p: Path) -> str:
 def pytest_run(prefix):
     if not runs_of(prefix):
         return {"id": prefix, "status": "pending" if not (V / prefix).exists() else "incomplete"}
+    if prefix == "unit-2":  # stopped by this lane at 42% (connection-cap rule): no exit file by design
+        return {"id": prefix, "status": "incomplete (stopped at 42%)", "log": str(V / prefix / "run.log"),
+                "log_sha256": sha(V / prefix / "run.log")}
     if any(not (d / "exit").exists() for d in runs_of(prefix)):
         return {"id": prefix, "status": "running"}
     a, rules, unmatched = triage(prefix)
@@ -136,6 +152,10 @@ def main():
     for name, decisive, support, how in FUNCTIONAL:
         runner = tck_run if name.startswith("tests/tck") else pytest_run
         sup_runner = tck_rerun if name.startswith("tests/tck") else pytest_run
+        if name.startswith("driver A/B"):
+            out["functional"].append({"suite": name, "meant_to_run": how, "decisive": [pytest_run(p) for p in decisive],
+                                      "supporting": [pytest_run(support[0]), tck_rerun(support[1])]})
+            continue
         out["functional"].append({"suite": name, "meant_to_run": how, "decisive": [runner(p) for p in decisive],
                                   "supporting": [sup_runner(p) for p in support]})
     for name, prefixes in PERF:
