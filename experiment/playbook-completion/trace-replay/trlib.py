@@ -664,7 +664,8 @@ def check(trace: Dict, families: List[Family], footprint: Dict[str, set], quiet:
 
 # ------------------------------------------------------------------------------------------------ controls
 
-def mutate(trace: Dict, kind: str, families: List[Family], footprint: Dict[str, set]) -> Tuple[Dict, str]:
+def mutate(trace: Dict, kind: str, families: List[Family], footprint: Dict[str, set],
+           pair: Optional[Tuple[int, int]] = None) -> Tuple[Dict, str]:
     """Seeded trace defects. Returns (mutated trace, description). Raises LookupError when not applicable."""
     t = copy.deepcopy(trace)
     for f in families:
@@ -678,6 +679,14 @@ def mutate(trace: Dict, kind: str, families: List[Family], footprint: Dict[str, 
                     del seg[j]
                     t["_segments"] = segs
                     return t, f"dropped record {r['a']} {r['t']} {r['g'][:80]} of step {i} {t['steps'][i]['op']}"
+    elif kind == "reordered-transaction" and pair is not None:
+        # a scenario names the two steps to swap (used where the default choice would swap two steps the machine
+        # cannot tell apart: two identical actions commute)
+        x, y = pair
+        segs[x], segs[y] = segs[y], segs[x]
+        t["_segments"] = segs
+        return t, (f"swapped the records of step {x} {t['steps'][x]['op']} and step {y} {t['steps'][y]['op']} "
+                   f"(pair named by the scenario)")
     elif kind == "reordered-transaction":
         cand = [i for i, seg in enumerate(segs) if any(rel(r) for r in seg)]
         pairs = list(zip(cand, cand[1:]))
@@ -751,12 +760,13 @@ CONTROLS = {"dropped-record": {"model-post-state", "continuity", "faithfulness"}
             "foreign-write": {"foreign-process"}}
 
 
-def run_controls(trace: Dict, families_factory: Callable[[], List[Family]], footprint: Dict[str, set]) -> Dict:
+def run_controls(trace: Dict, families_factory: Callable[[], List[Family]], footprint: Dict[str, set],
+                 pairs: Optional[Dict[str, Tuple[int, int]]] = None) -> Dict:
     out = {}
     for kind, expected in CONTROLS.items():
         fams = families_factory()
         try:
-            mt, desc = mutate(trace, kind, fams, footprint)
+            mt, desc = mutate(trace, kind, fams, footprint, (pairs or {}).get(kind))
         except LookupError as ex:
             out[kind] = {"applicable": False, "detail": str(ex), "caught": False}
             continue

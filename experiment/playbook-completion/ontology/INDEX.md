@@ -17,32 +17,32 @@ original submission (`experiment/playbook-uplift/`); `C-` references resolve aga
 
 ## Gate
 
-**PASS**: 3877 statements in 19 modules, 904 cells, 343 glossary terms (860 local restatements). Every parent resolves, every statement reads at grade 8 or below, every module glossary term a statement uses is defined by the statement, an ancestor or an earlier statement with the same parent (literal rule, HD-0001) and never before its definition, every evidence reference resolves, every proof or model-check item beside a finding that shows the product violates the statement is marked model-only, and every cell is defined or assigned to the human.
+**PASS**: 4216 statements in 19 modules, 1082 cells, 343 glossary terms (860 local restatements). Every parent resolves, every statement reads at grade 8 or below, every module glossary term a statement uses is defined by the statement, an ancestor or an earlier statement with the same parent (literal rule, HD-0001) and never before its definition, every evidence reference resolves, every proof or model-check item beside a finding that shows the product violates the statement is marked model-only, and every cell is defined or assigned to the human.
 
 ## Modules
 
 | Module | File | Statements | R | D | B | T | I | X | P | Q | Terms | Restated | Cells | Open cells | Max grade |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | SYS | 00-system.md | 47 | 1 | 32 | 0 | 0 | 10 | 0 | 4 | 0 | 32 | 0 | 0 | 0 | 7.8 |
-| INS | 01-install-schema.md | 225 | 1 | 55 | 101 | 14 | 10 | 28 | 13 | 3 | 18 | 36 | 51 | 0 | 8.0 |
-| GID | 02-graph-identity.md | 134 | 1 | 46 | 44 | 18 | 7 | 14 | 2 | 2 | 17 | 30 | 31 | 0 | 8.0 |
-| WRT | 03-writes.md | 180 | 1 | 46 | 68 | 41 | 2 | 18 | 2 | 2 | 18 | 28 | 51 | 2 | 7.8 |
-| ADJ | 04-adjacency.md | 289 | 1 | 112 | 99 | 55 | 11 | 3 | 6 | 2 | 24 | 90 | 61 | 1 | 8.0 |
-| TMP | 05-temporal.md | 301 | 1 | 115 | 120 | 33 | 7 | 17 | 6 | 2 | 23 | 92 | 58 | 0 | 7.8 |
-| VEC | 06-vectors.md | 301 | 1 | 79 | 134 | 17 | 18 | 40 | 8 | 4 | 23 | 56 | 90 | 0 | 7.8 |
-| TXT | 07-text-search.md | 214 | 1 | 53 | 80 | 35 | 14 | 25 | 1 | 5 | 12 | 41 | 53 | 5 | 7.8 |
-| CYP | 08-cypher-sql.md | 259 | 1 | 62 | 77 | 64 | 9 | 36 | 6 | 4 | 23 | 41 | 52 | 0 | 8.0 |
-| NAT | 09-native-executor.md | 216 | 1 | 68 | 17 | 100 | 9 | 14 | 3 | 4 | 22 | 46 | 57 | 0 | 8.0 |
-| ALG | 10-algorithms.md | 242 | 1 | 44 | 112 | 36 | 9 | 30 | 6 | 4 | 9 | 35 | 51 | 6 | 8.0 |
-| LED | 11-ledger.md | 351 | 1 | 146 | 47 | 100 | 12 | 32 | 8 | 5 | 21 | 125 | 69 | 7 | 8.0 |
-| ERS | 12-erasure.md | 33 | 1 | 11 | 12 | 2 | 3 | 2 | 1 | 1 | 5 | 6 | 15 | 3 | 7.6 |
-| RED | 13-redaction.md | 93 | 1 | 42 | 29 | 6 | 3 | 5 | 4 | 3 | 13 | 28 | 33 | 2 | 8.0 |
-| RPL | 14-replay.md | 32 | 1 | 10 | 14 | 1 | 1 | 2 | 2 | 1 | 5 | 4 | 25 | 0 | 7.6 |
-| INT | 15-integrations.md | 328 | 1 | 116 | 29 | 124 | 8 | 37 | 9 | 4 | 26 | 90 | 66 | 1 | 8.0 |
-| API | 16-interfaces.md | 237 | 1 | 67 | 40 | 93 | 4 | 22 | 5 | 5 | 19 | 48 | 64 | 0 | 7.8 |
-| OPS | 17-operations.md | 293 | 1 | 69 | 98 | 68 | 7 | 29 | 16 | 5 | 23 | 47 | 56 | 0 | 8.0 |
+| INS | 01-install-schema.md | 259 | 1 | 55 | 127 | 21 | 10 | 29 | 13 | 3 | 18 | 36 | 51 | 0 | 8.0 |
+| GID | 02-graph-identity.md | 136 | 1 | 46 | 44 | 18 | 7 | 16 | 2 | 2 | 17 | 30 | 31 | 0 | 8.0 |
+| WRT | 03-writes.md | 210 | 1 | 46 | 88 | 51 | 2 | 18 | 2 | 2 | 18 | 28 | 51 | 2 | 7.8 |
+| ADJ | 04-adjacency.md | 300 | 1 | 112 | 100 | 65 | 11 | 3 | 6 | 2 | 24 | 90 | 61 | 1 | 8.0 |
+| TMP | 05-temporal.md | 307 | 1 | 115 | 124 | 35 | 7 | 17 | 6 | 2 | 23 | 92 | 58 | 0 | 7.8 |
+| VEC | 06-vectors.md | 320 | 1 | 79 | 147 | 22 | 18 | 41 | 8 | 4 | 23 | 56 | 90 | 0 | 7.9 |
+| TXT | 07-text-search.md | 227 | 1 | 53 | 90 | 36 | 14 | 27 | 1 | 5 | 12 | 41 | 75 | 5 | 7.8 |
+| CYP | 08-cypher-sql.md | 278 | 1 | 62 | 81 | 79 | 9 | 36 | 6 | 4 | 23 | 41 | 52 | 0 | 8.0 |
+| NAT | 09-native-executor.md | 224 | 1 | 68 | 25 | 100 | 9 | 14 | 3 | 4 | 22 | 46 | 57 | 0 | 8.0 |
+| ALG | 10-algorithms.md | 297 | 1 | 44 | 152 | 47 | 9 | 34 | 6 | 4 | 9 | 35 | 51 | 6 | 8.0 |
+| LED | 11-ledger.md | 356 | 1 | 146 | 47 | 105 | 12 | 32 | 8 | 5 | 21 | 125 | 69 | 7 | 8.0 |
+| ERS | 12-erasure.md | 49 | 1 | 11 | 26 | 4 | 3 | 2 | 1 | 1 | 5 | 6 | 23 | 3 | 7.6 |
+| RED | 13-redaction.md | 99 | 1 | 42 | 35 | 6 | 3 | 5 | 4 | 3 | 13 | 28 | 33 | 2 | 8.0 |
+| RPL | 14-replay.md | 45 | 1 | 10 | 26 | 2 | 1 | 2 | 2 | 1 | 5 | 4 | 25 | 0 | 7.6 |
+| INT | 15-integrations.md | 351 | 1 | 116 | 33 | 140 | 8 | 40 | 9 | 4 | 26 | 90 | 139 | 2 | 8.0 |
+| API | 16-interfaces.md | 287 | 1 | 67 | 44 | 136 | 4 | 25 | 5 | 5 | 19 | 48 | 139 | 3 | 7.8 |
+| OPS | 17-operations.md | 322 | 1 | 69 | 105 | 89 | 7 | 30 | 16 | 5 | 23 | 47 | 56 | 0 | 8.0 |
 | SNP | 18-snapshot.md | 102 | 1 | 27 | 39 | 15 | 5 | 10 | 3 | 2 | 10 | 17 | 21 | 2 | 7.6 |
-| **all** | | 3877 | 19 | 1200 | 1160 | 822 | 149 | 364 | 105 | 58 | 343 | 860 | 904 | 29 | |
+| **all** | | 4216 | 19 | 1200 | 1333 | 971 | 149 | 381 | 105 | 58 | 343 | 860 | 1082 | 33 | |
 
 ## Evidence by module
 
@@ -51,25 +51,25 @@ Count of statements carrying each evidence kind (a statement may carry several).
 | Module | proved | proved (model-only) | mc | mc (model-only) | trace | live | run | ran | tested | inspected | assumed | open | finding | not-implemented |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | SYS | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 43 | 4 | 0 | 8 | 0 |
-| INS | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 77 | 87 | 177 | 13 | 3 | 8 | 0 |
-| GID | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 15 | 38 | 104 | 5 | 2 | 10 | 5 |
-| WRT | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 16 | 45 | 152 | 10 | 2 | 10 | 0 |
-| ADJ | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 25 | 94 | 199 | 18 | 2 | 12 | 0 |
-| TMP | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 28 | 107 | 209 | 9 | 2 | 15 | 0 |
-| VEC | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 62 | 110 | 238 | 12 | 4 | 22 | 0 |
-| TXT | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 21 | 71 | 172 | 12 | 5 | 16 | 1 |
-| CYP | 0 | 0 | 1 | 2 | 0 | 3 | 0 | 81 | 102 | 218 | 11 | 4 | 34 | 0 |
-| NAT | 0 | 0 | 3 | 0 | 0 | 0 | 0 | 35 | 69 | 169 | 12 | 4 | 9 | 0 |
-| ALG | 0 | 0 | 1 | 0 | 0 | 14 | 0 | 46 | 79 | 198 | 9 | 4 | 19 | 0 |
-| LED | 0 | 0 | 5 | 0 | 0 | 0 | 0 | 28 | 91 | 213 | 12 | 5 | 15 | 1 |
-| ERS | 1 | 0 | 2 | 1 | 0 | 10 | 0 | 2 | 9 | 21 | 2 | 1 | 4 | 0 |
-| RED | 5 | 5 | 6 | 4 | 0 | 33 | 0 | 21 | 21 | 41 | 7 | 4 | 16 | 0 |
-| RPL | 3 | 2 | 0 | 2 | 0 | 9 | 0 | 7 | 7 | 18 | 5 | 1 | 5 | 0 |
-| INT | 0 | 0 | 0 | 0 | 0 | 25 | 0 | 40 | 92 | 235 | 14 | 4 | 14 | 0 |
-| API | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 46 | 57 | 189 | 13 | 5 | 18 | 1 |
-| OPS | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 94 | 101 | 243 | 27 | 5 | 17 | 0 |
+| INS | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 83 | 93 | 211 | 13 | 3 | 13 | 0 |
+| GID | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 17 | 40 | 106 | 5 | 2 | 11 | 5 |
+| WRT | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 16 | 45 | 182 | 10 | 2 | 15 | 0 |
+| ADJ | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 25 | 94 | 210 | 18 | 2 | 15 | 0 |
+| TMP | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 28 | 107 | 215 | 9 | 2 | 15 | 0 |
+| VEC | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 62 | 110 | 257 | 12 | 4 | 22 | 0 |
+| TXT | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 21 | 71 | 185 | 12 | 5 | 16 | 1 |
+| CYP | 0 | 0 | 1 | 2 | 0 | 3 | 0 | 85 | 113 | 237 | 11 | 4 | 34 | 0 |
+| NAT | 0 | 0 | 3 | 0 | 0 | 0 | 0 | 35 | 71 | 177 | 12 | 4 | 9 | 0 |
+| ALG | 0 | 0 | 1 | 0 | 0 | 14 | 0 | 46 | 79 | 253 | 9 | 4 | 22 | 0 |
+| LED | 0 | 0 | 5 | 0 | 0 | 0 | 0 | 28 | 91 | 218 | 12 | 5 | 15 | 1 |
+| ERS | 1 | 0 | 2 | 1 | 0 | 10 | 0 | 2 | 17 | 37 | 2 | 1 | 5 | 0 |
+| RED | 5 | 5 | 6 | 4 | 0 | 33 | 0 | 22 | 22 | 47 | 7 | 4 | 16 | 0 |
+| RPL | 3 | 2 | 0 | 2 | 0 | 9 | 0 | 19 | 20 | 31 | 5 | 1 | 5 | 0 |
+| INT | 0 | 0 | 0 | 0 | 0 | 25 | 0 | 40 | 92 | 258 | 14 | 4 | 18 | 0 |
+| API | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 46 | 60 | 239 | 13 | 5 | 22 | 1 |
+| OPS | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 94 | 101 | 272 | 27 | 5 | 21 | 0 |
 | SNP | 0 | 0 | 0 | 1 | 0 | 5 | 0 | 21 | 40 | 85 | 3 | 3 | 10 | 0 |
-| **all** | 9 | 7 | 18 | 10 | 0 | 99 | 0 | 665 | 1220 | 2924 | 198 | 60 | 262 | 8 |
+| **all** | 9 | 7 | 18 | 10 | 0 | 99 | 0 | 690 | 1266 | 3263 | 198 | 60 | 292 | 8 |
 
 ## Model evidence and product evidence
 
@@ -78,40 +78,40 @@ Statements (restatements left out). Product evidence: inspected, tested, ran, ru
 | Module | Statements | Product evidence | Model evidence | of which model-only | Model evidence, no product evidence | Product finding | Product finding and model evidence |
 |---|---:|---:|---:|---:|---:|---:|---:|
 | SYS | 47 | 43 | 0 | 0 | 0 | 8 | 0 |
-| INS | 189 | 179 | 0 | 0 | 0 | 8 | 0 |
-| GID | 104 | 104 | 0 | 0 | 0 | 10 | 0 |
-| WRT | 152 | 152 | 0 | 0 | 0 | 10 | 0 |
-| ADJ | 199 | 199 | 0 | 0 | 0 | 10 | 0 |
-| TMP | 209 | 209 | 0 | 0 | 0 | 15 | 0 |
-| VEC | 245 | 238 | 0 | 0 | 0 | 22 | 0 |
-| TXT | 173 | 172 | 0 | 0 | 0 | 16 | 0 |
-| CYP | 218 | 218 | 3 | 2 | 0 | 34 | 2 |
-| NAT | 170 | 169 | 3 | 0 | 0 | 7 | 0 |
-| ALG | 207 | 198 | 1 | 0 | 0 | 18 | 0 |
-| LED | 226 | 213 | 5 | 0 | 0 | 15 | 0 |
-| ERS | 27 | 24 | 4 | 1 | 2 | 4 | 1 |
-| RED | 65 | 59 | 14 | 7 | 2 | 16 | 7 |
-| RPL | 28 | 25 | 6 | 3 | 0 | 5 | 3 |
-| INT | 238 | 235 | 0 | 0 | 0 | 13 | 0 |
-| API | 189 | 189 | 0 | 0 | 0 | 15 | 0 |
-| OPS | 246 | 243 | 0 | 0 | 0 | 17 | 0 |
+| INS | 223 | 213 | 0 | 0 | 0 | 13 | 0 |
+| GID | 106 | 106 | 0 | 0 | 0 | 11 | 0 |
+| WRT | 182 | 182 | 0 | 0 | 0 | 15 | 0 |
+| ADJ | 210 | 210 | 0 | 0 | 0 | 13 | 0 |
+| TMP | 215 | 215 | 0 | 0 | 0 | 15 | 0 |
+| VEC | 264 | 257 | 0 | 0 | 0 | 22 | 0 |
+| TXT | 186 | 185 | 0 | 0 | 0 | 16 | 0 |
+| CYP | 237 | 237 | 3 | 2 | 0 | 34 | 2 |
+| NAT | 178 | 177 | 3 | 0 | 0 | 7 | 0 |
+| ALG | 262 | 253 | 1 | 0 | 0 | 21 | 0 |
+| LED | 231 | 218 | 5 | 0 | 0 | 15 | 0 |
+| ERS | 43 | 40 | 4 | 1 | 2 | 5 | 1 |
+| RED | 71 | 65 | 14 | 7 | 2 | 16 | 7 |
+| RPL | 41 | 38 | 6 | 3 | 0 | 5 | 3 |
+| INT | 261 | 258 | 0 | 0 | 0 | 17 | 0 |
+| API | 239 | 239 | 0 | 0 | 0 | 19 | 0 |
+| OPS | 275 | 272 | 0 | 0 | 0 | 21 | 0 |
 | SNP | 85 | 85 | 1 | 1 | 0 | 10 | 1 |
-| **all** | 3017 | 2954 | 37 | 14 | 4 | 253 | 14 |
+| **all** | 3356 | 3293 | 37 | 14 | 4 | 283 | 14 |
 
 ## Evidence combinations
 
 | Combination | Statements |
 |---|---:|
-| inspected | 1343 |
-| ran+tested+inspected | 581 |
-| tested+inspected | 508 |
-| inspected+finding | 182 |
+| inspected | 1607 |
+| ran+tested+inspected | 605 |
+| tested+inspected | 529 |
+| inspected+finding | 211 |
 | inspected+assumed | 92 |
 | assumed | 47 |
 | inspected+open | 43 |
 | live+inspected | 24 |
 | live+ran+tested+inspected | 24 |
-| ran+tested+inspected+finding | 22 |
+| ran+tested+inspected+finding | 23 |
 | tested+inspected+assumed | 19 |
 | inspected+assumed+finding | 15 |
 | ran+tested+inspected+assumed | 13 |
@@ -194,7 +194,7 @@ Proved or model-checked as a design while a cited finding shows the product at t
 | CYP-I6.4 | A stepped write is one transaction too. A failure in a later step takes back the earlier steps. | inspected:iris_vector_graph/_engine/query.py:1946-1967; inspected:iris_vector_graph/_engine/query.py:1992-2031; inspected:iris_vector_graph/_engine/query.py:1692-1705; finding:F-0806; live:C-b-08-live-footprints; mc:C-b-mc-m08-txn-as-built-atomic [model-only] |
 | CYP-X6.5 | A write that IRIS or the product refuses raises a write error and leaves the graph as it was. | inspected:iris_vector_graph/stores/iris_sql_store.py:1811-1818; inspected:iris_vector_graph/errors.py:117-159; tested:tests/unit/test_460_r221_refused_write_error_type.py::test_a_statement_iris_refuses_raises_graph_write_error_with_its_sqlcode; finding:F-0807; live:C-b-08-live-footprints; mc:C-b-mc-m08-txn-as-built-atomic [model-only] |
 | ERS-I3 | After an erasure, each live edge the ledger saved still has its statement entry. | finding:F-1201; mc:erasure-as-built [model-only]; mc:erasure-reviewed [model-only]; mc:C-core-m1-as-built-isolation-stmt-a [model-only]; mc:C-core-m1-as-built-isolation-stmt-b [model-only]; mc:C-core-m1-as-built-isolation-stmt-c [model-only] |
-| RED-B1.1 | Redaction never makes a tombstone of the record of live content. | finding:F-1302; live:native-commit_in_unmarked_window; mc:redaction-as-built-live [model-only]; mc:redaction-reviewed [model-only]; proved:theorem_begin_spares_live [model-only]; assumed:P-1311; open:HD-1201; finding:F-C1201; finding:F-C1301; finding:F-C1308 |
+| RED-B1.1 | Redaction never makes a tombstone of the record of live content. | finding:F-1302; live:native-commit_in_unmarked_window; mc:redaction-as-built-live [model-only]; mc:redaction-reviewed [model-only]; proved:theorem_begin_spares_live [model-only]; assumed:P-1311; open:HD-1201; finding:F-C1201; finding:F-C1301; finding:F-C1308; finding:F-C1350; finding:F-C1351 |
 | RED-B4 | A retry key of a redacted revision can never be used again. | inspected:iris_src/src/Graph/KG/Ledger.cls:466-473; inspected:iris_src/src/Graph/KG/LedgerRedact.cls:359-365; tested:tests/integration/test_256_ledger_redaction_e2e.py::test_a_retry_with_a_redacted_idempotency_key_is_refused; live:native-retries; live:native-mutants; proved:theorem_retry_refused [model-only]; finding:F-1801; finding:F-CS01 |
 | RED-B4.3 | A retry sent between erasure and redaction must not bring the content back. | finding:F-1306; mc:retry-as-built [model-only]; mc:retry-reviewed [model-only]; live:native-retry_between_erase_and_redact |
 | RED-B6.1 | Two redaction runs of two targets that start at once must not both run. | finding:F-1303; live:native-two_targets_at_once; mc:redaction-as-built-audit [model-only]; proved:theorem_l2_satisfies_l1 [model-only] |
@@ -221,7 +221,7 @@ The intent states it; no code does it.
 | LED-B6.9 | When a graph holds two edges with the same tuple, each has its own statement id. A change can name either one. | not-implemented; inspected:iris_src/src/Graph/KG/LedgerApply.cls:144-157; inspected:iris_src/src/Graph/KG/LedgerApply.cls:159-169; inspected:iris_src/src/Graph/KG/LedgerGenesis.cls:38-48 |
 | API-B15.3 | An execution context would let a session touch one graph only. It is planned and not built. | not-implemented; inspected:api/main.py:118-138; inspected:iris_vector_graph/bolt_server.py:377-394 |
 
-## Findings (262)
+## Findings (292)
 
 The code disagrees with the statement (original FINDINGS.md; F-C ids and every audit disposition in experiment/playbook-completion/findings/audit/).
 
@@ -229,8 +229,8 @@ The code disagrees with the statement (original FINDINGS.md; F-C ids and every a
 |---|---|---|
 | SYS-D26 | Erasure removes a graph's content, or some of its nodes, from every store. | inspected:iris_src/src/Graph/KG/Eraser.cls:1-35; finding:F-1502 |
 | SYS-I1 | Each kind of fact has one owner, and only that owner writes it. | inspected:iris_src/src/Graph/KG/Adjacency.cls:1-20; inspected:iris_src/src/Graph/KG/GraphKey.cls:51-77; inspected:iris_src/src/Graph/KG/Eraser.cls:1-17; finding:F-1114 |
-| SYS-I2 | Content of one graph never shows up in an answer about another graph. | inspected:iris_src/src/Graph/KG/GraphKey.cls:51-77; inspected:iris_src/src/Graph/KG/Eraser.cls:113-125; finding:F-0106; finding:F-1002; finding:F-1502; finding:F-1507; finding:F-1603; finding:F-1701 |
-| SYS-I3 | A refused command leaves every store as it was. | inspected:iris_src/src/Graph/KG/Ledger.cls:397-415; inspected:iris_src/src/Graph/KG/LedgerRedact.cls:185-211; finding:F-0615; finding:F-0704; finding:F-C0702; finding:F-1511 |
+| SYS-I2 | Content of one graph never shows up in an answer about another graph. | inspected:iris_src/src/Graph/KG/GraphKey.cls:51-77; inspected:iris_src/src/Graph/KG/Eraser.cls:113-125; finding:F-0106; finding:F-1002; finding:F-1502; finding:F-1507; finding:F-1603; finding:F-1701; finding:F-C1547 |
+| SYS-I3 | A refused command leaves every store as it was. | inspected:iris_src/src/Graph/KG/Ledger.cls:397-415; inspected:iris_src/src/Graph/KG/LedgerRedact.cls:185-211; finding:F-0615; finding:F-0704; finding:F-C0702; finding:F-1511; finding:F-C0748 |
 | SYS-I4 | A command that writes to more than one store writes to all of them or to none. | inspected:iris_src/src/Graph/KG/Eraser.cls:47-260; inspected:iris_src/src/Graph/KG/Ledger.cls:397-415; finding:F-C1501; finding:F-C1502; finding:F-1609 |
 | SYS-I5 | The ledger only grows. A saved record changes only when redaction turns it into a tombstone. | inspected:iris_src/src/Graph/KG/LedgerRevision.cls:77-123; inspected:iris_src/src/Graph/KG/LedgerRedact.cls:332-347; finding:F-1801 |
 | SYS-I8 | A store that is built from other stores either matches them or says it is out of date. | inspected:iris_src/src/Graph/KG/Adjacency.cls:20-35; finding:F-1005 |
@@ -241,8 +241,13 @@ The code disagrees with the statement (original FINDINGS.md; F-C ids and every a
 | INS-I7.6 | Legacy removal says an object was removed only when it is gone. | inspected:iris_vector_graph/_engine/legacy.py:670-672; inspected:iris_vector_graph/_engine/legacy.py:679-684; finding:F-0101 |
 | INS-T9.3 | Each setup drops an old property index by a name that has no table and no schema. | inspected:iris_vector_graph/schema.py:656-657; finding:F-0107 |
 | INS-B9.11 | The upgrade works on the namespace's own schema. | inspected:iris_vector_graph/migrations/upgrade.py:57-58; inspected:iris_vector_graph/migrations/upgrade.py:140; inspected:iris_vector_graph/migrations/upgrade.py:144-152; finding:F-0109 |
+| INS-B9.12.90 | Before a statement runs, its schema and vector width are filled in. The width is written as a whole number, so it cannot carry other text. | inspected:iris_vector_graph/migrations/statements.py:269-301; finding:F-0104 |
 | INS-I11.1 | The SQL files the product ships describe the same schema that setup makes, and put nothing outside it. | inspected:sql/schema.sql:4-52; inspected:sql/globals_schema.sql:29; inspected:sql/graph_walk_tvf.sql:18; inspected:sql/migrations/000_base_schema_iris.sql:9-30; finding:F-0105 |
+| INS-B11.90 | The routine files of the SQL folder give their routines no schema name. Run as they are, they land in the default SQL schema. | inspected:sql/operators.sql:32-154; inspected:sql/operators_fixed.sql:32-106; inspected:sql/graph_path_globals.sql:5-12; inspected:sql/graph_path_globals.sql:143-150; inspected:sql/graph_path_globals.sql:283-287; inspected:sql/graph_walk_tvf.sql:72-93; finding:F-0105 |
+| INS-B11.91 | The base schema file of the SQL folder also makes four edge indexes, an index on the vectors and a word index on the texts. None of them names a schema. | inspected:sql/migrations/000_base_schema_iris.sql:31-55; finding:F-0105 |
+| INS-B11.93 | An older install script runs three SQL files, cut at each semicolon. A piece that fails is only logged, and the script goes on. | inspected:scripts/deploy_production.py:43-85; inspected:scripts/deploy_production.py:99-109; finding:F-0105 |
 | INS-I12.4 | The property keys of a label come only from nodes that carry that label in the same graph. | inspected:iris_vector_graph/_engine/schema.py:500-515; finding:F-0106 |
+| INS-B80.80 | The production install script runs three SQL files, with a default schema the operator picks. A statement that fails is logged and skipped. Then it loads the classes the way setup does. | inspected:scripts/deploy_production.py:28-109; finding:F-0105 |
 | GID-B3.8 | The Python check and the server check refuse the same names. | inspected:iris_vector_graph/_validate.py:43; inspected:iris_src/src/Graph/KG/GraphKey.cls:44; assumed:P-0202; finding:F-0203 |
 | GID-B3.10 | Every write that takes a graph name runs the name check before it writes. | inspected:iris_vector_graph/_engine/nodes_edges.py:1019; inspected:iris_vector_graph/_engine/nodes_edges.py:2421; inspected:iris_vector_graph/_engine/nodes_edges.py:2560; inspected:iris_vector_graph/_engine/nodes_edges.py:1797-1806; inspected:iris_vector_graph/_engine/nodes_edges.py:1954-1967; inspected:iris_vector_graph/bulk_loader.py:73-77; finding:F-0202 |
 | GID-B3.11 | A query that names a graph runs the name check before it reads or writes. | inspected:iris_vector_graph/cypher/parser.py:175-192; inspected:iris_vector_graph/cypher/translator.py:429-438; finding:F-0202 |
@@ -253,21 +258,30 @@ The code disagrees with the statement (original FINDINGS.md; F-C ids and every a
 | GID-B5.8 | A Bolt client sees one id per parallel edge, the same in every process. | not-implemented; inspected:iris_vector_graph/bolt_server.py:765-772; finding:F-0205 |
 | GID-B6.10 | An all-graphs walk reaches every graph that holds edges, however many there are. | inspected:iris_vector_graph/_engine/query.py:2408-2420; inspected:iris_vector_graph/_engine/query.py:2474-2479; finding:F-0209 |
 | GID-I6.12 | No Python read joins one graph's node ids with another graph's node data. | inspected:iris_vector_graph/_engine/nodes_edges.py:779-794; inspected:iris_vector_graph/_engine/nodes_edges.py:584-619; finding:F-0206 |
+| GID-X7.91 | The check for one timed edge refuses an empty or blank source, type or target. It also refuses a time or a weight below zero. | inspected:iris_vector_graph/_validate.py:13-16; inspected:iris_vector_graph/_validate.py:207-227; inspected:iris_vector_graph/_engine/temporal.py:289-291; inspected:iris_vector_graph/_engine/temporal.py:370-373; tested:tests/unit/test_validation.py::TestTemporalEdgeInput::test_empty_source_raises; tested:tests/unit/test_validation.py::TestTemporalEdgeInput::test_negative_timestamp_raises; tested:tests/unit/test_validation.py::TestTemporalEdgeInput::test_negative_weight_raises; finding:F-0513 |
 | WRT-B1.4 | Once strict mode is on, every engine refuses direct writes, at once. | inspected:iris_vector_graph/ledger/guard.py:20; inspected:iris_vector_graph/ledger/guard.py:38-59; tested:tests/unit/test_ledger_guard.py::TestGuard::test_cache_honours_ttl_and_refresh; finding:F-0302 |
 | WRT-T1.6 | The bulk loader makes no strict check, so it writes in strict mode too. | inspected:iris_vector_graph/bulk_loader.py:252-272; inspected:iris_vector_graph/bulk_loader.py:380-402; finding:F-0301 |
 | WRT-B1.9 | A direct edge delete drops the ledger link of the edge it removes. | inspected:iris_vector_graph/_engine/nodes_edges.py:1418-1433; finding:F-0303 |
+| WRT-B1.81 | With strict mode off, the imports leave content that no record names. They do not wait for a redaction that is running, and can make its target live again. | inspected:iris_vector_graph/_engine/snapshot.py:647-728; inspected:iris_vector_graph/_engine/snapshot.py:503-546; finding:F-C1350 |
+| WRT-T1.82 | The repo's networkx loader script writes labels, properties and edges straight into the tables with SQL. It makes no strict check, and it is not in the installed package. | inspected:scripts/ingest/networkx_loader.py:264-364; inspected:scripts/ingest/networkx_loader.py:246-262; inspected:pyproject.toml:176-189; finding:F-C1701 |
 | WRT-B3.8 | A refused node write is never reported as a node that was there already. | inspected:iris_vector_graph/_engine/nodes_edges.py:1097-1102; assumed:P-0307; finding:F-0306 |
 | WRT-B3.19 | A bulk write larger than one batch is still one transaction on the server loader path. | inspected:iris_vector_graph/_engine/nodes_edges.py:1718-1754; inspected:iris_vector_graph/_engine/nodes_edges.py:2047-2068; inspected:iris_vector_graph/engine.py:1916-1942; finding:F-0305 |
+| WRT-B4.9 | When two writers race to create one edge, one adds it and the other answers false. | inspected:iris_vector_graph/_engine/nodes_edges.py:1243-1245; finding:F-C0348 |
 | WRT-B4.11 | Storing an edge over a marked edge takes it over, as creating one does. | inspected:iris_vector_graph/_engine/nodes_edges.py:2567-2581; finding:F-0304 |
 | WRT-B4.16 | An edge weight can be set in any graph, as other writes let the caller name a graph. | inspected:iris_vector_graph/_engine/nodes_edges.py:1338-1342; finding:F-0206 |
 | WRT-B4.30 | The fast edge ingest raises on any row IRIS refuses, on both of its paths. | inspected:iris_vector_graph/_engine/nodes_edges.py:2104-2110; inspected:iris_src/src/Graph/KG/EdgeScan.cls:290-300; finding:F-0307 |
 | WRT-B7.15 | The bulk loader refuses an edge property of NaN or infinity, as an edge create does. | inspected:iris_vector_graph/bulk_loader.py:453; finding:F-0308 |
 | WRT-B7.16 | The bulk loader builds the indexes of the tables in its own schema. | inspected:iris_vector_graph/bulk_loader.py:73-81; inspected:iris_vector_graph/bulk_loader.py:495; finding:F-0309 |
+| WRT-T8.90 | A refused insert counts as a row already there when its error text names a unique key. | inspected:iris_vector_graph/_write_txn.py:46-49; inspected:iris_vector_graph/stores/iris_sql_store.py:757-762; inspected:iris_vector_graph/_engine/schema.py:3055-3062; finding:F-C1110 |
+| WRT-B92 | With a limit, a lookup by property answers the first rows it meets, in no set order. | inspected:iris_vector_graph/_engine/nodes_edges.py:801-831; inspected:iris_vector_graph/_engine/nodes_edges.py:892-914; finding:F-C0302 |
 | ADJ-T1.3 | Callers pass the graph key, not the name of the graph. For the default graph that key is 0, never the empty name. | inspected:iris_src/src/Graph/KG/EdgeScan.cls:15-19; inspected:iris_src/src/Graph/KG/Adjacency.cls:80-88; finding:F-0408 |
 | ADJ-I1.6 | No code outside the writer class writes the adjacency index. That holds for Python code too. | inspected:iris_vector_graph/_engine/snapshot.py:1654-1692; tested:tests/unit/test_adjacency_single_writer.py::test_only_adjacency_and_the_allow_list_write_the_out_and_in_stores; finding:F-0404 |
+| ADJ-T2.90 | The temporal mark is a qualifier named temporal that holds true, or 1 as a number or as text. So an edge row another writer made with it is taken for a temporal one, and can be deleted. | inspected:iris_src/src/Graph/KG/Adjacency.cls:735-748; inspected:iris_src/src/Graph/KG/Adjacency.cls:619-641; finding:F-C0450 |
+| ADJ-T3.1.94 | A guess merges the sketches of the nodes reached, so it is not exact. The sketches have no graph part, so a guess mixes the edges of every graph. | inspected:iris_src/src/Graph/KG/GraphIndex.cls:126-150; inspected:iris_src/src/Graph/KG/NKGAccelTraversal.cls:528-552; finding:F-0819 |
 | ADJ-B3.2.2 | Any change of a stored weight moves the graph-version token, also for a shadow or a repeat of the same edge. | inspected:iris_src/src/Graph/KG/Adjacency.cls:133-136; inspected:iris_src/src/Graph/KG/Adjacency.cls:234-237; inspected:iris_src/src/Graph/KG/Adjacency.cls:340; finding:F-0405 |
 | ADJ-T3.6.1 | A weight change takes no writer lock and leaves the source generation alone. It still moves the graph-version token. | inspected:iris_src/src/Graph/KG/Adjacency.cls:327; inspected:iris_src/src/Graph/KG/Adjacency.cls:340; tested:tests/e2e/test_degree_cache_live.py::test_reweight_does_not_move_the_generation; finding:F-0407 |
 | ADJ-B3.9.1 | Erasing a graph removes its index entries in the same transaction as its rows. | inspected:iris_src/src/Graph/KG/Eraser.cls:217-235; tested:tests/e2e/test_252_writer_paths_e2e.py::test_create_edge_in_a_named_graph_then_erase_the_graph; finding:F-0408 |
+| ADJ-T3.13.90 | Before it writes an edge, the bulk edge load adds each end node the default graph lacks. An edge whose end node IRIS refuses is skipped and not counted. | inspected:iris_src/src/Graph/KG/EdgeScan.cls:247-258; inspected:iris_src/src/Graph/KG/EdgeScan.cls:284-291; finding:F-0307 |
 | ADJ-I5.9 | A count that saw another process's open write is never stored as current. | inspected:iris_src/src/Graph/KG/Adj.cls:63-80; inspected:iris_src/src/Graph/KG/Adjacency.cls:374-377; inspected:iris_src/src/Graph/KG/Adjacency.cls:435-438; tested:tests/e2e/test_degree_cache_live.py::test_a_write_in_flight_is_seen_but_never_cached_and_rollback_is_clean; finding:F-0401; finding:F-C0401 |
 | ADJ-I5.9.1 | A source generation never goes back to a value it had before. | inspected:iris_src/src/Graph/KG/Adjacency.cls:376; inspected:iris_src/src/Graph/KG/Adjacency.cls:437; inspected:iris_src/src/Graph/KG/Adjacency.cls:461; inspected:iris_src/src/Graph/KG/Adjacency.cls:824-830; finding:F-0401 |
 | ADJ-I5.17.5 | Clearing the degree cache never changes an answer. | inspected:iris_src/src/Graph/KG/Adj.cls:207-217; inspected:iris_src/src/Graph/KG/TraversalKHop.cls:13-20; finding:F-0406 |
@@ -314,7 +328,7 @@ The code disagrees with the statement (original FINDINGS.md; F-C ids and every a
 | VEC-B11.14 | Adding a vector for an id already in an index replaces its old vector. | inspected:iris_src/src/Graph/KG/IVFIndex.cls:212-213; inspected:iris_src/src/Graph/KG/PLAIDSearch.cls:204-231; inspected:iris_src/src/Graph/KG/VecIndex.cls:144-149; finding:F-0608 |
 | TXT-D1 | A stopword is one of 77 common English words. It is never kept as a word of a text or a query. | inspected:iris_src/src/Graph/KG/BM25Index.cls:41-50; inspected:iris_src/src/Graph/KG/BM25Index.cls:79-86; finding:F-C0701 |
 | TXT-B1.11 | Build holds the write lock while it writes, so no other writer mixes in. | inspected:iris_src/src/Graph/KG/BM25Index.cls:97-175; finding:F-0701 |
-| TXT-X2 | A refused build of this kind leaves the old index as it was. | inspected:iris_vector_graph/_engine/vector.py:299-310; inspected:iris_src/src/Graph/KG/BM25Index.cls:99; finding:F-0704 |
+| TXT-X2 | A refused build of this kind leaves the old index as it was. | inspected:iris_vector_graph/_engine/vector.py:299-310; inspected:iris_src/src/Graph/KG/BM25Index.cls:99; finding:F-0704; finding:F-C0748 |
 | TXT-I5 | Two writers never change one BM25 index at the same time. | inspected:iris_src/src/Graph/KG/BM25Index.cls:403-410; inspected:iris_src/src/Graph/KG/BM25Index.cls:587-591; finding:F-0701 |
 | TXT-I6 | A BM25 index matches the text of its graph, or says that it is out of date. | inspected:iris_src/src/Graph/KG/BM25Index.cls:439-514; finding:F-0703 |
 | TXT-B7.1 | Drop waits for a writer that holds the write lock. | inspected:iris_src/src/Graph/KG/BM25Index.cls:587-591; finding:F-0701 |
@@ -378,9 +392,12 @@ The code disagrees with the statement (original FINDINGS.md; F-C ids and every a
 | ALG-I6 | A read algorithm changes no content. It may write only its own work areas and caches. | inspected:iris_src/src/Graph/KG/TraversalBFS.cls:432-461; inspected:iris_src/src/Graph/KG/AlgoCache.cls:45-51; finding:F-C1001 |
 | ALG-B1.11 | Global PageRank lists the same nodes whichever way it is worked out. | inspected:iris_src/src/Graph/KG/PageRank.cls:506-520; inspected:iris_vector_graph/stores/iris_sql_store.py:2396-2399; finding:F-1003 |
 | ALG-B2.19 | A cached answer changes when a start node is added to the graph or removed from it. | inspected:iris_vector_graph/stores/iris_sql_store.py:2248-2258; inspected:iris_src/src/Graph/KG/PageRank.cls:91-116; finding:F-1004 |
+| ALG-B2.91 | An older PageRank class is still installed where the server has embedded Python. It reads the nodes and edges of every graph whose ids match a pattern, so its scores mix graphs. | inspected:iris_src/src/Graph/KG/PageRankEmbedded.cls:5-30; inspected:iris_src/src/Graph/KG/PageRankEmbedded.cls:105-169; finding:F-1013 |
 | ALG-B5.4 | Degree counts each of several edges of one type between two nodes on its own, in each direction. | inspected:iris_src/src/Graph/KG/Centrality.cls:88-104; inspected:iris_src/src/Graph/KG/Adjacency.cls:203-206; finding:F-1007 |
 | ALG-B6.4 | Leiden's level limit and tolerance hold on each path that can answer. | inspected:iris_vector_graph/stores/iris_sql_store.py:3765-3790; inspected:iris_src/src/Graph/KG/Communities.cls:698-703; finding:F-1010 |
 | ALG-B6.6 | Triangles, strong components and k-cores read the default graph's own edges, through the Arno library or a walk from Python. The engine never reads the snapshot for them. | inspected:iris_vector_graph/stores/iris_sql_store.py:3977-4006; inspected:iris_vector_graph/stores/arno_bridge.py:658-670; finding:F-1011 |
+| ALG-B6.92 | On the server, Leiden first asks an optional Python library to find the groups in the snapshot. That path takes no level limit or tolerance. Without the library, the server's own method answers. | inspected:iris_src/src/Graph/KG/Communities.cls:611-703; finding:F-1010 |
+| ALG-B6.94 | Before the store calls the Arno library over SQL, it checks the library once in each database session. That check first creates the bridge's SQL functions, so a read can change the schema. If they must be made inside an open transaction, the check fails, and the library counts as missing for the rest of that session. | inspected:iris_vector_graph/stores/arno_bridge.py:60-85; inspected:iris_vector_graph/stores/arno_bridge.py:106-134; inspected:iris_vector_graph/stores/arno_bridge.py:360-429; inspected:iris_vector_graph/_write_txn.py:90-99; finding:F-C1001 |
 | ALG-B8.4 | The vectors added on request are the default graph's own vectors. | inspected:iris_vector_graph/_engine/algorithms.py:850-880; finding:F-1006 |
 | ALG-B9.5 | A k-hop call from a node that is not in the default graph answers two empty lists. A walk that fails raises an error. | inspected:iris_vector_graph/_engine/algorithms.py:603-626; finding:F-1009 |
 | ALG-B9.9 | Random walks stay inside the default graph. | inspected:iris_vector_graph/_engine/algorithms.py:658-678; inspected:iris_src/src/Graph/KG/NKGAccelTraversal.cls:187-222; finding:F-1002 |
@@ -409,8 +426,9 @@ The code disagrees with the statement (original FINDINGS.md; F-C ids and every a
 | ERS-I3 | After an erasure, each live edge the ledger saved still has its statement entry. | finding:F-1201; mc:erasure-as-built [model-only]; mc:erasure-reviewed [model-only]; mc:C-core-m1-as-built-isolation-stmt-a [model-only]; mc:C-core-m1-as-built-isolation-stmt-b [model-only]; mc:C-core-m1-as-built-isolation-stmt-c [model-only] |
 | ERS-T2 | A graph erasure takes no ledger lock, so commits into the same graph do not wait for it. | inspected:iris_src/src/Graph/KG/Eraser.cls:47-261; finding:F-1201 |
 | ERS-B6 | A ledger delete of a node removes it from the default graph only. | inspected:iris_src/src/Graph/KG/LedgerApply.cls:374-418; live:native-mixed_tenant_flow; finding:F-1401 |
+| ERS-T92 | Erasing a list of edges, or everything, takes no ledger lock. So a commit does not wait for it. | inspected:iris_src/src/Graph/KG/Eraser.cls:412-461; inspected:iris_src/src/Graph/KG/Eraser.cls:712-818; finding:F-1114 |
 | RED-B1 | Redaction runs only on a redaction target that is no longer live. | inspected:iris_src/src/Graph/KG/LedgerRedact.cls:206-210; finding:F-C1308 |
-| RED-B1.1 | Redaction never makes a tombstone of the record of live content. | finding:F-1302; live:native-commit_in_unmarked_window; mc:redaction-as-built-live [model-only]; mc:redaction-reviewed [model-only]; proved:theorem_begin_spares_live [model-only]; assumed:P-1311; open:HD-1201; finding:F-C1201; finding:F-C1301; finding:F-C1308 |
+| RED-B1.1 | Redaction never makes a tombstone of the record of live content. | finding:F-1302; live:native-commit_in_unmarked_window; mc:redaction-as-built-live [model-only]; mc:redaction-reviewed [model-only]; proved:theorem_begin_spares_live [model-only]; assumed:P-1311; open:HD-1201; finding:F-C1201; finding:F-C1301; finding:F-C1308; finding:F-C1350; finding:F-C1351 |
 | RED-T1 | At the pin, the first liveness check runs before any lock or marker exists. | inspected:iris_src/src/Graph/KG/LedgerRedact.cls:202-216; finding:F-1302 |
 | RED-B1.2 | A tenant whose nodes live in a named graph cannot be redacted by naming its graph alone. | live:native-graph_per_tenant_unprefixed; finding:F-1305 |
 | RED-X2 | Redacting the default graph with no id prefix should not touch nodes that live in a named graph. | finding:F-1304; live:native-default_graph_without_prefix |
@@ -432,6 +450,7 @@ The code disagrees with the statement (original FINDINGS.md; F-C ids and every a
 | RPL-B7 | The verify call says equal when every change went through the ledger. | finding:F-1401; live:native-mixed_tenant_flow |
 | INT-F3.9 | A register that fails should leave the settings as they were. | finding:F-1511; inspected:iris_src/src/Graph/KG/FHIRGraph.cls:235-258 |
 | INT-F9 | Schedule makes or updates one FHIR sync task for a graph. Unschedule deletes it and keeps the graph registered. | inspected:iris_src/src/Graph/KG/FHIRGraph.cls:664-741; inspected:iris_vector_graph/_engine/fhir_graph.py:291-310; tested:tests/e2e/test_470_fhir_task_ownership_e2e.py::test_the_graphs_own_task_is_scheduled_and_unscheduled; finding:F-C1501 |
+| INT-F9.90 | Schedule saves the task, then writes its id on the graph's row in a second step. Unschedule deletes the task, then clears the id. No transaction holds both steps. | inspected:iris_src/src/Graph/KG/FHIRGraph.cls:699-704; inspected:iris_src/src/Graph/KG/FHIRGraph.cls:722-730; finding:F-C1501 |
 | INT-C4.6 | When reading the FHIR graphs fails, the Cypher API should return that error, not quietly use the old bridge. | finding:F-1508; inspected:iris_vector_graph/cypher_api.py:331-336 |
 | INT-B1.3 | The bridge anchor lookup should match only nodes in the default graph. | finding:F-1507; inspected:iris_vector_graph/_engine/fhir.py:465-479; inspected:iris_vector_graph/_engine/fhir_graph.py:650-652 |
 | INT-B1.8 | The condition search should read every page of results. | finding:F-1505; inspected:iris_vector_graph/fhir_bridge.py:105-110; inspected:iris_vector_graph/fhir_bridge.py:305-310 |
@@ -442,8 +461,11 @@ The code disagrees with the statement (original FINDINGS.md; F-C ids and every a
 | INT-E1.6 | A reifier node should live in the same graph as the edge it describes. | finding:F-1502; inspected:iris_vector_graph/_engine/schema.py:3304-3310 |
 | INT-E1.7 | Erasing an edge's graph should remove its reifier nodes too. | finding:F-1502; inspected:iris_src/src/Graph/KG/Eraser.cls:185-189 |
 | INT-E1.9 | Deleting a node also deletes the reifier nodes of its edges. | inspected:iris_vector_graph/_engine/nodes_edges.py:2176-2199; tested:tests/e2e/test_reification_e2e.py::TestReificationE2E::test_delete_node_cascades_to_reification; finding:F-C1502 |
+| INT-E1.9.90 | The reifier nodes go in a second step, after the node's own delete is saved. If that step fails, the error says the node is gone but its reifier nodes are not. | inspected:iris_vector_graph/_engine/nodes_edges.py:2176-2199; finding:F-C1502 |
 | INT-E1.10 | Deleting a reifier should touch only that reifier node, and leave no edge without its node. | finding:F-1503; inspected:iris_vector_graph/_engine/schema.py:3361-3397 |
+| INT-E1.90 | When a sync of health data drops an edge, it deletes the rows that link the edge to its reifier nodes. The reifier nodes stay, with their labels and properties. | inspected:iris_src/src/Graph/KG/FHIRGraph.cls:2584-2599; finding:F-1502 |
 | INT-V1.5 | When the window read fails, PROV export raises the error to the caller. | inspected:iris_vector_graph/_engine/prov.py:181-207; tested:tests/unit/test_admin_rdf_prov_shacl_coverage.py::test_get_temporal_edges_window_no_iris_raises; finding:F-1501 |
+| INT-B80.85 | Undoing inference deletes each edge of one graph whose qualifiers hold an inferred key, and its index entry. A user's edge with that key goes too, even one whose ledger record is live. | inspected:iris_vector_graph/_engine/schema.py:3186-3259; inspected:iris_vector_graph/_engine/schema.py:61-61; finding:F-C0151 |
 | API-B4.5 | Two calls to the sample API should never use its one IRIS connection at the same time. | inspected:api/main.py:100-113; inspected:api/main.py:140-142; inspected:api/dependencies.py:10-22; finding:F-1608; assumed:P-1605 |
 | API-B5.7 | The time limit a caller sends should bound how long the query runs. | inspected:api/models/cypher.py:41-46; inspected:api/routers/cypher.py:94-129; finding:F-1606 |
 | API-B5.8 | The route should answer each query as the engine's own Cypher call does. | inspected:api/routers/cypher.py:118-129; inspected:iris_vector_graph/_engine/query.py:1895-1905; finding:F-1607 |
@@ -451,19 +473,25 @@ The code disagrees with the statement (original FINDINGS.md; F-C ids and every a
 | API-B6.6 | The biomedical fields should read one graph, as node does. | inspected:api/gql/loaders.py:19-45; inspected:api/gql/loaders.py:183-200; finding:F-1604 |
 | API-B6.7 | The update protein call should change only the node it names, in one graph. | inspected:examples/domains/biomedical/resolver.py:240-278; finding:F-1604 |
 | API-B7.4 | The writes of one call should all happen, or none should. | inspected:api/routers/fhir_event.py:318-346; finding:F-1609 |
+| API-T8.5.90 | After any failure, the server drops its engine and runs the query once more. So a write may run twice. | inspected:iris_vector_graph/cypher_api.py:239-250; inspected:iris_vector_graph/cypher_api.py:201-218; finding:F-C1604 |
 | API-B8.6.1 | If one statement in a batch fails, the batch should undo the others. | inspected:iris_vector_graph/cypher_api.py:391-400; finding:F-1610 |
+| API-T8.92 | A Bolt session does not close the IRIS connection it opened. The connection stays open after the driver has gone. | inspected:iris_vector_graph/bolt_server.py:391-423; inspected:iris_vector_graph/bolt_server.py:922-960; inspected:iris_vector_graph/cypher_api.py:134-138; finding:F-C1601 |
 | API-T9.1 | The TCP listener binds to the address of the web app, or to one an operator sets, on port 7687. | inspected:iris_vector_graph/cypher_api.py:48-63; inspected:iris_vector_graph/cli.py:427-428; tested:tests/unit/test_460_r225_cli_and_bolt_host.py::test_server_start_gives_the_bolt_listener_its_host; tested:tests/unit/test_460_r225_cli_and_bolt_host.py::test_the_bolt_listener_binds_bolt_tcp_host; finding:F-C1603 |
 | API-B9.10 | A rollback should undo the writes made since the driver began its transaction. | inspected:iris_vector_graph/bolt_server.py:500-510; inspected:iris_vector_graph/bolt_server.py:579-581; finding:F-1601; assumed:P-1612 |
 | API-B9.11 | A pull of some rows should keep the rest for the next pull. | inspected:iris_vector_graph/bolt_server.py:624-660; finding:F-1602; assumed:P-1612 |
+| API-T9.94 | Started straight from Python, the web app takes calls on every network address, on port 8000. Its TCP listener binds every address too, unless an operator sets one. | inspected:iris_vector_graph/cypher_api.py:47-63; inspected:iris_vector_graph/cypher_api.py:777-779; finding:F-C1603 |
 | API-B10.3 | Its reads should keep each graph apart. | inspected:iris_vector_graph/gql/resolvers.py:90-133; inspected:iris_vector_graph/gql/resolvers.py:32-46; inspected:iris_vector_graph/gql/engine.py:32-57; finding:F-1603 |
 | API-B10.6 | Its health route should say so when IRIS does not answer. | inspected:iris_vector_graph/gql/__init__.py:58-67; finding:F-1611 |
 | API-B11.12 | The routes should read a request body of any size. | inspected:iris_src/src/Graph/KG/Service.cls:321-327; finding:F-1612; assumed:P-1607 |
 | API-B12.9 | The vector lookup should search by the text the client sends. | inspected:iris_src/src/Graph/KG/MCPTools.cls:189-223; finding:F-1613 |
 | API-B13.2 | Its routes that write should need the API key, as on the other servers. | inspected:src/iris_demo_server/routes/fhir.py:503-533; inspected:src/iris_demo_server/app.py:1-22; finding:F-1614 |
 | API-B13.7 | The fraud server should read the payer's stored vector. | inspected:src/iris_fraud_server/app.py:246-279; inspected:iris_vector_graph/schema.py:429-437; finding:F-1615 |
+| API-T13.105 | The fraud server scores a payment from the payer's events of the last day and week. A model it loads at start makes the score. | inspected:src/iris_fraud_server/app.py:116-243; inspected:src/iris_fraud_server/app.py:285-404; inspected:src/iris_fraud_server/app.py:432-455; inspected:src/iris_fraud_server/app.py:467-486; finding:F-1615 |
 | API-B15.8 | No interface should mix two graphs in one answer or one write. | inspected:iris_vector_graph/gql/resolvers.py:90-133; inspected:api/gql/loaders.py:19-45; inspected:examples/domains/biomedical/resolver.py:240-278; finding:F-1603; finding:F-1604 |
 | OPS-B1.12 | The server start command runs the web server on a chosen address and port. | inspected:iris_vector_graph/cli.py:419-438; tested:tests/unit/test_cli.py::test_server_start_calls_uvicorn; finding:F-C1702 |
 | OPS-Q1.12.5 | Should server start refuse to listen on every address when no API key is set? | open:HD-1705; finding:F-1709; inspected:iris_vector_graph/cli.py:419-441; inspected:iris_vector_graph/_api_key.py:21-23 |
+| OPS-B1.12.90 | Asked for more than one process, server start stops at once with code 1. The web server does not start. | inspected:iris_vector_graph/cli.py:419-441; finding:F-C1702 |
+| OPS-B1.90 | The package also names two more shell programs, a test runner and a graph loader. Neither runs from an installed copy, since their code is not in it. | inspected:pyproject.toml:176-179; inspected:pyproject.toml:184-185; finding:F-C1701 |
 | OPS-I2.3.3 | The list of parts that can be unknown names every part the report may mark. | finding:F-1713; inspected:iris_vector_graph/status.py:10-11; inspected:iris_vector_graph/_engine/admin.py:551; inspected:iris_vector_graph/_engine/admin.py:752-753 |
 | OPS-B3.7.2 | The constraint and index lists name the keys the tables really have. | finding:F-1707; inspected:iris_vector_graph/_engine/admin.py:261-278; inspected:iris_vector_graph/stores/iris_sql_store.py:3079-3080; inspected:iris_vector_graph/schema.py:399-400; inspected:iris_vector_graph/schema.py:44 |
 | OPS-B4.6.7 | A caller transaction opened with SQL on an in-IRIS link holds the product's writes. They wait until the caller ends it. | finding:F-1702; inspected:iris_vector_graph/embedded.py:312-321; tested:tests/unit/test_embedded.py::test_transaction_statements_are_noop |
@@ -473,12 +501,14 @@ The code disagrees with the statement (original FINDINGS.md; F-C ids and every a
 | OPS-B5.4 | Write nodes puts in node rows, labels and properties in one transaction. A duplicate is skipped and keeps its old value. | inspected:iris_vector_graph/stores/iris_sql_store.py:1214-1246; tested:tests/unit/test_store_protocol.py::test_write_nodes_commits; finding:F-C1706 |
 | OPS-B5.19.3 | The reader counts each edge into a node, parallel edges too, as it does for edges out. | finding:F-1712; inspected:iris_vector_graph/stores/lazy_kg.py:215-269; inspected:iris_src/src/Graph/KG/Adjacency.cls:197-209; tested:tests/unit/test_lazy_kg_coverage.py::test_in_degree_basic |
 | OPS-B6.2.1 | Each request of the client turns a refused key into a client error. That holds for file loads and explain calls too. | finding:F-1714; inspected:iris_vector_graph/sdk.py:166-182; inspected:iris_vector_graph/sdk.py:254-281 |
+| OPS-T6.4.90 | A server error says it is worth sending again when its status code is 500 or more. It does not look at whether the query writes. | inspected:iris_vector_graph/sdk.py:30-42; finding:F-C1703 |
 | OPS-B7 | The product's own errors share one error root, so one catch takes them all. | finding:F-1704; inspected:iris_vector_graph/errors.py:1-17; inspected:iris_vector_graph/sdk.py:17-19; inspected:iris_vector_graph/exceptions.py:100-157; inspected:iris_vector_graph/schema_name.py:38; tested:tests/unit/test_error_model.py::test_all_descend_from_single_root |
 | OPS-B9.3.1 | The fast index helper tries the filtered index kind first and falls back to a plain one. | finding:F-1706; inspected:iris_vector_graph/dbapi_utils.py:181-204 |
 | OPS-B9.4 | Similarity search puts the closest rows first, for each kind of distance. | finding:F-1705; inspected:iris_vector_graph/dbapi_utils.py:238-279; assumed:P-1710 |
 | OPS-B11.4 | The docker recipe starts IRIS and the web server, with an API key and a service user. | finding:F-1710; inspected:deploy/docker/compose.yml:1-46; inspected:deploy/docker/cpf/merge.conf:1-18 |
 | OPS-B11.5 | The bolt-on installer makes the namespace and sets up the product. It makes a service user and a config the server reads. | finding:F-1708; inspected:deploy/bolt-on/install.sh:21-102 |
 | OPS-B11.6 | The server setup guide's client example runs as written. | finding:F-1711; inspected:iris_vector_graph/result.py:9-16; inspected:iris_vector_graph/sdk.py:79-84 |
+| OPS-T80.83 | The install declares three shell commands, but only the main one runs from a wheel. The other two name code the wheel lacks. | inspected:pyproject.toml:176-189; finding:F-C1701 |
 | SNP-I1 | A snapshot archive copies each store on the store list. Or the export list says why it leaves one out. | inspected:iris_vector_graph/_engine/snapshot.py:87-202; tested:tests/integration/test_snapshot_inventory.py::test_the_snapshot_plan_accounts_for_every_store_in_the_inventory; tested:tests/integration/test_snapshot_inventory.py::test_the_plan_names_no_store_the_inventory_does_not; tested:tests/unit/test_snapshot_inventory.py::test_every_derived_store_carries_a_reason; finding:F-C1804 |
 | SNP-B1.18 | Vectors of edges keep their graph and their notes through a snapshot archive. | inspected:iris_vector_graph/_engine/snapshot.py:942-956; inspected:iris_vector_graph/_engine/snapshot.py:1510-1552; inspected:iris_vector_graph/schema.py:455-464; finding:F-1803; finding:F-C1804 |
 | SNP-T1.20.1 | The HTTP endpoint names each file by the second it was made. | inspected:iris_vector_graph/cypher_api.py:672-673; finding:F-1807 |
@@ -534,7 +564,7 @@ Statements waiting on a human decision (see the original DECISIONS.md).
 | LED-Q5 | Should a post-commit property be kept as a record in its revision? | open:HD-1105 |
 | LED-Q4 | Should the server enforce strict mode, or should it stay a check in Python? | open:HD-1103 |
 | ERS-Q1 | Should a graph erasure hold the ledger lock so commits into the graph wait? | open:HD-1201; mc:erasure-reviewed |
-| RED-B1.1 | Redaction never makes a tombstone of the record of live content. | finding:F-1302; live:native-commit_in_unmarked_window; mc:redaction-as-built-live [model-only]; mc:redaction-reviewed [model-only]; proved:theorem_begin_spares_live [model-only]; assumed:P-1311; open:HD-1201; finding:F-C1201; finding:F-C1301; finding:F-C1308 |
+| RED-B1.1 | Redaction never makes a tombstone of the record of live content. | finding:F-1302; live:native-commit_in_unmarked_window; mc:redaction-as-built-live [model-only]; mc:redaction-reviewed [model-only]; proved:theorem_begin_spares_live [model-only]; assumed:P-1311; open:HD-1201; finding:F-C1201; finding:F-C1301; finding:F-C1308; finding:F-C1350; finding:F-C1351 |
 | RED-Q1 | Should the opening check and the redaction marker share one locked step? | open:HD-1301; proved:theorem_l2_satisfies_l1; mc:refinement-reviewed |
 | RED-Q2 | Spec 256 says free text is cleared only when every record is redacted. Which rule stands? | open:HD-1302; finding:F-1301 |
 | RED-Q3 | Should an operator be able to drop a redaction run that is not done? | open:HD-1303 |
@@ -692,7 +722,7 @@ Statements that rest on a named premise (see the original TRUST.md).
 | LED-P3 | A row read from a table holds no lock until it is saved, and the save writes the whole row. | assumed:P-1103 |
 | ERS-I1 | A graph erasure finishes in full or changes nothing. | inspected:iris_src/src/Graph/KG/Eraser.cls:56-261; tested:tests/integration/test_eraser_failures.py::test_a_refused_delete_erases_nothing; assumed:P-0001; live:C-live-erase-vs-commit-fk |
 | ERS-P1 | A delete that meets a row another transaction holds waits for that transaction. | assumed:P-1201 |
-| RED-B1.1 | Redaction never makes a tombstone of the record of live content. | finding:F-1302; live:native-commit_in_unmarked_window; mc:redaction-as-built-live [model-only]; mc:redaction-reviewed [model-only]; proved:theorem_begin_spares_live [model-only]; assumed:P-1311; open:HD-1201; finding:F-C1201; finding:F-C1301; finding:F-C1308 |
+| RED-B1.1 | Redaction never makes a tombstone of the record of live content. | finding:F-1302; live:native-commit_in_unmarked_window; mc:redaction-as-built-live [model-only]; mc:redaction-reviewed [model-only]; proved:theorem_begin_spares_live [model-only]; assumed:P-1311; open:HD-1201; finding:F-C1201; finding:F-C1301; finding:F-C1308; finding:F-C1350; finding:F-C1351 |
 | RED-P1 | Every record that touches one node or edge is in a redaction target, or none is. | assumed:P-1301; live:native-mixed_tenant_flow |
 | RED-B2.2 | Anyone who holds the original record can check that a tombstone replaced it. | tested:tests/integration/test_256_ledger_redaction_e2e.py::test_each_tombstone_digest_is_sha256_of_the_canonical_record_it_replaced; live:native-mixed_tenant_flow; assumed:P-1302 |
 | RED-P2 | Only the product's own code sets the value that opens that one update. | assumed:P-1308; tested:tests/unit/test_256_ledger_redaction.py::test_only_ledger_redact_sets_the_exemption_variable |
@@ -762,7 +792,7 @@ Statements that rest on a named premise (see the original TRUST.md).
 | SNP-P2 | The client's walk and text form give back every value except vectors. | inspected:iris_vector_graph/_engine/snapshot.py:1626-1652; assumed:P-1802 |
 | SNP-P3 | A snapshot archive is a file anyone can write, so a restore treats it as untrusted. | inspected:iris_vector_graph/_engine/snapshot.py:368-378; inspected:iris_vector_graph/_engine/snapshot.py:412-422; assumed:P-1803 |
 
-## Inspection only (1343)
+## Inspection only (1607)
 
 Supported only by reading production code at the pin.
 
@@ -836,12 +866,14 @@ Supported only by reading production code at the pin.
 | INS-B1.20 | Setup makes the ledger's lookup index after the deploy compiles the ledger table. A failure there is a warning. | inspected:iris_vector_graph/_engine/schema.py:2661-2671; inspected:iris_vector_graph/_engine/schema.py:807-821 |
 | INS-B1.21 | Setup repairs the search helper classes of the two text indexes, which a compile can delete. | inspected:iris_vector_graph/_engine/schema.py:2683-2689; inspected:iris_vector_graph/schema.py:196-200 |
 | INS-T1.23 | Setup's own SQL is written for the default schema name. For any other schema, the connection rewrites it before it runs. | inspected:iris_vector_graph/schema_name.py:404-452; inspected:iris_vector_graph/_engine/schema.py:2281-2286 |
+| INS-B1.90 | Setup asked for over the web deploys no classes unless the request asks for them. The schema init command never asks. | inspected:iris_vector_graph/cypher_api.py:571-594; inspected:iris_vector_graph/cli.py:202-234; inspected:iris_vector_graph/_engine/schema.py:2097-2099 |
 | INS-B2 | Each namespace has one schema. Its name is chosen once and kept in the schema record. | inspected:iris_vector_graph/schema_name.py:1-27 |
 | INS-X2.6 | Setup refuses a schema whose class package already holds classes the product did not make. Nothing is made. | inspected:iris_vector_graph/schema_name.py:465-509; inspected:iris_vector_graph/_engine/schema.py:2243 |
 | INS-I2.8 | Once saved, the schema record is never changed by setup. | inspected:iris_vector_graph/_engine/schema.py:2225-2226; inspected:iris_vector_graph/_engine/schema.py:2311-2312 |
 | INS-B2.9 | Setup says how it chose the schema: new, found in place, named by the caller, or already saved. | inspected:iris_vector_graph/_engine/schema.py:2230-2242 |
 | INS-B2.13 | Without the native call interface, setup saves no record and says so in its warnings. | inspected:iris_vector_graph/_engine/schema.py:2213-2221; inspected:iris_vector_graph/_engine/schema.py:2309-2310 |
 | INS-T2.15 | Classes never read the schema record when they run. The deploy rewrites their text for the schema before it loads them. | inspected:iris_vector_graph/schema_name.py:1-8; inspected:iris_vector_graph/_engine/class_deploy.py:109-119 |
+| INS-B2.90 | Reading the schema record gives the saved schema name. A missing or empty record reads as none. | inspected:iris_vector_graph/schema_name.py:176-181 |
 | INS-B3 | Before an engine sends any SQL, it checks the namespace. The schema must be its own and set up for this release. | inspected:iris_vector_graph/engine.py:363-366; inspected:iris_vector_graph/engine.py:1847-1868 |
 | INS-X3.3 | With no record and no marker routine, every public call is refused. The error says which of three cases it is. | inspected:iris_vector_graph/schema_name.py:226-235; inspected:iris_vector_graph/schema_name.py:249-267 |
 | INS-B3.5 | Some calls still work where the engine is refused: setup, status, legacy removal and close. | inspected:iris_vector_graph/schema_name.py:376-377; inspected:iris_vector_graph/_engine/admin.py:388-394 |
@@ -856,21 +888,32 @@ Supported only by reading production code at the pin.
 | INS-I6.5 | The read path grants EXECUTE on routines only, never a right on a table. | inspected:iris_vector_graph/_engine/legacy.py:435-442 |
 | INS-B6.7 | The transaction routines are never on the read path. | inspected:iris_vector_graph/_engine/legacy.py:271-275 |
 | INS-X6.13 | If a ledger table is missing after setup, setup raises. It copies no rows. | inspected:iris_vector_graph/_engine/legacy.py:633-635 |
+| INS-T6.90 | Setup reads the rights on all the objects it looks at in one query. Each right says how it is held: on the object, through its schema, as owner, or as a full-rights user. | inspected:iris_vector_graph/_engine/legacy.py:170-204 |
+| INS-B6.91 | Setup looks for library wrappers in every schema. It finds each one by its exact name, never by a pattern. | inspected:iris_vector_graph/_engine/legacy.py:444-475; inspected:iris_vector_graph/_engine/schema.py:2291-2296 |
 | INS-B7.8 | Legacy removal still works when the engine is refused. | inspected:iris_vector_graph/_engine/admin.py:388-389 |
 | INS-B8 | On a 3.2.0 install, setup moves the edges out of the old class table. It puts them back in a new table and loses none. | inspected:iris_vector_graph/schema.py:2904-2908; inspected:iris_vector_graph/schema.py:2946 |
 | INS-B9 | Setup and the upgrade calls bring the tables of an older install to the current shape. | inspected:iris_vector_graph/schema.py:600-731; inspected:iris_vector_graph/migrations/upgrade.py:1-33 |
 | INS-B9.1 | Each setup checks each table, column and index. It makes only what is missing. | inspected:iris_vector_graph/schema.py:600-731; inspected:iris_vector_graph/_engine/schema.py:2513-2526 |
 | INS-B9.2 | Setup gives the default graph one spelling in the edge table and keeps it so. It runs only the part the column lacks. | inspected:iris_vector_graph/schema.py:1230-1338 |
+| INS-B9.1.90 | Setup adds the graph column to an edge table that lacks it. It also adds two edge indexes that start with the graph. | inspected:iris_vector_graph/schema.py:1180-1200; inspected:iris_vector_graph/schema.py:1217-1227; inspected:iris_vector_graph/schema.py:705-708 |
+| INS-B9.1.95 | Setup adds the graph column to the node table. Each time, it then moves any old graph property of a node into that column and deletes the property. | inspected:iris_vector_graph/schema.py:1514-1574; inspected:iris_vector_graph/schema.py:719 |
+| INS-B9.1.97 | Called on its own with a flag, the node step can also rebuild the node table with a key of node and graph. Setup never sets that flag. The step copies the rows to a new table, drops the old one and renames the copy. If the rename fails, the rows are left only in the copy. | inspected:iris_vector_graph/schema.py:1514-1530; inspected:iris_vector_graph/schema.py:1568-1637; inspected:iris_vector_graph/schema.py:719 |
 | INS-B9.4 | One call takes a 3.2.0 install to 4.0.0 in four steps, always in the same order. | inspected:iris_vector_graph/migrations/upgrade.py:58-61; inspected:iris_vector_graph/migrations/upgrade.py:130-202 |
 | INS-X9.5 | A step name that is not one of the four is refused before any step runs. | inspected:iris_vector_graph/migrations/upgrade.py:226-236 |
 | INS-B9.6 | A re-key step whose table already has the new shape is skipped, and says why. | inspected:iris_vector_graph/migrations/upgrade.py:270-285; inspected:iris_vector_graph/migrations/upgrade.py:379-419 |
 | INS-X9.8 | The upgrade refuses to start while the caller has an open transaction. A preview does not refuse. | inspected:iris_vector_graph/migrations/upgrade.py:176-177; inspected:iris_vector_graph/migrations/_commit.py:18-22 |
 | INS-B9.10 | After the last step, the upgrade gathers table stats. A preview does not. | inspected:iris_vector_graph/migrations/upgrade.py:196-218 |
+| INS-B9.4.90 | The node re-key of the upgrade has a fixed order. It drops the keys that hold the old node key, keys nodes by graph, gives labels and properties their graph, and then puts the keys back. | inspected:iris_vector_graph/schema.py:1363-1511; inspected:iris_vector_graph/migrations/graph_scoped_embeddings.py:646-690 |
+| INS-X9.4.91 | The re-key refuses an old key name that is not plain. It hands back no statements then. | inspected:iris_vector_graph/schema.py:1446-1451 |
+| INS-B9.4.92 | The upgrade's report gives one total of rows. It adds up the rows that each counting step placed or set aside. | inspected:iris_vector_graph/migrations/upgrade.py:119-127 |
 | INS-B9.12 | Each statement of the 4.0.0 move of docs and of vectors on edges is kept as named data. It holds its text, its inputs and what it should do. | inspected:iris_vector_graph/migrations/statements.py:1-13; inspected:iris_vector_graph/migrations/statements.py:36-57 |
 | INS-B9.16 | On a 3.2.0 install, setup waits to make the graph index on the text table. It waits until the 4.0.0 docs step has run. | inspected:iris_vector_graph/_engine/schema.py:2451-2464 |
 | INS-B10 | The server's SQL entry points sit in the schema. They check the caller's table rights before they read or write around SQL. | inspected:iris_src/src/Graph/KG/SqlProcs.cls:119-164; inspected:iris_src/src/Graph/KG/SqlPrivilege.cls:1-10 |
 | INS-B10.1 | The forwarder class passes each SQL call on to the server code that does the work. The code classes give no SQL names of their own. | inspected:iris_src/src/Graph/KG/SqlProcs.cls:1-20; inspected:iris_src/src/Graph/KG/SqlProcs.cls:102-117 |
 | INS-T10.2 | The forwarder class names its tables in its own schema. So it follows the schema it was compiled in. | inspected:iris_src/src/Graph/KG/SqlProcs.cls:124-128 |
+| INS-B10.1.90 | The forwarder class gives the Cypher expression functions their SQL names. Each one passes its inputs to the Cypher code and returns its answer as it is. | inspected:iris_src/src/Graph/KG/SqlProcs.cls:15-100 |
+| INS-B10.1.91 | The forwarder class gives the three transaction calls of a write their SQL names: begin, end and undo. Each passes its level on and returns the answer. | inspected:iris_src/src/Graph/KG/SqlProcs.cls:166-181 |
+| INS-B10.1.92 | The forwarder class gives the ledger reader its SQL name as a query. Its fetch and close steps go straight to the ledger code. | inspected:iris_src/src/Graph/KG/SqlProcs.cls:205-225 |
 | INS-B10.5 | Each SQL routine that writes around SQL rights first checks the insert, update or delete right it needs. | inspected:iris_src/src/Graph/KG/SqlProcs.cls:194-198; inspected:iris_src/src/Graph/KG/SqlPrivilege.cls:37-54 |
 | INS-B10.6 | A caller with full rights passes the check. Rights held through roles count, on the table or on its schema. | inspected:iris_src/src/Graph/KG/SqlPrivilege.cls:18-30; inspected:iris_src/src/Graph/KG/SqlPrivilege.cls:71-84 |
 | INS-X10.7 | A caller who lacks the right is refused with SQL's privilege error, which names the table. | inspected:iris_src/src/Graph/KG/SqlPrivilege.cls:26-27; inspected:iris_src/src/Graph/KG/SqlPrivilege.cls:49-50 |
@@ -878,12 +921,22 @@ Supported only by reading production code at the pin.
 | INS-B10.10 | The index rebuild routine takes a schema name. It refuses a name that is not plain, and rebuilds the indexes of four tables. | inspected:iris_src/src/Graph/KG/SqlProcs.cls:200-203; inspected:iris_src/src/Graph/KG/Ledger.cls:224-239 |
 | INS-B10.11 | Server code called over the native call interface does not run the privilege check. The database right is the limit there. | inspected:iris_src/src/Graph/KG/SqlPrivilege.cls:9-10 |
 | INS-B11 | Setup runs no file under the SQL folder. Its own table and routine text lives in the Python package. | inspected:iris_vector_graph/schema.py:371-382; inspected:iris_vector_graph/_engine/schema.py:2446 |
+| INS-B11.92 | Two table files of the SQL folder hold the same text that setup runs for two side tables: the clinical code links and the edge notes. | inspected:sql/fhir_bridges.sql:1-14; inspected:sql/rdf_reifications.sql:1-9; inspected:iris_vector_graph/schema.py:484-496; inspected:iris_vector_graph/schema.py:514-520 |
+| INS-B11.94 | A separate script tries to make the walk functions of the SQL folder. It stops at the first syntax error, and it fails unless every statement ran. | inspected:scripts/deploy_graph_tvfs.py:50-123; inspected:scripts/deploy_graph_tvfs.py:125-170; inspected:scripts/deploy_graph_tvfs.py:172-240 |
 | INS-B12 | A few read calls of the setup code describe what the namespace holds. | inspected:iris_vector_graph/_engine/schema.py:426-534 |
 | INS-B12.1 | The ready test answers true only when the schema's node table can be read. It answers false on any error. | inspected:iris_vector_graph/_engine/schema.py:426-437 |
 | INS-B12.2 | Node and edge counts cover one graph. With no graph named, they count the default graph. | inspected:iris_vector_graph/_engine/schema.py:454-497 |
 | INS-B12.3 | The lists of labels and edge types cover all graphs. | inspected:iris_vector_graph/_engine/schema.py:440-451 |
 | INS-B12.5 | The schema diagram is a sample across all graphs, and only reads. | inspected:iris_vector_graph/_engine/schema.py:2772-2856 |
 | INS-B12.6 | Asked if a node exists with no graph named, the product looks in the default graph. | inspected:iris_vector_graph/_engine/schema.py:518-534 |
+| INS-B12.90 | A schema check call reads one row from each of seven tables and says which ones answered. The node table is not one of them. | inspected:iris_vector_graph/schema.py:1889-1913 |
+| INS-T12.91 | To find the class that holds a table, the product asks IRIS. If IRIS names none, the product guesses the name from the table name. | inspected:iris_vector_graph/schema.py:2030-2060; inspected:iris_vector_graph/schema.py:1925-1939; inspected:iris_vector_graph/schema.py:2075-2077; inspected:iris_vector_graph/_engine/schema.py:1234-1236 |
+| INS-B12.80 | The list of property keys covers all graphs when no label is given. | inspected:iris_vector_graph/_engine/schema.py:500-515 |
+| INS-B80 | The repo holds install scripts beside setup. They are not in the installed package, and setup runs none of them. | inspected:pyproject.toml:181-189; inspected:iris_vector_graph/_engine/class_deploy.py:52-58 |
+| INS-T80.81 | The class install script looks for classes in a folder the repo lacks, so it loads none. It then makes one PageRank SQL function with no schema name. | inspected:scripts/deploy_objectscript.py:46-59; inspected:scripts/deploy_objectscript.py:104-168; inspected:scripts/deploy_objectscript.py:209-262 |
+| INS-T80.82 | The walk function script runs one SQL file of table functions. Its own log warns that IRIS may refuse them. | inspected:scripts/deploy_graph_tvfs.py:50-123; inspected:scripts/deploy_graph_tvfs.py:172-240 |
+| INS-T80.83 | The dev setup script starts the repo's IRIS and runs setup as the stock system user. It writes that login to a local settings file. | inspected:scripts/setup_iris.py:34-62 |
+| INS-T80.84 | An old node table script adds a node row for each id the label, property and edge tables name. It names no graph and no schema, so it fits only an install older than 4.0. | inspected:scripts/migrations/migrate_to_nodepk.py:172-334; inspected:scripts/migrations/migrate_to_nodepk.py:572-706; inspected:sql/migrations/001_add_nodepk_table.sql:10-13 |
 | GID-0 | This module owns how a graph is named and keyed. It also owns which graphs may hold two like edges, and what a read or write with no graph does. | inspected:iris_src/src/Graph/KG/GraphKey.cls:1-17; inspected:iris_src/src/Graph/KG/GraphMode.cls:1-11; inspected:iris_vector_graph/_validate.py:19-71 |
 | GID-D1 | A graph name is the text a caller uses to pick a graph. The empty name picks the default graph. | inspected:iris_vector_graph/_validate.py:19-49 |
 | GID-D2 | A graph key is the value that stands for a graph inside a native store. | inspected:iris_src/src/Graph/KG/GraphKey.cls:1-17 |
@@ -957,8 +1010,11 @@ Supported only by reading production code at the pin.
 | WRT-B1.1 | With the ledger on but strict mode off, a direct write still runs. It leaves content that no record names. | inspected:iris_vector_graph/ledger/guard.py:69-80; inspected:iris_vector_graph/_engine/nodes_edges.py:1005 |
 | WRT-T1.3 | The strict check runs in the engine, not on the server. Plain SQL and direct server calls are never checked. | inspected:iris_vector_graph/_engine/ledger.py:72-79; inspected:iris_vector_graph/ledger/guard.py:1-7 |
 | WRT-B1.8 | A node delete also drops the ledger links of the edges it removes. | inspected:iris_vector_graph/_engine/nodes_edges.py:2176-2200; inspected:iris_src/src/Graph/KG/Eraser.cls:669-677 |
+| WRT-B1.80 | The networkx, OBO, RDF and NDJSON imports make the strict check before they write. In strict mode each one is refused. | inspected:iris_vector_graph/_engine/snapshot.py:471-471; inspected:iris_vector_graph/_engine/snapshot.py:580-580; inspected:iris_vector_graph/_engine/snapshot.py:1745-1745; inspected:iris_vector_graph/_engine/snapshot.py:1725-1725; inspected:iris_vector_graph/_engine/ledger.py:72-79 |
 | WRT-B2 | Each direct write is one transaction: all of its rows and index entries stay, or none do. | inspected:iris_vector_graph/_write_txn.py:102-108; inspected:iris_vector_graph/_engine/nodes_edges.py:1016-1018 |
 | WRT-T2.9 | A write level clears the process's last error text, so a refusal names only its own cause. | inspected:iris_src/src/Graph/KG/Txn.cls:21-25 |
+| WRT-B2.80 | With no caller transaction, a networkx or NDJSON import commits each node and edge write on its own, and each batch of timed edges. A failure stops the import and keeps what it wrote before. | inspected:iris_vector_graph/_engine/snapshot.py:503-546; inspected:iris_vector_graph/_engine/snapshot.py:1790-1853 |
+| WRT-B2.81 | An RDF import writes in batches. With no caller transaction each batch commits on its own, and a failed commit undoes that batch and raises. Earlier batches stay. | inspected:iris_vector_graph/_engine/snapshot.py:622-633; inspected:iris_vector_graph/_engine/snapshot.py:675-728; inspected:iris_vector_graph/_engine/snapshot.py:769-774 |
 | WRT-B3 | A node write puts a node in one graph with its labels and properties. | inspected:iris_vector_graph/_engine/nodes_edges.py:968-1104 |
 | WRT-B3.3 | A new node gets an id property equal to its id, unless the caller gives one. | inspected:iris_vector_graph/_engine/nodes_edges.py:1055-1057 |
 | WRT-B3.4 | A property given with no value is not stored. | inspected:iris_vector_graph/_engine/nodes_edges.py:1060-1063 |
@@ -968,12 +1024,12 @@ Supported only by reading production code at the pin.
 | WRT-T3.27 | Each graph's node delete is one server call that owns its transaction and reaches every store. | inspected:iris_vector_graph/stores/iris_sql_store.py:1340-1359; inspected:iris_src/src/Graph/KG/Eraser.cls:353-372 |
 | WRT-B3.28 | A bulk node delete runs in batches. A failed batch deletes nothing and is counted, and the rest still run. | inspected:iris_vector_graph/_engine/nodes_edges.py:2270-2299 |
 | WRT-B3.29 | The old adjacency delete removes every edge of the given nodes, in all graphs. The nodes stay. | inspected:iris_vector_graph/_engine/nodes_edges.py:2301-2339 |
+| WRT-T3.90 | When the caller has a transaction open, the server loader runs in the caller's own IRIS process. Its rows then join that transaction. | inspected:iris_vector_graph/_write_txn.py:147-160; inspected:iris_vector_graph/_engine/nodes_edges.py:1718-1726; inspected:iris_vector_graph/_engine/nodes_edges.py:2047-2054 |
 | WRT-B4 | An edge write puts one edge in one graph, with both of its end nodes in that graph. | inspected:iris_vector_graph/_engine/nodes_edges.py:1151-1255 |
 | WRT-X4.4 | A weight or property value of NaN or infinity is refused. Nothing is written. | inspected:iris_vector_graph/_engine/nodes_edges.py:288-302; inspected:iris_vector_graph/_engine/nodes_edges.py:319-320 |
 | WRT-T4.6 | Where IRIS does not keep the adjacency index, an edge create writes the index entry itself. It does so before the commit. | inspected:iris_vector_graph/_engine/nodes_edges.py:1221-1235; inspected:iris_src/src/Graph/KG/EdgeScan.cls:154-157 |
 | WRT-X4.7 | If that index write fails, the edge create is undone and raises, naming the part that failed. | inspected:iris_vector_graph/_engine/nodes_edges.py:1239-1242; inspected:iris_vector_graph/_engine/nodes_edges.py:40-51 |
 | WRT-B4.8 | Creating an edge over a marked edge takes it over: the mark goes, and the call answers true. | inspected:iris_vector_graph/_engine/nodes_edges.py:1275-1304; inspected:iris_vector_graph/_engine/nodes_edges.py:1250-1252 |
-| WRT-B4.9 | When two writers race to create one edge, one adds it and the other answers false. | inspected:iris_vector_graph/_engine/nodes_edges.py:1243-1245 |
 | WRT-T4.12 | Storing an edge writes rows only. IRIS keeps the adjacency index for it, or a later rebuild does. | inspected:iris_vector_graph/_engine/nodes_edges.py:2550-2553 |
 | WRT-B4.13 | Setting an edge weight changes the weight and keeps the edge's other properties. | inspected:iris_vector_graph/_engine/nodes_edges.py:1347-1362 |
 | WRT-B4.14 | Setting the weight of an edge with no row answers false and writes nothing. | inspected:iris_vector_graph/_engine/nodes_edges.py:1343-1346 |
@@ -999,10 +1055,14 @@ Supported only by reading production code at the pin.
 | WRT-X5.10 | The direct row write is refused if the row stays locked for ten seconds. It is also refused if the table is not stored as it expects. | inspected:iris_src/src/Graph/KG/PropWrite.cls:43-46; inspected:iris_src/src/Graph/KG/PropWrite.cls:51-53; inspected:iris_src/src/Graph/KG/PropWrite.cls:66-100 |
 | WRT-X5.11 | The direct row write is refused to a user who may not update the property table. | inspected:iris_src/src/Graph/KG/PropWrite.cls:40 |
 | WRT-T5.13 | An edge's properties are kept in one JSON text per edge. A number there reads back from its text. | inspected:iris_vector_graph/prop_values.py:141-168 |
+| WRT-B5.90 | The property lookups give a number back as a number. A list, a map, true or false comes back as the text it is stored as. | inspected:iris_vector_graph/_engine/nodes_edges.py:846-914; inspected:iris_vector_graph/prop_values.py:204-231 |
+| WRT-T5.91 | A test that stored text equals a number accepts each text the number may be stored as, such as .95 and 0.95. | inspected:iris_vector_graph/prop_values.py:171-186; inspected:iris_vector_graph/cypher/translator.py:16244-16261; inspected:iris_vector_graph/_engine/query.py:92-97 |
+| WRT-T5.92 | A query column known to hold a list, a map or a path is read from its JSON text. Text there that is not JSON stays text, with a warning. | inspected:iris_vector_graph/prop_values.py:251-258; inspected:iris_vector_graph/_engine/query.py:497-525 |
 | WRT-T6 | Where IRIS keeps the adjacency index, each label row change updates the label entries. It does so in the same transaction. | inspected:iris_src/src/Graph/KG/LabelIndex.cls:1-13; inspected:iris_src/src/Graph/KG/LabelIndex.cls:25-28 |
 | WRT-T6.1 | A changed label row removes the old entry and then adds the new one. | inspected:iris_src/src/Graph/KG/LabelIndex.cls:16-24 |
 | WRT-T6.2 | Clearing the label index takes out the labels of all graphs. | inspected:iris_src/src/Graph/KG/LabelIndex.cls:30-33 |
 | WRT-T6.3 | Where IRIS does not keep the index, only the engine's own edge writes and a rebuild keep it current. | inspected:iris_vector_graph/_engine/nodes_edges.py:1221-1235; inspected:iris_vector_graph/_engine/nodes_edges.py:2550-2553 |
+| WRT-T6.90 | When IRIS builds the label index again, its start and end steps do nothing. Each label row goes in as one insert. | inspected:iris_src/src/Graph/KG/LabelIndex.cls:10-13; inspected:iris_src/src/Graph/KG/LabelIndex.cls:30-43 |
 | WRT-B7 | Bulk loading writes many rows fast, with fewer checks, and builds the indexes once at the end. | inspected:iris_vector_graph/bulk_loader.py:1-22 |
 | WRT-B7.1 | A load session drops some indexes and builds them at the end. It tunes big tables and rebuilds the adjacency index once. | inspected:iris_vector_graph/_engine/nodes_edges.py:370-502 |
 | WRT-B7.2 | Inside a caller transaction, a load session joins it. It drops no index, tunes no table, retries nothing, and leaves the rebuild for later. | inspected:iris_vector_graph/_engine/nodes_edges.py:414-418; inspected:iris_vector_graph/_engine/nodes_edges.py:448-451 |
@@ -1014,12 +1074,30 @@ Supported only by reading production code at the pin.
 | WRT-B7.11 | The bulk loader skips nodes and edges its graph already has, and loads each edge once. | inspected:iris_vector_graph/bulk_loader.py:298-306; inspected:iris_vector_graph/bulk_loader.py:420-440 |
 | WRT-T7.17 | A networkx edge takes its type from its predicate, label or key field, else from its networkx key, else is_a. | inspected:iris_vector_graph/bulk_loader.py:632-651 |
 | WRT-T7.18 | After a load the bulk loader builds the adjacency index from the tables. Its counts cover only its own graph. | inspected:iris_vector_graph/bulk_loader.py:512-538; inspected:iris_vector_graph/bulk_loader.py:600-629 |
+| WRT-B7.90 | The bulk loader can also run as a command. It loads a saved networkx graph from a file into one graph. | inspected:iris_vector_graph/bulk_loader.py:654-710 |
+| WRT-B7.80 | A networkx load writes a networkx graph's nodes and edges into the default graph. It makes each one with the engine's own node or edge create. | inspected:iris_vector_graph/_engine/snapshot.py:446-555; inspected:iris_vector_graph/bulk_loader.py:1-40 |
+| WRT-T7.81 | Before its first write, a networkx load checks the width of every value. It answers how many nodes and edges it added and skipped, and syncs when it added any. | inspected:iris_vector_graph/_engine/snapshot.py:499-502; inspected:iris_vector_graph/_engine/snapshot.py:547-555 |
+| WRT-B7.82 | An OBO load reads an ontology from a file or a web address and loads it as a networkx load. Each term's namespace becomes its label. | inspected:iris_vector_graph/_engine/snapshot.py:1694-1725 |
+| WRT-B7.83 | An RDF import writes a file's facts with plain SQL. A fact that points at a node becomes an edge, and one with a literal becomes a property of the subject. It writes no labels. | inspected:iris_vector_graph/_engine/snapshot.py:557-621; inspected:iris_vector_graph/_engine/snapshot.py:640-714; inspected:iris_vector_graph/_engine/snapshot.py:732-774 |
+| WRT-T7.84 | Facts go to the graph the caller names, but in a quad file a fact's own graph wins. A row that fails is logged and skipped, and the answer counts rows that were there already. | inspected:iris_vector_graph/_engine/snapshot.py:640-714; inspected:iris_vector_graph/_engine/snapshot.py:732-767; inspected:iris_vector_graph/_engine/snapshot.py:783-795 |
+| WRT-T7.85 | With no caller transaction, the import then rebuilds the adjacency index of every graph. A failed rebuild is only logged. Inside one, the import is refused where IRIS does not keep that index. | inspected:iris_vector_graph/_engine/snapshot.py:622-632; inspected:iris_vector_graph/_engine/snapshot.py:776-781 |
+| WRT-B7.86 | An NDJSON import writes the nodes and edges a file lists, and edges that carry a time, through the engine's own writes. | inspected:iris_vector_graph/_engine/snapshot.py:1727-1855 |
+| WRT-T7.87 | Nodes and edges go to the caller's graph, else to an edge line's own graph. Edges that carry a time go to the default graph. A line it cannot use is logged and skipped, and its counts are of lines, not rows. | inspected:iris_vector_graph/_engine/snapshot.py:1752-1855 |
+| WRT-B7.88 | An NDJSON export writes the default graph's nodes and then its edges to a file, and writes nothing to IRIS. It leaves out named graphs and the rows that timed edges imply. | inspected:iris_vector_graph/_engine/snapshot.py:1857-1904 |
+| WRT-B7.89 | Two repo scripts load demo data sets through the engine: setup, bulk writes or networkx loads, and vectors. Neither is in the installed package. | inspected:scripts/load_drkg.py:21-98; inspected:scripts/load_demo_data.py:55-146; inspected:pyproject.toml:181-189 |
 | WRT-T8.1 | A plain batch insert compares the rows written with the rows sent. | inspected:iris_vector_graph/_batch_check.py:35-45 |
 | WRT-T8.2 | A batch of guarded inserts uses a read back, since a skipped repeat and a refused row look the same. | inspected:iris_vector_graph/_batch_check.py:48-65 |
 | WRT-X8.3 | A batch with a missing row raises before its rollback, naming up to five of them. | inspected:iris_vector_graph/_batch_check.py:68-80 |
 | WRT-T8.4 | These checks run only on a real IRIS connection. | inspected:iris_vector_graph/_batch_check.py:29-32 |
 | WRT-T8.6 | Ties in a ranking are broken by node id in IRIS order: numbers first by value, then other text by code. | inspected:iris_vector_graph/_collation.py:1-21 |
 | WRT-T8.7 | Two scores that agree to twelve places count as a tie. | inspected:iris_vector_graph/_collation.py:24-32 |
+| WRT-B90 | The engine's node and edge counts cover one graph. With no graph named, they count the default graph. | inspected:iris_vector_graph/_engine/nodes_edges.py:733-758; inspected:iris_vector_graph/_engine/nodes_edges.py:2362-2391 |
+| WRT-B91 | The engine's lookups by label, by property or by id pattern read every graph together. A caller cannot pick one graph, and an id held in two graphs can come back twice. | inspected:iris_vector_graph/_engine/nodes_edges.py:760-777; inspected:iris_vector_graph/_engine/nodes_edges.py:801-831; inspected:iris_vector_graph/_engine/nodes_edges.py:846-966 |
+| WRT-B93 | Erasing all graphs empties every graph, and the shared stores made from their content. The ledger's records stay, and so do the vectors set aside for want of a graph. | inspected:iris_vector_graph/_engine/nodes_edges.py:1565-1586; inspected:iris_src/src/Graph/KG/Eraser.cls:709-845 |
+| WRT-B94 | Asking which ids are nodes checks every graph. A lookup IRIS refuses raises, so a refused id never reads as missing. | inspected:iris_vector_graph/_engine/nodes_edges.py:2590-2625 |
+| WRT-B95 | A node's name is read from the default graph: its name property, else its label property, else its title. | inspected:iris_vector_graph/_engine/nodes_edges.py:2341-2354 |
+| WRT-B96 | A field lookup takes one text field out of each JSON value under a key, on the server. It finds the field only when it is written in one fixed way. | inspected:iris_vector_graph/_engine/nodes_edges.py:916-930 |
+| WRT-B97 | An engine can be made on a connection that the wrapper package opens. With no address, that works only inside IRIS. Such an engine never reconnects on its own. | inspected:iris_vector_graph/engine.py:517-557 |
 | ADJ-0 | This module owns the fast copy of each graph's edges. It also owns the counts and caches made from that copy, and the checks that it still matches the edge table. | inspected:iris_src/src/Graph/KG/Adjacency.cls:1-48; inspected:iris_src/src/Graph/KG/Adj.cls:1-24 |
 | ADJ-D1 | The adjacency index is a native store that holds each graph's edges twice: once by source node and once by target node. | inspected:iris_src/src/Graph/KG/Adjacency.cls:1-8 |
 | ADJ-D2 | The graph key is the name the adjacency index files a graph under. It is 0 for the default graph and the graph's own name for a named graph. | inspected:iris_src/src/Graph/KG/Adjacency.cls:39-40; inspected:iris_src/src/Graph/KG/GraphKey.cls:51-64 |
@@ -1052,12 +1130,18 @@ Supported only by reading production code at the pin.
 | ADJ-T2.13 | An edge written with a timestamp adds an edge row with a temporal mark when the triple has no index entry. The hook then adds the entry. | inspected:iris_src/src/Graph/KG/Adjacency.cls:559-618; inspected:iris_src/src/Graph/KG/TemporalIndex.cls:107-115 |
 | ADJ-T2.14 | When a triple's last timestamp goes, its edge row is deleted. That happens only while the row still has the temporal mark. | inspected:iris_src/src/Graph/KG/Adjacency.cls:620-688 |
 | ADJ-T2.15 | Without the hook, a purge drops a triple's index entry only when no edge row holds the triple. | inspected:iris_src/src/Graph/KG/Adjacency.cls:690-733 |
+| ADJ-T2.91 | When IRIS builds the row hook's index again, the start and end steps of the build do nothing. Each row goes in as one insert. | inspected:iris_src/src/Graph/KG/AdjIndex.cls:1-8; inspected:iris_src/src/Graph/KG/AdjIndex.cls:34-42 |
 | ADJ-B3 | The writer class has one command for each kind of change. Each keeps both halves of an edge in step. | inspected:iris_src/src/Graph/KG/Adjacency.cls:75-472 |
 | ADJ-T3.1.1 | Adding an edge that is already there moves the source generation again. That is harmless: it only makes cache entries stale. | inspected:iris_src/src/Graph/KG/Adjacency.cls:75-79; inspected:iris_src/src/Graph/KG/Adjacency.cls:89 |
 | ADJ-T3.1.2 | Once the interned snapshot is built, adding an edge also gives its ends numbers there and adds the edge. | inspected:iris_src/src/Graph/KG/Adjacency.cls:94-107; inspected:iris_src/src/Graph/KG/GraphIndex.cls:43-76 |
+| ADJ-T3.1.90 | A bulk load can first set up an empty interned snapshot. Each edge it then adds is numbered there at once. | inspected:iris_src/src/Graph/KG/TraversalBuild.cls:216-224; inspected:iris_vector_graph/_engine/nodes_edges.py:426-438; inspected:iris_src/src/Graph/KG/Adjacency.cls:94-107 |
+| ADJ-T3.1.91 | Each edge type gets a number in the interned snapshot too, and keeps it for good. The first three numbers are kept for fixed names. | inspected:iris_src/src/Graph/KG/GraphIndex.cls:29-41; inspected:iris_src/src/Graph/KG/GraphIndex.cls:78-101 |
+| ADJ-T3.1.92 | A lookup of a node's or an edge type's number in the interned snapshot never makes one. It answers empty when there is none. | inspected:iris_src/src/Graph/KG/GraphIndex.cls:152-160; inspected:iris_src/src/Graph/KG/NKGAccelTraversal.cls:435-455 |
+| ADJ-T3.1.93 | Adding an edge to the interned snapshot also adds its target to a small sketch, kept per source and edge type. The sketches are used to guess how many nodes a walk reaches. | inspected:iris_src/src/Graph/KG/GraphIndex.cls:103-124; inspected:iris_src/src/Graph/KG/Adjacency.cls:94-107; inspected:iris_src/src/Graph/KG/TraversalBuild.cls:495-516 |
 | ADJ-B3.2 | A shadow write for a timed edge adds both halves. It does not number the ends in the interned snapshot. | inspected:iris_src/src/Graph/KG/Adjacency.cls:111-139 |
 | ADJ-T3.3.1 | The source generation moves only when the edge was really there. | inspected:iris_src/src/Graph/KG/Adjacency.cls:151-156 |
 | ADJ-T3.3.3 | When a named graph loses its last edge, the interned snapshot is marked stale if it held that graph's nodes. | inspected:iris_src/src/Graph/KG/Adjacency.cls:169-181 |
+| ADJ-T3.3.90 | Taking an edge out of the interned snapshot drops both of its halves there and lowers the source's count. Its edge count and the source's sketch stay as they were. | inspected:iris_src/src/Graph/KG/GraphIndex.cls:174-186; inspected:iris_src/src/Graph/KG/Adjacency.cls:158-164; inspected:iris_src/src/Graph/KG/Adjacency.cls:383-387 |
 | ADJ-T3.4.2 | The count is worked out again from the children each time, not stepped up. So a rolled-back row takes its count with it. | inspected:iris_src/src/Graph/KG/Adjacency.cls:254-255; inspected:iris_src/src/Graph/KG/Adjacency.cls:797-808 |
 | ADJ-T3.4.3 | The plain entry of the triple carries the weight of the edge with the lowest key. | inspected:iris_src/src/Graph/KG/Adjacency.cls:871-881 |
 | ADJ-T3.4.4 | The source generation moves when the triple's edge count changes. | inspected:iris_src/src/Graph/KG/Adjacency.cls:251-256 |
@@ -1086,9 +1170,11 @@ Supported only by reading production code at the pin.
 | ADJ-T7.9.2 | A node keeps its number for good, and the number counters only go up. | inspected:iris_src/src/Graph/KG/GraphIndex.cls:43-76; inspected:iris_src/src/Graph/KG/TraversalBuild.cls:231-239; inspected:iris_src/src/Graph/KG/TraversalBuild.cls:426-443 |
 | ADJ-T7.9.3 | Gaps in the numbers are left only in two cases. No reader library is set up, or the library says it can skip them. | inspected:iris_src/src/Graph/KG/TraversalBuild.cls:757-813 |
 | ADJ-T7.9.4 | Its edge count may be too high but is never too low. | inspected:iris_src/src/Graph/KG/TraversalBuild.cls:367-370 |
+| ADJ-T7.9.90 | The interned snapshot's count of nodes with edges is taken at each rewrite. Writes after that leave it as it was. | inspected:iris_src/src/Graph/KG/TraversalBuild.cls:241-247; inspected:iris_vector_graph/_engine/admin.py:790-800 |
 | ADJ-X7.10 | A rebuild of the interned snapshot waits for any other one. It is refused after 900 seconds. | inspected:iris_src/src/Graph/KG/TraversalBuild.cls:249-250; inspected:iris_src/src/Graph/KG/TraversalBuild.cls:293-296 |
 | ADJ-B7.11 | After an erase marks the interned snapshot, the next reader rebuilds it before it reads. One that was never built is left alone. | inspected:iris_src/src/Graph/KG/TraversalBuild.cls:382-424 |
 | ADJ-B7.13 | The Arno snapshot holds the default graph only. It is made again when the token has moved since it was made. | inspected:iris_src/src/Graph/KG/ArnoAccel.cls:305-321 |
+| ADJ-B7.80 | The engine's call to backfill the exact two-hop counts runs that build for every graph. It answers how many it wrote, and if the build fails, it logs a warning and answers zero. | inspected:iris_vector_graph/_engine/schema.py:2952-2963; inspected:iris_src/src/Graph/KG/Traversal.cls:56-58; inspected:iris_src/src/Graph/KG/TraversalBuild.cls:996-1067 |
 | ADJ-B8 | Sync rebuilds the adjacency index from the edge rows, then the interned snapshot and the two-hop counts. It returns true or raises. | inspected:iris_vector_graph/_engine/schema.py:2859-2910; inspected:iris_src/src/Graph/KG/Traversal.cls:16-18 |
 | ADJ-B8.1 | A failed step raises an error that names the server method and its message. | inspected:iris_vector_graph/_engine/schema.py:2878-2891 |
 | ADJ-T8.2.1 | That refill may run in several jobs at once. | inspected:iris_src/src/Graph/KG/TraversalBuild.cls:128-133 |
@@ -1137,6 +1223,7 @@ Supported only by reading production code at the pin.
 | TMP-T1.15 | A temporal write runs no transaction of its own. A failure part way keeps the stores it wrote first. | inspected:iris_vector_graph/_engine/temporal.py:12-17; inspected:iris_src/src/Graph/KG/TemporalIndex.cls:46-65 |
 | TMP-T1.19 | When the batch server call fails, the store writes each edge alone and can no longer count collisions. | inspected:iris_vector_graph/stores/iris_sql_store.py:2759-2786 |
 | TMP-T1.22 | Both index forms share one set of stores. Times in seconds and in milliseconds in one graph land in wrong buckets, and nothing checks it. | inspected:iris_src/src/Graph/KG/TemporalIndexMS.cls:4-9; inspected:iris_src/src/Graph/KG/TemporalIndex.cls:97-102 |
+| TMP-B1.90 | The millisecond index can report one source's bucket count in one time bucket of a graph. It only reads. | inspected:iris_src/src/Graph/KG/TemporalIndexMS.cls:11-17; inspected:iris_src/src/Graph/KG/TemporalIndex.cls:102-102; inspected:iris_src/src/Graph/KG/TemporalIndex.cls:357-358 |
 | TMP-B2.2 | A marked row needs its two end nodes, so a temporal write makes them when they are missing. | inspected:iris_src/src/Graph/KG/Adjacency.cls:591-602 |
 | TMP-T2.3 | The marked row keeps the weight of the first temporal edge that made it. Later weights do not change it. | inspected:iris_src/src/Graph/KG/Adjacency.cls:577-589 |
 | TMP-I2.9 | Marked rows are a copy made from the temporal index, never the other way round. | inspected:iris_src/src/Graph/KG/TemporalPolicy.cls:18-20; inspected:iris_src/src/Graph/KG/TemporalIndex.cls:226-235 |
@@ -1184,9 +1271,14 @@ Supported only by reading production code at the pin.
 | TMP-T12.11 | A changeset temporal write is an update by default. The engine's default is insert. | inspected:iris_vector_graph/ledger/changeset.py:319; inspected:iris_src/src/Graph/KG/LedgerApply.cls:628 |
 | TMP-T12.12 | A temporal record carries its graph and both edge ends, so redaction can match it to a tenant. | inspected:iris_src/src/Graph/KG/LedgerRedact.cls:97-98; inspected:iris_src/src/Graph/KG/LedgerApply.cls:637-640 |
 | TMP-B13.1 | No purge removes an interned label set. | inspected:iris_src/src/Graph/KG/TemporalIndex.cls:1339-1340; inspected:iris_src/src/Graph/KG/TemporalIndex.cls:379-391 |
+| TMP-B13.90 | Looking up a known hash gives back the sorted form stored under it. | inspected:iris_vector_graph/_engine/temporal.py:848-850; inspected:iris_vector_graph/stores/iris_sql_store.py:2848-2852; inspected:iris_src/src/Graph/KG/TemporalIndex.cls:1393-1397 |
 | TMP-T14.3 | Temporal edge times are plain numbers with no time zone. | inspected:iris_src/src/Graph/KG/TemporalIndex.cls:46-51 |
 | TMP-B15 | Exporting temporal edges writes one line per edge with its attributes. The import can load them again. | inspected:iris_vector_graph/_engine/temporal.py:1113-1155 |
 | TMP-B15.1 | The export reads the window as one string, so it fails past about 35 thousand edges. | inspected:iris_vector_graph/_engine/temporal.py:1120-1137 |
+| TMP-B80 | A repo script deletes the bare nodes of one graph. It is for old releases whose engine has no call for that. A node that gains a link while it runs is kept. | inspected:scripts/sweep_bare_nodes_interim.py:1-81 |
+| TMP-T80.80 | It deletes each node with a plain SQL delete that checks again that the node is bare. It saves after each batch and checks no ledger setting. | inspected:scripts/sweep_bare_nodes_interim.py:35-81 |
+| TMP-B81 | A repo script copies items from one outside FHIR server into the default graph. Each item gets a node, and a temporal edge from its patient when it names one. | inspected:scripts/backfill_temporal_edges.py:52-194 |
+| TMP-T81.80 | It can also store a vector for some items. A node write that fails is hidden, and its defaults name one test site. | inspected:scripts/backfill_temporal_edges.py:68-166 |
 | VEC-0 | This module owns the number lists kept for nodes and edges, the models that made them, and the search over them. | inspected:iris_vector_graph/_engine/embeddings.py:142-146; inspected:iris_vector_graph/embedding_identity.py:1-15; inspected:iris_vector_graph/_engine/schema.py:139-159 |
 | VEC-D3 | The number type of a vector is the kind of number it holds, such as double or float. | inspected:iris_vector_graph/security.py:142-151; inspected:iris_vector_graph/_engine/schema.py:1223-1254 |
 | VEC-D4 | A model key is the name of the model that made some vectors, written in one fixed way. | inspected:iris_vector_graph/embedding_identity.py:42-72 |
@@ -1223,6 +1315,7 @@ Supported only by reading production code at the pin.
 | VEC-X2.8 | Making a new route is refused inside a transaction the caller opened. | inspected:iris_vector_graph/_engine/embeddings.py:493-499 |
 | VEC-B2.18 | One graph and model can have a node route and an edge route. Each lookup says which kind it wants. | inspected:iris_vector_graph/_engine/embeddings.py:276-282; inspected:iris_vector_graph/_engine/schema.py:161-178 |
 | VEC-B2.22 | Erasing a graph empties and drops its routes, then removes their registry rows. | inspected:iris_src/src/Graph/KG/Eraser.cls:67-98; inspected:iris_src/src/Graph/KG/Eraser.cls:272-298 |
+| VEC-B2.90 | A caller can make the engine forget the routes it keeps in memory: those of one graph and model, of one graph, or all of them. | inspected:iris_vector_graph/_engine/embeddings.py:345-375 |
 | VEC-B3 | Storing a vector writes it to the route of its graph and model, after the identity check. | inspected:iris_vector_graph/_engine/embeddings.py:942-1025 |
 | VEC-X3.1 | Storing a node's vector is refused when the node is not in that graph. | inspected:iris_vector_graph/_engine/embeddings.py:967; inspected:iris_vector_graph/_engine/nodes_edges.py:532-557 |
 | VEC-B3.3 | A new vector for a node replaces its old one, in that graph only. | inspected:iris_vector_graph/_engine/embeddings.py:999-1017 |
@@ -1233,9 +1326,12 @@ Supported only by reading production code at the pin.
 | VEC-B3.11 | Storing an edge vector does not check that the edge exists. | inspected:iris_vector_graph/_engine/embeddings.py:1138-1142 |
 | VEC-B3.12 | The graph a caller names keeps data apart. It does not decide who may read what. | inspected:iris_vector_graph/_engine/embeddings.py:961-963 |
 | VEC-B3.14 | The vector tools read the column's declared width and refuse when it has none, rather than guess. | inspected:iris_vector_graph/vector_utils.py:34-44; inspected:iris_vector_graph/vector_utils.py:62-82 |
+| VEC-T3.90 | The declared width of a table's vector column is read from IRIS's class records, else from its column list. No table, no declared width and a failed read all answer none. | inspected:iris_vector_graph/schema.py:2063-2141 |
+| VEC-B3.91 | The tools' statistics call gives a vector table's row count and the length of one sample value as its width. A failure comes back as an error entry and is not raised. | inspected:iris_vector_graph/vector_utils.py:433-473 |
 | VEC-B4.1 | Reading many nodes' vectors answers only the nodes that have one in that graph. | inspected:iris_vector_graph/_engine/embeddings.py:1748-1800 |
 | VEC-B4.2 | A count with no graph and no model counts the whole legacy node table, across all graphs. | inspected:iris_vector_graph/_engine/embeddings.py:2139-2153 |
 | VEC-X4.5 | A failed count or listing raises. It never answers zero or an empty list instead. | inspected:iris_vector_graph/_engine/embeddings.py:917-918; inspected:iris_vector_graph/_engine/embeddings.py:2156-2162 |
+| VEC-B4.90 | The web stats route's vector count is the count with no graph and no model. So it counts the whole legacy node table. | inspected:iris_vector_graph/cypher_api.py:557-568; inspected:iris_vector_graph/_engine/embeddings.py:2136-2153 |
 | VEC-B5.2 | The score of a route search is the cosine of the angle between the two vectors. | inspected:iris_vector_graph/_engine/vector.py:593-600 |
 | VEC-B5.10 | The simple nearest search uses the route search when IRIS can score vectors. Otherwise it uses an IVF index, for the default graph only. | inspected:iris_vector_graph/_engine/vector.py:748-795 |
 | VEC-X5.11 | A search that names a graph or a model is refused when only an IVF index could answer it. | inspected:iris_vector_graph/_engine/vector.py:783-790 |
@@ -1246,6 +1342,9 @@ Supported only by reading production code at the pin.
 | VEC-B5.20 | Neighbor expansion answers the one-hop edges of the seeds, in one graph, whose confidence meets the bar. Depth is ignored. | inspected:iris_vector_graph/_engine/vector.py:1055-1121 |
 | VEC-B5.25 | A search over all graphs for one model reads each graph's own route. | inspected:iris_vector_graph/_engine/embeddings.py:693-741 |
 | VEC-B5.26 | A route with no HNSW index still answers right. Its search reads every row. | inspected:iris_vector_graph/_engine/vector.py:593-600; inspected:iris_vector_graph/_engine/schema.py:911-933 |
+| VEC-B5.90 | The check for HNSW indexes on a table reads what IRIS holds now. If the read fails it answers none, and it notes the failure only for a caller that asks. | inspected:iris_vector_graph/schema.py:1966-2027 |
+| VEC-B5.91 | The tools' call for tuning an HNSW index tests nothing. It always gives the same fixed advice. | inspected:iris_vector_graph/vector_utils.py:412-431 |
+| VEC-B5.92 | The nearest search of the engine's query part reads the route of one graph and model, the default graph when none is named. A query that is not numbers, or a failed read of the table, answers no rows and carries the error. | inspected:iris_vector_graph/engine.py:184; inspected:iris_vector_graph/stores/iris_sql_store.py:2568-2650 |
 | VEC-B6.1 | To turn text into a vector, the IRIS model is tried first if one is set. Next comes the engine's own model, then a default local model. | inspected:iris_vector_graph/_engine/embeddings.py:148-208 |
 | VEC-B6.3 | Only nodes of the named graph are picked, and their text comes from that graph's properties. | inspected:iris_vector_graph/_engine/embeddings.py:1326-1339; inspected:iris_vector_graph/_engine/embeddings.py:1381-1400 |
 | VEC-B6.4 | Unless forced, nodes that already have a vector in the route are skipped. | inspected:iris_vector_graph/_engine/embeddings.py:1358-1373 |
@@ -1253,12 +1352,14 @@ Supported only by reading production code at the pin.
 | VEC-B6.6 | The answer counts the nodes picked, embedded, skipped and failed. | inspected:iris_vector_graph/_engine/embeddings.py:1491-1497 |
 | VEC-B6.9 | Embedding a graph's edges works the same way. Edges are picked by predicate and by end labels. | inspected:iris_vector_graph/_engine/embeddings.py:1502-1691 |
 | VEC-B6.14 | The missing-only filter on edges does nothing. The edge route decides which edges are done. | inspected:iris_vector_graph/embed_selector.py:143-146; inspected:iris_vector_graph/embed_selector.py:170-171 |
+| VEC-B6.90 | The web route for embedding works on the default graph only. It passes on a label filter and the force switch. | inspected:iris_vector_graph/cypher_api.py:608-620 |
 | VEC-B7 | A caller can queue nodes or texts so that a worker gives them vectors later. | inspected:iris_vector_graph/_engine/embeddings.py:1803-1873; inspected:iris_src/src/Graph/KG/EmbedQueue.cls:4-25 |
 | VEC-B7.3 | Each queued text gets a new entry, and texts are never merged. | inspected:iris_src/src/Graph/KG/EmbedQueue.cls:81-104 |
 | VEC-B7.7 | Queuing nodes for a named graph with an IRIS model first makes that graph's route, at the model's width. | inspected:iris_vector_graph/_engine/embeddings.py:1849-1850; inspected:iris_vector_graph/_engine/embeddings.py:1876-1896 |
 | VEC-B7.8 | In a namespace with no queue, queuing warns and answers zero. Any other refusal raises. | inspected:iris_vector_graph/_engine/embeddings.py:130-139 |
 | VEC-B7.13 | An entry whose vector fails to store is marked failed, with the reason. | inspected:iris_vector_graph/_engine/embeddings.py:1982-1984; inspected:iris_vector_graph/_engine/embeddings.py:2018-2031 |
 | VEC-T7.14 | The Python worker marks an entry done before it stores the vector. A stop in between leaves a done entry and no vector. | inspected:iris_vector_graph/_engine/embeddings.py:1958-1980 |
+| VEC-B7.90 | The waiting count covers the waiting entries of all graphs at once. | inspected:iris_src/src/Graph/KG/EmbedQueue.cls:168-179; inspected:iris_vector_graph/_engine/embeddings.py:2089-2102; inspected:iris_src/src/Graph/KG/EmbedQueueTask.cls:15-32 |
 | VEC-B8.3 | Row counts are taken inside the route's graph. A route whose table is gone counts zero. | inspected:iris_vector_graph/_engine/schema.py:1884-1909 |
 | VEC-B8.8 | Measuring all routes measures each route in the inventory that has a table. | inspected:iris_vector_graph/_engine/vector.py:726-746 |
 | VEC-B9.10 | Erasing a graph never removes a quarantined row, since no graph owns it. | inspected:iris_src/src/Graph/KG/Eraser.cls:300-302 |
@@ -1274,6 +1375,9 @@ Supported only by reading production code at the pin.
 | VEC-B10.16 | The node store step drops the old flat stores and has the server rebuild them by graph. It never guesses a graph. | inspected:iris_vector_graph/migrations/kg_node_stores.py:1-36; inspected:iris_vector_graph/migrations/kg_node_stores.py:170-180 |
 | VEC-X10.17 | The node store step checks first. If a source table has no graph column, or a rebuild step is missing, it stops and drops nothing. | inspected:iris_vector_graph/migrations/kg_node_stores.py:131-137; inspected:iris_vector_graph/migrations/kg_node_stores.py:144; inspected:iris_vector_graph/migrations/kg_node_stores.py:164-168 |
 | VEC-T10.18 | The drop and the rebuild are not one transaction. A stop in between leaves those stores empty until the step runs again. | inspected:iris_vector_graph/migrations/kg_node_stores.py:170-182 |
+| VEC-B10.90 | The text and edge vector step first adds what placing needs, and last puts the new tables in place of the old ones. Each part can run again with no harm. | inspected:iris_vector_graph/migrations/docs_and_edge_vectors.py:26-41; inspected:iris_vector_graph/migrations/docs_and_edge_vectors.py:214-260 |
+| VEC-B10.91 | Each part of the text and edge vector step can also hand back its SQL without running it. | inspected:iris_vector_graph/migrations/docs_and_edge_vectors.py:154-206 |
+| VEC-X10.92 | A new run refuses a staging or quarantine table for edge vectors that holds rows at another width. An empty one is made again at the new width. | inspected:iris_vector_graph/migrations/docs_and_edge_vectors.py:224-255 |
 | VEC-B11 | The engine knows its vector indexes by name, from the index stores at start and from builds made through it. | inspected:iris_vector_graph/_engine/vector.py:84-148; inspected:iris_vector_graph/_engine/vector.py:227-266 |
 | VEC-X11.1 | Asking for an index name the engine does not know is refused, and the error lists the known names. | inspected:iris_vector_graph/_engine/vector.py:236-238 |
 | VEC-B11.2 | Adding an index setup builds nothing. A name in use is refused unless replace is asked, and replace drops the old index first. | inspected:iris_vector_graph/_engine/vector.py:243-259 |
@@ -1289,6 +1393,13 @@ Supported only by reading production code at the pin.
 | VEC-B11.27 | Adding an item to a PLAID index puts each word in its nearest group. The groups do not move. | inspected:iris_src/src/Graph/KG/PLAIDSearch.cls:204-232 |
 | VEC-B11.28 | Dropping an index of any kind removes all its data. | inspected:iris_src/src/Graph/KG/IVFIndex.cls:160-163; inspected:iris_src/src/Graph/KG/VecIndex.cls:54-57; inspected:iris_src/src/Graph/KG/PLAIDSearch.cls:244-247 |
 | VEC-B11.29 | The table check reports a vector column's width from one sample row, and its row count. | inspected:iris_vector_graph/_engine/vector.py:1122-1168 |
+| VEC-B11.90 | Each IVF or PLAID index can report its settings and its size. One that does not exist reports nothing. | inspected:iris_src/src/Graph/KG/IVFIndex.cls:165-173; inspected:iris_src/src/Graph/KG/PLAIDSearch.cls:234-242; inspected:iris_vector_graph/_engine/vector.py:1741-1745; inspected:iris_vector_graph/_engine/vector.py:2061-2068 |
+| VEC-B11.91 | A tree index can report its settings and size too. One that does not exist reports as an empty index with the default settings. | inspected:iris_src/src/Graph/KG/VecIndex.cls:460-468; inspected:iris_vector_graph/_engine/vector.py:1632-1640 |
+| VEC-T11.92 | An IVF build writes its vectors in batches, each one into the group that was worked out for it. At the end, the build counts what the groups hold. | inspected:iris_src/src/Graph/KG/IVFIndex.cls:234-276; inspected:iris_vector_graph/_engine/vector.py:2011-2023 |
+| VEC-T11.93 | A tree index works out its measures on the server: cosine, straight line distance, sum of gaps, dot product and largest gap. | inspected:iris_src/src/Graph/KG/VecIndex.cls:83-115 |
+| VEC-B11.94 | A tree search ranks by distance, nearest first. For cosine the distance is one minus the cosine, and for dot it is minus the dot. For the other measures the score is the distance, so a lower score is closer. | inspected:iris_src/src/Graph/KG/VecIndex.cls:63-71; inspected:iris_src/src/Graph/KG/VecIndex.cls:388-411 |
+| VEC-T11.95 | A score helper gives the cosine or the dot as it is, and one over one plus the distance for the other measures. No search calls it. | inspected:iris_src/src/Graph/KG/VecIndex.cls:73-81 |
+| VEC-T11.96 | A tree index can store a matrix and work out one more measure from it. No build and no search uses that measure. | inspected:iris_src/src/Graph/KG/VecIndex.cls:117-138; inspected:iris_src/src/Graph/KG/VecIndex.cls:26-40 |
 | TXT-0 | This module owns word search over node text and the merging of ranked search lists. | inspected:iris_src/src/Graph/KG/BM25Index.cls:1-34; inspected:iris_vector_graph/fusion.py:1-24; inspected:iris_vector_graph/text_search.py:1-29 |
 | TXT-D2 | A BM25 index is a named word index over the nodes of one graph. Each node's text is one document in it. | inspected:iris_src/src/Graph/KG/BM25Index.cls:1-22; inspected:iris_src/src/Graph/KG/BM25Index.cls:93-97 |
 | TXT-D3 | The document frequency of a word is the number of documents that hold it. | inspected:iris_src/src/Graph/KG/BM25Index.cls:15; inspected:iris_src/src/Graph/KG/BM25Index.cls:194-197 |
@@ -1339,6 +1450,8 @@ Supported only by reading production code at the pin.
 | TXT-B12.4 | A minimum count above zero drops texts with fewer matches. | inspected:iris_vector_graph/_engine/vector.py:977-995 |
 | TXT-B12.6 | In the fallback, a text must hold every query word, each score is 1, and the order is not set. | inspected:iris_vector_graph/_engine/vector.py:1035-1048 |
 | TXT-B12.7 | Any other error is raised to the caller. | inspected:iris_vector_graph/_engine/vector.py:1011-1012; inspected:iris_vector_graph/_engine/vector.py:1050-1052 |
+| TXT-B12.90 | The operators text search passes its arguments to the engine's docs table search. That includes the graph. | inspected:iris_vector_graph/operators.py:30-35 |
+| TXT-B12.91 | The SQL text procedure has no fallback. Without the word index, a call to it fails. | inspected:iris_vector_graph/schema.py:2499-2523; inspected:iris_vector_graph/_engine/vector.py:1007-1018 |
 | TXT-B13.3 | An item scores one over c plus its place in each fusion leg, added over both. | inspected:iris_vector_graph/_engine/vector.py:1438-1446 |
 | TXT-B13.5 | An empty text query skips the BM25 leg. | inspected:iris_vector_graph/_engine/vector.py:1431 |
 | TXT-B13.6 | Each answer gives the node id, the fused score, and the vector and text scores, with 0 for a missing one. | inspected:iris_vector_graph/_engine/vector.py:1446-1452 |
@@ -1360,8 +1473,19 @@ Supported only by reading production code at the pin.
 | TXT-B18.1 | It works out whether to use vectors or the graph, but does not use that choice. | inspected:iris_vector_graph/fusion.py:284-299 |
 | TXT-B19 | The older text search class runs word, name and edge searches over the schema's tables. | inspected:iris_vector_graph/text_search.py:17-256; inspected:iris_vector_graph/__init__.py:93 |
 | TXT-B19.3 | A failed document search gives an empty list and logs an error. | inspected:iris_vector_graph/text_search.py:61-64; inspected:iris_vector_graph/text_search.py:90-94 |
+| TXT-B19.90 | Setting up the older text search class reads nothing. It refuses a schema name that is not a plain name. | inspected:iris_vector_graph/text_search.py:22-29; inspected:iris_vector_graph/security.py:78-99 |
+| TXT-B19.91 | A failed edge, name or context search is raised to the caller. | inspected:iris_vector_graph/text_search.py:144-148; inspected:iris_vector_graph/text_search.py:190-194; inspected:iris_vector_graph/text_search.py:252-256 |
+| TXT-B19.92 | The document search's fallback finds texts that hold the whole query. Each scores 1, and they come sorted by id. | inspected:iris_vector_graph/text_search.py:68-94 |
 | TXT-B20 | Erasing a graph deletes its rows of the docs table. | inspected:iris_src/src/Graph/KG/Eraser.cls:138-147; inspected:iris_src/src/Graph/KG/GraphStores.cls:43-49 |
 | TXT-B21 | A snapshot carries every BM25 index in full. | inspected:iris_vector_graph/_engine/snapshot.py:387-398 |
+| TXT-B90 | A handle on a text index runs the engine's BM25 build, search, insert, drop and info for its own name. | inspected:iris_vector_graph/index_protocol.py:20-61; inspected:iris_vector_graph/index_protocol.py:74-105; inspected:iris_vector_graph/_engine/vector.py:227-242; inspected:iris_vector_graph/engine.py:1724-1731 |
+| TXT-B90.90 | A handle build takes the property names from the call, then from the handle's setup. With neither, it indexes only the name property. | inspected:iris_vector_graph/index_protocol.py:83-84; inspected:iris_vector_graph/_engine/vector.py:267-268; inspected:iris_vector_graph/_engine/vector.py:299-305; inspected:iris_vector_graph/index_config.py:26-30 |
+| TXT-B90.91 | A handle build with no graph in the call builds for the default graph. A text setup cannot name a graph. | inspected:iris_vector_graph/_engine/vector.py:299-305; inspected:iris_vector_graph/index_config.py:11-30; inspected:iris_vector_graph/_engine/vector.py:1776-1784 |
+| TXT-B90.92 | A handle search is refused when the index is missing or has no documents. The engine's own search gives an empty list then. | inspected:iris_vector_graph/index_protocol.py:64-95; inspected:iris_vector_graph/_engine/vector.py:1871-1879; inspected:iris_src/src/Graph/KG/BM25Index.cls:597-614 |
+| TXT-B90.93 | A handle search passes on only the query and k. Any other option, such as the cutoff, is dropped. | inspected:iris_vector_graph/index_protocol.py:32-38; inspected:iris_vector_graph/index_protocol.py:92-95; inspected:iris_vector_graph/_engine/vector.py:1786-1793 |
+| TXT-B90.94 | A handle insert takes the text where a vector would go. It gives back nothing, so a text with no words looks like any other. | inspected:iris_vector_graph/index_protocol.py:39-45; inspected:iris_vector_graph/index_protocol.py:97-98; inspected:iris_vector_graph/_engine/vector.py:1840-1848 |
+| TXT-B90.95 | A handle drop deletes the index and its data. Then it takes the name off the engine's list. | inspected:iris_vector_graph/index_protocol.py:46-52; inspected:iris_vector_graph/index_protocol.py:100-102; inspected:iris_vector_graph/_engine/vector.py:1868-1870 |
+| TXT-B90.96 | Registering a text index setup with replace, on a name the engine knows, drops the old index and its data at once. Nothing is built until the handle's build runs. | inspected:iris_vector_graph/_engine/vector.py:243-259; inspected:iris_vector_graph/index_protocol.py:100-102; inspected:iris_vector_graph/_engine/vector.py:1422-1432 |
 | CYP-0 | This module turns Cypher and AQL text into SQL over the tables that hold graphs. It runs that SQL and returns the rows. | inspected:iris_vector_graph/_engine/query.py:1746-1944; inspected:iris_vector_graph/cypher/translator.py:7090-7106; inspected:iris_vector_graph/cypher/translator.py:7310-7390 |
 | CYP-D1 | The graph tables are the four SQL tables that hold nodes, labels, properties and edges. | inspected:iris_vector_graph/cypher/translator.py:404-404 |
 | CYP-D2 | A Cypher query is a text in the Cypher language. A caller sends it to the engine to read or change graphs. | inspected:iris_vector_graph/_engine/query.py:1746-1781 |
@@ -1399,7 +1523,9 @@ Supported only by reading production code at the pin.
 | CYP-T4.13 | An approximate distinct count uses a fast estimate when the query has the right shape. Otherwise it counts exactly. | inspected:iris_vector_graph/_engine/query.py:4361-4410; inspected:iris_vector_graph/_engine/query.py:4410-4500 |
 | CYP-T4.15 | A one-hop count or id list from a fixed id may skip SQL. It does so only while the default graph is the only graph with edges. | inspected:iris_vector_graph/_engine/query.py:4294-4320 |
 | CYP-B4.16 | A mapped label reads the rows of its SQL table. Other engines' new mappings show up only after a reload. | inspected:iris_vector_graph/cypher/translator.py:14824-14838; inspected:iris_vector_graph/_engine/fhir.py:19-44 |
+| CYP-B4.16.90 | A link mapping lets an edge between two mapped labels be read from a key column or a join table. It is kept once for the namespace, with no graph. | inspected:iris_vector_graph/_engine/fhir.py:147-197; inspected:iris_vector_graph/_engine/fhir.py:49-83; inspected:iris_vector_graph/cypher/translator.py:16006-16042 |
 | CYP-T4.18 | Each answer is decoded in Python. A value then comes back with its Cypher type, as far as storage allows. | inspected:iris_vector_graph/_engine/query.py:332-350; inspected:iris_vector_graph/_engine/query.py:1137-1216 |
+| CYP-T4.90 | A caller can ask for the schema name the translator uses when it has no engine. It is empty until a caller sets one. | inspected:iris_vector_graph/cypher/translator.py:36-41; inspected:iris_vector_graph/cypher/translator.py:341-357; inspected:iris_vector_graph/cypher/translator.py:63-71; inspected:iris_vector_graph/cypher/translator.py:7096-7100; inspected:iris_vector_graph/cypher/__init__.py:1-4; inspected:iris_vector_graph/text_search.py:22-29 |
 | CYP-T5.2 | The graph filter is added to each join of the graph tables by rewriting the SQL text. | inspected:iris_vector_graph/cypher/translator.py:719-779 |
 | CYP-T5.7 | An all-graphs read cannot tell which graph a row came from. | inspected:iris_vector_graph/_engine/query.py:451-474 |
 | CYP-B5.9 | The name of a graph is not a security boundary. Any caller can name any graph or read all of them. | inspected:iris_vector_graph/cypher/parser.py:175-191; inspected:iris_vector_graph/cypher/translator.py:2075-2095 |
@@ -1422,6 +1548,7 @@ Supported only by reading production code at the pin.
 | CYP-T7.5 | Strict mode is checked in Python only. IRIS itself does not refuse a write that skips the ledger. | inspected:iris_src/src/Graph/KG/Ledger.cls:360-381; inspected:iris_vector_graph/ledger/guard.py:1-7 |
 | CYP-B7.7 | A Cypher delete of an edge that the ledger recorded leaves the ledger's live statement for that edge. | inspected:iris_src/src/Graph/KG/Ledger.cls:7-9; inspected:iris_vector_graph/stores/iris_sql_store.py:1580-1818; inspected:iris_src/src/Graph/KG/Eraser.cls:670-678 |
 | CYP-B7.8 | A Cypher write can write a tenant's ids again after erasure or redaction. No retry key or ledger record stops it. | inspected:iris_vector_graph/_engine/query.py:1946-1967; inspected:iris_vector_graph/stores/iris_sql_store.py:1580-1818 |
+| CYP-B8.90 | In read-only mode, a show command, or the label query that the Neo4j Browser sends, is judged by its words, since the parser cannot read it. It counts as a write only if it holds a write word. | inspected:iris_vector_graph/cypher/read_only.py:53-66; inspected:iris_vector_graph/cypher/read_only.py:69-75; inspected:iris_vector_graph/_engine/query.py:1808-1827; inspected:iris_vector_graph/_engine/query.py:1883-1884 |
 | CYP-B9 | A query parameter's value is bound to the SQL statement. It is not pasted into the SQL text. | inspected:iris_vector_graph/cypher/translator.py:1765-1788 |
 | CYP-T9.1 | A few values are written into the SQL text instead: the name of the graph, a percentile, and parameters held in a write's lists and maps. | inspected:iris_vector_graph/cypher/translator.py:2085-2086; inspected:iris_vector_graph/cypher/translator.py:28593-28605; inspected:iris_vector_graph/cypher/translator.py:7294-7307 |
 | CYP-T10.1 | Search and walk procedures become SQL inside the query. Schema and status procedures are answered by the engine in Python. | inspected:iris_vector_graph/cypher/translator.py:2248-2284; inspected:iris_vector_graph/cypher/translator.py:31889-31908; inspected:iris_vector_graph/engine.py:944-966; inspected:iris_vector_graph/engine.py:1676-1720 |
@@ -1430,11 +1557,16 @@ Supported only by reading production code at the pin.
 | CYP-T11.3 | A helper function reads a SQL null as empty text, and the empty string as a special mark. | inspected:iris_src/src/Graph/KG/CypherFn.cls:1-8 |
 | CYP-T11.4 | Regex match answers false for a pattern it cannot build, not an error. | inspected:iris_src/src/Graph/KG/CypherFn.cls:13-26 |
 | CYP-B11.5 | A list item lookup checks that its index is a whole number. | inspected:iris_src/src/Graph/KG/CypherFn.cls:146-188 |
+| CYP-T11.90 | Thirteen of the helper functions in IRIS are called by no translation. Plain SQL, or a dotted function name in a query, can still call them. | inspected:iris_src/src/Graph/KG/CypherFn.cls:1-11; inspected:iris_src/src/Graph/KG/SqlProcs.cls:1-3; inspected:iris_vector_graph/cypher/translator.py:387-397; inspected:iris_vector_graph/cypher/translator.py:13374-13380; inspected:iris_vector_graph/cypher/translator.py:19603-19604; inspected:iris_vector_graph/cypher/translator.py:29117-29121; inspected:iris_vector_graph/schema.py:2321-2324; inspected:iris_vector_graph/schema.py:2373-2378 |
+| CYP-T11.101 | When the map, or a list or map value, is not valid JSON, the set and remove helper functions answer the map as it was. No error is raised, so the write changes nothing. | inspected:iris_src/src/Graph/KG/CypherFn.cls:220-238; inspected:iris_src/src/Graph/KG/CypherFn.cls:246-251 |
+| CYP-T11.103 | A range with a step known only at run time uses the range helper function. So a step of 0 there gives an empty list, though a step of 0 written in the query is refused. | inspected:iris_vector_graph/cypher/translator.py:29055-29099; inspected:iris_vector_graph/cypher/translator.py:29114-29122; inspected:iris_src/src/Graph/KG/CypherFn.cls:257-257 |
 | CYP-B12 | Each kind of failure has its own error type, so a caller can tell them apart. | inspected:iris_vector_graph/cypher/parser.py:18-38; inspected:iris_vector_graph/errors.py:117-159; inspected:iris_vector_graph/_engine/query.py:1783-1789 |
 | CYP-X12.2 | A query that parses but breaks a Cypher rule raises a syntax error. Its message starts with the openCypher error's name. | inspected:iris_vector_graph/cypher/translator.py:10476-10514; inspected:iris_vector_graph/cypher/translator.py:29565-29567 |
 | CYP-T14.2 | Show commands are answered by the engine. | inspected:iris_vector_graph/_engine/query.py:1883-1884; inspected:iris_vector_graph/_engine/admin.py:117-120 |
 | CYP-T15.2 | The older PageRank call drops its two-way and reverse weight inputs. | inspected:iris_vector_graph/operators.py:84-91 |
 | CYP-T15.3 | The SQL file of retrieval procedures is not loaded by setup. Its procedures take no graph and read every graph's rows. | inspected:sql/operators.sql:1-30; inspected:sql/operators.sql:80-104; inspected:iris_vector_graph/schema.py:2437-2484 |
+| CYP-B15.90 | Its walk, group, subgraph, neighbour, PageRank and rerank calls pass each input on as given. They add nothing and drop nothing. | inspected:iris_vector_graph/operators.py:51-67; inspected:iris_vector_graph/operators.py:93-110; inspected:iris_vector_graph/operators.py:125-146; inspected:iris_vector_graph/_engine/algorithms.py:698-700; inspected:iris_vector_graph/_engine/algorithms.py:733-740; inspected:iris_vector_graph/_engine/algorithms.py:805-805; inspected:iris_vector_graph/_engine/algorithms.py:829-829; inspected:iris_vector_graph/_engine/algorithms.py:881-885; inspected:iris_vector_graph/_engine/algorithms.py:986-988; inspected:iris_vector_graph/_engine/algorithms.py:1024-1029; inspected:iris_vector_graph/_engine/algorithms.py:1043-1050; inspected:iris_vector_graph/_engine/vector.py:1055-1062 |
+| CYP-B15.91 | The guided subgraph call also takes two older input names. When given, each one wins over the input it stands for. | inspected:iris_vector_graph/operators.py:112-123; inspected:iris_vector_graph/_engine/algorithms.py:947-951 |
 | CYP-B16 | The SQL path is held to the openCypher TCK. A harness runs each test case against IRIS. | inspected:tests/tck/environment.py:85-104 |
 | CYP-T16.1 | A scenario passes only when side effects, columns, values and their Python types all match. | inspected:tests/tck/steps/results.py:89-100; inspected:tests/tck/steps/comparison.py:500-590; inspected:tests/tck/steps/graph_setup.py:20-45 |
 | CYP-T16.2 | The harness turns multigraph mode on for the default graph, which users get only when they ask. | inspected:tests/tck/environment.py:301-310 |
@@ -1520,6 +1652,12 @@ Supported only by reading production code at the pin.
 | NAT-T10.1 | Local mode runs the engine inside IRIS. Remote mode connects to another IRIS. | inspected:iris_src/src/IVG/CypherEngine.cls:27-53; inspected:iris_src/src/IVG/CypherEngine.cls:56-94 |
 | NAT-T10.2 | Lists and maps in a row come back as text. | inspected:iris_src/src/IVG/CypherEngine.cls:117-129 |
 | NAT-T10.3 | Reads made through this class follow the same paths as the engine's own reads. | inspected:iris_src/src/IVG/CypherEngine.cls:89-92; inspected:iris_src/src/IVG/CypherEngine.cls:107-108 |
+| NAT-T10.90 | A query through this class may write as well as read. The class has no way to refuse a write. | inspected:iris_src/src/IVG/CypherEngine.cls:96-150; inspected:iris_vector_graph/_engine/query.py:1746-1790 |
+| NAT-T10.91 | The one-value call gives the first value of the first row as text. With no row it gives the default. A read that fails gives the default too. | inspected:iris_src/src/IVG/CypherEngine.cls:140-150; inspected:iris_vector_graph/_engine/query.py:1751-1758 |
+| NAT-T10.92 | The class's node count, edge count, label counts and node check look only at the default graph. Its label list covers every graph. None of them writes. | inspected:iris_src/src/IVG/CypherEngine.cls:152-199; inspected:iris_vector_graph/_engine/schema.py:440-534 |
+| NAT-T10.93 | Schema setup through this class runs the engine's full setup with its defaults. It writes tables and server code. Each value of its answer comes back as text. | inspected:iris_src/src/IVG/CypherEngine.cls:201-213; inspected:iris_vector_graph/_engine/schema.py:2097-2161 |
+| NAT-T10.94 | The rebuild call clears the walk index of every graph and fills it again from the edge and label tables. It gives 1 or raises an error, never 0. | inspected:iris_src/src/IVG/CypherEngine.cls:215-220; inspected:iris_vector_graph/_engine/schema.py:2887-2921; inspected:iris_src/src/Graph/KG/TraversalBuild.cls:30-100 |
+| NAT-T10.95 | The ready call gives 1 when the schema's node table can be read. It gives 0 on any error, even when the engine cannot start. | inspected:iris_src/src/IVG/CypherEngine.cls:222-230; inspected:iris_vector_graph/_engine/schema.py:426-437 |
 | ALG-0 | This module answers questions about the shape of a graph, such as scores, groups, walks and paths. It also owns the stores and the routing that make those answers fast. | inspected:iris_vector_graph/_engine/algorithms.py:170-214; inspected:iris_src/src/Graph/KG/Algorithms.cls:1-4 |
 | ALG-D1 | An algorithm owner is the product's own server code for one algorithm. Its answer is the reference answer. | inspected:iris_src/src/Graph/KG/PageRank.cls:1-8; inspected:iris_src/src/Graph/KG/Algorithms.cls:1-10 |
 | ALG-D2 | The Arno library is an optional native library that IRIS can load into a process. It holds faster versions of some algorithms. The product does not ship it. | inspected:iris_src/src/Graph/KG/ArnoAccel.cls:1-16; inspected:iris_src/src/Graph/KG/ArnoAccel.cls:105-133 |
@@ -1547,6 +1685,7 @@ Supported only by reading production code at the pin.
 | ALG-B2.12 | The caller can leave out edges by type. A left-out edge counts neither in the walk nor in any node's share. | inspected:iris_src/src/Graph/KG/PageRank.cls:15-21; inspected:iris_vector_graph/_engine/algorithms.py:21-49 |
 | ALG-B2.16 | The short form takes one start node or a list of them and answers a ranked list. A map or a set is refused. | inspected:iris_vector_graph/_engine/algorithms.py:627-657 |
 | ALG-B2.17 | The pair form answers node and score pairs, best first. With no start nodes it answers an empty list. | inspected:iris_vector_graph/_engine/algorithms.py:1028-1042 |
+| ALG-B2.90 | The SQL form adds a zero row for each node of the graph that the walk left unscored. These rows come after the scored rows, in id order, up to the row limit. | inspected:iris_src/src/Graph/KG/PageRank.cls:118-156; inspected:iris_vector_graph/schema.py:2582-2598 |
 | ALG-B3 | Connected components group the default graph's nodes that are linked, in either direction. | inspected:iris_src/src/Graph/KG/Algorithms.cls:6-31; inspected:iris_vector_graph/_engine/algorithms.py:805-828 |
 | ALG-B3.1 | Each group is named by its first node in id order. | inspected:iris_src/src/Graph/KG/Algorithms.cls:40-76 |
 | ALG-B3.2 | A node with no edge is a group of its own, named by itself. | inspected:iris_vector_graph/_engine/algorithms.py:805-815 |
@@ -1564,32 +1703,68 @@ Supported only by reading production code at the pin.
 | ALG-B5.14 | Neighbourhood betweenness scores the nodes a start node reaches within a few hops. A start node with no edge answers an empty list. | inspected:iris_vector_graph/_engine/algorithms.py:1253-1292 |
 | ALG-B5.16 | Closeness has two formulas. Harmonic adds one over the distance to each node reached. Classical gives zero to a node that does not reach every other node. | inspected:iris_vector_graph/_engine/algorithms.py:1335-1352 |
 | ALG-B5.21 | A store that lacks a centrality method refuses the call. The error says it is not built. | inspected:iris_vector_graph/_engine/algorithms.py:1096-1100 |
+| ALG-B5.90 | On the server, closeness reads the interned snapshot along out-edges, in-edges or both, up to a hop limit. It uses the same two formulas as the engine method. | inspected:iris_src/src/Graph/KG/NKGAccelCentrality.cls:4-83; inspected:iris_src/src/Graph/KG/NKGAccelCentrality.cls:608-729; inspected:iris_src/src/Graph/KG/NKGAccel.cls:196-203; inspected:iris_vector_graph/stores/iris_sql_store.py:3548-3562 |
+| ALG-B5.91 | On the server, betweenness scores the directed graph for out and in, and the undirected graph for both. It takes its sample in the same fixed hashed order as the engine. | inspected:iris_src/src/Graph/KG/NKGAccelCentrality.cls:214-223; inspected:iris_src/src/Graph/KG/NKGAccelCentrality.cls:351-465; inspected:iris_src/src/Graph/KG/NKGAccel.cls:224-227; inspected:iris_src/src/Graph/KG/NKGAccel.cls:232-235; inspected:iris_vector_graph/stores/iris_sql_store.py:3337-3368 |
+| ALG-B5.92 | Server betweenness splits its start nodes over background jobs: as many as the caller asks, else one per processor up to eight. The jobs share work areas kept under the caller's process number, which the run clears at its end. Areas left by a process that has gone are cleared too. | inspected:iris_src/src/Graph/KG/NKGAccelCentrality.cls:224-350; inspected:iris_src/src/Graph/KG/NKGAccelCentrality.cls:380-445; inspected:iris_src/src/Graph/KG/NKGAccelCentrality.cls:466-486; inspected:iris_src/src/Graph/KG/NKGAccel.cls:228-231 |
+| ALG-B5.93 | On the server, neighbourhood betweenness takes the nodes within some hops of a start node along out-edges. It scores the directed paths inside that set. A start node that is not in the snapshot gives an error text. | inspected:iris_src/src/Graph/KG/NKGAccelCentrality.cls:487-606; inspected:iris_src/src/Graph/KG/NKGAccel.cls:236-239; inspected:iris_vector_graph/stores/iris_sql_store.py:3234-3255 |
+| ALG-B5.94 | The server's closeness and betweenness refuse a direction other than out, in or both. Betweenness also refuses a hop limit that is not a whole number of zero or more. Each refusal is an error text with no scores. | inspected:iris_src/src/Graph/KG/NKGAccelCentrality.cls:6-7; inspected:iris_src/src/Graph/KG/NKGAccelCentrality.cls:353-354; inspected:iris_src/src/Graph/KG/NKGAccelCentrality.cls:610-611; inspected:iris_vector_graph/schema.py:2649-2649 |
+| ALG-B5.95 | A further closeness method on the server uses an optional Python graph library. No engine path calls it. It treats each edge as two-way, and without the library it gives a marker text instead of scores. | inspected:iris_src/src/Graph/KG/Communities.cls:541-609; inspected:iris_vector_graph/stores/iris_sql_store.py:3498-3520 |
+| ALG-B5.96 | When the server's degree method cannot be found, the store counts the degrees from Python over the same graph. Any other failure comes back as an error, which the engine raises. | inspected:iris_vector_graph/stores/iris_sql_store.py:3103-3194; inspected:iris_vector_graph/_engine/algorithms.py:1122-1128 |
+| ALG-B5.97 | The degree procedure counts the graph that the query names. Without a name it answers for each graph that has an edge, one row for each graph and node. An option name it does not know is refused. | inspected:iris_vector_graph/cypher/translator.py:105-106; inspected:iris_vector_graph/cypher/translator.py:123-135; inspected:iris_vector_graph/cypher/translator.py:290-304; inspected:iris_vector_graph/cypher/translator.py:31666-31697 |
 | ALG-B6 | The community methods group or count the default graph's nodes. They find Leiden communities, triangles, strong components and k-cores, and take no graph. | inspected:iris_vector_graph/_engine/algorithms.py:1527-1546; inspected:iris_src/src/Graph/KG/Communities.cls:1-12 |
 | ALG-B6.1 | A node with no edge gets its own row: its own group, zero triangles or core zero. | inspected:iris_vector_graph/_engine/algorithms.py:1611-1621; inspected:iris_vector_graph/_engine/algorithms.py:1697-1704 |
 | ALG-B6.5 | The top count limits rows on every path. It does not keep whole groups. | inspected:iris_vector_graph/_engine/algorithms.py:1626-1637 |
 | ALG-B6.8 | A failure on the path that ran is raised. It is never answered as no communities. | inspected:iris_vector_graph/_engine/algorithms.py:84-88; inspected:iris_vector_graph/_engine/algorithms.py:1611-1616 |
+| ALG-B6.90 | On the server, k-cores read the snapshot as an undirected graph with no self-loops. The answer lists the highest core number first, then node id, cut to the top count. | inspected:iris_src/src/Graph/KG/Communities.cls:16-42; inspected:iris_src/src/Graph/KG/Communities.cls:111-184 |
+| ALG-B6.91 | On the server, strong components follow each edge one way. Groups come largest first. A top count never splits a group, so the answer can hold more rows than it asks for. | inspected:iris_src/src/Graph/KG/Communities.cls:186-311 |
+| ALG-B6.93 | Strong components and k-cores try the Arno library first, unless it is turned off. Any failure there falls back to the walk from Python. A warning is logged only when the failure is not the library's own. | inspected:iris_vector_graph/stores/iris_sql_store.py:4064-4075; inspected:iris_vector_graph/stores/iris_sql_store.py:4179-4190 |
+| ALG-B6.95 | A call to the Arno library over SQL raises a library error when the library is missing or the function name is unknown. It does the same for a wrong count of arguments, or for an answer that is an error. A long answer is fetched in parts. | inspected:iris_vector_graph/stores/arno_bridge.py:432-537 |
+| ALG-B6.96 | The bridge also has three helpers that no product path calls. One clears the saved check answers, one maps the library's node numbers back to node ids, and one lists the default graph's edges as text. | inspected:iris_vector_graph/stores/arno_bridge.py:556-640 |
 | ALG-B7.3 | While only the default graph has edges, they answer from the snapshot. | inspected:iris_vector_graph/cypher/translator.py:254-262 |
+| ALG-B7.90 | Called directly, the server methods behind the snapshot procedures make no such check. They then answer from every graph's edges merged. | inspected:iris_src/src/Graph/KG/NKGAccelCentrality.cls:4-10; inspected:iris_src/src/Graph/KG/NKGAccelCentrality.cls:351-357; inspected:iris_src/src/Graph/KG/NKGAccelCentrality.cls:487-492; inspected:iris_src/src/Graph/KG/NKGAccelCentrality.cls:608-614; inspected:iris_src/src/Graph/KG/Communities.cls:111-114; inspected:iris_src/src/Graph/KG/Communities.cls:186-188; inspected:iris_vector_graph/schema.py:2644-2648 |
+| ALG-B7.91 | Each snapshot procedure checks its options as its engine method does. An unknown option name, or a value that the method refuses, is refused. | inspected:iris_vector_graph/cypher/translator.py:107-120; inspected:iris_vector_graph/cypher/translator.py:138-170; inspected:iris_vector_graph/cypher/translator.py:326-338 |
+| ALG-B7.92 | Called directly, these server methods give an error text when there is no snapshot. They do not raise for it. | inspected:iris_src/src/Graph/KG/NKGAccelCentrality.cls:8-10; inspected:iris_src/src/Graph/KG/NKGAccelCentrality.cls:355-357; inspected:iris_src/src/Graph/KG/NKGAccelCentrality.cls:489-491; inspected:iris_src/src/Graph/KG/NKGAccelCentrality.cls:612-614; inspected:iris_src/src/Graph/KG/Communities.cls:113-113; inspected:iris_src/src/Graph/KG/Communities.cls:188-188 |
 | ALG-B8 | Subgraph returns the default graph's nodes within some hops of the start nodes, with the edges among them. | inspected:iris_vector_graph/_engine/algorithms.py:881-946; inspected:iris_src/src/Graph/KG/Subgraph.cls:6-11 |
 | ALG-B8.1 | A start node with no edge in the default graph is left out. | inspected:iris_src/src/Graph/KG/Subgraph.cls:36-47 |
 | ALG-B8.3 | Each node's labels and properties come from the default graph's rows only. | inspected:iris_src/src/Graph/KG/Subgraph.cls:113-150 |
 | ALG-B8.7 | A request with a list of edge types always goes to the algorithm owner. The native reader has no such filter. | inspected:iris_vector_graph/stores/iris_sql_store.py:2526-2535 |
 | ALG-B8.8 | The guided subgraph adds the best personalized PageRank nodes to the start nodes, then takes the subgraph around them. Nothing is pruned after. | inspected:iris_vector_graph/_engine/algorithms.py:947-985 |
 | ALG-B8.9 | Its node limit is the smaller of the node limit and the PageRank top count. | inspected:iris_vector_graph/_engine/algorithms.py:973-975 |
+| ALG-B8.90 | The server's own guided subgraph runs its own PageRank over the default graph's out-edges. It keeps the best nodes, then walks out from them, holding at most twice the top count of nodes. A start list that cannot be read gives an empty answer. | inspected:iris_src/src/Graph/KG/Subgraph.cls:175-412 |
 | ALG-B9 | Walks list the nodes and edges reached from a start node, hop by hop. | inspected:iris_src/src/Graph/KG/TraversalBFS.cls:98-112; inspected:iris_vector_graph/_engine/algorithms.py:698-732 |
 | ALG-B9.1 | The graph walk follows out-edges in the default graph. Its list of edge types gives one type per hop, and the last one repeats. | inspected:iris_vector_graph/_engine/algorithms.py:698-712; inspected:iris_src/src/Graph/KG/TraversalBFS.cls:150-168 |
 | ALG-B9.2 | The graph walk returns at most the result limit, ordered by hop. | inspected:iris_vector_graph/_engine/algorithms.py:713-732; inspected:iris_src/src/Graph/KG/TraversalBFS.cls:432-461 |
 | ALG-B9.3 | A login that cannot write the walk's work area is refused. The message names the area and the access it needs. | inspected:iris_vector_graph/_engine/algorithms.py:100-131; inspected:iris_vector_graph/_engine/algorithms.py:714-724 |
 | ALG-B9.10 | The neighbour call lists nodes one hop away through a query over every graph. An unknown direction is refused. | inspected:iris_vector_graph/_engine/algorithms.py:986-1023 |
 | ALG-B9.11 | The two-hop path call ignores its hop limit. It always matches exactly two hops. | inspected:iris_vector_graph/_engine/algorithms.py:679-697 |
+| ALG-B9.90 | The older walk calls give the walk's rows in other forms: a list, a text, or a count of distinct end nodes. Each walks the graph it is given, or the default graph when none is named. | inspected:iris_src/src/Graph/KG/TraversalBFS.cls:209-212; inspected:iris_src/src/Graph/KG/TraversalBFS.cls:246-280; inspected:iris_src/src/Graph/KG/TraversalBFS.cls:463-486; inspected:iris_src/src/Graph/KG/Traversal.cls:84-87; inspected:iris_src/src/Graph/KG/Traversal.cls:94-97; inspected:iris_src/src/Graph/KG/Traversal.cls:120-123 |
+| ALG-B9.91 | Some walk calls stage their answer in parts, so that an answer too long for one text can still be read. The caller reads each part once, and reading a part removes it. | inspected:iris_src/src/Graph/KG/TraversalBFS.cls:281-322; inspected:iris_src/src/Graph/KG/TraversalBFS.cls:323-374; inspected:iris_src/src/Graph/KG/TraversalBFS.cls:424-430; inspected:iris_src/src/Graph/KG/TraversalBFS.cls:487-492; inspected:iris_src/src/Graph/KG/TraversalBFS.cls:516-553; inspected:iris_src/src/Graph/KG/Traversal.cls:99-113; inspected:iris_src/src/Graph/KG/Traversal.cls:125-128; inspected:iris_src/src/Graph/KG/Traversal.cls:135-139; inspected:iris_vector_graph/host.py:47-61; inspected:iris_vector_graph/host.py:155-168 |
+| ALG-B9.92 | The chunked form keeps its parts in the shared walk work area until they are read. The stream form keeps them in the caller's process, so nothing is left once that process ends. | inspected:iris_src/src/Graph/KG/TraversalBFS.cls:297-321; inspected:iris_src/src/Graph/KG/TraversalBFS.cls:336-373 |
+| ALG-B9.93 | The page reader hands out a staged walk one page at a time, in hop order and then node order. The cursor is the last row given, and the call that ends the walk removes what was staged. | inspected:iris_src/src/Graph/KG/TraversalBFS.cls:554-606; inspected:iris_src/src/Graph/KG/Traversal.cls:141-144; inspected:iris_vector_graph/engine.py:118-145; inspected:iris_vector_graph/stores/iris_sql_store.py:1989-2000 |
+| ALG-B9.94 | For each node the store's walk reached, the type lookup gives the first edge type, in name order, that reaches it from the hop before. It gives an empty type when no edge does. | inspected:iris_src/src/Graph/KG/TraversalBFS.cls:375-422; inspected:iris_vector_graph/stores/iris_sql_store.py:1886-1912 |
+| ALG-B9.95 | The one-hop count gives a node's out-edge count in the default graph, for one edge type or all. It may keep that count for later calls. The one-hop list gives the far end of each such edge, one line per edge. | inspected:iris_src/src/Graph/KG/TraversalKHop.cls:4-66; inspected:iris_src/src/Graph/KG/Traversal.cls:156-164; inspected:iris_vector_graph/_engine/query.py:4316-4352 |
+| ALG-B9.96 | The two-hop count and list give the nodes first reached at the second out-hop in the default graph. The start node and its direct neighbours are left out. The list stops at its limit when one is given. | inspected:iris_src/src/Graph/KG/TraversalKHop.cls:67-213; inspected:iris_src/src/Graph/KG/Traversal.cls:166-174; inspected:iris_vector_graph/_engine/query.py:4518-4545 |
+| ALG-B9.97 | The snapshot exports list the snapshot's out-edges, so they mix every graph's edges. A large export is staged in parts inside the caller's process. With no snapshot, the plain export gives an empty text. | inspected:iris_src/src/Graph/KG/NKGAccelAdjacency.cls:1-73; inspected:iris_src/src/Graph/KG/NKGAccelAdjacency.cls:167-216; inspected:iris_src/src/Graph/KG/NKGAccel.cls:152-155 |
+| ALG-B9.98 | A snapshot walk answer over 9,000 characters is handed over in parts kept in the caller's process. Reading a part leaves it in place until the next answer under the same name. | inspected:iris_src/src/Graph/KG/NKGAccelAdjacency.cls:217-233; inspected:iris_src/src/Graph/KG/NKGAccel.cls:156-159 |
+| ALG-B9.99 | The sorted k-hop form stages the nodes it reached in the shared walk work area under a tag. The reader lists them by distance and then node id, and then removes them. | inspected:iris_src/src/Graph/KG/NKGAccelTraversal.cls:104-182; inspected:iris_src/src/Graph/KG/NKGAccelAdjacency.cls:234-254; inspected:iris_src/src/Graph/KG/NKGAccel.cls:160-163; inspected:iris_src/src/Graph/KG/NKGAccel.cls:168-171; inspected:iris_vector_graph/host.py:89-121 |
+| ALG-B9.100 | The snapshot k-hop walk lists the nodes within some hops of a start node along out-edges, each with its distance. It stops at a node limit, 1,000 by default, and mixes every graph's edges. A start node not in the snapshot gives an error object. | inspected:iris_src/src/Graph/KG/NKGAccelTraversal.cls:1-8; inspected:iris_src/src/Graph/KG/NKGAccelTraversal.cls:20-103; inspected:iris_src/src/Graph/KG/NKGAccelTraversal.cls:183-186; inspected:iris_src/src/Graph/KG/NKGAccel.cls:164-167; inspected:iris_src/src/Graph/KG/NKGAccel.cls:172-175 |
+| ALG-B9.101 | Three reads tell how the last library walk in this process went. They give the path it took, the error behind a fall back, and the number of parts its reply came in. | inspected:iris_src/src/Graph/KG/NKGAccelTraversal.cls:222-240; inspected:iris_src/src/Graph/KG/NKGAccelTraversal.cls:286-309 |
+| ALG-B9.102 | The snapshot path search gives the hop count of a shortest path along edge direction, or minus one when it finds none. It searches from both ends, each up to the hop limit, so it can find a path up to twice that long. | inspected:iris_src/src/Graph/KG/NKGAccelTraversal.cls:366-434; inspected:iris_src/src/Graph/KG/NKGAccel.cls:184-187 |
+| ALG-B9.103 | The distinct count walks the snapshot to one hop short of the limit. It then joins the stored sketches of the out-neighbours of each node it reached. So the count is an estimate, and it mixes every graph's edges. | inspected:iris_src/src/Graph/KG/NKGAccelTraversal.cls:435-553; inspected:iris_src/src/Graph/KG/NKGAccel.cls:188-191; inspected:iris_vector_graph/_engine/query.py:4361-4410 |
+| ALG-B9.104 | The neighbour procedure lists the nodes one hop from the given sources, along one edge type if named. It gives one row for each graph and neighbour, and a query that names a graph reads only that graph's edges. A direction other than out, in or both is refused. | inspected:iris_vector_graph/cypher/translator.py:2970-3042 |
+| ALG-B9.105 | A list of edge types that cannot be read counts as no list, so the walk follows every type. | inspected:iris_src/src/Graph/KG/TraversalBFS.cls:216-223; inspected:iris_src/src/Graph/KG/TraversalBFS.cls:251-254; inspected:iris_src/src/Graph/KG/TraversalBFS.cls:283-290; inspected:iris_src/src/Graph/KG/TraversalBFS.cls:337-344; inspected:iris_src/src/Graph/KG/TraversalBFS.cls:434-441; inspected:iris_src/src/Graph/KG/TraversalBFS.cls:465-472 |
 | ALG-B10 | Path search finds the shortest paths between two nodes in one graph. | inspected:iris_src/src/Graph/KG/TraversalPaths.cls:1-7 |
 | ALG-B10.2 | A path from a node to itself has length zero. An empty end answers no path. | inspected:iris_src/src/Graph/KG/TraversalPaths.cls:10-26 |
 | ALG-B10.4 | The plain search walks out-edges or both ways. The store turns an in-edge search into an out-edge search from the far end. | inspected:iris_vector_graph/stores/iris_sql_store.py:2196-2207; inspected:iris_src/src/Graph/KG/TraversalPaths.cls:45-75 |
 | ALG-B10.7 | A hop limit of zero or less means no limit for a weighted search. | inspected:iris_src/src/Graph/KG/TraversalPaths.cls:250-252 |
 | ALG-B10.8 | Costs are written as decimal numbers, so a weight of one reads back as 1.0. | inspected:iris_src/src/Graph/KG/TraversalPaths.cls:481-494 |
+| ALG-B10.90 | The weighted path procedure searches the graph that the query names. Without a name it searches each graph that has edges, and gives a row for each graph where it finds a path. | inspected:iris_vector_graph/engine.py:944-946; inspected:iris_vector_graph/engine.py:1201-1313 |
 | ALG-B11.3 | A walk both ways reads a self-loop once. | inspected:iris_src/src/Graph/KG/VarLength.cls:27-32 |
 | ALG-B11.4 | If the maximum depth is below the minimum, no nodes are found. | inspected:iris_src/src/Graph/KG/VarLength.cls:158-164 |
 | ALG-B11.5 | It reads the adjacency index only where that index is declared on the table of edges. Elsewhere the same walk reads that table in SQL. | inspected:iris_src/src/Graph/KG/VarLength.cls:1-7; inspected:iris_vector_graph/schema.py:2393 |
 | ALG-B11.6 | A large last level may be split across several jobs. They add their nodes in the order one job would. | inspected:iris_src/src/Graph/KG/VarLength.cls:271-296 |
+| ALG-B11.90 | Given a list of candidate end nodes, the walk finds which of them it reaches and at what least depth. It walks one graph, out from the start node and back from each candidate. | inspected:iris_src/src/Graph/KG/VarLength.cls:60-122; inspected:iris_src/src/Graph/KG/Cypher/Exec.cls:1105-1120 |
+| ALG-B11.91 | Each job takes its share of the level and writes the new nodes to a shared temporary area. The caller merges them in walk order and clears the area. There are at most eight jobs, and the count of processors is read once per process. | inspected:iris_src/src/Graph/KG/VarLength.cls:260-269; inspected:iris_src/src/Graph/KG/VarLength.cls:297-396 |
 | ALG-B12 | A sync builds the interned snapshot from the edges of every graph. | inspected:iris_vector_graph/_engine/schema.py:2859-2910; inspected:iris_src/src/Graph/KG/TraversalBuild.cls:288-310 |
 | ALG-B12.1 | An edge that two graphs both hold is one edge there, with the default graph's weight. | inspected:iris_src/src/Graph/KG/TraversalBuild.cls:445-470 |
 | ALG-B12.3 | Only one rebuild runs at a time. A rebuild that waits too long for another fails and says so. | inspected:iris_src/src/Graph/KG/TraversalBuild.cls:288-296 |
@@ -1597,6 +1772,10 @@ Supported only by reading production code at the pin.
 | ALG-B12.8 | A sync whose rebuild fails raises an error that names the server method. | inspected:iris_vector_graph/_engine/schema.py:2877-2910 |
 | ALG-B12.10 | The old rebuild command still works, with a warning that it is out of date. | inspected:iris_vector_graph/_engine/schema.py:2924-2932 |
 | ALG-B12.11 | Several edges of one type between two nodes appear once in the snapshot. | inspected:iris_src/src/Graph/KG/TraversalBuild.cls:452-461; inspected:iris_src/src/Graph/KG/ArnoAccel.cls:252-257 |
+| ALG-B12.90 | The snapshot setup call writes an empty snapshot frame when none exists, with zero counts and the reserved labels. It leaves a snapshot that already has counts alone. | inspected:iris_src/src/Graph/KG/TraversalBuild.cls:216-224; inspected:iris_src/src/Graph/KG/Traversal.cls:21-24; inspected:iris_vector_graph/_engine/nodes_edges.py:425-430 |
+| ALG-B12.91 | The snapshot count calls only read. They give its edge count, the next free node number, and the node count of the last rebuild. Another call says whether the snapshot holds any node. | inspected:iris_src/src/Graph/KG/TraversalBuild.cls:226-247; inspected:iris_src/src/Graph/KG/TraversalBuild.cls:1098-1103; inspected:iris_src/src/Graph/KG/Traversal.cls:26-39; inspected:iris_src/src/Graph/KG/Traversal.cls:66-69 |
+| ALG-B12.92 | The adjacency index edge count adds up the edges of every graph. Several edges of one type between two nodes each count. It stops counting once it reaches its limit, 10,000 by default. | inspected:iris_src/src/Graph/KG/TraversalBuild.cls:1069-1096; inspected:iris_src/src/Graph/KG/Traversal.cls:61-64; inspected:iris_vector_graph/_engine/admin.py:480-492 |
+| ALG-B12.93 | In the USER namespace, when the optional library can be loaded, the build also asks it for two-hop counts over the snapshot. These merged counts are kept apart from the counts made for each graph. Elsewhere the call does nothing and answers zero. | inspected:iris_src/src/Graph/KG/NKGAccelTraversal.cls:568-631; inspected:iris_src/src/Graph/KG/TraversalBuild.cls:996-1015; inspected:iris_src/src/Graph/KG/NKGAccel.cls:192-195 |
 | ALG-B13 | The Arno library is optional. If it is missing, this is logged once, quietly, and each algorithm still answers. | inspected:iris_vector_graph/stores/iris_sql_store.py:65-70; inspected:iris_vector_graph/stores/iris_sql_store.py:1022-1032 |
 | ALG-B13.2 | The library path is the caller's setting, if given. Else it is the last path loaded, if that lies in a safe IRIS folder. Else it is a fixed default. | inspected:iris_src/src/Graph/KG/ArnoAccel.cls:18-49 |
 | ALG-B13.3 | The product's SQL functions open no other library file. They also refuse to call a function they do not use. | inspected:iris_src/src/Graph/KG/ArnoAccel.cls:51-71 |
@@ -1605,10 +1784,20 @@ Supported only by reading production code at the pin.
 | ALG-B13.8 | Before use, the engine tries one small walk through the library. If that fails, the library is off for that store. | inspected:iris_vector_graph/stores/iris_sql_store.py:1033-1060 |
 | ALG-B13.9 | Whether the library is there is decided once for each store. | inspected:iris_vector_graph/stores/iris_sql_store.py:990-993 |
 | ALG-B13.10 | The engine status says if the library is loaded, turned off or missing. It also says where the engine looked for it. | inspected:iris_vector_graph/_engine/admin.py:34-58 |
+| ALG-B13.90 | The library loader's status calls change nothing. They say whether a snapshot exists, whether this process holds the library walk, from which file, and why the last load failed. | inspected:iris_src/src/Graph/KG/NKGAccelLoader.cls:4-11; inspected:iris_src/src/Graph/KG/NKGAccelLoader.cls:43-52; inspected:iris_src/src/Graph/KG/NKGAccelLoader.cls:57-61; inspected:iris_src/src/Graph/KG/NKGAccel.cls:107-110; inspected:iris_src/src/Graph/KG/NKGAccel.cls:120-123; inspected:iris_src/src/Graph/KG/NKGAccel.cls:128-131 |
+| ALG-B13.91 | Two calls make this process forget its library handle and every saved load state. They do not close the library, and the next load opens it again. | inspected:iris_src/src/Graph/KG/NKGAccelLoader.cls:12-15; inspected:iris_src/src/Graph/KG/NKGAccelLoader.cls:53-56; inspected:iris_src/src/Graph/KG/NKGAccel.cls:111-114; inspected:iris_src/src/Graph/KG/NKGAccel.cls:124-127 |
+| ALG-B13.92 | The report of what can run says if a snapshot exists and if the Arno library answers. It lists the library's methods only when the library answers. Asking can load the library into the process. | inspected:iris_src/src/Graph/KG/NKGAccelLoader.cls:99-127; inspected:iris_src/src/Graph/KG/NKGAccel.cls:140-143; inspected:iris_vector_graph/stores/iris_sql_store.py:1021-1032 |
+| ALG-B13.93 | The old call that asked the Arno library to build the snapshot is refused. It calls nothing and answers an error that names the server's own build. | inspected:iris_src/src/Graph/KG/NKGAccelLoader.cls:128-135; inspected:iris_src/src/Graph/KG/NKGAccel.cls:144-147 |
+| ALG-B13.94 | A copy of the snapshot's edges for the Arno library is kept in a work area, with the snapshot version it was made from. A snapshot build clears it, and the warm call makes it again only when the version has moved. | inspected:iris_src/src/Graph/KG/NKGAccelLoader.cls:62-98; inspected:iris_src/src/Graph/KG/TraversalBuild.cls:288-308; inspected:iris_src/src/Graph/KG/NKGAccel.cls:132-139 |
+| ALG-B13.95 | The library's status calls change nothing. They give the file this process loaded, whether the file to load exists, the path last recorded, and the loaded build's version name. None of them loads the library. | inspected:iris_src/src/Graph/KG/ArnoAccel.cls:73-83; inspected:iris_src/src/Graph/KG/ArnoAccel.cls:135-138; inspected:iris_src/src/Graph/KG/ArnoAccel.cls:225-237; inspected:iris_vector_graph/_engine/admin.py:21-58; inspected:iris_vector_graph/_engine/admin.py:604-612 |
+| ALG-B13.96 | The check of whether the library can run says no at once when no load has saved a library path. Else it asks this process's handle for the version. When that fails, it loads the library again. | inspected:iris_src/src/Graph/KG/ArnoAccel.cls:140-161; inspected:iris_vector_graph/stores/iris_sql_store.py:858-871 |
+| ALG-B13.97 | Some calls of the library class do not use the Arno library at all. These are PageRank, its form with start nodes, components, label spreading and subgraph. Each passes the call to the algorithm owner and gives its answer. | inspected:iris_src/src/Graph/KG/ArnoAccel.cls:370-400 |
+| ALG-B13.98 | The sample helpers read a copy of the default graph's nodes and edges kept in a work area. The copy is made again whenever the token has moved. | inspected:iris_src/src/Graph/KG/ArnoAccel.cls:305-368 |
 | ALG-B14.1 | Five algorithms can go to a native reader. They are PageRank and its form with start nodes, connected components, label spreading and subgraph. | inspected:iris_vector_graph/arno_readers.py:26-28 |
 | ALG-B14.6 | At the pin only global PageRank has a proven native reader. Each other algorithm here answers from its owner. | inspected:docs/dev/arno-reader-proof.json:1-21 |
 | ALG-B15 | The proof gate writes the proof record, never a person. Routing takes its minimum revisions from nowhere else. | inspected:iris_vector_graph/arno_readers.py:1-12; inspected:iris_vector_graph/_arno_gate.py:138-177 |
 | ALG-B15.4 | The proof record ships inside the installed package. An operator can name another file with a switch. | inspected:iris_vector_graph/arno_readers.py:33-40 |
+| ALG-B15.90 | For label spreading, the gate first needs every repeat to give the same labels as the first. Its groups must then share enough node pairs with the algorithm owner's groups. | inspected:iris_vector_graph/_arno_gate.py:95-132; inspected:scripts/arno_reader_gate.py:44-44 |
 | ALG-B16 | The result cache keeps the answers of four algorithms. They are PageRank and its personalized form, connected components and label spreading. Others are worked out each time. | inspected:iris_vector_graph/algo_cache.py:15-17; inspected:iris_vector_graph/stores/iris_sql_store.py:938-944 |
 | ALG-B16.2 | The token is read before the answer is computed and stored with it. A write during the run leaves the entry out of date, never wrongly current. | inspected:iris_src/src/Graph/KG/AlgoCache.cls:1-10; inspected:iris_vector_graph/stores/iris_sql_store.py:921-936 |
 | ALG-B16.4 | Every graph shares one token, so a write in one graph also ages every other graph's entries. That costs a recompute, never a wrong answer. | inspected:iris_src/src/Graph/KG/AlgoCache.cls:17-21 |
@@ -1617,6 +1806,7 @@ Supported only by reading production code at the pin.
 | ALG-B16.7 | If the cache itself fails, the store turns it off for the rest of its life and computes every answer. | inspected:iris_vector_graph/stores/iris_sql_store.py:966-972; inspected:iris_vector_graph/stores/iris_sql_store.py:984-988 |
 | ALG-B16.8 | A login that may only read gets correct answers that are not kept. | inspected:iris_vector_graph/stores/iris_sql_store.py:76-86 |
 | ALG-B16.12 | Restoring a saved copy moves the token past the copy's value and past the old value. | inspected:iris_vector_graph/_engine/snapshot.py:49-58 |
+| ALG-B16.90 | One server call raises the token and the snapshot's version count by one each. An erase and a restore both use it, so every cached answer then counts as out of date. | inspected:iris_src/src/Graph/KG/ArnoAccel.cls:296-303; inspected:iris_src/src/Graph/KG/Eraser.cls:1038-1052; inspected:iris_vector_graph/_engine/snapshot.py:48-58 |
 | LED-0 | This module owns the ledger's on and off switch. It owns how a changeset turns into a revision, and the facts kept on each one. | inspected:iris_src/src/Graph/KG/Ledger.cls:1-18; inspected:iris_vector_graph/ledger/client.py:1-6 |
 | LED-D1 | The ledger state says if the ledger was never turned on, is on, or is off. It starts as never on. | inspected:iris_src/src/Graph/KG/Ledger.cls:40-43 |
 | LED-D2 | The head is the newest revision in the ledger. | inspected:iris_src/src/Graph/KG/Ledger.cls:5; inspected:iris_src/src/Graph/KG/Ledger.cls:556-558 |
@@ -1651,6 +1841,9 @@ Supported only by reading production code at the pin.
 | LED-B3 | Meta tells the ledger state, strict mode, the limits and the head. It never refuses. | inspected:iris_src/src/Graph/KG/Ledger.cls:143-156; inspected:iris_vector_graph/ledger/client.py:311-312 |
 | LED-B3.4 | Head reports the ledger as broken when it is enabled but holds no revision. | inspected:iris_src/src/Graph/KG/Ledger.cls:161-162 |
 | LED-B3.6 | Seq lookup turns a revision id into its seq, or says the id is unknown. | inspected:iris_src/src/Graph/KG/Ledger.cls:166-173; inspected:iris_vector_graph/ledger/client.py:579-583 |
+| LED-B3.8.90 | Setup makes sure the lookup by correlation id has its index. It fills the index when the table has rows but the index has none. | inspected:iris_vector_graph/schema.py:733-765; inspected:iris_vector_graph/_engine/schema.py:807-821; inspected:iris_vector_graph/_engine/schema.py:2661-2671; inspected:iris_src/src/Graph/KG/LedgerRevision.cls:54-75 |
+| LED-B3.8.91 | An index that holds only some of the rows counts as full, so setup does not fill it. | inspected:iris_src/src/Graph/KG/LedgerRevision.cls:60-75 |
+| LED-B3.8.92 | If setup cannot make or fill that index, it goes on and adds a warning to its answer. | inspected:iris_vector_graph/_engine/schema.py:2661-2671; inspected:iris_vector_graph/_engine/schema.py:2715-2722; inspected:iris_vector_graph/_engine/schema.py:685-696 |
 | LED-B3.11 | History reads only the revision table. So it still works while a redaction is in progress. | inspected:iris_vector_graph/ledger/client.py:585-629; inspected:iris_vector_graph/ledger/client.py:695-699 |
 | LED-B4.1 | A commit runs its checks in this order: head lock, ledger state, retry key, expected head, size, then the changes. | inspected:iris_src/src/Graph/KG/Ledger.cls:16-17; inspected:iris_src/src/Graph/KG/Ledger.cls:440-513 |
 | LED-B4.5 | A commit is refused when the ledger was never enabled. | inspected:iris_src/src/Graph/KG/Ledger.cls:445-446 |
@@ -1671,6 +1864,7 @@ Supported only by reading production code at the pin.
 | LED-B4.14 | A commit makes all its governed store changes in one transaction, under the head lock. Its records, the head, the id maps and its retry key go in the same one. | inspected:iris_src/src/Graph/KG/Ledger.cls:397-415; inspected:iris_src/src/Graph/KG/Ledger.cls:530-567; inspected:iris_src/src/Graph/KG/LedgerApply.cls:1-8 |
 | LED-B4.14.2 | Rejection and replay counts are added after the transaction ends and after the head lock is freed. | inspected:iris_src/src/Graph/KG/Ledger.cls:404-413; inspected:iris_src/src/Graph/KG/LedgerStats.cls:63-88 |
 | LED-B4.14.3 | The Python client writes post-commit properties after the commit. It uses a second transaction and does not hold the head lock. | inspected:iris_vector_graph/ledger/client.py:430-435; inspected:iris_vector_graph/ledger/client.py:445-487 |
+| LED-B4.14.90 | The inner steps of a commit can be called alone by anyone who may run the server code. Called that way, they write with no transaction of their own. | inspected:iris_src/src/Graph/KG/Ledger.cls:397-415; inspected:iris_src/src/Graph/KG/Ledger.cls:417-440; inspected:iris_src/src/Graph/KG/Ledger.cls:530-567; inspected:iris_src/src/Graph/KG/LedgerApply.cls:17-48; inspected:iris_src/src/Graph/KG/LedgerApply.cls:158-169 |
 | LED-B5 | A changeset can add, change and delete nodes, labels, properties, edges and qualifiers. It can also add time-stamped edges. | inspected:iris_src/src/Graph/KG/LedgerApply.cls:17-48; inspected:iris_vector_graph/ledger/changeset.py:120-345 |
 | LED-B5.2 | A node counts as there when any graph holds a row with its id. | inspected:iris_src/src/Graph/KG/LedgerApply.cls:79-95 |
 | LED-B5.5 | Upsert node adds the node when it is missing, and adds its labels and properties when it is there. | inspected:iris_src/src/Graph/KG/LedgerApply.cls:215-250 |
@@ -1716,6 +1910,7 @@ Supported only by reading production code at the pin.
 | LED-B13.7 | The count entry point adds one to any known count, for any caller. | inspected:iris_src/src/Graph/KG/Ledger.cls:187-190; inspected:iris_src/src/Graph/KG/LedgerStats.cls:90-105 |
 | LED-B13.8 | Engine status shows the ledger state, the head and the counts. A failed read is listed, not raised. | inspected:iris_vector_graph/_engine/ledger.py:40-69 |
 | LED-B14.8 | The error for a redacted key is a kind of key conflict error. | inspected:iris_vector_graph/ledger/errors.py:129-134 |
+| LED-B14.90 | The error for a rebuild over its bound gives the bound and the count reached. It tells the caller to ask for a stream. | inspected:iris_vector_graph/ledger/errors.py:67-75; inspected:iris_vector_graph/ledger/replay.py:544-556 |
 | LED-B15 | The index rebuild runs a full index build on the four node and edge tables and answers 4. | inspected:iris_src/src/Graph/KG/Ledger.cls:212-239 |
 | LED-B15.1 | The index rebuild refuses a schema name that is not a plain SQL name, before any statement runs. | inspected:iris_src/src/Graph/KG/Ledger.cls:222-228 |
 | LED-B16 | Each engine makes its ledger client and its guard on first use and keeps them. | inspected:iris_vector_graph/_engine/ledger.py:14-38 |
@@ -1728,6 +1923,13 @@ Supported only by reading production code at the pin.
 | ERS-T1 | Tables that hold only one graph's vectors are dropped after the erasure commits. | inspected:iris_src/src/Graph/KG/Eraser.cls:263-305 |
 | ERS-B2.1 | It removes the statement entry of each edge it removes. | inspected:iris_src/src/Graph/KG/Eraser.cls:665-678 |
 | ERS-X2 | A node erasure with an empty prefix is refused. | inspected:iris_src/src/Graph/KG/Eraser.cls:322-326; inspected:iris_vector_graph/_engine/nodes_edges.py:1553-1558 |
+| ERS-B90 | The product keeps one list of the stores that hold graph content. For each store it says whether one graph's part can be kept apart there, and if not, why. | inspected:iris_src/src/Graph/KG/GraphStores.cls:1-171 |
+| ERS-T94 | Each batch of the sweep is saved on its own. A failure undoes only the batch it was in. | inspected:iris_src/src/Graph/KG/Eraser.cls:1205-1207; inspected:iris_src/src/Graph/KG/Eraser.cls:1258-1315 |
+| ERS-B95 | A graph erasure or a node erasure leaves the queued embedding requests of the erased nodes in place. So does erasing everything. | inspected:iris_src/src/Graph/KG/EmbedQueue.cls:4-20; inspected:iris_src/src/Graph/KG/EmbedQueue.cls:181-195; inspected:iris_src/src/Graph/KG/Eraser.cls:47-305; inspected:iris_src/src/Graph/KG/Eraser.cls:467-636; inspected:iris_src/src/Graph/KG/Eraser.cls:709-845 |
+| ERS-B96 | A graph erasure or a node erasure leaves the table of documents that an upgrade could not place in a graph. So does erasing everything. | inspected:iris_vector_graph/migrations/statements.py:73-85; inspected:iris_vector_graph/migrations/docs_and_edge_vectors.py:354-375; inspected:iris_src/src/Graph/KG/Eraser.cls:47-305; inspected:iris_src/src/Graph/KG/Eraser.cls:467-636; inspected:iris_src/src/Graph/KG/Eraser.cls:709-845 |
+| ERS-B97 | A graph erasure or a node erasure leaves the table of vectors of edges that an upgrade could not place in a graph. So does erasing everything. | inspected:iris_vector_graph/migrations/statements.py:156-172; inspected:iris_vector_graph/migrations/statements.py:216-253; inspected:iris_vector_graph/migrations/docs_and_edge_vectors.py:410-470; inspected:iris_src/src/Graph/KG/Eraser.cls:47-305; inspected:iris_src/src/Graph/KG/Eraser.cls:467-636; inspected:iris_src/src/Graph/KG/Eraser.cls:709-845 |
+| ERS-B98 | A graph erasure or a node erasure only marks the saved copy of the default graph as old. The copy stays until one of the three calls that read it builds a new one. Erasing everything removes it. | inspected:iris_src/src/Graph/KG/ArnoAccel.cls:293-371; inspected:iris_src/src/Graph/KG/ArnoAccel.cls:402-440; inspected:iris_src/src/Graph/KG/Eraser.cls:1034-1053; inspected:iris_src/src/Graph/KG/Eraser.cls:806; inspected:iris_src/src/Graph/KG/GraphStores.cls:131 |
+| ERS-B99 | A graph erasure or a node erasure leaves the two tables where an upgrade from version 3.2 kept copies of edges. So does erasing everything. | inspected:iris_vector_graph/schema.py:46-54; inspected:iris_vector_graph/schema.py:2976-3013; inspected:iris_vector_graph/schema.py:3221-3259; inspected:iris_src/src/Graph/KG/Eraser.cls:47-305; inspected:iris_src/src/Graph/KG/Eraser.cls:467-636; inspected:iris_src/src/Graph/KG/Eraser.cls:709-845 |
 | RED-0 | Redaction takes an erased tenant's content out of the ledger's records. Each record keeps its place. | inspected:iris_src/src/Graph/KG/LedgerRedact.cls:1-29 |
 | RED-D1 | A redaction target is a graph, or the nodes of a graph whose ids start with a given text. | inspected:iris_src/src/Graph/KG/LedgerRedact.cls:45-64 |
 | RED-D2 | An id prefix is the start of a node id that marks which tenant the node belongs to. | inspected:iris_src/src/Graph/KG/LedgerRedact.cls:45-53 |
@@ -1748,6 +1950,11 @@ Supported only by reading production code at the pin.
 | RED-X4 | A redaction call is refused if the caller has a transaction open. | inspected:iris_src/src/Graph/KG/LedgerRedact.cls:187; inspected:iris_vector_graph/ledger/client.py:666 |
 | RED-D14 | A statement entry is the ledger's note that one edge is live. | inspected:iris_src/src/Graph/KG/Ledger.cls:8-9 |
 | RED-X5 | A blank separator is not allowed. | inspected:iris_src/src/Graph/KG/LedgerRedact.cls:191 |
+| RED-B91 | A redaction run leaves the queued embedding requests alone. Its redaction receipt does not list them as out of reach. | inspected:iris_src/src/Graph/KG/EmbedQueue.cls:4-20; inspected:iris_src/src/Graph/KG/EmbedQueue.cls:181-195; inspected:iris_src/src/Graph/KG/LedgerRedact.cls:182-239; inspected:iris_src/src/Graph/KG/LedgerRedact.cls:504-509 |
+| RED-B92 | A redaction run leaves the table of documents that an upgrade could not place in a graph. Its redaction receipt does not list that table as out of reach. | inspected:iris_vector_graph/migrations/statements.py:73-85; inspected:iris_vector_graph/migrations/docs_and_edge_vectors.py:354-375; inspected:iris_src/src/Graph/KG/LedgerRedact.cls:182-239; inspected:iris_src/src/Graph/KG/LedgerRedact.cls:504-509 |
+| RED-B93 | A redaction run leaves the table of vectors of edges that an upgrade could not place in a graph. Its redaction receipt does not list that table as out of reach. | inspected:iris_vector_graph/migrations/statements.py:156-172; inspected:iris_vector_graph/migrations/docs_and_edge_vectors.py:410-470; inspected:iris_src/src/Graph/KG/LedgerRedact.cls:182-239; inspected:iris_src/src/Graph/KG/LedgerRedact.cls:504-509 |
+| RED-B94 | A redaction run does not touch the saved copy of the default graph. Its redaction receipt does not list that copy as out of reach. | inspected:iris_src/src/Graph/KG/ArnoAccel.cls:293-371; inspected:iris_src/src/Graph/KG/GraphStores.cls:131; inspected:iris_src/src/Graph/KG/LedgerRedact.cls:182-239; inspected:iris_src/src/Graph/KG/LedgerRedact.cls:504-509 |
+| RED-B95 | A redaction run leaves the two tables where an upgrade from version 3.2 kept copies of edges. Its redaction receipt does not list them as out of reach. | inspected:iris_vector_graph/schema.py:46-54; inspected:iris_vector_graph/schema.py:3221-3259; inspected:iris_src/src/Graph/KG/LedgerRedact.cls:182-239; inspected:iris_src/src/Graph/KG/LedgerRedact.cls:504-509 |
 | RPL-0 | The ledger's records can be played back to rebuild the graph and checked against the store. | inspected:iris_vector_graph/ledger/replay.py:1-6 |
 | RPL-D1 | A replay up to a revision uses only the records up to that point. | inspected:iris_vector_graph/ledger/replay.py:155-210; inspected:iris_vector_graph/ledger/replay.py:544-570 |
 | RPL-D2 | The verify call checks the replay against the tables. | inspected:iris_vector_graph/ledger/replay.py:806-855 |
@@ -1815,6 +2022,7 @@ Supported only by reading production code at the pin.
 | INT-F6.2 | A FHIR sync task counts a busy answer as success, so its next run picks up the work. | inspected:iris_src/src/Graph/KG/FHIRGraphSyncTask.cls:14-27 |
 | INT-F6.3 | The shell tool exits with code 2 when the graph is busy. | inspected:iris_vector_graph/cli.py:315-317; inspected:iris_vector_graph/cli.py:350-361 |
 | INT-F8.5 | A FHIR graph uses the name form of its id in its rows and the index form in the adjacency index. | inspected:iris_src/src/Graph/KG/FHIRGraph.cls:1717-1720 |
+| INT-F8.90 | Three helper calls of the server class are open to any caller who may run it. One reads a graph's settings, one turns a category code into a label name, and one quotes a SQL name. None of them writes. | inspected:iris_src/src/Graph/KG/FHIRGraph.cls:1711-1749; inspected:iris_src/src/Graph/KG/FHIRGraph.cls:2572-2582; inspected:iris_src/src/Graph/KG/FHIRGraph.cls:3090-3094 |
 | INT-F9.1 | The sync time is rounded up to whole minutes, and is at least one minute. | inspected:iris_src/src/Graph/KG/FHIRGraph.cls:676-677 |
 | INT-F12 | The namespace is the security line for FHIR graphs, not the graph id. Anyone who can read the namespace's tables can read the graph. | inspected:iris_vector_graph/_engine/nodes_edges.py:1508-1510; inspected:iris_vector_graph/_engine/fhir.py:286-288 |
 | INT-F12.5 | The engine may make the FHIR server calls through a second IRIS login. Then a caller's open transaction does not cover them. | inspected:iris_vector_graph/engine.py:1894-1942; inspected:iris_vector_graph/_engine/fhir_graph.py:183-188 |
@@ -1828,16 +2036,21 @@ Supported only by reading production code at the pin.
 | INT-C2.2 | The via filter keeps only the compartment edges reached through one of the named params. | inspected:iris_src/src/Graph/KG/FHIRGraph.cls:1631-1648 |
 | INT-C2.3 | Score on items with no kept compartment edge is shown as unattributed. | inspected:iris_src/src/Graph/KG/FHIRGraph.cls:1655-1658 |
 | INT-C2.4 | An item in two charts gives its full score to each patient. | inspected:iris_src/src/Graph/KG/FHIRGraph.cls:1546-1553 |
+| INT-C2.90 | A server call can also group scores that a caller sends, in the same way. It refuses scores that are not a JSON object. | inspected:iris_src/src/Graph/KG/FHIRGraph.cls:1546-1570 |
 | INT-C3 | The coverage report and the gaps report are worked out at call time and never stored. | inspected:iris_vector_graph/_engine/fhir_graph.py:492-561; inspected:iris_src/src/Graph/KG/FHIRGraph.cls:935-940 |
 | INT-C3.1 | The coverage report gives, for each type, the count and the share with a compartment edge. It also gives some keys with no patient, profile counts and the category split. | inspected:iris_src/src/Graph/KG/FHIRGraph.cls:945-1030 |
 | INT-C3.3 | The gaps report lists the most common codes that the code crosswalk does not map, 20 by default. It also counts items with text but no code. | inspected:iris_src/src/Graph/KG/FHIRGraph.cls:1122-1245; inspected:iris_vector_graph/_engine/fhir_graph.py:517-561 |
+| INT-C3.90 | A server call gives, for each type with an item that is not deleted, the path of each code param in the item text. It writes nothing. | inspected:iris_src/src/Graph/KG/FHIRGraph.cls:1313-1340; inspected:iris_vector_graph/_engine/fhir_graph.py:545-552 |
 | INT-C4 | A patient's anchors come from every FHIR graph that holds the patient. | inspected:iris_vector_graph/_engine/fhir_graph.py:563-596; inspected:iris_src/src/Graph/KG/FHIRGraph.cls:1249-1312 |
 | INT-C4.1 | Each anchor names its source graph. A graph argument limits the answer to that graph. | inspected:iris_vector_graph/_engine/fhir_graph.py:573-596 |
 | INT-C4.4 | The Cypher API takes anchors from a FHIR graph that holds the patient, and from the old bridge if none does. It says which one it used. | inspected:iris_vector_graph/cypher_api.py:327-347; inspected:iris_vector_graph/cypher_api.py:355-366 |
+| INT-C4.90 | A base address that a caller sends is checked only when no FHIR graph holds the patient. When one does, the address is not used. | inspected:iris_vector_graph/cypher_api.py:293-301; inspected:iris_vector_graph/cypher_api.py:327-347 |
 | INT-B1.2 | A FHIR bridge row is keyed by code and node. Adding it again with another type or system updates that row. | inspected:sql/fhir_bridges.sql:2-10; inspected:iris_vector_graph/_engine/fhir.py:420-425 |
 | INT-B1.4 | A failed anchor query raises. It no longer answers an empty list. | inspected:iris_vector_graph/_engine/fhir.py:444-481 |
 | INT-B1.7 | Code pick-up keeps only ICD-10 codes from Condition items. | inspected:iris_vector_graph/fhir_bridge.py:130-183 |
 | INT-B1.10 | The old pipeline's rank walk names no graph. | inspected:iris_vector_graph/fhir_bridge.py:282-286 |
+| INT-B1.90 | The bridge anchor lookup gives the nodes that bridge rows map the codes to, and only nodes that exist. It writes nothing, and no codes give an empty list. | inspected:iris_vector_graph/_engine/fhir.py:444-481 |
+| INT-T1.80 | A repo script fills the FHIR bridge table from a UMLS file with plain SQL. It writes no code crosswalk row, and any row it cannot add is counted as a repeat. It is not in the installed package. | inspected:scripts/ingest/load_umls_bridges.py:14-134; inspected:pyproject.toml:181-189 |
 | INT-M1.1 | Mapped rows and links are not in the adjacency index, so graph walks and graph algorithms do not see them. | inspected:iris_vector_graph/_engine/fhir.py:96-104 |
 | INT-M1.5 | Mapping a label again updates its row. | inspected:iris_vector_graph/_engine/fhir.py:129-138 |
 | INT-M1.9 | Each engine keeps the mappings in a cache. Reload reads them again after another process changes them. | inspected:iris_vector_graph/_engine/fhir.py:19-83; inspected:iris_vector_graph/_engine/fhir.py:257-265 |
@@ -1854,7 +2067,9 @@ Supported only by reading production code at the pin.
 | INT-R1.16 | The Cypher export writes one RDF triple per row from three columns. Each value becomes an address, even a plain number or word. | inspected:iris_vector_graph/_engine/rdf_export.py:212-240 |
 | INT-R1.17 | A row with less than three columns adds a type triple only for values that are full addresses. | inspected:iris_vector_graph/_engine/rdf_export.py:242-246 |
 | INT-R1.21 | RDF export, the SHACL check and PROV export need the rdf extra. It holds rdflib below 8 and pySHACL. | inspected:iris_vector_graph/_engine/rdf_export.py:39-47; inspected:iris_vector_graph/_engine/shacl.py:85-104 |
+| INT-R1.90 | Listing prefixes gives each saved prefix with its address. It writes nothing. | inspected:iris_vector_graph/_engine/rdf_export.py:78-94 |
 | INT-E1 | A reifier node holds properties about one edge. A link row ties it to the edge's row id. | inspected:iris_vector_graph/_engine/schema.py:3264-3332; inspected:sql/rdf_reifications.sql:1-9 |
+| INT-E1.1.90 | Reify looks for the label and each property in every graph, not only the default graph. If a node with the same id in a named graph has one, the reifier node does not get it. | inspected:iris_vector_graph/_engine/schema.py:3304-3321 |
 | INT-E1.2 | Reify answers nothing and writes nothing when there is no edge with that id. | inspected:iris_vector_graph/_engine/schema.py:3296-3303 |
 | INT-E1.4 | Reify with a reifier id that is already linked is refused, and nothing is written. | inspected:iris_vector_graph/_engine/schema.py:3311-3314; inspected:iris_vector_graph/_engine/schema.py:3325-3330 |
 | INT-E1.5 | In strict ledger mode, reify and reifier delete are refused. | inspected:iris_vector_graph/_engine/schema.py:3286; inspected:iris_vector_graph/_engine/schema.py:3372; inspected:iris_vector_graph/ledger/guard.py:75-80 |
@@ -1870,6 +2085,17 @@ Supported only by reading production code at the pin.
 | INT-V1.2 | A temporal edge has one time, so no activity has an end time. | inspected:iris_src/src/Graph/KG/TemporalIndex.cls:713-716; inspected:iris_vector_graph/_engine/prov.py:204 |
 | INT-V1.7 | The Cypher form takes every text value in the rows as a node id, and exports edges that start or end at one. | inspected:iris_vector_graph/_engine/prov.py:141-177; inspected:iris_vector_graph/_engine/prov.py:209-213 |
 | INT-V1.9 | A time that cannot be read is written as the start of 1970. | inspected:iris_vector_graph/_engine/prov.py:59-65 |
+| INT-B90 | The FHIR shell commands call the engine straight in IRIS. Each prints the answer, or prints why it failed and exits with code 1. | inspected:iris_vector_graph/cli.py:297-317; inspected:iris_vector_graph/cli.py:319-414 |
+| INT-B80 | Inference reads one graph's edges and adds the edges that the RDF schema rules imply. Each new edge carries a qualifier that marks it as inferred. | inspected:iris_vector_graph/_engine/schema.py:2966-2990; inspected:iris_vector_graph/_engine/schema.py:3182-3183; inspected:iris_vector_graph/_engine/schema.py:50-61 |
+| INT-T80.80 | The basic rules close the chains of subclass and subproperty links. They add types from subclasses, domains and ranges. The OWL rules also add equal, inverse, transitive and symmetric links. | inspected:iris_vector_graph/_engine/schema.py:3090-3181 |
+| INT-T80.81 | Inference reads and writes only the graph it is given, the default graph when none is given. | inspected:iris_vector_graph/_engine/schema.py:2994-3023; inspected:iris_vector_graph/_engine/schema.py:3128-3134 |
+| INT-B80.82 | All new edges of one run go in one transaction. A refused insert undoes them and raises, and an edge already there is skipped. The answer counts the edges written. | inspected:iris_vector_graph/_engine/schema.py:3030-3068 |
+| INT-T80.83 | Where IRIS does not keep the edge index, inference writes each index entry itself. If one fails, the rows are undone and the call raises, but the entries written stay. | inspected:iris_vector_graph/_engine/schema.py:3069-3088 |
+| INT-T80.84 | Inference and its undo check the ledger first. When the ledger refuses writes it does not record, both are refused. | inspected:iris_vector_graph/_engine/schema.py:2977-2977; inspected:iris_vector_graph/_engine/schema.py:3194-3194; inspected:iris_vector_graph/_engine/ledger.py:72-79 |
+| INT-X80.86 | Some namespaces lack the edge index that IRIS keeps. There, undoing inference is refused inside the caller's open transaction. | inspected:iris_vector_graph/_engine/schema.py:3192-3202 |
+| INT-B90.90 | With no IRIS address in an option or the shell, each command is refused. The error names the settings to set. | inspected:iris_vector_graph/cli.py:36-44; inspected:iris_vector_graph/cli.py:304-317 |
+| INT-B90.91 | The sync command needs the once flag. Without it, the command is refused before it connects, and it points to the schedule command. | inspected:iris_vector_graph/cli.py:350-361 |
+| INT-B90.92 | With the remove flag, the schedule command deletes the graph's task. It does what unschedule does. | inspected:iris_vector_graph/cli.py:404-414 |
 | API-0 | This module owns how a caller reaches the product from outside Python. That means web apps, GraphQL, Bolt, the search service in IRIS and the MCP classes. | inspected:api/main.py:68-144; inspected:iris_vector_graph/cypher_api.py:66-118; inspected:iris_src/src/Graph/KG/Service.cls:1-11 |
 | API-D17 | A route is one web path and method that a server answers. | inspected:iris_vector_graph/cypher_api.py:351-352; inspected:api/main.py:96-101 |
 | API-D18 | A connection is one open link from a server to IRIS. One IRIS process serves it. | inspected:iris_vector_graph/cypher_api.py:157-198; inspected:api/main.py:21-37 |
@@ -1910,9 +2136,20 @@ Supported only by reading production code at the pin.
 | API-T6.9 | The Cypher field answers an error as a value that holds the IRIS text. | inspected:api/gql/schema.py:221-223 |
 | API-T6.10 | The Cypher field reads every graph, unless the query names one. | inspected:api/gql/schema.py:149-178 |
 | API-T6.11 | The resolvers in the api resolvers folder are not part of the served schema. | inspected:api/gql/schema.py:15-16; inspected:api/gql/resolvers/mutation.py:181-228 |
+| API-T6.11.90 | The types those resolvers return are not served either. So their fields never run. | inspected:api/gql/types.py:54-344; inspected:api/gql/schema.py:11-18; inspected:api/gql/schema.py:74-95 |
+| API-T6.11.91 | The loaders in the api core folder are not used either. The app builds other loaders, which read the tables directly. | inspected:api/gql/core/loaders.py:13-62; inspected:api/gql/context.py:33-50; inspected:examples/domains/biomedical/loaders.py:13 |
 | API-T6.12 | The node field never uses a domain type, since no app puts a domain resolver in the context. | inspected:api/gql/core/resolvers.py:43-49; inspected:api/gql/context.py:17-51 |
+| API-X6.91 | The create protein call refuses an id that the default graph holds already. It also refuses a vector that is not 768 wide. Nothing is written then. | inspected:examples/domains/biomedical/resolver.py:204-219; inspected:iris_vector_graph/_engine/schema.py:518-534 |
+| API-T6.94 | The domain hooks never run in the app. No app registers a domain or puts one in the context. | inspected:api/gql/core/domain_resolver.py:19-164; inspected:examples/domains/biomedical/resolver.py:28-119; inspected:api/gql/core/resolvers.py:43-49; inspected:api/gql/context.py:26-50; inspected:api/gql/schema.py:110-147 |
+| API-T6.95 | The property field of a node answers one property by its key. It reads nothing more from IRIS. | inspected:api/gql/core/types.py:39-76; inspected:examples/domains/biomedical/types.py:13 |
+| API-T6.96 | No served field returns an edge. So the edge type and its qualifier field never run. | inspected:api/gql/core/types.py:108-135; inspected:api/gql/core/resolvers.py:14; inspected:api/gql/schema.py:314-328 |
+| API-B6.80 | A protein's interaction field and a gene's encodes field follow the node's edges of one type. They then load the nodes at the far ends. | inspected:examples/domains/biomedical/types.py:37-80; inspected:examples/domains/biomedical/types.py:206-249 |
+| API-T6.81 | Five other biomedical fields always raise an error that says they are not built yet. | inspected:examples/domains/biomedical/types.py:82-100; inspected:examples/domains/biomedical/types.py:251-259; inspected:examples/domains/biomedical/types.py:276-294 |
+| API-T6.82 | A protein's similar field takes the protein's own vector and finds near proteins in the default graph. It drops the protein itself and any under the threshold. | inspected:examples/domains/biomedical/types.py:103-188 |
+| API-T6.83 | The loaders in the biomedical example folder are named but never made. The app's own loaders serve those fields. | inspected:examples/domains/biomedical/loaders.py:16-147; inspected:api/gql/context.py:33-50; inspected:examples/domains/biomedical/resolver.py:17-17 |
 | API-T7.7 | For two kinds of resource that carry text, the route queues a vector for the node after it answers. | inspected:api/routers/fhir_event.py:41-48; inspected:api/routers/fhir_event.py:155-165; inspected:api/routers/fhir_event.py:350-357 |
 | API-T7.8 | A failed write answers with the IRIS error text. | inspected:api/routers/fhir_event.py:325-326; inspected:api/routers/fhir_event.py:345-346 |
+| API-T4.90 | A GraphQL call never closes the app's connection when it ends. The connection stays open for the next call. | inspected:api/gql/schema.py:51-72; inspected:api/gql/context.py:26-32; inspected:api/main.py:87-94 |
 | API-B8 | The Cypher HTTP server serves Cypher, Neo4j style routes, admin routes, a health route and the Bolt server. | inspected:iris_vector_graph/cypher_api.py:66-118; inspected:iris_vector_graph/cypher_api.py:351-740 |
 | API-T8.1 | By default it listens on every network address, on port 8200. | inspected:iris_vector_graph/cli.py:418-440 |
 | API-B8.5 | Its Cypher route runs one query through the engine. It answers at most the row limit the caller sets. | inspected:iris_vector_graph/cypher_api.py:239-265; inspected:iris_vector_graph/cypher_api.py:351-376 |
@@ -1935,15 +2172,22 @@ Supported only by reading production code at the pin.
 | API-T8.10.8 | An admin error answers with the IRIS text. | inspected:iris_vector_graph/cypher_api.py:593-594; inspected:iris_vector_graph/cypher_api.py:604-605 |
 | API-X8.10.9 | Schema setup refuses a vector width that the stored vector columns do not have. | inspected:iris_vector_graph/cypher_api.py:578-592 |
 | API-T8.11 | The graph browser pages need the key like any other path. | inspected:iris_vector_graph/cypher_api.py:73-90 |
+| API-T8.90 | Inside IRIS the server can run as a WSGI app. That works only when the operator has added the package that wraps it. | inspected:iris_vector_graph/cypher_api.py:781-785; inspected:iris_vector_graph/cypher_api.py:22-28; inspected:pyproject.toml:41-66 |
+| API-T8.91 | The browser route serves the graph browser only when its files sit beside the package. The built package leaves them out, so the route then answers a page that says so. | inspected:iris_vector_graph/cypher_api.py:73-90; inspected:pyproject.toml:185-189 |
 | API-B9 | The Bolt server speaks Bolt 4.4 and 5 to Neo4j drivers, over TCP and over a web socket. | inspected:iris_vector_graph/bolt_server.py:331-345; inspected:iris_vector_graph/bolt_server.py:377-457; inspected:iris_vector_graph/bolt_server.py:922-1000 |
 | API-T9.8 | Each run executes at once through the engine and keeps every row in memory for the next pull. | inspected:iris_vector_graph/bolt_server.py:579-614 |
 | API-T9.9 | A failed run answers a failure with the error text. The session then waits for a reset. | inspected:iris_vector_graph/bolt_server.py:616-622; inspected:iris_vector_graph/bolt_server.py:465-472 |
 | API-T9.12 | The server ignores the database a driver names. A query picks a graph only with USE GRAPH. | inspected:iris_vector_graph/bolt_server.py:490-501; inspected:iris_vector_graph/bolt_server.py:567-581 |
+| API-T9.90 | A discard drops the rows that wait for a pull and answers success. | inspected:iris_vector_graph/bolt_server.py:511-515 |
+| API-T9.91 | A logoff ends the login and answers success. The session may log on again with the key. | inspected:iris_vector_graph/bolt_server.py:487-489; inspected:iris_vector_graph/bolt_server.py:50-51; inspected:iris_vector_graph/bolt_server.py:530-565 |
+| API-T9.92 | A pull with no rows waiting answers success at once, with no rows. | inspected:iris_vector_graph/bolt_server.py:624-628 |
+| API-T9.93 | A new run drops any rows that the last run left waiting. | inspected:iris_vector_graph/bolt_server.py:567-614 |
 | API-T10.4 | Its node field and its vector search read the default graph only. | inspected:iris_vector_graph/gql/resolvers.py:24-30; inspected:iris_vector_graph/gql/resolvers.py:48-87; inspected:iris_vector_graph/_engine/vector.py:504-507 |
 | API-T10.5 | Its stats field counts rows of every graph together. | inspected:iris_vector_graph/gql/resolvers.py:10-21 |
 | API-T10.8 | Its errors answer with the IRIS text. | inspected:iris_vector_graph/gql/__init__.py:36-45 |
 | API-T10.9 | Its pool hands out the same single connection up to five times. | inspected:iris_vector_graph/gql/pooling.py:11-46 |
 | API-T10.10 | It reads the tables of the engine's own schema. | inspected:iris_vector_graph/gql/engine.py:9-15; inspected:iris_vector_graph/gql/resolvers.py:10-14 |
+| API-T10.90 | The properties field of a node always answers an empty list. Each property comes as its own field of the label's type. | inspected:iris_vector_graph/gql/schema.py:30-37; inspected:iris_vector_graph/gql/schema.py:83-124; inspected:iris_vector_graph/gql/resolvers.py:180-201 |
 | API-B11 | The REST dispatcher answers vector search, hybrid search and a walk along typed edges. | inspected:iris_src/src/Graph/KG/Service.cls:4-11; inspected:iris_src/src/Graph/KG/Service.cls:265-319 |
 | API-T11.8 | Only a table name of the right shape gets a grant, so a planted row cannot widen the role. | inspected:iris_src/src/Graph/KG/Service.cls:198-202 |
 | API-T11.10 | The walk route takes no graph. It always walks the default graph. | inspected:iris_src/src/Graph/KG/Service.cls:304-319; inspected:iris_src/src/Graph/KG/PyOps.cls:423-428; inspected:iris_src/src/Graph/KG/Traversal.cls:84-87 |
@@ -1956,23 +2200,48 @@ Supported only by reading production code at the pin.
 | API-T12.8 | The ranked walk reads the default graph only. | inspected:iris_src/src/Graph/KG/MCPTools.cls:162-188; inspected:iris_src/src/Graph/KG/PageRank.cls:33-36 |
 | API-T12.10 | The tool set logs each call to the IRIS console. | inspected:iris_src/src/Graph/KG/MCPToolSet.cls:8-17 |
 | API-T12.11 | A tool reports an error in a status field, not as a protocol error. | inspected:iris_src/src/Graph/KG/MCPTools.cls:26-28; inspected:iris_src/src/Graph/KG/MCPTools.cls:64-68 |
+| API-T12.80 | A sample config in the repo points an outside MCP server program at one IRIS web path. It logs in with a stock web user and the factory password. | inspected:config/mcp-graph.toml:1-18 |
 | API-B13 | The demo server shows three demos. It answers on every network address and asks for no key. | inspected:src/iris_demo_server/app.py:1-22; inspected:src/iris_demo_server/app.py:131-136; inspected:src/iris_demo_server/app.py:503-504 |
 | API-T13.1 | Each demo reads one fixed graph. | inspected:src/iris_demo_server/services/iris_biomedical_client.py:1-6; inspected:src/iris_demo_server/services/iris_biomedical_client.py:41-63; inspected:src/iris_demo_server/services/fhir_graph_client.py:31-67 |
 | API-T13.3 | Its status cards show the IRIS error text. | inspected:src/iris_demo_server/app.py:103-128 |
 | API-T13.5 | The fraud server takes calls on all network addresses. | inspected:src/iris_fraud_server/app.py:544-566 |
 | API-X13.6 | The fraud server refuses an id that has no colon. | inspected:src/iris_fraud_server/app.py:65-70 |
+| API-T13.90 | The page, design and scenario routes answer fixed pages and forms. The bio and FHIR pages also show counts read from their graph. | inspected:src/iris_demo_server/app.py:87-96; inspected:src/iris_demo_server/app.py:139-499; inspected:src/iris_demo_server/routes/biomedical.py:38-49; inspected:src/iris_demo_server/routes/biomedical.py:55-356; inspected:src/iris_demo_server/routes/biomedical.py:359-414; inspected:src/iris_demo_server/routes/fraud.py:72-105; inspected:src/iris_demo_server/routes/fhir.py:228-285; inspected:src/iris_demo_server/routes/fhir.py:349-368; inspected:src/iris_demo_server/routes/fhir.py:461-473; inspected:src/iris_demo_server/services/fhir_demo_data.py:265-271 |
+| API-T13.91 | The fraud demo asks the fraud server for a score. In demo mode, or when that call fails, it scores by the amount alone. | inspected:src/iris_demo_server/routes/fraud.py:17-34; inspected:src/iris_demo_server/routes/fraud.py:107-145; inspected:src/iris_demo_server/services/fraud_client.py:17-145 |
+| API-T13.92 | The graph and the audit trail that the fraud demo draws are made up. They are not read from IRIS. | inspected:src/iris_demo_server/routes/fraud.py:147-196; inspected:src/iris_demo_server/routes/fraud.py:240-476 |
+| API-T13.93 | The protein search matches text in the bio demo's graph, not vectors. A name search ranks the exact symbol first. Any other kind matches words in the protein's note. | inspected:src/iris_demo_server/routes/biomedical.py:416-584; inspected:src/iris_demo_server/services/iris_biomedical_client.py:31-37; inspected:src/iris_demo_server/services/iris_biomedical_client.py:117-148; inspected:src/iris_demo_server/services/bio_demo_data.py:142-147 |
+| API-T13.94 | The network and path routes walk the bio demo's links in both directions. A path is a shortest one within the hop cap, five at most. | inspected:src/iris_demo_server/routes/biomedical.py:586-1154; inspected:src/iris_demo_server/routes/biomedical.py:1156-1352; inspected:src/iris_demo_server/services/iris_biomedical_client.py:150-226 |
+| API-T13.95 | When IRIS cannot be reached, a bio or FHIR route answers the error text instead of a result. | inspected:src/iris_demo_server/routes/biomedical.py:575-584; inspected:src/iris_demo_server/routes/biomedical.py:1153-1154; inspected:src/iris_demo_server/routes/biomedical.py:1343-1352; inspected:src/iris_demo_server/routes/fhir.py:371-379; inspected:src/iris_demo_server/routes/fhir.py:461-533 |
+| API-T13.96 | The bio seed loads the bio demo's graph. It first erases that graph, unless the graph already holds as many nodes and edges as the seed. | inspected:src/iris_demo_server/services/bio_demo_data.py:150-229 |
+| API-T13.97 | The FHIR seed writes about two hundred made up patients and their visits, each with a fixed id. So a rerun rewrites the same set. | inspected:src/iris_demo_server/services/fhir_demo_data.py:205-262; inspected:src/iris_demo_server/services/fhir_demo_data.py:403-453 |
+| API-T13.98 | Before it writes, the FHIR seed deletes the conditions that the live panel added. After, it adds the demo concepts and runs a sync until no change waits, fifty tries at most. | inspected:src/iris_demo_server/services/fhir_demo_data.py:366-400; inspected:src/iris_demo_server/services/fhir_demo_data.py:413-431 |
+| API-T13.99 | The FHIR seed also compiles the demo's own class into the namespace. With a flag, it compiles every product class too and sets up the schema. | inspected:src/iris_demo_server/services/fhir_demo_data.py:282-339; inspected:src/iris_demo_server/services/fhir_demo_data.py:403-411 |
+| API-T13.100 | A demo class inside IRIS runs one FHIR call with no web layer in front. A write through it lands as one over the web would. | inspected:src/iris_demo_server/objectscript/IVGDemo/FHIRLoad.cls:1-46; inspected:src/iris_demo_server/services/fhir_demo_data.py:342-363 |
+| API-T13.101 | The FHIR search expands known demo concepts by up to three hops. It then ranks the patients and clinicians linked to them. | inspected:src/iris_demo_server/routes/fhir.py:88-107; inspected:src/iris_demo_server/routes/fhir.py:292-346; inspected:src/iris_demo_server/routes/fhir.py:475-492; inspected:src/iris_demo_server/services/fhir_graph_client.py:119-205; inspected:src/iris_demo_server/services/fhir_demo_data.py:128-135 |
+| API-T13.102 | The neighbourhood route shows what links to one key in that graph, one step out. It refuses a key of the wrong shape. | inspected:src/iris_demo_server/routes/fhir.py:494-501; inspected:src/iris_demo_server/services/fhir_graph_client.py:209-253 |
+| API-T13.103 | The live add writes one condition per patient and code. Adding the same pair again rewrites that condition. | inspected:src/iris_demo_server/routes/fhir.py:503-519; inspected:src/iris_demo_server/services/fhir_graph_client.py:257-270; inspected:src/iris_demo_server/services/fhir_demo_data.py:151-167; inspected:src/iris_demo_server/services/fhir_demo_data.py:274-277 |
+| API-T13.104 | No demo route keeps a session or builds a score from a bare number. That model code never runs. | inspected:src/iris_demo_server/models/session.py:35-59; inspected:src/iris_demo_server/models/fraud.py:44-75 |
+| API-X13.106 | The fraud server refuses the subgraph mode. It answers that the mode is not built. | inspected:src/iris_fraud_server/app.py:467-486; inspected:src/iris_fraud_server/app.py:51-56 |
+| API-T13.107 | With no model file at start, the fraud server scores with a stand-in model of random weights. | inspected:src/iris_fraud_server/app.py:439-450; inspected:src/iris_fraud_server/app.py:515-537 |
+| API-T13.108 | The fraud server's health route says healthy when a model is loaded and IRIS answers a test query. | inspected:src/iris_fraud_server/app.py:488-510 |
 | API-T14 | Helper code keeps text from callers out of SQL names. | inspected:iris_vector_graph/security.py:78-139; inspected:iris_vector_graph/routing.py:32-78 |
 | API-X14.1 | A table name that is not on the allow list is refused. | inspected:iris_vector_graph/security.py:101-139 |
 | API-T14.2 | A graph's own vector table is named by a hash of the graph and model. So a graph name never becomes part of a SQL name. | inspected:iris_vector_graph/routing.py:32-78 |
 | API-T14.3 | A graph value goes into SQL as a bound value, never as text in the statement. | inspected:iris_vector_graph/routing.py:81-107 |
 | API-X14.4 | A vector text with anything but numbers and commas is refused. | inspected:iris_vector_graph/security.py:159-182 |
 | API-X14.5 | A vector type name that has more than letters is refused. | inspected:iris_vector_graph/security.py:142-151 |
+| API-T14.90 | A column name that must go into SQL is put in double quotes. Any quote inside it is doubled, so it stays one name. | inspected:iris_vector_graph/security.py:154-156; inspected:iris_vector_graph/stores/iris_sql_store.py:410-421 |
 | API-B15 | A graph name is not a security line. Any caller who may use an interface may name any graph in the namespace. | inspected:api/routers/fhir_event.py:182-187; inspected:iris_src/src/Graph/KG/Service.cls:278; inspected:api/gql/core/resolvers.py:154 |
 | API-B15.1 | Each tenant gets its own namespace and its own servers. That is how an operator keeps tenants apart. | inspected:iris_vector_graph/cypher_api.py:157-183; inspected:api/main.py:21-37 |
 | API-I15.2 | No interface checks a tenant. None knows which graphs a caller may use. | inspected:iris_vector_graph/api_auth.py:77-123; inspected:iris_src/src/Graph/KG/Service.cls:46-51 |
 | API-T15.5 | Some interfaces use the graph a caller names and check only its form. These are GraphQL node and nodes, the FHIR event route, and the two search routes. | inspected:api/gql/core/resolvers.py:154; inspected:api/routers/fhir_event.py:182-187; inspected:iris_src/src/Graph/KG/Service.cls:278 |
 | API-T15.6 | Cypher picks a graph only by USE GRAPH in the query text. This holds on every Cypher route, on Bolt and in the MCP tools. | inspected:api/routers/cypher.py:118-129; inspected:iris_vector_graph/cypher_api.py:239-265; inspected:iris_vector_graph/bolt_server.py:579-581; inspected:iris_src/src/Graph/KG/MCPTools.cls:9-29 |
 | API-T15.7 | Some interfaces always use the default graph. These are the walk route, export, embed, the ranked walk and the vector lookup. | inspected:iris_src/src/Graph/KG/Service.cls:304-319; inspected:iris_vector_graph/cypher_api.py:608-665; inspected:iris_src/src/Graph/KG/MCPTools.cls:162-223 |
+| API-B80 | A repo program offers two tools to an MCP client over its standard input and output: Cypher and file loading. It is not in the installed package, and no class or setting of the product starts it. | inspected:scripts/mcp/ivg_mcp_server.py:1-81; inspected:scripts/mcp/ivg_mcp_server.py:131-138; inspected:pyproject.toml:181-189 |
+| API-T80.80 | It logs in to IRIS with values from the environment. With none set, it uses the superuser name and the stock password. | inspected:scripts/mcp/ivg_mcp_server.py:15-30 |
+| API-T80.81 | Its Cypher tool runs any query, writes included, on one link kept for the whole run. It reads every graph unless the query names one. | inspected:scripts/mcp/ivg_mcp_server.py:84-99 |
+| API-T80.82 | Its load tool reads a GraphML or OBO file into the default graph, then rebuilds the edge index of every graph. Its answer always says zero nodes and zero edges were loaded. | inspected:scripts/mcp/ivg_mcp_server.py:102-128; inspected:iris_vector_graph/_engine/snapshot.py:547-555 |
+| API-T80.83 | No key and no read-only setting protects the program. Whoever starts it can use both tools. | inspected:scripts/mcp/ivg_mcp_server.py:71-81; inspected:scripts/mcp/ivg_mcp_server.py:131-138 |
 | OPS-0 | This module owns how people and programs reach the product and run it. | inspected:iris_vector_graph/cli.py:1-20; inspected:iris_vector_graph/_engine/admin.py:110-115; inspected:iris_vector_graph/host.py:1-19 |
 | OPS-D1 | A connection is one open link from a Python program to IRIS. | inspected:iris_vector_graph/cli.py:50-59; inspected:iris_vector_graph/embedded.py:529-549 |
 | OPS-D2 | A host is where the engine runs. It is a program outside IRIS, or a process inside IRIS. | inspected:iris_vector_graph/host.py:1-19 |
@@ -2017,6 +2286,8 @@ Supported only by reading production code at the pin.
 | OPS-B2.7 | The report lists the search indexes that each index class says it holds. | inspected:iris_vector_graph/_engine/admin.py:643-669 |
 | OPS-B2.8 | The report lists each SQL function or procedure that setup declares and the schema lacks. | inspected:iris_vector_graph/_engine/admin.py:705-731 |
 | OPS-B2.9 | The report gives the ledger's state and its latest revision number. It also counts saves and refusals. | inspected:iris_vector_graph/_engine/admin.py:679-684; inspected:iris_vector_graph/status.py:107-132; inspected:iris_vector_graph/status.py:277-289 |
+| OPS-B2.90 | Vector search counts as ready when any vector exists, and edge search when any edge has a vector. Text search counts as ready when any text index exists. | inspected:iris_vector_graph/status.py:204-214 |
+| OPS-B2.91 | The text index state is ready when a text index exists, else absent. The packed index state is ready when it is built, empty when only the adjacency index holds edges, else absent. | inspected:iris_vector_graph/status.py:166-179 |
 | OPS-B3 | The admin helpers let an operator check drift and read warnings. They also show and end running queries. | inspected:iris_vector_graph/_engine/admin.py:110-115 |
 | OPS-T3.1.1 | Verify sync flags drift only when the edge table has more rows than the packed index has edges. It does not flag the reverse. | inspected:iris_vector_graph/_engine/admin.py:804-818 |
 | OPS-T3.1.3 | Verify sync also says out of sync while a bulk load in this engine waits for a sync. | inspected:iris_vector_graph/_engine/admin.py:802; inspected:iris_vector_graph/_engine/admin.py:818-822 |
@@ -2034,7 +2305,15 @@ Supported only by reading production code at the pin.
 | OPS-B4.5 | Class and method checks are asked in SQL. When SQL refuses, they are asked through a class call. | inspected:iris_vector_graph/host.py:190-200 |
 | OPS-T4.6.6 | When IRIS cannot prepare a statement, the link tries two other ways to run it. It then reports all three errors. | inspected:iris_vector_graph/embedded.py:343-359 |
 | OPS-T4.6.9 | The in-IRIS stand-in for native calls keeps percent names as they are. Only the class loader in setup asks it to rename them. | inspected:iris_vector_graph/embedded.py:459-492 |
+| OPS-B4.6.90 | A batch call runs the statement once for each row and counts the rows. A row with an empty text value is written into the SQL text, as for one call. | inspected:iris_vector_graph/embedded.py:387-413 |
+| OPS-B4.6.91 | The in-IRIS cursor reads every row of a result at the first fetch. If that read fails part way, the fetch raises. | inspected:iris_vector_graph/embedded.py:415-451 |
+| OPS-B4.6.92 | The in-IRIS stand-in also gives the global calls of the native driver: read, write, kill, test and next key. A node that is not there reads as nothing. | inspected:iris_vector_graph/embedded.py:494-527 |
 | OPS-B4.9 | On a client connection, SQL begin opens a caller transaction. The product's writes join it until the caller ends it. | inspected:iris_vector_graph/_write_txn.py:1-30 |
+| OPS-B4.80 | The connect helper opens a network connection and builds an engine on it. It keeps the login values, so the engine can connect once more when its link drops. | inspected:iris_vector_graph/engine.py:486-514; inspected:iris_vector_graph/engine.py:885-902 |
+| OPS-B4.81 | The wrapper helper builds an engine on a network connection when given a host. With no host it opens one inside IRIS, and raises anywhere else. It keeps no login values. | inspected:iris_vector_graph/engine.py:516-557 |
+| OPS-T4.82 | Both helpers log in as the stock system user with the stock password, unless told to use others. | inspected:iris_vector_graph/engine.py:487-494; inspected:iris_vector_graph/engine.py:517-524 |
+| OPS-B4.83 | An engine finds out which server classes the namespace holds on first need, and keeps that answer. Setup or a caller may set it, and clearing it makes the engine ask again. | inspected:iris_vector_graph/engine.py:1741-1760; inspected:iris_vector_graph/engine.py:1788-1812 |
+| OPS-X4.84 | If the class list cannot be read for want of a right, the engine raises. It does not take that as no classes. | inspected:iris_vector_graph/engine.py:1800-1803 |
 | OPS-B5 | The SQL adapter does the engine's reads and writes in one schema. Each adapter keeps its own schema name. | inspected:iris_vector_graph/stores/iris_sql_store.py:764-787 |
 | OPS-I5.1 | Each adapter call first passes the engine's schema check. So a refused namespace refuses the adapter too. | inspected:iris_vector_graph/stores/iris_sql_store.py:766-768; inspected:iris_vector_graph/stores/iris_sql_store.py:783; inspected:iris_vector_graph/schema_name.py:356-373 |
 | OPS-X5.4.1 | Any other failure undoes the whole write and raises a write error. | inspected:iris_vector_graph/stores/iris_sql_store.py:1247-1250; inspected:iris_vector_graph/errors.py:117-159 |
@@ -2049,12 +2328,16 @@ Supported only by reading production code at the pin.
 | OPS-I5.13.1 | A write during a run leaves the saved answer stale, not wrongly fresh. | inspected:iris_vector_graph/stores/iris_sql_store.py:929-933; inspected:iris_vector_graph/stores/iris_sql_store.py:968-981 |
 | OPS-B5.15 | The adapter's counts and name lists read every graph together. | inspected:iris_vector_graph/stores/iris_sql_store.py:3019-3041 |
 | OPS-T5.17.1 | Graph scoped calls take the graph by keyword. No value means the default graph, never every graph. | inspected:iris_vector_graph/store_protocol.py:14-25; inspected:iris_vector_graph/store_protocol.py:59-66; inspected:iris_vector_graph/constants.py:36-42 |
+| OPS-B5.17.90 | The protocol also names calls for edges with a time, for purges and for saved label sets. It names the index list and the graph algorithms too. | inspected:iris_vector_graph/store_protocol.py:67-129 |
 | OPS-T5.18 | Some fallback paths of the adapter give an empty list and do not compute. | inspected:iris_vector_graph/stores/iris_sql_store.py:1090-1108 |
 | OPS-X5.19.1 | A bad name for a graph is refused when the reader is made, not later. | inspected:iris_vector_graph/stores/lazy_kg.py:120-128 |
 | OPS-T5.19.2 | The reader takes no snapshot and no lock, so writes during a long run may change what it sees. | inspected:iris_vector_graph/stores/lazy_kg.py:32-35 |
 | OPS-B5.19.4 | The graph list names each graph that holds an edge, with the empty name for the default graph. | inspected:iris_vector_graph/stores/lazy_kg.py:66-80 |
+| OPS-B5.19.90 | The node list names each node with an edge once. Each list of neighbours names a linked node once, even across parallel edges. | inspected:iris_vector_graph/stores/lazy_kg.py:137-213 |
+| OPS-B5.19.91 | A caller can clear what the reader keeps, or ask how much it keeps. Neither call reads IRIS. | inspected:iris_vector_graph/stores/lazy_kg.py:271-290 |
 | OPS-B6 | The HTTP client sends Cypher and admin calls to the web server and returns the results. | inspected:iris_vector_graph/sdk.py:87-110 |
 | OPS-T6.9 | Calls other than queries are sent once. A failure raises the network library's own error. | inspected:iris_vector_graph/sdk.py:143-150; inspected:iris_vector_graph/sdk.py:166-182; inspected:iris_vector_graph/sdk.py:203-207 |
+| OPS-B6.90 | Each client's AQL call turns the AQL into Cypher in the caller's process. Then it sends that like any other query. | inspected:iris_vector_graph/sdk.py:124-131; inspected:iris_vector_graph/sdk.py:269-276 |
 | OPS-B7.2 | A write that IRIS refuses raises a write error after its own part is undone. It keeps the IRIS code when there is one. | inspected:iris_vector_graph/errors.py:117-159 |
 | OPS-T7.2.1 | A write refused for the schema's age is also a schema error, so both kinds of catch take it. | inspected:iris_vector_graph/errors.py:144-149; inspected:iris_vector_graph/errors.py:162-172 |
 | OPS-X7.3 | Some calls are refused inside a caller transaction that holds a write. The error says nothing was done and the transaction is still open. | inspected:iris_vector_graph/errors.py:175-190 |
@@ -2074,6 +2357,7 @@ Supported only by reading production code at the pin.
 | OPS-B10.4 | Server vector search reads a graph's own vector table when it has one. Else it reads the default table. | inspected:iris_src/src/Graph/KG/PyOps.cls:263-346 |
 | OPS-X10.4.1 | A vector of the wrong width is refused, naming both widths. | inspected:iris_src/src/Graph/KG/PyOps.cls:236-261 |
 | OPS-X10.4.2 | A table name that does not look like a vector table is refused before it is put in SQL. | inspected:iris_src/src/Graph/KG/PyOps.cls:321-332 |
+| OPS-B10.4.90 | The width a vector must have comes from the width saved for its table. Else it is read from the table's column, and else it is 768. | inspected:iris_src/src/Graph/KG/PyOps.cls:70-154 |
 | OPS-B10.5 | Server hybrid search fuses vector and text ranks. Rank r scores one over c plus r. | inspected:iris_src/src/Graph/KG/PyOps.cls:351-421 |
 | OPS-T10.6 | The schema name in these classes is a token that setup rewrites to the namespace's schema. | inspected:iris_src/src/Graph/KG/PyOps.cls:277-280; inspected:iris_vector_graph/_engine/class_deploy.py:112-117 |
 | OPS-T10.7 | The regex helper answers no match for a bad pattern, not an error. | inspected:iris_src/src/Graph/KG/SQL.cls:7-20 |
@@ -2083,6 +2367,16 @@ Supported only by reading production code at the pin.
 | OPS-T11.1 | The main recipe opens the IRIS ports to the whole network. | inspected:docker-compose.yml:31-33 |
 | OPS-T11.2 | Data lives in a named volume, so stopping the recipe keeps it. Down with volumes wipes it. | inspected:docker-compose.yml:10-11; inspected:docker-compose.yml:34-35; inspected:docker-compose.yml:49-50 |
 | OPS-T11.3.1 | Two licensed recipes install the newest product release from the package index. They do not use this checkout. | inspected:docker/enterprise/iris-entrypoint.sh:6-7; inspected:docker/enterprise/post-start.sh:2; inspected:deploy/iris-build/Dockerfile:41 |
+| OPS-B11.3.90 | One licensed recipe also starts a web gateway on port 64780 of the machine, once IRIS is healthy. The gateway passes every web path on to IRIS. | inspected:docker/enterprise/docker-compose-2026.yml:25-38; inspected:docker/enterprise/webgateway-init.sh:1-76 |
+| OPS-B11.3.91 | The gateway logs in to IRIS as the system user with the stock password. Its manager page takes requests from any address. | inspected:docker/enterprise/webgateway-init.sh:12-31 |
+| OPS-B11.3.92 | Both licensed compose files turn on the call-in and client binding services of IRIS. They also keep the two stock passwords from expiring. | inspected:docker/enterprise/merge.cpf:1-12; inspected:docker/enterprise/docker-compose.yml:15-19; inspected:docker/enterprise/docker-compose-2026.yml:7-11 |
+| OPS-B80 | The wheel holds one Python package. The build adds the server class texts and one proof file to it. Repo scripts, examples and tests are not in it. | inspected:pyproject.toml:181-198 |
+| OPS-B80.80 | Importing the package gives the engine and its main helpers by name. These are input and error types, index and search helpers, the web client and the store classes. | inspected:iris_vector_graph/__init__.py:1-107 |
+| OPS-T80.81 | A star import gives the 67 names the package lists. Some names it loads, such as most algorithm inputs, are left out. | inspected:iris_vector_graph/__init__.py:108-179 |
+| OPS-T80.82 | The engine part of the package exports nothing, since its file is empty. The stores part exports the store protocol and the IRIS store class. | inspected:iris_vector_graph/_engine/__init__.py:1-1; inspected:iris_vector_graph/stores/__init__.py:1-4 |
+| OPS-B81 | Two repo files help an operator set up a server by hand. Neither is in the installed package. | inspected:scripts/setup_security.sql:1-20; inspected:scripts/install-embedded-deps.sh:1-42; inspected:pyproject.toml:181-189 |
+| OPS-T81.80 | The roles file makes a reader role and a writer role, with rights on all of the product's default schema. The writer may also add, change and delete rows. Resources must still be granted by hand. | inspected:scripts/setup_security.sql:1-20 |
+| OPS-T81.81 | The embedded install script adds the graph and Leiden libraries and the core needs to the Python inside an IRIS container. It never adds the IRIS driver packages. | inspected:scripts/install-embedded-deps.sh:1-42 |
 | SNP-0 | This module saves a copy of the content of a namespace to a file. It also loads it back. | inspected:iris_vector_graph/_engine/snapshot.py:797-1048; inspected:iris_vector_graph/_engine/snapshot.py:1076-1610; inspected:iris_src/src/Graph/KG/Snapshot.cls:1-164 |
 | SNP-D1 | A snapshot archive is a zip file with a copy of the tables and native indexes of every graph. It also lists what it holds. | inspected:iris_vector_graph/_engine/snapshot.py:1035-1041 |
 | SNP-D2 | The export list names each store and says if a snapshot archive copies it or leaves it to be rebuilt. | inspected:iris_vector_graph/_engine/snapshot.py:87-166 |
@@ -2126,7 +2420,7 @@ Supported only by reading production code at the pin.
 | SNP-B3 | tests/unit/test_snapshot.py::test_restore_is_destructive_by_default | unit-full | skipped | skipped: SKIP_IRIS_TESTS=true |
 | SNP-B4 | tests/unit/test_snapshot.py::test_restore_merge_preserves_local | unit-full | skipped | skipped: SKIP_IRIS_TESTS=true |
 
-## Open cells (29)
+## Open cells (33)
 
 | Module | Entity | State | Command | Decision |
 |---|---|---|---|---|
@@ -2157,6 +2451,10 @@ Supported only by reading production code at the pin.
 | RED | redaction target | erased | retry an old key | HD-1305 |
 | RED | redaction target | redacting | retry an old key | HD-1305 |
 | INT | FHIR graph | busy | erase | HD-1503 |
+| INT | FHIR sync task | unreadable item | task run | HD-1504 |
+| API | generated GraphQL call | key off | deep query | HD-1605 |
+| API | generated GraphQL call | key given | deep query | HD-1605 |
+| API | generated GraphQL call | key given read-only | deep query | HD-1605 |
 | SNP | namespace | ledger on | replacing restore | HD-1801 |
 | SNP | namespace | ledger on | merge restore | HD-1801 |
 
@@ -2171,15 +2469,15 @@ Supported only by reading production code at the pin.
 | ADJ | 42 | 16 | 2 | 0 | 1 |
 | TMP | 30 | 24 | 4 | 0 | 0 |
 | VEC | 37 | 38 | 15 | 0 | 0 |
-| TXT | 24 | 12 | 11 | 1 | 5 |
+| TXT | 40 | 13 | 16 | 1 | 5 |
 | CYP | 38 | 7 | 7 | 0 | 0 |
 | NAT | 36 | 18 | 3 | 0 | 0 |
 | ALG | 36 | 6 | 3 | 0 | 6 |
 | LED | 36 | 7 | 19 | 0 | 7 |
-| ERS | 9 | 2 | 1 | 0 | 3 |
+| ERS | 12 | 7 | 1 | 0 | 3 |
 | RED | 21 | 4 | 4 | 2 | 2 |
 | RPL | 18 | 2 | 5 | 0 | 0 |
-| INT | 29 | 14 | 22 | 0 | 1 |
-| API | 32 | 9 | 15 | 8 | 0 |
+| INT | 52 | 34 | 51 | 0 | 2 |
+| API | 74 | 25 | 29 | 8 | 3 |
 | OPS | 31 | 3 | 22 | 0 | 0 |
 | SNP | 10 | 3 | 6 | 0 | 2 |

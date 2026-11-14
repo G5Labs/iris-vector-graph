@@ -62,7 +62,8 @@ def check(nn: str, names) -> int:
                                          "replay_matches_engine": rep["replay_matches_engine"],
                                          "unmapped_writes": rep["unmapped_writes"], "steps": rep["steps"]}
         ab = result["designs"][mod.DESIGNS[0]]
-        result["controls"] = trlib.run_controls(trace, lambda: mod.families(trace, mod.DESIGNS[0]), fp)
+        result["controls"] = trlib.run_controls(trace, lambda: mod.families(trace, mod.DESIGNS[0]), fp,
+                                                getattr(mod, "CONTROL_PAIRS", {}).get(name))
         expected = mod.EXPECT.get(name, [])
         found = []
         for fam, prop, finding in expected:

@@ -238,3 +238,71 @@ before F-0503 became intent-undecided); after, 0. Registry: `rr2-ontology-check`
 ## Hand additions after review 3 (A-3)
 
 `finding:F-CS01` was added by hand to RED-B12 and RED-B4 (`13-redaction.md`) and recorded in `evidence-additions.json`; `add_evidence.py` did not generate these two items, so a regeneration from that tool alone would omit them. `independent_recheck.py` verifies them against `evidence-additions.json`.
+
+## Coverage reconciliation and cells (ontology-2 lane, steer 7)
+
+Gate 3.1-coverage ("statements cover the module's actual public entry points, storage owners, background jobs,
+native paths and lifecycle operations, reconciled against a source inventory") and the open 3.1-cells modules.
+Logs: `$RUN_DIR/ontology-2/`.
+
+**Mechanical reconciliation (`tools/coverage_reconcile.py`).** It reads the committed source inventories
+(`models/breadth-a/inventory/01-06.json`, `models/breadth-b/inventory/07-11.json`, `models/breadth-c/inventory.json`
+for 12-18 and for the unowned surface, module 00: 899 entry points and 180 files no Scope line owns), a storage
+inventory it derives from the pinned tree (pseudo-module `stores`: 49 globals written or named and SQL tables
+declared), the modules here, and `reconcile-records.json`. An entry is covered when its inventory already counts it
+(and every statement it names still exists), when a statement of its module cites its file with an overlapping line
+range or names it, or when a reviewed record says why (`statement`, `helper` with the covered entry or statement it
+serves, `other-module`, `owner` for module 00, `not-entry-point`, `tooling`, `not-deployed`). Records are
+validated: the entry exists, the named statements exist in the named module, a helper's target is covered (no
+chains through uncovered entries, no cycles), a reason is given; three path rules cover module 00's tooling
+(`scripts/*`, `examples/*`: in neither the wheel nor, for scripts, the sdist, pyproject.toml:181-195) and dev
+classes (`iris_src/dev/*`: class deploy reads iris_src/src only). Its self-test (`--self-test`) checks a fixture (a
+seeded uncovered entry point is reported; cite overlap, statement records, helpers of covered and of uncovered
+entries, a missing statement, a stale record, a helper cycle and a record without a reason each behave as expected),
+then on the real inputs: removing one real record raises its module's uncovered count by one, and a seeded entry
+point with no statement and no record is reported. `tools/derive_callers.py` lists the call sites of uncovered
+entries (proposals for helper records only; it decides nothing).
+
+**Additions.** Helper agents of this lane drafted, per module group, as-built statements (graded `inspected`, cited
+path:lines at the pin, `tested:` where an upstream test asserts it, `finding:` where a recorded finding shows the
+behaviour violates intent; no `proved:`/`mc:`; ids with n >= 90, module 00's owner statements 80-89) and records;
+every draft was checked on a scratch copy with the four tools before the lead merged it. The statements are recorded
+in `evidence-additions.json` under `coverage_additions` (each row in full, its anchor and the entries it covers) and
+applied by `tools/add_coverage.py` (idempotent, after `repair.py` and `add_evidence.py`). `independent_recheck.py`
+accepts exactly those rows, entity lines, cells and Scope addenda and nothing else (removing them gives back the
+original text outside the tables and the original Cells section); its `--ontology DIR --coverage-spec FILE` options
+check a scratch copy.
+
+| Added | Count |
+|---|---:|
+| Statements (B 173, T 149, X 17; no D, no glossary rows) | 339 |
+| Coverage records (helper 145, owner 117, other-module 67, statement 38, not-entry-point 11) + 3 path rules | 378 |
+| Entity lines / cells (07: 2 / 22, 12: 2 / 8, 15: 7 / 73, 16: 4 / 75); open cells, each on an existing human decision (HD-1605 x3, HD-1504 x1) | 15 / 178 |
+| Scope addenda (one line per module receiving module 00 code: 01, 03, 04, 05, 11, 12, 13, 15, 16, 17) | 10 |
+
+Result (`ont2-coverage-r2`; first registered as `ont2-coverage` before the records file was renamed out of the product .gitignore pattern coverage*.json): 3,580 entries (3,531 entry points and files in 19 modules, 49 stores), 0 uncovered, 0
+invalid records: inventory 1,323, inventory not counted 88 (semantics owned elsewhere, by the inventory's own rule),
+statement match 841, records 1,328 (tooling 940 by path rule, helper 144, owner 117, other-module 67, statement 34,
+not-deployed 15, not-entry-point 11). Module 00's owners: the bulk importers and NDJSON export (`_engine/snapshot.py`)
+to 03, inference to 15, `backfill_deg2p_exact` to 04, the schema readers and `setup_tables` to 01 (01 already states
+them), engine construction, capabilities and the package export list to 17, the stdio MCP server and its sample
+config to 16, the operator install and migration scripts to 01, 05 and 17. The 5 reach obligations (^EmbedQueue,
+docs_quarantine, edge_vector_quarantine, ^ArnoKG, the 3.2 rescue tables) are stated as built (ERS-B95..B99,
+RED-B91..B95: which erasure and redaction reaches each store and that the receipt does not name it); whether they
+ought to be reached stays the maintainer's question.
+
+Cells: the HD-0701 cells of module 07 stay open and assigned to HD-0701 (the gate accepts an open cell assigned to
+the human; a reviewed model's working answer is not a decision). Modules 13 and 14 needed no new entity (their
+store list, content check and in-progress query only read; the redaction run and ledger view entities already have
+every cell).
+
+**Finding tags (moving input, by hand, recorded in `evidence-additions.json`).** New findings of other lanes named
+statements: tagged F-C1350 and F-C1351 on RED-B1.1 (required by `[uncited-finding]`), F-C0348 on WRT-B4.9, F-C0748 on
+SYS-I3 and TXT-X2, F-C1547 on SYS-I2; 17 candidate pairs rejected with reasons (`rejected_findings`).
+`add_evidence.py` does not generate these items (as with A-3), so a regeneration from that tool alone omits them.
+
+**Limits.** Coverage is mechanical: a cite or name hit is evidence of mention, not of a correct statement; the new
+statements are inspected-grade readings by the lane's helpers, spot-checked by the lead, not run. The inventories
+are those of the breadth lanes (their scope rules and lexical screens); the storage inventory is lexical (dynamic
+global and table names are not resolved). Possible product defects the helpers noticed are reported to the
+orchestrator, not filed.

@@ -12,7 +12,10 @@
    the same relative order; parent and text differ only where repairs.json says so; evidence is the original
    evidence plus exactly the items evidence-additions.json lists, with [model-only] only where it lists it; notes
    are unchanged or as evidence-additions.json lists; the file text outside the Glossary and Statements tables
-   (cells included) is unchanged.
+   (cells included) is unchanged. The only other rows, entity lines and cells are the coverage additions that
+   evidence-additions.json lists under `coverage_additions` (ontology-2 lane, applied by add_coverage.py): each
+   listed statement row is present exactly as recorded, and removing the listed scope addenda, entity lines and
+   cell rows gives back the original text outside the tables and the original Cells section.
 4. Evidence (review R-05), re-derived from the raw audit and registry files: a statement citing a finding whose
    audit disposition is reproduced-live, reproduced-test or confirmed-source, or intent-undecided with live, run or
    trace evidence (review R2-08), has [model-only] on every proved:/mc: item; every restatement's evidence equals
@@ -133,6 +136,16 @@ def evidence_checks(mods, every):
 
 
 def main():
+    global NEW
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--ontology", type=Path, help="check a scratch copy of the modules instead (read only)")
+    ap.add_argument("--coverage-spec", type=Path,
+                    help="add this file's statements/cells/scope_addenda to the recorded coverage additions")
+    a = ap.parse_args()
+    ont_dir = NEW
+    if a.ontology:
+        NEW = a.ontology.resolve()
     mods, every = [], {}
     for f in sorted(NEW.glob("[0-9][0-9]-*.md")):
         lines = f.read_text(encoding="utf-8").split("\n")
@@ -183,11 +196,43 @@ def main():
     for p in ev_problems[:20]:
         print("  ", p)
     problems += ev_problems
-    adds = json.loads((NEW / "evidence-additions.json").read_text(encoding="utf-8"))
-    rep = json.loads((NEW / "repairs.json").read_text(encoding="utf-8"))["statements"]
+    adds = json.loads((ont_dir / "evidence-additions.json").read_text(encoding="utf-8"))
+    rep = json.loads((ont_dir / "repairs.json").read_text(encoding="utf-8"))["statements"]
+    if a.coverage_spec:
+        extra = json.loads(a.coverage_spec.read_text(encoding="utf-8"))
+        extra = extra.get("coverage_additions", extra)
+        cov0 = adds.setdefault("coverage_additions", {})
+        for k in ("statements", "cells", "scope_addenda"):
+            cov0[k] = cov0.get(k, []) + extra.get(k, [])
     moved = {k for k, v in rep.items() if "reparent" in v["change"]}
     reworded = {k for k, v in rep.items() if "reword" in v["change"]}
     added = {k for k, v in rep.items() if v["change"].startswith("added")}
+    cov = adds.get("coverage_additions", {})
+    cov_rows, cov_lines = {}, {}
+    for x in cov.get("statements", []):
+        cov_rows.setdefault(x["file"], {})[x["row"][0]] = [c.strip() for c in x["row"]]
+    for x in cov.get("scope_addenda", []):
+        cov_lines.setdefault(x["file"], {"entity": [], "rows": []})["entity"].append(x["line"])
+    for x in cov.get("cells", []):
+        lst = cov_lines.setdefault(x["file"], {"entity": [], "rows": []})
+        if x.get("entity_line"):
+            lst["entity"].append(x["entity_line"])
+        lst["rows"] += [[c.strip() for c in r] for r in x.get("rows", [])]
+
+    def drop_recorded(text, name):
+        """The file text with the recorded entity lines and cell rows removed (each once)."""
+        rec = cov_lines.get(name, {"entity": [], "rows": []})
+        ent, rows, out = list(rec["entity"]), [list(r) for r in rec["rows"]], []
+        for l in text.split("\n"):
+            if l in ent:
+                ent.remove(l)
+                continue
+            if l.startswith("|") and cells(l) in rows:
+                rows.remove(cells(l))
+                continue
+            out.append(l)
+        return "\n".join(out), ent + rows
+
     n, bad = 0, []
     for f in sorted(OLD.glob("[0-9][0-9]-*.md")):
         a = {r[0]: r for r in table(f.read_text(encoding="utf-8").split("\n"), "## Statements")}
@@ -225,15 +270,25 @@ def main():
         if [r[0] for r in bst if r[0] in a] != list(a):
             bad.append(f"{f.name}: original rows reordered")
         extra = {r[0] for r in bst} - set(a)
-        if not extra <= added:
-            bad.append(f"{f.name}: unrecorded new rows {sorted(extra - added)[:5]}")
+        mine = cov_rows.get(f.name, {})
+        if not extra <= added | set(mine):
+            bad.append(f"{f.name}: unrecorded new rows {sorted(extra - added - set(mine))[:5]}")
+        for rid, row in mine.items():
+            if b.get(rid) != row:
+                bad.append(f"{f.name}: coverage addition {rid} missing or not as recorded")
         keep = lambda t: [l for l in t.split("\n") if not l.startswith("|")]
         cell_part = lambda t: t.split("## Cells")[1] if "## Cells" in t else ""
-        old_text, new_text = f.read_text(encoding="utf-8"), "\n".join(new_lines)
+        old_text = f.read_text(encoding="utf-8")
+        new_text, unmatched = drop_recorded("\n".join(new_lines), f.name)
+        if unmatched:
+            bad.append(f"{f.name}: recorded entity lines or cells not present: {unmatched[:3]}")
         if keep(old_text) != keep(new_text) or cell_part(old_text) != cell_part(new_text):
             bad.append(f"{f.name}: text outside the glossary and statements tables changed")
     print(f"preservation: {n} original statements checked; {len(bad)} problem(s); recorded changes: "
-          f"{len(moved)} reparented, {len(reworded)} reworded, {len(added)} added")
+          f"{len(moved)} reparented, {len(reworded)} reworded, {len(added)} added; coverage additions: "
+          f"{sum(len(v) for v in cov_rows.values())} statements, "
+          f"{sum(len(v['entity']) for v in cov_lines.values())} entity lines, "
+          f"{sum(len(v['rows']) for v in cov_lines.values())} cells")
     for p in bad[:20]:
         print("  ", p)
     if len(mods) != 19 or n != 3015 or not every:

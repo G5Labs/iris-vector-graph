@@ -334,8 +334,8 @@
   "title": "EraseAll kills ^ArnoKG, a store the erase plan (GraphStores.Inventory) does not list",
   "intended": "Graph.KG.GraphStores.Inventory is the product's list of the stores erasure covers (12-erasure.md:5 Scope; iris_src/src/Graph/KG/GraphStores.cls:28-130, 'Stated once here rather than rediscovered by each consumer'). ^ArnoKG belongs to the algorithms module's Arno bridge (10-algorithms.md:5-8). Playbook \u00a73.4: single write owner.",
   "observed": "iris_src/src/Graph/KG/Eraser.cls:806 (EraseAll) runs Kill ^ArnoKG; GraphStores.Inventory has no ^ArnoKG entry; EraseGraph and EraseNodes write no ^ArnoKG (st-check-own-census).",
-  "disposition": "confirmed-source",
-  "outcome": "product-defect",
+  "disposition": "refuted",
+  "outcome": "refuted",
   "evidence": [
    {
     "kind": "check",
@@ -348,6 +348,10 @@
    {
     "kind": "inspected",
     "ref": "iris_src/src/Graph/KG/GraphStores.cls:28-130"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/GraphStores.cls:131"
    }
   ],
   "gates": [
@@ -356,7 +360,7 @@
   "severity": "S4",
   "confidence": "high",
   "remedy": "List ^ArnoKG in GraphStores.Inventory (with the scope it can be erased by) and clear it through the Arno bridge's own invalidation (NKGAccelLoader.InvalidateAdjCache).",
-  "notes": "The kill itself is the right effect for an erase-all (ADR-0004). Not checked here: whether a graph erasure (which does not touch ^ArnoKG) leaves an Arno-path answer built from the erased graph's cached adjacency; that is an erasure-completeness question for the owning lanes."
+  "notes": "The kill itself is the right effect for an erase-all (ADR-0004). Not checked here: whether a graph erasure (which does not touch ^ArnoKG) leaves an Arno-path answer built from the erased graph's cached adjacency; that is an erasure-completeness question for the owning lanes. Refuted (orchestrator, from the ontology-2 lane's correction, checked at the pin): GraphStores.Inventory does list ^ArnoKG at GraphStores.cls:131, one line past the range the record cited (28-130); that entry itself says erasing content without bumping ^KG(\"__version\") leaves Arno serving the erased graph, which is an erasure-completeness question, not this finding."
  },
  {
   "id": "F-C1540",

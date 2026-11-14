@@ -1389,3 +1389,56 @@ class AdjToken(Family):
 
     def relevant(self, ref):
         return ref.startswith('^IVG.AlgoCache') or ref.startswith('^KG("__version")') or ref.startswith('^KG("out"')
+
+
+class InsSetupRun(InsSetup):
+    """ins_setup (models/breadth-a/src/ins_setup.rs:61-109) driven by a real initialize_schema() call. The explorer
+    models one setup on a fresh namespace; the lane's namespace was set up before, so a further call is replayed as
+    `NewRun` (the machine's step reset to Tables, keeping the store's marker and record: an initial-state
+    generalisation, not one of the explorer's init states) followed by one Ok/Fail per setup step, chosen from the
+    reply and the WARNING records the call logged (captured by the scenario): Tables fails when a "Schema setup
+    warning" was logged (schema.py:2509-2511), Classes when `objectscript_failed` is non-empty, Kg when "^KG bootstrap
+    failed" was logged (schema.py:2680-2681; `kg_built` false alone means this run did not need to build ^KG);
+    Marker and Record have no failure path that returns, and Record's effect is checked in the store (the journaled
+    ^IVG.Deploy("schema") write). Observation adds the run's phase and the reply's warned / deploy_failed to
+    (record, marker, engine)."""
+
+    def __init__(self, which, design="as-built"):
+        super().__init__(which, design)
+        self.name = f"ins_setup_run[{design}]{which}"
+        self.reply = None
+
+    def next(self, s, a):
+        if a == "NewRun":
+            u = dict(s)
+            u.update(step="Tables", failed=False, warned=False, deploy_failed=False)
+            return u
+        return super().next(s, a)
+
+    def obs(self, s):
+        return (s["record"], s["marker"], s["engine"], s["step"], s["warned"], s["deploy_failed"])
+
+    def alpha(self, store, step):
+        rec, marker, eng = super().alpha(store, step)
+        st, warned, dfail = self.S["step"], self.S["warned"], self.S["deploy_failed"]
+        if step is not None and step.get("setup_run") == self.which:
+            r = step["reply"] if isinstance(step["reply"], dict) else {}
+            st = "Replied" if step["ok"] else "Stopped"
+            warned = bool(r.get("warnings"))
+            dfail = bool(r.get("objectscript_failed"))
+        elif step is not None and step.get("env") == "record-removed":
+            st = "Stopped"
+        elif step is not None and step.get("env") == "record-restored":
+            st = "Replied"
+        return (rec, marker, eng, st, warned, dfail)
+
+    def actions(self, step, seg, pre, post):
+        if step.get("setup_run") == self.which:
+            if not step["ok"]:
+                return ["NewRun", "Stop"]
+            r = step["reply"] if isinstance(step["reply"], dict) else {}
+            logged = r.get("log_warnings") or []
+            tables = "Fail" if any(m.startswith("Schema setup warning") for m in logged) else "Ok"
+            kg = "Fail" if any(m.startswith("^KG bootstrap failed") for m in logged) else "Ok"
+            return ["NewRun", tables, "Ok", "Fail" if r.get("objectscript_failed") else "Ok", kg, "Ok"]
+        return super().actions(step, seg, pre, post)

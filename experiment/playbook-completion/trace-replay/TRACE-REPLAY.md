@@ -43,7 +43,9 @@ cites the Rust lines); the model crates are not modified and not linked. The exp
 (the first model-relevant SET removed: model-post-state, continuity or faithfulness), *reordered transaction* (the
 records of two model-relevant steps swapped, or, in a one-step trace, two of its transactions or two writes of one
 node: model-post-state, model-not-enabled or continuity), *foreign write* (a copy of a model-relevant record
-attributed to process 999999: foreign-process). The oracle itself has a self-test on the lane's scratch global
+attributed to process 999999: foreign-process). A scenario may name the reorder pair (`CONTROL_PAIRS`, used only by
+08/readonly, where the default pair is two identical machine actions); every other scenario uses the default choice.
+The oracle itself has a self-test on the lane's scratch global
 `^IVGAuditE` (plain SET, transactional SET/KILL/$Increment, nested level rolled back, full rollback, subtree KILL):
 replay equals the engine, and each control is caught (`selftest_oracle.py`, `tr-oracle-selftest`).
 
@@ -77,9 +79,20 @@ Run ids: `tr-replay-NN` (the replay of all the module's scenarios, as built and 
   (marker without record = Ok, Ok, Stop; record restored = five Ok steps), documented in the class.
 - Result: as built matches every step; replay equals engine. **F-0103 reproduced** (INS-I3.4 at step 1: accepted with
   no record because the marker class exists). Reviewed design diverges at step 1 (it refuses). Controls: 3/3 caught.
-- Gap: `initialize_schema()` itself was not replayed through the machine (it would journal the class compile; the
-  journal reader transfers every system record): the setup steps Tables..Record are not trace-checked. `ins_legacy` not
-  replayed (no legacy objects exist in AUDITE and creating some would compile classes).
+- Scenario `setup` (follow-up, `tr-replay-01-r2`): harness removes the schema record, the pin's own
+  `initialize_schema()` runs on AUDITE (its classes are unchanged, so nothing is compiled and the journal stays small:
+  41 records), the first-use check accepts on the record setup wrote. 3 steps, 41 records, 8 actions (class
+  `InsSetupRun`): the setup call is `NewRun` (the machine's step reset to Tables keeping the store's marker and record,
+  an initial-state generalisation: the explorer models one setup on a fresh namespace) then one Ok/Fail per step,
+  chosen from the reply and the WARNING records the call logged (captured by the scenario): Tables fails on a logged
+  "Schema setup warning", Classes on a non-empty `objectscript_failed`, Kg on a logged "^KG bootstrap failed"
+  (`kg_built` false alone means this run did not need to build ^KG). This run: no warning logged, `warnings` [],
+  `objectscript_failed` {}, so five Ok; the Record step is the journaled `^IVG.Deploy("schema")` write. Matches as
+  built, replay equals engine, no invariant violated (INS-B1.12 holds on this success path); reviewed design does
+  not diverge. Controls 3/3 (`tr-controls-01-r2`; the reorder caught by model-post-state).
+- Gap: setup replayed only on an already set-up namespace and only on its success path (no table created, no class
+  compiled, ^KG not rebuilt; the failure paths of F-0102 not exercised). `ins_legacy` not replayed (no legacy objects
+  exist in AUDITE and creating some would compile classes).
 - Lock log: one `initialize_schema()` (3.2 s, no recompile) held only the parent `^IVG.AdjW` shared (its ^KG rebuild),
   within the declared plan; no ledger head lock. The plan's `^IVG.AdjW(g)` E:0 and `^IVG.NKGBuild` X were not exercised.
 
@@ -251,7 +264,11 @@ Run ids: `tr-replay-NN` (the replay of all the module's scenarios, as built and 
   use changed data) and **F-0815** ($TLEVEL 0 to 1 under read_only) reproduced.
 - Both match as built. Controls: 3/3 in `txn`; in `readonly` the reorder control swapped the two AQL writes, which are
   the same machine action, so no model rule can see their order: it was flagged only by faithfulness and
-  foreign-process, which `run.py` does not count (`tr-controls-08` registered **fail** for that reason).
+  foreign-process, which `run.py` does not count (`tr-controls-08` registered **fail** for that reason, kept as
+  recorded). Follow-up `tr-controls-08-r2` (pass): every journaled transaction of `readonly` is an AqlWrite (the other
+  calls write nothing), so `m08.CONTROL_PAIRS` names the pair (1, 2): the first AQL write's transaction is moved one
+  call earlier onto the refused read-only CREATE (`Call(WriteClause)`), and model-post-state flags step 1 (the machine
+  has a refused call change no data; the replayed store shows data changed). `txn` controls unchanged.
 - Lock log: 284 Cypher CREATE+DELETE pairs held `^IVG.AdjW(g)` S only (row hook) plus SQL row locks; with it held
   exclusively a CREATE waited 5.0 s at WriterLock holding its node, label, property, edge and unique-index row locks,
   then completed. Holds.
@@ -280,8 +297,9 @@ Run ids: `tr-replay-NN` (the replay of all the module's scenarios, as built and 
 <a id="gaps"></a>
 ## 4. Gaps and remaining obligations (exact)
 
-- 01: setup's own steps (Tables..Record) not trace-replayed; `ins_legacy` not replayed; lock-plan entries
-  `^IVG.AdjW(g)` E:0 and `^IVG.NKGBuild` X not exercised by the one setup run.
+- 01: setup replayed only on an already set-up namespace and its success path (fresh-namespace setup and the F-0102
+  failure paths not exercised); `ins_legacy` not replayed; lock-plan entries `^IVG.AdjW(g)` E:0 and `^IVG.NKGBuild` X
+  not exercised by the one setup run.
 - 02: F-0207's interleaving (count and kill of `GraphMode.Set` against a concurrent writer) not produced.
 - 04: F-0401/F-C0401 (reader in flight across a writer rollback or erase) not produced; `adj_rebuild_txn` part 2 (two
   concurrent rebuilds, F-C0402) not produced.
@@ -305,6 +323,8 @@ Run ids: `tr-replay-NN` (the replay of all the module's scenarios, as built and 
 
 `tr-oracle-selftest` (check, pass); `tr-replay-01..11, 15..18` (trace; pass, 15 blocked); `tr-controls-01..11, 16..18`
 (control; pass, 08 fail as above); `tr-locklog-01, 02, 03, 04, 05, 06, 08, 10, 13, 13b, 18` (live, pass).
+Follow-up (after commit e8a3ab67): `tr-replay-01-r2` (trace, pass), `tr-controls-01-r2` (control, pass),
+`tr-controls-08-r2` (control, pass; supersedes `tr-controls-08`, which stays as recorded).
 New finding: F-C0330 (`findings/audit/zz-trace-replay.json`).
 
 ## 6. Files

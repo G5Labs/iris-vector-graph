@@ -4,8 +4,10 @@
   {
    "gate": "3.7-trace-replay",
    "module": "01",
-   "status": "open",
+   "status": "closed",
    "evidence": [
+    "run:tr-replay-01-r2",
+    "run:tr-controls-01-r2",
     "run:tr-replay-01",
     "run:tr-controls-01",
     "run:tr-oracle-selftest",
@@ -14,11 +16,11 @@
    "evidence_grade": "trace",
    "level": "product",
    "product_obligation": "fails",
-   "product_basis": "tr-replay-01: the first-use check replayed through ins_setup; INS-I3.4 violated (F-0103 reproduced in the trace)",
+   "product_basis": "tr-replay-01-r2: first use replayed through ins_setup (INS-I3.4 violated: F-0103 reproduced) and a real initialize_schema() replayed through ins_setup (NewRun + five steps; Record seen as the journaled schema-record write; INS-B1.12 holds on this success path)",
    "as_built_findings": [
     "F-0103"
    ],
-   "remaining": "initialize_schema's own steps (Tables, Marker, Classes, Kg, Record) are not trace-replayed (the journal read would transfer the whole class compile); ins_legacy not replayed. Limits: sequential traces of one scenario per family (plus the caller-transaction interleavings named); bitmap chunks and ^odd* not replayed; a pass means the as-built machine matched these traces, not that the handler performs its step on every input."
+   "remaining": "setup replayed only on an already set-up namespace (no table created, no class compiled, ^KG not rebuilt) and only on its success path: the failure paths (F-0102: failures only logged) and a fresh-namespace setup are not trace-replayed; ins_legacy not replayed. Limits: sequential traces of one scenario per family (plus the caller-transaction interleavings named); bitmap chunks and ^odd* not replayed; a pass means the as-built machine matched these traces, not that the handler performs its step on every input."
   },
   {
    "gate": "3.7-trace-replay",
@@ -151,6 +153,7 @@
    "status": "closed",
    "evidence": [
     "run:tr-replay-08",
+    "run:tr-controls-08-r2",
     "run:tr-controls-08",
     "run:tr-oracle-selftest",
     "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#08"
@@ -165,7 +168,7 @@
     "F-0814",
     "F-0815"
    ],
-   "remaining": "tr-controls-08 fails one criterion: in 08/readonly the reordered-transaction control (two identical AqlWrite steps) was flagged only by faithfulness and foreign-process, not by a model rule; Txn CallerRollback not driven. Limits: sequential traces of one scenario per family (plus the caller-transaction interleavings named); bitmap chunks and ^odd* not replayed; a pass means the as-built machine matched these traces, not that the handler performs its step on every input."
+   "remaining": "tr-controls-08 (recorded fail) is superseded by tr-controls-08-r2: the readonly reorder control now swaps steps with different machine actions and is caught by model-post-state. Txn CallerRollback not driven. Limits: sequential traces of one scenario per family (plus the caller-transaction interleavings named); bitmap chunks and ^odd* not replayed; a pass means the as-built machine matched these traces, not that the handler performs its step on every input."
   },
   {
    "gate": "3.7-trace-replay",
@@ -484,6 +487,7 @@
  "notes": [
   "New finding F-C0330 in findings/audit/zz-trace-replay.json.",
   "Footprint gaps (files, not product): footprints/03.json py:IRISGraphEngine.delete_node omits ^IVG.Ledger, ^NKG, ^IVG.AlgoCache; footprints/03.json create_node omits ledger_stats written by a strict-mode refusal; footprints/18.json lock plan omits ^IVG.AdjW S from erase_all.",
-  "Erratum: tr-locklog-13 observes text describes the 13b probe too; that check's log is tr-locklog-13b's."
+  "Erratum: tr-locklog-13 observes text describes the 13b probe too; that check's log is tr-locklog-13b's.",
+  "Follow-up (after e8a3ab67): tr-replay-01-r2, tr-controls-01-r2, tr-controls-08-r2; cells 3.7-trace-replay/01 and /08 updated."
  ]
 }

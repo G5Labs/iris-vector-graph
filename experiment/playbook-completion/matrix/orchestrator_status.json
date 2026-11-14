@@ -2282,28 +2282,28 @@
    "module": "00",
    "status": "not-applicable",
    "level": "model",
-   "reason": "module 00 holds only definitions, axioms and premises and no operations (ontology/00-system.md:46-96; proofs-d1f/PROOFS.md module 00 decision); its system-wide invariants are proved in the composed protocols (proofs/, proofs-d9/)"
+   "reason": "module 00 holds only definitions, axioms and premises and no operations (ontology/00-system.md:46-96; proofs-d1f/PROOFS.md module 00 decision); its system-wide axioms are instantiated in the module contracts (model level) and model-checked over six composed mechanisms (sem-mc-sys00-reviewed, -as-built, sem-control-sys00; mc, exhaustive within bounds); no cross-module proof of them exists (proof debt D-5)"
   },
   {
    "gate": "3.3-L2",
    "module": "00",
    "status": "not-applicable",
    "level": "model",
-   "reason": "module 00 holds only definitions, axioms and premises and no operations (ontology/00-system.md:46-96; proofs-d1f/PROOFS.md module 00 decision); its system-wide invariants are proved in the composed protocols (proofs/, proofs-d9/)"
+   "reason": "module 00 holds only definitions, axioms and premises and no operations (ontology/00-system.md:46-96; proofs-d1f/PROOFS.md module 00 decision); its system-wide axioms are instantiated in the module contracts (model level) and model-checked over six composed mechanisms (sem-mc-sys00-reviewed, -as-built, sem-control-sys00; mc, exhaustive within bounds); no cross-module proof of them exists (proof debt D-5)"
   },
   {
    "gate": "3.3-refinement",
    "module": "00",
    "status": "not-applicable",
    "level": "model",
-   "reason": "module 00 holds only definitions, axioms and premises and no operations (ontology/00-system.md:46-96; proofs-d1f/PROOFS.md module 00 decision); its system-wide invariants are proved in the composed protocols (proofs/, proofs-d9/)"
+   "reason": "module 00 holds only definitions, axioms and premises and no operations (ontology/00-system.md:46-96; proofs-d1f/PROOFS.md module 00 decision); its system-wide axioms are instantiated in the module contracts (model level) and model-checked over six composed mechanisms (sem-mc-sys00-reviewed, -as-built, sem-control-sys00; mc, exhaustive within bounds); no cross-module proof of them exists (proof debt D-5)"
   },
   {
    "gate": "3.3-controls",
    "module": "00",
    "status": "not-applicable",
    "level": "model",
-   "reason": "module 00 holds only definitions, axioms and premises and no operations (ontology/00-system.md:46-96; proofs-d1f/PROOFS.md module 00 decision); its system-wide invariants are proved in the composed protocols (proofs/, proofs-d9/)"
+   "reason": "module 00 holds only definitions, axioms and premises and no operations (ontology/00-system.md:46-96; proofs-d1f/PROOFS.md module 00 decision); its system-wide axioms are instantiated in the module contracts (model level) and model-checked over six composed mechanisms (sem-mc-sys00-reviewed, -as-built, sem-control-sys00; mc, exhaustive within bounds); no cross-module proof of them exists (proof debt D-5)"
   },
   {
    "gate": "3.7-suites",
@@ -2349,7 +2349,7 @@
   {
    "gate": "3.7-perf",
    "module": "product",
-   "status": "closed",
+   "status": "blocked",
    "level": "product",
    "evidence": [
     "run:val-perf-sc256-upstream-1",
@@ -2365,7 +2365,7 @@
    "as_built_findings": [
     "F-C0606"
    ],
-   "remaining": "A/B of the existing baseline configurations that can run here (Community 2026.1, 2 CPUs, driver 5.3.2 vs 5.4.0): SC-002 verify equal (2 runs); SC-003 1.42/1.41 s for 100,000 records, longest batch 39/31 ms, and committer-side longest overlapping commit 311/55/57 and 253/39/28 ms; spec 227 SC-010 exceeds its 1.1x budget in 6 of 6 runs (F-C0606). SC-003's stated target environment (an Enterprise laptop container) is not available (3.7-editions, blocked); Neo4j/GDS/Memgraph legs, LDBC SNB and the Arno/Enterprise benchmark scripts were not run (blocked-access)"
+   "remaining": "runnable subset done (Community 2026.1, 2 CPUs, driver 5.3.2 vs 5.4.0): SC-002 verify equal (2 runs); SC-003 1.42/1.41 s for 100,000 records, longest batch 39/31 ms, committer-side longest overlapping commit 311/55/57 and 253/39/28 ms; spec 227 SC-010 exceeds its 1.1x budget in 6 of 6 runs (F-C0606). Blocked-access for the rest of the gate's baseline configurations (review R4-11): SC-003's target platform (an Enterprise laptop container), the Neo4j/GDS/Memgraph legs and LDBC SNB (no such services or datasets here), and the Enterprise/Arno benchmarks/ scripts (no Enterprise licence, no x86_64 libarno_callout.so; validation/SUITES.md:188-190)"
   },
   {
    "gate": "3.7-e2e",

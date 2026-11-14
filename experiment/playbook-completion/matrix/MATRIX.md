@@ -10,8 +10,8 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 3.1-grade | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.1-terms | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.1-index | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
-| 3.1-cells | method | 12 | 0 | 6 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 18 | 1 |
-| 3.1-coverage | method | 1 | 0 | 23 | 0 | 0 | 5 | 0 | 0 | 0 | 0 | 19 | 0 |
+| 3.1-cells | method | 18 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 18 | 1 |
+| 3.1-coverage | method | 24 | 0 | 5 | 0 | 0 | 5 | 5 | 0 | 0 | 0 | 19 | 0 |
 | 3.1-intent | method | 19 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 18 | 0 |
 | 3.2-library | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.2-differential | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
@@ -27,7 +27,7 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 3.3-cost | model | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.3-model-check | model | 19 | 0 | 0 | 0 | 0 | 19 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 3.3a-axioms | model | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 |
-| 3.3a-mechanisms | model | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 |
+| 3.3a-mechanisms | model | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 3.3a-lifecycles | model | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 3.3a-domain-contract | model | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 3.3a-writesets | model | 185 | 0 | 18 | 0 | 1 | 82 | 0 | 29 | 85 | 0 | 7 | 1 |
@@ -53,10 +53,10 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 3.7-integration-worlds | product | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 3.7-differential | method | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 3.7-e2e | product | 0 | 0 | 0 | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 |
-| 3.7-trace-replay | product | 14 | 0 | 3 | 1 | 1 | 14 | 0 | 0 | 0 | 0 | 4 | 1 |
+| 3.7-trace-replay | product | 16 | 0 | 1 | 1 | 1 | 14 | 0 | 0 | 0 | 0 | 4 | 1 |
 | 3.7-lock-log | product | 14 | 0 | 1 | 1 | 3 | 4 | 0 | 0 | 0 | 0 | 12 | 3 |
 | 3.7-mutation | product | 0 | 0 | 15 | 3 | 1 | 1 | 0 | 0 | 0 | 0 | 17 | 1 |
-| 3.7-perf | product | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 |
+| 3.7-perf | product | 0 | 0 | 0 | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 3.7-failure-controls | product | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 3.7-suites | product | 0 | 0 | 0 | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 3.7-editions | product | 0 | 0 | 0 | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 |
@@ -78,7 +78,7 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 5c-root-causes | method | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 5c-reviewers | method | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 |
 
-Totals: {'closed': 516, 'not-applicable': 35, 'open': 188, 'blocked': 8}; evidence grade of closed cells: {'registered-run': 405, 'inspected': 111}; product: {'unknown': 202, 'n/a': 33, 'fails': 396, 'intent-undecided': 1, 'holds-in-model-only': 1, 'holds-live': 29, 'holds-inspected': 85}
+Totals: {'closed': 545, 'not-applicable': 35, 'open': 163, 'blocked': 9}; evidence grade of closed cells: {'registered-run': 435, 'inspected': 110}; product: {'unknown': 202, 'n/a': 33, 'fails': 396, 'intent-undecided': 6, 'holds-in-model-only': 1, 'holds-live': 29, 'holds-inspected': 85}
 
 ## Writer census obligations (review R2-02)
 
@@ -88,6 +88,11 @@ From `followup-writer-census` via `matrix-input/writer-census-obligations.json`:
 
 | Cell | Store | Status | Product |
 |---|---|---|---|
+| 3.1-coverage/13/REACH-1 | ^EmbedQueue | closed | intent-undecided |
+| 3.1-coverage/13/REACH-2 | Graph_KG.docs_quarantine | closed | intent-undecided |
+| 3.1-coverage/13/REACH-3 | Graph_KG.edge_vector_quarantine | closed | intent-undecided |
+| 3.1-coverage/13/REACH-4 | ^ArnoKG | closed | intent-undecided |
+| 3.1-coverage/13/REACH-5 | Graph_KG.rdf_edges__ivg400rescue / __ivg400unplaced | closed | intent-undecided |
 | 3.1-coverage/13/REACH-1 | ^EmbedQueue(reqId, text \| node_id \| result \| graph) | open | unknown |
 | 3.1-coverage/13/REACH-2 | Graph_KG.docs_quarantine | open | unknown |
 | 3.1-coverage/13/REACH-3 | Graph_KG.edge_vector_quarantine | open | unknown |

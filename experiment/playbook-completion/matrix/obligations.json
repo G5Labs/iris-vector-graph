@@ -183,21 +183,25 @@
    "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    {
-     "kind": "inventory",
-     "ref": "models/breadth-b/inventory/07.json"
-    }
+   "cited_runs": [
+    "ont2-independent-recheck-r2",
+    "ont2-ontology-check-r2"
    ],
+   "evidence": [
+    "run:ont2-ontology-check-r2",
+    "run:ont2-independent-recheck-r2",
+    "experiment/playbook-completion/ontology/07-text-search.md (Cells)",
+    "experiment/playbook-completion/ontology/evidence-additions.json#coverage_additions"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.1-cells",
    "level": "method",
    "module": "07",
+   "product_basis": "All declared (state x command) cells defined or open on a human decision (checker [cell] rule, 0 violations). Added entities 'docs table search' (iFind word index present/absent x default/named graph; engine kg_TXT, operators shim, SQL kg_TXT: 12 cells, the SQL procedure refused without the index, TXT-B12.90/91) and 'older text search' (TextSearchEngine: tables readable/reads fail x set up and four searches: 10 cells, TXT-B19.90-92). The 4 HD-0701 cells (5 rows) stay open and assigned to HD-0701: a reviewed model's working answer is not a human decision, so they are not resolved here.",
    "product_obligation": "unknown",
-   "reason": "All 53 cells are defined or open; 4 cells are open on HD-0701 (building x build/insert/drop, upgrading x build/drop: 5 rows) whose working answer (serialize, complete-or-unavailable) the reviewed model now covers. The docs-table text search (kg_TXT engine/SQL/operators) and TextSearchEngine have no entity in Cells.",
-   "remaining": "Add cells for kg_TXT (docs table: iFind present/absent x graph) and TextSearchEngine; resolve the HD-0701 cells to the reviewed outcome.",
-   "source": "modules/07.json",
-   "status": "open"
+   "remaining": "HD-0701 (human) decides the 5 open rows",
+   "source": "matrix-input/ontology-2.json",
+   "status": "closed"
   },
   {
    "cited_runs": [],
@@ -263,62 +267,104 @@
    "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "ont2-independent-recheck-r2",
+    "ont2-ontology-check-r2"
+   ],
+   "evidence": [
+    "run:ont2-ontology-check-r2",
+    "run:ont2-independent-recheck-r2",
+    "experiment/playbook-completion/ontology/12-erasure.md (Cells)"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.1-cells",
    "level": "method",
    "module": "12",
+   "product_basis": "All cells defined (checker). Added entities 'whole namespace' (holds content/empty x erase everything, erase one graph; ERS-B93, ERS-B93.1, ERS-B1, ERS-B1.4) and 'node in a sweep' (holds nothing/holds an edge or data x sweep the graph, count only; ERS-B94, ERS-B94.1, ERS-B94.2); the 3 HD-1201 open cells unchanged. The store list and content check (GraphStores) only read and have no states.",
    "product_obligation": "unknown",
-   "remaining": "closed claim cites no registered run or committed artifact",
-   "status": "open"
+   "remaining": "HD-1201 (human) decides the 3 open rows",
+   "source": "matrix-input/ontology-2.json",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "ont2-independent-recheck-r2",
+    "ont2-ontology-check-r2"
+   ],
+   "evidence": [
+    "run:ont2-ontology-check-r2",
+    "run:ont2-independent-recheck-r2",
+    "experiment/playbook-completion/ontology/13-redaction.md (Cells)"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.1-cells",
    "level": "method",
    "module": "13",
+   "product_basis": "All declared cells defined or open on a human decision (checker). No entity is missing: the in-progress query and the reach statements (RED-B90..B95) describe reads and stores with no states of their own; the redaction run and ledger view entities already have every cell.",
    "product_obligation": "unknown",
-   "remaining": "closed claim cites no registered run or committed artifact",
-   "status": "open"
+   "remaining": "",
+   "source": "matrix-input/ontology-2.json",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "ont2-independent-recheck-r2",
+    "ont2-ontology-check-r2"
+   ],
+   "evidence": [
+    "run:ont2-ontology-check-r2",
+    "run:ont2-independent-recheck-r2",
+    "experiment/playbook-completion/ontology/14-replay.md (Cells)"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.1-cells",
    "level": "method",
    "module": "14",
+   "product_basis": "All declared cells defined (checker). No entity is missing: the record readers, canonical form, NDJSON export and diff added here (RPL-B90..B92.5, RPL-T90) are reads with no states; the existing entity covers verify and replay.",
    "product_obligation": "unknown",
-   "remaining": "closed claim cites no registered run or committed artifact",
-   "status": "open"
+   "remaining": "",
+   "source": "matrix-input/ontology-2.json",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "experiment/playbook-uplift/ontology/15-integrations.md ## Cells",
-    "modules/15.json entry_points.cells_notes"
+   "cited_runs": [
+    "ont2-independent-recheck-r2",
+    "ont2-ontology-check-r2"
    ],
+   "evidence": [
+    "run:ont2-ontology-check-r2",
+    "run:ont2-independent-recheck-r2",
+    "experiment/playbook-completion/ontology/15-integrations.md (Cells)"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.1-cells",
    "level": "method",
    "module": "15",
+   "product_basis": "All cells defined or open on a human decision (checker). Added the 7 entities the matrix named: code crosswalk, FHIR bridge, concept pipeline, prefix registry, FHIR sync task, ivg fhir CLI, Cypher anchors (73 cells; 1 open: FHIR sync task x unreadable item x task run on HD-1504; the IRIS for Health-only states cite statements that say what Community does). The existing FHIR graph/busy/erase cell stays on HD-1503.",
    "product_obligation": "unknown",
-   "remaining": "Every existing cell is defined or assigned (FHIR graph/busy/erase -> HD-1503), but entities with statements have no cells: code crosswalk, FHIR bridge, concept pipeline, prefix registry, sync task, `ivg fhir` CLI, Cypher anchors.",
-   "source": "modules/15.json",
-   "status": "open"
+   "remaining": "HD-1503 and HD-1504 (human) decide their open rows",
+   "source": "matrix-input/ontology-2.json",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "ontology/16-interfaces.md:232-305",
-    "modules/16.json#cells_map"
+   "cited_runs": [
+    "ont2-independent-recheck-r2",
+    "ont2-ontology-check-r2"
    ],
+   "evidence": [
+    "run:ont2-ontology-check-r2",
+    "run:ont2-independent-recheck-r2",
+    "experiment/playbook-completion/ontology/16-interfaces.md (Cells)"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.1-cells",
    "level": "method",
    "module": "16",
+   "product_basis": "All cells defined or open on a human decision (checker). Added the entities the matrix named: Bolt explicit transaction (idle, after begin, rows waiting, rows waiting after begin x begin, run, pull all, pull some, discard, commit, rollback: 28 cells), generated GraphQL call (20 cells; 3 'deep query' rows open on HD-1605, which asks whether the generated server should match the sample API's depth limit), demo server call (15) and fraud server call (12).",
    "product_obligation": "unknown",
-   "remaining": "cells exist for 5 entities and map to entry points; add cells for Bolt explicit transactions/PULL, generated GraphQL and demo/fraud servers",
-   "source": "modules/16.json",
-   "status": "open"
+   "remaining": "HD-1605 (human) decides the 3 open rows",
+   "source": "matrix-input/ontology-2.json",
+   "status": "closed"
   },
   {
    "cited_runs": [],
@@ -349,25 +395,56 @@
    "status": "closed"
   },
   {
-   "cited_runs": [],
+   "cited_runs": [
+    "ont2-coverage-r2",
+    "ont2-coverage-selftest-r2",
+    "ont2-independent-recheck-r2",
+    "ont2-ontology-check-r2"
+   ],
    "evidence": [
+    "run:ont2-coverage-r2",
+    "run:ont2-coverage-selftest-r2",
+    "run:ont2-ontology-check-r2",
+    "run:ont2-independent-recheck-r2",
+    "experiment/playbook-completion/ontology/reconcile-records.json",
+    "experiment/playbook-completion/ontology/tools/coverage_reconcile.py",
+    "experiment/playbook-completion/ontology/evidence-additions.json#coverage_additions",
     "experiment/playbook-completion/models/breadth-c/inventory.json",
     "experiment/playbook-completion/models/breadth-c/tools/inventory.py"
    ],
+   "evidence_grade": "registered-run",
    "gate": "3.1-coverage",
    "level": "method",
    "module": "00",
+   "product_basis": "1079 inventoried entries reconciled mechanically (record:helper 7, record:not-deployed 15, record:owner 117, record:tooling 940); every record validated (entry in the inventory, named statements exist, helper targets covered). The method step is done; whether each stated behaviour is the intended one is the other gates' question.",
    "product_obligation": "unknown",
-   "remaining": "assign owners (Scope lines) for the unowned product writers (import_graph_ndjson, import_rdf, load_networkx, load_obo, materialize/retract_inference, backfill_deg2p_exact), engine construction, the package export list, the MCP stdio server and the operator scripts listed under reconciliation",
-   "source": "modules/00.json",
-   "status": "open"
+   "remaining": "",
+   "source": "matrix-input/ontology-2.json",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
+   "as_built_findings": [
+    "F-0104",
+    "F-0105"
+   ],
+   "cited_runs": [
+    "ont2-coverage-r2",
+    "ont2-coverage-selftest-r2",
+    "ont2-independent-recheck-r2",
+    "ont2-ontology-check-r2"
+   ],
    "evidence": [
+    "run:ont2-coverage-r2",
+    "run:ont2-coverage-selftest-r2",
+    "run:ont2-ontology-check-r2",
+    "run:ont2-independent-recheck-r2",
+    "experiment/playbook-completion/ontology/reconcile-records.json",
+    "experiment/playbook-completion/ontology/tools/coverage_reconcile.py",
+    "experiment/playbook-completion/ontology/evidence-additions.json#coverage_additions",
     "models/breadth-a/inventory/01.json",
     "models/breadth-a/tools/inventory.py"
    ],
+   "evidence_grade": "registered-run",
    "findings": [
     "F-0104",
     "F-0105"
@@ -378,138 +455,260 @@
    "product_basis": {
     "fails": [
      "finding F-0104",
-     "finding F-0105"
+     "finding F-0105",
+     "stated fails by matrix-input/ontology-2.json"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "96 inventoried entry points no statement or cell covers (of 314); add statements or record them as helpers",
-   "source": "modules/01.json",
-   "status": "open"
+   "remaining": "",
+   "source": "matrix-input/ontology-2.json",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
+   "cited_runs": [
+    "ont2-coverage-r2",
+    "ont2-coverage-selftest-r2",
+    "ont2-independent-recheck-r2",
+    "ont2-ontology-check-r2"
+   ],
    "evidence": [
+    "run:ont2-coverage-r2",
+    "run:ont2-coverage-selftest-r2",
+    "run:ont2-ontology-check-r2",
+    "run:ont2-independent-recheck-r2",
+    "experiment/playbook-completion/ontology/reconcile-records.json",
+    "experiment/playbook-completion/ontology/tools/coverage_reconcile.py",
+    "experiment/playbook-completion/ontology/evidence-additions.json#coverage_additions",
     "models/breadth-a/inventory/02.json",
     "models/breadth-a/tools/inventory.py"
    ],
+   "evidence_grade": "registered-run",
    "gate": "3.1-coverage",
    "level": "method",
    "module": "02",
+   "product_basis": "46 inventoried entries reconciled mechanically (inventory 40, statement-match 6); every record validated (entry in the inventory, named statements exist, helper targets covered). The method step is done; whether each stated behaviour is the intended one is the other gates' question.",
    "product_obligation": "unknown",
-   "remaining": "6 inventoried entry points no statement or cell covers (of 46); add statements or record them as helpers",
-   "source": "modules/02.json",
-   "status": "open"
+   "remaining": "",
+   "source": "matrix-input/ontology-2.json",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
+   "cited_runs": [
+    "ont2-coverage-r2",
+    "ont2-coverage-selftest-r2",
+    "ont2-independent-recheck-r2",
+    "ont2-ontology-check-r2"
+   ],
    "evidence": [
+    "run:ont2-coverage-r2",
+    "run:ont2-coverage-selftest-r2",
+    "run:ont2-ontology-check-r2",
+    "run:ont2-independent-recheck-r2",
+    "experiment/playbook-completion/ontology/reconcile-records.json",
+    "experiment/playbook-completion/ontology/tools/coverage_reconcile.py",
+    "experiment/playbook-completion/ontology/evidence-additions.json#coverage_additions",
     "models/breadth-a/inventory/03.json",
     "models/breadth-a/tools/inventory.py"
    ],
+   "evidence_grade": "registered-run",
    "gate": "3.1-coverage",
    "level": "method",
    "module": "03",
+   "product_basis": "98 inventoried entries reconciled mechanically (inventory 68, record:helper 2, record:other-module 3, statement-match 25); every record validated (entry in the inventory, named statements exist, helper targets covered). The method step is done; whether each stated behaviour is the intended one is the other gates' question.",
    "product_obligation": "unknown",
-   "remaining": "30 inventoried entry points no statement or cell covers (of 98); add statements or record them as helpers",
-   "source": "modules/03.json",
-   "status": "open"
+   "remaining": "",
+   "source": "matrix-input/ontology-2.json",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
+   "cited_runs": [
+    "ont2-coverage-r2",
+    "ont2-coverage-selftest-r2",
+    "ont2-independent-recheck-r2",
+    "ont2-ontology-check-r2"
+   ],
    "evidence": [
+    "run:ont2-coverage-r2",
+    "run:ont2-coverage-selftest-r2",
+    "run:ont2-ontology-check-r2",
+    "run:ont2-independent-recheck-r2",
+    "experiment/playbook-completion/ontology/reconcile-records.json",
+    "experiment/playbook-completion/ontology/tools/coverage_reconcile.py",
+    "experiment/playbook-completion/ontology/evidence-additions.json#coverage_additions",
     "models/breadth-a/inventory/04.json",
     "models/breadth-a/tools/inventory.py"
    ],
+   "evidence_grade": "registered-run",
    "gate": "3.1-coverage",
    "level": "method",
    "module": "04",
+   "product_basis": "167 inventoried entries reconciled mechanically (inventory 120, inventory-not-counted 16, record:helper 5, record:other-module 10, record:statement 1, statement-match 15); every record validated (entry in the inventory, named statements exist, helper targets covered). The method step is done; whether each stated behaviour is the intended one is the other gates' question.",
    "product_obligation": "unknown",
-   "remaining": "31 inventoried entry points no statement or cell covers (of 167); add statements or record them as helpers",
-   "source": "modules/04.json",
-   "status": "open"
+   "remaining": "",
+   "source": "matrix-input/ontology-2.json",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
+   "cited_runs": [
+    "ont2-coverage-r2",
+    "ont2-coverage-selftest-r2",
+    "ont2-independent-recheck-r2",
+    "ont2-ontology-check-r2"
+   ],
    "evidence": [
+    "run:ont2-coverage-r2",
+    "run:ont2-coverage-selftest-r2",
+    "run:ont2-ontology-check-r2",
+    "run:ont2-independent-recheck-r2",
+    "experiment/playbook-completion/ontology/reconcile-records.json",
+    "experiment/playbook-completion/ontology/tools/coverage_reconcile.py",
+    "experiment/playbook-completion/ontology/evidence-additions.json#coverage_additions",
     "models/breadth-a/inventory/05.json",
     "models/breadth-a/tools/inventory.py"
    ],
+   "evidence_grade": "registered-run",
    "gate": "3.1-coverage",
    "level": "method",
    "module": "05",
+   "product_basis": "134 inventoried entries reconciled mechanically (inventory 117, inventory-not-counted 8, record:helper 7, statement-match 2); every record validated (entry in the inventory, named statements exist, helper targets covered). The method step is done; whether each stated behaviour is the intended one is the other gates' question.",
    "product_obligation": "unknown",
-   "remaining": "9 inventoried entry points no statement or cell covers (of 134); add statements or record them as helpers",
-   "source": "modules/05.json",
-   "status": "open"
+   "remaining": "",
+   "source": "matrix-input/ontology-2.json",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
+   "cited_runs": [
+    "ont2-coverage-r2",
+    "ont2-coverage-selftest-r2",
+    "ont2-independent-recheck-r2",
+    "ont2-ontology-check-r2"
+   ],
    "evidence": [
+    "run:ont2-coverage-r2",
+    "run:ont2-coverage-selftest-r2",
+    "run:ont2-ontology-check-r2",
+    "run:ont2-independent-recheck-r2",
+    "experiment/playbook-completion/ontology/reconcile-records.json",
+    "experiment/playbook-completion/ontology/tools/coverage_reconcile.py",
+    "experiment/playbook-completion/ontology/evidence-additions.json#coverage_additions",
     "models/breadth-a/inventory/06.json",
     "models/breadth-a/tools/inventory.py"
    ],
+   "evidence_grade": "registered-run",
    "gate": "3.1-coverage",
    "level": "method",
    "module": "06",
+   "product_basis": "182 inventoried entries reconciled mechanically (inventory 130, inventory-not-counted 9, record:helper 2, record:other-module 3, record:statement 3, statement-match 35); every record validated (entry in the inventory, named statements exist, helper targets covered). The method step is done; whether each stated behaviour is the intended one is the other gates' question.",
    "product_obligation": "unknown",
-   "remaining": "43 inventoried entry points no statement or cell covers (of 182); add statements or record them as helpers",
-   "source": "modules/06.json",
-   "status": "open"
+   "remaining": "",
+   "source": "matrix-input/ontology-2.json",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    {
-     "kind": "inventory",
-     "ref": "models/breadth-b/inventory/07.json"
-    }
+   "cited_runs": [
+    "ont2-coverage-r2",
+    "ont2-coverage-selftest-r2",
+    "ont2-independent-recheck-r2",
+    "ont2-ontology-check-r2"
    ],
+   "evidence": [
+    "run:ont2-coverage-r2",
+    "run:ont2-coverage-selftest-r2",
+    "run:ont2-ontology-check-r2",
+    "run:ont2-independent-recheck-r2",
+    "experiment/playbook-completion/ontology/reconcile-records.json",
+    "experiment/playbook-completion/ontology/tools/coverage_reconcile.py",
+    "experiment/playbook-completion/ontology/evidence-additions.json#coverage_additions"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.1-coverage",
    "level": "method",
    "module": "07",
+   "product_basis": "48 inventoried entries reconciled mechanically (inventory 41, record:helper 1, statement-match 6); every record validated (entry in the inventory, named statements exist, helper targets covered). The method step is done; whether each stated behaviour is the intended one is the other gates' question.",
    "product_obligation": "unknown",
-   "reason": "48 entry points derived mechanically; 0 cell commands lack an entry point; 7 entry points no statement covers: the Index handle's fulltext build/search/insert/drop/info (index_protocol.py:83-105; Index.build reaches TXT-X2 only via vector.py:299-310), create_index(replace=True)'s drop (vector.py:243-259) and HybridSearchFusion.__init__ (pure). 12 entry points are in no cell (kg_TXT x3, TextSearchEngine x5, RRFFusion x2, kg_RERANK, HybridSearchFusion.__init__).",
-   "remaining": "Add statements for the Index handle fulltext path and create_index(replace=True).",
-   "source": "modules/07.json",
-   "status": "open"
+   "remaining": "",
+   "source": "matrix-input/ontology-2.json",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
+   "cited_runs": [
+    "ont2-coverage-r2",
+    "ont2-coverage-selftest-r2",
+    "ont2-independent-recheck-r2",
+    "ont2-ontology-check-r2"
+   ],
    "evidence": [
+    "run:ont2-coverage-r2",
+    "run:ont2-coverage-selftest-r2",
+    "run:ont2-ontology-check-r2",
+    "run:ont2-independent-recheck-r2",
+    "experiment/playbook-completion/ontology/reconcile-records.json",
+    "experiment/playbook-completion/ontology/tools/coverage_reconcile.py",
+    "experiment/playbook-completion/ontology/evidence-additions.json#coverage_additions",
     "experiment/playbook-completion/models/breadth-b/inventory/08.json",
     "experiment/playbook-completion/models/breadth-b/tools/scope/08.json"
    ],
+   "evidence_grade": "registered-run",
    "gate": "3.1-coverage",
    "level": "method",
    "module": "08",
+   "product_basis": "101 inventoried entries reconciled mechanically (inventory 49, record:helper 16, record:not-entry-point 4, record:other-module 3, statement-match 29); every record validated (entry in the inventory, named statements exist, helper targets covered). The method step is done; whether each stated behaviour is the intended one is the other gates' question.",
    "product_obligation": "unknown",
-   "reason": "Mechanical inventory: 101 entry points; 52 not named by any statement, classified: covered at class level by CYP-D17/CYP-B11/CYP-T11.3 (CypherFn.cls:1-11 cited, per-function semantics not stated): 31; operators shim methods of other modules' operators (kg_GRAPH_WALK, kg_WCC, kg_CDLP, kg_SUBGRAPH, kg_PPR*, kg_NEIGHBORS, kg_MENTIONS, kg_RERANK, kg_NEIGHBORHOOD_EXPANSION): no CYP statement names them (real omission of the shim's contract; behaviour owned by modules 06/07/10): 11; inventory false positives (dbms.clientconfig answer keys, not procedures): 4; callers owned by other modules (16 interfaces / 09 native) that reach execute_cypher: 3; real omissions (no statement covers): 3",
-   "remaining": "Add statements for answered_without_parsing (read-only verdict of shortcut texts), map_sql_relationship (namespace-wide, no graph key) and the operators shim contract; per-function CypherFn semantics.",
-   "source": "modules/08.json",
-   "status": "open"
+   "remaining": "",
+   "source": "matrix-input/ontology-2.json",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
+   "cited_runs": [
+    "ont2-coverage-r2",
+    "ont2-coverage-selftest-r2",
+    "ont2-independent-recheck-r2",
+    "ont2-ontology-check-r2"
+   ],
    "evidence": [
+    "run:ont2-coverage-r2",
+    "run:ont2-coverage-selftest-r2",
+    "run:ont2-ontology-check-r2",
+    "run:ont2-independent-recheck-r2",
+    "experiment/playbook-completion/ontology/reconcile-records.json",
+    "experiment/playbook-completion/ontology/tools/coverage_reconcile.py",
+    "experiment/playbook-completion/ontology/evidence-additions.json#coverage_additions",
     "inspected:experiment/playbook-completion/models/breadth-b/inventory/09.json"
    ],
+   "evidence_grade": "registered-run",
    "gate": "3.1-coverage",
    "level": "method",
    "module": "09",
+   "product_basis": "63 inventoried entries reconciled mechanically (inventory 48, statement-match 15); every record validated (entry in the inventory, named statements exist, helper targets covered). The method step is done; whether each stated behaviour is the intended one is the other gates' question.",
    "product_obligation": "unknown",
-   "reason": "63 entry points derived from source; 15 have no covering statement: IVG.CypherEngine's helpers (Query, Scalar, GetLabels*, GetNodeCount, GetEdgeCount, NodeExists, GetLabelCounts*, InitSchema*, RebuildKG, IsReady; QueryJson/Query/Scalar run writes too, with no read_only) and Props.GetJson/LayoutOK. Background jobs (Gen.Build job, Exec.Part workers), the deploy DropAll and the namespace mode global are inventoried and covered.",
-   "remaining": "statements for IVG.CypherEngine's helper methods (incl. that Query runs writes and InitSchema/RebuildKG are lifecycle writers) and the property reader's JSON accessor",
-   "source": "modules/09.json",
-   "status": "open"
+   "remaining": "",
+   "source": "matrix-input/ontology-2.json",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
+   "as_built_findings": [
+    "F-1013"
+   ],
+   "cited_runs": [
+    "ont2-coverage-r2",
+    "ont2-coverage-selftest-r2",
+    "ont2-independent-recheck-r2",
+    "ont2-ontology-check-r2"
+   ],
    "evidence": [
+    "run:ont2-coverage-r2",
+    "run:ont2-coverage-selftest-r2",
+    "run:ont2-ontology-check-r2",
+    "run:ont2-independent-recheck-r2",
+    "experiment/playbook-completion/ontology/reconcile-records.json",
+    "experiment/playbook-completion/ontology/tools/coverage_reconcile.py",
+    "experiment/playbook-completion/ontology/evidence-additions.json#coverage_additions",
     "models/breadth-b/inventory/10.json",
     "$RUN_DIR/breadth-b/inventory/10-reconcile.json",
     "live/breadth-b/10_reconcile.py"
    ],
+   "evidence_grade": "registered-run",
    "findings": [
     "F-1013"
    ],
@@ -518,80 +717,171 @@
    "module": "10",
    "product_basis": {
     "fails": [
-     "finding F-1013"
+     "finding F-1013",
+     "stated fails by matrix-input/ontology-2.json"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "reason": "Reconciled mechanically: other-module (cypher procs, builders, other modules' writers) and reached-from-covered entries are not omissions.",
-   "remaining": "178 of 295 mechanically derived entry points are named by no ALG statement: {'direct-surface-only': 56, 'product-caller': 26, 'reached-from-covered': 38, 'objectscript-caller-only': 30, 'other-module': 28}. Genuine omissions are the direct-surface-only public class methods (PageRankEmbedded.ComputePageRank*, PageRank.WithUnscored, Communities.KCoreJson/SCCJson, Subgraph.PPRGuidedJson, ArnoAccel.*Json, legacy Traversal.BFS*/KHop2*, NKGAccel facades, VarLength.LastLevelPart, arno_bridge helpers) and the product-caller set (host.py, admin.py, query.py callers); statements or explicit internal/deprecated status are needed for each.",
-   "source": "modules/10.json",
-   "status": "open"
+   "remaining": "",
+   "source": "matrix-input/ontology-2.json",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
+   "cited_runs": [
+    "ont2-coverage-r2",
+    "ont2-coverage-selftest-r2",
+    "ont2-independent-recheck-r2",
+    "ont2-ontology-check-r2"
+   ],
    "evidence": [
+    "run:ont2-coverage-r2",
+    "run:ont2-coverage-selftest-r2",
+    "run:ont2-ontology-check-r2",
+    "run:ont2-independent-recheck-r2",
+    "experiment/playbook-completion/ontology/reconcile-records.json",
+    "experiment/playbook-completion/ontology/tools/coverage_reconcile.py",
+    "experiment/playbook-completion/ontology/evidence-additions.json#coverage_additions",
     "inventory:experiment/playbook-completion/models/breadth-b/inventory/11.json"
    ],
+   "evidence_grade": "registered-run",
    "gate": "3.1-coverage",
    "level": "method",
    "module": "11",
+   "product_basis": "123 inventoried entries reconciled mechanically (inventory 104, record:helper 13, record:statement 1, statement-match 5); every record validated (entry in the inventory, named statements exist, helper targets covered). The method step is done; whether each stated behaviour is the intended one is the other gates' question.",
    "product_obligation": "unknown",
-   "reason": "123 entry points derived mechanically (66 ObjectScript class methods, 48 Python, 2 engine, 2 SQL DML, 2 SQL reads, 2 object paths, 1 guard-site set); 19 have no covering statement: 3 real omissions (StmtForTuple, BuildCorrelationIndex, ensure_ledger_index), 12 internal helpers that are public only by visibility (NewId, MetaGet, ErrLimit, RevisionObj, EncNull, Rec, IsReserved, Run, ParseQuals, QualsJson, WeightOf, IsNumeric), 4 trivial Python constructors/decoders.",
-   "remaining": "Add statements for StmtForTuple (statement lookup by tuple used by verify; Ledger.cls:176-179) and for the correlation index lifecycle (LedgerRevision.BuildCorrelationIndex :65-85, schema.py ensure_ledger_index :737-770); state that LedgerApply/CommitInTxn/WriteRevision are public class methods callable outside a commit (premise P-1105).",
-   "source": "modules/11.json",
-   "status": "open"
+   "remaining": "",
+   "source": "matrix-input/ontology-2.json",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "ont2-coverage-r2",
+    "ont2-coverage-selftest-r2",
+    "ont2-independent-recheck-r2",
+    "ont2-ontology-check-r2"
+   ],
+   "evidence": [
+    "run:ont2-coverage-r2",
+    "run:ont2-coverage-selftest-r2",
+    "run:ont2-ontology-check-r2",
+    "run:ont2-independent-recheck-r2",
+    "experiment/playbook-completion/ontology/reconcile-records.json",
+    "experiment/playbook-completion/ontology/tools/coverage_reconcile.py",
+    "experiment/playbook-completion/ontology/evidence-additions.json#coverage_additions"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.1-coverage",
    "level": "method",
    "module": "12",
+   "product_basis": "35 inventoried entries reconciled mechanically (record:helper 11, record:other-module 2, statement-match 22); every record validated (entry in the inventory, named statements exist, helper targets covered). The method step is done; whether each stated behaviour is the intended one is the other gates' question.",
    "product_obligation": "unknown",
-   "remaining": "entry-point reconciliation for 12-14 not run",
-   "status": "open"
+   "remaining": "",
+   "source": "matrix-input/ontology-2.json",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "ont2-coverage-r2",
+    "ont2-coverage-selftest-r2",
+    "ont2-independent-recheck-r2",
+    "ont2-ontology-check-r2"
+   ],
+   "evidence": [
+    "run:ont2-coverage-r2",
+    "run:ont2-coverage-selftest-r2",
+    "run:ont2-ontology-check-r2",
+    "run:ont2-independent-recheck-r2",
+    "experiment/playbook-completion/ontology/reconcile-records.json",
+    "experiment/playbook-completion/ontology/tools/coverage_reconcile.py",
+    "experiment/playbook-completion/ontology/evidence-additions.json#coverage_additions"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.1-coverage",
    "level": "method",
    "module": "13",
+   "product_basis": "23 inventoried entries reconciled mechanically (record:helper 5, statement-match 18); every record validated (entry in the inventory, named statements exist, helper targets covered). The method step is done; whether each stated behaviour is the intended one is the other gates' question.",
    "product_obligation": "unknown",
-   "remaining": "entry-point reconciliation for 12-14 not run",
-   "status": "open"
+   "remaining": "",
+   "source": "matrix-input/ontology-2.json",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "ont2-coverage-r2",
+    "ont2-coverage-selftest-r2",
+    "ont2-independent-recheck-r2",
+    "ont2-ontology-check-r2"
+   ],
+   "evidence": [
+    "run:ont2-coverage-r2",
+    "run:ont2-coverage-selftest-r2",
+    "run:ont2-ontology-check-r2",
+    "run:ont2-independent-recheck-r2",
+    "experiment/playbook-completion/ontology/reconcile-records.json",
+    "experiment/playbook-completion/ontology/tools/coverage_reconcile.py",
+    "experiment/playbook-completion/ontology/evidence-additions.json#coverage_additions"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.1-coverage",
    "level": "method",
    "module": "14",
+   "product_basis": "30 inventoried entries reconciled mechanically (record:helper 4, record:other-module 1, statement-match 25); every record validated (entry in the inventory, named statements exist, helper targets covered). The method step is done; whether each stated behaviour is the intended one is the other gates' question.",
    "product_obligation": "unknown",
-   "remaining": "entry-point reconciliation for 12-14 not run",
-   "status": "open"
+   "remaining": "",
+   "source": "matrix-input/ontology-2.json",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
+   "cited_runs": [
+    "ont2-coverage-r2",
+    "ont2-coverage-selftest-r2",
+    "ont2-independent-recheck-r2",
+    "ont2-ontology-check-r2"
+   ],
    "evidence": [
+    "run:ont2-coverage-r2",
+    "run:ont2-coverage-selftest-r2",
+    "run:ont2-ontology-check-r2",
+    "run:ont2-independent-recheck-r2",
+    "experiment/playbook-completion/ontology/reconcile-records.json",
+    "experiment/playbook-completion/ontology/tools/coverage_reconcile.py",
+    "experiment/playbook-completion/ontology/evidence-additions.json#coverage_additions",
     "models/breadth-c/inventory.json reconciliation.15",
     "modules/15.json entry_points"
    ],
+   "evidence_grade": "registered-run",
    "gate": "3.1-coverage",
    "level": "method",
    "module": "15",
+   "product_basis": "138 inventoried entries reconciled mechanically (inventory 52, record:helper 20, record:statement 2, statement-match 64); every record validated (entry in the inventory, named statements exist, helper targets covered). The method step is done; whether each stated behaviour is the intended one is the other gates' question.",
    "product_obligation": "unknown",
-   "remaining": "All 86 lexically uncovered entry points reviewed (covered under another name or internal); 5 statement omissions remain (entry_points.omissions: F-C1501 Schedule/Unschedule pair, sync DeleteEdge leaving reifiers, reify guards, delete_node second transaction, public helper ClassMethods). Background job and lifecycle operations are covered.",
-   "source": "modules/15.json",
-   "status": "open"
+   "remaining": "",
+   "source": "matrix-input/ontology-2.json",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
+   "as_built_findings": [
+    "F-1603"
+   ],
+   "cited_runs": [
+    "ont2-coverage-r2",
+    "ont2-coverage-selftest-r2",
+    "ont2-independent-recheck-r2",
+    "ont2-ontology-check-r2"
+   ],
    "evidence": [
+    "run:ont2-coverage-r2",
+    "run:ont2-coverage-selftest-r2",
+    "run:ont2-ontology-check-r2",
+    "run:ont2-independent-recheck-r2",
+    "experiment/playbook-completion/ontology/reconcile-records.json",
+    "experiment/playbook-completion/ontology/tools/coverage_reconcile.py",
+    "experiment/playbook-completion/ontology/evidence-additions.json#coverage_additions",
     "models/breadth-c/inventory.json#reconciliation.16",
     "modules/16.json#entry_points.omissions"
    ],
+   "evidence_grade": "registered-run",
    "findings": [
     "F-1603"
    ],
@@ -600,21 +890,41 @@
    "module": "16",
    "product_basis": {
     "fails": [
-     "finding F-1603"
+     "finding F-1603",
+     "stated fails by matrix-input/ontology-2.json"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "9 omissions (incl. 4 writers / deployment entries) need statements",
-   "source": "modules/16.json",
-   "status": "open"
+   "remaining": "",
+   "source": "matrix-input/ontology-2.json",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
+   "as_built_findings": [
+    "F-1708",
+    "F-1709",
+    "F-1710",
+    "F-C1701"
+   ],
+   "cited_runs": [
+    "ont2-coverage-r2",
+    "ont2-coverage-selftest-r2",
+    "ont2-independent-recheck-r2",
+    "ont2-ontology-check-r2"
+   ],
    "evidence": [
+    "run:ont2-coverage-r2",
+    "run:ont2-coverage-selftest-r2",
+    "run:ont2-ontology-check-r2",
+    "run:ont2-independent-recheck-r2",
+    "experiment/playbook-completion/ontology/reconcile-records.json",
+    "experiment/playbook-completion/ontology/tools/coverage_reconcile.py",
+    "experiment/playbook-completion/ontology/evidence-additions.json#coverage_additions",
     "models/breadth-c/inventory.json reconciliation.17",
     "modules/17.json entry_points.omissions"
    ],
+   "evidence_grade": "registered-run",
    "findings": [
     "F-1708",
     "F-1709",
@@ -629,21 +939,37 @@
      "finding F-1708",
      "finding F-1709",
      "finding F-1710",
-     "finding F-C1701"
+     "finding F-C1701",
+     "stated fails by matrix-input/ontology-2.json"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "statements for 7 omissions",
-   "source": "modules/17.json",
-   "status": "open"
+   "remaining": "",
+   "source": "matrix-input/ontology-2.json",
+   "status": "closed"
   },
   {
-   "cited_runs": [],
+   "as_built_findings": [
+    "F-C1804"
+   ],
+   "cited_runs": [
+    "ont2-coverage-r2",
+    "ont2-coverage-selftest-r2",
+    "ont2-independent-recheck-r2",
+    "ont2-ontology-check-r2"
+   ],
    "evidence": [
+    "run:ont2-coverage-r2",
+    "run:ont2-coverage-selftest-r2",
+    "run:ont2-ontology-check-r2",
+    "run:ont2-independent-recheck-r2",
+    "experiment/playbook-completion/ontology/reconcile-records.json",
+    "experiment/playbook-completion/ontology/tools/coverage_reconcile.py",
+    "experiment/playbook-completion/ontology/evidence-additions.json#coverage_additions",
     "experiment/playbook-completion/models/breadth-c/inventory.json reconciliation.18 (22 entry points; the 8 lexically uncovered are SetNodeJSON (SNP-T1.9), the private helpers IsVector/Encode/Decode/NodeRef, and the plan helpers routed_export_plan/ledger_storage_globals/snapshot_globals/kg_export_subscripts (SNP-B1.7, SNP-I1.1))"
    ],
-   "evidence_grade": "inspected",
+   "evidence_grade": "registered-run",
    "findings": [
     "F-C1804"
    ],
@@ -652,13 +978,14 @@
    "module": "18",
    "product_basis": {
     "fails": [
-     "finding F-C1804"
+     "finding F-C1804",
+     "stated fails by matrix-input/ontology-2.json"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "no cell covers the Snapshot.cls file helpers (stated by SNP-T5/SNP-X5.1 only); import/export NDJSON, import_rdf, load_networkx, load_obo are excluded by the Scope line and owned by no module (modules/00.json); SNP-B1.18/SNP-I1 do not cover routed edge vectors, which the archive omits (F-C1804)",
-   "source": "modules/18.json",
+   "remaining": "",
+   "source": "matrix-input/ontology-2.json",
    "status": "closed"
   },
   {
@@ -1459,7 +1786,7 @@
    "level": "model",
    "module": "00",
    "product_obligation": "n/a",
-   "reason": "module 00 holds only definitions, axioms and premises and no operations (ontology/00-system.md:46-96; proofs-d1f/PROOFS.md module 00 decision); its system-wide invariants are proved in the composed protocols (proofs/, proofs-d9/)",
+   "reason": "module 00 holds only definitions, axioms and premises and no operations (ontology/00-system.md:46-96; proofs-d1f/PROOFS.md module 00 decision); its system-wide axioms are instantiated in the module contracts (model level) and model-checked over six composed mechanisms (sem-mc-sys00-reviewed, -as-built, sem-control-sys00; mc, exhaustive within bounds); no cross-module proof of them exists (proof debt D-5)",
    "status": "not-applicable"
   },
   {
@@ -2001,7 +2328,7 @@
    "level": "model",
    "module": "00",
    "product_obligation": "n/a",
-   "reason": "module 00 holds only definitions, axioms and premises and no operations (ontology/00-system.md:46-96; proofs-d1f/PROOFS.md module 00 decision); its system-wide invariants are proved in the composed protocols (proofs/, proofs-d9/)",
+   "reason": "module 00 holds only definitions, axioms and premises and no operations (ontology/00-system.md:46-96; proofs-d1f/PROOFS.md module 00 decision); its system-wide axioms are instantiated in the module contracts (model level) and model-checked over six composed mechanisms (sem-mc-sys00-reviewed, -as-built, sem-control-sys00; mc, exhaustive within bounds); no cross-module proof of them exists (proof debt D-5)",
    "status": "not-applicable"
   },
   {
@@ -2529,7 +2856,7 @@
    "level": "model",
    "module": "00",
    "product_obligation": "n/a",
-   "reason": "module 00 holds only definitions, axioms and premises and no operations (ontology/00-system.md:46-96; proofs-d1f/PROOFS.md module 00 decision); its system-wide invariants are proved in the composed protocols (proofs/, proofs-d9/)",
+   "reason": "module 00 holds only definitions, axioms and premises and no operations (ontology/00-system.md:46-96; proofs-d1f/PROOFS.md module 00 decision); its system-wide axioms are instantiated in the module contracts (model level) and model-checked over six composed mechanisms (sem-mc-sys00-reviewed, -as-built, sem-control-sys00; mc, exhaustive within bounds); no cross-module proof of them exists (proof debt D-5)",
    "status": "not-applicable"
   },
   {
@@ -3124,7 +3451,7 @@
    "level": "model",
    "module": "00",
    "product_obligation": "n/a",
-   "reason": "module 00 holds only definitions, axioms and premises and no operations (ontology/00-system.md:46-96; proofs-d1f/PROOFS.md module 00 decision); its system-wide invariants are proved in the composed protocols (proofs/, proofs-d9/)",
+   "reason": "module 00 holds only definitions, axioms and premises and no operations (ontology/00-system.md:46-96; proofs-d1f/PROOFS.md module 00 decision); its system-wide axioms are instantiated in the module contracts (model level) and model-checked over six composed mechanisms (sem-mc-sys00-reviewed, -as-built, sem-control-sys00; mc, exhaustive within bounds); no cross-module proof of them exists (proof debt D-5)",
    "status": "not-applicable"
   },
   {
@@ -6135,7 +6462,7 @@
     "run:sem-control-unit",
     "run:sem-check"
    ],
-   "evidence_grade": "registered-run",
+   "evidence_grade": "mc (explorer, exhaustive within declared bounds, none truncated; 237 mechanism checks: generic machine per mechanism over a trait, one instance per object variant; 48 negative controls, at least one per law, all caught)",
    "findings": [
     "F-0103",
     "F-0107",
@@ -6390,9 +6717,9 @@
     ]
    },
    "product_obligation": "fails",
-   "remaining": "generic lemmas are explorer checks over a trait, not Verus proofs over a trait (playbook: 'proved once over a trait'); 63 axiom-breaking findings are not attached to a mechanism instance (MECHANISMS.md, last section); no result transfers to the product F-1001 (Arno callout) is blocked-access, so it is classed under the axioms but not counted as as-built evidence here.",
+   "remaining": "Reopened (review R4-10): the playbook requires the mechanisms' generic lemmas to be proved once over a trait (verification-playbook.txt:282, :642); only explorer checks over a trait exist (sem-mc-*), so the requirement is unmet: proof debt D-14 (a Verus lane, proofs-mech, is attempting it). generic lemmas are explorer checks over a trait, not Verus proofs over a trait (playbook: 'proved once over a trait'); 63 axiom-breaking findings are not attached to a mechanism instance (MECHANISMS.md, last section); no result transfers to the product F-1001 (Arno callout) is blocked-access, so it is classed under the axioms but not counted as as-built evidence here.",
    "source": "matrix-input/semantics.json",
-   "status": "closed"
+   "status": "open"
   },
   {
    "as_built_findings": [
@@ -8048,8 +8375,7 @@
   {
    "as_built_findings": [
     "F-1806",
-    "F-C1040",
-    "F-C1240"
+    "F-C1040"
    ],
    "cited_runs": [
     "st-check-own-census",
@@ -8068,8 +8394,7 @@
    "findings": [
     "F-1806",
     "F-C1001",
-    "F-C1040",
-    "F-C1240"
+    "F-C1040"
    ],
    "gate": "3.4-ownership",
    "level": "product",
@@ -8079,14 +8404,13 @@
      "finding F-1806",
      "finding F-C1001",
      "finding F-C1040",
-     "finding F-C1240",
      "stated fails by matrix-input/structural.json",
      "run st-check-own-census (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "source-level census: run-time names rest on the cited resolution hints in census_all.py/ownership.py (TABLE_HINTS, LINE_HINTS, TEMPLATE_USERS); a write form the scanner does not recognise is covered only as far as the registered census (268/268) and the 393 journal-observed pairs reach. Whether declared shared ownership is accepted is a maintainer decision (\u00a73.8).",
+   "remaining": "source-level census: run-time names rest on the cited resolution hints in census_all.py/ownership.py (TABLE_HINTS, LINE_HINTS, TEMPLATE_USERS); a write form the scanner does not recognise is covered only as far as the registered census (268/268) and the 393 journal-observed pairs reach. Whether declared shared ownership is accepted is a maintainer decision (\u00a73.8). F-C1240 was refuted after this lane (GraphStores.cls:131 lists ^ArnoKG).",
    "source": "matrix-input/structural.json",
    "status": "closed",
    "sub_lane": "ownership"
@@ -8134,16 +8458,12 @@
     "run:followup-writer-census"
    ],
    "evidence_grade": "registered-run",
-   "findings": [
-    "F-C1240"
-   ],
    "gate": "3.4-ownership",
    "level": "product",
    "level_detail": "as-built (pin 3eaa79cf), AUDITC traces",
    "module": "12",
    "product_basis": {
     "fails": [
-     "finding F-C1240",
      "lane status failed (matrix-input/correspondence_status.json)",
      "run corr-closure-scan (fail)",
      "run corr-trace-f1201 (fail)"
@@ -13932,16 +14252,20 @@
    ],
    "cited_runs": [
     "tr-controls-01",
+    "tr-controls-01-r2",
     "tr-oracle-selftest",
-    "tr-replay-01"
+    "tr-replay-01",
+    "tr-replay-01-r2"
    ],
    "evidence": [
+    "run:tr-replay-01-r2",
+    "run:tr-controls-01-r2",
     "run:tr-replay-01",
     "run:tr-controls-01",
     "run:tr-oracle-selftest",
     "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#01"
    ],
-   "evidence_grade": "trace",
+   "evidence_grade": "registered-run",
    "findings": [
     "F-0103"
    ],
@@ -13956,9 +14280,9 @@
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "initialize_schema's own steps (Tables, Marker, Classes, Kg, Record) are not trace-replayed (the journal read would transfer the whole class compile); ins_legacy not replayed. Limits: sequential traces of one scenario per family (plus the caller-transaction interleavings named); bitmap chunks and ^odd* not replayed; a pass means the as-built machine matched these traces, not that the handler performs its step on every input.",
+   "remaining": "setup replayed only on an already set-up namespace (no table created, no class compiled, ^KG not rebuilt) and only on its success path: the failure paths (F-0102: failures only logged) and a fresh-namespace setup are not trace-replayed; ins_legacy not replayed. Limits: sequential traces of one scenario per family (plus the caller-transaction interleavings named); bitmap chunks and ^odd* not replayed; a pass means the as-built machine matched these traces, not that the handler performs its step on every input.",
    "source": "matrix-input/trace-replay.json",
-   "status": "open"
+   "status": "closed"
   },
   {
    "as_built_findings": [
@@ -14206,16 +14530,18 @@
    ],
    "cited_runs": [
     "tr-controls-08",
+    "tr-controls-08-r2",
     "tr-oracle-selftest",
     "tr-replay-08"
    ],
    "evidence": [
     "run:tr-replay-08",
+    "run:tr-controls-08-r2",
     "run:tr-controls-08",
     "run:tr-oracle-selftest",
     "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#08"
    ],
-   "evidence_grade": "trace",
+   "evidence_grade": "registered-run",
    "findings": [
     "F-0805",
     "F-0806",
@@ -14237,9 +14563,9 @@
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "Orchestrator: kept open because tr-controls-08 failed one criterion (the readonly scenario's reordered-transaction control was caught by no model rule: the swapped steps are two identical AqlWrite actions); a reorder control a model rule can detect is needed before this cell closes. tr-controls-08 fails one criterion: in 08/readonly the reordered-transaction control (two identical AqlWrite steps) was flagged only by faithfulness and foreign-process, not by a model rule; Txn CallerRollback not driven. Limits: sequential traces of one scenario per family (plus the caller-transaction interleavings named); bitmap chunks and ^odd* not replayed; a pass means the as-built machine matched these traces, not that the handler performs its step on every input.",
+   "remaining": "tr-controls-08 (recorded fail) is superseded by tr-controls-08-r2: the readonly reorder control now swaps steps with different machine actions and is caught by model-post-state. Txn CallerRollback not driven. Limits: sequential traces of one scenario per family (plus the caller-transaction interleavings named); bitmap chunks and ^odd* not replayed; a pass means the as-built machine matched these traces, not that the handler performs its step on every input.",
    "source": "matrix-input/trace-replay.json",
-   "status": "open"
+   "status": "closed"
   },
   {
    "cited_runs": [
@@ -15172,7 +15498,6 @@
     "run:val-perf-default-1",
     "validation/SUITES.md"
    ],
-   "evidence_grade": "registered-run",
    "findings": [
     "F-C0606"
    ],
@@ -15188,8 +15513,8 @@
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "A/B of the existing baseline configurations that can run here (Community 2026.1, 2 CPUs, driver 5.3.2 vs 5.4.0): SC-002 verify equal (2 runs); SC-003 1.42/1.41 s for 100,000 records, longest batch 39/31 ms, and committer-side longest overlapping commit 311/55/57 and 253/39/28 ms; spec 227 SC-010 exceeds its 1.1x budget in 6 of 6 runs (F-C0606). SC-003's stated target environment (an Enterprise laptop container) is not available (3.7-editions, blocked); Neo4j/GDS/Memgraph legs, LDBC SNB and the Arno/Enterprise benchmark scripts were not run (blocked-access)",
-   "status": "closed"
+   "remaining": "runnable subset done (Community 2026.1, 2 CPUs, driver 5.3.2 vs 5.4.0): SC-002 verify equal (2 runs); SC-003 1.42/1.41 s for 100,000 records, longest batch 39/31 ms, committer-side longest overlapping commit 311/55/57 and 253/39/28 ms; spec 227 SC-010 exceeds its 1.1x budget in 6 of 6 runs (F-C0606). Blocked-access for the rest of the gate's baseline configurations (review R4-11): SC-003's target platform (an Enterprise laptop container), the Neo4j/GDS/Memgraph legs and LDBC SNB (no such services or datasets here), and the Enterprise/Arno benchmarks/ scripts (no Enterprise licence, no x86_64 libarno_callout.so; validation/SUITES.md:188-190)",
+   "status": "blocked"
   },
   {
    "cited_runs": [
@@ -16835,6 +17160,126 @@
    "product_obligation": "fails",
    "remaining": "mechanical evidence audit, adversarial review and a randomized simulator through the real product (304 schedules, invariants after every commit) all ran",
    "status": "closed"
+  },
+  {
+   "cited_runs": [
+    "ont2-coverage-r2",
+    "ont2-ontology-check-r2"
+   ],
+   "evidence": [
+    "run:ont2-ontology-check-r2",
+    "run:ont2-coverage-r2",
+    "experiment/playbook-completion/ontology/12-erasure.md (ERS-B95)",
+    "experiment/playbook-completion/ontology/13-redaction.md (RED-B91)"
+   ],
+   "evidence_grade": "registered-run",
+   "gate": "3.1-coverage",
+   "kind": "reach-obligation",
+   "level": "method",
+   "module": "13",
+   "obligation_id": "REACH-1",
+   "product_basis": "The ontology now states the store's reach as built (ERS-B95, RED-B91): which erasure (graph, node, everything) and redaction reach ^EmbedQueue, and that the redaction receipt's out-of-reach list (LedgerRedact.cls:504-508) does not name it. Whether the store is content a tenant removal must reach or name is not decided (STATUS residual question 1; no human decision HD covers it, so none is assigned).",
+   "product_obligation": "intent-undecided",
+   "remaining": "maintainer: should erase/redact reach this store, or the receipt name it? (no HD exists; not invented)",
+   "source": "matrix-input/ontology-2.json",
+   "status": "closed",
+   "store": "^EmbedQueue"
+  },
+  {
+   "cited_runs": [
+    "ont2-coverage-r2",
+    "ont2-ontology-check-r2"
+   ],
+   "evidence": [
+    "run:ont2-ontology-check-r2",
+    "run:ont2-coverage-r2",
+    "experiment/playbook-completion/ontology/12-erasure.md (ERS-B96)",
+    "experiment/playbook-completion/ontology/13-redaction.md (RED-B92)"
+   ],
+   "evidence_grade": "registered-run",
+   "gate": "3.1-coverage",
+   "kind": "reach-obligation",
+   "level": "method",
+   "module": "13",
+   "obligation_id": "REACH-2",
+   "product_basis": "The ontology now states the store's reach as built (ERS-B96, RED-B92): which erasure (graph, node, everything) and redaction reach Graph_KG.docs_quarantine, and that the redaction receipt's out-of-reach list (LedgerRedact.cls:504-508) does not name it. Whether the store is content a tenant removal must reach or name is not decided (STATUS residual question 1; no human decision HD covers it, so none is assigned).",
+   "product_obligation": "intent-undecided",
+   "remaining": "maintainer: should erase/redact reach this store, or the receipt name it? (no HD exists; not invented)",
+   "source": "matrix-input/ontology-2.json",
+   "status": "closed",
+   "store": "Graph_KG.docs_quarantine"
+  },
+  {
+   "cited_runs": [
+    "ont2-coverage-r2",
+    "ont2-ontology-check-r2"
+   ],
+   "evidence": [
+    "run:ont2-ontology-check-r2",
+    "run:ont2-coverage-r2",
+    "experiment/playbook-completion/ontology/12-erasure.md (ERS-B97)",
+    "experiment/playbook-completion/ontology/13-redaction.md (RED-B93)"
+   ],
+   "evidence_grade": "registered-run",
+   "gate": "3.1-coverage",
+   "kind": "reach-obligation",
+   "level": "method",
+   "module": "13",
+   "obligation_id": "REACH-3",
+   "product_basis": "The ontology now states the store's reach as built (ERS-B97, RED-B93): which erasure (graph, node, everything) and redaction reach Graph_KG.edge_vector_quarantine, and that the redaction receipt's out-of-reach list (LedgerRedact.cls:504-508) does not name it. Whether the store is content a tenant removal must reach or name is not decided (STATUS residual question 1; no human decision HD covers it, so none is assigned).",
+   "product_obligation": "intent-undecided",
+   "remaining": "maintainer: should erase/redact reach this store, or the receipt name it? (no HD exists; not invented)",
+   "source": "matrix-input/ontology-2.json",
+   "status": "closed",
+   "store": "Graph_KG.edge_vector_quarantine"
+  },
+  {
+   "cited_runs": [
+    "ont2-coverage-r2",
+    "ont2-ontology-check-r2"
+   ],
+   "evidence": [
+    "run:ont2-ontology-check-r2",
+    "run:ont2-coverage-r2",
+    "experiment/playbook-completion/ontology/12-erasure.md (ERS-B98)",
+    "experiment/playbook-completion/ontology/13-redaction.md (RED-B94)"
+   ],
+   "evidence_grade": "registered-run",
+   "gate": "3.1-coverage",
+   "kind": "reach-obligation",
+   "level": "method",
+   "module": "13",
+   "obligation_id": "REACH-4",
+   "product_basis": "The ontology now states the store's reach as built (ERS-B98, RED-B94): which erasure (graph, node, everything) and redaction reach ^ArnoKG, and that the redaction receipt's out-of-reach list (LedgerRedact.cls:504-508) does not name it. Whether the store is content a tenant removal must reach or name is not decided (STATUS residual question 1; no human decision HD covers it, so none is assigned).",
+   "product_obligation": "intent-undecided",
+   "remaining": "maintainer: should erase/redact reach this store, or the receipt name it? (no HD exists; not invented)",
+   "source": "matrix-input/ontology-2.json",
+   "status": "closed",
+   "store": "^ArnoKG"
+  },
+  {
+   "cited_runs": [
+    "ont2-coverage-r2",
+    "ont2-ontology-check-r2"
+   ],
+   "evidence": [
+    "run:ont2-ontology-check-r2",
+    "run:ont2-coverage-r2",
+    "experiment/playbook-completion/ontology/12-erasure.md (ERS-B99)",
+    "experiment/playbook-completion/ontology/13-redaction.md (RED-B95)"
+   ],
+   "evidence_grade": "registered-run",
+   "gate": "3.1-coverage",
+   "kind": "reach-obligation",
+   "level": "method",
+   "module": "13",
+   "obligation_id": "REACH-5",
+   "product_basis": "The ontology now states the store's reach as built (ERS-B99, RED-B95): which erasure (graph, node, everything) and redaction reach Graph_KG.rdf_edges__ivg400rescue / __ivg400unplaced, and that the redaction receipt's out-of-reach list (LedgerRedact.cls:504-508) does not name it. Whether the store is content a tenant removal must reach or name is not decided (STATUS residual question 1; no human decision HD covers it, so none is assigned).",
+   "product_obligation": "intent-undecided",
+   "remaining": "maintainer: should erase/redact reach this store, or the receipt name it? (no HD exists; not invented)",
+   "source": "matrix-input/ontology-2.json",
+   "status": "closed",
+   "store": "Graph_KG.rdf_edges__ivg400rescue / __ivg400unplaced"
   },
   {
    "cited_runs": [],
@@ -31691,7 +32136,7 @@
    "id": "3.3a-mechanisms",
    "phase": "3.3a",
    "scope": "product",
-   "text": "shared mechanisms with state, operations, laws, generic controls"
+   "text": "shared mechanisms with state, operations, events, L1 laws, generic lemmas proved once over a trait, and generic controls (playbook \u00a73.3a item 2)"
   },
   {
    "id": "3.3a-lifecycles",
@@ -33963,7 +34408,7 @@
   },
   {
    "confidence": "high",
-   "disposition": "confirmed-source",
+   "disposition": "refuted",
    "evidence": [
     {
      "kind": "check",
@@ -33976,6 +34421,10 @@
     {
      "kind": "inspected",
      "ref": "iris_src/src/Graph/KG/GraphStores.cls:28-130"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/GraphStores.cls:131"
     }
    ],
    "gates": [
@@ -35437,11 +35886,11 @@
   "holds-in-model-only": 1,
   "holds-inspected": 85,
   "holds-live": 29,
-  "intent-undecided": 1,
+  "intent-undecided": 6,
   "n/a": 33,
   "unknown": 202
  },
- "registry_runs": 1122,
+ "registry_runs": 1143,
  "starting_inventory": {
   "cells": 904,
   "decisions": 61,
@@ -35452,10 +35901,10 @@
   "writer_obligations": 83
  },
  "status_counts": {
-  "blocked": 8,
-  "closed": 516,
+  "blocked": 9,
+  "closed": 545,
   "not-applicable": 35,
-  "open": 188
+  "open": 163
  },
  "submission": "9c3719c1",
  "writer_obligations": [

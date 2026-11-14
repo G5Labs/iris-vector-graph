@@ -117,6 +117,13 @@ def s_readonly(cap: trlib.Capture):
 
 SCENARIOS = {"txn": s_txn, "readonly": s_readonly}
 
+# Control choice (orchestrator follow-up after tr-controls-08): the default reorder swapped steps 2 and 3, two AqlWrite
+# calls, the same machine action, so their order is invisible to readonly and only faithfulness/foreign-process
+# flagged it. Every journaled transaction of this scenario is an AqlWrite (the other calls write nothing), so the
+# control moves the first AQL write's transaction one call earlier, onto the refused read-only CREATE (step 1,
+# action Call(WriteClause)): the actions differ and the machine must see a refused call change data.
+CONTROL_PAIRS = {"readonly": {"reordered-transaction": (1, 2)}}
+
 EXPECT = {"txn": [("txn[as-built]lit", Txn.DUP, "F-0805"), ("txn[as-built]step", Txn.MSG, "F-0806")],
           "readonly": [("readonly[as-built]", ReadOnly.RO, "F-0814/F-0815")]}
 
