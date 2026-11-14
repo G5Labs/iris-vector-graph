@@ -28,6 +28,8 @@ Product obligation (separate from the verification status), review R2-01:
   result `expected-violation`, or a lane status `failed`; `product_basis` lists which;
 - `intent-undecided` when the only such evidence belongs to findings whose disposition is intent-undecided (or to a
   located control of a decision only): the behaviour is observed, the intent is not settled (CONVENTIONS);
+- `holds-live` / `holds-inspected` only for a census (invariant, writer) pair discharged at the pin by a lemma or guard
+  (writesets/DISCHARGES.json), graded by that discharge's evidence;
 - `holds-in-model-only` for a closed model-level cell with no such evidence; `unknown` otherwise; `n/a` when the
   cell is not applicable.
 
@@ -57,7 +59,7 @@ EXPECTED = {"modules": 19, "cells": 904, "decisions": 61, "premises": 138, "find
             "writer_obligations": 83}
 STATUSES = ["closed", "failed", "open", "blocked", "not-applicable"]
 LEVELS = ("method", "model", "product")
-PO = ["fails", "intent-undecided", "holds-in-model-only", "unknown", "n/a"]
+PO = ["fails", "intent-undecided", "holds-live", "holds-inspected", "holds-in-model-only", "unknown", "n/a"]
 REPRODUCED = ("reproduced-live", "reproduced-test", "reproduced-model", "confirmed-source", "product-defect")
 UNDECIDED = ("intent-undecided",)
 AS_BUILT_TEXT = re.compile(r"as-built (fails|reproduc\w*|violates?\b)", re.I)
@@ -381,7 +383,9 @@ def main() -> int:
             basis.append(f"lane status failed ({c.get('source') or 'orchestrator'})")
         if c.get("_explicit_po") == "fails":
             basis.append(f"stated fails by {c.get('source') or 'orchestrator'}")
-        if c["level"] != "method":
+        # a lemma/guard discharge of one write-set pair cites runs for the pair it judged preserved; a cited run that
+        # failed on another invariant (or another writer's pair) is not as-built evidence against this pair
+        if c["level"] != "method" and c.get("discharge") not in ("lemma", "guard"):
             for rid in c["cited_runs"]:
                 rec = reg.get(rid) or {}
                 if not (rec.get("result") == "fail" or as_built_run(rid, rec)):
@@ -439,7 +443,13 @@ def main() -> int:
         if st == "failed":            # lanes' "failed" = a product defect: the verification itself is done
             st = "closed"
             c["_lane_failed"] = True
-        reopen = [s["reopen"] for s in sups if s.get("reopen")]
+        lifted = [s for s in sups if s.get("reopen") and s.get("lift") == "census-discharged"
+                  and nn in census_any and census_open.get(nn, 0) == 0]
+        reopen = [s["reopen"] for s in sups if s.get("reopen") and s not in lifted]
+        if lifted:
+            c["remaining"] = " ".join([x for x in [str(c.get("remaining") or "").strip()] if x]
+                                      + ["Census reopen lifted: every census cell of this module is discharged "
+                                         "(writesets/DISCHARGES.json)."])
         if reopen and st == "closed":  # a supplement may only reopen a cell, never close one
             st = "open"
             c["remaining"] = " ".join([x for x in [str(c.get("remaining") or "").strip()] if x]
@@ -471,21 +481,6 @@ def main() -> int:
             c.pop("as_built_findings", None)
         return c
 
-    for g in gates:
-        targets = ["product"] if g["scope"] == "product" else nns
-        for nn in targets:
-            c = explicit.get((g["id"], nn))
-            if c is None and nn != "product":
-                lm = lane_modules.get(nn, {})
-                gs = lm.get("gates_by_id", {}) if isinstance(lm, dict) else {}
-                if g["id"] in gs:
-                    c = {"gate": g["id"], "module": nn, **gs[g["id"]], "source": f"modules/{nn}.json"}
-            if c is None and g.get("na_reason"):
-                c = {"gate": g["id"], "module": nn, "status": "not-applicable", "reason": g["na_reason"]}
-            if c is None:
-                c = {"gate": g["id"], "module": nn, "status": "open", "evidence": [], "remaining": "no evidence recorded"}
-            cells.append(finish(c, g["id"], nn))
-    gate_ids = {g["id"] for g in gates}
     # write-set discharges (writesets lane, queue Q17c): one entry per census obligation id
     dis = load(DISCHARGES, {}) if DISCHARGES.exists() and not os.environ.get("MATRIX_SKIP_DISCHARGES") else {}
     dis = {k: v for k, v in dis.items() if not str(k).startswith("_")}
@@ -503,9 +498,20 @@ def main() -> int:
                 f = r.split(":")[0] if not r.startswith("run:") else r
                 if not ((ROOT / f).exists() or (ROOT.parent.parent / f).exists()):
                     problems.append(f"{c['obligation_id']}: discharge evidence {r} is neither a registered run nor a file")
-        c["evidence"] = list(c.get("evidence", [])) + [r.split(":")[0] if resolve(r, reg) is None and not r.startswith("run:")
-                                                       else r for r in refs]
+        # the census run defines the obligation; the discharge's own evidence decides it
+        c["obligation_source"] = [e for e in c.get("evidence", [])]
+        c["evidence"] = [r.split(":")[0] if resolve(r, reg) is None and not r.startswith("run:") else r for r in refs]
         c["discharge_evidence"] = refs
+        # runs that did not decide anything (e.g. a blocked live attempt) are context, not discharge evidence
+        ctx = [r for r in refs if resolve(r, reg) and (reg[resolve(r, reg)] or {}).get("result")
+               not in ("pass", "fail", "expected-violation")]
+        if ctx and d.get("grade") == "inspected":
+            c["evidence"] = [e for e in c["evidence"] if e not in ctx]
+            c["context_runs"] = ctx
+        if kind in ("lemma", "guard"):
+            # a per-pair discharge about the pin's own writer code: product level, graded by its evidence
+            c["level"] = "product"
+            c["product_obligation"] = "holds-live" if d.get("grade") == "live" else "holds-inspected"
         if kind in ("lemma", "guard", "finding"):
             c["status"] = "closed"
             if kind == "finding":
@@ -519,6 +525,29 @@ def main() -> int:
     for k in sorted(set(dis) - applied):
         if not str(k).startswith("module:"):
             problems.append(f"writesets/DISCHARGES.json names {k}, which is no census obligation")
+    census_open = defaultdict(int)     # per module: census cells still open after the discharges
+    census_any = set()
+    for c in extra:
+        if c["gate"] == "3.3a-writesets" and c.get("obligation_id"):
+            census_any.add(c.get("module"))
+            if c.get("status", "open") != "closed":
+                census_open[c.get("module")] += 1
+
+    for g in gates:
+        targets = ["product"] if g["scope"] == "product" else nns
+        for nn in targets:
+            c = explicit.get((g["id"], nn))
+            if c is None and nn != "product":
+                lm = lane_modules.get(nn, {})
+                gs = lm.get("gates_by_id", {}) if isinstance(lm, dict) else {}
+                if g["id"] in gs:
+                    c = {"gate": g["id"], "module": nn, **gs[g["id"]], "source": f"modules/{nn}.json"}
+            if c is None and g.get("na_reason"):
+                c = {"gate": g["id"], "module": nn, "status": "not-applicable", "reason": g["na_reason"]}
+            if c is None:
+                c = {"gate": g["id"], "module": nn, "status": "open", "evidence": [], "remaining": "no evidence recorded"}
+            cells.append(finish(c, g["id"], nn))
+    gate_ids = {g["id"] for g in gates}
     for c in extra:
         if c["gate"] not in gate_ids or c.get("module", "product") not in nns + ["product"]:
             problems.append(f"extra cell {c.get('obligation_id')}: unknown gate or module")
@@ -595,6 +624,8 @@ def main() -> int:
              "a reproduced finding attached by gate or named by the cell, a failed run, or an as-built model check or "
              "located control with its expected violation; `product_basis` in obligations.json says which), "
              "`intent-undecided` (the behaviour is observed but only findings whose intent is undecided show it), "
+             "`holds-live` / `holds-inspected` (only for single write-set pairs the writesets lane discharged at the pin "
+             "by a preservation lemma or guard, observed live or read in the pin's code; the weakest product grades), "
              "`holds-in-model-only` (only a model result supports it; the code correspondence is not discharged), "
              "`unknown`. **Level**: what the evidence is about (method, model, product; the input's wording is kept "
              "as `level_detail`). Rows count every cell, including the per-obligation census and reach cells below.", "",

@@ -1,0 +1,17 @@
+{
+  "command": "locks.sh iris timeout 900 python experiment/playbook-completion/writesets/live/ws_probes.py rb-delete_reification stmt-purge migrations fhir-blocked (AUDITB)",
+  "experiment_head": "d77620a9333a7eb5b62ca9b8c92144a6aaf74d2b",
+  "finding": "F-C0150",
+  "id": "ws-live-migrations",
+  "kind": "live",
+  "lane": "writesets",
+  "log": "$RUN_DIR/writesets/migrations.json",
+  "log_bytes": 2993,
+  "log_sha256": "0f6fcc699b49c5314f57b78629132c4329ff389b8a347ca8d48403e24543453b",
+  "namespace": "AUDITB",
+  "observes": "Graph target wsagG (ledger relationship in wsagG, 2 node rows + 1 edge), erased, a bounded redaction of wsagG set the marker. With the marker present GraphSchema.tighten_graph_id_column (rows_repaired 0, already_tight), _spo_constraint_status / ensure_ekey (already at 234) and ensure_props_value_key (backfilled 0) left wsagG at 0 live rows and every ledger record unchanged. engine.create_node(\"wsag|z\", properties={\"__graph\": \"wsagG\"}) stored a __graph property (default graph); GraphSchema.add_graph_id_to_nodes (run by every initialize_schema, schema.py:719) moved node wsag|z into wsagG (rows_migrated 1) and deleted the property: wsagG has 1 live node row while the marker names it; a re-run is refused target_live. INV-marker fails for add_graph_id_to_nodes.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T11:46:13+00:00",
+  "result": "fail"
+}

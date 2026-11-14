@@ -1,0 +1,17 @@
+{
+  "command": "locks.sh iris timeout 600 python experiment/playbook-completion/writesets/live/ws_probes.py sql-insert gap-marker (AUDITB)",
+  "experiment_head": "d77620a9333a7eb5b62ca9b8c92144a6aaf74d2b",
+  "finding": "F-C1850",
+  "id": "ws-live-gap-marker",
+  "kind": "live",
+  "lane": "writesets",
+  "log": "$RUN_DIR/writesets/gap-marker.json",
+  "log_bytes": 2091,
+  "log_sha256": "3ad6ef9551651db39b5fe85df66d78d0695db1263821a3fb956555cbbe2410d4",
+  "namespace": "AUDITB",
+  "observes": "WS-GAP-001. Tenant wsgm (3 revisions, 9 content rows); save_snapshot; erase; a bounded redaction (batch 1, max_batches 1) set the marker (1 tombstone); restore_snapshot(archive, merge=False): the marker is still there, the target has 9 live rows (nodes 3, labels 3, props 3), 0 tombstones (the archive records replaced the one tombstone); verify() = redaction_in_progress; a re-run is refused target_live; another tenant ledger commit succeeds. INV-marker fails (marker names a live target).",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T11:46:13+00:00",
+  "result": "fail"
+}

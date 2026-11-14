@@ -1,0 +1,17 @@
+{
+  "command": "locks.sh iris timeout 900 python experiment/playbook-completion/writesets/live/ws_probes.py rb-delete_reification stmt-collision snap-helpers sql-insert gap-restore (AUDITB)",
+  "experiment_head": "d77620a9333a7eb5b62ca9b8c92144a6aaf74d2b",
+  "finding": "F-1806",
+  "id": "ws-live-snap-importglobals",
+  "kind": "live",
+  "lane": "writesets",
+  "log": "$RUN_DIR/writesets/snap-helpers.json",
+  "log_bytes": 3484,
+  "log_sha256": "b1baf89382e5fee2a2352fdb803cdbfb4d8d901d99609c57faf7b5ee7bb8db14",
+  "namespace": "AUDITB",
+  "observes": "Graph.KG.Snapshot.ImportGlobals over the ledger global (F-1806). History H1 (seq 2 = create_node/add_label/set_prop of wsimp1|n1) exported with the class own ExportGlobals to /tmp/IVGAuditWS-*/^IVG.Ledger.gof (1,332 bytes); PurgeAll, re-enable, history H2 (seq 2 = wsimp2|n1, revision row 2 message H2); ImportGlobals(dir) answered {\"imported\":1}; its process set ^IVG.Ledger rec (3), head (1), meta (4), idBySeq (2), revById (2), stmtNext (1) (journal); the 3 records of seq 2 are now H1 records (wsimp1|n1) while revision row 2 is H2; verify() equal -> diverges. In the same run SetNodeJSON on ^IVG.Ledger(\"redacting\"), ^IVG.Ledger(\"rec\",1,1) and ^Graph.KG.LedgerRevisionD(1) was refused (\"not a vector-index global\"). Scratch directory removed.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T11:46:12+00:00",
+  "result": "fail"
+}

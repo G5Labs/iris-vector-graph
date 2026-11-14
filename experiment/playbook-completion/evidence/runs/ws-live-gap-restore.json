@@ -1,0 +1,17 @@
+{
+  "command": "locks.sh iris timeout 900 python experiment/playbook-completion/writesets/live/ws_probes.py rb-delete_reification stmt-collision snap-helpers sql-insert gap-restore (AUDITB)",
+  "experiment_head": "d77620a9333a7eb5b62ca9b8c92144a6aaf74d2b",
+  "finding": "F-C1850",
+  "id": "ws-live-gap-restore",
+  "kind": "live",
+  "lane": "writesets",
+  "log": "$RUN_DIR/writesets/gap-restore.json",
+  "log_bytes": 3749,
+  "log_sha256": "8e6142f4c79f73ac4c0aa01e47d3105ba68ed154b1d23e675385b31f8693d3aa",
+  "namespace": "AUDITB",
+  "observes": "WS-GAP-002/003. Tenant wsgap: revision 2 (message, idempotency key wsgap-k1, 3 records); save_snapshot (pre-erase archive); erase; redact complete (3 tombstones, metadata cleared, key removed, redactedRev(2) and 1 idemRedacted set, audit revision 3); restore_snapshot(archive, merge=False): the 3 records of seq 2 back as originals, revision row 2 message and key back, idem(wsgap-k1) live, redactedRev(2) and idemRedacted still there; erase again and redact again: the 3 records are tombstoned but ClearRevision skipped (redactedRev(2) exists): revision row 2 keeps message \"wsgap secret message\" and key wsgap-k1, idem(wsgap-k1) stays live, and Final fails LedgerInconsistencyError (^Graph.KG.LedgerRevisionD(3) exists, F-1801), marker held; a retry with wsgap-k1 is answered replayed=True with the redacted revision 2 and its message; verify() = redaction_in_progress. INV-text and INV-retry fail.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T11:46:13+00:00",
+  "result": "fail"
+}

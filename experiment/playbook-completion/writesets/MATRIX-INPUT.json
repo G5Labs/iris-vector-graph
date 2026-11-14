@@ -1,0 +1,255 @@
+{
+ "_doc": "Writesets lane proposals for the module-level 3.3a-writesets cells (keys as matrix/gates.json). The 185 per-obligation census cells are in writesets/DISCHARGES.json (to be applied by build_matrix.py). evidence_grade is the weakest grade among the cell's discharges (DISCHARGES.json grades each). Module 08 is unchanged (its open pairs are outside the census).",
+ "cells": [
+  {
+   "gate": "3.3a-writesets",
+   "module": "01",
+   "status": "open",
+   "evidence": [
+    "experiment/playbook-completion/writesets/DISCHARGES.json",
+    "run:followup-writer-census"
+   ],
+   "evidence_grade": "inspected",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "census cells of module 01 discharged by findings where the as-built writer breaks the invariant (F-C0150, F-C0151, F-C1306) (grade is the weakest of the cell's discharges; DISCHARGES.json grades each, many live)",
+   "as_built_findings": [
+    "F-C0150",
+    "F-C0151",
+    "F-C1306"
+   ],
+   "remaining": "census part done (29 cells, 0 open); still open: 112 (module invariant, writer) pairs with status open in experiment/playbook-completion/models/breadth-a/writesets.json (module invariants, not the 8 manifest invariants), not addressed by the writesets lane"
+  },
+  {
+   "gate": "3.3a-writesets",
+   "module": "03",
+   "status": "open",
+   "evidence": [
+    "experiment/playbook-completion/writesets/DISCHARGES.json",
+    "run:followup-writer-census"
+   ],
+   "evidence_grade": "inspected",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "census cells of module 03 discharged by findings where the as-built writer breaks the invariant (F-C1307, F-C1350, F-C1301) (grade is the weakest of the cell's discharges; DISCHARGES.json grades each, many live)",
+   "as_built_findings": [
+    "F-C1307",
+    "F-C1350",
+    "F-C1301"
+   ],
+   "remaining": "census part done (28 cells, 0 open); still open: 97 (module invariant, writer) pairs with status open in experiment/playbook-completion/models/breadth-a/writesets.json (module invariants, not the 8 manifest invariants), not addressed by the writesets lane"
+  },
+  {
+   "gate": "3.3a-writesets",
+   "module": "04",
+   "status": "open",
+   "evidence": [
+    "experiment/playbook-completion/writesets/DISCHARGES.json",
+    "run:followup-writer-census"
+   ],
+   "evidence_grade": "inspected",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "census cells of module 04 discharged by findings where the as-built writer breaks the invariant (F-C0450, F-C1307, F-C1350) (grade is the weakest of the cell's discharges; DISCHARGES.json grades each, many live)",
+   "as_built_findings": [
+    "F-C0450",
+    "F-C1307",
+    "F-C1350"
+   ],
+   "remaining": "census part done (20 cells, 0 open); still open: 125 (module invariant, writer) pairs with status open in experiment/playbook-completion/models/breadth-a/writesets.json (module invariants, not the 8 manifest invariants), not addressed by the writesets lane"
+  },
+  {
+   "gate": "3.3a-writesets",
+   "module": "05",
+   "status": "open",
+   "evidence": [
+    "experiment/playbook-completion/writesets/DISCHARGES.json",
+    "run:followup-writer-census"
+   ],
+   "evidence_grade": "inspected",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "census cells of module 05 discharged by findings where the as-built writer breaks the invariant (F-C0450, F-C1307, F-C1350, F-C1301) (grade is the weakest of the cell's discharges; DISCHARGES.json grades each, many live)",
+   "as_built_findings": [
+    "F-C0450",
+    "F-C1307",
+    "F-C1350",
+    "F-C1301"
+   ],
+   "remaining": "census part done (16 cells, 0 open); still open: 171 (module invariant, writer) pairs with status open in experiment/playbook-completion/models/breadth-a/writesets.json (module invariants, not the 8 manifest invariants), not addressed by the writesets lane"
+  },
+  {
+   "gate": "3.3a-writesets",
+   "module": "06",
+   "status": "open",
+   "evidence": [
+    "experiment/playbook-completion/writesets/DISCHARGES.json",
+    "run:followup-writer-census"
+   ],
+   "evidence_grade": "inspected",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "lane status failed (modules/06.json); the module's 15 census cells (graph_scoped_embeddings conditional writers) are lemmas (resolved run-time names)",
+   "as_built_findings": [],
+   "remaining": "census part done (15 cells, 0 open); still open: 48 (module invariant, writer) pairs with status open in experiment/playbook-completion/models/breadth-a/writesets.json (module invariants, not the 8 manifest invariants), not addressed by the writesets lane"
+  },
+  {
+   "gate": "3.3a-writesets",
+   "module": "11",
+   "status": "closed",
+   "evidence": [
+    "experiment/playbook-completion/writesets/DISCHARGES.json",
+    "run:ws-live-sql-guard",
+    "run:ws-live-snap-setnodejson",
+    "run:ws-live-snap-importglobals",
+    "run:fc1306-legacy-ledger-rows",
+    "run:ws-live-gap-restore",
+    "run:ws-live-sql-insert-wedge"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "module 11's census cell WS-OBL-001 (SQL INSERT surface, INV-text) is a guard confirmed live; module 11's own pairs were dispositioned (modules/11.json). By invariant ownership (INV-shape/isolation/text/retry) the product fails: Snapshot.ImportGlobals (F-1806, live), copy_ledger_history (F-C1306), restore's undeclared redaction stores (F-C1850); the INSERT surface wedges the ledger (F-C1150)",
+   "as_built_findings": [
+    "F-1806",
+    "F-C1306",
+    "F-C1850",
+    "F-C1150",
+    "F-1801"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.3a-writesets",
+   "module": "12",
+   "status": "open",
+   "evidence": [
+    "experiment/playbook-completion/writesets/DISCHARGES.json",
+    "run:ws-live-stmt-collision",
+    "run:ws-live-stmt-purge",
+    "run:ws-live-fhir-blocked"
+   ],
+   "evidence_grade": "inspected",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "INV-stmt (ERS-I2/I3) census obligations: temporal/inferred marker predicates delete ledger relationships and leave live statements (F-C0450, F-C0151, live) (grade is the weakest of the cell's discharges; DISCHARGES.json grades each, many live)",
+   "as_built_findings": [
+    "F-C0450",
+    "F-C0151"
+   ],
+   "remaining": "open INV-stmt census cells: WS-OBL-029, WS-OBL-033, WS-OBL-041, WS-OBL-150, WS-OBL-154 (FHIR DropNode/DeleteEdge/ResyncKey: blocked-access, HS_FHIRServer absent; iris_sql_store SQL fallbacks of _delete_nodes_sql/delete_edges: unreached at the pin's deploy)"
+  },
+  {
+   "gate": "3.3a-writesets",
+   "module": "13",
+   "status": "open",
+   "evidence": [
+    "experiment/playbook-completion/writesets/DISCHARGES.json",
+    "run:ws-live-ins-store_node",
+    "run:ws-live-ins-store_edge",
+    "run:ws-live-ins-bulk_create_nodes",
+    "run:ws-live-ins-bulk_ingest_edges",
+    "run:ws-live-ins-bulk_create_edges",
+    "run:ws-live-ins-store_write_nodes",
+    "run:ws-live-ins-store_write_edges",
+    "run:ws-live-ins-create_edge_temporal",
+    "run:ws-live-ins-bulk_create_edges_temporal",
+    "run:ws-live-ins-reify_edge",
+    "run:ws-live-ins-bulkloader_load_edges",
+    "run:ws-live-ins-import_rdf",
+    "run:ws-live-fc1301-delete-reification",
+    "run:ws-live-migrations",
+    "run:ws-live-gap-marker",
+    "run:ws-live-noindex"
+   ],
+   "evidence_grade": "inspected",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "INV-marker and INV-no-live-tombstone census obligations: 12 bypass inserters (F-C1307, F-C1350, live), a bypass deleter in a caller transaction (F-C1301, now live), add_graph_id_to_nodes (F-C0150), restore (F-C1850); outside the census, %NOINDEX bulk loads defeat the liveness check (F-C1351) (grade is the weakest of the cell's discharges; DISCHARGES.json grades each, many live)",
+   "as_built_findings": [
+    "F-C1350",
+    "F-C1307",
+    "F-C1301",
+    "F-C0150",
+    "F-C1850",
+    "F-C1351",
+    "F-C1308"
+   ],
+   "remaining": "open INV-marker/INV-no-live-tombstone census cells: WS-OBL-147, WS-OBL-148 (iris_sql_store._delete_nodes_sql SQL fallback, unreached at the pin's deploy); 23 census discharges by finding are graded inspected (FHIR writers live-blocked, _mirror_node, DeleteBareSet, DropRows, _drop_orphaned_props, add_graph_id_to_nodes' INV-no-live-tombstone)"
+  },
+  {
+   "gate": "3.3a-writesets",
+   "module": "14",
+   "status": "closed",
+   "evidence": [
+    "experiment/playbook-completion/writesets/DISCHARGES.json",
+    "run:ws-live-ins-store_node",
+    "run:ws-live-stmt-collision",
+    "run:ws-live-snap-importglobals"
+   ],
+   "evidence_grade": "inspected",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "INV-replay census obligations: 40 by the RPL-B3 premise lemma (no unrecorded writes; verify() classified the writes unrecorded_writes live for 20 writers), SetNodeJSON by guard; Snapshot.ImportGlobals breaks it (F-1806: imported ledger records no longer replay to the store) (grade is the weakest of the cell's discharges; DISCHARGES.json grades each, many live)",
+   "as_built_findings": [
+    "F-1806"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.3a-writesets",
+   "module": "15",
+   "status": "open",
+   "evidence": [
+    "experiment/playbook-completion/writesets/DISCHARGES.json"
+   ],
+   "evidence_grade": "inspected",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "census obligations of this module's writers discharged by findings where the as-built writer breaks the invariant (grade is the weakest of the cell's discharges; DISCHARGES.json grades each, many live)",
+   "as_built_findings": [
+    "F-C1307",
+    "F-C1350",
+    "F-C1301"
+   ],
+   "remaining": "open census cells WS-OBL-029, WS-OBL-033, WS-OBL-041 (blocked-access: HS_FHIRServer absent, ws-live-fhir-blocked); FHIR writers' finding discharges graded inspected; outside the census: (invariant, plan) pairs for FHIR Rebuild/SyncOnce/Reinterpret/Schedule and the table-map/crosswalk writers named in this cell"
+  },
+  {
+   "gate": "3.3a-writesets",
+   "module": "17",
+   "status": "open",
+   "evidence": [
+    "experiment/playbook-completion/writesets/DISCHARGES.json"
+   ],
+   "evidence_grade": "inspected",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "census obligations of this module's writers discharged by findings where the as-built writer breaks the invariant (grade is the weakest of the cell's discharges; DISCHARGES.json grades each, many live)",
+   "as_built_findings": [
+    "F-C1307",
+    "F-C1350"
+   ],
+   "remaining": "open census cells WS-OBL-147, WS-OBL-148, WS-OBL-150, WS-OBL-154 (SQL fallbacks of _delete_nodes_sql/delete_edges, unreached at the pin's deploy: iris_sql_store.py:1307-1318); insert_vector's 5 conditional cells resolved (no product caller)"
+  },
+  {
+   "gate": "3.3a-writesets",
+   "module": "18",
+   "status": "open",
+   "evidence": [
+    "experiment/playbook-completion/writesets/DISCHARGES.json"
+   ],
+   "evidence_grade": "inspected",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "census obligations of this module's writers discharged by findings where the as-built writer breaks the invariant (grade is the weakest of the cell's discharges; DISCHARGES.json grades each, many live)",
+   "as_built_findings": [
+    "F-1806",
+    "F-C1850",
+    "F-1801",
+    "F-C1307",
+    "F-C1350"
+   ],
+   "remaining": "census part done (all 23 module-18 census cells discharged, WS-GAP-001..003 included); outside the census: snapshot.restore_merge is not a plan though it writes the ledger globals and ^KG(\"tagg\") (F-1805)"
+  }
+ ]
+}

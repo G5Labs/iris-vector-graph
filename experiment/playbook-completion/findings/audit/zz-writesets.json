@@ -1,0 +1,278 @@
+[
+ {
+  "id": "F-C1350",
+  "module": "13",
+  "title": "Redaction batches tombstone the history of content a ledger-bypassing writer made live after the run's entry check",
+  "intended": "experiment/playbook-uplift/ontology/13-redaction.md:51 (RED-B1.1: redaction never makes a tombstone of the record of live content); specs/256-ledger-tenant-redaction/spec.md:124 (FR-005: redaction MUST refuse while any non-tombstoned live statement or node of the target remains); docs/adr/0013-redaction-removes-content-from-history.md:17 (refused while any row of the target is live); the product's own checks count any content row of the target as live (LedgerRedact.cls:202-211 entry, 409-416 Final 'became live again').",
+  "observed": "Live in AUDITB, 12 runs, one per writer (ws-live-ins-store_node, -store_edge, -bulk_create_nodes, -bulk_ingest_edges, -bulk_create_edges, -store_write_nodes, -store_write_edges, -create_edge_temporal, -bulk_create_edges_temporal, -reify_edge, -bulkloader_load_edges, -import_rdf). Each: a target tenant with 7 ledger records (2 nodes with label and property, 1 relationship) is erased (0 live rows); a redaction is started while a second connection holds ^IVG.Ledger(\"head\") (as a concurrent ledger commit does), passes its entry liveness check and waits for the lock; the writer, which reads no marker and takes no ledger lock, writes the target's rows and commits (target live again: node, label, property and/or edge rows); after the lock is released the run writes all 7 tombstones, every one at a journal address after the writer's CommitTrans, while the target is live; Final then refuses 'became live again' and the marker stays (F-C1307). The writers' processes wrote no ^IVG.Ledger node. Cause: no non-ledger writer reads ^IVG.Ledger(\"redacting\") (only BlocksCommit, LedgerRedact.cls:258-269, called by ledger commits) and BatchInLock (LedgerRedact.cls:302-330) tombstones without re-checking liveness; only the entry check and Final read LiveRows. The same effect for engine.create_node is in F-C1307's run (fu-r03-marker-held-open, step 4).",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "ws-live-ins-store_node"
+   },
+   {
+    "kind": "live",
+    "ref": "ws-live-ins-store_edge"
+   },
+   {
+    "kind": "live",
+    "ref": "ws-live-ins-bulk_create_nodes"
+   },
+   {
+    "kind": "live",
+    "ref": "ws-live-ins-bulk_ingest_edges"
+   },
+   {
+    "kind": "live",
+    "ref": "ws-live-ins-bulk_create_edges"
+   },
+   {
+    "kind": "live",
+    "ref": "ws-live-ins-store_write_nodes"
+   },
+   {
+    "kind": "live",
+    "ref": "ws-live-ins-store_write_edges"
+   },
+   {
+    "kind": "live",
+    "ref": "ws-live-ins-create_edge_temporal"
+   },
+   {
+    "kind": "live",
+    "ref": "ws-live-ins-bulk_create_edges_temporal"
+   },
+   {
+    "kind": "live",
+    "ref": "ws-live-ins-reify_edge"
+   },
+   {
+    "kind": "live",
+    "ref": "ws-live-ins-bulkloader_load_edges"
+   },
+   {
+    "kind": "live",
+    "ref": "ws-live-ins-import_rdf"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/LedgerRedact.cls:302-330"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/LedgerRedact.cls:202-211"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/LedgerRedact.cls:409-416"
+   }
+  ],
+  "gates": [
+   "3.3a-writesets",
+   "3.7-integration-worlds",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S1",
+  "confidence": "high",
+  "remedy": "Either make every content writer refuse a write into a target while its marker exists (and serialize writers with the run's start, HD-1301's working answer), or have each batch re-check the target's liveness under the head lock before it tombstones and stop (leaving the marker) when the target is live again.",
+  "notes": "Contradicts the original discharge experiment/playbook-uplift/semantics/WRITESETS.md:61-63 ('content written outside the ledger has no record to tombstone; old records of an erased id are erased history'). That reading (the re-created id is new content, its old records are erased history) is the alternative; it is not the product's: the entry check and Final refuse exactly such rows as live, and FR-005 forbids a redaction while a node of the target remains. The head lock held by the probe only widens the window; any write between the entry check and the batch that reaches a record has the same effect, and bypass writes are never refused while the marker exists. Distinct from F-1302 (a ledger commit before the marker) and F-C1301 (an uncommitted delete that rolls back)."
+ },
+ {
+  "id": "F-C0450",
+  "module": "04",
+  "title": "A ledger relationship whose qualifiers hold temporal=1 is deleted as a temporal edge's derived row, and its statement stays live",
+  "intended": "docs/adr/0009-a-temporal-edge-implies-a-structural-edge.md:38-42 ('A row an explicit write asserted is unmarked and outlives the purge of its timestamps'); iris_src/src/Graph/KG/Adjacency.cls:619-621 (the row is deleted only while it carries the temporal marker, 'so an edge created explicitly outlives its temporal edges'); INV-stmt / ERS-I2 (no live statement without its row, experiment/playbook-uplift/ontology/12-erasure.md:42).",
+  "observed": "Live in AUDITB (ws-live-stmt-collision, ws-live-stmt-purge). The ledger accepts any qualifier key but id and __graph (LedgerApply.cls:68-71) and stores values as strings (QualsJson, LedgerApply.cls:420-434), so create_relationship(..., qualifiers={'temporal': 1}) is stored {\"temporal\":\"1\"}; Adjacency.IsTemporalMarked (736-748) tests %Get(\"temporal\") = 1, which \"1\" satisfies, while the ledger's own adoption test is = \"true\" (LedgerApply.cls:469). (a) A temporal edge on the same triple and engine.delete_edge_temporal: TemporalIndex.DeleteTemporalEdge -> RetractTemporalRow deleted the ledger's row; (b) set_temporal_structural('RD', False) and drop_temporal_structural_rows('RD'): TemporalPolicy.DropRows (pass 2 parses with IsTemporalMarked) deleted it and retired its 2 recorded endpoint nodes; (c) engine.purge_before(2000) after a temporal edge at ts 1000: RetractTemporalRows' %STARTSWITH test misses and its fallback RetractTemporalRow (Adjacency.cls:677-679) deleted it. Each time the statement (^IVG.Ledger(\"stmt\", id), closed seq empty) and its tuple index entry stay live with no row; verify() went equal -> diverges (unrecorded_writes).",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "ws-live-stmt-collision"
+   },
+   {
+    "kind": "live",
+    "ref": "ws-live-stmt-purge"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/Adjacency.cls:736-748"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/LedgerApply.cls:420-434"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/TemporalPolicy.cls:124-228"
+   }
+  ],
+  "gates": [
+   "3.3a-writesets",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S2",
+  "confidence": "high",
+  "remedy": "Mark derived rows with something a governed relationship cannot carry (a reserved qualifier key the ledger and every writer refuse, or a separate column), and make every marker test use the same predicate; or have the temporal retraction refuse a row that has a live statement.",
+  "notes": "A user qualifier named 'temporal' is unusual but unrestricted; the same row is also adopted (qualifiers set to NULL) by bulk_create_edges' _ADOPT_TEMPORAL_ROW_SQL if it matches _TEMPORAL_MARKED_ROW."
+ },
+ {
+  "id": "F-C0151",
+  "module": "01",
+  "title": "retract_inference deletes any relationship whose qualifiers contain a key named 'inferred', a ledger relationship included, leaving its statement live",
+  "intended": "iris_vector_graph/_engine/schema.py:3187 (retract_inference deletes 'the edges materialize_inference wrote'); INV-stmt / ERS-I2 (no live statement without its row).",
+  "observed": "Live in AUDITB (ws-live-stmt-collision): a ledger relationship wsq|x -RI-> wsq|y created with qualifiers {'inferred': 'user'} (stored {\"inferred\":\"user\"}, statement 3 live); engine.retract_inference() returned 1 and deleted that row (DELETE ... WHERE qualifiers LIKE '%\"inferred\":%', schema.py:61, 3224); statement 3 stays live with no row; verify() = diverges (unrecorded_writes).",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "ws-live-stmt-collision"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/schema.py:3186-3259"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/schema.py:61"
+   }
+  ],
+  "gates": [
+   "3.3a-writesets",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S2",
+  "confidence": "high",
+  "remedy": "Identify inferred rows by a marker no user qualifier can carry (reserve the key in the ledger and the writers), or skip rows that have a live statement.",
+  "notes": ""
+ },
+ {
+  "id": "F-C0150",
+  "module": "01",
+  "title": "Every initialize_schema moves a node with a '__graph' property into that graph (add_graph_id_to_nodes), and the engine still writes such a property: an unrecorded cross-graph move, also into a graph whose redaction is in progress",
+  "intended": "CHANGELOG.md:5229-5240 (spec 214: graph_id is a real column, the __graph pseudo-property is legacy) and iris_vector_graph/_engine/nodes_edges.py:1058 ('spec 214 FR-019: __graph pseudo-property no longer written'); iris_vector_graph/ledger/changeset.py:31 (the ledger reserves '__graph'); while a redaction runs the target stays not live (ADR-0013:17, RED-B5).",
+  "observed": "Live in AUDITB (ws-live-migrations): graph wsagG (a ledger relationship, erased) with a bounded redaction's marker; engine.create_node('wsag|z', properties={'__graph': 'wsagG'}) stored a '__graph' property row in the default graph; GraphSchema.add_graph_id_to_nodes, which ensure_indexes runs on every initialize_schema (schema.py:719, _engine/schema.py:2514), answered rows_migrated 1: node wsag|z now has graph_id wsagG and the property is gone; wsagG has 1 live node row while its marker exists, and a re-run is refused target_live. The ledger recorded nothing (create_node is not a ledger write and the move is SQL in the migration).",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "ws-live-migrations"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/schema.py:1514-1637"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/schema.py:704-722"
+   }
+  ],
+  "gates": [
+   "3.3a-writesets",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S2",
+  "confidence": "high",
+  "remedy": "Refuse '__graph' as a property key on every write path (as the ledger does), and run the __graph migration only once, when the graph_id column is added (not on every initialize_schema).",
+  "notes": "With the F-C1350 mechanism the move after a run's entry check also tombstones a live target (inspected composition). A tenant can move its own node into any graph name this way; whether that crosses a tenant boundary depends on the deployment's graph-per-tenant use."
+ },
+ {
+  "id": "F-C1150",
+  "module": "11",
+  "title": "A plain SQL INSERT into Graph_KG.ledger_revisions is accepted, and a row planted at head+1 makes every later ledger commit fail",
+  "intended": "iris_src/src/Graph/KG/LedgerRevision.cls:1-5 ('one immutable row per committed revision ... Written only by Graph.KG.Ledger.Commit inside the commit transaction'; UPDATE and DELETE are rejected, FR-023).",
+  "observed": "Live in AUDITB (ws-live-sql-insert-wedge): with head seq 3, an SQL INSERT of a row with seq 4 and every required column was accepted (the table has UPDATE and DELETE triggers, no INSERT trigger); the next engine.ledger.commit failed LedgerInconsistencyError 'revision row save failed: ERROR #5805: ID key not unique ... ^Graph.KG.LedgerRevisionD(4) exists'; verify() still answered equal. An INSERT of an existing seq is refused (SeqIdx) and UPDATE is refused (trigger) (ws-live-sql-guard), so the INSERT cannot rewrite history; it blocks the ledger.",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "ws-live-sql-insert-wedge"
+   },
+   {
+    "kind": "live",
+    "ref": "ws-live-sql-guard"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/LedgerRevision.cls:44"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/LedgerRevision.cls:87-108"
+   }
+  ],
+  "gates": [
+   "3.3a-writesets",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S2",
+  "confidence": "high",
+  "remedy": "Add an INSERT trigger (or %OnBeforeSave check) that refuses a row outside Ledger.Commit's transaction, as for UPDATE and DELETE; and have verify() report a revision row with no records.",
+  "notes": "The census's '<any SQL client>::INSERT INTO Graph_KG.ledger_revisions' writer (review R-02's inferred revision-insert wedge, not probed before). Any SQL user with INSERT on the table can do this; the effect is the same wedge F-1801 reaches through restore."
+ },
+ {
+  "id": "F-C1850",
+  "module": "18",
+  "title": "A replacing restore leaves the live ledger's redaction stores in place: a marked target comes back live, and a second redaction of a restored tenant keeps its revision text and retry key",
+  "intended": "spec 256 Decision 2 as the code states it (iris_src/src/Graph/KG/LedgerRedact.cls:349-352: clear message, source, correlation id and idempotency key of a revision with a redacted record) and specs/256-ledger-tenant-redaction/spec.md:142 (SC-001); ADR-0013 (redaction removes content from history; while a run is in progress the target is not live); decisions.md HD-1801 (treat the archive's history as a unit; keep current redaction obligations).",
+  "observed": "Live in AUDITB. (1) ws-live-gap-restore: tenant wsgap, revision 2 (message, key wsgap-k1); save_snapshot; erase; redact complete (audit revision 3; redactedRev(2), idemRedacted set, idem killed, text cleared); restore_snapshot(archive, merge=False): records of seq 2 back as originals, row 2 message and key back, idem(wsgap-k1) live, while redactedRev(2) and idemRedacted stay (the import of ^IVG.Ledger sets the archive's nodes and kills none, snapshot.py:1574, 1654-1692). Erase and redact again: the 3 records are tombstoned but ClearRevision is skipped because redactedRev(2) exists (LedgerRedact.cls:345): row 2 keeps message 'wsgap secret message' and key wsgap-k1, idem(wsgap-k1) stays live (INV-text, INV-retry fail); a retry with wsgap-k1 is answered replayed=True with the redacted revision and its message; Final fails on the leftover row 3 (F-1801's wedge) and the marker stays. (2) ws-live-gap-marker: a bounded redaction left the marker; a replacing restore of an archive holding the target brought its 9 rows back and kept the marker: the marker names a live target (INV-marker fails); a re-run is refused target_live.",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "ws-live-gap-restore"
+   },
+   {
+    "kind": "live",
+    "ref": "ws-live-gap-marker"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/snapshot.py:1654-1692"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/LedgerRedact.cls:333-378"
+   }
+  ],
+  "gates": [
+   "3.3a-writesets",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S1",
+  "confidence": "high",
+  "remedy": "Make a replacing restore replace the whole ledger state as a unit (kill ^IVG.Ledger, including marker, redactedRev and idemRedacted, before importing) or refuse it when the live ledger has redactions after the archive (HD-1801's working answer); and have ClearRevision clear a revision's text whenever it still holds text, not only when redactedRev is absent.",
+  "notes": "The census's write-set gaps WS-GAP-001..003 (restore_snapshot through _import_global_from_ndjson writes marker, idemRedacted and redactedRev, which plan snapshot.restore_replace does not declare). Root cause shared with F-1801 (the overlay) and F-C1304 (archives keep a redacted tenant); the effects here are the redaction stores' and are not in those records."
+ },
+ {
+  "id": "F-C1351",
+  "module": "13",
+  "title": "The redaction's liveness check misses rows a bulk load wrote with %NOINDEX: the redaction completes while the tenant's rows exist, and they reappear at the next index rebuild",
+  "intended": "specs/256-ledger-tenant-redaction/spec.md:124 (FR-005: refuse while any non-tombstoned live statement or node of the target remains); docs/adr/0013-redaction-removes-content-from-history.md:17 (refused while any row of the target is live); RED-B1.1 (experiment/playbook-uplift/ontology/13-redaction.md:51).",
+  "observed": "Live in AUDITB (ws-live-noindex): tenant wsni committed through the ledger (3 records) and erased; BulkLoader.load_nodes (default use_noindex=True, INSERT %NOINDEX %NOCHECK, bulk_loader.py:8-11) wrote its node, label and property rows; COUNT(*) queries of LiveRows' shape (%EXACT(id) %STARTSWITH ?, LedgerRedact.cls:149-178) answered 0 while a %IGNOREINDEX full scan found nodes 1, labels 1, props 2; redact(None, prefix='wsni') completed (receipt complete, 3 records tombstoned, marker removed); BulkLoader.rebuild_all_indices then made the rows visible: 4 live rows under tombstoned records, verify() = diverges.",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "ws-live-noindex"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/LedgerRedact.cls:149-178"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/bulk_loader.py:252-300"
+   }
+  ],
+  "gates": [
+   "3.3a-writesets",
+   "3.7-integration-worlds",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S1",
+  "confidence": "high",
+  "remedy": "Count liveness without relying on indexes a %NOINDEX load leaves stale (%IGNOREINDEX on LiveRows' counts, or refuse a redaction while an index build is pending for the content tables), or have the bulk loader rebuild the indices before it returns.",
+  "notes": "Outside the census's 185 cells: BulkLoader.load_nodes is not one of its uncovered writers. The window lasts from the load until rebuild_all_indices (load_networkx runs it as phase 5; load_nodes and load_edges called on their own do not). The same probe family showed load_edges' %NOINDEX edge row uncounted (ws-live-ins-bulkloader_load_edges: rdf_edges 0 while the journal shows the write)."
+ }
+]
