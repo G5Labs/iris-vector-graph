@@ -1447,7 +1447,13 @@
    "gate": "3.3-L1",
    "level": "model",
    "module": "06",
-   "product_obligation": "holds-in-model-only",
+   "product_basis": {
+    "fails": [
+     "stated fails by orchestrator"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
    "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1b/PROOFS.md; no code correspondence",
    "status": "closed"
   },
@@ -1924,7 +1930,13 @@
    "gate": "3.3-L1",
    "level": "model",
    "module": "18",
-   "product_obligation": "holds-in-model-only",
+   "product_basis": {
+    "fails": [
+     "stated fails by orchestrator"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
    "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1b/PROOFS.md; no code correspondence",
    "status": "closed"
   },
@@ -2040,7 +2052,13 @@
    "gate": "3.3-L2",
    "level": "model",
    "module": "06",
-   "product_obligation": "holds-in-model-only",
+   "product_basis": {
+    "fails": [
+     "stated fails by orchestrator"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
    "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1b/PROOFS.md; no code correspondence",
    "status": "closed"
   },
@@ -2360,7 +2378,13 @@
    "gate": "3.3-L2",
    "level": "model",
    "module": "18",
-   "product_obligation": "holds-in-model-only",
+   "product_basis": {
+    "fails": [
+     "stated fails by orchestrator"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
    "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1b/PROOFS.md; no code correspondence",
    "status": "closed"
   },
@@ -2472,7 +2496,13 @@
    "gate": "3.3-refinement",
    "level": "model",
    "module": "06",
-   "product_obligation": "holds-in-model-only",
+   "product_basis": {
+    "fails": [
+     "stated fails by orchestrator"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
    "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1b/PROOFS.md; no code correspondence",
    "status": "closed"
   },
@@ -2756,7 +2786,13 @@
    "gate": "3.3-refinement",
    "level": "model",
    "module": "18",
-   "product_obligation": "holds-in-model-only",
+   "product_basis": {
+    "fails": [
+     "stated fails by orchestrator"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
    "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1b/PROOFS.md; no code correspondence",
    "status": "closed"
   },
@@ -2901,6 +2937,7 @@
    "module": "06",
    "product_basis": {
     "fails": [
+     "stated fails by orchestrator",
      "run proofs-d1b-f0604-done-without-vector (expected-violation)",
      "run proofs-d1b-f0606-erase-keeps-ivf (expected-violation)",
      "run proofs-d1b-f1801-no-prefix-check (expected-violation)",
@@ -3240,6 +3277,7 @@
    "module": "18",
    "product_basis": {
     "fails": [
+     "stated fails by orchestrator",
      "run proofs-d1b-f0604-done-without-vector (expected-violation)",
      "run proofs-d1b-f0606-erase-keeps-ivf (expected-violation)",
      "run proofs-d1b-f1801-no-prefix-check (expected-violation)",
@@ -3318,7 +3356,7 @@
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "model-level: participant contracts composed with actors Protocol2 in two levels; no code correspondence (see 3.5-handlers); premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested; as built: the four located controls encode the pin's behaviour (F-1302, F-1303, F-1306; F-1201 intent-undecided) and each has a proved counterexample, and the premises above are violated by reproduced findings, so the product obligation fails [review-response R2-01]",
+   "remaining": "model-level: participant contracts composed with actors Protocol2 in two levels; no code correspondence (see 3.5-handlers); premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested; as built: the four located controls encode the pin's behaviour (F-1302, F-1303, F-1306; F-1201 intent-undecided) and each has a proved counterexample, and the premises above are violated by reproduced findings, so the product obligation fails [review-response R2-01]; proofs-d9 premise P-D9-3 (bypass writers never write ledger globals) is false at the pin (census: restore, ImportGlobals, Disable/SetStrict, copy_ledger_history, SQL INSERT into ledger_revisions)",
    "status": "closed"
   },
   {
@@ -26163,13 +26201,13 @@
   }
  ],
  "product_counts": {
-  "fails": 220,
-  "holds-in-model-only": 7,
+  "fails": 226,
+  "holds-in-model-only": 1,
   "intent-undecided": 2,
   "n/a": 34,
   "unknown": 484
  },
- "registry_runs": 781,
+ "registry_runs": 784,
  "starting_inventory": {
   "cells": 904,
   "decisions": 61,

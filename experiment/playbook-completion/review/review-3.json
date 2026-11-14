@@ -1,0 +1,117 @@
+{
+ "review": "independent reviewer, third pass (playbook §3.8 / §5c)",
+ "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "audit_head": "a6dc67a1",
+ "date": "2026-11-14",
+ "decision": "no sign-off",
+ "second_pass_conditions": {
+  "R2-11": "met in substance (F-1201 reproduced-live, remedy conditional on HD-1201); ADR-0004 quotation in its note is wrong (R3-05)",
+  "R2-12": "met (errata corr-trace-conf, CORRESPONDENCE.md method row corrected, corr-abstraction-selftest-r3 rejects at the tombstone-of-live-content rule, independent-review-2-final = REVIEW-2.md sha ef6a7c40)",
+  "R2-07": "open: no operator ruling (CONVENTIONS.md unchanged since bd727838; operator records 00:12Z, 02:16Z, 03:16Z do not address it)"
+ },
+ "findings": [
+  {
+   "id": "R3-01",
+   "angle": [
+    3
+   ],
+   "severity": "S3",
+   "claim": "proofs-d9 premise P-D9-3 ('bypass writers write content rows only, never ledger globals') cites the superseded writer census; the corrected census lists five ledger-global writers outside the ledger classes (restore_snapshot/_import_global_from_ndjson snapshot.py:1679, Snapshot.ImportGlobals, Snapshot.SetNodeJSON, copy_ledger_history, SQL INSERT surface on ledger_revisions); P-D9-3 is violated at the pin but missing from 'Premises the pin violates'.",
+   "evidence": [
+    "experiment/playbook-completion/proofs-d9/PROOFS.md §5 P-D9-3, 'Premises the pin violates'",
+    "$RUN_DIR/followup/writer-census.json ledger_writers_outside_ledger_classes",
+    "findings F-1801, F-C1304"
+   ],
+   "recommendation": "List P-D9-3 as violated, citing followup-writer-census; note restore/snapshot during a run as unmodelled."
+  },
+  {
+   "id": "R3-02",
+   "angle": [
+    4
+   ],
+   "severity": "S3",
+   "claim": "06 and 18 3.3-L1/L2/refinement cells are holds-in-model-only while the 06/18 3.3-controls cells (same crate) are fails and 04/11 L1/L2/refinement are fails; F-1801, F-0606, F-C1304 are reproduced live; the --check rule misses cells citing only a baseline run (6 of the 7 holds-in-model-only cells).",
+   "evidence": [
+    "experiment/playbook-completion/matrix/obligations.json cells 06/18 3.3-L1, 3.3-L2, 3.3-refinement",
+    "experiment/playbook-completion/matrix/build_matrix.py --check"
+   ],
+   "recommendation": "Apply the 04/11 product-label rule to 06/18 and extend --check."
+  },
+  {
+   "id": "R3-03",
+   "angle": [
+    4
+   ],
+   "severity": "S3",
+   "claim": "The ontology (last changed 0eec4df8) does not cite F-CS01: RED-B12 (no ledger record/row/reader shows the tenant's ids or values) and RED-B4 (a redacted revision's retry key never usable again; F-CS01's key stays bound and replays) are contradicted without citation; the checker rule did not fire because F-CS01's intended names spec lines, not statement ids.",
+   "evidence": [
+    "experiment/playbook-completion/ontology/13-redaction.md RED-B4, RED-B12",
+    "experiment/playbook-completion/findings/audit/zz-simulator.json F-CS01",
+    "registry:sim-fcs01-minimal"
+   ],
+   "recommendation": "Cite F-CS01 on RED-B12 and RED-B4 with [model-only] where applicable."
+  },
+  {
+   "id": "R3-04",
+   "angle": [
+    4
+   ],
+   "severity": "S3",
+   "claim": "STATUS.md's §3.8 row still says the randomized simulator was not run and 5c-reviewers is open, contradicting its own line 42 and the matrix (5c-reviewers closed); the verdict paragraph cites the older candidate 0eec4df8 rather than verify-full-fd605df3.",
+   "evidence": [
+    "experiment/playbook-completion/STATUS.md lines 8, 28, 42",
+    "experiment/playbook-completion/matrix/obligations.json 5c-reviewers"
+   ],
+   "recommendation": "Reconcile STATUS with the matrix and the latest full run."
+  },
+  {
+   "id": "R3-05",
+   "angle": [
+    1,
+    5
+   ],
+   "severity": "S4",
+   "claim": "Cosmetic: F-1201's note attributes to ADR-0004's Consequences a phrase that is in the Decision ('no live statement outlives its content', line 18) and one that is not in the ADR ('the statement map must track recorded live edges'); the settling clause is lines 79-80; its intended still cites only the converse. orchestrator_status 3.7-full-rerun says 'final verify.sh run pending'. build_matrix --check is STALE by one registry count. The simulator's not-hit list omits rollback-based F-C1201/F-C1301.",
+   "evidence": [
+    "experiment/playbook-completion/findings/audit/12.json F-1201",
+    "docs/adr/0004-erasure-removes-content-not-history.md:18,79-80",
+    "experiment/playbook-completion/matrix/orchestrator_status.json 3.7-full-rerun",
+    "experiment/playbook-completion/simulator/SIMULATOR.md 'Known findings in scope that were not hit'"
+   ],
+   "recommendation": "Correct the quotation and intended field; refresh the stale notes; rebuild the matrix after the last registration."
+  }
+ ],
+ "conditions": {
+  "operator": [
+   "O-1 (R2-07): ruling from the user/operator on compiling v4.5.1 and IVGDev.Setup into %SYS via a pinned fixture, or F-C1306's evidence re-graded as outside the conventions; CONVENTIONS.md to state the rule"
+  ],
+  "audit": [
+   "A-1 (R3-01)",
+   "A-2 (R3-02)",
+   "A-3 (R3-03)",
+   "A-4 (R3-04)"
+  ],
+  "maintainer": [
+   "§3.8 second clause: a fix or recorded decision for every finding",
+   "residual questions in decisions.md",
+   "intent-undecided or assumption-conditional items: F-0401, F-0503, F-C1102 durability premise, F-1201 remedy (HD-1201), F-CS01's reading of FR-004"
+  ]
+ },
+ "sign_off_on": "O-1 and A-1..A-4 met: sign-off on spec against intent and the account's accuracy (§3.8 first clause), covering the account, not the product",
+ "evidence_audit": {
+  "registry_records_hashed": 782,
+  "sha_ok": 776,
+  "sha_mismatch": 6,
+  "sha_mismatch_note": "disclosed superseded core-proofs originals",
+  "sample_read": 31,
+  "sample_scope": "every run registered after the second pass",
+  "match": 28,
+  "partial": 3,
+  "mismatch": 0,
+  "partial_ids": [
+   "proofs-d9-baseline",
+   "proofs-d9-bypass-start",
+   "proofs-d9-bypass-erase"
+  ]
+ }
+}

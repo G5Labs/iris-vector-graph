@@ -1,6 +1,6 @@
 {
  "counts": {
-  "finding_tags": 51,
+  "finding_tags": 53,
   "items_model_only": 24,
   "notes_changed": 18,
   "restatements_updated": 2,
@@ -128,12 +128,20 @@
    "F-C1306": {
     "disposition": "reproduced-live",
     "why": "contradicted (manual, review R2-03): after a supported 4.5.x upgrade, Graph_KG.ledger_revisions keeps the erased and redacted tenant's messages, sources and keys (fc1306-legacy-ledger-rows)"
+   },
+   "F-CS01": {
+    "disposition": "reproduced-live",
+    "why": "contradicted (live): after erase and a complete redaction a no-op changeset's zero-record revision keeps the tenant's message, source, correlation id and key (simulator, sim-fcs01-minimal; review-3 A-3)"
    }
   },
   "RED-B4": {
    "F-1801": {
     "disposition": "reproduced-live",
     "why": "contradicted (manual, review R2-03): a replacing restore binds a redacted revision's retry key again (model core-m3-as-built-F1801-keys; the restore overlay itself is live, c18-live-ledger-overlay)"
+   },
+   "F-CS01": {
+    "disposition": "reproduced-live",
+    "why": "contradicted (live): a retry with the key of that zero-record revision is replayed after the redaction instead of refused (sim-fcs01-minimal; review-3 A-3)"
    }
   },
   "RED-B7": {

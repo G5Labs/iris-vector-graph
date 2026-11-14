@@ -234,3 +234,7 @@ intent-undecided), and `[uncited-finding]` is new. `independent_recheck.py` re-d
 Before the tags, `[uncited-finding]` reported exactly F-C1308 on RED-B1.1 (and F-0503 on RPL-B3, a reviewed rejection,
 before F-0503 became intent-undecided); after, 0. Registry: `rr2-ontology-check`, `rr2-ontology-self-test`,
 `rr2-ontology-independent-recheck` (lane review-response).
+
+## Hand additions after review 3 (A-3)
+
+`finding:F-CS01` was added by hand to RED-B12 and RED-B4 (`13-redaction.md`) and recorded in `evidence-additions.json`; `add_evidence.py` did not generate these two items, so a regeneration from that tool alone would omit them. `independent_recheck.py` verifies them against `evidence-additions.json`.

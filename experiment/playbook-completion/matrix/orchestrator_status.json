@@ -99,7 +99,7 @@
     "run:proofs-d9-progress-rewind",
     "run:proofs-d9-recheck"
    ],
-   "remaining": "model-level: participant contracts composed with actors Protocol2 in two levels; no code correspondence (see 3.5-handlers); premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested; as built: the four located controls encode the pin's behaviour (F-1302, F-1303, F-1306; F-1201 intent-undecided) and each has a proved counterexample, and the premises above are violated by reproduced findings, so the product obligation fails [review-response R2-01]",
+   "remaining": "model-level: participant contracts composed with actors Protocol2 in two levels; no code correspondence (see 3.5-handlers); premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested; as built: the four located controls encode the pin's behaviour (F-1302, F-1303, F-1306; F-1201 intent-undecided) and each has a proved counterexample, and the premises above are violated by reproduced findings, so the product obligation fails [review-response R2-01]; proofs-d9 premise P-D9-3 (bypass writers never write ledger globals) is false at the pin (census: restore, ImportGlobals, Disable/SetStrict, copy_ledger_history, SQL INSERT into ledger_revisions)",
    "level": "model",
    "premises_refuted_at_pin": [
     "no-bypass-writes",
@@ -1415,7 +1415,9 @@
     "run:proofs-d1b-baseline"
    ],
    "level": "model",
-   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1b/PROOFS.md; no code correspondence"
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1b/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin (proofs-d1b/PROOFS.md)"
   },
   {
    "gate": "3.3-L2",
@@ -1425,7 +1427,9 @@
     "run:proofs-d1b-baseline"
    ],
    "level": "model",
-   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1b/PROOFS.md; no code correspondence"
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1b/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin (proofs-d1b/PROOFS.md)"
   },
   {
    "gate": "3.3-refinement",
@@ -1436,7 +1440,9 @@
     "run:proofs-d1b-recheck"
    ],
    "level": "model",
-   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1b/PROOFS.md; no code correspondence"
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1b/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin (proofs-d1b/PROOFS.md)"
   },
   {
    "gate": "3.3-controls",
@@ -1456,7 +1462,9 @@
     "run:proofs-d1b-hd0604-two-consumers"
    ],
    "level": "model",
-   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1b/PROOFS.md; no code correspondence"
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1b/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin (proofs-d1b/PROOFS.md)"
   },
   {
    "gate": "3.3-L1",
@@ -1466,7 +1474,9 @@
     "run:proofs-d1b-baseline"
    ],
    "level": "model",
-   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1b/PROOFS.md; no code correspondence"
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1b/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin (proofs-d1b/PROOFS.md)"
   },
   {
    "gate": "3.3-L2",
@@ -1476,7 +1486,9 @@
     "run:proofs-d1b-baseline"
    ],
    "level": "model",
-   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1b/PROOFS.md; no code correspondence"
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1b/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin (proofs-d1b/PROOFS.md)"
   },
   {
    "gate": "3.3-refinement",
@@ -1487,7 +1499,9 @@
     "run:proofs-d1b-recheck"
    ],
    "level": "model",
-   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1b/PROOFS.md; no code correspondence"
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1b/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin (proofs-d1b/PROOFS.md)"
   },
   {
    "gate": "3.3-controls",
@@ -1507,7 +1521,9 @@
     "run:proofs-d1b-hd0604-two-consumers"
    ],
    "level": "model",
-   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1b/PROOFS.md; no code correspondence"
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1b/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin (proofs-d1b/PROOFS.md)"
   }
  ]
 }
