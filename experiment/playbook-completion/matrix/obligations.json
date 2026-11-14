@@ -1736,21 +1736,28 @@
   },
   {
    "as_built_findings": [
-    "F-C1301",
+    "F-1201",
     "F-1304",
     "F-1305",
-    "F-C1201"
+    "F-C1201",
+    "F-C1301"
    ],
    "cited_runs": [
     "core-proofs-baseline",
-    "core-proofs-recheck-baseline"
+    "core-proofs-recheck-baseline",
+    "proofs-d9b-baseline",
+    "proofs-d9b-recheck"
    ],
    "evidence": [
     "run:core-proofs-baseline",
-    "run:core-proofs-recheck-baseline"
+    "run:core-proofs-recheck-baseline",
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md"
    ],
    "evidence_grade": "registered-run",
    "findings": [
+    "F-1201",
     "F-1304",
     "F-1305",
     "F-C1201",
@@ -1767,6 +1774,7 @@
    ],
    "product_basis": {
     "fails": [
+     "finding F-1201",
      "finding F-1304",
      "finding F-1305",
      "finding F-C1201",
@@ -1775,30 +1783,46 @@
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
-   "status": "closed"
+   "remaining": "premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested [proofs-d9b] L1 here is the outer business contract at protocol granularity with its invariants (Biz invariants for erasure with rollback (committed view), statement index and statement history after an erasure (theorem_erasure_clears_statement_history), lock serialization (G-L)); model-level only; no proof links the ObjectScript/Python to these contracts (D-2..D-5); verify()'s table read and graph-blind node identity (F-1401) not modelled; F-CS01's reviewed design (R-1 no-op records) is intent-undecided (PROOFS.md section 6); eraser variants, temporal-only storage, lock timeouts, restore/redactedRev not modelled; progress premises PF-1..PF-6 not discharged against IRIS",
+   "status": "closed",
+   "supplemented_by": [
+    "matrix-input/proofs-d9b.json"
+   ]
   },
   {
    "as_built_findings": [
-    "F-C1301",
+    "F-1302",
+    "F-1303",
     "F-1304",
     "F-1305",
-    "F-C1201"
+    "F-1306",
+    "F-C1201",
+    "F-C1301",
+    "F-CS01"
    ],
    "cited_runs": [
     "core-proofs-baseline",
-    "core-proofs-recheck-baseline"
+    "core-proofs-recheck-baseline",
+    "proofs-d9b-baseline",
+    "proofs-d9b-recheck"
    ],
    "evidence": [
     "run:core-proofs-baseline",
-    "run:core-proofs-recheck-baseline"
+    "run:core-proofs-recheck-baseline",
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md"
    ],
    "evidence_grade": "registered-run",
    "findings": [
+    "F-1302",
+    "F-1303",
     "F-1304",
     "F-1305",
+    "F-1306",
     "F-C1201",
-    "F-C1301"
+    "F-C1301",
+    "F-CS01"
    ],
    "gate": "3.3-L1",
    "level": "model",
@@ -1811,36 +1835,52 @@
    ],
    "product_basis": {
     "fails": [
+     "finding F-1302",
+     "finding F-1303",
      "finding F-1304",
      "finding F-1305",
+     "finding F-1306",
      "finding F-C1201",
-     "finding F-C1301"
+     "finding F-C1301",
+     "finding F-CS01"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
-   "status": "closed"
+   "remaining": "premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested [proofs-d9b] L1 here is the outer business contract at protocol granularity with its invariants (Biz invariants and theorems: no tombstone of live content, per-target audit, marker ownership, revision metadata redacted for every revision attributable to a completed target (F-CS01), Decision 2, INV-retry (step and executions), statement history after Final, replay changes nothing); model-level only; no proof links the ObjectScript/Python to these contracts (D-2..D-5); verify()'s table read and graph-blind node identity (F-1401) not modelled; F-CS01's reviewed design (R-1 no-op records) is intent-undecided (PROOFS.md section 6); eraser variants, temporal-only storage, lock timeouts, restore/redactedRev not modelled; progress premises PF-1..PF-6 not discharged against IRIS",
+   "status": "closed",
+   "supplemented_by": [
+    "matrix-input/proofs-d9b.json"
+   ]
   },
   {
    "as_built_findings": [
-    "F-C1301",
     "F-1304",
     "F-1305",
-    "F-C1201"
+    "F-1306",
+    "F-1402",
+    "F-C1201",
+    "F-C1301"
    ],
    "cited_runs": [
     "core-proofs-baseline",
-    "core-proofs-recheck-baseline"
+    "core-proofs-recheck-baseline",
+    "proofs-d9b-baseline",
+    "proofs-d9b-recheck"
    ],
    "evidence": [
     "run:core-proofs-baseline",
-    "run:core-proofs-recheck-baseline"
+    "run:core-proofs-recheck-baseline",
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md"
    ],
    "evidence_grade": "registered-run",
    "findings": [
     "F-1304",
     "F-1305",
+    "F-1306",
+    "F-1402",
     "F-C1201",
     "F-C1301"
    ],
@@ -1857,14 +1897,19 @@
     "fails": [
      "finding F-1304",
      "finding F-1305",
+     "finding F-1306",
+     "finding F-1402",
      "finding F-C1201",
      "finding F-C1301"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
-   "status": "closed"
+   "remaining": "premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested [proofs-d9b] L1 here is the outer business contract at protocol granularity with its invariants (RdOuter invariant rd_inv and RPL-I1 (theorem_accepted_view_consistent: a returned view is a prefix of the current history with no marker and the epoch unchanged); replay = store once settled; a replayed retry changes nothing); model-level only; no proof links the ObjectScript/Python to these contracts (D-2..D-5); verify()'s table read and graph-blind node identity (F-1401) not modelled; F-CS01's reviewed design (R-1 no-op records) is intent-undecided (PROOFS.md section 6); eraser variants, temporal-only storage, lock timeouts, restore/redactedRev not modelled; progress premises PF-1..PF-6 not discharged against IRIS",
+   "status": "closed",
+   "supplemented_by": [
+    "matrix-input/proofs-d9b.json"
+   ]
   },
   {
    "cited_runs": [
@@ -2225,19 +2270,26 @@
   },
   {
    "as_built_findings": [
-    "F-C1301",
+    "F-1201",
     "F-1304",
     "F-1305",
-    "F-C1201"
+    "F-C1201",
+    "F-C1301"
    ],
    "cited_runs": [
-    "core-refine-m2-reviewed"
+    "core-refine-m2-reviewed",
+    "proofs-d9b-baseline",
+    "proofs-d9b-recheck"
    ],
    "evidence": [
-    "run:core-refine-m2-reviewed"
+    "run:core-refine-m2-reviewed",
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md"
    ],
    "evidence_grade": "registered-run",
    "findings": [
+    "F-1201",
     "F-1304",
     "F-1305",
     "F-C1201",
@@ -2254,6 +2306,7 @@
    ],
    "product_basis": {
     "fails": [
+     "finding F-1201",
      "finding F-1304",
      "finding F-1305",
      "finding F-C1201",
@@ -2262,28 +2315,44 @@
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
-   "status": "closed"
+   "remaining": "premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested [proofs-d9b] participant contracts over the pin's data layout (^IVG.Ledger rec/head/idem/idemRedacted/stmt/tuple/redacting, Graph_KG.ledger_revisions row fields, content tables keyed by graph and id; epoch is a reviewed-design addition); one statement-history key per edge (P-D9b-3); model-level only; no proof links the ObjectScript/Python to these contracts (D-2..D-5); verify()'s table read and graph-blind node identity (F-1401) not modelled; F-CS01's reviewed design (R-1 no-op records) is intent-undecided (PROOFS.md section 6); eraser variants, temporal-only storage, lock timeouts, restore/redactedRev not modelled; progress premises PF-1..PF-6 not discharged against IRIS",
+   "status": "closed",
+   "supplemented_by": [
+    "matrix-input/proofs-d9b.json"
+   ]
   },
   {
    "as_built_findings": [
-    "F-C1301",
+    "F-1302",
+    "F-1303",
     "F-1304",
     "F-1305",
-    "F-C1201"
+    "F-1306",
+    "F-C1201",
+    "F-C1301",
+    "F-CS01"
    ],
    "cited_runs": [
-    "core-refine-m2-reviewed"
+    "core-refine-m2-reviewed",
+    "proofs-d9b-baseline",
+    "proofs-d9b-recheck"
    ],
    "evidence": [
-    "run:core-refine-m2-reviewed"
+    "run:core-refine-m2-reviewed",
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md"
    ],
    "evidence_grade": "registered-run",
    "findings": [
+    "F-1302",
+    "F-1303",
     "F-1304",
     "F-1305",
+    "F-1306",
     "F-C1201",
-    "F-C1301"
+    "F-C1301",
+    "F-CS01"
    ],
    "gate": "3.3-L2",
    "level": "model",
@@ -2296,34 +2365,50 @@
    ],
    "product_basis": {
     "fails": [
+     "finding F-1302",
+     "finding F-1303",
      "finding F-1304",
      "finding F-1305",
+     "finding F-1306",
      "finding F-C1201",
-     "finding F-C1301"
+     "finding F-C1301",
+     "finding F-CS01"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
-   "status": "closed"
+   "remaining": "premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested [proofs-d9b] participant contracts over the pin's data layout (^IVG.Ledger rec/head/idem/idemRedacted/stmt/tuple/redacting, Graph_KG.ledger_revisions row fields, content tables keyed by graph and id; epoch is a reviewed-design addition); one statement-history key per edge (P-D9b-3); model-level only; no proof links the ObjectScript/Python to these contracts (D-2..D-5); verify()'s table read and graph-blind node identity (F-1401) not modelled; F-CS01's reviewed design (R-1 no-op records) is intent-undecided (PROOFS.md section 6); eraser variants, temporal-only storage, lock timeouts, restore/redactedRev not modelled; progress premises PF-1..PF-6 not discharged against IRIS",
+   "status": "closed",
+   "supplemented_by": [
+    "matrix-input/proofs-d9b.json"
+   ]
   },
   {
    "as_built_findings": [
-    "F-C1301",
     "F-1304",
     "F-1305",
-    "F-C1201"
+    "F-1306",
+    "F-1402",
+    "F-C1201",
+    "F-C1301"
    ],
    "cited_runs": [
-    "core-refine-m2-reviewed"
+    "core-refine-m2-reviewed",
+    "proofs-d9b-baseline",
+    "proofs-d9b-recheck"
    ],
    "evidence": [
-    "run:core-refine-m2-reviewed"
+    "run:core-refine-m2-reviewed",
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md"
    ],
    "evidence_grade": "registered-run",
    "findings": [
     "F-1304",
     "F-1305",
+    "F-1306",
+    "F-1402",
     "F-C1201",
     "F-C1301"
    ],
@@ -2340,14 +2425,19 @@
     "fails": [
      "finding F-1304",
      "finding F-1305",
+     "finding F-1306",
+     "finding F-1402",
      "finding F-C1201",
      "finding F-C1301"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
-   "status": "closed"
+   "remaining": "premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested [proofs-d9b] participant contracts over the pin's data layout (^IVG.Ledger rec/head/idem/idemRedacted/stmt/tuple/redacting, Graph_KG.ledger_revisions row fields, content tables keyed by graph and id; epoch is a reviewed-design addition); one statement-history key per edge (P-D9b-3); model-level only; no proof links the ObjectScript/Python to these contracts (D-2..D-5); verify()'s table read and graph-blind node identity (F-1401) not modelled; F-CS01's reviewed design (R-1 no-op records) is intent-undecided (PROOFS.md section 6); eraser variants, temporal-only storage, lock timeouts, restore/redactedRev not modelled; progress premises PF-1..PF-6 not discharged against IRIS",
+   "status": "closed",
+   "supplemented_by": [
+    "matrix-input/proofs-d9b.json"
+   ]
   },
   {
    "cited_runs": [
@@ -2746,25 +2836,32 @@
   },
   {
    "as_built_findings": [
-    "F-C1301",
+    "F-1201",
     "F-1304",
     "F-1305",
-    "F-C1201"
+    "F-C1201",
+    "F-C1301"
    ],
    "cited_runs": [
     "core-proofs-baseline",
     "core-proofs-recheck-baseline",
     "core-refine-m2-as-built",
-    "core-refine-m2-reviewed"
+    "core-refine-m2-reviewed",
+    "proofs-d9b-baseline",
+    "proofs-d9b-recheck"
    ],
    "evidence": [
     "run:core-refine-m2-reviewed",
     "run:core-proofs-baseline",
     "run:core-proofs-recheck-baseline",
-    "run:core-refine-m2-as-built"
+    "run:core-refine-m2-as-built",
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md"
    ],
    "evidence_grade": "registered-run",
    "findings": [
+    "F-1201",
     "F-1304",
     "F-1305",
     "F-C1201",
@@ -2781,6 +2878,7 @@
    ],
    "product_basis": {
     "fails": [
+     "finding F-1201",
      "finding F-1304",
      "finding F-1305",
      "finding F-C1201",
@@ -2790,34 +2888,50 @@
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "model to model; as-built fails refinement (core-refine-m2-as-built); premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
-   "status": "closed"
+   "remaining": "model to model; as-built fails refinement (core-refine-m2-as-built); premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested [proofs-d9b] step_binds and step_enabled proved for every operation at RLP, SysP, TopP and ReadP; any implementations of the participant contracts refine Biz/RdOuter and keep their invariants (system.rs, protocol_rd.rs); model to model only, model-level only; no proof links the ObjectScript/Python to these contracts (D-2..D-5); verify()'s table read and graph-blind node identity (F-1401) not modelled; F-CS01's reviewed design (R-1 no-op records) is intent-undecided (PROOFS.md section 6); eraser variants, temporal-only storage, lock timeouts, restore/redactedRev not modelled; progress premises PF-1..PF-6 not discharged against IRIS",
+   "status": "closed",
+   "supplemented_by": [
+    "matrix-input/proofs-d9b.json"
+   ]
   },
   {
    "as_built_findings": [
-    "F-C1301",
+    "F-1302",
+    "F-1303",
     "F-1304",
     "F-1305",
-    "F-C1201"
+    "F-1306",
+    "F-C1201",
+    "F-C1301",
+    "F-CS01"
    ],
    "cited_runs": [
     "core-proofs-baseline",
     "core-proofs-recheck-baseline",
     "core-refine-m2-as-built",
-    "core-refine-m2-reviewed"
+    "core-refine-m2-reviewed",
+    "proofs-d9b-baseline",
+    "proofs-d9b-recheck"
    ],
    "evidence": [
     "run:core-refine-m2-reviewed",
     "run:core-proofs-baseline",
     "run:core-proofs-recheck-baseline",
-    "run:core-refine-m2-as-built"
+    "run:core-refine-m2-as-built",
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md"
    ],
    "evidence_grade": "registered-run",
    "findings": [
+    "F-1302",
+    "F-1303",
     "F-1304",
     "F-1305",
+    "F-1306",
     "F-C1201",
-    "F-C1301"
+    "F-C1301",
+    "F-CS01"
    ],
    "gate": "3.3-refinement",
    "level": "model",
@@ -2830,41 +2944,57 @@
    ],
    "product_basis": {
     "fails": [
+     "finding F-1302",
+     "finding F-1303",
      "finding F-1304",
      "finding F-1305",
+     "finding F-1306",
      "finding F-C1201",
      "finding F-C1301",
+     "finding F-CS01",
      "run core-refine-m2-as-built (expected-violation)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "model to model; as-built fails refinement (core-refine-m2-as-built); premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
-   "status": "closed"
+   "remaining": "model to model; as-built fails refinement (core-refine-m2-as-built); premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested [proofs-d9b] step_binds and step_enabled proved for every operation at RLP, SysP, TopP and ReadP; any implementations of the participant contracts refine Biz/RdOuter and keep their invariants (system.rs, protocol_rd.rs); model to model only, model-level only; no proof links the ObjectScript/Python to these contracts (D-2..D-5); verify()'s table read and graph-blind node identity (F-1401) not modelled; F-CS01's reviewed design (R-1 no-op records) is intent-undecided (PROOFS.md section 6); eraser variants, temporal-only storage, lock timeouts, restore/redactedRev not modelled; progress premises PF-1..PF-6 not discharged against IRIS",
+   "status": "closed",
+   "supplemented_by": [
+    "matrix-input/proofs-d9b.json"
+   ]
   },
   {
    "as_built_findings": [
-    "F-C1301",
     "F-1304",
     "F-1305",
-    "F-C1201"
+    "F-1306",
+    "F-1402",
+    "F-C1201",
+    "F-C1301"
    ],
    "cited_runs": [
     "core-proofs-baseline",
     "core-proofs-recheck-baseline",
     "core-refine-m2-as-built",
-    "core-refine-m2-reviewed"
+    "core-refine-m2-reviewed",
+    "proofs-d9b-baseline",
+    "proofs-d9b-recheck"
    ],
    "evidence": [
     "run:core-refine-m2-reviewed",
     "run:core-proofs-baseline",
     "run:core-proofs-recheck-baseline",
-    "run:core-refine-m2-as-built"
+    "run:core-refine-m2-as-built",
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md"
    ],
    "evidence_grade": "registered-run",
    "findings": [
     "F-1304",
     "F-1305",
+    "F-1306",
+    "F-1402",
     "F-C1201",
     "F-C1301"
    ],
@@ -2881,6 +3011,8 @@
     "fails": [
      "finding F-1304",
      "finding F-1305",
+     "finding F-1306",
+     "finding F-1402",
      "finding F-C1201",
      "finding F-C1301",
      "run core-refine-m2-as-built (expected-violation)"
@@ -2888,8 +3020,11 @@
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "model to model; as-built fails refinement (core-refine-m2-as-built); premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
-   "status": "closed"
+   "remaining": "model to model; as-built fails refinement (core-refine-m2-as-built); premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested [proofs-d9b] step_binds and step_enabled proved for every operation at RLP, SysP, TopP and ReadP; any implementations of the participant contracts refine Biz/RdOuter and keep their invariants (system.rs, protocol_rd.rs); model to model only, model-level only; no proof links the ObjectScript/Python to these contracts (D-2..D-5); verify()'s table read and graph-blind node identity (F-1401) not modelled; F-CS01's reviewed design (R-1 no-op records) is intent-undecided (PROOFS.md section 6); eraser variants, temporal-only storage, lock timeouts, restore/redactedRev not modelled; progress premises PF-1..PF-6 not discharged against IRIS",
+   "status": "closed",
+   "supplemented_by": [
+    "matrix-input/proofs-d9b.json"
+   ]
   },
   {
    "cited_runs": [
@@ -3723,11 +3858,17 @@
   {
    "as_built_findings": [
     "F-1201",
+    "F-C1201",
     "F-C1202"
    ],
    "cited_runs": [
     "core-proofs-f1302-unlocked-start",
     "core-proofs-recheck-f1302_unlocked_start",
+    "proofs-d9b-baseline",
+    "proofs-d9b-bypass-erase",
+    "proofs-d9b-f1201-erase-unlocked",
+    "proofs-d9b-liveness-dirty",
+    "proofs-d9b-recheck",
     "proofs-pa3-f1201-erase-no-head-lock",
     "proofs-pa3-fc1202-erase-unguarded",
     "proofs-pa3-recheck"
@@ -3738,11 +3879,19 @@
     "run:proofs-pa3-f1201-erase-no-head-lock",
     "run:proofs-pa3-fc1202-erase-unguarded",
     "run:proofs-pa3-recheck",
-    "experiment/playbook-completion/proofs-pa3/PROOFS.md"
+    "experiment/playbook-completion/proofs-pa3/PROOFS.md",
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "run:proofs-d9b-f1201-erase-unlocked",
+    "run:proofs-d9b-liveness-dirty",
+    "run:proofs-d9b-bypass-erase",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md",
+    "experiment/playbook-completion/proofs-d9b/RESULTS.json"
    ],
    "evidence_grade": "registered-run",
    "findings": [
     "F-1201",
+    "F-C1201",
     "F-C1202"
    ],
    "gate": "3.3-controls",
@@ -3751,6 +3900,7 @@
    "product_basis": {
     "fails": [
      "finding F-1201",
+     "finding F-C1201",
      "finding F-C1202",
      "run core-proofs-f1302-unlocked-start (expected-violation)",
      "run proofs-pa3-f1201-erase-no-head-lock (expected-violation)",
@@ -3759,24 +3909,60 @@
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "[proofs-pa3] model-level only: no proof connects the ObjectScript/Python to the L2 machines (D-2, D-3); the two modules' L2s are separate machines of the same EraseGraph (no single composed machine; the core lane's M2 explorer model composes them, bounded)",
+   "remaining": "[proofs-pa3] model-level only: no proof connects the ObjectScript/Python to the L2 machines (D-2, D-3); the two modules' L2s are separate machines of the same EraseGraph (no single composed machine; the core lane's M2 explorer model composes them, bounded) [proofs-d9b] each control rejected only in its expected file with every other function verified as in the baseline and a proved reachable counterexample; controls are model changes, the product's own behaviour is the as-built evidence (live findings)",
    "status": "closed",
    "supplemented_by": [
-    "matrix-input/models-2.json"
+    "matrix-input/models-2.json",
+    "matrix-input/proofs-d9b.json"
    ]
   },
   {
+   "as_built_findings": [
+    "F-1302",
+    "F-1303",
+    "F-1304",
+    "F-1306",
+    "F-C1301",
+    "F-CS01"
+   ],
    "cited_runs": [
     "core-proofs-f1302-unlocked-start",
-    "core-proofs-recheck-f1302_unlocked_start"
+    "core-proofs-recheck-f1302_unlocked_start",
+    "proofs-d9b-baseline",
+    "proofs-d9b-bypass-start",
+    "proofs-d9b-f1302-unlocked-start",
+    "proofs-d9b-f1303-other-marker",
+    "proofs-d9b-f1306-replay-reapplies",
+    "proofs-d9b-fcs01-noop-unrecorded",
+    "proofs-d9b-recheck",
+    "proofs-d9b-sc-narrow",
+    "proofs-d9b-unaligned-rm",
+    "proofs-d9b-unaligned-sc"
    ],
    "evidence": [
     "run:core-proofs-f1302-unlocked-start",
-    "run:core-proofs-recheck-f1302_unlocked_start"
+    "run:core-proofs-recheck-f1302_unlocked_start",
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "run:proofs-d9b-fcs01-noop-unrecorded",
+    "run:proofs-d9b-f1302-unlocked-start",
+    "run:proofs-d9b-f1303-other-marker",
+    "run:proofs-d9b-f1306-replay-reapplies",
+    "run:proofs-d9b-unaligned-rm",
+    "run:proofs-d9b-unaligned-sc",
+    "run:proofs-d9b-sc-narrow",
+    "run:proofs-d9b-bypass-start",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md",
+    "experiment/playbook-completion/proofs-d9b/RESULTS.json"
    ],
    "evidence_grade": "registered-run",
    "findings": [
-    "F-1302"
+    "F-1302",
+    "F-1303",
+    "F-1304",
+    "F-1306",
+    "F-C1301",
+    "F-CS01"
    ],
    "gate": "3.3-controls",
    "level": "model",
@@ -3784,34 +3970,73 @@
    "product_basis": {
     "fails": [
      "finding F-1302",
-     "run core-proofs-f1302-unlocked-start (expected-violation)"
+     "finding F-1303",
+     "finding F-1304",
+     "finding F-1306",
+     "finding F-C1301",
+     "finding F-CS01",
+     "run core-proofs-f1302-unlocked-start (expected-violation)",
+     "run proofs-d9b-f1302-unlocked-start (expected-violation)",
+     "run proofs-d9b-f1303-other-marker (expected-violation)",
+     "run proofs-d9b-f1306-replay-reapplies (expected-violation)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "status": "closed"
+   "remaining": "[proofs-d9b] each control rejected only in its expected file with every other function verified as in the baseline and a proved reachable counterexample; controls are model changes, the product's own behaviour is the as-built evidence (live findings)",
+   "status": "closed",
+   "supplemented_by": [
+    "matrix-input/proofs-d9b.json"
+   ]
   },
   {
+   "as_built_findings": [
+    "F-1306",
+    "F-1402"
+   ],
    "cited_runs": [
     "core-proofs-f1302-unlocked-start",
-    "core-proofs-recheck-f1302_unlocked_start"
+    "core-proofs-recheck-f1302_unlocked_start",
+    "proofs-d9b-baseline",
+    "proofs-d9b-f1306-replay-reapplies",
+    "proofs-d9b-f1402-reader-no-recheck",
+    "proofs-d9b-reader-marker-recheck-only",
+    "proofs-d9b-recheck"
    ],
    "evidence": [
     "run:core-proofs-f1302-unlocked-start",
-    "run:core-proofs-recheck-f1302_unlocked_start"
+    "run:core-proofs-recheck-f1302_unlocked_start",
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "run:proofs-d9b-f1402-reader-no-recheck",
+    "run:proofs-d9b-reader-marker-recheck-only",
+    "run:proofs-d9b-f1306-replay-reapplies",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md",
+    "experiment/playbook-completion/proofs-d9b/RESULTS.json"
    ],
    "evidence_grade": "registered-run",
+   "findings": [
+    "F-1306",
+    "F-1402"
+   ],
    "gate": "3.3-controls",
    "level": "model",
    "module": "14",
    "product_basis": {
     "fails": [
-     "run core-proofs-f1302-unlocked-start (expected-violation)"
+     "finding F-1306",
+     "finding F-1402",
+     "run core-proofs-f1302-unlocked-start (expected-violation)",
+     "run proofs-d9b-f1306-replay-reapplies (expected-violation)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "status": "closed"
+   "remaining": "[proofs-d9b] each control rejected only in its expected file with every other function verified as in the baseline and a proved reachable counterexample; controls are model changes, the product's own behaviour is the as-built evidence (live findings)",
+   "status": "closed",
+   "supplemented_by": [
+    "matrix-input/proofs-d9b.json"
+   ]
   },
   {
    "cited_runs": [
@@ -4078,10 +4303,18 @@
   },
   {
    "as_built_findings": [
-    "F-C1301",
+    "F-1201",
+    "F-1302",
+    "F-1303",
     "F-1304",
     "F-1305",
-    "F-C1201"
+    "F-1306",
+    "F-1402",
+    "F-C1201",
+    "F-C1301",
+    "F-C1303",
+    "F-C1307",
+    "F-CS01"
    ],
    "cited_runs": [
     "core-proofs-baseline",
@@ -4092,7 +4325,24 @@
     "core-proofs-recheck-baseline",
     "proofs-d9-baseline",
     "proofs-d9-progress-rewind",
-    "proofs-d9-recheck"
+    "proofs-d9-recheck",
+    "proofs-d9b-baseline",
+    "proofs-d9b-bound-follows-tail",
+    "proofs-d9b-bypass-erase",
+    "proofs-d9b-bypass-start",
+    "proofs-d9b-f1201-erase-unlocked",
+    "proofs-d9b-f1302-unlocked-start",
+    "proofs-d9b-f1303-other-marker",
+    "proofs-d9b-f1306-replay-reapplies",
+    "proofs-d9b-f1402-reader-no-recheck",
+    "proofs-d9b-fcs01-noop-unrecorded",
+    "proofs-d9b-liveness-dirty",
+    "proofs-d9b-progress-rewind",
+    "proofs-d9b-reader-marker-recheck-only",
+    "proofs-d9b-recheck",
+    "proofs-d9b-sc-narrow",
+    "proofs-d9b-unaligned-rm",
+    "proofs-d9b-unaligned-sc"
    ],
    "evidence": [
     "run:core-proofs-baseline",
@@ -4103,14 +4353,41 @@
     "run:core-proofs-recheck-baseline",
     "run:proofs-d9-baseline",
     "run:proofs-d9-progress-rewind",
-    "run:proofs-d9-recheck"
+    "run:proofs-d9-recheck",
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "run:proofs-d9b-bypass-start",
+    "run:proofs-d9b-bypass-erase",
+    "run:proofs-d9b-liveness-dirty",
+    "run:proofs-d9b-unaligned-rm",
+    "run:proofs-d9b-unaligned-sc",
+    "run:proofs-d9b-f1201-erase-unlocked",
+    "run:proofs-d9b-fcs01-noop-unrecorded",
+    "run:proofs-d9b-f1302-unlocked-start",
+    "run:proofs-d9b-f1303-other-marker",
+    "run:proofs-d9b-f1306-replay-reapplies",
+    "run:proofs-d9b-sc-narrow",
+    "run:proofs-d9b-f1402-reader-no-recheck",
+    "run:proofs-d9b-reader-marker-recheck-only",
+    "run:proofs-d9b-progress-rewind",
+    "run:proofs-d9b-bound-follows-tail",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md",
+    "experiment/playbook-completion/proofs-d9b/RESULTS.json"
    ],
    "evidence_grade": "registered-run",
    "findings": [
+    "F-1201",
+    "F-1302",
+    "F-1303",
     "F-1304",
     "F-1305",
+    "F-1306",
+    "F-1402",
     "F-C1201",
-    "F-C1301"
+    "F-C1301",
+    "F-C1303",
+    "F-C1307",
+    "F-CS01"
    ],
    "gate": "3.3-protocol",
    "level": "model",
@@ -4123,35 +4400,63 @@
    ],
    "product_basis": {
     "fails": [
+     "finding F-1201",
+     "finding F-1302",
+     "finding F-1303",
      "finding F-1304",
      "finding F-1305",
+     "finding F-1306",
+     "finding F-1402",
      "finding F-C1201",
      "finding F-C1301",
+     "finding F-C1303",
+     "finding F-C1307",
+     "finding F-CS01",
      "run core-proofs-f1201-erase-unlocked (expected-violation)",
      "run core-proofs-f1302-unlocked-start (expected-violation)",
      "run core-proofs-f1303-other-marker (expected-violation)",
-     "run core-proofs-f1306-replay-reapplies (expected-violation)"
+     "run core-proofs-f1306-replay-reapplies (expected-violation)",
+     "run proofs-d9b-f1302-unlocked-start (expected-violation)",
+     "run proofs-d9b-f1303-other-marker (expected-violation)",
+     "run proofs-d9b-f1306-replay-reapplies (expected-violation)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "model-level: participant contracts composed with actors Protocol2 in two levels; no code correspondence (see 3.5-handlers); premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested; as built: the four located controls encode the pin's behaviour (F-1302, F-1303, F-1306; F-1201 intent-undecided) and each has a proved counterexample, and the premises above are violated by reproduced findings, so the product obligation fails [review-response R2-01]; proofs-d9 premise P-D9-3 (bypass writers never write ledger globals) is false at the pin (census: restore, ImportGlobals, Disable/SetStrict, copy_ledger_history, SQL INSERT into ledger_revisions)",
-   "status": "closed"
+   "remaining": "model-level: participant contracts composed with actors Protocol2 in two levels; no code correspondence (see 3.5-handlers); premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested; as built: the four located controls encode the pin's behaviour (F-1302, F-1303, F-1306; F-1201 intent-undecided) and each has a proved counterexample, and the premises above are violated by reproduced findings, so the product obligation fails [review-response R2-01]; proofs-d9 premise P-D9-3 (bypass writers never write ledger globals) is false at the pin (census: restore, ImportGlobals, Disable/SetStrict, copy_ledger_history, SQL INSERT into ledger_revisions) [proofs-d9b] D-9 now paid at model level for readers (record readers; partition ReadP over RL), statement history, Decision 2, retry-key movement, F-1306 and the F-1302/F-1303/F-1306 re-runs; model-level only; no proof links the ObjectScript/Python to these contracts (D-2..D-5); verify()'s table read and graph-blind node identity (F-1401) not modelled; F-CS01's reviewed design (R-1 no-op records) is intent-undecided (PROOFS.md section 6); eraser variants, temporal-only storage, lock timeouts, restore/redactedRev not modelled; progress premises PF-1..PF-6 not discharged against IRIS",
+   "status": "closed",
+   "supplemented_by": [
+    "matrix-input/proofs-d9b.json"
+   ]
   },
   {
+   "as_built_findings": [
+    "F-C1303",
+    "F-C1307"
+   ],
    "cited_runs": [
     "core-proofs-progress-rewind",
     "core-proofs-recheck-progress_rewind",
     "proofs-d9-baseline",
     "proofs-d9-progress-rewind",
-    "proofs-d9-recheck"
+    "proofs-d9-recheck",
+    "proofs-d9b-baseline",
+    "proofs-d9b-bound-follows-tail",
+    "proofs-d9b-progress-rewind",
+    "proofs-d9b-recheck"
    ],
    "evidence": [
     "run:core-proofs-progress-rewind",
     "run:core-proofs-recheck-progress_rewind",
     "run:proofs-d9-baseline",
     "run:proofs-d9-progress-rewind",
-    "run:proofs-d9-recheck"
+    "run:proofs-d9-recheck",
+    "run:proofs-d9b-progress-rewind",
+    "run:proofs-d9b-bound-follows-tail",
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md",
+    "experiment/playbook-completion/proofs-d9b/RESULTS.json"
    ],
    "evidence_grade": "registered-run",
    "findings": [
@@ -4175,8 +4480,11 @@
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "progress premises not discharged against IRIS scheduling; premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
-   "status": "closed"
+   "remaining": "progress premises not discharged against IRIS scheduling; premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 25+ undeclared writers; F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested [proofs-d9b] D-12 paid at model level; progress premises PF-1..PF-6 not derived or tested against IRIS scheduling; readers' progress (M3-readers AG EF) not proved",
+   "status": "closed",
+   "supplemented_by": [
+    "matrix-input/proofs-d9b.json"
+   ]
   },
   {
    "cited_runs": [
@@ -7404,14 +7712,16 @@
     "footprints/04.json"
    ],
    "findings": [
-    "F-0404"
+    "F-0404",
+    "F-C0440"
    ],
    "gate": "3.4-ownership",
    "level": "product",
    "module": "04",
    "product_basis": {
     "fails": [
-     "finding F-0404"
+     "finding F-0404",
+     "finding F-C0440"
     ],
     "intent_undecided": []
    },
@@ -7438,10 +7748,19 @@
    "evidence": [
     "footprints/06.json"
    ],
+   "findings": [
+    "F-C0640"
+   ],
    "gate": "3.4-ownership",
    "level": "product",
    "module": "06",
-   "product_obligation": "unknown",
+   "product_basis": {
+    "fails": [
+     "finding F-C0640"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
    "remaining": "no ownership self-test",
    "source": "modules/06.json",
    "status": "open"
@@ -7490,10 +7809,19 @@
    "evidence": [
     "experiment/playbook-uplift/ontology/08-cypher-sql.md:5"
    ],
+   "findings": [
+    "F-C0840"
+   ],
    "gate": "3.4-ownership",
    "level": "product",
    "module": "08",
-   "product_obligation": "unknown",
+   "product_basis": {
+    "fails": [
+     "finding F-C0840"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
    "reason": "Ownership is documented (Scope line; ADR-0008/0011: Adjacency is the one writer of ^KG); no self-tested ownership check exists for the graph tables Cypher writes.",
    "remaining": "Self-tested ownership check over the writer census.",
    "source": "modules/08.json",
@@ -7523,14 +7851,16 @@
     "footprints/10.json"
    ],
    "findings": [
-    "F-C1001"
+    "F-C1001",
+    "F-C1040"
    ],
    "gate": "3.4-ownership",
    "level": "product",
    "module": "10",
    "product_basis": {
     "fails": [
-     "finding F-C1001"
+     "finding F-C1001",
+     "finding F-C1040"
     ],
     "intent_undecided": []
    },
@@ -7583,12 +7913,16 @@
     "run:followup-writer-census"
    ],
    "evidence_grade": "registered-run",
+   "findings": [
+    "F-C1240"
+   ],
    "gate": "3.4-ownership",
    "level": "product",
    "level_detail": "as-built (pin 3eaa79cf), AUDITC traces",
    "module": "12",
    "product_basis": {
     "fails": [
+     "finding F-C1240",
      "lane status failed (matrix-input/correspondence_status.json)",
      "run corr-closure-scan (fail)",
      "run corr-trace-f1201 (fail)"
@@ -7672,11 +8006,15 @@
     "footprints/15.json"
    ],
    "evidence_grade": "registered-run",
+   "findings": [
+    "F-C1540"
+   ],
    "gate": "3.4-ownership",
    "level": "product",
    "module": "15",
    "product_basis": {
     "fails": [
+     "finding F-C1540",
      "lane status failed (modules/15.json)",
      "run c15-live-bridge (fail)",
      "run c15-live-delreif2 (fail)",
@@ -7726,11 +8064,15 @@
     "evidence/runs/ib-HD1701-readonly-flag.json"
    ],
    "evidence_grade": "registered-run",
+   "findings": [
+    "F-C1740"
+   ],
    "gate": "3.4-ownership",
    "level": "product",
    "module": "17",
    "product_basis": {
     "fails": [
+     "finding F-C1740",
      "lane status failed (modules/17.json)"
     ],
     "intent_undecided": []
@@ -7874,7 +8216,8 @@
    ],
    "findings": [
     "F-C0603",
-    "F-C0604"
+    "F-C0604",
+    "F-C0642"
    ],
    "gate": "3.4-storage-order",
    "level": "product",
@@ -7882,7 +8225,8 @@
    "product_basis": {
     "fails": [
      "finding F-C0603",
-     "finding F-C0604"
+     "finding F-C0604",
+     "finding F-C0642"
     ],
     "intent_undecided": []
    },
@@ -8081,10 +8425,19 @@
    "evidence": [
     "$RUN_DIR/checks/storage-order.json"
    ],
+   "findings": [
+    "F-C1642"
+   ],
    "gate": "3.4-storage-order",
    "level": "product",
    "module": "16",
-   "product_obligation": "unknown",
+   "product_basis": {
+    "fails": [
+     "finding F-C1642"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
    "remaining": "decide whether sampled schema discovery may depend on storage order; no self-test",
    "sites": [
     {
@@ -8107,10 +8460,19 @@
    "evidence": [
     "$RUN_DIR/checks/storage-order.json sites in module-17 files: admin.py:104 (active_queries_sql: TOP n of CURRENT_STATEMENTS, a documented bounded diagnostic sample, OPS-B3.4 'up to a limit'; no order promised - existence-only/sample, not a finding); admin.py:706 (docstring text: false positive); admin.py:733 (SELECT TOP 0 name(NULL): a prepare-time existence probe returning no rows - false positive); dbapi_utils.py:267 (ORDER BY score DESC is on the next f-string line :272 - false positive for row order; the direction is wrong for L2, F-1705); stores/iris_sql_store.py:2633 (ORDER BY score DESC at :2641 - false positive; ties at the k-th score are broken by storage order, an open note for HD-0603's defined tie behaviour, not a finding here)"
    ],
+   "findings": [
+    "F-C1742"
+   ],
    "gate": "3.4-storage-order",
    "level": "product",
    "module": "17",
-   "product_obligation": "unknown",
+   "product_basis": {
+    "fails": [
+     "finding F-C1742"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
    "remaining": "closed claim cites no registered run or committed artifact",
    "source": "modules/17.json",
    "status": "open"
@@ -8453,10 +8815,19 @@
    "evidence": [
     "footprints/15.json (reads declared from source)"
    ],
+   "findings": [
+    "F-C1547"
+   ],
    "gate": "3.4-declared-reads",
    "level": "product",
    "module": "15",
-   "product_obligation": "unknown",
+   "product_basis": {
+    "fails": [
+     "finding F-C1547"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
    "remaining": "Reads are declared but not checked mechanically (the journal sees writes only); no declared-reads self-test. get_kg_anchors reads nodes of every graph (F-1507).",
    "source": "modules/15.json",
    "status": "open"
@@ -10216,10 +10587,21 @@
     "b-08-live-footprints",
     "b-08-live-footprints-rerun"
    ],
+   "findings": [
+    "F-C0848",
+    "F-C0849"
+   ],
    "gate": "3.6-frame",
    "level": "product",
    "module": "08",
-   "product_obligation": "unknown",
+   "product_basis": {
+    "fails": [
+     "finding F-C0848",
+     "finding F-C0849"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
    "reason": "Frame per statement shape not stated: a Cypher write may touch nodes/rdf_labels/rdf_props/rdf_edges, ^KG and ^NKG (journal: no undeclared store), but no per-shape frame obligation is discharged.",
    "remaining": "Frame lemma per translator statement class.",
    "source": "modules/08.json",
@@ -10465,14 +10847,16 @@
    "cited_runs": [],
    "evidence": [],
    "findings": [
-    "F-C0602"
+    "F-C0602",
+    "F-C0642"
    ],
    "gate": "3.6-row-permutation",
    "level": "product",
    "module": "06",
    "product_basis": {
     "fails": [
-     "finding F-C0602"
+     "finding F-C0602",
+     "finding F-C0642"
     ],
     "intent_undecided": []
    },
@@ -10661,10 +11045,19 @@
    "evidence": [
     "iris_vector_graph/gql/resolvers.py:32-46"
    ],
+   "findings": [
+    "F-C1642"
+   ],
    "gate": "3.6-row-permutation",
    "level": "product",
    "module": "16",
-   "product_obligation": "unknown",
+   "product_basis": {
+    "fails": [
+     "finding F-C1642"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
    "remaining": "nodes(label) paging slices an unordered id list (offset/limit without ORDER BY): page content depends on row order",
    "source": "modules/16.json",
    "status": "open"
@@ -10672,10 +11065,19 @@
   {
    "cited_runs": [],
    "evidence": [],
+   "findings": [
+    "F-C1742"
+   ],
    "gate": "3.6-row-permutation",
    "level": "product",
    "module": "17",
-   "product_obligation": "unknown",
+   "product_basis": {
+    "fails": [
+     "finding F-C1742"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
    "remaining": "",
    "source": "modules/17.json",
    "status": "open"
@@ -10749,10 +11151,21 @@
    "evidence": [
     "findings/audit/03.json"
    ],
+   "findings": [
+    "F-C0348",
+    "F-C0349"
+   ],
    "gate": "3.6-keys",
    "level": "product",
    "module": "03",
-   "product_obligation": "unknown",
+   "product_basis": {
+    "fails": [
+     "finding F-C0348",
+     "finding F-C0349"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
    "remaining": "not done",
    "source": "modules/03.json",
    "status": "open"
@@ -11147,10 +11560,19 @@
    "evidence": [
     "findings/audit/03.json"
    ],
+   "findings": [
+    "F-C0348"
+   ],
    "gate": "3.6-fk",
    "level": "product",
    "module": "03",
-   "product_obligation": "unknown",
+   "product_basis": {
+    "fails": [
+     "finding F-C0348"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
    "remaining": "not done",
    "source": "modules/03.json",
    "status": "open"
@@ -11370,10 +11792,19 @@
     "c15-live-delreif (fk_edges_source refuses, txn rolls back)",
     "iris_vector_graph/schema.py:42-43,408"
    ],
+   "findings": [
+    "F-C1548"
+   ],
    "gate": "3.6-fk",
    "level": "product",
    "module": "15",
-   "product_obligation": "unknown",
+   "product_basis": {
+    "fails": [
+     "finding F-C1548"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
    "remaining": "rdf_reifications.edge_id and fhir_* tables have no FK (reifier nodes outlive their edges: F-1502); FK conditions not discharged by proof.",
    "source": "modules/15.json",
    "status": "open"
@@ -11548,11 +11979,15 @@
      "ref": "iris_src/src/Graph/KG/BM25Index.cls:194"
     }
    ],
+   "findings": [
+    "F-C0748"
+   ],
    "gate": "3.6-capacity",
    "level": "product",
    "module": "07",
    "product_basis": {
     "fails": [
+     "finding F-C0748",
      "run b-07-fc0702-nested-rollback (fail)"
     ],
     "intent_undecided": []
@@ -11572,11 +12007,15 @@
     "b-08-live-f0807",
     "b-08-live-f0806"
    ],
+   "findings": [
+    "F-C0848"
+   ],
    "gate": "3.6-capacity",
    "level": "product",
    "module": "08",
    "product_basis": {
     "fails": [
+     "finding F-C0848",
      "run b-08-live-f0806 (fail)",
      "run b-08-live-f0807 (fail)"
     ],
@@ -11593,10 +12032,19 @@
    "evidence": [
     "inspected:iris_src/src/Graph/KG/Cypher/Exec.cls:449-450"
    ],
+   "findings": [
+    "F-C0948"
+   ],
    "gate": "3.6-capacity",
    "level": "product",
    "module": "09",
-   "product_obligation": "unknown",
+   "product_basis": {
+    "fails": [
+     "finding F-C0948"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
    "reason": "rows are paged (1000 per page, strings under 3.6 MB, Exec.cls:76-87, :1902-1910); workers at most 8 (Exec.cls:449-450); routes and translations at most 256 per engine (NAT-T7.9); compiled classes grow by one per new shape and nothing prunes them (NAT-T5.25) \u2014 no capacity bound or test",
    "remaining": "a bound or a measured limit for compiled classes",
    "source": "modules/09.json",
@@ -11729,11 +12177,15 @@
     "c15-live-memory (F-1510)",
     "P-1510"
    ],
+   "findings": [
+    "F-C1549"
+   ],
    "gate": "3.6-capacity",
    "level": "product",
    "module": "15",
    "product_basis": {
     "fails": [
+     "finding F-C1549",
      "run c15-live-memory (fail)"
     ],
     "intent_undecided": []
@@ -11778,10 +12230,19 @@
     "iris_vector_graph/stores/iris_sql_store.py:1112-1114, 1303-1305 (500-id chunks, P-1708)",
     "iris_vector_graph/host.py:52-77 (P-1707)"
    ],
+   "findings": [
+    "F-C1743"
+   ],
    "gate": "3.6-capacity",
    "level": "product",
    "module": "17",
-   "product_obligation": "unknown",
+   "product_basis": {
+    "fails": [
+     "finding F-C1743"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
    "remaining": "not measured",
    "source": "modules/17.json",
    "status": "open"
@@ -11792,10 +12253,19 @@
     "iris_vector_graph/_engine/snapshot.py:1103-1110 (every archive member read into memory)",
     "snapshot.py:862-1041 (whole archive built in memory)"
    ],
+   "findings": [
+    "F-C1848"
+   ],
    "gate": "3.6-capacity",
    "level": "product",
    "module": "18",
-   "product_obligation": "unknown",
+   "product_basis": {
+    "fails": [
+     "finding F-C1848"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
    "remaining": "no bound or streaming; not measured",
    "source": "modules/18.json",
    "status": "open"
@@ -12937,10 +13407,19 @@
   {
    "cited_runs": [],
    "evidence": [],
+   "findings": [
+    "F-C1743"
+   ],
    "gate": "3.7-failure-controls",
    "level": "product",
    "module": "product",
-   "product_obligation": "unknown",
+   "product_basis": {
+    "fails": [
+     "finding F-C1743"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
    "remaining": "no evidence recorded",
    "status": "open"
   },
@@ -31352,6 +31831,479 @@
   },
   {
    "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "st-live-keys-race-edge"
+    },
+    {
+     "kind": "live",
+     "ref": "st-live-keys"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/nodes_edges.py:1205-1256"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/nodes_edges.py:1106-1150"
+    }
+   ],
+   "gates": [
+    "3.6-keys",
+    "3.6-fk"
+   ],
+   "id": "F-C0348",
+   "severity": "S2"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "st-live-keys"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/bulk_loader.py:290-334"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/bulk_loader.py:420-440"
+    }
+   ],
+   "gates": [
+    "3.6-keys"
+   ],
+   "id": "F-C0349",
+   "severity": "S2"
+  },
+  {
+   "confidence": "high",
+   "disposition": "confirmed-source",
+   "evidence": [
+    {
+     "kind": "check",
+     "ref": "st-check-own-census"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/TraversalBuild.cls:60-67"
+    },
+    {
+     "kind": "inspected",
+     "ref": "experiment/playbook-uplift/ontology/04-adjacency.md:49"
+    }
+   ],
+   "gates": [
+    "3.4-ownership"
+   ],
+   "id": "F-C0440",
+   "severity": "S4"
+  },
+  {
+   "confidence": "high",
+   "disposition": "confirmed-source",
+   "evidence": [
+    {
+     "kind": "check",
+     "ref": "st-check-own-census"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/vector.py:322-331"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/index_protocol.py:50"
+    }
+   ],
+   "gates": [
+    "3.4-ownership"
+   ],
+   "id": "F-C0640",
+   "severity": "S4"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "st-live-perm-b"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/vector.py:569-600"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/schema.py:2436-2482"
+    }
+   ],
+   "gates": [
+    "3.6-row-permutation",
+    "3.4-storage-order"
+   ],
+   "id": "F-C0642",
+   "severity": "S3"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "st-live-cap-bm25"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/BM25Index.cls:56-87"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/BM25Index.cls:97-110"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/BM25Index.cls:176-204"
+    }
+   ],
+   "gates": [
+    "3.6-capacity"
+   ],
+   "id": "F-C0748",
+   "severity": "S2"
+  },
+  {
+   "confidence": "high",
+   "disposition": "confirmed-source",
+   "evidence": [
+    {
+     "kind": "check",
+     "ref": "st-check-own-census"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher/translator.py:10740-10800"
+    }
+   ],
+   "gates": [
+    "3.4-ownership"
+   ],
+   "id": "F-C0840",
+   "severity": "S3"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "st-live-cypher-relprop"
+    },
+    {
+     "kind": "live",
+     "ref": "st-live-cap-values"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher/translator.py:10213-10246"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher/translator.py:473-504"
+    }
+   ],
+   "gates": [
+    "3.6-capacity",
+    "3.6-frame"
+   ],
+   "id": "F-C0848",
+   "severity": "S2"
+  },
+  {
+   "confidence": "medium",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "st-live-cypher-relprop"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher/translator.py:10410-10432"
+    }
+   ],
+   "gates": [
+    "3.6-frame"
+   ],
+   "id": "F-C0849",
+   "severity": "S3"
+  },
+  {
+   "confidence": "medium",
+   "disposition": "confirmed-source",
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Cypher/Gen.cls:163-230"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/schema.py:2939"
+    }
+   ],
+   "gates": [
+    "3.6-capacity"
+   ],
+   "id": "F-C0948",
+   "severity": "S4"
+  },
+  {
+   "confidence": "high",
+   "disposition": "confirmed-source",
+   "evidence": [
+    {
+     "kind": "check",
+     "ref": "st-check-own-census"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/ArnoAccel.cls:291-302"
+    }
+   ],
+   "gates": [
+    "3.4-ownership"
+   ],
+   "id": "F-C1040",
+   "severity": "S4"
+  },
+  {
+   "confidence": "high",
+   "disposition": "confirmed-source",
+   "evidence": [
+    {
+     "kind": "check",
+     "ref": "st-check-own-census"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Eraser.cls:794-808"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/GraphStores.cls:28-130"
+    }
+   ],
+   "gates": [
+    "3.4-ownership"
+   ],
+   "id": "F-C1240",
+   "severity": "S4"
+  },
+  {
+   "confidence": "medium",
+   "disposition": "confirmed-source",
+   "evidence": [
+    {
+     "kind": "check",
+     "ref": "st-check-own-census"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/FHIRGraph.cls:2470-2620"
+    }
+   ],
+   "gates": [
+    "3.4-ownership"
+   ],
+   "id": "F-C1540",
+   "severity": "S3"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "st-live-reads-b"
+    },
+    {
+     "kind": "control",
+     "ref": "st-control-reads-selftest"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/schema.py:3335-3360"
+    }
+   ],
+   "gates": [
+    "3.4-declared-reads"
+   ],
+   "id": "F-C1547",
+   "severity": "S2"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "st-live-fk"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/schema.py:514-519"
+    }
+   ],
+   "gates": [
+    "3.6-fk"
+   ],
+   "id": "F-C1548",
+   "severity": "S3"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "st-live-cap-batch-r2"
+    },
+    {
+     "kind": "live",
+     "ref": "st-live-cap-batch"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/prov.py:181-221"
+    }
+   ],
+   "gates": [
+    "3.6-capacity"
+   ],
+   "id": "F-C1549",
+   "severity": "S3"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "st-live-so-confirm"
+    },
+    {
+     "kind": "live",
+     "ref": "st-live-perm-c"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/gql/resolvers.py:32-46"
+    }
+   ],
+   "gates": [
+    "3.4-storage-order",
+    "3.6-row-permutation"
+   ],
+   "id": "F-C1642",
+   "severity": "S4"
+  },
+  {
+   "confidence": "high",
+   "disposition": "confirmed-source",
+   "evidence": [
+    {
+     "kind": "check",
+     "ref": "st-check-own-census"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/stores/iris_sql_store.py:1363-1418"
+    }
+   ],
+   "gates": [
+    "3.4-ownership"
+   ],
+   "id": "F-C1740",
+   "severity": "S4"
+  },
+  {
+   "confidence": "high",
+   "disposition": "confirmed-source",
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/stores/iris_sql_store.py:1162-1200"
+    },
+    {
+     "kind": "check",
+     "ref": "st-check-so-gate"
+    },
+    {
+     "kind": "live",
+     "ref": "st-live-so-17b"
+    }
+   ],
+   "gates": [
+    "3.4-storage-order",
+    "3.6-row-permutation"
+   ],
+   "id": "F-C1742",
+   "severity": "S4"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "st-live-so-confirm"
+    },
+    {
+     "kind": "live",
+     "ref": "st-live-so-17b"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/stores/iris_sql_store.py:1176-1181"
+    }
+   ],
+   "gates": [
+    "3.7-failure-controls",
+    "3.6-capacity"
+   ],
+   "id": "F-C1743",
+   "severity": "S2"
+  },
+  {
+   "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "st-live-cap-snapshot-mem"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/snapshot.py:864-900"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/snapshot.py:1107-1112"
+    }
+   ],
+   "gates": [
+    "3.6-capacity"
+   ],
+   "id": "F-C1848",
+   "severity": "S3"
+  },
+  {
+   "confidence": "high",
    "disposition": "reproduced-test",
    "evidence": [
     {
@@ -32576,13 +33528,13 @@
   }
  ],
  "product_counts": {
-  "fails": 332,
+  "fails": 347,
   "holds-in-model-only": 1,
   "holds-inspected": 85,
   "holds-live": 29,
   "intent-undecided": 2,
   "n/a": 33,
-  "unknown": 265
+  "unknown": 250
  },
  "registry_runs": 1064,
  "starting_inventory": {

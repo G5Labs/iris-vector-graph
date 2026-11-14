@@ -1,0 +1,336 @@
+{
+ "_doc": "Proposed matrix cells from lane proofs-d9b (proof debts D-9 and D-12). Model-level results only: every product_obligation stays as the as-built evidence says. Registry ids: proofs-d9b-baseline, proofs-d9b-recheck, and one per control (PROOFS.md section 7/8).",
+ "proof_debt_proposals": {
+  "D-9": "paid at model level for readers (record readers), statement history, Decision 2, retry-key movement, F-1306, and the re-run of F-1302/F-1303/F-1306 (proofs-d9b-*, 158 verified, 13 located safety controls, recheck proofs-d9b-recheck); still open: verify()'s table read and node identity, readers' progress, post-commit recovery, F-CS01's reviewed design intent-undecided, prefix-eraser variants, restore",
+  "D-12": "paid at model level: control_bound_follows_tail fails only progress::RunProgress::nonincreasing at progress.rs:184 (commit case), 147 non-progress functions verified as in the baseline (proofs-d9b-bound-follows-tail, recheck proofs-d9b-recheck)"
+ },
+ "cells": [
+  {
+   "gate": "3.3-protocol",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "run:proofs-d9b-bypass-start",
+    "run:proofs-d9b-bypass-erase",
+    "run:proofs-d9b-liveness-dirty",
+    "run:proofs-d9b-unaligned-rm",
+    "run:proofs-d9b-unaligned-sc",
+    "run:proofs-d9b-f1201-erase-unlocked",
+    "run:proofs-d9b-fcs01-noop-unrecorded",
+    "run:proofs-d9b-f1302-unlocked-start",
+    "run:proofs-d9b-f1303-other-marker",
+    "run:proofs-d9b-f1306-replay-reapplies",
+    "run:proofs-d9b-sc-narrow",
+    "run:proofs-d9b-f1402-reader-no-recheck",
+    "run:proofs-d9b-reader-marker-recheck-only",
+    "run:proofs-d9b-progress-rewind",
+    "run:proofs-d9b-bound-follows-tail",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md",
+    "experiment/playbook-completion/proofs-d9b/RESULTS.json"
+   ],
+   "evidence_grade": "proved",
+   "level": "model",
+   "product_obligation": "fails",
+   "product_basis": "none of the reviewed guards exists at the pin (PROOFS.md 'Premises the pin violates'); the as-built controls encode reproduced findings and each reaches a proved business violation: F-CS01 (live sim-fcs01-minimal; control proofs-d9b-fcs01-noop-unrecorded), F-1302, F-1303 (live; re-run controls), F-1306 (live; re-run control), F-1402 (live; proofs-d9b-f1402-reader-no-recheck), F-C1201, F-1304, F-1201 (live; D-9 controls), F-C1301 (model)",
+   "as_built_findings": [
+    "F-CS01",
+    "F-1302",
+    "F-1303",
+    "F-1306",
+    "F-1402",
+    "F-C1201",
+    "F-1304",
+    "F-1201",
+    "F-C1301",
+    "F-C1303",
+    "F-C1307"
+   ],
+   "remaining": "D-9 now paid at model level for readers (record readers; partition ReadP over RL), statement history, Decision 2, retry-key movement, F-1306 and the F-1302/F-1303/F-1306 re-runs; model-level only; no proof links the ObjectScript/Python to these contracts (D-2..D-5); verify()'s table read and graph-blind node identity (F-1401) not modelled; F-CS01's reviewed design (R-1 no-op records) is intent-undecided (PROOFS.md section 6); eraser variants, temporal-only storage, lock timeouts, restore/redactedRev not modelled; progress premises PF-1..PF-6 not discharged against IRIS"
+  },
+  {
+   "gate": "3.3-progress-controls",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d9b-progress-rewind",
+    "run:proofs-d9b-bound-follows-tail",
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md",
+    "experiment/playbook-completion/proofs-d9b/RESULTS.json"
+   ],
+   "evidence_grade": "proved",
+   "level": "model",
+   "product_obligation": "fails",
+   "product_basis": "both progress-only controls fail only progress::RunProgress::nonincreasing (progress.rs:192 rewind, D-1; progress.rs:184 bound follows the tail, D-2 = proof debt D-12) with the 147 non-progress functions verified as in the baseline; at the pin the cursor is process-local and a re-run rescans (F-C1303, live) and the scan bound follows the tail (LedgerRedact.cls:216-226, 308-313, inspected), and PF-6 is violated (F-C1307, live)",
+   "as_built_findings": [
+    "F-C1303",
+    "F-C1307"
+   ],
+   "remaining": "D-12 paid at model level; progress premises PF-1..PF-6 not derived or tested against IRIS scheduling; readers' progress (M3-readers AG EF) not proved"
+  },
+  {
+   "gate": "3.3-L1",
+   "module": "12",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md"
+   ],
+   "evidence_grade": "proved",
+   "level": "model",
+   "product_obligation": "fails",
+   "product_basis": "none of the reviewed guards exists at the pin (PROOFS.md 'Premises the pin violates'); the as-built controls encode reproduced findings and each reaches a proved business violation: the eraser takes no head lock (F-1201, live 8/8; control proofs-d9b-f1201-erase-unlocked, cx_f1201) and the liveness check reads an open erasure's uncommitted deletes (F-C1201, live; control proofs-d9b-liveness-dirty, cx_liveness_dirty)",
+   "as_built_findings": [
+    "F-1201",
+    "F-C1201"
+   ],
+   "remaining": "L1 here is the outer business contract at protocol granularity with its invariants (Biz invariants for erasure with rollback (committed view), statement index and statement history after an erasure (theorem_erasure_clears_statement_history), lock serialization (G-L)); model-level only; no proof links the ObjectScript/Python to these contracts (D-2..D-5); verify()'s table read and graph-blind node identity (F-1401) not modelled; F-CS01's reviewed design (R-1 no-op records) is intent-undecided (PROOFS.md section 6); eraser variants, temporal-only storage, lock timeouts, restore/redactedRev not modelled; progress premises PF-1..PF-6 not discharged against IRIS"
+  },
+  {
+   "gate": "3.3-L2",
+   "module": "12",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md"
+   ],
+   "evidence_grade": "proved",
+   "level": "model",
+   "product_obligation": "fails",
+   "product_basis": "none of the reviewed guards exists at the pin (PROOFS.md 'Premises the pin violates'); the as-built controls encode reproduced findings and each reaches a proved business violation: the eraser takes no head lock (F-1201, live 8/8; control proofs-d9b-f1201-erase-unlocked, cx_f1201) and the liveness check reads an open erasure's uncommitted deletes (F-C1201, live; control proofs-d9b-liveness-dirty, cx_liveness_dirty)",
+   "as_built_findings": [
+    "F-1201",
+    "F-C1201"
+   ],
+   "remaining": "participant contracts over the pin's data layout (^IVG.Ledger rec/head/idem/idemRedacted/stmt/tuple/redacting, Graph_KG.ledger_revisions row fields, content tables keyed by graph and id; epoch is a reviewed-design addition); one statement-history key per edge (P-D9b-3); model-level only; no proof links the ObjectScript/Python to these contracts (D-2..D-5); verify()'s table read and graph-blind node identity (F-1401) not modelled; F-CS01's reviewed design (R-1 no-op records) is intent-undecided (PROOFS.md section 6); eraser variants, temporal-only storage, lock timeouts, restore/redactedRev not modelled; progress premises PF-1..PF-6 not discharged against IRIS"
+  },
+  {
+   "gate": "3.3-refinement",
+   "module": "12",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md"
+   ],
+   "evidence_grade": "proved",
+   "level": "model",
+   "product_obligation": "fails",
+   "product_basis": "none of the reviewed guards exists at the pin (PROOFS.md 'Premises the pin violates'); the as-built controls encode reproduced findings and each reaches a proved business violation: the eraser takes no head lock (F-1201, live 8/8; control proofs-d9b-f1201-erase-unlocked, cx_f1201) and the liveness check reads an open erasure's uncommitted deletes (F-C1201, live; control proofs-d9b-liveness-dirty, cx_liveness_dirty)",
+   "as_built_findings": [
+    "F-1201",
+    "F-C1201"
+   ],
+   "remaining": "step_binds and step_enabled proved for every operation at RLP, SysP, TopP and ReadP; any implementations of the participant contracts refine Biz/RdOuter and keep their invariants (system.rs, protocol_rd.rs); model to model only, model-level only; no proof links the ObjectScript/Python to these contracts (D-2..D-5); verify()'s table read and graph-blind node identity (F-1401) not modelled; F-CS01's reviewed design (R-1 no-op records) is intent-undecided (PROOFS.md section 6); eraser variants, temporal-only storage, lock timeouts, restore/redactedRev not modelled; progress premises PF-1..PF-6 not discharged against IRIS"
+  },
+  {
+   "gate": "3.3-controls",
+   "module": "12",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "run:proofs-d9b-f1201-erase-unlocked",
+    "run:proofs-d9b-liveness-dirty",
+    "run:proofs-d9b-bypass-erase",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md",
+    "experiment/playbook-completion/proofs-d9b/RESULTS.json"
+   ],
+   "evidence_grade": "proved",
+   "level": "model",
+   "product_obligation": "fails",
+   "product_basis": "none of the reviewed guards exists at the pin (PROOFS.md 'Premises the pin violates'); the as-built controls encode reproduced findings and each reaches a proved business violation: the eraser takes no head lock (F-1201, live 8/8; control proofs-d9b-f1201-erase-unlocked, cx_f1201) and the liveness check reads an open erasure's uncommitted deletes (F-C1201, live; control proofs-d9b-liveness-dirty, cx_liveness_dirty)",
+   "as_built_findings": [
+    "F-1201",
+    "F-C1201"
+   ],
+   "remaining": "each control rejected only in its expected file with every other function verified as in the baseline and a proved reachable counterexample; controls are model changes, the product's own behaviour is the as-built evidence (live findings)"
+  },
+  {
+   "gate": "3.3-L1",
+   "module": "13",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md"
+   ],
+   "evidence_grade": "proved",
+   "level": "model",
+   "product_obligation": "fails",
+   "product_basis": "none of the reviewed guards exists at the pin (PROOFS.md 'Premises the pin violates'); the as-built controls encode reproduced findings and each reaches a proved business violation: F-CS01 (live sim-fcs01-minimal: zero-record revision keeps metadata and bound key; cx_fcs01), F-1302, F-1303 (live; cx_f1302, cx_f1303), F-1306 (live; cx_f1306), F-1304 (live; cx_unaligned_rm), F-C1301 (model; cx_bypass_start)",
+   "as_built_findings": [
+    "F-CS01",
+    "F-1302",
+    "F-1303",
+    "F-1306",
+    "F-1304",
+    "F-C1301"
+   ],
+   "remaining": "L1 here is the outer business contract at protocol granularity with its invariants (Biz invariants and theorems: no tombstone of live content, per-target audit, marker ownership, revision metadata redacted for every revision attributable to a completed target (F-CS01), Decision 2, INV-retry (step and executions), statement history after Final, replay changes nothing); model-level only; no proof links the ObjectScript/Python to these contracts (D-2..D-5); verify()'s table read and graph-blind node identity (F-1401) not modelled; F-CS01's reviewed design (R-1 no-op records) is intent-undecided (PROOFS.md section 6); eraser variants, temporal-only storage, lock timeouts, restore/redactedRev not modelled; progress premises PF-1..PF-6 not discharged against IRIS"
+  },
+  {
+   "gate": "3.3-L2",
+   "module": "13",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md"
+   ],
+   "evidence_grade": "proved",
+   "level": "model",
+   "product_obligation": "fails",
+   "product_basis": "none of the reviewed guards exists at the pin (PROOFS.md 'Premises the pin violates'); the as-built controls encode reproduced findings and each reaches a proved business violation: F-CS01 (live sim-fcs01-minimal: zero-record revision keeps metadata and bound key; cx_fcs01), F-1302, F-1303 (live; cx_f1302, cx_f1303), F-1306 (live; cx_f1306), F-1304 (live; cx_unaligned_rm), F-C1301 (model; cx_bypass_start)",
+   "as_built_findings": [
+    "F-CS01",
+    "F-1302",
+    "F-1303",
+    "F-1306",
+    "F-1304",
+    "F-C1301"
+   ],
+   "remaining": "participant contracts over the pin's data layout (^IVG.Ledger rec/head/idem/idemRedacted/stmt/tuple/redacting, Graph_KG.ledger_revisions row fields, content tables keyed by graph and id; epoch is a reviewed-design addition); one statement-history key per edge (P-D9b-3); model-level only; no proof links the ObjectScript/Python to these contracts (D-2..D-5); verify()'s table read and graph-blind node identity (F-1401) not modelled; F-CS01's reviewed design (R-1 no-op records) is intent-undecided (PROOFS.md section 6); eraser variants, temporal-only storage, lock timeouts, restore/redactedRev not modelled; progress premises PF-1..PF-6 not discharged against IRIS"
+  },
+  {
+   "gate": "3.3-refinement",
+   "module": "13",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md"
+   ],
+   "evidence_grade": "proved",
+   "level": "model",
+   "product_obligation": "fails",
+   "product_basis": "none of the reviewed guards exists at the pin (PROOFS.md 'Premises the pin violates'); the as-built controls encode reproduced findings and each reaches a proved business violation: F-CS01 (live sim-fcs01-minimal: zero-record revision keeps metadata and bound key; cx_fcs01), F-1302, F-1303 (live; cx_f1302, cx_f1303), F-1306 (live; cx_f1306), F-1304 (live; cx_unaligned_rm), F-C1301 (model; cx_bypass_start)",
+   "as_built_findings": [
+    "F-CS01",
+    "F-1302",
+    "F-1303",
+    "F-1306",
+    "F-1304",
+    "F-C1301"
+   ],
+   "remaining": "step_binds and step_enabled proved for every operation at RLP, SysP, TopP and ReadP; any implementations of the participant contracts refine Biz/RdOuter and keep their invariants (system.rs, protocol_rd.rs); model to model only, model-level only; no proof links the ObjectScript/Python to these contracts (D-2..D-5); verify()'s table read and graph-blind node identity (F-1401) not modelled; F-CS01's reviewed design (R-1 no-op records) is intent-undecided (PROOFS.md section 6); eraser variants, temporal-only storage, lock timeouts, restore/redactedRev not modelled; progress premises PF-1..PF-6 not discharged against IRIS"
+  },
+  {
+   "gate": "3.3-controls",
+   "module": "13",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "run:proofs-d9b-fcs01-noop-unrecorded",
+    "run:proofs-d9b-f1302-unlocked-start",
+    "run:proofs-d9b-f1303-other-marker",
+    "run:proofs-d9b-f1306-replay-reapplies",
+    "run:proofs-d9b-unaligned-rm",
+    "run:proofs-d9b-unaligned-sc",
+    "run:proofs-d9b-sc-narrow",
+    "run:proofs-d9b-bypass-start",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md",
+    "experiment/playbook-completion/proofs-d9b/RESULTS.json"
+   ],
+   "evidence_grade": "proved",
+   "level": "model",
+   "product_obligation": "fails",
+   "product_basis": "none of the reviewed guards exists at the pin (PROOFS.md 'Premises the pin violates'); the as-built controls encode reproduced findings and each reaches a proved business violation: F-CS01 (live sim-fcs01-minimal: zero-record revision keeps metadata and bound key; cx_fcs01), F-1302, F-1303 (live; cx_f1302, cx_f1303), F-1306 (live; cx_f1306), F-1304 (live; cx_unaligned_rm), F-C1301 (model; cx_bypass_start)",
+   "as_built_findings": [
+    "F-CS01",
+    "F-1302",
+    "F-1303",
+    "F-1306",
+    "F-1304",
+    "F-C1301"
+   ],
+   "remaining": "each control rejected only in its expected file with every other function verified as in the baseline and a proved reachable counterexample; controls are model changes, the product's own behaviour is the as-built evidence (live findings)"
+  },
+  {
+   "gate": "3.3-L1",
+   "module": "14",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md"
+   ],
+   "evidence_grade": "proved",
+   "level": "model",
+   "product_obligation": "fails",
+   "product_basis": "none of the reviewed guards exists at the pin (PROOFS.md 'Premises the pin violates'); the as-built controls encode reproduced findings and each reaches a proved business violation: readers check the marker once before a lazy paged read (F-1402, live ib-HD1401-reader-full-race; control proofs-d9b-f1402-reader-no-recheck, cx_reader: a whole redaction inside one read gives a view that is neither history); a post-read marker re-check alone (HD-1401 b1) also fails (proofs-d9b-reader-marker-recheck-only); a replay re-applies post-commit properties (F-1306, live)",
+   "as_built_findings": [
+    "F-1402",
+    "F-1306"
+   ],
+   "remaining": "L1 here is the outer business contract at protocol granularity with its invariants (RdOuter invariant rd_inv and RPL-I1 (theorem_accepted_view_consistent: a returned view is a prefix of the current history with no marker and the epoch unchanged); replay = store once settled; a replayed retry changes nothing); model-level only; no proof links the ObjectScript/Python to these contracts (D-2..D-5); verify()'s table read and graph-blind node identity (F-1401) not modelled; F-CS01's reviewed design (R-1 no-op records) is intent-undecided (PROOFS.md section 6); eraser variants, temporal-only storage, lock timeouts, restore/redactedRev not modelled; progress premises PF-1..PF-6 not discharged against IRIS"
+  },
+  {
+   "gate": "3.3-L2",
+   "module": "14",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md"
+   ],
+   "evidence_grade": "proved",
+   "level": "model",
+   "product_obligation": "fails",
+   "product_basis": "none of the reviewed guards exists at the pin (PROOFS.md 'Premises the pin violates'); the as-built controls encode reproduced findings and each reaches a proved business violation: readers check the marker once before a lazy paged read (F-1402, live ib-HD1401-reader-full-race; control proofs-d9b-f1402-reader-no-recheck, cx_reader: a whole redaction inside one read gives a view that is neither history); a post-read marker re-check alone (HD-1401 b1) also fails (proofs-d9b-reader-marker-recheck-only); a replay re-applies post-commit properties (F-1306, live)",
+   "as_built_findings": [
+    "F-1402",
+    "F-1306"
+   ],
+   "remaining": "participant contracts over the pin's data layout (^IVG.Ledger rec/head/idem/idemRedacted/stmt/tuple/redacting, Graph_KG.ledger_revisions row fields, content tables keyed by graph and id; epoch is a reviewed-design addition); one statement-history key per edge (P-D9b-3); model-level only; no proof links the ObjectScript/Python to these contracts (D-2..D-5); verify()'s table read and graph-blind node identity (F-1401) not modelled; F-CS01's reviewed design (R-1 no-op records) is intent-undecided (PROOFS.md section 6); eraser variants, temporal-only storage, lock timeouts, restore/redactedRev not modelled; progress premises PF-1..PF-6 not discharged against IRIS"
+  },
+  {
+   "gate": "3.3-refinement",
+   "module": "14",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md"
+   ],
+   "evidence_grade": "proved",
+   "level": "model",
+   "product_obligation": "fails",
+   "product_basis": "none of the reviewed guards exists at the pin (PROOFS.md 'Premises the pin violates'); the as-built controls encode reproduced findings and each reaches a proved business violation: readers check the marker once before a lazy paged read (F-1402, live ib-HD1401-reader-full-race; control proofs-d9b-f1402-reader-no-recheck, cx_reader: a whole redaction inside one read gives a view that is neither history); a post-read marker re-check alone (HD-1401 b1) also fails (proofs-d9b-reader-marker-recheck-only); a replay re-applies post-commit properties (F-1306, live)",
+   "as_built_findings": [
+    "F-1402",
+    "F-1306"
+   ],
+   "remaining": "step_binds and step_enabled proved for every operation at RLP, SysP, TopP and ReadP; any implementations of the participant contracts refine Biz/RdOuter and keep their invariants (system.rs, protocol_rd.rs); model to model only, model-level only; no proof links the ObjectScript/Python to these contracts (D-2..D-5); verify()'s table read and graph-blind node identity (F-1401) not modelled; F-CS01's reviewed design (R-1 no-op records) is intent-undecided (PROOFS.md section 6); eraser variants, temporal-only storage, lock timeouts, restore/redactedRev not modelled; progress premises PF-1..PF-6 not discharged against IRIS"
+  },
+  {
+   "gate": "3.3-controls",
+   "module": "14",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "run:proofs-d9b-f1402-reader-no-recheck",
+    "run:proofs-d9b-reader-marker-recheck-only",
+    "run:proofs-d9b-f1306-replay-reapplies",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md",
+    "experiment/playbook-completion/proofs-d9b/RESULTS.json"
+   ],
+   "evidence_grade": "proved",
+   "level": "model",
+   "product_obligation": "fails",
+   "product_basis": "none of the reviewed guards exists at the pin (PROOFS.md 'Premises the pin violates'); the as-built controls encode reproduced findings and each reaches a proved business violation: readers check the marker once before a lazy paged read (F-1402, live ib-HD1401-reader-full-race; control proofs-d9b-f1402-reader-no-recheck, cx_reader: a whole redaction inside one read gives a view that is neither history); a post-read marker re-check alone (HD-1401 b1) also fails (proofs-d9b-reader-marker-recheck-only); a replay re-applies post-commit properties (F-1306, live)",
+   "as_built_findings": [
+    "F-1402",
+    "F-1306"
+   ],
+   "remaining": "each control rejected only in its expected file with every other function verified as in the baseline and a proved reachable counterexample; controls are model changes, the product's own behaviour is the as-built evidence (live findings)"
+  }
+ ]
+}
