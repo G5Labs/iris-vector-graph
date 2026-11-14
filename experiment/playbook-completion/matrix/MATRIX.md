@@ -18,10 +18,10 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 3.2-sharpness | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.2-mutants | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.2-coverage | method | 3 | 0 | 15 | 1 | 0 | 5 | 0 | 14 | 0 |
-| 3.3-L1 | model | 3 | 0 | 15 | 0 | 1 | 1 | 0 | 17 | 1 |
-| 3.3-L2 | model | 3 | 0 | 14 | 0 | 2 | 1 | 0 | 16 | 2 |
-| 3.3-refinement | model | 3 | 0 | 15 | 0 | 1 | 1 | 0 | 17 | 1 |
-| 3.3-controls | model | 3 | 0 | 15 | 0 | 1 | 1 | 2 | 15 | 1 |
+| 3.3-L1 | model | 5 | 0 | 13 | 0 | 1 | 1 | 2 | 15 | 1 |
+| 3.3-L2 | model | 5 | 0 | 12 | 0 | 2 | 1 | 2 | 14 | 2 |
+| 3.3-refinement | model | 5 | 0 | 13 | 0 | 1 | 1 | 1 | 16 | 1 |
+| 3.3-controls | model | 5 | 0 | 13 | 0 | 1 | 1 | 4 | 13 | 1 |
 | 3.3-protocol | model | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.3-progress-controls | model | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.3-cost | model | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0 |
@@ -78,4 +78,4 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 5c-root-causes | method | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 5c-reviewers | method | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 
-Totals: {'closed': 137, 'not-applicable': 36, 'open': 377, 'blocked': 7}; evidence grade of closed cells: {'registered-run': 98, 'inspected': 39}; product: {'unknown': 344, 'n/a': 34, 'fails': 173, 'holds-in-model-only': 6}
+Totals: {'closed': 145, 'not-applicable': 36, 'open': 369, 'blocked': 7}; evidence grade of closed cells: {'registered-run': 106, 'inspected': 39}; product: {'unknown': 337, 'n/a': 34, 'fails': 173, 'holds-in-model-only': 13}

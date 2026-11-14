@@ -6,7 +6,7 @@ row says what evidence exists instead and why the proof is missing. Nothing in t
 
 | # | Obligation | Scope | Evidence instead | Why unproved |
 |---|---|---|---|---|
-| D-1 | L1/L2 refinement proofs for modules 00-11 and 15-18 | 17 modules | bounded explorer models with as-built, reviewed, control and reachability checks (`models/breadth-*`, 145+ checks) | specification-first (§5a): models first; Verus layers not written for these modules |
+| D-1 | L1/L2 refinement proofs for modules 00-03, 05-10 and 15-18 (modules 04 and 11 proved at model level: `proofs-breadth-*`, 94 verified, 0 errors, recheck `proofs-breadth-recheck`) | 15 modules | bounded explorer models with as-built, reviewed, control and reachability checks (`models/breadth-*`, 145+ checks) | specification-first (§5a): models first; Verus layers not written for these modules |
 | D-2 | Statement lemmas: each IRIS SQL statement and ObjectScript global operation equals its model evaluation (§3.4) | every writer and reader | journal-validated footprints (breadth lanes, `trace-conformance-ledger`), source inspection | no Verus frontend or IRIS SQL semantics library exists (PGspec is PostgreSQL and is skipped); the IRIS contract is executable, not a Verus spec |
 | D-3 | Handler proofs: each Python/ObjectScript entry point performs its spec step (§3.5) | all handlers | trace conformance of one two-tenant scenario; correspondence lane's map and unchecked-line list (`correspondence/`) | no verifier for ObjectScript or Python |
 | D-4 | Lock-plan obligations per handler (§3.5) | writers of modules 11-14 and AdjW users | controlled lock probes and journal order; IRIS contract lock clauses | as D-3; F-1201 shows the eraser's plan is incomplete at the pin |

@@ -77,6 +77,9 @@ if [[ "$mode" == full || "$mode" == live ]]; then
     bin="$(find "$T/$crate/release" -maxdepth 1 -type f -perm -u+x ! -name '*.d' | head -1)"
     step "models-$crate" 7200 $H "$bin" --out "$out/models-$crate.json"
   done
+  if have "$here/proofs-breadth/tools/run_proofs.py"; then mkdir -p "$out/proofs-breadth"
+    step proofs-breadth 3600 env PROOFS_OUT_DIR="$out/proofs-breadth" python "$here/proofs-breadth/tools/run_proofs.py"
+  fi
   step models-compare 120 python3 "$here/tools/compare_model_results.py" "$out"
   if have "$here/proofs/tools/run_proofs.py"; then mkdir -p "$out/proofs"
     step proofs 7200 env PROOFS_OUT_DIR="$out/proofs" python "$here/proofs/tools/run_proofs.py"  # takes the heavy lock per Verus run itself; writes under $out

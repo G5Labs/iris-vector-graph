@@ -1287,17 +1287,19 @@
    "status": "open"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "models/breadth-a/src (adj_degree, adj_rebuild_txn, adj_token)"
+   "cited_runs": [
+    "proofs-breadth-baseline"
    ],
+   "evidence": [
+    "run:proofs-breadth-baseline"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-L1",
    "level": "model",
    "module": "04",
-   "product_obligation": "unknown",
-   "remaining": "explorer models state the module's key invariants (see RESULTS.json); no Verus L1",
-   "source": "modules/04.json",
-   "status": "open"
+   "product_obligation": "holds-in-model-only",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
    "cited_runs": [],
@@ -1518,24 +1520,19 @@
    "status": "open"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "mc:m11-enable-as-built-consistency",
-    "mc:m11-enable-reviewed",
-    "mc:m11-adopt-reviewed",
-    "mc:m11-stats-reviewed",
-    "mc:m11-guard-reviewed",
-    "mc:m11-retry-reviewed",
-    "mc:m11-commit-as-built"
+   "cited_runs": [
+    "proofs-breadth-baseline"
    ],
+   "evidence": [
+    "run:proofs-breadth-baseline"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-L1",
    "level": "model",
    "module": "11",
-   "product_obligation": "unknown",
-   "reason": "Six small explorer machines carry LED business invariants (LED-B1.7, B1.12, B1.20, B4.3, B4.7.5, B4.7.8, B4.11.2, B10.5, B13.4, the shared strict-mode invariant SG); exhaustive within bounds.",
-   "remaining": "closed claim cites no registered run or committed artifact",
-   "source": "modules/11.json",
-   "status": "open"
+   "product_obligation": "holds-in-model-only",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
    "cited_runs": [
@@ -1705,17 +1702,19 @@
    "status": "open"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "models/breadth-a/src/adj_degree.rs"
+   "cited_runs": [
+    "proofs-breadth-baseline"
    ],
+   "evidence": [
+    "run:proofs-breadth-baseline"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-L2",
    "level": "model",
    "module": "04",
-   "product_obligation": "unknown",
-   "remaining": "no L2 machine over the real data layout beyond adj_degree's gen/degc/out state",
-   "source": "modules/04.json",
-   "status": "open"
+   "product_obligation": "holds-in-model-only",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
    "cited_runs": [],
@@ -1823,20 +1822,19 @@
    "status": "open"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "mc:m11-commit-as-built",
-    "mc:m11-enable-as-built",
-    "mc:m11-stats-as-built-caller-txn"
+   "cited_runs": [
+    "proofs-breadth-baseline"
    ],
+   "evidence": [
+    "run:proofs-breadth-baseline"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-L2",
    "level": "model",
    "module": "11",
-   "product_obligation": "unknown",
-   "reason": "The machines abstract the real globals/rows each finding needs (state, head, revision row, stats row, statement maps, guard cache), not the full layout.",
-   "remaining": "An L2 machine over the full ^IVG.Ledger layout (rec/stmt/tuple/idem/revById/idBySeq) and the four governed tables with refinement to L1.",
-   "source": "modules/11.json",
-   "status": "open"
+   "product_obligation": "holds-in-model-only",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
    "cited_runs": [
@@ -1989,10 +1987,15 @@
    "status": "open"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "breadth-a-mc-adj_degree-reviewed (refinement audit, bounded)"
+   "cited_runs": [
+    "proofs-breadth-baseline",
+    "proofs-breadth-recheck"
    ],
+   "evidence": [
+    "run:proofs-breadth-baseline",
+    "run:proofs-breadth-recheck"
+   ],
+   "evidence_grade": "registered-run",
    "findings": [
     "F-0401"
    ],
@@ -2000,9 +2003,8 @@
    "level": "model",
    "module": "04",
    "product_obligation": "fails",
-   "remaining": "no proof; bounded refinement audit only for the degree cache",
-   "source": "modules/04.json",
-   "status": "open"
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
    "cited_runs": [],
@@ -2079,16 +2081,21 @@
    "status": "open"
   },
   {
-   "cited_runs": [],
-   "evidence": [],
+   "cited_runs": [
+    "proofs-breadth-baseline",
+    "proofs-breadth-recheck"
+   ],
+   "evidence": [
+    "run:proofs-breadth-baseline",
+    "run:proofs-breadth-recheck"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-refinement",
    "level": "model",
    "module": "11",
-   "product_obligation": "unknown",
-   "reason": "Not built for module 11.",
-   "remaining": "Refinement of an L2 over the real layout to the L1 (explorer::refinement::audit or Verus).",
-   "source": "modules/11.json",
-   "status": "open"
+   "product_obligation": "holds-in-model-only",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
    "cited_runs": [
@@ -2259,17 +2266,31 @@
    "status": "open"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "models/breadth-a/RESULTS.json: adj_degree-control-no-probe, adj_degree-refinement-control-no-probe, adj_token-control-probe-late, adj_rebuild_txn-control-level-after-tstart, adj_rebuild_txn-concurrent-control-early-release"
+   "cited_runs": [
+    "proofs-breadth-f0801-fail-open",
+    "proofs-breadth-f0801-ttl-cache",
+    "proofs-breadth-f1108-unguarded-bulk-delete",
+    "proofs-breadth-fc0401-write-before-gen",
+    "proofs-breadth-fc1101-stats-whole-row",
+    "proofs-breadth-hd0401-erase-kills-gen",
+    "proofs-breadth-hd0401-rebuild-kills-gen"
    ],
+   "evidence": [
+    "run:proofs-breadth-f0801-fail-open",
+    "run:proofs-breadth-hd0401-erase-kills-gen",
+    "run:proofs-breadth-fc1101-stats-whole-row",
+    "run:proofs-breadth-fc0401-write-before-gen",
+    "run:proofs-breadth-f1108-unguarded-bulk-delete",
+    "run:proofs-breadth-hd0401-rebuild-kills-gen",
+    "run:proofs-breadth-f0801-ttl-cache"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-controls",
    "level": "model",
    "module": "04",
-   "product_obligation": "unknown",
-   "remaining": "controls are explorer mutants (each caught), not proof-level rejections",
-   "source": "modules/04.json",
-   "status": "open"
+   "product_obligation": "holds-in-model-only",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
    "cited_runs": [],
@@ -2403,24 +2424,31 @@
    "status": "open"
   },
   {
-   "cited_runs": [],
-   "evidence": [
-    "mc:m11-enable-control-nolock",
-    "mc:m11-adopt-control-nocheck",
-    "mc:m11-stats-control-split",
-    "mc:m11-guard-control-failopen",
-    "mc:m11-retry-control-reapply",
-    "mc:m11-commit-control-unlock",
-    "mc:m11-commit-control-unlock-chain"
+   "cited_runs": [
+    "proofs-breadth-f0801-fail-open",
+    "proofs-breadth-f0801-ttl-cache",
+    "proofs-breadth-f1108-unguarded-bulk-delete",
+    "proofs-breadth-fc0401-write-before-gen",
+    "proofs-breadth-fc1101-stats-whole-row",
+    "proofs-breadth-hd0401-erase-kills-gen",
+    "proofs-breadth-hd0401-rebuild-kills-gen"
    ],
+   "evidence": [
+    "run:proofs-breadth-f0801-fail-open",
+    "run:proofs-breadth-hd0401-erase-kills-gen",
+    "run:proofs-breadth-fc1101-stats-whole-row",
+    "run:proofs-breadth-fc0401-write-before-gen",
+    "run:proofs-breadth-f1108-unguarded-bulk-delete",
+    "run:proofs-breadth-hd0401-rebuild-kills-gen",
+    "run:proofs-breadth-f0801-ttl-cache"
+   ],
+   "evidence_grade": "registered-run",
    "gate": "3.3-controls",
    "level": "model",
    "module": "11",
-   "product_obligation": "unknown",
-   "reason": "7 explorer controls (mutants of the reviewed/pin designs) each caught by the expected invariant.",
-   "remaining": "Proof-level controls (the gate asks for rejection by a proof).",
-   "source": "modules/11.json",
-   "status": "open"
+   "product_obligation": "holds-in-model-only",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence",
+   "status": "closed"
   },
   {
    "cited_runs": [
@@ -18389,7 +18417,7 @@
    "source": "TRUST.md"
   }
  ],
- "registry_runs": 605,
+ "registry_runs": 690,
  "starting_inventory": {
   "cells": 904,
   "decisions": 61,
@@ -18401,9 +18429,9 @@
  },
  "status_counts": {
   "blocked": 7,
-  "closed": 137,
+  "closed": 145,
   "not-applicable": 36,
-  "open": 377
+  "open": 369
  },
  "submission": "9c3719c1",
  "writer_obligations": [

@@ -1,0 +1,34 @@
+[package]
+name = "ivg-breadth-proofs"
+version = "0.1.0"
+edition = "2021"
+description = "Completion audit, BREADTH-PROOFS lane (proof debt D-1, playbook §3.3): Verus L1 contracts, L2 machines over the stored layout, refinement and broken-implementation controls for module 11 (ledger commit, idempotency, expected head, enable/disable/strict, the strict-mode guard) and module 04 (adjacency writer lock, generation-validated degree cache, erase, rebuild)."
+publish = false
+
+[dependencies]
+vstd = { version = "=0.0.0-2026-09-20-0158", features = ["std", "alloc"] }
+actors = { git = "file:///home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/playbook-reference-actors", rev = "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877" }
+
+[patch.crates-io]
+verus_builtin_macros = { git = "file:///home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/playbook-reference-actors", rev = "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877" }
+
+[features]
+# Broken-implementation controls (playbook §3.3 gate). Each replaces one decision of the reviewed design by the pin's
+# behaviour (as reproduced by the audit) and must make verification fail, every error located in the file named here.
+# Module 11 (ledger):
+control_f0801_ttl_cache = []              # src/ledger_l2.rs  the guard answers from a cached meta (TTL 5 s, guard.py:38-59)
+control_f0801_fail_open = []              # src/ledger_l2.rs  a failed guard probe reads as never-enabled (guard.py:55-56)
+control_f1108_unguarded_bulk_delete = []  # src/ledger_l2.rs  bulk_delete_adjacency has no guard (nodes_edges.py:2301-2339)
+control_fc1101_stats_whole_row = []       # src/ledger_l2.rs  Bump saves the whole stats row from an unlocked copy (LedgerStats.cls:51-88)
+# Module 04 (adjacency):
+control_fc0401_write_before_gen = []      # src/adj_l2.rs     a writer changes out before its first generation step (Adjacency.cls:87-89, 151-156)
+control_hd0401_erase_kills_gen = []       # src/adj_l2.rs     RemoveGraph kills out, then gen and degc (Adjacency.cls:434-439)
+control_hd0401_rebuild_kills_gen = []     # src/adj_l2.rs     RemoveAll kills gen; FillEdge does not step it (Adjacency.cls:452-462, 824-830)
+
+[package.metadata.verus]
+verify = true
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(verus_only)', 'cfg(verus_keep_ghost)', 'cfg(verus_keep_ghost_body)'] }
+
+[workspace]
