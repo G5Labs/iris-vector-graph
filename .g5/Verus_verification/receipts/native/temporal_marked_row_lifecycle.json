@@ -1,0 +1,111 @@
+{
+  "_probe_inputs": {
+    ".g5/Verus_verification/native/harness.py": "61af481af586763543377f4f3b77661b5e3988f7b74125516a14535292c6d2c5",
+    ".g5/Verus_verification/native/probes/graph_structure_common.py": "977359030e19b7c7c663a265389727951de9e32e4e4fc398522148b1e11ed219",
+    ".g5/Verus_verification/native/probes/redaction_common.py": "ad40819dfdccb8558d2728504fa6ff77975431aabc7b9a8782d24dc18b9f71e6",
+    ".g5/Verus_verification/native/probes/search_common.py": "92ff874bc87390be56edb05c75d2f2c5906458c0b37cd86171888ee61d8b5ae2",
+    ".g5/Verus_verification/native/probes/temporal_marked_row_lifecycle.py": "b00053d10c11ba52a272c38b497084ae92cf8b64c8c2ac526278257bad62dbcb"
+  },
+  "_product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "adjacency_indexed": "1",
+  "cases": {
+    "F8_optin_strands": {
+      "after_purge_while_registered": [
+        {
+          "temporal": true
+        }
+      ],
+      "backfill": 0,
+      "delete_returned": false,
+      "drop": "ValueError: predicate(s) ['PROBE_ML'] are still structural: register them temporal-only first (set_temporal_structural(predicate, False))",
+      "purge": "PurgeResult(deleted=1, skipped=0, nodes_retired=0)",
+      "purge_again": "PurgeResult(deleted=0, skipped=0, nodes_retired=0)",
+      "rows_after_maintenance": [
+        {
+          "temporal": true
+        }
+      ],
+      "rows_after_optin": [
+        {
+          "temporal": true
+        }
+      ],
+      "start": [
+        {
+          "temporal": true
+        }
+      ],
+      "structural_again": true,
+      "verdict": "OBSERVED_DEFECT: F8 a marked row of a structural predicate with no timestamp survives delete, purge, drop (ValueError: predicate(s) ['PROBE_ML'] are still structural: register them tempor) and backfill (L1-ROW; decision Q4 open)",
+      "window_after_optin": []
+    },
+    "K1_marked_row": {
+      "after_first_delete": [
+        {
+          "temporal": true
+        }
+      ],
+      "after_last_delete": [],
+      "after_two_writes": [
+        {
+          "temporal": true
+        }
+      ],
+      "verdict": "OBSERVED_AS_EXPECTED: K1 marked row asserted, kept while a timestamp remains, removed with the last"
+    },
+    "K2_adoption": {
+      "after_create_edge": [
+        {}
+      ],
+      "after_last_delete": [
+        {}
+      ],
+      "after_purge": [
+        {}
+      ],
+      "verdict": "OBSERVED_AS_EXPECTED: K2 adoption cleared the marker and the explicit row outlived delete and purge"
+    },
+    "K3_optout_write": {
+      "rows": [],
+      "target_node_rows": 0,
+      "verdict": "OBSERVED_AS_EXPECTED: K3 temporal-only write: no row, no node, temporal edge readable",
+      "window": [
+        {
+          "o": "probe:ml:k3:o-new",
+          "p": "PROBE_ML_OPT",
+          "predicate": "PROBE_ML_OPT",
+          "s": "probe:ml:k3:s",
+          "source": "probe:ml:k3:s",
+          "target": "probe:ml:k3:o-new",
+          "timestamp": 1700000100,
+          "ts": 1700000100,
+          "w": 1,
+          "weight": 1
+        }
+      ]
+    },
+    "K4_delete_vs_purge_registered": {
+      "delete_path_rows": [],
+      "purge_path_rows": [
+        {
+          "temporal": true
+        }
+      ],
+      "purge_path_window": [],
+      "verdict": "OBSERVED_AS_EXPECTED: K4 registered predicate: delete retracts the old row, purge keeps it (the open delete/purge asymmetry, as the model reads the code)"
+    }
+  },
+  "model": "temporal",
+  "probe": "temporal_marked_row_lifecycle",
+  "schema": {
+    "objectscript_failed": {},
+    "objectscript_skipped": {
+      "Graph.KG.MCPService": "needs %AI.MCP.Service, not installed on this server",
+      "Graph.KG.MCPToolSet": "needs %AI.Policy.ConsoleAudit, %AI.ToolSet, not installed on this server",
+      "Graph.KG.MCPTools": "needs %AI.Tool, not installed on this server"
+    },
+    "schema": "Graph_KG",
+    "warnings": []
+  },
+  "verdict": "OBSERVED_DEFECT: F8_optin_strands: OBSERVED_DEFECT: F8 a marked row of a structural predicate with no timestamp survives delete, purge, drop (ValueError: predicate(s) ['PROBE_ML'] are still structural: register them tempor) and backfill (L1-ROW; decision Q4 open)"
+}

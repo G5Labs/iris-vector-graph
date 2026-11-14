@@ -1,0 +1,38 @@
+{
+  "readers": {
+    "diff": {
+      "error": "RedactionInProgressError",
+      "refused": true
+    },
+    "export_reconstruction": {
+      "error": "RedactionInProgressError",
+      "refused": true
+    },
+    "get_revision": {
+      "error": "RedactionInProgressError",
+      "refused": true
+    },
+    "history": {
+      "refused": false,
+      "sample": "[[1, \"genesis\", null], [2, null, null], [3, \"tenantB load\", \"tenantB|c1\"], [4, \"sync both\", \"shared|c1\"], [5, \"tenantA extra\", \"tenantA|c2\"], [6, \"tenantA cleanup\", \"tenantA|c3\"], [7, \"tenantB more\", \"tenantB|c2\"]]"
+    },
+    "ledger_records_sql": {
+      "refused": false,
+      "sample": "[[2, 1, \"create_node\", \"node\", \"tenantA|n1\", null, null, 1, null, 0, null, null, null, null], [2, 2, \"add_label\", \"node\", \"tenantA|n1\", \"TA\", null, 1, null, 0, null, null, null, null], [2, 3, \"set_prop\", \"node\", \"tenantA|n1\", \"secret\", null, 1, \"alpha1\", 0, null, null, null, null], [2, 4, \"create_node\", \"node\", \"tenantA|n2\", null, null, 1, null, 0, null, null, null, null], [2, 5, \"set_prop\", \"node\", \"tenantA|n2\", \"name\", null, 1, \"alphaName\", 0, null, null, null, null]]"
+    },
+    "reconstruct": {
+      "error": "RedactionInProgressError",
+      "refused": true
+    },
+    "stats": {
+      "refused": false,
+      "sample": "{\"state\": \"enabled\", \"strict\": false, \"head_seq\": 7, \"commits_ok\": 7, \"rejections\": {\"rej_stale_head\": 0, \"rej_unknown_head\": 0, \"rej_idem_conflict\": 0, \"rej_failed_op\": 0, \"rej_strict_block\": 0, \"rej_size_limit\": 0, \"rej_disabled\": 0, \"rej_lock_timeout\": 0}, \"replays_idem\": 0, \"last_verify_ms\": 1794612314244, \"last_verify_result\": \"redaction_in_progress\", \"enabled_ms\": 1794612314123, \"disabled_ms\": null}"
+    },
+    "verify": {
+      "refused": false,
+      "sample": "\"redaction_in_progress\""
+    }
+  },
+  "reason": "refused: get_revision, diff, reconstruct, export_reconstruction; answered: verify, history, stats, ledger_records_sql",
+  "verdict": "OBSERVED_AS_EXPECTED"
+}

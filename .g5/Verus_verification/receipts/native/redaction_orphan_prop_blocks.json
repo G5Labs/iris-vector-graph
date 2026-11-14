@@ -1,0 +1,42 @@
+{
+  "_probe_inputs": {
+    ".g5/Verus_verification/native/harness.py": "61af481af586763543377f4f3b77661b5e3988f7b74125516a14535292c6d2c5",
+    ".g5/Verus_verification/native/probes/graph_structure_common.py": "977359030e19b7c7c663a265389727951de9e32e4e4fc398522148b1e11ed219",
+    ".g5/Verus_verification/native/probes/redaction_common.py": "ad40819dfdccb8558d2728504fa6ff77975431aabc7b9a8782d24dc18b9f71e6",
+    ".g5/Verus_verification/native/probes/redaction_orphan_prop_blocks.py": "e4dcd8e6e31f9878a3c3735a2499e3083444379fefb550a507817437c53ea977",
+    ".g5/Verus_verification/native/probes/search_common.py": "92ff874bc87390be56edb05c75d2f2c5906458c0b37cd86171888ee61d8b5ae2"
+  },
+  "_product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "explicit_erase": false,
+  "orphan_prop_rows_node_rows": [
+    [
+      1,
+      0
+    ],
+    [
+      1,
+      0
+    ],
+    [
+      0,
+      0
+    ]
+  ],
+  "post_commit_applied": true,
+  "reason": "orphan (props, nodes) after commit (1, 0), after prefix erase (1, 0); redact \u2192 RedactionTargetLiveError; again after a second prefix erase \u2192 RedactionTargetLiveError; explicit-id erase \u2192 props 0; redact \u2192 completed",
+  "redact_after_explicit_erase": {
+    "complete": true,
+    "refused": false
+  },
+  "redact_after_prefix_erase": {
+    "error": "RedactionTargetLiveError",
+    "message": "the default graph (ids starting 'tP|') still holds 1 live row(s) (rdf_props 1); erase it before redacting",
+    "refused": true
+  },
+  "redact_after_second_prefix_erase": {
+    "error": "RedactionTargetLiveError",
+    "message": "the default graph (ids starting 'tP|') still holds 1 live row(s) (rdf_props 1); erase it before redacting",
+    "refused": true
+  },
+  "verdict": "OBSERVED_DEFECT"
+}

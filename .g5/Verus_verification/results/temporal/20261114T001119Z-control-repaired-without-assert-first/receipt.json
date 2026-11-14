@@ -1,0 +1,47 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_stats_repaired_total"
+    ],
+    "find": "    Variant { assert_first: true, incr_undone: true, update_rebuilds: true, optin_guard: true }",
+    "name": "repaired-without-assert-first",
+    "replace": "    Variant { assert_first: false, incr_undone: true, update_rebuilds: true, optin_guard: true }",
+    "why": "The total statistics theorem needs S2: without it a throw from AssertTemporalRow leaves raw stores without tagg"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_stats_repaired_total"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal/model.json": "198e8a63d2b7c2280707913e8c5664d2d0bd6f083e717fd10f8c67659153f650",
+    ".g5/Verus_verification/models/temporal/temporal.rs": "866e2a17730348c2be9da53e5642963fabe3ac59a53ba0be6776ddc6ba84600f"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/temporal/controls/repaired-without-assert-first/temporal.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_stats_repaired_total": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/temporal/20261114T001109Z-control-repaired-without-assert-first-theorem_stats_repaired_total.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/temporal/20261114T001109Z-control-repaired-without-assert-first.log",
+    "timed_out": false,
+    "verified": 103
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

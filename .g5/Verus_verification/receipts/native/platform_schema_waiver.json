@@ -1,0 +1,57 @@
+{
+  "_probe_inputs": {
+    ".g5/Verus_verification/native/harness.py": "61af481af586763543377f4f3b77661b5e3988f7b74125516a14535292c6d2c5",
+    ".g5/Verus_verification/native/probes/graph_structure_common.py": "977359030e19b7c7c663a265389727951de9e32e4e4fc398522148b1e11ed219",
+    ".g5/Verus_verification/native/probes/platform_schema_waiver.py": "e511acd21b791ff692e9001979b6631da49706711ac19e8768c01da80e205248",
+    ".g5/Verus_verification/native/probes/redaction_common.py": "ad40819dfdccb8558d2728504fa6ff77975431aabc7b9a8782d24dc18b9f71e6",
+    ".g5/Verus_verification/native/probes/search_common.py": "92ff874bc87390be56edb05c75d2f2c5906458c0b37cd86171888ee61d8b5ae2"
+  },
+  "_product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "after": {
+    "ivg_table_schemas": [
+      [
+        "Graph_KG",
+        "nodes"
+      ],
+      [
+        "Graph_KG",
+        "rdf_edges"
+      ]
+    ],
+    "other_marker_defined": 0,
+    "record": "Graph_KG",
+    "recorded_stamp": "2026-11-13 21:25:13 UTC 4.7.0"
+  },
+  "backfill_structural_rows_dry_run": {
+    "message": "<SQL ERROR>; Details: [SQLCODE: <-30>:<Table or view not found>]\r\n[Location: <Prepare>]\r\n[%msg: < Table 'IVGPROBE.RDF_EDGES' not found>]",
+    "raised": "ProgrammingError"
+  },
+  "before": {
+    "ivg_table_schemas": [
+      [
+        "Graph_KG",
+        "nodes"
+      ],
+      [
+        "Graph_KG",
+        "rdf_edges"
+      ]
+    ],
+    "other_marker_defined": 0,
+    "record": "Graph_KG",
+    "recorded_stamp": "2026-11-13 21:25:13 UTC 4.7.0"
+  },
+  "control_engine_node_count": {
+    "message": "Namespace USER records Graph_KG as its IVG Schema, and this engine asks for IVGPROBE. A namespace holds one IVG Schema per namespace: IVG's globals (^KG, ^NKG, ^IVG.*) belong to the namespace, so a second schema would share them. Build the engine with schema_prefix='Graph_KG', or use a separate namespace for the other schema. Nothing was written.",
+    "raised": "IVGSchemaError"
+  },
+  "migrate_to_graph_scoped_embeddings_dry_run": {
+    "raised": null,
+    "value": "MigrationReport(rows_placed={}, rows_quarantined={}, quarantined_ids=[], tables_created=[], indexes_created=[], indexes_refused={}, widths_reconciled={}, structural_blockers={}, duplicates_removed={}, key_conflicts={}, legacy_node_keys=[], node_key_blockers={}, endpoints_registered=[])"
+  },
+  "other_schema": "IVGPROBE",
+  "probe": "platform_schema_waiver",
+  "reason": "the namespace records Graph_KG; an engine on IVGPROBE is refused, but the migrations' waived engine was not: migrate_to_graph_scoped_embeddings_dry_run -> returned; backfill_structural_rows_dry_run -> ProgrammingError",
+  "unchanged": true,
+  "verdict": "OBSERVED_DEFECT"
+}

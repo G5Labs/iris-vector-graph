@@ -1,0 +1,55 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_collision_changes_nothing",
+      "lemma_write_exact"
+    ],
+    "find": "    mode != Mode::Update && s.tout.contains_key(c)\n}",
+    "name": "no-collision-guard",
+    "replace": "    false\n}",
+    "why": "WriteStores without the $Data(tout) guard (:84-85): an 'insert' at occupied coordinates is counted again (spec 254 FR-003, the pre-254 behaviour)"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_collision_changes_nothing",
+      "lemma_write_exact"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal/model.json": "198e8a63d2b7c2280707913e8c5664d2d0bd6f083e717fd10f8c67659153f650",
+    ".g5/Verus_verification/models/temporal/temporal.rs": "866e2a17730348c2be9da53e5642963fabe3ac59a53ba0be6776ddc6ba84600f"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/temporal/controls/no-collision-guard/temporal.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 5,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_collision_changes_nothing": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/temporal/20261114T000945Z-control-no-collision-guard-lemma_collision_changes_nothing.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "lemma_write_exact": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/temporal/20261114T000945Z-control-no-collision-guard-lemma_write_exact.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/temporal/20261114T000945Z-control-no-collision-guard.log",
+    "timed_out": false,
+    "verified": 99
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

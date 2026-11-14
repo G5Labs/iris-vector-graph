@@ -1,0 +1,44 @@
+{
+  "after_ttl": {
+    "message": "ledger strict mode: structural write 'create_node' rejected; commit a changeset via engine.ledger",
+    "raised": "LedgerStrictModeError"
+  },
+  "bypass": {
+    "raised": null,
+    "value": "True"
+  },
+  "engine1_same_engine": {
+    "message": "ledger strict mode: structural write 'create_node' rejected; commit a changeset via engine.ledger",
+    "raised": "LedgerStrictModeError"
+  },
+  "meta_after_set_strict": {
+    "head_id": "a87366e5dfbc11f194f44aa54a442c16",
+    "head_seq": 1,
+    "max_ops": 50000,
+    "ok": true,
+    "recon_bound": 250000,
+    "state": "enabled",
+    "strict": true
+  },
+  "probe": "platform_strict_ttl",
+  "reason": "engine 2 wrote 'ttl-bypass' unrecorded 0.001 s after set_strict(True) returned (cached probe); after the TTL it was refused",
+  "rows": {
+    "ttl-after": 0,
+    "ttl-bypass": 1,
+    "ttl-engine1": 0,
+    "ttl-warm": 1
+  },
+  "schema": "Graph_KG",
+  "seconds": {
+    "after_ttl_call": 5.5,
+    "bypass_call": 0.089,
+    "engine1_call": 0.088,
+    "set_strict_returned": 0.088,
+    "warm_probe": 0.087
+  },
+  "verdict": "OBSERVED_DEFECT",
+  "warm": {
+    "raised": null,
+    "value": "True"
+  }
+}

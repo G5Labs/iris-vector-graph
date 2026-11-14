@@ -1,0 +1,127 @@
+{
+  "claimed": "EmbeddingIdentity(mechanism='iris-embedding-config', model_key='g5probe-model-a', declared_config='g5probe-model-a', dimension=768, dtype='DOUBLE')",
+  "read_after_claim": null,
+  "read_before_claim": true,
+  "reason": "after claiming kg_NodeEmbeddings for 'g5probe-model-a', 2 registry rows answer ('', 'g5probe-model-a') and get_embedding('g5p:route:1') returns nothing although the vector stored for that pair is still in its kg_emb_ route",
+  "registry_after_claim": [
+    [
+      "kg_NodeEmbeddings",
+      "",
+      "g5probe-model-a",
+      "iris-embedding-config",
+      768
+    ],
+    [
+      "kg_NodeEmbeddings_optimized",
+      "",
+      null,
+      null,
+      768
+    ],
+    [
+      "kg_EdgeEmbeddings",
+      "",
+      null,
+      null,
+      768
+    ],
+    [
+      "kg_emb_2c0a30aeb6d25cd0",
+      "",
+      "g5probe-model-a",
+      "iris-embedding-config",
+      768
+    ]
+  ],
+  "registry_after_store": [
+    [
+      "kg_NodeEmbeddings",
+      "",
+      null,
+      null,
+      768
+    ],
+    [
+      "kg_NodeEmbeddings_optimized",
+      "",
+      null,
+      null,
+      768
+    ],
+    [
+      "kg_EdgeEmbeddings",
+      "",
+      null,
+      null,
+      768
+    ],
+    [
+      "kg_emb_2c0a30aeb6d25cd0",
+      "",
+      "g5probe-model-a",
+      "iris-embedding-config",
+      768
+    ]
+  ],
+  "registry_initial": [
+    [
+      "kg_NodeEmbeddings",
+      "",
+      null,
+      null,
+      768
+    ],
+    [
+      "kg_NodeEmbeddings_optimized",
+      "",
+      null,
+      null,
+      768
+    ],
+    [
+      "kg_EdgeEmbeddings",
+      "",
+      null,
+      null,
+      768
+    ]
+  ],
+  "rows_answering_pair": [
+    [
+      "kg_NodeEmbeddings",
+      "",
+      "g5probe-model-a",
+      "iris-embedding-config",
+      768
+    ],
+    [
+      "kg_emb_2c0a30aeb6d25cd0",
+      "",
+      "g5probe-model-a",
+      "iris-embedding-config",
+      768
+    ]
+  ],
+  "schema": {
+    "objectscript_failed": {},
+    "objectscript_skipped": {
+      "Graph.KG.MCPService": "needs %AI.MCP.Service, not installed on this server",
+      "Graph.KG.MCPToolSet": "needs %AI.Policy.ConsoleAudit, %AI.ToolSet, not installed on this server",
+      "Graph.KG.MCPTools": "needs %AI.Tool, not installed on this server"
+    },
+    "schema": "Graph_KG",
+    "warnings": []
+  },
+  "schema_after_reset": {
+    "objectscript_failed": {},
+    "objectscript_skipped": {
+      "Graph.KG.MCPService": "needs %AI.MCP.Service, not installed on this server",
+      "Graph.KG.MCPToolSet": "needs %AI.Policy.ConsoleAudit, %AI.ToolSet, not installed on this server",
+      "Graph.KG.MCPTools": "needs %AI.Tool, not installed on this server"
+    },
+    "schema": "Graph_KG",
+    "warnings": []
+  },
+  "stored": true,
+  "verdict": "OBSERVED_DEFECT"
+}

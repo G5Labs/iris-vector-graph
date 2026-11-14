@@ -1,0 +1,47 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_locked_build_preserves"
+    ],
+    "find": "            if s.build is Some || (v.build_locked && s.run is Some) {",
+    "name": "repair-build-ignores-writer",
+    "replace": "            if s.build is Some {",
+    "why": "The repair's Build must wait for an in-flight writer: a Build Kill inside an Insert breaks it"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_locked_build_preserves"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/search/model.json": "2de500e7dc05f10e2b44fac199a97d4d453171a43199d5f6f06970bc2cf0f27a",
+    ".g5/Verus_verification/models/search/search.rs": "e6eb3b77c43d30ca5c72df32c9ccd134687a5ef4eb3da6c22325fc2b2f7c45cd"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/search/controls/repair-build-ignores-writer/search.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_locked_build_preserves": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/search/20261114T001926Z-control-repair-build-ignores-writer-theorem_locked_build_preserves.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/search/20261114T001926Z-control-repair-build-ignores-writer.log",
+    "timed_out": false,
+    "verified": 49
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

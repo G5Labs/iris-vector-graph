@@ -1,0 +1,47 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_repaired_delete_rel_keeps_layout"
+    ],
+    "find": "    if indexed {\n        row_remove(t, rows2, e, multi)\n    } else if multi {",
+    "name": "repaired-delete-rel-keeps-line-689",
+    "replace": "    if indexed {\n        let t1 = row_remove(t, rows2, e, multi);\n        if present(t1) { remove(t1) } else { t1 }\n    } else if multi {",
+    "why": "The proposed DeleteRelInternal with the unconditional Remove of LedgerApply.cls:689 put back on the indexed path"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_repaired_delete_rel_keeps_layout"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/graph_structure/graph_structure.rs": "484d962fdc6c09c3c32e3bb34b00d9123e8327ad68f5254f949fd402816999bf",
+    ".g5/Verus_verification/models/graph_structure/model.json": "951575ea61c50a004b037efd04df00c36d8275766e3d34830029dc700610d801"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/graph_structure/controls/repaired-delete-rel-keeps-line-689/graph_structure.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_repaired_delete_rel_keeps_layout": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/graph_structure/20261113T232117Z-control-repaired-delete-rel-keeps-line-689-theorem_repaired_delete_rel_keeps_layout.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/graph_structure/20261113T232117Z-control-repaired-delete-rel-keeps-line-689.log",
+    "timed_out": false,
+    "verified": 54
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

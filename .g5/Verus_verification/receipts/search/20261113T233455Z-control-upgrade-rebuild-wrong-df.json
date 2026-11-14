@@ -1,0 +1,47 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_rebuild_count_cons"
+    ],
+    "find": "        df: Map::new(ix.tf.dom(), |t: Term| ix.tf[t].dom().len() as int),",
+    "name": "upgrade-rebuild-wrong-df",
+    "replace": "        df: Map::new(ix.tf.dom(), |t: Term| 1int),",
+    "why": "The tf walk does not count postings (df := 1 per term): the rebuilt index is not the brute-force count (FR-016, SC-012)"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_rebuild_count_cons"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/search/model.json": "5425eb2353667584a0873b207f0aaf993a3b96467703eff6840696dc7c02a1b7",
+    ".g5/Verus_verification/models/search/search.rs": "9719f3a217ccba0cc5489cff9ef10b8567cb8bad29e0debae2cb021e5177ad73"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/search/controls/upgrade-rebuild-wrong-df/search.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_rebuild_count_cons": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/search/20261113T233433Z-control-upgrade-rebuild-wrong-df-lemma_rebuild_count_cons.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/search/20261113T233433Z-control-upgrade-rebuild-wrong-df.log",
+    "timed_out": false,
+    "verified": 48
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

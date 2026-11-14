@@ -1,0 +1,16 @@
+{
+  "commit_error": null,
+  "created": true,
+  "expected": {
+    "insert_raises": true,
+    "node_persisted_after_commit": 1,
+    "tlevel_after": 1
+  },
+  "insert_raised": "RuntimeError('<SUBSCRIPT>RemoveDoc+1^Graph.KG.BM25Index.1 ^BM25Idx(\"g5pbm25txn\",\"len\",\"ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd')",
+  "node_persisted_after_commit": 0,
+  "node_visible_in_caller_txn": 0,
+  "reason": "a failed bm25_insert inside the caller's transaction left $TLEVEL 1->0; the node the caller created earlier in it is gone after the caller's commit",
+  "tlevel_after_failed_insert": 0,
+  "tlevel_before_insert": 1,
+  "verdict": "OBSERVED_DEFECT"
+}

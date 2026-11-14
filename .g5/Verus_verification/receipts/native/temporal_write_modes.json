@@ -1,0 +1,329 @@
+{
+  "T": 1700000100,
+  "_probe_inputs": {
+    ".g5/Verus_verification/native/harness.py": "61af481af586763543377f4f3b77661b5e3988f7b74125516a14535292c6d2c5",
+    ".g5/Verus_verification/native/probes/graph_structure_common.py": "977359030e19b7c7c663a265389727951de9e32e4e4fc398522148b1e11ed219",
+    ".g5/Verus_verification/native/probes/redaction_common.py": "ad40819dfdccb8558d2728504fa6ff77975431aabc7b9a8782d24dc18b9f71e6",
+    ".g5/Verus_verification/native/probes/search_common.py": "92ff874bc87390be56edb05c75d2f2c5906458c0b37cd86171888ee61d8b5ae2",
+    ".g5/Verus_verification/native/probes/temporal_write_modes.py": "acba88089b2a2b40fa118e68a808ec7d39195b6cb2db8c180f9f501b266acb6a"
+  },
+  "_product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "adjacency_indexed": "1",
+  "bucket": 5666667,
+  "cases": {
+    "bulk_fallback_insert": {
+      "agg_whole_bucket": {
+        "count": 1,
+        "sum": 1.0
+      },
+      "expected_l1": {
+        "count": 2,
+        "sum": 6.0,
+        "velocity": 2
+      },
+      "l1_holds": false,
+      "mode": "insert",
+      "raw": {
+        "bucket": 2,
+        "tagg_count": 1,
+        "tagg_sum": "1.0"
+      },
+      "rdf_edges_rows_for_source": 1,
+      "refused_edge_raw_present": true,
+      "returned": {
+        "collisions": 0,
+        "skipped": 0,
+        "written": 2
+      },
+      "velocity_bucket": 2,
+      "verdict": "OBSERVED_DEFECT: mode=insert batch with a refused edge returned written=2, collisions=0, no error; raw edges=2 (sum 6.0), tagg count=1 sum=1.0, velocity=2, rows=1",
+      "window_all": [
+        {
+          "o": "probe:bulk:insert:o0",
+          "p": "PROBE_TW",
+          "predicate": "PROBE_TW",
+          "s": "probe:bulk:insert:s",
+          "source": "probe:bulk:insert:s",
+          "target": "probe:bulk:insert:o0",
+          "timestamp": 1700000100,
+          "ts": 1700000100,
+          "w": 1,
+          "weight": 1
+        },
+        {
+          "o": "probe:long:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "p": "PROBE_TW",
+          "predicate": "PROBE_TW",
+          "s": "probe:bulk:insert:s",
+          "source": "probe:bulk:insert:s",
+          "target": "probe:long:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "timestamp": 1700000101,
+          "ts": 1700000101,
+          "w": 5,
+          "weight": 5
+        }
+      ]
+    },
+    "bulk_fallback_update": {
+      "agg_whole_bucket": {
+        "count": 2,
+        "sum": 2.0
+      },
+      "expected_l1": {
+        "count": 2,
+        "sum": 6.0,
+        "velocity": 2
+      },
+      "l1_holds": false,
+      "mode": "update",
+      "raw": {
+        "bucket": 4,
+        "tagg_count": 2,
+        "tagg_sum": "2.0"
+      },
+      "rdf_edges_rows_for_source": 1,
+      "refused_edge_raw_present": true,
+      "returned": "GraphWriteError: bulk_create_edges_temporal failed, 1 of 2 edges written: <THROW> *%Exception.StatusException ERROR #5001: AssertTemporalRow node probe:long:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "velocity_bucket": 4,
+      "verdict": "OBSERVED_DEFECT: mode=update after the fallback the whole-bucket count/sum/velocity 2/2.0/4 differ from the raw store 2/6.0/2 (call: GraphWriteError: bulk_create_edges_temporal failed, 1 of 2 edges written: <THROW> *%Exception.StatusException ERROR #5001: AssertTemporalRow node probe:long:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx)",
+      "window_all": [
+        {
+          "o": "probe:bulk:update:o0",
+          "p": "PROBE_TW",
+          "predicate": "PROBE_TW",
+          "s": "probe:bulk:update:s",
+          "source": "probe:bulk:update:s",
+          "target": "probe:bulk:update:o0",
+          "timestamp": 1700000100,
+          "ts": 1700000100,
+          "w": 1,
+          "weight": 1
+        },
+        {
+          "o": "probe:long:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "p": "PROBE_TW",
+          "predicate": "PROBE_TW",
+          "s": "probe:bulk:update:s",
+          "source": "probe:bulk:update:s",
+          "target": "probe:long:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "timestamp": 1700000101,
+          "ts": 1700000101,
+          "w": 5,
+          "weight": 5
+        }
+      ]
+    },
+    "partial_write_retry": {
+      "after_first": {
+        "agg_cut_window_T_T": {
+          "count": 1,
+          "sum": 2.0
+        },
+        "agg_whole_bucket": {
+          "count": 0,
+          "max": "<reader error ValueError: could not convert string to float: 'None'>",
+          "min": "<reader error ValueError: could not convert string to float: 'None'>",
+          "sum": 0.0
+        },
+        "node_rows_for_target": 0,
+        "raw": {
+          "bucket": 1,
+          "tagg_count": null,
+          "tagg_max": null,
+          "tagg_min": null,
+          "tagg_sum": null,
+          "tout": "2.0"
+        },
+        "rdf_edges_rows": 0,
+        "velocity_bucket": 1,
+        "window_edges": [
+          {
+            "o": "probe:long:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "p": "PROBE_TW",
+            "predicate": "PROBE_TW",
+            "s": "probe:pw:s",
+            "source": "probe:pw:s",
+            "target": "probe:long:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "timestamp": 1700000100,
+            "ts": 1700000100,
+            "w": 2,
+            "weight": 2
+          }
+        ]
+      },
+      "after_retry": {
+        "agg_cut_window_T_T": {
+          "count": 1,
+          "sum": 2.0
+        },
+        "agg_whole_bucket": {
+          "count": 0,
+          "max": "<reader error ValueError: could not convert string to float: 'None'>",
+          "min": "<reader error ValueError: could not convert string to float: 'None'>",
+          "sum": 0.0
+        },
+        "node_rows_for_target": 0,
+        "raw": {
+          "bucket": 1,
+          "tagg_count": null,
+          "tagg_max": null,
+          "tagg_min": null,
+          "tagg_sum": null,
+          "tout": "2.0"
+        },
+        "rdf_edges_rows": 0,
+        "velocity_bucket": 1,
+        "window_edges": [
+          {
+            "o": "probe:long:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "p": "PROBE_TW",
+            "predicate": "PROBE_TW",
+            "s": "probe:pw:s",
+            "source": "probe:pw:s",
+            "target": "probe:long:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "timestamp": 1700000100,
+            "ts": 1700000100,
+            "w": 2,
+            "weight": 2
+          }
+        ]
+      },
+      "first_write": "GraphWriteError: create_edge_temporal failed, the temporal stores written before the error stay (the temporal write runs no transaction): <THROW> *%Exception.StatusException ERROR #5001: AssertTemporalRow node probe:long:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "retry_changed_nothing": true,
+      "retry_insert": "returned True (no error)",
+      "verdict": "OBSERVED_DEFECT: the refused write left 1 raw edge(s), bucket=1, tagg count=None (docstring: writes nothing); the retry returned without error and wrote nothing more (L1-AGG holds: False)"
+    },
+    "update_double_count": {
+      "after_delete": {
+        "agg_cut_window_T_T": {
+          "count": 0,
+          "sum": 0.0
+        },
+        "agg_whole_bucket": {
+          "count": 0,
+          "max": "<reader error ValueError: could not convert string to float: 'None'>",
+          "min": "<reader error ValueError: could not convert string to float: 'None'>",
+          "sum": 0.0
+        },
+        "node_rows_for_target": 1,
+        "raw": {
+          "bucket": 1,
+          "tagg_count": null,
+          "tagg_max": null,
+          "tagg_min": null,
+          "tagg_sum": null,
+          "tout": null
+        },
+        "rdf_edges_rows": 0,
+        "velocity_bucket": 1,
+        "window_edges": []
+      },
+      "after_insert": {
+        "agg_cut_window_T_T": {
+          "count": 1,
+          "sum": 2.0
+        },
+        "agg_whole_bucket": {
+          "count": 1,
+          "max": 2.0,
+          "min": 2.0,
+          "sum": 2.0
+        },
+        "node_rows_for_target": 1,
+        "raw": {
+          "bucket": 1,
+          "tagg_count": 1,
+          "tagg_max": "2.0",
+          "tagg_min": "2.0",
+          "tagg_sum": "2.0",
+          "tout": "2.0"
+        },
+        "rdf_edges_rows": 1,
+        "velocity_bucket": 1,
+        "window_edges": [
+          {
+            "o": "probe:upd:o",
+            "p": "PROBE_TW",
+            "predicate": "PROBE_TW",
+            "s": "probe:upd:s",
+            "source": "probe:upd:s",
+            "target": "probe:upd:o",
+            "timestamp": 1700000100,
+            "ts": 1700000100,
+            "w": 2,
+            "weight": 2
+          }
+        ]
+      },
+      "after_update": {
+        "agg_cut_window_T_T": {
+          "count": 1,
+          "sum": 9.0
+        },
+        "agg_whole_bucket": {
+          "count": 2,
+          "max": 9.0,
+          "min": 2.0,
+          "sum": 11.0
+        },
+        "node_rows_for_target": 1,
+        "raw": {
+          "bucket": 2,
+          "tagg_count": 2,
+          "tagg_max": "9.0",
+          "tagg_min": "2.0",
+          "tagg_sum": "11.0",
+          "tout": "9.0"
+        },
+        "rdf_edges_rows": 1,
+        "velocity_bucket": 2,
+        "window_edges": [
+          {
+            "o": "probe:upd:o",
+            "p": "PROBE_TW",
+            "predicate": "PROBE_TW",
+            "s": "probe:upd:s",
+            "source": "probe:upd:s",
+            "target": "probe:upd:o",
+            "timestamp": 1700000100,
+            "ts": 1700000100,
+            "w": 9,
+            "weight": 9
+          }
+        ]
+      },
+      "delete_returned": true,
+      "doc_holds_after_update": false,
+      "expected_doc_original_value": {
+        "count": 1,
+        "sum": 2.0
+      },
+      "expected_l1": {
+        "count": 1,
+        "sum": 9.0,
+        "velocity": 1
+      },
+      "expected_l1_after_delete": {
+        "count": 0,
+        "sum": 0.0,
+        "velocity": 0
+      },
+      "l1_holds_after_delete": false,
+      "l1_holds_after_update": false,
+      "verdict": "OBSERVED_DEFECT: one raw edge (w=9) but whole-bucket count=2 sum=11.0 velocity=2 (L1 expects 1/9.0/1, the docstring 1/2.0)"
+    }
+  },
+  "model": "temporal",
+  "probe": "temporal_write_modes",
+  "schema": {
+    "objectscript_failed": {},
+    "objectscript_skipped": {
+      "Graph.KG.MCPService": "needs %AI.MCP.Service, not installed on this server",
+      "Graph.KG.MCPToolSet": "needs %AI.Policy.ConsoleAudit, %AI.ToolSet, not installed on this server",
+      "Graph.KG.MCPTools": "needs %AI.Tool, not installed on this server"
+    },
+    "schema": "Graph_KG",
+    "warnings": []
+  },
+  "verdict": "OBSERVED_DEFECT: update_double_count: OBSERVED_DEFECT: one raw edge (w=9) but whole-bucket count=2 sum=11.0 velocity=2 (L1 expects 1/9.0/1, the docstring 1/2.0); partial_write_retry: OBSERVED_DEFECT: the refused write left 1 raw edge(s), bucket=1, tagg count=None (docstring: writes nothing); the retry returned without error and wrote nothing more (L1-AGG holds: False); bulk_fallback_insert: OBSERVED_DEFECT: mode=insert batch with a refused edge returned written=2, collisions=0, no error; raw edges=2 (sum 6.0), tagg count=1 sum=1.0, velocity=2, rows=1; bulk_fallback_update: OBSERVED_DEFECT: mode=update after the fallback the whole-bucket count/sum/velocity 2/2.0/4 differ from the raw store 2/6.0/2 (call: GraphWriteError: bulk_create_edges_temporal failed, 1 of 2 edges written: <THROW> *%Exception.StatusException ERROR #5001: AssertTemporalRow node probe:long:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx)"
+}

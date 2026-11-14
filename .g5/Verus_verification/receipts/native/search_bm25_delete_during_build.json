@@ -1,0 +1,37 @@
+{
+  "_probe_inputs": {
+    ".g5/Verus_verification/native/harness.py": "61af481af586763543377f4f3b77661b5e3988f7b74125516a14535292c6d2c5",
+    ".g5/Verus_verification/native/probes/graph_structure_common.py": "977359030e19b7c7c663a265389727951de9e32e4e4fc398522148b1e11ed219",
+    ".g5/Verus_verification/native/probes/redaction_common.py": "ad40819dfdccb8558d2728504fa6ff77975431aabc7b9a8782d24dc18b9f71e6",
+    ".g5/Verus_verification/native/probes/search_bm25_delete_during_build.py": "c17a1e68f5619cbe174dc1d6d695c1c1b714eb985f29fa89441229f770303f3a",
+    ".g5/Verus_verification/native/probes/search_common.py": "92ff874bc87390be56edb05c75d2f2c5906458c0b37cd86171888ee61d8b5ae2"
+  },
+  "_product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "build": "{'indexed': 4000, 'avgdl': 3, 'vocab_size': 4031, 'graph': 'g5probe_bm25_del'}",
+  "deletes": 2,
+  "false_answers_inside": 2,
+  "inside_window": 2,
+  "reason": "2 of 2 deleted documents are still returned after the rebuild (2 deletes inside the 0.713 s window answered False)",
+  "resurrected": [
+    {
+      "bm25_delete": false,
+      "doc": "g5p:del:0"
+    },
+    {
+      "bm25_delete": false,
+      "doc": "g5p:del:1"
+    }
+  ],
+  "schema": {
+    "objectscript_failed": {},
+    "objectscript_skipped": {
+      "Graph.KG.MCPService": "needs %AI.MCP.Service, not installed on this server",
+      "Graph.KG.MCPToolSet": "needs %AI.Policy.ConsoleAudit, %AI.ToolSet, not installed on this server",
+      "Graph.KG.MCPTools": "needs %AI.Tool, not installed on this server"
+    },
+    "schema": "Graph_KG",
+    "warnings": []
+  },
+  "verdict": "OBSERVED_DEFECT",
+  "window_s": 0.713
+}

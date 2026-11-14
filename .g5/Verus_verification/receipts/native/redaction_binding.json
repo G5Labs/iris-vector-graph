@@ -1,0 +1,218 @@
+{
+  "_probe_inputs": {
+    ".g5/Verus_verification/native/harness.py": "61af481af586763543377f4f3b77661b5e3988f7b74125516a14535292c6d2c5",
+    ".g5/Verus_verification/native/probes/graph_structure_common.py": "977359030e19b7c7c663a265389727951de9e32e4e4fc398522148b1e11ed219",
+    ".g5/Verus_verification/native/probes/redaction_binding.py": "0b524f630e92b70f1819773c2eb1a73ca570813d0c131081ac09bdd1945a11e5",
+    ".g5/Verus_verification/native/probes/redaction_common.py": "ad40819dfdccb8558d2728504fa6ff77975431aabc7b9a8782d24dc18b9f71e6",
+    ".g5/Verus_verification/native/probes/search_common.py": "92ff874bc87390be56edb05c75d2f2c5906458c0b37cd86171888ee61d8b5ae2"
+  },
+  "_product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "audit_leaks": [],
+  "audit_revisions": [
+    {
+      "actor": "system:ledger-redact",
+      "actor_type": "system",
+      "committed_ms": 1794619514544,
+      "conn_user": "_SYSTEM",
+      "correlation_id": null,
+      "idempotency_key": null,
+      "kind": "redaction",
+      "message": "redaction: 8 record(s) in 4 revision(s)",
+      "op_count": 4,
+      "parent_id": "3df86795dfca11f194f44aa54a442c16",
+      "revision_id": "3e3803e4dfca11f194f44aa54a442c16",
+      "seq": 8,
+      "source": "{\"records\":8,\"revisions\":4,\"statements\":0,\"target_sha256\":\"17f9781a7f4bad5fe90ce5674cd519e5a9ddb12ced7e9ac5a257ab721eb19d4b\"}",
+      "stmt_first": null,
+      "stmt_last": null
+    },
+    {
+      "actor": "system:ledger-redact",
+      "actor_type": "system",
+      "committed_ms": 1794619514933,
+      "conn_user": "_SYSTEM",
+      "correlation_id": null,
+      "idempotency_key": null,
+      "kind": "redaction",
+      "message": "redaction: 12 record(s) in 4 revision(s)",
+      "op_count": 4,
+      "parent_id": "3e3803e4dfca11f194f44aa54a442c16",
+      "revision_id": "3e7373f3dfca11f194f44aa54a442c16",
+      "seq": 9,
+      "source": "{\"records\":12,\"revisions\":4,\"statements\":0,\"target_sha256\":\"977572456e040fb35bd3d535f49f1bce3f75d5a5a578f2b3a1a1f45289fe64d3\"}",
+      "stmt_first": null,
+      "stmt_last": null
+    }
+  ],
+  "audit_target_digests_expected": [
+    "17f9781a7f4bad5fe90ce5674cd519e5a9ddb12ced7e9ac5a257ab721eb19d4b",
+    "977572456e040fb35bd3d535f49f1bce3f75d5a5a578f2b3a1a1f45289fe64d3"
+  ],
+  "idem_after": {
+    "tB-k1": "b'\\x03\\x04\\x03B\\x0163f7057e1ac59c9a3704db5568b22f20b952f41d6f094f88040ddabf7540090d'",
+    "tB-k2": "b'\\x03\\x04\\x07B\\x01ac687563eba531743b6cebfffcbd04b9555b0b050b70f25c0dcc98a083f68aee'"
+  },
+  "idem_before": {
+    "shared-k1": "b'\\x03\\x04\\x04B\\x0152c4e8df62a43ce7f0bfe7b799bfa07856e51a1602cdd56ef968376080c6761c'",
+    "tA-k1": "b'\\x03\\x04\\x02B\\x01f4ef0576fdebd9c8bba7976f317b4283ff592f91be86b6e0a10ba06768ad4cdf'",
+    "tA-k2": "b'\\x03\\x04\\x05B\\x018d8cc7ba465388acce190c4e96aca0cb3a65eb6b0a2dc1560efd7c0d8b4db7d9'",
+    "tB-k1": "b'\\x03\\x04\\x03B\\x0163f7057e1ac59c9a3704db5568b22f20b952f41d6f094f88040ddabf7540090d'",
+    "tB-k2": "b'\\x03\\x04\\x07B\\x01ac687563eba531743b6cebfffcbd04b9555b0b050b70f25c0dcc98a083f68aee'"
+  },
+  "l1_vs_twin": [],
+  "marker_after": null,
+  "metadata_problems": [],
+  "observation_controls": {
+    "digest_change_detected": true,
+    "value_change_detected": true
+  },
+  "reason": "31 records, 20 tombstoned as the twin predicted; byte-identical otherwise; verify diverges\u2192equal; metadata/idem moved; controls={'value_change_detected': True, 'digest_change_detected': True}",
+  "receipts": [
+    {
+      "batches": 2,
+      "complete": true,
+      "idempotency_keys_removed": 3,
+      "max_batch_ms": 75,
+      "metadata_cleared": 4,
+      "out_of_reach": [
+        "ledger exports (export_reconstruction files) written before this redaction still hold the content",
+        "IRIS journal files written before this redaction still hold the content",
+        "backups taken before this redaction still hold the content"
+      ],
+      "records_tombstoned": 8,
+      "redaction": "RevisionInfo(seq=8, revision_id='3e3803e4dfca11f194f44aa54a442c16', parent_id='3df86795dfca11f194f44aa54a442c16', kind='redaction', actor='system:ledger-redact', actor_type='system', conn_user='_SYSTEM', committed_ms=1794619514544, message='redaction: 8 record(s) in 4 revision(s)', source={'records': 8, 'revisions': 4, 'statements': 0, 'target_sha256': '17f9781a7f4bad5fe90ce5674cd519e5a9ddb12ced7e9ac5a257ab721eb19d4b'}, correlation_id=None, idempotency_key=None, op_count=4)",
+      "revision_seqs": [
+        2,
+        4,
+        5,
+        6
+      ],
+      "statements_removed": 0,
+      "target_sha256": "17f9781a7f4bad5fe90ce5674cd519e5a9ddb12ced7e9ac5a257ab721eb19d4b",
+      "unattributed_records": 0
+    },
+    {
+      "batches": 2,
+      "complete": true,
+      "idempotency_keys_removed": 0,
+      "max_batch_ms": 0,
+      "metadata_cleared": 0,
+      "out_of_reach": [
+        "ledger exports (export_reconstruction files) written before this redaction still hold the content",
+        "IRIS journal files written before this redaction still hold the content",
+        "backups taken before this redaction still hold the content"
+      ],
+      "records_tombstoned": 12,
+      "redaction": "RevisionInfo(seq=9, revision_id='3e7373f3dfca11f194f44aa54a442c16', parent_id='3e3803e4dfca11f194f44aa54a442c16', kind='redaction', actor='system:ledger-redact', actor_type='system', conn_user='_SYSTEM', committed_ms=1794619514933, message='redaction: 12 record(s) in 4 revision(s)', source={'records': 12, 'revisions': 4, 'statements': 0, 'target_sha256': '977572456e040fb35bd3d535f49f1bce3f75d5a5a578f2b3a1a1f45289fe64d3'}, correlation_id=None, idempotency_key=None, op_count=4)",
+      "revision_seqs": [
+        2,
+        4,
+        5,
+        6
+      ],
+      "statements_removed": 0,
+      "target_sha256": "977572456e040fb35bd3d535f49f1bce3f75d5a5a578f2b3a1a1f45289fe64d3",
+      "unattributed_records": 0
+    }
+  ],
+  "record_problems": [],
+  "records_before": 31,
+  "schema": {
+    "objectscript_failed": {},
+    "objectscript_skipped": {
+      "Graph.KG.MCPService": "needs %AI.MCP.Service, not installed on this server",
+      "Graph.KG.MCPToolSet": "needs %AI.Policy.ConsoleAudit, %AI.ToolSet, not installed on this server",
+      "Graph.KG.MCPTools": "needs %AI.Tool, not installed on this server"
+    },
+    "schema": "Graph_KG",
+    "warnings": []
+  },
+  "stmt_leftovers_after_erase": {},
+  "twin_unknown": [],
+  "twin_yes": [
+    [
+      2,
+      1
+    ],
+    [
+      2,
+      2
+    ],
+    [
+      2,
+      3
+    ],
+    [
+      2,
+      4
+    ],
+    [
+      2,
+      5
+    ],
+    [
+      2,
+      6
+    ],
+    [
+      2,
+      7
+    ],
+    [
+      2,
+      8
+    ],
+    [
+      2,
+      9
+    ],
+    [
+      2,
+      10
+    ],
+    [
+      4,
+      1
+    ],
+    [
+      4,
+      3
+    ],
+    [
+      5,
+      1
+    ],
+    [
+      5,
+      2
+    ],
+    [
+      5,
+      3
+    ],
+    [
+      5,
+      4
+    ],
+    [
+      5,
+      5
+    ],
+    [
+      6,
+      1
+    ],
+    [
+      6,
+      2
+    ],
+    [
+      6,
+      3
+    ]
+  ],
+  "verdict": "OBSERVED_AS_EXPECTED",
+  "verify_after_erase": "diverges",
+  "verify_after_redaction": "equal",
+  "verify_differences": []
+}

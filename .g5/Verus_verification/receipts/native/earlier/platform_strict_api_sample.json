@@ -1,0 +1,33 @@
+{
+  "control_row": 1,
+  "control_strict_off": {
+    "body": "CypherQueryResponse(columns=[], rows=[], row_count=0, execution_time_ms=48.04730415344238, translation_time_ms=1.9237995147705078, query_metadata=QueryMetadata(sql_query='INSERT INTO Graph_KG.nodes (node_id, graph_id) SELECT ?, \\'\\' WHERE NOT EXISTS (SELECT 1 FROM Graph_KG.nodes WHERE node_id = ? AN",
+    "raised": null,
+    "status": 200,
+    "type": "CypherQueryResponse"
+  },
+  "engine_path": {
+    "raised": "LedgerStrictModeError"
+  },
+  "engine_row": 0,
+  "meta": {
+    "head_id": "a72e9960dfbc11f194f44aa54a442c16",
+    "head_seq": 1,
+    "max_ops": 50000,
+    "ok": true,
+    "recon_bound": 250000,
+    "state": "enabled",
+    "strict": true
+  },
+  "probe": "platform_strict_api_sample",
+  "reason": "under strict mode api.main's POST /api/cypher committed CREATE unrecorded (engine path: LedgerStrictModeError, row 0)",
+  "schema": "Graph_KG",
+  "strict_case": {
+    "body": "CypherQueryResponse(columns=[], rows=[], row_count=0, execution_time_ms=0.70953369140625, translation_time_ms=13.707160949707031, query_metadata=QueryMetadata(sql_query='INSERT INTO Graph_KG.nodes (node_id, graph_id) SELECT ?, \\'\\' WHERE NOT EXISTS (SELECT 1 FROM Graph_KG.nodes WHERE node_id = ? AND",
+    "raised": null,
+    "status": 200,
+    "type": "CypherQueryResponse"
+  },
+  "strict_row": 1,
+  "verdict": "OBSERVED_DEFECT"
+}

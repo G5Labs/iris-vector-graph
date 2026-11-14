@@ -1,0 +1,53 @@
+{
+  "_probe_inputs": {
+    ".g5/Verus_verification/native/harness.py": "61af481af586763543377f4f3b77661b5e3988f7b74125516a14535292c6d2c5",
+    ".g5/Verus_verification/native/probes/graph_structure_common.py": "977359030e19b7c7c663a265389727951de9e32e4e4fc398522148b1e11ed219",
+    ".g5/Verus_verification/native/probes/redaction_common.py": "ad40819dfdccb8558d2728504fa6ff77975431aabc7b9a8782d24dc18b9f71e6",
+    ".g5/Verus_verification/native/probes/redaction_default_graph_whole.py": "c8617af87efe39a8af3b00591c5edbfae13d36912dc4a8ccef3cfc5d9f83c5f1",
+    ".g5/Verus_verification/native/probes/search_common.py": "92ff874bc87390be56edb05c75d2f2c5906458c0b37cd86171888ee61d8b5ae2"
+  },
+  "_product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "node_records_tombstoned": [
+    "(2, 1)",
+    "(2, 2)",
+    "(2, 3)",
+    "(2, 4)"
+  ],
+  "node_rows_after_erasing_default_graph": [
+    [
+      "X",
+      "gN"
+    ],
+    [
+      "Y",
+      "gN"
+    ]
+  ],
+  "outcome": {
+    "receipt": {
+      "batches": 2,
+      "complete": true,
+      "idempotency_keys_removed": 1,
+      "max_batch_ms": 127,
+      "metadata_cleared": 1,
+      "out_of_reach": [
+        "ledger exports (export_reconstruction files) written before this redaction still hold the content",
+        "IRIS journal files written before this redaction still hold the content",
+        "backups taken before this redaction still hold the content"
+      ],
+      "records_tombstoned": 4,
+      "redaction": "RevisionInfo(seq=3, revision_id='95e88dd9dfca11f194f44aa54a442c16', parent_id='95797e3adfca11f194f44aa54a442c16', kind='redaction', actor='system:ledger-redact', actor_type='system', conn_user='_SYSTEM', committed_ms=1794619661662, message='redaction: 4 record(s) in 1 revision(s)', source={'records': 4, 'revisions': 1, 'statements': 0, 'target_sha256': '6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d'}, correlation_id=None, idempotency_key=None, op_count=1)",
+      "revision_seqs": [
+        2
+      ],
+      "statements_removed": 0,
+      "target_sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
+      "unattributed_records": 0
+    },
+    "refused": false
+  },
+  "reason": "live node rows [('X', 'gN'), ('Y', 'gN')]; redact(None) completed; 4 records tombstoned; verify after: diverges",
+  "verdict": "OBSERVED_DEFECT",
+  "verify_after": "diverges",
+  "verify_before": "diverges"
+}

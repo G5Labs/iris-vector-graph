@@ -1,0 +1,165 @@
+{
+  "audit_names": {
+    "6": [
+      2,
+      3
+    ],
+    "7": [
+      2
+    ]
+  },
+  "audit_revisions": [
+    {
+      "actor": "system:ledger-redact",
+      "actor_type": "system",
+      "committed_ms": 1794612354060,
+      "conn_user": "_SYSTEM",
+      "correlation_id": null,
+      "idempotency_key": null,
+      "kind": "redaction",
+      "message": "redaction: 15 record(s) in 2 revision(s)",
+      "op_count": 2,
+      "parent_id": "92012001dfb911f194f44aa54a442c16",
+      "revision_id": "923cdc89dfb911f194f44aa54a442c16",
+      "seq": 6,
+      "source": "{\"records\":15,\"revisions\":2,\"statements\":0,\"target_sha256\":\"8304c2bb62a7b4a8cab9981354ee06918272de4c1b12397b215f8c1295d3f600\"}",
+      "source_parsed": {
+        "records": 15,
+        "revisions": 2,
+        "statements": 0,
+        "target_sha256": "8304c2bb62a7b4a8cab9981354ee06918272de4c1b12397b215f8c1295d3f600"
+      },
+      "stmt_first": null,
+      "stmt_last": null
+    },
+    {
+      "actor": "system:ledger-redact",
+      "actor_type": "system",
+      "committed_ms": 1794612354139,
+      "conn_user": "_SYSTEM",
+      "correlation_id": null,
+      "idempotency_key": null,
+      "kind": "redaction",
+      "message": "redaction: 5 record(s) in 1 revision(s)",
+      "op_count": 1,
+      "parent_id": "923cdc89dfb911f194f44aa54a442c16",
+      "revision_id": "924907ccdfb911f194f44aa54a442c16",
+      "seq": 7,
+      "source": "{\"records\":5,\"revisions\":1,\"statements\":0,\"target_sha256\":\"c07dea52b49eb7a58c8c649b99cac0b371bf9551cea3e9fa9001cc85c487f4fd\"}",
+      "source_parsed": {
+        "records": 5,
+        "revisions": 1,
+        "statements": 0,
+        "target_sha256": "c07dea52b49eb7a58c8c649b99cac0b371bf9551cea3e9fa9001cc85c487f4fd"
+      },
+      "stmt_first": null,
+      "stmt_last": null
+    }
+  ],
+  "events": [
+    {
+      "t": 0.1534,
+      "what": "locker start"
+    },
+    {
+      "t": 1.0799,
+      "what": "A start"
+    },
+    {
+      "t": 1.1769,
+      "what": "B start"
+    },
+    {
+      "t": 5.8725,
+      "what": "locker end"
+    },
+    {
+      "t": 5.874,
+      "target_sha256": "8304c2bb62a7b4a8cab9981354ee06918272de4c1b12397b215f8c1295d3f600",
+      "what": "marker"
+    },
+    {
+      "t": 6.2023,
+      "target_sha256": "c07dea52b49eb7a58c8c649b99cac0b371bf9551cea3e9fa9001cc85c487f4fd",
+      "what": "marker"
+    },
+    {
+      "result": true,
+      "t": 6.2042,
+      "what": "B end"
+    },
+    {
+      "result": true,
+      "t": 6.2803,
+      "what": "A end"
+    }
+  ],
+  "late": {},
+  "marker_after": null,
+  "raced_entry_checks": true,
+  "reason": "audit revisions=2 names={6: [2, 3], 7: [2]} digests=['8304c2bb', 'c07dea52'] A={'ok': True, 'receipt': {'complete': True, 'target_sha256': 'c07dea52b49eb7a58c8c649b99cac0b371bf9551cea3e9fa9001cc85c487f4fd', 'revision_seqs': [2], 'records_tombstoned': 5, 'metadata_cleared': 0, 'idempotency_keys_removed': 0, 'statements_removed': 0, 'unattributed_records': 0, 'batches': 154, 'max_batch_ms': 4195, 'redaction': RevisionInfo(seq=7, revision_id='924907ccdfb911f194f44aa54a442c16', parent_id='923cdc89dfb911f194f44aa54a442c16', kind='redaction', actor='system:ledger-redact', actor_type='system', conn_user='_SYSTEM', committed_ms=1794612354139, message='redaction: 5 record(s) in 1 revision(s)', source={'records': 5, 'revisions': 1, 'statements': 0, 'target_sha256': 'c07dea52b49eb7a58c8c649b99cac0b371bf9551cea3e9fa9001cc85c487f4fd'}, correlation_id=None, idempotency_key=None, op_count=1), 'out_of_reach': ['ledger exports (export_reconstruction files) written before this redaction still hold the content', 'IRIS journal files written before this redaction still hold the content', 'backups taken before this redaction still hold the content']}} B={'ok': True, 'receipt': {'complete': True, 'target_sha256': '8304c2bb62a7b4a8cab9981354ee06918272de4c1b12397b215f8c1295d3f600', 'revision_seqs': [2, 3], 'records_tombstoned': 15, 'metadata_cleared': 2, 'idempotency_keys_removed': 2, 'statements_removed': 0, 'unattributed_records': 0, 'batches': 2, 'max_batch_ms': 4196, 'redaction': RevisionInfo(seq=6, revision_id='923cdc89dfb911f194f44aa54a442c16', parent_id='92012001dfb911f194f44aa54a442c16', kind='redaction', actor='system:ledger-redact', actor_type='system', conn_user='_SYSTEM', committed_ms=1794612354060, message='redaction: 15 record(s) in 2 revision(s)', source={'records': 15, 'revisions': 2, 'statements': 0, 'target_sha256': '8304c2bb62a7b4a8cab9981354ee06918272de4c1b12397b215f8c1295d3f600'}, correlation_id=None, idempotency_key=None, op_count=2), 'out_of_reach': ['ledger exports (export_reconstruction files) written before this redaction still hold the content', 'IRIS journal files written before this redaction still hold the content', 'backups taken before this redaction still hold the content']}} late=None",
+  "results": {
+    "A": {
+      "ok": true,
+      "receipt": {
+        "batches": 154,
+        "complete": true,
+        "idempotency_keys_removed": 0,
+        "max_batch_ms": 4195,
+        "metadata_cleared": 0,
+        "out_of_reach": [
+          "ledger exports (export_reconstruction files) written before this redaction still hold the content",
+          "IRIS journal files written before this redaction still hold the content",
+          "backups taken before this redaction still hold the content"
+        ],
+        "records_tombstoned": 5,
+        "redaction": "RevisionInfo(seq=7, revision_id='924907ccdfb911f194f44aa54a442c16', parent_id='923cdc89dfb911f194f44aa54a442c16', kind='redaction', actor='system:ledger-redact', actor_type='system', conn_user='_SYSTEM', committed_ms=1794612354139, message='redaction: 5 record(s) in 1 revision(s)', source={'records': 5, 'revisions': 1, 'statements': 0, 'target_sha256': 'c07dea52b49eb7a58c8c649b99cac0b371bf9551cea3e9fa9001cc85c487f4fd'}, correlation_id=None, idempotency_key=None, op_count=1)",
+        "revision_seqs": [
+          2
+        ],
+        "statements_removed": 0,
+        "target_sha256": "c07dea52b49eb7a58c8c649b99cac0b371bf9551cea3e9fa9001cc85c487f4fd",
+        "unattributed_records": 0
+      }
+    },
+    "B": {
+      "ok": true,
+      "receipt": {
+        "batches": 2,
+        "complete": true,
+        "idempotency_keys_removed": 2,
+        "max_batch_ms": 4196,
+        "metadata_cleared": 2,
+        "out_of_reach": [
+          "ledger exports (export_reconstruction files) written before this redaction still hold the content",
+          "IRIS journal files written before this redaction still hold the content",
+          "backups taken before this redaction still hold the content"
+        ],
+        "records_tombstoned": 15,
+        "redaction": "RevisionInfo(seq=6, revision_id='923cdc89dfb911f194f44aa54a442c16', parent_id='92012001dfb911f194f44aa54a442c16', kind='redaction', actor='system:ledger-redact', actor_type='system', conn_user='_SYSTEM', committed_ms=1794612354060, message='redaction: 15 record(s) in 2 revision(s)', source={'records': 15, 'revisions': 2, 'statements': 0, 'target_sha256': '8304c2bb62a7b4a8cab9981354ee06918272de4c1b12397b215f8c1295d3f600'}, correlation_id=None, idempotency_key=None, op_count=2)",
+        "revision_seqs": [
+          2,
+          3
+        ],
+        "statements_removed": 0,
+        "target_sha256": "8304c2bb62a7b4a8cab9981354ee06918272de4c1b12397b215f8c1295d3f600",
+        "unattributed_records": 0
+      }
+    }
+  },
+  "seq_tenant_a": [
+    2
+  ],
+  "seq_tenant_b": [
+    3
+  ],
+  "target_digests": {
+    "A": "c07dea52b49eb7a58c8c649b99cac0b371bf9551cea3e9fa9001cc85c487f4fd",
+    "B": "8304c2bb62a7b4a8cab9981354ee06918272de4c1b12397b215f8c1295d3f600"
+  },
+  "tombstoned_seqs": [
+    2,
+    3
+  ],
+  "verdict": "OBSERVED_DEFECT"
+}

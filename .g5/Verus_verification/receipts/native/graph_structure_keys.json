@@ -1,0 +1,288 @@
+{
+  "_probe_inputs": {
+    ".g5/Verus_verification/native/harness.py": "61af481af586763543377f4f3b77661b5e3988f7b74125516a14535292c6d2c5",
+    ".g5/Verus_verification/native/probes/graph_structure_common.py": "977359030e19b7c7c663a265389727951de9e32e4e4fc398522148b1e11ed219",
+    ".g5/Verus_verification/native/probes/graph_structure_keys.py": "b5860f0b40c37cc54ca49b8bef65168e506fb958901695370c3c2c7fd8e128c2",
+    ".g5/Verus_verification/native/probes/redaction_common.py": "ad40819dfdccb8558d2728504fa6ff77975431aabc7b9a8782d24dc18b9f71e6",
+    ".g5/Verus_verification/native/probes/search_common.py": "92ff874bc87390be56edb05c75d2f2c5906458c0b37cd86171888ee61d8b5ae2"
+  },
+  "_product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "cases": {
+    "K1": {
+      "graph": "'0'",
+      "kg_after": 0,
+      "kg_before": 0,
+      "reason": "refused, nothing written",
+      "result": {
+        "raised": {
+          "message": "graph name \"0\" is reserved: IRIS canonicalizes the subscript \"0\" to the integer 0 that keys the default graph",
+          "trace": "Traceback (most recent call last):\n  File \"/home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-g5-verus-20261113/iris-vector-graph/.g5/Verus_verification/native/probes/graph_structure_keys.py\", line 51, in try_create\n    return {\"returned\": eng.create_edge(S, P, O, graph=graph)}\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-g5-verus-20261113/iris-vector-graph/iris_vector_graph/_engine/nodes_edges.py\", line 1197, in create_edge\n    graph_key = graph_index_key(graph)\n                ^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-g5-verus-20261113/iris-vector-graph/iris_vector_graph/_validate.py\", line 70, in graph_index_key\n    canonical = validate_graph_name(graph)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-g5-verus-20261113/iris-vector-graph/iris_vector_graph/_validate.py\", line 39, in validate_graph_name\n    raise ValueError(\nValueError: graph name \"0\" is reserved: IRIS canonicalizes the subscript \"0\" to the integer 0 that keys the default graph\n",
+          "type": "ValueError"
+        }
+      },
+      "rows_after": [],
+      "rows_before": [],
+      "verdict": "OBSERVED_AS_EXPECTED"
+    },
+    "K2": {
+      "graph": "'\\x01'",
+      "kg_after": 0,
+      "kg_before": 0,
+      "reason": "refused, nothing written",
+      "result": {
+        "raised": {
+          "message": "graph name '\\x01' contains a control character (0x01), which cannot be used as a subscript",
+          "trace": "Traceback (most recent call last):\n  File \"/home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-g5-verus-20261113/iris-vector-graph/.g5/Verus_verification/native/probes/graph_structure_keys.py\", line 51, in try_create\n    return {\"returned\": eng.create_edge(S, P, O, graph=graph)}\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-g5-verus-20261113/iris-vector-graph/iris_vector_graph/_engine/nodes_edges.py\", line 1197, in create_edge\n    graph_key = graph_index_key(graph)\n                ^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-g5-verus-20261113/iris-vector-graph/iris_vector_graph/_validate.py\", line 70, in graph_index_key\n    canonical = validate_graph_name(graph)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-g5-verus-20261113/iris-vector-graph/iris_vector_graph/_validate.py\", line 45, in validate_graph_name\n    raise ValueError(\nValueError: graph name '\\x01' contains a control character (0x01), which cannot be used as a subscript\n",
+          "type": "ValueError"
+        }
+      },
+      "rows_after": [],
+      "rows_before": [],
+      "verdict": "OBSERVED_AS_EXPECTED"
+    },
+    "K3": {
+      "graph": "'\\x85'",
+      "kg_after": 0,
+      "kg_before": 0,
+      "reason": "refused, nothing written",
+      "result": {
+        "raised": {
+          "message": "create_edge failed (SQLCODE -400), nothing written: <SQL ERROR>; Details: [SQLCODE: <-400>:<Fatal error occurred>]\r\n[Location: <ServerLoop>]\r\n[%msg: <ERROR #5001: graph name contains a control character, which cannot be used as a subscript>]",
+          "trace": "Traceback (most recent call last):\n  File \"/home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-g5-verus-20261113/iris-vector-graph/iris_vector_graph/_engine/nodes_edges.py\", line 1214, in create_edge\n    cursor.execute(\niris.dbapi.DatabaseError: <SQL ERROR>; Details: [SQLCODE: <-400>:<Fatal error occurred>]\r\n[Location: <ServerLoop>]\r\n[%msg: <ERROR #5001: graph name contains a control character, which cannot be used as a subscript>]\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-g5-verus-20261113/iris-vector-graph/.g5/Verus_verification/native/probes/graph_structure_keys.py\", line 51, in try_create\n    return {\"returned\": eng.create_edge(S, P, O, graph=graph)}\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-g5-verus-20261113/iris-vector-graph/iris_vector_graph/_engine/nodes_edges.py\", line 1249, in create_edge\n    raise GraphWriteError(\"create_edge\", e, left if kg_written else \"\") from e\niris_vector_graph.errors.GraphWriteError: create_edge failed (SQLCODE -400), nothing written: <SQL ERROR>; Details: [SQLCODE: <-400>:<Fatal error occurred>]\r\n[Location: <ServerLoop>]\r\n[%msg: <ERROR #5001: graph name contains a control character, which cannot be used as a subscript>]\n",
+          "type": "GraphWriteError"
+        }
+      },
+      "rows_after": [],
+      "rows_before": [],
+      "verdict": "OBSERVED_AS_EXPECTED"
+    },
+    "K4": {
+      "delete": {
+        "returned": true
+      },
+      "first": {
+        "returned": true
+      },
+      "kg_after_delete": 0,
+      "kg_after_two": 1,
+      "reason": "graph 'g5k' and 'g5k'+NUL got 2 rows; after delete_edge(graph='g5k') rows [['g5k\\x00', 0]] remain with ^KG $Data 0",
+      "rows_after_delete": [
+        [
+          "g5k\u0000",
+          0
+        ]
+      ],
+      "rows_after_two": [
+        [
+          "g5k",
+          0
+        ],
+        [
+          "g5k\u0000",
+          0
+        ]
+      ],
+      "second": {
+        "returned": true
+      },
+      "verdict": "OBSERVED_DEFECT",
+      "verify_g5k": {
+        "checked": [
+          "Graph_KG.rdf_edges",
+          "^KG(\"out\")",
+          "^KG(\"in\")",
+          "^KG(\"degc\")"
+        ],
+        "counts": {
+          "cacheEntries": 0,
+          "inEdges": 0,
+          "outEdges": 0,
+          "sqlEdges": 0
+        },
+        "drift": [],
+        "graph": "g5k",
+        "graphKey": "g5k",
+        "ok": 1,
+        "unscoped": [
+          {
+            "kind": "sql",
+            "reason": "keyed by reifier and edge id alone, with no graph column and no join to one",
+            "store": "Graph_KG.rdf_reifications"
+          },
+          {
+            "kind": "global",
+            "reason": "node interning is append-only and ignores graph_id, so its counters over-count and its ids cannot be attributed to one graph",
+            "store": "^NKG"
+          },
+          {
+            "kind": "global",
+            "reason": "Arno's two-hop counts, computed over ^NKG by Graph.KG.NKGAccelTraversal:Build2HopExact; since ^NKG's interning carries no graph, the number cannot be attributed to one graph and is kept apart from the scoped ^KG(\"deg2p_exact\") rather than written into it",
+            "store": "^KG(\"deg2p_exact_merged\")"
+          },
+          {
+            "kind": "global",
+            "reason": "content-addressed interning of temporal label sets, deliberately append-only: Graph.KG.TemporalIndex documents that no purge touches it",
+            "store": "^KG(\"labelset\")"
+          },
+          {
+            "kind": "global",
+            "reason": "a whole-database JSON snapshot keyed by graph name \"KG\" with no graph dimension, invalidated by comparing ^KG(\"__version\") rather than by content, so erasing content without bumping that stamp leaves Arno serving the erased graph",
+            "store": "^ArnoKG"
+          }
+        ],
+        "unverified": [
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.nodes"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.rdf_labels"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.rdf_props"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.kg_NodeEmbeddings"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.kg_NodeEmbeddings_optimized"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.kg_EdgeEmbeddings"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.docs"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.embedding_registry"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.fhir_unresolved"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.fhir_definitions"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.fhir_canonical_refs"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"gen\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"degw\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"label\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"prop\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"deg2p\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"deg2p_exact\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"tout\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"tin\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"bucket\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"tagg\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"edgeprop\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"tlast\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^IVG.Ledger(\"tuple\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^IVG.Ledger(\"stmt\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^IVG.GraphMode"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^IVG.TemporalStructural"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^IVG.AlgoCache"
+          }
+        ]
+      }
+    },
+    "K5": {
+      "kg_index_key": 1,
+      "kg_ledger_key": 0,
+      "ledger_index_key": 0,
+      "ledger_ledger_key": 1,
+      "reason": "each store holds the edge under its own default key only",
+      "verdict": "OBSERVED_AS_EXPECTED"
+    }
+  },
+  "p_ctrl": {
+    "0x1": "refused: <THROW> *%Exception.StatusException ERROR #5001: graph name contains a control character, which cannot be used as a subs",
+    "0x1f": "refused: <THROW> *%Exception.StatusException ERROR #5001: graph name contains a control character, which cannot be used as a subs",
+    "0x7f": "refused: <THROW> *%Exception.StatusException ERROR #5001: graph name contains a control character, which cannot be used as a subs",
+    "0x80": "refused: <THROW> *%Exception.StatusException ERROR #5001: graph name contains a control character, which cannot be used as a subs",
+    "0x85": "refused: <THROW> *%Exception.StatusException ERROR #5001: graph name contains a control character, which cannot be used as a subs",
+    "0x9f": "refused: <THROW> *%Exception.StatusException ERROR #5001: graph name contains a control character, which cannot be used as a subs",
+    "0xa0": "accepted"
+  },
+  "probe": "graph_structure_keys",
+  "reason": "K4: graph 'g5k' and 'g5k'+NUL got 2 rows; after delete_edge(graph='g5k') rows [['g5k\\x00', 0]] remain with ^KG $Data 0",
+  "reset_errors": [],
+  "schema": {
+    "objectscript_failed": {},
+    "objectscript_skipped": {
+      "Graph.KG.MCPService": "needs %AI.MCP.Service, not installed on this server",
+      "Graph.KG.MCPToolSet": "needs %AI.Policy.ConsoleAudit, %AI.ToolSet, not installed on this server",
+      "Graph.KG.MCPTools": "needs %AI.Tool, not installed on this server"
+    },
+    "schema": "Graph_KG",
+    "warnings": []
+  },
+  "verdict": "OBSERVED_DEFECT",
+  "verdict_self_check": {
+    "discriminates": true,
+    "k4_defect": "OBSERVED_DEFECT",
+    "k4_ok": "OBSERVED_AS_EXPECTED",
+    "refusal_defect": "OBSERVED_DEFECT",
+    "refusal_ok": "OBSERVED_AS_EXPECTED"
+  }
+}

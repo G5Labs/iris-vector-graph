@@ -1,0 +1,59 @@
+{
+  "_probe_inputs": {
+    ".g5/Verus_verification/native/harness.py": "61af481af586763543377f4f3b77661b5e3988f7b74125516a14535292c6d2c5",
+    ".g5/Verus_verification/native/probes/graph_structure_common.py": "977359030e19b7c7c663a265389727951de9e32e4e4fc398522148b1e11ed219",
+    ".g5/Verus_verification/native/probes/redaction_common.py": "ad40819dfdccb8558d2728504fa6ff77975431aabc7b9a8782d24dc18b9f71e6",
+    ".g5/Verus_verification/native/probes/search_bm25_erase.py": "91f0104363476e9c207ce946a830590f51310eb5589ec07c5768b3885d8e835e",
+    ".g5/Verus_verification/native/probes/search_common.py": "92ff874bc87390be56edb05c75d2f2c5906458c0b37cd86171888ee61d8b5ae2"
+  },
+  "_product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "build": {
+    "avgdl": 2,
+    "graph": "g5probe_bm25_erase",
+    "indexed": 1,
+    "vocab_size": 2
+  },
+  "created": true,
+  "erase_removed": 1,
+  "expected_after": [],
+  "info_after": {
+    "N": 1,
+    "avgdl": 2,
+    "graph": "g5probe_bm25_erase",
+    "schema": 2,
+    "type": "bm25",
+    "vocab_size": 2
+  },
+  "node_exists_after": false,
+  "reason": "after erase_graph('g5probe_bm25_erase') bm25_search('g5pbm25erase', 'zyxwortle') still answers g5p:erase:1 ([('g5p:erase:1', 0.2876820724517809)]); after re-creating g5p:erase:1 with other text the erased text still scores it ([('g5p:erase:1', 0.2876820724517809)])",
+  "recreated": true,
+  "schema": {
+    "objectscript_failed": {},
+    "objectscript_skipped": {
+      "Graph.KG.MCPService": "needs %AI.MCP.Service, not installed on this server",
+      "Graph.KG.MCPToolSet": "needs %AI.Policy.ConsoleAudit, %AI.ToolSet, not installed on this server",
+      "Graph.KG.MCPTools": "needs %AI.Tool, not installed on this server"
+    },
+    "schema": "Graph_KG",
+    "warnings": []
+  },
+  "search_after": [
+    [
+      "g5p:erase:1",
+      0.2876820724517809
+    ]
+  ],
+  "search_after_recreate": [
+    [
+      "g5p:erase:1",
+      0.2876820724517809
+    ]
+  ],
+  "search_before": [
+    [
+      "g5p:erase:1",
+      0.2876820724517809
+    ]
+  ],
+  "verdict": "OBSERVED_DEFECT"
+}

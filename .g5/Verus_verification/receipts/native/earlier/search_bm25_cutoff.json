@@ -1,0 +1,177 @@
+{
+  "N": 4,
+  "cases": [
+    {
+      "expected_fallback": true,
+      "expected_skipped": [
+        "qcommon"
+      ],
+      "fallback": true,
+      "fraction": 0.5,
+      "query": "qcommon qmid",
+      "results": [
+        [
+          "c:3",
+          0.3663730541968852
+        ],
+        [
+          "c:1",
+          0.330434552967763
+        ],
+        [
+          "c:2",
+          0.330434552967763
+        ]
+      ],
+      "skipped": [
+        "qcommon"
+      ]
+    },
+    {
+      "expected_fallback": false,
+      "expected_skipped": [
+        "qcommon"
+      ],
+      "fallback": false,
+      "fraction": 0.5,
+      "query": "qraretwo qrareone qcommon",
+      "results": [
+        [
+          "c:1",
+          1.1153971484218481
+        ],
+        [
+          "c:2",
+          1.1153971484218481
+        ]
+      ],
+      "skipped": [
+        "qcommon"
+      ]
+    },
+    {
+      "expected_fallback": true,
+      "expected_skipped": [
+        "qalpha"
+      ],
+      "fallback": true,
+      "fraction": 0.5,
+      "query": "qbeta qalpha",
+      "results": [
+        [
+          "c:4",
+          0.12143245872427438
+        ],
+        [
+          "c:3",
+          0.10822530309263124
+        ],
+        [
+          "c:1",
+          0.09760919706719602
+        ],
+        [
+          "c:2",
+          0.09760919706719602
+        ]
+      ],
+      "skipped": [
+        "qalpha"
+      ]
+    },
+    {
+      "expected_fallback": true,
+      "expected_skipped": [],
+      "fallback": true,
+      "fraction": 0.5,
+      "query": "qnosuchterm qcommon",
+      "results": [
+        [
+          "c:4",
+          0.12143245872427438
+        ],
+        [
+          "c:3",
+          0.10822530309263124
+        ],
+        [
+          "c:1",
+          0.09760919706719602
+        ],
+        [
+          "c:2",
+          0.09760919706719602
+        ]
+      ],
+      "skipped": []
+    },
+    {
+      "expected_fallback": false,
+      "expected_skipped": [],
+      "fallback": false,
+      "fraction": 0.0,
+      "query": "qcommon qmid",
+      "results": [
+        [
+          "c:3",
+          0.4745983572895165
+        ],
+        [
+          "c:1",
+          0.428043750034959
+        ],
+        [
+          "c:2",
+          0.428043750034959
+        ],
+        [
+          "c:4",
+          0.12143245872427438
+        ]
+      ],
+      "skipped": []
+    },
+    {
+      "expected_fallback": true,
+      "expected_skipped": [
+        "qbeta",
+        "qcommon"
+      ],
+      "fallback": true,
+      "fraction": 0.99,
+      "query": "qalpha qbeta qcommon",
+      "results": [
+        [
+          "c:4",
+          0.12143245872427438
+        ],
+        [
+          "c:3",
+          0.10822530309263124
+        ],
+        [
+          "c:1",
+          0.09760919706719602
+        ],
+        [
+          "c:2",
+          0.09760919706719602
+        ]
+      ],
+      "skipped": [
+        "qbeta",
+        "qcommon"
+      ]
+    }
+  ],
+  "df": {
+    "qalpha": 4,
+    "qbeta": 4,
+    "qcommon": 4,
+    "qmid": 3,
+    "qrareone": 1,
+    "qraretwo": 1
+  },
+  "reason": "all 6 cutoff cases match the contract",
+  "verdict": "OBSERVED_AS_EXPECTED"
+}

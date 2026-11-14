@@ -1,0 +1,78 @@
+{
+  "_probe_inputs": {
+    ".g5/Verus_verification/native/harness.py": "61af481af586763543377f4f3b77661b5e3988f7b74125516a14535292c6d2c5",
+    ".g5/Verus_verification/native/probes/graph_structure_common.py": "977359030e19b7c7c663a265389727951de9e32e4e4fc398522148b1e11ed219",
+    ".g5/Verus_verification/native/probes/redaction_common.py": "ad40819dfdccb8558d2728504fa6ff77975431aabc7b9a8782d24dc18b9f71e6",
+    ".g5/Verus_verification/native/probes/redaction_temporal_only_live.py": "f5982be60fe771d17c7d49fafb688366284d0811a053d615695637df0b6c7425",
+    ".g5/Verus_verification/native/probes/search_common.py": "92ff874bc87390be56edb05c75d2f2c5906458c0b37cd86171888ee61d8b5ae2"
+  },
+  "_product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "node_rows_in_graph": 0,
+  "outcome": {
+    "receipt": {
+      "batches": 2,
+      "complete": true,
+      "idempotency_keys_removed": 1,
+      "max_batch_ms": 48,
+      "metadata_cleared": 1,
+      "out_of_reach": [
+        "ledger exports (export_reconstruction files) written before this redaction still hold the content",
+        "IRIS journal files written before this redaction still hold the content",
+        "backups taken before this redaction still hold the content"
+      ],
+      "records_tombstoned": 1,
+      "redaction": "RevisionInfo(seq=3, revision_id='b1786167dfca11f194f44aa54a442c16', parent_id='b154217edfca11f194f44aa54a442c16', kind='redaction', actor='system:ledger-redact', actor_type='system', conn_user='_SYSTEM', committed_ms=1794619707904, message='redaction: 1 record(s) in 1 revision(s)', source={'records': 1, 'revisions': 1, 'statements': 0, 'target_sha256': 'b6cb07311d4b1c72d9a45c4b9043783d288e48ca0aa5bc7e0e724015bcc9e06b'}, correlation_id=None, idempotency_key=None, op_count=1)",
+      "revision_seqs": [
+        2
+      ],
+      "statements_removed": 0,
+      "target_sha256": "b6cb07311d4b1c72d9a45c4b9043783d288e48ca0aa5bc7e0e724015bcc9e06b",
+      "unattributed_records": 0
+    },
+    "refused": false
+  },
+  "rdf_edges_rows_in_graph": 0,
+  "reason": "rows=0 nodes=0 window_before=1 outcome=completed tombstoned_temporal_records=1 window_after=1",
+  "records_changed": [
+    [
+      2,
+      1
+    ]
+  ],
+  "temporal_records_tombstoned": [
+    [
+      2,
+      1
+    ]
+  ],
+  "verdict": "OBSERVED_DEFECT",
+  "verify": "equal",
+  "window_after": [
+    {
+      "o": "tT|o",
+      "p": "METRIC",
+      "predicate": "METRIC",
+      "s": "tT|s",
+      "source": "tT|s",
+      "target": "tT|o",
+      "timestamp": 1700000100,
+      "ts": 1700000100,
+      "w": 7.5,
+      "weight": 7.5
+    }
+  ],
+  "window_before": [
+    {
+      "o": "tT|o",
+      "p": "METRIC",
+      "predicate": "METRIC",
+      "s": "tT|s",
+      "source": "tT|s",
+      "target": "tT|o",
+      "timestamp": 1700000100,
+      "ts": 1700000100,
+      "w": 7.5,
+      "weight": 7.5
+    }
+  ]
+}

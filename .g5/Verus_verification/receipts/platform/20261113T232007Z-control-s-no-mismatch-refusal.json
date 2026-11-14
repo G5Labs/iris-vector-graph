@@ -1,0 +1,63 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_s_step_preserves_inv",
+      "theorem_schema_one_per_namespace",
+      "witness_serial_first_setup_and_refusal"
+    ],
+    "find": "        Some(r) => if r == sch { Some(How::Existing) } else { None },",
+    "name": "s-no-mismatch-refusal",
+    "replace": "        Some(r) => Some(How::Existing),",
+    "why": "_record_and_initialize without the mismatch refusal at 2224-2226: a setup on another schema proceeds over a recorded namespace (FR-006)"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_s_step_preserves_inv",
+      "theorem_schema_one_per_namespace",
+      "witness_serial_first_setup_and_refusal"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/platform/model.json": "06b6e8ef18c6892ed65884236dd631bd76cb7c6f17583e95390f669d833d23ce",
+    ".g5/Verus_verification/models/platform/platform.rs": "d7bcef304c208329d71cb63376c5977c7305620661b6148f50c6fd11bcfb286e"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/platform/controls/s-no-mismatch-refusal/platform.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 4,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_s_step_preserves_inv": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/platform/20261113T231950Z-control-s-no-mismatch-refusal-lemma_s_step_preserves_inv.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_schema_one_per_namespace": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/platform/20261113T231950Z-control-s-no-mismatch-refusal-theorem_schema_one_per_namespace.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "witness_serial_first_setup_and_refusal": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/platform/20261113T231950Z-control-s-no-mismatch-refusal-witness_serial_first_setup_and_refusal.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/platform/20261113T231950Z-control-s-no-mismatch-refusal.log",
+    "timed_out": false,
+    "verified": 31
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

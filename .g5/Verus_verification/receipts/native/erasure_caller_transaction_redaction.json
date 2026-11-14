@@ -1,0 +1,23 @@
+{
+  "_probe_inputs": {
+    ".g5/Verus_verification/native/harness.py": "61af481af586763543377f4f3b77661b5e3988f7b74125516a14535292c6d2c5",
+    ".g5/Verus_verification/native/probes/erasure_caller_transaction.py": "918ee1545eeb9c88f79fb4d12cde3256ddb6d616261058f127d97d32e05c2715",
+    ".g5/Verus_verification/native/probes/graph_structure_common.py": "977359030e19b7c7c663a265389727951de9e32e4e4fc398522148b1e11ed219",
+    ".g5/Verus_verification/native/probes/redaction_common.py": "ad40819dfdccb8558d2728504fa6ff77975431aabc7b9a8782d24dc18b9f71e6",
+    ".g5/Verus_verification/native/probes/search_common.py": "92ff874bc87390be56edb05c75d2f2c5906458c0b37cd86171888ee61d8b5ae2"
+  },
+  "_product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "edges_after_caller_rollback": 1,
+  "edges_seen_by_other_connection": 0,
+  "erase_removed": 3,
+  "reason": "erase nested at $TLEVEL=1; redaction completed with 2 tombstones; after the caller's rollback gA has 1 edge row(s) and the ledger 2 tombstone(s); verify=diverges",
+  "redaction": {
+    "complete": true,
+    "records_tombstoned": 2,
+    "refused": false
+  },
+  "tlevel_after_erase": 1,
+  "tombstones": 2,
+  "verdict": "OBSERVED_DEFECT",
+  "verify": "diverges"
+}

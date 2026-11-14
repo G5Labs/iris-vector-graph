@@ -1,0 +1,95 @@
+{
+  "_probe_inputs": {
+    ".g5/Verus_verification/native/harness.py": "61af481af586763543377f4f3b77661b5e3988f7b74125516a14535292c6d2c5",
+    ".g5/Verus_verification/native/probes/graph_structure_common.py": "977359030e19b7c7c663a265389727951de9e32e4e4fc398522148b1e11ed219",
+    ".g5/Verus_verification/native/probes/redaction_common.py": "ad40819dfdccb8558d2728504fa6ff77975431aabc7b9a8782d24dc18b9f71e6",
+    ".g5/Verus_verification/native/probes/redaction_interrupt_resume.py": "1c0d5a7a21562a7e5f60000f30c51366933921033310da586b6f1eb9401df8ef",
+    ".g5/Verus_verification/native/probes/search_common.py": "92ff874bc87390be56edb05c75d2f2c5906458c0b37cd86171888ee61d8b5ae2"
+  },
+  "_product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "marker_after": null,
+  "named": [
+    [
+      2,
+      4,
+      5,
+      6
+    ]
+  ],
+  "reason": "record diffs vs uninterrupted=0; audit names [[2, 4, 5, 6]] vs [[2, 4, 5, 6]]; final tombstoned 8 vs 8; steps={'1_paused': False, '2_disabled': 'LedgerDisabledError', '4_live_again': 'RedactionTargetLiveError', '5_verify_midway': 'redaction_in_progress', '5_final': True}",
+  "record_differences": [],
+  "reference_named": [
+    [
+      2,
+      4,
+      5,
+      6
+    ]
+  ],
+  "reference_receipt": {
+    "batches": 2,
+    "complete": true,
+    "idempotency_keys_removed": 3,
+    "max_batch_ms": 177,
+    "metadata_cleared": 4,
+    "out_of_reach": [
+      "ledger exports (export_reconstruction files) written before this redaction still hold the content",
+      "IRIS journal files written before this redaction still hold the content",
+      "backups taken before this redaction still hold the content"
+    ],
+    "records_tombstoned": 8,
+    "redaction": "RevisionInfo(seq=8, revision_id='9c36b278dfca11f194f44aa54a442c16', parent_id='9bcf9737dfca11f194f44aa54a442c16', kind='redaction', actor='system:ledger-redact', actor_type='system', conn_user='_SYSTEM', committed_ms=1794619672241, message='redaction: 8 record(s) in 4 revision(s)', source={'records': 8, 'revisions': 4, 'statements': 0, 'target_sha256': '17f9781a7f4bad5fe90ce5674cd519e5a9ddb12ced7e9ac5a257ab721eb19d4b'}, correlation_id=None, idempotency_key=None, op_count=4)",
+    "revision_seqs": [
+      2,
+      4,
+      5,
+      6
+    ],
+    "statements_removed": 0,
+    "target_sha256": "17f9781a7f4bad5fe90ce5674cd519e5a9ddb12ced7e9ac5a257ab721eb19d4b",
+    "unattributed_records": 0
+  },
+  "steps": {
+    "1_paused": {
+      "complete": false,
+      "marker": true,
+      "tombstoned": 1
+    },
+    "2_disabled": {
+      "error": "LedgerDisabledError",
+      "refused": true,
+      "unchanged": true
+    },
+    "4_live_again": {
+      "error": "RedactionTargetLiveError",
+      "marker": true,
+      "refused": true
+    },
+    "5_final": {
+      "batches": 2,
+      "complete": true,
+      "idempotency_keys_removed": 3,
+      "max_batch_ms": 1,
+      "metadata_cleared": 4,
+      "out_of_reach": [
+        "ledger exports (export_reconstruction files) written before this redaction still hold the content",
+        "IRIS journal files written before this redaction still hold the content",
+        "backups taken before this redaction still hold the content"
+      ],
+      "records_tombstoned": 8,
+      "redaction": "RevisionInfo(seq=8, revision_id='9c824be4dfca11f194f44aa54a442c16', parent_id='9c49ba8ddfca11f194f44aa54a442c16', kind='redaction', actor='system:ledger-redact', actor_type='system', conn_user='_SYSTEM', committed_ms=1794619672736, message='redaction: 8 record(s) in 4 revision(s)', source={'records': 8, 'revisions': 4, 'statements': 0, 'target_sha256': '17f9781a7f4bad5fe90ce5674cd519e5a9ddb12ced7e9ac5a257ab721eb19d4b'}, correlation_id=None, idempotency_key=None, op_count=4)",
+      "revision_seqs": [
+        2,
+        4,
+        5,
+        6
+      ],
+      "statements_removed": 0,
+      "target_sha256": "17f9781a7f4bad5fe90ce5674cd519e5a9ddb12ced7e9ac5a257ab721eb19d4b",
+      "unattributed_records": 0
+    },
+    "5_verify_midway": "redaction_in_progress"
+  },
+  "verdict": "OBSERVED_AS_EXPECTED",
+  "verify_final": "equal"
+}

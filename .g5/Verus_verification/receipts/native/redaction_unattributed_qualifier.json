@@ -1,0 +1,57 @@
+{
+  "_probe_inputs": {
+    ".g5/Verus_verification/native/harness.py": "61af481af586763543377f4f3b77661b5e3988f7b74125516a14535292c6d2c5",
+    ".g5/Verus_verification/native/probes/graph_structure_common.py": "977359030e19b7c7c663a265389727951de9e32e4e4fc398522148b1e11ed219",
+    ".g5/Verus_verification/native/probes/redaction_common.py": "ad40819dfdccb8558d2728504fa6ff77975431aabc7b9a8782d24dc18b9f71e6",
+    ".g5/Verus_verification/native/probes/redaction_unattributed_qualifier.py": "75279edc1328e244c13ee97503476e5b16ba5bd2581450c625c12576468d3180",
+    ".g5/Verus_verification/native/probes/search_common.py": "92ff874bc87390be56edb05c75d2f2c5906458c0b37cd86171888ee61d8b5ae2"
+  },
+  "_product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "qualifier_records_before": {
+    "(3, 1)": [
+      "set_qual",
+      "rel",
+      1,
+      "note",
+      "N",
+      "SuSecretQualifier",
+      "",
+      "assigned_stmt"
+    ]
+  },
+  "reason": "receipt complete=True records_tombstoned=2 unattributed_records=1; records still holding the qualifier value: 1",
+  "receipt": {
+    "batches": 2,
+    "complete": true,
+    "idempotency_keys_removed": 1,
+    "max_batch_ms": 204,
+    "metadata_cleared": 1,
+    "out_of_reach": [
+      "ledger exports (export_reconstruction files) written before this redaction still hold the content",
+      "IRIS journal files written before this redaction still hold the content",
+      "backups taken before this redaction still hold the content"
+    ],
+    "records_tombstoned": 2,
+    "redaction": "RevisionInfo(seq=4, revision_id='b70d9891dfca11f194f44aa54a442c16', parent_id='b69dd272dfca11f194f44aa54a442c16', kind='redaction', actor='system:ledger-redact', actor_type='system', conn_user='_SYSTEM', committed_ms=1794619717270, message='redaction: 2 record(s) in 1 revision(s)', source={'records': 2, 'revisions': 1, 'statements': 0, 'target_sha256': '0ae481f2cc84ade4be661aece5cb59386cd524be7c3505587fa27d1cf2e80ff0'}, correlation_id=None, idempotency_key=None, op_count=1)",
+    "revision_seqs": [
+      2
+    ],
+    "statements_removed": 0,
+    "target_sha256": "0ae481f2cc84ade4be661aece5cb59386cd524be7c3505587fa27d1cf2e80ff0",
+    "unattributed_records": 1
+  },
+  "records_still_holding_target_text": {
+    "(3, 1)": [
+      "set_qual",
+      "rel",
+      1,
+      "note",
+      "N",
+      "SuSecretQualifier",
+      "",
+      "assigned_stmt"
+    ]
+  },
+  "verdict": "OBSERVED_DEFECT",
+  "verify": "equal"
+}

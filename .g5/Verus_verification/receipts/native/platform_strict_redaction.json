@@ -1,0 +1,51 @@
+{
+  "_probe_inputs": {
+    ".g5/Verus_verification/native/harness.py": "61af481af586763543377f4f3b77661b5e3988f7b74125516a14535292c6d2c5",
+    ".g5/Verus_verification/native/probes/graph_structure_common.py": "977359030e19b7c7c663a265389727951de9e32e4e4fc398522148b1e11ed219",
+    ".g5/Verus_verification/native/probes/platform_strict_redaction.py": "26da51e49c01c330205049aedf8781f11af5ffff64cd9ae6cab49b21023ea4a4",
+    ".g5/Verus_verification/native/probes/redaction_common.py": "ad40819dfdccb8558d2728504fa6ff77975431aabc7b9a8782d24dc18b9f71e6",
+    ".g5/Verus_verification/native/probes/search_common.py": "92ff874bc87390be56edb05c75d2f2c5906458c0b37cd86171888ee61d8b5ae2"
+  },
+  "_product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "a_erase_strict": {
+    "message": "ledger strict mode: structural write 'erase_graph' rejected; commit a changeset via engine.ledger",
+    "raised": "LedgerStrictModeError"
+  },
+  "b_ledger_delete_rel": {
+    "raised": null,
+    "value": "CommitResult(revision=RevisionInfo(seq=3, revision_id='33051ec4dfca11f194f44aa54a442c16', parent_id='32f6a23adfca11f194f44aa54a442c16', kind='changeset', actor='probe:platform', actor_type='system', conn_user='_SYSTEM', committed_ms=1794619495755, message=None, source=None, correlation_id=None, idem"
+  },
+  "c_ledger_delete_nodes": {
+    "raised": null,
+    "value": "CommitResult(revision=RevisionInfo(seq=4, revision_id='337237d8dfca11f194f44aa54a442c16', parent_id='33051ec4dfca11f194f44aa54a442c16', kind='changeset', actor='probe:platform', actor_type='system', conn_user='_SYSTEM', committed_ms=1794619496470, message=None, source=None, correlation_id=None, idem"
+  },
+  "d_redact_strict": {
+    "message": "graph 'tenantG' still holds 2 live row(s) (nodes 2); erase it before redacting",
+    "raised": "RedactionTargetLiveError"
+  },
+  "e_erase_after_strict_off": {
+    "raised": null,
+    "value": "2"
+  },
+  "f_redact_after_erase": {
+    "raised": null,
+    "value": "RedactionReceipt(complete=True, target_sha256='20e7e89840211e735e1fcd3e17fbec2d74ea47c0547d87732397264a42505281', revision_seqs=[2, 3], records_tombstoned=2, metadata_cleared=2, idempotency_keys_removed=0, statements_removed=0, unattributed_records=0, batches=2, max_batch_ms=0, redaction=RevisionInf"
+  },
+  "graph": "tenantG",
+  "probe": "platform_strict_redaction",
+  "reason": "under strict mode tenantG cannot be erased, the ledger leaves its 2 node row(s), and redact is refused target_live; with strict off both run (consequence for a human decision)",
+  "rows_after_ledger_deletes": {
+    "nodes": 2,
+    "rdf_edges": 0
+  },
+  "rows_end": {
+    "nodes": 0,
+    "rdf_edges": 0
+  },
+  "rows_fixture": {
+    "nodes": 2,
+    "rdf_edges": 1
+  },
+  "schema": "Graph_KG",
+  "verdict": "OBSERVED_AS_EXPECTED"
+}

@@ -1,0 +1,47 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_cutoff_contract"
+    ],
+    "find": "            CutOut { skip: s.skip.remove(s.min->Some_0.0), fallback: true }",
+    "name": "cutoff-no-fallback",
+    "replace": "            CutOut { skip: s.skip, fallback: true }",
+    "why": "When every known term is over the bound none is kept back (FR-044-C2; CONTEXT.md 'a valid query never answers with nothing')"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_cutoff_contract"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/search/model.json": "2de500e7dc05f10e2b44fac199a97d4d453171a43199d5f6f06970bc2cf0f27a",
+    ".g5/Verus_verification/models/search/search.rs": "e6eb3b77c43d30ca5c72df32c9ccd134687a5ef4eb3da6c22325fc2b2f7c45cd"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/search/controls/cutoff-no-fallback/search.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_cutoff_contract": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/search/20261114T000855Z-control-cutoff-no-fallback-theorem_cutoff_contract.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/search/20261114T000855Z-control-cutoff-no-fallback.log",
+    "timed_out": false,
+    "verified": 49
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

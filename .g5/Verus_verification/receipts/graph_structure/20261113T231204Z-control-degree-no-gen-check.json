@@ -1,0 +1,47 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_check"
+    ],
+    "find": "if rd.got && (!v.nolock_check || !s.nolock) && (!v.gen_check || same(s, rd, v)) {",
+    "name": "degree-no-gen-check",
+    "replace": "if rd.got && (!v.nolock_check || !s.nolock) {",
+    "why": "Adj.Degree's store test without the generation comparison (Adj.cls:75)"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_check"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/graph_structure/graph_structure.rs": "484d962fdc6c09c3c32e3bb34b00d9123e8327ad68f5254f949fd402816999bf",
+    ".g5/Verus_verification/models/graph_structure/model.json": "0850d869e33b8184978acac395e815f167ed4c54712ffb9b2f9c252b4813b127"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/graph_structure/controls/degree-no-gen-check/graph_structure.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_check": {
+        "errors": 0,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/graph_structure/20261113T231156Z-control-degree-no-gen-check-lemma_check.log",
+        "timed_out": false,
+        "verified": 1
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/graph_structure/20261113T231156Z-control-degree-no-gen-check.log",
+    "timed_out": false,
+    "verified": 54
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "FAIL_ELSEWHERE",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

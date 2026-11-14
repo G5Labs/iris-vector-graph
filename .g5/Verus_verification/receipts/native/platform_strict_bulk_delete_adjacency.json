@@ -1,0 +1,31 @@
+{
+  "_probe_inputs": {
+    ".g5/Verus_verification/native/harness.py": "61af481af586763543377f4f3b77661b5e3988f7b74125516a14535292c6d2c5",
+    ".g5/Verus_verification/native/probes/graph_structure_common.py": "977359030e19b7c7c663a265389727951de9e32e4e4fc398522148b1e11ed219",
+    ".g5/Verus_verification/native/probes/platform_strict_bulk_delete_adjacency.py": "d9dadbbb024626245f39108b4410f0e62ec67259dde2075ee1be23b8d17c7a06",
+    ".g5/Verus_verification/native/probes/redaction_common.py": "ad40819dfdccb8558d2728504fa6ff77975431aabc7b9a8782d24dc18b9f71e6",
+    ".g5/Verus_verification/native/probes/search_common.py": "92ff874bc87390be56edb05c75d2f2c5906458c0b37cd86171888ee61d8b5ae2"
+  },
+  "_product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "call": {
+    "raised": null,
+    "value": "1"
+  },
+  "edge_after": 0,
+  "edge_before": 1,
+  "meta": {
+    "head_id": "3042b8a0dfca11f194f44aa54a442c16",
+    "head_seq": 2,
+    "max_ops": 50000,
+    "ok": true,
+    "recon_bound": 250000,
+    "state": "enabled",
+    "strict": true
+  },
+  "probe": "platform_strict_bulk_delete_adjacency",
+  "reason": "under strict mode bulk_delete_adjacency deleted the edge unrecorded (call returned; verify equal -> diverges)",
+  "schema": "Graph_KG",
+  "verdict": "OBSERVED_DEFECT",
+  "verify_after": "diverges",
+  "verify_before": "equal"
+}

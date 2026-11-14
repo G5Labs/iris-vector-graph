@@ -1,0 +1,53 @@
+{
+  "_probe_inputs": {
+    ".g5/Verus_verification/native/harness.py": "61af481af586763543377f4f3b77661b5e3988f7b74125516a14535292c6d2c5",
+    ".g5/Verus_verification/native/probes/graph_structure_common.py": "977359030e19b7c7c663a265389727951de9e32e4e4fc398522148b1e11ed219",
+    ".g5/Verus_verification/native/probes/redaction_common.py": "ad40819dfdccb8558d2728504fa6ff77975431aabc7b9a8782d24dc18b9f71e6",
+    ".g5/Verus_verification/native/probes/search_bm25_upgrade_concurrent.py": "5339c7f0451f5cfc4f755ff4b374604a455c0c485fb6d0c0a69454e554e44fd9",
+    ".g5/Verus_verification/native/probes/search_common.py": "92ff874bc87390be56edb05c75d2f2c5906458c0b37cd86171888ee61d8b5ae2"
+  },
+  "_product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "empty_answers": 205,
+  "info_after": {
+    "N": 6000,
+    "avgdl": 3,
+    "graph": "",
+    "schema": 2,
+    "type": "bm25",
+    "vocab_size": 6098
+  },
+  "info_before": {
+    "N": 6000,
+    "avgdl": 3,
+    "graph": "",
+    "schema": 1,
+    "type": "bm25",
+    "vocab_size": 6098
+  },
+  "reason": "two Upgrades ({'upgraded': 1, 'docs': 6000, 'vocab': 6098, 'postings': 18000}, {'upgraded': 1, 'docs': 6000, 'vocab': 6098, 'postings': 18000}); 205 of 210 Searches for a term in every document answered nothing; violations after: []",
+  "searches": 210,
+  "upgrade": {
+    "first": {
+      "docs": 6000,
+      "postings": 18000,
+      "upgraded": 1,
+      "vocab": 6098
+    },
+    "first_t": [
+      2100679.201024523,
+      2100679.301217971
+    ],
+    "second": {
+      "docs": 6000,
+      "postings": 18000,
+      "upgraded": 1,
+      "vocab": 6098
+    },
+    "second_t": [
+      2100679.221260086,
+      2100679.475723205
+    ]
+  },
+  "verdict": "OBSERVED_DEFECT",
+  "violations_after": []
+}

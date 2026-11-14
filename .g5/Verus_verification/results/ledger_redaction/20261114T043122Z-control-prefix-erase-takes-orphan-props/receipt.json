@@ -1,0 +1,47 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "witness_orphan_prop_row_blocks_prefix_redaction"
+    ],
+    "find": "        Item::PropRow { g, id } => g == t.g && t.m.len() > 0 && has_prefix(id, t.m) && live.contains(Item::NodeRow { g, id }),",
+    "name": "prefix-erase-takes-orphan-props",
+    "replace": "        Item::PropRow { g, id } => g == t.g && t.m.len() > 0 && has_prefix(id, t.m),",
+    "why": "A prefix erase that also deleted property rows without a node row (what an erase of every store requires): W6 must then fail, showing it depends on the product-faithful erase"
+  },
+  "expected": {
+    "fail_in": [
+      "witness_orphan_prop_row_blocks_prefix_redaction"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_redaction/model.json": "fc153e50dcf4bf45ecb6091bbad3fde9b31ff4a915be20ac87179cede95a2012",
+    ".g5/Verus_verification/models/ledger_redaction/redaction.rs": "9de526d282101d25486ef68fe8cb7f5986511e545ccb47d3cbd36bf2a18513c9"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_redaction/controls/prefix-erase-takes-orphan-props/redaction.rs --crate-type=lib --num-threads 6 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "witness_orphan_prop_row_blocks_prefix_redaction": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_redaction/20261114T043116Z-control-prefix-erase-takes-orphan-props-witness_orphan_prop_row_blocks_prefix_redaction.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_redaction/20261114T043116Z-control-prefix-erase-takes-orphan-props.log",
+    "timed_out": false,
+    "verified": 40
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "threads": "6",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,191 @@
+{
+  "adjacency_indexed": "1",
+  "cases": {
+    "C0_known_endpoints_named_graph": {
+      "after": {
+        "classification": null,
+        "differences": [],
+        "result": "equal"
+      },
+      "before": {
+        "classification": null,
+        "differences": [],
+        "result": "equal"
+      },
+      "node_rows_b": [
+        [
+          "probe:ep:b",
+          ""
+        ],
+        [
+          "probe:ep:b",
+          "probe_g"
+        ]
+      ],
+      "revisions_added": 0,
+      "verdict": "OBSERVED_AS_EXPECTED: C0 known endpoints, named graph: verify stays equal"
+    },
+    "C1_optout": {
+      "after": {
+        "classification": null,
+        "differences": [],
+        "result": "equal"
+      },
+      "before": {
+        "classification": null,
+        "differences": [],
+        "result": "equal"
+      },
+      "node_rows": [],
+      "verdict": "OBSERVED_AS_EXPECTED: C1 temporal-only predicate: verify stays equal"
+    },
+    "V1_direct_new_endpoint": {
+      "after": {
+        "classification": "unrecorded_writes",
+        "differences": [
+          {
+            "after": "",
+            "attr": "",
+            "before": null,
+            "id": "probe:ep:new:1",
+            "kind": "node"
+          }
+        ],
+        "result": "diverges"
+      },
+      "before": {
+        "classification": null,
+        "differences": [],
+        "result": "equal"
+      },
+      "node_rows": [
+        [
+          "probe:ep:new:1",
+          ""
+        ]
+      ],
+      "revisions_added": 0,
+      "verdict": "OBSERVED_DEFECT: V1 direct write, new endpoint: verify diverges (unrecorded_writes) on ['probe:ep:new:1']"
+    },
+    "V2_ledger_new_endpoint": {
+      "after": {
+        "classification": "unrecorded_writes",
+        "differences": [
+          {
+            "after": "",
+            "attr": "",
+            "before": null,
+            "id": "probe:ep:new:2",
+            "kind": "node"
+          }
+        ],
+        "result": "diverges"
+      },
+      "before": {
+        "classification": null,
+        "differences": [],
+        "result": "equal"
+      },
+      "head_records": [
+        [
+          "create_temporal_edge",
+          "temporal_edge",
+          "probe:ep:a|PROBE_EP|probe:ep:new:2@1700000100"
+        ]
+      ],
+      "node_rows": [
+        [
+          "probe:ep:new:2",
+          ""
+        ]
+      ],
+      "verdict": "OBSERVED_DEFECT: V2 ledger temporal op, new endpoint: verify diverges (unrecorded_writes) on ['probe:ep:new:2']"
+    },
+    "V3_upsert_after_temporal": {
+      "after": {
+        "classification": "unrecorded_writes",
+        "differences": [
+          {
+            "after": "",
+            "attr": "",
+            "before": null,
+            "id": "probe:ep:new:3",
+            "kind": "node"
+          }
+        ],
+        "result": "diverges"
+      },
+      "before": {
+        "classification": null,
+        "differences": [],
+        "result": "equal"
+      },
+      "create_node_recorded": false,
+      "head_records": [
+        [
+          "create_temporal_edge",
+          "temporal_edge",
+          "probe:ep:a|PROBE_EP|probe:ep:new:3@1700000100"
+        ]
+      ],
+      "node_rows": [
+        [
+          "probe:ep:new:3",
+          ""
+        ]
+      ],
+      "verdict": "OBSERVED_DEFECT: V3 temporal op then upsert_node in one changeset: verify diverges (unrecorded_writes) on ['probe:ep:new:3']"
+    },
+    "V4_op_order": {
+      "after": {
+        "classification": null,
+        "differences": [],
+        "result": "equal"
+      },
+      "create_then_temporal": "committed",
+      "temporal_then_create": "ChangesetOperationError: changeset operation 1 failed: node_exists: 'probe:ep:new:4'",
+      "verdict": "OBSERVED_DEFECT: V4 op order decides: [temporal, create_node] -> ChangesetOperationError: changeset operation 1 failed: node_exists: 'probe:ep:new:4'; [create_node, temporal] -> committed"
+    },
+    "V5_strict_mode": {
+      "after": {
+        "classification": "unrecorded_writes",
+        "differences": [
+          {
+            "after": "",
+            "attr": "",
+            "before": null,
+            "id": "probe:ep:new:strict",
+            "kind": "node"
+          }
+        ],
+        "result": "diverges"
+      },
+      "before": {
+        "classification": null,
+        "differences": [],
+        "result": "equal"
+      },
+      "node_rows": [
+        [
+          "probe:ep:new:strict",
+          ""
+        ]
+      ],
+      "verdict": "OBSERVED_DEFECT: V5 strict mode, new endpoint: verify diverges (unrecorded_writes) on ['probe:ep:new:strict']",
+      "write": "returned"
+    }
+  },
+  "model": "temporal",
+  "probe": "temporal_endpoint_nodes_verify",
+  "schema": {
+    "objectscript_failed": {},
+    "objectscript_skipped": {
+      "Graph.KG.MCPService": "needs %AI.MCP.Service, not installed on this server",
+      "Graph.KG.MCPToolSet": "needs %AI.Policy.ConsoleAudit, %AI.ToolSet, not installed on this server",
+      "Graph.KG.MCPTools": "needs %AI.Tool, not installed on this server"
+    },
+    "schema": "Graph_KG",
+    "warnings": []
+  },
+  "verdict": "OBSERVED_DEFECT: V1_direct_new_endpoint: OBSERVED_DEFECT: V1 direct write, new endpoint: verify diverges (unrecorded_writes) on ['probe:ep:new:1']; V2_ledger_new_endpoint: OBSERVED_DEFECT: V2 ledger temporal op, new endpoint: verify diverges (unrecorded_writes) on ['probe:ep:new:2']; V3_upsert_after_temporal: OBSERVED_DEFECT: V3 temporal op then upsert_node in one changeset: verify diverges (unrecorded_writes) on ['probe:ep:new:3']; V4_op_order: OBSERVED_DEFECT: V4 op order decides: [temporal, create_node] -> ChangesetOperationError: changeset operation 1 failed: node_exists: 'probe:ep:new:4'; [create_node, temporal] -> committed; V5_strict_mode: OBSERVED_DEFECT: V5 strict mode, new endpoint: verify diverges (unrecorded_writes) on ['probe:ep:new:strict']"
+}

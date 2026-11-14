@@ -1,0 +1,185 @@
+{
+  "N": 4,
+  "_probe_inputs": {
+    ".g5/Verus_verification/native/harness.py": "61af481af586763543377f4f3b77661b5e3988f7b74125516a14535292c6d2c5",
+    ".g5/Verus_verification/native/probes/graph_structure_common.py": "977359030e19b7c7c663a265389727951de9e32e4e4fc398522148b1e11ed219",
+    ".g5/Verus_verification/native/probes/redaction_common.py": "ad40819dfdccb8558d2728504fa6ff77975431aabc7b9a8782d24dc18b9f71e6",
+    ".g5/Verus_verification/native/probes/search_bm25_cutoff.py": "86f26ec22392981fb047ae2ebb17c664de5c014e0050745c5b2a0c215d730cc2",
+    ".g5/Verus_verification/native/probes/search_common.py": "92ff874bc87390be56edb05c75d2f2c5906458c0b37cd86171888ee61d8b5ae2"
+  },
+  "_product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "cases": [
+    {
+      "expected_fallback": true,
+      "expected_skipped": [
+        "qcommon"
+      ],
+      "fallback": true,
+      "fraction": 0.5,
+      "query": "qcommon qmid",
+      "results": [
+        [
+          "c:3",
+          0.3663730541968852
+        ],
+        [
+          "c:1",
+          0.330434552967763
+        ],
+        [
+          "c:2",
+          0.330434552967763
+        ]
+      ],
+      "skipped": [
+        "qcommon"
+      ]
+    },
+    {
+      "expected_fallback": false,
+      "expected_skipped": [
+        "qcommon"
+      ],
+      "fallback": false,
+      "fraction": 0.5,
+      "query": "qraretwo qrareone qcommon",
+      "results": [
+        [
+          "c:1",
+          1.1153971484218481
+        ],
+        [
+          "c:2",
+          1.1153971484218481
+        ]
+      ],
+      "skipped": [
+        "qcommon"
+      ]
+    },
+    {
+      "expected_fallback": true,
+      "expected_skipped": [
+        "qalpha"
+      ],
+      "fallback": true,
+      "fraction": 0.5,
+      "query": "qbeta qalpha",
+      "results": [
+        [
+          "c:4",
+          0.12143245872427438
+        ],
+        [
+          "c:3",
+          0.10822530309263124
+        ],
+        [
+          "c:1",
+          0.09760919706719602
+        ],
+        [
+          "c:2",
+          0.09760919706719602
+        ]
+      ],
+      "skipped": [
+        "qalpha"
+      ]
+    },
+    {
+      "expected_fallback": true,
+      "expected_skipped": [],
+      "fallback": true,
+      "fraction": 0.5,
+      "query": "qnosuchterm qcommon",
+      "results": [
+        [
+          "c:4",
+          0.12143245872427438
+        ],
+        [
+          "c:3",
+          0.10822530309263124
+        ],
+        [
+          "c:1",
+          0.09760919706719602
+        ],
+        [
+          "c:2",
+          0.09760919706719602
+        ]
+      ],
+      "skipped": []
+    },
+    {
+      "expected_fallback": false,
+      "expected_skipped": [],
+      "fallback": false,
+      "fraction": 0.0,
+      "query": "qcommon qmid",
+      "results": [
+        [
+          "c:3",
+          0.4745983572895165
+        ],
+        [
+          "c:1",
+          0.428043750034959
+        ],
+        [
+          "c:2",
+          0.428043750034959
+        ],
+        [
+          "c:4",
+          0.12143245872427438
+        ]
+      ],
+      "skipped": []
+    },
+    {
+      "expected_fallback": true,
+      "expected_skipped": [
+        "qbeta",
+        "qcommon"
+      ],
+      "fallback": true,
+      "fraction": 0.99,
+      "query": "qalpha qbeta qcommon",
+      "results": [
+        [
+          "c:4",
+          0.12143245872427438
+        ],
+        [
+          "c:3",
+          0.10822530309263124
+        ],
+        [
+          "c:1",
+          0.09760919706719602
+        ],
+        [
+          "c:2",
+          0.09760919706719602
+        ]
+      ],
+      "skipped": [
+        "qbeta",
+        "qcommon"
+      ]
+    }
+  ],
+  "df": {
+    "qalpha": 4,
+    "qbeta": 4,
+    "qcommon": 4,
+    "qmid": 3,
+    "qrareone": 1,
+    "qraretwo": 1
+  },
+  "reason": "all 6 cutoff cases match the contract",
+  "verdict": "OBSERVED_AS_EXPECTED"
+}

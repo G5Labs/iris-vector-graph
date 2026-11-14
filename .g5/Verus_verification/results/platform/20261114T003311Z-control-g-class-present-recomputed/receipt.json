@@ -1,0 +1,47 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "witness_class_absent_cached_for_the_engines_lifetime"
+    ],
+    "find": "    if !s.known.contains(e) && !class_present { s.blind.insert(e) } else { s.blind }",
+    "name": "g-class-present-recomputed",
+    "replace": "    if !class_present { s.blind.insert(e) } else { s.blind.remove(e) }",
+    "why": "a guard that recomputes the class's presence on every probe (guard.py:45-49 computes it once): the lifetime fail-open disappears"
+  },
+  "expected": {
+    "fail_in": [
+      "witness_class_absent_cached_for_the_engines_lifetime"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/platform/model.json": "b9f28717e35a13434e947ab594cfaee5a8fd17f02fd976b73ea05f80ba3cdd13",
+    ".g5/Verus_verification/models/platform/platform.rs": "7596e0664af330b2e7b7d2d658651846a3cdbc86a38bba597977e81b5df57855"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/platform/controls/g-class-present-recomputed/platform.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "witness_class_absent_cached_for_the_engines_lifetime": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/platform/20261114T003245Z-control-g-class-present-recomputed-witness_class_absent_cached_for_the_engines_lifetime.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/platform/20261114T003245Z-control-g-class-present-recomputed.log",
+    "timed_out": false,
+    "verified": 50
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

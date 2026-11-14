@@ -1,0 +1,243 @@
+{
+  "adjacency_indexed": "1",
+  "cases": {
+    "R1_refused_changeset": {
+      "after_refusal": {
+        "agg_whole_bucket": {
+          "count": 1,
+          "max": "<reader error ValueError: could not convert string to float: 'None'>",
+          "min": "<reader error ValueError: could not convert string to float: 'None'>",
+          "sum": 2.0
+        },
+        "expected_l1": {
+          "count": 0,
+          "sum": 0.0,
+          "velocity": 0
+        },
+        "raw": {
+          "bucket": 1,
+          "tagg_count": 1,
+          "tagg_hll": false,
+          "tagg_min": null,
+          "tagg_sum": "2.0"
+        },
+        "unparsable_weights": [],
+        "velocity_bucket": 1,
+        "window_edges": []
+      },
+      "after_retry": {
+        "agg_whole_bucket": {
+          "count": 2,
+          "max": 2.0,
+          "min": 2.0,
+          "sum": 4.0
+        },
+        "expected_l1": {
+          "count": 1,
+          "sum": 2.0,
+          "velocity": 1
+        },
+        "raw": {
+          "bucket": 2,
+          "tagg_count": 2,
+          "tagg_hll": true,
+          "tagg_min": "2.0",
+          "tagg_sum": "4.0"
+        },
+        "unparsable_weights": [],
+        "velocity_bucket": 2,
+        "window_edges": [
+          {
+            "o": "probe:rb:b",
+            "p": "PROBE_RB",
+            "predicate": "PROBE_RB",
+            "s": "probe:rb:a",
+            "source": "probe:rb:a",
+            "target": "probe:rb:b",
+            "timestamp": 1700000100,
+            "ts": 1700000100,
+            "w": 2,
+            "weight": 2
+          }
+        ]
+      },
+      "commit": "NodeNotFoundError: create_relationship failed: node 'probe:rb:ghost-not-a-node' does not exist. Add upsert_node('probe:rb:ghost-not-a-node') to the changeset, or set auto_stub_missing_nodes=True on the Changeset.",
+      "head_after_refusal": 2,
+      "head_before": 2,
+      "ts": 1700000100,
+      "verdict": "OBSERVED_DEFECT: R1 refused changeset: no raw edge after the rollback, but whole-bucket count=1 sum=2.0 velocity=1; after the retry 1 raw edge(s) but count=2 sum=4.0 velocity=2"
+    },
+    "R2_caller_rollback_commit": {
+      "after_rollback": {
+        "agg_whole_bucket": {
+          "count": 1,
+          "max": "<reader error ValueError: could not convert string to float: 'None'>",
+          "min": "<reader error ValueError: could not convert string to float: 'None'>",
+          "sum": 3.0
+        },
+        "expected_l1": {
+          "count": 0,
+          "sum": 0.0,
+          "velocity": 0
+        },
+        "raw": {
+          "bucket": 1,
+          "tagg_count": 1,
+          "tagg_hll": false,
+          "tagg_min": null,
+          "tagg_sum": "3.0"
+        },
+        "unparsable_weights": [],
+        "velocity_bucket": 1,
+        "window_edges": []
+      },
+      "commit": "committed inside the caller's transaction",
+      "head_after_rollback": 2,
+      "head_before": 2,
+      "inside": {
+        "agg_whole_bucket": {
+          "count": 1,
+          "max": 3.0,
+          "min": 3.0,
+          "sum": 3.0
+        },
+        "expected_l1": {
+          "count": 1,
+          "sum": 3.0,
+          "velocity": 1
+        },
+        "raw": {
+          "bucket": 1,
+          "tagg_count": 1,
+          "tagg_hll": true,
+          "tagg_min": "3.0",
+          "tagg_sum": "3.0"
+        },
+        "unparsable_weights": [],
+        "velocity_bucket": 1,
+        "window_edges": [
+          {
+            "o": "probe:rb:b",
+            "p": "PROBE_RB",
+            "predicate": "PROBE_RB",
+            "s": "probe:rb:a",
+            "source": "probe:rb:a",
+            "target": "probe:rb:b",
+            "timestamp": 1700000700,
+            "ts": 1700000700,
+            "w": 3,
+            "weight": 3
+          }
+        ]
+      },
+      "ts": 1700000700,
+      "verdict": "OBSERVED_DEFECT: R2 caller rollback of a ledger commit: no raw edge after the rollback, but whole-bucket count=1 sum=3.0 velocity=1"
+    },
+    "R3_caller_rollback_direct": {
+      "after_rollback": {
+        "agg_whole_bucket": {
+          "count": 1,
+          "max": "<reader error ValueError: could not convert string to float: 'None'>",
+          "min": "<reader error ValueError: could not convert string to float: 'None'>",
+          "sum": 4.0
+        },
+        "expected_l1": {
+          "count": 0,
+          "sum": 0.0,
+          "velocity": 0
+        },
+        "raw": {
+          "bucket": 1,
+          "tagg_count": 1,
+          "tagg_hll": false,
+          "tagg_min": null,
+          "tagg_sum": "4.0"
+        },
+        "unparsable_weights": [],
+        "velocity_bucket": 1,
+        "window_edges": []
+      },
+      "inside": {
+        "agg_whole_bucket": {
+          "count": 1,
+          "max": 4.0,
+          "min": 4.0,
+          "sum": 4.0
+        },
+        "expected_l1": {
+          "count": 1,
+          "sum": 4.0,
+          "velocity": 1
+        },
+        "raw": {
+          "bucket": 1,
+          "tagg_count": 1,
+          "tagg_hll": true,
+          "tagg_min": "4.0",
+          "tagg_sum": "4.0"
+        },
+        "unparsable_weights": [],
+        "velocity_bucket": 1,
+        "window_edges": [
+          {
+            "o": "probe:rb:b",
+            "p": "PROBE_RB",
+            "predicate": "PROBE_RB",
+            "s": "probe:rb:a",
+            "source": "probe:rb:a",
+            "target": "probe:rb:b",
+            "timestamp": 1700001300,
+            "ts": 1700001300,
+            "w": 4,
+            "weight": 4
+          }
+        ]
+      },
+      "ts": 1700001300,
+      "verdict": "OBSERVED_DEFECT: R3 caller rollback of create_edge_temporal: no raw edge after the rollback, but whole-bucket count=1 sum=4.0 velocity=1"
+    },
+    "R4_throw_in_changeset": {
+      "after": {
+        "agg_whole_bucket": {
+          "count": 0,
+          "max": "<reader error ValueError: could not convert string to float: 'None'>",
+          "min": "<reader error ValueError: could not convert string to float: 'None'>",
+          "sum": 0.0
+        },
+        "expected_l1": {
+          "count": 0,
+          "sum": 0.0,
+          "velocity": 0
+        },
+        "raw": {
+          "bucket": 1,
+          "tagg_count": null,
+          "tagg_hll": false,
+          "tagg_min": null,
+          "tagg_sum": null
+        },
+        "unparsable_weights": [],
+        "velocity_bucket": 1,
+        "window_edges": []
+      },
+      "commit": "LedgerInconsistencyError: ERROR #5001: AssertTemporalRow node probe:rb:long:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx: SQLCODE -104 Field 'Graph_KG.nodes.node_id' (value 'probe:rb:long:xxxxxxxxxxxxxxxxxxxxxxxxxx...') failed validation",
+      "head_after": 2,
+      "head_before": 2,
+      "ts": 1700001900,
+      "verdict": "OBSERVED_DEFECT: R4 throw inside a changeset: no raw edge after the rollback, but whole-bucket count=0 sum=0.0 velocity=1"
+    }
+  },
+  "model": "temporal",
+  "probe": "temporal_rollback_counters",
+  "schema": {
+    "objectscript_failed": {},
+    "objectscript_skipped": {
+      "Graph.KG.MCPService": "needs %AI.MCP.Service, not installed on this server",
+      "Graph.KG.MCPToolSet": "needs %AI.Policy.ConsoleAudit, %AI.ToolSet, not installed on this server",
+      "Graph.KG.MCPTools": "needs %AI.Tool, not installed on this server"
+    },
+    "schema": "Graph_KG",
+    "warnings": []
+  },
+  "verdict": "OBSERVED_DEFECT: R1_refused_changeset: OBSERVED_DEFECT: R1 refused changeset: no raw edge after the rollback, but whole-bucket count=1 sum=2.0 velocity=1; after the retry 1 raw edge(s) but count=2 sum=4.0 velocity=2; R2_caller_rollback_commit: OBSERVED_DEFECT: R2 caller rollback of a ledger commit: no raw edge after the rollback, but whole-bucket count=1 sum=3.0 velocity=1; R3_caller_rollback_direct: OBSERVED_DEFECT: R3 caller rollback of create_edge_temporal: no raw edge after the rollback, but whole-bucket count=1 sum=4.0 velocity=1; R4_throw_in_changeset: OBSERVED_DEFECT: R4 throw inside a changeset: no raw edge after the rollback, but whole-bucket count=0 sum=0.0 velocity=1"
+}

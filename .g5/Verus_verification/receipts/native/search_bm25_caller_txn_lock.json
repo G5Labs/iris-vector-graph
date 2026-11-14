@@ -1,0 +1,30 @@
+{
+  "_probe_inputs": {
+    ".g5/Verus_verification/native/harness.py": "61af481af586763543377f4f3b77661b5e3988f7b74125516a14535292c6d2c5",
+    ".g5/Verus_verification/native/probes/graph_structure_common.py": "977359030e19b7c7c663a265389727951de9e32e4e4fc398522148b1e11ed219",
+    ".g5/Verus_verification/native/probes/redaction_common.py": "ad40819dfdccb8558d2728504fa6ff77975431aabc7b9a8782d24dc18b9f71e6",
+    ".g5/Verus_verification/native/probes/search_bm25_caller_txn.py": "bf8839731616af5a488e0aa16536fe7d3259988c325946a78d0d9c63002e4033",
+    ".g5/Verus_verification/native/probes/search_common.py": "92ff874bc87390be56edb05c75d2f2c5906458c0b37cd86171888ee61d8b5ae2"
+  },
+  "_product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "cfg": {
+    "N": "b'2'",
+    "schema": "b'2'",
+    "totalLen": "b'2'",
+    "vocab_size": "b'2'"
+  },
+  "first_insert": true,
+  "postings": [
+    "kappa/b2",
+    "lambda/seed"
+  ],
+  "reason": "the second Insert waited 3.0s for the caller's transaction (IRIS kept the lock), counters consistent",
+  "second": {
+    "elapsed": 3.0392305380664766,
+    "ok": true
+  },
+  "second_finished_before_caller_rollback": false,
+  "tlevel_after_inner_commit": 1,
+  "verdict": "OBSERVED_AS_EXPECTED",
+  "violations_after_rollback": []
+}

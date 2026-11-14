@@ -1,0 +1,258 @@
+{
+  "name": "search",
+  "root": "search.rs",
+  "expected_verified": 56,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "controls": [
+    {
+      "name": "removedoc-keeps-df",
+      "why": "RemoveDoc's loop does not decrement df (O1, FR-016): a replace or delete leaves df(t) above the number of postings",
+      "find": "            |t: Term| if rec.contains(t) { ix.df[t] - 1 } else { ix.df[t] },",
+      "replace": "            |t: Term| ix.df[t],",
+      "expect_fail_in": [
+        "lemma_remove_doc_preserves"
+      ]
+    },
+    {
+      "name": "insert-without-removedoc",
+      "why": "Insert adds without RemoveDoc first (O1, FR-016/FR-018 'including after a replace'): a replace counts the document twice",
+      "find": "    let ix1 = remove_doc(init_ix(ix), d);\n    if dlen > 0 { add_doc(ix1, d, bag, dlen) } else { ix1 }",
+      "replace": "    let ix1 = init_ix(ix);\n    if dlen > 0 { add_doc(ix1, d, bag, dlen) } else { ix1 }",
+      "expect_fail_in": [
+        "theorem_insert_preserves_counters"
+      ]
+    },
+    {
+      "name": "vocab-not-counted",
+      "why": "The add loop never increments vocab_size for a new term (O1, FR-018)",
+      "find": "        vocab: ix.vocab + fresh_terms(ix, bag).len(),",
+      "replace": "        vocab: ix.vocab,",
+      "expect_fail_in": [
+        "lemma_add_doc_preserves"
+      ]
+    },
+    {
+      "name": "repair-insert-ignores-build",
+      "why": "The proposed repair (Build holds the write lock) is what keeps an Insert out of a running Build: without the guard the locked-build theorem fails",
+      "find": "            if !tok_ok(bag, dlen) || s.run is Some || (v.build_locked && s.build is Some) || !writable(s.ix) {",
+      "replace": "            if !tok_ok(bag, dlen) || s.run is Some || !writable(s.ix) {",
+      "expect_fail_in": [
+        "theorem_locked_build_preserves"
+      ]
+    },
+    {
+      "name": "as-built-build-locked",
+      "why": "The F2 witnesses depend on Build taking no lock: with the lock the interleaving is not enabled",
+      "find": "pub open spec fn as_built_writers() -> WVariant { WVariant { build_locked: false, delete_under_lock: false } }",
+      "replace": "pub open spec fn as_built_writers() -> WVariant { WVariant { build_locked: true, delete_under_lock: false } }",
+      "expect_fail_in": [
+        "witness_build_insert_breaks_n",
+        "witness_build_insert_double_df"
+      ]
+    },
+    {
+      "name": "cutoff-ties-to-last",
+      "why": "tMinDf updated on <= instead of <: a tie keeps the last term in query order, not the first (FR-044-C2)",
+      "find": "                    Some(m) => if d < m.1 { Some((tok, d)) } else { s.min },",
+      "replace": "                    Some(m) => if d <= m.1 { Some((tok, d)) } else { s.min },",
+      "expect_fail_in": [
+        "lemma_cut_scan"
+      ]
+    },
+    {
+      "name": "cutoff-no-fallback",
+      "why": "When every known term is over the bound none is kept back (FR-044-C2; CONTEXT.md 'a valid query never answers with nothing')",
+      "find": "            CutOut { skip: s.skip.remove(s.min->Some_0.0), fallback: true }",
+      "replace": "            CutOut { skip: s.skip, fallback: true }",
+      "expect_fail_in": [
+        "theorem_cutoff_contract"
+      ]
+    },
+    {
+      "name": "cutoff-counts-unknown-terms",
+      "why": "Terms with df 0 are taken as known (the `If tD = 0 Continue` removed): FR-044-C2 'terms with df 0 are neither skipped nor kept'",
+      "find": "        if d == 0 {\n            s\n        } else {\n            CutSt {",
+      "replace": "        if false {\n            s\n        } else {\n            CutSt {",
+      "expect_fail_in": [
+        "lemma_cut_scan"
+      ]
+    },
+    {
+      "name": "upgrade-no-flag",
+      "why": "Upgrade does not set cfg 'upgrading' (l.533): writers are not refused while it runs (FR-023)",
+      "find": "                Some(USys { ix: Ix { upgrading: true, ..s.ix }, ups: s.ups.insert(p, UpPc::Flagged), ..s })",
+      "replace": "                Some(USys { ups: s.ups.insert(p, UpPc::Flagged), ..s })",
+      "expect_fail_in": [
+        "theorem_upgrade_step_preserves"
+      ]
+    },
+    {
+      "name": "upgrade-flip-before-count",
+      "why": "schema = 2 set before N/totalLen/vocab_size are recomputed (FR-023 'set schema to 2 only after ... are complete')",
+      "find": "            if !s.ups.contains_key(p) || s.ups[p] != UpPc::Counted { None } else {\n                Some(USys { ix: Ix { schema: Some(2), ..s.ix }",
+      "replace": "            if !s.ups.contains_key(p) || s.ups[p] != UpPc::Rebuilt { None } else {\n                Some(USys { ix: Ix { schema: Some(2), ..s.ix }",
+      "expect_fail_in": [
+        "theorem_upgrade_step_preserves",
+        "theorem_repaired_upgrade_preserves"
+      ]
+    },
+    {
+      "name": "upgrade-rebuild-wrong-df",
+      "why": "The tf walk does not count postings (df := 1 per term): the rebuilt index is not the brute-force count (FR-016, SC-012)",
+      "find": "        df: Map::new(ix.tf.dom(), |t: Term| ix.tf[t].dom().len() as int),",
+      "replace": "        df: Map::new(ix.tf.dom(), |t: Term| 1int),",
+      "expect_fail_in": [
+        "lemma_rebuild_count_cons"
+      ]
+    },
+    {
+      "name": "repair-recheck-off",
+      "why": "The proposed repair (re-read schema under the lock, skip the rebuild of a schema-2 index) is what makes concurrent and re-run Upgrades safe for readers",
+      "find": "pub open spec fn upgrade_repaired() -> UVariant { UVariant { recheck: true, serial: false, crash_after_flip: true } }",
+      "replace": "pub open spec fn upgrade_repaired() -> UVariant { UVariant { recheck: false, serial: false, crash_after_flip: true } }",
+      "expect_fail_in": [
+        "theorem_repaired_upgrade_preserves",
+        "witness_repair_rerun_keeps_index"
+      ]
+    },
+    {
+      "name": "as-built-upgrade-serial",
+      "why": "W-O2a needs two Upgrade calls in flight: with the serial premise the second Start is not enabled",
+      "find": "pub open spec fn upgrade_concurrent() -> UVariant { UVariant { recheck: false, serial: false, crash_after_flip: false } }",
+      "replace": "pub open spec fn upgrade_concurrent() -> UVariant { UVariant { recheck: false, serial: true, crash_after_flip: false } }",
+      "expect_fail_in": [
+        "witness_concurrent_upgrades"
+      ]
+    },
+    {
+      "name": "identity-no-width",
+      "why": "conflicts() without the width comparison: a wrong-width writer is admitted (ADR-0005/0006, FR-014 width in all four cells)",
+      "find": "    ||| (rec.width is Some && off.width is Some && rec.width != off.width)\n    ||| rec.dtype != off.dtype\n}",
+      "replace": "    ||| false\n    ||| rec.dtype != off.dtype\n}",
+      "expect_fail_in": [
+        "theorem_store_routes_and_refuses"
+      ]
+    },
+    {
+      "name": "route-created-without-lookup",
+      "why": "_route_for_write creates a route without reading the registry first: a second row answers the pair (FR-011) and the write misses its readers",
+      "find": "            let created = readable && route is None && !is_default_pair(g, key);",
+      "replace": "            let created = readable && !is_default_pair(g, key);",
+      "expect_fail_in": [
+        "theorem_store_routes_and_refuses"
+      ]
+    },
+    {
+      "name": "repair-fail-closed-off",
+      "why": "W-O3d's refusal under the proposed repair comes from the fail-closed read: without it the cached-route write is admitted",
+      "find": "            let id_refused = (fail_closed && ir is Error) || (recorded is Some && conflicts(recorded->Some_0, off));",
+      "replace": "            let id_refused = recorded is Some && conflicts(recorded->Some_0, off);",
+      "expect_fail_in": [
+        "witness_identity_fail_open"
+      ]
+    },
+    {
+      "name": "queue-routes-default-graph",
+      "why": "The IRIS worker routes default-graph entries like named ones (RouteTable): the F8 witnesses no longer write into kg_NodeEmbeddings",
+      "find": "    let target = if g == default_graph() { Some(legacy()) } else { route_table(s.reg, g, c) };",
+      "replace": "    let target = route_table(s.reg, g, c);",
+      "expect_fail_in": [
+        "witness_queue_default_graph_misroutes",
+        "witness_queue_writes_into_claimed_table"
+      ]
+    },
+    {
+      "name": "repair-erase-keeps-bm25",
+      "why": "The proposed repair (EraseGraph drops the BM25 indexes recorded for the graph) is what removes the erased answers (ADR-0004)",
+      "find": "            Map::new(s.bm25.dom().filter(|x: IxName| s.bm25[x].graph != g), |x: IxName| s.bm25[x])",
+      "replace": "            s.bm25",
+      "expect_fail_in": [
+        "theorem_repaired_erase_removes_answers",
+        "witness_erase_leaves_bm25"
+      ]
+    },
+    {
+      "name": "repair-erase-drops-every-index",
+      "why": "Valid outcome must survive: an erase that drops every BM25 index (other graphs' too) satisfies 'no erased answer' but breaks the frame clause",
+      "find": "            Map::new(s.bm25.dom().filter(|x: IxName| s.bm25[x].graph != g), |x: IxName| s.bm25[x])",
+      "replace": "            Map::new(s.bm25.dom().filter(|x: IxName| false), |x: IxName| s.bm25[x])",
+      "expect_fail_in": [
+        "theorem_repaired_erase_removes_answers"
+      ]
+    },
+    {
+      "name": "upgrade-writer-ignores-flag",
+      "why": "An Insert that does not run RequireWritable is not refused while an Upgrade is in flight (FR-022/FR-023)",
+      "find": "            if !tok_ok(bag, dlen) || s.lock is Some || !writable(s.ix) { None } else {",
+      "replace": "            if !tok_ok(bag, dlen) || s.lock is Some { None } else {",
+      "expect_fail_in": [
+        "theorem_writers_refused_while_upgrading"
+      ]
+    },
+    {
+      "name": "identity-reads-ledger",
+      "why": "An identity check that only runs with the ledger enabled (ADR-0006: refusable on an install with no history feature enabled)",
+      "find": "            if id_refused || width_refused {",
+      "replace": "            if (id_refused || width_refused) && s.ledger_on {",
+      "expect_fail_in": [
+        "theorem_identity_check_ignores_ledger"
+      ]
+    },
+    {
+      "name": "upgrade-keeps-idf",
+      "why": "Upgrade never removes the stored idf (FR-017/FR-023 'only then remove the stored idf'): the completed index is not the canonical schema-2 index",
+      "find": "                Some(USys { ix: Ix { idf: false, ..s.ix }, ups: s.ups.insert(p, UpPc::Cleaned), ..s })",
+      "replace": "                Some(USys { ix: s.ix, ups: s.ups.insert(p, UpPc::Cleaned), ..s })",
+      "expect_fail_in": [
+        "theorem_upgrade_completes"
+      ]
+    },
+    {
+      "name": "as-built-no-drop",
+      "why": "R1-8: W-O1c is a trace of the step relation: with Drop disabled it no longer verifies (the reviewer's Adv-3a)",
+      "find": "            if v.build_locked && (s.build is Some || s.run is Some) {\n                None\n            } else {\n                Some(WSys { ix: absent_ix(), ..s })\n            },",
+      "replace": "            None,",
+      "expect_fail_in": [
+        "witness_drop_inside_insert"
+      ]
+    },
+    {
+      "name": "repair-drop-ignores-writer",
+      "why": "The repair's Drop must wait for the writer's lock too: a Drop that only waits for a Build lands inside an Insert (W-O1c)",
+      "find": "            if v.build_locked && (s.build is Some || s.run is Some) {",
+      "replace": "            if v.build_locked && s.build is Some {",
+      "expect_fail_in": [
+        "theorem_locked_build_preserves"
+      ]
+    },
+    {
+      "name": "repair-build-ignores-writer",
+      "why": "The repair's Build must wait for an in-flight writer: a Build Kill inside an Insert breaks it",
+      "find": "            if s.build is Some || (v.build_locked && s.run is Some) {",
+      "replace": "            if s.build is Some {",
+      "expect_fail_in": [
+        "theorem_locked_build_preserves"
+      ]
+    },
+    {
+      "name": "repair-delete-checks-n-first",
+      "why": "R2-1: with Build and Drop locked but Delete still testing cfg N before the lock (the round-1 repair), a Delete issued during a Build returns 0 and the Build republishes the document",
+      "find": "pub open spec fn locked_build() -> WVariant { WVariant { build_locked: true, delete_under_lock: true } }",
+      "replace": "pub open spec fn locked_build() -> WVariant { WVariant { build_locked: true, delete_under_lock: false } }",
+      "expect_fail_in": [
+        "theorem_repair_delete_takes_effect",
+        "witness_repair_delete_after_build"
+      ]
+    },
+    {
+      "name": "as-built-delete-without-early-return",
+      "why": "R2-1: the lost delete comes from Delete's early return when cfg N is absent (l.498); without it the Delete removes the flushed document",
+      "find": "            } else if s.ix.n is None {\n                Some(WSys { gone: s.gone.insert(d), ..s })  // returns 0 without locking (l.498)",
+      "replace": "            } else if false {\n                Some(WSys { gone: s.gone.insert(d), ..s })  // returns 0 without locking (l.498)",
+      "expect_fail_in": [
+        "witness_delete_during_build_lost",
+        "witness_round1_repair_loses_delete"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "_probe_inputs": {
+    ".g5/Verus_verification/native/harness.py": "61af481af586763543377f4f3b77661b5e3988f7b74125516a14535292c6d2c5",
+    ".g5/Verus_verification/native/probes/graph_structure_common.py": "977359030e19b7c7c663a265389727951de9e32e4e4fc398522148b1e11ed219",
+    ".g5/Verus_verification/native/probes/platform_strict_api_sample.py": "460140b864dbd9356fd24453622172d53ab4d62a564b34ea2df357dcc43e7068",
+    ".g5/Verus_verification/native/probes/redaction_common.py": "ad40819dfdccb8558d2728504fa6ff77975431aabc7b9a8782d24dc18b9f71e6",
+    ".g5/Verus_verification/native/probes/search_common.py": "92ff874bc87390be56edb05c75d2f2c5906458c0b37cd86171888ee61d8b5ae2"
+  },
+  "_product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "control_row": 1,
+  "control_strict_off": {
+    "body": "CypherQueryResponse(columns=[], rows=[], row_count=0, execution_time_ms=47.9893684387207, translation_time_ms=1.8954277038574219, query_metadata=QueryMetadata(sql_query='INSERT INTO Graph_KG.nodes (node_id, graph_id) SELECT ?, \\'\\' WHERE NOT EXISTS (SELECT 1 FROM Graph_KG.nodes WHERE node_id = ? AND",
+    "raised": null,
+    "status": 200,
+    "type": "CypherQueryResponse"
+  },
+  "engine_path": {
+    "raised": "LedgerStrictModeError"
+  },
+  "engine_row": 0,
+  "meta": {
+    "head_id": "2eef64e8dfca11f194f44aa54a442c16",
+    "head_seq": 1,
+    "max_ops": 50000,
+    "ok": true,
+    "recon_bound": 250000,
+    "state": "enabled",
+    "strict": true
+  },
+  "probe": "platform_strict_api_sample",
+  "reason": "under strict mode api.main's POST /api/cypher committed CREATE unrecorded (engine path: LedgerStrictModeError, row 0)",
+  "schema": "Graph_KG",
+  "strict_case": {
+    "body": "CypherQueryResponse(columns=[], rows=[], row_count=0, execution_time_ms=0.6039142608642578, translation_time_ms=1.238107681274414, query_metadata=QueryMetadata(sql_query='INSERT INTO Graph_KG.nodes (node_id, graph_id) SELECT ?, \\'\\' WHERE NOT EXISTS (SELECT 1 FROM Graph_KG.nodes WHERE node_id = ? AN",
+    "raised": null,
+    "status": 200,
+    "type": "CypherQueryResponse"
+  },
+  "strict_row": 1,
+  "verdict": "OBSERVED_DEFECT"
+}

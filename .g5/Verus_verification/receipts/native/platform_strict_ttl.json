@@ -1,0 +1,52 @@
+{
+  "_probe_inputs": {
+    ".g5/Verus_verification/native/harness.py": "61af481af586763543377f4f3b77661b5e3988f7b74125516a14535292c6d2c5",
+    ".g5/Verus_verification/native/probes/graph_structure_common.py": "977359030e19b7c7c663a265389727951de9e32e4e4fc398522148b1e11ed219",
+    ".g5/Verus_verification/native/probes/platform_strict_ttl.py": "8cb1ccaf9d8ab9f3c4366853f046cda04fde3c6b4a7bd0fd45ed1e2165cfeb10",
+    ".g5/Verus_verification/native/probes/redaction_common.py": "ad40819dfdccb8558d2728504fa6ff77975431aabc7b9a8782d24dc18b9f71e6",
+    ".g5/Verus_verification/native/probes/search_common.py": "92ff874bc87390be56edb05c75d2f2c5906458c0b37cd86171888ee61d8b5ae2"
+  },
+  "_product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "after_ttl": {
+    "message": "ledger strict mode: structural write 'create_node' rejected; commit a changeset via engine.ledger",
+    "raised": "LedgerStrictModeError"
+  },
+  "bypass": {
+    "raised": null,
+    "value": "True"
+  },
+  "engine1_same_engine": {
+    "message": "ledger strict mode: structural write 'create_node' rejected; commit a changeset via engine.ledger",
+    "raised": "LedgerStrictModeError"
+  },
+  "meta_after_set_strict": {
+    "head_id": "3501f3c2dfca11f194f44aa54a442c16",
+    "head_seq": 1,
+    "max_ops": 50000,
+    "ok": true,
+    "recon_bound": 250000,
+    "state": "enabled",
+    "strict": true
+  },
+  "probe": "platform_strict_ttl",
+  "reason": "engine 2 wrote 'ttl-bypass' unrecorded 0.002 s after set_strict(True) returned (cached probe); after the TTL it was refused",
+  "rows": {
+    "ttl-after": 0,
+    "ttl-bypass": 1,
+    "ttl-engine1": 0,
+    "ttl-warm": 1
+  },
+  "schema": "Graph_KG",
+  "seconds": {
+    "after_ttl_call": 5.5,
+    "bypass_call": 0.039,
+    "engine1_call": 0.038,
+    "set_strict_returned": 0.037,
+    "warm_probe": 0.037
+  },
+  "verdict": "OBSERVED_DEFECT",
+  "warm": {
+    "raised": null,
+    "value": "True"
+  }
+}

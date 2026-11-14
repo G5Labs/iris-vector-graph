@@ -1,0 +1,295 @@
+{
+  "name": "platform",
+  "root": "platform.rs",
+  "expected_verified": 51,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "controls": [
+    {
+      "name": "s-no-mismatch-refusal",
+      "why": "_record_and_initialize without the mismatch refusal at 2224-2226: a setup on another schema proceeds over a recorded namespace (FR-006)",
+      "find": "        Some(r) => if r == sch { Some(How::Existing) } else { None },",
+      "replace": "        Some(r) => Some(How::Existing),",
+      "expect_fail_in": [
+        "lemma_s_step_preserves_inv",
+        "theorem_schema_one_per_namespace",
+        "witness_serial_first_setup_and_refusal"
+      ]
+    },
+    {
+      "name": "s-no-first-access-check",
+      "why": "IRISGraphEngine construction without check_first_access (engine.py:375-378): every engine is accepted whatever the record says",
+      "find": "accepted: !native_ok || check_passes(s, sch) }",
+      "replace": "accepted: true }",
+      "expect_fail_in": [
+        "lemma_s_step_preserves_inv",
+        "theorem_refusal_changes_nothing",
+        "witness_serial_first_setup_and_refusal"
+      ]
+    },
+    {
+      "name": "s-serial-off",
+      "why": "the proof's premise P-SERIAL (or the proposed lock) removed: two setups in flight break the record invariant",
+      "find": "    SVariant { serial: true, refuse_explicit_over_marker: true, deploy_refusal_aborts: false, cas: false, cas_raises: false }",
+      "replace": "    SVariant { serial: false, refuse_explicit_over_marker: true, deploy_refusal_aborts: false, cas: false, cas_raises: false }",
+      "expect_fail_in": [
+        "lemma_s_step_preserves_inv"
+      ]
+    },
+    {
+      "name": "s-explicit-over-marker-allowed",
+      "why": "the proof's premise P-NO-EXPLICIT-OVER-MARKER removed: FR-009's explicit path records a second schema over another 4.6 setup (F-S3)",
+      "find": "    SVariant { serial: true, refuse_explicit_over_marker: true, deploy_refusal_aborts: false, cas: false, cas_raises: false }",
+      "replace": "    SVariant { serial: true, refuse_explicit_over_marker: false, deploy_refusal_aborts: false, cas: false, cas_raises: false }",
+      "expect_fail_in": [
+        "lemma_s_step_preserves_inv"
+      ]
+    },
+    {
+      "name": "s-deploy-reraise",
+      "why": "the deploy's IVGSchemaError re-raised instead of kept as a warning (_engine/schema.py:2591-2594): W-S1b's overwrite no longer happens, so the swallow is decisive for that witness",
+      "find": "    SVariant { serial: false, refuse_explicit_over_marker: false, deploy_refusal_aborts: false, cas: false, cas_raises: false }\n}",
+      "replace": "    SVariant { serial: false, refuse_explicit_over_marker: false, deploy_refusal_aborts: true, cas: false, cas_raises: false }\n}",
+      "expect_fail_in": [
+        "witness_deploy_refusal_is_swallowed"
+      ]
+    },
+    {
+      "name": "s-waive-checks",
+      "why": "_waive_schema_check that waives only the no-record case (R1-5 proposal): the migration engine stays refused on a mismatch",
+      "find": "        SAction::Waive { e } =>\n            if !s.engines.contains_key(e) {",
+      "replace": "        SAction::Waive { e } =>\n            if !s.engines.contains_key(e) || (s.record is Some && s.record != Some(s.engines[e].sch)) {",
+      "expect_fail_in": [
+        "witness_waiver_releases_a_mismatch"
+      ]
+    },
+    {
+      "name": "s-setup-does-not-release",
+      "why": "valid outcome: initialize_schema without _schema_check_passed (2159-2160): the first setup's own engine stays refused",
+      "find": "                let released = s.engines.insert(st.e, Eng { accepted: true, ..s.engines[st.e] });",
+      "replace": "                let released = s.engines;",
+      "expect_fail_in": [
+        "witness_serial_first_setup_and_refusal"
+      ]
+    },
+    {
+      "name": "s-cas-raise-releases",
+      "why": "a lost compare-and-set that raises but still releases the engine: the raise-without-release is decisive for W-CAS-raise's refusal of the second engine",
+      "find": "                    if v.cas_raises {\n                        Some(SSt { setups: s.setups.remove(p), ..s })",
+      "replace": "                    if v.cas_raises {\n                        Some(SSt { engines: released, setups: s.setups.remove(p), ..s })",
+      "expect_fail_in": [
+        "witness_cas_with_raise_still_admits_late_ddl"
+      ]
+    },
+    {
+      "name": "g-no-refusal",
+      "why": "check_structural_write that never raises (guard.py:75-80): every guarded path writes under strict mode",
+      "find": "                if seen_strict(s, e, probe_ok, class_present, v) {",
+      "replace": "                if false {",
+      "expect_fail_in": [
+        "lemma_g_step_preserves_inv",
+        "theorem_strict_paths",
+        "witness_user_guide_strict_example",
+        "theorem_strict_blocks_named_graph_redaction"
+      ]
+    },
+    {
+      "name": "g-set-strict-no-refresh",
+      "why": "set_strict without _refresh_guard (client.py:307): the engine that turned strict on answers from its own stale cache",
+      "find": "        GAction::SetStrict { e, flag } => Some(GSt { strict: flag, cache: s.cache.remove(e), ..s }),",
+      "replace": "        GAction::SetStrict { e, flag } => Some(GSt { strict: flag, ..s }),",
+      "expect_fail_in": [
+        "lemma_g_step_preserves_inv",
+        "witness_user_guide_strict_example"
+      ]
+    },
+    {
+      "name": "g-bda-guarded",
+      "why": "binding check: if bulk_delete_adjacency called ledger_check, its bypass witness must fail",
+      "find": "        Path::CreateNode | Path::CypherDml | Path::EraseGraph | Path::OtherGuarded => PathClass::Guarded,\n        Path::BulkDeleteAdjacency | Path::ApiSample => PathClass::UndocumentedBypass,",
+      "replace": "        Path::CreateNode | Path::CypherDml | Path::EraseGraph | Path::OtherGuarded | Path::BulkDeleteAdjacency => PathClass::Guarded,\n        Path::ApiSample => PathClass::UndocumentedBypass,",
+      "expect_fail_in": [
+        "witness_undocumented_bypasses_break_the_contract"
+      ]
+    },
+    {
+      "name": "g-fhir-exempt",
+      "why": "R1-11/Adv-3b: FHIR sync reclassified as documented-exempt without a source: the classification witness must catch it",
+      "find": "        Path::FhirSync | Path::McpCypher | Path::Migration | Path::SetMultigraph | Path::PropSetProc => PathClass::Undecided,",
+      "replace": "        Path::FhirSync => PathClass::DocumentedExempt,\n        Path::McpCypher | Path::Migration | Path::SetMultigraph | Path::PropSetProc => PathClass::Undecided,",
+      "expect_fail_in": [
+        "witness_undecided_paths_write_under_strict"
+      ]
+    },
+    {
+      "name": "g-index-writes-undecided",
+      "why": "R1-11: embedding/vector/BM25 writes reclassified from outside-scope (ADR-0006) to undecided: the out-of-scope witness must catch it",
+      "find": "        Path::IndexWrite => PathClass::OutsideScope,",
+      "replace": "        Path::IndexWrite => PathClass::Undecided,",
+      "expect_fail_in": [
+        "witness_exempt_and_out_of_scope_writes_are_permitted"
+      ]
+    },
+    {
+      "name": "g-class-present-recomputed",
+      "why": "a guard that recomputes the class's presence on every probe (guard.py:45-49 computes it once): the lifetime fail-open disappears",
+      "find": "    if !s.known.contains(e) && !class_present { s.blind.insert(e) } else { s.blind }",
+      "replace": "    if !class_present { s.blind.insert(e) } else { s.blind.remove(e) }",
+      "expect_fail_in": [
+        "witness_class_absent_cached_for_the_engines_lifetime"
+      ]
+    },
+    {
+      "name": "g-ledger-deletes-named-nodes",
+      "why": "a ledger delete_node that also removed the named graph's node rows (OpDeleteNode is default-graph only, LedgerApply.cls:357-385): the strict-mode redaction block disappears",
+      "find": "            if !s.enabled { None } else { Some(s) },",
+      "replace": "            if !s.enabled { None } else { Some(GSt { g_nodes: 0, ..s }) },",
+      "expect_fail_in": [
+        "theorem_strict_blocks_named_graph_redaction",
+        "witness_strict_erase_then_redact_needs_strict_off"
+      ]
+    },
+    {
+      "name": "g-ttl-zero",
+      "why": "TTL_SECONDS = 0 (guard.py:20): the TTL-window witness must disappear",
+      "find": "    GVariant { ttl: 5, guard_all: false }",
+      "replace": "    GVariant { ttl: 0, guard_all: false }",
+      "expect_fail_in": [
+        "witness_ttl_window_admits_a_write_after_set_strict"
+      ]
+    },
+    {
+      "name": "g-fail-closed",
+      "why": "a guard that treats a failed probe as strict (guard.py:55-56 fails open): the fail-open witness must disappear",
+      "find": "    !blind_after(s, e, class_present).contains(e) && probe_ok && meta_strict(s)",
+      "replace": "    !blind_after(s, e, class_present).contains(e) && (!probe_ok || meta_strict(s))",
+      "expect_fail_in": [
+        "witness_failed_probe_admits_a_write"
+      ]
+    },
+    {
+      "name": "p-no-class-name-check",
+      "why": "Gen.For line 73 without the IVGC.P<h> check: an ok entry naming another class is run",
+      "find": "            Run { phase: RPhase::Running, gen: if name_ok(e.cls, h, v) { e.cls } else { None }, ..rr }",
+      "replace": "            Run { phase: RPhase::Running, gen: e.cls, ..rr }",
+      "expect_fail_in": [
+        "lemma_for_hit_checks",
+        "witness_readback_trusts_the_entrys_class"
+      ]
+    },
+    {
+      "name": "p-no-stamp-check",
+      "why": "Gen.For line 71 without the stamp comparison: a class built for an older layout/executor is run (ADR-0014 'a stale entry is never run')",
+      "find": "    if s.entries.contains_key(h) && s.entries[h].shape == rr.shape && s.entries[h].stamp == rr.stamp {",
+      "replace": "    if s.entries.contains_key(h) && s.entries[h].shape == rr.shape {",
+      "expect_fail_in": [
+        "lemma_for_hit_checks",
+        "lemma_p_step_preserves_inv",
+        "witness_straggler_recompiles_for_an_old_layout"
+      ]
+    },
+    {
+      "name": "p-no-shape-check",
+      "why": "Gen.For line 71 without the shape comparison: a colliding shape's class is run directly (under P-NO-COLLISION the comparison is redundant: see NOTES)",
+      "find": "    if s.entries.contains_key(h) && s.entries[h].shape == rr.shape && s.entries[h].stamp == rr.stamp {",
+      "replace": "    if s.entries.contains_key(h) && s.entries[h].stamp == rr.stamp {",
+      "expect_fail_in": [
+        "lemma_for_hit_checks",
+        "witness_collision_swaps_the_class_mid_run"
+      ]
+    },
+    {
+      "name": "p-no-digest-check",
+      "why": "Gen.Build without the R311 digest check (Gen.cls:177-182): planted lines are compiled",
+      "find": "    } else if digest(s.src[h]) != d {\n        // \"refused: its lines",
+      "replace": "    } else if false {\n        // \"refused: its lines",
+      "expect_fail_in": [
+        "lemma_build_preserves",
+        "lemma_q_build_preserves"
+      ]
+    },
+    {
+      "name": "p-no-dropall",
+      "why": "a deploy that does not call Gen.DropAll (schema.py:2935-2941): compiled plans survive the deploy",
+      "find": "                if deployed {\n                    // Gen.DropAll",
+      "replace": "                if false {\n                    // Gen.DropAll",
+      "expect_fail_in": [
+        "lemma_deploy_discards"
+      ]
+    },
+    {
+      "name": "p-build-never-ok",
+      "why": "valid outcome: a Build that never marks the entry ok: the compiled plan is never used",
+      "find": "            entries: s.entries.insert(h, Entry { cls: Some(class_name(h, d, v)), status: Status::Ok, ..s.entries[h] }),",
+      "replace": "            entries: s.entries.insert(h, Entry { cls: Some(class_name(h, d, v)), status: Status::Failed, ..s.entries[h] }),",
+      "expect_fail_in": [
+        "witness_compiled_plan_is_used",
+        "witness_repair_keeps_both_colliding_plans"
+      ]
+    },
+    {
+      "name": "p-collision-premise-dropped",
+      "why": "P-NO-COLLISION removed: two presented shapes may share IVGC.P<h>",
+      "find": "        PAction::RunBegin { shape, .. } => forall|x: Shape| #[trigger] s.presented.contains(x) && hash_of(x) == hash_of(shape) ==> x == shape,",
+      "replace": "        PAction::RunBegin { shape, .. } => true,",
+      "expect_fail_in": [
+        "lemma_p_step_preserves_inv"
+      ]
+    },
+    {
+      "name": "p-quiescence-premise-dropped",
+      "why": "P-QUIESCENT removed for rdf_props recompiles: a run in flight keeps an older layout",
+      "find": "        PAction::LayoutChange => s.runs == Map::<nat, Run>::empty() && s.jobs == Map::<nat, Job>::empty(),",
+      "replace": "        PAction::LayoutChange => true,",
+      "expect_fail_in": [
+        "lemma_p_step_preserves_inv"
+      ]
+    },
+    {
+      "name": "r-no-build-check",
+      "why": "the repair without Build's shape/stamp check: the build lemma (which consumes the check) fails; the semantic counterexample is witness_unique_names_alone_leave_the_persistent_case",
+      "find": "    PVariant { build_checks: true, unique_names: true, readback_checks: true }",
+      "replace": "    PVariant { build_checks: false, unique_names: true, readback_checks: true }",
+      "expect_fail_in": [
+        "lemma_q_build_preserves"
+      ]
+    },
+    {
+      "name": "r-no-unique-names",
+      "why": "the repair with IVGC.P<CRC-32> names: the build lemma fails (a name no longer determines its code) and two colliding plans cannot coexist; the semantic counterexample is witness_build_check_leaves_the_mid_run_swap",
+      "find": "    PVariant { build_checks: true, unique_names: true, readback_checks: true }",
+      "replace": "    PVariant { build_checks: true, unique_names: false, readback_checks: true }",
+      "expect_fail_in": [
+        "lemma_q_build_preserves",
+        "witness_repair_keeps_both_colliding_plans"
+      ]
+    },
+    {
+      "name": "r-no-readback-check",
+      "why": "the repair with the read-back as built (Gen.cls:102-103): a sync run can be given a colliding shape's class",
+      "find": "    PVariant { build_checks: true, unique_names: true, readback_checks: true }",
+      "replace": "    PVariant { build_checks: true, unique_names: true, readback_checks: false }",
+      "expect_fail_in": [
+        "lemma_q_step_preserves_inv"
+      ]
+    },
+    {
+      "name": "p-as-built-with-build-check",
+      "why": "as built plus Build's shape/stamp check: the persistent poisoning (W-O2b) and the forged-collision attack disappear",
+      "find": "    PVariant { build_checks: false, unique_names: false, readback_checks: false }",
+      "replace": "    PVariant { build_checks: true, unique_names: false, readback_checks: false }",
+      "expect_fail_in": [
+        "witness_collision_leaves_another_shapes_code_under_an_ok_entry",
+        "witness_reader_forges_a_collision_and_poisons_a_shape"
+      ]
+    },
+    {
+      "name": "p-forge-needs-affine-crc",
+      "why": "the forging lemma rests on P-CRC-AFFINE: without the suffix bijection no target is guaranteed to be hit",
+      "find": "        0 <= x1 < 0x1_0000_0000 && 0 <= x2 < 0x1_0000_0000 && x1 != x2 ==> crc32(forged(base, x1)) != crc32(forged(base, x2))",
+      "replace": "        0 <= x1 < 0x1_0000_0000 && 0 <= x2 < 0x1_0000_0000 && x1 != x2 ==> true",
+      "expect_fail_in": [
+        "lemma_forge_collision"
+      ]
+    }
+  ]
+}

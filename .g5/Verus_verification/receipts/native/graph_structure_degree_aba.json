@@ -1,0 +1,36 @@
+{
+  "_probe_inputs": {
+    ".g5/Verus_verification/native/harness.py": "61af481af586763543377f4f3b77661b5e3988f7b74125516a14535292c6d2c5",
+    ".g5/Verus_verification/native/probes/graph_structure_common.py": "977359030e19b7c7c663a265389727951de9e32e4e4fc398522148b1e11ed219",
+    ".g5/Verus_verification/native/probes/graph_structure_degree_aba.py": "b8b5d997eb920af45b148204153d8cb45f0f8412f85c7d28cb6b0cb8e012f4ed",
+    ".g5/Verus_verification/native/probes/redaction_common.py": "ad40819dfdccb8558d2728504fa6ff77975431aabc7b9a8782d24dc18b9f71e6",
+    ".g5/Verus_verification/native/probes/search_common.py": "92ff874bc87390be56edb05c75d2f2c5906458c0b37cd86171888ee61d8b5ae2"
+  },
+  "_product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "adjacency_index_kind": "functional",
+  "errors": [],
+  "mismatches": [],
+  "probe": "graph_structure_degree_aba",
+  "reader_calls": 2145939,
+  "readers": 3,
+  "reason": "no stale entry in 3129 rounds; the race window was not hit (not evidence of absence)",
+  "rounds": 3129,
+  "schema": {
+    "objectscript_failed": {},
+    "objectscript_skipped": {
+      "Graph.KG.MCPService": "needs %AI.MCP.Service, not installed on this server",
+      "Graph.KG.MCPToolSet": "needs %AI.Policy.ConsoleAudit, %AI.ToolSet, not installed on this server",
+      "Graph.KG.MCPTools": "needs %AI.Tool, not installed on this server"
+    },
+    "schema": "Graph_KG",
+    "warnings": []
+  },
+  "seconds": 120.0,
+  "verdict": "INCONCLUSIVE",
+  "verdict_self_check": {
+    "clean_case": "INCONCLUSIVE",
+    "discriminates": true,
+    "mismatch_case": "OBSERVED_DEFECT",
+    "no_reader_case": "no reader call ran (0 reader errors, e.g. a license limit): the race could not occur"
+  }
+}

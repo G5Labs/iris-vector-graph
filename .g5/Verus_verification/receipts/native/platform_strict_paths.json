@@ -1,0 +1,93 @@
+{
+  "_probe_inputs": {
+    ".g5/Verus_verification/native/harness.py": "61af481af586763543377f4f3b77661b5e3988f7b74125516a14535292c6d2c5",
+    ".g5/Verus_verification/native/probes/graph_structure_common.py": "977359030e19b7c7c663a265389727951de9e32e4e4fc398522148b1e11ed219",
+    ".g5/Verus_verification/native/probes/platform_strict_paths.py": "6c2bc203f34dd84eb97327bdf6cf937d1167ef42076e00a1038214a754d8cc07",
+    ".g5/Verus_verification/native/probes/redaction_common.py": "ad40819dfdccb8558d2728504fa6ff77975431aabc7b9a8782d24dc18b9f71e6",
+    ".g5/Verus_verification/native/probes/search_common.py": "92ff874bc87390be56edb05c75d2f2c5906458c0b37cd86171888ee61d8b5ae2"
+  },
+  "_product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "before": {
+    "nodes": [
+      [
+        "",
+        "pa"
+      ],
+      [
+        "",
+        "pb"
+      ],
+      [
+        "",
+        "tx"
+      ],
+      [
+        "",
+        "ty"
+      ],
+      [
+        "tenantG",
+        "tx"
+      ],
+      [
+        "tenantG",
+        "ty"
+      ]
+    ],
+    "rdf_edges": [
+      [
+        "",
+        "pa",
+        "R",
+        "pb"
+      ],
+      [
+        "tenantG",
+        "tx",
+        "R",
+        "ty"
+      ]
+    ]
+  },
+  "calls": {
+    "create_node": {
+      "message": "ledger strict mode: structural write 'create_node' rejected; commit a changeset via engine.ledger",
+      "raised": "LedgerStrictModeError",
+      "rows_unchanged": true
+    },
+    "erase_graph": {
+      "message": "ledger strict mode: structural write 'erase_graph' rejected; commit a changeset via engine.ledger",
+      "raised": "LedgerStrictModeError",
+      "rows_unchanged": true
+    },
+    "execute_cypher_create": {
+      "message": "ledger strict mode: structural write 'cypher_dml' rejected; commit a changeset via engine.ledger",
+      "raised": "LedgerStrictModeError",
+      "rows_unchanged": true
+    }
+  },
+  "meta": {
+    "head_id": "3190ebdadfca11f194f44aa54a442c16",
+    "head_seq": 2,
+    "max_ops": 50000,
+    "ok": true,
+    "recon_bound": 250000,
+    "state": "enabled",
+    "strict": true
+  },
+  "probe": "platform_strict_paths",
+  "reason": "create_node, Cypher CREATE and erase_graph are refused under strict mode and change nothing",
+  "refused": {
+    "create_node": true,
+    "erase_graph": true,
+    "execute_cypher_create": true
+  },
+  "rej_strict_block_delta": 2,
+  "schema": "Graph_KG",
+  "unchanged": {
+    "create_node": true,
+    "erase_graph": true,
+    "execute_cypher_create": true
+  },
+  "verdict": "OBSERVED_AS_EXPECTED"
+}

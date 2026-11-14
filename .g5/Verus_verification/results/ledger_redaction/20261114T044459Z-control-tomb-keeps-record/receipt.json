@@ -1,0 +1,55 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_tomb_never_matches",
+      "theorem_replay_skips_target"
+    ],
+    "find": "pub open spec fn tomb(l: Live, pos: nat) -> Rec {\n    Rec::Tomb { digest: digest_of(l, pos), op: l.op, flags: l.flags }\n}",
+    "name": "tomb-keeps-record",
+    "replace": "pub open spec fn tomb(l: Live, pos: nat) -> Rec {\n    Rec::Live(l)\n}",
+    "why": "Tombstone writes the original record back (no content removed) \u2014 the rescan lemma consumes lemma_tomb_never_matches's contract, so the failure is attributed there and in replay"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_tomb_never_matches",
+      "theorem_replay_skips_target"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_redaction/model.json": "fc153e50dcf4bf45ecb6091bbad3fde9b31ff4a915be20ac87179cede95a2012",
+    ".g5/Verus_verification/models/ledger_redaction/redaction.rs": "9de526d282101d25486ef68fe8cb7f5986511e545ccb47d3cbd36bf2a18513c9"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_redaction/controls/tomb-keeps-record/redaction.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_tomb_never_matches": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_redaction/20261114T044449Z-control-tomb-keeps-record-lemma_tomb_never_matches.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_replay_skips_target": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_redaction/20261114T044449Z-control-tomb-keeps-record-theorem_replay_skips_target.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_redaction/20261114T044449Z-control-tomb-keeps-record.log",
+    "timed_out": false,
+    "verified": 39
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

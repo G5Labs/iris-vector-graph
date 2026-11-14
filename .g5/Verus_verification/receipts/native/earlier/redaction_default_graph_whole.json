@@ -1,0 +1,45 @@
+{
+  "node_records_tombstoned": [
+    "(2, 1)",
+    "(2, 2)",
+    "(2, 3)",
+    "(2, 4)"
+  ],
+  "node_rows_after_erasing_default_graph": [
+    [
+      "X",
+      "gN"
+    ],
+    [
+      "Y",
+      "gN"
+    ]
+  ],
+  "outcome": {
+    "receipt": {
+      "batches": 2,
+      "complete": true,
+      "idempotency_keys_removed": 1,
+      "max_batch_ms": 178,
+      "metadata_cleared": 1,
+      "out_of_reach": [
+        "ledger exports (export_reconstruction files) written before this redaction still hold the content",
+        "IRIS journal files written before this redaction still hold the content",
+        "backups taken before this redaction still hold the content"
+      ],
+      "records_tombstoned": 4,
+      "redaction": "RevisionInfo(seq=3, revision_id='6c051f6fdfb911f194f44aa54a442c16', parent_id='6bb90bc3dfb911f194f44aa54a442c16', kind='redaction', actor='system:ledger-redact', actor_type='system', conn_user='_SYSTEM', committed_ms=1794612289941, message='redaction: 4 record(s) in 1 revision(s)', source={'records': 4, 'revisions': 1, 'statements': 0, 'target_sha256': '6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d'}, correlation_id=None, idempotency_key=None, op_count=1)",
+      "revision_seqs": [
+        2
+      ],
+      "statements_removed": 0,
+      "target_sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
+      "unattributed_records": 0
+    },
+    "refused": false
+  },
+  "reason": "live node rows [('X', 'gN'), ('Y', 'gN')]; redact(None) completed; 4 records tombstoned; verify after: diverges",
+  "verdict": "OBSERVED_DEFECT",
+  "verify_after": "diverges",
+  "verify_before": "diverges"
+}

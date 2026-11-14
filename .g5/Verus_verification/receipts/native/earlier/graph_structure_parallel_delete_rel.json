@@ -1,0 +1,1203 @@
+{
+  "adjacency_index_kind": "functional",
+  "cases": [
+    {
+      "count_after": 0,
+      "count_before": 2,
+      "degree_after": 0,
+      "degree_before": 2,
+      "expected_after": {
+        "children": 0,
+        "degree": 1,
+        "hash": null,
+        "present": true
+      },
+      "gkey": 0,
+      "graph": null,
+      "is_multigraph": true,
+      "layout_after": {
+        "children": [],
+        "data": 0,
+        "hash": null,
+        "in_data": 0,
+        "leaf": false
+      },
+      "layout_before": {
+        "children": [
+          "0",
+          "1"
+        ],
+        "data": 11,
+        "hash": 2,
+        "in_data": 11,
+        "leaf": true
+      },
+      "ledger_result": {
+        "replayed": false,
+        "revision": "f2129195dfbb11f194f44aa54a442c16"
+      },
+      "neighbours_cypher": [
+        [
+          "g5ps:default:b"
+        ]
+      ],
+      "o": "g5ps:default:b",
+      "observed_after": {
+        "children": 0,
+        "degree": 0,
+        "hash": null,
+        "present": false
+      },
+      "p": "G5PS_T",
+      "reason": "one row remains but the index reads {'present': False, 'children': 0, 'hash': None, 'degree': 0} (expected {'present': True, 'children': 0, 'hash': None, 'degree': 1}; recount 0)",
+      "rows_after": [
+        [
+          1477,
+          1,
+          ""
+        ]
+      ],
+      "rows_after_n": 1,
+      "rows_before": [
+        [
+          1476,
+          0,
+          ""
+        ],
+        [
+          1477,
+          1,
+          ""
+        ]
+      ],
+      "rows_before_n": 2,
+      "s": "g5ps:default:a",
+      "verdict": "OBSERVED_DEFECT",
+      "verify_after": {
+        "checked": [
+          "Graph_KG.rdf_edges",
+          "^KG(\"out\")",
+          "^KG(\"in\")",
+          "^KG(\"degc\")"
+        ],
+        "counts": {
+          "cacheEntries": 1,
+          "inEdges": 0,
+          "outEdges": 0,
+          "sqlEdges": 1
+        },
+        "drift": [
+          {
+            "count": 1,
+            "detail": "rows in Graph_KG.rdf_edges with no ^KG(\"out\") entry, so traversal cannot see them",
+            "kind": "missing",
+            "store": "^KG(\"out\")"
+          },
+          {
+            "count": 1,
+            "detail": "rows with no ^KG(\"in\") entry, so inbound traversal cannot see them",
+            "kind": "missing",
+            "store": "^KG(\"in\")"
+          }
+        ],
+        "graph": "",
+        "graphKey": 0,
+        "ok": 0,
+        "unscoped": [
+          {
+            "kind": "sql",
+            "reason": "keyed by reifier and edge id alone, with no graph column and no join to one",
+            "store": "Graph_KG.rdf_reifications"
+          },
+          {
+            "kind": "global",
+            "reason": "node interning is append-only and ignores graph_id, so its counters over-count and its ids cannot be attributed to one graph",
+            "store": "^NKG"
+          },
+          {
+            "kind": "global",
+            "reason": "Arno's two-hop counts, computed over ^NKG by Graph.KG.NKGAccelTraversal:Build2HopExact; since ^NKG's interning carries no graph, the number cannot be attributed to one graph and is kept apart from the scoped ^KG(\"deg2p_exact\") rather than written into it",
+            "store": "^KG(\"deg2p_exact_merged\")"
+          },
+          {
+            "kind": "global",
+            "reason": "content-addressed interning of temporal label sets, deliberately append-only: Graph.KG.TemporalIndex documents that no purge touches it",
+            "store": "^KG(\"labelset\")"
+          },
+          {
+            "kind": "global",
+            "reason": "a whole-database JSON snapshot keyed by graph name \"KG\" with no graph dimension, invalidated by comparing ^KG(\"__version\") rather than by content, so erasing content without bumping that stamp leaves Arno serving the erased graph",
+            "store": "^ArnoKG"
+          }
+        ],
+        "unverified": [
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.nodes"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.rdf_labels"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.rdf_props"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.kg_NodeEmbeddings"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.kg_NodeEmbeddings_optimized"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.kg_EdgeEmbeddings"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.docs"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.embedding_registry"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.fhir_unresolved"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.fhir_definitions"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.fhir_canonical_refs"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"gen\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"degw\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"label\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"prop\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"deg2p\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"deg2p_exact\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"tout\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"tin\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"bucket\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"tagg\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"edgeprop\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"tlast\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^IVG.Ledger(\"tuple\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^IVG.Ledger(\"stmt\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^IVG.GraphMode"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^IVG.TemporalStructural"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^IVG.AlgoCache"
+          }
+        ]
+      },
+      "verify_before": {
+        "checked": [
+          "Graph_KG.rdf_edges",
+          "^KG(\"out\")",
+          "^KG(\"in\")",
+          "^KG(\"degc\")"
+        ],
+        "counts": {
+          "cacheEntries": 1,
+          "inEdges": 1,
+          "outEdges": 1,
+          "sqlEdges": 2
+        },
+        "drift": [
+          {
+            "count": 1,
+            "detail": "rows in Graph_KG.rdf_edges with no ^KG(\"out\") entry, so traversal cannot see them",
+            "kind": "missing",
+            "store": "^KG(\"out\")"
+          },
+          {
+            "count": 1,
+            "detail": "rows with no ^KG(\"in\") entry, so inbound traversal cannot see them",
+            "kind": "missing",
+            "store": "^KG(\"in\")"
+          }
+        ],
+        "graph": "",
+        "graphKey": 0,
+        "ok": 0,
+        "unscoped": [
+          {
+            "kind": "sql",
+            "reason": "keyed by reifier and edge id alone, with no graph column and no join to one",
+            "store": "Graph_KG.rdf_reifications"
+          },
+          {
+            "kind": "global",
+            "reason": "node interning is append-only and ignores graph_id, so its counters over-count and its ids cannot be attributed to one graph",
+            "store": "^NKG"
+          },
+          {
+            "kind": "global",
+            "reason": "Arno's two-hop counts, computed over ^NKG by Graph.KG.NKGAccelTraversal:Build2HopExact; since ^NKG's interning carries no graph, the number cannot be attributed to one graph and is kept apart from the scoped ^KG(\"deg2p_exact\") rather than written into it",
+            "store": "^KG(\"deg2p_exact_merged\")"
+          },
+          {
+            "kind": "global",
+            "reason": "content-addressed interning of temporal label sets, deliberately append-only: Graph.KG.TemporalIndex documents that no purge touches it",
+            "store": "^KG(\"labelset\")"
+          },
+          {
+            "kind": "global",
+            "reason": "a whole-database JSON snapshot keyed by graph name \"KG\" with no graph dimension, invalidated by comparing ^KG(\"__version\") rather than by content, so erasing content without bumping that stamp leaves Arno serving the erased graph",
+            "store": "^ArnoKG"
+          }
+        ],
+        "unverified": [
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.nodes"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.rdf_labels"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.rdf_props"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.kg_NodeEmbeddings"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.kg_NodeEmbeddings_optimized"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.kg_EdgeEmbeddings"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.docs"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.embedding_registry"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.fhir_unresolved"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.fhir_definitions"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.fhir_canonical_refs"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"gen\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"degw\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"label\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"prop\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"deg2p\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"deg2p_exact\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"tout\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"tin\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"bucket\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"tagg\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"edgeprop\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"tlast\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^IVG.Ledger(\"tuple\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^IVG.Ledger(\"stmt\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^IVG.GraphMode"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^IVG.TemporalStructural"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^IVG.AlgoCache"
+          }
+        ]
+      }
+    },
+    {
+      "count_after": 0,
+      "count_before": 2,
+      "degree_after": 0,
+      "degree_before": 2,
+      "expected_after": {
+        "children": 0,
+        "degree": 1,
+        "hash": null,
+        "present": true
+      },
+      "gkey": "g5ps_named",
+      "graph": "g5ps_named",
+      "is_multigraph": true,
+      "layout_after": {
+        "children": [],
+        "data": 0,
+        "hash": null,
+        "in_data": 0,
+        "leaf": false
+      },
+      "layout_before": {
+        "children": [
+          "0",
+          "1"
+        ],
+        "data": 11,
+        "hash": 2,
+        "in_data": 11,
+        "leaf": true
+      },
+      "ledger_result": {
+        "replayed": false,
+        "revision": "f280b0b7dfbb11f194f44aa54a442c16"
+      },
+      "neighbours_cypher": [
+        [
+          "g5ps:g5ps_named:b"
+        ]
+      ],
+      "o": "g5ps:g5ps_named:b",
+      "observed_after": {
+        "children": 0,
+        "degree": 0,
+        "hash": null,
+        "present": false
+      },
+      "p": "G5PS_T",
+      "reason": "one row remains but the index reads {'present': False, 'children': 0, 'hash': None, 'degree': 0} (expected {'present': True, 'children': 0, 'hash': None, 'degree': 1}; recount 0)",
+      "rows_after": [
+        [
+          1479,
+          1,
+          "g5ps_named"
+        ]
+      ],
+      "rows_after_n": 1,
+      "rows_before": [
+        [
+          1478,
+          0,
+          "g5ps_named"
+        ],
+        [
+          1479,
+          1,
+          "g5ps_named"
+        ]
+      ],
+      "rows_before_n": 2,
+      "s": "g5ps:g5ps_named:a",
+      "verdict": "OBSERVED_DEFECT",
+      "verify_after": {
+        "checked": [
+          "Graph_KG.rdf_edges",
+          "^KG(\"out\")",
+          "^KG(\"in\")",
+          "^KG(\"degc\")"
+        ],
+        "counts": {
+          "cacheEntries": 1,
+          "inEdges": 0,
+          "outEdges": 0,
+          "sqlEdges": 1
+        },
+        "drift": [
+          {
+            "count": 1,
+            "detail": "rows in Graph_KG.rdf_edges with no ^KG(\"out\") entry, so traversal cannot see them",
+            "kind": "missing",
+            "store": "^KG(\"out\")"
+          },
+          {
+            "count": 1,
+            "detail": "rows with no ^KG(\"in\") entry, so inbound traversal cannot see them",
+            "kind": "missing",
+            "store": "^KG(\"in\")"
+          }
+        ],
+        "graph": "g5ps_named",
+        "graphKey": "g5ps_named",
+        "ok": 0,
+        "unscoped": [
+          {
+            "kind": "sql",
+            "reason": "keyed by reifier and edge id alone, with no graph column and no join to one",
+            "store": "Graph_KG.rdf_reifications"
+          },
+          {
+            "kind": "global",
+            "reason": "node interning is append-only and ignores graph_id, so its counters over-count and its ids cannot be attributed to one graph",
+            "store": "^NKG"
+          },
+          {
+            "kind": "global",
+            "reason": "Arno's two-hop counts, computed over ^NKG by Graph.KG.NKGAccelTraversal:Build2HopExact; since ^NKG's interning carries no graph, the number cannot be attributed to one graph and is kept apart from the scoped ^KG(\"deg2p_exact\") rather than written into it",
+            "store": "^KG(\"deg2p_exact_merged\")"
+          },
+          {
+            "kind": "global",
+            "reason": "content-addressed interning of temporal label sets, deliberately append-only: Graph.KG.TemporalIndex documents that no purge touches it",
+            "store": "^KG(\"labelset\")"
+          },
+          {
+            "kind": "global",
+            "reason": "a whole-database JSON snapshot keyed by graph name \"KG\" with no graph dimension, invalidated by comparing ^KG(\"__version\") rather than by content, so erasing content without bumping that stamp leaves Arno serving the erased graph",
+            "store": "^ArnoKG"
+          }
+        ],
+        "unverified": [
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.nodes"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.rdf_labels"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.rdf_props"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.kg_NodeEmbeddings"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.kg_NodeEmbeddings_optimized"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.kg_EdgeEmbeddings"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.docs"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.embedding_registry"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.fhir_unresolved"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.fhir_definitions"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.fhir_canonical_refs"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"gen\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"degw\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"label\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"prop\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"deg2p\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"deg2p_exact\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"tout\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"tin\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"bucket\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"tagg\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"edgeprop\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"tlast\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^IVG.Ledger(\"tuple\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^IVG.Ledger(\"stmt\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^IVG.GraphMode"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^IVG.TemporalStructural"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^IVG.AlgoCache"
+          }
+        ]
+      },
+      "verify_before": {
+        "checked": [
+          "Graph_KG.rdf_edges",
+          "^KG(\"out\")",
+          "^KG(\"in\")",
+          "^KG(\"degc\")"
+        ],
+        "counts": {
+          "cacheEntries": 1,
+          "inEdges": 1,
+          "outEdges": 1,
+          "sqlEdges": 2
+        },
+        "drift": [
+          {
+            "count": 1,
+            "detail": "rows in Graph_KG.rdf_edges with no ^KG(\"out\") entry, so traversal cannot see them",
+            "kind": "missing",
+            "store": "^KG(\"out\")"
+          },
+          {
+            "count": 1,
+            "detail": "rows with no ^KG(\"in\") entry, so inbound traversal cannot see them",
+            "kind": "missing",
+            "store": "^KG(\"in\")"
+          }
+        ],
+        "graph": "g5ps_named",
+        "graphKey": "g5ps_named",
+        "ok": 0,
+        "unscoped": [
+          {
+            "kind": "sql",
+            "reason": "keyed by reifier and edge id alone, with no graph column and no join to one",
+            "store": "Graph_KG.rdf_reifications"
+          },
+          {
+            "kind": "global",
+            "reason": "node interning is append-only and ignores graph_id, so its counters over-count and its ids cannot be attributed to one graph",
+            "store": "^NKG"
+          },
+          {
+            "kind": "global",
+            "reason": "Arno's two-hop counts, computed over ^NKG by Graph.KG.NKGAccelTraversal:Build2HopExact; since ^NKG's interning carries no graph, the number cannot be attributed to one graph and is kept apart from the scoped ^KG(\"deg2p_exact\") rather than written into it",
+            "store": "^KG(\"deg2p_exact_merged\")"
+          },
+          {
+            "kind": "global",
+            "reason": "content-addressed interning of temporal label sets, deliberately append-only: Graph.KG.TemporalIndex documents that no purge touches it",
+            "store": "^KG(\"labelset\")"
+          },
+          {
+            "kind": "global",
+            "reason": "a whole-database JSON snapshot keyed by graph name \"KG\" with no graph dimension, invalidated by comparing ^KG(\"__version\") rather than by content, so erasing content without bumping that stamp leaves Arno serving the erased graph",
+            "store": "^ArnoKG"
+          }
+        ],
+        "unverified": [
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.nodes"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.rdf_labels"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.rdf_props"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.kg_NodeEmbeddings"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.kg_NodeEmbeddings_optimized"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.kg_EdgeEmbeddings"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.docs"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.embedding_registry"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.fhir_unresolved"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.fhir_definitions"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "Graph_KG.fhir_canonical_refs"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"gen\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"degw\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"label\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"prop\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"deg2p\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"deg2p_exact\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"tout\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"tin\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"bucket\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"tagg\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"edgeprop\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^KG(\"tlast\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^IVG.Ledger(\"tuple\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^IVG.Ledger(\"stmt\")"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^IVG.GraphMode"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^IVG.TemporalStructural"
+          },
+          {
+            "reason": "graph-scoped, but this oracle compares structural adjacency only",
+            "store": "^IVG.AlgoCache"
+          }
+        ]
+      }
+    }
+  ],
+  "f7_verify_before": [
+    {
+      "checked": [
+        "Graph_KG.rdf_edges",
+        "^KG(\"out\")",
+        "^KG(\"in\")",
+        "^KG(\"degc\")"
+      ],
+      "counts": {
+        "cacheEntries": 1,
+        "inEdges": 1,
+        "outEdges": 1,
+        "sqlEdges": 2
+      },
+      "drift": [
+        {
+          "count": 1,
+          "detail": "rows in Graph_KG.rdf_edges with no ^KG(\"out\") entry, so traversal cannot see them",
+          "kind": "missing",
+          "store": "^KG(\"out\")"
+        },
+        {
+          "count": 1,
+          "detail": "rows with no ^KG(\"in\") entry, so inbound traversal cannot see them",
+          "kind": "missing",
+          "store": "^KG(\"in\")"
+        }
+      ],
+      "graph": "",
+      "graphKey": 0,
+      "ok": 0,
+      "unscoped": [
+        {
+          "kind": "sql",
+          "reason": "keyed by reifier and edge id alone, with no graph column and no join to one",
+          "store": "Graph_KG.rdf_reifications"
+        },
+        {
+          "kind": "global",
+          "reason": "node interning is append-only and ignores graph_id, so its counters over-count and its ids cannot be attributed to one graph",
+          "store": "^NKG"
+        },
+        {
+          "kind": "global",
+          "reason": "Arno's two-hop counts, computed over ^NKG by Graph.KG.NKGAccelTraversal:Build2HopExact; since ^NKG's interning carries no graph, the number cannot be attributed to one graph and is kept apart from the scoped ^KG(\"deg2p_exact\") rather than written into it",
+          "store": "^KG(\"deg2p_exact_merged\")"
+        },
+        {
+          "kind": "global",
+          "reason": "content-addressed interning of temporal label sets, deliberately append-only: Graph.KG.TemporalIndex documents that no purge touches it",
+          "store": "^KG(\"labelset\")"
+        },
+        {
+          "kind": "global",
+          "reason": "a whole-database JSON snapshot keyed by graph name \"KG\" with no graph dimension, invalidated by comparing ^KG(\"__version\") rather than by content, so erasing content without bumping that stamp leaves Arno serving the erased graph",
+          "store": "^ArnoKG"
+        }
+      ],
+      "unverified": [
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "Graph_KG.nodes"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "Graph_KG.rdf_labels"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "Graph_KG.rdf_props"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "Graph_KG.kg_NodeEmbeddings"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "Graph_KG.kg_NodeEmbeddings_optimized"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "Graph_KG.kg_EdgeEmbeddings"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "Graph_KG.docs"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "Graph_KG.embedding_registry"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "Graph_KG.fhir_unresolved"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "Graph_KG.fhir_definitions"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "Graph_KG.fhir_canonical_refs"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "^KG(\"gen\")"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "^KG(\"degw\")"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "^KG(\"label\")"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "^KG(\"prop\")"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "^KG(\"deg2p\")"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "^KG(\"deg2p_exact\")"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "^KG(\"tout\")"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "^KG(\"tin\")"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "^KG(\"bucket\")"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "^KG(\"tagg\")"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "^KG(\"edgeprop\")"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "^KG(\"tlast\")"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "^IVG.Ledger(\"tuple\")"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "^IVG.Ledger(\"stmt\")"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "^IVG.GraphMode"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "^IVG.TemporalStructural"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "^IVG.AlgoCache"
+        }
+      ]
+    },
+    {
+      "checked": [
+        "Graph_KG.rdf_edges",
+        "^KG(\"out\")",
+        "^KG(\"in\")",
+        "^KG(\"degc\")"
+      ],
+      "counts": {
+        "cacheEntries": 1,
+        "inEdges": 1,
+        "outEdges": 1,
+        "sqlEdges": 2
+      },
+      "drift": [
+        {
+          "count": 1,
+          "detail": "rows in Graph_KG.rdf_edges with no ^KG(\"out\") entry, so traversal cannot see them",
+          "kind": "missing",
+          "store": "^KG(\"out\")"
+        },
+        {
+          "count": 1,
+          "detail": "rows with no ^KG(\"in\") entry, so inbound traversal cannot see them",
+          "kind": "missing",
+          "store": "^KG(\"in\")"
+        }
+      ],
+      "graph": "g5ps_named",
+      "graphKey": "g5ps_named",
+      "ok": 0,
+      "unscoped": [
+        {
+          "kind": "sql",
+          "reason": "keyed by reifier and edge id alone, with no graph column and no join to one",
+          "store": "Graph_KG.rdf_reifications"
+        },
+        {
+          "kind": "global",
+          "reason": "node interning is append-only and ignores graph_id, so its counters over-count and its ids cannot be attributed to one graph",
+          "store": "^NKG"
+        },
+        {
+          "kind": "global",
+          "reason": "Arno's two-hop counts, computed over ^NKG by Graph.KG.NKGAccelTraversal:Build2HopExact; since ^NKG's interning carries no graph, the number cannot be attributed to one graph and is kept apart from the scoped ^KG(\"deg2p_exact\") rather than written into it",
+          "store": "^KG(\"deg2p_exact_merged\")"
+        },
+        {
+          "kind": "global",
+          "reason": "content-addressed interning of temporal label sets, deliberately append-only: Graph.KG.TemporalIndex documents that no purge touches it",
+          "store": "^KG(\"labelset\")"
+        },
+        {
+          "kind": "global",
+          "reason": "a whole-database JSON snapshot keyed by graph name \"KG\" with no graph dimension, invalidated by comparing ^KG(\"__version\") rather than by content, so erasing content without bumping that stamp leaves Arno serving the erased graph",
+          "store": "^ArnoKG"
+        }
+      ],
+      "unverified": [
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "Graph_KG.nodes"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "Graph_KG.rdf_labels"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "Graph_KG.rdf_props"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "Graph_KG.kg_NodeEmbeddings"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "Graph_KG.kg_NodeEmbeddings_optimized"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "Graph_KG.kg_EdgeEmbeddings"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "Graph_KG.docs"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "Graph_KG.embedding_registry"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "Graph_KG.fhir_unresolved"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "Graph_KG.fhir_definitions"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "Graph_KG.fhir_canonical_refs"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "^KG(\"gen\")"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "^KG(\"degw\")"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "^KG(\"label\")"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "^KG(\"prop\")"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "^KG(\"deg2p\")"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "^KG(\"deg2p_exact\")"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "^KG(\"tout\")"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "^KG(\"tin\")"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "^KG(\"bucket\")"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "^KG(\"tagg\")"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "^KG(\"edgeprop\")"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "^KG(\"tlast\")"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "^IVG.Ledger(\"tuple\")"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "^IVG.Ledger(\"stmt\")"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "^IVG.GraphMode"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "^IVG.TemporalStructural"
+        },
+        {
+          "reason": "graph-scoped, but this oracle compares structural adjacency only",
+          "store": "^IVG.AlgoCache"
+        }
+      ]
+    }
+  ],
+  "probe": "graph_structure_parallel_delete_rel",
+  "reason": "default: one row remains but the index reads {'present': False, 'children': 0, 'hash': None, 'degree': 0} (expected {'present': True, 'children': 0, 'hash': None, 'degree': 1}; recount 0); g5ps_named: one row remains but the index reads {'present': False, 'children': 0, 'hash': None, 'degree': 0} (expected {'present': True, 'children': 0, 'hash': None, 'degree': 1}; recount 0)",
+  "schema": {
+    "objectscript_failed": {},
+    "objectscript_skipped": {
+      "Graph.KG.MCPService": "needs %AI.MCP.Service, not installed on this server",
+      "Graph.KG.MCPToolSet": "needs %AI.Policy.ConsoleAudit, %AI.ToolSet, not installed on this server",
+      "Graph.KG.MCPTools": "needs %AI.Tool, not installed on this server"
+    },
+    "schema": "Graph_KG",
+    "warnings": []
+  },
+  "verdict": "OBSERVED_DEFECT",
+  "verdict_self_check": {
+    "defect_case": "OBSERVED_DEFECT",
+    "discriminates": true,
+    "fixed_case": "OBSERVED_AS_EXPECTED"
+  }
+}

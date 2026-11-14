@@ -1,0 +1,58 @@
+{
+  "_probe_inputs": {
+    ".g5/Verus_verification/native/harness.py": "61af481af586763543377f4f3b77661b5e3988f7b74125516a14535292c6d2c5",
+    ".g5/Verus_verification/native/probes/graph_structure_algo_cache_rollback.py": "54bc35b19209ac86749ab06af12bc82be08ceec531c4a9fd589ade87e6160509",
+    ".g5/Verus_verification/native/probes/graph_structure_common.py": "977359030e19b7c7c663a265389727951de9e32e4e4fc398522148b1e11ed219",
+    ".g5/Verus_verification/native/probes/redaction_common.py": "ad40819dfdccb8558d2728504fa6ff77975431aabc7b9a8782d24dc18b9f71e6",
+    ".g5/Verus_verification/native/probes/search_common.py": "92ff874bc87390be56edb05c75d2f2c5906458c0b37cd86171888ee61d8b5ae2"
+  },
+  "_product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "after": {
+    "g5ac:a": "g5ac:a",
+    "g5ac:b": "g5ac:a",
+    "g5ac:c": "g5ac:a"
+  },
+  "after_c_joined": true,
+  "algo_cache_disabled_env": "",
+  "algo_cache_stats_eng2": {
+    "miss": 2,
+    "put": 2
+  },
+  "algo_cache_stats_eng3": {
+    "hit": 1
+  },
+  "baseline": {
+    "g5ac:a": "g5ac:a",
+    "g5ac:b": "g5ac:a",
+    "g5ac:c": "g5ac:c"
+  },
+  "baseline_c_joined": false,
+  "dirty": {
+    "g5ac:a": "g5ac:a",
+    "g5ac:b": "g5ac:a",
+    "g5ac:c": "g5ac:a"
+  },
+  "dirty_c_joined": true,
+  "probe": "graph_structure_algo_cache_rollback",
+  "reason": "after the rollback WCC still joins c to a (token 655001 = token the dirty answer was stored under 655001)",
+  "rows_c_a_after_rollback": 0,
+  "schema": {
+    "objectscript_failed": {},
+    "objectscript_skipped": {
+      "Graph.KG.MCPService": "needs %AI.MCP.Service, not installed on this server",
+      "Graph.KG.MCPToolSet": "needs %AI.Policy.ConsoleAudit, %AI.ToolSet, not installed on this server",
+      "Graph.KG.MCPTools": "needs %AI.Tool, not installed on this server"
+    },
+    "schema": "Graph_KG",
+    "warnings": []
+  },
+  "token_after_rollback": 655001,
+  "token_baseline": 655000,
+  "token_dirty": 655001,
+  "verdict": "OBSERVED_DEFECT",
+  "verdict_self_check": {
+    "defect_case": "OBSERVED_DEFECT",
+    "discriminates": true,
+    "fixed_case": "OBSERVED_AS_EXPECTED"
+  }
+}

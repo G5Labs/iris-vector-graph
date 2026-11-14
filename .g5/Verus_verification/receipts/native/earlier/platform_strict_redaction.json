@@ -1,0 +1,43 @@
+{
+  "a_erase_strict": {
+    "message": "ledger strict mode: structural write 'erase_graph' rejected; commit a changeset via engine.ledger",
+    "raised": "LedgerStrictModeError"
+  },
+  "b_ledger_delete_rel": {
+    "raised": null,
+    "value": "CommitResult(revision=RevisionInfo(seq=3, revision_id='acf8d7c9dfbc11f194f44aa54a442c16', parent_id='ace9c5c6dfbc11f194f44aa54a442c16', kind='changeset', actor='probe:platform', actor_type='system', conn_user='_SYSTEM', committed_ms=1794613687403, message=None, source=None, correlation_id=None, idem"
+  },
+  "c_ledger_delete_nodes": {
+    "raised": null,
+    "value": "CommitResult(revision=RevisionInfo(seq=4, revision_id='ad1244c2dfbc11f194f44aa54a442c16', parent_id='acf8d7c9dfbc11f194f44aa54a442c16', kind='changeset', actor='probe:platform', actor_type='system', conn_user='_SYSTEM', committed_ms=1794613687569, message=None, source=None, correlation_id=None, idem"
+  },
+  "d_redact_strict": {
+    "message": "graph 'tenantG' still holds 2 live row(s) (nodes 2); erase it before redacting",
+    "raised": "RedactionTargetLiveError"
+  },
+  "e_erase_after_strict_off": {
+    "raised": null,
+    "value": "2"
+  },
+  "f_redact_after_erase": {
+    "raised": null,
+    "value": "RedactionReceipt(complete=True, target_sha256='20e7e89840211e735e1fcd3e17fbec2d74ea47c0547d87732397264a42505281', revision_seqs=[2, 3], records_tombstoned=2, metadata_cleared=2, idempotency_keys_removed=0, statements_removed=0, unattributed_records=0, batches=2, max_batch_ms=137, redaction=RevisionI"
+  },
+  "graph": "tenantG",
+  "probe": "platform_strict_redaction",
+  "reason": "under strict mode tenantG cannot be erased, the ledger leaves its 2 node row(s), and redact is refused target_live; with strict off both run (consequence for a human decision)",
+  "rows_after_ledger_deletes": {
+    "nodes": 2,
+    "rdf_edges": 0
+  },
+  "rows_end": {
+    "nodes": 0,
+    "rdf_edges": 0
+  },
+  "rows_fixture": {
+    "nodes": 2,
+    "rdf_edges": 1
+  },
+  "schema": "Graph_KG",
+  "verdict": "OBSERVED_AS_EXPECTED"
+}

@@ -1,0 +1,49 @@
+{
+  "after": {
+    "ivg_table_schemas": [
+      [
+        "Graph_KG",
+        "nodes"
+      ],
+      [
+        "Graph_KG",
+        "rdf_edges"
+      ]
+    ],
+    "other_marker_defined": 0,
+    "record": "Graph_KG",
+    "recorded_stamp": "2026-11-13 21:25:13 UTC 4.7.0"
+  },
+  "backfill_structural_rows_dry_run": {
+    "message": "<SQL ERROR>; Details: [SQLCODE: <-30>:<Table or view not found>]\r\n[Location: <Prepare>]\r\n[%msg: < Table 'IVGPROBE.RDF_EDGES' not found>]",
+    "raised": "ProgrammingError"
+  },
+  "before": {
+    "ivg_table_schemas": [
+      [
+        "Graph_KG",
+        "nodes"
+      ],
+      [
+        "Graph_KG",
+        "rdf_edges"
+      ]
+    ],
+    "other_marker_defined": 0,
+    "record": "Graph_KG",
+    "recorded_stamp": "2026-11-13 21:25:13 UTC 4.7.0"
+  },
+  "control_engine_node_count": {
+    "message": "Namespace USER records Graph_KG as its IVG Schema, and this engine asks for IVGPROBE. A namespace holds one IVG Schema per namespace: IVG's globals (^KG, ^NKG, ^IVG.*) belong to the namespace, so a second schema would share them. Build the engine with schema_prefix='Graph_KG', or use a separate namespace for the other schema. Nothing was written.",
+    "raised": "IVGSchemaError"
+  },
+  "migrate_to_graph_scoped_embeddings_dry_run": {
+    "raised": null,
+    "value": "MigrationReport(rows_placed={}, rows_quarantined={}, quarantined_ids=[], tables_created=[], indexes_created=[], indexes_refused={}, widths_reconciled={}, structural_blockers={}, duplicates_removed={}, key_conflicts={}, legacy_node_keys=[], node_key_blockers={}, endpoints_registered=[])"
+  },
+  "other_schema": "IVGPROBE",
+  "probe": "platform_schema_waiver",
+  "reason": "the namespace records Graph_KG; an engine on IVGPROBE is refused, but the migrations' waived engine was not: migrate_to_graph_scoped_embeddings_dry_run -> returned; backfill_structural_rows_dry_run -> ProgrammingError",
+  "unchanged": true,
+  "verdict": "OBSERVED_DEFECT"
+}

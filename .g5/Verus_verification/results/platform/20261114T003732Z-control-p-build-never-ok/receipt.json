@@ -1,0 +1,55 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "witness_compiled_plan_is_used",
+      "witness_repair_keeps_both_colliding_plans"
+    ],
+    "find": "            entries: s.entries.insert(h, Entry { cls: Some(class_name(h, d, v)), status: Status::Ok, ..s.entries[h] }),",
+    "name": "p-build-never-ok",
+    "replace": "            entries: s.entries.insert(h, Entry { cls: Some(class_name(h, d, v)), status: Status::Failed, ..s.entries[h] }),",
+    "why": "valid outcome: a Build that never marks the entry ok: the compiled plan is never used"
+  },
+  "expected": {
+    "fail_in": [
+      "witness_compiled_plan_is_used",
+      "witness_repair_keeps_both_colliding_plans"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/platform/model.json": "b9f28717e35a13434e947ab594cfaee5a8fd17f02fd976b73ea05f80ba3cdd13",
+    ".g5/Verus_verification/models/platform/platform.rs": "7596e0664af330b2e7b7d2d658651846a3cdbc86a38bba597977e81b5df57855"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/platform/controls/p-build-never-ok/platform.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 9,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "witness_compiled_plan_is_used": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/platform/20261114T003653Z-control-p-build-never-ok-witness_compiled_plan_is_used.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "witness_repair_keeps_both_colliding_plans": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/platform/20261114T003653Z-control-p-build-never-ok-witness_repair_keeps_both_colliding_plans.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/platform/20261114T003653Z-control-p-build-never-ok.log",
+    "timed_out": false,
+    "verified": 42
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

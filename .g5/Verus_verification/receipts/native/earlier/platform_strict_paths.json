@@ -1,0 +1,85 @@
+{
+  "before": {
+    "nodes": [
+      [
+        "",
+        "pa"
+      ],
+      [
+        "",
+        "pb"
+      ],
+      [
+        "",
+        "tx"
+      ],
+      [
+        "",
+        "ty"
+      ],
+      [
+        "tenantG",
+        "tx"
+      ],
+      [
+        "tenantG",
+        "ty"
+      ]
+    ],
+    "rdf_edges": [
+      [
+        "",
+        "pa",
+        "R",
+        "pb"
+      ],
+      [
+        "tenantG",
+        "tx",
+        "R",
+        "ty"
+      ]
+    ]
+  },
+  "calls": {
+    "create_node": {
+      "message": "ledger strict mode: structural write 'create_node' rejected; commit a changeset via engine.ledger",
+      "raised": "LedgerStrictModeError",
+      "rows_unchanged": true
+    },
+    "erase_graph": {
+      "message": "ledger strict mode: structural write 'erase_graph' rejected; commit a changeset via engine.ledger",
+      "raised": "LedgerStrictModeError",
+      "rows_unchanged": true
+    },
+    "execute_cypher_create": {
+      "message": "ledger strict mode: structural write 'cypher_dml' rejected; commit a changeset via engine.ledger",
+      "raised": "LedgerStrictModeError",
+      "rows_unchanged": true
+    }
+  },
+  "meta": {
+    "head_id": "a44e0d03dfbc11f194f44aa54a442c16",
+    "head_seq": 2,
+    "max_ops": 50000,
+    "ok": true,
+    "recon_bound": 250000,
+    "state": "enabled",
+    "strict": true
+  },
+  "probe": "platform_strict_paths",
+  "reason": "create_node, Cypher CREATE and erase_graph are refused under strict mode and change nothing",
+  "refused": {
+    "create_node": true,
+    "erase_graph": true,
+    "execute_cypher_create": true
+  },
+  "rej_strict_block_delta": 2,
+  "schema": "Graph_KG",
+  "unchanged": {
+    "create_node": true,
+    "erase_graph": true,
+    "execute_cypher_create": true
+  },
+  "verdict": "OBSERVED_AS_EXPECTED"
+}

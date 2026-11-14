@@ -1,0 +1,55 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_g_step_preserves_inv",
+      "witness_user_guide_strict_example"
+    ],
+    "find": "        GAction::SetStrict { e, flag } => Some(GSt { strict: flag, cache: s.cache.remove(e), ..s }),",
+    "name": "g-set-strict-no-refresh",
+    "replace": "        GAction::SetStrict { e, flag } => Some(GSt { strict: flag, ..s }),",
+    "why": "set_strict without _refresh_guard (client.py:307): the engine that turned strict on answers from its own stale cache"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_g_step_preserves_inv",
+      "witness_user_guide_strict_example"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/platform/model.json": "b9f28717e35a13434e947ab594cfaee5a8fd17f02fd976b73ea05f80ba3cdd13",
+    ".g5/Verus_verification/models/platform/platform.rs": "7596e0664af330b2e7b7d2d658651846a3cdbc86a38bba597977e81b5df57855"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/platform/controls/g-set-strict-no-refresh/platform.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_g_step_preserves_inv": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/platform/20261114T003104Z-control-g-set-strict-no-refresh-lemma_g_step_preserves_inv.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "witness_user_guide_strict_example": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/platform/20261114T003104Z-control-g-set-strict-no-refresh-witness_user_guide_strict_example.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/platform/20261114T003104Z-control-g-set-strict-no-refresh.log",
+    "timed_out": false,
+    "verified": 48
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}
