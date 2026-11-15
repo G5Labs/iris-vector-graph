@@ -1892,6 +1892,8 @@ Reproduced by: playbook arm, live on its IRIS (x86_64 VM): `breadth-a-live-05-te
 - Remedy proposed by the playbook arm (not implemented): Send '' for a missing timestamp; stop treating an explicit 0 as missing in BulkInsertCounts.
 - Not yet compared with the guidance arm's entries beyond the confirmed merges.
 
+Iteration 7 strengthens the known missing-time issue, also bug-tmp-007, without a new bug count: actual Python single omission/None sends text0 and native stores epoch0; normal bulk0 resolves current seconds, prewrite-unavailable bulk fallback stores epoch0. Positive100 agrees; duplicate normal0/collision1 versus fallback1/collision0 leaves the same event. temporal_clock derives raw aliases/carrier/selected server writer to the final window with 25 new units plus31 inherited rechecked. Actual native9 and Python adapter evidence remain distinct. Intended missing-time clock requirement remains; no repair or general prefix-failure/clock/coercion proof.
+
 _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
 
 <a id="F-0504"></a>
@@ -3742,6 +3744,9 @@ Observed: the single-edge path sends `0` (`temporal.py:294`), the store sends `"
 Consequence: such events land in 1970 and are missed by recent-window reads, velocity and latest-event queries.
 
 Repair proposal (not implemented): send `""` (or the current time) for None, and make the test assert the timestamp. Governing statement: [temporal.edge](../ontology/features/temporal.g5.md#temporal.edge).
+
+
+Iteration 7: corroborated with F-0502 as one known missing-time root. Actual native single omission/None/zero stores epoch0; normal bulk0 uses current seconds, prewrite fallback0 stores epoch0. Positive timestamps agree. [Clock model and provider limits](models/temporal_clock/NOTES.md), [native neighbors](../uplift/consolidated/iteration-7/timestamp-native.json). Intended current-time stamping remains violated; no repair or new bug count.
 
 <a id="bug-tmp-008"></a>
 ### The ObjectScript temporal purge-all and erase-all leave marked structural rows

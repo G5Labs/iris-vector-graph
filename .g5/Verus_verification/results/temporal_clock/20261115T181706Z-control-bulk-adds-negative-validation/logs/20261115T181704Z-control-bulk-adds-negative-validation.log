@@ -1,0 +1,30 @@
+verification results:: 53 verified, 3 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/bulk-adds-negative-validation/20261115T181704Z/models/temporal_clock/temporal_clock.rs:116:13
+    |
+114 | pub proof fn theorem_alias_truthiness_changes_coordinate(n:int)
+    | --------------------------------------------------------------- at the end of the function body
+115 |     requires n!=0,
+116 |     ensures bulk_payload(Raw::Number(0),Raw::Number(n),true)==Some(n),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/bulk-adds-negative-validation/20261115T181704Z/models/temporal_clock/temporal_clock.rs:125:13
+    |
+123 | pub proof fn theorem_bulk_keeps_negative(n:int)
+    | ----------------------------------------------- at the end of the function body
+124 |     requires n<0,
+125 |     ensures bulk_payload(Raw::Number(n),Raw::Missing,true)==Some(n),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/bulk-adds-negative-validation/20261115T181704Z/models/temporal_clock/temporal_clock.rs:130:9
+    |
+128 | pub proof fn theorem_coercion_retains_preconversion_truthiness(n:int)
+    | --------------------------------------------------------------------- at the end of the function body
+129 |     ensures bulk_payload(Raw::Coercible{value:0,truthy:true},Raw::Number(n),true)==Some(0),
+130 |         bulk_payload(Raw::Coercible{value:0,truthy:false},Raw::Number(n),true)==Some(n),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

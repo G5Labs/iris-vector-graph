@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_bare_alias_keeps_physical"
+    ],
+    "find": "if q.return_name.is_some(){q.return_name.unwrap()}else{physical()}",
+    "name": "bare-alias-projected",
+    "replace": "if q.return_name.is_some(){q.return_name.unwrap()}else{q.alias}",
+    "why": "bare-alias-projected"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_bare_alias_keeps_physical"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/procedure_results/model.json": "48eea63daaba0e7ff6a93e3eafb2131e2d7c3b37c71b69bb4f5bc9a0e88ee84d",
+    ".g5/Verus_verification/models/procedure_results/procedure_results.rs": "54a75b7b3bf74c2efce04b82f6d2bbdca3d07e59f900e4b8ff5d3ed2ce6b90a9"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration7-procedure-20261115/verus/procedure_results/controls/bare-alias-projected/20261115T181204Z/models/procedure_results/procedure_results.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_bare_alias_keeps_physical": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration7-procedure-20261115/verus/procedure_results/20261115T181204Z-control-bare-alias-projected-theorem_bare_alias_keeps_physical.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration7-procedure-20261115/verus/procedure_results/20261115T181204Z-control-bare-alias-projected.log",
+    "timed_out": false,
+    "verified": 16
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/procedure_results/20261115T181205Z-control-bare-alias-projected/logs/20261115T181204Z-control-bare-alias-projected-theorem_bare_alias_keeps_physical.log": "49a934ebeed0f7519ca984b84f80bf6f7c7873d1374a2168e150ebe3f97f0473",
+    ".g5/Verus_verification/results/procedure_results/20261115T181205Z-control-bare-alias-projected/logs/20261115T181204Z-control-bare-alias-projected.log": "85841010a075758923b977ac85ea845bf5f937f4700fcde25bfe5130b95b6108"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

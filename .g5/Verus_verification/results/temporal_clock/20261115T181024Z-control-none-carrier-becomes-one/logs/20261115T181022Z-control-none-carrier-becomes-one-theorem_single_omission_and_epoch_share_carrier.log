@@ -1,0 +1,27 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/none-carrier-becomes-one/20261115T181022Z/models/temporal_clock/temporal_clock.rs:67:1
+   |
+67 | pub proof fn theorem_single_omission_and_epoch_share_carrier()
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/none-carrier-becomes-one/20261115T181022Z/models/temporal_clock/temporal_clock.rs:68:13
+   |
+67 | pub proof fn theorem_single_omission_and_epoch_share_carrier()
+   | -------------------------------------------------------------- at the end of the function body
+68 |     ensures single_payload(Raw::Missing)==Some(0),single_payload(Raw::Null)==Some(0),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/none-carrier-becomes-one/20261115T181022Z/models/temporal_clock/temporal_clock.rs:68:51
+   |
+67 | pub proof fn theorem_single_omission_and_epoch_share_carrier()
+   | -------------------------------------------------------------- at the end of the function body
+68 |     ensures single_payload(Raw::Missing)==Some(0),single_payload(Raw::Null)==Some(0),
+   |                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

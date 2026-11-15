@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-health-20261115/verus/service_health/controls/reset-close-failure-retains-cache/20261115T180939Z/models/service_health/service_health.rs:152:13
+    |
+151 | pub proof fn theorem_reset_clears_even_when_close_fails(s:Cache,error:Error)
+    | ---------------------------------------------------------------------------- at the end of the function body
+152 |     ensures reset(s,Access::Raised(error)).state.engine.is_none(),reset(s,Access::Raised(error)).closed.is_none(),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

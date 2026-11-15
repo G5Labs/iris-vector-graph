@@ -1,0 +1,11 @@
+verification results:: 16 verified, 1 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-procedure-20261115/verus/procedure_results/controls/unsupported-clause-dropped/20261115T180920Z/models/procedure_results/procedure_results.rs:116:13
+    |
+115 | pub proof fn theorem_unsupported_clause_always_refused(rows:Seq<int>,q:Query,c:Seq<char>)
+    | ----------------------------------------------------------------------------------------- at the end of the function body
+116 |     ensures consume(rows,Query{refused_clause:Some(c),..q})==Outcome::Refused,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

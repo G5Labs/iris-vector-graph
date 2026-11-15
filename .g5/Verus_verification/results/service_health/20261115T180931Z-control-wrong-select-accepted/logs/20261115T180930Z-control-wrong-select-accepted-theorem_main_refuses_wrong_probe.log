@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /Users/ziniuw/runs/ivg-iteration7-health-20261115/verus/service_health/controls/wrong-select-accepted/20261115T180930Z/models/service_health/service_health.rs:79:1
+   |
+79 | pub proof fn theorem_main_refuses_wrong_probe(s:Main,p:Probe)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration7-health-20261115/verus/service_health/controls/wrong-select-accepted/20261115T180930Z/models/service_health/service_health.rs:81:13
+   |
+79 | pub proof fn theorem_main_refuses_wrong_probe(s:Main,p:Probe)
+   | ------------------------------------------------------------- at the end of the function body
+80 |     requires s.engine.is_some(),!selected_one(p.selected),
+81 |     ensures main_request(s,p).response.status==Status::Unavailable,
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration7-health-20261115/verus/service_health/controls/wrong-select-accepted/20261115T180930Z/models/service_health/service_health.rs:82:9
+   |
+79 | pub proof fn theorem_main_refuses_wrong_probe(s:Main,p:Probe)
+   | ------------------------------------------------------------- at the end of the function body
+...
+82 |         main_request(s,p).response.reason==Some(Reason::Select),!main_request(s,p).record_read,
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

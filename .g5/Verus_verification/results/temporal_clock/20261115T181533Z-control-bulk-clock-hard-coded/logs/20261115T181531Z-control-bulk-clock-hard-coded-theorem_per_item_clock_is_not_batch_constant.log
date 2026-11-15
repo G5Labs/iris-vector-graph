@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/bulk-clock-hard-coded/20261115T181531Z/models/temporal_clock/temporal_clock.rs:144:13
+    |
+142 | pub proof fn theorem_per_item_clock_is_not_batch_constant(now1:int,now2:int)
+    | ---------------------------------------------------------------------------- at the end of the function body
+143 |     requires now1!=now2,
+144 |     ensures coordinate(0,Route::Counts,now1)!=coordinate(0,Route::Counts,now2),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

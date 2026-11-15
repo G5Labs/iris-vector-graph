@@ -1,0 +1,15 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-health-20261115/verus/service_health/controls/record-mismatch-accepted/20261115T181705Z/models/service_health/service_health.rs:103:9
+    |
+ 98 |   pub proof fn theorem_main_checks_actual_namespace(s:Main,p:Probe)
+    |   ----------------------------------------------------------------- at the end of the function body
+...
+103 | /         (p.record matches Record::Value(name) ==> (
+104 | |             main_request(s,p).response.status==Status::Ok <==> same_schema(name,p.expected))),
+    | |_____________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 1 previous error
+

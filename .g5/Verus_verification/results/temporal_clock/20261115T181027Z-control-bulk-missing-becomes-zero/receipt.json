@@ -1,0 +1,52 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_bulk_missing_null_empty_refuse"
+    ],
+    "find": "}else{None}\n}",
+    "name": "bulk-missing-becomes-zero",
+    "replace": "}else{Some(0)}\n}"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_bulk_missing_null_empty_refuse"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal_clock/model.json": "26752db5f768aaf0e1f2826d08207f347ad9aab6b8566240489febffb87af840",
+    ".g5/Verus_verification/models/temporal_clock/temporal_clock.rs": "347ab034dc71589ac9756381a874dbb437560f5b37d48ff95e457fc7485e521f",
+    ".g5/Verus_verification/models/temporal_restore/temporal_restore.rs": "0f72f0047d5a1faf6471e0cd7b2bc369fe2c4e334144bbc17b6264b961d584a6",
+    ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs": "4f14236f57a45c64e889f794b6d55f3fc823dccaba4a2759ed7cedc97fd3bd9d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/bulk-missing-becomes-zero/20261115T181026Z/models/temporal_clock/temporal_clock.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_bulk_missing_null_empty_refuse": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/20261115T181026Z-control-bulk-missing-becomes-zero-theorem_bulk_missing_null_empty_refuse.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/20261115T181026Z-control-bulk-missing-becomes-zero.log",
+    "timed_out": false,
+    "verified": 48
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal_clock/20261115T181027Z-control-bulk-missing-becomes-zero/logs/20261115T181026Z-control-bulk-missing-becomes-zero-theorem_bulk_missing_null_empty_refuse.log": "4b46f426c0178c66273d0967b3cab544755ce0d087452fe5643c21a3710b409f",
+    ".g5/Verus_verification/results/temporal_clock/20261115T181027Z-control-bulk-missing-becomes-zero/logs/20261115T181026Z-control-bulk-missing-becomes-zero.log": "533506d019a75fdad5bf67a9b74fe568ee8c2b4b05fa11d878a9c8013d10018e"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

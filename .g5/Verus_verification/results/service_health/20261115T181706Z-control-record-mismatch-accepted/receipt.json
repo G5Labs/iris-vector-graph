@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_main_checks_actual_namespace"
+    ],
+    "find": "if same_schema(name,p.expected) {None}",
+    "name": "record-mismatch-accepted",
+    "replace": "if true {None}"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_main_checks_actual_namespace"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/service_health/model.json": "9e9c64a322b9016d1845da7e9d52c702e420bab831a1e476d5b548b760a724f9",
+    ".g5/Verus_verification/models/service_health/service_health.rs": "c768d2646b1eba243619f465348f463b5d3a50a98382965c1325f2e50a966d8e"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration7-health-20261115/verus/service_health/controls/record-mismatch-accepted/20261115T181705Z/models/service_health/service_health.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_main_checks_actual_namespace": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration7-health-20261115/verus/service_health/20261115T181705Z-control-record-mismatch-accepted-theorem_main_checks_actual_namespace.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration7-health-20261115/verus/service_health/20261115T181705Z-control-record-mismatch-accepted.log",
+    "timed_out": false,
+    "verified": 17
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/service_health/20261115T181706Z-control-record-mismatch-accepted/logs/20261115T181705Z-control-record-mismatch-accepted-theorem_main_checks_actual_namespace.log": "28b0964de3edd9117a02f86aab1e192648715440ed24c96fbcb328c213ad9fe2",
+    ".g5/Verus_verification/results/service_health/20261115T181706Z-control-record-mismatch-accepted/logs/20261115T181705Z-control-record-mismatch-accepted.log": "c3dfd866f830109aea3235d33f318e664abd2e0ca12619176a8827bb9a870779"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

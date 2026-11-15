@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_alias_return"
+    ],
+    "find": "if q.return_name.is_some(){q.return_name.unwrap()}else{physical()}",
+    "name": "return-alias-lost",
+    "replace": "physical()",
+    "why": "return-alias-lost"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_alias_return"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/procedure_results/model.json": "6a39b16f5e69698e0a2c602aa11ebf654da8e13c82c1a0bcc9f9609fd70f03b8",
+    ".g5/Verus_verification/models/procedure_results/procedure_results.rs": "c1b5fd65835381087753328369b55ce89b2c7b04f9191a97736a5a98bef1b875"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration7-procedure-20261115/verus/procedure_results/controls/return-alias-lost/20261115T182156Z/models/procedure_results/procedure_results.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 6,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_alias_return": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration7-procedure-20261115/verus/procedure_results/20261115T182156Z-control-return-alias-lost-theorem_alias_return.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration7-procedure-20261115/verus/procedure_results/20261115T182156Z-control-return-alias-lost.log",
+    "timed_out": false,
+    "verified": 13
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/procedure_results/20261115T182158Z-control-return-alias-lost/logs/20261115T182156Z-control-return-alias-lost-theorem_alias_return.log": "596959525a31a2864df9dc58b2f5a5a0f188373c9159a8bc40ffd3c94526e4e9",
+    ".g5/Verus_verification/results/procedure_results/20261115T182158Z-control-return-alias-lost/logs/20261115T182156Z-control-return-alias-lost.log": "aec3c418bed4d3781c3bfa742d7c621dc9aac68e81643a1ac463bc348d507e35"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

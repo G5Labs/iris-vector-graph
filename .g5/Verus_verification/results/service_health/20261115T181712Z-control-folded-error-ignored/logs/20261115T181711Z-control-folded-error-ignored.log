@@ -1,0 +1,21 @@
+verification results:: 16 verified, 2 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-health-20261115/verus/service_health/controls/folded-error-ignored/20261115T181711Z/models/service_health/service_health.rs:155:13
+    |
+153 | pub proof fn theorem_folded_error_controls_status(s:Cache,f:Factory,msg:Seq<char>)
+    | ---------------------------------------------------------------------------------- at the end of the function body
+154 |     requires s.engine.is_some(),msg.len()>0,
+155 |     ensures cache_request(s,f,Query::Returned{error:Some(msg)}).response.status==Status::Unavailable,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-health-20261115/verus/service_health/controls/folded-error-ignored/20261115T181711Z/models/service_health/service_health.rs:189:9
+    |
+185 | pub proof fn theorem_folded_query_failure_does_not_reset(s:Cache,f:Factory,next:Factory,msg:Seq<char>,q2:Query,close:Access)
+    | ---------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+189 |         !run_query(s,f,Query::Returned{error:Some(msg)},next,q2,close).ok,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

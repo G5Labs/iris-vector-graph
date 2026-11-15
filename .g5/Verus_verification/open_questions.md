@@ -266,6 +266,39 @@ Interpretations: (a) retries are allowed only for reads and for idempotency-keye
 
 Decision needed: the retry policy for writes.
 
+<a id="q-iter-006"></a>
+### Should the sample API retry construction after a startup outage?
+
+Severity: Medium · Decision: Open
+
+Run: Improvement iteration 7, 2026-11-15
+
+Evidence: api.main captures no engine when automatic startup fails, so later health requests remain unavailable even if construction could now succeed. cypher_api leaves failed construction uncached and retries. Actual in-process ASGI neighbors and [health model](models/service_health/NOTES.md) derive these distinct histories; no external database recovery was tested and no auto-recovery requirement established.
+
+Working answer: recreate the sample app as built. Alternative: retry construction and consistently replace captured GraphQL/query/health ownership. Canonical owner: [recovery policy](../ontology/concepts/access.g5.md#access.health.recovery-policy). Decision needed: operator recreation versus automatic recovery contract; no owner decision inferred.
+
+<a id="q-iter-004"></a>
+### Should standalone handled metadata calls expose YIELD aliases as result columns?
+
+Severity: Medium · Decision: Open
+
+Run: Improvement iteration 7, 2026-11-15
+
+Evidence: real persisted A/B labels through db.labels and public execute_cypher give column label for YIELD label AS l, but column l with RETURN l. Bare ORDER BY l refuses; RETURN l ORDER BY l succeeds. [Native empty/nonempty neighbors](../uplift/consolidated/iteration-7/procedure-native.json), [qualified model](models/procedure_results/NOTES.md). No specific contrary metadata-only requirement was established, so this is not counted as a new bug.
+
+Working answer: document physical columns until a maintainer decides. Alternative: project standalone YIELD aliases consistently, preserving explicit RETURN and existing supported filters. Canonical owner: [alias policy](../ontology/features/cypher.g5.md#query.system-procedures.alias-policy). Decision needed: compatibility versus uniform result names; no human decision inferred.
+
+<a id="q-iter-005"></a>
+### Should handled WHERE validation happen when no rows exist?
+
+Severity: Medium · Decision: Open
+
+Run: Improvement iteration 7, 2026-11-15
+
+Evidence: unsupported STARTS WITH and missing parameter both refuse with label data but return an empty projected result when the producer is empty. Structural MATCH still refuses on empty data. Actual Python/SQLite and [native cases](../uplift/consolidated/iteration-7/procedure-native.json) agree; [model](models/procedure_results/NOTES.md) distinguishes these branches. This exception to a broad refusal description does not establish an intended validation policy.
+
+Working answer: document row evaluation as built. Alternative: validate supported expression forms and supplied parameters before evaluating rows, so invalid queries have stable outcomes independent of data. Canonical owner: [empty validation](../ontology/features/cypher.g5.md#query.system-procedures.empty-validation). Decision needed: eager validation requirement and compatibility; no owner approval inferred.
+
 <a id="q-iter-003"></a>
 ### Should history text filters use binary identity or the current database comparison?
 

@@ -1,0 +1,20 @@
+verification results:: 15 verified, 2 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-procedure-20261115/verus/procedure_results/controls/bare-alias-projected/20261115T180917Z/models/procedure_results/procedure_results.rs:105:13
+    |
+104 | pub proof fn theorem_bare_alias_keeps_physical(rows:Seq<int>,alias:Seq<char>)
+    | ----------------------------------------------------------------------------- at the end of the function body
+105 |     ensures consume(rows,simple(alias,Condition::All,false))==(Outcome::Rows{column:physical(),values:rows}),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-procedure-20261115/verus/procedure_results/controls/bare-alias-projected/20261115T180917Z/models/procedure_results/procedure_results.rs:120:13
+    |
+118 | pub proof fn theorem_order_requires_result_column(rows:Seq<int>,alias:Seq<char>)
+    | -------------------------------------------------------------------------------- at the end of the function body
+119 |     requires alias!=physical(),
+120 |     ensures consume(rows,Query{order_name:Some(alias),..simple(alias,Condition::All,false)})==Outcome::Refused,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

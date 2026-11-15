@@ -1,0 +1,61 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_bulk_zero_fallback_differs",
+      "theorem_bulk_clock_and_fallback_final_windows"
+    ],
+    "find": "if available{Route::Counts}else{Route::PrewriteFallback}",
+    "name": "fallback-routes-to-counts",
+    "replace": "Route::Counts"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_bulk_zero_fallback_differs",
+      "theorem_bulk_clock_and_fallback_final_windows"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal_clock/model.json": "26752db5f768aaf0e1f2826d08207f347ad9aab6b8566240489febffb87af840",
+    ".g5/Verus_verification/models/temporal_clock/temporal_clock.rs": "347ab034dc71589ac9756381a874dbb437560f5b37d48ff95e457fc7485e521f",
+    ".g5/Verus_verification/models/temporal_restore/temporal_restore.rs": "0f72f0047d5a1faf6471e0cd7b2bc369fe2c4e334144bbc17b6264b961d584a6",
+    ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs": "4f14236f57a45c64e889f794b6d55f3fc823dccaba4a2759ed7cedc97fd3bd9d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/fallback-routes-to-counts/20261115T181037Z/models/temporal_clock/temporal_clock.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_bulk_clock_and_fallback_final_windows": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/20261115T181037Z-control-fallback-routes-to-counts-theorem_bulk_clock_and_fallback_final_windows.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_bulk_zero_fallback_differs": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/20261115T181037Z-control-fallback-routes-to-counts-theorem_bulk_zero_fallback_differs.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/20261115T181037Z-control-fallback-routes-to-counts.log",
+    "timed_out": false,
+    "verified": 48
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal_clock/20261115T181039Z-control-fallback-routes-to-counts/logs/20261115T181037Z-control-fallback-routes-to-counts-theorem_bulk_clock_and_fallback_final_windows.log": "3b7387ee4fc929aeba9afab5e5106fbf4367b4977fe8fb61a483620a96774163",
+    ".g5/Verus_verification/results/temporal_clock/20261115T181039Z-control-fallback-routes-to-counts/logs/20261115T181037Z-control-fallback-routes-to-counts-theorem_bulk_zero_fallback_differs.log": "9466bb9cbf03acb479f4d89006c9b02ab6acb788d3399da83aa027fc9caf24d6",
+    ".g5/Verus_verification/results/temporal_clock/20261115T181039Z-control-fallback-routes-to-counts/logs/20261115T181037Z-control-fallback-routes-to-counts.log": "621f204bf8e8955452956865ea5a68732298a76b773fc0772a7e708d8579fdfb"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

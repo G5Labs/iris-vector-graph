@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_cached_query_failure_keeps_engine"
+    ],
+    "find": "CacheRequest{state,used:engine,response:Reply",
+    "name": "cached-failure-clears-engine",
+    "replace": "CacheRequest{state:Cache{engine:if query_ok(q){engine}else{None},..state},used:engine,response:Reply"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_cached_query_failure_keeps_engine"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/service_health/model.json": "9e9c64a322b9016d1845da7e9d52c702e420bab831a1e476d5b548b760a724f9",
+    ".g5/Verus_verification/models/service_health/service_health.rs": "c768d2646b1eba243619f465348f463b5d3a50a98382965c1325f2e50a966d8e"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration7-root-review-20261115/verus/service_health/controls/cached-failure-clears-engine/20261115T182052Z/models/service_health/service_health.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 4,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_cached_query_failure_keeps_engine": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration7-root-review-20261115/verus/service_health/20261115T182052Z-control-cached-failure-clears-engine-theorem_cached_query_failure_keeps_engine.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration7-root-review-20261115/verus/service_health/20261115T182052Z-control-cached-failure-clears-engine.log",
+    "timed_out": false,
+    "verified": 14
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/service_health/20261115T182053Z-control-cached-failure-clears-engine/logs/20261115T182052Z-control-cached-failure-clears-engine-theorem_cached_query_failure_keeps_engine.log": "925182830b085b8829785be3e5e1fb897b106eb6a8db1f0434e73c755c20b5e7",
+    ".g5/Verus_verification/results/service_health/20261115T182053Z-control-cached-failure-clears-engine/logs/20261115T182052Z-control-cached-failure-clears-engine.log": "390d94c66816d54123811d5e30baa5e0722f7540effdce286dcf9006b58a59f1"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

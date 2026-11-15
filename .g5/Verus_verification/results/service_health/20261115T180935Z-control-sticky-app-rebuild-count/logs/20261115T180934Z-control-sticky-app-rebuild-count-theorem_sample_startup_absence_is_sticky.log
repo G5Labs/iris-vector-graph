@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-health-20261115/verus/service_health/controls/sticky-app-rebuild-count/20261115T180934Z/models/service_health/service_health.rs:112:9
+    |
+110 | pub proof fn theorem_sample_startup_absence_is_sticky(p:Probe,q:Probe,error:Error)
+    | ---------------------------------------------------------------------------------- at the end of the function body
+111 |     ensures main_request(main_request(main_boot(Factory::Raised(error)),p).state,q).state.engine.is_none(),
+112 |         main_request(main_request(main_boot(Factory::Raised(error)),p).state,q).state.factory_calls==1,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

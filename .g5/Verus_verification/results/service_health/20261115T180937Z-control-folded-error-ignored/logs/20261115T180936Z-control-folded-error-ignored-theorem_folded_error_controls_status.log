@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-health-20261115/verus/service_health/controls/folded-error-ignored/20261115T180936Z/models/service_health/service_health.rs:141:13
+    |
+139 | pub proof fn theorem_folded_error_controls_status(s:Cache,f:Factory,msg:Seq<char>)
+    | ---------------------------------------------------------------------------------- at the end of the function body
+140 |     requires s.engine.is_some(),msg.len()>0,
+141 |     ensures cache_request(s,f,Query::Returned{error:Some(msg)}).response.status==Status::Unavailable,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

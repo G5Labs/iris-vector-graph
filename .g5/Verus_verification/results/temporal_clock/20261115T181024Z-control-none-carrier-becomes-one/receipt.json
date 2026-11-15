@@ -1,0 +1,61 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_single_omission_and_epoch_share_carrier",
+      "theorem_raw_omission_misses_recent_window"
+    ],
+    "find": "r==Raw::Null {Some(0)}",
+    "name": "none-carrier-becomes-one",
+    "replace": "r==Raw::Null {Some(1)}"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_single_omission_and_epoch_share_carrier",
+      "theorem_raw_omission_misses_recent_window"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal_clock/model.json": "26752db5f768aaf0e1f2826d08207f347ad9aab6b8566240489febffb87af840",
+    ".g5/Verus_verification/models/temporal_clock/temporal_clock.rs": "347ab034dc71589ac9756381a874dbb437560f5b37d48ff95e457fc7485e521f",
+    ".g5/Verus_verification/models/temporal_restore/temporal_restore.rs": "0f72f0047d5a1faf6471e0cd7b2bc369fe2c4e334144bbc17b6264b961d584a6",
+    ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs": "4f14236f57a45c64e889f794b6d55f3fc823dccaba4a2759ed7cedc97fd3bd9d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/none-carrier-becomes-one/20261115T181022Z/models/temporal_clock/temporal_clock.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_raw_omission_misses_recent_window": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/20261115T181022Z-control-none-carrier-becomes-one-theorem_raw_omission_misses_recent_window.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_single_omission_and_epoch_share_carrier": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/20261115T181022Z-control-none-carrier-becomes-one-theorem_single_omission_and_epoch_share_carrier.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/20261115T181022Z-control-none-carrier-becomes-one.log",
+    "timed_out": false,
+    "verified": 48
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal_clock/20261115T181024Z-control-none-carrier-becomes-one/logs/20261115T181022Z-control-none-carrier-becomes-one-theorem_raw_omission_misses_recent_window.log": "49b334ee5213565853326fa7252722c667cf3b5f73ed059b111d1e9c4ce45963",
+    ".g5/Verus_verification/results/temporal_clock/20261115T181024Z-control-none-carrier-becomes-one/logs/20261115T181022Z-control-none-carrier-becomes-one-theorem_single_omission_and_epoch_share_carrier.log": "0bd1e83be5058c01071513507ff95db06483b845ff4e8e243f30b6d73633005a",
+    ".g5/Verus_verification/results/temporal_clock/20261115T181024Z-control-none-carrier-becomes-one/logs/20261115T181022Z-control-none-carrier-becomes-one.log": "c065e750e8c186692164fd5a108a82b08caaae849889ed3026c2e4314470a7b8"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

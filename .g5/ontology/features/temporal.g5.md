@@ -28,6 +28,19 @@ A temporal edge records when an event happened on a triple in one graph, with a 
 - At most one temporal edge exists at one set of coordinates.
 - The unit is set by the entry point: the engine's interface counts seconds, and a millisecond entry point that the engine does not expose counts milliseconds; a bucket is five minutes in either.
 - Both entry points use the same per-graph stores, so a caller must keep one unit per graph; IVG cannot detect a mix.
+- The single Python API currently violates missing-time stamping: omission and None are sent as epoch zero; [clock resolution](#temporal.edge.clock) also distinguishes normal bulk zero from its fallback.
+
+<a id="temporal.edge.clock"></a>
+[D · temporal.edge.clock]
+
+Timestamp normalization and the selected writer determine the stored coordinate,
+so fixed-coordinate repeatability requires the same resolved event times.
+
+- Single Python omission, None and explicit zero reach the single writer as text zero and remain epoch zero; a normal bulk zero uses each item's current seconds.
+- If the bulk endpoint is unavailable before writing, its single-edge fallback stores that same zero at epoch zero. Explicit positive timestamps retain event time on all three paths.
+- Bulk items require a usable timestamp; all items are validated and normalized before the first write, while an empty batch succeeds with count zero.
+- Numeric short alias `ts=0` defers to a supplied long `timestamp` alias, while text `ts="0"` keeps zero. A present None long alias can fail conversion where an absent long alias defaults to zero.
+- On a duplicate explicit positive timestamp, normal bulk reports a collision and zero writes; fallback counts the successful single call and cannot report the collision. The stored existing event remains unchanged.
 
 <a id="temporal.edge.graph-scope"></a>
 [I · temporal.edge.graph-scope]
@@ -369,6 +382,15 @@ What should an insert collision inside a changeset do?
 The Python engine calls only the seconds entry point; the millisecond class shares the same stores. Observed divergence: the single-edge Python write sends 0 for a missing timestamp and the edge is stored at time 0, while the batch path stamps 0 as now (finding F11 in [stage-A notes](../../uplift/ivg-verus-initial/intent/temporal.md)).
 
 Findings: [create_edge_temporal with no timestamp stores the event at time 0](../../Verus_verification/bugs_issues.md#bug-tmp-007)
+
+### temporal.edge.clock
+- agent
+- user-facing-behavior
+- test-coverage
+- Expands: [Temporal edge](#temporal.edge).
+- Formal: [raw timestamp to final reader](../../Verus_verification/models/temporal_clock/temporal_clock.rs), [source roles and scope](../../Verus_verification/models/temporal_clock/NOTES.md).
+
+Evidence: [source-frozen neighboring outcomes](../../uplift/consolidated/iteration-7/timestamp-PAIRS.md), [actual native clock/fallback/window cases](../../uplift/consolidated/iteration-7/timestamp-native.json). Known bug-tmp-007/F-0502 is one missing-time issue; F-0513 separately concerns negative bulk values. The new proof covers default insert and pre-effect refusal, not partial-prefix replay, all native coercions, strict ledger, millisecond entry points or arbitrary clocks.
 
 ### temporal.edge.graph-scope
 - Sources: [ADR-0003](../../../docs/adr/0003-two-graph-key-derivations.md), [GraphKey](../../../iris_src/src/Graph/KG/GraphKey.cls), [glossary](../../../CONTEXT.md#L28-L58); live tests: [graph scope](../../../tests/integration/test_223_temporal_graph_scope.py)

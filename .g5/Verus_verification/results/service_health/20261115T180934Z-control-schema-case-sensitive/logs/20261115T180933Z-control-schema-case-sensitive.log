@@ -1,0 +1,12 @@
+verification results:: 14 verified, 1 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-health-20261115/verus/service_health/controls/schema-case-sensitive/20261115T180933Z/models/service_health/service_health.rs:102:13
+    |
+102 |     ensures main_request(s,p).response.status==Status::Ok,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+103 | {
+104 |     assert(upper(upper(name)) =~= upper(name)) by {
+    |     ------ at the end of the function body
+
+error: aborting due to 1 previous error
+

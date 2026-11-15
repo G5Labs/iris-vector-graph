@@ -1,0 +1,36 @@
+verification results:: 50 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/single-admits-negative/20261115T181341Z/models/temporal_clock/temporal_clock.rs:71:1
+   |
+71 | pub proof fn theorem_single_validation(n:int)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/single-admits-negative/20261115T181341Z/models/temporal_clock/temporal_clock.rs:73:13
+   |
+71 | pub proof fn theorem_single_validation(n:int)
+   | --------------------------------------------- at the end of the function body
+72 |     requires n<0,
+73 |     ensures single_payload(Raw::Number(n))==None,single_payload(Raw::Text(n))==None,
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/single-admits-negative/20261115T181341Z/models/temporal_clock/temporal_clock.rs:73:50
+   |
+71 | pub proof fn theorem_single_validation(n:int)
+   | --------------------------------------------- at the end of the function body
+72 |     requires n<0,
+73 |     ensures single_payload(Raw::Number(n))==None,single_payload(Raw::Text(n))==None,
+   |                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/single-admits-negative/20261115T181341Z/models/temporal_clock/temporal_clock.rs:94:9
+   |
+91 | pub proof fn theorem_bulk_keeps_negative(n:int)
+   | ----------------------------------------------- at the end of the function body
+...
+94 |         single_payload(Raw::Number(n))==None,
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

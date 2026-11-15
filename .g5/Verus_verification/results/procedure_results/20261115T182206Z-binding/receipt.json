@@ -1,0 +1,997 @@
+{
+  "blocked_network_calls": 0,
+  "comparisons": 6580,
+  "detection": {
+    "actual_distinct_producer_removed": true,
+    "actual_where_consumer_removed": true,
+    "changed_column_oracle_rejected": true
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bulk_children/binding.py": "68611bb8ec02a41fb5d62f1d01ae2053209304d05766fc642a22475e7feb6758",
+    ".g5/Verus_verification/models/procedure_results/binding.py": "d9d8c54ec729c4b6a29315cc7f19d19209566694a6c1268606132e87b400dde8",
+    ".g5/Verus_verification/models/procedure_results/procedure_results.rs": "c1b5fd65835381087753328369b55ce89b2c7b04f9191a97736a5a98bef1b875",
+    ".g5/Verus_verification/tools/binding_common.py": "c0e7292671b37f7fae18dbf90102fb5c3f9c2a746d4f2a642b92cd96fe781f8a",
+    "iris_vector_graph/_engine/nodes_edges.py": "7eb2ea4761f66c683db0dd8b55132bb5c2347855acb14ab5ed0f8210543857c7",
+    "iris_vector_graph/_engine/query.py": "197e7abc8ae204165b363ba4fc17445cb6fc7f789efd3b9dad6d88b0334945a3",
+    "iris_vector_graph/cypher/parser.py": "fb75d7be8289d65934e3bf40673c8e77db29e220a030d781b548f55820061805",
+    "iris_vector_graph/cypher/row_where.py": "dda4a80ea20023502c6751e07dd0a7b64ac05b792ff278bbbbf585ccdb3ca654",
+    "iris_vector_graph/engine.py": "89d5bc083ddf15315eef449fb1896c8d9864f5a125ba2515b1a0b39deb8a3eba",
+    "iris_vector_graph/result.py": "47d80ab0e017c9a421980abe81cfd573798e5d2b9808b4d71a505944d8ba051c"
+  },
+  "kind": "binding",
+  "mismatch_count": 0,
+  "mismatches": [],
+  "model": "procedure_results",
+  "pin": {
+    "all_equal": true,
+    "files_equal_pin_blobs": {
+      "iris_vector_graph/_engine/nodes_edges.py": true,
+      "iris_vector_graph/_engine/query.py": true,
+      "iris_vector_graph/_engine/temporal_window.py": true,
+      "iris_vector_graph/embedded.py": true,
+      "iris_vector_graph/engine.py": true,
+      "iris_vector_graph/freshness.py": true,
+      "iris_vector_graph/ledger/client.py": true,
+      "iris_vector_graph/ledger/replay.py": true,
+      "iris_vector_graph/prop_values.py": true,
+      "iris_vector_graph/schema.py": true
+    },
+    "pin_commit": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+    "pin_dir": "/Users/ziniuw/runs/ivg-consolidated-20261114/pin"
+  },
+  "platform": "macOS-26.2-arm64-arm-64bit",
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "python": "3.11.8",
+  "samples": [
+    {
+      "expected": {
+        "columns": [
+          "label"
+        ],
+        "error": null,
+        "rows": []
+      },
+      "observation": {
+        "columns": [
+          "label"
+        ],
+        "error": null,
+        "rows": []
+      },
+      "query": "CALL db.labels() YIELD label AS l",
+      "world": 0
+    },
+    {
+      "expected": {
+        "refused": true
+      },
+      "observation": {
+        "message": "db.labels: ORDER BY reads a returned column by name, not Variable(name='l', is_parameter=False)",
+        "refused": true
+      },
+      "query": "CALL db.labels() YIELD label AS l ORDER BY l",
+      "world": 0
+    },
+    {
+      "expected": {
+        "columns": [
+          "l"
+        ],
+        "error": null,
+        "rows": []
+      },
+      "observation": {
+        "columns": [
+          "l"
+        ],
+        "error": null,
+        "rows": []
+      },
+      "query": "CALL db.labels() YIELD label AS l RETURN l",
+      "world": 0
+    },
+    {
+      "expected": {
+        "columns": [
+          "l"
+        ],
+        "error": null,
+        "rows": []
+      },
+      "observation": {
+        "columns": [
+          "l"
+        ],
+        "error": null,
+        "rows": []
+      },
+      "query": "CALL db.labels() YIELD label AS l RETURN l ORDER BY l",
+      "world": 0
+    },
+    {
+      "expected": {
+        "columns": [
+          "label"
+        ],
+        "error": null,
+        "rows": []
+      },
+      "observation": {
+        "columns": [
+          "label"
+        ],
+        "error": null,
+        "rows": []
+      },
+      "query": "CALL db.labels() YIELD label AS l WHERE l STARTS WITH 'A'",
+      "world": 0
+    },
+    {
+      "expected": {
+        "refused": true
+      },
+      "observation": {
+        "message": "db.labels: ORDER BY reads a returned column by name, not Variable(name='l', is_parameter=False)",
+        "refused": true
+      },
+      "query": "CALL db.labels() YIELD label AS l WHERE l STARTS WITH 'A' ORDER BY l",
+      "world": 0
+    },
+    {
+      "expected": {
+        "columns": [
+          "l"
+        ],
+        "error": null,
+        "rows": []
+      },
+      "observation": {
+        "columns": [
+          "l"
+        ],
+        "error": null,
+        "rows": []
+      },
+      "query": "CALL db.labels() YIELD label AS l WHERE l STARTS WITH 'A' RETURN l",
+      "world": 0
+    },
+    {
+      "expected": {
+        "columns": [
+          "l"
+        ],
+        "error": null,
+        "rows": []
+      },
+      "observation": {
+        "columns": [
+          "l"
+        ],
+        "error": null,
+        "rows": []
+      },
+      "query": "CALL db.labels() YIELD label AS l WHERE l STARTS WITH 'A' RETURN l ORDER BY l",
+      "world": 0
+    },
+    {
+      "expected": {
+        "columns": [
+          "label"
+        ],
+        "error": null,
+        "rows": []
+      },
+      "observation": {
+        "columns": [
+          "label"
+        ],
+        "error": null,
+        "rows": []
+      },
+      "query": "CALL db.labels() YIELD label AS l WHERE l = $wanted",
+      "world": 0
+    },
+    {
+      "expected": {
+        "refused": true
+      },
+      "observation": {
+        "message": "db.labels: ORDER BY reads a returned column by name, not Variable(name='l', is_parameter=False)",
+        "refused": true
+      },
+      "query": "CALL db.labels() YIELD label AS l WHERE l = $wanted ORDER BY l",
+      "world": 0
+    },
+    {
+      "expected": {
+        "columns": [
+          "l"
+        ],
+        "error": null,
+        "rows": []
+      },
+      "observation": {
+        "columns": [
+          "l"
+        ],
+        "error": null,
+        "rows": []
+      },
+      "query": "CALL db.labels() YIELD label AS l WHERE l = $wanted RETURN l",
+      "world": 0
+    },
+    {
+      "expected": {
+        "columns": [
+          "l"
+        ],
+        "error": null,
+        "rows": []
+      },
+      "observation": {
+        "columns": [
+          "l"
+        ],
+        "error": null,
+        "rows": []
+      },
+      "query": "CALL db.labels() YIELD label AS l WHERE l = $wanted RETURN l ORDER BY l",
+      "world": 0
+    },
+    {
+      "expected": {
+        "columns": [
+          "label"
+        ],
+        "error": null,
+        "rows": [
+          [
+            "A"
+          ]
+        ]
+      },
+      "observation": {
+        "columns": [
+          "label"
+        ],
+        "error": null,
+        "rows": [
+          [
+            "A"
+          ]
+        ]
+      },
+      "query": "CALL db.labels() YIELD label AS l",
+      "world": 1
+    },
+    {
+      "expected": {
+        "refused": true
+      },
+      "observation": {
+        "message": "db.labels: ORDER BY reads a returned column by name, not Variable(name='l', is_parameter=False)",
+        "refused": true
+      },
+      "query": "CALL db.labels() YIELD label AS l ORDER BY l",
+      "world": 1
+    },
+    {
+      "expected": {
+        "columns": [
+          "l"
+        ],
+        "error": null,
+        "rows": [
+          [
+            "A"
+          ]
+        ]
+      },
+      "observation": {
+        "columns": [
+          "l"
+        ],
+        "error": null,
+        "rows": [
+          [
+            "A"
+          ]
+        ]
+      },
+      "query": "CALL db.labels() YIELD label AS l RETURN l",
+      "world": 1
+    },
+    {
+      "expected": {
+        "columns": [
+          "l"
+        ],
+        "error": null,
+        "rows": [
+          [
+            "A"
+          ]
+        ]
+      },
+      "observation": {
+        "columns": [
+          "l"
+        ],
+        "error": null,
+        "rows": [
+          [
+            "A"
+          ]
+        ]
+      },
+      "query": "CALL db.labels() YIELD label AS l RETURN l ORDER BY l",
+      "world": 1
+    },
+    {
+      "expected": {
+        "refused": true
+      },
+      "observation": {
+        "message": "WHERE after YIELD of a procedure IVG answers outside SQL reads the yielded names, literals and parameters, comparisons, IN a literal list, IS NULL, AND, OR, XOR and NOT; not BooleanExpression(operator=<BooleanOperator.STARTS_WITH: 'STARTS WITH'>, operands=[Variable(name='l', is_parameter=False), Literal(value='A')]). Filter the returned rows in Python instead.",
+        "refused": true
+      },
+      "query": "CALL db.labels() YIELD label AS l WHERE l STARTS WITH 'A'",
+      "world": 1
+    },
+    {
+      "expected": {
+        "refused": true
+      },
+      "observation": {
+        "message": "WHERE after YIELD of a procedure IVG answers outside SQL reads the yielded names, literals and parameters, comparisons, IN a literal list, IS NULL, AND, OR, XOR and NOT; not BooleanExpression(operator=<BooleanOperator.STARTS_WITH: 'STARTS WITH'>, operands=[Variable(name='l', is_parameter=False), Literal(value='A')]). Filter the returned rows in Python instead.",
+        "refused": true
+      },
+      "query": "CALL db.labels() YIELD label AS l WHERE l STARTS WITH 'A' ORDER BY l",
+      "world": 1
+    },
+    {
+      "expected": {
+        "refused": true
+      },
+      "observation": {
+        "message": "WHERE after YIELD of a procedure IVG answers outside SQL reads the yielded names, literals and parameters, comparisons, IN a literal list, IS NULL, AND, OR, XOR and NOT; not BooleanExpression(operator=<BooleanOperator.STARTS_WITH: 'STARTS WITH'>, operands=[Variable(name='l', is_parameter=False), Literal(value='A')]). Filter the returned rows in Python instead.",
+        "refused": true
+      },
+      "query": "CALL db.labels() YIELD label AS l WHERE l STARTS WITH 'A' RETURN l",
+      "world": 1
+    },
+    {
+      "expected": {
+        "refused": true
+      },
+      "observation": {
+        "message": "WHERE after YIELD of a procedure IVG answers outside SQL reads the yielded names, literals and parameters, comparisons, IN a literal list, IS NULL, AND, OR, XOR and NOT; not BooleanExpression(operator=<BooleanOperator.STARTS_WITH: 'STARTS WITH'>, operands=[Variable(name='l', is_parameter=False), Literal(value='A')]). Filter the returned rows in Python instead.",
+        "refused": true
+      },
+      "query": "CALL db.labels() YIELD label AS l WHERE l STARTS WITH 'A' RETURN l ORDER BY l",
+      "world": 1
+    },
+    {
+      "expected": {
+        "refused": true
+      },
+      "observation": {
+        "message": "WHERE after YIELD: parameter $wanted is not given",
+        "refused": true
+      },
+      "query": "CALL db.labels() YIELD label AS l WHERE l = $wanted",
+      "world": 1
+    },
+    {
+      "expected": {
+        "refused": true
+      },
+      "observation": {
+        "message": "WHERE after YIELD: parameter $wanted is not given",
+        "refused": true
+      },
+      "query": "CALL db.labels() YIELD label AS l WHERE l = $wanted ORDER BY l",
+      "world": 1
+    },
+    {
+      "expected": {
+        "refused": true
+      },
+      "observation": {
+        "message": "WHERE after YIELD: parameter $wanted is not given",
+        "refused": true
+      },
+      "query": "CALL db.labels() YIELD label AS l WHERE l = $wanted RETURN l",
+      "world": 1
+    },
+    {
+      "expected": {
+        "refused": true
+      },
+      "observation": {
+        "message": "WHERE after YIELD: parameter $wanted is not given",
+        "refused": true
+      },
+      "query": "CALL db.labels() YIELD label AS l WHERE l = $wanted RETURN l ORDER BY l",
+      "world": 1
+    },
+    {
+      "expected": {
+        "columns": [
+          "label"
+        ],
+        "error": null,
+        "rows": [
+          [
+            "B"
+          ]
+        ]
+      },
+      "observation": {
+        "columns": [
+          "label"
+        ],
+        "error": null,
+        "rows": [
+          [
+            "B"
+          ]
+        ]
+      },
+      "query": "CALL db.labels() YIELD label AS l",
+      "world": 2
+    },
+    {
+      "expected": {
+        "refused": true
+      },
+      "observation": {
+        "message": "db.labels: ORDER BY reads a returned column by name, not Variable(name='l', is_parameter=False)",
+        "refused": true
+      },
+      "query": "CALL db.labels() YIELD label AS l ORDER BY l",
+      "world": 2
+    },
+    {
+      "expected": {
+        "columns": [
+          "l"
+        ],
+        "error": null,
+        "rows": [
+          [
+            "B"
+          ]
+        ]
+      },
+      "observation": {
+        "columns": [
+          "l"
+        ],
+        "error": null,
+        "rows": [
+          [
+            "B"
+          ]
+        ]
+      },
+      "query": "CALL db.labels() YIELD label AS l RETURN l",
+      "world": 2
+    },
+    {
+      "expected": {
+        "columns": [
+          "l"
+        ],
+        "error": null,
+        "rows": [
+          [
+            "B"
+          ]
+        ]
+      },
+      "observation": {
+        "columns": [
+          "l"
+        ],
+        "error": null,
+        "rows": [
+          [
+            "B"
+          ]
+        ]
+      },
+      "query": "CALL db.labels() YIELD label AS l RETURN l ORDER BY l",
+      "world": 2
+    },
+    {
+      "expected": {
+        "refused": true
+      },
+      "observation": {
+        "message": "WHERE after YIELD of a procedure IVG answers outside SQL reads the yielded names, literals and parameters, comparisons, IN a literal list, IS NULL, AND, OR, XOR and NOT; not BooleanExpression(operator=<BooleanOperator.STARTS_WITH: 'STARTS WITH'>, operands=[Variable(name='l', is_parameter=False), Literal(value='A')]). Filter the returned rows in Python instead.",
+        "refused": true
+      },
+      "query": "CALL db.labels() YIELD label AS l WHERE l STARTS WITH 'A'",
+      "world": 2
+    },
+    {
+      "expected": {
+        "refused": true
+      },
+      "observation": {
+        "message": "WHERE after YIELD of a procedure IVG answers outside SQL reads the yielded names, literals and parameters, comparisons, IN a literal list, IS NULL, AND, OR, XOR and NOT; not BooleanExpression(operator=<BooleanOperator.STARTS_WITH: 'STARTS WITH'>, operands=[Variable(name='l', is_parameter=False), Literal(value='A')]). Filter the returned rows in Python instead.",
+        "refused": true
+      },
+      "query": "CALL db.labels() YIELD label AS l WHERE l STARTS WITH 'A' ORDER BY l",
+      "world": 2
+    },
+    {
+      "expected": {
+        "refused": true
+      },
+      "observation": {
+        "message": "WHERE after YIELD of a procedure IVG answers outside SQL reads the yielded names, literals and parameters, comparisons, IN a literal list, IS NULL, AND, OR, XOR and NOT; not BooleanExpression(operator=<BooleanOperator.STARTS_WITH: 'STARTS WITH'>, operands=[Variable(name='l', is_parameter=False), Literal(value='A')]). Filter the returned rows in Python instead.",
+        "refused": true
+      },
+      "query": "CALL db.labels() YIELD label AS l WHERE l STARTS WITH 'A' RETURN l",
+      "world": 2
+    },
+    {
+      "expected": {
+        "refused": true
+      },
+      "observation": {
+        "message": "WHERE after YIELD of a procedure IVG answers outside SQL reads the yielded names, literals and parameters, comparisons, IN a literal list, IS NULL, AND, OR, XOR and NOT; not BooleanExpression(operator=<BooleanOperator.STARTS_WITH: 'STARTS WITH'>, operands=[Variable(name='l', is_parameter=False), Literal(value='A')]). Filter the returned rows in Python instead.",
+        "refused": true
+      },
+      "query": "CALL db.labels() YIELD label AS l WHERE l STARTS WITH 'A' RETURN l ORDER BY l",
+      "world": 2
+    },
+    {
+      "expected": {
+        "refused": true
+      },
+      "observation": {
+        "message": "WHERE after YIELD: parameter $wanted is not given",
+        "refused": true
+      },
+      "query": "CALL db.labels() YIELD label AS l WHERE l = $wanted",
+      "world": 2
+    },
+    {
+      "expected": {
+        "refused": true
+      },
+      "observation": {
+        "message": "WHERE after YIELD: parameter $wanted is not given",
+        "refused": true
+      },
+      "query": "CALL db.labels() YIELD label AS l WHERE l = $wanted ORDER BY l",
+      "world": 2
+    },
+    {
+      "expected": {
+        "refused": true
+      },
+      "observation": {
+        "message": "WHERE after YIELD: parameter $wanted is not given",
+        "refused": true
+      },
+      "query": "CALL db.labels() YIELD label AS l WHERE l = $wanted RETURN l",
+      "world": 2
+    },
+    {
+      "expected": {
+        "refused": true
+      },
+      "observation": {
+        "message": "WHERE after YIELD: parameter $wanted is not given",
+        "refused": true
+      },
+      "query": "CALL db.labels() YIELD label AS l WHERE l = $wanted RETURN l ORDER BY l",
+      "world": 2
+    },
+    {
+      "expected": {
+        "columns": [
+          "label"
+        ],
+        "error": null,
+        "rows": [
+          [
+            "A"
+          ],
+          [
+            "B"
+          ]
+        ]
+      },
+      "observation": {
+        "columns": [
+          "label"
+        ],
+        "error": null,
+        "rows": [
+          [
+            "A"
+          ],
+          [
+            "B"
+          ]
+        ]
+      },
+      "query": "CALL db.labels() YIELD label AS l",
+      "world": 3
+    },
+    {
+      "expected": {
+        "refused": true
+      },
+      "observation": {
+        "message": "db.labels: ORDER BY reads a returned column by name, not Variable(name='l', is_parameter=False)",
+        "refused": true
+      },
+      "query": "CALL db.labels() YIELD label AS l ORDER BY l",
+      "world": 3
+    },
+    {
+      "expected": {
+        "columns": [
+          "l"
+        ],
+        "error": null,
+        "rows": [
+          [
+            "A"
+          ],
+          [
+            "B"
+          ]
+        ]
+      },
+      "observation": {
+        "columns": [
+          "l"
+        ],
+        "error": null,
+        "rows": [
+          [
+            "A"
+          ],
+          [
+            "B"
+          ]
+        ]
+      },
+      "query": "CALL db.labels() YIELD label AS l RETURN l",
+      "world": 3
+    },
+    {
+      "expected": {
+        "columns": [
+          "l"
+        ],
+        "error": null,
+        "rows": [
+          [
+            "A"
+          ],
+          [
+            "B"
+          ]
+        ]
+      },
+      "observation": {
+        "columns": [
+          "l"
+        ],
+        "error": null,
+        "rows": [
+          [
+            "A"
+          ],
+          [
+            "B"
+          ]
+        ]
+      },
+      "query": "CALL db.labels() YIELD label AS l RETURN l ORDER BY l",
+      "world": 3
+    },
+    {
+      "expected": {
+        "refused": true
+      },
+      "observation": {
+        "message": "WHERE after YIELD of a procedure IVG answers outside SQL reads the yielded names, literals and parameters, comparisons, IN a literal list, IS NULL, AND, OR, XOR and NOT; not BooleanExpression(operator=<BooleanOperator.STARTS_WITH: 'STARTS WITH'>, operands=[Variable(name='l', is_parameter=False), Literal(value='A')]). Filter the returned rows in Python instead.",
+        "refused": true
+      },
+      "query": "CALL db.labels() YIELD label AS l WHERE l STARTS WITH 'A'",
+      "world": 3
+    },
+    {
+      "expected": {
+        "refused": true
+      },
+      "observation": {
+        "message": "WHERE after YIELD of a procedure IVG answers outside SQL reads the yielded names, literals and parameters, comparisons, IN a literal list, IS NULL, AND, OR, XOR and NOT; not BooleanExpression(operator=<BooleanOperator.STARTS_WITH: 'STARTS WITH'>, operands=[Variable(name='l', is_parameter=False), Literal(value='A')]). Filter the returned rows in Python instead.",
+        "refused": true
+      },
+      "query": "CALL db.labels() YIELD label AS l WHERE l STARTS WITH 'A' ORDER BY l",
+      "world": 3
+    },
+    {
+      "expected": {
+        "refused": true
+      },
+      "observation": {
+        "message": "WHERE after YIELD of a procedure IVG answers outside SQL reads the yielded names, literals and parameters, comparisons, IN a literal list, IS NULL, AND, OR, XOR and NOT; not BooleanExpression(operator=<BooleanOperator.STARTS_WITH: 'STARTS WITH'>, operands=[Variable(name='l', is_parameter=False), Literal(value='A')]). Filter the returned rows in Python instead.",
+        "refused": true
+      },
+      "query": "CALL db.labels() YIELD label AS l WHERE l STARTS WITH 'A' RETURN l",
+      "world": 3
+    },
+    {
+      "expected": {
+        "refused": true
+      },
+      "observation": {
+        "message": "WHERE after YIELD of a procedure IVG answers outside SQL reads the yielded names, literals and parameters, comparisons, IN a literal list, IS NULL, AND, OR, XOR and NOT; not BooleanExpression(operator=<BooleanOperator.STARTS_WITH: 'STARTS WITH'>, operands=[Variable(name='l', is_parameter=False), Literal(value='A')]). Filter the returned rows in Python instead.",
+        "refused": true
+      },
+      "query": "CALL db.labels() YIELD label AS l WHERE l STARTS WITH 'A' RETURN l ORDER BY l",
+      "world": 3
+    },
+    {
+      "expected": {
+        "refused": true
+      },
+      "observation": {
+        "message": "WHERE after YIELD: parameter $wanted is not given",
+        "refused": true
+      },
+      "query": "CALL db.labels() YIELD label AS l WHERE l = $wanted",
+      "world": 3
+    },
+    {
+      "expected": {
+        "refused": true
+      },
+      "observation": {
+        "message": "WHERE after YIELD: parameter $wanted is not given",
+        "refused": true
+      },
+      "query": "CALL db.labels() YIELD label AS l WHERE l = $wanted ORDER BY l",
+      "world": 3
+    },
+    {
+      "expected": {
+        "refused": true
+      },
+      "observation": {
+        "message": "WHERE after YIELD: parameter $wanted is not given",
+        "refused": true
+      },
+      "query": "CALL db.labels() YIELD label AS l WHERE l = $wanted RETURN l",
+      "world": 3
+    },
+    {
+      "expected": {
+        "refused": true
+      },
+      "observation": {
+        "message": "WHERE after YIELD: parameter $wanted is not given",
+        "refused": true
+      },
+      "query": "CALL db.labels() YIELD label AS l WHERE l = $wanted RETURN l ORDER BY l",
+      "world": 3
+    },
+    {
+      "expected": {
+        "columns": [
+          "label"
+        ],
+        "error": null,
+        "rows": [
+          [
+            "A"
+          ],
+          [
+            "C"
+          ]
+        ]
+      },
+      "observation": {
+        "columns": [
+          "label"
+        ],
+        "error": null,
+        "rows": [
+          [
+            "A"
+          ],
+          [
+            "C"
+          ]
+        ]
+      },
+      "query": "CALL db.labels() YIELD label AS l",
+      "world": 4
+    },
+    {
+      "expected": {
+        "refused": true
+      },
+      "observation": {
+        "message": "db.labels: ORDER BY reads a returned column by name, not Variable(name='l', is_parameter=False)",
+        "refused": true
+      },
+      "query": "CALL db.labels() YIELD label AS l ORDER BY l",
+      "world": 4
+    },
+    {
+      "expected": {
+        "columns": [
+          "l"
+        ],
+        "error": null,
+        "rows": [
+          [
+            "A"
+          ],
+          [
+            "C"
+          ]
+        ]
+      },
+      "observation": {
+        "columns": [
+          "l"
+        ],
+        "error": null,
+        "rows": [
+          [
+            "A"
+          ],
+          [
+            "C"
+          ]
+        ]
+      },
+      "query": "CALL db.labels() YIELD label AS l RETURN l",
+      "world": 4
+    },
+    {
+      "expected": {
+        "columns": [
+          "l"
+        ],
+        "error": null,
+        "rows": [
+          [
+            "A"
+          ],
+          [
+            "C"
+          ]
+        ]
+      },
+      "observation": {
+        "columns": [
+          "l"
+        ],
+        "error": null,
+        "rows": [
+          [
+            "A"
+          ],
+          [
+            "C"
+          ]
+        ]
+      },
+      "query": "CALL db.labels() YIELD label AS l RETURN l ORDER BY l",
+      "world": 4
+    },
+    {
+      "expected": {
+        "refused": true
+      },
+      "observation": {
+        "message": "WHERE after YIELD of a procedure IVG answers outside SQL reads the yielded names, literals and parameters, comparisons, IN a literal list, IS NULL, AND, OR, XOR and NOT; not BooleanExpression(operator=<BooleanOperator.STARTS_WITH: 'STARTS WITH'>, operands=[Variable(name='l', is_parameter=False), Literal(value='A')]). Filter the returned rows in Python instead.",
+        "refused": true
+      },
+      "query": "CALL db.labels() YIELD label AS l WHERE l STARTS WITH 'A'",
+      "world": 4
+    },
+    {
+      "expected": {
+        "refused": true
+      },
+      "observation": {
+        "message": "WHERE after YIELD of a procedure IVG answers outside SQL reads the yielded names, literals and parameters, comparisons, IN a literal list, IS NULL, AND, OR, XOR and NOT; not BooleanExpression(operator=<BooleanOperator.STARTS_WITH: 'STARTS WITH'>, operands=[Variable(name='l', is_parameter=False), Literal(value='A')]). Filter the returned rows in Python instead.",
+        "refused": true
+      },
+      "query": "CALL db.labels() YIELD label AS l WHERE l STARTS WITH 'A' ORDER BY l",
+      "world": 4
+    },
+    {
+      "expected": {
+        "refused": true
+      },
+      "observation": {
+        "message": "WHERE after YIELD of a procedure IVG answers outside SQL reads the yielded names, literals and parameters, comparisons, IN a literal list, IS NULL, AND, OR, XOR and NOT; not BooleanExpression(operator=<BooleanOperator.STARTS_WITH: 'STARTS WITH'>, operands=[Variable(name='l', is_parameter=False), Literal(value='A')]). Filter the returned rows in Python instead.",
+        "refused": true
+      },
+      "query": "CALL db.labels() YIELD label AS l WHERE l STARTS WITH 'A' RETURN l",
+      "world": 4
+    },
+    {
+      "expected": {
+        "refused": true
+      },
+      "observation": {
+        "message": "WHERE after YIELD of a procedure IVG answers outside SQL reads the yielded names, literals and parameters, comparisons, IN a literal list, IS NULL, AND, OR, XOR and NOT; not BooleanExpression(operator=<BooleanOperator.STARTS_WITH: 'STARTS WITH'>, operands=[Variable(name='l', is_parameter=False), Literal(value='A')]). Filter the returned rows in Python instead.",
+        "refused": true
+      },
+      "query": "CALL db.labels() YIELD label AS l WHERE l STARTS WITH 'A' RETURN l ORDER BY l",
+      "world": 4
+    },
+    {
+      "expected": {
+        "refused": true
+      },
+      "observation": {
+        "message": "WHERE after YIELD: parameter $wanted is not given",
+        "refused": true
+      },
+      "query": "CALL db.labels() YIELD label AS l WHERE l = $wanted",
+      "world": 4
+    },
+    {
+      "expected": {
+        "refused": true
+      },
+      "observation": {
+        "message": "WHERE after YIELD: parameter $wanted is not given",
+        "refused": true
+      },
+      "query": "CALL db.labels() YIELD label AS l WHERE l = $wanted ORDER BY l",
+      "world": 4
+    },
+    {
+      "expected": {
+        "refused": true
+      },
+      "observation": {
+        "message": "WHERE after YIELD: parameter $wanted is not given",
+        "refused": true
+      },
+      "query": "CALL db.labels() YIELD label AS l WHERE l = $wanted RETURN l",
+      "world": 4
+    },
+    {
+      "expected": {
+        "refused": true
+      },
+      "observation": {
+        "message": "WHERE after YIELD: parameter $wanted is not given",
+        "refused": true
+      },
+      "query": "CALL db.labels() YIELD label AS l WHERE l = $wanted RETURN l ORDER BY l",
+      "world": 4
+    }
+  ],
+  "scope": "A/B/C labels via real single/bulk Python writers, real SQLite DISTINCT producer/parser/dispatch/where/projection/tail/public reader. Explicit transaction and SQL dialect adapters; no native IRIS, network, arbitrary collation, multi-column or general expression proof.",
+  "source_inputs": {
+    "iris_vector_graph/_engine/nodes_edges.py": "7eb2ea4761f66c683db0dd8b55132bb5c2347855acb14ab5ed0f8210543857c7",
+    "iris_vector_graph/_engine/query.py": "197e7abc8ae204165b363ba4fc17445cb6fc7f789efd3b9dad6d88b0334945a3",
+    "iris_vector_graph/cypher/parser.py": "fb75d7be8289d65934e3bf40673c8e77db29e220a030d781b548f55820061805",
+    "iris_vector_graph/cypher/row_where.py": "dda4a80ea20023502c6751e07dd0a7b64ac05b792ff278bbbbf585ccdb3ca654",
+    "iris_vector_graph/engine.py": "89d5bc083ddf15315eef449fb1896c8d9864f5a125ba2515b1a0b39deb8a3eba",
+    "iris_vector_graph/result.py": "47d80ab0e017c9a421980abe81cfd573798e5d2b9808b4d71a505944d8ba051c"
+  },
+  "verdict": "AGREES",
+  "wall_s": 2.998363958002301
+}

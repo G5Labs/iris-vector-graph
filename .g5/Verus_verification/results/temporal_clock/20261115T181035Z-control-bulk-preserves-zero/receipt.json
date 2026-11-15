@@ -1,0 +1,61 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_server_empty_and_zero_differ",
+      "theorem_bulk_clock_and_fallback_final_windows"
+    ],
+    "find": "if n==0{now}else{n}",
+    "name": "bulk-preserves-zero",
+    "replace": "n"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_server_empty_and_zero_differ",
+      "theorem_bulk_clock_and_fallback_final_windows"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal_clock/model.json": "26752db5f768aaf0e1f2826d08207f347ad9aab6b8566240489febffb87af840",
+    ".g5/Verus_verification/models/temporal_clock/temporal_clock.rs": "347ab034dc71589ac9756381a874dbb437560f5b37d48ff95e457fc7485e521f",
+    ".g5/Verus_verification/models/temporal_restore/temporal_restore.rs": "0f72f0047d5a1faf6471e0cd7b2bc369fe2c4e334144bbc17b6264b961d584a6",
+    ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs": "4f14236f57a45c64e889f794b6d55f3fc823dccaba4a2759ed7cedc97fd3bd9d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/bulk-preserves-zero/20261115T181033Z/models/temporal_clock/temporal_clock.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 4,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_bulk_clock_and_fallback_final_windows": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/20261115T181033Z-control-bulk-preserves-zero-theorem_bulk_clock_and_fallback_final_windows.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_server_empty_and_zero_differ": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/20261115T181033Z-control-bulk-preserves-zero-theorem_server_empty_and_zero_differ.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/20261115T181033Z-control-bulk-preserves-zero.log",
+    "timed_out": false,
+    "verified": 46
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal_clock/20261115T181035Z-control-bulk-preserves-zero/logs/20261115T181033Z-control-bulk-preserves-zero-theorem_bulk_clock_and_fallback_final_windows.log": "57a2880ce35244cee941f14418f68a6fcdba7076f41e585344af682df29e4642",
+    ".g5/Verus_verification/results/temporal_clock/20261115T181035Z-control-bulk-preserves-zero/logs/20261115T181033Z-control-bulk-preserves-zero-theorem_server_empty_and_zero_differ.log": "d55698b38ac83140c5c2f6fc87dde52f09ec0f0aaeaa6d9d545d61d94b25f660",
+    ".g5/Verus_verification/results/temporal_clock/20261115T181035Z-control-bulk-preserves-zero/logs/20261115T181033Z-control-bulk-preserves-zero.log": "fad291193e1d42f0aeb29d65220268a05586f84170fcfc868d359ee2693fec0a"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

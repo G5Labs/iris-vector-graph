@@ -1,0 +1,52 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_refusal_no_effect"
+    ],
+    "find": "if !provider_ok {refused(s)}",
+    "name": "provider-refusal-ignored",
+    "replace": "if false {refused(s)}"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_refusal_no_effect"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal_clock/model.json": "9eb825facbe5b07098d5b383a601ef1d06f68772a411a5bcc510f358e00c1e01",
+    ".g5/Verus_verification/models/temporal_clock/temporal_clock.rs": "23d02ef8b765a2fd495bf9b248b9c72ee7b5ac8b02d55ac1a43159bebdd3a306",
+    ".g5/Verus_verification/models/temporal_restore/temporal_restore.rs": "0f72f0047d5a1faf6471e0cd7b2bc369fe2c4e334144bbc17b6264b961d584a6",
+    ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs": "4f14236f57a45c64e889f794b6d55f3fc823dccaba4a2759ed7cedc97fd3bd9d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/provider-refusal-ignored/20261115T181357Z/models/temporal_clock/temporal_clock.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_refusal_no_effect": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/20261115T181357Z-control-provider-refusal-ignored-theorem_refusal_no_effect.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/20261115T181357Z-control-provider-refusal-ignored.log",
+    "timed_out": false,
+    "verified": 51
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal_clock/20261115T181358Z-control-provider-refusal-ignored/logs/20261115T181357Z-control-provider-refusal-ignored-theorem_refusal_no_effect.log": "8a0b97b0812682d7bf190b409ff5f0881b8b3100515e022b120292d77ae2a632",
+    ".g5/Verus_verification/results/temporal_clock/20261115T181358Z-control-provider-refusal-ignored/logs/20261115T181357Z-control-provider-refusal-ignored.log": "8a7a2bdb27b48eb13eb051fd2a5c87cb3aa18d9e2330a28548503bd27e19aaa3"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_folded_error_controls_status"
+    ],
+    "find": "error.is_none() || error.unwrap().len()==0",
+    "name": "folded-error-ignored",
+    "replace": "true"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_folded_error_controls_status"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/service_health/model.json": "9e9c64a322b9016d1845da7e9d52c702e420bab831a1e476d5b548b760a724f9",
+    ".g5/Verus_verification/models/service_health/service_health.rs": "c768d2646b1eba243619f465348f463b5d3a50a98382965c1325f2e50a966d8e"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration7-health-20261115/verus/service_health/controls/folded-error-ignored/20261115T181711Z/models/service_health/service_health.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_folded_error_controls_status": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration7-health-20261115/verus/service_health/20261115T181711Z-control-folded-error-ignored-theorem_folded_error_controls_status.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration7-health-20261115/verus/service_health/20261115T181711Z-control-folded-error-ignored.log",
+    "timed_out": false,
+    "verified": 16
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/service_health/20261115T181712Z-control-folded-error-ignored/logs/20261115T181711Z-control-folded-error-ignored-theorem_folded_error_controls_status.log": "49ae0dbdd8fd17a7b0d4c56f3cdc3131800231b4ab1ec24dc46e0e0ceeec503a",
+    ".g5/Verus_verification/results/service_health/20261115T181712Z-control-folded-error-ignored/logs/20261115T181711Z-control-folded-error-ignored.log": "f1bc2eaad9ec2f3c834fa9e5698b68764b542fc4e96816c4202b84b37e6d320c"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

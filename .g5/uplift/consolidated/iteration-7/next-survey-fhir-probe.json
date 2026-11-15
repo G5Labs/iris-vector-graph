@@ -1,0 +1,4543 @@
+{
+  "verdict": "AGREES",
+  "cases": [
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "fhir:NS:X0001",
+      "interval": null,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "value",
+        "value": {
+          "status": "scheduled",
+          "task_id": "7"
+        }
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Schedule",
+          "fhir:NS:X0001",
+          0
+        ]
+      ],
+      "expected": "value",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "fhir:NS:X0001",
+      "interval": null,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "value",
+        "value": {
+          "status": "busy"
+        }
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Schedule",
+          "fhir:NS:X0001",
+          0
+        ]
+      ],
+      "expected": "value",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "fhir:NS:X0001",
+      "interval": null,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "FHIRGraphError",
+        "message": "Schedule: ordinary restored task does not belong to graph"
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Schedule",
+          "fhir:NS:X0001",
+          0
+        ]
+      ],
+      "expected": "server-error",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "fhir:NS:X0001",
+      "interval": null,
+      "reply": "{}",
+      "outcome": {
+        "kind": "value",
+        "value": {}
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Schedule",
+          "fhir:NS:X0001",
+          0
+        ]
+      ],
+      "expected": "value",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "fhir:NS:X0001",
+      "interval": 0,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 0"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "fhir:NS:X0001",
+      "interval": 0,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 0"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "fhir:NS:X0001",
+      "interval": 0,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 0"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "fhir:NS:X0001",
+      "interval": 0,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 0"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "fhir:NS:X0001",
+      "interval": 1,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "fhir:NS:X0001",
+      "interval": 1,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "fhir:NS:X0001",
+      "interval": 1,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "fhir:NS:X0001",
+      "interval": 1,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "fhir:NS:X0001",
+      "interval": 59,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 59"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "fhir:NS:X0001",
+      "interval": 59,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 59"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "fhir:NS:X0001",
+      "interval": 59,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 59"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "fhir:NS:X0001",
+      "interval": 59,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 59"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "fhir:NS:X0001",
+      "interval": 60,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "value",
+        "value": {
+          "status": "scheduled",
+          "task_id": "7"
+        }
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Schedule",
+          "fhir:NS:X0001",
+          60
+        ]
+      ],
+      "expected": "value",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "fhir:NS:X0001",
+      "interval": 60,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "value",
+        "value": {
+          "status": "busy"
+        }
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Schedule",
+          "fhir:NS:X0001",
+          60
+        ]
+      ],
+      "expected": "value",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "fhir:NS:X0001",
+      "interval": 60,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "FHIRGraphError",
+        "message": "Schedule: ordinary restored task does not belong to graph"
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Schedule",
+          "fhir:NS:X0001",
+          60
+        ]
+      ],
+      "expected": "server-error",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "fhir:NS:X0001",
+      "interval": 60,
+      "reply": "{}",
+      "outcome": {
+        "kind": "value",
+        "value": {}
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Schedule",
+          "fhir:NS:X0001",
+          60
+        ]
+      ],
+      "expected": "value",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "fhir:NS:X0001",
+      "interval": 61,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "value",
+        "value": {
+          "status": "scheduled",
+          "task_id": "7"
+        }
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Schedule",
+          "fhir:NS:X0001",
+          61
+        ]
+      ],
+      "expected": "value",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "fhir:NS:X0001",
+      "interval": 61,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "value",
+        "value": {
+          "status": "busy"
+        }
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Schedule",
+          "fhir:NS:X0001",
+          61
+        ]
+      ],
+      "expected": "value",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "fhir:NS:X0001",
+      "interval": 61,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "FHIRGraphError",
+        "message": "Schedule: ordinary restored task does not belong to graph"
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Schedule",
+          "fhir:NS:X0001",
+          61
+        ]
+      ],
+      "expected": "server-error",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "fhir:NS:X0001",
+      "interval": 61,
+      "reply": "{}",
+      "outcome": {
+        "kind": "value",
+        "value": {}
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Schedule",
+          "fhir:NS:X0001",
+          61
+        ]
+      ],
+      "expected": "value",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "fhir:NS:X0001",
+      "interval": 120,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "value",
+        "value": {
+          "status": "scheduled",
+          "task_id": "7"
+        }
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Schedule",
+          "fhir:NS:X0001",
+          120
+        ]
+      ],
+      "expected": "value",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "fhir:NS:X0001",
+      "interval": 120,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "value",
+        "value": {
+          "status": "busy"
+        }
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Schedule",
+          "fhir:NS:X0001",
+          120
+        ]
+      ],
+      "expected": "value",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "fhir:NS:X0001",
+      "interval": 120,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "FHIRGraphError",
+        "message": "Schedule: ordinary restored task does not belong to graph"
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Schedule",
+          "fhir:NS:X0001",
+          120
+        ]
+      ],
+      "expected": "server-error",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "fhir:NS:X0001",
+      "interval": 120,
+      "reply": "{}",
+      "outcome": {
+        "kind": "value",
+        "value": {}
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Schedule",
+          "fhir:NS:X0001",
+          120
+        ]
+      ],
+      "expected": "value",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "fhir:NS:X0001",
+      "interval": -1,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got -1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "fhir:NS:X0001",
+      "interval": -1,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got -1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "fhir:NS:X0001",
+      "interval": -1,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got -1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "fhir:NS:X0001",
+      "interval": -1,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got -1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "fhir:NS:X0001",
+      "interval": "60",
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got '60'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "fhir:NS:X0001",
+      "interval": "60",
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got '60'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "fhir:NS:X0001",
+      "interval": "60",
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got '60'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "fhir:NS:X0001",
+      "interval": "60",
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got '60'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "fhir:NS:X0001",
+      "interval": 60.5,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 60.5"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "fhir:NS:X0001",
+      "interval": 60.5,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 60.5"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "fhir:NS:X0001",
+      "interval": 60.5,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 60.5"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "fhir:NS:X0001",
+      "interval": 60.5,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 60.5"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "ordinary-named-graph",
+      "interval": null,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "value",
+        "value": {
+          "status": "scheduled",
+          "task_id": "7"
+        }
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Schedule",
+          "ordinary-named-graph",
+          0
+        ]
+      ],
+      "expected": "value",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "ordinary-named-graph",
+      "interval": null,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "value",
+        "value": {
+          "status": "busy"
+        }
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Schedule",
+          "ordinary-named-graph",
+          0
+        ]
+      ],
+      "expected": "value",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "ordinary-named-graph",
+      "interval": null,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "FHIRGraphError",
+        "message": "Schedule: ordinary restored task does not belong to graph"
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Schedule",
+          "ordinary-named-graph",
+          0
+        ]
+      ],
+      "expected": "server-error",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "ordinary-named-graph",
+      "interval": null,
+      "reply": "{}",
+      "outcome": {
+        "kind": "value",
+        "value": {}
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Schedule",
+          "ordinary-named-graph",
+          0
+        ]
+      ],
+      "expected": "value",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "ordinary-named-graph",
+      "interval": 0,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 0"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "ordinary-named-graph",
+      "interval": 0,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 0"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "ordinary-named-graph",
+      "interval": 0,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 0"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "ordinary-named-graph",
+      "interval": 0,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 0"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "ordinary-named-graph",
+      "interval": 1,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "ordinary-named-graph",
+      "interval": 1,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "ordinary-named-graph",
+      "interval": 1,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "ordinary-named-graph",
+      "interval": 1,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "ordinary-named-graph",
+      "interval": 59,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 59"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "ordinary-named-graph",
+      "interval": 59,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 59"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "ordinary-named-graph",
+      "interval": 59,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 59"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "ordinary-named-graph",
+      "interval": 59,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 59"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "ordinary-named-graph",
+      "interval": 60,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "value",
+        "value": {
+          "status": "scheduled",
+          "task_id": "7"
+        }
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Schedule",
+          "ordinary-named-graph",
+          60
+        ]
+      ],
+      "expected": "value",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "ordinary-named-graph",
+      "interval": 60,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "value",
+        "value": {
+          "status": "busy"
+        }
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Schedule",
+          "ordinary-named-graph",
+          60
+        ]
+      ],
+      "expected": "value",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "ordinary-named-graph",
+      "interval": 60,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "FHIRGraphError",
+        "message": "Schedule: ordinary restored task does not belong to graph"
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Schedule",
+          "ordinary-named-graph",
+          60
+        ]
+      ],
+      "expected": "server-error",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "ordinary-named-graph",
+      "interval": 60,
+      "reply": "{}",
+      "outcome": {
+        "kind": "value",
+        "value": {}
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Schedule",
+          "ordinary-named-graph",
+          60
+        ]
+      ],
+      "expected": "value",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "ordinary-named-graph",
+      "interval": 61,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "value",
+        "value": {
+          "status": "scheduled",
+          "task_id": "7"
+        }
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Schedule",
+          "ordinary-named-graph",
+          61
+        ]
+      ],
+      "expected": "value",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "ordinary-named-graph",
+      "interval": 61,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "value",
+        "value": {
+          "status": "busy"
+        }
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Schedule",
+          "ordinary-named-graph",
+          61
+        ]
+      ],
+      "expected": "value",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "ordinary-named-graph",
+      "interval": 61,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "FHIRGraphError",
+        "message": "Schedule: ordinary restored task does not belong to graph"
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Schedule",
+          "ordinary-named-graph",
+          61
+        ]
+      ],
+      "expected": "server-error",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "ordinary-named-graph",
+      "interval": 61,
+      "reply": "{}",
+      "outcome": {
+        "kind": "value",
+        "value": {}
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Schedule",
+          "ordinary-named-graph",
+          61
+        ]
+      ],
+      "expected": "value",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "ordinary-named-graph",
+      "interval": 120,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "value",
+        "value": {
+          "status": "scheduled",
+          "task_id": "7"
+        }
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Schedule",
+          "ordinary-named-graph",
+          120
+        ]
+      ],
+      "expected": "value",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "ordinary-named-graph",
+      "interval": 120,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "value",
+        "value": {
+          "status": "busy"
+        }
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Schedule",
+          "ordinary-named-graph",
+          120
+        ]
+      ],
+      "expected": "value",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "ordinary-named-graph",
+      "interval": 120,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "FHIRGraphError",
+        "message": "Schedule: ordinary restored task does not belong to graph"
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Schedule",
+          "ordinary-named-graph",
+          120
+        ]
+      ],
+      "expected": "server-error",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "ordinary-named-graph",
+      "interval": 120,
+      "reply": "{}",
+      "outcome": {
+        "kind": "value",
+        "value": {}
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Schedule",
+          "ordinary-named-graph",
+          120
+        ]
+      ],
+      "expected": "value",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "ordinary-named-graph",
+      "interval": -1,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got -1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "ordinary-named-graph",
+      "interval": -1,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got -1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "ordinary-named-graph",
+      "interval": -1,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got -1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "ordinary-named-graph",
+      "interval": -1,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got -1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "ordinary-named-graph",
+      "interval": "60",
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got '60'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "ordinary-named-graph",
+      "interval": "60",
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got '60'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "ordinary-named-graph",
+      "interval": "60",
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got '60'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "ordinary-named-graph",
+      "interval": "60",
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got '60'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "ordinary-named-graph",
+      "interval": 60.5,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 60.5"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "ordinary-named-graph",
+      "interval": 60.5,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 60.5"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "ordinary-named-graph",
+      "interval": 60.5,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 60.5"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "ordinary-named-graph",
+      "interval": 60.5,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 60.5"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": null,
+      "interval": null,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": null,
+      "interval": null,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": null,
+      "interval": null,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": null,
+      "interval": null,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": null,
+      "interval": 0,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 0"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": null,
+      "interval": 0,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 0"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": null,
+      "interval": 0,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 0"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": null,
+      "interval": 0,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 0"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": null,
+      "interval": 1,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": null,
+      "interval": 1,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": null,
+      "interval": 1,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": null,
+      "interval": 1,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": null,
+      "interval": 59,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 59"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": null,
+      "interval": 59,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 59"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": null,
+      "interval": 59,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 59"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": null,
+      "interval": 59,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 59"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": null,
+      "interval": 60,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": null,
+      "interval": 60,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": null,
+      "interval": 60,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": null,
+      "interval": 60,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": null,
+      "interval": 61,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": null,
+      "interval": 61,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": null,
+      "interval": 61,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": null,
+      "interval": 61,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": null,
+      "interval": 120,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": null,
+      "interval": 120,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": null,
+      "interval": 120,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": null,
+      "interval": 120,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": null,
+      "interval": -1,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got -1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": null,
+      "interval": -1,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got -1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": null,
+      "interval": -1,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got -1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": null,
+      "interval": -1,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got -1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": null,
+      "interval": "60",
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got '60'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": null,
+      "interval": "60",
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got '60'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": null,
+      "interval": "60",
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got '60'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": null,
+      "interval": "60",
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got '60'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": null,
+      "interval": 60.5,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 60.5"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": null,
+      "interval": 60.5,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 60.5"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": null,
+      "interval": 60.5,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 60.5"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": null,
+      "interval": 60.5,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 60.5"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "",
+      "interval": null,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "",
+      "interval": null,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "",
+      "interval": null,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "",
+      "interval": null,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "",
+      "interval": 0,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 0"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "",
+      "interval": 0,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 0"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "",
+      "interval": 0,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 0"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "",
+      "interval": 0,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 0"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "",
+      "interval": 1,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "",
+      "interval": 1,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "",
+      "interval": 1,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "",
+      "interval": 1,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "",
+      "interval": 59,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 59"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "",
+      "interval": 59,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 59"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "",
+      "interval": 59,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 59"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "",
+      "interval": 59,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 59"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "",
+      "interval": 60,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "",
+      "interval": 60,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "",
+      "interval": 60,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "",
+      "interval": 60,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "",
+      "interval": 61,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "",
+      "interval": 61,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "",
+      "interval": 61,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "",
+      "interval": 61,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "",
+      "interval": 120,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "",
+      "interval": 120,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "",
+      "interval": 120,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "",
+      "interval": 120,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "",
+      "interval": -1,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got -1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "",
+      "interval": -1,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got -1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "",
+      "interval": -1,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got -1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "",
+      "interval": -1,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got -1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "",
+      "interval": "60",
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got '60'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "",
+      "interval": "60",
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got '60'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "",
+      "interval": "60",
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got '60'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "",
+      "interval": "60",
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got '60'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "",
+      "interval": 60.5,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 60.5"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "",
+      "interval": 60.5,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 60.5"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "",
+      "interval": 60.5,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 60.5"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "",
+      "interval": 60.5,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 60.5"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "0",
+      "interval": null,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name \"0\" is reserved: IRIS canonicalizes the subscript \"0\" to the integer 0 that keys the default graph"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "0",
+      "interval": null,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name \"0\" is reserved: IRIS canonicalizes the subscript \"0\" to the integer 0 that keys the default graph"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "0",
+      "interval": null,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name \"0\" is reserved: IRIS canonicalizes the subscript \"0\" to the integer 0 that keys the default graph"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "0",
+      "interval": null,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name \"0\" is reserved: IRIS canonicalizes the subscript \"0\" to the integer 0 that keys the default graph"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "0",
+      "interval": 0,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 0"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "0",
+      "interval": 0,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 0"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "0",
+      "interval": 0,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 0"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "0",
+      "interval": 0,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 0"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "0",
+      "interval": 1,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "0",
+      "interval": 1,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "0",
+      "interval": 1,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "0",
+      "interval": 1,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "0",
+      "interval": 59,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 59"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "0",
+      "interval": 59,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 59"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "0",
+      "interval": 59,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 59"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "0",
+      "interval": 59,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 59"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "0",
+      "interval": 60,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name \"0\" is reserved: IRIS canonicalizes the subscript \"0\" to the integer 0 that keys the default graph"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "0",
+      "interval": 60,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name \"0\" is reserved: IRIS canonicalizes the subscript \"0\" to the integer 0 that keys the default graph"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "0",
+      "interval": 60,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name \"0\" is reserved: IRIS canonicalizes the subscript \"0\" to the integer 0 that keys the default graph"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "0",
+      "interval": 60,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name \"0\" is reserved: IRIS canonicalizes the subscript \"0\" to the integer 0 that keys the default graph"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "0",
+      "interval": 61,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name \"0\" is reserved: IRIS canonicalizes the subscript \"0\" to the integer 0 that keys the default graph"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "0",
+      "interval": 61,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name \"0\" is reserved: IRIS canonicalizes the subscript \"0\" to the integer 0 that keys the default graph"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "0",
+      "interval": 61,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name \"0\" is reserved: IRIS canonicalizes the subscript \"0\" to the integer 0 that keys the default graph"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "0",
+      "interval": 61,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name \"0\" is reserved: IRIS canonicalizes the subscript \"0\" to the integer 0 that keys the default graph"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "0",
+      "interval": 120,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name \"0\" is reserved: IRIS canonicalizes the subscript \"0\" to the integer 0 that keys the default graph"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "0",
+      "interval": 120,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name \"0\" is reserved: IRIS canonicalizes the subscript \"0\" to the integer 0 that keys the default graph"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "0",
+      "interval": 120,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name \"0\" is reserved: IRIS canonicalizes the subscript \"0\" to the integer 0 that keys the default graph"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "0",
+      "interval": 120,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name \"0\" is reserved: IRIS canonicalizes the subscript \"0\" to the integer 0 that keys the default graph"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "0",
+      "interval": -1,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got -1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "0",
+      "interval": -1,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got -1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "0",
+      "interval": -1,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got -1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "0",
+      "interval": -1,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got -1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "0",
+      "interval": "60",
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got '60'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "0",
+      "interval": "60",
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got '60'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "0",
+      "interval": "60",
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got '60'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "0",
+      "interval": "60",
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got '60'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "0",
+      "interval": 60.5,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 60.5"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "0",
+      "interval": 60.5,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 60.5"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "0",
+      "interval": 60.5,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 60.5"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "0",
+      "interval": 60.5,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 60.5"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "a\u0001b",
+      "interval": null,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name 'a\\x01b' contains a control character (0x01), which cannot be used as a subscript"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "a\u0001b",
+      "interval": null,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name 'a\\x01b' contains a control character (0x01), which cannot be used as a subscript"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "a\u0001b",
+      "interval": null,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name 'a\\x01b' contains a control character (0x01), which cannot be used as a subscript"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "a\u0001b",
+      "interval": null,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name 'a\\x01b' contains a control character (0x01), which cannot be used as a subscript"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "a\u0001b",
+      "interval": 0,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 0"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "a\u0001b",
+      "interval": 0,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 0"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "a\u0001b",
+      "interval": 0,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 0"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "a\u0001b",
+      "interval": 0,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 0"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "a\u0001b",
+      "interval": 1,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "a\u0001b",
+      "interval": 1,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "a\u0001b",
+      "interval": 1,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "a\u0001b",
+      "interval": 1,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "a\u0001b",
+      "interval": 59,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 59"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "a\u0001b",
+      "interval": 59,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 59"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "a\u0001b",
+      "interval": 59,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 59"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "a\u0001b",
+      "interval": 59,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 59"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "a\u0001b",
+      "interval": 60,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name 'a\\x01b' contains a control character (0x01), which cannot be used as a subscript"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "a\u0001b",
+      "interval": 60,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name 'a\\x01b' contains a control character (0x01), which cannot be used as a subscript"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "a\u0001b",
+      "interval": 60,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name 'a\\x01b' contains a control character (0x01), which cannot be used as a subscript"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "a\u0001b",
+      "interval": 60,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name 'a\\x01b' contains a control character (0x01), which cannot be used as a subscript"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "a\u0001b",
+      "interval": 61,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name 'a\\x01b' contains a control character (0x01), which cannot be used as a subscript"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "a\u0001b",
+      "interval": 61,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name 'a\\x01b' contains a control character (0x01), which cannot be used as a subscript"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "a\u0001b",
+      "interval": 61,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name 'a\\x01b' contains a control character (0x01), which cannot be used as a subscript"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "a\u0001b",
+      "interval": 61,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name 'a\\x01b' contains a control character (0x01), which cannot be used as a subscript"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "a\u0001b",
+      "interval": 120,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name 'a\\x01b' contains a control character (0x01), which cannot be used as a subscript"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "a\u0001b",
+      "interval": 120,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name 'a\\x01b' contains a control character (0x01), which cannot be used as a subscript"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "a\u0001b",
+      "interval": 120,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name 'a\\x01b' contains a control character (0x01), which cannot be used as a subscript"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "a\u0001b",
+      "interval": 120,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name 'a\\x01b' contains a control character (0x01), which cannot be used as a subscript"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "a\u0001b",
+      "interval": -1,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got -1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "a\u0001b",
+      "interval": -1,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got -1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "a\u0001b",
+      "interval": -1,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got -1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "a\u0001b",
+      "interval": -1,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got -1"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "a\u0001b",
+      "interval": "60",
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got '60'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "a\u0001b",
+      "interval": "60",
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got '60'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "a\u0001b",
+      "interval": "60",
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got '60'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "a\u0001b",
+      "interval": "60",
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got '60'"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "a\u0001b",
+      "interval": 60.5,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 60.5"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "a\u0001b",
+      "interval": 60.5,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 60.5"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "a\u0001b",
+      "interval": 60.5,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 60.5"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_schedule",
+      "graph": "a\u0001b",
+      "interval": 60.5,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "interval_s must be at least 60 (Task Manager counts minutes), got 60.5"
+      },
+      "port": [],
+      "expected": "validation",
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_sync",
+      "graph": "fhir:NS:X0001",
+      "interval": null,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "value",
+        "value": {
+          "status": "scheduled",
+          "task_id": "7"
+        }
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "SyncOnce",
+          "fhir:NS:X0001"
+        ]
+      ],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_sync",
+      "graph": "fhir:NS:X0001",
+      "interval": null,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "value",
+        "value": {
+          "status": "busy"
+        }
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "SyncOnce",
+          "fhir:NS:X0001"
+        ]
+      ],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_sync",
+      "graph": "fhir:NS:X0001",
+      "interval": null,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "FHIRGraphError",
+        "message": "SyncOnce: ordinary restored task does not belong to graph"
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "SyncOnce",
+          "fhir:NS:X0001"
+        ]
+      ],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_sync",
+      "graph": "fhir:NS:X0001",
+      "interval": null,
+      "reply": "{}",
+      "outcome": {
+        "kind": "value",
+        "value": {}
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "SyncOnce",
+          "fhir:NS:X0001"
+        ]
+      ],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_sync",
+      "graph": "ordinary-named-graph",
+      "interval": null,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "value",
+        "value": {
+          "status": "scheduled",
+          "task_id": "7"
+        }
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "SyncOnce",
+          "ordinary-named-graph"
+        ]
+      ],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_sync",
+      "graph": "ordinary-named-graph",
+      "interval": null,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "value",
+        "value": {
+          "status": "busy"
+        }
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "SyncOnce",
+          "ordinary-named-graph"
+        ]
+      ],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_sync",
+      "graph": "ordinary-named-graph",
+      "interval": null,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "FHIRGraphError",
+        "message": "SyncOnce: ordinary restored task does not belong to graph"
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "SyncOnce",
+          "ordinary-named-graph"
+        ]
+      ],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_sync",
+      "graph": "ordinary-named-graph",
+      "interval": null,
+      "reply": "{}",
+      "outcome": {
+        "kind": "value",
+        "value": {}
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "SyncOnce",
+          "ordinary-named-graph"
+        ]
+      ],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_sync",
+      "graph": null,
+      "interval": null,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_sync",
+      "graph": null,
+      "interval": null,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_sync",
+      "graph": null,
+      "interval": null,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_sync",
+      "graph": null,
+      "interval": null,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_sync",
+      "graph": "",
+      "interval": null,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_sync",
+      "graph": "",
+      "interval": null,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_sync",
+      "graph": "",
+      "interval": null,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_sync",
+      "graph": "",
+      "interval": null,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_sync",
+      "graph": "0",
+      "interval": null,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name \"0\" is reserved: IRIS canonicalizes the subscript \"0\" to the integer 0 that keys the default graph"
+      },
+      "port": [],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_sync",
+      "graph": "0",
+      "interval": null,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name \"0\" is reserved: IRIS canonicalizes the subscript \"0\" to the integer 0 that keys the default graph"
+      },
+      "port": [],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_sync",
+      "graph": "0",
+      "interval": null,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name \"0\" is reserved: IRIS canonicalizes the subscript \"0\" to the integer 0 that keys the default graph"
+      },
+      "port": [],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_sync",
+      "graph": "0",
+      "interval": null,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name \"0\" is reserved: IRIS canonicalizes the subscript \"0\" to the integer 0 that keys the default graph"
+      },
+      "port": [],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_sync",
+      "graph": "a\u0001b",
+      "interval": null,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name 'a\\x01b' contains a control character (0x01), which cannot be used as a subscript"
+      },
+      "port": [],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_sync",
+      "graph": "a\u0001b",
+      "interval": null,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name 'a\\x01b' contains a control character (0x01), which cannot be used as a subscript"
+      },
+      "port": [],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_sync",
+      "graph": "a\u0001b",
+      "interval": null,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name 'a\\x01b' contains a control character (0x01), which cannot be used as a subscript"
+      },
+      "port": [],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_sync",
+      "graph": "a\u0001b",
+      "interval": null,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name 'a\\x01b' contains a control character (0x01), which cannot be used as a subscript"
+      },
+      "port": [],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_unschedule",
+      "graph": "fhir:NS:X0001",
+      "interval": null,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "value",
+        "value": {
+          "status": "scheduled",
+          "task_id": "7"
+        }
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Unschedule",
+          "fhir:NS:X0001"
+        ]
+      ],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_unschedule",
+      "graph": "fhir:NS:X0001",
+      "interval": null,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "value",
+        "value": {
+          "status": "busy"
+        }
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Unschedule",
+          "fhir:NS:X0001"
+        ]
+      ],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_unschedule",
+      "graph": "fhir:NS:X0001",
+      "interval": null,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "FHIRGraphError",
+        "message": "Unschedule: ordinary restored task does not belong to graph"
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Unschedule",
+          "fhir:NS:X0001"
+        ]
+      ],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_unschedule",
+      "graph": "fhir:NS:X0001",
+      "interval": null,
+      "reply": "{}",
+      "outcome": {
+        "kind": "value",
+        "value": {}
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Unschedule",
+          "fhir:NS:X0001"
+        ]
+      ],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_unschedule",
+      "graph": "ordinary-named-graph",
+      "interval": null,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "value",
+        "value": {
+          "status": "scheduled",
+          "task_id": "7"
+        }
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Unschedule",
+          "ordinary-named-graph"
+        ]
+      ],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_unschedule",
+      "graph": "ordinary-named-graph",
+      "interval": null,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "value",
+        "value": {
+          "status": "busy"
+        }
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Unschedule",
+          "ordinary-named-graph"
+        ]
+      ],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_unschedule",
+      "graph": "ordinary-named-graph",
+      "interval": null,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "FHIRGraphError",
+        "message": "Unschedule: ordinary restored task does not belong to graph"
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Unschedule",
+          "ordinary-named-graph"
+        ]
+      ],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_unschedule",
+      "graph": "ordinary-named-graph",
+      "interval": null,
+      "reply": "{}",
+      "outcome": {
+        "kind": "value",
+        "value": {}
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Unschedule",
+          "ordinary-named-graph"
+        ]
+      ],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_unschedule",
+      "graph": null,
+      "interval": null,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_unschedule",
+      "graph": null,
+      "interval": null,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_unschedule",
+      "graph": null,
+      "interval": null,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_unschedule",
+      "graph": null,
+      "interval": null,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_unschedule",
+      "graph": "",
+      "interval": null,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_unschedule",
+      "graph": "",
+      "interval": null,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_unschedule",
+      "graph": "",
+      "interval": null,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_unschedule",
+      "graph": "",
+      "interval": null,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "a FHIR graph id is required, e.g. 'fhir:IVGFHIR:X0001'"
+      },
+      "port": [],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_unschedule",
+      "graph": "0",
+      "interval": null,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name \"0\" is reserved: IRIS canonicalizes the subscript \"0\" to the integer 0 that keys the default graph"
+      },
+      "port": [],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_unschedule",
+      "graph": "0",
+      "interval": null,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name \"0\" is reserved: IRIS canonicalizes the subscript \"0\" to the integer 0 that keys the default graph"
+      },
+      "port": [],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_unschedule",
+      "graph": "0",
+      "interval": null,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name \"0\" is reserved: IRIS canonicalizes the subscript \"0\" to the integer 0 that keys the default graph"
+      },
+      "port": [],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_unschedule",
+      "graph": "0",
+      "interval": null,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name \"0\" is reserved: IRIS canonicalizes the subscript \"0\" to the integer 0 that keys the default graph"
+      },
+      "port": [],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_unschedule",
+      "graph": "a\u0001b",
+      "interval": null,
+      "reply": "{\"status\": \"scheduled\", \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name 'a\\x01b' contains a control character (0x01), which cannot be used as a subscript"
+      },
+      "port": [],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_unschedule",
+      "graph": "a\u0001b",
+      "interval": null,
+      "reply": "{\"status\": \"busy\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name 'a\\x01b' contains a control character (0x01), which cannot be used as a subscript"
+      },
+      "port": [],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_unschedule",
+      "graph": "a\u0001b",
+      "interval": null,
+      "reply": "{\"status\": \"error\", \"error\": \"ordinary restored task does not belong to graph\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name 'a\\x01b' contains a control character (0x01), which cannot be used as a subscript"
+      },
+      "port": [],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_unschedule",
+      "graph": "a\u0001b",
+      "interval": null,
+      "reply": "{}",
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "graph name 'a\\x01b' contains a control character (0x01), which cannot be used as a subscript"
+      },
+      "port": [],
+      "agrees": true
+    }
+  ],
+  "status_versions": [
+    {
+      "method": "fhir_graph_status",
+      "graph": "fhir:NS:X0001",
+      "interval": null,
+      "reply": "{\"status\": \"ok\", \"interpretation_version\": null, \"interpretation_current\": 2, \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "value",
+        "value": {
+          "status": "ok",
+          "interpretation_version": null,
+          "interpretation_current": 2,
+          "task_id": "7",
+          "interpretation_stale": true
+        }
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Status",
+          "fhir:NS:X0001"
+        ]
+      ],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_status",
+      "graph": "fhir:NS:X0001",
+      "interval": null,
+      "reply": "{\"status\": \"ok\", \"interpretation_version\": \"\", \"interpretation_current\": 2, \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "value",
+        "value": {
+          "status": "ok",
+          "interpretation_version": null,
+          "interpretation_current": 2,
+          "task_id": "7",
+          "interpretation_stale": true
+        }
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Status",
+          "fhir:NS:X0001"
+        ]
+      ],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_status",
+      "graph": "fhir:NS:X0001",
+      "interval": null,
+      "reply": "{\"status\": \"ok\", \"interpretation_version\": 0, \"interpretation_current\": 2, \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "value",
+        "value": {
+          "status": "ok",
+          "interpretation_version": 0,
+          "interpretation_current": 2,
+          "task_id": "7",
+          "interpretation_stale": true
+        }
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Status",
+          "fhir:NS:X0001"
+        ]
+      ],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_status",
+      "graph": "fhir:NS:X0001",
+      "interval": null,
+      "reply": "{\"status\": \"ok\", \"interpretation_version\": 1, \"interpretation_current\": 2, \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "value",
+        "value": {
+          "status": "ok",
+          "interpretation_version": 1,
+          "interpretation_current": 2,
+          "task_id": "7",
+          "interpretation_stale": true
+        }
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Status",
+          "fhir:NS:X0001"
+        ]
+      ],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_status",
+      "graph": "fhir:NS:X0001",
+      "interval": null,
+      "reply": "{\"status\": \"ok\", \"interpretation_version\": \"1\", \"interpretation_current\": 2, \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "value",
+        "value": {
+          "status": "ok",
+          "interpretation_version": 1,
+          "interpretation_current": 2,
+          "task_id": "7",
+          "interpretation_stale": true
+        }
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Status",
+          "fhir:NS:X0001"
+        ]
+      ],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_status",
+      "graph": "fhir:NS:X0001",
+      "interval": null,
+      "reply": "{\"status\": \"ok\", \"interpretation_version\": 2, \"interpretation_current\": 2, \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "value",
+        "value": {
+          "status": "ok",
+          "interpretation_version": 2,
+          "interpretation_current": 2,
+          "task_id": "7",
+          "interpretation_stale": false
+        }
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Status",
+          "fhir:NS:X0001"
+        ]
+      ],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_status",
+      "graph": "fhir:NS:X0001",
+      "interval": null,
+      "reply": "{\"status\": \"ok\", \"interpretation_version\": \"2\", \"interpretation_current\": 2, \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "value",
+        "value": {
+          "status": "ok",
+          "interpretation_version": 2,
+          "interpretation_current": 2,
+          "task_id": "7",
+          "interpretation_stale": false
+        }
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Status",
+          "fhir:NS:X0001"
+        ]
+      ],
+      "agrees": true
+    },
+    {
+      "method": "fhir_graph_status",
+      "graph": "fhir:NS:X0001",
+      "interval": null,
+      "reply": "{\"status\": \"ok\", \"interpretation_version\": 3, \"interpretation_current\": 2, \"task_id\": \"7\"}",
+      "outcome": {
+        "kind": "error",
+        "type": "RuntimeError",
+        "message": "FHIR graph interpretation version 3 is newer than this IVG's 2; upgrade iris-vector-graph"
+      },
+      "port": [
+        [
+          "Graph.KG.FHIRGraph",
+          "Status",
+          "fhir:NS:X0001"
+        ]
+      ],
+      "agrees": true
+    }
+  ],
+  "mismatches": [],
+  "detection": {
+    "error-becomes-success": true,
+    "valid-60-refused": true
+  },
+  "elapsed": 0.0026727500080596656,
+  "observed": "Actual pinned Python wrappers validate interval/graph, forward args, propagate busy and raise FHIRGraphError; actual status version typing/staleness/future-version refusal.",
+  "unobserved": [
+    "ObjectScript CheckOwnTask/Schedule/Unschedule execution",
+    "Task Manager object storage/Settings list and mutations",
+    "two-feed SQL selection, transactions/locks and current-resource resync",
+    "native FHIR repository and final graph contents"
+  ],
+  "provider_substitute": "Recording Native API endpoint supplies JSON replies; no task row or native operation is executed.",
+  "source_sha256": {
+    "iris_vector_graph/_engine/fhir_graph.py": "7bd8988dd02dfe4a4978d8342c8d8eda5e7b0b4305a9bee50ca5b3a5d20f3e16",
+    "iris_src/src/Graph/KG/FHIRGraph.cls": "6c6a72a116b902f4f649da55ec785cb1ba84482ff56abbfd43d0424a6b9f3dc0",
+    "iris_src/src/Graph/KG/FHIRGraphSyncTask.cls": "56c236c7160f46dcdb21267adf6c171deb7635124f0298e32bb198f2db6f9b8a",
+    "docs/FHIR_GRAPH.md": "56b6fd9078bf59068c5285fb822a93d0cc400cbaf08c65a1edea9f6f00d1e47f",
+    "tests/e2e/test_470_fhir_task_ownership_e2e.py": "2d7908af079df6f895e2c82c18e90db1ae743e6c41c715900cef9bd225022e65"
+  }
+}

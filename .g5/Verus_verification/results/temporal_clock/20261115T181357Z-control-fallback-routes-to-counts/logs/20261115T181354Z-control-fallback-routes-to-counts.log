@@ -1,0 +1,34 @@
+verification results:: 49 verified, 3 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/fallback-routes-to-counts/20261115T181354Z/models/temporal_clock/temporal_clock.rs:117:9
+    |
+114 | pub proof fn theorem_bulk_zero_fallback_differs(e:stores::Edge,now:int)
+    | ----------------------------------------------------------------------- at the end of the function body
+...
+117 |         call_bulk(Map::empty(),e,Raw::Number(0),Raw::Missing,true,false,now,true,1,true).time==Some(0),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/fallback-routes-to-counts/20261115T181354Z/models/temporal_clock/temporal_clock.rs:150:13
+    |
+147 |   pub proof fn theorem_raw_bulk_to_reader(s:stores::Global,e:stores::Edge,short:Raw,long:Raw,shape_ok:bool,available:bool,now:int,w:int)
+    |   -------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+150 |       ensures observe(call_bulk(s,e,short,long,shape_ok,available,now,true,w,true),e,
+    |  _____________^
+151 | |         produced_bulk_time(short,long,shape_ok,available,now).unwrap(),e.0,
+152 | |         produced_bulk_time(short,long,shape_ok,available,now).unwrap(),
+153 | |         produced_bulk_time(short,long,shape_ok,available,now).unwrap(),false,stores::paging::plain(None))==Some(w),
+    | |__________________________________________________________________________________________________________________^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/fallback-routes-to-counts/20261115T181354Z/models/temporal_clock/temporal_clock.rs:168:9
+    |
+164 | pub proof fn theorem_bulk_clock_and_fallback_final_windows(e:stores::Edge,now:int)
+    | ---------------------------------------------------------------------------------- at the end of the function body
+...
+168 |         observe(call_bulk(Map::empty(),e,Raw::Number(0),Raw::Missing,true,false,now,true,7,true),e,0,e.0,0,0,false,stores::paging::plain(None))==Some(7),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

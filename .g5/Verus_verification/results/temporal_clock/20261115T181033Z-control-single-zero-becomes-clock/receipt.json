@@ -1,0 +1,61 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_server_empty_and_zero_differ",
+      "theorem_bulk_zero_fallback_differs"
+    ],
+    "find": "NativeTime::Number(n)=>n}",
+    "name": "single-zero-becomes-clock",
+    "replace": "NativeTime::Number(n)=>if n==0{now}else{n}}"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_server_empty_and_zero_differ",
+      "theorem_bulk_zero_fallback_differs"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal_clock/model.json": "26752db5f768aaf0e1f2826d08207f347ad9aab6b8566240489febffb87af840",
+    ".g5/Verus_verification/models/temporal_clock/temporal_clock.rs": "347ab034dc71589ac9756381a874dbb437560f5b37d48ff95e457fc7485e521f",
+    ".g5/Verus_verification/models/temporal_restore/temporal_restore.rs": "0f72f0047d5a1faf6471e0cd7b2bc369fe2c4e334144bbc17b6264b961d584a6",
+    ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs": "4f14236f57a45c64e889f794b6d55f3fc823dccaba4a2759ed7cedc97fd3bd9d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/single-zero-becomes-clock/20261115T181031Z/models/temporal_clock/temporal_clock.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 4,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_bulk_zero_fallback_differs": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/20261115T181031Z-control-single-zero-becomes-clock-theorem_bulk_zero_fallback_differs.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_server_empty_and_zero_differ": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/20261115T181031Z-control-single-zero-becomes-clock-theorem_server_empty_and_zero_differ.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/20261115T181031Z-control-single-zero-becomes-clock.log",
+    "timed_out": false,
+    "verified": 46
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal_clock/20261115T181033Z-control-single-zero-becomes-clock/logs/20261115T181031Z-control-single-zero-becomes-clock-theorem_bulk_zero_fallback_differs.log": "24c9d3ac99bd91123b372c85682bc41b36b11ff552d0471880bb2fb99ee773f2",
+    ".g5/Verus_verification/results/temporal_clock/20261115T181033Z-control-single-zero-becomes-clock/logs/20261115T181031Z-control-single-zero-becomes-clock-theorem_server_empty_and_zero_differ.log": "5ea2bf45bab37cb0b9decae7a4d1ab071ea9140fd01102b7fddaf8b05e9f4657",
+    ".g5/Verus_verification/results/temporal_clock/20261115T181033Z-control-single-zero-becomes-clock/logs/20261115T181031Z-control-single-zero-becomes-clock.log": "69c11de7af64f65085da09e23c91a57c6744f9057d4b8d347b28fea670bbf6ea"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

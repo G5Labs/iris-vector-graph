@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/fallback-routes-to-counts/20261115T181533Z/models/temporal_clock/temporal_clock.rs:149:9
+    |
+146 | pub proof fn theorem_bulk_zero_fallback_differs(e:stores::Edge,now:int)
+    | ----------------------------------------------------------------------- at the end of the function body
+...
+149 |         call_bulk(Map::empty(),e,Raw::Number(0),Raw::Missing,true,false,now,true,1,true).time==Some(0),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-procedure-20261115/verus/procedure_results/controls/physical-return-validates-source/20261115T182206Z/models/procedure_results/procedure_results.rs:136:13
+    |
+135 | pub proof fn theorem_physical_return_bypasses_source_check(rows:Seq<int>,src:Seq<char>)
+    | --------------------------------------------------------------------------------------- at the end of the function body
+136 |     ensures consume(rows,Query{source:src,..simple(physical(),Condition::All,true)})==(Outcome::Rows{column:physical(),values:rows}),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

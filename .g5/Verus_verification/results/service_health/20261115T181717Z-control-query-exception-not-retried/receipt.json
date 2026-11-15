@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_query_exception_replaces_cache"
+    ],
+    "find": "|| matches!(q,Query::Raised(_))",
+    "name": "query-exception-not-retried",
+    "replace": "|| false"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_query_exception_replaces_cache"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/service_health/model.json": "9e9c64a322b9016d1845da7e9d52c702e420bab831a1e476d5b548b760a724f9",
+    ".g5/Verus_verification/models/service_health/service_health.rs": "c768d2646b1eba243619f465348f463b5d3a50a98382965c1325f2e50a966d8e"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration7-health-20261115/verus/service_health/controls/query-exception-not-retried/20261115T181716Z/models/service_health/service_health.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_query_exception_replaces_cache": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration7-health-20261115/verus/service_health/20261115T181716Z-control-query-exception-not-retried-theorem_query_exception_replaces_cache.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration7-health-20261115/verus/service_health/20261115T181716Z-control-query-exception-not-retried.log",
+    "timed_out": false,
+    "verified": 16
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/service_health/20261115T181717Z-control-query-exception-not-retried/logs/20261115T181716Z-control-query-exception-not-retried-theorem_query_exception_replaces_cache.log": "9f5554c40a62cf4d3785a669fcfc52974899a5c95f940932bf2f99b2a4f32ee3",
+    ".g5/Verus_verification/results/service_health/20261115T181717Z-control-query-exception-not-retried/logs/20261115T181716Z-control-query-exception-not-retried.log": "a3512c6f81d11536f67c8f89dd27e5c4db35801dcf7a7bf592ec51e887b56869"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

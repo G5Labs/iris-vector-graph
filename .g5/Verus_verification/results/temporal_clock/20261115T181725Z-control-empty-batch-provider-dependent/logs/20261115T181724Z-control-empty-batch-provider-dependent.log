@@ -1,0 +1,12 @@
+verification results:: 55 verified, 1 errors
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/empty-batch-provider-dependent/20261115T181724Z/models/temporal_clock/temporal_clock.rs:97:9
+   |
+95 | pub proof fn theorem_empty_batch_no_provider_dependency(s:stores::Global,available:bool,clocks:Seq<int>,ok:bool)
+   | ---------------------------------------------------------------------------------------------------------------- at the end of the function body
+96 |     ensures call_batch(s,seq![],available,clocks,ok).state==s,
+97 |         call_batch(s,seq![],available,clocks,ok).accepted,call_batch(s,seq![],available,clocks,ok).count==0,
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

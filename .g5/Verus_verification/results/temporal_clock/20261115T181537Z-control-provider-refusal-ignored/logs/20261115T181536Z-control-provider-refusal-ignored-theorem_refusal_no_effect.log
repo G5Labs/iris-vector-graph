@@ -1,0 +1,28 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/provider-refusal-ignored/20261115T181536Z/models/temporal_clock/temporal_clock.rs:151:1
+    |
+151 | pub proof fn theorem_refusal_no_effect(s:stores::Global,e:stores::Edge,r:Raw,short:Raw,long:Raw,now:int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/provider-refusal-ignored/20261115T181536Z/models/temporal_clock/temporal_clock.rs:152:13
+    |
+151 | pub proof fn theorem_refusal_no_effect(s:stores::Global,e:stores::Edge,r:Raw,short:Raw,long:Raw,now:int)
+    | -------------------------------------------------------------------------------------------------------- at the end of the function body
+152 |     ensures call_single(s,e,r,now,false,1,true).state==s,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/provider-refusal-ignored/20261115T181536Z/models/temporal_clock/temporal_clock.rs:153:9
+    |
+151 | pub proof fn theorem_refusal_no_effect(s:stores::Global,e:stores::Edge,r:Raw,short:Raw,long:Raw,now:int)
+    | -------------------------------------------------------------------------------------------------------- at the end of the function body
+152 |     ensures call_single(s,e,r,now,false,1,true).state==s,
+153 |         call_bulk(s,e,short,long,true,true,now,false,1,true).state==s,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

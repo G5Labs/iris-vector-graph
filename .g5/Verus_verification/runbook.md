@@ -275,3 +275,30 @@ Expected31 total/7 controls/AGREES7 native and20/13/AGREES6080. Omit CONTROL
 for complete suites. Run native scripts serially on the guarded iteration5 isolated
 instance. History iteration6/history-*-native.py retains actual writer evidence.
 Additional model inputs are stamped and each control keeps its dependency tree.
+
+## Improvement iteration 7 on this Mac
+
+[Checkpoint](../uplift/consolidated/iteration-7/HANDOFF.md), individual handoffs and
+family NOTES provide exact source roles/domain. Reuse iteration4 tool pins,4 threads
+and a fresh RUN_DIR. From the repository root:
+
+```sh
+python3 .g5/Verus_verification/run_verus.py prove .g5/Verus_verification/models/temporal_clock
+CONTROL=bulk-preserves-zero python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/temporal_clock
+python3 .g5/Verus_verification/run_verus.py prove .g5/Verus_verification/models/procedure_results
+CONTROL=physical-return-validates-source python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/procedure_results
+python3 .g5/Verus_verification/run_verus.py prove .g5/Verus_verification/models/service_health
+CONTROL=cached-failure-clears-engine python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/service_health
+/Users/ziniuw/runs/ivg-consolidated-20261114/venv/bin/python -B -I .g5/Verus_verification/models/temporal_clock/binding.py
+/Users/ziniuw/runs/ivg-consolidated-20261114/venv/bin/python -B -I .g5/Verus_verification/models/procedure_results/binding.py
+/Users/ziniuw/runs/ivg-consolidated-20261114/venv/bin/python -B -I .g5/Verus_verification/models/service_health/binding.py
+python3 .g5/Verus_verification/tools/correspondence_gate.py check .g5/uplift/consolidated/iteration-7/correspondence-inputs.json
+python3 .g5/Verus_verification/tools/check_consolidated.py
+```
+
+Expected56/16/AGREES1564(+5scenarios),19/10/AGREES6580,18/13/AGREES84.
+Omit CONTROL for complete suites. Native supplements timestamp-native.py and
+procedure-native.py require IVG_TEMPORAL_NATIVE=1 and only the guarded iteration5
+runtime; run serially. Copy their scripts/outputs to a fresh replay evidence folder
+before rerunning, to preserve sealed original JSON paths. posteffect-native.py is
+next-model discovery evidence, not current formal credit or a real network fault.

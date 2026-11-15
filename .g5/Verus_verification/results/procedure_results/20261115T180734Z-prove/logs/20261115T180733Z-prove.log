@@ -1,0 +1,80 @@
+verification results:: 9 verified, 6 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/procedure_results/procedure_results.rs:63:1
+   |
+63 | pub proof fn theorem_distinct_complete_provider(s:Seq<Label>,g:int,l:int)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/procedure_results/procedure_results.rs:64:13
+   |
+63 | pub proof fn theorem_distinct_complete_provider(s:Seq<Label>,g:int,l:int)
+   | ------------------------------------------------------------------------- at the end of the function body
+64 |     ensures provider(s,g).contains(l) <==> (exists|i:int|0<=i<s.len() && s[i].text==l),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: assertion failed
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/procedure_results/procedure_results.rs:69:12
+   |
+69 |     assert(mapped.contains(l) <==> (exists|i:int|0<=i<s.len() && s[i].text==l));
+   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/procedure_results/procedure_results.rs:81:13
+   |
+80 | pub proof fn theorem_alias_return(rows:Seq<int>,alias:Seq<char>)
+   | ---------------------------------------------------------------- at the end of the function body
+81 |     ensures consume(rows,simple(alias,Condition::All,true))==(Outcome::Rows{column:alias,values:rows}),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/procedure_results/procedure_results.rs:84:13
+   |
+83 | pub proof fn theorem_bare_alias_keeps_physical(rows:Seq<int>,alias:Seq<char>)
+   | ----------------------------------------------------------------------------- at the end of the function body
+84 |     ensures consume(rows,simple(alias,Condition::All,false))==(Outcome::Rows{column:physical(),values:rows}),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/procedure_results/procedure_results.rs:90:1
+   |
+90 | pub proof fn theorem_empty_skips_expression_validation(alias:Seq<char>)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/procedure_results/procedure_results.rs:91:13
+   |
+90 | pub proof fn theorem_empty_skips_expression_validation(alias:Seq<char>)
+   | ----------------------------------------------------------------------- at the end of the function body
+91 |     ensures consume(seq![],simple(alias,Condition::Unsupported,true))==(Outcome::Rows{column:alias,values:seq![]}),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/procedure_results/procedure_results.rs:92:9
+   |
+90 | pub proof fn theorem_empty_skips_expression_validation(alias:Seq<char>)
+   | ----------------------------------------------------------------------- at the end of the function body
+91 |     ensures consume(seq![],simple(alias,Condition::Unsupported,true))==(Outcome::Rows{column:alias,values:seq![]}),
+92 |         consume(seq![],simple(alias,Condition::MissingParam,true))==(Outcome::Rows{column:alias,values:seq![]}),
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/procedure_results/procedure_results.rs:100:9
+    |
+ 97 | pub proof fn theorem_order_requires_result_column(rows:Seq<int>,alias:Seq<char>)
+    | -------------------------------------------------------------------------------- at the end of the function body
+...
+100 |         consume(rows,Query{order_name:Some(alias),..simple(alias,Condition::All,true)})==(Outcome::Rows{column:alias,values:rows}),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/procedure_results/procedure_results.rs:105:9
+    |
+102 | pub proof fn theorem_wrong_source_empty_vs_nonempty(alias:Seq<char>,src:Seq<char>,rows:Seq<int>)
+    | ------------------------------------------------------------------------------------------------ at the end of the function body
+...
+105 |         consume(seq![],Query{source:src,..simple(alias,Condition::All,true)})==(Outcome::Rows{column:alias,values:seq![]}),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 8 previous errors
+

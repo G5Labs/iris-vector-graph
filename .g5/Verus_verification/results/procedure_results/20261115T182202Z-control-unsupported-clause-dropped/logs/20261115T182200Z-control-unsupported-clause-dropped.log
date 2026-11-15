@@ -1,0 +1,35 @@
+verification results:: 17 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration7-procedure-20261115/verus/procedure_results/controls/unsupported-clause-dropped/20261115T182200Z/models/procedure_results/procedure_results.rs:119:1
+    |
+119 | pub proof fn theorem_unsupported_clause_always_refused(rows:Seq<int>,q:Query)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-procedure-20261115/verus/procedure_results/controls/unsupported-clause-dropped/20261115T182200Z/models/procedure_results/procedure_results.rs:120:13
+    |
+119 | pub proof fn theorem_unsupported_clause_always_refused(rows:Seq<int>,q:Query)
+    | ----------------------------------------------------------------------------- at the end of the function body
+120 |     ensures consume(rows,Query{tail:Tail::Match,..q})==Outcome::Refused,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-procedure-20261115/verus/procedure_results/controls/unsupported-clause-dropped/20261115T182200Z/models/procedure_results/procedure_results.rs:121:9
+    |
+119 | pub proof fn theorem_unsupported_clause_always_refused(rows:Seq<int>,q:Query)
+    | ----------------------------------------------------------------------------- at the end of the function body
+120 |     ensures consume(rows,Query{tail:Tail::Match,..q})==Outcome::Refused,
+121 |         consume(rows,Query{tail:Tail::Union,..q})==Outcome::Refused,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-procedure-20261115/verus/procedure_results/controls/unsupported-clause-dropped/20261115T182200Z/models/procedure_results/procedure_results.rs:153:13
+    |
+151 | pub proof fn theorem_with_scope_and_alias(rows:Seq<int>,a:Seq<char>,b:Seq<char>)
+    | -------------------------------------------------------------------------------- at the end of the function body
+152 |     requires a!=b,
+153 |     ensures consume(rows,Query{tail:Tail::With{input:a,output:b},..simple(a,Condition::All,true)})==Outcome::Refused,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

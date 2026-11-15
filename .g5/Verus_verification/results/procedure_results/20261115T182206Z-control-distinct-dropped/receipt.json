@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_distinct_provider"
+    ],
+    "find": "texts(records).to_set().to_seq().sort_by(leq())",
+    "name": "distinct-dropped",
+    "replace": "texts(records).sort_by(leq())",
+    "why": "distinct-dropped"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_distinct_provider"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/procedure_results/model.json": "6a39b16f5e69698e0a2c602aa11ebf654da8e13c82c1a0bcc9f9609fd70f03b8",
+    ".g5/Verus_verification/models/procedure_results/procedure_results.rs": "c1b5fd65835381087753328369b55ce89b2c7b04f9191a97736a5a98bef1b875"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration7-procedure-20261115/verus/procedure_results/controls/distinct-dropped/20261115T182205Z/models/procedure_results/procedure_results.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_distinct_provider": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration7-procedure-20261115/verus/procedure_results/20261115T182205Z-control-distinct-dropped-theorem_distinct_provider.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration7-procedure-20261115/verus/procedure_results/20261115T182205Z-control-distinct-dropped.log",
+    "timed_out": false,
+    "verified": 17
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/procedure_results/20261115T182206Z-control-distinct-dropped/logs/20261115T182205Z-control-distinct-dropped-theorem_distinct_provider.log": "6a1e304c1715e52788b6ad0a64b5ebba99f3c60f750c8a1b69f16287d22ee7a5",
+    ".g5/Verus_verification/results/procedure_results/20261115T182206Z-control-distinct-dropped/logs/20261115T182205Z-control-distinct-dropped.log": "ab6bae86f28ab89c5a82b825a3fba1847d37e61ec1986b50a1e5f1daba58e527"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

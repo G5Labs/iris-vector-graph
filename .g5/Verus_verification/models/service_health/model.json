@@ -1,0 +1,114 @@
+{
+  "name": "service_health",
+  "root": "service_health.rs",
+  "expected_verified": 18,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "controls": [
+    {
+      "name": "wrong-select-accepted",
+      "find": "if !selected_one(p.selected) {Some(Reason::Select)}",
+      "replace": "if false {Some(Reason::Select)}",
+      "expect_fail_in": [
+        "theorem_main_refuses_wrong_probe"
+      ]
+    },
+    {
+      "name": "record-mismatch-accepted",
+      "find": "if same_schema(name,p.expected) {None}",
+      "replace": "if true {None}",
+      "expect_fail_in": [
+        "theorem_main_checks_actual_namespace"
+      ]
+    },
+    {
+      "name": "missing-record-accepted",
+      "find": "Record::Missing=>Some(Reason::RecordMissing)",
+      "replace": "Record::Missing=>None",
+      "expect_fail_in": [
+        "theorem_main_checks_actual_namespace"
+      ]
+    },
+    {
+      "name": "schema-case-sensitive",
+      "find": "upper(a)==upper(b)",
+      "replace": "a==b",
+      "expect_fail_in": [
+        "theorem_ascii_case_match"
+      ]
+    },
+    {
+      "name": "sticky-app-rebuild-count",
+      "find": "MainRequest{state:s,response:reply",
+      "replace": "MainRequest{state:Main{factory_calls:s.factory_calls+1,..s},response:reply",
+      "expect_fail_in": [
+        "theorem_sample_startup_absence_is_sticky",
+        "theorem_bound_sample_can_recover"
+      ]
+    },
+    {
+      "name": "factory-failure-cached",
+      "find": "Factory::Raised(_)=>None,Factory::Engine",
+      "replace": "Factory::Raised(_)=>Some(-1),Factory::Engine",
+      "expect_fail_in": [
+        "theorem_failed_construction_is_retried"
+      ]
+    },
+    {
+      "name": "folded-error-ignored",
+      "find": "error.is_none() || error.unwrap().len()==0",
+      "replace": "true",
+      "expect_fail_in": [
+        "theorem_folded_error_controls_status"
+      ]
+    },
+    {
+      "name": "empty-error-refused",
+      "find": "error.is_none() || error.unwrap().len()==0",
+      "replace": "error.is_none()",
+      "expect_fail_in": [
+        "theorem_folded_error_controls_status"
+      ]
+    },
+    {
+      "name": "cached-failure-clears-engine",
+      "find": "CacheRequest{state,used:engine,response:Reply",
+      "replace": "CacheRequest{state:Cache{engine:if query_ok(q){engine}else{None},..state},used:engine,response:Reply",
+      "expect_fail_in": [
+        "theorem_cached_query_failure_keeps_engine"
+      ]
+    },
+    {
+      "name": "reset-close-failure-retains-cache",
+      "find": "state:Cache{engine:None,close_attempts:",
+      "replace": "state:Cache{engine:if matches!(close,Access::Ready){None}else{s.engine},close_attempts:",
+      "expect_fail_in": [
+        "theorem_reset_clears_even_when_close_fails",
+        "theorem_reset_allows_replacement"
+      ]
+    },
+    {
+      "name": "injected-failure-swallowed",
+      "find": "Access::Ready=>Some(Main{engine:Some(id),factory_calls:0}),_=>None",
+      "replace": "Access::Ready=>Some(Main{engine:Some(id),factory_calls:0}),_=>Some(Main{engine:None,factory_calls:0})",
+      "expect_fail_in": [
+        "theorem_constructor_and_injected_refusal_differ"
+      ]
+    },
+    {
+      "name": "query-exception-not-retried",
+      "find": "|| matches!(q,Query::Raised(_))",
+      "replace": "|| false",
+      "expect_fail_in": [
+        "theorem_query_exception_replaces_cache"
+      ]
+    },
+    {
+      "name": "folded-query-error-retried",
+      "find": "|| matches!(q,Query::Raised(_))",
+      "replace": "|| !query_ok(q)",
+      "expect_fail_in": [
+        "theorem_folded_query_failure_does_not_reset"
+      ]
+    }
+  ]
+}

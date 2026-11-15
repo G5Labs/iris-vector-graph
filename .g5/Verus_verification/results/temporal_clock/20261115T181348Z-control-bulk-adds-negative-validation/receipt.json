@@ -1,0 +1,52 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_bulk_keeps_negative"
+    ],
+    "find": "if bulk_shape(short,long,shape_ok){integer(bulk_selected(short,long))}",
+    "name": "bulk-adds-negative-validation",
+    "replace": "if bulk_shape(short,long,shape_ok){let n=integer(bulk_selected(short,long));if n.is_some() && n.unwrap()>=0{n}else{None}}"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_bulk_keeps_negative"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal_clock/model.json": "9eb825facbe5b07098d5b383a601ef1d06f68772a411a5bcc510f358e00c1e01",
+    ".g5/Verus_verification/models/temporal_clock/temporal_clock.rs": "23d02ef8b765a2fd495bf9b248b9c72ee7b5ac8b02d55ac1a43159bebdd3a306",
+    ".g5/Verus_verification/models/temporal_restore/temporal_restore.rs": "0f72f0047d5a1faf6471e0cd7b2bc369fe2c4e334144bbc17b6264b961d584a6",
+    ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs": "4f14236f57a45c64e889f794b6d55f3fc823dccaba4a2759ed7cedc97fd3bd9d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/bulk-adds-negative-validation/20261115T181347Z/models/temporal_clock/temporal_clock.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_bulk_keeps_negative": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/20261115T181347Z-control-bulk-adds-negative-validation-theorem_bulk_keeps_negative.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/20261115T181347Z-control-bulk-adds-negative-validation.log",
+    "timed_out": false,
+    "verified": 49
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal_clock/20261115T181348Z-control-bulk-adds-negative-validation/logs/20261115T181347Z-control-bulk-adds-negative-validation-theorem_bulk_keeps_negative.log": "cc9e9c9c81bbd8b1f157394c41ab58e4f7122383fc97f1853bde6286264483d6",
+    ".g5/Verus_verification/results/temporal_clock/20261115T181348Z-control-bulk-adds-negative-validation/logs/20261115T181347Z-control-bulk-adds-negative-validation.log": "bb3fd9f111e7ebd285ab62ddc8b9491f5f24dc4d376b7b5bce75e0282a790a7b"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

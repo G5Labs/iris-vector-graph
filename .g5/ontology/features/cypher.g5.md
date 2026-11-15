@@ -287,6 +287,30 @@ So that Neo4j tools work, IVG answers some Neo4j procedure calls itself, outside
 - A `db.*`, `dbms.*` or `apoc.*` call takes after its `YIELD` only a `WHERE`, one `WITH` of yielded names, a `RETURN` of yielded names, `ORDER BY`, `SKIP` and `LIMIT`; any other clause is refused, naming it.
 - Another `gds.*` call is refused, naming IVG's own procedure to call instead; `gds.nodeSimilarity.stream` is the exception, passed to IVG's vector search with its arguments as given.
 
+<a id="query.system-procedures.results"></a>
+[D · query.system-procedures.results]
+
+Handled metadata rows apply the following result rules.
+
+- A `YIELD` alias names the value read by `WHERE` and `RETURN`; only a true condition keeps a row, so a comparison with null does not. Filtering precedes `SKIP` and `LIMIT`.
+- As built, bare `db.labels() YIELD label AS l` keeps result column `label`, while `RETURN l` projects column `l`. `ORDER BY` reads a returned column and refuses another name even on empty data, so bare `ORDER BY l` refuses while `RETURN l ORDER BY l` succeeds.
+- A RETURN list already equal to the physical result columns bypasses source-name validation: `YIELD absent AS label RETURN label` keeps actual label values, while alias `l` refuses on nonempty rows.
+- Unsupported WHERE expressions and missing parameters are evaluated only when producer rows exist; an empty producer can return no rows without that error. Unsupported structural clauses such as `MATCH` refuse independently of whether rows exist.
+
+<a id="query.system-procedures.alias-policy"></a>
+[Q · query.system-procedures.alias-policy]
+
+Should a standalone handled metadata call expose its `YIELD` aliases as result
+columns? Working answer: document current physical columns until a maintainer
+decides. Alternative: project aliases consistently, preserving explicit RETURN.
+
+<a id="query.system-procedures.empty-validation"></a>
+[Q · query.system-procedures.empty-validation]
+
+Should an unsupported WHERE or missing parameter be refused even when a handled
+procedure produces no rows? Working answer: document evaluation on existing rows.
+Alternative: validate the supported expression and parameter surface eagerly.
+
 <a id="query.system-procedures.unknown"></a>
 [Q · query.system-procedures.unknown]
 
@@ -654,9 +678,35 @@ Findings: [Text shortcuts meant for Neo4j Browser answer unrelated queries with 
 - agent
 - user-facing-behavior
 - test-coverage
-- Children: [unknown names](#query.system-procedures.unknown).
+- Formal: [procedure results and qualified source roles](../../Verus_verification/models/procedure_results/NOTES.md).
+- Children: [result rules](#query.system-procedures.results), [unknown names](#query.system-procedures.unknown), [alias policy](#query.system-procedures.alias-policy), [empty validation](#query.system-procedures.empty-validation).
 
 Sources: [USER_GUIDE, procedures](../../../docs/USER_GUIDE.md#L803-L821), [handler table](../../../iris_vector_graph/engine.py#L944-L966), [`_try_system_procedure`](../../../iris_vector_graph/engine.py#L1676-L1722), [GDS answers and shims](../../../iris_vector_graph/_engine/query.py#L650-L705), [reconstruction check G25 and correction 21](../../uplift/ivg-verus-initial/reconstruction-check.md). Live: [`test_460_r314_call_yield_values_e2e.py`](../../../tests/e2e/test_460_r314_call_yield_values_e2e.py). The `ivg.*` procedures are IVG's own and are not covered here; `gds.louvain.stream` maps to `ivg.leiden`, which no handler answers, so it is refused too.
+
+### query.system-procedures.results
+- agent
+- user-facing-behavior
+- test-coverage
+- Expands: [System procedures](#query.system-procedures).
+- Formal: [procedure result model and exact source roles](../../Verus_verification/models/procedure_results/NOTES.md).
+
+Evidence: [actual SQLite and native scope](../../Verus_verification/models/procedure_results/NOTES.md), [native empty/nonempty neighbors](../../uplift/consolidated/iteration-7/procedure-native.json). Full grammar, general expressions, multi-column providers and arbitrary collation remain outside the new proof.
+
+### query.system-procedures.alias-policy
+- agent
+- uncertain
+- user-facing-behavior
+- Expands: [System procedures](#query.system-procedures).
+
+Evidence: [source-frozen survey](../../uplift/consolidated/iteration-6/breadth-survey.md), [actual IRIS neighbors](../../uplift/consolidated/iteration-7/procedure-native.json). No owner policy is inferred from the as-built alias exception. Question: [q-iter-004](../../Verus_verification/open_questions.md#q-iter-004).
+
+### query.system-procedures.empty-validation
+- agent
+- uncertain
+- user-facing-behavior
+- Expands: [System procedures](#query.system-procedures).
+
+Evidence: [empty/nonempty producer cases](../../uplift/consolidated/iteration-7/procedure-native.json), [scope and controls](../../Verus_verification/models/procedure_results/NOTES.md). This concerns evaluation before rows exist, not permission to silently ignore a later clause. Question: [q-iter-005](../../Verus_verification/open_questions.md#q-iter-005).
 
 ### query.system-procedures.unknown
 - agent

@@ -614,3 +614,18 @@ insufficient; snapshot observation-control credit withdrawn/replaced with native
 17 newly reached:123/4130->140/4130. Six purposive builder cases measure no
 independent/population performance. Timestamp resolution, service recovery and
 CALL tails remain material; no convergence. Stable formal links live in owners.
+
+## Improvement iteration 7 (2026-11-15)
+
+[Evidence](../uplift/consolidated/iteration-7/HANDOFF.md): temporal_clock56 units
+(25 new +31 imported rechecked)/16 controls; procedure_results19/10; service_health
+18/13.62 new units/39 controls,0 product-body proofs. Actual bindings1564 temporal
+cases plus5 scenarios/12512 nested observations,6580 procedure cases,84 ASGI checks;
+root native9/24. Reviewed physical-column shortcut miss retained/corrected without
+input narrowing; state-only health control credit withdrawn/replaced. Known missing-
+time root strengthened,3 open policy questions,0 new bugs/repairs. Same member
+instrument140/4130->167/4130,27 newly reached;38 role rows with4 API roles outside
+census and2 setup observations. Six staleness fixtures include API-source/newwriter.
+Thirteen builder cases are purposive, not independent/population performance.
+Actual post-effect native4 and independent FHIR task survey show material next gaps;
+convergence unsupported. Full provider/general semantics remain qualified in NOTES.

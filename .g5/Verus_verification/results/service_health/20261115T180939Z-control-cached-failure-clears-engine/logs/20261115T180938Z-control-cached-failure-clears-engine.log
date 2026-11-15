@@ -1,0 +1,36 @@
+verification results:: 13 verified, 2 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-health-20261115/verus/service_health/controls/cached-failure-clears-engine/20261115T180938Z/models/service_health/service_health.rs:136:9
+    |
+133 | pub proof fn theorem_cached_query_failure_keeps_engine(s:Cache,f:Factory,error:Error)
+    | ------------------------------------------------------------------------------------- at the end of the function body
+...
+136 |         cache_request(s,f,Query::Raised(error)).state.engine==s.engine,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration7-health-20261115/verus/service_health/controls/cached-failure-clears-engine/20261115T180938Z/models/service_health/service_health.rs:145:1
+    |
+145 | pub proof fn theorem_cache_recovers_without_new_factory(s:Cache,f:Factory,error:Error)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-health-20261115/verus/service_health/controls/cached-failure-clears-engine/20261115T180938Z/models/service_health/service_health.rs:147:13
+    |
+145 | pub proof fn theorem_cache_recovers_without_new_factory(s:Cache,f:Factory,error:Error)
+    | -------------------------------------------------------------------------------------- at the end of the function body
+146 |     requires s.engine.is_some(),
+147 |     ensures cache_request(cache_request(s,f,Query::Raised(error)).state,f,clean_query()).response.status==Status::Ok,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-health-20261115/verus/service_health/controls/cached-failure-clears-engine/20261115T180938Z/models/service_health/service_health.rs:148:9
+    |
+145 | pub proof fn theorem_cache_recovers_without_new_factory(s:Cache,f:Factory,error:Error)
+    | -------------------------------------------------------------------------------------- at the end of the function body
+...
+148 |         cache_request(cache_request(s,f,Query::Raised(error)).state,f,clean_query()).state.engine==s.engine,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

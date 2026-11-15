@@ -1,0 +1,1577 @@
+{
+  "comparisons": 80,
+  "detection": {
+    "changed-http-status": true,
+    "folded-error-mutation": true,
+    "record-mismatch-mutation": true,
+    "reset-cache-mutation": true,
+    "schema-case-mutation": true
+  },
+  "formal_relation": "raw provider responses -> problem/main_boot/main_request and cache_request/reset; expected Python twin inspected against service_health spec; scalar SELECT1 equality varied, validated ASCII schema casing; no executable-body proof or general Unicode casing proof",
+  "inputs": {
+    ".g5/Verus_verification/models/service_health/binding.py": "33692d04badfc9840c628f5b1a75845c1fc278410cbba47f640828f985dfc09a",
+    ".g5/Verus_verification/models/service_health/service_health.rs": "326d0bb9da332c335a8d0516b1d4cef7c487a5cdf18054d229d52a9f94e28014",
+    ".g5/Verus_verification/tools/binding_common.py": "c0e7292671b37f7fae18dbf90102fb5c3f9c2a746d4f2a642b92cd96fe781f8a",
+    "api/main.py": "5028bd39bf8b5c0f1384eaeeafd194a2953cd501ffe55f9887c09cf728ba4c86",
+    "iris_vector_graph/cypher_api.py": "7402a8392ec939ac742b4651d21aac876f3343b0191b8cb7f590562aa3416bef",
+    "iris_vector_graph/result.py": "47d80ab0e017c9a421980abe81cfd573798e5d2b9808b4d71a505944d8ba051c",
+    "iris_vector_graph/schema_name.py": "1672cdf714665ca76d5ff6bdffd739448ba48b9ba7f4cff3a5598d284295409e"
+  },
+  "kind": "binding",
+  "mismatch_count": 0,
+  "mismatches": [],
+  "model": "service_health",
+  "network_connect_calls": 0,
+  "observations": [
+    {
+      "detail": {
+        "records": 1,
+        "selects": 1,
+        "sql": [
+          "SELECT 1"
+        ]
+      },
+      "expected": {
+        "body": {
+          "database": "connected",
+          "graphql": "available",
+          "status": "healthy"
+        },
+        "code": 200
+      },
+      "got": {
+        "body": {
+          "database": "connected",
+          "graphql": "available",
+          "status": "healthy"
+        },
+        "code": 200
+      },
+      "name": "main-one"
+    },
+    {
+      "expected": {
+        "records": 1,
+        "selects": 1
+      },
+      "got": {
+        "records": 1,
+        "selects": 1
+      },
+      "name": "main-provider-order-one"
+    },
+    {
+      "detail": {
+        "records": 0,
+        "selects": 1,
+        "sql": [
+          "SELECT 1"
+        ]
+      },
+      "expected": {
+        "body": {
+          "database": "connected",
+          "graphql": "available",
+          "status": "healthy"
+        },
+        "code": 200
+      },
+      "got": {
+        "body": {
+          "database": "connected",
+          "graphql": "available",
+          "status": "healthy"
+        },
+        "code": 200
+      },
+      "name": "main-standin-no-record"
+    },
+    {
+      "expected": {
+        "records": 0,
+        "selects": 1
+      },
+      "got": {
+        "records": 0,
+        "selects": 1
+      },
+      "name": "main-provider-order-standin-no-record"
+    },
+    {
+      "detail": {
+        "records": 0,
+        "selects": 1,
+        "sql": [
+          "SELECT 1"
+        ]
+      },
+      "expected": {
+        "body": {
+          "database": "connected",
+          "graphql": "available",
+          "status": "healthy"
+        },
+        "code": 200
+      },
+      "got": {
+        "body": {
+          "database": "connected",
+          "graphql": "available",
+          "status": "healthy"
+        },
+        "code": 200
+      },
+      "name": "main-standin-record-unreadable"
+    },
+    {
+      "expected": {
+        "records": 0,
+        "selects": 1
+      },
+      "got": {
+        "records": 0,
+        "selects": 1
+      },
+      "name": "main-provider-order-standin-record-unreadable"
+    },
+    {
+      "detail": {
+        "records": 0,
+        "selects": 1,
+        "sql": [
+          "SELECT 1"
+        ]
+      },
+      "expected": {
+        "body": {
+          "database": "unavailable",
+          "graphql": "available",
+          "reason": "the database did not answer SELECT 1",
+          "status": "unhealthy"
+        },
+        "code": 503
+      },
+      "got": {
+        "body": {
+          "database": "unavailable",
+          "graphql": "available",
+          "reason": "the database did not answer SELECT 1",
+          "status": "unhealthy"
+        },
+        "code": 503
+      },
+      "name": "main-wrong-zero"
+    },
+    {
+      "expected": {
+        "records": 0,
+        "selects": 1
+      },
+      "got": {
+        "records": 0,
+        "selects": 1
+      },
+      "name": "main-provider-order-wrong-zero"
+    },
+    {
+      "detail": {
+        "records": 0,
+        "selects": 1,
+        "sql": [
+          "SELECT 1"
+        ]
+      },
+      "expected": {
+        "body": {
+          "database": "unavailable",
+          "graphql": "available",
+          "reason": "the database did not answer SELECT 1",
+          "status": "unhealthy"
+        },
+        "code": 503
+      },
+      "got": {
+        "body": {
+          "database": "unavailable",
+          "graphql": "available",
+          "reason": "the database did not answer SELECT 1",
+          "status": "unhealthy"
+        },
+        "code": 503
+      },
+      "name": "main-no-row"
+    },
+    {
+      "expected": {
+        "records": 0,
+        "selects": 1
+      },
+      "got": {
+        "records": 0,
+        "selects": 1
+      },
+      "name": "main-provider-order-no-row"
+    },
+    {
+      "detail": {
+        "records": 0,
+        "selects": 1,
+        "sql": [
+          "SELECT 1"
+        ]
+      },
+      "expected": {
+        "body": {
+          "database": "unavailable",
+          "graphql": "available",
+          "reason": "the database did not answer SELECT 1",
+          "status": "unhealthy"
+        },
+        "code": 503
+      },
+      "got": {
+        "body": {
+          "database": "unavailable",
+          "graphql": "available",
+          "reason": "the database did not answer SELECT 1",
+          "status": "unhealthy"
+        },
+        "code": 503
+      },
+      "name": "main-empty-row"
+    },
+    {
+      "expected": {
+        "records": 0,
+        "selects": 1
+      },
+      "got": {
+        "records": 0,
+        "selects": 1
+      },
+      "name": "main-provider-order-empty-row"
+    },
+    {
+      "detail": {
+        "records": 0,
+        "selects": 1,
+        "sql": [
+          "SELECT 1"
+        ]
+      },
+      "expected": {
+        "body": {
+          "database": "unavailable",
+          "graphql": "available",
+          "reason": "the database did not answer SELECT 1",
+          "status": "unhealthy"
+        },
+        "code": 503
+      },
+      "got": {
+        "body": {
+          "database": "unavailable",
+          "graphql": "available",
+          "reason": "the database did not answer SELECT 1",
+          "status": "unhealthy"
+        },
+        "code": 503
+      },
+      "name": "main-text-one"
+    },
+    {
+      "expected": {
+        "records": 0,
+        "selects": 1
+      },
+      "got": {
+        "records": 0,
+        "selects": 1
+      },
+      "name": "main-provider-order-text-one"
+    },
+    {
+      "detail": {
+        "records": 0,
+        "selects": 1,
+        "sql": [
+          "SELECT 1"
+        ]
+      },
+      "expected": {
+        "body": {
+          "database": "unavailable",
+          "graphql": "available",
+          "reason": "the database did not answer SELECT 1",
+          "status": "unhealthy"
+        },
+        "code": 503
+      },
+      "got": {
+        "body": {
+          "database": "unavailable",
+          "graphql": "available",
+          "reason": "the database did not answer SELECT 1",
+          "status": "unhealthy"
+        },
+        "code": 503
+      },
+      "name": "main-null-first"
+    },
+    {
+      "expected": {
+        "records": 0,
+        "selects": 1
+      },
+      "got": {
+        "records": 0,
+        "selects": 1
+      },
+      "name": "main-provider-order-null-first"
+    },
+    {
+      "detail": {
+        "records": 1,
+        "selects": 1,
+        "sql": [
+          "SELECT 1"
+        ]
+      },
+      "expected": {
+        "body": {
+          "database": "connected",
+          "graphql": "available",
+          "status": "healthy"
+        },
+        "code": 200
+      },
+      "got": {
+        "body": {
+          "database": "connected",
+          "graphql": "available",
+          "status": "healthy"
+        },
+        "code": 200
+      },
+      "name": "main-boolean-one"
+    },
+    {
+      "expected": {
+        "records": 1,
+        "selects": 1
+      },
+      "got": {
+        "records": 1,
+        "selects": 1
+      },
+      "name": "main-provider-order-boolean-one"
+    },
+    {
+      "detail": {
+        "records": 0,
+        "selects": 1,
+        "sql": [
+          "SELECT 1"
+        ]
+      },
+      "expected": {
+        "body": {
+          "database": "unavailable",
+          "graphql": "available",
+          "reason": "the database did not answer SELECT 1",
+          "status": "unhealthy"
+        },
+        "code": 503
+      },
+      "got": {
+        "body": {
+          "database": "unavailable",
+          "graphql": "available",
+          "reason": "the database did not answer SELECT 1",
+          "status": "unhealthy"
+        },
+        "code": 503
+      },
+      "name": "main-boolean-zero"
+    },
+    {
+      "expected": {
+        "records": 0,
+        "selects": 1
+      },
+      "got": {
+        "records": 0,
+        "selects": 1
+      },
+      "name": "main-provider-order-boolean-zero"
+    },
+    {
+      "detail": {
+        "records": 1,
+        "selects": 1,
+        "sql": [
+          "SELECT 1"
+        ]
+      },
+      "expected": {
+        "body": {
+          "database": "connected",
+          "graphql": "available",
+          "status": "healthy"
+        },
+        "code": 200
+      },
+      "got": {
+        "body": {
+          "database": "connected",
+          "graphql": "available",
+          "status": "healthy"
+        },
+        "code": 200
+      },
+      "name": "main-float-one"
+    },
+    {
+      "expected": {
+        "records": 1,
+        "selects": 1
+      },
+      "got": {
+        "records": 1,
+        "selects": 1
+      },
+      "name": "main-provider-order-float-one"
+    },
+    {
+      "detail": {
+        "records": 0,
+        "selects": 1,
+        "sql": [
+          "SELECT 1"
+        ]
+      },
+      "expected": {
+        "body": {
+          "database": "unavailable",
+          "graphql": "available",
+          "reason": "the database did not answer SELECT 1",
+          "status": "unhealthy"
+        },
+        "code": 503
+      },
+      "got": {
+        "body": {
+          "database": "unavailable",
+          "graphql": "available",
+          "reason": "the database did not answer SELECT 1",
+          "status": "unhealthy"
+        },
+        "code": 503
+      },
+      "name": "main-float-half"
+    },
+    {
+      "expected": {
+        "records": 0,
+        "selects": 1
+      },
+      "got": {
+        "records": 0,
+        "selects": 1
+      },
+      "name": "main-provider-order-float-half"
+    },
+    {
+      "detail": {
+        "records": 1,
+        "selects": 1,
+        "sql": [
+          "SELECT 1"
+        ]
+      },
+      "expected": {
+        "body": {
+          "database": "connected",
+          "graphql": "available",
+          "status": "healthy"
+        },
+        "code": 200
+      },
+      "got": {
+        "body": {
+          "database": "connected",
+          "graphql": "available",
+          "status": "healthy"
+        },
+        "code": 200
+      },
+      "name": "main-decimal-one"
+    },
+    {
+      "expected": {
+        "records": 1,
+        "selects": 1
+      },
+      "got": {
+        "records": 1,
+        "selects": 1
+      },
+      "name": "main-provider-order-decimal-one"
+    },
+    {
+      "detail": {
+        "records": 1,
+        "selects": 1,
+        "sql": [
+          "SELECT 1"
+        ]
+      },
+      "expected": {
+        "body": {
+          "database": "connected",
+          "graphql": "available",
+          "status": "healthy"
+        },
+        "code": 200
+      },
+      "got": {
+        "body": {
+          "database": "connected",
+          "graphql": "available",
+          "status": "healthy"
+        },
+        "code": 200
+      },
+      "name": "main-fraction-one"
+    },
+    {
+      "expected": {
+        "records": 1,
+        "selects": 1
+      },
+      "got": {
+        "records": 1,
+        "selects": 1
+      },
+      "name": "main-provider-order-fraction-one"
+    },
+    {
+      "detail": {
+        "records": 0,
+        "selects": 1,
+        "sql": [
+          "SELECT 1"
+        ]
+      },
+      "expected": {
+        "body": {
+          "database": "unavailable",
+          "graphql": "available",
+          "reason": "the database did not answer SELECT 1",
+          "status": "unhealthy"
+        },
+        "code": 503
+      },
+      "got": {
+        "body": {
+          "database": "unavailable",
+          "graphql": "available",
+          "reason": "the database did not answer SELECT 1",
+          "status": "unhealthy"
+        },
+        "code": 503
+      },
+      "name": "main-nonfinite-nan"
+    },
+    {
+      "expected": {
+        "records": 0,
+        "selects": 1
+      },
+      "got": {
+        "records": 0,
+        "selects": 1
+      },
+      "name": "main-provider-order-nonfinite-nan"
+    },
+    {
+      "detail": {
+        "records": 0,
+        "selects": 1,
+        "sql": [
+          "SELECT 1"
+        ]
+      },
+      "expected": {
+        "body": {
+          "database": "unavailable",
+          "graphql": "available",
+          "reason": "the database did not answer SELECT 1",
+          "status": "unhealthy"
+        },
+        "code": 503
+      },
+      "got": {
+        "body": {
+          "database": "unavailable",
+          "graphql": "available",
+          "reason": "the database did not answer SELECT 1",
+          "status": "unhealthy"
+        },
+        "code": 503
+      },
+      "name": "main-nonfinite-inf"
+    },
+    {
+      "expected": {
+        "records": 0,
+        "selects": 1
+      },
+      "got": {
+        "records": 0,
+        "selects": 1
+      },
+      "name": "main-provider-order-nonfinite-inf"
+    },
+    {
+      "detail": {
+        "records": 0,
+        "selects": 1,
+        "sql": [
+          "SELECT 1"
+        ]
+      },
+      "expected": {
+        "body": {
+          "database": "unavailable",
+          "graphql": "available",
+          "reason": "the database did not answer SELECT 1",
+          "status": "unhealthy"
+        },
+        "code": 503
+      },
+      "got": {
+        "body": {
+          "database": "unavailable",
+          "graphql": "available",
+          "reason": "the database did not answer SELECT 1",
+          "status": "unhealthy"
+        },
+        "code": 503
+      },
+      "name": "main-select-connection"
+    },
+    {
+      "expected": {
+        "records": 0,
+        "selects": 1
+      },
+      "got": {
+        "records": 0,
+        "selects": 1
+      },
+      "name": "main-provider-order-select-connection"
+    },
+    {
+      "detail": {
+        "records": 0,
+        "selects": 1,
+        "sql": [
+          "SELECT 1"
+        ]
+      },
+      "expected": {
+        "body": {
+          "database": "unavailable",
+          "graphql": "available",
+          "reason": "the database did not answer SELECT 1",
+          "status": "unhealthy"
+        },
+        "code": 503
+      },
+      "got": {
+        "body": {
+          "database": "unavailable",
+          "graphql": "available",
+          "reason": "the database did not answer SELECT 1",
+          "status": "unhealthy"
+        },
+        "code": 503
+      },
+      "name": "main-select-permission"
+    },
+    {
+      "expected": {
+        "records": 0,
+        "selects": 1
+      },
+      "got": {
+        "records": 0,
+        "selects": 1
+      },
+      "name": "main-provider-order-select-permission"
+    },
+    {
+      "detail": {
+        "records": 1,
+        "selects": 1,
+        "sql": [
+          "SELECT 1"
+        ]
+      },
+      "expected": {
+        "body": {
+          "database": "unavailable",
+          "graphql": "available",
+          "reason": "the namespace has no IVG Schema record: setup has not finished; run initialize_schema()",
+          "status": "unhealthy"
+        },
+        "code": 503
+      },
+      "got": {
+        "body": {
+          "database": "unavailable",
+          "graphql": "available",
+          "reason": "the namespace has no IVG Schema record: setup has not finished; run initialize_schema()",
+          "status": "unhealthy"
+        },
+        "code": 503
+      },
+      "name": "main-record-missing"
+    },
+    {
+      "expected": {
+        "records": 1,
+        "selects": 1
+      },
+      "got": {
+        "records": 1,
+        "selects": 1
+      },
+      "name": "main-provider-order-record-missing"
+    },
+    {
+      "detail": {
+        "records": 1,
+        "selects": 1,
+        "sql": [
+          "SELECT 1"
+        ]
+      },
+      "expected": {
+        "body": {
+          "database": "unavailable",
+          "graphql": "available",
+          "reason": "the namespace has no IVG Schema record: setup has not finished; run initialize_schema()",
+          "status": "unhealthy"
+        },
+        "code": 503
+      },
+      "got": {
+        "body": {
+          "database": "unavailable",
+          "graphql": "available",
+          "reason": "the namespace has no IVG Schema record: setup has not finished; run initialize_schema()",
+          "status": "unhealthy"
+        },
+        "code": 503
+      },
+      "name": "main-record-empty"
+    },
+    {
+      "expected": {
+        "records": 1,
+        "selects": 1
+      },
+      "got": {
+        "records": 1,
+        "selects": 1
+      },
+      "name": "main-provider-order-record-empty"
+    },
+    {
+      "detail": {
+        "records": 1,
+        "selects": 1,
+        "sql": [
+          "SELECT 1"
+        ]
+      },
+      "expected": {
+        "body": {
+          "database": "unavailable",
+          "graphql": "available",
+          "reason": "the namespace records another IVG Schema",
+          "status": "unhealthy"
+        },
+        "code": 503
+      },
+      "got": {
+        "body": {
+          "database": "unavailable",
+          "graphql": "available",
+          "reason": "the namespace records another IVG Schema",
+          "status": "unhealthy"
+        },
+        "code": 503
+      },
+      "name": "main-record-other"
+    },
+    {
+      "expected": {
+        "records": 1,
+        "selects": 1
+      },
+      "got": {
+        "records": 1,
+        "selects": 1
+      },
+      "name": "main-provider-order-record-other"
+    },
+    {
+      "detail": {
+        "records": 1,
+        "selects": 1,
+        "sql": [
+          "SELECT 1"
+        ]
+      },
+      "expected": {
+        "body": {
+          "database": "connected",
+          "graphql": "available",
+          "status": "healthy"
+        },
+        "code": 200
+      },
+      "got": {
+        "body": {
+          "database": "connected",
+          "graphql": "available",
+          "status": "healthy"
+        },
+        "code": 200
+      },
+      "name": "main-record-case"
+    },
+    {
+      "expected": {
+        "records": 1,
+        "selects": 1
+      },
+      "got": {
+        "records": 1,
+        "selects": 1
+      },
+      "name": "main-provider-order-record-case"
+    },
+    {
+      "detail": {
+        "records": 1,
+        "selects": 1,
+        "sql": [
+          "SELECT 1"
+        ]
+      },
+      "expected": {
+        "body": {
+          "database": "unavailable",
+          "graphql": "available",
+          "reason": "the namespace records another IVG Schema",
+          "status": "unhealthy"
+        },
+        "code": 503
+      },
+      "got": {
+        "body": {
+          "database": "unavailable",
+          "graphql": "available",
+          "reason": "the namespace records another IVG Schema",
+          "status": "unhealthy"
+        },
+        "code": 503
+      },
+      "name": "main-record-number"
+    },
+    {
+      "expected": {
+        "records": 1,
+        "selects": 1
+      },
+      "got": {
+        "records": 1,
+        "selects": 1
+      },
+      "name": "main-provider-order-record-number"
+    },
+    {
+      "detail": {
+        "records": 1,
+        "selects": 1,
+        "sql": [
+          "SELECT 1"
+        ]
+      },
+      "expected": {
+        "body": {
+          "database": "unavailable",
+          "graphql": "available",
+          "reason": "the IVG Schema record could not be read",
+          "status": "unhealthy"
+        },
+        "code": 503
+      },
+      "got": {
+        "body": {
+          "database": "unavailable",
+          "graphql": "available",
+          "reason": "the IVG Schema record could not be read",
+          "status": "unhealthy"
+        },
+        "code": 503
+      },
+      "name": "main-record-permission"
+    },
+    {
+      "expected": {
+        "records": 1,
+        "selects": 1
+      },
+      "got": {
+        "records": 1,
+        "selects": 1
+      },
+      "name": "main-provider-order-record-permission"
+    },
+    {
+      "detail": {
+        "records": 1,
+        "selects": 1,
+        "sql": [
+          "SELECT 1"
+        ]
+      },
+      "expected": {
+        "body": {
+          "database": "unavailable",
+          "graphql": "available",
+          "reason": "the IVG Schema record could not be read",
+          "status": "unhealthy"
+        },
+        "code": 503
+      },
+      "got": {
+        "body": {
+          "database": "unavailable",
+          "graphql": "available",
+          "reason": "the IVG Schema record could not be read",
+          "status": "unhealthy"
+        },
+        "code": 503
+      },
+      "name": "main-record-connection"
+    },
+    {
+      "expected": {
+        "records": 1,
+        "selects": 1
+      },
+      "got": {
+        "records": 1,
+        "selects": 1
+      },
+      "name": "main-provider-order-record-connection"
+    },
+    {
+      "expected": {
+        "calls": 1,
+        "replies": [
+          {
+            "body": {
+              "database": "unavailable",
+              "graphql": "available",
+              "reason": "the API started without the database",
+              "status": "unhealthy"
+            },
+            "code": 503
+          },
+          {
+            "body": {
+              "database": "unavailable",
+              "graphql": "available",
+              "reason": "the API started without the database",
+              "status": "unhealthy"
+            },
+            "code": 503
+          }
+        ]
+      },
+      "got": {
+        "calls": 1,
+        "replies": [
+          {
+            "body": {
+              "database": "unavailable",
+              "graphql": "available",
+              "reason": "the API started without the database",
+              "status": "unhealthy"
+            },
+            "code": 503
+          },
+          {
+            "body": {
+              "database": "unavailable",
+              "graphql": "available",
+              "reason": "the API started without the database",
+              "status": "unhealthy"
+            },
+            "code": 503
+          }
+        ]
+      },
+      "name": "sticky-ConnectionError"
+    },
+    {
+      "expected": {
+        "calls": 1,
+        "replies": [
+          {
+            "body": {
+              "database": "unavailable",
+              "graphql": "available",
+              "reason": "the API started without the database",
+              "status": "unhealthy"
+            },
+            "code": 503
+          },
+          {
+            "body": {
+              "database": "unavailable",
+              "graphql": "available",
+              "reason": "the API started without the database",
+              "status": "unhealthy"
+            },
+            "code": 503
+          }
+        ]
+      },
+      "got": {
+        "calls": 1,
+        "replies": [
+          {
+            "body": {
+              "database": "unavailable",
+              "graphql": "available",
+              "reason": "the API started without the database",
+              "status": "unhealthy"
+            },
+            "code": 503
+          },
+          {
+            "body": {
+              "database": "unavailable",
+              "graphql": "available",
+              "reason": "the API started without the database",
+              "status": "unhealthy"
+            },
+            "code": 503
+          }
+        ]
+      },
+      "name": "sticky-PermissionError"
+    },
+    {
+      "expected": {
+        "calls": 1,
+        "reply": {
+          "body": {
+            "database": "unavailable",
+            "graphql": "available",
+            "reason": "the API started without the database",
+            "status": "unhealthy"
+          },
+          "code": 503
+        }
+      },
+      "got": {
+        "calls": 1,
+        "reply": {
+          "body": {
+            "database": "unavailable",
+            "graphql": "available",
+            "reason": "the API started without the database",
+            "status": "unhealthy"
+          },
+          "code": 503
+        }
+      },
+      "name": "automatic-first-access-caught"
+    },
+    {
+      "expected": "PermissionError",
+      "got": "PermissionError",
+      "name": "injected-first-access-not-caught"
+    },
+    {
+      "expected": [
+        {
+          "body": {
+            "database": "unavailable",
+            "graphql": "available",
+            "reason": "the database did not answer SELECT 1",
+            "status": "unhealthy"
+          },
+          "code": 503
+        },
+        {
+          "body": {
+            "database": "connected",
+            "graphql": "available",
+            "status": "healthy"
+          },
+          "code": 200
+        }
+      ],
+      "got": [
+        {
+          "body": {
+            "database": "unavailable",
+            "graphql": "available",
+            "reason": "the database did not answer SELECT 1",
+            "status": "unhealthy"
+          },
+          "code": 503
+        },
+        {
+          "body": {
+            "database": "connected",
+            "graphql": "available",
+            "status": "healthy"
+          },
+          "code": 200
+        }
+      ],
+      "name": "bound-main-recovery"
+    },
+    {
+      "expected": {
+        "cached": "lazy-recovery",
+        "calls": 2,
+        "replies": [
+          {
+            "body": {
+              "status": "unavailable"
+            },
+            "code": 503
+          },
+          {
+            "body": {
+              "status": "ok"
+            },
+            "code": 200
+          }
+        ]
+      },
+      "got": {
+        "cached": "lazy-recovery",
+        "calls": 2,
+        "replies": [
+          {
+            "body": {
+              "status": "unavailable"
+            },
+            "code": 503
+          },
+          {
+            "body": {
+              "status": "ok"
+            },
+            "code": 200
+          }
+        ]
+      },
+      "name": "lazy-factory-recovery"
+    },
+    {
+      "expected": [
+        true,
+        true
+      ],
+      "got": [
+        true,
+        true
+      ],
+      "name": "lazy-factory-lock"
+    },
+    {
+      "expected": {
+        "body": {
+          "status": "unavailable"
+        },
+        "code": 503
+      },
+      "got": {
+        "body": {
+          "status": "unavailable"
+        },
+        "code": 503
+      },
+      "name": "cypher-raised-connection"
+    },
+    {
+      "expected": {
+        "calls": 1,
+        "queries": 1,
+        "same_engine": true
+      },
+      "got": {
+        "calls": 1,
+        "queries": 1,
+        "same_engine": true
+      },
+      "name": "cached-raised-connection"
+    },
+    {
+      "expected": [
+        true
+      ],
+      "got": [
+        true
+      ],
+      "name": "query-lock-raised-connection"
+    },
+    {
+      "expected": {
+        "body": {
+          "status": "unavailable"
+        },
+        "code": 503
+      },
+      "got": {
+        "body": {
+          "status": "unavailable"
+        },
+        "code": 503
+      },
+      "name": "cypher-raised-permission"
+    },
+    {
+      "expected": {
+        "calls": 1,
+        "queries": 1,
+        "same_engine": true
+      },
+      "got": {
+        "calls": 1,
+        "queries": 1,
+        "same_engine": true
+      },
+      "name": "cached-raised-permission"
+    },
+    {
+      "expected": [
+        true
+      ],
+      "got": [
+        true
+      ],
+      "name": "query-lock-raised-permission"
+    },
+    {
+      "expected": {
+        "body": {
+          "status": "unavailable"
+        },
+        "code": 503
+      },
+      "got": {
+        "body": {
+          "status": "unavailable"
+        },
+        "code": 503
+      },
+      "name": "cypher-folded"
+    },
+    {
+      "expected": {
+        "calls": 1,
+        "queries": 1,
+        "same_engine": true
+      },
+      "got": {
+        "calls": 1,
+        "queries": 1,
+        "same_engine": true
+      },
+      "name": "cached-folded"
+    },
+    {
+      "expected": [
+        true
+      ],
+      "got": [
+        true
+      ],
+      "name": "query-lock-folded"
+    },
+    {
+      "expected": {
+        "body": {
+          "status": "ok"
+        },
+        "code": 200
+      },
+      "got": {
+        "body": {
+          "status": "ok"
+        },
+        "code": 200
+      },
+      "name": "cypher-empty-folded"
+    },
+    {
+      "expected": {
+        "calls": 1,
+        "queries": 1,
+        "same_engine": true
+      },
+      "got": {
+        "calls": 1,
+        "queries": 1,
+        "same_engine": true
+      },
+      "name": "cached-empty-folded"
+    },
+    {
+      "expected": [
+        true
+      ],
+      "got": [
+        true
+      ],
+      "name": "query-lock-empty-folded"
+    },
+    {
+      "expected": {
+        "body": {
+          "status": "ok"
+        },
+        "code": 200
+      },
+      "got": {
+        "body": {
+          "status": "ok"
+        },
+        "code": 200
+      },
+      "name": "cypher-clean"
+    },
+    {
+      "expected": {
+        "calls": 1,
+        "queries": 1,
+        "same_engine": true
+      },
+      "got": {
+        "calls": 1,
+        "queries": 1,
+        "same_engine": true
+      },
+      "name": "cached-clean"
+    },
+    {
+      "expected": [
+        true
+      ],
+      "got": [
+        true
+      ],
+      "name": "query-lock-clean"
+    },
+    {
+      "expected": {
+        "calls": 1,
+        "replies": [
+          {
+            "body": {
+              "status": "unavailable"
+            },
+            "code": 503
+          },
+          {
+            "body": {
+              "status": "ok"
+            },
+            "code": 200
+          }
+        ],
+        "same_engine": true
+      },
+      "got": {
+        "calls": 1,
+        "replies": [
+          {
+            "body": {
+              "status": "unavailable"
+            },
+            "code": 503
+          },
+          {
+            "body": {
+              "status": "ok"
+            },
+            "code": 200
+          }
+        ],
+        "same_engine": true
+      },
+      "name": "cached-query-recovers"
+    },
+    {
+      "expected": {
+        "calls": 2,
+        "cleared": true,
+        "close_attempts": 1,
+        "replies": [
+          {
+            "body": {
+              "status": "unavailable"
+            },
+            "code": 503
+          },
+          {
+            "body": {
+              "status": "ok"
+            },
+            "code": 200
+          }
+        ]
+      },
+      "got": {
+        "calls": 2,
+        "cleared": true,
+        "close_attempts": 1,
+        "replies": [
+          {
+            "body": {
+              "status": "unavailable"
+            },
+            "code": 503
+          },
+          {
+            "body": {
+              "status": "ok"
+            },
+            "code": 200
+          }
+        ]
+      },
+      "name": "reset-False"
+    },
+    {
+      "expected": {
+        "calls": 2,
+        "cleared": true,
+        "close_attempts": 1,
+        "replies": [
+          {
+            "body": {
+              "status": "unavailable"
+            },
+            "code": 503
+          },
+          {
+            "body": {
+              "status": "ok"
+            },
+            "code": 200
+          }
+        ]
+      },
+      "got": {
+        "calls": 2,
+        "cleared": true,
+        "close_attempts": 1,
+        "replies": [
+          {
+            "body": {
+              "status": "unavailable"
+            },
+            "code": 503
+          },
+          {
+            "body": {
+              "status": "ok"
+            },
+            "code": 200
+          }
+        ]
+      },
+      "name": "reset-True"
+    },
+    {
+      "expected": null,
+      "got": null,
+      "name": "reset-empty-cache"
+    },
+    {
+      "expected": true,
+      "got": true,
+      "name": "main-factory-body"
+    },
+    {
+      "expected": true,
+      "got": true,
+      "name": "cypher-factory-host-body"
+    },
+    {
+      "expected": [
+        "connector",
+        "engine-constructor",
+        "connector",
+        "engine-constructor"
+      ],
+      "got": [
+        "connector",
+        "engine-constructor",
+        "connector",
+        "engine-constructor"
+      ],
+      "name": "factory-port-order"
+    },
+    {
+      "expected": 0,
+      "got": 0,
+      "name": "no-network-connects"
+    }
+  ],
+  "pin": {
+    "all_equal": true,
+    "files_equal_pin_blobs": {
+      "api/main.py": true,
+      "iris_vector_graph/_engine/nodes_edges.py": true,
+      "iris_vector_graph/_engine/query.py": true,
+      "iris_vector_graph/_engine/temporal_window.py": true,
+      "iris_vector_graph/cypher_api.py": true,
+      "iris_vector_graph/embedded.py": true,
+      "iris_vector_graph/engine.py": true,
+      "iris_vector_graph/freshness.py": true,
+      "iris_vector_graph/ledger/client.py": true,
+      "iris_vector_graph/ledger/replay.py": true,
+      "iris_vector_graph/prop_values.py": true,
+      "iris_vector_graph/result.py": true,
+      "iris_vector_graph/schema.py": true,
+      "iris_vector_graph/schema_name.py": true
+    },
+    "pin_commit": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+    "pin_dir": "/Users/ziniuw/runs/ivg-consolidated-20261114/pin"
+  },
+  "platform": "macOS-26.2-arm64-arm-64bit",
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "python": "3.11.8",
+  "real": "api.main.create_app/get_engine/database_problem, schema_name.read_record/same_schema, cypher_api._make_engine host branch/_get_engine/_engine/_reset_engine/health, actual ASGI request routing and response JSON",
+  "scope": "main app capture/sticky absence versus lazy cache retry, actual query/record decision to status/body, folded/empty error, reset including close failure; api/main.py lies outside historical production-member census and is reported separately",
+  "substituted": "named connector and engine-constructor ports; returned SELECT1 scalar/exception; NativeAPI record get; execute_cypher result/exception; connection.close. No SQL engine, live IRIS, network listener, authentication/deployment/concurrency proof.",
+  "verdict": "AGREES",
+  "wall_s": 0.831
+}

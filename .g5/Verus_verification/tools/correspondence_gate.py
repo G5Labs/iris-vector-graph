@@ -6,6 +6,8 @@ file/name in the scoped source roots. check RECEIPT [--root DISPOSABLE_COPY] rep
 proof stale separately from correspondence stale. Any added/renamed/removed file,
 member or writer in these roots reopens all product bindings, even when proofs reuse.
 Full-file hashes catch unbound local functions, dispatch registrations and imports.
+api/ is included for service-health correspondence, while remaining outside the
+historical named-member census. The audit implementation itself is stamped.
 External providers/configuration remain named premises, not captured live state.
 """
 import argparse,hashlib,json,os
@@ -13,11 +15,11 @@ from pathlib import Path
 REPO=Path(__file__).resolve().parents[3]
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 def inputs(root):
-    product={str(p.relative_to(root)):sha(p) for d in ['iris_vector_graph','iris_src'] for p in (root/d).rglob('*') if p.is_file() and p.suffix in ['.py','.cls','.sql']}
+    product={str(p.relative_to(root)):sha(p) for d in ['iris_vector_graph','iris_src','api'] for p in (root/d).rglob('*') if p.is_file() and p.suffix in ['.py','.cls','.sql']}
     formal={str(p.relative_to(root)):sha(p) for p in (root/'.g5/Verus_verification/models').rglob('*') if p.is_file() and (p.suffix=='.rs' or p.name=='model.json')}
     for p in (root/'.g5/Verus_verification/models').glob('*/binding.py'):
         product[str(p.relative_to(root))]=sha(p)
-    for n in ['tools/binding_common.py']:
+    for n in ['tools/binding_common.py','tools/correspondence_gate.py']:
         p=root/'.g5/Verus_verification'/n;product[str(p.relative_to(root))]=sha(p)
     for n in ['crosswalk/decision-links.tsv','families.tsv']:
         p=root/'.g5/Verus_verification'/n;product[str(p.relative_to(root))]=sha(p)

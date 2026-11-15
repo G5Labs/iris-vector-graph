@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_final_filter_sound"
+    ],
+    "find": "rows.filter(|l:int|passes(l,c))",
+    "name": "where-removed",
+    "replace": "rows",
+    "why": "where-removed"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_final_filter_sound"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/procedure_results/model.json": "6a39b16f5e69698e0a2c602aa11ebf654da8e13c82c1a0bcc9f9609fd70f03b8",
+    ".g5/Verus_verification/models/procedure_results/procedure_results.rs": "c1b5fd65835381087753328369b55ce89b2c7b04f9191a97736a5a98bef1b875"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration7-procedure-20261115/verus/procedure_results/controls/where-removed/20261115T182155Z/models/procedure_results/procedure_results.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_final_filter_sound": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration7-procedure-20261115/verus/procedure_results/20261115T182155Z-control-where-removed-theorem_final_filter_sound.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration7-procedure-20261115/verus/procedure_results/20261115T182155Z-control-where-removed.log",
+    "timed_out": false,
+    "verified": 18
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/procedure_results/20261115T182156Z-control-where-removed/logs/20261115T182155Z-control-where-removed-theorem_final_filter_sound.log": "243d77766a0bb6f52265b7737306166d3872d2f82660b6051ca02412a749cec0",
+    ".g5/Verus_verification/results/procedure_results/20261115T182156Z-control-where-removed/logs/20261115T182155Z-control-where-removed.log": "b26fe3f629ccb07212d37ec91286184d301a3362afe469c6dbc0499c7ed2287c"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,32 @@
+verification results:: 14 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/procedure_results/procedure_results.rs:63:1
+   |
+63 | pub proof fn theorem_distinct_complete_provider(s:Seq<Label>,g:int,l:int)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/procedure_results/procedure_results.rs:64:13
+   |
+63 | pub proof fn theorem_distinct_complete_provider(s:Seq<Label>,g:int,l:int)
+   | ------------------------------------------------------------------------- at the end of the function body
+64 |     ensures provider(s,g).contains(l) <==> (exists|i:int|0<=i<s.len() && s[i].text==l),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: assertion failed
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/procedure_results/procedure_results.rs:72:12
+   |
+72 |     assert(keys.to_seq().contains(l) <==> mapped.contains(l));
+   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/procedure_results/procedure_results.rs:111:9
+    |
+108 | pub proof fn theorem_wrong_source_empty_vs_nonempty(alias:Seq<char>,src:Seq<char>,rows:Seq<int>)
+    | ------------------------------------------------------------------------------------------------ at the end of the function body
+...
+111 |         consume(seq![],Query{source:src,..simple(alias,Condition::All,true)})==(Outcome::Rows{column:alias,values:seq![]}),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

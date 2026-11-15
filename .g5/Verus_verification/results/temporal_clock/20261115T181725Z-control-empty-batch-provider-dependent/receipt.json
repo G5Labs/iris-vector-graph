@@ -1,0 +1,52 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_empty_batch_no_provider_dependency"
+    ],
+    "find": "if es.len()==0 {fold(s,es,available,clocks)}",
+    "name": "empty-batch-provider-dependent",
+    "replace": "if es.len()==0 && provider_ok {fold(s,es,available,clocks)}"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_empty_batch_no_provider_dependency"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal_clock/model.json": "8f7a35ecf9bb5d55d0568bca432af59aa4d892fd71a3956a4e12f7e4392d7b2d",
+    ".g5/Verus_verification/models/temporal_clock/temporal_clock.rs": "ce371d29745a9f520abb327fa3b358b5aac15db46d105664604598eba70e8be1",
+    ".g5/Verus_verification/models/temporal_restore/temporal_restore.rs": "0f72f0047d5a1faf6471e0cd7b2bc369fe2c4e334144bbc17b6264b961d584a6",
+    ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs": "4f14236f57a45c64e889f794b6d55f3fc823dccaba4a2759ed7cedc97fd3bd9d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/empty-batch-provider-dependent/20261115T181724Z/models/temporal_clock/temporal_clock.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_empty_batch_no_provider_dependency": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/20261115T181724Z-control-empty-batch-provider-dependent-theorem_empty_batch_no_provider_dependency.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/20261115T181724Z-control-empty-batch-provider-dependent.log",
+    "timed_out": false,
+    "verified": 55
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal_clock/20261115T181725Z-control-empty-batch-provider-dependent/logs/20261115T181724Z-control-empty-batch-provider-dependent-theorem_empty_batch_no_provider_dependency.log": "8aa527bedde0588fc68eead20f4389a26a3bfe72e05ab9d2ee148908c4db4f94",
+    ".g5/Verus_verification/results/temporal_clock/20261115T181725Z-control-empty-batch-provider-dependent/logs/20261115T181724Z-control-empty-batch-provider-dependent.log": "2c8fc8d42acf2ab0506a595bca52782d0b0d25104a8aaeeed6fb55c2354941f3"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

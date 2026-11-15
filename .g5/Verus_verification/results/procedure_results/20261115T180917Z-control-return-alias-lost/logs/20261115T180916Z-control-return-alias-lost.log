@@ -1,0 +1,62 @@
+verification results:: 12 verified, 5 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-procedure-20261115/verus/procedure_results/controls/return-alias-lost/20261115T180916Z/models/procedure_results/procedure_results.rs:102:13
+    |
+101 | pub proof fn theorem_alias_return(rows:Seq<int>,alias:Seq<char>)
+    | ---------------------------------------------------------------- at the end of the function body
+102 |     ensures consume(rows,simple(alias,Condition::All,true))==(Outcome::Rows{column:alias,values:rows}),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration7-procedure-20261115/verus/procedure_results/controls/return-alias-lost/20261115T180916Z/models/procedure_results/procedure_results.rs:111:1
+    |
+111 | pub proof fn theorem_empty_skips_expression_validation(alias:Seq<char>)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-procedure-20261115/verus/procedure_results/controls/return-alias-lost/20261115T180916Z/models/procedure_results/procedure_results.rs:112:13
+    |
+111 | pub proof fn theorem_empty_skips_expression_validation(alias:Seq<char>)
+    | ----------------------------------------------------------------------- at the end of the function body
+112 |     ensures consume(seq![],simple(alias,Condition::Unsupported,true))==(Outcome::Rows{column:alias,values:seq![]}),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-procedure-20261115/verus/procedure_results/controls/return-alias-lost/20261115T180916Z/models/procedure_results/procedure_results.rs:113:9
+    |
+111 | pub proof fn theorem_empty_skips_expression_validation(alias:Seq<char>)
+    | ----------------------------------------------------------------------- at the end of the function body
+112 |     ensures consume(seq![],simple(alias,Condition::Unsupported,true))==(Outcome::Rows{column:alias,values:seq![]}),
+113 |         consume(seq![],simple(alias,Condition::MissingParam,true))==(Outcome::Rows{column:alias,values:seq![]}),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-procedure-20261115/verus/procedure_results/controls/return-alias-lost/20261115T180916Z/models/procedure_results/procedure_results.rs:121:9
+    |
+118 | pub proof fn theorem_order_requires_result_column(rows:Seq<int>,alias:Seq<char>)
+    | -------------------------------------------------------------------------------- at the end of the function body
+...
+121 |         consume(rows,Query{order_name:Some(alias),..simple(alias,Condition::All,true)})==(Outcome::Rows{column:alias,values:rows}),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-procedure-20261115/verus/procedure_results/controls/return-alias-lost/20261115T180916Z/models/procedure_results/procedure_results.rs:126:9
+    |
+123 | pub proof fn theorem_wrong_source_empty_vs_nonempty(alias:Seq<char>,src:Seq<char>,rows:Seq<int>)
+    | ------------------------------------------------------------------------------------------------ at the end of the function body
+...
+126 |         consume(seq![],Query{source:src,..simple(alias,Condition::All,true)})==(Outcome::Rows{column:alias,values:seq![]}),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-procedure-20261115/verus/procedure_results/controls/return-alias-lost/20261115T180916Z/models/procedure_results/procedure_results.rs:129:13
+    |
+128 |   pub proof fn theorem_filter_before_limit(rows:Seq<int>,alias:Seq<char>,wanted:int)
+    |   ---------------------------------------------------------------------------------- at the end of the function body
+129 |       ensures consume(rows,Query{limit:Some(1),..simple(alias,Condition::Eq(Value::Text(wanted)),true)})
+    |  _____________^
+130 | |         ==(Outcome::Rows{column:alias,values:cut(filtered(rows,Condition::Eq(Value::Text(wanted))),0,Some(1))}),
+    | |_______________________________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 6 previous errors
+

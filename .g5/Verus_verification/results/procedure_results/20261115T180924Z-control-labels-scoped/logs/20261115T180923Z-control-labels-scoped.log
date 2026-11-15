@@ -1,0 +1,27 @@
+verification results:: 14 verified, 3 errors
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration7-procedure-20261115/verus/procedure_results/controls/labels-scoped/20261115T180923Z/models/procedure_results/procedure_results.rs:63:13
+   |
+62 | pub proof fn theorem_graph_is_ignored(s:Seq<Label>,g:int,h:int,q:Query)
+   | ----------------------------------------------------------------------- at the end of the function body
+63 |     ensures call(s,g,q)==call(s,h,q),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: assertion failed
+  --> /Users/ziniuw/runs/ivg-iteration7-procedure-20261115/verus/procedure_results/controls/labels-scoped/20261115T180923Z/models/procedure_results/procedure_results.rs:79:12
+   |
+79 |     assert(keys.to_seq().to_multiset()==provider(s,g).to_multiset());
+   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: precondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration7-procedure-20261115/verus/procedure_results/controls/labels-scoped/20261115T180923Z/models/procedure_results/procedure_results.rs:88:2
+   |
+88 |  provider(s,g).lemma_multiset_has_no_duplicates_conv();}
+   |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+  --> seq_lib.rs:1153:12
+   |
+   = note: failed precondition
+
+error: aborting due to 3 previous errors
+

@@ -1,0 +1,28 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration7-health-20261115/verus/service_health/controls/reset-close-failure-retains-cache/20261115T181714Z/models/service_health/service_health.rs:169:1
+    |
+169 | pub proof fn theorem_reset_allows_replacement(s:Cache,id:int,close:Access)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-health-20261115/verus/service_health/controls/reset-close-failure-retains-cache/20261115T181714Z/models/service_health/service_health.rs:170:13
+    |
+169 | pub proof fn theorem_reset_allows_replacement(s:Cache,id:int,close:Access)
+    | -------------------------------------------------------------------------- at the end of the function body
+170 |     ensures cache_request(reset(s,close).state,Factory::Engine{id,connection:Access::Ready},clean_query()).state.engine==Some(id),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-health-20261115/verus/service_health/controls/reset-close-failure-retains-cache/20261115T181714Z/models/service_health/service_health.rs:171:9
+    |
+169 | pub proof fn theorem_reset_allows_replacement(s:Cache,id:int,close:Access)
+    | -------------------------------------------------------------------------- at the end of the function body
+170 |     ensures cache_request(reset(s,close).state,Factory::Engine{id,connection:Access::Ready},clean_query()).state.engine==Some(id),
+171 |         cache_request(reset(s,close).state,Factory::Engine{id,connection:Access::Ready},clean_query()).state.factory_calls==s.factory_calls+1,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

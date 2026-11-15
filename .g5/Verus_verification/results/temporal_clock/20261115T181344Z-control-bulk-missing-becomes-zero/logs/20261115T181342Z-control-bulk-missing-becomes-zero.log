@@ -1,0 +1,50 @@
+verification results:: 50 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/bulk-missing-becomes-zero/20261115T181342Z/models/temporal_clock/temporal_clock.rs:76:1
+   |
+76 | pub proof fn theorem_bulk_missing_null_empty_refuse(shape:bool)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/bulk-missing-becomes-zero/20261115T181342Z/models/temporal_clock/temporal_clock.rs:77:13
+   |
+76 | pub proof fn theorem_bulk_missing_null_empty_refuse(shape:bool)
+   | --------------------------------------------------------------- at the end of the function body
+77 |     ensures bulk_payload(Raw::Missing,Raw::Missing,shape)==None,
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/bulk-missing-becomes-zero/20261115T181342Z/models/temporal_clock/temporal_clock.rs:78:9
+   |
+76 | pub proof fn theorem_bulk_missing_null_empty_refuse(shape:bool)
+   | --------------------------------------------------------------- at the end of the function body
+77 |     ensures bulk_payload(Raw::Missing,Raw::Missing,shape)==None,
+78 |         bulk_payload(Raw::Null,Raw::Missing,shape)==None,
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/bulk-missing-becomes-zero/20261115T181342Z/models/temporal_clock/temporal_clock.rs:124:1
+    |
+124 | pub proof fn theorem_invalid_input_refuses_before_write(s:stores::Global,e:stores::Edge,now:int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/bulk-missing-becomes-zero/20261115T181342Z/models/temporal_clock/temporal_clock.rs:126:9
+    |
+124 | pub proof fn theorem_invalid_input_refuses_before_write(s:stores::Global,e:stores::Edge,now:int)
+    | ------------------------------------------------------------------------------------------------ at the end of the function body
+125 |     ensures call_single(s,e,Raw::Bad,now,true,1,true).state==s,
+126 |         call_bulk(s,e,Raw::Missing,Raw::Missing,true,false,now,true,1,true).state==s,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/bulk-missing-becomes-zero/20261115T181342Z/models/temporal_clock/temporal_clock.rs:127:9
+    |
+124 | pub proof fn theorem_invalid_input_refuses_before_write(s:stores::Global,e:stores::Edge,now:int)
+    | ------------------------------------------------------------------------------------------------ at the end of the function body
+...
+127 |         !call_bulk(s,e,Raw::Missing,Raw::Missing,true,false,now,true,1,true).accepted,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 4 previous errors
+

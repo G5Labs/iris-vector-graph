@@ -1,0 +1,59 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_sample_startup_absence_is_sticky",
+      "theorem_bound_sample_can_recover"
+    ],
+    "find": "MainRequest{state:s,response:reply",
+    "name": "sticky-app-rebuild-count",
+    "replace": "MainRequest{state:Main{factory_calls:s.factory_calls+1,..s},response:reply"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_sample_startup_absence_is_sticky",
+      "theorem_bound_sample_can_recover"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/service_health/model.json": "5fdce327b505ccb3a5f49407560872498bb60480a6962b0f3fb2c89dccdc76e3",
+    ".g5/Verus_verification/models/service_health/service_health.rs": "326d0bb9da332c335a8d0516b1d4cef7c487a5cdf18054d229d52a9f94e28014"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration7-health-20261115/verus/service_health/controls/sticky-app-rebuild-count/20261115T180934Z/models/service_health/service_health.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_bound_sample_can_recover": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration7-health-20261115/verus/service_health/20261115T180934Z-control-sticky-app-rebuild-count-theorem_bound_sample_can_recover.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_sample_startup_absence_is_sticky": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration7-health-20261115/verus/service_health/20261115T180934Z-control-sticky-app-rebuild-count-theorem_sample_startup_absence_is_sticky.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration7-health-20261115/verus/service_health/20261115T180934Z-control-sticky-app-rebuild-count.log",
+    "timed_out": false,
+    "verified": 13
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/service_health/20261115T180935Z-control-sticky-app-rebuild-count/logs/20261115T180934Z-control-sticky-app-rebuild-count-theorem_bound_sample_can_recover.log": "70b1215705302471afe3a099e268c3ed75df19c63788e7c1045f491f7d078f1e",
+    ".g5/Verus_verification/results/service_health/20261115T180935Z-control-sticky-app-rebuild-count/logs/20261115T180934Z-control-sticky-app-rebuild-count-theorem_sample_startup_absence_is_sticky.log": "092a1bebb2c3f0b9e9ac72c7dcee5bc3bd0623b381b56f7dea795179792154da",
+    ".g5/Verus_verification/results/service_health/20261115T180935Z-control-sticky-app-rebuild-count/logs/20261115T180934Z-control-sticky-app-rebuild-count.log": "4993777ddec23c7fec5bb04a6ed393a2df185cdfe468ccf6fd7d3f7e5da88348"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

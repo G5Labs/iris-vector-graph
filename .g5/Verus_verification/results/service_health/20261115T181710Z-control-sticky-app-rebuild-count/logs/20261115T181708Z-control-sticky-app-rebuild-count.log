@@ -1,0 +1,21 @@
+verification results:: 16 verified, 2 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-health-20261115/verus/service_health/controls/sticky-app-rebuild-count/20261115T181708Z/models/service_health/service_health.rs:126:9
+    |
+124 | pub proof fn theorem_sample_startup_absence_is_sticky(p:Probe,q:Probe,error:Error)
+    | ---------------------------------------------------------------------------------- at the end of the function body
+125 |     ensures main_request(main_request(main_boot(Factory::Raised(error)),p).state,q).state.engine.is_none(),
+126 |         main_request(main_request(main_boot(Factory::Raised(error)),p).state,q).state.factory_calls==1,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-health-20261115/verus/service_health/controls/sticky-app-rebuild-count/20261115T181708Z/models/service_health/service_health.rs:139:9
+    |
+135 | pub proof fn theorem_bound_sample_can_recover(s:Main,bad:Probe,good:Probe)
+    | -------------------------------------------------------------------------- at the end of the function body
+...
+139 |         main_request(main_request(s,bad).state,good).state.factory_calls==s.factory_calls,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

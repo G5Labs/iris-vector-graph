@@ -1,0 +1,52 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_actual_coordinate_reaches_window"
+    ],
+    "find": "stores::weight(r.state,at(e,ts),",
+    "name": "reader-uses-raw-identity-time",
+    "replace": "stores::weight(r.state,e,"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_actual_coordinate_reaches_window"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal_clock/model.json": "26752db5f768aaf0e1f2826d08207f347ad9aab6b8566240489febffb87af840",
+    ".g5/Verus_verification/models/temporal_clock/temporal_clock.rs": "347ab034dc71589ac9756381a874dbb437560f5b37d48ff95e457fc7485e521f",
+    ".g5/Verus_verification/models/temporal_restore/temporal_restore.rs": "0f72f0047d5a1faf6471e0cd7b2bc369fe2c4e334144bbc17b6264b961d584a6",
+    ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs": "4f14236f57a45c64e889f794b6d55f3fc823dccaba4a2759ed7cedc97fd3bd9d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/reader-uses-raw-identity-time/20261115T181043Z/models/temporal_clock/temporal_clock.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 4,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_actual_coordinate_reaches_window": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/20261115T181043Z-control-reader-uses-raw-identity-time-theorem_actual_coordinate_reaches_window.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/20261115T181043Z-control-reader-uses-raw-identity-time.log",
+    "timed_out": false,
+    "verified": 46
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal_clock/20261115T181045Z-control-reader-uses-raw-identity-time/logs/20261115T181043Z-control-reader-uses-raw-identity-time-theorem_actual_coordinate_reaches_window.log": "321a94e2bb67953190a2e3c297d4552640de192d36eec01f9d406481e30bd9e0",
+    ".g5/Verus_verification/results/temporal_clock/20261115T181045Z-control-reader-uses-raw-identity-time/logs/20261115T181043Z-control-reader-uses-raw-identity-time.log": "9811e6ce1349804264a27f2c442d1d532bd263ae33e4ceac708c271d99798077"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

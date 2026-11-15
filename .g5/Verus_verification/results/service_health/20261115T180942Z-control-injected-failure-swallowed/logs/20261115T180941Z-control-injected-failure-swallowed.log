@@ -1,0 +1,12 @@
+verification results:: 14 verified, 1 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-health-20261115/verus/service_health/controls/injected-failure-swallowed/20261115T180941Z/models/service_health/service_health.rs:118:9
+    |
+116 | pub proof fn theorem_constructor_and_injected_refusal_differ(id:int,error:Error)
+    | -------------------------------------------------------------------------------- at the end of the function body
+117 |     ensures main_boot(Factory::Engine{id,connection:Access::Raised(error)}).engine.is_none(),
+118 |         main_injected(id,Access::Raised(error)).is_none(),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

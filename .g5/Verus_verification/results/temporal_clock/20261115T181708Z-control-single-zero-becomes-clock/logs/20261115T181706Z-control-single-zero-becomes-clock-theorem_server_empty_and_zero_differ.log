@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/single-zero-becomes-clock/20261115T181706Z/models/temporal_clock/temporal_clock.rs:132:1
+    |
+132 | pub proof fn theorem_server_empty_and_zero_differ(now:int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/single-zero-becomes-clock/20261115T181706Z/models/temporal_clock/temporal_clock.rs:134:54
+    |
+132 | pub proof fn theorem_server_empty_and_zero_differ(now:int)
+    | ---------------------------------------------------------- at the end of the function body
+133 |     requires now!=0,
+134 |     ensures single_clock(NativeTime::Empty,now)==now,single_clock(NativeTime::Number(0),now)==0,
+    |                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/single-zero-becomes-clock/20261115T181706Z/models/temporal_clock/temporal_clock.rs:135:32
+    |
+132 | pub proof fn theorem_server_empty_and_zero_differ(now:int)
+    | ---------------------------------------------------------- at the end of the function body
+...
+135 |         bulk_clock(0,now)==now,single_clock(NativeTime::Number(0),now)!=bulk_clock(0,now),
+    |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

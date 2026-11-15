@@ -1,0 +1,19 @@
+verification results:: 16 verified, 2 errors
+error: assertion failed
+  --> /Users/ziniuw/runs/ivg-iteration7-procedure-20261115/verus/procedure_results/controls/distinct-dropped/20261115T181211Z/models/procedure_results/procedure_results.rs:83:12
+   |
+83 |     assert(keys.to_seq().to_multiset()==provider(s,g).to_multiset());
+   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: precondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration7-procedure-20261115/verus/procedure_results/controls/distinct-dropped/20261115T181211Z/models/procedure_results/procedure_results.rs:92:2
+   |
+92 |  provider(s,g).lemma_multiset_has_no_duplicates_conv();}
+   |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+  --> seq_lib.rs:1153:12
+   |
+   = note: failed precondition
+
+error: aborting due to 2 previous errors
+

@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration7-health-20261115/verus/service_health/controls/query-exception-not-retried/20261115T181716Z/models/service_health/service_health.rs:178:1
+    |
+178 | pub proof fn theorem_query_exception_replaces_cache(s:Cache,f:Factory,id:int,error:Error,close:Access)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-health-20261115/verus/service_health/controls/query-exception-not-retried/20261115T181716Z/models/service_health/service_health.rs:180:13
+    |
+178 | pub proof fn theorem_query_exception_replaces_cache(s:Cache,f:Factory,id:int,error:Error,close:Access)
+    | ------------------------------------------------------------------------------------------------------ at the end of the function body
+179 |     requires s.engine.is_some(),
+180 |     ensures run_query(s,f,Query::Raised(error),Factory::Engine{id,connection:Access::Ready},clean_query(),close).state.engine==Some(id),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-health-20261115/verus/service_health/controls/query-exception-not-retried/20261115T181716Z/models/service_health/service_health.rs:181:9
+    |
+178 | pub proof fn theorem_query_exception_replaces_cache(s:Cache,f:Factory,id:int,error:Error,close:Access)
+    | ------------------------------------------------------------------------------------------------------ at the end of the function body
+...
+181 |         run_query(s,f,Query::Raised(error),Factory::Engine{id,connection:Access::Ready},clean_query(),close).state.factory_calls==s.factory_calls+1,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

@@ -1,0 +1,13 @@
+verification results:: 16 verified, 1 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-procedure-20261115/verus/procedure_results/controls/limit-before-where/20261115T180922Z/models/procedure_results/procedure_results.rs:129:13
+    |
+128 |   pub proof fn theorem_filter_before_limit(rows:Seq<int>,alias:Seq<char>,wanted:int)
+    |   ---------------------------------------------------------------------------------- at the end of the function body
+129 |       ensures consume(rows,Query{limit:Some(1),..simple(alias,Condition::Eq(Value::Text(wanted)),true)})
+    |  _____________^
+130 | |         ==(Outcome::Rows{column:alias,values:cut(filtered(rows,Condition::Eq(Value::Text(wanted))),0,Some(1))}),
+    | |_______________________________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 1 previous error
+

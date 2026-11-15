@@ -1,0 +1,57 @@
+{
+  "scratch": "/Users/ziniuw/.cache/g5-verification/ivg-health-freshness-scj8o1p4",
+  "capture": ".g5/uplift/consolidated/iteration-7/health-gate-before.json",
+  "results": [
+    {
+      "case": "unchanged-disposable-snapshot",
+      "exit": 0,
+      "output": {
+        "proof": "REUSABLE_INPUTS",
+        "correspondence": "REUSABLE_INPUTS",
+        "changed_product": [],
+        "changed_formal": [],
+        "scope": "all scoped model bindings; full file/name manifest discovers competing/new writers; no provider freshness claim"
+      }
+    },
+    {
+      "case": "source-only-api-health-ignores-problem",
+      "exit": 1,
+      "output": {
+        "proof": "REUSABLE_INPUTS",
+        "correspondence": "STALE_ALL",
+        "changed_product": [
+          "api/main.py"
+        ],
+        "changed_formal": [],
+        "scope": "all scoped model bindings; full file/name manifest discovers competing/new writers; no provider freshness claim"
+      }
+    },
+    {
+      "case": "new-potential-competing-cache-writer",
+      "exit": 1,
+      "output": {
+        "proof": "REUSABLE_INPUTS",
+        "correspondence": "STALE_ALL",
+        "changed_product": [
+          "api/health_new_cache_writer.py"
+        ],
+        "changed_formal": [],
+        "scope": "all scoped model bindings; full file/name manifest discovers competing/new writers; no provider freshness claim"
+      }
+    },
+    {
+      "case": "changed-formal-folded-error-decision",
+      "exit": 1,
+      "output": {
+        "proof": "STALE_ALL",
+        "correspondence": "STALE_ALL",
+        "changed_product": [],
+        "changed_formal": [
+          ".g5/Verus_verification/models/service_health/service_health.rs"
+        ],
+        "scope": "all scoped model bindings; full file/name manifest discovers competing/new writers; no provider freshness claim"
+      }
+    }
+  ],
+  "scope": "disposable snapshot only; actual gate, unchanged theorem inputs reused for source-only api/new-writer edits; formal decision edit reopens proofs and correspondence; external provider/runtime state not checked"
+}

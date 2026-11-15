@@ -177,6 +177,9 @@ P = [
 ]
 
 C = [  # this consolidation's new model directories: (name, scope, design, status, premises/notes)
+    ("procedure_results", "persisted labels to handled CALL aliases/filter/structural tail/projection/result columns, empty validation and cuts", "as-built transcription", "active"),
+    ("temporal_clock", "raw caller timestamp and alternate normal/fallback clock resolution to temporal writer/window", "as-built transcription", "active"),
+    ("service_health", "actual construction/query/schema provider results to HTTP health plus sticky capture/lazy cache recovery", "as-built transcription", "active"),
     ("history_paging", "raw cursor/filter/order/limit producer, native text comparison fragment, exact-full-page cursor and RevisionInfo projection", "as-built transcription", "active"),
     ("temporal_restore", "event/global export/import to window, graph0/epoch0, scalar type loss and silent line refusal; imported paging units separated", "as-built transcription", "active"),
     ("bulk_children", "graph-key/parent census, orphan properties, missing-key merge, label union, repeat order and complete typed reader projection; native finite witnesses", "as-built transcription", "active"),

@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/none-carrier-becomes-one/20261115T181339Z/models/temporal_clock/temporal_clock.rs:161:13
+    |
+159 | pub proof fn theorem_raw_omission_misses_recent_window(e:stores::Edge,now:int)
+    | ------------------------------------------------------------------------------ at the end of the function body
+160 |     requires now>0,
+161 |     ensures observe(call_single(Map::empty(),e,Raw::Missing,now,true,7,true),e,0,e.0,0,0,false,stores::paging::plain(None))==Some(7),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

@@ -1,0 +1,355 @@
+{
+  "verdict": "AGREES",
+  "comparisons": 4,
+  "cases": [
+    {
+      "name": "zero",
+      "inputs": [
+        {
+          "s": "ack:0",
+          "p": "R",
+          "o": "end",
+          "ts": 0
+        }
+      ],
+      "fault_after_actual_success": true,
+      "port": [
+        {
+          "method": "BulkInsertCounts",
+          "args": [
+            "ack7_zero",
+            "[{\"s\": \"ack:0\", \"p\": \"R\", \"o\": \"end\", \"ts\": 0, \"w\": 1.0}]",
+            "0",
+            ""
+          ],
+          "actual_native_reply": "1:0:0",
+          "fault": "controlled lost reply after actual completion"
+        },
+        {
+          "method": "InsertEdge",
+          "args": [
+            "ack7_zero",
+            "ack:0",
+            "R",
+            "end",
+            "0",
+            "1.0",
+            "",
+            "0",
+            "0",
+            ""
+          ]
+        }
+      ],
+      "rows": [
+        {
+          "source": "ack:0",
+          "predicate": "R",
+          "target": "end",
+          "timestamp": 0,
+          "weight": 1,
+          "s": "ack:0",
+          "p": "R",
+          "o": "end",
+          "ts": 0,
+          "w": 1
+        },
+        {
+          "source": "ack:0",
+          "predicate": "R",
+          "target": "end",
+          "timestamp": 1794766835,
+          "weight": 1,
+          "s": "ack:0",
+          "p": "R",
+          "o": "end",
+          "ts": 1794766835,
+          "w": 1
+        }
+      ],
+      "wall_clock_bounds": [
+        1794766835,
+        1794766835
+      ],
+      "returned": {
+        "written": 1,
+        "collisions": 0,
+        "skipped": 0
+      },
+      "agreement": true
+    },
+    {
+      "name": "positive",
+      "inputs": [
+        {
+          "s": "ack:0",
+          "p": "R",
+          "o": "end",
+          "ts": 100
+        }
+      ],
+      "fault_after_actual_success": true,
+      "port": [
+        {
+          "method": "BulkInsertCounts",
+          "args": [
+            "ack7_positive",
+            "[{\"s\": \"ack:0\", \"p\": \"R\", \"o\": \"end\", \"ts\": 100, \"w\": 1.0}]",
+            "0",
+            ""
+          ],
+          "actual_native_reply": "1:0:0",
+          "fault": "controlled lost reply after actual completion"
+        },
+        {
+          "method": "InsertEdge",
+          "args": [
+            "ack7_positive",
+            "ack:0",
+            "R",
+            "end",
+            "100",
+            "1.0",
+            "",
+            "0",
+            "0",
+            ""
+          ]
+        }
+      ],
+      "rows": [
+        {
+          "source": "ack:0",
+          "predicate": "R",
+          "target": "end",
+          "timestamp": 100,
+          "weight": 1,
+          "s": "ack:0",
+          "p": "R",
+          "o": "end",
+          "ts": 100,
+          "w": 1
+        }
+      ],
+      "wall_clock_bounds": [
+        1794766835,
+        1794766835
+      ],
+      "returned": {
+        "written": 1,
+        "collisions": 0,
+        "skipped": 0
+      },
+      "agreement": true
+    },
+    {
+      "name": "mixed",
+      "inputs": [
+        {
+          "s": "ack:0",
+          "p": "R",
+          "o": "end",
+          "ts": 0
+        },
+        {
+          "s": "ack:1",
+          "p": "R",
+          "o": "end",
+          "ts": 100
+        }
+      ],
+      "fault_after_actual_success": true,
+      "port": [
+        {
+          "method": "BulkInsertCounts",
+          "args": [
+            "ack7_mixed",
+            "[{\"s\": \"ack:0\", \"p\": \"R\", \"o\": \"end\", \"ts\": 0, \"w\": 1.0}, {\"s\": \"ack:1\", \"p\": \"R\", \"o\": \"end\", \"ts\": 100, \"w\": 1.0}]",
+            "0",
+            ""
+          ],
+          "actual_native_reply": "2:0:0",
+          "fault": "controlled lost reply after actual completion"
+        },
+        {
+          "method": "InsertEdge",
+          "args": [
+            "ack7_mixed",
+            "ack:0",
+            "R",
+            "end",
+            "0",
+            "1.0",
+            "",
+            "0",
+            "0",
+            ""
+          ]
+        },
+        {
+          "method": "InsertEdge",
+          "args": [
+            "ack7_mixed",
+            "ack:1",
+            "R",
+            "end",
+            "100",
+            "1.0",
+            "",
+            "0",
+            "0",
+            ""
+          ]
+        }
+      ],
+      "rows": [
+        {
+          "source": "ack:0",
+          "predicate": "R",
+          "target": "end",
+          "timestamp": 0,
+          "weight": 1,
+          "s": "ack:0",
+          "p": "R",
+          "o": "end",
+          "ts": 0,
+          "w": 1
+        },
+        {
+          "source": "ack:1",
+          "predicate": "R",
+          "target": "end",
+          "timestamp": 100,
+          "weight": 1,
+          "s": "ack:1",
+          "p": "R",
+          "o": "end",
+          "ts": 100,
+          "w": 1
+        },
+        {
+          "source": "ack:0",
+          "predicate": "R",
+          "target": "end",
+          "timestamp": 1794766835,
+          "weight": 1,
+          "s": "ack:0",
+          "p": "R",
+          "o": "end",
+          "ts": 1794766835,
+          "w": 1
+        }
+      ],
+      "wall_clock_bounds": [
+        1794766835,
+        1794766835
+      ],
+      "returned": {
+        "written": 2,
+        "collisions": 0,
+        "skipped": 0
+      },
+      "agreement": true
+    },
+    {
+      "name": "prewrite",
+      "inputs": [
+        {
+          "s": "ack:0",
+          "p": "R",
+          "o": "end",
+          "ts": 0
+        },
+        {
+          "s": "ack:1",
+          "p": "R",
+          "o": "end",
+          "ts": 100
+        }
+      ],
+      "fault_after_actual_success": false,
+      "port": [
+        {
+          "method": "BulkInsertCounts",
+          "args": [
+            "ack7_prewrite",
+            "[{\"s\": \"ack:0\", \"p\": \"R\", \"o\": \"end\", \"ts\": 0, \"w\": 1.0}, {\"s\": \"ack:1\", \"p\": \"R\", \"o\": \"end\", \"ts\": 100, \"w\": 1.0}]",
+            "0",
+            ""
+          ],
+          "fault": "controlled prewrite unavailable"
+        },
+        {
+          "method": "InsertEdge",
+          "args": [
+            "ack7_prewrite",
+            "ack:0",
+            "R",
+            "end",
+            "0",
+            "1.0",
+            "",
+            "0",
+            "0",
+            ""
+          ]
+        },
+        {
+          "method": "InsertEdge",
+          "args": [
+            "ack7_prewrite",
+            "ack:1",
+            "R",
+            "end",
+            "100",
+            "1.0",
+            "",
+            "0",
+            "0",
+            ""
+          ]
+        }
+      ],
+      "rows": [
+        {
+          "source": "ack:0",
+          "predicate": "R",
+          "target": "end",
+          "timestamp": 0,
+          "weight": 1,
+          "s": "ack:0",
+          "p": "R",
+          "o": "end",
+          "ts": 0,
+          "w": 1
+        },
+        {
+          "source": "ack:1",
+          "predicate": "R",
+          "target": "end",
+          "timestamp": 100,
+          "weight": 1,
+          "s": "ack:1",
+          "p": "R",
+          "o": "end",
+          "ts": 100,
+          "w": 1
+        }
+      ],
+      "wall_clock_bounds": [
+        1794766835,
+        1794766835
+      ],
+      "returned": {
+        "written": 2,
+        "collisions": 0,
+        "skipped": 0
+      },
+      "agreement": true
+    }
+  ],
+  "identity_checked": true,
+  "container": "ivg-uplift-next-20261115",
+  "scope": "Actual unchanged native Counts/InsertEdge and public writer/window; injected exception occurs after completed native success, before caller accepts reply. This is not real TCP/partial-prefix fault evidence. Native leaves are real; expected result is source-derived, not yet a proved composed model.",
+  "script_sha256": "abd3256f5accc49517e4b3982a048e2b0af0de53f0db108a7169aec87185190b"
+}

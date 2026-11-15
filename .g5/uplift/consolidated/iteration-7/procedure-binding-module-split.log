@@ -1,0 +1,69 @@
+WARNING:root:IRISINSTALLDIR or ISC_PACKAGE_INSTALLDIR environment variable is not set
+WARNING:root:Embedded Python not configured; call iris.connect(path=...) to configure it
+procedure_results: DISAGREES; 6520 comparisons; /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/results/procedure_results/20261115T181027Z-binding/receipt.json
+[
+  {
+    "world": 0,
+    "writer": "single",
+    "query": "CALL db.labels() YIELD label ORDER BY label",
+    "want": {
+      "columns": [
+        "label"
+      ],
+      "rows": [],
+      "error": null
+    },
+    "got": {
+      "refused": true,
+      "message": "db.labels: ORDER BY reads a returned column by name, not Variable(name='label', is_parameter=False)"
+    }
+  },
+  {
+    "world": 0,
+    "writer": "single",
+    "query": "CALL db.labels() YIELD label ORDER BY label LIMIT 0",
+    "want": {
+      "columns": [
+        "label"
+      ],
+      "rows": [],
+      "error": null
+    },
+    "got": {
+      "refused": true,
+      "message": "db.labels: ORDER BY reads a returned column by name, not Variable(name='label', is_parameter=False)"
+    }
+  },
+  {
+    "world": 0,
+    "writer": "single",
+    "query": "CALL db.labels() YIELD label ORDER BY label LIMIT 1",
+    "want": {
+      "columns": [
+        "label"
+      ],
+      "rows": [],
+      "error": null
+    },
+    "got": {
+      "refused": true,
+      "message": "db.labels: ORDER BY reads a returned column by name, not Variable(name='label', is_parameter=False)"
+    }
+  },
+  {
+    "world": 0,
+    "writer": "single",
+    "query": "CALL db.labels() YIELD label ORDER BY label SKIP 1",
+    "want": {
+      "columns": [
+        "label"
+      ],
+      "rows": [],
+      "error": null
+    },
+    "got": {
+      "refused": true,
+      "message": "db.labels: ORDER BY reads a returned column by name, not Variable(name='label', is_parameter=False)"
+    }
+  }
+]

@@ -1,0 +1,18 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/writer-loses-resolved-time/20261115T181716Z/models/temporal_clock/temporal_clock.rs:182:13
+    |
+179 |   pub proof fn theorem_raw_bulk_to_reader(s:stores::Global,e:stores::Edge,short:Raw,long:Raw,shape_ok:bool,available:bool,now:int,w:int)
+    |   -------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+182 |       ensures observe(call_bulk(s,e,short,long,shape_ok,available,now,true,w,true),e,
+    |  _____________^
+183 | |         produced_bulk_time(short,long,shape_ok,available,now).unwrap(),e.0,
+184 | |         produced_bulk_time(short,long,shape_ok,available,now).unwrap(),
+185 | |         produced_bulk_time(short,long,shape_ok,available,now).unwrap(),false,stores::paging::plain(None))==Some(w),
+    | |__________________________________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 1 previous error
+

@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/reader-uses-raw-identity-time/20261115T181043Z/models/temporal_clock/temporal_clock.rs:129:1
+    |
+129 | pub proof fn theorem_actual_coordinate_reaches_window(s:stores::Global,e:stores::Edge,n:int,route:Route,now:int,w:int,reverse:bool,lo:int,hi:int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/reader-uses-raw-identity-time/20261115T181043Z/models/temporal_clock/temporal_clock.rs:131:13
+    |
+129 | pub proof fn theorem_actual_coordinate_reaches_window(s:stores::Global,e:stores::Edge,n:int,route:Route,now:int,w:int,reverse:bool,lo:int,hi:int)
+    | ------------------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+130 |     requires !s.contains_key(stores::out(at(e,coordinate(n,route,now)))),lo<=coordinate(n,route,now)<=hi,
+131 |     ensures observe(write(s,e,n,route,now,true,w,reverse),e,coordinate(n,route,now),e.0,lo,hi,false,stores::paging::plain(None))==Some(w),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/reader-uses-raw-identity-time/20261115T181043Z/models/temporal_clock/temporal_clock.rs:132:9
+    |
+129 | pub proof fn theorem_actual_coordinate_reaches_window(s:stores::Global,e:stores::Edge,n:int,route:Route,now:int,w:int,reverse:bool,lo:int,hi:int)
+    | ------------------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+132 |         reverse ==> observe(write(s,e,n,route,now,true,w,reverse),e,coordinate(n,route,now),e.0,lo,hi,true,stores::paging::plain(None))==Some(w),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

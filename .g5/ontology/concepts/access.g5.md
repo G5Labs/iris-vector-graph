@@ -81,6 +81,23 @@ Should the server refuse to start, or at least warn, when it listens beyond the 
 
 `/health` needs no key and answers status only, with no counts and no error text. It answers unhealthy when the database does not respond. The sample API's `/health` also answers unhealthy when the namespace's schema record is missing or names another schema; the HTTP server's runs a node count instead.
 
+<a id="access.health.lifecycle"></a>
+[D · access.health.lifecycle]
+
+Health reflects both the probe and the engine retained by the app.
+
+- The sample API captures its engine when created. Failed automatic construction or first connection access still starts an app, but health stays unavailable until recreation; an already-bound engine can recover when its probe succeeds again.
+- Injecting an engine whose first connection access fails raises during app creation, rather than starting the engine-absent app.
+- The Cypher HTTP server constructs an engine when its cache is empty and retries failed construction on a later request. A later health-query failure retains that engine; a successful probe on it can recover health.
+- Reset tries to close the engine and clears the cache even if close raises, allowing later replacement. A normal query's first raised exception resets and retries once; a folded result error does not reset, and a second exception stops with the replacement cached.
+
+<a id="access.health.recovery-policy"></a>
+[Q · access.health.recovery-policy]
+
+Should the sample API retry construction after a startup outage? Working answer:
+recreate the app as built; automatic recovery would also need to replace its
+captured GraphQL and query engine consistently.
+
 ## Read-only mode
 
 <a id="access.read_only"></a>
@@ -272,12 +289,30 @@ Findings: [The sample environment file sets IRIS_USER, but the server reads IRIS
 Findings: [Should the server refuse to start on a reachable address with no key and a superuser login?](../../Verus_verification/open_questions.md#q-plt-003)
 
 ### access.health
+- Formal: [health/provider/lifecycle contract](../../Verus_verification/models/service_health/service_health.rs), [source roles and evidence limits](../../Verus_verification/models/service_health/NOTES.md).
 
 - Sources: [ADMIN_GUIDE §5](../../../docs/ADMIN_GUIDE.md); [api/main.py database_problem](../../../api/main.py); [CHANGELOG v4.7.0](../../../CHANGELOG.md)
 - agent
 - operations, security
 
 The schema-record check was added to the sample API's `/health` in 4.6.3 ([CHANGELOG](../../../CHANGELOG.md#L493-L499); [api/main.py](../../../api/main.py#L40-L63)); the HTTP server's `/health` ([cypher_api.py](../../../iris_vector_graph/cypher_api.py#L268-L285)) does not check it. The HTTP server's `/health` holds the engine lock and counts nodes, so it serializes behind other requests.
+
+### access.health.lifecycle
+- agent
+- operations
+- user-facing-behavior
+- Expands: [Health](#access.health).
+- Formal: [service health](../../Verus_verification/models/service_health/service_health.rs), [qualified source roles](../../Verus_verification/models/service_health/NOTES.md).
+
+Evidence: [84 actual Python/in-process ASGI checks and provider controls](../../Verus_verification/models/service_health/NOTES.md). Readiness is probe-specific, not a promise that every feature works or an external database will recover. api.main roles stay outside the historical member census; constructor/SQL/native-record/network/concurrent providers remain explicit limits.
+
+### access.health.recovery-policy
+- agent
+- uncertain
+- operations
+- Expands: [Health lifecycle](#access.health.lifecycle).
+
+Evidence: [retained startup neighbors](../../uplift/consolidated/iteration-7/health-PAIRS.md). No auto-recovery requirement or owner approval was established. Question: [q-iter-006](../../Verus_verification/open_questions.md#q-iter-006).
 
 ### access.read_only
 

@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_graph_is_ignored"
+    ],
+    "find": "texts(records).to_set().to_seq().sort_by(leq())",
+    "name": "labels-scoped",
+    "replace": "texts(records.filter(|r:Label|r.graph==requested_graph)).to_set().to_seq().sort_by(leq())",
+    "why": "labels-scoped"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_graph_is_ignored"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/procedure_results/model.json": "6a39b16f5e69698e0a2c602aa11ebf654da8e13c82c1a0bcc9f9609fd70f03b8",
+    ".g5/Verus_verification/models/procedure_results/procedure_results.rs": "c1b5fd65835381087753328369b55ce89b2c7b04f9191a97736a5a98bef1b875"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration7-procedure-20261115/verus/procedure_results/controls/labels-scoped/20261115T182204Z/models/procedure_results/procedure_results.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_graph_is_ignored": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration7-procedure-20261115/verus/procedure_results/20261115T182204Z-control-labels-scoped-theorem_graph_is_ignored.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration7-procedure-20261115/verus/procedure_results/20261115T182204Z-control-labels-scoped.log",
+    "timed_out": false,
+    "verified": 16
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/procedure_results/20261115T182205Z-control-labels-scoped/logs/20261115T182204Z-control-labels-scoped-theorem_graph_is_ignored.log": "a1b0ebd6b0c39d087bdbc1415ca047c17d0e3bbac69e1c23ef9b17ecd1696086",
+    ".g5/Verus_verification/results/procedure_results/20261115T182205Z-control-labels-scoped/logs/20261115T182204Z-control-labels-scoped.log": "a31c32b222a2043ab1dd54940e2ffb99f544394ef8e5f0d5c84609f067cd97e5"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

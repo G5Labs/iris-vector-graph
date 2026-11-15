@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_main_refuses_wrong_probe"
+    ],
+    "find": "if !selected_one(p.selected) {Some(Reason::Select)}",
+    "name": "wrong-select-accepted",
+    "replace": "if false {Some(Reason::Select)}"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_main_refuses_wrong_probe"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/service_health/model.json": "5fdce327b505ccb3a5f49407560872498bb60480a6962b0f3fb2c89dccdc76e3",
+    ".g5/Verus_verification/models/service_health/service_health.rs": "326d0bb9da332c335a8d0516b1d4cef7c487a5cdf18054d229d52a9f94e28014"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration7-health-20261115/verus/service_health/controls/wrong-select-accepted/20261115T180930Z/models/service_health/service_health.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_main_refuses_wrong_probe": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration7-health-20261115/verus/service_health/20261115T180930Z-control-wrong-select-accepted-theorem_main_refuses_wrong_probe.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration7-health-20261115/verus/service_health/20261115T180930Z-control-wrong-select-accepted.log",
+    "timed_out": false,
+    "verified": 12
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/service_health/20261115T180931Z-control-wrong-select-accepted/logs/20261115T180930Z-control-wrong-select-accepted-theorem_main_refuses_wrong_probe.log": "0e0a14d76d7a58ee0a515fe19895aae63b8e8e92bc8a5d4241f5826bad2d0622",
+    ".g5/Verus_verification/results/service_health/20261115T180931Z-control-wrong-select-accepted/logs/20261115T180930Z-control-wrong-select-accepted.log": "635afafa2676f190259576c019a5018af674fb4d9a2a69c31b82bde49866a03a"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

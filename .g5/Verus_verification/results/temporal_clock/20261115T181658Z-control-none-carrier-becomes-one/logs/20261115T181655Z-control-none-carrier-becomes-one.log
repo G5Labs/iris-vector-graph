@@ -1,0 +1,34 @@
+verification results:: 54 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/none-carrier-becomes-one/20261115T181655Z/models/temporal_clock/temporal_clock.rs:99:1
+   |
+99 | pub proof fn theorem_single_omission_and_epoch_share_carrier()
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/none-carrier-becomes-one/20261115T181655Z/models/temporal_clock/temporal_clock.rs:100:13
+    |
+ 99 | pub proof fn theorem_single_omission_and_epoch_share_carrier()
+    | -------------------------------------------------------------- at the end of the function body
+100 |     ensures single_payload(Raw::Missing)==Some(0),single_payload(Raw::Null)==Some(0),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/none-carrier-becomes-one/20261115T181655Z/models/temporal_clock/temporal_clock.rs:100:51
+    |
+ 99 | pub proof fn theorem_single_omission_and_epoch_share_carrier()
+    | -------------------------------------------------------------- at the end of the function body
+100 |     ensures single_payload(Raw::Missing)==Some(0),single_payload(Raw::Null)==Some(0),
+    |                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration7-timestamp-20261115/verus/temporal_clock/controls/none-carrier-becomes-one/20261115T181655Z/models/temporal_clock/temporal_clock.rs:206:13
+    |
+204 | pub proof fn theorem_raw_omission_misses_recent_window(e:stores::Edge,now:int)
+    | ------------------------------------------------------------------------------ at the end of the function body
+205 |     requires now>0,
+206 |     ensures observe(call_single(Map::empty(),e,Raw::Missing,now,true,7,true),e,0,e.0,0,0,false,stores::paging::plain(None))==Some(7),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+
