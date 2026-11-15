@@ -1,5 +1,7 @@
 # Iteration 4 checkpoint
 
+Implementation checkpoint `390758ed73a6dcbc13c3d0810ac5f41b075d2b4d`.
+Final seal is the following commit, titled `Seal iteration 4 evidence and continuation`.
 Starting foundation `9a835bb0346c23a163d0fa7a591c0656c4f9d4de`, branch
 `consolidated_uplift`, unchanged product `3eaa79cf`. The external before archive
 and SHA-256 in inputs.json preserve all 1,972 starting foundation files, including

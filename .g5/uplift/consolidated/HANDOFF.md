@@ -1,3 +1,5 @@
+Latest checkpoint: [iteration 4](iteration-4/HANDOFF.md), continuing into iteration 5.
+
 # IVG consolidated uplift — handoff
 
 **Current continuation: iteration 3 (2026-11-15)** — [sealed handoff](iteration-3/HANDOFF.md), [retained sample and challenges](iteration-3/PAIRS.md), [coverage](../../Verus_verification/coverage.md#improvement-iteration-3-2026-11-15). Input `0af2a61d`; implementation checkpoint `6f32b507`; final seal is the clean tip with subject `Seal iteration 3 with corrected snapshot evidence and handoff`. Four new as-built families: **33 obligations / 19 named controls**, **164 upstream tests passed**, consolidated gate PASS. Corrects the inherited empty-deletion-prior inference while retaining a stronger range-prior witness. Named diff, global PageRank admission/self-loop producer, AQL frontend and vector threshold/results gain scoped contracts; full lifecycle/content and live IRIS correspondence remain open. This supersedes conflicting scope/count claims below without removing historical evidence.
