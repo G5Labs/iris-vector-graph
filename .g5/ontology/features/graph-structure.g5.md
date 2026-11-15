@@ -66,11 +66,11 @@ Deleting a node removes, in its graph, its labels, properties, documents, vector
 <a id="structure.node.delete.bulk"></a>
 [D · structure.node.delete.bulk]
 
-Bulk node deletion ignores missing or empty IDs and repeats, then runs batches in each selected graph; a failed batch is logged and later batches still run. Its `DeleteResult` reports `deleted` from calls that returned successfully and `failed` as the number of requested IDs in calls that raised; converting it to an integer or boolean uses only `deleted`.
+Bulk node deletion drops None and empty IDs, converts the rest to text and removes repeats, then runs batches in each selected graph; a failed batch is logged and later batches still run. Its `DeleteResult` reports `deleted` from calls that returned successfully and `failed` as the number of requested IDs in calls that raised; converting it to an integer or boolean uses only `deleted`.
 
 - A true result can have failures. A false result does not prove that nothing was deleted: a node delete can finish before its later reifier cleanup raises, and the caller counts that whole batch as failed.
 - The same risk applies when an underlying store call commits some chunks before a later chunk fails ([erasure atomicity](erasure.g5.md#erasure.atomic)). The batch log's claim that everything rolled back is too strong.
-- With an explicit graph only that graph is selected. With graph omitted, an ID held in several graphs is refused before any deletion. This model covers one explicit graph and positive batch sizes; graph discovery and database atomicity remain separate obligations.
+- With an explicit graph only that graph is selected. With graph omitted, an ID held in several graphs is refused before any deletion.
 
 <a id="structure.node.update"></a>
 [I · structure.node.update]

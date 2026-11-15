@@ -292,7 +292,7 @@ The exported Python `RRFFusion.fuse_results` uses each entity's first position i
 <a id="search.fusion.python.support"></a>
 [Q · search.fusion.python.support]
 
-Should the exported Python fusion helpers remain supported? Working answer: keep them and make their graph and failure behavior follow the shared fusion rules; the alternative is to deprecate them explicitly. No owner has ratified this choice.
+Should these Python fusion helpers remain supported? Working answer: keep them and make their graph and failure behavior follow the shared fusion rules; the alternative is to deprecate them explicitly. No owner has ratified this choice.
 
 <a id="search.fusion.absent"></a>
 [Q · search.fusion.absent]
@@ -300,6 +300,7 @@ Should the exported Python fusion helpers remain supported? Working answer: keep
 What does a result that is missing from one leg get from that leg?
 - Provisional answer: nothing, as the documented formula says and three of the four fusion entry points do.
 - Alternative (the engine's fusion today): `1 / (2c + length of that leg)`, which can change the order of results.
+- A separate, documented rule for each entry point is another proposal. The two uplifts favored different defaults; no owner has chosen a shared rule or separate rules.
 
 <a id="search.fusion.text_leg"></a>
 [Q · search.fusion.text_leg]
