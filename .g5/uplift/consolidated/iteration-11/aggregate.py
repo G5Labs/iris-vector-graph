@@ -1,0 +1,36 @@
+import datetime,hashlib,json,re
+from pathlib import Path
+R=Path.cwd();O=R/'.g5/uplift/consolidated/iteration-11';V=R/'.g5/Verus_verification'
+def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest() if p.is_file() else None
+latest={};control_count=0
+for fam in ['weighted_fraction','vector_admission']:
+ m=json.loads((V/'models'/fam/'model.json').read_text());rs=V/'results'/fam;latest[fam]={}
+ for label,pattern in [('proof','*-prove/receipt.json'),('binding','*-binding/receipt.json')]+[(c['name'],'*-control-'+c['name']+'/receipt.json') for c in m['controls']]:
+  p=sorted(rs.glob(pattern))[-1];d=json.loads(p.read_text());stale=[k for k,h in d['inputs'].items() if sha(Path(k.removeprefix('external:')) if k.startswith('external:') else R/k)!=h];assert not stale,(fam,label,stale)
+  expected='PASS' if label=='proof' else 'AGREES' if label=='binding' else 'EXPECTED_FAIL';assert d['verdict']==expected,(fam,label,d['verdict'])
+  obs=d.get('observed',{});item=dict(path=str(p.relative_to(R)),sha256=sha(p),verdict=d['verdict'],verified=obs.get('verified'),errors=obs.get('errors'),comparisons=d.get('comparisons'),inputs_match=True,input_count=len(d['inputs']))
+  if label not in ['proof','binding']:
+   control_count+=1;assert not obs.get('timed_out') and not obs.get('has_resource_limit'),(fam,label,obs)
+   named={}
+   for fn,q in obs['per_function'].items():
+    logs=[R/k for k in d['raw_log_copies'] if k.endswith('-'+fn+'.log')];assert len(logs)==1,(fam,label,fn,logs);txt=logs[0].read_text().lower();ordinary='assertion failed' in txt or 'postcondition not satisfied' in txt
+    assert q.get('errors',0)>0 and not q.get('timed_out') and ordinary and not re.search(r'rlimit|resource limit|timed out',txt),(fam,label,fn)
+    named[fn]=dict(errors=q['errors'],ordinary=True,no_resource_limit=True,raw_log=str(logs[0].relative_to(R)),sha256=sha(logs[0]))
+   item['named']=named;item['full_resource_limit']=False
+  latest[fam][label]=item
+assert control_count==21
+fc=json.loads((O/'fraction-counts.json').read_text());vc=json.loads((O/'vector-counts.json').read_text());reach=json.loads((O/'reach-delta.json').read_text());role=json.loads((O/'role-audit.json').read_text());fb=json.loads((O/'fraction-costs.json').read_text());vb=json.loads((O/'vector-cost-ledger.json').read_text());fr=json.loads((O/'review-fraction-validation.json').read_text());vr=json.loads((O/'review-vector-validation.json').read_text())
+assert fc['total_verifier_units']==181;assert len(latest['weighted_fraction'])==15 and len(latest['vector_admission'])==10
+native={}
+for n in ['root-vector-native','root-fraction-native','root-seed-native','next-communities-native']:
+ d=json.loads((O/(n+'.json')).read_text());native[n]=dict(cases=d['completed_cases'],elapsed_s=d['elapsed'],verdict=d['verdict'],scope=d['scope'])
+validation=dict(product_pin='3eaa79cf77d3e0a879b2cced634cf2729d81499e',input='cb02a64d9f7eb1de4571b10534b3e8262f4c3b6c',latest=latest,new_units=dict(weighted_fraction=93,vector_admission=77,total=170,proof_declarations=116,named_theorems=83,helpers=33,recursive_spec_checks=35,nonlinear_arithmetic_subqueries=19,imported_rechecked=88,total_verifier_units_including_imports=258),controls=dict(package=21,source_facing=17,encoding_simulation=4,all_full_and_named_ordinary=True,extra_independent_ttl_omission=1,extra_is_package_control=False),bindings=dict(fraction_main=20522,fraction_typed=13,fraction_ideal_nondyadic=3,fraction_unreduced=4,fraction_sensitivities=dict(actual_python=3,source_port=3,representation=4,observation=1),vector_total=735,vector_search=466,vector_raw_json=254,vector_cache=3,vector_ivf=12,vector_affirmative_constructor_checks=3,vector_sensitivities=dict(actual_python=7,source_port=1,observation=1),child_socket_or_native_calls=0),native=dict(main_cases=40,next_communities_preparation_cases=18,observations=native,scope='Controlled seed first-score exception is injected in-process; subsequent native scores are actual. No organic outage, native executable-body proof or universal Double/metadata/kernel refinement.'),upstream=dict(fraction=83,vector=23,total=106,scope='Selected pinned upstream units; no product change and no new formal units.'),source_preparations=dict(independent_vector=21,independent_seed=6,next_ledger_root=23,next_ledger_independent=7,new_formal_credit=0),reach=dict(before=197,after=208,denominator=4130,new=11,lost=0,direct_body_verified=0),role_audit=dict(active_rows=18,observations=7,new_rows=25,already_active_strengthened=7,new_unique_members=11,inherited_not_exhaustively_reaudited=197),registers=dict(bugs=433,simplifications=55,questions=146,new_bugs=1,new_questions=0,new_bug_ids=['bug-plt-105'],owner_decisions=0,questions_resolved=0,repairs_or_simplifications_accepted=0),count_correction=dict(ppr_total=103,ppr_proof=68,ppr_recursive=18,ppr_nonlinear=17,iteration10_total_new=146,iteration10_proof=108,iteration10_recursive=21,iteration10_nonlinear=17,new_gain=0,raw_receipts_or_archives_changed=False,note='count-correction.md'),cost=dict(start=json.loads((O/'inputs.json').read_text())['time'],recorded_now=datetime.datetime.now(datetime.timezone.utc).isoformat(),fraction_builder_verifier_wall_s_coarse=fb['approx_receipt_backed_verifier_wall_s'],vector_builder_verifier_wall_s_coarse=vb['approx_proof_and_controls_tool_wall_s'],fraction_review_subprocess_s=fr['subprocess_elapsed_s'],vector_v2_review_subprocess_s=vr['subprocess_elapsed_s'],vector_v1_superseded_review_s=vr['superseded_v1_replay_s'],ledgers=['fraction-costs.json','vector-cost-ledger.json','review-fraction-validation.json','review-vector-validation.json','count-audit-results.json'],tokens_cache_currency_solver_only_cpu='unavailable',independent_grader='not run'),preservation=dict(vector_manifest='vector-preserved-evidence.json',unavailable_historical_input_versions=51,scope='Final and exact frozen V1/V2 sources/helpers/receipts/logs preserved. Earlier51 live-edit input versions lack exact bytes; their hashes/diagnostics are retained without invented reconstruction. See manifest.'),convergence='unsupported; raw WCC/CDLP with live completion and full ledger content/producer scope remain material and tractable. No fixed round/time/percentage budget.',direct_body_verified=0)
+freshness = json.loads((O/'freshness-controls.json').read_text())
+assert freshness['all_expected'] and len(freshness['controls']) == 20
+assert (O/'consolidated-gate.log').read_text().rstrip().endswith('PASS')
+validation['freshness_fixtures'] = dict(controls=20, all_expected=True, active_inputs_mutated=False, report='freshness-controls.json')
+validation['consolidated_gate'] = dict(verdict='PASS', ontology_blocks=403, source_links=307, log='consolidated-gate.log')
+validation['member_outcomes'] = json.loads((O/'member-outcomes.json').read_text())['summary']
+validation['scoring_guidance'] = json.loads((O/'scoring-guidance-update.json').read_text())
+validation['formatting_supplement'] = dict(change='fraction-formatting-change.json', review='review-fraction-formatting.json', root_binding_elapsed_s=3.04494, independent_binding_elapsed_s=3.664660750015173, new_formal_units=0)
+(O/'validation.json').write_text(json.dumps(validation,indent=2)+'\n');print(json.dumps(dict(fresh_receipts=25,package_controls=21,new_units=170,imports=88,source_members=208)))

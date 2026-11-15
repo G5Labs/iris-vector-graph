@@ -1,0 +1,55 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_absent_named_does_not_cache"
+    ],
+    "find": "if rows.len()==0 {Resolved{engine:next,selection:fallback(r,true)}}",
+    "name": "cache-readable-absence",
+    "replace": "if rows.len()==0 {Resolved{engine:Engine{cache:next.cache.insert(key(r),Cached{route:Route{table:None,width:None,dtype:double()},at:r.write_at}),..next},selection:fallback(r,true)}}",
+    "why": "A readable miss is not cached; a subsequent raw publication must remain visible."
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_absent_named_does_not_cache"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/vector_admission/catalog.rs": "17f002c56f196ca6a21a616d83e971a575f4f91042a9768a190c78b9c57b53cd",
+    ".g5/Verus_verification/models/vector_admission/json_width.rs": "74b80e052447a335fe4aeb81de069dad03a99cbf56f02a9736bb6261998170e2",
+    ".g5/Verus_verification/models/vector_admission/model.json": "d66a2896070991db3935a3927a246ce57a52bf495e0a1fa57cdcc4c57fd584d6",
+    ".g5/Verus_verification/models/vector_admission/numbers.rs": "1d179939e358597a336d4ab7cbcd6a3facc34858ddc665a5132b07d26cab96f0",
+    ".g5/Verus_verification/models/vector_admission/parser.rs": "e1eb5e6d8846c94f950acaf0a8eeb2639fbd86d4d4ed8fbbcf21160e8d142642",
+    ".g5/Verus_verification/models/vector_admission/vector_admission.rs": "6347a9404971a56ea015c7263610fe1b90a00d8ebf5c8fc11d16843e42e119e0"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration11-vector-20261115/verus/vector_admission/controls/cache-readable-absence/20261115T213142Z/models/vector_admission/vector_admission.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_absent_named_does_not_cache": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration11-vector-20261115/verus/vector_admission/20261115T213142Z-control-cache-readable-absence-theorem_absent_named_does_not_cache.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration11-vector-20261115/verus/vector_admission/20261115T213142Z-control-cache-readable-absence.log",
+    "timed_out": false,
+    "verified": 76
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/vector_admission/20261115T213149Z-control-cache-readable-absence/logs/20261115T213142Z-control-cache-readable-absence-theorem_absent_named_does_not_cache.log": "a74869cbb3c4b0f9bad46698ea7d1fb0a544891ec9bf0aff17332f69cdb0ca0e",
+    ".g5/Verus_verification/results/vector_admission/20261115T213149Z-control-cache-readable-absence/logs/20261115T213142Z-control-cache-readable-absence.log": "6303e73ba5af44bef068afb2edee03dbd51ad6701a37a9cb889773f7560b2ee1"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

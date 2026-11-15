@@ -1,0 +1,17 @@
+error: this file contains an unclosed delimiter
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/vector_admission.rs:94:3
+   |
+ 4 | verus! {
+   |        - unclosed delimiter
+...
+25 | pub open spec fn dim(c:Cell)->Decode<Option<int>> {match c{
+   |                                                           - this delimiter might not be properly closed...
+...
+28 |     Cell::Float(n)=>Decode::Value(Some(if n>=0{n/1000}else{-((-n)/1000)})),_=>Decode::Error}}
+   |                                                                                            - ...as it matches this but it has different indentation
+...
+94 | }
+   |  ^
+
+error: aborting due to 1 previous error
+

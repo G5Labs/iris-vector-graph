@@ -1,0 +1,3204 @@
+{
+  "iris_vector_graph/_engine/temporal_window.py::window_spec": [
+    {
+      "block": "temporal.window.sources",
+      "role": "producer",
+      "path": "iris_vector_graph/_engine/temporal_window.py",
+      "symbol": "window_spec",
+      "pin lines": "37-58",
+      "family": "C-temporal_window_reader",
+      "formal item": ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs::window_spec",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    },
+    {
+      "block": "temporal.window.sources",
+      "role": "producer",
+      "path": "iris_vector_graph/_engine/temporal_window.py",
+      "symbol": "window_spec",
+      "pin lines": "37-58",
+      "family": "C-temporal_window_reader",
+      "formal item": ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs::theorem_spec_sources_omitted_vs_empty",
+      "relation": "proves",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_src/src/Graph/KG/TemporalWindow.cls::Open": [
+    {
+      "block": "temporal.window.sources",
+      "role": "reader",
+      "path": "iris_src/src/Graph/KG/TemporalWindow.cls",
+      "symbol": "Open",
+      "pin lines": "44-81",
+      "family": "C-temporal_window_reader",
+      "formal item": ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs::server_admits",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected"
+    }
+  ],
+  "iris_src/src/Graph/KG/TemporalWindow.cls::NextKey": [
+    {
+      "block": "temporal.window.sources",
+      "role": "reader",
+      "path": "iris_src/src/Graph/KG/TemporalWindow.cls",
+      "symbol": "NextKey",
+      "pin lines": "196-239",
+      "family": "C-temporal_window_reader",
+      "formal item": ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs::theorem_server_filter_sources",
+      "relation": "proves",
+      "design": "as-built",
+      "grade": "Inspected"
+    }
+  ],
+  "iris_vector_graph/_engine/temporal_window.py::TemporalWindowCursor.__next__": [
+    {
+      "block": "temporal.window.paging",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/temporal_window.py",
+      "symbol": "TemporalWindowCursor.__next__",
+      "pin lines": "102-113",
+      "family": "C-temporal_window_reader",
+      "formal item": ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs::step",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    },
+    {
+      "block": "temporal.window.paging",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/temporal_window.py",
+      "symbol": "TemporalWindowCursor.__next__",
+      "pin lines": "102-113",
+      "family": "C-temporal_window_reader",
+      "formal item": ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs::theorem_yield_is_concat_to_done",
+      "relation": "proves",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/_engine/temporal_window.py::TemporalWindowCursor.__init__": [
+    {
+      "block": "temporal.window.paging.release",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/temporal_window.py",
+      "symbol": "TemporalWindowCursor.__init__",
+      "pin lines": "82-93",
+      "family": "C-temporal_window_reader",
+      "formal item": ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs::open",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/_engine/temporal_window.py::TemporalWindowCursor.close": [
+    {
+      "block": "temporal.window.paging.release",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/temporal_window.py",
+      "symbol": "TemporalWindowCursor.close",
+      "pin lines": "115-124",
+      "family": "C-temporal_window_reader",
+      "formal item": ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs::theorem_close_mid_read_once",
+      "relation": "proves",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/_engine/temporal_window.py::TemporalWindowCursor.__exit__": [
+    {
+      "block": "temporal.window.paging.release",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/temporal_window.py",
+      "symbol": "TemporalWindowCursor.__exit__",
+      "pin lines": "129-130",
+      "family": "C-temporal_window_reader",
+      "formal item": ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs::close",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/_engine/temporal_window.py::TemporalWindowCursor.__del__": [
+    {
+      "block": "temporal.window.paging.release",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/temporal_window.py",
+      "symbol": "TemporalWindowCursor.__del__",
+      "pin lines": "132-136",
+      "family": "C-temporal_window_reader",
+      "formal item": ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs::close",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/_engine/temporal_window.py::_server_call": [
+    {
+      "block": "temporal.window.paging.release",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/temporal_window.py",
+      "symbol": "_server_call",
+      "pin lines": "67-71",
+      "family": "C-temporal_window_reader",
+      "formal item": ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs::theorem_failed_page_closes_once",
+      "relation": "proves",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_src/src/Graph/KG/TemporalWindow.cls::Page": [
+    {
+      "block": "temporal.window.paging.release",
+      "role": "producer",
+      "path": "iris_src/src/Graph/KG/TemporalWindow.cls",
+      "symbol": "Page",
+      "pin lines": "128-193",
+      "family": "C-temporal_window_reader",
+      "formal item": ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs::theorem_server_full_page_nonempty",
+      "relation": "proves",
+      "design": "as-built",
+      "grade": "Inspected"
+    }
+  ],
+  "iris_src/src/Graph/KG/TemporalWindow.cls::Next": [
+    {
+      "block": "temporal.window.paging.release",
+      "role": "producer",
+      "path": "iris_src/src/Graph/KG/TemporalWindow.cls",
+      "symbol": "Next",
+      "pin lines": "85-91",
+      "family": "C-temporal_window_reader",
+      "formal item": ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs::after_page",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected"
+    }
+  ],
+  "iris_src/src/Graph/KG/TemporalWindow.cls::Close": [
+    {
+      "block": "temporal.window.paging.release",
+      "role": "producer",
+      "path": "iris_src/src/Graph/KG/TemporalWindow.cls",
+      "symbol": "Close",
+      "pin lines": "94-97",
+      "family": "C-temporal_window_reader",
+      "formal item": ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs::close",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected"
+    }
+  ],
+  "iris_vector_graph/freshness.py::Freshness.is_current": [
+    {
+      "block": "structure.rebuilt.stamp",
+      "role": "reader",
+      "path": "iris_vector_graph/freshness.py",
+      "symbol": "Freshness.is_current",
+      "pin lines": "70-72",
+      "family": "C-freshness_stamp",
+      "formal item": ".g5/Verus_verification/models/freshness_stamp/freshness_stamp.rs::theorem_unstamped_stale_at_zero",
+      "relation": "proves",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/freshness.py::Freshness.token": [
+    {
+      "block": "structure.rebuilt.stamp",
+      "role": "reader",
+      "path": "iris_vector_graph/freshness.py",
+      "symbol": "Freshness.token",
+      "pin lines": "54-57",
+      "family": "C-freshness_stamp",
+      "formal item": ".g5/Verus_verification/models/freshness_stamp/freshness_stamp.rs::token",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/freshness.py::Freshness.built_from": [
+    {
+      "block": "structure.rebuilt.stamp",
+      "role": "reader",
+      "path": "iris_vector_graph/freshness.py",
+      "symbol": "Freshness.built_from",
+      "pin lines": "66-68",
+      "family": "C-freshness_stamp",
+      "formal item": ".g5/Verus_verification/models/freshness_stamp/freshness_stamp.rs::built_from",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/freshness.py::Freshness._read_int": [
+    {
+      "block": "structure.rebuilt.stamp",
+      "role": "reader",
+      "path": "iris_vector_graph/freshness.py",
+      "symbol": "Freshness._read_int",
+      "pin lines": "45-52",
+      "family": "C-freshness_stamp",
+      "formal item": ".g5/Verus_verification/models/freshness_stamp/freshness_stamp.rs::read_int",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/freshness.py::Freshness.stale_stores": [
+    {
+      "block": "structure.rebuilt.stamp",
+      "role": "reader",
+      "path": "iris_vector_graph/freshness.py",
+      "symbol": "Freshness.stale_stores",
+      "pin lines": "74-77",
+      "family": "C-freshness_stamp",
+      "formal item": ".g5/Verus_verification/models/freshness_stamp/freshness_stamp.rs::theorem_stale_stores_exact",
+      "relation": "proves",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_src/src/Graph/KG/TraversalKHop.cls::Fresh": [
+    {
+      "block": "structure.rebuilt.stamp",
+      "role": "reader",
+      "path": "iris_src/src/Graph/KG/TraversalKHop.cls",
+      "symbol": "Fresh",
+      "pin lines": "237-243",
+      "family": "C-freshness_stamp",
+      "formal item": ".g5/Verus_verification/models/freshness_stamp/freshness_stamp.rs::theorem_python_agrees_with_objectscript",
+      "relation": "proves",
+      "design": "as-built",
+      "grade": "Inspected"
+    }
+  ],
+  "iris_vector_graph/embedded.py::_is_no_data": [
+    {
+      "block": "adapters.embedded.no_data",
+      "role": "reader",
+      "path": "iris_vector_graph/embedded.py",
+      "symbol": "_is_no_data",
+      "pin lines": "193-196",
+      "family": "C-embedded_no_data",
+      "formal item": ".g5/Verus_verification/models/embedded_no_data/embedded_no_data.rs::is_no_data",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/embedded.py::_no_data_ok": [
+    {
+      "block": "adapters.embedded.no_data",
+      "role": "reader",
+      "path": "iris_vector_graph/embedded.py",
+      "symbol": "_no_data_ok",
+      "pin lines": "199-206",
+      "family": "C-embedded_no_data",
+      "formal item": ".g5/Verus_verification/models/embedded_no_data/embedded_no_data.rs::first_pass_row",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/embedded.py::_exec_inline": [
+    {
+      "block": "adapters.embedded.no_data",
+      "role": "reader",
+      "path": "iris_vector_graph/embedded.py",
+      "symbol": "_exec_inline",
+      "pin lines": "265-277",
+      "family": "C-embedded_no_data",
+      "formal item": ".g5/Verus_verification/models/embedded_no_data/embedded_no_data.rs::exec_inline",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/embedded.py::EmbeddedCursor.execute": [
+    {
+      "block": "adapters.embedded.no_data",
+      "role": "reader",
+      "path": "iris_vector_graph/embedded.py",
+      "symbol": "EmbeddedCursor.execute",
+      "pin lines": "312-385",
+      "family": "C-embedded_no_data",
+      "formal item": ".g5/Verus_verification/models/embedded_no_data/embedded_no_data.rs::theorem_no_data_is_empty",
+      "relation": "proves",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    },
+    {
+      "block": "adapters.embedded.no_data",
+      "role": "reader",
+      "path": "iris_vector_graph/embedded.py",
+      "symbol": "EmbeddedCursor.execute",
+      "pin lines": "312-385",
+      "family": "C-embedded_no_data",
+      "formal item": ".g5/Verus_verification/models/embedded_no_data/embedded_no_data.rs::theorem_other_error_raises",
+      "relation": "proves",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/embedded.py::EmbeddedCursor.executemany": [
+    {
+      "block": "adapters.embedded.no_data",
+      "role": "writer",
+      "path": "iris_vector_graph/embedded.py",
+      "symbol": "EmbeddedCursor.executemany",
+      "pin lines": "387-413",
+      "family": "C-embedded_no_data",
+      "formal item": ".g5/Verus_verification/models/embedded_no_data/embedded_no_data.rs::theorem_batch_counts_rows",
+      "relation": "proves",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    },
+    {
+      "block": "adapters.embedded.no_data",
+      "role": "writer",
+      "path": "iris_vector_graph/embedded.py",
+      "symbol": "EmbeddedCursor.executemany",
+      "pin lines": "387-413",
+      "family": "C-embedded_no_data",
+      "formal item": ".g5/Verus_verification/models/embedded_no_data/embedded_no_data.rs::witness_ddtab_mid_batch_reruns_rows",
+      "relation": "witnesses",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/embedded.py::_is_ddtab_error": [
+    {
+      "block": "adapters.embedded",
+      "role": "reader",
+      "path": "iris_vector_graph/embedded.py",
+      "symbol": "_is_ddtab_error",
+      "pin lines": "209-211",
+      "family": "C-embedded_no_data",
+      "formal item": ".g5/Verus_verification/models/embedded_no_data/embedded_no_data.rs::chain",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/prop_values.py::parse_rel_prop_text": [
+    {
+      "block": "query.values.relationship_text",
+      "role": "reader",
+      "path": "iris_vector_graph/prop_values.py",
+      "symbol": "parse_rel_prop_text",
+      "pin lines": "141-168",
+      "family": "C-rel_prop_text",
+      "formal item": ".g5/Verus_verification/models/rel_prop_text/rel_prop_text.rs::as_built",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    },
+    {
+      "block": "query.values.relationship_text",
+      "role": "reader",
+      "path": "iris_vector_graph/prop_values.py",
+      "symbol": "parse_rel_prop_text",
+      "pin lines": "141-168",
+      "family": "C-rel_prop_text",
+      "formal item": ".g5/Verus_verification/models/rel_prop_text/rel_prop_text.rs::theorem_as_built_agrees_on_plain_ascii",
+      "relation": "proves",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/prop_values.py::parse_prop_text": [
+    {
+      "block": "query.values.relationship_text",
+      "role": "reader",
+      "path": "iris_vector_graph/prop_values.py",
+      "symbol": "parse_prop_text",
+      "pin lines": "129-138",
+      "family": "C-rel_prop_text",
+      "formal item": ".g5/Verus_verification/models/rel_prop_text/rel_prop_text.rs::decode",
+      "relation": "models",
+      "design": "reviewed",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/prop_values.py::decode_json_list_map": [
+    {
+      "block": "query.values.relationship_text",
+      "role": "reader",
+      "path": "iris_vector_graph/prop_values.py",
+      "symbol": "decode_json_list_map",
+      "pin lines": "234-248",
+      "family": "C-rel_prop_text",
+      "formal item": ".g5/Verus_verification/models/rel_prop_text/rel_prop_text.rs::shaped",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/schema.py::GraphSchema.ensure_adjacency_index": [
+    {
+      "block": "structure.adjacency.declare",
+      "role": "writer",
+      "path": "iris_vector_graph/schema.py",
+      "symbol": "GraphSchema.ensure_adjacency_index",
+      "pin lines": "821-898",
+      "family": "C-index_declaration",
+      "formal item": ".g5/Verus_verification/models/index_declaration/index_declaration.rs::plan",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    },
+    {
+      "block": "structure.adjacency.declare",
+      "role": "writer",
+      "path": "iris_vector_graph/schema.py",
+      "symbol": "GraphSchema.ensure_adjacency_index",
+      "pin lines": "821-898",
+      "family": "C-index_declaration",
+      "formal item": ".g5/Verus_verification/models/index_declaration/index_declaration.rs::theorem_backfill_before_edge_index",
+      "relation": "proves",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    },
+    {
+      "block": "structure.adjacency.declare",
+      "role": "writer",
+      "path": "iris_vector_graph/schema.py",
+      "symbol": "GraphSchema.ensure_adjacency_index",
+      "pin lines": "821-898",
+      "family": "C-index_declaration",
+      "formal item": ".g5/Verus_verification/models/index_declaration/index_declaration.rs::theorem_no_prereq_no_ddl",
+      "relation": "proves",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/schema.py::GraphSchema.adjacency_index_kind": [
+    {
+      "block": "structure.adjacency.declare",
+      "role": "reader",
+      "path": "iris_vector_graph/schema.py",
+      "symbol": "GraphSchema.adjacency_index_kind",
+      "pin lines": "785-818",
+      "family": "C-index_declaration",
+      "formal item": ".g5/Verus_verification/models/index_declaration/index_declaration.rs::theorem_plain_replaced",
+      "relation": "proves",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_src/src/Graph/KG/AlgoCache.cls::Get": [
+    {
+      "block": "algorithms.cache",
+      "role": "reader",
+      "path": "iris_src/src/Graph/KG/AlgoCache.cls",
+      "symbol": "Get",
+      "pin lines": "39-51",
+      "family": "P-proofs-d1e",
+      "formal item": "experiment/playbook-completion/proofs-d1e/src/acache_l1.rs::theorem_answer_is_fresh",
+      "relation": "models",
+      "design": "reviewed",
+      "grade": "Inspected (the reviewed design keys on nver; the pin is control_f1004_create_moves_no_token)"
+    }
+  ],
+  "iris_src/src/Graph/KG/Ledger.cls::CommitInTxn": [
+    {
+      "block": "ledger.idempotency",
+      "role": "writer",
+      "path": "iris_src/src/Graph/KG/Ledger.cls",
+      "symbol": "CommitInTxn",
+      "pin lines": "419-528",
+      "family": "P-proofs-pa3",
+      "formal item": "experiment/playbook-completion/proofs-pa3/src/ledger_l1.rs::theorem_key_binds_one_fingerprint",
+      "relation": "models",
+      "design": "reviewed",
+      "grade": "Inspected"
+    },
+    {
+      "block": "ledger.commit.admission",
+      "role": "writer",
+      "path": "iris_src/src/Graph/KG/Ledger.cls",
+      "symbol": "CommitInTxn",
+      "pin lines": "419-528",
+      "family": "G-ledger_redaction",
+      "formal item": ".g5/Verus_verification/models/ledger_redaction/redaction.rs::theorem_retry_replays_first",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed on the guidance VM (native probes)"
+    },
+    {
+      "block": "ledger.commit",
+      "role": "writer",
+      "path": "iris_src/src/Graph/KG/Ledger.cls",
+      "symbol": "CommitInTxn",
+      "pin lines": "419-531",
+      "family": "C-ledger_apply",
+      "formal item": ".g5/Verus_verification/models/ledger_apply/ledger_apply.rs::commit",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected transaction/global provider"
+    }
+  ],
+  "iris_src/src/Graph/KG/Adj.cls::Degree": [
+    {
+      "block": "structure.degree.cache.uncommitted",
+      "role": "reader",
+      "path": "iris_src/src/Graph/KG/Adj.cls",
+      "symbol": "Degree",
+      "pin lines": "52",
+      "family": "G-graph_structure",
+      "formal item": ".g5/Verus_verification/models/graph_structure/graph_structure.rs::theorem_as_built_cache_sound",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed on the guidance VM (native probes)"
+    }
+  ],
+  "iris_vector_graph/_engine/embeddings.py::EmbeddingsMixin._route_for_write": [
+    {
+      "block": "search.embedding.other_model",
+      "role": "writer",
+      "path": "iris_vector_graph/_engine/embeddings.py",
+      "symbol": "EmbeddingsMixin._route_for_write",
+      "pin lines": "755-792",
+      "family": "G-search",
+      "formal item": ".g5/Verus_verification/models/search/search.rs::theorem_store_routes_and_refuses",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed on the guidance VM (native probes)"
+    }
+  ],
+  "iris_src/src/Graph/KG/Cypher/Gen.cls::For": [
+    {
+      "block": "query.compiled.fallback",
+      "role": "reader",
+      "path": "iris_src/src/Graph/KG/Cypher/Gen.cls",
+      "symbol": "For",
+      "pin lines": "61-105",
+      "family": "P-proofs-d1d",
+      "formal item": "experiment/playbook-completion/proofs-d1d/src/planc_l2.rs::theorem_ok_entry_runs_its_shapes_class",
+      "relation": "models",
+      "design": "reviewed",
+      "grade": "Inspected"
+    }
+  ],
+  "iris_vector_graph/prop_values.py::prop_value": [
+    {
+      "block": "query.values",
+      "role": "producer",
+      "path": "iris_vector_graph/prop_values.py",
+      "symbol": "prop_value",
+      "pin lines": "106-126",
+      "family": "C-node_read",
+      "formal item": ".g5/Verus_verification/models/node_read/node_read.rs::write",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; IRIS substituted)"
+    }
+  ],
+  "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.create_node": [
+    {
+      "block": "query.values",
+      "role": "writer",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "NodesEdgesMixin.create_node",
+      "pin lines": "968-1104",
+      "family": "C-node_read",
+      "formal item": ".g5/Verus_verification/models/node_read/node_read.rs::theorem_numeric_writer_and_reader",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; IRIS substituted)"
+    },
+    {
+      "block": "structure.node.read",
+      "role": "writer",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "NodesEdgesMixin.create_node",
+      "pin lines": "968-1104",
+      "family": "C-node_read",
+      "formal item": ".g5/Verus_verification/models/node_read/node_read.rs::write",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; IRIS substituted)"
+    },
+    {
+      "block": "structure.node.read.aliases",
+      "role": "producer",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "NodesEdgesMixin.create_node",
+      "pin lines": "968-1104",
+      "family": "C-node_read",
+      "formal item": ".g5/Verus_verification/models/node_read/node_read.rs::assign",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; IRIS substituted)"
+    },
+    {
+      "block": "install.import.ndjson",
+      "role": "writer",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "NodesEdgesMixin.create_node",
+      "pin lines": "968-1104",
+      "family": "C-ndjson_import",
+      "formal item": ".g5/Verus_verification/models/ndjson_import/ndjson_import.rs::step",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; IRIS substituted)"
+    }
+  ],
+  "iris_vector_graph/schema.py::GraphSchema.get_procedures_sql_list": [
+    {
+      "block": "query.values",
+      "role": "producer",
+      "path": "iris_vector_graph/schema.py",
+      "symbol": "GraphSchema.get_procedures_sql_list",
+      "pin lines": "2144-2775",
+      "family": "C-node_read",
+      "formal item": ".g5/Verus_verification/models/node_read/node_read.rs::cy_typed",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected CY_TYPED subsection only; numeric spelling premise"
+    }
+  ],
+  "iris_vector_graph/prop_values.py::decode_typed_text": [
+    {
+      "block": "query.values",
+      "role": "reader",
+      "path": "iris_vector_graph/prop_values.py",
+      "symbol": "decode_typed_text",
+      "pin lines": "204-231",
+      "family": "C-node_read",
+      "formal item": ".g5/Verus_verification/models/node_read/node_read.rs::read",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; IRIS substituted)"
+    }
+  ],
+  "iris_vector_graph/prop_values.py::read_node_value": [
+    {
+      "block": "query.values",
+      "role": "reader",
+      "path": "iris_vector_graph/prop_values.py",
+      "symbol": "read_node_value",
+      "pin lines": "273-279",
+      "family": "C-node_read",
+      "formal item": ".g5/Verus_verification/models/node_read/node_read.rs::journey",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; IRIS substituted)"
+    }
+  ],
+  "iris_vector_graph/_engine/query.py::_finish_sql_result": [
+    {
+      "block": "query.values",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/query.py",
+      "symbol": "_finish_sql_result",
+      "pin lines": "332-350",
+      "family": "C-node_read",
+      "formal item": ".g5/Verus_verification/models/node_read/node_read.rs::finish_scalar",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed scalar node-property subset; remaining pipeline not modeled"
+    }
+  ],
+  "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.get_nodes": [
+    {
+      "block": "structure.node.read",
+      "role": "reader",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "NodesEdgesMixin.get_nodes",
+      "pin lines": "621-697",
+      "family": "C-node_read",
+      "formal item": ".g5/Verus_verification/models/node_read/node_read.rs::theorem_bare_node_vs_absent",
+      "relation": "proves",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; IRIS substituted)"
+    },
+    {
+      "block": "structure.node.read.aliases",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "NodesEdgesMixin.get_nodes",
+      "pin lines": "621-697",
+      "family": "C-node_read",
+      "formal item": ".g5/Verus_verification/models/node_read/node_read.rs::witness_alias_collision",
+      "relation": "witnesses",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; IRIS substituted)"
+    },
+    {
+      "block": "install.import.ndjson",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "NodesEdgesMixin.get_nodes",
+      "pin lines": "621-697",
+      "family": "C-ndjson_import",
+      "formal item": ".g5/Verus_verification/models/ndjson_import/ndjson_import.rs::theorem_skip_then_node_reaches_reader",
+      "relation": "proves",
+      "design": "as-built",
+      "grade": "Observed cross-call binding; formal reader is map lookup only"
+    },
+    {
+      "block": "structure.node.bulk",
+      "role": "reader",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "NodesEdgesMixin.get_nodes",
+      "pin lines": "exact named declaration at product pin",
+      "family": "C-bulk_children",
+      "formal item": ".g5/Verus_verification/models/bulk_children/bulk_children.rs::read",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual SQL writer/readback on SQLite; finite IRIS B1/B2 normal paths; provider rollback conditional"
+    }
+  ],
+  "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.get_node": [
+    {
+      "block": "structure.node.read",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "NodesEdgesMixin.get_node",
+      "pin lines": "563-582",
+      "family": "C-node_read",
+      "formal item": ".g5/Verus_verification/models/node_read/node_read.rs::included",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; IRIS substituted)"
+    },
+    {
+      "block": "structure.node.bulk",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "NodesEdgesMixin.get_node",
+      "pin lines": "exact named declaration at product pin",
+      "family": "C-bulk_children",
+      "formal item": ".g5/Verus_verification/models/bulk_children/bulk_children.rs::read",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual SQL writer/readback on SQLite; finite IRIS B1/B2 normal paths; provider rollback conditional"
+    }
+  ],
+  "iris_vector_graph/_engine/snapshot.py::SnapshotMixin.import_graph_ndjson": [
+    {
+      "block": "install.import.ndjson",
+      "role": "producer",
+      "path": "iris_vector_graph/_engine/snapshot.py",
+      "symbol": "SnapshotMixin.import_graph_ndjson",
+      "pin lines": "1727-1855",
+      "family": "C-ndjson_import",
+      "formal item": ".g5/Verus_verification/models/ndjson_import/ndjson_import.rs::selected",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; IRIS substituted)"
+    }
+  ],
+  "iris_vector_graph/cypher/native_route.py::NativeRoute._start_trial": [
+    {
+      "block": "query.native.route",
+      "role": "producer",
+      "path": "iris_vector_graph/cypher/native_route.py",
+      "symbol": "NativeRoute._start_trial",
+      "pin lines": "57-61",
+      "family": "C-route_recheck",
+      "formal item": ".g5/Verus_verification/models/route_recheck/route_recheck.rs::start_trial",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; IRIS substituted)"
+    }
+  ],
+  "iris_vector_graph/cypher/native_route.py::NativeRoute._held_run": [
+    {
+      "block": "query.native.route",
+      "role": "writer",
+      "path": "iris_vector_graph/cypher/native_route.py",
+      "symbol": "NativeRoute._held_run",
+      "pin lines": "109-123",
+      "family": "C-route_recheck",
+      "formal item": ".g5/Verus_verification/models/route_recheck/route_recheck.rs::held_run",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; IRIS substituted)"
+    }
+  ],
+  "iris_vector_graph/cypher/native_route.py::NativeRoute.next_path": [
+    {
+      "block": "query.native.route",
+      "role": "reader",
+      "path": "iris_vector_graph/cypher/native_route.py",
+      "symbol": "NativeRoute.next_path",
+      "pin lines": "76-83",
+      "family": "C-route_recheck",
+      "formal item": ".g5/Verus_verification/models/route_recheck/route_recheck.rs::next_path",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; IRIS substituted)"
+    }
+  ],
+  "iris_vector_graph/cypher/native_route.py::NativeRoute.sql_failed": [
+    {
+      "block": "query.native.route",
+      "role": "writer",
+      "path": "iris_vector_graph/cypher/native_route.py",
+      "symbol": "NativeRoute.sql_failed",
+      "pin lines": "71-74",
+      "family": "C-route_recheck",
+      "formal item": ".g5/Verus_verification/models/route_recheck/route_recheck.rs::sql_failed",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; IRIS substituted)"
+    }
+  ],
+  "iris_src/src/Graph/KG/Adj.cls::WarmFill": [
+    {
+      "block": "structure.degree.cache.warm",
+      "role": "producer",
+      "path": "iris_src/src/Graph/KG/Adj.cls",
+      "symbol": "WarmFill",
+      "pin lines": "138-175",
+      "family": "C-warm_sources",
+      "formal item": ".g5/Verus_verification/models/warm_sources/warm_sources.rs::stores",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected ObjectScript; not executed here"
+    }
+  ],
+  "iris_src/src/Graph/KG/Adj.cls::WarmAll": [
+    {
+      "block": "structure.degree.cache.warm",
+      "role": "writer",
+      "path": "iris_src/src/Graph/KG/Adj.cls",
+      "symbol": "WarmAll",
+      "pin lines": "184-205",
+      "family": "C-warm_sources",
+      "formal item": ".g5/Verus_verification/models/warm_sources/warm_sources.rs::filled",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected ObjectScript; not executed here"
+    },
+    {
+      "block": "structure.degree.cache.warm",
+      "role": "writer",
+      "path": "iris_src/src/Graph/KG/Adj.cls",
+      "symbol": "WarmAll",
+      "pin lines": "184-205",
+      "family": "C-warm_sources",
+      "formal item": ".g5/Verus_verification/models/warm_sources/warm_sources.rs::stamp",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected ObjectScript; not executed here"
+    }
+  ],
+  "iris_src/src/Graph/KG/Adj.cls::AllWarm": [
+    {
+      "block": "structure.degree.cache.warm",
+      "role": "reader",
+      "path": "iris_src/src/Graph/KG/Adj.cls",
+      "symbol": "AllWarm",
+      "pin lines": "214-217",
+      "family": "C-warm_sources",
+      "formal item": ".g5/Verus_verification/models/warm_sources/warm_sources.rs::all_warm",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected ObjectScript; not executed here"
+    }
+  ],
+  "iris_vector_graph/cypher/translator.py::_reads_node_value": [
+    {
+      "block": "query.values",
+      "role": "producer",
+      "path": "iris_vector_graph/cypher/translator.py",
+      "symbol": "_reads_node_value",
+      "pin lines": "7644-7678",
+      "family": "C-node_read",
+      "formal item": ".g5/Verus_verification/models/node_read/node_read.rs::typed_column",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed scalar node-property subset; metadata normalization not modeled"
+    }
+  ],
+  "iris_vector_graph/cypher/translator.py::translate_to_sql": [
+    {
+      "block": "query.values",
+      "role": "producer",
+      "path": "iris_vector_graph/cypher/translator.py",
+      "symbol": "translate_to_sql",
+      "pin lines": "7090-7106",
+      "family": "C-node_read",
+      "formal item": ".g5/Verus_verification/models/node_read/node_read.rs::typed_column",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed scalar node-property subset; metadata normalization not modeled"
+    }
+  ],
+  "iris_vector_graph/_engine/query.py::_decode_typed_value_columns": [
+    {
+      "block": "query.values",
+      "role": "reader",
+      "path": "iris_vector_graph/_engine/query.py",
+      "symbol": "_decode_typed_value_columns",
+      "pin lines": "1137-1154",
+      "family": "C-node_read",
+      "formal item": ".g5/Verus_verification/models/node_read/node_read.rs::theorem_sql_scalar_read_reaches_result",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed scalar node-property subset; metadata normalization not modeled"
+    }
+  ],
+  "iris_src/src/Graph/KG/LedgerApply.cls::ApplyAll": [
+    {
+      "block": "ledger.commit",
+      "role": "producer",
+      "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+      "symbol": "ApplyAll",
+      "pin lines": "18-51",
+      "family": "C-ledger_apply",
+      "formal item": ".g5/Verus_verification/models/ledger_apply/ledger_apply.rs::apply_all",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected ObjectScript; no native writer"
+    }
+  ],
+  "iris_src/src/Graph/KG/LedgerApply.cls::NodeExists": [
+    {
+      "block": "ledger.commit",
+      "role": "producer",
+      "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+      "symbol": "NodeExists",
+      "pin lines": "79-96",
+      "family": "C-ledger_apply",
+      "formal item": ".g5/Verus_verification/models/ledger_apply/ledger_apply.rs::fails",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected ObjectScript; no native writer"
+    }
+  ],
+  "iris_src/src/Graph/KG/LedgerApply.cls::OpSetProp": [
+    {
+      "block": "ledger.commit",
+      "role": "producer",
+      "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+      "symbol": "OpSetProp",
+      "pin lines": "309-318",
+      "family": "C-ledger_apply",
+      "formal item": ".g5/Verus_verification/models/ledger_apply/ledger_apply.rs::fails",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected ObjectScript; no native writer"
+    }
+  ],
+  "iris_src/src/Graph/KG/LedgerApply.cls::SetProp": [
+    {
+      "block": "ledger.commit",
+      "role": "producer",
+      "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+      "symbol": "SetProp",
+      "pin lines": "266-285",
+      "family": "C-ledger_apply",
+      "formal item": ".g5/Verus_verification/models/ledger_apply/ledger_apply.rs::write",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected ObjectScript; no native writer"
+    },
+    {
+      "block": "ledger.readers.diff",
+      "role": "writer",
+      "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+      "symbol": "SetProp",
+      "pin lines": "266",
+      "family": "C-history_diff",
+      "formal item": ".g5/Verus_verification/models/history_diff/history_diff.rs::writer",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected prior/new projection; no-op emission abstracted"
+    }
+  ],
+  "iris_src/src/Graph/KG/LedgerApply.cls::OpCreateRel": [
+    {
+      "block": "ledger.commit",
+      "role": "producer",
+      "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+      "symbol": "OpCreateRel",
+      "pin lines": "450-530",
+      "family": "C-ledger_apply",
+      "formal item": ".g5/Verus_verification/models/ledger_apply/ledger_apply.rs::fails",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected ObjectScript; no native writer"
+    }
+  ],
+  "iris_src/src/Graph/KG/LedgerApply.cls::OpCreateNode": [
+    {
+      "block": "ledger.commit",
+      "role": "producer",
+      "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+      "symbol": "OpCreateNode",
+      "pin lines": "215-252",
+      "family": "C-ledger_apply",
+      "formal item": ".g5/Verus_verification/models/ledger_apply/ledger_apply.rs::write",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected ObjectScript; no native writer"
+    }
+  ],
+  "iris_src/src/Graph/KG/LedgerApply.cls::OpAddLabel": [
+    {
+      "block": "ledger.commit",
+      "role": "producer",
+      "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+      "symbol": "OpAddLabel",
+      "pin lines": "286-293",
+      "family": "C-ledger_apply",
+      "formal item": ".g5/Verus_verification/models/ledger_apply/ledger_apply.rs::write",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected ObjectScript; no native writer"
+    }
+  ],
+  "iris_src/src/Graph/KG/LedgerApply.cls::Rec": [
+    {
+      "block": "ledger.commit",
+      "role": "producer",
+      "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+      "symbol": "Rec",
+      "pin lines": "62-67",
+      "family": "C-ledger_apply",
+      "formal item": ".g5/Verus_verification/models/ledger_apply/ledger_apply.rs::write",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected ObjectScript; no native writer"
+    }
+  ],
+  "iris_src/src/Graph/KG/Ledger.cls::Commit": [
+    {
+      "block": "ledger.commit",
+      "role": "writer",
+      "path": "iris_src/src/Graph/KG/Ledger.cls",
+      "symbol": "Commit",
+      "pin lines": "397-418",
+      "family": "C-ledger_apply",
+      "formal item": ".g5/Verus_verification/models/ledger_apply/ledger_apply.rs::commit",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected transaction/global provider"
+    }
+  ],
+  "iris_src/src/Graph/KG/Ledger.cls::WriteRevision": [
+    {
+      "block": "ledger.commit",
+      "role": "writer",
+      "path": "iris_src/src/Graph/KG/Ledger.cls",
+      "symbol": "WriteRevision",
+      "pin lines": "532-571",
+      "family": "C-ledger_apply",
+      "formal item": ".g5/Verus_verification/models/ledger_apply/ledger_apply.rs::revision",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected transaction/global provider"
+    }
+  ],
+  "iris_vector_graph/ledger/client.py::GraphLedger.get_revision": [
+    {
+      "block": "ledger.commit",
+      "role": "reader",
+      "path": "iris_vector_graph/ledger/client.py",
+      "symbol": "GraphLedger.get_revision",
+      "pin lines": "695-704",
+      "family": "C-ledger_apply",
+      "formal item": ".g5/Verus_verification/models/ledger_apply/ledger_apply.rs::revision",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed Python reader; reference record producer substituted"
+    }
+  ],
+  "iris_vector_graph/ledger/client.py::GraphLedger._commit": [
+    {
+      "block": "ledger.commit",
+      "role": "consumer",
+      "path": "iris_vector_graph/ledger/client.py",
+      "symbol": "GraphLedger._commit",
+      "pin lines": "402-443",
+      "family": "C-ledger_apply",
+      "formal item": ".g5/Verus_verification/models/ledger_apply/ledger_apply.rs::theorem_mid_failure_rolls_back_prefix",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed error mapping only; no native rollback"
+    }
+  ],
+  "iris_vector_graph/ledger/client.py::GraphLedger.reconstruct": [
+    {
+      "block": "ledger.readers.bound",
+      "role": "producer",
+      "path": "iris_vector_graph/ledger/client.py",
+      "symbol": "GraphLedger.reconstruct",
+      "pin lines": "720-728",
+      "family": "C-reconstruction",
+      "formal item": ".g5/Verus_verification/models/reconstruction/reconstruction.rs::effective",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed Python; SQL/meta substituted; structural count projection"
+    }
+  ],
+  "iris_vector_graph/ledger/replay.py::contributes": [
+    {
+      "block": "ledger.readers.bound",
+      "role": "reader",
+      "path": "iris_vector_graph/ledger/replay.py",
+      "symbol": "contributes",
+      "pin lines": "24-26",
+      "family": "C-reconstruction",
+      "formal item": ".g5/Verus_verification/models/reconstruction/reconstruction.rs::apply",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed Python; SQL/meta substituted; structural count projection"
+    }
+  ],
+  "iris_vector_graph/ledger/replay.py::GraphState.apply": [
+    {
+      "block": "ledger.readers.bound",
+      "role": "reader",
+      "path": "iris_vector_graph/ledger/replay.py",
+      "symbol": "GraphState.apply",
+      "pin lines": "170-209",
+      "family": "C-reconstruction",
+      "formal item": ".g5/Verus_verification/models/reconstruction/reconstruction.rs::apply",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed Python; SQL/meta substituted; structural count projection"
+    },
+    {
+      "block": "ledger.readers.diff",
+      "role": "consumer",
+      "path": "iris_vector_graph/ledger/replay.py",
+      "symbol": "GraphState.apply",
+      "pin lines": "170-209",
+      "family": "C-history_diff",
+      "formal item": ".g5/Verus_verification/models/history_diff/history_diff.rs::continuous",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed endpoint per-property projection only"
+    }
+  ],
+  "iris_vector_graph/ledger/replay.py::reconstruct": [
+    {
+      "block": "ledger.readers.bound",
+      "role": "reader",
+      "path": "iris_vector_graph/ledger/replay.py",
+      "symbol": "reconstruct",
+      "pin lines": "544-566",
+      "family": "C-reconstruction",
+      "formal item": ".g5/Verus_verification/models/reconstruction/reconstruction.rs::run",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed Python; SQL/meta substituted; structural count projection"
+    }
+  ],
+  "iris_vector_graph/ledger/client.py::GraphLedger.export_reconstruction": [
+    {
+      "block": "ledger.readers.bound",
+      "role": "consumer",
+      "path": "iris_vector_graph/ledger/client.py",
+      "symbol": "GraphLedger.export_reconstruction",
+      "pin lines": "730-739",
+      "family": "C-reconstruction",
+      "formal item": ".g5/Verus_verification/models/reconstruction/reconstruction.rs::theorem_stream_and_export_fold",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed Python; SQL/meta substituted; structural count projection"
+    }
+  ],
+  "iris_vector_graph/ledger/replay.py::iter_records_sql": [
+    {
+      "block": "ledger.readers.bound",
+      "role": "reader",
+      "path": "iris_vector_graph/ledger/replay.py",
+      "symbol": "iter_records_sql",
+      "pin lines": "252-269",
+      "family": "C-reconstruction",
+      "formal item": ".g5/Verus_verification/models/reconstruction/reconstruction.rs::selected",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed Python; SQL/meta substituted; structural count projection"
+    }
+  ],
+  "iris_vector_graph/fusion.py::RRFFusion.fuse_results": [
+    {
+      "block": "search.fusion.python",
+      "role": "producer",
+      "path": "iris_vector_graph/fusion.py",
+      "symbol": "RRFFusion.fuse_results",
+      "pin lines": "27-64",
+      "family": "C-fusion_ranking",
+      "formal item": ".g5/Verus_verification/models/fusion_ranking/fusion_ranking.rs::rank",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed actual Python rank/score producer"
+    }
+  ],
+  "iris_vector_graph/fusion.py::HybridSearchFusion.multi_modal_search": [
+    {
+      "block": "search.fusion.python",
+      "role": "consumer",
+      "path": "iris_vector_graph/fusion.py",
+      "symbol": "HybridSearchFusion.multi_modal_search",
+      "pin lines": "109-252",
+      "family": "C-fusion_ranking",
+      "formal item": ".g5/Verus_verification/models/fusion_ranking/fusion_ranking.rs::top_two",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed strict pair winner; general sort/details not proved"
+    },
+    {
+      "block": "search.fusion.failed_leg",
+      "role": "consumer",
+      "path": "iris_vector_graph/fusion.py",
+      "symbol": "HybridSearchFusion.multi_modal_search",
+      "pin lines": "109-252",
+      "family": "C-fusion_ranking",
+      "formal item": ".g5/Verus_verification/models/fusion_ranking/fusion_ranking.rs::collect",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed actual Python catches; providers substituted"
+    }
+  ],
+  "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.bulk_delete_nodes": [
+    {
+      "block": "structure.node.delete.bulk",
+      "role": "producer",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "NodesEdgesMixin.bulk_delete_nodes",
+      "pin lines": "2270-2299",
+      "family": "C-bulk_delete",
+      "formal item": ".g5/Verus_verification/models/bulk_delete/bulk_delete.rs::normalize",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed Python orchestration; storage/reifier census/guard substituted"
+    }
+  ],
+  "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin._delete_in_scope": [
+    {
+      "block": "structure.node.delete.bulk",
+      "role": "writer",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "NodesEdgesMixin._delete_in_scope",
+      "pin lines": "2176-2200",
+      "family": "C-bulk_delete",
+      "formal item": ".g5/Verus_verification/models/bulk_delete/bulk_delete.rs::batches",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed Python orchestration; storage/reifier census/guard substituted"
+    }
+  ],
+  "iris_vector_graph/_engine/nodes_edges.py::DeleteResult.__int__": [
+    {
+      "block": "structure.node.delete.bulk",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "DeleteResult.__int__",
+      "pin lines": "107-108",
+      "family": "C-bulk_delete",
+      "formal item": ".g5/Verus_verification/models/bulk_delete/bulk_delete.rs::as_int",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed Python orchestration; storage/reifier census/guard substituted"
+    }
+  ],
+  "iris_vector_graph/_engine/nodes_edges.py::DeleteResult.__bool__": [
+    {
+      "block": "structure.node.delete.bulk",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "DeleteResult.__bool__",
+      "pin lines": "110-111",
+      "family": "C-bulk_delete",
+      "formal item": ".g5/Verus_verification/models/bulk_delete/bulk_delete.rs::as_bool",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed Python orchestration; storage/reifier census/guard substituted"
+    }
+  ],
+  "iris_vector_graph/ledger/client.py::GraphLedger.diff": [
+    {
+      "block": "ledger.readers.diff",
+      "role": "consumer",
+      "path": "iris_vector_graph/ledger/client.py",
+      "symbol": "GraphLedger.diff",
+      "pin lines": "706-718",
+      "family": "C-history_diff",
+      "formal item": ".g5/Verus_verification/models/history_diff/history_diff.rs::diff",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed named Python reader; SQL provider substituted"
+    }
+  ],
+  "iris_vector_graph/ledger/replay.py::compute_diff": [
+    {
+      "block": "ledger.readers.diff",
+      "role": "reader",
+      "path": "iris_vector_graph/ledger/replay.py",
+      "symbol": "compute_diff",
+      "pin lines": "453-536",
+      "family": "C-history_diff",
+      "formal item": ".g5/Verus_verification/models/history_diff/history_diff.rs::track",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed per-attribute lifecycle projection"
+    }
+  ],
+  "iris_vector_graph/ledger/replay.py::Diff.inverse": [
+    {
+      "block": "ledger.readers.diff",
+      "role": "consumer",
+      "path": "iris_vector_graph/ledger/replay.py",
+      "symbol": "Diff.inverse",
+      "pin lines": "417-418",
+      "family": "C-history_diff",
+      "formal item": ".g5/Verus_verification/models/history_diff/history_diff.rs::inverse",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed Python"
+    }
+  ],
+  "iris_src/src/Graph/KG/LedgerApply.cls::NodeSnapshotJson": [
+    {
+      "block": "ledger.readers.diff",
+      "role": "producer",
+      "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+      "symbol": "NodeSnapshotJson",
+      "pin lines": "337",
+      "family": "C-history_diff",
+      "formal item": ".g5/Verus_verification/models/history_diff/history_diff.rs::writer",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected selected property projection; full JSON unproved"
+    }
+  ],
+  "iris_src/src/Graph/KG/LedgerApply.cls::DeleteNodeRows": [
+    {
+      "block": "ledger.readers.diff",
+      "role": "writer",
+      "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+      "symbol": "DeleteNodeRows",
+      "pin lines": "354",
+      "family": "C-history_diff",
+      "formal item": ".g5/Verus_verification/models/history_diff/history_diff.rs::writer",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected snapshot producer; no IRIS execution"
+    }
+  ],
+  "iris_vector_graph/_engine/algorithms.py::AlgorithmsMixin._node_set_token": [
+    {
+      "block": "algorithms.cache.pagerank",
+      "role": "producer",
+      "path": "iris_vector_graph/_engine/algorithms.py",
+      "symbol": "AlgorithmsMixin._node_set_token",
+      "pin lines": "179-193",
+      "family": "C-pagerank_admission",
+      "formal item": ".g5/Verus_verification/models/pagerank_admission/pagerank_admission.rs::token",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; server substituted)"
+    }
+  ],
+  "iris_vector_graph/_engine/algorithms.py::AlgorithmsMixin._kg_pagerank_global": [
+    {
+      "block": "algorithms.cache.pagerank",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/algorithms.py",
+      "symbol": "AlgorithmsMixin._kg_pagerank_global",
+      "pin lines": "781-804",
+      "family": "C-pagerank_admission",
+      "formal item": ".g5/Verus_verification/models/pagerank_admission/pagerank_admission.rs::call",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; server substituted)"
+    }
+  ],
+  "iris_vector_graph/_edgeless.py::edgeless": [
+    {
+      "block": "algorithms.cache.pagerank",
+      "role": "producer",
+      "path": "iris_vector_graph/_edgeless.py",
+      "symbol": "edgeless",
+      "pin lines": "58-60",
+      "family": "C-pagerank_admission",
+      "formal item": ".g5/Verus_verification/models/pagerank_admission/pagerank_admission.rs::edgeless",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; server substituted)"
+    }
+  ],
+  "iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore.execute_pagerank": [
+    {
+      "block": "algorithms.cache.pagerank",
+      "role": "writer",
+      "path": "iris_vector_graph/stores/iris_sql_store.py",
+      "symbol": "IRISGraphStore.execute_pagerank",
+      "pin lines": "2362-2386",
+      "family": "C-pagerank_admission",
+      "formal item": ".g5/Verus_verification/models/pagerank_admission/pagerank_admission.rs::key",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; server substituted)"
+    }
+  ],
+  "iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore._cached_algorithm": [
+    {
+      "block": "algorithms.cache.pagerank",
+      "role": "reader",
+      "path": "iris_vector_graph/stores/iris_sql_store.py",
+      "symbol": "IRISGraphStore._cached_algorithm",
+      "pin lines": "921-988",
+      "family": "C-pagerank_admission",
+      "formal item": ".g5/Verus_verification/models/pagerank_admission/pagerank_admission.rs::call",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; server substituted)"
+    }
+  ],
+  "iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore._execute_pagerank": [
+    {
+      "block": "algorithms.cache.pagerank",
+      "role": "consumer",
+      "path": "iris_vector_graph/stores/iris_sql_store.py",
+      "symbol": "IRISGraphStore._execute_pagerank",
+      "pin lines": "2388-2417",
+      "family": "C-pagerank_admission",
+      "formal item": ".g5/Verus_verification/models/pagerank_admission/pagerank_admission.rs::call",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; server substituted)"
+    }
+  ],
+  "iris_vector_graph/cypher/aql/lexer.py::AQLLexer._read_number": [
+    {
+      "block": "query.aql",
+      "role": "producer",
+      "path": "iris_vector_graph/cypher/aql/lexer.py",
+      "symbol": "AQLLexer._read_number",
+      "pin lines": "164-174",
+      "family": "C-aql_frontend",
+      "formal item": ".g5/Verus_verification/models/aql_frontend/aql_frontend.rs::lex",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed actual frontend; Cypher execution recorder"
+    }
+  ],
+  "iris_vector_graph/cypher/aql/parser.py::AQLParser.parse": [
+    {
+      "block": "query.aql",
+      "role": "writer",
+      "path": "iris_vector_graph/cypher/aql/parser.py",
+      "symbol": "AQLParser.parse",
+      "pin lines": "32-168",
+      "family": "C-aql_frontend",
+      "formal item": ".g5/Verus_verification/models/aql_frontend/aql_frontend.rs::depth",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed actual frontend; Cypher execution recorder"
+    }
+  ],
+  "iris_vector_graph/cypher/aql/translator.py::AQLTranslator._resolve_binop": [
+    {
+      "block": "query.aql",
+      "role": "writer",
+      "path": "iris_vector_graph/cypher/aql/translator.py",
+      "symbol": "AQLTranslator._resolve_binop",
+      "pin lines": "95-109",
+      "family": "C-aql_frontend",
+      "formal item": ".g5/Verus_verification/models/aql_frontend/aql_frontend.rs::resolve",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed actual frontend; Cypher execution recorder"
+    }
+  ],
+  "iris_vector_graph/cypher/aql/translator.py::AQLTranslator._translate_traversal": [
+    {
+      "block": "query.aql",
+      "role": "consumer",
+      "path": "iris_vector_graph/cypher/aql/translator.py",
+      "symbol": "AQLTranslator._translate_traversal",
+      "pin lines": "156-224",
+      "family": "C-aql_frontend",
+      "formal item": ".g5/Verus_verification/models/aql_frontend/aql_frontend.rs::hops",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed actual frontend; Cypher execution recorder"
+    }
+  ],
+  "iris_vector_graph/_engine/query.py::QueryMixin.execute_aql": [
+    {
+      "block": "query.aql",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/query.py",
+      "symbol": "QueryMixin.execute_aql",
+      "pin lines": "1730-1744",
+      "family": "C-aql_frontend",
+      "formal item": ".g5/Verus_verification/models/aql_frontend/aql_frontend.rs::hops",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed actual frontend; Cypher execution recorder"
+    }
+  ],
+  "iris_vector_graph/_engine/vector.py::VectorMixin.vector_search": [
+    {
+      "block": "search.knn.threshold",
+      "role": "producer",
+      "path": "iris_vector_graph/_engine/vector.py",
+      "symbol": "VectorMixin.vector_search",
+      "pin lines": "1169-1287",
+      "family": "C-vector_threshold",
+      "formal item": ".g5/Verus_verification/models/vector_threshold/vector_threshold.rs::build",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed Python with adapted SQLite SQL provider; cosine premise"
+    },
+    {
+      "block": "search.knn.threshold",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/vector.py",
+      "symbol": "VectorMixin.vector_search",
+      "pin lines": "1169-1287",
+      "family": "C-vector_threshold",
+      "formal item": ".g5/Verus_verification/models/vector_threshold/vector_threshold.rs::search",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed Python with adapted SQLite SQL provider; cosine premise"
+    }
+  ],
+  "iris_vector_graph/_engine/vector.py::VectorMixin.edge_vector_search": [
+    {
+      "block": "search.knn.threshold",
+      "role": "producer",
+      "path": "iris_vector_graph/_engine/vector.py",
+      "symbol": "VectorMixin.edge_vector_search",
+      "pin lines": "333-398",
+      "family": "C-vector_threshold",
+      "formal item": ".g5/Verus_verification/models/vector_threshold/vector_threshold.rs::build",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed Python with adapted SQLite SQL provider; cosine premise"
+    },
+    {
+      "block": "search.knn.threshold",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/vector.py",
+      "symbol": "VectorMixin.edge_vector_search",
+      "pin lines": "333-398",
+      "family": "C-vector_threshold",
+      "formal item": ".g5/Verus_verification/models/vector_threshold/vector_threshold.rs::search",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed Python with adapted SQLite SQL provider; cosine premise"
+    }
+  ],
+  "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.create_edge": [
+    {
+      "block": "structure.edge.single",
+      "role": "writer",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "NodesEdgesMixin.create_edge",
+      "pin lines": "see exact symbol at product pin",
+      "family": "C-edge_acceptance",
+      "formal item": ".g5/Verus_verification/models/edge_acceptance/edge_acceptance.rs::run",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/SQLite agreement; IRIS/callback providers conditional; specific single-triple behavior"
+    }
+  ],
+  "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.store_edge": [
+    {
+      "block": "structure.edge.single",
+      "role": "writer",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "NodesEdgesMixin.store_edge",
+      "pin lines": "see exact symbol at product pin",
+      "family": "C-edge_acceptance",
+      "formal item": ".g5/Verus_verification/models/edge_acceptance/edge_acceptance.rs::run",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/SQLite agreement; IRIS/callback providers conditional; specific single-triple behavior"
+    }
+  ],
+  "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin._ensure_edge_endpoints": [
+    {
+      "block": "structure.edge.single",
+      "role": "writer",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "NodesEdgesMixin._ensure_edge_endpoints",
+      "pin lines": "see exact symbol at product pin",
+      "family": "C-edge_acceptance",
+      "formal item": ".g5/Verus_verification/models/edge_acceptance/edge_acceptance.rs::theorem_new_edge_registers_endpoints",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/SQLite agreement; IRIS/callback providers conditional; specific single-triple behavior"
+    }
+  ],
+  "iris_vector_graph/_engine/nodes_edges.py::_swallow_duplicate": [
+    {
+      "block": "structure.edge.single",
+      "role": "reader",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "_swallow_duplicate",
+      "pin lines": "see exact symbol at product pin",
+      "family": "C-edge_acceptance",
+      "formal item": ".g5/Verus_verification/models/edge_acceptance/edge_acceptance.rs::theorem_duplicate_returns_differ",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/SQLite agreement; IRIS/callback providers conditional; specific single-triple behavior"
+    }
+  ],
+  "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin._adopt_temporal_row": [
+    {
+      "block": "structure.edge.single",
+      "role": "writer",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "NodesEdgesMixin._adopt_temporal_row",
+      "pin lines": "see exact symbol at product pin",
+      "family": "C-edge_acceptance",
+      "formal item": ".g5/Verus_verification/models/edge_acceptance/edge_acceptance.rs::theorem_temporal_adoption",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/SQLite agreement; IRIS/callback providers conditional; specific single-triple behavior"
+    }
+  ],
+  "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.edge_count": [
+    {
+      "block": "structure.edge.single",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "NodesEdgesMixin.edge_count",
+      "pin lines": "see exact symbol at product pin",
+      "family": "C-edge_acceptance",
+      "formal item": ".g5/Verus_verification/models/edge_acceptance/edge_acceptance.rs::count",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/SQLite agreement; IRIS/callback providers conditional; specific single-triple behavior"
+    }
+  ],
+  "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin._count_in_graph": [
+    {
+      "block": "structure.edge.single",
+      "role": "reader",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "NodesEdgesMixin._count_in_graph",
+      "pin lines": "see exact symbol at product pin",
+      "family": "C-edge_acceptance",
+      "formal item": ".g5/Verus_verification/models/edge_acceptance/edge_acceptance.rs::count",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/SQLite agreement; IRIS/callback providers conditional; specific single-triple behavior"
+    }
+  ],
+  "iris_vector_graph/_engine/nodes_edges.py::_qualifiers_json": [
+    {
+      "block": "temporal.structural.adopt",
+      "role": "producer",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "_qualifiers_json",
+      "pin lines": "see exact symbol at product pin",
+      "family": "C-edge_acceptance",
+      "formal item": ".g5/Verus_verification/models/edge_acceptance/edge_acceptance.rs::theorem_caller_marker_retained",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/SQLite agreement; caller Boolean temporal marker preservation only; not general JSON equivalence"
+    }
+  ],
+  "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.bulk_create_nodes": [
+    {
+      "block": "structure.node.bulk",
+      "role": "writer",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "NodesEdgesMixin.bulk_create_nodes",
+      "pin lines": "exact named declaration at product pin",
+      "family": "C-bulk_children",
+      "formal item": ".g5/Verus_verification/models/bulk_children/bulk_children.rs::run",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual SQL writer/readback on SQLite; finite IRIS B1/B2 normal paths; provider rollback conditional"
+    }
+  ],
+  "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin._drop_orphaned_props": [
+    {
+      "block": "structure.node.bulk",
+      "role": "writer",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "NodesEdgesMixin._drop_orphaned_props",
+      "pin lines": "exact named declaration at product pin",
+      "family": "C-bulk_children",
+      "formal item": ".g5/Verus_verification/models/bulk_children/bulk_children.rs::cleanup",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual SQL writer/readback on SQLite; finite IRIS B1/B2 normal paths; provider rollback conditional"
+    }
+  ],
+  "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin._bulk_sql": [
+    {
+      "block": "structure.node.bulk",
+      "role": "producer",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "NodesEdgesMixin._bulk_sql",
+      "pin lines": "exact named declaration at product pin",
+      "family": "C-bulk_children",
+      "formal item": ".g5/Verus_verification/models/bulk_children/bulk_children.rs::apply",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual SQL writer/readback on SQLite; finite IRIS B1/B2 normal paths; provider rollback conditional"
+    }
+  ],
+  "iris_vector_graph/schema.py::GraphSchema.get_bulk_insert_sql": [
+    {
+      "block": "structure.node.bulk",
+      "role": "producer",
+      "path": "iris_vector_graph/schema.py",
+      "symbol": "GraphSchema.get_bulk_insert_sql",
+      "pin lines": "exact named declaration at product pin",
+      "family": "C-bulk_children",
+      "formal item": ".g5/Verus_verification/models/bulk_children/bulk_children.rs::apply",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual SQL writer/readback on SQLite; finite IRIS B1/B2 normal paths; provider rollback conditional"
+    }
+  ],
+  "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin._check_nodes_written": [
+    {
+      "block": "structure.node.bulk",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "NodesEdgesMixin._check_nodes_written",
+      "pin lines": "exact named declaration at product pin",
+      "family": "C-bulk_children",
+      "formal item": ".g5/Verus_verification/models/bulk_children/bulk_children.rs::complete",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual SQL writer/readback on SQLite; finite IRIS B1/B2 normal paths; provider rollback conditional"
+    }
+  ],
+  "iris_vector_graph/_batch_check.py::missing_rows": [
+    {
+      "block": "structure.node.bulk",
+      "role": "reader",
+      "path": "iris_vector_graph/_batch_check.py",
+      "symbol": "missing_rows",
+      "pin lines": "exact named declaration at product pin",
+      "family": "C-bulk_children",
+      "formal item": ".g5/Verus_verification/models/bulk_children/bulk_children.rs::complete",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual SQL writer/readback on SQLite; finite IRIS B1/B2 normal paths; provider rollback conditional"
+    }
+  ],
+  "iris_vector_graph/_batch_check.py::raise_if_missing": [
+    {
+      "block": "structure.node.bulk",
+      "role": "consumer",
+      "path": "iris_vector_graph/_batch_check.py",
+      "symbol": "raise_if_missing",
+      "pin lines": "exact named declaration at product pin",
+      "family": "C-bulk_children",
+      "formal item": ".g5/Verus_verification/models/bulk_children/bulk_children.rs::run",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual SQL writer/readback on SQLite; finite IRIS B1/B2 normal paths; provider rollback conditional"
+    }
+  ],
+  "iris_src/src/Graph/KG/EdgeScan.cls::BulkIngestNodesSQL": [
+    {
+      "block": "structure.node.bulk",
+      "role": "writer",
+      "path": "iris_src/src/Graph/KG/EdgeScan.cls",
+      "symbol": "BulkIngestNodesSQL",
+      "pin lines": "exact named declaration at product pin",
+      "family": "C-bulk_children",
+      "formal item": ".g5/Verus_verification/models/bulk_children/bulk_children.rs::fold",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual native single default-graph chunk normal B1/B2 via traced public dispatch; general chunk/failure/transaction equivalence open"
+    }
+  ],
+  "iris_vector_graph/_engine/snapshot.py::routed_export_plan": [
+    {
+      "block": "install.snapshot.routes",
+      "role": "producer",
+      "path": "iris_vector_graph/_engine/snapshot.py",
+      "symbol": "routed_export_plan",
+      "pin lines": "exact named declaration at product pin",
+      "family": "C-snapshot_routes",
+      "formal item": ".g5/Verus_verification/models/snapshot_routes/snapshot_routes.rs::export",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual IRIS save/restore/read/width cases; specific decoded unique node-route role only; arbitrary provider faults/numerics unproved"
+    }
+  ],
+  "iris_vector_graph/_engine/snapshot.py::SnapshotMixin.save_snapshot": [
+    {
+      "block": "install.snapshot.routes",
+      "role": "writer",
+      "path": "iris_vector_graph/_engine/snapshot.py",
+      "symbol": "SnapshotMixin.save_snapshot",
+      "pin lines": "exact named declaration at product pin",
+      "family": "C-snapshot_routes",
+      "formal item": ".g5/Verus_verification/models/snapshot_routes/snapshot_routes.rs::export",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual IRIS save/restore/read/width cases; specific decoded unique node-route role only; arbitrary provider faults/numerics unproved"
+    },
+    {
+      "block": "install.snapshot.temporal",
+      "role": "writer",
+      "path": "iris_vector_graph/_engine/snapshot.py",
+      "symbol": "SnapshotMixin.save_snapshot",
+      "pin lines": "exact symbol at product pin",
+      "family": "C-temporal_restore",
+      "formal item": ".g5/Verus_verification/models/temporal_restore/temporal_restore.rs::export_temporal",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual native seven-world groups; integer/plain-text projection; complete leaf-enumeration premise; page sequence composition/codec generality open"
+    }
+  ],
+  "iris_vector_graph/_engine/snapshot.py::SnapshotMixin.restore_snapshot": [
+    {
+      "block": "install.snapshot.routes",
+      "role": "writer",
+      "path": "iris_vector_graph/_engine/snapshot.py",
+      "symbol": "SnapshotMixin.restore_snapshot",
+      "pin lines": "exact named declaration at product pin",
+      "family": "C-snapshot_routes",
+      "formal item": ".g5/Verus_verification/models/snapshot_routes/snapshot_routes.rs::restore_one",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual IRIS save/restore/read/width cases; specific decoded unique node-route role only; arbitrary provider faults/numerics unproved"
+    },
+    {
+      "block": "install.snapshot.temporal",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/snapshot.py",
+      "symbol": "SnapshotMixin.restore_snapshot",
+      "pin lines": "exact symbol at product pin",
+      "family": "C-temporal_restore",
+      "formal item": ".g5/Verus_verification/models/temporal_restore/temporal_restore.rs::restore",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual native seven-world groups; integer/plain-text projection; complete leaf-enumeration premise; page sequence composition/codec generality open"
+    }
+  ],
+  "iris_vector_graph/_engine/schema.py::SchemaMixin.routed_table_ddl": [
+    {
+      "block": "install.snapshot.routes",
+      "role": "producer",
+      "path": "iris_vector_graph/_engine/schema.py",
+      "symbol": "SchemaMixin.routed_table_ddl",
+      "pin lines": "exact named declaration at product pin",
+      "family": "C-snapshot_routes",
+      "formal item": ".g5/Verus_verification/models/snapshot_routes/snapshot_routes.rs::prepare",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual IRIS save/restore/read/width cases; specific decoded unique node-route role only; arbitrary provider faults/numerics unproved"
+    }
+  ],
+  "iris_vector_graph/_engine/schema.py::SchemaMixin._create_routed_table": [
+    {
+      "block": "install.snapshot.routes",
+      "role": "writer",
+      "path": "iris_vector_graph/_engine/schema.py",
+      "symbol": "SchemaMixin._create_routed_table",
+      "pin lines": "exact named declaration at product pin",
+      "family": "C-snapshot_routes",
+      "formal item": ".g5/Verus_verification/models/snapshot_routes/snapshot_routes.rs::prepare",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual IRIS save/restore/read/width cases; specific decoded unique node-route role only; arbitrary provider faults/numerics unproved"
+    }
+  ],
+  "iris_vector_graph/_engine/schema.py::SchemaMixin._attempt_route_index": [
+    {
+      "block": "install.snapshot.routes",
+      "role": "producer",
+      "path": "iris_vector_graph/_engine/schema.py",
+      "symbol": "SchemaMixin._attempt_route_index",
+      "pin lines": "exact named declaration at product pin",
+      "family": "C-snapshot_routes",
+      "formal item": ".g5/Verus_verification/models/snapshot_routes/snapshot_routes.rs::prepare",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual IRIS save/restore/read/width cases; specific decoded unique node-route role only; arbitrary provider faults/numerics unproved"
+    }
+  ],
+  "iris_vector_graph/_engine/schema.py::SchemaMixin._record_route_index_state": [
+    {
+      "block": "install.snapshot.routes",
+      "role": "writer",
+      "path": "iris_vector_graph/_engine/schema.py",
+      "symbol": "SchemaMixin._record_route_index_state",
+      "pin lines": "exact named declaration at product pin",
+      "family": "C-snapshot_routes",
+      "formal item": ".g5/Verus_verification/models/snapshot_routes/snapshot_routes.rs::prepare",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual IRIS save/restore/read/width cases; specific decoded unique node-route role only; arbitrary provider faults/numerics unproved"
+    }
+  ],
+  "iris_vector_graph/_engine/embeddings.py::EmbeddingsMixin._read_route": [
+    {
+      "block": "install.snapshot.routes",
+      "role": "reader",
+      "path": "iris_vector_graph/_engine/embeddings.py",
+      "symbol": "EmbeddingsMixin._read_route",
+      "pin lines": "exact named declaration at product pin",
+      "family": "C-snapshot_routes",
+      "formal item": ".g5/Verus_verification/models/snapshot_routes/snapshot_routes.rs::read",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual IRIS save/restore/read/width cases; specific decoded unique node-route role only; arbitrary provider faults/numerics unproved"
+    }
+  ],
+  "iris_vector_graph/_engine/embeddings.py::EmbeddingsMixin._route_for_read": [
+    {
+      "block": "install.snapshot.routes",
+      "role": "reader",
+      "path": "iris_vector_graph/_engine/embeddings.py",
+      "symbol": "EmbeddingsMixin._route_for_read",
+      "pin lines": "exact named declaration at product pin",
+      "family": "C-snapshot_routes",
+      "formal item": ".g5/Verus_verification/models/snapshot_routes/snapshot_routes.rs::read",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual IRIS save/restore/read/width cases; specific decoded unique node-route role only; arbitrary provider faults/numerics unproved"
+    }
+  ],
+  "iris_vector_graph/_engine/embeddings.py::EmbeddingsMixin.get_embedding": [
+    {
+      "block": "install.snapshot.routes",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/embeddings.py",
+      "symbol": "EmbeddingsMixin.get_embedding",
+      "pin lines": "exact named declaration at product pin",
+      "family": "C-snapshot_routes",
+      "formal item": ".g5/Verus_verification/models/snapshot_routes/snapshot_routes.rs::read",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual IRIS save/restore/read/width cases; specific decoded unique node-route role only; arbitrary provider faults/numerics unproved"
+    }
+  ],
+  "iris_vector_graph/_engine/vector.py::VectorMixin._assert_query_width": [
+    {
+      "block": "install.snapshot.routes",
+      "role": "producer",
+      "path": "iris_vector_graph/_engine/vector.py",
+      "symbol": "VectorMixin._assert_query_width",
+      "pin lines": "exact named declaration at product pin",
+      "family": "C-snapshot_routes",
+      "formal item": ".g5/Verus_verification/models/snapshot_routes/snapshot_routes.rs::query_admitted",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual IRIS save/restore/read/width cases; specific decoded unique node-route role only; arbitrary provider faults/numerics unproved"
+    }
+  ],
+  "iris_vector_graph/_engine/vector.py::VectorMixin.kg_KNN_VEC": [
+    {
+      "block": "install.snapshot.routes",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/vector.py",
+      "symbol": "VectorMixin.kg_KNN_VEC",
+      "pin lines": "exact named declaration at product pin",
+      "family": "C-snapshot_routes",
+      "formal item": ".g5/Verus_verification/models/snapshot_routes/snapshot_routes.rs::query_admitted",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual IRIS save/restore/read/width cases; specific decoded unique node-route role only; arbitrary provider faults/numerics unproved"
+    }
+  ],
+  "iris_vector_graph/ledger/client.py::GraphLedger.history": [
+    {
+      "block": "ledger.readers.history",
+      "role": "producer",
+      "path": "iris_vector_graph/ledger/client.py",
+      "symbol": "GraphLedger.history",
+      "pin lines": "exact symbol at product pin",
+      "family": "C-history_paging",
+      "formal item": ".g5/Verus_verification/models/history_paging/history_paging.rs::cursor_input",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/SQLite6080 and native TOP/comparison/continuation; bounded provider fragment; prior writers/indexes/JSON general parsing open"
+    }
+  ],
+  "iris_vector_graph/ledger/replay.py::fetch_history": [
+    {
+      "block": "ledger.readers.history",
+      "role": "producer",
+      "path": "iris_vector_graph/ledger/replay.py",
+      "symbol": "fetch_history",
+      "pin lines": "exact symbol at product pin",
+      "family": "C-history_paging",
+      "formal item": ".g5/Verus_verification/models/history_paging/history_paging.rs::history",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/SQLite6080 and native TOP/comparison/continuation; bounded provider fragment; prior writers/indexes/JSON general parsing open"
+    }
+  ],
+  "iris_vector_graph/ledger/replay.py::_rev_from_row": [
+    {
+      "block": "ledger.readers.history",
+      "role": "reader",
+      "path": "iris_vector_graph/ledger/replay.py",
+      "symbol": "_rev_from_row",
+      "pin lines": "exact symbol at product pin",
+      "family": "C-history_paging",
+      "formal item": ".g5/Verus_verification/models/history_paging/history_paging.rs::decode",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/SQLite6080 and native TOP/comparison/continuation; bounded provider fragment; prior writers/indexes/JSON general parsing open"
+    }
+  ],
+  "iris_vector_graph/ledger/client.py::RevisionInfo.from_wire": [
+    {
+      "block": "ledger.readers.history",
+      "role": "consumer",
+      "path": "iris_vector_graph/ledger/client.py",
+      "symbol": "RevisionInfo.from_wire",
+      "pin lines": "exact symbol at product pin",
+      "family": "C-history_paging",
+      "formal item": ".g5/Verus_verification/models/history_paging/history_paging.rs::decode",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/SQLite6080 and native TOP/comparison/continuation; bounded provider fragment; prior writers/indexes/JSON general parsing open"
+    }
+  ],
+  "iris_src/src/Graph/KG/TemporalIndex.cls::WriteStores": [
+    {
+      "block": "install.snapshot.temporal",
+      "role": "writer",
+      "path": "iris_src/src/Graph/KG/TemporalIndex.cls",
+      "symbol": "WriteStores",
+      "pin lines": "exact symbol at product pin",
+      "family": "C-temporal_restore",
+      "formal item": ".g5/Verus_verification/models/temporal_restore/temporal_restore.rs::insert",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual native seven-world groups; integer/plain-text projection; complete leaf-enumeration premise; page sequence composition/codec generality open"
+    },
+    {
+      "block": "temporal.edge.clock",
+      "role": "writer",
+      "path": "iris_src/src/Graph/KG/TemporalIndex.cls",
+      "symbol": "WriteStores",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-temporal_clock",
+      "formal item": ".g5/Verus_verification/models/temporal_clock/temporal_clock.rs::write",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python1564+five scenarios with specified native-port adapter; root actualIRIS9; raw timestamp/coordinate projection only; other shape validation and general codec/prefix failures unproved"
+    },
+    {
+      "block": "temporal.write.retry",
+      "role": "writer",
+      "path": "iris_src/src/Graph/KG/TemporalIndex.cls",
+      "symbol": "WriteStores",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-retry_replay",
+      "formal item": ".g5/Verus_verification/models/retry_replay/retry_replay.rs::counts",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/ported-prefix872 with input-derived oracle; native4 full-success/prewrite carried forward; partial prefix/provider/fallback completion conditional, no body verification"
+    }
+  ],
+  "iris_vector_graph/_engine/temporal.py::TemporalMixin.create_edge_temporal": [
+    {
+      "block": "install.snapshot.temporal",
+      "role": "producer",
+      "path": "iris_vector_graph/_engine/temporal.py",
+      "symbol": "TemporalMixin.create_edge_temporal",
+      "pin lines": "exact symbol at product pin",
+      "family": "C-temporal_restore",
+      "formal item": ".g5/Verus_verification/models/temporal_restore/temporal_restore.rs::insert",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual native seven-world groups; integer/plain-text projection; complete leaf-enumeration premise; page sequence composition/codec generality open"
+    },
+    {
+      "block": "temporal.edge.clock",
+      "role": "producer",
+      "path": "iris_vector_graph/_engine/temporal.py",
+      "symbol": "TemporalMixin.create_edge_temporal",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-temporal_clock",
+      "formal item": ".g5/Verus_verification/models/temporal_clock/temporal_clock.rs::single_payload",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python1564+five scenarios with specified native-port adapter; root actualIRIS9; raw timestamp/coordinate projection only; other shape validation and general codec/prefix failures unproved"
+    }
+  ],
+  "iris_vector_graph/_engine/snapshot.py::kg_export_subscripts": [
+    {
+      "block": "install.snapshot.temporal",
+      "role": "producer",
+      "path": "iris_vector_graph/_engine/snapshot.py",
+      "symbol": "kg_export_subscripts",
+      "pin lines": "exact symbol at product pin",
+      "family": "C-temporal_restore",
+      "formal item": ".g5/Verus_verification/models/temporal_restore/temporal_restore.rs::export_temporal",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual native seven-world groups; integer/plain-text projection; complete leaf-enumeration premise; page sequence composition/codec generality open"
+    }
+  ],
+  "iris_vector_graph/_engine/snapshot.py::SnapshotMixin._export_global_to_ndjson": [
+    {
+      "block": "install.snapshot.temporal",
+      "role": "writer",
+      "path": "iris_vector_graph/_engine/snapshot.py",
+      "symbol": "SnapshotMixin._export_global_to_ndjson",
+      "pin lines": "exact symbol at product pin",
+      "family": "C-temporal_restore",
+      "formal item": ".g5/Verus_verification/models/temporal_restore/temporal_restore.rs::export",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual native seven-world groups; integer/plain-text projection; complete leaf-enumeration premise; page sequence composition/codec generality open"
+    }
+  ],
+  "iris_vector_graph/_engine/snapshot.py::SnapshotMixin._import_global_from_ndjson": [
+    {
+      "block": "install.snapshot.temporal",
+      "role": "writer",
+      "path": "iris_vector_graph/_engine/snapshot.py",
+      "symbol": "SnapshotMixin._import_global_from_ndjson",
+      "pin lines": "exact symbol at product pin",
+      "family": "C-temporal_restore",
+      "formal item": ".g5/Verus_verification/models/temporal_restore/temporal_restore.rs::import",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual native seven-world groups; integer/plain-text projection; complete leaf-enumeration premise; page sequence composition/codec generality open"
+    }
+  ],
+  "iris_src/src/Graph/KG/TemporalIndex.cls::QueryWindow": [
+    {
+      "block": "install.snapshot.temporal",
+      "role": "producer",
+      "path": "iris_src/src/Graph/KG/TemporalIndex.cls",
+      "symbol": "QueryWindow",
+      "pin lines": "exact symbol at product pin",
+      "family": "C-temporal_restore",
+      "formal item": ".g5/Verus_verification/models/temporal_restore/temporal_restore.rs::weight",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual native seven-world groups; integer/plain-text projection; complete leaf-enumeration premise; page sequence composition/codec generality open"
+    }
+  ],
+  "iris_src/src/Graph/KG/TemporalWindow.cls::Row": [
+    {
+      "block": "install.snapshot.temporal",
+      "role": "producer",
+      "path": "iris_src/src/Graph/KG/TemporalWindow.cls",
+      "symbol": "Row",
+      "pin lines": "exact symbol at product pin",
+      "family": "C-temporal_restore",
+      "formal item": ".g5/Verus_verification/models/temporal_restore/temporal_restore.rs::attrs",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual native seven-world groups; integer/plain-text projection; complete leaf-enumeration premise; page sequence composition/codec generality open"
+    }
+  ],
+  "iris_vector_graph/_engine/temporal.py::TemporalMixin.get_edges_in_window": [
+    {
+      "block": "install.snapshot.temporal",
+      "role": "reader",
+      "path": "iris_vector_graph/_engine/temporal.py",
+      "symbol": "TemporalMixin.get_edges_in_window",
+      "pin lines": "exact symbol at product pin",
+      "family": "C-temporal_restore",
+      "formal item": ".g5/Verus_verification/models/temporal_restore/temporal_restore.rs::weight",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual native seven-world groups; integer/plain-text projection; complete leaf-enumeration premise; page sequence composition/codec generality open"
+    },
+    {
+      "block": "temporal.edge.clock",
+      "role": "reader",
+      "path": "iris_vector_graph/_engine/temporal.py",
+      "symbol": "TemporalMixin.get_edges_in_window",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-temporal_clock",
+      "formal item": ".g5/Verus_verification/models/temporal_clock/temporal_clock.rs::observe",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python1564+five scenarios with specified native-port adapter; root actualIRIS9; raw timestamp/coordinate projection only; other shape validation and general codec/prefix failures unproved"
+    },
+    {
+      "block": "temporal.write.retry",
+      "role": "reader",
+      "path": "iris_vector_graph/_engine/temporal.py",
+      "symbol": "TemporalMixin.get_edges_in_window",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-retry_replay",
+      "formal item": ".g5/Verus_verification/models/retry_replay/retry_replay.rs::read",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/ported-prefix872 with input-derived oracle; native4 full-success/prewrite carried forward; partial prefix/provider/fallback completion conditional, no body verification"
+    }
+  ],
+  "iris_vector_graph/_engine/temporal.py::TemporalMixin.iter_edges_in_window": [
+    {
+      "block": "install.snapshot.temporal",
+      "role": "reader",
+      "path": "iris_vector_graph/_engine/temporal.py",
+      "symbol": "TemporalMixin.iter_edges_in_window",
+      "pin lines": "exact symbol at product pin",
+      "family": "C-temporal_restore",
+      "formal item": ".g5/Verus_verification/models/temporal_restore/temporal_restore.rs::weight",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual native seven-world groups; integer/plain-text projection; complete leaf-enumeration premise; page sequence composition/codec generality open"
+    },
+    {
+      "block": "temporal.edge.clock",
+      "role": "reader",
+      "path": "iris_vector_graph/_engine/temporal.py",
+      "symbol": "TemporalMixin.iter_edges_in_window",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-temporal_clock",
+      "formal item": ".g5/Verus_verification/models/temporal_clock/temporal_clock.rs::observe",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python1564+five scenarios with specified native-port adapter; root actualIRIS9; raw timestamp/coordinate projection only; other shape validation and general codec/prefix failures unproved"
+    },
+    {
+      "block": "temporal.write.retry",
+      "role": "reader",
+      "path": "iris_vector_graph/_engine/temporal.py",
+      "symbol": "TemporalMixin.iter_edges_in_window",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-retry_replay",
+      "formal item": ".g5/Verus_verification/models/retry_replay/retry_replay.rs::read",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/ported-prefix872 with input-derived oracle; native4 full-success/prewrite carried forward; partial prefix/provider/fallback completion conditional, no body verification"
+    }
+  ],
+  "iris_vector_graph/_engine/temporal_window.py::event": [
+    {
+      "block": "install.snapshot.temporal",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/temporal_window.py",
+      "symbol": "event",
+      "pin lines": "exact symbol at product pin",
+      "family": "C-temporal_restore",
+      "formal item": ".g5/Verus_verification/models/temporal_restore/temporal_restore.rs::attrs",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual native seven-world groups; integer/plain-text projection; complete leaf-enumeration premise; page sequence composition/codec generality open"
+    }
+  ],
+  "iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore.write_temporal_edge": [
+    {
+      "block": "install.snapshot.temporal",
+      "role": "producer",
+      "path": "iris_vector_graph/stores/iris_sql_store.py",
+      "symbol": "IRISGraphStore.write_temporal_edge",
+      "pin lines": "exact symbol at product pin",
+      "family": "C-temporal_restore",
+      "formal item": ".g5/Verus_verification/models/temporal_restore/temporal_restore.rs::insert",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual native explicit integer timestamp/window projection; raw clock/provider/general JSON boundaries open"
+    },
+    {
+      "block": "temporal.edge.clock",
+      "role": "writer",
+      "path": "iris_vector_graph/stores/iris_sql_store.py",
+      "symbol": "IRISGraphStore.write_temporal_edge",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-temporal_clock",
+      "formal item": ".g5/Verus_verification/models/temporal_clock/temporal_clock.rs::call_single",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python1564+five scenarios with specified native-port adapter; root actualIRIS9; raw timestamp/coordinate projection only; other shape validation and general codec/prefix failures unproved"
+    },
+    {
+      "block": "temporal.write.retry",
+      "role": "writer",
+      "path": "iris_vector_graph/stores/iris_sql_store.py",
+      "symbol": "IRISGraphStore.write_temporal_edge",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-retry_replay",
+      "formal item": ".g5/Verus_verification/models/retry_replay/retry_replay.rs::run",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/ported-prefix872 with input-derived oracle; native4 full-success/prewrite carried forward; partial prefix/provider/fallback completion conditional, no body verification"
+    }
+  ],
+  "iris_src/src/Graph/KG/TemporalIndex.cls::QueryWindowInbound": [
+    {
+      "block": "install.snapshot.temporal",
+      "role": "producer",
+      "path": "iris_src/src/Graph/KG/TemporalIndex.cls",
+      "symbol": "QueryWindowInbound",
+      "pin lines": "exact symbol at product pin",
+      "family": "C-temporal_restore",
+      "formal item": ".g5/Verus_verification/models/temporal_restore/temporal_restore.rs::weight",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual native explicit integer timestamp/window projection; raw clock/provider/general JSON boundaries open"
+    }
+  ],
+  "iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore.execute_temporal_window_query": [
+    {
+      "block": "install.snapshot.temporal",
+      "role": "consumer",
+      "path": "iris_vector_graph/stores/iris_sql_store.py",
+      "symbol": "IRISGraphStore.execute_temporal_window_query",
+      "pin lines": "exact symbol at product pin",
+      "family": "C-temporal_restore",
+      "formal item": ".g5/Verus_verification/models/temporal_restore/temporal_restore.rs::weight",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual native explicit integer timestamp/window projection; raw clock/provider/general JSON boundaries open"
+    }
+  ],
+  "iris_vector_graph/engine.py::IRISGraphEngine._proc_db_labels": [
+    {
+      "block": "query.system-procedures",
+      "role": "producer",
+      "path": "iris_vector_graph/engine.py",
+      "symbol": "IRISGraphEngine._proc_db_labels",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-procedure_results",
+      "formal item": ".g5/Verus_verification/models/procedure_results/procedure_results.rs::provider",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/SQLite6580 and IRIS24; single-label A/B/C provider projection; parser grammar/general expressions/writer transactions unproved"
+    }
+  ],
+  "iris_vector_graph/engine.py::IRISGraphEngine._try_system_procedure": [
+    {
+      "block": "query.system-procedures",
+      "role": "producer",
+      "path": "iris_vector_graph/engine.py",
+      "symbol": "IRISGraphEngine._try_system_procedure",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-procedure_results",
+      "formal item": ".g5/Verus_verification/models/procedure_results/procedure_results.rs::call",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/SQLite6580 and IRIS24; single-label A/B/C provider projection; parser grammar/general expressions/writer transactions unproved"
+    }
+  ],
+  "iris_vector_graph/cypher/parser.py::Parser.parse_procedure_call": [
+    {
+      "block": "query.system-procedures",
+      "role": "producer",
+      "path": "iris_vector_graph/cypher/parser.py",
+      "symbol": "Parser.parse_procedure_call",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-procedure_results",
+      "formal item": ".g5/Verus_verification/models/procedure_results/procedure_results.rs::consume",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/SQLite6580 and IRIS24; single-label A/B/C provider projection; parser grammar/general expressions/writer transactions unproved; parser/name relation observed, full grammar excluded"
+    }
+  ],
+  "iris_vector_graph/cypher/row_where.py::yield_names": [
+    {
+      "block": "query.system-procedures",
+      "role": "producer",
+      "path": "iris_vector_graph/cypher/row_where.py",
+      "symbol": "yield_names",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-procedure_results",
+      "formal item": ".g5/Verus_verification/models/procedure_results/procedure_results.rs::consume",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/SQLite6580 and IRIS24; single-label A/B/C provider projection; parser grammar/general expressions/writer transactions unproved; parser/name relation observed, full grammar excluded"
+    }
+  ],
+  "iris_vector_graph/cypher/row_where.py::handler_tail": [
+    {
+      "block": "query.system-procedures",
+      "role": "producer",
+      "path": "iris_vector_graph/cypher/row_where.py",
+      "symbol": "handler_tail",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-procedure_results",
+      "formal item": ".g5/Verus_verification/models/procedure_results/procedure_results.rs::bad_tail",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/SQLite6580 and IRIS24; single-label A/B/C provider projection; parser grammar/general expressions/writer transactions unproved"
+    }
+  ],
+  "iris_vector_graph/cypher/row_where.py::_eq": [
+    {
+      "block": "query.system-procedures",
+      "role": "producer",
+      "path": "iris_vector_graph/cypher/row_where.py",
+      "symbol": "_eq",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-procedure_results",
+      "formal item": ".g5/Verus_verification/models/procedure_results/procedure_results.rs::eq",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/SQLite6580 and IRIS24; single-label A/B/C provider projection; parser grammar/general expressions/writer transactions unproved"
+    }
+  ],
+  "iris_vector_graph/cypher/row_where.py::row_passes": [
+    {
+      "block": "query.system-procedures",
+      "role": "consumer",
+      "path": "iris_vector_graph/cypher/row_where.py",
+      "symbol": "row_passes",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-procedure_results",
+      "formal item": ".g5/Verus_verification/models/procedure_results/procedure_results.rs::passes",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/SQLite6580 and IRIS24; single-label A/B/C provider projection; parser grammar/general expressions/writer transactions unproved"
+    }
+  ],
+  "iris_vector_graph/cypher/row_where.py::where_rows": [
+    {
+      "block": "query.system-procedures",
+      "role": "consumer",
+      "path": "iris_vector_graph/cypher/row_where.py",
+      "symbol": "where_rows",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-procedure_results",
+      "formal item": ".g5/Verus_verification/models/procedure_results/procedure_results.rs::filtered",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/SQLite6580 and IRIS24; single-label A/B/C provider projection; parser grammar/general expressions/writer transactions unproved"
+    }
+  ],
+  "iris_vector_graph/_engine/query.py::_project_onto_names": [
+    {
+      "block": "query.system-procedures",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/query.py",
+      "symbol": "_project_onto_names",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-procedure_results",
+      "formal item": ".g5/Verus_verification/models/procedure_results/procedure_results.rs::consume",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/SQLite6580 and IRIS24; single-label A/B/C provider projection; parser grammar/general expressions/writer transactions unproved"
+    }
+  ],
+  "iris_vector_graph/_engine/query.py::_apply_handler_tail": [
+    {
+      "block": "query.system-procedures",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/query.py",
+      "symbol": "_apply_handler_tail",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-procedure_results",
+      "formal item": ".g5/Verus_verification/models/procedure_results/procedure_results.rs::cut",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/SQLite6580 and IRIS24; single-label A/B/C provider projection; parser grammar/general expressions/writer transactions unproved"
+    }
+  ],
+  "iris_vector_graph/_engine/query.py::QueryMixin._execute_parsed": [
+    {
+      "block": "query.system-procedures",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/query.py",
+      "symbol": "QueryMixin._execute_parsed",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-procedure_results",
+      "formal item": ".g5/Verus_verification/models/procedure_results/procedure_results.rs::consume",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/SQLite6580 and IRIS24; single-label A/B/C provider projection; parser grammar/general expressions/writer transactions unproved"
+    }
+  ],
+  "iris_vector_graph/_engine/query.py::QueryMixin.execute_cypher": [
+    {
+      "block": "query.system-procedures",
+      "role": "reader",
+      "path": "iris_vector_graph/_engine/query.py",
+      "symbol": "QueryMixin.execute_cypher",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-procedure_results",
+      "formal item": ".g5/Verus_verification/models/procedure_results/procedure_results.rs::call",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/SQLite6580 and IRIS24; single-label A/B/C provider projection; parser grammar/general expressions/writer transactions unproved"
+    }
+  ],
+  "iris_vector_graph/_validate.py::TemporalEdgeInput": [
+    {
+      "block": "temporal.edge.clock",
+      "role": "producer",
+      "path": "iris_vector_graph/_validate.py",
+      "symbol": "TemporalEdgeInput",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-temporal_clock",
+      "formal item": ".g5/Verus_verification/models/temporal_clock/temporal_clock.rs::single_payload",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python1564+five scenarios with specified native-port adapter; root actualIRIS9; raw timestamp/coordinate projection only; other shape validation and general codec/prefix failures unproved"
+    }
+  ],
+  "iris_vector_graph/_engine/temporal.py::_check_temporal_edges": [
+    {
+      "block": "temporal.edge.clock",
+      "role": "producer",
+      "path": "iris_vector_graph/_engine/temporal.py",
+      "symbol": "_check_temporal_edges",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-temporal_clock",
+      "formal item": ".g5/Verus_verification/models/temporal_clock/temporal_clock.rs::bulk_shape",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python1564+five scenarios with specified native-port adapter; root actualIRIS9; raw timestamp/coordinate projection only; other shape validation and general codec/prefix failures unproved"
+    }
+  ],
+  "iris_vector_graph/_engine/temporal.py::TemporalMixin.bulk_create_edges_temporal": [
+    {
+      "block": "temporal.edge.clock",
+      "role": "producer",
+      "path": "iris_vector_graph/_engine/temporal.py",
+      "symbol": "TemporalMixin.bulk_create_edges_temporal",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-temporal_clock",
+      "formal item": ".g5/Verus_verification/models/temporal_clock/temporal_clock.rs::call_batch",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python1564+five scenarios with specified native-port adapter; root actualIRIS9; raw timestamp/coordinate projection only; other shape validation and general codec/prefix failures unproved"
+    },
+    {
+      "block": "temporal.write.retry",
+      "role": "producer",
+      "path": "iris_vector_graph/_engine/temporal.py",
+      "symbol": "TemporalMixin.bulk_create_edges_temporal",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-retry_replay",
+      "formal item": ".g5/Verus_verification/models/retry_replay/retry_replay.rs::run",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/ported-prefix872 with input-derived oracle; native4 full-success/prewrite carried forward; partial prefix/provider/fallback completion conditional, no body verification"
+    }
+  ],
+  "iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore.bulk_write_temporal_edges": [
+    {
+      "block": "temporal.edge.clock",
+      "role": "writer",
+      "path": "iris_vector_graph/stores/iris_sql_store.py",
+      "symbol": "IRISGraphStore.bulk_write_temporal_edges",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-temporal_clock",
+      "formal item": ".g5/Verus_verification/models/temporal_clock/temporal_clock.rs::call_bulk",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python1564+five scenarios with specified native-port adapter; root actualIRIS9; raw timestamp/coordinate projection only; other shape validation and general codec/prefix failures unproved"
+    },
+    {
+      "block": "temporal.write.retry",
+      "role": "writer",
+      "path": "iris_vector_graph/stores/iris_sql_store.py",
+      "symbol": "IRISGraphStore.bulk_write_temporal_edges",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-retry_replay",
+      "formal item": ".g5/Verus_verification/models/retry_replay/retry_replay.rs::run",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/ported-prefix872 with input-derived oracle; native4 full-success/prewrite carried forward; partial prefix/provider/fallback completion conditional, no body verification"
+    }
+  ],
+  "iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore._call_classmethod": [
+    {
+      "block": "temporal.edge.clock",
+      "role": "producer",
+      "path": "iris_vector_graph/stores/iris_sql_store.py",
+      "symbol": "IRISGraphStore._call_classmethod",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-temporal_clock",
+      "formal item": ".g5/Verus_verification/models/temporal_clock/temporal_clock.rs::write",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python1564+five scenarios with specified native-port adapter; root actualIRIS9; raw timestamp/coordinate projection only; other shape validation and general codec/prefix failures unproved"
+    }
+  ],
+  "iris_src/src/Graph/KG/TemporalIndex.cls::InsertEdge": [
+    {
+      "block": "temporal.edge.clock",
+      "role": "producer",
+      "path": "iris_src/src/Graph/KG/TemporalIndex.cls",
+      "symbol": "InsertEdge",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-temporal_clock",
+      "formal item": ".g5/Verus_verification/models/temporal_clock/temporal_clock.rs::single_clock",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python1564+five scenarios with specified native-port adapter; root actualIRIS9; raw timestamp/coordinate projection only; other shape validation and general codec/prefix failures unproved"
+    },
+    {
+      "block": "temporal.write.retry",
+      "role": "writer",
+      "path": "iris_src/src/Graph/KG/TemporalIndex.cls",
+      "symbol": "InsertEdge",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-retry_replay",
+      "formal item": ".g5/Verus_verification/models/retry_replay/retry_replay.rs::run",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/ported-prefix872 with input-derived oracle; native4 full-success/prewrite carried forward; partial prefix/provider/fallback completion conditional, no body verification"
+    }
+  ],
+  "iris_src/src/Graph/KG/TemporalIndex.cls::BulkInsertCounts": [
+    {
+      "block": "temporal.edge.clock",
+      "role": "producer",
+      "path": "iris_src/src/Graph/KG/TemporalIndex.cls",
+      "symbol": "BulkInsertCounts",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-temporal_clock",
+      "formal item": ".g5/Verus_verification/models/temporal_clock/temporal_clock.rs::bulk_clock",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python1564+five scenarios with specified native-port adapter; root actualIRIS9; raw timestamp/coordinate projection only; other shape validation and general codec/prefix failures unproved"
+    },
+    {
+      "block": "temporal.write.retry",
+      "role": "producer",
+      "path": "iris_src/src/Graph/KG/TemporalIndex.cls",
+      "symbol": "BulkInsertCounts",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-retry_replay",
+      "formal item": ".g5/Verus_verification/models/retry_replay/retry_replay.rs::counts",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/ported-prefix872 with input-derived oracle; native4 full-success/prewrite carried forward; partial prefix/provider/fallback completion conditional, no body verification"
+    }
+  ],
+  "iris_vector_graph/schema_name.py::read_record": [
+    {
+      "block": "access.health.lifecycle",
+      "role": "producer",
+      "path": "iris_vector_graph/schema_name.py",
+      "symbol": "read_record",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-service_health",
+      "formal item": ".g5/Verus_verification/models/service_health/service_health.rs::problem",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/in-processASGI84 and6 sensitivity checks; named provider ports; raw readiness/cache projection; no native/network/concurrency/full-member proof; api roles outside census"
+    }
+  ],
+  "iris_vector_graph/schema_name.py::same_schema": [
+    {
+      "block": "access.health.lifecycle",
+      "role": "producer",
+      "path": "iris_vector_graph/schema_name.py",
+      "symbol": "same_schema",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-service_health",
+      "formal item": ".g5/Verus_verification/models/service_health/service_health.rs::same_schema",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/in-processASGI84 and6 sensitivity checks; named provider ports; raw readiness/cache projection; no native/network/concurrency/full-member proof; api roles outside census"
+    }
+  ],
+  "iris_vector_graph/cypher_api.py::_make_engine": [
+    {
+      "block": "access.health.lifecycle",
+      "role": "producer",
+      "path": "iris_vector_graph/cypher_api.py",
+      "symbol": "_make_engine",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-service_health",
+      "formal item": ".g5/Verus_verification/models/service_health/service_health.rs::cache_request",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/in-processASGI84 and6 sensitivity checks; named provider ports; raw readiness/cache projection; no native/network/concurrency/full-member proof; api roles outside census"
+    }
+  ],
+  "iris_vector_graph/cypher_api.py::_get_engine": [
+    {
+      "block": "access.health.lifecycle",
+      "role": "writer",
+      "path": "iris_vector_graph/cypher_api.py",
+      "symbol": "_get_engine",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-service_health",
+      "formal item": ".g5/Verus_verification/models/service_health/service_health.rs::cache_request",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/in-processASGI84 and6 sensitivity checks; named provider ports; raw readiness/cache projection; no native/network/concurrency/full-member proof; api roles outside census"
+    }
+  ],
+  "iris_vector_graph/cypher_api.py::_engine": [
+    {
+      "block": "access.health.lifecycle",
+      "role": "producer",
+      "path": "iris_vector_graph/cypher_api.py",
+      "symbol": "_engine",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-service_health",
+      "formal item": ".g5/Verus_verification/models/service_health/service_health.rs::cache_request",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/in-processASGI84 and6 sensitivity checks; named provider ports; raw readiness/cache projection; no native/network/concurrency/full-member proof; api roles outside census"
+    }
+  ],
+  "iris_vector_graph/cypher_api.py::health": [
+    {
+      "block": "access.health.lifecycle",
+      "role": "reader",
+      "path": "iris_vector_graph/cypher_api.py",
+      "symbol": "health",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-service_health",
+      "formal item": ".g5/Verus_verification/models/service_health/service_health.rs::cache_request",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/in-processASGI84 and6 sensitivity checks; named provider ports; raw readiness/cache projection; no native/network/concurrency/full-member proof; api roles outside census"
+    }
+  ],
+  "iris_vector_graph/cypher_api.py::_reset_engine": [
+    {
+      "block": "access.health.lifecycle",
+      "role": "writer",
+      "path": "iris_vector_graph/cypher_api.py",
+      "symbol": "_reset_engine",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-service_health",
+      "formal item": ".g5/Verus_verification/models/service_health/service_health.rs::reset",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/in-processASGI84 and6 sensitivity checks; named provider ports; raw readiness/cache projection; no native/network/concurrency/full-member proof; api roles outside census"
+    }
+  ],
+  "iris_vector_graph/cypher_api.py::_run_cypher": [
+    {
+      "block": "access.health.lifecycle",
+      "role": "writer",
+      "path": "iris_vector_graph/cypher_api.py",
+      "symbol": "_run_cypher",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-service_health",
+      "formal item": ".g5/Verus_verification/models/service_health/service_health.rs::run_query",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/in-processASGI84 and6 sensitivity checks; named provider ports; raw readiness/cache projection; no native/network/concurrency/full-member proof; api roles outside census"
+    }
+  ],
+  "iris_vector_graph/_engine/fhir_graph.py::FhirGraphMixin.fhir_graph_schedule": [
+    {
+      "block": "fhir.graph.lifecycle.tasks",
+      "role": "producer",
+      "path": "iris_vector_graph/_engine/fhir_graph.py",
+      "symbol": "FhirGraphMixin.fhir_graph_schedule",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-fhir_tasks",
+      "formal item": ".g5/Verus_verification/models/fhir_tasks/fhir_tasks.rs::public_schedule",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/TaskSQLite731 plus scoped extras; native20 TaskManager/registry points; namespaceguard/fullFHIRStatus/faultordering/loader/provider limits explicit, no body verification"
+    }
+  ],
+  "iris_vector_graph/_engine/fhir_graph.py::FhirGraphMixin.fhir_graph_unschedule": [
+    {
+      "block": "fhir.graph.lifecycle.tasks",
+      "role": "producer",
+      "path": "iris_vector_graph/_engine/fhir_graph.py",
+      "symbol": "FhirGraphMixin.fhir_graph_unschedule",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-fhir_tasks",
+      "formal item": ".g5/Verus_verification/models/fhir_tasks/fhir_tasks.rs::unschedule",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/TaskSQLite731 plus scoped extras; native20 TaskManager/registry points; namespaceguard/fullFHIRStatus/faultordering/loader/provider limits explicit, no body verification"
+    }
+  ],
+  "iris_src/src/Graph/KG/FHIRGraph.cls::Open": [
+    {
+      "block": "fhir.graph.lifecycle.tasks",
+      "role": "producer",
+      "path": "iris_src/src/Graph/KG/FHIRGraph.cls",
+      "symbol": "Open",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-fhir_tasks",
+      "formal item": ".g5/Verus_verification/models/fhir_tasks/fhir_tasks.rs::schedule",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/TaskSQLite731 plus scoped extras; native20 TaskManager/registry points; namespaceguard/fullFHIRStatus/faultordering/loader/provider limits explicit, no body verification; admitted registry row lookup projection only, other Open/JSON providers conditional"
+    }
+  ],
+  "iris_src/src/Graph/KG/FHIRGraph.cls::CheckOwnTask": [
+    {
+      "block": "fhir.graph.lifecycle.tasks",
+      "role": "producer",
+      "path": "iris_src/src/Graph/KG/FHIRGraph.cls",
+      "symbol": "CheckOwnTask",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-fhir_tasks",
+      "formal item": ".g5/Verus_verification/models/fhir_tasks/fhir_tasks.rs::ownership",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/TaskSQLite731 plus scoped extras; native20 TaskManager/registry points; namespaceguard/fullFHIRStatus/faultordering/loader/provider limits explicit, no body verification"
+    }
+  ],
+  "iris_src/src/Graph/KG/FHIRGraph.cls::Schedule": [
+    {
+      "block": "fhir.graph.lifecycle.tasks",
+      "role": "writer",
+      "path": "iris_src/src/Graph/KG/FHIRGraph.cls",
+      "symbol": "Schedule",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-fhir_tasks",
+      "formal item": ".g5/Verus_verification/models/fhir_tasks/fhir_tasks.rs::schedule",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/TaskSQLite731 plus scoped extras; native20 TaskManager/registry points; namespaceguard/fullFHIRStatus/faultordering/loader/provider limits explicit, no body verification"
+    }
+  ],
+  "iris_src/src/Graph/KG/FHIRGraph.cls::Unschedule": [
+    {
+      "block": "fhir.graph.lifecycle.tasks",
+      "role": "writer",
+      "path": "iris_src/src/Graph/KG/FHIRGraph.cls",
+      "symbol": "Unschedule",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-fhir_tasks",
+      "formal item": ".g5/Verus_verification/models/fhir_tasks/fhir_tasks.rs::unschedule",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/TaskSQLite731 plus scoped extras; native20 TaskManager/registry points; namespaceguard/fullFHIRStatus/faultordering/loader/provider limits explicit, no body verification"
+    }
+  ],
+  "iris_src/src/Graph/KG/FHIRGraphSyncTask.cls::OnTask": [
+    {
+      "block": "fhir.graph.lifecycle.tasks",
+      "role": "consumer",
+      "path": "iris_src/src/Graph/KG/FHIRGraphSyncTask.cls",
+      "symbol": "OnTask",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-fhir_tasks",
+      "formal item": ".g5/Verus_verification/models/fhir_tasks/fhir_tasks.rs::on_task",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/TaskSQLite731 plus scoped extras; native20 TaskManager/registry points; namespaceguard/fullFHIRStatus/faultordering/loader/provider limits explicit, no body verification"
+    }
+  ],
+  "iris_src/src/Graph/KG/FHIRGraph.cls::Status": [
+    {
+      "block": "fhir.graph.lifecycle.tasks",
+      "role": "reader",
+      "path": "iris_src/src/Graph/KG/FHIRGraph.cls",
+      "symbol": "Status",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-fhir_tasks",
+      "formal item": ".g5/Verus_verification/models/fhir_tasks/fhir_tasks.rs::status",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/TaskSQLite731 plus scoped extras; native20 TaskManager/registry points; namespaceguard/fullFHIRStatus/faultordering/loader/provider limits explicit, no body verification"
+    }
+  ],
+  "iris_vector_graph/_engine/fhir_graph.py::FhirGraphMixin.fhir_graph_status": [
+    {
+      "block": "fhir.graph.lifecycle.tasks",
+      "role": "reader",
+      "path": "iris_vector_graph/_engine/fhir_graph.py",
+      "symbol": "FhirGraphMixin.fhir_graph_status",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-fhir_tasks",
+      "formal item": ".g5/Verus_verification/models/fhir_tasks/fhir_tasks.rs::status",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/TaskSQLite731 plus scoped extras; native20 TaskManager/registry points; namespaceguard/fullFHIRStatus/faultordering/loader/provider limits explicit, no body verification"
+    }
+  ],
+  "iris_vector_graph/_engine/fhir_graph.py::_interp_stale": [
+    {
+      "block": "fhir.graph.lifecycle.tasks",
+      "role": "producer",
+      "path": "iris_vector_graph/_engine/fhir_graph.py",
+      "symbol": "_interp_stale",
+      "pin lines": "exact declaration at product pin",
+      "family": "C-fhir_tasks",
+      "formal item": ".g5/Verus_verification/models/fhir_tasks/fhir_tasks.rs::status",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/TaskSQLite731 plus scoped extras; native20 TaskManager/registry points; namespaceguard/fullFHIRStatus/faultordering/loader/provider limits explicit, no body verification"
+    }
+  ],
+  "iris_src/src/Graph/KG/TraversalPaths.cls::DijkstraJson": [
+    {
+      "block": "algorithms.op.paths.weighted",
+      "role": "search transition",
+      "path": "iris_src/src/Graph/KG/TraversalPaths.cls",
+      "symbol": "DijkstraJson",
+      "pin lines": "256",
+      "family": "C-weighted_paths",
+      "formal item": ".g5/Verus_verification/models/weighted_paths/weighted_paths.rs::theorem_complete_terminating_search",
+      "relation": "models",
+      "design": "as-built fragment",
+      "grade": "Observed (bounded native + unit port)"
+    }
+  ],
+  "iris_src/src/Graph/KG/TraversalPaths.cls::DijkstraBacktrack": [
+    {
+      "block": "algorithms.op.paths.weighted",
+      "role": "parent reader",
+      "path": "iris_src/src/Graph/KG/TraversalPaths.cls",
+      "symbol": "DijkstraBacktrack",
+      "pin lines": "450",
+      "family": "C-weighted_paths",
+      "formal item": ".g5/Verus_verification/models/weighted_paths/weighted_paths.rs::theorem_backtrack_derives_path_and_cost",
+      "relation": "models",
+      "design": "as-built fragment",
+      "grade": "Observed (bounded native + unit port)"
+    }
+  ],
+  "iris_src/src/Graph/KG/Traversal.cls::DijkstraJson": [
+    {
+      "block": "algorithms.op.paths.weighted",
+      "role": "shared delegate",
+      "path": "iris_src/src/Graph/KG/Traversal.cls",
+      "symbol": "DijkstraJson",
+      "pin lines": "151",
+      "family": "C-weighted_paths",
+      "formal item": ".g5/Verus_verification/models/weighted_paths/weighted_paths.rs::theorem_complete_terminating_search",
+      "relation": "models",
+      "design": "as-built fragment",
+      "grade": "Observed (bounded native + unit port)"
+    }
+  ],
+  "iris_vector_graph/bolt_server.py::encode_message": [
+    {
+      "block": "access.bolt.framing",
+      "role": "byte producer",
+      "path": "iris_vector_graph/bolt_server.py",
+      "symbol": "encode_message",
+      "pin lines": "256-266",
+      "family": "C-bolt_stream",
+      "formal item": ".g5/Verus_verification/models/bolt_stream/bolt_stream.rs::encode",
+      "relation": "models",
+      "design": "as-built fragment",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/bolt_server.py::_decode_messages_stateless": [
+    {
+      "block": "access.bolt.framing",
+      "role": "byte reader",
+      "path": "iris_vector_graph/bolt_server.py",
+      "symbol": "_decode_messages_stateless",
+      "pin lines": "294-311",
+      "family": "C-bolt_stream",
+      "formal item": ".g5/Verus_verification/models/bolt_stream/bolt_stream.rs::scan",
+      "relation": "models",
+      "design": "as-built fragment",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/bolt_server.py::BoltSession._recv_message": [
+    {
+      "block": "access.bolt.framing",
+      "role": "buffer queue writer",
+      "path": "iris_vector_graph/bolt_server.py",
+      "symbol": "BoltSession._recv_message",
+      "pin lines": "439-454",
+      "family": "C-bolt_stream",
+      "formal item": ".g5/Verus_verification/models/bolt_stream/bolt_stream.rs::receive",
+      "relation": "models",
+      "design": "as-built fragment",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/bolt_server.py::BoltSession.run": [
+    {
+      "block": "access.bolt.framing",
+      "role": "loop decision",
+      "path": "iris_vector_graph/bolt_server.py",
+      "symbol": "BoltSession.run",
+      "pin lines": "396-425",
+      "family": "C-bolt_stream",
+      "formal item": ".g5/Verus_verification/models/bolt_stream/bolt_stream.rs::ws_continues",
+      "relation": "models",
+      "design": "as-built fragment",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/bolt_server.py::BoltSession._dispatch": [
+    {
+      "block": "access.bolt.results",
+      "role": "dispatch writer",
+      "path": "iris_vector_graph/bolt_server.py",
+      "symbol": "BoltSession._dispatch",
+      "pin lines": "459-521",
+      "family": "C-bolt_stream",
+      "formal item": ".g5/Verus_verification/models/bolt_stream/bolt_stream.rs::dispatch",
+      "relation": "models",
+      "design": "as-built fragment",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/bolt_server.py::BoltSession._handle_run": [
+    {
+      "block": "access.bolt.results",
+      "role": "result producer",
+      "path": "iris_vector_graph/bolt_server.py",
+      "symbol": "BoltSession._handle_run",
+      "pin lines": "567-622",
+      "family": "C-bolt_stream",
+      "formal item": ".g5/Verus_verification/models/bolt_stream/bolt_stream.rs::run",
+      "relation": "models",
+      "design": "as-built fragment",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/bolt_server.py::BoltSession._handle_pull": [
+    {
+      "block": "access.bolt.results",
+      "role": "final result reader",
+      "path": "iris_vector_graph/bolt_server.py",
+      "symbol": "BoltSession._handle_pull",
+      "pin lines": "624-660",
+      "family": "C-bolt_stream",
+      "formal item": ".g5/Verus_verification/models/bolt_stream/bolt_stream.rs::pull",
+      "relation": "models",
+      "design": "as-built fragment",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/bolt_server.py::BoltSession._handle_reset": [
+    {
+      "block": "access.bolt.results",
+      "role": "competing result writer",
+      "path": "iris_vector_graph/bolt_server.py",
+      "symbol": "BoltSession._handle_reset",
+      "pin lines": "662-667",
+      "family": "C-bolt_stream",
+      "formal item": ".g5/Verus_verification/models/bolt_stream/bolt_stream.rs::reset",
+      "relation": "models",
+      "design": "as-built fragment",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_src/src/Graph/KG/TraversalPaths.cls::DijkstraCost": [
+    {
+      "block": "algorithms.op.paths.weighted",
+      "role": "cost-only search transition",
+      "path": "iris_src/src/Graph/KG/TraversalPaths.cls",
+      "symbol": "DijkstraCost",
+      "pin lines": "378",
+      "family": "C-weighted_cost",
+      "formal item": ".g5/Verus_verification/models/weighted_cost/weighted_cost.rs::theorem_actual_dijkstra_cost_complete",
+      "relation": "models",
+      "design": "as-built integer/mirrored scalar fragment",
+      "grade": "Observed (bounded native + actual Python/source-port)"
+    }
+  ],
+  "iris_src/src/Graph/KG/PageRank.cls::Run": [
+    {
+      "block": "algorithms.op.ppr",
+      "role": "recurrence writer",
+      "path": "iris_src/src/Graph/KG/PageRank.cls",
+      "symbol": "Run",
+      "pin lines": "170",
+      "family": "C-ppr_walk",
+      "formal item": ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs::theorem_raw_walk_mass",
+      "relation": "models",
+      "design": "as-built exact-math fragment",
+      "grade": "Observed (bounded native + actual Python/source-port)"
+    }
+  ],
+  "iris_src/src/Graph/KG/PageRank.cls::Multiplicity": [
+    {
+      "block": "algorithms.op.ppr",
+      "role": "multiplicity reader",
+      "path": "iris_src/src/Graph/KG/PageRank.cls",
+      "symbol": "Multiplicity",
+      "pin lines": "526",
+      "family": "C-ppr_walk",
+      "formal item": ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs::mult",
+      "relation": "models",
+      "design": "as-built exact-math fragment",
+      "grade": "Observed (bounded native + actual Python/source-port)"
+    }
+  ],
+  "iris_src/src/Graph/KG/PageRank.cls::NodeSeeds": [
+    {
+      "block": "algorithms.op.ppr",
+      "role": "seed membership decision",
+      "path": "iris_src/src/Graph/KG/PageRank.cls",
+      "symbol": "NodeSeeds",
+      "pin lines": "91",
+      "family": "C-ppr_walk",
+      "formal item": ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs::theorem_valid_seed_set",
+      "relation": "models",
+      "design": "as-built exact-math fragment",
+      "grade": "Observed (bounded native + actual Python/source-port)"
+    }
+  ],
+  "iris_src/src/Graph/KG/PageRank.cls::RunJson": [
+    {
+      "block": "algorithms.op.ppr.completion",
+      "role": "positive producer rank and cut",
+      "path": "iris_src/src/Graph/KG/PageRank.cls",
+      "symbol": "RunJson",
+      "pin lines": "33",
+      "family": "C-ppr_walk",
+      "formal item": ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs::cut",
+      "relation": "models",
+      "design": "as-built exact-math fragment",
+      "grade": "Observed (bounded native + actual Python/source-port)"
+    }
+  ],
+  "iris_src/src/Graph/KG/PageRank.cls::WithUnscored": [
+    {
+      "block": "algorithms.op.ppr.completion",
+      "role": "zero completion reader",
+      "path": "iris_src/src/Graph/KG/PageRank.cls",
+      "symbol": "WithUnscored",
+      "pin lines": "126",
+      "family": "C-ppr_walk",
+      "formal item": ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs::fast_reader",
+      "relation": "models",
+      "design": "as-built exact-math fragment",
+      "grade": "Observed (bounded native + actual Python/source-port)"
+    }
+  ],
+  "iris_vector_graph/_engine/algorithms.py::AlgorithmsMixin._kg_PERSONALIZED_PAGERANK_python_fallback": [
+    {
+      "block": "algorithms.op.ppr",
+      "role": "fallback recurrence writer",
+      "path": "iris_vector_graph/_engine/algorithms.py",
+      "symbol": "AlgorithmsMixin._kg_PERSONALIZED_PAGERANK_python_fallback",
+      "pin lines": "423-576",
+      "family": "C-ppr_walk",
+      "formal item": ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs::theorem_raw_walk_mass",
+      "relation": "models",
+      "design": "as-built exact-math fragment",
+      "grade": "Observed (bounded native + actual Python/source-port)"
+    }
+  ],
+  "iris_vector_graph/_engine/algorithms.py::AlgorithmsMixin._ppr_every_node": [
+    {
+      "block": "algorithms.op.ppr.completion",
+      "role": "final public reader",
+      "path": "iris_vector_graph/_engine/algorithms.py",
+      "symbol": "AlgorithmsMixin._ppr_every_node",
+      "pin lines": "392-421",
+      "family": "C-ppr_walk",
+      "formal item": ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs::fast_reader",
+      "relation": "models",
+      "design": "as-built exact-math fragment",
+      "grade": "Observed (bounded native + actual Python/source-port)"
+    }
+  ],
+  "iris_vector_graph/_engine/algorithms.py::AlgorithmsMixin.kg_PERSONALIZED_PAGERANK": [
+    {
+      "block": "algorithms.op.ppr.completion",
+      "role": "typed request composition",
+      "path": "iris_vector_graph/_engine/algorithms.py",
+      "symbol": "AlgorithmsMixin.kg_PERSONALIZED_PAGERANK",
+      "pin lines": "216-390",
+      "family": "C-ppr_walk",
+      "formal item": ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs::theorem_public_default_cap_gap_from_raw_seeds",
+      "relation": "models",
+      "design": "as-built exact-math fragment",
+      "grade": "Observed (bounded native + actual Python/source-port)"
+    }
+  ]
+}

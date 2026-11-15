@@ -1,0 +1,14 @@
+verification results:: 3 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration11-fraction-20261115/verus/weighted_fraction/controls/default-unit-not-scaled/20261115T211807Z/models/weighted_fraction/weighted_fraction.rs:115:30
+    |
+113 | pub proof fn theorem_scalar_and_cap_decode(c:Config,a:Arc)
+    | ---------------------------------------------------------- at the end of the function body
+114 |     requires frame(c),c.raw.contains_key(a),
+115 |     ensures numerator(c,a)>0,decode(c,numerator(c,a))==weight(c,a),
+    |                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

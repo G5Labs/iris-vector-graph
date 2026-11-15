@@ -1,0 +1,504 @@
+{
+  "verdict": "SOURCE_CONTRAST_OBSERVED",
+  "cases": [
+    {
+      "name": "seed-primary-success-k1",
+      "raw_request": {
+        "query": "seed",
+        "k": 1,
+        "graph": "g",
+        "model": "m"
+      },
+      "fault_profile": {
+        "generic_first_primary": false,
+        "embedded_unavailable": false,
+        "organic_outage_claim": false
+      },
+      "result": [
+        [
+          "peer",
+          0.7071067811865475
+        ]
+      ],
+      "error": null,
+      "expected_asbuilt_from_raw_vectors": [
+        [
+          "peer",
+          0.7071067811865475
+        ]
+      ],
+      "intended_seed_excluded_from_raw_request": [
+        [
+          "peer",
+          0.7071067811865475
+        ]
+      ],
+      "agrees_source_prediction": true,
+      "intent_satisfied": true,
+      "seed_reads": 1,
+      "dbapi_score_attempts": 1,
+      "embedded_score_attempts": [],
+      "raw_sql": [
+        [
+          "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+          [
+            "g",
+            "node",
+            "m"
+          ]
+        ],
+        [
+          "SELECT emb FROM Graph_KG.kg_emb_0000000000000001 WHERE node_id = ? AND (COALESCE(graph_id, '') = COALESCE(?, ''))",
+          [
+            "seed",
+            "g"
+          ]
+        ],
+        [
+          "SELECT TOP ? n.node_id, VECTOR_COSINE(n.emb, TO_VECTOR(?, DOUBLE)) AS score FROM Graph_KG.kg_emb_0000000000000001 n WHERE (COALESCE(n.graph_id, '') = COALESCE(?, '')) AND n.node_id != ? ORDER BY score DESC",
+          [
+            1,
+            "[1.0,0.0,0.0,0.0]",
+            "g",
+            "seed"
+          ]
+        ]
+      ],
+      "provider_scope": "actual public/optimized functions, raw-vector semantic SQL provider and actual float reader; no native/DB runtime or modified product method"
+    },
+    {
+      "name": "seed-primary-success-k2",
+      "raw_request": {
+        "query": "seed",
+        "k": 2,
+        "graph": "g",
+        "model": "m"
+      },
+      "fault_profile": {
+        "generic_first_primary": false,
+        "embedded_unavailable": false,
+        "organic_outage_claim": false
+      },
+      "result": [
+        [
+          "peer",
+          0.7071067811865475
+        ]
+      ],
+      "error": null,
+      "expected_asbuilt_from_raw_vectors": [
+        [
+          "peer",
+          0.7071067811865475
+        ]
+      ],
+      "intended_seed_excluded_from_raw_request": [
+        [
+          "peer",
+          0.7071067811865475
+        ]
+      ],
+      "agrees_source_prediction": true,
+      "intent_satisfied": true,
+      "seed_reads": 1,
+      "dbapi_score_attempts": 1,
+      "embedded_score_attempts": [],
+      "raw_sql": [
+        [
+          "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+          [
+            "g",
+            "node",
+            "m"
+          ]
+        ],
+        [
+          "SELECT emb FROM Graph_KG.kg_emb_0000000000000001 WHERE node_id = ? AND (COALESCE(graph_id, '') = COALESCE(?, ''))",
+          [
+            "seed",
+            "g"
+          ]
+        ],
+        [
+          "SELECT TOP ? n.node_id, VECTOR_COSINE(n.emb, TO_VECTOR(?, DOUBLE)) AS score FROM Graph_KG.kg_emb_0000000000000001 n WHERE (COALESCE(n.graph_id, '') = COALESCE(?, '')) AND n.node_id != ? ORDER BY score DESC",
+          [
+            2,
+            "[1.0,0.0,0.0,0.0]",
+            "g",
+            "seed"
+          ]
+        ]
+      ],
+      "provider_scope": "actual public/optimized functions, raw-vector semantic SQL provider and actual float reader; no native/DB runtime or modified product method"
+    },
+    {
+      "name": "seed-primary-generic-fault-embedded-k1",
+      "raw_request": {
+        "query": "seed",
+        "k": 1,
+        "graph": "g",
+        "model": "m"
+      },
+      "fault_profile": {
+        "generic_first_primary": true,
+        "embedded_unavailable": false,
+        "organic_outage_claim": false
+      },
+      "result": [
+        [
+          "seed",
+          1.0
+        ]
+      ],
+      "error": null,
+      "expected_asbuilt_from_raw_vectors": [
+        [
+          "seed",
+          1.0
+        ]
+      ],
+      "intended_seed_excluded_from_raw_request": [
+        [
+          "peer",
+          0.7071067811865475
+        ]
+      ],
+      "agrees_source_prediction": true,
+      "intent_satisfied": false,
+      "seed_reads": 1,
+      "dbapi_score_attempts": 1,
+      "embedded_score_attempts": [
+        {
+          "sql": "SELECT TOP 1 n.node_id, VECTOR_COSINE(n.emb, TO_VECTOR(?, DOUBLE)) AS score FROM Graph_KG.kg_emb_0000000000000001 n WHERE (COALESCE(n.graph_id, '') = COALESCE(?, '')) ORDER BY score DESC",
+          "params": [
+            "[1.0,0.0,0.0,0.0]",
+            "g"
+          ],
+          "provider": "named embedded SQL over raw vectors"
+        }
+      ],
+      "raw_sql": [
+        [
+          "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+          [
+            "g",
+            "node",
+            "m"
+          ]
+        ],
+        [
+          "SELECT emb FROM Graph_KG.kg_emb_0000000000000001 WHERE node_id = ? AND (COALESCE(graph_id, '') = COALESCE(?, ''))",
+          [
+            "seed",
+            "g"
+          ]
+        ],
+        [
+          "SELECT TOP ? n.node_id, VECTOR_COSINE(n.emb, TO_VECTOR(?, DOUBLE)) AS score FROM Graph_KG.kg_emb_0000000000000001 n WHERE (COALESCE(n.graph_id, '') = COALESCE(?, '')) AND n.node_id != ? ORDER BY score DESC",
+          [
+            1,
+            "[1.0,0.0,0.0,0.0]",
+            "g",
+            "seed"
+          ]
+        ]
+      ],
+      "provider_scope": "actual public/optimized functions, raw-vector semantic SQL provider and actual float reader; no native/DB runtime or modified product method"
+    },
+    {
+      "name": "seed-primary-generic-fault-embedded-k2",
+      "raw_request": {
+        "query": "seed",
+        "k": 2,
+        "graph": "g",
+        "model": "m"
+      },
+      "fault_profile": {
+        "generic_first_primary": true,
+        "embedded_unavailable": false,
+        "organic_outage_claim": false
+      },
+      "result": [
+        [
+          "seed",
+          1.0
+        ],
+        [
+          "peer",
+          0.7071067811865475
+        ]
+      ],
+      "error": null,
+      "expected_asbuilt_from_raw_vectors": [
+        [
+          "seed",
+          1.0
+        ],
+        [
+          "peer",
+          0.7071067811865475
+        ]
+      ],
+      "intended_seed_excluded_from_raw_request": [
+        [
+          "peer",
+          0.7071067811865475
+        ]
+      ],
+      "agrees_source_prediction": true,
+      "intent_satisfied": false,
+      "seed_reads": 1,
+      "dbapi_score_attempts": 1,
+      "embedded_score_attempts": [
+        {
+          "sql": "SELECT TOP 2 n.node_id, VECTOR_COSINE(n.emb, TO_VECTOR(?, DOUBLE)) AS score FROM Graph_KG.kg_emb_0000000000000001 n WHERE (COALESCE(n.graph_id, '') = COALESCE(?, '')) ORDER BY score DESC",
+          "params": [
+            "[1.0,0.0,0.0,0.0]",
+            "g"
+          ],
+          "provider": "named embedded SQL over raw vectors"
+        }
+      ],
+      "raw_sql": [
+        [
+          "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+          [
+            "g",
+            "node",
+            "m"
+          ]
+        ],
+        [
+          "SELECT emb FROM Graph_KG.kg_emb_0000000000000001 WHERE node_id = ? AND (COALESCE(graph_id, '') = COALESCE(?, ''))",
+          [
+            "seed",
+            "g"
+          ]
+        ],
+        [
+          "SELECT TOP ? n.node_id, VECTOR_COSINE(n.emb, TO_VECTOR(?, DOUBLE)) AS score FROM Graph_KG.kg_emb_0000000000000001 n WHERE (COALESCE(n.graph_id, '') = COALESCE(?, '')) AND n.node_id != ? ORDER BY score DESC",
+          [
+            2,
+            "[1.0,0.0,0.0,0.0]",
+            "g",
+            "seed"
+          ]
+        ]
+      ],
+      "provider_scope": "actual public/optimized functions, raw-vector semantic SQL provider and actual float reader; no native/DB runtime or modified product method"
+    },
+    {
+      "name": "seed-primary-generic-fault-DBAPI-k2",
+      "raw_request": {
+        "query": "seed",
+        "k": 2,
+        "graph": "g",
+        "model": "m"
+      },
+      "fault_profile": {
+        "generic_first_primary": true,
+        "embedded_unavailable": true,
+        "organic_outage_claim": false
+      },
+      "result": [
+        [
+          "seed",
+          1.0
+        ],
+        [
+          "peer",
+          0.7071067811865475
+        ]
+      ],
+      "error": null,
+      "expected_asbuilt_from_raw_vectors": [
+        [
+          "seed",
+          1.0
+        ],
+        [
+          "peer",
+          0.7071067811865475
+        ]
+      ],
+      "intended_seed_excluded_from_raw_request": [
+        [
+          "peer",
+          0.7071067811865475
+        ]
+      ],
+      "agrees_source_prediction": true,
+      "intent_satisfied": false,
+      "seed_reads": 1,
+      "dbapi_score_attempts": 2,
+      "embedded_score_attempts": [
+        {
+          "sql": "SELECT TOP 2 n.node_id, VECTOR_COSINE(n.emb, TO_VECTOR(?, DOUBLE)) AS score FROM Graph_KG.kg_emb_0000000000000001 n WHERE (COALESCE(n.graph_id, '') = COALESCE(?, '')) ORDER BY score DESC",
+          "params": [
+            "[1.0,0.0,0.0,0.0]",
+            "g"
+          ],
+          "provider": "named embedded SQL over raw vectors"
+        }
+      ],
+      "raw_sql": [
+        [
+          "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+          [
+            "g",
+            "node",
+            "m"
+          ]
+        ],
+        [
+          "SELECT emb FROM Graph_KG.kg_emb_0000000000000001 WHERE node_id = ? AND (COALESCE(graph_id, '') = COALESCE(?, ''))",
+          [
+            "seed",
+            "g"
+          ]
+        ],
+        [
+          "SELECT TOP ? n.node_id, VECTOR_COSINE(n.emb, TO_VECTOR(?, DOUBLE)) AS score FROM Graph_KG.kg_emb_0000000000000001 n WHERE (COALESCE(n.graph_id, '') = COALESCE(?, '')) AND n.node_id != ? ORDER BY score DESC",
+          [
+            2,
+            "[1.0,0.0,0.0,0.0]",
+            "g",
+            "seed"
+          ]
+        ],
+        [
+          "SELECT TOP 2 n.node_id, VECTOR_COSINE(n.emb, TO_VECTOR(?, DOUBLE)) AS score FROM Graph_KG.kg_emb_0000000000000001 n WHERE (COALESCE(n.graph_id, '') = COALESCE(?, '')) ORDER BY score DESC",
+          [
+            "[1.0,0.0,0.0,0.0]",
+            "g"
+          ]
+        ]
+      ],
+      "provider_scope": "actual public/optimized functions, raw-vector semantic SQL provider and actual float reader; no native/DB runtime or modified product method"
+    },
+    {
+      "name": "literal-same-generic-fault-legal-self",
+      "raw_request": {
+        "query": "[1,0,0,0]",
+        "k": 1,
+        "graph": "g",
+        "model": "m"
+      },
+      "fault_profile": {
+        "generic_first_primary": true,
+        "embedded_unavailable": false,
+        "organic_outage_claim": false
+      },
+      "result": [
+        [
+          "seed",
+          1.0
+        ]
+      ],
+      "error": null,
+      "expected_asbuilt_from_raw_vectors": [
+        [
+          "seed",
+          1.0
+        ]
+      ],
+      "intended_seed_excluded_from_raw_request": [
+        [
+          "seed",
+          1.0
+        ]
+      ],
+      "agrees_source_prediction": true,
+      "intent_satisfied": true,
+      "seed_reads": 0,
+      "dbapi_score_attempts": 1,
+      "embedded_score_attempts": [
+        {
+          "sql": "SELECT TOP 1 n.node_id, VECTOR_COSINE(n.emb, TO_VECTOR(?, DOUBLE)) AS score FROM Graph_KG.kg_emb_0000000000000001 n WHERE (COALESCE(n.graph_id, '') = COALESCE(?, '')) ORDER BY score DESC",
+          "params": [
+            "[1,0,0,0]",
+            "g"
+          ],
+          "provider": "named embedded SQL over raw vectors"
+        }
+      ],
+      "raw_sql": [
+        [
+          "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+          [
+            "g",
+            "node",
+            "m"
+          ]
+        ],
+        [
+          "SELECT TOP ? n.node_id, VECTOR_COSINE(n.emb, TO_VECTOR(?, DOUBLE)) AS score FROM Graph_KG.kg_emb_0000000000000001 n WHERE (COALESCE(n.graph_id, '') = COALESCE(?, '')) ORDER BY score DESC",
+          [
+            1,
+            "[1,0,0,0]",
+            "g"
+          ]
+        ]
+      ],
+      "provider_scope": "actual public/optimized functions, raw-vector semantic SQL provider and actual float reader; no native/DB runtime or modified product method"
+    }
+  ],
+  "case_count": 6,
+  "raw_vectors": [
+    [
+      "g",
+      "seed",
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    ],
+    [
+      "g",
+      "peer",
+      [
+        0.5,
+        0.5,
+        0.0,
+        0.0
+      ]
+    ],
+    [
+      "other",
+      "foreign",
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    ]
+  ],
+  "elapsed_s": 0.018607083009555936,
+  "socket_calls": 0,
+  "native_calls": 0,
+  "failure": null,
+  "candidate_inspected": false,
+  "source_inputs": {
+    "iris_vector_graph/_engine/vector.py": {
+      "sha256": "f7e0297f514c2c87c0c3b98df18b7264624e9c10fa81c0ec1d28508d95c0b0d5",
+      "current_equal": true
+    },
+    "iris_vector_graph/_engine/embeddings.py": {
+      "sha256": "38335c3ffcf9a4097516ba01f6768390470a06c1dd30006043262ce6df235739",
+      "current_equal": true
+    },
+    "tests/unit/route_fakes_227.py": {
+      "sha256": "650ba53abb0c368dc9d4f4553ea835757f2a6adc43ee8a8bd8a5799b53c1bb9e",
+      "current_equal": true
+    }
+  },
+  "inputs": {
+    ".g5/uplift/consolidated/iteration-11/review-seed-probe.py": "4666a54da8cb594d2e7df3562b45c5ce6fd1e1396841c4bf5b965e34e7d52d63",
+    ".g5/uplift/consolidated/iteration-11/review-seed-predictions.md": "f091809115ef7d7f761c39201dc14224026cd57f6eb60fd89e4d8fd10921a9df",
+    ".g5/uplift/consolidated/iteration-10/next-vector-survey-probe.py": "4355b7b154b7529303971a7c5796c2b8b03da887bd0829f755395d84d8aff7a4"
+  },
+  "scope": "Provider-conditioned seed exclusion loss; actual Python methods execute without product mutation. Local SQL providers derive cosine/predicates from raw data, do not supply result oracle rows. Not organic outage/native proof/new issue adjudication."
+}

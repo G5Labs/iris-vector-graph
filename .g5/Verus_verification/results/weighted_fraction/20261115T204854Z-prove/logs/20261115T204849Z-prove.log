@@ -1,0 +1,33 @@
+verification results:: 120 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_fraction/weighted_fraction.rs:194:1
+    |
+194 | pub proof fn lemma_jq_insert_remove(c:Config,q:Set<json::Entry>,e:json::Entry)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_fraction/weighted_fraction.rs:199:28
+    |
+199 |     assert forall|r:JEntry|jq(c,q.insert(e)).contains(r) <==> jq(c,q).insert(je(c,e)).contains(r) by {
+    |                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_fraction/weighted_fraction.rs:205:28
+    |
+205 |     assert forall|r:JEntry|jq(c,q.remove(e)).contains(r) <==> jq(c,q).remove(je(c,e)).contains(r) by {
+    |                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+note: recommendation not met: cannot prove that there exists values that satisfy the condition of the choose expression
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_fraction/weighted_fraction.rs:209:45
+    |
+209 |     if q.len()>0{let f=choose|f:json::Entry|q.contains(f);assert(jq(c,q).contains(je(c,f)));}
+    |                                             ^^^^^^^^^^^^^
+
+note: recommendation not met: cannot prove that there exists values that satisfy the condition of the choose expression
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_fraction/weighted_fraction.rs:210:46
+    |
+210 |     if jq(c,q).len()>0{let r=choose|r:JEntry|jq(c,q).contains(r);let f=choose|f:json::Entry|q.contains(f) && je(c,f)==r;}
+    |                                              ^^^^^^^^^^^^^^^^^^^
+
+error: aborting due to 2 previous errors
+

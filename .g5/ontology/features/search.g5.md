@@ -109,6 +109,12 @@ A read for a graph and model that has no route answers nothing, never vectors fr
 - The route is looked up first, so a search of an unrouted pair is an empty answer even when its query vector has the wrong width: it is never a width error.
 - Reading one node's vector through an unrouted pair answers no vector.
 
+<a id="search.routes.cache"></a>
+[D · search.routes.cache]
+
+A route lookup may reuse a decoded registry row for up to 30 seconds by default, with a separate entry for each registry, graph, model and vector kind. A response with no row or an absent registry does not create a cache entry; a remembered row may hide a later registry change until it expires or is invalidated.
+- A row exactly at the time limit is still usable. Disabling cache lookup forces a fresh read without clearing stored entries.
+
 <a id="search.routes.create_on_write"></a>
 [D · search.routes.create_on_write]
 
@@ -158,6 +164,14 @@ A BM25 index covers exactly one graph, and building one without naming a graph m
 
 A named search index changes only through its own build, insert, delete and drop calls, so the caller keeps it in step with the graph. Node writes and node deletes do not update it, so a deleted node stays findable through the index until the caller removes it or rebuilds the index.
 - Erasure is the exception: it must [clear the erased graph's content](#search.erasure.indexes) from these indexes.
+
+## Building an IVF index
+
+<a id="search.scope.indexes.ivf"></a>
+[I · search.scope.indexes.ivf]
+
+An IVF build reads vectors from the requested graph and model's route, never another pair's table. If the pair has no route, it raises an error before reading any vector table or starting the index build; a routed selection with no vectors also raises an error.
+- Request validation and required library loading may refuse the build before the route is read. Building an index does not establish that later graph writes keep it current; the caller owns [index upkeep](#search.scope.indexes.upkeep).
 
 ## Quarantine
 
@@ -372,7 +386,7 @@ What must erasing one graph do to a VecIndex, PLAID or IVF index, which records 
 ### search.embedding.width
 - Sources: query width before search: [`iris_vector_graph/_engine/vector.py::_assert_query_width`](../../../iris_vector_graph/_engine/vector.py#L455-L502), called first in [`::kg_KNN_VEC`](../../../iris_vector_graph/_engine/vector.py#L504-L545) (route lookup `:536-538`, check `:542`, first statement `:557`), unit tests [test_227_query_width.py](../../../tests/unit/test_227_query_width.py#L100-L132), live `tests/e2e/test_460_r223_vector_width_e2e.py`; [ADR-0005 consequences](../../../docs/adr/0005-vector-width-is-not-declared-in-to-vector.md#L62-L73), [reconcile_recorded_dimensions](../../../iris_vector_graph/_engine/schema.py#L1688-L1710), [reused-route width check](../../../iris_vector_graph/_engine/embeddings.py#L589-L641), [USER_GUIDE on setup and width](../../../docs/USER_GUIDE.md#L897-L910), [test_227_two_models.py](../../../tests/e2e/test_227_two_models.py), query width: [ADR-0005](../../../docs/adr/0005-vector-width-is-not-declared-in-to-vector.md#L7-L48), [query width check](../../../iris_vector_graph/_engine/vector.py#L455-L502), [test_to_vector_width_regression_e2e.py](../../../tests/integration/test_to_vector_width_regression_e2e.py)
 - Playbook: [VEC-X5.5](../../../experiment/playbook-completion/ontology/06-vectors.md#L184)
-- Verus: `search` (as-built) `read_route`/`read_table` model route absence, not the query-width preflight; the playbook's `vec_route_batch` explorer and `proofs-d1b` `vq_l2` (reviewed) do not either. No formal contract for the order "route, then width, then search".
+- Verus: [vector_admission](../../Verus_verification/models/vector_admission/NOTES.md) `width_check`, `theorem_direct_guard_no_score` and `theorem_whole_raw_row_four_query_three_no_scoring` derive route-before-width-before-score from raw rows, query characters and catalog cells for the three node KNN entry points. Nested JSON/strings/non-numeric elements are counted by the modeled outer-array lexer; syntax does not establish vector-element validity. JSON/library correspondence is finite observation, catalog output is a heuristic rather than physical-width truth, and numeric kernels/raw identifier carriers remain providers. Existing G search and P route kernels remain substantive typed routing hits; this does not establish every vector/edge/store/protocol surface.
 - Expands: [Embedding identity](#search.embedding)
 - Observed divergence: several query paths, such as [edge_vector_search](../../../iris_vector_graph/_engine/vector.py#L360-L370), declare the query's own length in `TO_VECTOR`, which keeps ADR-0005's intent but not its letter.
 - agent
@@ -449,7 +463,7 @@ Findings: [The embedding queue marks entries done without a stored vector](../..
 
 ### search.routes
 - Sources: [CHANGELOG v4.0.0 routed tables](../../../CHANGELOG.md#L4161-L4183), [EmbeddingRoute and resolve_route](../../../iris_vector_graph/_engine/embeddings.py#L35-L301), [route preference](../../../iris_vector_graph/_engine/embeddings.py#L107-L118), [test_227_two_models.py](../../../tests/e2e/test_227_two_models.py), edge vectors: [store_edge_embedding](../../../iris_vector_graph/_engine/embeddings.py#L1117-L1205), [edge_vector_search](../../../iris_vector_graph/_engine/vector.py#L333-L398), [migration guide](../../../docs/migration/v4.0.0.md#L553-L598)
-- Children: [No fallback](#search.routes.no_fallback), [Create on write](#search.routes.create_on_write), [Orphan](#search.routes.orphan)
+- Children: [No fallback](#search.routes.no_fallback), [Create on write](#search.routes.create_on_write), [Orphan](#search.routes.orphan), [Route cache](#search.routes.cache)
 - Observed divergence: the registry does not stop two tables answering one pair, so vectors written to a routed table before setup claims the original table can be stranded (F9). The upgrade puts named-graph edge vectors in `kg_EdgeEmbeddings` with no route row, where edge search for that graph does not look (F10). Both are in the [stage-A findings](../../uplift/ivg-verus-initial/intent/search.md#candidate-findings).
 - agent
 - architecture-decision, data-integrity
@@ -461,11 +475,24 @@ Findings: [Claiming the default embedding table for a model that already has a d
 - Sources: [_route_for_read](../../../iris_vector_graph/_engine/embeddings.py#L652-L679), [_is_default_pair](../../../iris_vector_graph/_engine/embeddings.py#L743-L753), [unrouted pair test](../../../tests/e2e/test_227_two_models.py#L204-L215); [`iris_vector_graph/_engine/vector.py::kg_KNN_VEC`](../../../iris_vector_graph/_engine/vector.py#L535-L538), [`iris_vector_graph/_engine/embeddings.py::get_embedding`](../../../iris_vector_graph/_engine/embeddings.py#L1694-L1745); unit tests [`test_an_unrouted_pair_still_reads_empty_rather_than_raising`](../../../tests/unit/test_227_query_width.py#L122-L132), [test_227_routed_reads.py](../../../tests/unit/test_227_routed_reads.py#L149-L183)
 - Playbook: [VEC-B4](../../../experiment/playbook-completion/ontology/06-vectors.md#L168)
 - Verus: `search` (as-built) [`search.rs`](../../Verus_verification/models/search/search.rs) `read_route` / `read_table` (route absence answers nothing; controls in its [model.json](../../Verus_verification/models/search/model.json))
+- Verus (raw workflow extension): [vector_admission](../../Verus_verification/models/vector_admission/NOTES.md) `resolve` and `theorem_whole_missing_raw_pair_returns_quiet_empty` derive scoped raw row selection, decoding, default/compatibility exceptions and named absence before any seed/vector/scoring effect. Stable provider row order and already-normalized identifier keys are explicit; no new route DDL/transaction or identity-codec theorem is inferred.
 - Expands: [Routes](#search.routes)
 - Note: the vector case of [no fall-through](../concepts/graph-scope.g5.md#graph.no_fallthrough).
 - agent
 - data-integrity, user-facing-behavior
 - test-coverage
+
+
+### search.routes.cache
+
+- Sources: [cache key and clock](../../../iris_vector_graph/_engine/embeddings.py#L307-L344), [invalidation](../../../iris_vector_graph/_engine/embeddings.py#L346-L375), [raw registry reader](../../../iris_vector_graph/_engine/embeddings.py#L377-L468), [source survey](../../uplift/consolidated/iteration-10/next-vector-survey-report.md), [actual native miss then another-engine creation](../../uplift/consolidated/iteration-11/root-vector-native.json)
+- Verus: [vector_admission](../../Verus_verification/models/vector_admission/NOTES.md) `key`, `cached`, `evict`, `resolve`, `invalidate` and `theorem_all_search_phases_keep_original_scope` derive cache key isolation, separate store/lookup timestamps, strict expiry, no negative insertion and read counts. V2 fixes registry/graph/model/node-kind/TTL from the original stable engine request across fallbacks; only provider replies and clock samples vary. Integer clock ticks preserve comparisons; arbitrary native float-clock refinement, concurrent DDL/writer correctness and universal invalidation are unproved. TTL0 bypasses lookup without clearing old entries.
+- Expands: [Routes](#search.routes)
+- agent
+- user-facing-behavior
+
+The strict expiration comparison permits a hit at exactly the TTL, and a positive hit does not reread the current backend row or its errors. The source caches only decoded positive rows, including their timestamp; a miss and registry-absent response are not cached. Per-engine clocks, invalidation, typed TTL and raw registry-provider behavior remain distinct from concurrent route-writer correctness. The earlier cached-absence forecast was refuted and retained, not counted as a defect.
+
 
 ### search.routes.create_on_write
 - Sources: [_create_route and its 4.7.0 commit comment](../../../iris_vector_graph/_engine/embeddings.py#L470-L558), [per-route locks](../../../iris_vector_graph/_engine/embeddings.py#L67-L81), [_route_for_write](../../../iris_vector_graph/_engine/embeddings.py#L755-L792), [width per route test](../../../tests/e2e/test_227_two_models.py#L86-L112)
@@ -489,12 +516,16 @@ Findings: [Route creation commits the routed table before its registry row, and 
 
 ### search.knn
 - Sources: [kg_KNN_VEC](../../../iris_vector_graph/_engine/vector.py#L504-L619), [_attempt_route_index](../../../iris_vector_graph/_engine/schema.py#L911-L933), [CHANGELOG v4.0.0 routed tables and HNSW](../../../CHANGELOG.md#L4161-L4183), [each graph's search test](../../../tests/e2e/test_227_two_models.py#L187-L203)
+- Verus: [vector_admission](../../Verus_verification/models/vector_admission/NOTES.md) `theorem_primary_generic_failure_really_calls_optimized`, `theorem_optimized_double_failure_really_calls_client`, typed score readers and raw CSV shape/effect relations cover the primary/optimized/client node-search chain. The source model retains both the seed-identity-loss counterexample and the unknown-width mixed-error empty answer. SQL/NumPy numeric replies are provider inputs, with finite actual readers and predicates executed in735 binding comparisons; no cosine/ANN/numerical or native-body theorem follows. Nonstring/raw numeric carriers, connection/cursor allocation and exact exception text remain qualified.
 - Note: added for gap G18 of the [reconstruction check](../../uplift/ivg-verus-initial/reconstruction-check.md#1b-gaps-a-builder-would-hit). The order of equal scores is not specified, and recall of the approximate index is recorded per route only when measured.
 - agent
 - user-facing-behavior
 - test-coverage
 
 Findings: [ADR-0005 forbids the three-argument TO_VECTOR for query vectors, which four call sites use](../../Verus_verification/bugs_issues.md#bug-doc-011)
+
+Observed fallback violation: primary seed lookup keeps its exclusion only in local SQL, then a generic scoring failure forwards the expanded literal without the original node ID. [Controlled actual native/provider cases](../../uplift/consolidated/iteration-11/root-seed-native.json) return the seed at k1, while normal seed requests return the peer and literal requests may lawfully return the seed. The injected fault is not an organic outage; [independent review](../../uplift/consolidated/iteration-11/review-seed-intent.md) confirms the existing exclusion intent and distinct root. [bug-plt-105](../../Verus_verification/bugs_issues.md#bug-plt-105); the exclusion requirement remains unchanged.
+
 
 ### search.knn.threshold
 
@@ -507,6 +538,7 @@ Findings: [ADR-0005 forbids the three-argument TO_VECTOR for query vectors, whic
 
 ### search.scope
 - Sources: [CHANGELOG v4.0.0 keyword graph](../../../CHANGELOG.md#L4184-L4198), [graph ID not an authorisation boundary](../../../CHANGELOG.md#L4366-L4370), [graph_scope_predicate](../../../iris_vector_graph/routing.py#L81-L100), [kg_KNN_VEC](../../../iris_vector_graph/_engine/vector.py#L504-L619), [test_230_scope_isolation.py](../../../tests/e2e/test_230_scope_isolation.py), SQL procedures: [KNOWN_ISSUES](../../../docs/KNOWN_ISSUES.md#L702-L714), [generated kg_KNN_VEC](../../../iris_vector_graph/schema.py#L2440-L2483), [test_460_r265_vector_procedures_route_e2e.py](../../../tests/e2e/test_460_r265_vector_procedures_route_e2e.py)
+- Verus (node KNN slice): [vector_admission](../../Verus_verification/models/vector_admission/NOTES.md) `theorem_all_search_phases_keep_original_scope` keeps original registry, normalized graph/model and TTL across every phase, with node kind fixed. Raw row filters and actual SQLite table/graph/label predicates corroborate that selected slice; fusion, other index dispatch, GraphQL and native SQL procedure scope are not transferred from it.
 - Children: [Indexes](#search.scope.indexes)
 - agent
 - security, user-facing-behavior
@@ -514,10 +546,11 @@ Findings: [ADR-0005 forbids the three-argument TO_VECTOR for query vectors, whic
 
 Findings: [TextSearchEngine.search_documents is public, ignores graphs and very likely always fails](../../Verus_verification/bugs_issues.md#bug-srch-013)
 
+
 ### search.scope.indexes
 - Sources: [BM25 Build graph parameter](../../../iris_src/src/Graph/KG/BM25Index.cls#L93-L175), [index graph scopes and fusion leg choice](../../../iris_vector_graph/_engine/vector.py#L150-L225), [scoped legs test](../../../tests/e2e/test_230_retrieval_scope.py#L505-L548), [mocked leg-choice tests](../../../tests/unit/test_460_rrf_leg_prefers_graphs_own_index.py)
 - Expands: [Graph scope](#search.scope)
-- Children: [Upkeep](#search.scope.indexes.upkeep)
+- Children: [Upkeep](#search.scope.indexes.upkeep), [IVF build admission](#search.scope.indexes.ivf)
 - Observed divergence: a Cypher BM25 search under a named graph never compares the index's recorded graph (F7), and an IVF index records no graph. The engine takes its list of indexes and their graphs once, so fusion does not see a dropped index or one another process built (F6). Both are in the [stage-A findings](../../uplift/ivg-verus-initial/intent/search.md#candidate-findings).
 - agent
 - data-integrity, architecture-decision
@@ -534,6 +567,18 @@ The pre-4.0.0 index case is from [BM25Index.cls](../../../iris_src/src/Graph/KG/
 - Note: added from correction 6 of the [reconstruction check](../../uplift/ivg-verus-initial/reconstruction-check.md#3-corrections-proposed) as a D, because the user guide documents caller upkeep for ordinary writes and deletes. That guide does not govern erasure, which [the erasure rule](#search.erasure.indexes) covers. No product code calls these indexes' insert or delete from a node write or delete path.
 - agent
 - architecture-decision, operations
+
+### search.scope.indexes.ivf
+
+- Sources: [public IVF build contract and admission](../../../iris_vector_graph/_engine/vector.py#L1880-L1948), [routed vector selection and build](../../../iris_vector_graph/_engine/vector.py#L1949-L2027), [existing route-build tests](../../../tests/unit/test_227_ivf_route.py), [source survey](../../uplift/consolidated/iteration-10/next-vector-survey-report.md), [native no-route refusal](../../uplift/consolidated/iteration-11/root-vector-native.json)
+- Verus: [vector_admission](../../Verus_verification/models/vector_admission/NOTES.md) `theorem_no_route_refuses_before_vector_read`, `theorem_empty_ids_after_cursor_before_select`, `theorem_malformed_info_after_build_keeps_local_maps` and `theorem_valid_info_publishes_after_native_prefix` derive the separate build admission/effect order from raw arguments, route rows and provider replies. The ordinary explicit text/metric/positive-int rule is modeled; generic Pydantic coercion is not. External Build/AddBatch/Finalize/Info effects can survive a later error; only local publication waits for syntax-valid Info. Opaque decoded Info content, base64/float32/clustering/native index correctness and rollback are outside this contract.
+- Expands: [Graph-scoped indexes](#search.scope.indexes)
+- agent
+- user-facing-behavior
+- test-coverage
+
+This owns build admission, separately from an absent pair's empty search answer. The existing search routing model and prepared route fixtures do not establish the raw build refusal/effect order. A successful one-vector source/provider fixture exercises Build/AddBatch/Finalize/Info carriers; root's native panel only confirms the no-route refusal. Native clustering, index contents, later search correctness, post-Build failures and rollback are not established by admission.
+
 
 ### search.quarantine
 - Sources: [CHANGELOG v4.0.0 quarantine](../../../CHANGELOG.md#L4199-L4217), [migration guide](../../../docs/migration/v4.0.0.md#L303-L390), [migration rules](../../../iris_vector_graph/migrations/graph_scoped_embeddings.py#L1-L33), [_fate](../../../iris_vector_graph/migrations/graph_scoped_embeddings.py#L895-L920), [quarantine DDL](../../../iris_vector_graph/_engine/schema.py#L205-L227), [test_227_migration.py](../../../tests/e2e/test_227_migration.py), documents and edge vectors: [migration](../../../iris_vector_graph/migrations/docs_and_edge_vectors.py#L1-L44), [guide](../../../docs/migration/v4.0.0.md#L525-L598), [test_230_migration.py](../../../tests/e2e/test_230_migration.py)

@@ -1,0 +1,2375 @@
+{
+  "time_utc": "2026-11-15T21:15:44.428848+00:00",
+  "status": "COUNT_ATTRIBUTION_CONFIRMED",
+  "product": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "stable_model_source_files_scanned": 37,
+  "excluded_moving_models": [
+    "vector_admission",
+    "weighted_fraction"
+  ],
+  "candidate_files_inspected": [],
+  "inventory": [
+    {
+      "file": ".g5/Verus_verification/models/aql_frontend/aql_frontend.rs",
+      "sha256": "a3cfe8d063930741196e130c4f5ea4f5f54046205e1e35a092e90978e222acf6",
+      "proof_declarations": 6,
+      "decreasing_spec_declarations": [],
+      "explicit_nonlinear_subqueries": 0,
+      "nonlinear_functions": []
+    },
+    {
+      "file": ".g5/Verus_verification/models/bolt_stream/bolt_stream.rs",
+      "sha256": "e33a117863fb22d2c012748e0eff64341096153e1ed0a5e3a49458b2681d82b5",
+      "proof_declarations": 39,
+      "decreasing_spec_declarations": [
+        "scan",
+        "chunk_wire",
+        "encoded_lengths",
+        "record_rows"
+      ],
+      "explicit_nonlinear_subqueries": 0,
+      "nonlinear_functions": []
+    },
+    {
+      "file": ".g5/Verus_verification/models/bulk_children/bulk_children.rs",
+      "sha256": "5c61e29afdfa02bff96e8eb564cc44c87b46c10e3c0491d17c9153bb223c2c14",
+      "proof_declarations": 25,
+      "decreasing_spec_declarations": [
+        "targets",
+        "fold",
+        "returned",
+        "complete",
+        "read_props"
+      ],
+      "explicit_nonlinear_subqueries": 0,
+      "nonlinear_functions": []
+    },
+    {
+      "file": ".g5/Verus_verification/models/bulk_delete/bulk_delete.rs",
+      "sha256": "ca7bd0e16ab6cb9ff8a8b306e654197d409f42a7c0703d701ab6d0dac2c6ef04",
+      "proof_declarations": 6,
+      "decreasing_spec_declarations": [
+        "normalize",
+        "remove",
+        "blocked",
+        "batches"
+      ],
+      "explicit_nonlinear_subqueries": 0,
+      "nonlinear_functions": []
+    },
+    {
+      "file": ".g5/Verus_verification/models/edge_acceptance/edge_acceptance.rs",
+      "sha256": "ef7c54c202ec2330605b8152cde61162775ab0c5cff0a1d11328d1a8c8375d79",
+      "proof_declarations": 7,
+      "decreasing_spec_declarations": [],
+      "explicit_nonlinear_subqueries": 0,
+      "nonlinear_functions": []
+    },
+    {
+      "file": ".g5/Verus_verification/models/embedded_no_data/embedded_no_data.rs",
+      "sha256": "08f11dc34ba743729953d87e2bcf39265fcac2bf6d3c76adbe059a1acd433f10",
+      "proof_declarations": 11,
+      "decreasing_spec_declarations": [
+        "pass1",
+        "fallback"
+      ],
+      "explicit_nonlinear_subqueries": 0,
+      "nonlinear_functions": []
+    },
+    {
+      "file": ".g5/Verus_verification/models/fhir_tasks/fhir_tasks.rs",
+      "sha256": "0e93bb9d52074062d2ac146c9b2e6d161b099e72ef0d518fe6affbd7c65adad4",
+      "proof_declarations": 26,
+      "decreasing_spec_declarations": [
+        "graph_setting"
+      ],
+      "explicit_nonlinear_subqueries": 0,
+      "nonlinear_functions": []
+    },
+    {
+      "file": ".g5/Verus_verification/models/freshness_stamp/freshness_stamp.rs",
+      "sha256": "2f5c51382a0f39e5c0d9c8d89023a0cfcc94458af4932d67128ab8fa93f67f17",
+      "proof_declarations": 6,
+      "decreasing_spec_declarations": [
+        "stale_stores"
+      ],
+      "explicit_nonlinear_subqueries": 0,
+      "nonlinear_functions": []
+    },
+    {
+      "file": ".g5/Verus_verification/models/fusion_ranking/fusion_ranking.rs",
+      "sha256": "c355b2249b053fc25045068e6e8039dc4302b052c4b2ab90ac102fa1197a6ead",
+      "proof_declarations": 7,
+      "decreasing_spec_declarations": [
+        "rank",
+        "score"
+      ],
+      "explicit_nonlinear_subqueries": 2,
+      "nonlinear_functions": [
+        {
+          "mode": "proof",
+          "name": "theorem_second_leg_changes_winner",
+          "line": 48,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": [
+            53,
+            54
+          ]
+        }
+      ]
+    },
+    {
+      "file": ".g5/Verus_verification/models/graph_structure/graph_structure.rs",
+      "sha256": "bda2567865779c90aa5ef3e84b2e77baf1d7468d3404c7ded9f2e30395ff6481",
+      "proof_declarations": 66,
+      "decreasing_spec_declarations": [
+        "strip_nul"
+      ],
+      "explicit_nonlinear_subqueries": 0,
+      "nonlinear_functions": []
+    },
+    {
+      "file": ".g5/Verus_verification/models/history_diff/history_diff.rs",
+      "sha256": "c4df415be363d277dc2225d8e19bad6b2e6e350c5c4f411ae38d11c837068d72",
+      "proof_declarations": 10,
+      "decreasing_spec_declarations": [
+        "read",
+        "continuous"
+      ],
+      "explicit_nonlinear_subqueries": 0,
+      "nonlinear_functions": []
+    },
+    {
+      "file": ".g5/Verus_verification/models/history_paging/history_paging.rs",
+      "sha256": "385755ecc9062df77704e9b19316f17e7ef23f09ef629d80bf592f1487a84f41",
+      "proof_declarations": 19,
+      "decreasing_spec_declarations": [
+        "trim_tail"
+      ],
+      "explicit_nonlinear_subqueries": 0,
+      "nonlinear_functions": []
+    },
+    {
+      "file": ".g5/Verus_verification/models/index_declaration/index_declaration.rs",
+      "sha256": "eab9e766a697691f94a531723dcf2f40ab1a074d076a40ad2f14ecc3c6488d7c",
+      "proof_declarations": 7,
+      "decreasing_spec_declarations": [],
+      "explicit_nonlinear_subqueries": 0,
+      "nonlinear_functions": []
+    },
+    {
+      "file": ".g5/Verus_verification/models/ledger_apply/ledger_apply.rs",
+      "sha256": "e38274cc4297ad371abb7a3486953615029bfb869f9ea8da012f11618b52682f",
+      "proof_declarations": 8,
+      "decreasing_spec_declarations": [
+        "apply_all"
+      ],
+      "explicit_nonlinear_subqueries": 0,
+      "nonlinear_functions": []
+    },
+    {
+      "file": ".g5/Verus_verification/models/ledger_redaction/redaction.rs",
+      "sha256": "9de526d282101d25486ef68fe8cb7f5986511e545ccb47d3cbd36bf2a18513c9",
+      "proof_declarations": 40,
+      "decreasing_spec_declarations": [
+        "replay"
+      ],
+      "explicit_nonlinear_subqueries": 0,
+      "nonlinear_functions": []
+    },
+    {
+      "file": ".g5/Verus_verification/models/ledger_redaction/twin.rs",
+      "sha256": "40b0789db399751b12e9dd5515489bcc9d2a3d36e8ec625bdae638a484a4d5c0",
+      "proof_declarations": 0,
+      "decreasing_spec_declarations": [],
+      "explicit_nonlinear_subqueries": 0,
+      "nonlinear_functions": []
+    },
+    {
+      "file": ".g5/Verus_verification/models/ndjson_import/ndjson_import.rs",
+      "sha256": "13b271835ec609f11372f795bf35a898d8ea5afa6d54074a4d796e0ce7e14020",
+      "proof_declarations": 8,
+      "decreasing_spec_declarations": [
+        "run"
+      ],
+      "explicit_nonlinear_subqueries": 0,
+      "nonlinear_functions": []
+    },
+    {
+      "file": ".g5/Verus_verification/models/node_read/node_read.rs",
+      "sha256": "5ecb57cde29cdf9cc5feabb06dd7dc4eabc24d6382a43bd60dbb43c14700a6fe",
+      "proof_declarations": 12,
+      "decreasing_spec_declarations": [
+        "result"
+      ],
+      "explicit_nonlinear_subqueries": 0,
+      "nonlinear_functions": []
+    },
+    {
+      "file": ".g5/Verus_verification/models/pagerank_admission/pagerank_admission.rs",
+      "sha256": "b67bef15cc35cd4b6ecd3d9927cfa7e67274cfd32436c8a15fc0c6fe0e108b0d",
+      "proof_declarations": 8,
+      "decreasing_spec_declarations": [
+        "edgeless"
+      ],
+      "explicit_nonlinear_subqueries": 0,
+      "nonlinear_functions": []
+    },
+    {
+      "file": ".g5/Verus_verification/models/platform/platform.rs",
+      "sha256": "7596e0664af330b2e7b7d2d658651846a3cdbc86a38bba597977e81b5df57855",
+      "proof_declarations": 51,
+      "decreasing_spec_declarations": [],
+      "explicit_nonlinear_subqueries": 0,
+      "nonlinear_functions": []
+    },
+    {
+      "file": ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs",
+      "sha256": "fc4d810bd6e92e5b57cb63c228a41b2f3ada7db3af9b32ddff58ef5f09b8fbcc",
+      "proof_declarations": 68,
+      "decreasing_spec_declarations": [
+        "scoped",
+        "valid_seeds",
+        "copies",
+        "hops",
+        "pos",
+        "sum",
+        "seed_add",
+        "ship",
+        "scatter",
+        "delta",
+        "held",
+        "iterate",
+        "insert",
+        "rank",
+        "rows",
+        "sparse",
+        "has",
+        "missing"
+      ],
+      "explicit_nonlinear_subqueries": 17,
+      "nonlinear_functions": [
+        {
+          "mode": "proof",
+          "name": "lemma_seed_add",
+          "line": 82,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": [
+            93,
+            95
+          ]
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_initial_uniform_mass",
+          "line": 98,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": [
+            102
+          ]
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_ship",
+          "line": 124,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": [
+            134,
+            136
+          ]
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_scatter",
+          "line": 138,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": [
+            157,
+            161,
+            162
+          ]
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_step_mass_from_raw_outgoing",
+          "line": 165,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": [
+            174
+          ]
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_iterated_mass",
+          "line": 188,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": [
+            193
+          ]
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_div_one",
+          "line": 328,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": [
+            328
+          ]
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_zero_tolerance_does_not_stop_on_zero_change",
+          "line": 391,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": [
+            396
+          ]
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_isolated3_recurrence",
+          "line": 443,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": [
+            451,
+            453
+          ]
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_recurrence_cap_fabricates_zero",
+          "line": 465,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": [
+            469
+          ]
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_isolated_seed_scores_positive",
+          "line": 592,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": [
+            600,
+            606
+          ]
+        }
+      ]
+    },
+    {
+      "file": ".g5/Verus_verification/models/procedure_results/procedure_results.rs",
+      "sha256": "c1b5fd65835381087753328369b55ce89b2c7b04f9191a97736a5a98bef1b875",
+      "proof_declarations": 19,
+      "decreasing_spec_declarations": [],
+      "explicit_nonlinear_subqueries": 0,
+      "nonlinear_functions": []
+    },
+    {
+      "file": ".g5/Verus_verification/models/reconstruction/reconstruction.rs",
+      "sha256": "245d60d0106d1e850ed6b6b1623f2ed442b3d34424db5297aeb55e2c4a87b3f6",
+      "proof_declarations": 8,
+      "decreasing_spec_declarations": [
+        "fold",
+        "run",
+        "prefixes_fit"
+      ],
+      "explicit_nonlinear_subqueries": 0,
+      "nonlinear_functions": []
+    },
+    {
+      "file": ".g5/Verus_verification/models/rel_prop_text/rel_prop_text.rs",
+      "sha256": "f45bbcb900699fb157ce6bc36583ece65c9b451ecf33f12fc8d6e34c3e0ffbbe",
+      "proof_declarations": 10,
+      "decreasing_spec_declarations": [],
+      "explicit_nonlinear_subqueries": 0,
+      "nonlinear_functions": []
+    },
+    {
+      "file": ".g5/Verus_verification/models/retry_replay/retry_replay.rs",
+      "sha256": "e8240f12fbd8883f412956fa658d691ed74248bd26ddacfc43aa42c298e718f1",
+      "proof_declarations": 14,
+      "decreasing_spec_declarations": [],
+      "explicit_nonlinear_subqueries": 0,
+      "nonlinear_functions": []
+    },
+    {
+      "file": ".g5/Verus_verification/models/route_recheck/route_recheck.rs",
+      "sha256": "1308596fd1641cb3586bb8c84b307a99e71bd72dc36767bf615564dbac7aebe8",
+      "proof_declarations": 6,
+      "decreasing_spec_declarations": [],
+      "explicit_nonlinear_subqueries": 0,
+      "nonlinear_functions": []
+    },
+    {
+      "file": ".g5/Verus_verification/models/search/search.rs",
+      "sha256": "b5e41104bb22000bbb8055a2f8626e39812b02e467d6a389e04ae6634df8508f",
+      "proof_declarations": 54,
+      "decreasing_spec_declarations": [
+        "sumf",
+        "cut_scan"
+      ],
+      "explicit_nonlinear_subqueries": 0,
+      "nonlinear_functions": []
+    },
+    {
+      "file": ".g5/Verus_verification/models/service_health/service_health.rs",
+      "sha256": "c768d2646b1eba243619f465348f463b5d3a50a98382965c1325f2e50a966d8e",
+      "proof_declarations": 18,
+      "decreasing_spec_declarations": [],
+      "explicit_nonlinear_subqueries": 0,
+      "nonlinear_functions": []
+    },
+    {
+      "file": ".g5/Verus_verification/models/snapshot_routes/snapshot_routes.rs",
+      "sha256": "ccbb06438227f8c61ca588cc0e0700e17ee707aa7376cf264272682cbb5994b8",
+      "proof_declarations": 14,
+      "decreasing_spec_declarations": [],
+      "explicit_nonlinear_subqueries": 0,
+      "nonlinear_functions": []
+    },
+    {
+      "file": ".g5/Verus_verification/models/temporal/temporal.rs",
+      "sha256": "9bade6a42c06775640604bf1c3cd7d9ad940878c784ee4fee5fde0ea6576b950",
+      "proof_declarations": 109,
+      "decreasing_spec_declarations": [
+        "wsum",
+        "apply_ops",
+        "bulk_counts",
+        "fallback"
+      ],
+      "explicit_nonlinear_subqueries": 0,
+      "nonlinear_functions": []
+    },
+    {
+      "file": ".g5/Verus_verification/models/temporal_clock/temporal_clock.rs",
+      "sha256": "ce371d29745a9f520abb327fa3b358b5aac15db46d105664604598eba70e8be1",
+      "proof_declarations": 24,
+      "decreasing_spec_declarations": [
+        "fold"
+      ],
+      "explicit_nonlinear_subqueries": 0,
+      "nonlinear_functions": []
+    },
+    {
+      "file": ".g5/Verus_verification/models/temporal_restore/temporal_restore.rs",
+      "sha256": "0f72f0047d5a1faf6471e0cd7b2bc369fe2c4e334144bbc17b6264b961d584a6",
+      "proof_declarations": 13,
+      "decreasing_spec_declarations": [
+        "export",
+        "import"
+      ],
+      "explicit_nonlinear_subqueries": 0,
+      "nonlinear_functions": []
+    },
+    {
+      "file": ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs",
+      "sha256": "4f14236f57a45c64e889f794b6d55f3fc823dccaba4a2759ed7cedc97fd3bd9d",
+      "proof_declarations": 14,
+      "decreasing_spec_declarations": [
+        "drain",
+        "concat"
+      ],
+      "explicit_nonlinear_subqueries": 0,
+      "nonlinear_functions": []
+    },
+    {
+      "file": ".g5/Verus_verification/models/vector_threshold/vector_threshold.rs",
+      "sha256": "8f46f4d7ba48f4320221846e49f76951cdd20c4c9b86578dd886e34ec7f7beb6",
+      "proof_declarations": 5,
+      "decreasing_spec_declarations": [
+        "eligible"
+      ],
+      "explicit_nonlinear_subqueries": 0,
+      "nonlinear_functions": []
+    },
+    {
+      "file": ".g5/Verus_verification/models/warm_sources/warm_sources.rs",
+      "sha256": "d4cbb45a49b1d5b5eaa8dcb15f18d6731bee6e43498273e5b1a0b43f3b535620",
+      "proof_declarations": 6,
+      "decreasing_spec_declarations": [
+        "filled"
+      ],
+      "explicit_nonlinear_subqueries": 0,
+      "nonlinear_functions": []
+    },
+    {
+      "file": ".g5/Verus_verification/models/weighted_cost/weighted_cost.rs",
+      "sha256": "602722835a1367bf97d2c548d3e256ddbdd96c8020fe775fbc0e7d88e7950093",
+      "proof_declarations": 40,
+      "decreasing_spec_declarations": [
+        "walk",
+        "reverse_path",
+        "expand"
+      ],
+      "explicit_nonlinear_subqueries": 0,
+      "nonlinear_functions": []
+    },
+    {
+      "file": ".g5/Verus_verification/models/weighted_paths/weighted_paths.rs",
+      "sha256": "0a58dc4b09a37717356c72b29a9df4cbee07d82985df5cb16058f19ce6c97907",
+      "proof_declarations": 39,
+      "decreasing_spec_declarations": [
+        "expand",
+        "walk",
+        "cost",
+        "backtrack",
+        "entries_for_node",
+        "finite_entries"
+      ],
+      "explicit_nonlinear_subqueries": 0,
+      "nonlinear_functions": []
+    }
+  ],
+  "selected": {
+    "ppr_walk": {
+      "source": ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs",
+      "source_sha256": "fc4d810bd6e92e5b57cb63c228a41b2f3ada7db3af9b32ddff58ef5f09b8fbcc",
+      "scratch_source": ".g5/uplift/consolidated/iteration-11/count-audit-scratch/inputs/models/ppr_walk/ppr_walk.rs",
+      "scratch_source_sha256": "fc4d810bd6e92e5b57cb63c228a41b2f3ada7db3af9b32ddff58ef5f09b8fbcc",
+      "proof_declarations": [
+        {
+          "mode": "proof",
+          "name": "lemma_pos",
+          "line": 70,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_sum_zeros",
+          "line": 73,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_deposit",
+          "line": 76,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_seed_add",
+          "line": 82,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": [
+            93,
+            95
+          ]
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_initial_uniform_mass",
+          "line": 98,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": [
+            102
+          ]
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_copies",
+          "line": 104,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_hops_unit",
+          "line": 107,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_ship",
+          "line": 124,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": [
+            134,
+            136
+          ]
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_scatter",
+          "line": 138,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": [
+            157,
+            161,
+            162
+          ]
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_step_mass_from_raw_outgoing",
+          "line": 165,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": [
+            174
+          ]
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_iterated_mass",
+          "line": 188,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": [
+            193
+          ]
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_iteration_cap",
+          "line": 197,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_prepend_contains",
+          "line": 201,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_valid_seed_set",
+          "line": 208,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_scoped_members",
+          "line": 227,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_hops_closed",
+          "line": 243,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_raw_preparation_closed",
+          "line": 261,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_raw_walk_mass",
+          "line": 270,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_order_transitive",
+          "line": 299,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_insert_order",
+          "line": 300,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_insert_member",
+          "line": 318,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_rank_order",
+          "line": 322,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_cap_is_actual_prefix",
+          "line": 325,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_div_one",
+          "line": 328,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": [
+            328
+          ]
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_tiny_recurrence",
+          "line": 330,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_rank_identity",
+          "line": 344,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_tiny_readers",
+          "line": 347,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_recurrence_tiny_zero_cut_differs",
+          "line": 355,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_positive_readers",
+          "line": 367,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_positive_rank_and_zeros_read_together",
+          "line": 384,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_strict_held_change_decides",
+          "line": 387,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_zero_tolerance_does_not_stop_on_zero_change",
+          "line": 391,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": [
+            396
+          ]
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_delta_self",
+          "line": 398,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_reverse_weight_scales_contribution_only",
+          "line": 400,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_reverse_zero_uses_dangling_restart",
+          "line": 413,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_multiplicity_divisor_not_distinct_neighbors",
+          "line": 424,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_other_graph_not_members_or_hops",
+          "line": 428,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_empty_scores_do_not_invent_zero_nodes",
+          "line": 431,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_zero_rows_sparse",
+          "line": 434,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_isolated3_recurrence",
+          "line": 443,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": [
+            451,
+            453
+          ]
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_capped_positive_row_becomes_zero",
+          "line": 455,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_recurrence_cap_fabricates_zero",
+          "line": 465,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": [
+            469
+          ]
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_cut_order",
+          "line": 472,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_full_reader_ordered",
+          "line": 477,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_producer_limit_is_derived",
+          "line": 494,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_refusal_precedes_walk",
+          "line": 498,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_no_valid_seed_is_empty",
+          "line": 502,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_walk_request_stays_within_iteration_budget",
+          "line": 506,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_request_tiny_readers_differ",
+          "line": 510,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_above_zero_bucket_readers_agree",
+          "line": 520,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_second_tiny_step",
+          "line": 529,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_held_zero_node_does_not_inflate_stop_threshold",
+          "line": 539,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_seed_add_monotone",
+          "line": 546,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_seed_positive",
+          "line": 557,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_valid_seed_identity",
+          "line": 569,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_scoped_map",
+          "line": 579,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_empty_scatter",
+          "line": 585,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_isolated_seed_scores_positive",
+          "line": 592,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": [
+            600,
+            606
+          ]
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_row_ids",
+          "line": 609,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_has_prepend",
+          "line": 615,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_missing_has",
+          "line": 618,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_missing_rows",
+          "line": 627,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_missing_nonempty",
+          "line": 639,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_rank_member",
+          "line": 652,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_rows_properties",
+          "line": 658,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_sparse_positive",
+          "line": 665,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_positive_input_cap_gap",
+          "line": 672,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_public_default_cap_gap_from_raw_seeds",
+          "line": 685,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": []
+        }
+      ],
+      "recursive_specs": [
+        {
+          "mode": "spec",
+          "name": "scoped",
+          "line": 22,
+          "decreases_in_spec_header": true,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "spec",
+          "name": "valid_seeds",
+          "line": 25,
+          "decreases_in_spec_header": true,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "spec",
+          "name": "copies",
+          "line": 29,
+          "decreases_in_spec_header": true,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "spec",
+          "name": "hops",
+          "line": 30,
+          "decreases_in_spec_header": true,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "spec",
+          "name": "pos",
+          "line": 39,
+          "decreases_in_spec_header": true,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "spec",
+          "name": "sum",
+          "line": 41,
+          "decreases_in_spec_header": true,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "spec",
+          "name": "seed_add",
+          "line": 43,
+          "decreases_in_spec_header": true,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "spec",
+          "name": "ship",
+          "line": 47,
+          "decreases_in_spec_header": true,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "spec",
+          "name": "scatter",
+          "line": 51,
+          "decreases_in_spec_header": true,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "spec",
+          "name": "delta",
+          "line": 177,
+          "decreases_in_spec_header": true,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "spec",
+          "name": "held",
+          "line": 178,
+          "decreases_in_spec_header": true,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "spec",
+          "name": "iterate",
+          "line": 180,
+          "decreases_in_spec_header": true,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "spec",
+          "name": "insert",
+          "line": 285,
+          "decreases_in_spec_header": true,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "spec",
+          "name": "rank",
+          "line": 286,
+          "decreases_in_spec_header": true,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "spec",
+          "name": "rows",
+          "line": 287,
+          "decreases_in_spec_header": true,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "spec",
+          "name": "sparse",
+          "line": 288,
+          "decreases_in_spec_header": true,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "spec",
+          "name": "has",
+          "line": 289,
+          "decreases_in_spec_header": true,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "spec",
+          "name": "missing",
+          "line": 290,
+          "decreases_in_spec_header": true,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        }
+      ],
+      "nonlinear_proof_functions": [
+        {
+          "mode": "proof",
+          "name": "lemma_seed_add",
+          "line": 82,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": [
+            93,
+            95
+          ]
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_initial_uniform_mass",
+          "line": 98,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": [
+            102
+          ]
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_ship",
+          "line": 124,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": [
+            134,
+            136
+          ]
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_scatter",
+          "line": 138,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": [
+            157,
+            161,
+            162
+          ]
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_step_mass_from_raw_outgoing",
+          "line": 165,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": [
+            174
+          ]
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_iterated_mass",
+          "line": 188,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": [
+            193
+          ]
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_div_one",
+          "line": 328,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": [
+            328
+          ]
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_zero_tolerance_does_not_stop_on_zero_change",
+          "line": 391,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": [
+            396
+          ]
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_isolated3_recurrence",
+          "line": 443,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": [
+            451,
+            453
+          ]
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_recurrence_cap_fabricates_zero",
+          "line": 465,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": [
+            469
+          ]
+        },
+        {
+          "mode": "proof",
+          "name": "lemma_isolated_seed_scores_positive",
+          "line": 592,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": [
+            600,
+            606
+          ]
+        }
+      ],
+      "totals": {
+        "proof_declarations": 68,
+        "recursive_spec_checks": 18,
+        "nonlinear_arith_subqueries": 17,
+        "verifier_total": 103
+      },
+      "checks": [
+        {
+          "function": null,
+          "expected_units": 103,
+          "observed": [
+            103,
+            0
+          ],
+          "exit_code": 0,
+          "seconds": 4.402773583016824,
+          "command": [
+            "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+            "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/count-audit-scratch/inputs/models/ppr_walk/ppr_walk.rs",
+            "--crate-type=lib",
+            "--num-threads",
+            "4",
+            "--triggers-mode",
+            "silent"
+          ],
+          "log": ".g5/uplift/consolidated/iteration-11/count-audit-scratch/logs/ppr_walk/full.log",
+          "ordinary_clean": true
+        },
+        {
+          "function": "scoped",
+          "expected_units": 1,
+          "observed": [
+            1,
+            0
+          ],
+          "exit_code": 0,
+          "seconds": 1.2048139999969862,
+          "command": [
+            "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+            "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/count-audit-scratch/inputs/models/ppr_walk/ppr_walk.rs",
+            "--crate-type=lib",
+            "--num-threads",
+            "4",
+            "--triggers-mode",
+            "silent",
+            "--verify-root",
+            "--verify-function",
+            "scoped"
+          ],
+          "log": ".g5/uplift/consolidated/iteration-11/count-audit-scratch/logs/ppr_walk/scoped.log",
+          "ordinary_clean": true
+        },
+        {
+          "function": "valid_seeds",
+          "expected_units": 1,
+          "observed": [
+            1,
+            0
+          ],
+          "exit_code": 0,
+          "seconds": 1.2016071249963716,
+          "command": [
+            "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+            "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/count-audit-scratch/inputs/models/ppr_walk/ppr_walk.rs",
+            "--crate-type=lib",
+            "--num-threads",
+            "4",
+            "--triggers-mode",
+            "silent",
+            "--verify-root",
+            "--verify-function",
+            "valid_seeds"
+          ],
+          "log": ".g5/uplift/consolidated/iteration-11/count-audit-scratch/logs/ppr_walk/valid_seeds.log",
+          "ordinary_clean": true
+        },
+        {
+          "function": "copies",
+          "expected_units": 1,
+          "observed": [
+            1,
+            0
+          ],
+          "exit_code": 0,
+          "seconds": 1.17960066604428,
+          "command": [
+            "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+            "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/count-audit-scratch/inputs/models/ppr_walk/ppr_walk.rs",
+            "--crate-type=lib",
+            "--num-threads",
+            "4",
+            "--triggers-mode",
+            "silent",
+            "--verify-root",
+            "--verify-function",
+            "copies"
+          ],
+          "log": ".g5/uplift/consolidated/iteration-11/count-audit-scratch/logs/ppr_walk/copies.log",
+          "ordinary_clean": true
+        },
+        {
+          "function": "hops",
+          "expected_units": 1,
+          "observed": [
+            1,
+            0
+          ],
+          "exit_code": 0,
+          "seconds": 1.2166150830453262,
+          "command": [
+            "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+            "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/count-audit-scratch/inputs/models/ppr_walk/ppr_walk.rs",
+            "--crate-type=lib",
+            "--num-threads",
+            "4",
+            "--triggers-mode",
+            "silent",
+            "--verify-root",
+            "--verify-function",
+            "hops"
+          ],
+          "log": ".g5/uplift/consolidated/iteration-11/count-audit-scratch/logs/ppr_walk/hops.log",
+          "ordinary_clean": true
+        },
+        {
+          "function": "pos",
+          "expected_units": 1,
+          "observed": [
+            1,
+            0
+          ],
+          "exit_code": 0,
+          "seconds": 1.1996433330350555,
+          "command": [
+            "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+            "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/count-audit-scratch/inputs/models/ppr_walk/ppr_walk.rs",
+            "--crate-type=lib",
+            "--num-threads",
+            "4",
+            "--triggers-mode",
+            "silent",
+            "--verify-root",
+            "--verify-function",
+            "pos"
+          ],
+          "log": ".g5/uplift/consolidated/iteration-11/count-audit-scratch/logs/ppr_walk/pos.log",
+          "ordinary_clean": true
+        },
+        {
+          "function": "sum",
+          "expected_units": 1,
+          "observed": [
+            1,
+            0
+          ],
+          "exit_code": 0,
+          "seconds": 1.2258790420019068,
+          "command": [
+            "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+            "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/count-audit-scratch/inputs/models/ppr_walk/ppr_walk.rs",
+            "--crate-type=lib",
+            "--num-threads",
+            "4",
+            "--triggers-mode",
+            "silent",
+            "--verify-root",
+            "--verify-function",
+            "sum"
+          ],
+          "log": ".g5/uplift/consolidated/iteration-11/count-audit-scratch/logs/ppr_walk/sum.log",
+          "ordinary_clean": true
+        },
+        {
+          "function": "seed_add",
+          "expected_units": 1,
+          "observed": [
+            1,
+            0
+          ],
+          "exit_code": 0,
+          "seconds": 1.2349011250189506,
+          "command": [
+            "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+            "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/count-audit-scratch/inputs/models/ppr_walk/ppr_walk.rs",
+            "--crate-type=lib",
+            "--num-threads",
+            "4",
+            "--triggers-mode",
+            "silent",
+            "--verify-root",
+            "--verify-function",
+            "seed_add"
+          ],
+          "log": ".g5/uplift/consolidated/iteration-11/count-audit-scratch/logs/ppr_walk/seed_add.log",
+          "ordinary_clean": true
+        },
+        {
+          "function": "ship",
+          "expected_units": 1,
+          "observed": [
+            1,
+            0
+          ],
+          "exit_code": 0,
+          "seconds": 1.2173689999617636,
+          "command": [
+            "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+            "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/count-audit-scratch/inputs/models/ppr_walk/ppr_walk.rs",
+            "--crate-type=lib",
+            "--num-threads",
+            "4",
+            "--triggers-mode",
+            "silent",
+            "--verify-root",
+            "--verify-function",
+            "ship"
+          ],
+          "log": ".g5/uplift/consolidated/iteration-11/count-audit-scratch/logs/ppr_walk/ship.log",
+          "ordinary_clean": true
+        },
+        {
+          "function": "scatter",
+          "expected_units": 1,
+          "observed": [
+            1,
+            0
+          ],
+          "exit_code": 0,
+          "seconds": 1.1915322080021724,
+          "command": [
+            "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+            "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/count-audit-scratch/inputs/models/ppr_walk/ppr_walk.rs",
+            "--crate-type=lib",
+            "--num-threads",
+            "4",
+            "--triggers-mode",
+            "silent",
+            "--verify-root",
+            "--verify-function",
+            "scatter"
+          ],
+          "log": ".g5/uplift/consolidated/iteration-11/count-audit-scratch/logs/ppr_walk/scatter.log",
+          "ordinary_clean": true
+        },
+        {
+          "function": "delta",
+          "expected_units": 1,
+          "observed": [
+            1,
+            0
+          ],
+          "exit_code": 0,
+          "seconds": 1.201001624984201,
+          "command": [
+            "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+            "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/count-audit-scratch/inputs/models/ppr_walk/ppr_walk.rs",
+            "--crate-type=lib",
+            "--num-threads",
+            "4",
+            "--triggers-mode",
+            "silent",
+            "--verify-root",
+            "--verify-function",
+            "delta"
+          ],
+          "log": ".g5/uplift/consolidated/iteration-11/count-audit-scratch/logs/ppr_walk/delta.log",
+          "ordinary_clean": true
+        },
+        {
+          "function": "held",
+          "expected_units": 1,
+          "observed": [
+            1,
+            0
+          ],
+          "exit_code": 0,
+          "seconds": 1.2314833749551326,
+          "command": [
+            "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+            "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/count-audit-scratch/inputs/models/ppr_walk/ppr_walk.rs",
+            "--crate-type=lib",
+            "--num-threads",
+            "4",
+            "--triggers-mode",
+            "silent",
+            "--verify-root",
+            "--verify-function",
+            "held"
+          ],
+          "log": ".g5/uplift/consolidated/iteration-11/count-audit-scratch/logs/ppr_walk/held.log",
+          "ordinary_clean": true
+        },
+        {
+          "function": "iterate",
+          "expected_units": 1,
+          "observed": [
+            1,
+            0
+          ],
+          "exit_code": 0,
+          "seconds": 1.3885219169897027,
+          "command": [
+            "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+            "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/count-audit-scratch/inputs/models/ppr_walk/ppr_walk.rs",
+            "--crate-type=lib",
+            "--num-threads",
+            "4",
+            "--triggers-mode",
+            "silent",
+            "--verify-root",
+            "--verify-function",
+            "iterate"
+          ],
+          "log": ".g5/uplift/consolidated/iteration-11/count-audit-scratch/logs/ppr_walk/iterate.log",
+          "ordinary_clean": true
+        },
+        {
+          "function": "insert",
+          "expected_units": 1,
+          "observed": [
+            1,
+            0
+          ],
+          "exit_code": 0,
+          "seconds": 1.226741582970135,
+          "command": [
+            "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+            "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/count-audit-scratch/inputs/models/ppr_walk/ppr_walk.rs",
+            "--crate-type=lib",
+            "--num-threads",
+            "4",
+            "--triggers-mode",
+            "silent",
+            "--verify-root",
+            "--verify-function",
+            "insert"
+          ],
+          "log": ".g5/uplift/consolidated/iteration-11/count-audit-scratch/logs/ppr_walk/insert.log",
+          "ordinary_clean": true
+        },
+        {
+          "function": "rank",
+          "expected_units": 1,
+          "observed": [
+            1,
+            0
+          ],
+          "exit_code": 0,
+          "seconds": 1.2249926250078715,
+          "command": [
+            "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+            "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/count-audit-scratch/inputs/models/ppr_walk/ppr_walk.rs",
+            "--crate-type=lib",
+            "--num-threads",
+            "4",
+            "--triggers-mode",
+            "silent",
+            "--verify-root",
+            "--verify-function",
+            "rank"
+          ],
+          "log": ".g5/uplift/consolidated/iteration-11/count-audit-scratch/logs/ppr_walk/rank.log",
+          "ordinary_clean": true
+        },
+        {
+          "function": "rows",
+          "expected_units": 1,
+          "observed": [
+            1,
+            0
+          ],
+          "exit_code": 0,
+          "seconds": 1.1950733750127256,
+          "command": [
+            "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+            "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/count-audit-scratch/inputs/models/ppr_walk/ppr_walk.rs",
+            "--crate-type=lib",
+            "--num-threads",
+            "4",
+            "--triggers-mode",
+            "silent",
+            "--verify-root",
+            "--verify-function",
+            "rows"
+          ],
+          "log": ".g5/uplift/consolidated/iteration-11/count-audit-scratch/logs/ppr_walk/rows.log",
+          "ordinary_clean": true
+        },
+        {
+          "function": "sparse",
+          "expected_units": 1,
+          "observed": [
+            1,
+            0
+          ],
+          "exit_code": 0,
+          "seconds": 1.2266885829740204,
+          "command": [
+            "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+            "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/count-audit-scratch/inputs/models/ppr_walk/ppr_walk.rs",
+            "--crate-type=lib",
+            "--num-threads",
+            "4",
+            "--triggers-mode",
+            "silent",
+            "--verify-root",
+            "--verify-function",
+            "sparse"
+          ],
+          "log": ".g5/uplift/consolidated/iteration-11/count-audit-scratch/logs/ppr_walk/sparse.log",
+          "ordinary_clean": true
+        },
+        {
+          "function": "has",
+          "expected_units": 1,
+          "observed": [
+            1,
+            0
+          ],
+          "exit_code": 0,
+          "seconds": 1.2199907079921104,
+          "command": [
+            "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+            "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/count-audit-scratch/inputs/models/ppr_walk/ppr_walk.rs",
+            "--crate-type=lib",
+            "--num-threads",
+            "4",
+            "--triggers-mode",
+            "silent",
+            "--verify-root",
+            "--verify-function",
+            "has"
+          ],
+          "log": ".g5/uplift/consolidated/iteration-11/count-audit-scratch/logs/ppr_walk/has.log",
+          "ordinary_clean": true
+        },
+        {
+          "function": "missing",
+          "expected_units": 1,
+          "observed": [
+            1,
+            0
+          ],
+          "exit_code": 0,
+          "seconds": 1.2270518750301562,
+          "command": [
+            "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+            "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/count-audit-scratch/inputs/models/ppr_walk/ppr_walk.rs",
+            "--crate-type=lib",
+            "--num-threads",
+            "4",
+            "--triggers-mode",
+            "silent",
+            "--verify-root",
+            "--verify-function",
+            "missing"
+          ],
+          "log": ".g5/uplift/consolidated/iteration-11/count-audit-scratch/logs/ppr_walk/missing.log",
+          "ordinary_clean": true
+        },
+        {
+          "function": "lemma_seed_add",
+          "expected_units": 3,
+          "observed": [
+            3,
+            0
+          ],
+          "exit_code": 0,
+          "seconds": 1.3512145419954322,
+          "command": [
+            "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+            "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/count-audit-scratch/inputs/models/ppr_walk/ppr_walk.rs",
+            "--crate-type=lib",
+            "--num-threads",
+            "4",
+            "--triggers-mode",
+            "silent",
+            "--verify-root",
+            "--verify-function",
+            "lemma_seed_add"
+          ],
+          "log": ".g5/uplift/consolidated/iteration-11/count-audit-scratch/logs/ppr_walk/lemma_seed_add.log",
+          "ordinary_clean": true
+        },
+        {
+          "function": "theorem_initial_uniform_mass",
+          "expected_units": 2,
+          "observed": [
+            2,
+            0
+          ],
+          "exit_code": 0,
+          "seconds": 1.2778648750390857,
+          "command": [
+            "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+            "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/count-audit-scratch/inputs/models/ppr_walk/ppr_walk.rs",
+            "--crate-type=lib",
+            "--num-threads",
+            "4",
+            "--triggers-mode",
+            "silent",
+            "--verify-root",
+            "--verify-function",
+            "theorem_initial_uniform_mass"
+          ],
+          "log": ".g5/uplift/consolidated/iteration-11/count-audit-scratch/logs/ppr_walk/theorem_initial_uniform_mass.log",
+          "ordinary_clean": true
+        },
+        {
+          "function": "lemma_ship",
+          "expected_units": 3,
+          "observed": [
+            3,
+            0
+          ],
+          "exit_code": 0,
+          "seconds": 1.3194912920007482,
+          "command": [
+            "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+            "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/count-audit-scratch/inputs/models/ppr_walk/ppr_walk.rs",
+            "--crate-type=lib",
+            "--num-threads",
+            "4",
+            "--triggers-mode",
+            "silent",
+            "--verify-root",
+            "--verify-function",
+            "lemma_ship"
+          ],
+          "log": ".g5/uplift/consolidated/iteration-11/count-audit-scratch/logs/ppr_walk/lemma_ship.log",
+          "ordinary_clean": true
+        },
+        {
+          "function": "lemma_scatter",
+          "expected_units": 4,
+          "observed": [
+            4,
+            0
+          ],
+          "exit_code": 0,
+          "seconds": 1.4213665829738602,
+          "command": [
+            "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+            "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/count-audit-scratch/inputs/models/ppr_walk/ppr_walk.rs",
+            "--crate-type=lib",
+            "--num-threads",
+            "4",
+            "--triggers-mode",
+            "silent",
+            "--verify-root",
+            "--verify-function",
+            "lemma_scatter"
+          ],
+          "log": ".g5/uplift/consolidated/iteration-11/count-audit-scratch/logs/ppr_walk/lemma_scatter.log",
+          "ordinary_clean": true
+        },
+        {
+          "function": "theorem_step_mass_from_raw_outgoing",
+          "expected_units": 2,
+          "observed": [
+            2,
+            0
+          ],
+          "exit_code": 0,
+          "seconds": 1.2735121660516597,
+          "command": [
+            "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+            "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/count-audit-scratch/inputs/models/ppr_walk/ppr_walk.rs",
+            "--crate-type=lib",
+            "--num-threads",
+            "4",
+            "--triggers-mode",
+            "silent",
+            "--verify-root",
+            "--verify-function",
+            "theorem_step_mass_from_raw_outgoing"
+          ],
+          "log": ".g5/uplift/consolidated/iteration-11/count-audit-scratch/logs/ppr_walk/theorem_step_mass_from_raw_outgoing.log",
+          "ordinary_clean": true
+        },
+        {
+          "function": "theorem_iterated_mass",
+          "expected_units": 2,
+          "observed": [
+            2,
+            0
+          ],
+          "exit_code": 0,
+          "seconds": 1.3071211670176126,
+          "command": [
+            "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+            "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/count-audit-scratch/inputs/models/ppr_walk/ppr_walk.rs",
+            "--crate-type=lib",
+            "--num-threads",
+            "4",
+            "--triggers-mode",
+            "silent",
+            "--verify-root",
+            "--verify-function",
+            "theorem_iterated_mass"
+          ],
+          "log": ".g5/uplift/consolidated/iteration-11/count-audit-scratch/logs/ppr_walk/theorem_iterated_mass.log",
+          "ordinary_clean": true
+        },
+        {
+          "function": "lemma_div_one",
+          "expected_units": 2,
+          "observed": [
+            2,
+            0
+          ],
+          "exit_code": 0,
+          "seconds": 1.3059079999802634,
+          "command": [
+            "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+            "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/count-audit-scratch/inputs/models/ppr_walk/ppr_walk.rs",
+            "--crate-type=lib",
+            "--num-threads",
+            "4",
+            "--triggers-mode",
+            "silent",
+            "--verify-root",
+            "--verify-function",
+            "lemma_div_one"
+          ],
+          "log": ".g5/uplift/consolidated/iteration-11/count-audit-scratch/logs/ppr_walk/lemma_div_one.log",
+          "ordinary_clean": true
+        },
+        {
+          "function": "theorem_zero_tolerance_does_not_stop_on_zero_change",
+          "expected_units": 2,
+          "observed": [
+            2,
+            0
+          ],
+          "exit_code": 0,
+          "seconds": 1.3207759580109268,
+          "command": [
+            "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+            "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/count-audit-scratch/inputs/models/ppr_walk/ppr_walk.rs",
+            "--crate-type=lib",
+            "--num-threads",
+            "4",
+            "--triggers-mode",
+            "silent",
+            "--verify-root",
+            "--verify-function",
+            "theorem_zero_tolerance_does_not_stop_on_zero_change"
+          ],
+          "log": ".g5/uplift/consolidated/iteration-11/count-audit-scratch/logs/ppr_walk/theorem_zero_tolerance_does_not_stop_on_zero_change.log",
+          "ordinary_clean": true
+        },
+        {
+          "function": "lemma_isolated3_recurrence",
+          "expected_units": 3,
+          "observed": [
+            3,
+            0
+          ],
+          "exit_code": 0,
+          "seconds": 1.3709122909931466,
+          "command": [
+            "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+            "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/count-audit-scratch/inputs/models/ppr_walk/ppr_walk.rs",
+            "--crate-type=lib",
+            "--num-threads",
+            "4",
+            "--triggers-mode",
+            "silent",
+            "--verify-root",
+            "--verify-function",
+            "lemma_isolated3_recurrence"
+          ],
+          "log": ".g5/uplift/consolidated/iteration-11/count-audit-scratch/logs/ppr_walk/lemma_isolated3_recurrence.log",
+          "ordinary_clean": true
+        },
+        {
+          "function": "theorem_recurrence_cap_fabricates_zero",
+          "expected_units": 2,
+          "observed": [
+            2,
+            0
+          ],
+          "exit_code": 0,
+          "seconds": 1.3627220409689471,
+          "command": [
+            "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+            "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/count-audit-scratch/inputs/models/ppr_walk/ppr_walk.rs",
+            "--crate-type=lib",
+            "--num-threads",
+            "4",
+            "--triggers-mode",
+            "silent",
+            "--verify-root",
+            "--verify-function",
+            "theorem_recurrence_cap_fabricates_zero"
+          ],
+          "log": ".g5/uplift/consolidated/iteration-11/count-audit-scratch/logs/ppr_walk/theorem_recurrence_cap_fabricates_zero.log",
+          "ordinary_clean": true
+        },
+        {
+          "function": "lemma_isolated_seed_scores_positive",
+          "expected_units": 3,
+          "observed": [
+            3,
+            0
+          ],
+          "exit_code": 0,
+          "seconds": 1.3634926250088029,
+          "command": [
+            "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+            "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/count-audit-scratch/inputs/models/ppr_walk/ppr_walk.rs",
+            "--crate-type=lib",
+            "--num-threads",
+            "4",
+            "--triggers-mode",
+            "silent",
+            "--verify-root",
+            "--verify-function",
+            "lemma_isolated_seed_scores_positive"
+          ],
+          "log": ".g5/uplift/consolidated/iteration-11/count-audit-scratch/logs/ppr_walk/lemma_isolated_seed_scores_positive.log",
+          "ordinary_clean": true
+        },
+        {
+          "function": "lemma_pos",
+          "expected_units": 1,
+          "observed": [
+            1,
+            0
+          ],
+          "exit_code": 0,
+          "seconds": 1.206172875012271,
+          "command": [
+            "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+            "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/count-audit-scratch/inputs/models/ppr_walk/ppr_walk.rs",
+            "--crate-type=lib",
+            "--num-threads",
+            "4",
+            "--triggers-mode",
+            "silent",
+            "--verify-root",
+            "--verify-function",
+            "lemma_pos"
+          ],
+          "log": ".g5/uplift/consolidated/iteration-11/count-audit-scratch/logs/ppr_walk/lemma_pos.log",
+          "ordinary_clean": true
+        }
+      ]
+    },
+    "fusion_ranking": {
+      "source": ".g5/Verus_verification/models/fusion_ranking/fusion_ranking.rs",
+      "source_sha256": "c355b2249b053fc25045068e6e8039dc4302b052c4b2ab90ac102fa1197a6ead",
+      "scratch_source": ".g5/uplift/consolidated/iteration-11/count-audit-scratch/inputs/models/fusion_ranking/fusion_ranking.rs",
+      "scratch_source_sha256": "c355b2249b053fc25045068e6e8039dc4302b052c4b2ab90ac102fa1197a6ead",
+      "proof_declarations": [
+        {
+          "mode": "proof",
+          "name": "theorem_rank_ignores_magnitude",
+          "line": 23,
+          "decreases_in_spec_header": false,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_first_occurrence_wins",
+          "line": 37,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_absent_contributes_zero",
+          "line": 40,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_second_leg_changes_winner",
+          "line": 48,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": [
+            53,
+            54
+          ]
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_vector_failure_dropped_text_failure_raises",
+          "line": 71,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_empty_success_is_a_retained_leg",
+          "line": 76,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "proof",
+          "name": "theorem_graph_failure_dropped",
+          "line": 80,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": []
+        }
+      ],
+      "recursive_specs": [
+        {
+          "mode": "spec",
+          "name": "rank",
+          "line": 6,
+          "decreases_in_spec_header": true,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        },
+        {
+          "mode": "spec",
+          "name": "score",
+          "line": 15,
+          "decreases_in_spec_header": true,
+          "direct_self_call": true,
+          "nonlinear_subquery_lines": []
+        }
+      ],
+      "nonlinear_proof_functions": [
+        {
+          "mode": "proof",
+          "name": "theorem_second_leg_changes_winner",
+          "line": 48,
+          "decreases_in_spec_header": false,
+          "direct_self_call": false,
+          "nonlinear_subquery_lines": [
+            53,
+            54
+          ]
+        }
+      ],
+      "totals": {
+        "proof_declarations": 7,
+        "recursive_spec_checks": 2,
+        "nonlinear_arith_subqueries": 2,
+        "verifier_total": 11
+      },
+      "checks": [
+        {
+          "function": null,
+          "expected_units": 11,
+          "observed": [
+            11,
+            0
+          ],
+          "exit_code": 0,
+          "seconds": 0.6244984999648295,
+          "command": [
+            "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+            "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/count-audit-scratch/inputs/models/fusion_ranking/fusion_ranking.rs",
+            "--crate-type=lib",
+            "--num-threads",
+            "4",
+            "--triggers-mode",
+            "silent"
+          ],
+          "log": ".g5/uplift/consolidated/iteration-11/count-audit-scratch/logs/fusion_ranking/full.log",
+          "ordinary_clean": true
+        },
+        {
+          "function": "rank",
+          "expected_units": 1,
+          "observed": [
+            1,
+            0
+          ],
+          "exit_code": 0,
+          "seconds": 0.5285751249757595,
+          "command": [
+            "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+            "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/count-audit-scratch/inputs/models/fusion_ranking/fusion_ranking.rs",
+            "--crate-type=lib",
+            "--num-threads",
+            "4",
+            "--triggers-mode",
+            "silent",
+            "--verify-root",
+            "--verify-function",
+            "rank"
+          ],
+          "log": ".g5/uplift/consolidated/iteration-11/count-audit-scratch/logs/fusion_ranking/rank.log",
+          "ordinary_clean": true
+        },
+        {
+          "function": "score",
+          "expected_units": 1,
+          "observed": [
+            1,
+            0
+          ],
+          "exit_code": 0,
+          "seconds": 0.5358907500049099,
+          "command": [
+            "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+            "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/count-audit-scratch/inputs/models/fusion_ranking/fusion_ranking.rs",
+            "--crate-type=lib",
+            "--num-threads",
+            "4",
+            "--triggers-mode",
+            "silent",
+            "--verify-root",
+            "--verify-function",
+            "score"
+          ],
+          "log": ".g5/uplift/consolidated/iteration-11/count-audit-scratch/logs/fusion_ranking/score.log",
+          "ordinary_clean": true
+        },
+        {
+          "function": "theorem_second_leg_changes_winner",
+          "expected_units": 3,
+          "observed": [
+            3,
+            0
+          ],
+          "exit_code": 0,
+          "seconds": 0.6008255829801783,
+          "command": [
+            "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+            "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/count-audit-scratch/inputs/models/fusion_ranking/fusion_ranking.rs",
+            "--crate-type=lib",
+            "--num-threads",
+            "4",
+            "--triggers-mode",
+            "silent",
+            "--verify-root",
+            "--verify-function",
+            "theorem_second_leg_changes_winner"
+          ],
+          "log": ".g5/uplift/consolidated/iteration-11/count-audit-scratch/logs/fusion_ranking/theorem_second_leg_changes_winner.log",
+          "ordinary_clean": true
+        },
+        {
+          "function": "theorem_graph_failure_dropped",
+          "expected_units": 1,
+          "observed": [
+            1,
+            0
+          ],
+          "exit_code": 0,
+          "seconds": 0.5080675419885665,
+          "command": [
+            "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+            "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/count-audit-scratch/inputs/models/fusion_ranking/fusion_ranking.rs",
+            "--crate-type=lib",
+            "--num-threads",
+            "4",
+            "--triggers-mode",
+            "silent",
+            "--verify-root",
+            "--verify-function",
+            "theorem_graph_failure_dropped"
+          ],
+          "log": ".g5/uplift/consolidated/iteration-11/count-audit-scratch/logs/fusion_ranking/theorem_graph_failure_dropped.log",
+          "ordinary_clean": true
+        }
+      ]
+    }
+  },
+  "verifier": {
+    "path": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "Verus\n  Version: 0.2026.10.04.426d8b0\n  Profile: release\n  Platform: macos_aarch64\n  Toolchain: 1.98.1-aarch64-apple-darwin (overridden by environment variable RUSTUP_TOOLCHAIN)\n\n",
+    "threads": 4,
+    "scope": "Unchanged stable source copied byte-for-byte; full baseline plus every recursive-spec function and every nonlinear-containing proof isolated. One nonlinear-free proof per model confirms body-only count. No active mutable11 replay."
+  },
+  "scratch_runs": 36,
+  "elapsed_s": 45.23323304200312,
+  "iteration10_corrected_new_units": {
+    "proof_declarations": 108,
+    "recursive_spec_checks": 21,
+    "nonlinear_arith_subqueries": 17,
+    "total": 146,
+    "unchanged_imported_units": 45,
+    "including_imports": 191
+  },
+  "findings": [
+    "PPR103 is68proof bodies+18recursive spec checks+17nonlinear subqueries, not68+35recursive checks.",
+    "Fusion current11 is7proof bodies+2recursive specs(rank,score)+2nonlinear subqueries, not10 and not7+4recursive. Its existing NOTES/manifest total11 are correct.",
+    "Only PPR/fusion stable model sources contain explicit nonlinear_arith; moving fraction/vector excluded. None of these subqueries is an additional independent behavioral theorem.",
+    "Proof/control totals, source/model/manifest bytes, sealed archives and historical raw receipts remain unchanged. Root owns dated current-document/ledger erratum."
+  ]
+}

@@ -1,0 +1,652 @@
+{
+  "verdict": "AGREES",
+  "cases": [
+    {
+      "case": "named full maps/stream/export",
+      "through": 1,
+      "observed": {
+        "nodes": {
+          "a": {
+            "labels": [
+              "L"
+            ],
+            "props": {
+              "k": "1"
+            }
+          },
+          "b": {
+            "labels": [],
+            "props": {}
+          }
+        },
+        "rels": {}
+      },
+      "stream_entities": 2,
+      "export": [
+        {
+          "id": "a",
+          "labels": [
+            "L"
+          ],
+          "props": {
+            "k": "1"
+          },
+          "type": "node"
+        },
+        {
+          "id": "b",
+          "labels": [],
+          "props": {},
+          "type": "node"
+        }
+      ],
+      "agrees": true
+    },
+    {
+      "case": "named full maps/stream/export",
+      "through": 2,
+      "observed": {
+        "nodes": {
+          "a": {
+            "labels": [
+              "L"
+            ],
+            "props": {
+              "k": "1"
+            }
+          },
+          "b": {
+            "labels": [],
+            "props": {}
+          }
+        },
+        "rels": {
+          "7": {
+            "s": "a",
+            "p": "R",
+            "o": "b",
+            "graph": null,
+            "quals": {
+              "w": "1.25"
+            }
+          }
+        }
+      },
+      "stream_entities": 3,
+      "export": [
+        {
+          "id": "a",
+          "labels": [
+            "L"
+          ],
+          "props": {
+            "k": "1"
+          },
+          "type": "node"
+        },
+        {
+          "id": "b",
+          "labels": [],
+          "props": {},
+          "type": "node"
+        },
+        {
+          "graph": null,
+          "o": "b",
+          "p": "R",
+          "quals": {
+            "w": "1.25"
+          },
+          "s": "a",
+          "stmt_id": "7",
+          "type": "rel"
+        }
+      ],
+      "agrees": true
+    },
+    {
+      "case": "named full maps/stream/export",
+      "through": 3,
+      "observed": {
+        "nodes": {
+          "a": {
+            "labels": [
+              "L",
+              "M"
+            ],
+            "props": {
+              "k": "2"
+            }
+          },
+          "b": {
+            "labels": [],
+            "props": {}
+          }
+        },
+        "rels": {
+          "7": {
+            "s": "a",
+            "p": "R",
+            "o": "b",
+            "graph": null,
+            "quals": {
+              "w": "2.5"
+            }
+          }
+        }
+      },
+      "stream_entities": 3,
+      "export": [
+        {
+          "id": "a",
+          "labels": [
+            "L",
+            "M"
+          ],
+          "props": {
+            "k": "2"
+          },
+          "type": "node"
+        },
+        {
+          "id": "b",
+          "labels": [],
+          "props": {},
+          "type": "node"
+        },
+        {
+          "graph": null,
+          "o": "b",
+          "p": "R",
+          "quals": {
+            "w": "2.5"
+          },
+          "s": "a",
+          "stmt_id": "7",
+          "type": "rel"
+        }
+      ],
+      "agrees": true
+    },
+    {
+      "case": "named full maps/stream/export",
+      "through": 4,
+      "observed": {
+        "nodes": {
+          "a": {
+            "labels": [
+              "L"
+            ],
+            "props": {
+              "k": "1"
+            }
+          },
+          "b": {
+            "labels": [],
+            "props": {}
+          }
+        },
+        "rels": {
+          "7": {
+            "s": "a",
+            "p": "R",
+            "o": "b",
+            "graph": null,
+            "quals": {
+              "w": "1.25"
+            }
+          }
+        }
+      },
+      "stream_entities": 3,
+      "export": [
+        {
+          "id": "a",
+          "labels": [
+            "L"
+          ],
+          "props": {
+            "k": "1"
+          },
+          "type": "node"
+        },
+        {
+          "id": "b",
+          "labels": [],
+          "props": {},
+          "type": "node"
+        },
+        {
+          "graph": null,
+          "o": "b",
+          "p": "R",
+          "quals": {
+            "w": "1.25"
+          },
+          "s": "a",
+          "stmt_id": "7",
+          "type": "rel"
+        }
+      ],
+      "agrees": true
+    },
+    {
+      "case": "named reverse/equal",
+      "a": 1,
+      "b": 1,
+      "entries": [],
+      "agrees": true
+    },
+    {
+      "case": "named reverse/equal",
+      "a": 1,
+      "b": 2,
+      "entries": [
+        {
+          "entity_kind": "rel",
+          "entity_id": "7",
+          "attr": "",
+          "before": null,
+          "after": "{\"s\": \"a\", \"p\": \"R\", \"o\": \"b\", \"graph\": null}"
+        },
+        {
+          "entity_kind": "rel",
+          "entity_id": "7",
+          "attr": "qual:w",
+          "before": null,
+          "after": "1.25"
+        }
+      ],
+      "agrees": true
+    },
+    {
+      "case": "named reverse/equal",
+      "a": 1,
+      "b": 3,
+      "entries": [
+        {
+          "entity_kind": "node",
+          "entity_id": "a",
+          "attr": "label:M",
+          "before": null,
+          "after": ""
+        },
+        {
+          "entity_kind": "node",
+          "entity_id": "a",
+          "attr": "prop:k",
+          "before": "1",
+          "after": "2"
+        },
+        {
+          "entity_kind": "rel",
+          "entity_id": "7",
+          "attr": "",
+          "before": null,
+          "after": "{\"s\": \"a\", \"p\": \"R\", \"o\": \"b\", \"graph\": null}"
+        },
+        {
+          "entity_kind": "rel",
+          "entity_id": "7",
+          "attr": "qual:w",
+          "before": null,
+          "after": "2.5"
+        }
+      ],
+      "agrees": true
+    },
+    {
+      "case": "named reverse/equal",
+      "a": 1,
+      "b": 4,
+      "entries": [
+        {
+          "entity_kind": "rel",
+          "entity_id": "7",
+          "attr": "",
+          "before": null,
+          "after": "{\"s\": \"a\", \"p\": \"R\", \"o\": \"b\", \"graph\": null}"
+        },
+        {
+          "entity_kind": "rel",
+          "entity_id": "7",
+          "attr": "qual:w",
+          "before": null,
+          "after": "1.25"
+        }
+      ],
+      "agrees": true
+    },
+    {
+      "case": "named reverse/equal",
+      "a": 2,
+      "b": 1,
+      "entries": [
+        {
+          "entity_kind": "rel",
+          "entity_id": "7",
+          "attr": "",
+          "before": "{\"s\": \"a\", \"p\": \"R\", \"o\": \"b\", \"graph\": null}",
+          "after": null
+        },
+        {
+          "entity_kind": "rel",
+          "entity_id": "7",
+          "attr": "qual:w",
+          "before": "1.25",
+          "after": null
+        }
+      ],
+      "agrees": true
+    },
+    {
+      "case": "named reverse/equal",
+      "a": 2,
+      "b": 2,
+      "entries": [],
+      "agrees": true
+    },
+    {
+      "case": "named reverse/equal",
+      "a": 2,
+      "b": 3,
+      "entries": [
+        {
+          "entity_kind": "node",
+          "entity_id": "a",
+          "attr": "label:M",
+          "before": null,
+          "after": ""
+        },
+        {
+          "entity_kind": "node",
+          "entity_id": "a",
+          "attr": "prop:k",
+          "before": "1",
+          "after": "2"
+        },
+        {
+          "entity_kind": "rel",
+          "entity_id": "7",
+          "attr": "qual:w",
+          "before": "1.25",
+          "after": "2.5"
+        }
+      ],
+      "agrees": true
+    },
+    {
+      "case": "named reverse/equal",
+      "a": 2,
+      "b": 4,
+      "entries": [],
+      "agrees": true
+    },
+    {
+      "case": "named reverse/equal",
+      "a": 3,
+      "b": 1,
+      "entries": [
+        {
+          "entity_kind": "node",
+          "entity_id": "a",
+          "attr": "label:M",
+          "before": "",
+          "after": null
+        },
+        {
+          "entity_kind": "node",
+          "entity_id": "a",
+          "attr": "prop:k",
+          "before": "2",
+          "after": "1"
+        },
+        {
+          "entity_kind": "rel",
+          "entity_id": "7",
+          "attr": "",
+          "before": "{\"s\": \"a\", \"p\": \"R\", \"o\": \"b\", \"graph\": null}",
+          "after": null
+        },
+        {
+          "entity_kind": "rel",
+          "entity_id": "7",
+          "attr": "qual:w",
+          "before": "2.5",
+          "after": null
+        }
+      ],
+      "agrees": true
+    },
+    {
+      "case": "named reverse/equal",
+      "a": 3,
+      "b": 2,
+      "entries": [
+        {
+          "entity_kind": "node",
+          "entity_id": "a",
+          "attr": "label:M",
+          "before": "",
+          "after": null
+        },
+        {
+          "entity_kind": "node",
+          "entity_id": "a",
+          "attr": "prop:k",
+          "before": "2",
+          "after": "1"
+        },
+        {
+          "entity_kind": "rel",
+          "entity_id": "7",
+          "attr": "qual:w",
+          "before": "2.5",
+          "after": "1.25"
+        }
+      ],
+      "agrees": true
+    },
+    {
+      "case": "named reverse/equal",
+      "a": 3,
+      "b": 3,
+      "entries": [],
+      "agrees": true
+    },
+    {
+      "case": "named reverse/equal",
+      "a": 3,
+      "b": 4,
+      "entries": [
+        {
+          "entity_kind": "node",
+          "entity_id": "a",
+          "attr": "label:M",
+          "before": "",
+          "after": null
+        },
+        {
+          "entity_kind": "node",
+          "entity_id": "a",
+          "attr": "prop:k",
+          "before": "2",
+          "after": "1"
+        },
+        {
+          "entity_kind": "rel",
+          "entity_id": "7",
+          "attr": "qual:w",
+          "before": "2.5",
+          "after": "1.25"
+        }
+      ],
+      "agrees": true
+    },
+    {
+      "case": "named reverse/equal",
+      "a": 4,
+      "b": 1,
+      "entries": [
+        {
+          "entity_kind": "rel",
+          "entity_id": "7",
+          "attr": "",
+          "before": "{\"s\": \"a\", \"p\": \"R\", \"o\": \"b\", \"graph\": null}",
+          "after": null
+        },
+        {
+          "entity_kind": "rel",
+          "entity_id": "7",
+          "attr": "qual:w",
+          "before": "1.25",
+          "after": null
+        }
+      ],
+      "agrees": true
+    },
+    {
+      "case": "named reverse/equal",
+      "a": 4,
+      "b": 2,
+      "entries": [],
+      "agrees": true
+    },
+    {
+      "case": "named reverse/equal",
+      "a": 4,
+      "b": 3,
+      "entries": [
+        {
+          "entity_kind": "node",
+          "entity_id": "a",
+          "attr": "label:M",
+          "before": null,
+          "after": ""
+        },
+        {
+          "entity_kind": "node",
+          "entity_id": "a",
+          "attr": "prop:k",
+          "before": "1",
+          "after": "2"
+        },
+        {
+          "entity_kind": "rel",
+          "entity_id": "7",
+          "attr": "qual:w",
+          "before": "1.25",
+          "after": "2.5"
+        }
+      ],
+      "agrees": true
+    },
+    {
+      "case": "named reverse/equal",
+      "a": 4,
+      "b": 4,
+      "entries": [],
+      "agrees": true
+    },
+    {
+      "case": "same-life full label/property/qualifier restore net empty",
+      "entries": [],
+      "agrees": true
+    },
+    {
+      "case": "known range-prior loss across rich lifecycle",
+      "before": {
+        "nodes": {
+          "a": {
+            "labels": [
+              "L"
+            ],
+            "props": {
+              "k": "1"
+            }
+          },
+          "b": {
+            "labels": [],
+            "props": {}
+          }
+        },
+        "rels": {}
+      },
+      "after": {
+        "nodes": {
+          "b": {
+            "labels": [],
+            "props": {}
+          },
+          "a": {
+            "labels": [],
+            "props": {
+              "k": "3"
+            }
+          }
+        },
+        "rels": {}
+      },
+      "reverse": [
+        {
+          "entity_kind": "node",
+          "entity_id": "a",
+          "attr": "",
+          "before": null,
+          "after": "{\"labels\": [\"L\", \"M\"], \"props\": {\"k\": \"2\"}}"
+        },
+        {
+          "entity_kind": "node",
+          "entity_id": "a",
+          "attr": "",
+          "before": "",
+          "after": null
+        },
+        {
+          "entity_kind": "node",
+          "entity_id": "a",
+          "attr": "prop:k",
+          "before": "3",
+          "after": null
+        }
+      ],
+      "deletion_snapshot": {
+        "labels": [
+          "L",
+          "M"
+        ],
+        "props": {
+          "k": "2"
+        }
+      },
+      "agrees": true,
+      "new_bug": false,
+      "policy": "q-con-002 unresolved; not applied as script"
+    },
+    {
+      "case": "raw row nullflag empty and JSON-null text distinct",
+      "new_values": [
+        null,
+        "",
+        "null"
+      ],
+      "agrees": true
+    }
+  ],
+  "case_count": 23,
+  "source_inputs": {
+    "iris_vector_graph/ledger/replay.py": "2cf6d87ea3b1c66f785c1bf8dcd7cf38c99e29cc3cac2794d73edf6af20d00b3",
+    "iris_vector_graph/ledger/client.py": "7a7674fe4c8efec9723847d409c6da867c3f90d7821991c94cc9b2eaee7ef08c",
+    "iris_vector_graph/ledger/export.py": "863649f572424ca27bb9c7ec16f0231bca1efd302289a72eead960af2fcf2d74"
+  },
+  "inputs": {
+    ".g5/uplift/consolidated/iteration-11/next-ledger-content-probe.py": "9633af88ccc4d1776f8c6449357aead07983d314a4707ce455af69b383781c9b",
+    ".g5/uplift/consolidated/iteration-11/next-ledger-content-PAIRS.md": "0f8b6df7e97721500753cbb6b8e78fb4b5d10a331b4387d750b20946c986b5a4",
+    ".g5/Verus_verification/tools/history_fixture.py": "609e475f188fd01eb7e1a63c2ac408c5990f32556dac224bfc46fdfa3e31d9b4"
+  },
+  "elapsed": 0.006285709037911147,
+  "socket_calls": 0,
+  "new_model_or_formal_credit": 0,
+  "new_issues": 0,
+  "scope": "Next workflow preparation only; actual named Python decoder/pager/fold/diff/stream/export over explicit SQL/meta/revision/redaction-guard fixture. Explicit expected full maps independent of the GraphState implementation. Histories are semantic admitted shapes, not native-writer reachability proof. Existing lifecycle finding strengthened, no policy decision/full endpoint script claim."
+}

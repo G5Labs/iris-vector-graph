@@ -1,0 +1,49 @@
+{
+  "runs": [
+    {
+      "kind": "proof",
+      "command": [
+        "/Users/ziniuw/runs/ivg-consolidated-20261114/venv/bin/python",
+        ".g5/Verus_verification/run_verus.py",
+        "prove",
+        ".g5/Verus_verification/models/vector_admission"
+      ],
+      "exit": 0,
+      "seconds": 6.2369963329983875,
+      "log": ".g5/uplift/consolidated/iteration-11/review-vector-v2-proof.log"
+    },
+    {
+      "kind": "controls",
+      "command": [
+        "/Users/ziniuw/runs/ivg-consolidated-20261114/venv/bin/python",
+        ".g5/Verus_verification/run_verus.py",
+        "controls",
+        ".g5/Verus_verification/models/vector_admission"
+      ],
+      "exit": 0,
+      "seconds": 62.74496566702146,
+      "log": ".g5/uplift/consolidated/iteration-11/review-vector-v2-controls.log"
+    },
+    {
+      "kind": "binding",
+      "command": [
+        "/Users/ziniuw/runs/ivg-consolidated-20261114/venv/bin/python",
+        ".g5/Verus_verification/models/vector_admission/binding.py"
+      ],
+      "exit": 0,
+      "seconds": 5.392158999980893,
+      "log": ".g5/uplift/consolidated/iteration-11/review-vector-v2-binding.log"
+    },
+    {
+      "kind": "upstream",
+      "command": [
+        "/Users/ziniuw/runs/ivg-consolidated-20261114/venv/bin/python",
+        ".g5/uplift/consolidated/iteration-11/vector-upstream-units.py"
+      ],
+      "exit": 0,
+      "seconds": 3.8552039160276763,
+      "log": ".g5/uplift/consolidated/iteration-11/review-vector-v2-upstream.log"
+    }
+  ],
+  "all_package_hashes_current_equals_scratch": true
+}

@@ -1,3 +1,5 @@
+Count classification corrected in iteration11: [audit and original-byte preservation](../iteration-11/count-correction.md). Totals/model/receipts unchanged;17 internal arithmetic subqueries were previously grouped with recursion checks.
+
 # Iteration10 paired builder ledger
 
 Builder judgments only: purposive source-informed overlapping panel, not external/independent evaluator grades, population rates or a convergence percentage. Same19 inherited decisions retained plus11 explicitly source-derived extensions judged on both snapshots. Published/private grading artifacts unchanged/uninspected; no new sampling/model/native/Git/shared edits for this ledger.
@@ -43,7 +45,7 @@ P6 records the as-built tiny/zero selected-cut difference; P7 deliberately remai
 
 R1/R2/V1 preserve fractional arithmetic, whole/raw numeric carriers and vector admission residuals. Cache and Degree are explicit providers with existing substantive hits, not new recurrence/cache correctness credit. Public dispatch is conditional source-only evidence; native direct fallback observations do not prove a physical outage path. Native floats/collation/JSON, present#0/underflow map presence, mirrors/count-key state and raw public Config remain qualified.
 
-Iteration10 adds146 units (108 proof declarations+38 spec termination), rechecks45 unchanged imported units,32 clean isolated named controls,36 fresh central receipts,9 active/14 observation links and source reach188→197/4130 with lost0. PPR has103/24 and450core+6error+13refusal+9wrapper comparisons; Cost has43new+45imported/8 and21168 comparisons. Actual native additions are root Cost15, PPRtie6/cap4; prior reverse5 is reused, not new execution. Root findings103Low/104Medium and Q008; no decision, question resolution or repair approval.
+Iteration10 adds146 units (108 proof declarations+21 spec termination+17 nonlinear subqueries), rechecks45 unchanged imported units,32 clean isolated named controls,36 fresh central receipts,9 active/14 observation links and source reach188→197/4130 with lost0. PPR has103/24 and450core+6error+13refusal+9wrapper comparisons; Cost has43new+45imported/8 and21168 comparisons. Actual native additions are root Cost15, PPRtie6/cap4; prior reverse5 is reused, not new execution. Root findings103Low/104Medium and Q008; no decision, question resolution or repair approval.
 
 One PPR whole mutant has a collateral resource limit; its named control is clean. First PPR control-target failures and Cost scan-order/resource misses remain withdrawn/retained. The late1.0 carrier and vector cached-absence misses are explicit, not retroactively called successful predictions.
 

@@ -1,0 +1,21 @@
+verification results:: 129 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_fraction/weighted_fraction.rs:316:1
+    |
+316 | pub proof fn lemma_json_neighbor_sequence(c:Config,u:int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_fraction/weighted_fraction.rs:324:12
+    |
+324 |     assert(jneighbors(c,u)==c.arcs.filter(p));
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_fraction/weighted_fraction.rs:325:12
+    |
+325 |     assert(json::neighbors(ck,u)==ck.arcs.filter(q));
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

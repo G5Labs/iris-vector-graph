@@ -1,3 +1,5 @@
+Count classification corrected in iteration11: [audit and original-byte preservation](../iteration-11/count-correction.md). Totals/model/receipts unchanged;17 internal arithmetic subqueries were previously grouped with recursion checks.
+
 # Iteration10 checkpoint
 
 Input e56c8592b040abb08eafefed65ae17e2f56bd673; product3eaa79cf unchanged on
@@ -14,8 +16,8 @@ not a new native executable-body verification.
 | weighted_cost |43 /8;45 imported units rechecked|21,168 actual Python handler/source-port full traces plus independent walk oracle;15 new actual Cost/JSON/public native cases; prior mirror4 reused|
 | ppr_walk |103 /24|450 core actual Python/source-port/Fraction cases,6 missing/error providers,13 refusals,9 list wrappers;6 new native tie and4 cap cases; prior5 reverse pairs reused;87 upstream tests|
 
-146 new units comprise108 proof declarations (40 named theorems,68 helpers) and38
-recursive-spec termination checks. Total191 includes45 unchanged imported JSON
+146 new units comprise108 proof declarations (40 named theorems,68 helpers) and21
+recursive-spec termination checks plus17 nonlinear arithmetic subqueries. Total191 includes45 unchanged imported JSON
 search units and is not the new-unit count. All36 latest central proof/control/
 binding receipts are fresh. All32 named controls fail ordinarily in isolation;
 one whole PPR cap mutant additionally hits a collateral resource limit, without

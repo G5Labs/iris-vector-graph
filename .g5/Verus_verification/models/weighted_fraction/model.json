@@ -1,0 +1,129 @@
+{
+  "name": "weighted_fraction",
+  "root": "weighted_fraction.rs",
+  "additional_inputs": [
+    "../weighted_cost/weighted_cost.rs",
+    "../weighted_paths/weighted_paths.rs"
+  ],
+  "expected_verified": 181,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "controls": [
+    {
+      "name": "default-unit-not-scaled",
+      "why": "None/nonpositive raw scalar is effective one, so encoded value must be D.",
+      "find": "*factor(c,a)}else{denominator(c)}",
+      "replace": "*factor(c,a)}else{1nat}",
+      "expect_fail_in": [
+        "theorem_scalar_and_cap_decode"
+      ]
+    },
+    {
+      "name": "positive-numerator-not-scaled",
+      "why": "Positive raw numerator needs every other denominator factor.",
+      "find": "(c.raw[a].unwrap().num as nat)*factor(c,a)",
+      "replace": "(c.raw[a].unwrap().num as nat)",
+      "expect_fail_in": [
+        "theorem_scalar_and_cap_decode"
+      ]
+    },
+    {
+      "name": "zero-raw-not-defaulted",
+      "why": "Zero raw scalar is effective one, not zero.",
+      "find": "c.raw[a].unwrap().num>0{(c.raw[a].unwrap().num as nat)",
+      "replace": "c.raw[a].unwrap().num>=0{(c.raw[a].unwrap().num as nat)",
+      "expect_fail_in": [
+        "theorem_scalar_and_cap_decode"
+      ]
+    },
+    {
+      "name": "cap-omits-common-factor",
+      "why": "Cap denominator participates in the derived common grid.",
+      "find": "(c.cap.num as nat)*omitted(denominations(c),c.arcs.len())",
+      "replace": "(c.cap.num as nat)",
+      "expect_fail_in": [
+        "theorem_cap_decode"
+      ]
+    },
+    {
+      "name": "json-removes-stale-entry",
+      "why": "Actual JSON adds improved entry while retaining its stale predecessor.",
+      "find": "queue:s.queue.insert((n,a.4,h)),dist:s.dist.insert(k,n)",
+      "replace": "queue:(if s.dist.contains_key(k){s.queue.remove((s.dist[k],a.4,h))}else{s.queue}).insert((n,a.4,h)),dist:s.dist.insert(k,n)",
+      "expect_fail_in": [
+        "theorem_json_relax_commutes"
+      ]
+    },
+    {
+      "name": "json-parent-weight-one",
+      "why": "The real parent records actual effective fractional weight for backtrack.",
+      "find": "((e.1,e.2),a,weight(c,a))),..s",
+      "replace": "((e.1,e.2),a,1real)),..s",
+      "expect_fail_in": [
+        "theorem_json_relax_commutes"
+      ]
+    },
+    {
+      "name": "cost-retains-old-queue",
+      "why": "Actual Cost removes old queue entry on a strict distance decrease.",
+      "find": "let q=if z.dist.contains_key(v){z.queue.remove((z.dist[v],v))}else{z.queue};\n        Side",
+      "replace": "let q=z.queue;\n        Side",
+      "expect_fail_in": [
+        "theorem_cost_decrease_commutes"
+      ]
+    },
+    {
+      "name": "cost-best-hop-loses-half",
+      "why": "Historical BestHop includes both path halves.",
+      "find": "best_hops:side(t,false).hop[v]+side(t,true).hop[v]",
+      "replace": "best_hops:side(t,false).hop[v]",
+      "expect_fail_in": [
+        "theorem_cost_relax_commutes"
+      ]
+    },
+    {
+      "name": "cost-both-backward-order",
+      "why": "Backward both scan reverses its primary tag.",
+      "find": "if b{(1-f) as nat}else{f}",
+      "replace": "if b{f}else{f}",
+      "expect_fail_in": [
+        "lemma_cost_neighbor_sequence"
+      ]
+    },
+    {
+      "name": "cost-frontsum-one-early",
+      "why": "Frontier stop compares the exact real sum against Best.",
+      "find": "if s.best.is_some() && f.0+r.0>=s.best.unwrap(){CEvent::Halt",
+      "replace": "if s.best.is_some() && f.0+r.0+1real>=s.best.unwrap(){CEvent::Halt",
+      "expect_fail_in": [
+        "theorem_cost_step_commutes"
+      ]
+    },
+    {
+      "name": "cost-hop-fallback-removed",
+      "why": "Over-bound historical cheapest path calls actual raw JSON with unchanged config.",
+      "find": "else if c.bound>0 && s.best_hops>c.bound{janswer(c)}",
+      "replace": "else if false{janswer(c)}",
+      "expect_fail_in": [
+        "theorem_cost_finish_commutes"
+      ]
+    },
+    {
+      "name": "json-reader-total-zero",
+      "why": "Final JSON reader exposes the actual accepted real cost.",
+      "find": "Path{arcs:p.arcs,costs:p.costs,total:e.0}",
+      "replace": "Path{arcs:p.arcs,costs:p.costs,total:0real}",
+      "expect_fail_in": [
+        "theorem_json_reader_raw_fields"
+      ]
+    },
+    {
+      "name": "self-zero-one",
+      "why": "The self branch returns zero even for a negative cap.",
+      "find": "Some(Path{arcs:seq![],costs:seq![],total:0real})",
+      "replace": "Some(Path{arcs:seq![],costs:seq![],total:1real})",
+      "expect_fail_in": [
+        "theorem_raw_signed_rational_json"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+verification results:: 110 verified, 2 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_fraction/weighted_fraction.rs:97:13
+    |
+ 97 |       ensures ((a*b) as real)==(a as real)*(b as real),
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+100 | /     if b>0{
+101 | |         lemma_nat_real_mul(a,(b-1) as nat);
+102 | |         assert(a*b==a*((b-1) as nat)+a) by(nonlinear_arith);
+103 | |         assert(((a*b) as real)==((a*((b-1) as nat)) as real)+(a as real));
+104 | |         assert(((b-1) as nat) as real==(b as real)-1real);
+105 | |         assert((a as real)*((b as real)-1real)+(a as real)==(a as real)*(b as real)) by(nonlinear_arith);
+106 | |     }
+    | |_____- at the end of the function body
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_fraction/weighted_fraction.rs:102:16
+    |
+102 |         assert(a*b==a*((b-1) as nat)+a) by(nonlinear_arith);
+    |                ^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

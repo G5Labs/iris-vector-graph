@@ -8083,6 +8083,29 @@ Repair proposal (not implemented): choose the zero-tie policy, then apply the sa
 
 Formal corroboration: [ppr_walk](models/ppr_walk/NOTES.md) `theorem_request_tiny_readers_differ` derives the raw one-step recurrence, ideal zero bucket and selected-set inequality; the larger-score neighbor agrees. This does not resolve q-iter-008 or certify arbitrary native rounding.
 
+<a id="bug-plt-105"></a>
+### After a primary scoring failure, a seed vector search can return the seed it should exclude
+
+Severity: Low · Decision: Open
+
+Run: Consolidated iteration11, 2026-11-15
+
+Found by: vector workflow source transcription; [five controlled native/provider cases](../uplift/consolidated/iteration-11/root-seed-native.json), [frozen predictions](../uplift/consolidated/iteration-11/root-seed-predictions.md), [source provenance](../uplift/consolidated/iteration-11/root-seed-provenance.json), and [independent intent/dedup/source review](../uplift/consolidated/iteration-11/review-seed-intent.md).
+
+Reproduced by: the actual public kg_KNN_VEC and optimized fallback over the hostname-guarded task-owned IRIS, using the previously created width4 route, seed vector and peer. An in-process DBAPI adapter injects exactly one generic first-score exception; it supplies no score rows or expected result. Subsequent scoring is real native VECTOR_COSINE. Independent actual-source cases additionally exercise the embedded and DBAPI readers over a cosine/predicate provider. No organic outage, native class failure, data/metadata modification or product patch was observed or performed.
+
+Expected: [search.knn](../ontology/features/search.g5.md#search.knn), API_REFERENCE971 and USER_GUIDE926 explicitly leave the seed node out of this search's answer. The separate vec_expand surface may include its seed and is not the operation tested here.
+
+Observed: normal seed requests at k1/k2 return only the distinct peer, with cosine1/sqrt2. After the controlled generic primary scoring failure, actual fallback returns the seed at score1 for k1 and seed plus peer for k2. A literal-vector request under the same failure lawfully returns the seed because there was no seed-ID exclusion. All five native/source predictions and six independent source cases agree; the original vector13 observations remain byte-identical.
+
+Cause: primary kg_KNN_VEC reads the seed vector, rewrites query_vector as a literal and keeps exclude_id only in its local primary SQL predicate. Its generic-error branch passes the expanded literal to _kg_KNN_VEC_python_optimized without the seed identity. That method treats it as a literal query and does not exclude the seed. A width error is a different branch and is not needed for this witness.
+
+Consequence: an admitted fallback can replace the requested neighbor with a perfect self-hit, or consume one of the k places with the seed. This provider-conditioned composition is confirmed; the frequency or occurrence of an organic primary failure in deployment is unmeasured. This is distinct from F-C0602's duplicate label rows, F-C0603's route preference and the existing TO_VECTOR syntax finding; no matching seed-identity-loss root was found.
+
+Repair proposal (not implemented): retain the original seed identity through every fallback and apply exclusion before ranking/cutting to k. Merely removing the seed after an already limited result may leave the answer short or lose the proper peer. No product repair or owner decision is recorded here.
+
+Formal corroboration: [vector_admission](models/vector_admission/NOTES.md) `theorem_seed_failure_passes_expansion_without_identity` proves the actual primary-to-optimized handoff of the expanded literal without the seed identity. Typed provider/readers and the controlled five-case native panel establish the sampled self-hit consequence; no organic outage, universal native numerical proof or repair is inferred.
+
 <a id="bug-tmp-012"></a>
 ### Without the adjacency index, deleting a temporal edge removes the adjacency of an explicit edge on the same triple
 

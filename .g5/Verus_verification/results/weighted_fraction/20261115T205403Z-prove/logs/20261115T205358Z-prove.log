@@ -1,0 +1,26 @@
+verification results:: 128 verified, 2 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_fraction/weighted_fraction.rs:317:13
+    |
+315 | pub proof fn lemma_json_neighbor_sequence(c:Config,u:int)
+    | --------------------------------------------------------- at the end of the function body
+316 |     requires frame(c),
+317 |     ensures json::neighbors(encoded(c),u)==c.arcs.filter(|a:Arc|selected(c,a) && a.2==u),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_fraction/weighted_fraction.rs:332:13
+    |
+332 |       ensures jstep(c,js(c,s))==jimage_event(c,json::step(encoded(c),s)),
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+335 | /     if s.queue.len()>0{
+336 | |         let e=json::minimum(s.queue);theorem_json_minimum_commutes(c,s.queue);lemma_json_pop_accept(c,s,e);
+337 | |         theorem_decode_arithmetic(c,e.0,encoded(c).cap);
+338 | |         if json::skipped(s,e){assert(jskipped(js(c,s),je(c,e)));}
+...   |
+347 | |     }
+    | |_____- at the end of the function body
+
+error: aborting due to 2 previous errors
+

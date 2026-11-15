@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/review-vector-scratch/run/verus/vector_admission/controls/raw-query-count-replaced-by-zero/20261115T213822Z/models/vector_admission/vector_admission.rs:495:13
+    |
+493 | pub proof fn theorem_raw_literal_three_route_four_refuses(route:Option<Route>,c:catalog::Catalog)
+    | ------------------------------------------------------------------------------------------------- at the end of the function body
+494 |     requires declared(route)==Some(4),
+495 |     ensures width_check(Query::Text(seq!['[','1',',','2',',','3',']']),route,c)==(Some(Error::Width{query:Some(3),stored:Some(4)}),0),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

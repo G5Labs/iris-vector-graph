@@ -1,3 +1,5 @@
+Iteration11 count correction: [audited unit breakdown](../../../uplift/consolidated/iteration-11/count-correction.md). Model/receipts unchanged; original10 documentation remains in the sealed snapshot.
+
 # PPR walk, producer limit and final readers
 
 Product `3eaa79cf77d3e0a879b2cced634cf2729d81499e`; iteration9 foundation
@@ -10,7 +12,7 @@ cache/degree contracts remain substantive hits; this package adds walk arithmeti
 and the capped producer through its final readers, not fresh cache correctness.
 
 Current baseline: **103 verifier units = 68 proof declarations (30 named
-theorems, 38 helpers) + 35 recursive-spec termination checks**, all new, no
+theorems, 38 helpers) + 18 recursive-spec termination checks + 17 nonlinear arithmetic subqueries**, all new, no
 imports. All **24 named controls** fail decisively in their isolated ordinary post/assert
 checks. One whole mutant (`producer-cap-ignored`) also reaches a collateral
 resource limit elsewhere; its isolated capped-row helper fails cleanly and no

@@ -1,0 +1,12 @@
+verification results:: 76 verified, 1 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration11-vector-20261115/verus/vector_admission/controls/embedded-keeps-None-id/20261115T214520Z/models/vector_admission/vector_admission.rs:504:13
+    |
+502 | pub proof fn theorem_reader_none_difference(n:Number)
+    | ----------------------------------------------------- at the end of the function body
+503 |     requires n.1>0,
+504 |     ensures read_scores(seq![seq![Cell::Null,Cell::Float(n)]],true,false)==Decode::Value(seq![]),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

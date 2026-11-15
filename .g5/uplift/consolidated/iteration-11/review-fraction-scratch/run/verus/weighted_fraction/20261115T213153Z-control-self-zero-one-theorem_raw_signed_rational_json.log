@@ -1,0 +1,35 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/review-fraction-scratch/run/verus/weighted_fraction/controls/self-zero-one/20261115T213153Z/models/weighted_fraction/weighted_fraction.rs:893:1
+    |
+893 | pub proof fn theorem_raw_signed_rational_json(c:Config)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/review-fraction-scratch/run/verus/weighted_fraction/controls/self-zero-one/20261115T213153Z/models/weighted_fraction/weighted_fraction.rs:895:13
+    |
+895 |       ensures source_correct(c,janswer(c)),reader_reaches_source(c),c.src==c.dst ==> jresult(c).unwrap().total==0real,
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+896 |   {
+897 | /     if c.src==c.dst{}
+898 | |     else if c.cap.num<0{
+899 | |         theorem_negative_cap_json_source_trace(c);assert forall|p:Seq<Arc>|!feasible(c,p) by {theorem_negative_cap_no_feasible_pa...
+900 | |     }else{theorem_actual_rational_json_complete(c);theorem_json_answer_commutes(c);}
+    | |____________________________________________________________________________________- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/review-fraction-scratch/run/verus/weighted_fraction/controls/self-zero-one/20261115T213153Z/models/weighted_fraction/weighted_fraction.rs:895:67
+    |
+895 |       ensures source_correct(c,janswer(c)),reader_reaches_source(c),c.src==c.dst ==> jresult(c).unwrap().total==0real,
+    |                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+896 |   {
+897 | /     if c.src==c.dst{}
+898 | |     else if c.cap.num<0{
+899 | |         theorem_negative_cap_json_source_trace(c);assert forall|p:Seq<Arc>|!feasible(c,p) by {theorem_negative_cap_no_feasible_pa...
+900 | |     }else{theorem_actual_rational_json_complete(c);theorem_json_answer_commutes(c);}
+    | |____________________________________________________________________________________- at the end of the function body
+
+error: aborting due to 2 previous errors
+

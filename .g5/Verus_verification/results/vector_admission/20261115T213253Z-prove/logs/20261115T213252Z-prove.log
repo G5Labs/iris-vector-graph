@@ -1,0 +1,70 @@
+error[E0433]: cannot find type `Query` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/vector_admission.rs:495:25
+    |
+495 |     ensures width_check(Query::Text(seq!['[','1',',','2',',','3',']']),route,c)==(Some(Error::Width{query:Some(3),stored:Some(4)}),0),
+    |                         ^^^^^ use of undeclared type `Query`
+    |
+help: consider importing this enum
+    |
+  1 + use crate::workflow::Query;
+    |
+
+error[E0425]: cannot find type `Query` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/vector_admission.rs:498:69
+    |
+498 | pub proof fn theorem_catalog_only_when_literal_and_no_route_width(q:Query,r:Option<Route>,c:catalog::Catalog)
+    |                                                                     ^^^^^ not found in this scope
+    |
+help: consider importing this enum
+    |
+  1 + use crate::workflow::Query;
+    |
+
+error[E0425]: cannot find function `scenario` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/vector_admission.rs:509:71
+    |
+509 |     requires vs.len()==3,qliteral(a.query),prepare(Entry::Primary,e,a,scenario(vs,Entry::Primary)).gate==(Gate::Ready{Name:table,ro...
+    |                                                                       ^^^^^^^^ not found in this scope
+    |
+help: consider importing this function
+    |
+  1 + use crate::workflow::scenario;
+    |
+
+error[E0425]: cannot find function `scenario` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/vector_admission.rs:509:146
+    |
+509 | ...).gate==(Gate::Ready{Name:table,route,dtype:d}),scenario(vs,Entry::Primary).primary==Raw::Error(f),width_fault(f),
+    |                                                    ^^^^^^^^ not found in this scope
+    |
+help: consider importing this function
+    |
+  1 + use crate::workflow::scenario;
+    |
+
+error[E0425]: cannot find function `scenario` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/vector_admission.rs:510:77
+    |
+510 |     ensures run(Entry::Primary,e,a,vs).outcome==Outcome::Error(diagnostic(a,scenario(vs,Entry::Primary),table).0),
+    |                                                                             ^^^^^^^^ not found in this scope
+    |
+help: consider importing this function
+    |
+  1 + use crate::workflow::scenario;
+    |
+
+error[E0425]: cannot find function `scenario` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/vector_admission.rs:511:85
+    |
+511 |         run(Entry::Primary,e,a,vs).trace.last()==Effect::DiagnosticRead(table,graph(scenario(vs,Entry::Primary).request)),
+    |                                                                                     ^^^^^^^^ not found in this scope
+    |
+help: consider importing this function
+    |
+  1 + use crate::workflow::scenario;
+    |
+
+error: aborting due to 6 previous errors
+
+Some errors have detailed explanations: E0425, E0433.
+For more information about an error, try `rustc --explain E0425`.

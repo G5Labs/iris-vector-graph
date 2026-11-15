@@ -1,0 +1,880 @@
+{
+  "cache": [
+    {
+      "agrees": true,
+      "name": "positive_ttl_and_backend_error",
+      "timeline": [
+        {
+          "agrees": true,
+          "got": "{'kind': 'rows', 'value': (True, EmbeddingRoute(graph_id='g', model_key='m', table_name='kg_emb_0000000000000001', dimension=4, dtype='DOUBLE', index_state='present', index_error=None, kind='node'))}",
+          "model_reads": 1,
+          "reads": 1,
+          "time": 0,
+          "want": "{'kind': 'rows', 'value': ('kg_emb_0000000000000001', 4, 'DOUBLE')}"
+        },
+        {
+          "agrees": true,
+          "got": "{'kind': 'rows', 'value': (True, EmbeddingRoute(graph_id='g', model_key='m', table_name='kg_emb_0000000000000001', dimension=4, dtype='DOUBLE', index_state='present', index_error=None, kind='node'))}",
+          "model_reads": 1,
+          "reads": 1,
+          "time": 30,
+          "want": "{'kind': 'rows', 'value': ('kg_emb_0000000000000001', 4, 'DOUBLE')}"
+        },
+        {
+          "agrees": true,
+          "got": "{'kind': 'error', 'type': 'RuntimeError'}",
+          "model_reads": 2,
+          "reads": 2,
+          "time": 30.001,
+          "want": "{'kind': 'error', 'type': 'RuntimeError'}"
+        }
+      ]
+    },
+    {
+      "agrees": true,
+      "known_nonbug": true,
+      "name": "absence_forecast_refuted_actual_writer",
+      "reads": [
+        1,
+        3,
+        4
+      ]
+    }
+  ],
+  "checks": {
+    "cache_all": true,
+    "immediate_width_refuses": true,
+    "ivf_all": true,
+    "mixed_width_empty": true,
+    "parser_all": true,
+    "seed_identity_loss": true
+  },
+  "comparisons": 734,
+  "contrasts": {
+    "immediate": {
+      "agrees": true,
+      "effects": {
+        "catalog": 3,
+        "client": 0,
+        "diagnostic": 1,
+        "kernel": 0,
+        "registry": 1,
+        "score": [
+          "primary"
+        ],
+        "seed": 0
+      },
+      "got": {
+        "kind": "error",
+        "type": "ValueError"
+      },
+      "input": {
+        "catalog": {
+          "error": true
+        },
+        "cells": null,
+        "dim": "None",
+        "embedded": "unavailable",
+        "faults": [
+          "SQLCODE -257 vectors of different lengths"
+        ],
+        "k": 2,
+        "label": null,
+        "present": true,
+        "query": "'[1,2,3]'",
+        "raw": "None",
+        "stage": "primary"
+      },
+      "model_effects": {
+        "catalog": 3,
+        "client": 0,
+        "diagnostic": 1,
+        "kernel": 0,
+        "registry": 1,
+        "score": [
+          "primary"
+        ],
+        "seed": 0
+      },
+      "sql": [
+        [
+          "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+          [
+            "g",
+            "node",
+            "m"
+          ]
+        ],
+        [
+          "SELECT Name FROM %Dictionary.CompiledClass WHERE SqlSchemaName = 'Graph_KG' AND SqlTableName = 'kg_emb_0000000000000001'",
+          []
+        ],
+        [
+          "SELECT Parameters FROM %Dictionary.CompiledProperty WHERE Name = 'emb' AND Parent = 'Graph.KG.kgemb0000000000000001'",
+          []
+        ],
+        [
+          "SELECT DTD_IDENTIFIER, COLUMN_TYPE, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_NAME = 'emb'",
+          [
+            "Graph_KG",
+            "kg_emb_0000000000000001"
+          ]
+        ],
+        [
+          "SELECT TOP ? n.node_id, VECTOR_COSINE(n.emb, TO_VECTOR(?, DOUBLE)) AS score FROM Graph_KG.kg_emb_0000000000000001 n WHERE (COALESCE(n.graph_id, '') = COALESCE(?, '')) ORDER BY score DESC",
+          [
+            2,
+            "[1,2,3]",
+            "g"
+          ]
+        ],
+        [
+          "SELECT TOP 1 emb FROM Graph_KG.kg_emb_0000000000000001 WHERE (COALESCE(graph_id, '') = COALESCE(?, ''))",
+          [
+            "g"
+          ]
+        ]
+      ],
+      "want": {
+        "kind": "error",
+        "type": "ValueError"
+      }
+    },
+    "mixed": {
+      "agrees": true,
+      "effects": {
+        "catalog": 9,
+        "client": 1,
+        "diagnostic": 0,
+        "kernel": 2,
+        "registry": 1,
+        "score": [
+          "primary",
+          "embedded",
+          "dbapi"
+        ],
+        "seed": 0
+      },
+      "got": {
+        "kind": "rows",
+        "value": []
+      },
+      "input": {
+        "catalog": {
+          "error": true
+        },
+        "cells": null,
+        "dim": "None",
+        "embedded": "unavailable",
+        "faults": [
+          "first score generic unavailable",
+          "SQLCODE -257 vectors of different lengths"
+        ],
+        "k": 2,
+        "label": null,
+        "present": true,
+        "query": "'[1,2,3]'",
+        "raw": "None",
+        "stage": "primary"
+      },
+      "model_effects": {
+        "catalog": 9,
+        "client": 1,
+        "diagnostic": 0,
+        "kernel": 2,
+        "registry": 1,
+        "score": [
+          "primary",
+          "embedded",
+          "dbapi"
+        ],
+        "seed": 0
+      },
+      "sql": [
+        [
+          "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+          [
+            "g",
+            "node",
+            "m"
+          ]
+        ],
+        [
+          "SELECT Name FROM %Dictionary.CompiledClass WHERE SqlSchemaName = 'Graph_KG' AND SqlTableName = 'kg_emb_0000000000000001'",
+          []
+        ],
+        [
+          "SELECT Parameters FROM %Dictionary.CompiledProperty WHERE Name = 'emb' AND Parent = 'Graph.KG.kgemb0000000000000001'",
+          []
+        ],
+        [
+          "SELECT DTD_IDENTIFIER, COLUMN_TYPE, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_NAME = 'emb'",
+          [
+            "Graph_KG",
+            "kg_emb_0000000000000001"
+          ]
+        ],
+        [
+          "SELECT TOP ? n.node_id, VECTOR_COSINE(n.emb, TO_VECTOR(?, DOUBLE)) AS score FROM Graph_KG.kg_emb_0000000000000001 n WHERE (COALESCE(n.graph_id, '') = COALESCE(?, '')) ORDER BY score DESC",
+          [
+            2,
+            "[1,2,3]",
+            "g"
+          ]
+        ],
+        [
+          "SELECT Name FROM %Dictionary.CompiledClass WHERE SqlSchemaName = 'Graph_KG' AND SqlTableName = 'kg_emb_0000000000000001'",
+          []
+        ],
+        [
+          "SELECT Parameters FROM %Dictionary.CompiledProperty WHERE Name = 'emb' AND Parent = 'Graph.KG.kgemb0000000000000001'",
+          []
+        ],
+        [
+          "SELECT DTD_IDENTIFIER, COLUMN_TYPE, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_NAME = 'emb'",
+          [
+            "Graph_KG",
+            "kg_emb_0000000000000001"
+          ]
+        ],
+        [
+          "SELECT TOP 2 n.node_id, VECTOR_COSINE(n.emb, TO_VECTOR(?, DOUBLE)) AS score FROM Graph_KG.kg_emb_0000000000000001 n WHERE (COALESCE(n.graph_id, '') = COALESCE(?, '')) ORDER BY score DESC",
+          [
+            "[1,2,3]",
+            "g"
+          ]
+        ],
+        [
+          "SELECT Name FROM %Dictionary.CompiledClass WHERE SqlSchemaName = 'Graph_KG' AND SqlTableName = 'kg_emb_0000000000000001'",
+          []
+        ],
+        [
+          "SELECT Parameters FROM %Dictionary.CompiledProperty WHERE Name = 'emb' AND Parent = 'Graph.KG.kgemb0000000000000001'",
+          []
+        ],
+        [
+          "SELECT DTD_IDENTIFIER, COLUMN_TYPE, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_NAME = 'emb'",
+          [
+            "Graph_KG",
+            "kg_emb_0000000000000001"
+          ]
+        ],
+        [
+          "SELECT n.node_id, n.emb FROM Graph_KG.kg_emb_0000000000000001 n WHERE n.emb IS NOT NULL AND (COALESCE(n.graph_id, '') = COALESCE(?, ''))",
+          [
+            "g"
+          ]
+        ]
+      ],
+      "want": {
+        "kind": "rows",
+        "value": []
+      }
+    },
+    "seed": {
+      "agrees": true,
+      "effects": {
+        "catalog": 0,
+        "client": 0,
+        "diagnostic": 0,
+        "kernel": 0,
+        "registry": 1,
+        "score": [
+          "primary",
+          "embedded",
+          "dbapi"
+        ],
+        "seed": 1
+      },
+      "got": {
+        "kind": "rows",
+        "value": [
+          [
+            "seed",
+            1.0
+          ]
+        ]
+      },
+      "input": {
+        "catalog": null,
+        "cells": null,
+        "dim": "4",
+        "embedded": "unavailable",
+        "faults": [
+          "first score generic unavailable"
+        ],
+        "k": 1,
+        "label": null,
+        "present": true,
+        "query": "'seed'",
+        "raw": "None",
+        "stage": "primary"
+      },
+      "model_effects": {
+        "catalog": 0,
+        "client": 0,
+        "diagnostic": 0,
+        "kernel": 0,
+        "registry": 1,
+        "score": [
+          "primary",
+          "embedded",
+          "dbapi"
+        ],
+        "seed": 1
+      },
+      "sql": [
+        [
+          "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+          [
+            "g",
+            "node",
+            "m"
+          ]
+        ],
+        [
+          "SELECT emb FROM Graph_KG.kg_emb_0000000000000001 WHERE node_id = ? AND (COALESCE(graph_id, '') = COALESCE(?, ''))",
+          [
+            "seed",
+            "g"
+          ]
+        ],
+        [
+          "SELECT TOP ? n.node_id, VECTOR_COSINE(n.emb, TO_VECTOR(?, DOUBLE)) AS score FROM Graph_KG.kg_emb_0000000000000001 n WHERE (COALESCE(n.graph_id, '') = COALESCE(?, '')) AND n.node_id != ? ORDER BY score DESC",
+          [
+            1,
+            "[1,0,0,0]",
+            "g",
+            "seed"
+          ]
+        ],
+        [
+          "SELECT TOP 1 n.node_id, VECTOR_COSINE(n.emb, TO_VECTOR(?, DOUBLE)) AS score FROM Graph_KG.kg_emb_0000000000000001 n WHERE (COALESCE(n.graph_id, '') = COALESCE(?, '')) ORDER BY score DESC",
+          [
+            "[1,0,0,0]",
+            "g"
+          ]
+        ]
+      ],
+      "want": {
+        "kind": "rows",
+        "value": [
+          [
+            "seed",
+            1.0
+          ]
+        ]
+      }
+    }
+  },
+  "current_equals_exported_pin": {
+    "iris_vector_graph/_engine/embeddings.py": true,
+    "iris_vector_graph/_engine/schema.py": true,
+    "iris_vector_graph/_engine/vector.py": true,
+    "iris_vector_graph/_validate.py": true,
+    "iris_vector_graph/embedding_identity.py": true,
+    "iris_vector_graph/schema.py": true,
+    "tests/unit/route_fakes_227.py": true
+  },
+  "elapsed": 4.78279491601279,
+  "failure": null,
+  "inputs": {
+    ".g5/Verus_verification/models/temporal_restore/binding.py": "cdd4459d65727c894b6be1aca1a1f61ad56cb1325592bacc9dcb5471a7608fe1",
+    ".g5/Verus_verification/models/vector_admission/binding.py": "8a3fa56d2adadf363ad9e2b726566fc03528a0636aa3aa96fe3d0e38766db16d",
+    ".g5/Verus_verification/models/vector_admission/catalog.rs": "17f002c56f196ca6a21a616d83e971a575f4f91042a9768a190c78b9c57b53cd",
+    ".g5/Verus_verification/models/vector_admission/ivf.rs": "ac94ad71afbbcc0662e527f6fe6fabaf2f457cbbc11bcc9211d14809e4365bf7",
+    ".g5/Verus_verification/models/vector_admission/json_width.rs": "74b80e052447a335fe4aeb81de069dad03a99cbf56f02a9736bb6261998170e2",
+    ".g5/Verus_verification/models/vector_admission/model.json": "9ee39b93056d2043546da833948db127fa8a1ddc7c819a9ccecf120a3e72c67b",
+    ".g5/Verus_verification/models/vector_admission/numbers.rs": "1d179939e358597a336d4ab7cbcd6a3facc34858ddc665a5132b07d26cab96f0",
+    ".g5/Verus_verification/models/vector_admission/parser.rs": "e1eb5e6d8846c94f950acaf0a8eeb2639fbd86d4d4ed8fbbcf21160e8d142642",
+    ".g5/Verus_verification/models/vector_admission/port.py": "34ec950813e48f37f75cacb9ca4af3057f61830b79eb98c0ef3fd35617701ec5",
+    ".g5/Verus_verification/models/vector_admission/vector_admission.rs": "39799fa482ad5fe08182b433463ecfb5f688aea77f7cb8148b069f56e5e2039c",
+    ".g5/Verus_verification/models/vector_admission/workflow.rs": "4cb119fb00b9dcb627db620854ceb2c6457cc54f7cea0e8fc10079a0958e645d",
+    ".g5/Verus_verification/tools/binding_common.py": "c0e7292671b37f7fae18dbf90102fb5c3f9c2a746d4f2a642b92cd96fe781f8a",
+    ".g5/uplift/consolidated/iteration-10/next-vector-survey-probe.py": "4355b7b154b7529303971a7c5796c2b8b03da887bd0829f755395d84d8aff7a4",
+    ".g5/uplift/consolidated/iteration-11/review-seed-audit.json": "94a9968586ff45c93e3532e452d9fbc6117f19f111118d09d4f9296af457e17b",
+    ".g5/uplift/consolidated/iteration-11/review-seed-audit.py": "65c765f74eb1fba98b4b7156df185d5a59c33b391a990bd26d5259dea7e02957",
+    ".g5/uplift/consolidated/iteration-11/review-seed-intent.md": "c39f269d7a262c4759b41c085c7498d83193fc2471bb99c1d2de5a0218bc8705",
+    ".g5/uplift/consolidated/iteration-11/review-seed-predictions.md": "f091809115ef7d7f761c39201dc14224026cd57f6eb60fd89e4d8fd10921a9df",
+    ".g5/uplift/consolidated/iteration-11/review-seed-probe.json": "9f08f6a30b7a399f61c8f7785a0fc7bdd99c4fb58cbdab96ea540c978b86fc67",
+    ".g5/uplift/consolidated/iteration-11/review-seed-probe.py": "4666a54da8cb594d2e7df3562b45c5ce6fd1e1396841c4bf5b965e34e7d52d63",
+    ".g5/uplift/consolidated/iteration-11/review-vector-expectations.md": "8a45d690c8ccdc24ef91c7423286e82bf525260da6e45cb662240831011ea933",
+    ".g5/uplift/consolidated/iteration-11/review-vector-fresh-audit.json": "e429917a723b7d5fff66fadebe2b700b7b1b7c88a7103e4a51589f80f0c6a58e",
+    ".g5/uplift/consolidated/iteration-11/review-vector-fresh.json": "0c0d57b39087038e1d5611bba325b5ca87dcbbf1c24a85cdfd02191b015bf118",
+    ".g5/uplift/consolidated/iteration-11/review-vector-fresh.py": "21960417943f60ac4f85d4046258dec82d1f854e9943f673ce2a75f659fc55fa",
+    ".g5/uplift/consolidated/iteration-11/root-seed-native.json": "fce114fb225bbe7e81647f76b0477fa327b260ebbcf7c2a4bbf0c90afaff8e46",
+    ".g5/uplift/consolidated/iteration-11/root-seed-native.py": "a3a6ebbb241d7189e3c5f72daea1420bc4dee74e259fc8cc0d7acf062647bee0",
+    ".g5/uplift/consolidated/iteration-11/root-seed-predictions.md": "769340abe4996c2f44c737283702f5e8df333cd039356482d5dbfa66b55d9767",
+    ".g5/uplift/consolidated/iteration-11/root-vector-native.json": "2d4fd0c5f55dfbfd2f6e823f4ead4ad517459f0acb7927d5556676ebafab9a98",
+    ".g5/uplift/consolidated/iteration-11/root-vector-native.py": "a6be3cb604e7577aa1b0e219d7c9bcd40f1ec366b58061d4880d634144ee60d2",
+    ".g5/uplift/consolidated/iteration-11/root-vector-predictions.md": "67b8e1d1f11715f2f9e7a14a797fcef7ed4903df3a60728d5caea9d9e963c465",
+    ".g5/uplift/consolidated/iteration-5/native-setup.json": "00f2a10ec6c71dcfef54013d462875481bd76ef3d7a8c9dc0e291aae63058cdf",
+    "iris_vector_graph/_engine/embeddings.py": "38335c3ffcf9a4097516ba01f6768390470a06c1dd30006043262ce6df235739",
+    "iris_vector_graph/_engine/schema.py": "e10b8cc75335c7426ca7e32ecd52024e02150d3dda178fbb56453cdbd29d1c51",
+    "iris_vector_graph/_engine/vector.py": "f7e0297f514c2c87c0c3b98df18b7264624e9c10fa81c0ec1d28508d95c0b0d5",
+    "iris_vector_graph/_validate.py": "0392e48267ed251d6bab1af4259df8aa55603bd4597148f850be420658300835",
+    "iris_vector_graph/embedding_identity.py": "669320de144126c67ceadbc41614658906056c018fd3eef0ba891ef9e170bb97",
+    "iris_vector_graph/schema.py": "711bc93c5fc6d485dace4ebdd1815b278bb52ed696e03cd483f978e65958a0b7",
+    "tests/unit/route_fakes_227.py": "650ba53abb0c368dc9d4f4553ea835757f2a6adc43ee8a8bd8a5799b53c1bb9e"
+  },
+  "ivf": [
+    {
+      "actual_methods": [],
+      "agrees": true,
+      "build_batch": "500",
+      "expected_methods": [],
+      "got": {
+        "kind": "error",
+        "type": "ValueError"
+      },
+      "info": "'{}'",
+      "name": "no-route",
+      "nlist": "1",
+      "published": false,
+      "raw_vectors": [],
+      "sql": [
+        [
+          "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+          [
+            "g",
+            "node",
+            "m"
+          ]
+        ]
+      ]
+    },
+    {
+      "actual_methods": [],
+      "agrees": true,
+      "build_batch": "500",
+      "expected_methods": [],
+      "got": {
+        "kind": "error",
+        "type": "ValueError"
+      },
+      "info": "'{}'",
+      "name": "empty-ids",
+      "nlist": "1",
+      "published": false,
+      "raw_vectors": [],
+      "sql": [
+        [
+          "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+          [
+            "g",
+            "node",
+            "m"
+          ]
+        ]
+      ]
+    },
+    {
+      "actual_methods": [],
+      "agrees": true,
+      "build_batch": "500",
+      "expected_methods": [],
+      "got": {
+        "kind": "error",
+        "type": "ValueError"
+      },
+      "info": "'{}'",
+      "name": "no-rows",
+      "nlist": "1",
+      "published": false,
+      "raw_vectors": [],
+      "sql": [
+        [
+          "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+          [
+            "g",
+            "node",
+            "m"
+          ]
+        ],
+        [
+          "SELECT node_id, emb FROM Graph_KG.kg_emb_0000000000000001 WHERE (COALESCE(graph_id, '') = COALESCE(?, ''))",
+          [
+            "g"
+          ]
+        ]
+      ]
+    },
+    {
+      "actual_methods": [],
+      "agrees": true,
+      "build_batch": "500",
+      "expected_methods": [],
+      "got": {
+        "kind": "error",
+        "type": "ValueError"
+      },
+      "info": "'{}'",
+      "name": "all-none",
+      "nlist": "1",
+      "published": false,
+      "raw_vectors": [
+        null
+      ],
+      "sql": [
+        [
+          "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+          [
+            "g",
+            "node",
+            "m"
+          ]
+        ],
+        [
+          "SELECT node_id, emb FROM Graph_KG.kg_emb_0000000000000001 WHERE (COALESCE(graph_id, '') = COALESCE(?, ''))",
+          [
+            "g"
+          ]
+        ]
+      ]
+    },
+    {
+      "actual_methods": [
+        "Build",
+        "AddBatch",
+        "FinalizeIndex",
+        "Info"
+      ],
+      "agrees": true,
+      "build_batch": "500",
+      "expected_methods": [
+        "Build",
+        "AddBatch",
+        "FinalizeIndex",
+        "Info"
+      ],
+      "got": {
+        "kind": "rows",
+        "value": {
+          "dim": 4
+        }
+      },
+      "info": "'{\"dim\":4}'",
+      "name": "one-vector",
+      "nlist": "1",
+      "published": true,
+      "raw_vectors": [
+        "1,0,0,0"
+      ],
+      "sql": [
+        [
+          "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+          [
+            "g",
+            "node",
+            "m"
+          ]
+        ],
+        [
+          "SELECT node_id, emb FROM Graph_KG.kg_emb_0000000000000001 WHERE (COALESCE(graph_id, '') = COALESCE(?, ''))",
+          [
+            "g"
+          ]
+        ]
+      ]
+    },
+    {
+      "actual_methods": [
+        "Build",
+        "AddBatch",
+        "FinalizeIndex",
+        "Info"
+      ],
+      "agrees": true,
+      "build_batch": "500",
+      "expected_methods": [
+        "Build",
+        "AddBatch",
+        "FinalizeIndex",
+        "Info"
+      ],
+      "got": {
+        "kind": "error",
+        "type": "JSONDecodeError"
+      },
+      "info": "'not-json'",
+      "name": "malformed-info",
+      "nlist": "1",
+      "published": false,
+      "raw_vectors": [
+        "1,0,0,0"
+      ],
+      "sql": [
+        [
+          "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+          [
+            "g",
+            "node",
+            "m"
+          ]
+        ],
+        [
+          "SELECT node_id, emb FROM Graph_KG.kg_emb_0000000000000001 WHERE (COALESCE(graph_id, '') = COALESCE(?, ''))",
+          [
+            "g"
+          ]
+        ]
+      ]
+    },
+    {
+      "actual_methods": [
+        "Build",
+        "AddBatch",
+        "FinalizeIndex",
+        "Info"
+      ],
+      "agrees": true,
+      "build_batch": "500",
+      "expected_methods": [
+        "Build",
+        "AddBatch",
+        "FinalizeIndex",
+        "Info"
+      ],
+      "got": {
+        "kind": "error",
+        "type": "JSONDecodeError"
+      },
+      "info": "None",
+      "name": "None-info",
+      "nlist": "1",
+      "published": false,
+      "raw_vectors": [
+        "1,0,0,0"
+      ],
+      "sql": [
+        [
+          "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+          [
+            "g",
+            "node",
+            "m"
+          ]
+        ],
+        [
+          "SELECT node_id, emb FROM Graph_KG.kg_emb_0000000000000001 WHERE (COALESCE(graph_id, '') = COALESCE(?, ''))",
+          [
+            "g"
+          ]
+        ]
+      ]
+    },
+    {
+      "actual_methods": [
+        "Build",
+        "AddBatch",
+        "FinalizeIndex",
+        "Info"
+      ],
+      "agrees": true,
+      "build_batch": "500",
+      "expected_methods": [
+        "Build",
+        "AddBatch",
+        "FinalizeIndex",
+        "Info"
+      ],
+      "got": {
+        "kind": "rows",
+        "value": null
+      },
+      "info": "'null'",
+      "name": "null-info-valid",
+      "nlist": "1",
+      "published": true,
+      "raw_vectors": [
+        "1,0,0,0"
+      ],
+      "sql": [
+        [
+          "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+          [
+            "g",
+            "node",
+            "m"
+          ]
+        ],
+        [
+          "SELECT node_id, emb FROM Graph_KG.kg_emb_0000000000000001 WHERE (COALESCE(graph_id, '') = COALESCE(?, ''))",
+          [
+            "g"
+          ]
+        ]
+      ]
+    },
+    {
+      "actual_methods": [],
+      "agrees": true,
+      "build_batch": "500",
+      "expected_methods": [],
+      "got": {
+        "kind": "error",
+        "type": "TypeError"
+      },
+      "info": "'{}'",
+      "name": "coercible-nlist-not-rewritten",
+      "nlist": "'1'",
+      "published": false,
+      "raw_vectors": [
+        "1,0,0,0"
+      ],
+      "sql": [
+        [
+          "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+          [
+            "g",
+            "node",
+            "m"
+          ]
+        ],
+        [
+          "SELECT node_id, emb FROM Graph_KG.kg_emb_0000000000000001 WHERE (COALESCE(graph_id, '') = COALESCE(?, ''))",
+          [
+            "g"
+          ]
+        ]
+      ]
+    },
+    {
+      "actual_methods": [
+        "Build"
+      ],
+      "agrees": true,
+      "build_batch": "'500'",
+      "expected_methods": [
+        "Build"
+      ],
+      "got": {
+        "kind": "error",
+        "type": "TypeError"
+      },
+      "info": "'{}'",
+      "name": "coercible-build-batch-not-rewritten",
+      "nlist": "1",
+      "published": false,
+      "raw_vectors": [
+        "1,0,0,0"
+      ],
+      "sql": [
+        [
+          "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+          [
+            "g",
+            "node",
+            "m"
+          ]
+        ],
+        [
+          "SELECT node_id, emb FROM Graph_KG.kg_emb_0000000000000001 WHERE (COALESCE(graph_id, '') = COALESCE(?, ''))",
+          [
+            "g"
+          ]
+        ]
+      ]
+    },
+    {
+      "actual_methods": [
+        "Build"
+      ],
+      "agrees": true,
+      "build_batch": "500",
+      "expected_methods": [
+        "Build"
+      ],
+      "got": {
+        "kind": "error",
+        "type": "RuntimeError"
+      },
+      "info": "'{}'",
+      "name": "Build-fault",
+      "nlist": "1",
+      "published": false,
+      "raw_vectors": [
+        "1,0,0,0"
+      ],
+      "sql": [
+        [
+          "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+          [
+            "g",
+            "node",
+            "m"
+          ]
+        ],
+        [
+          "SELECT node_id, emb FROM Graph_KG.kg_emb_0000000000000001 WHERE (COALESCE(graph_id, '') = COALESCE(?, ''))",
+          [
+            "g"
+          ]
+        ]
+      ]
+    },
+    {
+      "actual_methods": [
+        "Build",
+        "AddBatch",
+        "FinalizeIndex",
+        "Info"
+      ],
+      "agrees": true,
+      "build_batch": "500",
+      "expected_methods": [
+        "Build",
+        "AddBatch",
+        "FinalizeIndex",
+        "Info"
+      ],
+      "got": {
+        "kind": "error",
+        "type": "RuntimeError"
+      },
+      "info": "'{}'",
+      "name": "Info-fault",
+      "nlist": "1",
+      "published": false,
+      "raw_vectors": [
+        "1,0,0,0"
+      ],
+      "sql": [
+        [
+          "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+          [
+            "g",
+            "node",
+            "m"
+          ]
+        ],
+        [
+          "SELECT node_id, emb FROM Graph_KG.kg_emb_0000000000000001 WHERE (COALESCE(graph_id, '') = COALESCE(?, ''))",
+          [
+            "g"
+          ]
+        ]
+      ]
+    }
+  ],
+  "kind": "binding",
+  "mismatch_count": 0,
+  "mismatches": [],
+  "model": "vector_admission",
+  "native_calls": 0,
+  "parser_comparisons": 254,
+  "parser_misses": [],
+  "platform": "macOS-26.2-arm64-arm-64bit",
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "python": "3.11.8",
+  "scope": "Actual pinned Python route/cache/query/readers, SQLite-scoped SQL provider with finite math cosine and explicit fault replies, raw JSON stack port vs independent stdlib oracle. NumPy client kernel actually executes; kernel numeric theorem remains provider. Native root13+seed5 and independent source21/seed6 flat-hashed supplements only; no child native/network/Git.",
+  "search_comparisons": 466,
+  "sensitivity": {
+    "actual_graph_cache_key_removed": true,
+    "actual_route_precedence_removed": true,
+    "actual_width_guard_removed": true,
+    "corrupted_final_score_rejected": true
+  },
+  "socket_connect_calls": 0,
+  "verdict": "AGREES"
+}

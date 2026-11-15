@@ -1,0 +1,2492 @@
+error: struct literals are not allowed here; try surrounding the struct literal with parentheses
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/vector_admission.rs:118:65
+    |
+118 |         resolve(r,e,Raw::Rows(seq![row])).engine.cache[key(r)]==Cached{route,at:r.write_at},
+    |                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0425]: cannot find type `Text` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:5:22
+  |
+5 | pub enum Query {Text(Text),List(Seq<Cell>),Null,Other(Cell)}
+  |                      ^^^^ not found in this scope
+  |
+help: consider importing this type alias
+  |
+2 + use crate::parser::Text;
+  |
+
+error[E0425]: cannot find type `Cell` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:5:37
+  |
+5 | pub enum Query {Text(Text),List(Seq<Cell>),Null,Other(Cell)}
+  |                                     ^^^^ not found in this scope
+  |
+help: consider importing this struct
+  |
+2 + use std::cell::Cell;
+  |
+
+error[E0425]: cannot find type `Cell` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:5:55
+  |
+5 | pub enum Query {Text(Text),List(Seq<Cell>),Null,Other(Cell)}
+  |                                                       ^^^^ not found in this scope
+  |
+help: consider importing this struct
+  |
+2 + use std::cell::Cell;
+  |
+
+error[E0425]: cannot find type `Text` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:7:61
+  |
+7 | pub struct Args {pub query:Query,pub k:nat,pub label:Option<Text>,pub dtype:Option<Cell>,pub engine_dtype:Cell}
+  |                                                             ^^^^ not found in this scope
+  |
+help: consider importing this type alias
+  |
+2 + use crate::parser::Text;
+  |
+
+error[E0425]: cannot find type `Cell` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:7:84
+  |
+7 | pub struct Args {pub query:Query,pub k:nat,pub label:Option<Text>,pub dtype:Option<Cell>,pub engine_dtype:Cell}
+  |                                                                                    ^^^^ not found in this scope
+  |
+help: consider importing this struct
+  |
+2 + use std::cell::Cell;
+  |
+
+error[E0425]: cannot find type `Cell` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:7:107
+  |
+7 | pub struct Args {pub query:Query,pub k:nat,pub label:Option<Text>,pub dtype:Option<Cell>,pub engine_dtype:Cell}
+  |                                                                                                           ^^^^ not found in this scope
+  |
+help: consider importing this struct
+  |
+2 + use std::cell::Cell;
+  |
+
+error[E0425]: cannot find type `Name` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:8:30
+  |
+8 | pub struct Stored {pub table:Name,pub graph:int,pub id:Cell,pub emb:Cell,pub labels:Set<Text>}
+  |                              ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Cell` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:8:56
+  |
+8 | pub struct Stored {pub table:Name,pub graph:int,pub id:Cell,pub emb:Cell,pub labels:Set<Text>}
+  |                                                        ^^^^ not found in this scope
+  |
+help: consider importing this struct
+  |
+2 + use std::cell::Cell;
+  |
+
+error[E0425]: cannot find type `Cell` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:8:69
+  |
+8 | pub struct Stored {pub table:Name,pub graph:int,pub id:Cell,pub emb:Cell,pub labels:Set<Text>}
+  |                                                                     ^^^^ not found in this scope
+  |
+help: consider importing this struct
+  |
+2 + use std::cell::Cell;
+  |
+
+error[E0425]: cannot find type `Text` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:8:89
+  |
+8 | pub struct Stored {pub table:Name,pub graph:int,pub id:Cell,pub emb:Cell,pub labels:Set<Text>}
+  |                                                                                         ^^^^ not found in this scope
+  |
+help: consider importing this type alias
+  |
+2 + use crate::parser::Text;
+  |
+
+error[E0425]: cannot find type `Cell` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:9:49
+  |
+9 | pub struct Scored {pub row:Stored,pub cells:Seq<Cell>}
+  |                                                 ^^^^ not found in this scope
+  |
+help: consider importing this struct
+  |
+2 + use std::cell::Cell;
+  |
+
+error[E0425]: cannot find type `Number` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:10:35
+   |
+10 | pub struct Kernel {pub query_norm:Number,pub row_norm:Number,pub score:Number}
+   |                                   ^^^^^^ not found in this scope
+   |
+help: there is an enum variant `crate::json_width::Lex::Number`; try using the variant's enum
+   |
+10 - pub struct Kernel {pub query_norm:Number,pub row_norm:Number,pub score:Number}
+10 + pub struct Kernel {pub query_norm:crate::json_width::Lex,pub row_norm:Number,pub score:Number}
+   |
+
+error[E0425]: cannot find type `Number` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:10:55
+   |
+10 | pub struct Kernel {pub query_norm:Number,pub row_norm:Number,pub score:Number}
+   |                                                       ^^^^^^ not found in this scope
+   |
+help: there is an enum variant `crate::json_width::Lex::Number`; try using the variant's enum
+   |
+10 - pub struct Kernel {pub query_norm:Number,pub row_norm:Number,pub score:Number}
+10 + pub struct Kernel {pub query_norm:Number,pub row_norm:crate::json_width::Lex,pub score:Number}
+   |
+
+error[E0425]: cannot find type `Number` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:10:72
+   |
+10 | pub struct Kernel {pub query_norm:Number,pub row_norm:Number,pub score:Number}
+   |                                                                        ^^^^^^ not found in this scope
+   |
+help: there is an enum variant `crate::json_width::Lex::Number`; try using the variant's enum
+   |
+10 - pub struct Kernel {pub query_norm:Number,pub row_norm:Number,pub score:Number}
+10 + pub struct Kernel {pub query_norm:Number,pub row_norm:Number,pub score:crate::json_width::Lex}
+   |
+
+error[E0425]: cannot find type `Raw` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:11:49
+   |
+11 | pub struct ClientRow {pub row:Stored,pub kernel:Raw<Kernel>}
+   |                                                 ^^^ not found in this scope
+
+error[E0425]: cannot find type `Request` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:12:29
+   |
+12 | pub struct Env {pub request:Request,pub registry:Raw<Seq<Row>>,pub catalog:catalog::Catalog,
+   |                             ^^^^^^^ not found in this scope
+   |
+help: consider importing this struct
+   |
+ 2 + use std::error::Request;
+   |
+
+error[E0425]: cannot find type `Raw` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:12:50
+   |
+12 | pub struct Env {pub request:Request,pub registry:Raw<Seq<Row>>,pub catalog:catalog::Catalog,
+   |                                                  ^^^ not found in this scope
+
+error[E0425]: cannot find type `Row` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:12:58
+   |
+12 | pub struct Env {pub request:Request,pub registry:Raw<Seq<Row>>,pub catalog:catalog::Catalog,
+   |                                                          ^^^ not found in this scope
+   |
+help: you might be missing a type parameter
+   |
+12 | pub struct Env<Row> {pub request:Request,pub registry:Raw<Seq<Row>>,pub catalog:catalog::Catalog,
+   |               +++++
+
+error[E0425]: cannot find type `Raw` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:13:14
+   |
+13 |     pub seed:Raw<Seq<Stored>>,pub primary:Raw<Seq<Scored>>,pub embedded:Raw<Seq<Scored>>,pub dbapi:Raw<Seq<Scored>>,pub client:Raw<S...
+   |              ^^^ not found in this scope
+
+error[E0425]: cannot find type `Raw` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:13:43
+   |
+13 |     pub seed:Raw<Seq<Stored>>,pub primary:Raw<Seq<Scored>>,pub embedded:Raw<Seq<Scored>>,pub dbapi:Raw<Seq<Scored>>,pub client:Raw<S...
+   |                                           ^^^ not found in this scope
+
+error[E0425]: cannot find type `Raw` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:13:73
+   |
+13 |     pub seed:Raw<Seq<Stored>>,pub primary:Raw<Seq<Scored>>,pub embedded:Raw<Seq<Scored>>,pub dbapi:Raw<Seq<Scored>>,pub client:Raw<S...
+   |                                                                         ^^^ not found in this scope
+
+error[E0425]: cannot find type `Raw` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:13:100
+   |
+13 |     pub seed:Raw<Seq<Stored>>,pub primary:Raw<Seq<Scored>>,pub embedded:Raw<Seq<Scored>>,pub dbapi:Raw<Seq<Scored>>,pub client:Raw<S...
+   |                                                                                                    ^^^ not found in this scope
+
+error[E0425]: cannot find type `Raw` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:13:128
+   |
+13 | ...Seq<Scored>>,pub dbapi:Raw<Seq<Scored>>,pub client:Raw<Seq<ClientRow>>,pub diagnostic:Raw<Seq<Stored>>}
+   |                                                       ^^^ not found in this scope
+
+error[E0425]: cannot find type `Raw` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:13:163
+   |
+13 | ...ed>>,pub client:Raw<Seq<ClientRow>>,pub diagnostic:Raw<Seq<Stored>>}
+   |                                                       ^^^ not found in this scope
+
+error[E0425]: cannot find type `Key` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:14:24
+   |
+14 | pub enum Effect {Route(Key),RegistryRead(Key),CatalogRead(Name,nat),Cursor,
+   |                        ^^^ not found in this scope
+
+error[E0425]: cannot find type `Key` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:14:42
+   |
+14 | pub enum Effect {Route(Key),RegistryRead(Key),CatalogRead(Name,nat),Cursor,
+   |                                          ^^^ not found in this scope
+
+error[E0425]: cannot find type `Name` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:14:59
+   |
+14 | pub enum Effect {Route(Key),RegistryRead(Key),CatalogRead(Name,nat),Cursor,
+   |                                                           ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Name` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:15:14
+   |
+15 |     SeedRead(Name,int,Text),Score(Entry,Name,int,Query,Cell,Option<Text>,Option<Text>),
+   |              ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:15:23
+   |
+15 |     SeedRead(Name,int,Text),Score(Entry,Name,int,Query,Cell,Option<Text>,Option<Text>),
+   |                       ^^^^ not found in this scope
+   |
+help: consider importing this type alias
+   |
+ 2 + use crate::parser::Text;
+   |
+
+error[E0425]: cannot find type `Name` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:15:41
+   |
+15 |     SeedRead(Name,int,Text),Score(Entry,Name,int,Query,Cell,Option<Text>,Option<Text>),
+   |                                         ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Cell` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:15:56
+   |
+15 |     SeedRead(Name,int,Text),Score(Entry,Name,int,Query,Cell,Option<Text>,Option<Text>),
+   |                                                        ^^^^ not found in this scope
+   |
+help: consider importing this struct
+   |
+ 2 + use std::cell::Cell;
+   |
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:15:68
+   |
+15 |     SeedRead(Name,int,Text),Score(Entry,Name,int,Query,Cell,Option<Text>,Option<Text>),
+   |                                                                    ^^^^ not found in this scope
+   |
+help: consider importing this type alias
+   |
+ 2 + use crate::parser::Text;
+   |
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:15:81
+   |
+15 |     SeedRead(Name,int,Text),Score(Entry,Name,int,Query,Cell,Option<Text>,Option<Text>),
+   |                                                                                 ^^^^ not found in this scope
+   |
+help: consider importing this type alias
+   |
+ 2 + use crate::parser::Text;
+   |
+
+error[E0425]: cannot find type `Name` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:16:16
+   |
+16 |     ClientRead(Name,int,Option<Text>),Kernel(Cell),DiagnosticRead(Name,int),
+   |                ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:16:32
+   |
+16 |     ClientRead(Name,int,Option<Text>),Kernel(Cell),DiagnosticRead(Name,int),
+   |                                ^^^^ not found in this scope
+   |
+help: consider importing this type alias
+   |
+ 2 + use crate::parser::Text;
+   |
+
+error[E0425]: cannot find type `Cell` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:16:46
+   |
+16 |     ClientRead(Name,int,Option<Text>),Kernel(Cell),DiagnosticRead(Name,int),
+   |                                              ^^^^ not found in this scope
+   |
+help: consider importing this struct
+   |
+ 2 + use std::cell::Cell;
+   |
+
+error[E0425]: cannot find type `Name` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:16:67
+   |
+16 |     ClientRead(Name,int,Option<Text>),Kernel(Cell),DiagnosticRead(Name,int),
+   |                                                                   ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Name` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:17:13
+   |
+17 |     IvfRead(Name,int),Build(Name),AddBatch(nat),Finalize,Info,Publish}
+   |             ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Name` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:17:29
+   |
+17 |     IvfRead(Name,int),Build(Name),AddBatch(nat),Finalize,Info,Publish}
+   |                             ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Cell` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:19:22
+   |
+19 | pub type Answer=Seq<(Cell,Number)>;
+   |                      ^^^^ not found in this scope
+   |
+help: consider importing this struct
+   |
+ 2 + use std::cell::Cell;
+   |
+
+error[E0425]: cannot find type `Number` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:19:27
+   |
+19 | pub type Answer=Seq<(Cell,Number)>;
+   |                           ^^^^^^ not found in this scope
+   |
+help: there is an enum variant `crate::json_width::Lex::Number`; try using the variant's enum
+   |
+19 - pub type Answer=Seq<(Cell,Number)>;
+19 + pub type Answer=Seq<(Cell,crate::json_width::Lex)>;
+   |
+help: you might be missing a type parameter
+   |
+19 | pub type Answer<Number>=Seq<(Cell,Number)>;
+   |                ++++++++
+
+error[E0425]: cannot find type `Engine` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:21:31
+   |
+21 | pub struct Result {pub engine:Engine,pub trace:Seq<Effect>,pub outcome:Outcome}
+   |                               ^^^^^^ not found in this scope
+
+error[E0425]: cannot find type `Name` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:22:45
+   |
+22 | pub enum Gate {Stop(Error),Empty,Ready{Name:Name,route:Option<Route>,dtype:Cell}}
+   |                                             ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Route` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:22:63
+   |
+22 | pub enum Gate {Stop(Error),Empty,Ready{Name:Name,route:Option<Route>,dtype:Cell}}
+   |                                                               ^^^^^ not found in this scope
+   |
+help: there is an enum variant `crate::workflow::Effect::Route`; try using the variant's enum
+   |
+22 - pub enum Gate {Stop(Error),Empty,Ready{Name:Name,route:Option<Route>,dtype:Cell}}
+22 + pub enum Gate {Stop(Error),Empty,Ready{Name:Name,route:Option<crate::workflow::Effect>,dtype:Cell}}
+   |
+help: you might be missing a type parameter
+   |
+22 | pub enum Gate<Route> {Stop(Error),Empty,Ready{Name:Name,route:Option<Route>,dtype:Cell}}
+   |              +++++++
+
+error[E0425]: cannot find type `Cell` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:22:76
+   |
+22 | pub enum Gate {Stop(Error),Empty,Ready{Name:Name,route:Option<Route>,dtype:Cell}}
+   |                                                                            ^^^^ not found in this scope
+   |
+help: consider importing this struct
+   |
+ 2 + use std::cell::Cell;
+   |
+
+error[E0425]: cannot find type `Route` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:22:63
+   |
+22 | pub enum Gate {Stop(Error),Empty,Ready{Name:Name,route:Option<Route>,dtype:Cell}}
+   |                                                               ^^^^^ not found in this scope
+   |
+help: there is an enum variant `crate::workflow::Effect::Route`; try using the variant's enum
+   |
+22 - pub enum Gate {Stop(Error),Empty,Ready{Name:Name,route:Option<Route>,dtype:Cell}}
+22 + pub enum Gate {Stop(Error),Empty,Ready{Name:Name,route:Option<crate::workflow::Effect>,dtype:Cell}}
+   |
+help: you might be missing a type parameter
+   |
+22 | pub enum Gate {Stop(Error),Empty,Ready{Name:Name,route:Option<Route>,dtype:Cell}}<Route>
+   |                                                                                  +++++++
+
+error[E0425]: cannot find type `Engine` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:23:33
+   |
+23 | pub struct Prepared {pub engine:Engine,pub trace:Seq<Effect>,pub gate:Gate}
+   |                                 ^^^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:24:29
+   |
+24 | pub open spec fn measured(q:Text)->Option<nat> {json_width::width(q)}
+   |                             ^^^^ not found in this scope
+   |
+help: consider importing this type alias
+   |
+ 2 + use crate::parser::Text;
+   |
+
+error[E0425]: cannot find type `Route` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:27:40
+   |
+27 | pub open spec fn declared(route:Option<Route>)->Option<int> {match route{Some(r)=>r.width,None=>None}}
+   |                                        ^^^^^ not found in this scope
+   |
+help: there is an enum variant `crate::workflow::Effect::Route`; try using the variant's enum
+   |
+27 - pub open spec fn declared(route:Option<Route>)->Option<int> {match route{Some(r)=>r.width,None=>None}}
+27 + pub open spec fn declared(route:Option<crate::workflow::Effect>)->Option<int> {match route{Some(r)=>r.width,None=>None}}
+   |
+help: you might be missing a type parameter
+   |
+27 | pub open spec fn declared<Route>(route:Option<Route>)->Option<int> {match route{Some(r)=>r.width,None=>None}}
+   |                          +++++++
+
+error[E0425]: cannot find type `Route` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:28:44
+   |
+28 | pub open spec fn dtype(a:Args,route:Option<Route>)->Decode<Cell> {
+   |                                            ^^^^^ not found in this scope
+   |
+help: there is an enum variant `crate::workflow::Effect::Route`; try using the variant's enum
+   |
+28 - pub open spec fn dtype(a:Args,route:Option<Route>)->Decode<Cell> {
+28 + pub open spec fn dtype(a:Args,route:Option<crate::workflow::Effect>)->Decode<Cell> {
+   |
+help: you might be missing a type parameter
+   |
+28 | pub open spec fn dtype<Route>(a:Args,route:Option<Route>)->Decode<Cell> {
+   |                       +++++++
+
+error[E0425]: cannot find type `Decode` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:28:53
+   |
+28 | pub open spec fn dtype(a:Args,route:Option<Route>)->Decode<Cell> {
+   |                                                     ^^^^^^ not found in this scope
+
+error[E0425]: cannot find type `Cell` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:28:60
+   |
+28 | pub open spec fn dtype(a:Args,route:Option<Route>)->Decode<Cell> {
+   |                                                            ^^^^ not found in this scope
+   |
+help: consider importing this struct
+   |
+ 2 + use std::cell::Cell;
+   |
+
+error[E0433]: cannot find type `Cell` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:30:15
+   |
+30 |     match raw{Cell::Text(t)=>Decode::Value(Cell::Text(t.map_values(|c:char|upper(c)))),_=>Decode::Error}
+   |               ^^^^ use of undeclared type `Cell`
+   |
+help: consider importing this struct
+   |
+ 2 + use std::cell::Cell;
+   |
+
+error[E0433]: cannot find type `Cell` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:30:44
+   |
+30 |     match raw{Cell::Text(t)=>Decode::Value(Cell::Text(t.map_values(|c:char|upper(c)))),_=>Decode::Error}
+   |                                            ^^^^ use of undeclared type `Cell`
+   |
+help: consider importing this struct
+   |
+ 2 + use std::cell::Cell;
+   |
+
+error[E0425]: cannot find type `Route` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:32:51
+   |
+32 | pub open spec fn width_check(q:Query,route:Option<Route>,cat:catalog::Catalog)->(Option<Error>,nat) {
+   |                                                   ^^^^^ not found in this scope
+   |
+help: there is an enum variant `crate::workflow::Effect::Route`; try using the variant's enum
+   |
+32 - pub open spec fn width_check(q:Query,route:Option<Route>,cat:catalog::Catalog)->(Option<Error>,nat) {
+32 + pub open spec fn width_check(q:Query,route:Option<crate::workflow::Effect>,cat:catalog::Catalog)->(Option<Error>,nat) {
+   |
+help: you might be missing a type parameter
+   |
+32 | pub open spec fn width_check<Route>(q:Query,route:Option<Route>,cat:catalog::Catalog)->(Option<Error>,nat) {
+   |                             +++++++
+
+error[E0425]: cannot find type `Engine` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:38:40
+   |
+38 | pub open spec fn prepare(stage:Entry,e:Engine,a:Args,v:Env)->Prepared {
+   |                                        ^^^^^^ not found in this scope
+
+error[E0425]: cannot find type `Cell` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:51:28
+   |
+51 | pub open spec fn numeric(c:Cell)->Option<Number> {match c{Cell::Int(n)=>Some((n,1)),Cell::Bool(b)=>Some((if b{1int}else{0int},1)),Ce...
+   |                            ^^^^ not found in this scope
+   |
+help: consider importing this struct
+   |
+ 2 + use std::cell::Cell;
+   |
+
+error[E0425]: cannot find type `Number` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:51:42
+   |
+51 | pub open spec fn numeric(c:Cell)->Option<Number> {match c{Cell::Int(n)=>Some((n,1)),Cell::Bool(b)=>Some((if b{1int}else{0int},1)),Ce...
+   |                                          ^^^^^^ not found in this scope
+   |
+help: there is an enum variant `crate::json_width::Lex::Number`; try using the variant's enum
+   |
+51 - pub open spec fn numeric(c:Cell)->Option<Number> {match c{Cell::Int(n)=>Some((n,1)),Cell::Bool(b)=>Some((if b{1int}else{0int},1)),Cell::Float(n)=>if n.1>0{Some(n)}else{None},Cell::Text(t)=>numbers::decimal(t),_=>None}}
+51 + pub open spec fn numeric(c:Cell)->Option<crate::json_width::Lex> {match c{Cell::Int(n)=>Some((n,1)),Cell::Bool(b)=>Some((if b{1int}else{0int},1)),Cell::Float(n)=>if n.1>0{Some(n)}else{None},Cell::Text(t)=>numbers::decimal(t),_=>None}}
+   |
+help: you might be missing a type parameter
+   |
+51 | pub open spec fn numeric<Number>(c:Cell)->Option<Number> {match c{Cell::Int(n)=>Some((n,1)),Cell::Bool(b)=>Some((if b{1int}else{0int},1)),Cell::Float(n)=>if n.1>0{Some(n)}else{None},Cell::Text(t)=>numbers::decimal(t),_=>None}}
+   |                         ++++++++
+
+error[E0433]: cannot find type `Cell` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:51:59
+   |
+51 | pub open spec fn numeric(c:Cell)->Option<Number> {match c{Cell::Int(n)=>Some((n,1)),Cell::Bool(b)=>Some((if b{1int}else{0int},1)),Ce...
+   |                                                           ^^^^ use of undeclared type `Cell`
+   |
+help: consider importing this struct
+   |
+ 2 + use std::cell::Cell;
+   |
+
+error[E0433]: cannot find type `Cell` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:51:85
+   |
+51 | pub open spec fn numeric(c:Cell)->Option<Number> {match c{Cell::Int(n)=>Some((n,1)),Cell::Bool(b)=>Some((if b{1int}else{0int},1)),Ce...
+   |                                                                                     ^^^^ use of undeclared type `Cell`
+   |
+help: consider importing this struct
+   |
+ 2 + use std::cell::Cell;
+   |
+
+error[E0433]: cannot find type `Cell` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:51:131
+   |
+51 | ...,Cell::Bool(b)=>Some((if b{1int}else{0int},1)),Cell::Float(n)=>if n.1>0{Some(n)}else{None},Cell::Text(t)=>numbers::decimal(t),_=>...
+   |                                                   ^^^^ use of undeclared type `Cell`
+   |
+help: consider importing this struct
+   |
+ 2 + use std::cell::Cell;
+   |
+
+error[E0433]: cannot find type `Cell` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:51:175
+   |
+51 | ...)),Cell::Float(n)=>if n.1>0{Some(n)}else{None},Cell::Text(t)=>numbers::decimal(t),_=>None}}
+   |                                                   ^^^^ use of undeclared type `Cell`
+   |
+help: consider importing this struct
+   |
+ 2 + use std::cell::Cell;
+   |
+
+error[E0425]: cannot find type `Cell` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:52:43
+   |
+52 | pub open spec fn read_scores(rows:Seq<Seq<Cell>>,embedded:bool,exact:bool)->Decode<Answer> decreases rows.len(),
+   |                                           ^^^^ not found in this scope
+   |
+help: consider importing this struct
+   |
+ 2 + use std::cell::Cell;
+   |
+
+error[E0425]: cannot find type `Decode` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:52:77
+   |
+52 | pub open spec fn read_scores(rows:Seq<Seq<Cell>>,embedded:bool,exact:bool)->Decode<Answer> decreases rows.len(),
+   |                                                                             ^^^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:59:52
+   |
+59 | pub open spec fn label(a:Args,client:bool)->Option<Text> {if client{a.label}else{match a.label{Some(t)=>if t.len()>0{Some(t)}else{No...
+   |                                                    ^^^^ not found in this scope
+   |
+help: consider importing this type alias
+   |
+ 2 + use crate::parser::Text;
+   |
+
+error[E0425]: cannot find type `Name` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:60:42
+   |
+60 | pub open spec fn selected(s:Stored,table:Name,g:int,l:Option<Text>,exclude:Option<Text>)->bool {
+   |                                          ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:60:62
+   |
+60 | pub open spec fn selected(s:Stored,table:Name,g:int,l:Option<Text>,exclude:Option<Text>)->bool {
+   |                                                              ^^^^ not found in this scope
+   |
+help: consider importing this type alias
+   |
+ 2 + use crate::parser::Text;
+   |
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:60:83
+   |
+60 | pub open spec fn selected(s:Stored,table:Name,g:int,l:Option<Text>,exclude:Option<Text>)->bool {
+   |                                                                                   ^^^^ not found in this scope
+   |
+help: consider importing this type alias
+   |
+ 2 + use crate::parser::Text;
+   |
+
+error[E0433]: cannot find type `Cell` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:61:144
+   |
+61 | ...s_none() || exclude.unwrap().len()==0 || s.id!=Cell::Text(exclude.unwrap()))
+   |                                                   ^^^^ use of undeclared type `Cell`
+   |
+help: consider importing this struct
+   |
+ 2 + use std::cell::Cell;
+   |
+
+error[E0425]: cannot find type `Name` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:63:49
+   |
+63 | pub open spec fn sql_rows(raw:Seq<Scored>,table:Name,g:int,l:Option<Text>,exclude:Option<Text>,k:nat)->Seq<Seq<Cell>> {
+   |                                                 ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:63:69
+   |
+63 | pub open spec fn sql_rows(raw:Seq<Scored>,table:Name,g:int,l:Option<Text>,exclude:Option<Text>,k:nat)->Seq<Seq<Cell>> {
+   |                                                                     ^^^^ not found in this scope
+   |
+help: consider importing this type alias
+   |
+ 2 + use crate::parser::Text;
+   |
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:63:90
+   |
+63 | pub open spec fn sql_rows(raw:Seq<Scored>,table:Name,g:int,l:Option<Text>,exclude:Option<Text>,k:nat)->Seq<Seq<Cell>> {
+   |                                                                                          ^^^^ not found in this scope
+   |
+help: consider importing this type alias
+   |
+ 2 + use crate::parser::Text;
+   |
+
+error[E0425]: cannot find type `Cell` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:63:112
+   |
+63 | pub open spec fn sql_rows(raw:Seq<Scored>,table:Name,g:int,l:Option<Text>,exclude:Option<Text>,k:nat)->Seq<Seq<Cell>> {
+   |                                                                                                                ^^^^ not found in this scope
+   |
+help: consider importing this struct
+   |
+ 2 + use std::cell::Cell;
+   |
+
+error[E0425]: cannot find type `Raw` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:66:36
+   |
+66 | pub open spec fn provider_read(raw:Raw<Seq<Scored>>,table:Name,g:int,l:Option<Text>,exclude:Option<Text>,k:nat,embedded:bool,exact:b...
+   |                                    ^^^ not found in this scope
+
+error[E0425]: cannot find type `Name` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:66:59
+   |
+66 | pub open spec fn provider_read(raw:Raw<Seq<Scored>>,table:Name,g:int,l:Option<Text>,exclude:Option<Text>,k:nat,embedded:bool,exact:b...
+   |                                                           ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:66:79
+   |
+66 | pub open spec fn provider_read(raw:Raw<Seq<Scored>>,table:Name,g:int,l:Option<Text>,exclude:Option<Text>,k:nat,embedded:bool,exact:b...
+   |                                                                               ^^^^ not found in this scope
+   |
+help: consider importing this type alias
+   |
+ 2 + use crate::parser::Text;
+   |
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:66:100
+   |
+66 | pub open spec fn provider_read(raw:Raw<Seq<Scored>>,table:Name,g:int,l:Option<Text>,exclude:Option<Text>,k:nat,embedded:bool,exact:b...
+   |                                                                                                    ^^^^ not found in this scope
+   |
+help: consider importing this type alias
+   |
+ 2 + use crate::parser::Text;
+   |
+
+error[E0425]: cannot find type `Decode` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:66:139
+   |
+66 | ...de:Option<Text>,k:nat,embedded:bool,exact:bool)->Decode<Answer> {
+   |                                                     ^^^^^^ not found in this scope
+
+error[E0425]: cannot find type `Fault` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:69:32
+   |
+69 | pub open spec fn width_fault(f:Fault)->bool {find(f.message,seq!['-','2','5','7'],0).is_some() || find(f.message,seq!['v','e','c','t...
+   |                                ^^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:70:24
+   |
+70 | pub open spec fn csv(t:Text)->Text {seq!['[']+t+seq![']']}
+   |                        ^^^^ not found in this scope
+   |
+help: consider importing this type alias
+   |
+ 2 + use crate::parser::Text;
+   |
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:70:31
+   |
+70 | pub open spec fn csv(t:Text)->Text {seq!['[']+t+seq![']']}
+   |                               ^^^^ not found in this scope
+   |
+help: consider importing this type alias
+   |
+ 2 + use crate::parser::Text;
+   |
+
+error[E0425]: cannot find type `Cell` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:71:29
+   |
+71 | pub open spec fn cell_str(c:Cell)->Text {match c{Cell::Text(t)=>t,Cell::Null=>seq!['N','o','n','e'],Cell::Int(n)=>numbers::integer(n...
+   |                             ^^^^ not found in this scope
+   |
+help: consider importing this struct
+   |
+ 2 + use std::cell::Cell;
+   |
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:71:36
+   |
+71 | pub open spec fn cell_str(c:Cell)->Text {match c{Cell::Text(t)=>t,Cell::Null=>seq!['N','o','n','e'],Cell::Int(n)=>numbers::integer(n...
+   |                                    ^^^^ not found in this scope
+   |
+help: consider importing this type alias
+   |
+ 2 + use crate::parser::Text;
+   |
+
+error[E0433]: cannot find type `Cell` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:71:50
+   |
+71 | pub open spec fn cell_str(c:Cell)->Text {match c{Cell::Text(t)=>t,Cell::Null=>seq!['N','o','n','e'],Cell::Int(n)=>numbers::integer(n...
+   |                                                  ^^^^ use of undeclared type `Cell`
+   |
+help: consider importing this struct
+   |
+ 2 + use std::cell::Cell;
+   |
+
+error[E0433]: cannot find type `Cell` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:71:67
+   |
+71 | pub open spec fn cell_str(c:Cell)->Text {match c{Cell::Text(t)=>t,Cell::Null=>seq!['N','o','n','e'],Cell::Int(n)=>numbers::integer(n...
+   |                                                                   ^^^^ use of undeclared type `Cell`
+   |
+help: consider importing this struct
+   |
+ 2 + use std::cell::Cell;
+   |
+
+error[E0433]: cannot find type `Cell` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:71:101
+   |
+71 | ...::Text(t)=>t,Cell::Null=>seq!['N','o','n','e'],Cell::Int(n)=>numbers::integer(n),Cell::Bool(b)=>if b{seq!['T','r','u','e']}else{s...
+   |                                                   ^^^^ use of undeclared type `Cell`
+   |
+help: consider importing this struct
+   |
+ 2 + use std::cell::Cell;
+   |
+
+error[E0433]: cannot find type `Cell` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:71:135
+   |
+71 | ...'o','n','e'],Cell::Int(n)=>numbers::integer(n),Cell::Bool(b)=>if b{seq!['T','r','u','e']}else{seq!['F','a','l','s','e']},_=>seq![...
+   |                                                   ^^^^ use of undeclared type `Cell`
+   |
+help: consider importing this struct
+   |
+ 2 + use std::cell::Cell;
+   |
+
+error[E0425]: cannot find type `Name` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:76:48
+   |
+76 | pub open spec fn diagnostic(a:Args,v:Env,table:Name)->(Error,Seq<Effect>) {
+   |                                                ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Name` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:79:46
+   |
+79 | pub open spec fn seeds(raw:Seq<Stored>,table:Name,g:int,id:Text)->Seq<Stored> {raw.filter(|s:Stored|s.table==table && s.graph==g && ...
+   |                                              ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:79:60
+   |
+79 | pub open spec fn seeds(raw:Seq<Stored>,table:Name,g:int,id:Text)->Seq<Stored> {raw.filter(|s:Stored|s.table==table && s.graph==g && ...
+   |                                                            ^^^^ not found in this scope
+   |
+help: consider importing this type alias
+   |
+ 2 + use crate::parser::Text;
+   |
+
+error[E0433]: cannot find type `Cell` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:79:139
+   |
+79 | ...s:Stored|s.table==table && s.graph==g && s.id==Cell::Text(id))}
+   |                                                   ^^^^ use of undeclared type `Cell`
+   |
+help: consider importing this struct
+   |
+ 2 + use std::cell::Cell;
+   |
+
+error[E0425]: cannot find type `Name` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:81:49
+   |
+81 | pub open spec fn score_effect(stage:Entry,table:Name,a:Args,v:Env,d:Cell,exclude:Option<Text>)->Effect {Effect::Score(stage,table,gr...
+   |                                                 ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Cell` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:81:69
+   |
+81 | pub open spec fn score_effect(stage:Entry,table:Name,a:Args,v:Env,d:Cell,exclude:Option<Text>)->Effect {Effect::Score(stage,table,gr...
+   |                                                                     ^^^^ not found in this scope
+   |
+help: consider importing this struct
+   |
+ 2 + use std::cell::Cell;
+   |
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:81:89
+   |
+81 | pub open spec fn score_effect(stage:Entry,table:Name,a:Args,v:Env,d:Cell,exclude:Option<Text>)->Effect {Effect::Score(stage,table,gr...
+   |                                                                                         ^^^^ not found in this scope
+   |
+help: consider importing this type alias
+   |
+ 2 + use crate::parser::Text;
+   |
+
+error[E0425]: cannot find type `Cell` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:82:38
+   |
+82 | pub open spec fn shape_bad(q:Query,c:Cell)->bool {match (q,c){(Query::Text(t),Cell::Text(r))=>{let x=parser::width(json_width::trim(...
+   |                                      ^^^^ not found in this scope
+   |
+help: consider importing this struct
+   |
+ 2 + use std::cell::Cell;
+   |
+
+error[E0433]: cannot find type `Cell` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:82:79
+   |
+82 | pub open spec fn shape_bad(q:Query,c:Cell)->bool {match (q,c){(Query::Text(t),Cell::Text(r))=>{let x=parser::width(json_width::trim(...
+   |                                                                               ^^^^ use of undeclared type `Cell`
+   |
+help: consider importing this struct
+   |
+ 2 + use std::cell::Cell;
+   |
+
+error[E0425]: cannot find type `Cell` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:83:57
+   |
+83 | pub open spec fn kernel(row:ClientRow,q:Query)->Option<(Cell,Number)> {
+   |                                                         ^^^^ not found in this scope
+   |
+help: consider importing this struct
+   |
+ 2 + use std::cell::Cell;
+   |
+
+error[E0425]: cannot find type `Number` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:83:62
+   |
+83 | pub open spec fn kernel(row:ClientRow,q:Query)->Option<(Cell,Number)> {
+   |                                                              ^^^^^^ not found in this scope
+   |
+help: there is an enum variant `crate::json_width::Lex::Number`; try using the variant's enum
+   |
+83 - pub open spec fn kernel(row:ClientRow,q:Query)->Option<(Cell,Number)> {
+83 + pub open spec fn kernel(row:ClientRow,q:Query)->Option<(Cell,crate::json_width::Lex)> {
+   |
+help: you might be missing a type parameter
+   |
+83 | pub open spec fn kernel<Number>(row:ClientRow,q:Query)->Option<(Cell,Number)> {
+   |                        ++++++++
+
+error[E0425]: cannot find type `Number` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:88:28
+   |
+88 | pub open spec fn greater(a:Number,b:Number)->bool {a.0*(b.1 as int)>b.0*(a.1 as int)}
+   |                            ^^^^^^ not found in this scope
+   |
+help: there is an enum variant `crate::json_width::Lex::Number`; try using the variant's enum
+   |
+88 - pub open spec fn greater(a:Number,b:Number)->bool {a.0*(b.1 as int)>b.0*(a.1 as int)}
+88 + pub open spec fn greater(a:crate::json_width::Lex,b:Number)->bool {a.0*(b.1 as int)>b.0*(a.1 as int)}
+   |
+
+error[E0425]: cannot find type `Number` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:88:37
+   |
+88 | pub open spec fn greater(a:Number,b:Number)->bool {a.0*(b.1 as int)>b.0*(a.1 as int)}
+   |                                     ^^^^^^ not found in this scope
+   |
+help: there is an enum variant `crate::json_width::Lex::Number`; try using the variant's enum
+   |
+88 - pub open spec fn greater(a:Number,b:Number)->bool {a.0*(b.1 as int)>b.0*(a.1 as int)}
+88 + pub open spec fn greater(a:Number,b:crate::json_width::Lex)->bool {a.0*(b.1 as int)>b.0*(a.1 as int)}
+   |
+
+error[E0425]: cannot find type `Cell` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:89:28
+   |
+89 | pub open spec fn insert(x:(Cell,Number),rows:Answer)->Answer decreases rows.len(),
+   |                            ^^^^ not found in this scope
+   |
+help: consider importing this struct
+   |
+ 2 + use std::cell::Cell;
+   |
+
+error[E0425]: cannot find type `Number` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:89:33
+   |
+89 | pub open spec fn insert(x:(Cell,Number),rows:Answer)->Answer decreases rows.len(),
+   |                                 ^^^^^^ not found in this scope
+   |
+help: there is an enum variant `crate::json_width::Lex::Number`; try using the variant's enum
+   |
+89 - pub open spec fn insert(x:(Cell,Number),rows:Answer)->Answer decreases rows.len(),
+89 + pub open spec fn insert(x:(Cell,crate::json_width::Lex),rows:Answer)->Answer decreases rows.len(),
+   |
+
+error[E0425]: cannot find type `Engine` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:95:36
+   |
+95 | pub open spec fn run(stage:Entry,e:Engine,a:Args,vs:Seq<Env>)->Result
+   |                                    ^^^^^^ not found in this scope
+
+error[E0425]: cannot find type `Engine` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:141:70
+    |
+141 | pub proof fn theorem_prepare_absent_stops_before_dtype(stage:Entry,e:Engine,a:Args,v:Env)
+    |                                                                      ^^^^^^ not found in this scope
+
+error[E0425]: cannot find type `Engine` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:145:63
+    |
+145 | pub proof fn theorem_preflight_derived_mismatch(stage:Entry,e:Engine,a:Args,v:Env,table:Name,route:Option<Route>,d:Cell)
+    |                                                               ^^^^^^ not found in this scope
+
+error[E0425]: cannot find type `Name` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:145:89
+    |
+145 | pub proof fn theorem_preflight_derived_mismatch(stage:Entry,e:Engine,a:Args,v:Env,table:Name,route:Option<Route>,d:Cell)
+    |                                                                                         ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Route` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:145:107
+    |
+145 | pub proof fn theorem_preflight_derived_mismatch(stage:Entry,e:Engine,a:Args,v:Env,table:Name,route:Option<Route>,d:Cell)
+    |                                                                                                           ^^^^^ not found in this scope
+    |
+help: there is an enum variant `crate::workflow::Effect::Route`; try using the variant's enum
+    |
+145 - pub proof fn theorem_preflight_derived_mismatch(stage:Entry,e:Engine,a:Args,v:Env,table:Name,route:Option<Route>,d:Cell)
+145 + pub proof fn theorem_preflight_derived_mismatch(stage:Entry,e:Engine,a:Args,v:Env,table:Name,route:Option<crate::workflow::Effect>,d:Cell)
+    |
+help: you might be missing a type parameter
+    |
+145 | pub proof fn theorem_preflight_derived_mismatch<Route>(stage:Entry,e:Engine,a:Args,v:Env,table:Name,route:Option<Route>,d:Cell)
+    |                                                +++++++
+
+error[E0425]: cannot find type `Cell` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:145:116
+    |
+145 | pub proof fn theorem_preflight_derived_mismatch(stage:Entry,e:Engine,a:Args,v:Env,table:Name,route:Option<Route>,d:Cell)
+    |                                                                                                                    ^^^^ not found in this scope
+    |
+help: consider importing this struct
+    |
+  2 + use std::cell::Cell;
+    |
+
+error[E0425]: cannot find type `Engine` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:152:58
+    |
+152 | pub proof fn theorem_direct_guard_no_score(stage:Entry,e:Engine,a:Args,vs:Seq<Env>)
+    |                                                          ^^^^^^ not found in this scope
+
+error[E0425]: cannot find type `Route` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:156:84
+    |
+156 | pub proof fn theorem_catalog_only_when_literal_and_no_route_width(q:Query,r:Option<Route>,c:catalog::Catalog)
+    |                                                                                    ^^^^^ not found in this scope
+    |
+help: there is an enum variant `crate::workflow::Effect::Route`; try using the variant's enum
+    |
+156 - pub proof fn theorem_catalog_only_when_literal_and_no_route_width(q:Query,r:Option<Route>,c:catalog::Catalog)
+156 + pub proof fn theorem_catalog_only_when_literal_and_no_route_width(q:Query,r:Option<crate::workflow::Effect>,c:catalog::Catalog)
+    |
+help: you might be missing a type parameter
+    |
+156 | pub proof fn theorem_catalog_only_when_literal_and_no_route_width<Route>(q:Query,r:Option<Route>,c:catalog::Catalog)
+    |                                                                  +++++++
+
+error[E0425]: cannot find type `Engine` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:159:53
+    |
+159 | pub proof fn theorem_primary_dtype_precedes_width(e:Engine,a:Args,v:Env,table:Name,route:Option<Route>)
+    |                                                     ^^^^^^ not found in this scope
+
+error[E0425]: cannot find type `Name` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:159:79
+    |
+159 | pub proof fn theorem_primary_dtype_precedes_width(e:Engine,a:Args,v:Env,table:Name,route:Option<Route>)
+    |                                                                               ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Route` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:159:97
+    |
+159 | pub proof fn theorem_primary_dtype_precedes_width(e:Engine,a:Args,v:Env,table:Name,route:Option<Route>)
+    |                                                                                                 ^^^^^ not found in this scope
+    |
+help: there is an enum variant `crate::workflow::Effect::Route`; try using the variant's enum
+    |
+159 - pub proof fn theorem_primary_dtype_precedes_width(e:Engine,a:Args,v:Env,table:Name,route:Option<Route>)
+159 + pub proof fn theorem_primary_dtype_precedes_width(e:Engine,a:Args,v:Env,table:Name,route:Option<crate::workflow::Effect>)
+    |
+help: you might be missing a type parameter
+    |
+159 | pub proof fn theorem_primary_dtype_precedes_width<Route>(e:Engine,a:Args,v:Env,table:Name,route:Option<Route>)
+    |                                                  +++++++
+
+error[E0425]: cannot find type `Number` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:163:47
+    |
+163 | pub proof fn theorem_reader_none_difference(n:Number)
+    |                                               ^^^^^^ not found in this scope
+    |
+help: there is an enum variant `crate::json_width::Lex::Number`; try using the variant's enum
+    |
+163 - pub proof fn theorem_reader_none_difference(n:Number)
+163 + pub proof fn theorem_reader_none_difference(n:crate::json_width::Lex)
+    |
+
+error[E0433]: cannot find type `Cell` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:165:35
+    |
+165 |     ensures read_scores(seq![seq![Cell::Null,Cell::Float(n)]],true,false)==Decode::Value(seq![]),
+    |                                   ^^^^ use of undeclared type `Cell`
+    |
+help: consider importing this struct
+    |
+  2 + use std::cell::Cell;
+    |
+
+error[E0433]: cannot find type `Cell` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:165:46
+    |
+165 |     ensures read_scores(seq![seq![Cell::Null,Cell::Float(n)]],true,false)==Decode::Value(seq![]),
+    |                                              ^^^^ use of undeclared type `Cell`
+    |
+help: consider importing this struct
+    |
+  2 + use std::cell::Cell;
+    |
+
+error[E0433]: cannot find type `Cell` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:166:31
+    |
+166 |         read_scores(seq![seq![Cell::Null,Cell::Float(n)]],false,false)==Decode::Value(seq![(Cell::Null,n)]),
+    |                               ^^^^ use of undeclared type `Cell`
+    |
+help: consider importing this struct
+    |
+  2 + use std::cell::Cell;
+    |
+
+error[E0433]: cannot find type `Cell` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:166:42
+    |
+166 |         read_scores(seq![seq![Cell::Null,Cell::Float(n)]],false,false)==Decode::Value(seq![(Cell::Null,n)]),
+    |                                          ^^^^ use of undeclared type `Cell`
+    |
+help: consider importing this struct
+    |
+  2 + use std::cell::Cell;
+    |
+
+error[E0433]: cannot find type `Cell` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:166:93
+    |
+166 |         read_scores(seq![seq![Cell::Null,Cell::Float(n)]],false,false)==Decode::Value(seq![(Cell::Null,n)]),
+    |                                                                                             ^^^^ use of undeclared type `Cell`
+    |
+help: consider importing this struct
+    |
+  2 + use std::cell::Cell;
+    |
+
+error[E0433]: cannot find type `Cell` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:169:35
+    |
+169 |     ensures read_scores(seq![seq![Cell::Int(7),Cell::Int(1),Cell::Null]],false,true) is Error,
+    |                                   ^^^^ use of undeclared type `Cell`
+    |
+help: consider importing this struct
+    |
+  2 + use std::cell::Cell;
+    |
+
+error[E0433]: cannot find type `Cell` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:169:48
+    |
+169 |     ensures read_scores(seq![seq![Cell::Int(7),Cell::Int(1),Cell::Null]],false,true) is Error,
+    |                                                ^^^^ use of undeclared type `Cell`
+    |
+help: consider importing this struct
+    |
+  2 + use std::cell::Cell;
+    |
+
+error[E0433]: cannot find type `Cell` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:169:61
+    |
+169 |     ensures read_scores(seq![seq![Cell::Int(7),Cell::Int(1),Cell::Null]],false,true) is Error,
+    |                                                             ^^^^ use of undeclared type `Cell`
+    |
+help: consider importing this struct
+    |
+  2 + use std::cell::Cell;
+    |
+
+error[E0433]: cannot find type `Cell` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:170:31
+    |
+170 |         read_scores(seq![seq![Cell::Int(7),Cell::Int(1),Cell::Null]],false,false)==Decode::Value(seq![(Cell::Int(7),(1,1))]),
+    |                               ^^^^ use of undeclared type `Cell`
+    |
+help: consider importing this struct
+    |
+  2 + use std::cell::Cell;
+    |
+
+error[E0433]: cannot find type `Cell` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:170:44
+    |
+170 |         read_scores(seq![seq![Cell::Int(7),Cell::Int(1),Cell::Null]],false,false)==Decode::Value(seq![(Cell::Int(7),(1,1))]),
+    |                                            ^^^^ use of undeclared type `Cell`
+    |
+help: consider importing this struct
+    |
+  2 + use std::cell::Cell;
+    |
+
+error[E0433]: cannot find type `Cell` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:170:57
+    |
+170 |         read_scores(seq![seq![Cell::Int(7),Cell::Int(1),Cell::Null]],false,false)==Decode::Value(seq![(Cell::Int(7),(1,1))]),
+    |                                                         ^^^^ use of undeclared type `Cell`
+    |
+help: consider importing this struct
+    |
+  2 + use std::cell::Cell;
+    |
+
+error[E0433]: cannot find type `Cell` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:170:104
+    |
+170 |         read_scores(seq![seq![Cell::Int(7),Cell::Int(1),Cell::Null]],false,false)==Decode::Value(seq![(Cell::Int(7),(1,1))]),
+    |                                                                                                        ^^^^ use of undeclared type `Cell`
+    |
+help: consider importing this struct
+    |
+  2 + use std::cell::Cell;
+    |
+
+error[E0425]: cannot find type `Engine` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:176:71
+    |
+176 | pub proof fn theorem_primary_generic_failure_really_calls_optimized(e:Engine,a:Args,vs:Seq<Env>,table:Name,route:Option<Route>,d:Ce...
+    |                                                                       ^^^^^^ not found in this scope
+
+error[E0425]: cannot find type `Name` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:176:103
+    |
+176 | ...calls_optimized(e:Engine,a:Args,vs:Seq<Env>,table:Name,route:Option<Route>,d:Cell,f:Fault)
+    |                                                      ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Route` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:176:121
+    |
+176 | ...ngine,a:Args,vs:Seq<Env>,table:Name,route:Option<Route>,d:Cell,f:Fault)
+    |                                                     ^^^^^ not found in this scope
+    |
+help: there is an enum variant `crate::workflow::Effect::Route`; try using the variant's enum
+    |
+176 - pub proof fn theorem_primary_generic_failure_really_calls_optimized(e:Engine,a:Args,vs:Seq<Env>,table:Name,route:Option<Route>,d:Cell,f:Fault)
+176 + pub proof fn theorem_primary_generic_failure_really_calls_optimized(e:Engine,a:Args,vs:Seq<Env>,table:Name,route:Option<crate::workflow::Effect>,d:Cell,f:Fault)
+    |
+help: you might be missing a type parameter
+    |
+176 | pub proof fn theorem_primary_generic_failure_really_calls_optimized<Route>(e:Engine,a:Args,vs:Seq<Env>,table:Name,route:Option<Route>,d:Cell,f:Fault)
+    |                                                                    +++++++
+
+error[E0425]: cannot find type `Cell` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:176:130
+    |
+176 | ...Args,vs:Seq<Env>,table:Name,route:Option<Route>,d:Cell,f:Fault)
+    |                                                      ^^^^ not found in this scope
+    |
+help: consider importing this struct
+    |
+  2 + use std::cell::Cell;
+    |
+
+error[E0425]: cannot find type `Fault` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:176:137
+    |
+176 | ...Seq<Env>,table:Name,route:Option<Route>,d:Cell,f:Fault)
+    |                                                     ^^^^^ not found in this scope
+
+error[E0425]: cannot find type `Engine` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:182:69
+    |
+182 | pub proof fn theorem_optimized_double_failure_really_calls_client(e:Engine,a:Args,vs:Seq<Env>,table:Name,route:Option<Route>,d:Cell)
+    |                                                                     ^^^^^^ not found in this scope
+
+error[E0425]: cannot find type `Name` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:182:101
+    |
+182 | pub proof fn theorem_optimized_double_failure_really_calls_client(e:Engine,a:Args,vs:Seq<Env>,table:Name,route:Option<Route>,d:Cell)
+    |                                                                                                     ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Route` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:182:119
+    |
+182 | pub proof fn theorem_optimized_double_failure_really_calls_client(e:Engine,a:Args,vs:Seq<Env>,table:Name,route:Option<Route>,d:Cell)
+    |                                                                                                                       ^^^^^ not found in this scope
+    |
+help: there is an enum variant `crate::workflow::Effect::Route`; try using the variant's enum
+    |
+182 - pub proof fn theorem_optimized_double_failure_really_calls_client(e:Engine,a:Args,vs:Seq<Env>,table:Name,route:Option<Route>,d:Cell)
+182 + pub proof fn theorem_optimized_double_failure_really_calls_client(e:Engine,a:Args,vs:Seq<Env>,table:Name,route:Option<crate::workflow::Effect>,d:Cell)
+    |
+help: you might be missing a type parameter
+    |
+182 | pub proof fn theorem_optimized_double_failure_really_calls_client<Route>(e:Engine,a:Args,vs:Seq<Env>,table:Name,route:Option<Route>,d:Cell)
+    |                                                                  +++++++
+
+error[E0425]: cannot find type `Cell` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:182:128
+    |
+182 | pub proof fn theorem_optimized_double_failure_really_calls_client(e:Engine,a:Args,vs:Seq<Env>,table:Name,route:Option<Route>,d:Cell)
+    |                                                                                                                                ^^^^ not found in this scope
+    |
+help: consider importing this struct
+    |
+  2 + use std::cell::Cell;
+    |
+
+error[E0425]: cannot find type `Engine` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:188:62
+    |
+188 | pub proof fn theorem_primary_width_fault_does_not_fallback(e:Engine,a:Args,vs:Seq<Env>,table:Name,route:Option<Route>,d:Cell,f:Fault)
+    |                                                              ^^^^^^ not found in this scope
+
+error[E0425]: cannot find type `Name` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:188:94
+    |
+188 | pub proof fn theorem_primary_width_fault_does_not_fallback(e:Engine,a:Args,vs:Seq<Env>,table:Name,route:Option<Route>,d:Cell,f:Fault)
+    |                                                                                              ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Route` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:188:112
+    |
+188 | pub proof fn theorem_primary_width_fault_does_not_fallback(e:Engine,a:Args,vs:Seq<Env>,table:Name,route:Option<Route>,d:Cell,f:Fault)
+    |                                                                                                                ^^^^^ not found in this scope
+    |
+help: there is an enum variant `crate::workflow::Effect::Route`; try using the variant's enum
+    |
+188 - pub proof fn theorem_primary_width_fault_does_not_fallback(e:Engine,a:Args,vs:Seq<Env>,table:Name,route:Option<Route>,d:Cell,f:Fault)
+188 + pub proof fn theorem_primary_width_fault_does_not_fallback(e:Engine,a:Args,vs:Seq<Env>,table:Name,route:Option<crate::workflow::Effect>,d:Cell,f:Fault)
+    |
+help: you might be missing a type parameter
+    |
+188 | pub proof fn theorem_primary_width_fault_does_not_fallback<Route>(e:Engine,a:Args,vs:Seq<Env>,table:Name,route:Option<Route>,d:Cell,f:Fault)
+    |                                                           +++++++
+
+error[E0425]: cannot find type `Cell` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:188:121
+    |
+188 | pub proof fn theorem_primary_width_fault_does_not_fallback(e:Engine,a:Args,vs:Seq<Env>,table:Name,route:Option<Route>,d:Cell,f:Fault)
+    |                                                                                                                         ^^^^ not found in this scope
+    |
+help: consider importing this struct
+    |
+  2 + use std::cell::Cell;
+    |
+
+error[E0425]: cannot find type `Fault` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:188:128
+    |
+188 | pub proof fn theorem_primary_width_fault_does_not_fallback(e:Engine,a:Args,vs:Seq<Env>,table:Name,route:Option<Route>,d:Cell,f:Fault)
+    |                                                                                                                                ^^^^^ not found in this scope
+
+error[E0425]: cannot find type `Engine` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:198:71
+    |
+198 | pub proof fn theorem_seed_failure_passes_expansion_without_identity(e:Engine,a:Args,vs:Seq<Env>,table:Name,route:Option<Route>,d:Ce...
+    |                                                                       ^^^^^^ not found in this scope
+
+error[E0425]: cannot find type `Name` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:198:103
+    |
+198 | ...ithout_identity(e:Engine,a:Args,vs:Seq<Env>,table:Name,route:Option<Route>,d:Cell,id:Text,s:Stored,f:Fault)
+    |                                                      ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Route` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:198:121
+    |
+198 | ...ngine,a:Args,vs:Seq<Env>,table:Name,route:Option<Route>,d:Cell,id:Text,s:Stored,f:Fault)
+    |                                                     ^^^^^ not found in this scope
+    |
+help: there is an enum variant `crate::workflow::Effect::Route`; try using the variant's enum
+    |
+198 - pub proof fn theorem_seed_failure_passes_expansion_without_identity(e:Engine,a:Args,vs:Seq<Env>,table:Name,route:Option<Route>,d:Cell,id:Text,s:Stored,f:Fault)
+198 + pub proof fn theorem_seed_failure_passes_expansion_without_identity(e:Engine,a:Args,vs:Seq<Env>,table:Name,route:Option<crate::workflow::Effect>,d:Cell,id:Text,s:Stored,f:Fault)
+    |
+help: you might be missing a type parameter
+    |
+198 | pub proof fn theorem_seed_failure_passes_expansion_without_identity<Route>(e:Engine,a:Args,vs:Seq<Env>,table:Name,route:Option<Route>,d:Cell,id:Text,s:Stored,f:Fault)
+    |                                                                    +++++++
+
+error[E0425]: cannot find type `Cell` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:198:130
+    |
+198 | ...Args,vs:Seq<Env>,table:Name,route:Option<Route>,d:Cell,id:Text,s:Stored,f:Fault)
+    |                                                      ^^^^ not found in this scope
+    |
+help: consider importing this struct
+    |
+  2 + use std::cell::Cell;
+    |
+
+error[E0425]: cannot find type `Text` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:198:138
+    |
+198 | ...Seq<Env>,table:Name,route:Option<Route>,d:Cell,id:Text,s:Stored,f:Fault)
+    |                                                      ^^^^ not found in this scope
+    |
+help: consider importing this type alias
+    |
+  2 + use crate::parser::Text;
+    |
+
+error[E0425]: cannot find type `Fault` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:198:154
+    |
+198 | ...me,route:Option<Route>,d:Cell,id:Text,s:Stored,f:Fault)
+    |                                                     ^^^^^ not found in this scope
+
+error[E0433]: cannot find type `Cell` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:201:91
+    |
+201 | ...   vs[0].seed==Raw::Rows(seq![s]),s.table==table,s.graph==graph(vs[0].request),s.id==Cell::Text(id),vs[0].primary==Raw::Error(f)...
+    |                                                                                         ^^^^ use of undeclared type `Cell`
+    |
+help: consider importing this struct
+    |
+  2 + use std::cell::Cell;
+    |
+
+error[E0425]: cannot find type `Route` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:204:72
+    |
+204 | pub proof fn theorem_raw_literal_three_route_four_refuses(route:Option<Route>,c:catalog::Catalog)
+    |                                                                        ^^^^^ not found in this scope
+    |
+help: there is an enum variant `crate::workflow::Effect::Route`; try using the variant's enum
+    |
+204 - pub proof fn theorem_raw_literal_three_route_four_refuses(route:Option<Route>,c:catalog::Catalog)
+204 + pub proof fn theorem_raw_literal_three_route_four_refuses(route:Option<crate::workflow::Effect>,c:catalog::Catalog)
+    |
+help: you might be missing a type parameter
+    |
+204 | pub proof fn theorem_raw_literal_three_route_four_refuses<Route>(route:Option<Route>,c:catalog::Catalog)
+    |                                                          +++++++
+
+error[E0425]: cannot find type `Text` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:6:27
+  |
+6 | pub struct Args {pub name:Text,pub nlist:Cell,pub batch_size:Cell,pub build_batch:Cell,pub metric:Text,pub node_ids:Option<Seq<Cell>>}
+  |                           ^^^^ not found in this scope
+  |
+help: consider importing this type alias
+  |
+2 + use crate::parser::Text;
+  |
+
+error[E0425]: cannot find type `Cell` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:6:42
+  |
+6 | pub struct Args {pub name:Text,pub nlist:Cell,pub batch_size:Cell,pub build_batch:Cell,pub metric:Text,pub node_ids:Option<Seq<Cell>>}
+  |                                          ^^^^ not found in this scope
+  |
+help: consider importing this struct
+  |
+2 + use std::cell::Cell;
+  |
+
+error[E0425]: cannot find type `Cell` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:6:62
+  |
+6 | pub struct Args {pub name:Text,pub nlist:Cell,pub batch_size:Cell,pub build_batch:Cell,pub metric:Text,pub node_ids:Option<Seq<Cell>>}
+  |                                                              ^^^^ not found in this scope
+  |
+help: consider importing this struct
+  |
+2 + use std::cell::Cell;
+  |
+
+error[E0425]: cannot find type `Cell` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:6:83
+  |
+6 | pub struct Args {pub name:Text,pub nlist:Cell,pub batch_size:Cell,pub build_batch:Cell,pub metric:Text,pub node_ids:Option<Seq<Cell>>}
+  |                                                                                   ^^^^ not found in this scope
+  |
+help: consider importing this struct
+  |
+2 + use std::cell::Cell;
+  |
+
+error[E0425]: cannot find type `Text` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:6:99
+  |
+6 | pub struct Args {pub name:Text,pub nlist:Cell,pub batch_size:Cell,pub build_batch:Cell,pub metric:Text,pub node_ids:Option<Seq<Cell>>}
+  |                                                                                                   ^^^^ not found in this scope
+  |
+help: consider importing this type alias
+  |
+2 + use crate::parser::Text;
+  |
+
+error[E0425]: cannot find type `Cell` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:6:128
+  |
+6 | pub struct Args {pub name:Text,pub nlist:Cell,pub batch_size:Cell,pub build_batch:Cell,pub metric:Text,pub node_ids:Option<Seq<Cell>>}
+  |                                                                                                                                ^^^^ not found in this scope
+  |
+help: consider importing this struct
+  |
+2 + use std::cell::Cell;
+  |
+
+error[E0425]: cannot find type `Raw` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:7:40
+  |
+7 | pub struct Providers {pub dependencies:Raw<()>,pub rows:Raw<Seq<Stored>>,pub cluster:Raw<()>,pub build:Raw<()>,pub adds:Seq<Raw<()>>,...
+  |                                        ^^^ not found in this scope
+
+error[E0425]: cannot find type `Raw` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:7:57
+  |
+7 | pub struct Providers {pub dependencies:Raw<()>,pub rows:Raw<Seq<Stored>>,pub cluster:Raw<()>,pub build:Raw<()>,pub adds:Seq<Raw<()>>,...
+  |                                                         ^^^ not found in this scope
+
+error[E0425]: cannot find type `Raw` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:7:86
+  |
+7 | pub struct Providers {pub dependencies:Raw<()>,pub rows:Raw<Seq<Stored>>,pub cluster:Raw<()>,pub build:Raw<()>,pub adds:Seq<Raw<()>>,...
+  |                                                                                      ^^^ not found in this scope
+
+error[E0425]: cannot find type `Raw` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:7:104
+  |
+7 | pub struct Providers {pub dependencies:Raw<()>,pub rows:Raw<Seq<Stored>>,pub cluster:Raw<()>,pub build:Raw<()>,pub adds:Seq<Raw<()>>,...
+  |                                                                                                        ^^^ not found in this scope
+
+error[E0425]: cannot find type `Raw` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:7:125
+  |
+7 | ...pub cluster:Raw<()>,pub build:Raw<()>,pub adds:Seq<Raw<()>>,pub finalize:Raw<()>,pub info:Raw<Cell>}
+  |                                                       ^^^ not found in this scope
+
+error[E0425]: cannot find type `Raw` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:7:147
+  |
+7 | ...b build:Raw<()>,pub adds:Seq<Raw<()>>,pub finalize:Raw<()>,pub info:Raw<Cell>}
+  |                                                       ^^^ not found in this scope
+
+error[E0425]: cannot find type `Raw` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:7:164
+  |
+7 | ...ub adds:Seq<Raw<()>>,pub finalize:Raw<()>,pub info:Raw<Cell>}
+  |                                                       ^^^ not found in this scope
+
+error[E0425]: cannot find type `Cell` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:7:168
+  |
+7 | ...dds:Seq<Raw<()>>,pub finalize:Raw<()>,pub info:Raw<Cell>}
+  |                                                       ^^^^ not found in this scope
+  |
+help: consider importing this struct
+  |
+2 + use std::cell::Cell;
+  |
+
+error[E0425]: cannot find type `Text` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:8:35
+  |
+8 | pub struct Local {pub indexes:Map<Text,nat>,pub scopes:Map<Text,int>}
+  |                                   ^^^^ not found in this scope
+  |
+help: consider importing this type alias
+  |
+2 + use crate::parser::Text;
+  |
+
+error[E0425]: cannot find type `Text` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:8:60
+  |
+8 | pub struct Local {pub indexes:Map<Text,nat>,pub scopes:Map<Text,int>}
+  |                                                            ^^^^ not found in this scope
+  |
+help: consider importing this type alias
+  |
+2 + use crate::parser::Text;
+  |
+
+error[E0425]: cannot find type `Engine` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:9:31
+  |
+9 | pub struct Result {pub engine:Engine,pub local:Local,pub trace:Seq<Effect>,pub error:Option<Error>,pub returned:Option<Text>}
+  |                               ^^^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:9:120
+  |
+9 | pub struct Result {pub engine:Engine,pub local:Local,pub trace:Seq<Effect>,pub error:Option<Error>,pub returned:Option<Text>}
+  |                                                                                                                        ^^^^ not found in this scope
+  |
+help: consider importing this type alias
+  |
+2 + use crate::parser::Text;
+  |
+
+error[E0425]: cannot find type `Cell` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:10:29
+   |
+10 | pub open spec fn positive(c:Cell)->bool {match c{Cell::Float(n)=>n.1>0 && n.0>=n.1 && n.0%(n.1 as int)==0,_=>match dim(c){Decode::Va...
+   |                             ^^^^ not found in this scope
+   |
+help: consider importing this struct
+   |
+ 2 + use std::cell::Cell;
+   |
+
+error[E0433]: cannot find type `Cell` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:10:50
+   |
+10 | pub open spec fn positive(c:Cell)->bool {match c{Cell::Float(n)=>n.1>0 && n.0>=n.1 && n.0%(n.1 as int)==0,_=>match dim(c){Decode::Va...
+   |                                                  ^^^^ use of undeclared type `Cell`
+   |
+help: consider importing this struct
+   |
+ 2 + use std::cell::Cell;
+   |
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:11:27
+   |
+11 | pub open spec fn metric(m:Text)->bool {m==seq!['c','o','s','i','n','e'] || m==seq!['l','2'] || m==seq!['d','o','t'] || m==seq!['e','...
+   |                           ^^^^ not found in this scope
+   |
+help: consider importing this type alias
+   |
+ 2 + use crate::parser::Text;
+   |
+
+error[E0425]: cannot find type `Cell` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:13:28
+   |
+13 | pub open spec fn raw_int(c:Cell)->Option<nat> {match c{Cell::Int(n)=>if n>=1{Some(n as nat)}else{None},Cell::Bool(true)=>Some(1),_=>...
+   |                            ^^^^ not found in this scope
+   |
+help: consider importing this struct
+   |
+ 2 + use std::cell::Cell;
+   |
+
+error[E0433]: cannot find type `Cell` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:13:56
+   |
+13 | pub open spec fn raw_int(c:Cell)->Option<nat> {match c{Cell::Int(n)=>if n>=1{Some(n as nat)}else{None},Cell::Bool(true)=>Some(1),_=>...
+   |                                                        ^^^^ use of undeclared type `Cell`
+   |
+help: consider importing this struct
+   |
+ 2 + use std::cell::Cell;
+   |
+
+error[E0433]: cannot find type `Cell` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:13:104
+   |
+13 | ...ell::Int(n)=>if n>=1{Some(n as nat)}else{None},Cell::Bool(true)=>Some(1),_=>None}}
+   |                                                   ^^^^ use of undeclared type `Cell`
+   |
+help: consider importing this struct
+   |
+ 2 + use std::cell::Cell;
+   |
+
+error[E0425]: cannot find type `Name` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:14:50
+   |
+14 | pub open spec fn eligible(rows:Seq<Stored>,table:Name,g:int,ids:Option<Seq<Cell>>)->Seq<Stored> {
+   |                                                  ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Cell` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:14:76
+   |
+14 | pub open spec fn eligible(rows:Seq<Stored>,table:Name,g:int,ids:Option<Seq<Cell>>)->Seq<Stored> {
+   |                                                                            ^^^^ not found in this scope
+   |
+help: consider importing this struct
+   |
+ 2 + use std::cell::Cell;
+   |
+
+error[E0433]: cannot find type `Cell` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:18:64
+   |
+18 | pub open spec fn csv_width(r:Stored)->Option<nat> {match r.emb{Cell::Text(t)=>crate::parser::width(workflow::csv(t)),_=>None}}
+   |                                                                ^^^^ use of undeclared type `Cell`
+   |
+help: consider importing this struct
+   |
+ 2 + use std::cell::Cell;
+   |
+
+error[E0425]: cannot find type `Raw` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:20:60
+   |
+20 | pub open spec fn add_batches(n:nat,b:nat,i:nat,replies:Seq<Raw<()>>)->(Seq<Effect>,Option<Error>)
+   |                                                            ^^^ not found in this scope
+
+error[E0425]: cannot find type `Engine` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:28:24
+   |
+28 | pub open spec fn run(e:Engine,l:Local,r:Request,registry:Raw<Seq<Row>>,a:Args,p:Providers)->Result {
+   |                        ^^^^^^ not found in this scope
+
+error[E0425]: cannot find type `Request` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:28:41
+   |
+28 | pub open spec fn run(e:Engine,l:Local,r:Request,registry:Raw<Seq<Row>>,a:Args,p:Providers)->Result {
+   |                                         ^^^^^^^ not found in this scope
+   |
+help: consider importing this struct
+   |
+ 2 + use std::error::Request;
+   |
+
+error[E0425]: cannot find type `Raw` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:28:58
+   |
+28 | pub open spec fn run(e:Engine,l:Local,r:Request,registry:Raw<Seq<Row>>,a:Args,p:Providers)->Result {
+   |                                                          ^^^ not found in this scope
+
+error[E0425]: cannot find type `Row` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:28:66
+   |
+28 | pub open spec fn run(e:Engine,l:Local,r:Request,registry:Raw<Seq<Row>>,a:Args,p:Providers)->Result {
+   |                                                                  ^^^ not found in this scope
+   |
+help: you might be missing a type parameter
+   |
+28 | pub open spec fn run<Row>(e:Engine,l:Local,r:Request,registry:Raw<Seq<Row>>,a:Args,p:Providers)->Result {
+   |                     +++++
+
+error[E0425]: cannot find type `Engine` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:74:60
+   |
+74 | pub proof fn theorem_no_route_refuses_before_vector_read(e:Engine,l:Local,r:Request,registry:Raw<Seq<Row>>,a:Args,p:Providers)
+   |                                                            ^^^^^^ not found in this scope
+
+error[E0425]: cannot find type `Request` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:74:77
+   |
+74 | pub proof fn theorem_no_route_refuses_before_vector_read(e:Engine,l:Local,r:Request,registry:Raw<Seq<Row>>,a:Args,p:Providers)
+   |                                                                             ^^^^^^^ not found in this scope
+   |
+help: consider importing this struct
+   |
+ 2 + use std::error::Request;
+   |
+
+error[E0425]: cannot find type `Raw` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:74:94
+   |
+74 | pub proof fn theorem_no_route_refuses_before_vector_read(e:Engine,l:Local,r:Request,registry:Raw<Seq<Row>>,a:Args,p:Providers)
+   |                                                                                              ^^^ not found in this scope
+
+error[E0425]: cannot find type `Row` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:74:102
+   |
+74 | pub proof fn theorem_no_route_refuses_before_vector_read(e:Engine,l:Local,r:Request,registry:Raw<Seq<Row>>,a:Args,p:Providers)
+   |                                                                                                      ^^^ not found in this scope
+   |
+help: you might be missing a type parameter
+   |
+74 | pub proof fn theorem_no_route_refuses_before_vector_read<Row>(e:Engine,l:Local,r:Request,registry:Raw<Seq<Row>>,a:Args,p:Providers)
+   |                                                         +++++
+
+error[E0425]: cannot find type `Engine` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:78:61
+   |
+78 | pub proof fn theorem_empty_ids_after_cursor_before_select(e:Engine,l:Local,r:Request,registry:Raw<Seq<Row>>,a:Args,p:Providers)
+   |                                                             ^^^^^^ not found in this scope
+
+error[E0425]: cannot find type `Request` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:78:78
+   |
+78 | pub proof fn theorem_empty_ids_after_cursor_before_select(e:Engine,l:Local,r:Request,registry:Raw<Seq<Row>>,a:Args,p:Providers)
+   |                                                                              ^^^^^^^ not found in this scope
+   |
+help: consider importing this struct
+   |
+ 2 + use std::error::Request;
+   |
+
+error[E0425]: cannot find type `Raw` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:78:95
+   |
+78 | pub proof fn theorem_empty_ids_after_cursor_before_select(e:Engine,l:Local,r:Request,registry:Raw<Seq<Row>>,a:Args,p:Providers)
+   |                                                                                               ^^^ not found in this scope
+
+error[E0425]: cannot find type `Row` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:78:103
+   |
+78 | pub proof fn theorem_empty_ids_after_cursor_before_select(e:Engine,l:Local,r:Request,registry:Raw<Seq<Row>>,a:Args,p:Providers)
+   |                                                                                                       ^^^ not found in this scope
+   |
+help: you might be missing a type parameter
+   |
+78 | pub proof fn theorem_empty_ids_after_cursor_before_select<Row>(e:Engine,l:Local,r:Request,registry:Raw<Seq<Row>>,a:Args,p:Providers)
+   |                                                          +++++
+
+error[E0425]: cannot find type `Raw` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:90:81
+   |
+90 | pub proof fn lemma_adds_terminate_and_keep_prefix(n:nat,b:nat,i:nat,replies:Seq<Raw<()>>)
+   |                                                                                 ^^^ not found in this scope
+
+error[E0425]: cannot find type `Engine` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:94:60
+   |
+94 | pub proof fn theorem_invalid_raw_batch_fails_after_build(e:Engine,l:Local,r:Request,registry:Raw<Seq<Row>>,a:Args,p:Providers,raw:Se...
+   |                                                            ^^^^^^ not found in this scope
+
+error[E0425]: cannot find type `Request` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:94:77
+   |
+94 | pub proof fn theorem_invalid_raw_batch_fails_after_build(e:Engine,l:Local,r:Request,registry:Raw<Seq<Row>>,a:Args,p:Providers,raw:Se...
+   |                                                                             ^^^^^^^ not found in this scope
+   |
+help: consider importing this struct
+   |
+ 2 + use std::error::Request;
+   |
+
+error[E0425]: cannot find type `Raw` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:94:94
+   |
+94 | pub proof fn theorem_invalid_raw_batch_fails_after_build(e:Engine,l:Local,r:Request,registry:Raw<Seq<Row>>,a:Args,p:Providers,raw:Se...
+   |                                                                                              ^^^ not found in this scope
+
+error[E0425]: cannot find type `Row` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:94:102
+   |
+94 | pub proof fn theorem_invalid_raw_batch_fails_after_build(e:Engine,l:Local,r:Request,registry:Raw<Seq<Row>>,a:Args,p:Providers,raw:Se...
+   |                                                                                                      ^^^ not found in this scope
+   |
+help: you might be missing a type parameter
+   |
+94 | pub proof fn theorem_invalid_raw_batch_fails_after_build<Row>(e:Engine,l:Local,r:Request,registry:Raw<Seq<Row>>,a:Args,p:Providers,raw:Seq<Stored>,table:Name)
+   |                                                         +++++
+
+error[E0425]: cannot find type `Name` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:94:149
+   |
+94 | ...eq<Row>>,a:Args,p:Providers,raw:Seq<Stored>,table:Name)
+   |                                                      ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Engine` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:100:51
+    |
+100 | pub proof fn theorem_info_error_never_publishes(e:Engine,l:Local,r:Request,registry:Raw<Seq<Row>>,a:Args,p:Providers)
+    |                                                   ^^^^^^ not found in this scope
+
+error[E0425]: cannot find type `Request` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:100:68
+    |
+100 | pub proof fn theorem_info_error_never_publishes(e:Engine,l:Local,r:Request,registry:Raw<Seq<Row>>,a:Args,p:Providers)
+    |                                                                    ^^^^^^^ not found in this scope
+    |
+help: consider importing this struct
+    |
+  2 + use std::error::Request;
+    |
+
+error[E0425]: cannot find type `Raw` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:100:85
+    |
+100 | pub proof fn theorem_info_error_never_publishes(e:Engine,l:Local,r:Request,registry:Raw<Seq<Row>>,a:Args,p:Providers)
+    |                                                                                     ^^^ not found in this scope
+
+error[E0425]: cannot find type `Row` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:100:93
+    |
+100 | pub proof fn theorem_info_error_never_publishes(e:Engine,l:Local,r:Request,registry:Raw<Seq<Row>>,a:Args,p:Providers)
+    |                                                                                             ^^^ not found in this scope
+    |
+help: you might be missing a type parameter
+    |
+100 | pub proof fn theorem_info_error_never_publishes<Row>(e:Engine,l:Local,r:Request,registry:Raw<Seq<Row>>,a:Args,p:Providers)
+    |                                                +++++
+
+error[E0433]: cannot find type `Decode` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:30:30
+   |
+30 |     match raw{Cell::Text(t)=>Decode::Value(Cell::Text(t.map_values(|c:char|upper(c)))),_=>Decode::Error}
+   |                              ^^^^^^ use of undeclared type `Decode`
+
+error[E0433]: cannot find type `Decode` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:30:91
+   |
+30 |     match raw{Cell::Text(t)=>Decode::Value(Cell::Text(t.map_values(|c:char|upper(c)))),_=>Decode::Error}
+   |                                                                                           ^^^^^^ use of undeclared type `Decode`
+
+error[E0433]: cannot find type `Selection` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:41:9
+   |
+41 | ...   Selection::Empty=>Prepared{engine:r.engine,trace:t,gate:Gate::Empty},Selection::Error=>Prepared{engine:r.engine,trace:t,gate:G...
+   |       ^^^^^^^^^ use of undeclared type `Selection`
+
+error[E0433]: cannot find type `Selection` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:41:78
+   |
+41 | ...   Selection::Empty=>Prepared{engine:r.engine,trace:t,gate:Gate::Empty},Selection::Error=>Prepared{engine:r.engine,trace:t,gate:G...
+   |                                                                            ^^^^^^^^^ use of undeclared type `Selection`
+
+error[E0433]: cannot find type `Selection` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:42:9
+   |
+42 |         Selection::Table{Name:table,route}=>{
+   |         ^^^^^^^^^ use of undeclared type `Selection`
+
+error[E0433]: cannot find type `Decode` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:43:59
+   |
+43 |             let d=if stage is Primary{dtype(a,route)}else{Decode::Value(a.engine_dtype)};
+   |                                                           ^^^^^^ use of undeclared type `Decode`
+
+error[E0433]: cannot find type `Decode` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:44:21
+   |
+44 |             match d{Decode::Error=>Prepared{engine:r.engine,trace:t,gate:Gate::Stop(Error::Dtype)},Decode::Value(dtype)=>{
+   |                     ^^^^^^ use of undeclared type `Decode`
+
+error[E0433]: cannot find type `Decode` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:44:100
+   |
+44 |             match d{Decode::Error=>Prepared{engine:r.engine,trace:t,gate:Gate::Stop(Error::Dtype)},Decode::Value(dtype)=>{
+   |                                                                                                    ^^^^^^ use of undeclared type `Decode`
+
+error[E0433]: cannot find type `Decode` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:54:22
+   |
+54 |     if rows.len()==0{Decode::Value(seq![])}else{let r=rows[0];
+   |                      ^^^^^^ use of undeclared type `Decode`
+
+error[E0433]: cannot find type `Decode` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:55:23
+   |
+55 |         if r.len()==0{Decode::Error}else if embedded && r[0] is Null{read_scores(rows.drop_first(),embedded,exact)}
+   |                       ^^^^^^ use of undeclared type `Decode`
+
+error[E0433]: cannot find type `Decode` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:56:52
+   |
+56 | ...   else if r.len()<2 || (exact && r.len()!=2){Decode::Error}else{match numeric(r[1]){None=>Decode::Error,Some(n)=>match read_scor...
+   |                                                  ^^^^^^ use of undeclared type `Decode`
+
+error[E0433]: cannot find type `Decode` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:56:97
+   |
+56 | ...Decode::Error}else{match numeric(r[1]){None=>Decode::Error,Some(n)=>match read_scores(rows.drop_first(),embedded,exact){Decode::E...
+   |                                                 ^^^^^^ use of undeclared type `Decode`
+
+error[E0433]: cannot find type `Decode` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:56:172
+   |
+56 | ...ead_scores(rows.drop_first(),embedded,exact){Decode::Error=>Decode::Error,Decode::Value(t)=>Decode::Value(seq![(r[0],n)]+t)}}}
+   |                                                 ^^^^^^ use of undeclared type `Decode`
+
+error[E0433]: cannot find type `Decode` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:56:187
+   |
+56 | ....drop_first(),embedded,exact){Decode::Error=>Decode::Error,Decode::Value(t)=>Decode::Value(seq![(r[0],n)]+t)}}}
+   |                                                 ^^^^^^ use of undeclared type `Decode`
+
+error[E0433]: cannot find type `Decode` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:56:201
+   |
+56 | ...embedded,exact){Decode::Error=>Decode::Error,Decode::Value(t)=>Decode::Value(seq![(r[0],n)]+t)}}}
+   |                                                 ^^^^^^ use of undeclared type `Decode`
+
+error[E0433]: cannot find type `Decode` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:56:219
+   |
+56 | ...code::Error=>Decode::Error,Decode::Value(t)=>Decode::Value(seq![(r[0],n)]+t)}}}
+   |                                                 ^^^^^^ use of undeclared type `Decode`
+
+error[E0433]: cannot find type `Raw` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:67:15
+   |
+67 |     match raw{Raw::Error(_)=>Decode::Error,Raw::Rows(rows)=>read_scores(sql_rows(rows,table,g,l,exclude,k),embedded,exact)}
+   |               ^^^ use of undeclared type `Raw`
+
+error[E0433]: cannot find type `Decode` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:67:30
+   |
+67 |     match raw{Raw::Error(_)=>Decode::Error,Raw::Rows(rows)=>read_scores(sql_rows(rows,table,g,l,exclude,k),embedded,exact)}
+   |                              ^^^^^^ use of undeclared type `Decode`
+
+error[E0433]: cannot find type `Raw` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:67:44
+   |
+67 |     match raw{Raw::Error(_)=>Decode::Error,Raw::Rows(rows)=>read_scores(sql_rows(rows,table,g,l,exclude,k),embedded,exact)}
+   |                                            ^^^ use of undeclared type `Raw`
+
+error[E0433]: cannot find type `Raw` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:77:71
+   |
+77 |     (Error::Width{query:diag_query(a.query),stored:match v.diagnostic{Raw::Error(_)=>None,Raw::Rows(rows)=>stored_width(rows.filter(...
+   |                                                                       ^^^ use of undeclared type `Raw`
+
+error[E0433]: cannot find type `Raw` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:77:91
+   |
+77 |     (Error::Width{query:diag_query(a.query),stored:match v.diagnostic{Raw::Error(_)=>None,Raw::Rows(rows)=>stored_width(rows.filter(...
+   |                                                                                           ^^^ use of undeclared type `Raw`
+
+error[E0433]: cannot find type `Raw` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:84:60
+   |
+84 |     if shape_bad(q,row.row.emb){None}else{match row.kernel{Raw::Error(_)=>None,Raw::Rows(k)=>if k.query_norm.0>0 && k.row_norm.0>0 &...
+   |                                                            ^^^ use of undeclared type `Raw`
+
+error[E0433]: cannot find type `Raw` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:84:80
+   |
+84 |     if shape_bad(q,row.row.emb){None}else{match row.kernel{Raw::Error(_)=>None,Raw::Rows(k)=>if k.query_norm.0>0 && k.row_norm.0>0 &...
+   |                                                                                ^^^ use of undeclared type `Raw`
+
+error[E0433]: cannot find type `Raw` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:108:36
+    |
+108 | ...   match v.client{Raw::Error(_)=>Result{engine:p.engine,trace:t,outcome:Outcome::Error(Error::Provider)},Raw::Rows(rows)=>{
+    |                      ^^^ use of undeclared type `Raw`
+
+error[E0433]: cannot find type `Raw` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:108:123
+    |
+108 | ...race:t,outcome:Outcome::Error(Error::Provider)},Raw::Rows(rows)=>{
+    |                                                    ^^^ use of undeclared type `Raw`
+
+error[E0433]: cannot find type `Decode` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:115:107
+    |
+115 | ...request),label(a,false),None,a.k,true,false){Decode::Value(rows)=>Result{engine:p.engine,trace:t,outcome:Outcome::Rows(rows)},De...
+    |                                                 ^^^^^^ use of undeclared type `Decode`
+
+error[E0433]: cannot find type `Decode` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:115:188
+    |
+115 | ....engine,trace:t,outcome:Outcome::Rows(rows)},Decode::Error=>{
+    |                                                 ^^^^^^ use of undeclared type `Decode`
+
+error[E0433]: cannot find type `Decode` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:117:109
+    |
+117 | ...equest),label(a,false),None,a.k,false,false){Decode::Value(rows)=>Result{engine:p.engine,trace:t,outcome:Outcome::Rows(rows)},De...
+    |                                                 ^^^^^^ use of undeclared type `Decode`
+
+error[E0433]: cannot find type `Decode` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:117:190
+    |
+117 | ....engine,trace:t,outcome:Outcome::Rows(rows)},Decode::Error=>{let r=run(Entry::Client,p.engine,a,vs);Result{trace:t+r.trace,..r}}}
+    |                                                 ^^^^^^ use of undeclared type `Decode`
+
+error[E0433]: cannot find type `Raw` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:122:39
+    |
+122 |                 let seed=match v.seed{Raw::Rows(rows)=>seeds(rows,table,graph(v.request),id.unwrap_or(seq![])),_=>seq![]};
+    |                                       ^^^ use of undeclared type `Raw`
+
+error[E0433]: cannot find type `Raw` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:128:56
+    |
+128 |                     let raw=if seed_fault{match v.seed{Raw::Error(f)=>Raw::Error(f),_=>v.primary}}else{v.primary};
+    |                                                        ^^^ use of undeclared type `Raw`
+
+error[E0433]: cannot find type `Raw` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:128:71
+    |
+128 |                     let raw=if seed_fault{match v.seed{Raw::Error(f)=>Raw::Error(f),_=>v.primary}}else{v.primary};
+    |                                                                       ^^^ use of undeclared type `Raw`
+
+error[E0433]: cannot find type `Raw` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:129:40
+    |
+129 |                     let fail=match raw{Raw::Error(f)=>Some(f),_=>None};
+    |                                        ^^^ use of undeclared type `Raw`
+
+error[E0433]: cannot find type `Decode` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:131:108
+    |
+131 | ....request),label(a2,false),id,a.k,false,true){Decode::Value(rows)=>Result{engine:p.engine,trace:t,outcome:Outcome::Rows(rows)},De...
+    |                                                 ^^^^^^ use of undeclared type `Decode`
+
+error[E0433]: cannot find type `Decode` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:131:189
+    |
+131 | ....engine,trace:t,outcome:Outcome::Rows(rows)},Decode::Error=>{
+    |                                                 ^^^^^^ use of undeclared type `Decode`
+
+error[E0433]: cannot find type `Raw` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:142:96
+    |
+142 |     requires !cached(v.request,e),graph(v.request)!=0 || v.request.model.is_some(),v.registry==Raw::Rows(seq![]),
+    |                                                                                                ^^^ use of undeclared type `Raw`
+
+error[E0433]: cannot find type `Selection` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:146:58
+    |
+146 |     requires resolve(v.request,e,v.registry).selection==(Selection::Table{Name:table,route}),
+    |                                                          ^^^^^^^^^ use of undeclared type `Selection`
+
+error[E0433]: cannot find type `Decode` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:147:46
+    |
+147 |         stage is Primary ==> dtype(a,route)==Decode::Value(d),
+    |                                              ^^^^^^ use of undeclared type `Decode`
+
+error[E0433]: cannot find type `Selection` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:160:58
+    |
+160 |     requires resolve(v.request,e,v.registry).selection==(Selection::Table{Name:table,route}),dtype(a,route) is Error,
+    |                                                          ^^^^^^^^^ use of undeclared type `Selection`
+
+error[E0433]: cannot find type `Decode` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:165:76
+    |
+165 |     ensures read_scores(seq![seq![Cell::Null,Cell::Float(n)]],true,false)==Decode::Value(seq![]),
+    |                                                                            ^^^^^^ use of undeclared type `Decode`
+
+error[E0433]: cannot find type `Decode` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:166:73
+    |
+166 |         read_scores(seq![seq![Cell::Null,Cell::Float(n)]],false,false)==Decode::Value(seq![(Cell::Null,n)]),
+    |                                                                         ^^^^^^ use of undeclared type `Decode`
+
+error[E0433]: cannot find type `Decode` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:170:84
+    |
+170 |         read_scores(seq![seq![Cell::Int(7),Cell::Int(1),Cell::Null]],false,false)==Decode::Value(seq![(Cell::Int(7),(1,1))]),
+    |                                                                                    ^^^^^^ use of undeclared type `Decode`
+
+error[E0433]: cannot find type `Raw` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:178:24
+    |
+178 |         vs[0].primary==Raw::Error(f),!width_fault(f),
+    |                        ^^^ use of undeclared type `Raw`
+
+error[E0433]: cannot find type `Raw` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:189:139
+    |
+189 | ...Ready{Name:table,route,dtype:d}),vs[0].primary==Raw::Error(f),width_fault(f),
+    |                                                    ^^^ use of undeclared type `Raw`
+
+error[E0433]: cannot find type `Raw` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:201:21
+    |
+201 | ...   vs[0].seed==Raw::Rows(seq![s]),s.table==table,s.graph==graph(vs[0].request),s.id==Cell::Text(id),vs[0].primary==Raw::Error(f)...
+    |                   ^^^ use of undeclared type `Raw`
+
+error[E0433]: cannot find type `Raw` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:201:121
+    |
+201 | ...0].request),s.id==Cell::Text(id),vs[0].primary==Raw::Error(f),!width_fault(f),
+    |                                                    ^^^ use of undeclared type `Raw`
+
+error[E0433]: cannot find type `Decode` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:10:123
+   |
+10 | ...>=n.1 && n.0%(n.1 as int)==0,_=>match dim(c){Decode::Value(Some(n))=>n>=1,_=>false}}}
+   |                                                 ^^^^^^ use of undeclared type `Decode`
+
+error[E0433]: cannot find type `Selection` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:34:13
+   |
+34 |             Selection::Error=>Result{error:Some(Error::Registry),..base},Selection::Empty=>Result{error:Some(Error::NoRoute),..base},
+   |             ^^^^^^^^^ use of undeclared type `Selection`
+
+error[E0433]: cannot find type `Selection` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:34:74
+   |
+34 |             Selection::Error=>Result{error:Some(Error::Registry),..base},Selection::Empty=>Result{error:Some(Error::NoRoute),..base},
+   |                                                                          ^^^^^^^^^ use of undeclared type `Selection`
+
+error[E0433]: cannot find type `Selection` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:35:13
+   |
+35 |             Selection::Table{Name:table,route:_}=>{
+   |             ^^^^^^^^^ use of undeclared type `Selection`
+
+error[E0433]: cannot find type `Raw` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:39:34
+   |
+39 |                     match p.rows{Raw::Error(_)=>Result{error:Some(Error::Provider),..base},Raw::Rows(raw)=>{
+   |                                  ^^^ use of undeclared type `Raw`
+
+error[E0433]: cannot find type `Raw` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:39:92
+   |
+39 |                     match p.rows{Raw::Error(_)=>Result{error:Some(Error::Provider),..base},Raw::Rows(raw)=>{
+   |                                                                                            ^^^ use of undeclared type `Raw`
+
+error[E0433]: cannot find type `Raw` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:55:58
+   |
+55 | ...                   match p.info{Raw::Error(_)=>Result{error:Some(Error::Info),..base},Raw::Rows(raw)=>{
+   |                                    ^^^ use of undeclared type `Raw`
+
+error[E0433]: cannot find type `Raw` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:55:112
+   |
+55 | ...                   match p.info{Raw::Error(_)=>Result{error:Some(Error::Info),..base},Raw::Rows(raw)=>{
+   |                                                                                          ^^^ use of undeclared type `Raw`
+
+error[E0433]: cannot find type `Selection` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:95:80
+   |
+95 |     requires valid(a),p.dependencies is Rows,resolve(r,e,registry).selection==(Selection::Table{Name:table,route:None}),
+   |                                                                                ^^^^^^^^^ use of undeclared type `Selection`
+
+error[E0433]: cannot find type `Raw` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:96:38
+   |
+96 | ...   a.node_ids.is_none(),p.rows==Raw::Rows(raw),eligible(raw,table,graph(r),None).len()>0,rectangular(vectors(eligible(raw,table,g...
+   |                                    ^^^ use of undeclared type `Raw`
+
+error[E0425]: cannot find function `truthy` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:29:39
+   |
+29 |     let raw=match a.dtype{Some(x)=>if truthy(x){x}else{match route{Some(r)=>if truthy(r.dtype){r.dtype}else{a.engine_dtype},None=>a....
+   |                                       ^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `truthy` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:29:80
+   |
+29 |     let raw=match a.dtype{Some(x)=>if truthy(x){x}else{match route{Some(r)=>if truthy(r.dtype){r.dtype}else{a.engine_dtype},None=>a....
+   |                                                                                ^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `truthy` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:29:178
+   |
+29 | ...=>a.engine_dtype}},None=>match route{Some(r)=>if truthy(r.dtype){r.dtype}else{a.engine_dtype},None=>a.engine_dtype}};
+   |                                                     ^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `upper` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:30:76
+   |
+30 |     match raw{Cell::Text(t)=>Decode::Value(Cell::Text(t.map_values(|c:char|upper(c)))),_=>Decode::Error}
+   |                                                                            ^^^^^ not found in this scope
+
+error[E0425]: cannot find function `resolve` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:39:11
+   |
+39 |     let r=resolve(v.request,e,v.registry);let t=seq![Effect::Route(key(v.request))]+if r.engine.reads>e.reads{seq![Effect::RegistryR...
+   |           ^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `key` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:39:68
+   |
+39 |     let r=resolve(v.request,e,v.registry);let t=seq![Effect::Route(key(v.request))]+if r.engine.reads>e.reads{seq![Effect::RegistryR...
+   |                                                                    ^^^ not found in this scope
+
+error[E0425]: cannot find function `key` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:39:137
+   |
+39 | ...f r.engine.reads>e.reads{seq![Effect::RegistryRead(key(v.request))]}else{seq![]};
+   |                                                       ^^^ not found in this scope
+
+error[E0425]: cannot find function `find` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:69:46
+   |
+69 | pub open spec fn width_fault(f:Fault)->bool {find(f.message,seq!['-','2','5','7'],0).is_some() || find(f.message,seq!['v','e','c','t...
+   |                                              ^^^^ not found in this scope
+
+error[E0425]: cannot find function `find` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:69:99
+   |
+69 | pub open spec fn width_fault(f:Fault)->bool {find(f.message,seq!['-','2','5','7'],0).is_some() || find(f.message,seq!['v','e','c','t...
+   |                                                                                                   ^^^^ not found in this scope
+
+error[E0425]: cannot find function `graph` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:77:170
+   |
+77 | ...(rows.filter(|s:Stored|s.table==table && s.graph==graph(v.request)))}},seq![Effect::DiagnosticRead(table,graph(v.request))])
+   |                                                      ^^^^^ not found in this scope
+
+error[E0425]: cannot find function `graph` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:77:225
+   |
+77 | ...(v.request)))}},seq![Effect::DiagnosticRead(table,graph(v.request))])
+   |                                                      ^^^^^ not found in this scope
+
+error[E0425]: cannot find function `graph` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:81:131
+   |
+81 | ...:Option<Text>)->Effect {Effect::Score(stage,table,graph(v.request),a.query,d,label(a,false),exclude)}
+   |                                                      ^^^^^ not found in this scope
+
+error[E0425]: cannot find function `graph` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:107:62
+    |
+107 |                     let t=base+seq![Effect::ClientRead(table,graph(v.request),label(a,true))];
+    |                                                              ^^^^^ not found in this scope
+
+error[E0425]: cannot find function `graph` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:109:104
+    |
+109 | ...   let rows=rows.filter(|s:ClientRow|!(s.row.emb is Null) && selected(s.row,table,graph(v.request),label(a,true),None));let z=cl...
+    |                                                                                      ^^^^^ not found in this scope
+
+error[E0425]: cannot find function `graph` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:115:54
+    |
+115 | ...   match provider_read(v.embedded,table,graph(v.request),label(a,false),None,a.k,true,false){Decode::Value(rows)=>Result{engine:...
+    |                                            ^^^^^ not found in this scope
+
+error[E0425]: cannot find function `graph` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:117:55
+    |
+117 | ...   match provider_read(v.dbapi,table,graph(v.request),label(a,false),None,a.k,false,false){Decode::Value(rows)=>Result{engine:p....
+    |                                         ^^^^^ not found in this scope
+
+error[E0425]: cannot find function `graph` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:121:73
+    |
+121 |                 let st=base+if id.is_some(){seq![Effect::SeedRead(table,graph(v.request),id.unwrap())]}else{seq![]};
+    |                                                                         ^^^^^ not found in this scope
+
+error[E0425]: cannot find function `graph` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:122:73
+    |
+122 |                 let seed=match v.seed{Raw::Rows(rows)=>seeds(rows,table,graph(v.request),id.unwrap_or(seq![])),_=>seq![]};
+    |                                                                         ^^^^^ not found in this scope
+
+error[E0425]: cannot find function `graph` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:131:56
+    |
+131 | ...   else{match provider_read(raw,table,graph(v.request),label(a2,false),id,a.k,false,true){Decode::Value(rows)=>Result{engine:p.e...
+    |                                          ^^^^^ not found in this scope
+
+error[E0425]: cannot find function `cached` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:142:15
+    |
+142 |     requires !cached(v.request,e),graph(v.request)!=0 || v.request.model.is_some(),v.registry==Raw::Rows(seq![]),
+    |               ^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `graph` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:142:35
+    |
+142 |     requires !cached(v.request,e),graph(v.request)!=0 || v.request.model.is_some(),v.registry==Raw::Rows(seq![]),
+    |                                   ^^^^^ not found in this scope
+
+error[E0425]: cannot find function `theorem_absent_named_does_not_cache` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:144:2
+    |
+144 | {theorem_absent_named_does_not_cache(v.request,e);}
+    |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `resolve` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:146:14
+    |
+146 |     requires resolve(v.request,e,v.registry).selection==(Selection::Table{Name:table,route}),
+    |              ^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `resolve` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:160:14
+    |
+160 |     requires resolve(v.request,e,v.registry).selection==(Selection::Table{Name:table,route}),dtype(a,route) is Error,
+    |              ^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `graph` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:184:44
+    |
+184 |         provider_read(vs[1].embedded,table,graph(vs[1].request),label(a,false),None,a.k,true,false) is Error,
+    |                                            ^^^^^ not found in this scope
+
+error[E0425]: cannot find function `graph` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:185:41
+    |
+185 |         provider_read(vs[1].dbapi,table,graph(vs[1].request),label(a,false),None,a.k,false,false) is Error,
+    |                                         ^^^^^ not found in this scope
+
+error[E0425]: cannot find function `graph` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:191:79
+    |
+191 |         run(Entry::Primary,e,a,vs).trace.last()==Effect::DiagnosticRead(table,graph(vs[0].request)),
+    |                                                                               ^^^^^ not found in this scope
+
+error[E0425]: cannot find function `graph` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:201:64
+    |
+201 | ...   vs[0].seed==Raw::Rows(seq![s]),s.table==table,s.graph==graph(vs[0].request),s.id==Cell::Text(id),vs[0].primary==Raw::Error(f)...
+    |                                                              ^^^^^ not found in this scope
+
+error[E0425]: cannot find function `graph` in this scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:203:85
+    |
+203 | {reveal_with_fuel(run,2);reveal_with_fuel(Seq::filter,2);assert(seeds(seq![s],table,graph(vs[0].request),id) =~= seq![s]);}
+    |                                                                                     ^^^^^ not found in this scope
+
+error[E0425]: cannot find function `dim` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:10:116
+   |
+10 | ...>n.1>0 && n.0>=n.1 && n.0%(n.1 as int)==0,_=>match dim(c){Decode::Value(Some(n))=>n>=1,_=>false}}}
+   |                                                       ^^^ not found in this scope
+
+error[E0425]: cannot find function `resolve` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:31:19
+   |
+31 | ...   let route=resolve(r,e,registry);let tr=seq![Effect::Route(key(r))]+if route.engine.reads>e.reads{seq![Effect::RegistryRead(key...
+   |                 ^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `key` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:31:67
+   |
+31 | ...   let route=resolve(r,e,registry);let tr=seq![Effect::Route(key(r))]+if route.engine.reads>e.reads{seq![Effect::RegistryRead(key...
+   |                                                                 ^^^ not found in this scope
+
+error[E0425]: cannot find function `key` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:31:132
+   |
+31 | ...ute.engine.reads>e.reads{seq![Effect::RegistryRead(key(r))]}else{seq![]};
+   |                                                       ^^^ not found in this scope
+
+error[E0425]: cannot find function `graph` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:38:81
+   |
+38 |                     let base=Result{trace:base.trace+seq![Effect::IvfRead(table,graph(r))],..base};
+   |                                                                                 ^^^^^ not found in this scope
+
+error[E0425]: cannot find function `graph` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:40:53
+   |
+40 |                         let rows=eligible(raw,table,graph(r),a.node_ids);
+   |                                                     ^^^^^ not found in this scope
+
+error[E0425]: cannot find function `graph` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:58:137
+   |
+58 | ...   Result{local:Local{indexes:l.indexes.insert(a.name,1),scopes:l.scopes.insert(a.name,graph(r))},trace:base.trace+seq![Effect::P...
+   |                                                                                           ^^^^^ not found in this scope
+
+error[E0425]: cannot find function `resolve` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:75:46
+   |
+75 |     requires valid(a),p.dependencies is Rows,resolve(r,e,registry).selection is Empty,
+   |                                              ^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `resolve` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:79:46
+   |
+79 |     requires valid(a),p.dependencies is Rows,resolve(r,e,registry).selection is Table,a.node_ids==Some(seq![]),
+   |                                              ^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `resolve` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:95:46
+   |
+95 |     requires valid(a),p.dependencies is Rows,resolve(r,e,registry).selection==(Selection::Table{Name:table,route:None}),
+   |                                              ^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `graph` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:96:72
+   |
+96 | ...   a.node_ids.is_none(),p.rows==Raw::Rows(raw),eligible(raw,table,graph(r),None).len()>0,rectangular(vectors(eligible(raw,table,g...
+   |                                                                      ^^^^^ not found in this scope
+
+error[E0425]: cannot find function `graph` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/ivf.rs:96:134
+   |
+96 | ...e).len()>0,rectangular(vectors(eligible(raw,table,graph(r),None))),
+   |                                                      ^^^^^ not found in this scope
+
+error: aborting due to 296 previous errors
+
+Some errors have detailed explanations: E0425, E0433.
+For more information about an error, try `rustc --explain E0425`.

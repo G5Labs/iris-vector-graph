@@ -1,0 +1,19 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/review-fraction-scratch/run/verus/weighted_fraction/controls/cost-retains-old-queue/20261115T213103Z/models/weighted_fraction/weighted_fraction.rs:499:13
+    |
+499 |       ensures cdecrease(c,b,ds(c,z),ce(c,e),a)==ds(c,kernel::decrease(encoded(c),b,z,e,a)),
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+505 | /     if select(c,b,a){
+506 | |         theorem_scalar_and_cap_decode(c,a);theorem_decode_arithmetic(c,e.0,json::weight(encoded(c),a));
+507 | |         theorem_decode_arithmetic(c,n,encoded(c).cap);
+508 | |         if z.dist.contains_key(v){theorem_decode_arithmetic(c,z.dist[v],n);}
+...   |
+514 | |     }
+    | |_____- at the end of the function body
+
+error: aborting due to 1 previous error
+

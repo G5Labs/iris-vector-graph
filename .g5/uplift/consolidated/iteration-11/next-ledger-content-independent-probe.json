@@ -1,0 +1,104 @@
+{
+  "verdict": "AGREES",
+  "cases": [
+    {
+      "case": "create does not unpack embedded node content",
+      "observed": {
+        "labels": [],
+        "props": {}
+      },
+      "reader_admitted": true,
+      "ordinary_ApplyAll_record": false,
+      "source": "ApplyAll create_node emits empty new, then add_label/set_prop; do not encode a create payload snapshot as already-applied maps."
+    },
+    {
+      "case": "raw set None differs from absent property but diff prior/new None cancels",
+      "props": {
+        "k": ""
+      },
+      "diff": [],
+      "reader_admitted": true,
+      "ordinary_ApplyAll_record": false,
+      "source": "SetProp emits Enc(value), never EncNull as new; null JSON MetaGet becomes empty text. Adoption is a separate permissive record writer."
+    },
+    {
+      "case": "parallel IDs are not a tuple bijection",
+      "before": {
+        "statements": 2,
+        "comparable_tuples": 1,
+        "tuple_lookup": "2"
+      },
+      "after": {
+        "statement_ids": [
+          "2"
+        ],
+        "tuple_lookup": null
+      },
+      "source_conditional_native_reach": "Genesis.Capture allocates once per physical non-temporal edge row; Enable has no duplicate/GraphMode guard. Native duplicate-row fixture unexecuted here.",
+      "new_issue": false
+    },
+    {
+      "case": "tuple default graph normalization",
+      "observed": [
+        null,
+        null,
+        null,
+        "named"
+      ]
+    },
+    {
+      "case": "delete_node has no GraphState relationship cascade",
+      "nodes": [
+        "b"
+      ],
+      "statements": [
+        "3"
+      ],
+      "source_conditional_native_reach": "ApplyAll deletes default-graph incidents only; a named relationship survives its default bare-ID profile deletion. Do not infer global endpoint closure."
+    },
+    {
+      "case": "fold cannot validate deletion snapshot truth",
+      "folds_equal": true,
+      "diff_full": [
+        {
+          "entity_kind": "node",
+          "entity_id": "a",
+          "attr": "",
+          "before": "{\"labels\": [\"L\"], \"props\": {\"k\": \"v\"}}",
+          "after": null
+        }
+      ],
+      "diff_empty": [
+        {
+          "entity_kind": "node",
+          "entity_id": "a",
+          "attr": "",
+          "before": "",
+          "after": null
+        }
+      ],
+      "source": "DeleteNodeRows derives snapshot before deletion; snapshot correctness must follow actual SQL contents/query contract, not the final empty fold. Simple complete deletion snapshot remains passing; no policy decision."
+    },
+    {
+      "case": "GraphState accepts reserved raw record key",
+      "props": {
+        "id": "x"
+      },
+      "reader_admitted": true,
+      "ordinary_ApplyAll_record": false,
+      "source": "Ordinary node-property producer rejects id/__graph; reader does not. Relationship qualifier keys use a different admission rule."
+    }
+  ],
+  "case_count": 7,
+  "socket_calls": 0,
+  "native_calls": 0,
+  "elapsed_s": 0.31324241700349376,
+  "script_sha256": "dba98bc5fee59fd9a9fdf3d96bc3e783f37481600bbd3e9c7adb6f46ad7536ae",
+  "product_inputs": {
+    "iris_vector_graph/ledger/replay.py": "2cf6d87ea3b1c66f785c1bf8dcd7cf38c99e29cc3cac2794d73edf6af20d00b3",
+    "iris_src/src/Graph/KG/LedgerApply.cls": "73068abd02f1e93a8cda77365e9c8be41f8d756f1bc25dbb33e8a7468700c414",
+    "iris_src/src/Graph/KG/LedgerGenesis.cls": "afd64ea71b6159a5e49f729e3bb43fbd0796617cfa8fa69aa00c4e37f1629909",
+    "iris_src/src/Graph/KG/Ledger.cls": "d0a0e0149b09dda68c908da6c7544a99830afdc2e94905b57209589a7dad54dd"
+  },
+  "scope": "Seven bounded exact Python reader observations, source-based native reach assessment only. No new model, issue, source patch, native writer claim or q-con-002 decision."
+}

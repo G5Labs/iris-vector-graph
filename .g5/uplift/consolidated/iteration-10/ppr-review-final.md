@@ -1,3 +1,5 @@
+Count classification corrected in iteration11: [audit and original-byte preservation](../iteration-11/count-correction.md). Totals/model/receipts unchanged;17 internal arithmetic subqueries were previously grouped with recursion checks.
+
 # Independent ppr_walk review
 
 **Accept the stated fragment.** Independent replay passes103 verifier units,
@@ -48,8 +50,8 @@ or that every route currently meets intended completion/consistency.
 
 ## Independent execution and controls
 
-103 units comprise68 proof declarations (30 named theorems,38 helpers) and35
-recursive-spec termination checks, all new with no imports. No unchecked
+103 units comprise68 proof declarations (30 named theorems,38 helpers) and18
+recursive-spec termination checks plus17 nonlinear arithmetic subqueries, all new with no imports. No unchecked
 declaration, assumed optimum/result, external body or raised resource setting was
 found. Verus used the inherited binary and four threads.
 

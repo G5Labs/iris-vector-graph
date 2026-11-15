@@ -1,0 +1,12 @@
+verification results:: 76 verified, 1 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration11-vector-20261115/verus/vector_admission/controls/route-cache-graph-key-collapsed/20261115T213127Z/models/vector_admission/vector_admission.rs:132:13
+    |
+130 | pub proof fn theorem_each_raw_key_field_prevents_alias(r:Request,s:Request)
+    | --------------------------------------------------------------------------- at the end of the function body
+131 |     requires r.registry!=s.registry || graph(r)!=graph(s) || r.model!=s.model || r.kind!=s.kind,
+132 |     ensures key(r)!=key(s),
+    |             ^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

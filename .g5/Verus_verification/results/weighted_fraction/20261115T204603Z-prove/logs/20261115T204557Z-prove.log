@@ -1,0 +1,39 @@
+verification results:: 106 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_fraction/weighted_fraction.rs:95:1
+   |
+95 | pub proof fn theorem_scalar_and_cap_decode(c:Config,a:Arc)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_fraction/weighted_fraction.rs:104:20
+    |
+104 |             assert((d as real)==(x.den as real)*(f as real));
+    |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: precondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_fraction/weighted_fraction.rs:108:50
+    |
+ 51 |     requires forall|j:int|0<=j<ds.len() ==> ds[j]>0,
+    |              -------------------------------------- failed precondition
+...
+108 |     let f=omitted(denominations(c),c.arcs.len());lemma_product(denominations(c),c.arcs.len());lemma_ratio(c.cap.num,c.cap.den,f);
+    |                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_fraction/weighted_fraction.rs:109:12
+    |
+109 |     assert((cap_numerator(c) as real)==(c.cap.num as real)*(f as real));
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_fraction/weighted_fraction.rs:114:13
+    |
+112 | pub proof fn theorem_decode_arithmetic(c:Config,a:nat,b:nat)
+    | ------------------------------------------------------------ at the end of the function body
+113 |     requires denominator(c)>0,
+114 |     ensures decode(c,0)==0real,decode(c,a+b)==decode(c,a)+decode(c,b),
+    |             ^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 4 previous errors
+

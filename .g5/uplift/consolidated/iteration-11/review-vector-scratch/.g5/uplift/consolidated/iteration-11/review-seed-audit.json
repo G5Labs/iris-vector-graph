@@ -1,0 +1,101 @@
+{
+  "time_utc": "2026-11-15T21:08:04.202156+00:00",
+  "status": "READ_ONLY_SEED_AUDIT_AGREES",
+  "local_source_cases": 6,
+  "native_records_audited": 5,
+  "root_native_case_checks": [
+    {
+      "label": "primary seed k1",
+      "ids": [
+        "vec11:peer:ae6ddef1"
+      ],
+      "intent_violation": false,
+      "injected_faults": 0,
+      "score_attempts": 1,
+      "agrees": true
+    },
+    {
+      "label": "primary seed k2",
+      "ids": [
+        "vec11:peer:ae6ddef1"
+      ],
+      "intent_violation": false,
+      "injected_faults": 0,
+      "score_attempts": 1,
+      "agrees": true
+    },
+    {
+      "label": "generic fault seed k1",
+      "ids": [
+        "vec11:seed:ae6ddef1"
+      ],
+      "intent_violation": true,
+      "injected_faults": 1,
+      "score_attempts": 2,
+      "agrees": true
+    },
+    {
+      "label": "generic fault seed k2",
+      "ids": [
+        "vec11:seed:ae6ddef1",
+        "vec11:peer:ae6ddef1"
+      ],
+      "intent_violation": true,
+      "injected_faults": 1,
+      "score_attempts": 2,
+      "agrees": true
+    },
+    {
+      "label": "generic fault literal k1",
+      "ids": [
+        "vec11:seed:ae6ddef1"
+      ],
+      "intent_violation": false,
+      "injected_faults": 1,
+      "score_attempts": 2,
+      "agrees": true
+    }
+  ],
+  "probe_body_elapsed_s": 0.018607083009555936,
+  "probe_failures": [],
+  "native_executed_by_reviewer": 0,
+  "sockets": 0,
+  "candidate_files_inspected": [],
+  "dedup": {
+    "bugs_issues.md": {
+      "sha256": "48a36c69c2e5bd2de84a11ef38200ea3c488387fb8d86087885bbf303230eb84",
+      "same_surface_synonym_section_candidates": []
+    },
+    "open_questions.md": {
+      "sha256": "233752161f4af096e2ab7fdd42f08b272e2defff083b97714eabf30045257810",
+      "same_surface_synonym_section_candidates": []
+    },
+    "design_simplification.md": {
+      "sha256": "5ed11fb7c8cf27ad1cb1469ea73979ca0c133e1d745455f61531756a54c03e37",
+      "same_surface_synonym_section_candidates": []
+    }
+  },
+  "intent": "Existing kg_KNN_VEC API/user/canonical seed exclusion; vec_expand differsurface intentionally includesseed",
+  "recommendation": "Distinct Low provider-conditioned seed-to-literal fallback identity-loss finding; root adjudicates, no register/model/shared edits by reviewer",
+  "historical_prediction_recovery": {
+    "file": ".g5/uplift/consolidated/iteration-11/root-vector-attempt1-predictions.md",
+    "matches_old_input_digest": true,
+    "original_native13_files_unchanged": true,
+    "old_audit_left_unchanged": true
+  },
+  "inputs": {
+    ".g5/uplift/consolidated/iteration-11/review-seed-predictions.md": "f091809115ef7d7f761c39201dc14224026cd57f6eb60fd89e4d8fd10921a9df",
+    ".g5/uplift/consolidated/iteration-11/review-seed-probe.py": "4666a54da8cb594d2e7df3562b45c5ce6fd1e1396841c4bf5b965e34e7d52d63",
+    ".g5/uplift/consolidated/iteration-11/review-seed-probe.json": "9f08f6a30b7a399f61c8f7785a0fc7bdd99c4fb58cbdab96ea540c978b86fc67",
+    ".g5/uplift/consolidated/iteration-11/review-seed-probe.log": "28e45afc597e6d1b88c5b10df8f7948718278d6556927d45e144331d3ec9607e",
+    ".g5/uplift/consolidated/iteration-11/review-seed-intent.md": "c39f269d7a262c4759b41c085c7498d83193fc2471bb99c1d2de5a0218bc8705",
+    ".g5/uplift/consolidated/iteration-11/review-seed-audit.py": "65c765f74eb1fba98b4b7156df185d5a59c33b391a990bd26d5259dea7e02957",
+    ".g5/uplift/consolidated/iteration-11/root-vector-attempt1-predictions.md": "c21ce48ff1018f72f75010e1a0af2896032209270396da22b69833ca83ca1390",
+    ".g5/uplift/consolidated/iteration-11/root-vector-attempt1-provenance.json": "b6b1ab49290accf3b23b1f4cd377ca05139ae0605748a146c9fad7bdb22dbb7f",
+    ".g5/uplift/consolidated/iteration-11/root-seed-native.py": "a3a6ebbb241d7189e3c5f72daea1420bc4dee74e259fc8cc0d7acf062647bee0",
+    ".g5/uplift/consolidated/iteration-11/root-seed-native.json": "fce114fb225bbe7e81647f76b0477fa327b260ebbcf7c2a4bbf0c90afaff8e46",
+    ".g5/uplift/consolidated/iteration-11/root-seed-native.log": "40eeb3081abb81c438b8b95b6ce77b062a73d5d230515ea297fb84c3a822abed",
+    ".g5/uplift/consolidated/iteration-11/root-seed-predictions.md": "769340abe4996c2f44c737283702f5e8df333cd039356482d5dbfa66b55d9767"
+  },
+  "scope": "Independent finite source execution and static audit of actual root-native records; one controlled generic first-score exception is injected. No organic outage/native-body/refusal-all-carriers/wholemember proof."
+}

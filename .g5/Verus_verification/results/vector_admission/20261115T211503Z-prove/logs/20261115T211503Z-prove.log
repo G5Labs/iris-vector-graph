@@ -1,0 +1,27 @@
+error[E0308]: mismatched types
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:64:90
+   |
+64 |     let rs=raw.filter(|s:Scored|selected(s.row,table,g,l,exclude));rs.take(if rs.len()<k{rs.len()}else{k}).map_values(|s:Scored|s.ce...
+   |                                                                                          ^^^^^^^^ expected `int`, found `nat`
+
+error[E0308]: mismatched types
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:64:104
+   |
+64 | ...g,l,exclude));rs.take(if rs.len()<k{rs.len()}else{k}).map_values(|s:Scored|s.cells)
+   |                                                      ^ expected `int`, found `nat`
+
+error[E0308]: mismatched types
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:110:114
+    |
+110 | ...tcome::Rows(sorted.take(if sorted.len()<a.k{sorted.len()}else{a.k}))}
+    |                                                ^^^^^^^^^^^^ expected `int`, found `nat`
+
+error[E0308]: mismatched types
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/workflow.rs:110:132
+    |
+110 | ...rted.take(if sorted.len()<a.k{sorted.len()}else{a.k}))}
+    |                                                    ^^^ expected `int`, found `nat`
+
+error: aborting due to 4 previous errors
+
+For more information about this error, try `rustc --explain E0308`.

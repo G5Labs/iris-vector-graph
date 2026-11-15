@@ -1,0 +1,17 @@
+verification results:: 180 verified, 1 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/review-fraction-scratch/run/verus/weighted_fraction/controls/cost-frontsum-one-early/20261115T213127Z/models/weighted_fraction/weighted_fraction.rs:551:13
+    |
+551 |       ensures cstep(c,cs(c,s))==cimage_event(c,kernel::step(encoded(c),s)),
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+554 | /     if s.forward.queue.len()>0 && s.backward.queue.len()>0{
+555 | |         let f=kernel::minimum(s.forward.queue);let r=kernel::minimum(s.backward.queue);
+556 | |         theorem_cost_minimum_commutes(c,s.forward.queue);theorem_cost_minimum_commutes(c,s.backward.queue);
+557 | |         theorem_decode_arithmetic(c,f.0,r.0);theorem_decode_arithmetic(c,r.0,f.0);
+...   |
+564 | |     }
+    | |_____- at the end of the function body
+
+error: aborting due to 1 previous error
+

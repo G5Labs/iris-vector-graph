@@ -1,0 +1,30 @@
+verification results:: 161 verified, 3 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_fraction/weighted_fraction.rs:610:41
+    |
+610 |     ensures weights(c,p).len()==p.len(),sum(weights(c,p))==cost(c,p),
+    |                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+613 |     if p.len()>0{lemma_weights_sum(c,p.drop_last());let a=p.last();assert(p =~= p.drop_last().push(a));lemma_cost_push(c,p.drop_last(),a);}
+    |     --------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_fraction/weighted_fraction.rs:651:13
+    |
+651 |     ensures a[i as int]==b[i as int],
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+654 |     if i>0{lemma_trace_prefix(start,a,b,next,(i-1) as nat);}
+    |     -------------------------------------------------------- at the end of the function body
+
+error: precondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_fraction/weighted_fraction.rs:705:89
+    |
+132 | ...es denominator(c)>0,
+    |       ---------------- failed precondition
+...
+705 | ...  theorem_feasibility_commutes(c,p);theorem_path_sum_decodes(c,c.src,c.dst,p);theorem_decode_arithmetic(c,k,json::cost(encoded(c),p));
+    |                                                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: aborting due to 3 previous errors
+

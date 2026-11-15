@@ -1,0 +1,957 @@
+{
+  "verdict": "OBSERVED_SOURCE_AGREES",
+  "cases": [
+    {
+      "name": "V5-nested-object-route2",
+      "input": {
+        "raw_query": "[{\"k\":[1,2]},[3,4]]",
+        "hand_expected_outer_count": 2,
+        "raw_recorded_dimension": 2,
+        "native_numeric_element_acceptance": "unassessed"
+      },
+      "observation": {
+        "result": {
+          "kind": "value",
+          "value": [
+            [
+              "n",
+              0.75
+            ]
+          ]
+        },
+        "registry_reads": 1,
+        "sql_score_attempts": 1,
+        "metadata_reads": 0,
+        "client_vector_reads": 0,
+        "cursor_opens": 2,
+        "sql": [
+          [
+            "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+            [
+              "g",
+              "node",
+              "m"
+            ]
+          ],
+          [
+            "SELECT TOP ? n.node_id, VECTOR_COSINE(n.emb, TO_VECTOR(?, DOUBLE)) AS score FROM Graph_KG.kg_emb_0000000000000001 n WHERE (COALESCE(n.graph_id, '') = COALESCE(?, '')) ORDER BY score DESC",
+            [
+              2,
+              "[{\"k\":[1,2]},[3,4]]",
+              "g"
+            ]
+          ]
+        ]
+      },
+      "agrees": true
+    },
+    {
+      "name": "V5-nested-object-route3",
+      "input": {
+        "raw_query": "[{\"k\":[1,2]},[3,4]]",
+        "hand_expected_outer_count": 2,
+        "raw_recorded_dimension": 3,
+        "native_numeric_element_acceptance": "unassessed"
+      },
+      "observation": {
+        "result": {
+          "kind": "error",
+          "type": "ValueError",
+          "message": "query vector has 2 dimensions, but graph 'g' is routed to kg_emb_0000000000000001, which stores 3-dimensional vectors. A vector from one model cannot be scored against another model's space: pass the graph's own model_key and a vector of its width, or query the graph the vector belongs to."
+        },
+        "registry_reads": 1,
+        "sql_score_attempts": 0,
+        "metadata_reads": 0,
+        "client_vector_reads": 0,
+        "cursor_opens": 1,
+        "sql": [
+          [
+            "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+            [
+              "g",
+              "node",
+              "m"
+            ]
+          ]
+        ]
+      },
+      "agrees": true
+    },
+    {
+      "name": "V5-escaped-strings-route2",
+      "input": {
+        "raw_query": "[\"comma,] and quote\\\"\", \"[,]\"]",
+        "hand_expected_outer_count": 2,
+        "raw_recorded_dimension": 2,
+        "native_numeric_element_acceptance": "unassessed"
+      },
+      "observation": {
+        "result": {
+          "kind": "value",
+          "value": [
+            [
+              "n",
+              0.75
+            ]
+          ]
+        },
+        "registry_reads": 1,
+        "sql_score_attempts": 1,
+        "metadata_reads": 0,
+        "client_vector_reads": 0,
+        "cursor_opens": 2,
+        "sql": [
+          [
+            "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+            [
+              "g",
+              "node",
+              "m"
+            ]
+          ],
+          [
+            "SELECT TOP ? n.node_id, VECTOR_COSINE(n.emb, TO_VECTOR(?, DOUBLE)) AS score FROM Graph_KG.kg_emb_0000000000000001 n WHERE (COALESCE(n.graph_id, '') = COALESCE(?, '')) ORDER BY score DESC",
+            [
+              2,
+              "[\"comma,] and quote\\\"\", \"[,]\"]",
+              "g"
+            ]
+          ]
+        ]
+      },
+      "agrees": true
+    },
+    {
+      "name": "V5-escaped-strings-route3",
+      "input": {
+        "raw_query": "[\"comma,] and quote\\\"\", \"[,]\"]",
+        "hand_expected_outer_count": 2,
+        "raw_recorded_dimension": 3,
+        "native_numeric_element_acceptance": "unassessed"
+      },
+      "observation": {
+        "result": {
+          "kind": "error",
+          "type": "ValueError",
+          "message": "query vector has 2 dimensions, but graph 'g' is routed to kg_emb_0000000000000001, which stores 3-dimensional vectors. A vector from one model cannot be scored against another model's space: pass the graph's own model_key and a vector of its width, or query the graph the vector belongs to."
+        },
+        "registry_reads": 1,
+        "sql_score_attempts": 0,
+        "metadata_reads": 0,
+        "client_vector_reads": 0,
+        "cursor_opens": 1,
+        "sql": [
+          [
+            "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+            [
+              "g",
+              "node",
+              "m"
+            ]
+          ]
+        ]
+      },
+      "agrees": true
+    },
+    {
+      "name": "V5-nonnumeric-route4",
+      "input": {
+        "raw_query": "[true,false,null,\"x\"]",
+        "hand_expected_outer_count": 4,
+        "raw_recorded_dimension": 4,
+        "native_numeric_element_acceptance": "unassessed"
+      },
+      "observation": {
+        "result": {
+          "kind": "value",
+          "value": [
+            [
+              "n",
+              0.75
+            ]
+          ]
+        },
+        "registry_reads": 1,
+        "sql_score_attempts": 1,
+        "metadata_reads": 0,
+        "client_vector_reads": 0,
+        "cursor_opens": 2,
+        "sql": [
+          [
+            "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+            [
+              "g",
+              "node",
+              "m"
+            ]
+          ],
+          [
+            "SELECT TOP ? n.node_id, VECTOR_COSINE(n.emb, TO_VECTOR(?, DOUBLE)) AS score FROM Graph_KG.kg_emb_0000000000000001 n WHERE (COALESCE(n.graph_id, '') = COALESCE(?, '')) ORDER BY score DESC",
+            [
+              2,
+              "[true,false,null,\"x\"]",
+              "g"
+            ]
+          ]
+        ]
+      },
+      "agrees": true
+    },
+    {
+      "name": "V5-nonnumeric-route5",
+      "input": {
+        "raw_query": "[true,false,null,\"x\"]",
+        "hand_expected_outer_count": 4,
+        "raw_recorded_dimension": 5,
+        "native_numeric_element_acceptance": "unassessed"
+      },
+      "observation": {
+        "result": {
+          "kind": "error",
+          "type": "ValueError",
+          "message": "query vector has 4 dimensions, but graph 'g' is routed to kg_emb_0000000000000001, which stores 5-dimensional vectors. A vector from one model cannot be scored against another model's space: pass the graph's own model_key and a vector of its width, or query the graph the vector belongs to."
+        },
+        "registry_reads": 1,
+        "sql_score_attempts": 0,
+        "metadata_reads": 0,
+        "client_vector_reads": 0,
+        "cursor_opens": 1,
+        "sql": [
+          [
+            "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+            [
+              "g",
+              "node",
+              "m"
+            ]
+          ]
+        ]
+      },
+      "agrees": true
+    },
+    {
+      "name": "V5-python-extensions-route3",
+      "input": {
+        "raw_query": "[NaN,Infinity,-Infinity]",
+        "hand_expected_outer_count": 3,
+        "raw_recorded_dimension": 3,
+        "native_numeric_element_acceptance": "unassessed"
+      },
+      "observation": {
+        "result": {
+          "kind": "value",
+          "value": [
+            [
+              "n",
+              0.75
+            ]
+          ]
+        },
+        "registry_reads": 1,
+        "sql_score_attempts": 1,
+        "metadata_reads": 0,
+        "client_vector_reads": 0,
+        "cursor_opens": 2,
+        "sql": [
+          [
+            "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+            [
+              "g",
+              "node",
+              "m"
+            ]
+          ],
+          [
+            "SELECT TOP ? n.node_id, VECTOR_COSINE(n.emb, TO_VECTOR(?, DOUBLE)) AS score FROM Graph_KG.kg_emb_0000000000000001 n WHERE (COALESCE(n.graph_id, '') = COALESCE(?, '')) ORDER BY score DESC",
+            [
+              2,
+              "[NaN,Infinity,-Infinity]",
+              "g"
+            ]
+          ]
+        ]
+      },
+      "agrees": true
+    },
+    {
+      "name": "V5-python-extensions-route4",
+      "input": {
+        "raw_query": "[NaN,Infinity,-Infinity]",
+        "hand_expected_outer_count": 3,
+        "raw_recorded_dimension": 4,
+        "native_numeric_element_acceptance": "unassessed"
+      },
+      "observation": {
+        "result": {
+          "kind": "error",
+          "type": "ValueError",
+          "message": "query vector has 3 dimensions, but graph 'g' is routed to kg_emb_0000000000000001, which stores 4-dimensional vectors. A vector from one model cannot be scored against another model's space: pass the graph's own model_key and a vector of its width, or query the graph the vector belongs to."
+        },
+        "registry_reads": 1,
+        "sql_score_attempts": 0,
+        "metadata_reads": 0,
+        "client_vector_reads": 0,
+        "cursor_opens": 1,
+        "sql": [
+          [
+            "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+            [
+              "g",
+              "node",
+              "m"
+            ]
+          ]
+        ]
+      },
+      "agrees": true
+    },
+    {
+      "name": "V5-numeric-exponents-route3",
+      "input": {
+        "raw_query": " \n[1,-2.5e+2,3E-4]\t",
+        "hand_expected_outer_count": 3,
+        "raw_recorded_dimension": 3,
+        "native_numeric_element_acceptance": "unassessed"
+      },
+      "observation": {
+        "result": {
+          "kind": "value",
+          "value": [
+            [
+              "n",
+              0.75
+            ]
+          ]
+        },
+        "registry_reads": 1,
+        "sql_score_attempts": 1,
+        "metadata_reads": 0,
+        "client_vector_reads": 0,
+        "cursor_opens": 2,
+        "sql": [
+          [
+            "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+            [
+              "g",
+              "node",
+              "m"
+            ]
+          ],
+          [
+            "SELECT TOP ? n.node_id, VECTOR_COSINE(n.emb, TO_VECTOR(?, DOUBLE)) AS score FROM Graph_KG.kg_emb_0000000000000001 n WHERE (COALESCE(n.graph_id, '') = COALESCE(?, '')) ORDER BY score DESC",
+            [
+              2,
+              " \n[1,-2.5e+2,3E-4]\t",
+              "g"
+            ]
+          ]
+        ]
+      },
+      "agrees": true
+    },
+    {
+      "name": "V5-numeric-exponents-route4",
+      "input": {
+        "raw_query": " \n[1,-2.5e+2,3E-4]\t",
+        "hand_expected_outer_count": 3,
+        "raw_recorded_dimension": 4,
+        "native_numeric_element_acceptance": "unassessed"
+      },
+      "observation": {
+        "result": {
+          "kind": "error",
+          "type": "ValueError",
+          "message": "query vector has 3 dimensions, but graph 'g' is routed to kg_emb_0000000000000001, which stores 4-dimensional vectors. A vector from one model cannot be scored against another model's space: pass the graph's own model_key and a vector of its width, or query the graph the vector belongs to."
+        },
+        "registry_reads": 1,
+        "sql_score_attempts": 0,
+        "metadata_reads": 0,
+        "client_vector_reads": 0,
+        "cursor_opens": 1,
+        "sql": [
+          [
+            "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+            [
+              "g",
+              "node",
+              "m"
+            ]
+          ]
+        ]
+      },
+      "agrees": true
+    },
+    {
+      "name": "V5-empty-route4",
+      "input": {
+        "raw_query": "[]",
+        "hand_expected_outer_count": 0,
+        "raw_recorded_dimension": 4,
+        "native_numeric_element_acceptance": "unassessed"
+      },
+      "observation": {
+        "result": {
+          "kind": "error",
+          "type": "ValueError",
+          "message": "query vector has 0 dimensions, but graph 'g' is routed to kg_emb_0000000000000001, which stores 4-dimensional vectors. A vector from one model cannot be scored against another model's space: pass the graph's own model_key and a vector of its width, or query the graph the vector belongs to."
+        },
+        "registry_reads": 1,
+        "sql_score_attempts": 0,
+        "metadata_reads": 0,
+        "client_vector_reads": 0,
+        "cursor_opens": 1,
+        "sql": [
+          [
+            "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+            [
+              "g",
+              "node",
+              "m"
+            ]
+          ]
+        ]
+      },
+      "agrees": true
+    },
+    {
+      "name": "V8-attribute-30",
+      "input": {
+        "exception_type": "Fault",
+        "sqlcode": -30,
+        "message": "absent by numeric attribute"
+      },
+      "observation": {
+        "result": {
+          "kind": "value",
+          "value": [
+            "kg_NodeEmbeddings",
+            null
+          ]
+        },
+        "registry_reads": 1,
+        "sql_score_attempts": 0,
+        "metadata_reads": 0,
+        "client_vector_reads": 0,
+        "cursor_opens": 1,
+        "sql": [
+          [
+            "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+            [
+              "g",
+              "node",
+              "m"
+            ]
+          ]
+        ]
+      },
+      "agrees": true
+    },
+    {
+      "name": "V8-message-30",
+      "input": {
+        "exception_type": "RuntimeError",
+        "sqlcode": null,
+        "message": "[SQLCODE: <-30>:<Table or view not found>]"
+      },
+      "observation": {
+        "result": {
+          "kind": "value",
+          "value": [
+            "kg_NodeEmbeddings",
+            null
+          ]
+        },
+        "registry_reads": 1,
+        "sql_score_attempts": 0,
+        "metadata_reads": 0,
+        "client_vector_reads": 0,
+        "cursor_opens": 1,
+        "sql": [
+          [
+            "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+            [
+              "g",
+              "node",
+              "m"
+            ]
+          ]
+        ]
+      },
+      "agrees": true
+    },
+    {
+      "name": "V8-other-error",
+      "input": {
+        "exception_type": "RuntimeError",
+        "sqlcode": null,
+        "message": "registry provider unavailable"
+      },
+      "observation": {
+        "result": {
+          "kind": "error",
+          "type": "RuntimeError",
+          "message": "registry provider unavailable"
+        },
+        "registry_reads": 1,
+        "sql_score_attempts": 0,
+        "metadata_reads": 0,
+        "client_vector_reads": 0,
+        "cursor_opens": 1,
+        "sql": [
+          [
+            "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+            [
+              "g",
+              "node",
+              "m"
+            ]
+          ]
+        ]
+      },
+      "agrees": true
+    },
+    {
+      "name": "V8-nearby-text-not-classified",
+      "input": {
+        "exception_type": "RuntimeError",
+        "sqlcode": null,
+        "message": "unrelated raw -30 text"
+      },
+      "observation": {
+        "result": {
+          "kind": "error",
+          "type": "RuntimeError",
+          "message": "unrelated raw -30 text"
+        },
+        "registry_reads": 1,
+        "sql_score_attempts": 0,
+        "metadata_reads": 0,
+        "client_vector_reads": 0,
+        "cursor_opens": 1,
+        "sql": [
+          [
+            "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+            [
+              "g",
+              "node",
+              "m"
+            ]
+          ]
+        ]
+      },
+      "agrees": true
+    },
+    {
+      "name": "V11-unexpired-hit-hides-backend-error-until-expiry",
+      "input": {
+        "clock": [
+          0,
+          30,
+          30.001
+        ],
+        "backend_after_initial_read": "non-30 exception"
+      },
+      "observation": [
+        {
+          "time": 0.0,
+          "result": "{'kind': 'value', 'value': (True, EmbeddingRoute(graph_id='g', model_key='m', table_name='kg_emb_0000000000000001', dimension=4, dtype='DOUBLE', index_state='present', index_error=None, kind='node'))}",
+          "registry_reads": 1,
+          "cache": "{('Graph_KG.embedding_registry', 'g', 'm', 'node'): (EmbeddingRoute(graph_id='g', model_key='m', table_name='kg_emb_0000000000000001', dimension=4, dtype='DOUBLE', index_state='present', index_error=None, kind='node'), 0.0)}"
+        },
+        {
+          "time": 30.0,
+          "result": "{'kind': 'value', 'value': (True, EmbeddingRoute(graph_id='g', model_key='m', table_name='kg_emb_0000000000000001', dimension=4, dtype='DOUBLE', index_state='present', index_error=None, kind='node'))}",
+          "registry_reads": 1,
+          "cache": "{('Graph_KG.embedding_registry', 'g', 'm', 'node'): (EmbeddingRoute(graph_id='g', model_key='m', table_name='kg_emb_0000000000000001', dimension=4, dtype='DOUBLE', index_state='present', index_error=None, kind='node'), 0.0)}"
+        },
+        {
+          "time": 30.001,
+          "result": "{'kind': 'error', 'type': 'RuntimeError', 'message': 'current backend non-30 failure'}",
+          "registry_reads": 2,
+          "cache": "{}"
+        }
+      ],
+      "agrees": true
+    },
+    {
+      "name": "V8-V11-decoded-tableNone-is-cached-row-not-negative-cache",
+      "input": {
+        "raw_row": [
+          null,
+          4,
+          "DOUBLE",
+          null,
+          null
+        ],
+        "clock_after_read": 30,
+        "backend": "non-30 error"
+      },
+      "observation": {
+        "first": "{'kind': 'value', 'value': (True, EmbeddingRoute(graph_id='g', model_key='m', table_name=None, dimension=4, dtype='DOUBLE', index_state=None, index_error=None, kind='node'))}",
+        "search": {
+          "kind": "value",
+          "value": []
+        },
+        "cache": "{('Graph_KG.embedding_registry', 'g', 'm', 'node'): (EmbeddingRoute(graph_id='g', model_key='m', table_name=None, dimension=4, dtype='DOUBLE', index_state=None, index_error=None, kind='node'), 0)}",
+        "registry_reads": 1,
+        "sql_score_attempts": 0,
+        "metadata_reads": 0,
+        "client_vector_reads": 0,
+        "cursor_opens": 1,
+        "sql": [
+          [
+            "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+            [
+              "g",
+              "node",
+              "m"
+            ]
+          ]
+        ]
+      },
+      "agrees": true
+    },
+    {
+      "name": "V13-embedded-success",
+      "input": {
+        "provider_rows": [
+          [
+            null,
+            "0.5"
+          ],
+          [
+            "keep",
+            "0.75"
+          ]
+        ],
+        "query": "[1,2,3,4]"
+      },
+      "observation": {
+        "result": {
+          "kind": "value",
+          "value": [
+            [
+              "keep",
+              0.75
+            ]
+          ]
+        },
+        "embedded_attempts": [
+          {
+            "sql": "SELECT TOP 2 n.node_id, VECTOR_COSINE(n.emb, TO_VECTOR(?, FLOAT)) AS score FROM Graph_KG.kg_emb_0000000000000001 n WHERE (COALESCE(n.graph_id, '') = COALESCE(?, '')) ORDER BY score DESC",
+            "params": [
+              "[1,2,3,4]",
+              "g"
+            ],
+            "provider": "embedded-success"
+          }
+        ],
+        "registry_reads": 1,
+        "sql_score_attempts": 0,
+        "metadata_reads": 0,
+        "client_vector_reads": 0,
+        "cursor_opens": 1,
+        "sql": [
+          [
+            "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+            [
+              "g",
+              "node",
+              "m"
+            ]
+          ]
+        ]
+      },
+      "agrees": true
+    },
+    {
+      "name": "V13-embedded-unavailable-DBAPI-success",
+      "input": {
+        "provider_rows": [
+          [
+            null,
+            "0.5"
+          ],
+          [
+            "keep",
+            "0.75"
+          ]
+        ],
+        "query": "[1,2,3,4]"
+      },
+      "observation": {
+        "result": {
+          "kind": "value",
+          "value": [
+            [
+              null,
+              0.5
+            ],
+            [
+              "keep",
+              0.75
+            ]
+          ]
+        },
+        "embedded_attempts": [
+          {
+            "sql": "SELECT TOP 2 n.node_id, VECTOR_COSINE(n.emb, TO_VECTOR(?, FLOAT)) AS score FROM Graph_KG.kg_emb_0000000000000001 n WHERE (COALESCE(n.graph_id, '') = COALESCE(?, '')) ORDER BY score DESC",
+            "params": [
+              "[1,2,3,4]",
+              "g"
+            ],
+            "provider": "embedded-unavailable-DBAPI-success"
+          }
+        ],
+        "registry_reads": 1,
+        "sql_score_attempts": 1,
+        "metadata_reads": 0,
+        "client_vector_reads": 0,
+        "cursor_opens": 2,
+        "sql": [
+          [
+            "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+            [
+              "g",
+              "node",
+              "m"
+            ]
+          ],
+          [
+            "SELECT TOP 2 n.node_id, VECTOR_COSINE(n.emb, TO_VECTOR(?, FLOAT)) AS score FROM Graph_KG.kg_emb_0000000000000001 n WHERE (COALESCE(n.graph_id, '') = COALESCE(?, '')) ORDER BY score DESC",
+            [
+              "[1,2,3,4]",
+              "g"
+            ]
+          ]
+        ]
+      },
+      "agrees": true
+    },
+    {
+      "name": "V18-IVF-successful-Info-local-writes",
+      "input": {
+        "ivf_rows": [
+          [
+            "n",
+            "1,0,0,0"
+          ]
+        ],
+        "malformed_info": false
+      },
+      "observation": {
+        "result": {
+          "kind": "value",
+          "value": {
+            "nlist": 1,
+            "dim": 4,
+            "metric": "cosine",
+            "indexed": 1
+          }
+        },
+        "local_before": [
+          {
+            "hnsw": "hnsw"
+          },
+          {}
+        ],
+        "local_after": [
+          {
+            "hnsw": "hnsw",
+            "review_fresh_good": "ivf"
+          },
+          {
+            "review_fresh_good": "g"
+          }
+        ],
+        "class_method_port_events": [
+          {
+            "class": "Graph.KG.IVFIndex",
+            "method": "Build",
+            "args": [
+              "review_fresh_good",
+              "1",
+              "\"cosine\"",
+              "[[1.0, 0.0, 0.0, 0.0]]",
+              "[]",
+              "Graph_KG.kg_emb_0000000000000001"
+            ]
+          },
+          {
+            "class": "Graph.KG.IVFIndex",
+            "method": "AddBatch",
+            "args": [
+              "review_fresh_good",
+              "[{\"nodeId\": \"n\", \"cellIdx\": 0, \"vec\": [1.0, 0.0, 0.0, 0.0]}]"
+            ]
+          },
+          {
+            "class": "Graph.KG.IVFIndex",
+            "method": "FinalizeIndex",
+            "args": [
+              "review_fresh_good"
+            ]
+          },
+          {
+            "class": "Graph.KG.IVFIndex",
+            "method": "Info",
+            "args": [
+              "review_fresh_good"
+            ]
+          }
+        ],
+        "registry_reads": 1,
+        "sql_score_attempts": 0,
+        "metadata_reads": 0,
+        "client_vector_reads": 0,
+        "cursor_opens": 2,
+        "sql": [
+          [
+            "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+            [
+              "g",
+              "node",
+              "m"
+            ]
+          ],
+          [
+            "SELECT node_id, emb FROM Graph_KG.kg_emb_0000000000000001 WHERE (COALESCE(graph_id, '') = COALESCE(?, ''))",
+            [
+              "g"
+            ]
+          ]
+        ]
+      },
+      "agrees": true
+    },
+    {
+      "name": "V18-IVF-malformed-Info-after-effects",
+      "input": {
+        "ivf_rows": [
+          [
+            "n",
+            "1,0,0,0"
+          ]
+        ],
+        "malformed_info": true
+      },
+      "observation": {
+        "result": {
+          "kind": "error",
+          "type": "JSONDecodeError",
+          "message": "Expecting value: line 1 column 1 (char 0)"
+        },
+        "local_before": [
+          {
+            "hnsw": "hnsw"
+          },
+          {}
+        ],
+        "local_after": [
+          {
+            "hnsw": "hnsw"
+          },
+          {}
+        ],
+        "class_method_port_events": [
+          {
+            "class": "Graph.KG.IVFIndex",
+            "method": "Build",
+            "args": [
+              "review_fresh_bad",
+              "1",
+              "\"cosine\"",
+              "[[1.0, 0.0, 0.0, 0.0]]",
+              "[]",
+              "Graph_KG.kg_emb_0000000000000001"
+            ]
+          },
+          {
+            "class": "Graph.KG.IVFIndex",
+            "method": "AddBatch",
+            "args": [
+              "review_fresh_bad",
+              "[{\"nodeId\": \"n\", \"cellIdx\": 0, \"vec\": [1.0, 0.0, 0.0, 0.0]}]"
+            ]
+          },
+          {
+            "class": "Graph.KG.IVFIndex",
+            "method": "FinalizeIndex",
+            "args": [
+              "review_fresh_bad"
+            ]
+          },
+          {
+            "class": "Graph.KG.IVFIndex",
+            "method": "Info",
+            "args": [
+              "review_fresh_bad"
+            ]
+          }
+        ],
+        "registry_reads": 1,
+        "sql_score_attempts": 0,
+        "metadata_reads": 0,
+        "client_vector_reads": 0,
+        "cursor_opens": 2,
+        "sql": [
+          [
+            "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+            [
+              "g",
+              "node",
+              "m"
+            ]
+          ],
+          [
+            "SELECT node_id, emb FROM Graph_KG.kg_emb_0000000000000001 WHERE (COALESCE(graph_id, '') = COALESCE(?, ''))",
+            [
+              "g"
+            ]
+          ]
+        ]
+      },
+      "agrees": true
+    }
+  ],
+  "completed_cases": 21,
+  "failure": null,
+  "elapsed_s": 3.5743511249893345,
+  "socket_connect_calls": 0,
+  "native_calls": 0,
+  "candidate_files_inspected": [],
+  "source_inputs": {
+    "iris_vector_graph/_engine/vector.py": {
+      "sha256": "f7e0297f514c2c87c0c3b98df18b7264624e9c10fa81c0ec1d28508d95c0b0d5",
+      "current_equal": true
+    },
+    "iris_vector_graph/_engine/embeddings.py": {
+      "sha256": "38335c3ffcf9a4097516ba01f6768390470a06c1dd30006043262ce6df235739",
+      "current_equal": true
+    },
+    "iris_vector_graph/schema.py": {
+      "sha256": "711bc93c5fc6d485dace4ebdd1815b278bb52ed696e03cd483f978e65958a0b7",
+      "current_equal": true
+    },
+    "iris_vector_graph/_validate.py": {
+      "sha256": "0392e48267ed251d6bab1af4259df8aa55603bd4597148f850be420658300835",
+      "current_equal": true
+    },
+    "tests/unit/route_fakes_227.py": {
+      "sha256": "650ba53abb0c368dc9d4f4553ea835757f2a6adc43ee8a8bd8a5799b53c1bb9e",
+      "current_equal": true
+    }
+  },
+  "inputs": {
+    ".g5/uplift/consolidated/iteration-11/review-vector-fresh.py": "21960417943f60ac4f85d4046258dec82d1f854e9943f673ce2a75f659fc55fa",
+    ".g5/uplift/consolidated/iteration-10/next-vector-survey-probe.py": "4355b7b154b7529303971a7c5796c2b8b03da887bd0829f755395d84d8aff7a4",
+    ".g5/uplift/consolidated/iteration-11/review-vector-expectations.md": "8a45d690c8ccdc24ef91c7423286e82bf525260da6e45cb662240831011ea933"
+  },
+  "helper_substitutions": [
+    "inherited FakeRegistry/FakeCursor+capability constructor fixtures; request statistics reset after construction",
+    "time.monotonic controlled input for actual cache methods",
+    "embedded._sql_statement_execute named external SQL provider returning raw rows or raising, actual optimized reader unchanged",
+    "_iris_obj named local Build/AddBatch/Finalize/Info port, actual one-vector sklearn clustering; no native method executed"
+  ],
+  "scope": "Actual source admission, cache writers/readers, embedded-vs-DBAPI typed final readers and IVF post-Build Info conversion over named local fakes. Numeric element/native binder/cosine/clustering/native index/transactional rollback correctness not inferred. No formal or new issue/coverage claim."
+}

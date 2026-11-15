@@ -1,0 +1,12 @@
+verification results:: 76 verified, 1 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/review-vector-ttl-challenge-inputs/vector_admission.rs:362:111
+    |
+360 | pub proof fn theorem_all_search_phases_keep_original_scope(v:Seq<Env>,stage:Entry)
+    | ---------------------------------------------------------------------------------- at the end of the function body
+361 |     requires v.len()==3,
+362 |     ensures key(scenario(v,stage).request)==key(node_request(v[0].request)),scenario(v,stage).request.kind==0,scenario(v,stage).request.ttl==v[0].request.ttl,
+    |                                                                                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

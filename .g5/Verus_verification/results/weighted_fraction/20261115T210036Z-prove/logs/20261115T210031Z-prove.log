@@ -1,0 +1,27 @@
+verification results:: 143 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_fraction/weighted_fraction.rs:515:1
+    |
+515 | pub proof fn theorem_cost_relax_commutes(c:Config,s:kernel::State,b:bool,e:kernel::Entry,a:Arc)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: precondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_fraction/weighted_fraction.rs:526:9
+    |
+132 |     requires denominator(c)>0,
+    |              ---------------- failed precondition
+...
+526 |         theorem_decode_arithmetic(c,kernel::side(t,b).dist[v],kernel::side(t,!b).dist[v]);
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: precondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_fraction/weighted_fraction.rs:527:29
+    |
+132 |     requires denominator(c)>0,
+    |              ---------------- failed precondition
+...
+527 |         if s.best.is_some(){theorem_decode_arithmetic(c,s.best.unwrap(),n);}
+    |                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: aborting due to 2 previous errors
+

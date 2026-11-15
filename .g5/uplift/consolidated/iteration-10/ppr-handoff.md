@@ -1,3 +1,5 @@
+Count classification corrected in iteration11: [audit and original-byte preservation](../iteration-11/count-correction.md). Totals/model/receipts unchanged;17 internal arithmetic subqueries were previously grouped with recursion checks.
+
 # PPR walk handoff
 
 The bounded package is complete:103 verifier units,24 decisive named controls,
@@ -14,7 +16,7 @@ Files: [model and domain](../../../Verus_verification/models/ppr_walk/NOTES.md),
 [role proposals](ppr-roles.json), [final freshness](ppr-validation.json),
 [costs](ppr-costs.json). Product3eaa79cf; starting foundatione56c8592.
 No inherited unit is relabeled new:103 =68 proof declarations (30 named
-theorems+38 helpers)+35 recursive-spec termination checks, no model imports.
+theorems+38 helpers)+18 recursive-spec termination checks+17 nonlinear arithmetic subqueries, no model imports.
 Implementation-verified remains0.
 
 ## What is materially derived

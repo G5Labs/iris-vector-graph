@@ -1,0 +1,21 @@
+verification results:: 75 verified, 2 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration11-vector-20261115/verus/vector_admission/controls/raw-query-count-replaced-by-zero/20261115T214502Z/models/vector_admission/vector_admission.rs:495:13
+    |
+493 | pub proof fn theorem_raw_literal_three_route_four_refuses(route:Option<Route>,c:catalog::Catalog)
+    | ------------------------------------------------------------------------------------------------- at the end of the function body
+494 |     requires declared(route)==Some(4),
+495 |     ensures width_check(Query::Text(seq!['[','1',',','2',',','3',']']),route,c)==(Some(Error::Width{query:Some(3),stored:Some(4)}),0),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration11-vector-20261115/verus/vector_admission/controls/raw-query-count-replaced-by-zero/20261115T214502Z/models/vector_admission/vector_admission.rs:352:13
+    |
+348 | pub proof fn theorem_whole_raw_row_four_query_three_no_scoring(stage:Entry,e:Engine,a:Args,vs:Seq<Env>,row:Row)
+    | --------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+352 |     ensures run(stage,e,a,vs).outcome==Outcome::Error(Error::Width{query:Some(3),stored:Some(4)}),quiet(run(stage,e,a,vs).trace),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

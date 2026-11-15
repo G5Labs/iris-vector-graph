@@ -1,0 +1,32 @@
+error[E0308]: mismatched types
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/vector_admission.rs:31:89
+   |
+31 | pub open spec fn preference(row:Seq<Cell>)->nat {if row.len()>0{match row[0]{Cell::Name(0)=>0,Cell::Name(1)=>1,_=>2}}else{2}}
+   |                                                                       ------            ^ expected `nat`, found integer
+   |                                                                       |
+   |                                                                       this expression has type `Cell`
+
+error[E0308]: mismatched types
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/vector_admission.rs:31:106
+   |
+31 | pub open spec fn preference(row:Seq<Cell>)->nat {if row.len()>0{match row[0]{Cell::Name(0)=>0,Cell::Name(1)=>1,_=>2}}else{2}}
+   |                                                                       ------                             ^ expected `nat`, found integer
+   |                                                                       |
+   |                                                                       this expression has type `Cell`
+
+error[E0599]: `Map<(nat, int, Option<int>, nat), Cached>` is not an iterator
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/vector_admission/vector_admission.rs:80:26
+   |
+80 |     Engine{cache:e.cache.filter(|k:Key,v:Cached|!(g.is_none() || (k.1==g.unwrap() && (m.is_none() || k.2==m) && (kind.is_none() || k...
+   |                          ^^^^^^ `Map<(nat, int, Option<int>, nat), Cached>` is not an iterator
+   |
+   = note: the following trait bounds were not satisfied:
+           `vstd::map::Map<(vstd::prelude::nat, vstd::prelude::int, std::option::Option<vstd::prelude::int>, vstd::prelude::nat), Cached>: std::iter::Iterator`
+           which is required by `&mut vstd::map::Map<(vstd::prelude::nat, vstd::prelude::int, std::option::Option<vstd::prelude::int>, vstd::prelude::nat), Cached>: std::iter::Iterator`
+   = note: the full name for the type has been written to 'vector_admission.long-type-17174736471927693578.txt'
+   = note: consider using `--verbose` to print the full type name to the console
+
+error: aborting due to 3 previous errors
+
+Some errors have detailed explanations: E0308, E0599.
+For more information about an error, try `rustc --explain E0308`.

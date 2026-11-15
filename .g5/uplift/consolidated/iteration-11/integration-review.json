@@ -1,0 +1,1207 @@
+{
+  "verdict": "ACCEPT_INTEGRATION",
+  "utc": "2026-11-15T21:56:06.844844+00:00",
+  "scope": "Bounded independent central integration audit; semantic review of25 additions, structural check of307; inherited282 unchanged but not exhaustively semantically re-reviewed; no native/new tests/shared/model/Git edits/private evaluator access",
+  "files": {
+    ".g5/Verus_verification/crosswalk/decision-links.tsv": "876fd00bd35e5effdd9cfcdef07ad1f1e47b4b75c7bd7890124b124ccdffd3d5",
+    ".g5/Verus_verification/families.tsv": "a465e00b222ee092549b95de80003907757c8be5ddca727cd567f4a6fa06cbf5",
+    ".g5/ontology/features/search.g5.md": "6e656a028b5c2fc8d7fad83550d7b1726791cf1c81d668e9ec748be607ec6c7c",
+    ".g5/ontology/features/algorithms.g5.md": "58a9057cc821f08da7200eb785c86beb46be4587d149ac5d08f4a7a99705e031",
+    ".g5/uplift/consolidated/iteration-11/reach-delta.json": "bde2a7ab629433a1f8f9a88f4239630f50ffe22b5fba658f474861927eaac656",
+    ".g5/uplift/consolidated/iteration-11/count-correction.md": "41cb02e071d41464b0c9f01d989dfb64eefe42b31576d2d07704f7db2a279881",
+    ".g5/uplift/consolidated/iteration-11/count-summary-originals.json": "47f5ea890383f8b9bc4ba824b460ccfb15f34ce3b9f19673b0e83b3819466964"
+  },
+  "link_delta": {
+    "before": 282,
+    "after": 307,
+    "new": 25,
+    "lost": [],
+    "all307_locator_checks": true,
+    "explicit_inherited_no_formal_placeholders": [
+      {
+        "line": 21,
+        "relation": "models",
+        "grade": "Inspected (not modeled: a write of the token)"
+      },
+      {
+        "line": 37,
+        "relation": "observes",
+        "grade": "Observed (unit binding; not in the Verus model)"
+      },
+      {
+        "line": 38,
+        "relation": "observes",
+        "grade": "Inspected"
+      },
+      {
+        "line": 43,
+        "relation": "observes",
+        "grade": "Inspected"
+      },
+      {
+        "line": 44,
+        "relation": "observes",
+        "grade": "Observed (unit probe l2-inverse-order)"
+      },
+      {
+        "line": 45,
+        "relation": "observes",
+        "grade": "Observed (unit probe l2-inverse-order)"
+      },
+      {
+        "line": 46,
+        "relation": "observes",
+        "grade": "Inspected (lead L1)"
+      },
+      {
+        "line": 47,
+        "relation": "observes",
+        "grade": "Inspected"
+      },
+      {
+        "line": 72,
+        "relation": "observes",
+        "grade": "Inspected and upstream unit tests; engine integration not in model"
+      },
+      {
+        "line": 73,
+        "relation": "observes",
+        "grade": "Inspected and upstream unit tests; engine integration not in model"
+      }
+    ],
+    "active": 18,
+    "observation": 7,
+    "rows": [
+      {
+        "block": "algorithms.op.paths.weighted",
+        "role": "rational search transition",
+        "path": "iris_src/src/Graph/KG/TraversalPaths.cls",
+        "symbol": "DijkstraJson",
+        "pin lines": "256",
+        "family": "C-weighted_fraction",
+        "formal item": ".g5/Verus_verification/models/weighted_fraction/weighted_fraction.rs::theorem_raw_signed_rational_json",
+        "relation": "models",
+        "design": "as-built exact rational fragment",
+        "grade": "Observed (dyadic native + actual Python/source ports); exact-math fragment"
+      },
+      {
+        "block": "algorithms.op.paths.weighted",
+        "role": "rational stored-parent reader",
+        "path": "iris_src/src/Graph/KG/TraversalPaths.cls",
+        "symbol": "DijkstraBacktrack",
+        "pin lines": "450",
+        "family": "C-weighted_fraction",
+        "formal item": ".g5/Verus_verification/models/weighted_fraction/weighted_fraction.rs::theorem_backtrack_reaches_source",
+        "relation": "models",
+        "design": "as-built exact rational fragment",
+        "grade": "Observed (dyadic native + actual Python/source ports); exact-math fragment"
+      },
+      {
+        "block": "algorithms.op.paths.weighted",
+        "role": "rational bidirectional search and fallback",
+        "path": "iris_src/src/Graph/KG/TraversalPaths.cls",
+        "symbol": "DijkstraCost",
+        "pin lines": "378",
+        "family": "C-weighted_fraction",
+        "formal item": ".g5/Verus_verification/models/weighted_fraction/weighted_fraction.rs::theorem_raw_signed_rational_cost",
+        "relation": "models",
+        "design": "as-built exact rational fragment",
+        "grade": "Observed (dyadic native + actual Python/source ports); exact-math fragment"
+      },
+      {
+        "block": "algorithms.op.paths.weighted",
+        "role": "public typed caller context",
+        "path": "iris_vector_graph/engine.py",
+        "symbol": "IRISGraphEngine._proc_ivg_shortestpath_weighted",
+        "pin lines": "1201-1313",
+        "family": "C-weighted_fraction",
+        "formal item": ".g5/Verus_verification/models/weighted_fraction/weighted_fraction.rs::theorem_raw_signed_rational_cost",
+        "relation": "observes",
+        "design": "provider/caller context",
+        "grade": "Observed (qualified context)"
+      },
+      {
+        "block": "algorithms.op.paths.weighted",
+        "role": "structured JSON provider",
+        "path": "iris_src/src/Graph/KG/TraversalPaths.cls",
+        "symbol": "PathJson",
+        "pin lines": "486",
+        "family": "C-weighted_fraction",
+        "formal item": ".g5/Verus_verification/models/weighted_fraction/weighted_fraction.rs::theorem_json_reader_raw_fields",
+        "relation": "observes",
+        "design": "provider/caller context",
+        "grade": "Observed (qualified context)"
+      },
+      {
+        "block": "algorithms.op.paths.weighted",
+        "role": "native float provider",
+        "path": "iris_src/src/Graph/KG/TraversalPaths.cls",
+        "symbol": "JsonFloat",
+        "pin lines": "497",
+        "family": "C-weighted_fraction",
+        "formal item": ".g5/Verus_verification/models/weighted_fraction/weighted_fraction.rs::theorem_json_reader_raw_fields",
+        "relation": "observes",
+        "design": "provider/caller context",
+        "grade": "Observed (qualified context)"
+      },
+      {
+        "block": "algorithms.op.paths.weighted",
+        "role": "scalar projection producer",
+        "path": "iris_src/src/Graph/KG/Adjacency.cls",
+        "symbol": "SetLeafFromLowest",
+        "pin lines": "874",
+        "family": "C-weighted_fraction",
+        "formal item": ".g5/Verus_verification/models/weighted_fraction/weighted_fraction.rs::weight",
+        "relation": "observes",
+        "design": "provider/caller context",
+        "grade": "Observed (qualified context)"
+      },
+      {
+        "block": "search.routes.cache",
+        "role": "cache key producer",
+        "path": "iris_vector_graph/_engine/embeddings.py",
+        "symbol": "EmbeddingsMixin._route_cache_key",
+        "pin lines": "315-323",
+        "family": "C-vector_admission",
+        "formal item": ".g5/Verus_verification/models/vector_admission/vector_admission.rs::key",
+        "relation": "models",
+        "design": "as-built ordinary provider fragment",
+        "grade": "Observed (actual Python/SQLite + finite native); ordinary fragment"
+      },
+      {
+        "block": "search.routes.cache",
+        "role": "positive cache selector",
+        "path": "iris_vector_graph/_engine/embeddings.py",
+        "symbol": "EmbeddingsMixin._cached_route",
+        "pin lines": "325-336",
+        "family": "C-vector_admission",
+        "formal item": ".g5/Verus_verification/models/vector_admission/vector_admission.rs::cached",
+        "relation": "models",
+        "design": "as-built ordinary provider fragment",
+        "grade": "Observed (actual Python/SQLite + finite native); ordinary fragment"
+      },
+      {
+        "block": "search.routes.cache",
+        "role": "decoded row cache writer",
+        "path": "iris_vector_graph/_engine/embeddings.py",
+        "symbol": "EmbeddingsMixin._cache_route",
+        "pin lines": "338-343",
+        "family": "C-vector_admission",
+        "formal item": ".g5/Verus_verification/models/vector_admission/vector_admission.rs::resolve",
+        "relation": "models",
+        "design": "as-built ordinary provider fragment",
+        "grade": "Observed (actual Python/SQLite + finite native); ordinary fragment"
+      },
+      {
+        "block": "search.routes.cache",
+        "role": "local cache invalidator",
+        "path": "iris_vector_graph/_engine/embeddings.py",
+        "symbol": "EmbeddingsMixin.invalidate_route_cache",
+        "pin lines": "345-375",
+        "family": "C-vector_admission",
+        "formal item": ".g5/Verus_verification/models/vector_admission/vector_admission.rs::invalidate",
+        "relation": "models",
+        "design": "as-built ordinary provider fragment",
+        "grade": "Observed (actual Python/SQLite + finite native); ordinary fragment"
+      },
+      {
+        "block": "search.routes.no_fallback",
+        "role": "raw registry producer",
+        "path": "iris_vector_graph/_engine/embeddings.py",
+        "symbol": "EmbeddingsMixin._read_route",
+        "pin lines": "377-468",
+        "family": "C-vector_admission",
+        "formal item": ".g5/Verus_verification/models/vector_admission/vector_admission.rs::resolve",
+        "relation": "models",
+        "design": "as-built ordinary provider fragment",
+        "grade": "Observed (actual Python/SQLite + finite native); ordinary fragment"
+      },
+      {
+        "block": "search.routes.no_fallback",
+        "role": "route selector",
+        "path": "iris_vector_graph/_engine/embeddings.py",
+        "symbol": "EmbeddingsMixin._route_for_read",
+        "pin lines": "652-679",
+        "family": "C-vector_admission",
+        "formal item": ".g5/Verus_verification/models/vector_admission/vector_admission.rs::theorem_whole_missing_raw_pair_returns_quiet_empty",
+        "relation": "models",
+        "design": "as-built ordinary provider fragment",
+        "grade": "Observed (actual Python/SQLite + finite native); ordinary fragment"
+      },
+      {
+        "block": "search.embedding.width",
+        "role": "raw query width guard",
+        "path": "iris_vector_graph/_engine/vector.py",
+        "symbol": "VectorMixin._assert_query_width",
+        "pin lines": "455-502",
+        "family": "C-vector_admission",
+        "formal item": ".g5/Verus_verification/models/vector_admission/vector_admission.rs::width_check",
+        "relation": "models",
+        "design": "as-built ordinary provider fragment",
+        "grade": "Observed (actual Python/SQLite + finite native); ordinary fragment"
+      },
+      {
+        "block": "search.embedding.width",
+        "role": "catalog adapter",
+        "path": "iris_vector_graph/_engine/vector.py",
+        "symbol": "VectorMixin._catalog_width",
+        "pin lines": "411-423",
+        "family": "C-vector_admission",
+        "formal item": ".g5/Verus_verification/models/vector_admission/catalog.rs::read",
+        "relation": "models",
+        "design": "as-built ordinary provider fragment",
+        "grade": "Observed (actual Python/SQLite + finite native); ordinary fragment"
+      },
+      {
+        "block": "search.embedding.width",
+        "role": "raw metadata parser",
+        "path": "iris_vector_graph/schema.py",
+        "symbol": "GraphSchema.get_embedding_dimension",
+        "pin lines": "2063-2141",
+        "family": "C-vector_admission",
+        "formal item": ".g5/Verus_verification/models/vector_admission/catalog.rs::raw",
+        "relation": "models",
+        "design": "as-built ordinary provider fragment",
+        "grade": "Observed (actual Python/SQLite + finite native); ordinary fragment"
+      },
+      {
+        "block": "search.knn",
+        "role": "primary workflow and reader",
+        "path": "iris_vector_graph/_engine/vector.py",
+        "symbol": "VectorMixin.kg_KNN_VEC",
+        "pin lines": "504-615",
+        "family": "C-vector_admission",
+        "formal item": ".g5/Verus_verification/models/vector_admission/vector_admission.rs::theorem_primary_generic_failure_really_calls_optimized",
+        "relation": "models",
+        "design": "as-built ordinary provider fragment",
+        "grade": "Observed (actual Python/SQLite + finite native); ordinary fragment"
+      },
+      {
+        "block": "search.scope",
+        "role": "optimized workflow and reader",
+        "path": "iris_vector_graph/_engine/vector.py",
+        "symbol": "VectorMixin._kg_KNN_VEC_python_optimized",
+        "pin lines": "796-855",
+        "family": "C-vector_admission",
+        "formal item": ".g5/Verus_verification/models/vector_admission/vector_admission.rs::theorem_optimized_double_failure_really_calls_client",
+        "relation": "models",
+        "design": "as-built ordinary provider fragment",
+        "grade": "Observed (actual Python/SQLite + finite native); ordinary fragment"
+      },
+      {
+        "block": "search.scope",
+        "role": "client workflow and reader",
+        "path": "iris_vector_graph/_engine/vector.py",
+        "symbol": "VectorMixin._kg_KNN_VEC_client_side",
+        "pin lines": "856-916",
+        "family": "C-vector_admission",
+        "formal item": ".g5/Verus_verification/models/vector_admission/vector_admission.rs::theorem_client_shape_refusal_is_derived",
+        "relation": "models",
+        "design": "as-built ordinary provider fragment",
+        "grade": "Observed (actual Python/SQLite + finite native); ordinary fragment"
+      },
+      {
+        "block": "search.embedding.width",
+        "role": "width diagnostic reader",
+        "path": "iris_vector_graph/_engine/vector.py",
+        "symbol": "VectorMixin._raise_width_mismatch",
+        "pin lines": "425-453",
+        "family": "C-vector_admission",
+        "formal item": ".g5/Verus_verification/models/vector_admission/vector_admission.rs::diagnostic",
+        "relation": "models",
+        "design": "as-built ordinary provider fragment",
+        "grade": "Observed (actual Python/SQLite + finite native); ordinary fragment"
+      },
+      {
+        "block": "search.scope.indexes.ivf",
+        "role": "ordinary argument gate",
+        "path": "iris_vector_graph/_validate.py",
+        "symbol": "IVFBuildInput",
+        "pin lines": "124-141",
+        "family": "C-vector_admission",
+        "formal item": ".g5/Verus_verification/models/vector_admission/vector_admission.rs::valid",
+        "relation": "models",
+        "design": "as-built ordinary provider fragment",
+        "grade": "Observed (actual Python/SQLite + finite native); ordinary fragment"
+      },
+      {
+        "block": "search.scope.indexes.ivf",
+        "role": "IVF admission and effect reader",
+        "path": "iris_vector_graph/_engine/vector.py",
+        "symbol": "VectorMixin.ivf_build",
+        "pin lines": "1880-2027",
+        "family": "C-vector_admission",
+        "formal item": ".g5/Verus_verification/models/vector_admission/vector_admission.rs::theorem_no_route_refuses_before_vector_read",
+        "relation": "models",
+        "design": "as-built ordinary provider fragment",
+        "grade": "Observed (actual Python/SQLite + finite native); ordinary fragment"
+      },
+      {
+        "block": "search.routes.cache",
+        "role": "route publication context",
+        "path": "iris_vector_graph/_engine/embeddings.py",
+        "symbol": "EmbeddingsMixin._create_route",
+        "pin lines": "470-558",
+        "family": "C-vector_admission",
+        "formal item": ".g5/Verus_verification/models/vector_admission/vector_admission.rs::resolve",
+        "relation": "observes",
+        "design": "provider/other-consumer context",
+        "grade": "Observed (qualified context)"
+      },
+      {
+        "block": "search.embedding.width",
+        "role": "class lookup provider",
+        "path": "iris_vector_graph/schema.py",
+        "symbol": "GraphSchema.resolve_table_class",
+        "pin lines": "2030-2060",
+        "family": "C-vector_admission",
+        "formal item": ".g5/Verus_verification/models/vector_admission/catalog.rs::raw",
+        "relation": "observes",
+        "design": "provider/other-consumer context",
+        "grade": "Observed (qualified context)"
+      },
+      {
+        "block": "search.scope.indexes.ivf",
+        "role": "other IVF dispatch context",
+        "path": "iris_vector_graph/_engine/vector.py",
+        "symbol": "VectorMixin.search_nodes_by_vector",
+        "pin lines": "748-795",
+        "family": "C-vector_admission",
+        "formal item": ".g5/Verus_verification/models/vector_admission/vector_admission.rs::theorem_no_route_refuses_before_vector_read",
+        "relation": "observes",
+        "design": "provider/other-consumer context",
+        "grade": "Observed (qualified context)"
+      }
+    ]
+  },
+  "reach": {
+    "before": 197,
+    "after": 208,
+    "denominator": 4130,
+    "added": [
+      "iris_vector_graph/_engine/embeddings.py::EmbeddingsMixin._cache_route",
+      "iris_vector_graph/_engine/embeddings.py::EmbeddingsMixin._cached_route",
+      "iris_vector_graph/_engine/embeddings.py::EmbeddingsMixin._route_cache_key",
+      "iris_vector_graph/_engine/embeddings.py::EmbeddingsMixin.invalidate_route_cache",
+      "iris_vector_graph/_engine/vector.py::VectorMixin._catalog_width",
+      "iris_vector_graph/_engine/vector.py::VectorMixin._kg_KNN_VEC_client_side",
+      "iris_vector_graph/_engine/vector.py::VectorMixin._kg_KNN_VEC_python_optimized",
+      "iris_vector_graph/_engine/vector.py::VectorMixin._raise_width_mismatch",
+      "iris_vector_graph/_engine/vector.py::VectorMixin.ivf_build",
+      "iris_vector_graph/_validate.py::IVFBuildInput",
+      "iris_vector_graph/schema.py::GraphSchema.get_embedding_dimension"
+    ],
+    "strengthened": [
+      "iris_src/src/Graph/KG/TraversalPaths.cls::DijkstraJson",
+      "iris_src/src/Graph/KG/TraversalPaths.cls::DijkstraBacktrack",
+      "iris_src/src/Graph/KG/TraversalPaths.cls::DijkstraCost",
+      "iris_vector_graph/_engine/embeddings.py::EmbeddingsMixin._read_route",
+      "iris_vector_graph/_engine/embeddings.py::EmbeddingsMixin._route_for_read",
+      "iris_vector_graph/_engine/vector.py::VectorMixin._assert_query_width",
+      "iris_vector_graph/_engine/vector.py::VectorMixin.kg_KNN_VEC"
+    ],
+    "lost": [],
+    "direct_executable_body_verified": 0
+  },
+  "qualified_roles": {
+    "GraphSchema.get_embedding_dimension": "Active raw ASCII LEN/control/INFO parser-selector only; class/identifier lookup, coercion and physical catalog truth external.",
+    "VectorMixin._raise_width_mismatch": "Active array/list + scoped first CSV-row diagnostic only; arbitrary scalar/string len, __str__, exception spelling and cleanup external.",
+    "IVFBuildInput": "Active ordinary raw text/metric/positive-int gate only; no whole Pydantic/coercion/class-body theorem.",
+    "C-weighted_fraction": "Three existing active methods strengthened; exact rational raw transition/reader chain with Cost effective transposes, native arithmetic/JSON/collation/writer/Q007 limits.",
+    "C-vector_admission": "Fifteen active fragments +three observations; original registry/graph/model/node-kind/TTL fixed; grammar correspondence finite, physical metadata/native numbers/opaque Info not proved."
+  },
+  "packages_unchanged_since_accepted_scratch": {
+    "fraction": {
+      ".g5/Verus_verification/models/weighted_fraction/NOTES.md": {
+        "expected": "480ab266f13a2a1d9d9502faad68ecf83b355e77ef18ee146d4a49e421c8f8bf",
+        "current": "480ab266f13a2a1d9d9502faad68ecf83b355e77ef18ee146d4a49e421c8f8bf",
+        "scratch": "480ab266f13a2a1d9d9502faad68ecf83b355e77ef18ee146d4a49e421c8f8bf",
+        "unchanged": true
+      },
+      ".g5/Verus_verification/models/weighted_fraction/binding.py": {
+        "expected": "e265412a269568ad81e7738c6a6c7c6c2354343b0f871e2079a0bc5cecd839a5",
+        "current": "e265412a269568ad81e7738c6a6c7c6c2354343b0f871e2079a0bc5cecd839a5",
+        "scratch": "e265412a269568ad81e7738c6a6c7c6c2354343b0f871e2079a0bc5cecd839a5",
+        "unchanged": true
+      },
+      ".g5/Verus_verification/models/weighted_fraction/kernel_model.py": {
+        "expected": "c311c4bd891479fd0d81bb8e8193807feea73a09ef7fee889cb88ea81a44d1e7",
+        "current": "c311c4bd891479fd0d81bb8e8193807feea73a09ef7fee889cb88ea81a44d1e7",
+        "scratch": "c311c4bd891479fd0d81bb8e8193807feea73a09ef7fee889cb88ea81a44d1e7",
+        "unchanged": true
+      },
+      ".g5/Verus_verification/models/weighted_fraction/model.json": {
+        "expected": "22c689b76b80f23705c9beaee5d42c7ba7c297f5581927d1f6d963dbc7da7329",
+        "current": "22c689b76b80f23705c9beaee5d42c7ba7c297f5581927d1f6d963dbc7da7329",
+        "scratch": "22c689b76b80f23705c9beaee5d42c7ba7c297f5581927d1f6d963dbc7da7329",
+        "unchanged": true
+      },
+      ".g5/Verus_verification/models/weighted_fraction/source_ports.py": {
+        "expected": "bca3e022503cd7faaa2cd22f13ba8e48450da53f48c8e040da9df3f7f95ffb4e",
+        "current": "bca3e022503cd7faaa2cd22f13ba8e48450da53f48c8e040da9df3f7f95ffb4e",
+        "scratch": "bca3e022503cd7faaa2cd22f13ba8e48450da53f48c8e040da9df3f7f95ffb4e",
+        "unchanged": true
+      },
+      ".g5/Verus_verification/models/weighted_fraction/weighted_fraction.rs": {
+        "expected": "6e2216cd3140b056bd2537a7e076b0d3116103ebf02de24e18db7711da36e738",
+        "current": "6e2216cd3140b056bd2537a7e076b0d3116103ebf02de24e18db7711da36e738",
+        "scratch": "6e2216cd3140b056bd2537a7e076b0d3116103ebf02de24e18db7711da36e738",
+        "unchanged": true
+      }
+    },
+    "vector": {
+      ".g5/Verus_verification/models/vector_admission/catalog.rs": {
+        "expected": "17f002c56f196ca6a21a616d83e971a575f4f91042a9768a190c78b9c57b53cd",
+        "current": "17f002c56f196ca6a21a616d83e971a575f4f91042a9768a190c78b9c57b53cd",
+        "scratch": "17f002c56f196ca6a21a616d83e971a575f4f91042a9768a190c78b9c57b53cd",
+        "unchanged": true
+      },
+      ".g5/Verus_verification/models/vector_admission/json_width.rs": {
+        "expected": "74b80e052447a335fe4aeb81de069dad03a99cbf56f02a9736bb6261998170e2",
+        "current": "74b80e052447a335fe4aeb81de069dad03a99cbf56f02a9736bb6261998170e2",
+        "scratch": "74b80e052447a335fe4aeb81de069dad03a99cbf56f02a9736bb6261998170e2",
+        "unchanged": true
+      },
+      ".g5/Verus_verification/models/vector_admission/numbers.rs": {
+        "expected": "1d179939e358597a336d4ab7cbcd6a3facc34858ddc665a5132b07d26cab96f0",
+        "current": "1d179939e358597a336d4ab7cbcd6a3facc34858ddc665a5132b07d26cab96f0",
+        "scratch": "1d179939e358597a336d4ab7cbcd6a3facc34858ddc665a5132b07d26cab96f0",
+        "unchanged": true
+      },
+      ".g5/Verus_verification/models/vector_admission/parser.rs": {
+        "expected": "e1eb5e6d8846c94f950acaf0a8eeb2639fbd86d4d4ed8fbbcf21160e8d142642",
+        "current": "e1eb5e6d8846c94f950acaf0a8eeb2639fbd86d4d4ed8fbbcf21160e8d142642",
+        "scratch": "e1eb5e6d8846c94f950acaf0a8eeb2639fbd86d4d4ed8fbbcf21160e8d142642",
+        "unchanged": true
+      },
+      ".g5/Verus_verification/models/vector_admission/vector_admission.rs": {
+        "expected": "167d5d385daad2c4644b45324d725b9ec5a2113332a395c759cf91fc8366d130",
+        "current": "167d5d385daad2c4644b45324d725b9ec5a2113332a395c759cf91fc8366d130",
+        "scratch": "167d5d385daad2c4644b45324d725b9ec5a2113332a395c759cf91fc8366d130",
+        "unchanged": true
+      },
+      ".g5/Verus_verification/models/vector_admission/model.json": {
+        "expected": "d66a2896070991db3935a3927a246ce57a52bf495e0a1fa57cdcc4c57fd584d6",
+        "current": "d66a2896070991db3935a3927a246ce57a52bf495e0a1fa57cdcc4c57fd584d6",
+        "scratch": "d66a2896070991db3935a3927a246ce57a52bf495e0a1fa57cdcc4c57fd584d6",
+        "unchanged": true
+      },
+      ".g5/Verus_verification/models/vector_admission/binding.py": {
+        "expected": "c5126dedb2502f2e1e4573750d1312a57321f6f9411444f7fc0fb3d69d867b66",
+        "current": "c5126dedb2502f2e1e4573750d1312a57321f6f9411444f7fc0fb3d69d867b66",
+        "scratch": "c5126dedb2502f2e1e4573750d1312a57321f6f9411444f7fc0fb3d69d867b66",
+        "unchanged": true
+      },
+      ".g5/Verus_verification/models/vector_admission/port.py": {
+        "expected": "1f49a6f080248e4f4c2c21c14cf9d8c8f294f5b643c4394394215489efd9e488",
+        "current": "1f49a6f080248e4f4c2c21c14cf9d8c8f294f5b643c4394394215489efd9e488",
+        "scratch": "1f49a6f080248e4f4c2c21c14cf9d8c8f294f5b643c4394394215489efd9e488",
+        "unchanged": true
+      },
+      ".g5/Verus_verification/models/vector_admission/NOTES.md": {
+        "expected": "509650fdcf97617a515b77f2c0abdb08b27248a214b82500e1f6b0fc9259bce2",
+        "current": "509650fdcf97617a515b77f2c0abdb08b27248a214b82500e1f6b0fc9259bce2",
+        "scratch": "509650fdcf97617a515b77f2c0abdb08b27248a214b82500e1f6b0fc9259bce2",
+        "unchanged": true
+      }
+    }
+  },
+  "final_central_receipts": [
+    {
+      "family": "weighted_fraction",
+      "path": ".g5/Verus_verification/results/weighted_fraction/20261115T212111Z-prove/receipt.json",
+      "sha256": "194f0461f04f74d47a4be79641c21674eeeec89553c243afbaf08a387ba95744",
+      "kind": "proof",
+      "verdict": "PASS",
+      "all_inputs_current": true,
+      "raw_copies_match": true
+    },
+    {
+      "family": "weighted_fraction",
+      "path": ".g5/Verus_verification/results/weighted_fraction/20261115T211816Z-control-default-unit-not-scaled/receipt.json",
+      "sha256": "70d235522b0d5347d5835e7d6babef41ee56dc8aa3f0f6ffc6d1bc322153f319",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "all_inputs_current": true,
+      "raw_copies_match": true
+    },
+    {
+      "family": "weighted_fraction",
+      "path": ".g5/Verus_verification/results/weighted_fraction/20261115T211824Z-control-positive-numerator-not-scaled/receipt.json",
+      "sha256": "ecf1e8273dbe13706ac2fcc50cecb2f1ea49f87c20dae717e9ab0aa750e868c5",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "all_inputs_current": true,
+      "raw_copies_match": true
+    },
+    {
+      "family": "weighted_fraction",
+      "path": ".g5/Verus_verification/results/weighted_fraction/20261115T211833Z-control-zero-raw-not-defaulted/receipt.json",
+      "sha256": "286d07fee85073a5494dca0e3bd95b558bc4fd289f8197aa6200c31bf76aaf59",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "all_inputs_current": true,
+      "raw_copies_match": true
+    },
+    {
+      "family": "weighted_fraction",
+      "path": ".g5/Verus_verification/results/weighted_fraction/20261115T211842Z-control-cap-omits-common-factor/receipt.json",
+      "sha256": "43747103a87eb0b0360f98c539608f60cdd91d788f752d9147e762a66281e095",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "all_inputs_current": true,
+      "raw_copies_match": true
+    },
+    {
+      "family": "weighted_fraction",
+      "path": ".g5/Verus_verification/results/weighted_fraction/20261115T211850Z-control-json-removes-stale-entry/receipt.json",
+      "sha256": "82adfba797c1a7a5ba07be29f7e278748fee7e816d7484d10aa5d806cb490b47",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "all_inputs_current": true,
+      "raw_copies_match": true
+    },
+    {
+      "family": "weighted_fraction",
+      "path": ".g5/Verus_verification/results/weighted_fraction/20261115T211858Z-control-json-parent-weight-one/receipt.json",
+      "sha256": "d91d6249625cde9ff4ccb627f69c7d17e32680cc862446b3962359c8d0befa1d",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "all_inputs_current": true,
+      "raw_copies_match": true
+    },
+    {
+      "family": "weighted_fraction",
+      "path": ".g5/Verus_verification/results/weighted_fraction/20261115T211906Z-control-cost-retains-old-queue/receipt.json",
+      "sha256": "2f8b264cb3c4b8cedb74b1ec78dc54e60a702057f2fb2dfb8ae08d27c46dfe30",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "all_inputs_current": true,
+      "raw_copies_match": true
+    },
+    {
+      "family": "weighted_fraction",
+      "path": ".g5/Verus_verification/results/weighted_fraction/20261115T211915Z-control-cost-best-hop-loses-half/receipt.json",
+      "sha256": "2adf25b189ed687c43a17d35cf5f0c891a17cb915f5ae55c360a21b72ac07825",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "all_inputs_current": true,
+      "raw_copies_match": true
+    },
+    {
+      "family": "weighted_fraction",
+      "path": ".g5/Verus_verification/results/weighted_fraction/20261115T211923Z-control-cost-both-backward-order/receipt.json",
+      "sha256": "6e8f4cd2b6586a25c98c82182f2b045c3128101cc28d8b985b9d29af81369181",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "all_inputs_current": true,
+      "raw_copies_match": true
+    },
+    {
+      "family": "weighted_fraction",
+      "path": ".g5/Verus_verification/results/weighted_fraction/20261115T211931Z-control-cost-frontsum-one-early/receipt.json",
+      "sha256": "7881baf9f5825f80414b83840777387386099348032836e337e811b399951951",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "all_inputs_current": true,
+      "raw_copies_match": true
+    },
+    {
+      "family": "weighted_fraction",
+      "path": ".g5/Verus_verification/results/weighted_fraction/20261115T211938Z-control-cost-hop-fallback-removed/receipt.json",
+      "sha256": "a24f2bca51a135daa77de5c45624eee9a1d895e76024a1011ceb74ad36d17fad",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "all_inputs_current": true,
+      "raw_copies_match": true
+    },
+    {
+      "family": "weighted_fraction",
+      "path": ".g5/Verus_verification/results/weighted_fraction/20261115T211947Z-control-json-reader-total-zero/receipt.json",
+      "sha256": "8bcf2c1fb590171f856fa72cd95a55a6827289b97b84125e60d8a7e91424a49f",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "all_inputs_current": true,
+      "raw_copies_match": true
+    },
+    {
+      "family": "weighted_fraction",
+      "path": ".g5/Verus_verification/results/weighted_fraction/20261115T211955Z-control-self-zero-one/receipt.json",
+      "sha256": "c7552ebeb86b5fe56bb25fd8edb8ce5cd38e40ccbb78d428c717c1ccccab72b9",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "all_inputs_current": true,
+      "raw_copies_match": true
+    },
+    {
+      "family": "weighted_fraction",
+      "path": ".g5/Verus_verification/results/weighted_fraction/20261115T213016Z-binding/receipt.json",
+      "sha256": "c947e5ab765d643c445c0428be271f30f9ccb9276b8c79b69639bd7c2a226bbd",
+      "kind": "binding",
+      "verdict": "AGREES",
+      "all_inputs_current": true,
+      "raw_copies_match": true
+    },
+    {
+      "family": "vector_admission",
+      "path": ".g5/Verus_verification/results/vector_admission/20261115T214416Z-prove/receipt.json",
+      "sha256": "1942b1de2a324b7512a64e540fe8289b67a6b2b32559c52862c1fc22cd6148b8",
+      "kind": "proof",
+      "verdict": "PASS",
+      "all_inputs_current": true,
+      "raw_copies_match": true
+    },
+    {
+      "family": "vector_admission",
+      "path": ".g5/Verus_verification/results/vector_admission/20261115T214431Z-binding/receipt.json",
+      "sha256": "779d75b904f4c31b318f3830095e6ae42b71689de1eeda328912c85d7a3583ef",
+      "kind": "binding",
+      "verdict": "AGREES",
+      "all_inputs_current": true,
+      "raw_copies_match": true
+    },
+    {
+      "family": "vector_admission",
+      "path": ".g5/Verus_verification/results/vector_admission/20261115T214449Z-control-route-cache-graph-key-collapsed/receipt.json",
+      "sha256": "cb2c3a09d88aa3b52bac439714bdae96fdd01a1d203a5a12dfbcfc9648fa9396",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "all_inputs_current": true,
+      "raw_copies_match": true
+    },
+    {
+      "family": "vector_admission",
+      "path": ".g5/Verus_verification/results/vector_admission/20261115T214455Z-control-ttl-equality-expired/receipt.json",
+      "sha256": "5f488e08e6f8abc3f192f13a5ef9aada278fc1471da9e87bfd27aaf062f0f2f0",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "all_inputs_current": true,
+      "raw_copies_match": true
+    },
+    {
+      "family": "vector_admission",
+      "path": ".g5/Verus_verification/results/vector_admission/20261115T214502Z-control-cache-readable-absence/receipt.json",
+      "sha256": "ecdc9f5b2cb9f1efccc956b85e747b631d788a153d8510c7df287225a32bbea6",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "all_inputs_current": true,
+      "raw_copies_match": true
+    },
+    {
+      "family": "vector_admission",
+      "path": ".g5/Verus_verification/results/vector_admission/20261115T214509Z-control-raw-query-count-replaced-by-zero/receipt.json",
+      "sha256": "4a5fa724c38e7b035d57c1a56adee3d5efdf17aaf5d1e7066c3f6856c5a995e4",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "all_inputs_current": true,
+      "raw_copies_match": true
+    },
+    {
+      "family": "vector_admission",
+      "path": ".g5/Verus_verification/results/vector_admission/20261115T214520Z-control-catalog-overrides-present-route-width/receipt.json",
+      "sha256": "0665a8e28095b8beaaf66b4ec4c5938fb8b69fc2ef910c6a33ce63728e885062",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "all_inputs_current": true,
+      "raw_copies_match": true
+    },
+    {
+      "family": "vector_admission",
+      "path": ".g5/Verus_verification/results/vector_admission/20261115T214527Z-control-embedded-keeps-None-id/receipt.json",
+      "sha256": "40a4530d47ff0a5ef9476b386cd9e7aeb4d5096dfa3387fb4cd5f45b5b86958e",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "all_inputs_current": true,
+      "raw_copies_match": true
+    },
+    {
+      "family": "vector_admission",
+      "path": ".g5/Verus_verification/results/vector_admission/20261115T214537Z-control-primary-width-fault-falls-through/receipt.json",
+      "sha256": "0dc8c20c8c095bbeb1512ee99e3dbdde2773a2fb01f2e7a79dd573313f1cc32f",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "all_inputs_current": true,
+      "raw_copies_match": true
+    },
+    {
+      "family": "vector_admission",
+      "path": ".g5/Verus_verification/results/vector_admission/20261115T214544Z-control-malformed-Info-publishes/receipt.json",
+      "sha256": "6020f1d0de1476a71968e839579745b5ac567a5051f42bd891cd0c11daf04a38",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "all_inputs_current": true,
+      "raw_copies_match": true
+    }
+  ],
+  "ppr_count_correction": {
+    "source_unchanged_from_sealed10": true,
+    "preserved_originals": [
+      {
+        "original": ".g5/Verus_verification/models/ppr_walk/NOTES.md",
+        "preserved": ".g5/uplift/consolidated/iteration-11/count-summary-originals/.g5/Verus_verification/models/ppr_walk/NOTES.md",
+        "sha256": "35129098791e2aa6dc3d30f095b42cac06cb8f5f190c13a094aecc8a8f531878",
+        "hash_matches": true
+      },
+      {
+        "original": ".g5/Verus_verification/families.tsv",
+        "preserved": ".g5/uplift/consolidated/iteration-11/count-summary-originals/.g5/Verus_verification/families.tsv",
+        "sha256": "2173d2b6576ed84459a83031e7e962a88decec5c8c2b5e4c7140274cb4520ea4",
+        "hash_matches": true
+      },
+      {
+        "original": ".g5/Verus_verification/coverage.md",
+        "preserved": ".g5/uplift/consolidated/iteration-11/count-summary-originals/.g5/Verus_verification/coverage.md",
+        "sha256": "488253352de12ff9d02778a20fc5896fa5f9446c6b6ab531485ab13be1211f0b",
+        "hash_matches": true
+      },
+      {
+        "original": ".g5/uplift/consolidated/iteration-10/HANDOFF.md",
+        "preserved": ".g5/uplift/consolidated/iteration-11/count-summary-originals/.g5/uplift/consolidated/iteration-10/HANDOFF.md",
+        "sha256": "9c7afd70d6398a2bbf3ee4c38b924375938571749973aa566f97a36ce2b3d656",
+        "hash_matches": true
+      },
+      {
+        "original": ".g5/uplift/consolidated/iteration-10/PAIRS.md",
+        "preserved": ".g5/uplift/consolidated/iteration-11/count-summary-originals/.g5/uplift/consolidated/iteration-10/PAIRS.md",
+        "sha256": "a049f3a28e6af891d125cbcb616fa460159686999a6ab9bcdb1b812d9e494db3",
+        "hash_matches": true
+      },
+      {
+        "original": ".g5/uplift/consolidated/iteration-10/builder-scores.json",
+        "preserved": ".g5/uplift/consolidated/iteration-11/count-summary-originals/.g5/uplift/consolidated/iteration-10/builder-scores.json",
+        "sha256": "73faef8bc17dc0b6f1ff7ed20db60b3a9ed6403c22a332f397e6351d83acd3c5",
+        "hash_matches": true
+      },
+      {
+        "original": ".g5/uplift/consolidated/iteration-10/validation.json",
+        "preserved": ".g5/uplift/consolidated/iteration-11/count-summary-originals/.g5/uplift/consolidated/iteration-10/validation.json",
+        "sha256": "a3c73e3d3d5431798af82f4ace6e088e8f5bcb53820d9430b1c23d19286a7778",
+        "hash_matches": true
+      },
+      {
+        "original": ".g5/uplift/consolidated/iteration-10/aggregate.py",
+        "preserved": ".g5/uplift/consolidated/iteration-11/count-summary-originals/.g5/uplift/consolidated/iteration-10/aggregate.py",
+        "sha256": "942c835f7aad0b137abd9fe628027cc39ceb9e1d2df63497074abcc57ca07b16",
+        "hash_matches": true
+      },
+      {
+        "original": ".g5/uplift/consolidated/iteration-10/ppr-handoff.md",
+        "preserved": ".g5/uplift/consolidated/iteration-11/count-summary-originals/.g5/uplift/consolidated/iteration-10/ppr-handoff.md",
+        "sha256": "5de1ed7f0ea2c33faa38bc95b9bd1885067e46bda12e37f73363aa520b9949b4",
+        "hash_matches": true
+      },
+      {
+        "original": ".g5/uplift/consolidated/iteration-10/ppr-costs.json",
+        "preserved": ".g5/uplift/consolidated/iteration-11/count-summary-originals/.g5/uplift/consolidated/iteration-10/ppr-costs.json",
+        "sha256": "fe00b13b7d3107f9cdd99ded6680f0df4b793324f2489da8474c615e4a35dd47",
+        "hash_matches": true
+      },
+      {
+        "original": ".g5/uplift/consolidated/iteration-10/ppr-validation.json",
+        "preserved": ".g5/uplift/consolidated/iteration-11/count-summary-originals/.g5/uplift/consolidated/iteration-10/ppr-validation.json",
+        "sha256": "ec661942b1bcb0ce351393c1297cd54e0ba34b5bfe80f010bde9ddda01741d2f",
+        "hash_matches": true
+      },
+      {
+        "original": ".g5/uplift/consolidated/iteration-10/ppr-validation.py",
+        "preserved": ".g5/uplift/consolidated/iteration-11/count-summary-originals/.g5/uplift/consolidated/iteration-10/ppr-validation.py",
+        "sha256": "61e25fb84fee838c7af0d30635d0c541cd0d25474f3fffa8ec045fbfb3271225",
+        "hash_matches": true
+      },
+      {
+        "original": ".g5/uplift/consolidated/iteration-10/ppr-review-validation.json",
+        "preserved": ".g5/uplift/consolidated/iteration-11/count-summary-originals/.g5/uplift/consolidated/iteration-10/ppr-review-validation.json",
+        "sha256": "199e73674cb120ae7b73a11447ce4580695393b1de987330ab2899880af082ce",
+        "hash_matches": true
+      },
+      {
+        "original": ".g5/uplift/consolidated/iteration-10/ppr-review-final.md",
+        "preserved": ".g5/uplift/consolidated/iteration-11/count-summary-originals/.g5/uplift/consolidated/iteration-10/ppr-review-final.md",
+        "sha256": "3b1bb71b21947374205fee939866714189fbeb0bfb01fb693cb0fea38ec2f62d",
+        "hash_matches": true
+      }
+    ],
+    "raw_sealed_files_checked": [
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201809Z-prove/receipt.json",
+        "sha256": "d2c9363c4074174653d91bb783c9d8e1361a8b2ef971a9ace5e86d8f82a5ea5e",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201809Z-prove/logs/20261115T201805Z-prove.log",
+        "sha256": "452eaa411ef5406160bbcab83374389c45d4f3edbc61e0ea2b6282b7ba5f88d3",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T202015Z-binding/receipt.json",
+        "sha256": "110efdb80183cfd55ab7a46aaa4cccc962fe24dd5ad85786a9f013a7d652602c",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201816Z-control-scope-ignores-graph/receipt.json",
+        "sha256": "04fec8a8c808ca743db9be812b0bcaa1bf6566801f5bfd9eb47fb90d8b49f66c",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201816Z-control-scope-ignores-graph/logs/20261115T201809Z-control-scope-ignores-graph-theorem_scoped_members.log",
+        "sha256": "618f6ef82d8d1f8a5300665df0cb7a84789b495edafd32adc34115f008032c1a",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201816Z-control-scope-ignores-graph/logs/20261115T201809Z-control-scope-ignores-graph.log",
+        "sha256": "bdacae8adcfab617e480dcc28c6ba741a172c0425eafefe0898d15085d882650",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201823Z-control-absent-seed-admitted/receipt.json",
+        "sha256": "a6730d0dce1f311595a389a5fa35c26407381175d9c182344f2be9a813bbef07",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201823Z-control-absent-seed-admitted/logs/20261115T201816Z-control-absent-seed-admitted-theorem_valid_seed_set.log",
+        "sha256": "dfa894840a40f7d496441810ad711dd58576980cbfb9ddf0af555e46267708bb",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201823Z-control-absent-seed-admitted/logs/20261115T201816Z-control-absent-seed-admitted.log",
+        "sha256": "2eb0ca2ebaab81502d14ec99aceabdae2ae1748d00332fd549eb7ef3496602c7",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201829Z-control-repeated-seeds-count-twice/receipt.json",
+        "sha256": "6e47010f4b2c44d391959ada85f0d637fc0a686fcdf612ee056d978e17fe722e",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201829Z-control-repeated-seeds-count-twice/logs/20261115T201823Z-control-repeated-seeds-count-twice-theorem_valid_seed_set.log",
+        "sha256": "ab146b53debfd352e3f44fbd1c91bf3ea5180692afe10e35c38900fa4c6824d0",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201829Z-control-repeated-seeds-count-twice/logs/20261115T201823Z-control-repeated-seeds-count-twice.log",
+        "sha256": "8010c2dff3853595c521f73df26280d14547a4ddf3496a9b60931db4f5cba791",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201834Z-control-stored-multiplicity-ignored/receipt.json",
+        "sha256": "6535da75f6f61dc6fd7ca1f16f726aed85098f58bf7a565161148abbf1c85525",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201834Z-control-stored-multiplicity-ignored/logs/20261115T201829Z-control-stored-multiplicity-ignored-theorem_multiplicity_divisor_not_distinct_neighbors.log",
+        "sha256": "3ed60e121f0964f1135b68bac7b850f759889d0d43b8af4cc6ee365a6cf98c7c",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201834Z-control-stored-multiplicity-ignored/logs/20261115T201829Z-control-stored-multiplicity-ignored.log",
+        "sha256": "1e2292735aad2357a18654d82f398539e40f6cf4308185f42f1b220c4cd8da0b",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201841Z-control-excluded-edge-kept/receipt.json",
+        "sha256": "901c8acf3244e407b20a258a6f2f31d988e889e7d0300a8d2c62d97bcee905c9",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201841Z-control-excluded-edge-kept/logs/20261115T201834Z-control-excluded-edge-kept-theorem_multiplicity_divisor_not_distinct_neighbors.log",
+        "sha256": "e4d415f17ed0a177d48cc62b96f7a9f2d7d9957993c7a2051bd3c7d109c04ba9",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201841Z-control-excluded-edge-kept/logs/20261115T201834Z-control-excluded-edge-kept.log",
+        "sha256": "9ae2e17e70af61a5f8ce85a3ba7a2b2e7e8bc86adcea7b11986aa8463e5b786e",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201848Z-control-zero-weight-reverse-enabled/receipt.json",
+        "sha256": "67aa8de553267058611c473426352840cecefd53feb34303db2a4fdef430cd26",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201848Z-control-zero-weight-reverse-enabled/logs/20261115T201841Z-control-zero-weight-reverse-enabled-theorem_reverse_zero_uses_dangling_restart.log",
+        "sha256": "e1f9cea09656d842b04c3a427b53789ccc053816f0bf3e73894e27c6d8c2ebf4",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201848Z-control-zero-weight-reverse-enabled/logs/20261115T201841Z-control-zero-weight-reverse-enabled.log",
+        "sha256": "810ec88fb70aa83275ac86a6c1fec4f7666d53d07476a705651a35fba8ffe39d",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201855Z-control-divisor-added-one/receipt.json",
+        "sha256": "910dcc073567bf555fb5479cf17dd06cfe09df7404e0e2636658762dd4c121ad",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201855Z-control-divisor-added-one/logs/20261115T201848Z-control-divisor-added-one-lemma_scatter.log",
+        "sha256": "b503dd1a93be39644e950313e06aad8a2caa811da7140ce1290f292d1c99756c",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201855Z-control-divisor-added-one/logs/20261115T201848Z-control-divisor-added-one.log",
+        "sha256": "eb06a23d8e6a7b3a33ceb7f2822d49e42801b716812db189d9994a39632b6173",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201902Z-control-alpha-not-applied-to-hop/receipt.json",
+        "sha256": "3d3b1eb6cf1dbd85c10cf4718a0d3041260d18ead5143151c4e5657a4f00019a",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201902Z-control-alpha-not-applied-to-hop/logs/20261115T201855Z-control-alpha-not-applied-to-hop-lemma_scatter.log",
+        "sha256": "bb6b6b7466e39366702f53a4c8593e6ba01dbec3423474096dba53de82960392",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201902Z-control-alpha-not-applied-to-hop/logs/20261115T201855Z-control-alpha-not-applied-to-hop.log",
+        "sha256": "018c662f9cdee95102083f69de2403815fe74cc0dc2d3c8c42256f41a7e1cc5b",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201909Z-control-dangling-score-discarded/receipt.json",
+        "sha256": "09b5abb4cd0708ff81bd98f66277944a0655b1aec43448470d05875e64dec0dc",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201909Z-control-dangling-score-discarded/logs/20261115T201902Z-control-dangling-score-discarded-lemma_scatter.log",
+        "sha256": "0acd4aa3dffa53c68c5d6a1471d1b4385ee9567d01459dc54db9bc71063a3ed0",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201909Z-control-dangling-score-discarded/logs/20261115T201902Z-control-dangling-score-discarded.log",
+        "sha256": "4952ec2bd3b01a7f523ddb082870d7934d899d0fa1237ff59849432285ba9897",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201916Z-control-restart-drops-dangling/receipt.json",
+        "sha256": "e5498c355b25c25b1b751b1c458973ad85ae9e5ac77deb81ff9a5ea04fa706bf",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201916Z-control-restart-drops-dangling/logs/20261115T201909Z-control-restart-drops-dangling-theorem_step_mass_from_raw_outgoing.log",
+        "sha256": "1345451cabc1dc1d803071493bfc3a9bd0bf78d177cbfcd682d61b7b51e53dd6",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201916Z-control-restart-drops-dangling/logs/20261115T201909Z-control-restart-drops-dangling.log",
+        "sha256": "163ac7759722da9320e2d9104eb61cab4f87fa95caacb6d0a1b85da753d8792c",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201923Z-control-initial-share-not-normalized/receipt.json",
+        "sha256": "e30140c92aee50df398a7eee4f6bd087303eafff22089ad9ff6160ffaad43eef",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201923Z-control-initial-share-not-normalized/logs/20261115T201916Z-control-initial-share-not-normalized-theorem_initial_uniform_mass.log",
+        "sha256": "739bb20d398af8f0787b8fbaa11e7964f762a3ebbf28d76dd203529a46d1090a",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201923Z-control-initial-share-not-normalized/logs/20261115T201916Z-control-initial-share-not-normalized.log",
+        "sha256": "6dbf50d2f7424c9ce3239db7b2604747c4394f1b3432031bcc2f65322056213d",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201928Z-control-reverse-weight-ignored/receipt.json",
+        "sha256": "3383e1e6e1c9f4a2c7dc066f30ccfd802a1872062b9d19418ff086fe574db62c",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201928Z-control-reverse-weight-ignored/logs/20261115T201923Z-control-reverse-weight-ignored-theorem_reverse_weight_scales_contribution_only.log",
+        "sha256": "0a33e1ee15fe66d05d29aeaab3e3df9c7965464b7f4772fa020c275e22490811",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201928Z-control-reverse-weight-ignored/logs/20261115T201923Z-control-reverse-weight-ignored.log",
+        "sha256": "1f4f3fd15999c2d6f632672806ff0421cd412086246a968005c04bdf41ad54ee",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201935Z-control-stop-counts-zero-nodes/receipt.json",
+        "sha256": "49116b120a86f4b528c68195abc3525719bd01f28fa1a1cf78c33ae46a328427",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201935Z-control-stop-counts-zero-nodes/logs/20261115T201928Z-control-stop-counts-zero-nodes-theorem_held_zero_node_does_not_inflate_stop_threshold.log",
+        "sha256": "3f3d80e212193ef6446ddcd508af4f141d345d19789e78ed4a9c614f461c2d62",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201935Z-control-stop-counts-zero-nodes/logs/20261115T201928Z-control-stop-counts-zero-nodes.log",
+        "sha256": "abbeb579d0a140f2c997abf8887098585e2f4ffa0e01190cccf7cb9da6127a9b",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201942Z-control-stop-tolerance-ignored/receipt.json",
+        "sha256": "41790f89375b52e549bad8b54e8c2f77788cc25fbe98476da61aa58155d199c4",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201942Z-control-stop-tolerance-ignored/logs/20261115T201935Z-control-stop-tolerance-ignored-theorem_strict_held_change_decides.log",
+        "sha256": "488f41dee5ed4fa384d790e6ee2926e073df6a1958aa33771a549eac3d41b914",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201942Z-control-stop-tolerance-ignored/logs/20261115T201935Z-control-stop-tolerance-ignored.log",
+        "sha256": "0b7042aa6da3c67fed1e4af5397403d924fe4a2039dfcb5e87a74e08d061ab2f",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201948Z-control-stop-is-nonstrict/receipt.json",
+        "sha256": "25052d680843b63977284d0d2ca8cbcfcae4faf1c1245f4755c4cab5ecf27c4e",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201948Z-control-stop-is-nonstrict/logs/20261115T201942Z-control-stop-is-nonstrict-theorem_zero_tolerance_does_not_stop_on_zero_change.log",
+        "sha256": "9205c3bbea40ae9e9adabe945b8342ad460e116f8e774716d9188794916b48cb",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201948Z-control-stop-is-nonstrict/logs/20261115T201942Z-control-stop-is-nonstrict.log",
+        "sha256": "2dc5439a1fcbff0c74535afacab73f72469ee9a7bec66a346dd001ea676e163b",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201954Z-control-stopped-step-loses-new-scores/receipt.json",
+        "sha256": "3278ab56f911420ef3bad9058eae8ecf5c4967e0cf882049e8f92f2364222981",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201954Z-control-stopped-step-loses-new-scores/logs/20261115T201948Z-control-stopped-step-loses-new-scores-theorem_strict_held_change_decides.log",
+        "sha256": "ea7ee4e3b571ea0d038383f487164bb6624a09572c33e8563be20aa2bb97e57d",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T201954Z-control-stopped-step-loses-new-scores/logs/20261115T201948Z-control-stopped-step-loses-new-scores.log",
+        "sha256": "4dedbac3f8f3fb122cefc38fe2df21076622f8c1a06772a068ed99b2835a0dcc",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T202000Z-control-decimal-key-too-coarse/receipt.json",
+        "sha256": "66148aa3893acaba03c58e8e9227c31b1f9fd5ecdf19d23da97229d44e97b9e6",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T202000Z-control-decimal-key-too-coarse/logs/20261115T201954Z-control-decimal-key-too-coarse-theorem_above_zero_bucket_readers_agree.log",
+        "sha256": "aae5d9f42fc81726cacf43e13ebaccfe7ddfe4546b80813ec03c77d00554bb04",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T202000Z-control-decimal-key-too-coarse/logs/20261115T201954Z-control-decimal-key-too-coarse.log",
+        "sha256": "606059ffd88005c16fe52b17c401dbc215b61094209b1a59158c7257ca936fb3",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T202006Z-control-tie-id-order-reversed/receipt.json",
+        "sha256": "e3c413e64c7fe7799972375ff5cdd6058204013b3a634392d7db10baeb0ea28c",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T202006Z-control-tie-id-order-reversed/logs/20261115T202000Z-control-tie-id-order-reversed-lemma_tiny_readers.log",
+        "sha256": "364d88d32a995badd6599a49d0eadc23c342d57bca6adadb8f5cade4d8eec6ba",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T202006Z-control-tie-id-order-reversed/logs/20261115T202000Z-control-tie-id-order-reversed.log",
+        "sha256": "e94b45bdb10b89a5189f1b03e60464fda34621ae02d95ab1f28483d35f3eed98",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T202015Z-control-zero-rows-not-sparse/receipt.json",
+        "sha256": "1f10b6de5acef3f364b79cb7759e1b3de79707f8d12936d87f199e9cf05dadc6",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T202015Z-control-zero-rows-not-sparse/logs/20261115T202006Z-control-zero-rows-not-sparse-lemma_zero_rows_sparse.log",
+        "sha256": "74b0fb185e8a957e02f4012df38f32bd66d5504e93f37ecffc3f13569176345e",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T202015Z-control-zero-rows-not-sparse/logs/20261115T202006Z-control-zero-rows-not-sparse.log",
+        "sha256": "863656f022096e91baf744c6dda0f07d016c8679c6217efd94ae71fd284072d2",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T202025Z-control-producer-cap-ignored/receipt.json",
+        "sha256": "f445ec631082f6615fc36331f2928b359862689f8c3b4855759c69fc8e12f387",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T202025Z-control-producer-cap-ignored/logs/20261115T202015Z-control-producer-cap-ignored-lemma_capped_positive_row_becomes_zero.log",
+        "sha256": "9d23db574df226f9ed83c8daa0084b01cebb4a4749ef65a19b31bdea14ad9616",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T202025Z-control-producer-cap-ignored/logs/20261115T202015Z-control-producer-cap-ignored.log",
+        "sha256": "76c110978c678dfe16d1f6c0602e3cc3e33589c65e9d3f7e240c9ed1728c37fb",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T202031Z-control-zero-completion-removed/receipt.json",
+        "sha256": "382aedb3a43807d7ee5a1f083ebd17865c82267a145b14967980395407ab59da",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T202031Z-control-zero-completion-removed/logs/20261115T202025Z-control-zero-completion-removed-lemma_positive_readers.log",
+        "sha256": "2a4db3b5aa05bdadb1d35eaa5f36bf052b35e0f3123c9fe967b554feabe625c9",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T202031Z-control-zero-completion-removed/logs/20261115T202025Z-control-zero-completion-removed.log",
+        "sha256": "70ef1597a16e0fbe69d502f2adae23923765e121a1b244f1ead52e3c772a5ccd",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T202040Z-control-zeros-sorted-with-scored/receipt.json",
+        "sha256": "3e42befb30070559a70482872a042c1bf34b938365310ac8257205f8c2cc2415",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T202040Z-control-zeros-sorted-with-scored/logs/20261115T202031Z-control-zeros-sorted-with-scored-lemma_tiny_readers.log",
+        "sha256": "100176c5c840af9d03a11ad3f10fd40f50af2ddff8986edf06a450b6989d7e12",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T202040Z-control-zeros-sorted-with-scored/logs/20261115T202031Z-control-zeros-sorted-with-scored.log",
+        "sha256": "8544e13882a41c9de260d474f412ce038a93945a6b8849a100891f4277ae2c4c",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T202046Z-control-cap-precedes-explicit-top/receipt.json",
+        "sha256": "608ff393a03060d7aae2631a14d74d50ffd700b420fde1c96f78ea4841eb6b54",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T202046Z-control-cap-precedes-explicit-top/logs/20261115T202040Z-control-cap-precedes-explicit-top-theorem_producer_limit_is_derived.log",
+        "sha256": "1c31ff8f2469477b0ec01ba2643408a28043ece385397d67537a4bcbfc681376",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T202046Z-control-cap-precedes-explicit-top/logs/20261115T202040Z-control-cap-precedes-explicit-top.log",
+        "sha256": "fa96b333fef9dadfe8c46fe8d938bfdb57f814595811a082ff019af4fac2e8f2",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T202052Z-control-empty-exclusion-does-not-lift-cap/receipt.json",
+        "sha256": "5e466e3aacd42913c9ecdb93be9dd810e51ab261ddc9a941e37da568451e4cb4",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T202052Z-control-empty-exclusion-does-not-lift-cap/logs/20261115T202046Z-control-empty-exclusion-does-not-lift-cap-theorem_producer_limit_is_derived.log",
+        "sha256": "ef8fcca8a0b83f76f64ceb4e3355da541b51a540d685b6298af9c8fe96985917",
+        "equal_sealed10": true
+      },
+      {
+        "path": ".g5/Verus_verification/results/ppr_walk/20261115T202052Z-control-empty-exclusion-does-not-lift-cap/logs/20261115T202046Z-control-empty-exclusion-does-not-lift-cap.log",
+        "sha256": "cf3a758992e65bcd7d27ac06730c154fd3dff037a52bcb2851389cd19c08ebfb",
+        "equal_sealed10": true
+      }
+    ],
+    "receipts": 26,
+    "archives": "External sealed archives were not reopened or rewritten by this reviewer; immutable archive status is inherited from root hash audit and existing correction record, not independently rehashed here.",
+    "decomposition": "103=68 proof+18 recursive+17 NLA; iteration10new146=108 proof+21 recursive+17 NLA; totals/controlresults unchanged"
+  },
+  "concrete_misses": [],
+  "elapsed_s": 2.662043625023216
+}

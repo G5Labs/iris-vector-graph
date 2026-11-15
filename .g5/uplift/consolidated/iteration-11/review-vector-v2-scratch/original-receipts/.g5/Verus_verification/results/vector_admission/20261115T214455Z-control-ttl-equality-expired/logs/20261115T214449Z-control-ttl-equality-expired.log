@@ -1,0 +1,12 @@
+verification results:: 76 verified, 1 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration11-vector-20261115/verus/vector_admission/controls/ttl-equality-expired/20261115T214449Z/models/vector_admission/vector_admission.rs:103:13
+    |
+101 | pub proof fn theorem_cache_strict_expiry(r:Request,e:Engine)
+    | ------------------------------------------------------------ at the end of the function body
+102 |     requires e.cache.contains_key(key(r)),r.ttl>0,
+103 |     ensures r.now-e.cache[key(r)].at==r.ttl ==> cached(r,e),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

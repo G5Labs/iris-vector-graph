@@ -1,0 +1,29 @@
+verification results:: 74 verified, 3 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration11-vector-20261115/verus/vector_admission/controls/catalog-overrides-present-route-width/20261115T213159Z/models/vector_admission/vector_admission.rs:292:13
+    |
+287 | pub proof fn theorem_preflight_derived_mismatch(stage:Entry,e:Engine,a:Args,v:Env,table:Name,route:Option<Route>,d:Cell)
+    | ------------------------------------------------------------------------------------------------------------------------ at the end of the function body
+...
+292 |     ensures prepare(stage,e,a,v).gate==Gate::Stop(Error::Width{query:qwidth(a.query),stored:declared(route)}),quiet(prepare(stage,e...
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration11-vector-20261115/verus/vector_admission/controls/catalog-overrides-present-route-width/20261115T213159Z/models/vector_admission/vector_admission.rs:299:13
+    |
+298 | pub proof fn theorem_catalog_only_when_literal_and_no_route_width(q:Query,r:Option<Route>,c:catalog::Catalog)
+    | ------------------------------------------------------------------------------------------------------------- at the end of the function body
+299 |     ensures !qliteral(q) || (declared(r).is_some() && declared(r).unwrap()!=0) ==> width_check(q,r,c).1==0,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration11-vector-20261115/verus/vector_admission/controls/catalog-overrides-present-route-width/20261115T213159Z/models/vector_admission/vector_admission.rs:348:13
+    |
+346 | pub proof fn theorem_raw_literal_three_route_four_refuses(route:Option<Route>,c:catalog::Catalog)
+    | ------------------------------------------------------------------------------------------------- at the end of the function body
+347 |     requires declared(route)==Some(4),
+348 |     ensures width_check(Query::Text(seq!['[','1',',','2',',','3',']']),route,c)==(Some(Error::Width{query:Some(3),stored:Some(4)}),0),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

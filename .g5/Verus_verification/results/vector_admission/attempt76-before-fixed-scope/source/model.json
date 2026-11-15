@@ -1,0 +1,86 @@
+{
+  "name": "vector_admission",
+  "root": "vector_admission.rs",
+  "additional_inputs": [
+    "parser.rs",
+    "json_width.rs",
+    "catalog.rs",
+    "numbers.rs"
+  ],
+  "expected_verified": 76,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "controls": [
+    {
+      "name": "route-cache-graph-key-collapsed",
+      "why": "Cache graph identity is part of the raw key.",
+      "find": "(r.registry,graph(r),r.model,r.kind)",
+      "replace": "(r.registry,0,r.model,r.kind)",
+      "expect_fail_in": [
+        "theorem_each_raw_key_field_prevents_alias"
+      ]
+    },
+    {
+      "name": "ttl-equality-expired",
+      "why": "Source expires only when elapsed is strictly greater than TTL.",
+      "find": "r.now-e.cache[key(r)].at<=r.ttl",
+      "replace": "r.now-e.cache[key(r)].at<r.ttl",
+      "expect_fail_in": [
+        "theorem_cache_strict_expiry"
+      ]
+    },
+    {
+      "name": "cache-readable-absence",
+      "why": "A readable miss is not cached; a subsequent raw publication must remain visible.",
+      "find": "if rows.len()==0 {Resolved{engine:next,selection:fallback(r,true)}}",
+      "replace": "if rows.len()==0 {Resolved{engine:Engine{cache:next.cache.insert(key(r),Cached{route:Route{table:None,width:None,dtype:double()},at:r.write_at}),..next},selection:fallback(r,true)}}",
+      "expect_fail_in": [
+        "theorem_absent_named_does_not_cache"
+      ]
+    },
+    {
+      "name": "raw-query-count-replaced-by-zero",
+      "why": "The guard must consume the derived outer-array width.",
+      "find": "pub open spec fn measured(q:Text)->Option<nat> {json_width::width(q)}",
+      "replace": "pub open spec fn measured(q:Text)->Option<nat> {Some(0)}",
+      "expect_fail_in": [
+        "theorem_raw_literal_three_route_four_refuses"
+      ]
+    },
+    {
+      "name": "catalog-overrides-present-route-width",
+      "why": "A nonzero decoded route width wins before metadata lookup.",
+      "find": "let z=if d.is_some() && d.unwrap()!=0{(d,0nat)}else{catalog::read(cat)};",
+      "replace": "let z=if false{(d,0nat)}else{catalog::read(cat)};",
+      "expect_fail_in": [
+        "theorem_catalog_only_when_literal_and_no_route_width"
+      ]
+    },
+    {
+      "name": "embedded-keeps-None-id",
+      "why": "Actual embedded reader filters None ID before float conversion, unlike DBAPI.",
+      "find": "else if embedded && r[0] is Null{read_scores(rows.drop_first(),embedded,exact)}",
+      "replace": "else if false{read_scores(rows.drop_first(),embedded,exact)}",
+      "expect_fail_in": [
+        "theorem_reader_none_difference"
+      ]
+    },
+    {
+      "name": "primary-width-fault-falls-through",
+      "why": "Primary message -257 is diagnosed and raised before optimized/client fallback.",
+      "find": "if fail.is_some() && width_fault(fail.unwrap()){let z=diagnostic",
+      "replace": "if false{let z=diagnostic",
+      "expect_fail_in": [
+        "theorem_primary_width_fault_does_not_fallback"
+      ]
+    },
+    {
+      "name": "malformed-Info-publishes",
+      "why": "Info decoding happens after native effects and before local publication.",
+      "find": "if json_width::parsed(text).is_none(){Result{error:Some(Error::Info),..base}}",
+      "replace": "if false{Result{error:Some(Error::Info),..base}}",
+      "expect_fail_in": [
+        "theorem_malformed_info_after_build_keeps_local_maps"
+      ]
+    }
+  ]
+}
