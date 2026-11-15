@@ -1,0 +1,69 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_unstamped_stale_at_zero",
+      "theorem_is_current_iff_stamped_equal",
+      "theorem_python_agrees_with_objectscript"
+    ],
+    "find": "pub open spec fn built_from(s: Val) -> Option<int> {\n    read_int(s)\n}",
+    "name": "unset-stamp-reads-zero",
+    "replace": "pub open spec fn built_from(s: Val) -> Option<int> {\n    match read_int(s) { None => Some(0), x => x }\n}",
+    "why": "built_from reads a never-stamped store as stamp 0 (the 'not known is zero' mistake): an unstamped store looks current at token 0"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_unstamped_stale_at_zero",
+      "theorem_is_current_iff_stamped_equal",
+      "theorem_python_agrees_with_objectscript"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/freshness_stamp/freshness_stamp.rs": "2f5c51382a0f39e5c0d9c8d89023a0cfcc94458af4932d67128ab8fa93f67f17",
+    ".g5/Verus_verification/models/freshness_stamp/model.json": "5f7a18762a487193a77062a4d379551f0eafe952d035094b7df1defbf9648295"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/freshness_stamp/controls/unset-stamp-reads-zero/freshness_stamp.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_is_current_iff_stamped_equal": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/freshness_stamp/20261115T042457Z-control-unset-stamp-reads-zero-theorem_is_current_iff_stamped_equal.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_python_agrees_with_objectscript": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/freshness_stamp/20261115T042457Z-control-unset-stamp-reads-zero-theorem_python_agrees_with_objectscript.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_unstamped_stale_at_zero": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/freshness_stamp/20261115T042457Z-control-unset-stamp-reads-zero-theorem_unstamped_stale_at_zero.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/freshness_stamp/20261115T042457Z-control-unset-stamp-reads-zero.log",
+    "timed_out": false,
+    "verified": 4
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/freshness_stamp/20261115T042458Z-control-unset-stamp-reads-zero/logs/20261115T042457Z-control-unset-stamp-reads-zero-theorem_is_current_iff_stamped_equal.log": "4d1f85c52c1bef5d4ce049f39e682afdae54d3ac3a7b9c4cc95440169fcd6f1a",
+    ".g5/Verus_verification/results/freshness_stamp/20261115T042458Z-control-unset-stamp-reads-zero/logs/20261115T042457Z-control-unset-stamp-reads-zero-theorem_python_agrees_with_objectscript.log": "bace4a06e59a3d5dad23b8f21af818e4446962fd3427e4ca99854ea19ae33d9b",
+    ".g5/Verus_verification/results/freshness_stamp/20261115T042458Z-control-unset-stamp-reads-zero/logs/20261115T042457Z-control-unset-stamp-reads-zero-theorem_unstamped_stale_at_zero.log": "22fa91686e93f28fe54ef646bf5a168d6861bf697454bfc4198767026808d53e",
+    ".g5/Verus_verification/results/freshness_stamp/20261115T042458Z-control-unset-stamp-reads-zero/logs/20261115T042457Z-control-unset-stamp-reads-zero.log": "a4bc90f0bfc47c530c4e43852ae784c8b0a38ea5b1788c05f7fc0a125de5ee2a"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

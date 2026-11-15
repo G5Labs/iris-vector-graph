@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "witness_ddtab_mid_batch_reruns_rows"
+    ],
+    "find": "pub open spec fn fallback_start(failed_at: nat) -> nat {\n    0\n}",
+    "name": "repair-fallback-resumes",
+    "replace": "pub open spec fn fallback_start(failed_at: nat) -> nat {\n    failed_at\n}",
+    "why": "repaired variant: the fallback resumes at the row that failed instead of the first; the as-built rerun witness must then fail"
+  },
+  "expected": {
+    "fail_in": [
+      "witness_ddtab_mid_batch_reruns_rows"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/embedded_no_data/embedded_no_data.rs": "08f11dc34ba743729953d87e2bcf39265fcac2bf6d3c76adbe059a1acd433f10",
+    ".g5/Verus_verification/models/embedded_no_data/model.json": "22ac2340bb1c2287f2f4f407bd944b4c17cdd35dc2c113f46731a4ac86cacd71"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/embedded_no_data/controls/repair-fallback-resumes/embedded_no_data.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "witness_ddtab_mid_batch_reruns_rows": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/embedded_no_data/20261115T042916Z-control-repair-fallback-resumes-witness_ddtab_mid_batch_reruns_rows.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/embedded_no_data/20261115T042916Z-control-repair-fallback-resumes.log",
+    "timed_out": false,
+    "verified": 12
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/embedded_no_data/20261115T042917Z-control-repair-fallback-resumes/logs/20261115T042916Z-control-repair-fallback-resumes-witness_ddtab_mid_batch_reruns_rows.log": "bf594282bd3082ef6189160a2e3e7c799e03ed7661566b4e3c0f535369cd5132",
+    ".g5/Verus_verification/results/embedded_no_data/20261115T042917Z-control-repair-fallback-resumes/logs/20261115T042916Z-control-repair-fallback-resumes.log": "fe51d708b8c6d98f253705f6576d99f1eafa111d93fbb86dec7500d38a3a42a6"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

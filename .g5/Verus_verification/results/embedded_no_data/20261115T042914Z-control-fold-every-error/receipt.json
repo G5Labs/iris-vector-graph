@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_other_error_raises"
+    ],
+    "find": "Chain::Fail(e) => if is_no_data(e) { Res::Done { rs: false, rowcount: no_data_rowcount() } } else { Res::Raised },",
+    "name": "fold-every-error",
+    "replace": "Chain::Fail(e) => Res::Done { rs: false, rowcount: no_data_rowcount() },",
+    "why": "execute folds every error into an empty result (no _is_no_data check at :361)"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_other_error_raises"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/embedded_no_data/embedded_no_data.rs": "08f11dc34ba743729953d87e2bcf39265fcac2bf6d3c76adbe059a1acd433f10",
+    ".g5/Verus_verification/models/embedded_no_data/model.json": "22ac2340bb1c2287f2f4f407bd944b4c17cdd35dc2c113f46731a4ac86cacd71"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/embedded_no_data/controls/fold-every-error/embedded_no_data.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_other_error_raises": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/embedded_no_data/20261115T042913Z-control-fold-every-error-theorem_other_error_raises.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/embedded_no_data/20261115T042913Z-control-fold-every-error.log",
+    "timed_out": false,
+    "verified": 12
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/embedded_no_data/20261115T042914Z-control-fold-every-error/logs/20261115T042913Z-control-fold-every-error-theorem_other_error_raises.log": "d99860eef5c45d9833269af837dac17e2febbcdf590e4fd876ab7cebaf9a2d49",
+    ".g5/Verus_verification/results/embedded_no_data/20261115T042914Z-control-fold-every-error/logs/20261115T042913Z-control-fold-every-error.log": "538a524bb1f5d44f20c8dc02a9bdb7b12800ecb84ecb2e5d6428836a5eb2d65e"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

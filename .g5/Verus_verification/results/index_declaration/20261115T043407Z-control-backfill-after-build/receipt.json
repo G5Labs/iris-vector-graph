@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_backfill_before_edge_index",
+      "theorem_prereqs_declare_both"
+    ],
+    "find": "            drop + fill + seq![Act::Create(i)]",
+    "name": "backfill-after-build",
+    "replace": "            drop + seq![Act::Create(i)] + fill",
+    "why": "build the edge index, then backfill the temporal rows (:879-884 after :896): the build derives ^KG from rows that are not there yet"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_backfill_before_edge_index",
+      "theorem_prereqs_declare_both"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/index_declaration/index_declaration.rs": "eab9e766a697691f94a531723dcf2f40ab1a074d076a40ad2f14ecc3c6488d7c",
+    ".g5/Verus_verification/models/index_declaration/model.json": "5773aed8f9d053775c2256c9df9f59487ad5bb5875deda9251dcd2fa7996de04"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/index_declaration/controls/backfill-after-build/index_declaration.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_backfill_before_edge_index": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/index_declaration/20261115T043406Z-control-backfill-after-build-theorem_backfill_before_edge_index.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_prereqs_declare_both": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/index_declaration/20261115T043406Z-control-backfill-after-build-theorem_prereqs_declare_both.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/index_declaration/20261115T043406Z-control-backfill-after-build.log",
+    "timed_out": false,
+    "verified": 4
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/index_declaration/20261115T043407Z-control-backfill-after-build/logs/20261115T043406Z-control-backfill-after-build-theorem_backfill_before_edge_index.log": "d2edeb7d677c09283ce5de4466347215a40b5144b9ea443be509b487de46b4ee",
+    ".g5/Verus_verification/results/index_declaration/20261115T043407Z-control-backfill-after-build/logs/20261115T043406Z-control-backfill-after-build-theorem_prereqs_declare_both.log": "647f736606f6be0d1d1e11ebc71c67aaf5f445581e0afb765742a5a1db3b6d48",
+    ".g5/Verus_verification/results/index_declaration/20261115T043407Z-control-backfill-after-build/logs/20261115T043406Z-control-backfill-after-build.log": "f69494f9ca3ce0c3367b524d41a597e82ad5ffca2acf843cc7a13e63ca4d6e96"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

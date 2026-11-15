@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/embedded_no_data/controls/no-data-rowcount-unknown/embedded_no_data.rs:126:1
+    |
+126 | pub proof fn theorem_no_data_on_every_path(verb: Verb, e: Err, d: Err)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/embedded_no_data/controls/no-data-rowcount-unknown/embedded_no_data.rs:129:9
+    |
+126 | pub proof fn theorem_no_data_on_every_path(verb: Verb, e: Err, d: Err)
+    | ---------------------------------------------------------------------- at the end of the function body
+...
+129 |         execute(verb, false, R::Raise(e), R::Rs, R::Rs) == (Res::Done { rs: false, rowcount: 0 }),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/embedded_no_data/controls/no-data-rowcount-unknown/embedded_no_data.rs:131:9
+    |
+126 | pub proof fn theorem_no_data_on_every_path(verb: Verb, e: Err, d: Err)
+    | ---------------------------------------------------------------------- at the end of the function body
+...
+131 |         execute(verb, false, R::Raise(d), R::Raise(e), R::Rs) == (Res::Done { rs: false, rowcount: 0 }),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

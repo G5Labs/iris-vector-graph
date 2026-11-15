@@ -4481,6 +4481,48 @@ Consequence: the suite cannot be green at the released commit; the checklist's c
 
 Repair proposal (not implemented): add `loners=None` to the mock and assert it is passed.
 
+<a id="bug-adp-001"></a>
+### A batch fallback in the embedded cursor reruns the rows that already ran
+
+Severity: Low · Decision: Open
+
+Run: Consolidated uplift 2026-11-14
+
+**Suspected:** the control flow is observed on the real cursor with a scripted `iris.sql`; whether IRIS raises an unsupported-path error at a row after a successful prepare is not shown. Severity is lowered one level from Medium.
+
+Found by: [witness_ddtab_mid_batch_reruns_rows](results/embedded_no_data/20261115T042913Z-prove/receipt.json) in [embedded_no_data.rs](models/embedded_no_data/embedded_no_data.rs), with control `repair-fallback-resumes` (EXPECTED_FAIL); reading `embedded.py:387-413` while lifting public case M17.
+
+Reproduced by: none natively; unit level on the pin's real `EmbeddedCursor.executemany` ([binding receipt](results/embedded_no_data/20261115T042852Z-binding/receipt.json), `observed_rerun`: rows `[0, 0, 1]` completed, row count 2).
+
+Expected: a batch runs each row once (`executemany` reports "the rows run"; `OPS-B4.6.90`).
+
+Observed: the first pass runs rows in order; an unsupported-path error at row k sends the whole batch to the fallback, which starts again at row 0 (`embedded.py:399-410`), so rows 0..k-1 run twice and the row count reports only the second pass.
+
+Consequence: an INSERT batch can write rows twice or fail on a key it wrote itself; an UPDATE batch reapplies changes.
+
+Repair proposal (not implemented): resume the fallback at the row that failed (the model's `fallback_start(failed_at)`), or run the whole batch through one path chosen at prepare time. Governing statement: [adapters.embedded.no_data](../ontology/concepts/adapters.g5.md#adapters.embedded.no_data).
+
+<a id="bug-cyp-101"></a>
+### Relationship property text with a trailing line break or non-ASCII digits is read back as a number
+
+Severity: Low · Decision: Open
+
+Run: Consolidated uplift 2026-11-14
+
+**Suspected** end to end: the decoder's behavior is observed on the real function; that IRIS returns such text unchanged through `JSON_VALUE` is not observed. Severity is one level below its consequence (a stored string silently changes type and value).
+
+Found by: [witness_as_built_trailing_newline_promoted, witness_as_built_unicode_digit_promoted](results/rel_prop_text/20261115T043200Z-prove/receipt.json) in [rel_prop_text.rs](models/rel_prop_text/rel_prop_text.rs); reading `prop_values.py:90-91` while lifting public case M18.
+
+Reproduced by: none natively; unit level on the pin's real `parse_rel_prop_text` ([binding receipt](results/rel_prop_text/20261115T043204Z-binding/receipt.json): 38 departures from the canonical rule, every one with a line break or U+0662).
+
+Expected: canonical integer or decimal text becomes a number; numeric-looking text that is not canonical stays text (the decoder's docstring, `prop_values.py:154-158`; public case M18).
+
+Observed: `parse_rel_prop_text("12\n")` is `12` and `parse_rel_prop_text("1\u0662")` is `12`: Python's `\d` matches any Unicode decimal digit and `$` matches before a final line break (`prop_values.py:90-91`, `:164-167`).
+
+Consequence: a relationship property stored as such a string comes back from `RETURN r.p` as an integer or float, with the line break dropped.
+
+Repair proposal (not implemented): compile both patterns with `re.ASCII` and end them with `\Z`; the controls `as-built-ascii-digits` and `as-built-without-final-newline-match` show each change removes one half. Governing statement: [query.values.relationship_text](../ontology/features/cypher.g5.md#query.values.relationship_text).
+
 <a id="F-0101"></a>
 ### Legacy removal reports objects removed that may still be there
 

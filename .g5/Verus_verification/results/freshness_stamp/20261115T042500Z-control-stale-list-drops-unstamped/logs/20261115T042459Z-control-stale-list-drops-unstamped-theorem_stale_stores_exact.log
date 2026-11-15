@@ -1,0 +1,19 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/freshness_stamp/controls/stale-list-drops-unstamped/freshness_stamp.rs:110:9
+    |
+110 |           (forall|i: int| 0 <= i < stamps.len() ==> !is_current(#[trigger] stamps[i], t)) ==> stale_stores(stamps, t) == stamps,
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+113 | /     if stamps.len() > 0 {
+114 | |         theorem_stale_stores_exact(stamps.drop_last(), t);
+115 | |         let r = stale_stores(stamps.drop_last(), t);
+116 | |         if forall|i: int| 0 <= i < stamps.len() ==> !is_current(#[trigger] stamps[i], t) {
+...   |
+131 | |     }
+    | |_____- at the end of the function body
+
+error: aborting due to 1 previous error
+

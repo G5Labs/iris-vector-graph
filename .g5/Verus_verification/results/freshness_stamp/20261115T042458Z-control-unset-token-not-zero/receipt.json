@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_stamped_zero_current"
+    ],
+    "find": "        None => 0,\n        Some(i) => i,",
+    "name": "unset-token-not-zero",
+    "replace": "        None => -1,\n        Some(i) => i,",
+    "why": "token() reads an unset token as -1 instead of 0: a store stamped at zero looks stale on a fresh namespace"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_stamped_zero_current"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/freshness_stamp/freshness_stamp.rs": "2f5c51382a0f39e5c0d9c8d89023a0cfcc94458af4932d67128ab8fa93f67f17",
+    ".g5/Verus_verification/models/freshness_stamp/model.json": "5f7a18762a487193a77062a4d379551f0eafe952d035094b7df1defbf9648295"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/freshness_stamp/controls/unset-token-not-zero/freshness_stamp.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_stamped_zero_current": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/freshness_stamp/20261115T042458Z-control-unset-token-not-zero-theorem_stamped_zero_current.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/freshness_stamp/20261115T042458Z-control-unset-token-not-zero.log",
+    "timed_out": false,
+    "verified": 6
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/freshness_stamp/20261115T042458Z-control-unset-token-not-zero/logs/20261115T042458Z-control-unset-token-not-zero-theorem_stamped_zero_current.log": "aaf6c06a3ef2590e8de4c9347258434fcc5e8407225e5bb6787ffbc01d014657",
+    ".g5/Verus_verification/results/freshness_stamp/20261115T042458Z-control-unset-token-not-zero/logs/20261115T042458Z-control-unset-token-not-zero.log": "b17e7b3353d7ab0c76b30bf352d5c755b088942dfc8931e745d44c9ea409f78c"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

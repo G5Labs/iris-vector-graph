@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_unstamped_stale_at_zero",
+      "theorem_python_agrees_with_objectscript"
+    ],
+    "find": "        Val::Unset => false,\n        Val::Empty => false,\n        Val::Int(i) => i == token(t),",
+    "name": "os-fresh-without-data-check",
+    "replace": "        Val::Unset => token(t) == 0,\n        Val::Empty => false,\n        Val::Int(i) => i == token(t),",
+    "why": "Fresh without its $Data(...) # 2 guard: an unset stamp is read as \"\" and compared with the token"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_unstamped_stale_at_zero",
+      "theorem_python_agrees_with_objectscript"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/freshness_stamp/freshness_stamp.rs": "2f5c51382a0f39e5c0d9c8d89023a0cfcc94458af4932d67128ab8fa93f67f17",
+    ".g5/Verus_verification/models/freshness_stamp/model.json": "5f7a18762a487193a77062a4d379551f0eafe952d035094b7df1defbf9648295"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/freshness_stamp/controls/os-fresh-without-data-check/freshness_stamp.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_python_agrees_with_objectscript": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/freshness_stamp/20261115T042458Z-control-os-fresh-without-data-check-theorem_python_agrees_with_objectscript.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_unstamped_stale_at_zero": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/freshness_stamp/20261115T042458Z-control-os-fresh-without-data-check-theorem_unstamped_stale_at_zero.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/freshness_stamp/20261115T042458Z-control-os-fresh-without-data-check.log",
+    "timed_out": false,
+    "verified": 5
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/freshness_stamp/20261115T042459Z-control-os-fresh-without-data-check/logs/20261115T042458Z-control-os-fresh-without-data-check-theorem_python_agrees_with_objectscript.log": "5295a854f7ea028bc58b6c28b7e51a23265f5dd1fb6aa14087c3f14a790b3bd3",
+    ".g5/Verus_verification/results/freshness_stamp/20261115T042459Z-control-os-fresh-without-data-check/logs/20261115T042458Z-control-os-fresh-without-data-check-theorem_unstamped_stale_at_zero.log": "4d1ae47ee25f958c70ac694a8e682d458404652142aa7fac8a87d2c3d63601d5",
+    ".g5/Verus_verification/results/freshness_stamp/20261115T042459Z-control-os-fresh-without-data-check/logs/20261115T042458Z-control-os-fresh-without-data-check.log": "c38b697fefa00cd9ffdb3a175f75e2557cb475c80fb104f536a3b3ca2d296737"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

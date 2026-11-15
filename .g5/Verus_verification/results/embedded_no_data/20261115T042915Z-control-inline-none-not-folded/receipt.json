@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_no_data_is_empty",
+      "theorem_no_data_on_every_path"
+    ],
+    "find": "                let no_data = !rs && is_dml(verb);",
+    "name": "inline-none-not-folded",
+    "replace": "                let no_data = false;",
+    "why": "execute does not treat a missing result of a DML statement as no-row (:365-366 removed)"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_no_data_is_empty",
+      "theorem_no_data_on_every_path"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/embedded_no_data/embedded_no_data.rs": "08f11dc34ba743729953d87e2bcf39265fcac2bf6d3c76adbe059a1acd433f10",
+    ".g5/Verus_verification/models/embedded_no_data/model.json": "22ac2340bb1c2287f2f4f407bd944b4c17cdd35dc2c113f46731a4ac86cacd71"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/embedded_no_data/controls/inline-none-not-folded/embedded_no_data.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_no_data_is_empty": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/embedded_no_data/20261115T042914Z-control-inline-none-not-folded-theorem_no_data_is_empty.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_no_data_on_every_path": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/embedded_no_data/20261115T042914Z-control-inline-none-not-folded-theorem_no_data_on_every_path.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/embedded_no_data/20261115T042914Z-control-inline-none-not-folded.log",
+    "timed_out": false,
+    "verified": 11
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/embedded_no_data/20261115T042915Z-control-inline-none-not-folded/logs/20261115T042914Z-control-inline-none-not-folded-theorem_no_data_is_empty.log": "458657425d4e7c485b1260c7173e527c68e46ce2f36344f0a91eeb042c09e577",
+    ".g5/Verus_verification/results/embedded_no_data/20261115T042915Z-control-inline-none-not-folded/logs/20261115T042914Z-control-inline-none-not-folded-theorem_no_data_on_every_path.log": "581c06c5b4a2935c96c645d2fe30b0ffbd25769ca8c6aa9ba84a7a1273c7fe0a",
+    ".g5/Verus_verification/results/embedded_no_data/20261115T042915Z-control-inline-none-not-folded/logs/20261115T042914Z-control-inline-none-not-folded.log": "45f3a18cda8fad301c388ee95ee40bfb638755d77cc86628a6f1d1ecb91e21e1"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

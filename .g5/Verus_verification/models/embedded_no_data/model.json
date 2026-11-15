@@ -1,0 +1,64 @@
+{
+  "name": "embedded_no_data",
+  "root": "embedded_no_data.rs",
+  "expected_verified": 13,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "controls": [
+    {
+      "name": "fold-every-error",
+      "why": "execute folds every error into an empty result (no _is_no_data check at :361)",
+      "find": "Chain::Fail(e) => if is_no_data(e) { Res::Done { rs: false, rowcount: no_data_rowcount() } } else { Res::Raised },",
+      "replace": "Chain::Fail(e) => Res::Done { rs: false, rowcount: no_data_rowcount() },",
+      "expect_fail_in": [
+        "theorem_other_error_raises"
+      ]
+    },
+    {
+      "name": "ignore-cause",
+      "why": "_is_no_data reads only the error's own SQLCODE, not its cause's (:196): the three-path RuntimeError carrying SQLCODE 100 raises",
+      "find": "    e.code100 || e.cause100\n}",
+      "replace": "    e.code100\n}",
+      "expect_fail_in": [
+        "theorem_no_data_on_every_path"
+      ]
+    },
+    {
+      "name": "inline-none-not-folded",
+      "why": "execute does not treat a missing result of a DML statement as no-row (:365-366 removed)",
+      "find": "                let no_data = !rs && is_dml(verb);",
+      "replace": "                let no_data = false;",
+      "expect_fail_in": [
+        "theorem_no_data_is_empty",
+        "theorem_no_data_on_every_path"
+      ]
+    },
+    {
+      "name": "no-data-rowcount-unknown",
+      "why": "a no-row statement reports row count -1 instead of 0 (:373)",
+      "find": "pub open spec fn no_data_rowcount() -> int {\n    0\n}",
+      "replace": "pub open spec fn no_data_rowcount() -> int {\n    -1\n}",
+      "expect_fail_in": [
+        "theorem_no_data_is_empty",
+        "theorem_no_data_on_every_path"
+      ]
+    },
+    {
+      "name": "batch-raises-on-no-data",
+      "why": "the batch's first pass does not fold SQLCODE 100 (_no_data_ok removed at :395-397): a no-row row stops the batch",
+      "find": "        Chain::Fail(e) => if is_no_data(e) { Chain::Got { rs: false } } else { Chain::Fail(e) },\n        g => g,",
+      "replace": "        Chain::Fail(e) => Chain::Fail(e),\n        g => g,",
+      "expect_fail_in": [
+        "witness_batch_no_data_row_counts"
+      ]
+    },
+    {
+      "name": "repair-fallback-resumes",
+      "why": "repaired variant: the fallback resumes at the row that failed instead of the first; the as-built rerun witness must then fail",
+      "find": "pub open spec fn fallback_start(failed_at: nat) -> nat {\n    0\n}",
+      "replace": "pub open spec fn fallback_start(failed_at: nat) -> nat {\n    failed_at\n}",
+      "expect_fail_in": [
+        "witness_ddtab_mid_batch_reruns_rows"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/embedded_no_data/controls/ignore-cause/embedded_no_data.rs:132:9
+    |
+126 | pub proof fn theorem_no_data_on_every_path(verb: Verb, e: Err, d: Err)
+    | ---------------------------------------------------------------------- at the end of the function body
+...
+132 |         execute(verb, false, R::Raise(d), R::Raise(d), R::Raise(e)) == (Res::Done { rs: false, rowcount: 0 }),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

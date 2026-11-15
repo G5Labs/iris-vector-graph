@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "witness_as_built_trailing_newline_promoted"
+    ],
+    "find": "    int_text(t, true) || (t.len() >= 1 && t.last() == '\\n' && int_text(t.drop_last(), true))\n}",
+    "name": "as-built-without-final-newline-match",
+    "replace": "    int_text(t, true)\n}",
+    "why": "the as-built pattern with \\Z instead of $ (no match before a final line break); the newline witness must fail"
+  },
+  "expected": {
+    "fail_in": [
+      "witness_as_built_trailing_newline_promoted"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/rel_prop_text/model.json": "fb1ec47de0a2103918eb892981c1d51e6f2210ff2414415e368fd4c12b4c78af",
+    ".g5/Verus_verification/models/rel_prop_text/rel_prop_text.rs": "f45bbcb900699fb157ce6bc36583ece65c9b451ecf33f12fc8d6e34c3e0ffbbe"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/rel_prop_text/controls/as-built-without-final-newline-match/rel_prop_text.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "witness_as_built_trailing_newline_promoted": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/rel_prop_text/20261115T043202Z-control-as-built-without-final-newline-match-witness_as_built_trailing_newline_promoted.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/rel_prop_text/20261115T043202Z-control-as-built-without-final-newline-match.log",
+    "timed_out": false,
+    "verified": 9
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/rel_prop_text/20261115T043203Z-control-as-built-without-final-newline-match/logs/20261115T043202Z-control-as-built-without-final-newline-match-witness_as_built_trailing_newline_promoted.log": "7c26f47624f04dd105743734a1cccb257e924d777e1ff0e7a6a9b78326e75ecc",
+    ".g5/Verus_verification/results/rel_prop_text/20261115T043203Z-control-as-built-without-final-newline-match/logs/20261115T043202Z-control-as-built-without-final-newline-match.log": "01003b630447b3504e5606f22724e251c6dd1e79771ede821b1a336bdaac12ef"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

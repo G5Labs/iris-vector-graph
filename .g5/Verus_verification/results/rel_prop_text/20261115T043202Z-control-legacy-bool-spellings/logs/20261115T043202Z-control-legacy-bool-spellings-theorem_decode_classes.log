@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/rel_prop_text/controls/legacy-bool-spellings/rel_prop_text.rs:172:9
+    |
+163 | pub proof fn theorem_decode_classes()
+    | ------------------------------------- at the end of the function body
+...
+172 |         decode(seq!['T', 'r', 'u', 'e'], false) == Val::Str(seq!['T', 'r', 'u', 'e']),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

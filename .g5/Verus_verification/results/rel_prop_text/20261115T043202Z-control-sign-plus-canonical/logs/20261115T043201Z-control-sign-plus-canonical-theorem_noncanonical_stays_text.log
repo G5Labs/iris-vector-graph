@@ -1,0 +1,43 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/rel_prop_text/controls/sign-plus-canonical/rel_prop_text.rs:221:1
+    |
+221 | pub proof fn theorem_noncanonical_stays_text(t: Seq<char>, i: int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note: recommendation not met
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/rel_prop_text/controls/sign-plus-canonical/rel_prop_text.rs:233:16
+    |
+233 |         assert(s[j] == t[i]);
+    |                ^^^^
+    |
+   --> seq.rs:980:12
+    |
+    = note: recommendation not met
+
+error: assertion failed
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/rel_prop_text/controls/sign-plus-canonical/rel_prop_text.rs:233:16
+    |
+233 |         assert(s[j] == t[i]);
+    |                ^^^^^^^^^^^^ assertion failed
+
+note: recommendation not met
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/rel_prop_text/controls/sign-plus-canonical/rel_prop_text.rs:234:51
+    |
+234 |         if int_text(t, false) { if j > 0 { assert(s.drop_first()[j - 1] == s[j]); } }
+    |                                                   ^^^^^^^^^^^^^^^^^^^^^
+    |
+   --> seq.rs:980:12
+    |
+    = note: recommendation not met
+
+error: assertion failed
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/rel_prop_text/controls/sign-plus-canonical/rel_prop_text.rs:234:51
+    |
+234 |         if int_text(t, false) { if j > 0 { assert(s.drop_first()[j - 1] == s[j]); } }
+    |                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

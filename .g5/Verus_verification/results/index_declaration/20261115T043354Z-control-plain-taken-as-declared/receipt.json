@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_plain_replaced"
+    ],
+    "find": "pub open spec fn for_index(i: Idx, k: Kind) -> Seq<Act> {\n    match k {",
+    "name": "plain-taken-as-declared",
+    "replace": "pub open spec fn for_index(i: Idx, k: Kind) -> Seq<Act> {\n    match (if k is Plain { Kind::Functional } else { k }) {",
+    "why": "historical defect (4.7.0 row 16, CHANGELOG): a plain index named idx_edges_adj was taken for the adjacency index and ^KG went unwritten"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_plain_replaced"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/index_declaration/index_declaration.rs": "27e03f3a11a7bdd8a4c7ce44853c06d23da10134f71432d9b03bbb845ed0ffaa",
+    ".g5/Verus_verification/models/index_declaration/model.json": "5773aed8f9d053775c2256c9df9f59487ad5bb5875deda9251dcd2fa7996de04"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/index_declaration/controls/plain-taken-as-declared/index_declaration.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_plain_replaced": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/index_declaration/20261115T043354Z-control-plain-taken-as-declared-theorem_plain_replaced.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/index_declaration/20261115T043354Z-control-plain-taken-as-declared.log",
+    "timed_out": false,
+    "verified": 6
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/index_declaration/20261115T043354Z-control-plain-taken-as-declared/logs/20261115T043354Z-control-plain-taken-as-declared-theorem_plain_replaced.log": "c187b161852431b408848ea217bfa84375a773200878957135f82c02eb96bcc5",
+    ".g5/Verus_verification/results/index_declaration/20261115T043354Z-control-plain-taken-as-declared/logs/20261115T043354Z-control-plain-taken-as-declared.log": "9f139a6900249f6cafebe7ad864f509eaf8e410bf71fc74e603b607bd3cdb2a6"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,27 @@
+verification results:: 3 verified, 4 errors
+error: assertion failed
+  --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/index_declaration/controls/redeclare-functional/index_declaration.rs:77:12
+   |
+77 |     assert(plan(c) =~= for_index(Idx::Labels, c.labels));
+   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+  --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/index_declaration/controls/redeclare-functional/index_declaration.rs:89:20
+   |
+89 |             assert(plan(c) =~= for_index(Idx::Labels, c.labels));
+   |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/index_declaration/controls/redeclare-functional/index_declaration.rs:110:12
+    |
+110 |     assert(plan(c) =~= seq![Act::Drop(Idx::Edges), Act::Backfill, Act::Create(Idx::Edges)]);
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/index_declaration/controls/redeclare-functional/index_declaration.rs:118:12
+    |
+118 |     assert(plan(apply(c)) =~= Seq::<Act>::empty());
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 4 previous errors
+

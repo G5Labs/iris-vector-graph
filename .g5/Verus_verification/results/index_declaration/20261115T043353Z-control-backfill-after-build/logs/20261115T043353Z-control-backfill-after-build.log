@@ -1,0 +1,21 @@
+verification results:: 4 verified, 3 errors
+error: assertion failed
+  --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/index_declaration/controls/backfill-after-build/index_declaration.rs:68:12
+   |
+68 |     assert(plan(c) =~= seq![Act::Backfill, Act::Create(Idx::Edges), Act::Create(Idx::Labels)]);
+   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+  --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/index_declaration/controls/backfill-after-build/index_declaration.rs:97:16
+   |
+97 |         assert(plan(c)[d] == Act::Backfill);
+   |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/index_declaration/controls/backfill-after-build/index_declaration.rs:111:12
+    |
+111 |     assert(plan(c) =~= seq![Act::Drop(Idx::Edges), Act::Backfill, Act::Create(Idx::Edges)]);
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 3 previous errors
+

@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/freshness_stamp/controls/unset-token-not-zero/freshness_stamp.rs:89:1
+   |
+89 | pub proof fn theorem_stamped_zero_current()
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/freshness_stamp/controls/unset-token-not-zero/freshness_stamp.rs:91:9
+   |
+89 | pub proof fn theorem_stamped_zero_current()
+   | ------------------------------------------- at the end of the function body
+90 |     ensures
+91 |         is_current(Val::Int(0), Val::Unset),
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/freshness_stamp/controls/unset-token-not-zero/freshness_stamp.rs:92:9
+   |
+89 | pub proof fn theorem_stamped_zero_current()
+   | ------------------------------------------- at the end of the function body
+...
+92 |         is_current(Val::Int(0), Val::Empty),
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

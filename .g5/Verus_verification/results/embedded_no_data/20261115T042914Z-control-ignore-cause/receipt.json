@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_no_data_on_every_path"
+    ],
+    "find": "    e.code100 || e.cause100\n}",
+    "name": "ignore-cause",
+    "replace": "    e.code100\n}",
+    "why": "_is_no_data reads only the error's own SQLCODE, not its cause's (:196): the three-path RuntimeError carrying SQLCODE 100 raises"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_no_data_on_every_path"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/embedded_no_data/embedded_no_data.rs": "08f11dc34ba743729953d87e2bcf39265fcac2bf6d3c76adbe059a1acd433f10",
+    ".g5/Verus_verification/models/embedded_no_data/model.json": "22ac2340bb1c2287f2f4f407bd944b4c17cdd35dc2c113f46731a4ac86cacd71"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/embedded_no_data/controls/ignore-cause/embedded_no_data.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_no_data_on_every_path": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/embedded_no_data/20261115T042914Z-control-ignore-cause-theorem_no_data_on_every_path.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/embedded_no_data/20261115T042914Z-control-ignore-cause.log",
+    "timed_out": false,
+    "verified": 12
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/embedded_no_data/20261115T042914Z-control-ignore-cause/logs/20261115T042914Z-control-ignore-cause-theorem_no_data_on_every_path.log": "557fd8a25065fcc651905e2c51ac20da2f2299f45aaa04cea911603b57523ece",
+    ".g5/Verus_verification/results/embedded_no_data/20261115T042914Z-control-ignore-cause/logs/20261115T042914Z-control-ignore-cause.log": "1bfda3e334d420ba4ffc0d5ee28ca4c492aaa9bf6551e94449c7e9d1c2e28b9e"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

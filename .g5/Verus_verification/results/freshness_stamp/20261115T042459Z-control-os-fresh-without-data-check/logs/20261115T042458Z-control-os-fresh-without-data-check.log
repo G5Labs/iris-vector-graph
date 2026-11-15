@@ -1,0 +1,20 @@
+verification results:: 5 verified, 2 errors
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/freshness_stamp/controls/os-fresh-without-data-check/freshness_stamp.rs:83:9
+   |
+78 | pub proof fn theorem_unstamped_stale_at_zero(t: Val)
+   | ---------------------------------------------------- at the end of the function body
+...
+83 |         !os_fresh(Val::Unset, t),
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/freshness_stamp/controls/os-fresh-without-data-check/freshness_stamp.rs:101:13
+    |
+100 | pub proof fn theorem_python_agrees_with_objectscript(s: Val, t: Val)
+    | -------------------------------------------------------------------- at the end of the function body
+101 |     ensures is_current(s, t) == os_fresh(s, t),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

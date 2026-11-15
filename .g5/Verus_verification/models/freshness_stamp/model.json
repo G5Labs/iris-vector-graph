@@ -1,0 +1,47 @@
+{
+  "name": "freshness_stamp",
+  "root": "freshness_stamp.rs",
+  "expected_verified": 7,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "controls": [
+    {
+      "name": "unset-stamp-reads-zero",
+      "why": "built_from reads a never-stamped store as stamp 0 (the 'not known is zero' mistake): an unstamped store looks current at token 0",
+      "find": "pub open spec fn built_from(s: Val) -> Option<int> {\n    read_int(s)\n}",
+      "replace": "pub open spec fn built_from(s: Val) -> Option<int> {\n    match read_int(s) { None => Some(0), x => x }\n}",
+      "expect_fail_in": [
+        "theorem_unstamped_stale_at_zero",
+        "theorem_is_current_iff_stamped_equal",
+        "theorem_python_agrees_with_objectscript"
+      ]
+    },
+    {
+      "name": "unset-token-not-zero",
+      "why": "token() reads an unset token as -1 instead of 0: a store stamped at zero looks stale on a fresh namespace",
+      "find": "        None => 0,\n        Some(i) => i,",
+      "replace": "        None => -1,\n        Some(i) => i,",
+      "expect_fail_in": [
+        "theorem_stamped_zero_current"
+      ]
+    },
+    {
+      "name": "os-fresh-without-data-check",
+      "why": "Fresh without its $Data(...) # 2 guard: an unset stamp is read as \"\" and compared with the token",
+      "find": "        Val::Unset => false,\n        Val::Empty => false,\n        Val::Int(i) => i == token(t),",
+      "replace": "        Val::Unset => token(t) == 0,\n        Val::Empty => false,\n        Val::Int(i) => i == token(t),",
+      "expect_fail_in": [
+        "theorem_unstamped_stale_at_zero",
+        "theorem_python_agrees_with_objectscript"
+      ]
+    },
+    {
+      "name": "stale-list-drops-unstamped",
+      "why": "stale_stores skips stores that were never stamped",
+      "find": "        if built_from(stamps.last()) != Some(token(t)) { rest.push(stamps.last()) } else { rest }",
+      "replace": "        if built_from(stamps.last()) is Some && built_from(stamps.last()) != Some(token(t)) { rest.push(stamps.last()) } else { rest }",
+      "expect_fail_in": [
+        "theorem_stale_stores_exact"
+      ]
+    }
+  ]
+}

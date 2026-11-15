@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/freshness_stamp/controls/os-fresh-without-data-check/freshness_stamp.rs:101:13
+    |
+100 | pub proof fn theorem_python_agrees_with_objectscript(s: Val, t: Val)
+    | -------------------------------------------------------------------- at the end of the function body
+101 |     ensures is_current(s, t) == os_fresh(s, t),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

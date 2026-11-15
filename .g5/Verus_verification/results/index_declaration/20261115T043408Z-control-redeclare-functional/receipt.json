@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_declared_left_alone",
+      "theorem_second_run_is_noop"
+    ],
+    "find": "        Kind::Functional => Seq::empty(),\n        _ => {",
+    "name": "redeclare-functional",
+    "replace": "        _ => {",
+    "why": "declare an index that is already the adjacency index (:865-867 removed)"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_declared_left_alone",
+      "theorem_second_run_is_noop"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/index_declaration/index_declaration.rs": "eab9e766a697691f94a531723dcf2f40ab1a074d076a40ad2f14ecc3c6488d7c",
+    ".g5/Verus_verification/models/index_declaration/model.json": "5773aed8f9d053775c2256c9df9f59487ad5bb5875deda9251dcd2fa7996de04"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/index_declaration/controls/redeclare-functional/index_declaration.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 4,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_declared_left_alone": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/index_declaration/20261115T043407Z-control-redeclare-functional-theorem_declared_left_alone.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_second_run_is_noop": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/index_declaration/20261115T043407Z-control-redeclare-functional-theorem_second_run_is_noop.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/index_declaration/20261115T043407Z-control-redeclare-functional.log",
+    "timed_out": false,
+    "verified": 3
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/index_declaration/20261115T043408Z-control-redeclare-functional/logs/20261115T043407Z-control-redeclare-functional-theorem_declared_left_alone.log": "64f4fe89ef4cfbb8cc06172466a36b016bcacc4513c6e1da2e2d1a2bc86e62e2",
+    ".g5/Verus_verification/results/index_declaration/20261115T043408Z-control-redeclare-functional/logs/20261115T043407Z-control-redeclare-functional-theorem_second_run_is_noop.log": "785ed8a0223571d91f7f42232b28cc50c38bd76a5af0e2cc1a25f70e84809669",
+    ".g5/Verus_verification/results/index_declaration/20261115T043408Z-control-redeclare-functional/logs/20261115T043407Z-control-redeclare-functional.log": "5bc03c2e21868f8a04917c5aef0aaba124df963c45a62aceca083d5baea91c8a"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}
