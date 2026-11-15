@@ -4,7 +4,7 @@ Lane reflection, product pin `3eaa79cf`, IRIS 2026.1 Community in the dedicated 
 
 ## A. The audit's own tests that this reflection cites
 
-210 distinct registered runs are cited below (premise tests, proof-debt coverage, detections), by kind and result:
+214 distinct registered runs are cited below (premise tests, proof-debt coverage, detections), by kind and result:
 
 | Kind | Runs | Results |
 |---|---|---|
@@ -12,10 +12,10 @@ Lane reflection, product pin `3eaa79cf`, IRIS 2026.1 Community in the dedicated 
 | probe | 38 | blocked 1, expected-violation 7, fail 14, pass 16 |
 | run | 28 | fail 19, pass 9 |
 | check | 24 | fail 3, incomplete 2, pass 19 |
-| mc | 20 | expected-violation 19, pass 1 |
-| control | 13 | expected-violation 10, pass 3 |
+| mc | 21 | expected-violation 19, pass 2 |
+| control | 14 | expected-violation 11, pass 3 |
 | trace | 8 | fail 3, pass 5 |
-| proof | 3 | pass 3 |
+| proof | 5 | pass 5 |
 | review | 1 | pass 1 |
 
 Only `live`, `probe`, `run`, `trace` and `check` runs observe IRIS or the product; `mc`, `proof` and `control` runs are about models (cited as context, never counted as a test of a product or engine premise, except for premises about the audit's own tools). A failing run here usually shows a premise false at the pin.
@@ -141,8 +141,9 @@ Every premise named in the sources below has an entry (the checker extracts them
 | proofs-env/PROOFS.md | 4 | 1 | 1 | 1 | 1 |
 | proofs-mech/PROOFS.md (prose premises) | 3 | 0 | 0 | 2 | 1 |
 | proofs-pa3/PROOFS.md | 15 | 0 | 5 | 8 | 2 |
+| proofs-sys/PROOFS.md | 4 | 0 | 0 | 3 | 1 |
 | iris-contract/CONTRACT.md (clauses, E-1, Freedom, outside-subset features) | 59 | 34 | 0 | 5 | 20 |
-| **total** | **278** | **44** | **56** | **120** | **58** |
+| **total** | **282** | **44** | **56** | **123** | **59** |
 
 ### D.1 Premises shown false at the pin (tested-violated)
 
@@ -366,6 +367,10 @@ Contract features outside the validated subset are summarised after the table.
 | proofs:PF-4 | A process with an enabled step is eventually scheduled and its transaction commits (IRIS Locks: deferral, Nesting) | tested-partial | env-contract-r2, val-perf-committer-n3-1, val-mp-existing-1 | Lock-fairness stress test: more than 2 processes contending for ^IVG.Ledger(head) (commits, batches, Final) for minutes, recording each process's longest wait and timeouts; queue fairness is outside the contract. |
 | proofs-env:ENV-2 | the Verus subset covers the clauses the proof premises use | tested-partial | proofs-env-premise-map | Extending the Verus subset with the r6 extension clauses, E-1 and X2. |
 | proofs-env:ENV-4 | no liveness clause: the progress premises are not implied by the contract | untested | proofs-env-premise-map | Progress tests under IRIS scheduling (D-8). |
+| proofs-sys:PS-1 | the composed machine is the semantics lane's sys00 abstraction: two tenants with one item each, one retry key retried once, one erasure, one redaction run, every Run step atomic (one transaction, P-0001) | tested-partial | sim-main-20261114 | Larger-world instances of the sys00 composition (more tenants, items, retry keys, concurrent erasures), or a cutoff argument that the axiom checks are world-size generic for the composed choices; P-0001 (each Run step one transaction) is itself contradicted at the pin for the erasure (F-1201). |
+| proofs-sys:PS-2 | the operator re-runs the erasure of a target found live and resumes a parked redaction (actions ReErase, Resume) | tested-partial | live-fc1303-bounded-resume, fu-r03-marker-held-open | That the operator does re-run and resume is an operator premise; a test would script the re-erase/resume loop through the product and count the calls to completion (the pin's re-run does not progress, so none exists at the pin). |
+| proofs-sys:PS-3 | AX-14 is AG EF ('can finish'): the theorem exhibits a finishing schedule; a scheduler that runs it (fairness) is not modelled | untested | - | A soak through the product with concurrent committers, erasures and redactions asserting each redaction's marker clears within a bound (fair-scheduling progress), and a fairness version of the theorem. |
+| proofs-sys:PS-4 | AX-01, AX-09 and AX-13 are outside the composition; their laws are proofs-mech's M-12/M-01, M-08 and M-11 theorems | tested-partial | proofs-mech-baseline, proofs-sys-baseline | A bridge in proofs-sys that proves the AX-01, AX-09 and AX-13 check predicates equal to the proofs-mech laws (as bridge_m02..m10 do for the composed mechanisms); today the correspondence is by inspection. |
 
 Outside the contract's validated subset (23 features, all untested as engine clauses; the modules relying on each are listed in `iris-contract/CONTRACT.md`): $LIST semantics, $NAME, $LISTVALID; $ZF callouts; %Regex; EMBEDDING(); SQL text parsing; generat; %DynamicObject / JSON functions; HNSW vector index maintenance and build; IRISTEMP globals; JOB / WorkMgr processes; SQLCODEs other than -30, -110, -119, -201, -359, -400; Task Manager; absent on Community 2026.1: InterSystems FHIR server storage; catalog views other than TABLES / COLUMNS, default-schema re; class dictionary and run-time compilation (compiling is out ; compiled SQL routines (CREATE FUNCTION / PROCEDURE, [SqlProc; embedded Python (needs irispython in the container); engine limits (long strings, subscript length, bound-paramet; iFind search semantics (tokenizer %iFind.Utils.Analyze, word; journaling (the audit's oracle, not a clause); management APIs (%SYS.ProcessQuery, KillProcess, GetVersion,; named-index %IGNOREINDEX forms (only %IGNOREINDEX * is exerc; object filing (%OpenId / %Save concurrency), triggers, forei; pure functions and clocks ($ZCRC, SHA, GUID, $RANDOM, $HOROL; result-prefix queries (TOP / LIMIT / FETCH FIRST); streams; web dispatch, roles and SQL privileges. Test that should exist for each: $NAME and $LISTVALID remain outside (contract-2 family 'list' residual)..
 
@@ -386,7 +391,7 @@ Outside the contract's validated subset (23 features, all untested as engine cla
 | D-11 | `live-native-rerun-1314` | The original L2 refinement covers the reviewed design only; the pin violates it (F-1302, F-1303), so no product test can confirm it. |
 | D-12 | `live-fc1303-bounded-resume`, `core-m2-as-built-paced-resume` (model) | That D-2 (scan bound fixed at marking) is necessary for progress is a proof-level question; no product test can show it because the pin does not have D-2. |
 | D-13 | `live-f1201-reproduced`, `live-erase-vs-commit-fk`, `live-erase-vs-commit-emptygraph`, `corr-trace-f1201` | Inserts of new rows overlapping an eraser of the same graph; the breadth L2 models nothing of the overlap. |
-| D-14 | `ws-live-ins-store_node`, `fu-r03-marker-held-open`, `live-fc1303-bounded-resume`, `ib-HD1401-reader-full-race`, `sem-mc-queue-as-built-r2` (model) | No test links the code to the mechanism instances (D-2/D-3); mechanisms are not composed; the fixed small domains; M07-L4's fairness premise; laws the pin keeps are not tested on the product beyond the findings' runs. |
+| D-14 | `ws-live-ins-store_node`, `fu-r03-marker-held-open`, `live-fc1303-bounded-resume`, `ib-HD1401-reader-full-race`, `sem-mc-queue-as-built-r2` (model) | No test links the code to the mechanism instances or to the sys00 composition (D-2/D-3); the composition is proved (proofs-sys) over sys00's small world, without a refinement to the mechanism machines; the fixed small domains; M07-L4's fairness premise and AX-14 under fair scheduling; laws the pin keeps are not tested on the product beyond the findings' runs. |
 
 No row of PROOF-DEBT.md is paid by these tests: they sample the obligation on the product, they do not prove it.
 
@@ -400,7 +405,7 @@ No row of PROOF-DEBT.md is paid by these tests: they sample the obligation on th
 
 ## G. Environment closure
 
-The environment conditions the proofs and models rely on are listed exactly in `CLOSURE.md` (gate 3.6-closure): 171 conditions, validated 47, validated-in-part 51, assumed 66, shown-false 7. It joins this map's engine and progress premises with the IRIS contract's clauses (r6 and contract-2) and contract-2's outside-premise families, each with its validating run or its consequence.
+The environment conditions the proofs and models rely on are listed exactly in `CLOSURE.md` (gate 3.6-closure): 173 conditions, validated 47, validated-in-part 52, assumed 67, shown-false 7. It joins this map's engine and progress premises with the IRIS contract's clauses (r6 and contract-2) and contract-2's outside-premise families, each with its validating run or its consequence.
 
 ## H. Limits
 

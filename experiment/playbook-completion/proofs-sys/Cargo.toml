@@ -1,0 +1,41 @@
+[package]
+name = "ivg-proofs-sys"
+version = "0.1.0"
+edition = "2021"
+description = "Completion audit, PROOFS-SYS lane (steer 13; proof debt D-14's remaining part): the universal axioms of module 00 proved over the composition of the shared mechanisms M-01, M-02, M-03, M-04, M-05 and M-10, as the semantics lane's models/semantics/src/sys00.rs composes and model-checks them; one theorem per axiom over a design trait whose parameters are the composed mechanisms' instance choices; the as-built composition and the semantics lane's per-axiom mutants are located controls with proved counterexamples."
+publish = false
+
+[dependencies]
+vstd = { version = "=0.0.0-2026-09-20-0158", features = ["std", "alloc"] }
+actors = { git = "file:///home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/playbook-reference-actors", rev = "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877" }
+ivg-proofs-mech = { path = "../proofs-mech" }
+
+[patch.crates-io]
+verus_builtin_macros = { git = "file:///home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/playbook-reference-actors", rev = "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877" }
+
+[features]
+# Located controls: each feature compiles exactly one design's discharge of the system trait (impl SysObject for
+# <Design>) in src/ctl.rs; nothing else changes. Metadata per control is its `// CONTROL` line; tools/run_proofs.py
+# regenerates this list (--sync-features).
+#@CONTROLS-BEGIN
+sys00_as_built = []   # src/ctl_sys.rs SysAsBuilt (sys00-as-built-ax-06,sys00-as-built-ax-07,sys00-as-built-ax-08,sys00-as-built-ax-10,sys00-as-built-ax-11,sys00-as-built-ax-11-marker; AX-06,AX-07,AX-08,AX-10,AX-11,AX-11M)
+sys00_control_ax02_tomb_both_tenants = []   # src/ctl_sys.rs CtlTombBothTenants (sys00-control-ax02-tomb-both-tenants; AX-02,AX-07)
+sys00_control_ax03_refusal_writes = []   # src/ctl_sys.rs CtlRefusalWrites (sys00-control-ax03-refusal-writes; AX-03,AX-07,AX-08,AX-11M)
+sys00_control_ax04_erase_split = []   # src/ctl_sys.rs CtlEraseSplit (sys00-control-ax04-erase-split; AX-04)
+sys00_control_ax05_delete_records = []   # src/ctl_sys.rs CtlDeleteRecords (sys00-control-ax05-delete-records; AX-05)
+sys00_control_ax06_post_on_replay = []   # src/ctl_sys.rs CtlPostOnReplay (sys00-control-ax06-post-on-replay; AX-06,AX-10,AX-11M)
+sys00_control_ax07_unrecorded_apply = []   # src/ctl_sys.rs CtlUnrecordedApply (sys00-control-ax07-unrecorded-apply; AX-07)
+sys00_control_ax08_erase_skips_derived = []   # src/ctl_sys.rs CtlEraseSkipsDerived (sys00-control-ax08-erase-skips-derived; AX-08,AX-10)
+sys00_control_ax10_binding_kept = []   # src/ctl_sys.rs CtlBindingKept (sys00-control-ax10-binding-kept; AX-10)
+sys00_control_ax11_check_before_lock = []   # src/ctl_sys.rs CtlCheckBeforeLock (sys00-control-ax11-check-before-lock; AX-07,AX-11,AX-11M)
+sys00_control_ax12_receipt_early = []   # src/ctl_sys.rs CtlReceiptEarly (sys00-control-ax12-receipt-early; AX-10,AX-12)
+sys00_control_ax14_marker_never_cleared = []   # src/ctl_sys.rs CtlMarkerNeverCleared (sys00-control-ax14-marker-never-cleared; AX-14)
+#@CONTROLS-END
+
+[package.metadata.verus]
+verify = true
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(verus_only)', 'cfg(verus_keep_ghost)', 'cfg(verus_keep_ghost_body)'] }
+
+[workspace]

@@ -5292,13 +5292,27 @@
   },
   {
    "as_built_findings": [
-    "F-1101",
-    "F-1306",
-    "F-1302",
+    "F-0606",
     "F-0702",
-    "F-0606"
+    "F-1101",
+    "F-1302",
+    "F-1306"
    ],
    "cited_runs": [
+    "proofs-sys-baseline",
+    "proofs-sys-recheck",
+    "proofs-sys-sys00-as-built",
+    "proofs-sys-sys00-control-ax02-tomb-both-tenants",
+    "proofs-sys-sys00-control-ax03-refusal-writes",
+    "proofs-sys-sys00-control-ax04-erase-split",
+    "proofs-sys-sys00-control-ax05-delete-records",
+    "proofs-sys-sys00-control-ax06-post-on-replay",
+    "proofs-sys-sys00-control-ax07-unrecorded-apply",
+    "proofs-sys-sys00-control-ax08-erase-skips-derived",
+    "proofs-sys-sys00-control-ax10-binding-kept",
+    "proofs-sys-sys00-control-ax11-check-before-lock",
+    "proofs-sys-sys00-control-ax12-receipt-early",
+    "proofs-sys-sys00-control-ax14-marker-never-cleared",
     "sem-control-sys00-r2",
     "sem-mc-sys00-as-built-r2",
     "sem-mc-sys00-reviewed-r2"
@@ -5309,7 +5323,23 @@
     "experiment/playbook-completion/models/semantics/RESULTS.json",
     "run:sem-mc-sys00-reviewed-r2",
     "run:sem-mc-sys00-as-built-r2",
-    "run:sem-control-sys00-r2"
+    "run:sem-control-sys00-r2",
+    "run:proofs-sys-baseline",
+    "run:proofs-sys-recheck",
+    "run:proofs-sys-sys00-as-built",
+    "run:proofs-sys-sys00-control-ax02-tomb-both-tenants",
+    "run:proofs-sys-sys00-control-ax03-refusal-writes",
+    "run:proofs-sys-sys00-control-ax04-erase-split",
+    "run:proofs-sys-sys00-control-ax05-delete-records",
+    "run:proofs-sys-sys00-control-ax06-post-on-replay",
+    "run:proofs-sys-sys00-control-ax07-unrecorded-apply",
+    "run:proofs-sys-sys00-control-ax08-erase-skips-derived",
+    "run:proofs-sys-sys00-control-ax10-binding-kept",
+    "run:proofs-sys-sys00-control-ax11-check-before-lock",
+    "run:proofs-sys-sys00-control-ax12-receipt-early",
+    "run:proofs-sys-sys00-control-ax14-marker-never-cleared",
+    "experiment/playbook-completion/proofs-sys/PROOFS.md",
+    "experiment/playbook-completion/proofs-sys/RESULTS.json"
    ],
    "evidence_grade": "registered-run",
    "findings": [
@@ -5330,14 +5360,18 @@
      "finding F-1302",
      "finding F-1306",
      "stated fails by matrix-input/semantics.json",
+     "run proofs-sys-sys00-as-built (expected-violation)",
      "run sem-mc-sys00-as-built-r2 (expected-violation)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "AX-01, AX-09 and AX-13 are outside the composition (checked by the generic machines M-12/M-01, M-08, M-11: sem-mc-catalog-*, sem-mc-install-*, sem-mc-cap-*); AX-02, AX-03, AX-04, AX-05, AX-12 hold within the composition only, the product breaks them elsewhere (axioms.json); progress rests on TRUST.md's operator-re-run premise",
+   "remaining": "AX-01, AX-09 and AX-13 are outside the composition (checked by the generic machines M-12/M-01, M-08, M-11: sem-mc-catalog-*, sem-mc-install-*, sem-mc-cap-*); AX-02, AX-03, AX-04, AX-05, AX-12 hold within the composition only, the product breaks them elsewhere (axioms.json); progress rests on TRUST.md's operator-re-run premise [proofs-sys, D-14 composition] no proof connects the product's code to sys00 (D-2, D-3); no refinement from sys00 to the proofs-mech machines (the bridge proves the composed obligations equal to the mechanism instances' obligations and instantiates proofs-mech's theorems at them; it does not compose the mechanism machines); sys00's fixed small world (PROOFS.md PS-1); AX-14 is AG EF, not progress under fairness (PS-3); no sys00 axiom check covers M03-L2, the eraser's head lock (observation in PROOFS.md)",
    "source": "matrix-input/semantics.json",
-   "status": "closed"
+   "status": "closed",
+   "supplemented_by": [
+    "matrix-input/proofs-sys.json"
+   ]
   },
   {
    "cited_runs": [
@@ -6598,6 +6632,9 @@
     "F-C1850"
    ],
    "cited_runs": [
+    "proofs-sys-baseline",
+    "proofs-sys-recheck",
+    "proofs-sys-sys00-as-built",
     "sem-check-r4",
     "sem-check-selftest-r4",
     "sem-control-sys00-r2",
@@ -6612,7 +6649,12 @@
     "run:sem-check-selftest-r4",
     "run:sem-mc-sys00-reviewed-r2",
     "run:sem-mc-sys00-as-built-r2",
-    "run:sem-control-sys00-r2"
+    "run:sem-control-sys00-r2",
+    "run:proofs-sys-baseline",
+    "run:proofs-sys-recheck",
+    "run:proofs-sys-sys00-as-built",
+    "experiment/playbook-completion/proofs-sys/PROOFS.md",
+    "experiment/playbook-completion/proofs-sys/RESULTS.json"
    ],
    "evidence_grade": "registered-run",
    "findings": [
@@ -6713,9 +6755,12 @@
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "the repaired SYS-I wording (AX-01..AX-09) is proposed in semantics/src/axioms_src.json, not written into ontology/00-system.md (ontology lane); AX-12's durability half rests on an intent-undecided premise (F-C1102)",
+   "remaining": "the repaired SYS-I wording (AX-01..AX-09) is proposed in semantics/src/axioms_src.json, not written into ontology/00-system.md (ontology lane); AX-12's durability half rests on an intent-undecided premise (F-C1102) [proofs-sys, D-14 composition] no proof connects the product's code to sys00 (D-2, D-3); no refinement from sys00 to the proofs-mech machines (the bridge proves the composed obligations equal to the mechanism instances' obligations and instantiates proofs-mech's theorems at them; it does not compose the mechanism machines); sys00's fixed small world (PROOFS.md PS-1); AX-14 is AG EF, not progress under fairness (PS-3); no sys00 axiom check covers M03-L2, the eraser's head lock (observation in PROOFS.md)",
    "source": "matrix-input/semantics.json",
-   "status": "closed"
+   "status": "closed",
+   "supplemented_by": [
+    "matrix-input/proofs-sys.json"
+   ]
   },
   {
    "as_built_findings": [
@@ -6839,6 +6884,8 @@
    "cited_runs": [
     "proofs-mech-baseline",
     "proofs-mech-recheck",
+    "proofs-sys-baseline",
+    "proofs-sys-recheck",
     "sem-check-r4",
     "sem-control-cap-r2",
     "sem-control-catalog-r2",
@@ -6929,7 +6976,11 @@
     "run:proofs-mech-baseline",
     "run:proofs-mech-recheck",
     "experiment/playbook-completion/proofs-mech/PROOFS.md",
-    "experiment/playbook-completion/proofs-mech/RESULTS.json"
+    "experiment/playbook-completion/proofs-mech/RESULTS.json",
+    "run:proofs-sys-baseline",
+    "run:proofs-sys-recheck",
+    "experiment/playbook-completion/proofs-sys/PROOFS.md",
+    "experiment/playbook-completion/proofs-sys/RESULTS.json"
    ],
    "evidence_grade": "registered-run",
    "findings": [
@@ -7192,9 +7243,12 @@
     ]
    },
    "product_obligation": "fails",
-   "remaining": "Closed at model level (steer 9): all 45 laws of the 13 mechanisms are proved once over their mechanism's trait in Verus (proofs-mech: 1,149 verified, 0 errors, --no-cheating, empty trust inventory; 78 reviewed/canonical instances discharge every obligation; 120 located controls: 72 as-built variants, 2 named exceptions, 46 generic mutants; recheck proofs-mech-recheck), with the explorer's generic checks (sem-mc-*) alongside. Remaining, outside this gate: no code correspondence (D-2, D-3); mechanisms proved one at a time, not composed (sys00 stays explorer-only); the axiom-breaking findings MECHANISMS.md does not attach to a mechanism instance; small fixed domains (proofs-mech/PROOFS.md). The progress law M07-L4 assumes a weakly fair worker (TRUST.md). Every as-built variant that departs from a law is a located control, so the product obligation stays failed.",
+   "remaining": "Closed at model level (steer 9): all 45 laws of the 13 mechanisms are proved once over their mechanism's trait in Verus (proofs-mech: 1,149 verified, 0 errors, --no-cheating, empty trust inventory; 78 reviewed/canonical instances discharge every obligation; 120 located controls: 72 as-built variants, 2 named exceptions, 46 generic mutants; recheck proofs-mech-recheck), with the explorer's generic checks (sem-mc-*) alongside. Remaining, outside this gate: no code correspondence (D-2, D-3); mechanisms proved one at a time; their module-00 composition (sys00) is proved at model level by proofs-sys (the 12 sys00 axiom checks over the composed design trait; its reuse of proofs-mech is a proved equality of obligations, not a refinement from sys00 to the mechanism machines); the axiom-breaking findings MECHANISMS.md does not attach to a mechanism instance; small fixed domains (proofs-mech/PROOFS.md). The progress law M07-L4 assumes a weakly fair worker (TRUST.md). Every as-built variant that departs from a law is a located control, so the product obligation stays failed. [proofs-sys, D-14 composition] the remaining D-14 item 'mechanisms not composed; sys00 explorer-only' is paid at model level; still open: no proof connects the product's code to sys00 (D-2, D-3); no refinement from sys00 to the proofs-mech machines (the bridge proves the composed obligations equal to the mechanism instances' obligations and instantiates proofs-mech's theorems at them; it does not compose the mechanism machines); sys00's fixed small world (PROOFS.md PS-1); AX-14 is AG EF, not progress under fairness (PS-3); no sys00 axiom check covers M03-L2, the eraser's head lock (observation in PROOFS.md)",
    "source": "matrix-input/semantics.json",
-   "status": "closed"
+   "status": "closed",
+   "supplemented_by": [
+    "matrix-input/proofs-sys.json"
+   ]
   },
   {
    "as_built_findings": [
@@ -38298,7 +38352,7 @@
   "n/a": 33,
   "unknown": 190
  },
- "registry_runs": 1478,
+ "registry_runs": 1493,
  "starting_inventory": {
   "cells": 904,
   "decisions": 61,

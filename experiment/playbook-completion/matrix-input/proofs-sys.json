@@ -1,0 +1,60 @@
+{
+ "lane": "proofs-sys (D-14's remaining part: the module-00 axioms over the composed mechanisms)",
+ "source": "proofs-sys/MATRIX-INPUT.json",
+ "_doc": "Model-level supplements only; no cell changes status and every product obligation stays failed. Grades as stated by the lane: 3.3-model-check/00: proved (Verus, model level, decisive, --no-cheating, empty trust inventory incl. the proofs-mech dependency): 256 verified, 0 errors (proofs-sys-baseline, recheck proofs-sys-recheck); the explorer's sys00 checks (sem-mc-sys00-*) restated and proved over all 3,072 instance-choice vectors that meet each axiom's obligation",
+ "supplements": [
+  {
+   "gate": "3.3-model-check",
+   "module": "00",
+   "add_evidence": [
+    "run:proofs-sys-baseline",
+    "run:proofs-sys-recheck",
+    "run:proofs-sys-sys00-as-built",
+    "run:proofs-sys-sys00-control-ax02-tomb-both-tenants",
+    "run:proofs-sys-sys00-control-ax03-refusal-writes",
+    "run:proofs-sys-sys00-control-ax04-erase-split",
+    "run:proofs-sys-sys00-control-ax05-delete-records",
+    "run:proofs-sys-sys00-control-ax06-post-on-replay",
+    "run:proofs-sys-sys00-control-ax07-unrecorded-apply",
+    "run:proofs-sys-sys00-control-ax08-erase-skips-derived",
+    "run:proofs-sys-sys00-control-ax10-binding-kept",
+    "run:proofs-sys-sys00-control-ax11-check-before-lock",
+    "run:proofs-sys-sys00-control-ax12-receipt-early",
+    "run:proofs-sys-sys00-control-ax14-marker-never-cleared",
+    "experiment/playbook-completion/proofs-sys/PROOFS.md",
+    "experiment/playbook-completion/proofs-sys/RESULTS.json"
+   ],
+   "add_remaining": "[proofs-sys, D-14 composition] no proof connects the product's code to sys00 (D-2, D-3); no refinement from sys00 to the proofs-mech machines (the bridge proves the composed obligations equal to the mechanism instances' obligations and instantiates proofs-mech's theorems at them; it does not compose the mechanism machines); sys00's fixed small world (PROOFS.md PS-1); AX-14 is AG EF, not progress under fairness (PS-3); no sys00 axiom check covers M03-L2, the eraser's head lock (observation in PROOFS.md)",
+   "as_built_findings": [
+    "F-1101",
+    "F-1306",
+    "F-1302",
+    "F-0702",
+    "F-0606"
+   ]
+  },
+  {
+   "gate": "3.3a-axioms",
+   "module": "product",
+   "add_evidence": [
+    "run:proofs-sys-baseline",
+    "run:proofs-sys-recheck",
+    "run:proofs-sys-sys00-as-built",
+    "experiment/playbook-completion/proofs-sys/PROOFS.md",
+    "experiment/playbook-completion/proofs-sys/RESULTS.json"
+   ],
+   "add_remaining": "[proofs-sys, D-14 composition] no proof connects the product's code to sys00 (D-2, D-3); no refinement from sys00 to the proofs-mech machines (the bridge proves the composed obligations equal to the mechanism instances' obligations and instantiates proofs-mech's theorems at them; it does not compose the mechanism machines); sys00's fixed small world (PROOFS.md PS-1); AX-14 is AG EF, not progress under fairness (PS-3); no sys00 axiom check covers M03-L2, the eraser's head lock (observation in PROOFS.md)"
+  },
+  {
+   "gate": "3.3a-mechanisms",
+   "module": "product",
+   "add_evidence": [
+    "run:proofs-sys-baseline",
+    "run:proofs-sys-recheck",
+    "experiment/playbook-completion/proofs-sys/PROOFS.md",
+    "experiment/playbook-completion/proofs-sys/RESULTS.json"
+   ],
+   "add_remaining": "[proofs-sys, D-14 composition] the remaining D-14 item 'mechanisms not composed; sys00 explorer-only' is paid at model level; still open: no proof connects the product's code to sys00 (D-2, D-3); no refinement from sys00 to the proofs-mech machines (the bridge proves the composed obligations equal to the mechanism instances' obligations and instantiates proofs-mech's theorems at them; it does not compose the mechanism machines); sys00's fixed small world (PROOFS.md PS-1); AX-14 is AG EF, not progress under fairness (PS-3); no sys00 axiom check covers M03-L2, the eraser's head lock (observation in PROOFS.md)"
+  }
+ ]
+}

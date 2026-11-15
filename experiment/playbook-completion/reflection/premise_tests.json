@@ -6750,6 +6750,89 @@
    ],
    "verdict": "untested",
    "should_exist": "Progress tests under IRIS scheduling (D-8)."
+  },
+  {
+   "key": "proofs-sys:PS-1",
+   "source": "experiment/playbook-completion/proofs-sys/PROOFS.md",
+   "id": "PS-1",
+   "premise": "the composed machine is the semantics lane's sys00 abstraction: two tenants with one item each, one retry key retried once, one erasure, one redaction run, every Run step atomic (one transaction, P-0001)",
+   "pin_status": "modelling restriction, as in the explorer; not discharged against the product",
+   "class": "modelling-restriction",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "sim-main-20261114",
+     "what": "random schedules through the real product with more tenants, items and retries than sys00"
+    },
+    {
+     "kind": "model",
+     "ref": "sem-mc-sys00-reviewed",
+     "what": "model: the explorer's sys00 checks over the same small world"
+    }
+   ],
+   "verdict": "tested-partial",
+   "should_exist": "Larger-world instances of the sys00 composition (more tenants, items, retry keys, concurrent erasures), or a cutoff argument that the axiom checks are world-size generic for the composed choices; P-0001 (each Run step one transaction) is itself contradicted at the pin for the erasure (F-1201)."
+  },
+  {
+   "key": "proofs-sys:PS-2",
+   "source": "experiment/playbook-completion/proofs-sys/PROOFS.md",
+   "id": "PS-2",
+   "premise": "the operator re-runs the erasure of a target found live and resumes a parked redaction (actions ReErase, Resume)",
+   "pin_status": "assumed; used only by AX-14's schedule; TRUST.md's operator re-run progress premise",
+   "class": "progress",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "live-fc1303-bounded-resume",
+     "what": "an operator re-running a bounded redaction does not make progress at the pin"
+    },
+    {
+     "kind": "run",
+     "ref": "fu-r03-marker-held-open",
+     "what": "a re-run is refused at its entry check while a writer keeps the marked target live (F-C1307)"
+    }
+   ],
+   "verdict": "tested-partial",
+   "should_exist": "That the operator does re-run and resume is an operator premise; a test would script the re-erase/resume loop through the product and count the calls to completion (the pin's re-run does not progress, so none exists at the pin)."
+  },
+  {
+   "key": "proofs-sys:PS-3",
+   "source": "experiment/playbook-completion/proofs-sys/PROOFS.md",
+   "id": "PS-3",
+   "premise": "AX-14 is AG EF ('can finish'): the theorem exhibits a finishing schedule; a scheduler that runs it (fairness) is not modelled",
+   "pin_status": "named; a fairness version is open",
+   "class": "progress",
+   "tests": [
+    {
+     "kind": "model",
+     "ref": "proofs-sys-sys00-control-ax14-marker-never-cleared",
+     "what": "model: a marker that is never cleared is rejected at AX-14's obligation"
+    }
+   ],
+   "verdict": "untested",
+   "should_exist": "A soak through the product with concurrent committers, erasures and redactions asserting each redaction's marker clears within a bound (fair-scheduling progress), and a fairness version of the theorem."
+  },
+  {
+   "key": "proofs-sys:PS-4",
+   "source": "experiment/playbook-completion/proofs-sys/PROOFS.md",
+   "id": "PS-4",
+   "premise": "AX-01, AX-09 and AX-13 are outside the composition; their laws are proofs-mech's M-12/M-01, M-08 and M-11 theorems",
+   "pin_status": "scope of the explorer check, kept",
+   "class": "tool",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "proofs-mech-baseline",
+     "what": "proofs-mech's M-12/M-01, M-08 and M-11 theorems verify (part of 1,149 verified, 0 errors)"
+    },
+    {
+     "kind": "run",
+     "ref": "proofs-sys-baseline",
+     "what": "proofs-sys builds against the same proofs-mech sources (hashed into its sources_sha256)"
+    }
+   ],
+   "verdict": "tested-partial",
+   "should_exist": "A bridge in proofs-sys that proves the AX-01, AX-09 and AX-13 check predicates equal to the proofs-mech laws (as bridge_m02..m10 do for the composed mechanisms); today the correspondence is by inspection."
   }
  ],
  "proof_debt": [
@@ -7140,7 +7223,7 @@
      "what": "explorer checks of the mechanisms (sem-mc-*) alongside"
     }
    ],
-   "not_covered": "No test links the code to the mechanism instances (D-2/D-3); mechanisms are not composed; the fixed small domains; M07-L4's fairness premise; laws the pin keeps are not tested on the product beyond the findings' runs."
+   "not_covered": "No test links the code to the mechanism instances or to the sys00 composition (D-2/D-3); the composition is proved (proofs-sys) over sys00's small world, without a refinement to the mechanism machines; the fixed small domains; M07-L4's fairness premise and AX-14 under fair scheduling; laws the pin keeps are not tested on the product beyond the findings' runs."
   }
  ],
  "detection": {

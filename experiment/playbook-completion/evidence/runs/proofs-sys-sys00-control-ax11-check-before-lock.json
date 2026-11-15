@@ -1,0 +1,23 @@
+{
+  "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features sys00_control_ax11_check_before_lock -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+  "error_locations": "src/ctl_sys.rs:216,src/ctl_sys.rs:221,src/ctl_sys.rs:224",
+  "errors": "3",
+  "experiment_head": "0b36c251cfc75bbc48ed4d982a515374abd4f0db",
+  "id": "proofs-sys-sys00-control-ax11-check-before-lock",
+  "json_log": "$RUN_DIR/proofs-sys/run-20261114T234729Z/sys00_control_ax11_check_before_lock.json",
+  "json_sha256": "3f680eb9d5b109600b12ca3af67855ccc31cd78d064af941011e13e5a018dbfc",
+  "kind": "control",
+  "lane": "proofs-sys",
+  "log": "$RUN_DIR/proofs-sys/run-20261114T234729Z/sys00_control_ax11_check_before_lock.log",
+  "log_bytes": 6048,
+  "log_sha256": "11b6ceb929e74fce9a83cc2760668ad3875660555c7c96eaeb34c5c23ed87eac",
+  "observes": "sys00_control_ax11_check_before_lock (SYS CtlCheckBeforeLock, explorer check sys00-control-ax11-check-before-lock, mutant; findings none): 3 errors, exactly at ['src/ctl_sys.rs:216', 'src/ctl_sys.rs:221', 'src/ctl_sys.rs:224'] (laws AX-07,AX-11,AX-11M, the explorer's violated laws); failing ['inst::CtlCheckBeforeLock::discharge_ax07', 'inst::CtlCheckBeforeLock::discharge_ax11', 'inst::CtlCheckBeforeLock::discharge_ax11m']; every other function verifies as in the baseline=True; refutations inst::refute_ctlcheckbeforelock_ax07,inst::refute_ctlcheckbeforelock_ax11,inst::refute_ctlcheckbeforelock_ax11m and counterexamples cx::cx_ctlcheckbeforelock_ax07,cx::cx_ctlcheckbeforelock_ax11,cx::cx_ctlcheckbeforelock_ax11m verified=True",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T23:51:42+00:00",
+  "result": "expected-violation",
+  "rlimit_total": "60005584",
+  "sources_sha256": "fc9757dc97b10479b3f8f5d25e14d0c93ca1156b9cc78c60c3ee4096945e09df",
+  "verified": "265",
+  "verus_total_ms": "7259"
+}

@@ -176,7 +176,7 @@ if [[ "$mode" == full || "$mode" == live ]]; then
   if have "$here/proofs-d1f/tools/run_proofs.py"; then mkdir -p "$POUT/proofs-d1f"
     step proofs-d1f 3600 env RUN_DIR="$PRD" PROOFS_OUT_DIR="$POUT/proofs-d1f" python "$here/proofs-d1f/tools/run_proofs.py"
   fi
-  for crate in proofs-d9b proofs-d9c proofs-pa3 proofs-mech proofs-env; do
+  for crate in proofs-d9b proofs-d9c proofs-pa3 proofs-mech proofs-sys proofs-env; do
     if have "$here/$crate/tools/run_proofs.py"; then mkdir -p "$POUT/$crate"
       step "$crate" 3600 env RUN_DIR="$PRD" PROOFS_OUT_DIR="$POUT/$crate" python "$here/$crate/tools/run_proofs.py"
     fi

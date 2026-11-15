@@ -52,7 +52,7 @@ status, evidence level and product obligation per cell). Reconciled 2026-11-14 (
 | Q18f | orchestrator | exclusive-container worlds: repeated crash trials, SynchCommit=1, product-level licence refusal (S6) | done: live-crash-repeat-sc0, -sc1, live-licence-world |
 | Q18h | proofs-env | D-7: the IRIS environment contract as a Verus specification, premises linked, differential link to the executable contract | done (737c3930): Verus subset; 29/29 mutants |
 | Q18i | orchestrator | bounded merge gate per the playbook (verify.sh --merge, hard 1200 s) | done: verify-merge-20e3b336, -bb1f23fc (51/51, ~216 s) |
-| Q18j | proofs-sys | D-14 remainder: system axioms over the composed mechanisms in Verus | doing (steer 13) |
+| Q18j | proofs-sys | D-14 remainder: system axioms over the composed mechanisms in Verus | done (integrated by the orchestrator): 256 verified, 12/12 located controls, recheck; exactness against the explorer's `violates` checked independently |
 | Q18k | proofs-env | D-7 remainder: extension clauses, E-1, X2 into the Verus subset | doing (steer 13) |
 | Q18l | review | scoped addendum to review 6: R6 fixes, O-1 on IVG262CAP, D-7, the merge-gate interpretation | done: sign-off extends to 4e4a4d88; A-01..A-06 fixed (06cf63d1) |
 | Q18g | orchestrator | STATUS/TRUST/PROOF-DEBT refresh; verify.sh --live --clean on a committed tree; fifth review | doing: account refreshed (1dff8e3c, 82027430); clean gate on the candidate running |

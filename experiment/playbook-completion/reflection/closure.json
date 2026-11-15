@@ -2685,10 +2685,39 @@
    "relied_on_by": "proofs-env/PROOFS.md",
    "missing_test": "Progress tests under IRIS scheduling (D-8).",
    "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-sys:PS-2",
+   "group": "proof-premise",
+   "ref": "proofs-sys:PS-2",
+   "condition": "the operator re-runs the erasure of a target found live and resumes a parked redaction (actions ReErase, Resume) [progress]",
+   "status": "validated-in-part",
+   "runs": [
+    "live-fc1303-bounded-resume",
+    "fu-r03-marker-held-open"
+   ],
+   "observed": [],
+   "consequence": "results of proofs-sys that rest on it hold only where it holds; missing test: That the operator does re-run and resume is an operator premise; a test would script the re-erase/resume loop through the product and count the calls to completion (the pin's re-run does not progress, so none exists at the pin).",
+   "relied_on_by": "proofs-sys/PROOFS.md",
+   "missing_test": "That the operator does re-run and resume is an operator premise; a test would script the re-erase/resume loop through the product and count the calls to completion (the pin's re-run does not progress, so none exists at the pin).",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
+  },
+  {
+   "id": "proof-premise:proofs-sys:PS-3",
+   "group": "proof-premise",
+   "ref": "proofs-sys:PS-3",
+   "condition": "AX-14 is AG EF ('can finish'): the theorem exhibits a finishing schedule; a scheduler that runs it (fairness) is not modelled [progress]",
+   "status": "assumed",
+   "runs": [],
+   "observed": [],
+   "consequence": "results of proofs-sys that rest on it hold only where it holds; missing test: A soak through the product with concurrent committers, erasures and redactions asserting each redaction's marker clears within a bound (fair-scheduling progress), and a fairness version of the theorem.",
+   "relied_on_by": "proofs-sys/PROOFS.md",
+   "missing_test": "A soak through the product with concurrent committers, erasures and redactions asserting each redaction's marker clears within a bound (fair-scheduling progress), and a fairness version of the theorem.",
+   "source": "experiment/playbook-completion/reflection/premise_tests.json"
   }
  ],
  "summary": {
-  "conditions": 171,
+  "conditions": 173,
   "by_group": {
    "contract-r6": {
     "validated": 31,
@@ -2704,15 +2733,15 @@
    },
    "proof-premise": {
     "validated": 7,
-    "validated-in-part": 49,
+    "validated-in-part": 50,
     "shown-false": 6,
-    "assumed": 11
+    "assumed": 12
    }
   },
   "by_status": {
    "validated": 47,
-   "validated-in-part": 51,
-   "assumed": 66,
+   "validated-in-part": 52,
+   "assumed": 67,
    "shown-false": 7
   }
  }
