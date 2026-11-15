@@ -1,0 +1,15 @@
+{
+  "command": "flock -s -w 1800 $RUN_DIR/intent-b/auditib.lock timeout 600 python experiment/playbook-completion/intent/probes/lane-b/hd1704_vector_width.py",
+  "experiment_head": "c01a7ccd00b29670b521799344233fa4a814c925",
+  "id": "ib-HD1704-helper-coercion",
+  "kind": "probe",
+  "lane": "intent-b",
+  "log": "$RUN_DIR/intent-b/hd1704_vector_width.log",
+  "log_bytes": 920,
+  "log_sha256": "124a7e212ac07e41c03253c8fbc14383019e1ed56aefbf7a790b43248464dd99",
+  "observes": "normalize_vector pads [1,2]->[1,2,0,0], truncates 6->4, maps NaN/Inf->0.0 (no IRIS). On AUDITIB scratch IVGAudit.ib2_vec (VECTOR(FLOAT,4)), insert_vector stored a 3-wide input as 1,2,3,0, a 6-wide as 1,2,3,4 and NaN as 0, all returning True, while a raw INSERT of a 3-wide vector into the same column was refused (SQLCODE -104). Oracle = the helper's docstring (stated contract: coercion): pass. Shows the column-level width enforcement ADR-0005 relies on never fires through the helper; engine registry-aware refusal is tested upstream (tests/e2e/test_460_r223_vector_width_e2e.py), not re-run.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-13T22:44:03+00:00",
+  "result": "pass"
+}

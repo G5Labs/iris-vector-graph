@@ -1,0 +1,276 @@
+{
+ "cells": [
+  {
+   "gate": "3.4-ownership",
+   "module": "01",
+   "status": "closed",
+   "evidence": [
+    "run:st-check-own-census",
+    "run:st-check-own-controls",
+    "run:st-control-own-selftest",
+    "experiment/playbook-completion/structural/ownership/method.json",
+    "experiment/playbook-completion/structural/ownership/ownership.py",
+    "experiment/playbook-completion/structural/ownership/census_all.py"
+   ],
+   "evidence_grade": "inspected (mechanical source census, registered check with self-test; census completeness and journal controls)",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "owns 4 stores; 4 of them have another writer module. declared co-writers (single ownership fails by design): owner: 1; writer: 7. conditional: run-time-named writers (Graph.KG.Snapshot.ImportGlobals / SetNodeJSON load any global; restore's allow-listed roots)",
+   "as_built_findings": [
+    "F-1806"
+   ],
+   "remaining": "source-level census: run-time names rest on the cited resolution hints in census_all.py/ownership.py (TABLE_HINTS, LINE_HINTS, TEMPLATE_USERS); a write form the scanner does not recognise is covered only as far as the registered census (268/268) and the 393 journal-observed pairs reach. Whether declared shared ownership is accepted is a maintainer decision (\u00a73.8). DDL (162 schema objects) is reported in ownership.json 'ddl', not decided here; F-0107 (unqualified DROP INDEX) is the open DDL ownership finding."
+  },
+  {
+   "gate": "3.4-ownership",
+   "module": "02",
+   "status": "closed",
+   "evidence": [
+    "run:st-check-own-census",
+    "run:st-check-own-controls",
+    "run:st-control-own-selftest",
+    "experiment/playbook-completion/structural/ownership/method.json",
+    "experiment/playbook-completion/structural/ownership/ownership.py",
+    "experiment/playbook-completion/structural/ownership/census_all.py"
+   ],
+   "evidence_grade": "inspected (mechanical source census, registered check with self-test; census completeness and journal controls)",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "owns 1 stores; 1 of them have another writer module. declared co-writers (single ownership fails by design): into own: plan: 2",
+   "as_built_findings": [],
+   "remaining": "source-level census: run-time names rest on the cited resolution hints in census_all.py/ownership.py (TABLE_HINTS, LINE_HINTS, TEMPLATE_USERS); a write form the scanner does not recognise is covered only as far as the registered census (268/268) and the 393 journal-observed pairs reach. Whether declared shared ownership is accepted is a maintainer decision (\u00a73.8)."
+  },
+  {
+   "gate": "3.4-ownership",
+   "module": "03",
+   "status": "closed",
+   "evidence": [
+    "run:st-check-own-census",
+    "run:st-check-own-controls",
+    "run:st-control-own-selftest",
+    "experiment/playbook-completion/structural/ownership/method.json",
+    "experiment/playbook-completion/structural/ownership/ownership.py",
+    "experiment/playbook-completion/structural/ownership/census_all.py"
+   ],
+   "evidence_grade": "inspected (mechanical source census, registered check with self-test; census completeness and journal controls)",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "owns 4 stores; 4 of them have another writer module. undeclared writers of its stores: 00 -> sql:Graph_KG.nodes; 00 -> sql:Graph_KG.rdf_edges; 00 -> sql:Graph_KG.rdf_props; 16 -> sql:Graph_KG.rdf_props. declared co-writers (single ownership fails by design): into own: owner: 4; into own: plan: 8; into own: writer: 21",
+   "as_built_findings": [
+    "F-0503",
+    "F-1502",
+    "F-1503",
+    "F-1604"
+   ],
+   "remaining": "source-level census: run-time names rest on the cited resolution hints in census_all.py/ownership.py (TABLE_HINTS, LINE_HINTS, TEMPLATE_USERS); a write form the scanner does not recognise is covered only as far as the registered census (268/268) and the 393 journal-observed pairs reach. Whether declared shared ownership is accepted is a maintainer decision (\u00a73.8). Unowned writers of content tables: modules/00.json reconciliation (unowned product entry points import_rdf, materialize_inference / retract_inference; open under 3.1-coverage)."
+  },
+  {
+   "gate": "3.4-ownership",
+   "module": "04",
+   "status": "closed",
+   "evidence": [
+    "run:st-check-own-census",
+    "run:st-check-own-controls",
+    "run:st-control-own-selftest",
+    "experiment/playbook-completion/structural/ownership/method.json",
+    "experiment/playbook-completion/structural/ownership/ownership.py",
+    "experiment/playbook-completion/structural/ownership/census_all.py"
+   ],
+   "evidence_grade": "inspected (mechanical source census, registered check with self-test; census completeness and journal controls)",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "owns 26 stores; 26 of them have another writer module. undeclared writes into other modules' stores: global:^KG(\"prop\") (owner None, 1 site(s), e.g. iris_src/src/Graph/KG/TraversalBuild.cls:65 Graph.KG.TraversalBuild.BuildKG). undeclared writers of its stores: 10 -> global:^KG(\"__version\"); 18 -> global:^KG(\"__version\"); 18 -> global:^KG(\"degc\"); 18 -> global:^KG(\"degw\"); 18 -> global:^KG(\"gen\"); 15 -> global:^KG(\"label\"); 06 -> global:^NKG(\"q\"). declared co-writers (single ownership fails by design): into own: plan: 23; into own: writer: 5. conditional: run-time-named writers (Graph.KG.Snapshot.ImportGlobals / SetNodeJSON load any global; restore's allow-listed roots)",
+   "as_built_findings": [
+    "F-0404",
+    "F-1806",
+    "F-C0440",
+    "F-C0640",
+    "F-C1040",
+    "F-C1540"
+   ],
+   "remaining": "source-level census: run-time names rest on the cited resolution hints in census_all.py/ownership.py (TABLE_HINTS, LINE_HINTS, TEMPLATE_USERS); a write form the scanner does not recognise is covered only as far as the registered census (268/268) and the 393 journal-observed pairs reach. Whether declared shared ownership is accepted is a maintainer decision (\u00a73.8)."
+  },
+  {
+   "gate": "3.4-ownership",
+   "module": "05",
+   "status": "closed",
+   "evidence": [
+    "run:st-check-own-census",
+    "run:st-check-own-controls",
+    "run:st-control-own-selftest",
+    "experiment/playbook-completion/structural/ownership/method.json",
+    "experiment/playbook-completion/structural/ownership/ownership.py",
+    "experiment/playbook-completion/structural/ownership/census_all.py"
+   ],
+   "evidence_grade": "inspected (mechanical source census, registered check with self-test; census completeness and journal controls)",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "owns 8 stores; 8 of them have another writer module. declared co-writers (single ownership fails by design): into own: plan: 10; writer: 2",
+   "as_built_findings": [
+    "F-0503"
+   ],
+   "remaining": "source-level census: run-time names rest on the cited resolution hints in census_all.py/ownership.py (TABLE_HINTS, LINE_HINTS, TEMPLATE_USERS); a write form the scanner does not recognise is covered only as far as the registered census (268/268) and the 393 journal-observed pairs reach. Whether declared shared ownership is accepted is a maintainer decision (\u00a73.8)."
+  },
+  {
+   "gate": "3.4-ownership",
+   "module": "06",
+   "status": "closed",
+   "evidence": [
+    "run:st-check-own-census",
+    "run:st-check-own-controls",
+    "run:st-control-own-selftest",
+    "experiment/playbook-completion/structural/ownership/method.json",
+    "experiment/playbook-completion/structural/ownership/ownership.py",
+    "experiment/playbook-completion/structural/ownership/census_all.py"
+   ],
+   "evidence_grade": "inspected (mechanical source census, registered check with self-test; census completeness and journal controls)",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "owns 17 stores; 17 of them have another writer module. undeclared writes into other modules' stores: global:^NKG(\"q\") (owner 04, 1 site(s), e.g. iris_vector_graph/_engine/vector.py:330 VectorMixin._neighborhood_index_drop). undeclared writers of its stores: 15 -> sql:Graph_KG.docs; 17 -> sql:Graph_KG.docs; 15 -> sql:Graph_KG.kg_EdgeEmbeddings; 08 -> sql:Graph_KG.kg_NodeEmbeddings; 11 -> sql:Graph_KG.kg_NodeEmbeddings; 15 -> sql:Graph_KG.kg_NodeEmbeddings; 11 -> sql:Graph_KG.kg_NodeEmbeddings_optimized; 15 -> sql:Graph_KG.kg_NodeEmbeddings_optimized; 15 -> sql:kg_eemb_*; 15 -> sql:kg_emb_*. declared co-writers (single ownership fails by design): into own: owner: 4; into own: plan: 13; into own: writer: 4; writer: 7. conditional: run-time-named writers (Graph.KG.Snapshot.ImportGlobals / SetNodeJSON load any global; restore's allow-listed roots)",
+   "as_built_findings": [
+    "F-0618",
+    "F-1806",
+    "F-C0640",
+    "F-C0840",
+    "F-C1540",
+    "F-C1740"
+   ],
+   "remaining": "source-level census: run-time names rest on the cited resolution hints in census_all.py/ownership.py (TABLE_HINTS, LINE_HINTS, TEMPLATE_USERS); a write form the scanner does not recognise is covered only as far as the registered census (268/268) and the 393 journal-observed pairs reach. Whether declared shared ownership is accepted is a maintainer decision (\u00a73.8)."
+  },
+  {
+   "gate": "3.4-ownership",
+   "module": "08",
+   "status": "closed",
+   "evidence": [
+    "run:st-check-own-census",
+    "run:st-check-own-controls",
+    "run:st-control-own-selftest",
+    "experiment/playbook-completion/structural/ownership/method.json",
+    "experiment/playbook-completion/structural/ownership/ownership.py",
+    "experiment/playbook-completion/structural/ownership/census_all.py"
+   ],
+   "evidence_grade": "inspected (mechanical source census, registered check with self-test; census completeness and journal controls)",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "undeclared writes into other modules' stores: sql:Graph_KG.kg_NodeEmbeddings (owner 06, 2 site(s), e.g. iris_vector_graph/cypher/translator.py:10750 translate_delete_clause); sql:Graph_KG.rdf_reifications (owner 15, 3 site(s), e.g. iris_vector_graph/cypher/translator.py:10757 translate_delete_clause). declared co-writers (single ownership fails by design): writer: 4",
+   "as_built_findings": [
+    "F-C0840"
+   ],
+   "remaining": "source-level census: run-time names rest on the cited resolution hints in census_all.py/ownership.py (TABLE_HINTS, LINE_HINTS, TEMPLATE_USERS); a write form the scanner does not recognise is covered only as far as the registered census (268/268) and the 393 journal-observed pairs reach. Whether declared shared ownership is accepted is a maintainer decision (\u00a73.8)."
+  },
+  {
+   "gate": "3.4-ownership",
+   "module": "09",
+   "status": "closed",
+   "evidence": [
+    "run:st-check-own-census",
+    "run:st-check-own-controls",
+    "run:st-control-own-selftest",
+    "experiment/playbook-completion/structural/ownership/method.json",
+    "experiment/playbook-completion/structural/ownership/ownership.py",
+    "experiment/playbook-completion/structural/ownership/census_all.py"
+   ],
+   "evidence_grade": "inspected (mechanical source census, registered check with self-test; census completeness and journal controls)",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "owns 2 stores; 2 of them have another writer module. conditional: run-time-named writers (Graph.KG.Snapshot.ImportGlobals / SetNodeJSON load any global; restore's allow-listed roots)",
+   "as_built_findings": [
+    "F-1806"
+   ],
+   "remaining": "source-level census: run-time names rest on the cited resolution hints in census_all.py/ownership.py (TABLE_HINTS, LINE_HINTS, TEMPLATE_USERS); a write form the scanner does not recognise is covered only as far as the registered census (268/268) and the 393 journal-observed pairs reach. Whether declared shared ownership is accepted is a maintainer decision (\u00a73.8)."
+  },
+  {
+   "gate": "3.4-ownership",
+   "module": "10",
+   "status": "closed",
+   "evidence": [
+    "run:st-check-own-census",
+    "run:st-check-own-controls",
+    "run:st-control-own-selftest",
+    "experiment/playbook-completion/structural/ownership/method.json",
+    "experiment/playbook-completion/structural/ownership/ownership.py",
+    "experiment/playbook-completion/structural/ownership/census_all.py"
+   ],
+   "evidence_grade": "inspected (mechanical source census, registered check with self-test; census completeness and journal controls)",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "owns 6 stores; 6 of them have another writer module. undeclared writes into other modules' stores: global:^KG(\"__version\") (owner 04, 1 site(s), e.g. iris_src/src/Graph/KG/ArnoAccel.cls:301 Graph.KG.ArnoAccel.BumpVersion). undeclared writers of its stores: 12 -> global:^ArnoKG. declared co-writers (single ownership fails by design): plan: 1; writer: 2. conditional: run-time-named writers (Graph.KG.Snapshot.ImportGlobals / SetNodeJSON load any global; restore's allow-listed roots)",
+   "as_built_findings": [
+    "F-1806",
+    "F-C1040",
+    "F-C1240"
+   ],
+   "remaining": "source-level census: run-time names rest on the cited resolution hints in census_all.py/ownership.py (TABLE_HINTS, LINE_HINTS, TEMPLATE_USERS); a write form the scanner does not recognise is covered only as far as the registered census (268/268) and the 393 journal-observed pairs reach. Whether declared shared ownership is accepted is a maintainer decision (\u00a73.8)."
+  },
+  {
+   "gate": "3.4-ownership",
+   "module": "15",
+   "status": "closed",
+   "evidence": [
+    "run:st-check-own-census",
+    "run:st-check-own-controls",
+    "run:st-control-own-selftest",
+    "experiment/playbook-completion/structural/ownership/method.json",
+    "experiment/playbook-completion/structural/ownership/ownership.py",
+    "experiment/playbook-completion/structural/ownership/census_all.py"
+   ],
+   "evidence_grade": "inspected (mechanical source census, registered check with self-test; census completeness and journal controls)",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "owns 10 stores; 10 of them have another writer module. undeclared writes into other modules' stores: global:^KG(\"label\") (owner 04, 5 site(s), e.g. iris_src/src/Graph/KG/FHIRGraph.cls:2477 Graph.KG.FHIRGraph.DropNode); sql:Graph_KG.docs (owner 06, 1 site(s), e.g. iris_src/src/Graph/KG/FHIRGraph.cls:2481 Graph.KG.FHIRGraph.DropNode); sql:Graph_KG.kg_EdgeEmbeddings (owner 06, 1 site(s), e.g. iris_src/src/Graph/KG/FHIRGraph.cls:2588 Graph.KG.FHIRGraph.DeleteEdge); sql:Graph_KG.kg_NodeEmbeddings (owner 06, 1 site(s), e.g. iris_src/src/Graph/KG/FHIRGraph.cls:2482 Graph.KG.FHIRGraph.DropNode); sql:Graph_KG.kg_NodeEmbeddings_optimized (owner 06, 1 site(s), e.g. iris_src/src/Graph/KG/FHIRGraph.cls:2483 Graph.KG.FHIRGraph.DropNode); sql:kg_eemb_* (owner 06, 2 site(s), e.g. iris_src/src/Graph/KG/FHIRGraph.cls:2489 Graph.KG.FHIRGraph.DropNode); sql:kg_emb_* (owner 06, 2 site(s), e.g. iris_src/src/Graph/KG/FHIRGraph.cls:2489 Graph.KG.FHIRGraph.DropNode). undeclared writers of its stores: 08 -> sql:Graph_KG.rdf_reifications; 17 -> sql:Graph_KG.rdf_reifications. declared co-writers (single ownership fails by design): into own: owner: 1; into own: plan: 14; into own: writer: 1; writer: 4",
+   "as_built_findings": [
+    "F-1502",
+    "F-1503",
+    "F-C0840",
+    "F-C1540",
+    "F-C1740"
+   ],
+   "remaining": "source-level census: run-time names rest on the cited resolution hints in census_all.py/ownership.py (TABLE_HINTS, LINE_HINTS, TEMPLATE_USERS); a write form the scanner does not recognise is covered only as far as the registered census (268/268) and the 393 journal-observed pairs reach. Whether declared shared ownership is accepted is a maintainer decision (\u00a73.8)."
+  },
+  {
+   "gate": "3.4-ownership",
+   "module": "16",
+   "status": "closed",
+   "evidence": [
+    "run:st-check-own-census",
+    "run:st-check-own-controls",
+    "run:st-control-own-selftest",
+    "experiment/playbook-completion/structural/ownership/method.json",
+    "experiment/playbook-completion/structural/ownership/ownership.py",
+    "experiment/playbook-completion/structural/ownership/census_all.py"
+   ],
+   "evidence_grade": "inspected (mechanical source census, registered check with self-test; census completeness and journal controls)",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "undeclared writes into other modules' stores: sql:Graph_KG.rdf_props (owner 03, 3 site(s), e.g. examples/domains/biomedical/resolver.py:264 BiomedicalDomainResolver._update_protein_mutation)",
+   "as_built_findings": [
+    "F-1604"
+   ],
+   "remaining": "source-level census: run-time names rest on the cited resolution hints in census_all.py/ownership.py (TABLE_HINTS, LINE_HINTS, TEMPLATE_USERS); a write form the scanner does not recognise is covered only as far as the registered census (268/268) and the 393 journal-observed pairs reach. Whether declared shared ownership is accepted is a maintainer decision (\u00a73.8)."
+  },
+  {
+   "gate": "3.4-ownership",
+   "module": "18",
+   "status": "closed",
+   "evidence": [
+    "run:st-check-own-census",
+    "run:st-check-own-controls",
+    "run:st-control-own-selftest",
+    "experiment/playbook-completion/structural/ownership/method.json",
+    "experiment/playbook-completion/structural/ownership/ownership.py",
+    "experiment/playbook-completion/structural/ownership/census_all.py"
+   ],
+   "evidence_grade": "inspected (mechanical source census, registered check with self-test; census completeness and journal controls)",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "owns 1 stores; 0 of them have another writer module. undeclared writes into other modules' stores: global:^KG(\"__version\") (owner 04, 1 site(s), e.g. iris_vector_graph/_engine/snapshot.py:57 _raise_kg_version); global:^KG(\"degc\") (owner 04, 1 site(s), e.g. iris_vector_graph/_engine/snapshot.py:1690 SnapshotMixin._import_global_from_ndjson); global:^KG(\"degw\") (owner 04, 1 site(s), e.g. iris_vector_graph/_engine/snapshot.py:1689 SnapshotMixin._import_global_from_ndjson); global:^KG(\"gen\") (owner 04, 1 site(s), e.g. iris_vector_graph/_engine/snapshot.py:1691 SnapshotMixin._import_global_from_ndjson). declared co-writers (single ownership fails by design): plan: 64. conditional: run-time-named writers (Graph.KG.Snapshot.ImportGlobals / SetNodeJSON load any global; restore's allow-listed roots). 21 ADR class violations (ADR-0002, ADR-0011)",
+   "as_built_findings": [
+    "F-0404",
+    "F-1801",
+    "F-1805",
+    "F-1806"
+   ],
+   "remaining": "source-level census: run-time names rest on the cited resolution hints in census_all.py/ownership.py (TABLE_HINTS, LINE_HINTS, TEMPLATE_USERS); a write form the scanner does not recognise is covered only as far as the registered census (268/268) and the 393 journal-observed pairs reach. Whether declared shared ownership is accepted is a maintainer decision (\u00a73.8)."
+  }
+ ]
+}

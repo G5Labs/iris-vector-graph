@@ -1,0 +1,77 @@
+SHARED BRIEF FOR THE 3.5-style ROUND-2 REVIEWERS (product-gates lane; read fully before starting)
+
+ROOT = /home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/iris-vector-graph-audit
+The product (everything outside ROOT/experiment/) is READ-ONLY and equals pin 3eaa79cf. Read files in place. No IRIS,
+no database, no network, no git command that modifies anything. Write ONLY the two output files named in your task
+(under ROOT/experiment/playbook-completion/product-gates/style-r2/). Scratch only under /tmp. No emojis.
+
+GOAL: a style review of your modules' production files against the product's OWN documented conventions, with exact
+path:line citations at ROOT (verify every line number with sed -n / grep -n before citing). Only documented conventions
+count; where the pin documents no rule for something, say so and do not invent one.
+
+CONVENTION TABLE (use these ids exactly; round 1 is ROOT/experiment/playbook-completion/product-gates/STYLE.md: read its
+"Conventions" table, its deviations D-01..D-23 and borderline B-1..B-5 first, so you judge the same way):
+- C-1..C-26 exactly as in STYLE.md (C-1 tool-checked lint: NOT counted, the lane ran the tools; C-3 compile cleanliness
+  and C-20 justified indirection: not judged; C-21..C-26 come from docs/dev/notes/research/alt-impl/BRIEF.md, secondary
+  authority: count them but keep them separate in totals).
+- New conventions from the ADRs that did not touch modules 11-14 (read each ADR's Decision yourself and cite it):
+  C-27 ADR-0005 (docs/adr/0005-vector-width-is-not-declared-in-to-vector.md:7-19): a QUERY vector is converted with the
+       unlengthed TO_VECTOR(:q, DOUBLE); never the 3-argument form for a query vector; the embedding_dimension parameter
+       of GraphSchema.get_procedures_sql_list is not wired into it.
+  C-28 ADR-0006 (0006-...:8-14): embedding model/width identity lives in Graph_KG.embedding_registry, not in the ledger
+       and not in the per-row metadata column.
+  C-29 ADR-0007 (0007-bm25-df-and-doc-record-schema-2.md:3-12): BM25 schema 2 keeps df and a per-document token record
+       under a write lock (counters not by an unlocked $Increment); an unmigrated index is refused, naming Upgrade.
+  C-30 ADR-0009 (0009-...:9-14): a temporal edge write also asserts a marked structural row; a temporal delete removes
+       the row only while marked; create_edge clears the marker.
+  C-31 ADR-0010 (0010-...:10-14) and docs/architecture/ARCHITECTURE.md:107: degree is counted, never stored (no
+       ^KG("deg")/("degp")); readers go through the Sources/Degree helpers.
+  C-32 ADR-0012 (0012-...:10-16): degree answered from ^KG("degc") validated by ^KG("gen"); writers bump gen through
+       Adjacency under the shared lock ^IVG.AdjW(graph); a reader stores a recount only after the exclusive no-wait
+       probe succeeded and gen did not move.
+  C-33 ADR-0014 (0014-...:10-21): Graph.KG.Cypher.Gen owns generated IVGC.P<n> classes and ^IVG.CypherCompiled; a stale
+       entry is never run; only a deploy and Gen.DropAll() delete compiled classes and entries.
+  C-34 ADR-0015 (0015-...:10-...): ^IVG.TemporalStructural is set and cleared only through Graph.KG.TemporalPolicy /
+       engine.set_temporal_structural; the places in its table read the registry.
+  C-35 ADR-0016 (0016-...:10-...): every SQL object IVG creates lives in the IVG Schema (default Graph_KG). NOTE the
+       documented conflict B-5 in STYLE.md (the deploy rewrites Graph_KG literals; CONTRIBUTING.md:65-66,
+       specs/262-ivg-owned-sql-schema/research.md:8-12): a Graph_KG literal in a deployed class is NOT a deviation;
+       a hard-coded schema in Python that bypasses the recorded schema name may be (judge against schema_name.py).
+  If you find another documented rule in docs/architecture/ARCHITECTURE.md, CONTEXT.md, .specify/memory/constitution.md,
+  docs/dev/TESTING_POLICY.md (production-code rules only), CONTRIBUTING.md or PRE_RELEASE_CHECKLIST.md that applies to
+  your modules and is not in the table, add it as C-4x with a group prefix (C-40G1.., C-40G2.., ...) and its citation.
+
+METHOD (state it per file in your output):
+1. List your modules' production files from the "Scope:" line(s) of ROOT/experiment/playbook-completion/ontology/NN-*.md
+   (including "Also owns" lines). Shared files: review only the parts the scope names.
+2. For EVERY in-scope file and EVERY applicable convention, run the convention's search over the whole file and read
+   each hit in context: C-2 `type: ignore`; C-4 graph-key derivation outside Graph.KG.GraphKey (ObjectScript and Python
+   mirrors; read ADR-0003 to judge Python); C-5/C-6/C-7/C-8 `^KG(` sets/kills by store name and owning class; C-9 the
+   temporal globals (tout, tin, bucket, tagg, edgeprop, tlast) outside TemporalIndex, also through indirection/$Name;
+   C-10 `Kill ^NKG`; C-13/C-34 ^IVG.TemporalStructural; C-15 "schema prefix"/"SQLUser" in text; C-17 `except` blocks
+   that swallow (`pass`, `return False/None/[]`, `continue`, log-only) on a path that changes data; C-18 messages naming a
+   writing call; C-19 numeric comparison of string-stored values; C-21..C-26 ObjectScript idioms; C-27 TO_VECTOR; C-28
+   identity storage; C-29 ^BM25Idx counters and locks; C-30..C-33 as stated. C-14: read the header comment of EVERY
+   in-scope Graph.KG / IVG class and check each factual claim it makes against the class body. C-16: check the glossary
+   terms (CONTEXT.md) that your modules' public docstrings and error messages use.
+3. Files of more than ~3,000 lines (e.g. cypher/translator.py, stores/iris_sql_store.py, _engine/schema.py) are covered by
+   that convention-driven sweep, not a line-by-line read: say so in the file's row.
+4. Classify every hit: conforms / deviates / borderline (documents disagree or the rule's wording does not cover it;
+   not counted, give the reason) / reviewer note (taste, not counted). Give a few conforming citations per convention.
+5. A deviation that could be a real defect: grep ROOT/experiment/playbook-completion/findings/audit/*.json for the same
+   path, class, method or behaviour; if an existing finding covers it, name its id; otherwise mark it "new candidate"
+   with module, one-line title, evidence path:lines, why it is a defect (behavioural consequence), proposed severity
+   (S1-S4) and confidence. Source reading only: never claim runtime behaviour you did not see in the code.
+
+OUTPUT FILE 1: style-r2/STYLE-<GROUP>.md (compact, <= 300 lines), sections per module: files table (file, lines,
+coverage: full read or convention sweep, conventions applicable), deviations table (id D-<module>-<nn>, convention,
+path:lines, what deviates), borderline (not counted), candidate findings (existing id or new), reviewer notes (not
+counted), limitations. Start the file with one summary line per module: "Module NN: X deviations of Y conventions
+(primary sources: X1 of Y1; secondary BRIEF.md: X2)".
+OUTPUT FILE 2: style-r2/counts-<GROUP>.json:
+{"group": "...", "modules": {"NN": {"files_reviewed": [...], "coverage": {"path": "full|sweep"},
+ "deviations": [{"id": "D-NN-01", "convention": "C-x", "where": "path:lines", "what": "..."}],
+ "deviations_by_convention": {"C-x": n}, "borderline": n, "candidates": [{"title": "...", "where": "...",
+ "existing_finding": "F-..."|null, "severity": "S?", "confidence": "..."}],
+ "conventions_with_no_documented_rule": ["..."]}}}
+Your final message: per-module counts, the candidate list (existing ids vs new), and confirm the only files you wrote.

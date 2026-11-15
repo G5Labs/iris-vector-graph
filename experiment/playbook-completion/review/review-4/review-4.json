@@ -1,0 +1,143 @@
+{
+ "review": "independent reviewer, fourth pass (playbook §3.8 / §5c)",
+ "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "scope_head": "e8a0d08a",
+ "head_during_review": "7b72fc52 (not reviewed)",
+ "date": "2026-11-14",
+ "decision": "no sign-off",
+ "third_pass_conditions": {
+  "A-1": "partly met (proofs-d9 §5 table; trailing 'Premises the pin violates' and proofs-d9b omit P-D9-3)",
+  "A-2": "met",
+  "A-3": "met at ontology-review3-a3; ontology gate red again (F-C1350/F-C1351 on RED-B1.1)",
+  "A-4": "met for §3.8; STATUS stale again",
+  "O-1/R2-07": "open (operator)"
+ },
+ "evidence_audit": {
+  "records": 221,
+  "rehash_mismatches": 0,
+  "MATCH": 171,
+  "PARTIAL": 48,
+  "MISMATCH": 2,
+  "mismatches": [
+   "ws-live-ins-bulkloader_load_edges",
+   "ws-live-ins-import_rdf"
+  ],
+  "per_record": "review/review-4/evidence-verdicts.json"
+ },
+ "reruns": {
+  "proofs-d1c": "PASS 111/0, 10/10",
+  "proofs-d1d": "PASS 118/0, 21/21 (r2 sources)",
+  "proofs-d1e": "PASS 115/0, 15/15",
+  "proofs-d1f": "PASS 115/0, 16+1",
+  "proofs-d9b": "PASS 158/0, 13/13 + 2/2 progress-only",
+  "proofs-pa3": "PASS 108/0, 9/9",
+  "core-partition": "small checks and reviewed/F1305 families equal registered",
+  "models/semantics": "266/266 met",
+  "check_semantics": "exit 1 at e8a0d08a (F-C1351 unclassed), 24 at HEAD",
+  "check_discharges": "pass, self-test 19/19",
+  "check_root_causes": "exit 1 (12 at e8a0d08a, 35 at HEAD)",
+  "check_premise_map": "exit 1 (D-14, detection; PROOF_CRATES omits d9b/pa3)",
+  "intent_check": "0 problems, self-test pass",
+  "build_matrix --check": "STALE (e8a0d08a: built from uncommitted lanes' files; HEAD: registry 1080 vs 1078)",
+  "ontology_check": "exit 1 (RED-B1.1 uncited F-C1350, F-C1351; INDEX stale)",
+  "check_registry": "1080, 0 problems"
+ },
+ "conditions": {
+  "R4-01": {
+   "severity": "S2",
+   "blocking": true,
+   "where": "proofs-d9b/src/theorems.rs:26-36, biz.rs:70, :142-144; proofs-d9b/PROOFS.md:112; PROOF-DEBT.md:18; F-C1350 notes",
+   "fix": "qualify D-9's no-tombstone result as recorded-content only and record the reading as intent-undecided, or add a reviewed guard with a located control reproducing F-C1350"
+  },
+  "R4-02": {
+   "severity": "S2",
+   "blocking": true,
+   "where": "writesets/DISCHARGES.json WS-OBL-093; ws-live-fc1301-delete-reification; matrix/build_matrix.py:388",
+   "fix": "regrade WS-OBL-093; pair-specific exclusion of cited failed runs"
+  },
+  "R4-03": {
+   "severity": "S3",
+   "blocking": true,
+   "where": "proofs-d9b/PROOFS.md:168, :247; cx_f1306.rs:41; ledger/client.py:445-481; proofs/PROOFS.md:70",
+   "fix": "qualify or re-encode the F-1306 control as an unrecorded Writer step"
+  },
+  "R4-04": {
+   "severity": "S3",
+   "blocking": true,
+   "where": "proofs-d9b/PROOFS.md:239-251; proofs-d9/PROOFS.md:219-225; STATUS.md:63; TRUST.md:29",
+   "fix": "list P-D9-3 and the every-row liveness premise (F-C1351) as violated; F-C1301 live; F-C1350 for G-B"
+  },
+  "R4-05": {
+   "severity": "S3",
+   "blocking": true,
+   "where": "TRUST.md:43; PROOF-DEBT.md:22",
+   "fix": "state theorem_pa3_from_guard's actual (module 04, weakened) scope and module 11's remaining overlap"
+  },
+  "R4-06": {
+   "severity": "S3",
+   "blocking": true,
+   "where": "ws-live-ins-bulkloader_load_edges, ws-live-ins-import_rdf",
+   "fix": "errata; rerun import_rdf INV-replay from an equal baseline; record or explain the %NOINDEX edge residue"
+  },
+  "R4-07": {
+   "severity": "S3",
+   "blocking": true,
+   "where": "40 INV-replay lemma cells; WS-OBL-004/008/024/064/105; WS-OBL-135..144 migrations",
+   "fix": "label as detection (RPL-B7.1) with the RPL-B3 premise broken; drop unsupported '(journal)'; migrations run as context"
+  },
+  "R4-08": {
+   "severity": "S3",
+   "blocking": true,
+   "where": "15 sem-* records; semantics/SEMANTICS.md §2, §5; MECHANISMS.md",
+   "fix": "erratum; complement check; complete departure tables (19/59 controls, 38/84 as-built checks violate another law; 21 undeclared)"
+  },
+  "R4-09": {
+   "severity": "S3",
+   "blocking": true,
+   "where": "ontology gate, check_semantics, check_root_causes, check_premise_map (:54 PROOF_CRATES), TEST-REFLECTION.md, verify.sh",
+   "fix": "classify/cite new findings; glob proof crates; add steer-7 steps to verify.sh; register a new verify.sh --full on a committed tree"
+  },
+  "R4-10": {
+   "severity": "S3",
+   "blocking": true,
+   "where": "3.3a-mechanisms; matrix/gates.json:28; playbook:282, :642",
+   "fix": "reopen with D-14 remaining or state the explorer substitution"
+  },
+  "R4-11": {
+   "severity": "S3",
+   "blocking": true,
+   "where": "matrix/orchestrator_status.json:2350 (3.7-perf); validation/SUITES.md:188-190",
+   "fix": "blocked with exact dependencies, or split"
+  },
+  "R4-12": {
+   "severity": "S3",
+   "blocking": true,
+   "where": "matrix/orchestrator_status.json:2285, 2292, 2299, 2306",
+   "fix": "replace 'proved in the composed protocols' with the model-level/mc facts"
+  },
+  "R4-13": {
+   "severity": "S3",
+   "blocking": true,
+   "where": "STATUS.md:9, 24, 25, 37-38, S1 table; PROOF-DEBT.md:3, :18; F-C1301 observed",
+   "fix": "bring the account up to the steer-7 lanes"
+  },
+  "R4-14": {
+   "severity": "S4",
+   "blocking": false,
+   "fix": "runner summary for d9b/pa3; general 'N errors = failing functions' erratum; rf/d1d-r1/ws-deploy errata; recheck observes counts; F-C1150, F-C0670 wording"
+  },
+  "R4-15": {
+   "severity": "S4",
+   "blocking": false,
+   "fix": "matrix housekeeping (lift text, evidence_file grading, 3.3 basis, module 15, models-2 tags, WS-OBL-066 on O-1, check_discharges live-grade check, no matrix from uncommitted files)"
+  }
+ },
+ "operator": [
+  "O-1 (R2-07) pending"
+ ],
+ "sign_off_requires": [
+  "R4-01..R4-13",
+  "a registered verify.sh --full on the resulting committed tree",
+  "O-1 ruling"
+ ]
+}

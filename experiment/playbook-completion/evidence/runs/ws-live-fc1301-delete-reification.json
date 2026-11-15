@@ -1,0 +1,17 @@
+{
+  "command": "locks.sh iris timeout 900 python experiment/playbook-completion/writesets/live/ws_probes.py rb-delete_reification stmt-purge migrations fhir-blocked (AUDITB; 2 connections)",
+  "experiment_head": "d77620a9333a7eb5b62ca9b8c92144a6aaf74d2b",
+  "finding": "F-C1301",
+  "id": "ws-live-fc1301-delete-reification",
+  "kind": "live",
+  "lane": "writesets",
+  "log": "$RUN_DIR/writesets/rb-delete_reification.json",
+  "log_bytes": 4225,
+  "log_sha256": "19c7d1640f879873523273e5ad331d703950c9a89f6602a5b838c3eb7c1bc13f",
+  "namespace": "AUDITB",
+  "observes": "F-C1301 live with a real ledger-bypassing deleter. Phase 1: tenant wsrb (one ledger revision, 3 records, live node+label+prop); a caller connection ran START TRANSACTION ($TLEVEL 1) and engine.delete_reification(\"wsrb|n1\") nested in it (WriteTxn; $TLEVEL still 1 after the call); another connection saw 0 live rows (dirty read) and redact(None, prefix=\"wsrb\") completed (complete true, 3 records tombstoned, 2 batches, audit revision 3); the caller ROLLBACK restored the node, label and property (3 live rows) while all 3 records stay tombstoned; verify() = diverges (unrecorded_writes). Phase 2: tenant wsrb2, the same uncommitted delete, a bounded run (batch 1, max_batches 1) set the marker and tombstoned 1 record, the rollback made wsrb2 live (3 rows) while the marker names it; a re-run is refused target_live (marker held).",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T11:45:47+00:00",
+  "result": "fail"
+}

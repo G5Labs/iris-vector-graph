@@ -1,0 +1,5574 @@
+{
+ "_doc": "Shared mechanisms of IVG (playbook 3.3a step 2). Built by semantics/tools/build_semantics.py from src/mechanisms_src.json and models/semantics/RESULTS.json. Each law lists its negative controls and the as-built checks that violate it; each instance lists the model checks run for that object.",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "mechanisms": [
+  {
+   "id": "M-01",
+   "name": "Ledger commit with record",
+   "implements": [
+    "AX-05",
+    "AX-07",
+    "AX-04"
+   ],
+   "state": "governed content C; records R[1..head] (each content, or a tombstone); head; ledger state never-enabled | enabled | disabled; strict flag; an engine's cached copy of the strict flag",
+   "operations": [
+    "commit(changeset, expected_head?)",
+    "insert-if-absent commit (temporal insert mode)",
+    "write outside the ledger (bypass path)",
+    "set strict",
+    "redact a record (tombstone)"
+   ],
+   "effect_kinds": [
+    "append record",
+    "change governed content",
+    "move head",
+    "refuse"
+   ],
+   "events": [
+    "revision committed (seq, id)",
+    "refusal code"
+   ],
+   "laws": [
+    {
+     "id": "M01-L1",
+     "kind": "action",
+     "text": "History only grows: every step keeps each record or turns it into its tombstone, and never lowers the head.",
+     "controls": [
+      "ledger-control-C2-overwrite-record"
+     ],
+     "as_built_violations": [],
+     "also_violated_by": [],
+     "sharpness": [
+      "ledger-sharp-two-records",
+      "ledger-sharp-strict-refusal"
+     ]
+    },
+    {
+     "id": "M01-L2",
+     "kind": "invariant",
+     "text": "Record and change together: when no transaction is open, the governed content equals the replay of the records, unless an unrecorded write was allowed (non-strict) and is flagged.",
+     "controls": [
+      "ledger-control-C1-two-step-record"
+     ],
+     "as_built_violations": [
+      "ledger-node-delete-named-only-as-built",
+      "ledger-temporal-insert-collision-as-built"
+     ],
+     "also_violated_by": [],
+     "sharpness": [
+      "ledger-sharp-two-records",
+      "ledger-sharp-strict-refusal"
+     ]
+    },
+    {
+     "id": "M01-L3",
+     "kind": "action",
+     "text": "A stale expected head (or a disabled ledger) refuses with a code and changes nothing.",
+     "controls": [
+      "ledger-control-C3-ignore-head"
+     ],
+     "as_built_violations": [],
+     "also_violated_by": [],
+     "sharpness": [
+      "ledger-sharp-two-records",
+      "ledger-sharp-strict-refusal"
+     ]
+    },
+    {
+     "id": "M01-L4",
+     "kind": "action",
+     "text": "Strict mode: no write outside the ledger changes governed content while strict is on.",
+     "controls": [
+      "ledger-control-C4-unguarded-bypass"
+     ],
+     "as_built_violations": [
+      "ledger-strict-cached-guard-as-built",
+      "ledger-bypass-unchecked-as-built"
+     ],
+     "also_violated_by": [],
+     "sharpness": [
+      "ledger-sharp-two-records",
+      "ledger-sharp-strict-refusal"
+     ]
+    }
+   ],
+   "generic_controls": [
+    {
+     "id": "M01-C1",
+     "law": "M01-L2",
+     "mutant": "the record is written in a second step after the content, and a process may stop between them"
+    },
+    {
+     "id": "M01-C2",
+     "law": "M01-L1",
+     "mutant": "an update rewrites the last record in place instead of appending"
+    },
+    {
+     "id": "M01-C3",
+     "law": "M01-L3",
+     "mutant": "a stale expected head is applied"
+    },
+    {
+     "id": "M01-C4",
+     "law": "M01-L4",
+     "mutant": "one bypass path checks no strict flag"
+    }
+   ],
+   "family": "ledger",
+   "instances": [
+    {
+     "object": "11/ledger",
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/Ledger.cls:397-528",
+     "model": "ledger/commit-core",
+     "model_checks": [
+      "ledger-commit-core-as-built",
+      "ledger-commit-core-reviewed",
+      "ledger-control-C1-two-step-record",
+      "ledger-control-C2-overwrite-record",
+      "ledger-control-C3-ignore-head",
+      "ledger-control-C4-unguarded-bypass"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "11/node-id",
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/LedgerApply.cls:79-84, 354-385",
+     "model": "ledger/node-delete-named-only",
+     "note": "a delete of a node only a named graph holds is recorded although it removed nothing; replay then deletes what the store kept",
+     "departures": [
+      {
+       "law": "M01-L2",
+       "findings": [
+        "F-1105"
+       ]
+      }
+     ],
+     "model_checks": [
+      "ledger-node-delete-named-only-as-built",
+      "ledger-node-delete-named-only-reviewed"
+     ],
+     "violated_laws": [
+      "M01-L2"
+     ],
+     "departs": [
+      "M01-L2"
+     ],
+     "findings": [
+      "F-1105"
+     ]
+    },
+    {
+     "object": "05/temporal-coordinates",
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/LedgerApply.cls (temporal insert op)",
+     "model": "ledger/temporal-insert-collision",
+     "departures": [
+      {
+       "law": "M01-L2",
+       "findings": [
+        "F-0511"
+       ]
+      }
+     ],
+     "model_checks": [
+      "ledger-temporal-insert-collision-as-built",
+      "ledger-temporal-insert-collision-reviewed"
+     ],
+     "violated_laws": [
+      "M01-L2"
+     ],
+     "departs": [
+      "M01-L2"
+     ],
+     "findings": [
+      "F-0511"
+     ]
+    },
+    {
+     "object": "03/ledger-state",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/ledger/guard.py:20-59",
+     "model": "ledger/strict-cached-guard",
+     "note": "strict mode is a client-side check over a 5 s cache that fails open",
+     "departures": [
+      {
+       "law": "M01-L4",
+       "findings": [
+        "F-0302",
+        "F-0801"
+       ]
+      }
+     ],
+     "model_checks": [
+      "ledger-strict-cached-guard-as-built",
+      "ledger-strict-cached-guard-reviewed",
+      "ledger-sharp-two-records",
+      "ledger-sharp-strict-refusal"
+     ],
+     "violated_laws": [
+      "M01-L4"
+     ],
+     "departs": [
+      "M01-L4"
+     ],
+     "findings": [
+      "F-0302",
+      "F-0801"
+     ]
+    },
+    {
+     "object": "03/node-in-one-graph",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/bulk_loader.py:252-272; iris_vector_graph/_engine/temporal.py:623-641",
+     "model": "ledger/bypass-unchecked",
+     "note": "bulk loader, purges and two other write paths write governed rows with no strict check and no record",
+     "departures": [
+      {
+       "law": "M01-L4",
+       "findings": [
+        "F-0301",
+        "F-0504",
+        "F-1108"
+       ]
+      }
+     ],
+     "model_checks": [
+      "ledger-bypass-unchecked-as-built",
+      "ledger-bypass-unchecked-reviewed"
+     ],
+     "violated_laws": [
+      "M01-L4"
+     ],
+     "departs": [
+      "M01-L4"
+     ],
+     "findings": [
+      "F-0301",
+      "F-0504",
+      "F-1108"
+     ]
+    },
+    {
+     "object": "03/edge-in-one-graph",
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/Adjacency.cls:575-603",
+     "model": "ledger/bypass-unchecked",
+     "note": "a temporal write creates node rows the ledger never records",
+     "departures": [
+      {
+       "law": "M01-L4",
+       "findings": [
+        "F-0503"
+       ]
+      }
+     ],
+     "model_checks": [
+      "ledger-bypass-unchecked-as-built",
+      "ledger-bypass-unchecked-reviewed"
+     ],
+     "violated_laws": [
+      "M01-L4"
+     ],
+     "departs": [
+      "M01-L4"
+     ],
+     "findings": [
+      "F-0503"
+     ]
+    },
+    {
+     "object": "08/cypher-node",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/query.py:2299-2301",
+     "model": "ledger/strict-cached-guard",
+     "departures": [
+      {
+       "law": "M01-L4",
+       "findings": [
+        "F-0801"
+       ]
+      }
+     ],
+     "model_checks": [
+      "ledger-strict-cached-guard-as-built",
+      "ledger-strict-cached-guard-reviewed",
+      "ledger-sharp-two-records",
+      "ledger-sharp-strict-refusal"
+     ],
+     "violated_laws": [
+      "M01-L4"
+     ],
+     "departs": [
+      "M01-L4"
+     ],
+     "findings": [
+      "F-0801"
+     ]
+    },
+    {
+     "object": "08/cypher-edge",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/query.py:2299-2301",
+     "model": "ledger/strict-cached-guard",
+     "departures": [
+      {
+       "law": "M01-L4",
+       "findings": [
+        "F-0801"
+       ]
+      }
+     ],
+     "model_checks": [
+      "ledger-strict-cached-guard-as-built",
+      "ledger-strict-cached-guard-reviewed",
+      "ledger-sharp-two-records",
+      "ledger-sharp-strict-refusal"
+     ],
+     "violated_laws": [
+      "M01-L4"
+     ],
+     "departs": [
+      "M01-L4"
+     ],
+     "findings": [
+      "F-0801"
+     ]
+    },
+    {
+     "object": "08/cypher-call",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/ledger/guard.py:20-80",
+     "model": "ledger/strict-cached-guard",
+     "departures": [
+      {
+       "law": "M01-L4",
+       "findings": [
+        "F-0801"
+       ]
+      }
+     ],
+     "model_checks": [
+      "ledger-strict-cached-guard-as-built",
+      "ledger-strict-cached-guard-reviewed",
+      "ledger-sharp-two-records",
+      "ledger-sharp-strict-refusal"
+     ],
+     "violated_laws": [
+      "M01-L4"
+     ],
+     "departs": [
+      "M01-L4"
+     ],
+     "findings": [
+      "F-0801"
+     ]
+    },
+    {
+     "object": "11/edge-statement",
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/LedgerApply.cls",
+     "model": "ledger/commit-core",
+     "model_checks": [
+      "ledger-commit-core-as-built",
+      "ledger-commit-core-reviewed",
+      "ledger-control-C1-two-step-record",
+      "ledger-control-C2-overwrite-record",
+      "ledger-control-C3-ignore-head",
+      "ledger-control-C4-unguarded-bypass"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "14/ledger-view",
+     "use": "canonical",
+     "where": "iris_vector_graph/ledger/replay.py:155-210",
+     "model": "ledger/commit-core",
+     "note": "replay is the L2 law's fold",
+     "model_checks": [
+      "ledger-commit-core-as-built",
+      "ledger-commit-core-reviewed",
+      "ledger-control-C1-two-step-record",
+      "ledger-control-C2-overwrite-record",
+      "ledger-control-C3-ignore-head",
+      "ledger-control-C4-unguarded-bypass"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "18/namespace",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/snapshot.py:1554-1588",
+     "note": "shown in the snapshot family: snapshot-replacing-restore-as-built (law M06-L2, the restore form of M01-L1: a restore lowers the head)",
+     "departures": [
+      {
+       "law": "M01-L1",
+       "findings": [
+        "F-1801"
+       ]
+      }
+     ],
+     "model_checks": [],
+     "violated_laws": null,
+     "departs": [
+      "M01-L1"
+     ],
+     "findings": [
+      "F-1801"
+     ]
+    }
+   ],
+   "model": {
+    "crate": "experiment/playbook-completion/models/semantics",
+    "family": "ledger",
+    "checks": 16,
+    "checks_met": 16,
+    "scope": [
+     "exhaustive"
+    ]
+   }
+  },
+  {
+   "id": "M-02",
+   "name": "Retry and idempotency binding",
+   "implements": [
+    "AX-06",
+    "AX-12"
+   ],
+   "state": "binding per request identity: free | bound(answer, fingerprint) | redacted; effect count; post-commit effect count; a client's view of the answer (seen | lost)",
+   "operations": [
+    "send(request)",
+    "retry same request",
+    "retry with another payload under the same key",
+    "post-commit step",
+    "redact the bound revision"
+   ],
+   "effect_kinds": [
+    "apply effect once",
+    "bind",
+    "replay answer",
+    "refuse conflict",
+    "refuse redacted"
+   ],
+   "events": [
+    "answer (first or replayed)",
+    "idempotency_conflict",
+    "idempotency_redacted"
+   ],
+   "laws": [
+    {
+     "id": "M02-L1",
+     "kind": "invariant",
+     "text": "At most one effect per request identity (post-commit effects included).",
+     "controls": [
+      "retry-control-C1-bind-after-effect"
+     ],
+     "as_built_violations": [
+      "retry-client-resend-as-built",
+      "retry-server-rerun-as-built"
+     ],
+     "also_violated_by": [
+      "retry-ledger-key-as-built",
+      "retry-control-C2-post-on-replay",
+      "retry-control-C3-apply-conflict"
+     ],
+     "sharpness": [
+      "retry-sharp-replay",
+      "retry-sharp-conflict",
+      "retry-sharp-redacted-refusal"
+     ]
+    },
+    {
+     "id": "M02-L2",
+     "kind": "action",
+     "text": "A replay returns the first answer and changes nothing.",
+     "controls": [
+      "retry-control-C2-post-on-replay"
+     ],
+     "as_built_violations": [
+      "retry-ledger-key-as-built"
+     ],
+     "also_violated_by": [],
+     "sharpness": [
+      "retry-sharp-replay",
+      "retry-sharp-conflict",
+      "retry-sharp-redacted-refusal"
+     ]
+    },
+    {
+     "id": "M02-L3",
+     "kind": "action",
+     "text": "Another payload under a bound key is refused and changes nothing.",
+     "controls": [
+      "retry-control-C3-apply-conflict"
+     ],
+     "as_built_violations": [],
+     "also_violated_by": [],
+     "sharpness": [
+      "retry-sharp-replay",
+      "retry-sharp-conflict",
+      "retry-sharp-redacted-refusal"
+     ]
+    },
+    {
+     "id": "M02-L4",
+     "kind": "invariant",
+     "text": "After the bound revision is redacted, the binding is gone (no replay, no text) and a retry is refused.",
+     "controls": [
+      "retry-control-C4-redaction-keeps-binding"
+     ],
+     "as_built_violations": [
+      "retry-zero-record-revision-as-built"
+     ],
+     "also_violated_by": [],
+     "sharpness": [
+      "retry-sharp-replay",
+      "retry-sharp-conflict",
+      "retry-sharp-redacted-refusal"
+     ]
+    }
+   ],
+   "generic_controls": [
+    {
+     "id": "M02-C1",
+     "law": "M02-L1",
+     "mutant": "the binding is written in a separate step after the effect; a stop between them lets a retry apply again"
+    },
+    {
+     "id": "M02-C2",
+     "law": "M02-L2",
+     "mutant": "the post-commit step runs on a replayed answer too"
+    },
+    {
+     "id": "M02-C3",
+     "law": "M02-L3",
+     "mutant": "a conflicting payload is applied"
+    },
+    {
+     "id": "M02-C4",
+     "law": "M02-L4",
+     "mutant": "redaction leaves the binding"
+    }
+   ],
+   "family": "retry",
+   "instances": [
+    {
+     "object": "11/retry-key",
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/Ledger.cls:454-473; iris_vector_graph/ledger/client.py:418-487",
+     "model": "retry/ledger-key",
+     "note": "the server binding is atomic with the commit; the client re-applies post-commit properties on a replayed answer",
+     "departures": [
+      {
+       "law": "M02-L1",
+       "findings": [
+        "F-1101",
+        "F-1306"
+       ]
+      },
+      {
+       "law": "M02-L2",
+       "findings": [
+        "F-1101",
+        "F-1306"
+       ]
+      }
+     ],
+     "model_checks": [
+      "retry-ledger-key-as-built",
+      "retry-ledger-key-reviewed",
+      "retry-control-C1-bind-after-effect",
+      "retry-control-C2-post-on-replay",
+      "retry-control-C3-apply-conflict",
+      "retry-control-C4-redaction-keeps-binding",
+      "retry-sharp-replay",
+      "retry-sharp-conflict",
+      "retry-sharp-redacted-refusal"
+     ],
+     "violated_laws": [
+      "M02-L1",
+      "M02-L2"
+     ],
+     "departs": [
+      "M02-L1",
+      "M02-L2"
+     ],
+     "findings": [
+      "F-1101",
+      "F-1306"
+     ]
+    },
+    {
+     "object": "13/redaction-target",
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/LedgerApply.cls:229-233, 252-284",
+     "model": "retry/zero-record-revision",
+     "note": "a revision whose changeset recorded nothing is never touched by redaction, so its key stays bound",
+     "departures": [
+      {
+       "law": "M02-L4",
+       "findings": [
+        "F-CS01"
+       ]
+      }
+     ],
+     "model_checks": [
+      "retry-zero-record-revision-as-built",
+      "retry-zero-record-revision-reviewed"
+     ],
+     "violated_laws": [
+      "M02-L4"
+     ],
+     "departs": [
+      "M02-L4"
+     ],
+     "findings": [
+      "F-CS01"
+     ]
+    },
+    {
+     "object": "17/client-request",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/sdk.py:209-228",
+     "model": "retry/client-resend",
+     "departures": [
+      {
+       "law": "M02-L1",
+       "findings": [
+        "F-C1703"
+       ]
+      }
+     ],
+     "model_checks": [
+      "retry-client-resend-as-built",
+      "retry-client-resend-reviewed"
+     ],
+     "violated_laws": [
+      "M02-L1"
+     ],
+     "departs": [
+      "M02-L1"
+     ],
+     "findings": [
+      "F-C1703"
+     ]
+    },
+    {
+     "object": "16/cypher-http-call",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/cypher_api.py:239-268",
+     "model": "retry/server-rerun",
+     "departures": [
+      {
+       "law": "M02-L1",
+       "findings": [
+        "F-C1604"
+       ]
+      }
+     ],
+     "model_checks": [
+      "retry-server-rerun-as-built",
+      "retry-server-rerun-reviewed"
+     ],
+     "violated_laws": [
+      "M02-L1"
+     ],
+     "departs": [
+      "M02-L1"
+     ],
+     "findings": [
+      "F-C1604"
+     ]
+    },
+    {
+     "object": "01/setup-routine",
+     "use": "canonical",
+     "where": "iris_vector_graph/schema.py (initialize_schema)",
+     "model": "retry/idempotent-setup",
+     "model_checks": [
+      "retry-idempotent-setup-as-built",
+      "retry-idempotent-setup-reviewed"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "06/registry-row",
+     "use": "canonical",
+     "where": "iris_vector_graph/_engine/embeddings.py:157-197",
+     "model": "retry/idempotent-setup",
+     "note": "setting the same model again changes nothing (VEC-B1.18)",
+     "model_checks": [
+      "retry-idempotent-setup-as-built",
+      "retry-idempotent-setup-reviewed"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "06/queue-entry",
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/EmbedQueue.cls:35-60",
+     "model": "retry/idempotent-setup",
+     "note": "one entry per node id: a second enqueue overwrites; its lost-update race is M-07's",
+     "model_checks": [
+      "retry-idempotent-setup-as-built",
+      "retry-idempotent-setup-reviewed"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    }
+   ],
+   "model": {
+    "crate": "experiment/playbook-completion/models/semantics",
+    "family": "retry",
+    "checks": 17,
+    "checks_met": 17,
+    "scope": [
+     "exhaustive"
+    ]
+   }
+  },
+  {
+   "id": "M-03",
+   "name": "Exclusive section: lock and marker",
+   "implements": [
+    "AX-11",
+    "AX-12"
+   ],
+   "state": "lock holder(s) (exclusive or shared); marker: none | (target, owner); per target: live?, history tombstoned?",
+   "operations": [
+    "take lock (exclusive / shared)",
+    "release",
+    "check the target is not live",
+    "check no marker on the target",
+    "set marker",
+    "clear marker",
+    "guarded effect (commit into, tombstone, erase)"
+   ],
+   "effect_kinds": [
+    "acquire",
+    "release",
+    "mark",
+    "unmark",
+    "guarded write",
+    "refuse (busy, marked, live)"
+   ],
+   "events": [
+    "redaction_in_progress",
+    "lock_timeout",
+    "target_live"
+   ],
+   "laws": [
+    {
+     "id": "M03-L1",
+     "kind": "invariant",
+     "text": "Mutual exclusion: an exclusive holder excludes every other holder.",
+     "controls": [
+      "excl-control-C1-lock-admits-two"
+     ],
+     "as_built_violations": [],
+     "also_violated_by": [],
+     "sharpness": [
+      "excl-sharp-redaction-finishes",
+      "excl-sharp-commit-refused-by-marker",
+      "excl-sharp-run-refused-live"
+     ]
+    },
+    {
+     "id": "M03-L2",
+     "kind": "action",
+     "text": "Every guarded effect is made by a process that holds the lock.",
+     "controls": [
+      "excl-control-C2-writer-without-lock"
+     ],
+     "as_built_violations": [
+      "excl-eraser-no-head-lock-as-built",
+      "excl-adjacency-writer-lock-as-built",
+      "excl-bm25-write-lock-as-built",
+      "excl-plan-build-lock-as-built",
+      "excl-mode-switch-as-built"
+     ],
+     "also_violated_by": [],
+     "sharpness": [
+      "excl-sharp-redaction-finishes",
+      "excl-sharp-commit-refused-by-marker",
+      "excl-sharp-run-refused-live"
+     ]
+    },
+    {
+     "id": "M03-L3",
+     "kind": "invariant",
+     "text": "A marker is valid: while target t is marked, t is not live.",
+     "controls": [
+      "excl-control-C3-check-before-lock"
+     ],
+     "as_built_violations": [
+      "excl-redaction-marker-as-built-F1302-marker"
+     ],
+     "also_violated_by": [
+      "excl-redaction-marker-as-built",
+      "excl-redaction-marker-as-built-F1302-tomb-live",
+      "excl-control-C2-writer-without-lock",
+      "excl-control-C5-tomb-without-check"
+     ],
+     "sharpness": [
+      "excl-sharp-redaction-finishes",
+      "excl-sharp-commit-refused-by-marker",
+      "excl-sharp-run-refused-live"
+     ]
+    },
+    {
+     "id": "M03-L4",
+     "kind": "action",
+     "text": "Only the marker's owner clears it.",
+     "controls": [
+      "excl-control-C4-clear-any"
+     ],
+     "as_built_violations": [
+      "excl-redaction-marker-as-built"
+     ],
+     "also_violated_by": [
+      "excl-redaction-marker-as-built-F1302-marker",
+      "excl-redaction-marker-as-built-F1302-tomb-live"
+     ],
+     "sharpness": [
+      "excl-sharp-redaction-finishes",
+      "excl-sharp-commit-refused-by-marker",
+      "excl-sharp-run-refused-live"
+     ]
+    },
+    {
+     "id": "M03-L5",
+     "kind": "action",
+     "text": "No history of live content is tombstoned.",
+     "controls": [
+      "excl-control-C5-tomb-without-check"
+     ],
+     "as_built_violations": [
+      "excl-redaction-marker-as-built-F1302-tomb-live"
+     ],
+     "also_violated_by": [
+      "excl-redaction-marker-as-built",
+      "excl-redaction-marker-as-built-F1302-marker",
+      "excl-control-C2-writer-without-lock",
+      "excl-control-C3-check-before-lock"
+     ],
+     "sharpness": [
+      "excl-sharp-redaction-finishes",
+      "excl-sharp-commit-refused-by-marker",
+      "excl-sharp-run-refused-live"
+     ]
+    }
+   ],
+   "generic_controls": [
+    {
+     "id": "M03-C1",
+     "law": "M03-L1",
+     "mutant": "the lock admits a second exclusive holder"
+    },
+    {
+     "id": "M03-C2",
+     "law": "M03-L2",
+     "mutant": "one writer makes its guarded effect without the lock"
+    },
+    {
+     "id": "M03-C3",
+     "law": "M03-L3",
+     "mutant": "the liveness check runs before the lock and the marker is set in a later section"
+    },
+    {
+     "id": "M03-C4",
+     "law": "M03-L4",
+     "mutant": "Final clears whatever marker exists"
+    }
+   ],
+   "family": "excl",
+   "instances": [
+    {
+     "object": "11/ledger",
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/Ledger.cls:440-444, 404",
+     "model": "excl/head-lock-commit",
+     "model_checks": [
+      "excl-head-lock-commit-as-built",
+      "excl-head-lock-commit-reviewed"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "13/redaction-target",
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/LedgerRedact.cls:185-211, 302-330, 384-430",
+     "model": "excl/redaction-marker",
+     "note": "the liveness check is unlocked and the marker is set in the first batch; Final clears the one global marker whoever set it",
+     "departures": [
+      {
+       "law": "M03-L3",
+       "findings": [
+        "F-1302"
+       ]
+      },
+      {
+       "law": "M03-L4",
+       "findings": [
+        "F-1303"
+       ]
+      },
+      {
+       "law": "M03-L5",
+       "findings": [
+        "F-1302",
+        "F-C1350"
+       ]
+      }
+     ],
+     "model_checks": [
+      "excl-redaction-marker-as-built",
+      "excl-redaction-marker-reviewed",
+      "excl-redaction-marker-as-built-F1302-marker",
+      "excl-redaction-marker-as-built-F1302-tomb-live",
+      "excl-control-C1-lock-admits-two",
+      "excl-control-C2-writer-without-lock",
+      "excl-control-C3-check-before-lock",
+      "excl-control-C4-clear-any",
+      "excl-control-C5-tomb-without-check",
+      "excl-sharp-redaction-finishes",
+      "excl-sharp-commit-refused-by-marker",
+      "excl-sharp-run-refused-live"
+     ],
+     "violated_laws": [
+      "M03-L3",
+      "M03-L4",
+      "M03-L5"
+     ],
+     "departs": [
+      "M03-L3",
+      "M03-L4",
+      "M03-L5"
+     ],
+     "findings": [
+      "F-1302",
+      "F-1303",
+      "F-C1350"
+     ]
+    },
+    {
+     "object": "12/graph-content",
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/Eraser.cls:665-678, 809-811",
+     "model": "excl/eraser-no-head-lock",
+     "note": "erasure changes the statement maps and rows a commit also writes, without the head lock",
+     "departures": [
+      {
+       "law": "M03-L2",
+       "findings": [
+        "F-1201",
+        "F-1114",
+        "F-C1201"
+       ]
+      }
+     ],
+     "model_checks": [
+      "excl-eraser-no-head-lock-as-built",
+      "excl-eraser-no-head-lock-reviewed"
+     ],
+     "violated_laws": [
+      "M03-L2"
+     ],
+     "departs": [
+      "M03-L2"
+     ],
+     "findings": [
+      "F-1114",
+      "F-1201",
+      "F-C1201"
+     ]
+    },
+    {
+     "object": "04/graph-writer-lock",
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/Adjacency.cls:61-75",
+     "model": "excl/adjacency-writer-lock",
+     "note": "writers share the lock and proceed without it after 5 s, setting the no-lock mark (a signalled degraded mode); Reweight takes none",
+     "departures": [
+      {
+       "law": "M03-L2",
+       "findings": [
+        "F-0407"
+       ]
+      }
+     ],
+     "model_checks": [
+      "excl-adjacency-writer-lock-as-built",
+      "excl-adjacency-writer-lock-reviewed"
+     ],
+     "violated_laws": [
+      "M03-L2"
+     ],
+     "departs": [
+      "M03-L2"
+     ],
+     "findings": [
+      "F-0407"
+     ]
+    },
+    {
+     "object": "04/no-lock-mark",
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/Adjacency.cls:55-75",
+     "model": "excl/adjacency-no-lock-mark",
+     "note": "the mark is the signal of an unlocked write",
+     "model_checks": [
+      "excl-adjacency-no-lock-mark-as-built",
+      "excl-adjacency-no-lock-mark-reviewed"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "07/bm25-index",
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/BM25Index.cls:97-175, 403-410, 587-591",
+     "model": "excl/bm25-write-lock",
+     "departures": [
+      {
+       "law": "M03-L2",
+       "findings": [
+        "F-0701"
+       ]
+      }
+     ],
+     "model_checks": [
+      "excl-bm25-write-lock-as-built",
+      "excl-bm25-write-lock-reviewed"
+     ],
+     "violated_laws": [
+      "M03-L2"
+     ],
+     "departs": [
+      "M03-L2"
+     ],
+     "findings": [
+      "F-0701"
+     ]
+    },
+    {
+     "object": "09/compiled-shape",
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/Cypher/Gen.cls:166, 225-230",
+     "model": "excl/plan-build-lock",
+     "departures": [
+      {
+       "law": "M03-L2",
+       "findings": [
+        "F-0905"
+       ]
+      }
+     ],
+     "model_checks": [
+      "excl-plan-build-lock-as-built",
+      "excl-plan-build-lock-reviewed"
+     ],
+     "violated_laws": [
+      "M03-L2"
+     ],
+     "departs": [
+      "M03-L2"
+     ],
+     "findings": [
+      "F-0905"
+     ]
+    },
+    {
+     "object": "02/graph-mode",
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/GraphMode.cls:26-61",
+     "model": "excl/mode-switch",
+     "departures": [
+      {
+       "law": "M03-L2",
+       "findings": [
+        "F-0207"
+       ]
+      }
+     ],
+     "model_checks": [
+      "excl-mode-switch-as-built",
+      "excl-mode-switch-reviewed"
+     ],
+     "violated_laws": [
+      "M03-L2"
+     ],
+     "departs": [
+      "M03-L2"
+     ],
+     "findings": [
+      "F-0207"
+     ]
+    },
+    {
+     "object": "13/redaction-run",
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/LedgerRedact.cls:275-300",
+     "model": "excl/redaction-marker",
+     "departures": [
+      {
+       "law": "M03-L3",
+       "findings": [
+        "F-1302"
+       ],
+       "why": "the run checks liveness before its lock and sets the marker in its first batch"
+      },
+      {
+       "law": "M03-L4",
+       "findings": [
+        "F-1303"
+       ],
+       "why": "the run's Final clears the one global marker whoever set it"
+      },
+      {
+       "law": "M03-L5",
+       "findings": [
+        "F-1302",
+        "F-C1350"
+       ],
+       "why": "a batch tombstones history of content made live after the run's check"
+      }
+     ],
+     "note": "the redaction run is the actor of the redaction target's marker handling; same model as 13/redaction-target",
+     "model_checks": [
+      "excl-redaction-marker-as-built",
+      "excl-redaction-marker-reviewed",
+      "excl-redaction-marker-as-built-F1302-marker",
+      "excl-redaction-marker-as-built-F1302-tomb-live",
+      "excl-control-C1-lock-admits-two",
+      "excl-control-C2-writer-without-lock",
+      "excl-control-C3-check-before-lock",
+      "excl-control-C4-clear-any",
+      "excl-control-C5-tomb-without-check",
+      "excl-sharp-redaction-finishes",
+      "excl-sharp-commit-refused-by-marker",
+      "excl-sharp-run-refused-live"
+     ],
+     "violated_laws": [
+      "M03-L3",
+      "M03-L4",
+      "M03-L5"
+     ],
+     "departs": [
+      "M03-L3",
+      "M03-L4",
+      "M03-L5"
+     ],
+     "findings": [
+      "F-1302",
+      "F-1303",
+      "F-C1350"
+     ]
+    },
+    {
+     "object": "10/interned-snapshot",
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/NKGAccelLoader.cls",
+     "model": "excl/head-lock-commit",
+     "note": "rebuilt under lock ^IVG.NKGBuild; staleness is M-04's",
+     "model_checks": [
+      "excl-head-lock-commit-as-built",
+      "excl-head-lock-commit-reviewed"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "15/fhir-graph",
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/FHIRGraph.cls:543-626",
+     "note": "not modelled here: the sync lock against erasure is breadth-c machine M3 (HD-1502..1504)",
+     "model_checks": [],
+     "violated_laws": null,
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "15/fhir-sync-task",
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/FHIRGraph.cls:543-626",
+     "note": "not modelled here: the sync lock (busy refused), breadth-c machine M3",
+     "model_checks": [],
+     "violated_laws": null,
+     "departs": [],
+     "findings": []
+    }
+   ],
+   "model": {
+    "crate": "experiment/playbook-completion/models/semantics",
+    "family": "excl",
+    "checks": 26,
+    "checks_met": 26,
+    "scope": [
+     "exhaustive"
+    ]
+   }
+  },
+  {
+   "id": "M-04",
+   "name": "Derived store with staleness",
+   "implements": [
+    "AX-08"
+   ],
+   "state": "committed source S (and an open writer's uncommitted value); derived D (the S it was computed from); D's stamp; the live token T (monotone, not undone by rollback)",
+   "operations": [
+    "source write in a transaction, maintained per write path: in the same transaction (functional index), by moving the token, or not at all",
+    "commit / roll back / stop",
+    "reader fill (read token, read source, store D with that stamp)",
+    "rebuild under lock",
+    "clear without restamp",
+    "read through a gate"
+   ],
+   "effect_kinds": [
+    "update source",
+    "update derived",
+    "move token",
+    "stamp",
+    "refuse or fall back when stale"
+   ],
+   "events": [
+    "stale (stamp != token)",
+    "rebuilt"
+   ],
+   "laws": [
+    {
+     "id": "M04-L1",
+     "kind": "invariant",
+     "text": "Current or stale: when no writer is open, stamp = token implies D = f(S).",
+     "controls": [
+      "derived-control-C2-token-after-compute",
+      "derived-control-C5-probe-late"
+     ],
+     "as_built_violations": [
+      "derived-degree-cache-as-built-F0402",
+      "derived-degree-cache-as-built-FC0401",
+      "derived-degree-cache-as-built-F0406",
+      "derived-result-cache-04-as-built-F0402",
+      "derived-interned-snapshot-as-built-FC0801",
+      "derived-bucket-aggregate-update-as-built-F0501"
+     ],
+     "also_violated_by": [
+      "derived-algo-cache-edgeless-as-built-F1004",
+      "derived-interned-snapshot-as-built-F1005",
+      "derived-bm25-text-change-as-built-F0703",
+      "derived-statement-map-direct-delete-as-built-F0303",
+      "derived-engine-mode-cache-as-built-F0208",
+      "derived-ttl-cache-as-built-F0302",
+      "derived-ttl-cache-as-built-EXC05",
+      "derived-native-gate-label-index-as-built-F0906",
+      "derived-ivf-erase-as-built-F0606",
+      "derived-control-C1-unmaintained-path",
+      "derived-control-C3-rebuild-stamp-only"
+     ],
+     "sharpness": [
+      "derived-sharp-stale",
+      "derived-sharp-fill-current",
+      "derived-sharp-rebuilt"
+     ]
+    },
+    {
+     "id": "M04-L2",
+     "kind": "action",
+     "text": "Every source write path updates D in its transaction or moves the token.",
+     "controls": [
+      "derived-control-C1-unmaintained-path"
+     ],
+     "as_built_violations": [
+      "derived-algo-cache-edgeless-as-built-F1004",
+      "derived-interned-snapshot-as-built-F1005",
+      "derived-bm25-text-change-as-built-F0703",
+      "derived-statement-map-direct-delete-as-built-F0303",
+      "derived-engine-mode-cache-as-built-F0208",
+      "derived-ttl-cache-as-built-F0302",
+      "derived-ttl-cache-as-built-EXC05",
+      "derived-ivf-erase-as-built-F0606"
+     ],
+     "also_violated_by": [
+      "derived-native-gate-label-index-as-built-F0906"
+     ],
+     "sharpness": [
+      "derived-sharp-stale",
+      "derived-sharp-fill-current",
+      "derived-sharp-rebuilt"
+     ]
+    },
+    {
+     "id": "M04-L3",
+     "kind": "invariant",
+     "text": "A rebuild leaves D = f(S) with the current stamp, or leaves it stale.",
+     "controls": [
+      "derived-control-C3-rebuild-stamp-only"
+     ],
+     "as_built_violations": [],
+     "also_violated_by": [],
+     "sharpness": [
+      "derived-sharp-stale",
+      "derived-sharp-fill-current",
+      "derived-sharp-rebuilt"
+     ]
+    },
+    {
+     "id": "M04-L4",
+     "kind": "action",
+     "text": "A read from D answers f(S) or checks the signal and falls back.",
+     "controls": [
+      "derived-control-C4-unchecked-gate"
+     ],
+     "as_built_violations": [
+      "derived-native-gate-label-index-as-built-F0906"
+     ],
+     "also_violated_by": [
+      "derived-degree-cache-as-built-F0402",
+      "derived-degree-cache-as-built-FC0401",
+      "derived-degree-cache-as-built-F0406",
+      "derived-result-cache-04-as-built-F0402",
+      "derived-algo-cache-edgeless-as-built-F1004",
+      "derived-interned-snapshot-as-built-F1005",
+      "derived-interned-snapshot-as-built-FC0801",
+      "derived-bm25-text-change-as-built-F0703",
+      "derived-statement-map-direct-delete-as-built-F0303",
+      "derived-bucket-aggregate-update-as-built-F0501",
+      "derived-engine-mode-cache-as-built-F0208",
+      "derived-ttl-cache-as-built-F0302",
+      "derived-ttl-cache-as-built-EXC05",
+      "derived-ivf-erase-as-built-F0606",
+      "derived-control-C1-unmaintained-path",
+      "derived-control-C2-token-after-compute",
+      "derived-control-C3-rebuild-stamp-only",
+      "derived-control-C5-probe-late"
+     ],
+     "sharpness": [
+      "derived-sharp-stale",
+      "derived-sharp-fill-current",
+      "derived-sharp-rebuilt"
+     ]
+    }
+   ],
+   "generic_controls": [
+    {
+     "id": "M04-C1",
+     "law": "M04-L2",
+     "mutant": "one write path neither updates D nor moves the token"
+    },
+    {
+     "id": "M04-C2",
+     "law": "M04-L1",
+     "mutant": "a reader fill stamps D with the token read after the source (a write in between is missed)"
+    },
+    {
+     "id": "M04-C3",
+     "law": "M04-L3",
+     "mutant": "a rebuild stamps D without recomputing it"
+    },
+    {
+     "id": "M04-C4",
+     "law": "M04-L4",
+     "mutant": "the read gate does not check the stamp"
+    }
+   ],
+   "family": "derived",
+   "instances": [
+    {
+     "object": "04/adjacency-entry",
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/AdjIndex.cls:12-23 (functional index, X-FX)",
+     "model": "derived/adjacency-functional",
+     "model_checks": [
+      "derived-adjacency-functional-as-built",
+      "derived-adjacency-functional-reviewed"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "04/degree-cache-entry",
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/Adjacency.cls:80-160",
+     "model": "derived/degree-cache",
+     "note": "the token moves before commit and a rollback does not move it again, so a reader fill of the uncommitted count stays current; clearing the cache keeps the warm stamp",
+     "departures": [
+      {
+       "law": "M04-L1",
+       "findings": [
+        "F-0402",
+        "F-0406",
+        "F-C0401"
+       ]
+      },
+      {
+       "law": "M04-L4",
+       "findings": [
+        "F-0402",
+        "F-C0401",
+        "F-0406"
+       ],
+       "why": "consequence in this model: a read through the gate returns the stale value as current"
+      }
+     ],
+     "model_checks": [
+      "derived-degree-cache-as-built-F0402",
+      "derived-degree-cache-as-built-FC0401",
+      "derived-degree-cache-as-built-F0406",
+      "derived-degree-cache-reviewed",
+      "derived-control-C1-unmaintained-path",
+      "derived-control-C2-token-after-compute",
+      "derived-control-C3-rebuild-stamp-only",
+      "derived-control-C4-unchecked-gate",
+      "derived-control-C5-probe-late",
+      "derived-sharp-stale",
+      "derived-sharp-fill-current",
+      "derived-sharp-rebuilt"
+     ],
+     "violated_laws": [
+      "M04-L1",
+      "M04-L4"
+     ],
+     "departs": [
+      "M04-L1",
+      "M04-L4"
+     ],
+     "findings": [
+      "F-0402",
+      "F-0406",
+      "F-C0401"
+     ]
+    },
+    {
+     "object": "04/result-cache-entry",
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/AlgoCache.cls:1-50",
+     "model": "derived/result-cache-04",
+     "departures": [
+      {
+       "law": "M04-L1",
+       "findings": [
+        "F-0402"
+       ]
+      },
+      {
+       "law": "M04-L4",
+       "findings": [
+        "F-0402"
+       ],
+       "why": "consequence in this model: a read through the gate returns the stale value as current"
+      }
+     ],
+     "model_checks": [
+      "derived-result-cache-04-as-built-F0402",
+      "derived-result-cache-04-reviewed"
+     ],
+     "violated_laws": [
+      "M04-L1",
+      "M04-L4"
+     ],
+     "departs": [
+      "M04-L1",
+      "M04-L4"
+     ],
+     "findings": [
+      "F-0402"
+     ]
+    },
+    {
+     "object": "10/result-cache-entry",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/stores/iris_sql_store.py:921-983, 2231-2275",
+     "model": "derived/algo-cache-edgeless",
+     "note": "a node written without an edge moves no token",
+     "departures": [
+      {
+       "law": "M04-L2",
+       "findings": [
+        "F-1004"
+       ]
+      },
+      {
+       "law": "M04-L1",
+       "findings": [
+        "F-1004"
+       ],
+       "why": "consequence in this model of the same unmaintained write: the derived entry keeps a current stamp while it no longer equals its source"
+      },
+      {
+       "law": "M04-L4",
+       "findings": [
+        "F-1004"
+       ],
+       "why": "consequence in this model: a read through the gate returns the stale value as current"
+      }
+     ],
+     "model_checks": [
+      "derived-algo-cache-edgeless-as-built-F1004",
+      "derived-algo-cache-edgeless-reviewed"
+     ],
+     "violated_laws": [
+      "M04-L1",
+      "M04-L2",
+      "M04-L4"
+     ],
+     "departs": [
+      "M04-L1",
+      "M04-L2",
+      "M04-L4"
+     ],
+     "findings": [
+      "F-1004"
+     ]
+    },
+    {
+     "object": "10/interned-snapshot",
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/TemporalIndex.cls:104-112; iris_src/src/Graph/KG/Adjacency.cls:111-140",
+     "model": "derived/interned-snapshot",
+     "departures": [
+      {
+       "law": "M04-L2",
+       "findings": [
+        "F-1005"
+       ]
+      },
+      {
+       "law": "M04-L1",
+       "findings": [
+        "F-1005",
+        "F-C0801"
+       ]
+      },
+      {
+       "law": "M04-L4",
+       "findings": [
+        "F-1005",
+        "F-C0801"
+       ],
+       "why": "consequence in this model: a read through the gate returns the stale value as current"
+      }
+     ],
+     "model_checks": [
+      "derived-interned-snapshot-as-built-F1005",
+      "derived-interned-snapshot-as-built-FC0801",
+      "derived-interned-snapshot-reviewed"
+     ],
+     "violated_laws": [
+      "M04-L1",
+      "M04-L2",
+      "M04-L4"
+     ],
+     "departs": [
+      "M04-L1",
+      "M04-L2",
+      "M04-L4"
+     ],
+     "findings": [
+      "F-1005",
+      "F-C0801"
+     ]
+    },
+    {
+     "object": "07/bm25-index",
+     "use": "hand-rolled",
+     "where": "docs/USER_GUIDE.md:893-894; iris_src/src/Graph/KG/BM25Index.cls",
+     "model": "derived/bm25-text-change",
+     "note": "a node text change neither reindexes nor marks the index stale",
+     "departures": [
+      {
+       "law": "M04-L2",
+       "findings": [
+        "F-0703"
+       ]
+      },
+      {
+       "law": "M04-L1",
+       "findings": [
+        "F-0703"
+       ],
+       "why": "consequence in this model of the same unmaintained write: the derived entry keeps a current stamp while it no longer equals its source"
+      },
+      {
+       "law": "M04-L4",
+       "findings": [
+        "F-0703"
+       ],
+       "why": "consequence in this model: a read through the gate returns the stale value as current"
+      }
+     ],
+     "model_checks": [
+      "derived-bm25-text-change-as-built-F0703",
+      "derived-bm25-text-change-reviewed"
+     ],
+     "violated_laws": [
+      "M04-L1",
+      "M04-L2",
+      "M04-L4"
+     ],
+     "departs": [
+      "M04-L1",
+      "M04-L2",
+      "M04-L4"
+     ],
+     "findings": [
+      "F-0703"
+     ]
+    },
+    {
+     "object": "11/edge-statement",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/nodes_edges.py (direct delete_edge)",
+     "model": "derived/statement-map-direct-delete",
+     "departures": [
+      {
+       "law": "M04-L2",
+       "findings": [
+        "F-0303"
+       ]
+      },
+      {
+       "law": "M04-L1",
+       "findings": [
+        "F-0303"
+       ],
+       "why": "consequence in this model of the same unmaintained write: the derived entry keeps a current stamp while it no longer equals its source"
+      },
+      {
+       "law": "M04-L4",
+       "findings": [
+        "F-0303"
+       ],
+       "why": "consequence in this model: a read through the gate returns the stale value as current"
+      }
+     ],
+     "model_checks": [
+      "derived-statement-map-direct-delete-as-built-F0303",
+      "derived-statement-map-direct-delete-reviewed"
+     ],
+     "violated_laws": [
+      "M04-L1",
+      "M04-L2",
+      "M04-L4"
+     ],
+     "departs": [
+      "M04-L1",
+      "M04-L2",
+      "M04-L4"
+     ],
+     "findings": [
+      "F-0303"
+     ]
+    },
+    {
+     "object": "05/latest-event-index",
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/TemporalIndex.cls",
+     "model": "derived/adjacency-functional",
+     "note": "complete / incomplete is the staleness signal; rebuild makes it complete",
+     "model_checks": [
+      "derived-adjacency-functional-as-built",
+      "derived-adjacency-functional-reviewed"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "05/temporal-coordinates",
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/TemporalIndex.cls (bucket aggregate)",
+     "model": "derived/bucket-aggregate-update",
+     "note": "an update-mode write counts its edge again in the bucket aggregate",
+     "departures": [
+      {
+       "law": "M04-L1",
+       "findings": [
+        "F-0501"
+       ]
+      },
+      {
+       "law": "M04-L4",
+       "findings": [
+        "F-0501"
+       ],
+       "why": "consequence in this model: a read through the gate returns the stale value as current"
+      }
+     ],
+     "model_checks": [
+      "derived-bucket-aggregate-update-as-built-F0501",
+      "derived-bucket-aggregate-update-reviewed"
+     ],
+     "violated_laws": [
+      "M04-L1",
+      "M04-L4"
+     ],
+     "departs": [
+      "M04-L1",
+      "M04-L4"
+     ],
+     "findings": [
+      "F-0501"
+     ]
+    },
+    {
+     "object": "02/graph-mode",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine (engine mode cache)",
+     "model": "derived/engine-mode-cache",
+     "departures": [
+      {
+       "law": "M04-L2",
+       "findings": [
+        "F-0208"
+       ]
+      },
+      {
+       "law": "M04-L1",
+       "findings": [
+        "F-0208"
+       ],
+       "why": "consequence in this model of the same unmaintained write: the derived entry keeps a current stamp while it no longer equals its source"
+      },
+      {
+       "law": "M04-L4",
+       "findings": [
+        "F-0208"
+       ],
+       "why": "consequence in this model: a read through the gate returns the stale value as current"
+      }
+     ],
+     "model_checks": [
+      "derived-engine-mode-cache-as-built-F0208",
+      "derived-engine-mode-cache-reviewed"
+     ],
+     "violated_laws": [
+      "M04-L1",
+      "M04-L2",
+      "M04-L4"
+     ],
+     "departs": [
+      "M04-L1",
+      "M04-L2",
+      "M04-L4"
+     ],
+     "findings": [
+      "F-0208"
+     ]
+    },
+    {
+     "object": "03/ledger-state",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/ledger/guard.py:20-59",
+     "model": "derived/ttl-cache",
+     "note": "a 5 s cache with no staleness signal",
+     "departures": [
+      {
+       "law": "M04-L2",
+       "findings": [
+        "F-0302"
+       ]
+      },
+      {
+       "law": "M04-L1",
+       "findings": [
+        "F-0302"
+       ],
+       "why": "consequence in this model of the same unmaintained write: the derived entry keeps a current stamp while it no longer equals its source"
+      },
+      {
+       "law": "M04-L4",
+       "findings": [
+        "F-0302"
+       ],
+       "why": "consequence in this model: a read through the gate returns the stale value as current"
+      }
+     ],
+     "model_checks": [
+      "derived-ttl-cache-as-built-F0302",
+      "derived-ttl-cache-as-built-EXC05",
+      "derived-ttl-cache-reviewed"
+     ],
+     "violated_laws": [
+      "M04-L1",
+      "M04-L2",
+      "M04-L4"
+     ],
+     "departs": [
+      "M04-L1",
+      "M04-L2",
+      "M04-L4"
+     ],
+     "findings": [
+      "F-0302"
+     ]
+    },
+    {
+     "object": "06/route",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/vector.py (route memory)",
+     "model": "derived/ttl-cache",
+     "note": "the documented 30 s route memory (VEC-T2.13)",
+     "departures": [
+      {
+       "law": "M04-L2",
+       "findings": [],
+       "exception": "EXC-05"
+      },
+      {
+       "law": "M04-L1",
+       "findings": [],
+       "why": "within the documented 30 s route memory",
+       "exception": "EXC-05"
+      },
+      {
+       "law": "M04-L4",
+       "findings": [],
+       "why": "within the documented 30 s route memory",
+       "exception": "EXC-05"
+      }
+     ],
+     "model_checks": [
+      "derived-ttl-cache-as-built-F0302",
+      "derived-ttl-cache-as-built-EXC05",
+      "derived-ttl-cache-reviewed"
+     ],
+     "violated_laws": [
+      "M04-L1",
+      "M04-L2",
+      "M04-L4"
+     ],
+     "departs": [
+      "M04-L1",
+      "M04-L2",
+      "M04-L4"
+     ],
+     "findings": []
+    },
+    {
+     "object": "09/engine-native-path",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/cypher/native_plan.py:528-529; iris_vector_graph/engine.py:703-724",
+     "model": "derived/native-gate-label-index",
+     "departures": [
+      {
+       "law": "M04-L4",
+       "findings": [
+        "F-0906"
+       ],
+       "why": "the native gate reads the label index without checking that it is declared"
+      },
+      {
+       "law": "M04-L2",
+       "findings": [],
+       "exception": "EXC-11",
+       "why": "an undeclared label index is kept only by the engine's own writers; other writes leave it stale, by design"
+      },
+      {
+       "law": "M04-L1",
+       "findings": [],
+       "exception": "EXC-11",
+       "why": "an undeclared index's staleness signal is its declaration flag, not a stamp; the abstraction shows it as current and wrong"
+      }
+     ],
+     "model_checks": [
+      "derived-native-gate-label-index-as-built-F0906",
+      "derived-native-gate-label-index-reviewed"
+     ],
+     "violated_laws": [
+      "M04-L1",
+      "M04-L2",
+      "M04-L4"
+     ],
+     "departs": [
+      "M04-L1",
+      "M04-L2",
+      "M04-L4"
+     ],
+     "findings": [
+      "F-0906"
+     ]
+    },
+    {
+     "object": "09/compiled-shape",
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/Cypher/Gen.cls:13-16, 225-230",
+     "model": "derived/adjacency-functional",
+     "note": "a deploy discards every compiled plan (stamp); key collisions are M-12's",
+     "model_checks": [
+      "derived-adjacency-functional-as-built",
+      "derived-adjacency-functional-reviewed"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "06/ivf-index",
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/IVFIndex.cls",
+     "model": "derived/ivf-erase",
+     "note": "erasure leaves the index's entries; modelled as the erasure write path not maintaining it",
+     "departures": [
+      {
+       "law": "M04-L2",
+       "findings": [
+        "F-0606"
+       ]
+      },
+      {
+       "law": "M04-L1",
+       "findings": [
+        "F-0606"
+       ],
+       "why": "consequence in this model of the same unmaintained write: the derived entry keeps a current stamp while it no longer equals its source"
+      },
+      {
+       "law": "M04-L4",
+       "findings": [
+        "F-0606"
+       ],
+       "why": "consequence in this model: a read through the gate returns the stale value as current"
+      }
+     ],
+     "model_checks": [
+      "derived-ivf-erase-as-built-F0606",
+      "derived-ivf-erase-reviewed"
+     ],
+     "violated_laws": [
+      "M04-L1",
+      "M04-L2",
+      "M04-L4"
+     ],
+     "departs": [
+      "M04-L1",
+      "M04-L2",
+      "M04-L4"
+     ],
+     "findings": [
+      "F-0606"
+     ]
+    },
+    {
+     "object": "17/index-handle",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph (index handle, BM25)",
+     "model": "derived/bm25-text-change",
+     "departures": [
+      {
+       "law": "M04-L2",
+       "findings": [
+        "F-0703"
+       ]
+      },
+      {
+       "law": "M04-L1",
+       "findings": [
+        "F-0703"
+       ],
+       "why": "consequence in this model of the same unmaintained write: the derived entry keeps a current stamp while it no longer equals its source"
+      },
+      {
+       "law": "M04-L4",
+       "findings": [
+        "F-0703"
+       ],
+       "why": "consequence in this model: a read through the gate returns the stale value as current"
+      }
+     ],
+     "model_checks": [
+      "derived-bm25-text-change-as-built-F0703",
+      "derived-bm25-text-change-reviewed"
+     ],
+     "violated_laws": [
+      "M04-L1",
+      "M04-L2",
+      "M04-L4"
+     ],
+     "departs": [
+      "M04-L1",
+      "M04-L2",
+      "M04-L4"
+     ],
+     "findings": [
+      "F-0703"
+     ]
+    },
+    {
+     "object": "05/triple-row",
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/TemporalIndex.cls",
+     "model": "derived/adjacency-functional",
+     "note": "the marked structural row is derived from the temporal edge; its ownership departures are M-01/AX-01 findings (F-0506, F-0304)",
+     "model_checks": [
+      "derived-adjacency-functional-as-built",
+      "derived-adjacency-functional-reviewed"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "18/namespace",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/snapshot.py:1679",
+     "note": "shown in the snapshot family: snapshot-merge-aggregates-as-built (law M06-L3: a merge restore overwrites a derived aggregate)",
+     "departures": [
+      {
+       "law": "M04-L1",
+       "findings": [
+        "F-1805"
+       ]
+      }
+     ],
+     "model_checks": [],
+     "violated_laws": null,
+     "departs": [
+      "M04-L1"
+     ],
+     "findings": [
+      "F-1805"
+     ]
+    }
+   ],
+   "model": {
+    "crate": "experiment/playbook-completion/models/semantics",
+    "family": "derived",
+    "checks": 36,
+    "checks_met": 36,
+    "scope": [
+     "exhaustive"
+    ]
+   }
+  },
+  {
+   "id": "M-05",
+   "name": "Store inventory and removal",
+   "implements": [
+    "AX-10",
+    "AX-02",
+    "AX-04"
+   ],
+   "state": "stores s1..sn each holding content per target; the eraser's inventory; redaction's reach over history (records, revision text, retry keys); the receipt's list of what remains",
+   "operations": [
+    "write content of a target into the stores its path reaches",
+    "erase target",
+    "redact target",
+    "read receipt"
+   ],
+   "effect_kinds": [
+    "remove from inventoried stores",
+    "tombstone history",
+    "report remaining"
+   ],
+   "events": [
+    "receipt"
+   ],
+   "laws": [
+    {
+     "id": "M05-L1",
+     "kind": "invariant",
+     "text": "After erasure and a successful redaction of t, no store holds t's content unless the receipt names that store.",
+     "controls": [
+      "removal-control-C1-store-dropped"
+     ],
+     "as_built_violations": [
+      "removal-bm25-as-built",
+      "removal-vector-indexes-as-built",
+      "removal-quarantine-as-built",
+      "removal-snapshot-archives-as-built",
+      "removal-reifier-default-graph-as-built",
+      "removal-temporal-only-prefix-as-built",
+      "removal-history-text-as-built",
+      "removal-default-routed-vectors-as-built"
+     ],
+     "also_violated_by": [
+      "removal-bm25-as-built-M05-L3",
+      "removal-vector-indexes-as-built-M05-L3",
+      "removal-control-C1b-store-dropped-inventory"
+     ],
+     "sharpness": [
+      "removal-sharp-removed-other-kept",
+      "removal-sharp-erased-history-kept"
+     ]
+    },
+    {
+     "id": "M05-L2",
+     "kind": "action",
+     "text": "Removing t changes no other target's content.",
+     "controls": [
+      "removal-control-C2-cross-target"
+     ],
+     "as_built_violations": [
+      "removal-temporal-purge-all-graphs-as-built"
+     ],
+     "also_violated_by": [],
+     "sharpness": [
+      "removal-sharp-removed-other-kept",
+      "removal-sharp-erased-history-kept"
+     ]
+    },
+    {
+     "id": "M05-L3",
+     "kind": "invariant",
+     "text": "The inventory lists every store any write path reaches.",
+     "controls": [
+      "removal-control-C1b-store-dropped-inventory"
+     ],
+     "as_built_violations": [
+      "removal-bm25-as-built-M05-L3",
+      "removal-vector-indexes-as-built-M05-L3"
+     ],
+     "also_violated_by": [
+      "removal-bm25-as-built",
+      "removal-vector-indexes-as-built",
+      "removal-quarantine-as-built",
+      "removal-snapshot-archives-as-built",
+      "removal-reifier-default-graph-as-built",
+      "removal-temporal-only-prefix-as-built",
+      "removal-history-text-as-built",
+      "removal-default-routed-vectors-as-built",
+      "removal-control-C1-store-dropped"
+     ],
+     "sharpness": [
+      "removal-sharp-removed-other-kept",
+      "removal-sharp-erased-history-kept"
+     ]
+    }
+   ],
+   "generic_controls": [
+    {
+     "id": "M05-C1",
+     "law": "M05-L1",
+     "mutant": "one store is dropped from the inventory and the receipt does not name it"
+    },
+    {
+     "id": "M05-C2",
+     "law": "M05-L2",
+     "mutant": "erasure of t also removes the other target's entry in one store"
+    }
+   ],
+   "family": "removal",
+   "instances": [
+    {
+     "object": "12/graph-content",
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/Eraser.cls:47-260; iris_src/src/Graph/KG/GraphStores.cls:26-133",
+     "model": "removal/rows-adjacency-temporal",
+     "model_checks": [
+      "removal-rows-adjacency-temporal-as-built",
+      "removal-rows-adjacency-temporal-reviewed",
+      "removal-control-C1-store-dropped",
+      "removal-control-C1b-store-dropped-inventory",
+      "removal-control-C2-cross-target",
+      "removal-sharp-removed-other-kept",
+      "removal-sharp-erased-history-kept"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "07/bm25-index",
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/Eraser.cls:138-147",
+     "model": "removal/bm25",
+     "departures": [
+      {
+       "law": "M05-L1",
+       "findings": [
+        "F-0702"
+       ]
+      },
+      {
+       "law": "M05-L3",
+       "findings": [
+        "F-0702"
+       ]
+      }
+     ],
+     "model_checks": [
+      "removal-bm25-as-built",
+      "removal-bm25-as-built-M05-L3",
+      "removal-bm25-reviewed"
+     ],
+     "violated_laws": [
+      "M05-L1",
+      "M05-L3"
+     ],
+     "departs": [
+      "M05-L1",
+      "M05-L3"
+     ],
+     "findings": [
+      "F-0702"
+     ]
+    },
+    {
+     "object": "06/ivf-index",
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/GraphStores.cls:26-133",
+     "model": "removal/vector-indexes",
+     "departures": [
+      {
+       "law": "M05-L1",
+       "findings": [
+        "F-0606"
+       ]
+      },
+      {
+       "law": "M05-L3",
+       "findings": [
+        "F-0606"
+       ]
+      }
+     ],
+     "model_checks": [
+      "removal-vector-indexes-as-built",
+      "removal-vector-indexes-as-built-M05-L3",
+      "removal-vector-indexes-reviewed"
+     ],
+     "violated_laws": [
+      "M05-L1",
+      "M05-L3"
+     ],
+     "departs": [
+      "M05-L1",
+      "M05-L3"
+     ],
+     "findings": [
+      "F-0606"
+     ]
+    },
+    {
+     "object": "06/quarantined-row",
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/Eraser.cls:300-302, 752-758",
+     "model": "removal/quarantine",
+     "departures": [
+      {
+       "law": "M05-L1",
+       "findings": [
+        "F-C1305"
+       ]
+      },
+      {
+       "law": "M05-L3",
+       "findings": [
+        "F-C1305"
+       ],
+       "why": "the same defect seen as inventory incompleteness: a write path reaches a store that neither erasure, redaction nor the receipt reaches"
+      }
+     ],
+     "model_checks": [
+      "removal-quarantine-as-built",
+      "removal-quarantine-reviewed"
+     ],
+     "violated_laws": [
+      "M05-L1",
+      "M05-L3"
+     ],
+     "departs": [
+      "M05-L1",
+      "M05-L3"
+     ],
+     "findings": [
+      "F-C1305"
+     ]
+    },
+    {
+     "object": "18/snapshot-archive",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/snapshot.py:387-422",
+     "model": "removal/snapshot-archives",
+     "departures": [
+      {
+       "law": "M05-L1",
+       "findings": [
+        "F-C1304"
+       ]
+      },
+      {
+       "law": "M05-L3",
+       "findings": [
+        "F-C1304"
+       ],
+       "why": "the same defect seen as inventory incompleteness: a write path reaches a store that neither erasure, redaction nor the receipt reaches"
+      }
+     ],
+     "model_checks": [
+      "removal-snapshot-archives-as-built",
+      "removal-snapshot-archives-reviewed"
+     ],
+     "violated_laws": [
+      "M05-L1",
+      "M05-L3"
+     ],
+     "departs": [
+      "M05-L1",
+      "M05-L3"
+     ],
+     "findings": [
+      "F-C1304"
+     ]
+    },
+    {
+     "object": "15/reifier",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/schema.py:3296-3322; iris_src/src/Graph/KG/Eraser.cls:185-189",
+     "model": "removal/reifier-default-graph",
+     "departures": [
+      {
+       "law": "M05-L1",
+       "findings": [
+        "F-1502"
+       ]
+      },
+      {
+       "law": "M05-L3",
+       "findings": [
+        "F-1502"
+       ],
+       "why": "the same defect seen as inventory incompleteness: a write path reaches a store that neither erasure, redaction nor the receipt reaches"
+      }
+     ],
+     "model_checks": [
+      "removal-reifier-default-graph-as-built",
+      "removal-reifier-default-graph-reviewed"
+     ],
+     "violated_laws": [
+      "M05-L1",
+      "M05-L3"
+     ],
+     "departs": [
+      "M05-L1",
+      "M05-L3"
+     ],
+     "findings": [
+      "F-1502"
+     ]
+    },
+    {
+     "object": "05/edge-type-in-a-graph",
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/Eraser.cls:322-348, 590-610; iris_src/src/Graph/KG/LedgerRedact.cls:149-178",
+     "model": "removal/temporal-only-prefix",
+     "departures": [
+      {
+       "law": "M05-L1",
+       "findings": [
+        "F-C1203",
+        "F-C1308"
+       ]
+      },
+      {
+       "law": "M05-L3",
+       "findings": [
+        "F-C1203",
+        "F-C1308"
+       ],
+       "why": "the same defect seen as inventory incompleteness: a write path reaches a store that neither erasure, redaction nor the receipt reaches"
+      }
+     ],
+     "model_checks": [
+      "removal-temporal-only-prefix-as-built",
+      "removal-temporal-only-prefix-reviewed"
+     ],
+     "violated_laws": [
+      "M05-L1",
+      "M05-L3"
+     ],
+     "departs": [
+      "M05-L1",
+      "M05-L3"
+     ],
+     "findings": [
+      "F-C1203",
+      "F-C1308"
+     ]
+    },
+    {
+     "object": "13/redaction-target",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/legacy.py:606-646; iris_src/src/Graph/KG/LedgerApply.cls:229-233",
+     "model": "removal/history-text",
+     "departures": [
+      {
+       "law": "M05-L1",
+       "findings": [
+        "F-C1306",
+        "F-CS01",
+        "F-C1309"
+       ]
+      },
+      {
+       "law": "M05-L3",
+       "findings": [
+        "F-C1306",
+        "F-CS01",
+        "F-C1309"
+       ],
+       "why": "the same defect seen as inventory incompleteness: a write path reaches a store that neither erasure, redaction nor the receipt reaches"
+      }
+     ],
+     "model_checks": [
+      "removal-history-text-as-built",
+      "removal-history-text-reviewed"
+     ],
+     "violated_laws": [
+      "M05-L1",
+      "M05-L3"
+     ],
+     "departs": [
+      "M05-L1",
+      "M05-L3"
+     ],
+     "findings": [
+      "F-C1306",
+      "F-C1309",
+      "F-CS01"
+     ]
+    },
+    {
+     "object": "06/route",
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/LedgerApply.cls:353-370",
+     "model": "removal/default-routed-vectors",
+     "note": "the ledger's node delete does not reach a default-graph node's routed vectors",
+     "departures": [
+      {
+       "law": "M05-L1",
+       "findings": [
+        "F-0618"
+       ]
+      },
+      {
+       "law": "M05-L3",
+       "findings": [
+        "F-0618"
+       ],
+       "why": "the same defect seen as inventory incompleteness: a write path reaches a store that neither erasure, redaction nor the receipt reaches"
+      }
+     ],
+     "model_checks": [
+      "removal-default-routed-vectors-as-built",
+      "removal-default-routed-vectors-reviewed"
+     ],
+     "violated_laws": [
+      "M05-L1",
+      "M05-L3"
+     ],
+     "departs": [
+      "M05-L1",
+      "M05-L3"
+     ],
+     "findings": [
+      "F-0618"
+     ]
+    },
+    {
+     "object": "05/temporal-coordinates",
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/TemporalIndex.cls (Purge)",
+     "model": "removal/temporal-purge-all-graphs",
+     "departures": [
+      {
+       "law": "M05-L2",
+       "findings": [
+        "F-0507"
+       ]
+      }
+     ],
+     "model_checks": [
+      "removal-temporal-purge-all-graphs-as-built",
+      "removal-temporal-purge-all-graphs-reviewed"
+     ],
+     "violated_laws": [
+      "M05-L2"
+     ],
+     "departs": [
+      "M05-L2"
+     ],
+     "findings": [
+      "F-0507"
+     ]
+    },
+    {
+     "object": "15/fhir-graph",
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/FHIRGraph.cls",
+     "note": "not modelled here: erase against sync is breadth-c M3",
+     "model_checks": [],
+     "violated_laws": null,
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "12/whole-namespace",
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/Eraser.cls:699-845",
+     "model": "removal/rows-adjacency-temporal",
+     "note": "EraseAll empties every store on the list (ERS-B93; F-C1240 refuted: GraphStores lists ^ArnoKG)",
+     "model_checks": [
+      "removal-rows-adjacency-temporal-as-built",
+      "removal-rows-adjacency-temporal-reviewed",
+      "removal-control-C1-store-dropped",
+      "removal-control-C1b-store-dropped-inventory",
+      "removal-control-C2-cross-target",
+      "removal-sharp-removed-other-kept",
+      "removal-sharp-erased-history-kept"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "12/node-in-a-sweep",
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/Eraser.cls:1182-1248",
+     "model": "removal/rows-adjacency-temporal",
+     "note": "the sweep removes nodes that hold nothing (ERS-B94)",
+     "model_checks": [
+      "removal-rows-adjacency-temporal-as-built",
+      "removal-rows-adjacency-temporal-reviewed",
+      "removal-control-C1-store-dropped",
+      "removal-control-C1b-store-dropped-inventory",
+      "removal-control-C2-cross-target",
+      "removal-sharp-removed-other-kept",
+      "removal-sharp-erased-history-kept"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    }
+   ],
+   "model": {
+    "crate": "experiment/playbook-completion/models/semantics",
+    "family": "removal",
+    "checks": 27,
+    "checks_met": 27,
+    "scope": [
+     "exhaustive"
+    ]
+   }
+  },
+  {
+   "id": "M-06",
+   "name": "Snapshot save and restore",
+   "implements": [
+    "AX-12",
+    "AX-05",
+    "AX-10"
+   ],
+   "state": "live stores (rows, routed node vectors, routed edge vectors, ledger head and records, temporal aggregates); at most one archive (the stores it carries)",
+   "operations": [
+    "save",
+    "write and commit after the save",
+    "replacing restore",
+    "merge restore"
+   ],
+   "effect_kinds": [
+    "copy",
+    "replace",
+    "merge",
+    "report counts"
+   ],
+   "events": [
+    "restore report"
+   ],
+   "laws": [
+    {
+     "id": "M06-L1",
+     "kind": "invariant",
+     "text": "Round trip: a replacing restore of an archive saved at state s, with nothing written since, gives s on every store.",
+     "controls": [
+      "snapshot-control-C1-store-left-out"
+     ],
+     "as_built_violations": [
+      "snapshot-edge-vectors-missing-as-built"
+     ],
+     "also_violated_by": [],
+     "sharpness": [
+      "snapshot-sharp-restore-refused",
+      "snapshot-sharp-round-trip"
+     ]
+    },
+    {
+     "id": "M06-L2",
+     "kind": "action",
+     "text": "A restore never lowers the ledger head below a live commit (it refuses or replays).",
+     "controls": [
+      "snapshot-control-C2-head-laid-over"
+     ],
+     "as_built_violations": [
+      "snapshot-replacing-restore-as-built"
+     ],
+     "also_violated_by": [],
+     "sharpness": [
+      "snapshot-sharp-restore-refused",
+      "snapshot-sharp-round-trip"
+     ]
+    },
+    {
+     "id": "M06-L3",
+     "kind": "action",
+     "text": "A merge restore combines aggregates and counts only what it restored.",
+     "controls": [
+      "snapshot-control-C3-aggregates-overwritten"
+     ],
+     "as_built_violations": [
+      "snapshot-merge-aggregates-as-built"
+     ],
+     "also_violated_by": [],
+     "sharpness": [
+      "snapshot-sharp-restore-refused",
+      "snapshot-sharp-round-trip"
+     ]
+    }
+   ],
+   "generic_controls": [
+    {
+     "id": "M06-C1",
+     "law": "M06-L1",
+     "mutant": "one store is left out of the archive"
+    },
+    {
+     "id": "M06-C2",
+     "law": "M06-L2",
+     "mutant": "the replacing restore sets the archived head over the live one"
+    }
+   ],
+   "family": "snapshot",
+   "instances": [
+    {
+     "object": "18/snapshot-archive",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/snapshot.py:299-344, 960-1025",
+     "model": "snapshot/edge-vectors-missing",
+     "departures": [
+      {
+       "law": "M06-L1",
+       "findings": [
+        "F-C1804",
+        "F-1803",
+        "F-1804"
+       ]
+      }
+     ],
+     "model_checks": [
+      "snapshot-edge-vectors-missing-as-built",
+      "snapshot-edge-vectors-missing-reviewed",
+      "snapshot-control-C1-store-left-out",
+      "snapshot-control-C2-head-laid-over",
+      "snapshot-control-C3-aggregates-overwritten",
+      "snapshot-sharp-restore-refused",
+      "snapshot-sharp-round-trip"
+     ],
+     "violated_laws": [
+      "M06-L1"
+     ],
+     "departs": [
+      "M06-L1"
+     ],
+     "findings": [
+      "F-1803",
+      "F-1804",
+      "F-C1804"
+     ]
+    },
+    {
+     "object": "18/namespace",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/snapshot.py:1554-1588, 1654-1692, 1679",
+     "model": [
+      "snapshot/replacing-restore",
+      "snapshot/merge-aggregates"
+     ],
+     "departures": [
+      {
+       "law": "M06-L2",
+       "findings": [
+        "F-1801",
+        "F-C1850"
+       ]
+      },
+      {
+       "law": "M06-L3",
+       "findings": [
+        "F-1805",
+        "F-1802"
+       ]
+      }
+     ],
+     "model_checks": [
+      "snapshot-replacing-restore-as-built",
+      "snapshot-replacing-restore-reviewed",
+      "snapshot-merge-aggregates-as-built",
+      "snapshot-merge-aggregates-reviewed"
+     ],
+     "violated_laws": [
+      "M06-L2",
+      "M06-L3"
+     ],
+     "departs": [
+      "M06-L2",
+      "M06-L3"
+     ],
+     "findings": [
+      "F-1801",
+      "F-1802",
+      "F-1805",
+      "F-C1850"
+     ]
+    }
+   ],
+   "model": {
+    "crate": "experiment/playbook-completion/models/semantics",
+    "family": "snapshot",
+    "checks": 11,
+    "checks_met": 11,
+    "scope": [
+     "exhaustive"
+    ]
+   }
+  },
+  {
+   "id": "M-07",
+   "name": "Background job and queue",
+   "implements": [
+    "AX-14",
+    "AX-12",
+    "AX-11"
+   ],
+   "state": "entries (absent | pending | in flight | done | failed) with a text version; a worker's claim; a service order; a resumable run's cursor",
+   "operations": [
+    "enqueue (or re-enqueue)",
+    "claim / serve next",
+    "work",
+    "mark done or failed",
+    "resume a bounded run"
+   ],
+   "effect_kinds": [
+    "serve",
+    "store result",
+    "mark",
+    "advance cursor"
+   ],
+   "events": [
+    "DONE",
+    "ERROR"
+   ],
+   "laws": [
+    {
+     "id": "M07-L1",
+     "kind": "invariant",
+     "text": "Done means done: an entry is done only when its result was made from its current text.",
+     "controls": [
+      "queue-control-C3-mark-always"
+     ],
+     "as_built_violations": [
+      "queue-embed-queue-as-built-F0604",
+      "queue-embed-queue-as-built-FC0601"
+     ],
+     "also_violated_by": [
+      "queue-embed-queue-as-built-HD0604",
+      "queue-control-C2-two-consumers"
+     ],
+     "sharpness": [
+      "queue-sharp-fifo-serves-high",
+      "queue-sharp-fifo-overtake-2",
+      "queue-sharp-resume-finishes"
+     ]
+    },
+    {
+     "id": "M07-L2",
+     "kind": "invariant",
+     "text": "One worker per entry at a time.",
+     "controls": [
+      "queue-control-C2-two-consumers"
+     ],
+     "as_built_violations": [
+      "queue-embed-queue-as-built-HD0604"
+     ],
+     "also_violated_by": [],
+     "sharpness": [
+      "queue-sharp-fifo-serves-high",
+      "queue-sharp-fifo-overtake-2",
+      "queue-sharp-resume-finishes"
+     ]
+    },
+    {
+     "id": "M07-L3",
+     "kind": "invariant",
+     "text": "Bounded overtaking: while an entry is pending, at most N-1 other entries are served before it (N = distinct entries).",
+     "controls": [
+      "queue-control-C1-lifo-overtaking"
+     ],
+     "as_built_violations": [
+      "queue-embed-queue-as-built-FC0605-overtaking"
+     ],
+     "also_violated_by": [],
+     "sharpness": [
+      "queue-sharp-fifo-serves-high",
+      "queue-sharp-fifo-overtake-2",
+      "queue-sharp-resume-finishes"
+     ]
+    },
+    {
+     "id": "M07-L4",
+     "kind": "progress",
+     "text": "Under weak fairness of the worker, every pending entry is served (no fair cycle keeps it pending); a resumed run can always finish.",
+     "controls": [
+      "queue-control-C1b-lifo-fair-lasso",
+      "queue-control-C4-restart-scan"
+     ],
+     "as_built_violations": [
+      "queue-embed-queue-as-built-FC0605-fair-lasso",
+      "queue-bounded-redaction-resume-as-built"
+     ],
+     "also_violated_by": [],
+     "sharpness": [
+      "queue-sharp-fifo-serves-high",
+      "queue-sharp-fifo-overtake-2",
+      "queue-sharp-resume-finishes"
+     ]
+    }
+   ],
+   "generic_controls": [
+    {
+     "id": "M07-C1",
+     "law": "M07-L3",
+     "mutant": "serve the newest entry first (LIFO)"
+    },
+    {
+     "id": "M07-C2",
+     "law": "M07-L2",
+     "mutant": "two workers without the claim"
+    },
+    {
+     "id": "M07-C3",
+     "law": "M07-L1",
+     "mutant": "mark done whether or not a result was made"
+    },
+    {
+     "id": "M07-C4",
+     "law": "M07-L4",
+     "mutant": "a resumed run restarts its scan"
+    }
+   ],
+   "family": "queue",
+   "instances": [
+    {
+     "object": "06/queue-entry",
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/EmbedQueue.cls:35-60, 106-134, 258-338",
+     "model": "queue/embed-queue",
+     "note": "as built: DONE without a vector (F-0604), DONE with an old text (F-C0601), node-id service order (F-C0605); two workers (the IRIS task and process_embed_queue) can work one entry at once: the single-consumer premise (HD-0604) is neither enforced nor documented (new finding F-C0670)",
+     "departures": [
+      {
+       "law": "M07-L1",
+       "findings": [
+        "F-0604",
+        "F-C0601"
+       ]
+      },
+      {
+       "law": "M07-L2",
+       "findings": [
+        "F-C0670"
+       ]
+      },
+      {
+       "law": "M07-L3",
+       "findings": [
+        "F-C0605"
+       ]
+      },
+      {
+       "law": "M07-L4",
+       "findings": [
+        "F-C0605"
+       ]
+      }
+     ],
+     "model_checks": [
+      "queue-embed-queue-as-built-F0604",
+      "queue-embed-queue-as-built-FC0601",
+      "queue-embed-queue-as-built-HD0604",
+      "queue-embed-queue-reviewed-entry",
+      "queue-control-C2-two-consumers",
+      "queue-control-C3-mark-always",
+      "queue-embed-queue-as-built-FC0605-overtaking",
+      "queue-embed-queue-as-built-FC0605-fair-lasso",
+      "queue-embed-queue-as-built-FC0605-agef-blind",
+      "queue-embed-queue-reviewed-overtaking",
+      "queue-embed-queue-reviewed-fair-lasso",
+      "queue-control-C1-lifo-overtaking",
+      "queue-control-C1b-lifo-fair-lasso",
+      "queue-sharp-fifo-serves-high",
+      "queue-sharp-fifo-overtake-2"
+     ],
+     "violated_laws": [
+      "M07-L1",
+      "M07-L2",
+      "M07-L3",
+      "M07-L4"
+     ],
+     "departs": [
+      "M07-L1",
+      "M07-L2",
+      "M07-L3",
+      "M07-L4"
+     ],
+     "findings": [
+      "F-0604",
+      "F-C0601",
+      "F-C0605",
+      "F-C0670"
+     ]
+    },
+    {
+     "object": "13/redaction-run",
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/LedgerRedact.cls:185-240",
+     "model": "queue/bounded-redaction-resume",
+     "departures": [
+      {
+       "law": "M07-L4",
+       "findings": [
+        "F-C1303"
+       ]
+      }
+     ],
+     "model_checks": [
+      "queue-bounded-redaction-resume-as-built",
+      "queue-bounded-redaction-resume-reviewed",
+      "queue-control-C4-restart-scan",
+      "queue-sharp-resume-finishes"
+     ],
+     "violated_laws": [
+      "M07-L4"
+     ],
+     "departs": [
+      "M07-L4"
+     ],
+     "findings": [
+      "F-C1303"
+     ]
+    },
+    {
+     "object": "09/compiled-shape",
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/Cypher/Gen.cls:61-105",
+     "note": "not modelled here: the build job is breadth-b machine planc",
+     "model_checks": [],
+     "violated_laws": null,
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "15/fhir-graph",
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/FHIRGraph.cls:543-626",
+     "note": "not modelled here: the sync job is breadth-c machine M3",
+     "model_checks": [],
+     "violated_laws": null,
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "15/fhir-sync-task",
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/FHIRGraphSyncTask.cls",
+     "note": "not modelled here: the task runs SyncOnce, breadth-c machine M3",
+     "model_checks": [],
+     "violated_laws": null,
+     "departs": [],
+     "findings": []
+    }
+   ],
+   "model": {
+    "crate": "experiment/playbook-completion/models/semantics",
+    "family": "queue",
+    "checks": 19,
+    "checks_met": 19,
+    "scope": [
+     "exhaustive"
+    ]
+   }
+  },
+  {
+   "id": "M-08",
+   "name": "Install, settings and version gate",
+   "implements": [
+    "AX-09",
+    "AX-03"
+   ],
+   "state": "the namespace's recorded schema; the deployed class set and its version; the objects setup touched; settings (process mode, graph mode, optional dependencies)",
+   "operations": [
+    "setup(schema)",
+    "setup again",
+    "first use by an engine (schema, version)",
+    "set a setting"
+   ],
+   "effect_kinds": [
+    "record schema",
+    "create objects",
+    "refuse",
+    "report failures"
+   ],
+   "events": [
+    "setup reply with warnings",
+    "schema refusal"
+   ],
+   "laws": [
+    {
+     "id": "M08-L1",
+     "kind": "invariant",
+     "text": "One schema: once recorded, the namespace's schema never changes and an engine asking for another is refused.",
+     "controls": [
+      "install-control-C1-first-use-accepts-any"
+     ],
+     "as_built_violations": [
+      "install-first-use-no-record-as-built"
+     ],
+     "also_violated_by": [],
+     "sharpness": [
+      "install-sharp-other-schema-refused",
+      "install-sharp-both-enables-ok"
+     ]
+    },
+    {
+     "id": "M08-L2",
+     "kind": "action",
+     "text": "Idempotent: setup on a current install changes nothing.",
+     "controls": [
+      "install-control-C4-enable-race-errors"
+     ],
+     "as_built_violations": [
+      "install-concurrent-first-enable-as-built"
+     ],
+     "also_violated_by": [],
+     "sharpness": [
+      "install-sharp-other-schema-refused",
+      "install-sharp-both-enables-ok"
+     ]
+    },
+    {
+     "id": "M08-L3",
+     "kind": "action",
+     "text": "Setup touches only the namespace's schema (and the fixed legacy manifest).",
+     "controls": [
+      "install-control-C2-unqualified-drop"
+     ],
+     "as_built_violations": [
+      "install-unqualified-drop-as-built"
+     ],
+     "also_violated_by": [],
+     "sharpness": [
+      "install-sharp-other-schema-refused",
+      "install-sharp-both-enables-ok"
+     ]
+    },
+    {
+     "id": "M08-L4",
+     "kind": "action",
+     "text": "A setting outside its domain is refused, never read as another value.",
+     "controls": [
+      "install-control-C3-setting-unchecked"
+     ],
+     "as_built_violations": [
+      "install-unchecked-setting-as-built"
+     ],
+     "also_violated_by": [],
+     "sharpness": [
+      "install-sharp-other-schema-refused",
+      "install-sharp-both-enables-ok"
+     ]
+    }
+   ],
+   "generic_controls": [
+    {
+     "id": "M08-C1",
+     "law": "M08-L1",
+     "mutant": "first use accepts any schema"
+    },
+    {
+     "id": "M08-C2",
+     "law": "M08-L3",
+     "mutant": "setup drops an object by an unqualified name"
+    }
+   ],
+   "family": "install",
+   "instances": [
+    {
+     "object": "01/namespace",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/schema_name.py:220-235",
+     "model": "install/first-use-no-record",
+     "departures": [
+      {
+       "law": "M08-L1",
+       "findings": [
+        "F-0103"
+       ]
+      }
+     ],
+     "model_checks": [
+      "install-first-use-no-record-as-built",
+      "install-first-use-no-record-reviewed"
+     ],
+     "violated_laws": [
+      "M08-L1"
+     ],
+     "departs": [
+      "M08-L1"
+     ],
+     "findings": [
+      "F-0103"
+     ]
+    },
+    {
+     "object": "01/setup-routine",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/schema.py:655-658",
+     "model": "install/unqualified-drop",
+     "departures": [
+      {
+       "law": "M08-L3",
+       "findings": [
+        "F-0107"
+       ]
+      }
+     ],
+     "model_checks": [
+      "install-unqualified-drop-as-built",
+      "install-unqualified-drop-reviewed"
+     ],
+     "violated_laws": [
+      "M08-L3"
+     ],
+     "departs": [
+      "M08-L3"
+     ],
+     "findings": [
+      "F-0107"
+     ]
+    },
+    {
+     "object": "01/class-set",
+     "use": "canonical",
+     "where": "iris_vector_graph/schema.py (deploy)",
+     "model": "install/canonical",
+     "model_checks": [
+      "install-canonical-as-built",
+      "install-control-C1-first-use-accepts-any",
+      "install-control-C2-unqualified-drop",
+      "install-control-C3-setting-unchecked",
+      "install-control-C4-enable-race-errors",
+      "install-sharp-other-schema-refused",
+      "install-sharp-both-enables-ok"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "01/legacy-object",
+     "use": "canonical",
+     "where": "iris_vector_graph/_engine/legacy.py",
+     "model": "install/canonical",
+     "note": "listed from a fixed manifest; its removal report is F-0101 (AX-12)",
+     "exception_note": "EXC-09",
+     "model_checks": [
+      "install-canonical-as-built",
+      "install-control-C1-first-use-accepts-any",
+      "install-control-C2-unqualified-drop",
+      "install-control-C3-setting-unchecked",
+      "install-control-C4-enable-race-errors",
+      "install-sharp-other-schema-refused",
+      "install-sharp-both-enables-ok"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "09/process-mode",
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/Cypher/Gen.cls:41-44, 61-105",
+     "model": "install/unchecked-setting",
+     "departures": [
+      {
+       "law": "M08-L4",
+       "findings": [
+        "F-0903"
+       ]
+      }
+     ],
+     "model_checks": [
+      "install-unchecked-setting-as-built",
+      "install-unchecked-setting-reviewed"
+     ],
+     "violated_laws": [
+      "M08-L4"
+     ],
+     "departs": [
+      "M08-L4"
+     ],
+     "findings": [
+      "F-0903"
+     ]
+    },
+    {
+     "object": "15/rdf-extra",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/_rdf_utils.py:125-133",
+     "model": "install/unchecked-setting",
+     "note": "rdflib 8 is reported as rdflib absent",
+     "departures": [
+      {
+       "law": "M08-L4",
+       "findings": [
+        "F-1506"
+       ]
+      }
+     ],
+     "model_checks": [
+      "install-unchecked-setting-as-built",
+      "install-unchecked-setting-reviewed"
+     ],
+     "violated_laws": [
+      "M08-L4"
+     ],
+     "departs": [
+      "M08-L4"
+     ],
+     "findings": [
+      "F-1506"
+     ]
+    },
+    {
+     "object": "16/rest-web-app-path",
+     "use": "canonical",
+     "where": "iris_vector_graph (web app setup)",
+     "model": "install/canonical",
+     "model_checks": [
+      "install-canonical-as-built",
+      "install-control-C1-first-use-accepts-any",
+      "install-control-C2-unqualified-drop",
+      "install-control-C3-setting-unchecked",
+      "install-control-C4-enable-race-errors",
+      "install-sharp-other-schema-refused",
+      "install-sharp-both-enables-ok"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "16/mcp-tool-set",
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/MCPToolSet.cls",
+     "model": "install/canonical",
+     "note": "Community has no %AI: the tool set is absent, by edition",
+     "model_checks": [
+      "install-canonical-as-built",
+      "install-control-C1-first-use-accepts-any",
+      "install-control-C2-unqualified-drop",
+      "install-control-C3-setting-unchecked",
+      "install-control-C4-enable-race-errors",
+      "install-sharp-other-schema-refused",
+      "install-sharp-both-enables-ok"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "17/namespace",
+     "use": "canonical",
+     "where": "iris_vector_graph/_engine/admin.py",
+     "model": "install/canonical",
+     "model_checks": [
+      "install-canonical-as-built",
+      "install-control-C1-first-use-accepts-any",
+      "install-control-C2-unqualified-drop",
+      "install-control-C3-setting-unchecked",
+      "install-control-C4-enable-race-errors",
+      "install-sharp-other-schema-refused",
+      "install-sharp-both-enables-ok"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "03/ledger-state",
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/Ledger.cls:252-380",
+     "model": "install/canonical",
+     "note": "enable / disable / set-strict are settings with refusals",
+     "model_checks": [
+      "install-canonical-as-built",
+      "install-control-C1-first-use-accepts-any",
+      "install-control-C2-unqualified-drop",
+      "install-control-C3-setting-unchecked",
+      "install-control-C4-enable-race-errors",
+      "install-sharp-other-schema-refused",
+      "install-sharp-both-enables-ok"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "11/ledger",
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/Ledger.cls:252-329",
+     "model": "install/concurrent-first-enable",
+     "note": "two first enables at once: the second fails instead of returning the genesis",
+     "departures": [
+      {
+       "law": "M08-L2",
+       "findings": [
+        "F-1104"
+       ]
+      }
+     ],
+     "model_checks": [
+      "install-concurrent-first-enable-as-built",
+      "install-concurrent-first-enable-reviewed"
+     ],
+     "violated_laws": [
+      "M08-L2"
+     ],
+     "departs": [
+      "M08-L2"
+     ],
+     "findings": [
+      "F-1104"
+     ]
+    },
+    {
+     "object": "15/prefix-registry",
+     "use": "canonical",
+     "where": "iris_vector_graph (RDF prefix registry)",
+     "model": "install/canonical",
+     "note": "a saved prefix is a setting (INT-R1.14)",
+     "model_checks": [
+      "install-canonical-as-built",
+      "install-control-C1-first-use-accepts-any",
+      "install-control-C2-unqualified-drop",
+      "install-control-C3-setting-unchecked",
+      "install-control-C4-enable-race-errors",
+      "install-sharp-other-schema-refused",
+      "install-sharp-both-enables-ok"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "15/ivg-fhir-cli",
+     "use": "canonical",
+     "where": "iris_vector_graph (ivg fhir commands)",
+     "model": "install/canonical",
+     "note": "the CLI front of the FHIR graph setting; Schedule/Unschedule's untransacted steps are F-C1501 on 15/fhir-graph",
+     "model_checks": [
+      "install-canonical-as-built",
+      "install-control-C1-first-use-accepts-any",
+      "install-control-C2-unqualified-drop",
+      "install-control-C3-setting-unchecked",
+      "install-control-C4-enable-race-errors",
+      "install-sharp-other-schema-refused",
+      "install-sharp-both-enables-ok"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    }
+   ],
+   "model": {
+    "crate": "experiment/playbook-completion/models/semantics",
+    "family": "install",
+    "checks": 15,
+    "checks_met": 15,
+    "scope": [
+     "exhaustive"
+    ]
+   }
+  },
+  {
+   "id": "M-09",
+   "name": "Graph key and tenant scope",
+   "implements": [
+    "AX-02"
+   ],
+   "state": "two graphs with overlapping node ids; content per graph; the key derivations; the target predicates (erase, liveness, record match)",
+   "operations": [
+    "make a key from a name",
+    "scoped read",
+    "all-graphs read",
+    "scoped write",
+    "evaluate the three target predicates"
+   ],
+   "effect_kinds": [
+    "read in scope",
+    "write in scope",
+    "refuse a bad name"
+   ],
+   "events": [
+    "invalid graph name"
+   ],
+   "laws": [
+    {
+     "id": "M09-L1",
+     "kind": "invariant",
+     "text": "Every entry validates the name; distinct valid names give distinct keys.",
+     "controls": [
+      "scope-control-C1-key-ignores-name"
+     ],
+     "as_built_violations": [
+      "scope-name-check-missing-as-built"
+     ],
+     "also_violated_by": [],
+     "sharpness": [
+      "scope-sharp-same-id-two-graphs-differ",
+      "scope-sharp-named-write"
+     ]
+    },
+    {
+     "id": "M09-L2",
+     "kind": "invariant",
+     "text": "A scoped read answers from its graph alone; an all-graphs read is the union of each graph's answer.",
+     "controls": [
+      "scope-control-C2-join-across-graphs"
+     ],
+     "as_built_violations": [
+      "scope-all-graphs-walk-as-built",
+      "scope-unscoped-read-as-built",
+      "scope-interned-no-graph-dimension-as-built"
+     ],
+     "also_violated_by": [],
+     "sharpness": [
+      "scope-sharp-same-id-two-graphs-differ",
+      "scope-sharp-named-write"
+     ]
+    },
+    {
+     "id": "M09-L3",
+     "kind": "action",
+     "text": "A scoped write changes only its graph.",
+     "controls": [
+      "scope-control-C3-delete-every-graph"
+     ],
+     "as_built_violations": [
+      "scope-delete-every-graph-as-built"
+     ],
+     "also_violated_by": [],
+     "sharpness": [
+      "scope-sharp-same-id-two-graphs-differ",
+      "scope-sharp-named-write"
+     ]
+    },
+    {
+     "id": "M09-L4",
+     "kind": "invariant",
+     "text": "The erase, liveness and record-match predicates of a target select the same content.",
+     "controls": [
+      "scope-control-C4-graph-blind-match"
+     ],
+     "as_built_violations": [
+      "scope-three-predicates-as-built"
+     ],
+     "also_violated_by": [],
+     "sharpness": [
+      "scope-sharp-same-id-two-graphs-differ",
+      "scope-sharp-named-write"
+     ]
+    }
+   ],
+   "generic_controls": [
+    {
+     "id": "M09-C1",
+     "law": "M09-L1",
+     "mutant": "the key ignores the name"
+    },
+    {
+     "id": "M09-C2",
+     "law": "M09-L2",
+     "mutant": "a read joins by node id across graphs"
+    },
+    {
+     "id": "M09-C3",
+     "law": "M09-L3",
+     "mutant": "a delete by id acts in every graph"
+    },
+    {
+     "id": "M09-C4",
+     "law": "M09-L4",
+     "mutant": "the record-match predicate ignores the graph"
+    }
+   ],
+   "family": "scope",
+   "instances": [
+    {
+     "object": "02/graph-name",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/nodes_edges.py:968-1015",
+     "model": "scope/name-check-missing",
+     "departures": [
+      {
+       "law": "M09-L1",
+       "findings": [
+        "F-0202",
+        "F-0203"
+       ]
+      }
+     ],
+     "model_checks": [
+      "scope-name-check-missing-as-built",
+      "scope-name-check-missing-reviewed"
+     ],
+     "violated_laws": [
+      "M09-L1"
+     ],
+     "departs": [
+      "M09-L1"
+     ],
+     "findings": [
+      "F-0202",
+      "F-0203"
+     ]
+    },
+    {
+     "object": "08/graph-scope",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/cypher/translator.py:15404-15431",
+     "model": "scope/all-graphs-walk",
+     "departures": [
+      {
+       "law": "M09-L2",
+       "findings": [
+        "F-0818",
+        "F-0819",
+        "F-0820"
+       ]
+      }
+     ],
+     "model_checks": [
+      "scope-all-graphs-walk-as-built",
+      "scope-all-graphs-walk-reviewed"
+     ],
+     "violated_laws": [
+      "M09-L2"
+     ],
+     "departs": [
+      "M09-L2"
+     ],
+     "findings": [
+      "F-0818",
+      "F-0819",
+      "F-0820"
+     ]
+    },
+    {
+     "object": "10/default-graph-algorithm-call",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/algorithms.py:658-678",
+     "model": "scope/unscoped-read",
+     "departures": [
+      {
+       "law": "M09-L2",
+       "findings": [
+        "F-1002",
+        "F-1006",
+        "F-1008",
+        "F-1013",
+        "F-1001"
+       ],
+       "exception": "EXC-06"
+      }
+     ],
+     "model_checks": [
+      "scope-unscoped-read-as-built",
+      "scope-unscoped-read-reviewed"
+     ],
+     "violated_laws": [
+      "M09-L2"
+     ],
+     "departs": [
+      "M09-L2"
+     ],
+     "findings": [
+      "F-1001",
+      "F-1002",
+      "F-1006",
+      "F-1008",
+      "F-1013"
+     ]
+    },
+    {
+     "object": "16/graph-a-caller-names",
+     "use": "hand-rolled",
+     "where": "api (GraphQL resolvers)",
+     "model": "scope/unscoped-read",
+     "departures": [
+      {
+       "law": "M09-L2",
+       "findings": [
+        "F-1603",
+        "F-1604"
+       ]
+      }
+     ],
+     "model_checks": [
+      "scope-unscoped-read-as-built",
+      "scope-unscoped-read-reviewed"
+     ],
+     "violated_laws": [
+      "M09-L2"
+     ],
+     "departs": [
+      "M09-L2"
+     ],
+     "findings": [
+      "F-1603",
+      "F-1604"
+     ]
+    },
+    {
+     "object": "17/link",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/stores/iris_sql_store.py:1116-1210",
+     "model": "scope/unscoped-read",
+     "departures": [
+      {
+       "law": "M09-L2",
+       "findings": [
+        "F-1701"
+       ]
+      }
+     ],
+     "model_checks": [
+      "scope-unscoped-read-as-built",
+      "scope-unscoped-read-reviewed"
+     ],
+     "violated_laws": [
+      "M09-L2"
+     ],
+     "departs": [
+      "M09-L2"
+     ],
+     "findings": [
+      "F-1701"
+     ]
+    },
+    {
+     "object": "15/reifier",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/schema.py:3361-3397",
+     "model": "scope/delete-every-graph",
+     "departures": [
+      {
+       "law": "M09-L3",
+       "findings": [
+        "F-1503"
+       ]
+      }
+     ],
+     "model_checks": [
+      "scope-delete-every-graph-as-built",
+      "scope-delete-every-graph-reviewed"
+     ],
+     "violated_laws": [
+      "M09-L3"
+     ],
+     "departs": [
+      "M09-L3"
+     ],
+     "findings": [
+      "F-1503"
+     ]
+    },
+    {
+     "object": "13/redaction-target",
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/LedgerRedact.cls:89-178",
+     "model": "scope/three-predicates",
+     "departures": [
+      {
+       "law": "M09-L4",
+       "findings": [
+        "F-1304",
+        "F-1305"
+       ]
+      }
+     ],
+     "model_checks": [
+      "scope-three-predicates-as-built",
+      "scope-three-predicates-reviewed"
+     ],
+     "violated_laws": [
+      "M09-L4"
+     ],
+     "departs": [
+      "M09-L4"
+     ],
+     "findings": [
+      "F-1304",
+      "F-1305"
+     ]
+    },
+    {
+     "object": "11/node-id",
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/LedgerApply.cls:79-84",
+     "model": "scope/three-predicates",
+     "note": "ledger node records are graph-blind",
+     "departures": [
+      {
+       "law": "M09-L4",
+       "findings": [
+        "F-1105",
+        "F-1401"
+       ]
+      }
+     ],
+     "model_checks": [
+      "scope-three-predicates-as-built",
+      "scope-three-predicates-reviewed"
+     ],
+     "violated_laws": [
+      "M09-L4"
+     ],
+     "departs": [
+      "M09-L4"
+     ],
+     "findings": [
+      "F-1105",
+      "F-1401"
+     ]
+    },
+    {
+     "object": "03/node-in-one-graph",
+     "use": "canonical",
+     "where": "iris_vector_graph/schema.py:395-402",
+     "model": "scope/canonical",
+     "model_checks": [
+      "scope-canonical-as-built",
+      "scope-control-C1-key-ignores-name",
+      "scope-control-C2-join-across-graphs",
+      "scope-control-C3-delete-every-graph",
+      "scope-control-C4-graph-blind-match",
+      "scope-sharp-same-id-two-graphs-differ",
+      "scope-sharp-named-write"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "03/edge-in-one-graph",
+     "use": "canonical",
+     "where": "iris_vector_graph/schema.py:34-45",
+     "model": "scope/canonical",
+     "model_checks": [
+      "scope-canonical-as-built",
+      "scope-control-C1-key-ignores-name",
+      "scope-control-C2-join-across-graphs",
+      "scope-control-C3-delete-every-graph",
+      "scope-control-C4-graph-blind-match",
+      "scope-sharp-same-id-two-graphs-differ",
+      "scope-sharp-named-write"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "05/temporal-coordinates",
+     "use": "canonical",
+     "where": "docs/adr/0001-graph-key-as-first-subscript.md",
+     "model": "scope/canonical",
+     "model_checks": [
+      "scope-canonical-as-built",
+      "scope-control-C1-key-ignores-name",
+      "scope-control-C2-join-across-graphs",
+      "scope-control-C3-delete-every-graph",
+      "scope-control-C4-graph-blind-match",
+      "scope-sharp-same-id-two-graphs-differ",
+      "scope-sharp-named-write"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "08/cypher-node",
+     "use": "canonical",
+     "where": "iris_vector_graph/cypher/translator.py",
+     "model": "scope/canonical",
+     "model_checks": [
+      "scope-canonical-as-built",
+      "scope-control-C1-key-ignores-name",
+      "scope-control-C2-join-across-graphs",
+      "scope-control-C3-delete-every-graph",
+      "scope-control-C4-graph-blind-match",
+      "scope-sharp-same-id-two-graphs-differ",
+      "scope-sharp-named-write"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "08/cypher-edge",
+     "use": "canonical",
+     "where": "iris_vector_graph/cypher/translator.py",
+     "model": "scope/canonical",
+     "model_checks": [
+      "scope-canonical-as-built",
+      "scope-control-C1-key-ignores-name",
+      "scope-control-C2-join-across-graphs",
+      "scope-control-C3-delete-every-graph",
+      "scope-control-C4-graph-blind-match",
+      "scope-sharp-same-id-two-graphs-differ",
+      "scope-sharp-named-write"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "07/fused-search",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/vector.py:194-225",
+     "model": "scope/unscoped-read",
+     "departures": [
+      {
+       "law": "M09-L2",
+       "findings": [
+        "F-0609",
+        "F-0711"
+       ]
+      }
+     ],
+     "model_checks": [
+      "scope-unscoped-read-as-built",
+      "scope-unscoped-read-reviewed"
+     ],
+     "violated_laws": [
+      "M09-L2"
+     ],
+     "departs": [
+      "M09-L2"
+     ],
+     "findings": [
+      "F-0609",
+      "F-0711"
+     ]
+    },
+    {
+     "object": "06/route",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/embeddings.py:1803-1850",
+     "model": "scope/unscoped-read",
+     "departures": [
+      {
+       "law": "M09-L2",
+       "findings": [
+        "F-0605",
+        "F-0616"
+       ]
+      }
+     ],
+     "model_checks": [
+      "scope-unscoped-read-as-built",
+      "scope-unscoped-read-reviewed"
+     ],
+     "violated_laws": [
+      "M09-L2"
+     ],
+     "departs": [
+      "M09-L2"
+     ],
+     "findings": [
+      "F-0605",
+      "F-0616"
+     ]
+    },
+    {
+     "object": "12/graph-content",
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/Eraser.cls:113-125",
+     "model": "scope/canonical",
+     "model_checks": [
+      "scope-canonical-as-built",
+      "scope-control-C1-key-ignores-name",
+      "scope-control-C2-join-across-graphs",
+      "scope-control-C3-delete-every-graph",
+      "scope-control-C4-graph-blind-match",
+      "scope-sharp-same-id-two-graphs-differ",
+      "scope-sharp-named-write"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "10/interned-snapshot",
+     "use": "hand-rolled",
+     "where": "CONTEXT.md:97-102",
+     "model": "scope/interned-no-graph-dimension",
+     "note": "documented: no graph dimension",
+     "departures": [
+      {
+       "law": "M09-L2",
+       "findings": [],
+       "exception": "EXC-06"
+      }
+     ],
+     "model_checks": [
+      "scope-interned-no-graph-dimension-as-built",
+      "scope-interned-no-graph-dimension-reviewed"
+     ],
+     "violated_laws": [
+      "M09-L2"
+     ],
+     "departs": [
+      "M09-L2"
+     ],
+     "findings": []
+    },
+    {
+     "object": "10/native-route",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/algorithms.py",
+     "model": "scope/unscoped-read",
+     "note": "F-1001 is blocked-access (x86_64 library)",
+     "departures": [
+      {
+       "law": "M09-L2",
+       "findings": [
+        "F-1001"
+       ]
+      }
+     ],
+     "model_checks": [
+      "scope-unscoped-read-as-built",
+      "scope-unscoped-read-reviewed"
+     ],
+     "violated_laws": [
+      "M09-L2"
+     ],
+     "departs": [
+      "M09-L2"
+     ],
+     "findings": [
+      "F-1001"
+     ]
+    },
+    {
+     "object": "07/docs-table-search",
+     "use": "canonical",
+     "where": "iris_vector_graph/_engine/vector.py:917-1054",
+     "model": "scope/canonical",
+     "note": "searches one graph (TXT-B12)",
+     "model_checks": [
+      "scope-canonical-as-built",
+      "scope-control-C1-key-ignores-name",
+      "scope-control-C2-join-across-graphs",
+      "scope-control-C3-delete-every-graph",
+      "scope-control-C4-graph-blind-match",
+      "scope-sharp-same-id-two-graphs-differ",
+      "scope-sharp-named-write"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "07/older-text-search",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/text_search.py:17-256",
+     "model": "scope/unscoped-read",
+     "departures": [
+      {
+       "law": "M09-L2",
+       "findings": [
+        "F-0711"
+       ]
+      }
+     ],
+     "model_checks": [
+      "scope-unscoped-read-as-built",
+      "scope-unscoped-read-reviewed"
+     ],
+     "violated_laws": [
+      "M09-L2"
+     ],
+     "departs": [
+      "M09-L2"
+     ],
+     "findings": [
+      "F-0711"
+     ]
+    },
+    {
+     "object": "15/fhir-bridge",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/fhir.py:444-481",
+     "model": "scope/unscoped-read",
+     "departures": [
+      {
+       "law": "M09-L2",
+       "findings": [
+        "F-1507"
+       ]
+      }
+     ],
+     "model_checks": [
+      "scope-unscoped-read-as-built",
+      "scope-unscoped-read-reviewed"
+     ],
+     "violated_laws": [
+      "M09-L2"
+     ],
+     "departs": [
+      "M09-L2"
+     ],
+     "findings": [
+      "F-1507"
+     ]
+    },
+    {
+     "object": "16/generated-graphql-call",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/gql (generated server)",
+     "model": "scope/unscoped-read",
+     "departures": [
+      {
+       "law": "M09-L2",
+       "findings": [
+        "F-1603"
+       ]
+      }
+     ],
+     "model_checks": [
+      "scope-unscoped-read-as-built",
+      "scope-unscoped-read-reviewed"
+     ],
+     "violated_laws": [
+      "M09-L2"
+     ],
+     "departs": [
+      "M09-L2"
+     ],
+     "findings": [
+      "F-1603"
+     ]
+    }
+   ],
+   "model": {
+    "crate": "experiment/playbook-completion/models/semantics",
+    "family": "scope",
+    "checks": 19,
+    "checks_met": 19,
+    "scope": [
+     "exhaustive"
+    ]
+   }
+  },
+  {
+   "id": "M-10",
+   "name": "Unit of work: all or none, inert refusal",
+   "implements": [
+    "AX-04",
+    "AX-03",
+    "AX-12"
+   ],
+   "state": "the caller's transaction level and its earlier write; the unit's writes to two stores; a failure point; the reply",
+   "operations": [
+    "begin (nested in the caller's level)",
+    "write store A",
+    "write store B",
+    "fail",
+    "commit",
+    "roll back"
+   ],
+   "effect_kinds": [
+    "commit all",
+    "roll back own level",
+    "report code"
+   ],
+   "events": [
+    "reply (ok, refused with code)"
+   ],
+   "laws": [
+    {
+     "id": "M10-L1",
+     "kind": "invariant",
+     "text": "All or none: at the end of a unit, both of its writes are kept or neither.",
+     "controls": [
+      "unit-control-C1-per-statement"
+     ],
+     "as_built_violations": [
+      "unit-per-chunk-commit-as-built",
+      "unit-per-statement-commit-as-built",
+      "unit-no-transaction-as-built"
+     ],
+     "also_violated_by": [],
+     "sharpness": [
+      "unit-sharp-refused-inside-caller",
+      "unit-sharp-ok"
+     ]
+    },
+    {
+     "id": "M10-L2",
+     "kind": "invariant",
+     "text": "Inert refusal: a refused unit leaves the caller's earlier writes as they were.",
+     "controls": [
+      "unit-control-C2-rollback-all-levels"
+     ],
+     "as_built_violations": [
+      "unit-rollback-all-levels-as-built"
+     ],
+     "also_violated_by": [],
+     "sharpness": [
+      "unit-sharp-refused-inside-caller",
+      "unit-sharp-ok"
+     ]
+    },
+    {
+     "id": "M10-L3",
+     "kind": "invariant",
+     "text": "A refused unit replies refused, with a code of its family; an ok reply means both writes are kept.",
+     "controls": [
+      "unit-control-C3-ok-on-failure"
+     ],
+     "as_built_violations": [
+      "unit-wrong-reply-as-built",
+      "unit-hidden-failure-as-built"
+     ],
+     "also_violated_by": [],
+     "sharpness": [
+      "unit-sharp-refused-inside-caller",
+      "unit-sharp-ok"
+     ]
+    }
+   ],
+   "generic_controls": [
+    {
+     "id": "M10-C1",
+     "law": "M10-L1",
+     "mutant": "each statement commits on its own"
+    },
+    {
+     "id": "M10-C2",
+     "law": "M10-L2",
+     "mutant": "the refusal rolls back every level"
+    },
+    {
+     "id": "M10-C3",
+     "law": "M10-L3",
+     "mutant": "a failure is answered ok"
+    }
+   ],
+   "family": "unit",
+   "instances": [
+    {
+     "object": "03/caller-transaction",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/bulk_loader.py (server-loader path)",
+     "model": "unit/per-chunk-commit",
+     "departures": [
+      {
+       "law": "M10-L1",
+       "findings": [
+        "F-0305"
+       ]
+      }
+     ],
+     "model_checks": [
+      "unit-per-chunk-commit-as-built",
+      "unit-per-chunk-commit-reviewed"
+     ],
+     "violated_laws": [
+      "M10-L1"
+     ],
+     "departs": [
+      "M10-L1"
+     ],
+     "findings": [
+      "F-0305"
+     ]
+    },
+    {
+     "object": "07/bm25-index",
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/BM25Index.cls (insert in a caller transaction)",
+     "model": "unit/rollback-all-levels",
+     "departures": [
+      {
+       "law": "M10-L2",
+       "findings": [
+        "F-C0702",
+        "F-0704"
+       ]
+      }
+     ],
+     "model_checks": [
+      "unit-rollback-all-levels-as-built",
+      "unit-rollback-all-levels-reviewed"
+     ],
+     "violated_laws": [
+      "M10-L2"
+     ],
+     "departs": [
+      "M10-L2"
+     ],
+     "findings": [
+      "F-0704",
+      "F-C0702"
+     ]
+    },
+    {
+     "object": "04/adjacency-entry",
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/Adjacency.cls (rebuild)",
+     "model": "unit/rollback-all-levels",
+     "departures": [
+      {
+       "law": "M10-L2",
+       "findings": [
+        "F-0409"
+       ]
+      }
+     ],
+     "model_checks": [
+      "unit-rollback-all-levels-as-built",
+      "unit-rollback-all-levels-reviewed"
+     ],
+     "violated_laws": [
+      "M10-L2"
+     ],
+     "departs": [
+      "M10-L2"
+     ],
+     "findings": [
+      "F-0409"
+     ]
+    },
+    {
+     "object": "16/bolt-session-with-a-key-set",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/bolt_server.py:500-510, 567-622",
+     "model": "unit/per-statement-commit",
+     "departures": [
+      {
+       "law": "M10-L1",
+       "findings": [
+        "F-1601"
+       ]
+      }
+     ],
+     "note": "F-1601's reply aspect (BEGIN and COMMIT answer SUCCESS and do nothing) is not modelled separately; it is attributed to M10-L1 (each RUN commits on its own)",
+     "model_checks": [
+      "unit-per-statement-commit-as-built",
+      "unit-per-statement-commit-reviewed"
+     ],
+     "violated_laws": [
+      "M10-L1"
+     ],
+     "departs": [
+      "M10-L1"
+     ],
+     "findings": [
+      "F-1601"
+     ]
+    },
+    {
+     "object": "16/cypher-http-call",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/cypher_api.py:379-410",
+     "model": "unit/per-statement-commit",
+     "departures": [
+      {
+       "law": "M10-L1",
+       "findings": [
+        "F-1610",
+        "F-1609"
+       ]
+      }
+     ],
+     "model_checks": [
+      "unit-per-statement-commit-as-built",
+      "unit-per-statement-commit-reviewed"
+     ],
+     "violated_laws": [
+      "M10-L1"
+     ],
+     "departs": [
+      "M10-L1"
+     ],
+     "findings": [
+      "F-1609",
+      "F-1610"
+     ]
+    },
+    {
+     "object": "15/fhir-graph",
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/FHIRGraph.cls:167-279",
+     "model": "unit/no-transaction",
+     "departures": [
+      {
+       "law": "M10-L1",
+       "findings": [
+        "F-1511",
+        "F-C1501"
+       ]
+      }
+     ],
+     "model_checks": [
+      "unit-no-transaction-as-built",
+      "unit-no-transaction-reviewed"
+     ],
+     "violated_laws": [
+      "M10-L1"
+     ],
+     "departs": [
+      "M10-L1"
+     ],
+     "findings": [
+      "F-1511",
+      "F-C1501"
+     ]
+    },
+    {
+     "object": "15/reifier",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/nodes_edges.py:2176-2199",
+     "model": "unit/per-statement-commit",
+     "departures": [
+      {
+       "law": "M10-L1",
+       "findings": [
+        "F-C1502"
+       ]
+      }
+     ],
+     "model_checks": [
+      "unit-per-statement-commit-as-built",
+      "unit-per-statement-commit-reviewed"
+     ],
+     "violated_laws": [
+      "M10-L1"
+     ],
+     "departs": [
+      "M10-L1"
+     ],
+     "findings": [
+      "F-C1502"
+     ]
+    },
+    {
+     "object": "06/route",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/embeddings.py (store_embeddings route creation)",
+     "model": "unit/no-transaction",
+     "note": "the route is made in its own steps before the batch, so a refused batch leaves it",
+     "departures": [
+      {
+       "law": "M10-L1",
+       "findings": [
+        "F-0615"
+       ]
+      }
+     ],
+     "model_checks": [
+      "unit-no-transaction-as-built",
+      "unit-no-transaction-reviewed"
+     ],
+     "violated_laws": [
+      "M10-L1"
+     ],
+     "departs": [
+      "M10-L1"
+     ],
+     "findings": [
+      "F-0615"
+     ]
+    },
+    {
+     "object": "08/cypher-call",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/query.py:1946-1966",
+     "model": "unit/wrong-reply",
+     "note": "refusals of the wrong class or answered as no rows",
+     "departures": [
+      {
+       "law": "M10-L3",
+       "findings": [
+        "F-0807",
+        "F-0804",
+        "F-0817"
+       ]
+      }
+     ],
+     "model_checks": [
+      "unit-wrong-reply-as-built",
+      "unit-wrong-reply-reviewed"
+     ],
+     "violated_laws": [
+      "M10-L3"
+     ],
+     "departs": [
+      "M10-L3"
+     ],
+     "findings": [
+      "F-0804",
+      "F-0807",
+      "F-0817"
+     ]
+    },
+    {
+     "object": "03/node-in-one-graph",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/nodes_edges.py (create_node)",
+     "model": "unit/hidden-failure",
+     "departures": [
+      {
+       "law": "M10-L3",
+       "findings": [
+        "F-0306",
+        "F-0307"
+       ]
+      }
+     ],
+     "model_checks": [
+      "unit-hidden-failure-as-built",
+      "unit-hidden-failure-reviewed"
+     ],
+     "violated_laws": [
+      "M10-L3"
+     ],
+     "departs": [
+      "M10-L3"
+     ],
+     "findings": [
+      "F-0306",
+      "F-0307"
+     ]
+    },
+    {
+     "object": "11/caller-transaction",
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/Ledger.cls:390-415",
+     "model": "unit/canonical",
+     "note": "the commit is a nested level; a refused changeset takes back its own level alone",
+     "model_checks": [
+      "unit-canonical-as-built",
+      "unit-control-C1-per-statement",
+      "unit-control-C2-rollback-all-levels",
+      "unit-control-C3-ok-on-failure",
+      "unit-sharp-refused-inside-caller",
+      "unit-sharp-ok"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "07/fused-search",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine (fusion)",
+     "model": "unit/hidden-failure",
+     "note": "a failed leg is hidden in an ok answer",
+     "departures": [
+      {
+       "law": "M10-L3",
+       "findings": [
+        "F-0709"
+       ]
+      }
+     ],
+     "model_checks": [
+      "unit-hidden-failure-as-built",
+      "unit-hidden-failure-reviewed"
+     ],
+     "violated_laws": [
+      "M10-L3"
+     ],
+     "departs": [
+      "M10-L3"
+     ],
+     "findings": [
+      "F-0709"
+     ]
+    },
+    {
+     "object": "05/temporal-coordinates",
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/TemporalIndex.cls (refused write)",
+     "model": "unit/no-transaction",
+     "departures": [
+      {
+       "law": "M10-L1",
+       "findings": [
+        "F-C0501"
+       ]
+      }
+     ],
+     "model_checks": [
+      "unit-no-transaction-as-built",
+      "unit-no-transaction-reviewed"
+     ],
+     "violated_laws": [
+      "M10-L1"
+     ],
+     "departs": [
+      "M10-L1"
+     ],
+     "findings": [
+      "F-C0501"
+     ]
+    },
+    {
+     "object": "17/link",
+     "use": "canonical",
+     "where": "iris_vector_graph/_write_txn.py:15-90",
+     "model": "unit/canonical",
+     "model_checks": [
+      "unit-canonical-as-built",
+      "unit-control-C1-per-statement",
+      "unit-control-C2-rollback-all-levels",
+      "unit-control-C3-ok-on-failure",
+      "unit-sharp-refused-inside-caller",
+      "unit-sharp-ok"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "07/docs-table-search",
+     "use": "canonical",
+     "where": "iris_vector_graph/schema.py:2485-2523",
+     "note": "not modelled: the SQL procedure without a word index refuses (TXT-B12.91)",
+     "model_checks": [],
+     "violated_laws": null,
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "15/concept-pipeline",
+     "use": "canonical",
+     "where": "iris_vector_graph/_engine/fhir_graph.py:395-484",
+     "note": "not modelled: an unregistered graph is refused (INT-F8.1)",
+     "model_checks": [],
+     "violated_laws": null,
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "15/cypher-anchors",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/cypher_api.py:327-347",
+     "model": "unit/hidden-failure",
+     "departures": [
+      {
+       "law": "M10-L3",
+       "findings": [
+        "F-1508"
+       ],
+       "why": "a failed FHIR-graph anchor read is answered as a bridge lookup"
+      }
+     ],
+     "model_checks": [
+      "unit-hidden-failure-as-built",
+      "unit-hidden-failure-reviewed"
+     ],
+     "violated_laws": [
+      "M10-L3"
+     ],
+     "departs": [
+      "M10-L3"
+     ],
+     "findings": [
+      "F-1508"
+     ]
+    },
+    {
+     "object": "16/bolt-explicit-transaction",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/bolt_server.py:500-510, 567-622",
+     "model": "unit/per-statement-commit",
+     "departures": [
+      {
+       "law": "M10-L1",
+       "findings": [
+        "F-1601"
+       ]
+      }
+     ],
+     "note": "PULL n dropping rows (F-1602) is a functional finding",
+     "model_checks": [
+      "unit-per-statement-commit-as-built",
+      "unit-per-statement-commit-reviewed"
+     ],
+     "violated_laws": [
+      "M10-L1"
+     ],
+     "departs": [
+      "M10-L1"
+     ],
+     "findings": [
+      "F-1601"
+     ]
+    },
+    {
+     "object": "16/fraud-server-call",
+     "use": "hand-rolled",
+     "where": "src/iris_demo_server/routes/fraud.py:107-145",
+     "model": "unit/hidden-failure",
+     "departures": [
+      {
+       "law": "M10-L3",
+       "findings": [
+        "F-1615"
+       ],
+       "why": "the vector lookup fails and the server scores with zeros as if it had succeeded"
+      }
+     ],
+     "model_checks": [
+      "unit-hidden-failure-as-built",
+      "unit-hidden-failure-reviewed"
+     ],
+     "violated_laws": [
+      "M10-L3"
+     ],
+     "departs": [
+      "M10-L3"
+     ],
+     "findings": [
+      "F-1615"
+     ]
+    }
+   ],
+   "model": {
+    "crate": "experiment/playbook-completion/models/semantics",
+    "family": "unit",
+    "checks": 18,
+    "checks_met": 18,
+    "scope": [
+     "exhaustive"
+    ]
+   }
+  },
+  {
+   "id": "M-11",
+   "name": "Capability gate",
+   "implements": [
+    "AX-13",
+    "AX-03"
+   ],
+   "state": "the caller's key (none, wrong, ok) and role (read-write, read-only); the entry point's checks; the stores",
+   "operations": [
+    "read",
+    "write",
+    "admin write",
+    "server-file call"
+   ],
+   "effect_kinds": [
+    "allow",
+    "refuse before effect"
+   ],
+   "events": [
+    "401 / 403"
+   ],
+   "laws": [
+    {
+     "id": "M11-L1",
+     "kind": "action",
+     "text": "A read-only caller changes nothing.",
+     "controls": [
+      "cap-control-C1-write-without-read-only-check"
+     ],
+     "as_built_violations": [
+      "cap-aql-as-built"
+     ],
+     "also_violated_by": [
+      "cap-snapshot-file-helpers-as-built"
+     ],
+     "sharpness": [
+      "cap-sharp-keyed-write"
+     ]
+    },
+    {
+     "id": "M11-L2",
+     "kind": "action",
+     "text": "With keys on, a missing or wrong key is refused before any effect.",
+     "controls": [
+      "cap-control-C2-route-without-key-check"
+     ],
+     "as_built_violations": [
+      "cap-demo-server-as-built",
+      "cap-privilege-in-engine-only-as-built"
+     ],
+     "also_violated_by": [
+      "cap-snapshot-file-helpers-as-built"
+     ],
+     "sharpness": [
+      "cap-sharp-keyed-write"
+     ]
+    },
+    {
+     "id": "M11-L3",
+     "kind": "action",
+     "text": "No entry point reads, writes or deletes server files, or runs caller text as code.",
+     "controls": [
+      "cap-control-C3-file-route"
+     ],
+     "as_built_violations": [
+      "cap-aql-code-text-as-built",
+      "cap-snapshot-file-helpers-as-built"
+     ],
+     "also_violated_by": [],
+     "sharpness": [
+      "cap-sharp-keyed-write"
+     ]
+    }
+   ],
+   "generic_controls": [
+    {
+     "id": "M11-C1",
+     "law": "M11-L1",
+     "mutant": "one write route skips the read-only check"
+    },
+    {
+     "id": "M11-C2",
+     "law": "M11-L2",
+     "mutant": "one route skips the key check"
+    }
+   ],
+   "family": "cap",
+   "instances": [
+    {
+     "object": "16/cypher-http-call",
+     "use": "canonical",
+     "where": "iris_vector_graph/cypher_api.py; docs/ADMIN_GUIDE.md:824-840",
+     "model": "cap/http-server",
+     "model_checks": [
+      "cap-http-server-as-built",
+      "cap-control-C1-write-without-read-only-check",
+      "cap-control-C2-route-without-key-check",
+      "cap-control-C3-file-route",
+      "cap-sharp-keyed-write"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "16/rest-web-app-path",
+     "use": "hand-rolled",
+     "where": "src/iris_demo_server/app.py:1-22",
+     "model": "cap/demo-server",
+     "departures": [
+      {
+       "law": "M11-L2",
+       "findings": [
+        "F-1614"
+       ]
+      }
+     ],
+     "model_checks": [
+      "cap-demo-server-as-built",
+      "cap-demo-server-reviewed"
+     ],
+     "violated_laws": [
+      "M11-L2"
+     ],
+     "departs": [
+      "M11-L2"
+     ],
+     "findings": [
+      "F-1614"
+     ]
+    },
+    {
+     "object": "08/cypher-call",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/cypher/aql/translator.py:50-58, 154-168",
+     "model": [
+      "cap/aql",
+      "cap/aql-code-text"
+     ],
+     "departures": [
+      {
+       "law": "M11-L1",
+       "findings": [
+        "F-0814"
+       ]
+      },
+      {
+       "law": "M11-L3",
+       "findings": [
+        "F-0815",
+        "F-0814"
+       ]
+      }
+     ],
+     "model_checks": [
+      "cap-aql-as-built",
+      "cap-aql-reviewed",
+      "cap-aql-code-text-as-built",
+      "cap-aql-code-text-reviewed"
+     ],
+     "violated_laws": [
+      "M11-L1",
+      "M11-L3"
+     ],
+     "departs": [
+      "M11-L1",
+      "M11-L3"
+     ],
+     "findings": [
+      "F-0814",
+      "F-0815"
+     ]
+    },
+    {
+     "object": "18/snapshot-archive",
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/Snapshot.cls:4-73",
+     "model": "cap/snapshot-file-helpers",
+     "departures": [
+      {
+       "law": "M11-L3",
+       "findings": [
+        "F-C1803",
+        "F-1806"
+       ]
+      },
+      {
+       "law": "M11-L1",
+       "findings": [
+        "F-C1803",
+        "F-1806"
+       ],
+       "why": "the helpers run for a read-only caller too: no role check"
+      },
+      {
+       "law": "M11-L2",
+       "findings": [
+        "F-C1803",
+        "F-1806"
+       ],
+       "why": "the helpers run for any Native API caller: no credential check"
+      }
+     ],
+     "model_checks": [
+      "cap-snapshot-file-helpers-as-built",
+      "cap-snapshot-file-helpers-reviewed"
+     ],
+     "violated_laws": [
+      "M11-L1",
+      "M11-L2",
+      "M11-L3"
+     ],
+     "departs": [
+      "M11-L1",
+      "M11-L2",
+      "M11-L3"
+     ],
+     "findings": [
+      "F-1806",
+      "F-C1803"
+     ]
+    },
+    {
+     "object": "09/engine-native-path",
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/Cypher/Exec.cls:32-72",
+     "model": "cap/privilege-in-engine-only",
+     "departures": [
+      {
+       "law": "M11-L2",
+       "findings": [
+        "F-0908"
+       ]
+      }
+     ],
+     "model_checks": [
+      "cap-privilege-in-engine-only-as-built",
+      "cap-privilege-in-engine-only-reviewed"
+     ],
+     "violated_laws": [
+      "M11-L2"
+     ],
+     "departs": [
+      "M11-L2"
+     ],
+     "findings": [
+      "F-0908"
+     ]
+    },
+    {
+     "object": "16/bolt-session-with-a-key-set",
+     "use": "canonical",
+     "where": "iris_vector_graph/bolt_server.py",
+     "model": "cap/http-server",
+     "note": "keys are checked on HELLO/LOGON; F-C1603 (Bolt listens on every interface unless started by ivg server start) is network exposure, outside this machine's subset (no network model)",
+     "model_checks": [
+      "cap-http-server-as-built",
+      "cap-control-C1-write-without-read-only-check",
+      "cap-control-C2-route-without-key-check",
+      "cap-control-C3-file-route",
+      "cap-sharp-keyed-write"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "16/mcp-tool-set",
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/MCPTools.cls",
+     "note": "not modelled: %AI classes absent on Community (F-1613 blocked-access)",
+     "model_checks": [],
+     "violated_laws": null,
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "17/client-request",
+     "use": "canonical",
+     "where": "iris_vector_graph/sdk.py",
+     "model": "cap/http-server",
+     "note": "401/403 mapping is F-1714 (AX-03)",
+     "model_checks": [
+      "cap-http-server-as-built",
+      "cap-control-C1-write-without-read-only-check",
+      "cap-control-C2-route-without-key-check",
+      "cap-control-C3-file-route",
+      "cap-sharp-keyed-write"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "17/namespace",
+     "use": "canonical",
+     "where": "iris_vector_graph/_engine/admin.py (reader role)",
+     "model": "cap/http-server",
+     "model_checks": [
+      "cap-http-server-as-built",
+      "cap-control-C1-write-without-read-only-check",
+      "cap-control-C2-route-without-key-check",
+      "cap-control-C3-file-route",
+      "cap-sharp-keyed-write"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "17/link",
+     "use": "canonical",
+     "where": "iris_vector_graph/_write_txn.py",
+     "model": "cap/http-server",
+     "model_checks": [
+      "cap-http-server-as-built",
+      "cap-control-C1-write-without-read-only-check",
+      "cap-control-C2-route-without-key-check",
+      "cap-control-C3-file-route",
+      "cap-sharp-keyed-write"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "16/generated-graphql-call",
+     "use": "canonical",
+     "where": "iris_vector_graph/gql (generated server)",
+     "model": "cap/http-server",
+     "note": "key and read-only checks per the cells (API-X1.5, API-X10.2); health always healthy is F-1611 (AX-12)",
+     "model_checks": [
+      "cap-http-server-as-built",
+      "cap-control-C1-write-without-read-only-check",
+      "cap-control-C2-route-without-key-check",
+      "cap-control-C3-file-route",
+      "cap-sharp-keyed-write"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "16/demo-server-call",
+     "use": "hand-rolled",
+     "where": "src/iris_demo_server/app.py:1-22, 131-136",
+     "model": "cap/demo-server",
+     "departures": [
+      {
+       "law": "M11-L2",
+       "findings": [
+        "F-1614"
+       ]
+      }
+     ],
+     "model_checks": [
+      "cap-demo-server-as-built",
+      "cap-demo-server-reviewed"
+     ],
+     "violated_laws": [
+      "M11-L2"
+     ],
+     "departs": [
+      "M11-L2"
+     ],
+     "findings": [
+      "F-1614"
+     ]
+    },
+    {
+     "object": "16/fraud-server-call",
+     "use": "canonical",
+     "where": "src/iris_demo_server (fraud server)",
+     "model": "cap/http-server",
+     "model_checks": [
+      "cap-http-server-as-built",
+      "cap-control-C1-write-without-read-only-check",
+      "cap-control-C2-route-without-key-check",
+      "cap-control-C3-file-route",
+      "cap-sharp-keyed-write"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    }
+   ],
+   "model": {
+    "crate": "experiment/playbook-completion/models/semantics",
+    "family": "cap",
+    "checks": 15,
+    "checks_met": 15,
+    "scope": [
+     "exhaustive"
+    ]
+   }
+  },
+  {
+   "id": "M-12",
+   "name": "Catalog binding of artifacts to graph and identity",
+   "implements": [
+    "AX-02",
+    "AX-01",
+    "AX-08"
+   ],
+   "state": "artifacts (index, route, compiled class) each with the (graph, identity) it records; the key that names an artifact; a reader's check",
+   "operations": [
+    "create an artifact for (graph, identity)",
+    "write through the catalog's check",
+    "read an artifact for (graph, identity)",
+    "derive an artifact's name"
+   ],
+   "effect_kinds": [
+    "bind",
+    "refuse a clash",
+    "read the bound artifact"
+   ],
+   "events": [
+    "identity clash",
+    "no route"
+   ],
+   "laws": [
+    {
+     "id": "M12-L1",
+     "kind": "invariant",
+     "text": "Every artifact records the graph and identity it was built for.",
+     "controls": [
+      "catalog-control-C3-no-record"
+     ],
+     "as_built_violations": [
+      "catalog-bm25-index-graph-unchecked-as-built-M12-L1-F-0705"
+     ],
+     "also_violated_by": [
+      "catalog-bm25-index-graph-unchecked-as-built-M12-L2-F-0705"
+     ],
+     "sharpness": [
+      "catalog-sharp-three-artifacts"
+     ]
+    },
+    {
+     "id": "M12-L2",
+     "kind": "action",
+     "text": "A read or write checks the binding before using an artifact; a failed check refuses, never passes through.",
+     "controls": [
+      "catalog-control-C1-unchecked-read",
+      "catalog-control-C4-fail-open"
+     ],
+     "as_built_violations": [
+      "catalog-bm25-index-graph-unchecked-as-built",
+      "catalog-bm25-index-graph-unchecked-as-built-M12-L2-F-0705",
+      "catalog-ivf-index-graph-unchecked-as-built",
+      "catalog-identity-fail-open-as-built"
+     ],
+     "also_violated_by": [
+      "catalog-bm25-index-graph-unchecked-as-built-M12-L1-F-0705",
+      "catalog-control-C3-no-record"
+     ],
+     "sharpness": [
+      "catalog-sharp-three-artifacts"
+     ]
+    },
+    {
+     "id": "M12-L3",
+     "kind": "invariant",
+     "text": "Distinct (graph, identity) pairs name distinct artifacts.",
+     "controls": [
+      "catalog-control-C2-short-hash"
+     ],
+     "as_built_violations": [
+      "catalog-short-hash-name-as-built"
+     ],
+     "also_violated_by": [],
+     "sharpness": [
+      "catalog-sharp-three-artifacts"
+     ]
+    }
+   ],
+   "generic_controls": [
+    {
+     "id": "M12-C1",
+     "law": "M12-L2",
+     "mutant": "the read uses the artifact without checking its graph"
+    },
+    {
+     "id": "M12-C2",
+     "law": "M12-L3",
+     "mutant": "the artifact name is a hash too short to separate two shapes"
+    }
+   ],
+   "family": "catalog",
+   "instances": [
+    {
+     "object": "07/bm25-index",
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/BM25Index.cls:608-612; iris_vector_graph/cypher/translator.py:3133-3134, 3283-3292",
+     "model": "catalog/bm25-index-graph-unchecked",
+     "departures": [
+      {
+       "law": "M12-L1",
+       "findings": [
+        "F-0705"
+       ]
+      },
+      {
+       "law": "M12-L2",
+       "findings": [
+        "F-0705",
+        "F-0707"
+       ]
+      }
+     ],
+     "model_checks": [
+      "catalog-bm25-index-graph-unchecked-as-built",
+      "catalog-bm25-index-graph-unchecked-as-built-M12-L1-F-0705",
+      "catalog-bm25-index-graph-unchecked-as-built-M12-L2-F-0705",
+      "catalog-bm25-index-graph-unchecked-reviewed"
+     ],
+     "violated_laws": [
+      "M12-L1",
+      "M12-L2"
+     ],
+     "departs": [
+      "M12-L1",
+      "M12-L2"
+     ],
+     "findings": [
+      "F-0705",
+      "F-0707"
+     ]
+    },
+    {
+     "object": "06/ivf-index",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/vector.py:194-225",
+     "model": "catalog/ivf-index-graph-unchecked",
+     "departures": [
+      {
+       "law": "M12-L2",
+       "findings": [
+        "F-0609"
+       ]
+      }
+     ],
+     "model_checks": [
+      "catalog-ivf-index-graph-unchecked-as-built",
+      "catalog-ivf-index-graph-unchecked-reviewed"
+     ],
+     "violated_laws": [
+      "M12-L2"
+     ],
+     "departs": [
+      "M12-L2"
+     ],
+     "findings": [
+      "F-0609"
+     ]
+    },
+    {
+     "object": "06/registry-row",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/schema.py:1033-1061; iris_vector_graph/_engine/embeddings.py:157-197, 2033-2049",
+     "model": "catalog/identity-fail-open",
+     "departures": [
+      {
+       "law": "M12-L2",
+       "findings": [
+        "F-0601",
+        "F-0602",
+        "F-0603",
+        "F-0613"
+       ]
+      }
+     ],
+     "model_checks": [
+      "catalog-identity-fail-open-as-built",
+      "catalog-identity-fail-open-reviewed"
+     ],
+     "violated_laws": [
+      "M12-L2"
+     ],
+     "departs": [
+      "M12-L2"
+     ],
+     "findings": [
+      "F-0601",
+      "F-0602",
+      "F-0603",
+      "F-0613"
+     ]
+    },
+    {
+     "object": "09/compiled-shape",
+     "use": "hand-rolled",
+     "where": "iris_src/src/Graph/KG/Cypher/Gen.cls:69-80",
+     "model": "catalog/short-hash-name",
+     "departures": [
+      {
+       "law": "M12-L3",
+       "findings": [
+        "F-0901",
+        "F-C0901"
+       ]
+      }
+     ],
+     "model_checks": [
+      "catalog-short-hash-name-as-built",
+      "catalog-short-hash-name-reviewed"
+     ],
+     "violated_laws": [
+      "M12-L3"
+     ],
+     "departs": [
+      "M12-L3"
+     ],
+     "findings": [
+      "F-0901",
+      "F-C0901"
+     ]
+    },
+    {
+     "object": "06/route",
+     "use": "canonical",
+     "where": "iris_vector_graph/_engine/vector.py:164-226 (registry row names the table, VEC-I2.3)",
+     "model": "catalog/canonical",
+     "model_checks": [
+      "catalog-canonical-as-built",
+      "catalog-canonical-reviewed",
+      "catalog-control-C1-unchecked-read",
+      "catalog-control-C2-short-hash",
+      "catalog-control-C3-no-record",
+      "catalog-control-C4-fail-open",
+      "catalog-sharp-three-artifacts"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "15/table-mapping",
+     "use": "canonical",
+     "where": "iris_vector_graph (map_sql_table)",
+     "model": "catalog/canonical",
+     "note": "F-1504 (schema USER) is a functional finding",
+     "model_checks": [
+      "catalog-canonical-as-built",
+      "catalog-canonical-reviewed",
+      "catalog-control-C1-unchecked-read",
+      "catalog-control-C2-short-hash",
+      "catalog-control-C3-no-record",
+      "catalog-control-C4-fail-open",
+      "catalog-sharp-three-artifacts"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "10/native-route",
+     "use": "canonical",
+     "where": "iris_vector_graph (proof record)",
+     "model": "catalog/canonical",
+     "note": "routes by reader revision, not library version (CONTEXT.md:266-282)",
+     "model_checks": [
+      "catalog-canonical-as-built",
+      "catalog-canonical-reviewed",
+      "catalog-control-C1-unchecked-read",
+      "catalog-control-C2-short-hash",
+      "catalog-control-C3-no-record",
+      "catalog-control-C4-fail-open",
+      "catalog-sharp-three-artifacts"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    },
+    {
+     "object": "17/index-handle",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph (index handle)",
+     "model": "catalog/bm25-index-graph-unchecked",
+     "departures": [
+      {
+       "law": "M12-L2",
+       "findings": [
+        "F-0705"
+       ]
+      },
+      {
+       "law": "M12-L1",
+       "findings": [
+        "F-0705"
+       ],
+       "why": "the handle's BM25 index records no graph (F-0705)"
+      }
+     ],
+     "model_checks": [
+      "catalog-bm25-index-graph-unchecked-as-built",
+      "catalog-bm25-index-graph-unchecked-as-built-M12-L1-F-0705",
+      "catalog-bm25-index-graph-unchecked-as-built-M12-L2-F-0705",
+      "catalog-bm25-index-graph-unchecked-reviewed"
+     ],
+     "violated_laws": [
+      "M12-L1",
+      "M12-L2"
+     ],
+     "departs": [
+      "M12-L1",
+      "M12-L2"
+     ],
+     "findings": [
+      "F-0705"
+     ]
+    },
+    {
+     "object": "15/code-crosswalk",
+     "use": "canonical",
+     "where": "iris_vector_graph/_engine/fhir_graph.py",
+     "model": "catalog/canonical",
+     "note": "a code crosswalk row binds a code to its concept (INT-C5)",
+     "model_checks": [
+      "catalog-canonical-as-built",
+      "catalog-canonical-reviewed",
+      "catalog-control-C1-unchecked-read",
+      "catalog-control-C2-short-hash",
+      "catalog-control-C3-no-record",
+      "catalog-control-C4-fail-open",
+      "catalog-sharp-three-artifacts"
+     ],
+     "violated_laws": [],
+     "departs": [],
+     "findings": []
+    }
+   ],
+   "model": {
+    "crate": "experiment/playbook-completion/models/semantics",
+    "family": "catalog",
+    "checks": 17,
+    "checks_met": 17,
+    "scope": [
+     "exhaustive"
+    ]
+   }
+  },
+  {
+   "id": "M-13",
+   "name": "Read epoch: consistent multi-step read",
+   "implements": [
+    "AX-12"
+   ],
+   "state": "a multi-step change (marker set, step 1, step 2, cleared) and a reader that reads two parts in two steps; the reader's marker checks",
+   "operations": [
+    "start a change",
+    "change part 1",
+    "change part 2",
+    "finish",
+    "reader: check, read part 1, read part 2, check"
+   ],
+   "effect_kinds": [
+    "read",
+    "report interrupted"
+   ],
+   "events": [
+    "RedactionInProgress",
+    "interrupted read"
+   ],
+   "laws": [
+    {
+     "id": "M13-L1",
+     "kind": "invariant",
+     "text": "A finished read returns parts of one committed state, or reports that it was interrupted.",
+     "controls": [
+      "epoch-control-C1-no-end-check"
+     ],
+     "as_built_violations": [
+      "epoch-check-at-start-as-built",
+      "epoch-no-check-as-built"
+     ],
+     "also_violated_by": [],
+     "sharpness": [
+      "epoch-sharp-interrupted",
+      "epoch-sharp-new-state-read"
+     ]
+    }
+   ],
+   "generic_controls": [
+    {
+     "id": "M13-C1",
+     "law": "M13-L1",
+     "mutant": "the reader checks only before its first part"
+    }
+   ],
+   "family": "epoch",
+   "instances": [
+    {
+     "object": "14/ledger-view",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/ledger (record readers)",
+     "model": "epoch/check-at-start",
+     "departures": [
+      {
+       "law": "M13-L1",
+       "findings": [
+        "F-1402"
+       ]
+      }
+     ],
+     "model_checks": [
+      "epoch-check-at-start-as-built",
+      "epoch-check-at-start-reviewed",
+      "epoch-control-C1-no-end-check",
+      "epoch-sharp-interrupted",
+      "epoch-sharp-new-state-read"
+     ],
+     "violated_laws": [
+      "M13-L1"
+     ],
+     "departs": [
+      "M13-L1"
+     ],
+     "findings": [
+      "F-1402"
+     ]
+    },
+    {
+     "object": "18/snapshot-archive",
+     "use": "hand-rolled",
+     "where": "iris_vector_graph/_engine/snapshot.py:864-1034",
+     "model": "epoch/no-check",
+     "departures": [
+      {
+       "law": "M13-L1",
+       "findings": [
+        "F-C1801"
+       ]
+      }
+     ],
+     "model_checks": [
+      "epoch-no-check-as-built",
+      "epoch-no-check-reviewed"
+     ],
+     "violated_laws": [
+      "M13-L1"
+     ],
+     "departs": [
+      "M13-L1"
+     ],
+     "findings": [
+      "F-C1801"
+     ]
+    },
+    {
+     "object": "05/reader-handle",
+     "use": "canonical",
+     "where": "iris_src/src/Graph/KG/TemporalWindow.cls",
+     "note": "not modelled here: the paged window reader's consistency is HD-1401/HD-0903 working answers (quiet-writer premise)",
+     "model_checks": [],
+     "violated_laws": null,
+     "departs": [],
+     "findings": []
+    }
+   ],
+   "model": {
+    "crate": "experiment/playbook-completion/models/semantics",
+    "family": "epoch",
+    "checks": 7,
+    "checks_met": 7,
+    "scope": [
+     "exhaustive"
+    ]
+   }
+  }
+ ],
+ "unattached_objects": {
+  "_doc": "Objects whose only relation to the mechanisms is through another object, with the reason. The checker requires every objects.json object to appear in some instance list or here.",
+  "items": [
+   {
+    "object": "05/reader-handle",
+    "reason": "listed under M-13 as declared, not modelled"
+   }
+  ]
+ },
+ "results": {
+  "checks": 272,
+  "met": 272,
+  "truncated": 0,
+  "violation_checks_with_complement": 140,
+  "of_which_also_violate_another_law": 58
+ }
+}

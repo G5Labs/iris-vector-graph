@@ -1,0 +1,15 @@
+{
+  "command": "locks.sh iris python experiment/playbook-completion/structural/order/permutation.py $RUN_DIR/structural/order/perm-a.json 01,02,03,04,05",
+  "experiment_head": "8d11c49c4337db1fcf521c56a0c66e39b67128c4",
+  "id": "st-live-perm-a",
+  "kind": "live",
+  "lane": "structural",
+  "log": "$RUN_DIR/structural/order/perm-a.json",
+  "log_bytes": 52214,
+  "log_sha256": "1bcc0b2389ed933c18c9afc8d1b56b14d46da96c31f8552ee7c8b6e700031cc7",
+  "observes": "AUDITD, three insertion orders per module, answers compared: 01 get_schema_visualization differs (documented sample) but every answer passes the sample validator (each property set is that of a node carrying the label, each relationship end label that of an edge endpoint) -> holds; 02 list_graphs, count_nodes, get_nodes, get_node, _more_than_one_graph equal; 03 get_node_ids_by_label, get_node, count_nodes equal, get_node_ids_by_property(limit=2) and get_property_pairs_like(limit=2) differ (forward pw:0,pw:1; reverse and shuffle pw:4,pw:5: F-C0302) and _filter_edges_by_properties with the triple in two graphs differs (match forward, [] reverse/shuffle: F-0206); 04 kg_NEIGHBORS, get_edge_count, verify_graph, an unordered Cypher edge read and Adj.Degree equal; 05 get_edges_in_window (list), aggregate, bucket groups, latest edges, find_burst_nodes equal. Product fails for 03 only",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T12:07:00+00:00",
+  "result": "fail"
+}

@@ -1,0 +1,15 @@
+{
+  "command": "flock -w 1800 $RUN_DIR/intent-a/auditia.lock timeout 600 python experiment/playbook-completion/intent/probes/lane-a/hd0602_ivf_partial.py",
+  "experiment_head": "c01a7ccd00b29670b521799344233fa4a814c925",
+  "id": "intent-a-hd0602-ivf-partial",
+  "kind": "probe",
+  "lane": "intent-a",
+  "log": "$RUN_DIR/intent-a/hd0602_ivf_partial.log",
+  "log_bytes": 2237,
+  "log_sha256": "17149c440b79ea388e769991cee867af71ee964b0951124d78437cca0965ba4d",
+  "observes": "AUDITIA, 300 vectors in graph ia-0602, complete IVF index answers 300. During a real ivf_build rebuild (build_batch_size=1) a second connection's ivf_search answered fewer than 300 in 35 of 44 searches (min 7), no error. A rebuild killed by SIGKILL mid-way left an index answering 12 of 300 with no error, and IVFIndex.Info reported indexed=0 while 12 vectors answered. Fail is relative to the working contract in decisions.md HD-0602 (complete published index or explicit unavailable); no spec/ADR states a build contract, so this is not by itself a product-defect claim. An earlier attempt that closed the builder's connection from another thread crashed the client driver (rc 139, log kept as hd0602_ivf_partial.crashed-attempt1.log, cleaned up).",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-13T22:47:03+00:00",
+  "result": "fail"
+}

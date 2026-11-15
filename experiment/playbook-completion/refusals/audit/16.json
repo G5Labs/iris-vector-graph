@@ -1,0 +1,446 @@
+{
+ "module": "16",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "statements": [
+  {
+   "id": "API-X1.5",
+   "text": "A call without the right key gets an error that says the key is needed. No route code runs.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/api_auth.py:104-124",
+    "iris_vector_graph/cypher_api.py:105-109"
+   ],
+   "evidence": [
+    "run:rx-live-16"
+   ],
+   "notes": "Cypher HTTP server (uvicorn subprocess, IVG_API_KEY set): POST /api/cypher CREATE with no key, a wrong key, an empty key, a wrong bearer; /db/neo4j/tx/commit CREATE and /admin/load with no key: each 401 {'error':'unauthorized','message':'X-Api-Key header required'}; the node was not created and the journal shows no write (the route did not run); 6 cases.",
+   "live_cases": [
+    "POST /api/cypher CREATE, no key",
+    "POST /api/cypher CREATE, wrong key",
+    "POST /api/cypher CREATE, empty key",
+    "POST /api/cypher CREATE, wrong bearer",
+    "POST /db/neo4j/tx/commit CREATE, no key",
+    "POST /admin/load, no key"
+   ]
+  },
+  {
+   "id": "API-X1.6",
+   "text": "A web socket that does not show the key is closed before it opens.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/api_auth.py:111-118",
+    "api/main.py:124"
+   ],
+   "evidence": [
+    "run:rx-live-16"
+   ],
+   "notes": "Sample API (in process) with IVG_API_KEY: the /graphql web socket with no key and with a wrong key is closed with 1008 before accept (TestClient WebSocketDisconnect 1008); control: with the key it is accepted; 2 cases. The Cypher HTTP server's '/' web socket is exempt by design (Bolt authenticates in the protocol, API-X9.3).",
+   "live_cases": [
+    "sample API /graphql web socket without the key",
+    "sample API /graphql web socket with a wrong key"
+   ]
+  },
+  {
+   "id": "API-X3.2",
+   "text": "In read-only mode, the Cypher HTTP server refuses writes to admin routes. The explain route still answers.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/cypher_api.py:98-99",
+    "iris_vector_graph/api_auth.py:174-175"
+   ],
+   "evidence": [
+    "run:rx-live-16"
+   ],
+   "notes": "Cypher HTTP server with IVG_API_KEY + IVG_READ_ONLY: POST /admin/load, /admin/schema/init, /admin/indexes/rebuild, /admin/embed, /admin/snapshot and DELETE /admin/queries/{id}: 403 read_only_mode, no journal write; control: POST /admin/explain answers 200 with SQL; 6 cases.",
+   "live_cases": [
+    "POST /admin/load read-only",
+    "POST /admin/schema/init read-only",
+    "POST /admin/indexes/rebuild read-only",
+    "POST /admin/embed read-only",
+    "POST /admin/snapshot read-only",
+    "DELETE /admin/queries/{id} read-only"
+   ]
+  },
+  {
+   "id": "API-X3.3",
+   "text": "In read-only mode, the sample API refuses writes to the FHIR event route. An operator can allow them.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/api_auth.py:167-172",
+    "api/main.py:120"
+   ],
+   "evidence": [
+    "run:rx-live-16"
+   ],
+   "notes": "Sample API with IVG_READ_ONLY: POST /fhir-event/ (a valid event) -> 403 read_only_mode, nothing written; control: with IVG_ALLOW_FHIR_WRITES=true the request passes the middleware (it is then refused by the payload model, 422, by design of the control); 1 case.",
+   "live_cases": [
+    "POST /fhir-event/ under read-only"
+   ]
+  },
+  {
+   "id": "API-X5.1",
+   "text": "It refuses a path of many hops past a cap of ten, unless an operator raises the cap.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "api/routers/cypher.py:31-81",
+    "api/routers/cypher.py:119",
+    "api/routers/cypher.py:235-237"
+   ],
+   "evidence": [
+    "run:rx-live-16"
+   ],
+   "notes": "Sample API POST /api/cypher: *1..11 (default cap), unbounded * (parsed as 100 hops), *1..11 with IVG_CYPHER_MAX_HOPS='abc' (falls back to 10) and *1..6 with the cap at 5: 413 COMPLEXITY_LIMIT_EXCEEDED; control: cap 20 accepts *1..11; 4 cases.",
+   "live_cases": [
+    "POST /api/cypher *1..11 (default cap)",
+    "POST /api/cypher unbounded * (100 hops)",
+    "POST /api/cypher *1..11 (cap set to a bad value -> 10)",
+    "POST /api/cypher *1..6 (cap lowered to 5)"
+   ]
+  },
+  {
+   "id": "API-X5.2",
+   "text": "In read-only mode it refuses a query that writes.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "api/routers/cypher.py:103-114"
+   ],
+   "evidence": [
+    "run:rx-live-16"
+   ],
+   "notes": "Sample API with IVG_READ_ONLY: POST /api/cypher CREATE -> 403 errorType 'access' (errorCode INTERNAL_ERROR, as the statement's note says); nothing written; 1 case.",
+   "live_cases": [
+    "POST /api/cypher CREATE under read-only"
+   ]
+  },
+  {
+   "id": "API-X6.1",
+   "text": "It refuses a query nested more than ten levels deep, or past the level an operator sets.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "api/gql/schema.py:290-310",
+    "api/gql/schema.py:326"
+   ],
+   "evidence": [
+    "run:rx-live-16"
+   ],
+   "notes": "Sample API POST /graphql, a 13-level query: GraphQL error naming the depth limit (control: 4 levels pass); a fresh process with IVG_GRAPHQL_MAX_DEPTH=3 refuses a 4-level query during validation (no resolver, no IRIS); control: 'ten' falls back to 10 and accepts 4 levels; 2 cases.",
+   "live_cases": [
+    "GraphQL query 13 levels deep",
+    "GraphQL 4 levels with IVG_GRAPHQL_MAX_DEPTH set to 3"
+   ]
+  },
+  {
+   "id": "API-X6.8",
+   "text": "In read-only mode the mutations and the Cypher field refuse to write.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "api/gql/schema.py:160-163",
+    "api/gql/schema.py:231-238",
+    "api/gql/schema.py:258",
+    "api/gql/schema.py:269",
+    "api/gql/schema.py:280"
+   ],
+   "evidence": [
+    "run:rx-live-16"
+   ],
+   "notes": "Sample API with IVG_READ_ONLY: createProtein, updateProtein, deleteProtein -> GraphQL error (PermissionError, read-only mode); executeCypher CREATE -> {'error': 'mutation queries not allowed in read-only mode'}; nothing written or removed; 4 cases.",
+   "live_cases": [
+    "createProtein under read-only",
+    "updateProtein under read-only",
+    "deleteProtein under read-only",
+    "executeCypher CREATE under read-only"
+   ]
+  },
+  {
+   "id": "API-X6.91",
+   "text": "The create protein call refuses an id that the default graph holds already. It also refuses a vector that is not 768 wide. Nothing is written then.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "examples/domains/biomedical/resolver.py:204-211"
+   ],
+   "evidence": [
+    "run:rx-live-16"
+   ],
+   "notes": "createProtein of an id the default graph holds -> error 'already exists' (its properties unchanged); createProtein with a 3-wide vector -> error '768-dimensional', no node made; 2 cases.",
+   "live_cases": [
+    "createProtein of an id the default graph holds",
+    "createProtein with a 3-wide vector"
+   ]
+  },
+  {
+   "id": "API-X6.93",
+   "text": "The delete protein call refuses an id that the default graph does not hold. It also refuses when another graph holds the same id. Nothing is removed then.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "examples/domains/biomedical/resolver.py:309-310",
+    "iris_vector_graph/_engine/nodes_edges.py:2202-2225"
+   ],
+   "evidence": [
+    "run:rx-live-16"
+   ],
+   "notes": "deleteProtein of an id only a named graph holds -> 'not found'; of an id the default graph and a named graph hold -> ValueError 'held by more than one graph, so nothing was deleted'; both rows remain; 2 cases.",
+   "live_cases": [
+    "deleteProtein of an id only a named graph holds",
+    "deleteProtein of an id the default and a named graph hold"
+   ]
+  },
+  {
+   "id": "API-X7.3",
+   "text": "A graph name that fails the name check, or is over 256 characters, is refused before any write.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "api/routers/fhir_event.py:182-187",
+    "iris_vector_graph/_validate.py:31-49"
+   ],
+   "evidence": [
+    "run:rx-live-16"
+   ],
+   "notes": "Sample API POST /fhir-event/ with graph containing a control character, 257 characters, and '0': 422, nothing written; 3 cases.",
+   "live_cases": [
+    "POST /fhir-event/ graph control character",
+    "POST /fhir-event/ graph 257 characters",
+    "POST /fhir-event/ graph \"0\""
+   ]
+  },
+  {
+   "id": "API-X7.9",
+   "text": "With no engine, the route refuses the call and writes nothing.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "api/routers/fhir_event.py:300-305"
+   ],
+   "evidence": [
+    "run:rx-live-16"
+   ],
+   "notes": "An app made with no engine (IRIS address a closed port): POST /fhir-event/ -> 503, nothing written; 1 case.",
+   "live_cases": [
+    "POST /fhir-event/ on an app with no engine"
+   ]
+  },
+  {
+   "id": "API-X8.5.6",
+   "text": "It refuses a FHIR base address the operator did not list. So a caller cannot aim it at an inside address.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/cypher_api.py:288-308"
+   ],
+   "evidence": [
+    "run:rx-live-16"
+   ],
+   "notes": "Cypher HTTP server, IVG_FHIR_ALLOWED_BASES = <listener>/fhir: an unlisted host, the listed base plus a path, and the listed base as a string prefix: 400 naming IVG_FHIR_ALLOWED_BASES, the listener saw 0 connections; control: the listed base with a trailing slash is fetched; 3 cases.",
+   "live_cases": [
+    "POST /api/cypher fhir_base_url unlisted host",
+    "POST /api/cypher fhir_base_url listed base plus a path",
+    "POST /api/cypher fhir_base_url listed base as a prefix"
+   ]
+  },
+  {
+   "id": "API-X8.6.2",
+   "text": "In read-only mode, one write in the call stops all its statements.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/cypher_api.py:230-237",
+    "iris_vector_graph/cypher_api.py:381-385"
+   ],
+   "evidence": [
+    "run:rx-live-16"
+   ],
+   "notes": "Read-only server: /db/neo4j/tx/commit with read, CREATE, read -> 403, results [], Neo.ClientError.Statement.AccessMode; the write did not happen; 1 case.",
+   "live_cases": [
+    "tx/commit read, write, read under read-only"
+   ]
+  },
+  {
+   "id": "API-X8.10.9",
+   "text": "Schema setup refuses a vector width that the stored vector columns do not have.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/cypher_api.py:578-592",
+    "iris_vector_graph/_engine/schema.py:1564-1598",
+    "iris_vector_graph/_engine/schema.py:1634"
+   ],
+   "evidence": [
+    "run:rx-live-16"
+   ],
+   "notes": "Cypher HTTP app (in process): POST /admin/schema/init with embedding_dimension 7 while the empty vector columns are declared at another width -> 409 (EmbeddingIdentityConflict), no journal write; 1 case.",
+   "live_cases": [
+    "POST /admin/schema/init embedding_dimension 7 (columns empty, other width)"
+   ]
+  },
+  {
+   "id": "API-X9.3",
+   "text": "When the API key is set, a Bolt session runs nothing until a hello or logon message shows the key.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/bolt_server.py:50-51",
+    "iris_vector_graph/bolt_server.py:474-479",
+    "iris_vector_graph/bolt_server.py:530-565"
+   ],
+   "evidence": [
+    "run:rx-live-16"
+   ],
+   "notes": "Raw Bolt to the server's TCP listener (IVG_API_KEY set): 4.4 RUN CREATE before HELLO; 5.4 HELLO without credentials then RUN CREATE; 4.4 refused HELLO, RESET, RUN CREATE: each FAILURE Neo.ClientError.Security.Unauthorized, no write; control: 5.4 HELLO + LOGON with the key runs a read; 3 cases.",
+   "live_cases": [
+    "Bolt 4.4 RUN CREATE before HELLO",
+    "Bolt 5 HELLO without credentials, then RUN CREATE (no LOGON)",
+    "Bolt 4.4 refused HELLO, RESET, then RUN CREATE"
+   ]
+  },
+  {
+   "id": "API-X9.4",
+   "text": "A wrong key ends the session's login, even a good earlier one. A reset does not bring it back.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/bolt_server.py:530-545",
+    "iris_vector_graph/bolt_server.py:487-489",
+    "iris_vector_graph/bolt_server.py:662-667"
+   ],
+   "evidence": [
+    "run:rx-live-16"
+   ],
+   "notes": "5.4 good LOGON, wrong LOGON, RESET, RUN CREATE; 5.4 good LOGON, LOGOFF, RUN CREATE; 4.4 good HELLO, wrong HELLO, RESET, RUN CREATE: each FAILURE Unauthorized, no write; 3 cases.",
+   "live_cases": [
+    "Bolt 5 good LOGON, wrong LOGON, RESET, then RUN CREATE",
+    "Bolt 5 good LOGON, LOGOFF, then RUN CREATE",
+    "Bolt 4.4 good HELLO, wrong HELLO, RESET, then RUN CREATE"
+   ]
+  },
+  {
+   "id": "API-X9.7",
+   "text": "In read-only mode, a run of a query that writes fails with an access code.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/bolt_server.py:567-578"
+   ],
+   "evidence": [
+    "run:rx-live-16"
+   ],
+   "notes": "Read-only server, Bolt 4.4 HELLO with the key, RUN CREATE -> FAILURE Neo.ClientError.Statement.AccessMode, no write; the next RUN is IGNORED (session FAILED); 1 case.",
+   "live_cases": [
+    "Bolt RUN CREATE under read-only"
+   ]
+  },
+  {
+   "id": "API-X10.2",
+   "text": "Its Cypher field refuses a write in read-only mode.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/gql/resolvers.py:136-147"
+   ],
+   "evidence": [
+    "run:rx-live-16"
+   ],
+   "notes": "Generated GraphQL app (in process) with IVG_READ_ONLY: cypher(query: CREATE ...) -> GraphQL error (PermissionError), no write; 1 case.",
+   "live_cases": [
+    "generated GraphQL cypher field CREATE under read-only"
+   ]
+  },
+  {
+   "id": "API-X11.4",
+   "text": "Making the web app at a path that holds someone else's app is refused, and nothing changes.",
+   "outcome": "holds-run",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/Service.cls:39-41",
+    "iris_src/src/Graph/KG/Service.cls:76-93"
+   ],
+   "evidence": [
+    "run:val-gated-rag-1"
+   ],
+   "notes": "Not probed live here: triggering it means calling CreateWebApp at a path that holds another application, i.e. a %SYS web application of the shared container, which a defect would reconfigure. The pinned upstream e2e test makes its own foreign application (scratch fixture), calls CreateWebApp on it and asserts the answer names the application and its properties are unchanged; it PASSED in val-gated-rag-1 (that run's overall result is fail because of other tests).",
+   "log_contains": {
+    "run:val-gated-rag-1": "tests/e2e/test_460_kg_webapp_reset_e2e.py::test_an_application_that_is_not_ivgs_is_refused_and_left_as_it_was PASSED"
+   }
+  },
+  {
+   "id": "API-X13.6",
+   "text": "The fraud server refuses an id that has no colon.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "src/iris_fraud_server/app.py:65-70"
+   ],
+   "evidence": [
+    "run:rx-live-16"
+   ],
+   "notes": "Fraud server app (in process; torch and structlog are not installed here and were replaced by inert stand-ins for the import only; the request model does not use them): payer, device, ip and merchant without a colon -> 422 naming 'namespace:id'; 4 cases.",
+   "live_cases": [
+    "POST /fraud/score payer without a colon",
+    "POST /fraud/score device without a colon",
+    "POST /fraud/score ip without a colon",
+    "POST /fraud/score merchant without a colon"
+   ]
+  },
+  {
+   "id": "API-X13.106",
+   "text": "The fraud server refuses the subgraph mode. It answers that the mode is not built.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "src/iris_fraud_server/app.py:51-56",
+    "src/iris_fraud_server/app.py:476-481"
+   ],
+   "evidence": [
+    "run:rx-live-16"
+   ],
+   "notes": "Fraud server app (stand-ins as for API-X13.6): mode EGO -> 501 'EGO mode not implemented in MVP'; mode XYZ -> 422 from the request model; 2 cases.",
+   "live_cases": [
+    "POST /fraud/score mode EGO",
+    "POST /fraud/score mode XYZ"
+   ]
+  },
+  {
+   "id": "API-X14.1",
+   "text": "A table name that is not on the allow list is refused.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/security.py:101-139",
+    "iris_vector_graph/vector_utils.py:47-50"
+   ],
+   "evidence": [
+    "run:rx-live-16"
+   ],
+   "notes": "VectorOptimizer.get_vector_statistics with 'secrets', 'Graph_KG.nodes; DROP TABLE x', 'kg_emb_zz' and 'Other.users': ValueError 'not in the allowlist' before any SQL; 4 cases.",
+   "live_cases": [
+    "VectorOptimizer.get_vector_statistics not a graph table",
+    "VectorOptimizer.get_vector_statistics schema-qualified with SQL",
+    "VectorOptimizer.get_vector_statistics routed shape without 16 hex",
+    "VectorOptimizer.get_vector_statistics another schema's table"
+   ]
+  },
+  {
+   "id": "API-X14.4",
+   "text": "A vector text with anything but numbers and commas is refused.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/security.py:159-182",
+    "iris_vector_graph/_engine/embeddings.py:996"
+   ],
+   "evidence": [
+    "run:rx-live-16"
+   ],
+   "notes": "engine.store_embedding with an element holding a quote and with a word element: ValueError 'is not a number'; no vector row; 2 cases.",
+   "live_cases": [
+    "store_embedding with a quote in an element",
+    "store_embedding with a word element"
+   ]
+  },
+  {
+   "id": "API-X14.5",
+   "text": "A vector type name that has more than letters is refused.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/security.py:142-151",
+    "iris_vector_graph/engine.py:338",
+    "iris_vector_graph/_engine/embeddings.py:965"
+   ],
+   "evidence": [
+    "run:rx-live-16"
+   ],
+   "notes": "IRISGraphEngine(vector_dtype=\"DOUBLE), 'x') --\" / 'FLOAT32' / 'DOUBLE X') and store_embedding(dtype='FLOAT32'): ValueError 'is not a vector element type'; 4 cases.",
+   "live_cases": [
+    "engine vector_dtype SQL in the type",
+    "engine vector_dtype digits",
+    "engine vector_dtype a space",
+    "store_embedding dtype with digits"
+   ]
+  }
+ ]
+}

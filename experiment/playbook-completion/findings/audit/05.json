@@ -1,0 +1,615 @@
+{
+ "module": "05",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "lane": "breadth-a",
+ "generated_by": "experiment/playbook-completion/live/breadth-a/make_audit.py",
+ "source_findings": "experiment/playbook-uplift/findings/05.md",
+ "original_count": 14,
+ "new_count": 1,
+ "dispositions": {
+  "confirmed-source": 2,
+  "reproduced-live": 13
+ },
+ "findings": [
+  {
+   "id": "F-0501",
+   "title": "An update-mode write counts its edge again in the bucket aggregate",
+   "intended": "CONTEXT.md:173-177 (an upsert replaces the edge); the docstring says aggregates keep the original value.",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Make update subtract the old weight and not count, or rebuild the bucket.",
+   "gates": [
+    "3.3-model-check",
+    "3.3a-writesets",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-05-temporal"
+    },
+    {
+     "kind": "mc",
+     "ref": "breadth-a-mc-tmp_bucket-as-built"
+    },
+    {
+     "kind": "mc",
+     "ref": "breadth-a-mc-tmp_bucket-reviewed"
+    },
+    {
+     "kind": "control",
+     "ref": "breadth-a-control-tmp_bucket"
+    }
+   ],
+   "notes": "Whole-bucket count 2 and sum 6.0 for one edge of weight 5.0; a window cutting the bucket answers 1; after the delete the bucket counter stays 1. Neither the docstring (original value kept) nor CONTEXT holds.",
+   "module": "05",
+   "observed": {
+    "probe": "p0501_update_double_counts_bucket",
+    "verdict": "count 2, sum 6.0 for one edge",
+    "oracle": "whole-bucket count equals the edges at its coordinates (1) and sum their weights",
+    "values": {
+     "bucket_counter_after_delete": "1",
+     "cut_window_count": 1,
+     "tagg_count": "2",
+     "tout_weight": "5.0",
+     "whole_bucket_count": 2,
+     "whole_bucket_sum": 6.0
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0501_update_double_counts_bucket.json",
+    "log": "$RUN_DIR/breadth-a/live/05-all-20261113T224508.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-0502",
+   "title": "A temporal write with no time lands at epoch 0, not at the current time",
+   "intended": "InsertEdge's own rule: a missing time is now (TemporalIndex.cls:51).",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Send '' for a missing timestamp; stop treating an explicit 0 as missing in BulkInsertCounts.",
+   "gates": [
+    "3.5-decoders",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-05-temporal"
+    }
+   ],
+   "notes": "",
+   "module": "05",
+   "observed": {
+    "probe": "p0502_missing_time_is_epoch_zero",
+    "verdict": "single write stored at 0; batch ts 0 stored at 1794609910 (>1767225600)",
+    "oracle": "a missing time means now on every path; an explicit 0 means 0",
+    "values": {
+     "batch_first_ts": "1794609910",
+     "batch_stored_at_0": 0,
+     "single_stored_at_0": 1
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0502_missing_time_is_epoch_zero.json",
+    "log": "$RUN_DIR/breadth-a/live/05-all-20261113T224508.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-0503",
+   "title": "A temporal write can create node rows that the ledger never records",
+   "intended": "INV-replay / RPL-B3: with every write made through the ledger, replay equals the store; HD-0501 (assumption): implicitly created endpoints are real effects to record or give derived provenance.",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Per HD-0501: record the endpoint rows a governed temporal op creates, or mark them derived and exclude them from verify.",
+   "gates": [
+    "3.3a-writesets",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-ledger"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Adjacency.cls:575-603"
+    }
+   ],
+   "notes": "Review-response reclassification (review R2-08 / R-11, condition 5; 2026-11-14): disposition changed from reproduced-live to intent-undecided. The intended behaviour rests on HD-0501, an Assumption (record the implicitly created endpoint rows, or give them derived provenance and exclude them from verify; the representation is provisional); the RPL-B3 paraphrase is not RPL-B3's text (ontology/tools/add_evidence.py FINDING_REJECT). Observed behaviour kept and still live: breadth-a-live-ledger shows verify() diverging on the two endpoint node rows a governed temporal op created. Conditional on HD-0501.",
+   "module": "05",
+   "observed": {
+    "probe": "p0503_changeset_temporal_endpoint",
+    "verdict": "verify diverges on node rows the changeset's temporal op created",
+    "oracle": "with every write made through the ledger, verify() answers equal (RPL-B3, INV-replay)",
+    "values": {
+     "commit": "RevisionInfo(seq=4, revision_id='965533d7dfb911f1b3edf277e9aab529', parent_id='96540f04dfb911f1b3edf277e9aab529', kind='changeset', actor='breadth-a', actor_typ",
+     "node_rows": [
+      [
+       "bato232559"
+      ],
+      [
+       "bats232559"
+      ]
+     ],
+     "verify_after": {
+      "classification": "unrecorded_writes",
+      "differences_naming_endpoints": [
+       "DiffEntry(entity_kind='node', entity_id='bato232559', attr='', before=None, after='')",
+       "DiffEntry(entity_kind='node', entity_id='bats232559', attr='', before=None, after='')"
+      ],
+      "differences_total": 2,
+      "result": "diverges"
+     },
+     "verify_before": {
+      "differences": 0,
+      "result": "equal"
+     }
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0503_changeset_temporal_endpoint.json",
+    "log": "$RUN_DIR/breadth-a/live/ledger-all-20261113T232600.log"
+   },
+   "disposition": "intent-undecided"
+  },
+  {
+   "id": "F-0504",
+   "title": "Purges and the row drop delete node rows without the strict-mode check or a record",
+   "intended": "USER_GUIDE.md:1107-1121 (strict refuses structural writes not made through the ledger); erase_bare_nodes calls the guard (iris_vector_graph/stores/iris_sql_store.py:2823-2825).",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Guard node retirement as erase_bare_nodes is guarded, or skip ledger-known nodes.",
+   "gates": [
+    "3.3a-writesets",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-ledger"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/temporal.py:623-641"
+    }
+   ],
+   "notes": "",
+   "module": "05",
+   "observed": {
+    "probe": "p0504_purge_retires_nodes_under_strict",
+    "verdict": "purge deleted governed node rows under strict mode",
+    "oracle": "strict mode refuses structural deletes not made through the ledger (USER_GUIDE.md:1107-1121)",
+    "values": {
+     "delete_node_under_strict": "refused LedgerStrictModeError",
+     "endpoints_after": [],
+     "endpoints_before": [
+      [
+       "bato232559"
+      ],
+      [
+       "bats232559"
+      ]
+     ],
+     "purge_before": 2,
+     "verify": {
+      "differences": [],
+      "result": "diverges"
+     }
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0504_purge_retires_nodes_under_strict.json",
+    "log": "$RUN_DIR/breadth-a/live/ledger-all-20261113T232600.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-0505",
+   "title": "The marker test differs between the deleters and the ledger",
+   "intended": "ADR-0009 / HD-0302: an explicitly written edge (no JSON-true mark) survives the temporal side; LedgerGenesis treats temporal 1 as an ordinary qualifier (LedgerGenesis.cls:62-75).",
+   "severity": "S1",
+   "confidence": "high",
+   "remedy": "One shared predicate (JSON boolean true).",
+   "gates": [
+    "3.3-model-check",
+    "3.3a-writesets",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-05-temporal"
+    },
+    {
+     "kind": "mc",
+     "ref": "breadth-a-mc-tmp_mark-as-built"
+    },
+    {
+     "kind": "mc",
+     "ref": "breadth-a-mc-tmp_mark-reviewed"
+    }
+   ],
+   "notes": "An explicit create_edge with qualifiers {\"temporal\": 1} was deleted by the last temporal delete on its triple (data loss).",
+   "module": "05",
+   "observed": {
+    "probe": "p0505_marker_predicate",
+    "verdict": "explicit edge with temporal:1 deleted by the temporal delete",
+    "oracle": "an explicitly written edge (not JSON-true marked) survives the temporal side (ADR-0009)",
+    "values": {
+     "explicit_row": [
+      [
+       "{\"temporal\": 1}"
+      ]
+     ],
+     "row_after_last_temporal_delete": []
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0505_marker_predicate.json",
+    "log": "$RUN_DIR/breadth-a/live/05-all-20261113T224508.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-0506",
+   "title": "Without the adjacency index, the Python mirror writes an unmarked row for any predicate",
+   "intended": "ADR-0015 (an opted-out predicate writes nothing else); ADR-0009 (the asserted row is marked).",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Write the marker and honour the opt-out registry, or drop the mirror.",
+   "gates": [
+    "3.3a-writesets",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/temporal.py:309-331"
+    }
+   ],
+   "notes": "AUDITA declares the adjacency index, so the mirror path is unreachable there (a non-indexed namespace is not available).",
+   "module": "05",
+   "observed": "create_edge_temporal / bulk_create_edges_temporal insert an unmarked rdf_edges row when not _adjacency_indexed (iris_vector_graph/_engine/temporal.py:309-331, 453-475).",
+   "disposition": "confirmed-source"
+  },
+  {
+   "id": "F-0507",
+   "title": "TemporalIndex.Purge wipes every graph's temporal index and leaves the marked rows",
+   "intended": "ADR-0009 amendment: the marked row goes when the triple's last timestamp goes, in every graph; TMP-B9.13.",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Retract marked rows in Purge (or remove it) and fix the create_edge_temporal docstring that advises calling it.",
+   "gates": [
+    "3.3-model-check",
+    "3.3a-writesets",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-05-purge"
+    },
+    {
+     "kind": "mc",
+     "ref": "breadth-a-mc-tmp_mark-as-built"
+    },
+    {
+     "kind": "mc",
+     "ref": "breadth-a-mc-tmp_mark-reviewed"
+    }
+   ],
+   "notes": "Both graphs' tout gone; both marked rows and ^KG out stay; purge_before afterwards removes 0.",
+   "module": "05",
+   "observed": {
+    "probe": "p0507_purge_wipes_all_graphs",
+    "verdict": "both graphs' temporal stores wiped; marked rows and adjacency survive every purge",
+    "oracle": "ADR-0009 amendment: the marked row goes when the triple's last timestamp goes, in every graph",
+    "values": {
+     "out_g1_after": 1,
+     "purge_before_removed": 0,
+     "rows_after_purge": [
+      [
+       "bapa224520",
+       "{\"temporal\":true}"
+      ],
+      [
+       "bapb224520",
+       "{\"temporal\":true}"
+      ]
+     ],
+     "rows_after_purge_before": [
+      [
+       "bapa224520"
+      ],
+      [
+       "bapb224520"
+      ]
+     ],
+     "rows_before": [
+      [
+       "bapa224520",
+       "{\"temporal\":true}"
+      ],
+      [
+       "bapb224520",
+       "{\"temporal\":true}"
+      ]
+     ],
+     "tout_g1_after": 0,
+     "tout_g2_after": 0
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0507_purge_wipes_all_graphs.json",
+    "log": "$RUN_DIR/breadth-a/live/05-p0507_purge_wipes_all_graphs-p0513_validation_paths-20261113T224520.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-0508",
+   "title": "find_burst_nodes accepts a predicate and ignores it",
+   "intended": "Args docstring: 'predicate: Filter to edges with this predicate' (temporal.py find_burst_nodes).",
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Remove the argument or count per predicate; make the docstring agree (its first paragraph now says it filters nothing).",
+   "gates": [
+    "3.5-decoders",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-05-temporal"
+    }
+   ],
+   "notes": "",
+   "module": "05",
+   "observed": {
+    "probe": "p0508_burst_predicate_ignored",
+    "verdict": "hub reported as a burst of predicate B with only A edges",
+    "oracle": "Args: predicate filters to edges with this predicate (temporal.py docstring)",
+    "values": {
+     "bursts_for_B": [
+      {
+       "id": "hub",
+       "velocity": 5
+      }
+     ]
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0508_burst_predicate_ignored.json",
+    "log": "$RUN_DIR/breadth-a/live/05-all-20261113T224508.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-0509",
+   "title": "InternLabelSet's canonical form is not valid JSON for some inputs",
+   "intended": "Spec 204 FR-012: the canonical form is JSON.",
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Build the form with JSON escaping; catch the parse error.",
+   "gates": [
+    "3.5-decoders",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-05-temporal"
+    }
+   ],
+   "notes": "",
+   "module": "05",
+   "observed": {
+    "probe": "p0509_label_set_json",
+    "verdict": "resolved text is not JSON",
+    "oracle": "the canonical form of a label set is JSON (spec 204 FR-012)",
+    "values": {
+     "hash": "26c78fcd160e2ac0935cefe478ec33cc3f5c2555",
+     "json_error": "Expecting ',' delimiter: line 1 column 9 (char 8)",
+     "resolved": "{\"k\":\"a\"b\"}"
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0509_label_set_json.json",
+    "log": "$RUN_DIR/breadth-a/live/05-all-20261113T224508.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-0510",
+   "title": "The millisecond index computes 'now' in seconds",
+   "intended": "TemporalIndexMS: TSUNIT='ms' (TemporalIndexMS.cls:7-9).",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Scale now by 1000 when TSUNIT='ms'.",
+   "gates": [
+    "3.5-decoders",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-05-temporal"
+    }
+   ],
+   "notes": "",
+   "module": "05",
+   "observed": {
+    "probe": "p0510_ms_index_now_in_seconds",
+    "verdict": "stored at 1794609910 (seconds scale) instead of ~1794609910951",
+    "oracle": "TSUNIT=ms: a missing time is now in milliseconds",
+    "values": {
+     "now_ms": 1794609910951,
+     "stored_ts": 1794609910
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0510_ms_index_now_in_seconds.json",
+    "log": "$RUN_DIR/breadth-a/live/05-all-20261113T224508.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-0511",
+   "title": "A changeset's insert-mode temporal op is recorded even when it collides",
+   "intended": "Changeset.create_temporal_edge docstring: insert fails if the key exists (iris_vector_graph/ledger/changeset.py:334-335).",
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Return the collision from WriteStores to LedgerApply; refuse or skip the record (HD-0502).",
+   "gates": [
+    "3.3a-writesets",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-ledger"
+    }
+   ],
+   "notes": "",
+   "module": "05",
+   "observed": {
+    "probe": "p0511_insert_collision_recorded",
+    "verdict": "collision committed and recorded; weight unchanged",
+    "oracle": "Changeset.create_temporal_edge docstring: insert fails if the key exists; a no-op is not recorded",
+    "values": {
+     "commit": [
+      "ok",
+      "RevisionInfo(seq=5, revision_id='96587457dfb911f1b3edf277e9aab529', parent_id='965533d7dfb911f1b3edf277e9aab529', kind='changeset', actor='breadth-a', actor_typ"
+     ],
+     "recorded_ops": "[MutationRecord(seq=5, ordinal=1, op='create_temporal_edge', entity_kind='temporal_edge', entity_id='bats232559|TP|bato232559@1700000000', attr='', prior=None, new='{\"graph\":null,\"o\":\"bato232559\",\"p\":\"TP\",\"s\":\"bats232559\"}', graph=None, flags=[], digest=None, redacted_op=None)]",
+     "weight_after": "2.0",
+     "weight_before": "2.0"
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0511_insert_collision_recorded.json",
+    "log": "$RUN_DIR/breadth-a/live/ledger-all-20261113T232600.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-0512",
+   "title": "The batch field that suppresses the reverse index is not the one spec 204 names",
+   "intended": "Spec 204 FR-009 (specs/204-temporal-index-gaps/spec.md:185): suppress_reverse.",
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Accept both names or amend the spec.",
+   "gates": [
+    "3.5-decoders",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-05-temporal"
+    }
+   ],
+   "notes": "",
+   "module": "05",
+   "observed": {
+    "probe": "p0512_suppress_reverse_field",
+    "verdict": "suppress_reverse ignored; reverse index written",
+    "oracle": "spec 204 FR-009: suppress_reverse suppresses the reverse index",
+    "values": {
+     "result": "2:0:0",
+     "tin_written_with_sri": 0,
+     "tin_written_with_suppress_reverse": 1
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0512_suppress_reverse_field.json",
+    "log": "$RUN_DIR/breadth-a/live/05-all-20261113T224508.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-0513",
+   "title": "Temporal writes validate their input on one path only",
+   "intended": "TemporalEdgeInput (iris_vector_graph/_validate.py:207-227): timestamp >= 0, weight >= 0.",
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Validate every edge on every path.",
+   "gates": [
+    "5c-refusals",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-05-purge"
+    }
+   ],
+   "notes": "Weight -1 refused with a timestamp; stored without a timestamp and on the batch path.",
+   "module": "05",
+   "observed": {
+    "probe": "p0513_validation_paths",
+    "verdict": "refused with a timestamp; stored without one and on the batch path",
+    "oracle": "every temporal write path refuses weight < 0 (TemporalEdgeInput, _validate.py:207-227)",
+    "values": {
+     "batch": "TemporalWriteCount(written=1, collisions=0, skipped=0)",
+     "batch_weight_stored": "-1.0",
+     "single_with_ts": "ValidationError",
+     "single_without_ts": "stored"
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0513_validation_paths.json",
+    "log": "$RUN_DIR/breadth-a/live/05-p0507_purge_wipes_all_graphs-p0513_validation_paths-20261113T224520.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-0514",
+   "title": "The Python structural-row migration cannot read a large graph",
+   "intended": "The migration backfills every temporal triple of a graph.",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Read with iter_edges_in_window, or call backfill_temporal_structural_rows.",
+   "gates": [
+    "3.6-capacity",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/migrations/temporal_structural_rows.py:55-63"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/temporal.py:500-505"
+    }
+   ],
+   "notes": "Not run live (36k temporal edges in AUDITA under the shared IRIS lock was not cheap); the cap is the product's own docstring.",
+   "module": "05",
+   "observed": "_temporal_triples reads with get_edges_in_window(start=0, end=_ALL_TIME_END) (iris_vector_graph/migrations/temporal_structural_rows.py:55-63), whose docstring states a ~35 k-edge cap that raises TemporalWindowError (iris_vector_graph/_engine/temporal.py:500-505).",
+   "disposition": "confirmed-source"
+  },
+  {
+   "id": "F-C0501",
+   "title": "A refused temporal write raises but leaves the edge in the temporal index",
+   "intended": "create_edge_temporal docstring: 'A write IRIS refuses raises GraphWriteError and writes nothing'.",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Open a transaction in InsertEdge/WriteStores (or assert the row first) so a refusal takes back tout/tin/bucket/tagg.",
+   "gates": [
+    "3.3a-writesets",
+    "5c-refusals",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-05-partial"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/TemporalIndex.cls:80-111"
+    }
+   ],
+   "notes": "New, from the footprint sub-lane's static reading (WriteStores has no TSTART and writes the temporal stores before AssertTemporalRow); provoked with a 140-character predicate the structural row refuses.",
+   "module": "05",
+   "observed": {
+    "probe": "pC0501_refused_temporal_write_is_partial",
+    "verdict": "raised, yet the temporal index holds the edge",
+    "oracle": "a refused temporal write raises and writes nothing (temporal.py create_edge_temporal docstring)",
+    "values": {
+     "call": "raised GraphWriteError: create_edge_temporal failed (SQLCODE -104), the temporal stores written before the error stay (the temporal write runs no transaction): <THROW> *%Exception.StatusException ERROR #5001: AssertTemporalRow edge: SQLCODE -104 Field 'Graph_KG.rdf_edges.p'",
+     "rows": 0,
+     "temporal_stores_left": {
+      "bucket": 10,
+      "tagg": 0,
+      "tin": 10,
+      "tout": 10
+     },
+     "tout_entry": 1
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/pC0501_refused_temporal_write_is_partial.json",
+    "log": "$RUN_DIR/breadth-a/live/05-pC0501_refused_temporal_write_is_partial-20261113T232556.log"
+   },
+   "disposition": "reproduced-live"
+  }
+ ]
+}

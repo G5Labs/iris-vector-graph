@@ -1,0 +1,15 @@
+{
+  "command": "experiment/playbook-completion/trace-replay: run.py capture 11 (under locks.sh iris, AUDITE); run.py check NN",
+  "experiment_head": "7b72fc52c878c31e143452a8cc8452cc4a6c198f",
+  "id": "tr-replay-11",
+  "kind": "trace",
+  "lane": "trace-replay",
+  "log": "$RUN_DIR/trace-replay/logs/tr-replay-11.log",
+  "log_bytes": 4784,
+  "log_sha256": "bd7615bebb115ed611fd34ee0b4af9d36f68e54f98661fbf1be5504ccdaf4131",
+  "observes": "AUDITE traces enable (2 steps, 28 records), commit (3, 67), retry (3, 119), guard (7, 122) and adopt (2, 79) replayed through m11 enable, commit, retry, guard and adopt (breadth-b, as built): 25 actions all enabled and matching, replays equal the engine; LED-B10.5 and the governed-value invariant violated by the retry rewriting the post-commit value V1 over the recorded V2 (F-1101 reproduced), LED-B4.7.8 violated (replay answers no statement ids: F-1106 reproduced); SG violated from the write within the 5 s guard cache after strict mode was set by another engine (F-0801) and by bulk_delete_adjacency landing in strict mode (F-1108); enable, commit (caller rollback then a plain commit) and adopt matched with no violation (F-1104/F-1103 need concurrency, not produced); stats not replayed; frame gap: the refused create_node wrote ledger_stats",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T12:40:13+00:00",
+  "result": "pass"
+}

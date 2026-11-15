@@ -1,0 +1,15 @@
+{
+  "command": "locks.sh iris python experiment/playbook-completion/structural/order/so_live.py $RUN_DIR/structural/order/so-live-try1.json",
+  "experiment_head": "b04331578b5c2e2ea9559107a7f5d15e29b34530",
+  "id": "st-live-so-confirm",
+  "kind": "live",
+  "lane": "structural",
+  "log": "$RUN_DIR/structural/order/so-live-try1.json",
+  "log_bytes": 2773,
+  "log_sha256": "733cb5281d9be09dc844c4e88408bc4c62f2b41bf1c3226e077265b8262f3bbf",
+  "observes": "AUDITD, same data in two insertion orders (forward, reverse): P03 get_node_ids_by_property(k=v, limit=2) [so3:0,so3:1] vs [so3:5,so3:4] and get_property_pairs_like(t, x%, limit=2) likewise (F-C0302); _filter_edges_by_properties for (so3:0,R,so3:1) with w=1 in the default graph and w=2 in graph so3g matched forward and answered [] reverse (it tests whichever graph row comes first: F-0206); P16 generated GraphQL resolve_nodes(Q, limit=2) pages [so16:0,so16:1][so16:2,so16:3][so16:4] vs [so16:4,so16:3][so16:2,so16:1][so16:0] (F-C1642); P17 a child process calling IRISGraphStore.query_nodes(limit=2) printed its start mark and exited with return code -11 (SIGSEGV) in both orders, no answer (F-C1743; F-C1742 not observable); P11 in this run did not exercise parallel edges (create_edge of the same triple in a multigraph left one row) and is superseded by st-live-so-11",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T12:07:13+00:00",
+  "result": "fail"
+}

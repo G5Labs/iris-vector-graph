@@ -1,0 +1,2006 @@
+{
+  "crate": "experiment/playbook-completion/proofs-pa3 (ivg-pa3-proofs)",
+  "generated_utc": "2026-11-14T11:54:48+00:00",
+  "verus": "0.2026.10.04.426d8b0",
+  "actors_rev": "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877",
+  "sources_sha256": "599e7da930d89d62abb561d648c1de81b8d7446e620f2c29a82354d4e4815058",
+  "statement": "Every result is about the models (L1 contracts and the reviewed L2 machines); none is a property of the product at pin 3eaa79cf.",
+  "baseline": {
+    "tag": "baseline",
+    "features": "",
+    "rc": 0,
+    "timed_out": false,
+    "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+    "log": "$RUN_DIR/proofs-pa3/baseline.log",
+    "json": "$RUN_DIR/proofs-pa3/baseline.json",
+    "wall_seconds": 7.9,
+    "max_rss_kb": 619908,
+    "error_locations": [],
+    "resource_limit": false,
+    "verified": 108,
+    "errors": 0,
+    "success": true,
+    "verus_total_ms": 7406,
+    "smt_run_ms": 9754,
+    "rlimit_total": 25312309,
+    "modules": {
+      "adj_l2": {
+        "ms": 3726,
+        "rlimit": 11860275
+      },
+      "ledger_l2": {
+        "ms": 2664,
+        "rlimit": 6262722
+      },
+      "witness_adj": {
+        "ms": 2066,
+        "rlimit": 4741736
+      },
+      "witness_ledger": {
+        "ms": 1050,
+        "rlimit": 1904132
+      },
+      "ledger_l1": {
+        "ms": 215,
+        "rlimit": 462114
+      },
+      "adj_l1": {
+        "ms": 30,
+        "rlimit": 81330
+      }
+    },
+    "top_functions": [
+      {
+        "function": "witness_adj::witness_adj",
+        "ms": 1545,
+        "rlimit": 3382557,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::lemma_step_inv",
+        "ms": 751,
+        "rlimit": 1875272,
+        "success": true
+      },
+      {
+        "function": "witness_ledger::witness_erase",
+        "ms": 770,
+        "rlimit": 1437563,
+        "success": true
+      },
+      {
+        "function": "witness_adj::witness_overlap",
+        "ms": 521,
+        "rlimit": 1359179,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::lemma_step_refines",
+        "ms": 616,
+        "rlimit": 1116541,
+        "success": true
+      },
+      {
+        "function": "adj_l2::lemma_reader_step",
+        "ms": 291,
+        "rlimit": 1021332,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::lemma_erase_refines",
+        "ms": 410,
+        "rlimit": 919672,
+        "success": true
+      },
+      {
+        "function": "adj_l2::lemma_wpost",
+        "ms": 315,
+        "rlimit": 804587,
+        "success": true
+      },
+      {
+        "function": "adj_l2::lemma_ekill",
+        "ms": 202,
+        "rlimit": 692643,
+        "success": true
+      },
+      {
+        "function": "adj_l2::lemma_wout",
+        "ms": 192,
+        "rlimit": 647482,
+        "success": true
+      }
+    ],
+    "all_functions": [
+      {
+        "function": "adj_l1::AdjL1::init_safe",
+        "ms": 1,
+        "rlimit": 3982,
+        "success": true
+      },
+      {
+        "function": "adj_l1::AdjL1::step_safe",
+        "ms": 9,
+        "rlimit": 25329,
+        "success": true
+      },
+      {
+        "function": "adj_l1::lemma_deg_del",
+        "ms": 1,
+        "rlimit": 5087,
+        "success": true
+      },
+      {
+        "function": "adj_l1::lemma_deg_graph",
+        "ms": 1,
+        "rlimit": 5244,
+        "success": true
+      },
+      {
+        "function": "adj_l1::lemma_deg_other",
+        "ms": 2,
+        "rlimit": 7441,
+        "success": true
+      },
+      {
+        "function": "adj_l1::theorem_current_entry_is_committed_degree",
+        "ms": 1,
+        "rlimit": 3392,
+        "success": true
+      },
+      {
+        "function": "adj_l1::theorem_generations_monotone",
+        "ms": 2,
+        "rlimit": 5773,
+        "success": true
+      },
+      {
+        "function": "adj_l1::theorem_hit_answers_committed_degree",
+        "ms": 2,
+        "rlimit": 7646,
+        "success": true
+      },
+      {
+        "function": "adj_l1::theorem_stale_never_valid_again",
+        "ms": 6,
+        "rlimit": 17436,
+        "success": true
+      },
+      {
+        "function": "adj_l2::AdjL2::init_refines",
+        "ms": 2,
+        "rlimit": 8092,
+        "success": true
+      },
+      {
+        "function": "adj_l2::AdjL2::init_safe",
+        "ms": 12,
+        "rlimit": 29879,
+        "success": true
+      },
+      {
+        "function": "adj_l2::AdjL2::step_refines",
+        "ms": 19,
+        "rlimit": 34032,
+        "success": true
+      },
+      {
+        "function": "adj_l2::AdjL2::step_safe",
+        "ms": 14,
+        "rlimit": 28613,
+        "success": true
+      },
+      {
+        "function": "adj_l2::lemma_babort",
+        "ms": 178,
+        "rlimit": 465954,
+        "success": true
+      },
+      {
+        "function": "adj_l2::lemma_bfill_commit",
+        "ms": 182,
+        "rlimit": 498102,
+        "success": true
+      },
+      {
+        "function": "adj_l2::lemma_bkill",
+        "ms": 149,
+        "rlimit": 460165,
+        "success": true
+      },
+      {
+        "function": "adj_l2::lemma_bstep_or_begin",
+        "ms": 229,
+        "rlimit": 613416,
+        "success": true
+      },
+      {
+        "function": "adj_l2::lemma_count_committed",
+        "ms": 13,
+        "rlimit": 33976,
+        "success": true
+      },
+      {
+        "function": "adj_l2::lemma_eabort",
+        "ms": 178,
+        "rlimit": 634888,
+        "success": true
+      },
+      {
+        "function": "adj_l2::lemma_ecommit",
+        "ms": 169,
+        "rlimit": 605978,
+        "success": true
+      },
+      {
+        "function": "adj_l2::lemma_ekill",
+        "ms": 202,
+        "rlimit": 692643,
+        "success": true
+      },
+      {
+        "function": "adj_l2::lemma_ekillout",
+        "ms": 36,
+        "rlimit": 150328,
+        "success": true
+      },
+      {
+        "function": "adj_l2::lemma_elock",
+        "ms": 114,
+        "rlimit": 438737,
+        "success": true
+      },
+      {
+        "function": "adj_l2::lemma_erase_guard",
+        "ms": 24,
+        "rlimit": 86462,
+        "success": true
+      },
+      {
+        "function": "adj_l2::lemma_erows",
+        "ms": 124,
+        "rlimit": 428814,
+        "success": true
+      },
+      {
+        "function": "adj_l2::lemma_estep",
+        "ms": 149,
+        "rlimit": 543519,
+        "success": true
+      },
+      {
+        "function": "adj_l2::lemma_raw_inv_at",
+        "ms": 32,
+        "rlimit": 137342,
+        "success": true
+      },
+      {
+        "function": "adj_l2::lemma_reader_frame",
+        "ms": 15,
+        "rlimit": 55708,
+        "success": true
+      },
+      {
+        "function": "adj_l2::lemma_reader_others",
+        "ms": 11,
+        "rlimit": 32119,
+        "success": true
+      },
+      {
+        "function": "adj_l2::lemma_reader_step",
+        "ms": 291,
+        "rlimit": 1021332,
+        "success": true
+      },
+      {
+        "function": "adj_l2::lemma_rrecheck",
+        "ms": 99,
+        "rlimit": 348780,
+        "success": true
+      },
+      {
+        "function": "adj_l2::lemma_rstart",
+        "ms": 74,
+        "rlimit": 261075,
+        "success": true
+      },
+      {
+        "function": "adj_l2::lemma_rstore",
+        "ms": 112,
+        "rlimit": 407173,
+        "success": true
+      },
+      {
+        "function": "adj_l2::lemma_step",
+        "ms": 88,
+        "rlimit": 144435,
+        "success": true
+      },
+      {
+        "function": "adj_l2::lemma_unclaimed",
+        "ms": 4,
+        "rlimit": 13755,
+        "success": true
+      },
+      {
+        "function": "adj_l2::lemma_wabort",
+        "ms": 145,
+        "rlimit": 477410,
+        "success": true
+      },
+      {
+        "function": "adj_l2::lemma_wcommit",
+        "ms": 168,
+        "rlimit": 618254,
+        "success": true
+      },
+      {
+        "function": "adj_l2::lemma_wlock",
+        "ms": 123,
+        "rlimit": 376859,
+        "success": true
+      },
+      {
+        "function": "adj_l2::lemma_wout",
+        "ms": 192,
+        "rlimit": 647482,
+        "success": true
+      },
+      {
+        "function": "adj_l2::lemma_wpost",
+        "ms": 315,
+        "rlimit": 804587,
+        "success": true
+      },
+      {
+        "function": "adj_l2::lemma_wpre",
+        "ms": 168,
+        "rlimit": 553435,
+        "success": true
+      },
+      {
+        "function": "adj_l2::theorem_guarded_erase_removes_graph",
+        "ms": 46,
+        "rlimit": 113747,
+        "success": true
+      },
+      {
+        "function": "adj_l2::theorem_pa3_from_guard",
+        "ms": 8,
+        "rlimit": 15868,
+        "success": true
+      },
+      {
+        "function": "adj_l2::theorem_quiescent_cache_is_committed_degree",
+        "ms": 8,
+        "rlimit": 22542,
+        "success": true
+      },
+      {
+        "function": "adj_l2::theorem_raw_executions_refine",
+        "ms": 14,
+        "rlimit": 54774,
+        "success": true
+      },
+      {
+        "function": "ledger_l1::L1::init_safe",
+        "ms": 3,
+        "rlimit": 8929,
+        "success": true
+      },
+      {
+        "function": "ledger_l1::L1::step_safe",
+        "ms": 54,
+        "rlimit": 106175,
+        "success": true
+      },
+      {
+        "function": "ledger_l1::apply_recs",
+        "ms": 1,
+        "rlimit": 4247,
+        "success": true
+      },
+      {
+        "function": "ledger_l1::lemma_agree_apply",
+        "ms": 2,
+        "rlimit": 6870,
+        "success": true
+      },
+      {
+        "function": "ledger_l1::lemma_apply_local",
+        "ms": 5,
+        "rlimit": 13485,
+        "success": true
+      },
+      {
+        "function": "ledger_l1::lemma_apply_untouched",
+        "ms": 8,
+        "rlimit": 19790,
+        "success": true
+      },
+      {
+        "function": "ledger_l1::lemma_commit1_inv",
+        "ms": 40,
+        "rlimit": 85585,
+        "success": true
+      },
+      {
+        "function": "ledger_l1::lemma_replay_push",
+        "ms": 4,
+        "rlimit": 11315,
+        "success": true
+      },
+      {
+        "function": "ledger_l1::lemma_val_apply_op",
+        "ms": 4,
+        "rlimit": 10673,
+        "success": true
+      },
+      {
+        "function": "ledger_l1::lemma_val_ext",
+        "ms": 3,
+        "rlimit": 7982,
+        "success": true
+      },
+      {
+        "function": "ledger_l1::replay",
+        "ms": 1,
+        "rlimit": 3984,
+        "success": true
+      },
+      {
+        "function": "ledger_l1::theorem_applied_appends",
+        "ms": 17,
+        "rlimit": 37288,
+        "success": true
+      },
+      {
+        "function": "ledger_l1::theorem_expected_head_refusal",
+        "ms": 13,
+        "rlimit": 27411,
+        "success": true
+      },
+      {
+        "function": "ledger_l1::theorem_key_binds_one_fingerprint",
+        "ms": 15,
+        "rlimit": 33626,
+        "success": true
+      },
+      {
+        "function": "ledger_l1::theorem_replay_returns_bound_revision",
+        "ms": 15,
+        "rlimit": 32888,
+        "success": true
+      },
+      {
+        "function": "ledger_l1::theorem_revision_iff_recorded",
+        "ms": 3,
+        "rlimit": 8921,
+        "success": true
+      },
+      {
+        "function": "ledger_l1::theorem_stats_count_kept_revisions",
+        "ms": 1,
+        "rlimit": 4016,
+        "success": true
+      },
+      {
+        "function": "ledger_l1::theorem_strict_refuses_governed_writes",
+        "ms": 17,
+        "rlimit": 38929,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::L2::init_refines",
+        "ms": 6,
+        "rlimit": 16359,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::L2::init_safe",
+        "ms": 9,
+        "rlimit": 28833,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::L2::step_refines",
+        "ms": 21,
+        "rlimit": 47753,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::L2::step_safe",
+        "ms": 23,
+        "rlimit": 47767,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::lemma_caller_end_refines",
+        "ms": 130,
+        "rlimit": 329560,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::lemma_clean_ok",
+        "ms": 6,
+        "rlimit": 23056,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::lemma_commit_dom_ids",
+        "ms": 19,
+        "rlimit": 67551,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::lemma_commit_hist",
+        "ms": 22,
+        "rlimit": 71943,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::lemma_commit_idem",
+        "ms": 12,
+        "rlimit": 43844,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::lemma_commit_layout",
+        "ms": 13,
+        "rlimit": 43233,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::lemma_commit_refines",
+        "ms": 107,
+        "rlimit": 265367,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::lemma_eg",
+        "ms": 4,
+        "rlimit": 14163,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::lemma_engine_write_refines",
+        "ms": 206,
+        "rlimit": 510950,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::lemma_erase_refines",
+        "ms": 410,
+        "rlimit": 919672,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::lemma_fold_live",
+        "ms": 4,
+        "rlimit": 13510,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::lemma_fold_ok",
+        "ms": 4,
+        "rlimit": 13965,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::lemma_genesis",
+        "ms": 12,
+        "rlimit": 33929,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::lemma_head_lock",
+        "ms": 44,
+        "rlimit": 100834,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::lemma_is_rev",
+        "ms": 7,
+        "rlimit": 29992,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::lemma_lay_hist_len",
+        "ms": 2,
+        "rlimit": 7684,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::lemma_lay_hist_sx",
+        "ms": 6,
+        "rlimit": 21825,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::lemma_live_mono",
+        "ms": 2,
+        "rlimit": 8732,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::lemma_nested_refines",
+        "ms": 66,
+        "rlimit": 156779,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::lemma_out_matches",
+        "ms": 12,
+        "rlimit": 41398,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::lemma_raw_inv_at",
+        "ms": 37,
+        "rlimit": 90114,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::lemma_rec_put",
+        "ms": 7,
+        "rlimit": 28396,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::lemma_rec_put_all",
+        "ms": 3,
+        "rlimit": 15809,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::lemma_restore_clean",
+        "ms": 6,
+        "rlimit": 23240,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::lemma_restore_pre",
+        "ms": 2,
+        "rlimit": 10007,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::lemma_step_inv",
+        "ms": 751,
+        "rlimit": 1875272,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::lemma_step_refines",
+        "ms": 616,
+        "rlimit": 1116541,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::lemma_stmt_op_live",
+        "ms": 6,
+        "rlimit": 21016,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::lemma_stmt_op_ok",
+        "ms": 9,
+        "rlimit": 35382,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::lemma_union_apply",
+        "ms": 5,
+        "rlimit": 19575,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::lemma_union_empty",
+        "ms": 2,
+        "rlimit": 8449,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::lemma_val_restore",
+        "ms": 3,
+        "rlimit": 11749,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::rec_put",
+        "ms": 1,
+        "rlimit": 6047,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::stmt_fold",
+        "ms": 1,
+        "rlimit": 6449,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::theorem_layout_revision_iff_records",
+        "ms": 15,
+        "rlimit": 43248,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::theorem_raw_executions_refine",
+        "ms": 26,
+        "rlimit": 72355,
+        "success": true
+      },
+      {
+        "function": "ledger_l2::theorem_statements_match_records",
+        "ms": 7,
+        "rlimit": 20374,
+        "success": true
+      },
+      {
+        "function": "witness_adj::witness_adj",
+        "ms": 1545,
+        "rlimit": 3382557,
+        "success": true
+      },
+      {
+        "function": "witness_adj::witness_overlap",
+        "ms": 521,
+        "rlimit": 1359179,
+        "success": true
+      },
+      {
+        "function": "witness_ledger::witness_erase",
+        "ms": 770,
+        "rlimit": 1437563,
+        "success": true
+      },
+      {
+        "function": "witness_ledger::witness_ledger",
+        "ms": 280,
+        "rlimit": 466569,
+        "success": true
+      }
+    ],
+    "failing_functions": [],
+    "functions_checked": 108,
+    "max_function_rlimit": 3382557,
+    "pass": true,
+    "cost_per_module_proof": {
+      "module 11 (ledger)": {
+        "modules": {
+          "ledger_l2": {
+            "ms": 2664,
+            "rlimit": 6262722
+          },
+          "witness_ledger": {
+            "ms": 1050,
+            "rlimit": 1904132
+          },
+          "ledger_l1": {
+            "ms": 215,
+            "rlimit": 462114
+          }
+        },
+        "ms": 3929,
+        "rlimit": 8628968,
+        "functions": 61
+      },
+      "module 04 (adjacency)": {
+        "modules": {
+          "adj_l2": {
+            "ms": 3726,
+            "rlimit": 11860275
+          },
+          "witness_adj": {
+            "ms": 2066,
+            "rlimit": 4741736
+          },
+          "adj_l1": {
+            "ms": 30,
+            "rlimit": 81330
+          }
+        },
+        "ms": 5822,
+        "rlimit": 16683341,
+        "functions": 47
+      }
+    }
+  },
+  "controls": {
+    "control_f0801_ttl_cache": {
+      "tag": "control_f0801_ttl_cache",
+      "features": "control_f0801_ttl_cache",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f0801_ttl_cache -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-pa3/control_f0801_ttl_cache.log",
+      "json": "$RUN_DIR/proofs-pa3/control_f0801_ttl_cache.json",
+      "wall_seconds": 7.19,
+      "max_rss_kb": 635704,
+      "error_locations": [
+        "src/ledger_l2.rs:1000"
+      ],
+      "resource_limit": false,
+      "verified": 107,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 7022,
+      "smt_run_ms": 11209,
+      "rlimit_total": 25865332,
+      "modules": {
+        "adj_l2": {
+          "ms": 3817,
+          "rlimit": 11860275
+        },
+        "ledger_l2": {
+          "ms": 4083,
+          "rlimit": 8326715
+        },
+        "witness_adj": {
+          "ms": 2752,
+          "rlimit": 4741736
+        },
+        "ledger_l1": {
+          "ms": 230,
+          "rlimit": 462114
+        },
+        "cx_f0801_ttl": {
+          "ms": 231,
+          "rlimit": 314930
+        },
+        "adj_l1": {
+          "ms": 35,
+          "rlimit": 81330
+        },
+        "cx_ledger_common": {
+          "ms": 57,
+          "rlimit": 78232
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_adj::witness_adj",
+          "ms": 2004,
+          "rlimit": 3382557,
+          "success": true
+        },
+        {
+          "function": "ledger_l2::lemma_step_inv",
+          "ms": 1156,
+          "rlimit": 2730262,
+          "success": true
+        },
+        {
+          "function": "ledger_l2::lemma_step_refines",
+          "ms": 873,
+          "rlimit": 2017612,
+          "success": true
+        },
+        {
+          "function": "witness_adj::witness_overlap",
+          "ms": 748,
+          "rlimit": 1359179,
+          "success": true
+        },
+        {
+          "function": "adj_l2::lemma_reader_step",
+          "ms": 288,
+          "rlimit": 1021332,
+          "success": true
+        },
+        {
+          "function": "ledger_l2::lemma_erase_refines",
+          "ms": 582,
+          "rlimit": 920472,
+          "success": true
+        },
+        {
+          "function": "ledger_l2::lemma_engine_write_refines",
+          "ms": 444,
+          "rlimit": 807167,
+          "success": false
+        },
+        {
+          "function": "adj_l2::lemma_wpost",
+          "ms": 366,
+          "rlimit": 804587,
+          "success": true
+        },
+        {
+          "function": "adj_l2::lemma_ekill",
+          "ms": 236,
+          "rlimit": 692643,
+          "success": true
+        },
+        {
+          "function": "adj_l2::lemma_wout",
+          "ms": 268,
+          "rlimit": 647482,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "ledger_l2::lemma_engine_write_refines"
+      ],
+      "functions_checked": 108,
+      "max_function_rlimit": 3382557,
+      "module": "11",
+      "finding": "F-0801",
+      "expected": "src/ledger_l2.rs",
+      "counterexample": "cx_f0801_ttl::counterexample_f0801_ttl",
+      "what": "the strict-mode guard answers from the meta it cached within its TTL (guard.py:38-41): another engine's set_strict does not refresh it",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f0801_fail_open": {
+      "tag": "control_f0801_fail_open",
+      "features": "control_f0801_fail_open",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f0801_fail_open -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-pa3/control_f0801_fail_open.log",
+      "json": "$RUN_DIR/proofs-pa3/control_f0801_fail_open.json",
+      "wall_seconds": 7.75,
+      "max_rss_kb": 635412,
+      "error_locations": [
+        "src/ledger_l2.rs:1000"
+      ],
+      "resource_limit": false,
+      "verified": 107,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 7575,
+      "smt_run_ms": 10292,
+      "rlimit_total": 25420984,
+      "modules": {
+        "adj_l2": {
+          "ms": 3587,
+          "rlimit": 11860275
+        },
+        "ledger_l2": {
+          "ms": 4095,
+          "rlimit": 7936703
+        },
+        "witness_adj": {
+          "ms": 2003,
+          "rlimit": 4741736
+        },
+        "ledger_l1": {
+          "ms": 265,
+          "rlimit": 462114
+        },
+        "cx_f0801_failopen": {
+          "ms": 189,
+          "rlimit": 260594
+        },
+        "adj_l1": {
+          "ms": 60,
+          "rlimit": 81330
+        },
+        "cx_ledger_common": {
+          "ms": 89,
+          "rlimit": 78232
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_adj::witness_adj",
+          "ms": 1450,
+          "rlimit": 3382557,
+          "success": true
+        },
+        {
+          "function": "ledger_l2::lemma_step_inv",
+          "ms": 1225,
+          "rlimit": 2541714,
+          "success": true
+        },
+        {
+          "function": "ledger_l2::lemma_step_refines",
+          "ms": 1092,
+          "rlimit": 1878348,
+          "success": true
+        },
+        {
+          "function": "witness_adj::witness_overlap",
+          "ms": 552,
+          "rlimit": 1359179,
+          "success": true
+        },
+        {
+          "function": "adj_l2::lemma_reader_step",
+          "ms": 304,
+          "rlimit": 1021332,
+          "success": true
+        },
+        {
+          "function": "ledger_l2::lemma_erase_refines",
+          "ms": 444,
+          "rlimit": 919011,
+          "success": true
+        },
+        {
+          "function": "adj_l2::lemma_wpost",
+          "ms": 232,
+          "rlimit": 804587,
+          "success": true
+        },
+        {
+          "function": "ledger_l2::lemma_engine_write_refines",
+          "ms": 360,
+          "rlimit": 723932,
+          "success": false
+        },
+        {
+          "function": "adj_l2::lemma_ekill",
+          "ms": 208,
+          "rlimit": 692643,
+          "success": true
+        },
+        {
+          "function": "adj_l2::lemma_wout",
+          "ms": 234,
+          "rlimit": 647482,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "ledger_l2::lemma_engine_write_refines"
+      ],
+      "functions_checked": 108,
+      "max_function_rlimit": 3382557,
+      "module": "11",
+      "finding": "F-0801 (LED-B11.3)",
+      "expected": "src/ledger_l2.rs",
+      "counterexample": "cx_f0801_failopen::counterexample_f0801_failopen",
+      "what": "a guard probe that cannot run reads as never-enabled (guard.py:55-56)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f1108_unguarded_bulk_delete": {
+      "tag": "control_f1108_unguarded_bulk_delete",
+      "features": "control_f1108_unguarded_bulk_delete",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f1108_unguarded_bulk_delete -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-pa3/control_f1108_unguarded_bulk_delete.log",
+      "json": "$RUN_DIR/proofs-pa3/control_f1108_unguarded_bulk_delete.json",
+      "wall_seconds": 7.82,
+      "max_rss_kb": 634288,
+      "error_locations": [
+        "src/ledger_l2.rs:1000"
+      ],
+      "resource_limit": false,
+      "verified": 107,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 7643,
+      "smt_run_ms": 10653,
+      "rlimit_total": 25812813,
+      "modules": {
+        "adj_l2": {
+          "ms": 3369,
+          "rlimit": 11860275
+        },
+        "ledger_l2": {
+          "ms": 4551,
+          "rlimit": 8398471
+        },
+        "witness_adj": {
+          "ms": 2331,
+          "rlimit": 4741736
+        },
+        "ledger_l1": {
+          "ms": 192,
+          "rlimit": 462114
+        },
+        "cx_f1108": {
+          "ms": 108,
+          "rlimit": 190655
+        },
+        "adj_l1": {
+          "ms": 38,
+          "rlimit": 81330
+        },
+        "cx_ledger_common": {
+          "ms": 61,
+          "rlimit": 78232
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_adj::witness_adj",
+          "ms": 1586,
+          "rlimit": 3382557,
+          "success": true
+        },
+        {
+          "function": "ledger_l2::lemma_step_inv",
+          "ms": 1503,
+          "rlimit": 2725753,
+          "success": true
+        },
+        {
+          "function": "ledger_l2::lemma_step_refines",
+          "ms": 1256,
+          "rlimit": 2165687,
+          "success": true
+        },
+        {
+          "function": "witness_adj::witness_overlap",
+          "ms": 744,
+          "rlimit": 1359179,
+          "success": true
+        },
+        {
+          "function": "adj_l2::lemma_reader_step",
+          "ms": 296,
+          "rlimit": 1021332,
+          "success": true
+        },
+        {
+          "function": "ledger_l2::lemma_erase_refines",
+          "ms": 536,
+          "rlimit": 919998,
+          "success": true
+        },
+        {
+          "function": "adj_l2::lemma_wpost",
+          "ms": 231,
+          "rlimit": 804587,
+          "success": true
+        },
+        {
+          "function": "ledger_l2::lemma_engine_write_refines",
+          "ms": 322,
+          "rlimit": 730207,
+          "success": false
+        },
+        {
+          "function": "adj_l2::lemma_ekill",
+          "ms": 197,
+          "rlimit": 692643,
+          "success": true
+        },
+        {
+          "function": "adj_l2::lemma_wout",
+          "ms": 185,
+          "rlimit": 647482,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "ledger_l2::lemma_engine_write_refines"
+      ],
+      "functions_checked": 108,
+      "max_function_rlimit": 3382557,
+      "module": "11",
+      "finding": "F-1108",
+      "expected": "src/ledger_l2.rs",
+      "counterexample": "cx_f1108::counterexample_f1108",
+      "what": "bulk_delete_adjacency calls no guard and erases edge rows and their statement entries (nodes_edges.py:2301-2339)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_fc1101_stats_whole_row": {
+      "tag": "control_fc1101_stats_whole_row",
+      "features": "control_fc1101_stats_whole_row",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_fc1101_stats_whole_row -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-pa3/control_fc1101_stats_whole_row.log",
+      "json": "$RUN_DIR/proofs-pa3/control_fc1101_stats_whole_row.json",
+      "wall_seconds": 8.4,
+      "max_rss_kb": 636108,
+      "error_locations": [
+        "src/ledger_l2.rs:1190",
+        "src/ledger_l2.rs:1224"
+      ],
+      "resource_limit": false,
+      "verified": 106,
+      "errors": 2,
+      "success": false,
+      "verus_total_ms": 8230,
+      "smt_run_ms": 11336,
+      "rlimit_total": 21935096,
+      "modules": {
+        "adj_l2": {
+          "ms": 3649,
+          "rlimit": 11860275
+        },
+        "witness_adj": {
+          "ms": 2255,
+          "rlimit": 4741736
+        },
+        "ledger_l2": {
+          "ms": 4893,
+          "rlimit": 4306632
+        },
+        "ledger_l1": {
+          "ms": 181,
+          "rlimit": 462114
+        },
+        "cx_fc1101": {
+          "ms": 261,
+          "rlimit": 404282
+        },
+        "adj_l1": {
+          "ms": 34,
+          "rlimit": 81330
+        },
+        "cx_ledger_common": {
+          "ms": 61,
+          "rlimit": 78727
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_adj::witness_adj",
+          "ms": 1540,
+          "rlimit": 3382557,
+          "success": true
+        },
+        {
+          "function": "witness_adj::witness_overlap",
+          "ms": 714,
+          "rlimit": 1359179,
+          "success": true
+        },
+        {
+          "function": "adj_l2::lemma_reader_step",
+          "ms": 380,
+          "rlimit": 1021332,
+          "success": true
+        },
+        {
+          "function": "ledger_l2::lemma_erase_refines",
+          "ms": 404,
+          "rlimit": 844730,
+          "success": true
+        },
+        {
+          "function": "adj_l2::lemma_wpost",
+          "ms": 271,
+          "rlimit": 804587,
+          "success": true
+        },
+        {
+          "function": "ledger_l2::lemma_step_inv",
+          "ms": 1891,
+          "rlimit": 748422,
+          "success": false
+        },
+        {
+          "function": "adj_l2::lemma_ekill",
+          "ms": 197,
+          "rlimit": 692643,
+          "success": true
+        },
+        {
+          "function": "adj_l2::lemma_wout",
+          "ms": 185,
+          "rlimit": 647482,
+          "success": true
+        },
+        {
+          "function": "adj_l2::lemma_eabort",
+          "ms": 172,
+          "rlimit": 634888,
+          "success": true
+        },
+        {
+          "function": "adj_l2::lemma_wcommit",
+          "ms": 167,
+          "rlimit": 618254,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "ledger_l2::lemma_step_inv",
+        "ledger_l2::lemma_step_refines"
+      ],
+      "functions_checked": 108,
+      "max_function_rlimit": 3382557,
+      "module": "11",
+      "finding": "F-C1101 (root cause shared with F-1102)",
+      "expected": "src/ledger_l2.rs",
+      "counterexample": "cx_fc1101::counterexample_fc1101",
+      "what": "LedgerStats.Bump saves the whole stats row from the copy %OpenId opened without a lock (LedgerStats.cls:65-88)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_fc0401_write_before_gen": {
+      "tag": "control_fc0401_write_before_gen",
+      "features": "control_fc0401_write_before_gen",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_fc0401_write_before_gen -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-pa3/control_fc0401_write_before_gen.log",
+      "json": "$RUN_DIR/proofs-pa3/control_fc0401_write_before_gen.json",
+      "wall_seconds": 6.81,
+      "max_rss_kb": 630732,
+      "error_locations": [
+        "src/adj_l2.rs:811",
+        "src/adj_l2.rs:822"
+      ],
+      "resource_limit": false,
+      "verified": 108,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 6635,
+      "smt_run_ms": 8447,
+      "rlimit_total": 21458881,
+      "modules": {
+        "adj_l2": {
+          "ms": 3373,
+          "rlimit": 11300862
+        },
+        "ledger_l2": {
+          "ms": 3035,
+          "rlimit": 6262722
+        },
+        "witness_ledger": {
+          "ms": 1147,
+          "rlimit": 1904132
+        },
+        "cx_fc0401": {
+          "ms": 505,
+          "rlimit": 1235041
+        },
+        "ledger_l1": {
+          "ms": 224,
+          "rlimit": 462114
+        },
+        "cx_adj_common": {
+          "ms": 123,
+          "rlimit": 212680
+        },
+        "adj_l1": {
+          "ms": 38,
+          "rlimit": 81330
+        }
+      },
+      "top_functions": [
+        {
+          "function": "ledger_l2::lemma_step_inv",
+          "ms": 894,
+          "rlimit": 1875272,
+          "success": true
+        },
+        {
+          "function": "witness_ledger::witness_erase",
+          "ms": 832,
+          "rlimit": 1437563,
+          "success": true
+        },
+        {
+          "function": "cx_fc0401::counterexample_fc0401",
+          "ms": 505,
+          "rlimit": 1235041,
+          "success": true
+        },
+        {
+          "function": "ledger_l2::lemma_step_refines",
+          "ms": 527,
+          "rlimit": 1116541,
+          "success": true
+        },
+        {
+          "function": "adj_l2::lemma_reader_step",
+          "ms": 279,
+          "rlimit": 978378,
+          "success": true
+        },
+        {
+          "function": "ledger_l2::lemma_erase_refines",
+          "ms": 588,
+          "rlimit": 919672,
+          "success": true
+        },
+        {
+          "function": "adj_l2::lemma_wpost",
+          "ms": 278,
+          "rlimit": 808817,
+          "success": true
+        },
+        {
+          "function": "adj_l2::lemma_ekill",
+          "ms": 186,
+          "rlimit": 696657,
+          "success": true
+        },
+        {
+          "function": "adj_l2::lemma_eabort",
+          "ms": 175,
+          "rlimit": 634583,
+          "success": true
+        },
+        {
+          "function": "adj_l2::lemma_wcommit",
+          "ms": 168,
+          "rlimit": 619803,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "adj_l2::lemma_wout"
+      ],
+      "functions_checked": 109,
+      "max_function_rlimit": 1875272,
+      "module": "04",
+      "finding": "F-C0401",
+      "expected": "src/adj_l2.rs",
+      "counterexample": "cx_fc0401::counterexample_fc0401",
+      "what": "an adjacency writer changes ^KG(\"out\") before its first generation step (Adjacency.cls:87-89, 143-148)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_hd0401_erase_kills_gen": {
+      "tag": "control_hd0401_erase_kills_gen",
+      "features": "control_hd0401_erase_kills_gen",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_hd0401_erase_kills_gen -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-pa3/control_hd0401_erase_kills_gen.log",
+      "json": "$RUN_DIR/proofs-pa3/control_hd0401_erase_kills_gen.json",
+      "wall_seconds": 7.25,
+      "max_rss_kb": 633152,
+      "error_locations": [
+        "src/adj_l2.rs:1604",
+        "src/adj_l2.rs:1612",
+        "src/adj_l2.rs:1619",
+        "src/adj_l2.rs:1622",
+        "src/adj_l2.rs:1863",
+        "src/adj_l2.rs:1866"
+      ],
+      "resource_limit": false,
+      "verified": 106,
+      "errors": 3,
+      "success": false,
+      "verus_total_ms": 7067,
+      "smt_run_ms": 8456,
+      "rlimit_total": 22130845,
+      "modules": {
+        "adj_l2": {
+          "ms": 3420,
+          "rlimit": 11284720
+        },
+        "ledger_l2": {
+          "ms": 2741,
+          "rlimit": 6262722
+        },
+        "cx_hd0401_erase": {
+          "ms": 635,
+          "rlimit": 1923147
+        },
+        "witness_ledger": {
+          "ms": 1330,
+          "rlimit": 1904132
+        },
+        "ledger_l1": {
+          "ms": 183,
+          "rlimit": 462114
+        },
+        "cx_adj_common": {
+          "ms": 111,
+          "rlimit": 212680
+        },
+        "adj_l1": {
+          "ms": 33,
+          "rlimit": 81330
+        }
+      },
+      "top_functions": [
+        {
+          "function": "cx_hd0401_erase::counterexample_hd0401_erase",
+          "ms": 635,
+          "rlimit": 1923147,
+          "success": true
+        },
+        {
+          "function": "ledger_l2::lemma_step_inv",
+          "ms": 776,
+          "rlimit": 1875272,
+          "success": true
+        },
+        {
+          "function": "witness_ledger::witness_erase",
+          "ms": 1011,
+          "rlimit": 1437563,
+          "success": true
+        },
+        {
+          "function": "ledger_l2::lemma_step_refines",
+          "ms": 548,
+          "rlimit": 1116541,
+          "success": true
+        },
+        {
+          "function": "adj_l2::lemma_reader_step",
+          "ms": 295,
+          "rlimit": 986768,
+          "success": true
+        },
+        {
+          "function": "ledger_l2::lemma_erase_refines",
+          "ms": 473,
+          "rlimit": 919672,
+          "success": true
+        },
+        {
+          "function": "adj_l2::lemma_wpost",
+          "ms": 344,
+          "rlimit": 885673,
+          "success": true
+        },
+        {
+          "function": "adj_l2::lemma_wout",
+          "ms": 185,
+          "rlimit": 631020,
+          "success": true
+        },
+        {
+          "function": "adj_l2::lemma_wcommit",
+          "ms": 199,
+          "rlimit": 610688,
+          "success": true
+        },
+        {
+          "function": "adj_l2::lemma_ecommit",
+          "ms": 169,
+          "rlimit": 605881,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "adj_l2::lemma_eabort",
+        "adj_l2::lemma_ekill",
+        "adj_l2::lemma_ekillout"
+      ],
+      "functions_checked": 109,
+      "max_function_rlimit": 1923147,
+      "module": "04",
+      "finding": "F-0401 / HD-0401 (erase)",
+      "expected": "src/adj_l2.rs",
+      "counterexample": "cx_hd0401_erase::counterexample_hd0401_erase",
+      "what": "RemoveGraph kills ^KG(\"out\", g), then ^KG(\"gen\", g) and ^KG(\"degc\", g); a rollback restores them (Adjacency.cls:434-439)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_hd0401_rebuild_kills_gen": {
+      "tag": "control_hd0401_rebuild_kills_gen",
+      "features": "control_hd0401_rebuild_kills_gen",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_hd0401_rebuild_kills_gen -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-pa3/control_hd0401_rebuild_kills_gen.log",
+      "json": "$RUN_DIR/proofs-pa3/control_hd0401_rebuild_kills_gen.json",
+      "wall_seconds": 7.8,
+      "max_rss_kb": 632652,
+      "error_locations": [
+        "src/adj_l2.rs:2035",
+        "src/adj_l2.rs:2038",
+        "src/adj_l2.rs:2097"
+      ],
+      "resource_limit": false,
+      "verified": 107,
+      "errors": 2,
+      "success": false,
+      "verus_total_ms": 7613,
+      "smt_run_ms": 9429,
+      "rlimit_total": 22726075,
+      "modules": {
+        "adj_l2": {
+          "ms": 4004,
+          "rlimit": 11380301
+        },
+        "ledger_l2": {
+          "ms": 2930,
+          "rlimit": 6262722
+        },
+        "cx_hd0401_rebuild": {
+          "ms": 1051,
+          "rlimit": 2422654
+        },
+        "witness_ledger": {
+          "ms": 1104,
+          "rlimit": 1904132
+        },
+        "ledger_l1": {
+          "ms": 183,
+          "rlimit": 462114
+        },
+        "cx_adj_common": {
+          "ms": 120,
+          "rlimit": 212822
+        },
+        "adj_l1": {
+          "ms": 34,
+          "rlimit": 81330
+        }
+      },
+      "top_functions": [
+        {
+          "function": "cx_hd0401_rebuild::counterexample_hd0401_rebuild",
+          "ms": 1051,
+          "rlimit": 2422654,
+          "success": true
+        },
+        {
+          "function": "ledger_l2::lemma_step_inv",
+          "ms": 935,
+          "rlimit": 1875272,
+          "success": true
+        },
+        {
+          "function": "witness_ledger::witness_erase",
+          "ms": 813,
+          "rlimit": 1437563,
+          "success": true
+        },
+        {
+          "function": "ledger_l2::lemma_step_refines",
+          "ms": 523,
+          "rlimit": 1116541,
+          "success": true
+        },
+        {
+          "function": "adj_l2::lemma_reader_step",
+          "ms": 277,
+          "rlimit": 974817,
+          "success": true
+        },
+        {
+          "function": "ledger_l2::lemma_erase_refines",
+          "ms": 430,
+          "rlimit": 919672,
+          "success": true
+        },
+        {
+          "function": "adj_l2::lemma_wpost",
+          "ms": 244,
+          "rlimit": 806012,
+          "success": true
+        },
+        {
+          "function": "adj_l2::lemma_ekill",
+          "ms": 338,
+          "rlimit": 695819,
+          "success": true
+        },
+        {
+          "function": "adj_l2::lemma_wout",
+          "ms": 204,
+          "rlimit": 645412,
+          "success": true
+        },
+        {
+          "function": "adj_l2::lemma_eabort",
+          "ms": 270,
+          "rlimit": 633182,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "adj_l2::lemma_babort",
+        "adj_l2::lemma_bkill"
+      ],
+      "functions_checked": 109,
+      "max_function_rlimit": 2422654,
+      "module": "04",
+      "finding": "HD-0401 (rebuild)",
+      "expected": "src/adj_l2.rs",
+      "counterexample": "cx_hd0401_rebuild::counterexample_hd0401_rebuild",
+      "what": "RemoveAll kills ^KG(\"gen\") with out and degc and FillEdge does not step it (Adjacency.cls:452-462, 824-830)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f1201_erase_no_head_lock": {
+      "tag": "control_f1201_erase_no_head_lock",
+      "features": "control_f1201_erase_no_head_lock",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f1201_erase_no_head_lock -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-pa3/control_f1201_erase_no_head_lock.log",
+      "json": "$RUN_DIR/proofs-pa3/control_f1201_erase_no_head_lock.json",
+      "wall_seconds": 8.13,
+      "max_rss_kb": 634304,
+      "error_locations": [
+        "src/ledger_l2.rs:1070"
+      ],
+      "resource_limit": false,
+      "verified": 107,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 7920,
+      "smt_run_ms": 11619,
+      "rlimit_total": 29001002,
+      "modules": {
+        "adj_l2": {
+          "ms": 3680,
+          "rlimit": 11860275
+        },
+        "ledger_l2": {
+          "ms": 5264,
+          "rlimit": 11016404
+        },
+        "witness_adj": {
+          "ms": 1876,
+          "rlimit": 4741736
+        },
+        "cx_f1201": {
+          "ms": 463,
+          "rlimit": 760911
+        },
+        "ledger_l1": {
+          "ms": 238,
+          "rlimit": 462114
+        },
+        "adj_l1": {
+          "ms": 36,
+          "rlimit": 81330
+        },
+        "cx_ledger_common": {
+          "ms": 59,
+          "rlimit": 78232
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_adj::witness_adj",
+          "ms": 1342,
+          "rlimit": 3382557,
+          "success": true
+        },
+        {
+          "function": "ledger_l2::lemma_step_inv",
+          "ms": 1389,
+          "rlimit": 2687274,
+          "success": true
+        },
+        {
+          "function": "ledger_l2::lemma_step_refines",
+          "ms": 989,
+          "rlimit": 1795253,
+          "success": true
+        },
+        {
+          "function": "ledger_l2::lemma_erase_refines",
+          "ms": 715,
+          "rlimit": 1598234,
+          "success": true
+        },
+        {
+          "function": "ledger_l2::lemma_engine_write_refines",
+          "ms": 750,
+          "rlimit": 1493328,
+          "success": true
+        },
+        {
+          "function": "witness_adj::witness_overlap",
+          "ms": 533,
+          "rlimit": 1359179,
+          "success": true
+        },
+        {
+          "function": "adj_l2::lemma_reader_step",
+          "ms": 293,
+          "rlimit": 1021332,
+          "success": true
+        },
+        {
+          "function": "ledger_l2::lemma_commit_refines",
+          "ms": 361,
+          "rlimit": 868386,
+          "success": true
+        },
+        {
+          "function": "ledger_l2::lemma_caller_end_refines",
+          "ms": 370,
+          "rlimit": 845798,
+          "success": true
+        },
+        {
+          "function": "adj_l2::lemma_wpost",
+          "ms": 233,
+          "rlimit": 804587,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "ledger_l2::lemma_head_lock"
+      ],
+      "functions_checked": 108,
+      "max_function_rlimit": 3382557,
+      "module": "11",
+      "finding": "F-1201 (P-A3 violated)",
+      "expected": "src/ledger_l2.rs",
+      "counterexample": "cx_f1201::counterexample_f1201",
+      "what": "EraseGraph takes no ledger head lock (Eraser.cls:47-261): a ledger commit of a new edge into the graph lands between its row DELETE and EraseLedgerFor (1117-1144), which kills the new statement entry",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_fc1202_erase_unguarded": {
+      "tag": "control_fc1202_erase_unguarded",
+      "features": "control_fc1202_erase_unguarded",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_fc1202_erase_unguarded -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-pa3/control_fc1202_erase_unguarded.log",
+      "json": "$RUN_DIR/proofs-pa3/control_fc1202_erase_unguarded.json",
+      "wall_seconds": 7.44,
+      "max_rss_kb": 634284,
+      "error_locations": [
+        "src/adj_l2.rs:572"
+      ],
+      "resource_limit": false,
+      "verified": 108,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 7252,
+      "smt_run_ms": 9812,
+      "rlimit_total": 24044207,
+      "modules": {
+        "adj_l2": {
+          "ms": 3941,
+          "rlimit": 11962464
+        },
+        "ledger_l2": {
+          "ms": 2737,
+          "rlimit": 6262722
+        },
+        "cx_fc1202": {
+          "ms": 1683,
+          "rlimit": 3158765
+        },
+        "witness_ledger": {
+          "ms": 1115,
+          "rlimit": 1904132
+        },
+        "ledger_l1": {
+          "ms": 177,
+          "rlimit": 462114
+        },
+        "cx_adj_common": {
+          "ms": 123,
+          "rlimit": 212680
+        },
+        "adj_l1": {
+          "ms": 34,
+          "rlimit": 81330
+        }
+      },
+      "top_functions": [
+        {
+          "function": "cx_fc1202::counterexample_fc1202",
+          "ms": 1683,
+          "rlimit": 3158765,
+          "success": true
+        },
+        {
+          "function": "ledger_l2::lemma_step_inv",
+          "ms": 772,
+          "rlimit": 1875272,
+          "success": true
+        },
+        {
+          "function": "witness_ledger::witness_erase",
+          "ms": 819,
+          "rlimit": 1437563,
+          "success": true
+        },
+        {
+          "function": "ledger_l2::lemma_step_refines",
+          "ms": 549,
+          "rlimit": 1116541,
+          "success": true
+        },
+        {
+          "function": "adj_l2::lemma_reader_step",
+          "ms": 300,
+          "rlimit": 1017423,
+          "success": true
+        },
+        {
+          "function": "ledger_l2::lemma_erase_refines",
+          "ms": 449,
+          "rlimit": 919672,
+          "success": true
+        },
+        {
+          "function": "adj_l2::lemma_wpost",
+          "ms": 252,
+          "rlimit": 804148,
+          "success": true
+        },
+        {
+          "function": "adj_l2::lemma_ekill",
+          "ms": 234,
+          "rlimit": 697744,
+          "success": true
+        },
+        {
+          "function": "adj_l2::lemma_wout",
+          "ms": 268,
+          "rlimit": 647394,
+          "success": true
+        },
+        {
+          "function": "adj_l2::lemma_eabort",
+          "ms": 190,
+          "rlimit": 635578,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "adj_l2::lemma_erase_guard"
+      ],
+      "functions_checked": 109,
+      "max_function_rlimit": 3158765,
+      "module": "04",
+      "finding": "F-C1202 (P-A3 violated)",
+      "expected": "src/adj_l2.rs",
+      "counterexample": "cx_fc1202::counterexample_fc1202",
+      "what": "EraseGraph takes no lock before its DELETE and RemoveGraph's ^IVG.AdjW(g)#\"S\" excludes no writer (Adjacency.cls:428-445): a writer inserts a new edge of g after the DELETE, and RemoveGraph's kill drops its committed adjacency entry",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    }
+  },
+  "trust_inventory": {
+    "own_sources": {
+      "scanned": [
+        "src/adj_l1.rs",
+        "src/adj_l2.rs",
+        "src/cx_adj_common.rs",
+        "src/cx_f0801_failopen.rs",
+        "src/cx_f0801_ttl.rs",
+        "src/cx_f1108.rs",
+        "src/cx_f1201.rs",
+        "src/cx_fc0401.rs",
+        "src/cx_fc1101.rs",
+        "src/cx_fc1202.rs",
+        "src/cx_hd0401_erase.rs",
+        "src/cx_hd0401_rebuild.rs",
+        "src/cx_ledger_common.rs",
+        "src/ledger_l1.rs",
+        "src/ledger_l2.rs",
+        "src/lib.rs",
+        "src/witness_adj.rs",
+        "src/witness_ledger.rs"
+      ],
+      "patterns": [
+        "\\bassume\\s*\\(",
+        "\\badmit\\s*\\(",
+        "external_body",
+        "#\\s*\\[\\s*verifier::external",
+        "\\buninterp\\b",
+        "\\baxiom\\b",
+        "assume_specification",
+        "#\\s*\\[\\s*verifier::assume"
+      ],
+      "violations": []
+    },
+    "actors": {
+      "rev": "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877",
+      "path": "/home/ziniu_wu_g5labs_ai/.cargo/git/checkouts/playbook-reference-actors-924e50ff84dd7a85/c03f9fa/crates/actors/src",
+      "violations": [],
+      "note": "verified in the same build without --no-cheating (forwarded to roots only)"
+    },
+    "vstd": {
+      "version": "0.0.0-2026-09-20-0158",
+      "note": "Verus standard library: the trusted base (its axioms, e.g. Set::len and Map::new, are Verus's own); not scanned"
+    },
+    "trusted_items_in_this_crate": [],
+    "premises": "named in PROOFS.md (P-L1..P-L6, P-A1, P-A2, P-A4..P-A6, P-E1..P-E3; P-A3 removed); none is an assumption inside a proof"
+  },
+  "gate": "pass"
+}

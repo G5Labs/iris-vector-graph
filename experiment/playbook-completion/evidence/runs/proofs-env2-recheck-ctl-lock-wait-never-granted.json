@@ -1,0 +1,21 @@
+{
+  "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features ctl_lock_wait_never_granted -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+  "error_locations": "src/premises.rs:150,src/premises.rs:172",
+  "errors": "2",
+  "experiment_head": "792b8d6faf0bc77799920155f7eb1bea265a9934",
+  "id": "proofs-env2-recheck-ctl-lock-wait-never-granted",
+  "json_log": "$RUN_DIR/proofs-env2-recheck/run-20261115T000520Z/ctl_lock_wait_never_granted.json",
+  "json_sha256": "cf5443a44f016ea4d78f72de792299356e6ed149b1ae0f4f817befd3bb824d1e",
+  "kind": "control",
+  "lane": "proofs-env2",
+  "log": "$RUN_DIR/proofs-env2-recheck/run-20261115T000520Z/ctl_lock_wait_never_granted.log",
+  "log_bytes": 2258,
+  "log_sha256": "04821b406a9b1d9d511bccdc1f466a7a17e3fc9b779aa4365e0a3a433fc4799e",
+  "observes": "ctl_lock_wait_never_granted (clause E-LOCK-WAIT, mutant lock-wait-never-granted): 2 errors exactly at ['src/premises.rs:150', 'src/premises.rs:172']; failing ['premises::premise_d1f_p_f4', 'premises::premise_proofs_pf_3']; every other function verifies as in the baseline=True; counterexample cx::cx_lock_wait_never_granted verified=True",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-15T00:11:20+00:00",
+  "result": "expected-violation",
+  "sources_sha256": "b9a7bb764d46174889eac4290b91b4799f308914c4a682cbed7db9716ad1c99d",
+  "verified": "431"
+}

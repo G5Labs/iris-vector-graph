@@ -1,0 +1,17 @@
+{
+  "command": "locks.sh iris timeout 1200 python experiment/playbook-completion/writesets/live/ws_probes.py ba-noindex-parallel ba-explicit-survives ba-marker-qualifier ba-vec-node-delete ba-restore-merge (AUDITB)",
+  "experiment_head": "1564a673ea1737c0d9e32fe8f30a1d0d04bcf910",
+  "finding": "F-C0351",
+  "id": "ws-live-ba-marker-qualifier",
+  "kind": "live",
+  "lane": "writesets",
+  "log": "$RUN_DIR/writesets/ba-marker-qualifier.json",
+  "log_bytes": 1581,
+  "log_sha256": "edda9acaa7a396c54e59aaa9f3251565d81c5071940fbcb4b51965ae13d79db9",
+  "namespace": "AUDITB",
+  "observes": "ADR-0009/TMP-B9.13 (a marked row exists only while its triple has a timestamp). Ledger enabled, no temporal edge (^KG(\"tout\",0) absent). engine.store_edge, engine.create_edge and BulkLoader.load_edges (use_noindex False), each with qualifiers {\"temporal\": True}, wrote rows stored {\"temporal\": true}: marked rows whose triples have no timestamp. verify() then diverges only on the 6 endpoint nodes; none of the three relationships is among its differences (read_canonical skips rows whose temporal is JSON true, replay.py:617-620).",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T13:19:16+00:00",
+  "result": "fail"
+}

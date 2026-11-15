@@ -1,0 +1,15 @@
+{
+  "command": "python iris-contract/native/estop_gap_cases.py; locks.sh iris python iris-contract/native/driver.py (AUDITENV); iris-contract check",
+  "experiment_head": "a07ea0ca2887e7cc6c39c5845fbd632c5784eeda",
+  "id": "env-estop-gap",
+  "kind": "live",
+  "lane": "orchestrator",
+  "log": "$RUN_DIR/env/estop-gap/estop-gap.log",
+  "log_bytes": 2579,
+  "log_sha256": "9aae3718f6bb5f4c2894f829ac0e324587ed9ae2a35aa3df918734c564c05492",
+  "observes": "E-STOP gap reported by the proofs-env lane (no recorded round stopped a process with two OPEN levels): three cases in AUDITENV through the contract's own driver: a process at $TLEVEL 2 with a global write in each level, with a write only in the outer level, and with an outer-level row INSERT, each %SYSTEM.Process.Terminate'd without any commit; in every case every level was rolled back (globals undefined, table empty). The executable contract: 3 cases, 0 outside, 3 singleton; its exit code is 1 only because a 3-case round leaves 41 of the 42 round mutants alive, which is expected for a targeted round. Settles E-STOP's 'every level' reading by observation (P-0001)",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T22:38:41+00:00",
+  "result": "pass"
+}

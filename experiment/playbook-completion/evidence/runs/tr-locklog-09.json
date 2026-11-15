@@ -1,0 +1,15 @@
+{
+  "command": "TR_NAMESPACE=AUDITC trace-replay/lockrun.py 09 (locks.sh iris) then lockcheck.py 09",
+  "experiment_head": "ac8eb8a9aa124e438f3c7e0c0e765fed162f06d3",
+  "id": "tr-locklog-09",
+  "kind": "live",
+  "lane": "trace-replay",
+  "log": "$RUN_DIR/trace-replay/logs/tr-locklog-09.log",
+  "log_bytes": 1180,
+  "log_sha256": "a137d791729a57f7ad080d4957f27141e62d4946f5d41329a524843cc992b1c4",
+  "observes": "AUDITC, shape T9L (hash 2934912205): 855 DropAll+sync-read iterations (11 built: the engine route then answered by SQL) held only ^IVG.CypherCompiled(2934912205) exclusively in the reader while compiling (scan also saw the class-dictionary lock ^oddDEF(\"IVGC.P2934912205\")); 91 DropAll+job-read iterations (85 built): the reader held no build lock and the build jobs (one pid per build) held ^IVG.CypherCompiled(2934912205) exclusively; with that lock held by a probe a sync read did not wait (Lock :0, Gen.cls:166-167), compiled nothing, left the entry pending and answered in 0.055 s: matches the plan. Generated class IVGC.P2934912205 compiled 97 times (1 setup + 11 sync + 85 job builds) and deleted by Gen.DropAll each iteration; no IVGC class left in AUDITC at the end",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T15:22:59+00:00",
+  "result": "pass"
+}

@@ -1,0 +1,49 @@
+{
+ "module": "05",
+ "gate": "3.4-storage-order",
+ "input": "$RUN_DIR/checks/storage-order.json",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "generated_by": "experiment/playbook-completion/models/breadth-a/tools/storage_order_dispositions.py",
+ "method": "each scan site in the module's files assigned by enclosing function (storage_order_sites.py, inventory entry-point ranges and Scope lines) and read at the pin; scan completeness sampled by grep of the module's scope files for TOP/LIMIT/FETCH FIRST and truncating $Order loops ($RUN_DIR/breadth-a/storage-order/grep-missed.log). Source reading only; nothing was run.",
+ "sites": [],
+ "missed_by_scan": [
+  {
+   "file": "iris_src/src/Graph/KG/TemporalWindow.cls",
+   "line": 185,
+   "function": "TemporalWindow (paged window reader)",
+   "disposition": "collation-ordered",
+   "key_or_reason": "a page stops at pCount rows or PAGECHARS and the handle resumes at the saved key, so pages are complete and in ^KG subscript order",
+   "cites": [
+    "iris_src/src/Graph/KG/TemporalWindow.cls:160-191"
+   ],
+   "finding_candidate": false,
+   "title": "",
+   "severity": "",
+   "documented": true
+  },
+  {
+   "file": "iris_src/src/Graph/KG/TemporalWindow.cls",
+   "line": 341,
+   "function": "TemporalWindow.Latest",
+   "disposition": "collation-ordered",
+   "key_or_reason": "every-source and prefix reads page the latest-event index in source order with a 'next' key; ties at the newest timestamp go to the last (p, o) in index order",
+   "cites": [
+    "iris_src/src/Graph/KG/TemporalWindow.cls:293-347"
+   ],
+   "finding_candidate": false,
+   "title": "",
+   "severity": "",
+   "documented": true
+  }
+ ],
+ "out_of_scope": [],
+ "summary": {},
+ "summary_missed": {
+  "collation-ordered": 2
+ },
+ "finding_candidates": [],
+ "status_suggestion": {
+  "status": "closed",
+  "reason": "no scan site; the temporal readers' truncations are collation-ordered pages that resume"
+ }
+}

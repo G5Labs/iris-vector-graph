@@ -1,0 +1,1067 @@
+{
+ "module": "08",
+ "lane": "breadth-b",
+ "pin": "3eaa79cf",
+ "summary": {
+  "total_original": 25,
+  "by_disposition": {
+   "reproduced-live": 23,
+   "confirmed-source": 2
+  },
+  "by_outcome": {
+   "product-defect": 25
+  },
+  "by_severity": {
+   "S2": 7,
+   "S1": 6,
+   "S3": 11,
+   "S4": 1
+  },
+  "new": 3,
+  "live_log": "$RUN_DIR/breadth-b/live/08-findings.json",
+  "notes": "All live checks on AUDITB with native_cypher=False (SQL path), scratch ids b08_* / graphs b08g*, removed after each session.",
+  "reruns": "every b-08 live/run/probe registration was rerun under locks.sh iris after the 23:02:53-23:03:40 UTC incident window; all matched (ids with suffix -rerun)."
+ },
+ "findings": [
+  {
+   "id": "F-0801",
+   "title": "Ledger strict mode is a cached client check that fails open (Cypher writes)",
+   "intended": "In strict mode a guarded Cypher write raises LedgerStrictModeError and changes nothing (specs/213-graph-revision-ledger/contracts/ledger-api.md:82-92; CYP-X7.2). Decision HD-0801 (assumption): keep modelling the Python guard, cache and fail-open; the intended refusal still applies.",
+   "observed": "Live, two IRIS processes on AUDITB (b-08-live-f0801): process A's engine wrote once (guard cached state never-enabled); process B enabled the ledger and set strict (Meta: enabled, strict, head_seq 1); 0.28 s later A ran `CREATE (:B08G {id:'b08_g1'})`, which succeeded (row written, journal: nodes/rdf_labels/rdf_props/^KG) and was not recorded (head_seq 1 before and after). B's fresh engine was refused at once and A was refused after the 5 s TTL (LedgerStrictModeError). Source: guard caches Meta for TTL_SECONDS=5.0 and treats any probe exception as never-enabled (iris_vector_graph/ledger/guard.py:20, 38-59); the Cypher path checks it only on the transactional SQL route (query.py:2299-2301). Unit tests pinning the window and fail-open pass (b-08-run-unit).",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0801"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/ledger/guard.py:20-80"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/query.py:2299-2301"
+    },
+    {
+     "kind": "run",
+     "ref": "b-08-run-unit"
+    },
+    {
+     "kind": "mc",
+     "ref": "b-mc-m11-guard-as-built-ttl"
+    },
+    {
+     "kind": "mc",
+     "ref": "b-mc-m11-guard-as-built-failopen"
+    },
+    {
+     "kind": "mc",
+     "ref": "b-mc-m11-guard-reviewed"
+    },
+    {
+     "kind": "control",
+     "ref": "b-mc-m11-guard-control-failopen"
+    },
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0801-rerun"
+    },
+    {
+     "kind": "run",
+     "ref": "b-08-run-unit-rerun"
+    }
+   ],
+   "gates": [
+    "3.1-statements (CYP-X7.2)",
+    "3.5-handlers",
+    "3.6-composition (ledger guarantee consumed by modules 12-14)"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Either document the 5 s window and fail-open in ledger-api.md and USER_GUIDE, or check strict mode fail-closed per write (or server-side in Txn_Begin / a trigger) so raw SQL and other clients are covered (HD-0801 options b/c).",
+   "notes": "Module 11 owns the guard machine (b-mc-m11-guard-as-built-ttl, -as-built-failopen, -reviewed, -control-failopen). Fail-open on a failing probe is shown by the passing unit test only (a live probe failure needs a privilege change, not allowed here). Side effect of this check: the AUDITB ledger went never-enabled -> enabled (genesis seq 1) -> disabled, strict off; a never-enabled state cannot be restored without PurgeAll. Rerun under the iris lock after the 23:02:53-23:03:40 UTC incident window matched the original (b-08-live-f0801-rerun, b-08-run-unit-rerun).",
+   "module": "08",
+   "original_ref": "experiment/playbook-uplift/findings/08.md#F-0801"
+  },
+  {
+   "id": "F-0802",
+   "title": "Text shortcuts answer by substring and ignore USE GRAPH",
+   "intended": "A scoped query answers only from its graph (CONTEXT.md:27-43; USER_GUIDE.md:401-404); a query is answered by the translator unless it is exactly a tool's canned text.",
+   "observed": "Live AUDITB: `USE GRAPH 'b08gA' MATCH (n) RETURN count(*) AS c UNION ALL MATCH ()-[r]->() RETURN count(*) AS c` answered column `result` with nodes 7 / relationships 4 (whole namespace) where b08gA holds 3 / 2; a near-miss `RETURN DISTINCT n.name AS entity_name UNION ALL ...` under USE GRAPH answered canned (entity, id) rows including b08_leak (graph b08gB) and b08_s/b08_t (default graph). Model m08-scope-as-built-shortcut violates SYS-I2; reviewed passes.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0802"
+    },
+    {
+     "kind": "mc",
+     "ref": "m08-scope-as-built-shortcut"
+    },
+    {
+     "kind": "mc",
+     "ref": "m08-scope-reviewed"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/query.py:1807-1856"
+    },
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0802-rerun"
+    }
+   ],
+   "gates": [
+    "3.1-statements (CYP-B5)",
+    "3.3-L1 (SYS-I2)",
+    "3.4-declared-reads"
+   ],
+   "severity": "S1",
+   "confidence": "high",
+   "remedy": "Match the exact Neo4j Browser / Bloom texts (or compare the parsed AST), honour USE GRAPH in each shortcut, and test that a near-miss query is answered by the translator.",
+   "notes": "Rerun under the iris lock after the 23:02:53-23:03:40 UTC incident window matched the original (b-08-live-f0802-rerun).",
+   "module": "08",
+   "original_ref": "experiment/playbook-uplift/findings/08.md#F-0802"
+  },
+  {
+   "id": "F-0803",
+   "title": "A WHERE after RETURN is parsed and dropped",
+   "intended": "CYP-X3.8: a where clause after a return is refused, never read and dropped; openCypher refuses the text.",
+   "observed": "Live: `MATCH (n:B08L) RETURN n.id AS id WHERE false` returned all 5 B08L nodes, no error. tests/unit/test_lexer_parser_coverage.py:209 test_standalone_where_return asserts nothing (passes, b-08-run-unit).",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0803"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher/parser.py:287-291"
+    },
+    {
+     "kind": "run",
+     "ref": "b-08-run-unit"
+    },
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0803-rerun"
+    },
+    {
+     "kind": "run",
+     "ref": "b-08-run-unit-rerun"
+    }
+   ],
+   "gates": [
+    "3.1-statements (CYP-X3.8)",
+    "3.5-decoders (parser)"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Raise CypherParseError for WHERE after RETURN (or apply it), with a unit test asserting the refusal.",
+   "notes": "Rerun under the iris lock after the 23:02:53-23:03:40 UTC incident window matched the original (b-08-live-f0803-rerun, b-08-run-unit-rerun).",
+   "module": "08",
+   "original_ref": "experiment/playbook-uplift/findings/08.md#F-0803"
+  },
+  {
+   "id": "F-0804",
+   "title": "Lexer errors are Python SyntaxError, not CypherParseError",
+   "intended": "USER_GUIDE.md:313: a query that does not parse raises CypherParseError (CYP-X12.1).",
+   "observed": "Live: an unknown character (\u00a7), an unterminated string and a stray ';' each raised SyntaxError, none an instance of CypherParseError (parser.py:18 derives from Exception).",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0804"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher/lexer.py:229-232"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher/lexer.py:267-270"
+    },
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0804-rerun"
+    }
+   ],
+   "gates": [
+    "3.5-status-maps (error types)",
+    "3.1-statements (CYP-X12.1)"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Raise CypherParseError (or a subclass) from the lexer, or document both types; keep a distinct type for parses-but-invalid.",
+   "notes": "Rerun under the iris lock after the 23:02:53-23:03:40 UTC incident window matched the original (b-08-live-f0804-rerun).",
+   "module": "08",
+   "original_ref": "experiment/playbook-uplift/findings/08.md#F-0804"
+  },
+  {
+   "id": "F-0805",
+   "title": "A duplicate edge CREATE between literal endpoints fails the whole query instead of adding nothing",
+   "intended": "KNOWN_ISSUES.md:25-31: CREATE of an edge that exists returns no error and writes nothing for that edge (CYP-B6.7.6, CYP-B6.7.7); the matched-endpoint path is guarded (translator.py:10306-10365).",
+   "observed": "Live: after `CREATE (a:B08D {id:'b08_d1'})-[:B08T]->(b:B08D {id:'b08_d2'})`, the query `CREATE (c:B08D {id:'b08_d3'}), (a:B08D {id:'b08_d1'})-[:B08T]->(b:B08D {id:'b08_d2'})` raised GraphWriteError SQLCODE -119 (u_spo_graph_ekey) and its other write (node b08_d3) was rolled back. The same duplicate via matched endpoints (`CREATE (a),(b) CREATE (a)-[:T]->(b) CREATE (a)-[:T]->(b)`) is a silent no-op, as documented. Model m08-txn-as-built-dup violates; reviewed (guarded INSERT) passes.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0805"
+    },
+    {
+     "kind": "mc",
+     "ref": "m08-txn-as-built-dup"
+    },
+    {
+     "kind": "mc",
+     "ref": "m08-txn-reviewed"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher/translator.py:10212-10248"
+    },
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0805-rerun"
+    }
+   ],
+   "gates": [
+    "3.1-statements (CYP-B6.7.7)",
+    "3.4-statements",
+    "3.3-L1"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Guard the literal-endpoint INSERT with NOT EXISTS (as the matched path does), or correct KNOWN_ISSUES; live test over an existing edge.",
+   "notes": "In a MATCH+literal CREATE combined shape the same duplicate surfaced as GraphWriteError '<LIST ERROR> Incorrect list format, unsupported type for IRISList; type detected: 203' instead of -119 ($RUN_DIR/breadth-b/live/08-rollback-nkg.json): the error text does not name the cause. Rerun under the iris lock after the 23:02:53-23:03:40 UTC incident window matched the original (b-08-live-f0805-rerun).",
+   "module": "08",
+   "original_ref": "experiment/playbook-uplift/findings/08.md#F-0805"
+  },
+  {
+   "id": "F-0806",
+   "title": "A stepped write's error message says earlier steps are kept",
+   "intended": "Since 4.6.4 a write query is one write_txn rolled back on any failure (query.py:1946-1962; USER_GUIDE.md:266-271): nothing is written.",
+   "observed": "Live: `CREATE (:B08Y {id:'b08_short'}) WITH * MATCH (b:B08K {k: 1/0}) CREATE (:B08Z)` (count-only CREATE pipeline) raised GraphWriteError 'execute_cypher failed (SQLCODE -149), the rows of the steps before it are written' while node b08_short was rolled back (0 rows). Per-row MERGE/CREATE failing in a write step say 'nothing written' (correct). Model m08-txn-as-built-msg violates; reviewed passes.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0806"
+    },
+    {
+     "kind": "mc",
+     "ref": "m08-txn-as-built-msg"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/query.py:1692-1705"
+    },
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0806-rerun"
+    }
+   ],
+   "gates": [
+    "3.5-status-maps"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Drop the 'written' text (say nothing was written) and unit-test the message.",
+   "notes": "The wrong text arises only where a read step answers IVGResult.error after a write step (count-only pipeline); write-step SQL errors are raised by execute_transaction with 'nothing written'. Rerun under the iris lock after the 23:02:53-23:03:40 UTC incident window matched the original (b-08-live-f0806-rerun).",
+   "module": "08",
+   "original_ref": "experiment/playbook-uplift/findings/08.md#F-0806"
+  },
+  {
+   "id": "F-0807",
+   "title": "Some refused writes raise ValueError or SyntaxError, not GraphWriteError",
+   "intended": "USER_GUIDE.md:317-318 and the execute_cypher docstring (query.py:1756-1758): a write IRIS or IVG refuses raises GraphWriteError.",
+   "observed": "Live: count-only CREATE over 103,823 rows -> ValueError; MERGE on null -> ValueError; MERGE ON CREATE SET n = {...} -> SyntaxError; SET a.v = r.w + 1 -> SyntaxError. Nothing written in any.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0807"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/query.py:1980-1985"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher/translator.py:11513-11519"
+    },
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0807-rerun"
+    }
+   ],
+   "gates": [
+    "3.5-status-maps"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Wrap translator/engine refusals of writes in GraphWriteError keeping the cause, or list the other types in USER_GUIDE Errors.",
+   "notes": "Rerun under the iris lock after the 23:02:53-23:03:40 UTC incident window matched the original (b-08-live-f0807-rerun).",
+   "module": "08",
+   "original_ref": "experiment/playbook-uplift/findings/08.md#F-0807"
+  },
+  {
+   "id": "F-0808",
+   "title": "FOREACH over a parameter list does not run per item",
+   "intended": "openCypher runs the FOREACH body once per element.",
+   "observed": "Live: `FOREACH (x IN $list | CREATE (:B08F {v: x}))` with list [1,2,3] raised SyntaxError 'Undefined variable: x' and wrote nothing; the literal-list form created 3 nodes.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0808"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher/translator.py:3949-3967"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher/translator.py:7262-7307"
+    },
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0808-rerun"
+    }
+   ],
+   "gates": [
+    "3.1-statements (FOREACH semantics)"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Bind a parameter source before translation (as UNWIND does), or refuse it with a documented error; live test.",
+   "notes": "Observed outcome is a refusal (SyntaxError), not a wrong write; the finding's 'writes something other than asked' branch did not occur on this shape. Rerun under the iris lock after the 23:02:53-23:03:40 UTC incident window matched the original (b-08-live-f0808-rerun).",
+   "module": "08",
+   "original_ref": "experiment/playbook-uplift/findings/08.md#F-0808"
+  },
+  {
+   "id": "F-0809",
+   "title": "MERGE ON CREATE SET / ON MATCH SET value shapes fail (documented, 4.7.1)",
+   "intended": "KNOWN_ISSUES.md:131-142 (openCypher semantics).",
+   "observed": "Live: ON MATCH SET n.s = size(n.id) -> GraphWriteError SQLCODE -23; pattern MERGE ON CREATE SET a.c = a.count + 1 -> GraphWriteError <ARGUMENT ERROR>; ON MATCH SET n.v = 1/0 on a node the MERGE creates -> GraphWriteError -149, node not created. All three as documented.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0809"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher/translator.py:12062-12451"
+    },
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0809-rerun"
+    }
+   ],
+   "gates": [
+    "3.1-statements"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "The planned 4.7.1 fix with a live test per shape.",
+   "notes": "Documented known issue; refusals, no wrong data. Rerun under the iris lock after the 23:02:53-23:03:40 UTC incident window matched the original (b-08-live-f0809-rerun).",
+   "module": "08",
+   "original_ref": "experiment/playbook-uplift/findings/08.md#F-0809"
+  },
+  {
+   "id": "F-0810",
+   "title": "SET n.p = null keeps the key",
+   "intended": "openCypher: SET n.p = null removes the property; tests/e2e/test_470_set_null_e2e.py docstring says a literal null removes it.",
+   "observed": "Live: after SET n.z = null on b08_s, keys(n) = [id, z, name] and properties(n).z = '' (the rdf_props row remains); a computed null deletes.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0810"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher/translator.py:13648-13665"
+    },
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0810-rerun"
+    }
+   ],
+   "gates": [
+    "3.1-statements (CYP-B6.9)"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Delete the row for a literal null too; live test of keys(n).",
+   "notes": "Documented (KNOWN_ISSUES.md:144-152). Rerun under the iris lock after the 23:02:53-23:03:40 UTC incident window matched the original (b-08-live-f0810-rerun).",
+   "module": "08",
+   "original_ref": "experiment/playbook-uplift/findings/08.md#F-0810"
+  },
+  {
+   "id": "F-0811",
+   "title": "RETURN r.p of an edge number past 64 bits answers an integer",
+   "intended": "openCypher answers the float 1e+20 (KNOWN_ISSUES.md:163-170).",
+   "observed": "Live: after SET r.p = 1e20, RETURN r.p answered int 100000000000000000000.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0811"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/prop_values.py:141-168"
+    },
+    {
+     "kind": "run",
+     "ref": "b-08-run-unit"
+    },
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0811-rerun"
+    },
+    {
+     "kind": "run",
+     "ref": "b-08-run-unit-rerun"
+    }
+   ],
+   "gates": [
+    "3.5-decoders"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Cap the relationship reader at 64 bits as the node reader is; unit test parse_rel_prop_text.",
+   "notes": "Documented. Rerun under the iris lock after the 23:02:53-23:03:40 UTC incident window matched the original (b-08-live-f0811-rerun, b-08-run-unit-rerun).",
+   "module": "08",
+   "original_ref": "experiment/playbook-uplift/findings/08.md#F-0811"
+  },
+  {
+   "id": "F-0812",
+   "title": "A whole-number result of SET arithmetic reads back as an integer",
+   "intended": "openCypher: 2 * 1.5 is the float 3.0 (KNOWN_ISSUES.md:154-161).",
+   "observed": "Live: SET n.w = n.w * 1.5 over w: 2; RETURN n.w answered int 3.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0812"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher/translator.py:13784-13887"
+    },
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0812-rerun"
+    }
+   ],
+   "gates": [
+    "3.5-decoders"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Keep the float type through the SET writer; live test.",
+   "notes": "Documented. Rerun under the iris lock after the 23:02:53-23:03:40 UTC incident window matched the original (b-08-live-f0812-rerun).",
+   "module": "08",
+   "original_ref": "experiment/playbook-uplift/findings/08.md#F-0812"
+  },
+  {
+   "id": "F-0813",
+   "title": "Values carry no stored type",
+   "intended": "openCypher comparison semantics for mixed types (KNOWN_ISSUES.md:118-130, 183-240).",
+   "observed": "Live: edges {w: '10'} and {w: 9}; WHERE r.w > 8 matched both (the string '10' compared as a number); qualifiers store both as JSON strings ('{\"w\": \"10\"}', '{\"w\": \"9\"}').",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0813"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher/translator.py:10232-10238"
+    },
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0813-rerun"
+    }
+   ],
+   "gates": [
+    "3.4-statements"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Typed storage (planned 4.8.0) and the TCK typed runs on mixed data.",
+   "notes": "Documented with workarounds. Rerun under the iris lock after the 23:02:53-23:03:40 UTC incident window matched the original (b-08-live-f0813-rerun).",
+   "module": "08",
+   "original_ref": "experiment/playbook-uplift/findings/08.md#F-0813"
+  },
+  {
+   "id": "F-0814",
+   "title": "AQL text values are pasted into the Cypher text, and execute_aql ignores read-only",
+   "intended": "CYP-I9.4: a name written in a query reaches SQL only as a bound value or a checked name; CYP-I8.6 / read-only is available on the query entry points.",
+   "observed": "Live: honest FILTER v.name == 'nomatch' -> 0 rows; hostile literal 'nomatch\" OR true OR v.name = \"' -> 2 rows (filter rewritten). A collection name `B08R*1..1]->(v) SET v.pwn = 1 WITH v AS v MATCH (start)-[:B08R` made execute_aql write rdf_props rows on b08_m (graph b08gA) and b08_leak (graph b08gB) (journal: sql:Graph_KG.rdf_props). execute_aql has no read_only parameter. Model m08-readonly-as-built violates CYP-I8.6; reviewed passes.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0814"
+    },
+    {
+     "kind": "mc",
+     "ref": "m08-readonly-as-built"
+    },
+    {
+     "kind": "mc",
+     "ref": "m08-readonly-reviewed"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher/aql/translator.py:50-58"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher/aql/translator.py:154-168"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/query.py:1730-1745"
+    },
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0814-rerun"
+    }
+   ],
+   "gates": [
+    "3.1-statements (CYP-I9.4, CYP-I8.6)",
+    "3.5-decoders",
+    "3.5-handlers"
+   ],
+   "severity": "S1",
+   "confidence": "high",
+   "remedy": "Send every AQL literal as a query parameter, validate collection names as identifiers, add read_only to execute_aql (judge the translated text with writes_cypher), unit tests with hostile literals.",
+   "notes": "Rerun under the iris lock after the 23:02:53-23:03:40 UTC incident window matched the original (b-08-live-f0814-rerun).",
+   "module": "08",
+   "original_ref": "experiment/playbook-uplift/findings/08.md#F-0814"
+  },
+  {
+   "id": "F-0815",
+   "title": "A dotted function name pastes raw text into the SQL",
+   "intended": "CYP-I9.4; CYP-I8.6 (read-only changes nothing); USE GRAPH scopes the answer (USER_GUIDE.md:401-404).",
+   "observed": "Live with read_only=True: under USE GRAPH 'b08gA', `` RETURN `(SELECT LIST(NODE_ID) FROM GRAPH_KG.NODES WHERE %SQLUPPER(GRAPH_ID) = %SQLUPPER('B08GB')) AS LEAK --`.f(1) AS v `` answered 'b08_leak,b08_m' (graph b08gB's ids); a dotted name read %DICTIONARY.COMPILEDCLASS (5734 rows counted); `GRAPH_KG.TXN_BEGIN(0)` raised the connection's $TLEVEL 0 -> 1 (restored with Txn_Undo). Journal: no data write. Generated SQL: `SELECT (...) AS LEAK --.F(1) AS v`. tests/unit/test_cypher_posos_bugs.py:157 asserts the pass-through (b-08-run-unit). Models m08-scope-as-built-dotted and m08-readonly-as-built violate.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0815"
+    },
+    {
+     "kind": "mc",
+     "ref": "m08-scope-as-built-dotted"
+    },
+    {
+     "kind": "mc",
+     "ref": "m08-readonly-as-built"
+    },
+    {
+     "kind": "run",
+     "ref": "b-08-run-unit"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher/parser.py:1627-1640"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher/translator.py:29563-29578"
+    },
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0815-rerun"
+    },
+    {
+     "kind": "run",
+     "ref": "b-08-run-unit-rerun"
+    }
+   ],
+   "gates": [
+    "3.1-statements (CYP-I9.4, CYP-I8.6)",
+    "3.4-declared-reads",
+    "3.5-decoders"
+   ],
+   "severity": "S1",
+   "confidence": "high",
+   "remedy": "Refuse back-quoted or non-identifier namespaces in function calls, allow-list qualified functions (or gate them behind a setting), refuse them in read-only mode; unit tests with hostile names.",
+   "notes": "P-0806 (one statement per execute) bounds the payload to one SELECT, but that SELECT can read any table the SQL user can and call SQL functions with side effects. Rerun under the iris lock after the 23:02:53-23:03:40 UTC incident window matched the original (b-08-live-f0815-rerun, b-08-run-unit-rerun).",
+   "module": "08",
+   "original_ref": "experiment/playbook-uplift/findings/08.md#F-0815"
+  },
+  {
+   "id": "F-0816",
+   "title": "Schema procedures ignore USE GRAPH",
+   "intended": "USER_GUIDE.md:401-404: USE GRAPH scopes a query to one graph.",
+   "observed": "Live: under USE GRAPH 'b08gA' (labels B08L, types B08R/B08S), CALL db.labels() listed B08B (only in b08gB) and default-graph labels; db.relationshipTypes() listed B08Q and B08T (not in b08gA).",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0816"
+    },
+    {
+     "kind": "mc",
+     "ref": "m08-scope-as-built-dblabels"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/engine.py:1313-1323"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/engine.py:1702-1714"
+    },
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0816-rerun"
+    }
+   ],
+   "gates": [
+    "3.4-declared-reads",
+    "3.3-L1 (SYS-I2)"
+   ],
+   "severity": "S1",
+   "confidence": "high",
+   "remedy": "Give the schema handlers a graph parameter (or refuse them under USE GRAPH), with a unit test.",
+   "notes": "Metadata only (names of labels, types and property keys). Rerun under the iris lock after the 23:02:53-23:03:40 UTC incident window matched the original (b-08-live-f0816-rerun).",
+   "module": "08",
+   "original_ref": "experiment/playbook-uplift/findings/08.md#F-0816"
+  },
+  {
+   "id": "F-0817",
+   "title": "An unknown db, dbms or apoc procedure answers no rows",
+   "intended": "CYP-X10.2: an unknown procedure name is refused, with the list of known names.",
+   "observed": "Live: CALL db.b08nothing(), apoc.b08nothing(), dbms.b08nothing() each answered column 'value' with no rows and no error; ivg.b08nothing raised ValueError listing known names; gds.b08nothing.stream answered an 'error' column result.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0817"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/engine.py:1716-1720"
+    },
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0817-rerun"
+    }
+   ],
+   "gates": [
+    "3.1-statements (CYP-X10.2)",
+    "3.5-status-maps"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Raise for every unknown name (ProcedureNotFound) with a unit test.",
+   "notes": "Rerun under the iris lock after the 23:02:53-23:03:40 UTC incident window matched the original (b-08-live-f0817-rerun).",
+   "module": "08",
+   "original_ref": "experiment/playbook-uplift/findings/08.md#F-0817"
+  },
+  {
+   "id": "F-0818",
+   "title": "A variable-length walk in an all-graphs read can cross graphs",
+   "intended": "CYP-I5.6 / CONTEXT.md:38-43: a variable-length walk in an all-graphs read stays in the graph of its start node.",
+   "observed": "Live: with b08gA: b08_x-[:B08R]->b08_m and b08gB: b08_m-[:B08R]->b08_leak, `MATCH (a:B08L {id:'b08_x'}) WITH a MATCH (a)-[:B08R*1..2]->(b) RETURN b.id` answered [b08_leak, b08_m, b08_m] (SQL: CY_VLP_PATHS(Stage1.a, ..., 1, '-', ...): gall = 1); the plain-alias form answered [b08_m]. Model m08-scope-as-built-vlp violates SYS-I2; reviewed passes; control m08-scope-control-vlp-unscoped caught.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0818"
+    },
+    {
+     "kind": "mc",
+     "ref": "m08-scope-as-built-vlp"
+    },
+    {
+     "kind": "mc",
+     "ref": "m08-scope-reviewed"
+    },
+    {
+     "kind": "mc",
+     "ref": "m08-scope-control-vlp-unscoped"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher/translator.py:15404-15431"
+    },
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0818-rerun"
+    }
+   ],
+   "gates": [
+    "3.1-statements (CYP-I5.6)",
+    "3.3-L1",
+    "3.4-declared-reads"
+   ],
+   "severity": "S1",
+   "confidence": "high",
+   "remedy": "Carry the start's graph (Stage1.__g_a is already projected) into CY_VLP_* for every start shape, or refuse the shape; e2e test with a WITH-carried start in two graphs.",
+   "notes": "Overlaps F-1008 (module 10, VarLength every-graph mode). Rerun under the iris lock after the 23:02:53-23:03:40 UTC incident window matched the original (b-08-live-f0818-rerun).",
+   "module": "08",
+   "original_ref": "experiment/playbook-uplift/findings/08.md#F-0818"
+  },
+  {
+   "id": "F-0819",
+   "title": "approx_count_distinct in an all-graphs read merges graphs",
+   "intended": "CYP-I4.14: an approximate count in an all-graphs read counts each graph's nodes apart.",
+   "observed": "Live: `MATCH (a {node_id:'b08_x'})-[:B08R*1..2]->(m) RETURN approx_count_distinct(m)` took the HLL route (sql CountDistinctKHop, warning HLL-256) and answered 2; the exact count(DISTINCT m) answered 1 (b08_leak is reachable only through graph b08gB's edge from the shared id b08_m).",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0819"
+    },
+    {
+     "kind": "mc",
+     "ref": "m08-scope-as-built-hll"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/query.py:4361-4421"
+    },
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0819-rerun"
+    }
+   ],
+   "gates": [
+    "3.1-statements (CYP-I4.14)",
+    "3.3-L1"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Take the HLL route only when no named graph has edges (as the k-hop shortcut at query.py:4318-4320 does), with a unit test.",
+   "notes": "The run rebuilt ^NKG with engine.sync() on AUDITB (namespace-wide derived store). Rerun under the iris lock after the 23:02:53-23:03:40 UTC incident window matched the original (b-08-live-f0819-rerun).",
+   "module": "08",
+   "original_ref": "experiment/playbook-uplift/findings/08.md#F-0819"
+  },
+  {
+   "id": "F-0820",
+   "title": "kg_GRAPH_PATH reads every graph",
+   "intended": "USER_GUIDE.md:462-464: a Python read with no graph= means the default graph, never every graph (HD-0201 working assumption: omission selects the default graph).",
+   "observed": "Live: engine.kg_GRAPH_PATH('b08_x','B08R','B08S') returned the path b08_x->b08_m->b08_n, which exists only in graph b08gA (no default-graph edge from b08_x).",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0820"
+    },
+    {
+     "kind": "mc",
+     "ref": "m08-scope-as-built-graphpath"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/algorithms.py:679-697"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/operators.py:46-49"
+    },
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0820-rerun"
+    }
+   ],
+   "gates": [
+    "3.4-declared-reads",
+    "3.3-L1 (SYS-I2)"
+   ],
+   "severity": "S1",
+   "confidence": "high",
+   "remedy": "Add graph= (default: the default graph) and prefix USE GRAPH, with a unit test.",
+   "notes": "Rerun under the iris lock after the 23:02:53-23:03:40 UTC incident window matched the original (b-08-live-f0820-rerun).",
+   "module": "08",
+   "original_ref": "experiment/playbook-uplift/findings/08.md#F-0820"
+  },
+  {
+   "id": "F-0821",
+   "title": "The published TCK figures cannot be tied to this repository",
+   "intended": "Evidence claims are reproducible at a named commit (playbook \u00a73.7).",
+   "observed": "git: 9ca0edca, 99514e62, 2406c7dc, 500ecd40, da666988 (cited by docs/dev/TCK.md:172-201) are not objects in this repository; 0e69c125, f7a8c581 and 99ca2807 are ancestors of the pin. No TCK run here (not in scope; IRIS-backed).",
+   "disposition": "confirmed-source",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "probe",
+     "ref": "b-08-probe-tck-provenance"
+    },
+    {
+     "kind": "inspected",
+     "ref": "docs/dev/TCK.md:172-238"
+    },
+    {
+     "kind": "probe",
+     "ref": "b-08-probe-tck-provenance-rerun"
+    }
+   ],
+   "gates": [
+    "3.7-e2e",
+    "3.8-account"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "A full typed TCK run at the pin on Community and enterprise, multigraph on and off, keeping RUN_INFO and results.tsv.",
+   "notes": "677cbafa is the openCypher TCK commit (another repository), expected absent. Rerun under the iris lock after the 23:02:53-23:03:40 UTC incident window matched the original (b-08-probe-tck-provenance-rerun).",
+   "module": "08",
+   "original_ref": "experiment/playbook-uplift/findings/08.md#F-0821"
+  },
+  {
+   "id": "F-0822",
+   "title": "CREATE or MERGE after UNWIND $p AS e WITH e fails",
+   "intended": "openCypher: one node per element (KNOWN_ISSUES.md:585-596).",
+   "observed": "Live: `UNWIND $p AS e WITH e CREATE (:B08U {id: e.id})` raised GraphWriteError '<PARAMETER ERROR> Invalid number of parameters' (neither the -119 KNOWN_ISSUES/CHANGELOG name nor the -23 the unit test names); UNWIND without WITH created 2 nodes.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0822"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher/translator.py:7044-7087"
+    },
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0822-rerun"
+    }
+   ],
+   "gates": [
+    "3.1-statements",
+    "3.5-status-maps"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "A fix with a live test, and one error in docs and tests.",
+   "notes": "Third distinct error for one shape on IRIS Community 2026.1. Rerun under the iris lock after the 23:02:53-23:03:40 UTC incident window matched the original (b-08-live-f0822-rerun).",
+   "module": "08",
+   "original_ref": "experiment/playbook-uplift/findings/08.md#F-0822"
+  },
+  {
+   "id": "F-0823",
+   "title": "An aggregate in a CALL subquery that matches nothing answers 0",
+   "intended": "openCypher: an empty max/avg is null, an empty collect is [], count is 0.",
+   "observed": "Live: max(q.v) -> '0', avg(q.v) -> '0' (should be null); collect(q.v) -> the text '[]' (not 0 as the finding said; a string, not a list); count(q) -> 0 (right).",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0823"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher/translator.py:14543"
+    },
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0823-rerun"
+    }
+   ],
+   "gates": [
+    "3.4-statements"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "COALESCE only for count; live test per aggregate.",
+   "notes": "The collect branch of the original finding is partly refuted: it answers '[]' text, not 0. Rerun under the iris lock after the 23:02:53-23:03:40 UTC incident window matched the original (b-08-live-f0823-rerun).",
+   "module": "08",
+   "original_ref": "experiment/playbook-uplift/findings/08.md#F-0823"
+  },
+  {
+   "id": "F-0824",
+   "title": "Two slashes inside an AQL string start a comment",
+   "intended": "A string literal holding // is a string.",
+   "observed": "translate_aql (the pin's code, run in the live session) on FILTER v.url == 'http://x' raised AQLParseError 'Expected RETURN'; 'x' translated fine. It also cut a back-quoted collection name containing // (F-0814 probing).",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0824"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher/aql/lexer.py:46-63"
+    },
+    {
+     "kind": "live",
+     "ref": "b-08-live-f0824-rerun"
+    }
+   ],
+   "gates": [
+    "3.5-decoders"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Strip comments in the tokenizer outside strings; unit test.",
+   "notes": "Client-side (no IRIS involvement). Rerun under the iris lock after the 23:02:53-23:03:40 UTC incident window matched the original (b-08-live-f0824-rerun).",
+   "module": "08",
+   "original_ref": "experiment/playbook-uplift/findings/08.md#F-0824"
+  },
+  {
+   "id": "F-0825",
+   "title": "An expression the translator does not handle becomes SQL NULL",
+   "intended": "A query the product cannot translate is refused (CYP-X12.x), never answered with a silent null.",
+   "observed": "translate_expression falls through to `return \"NULL\"` (translator.py:29756). Probing six pattern-expression shapes in memory (RETURN (a)-->(), size(pattern), WITH pattern, pattern comprehension, named path, exists(pattern)) found no input that reaches it: the parser refuses pattern expressions in value position and the others translate. Reachability not established.",
+   "disposition": "confirmed-source",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher/translator.py:29676-29756"
+    }
+   ],
+   "gates": [
+    "3.5-decoders"
+   ],
+   "severity": "S4",
+   "confidence": "low",
+   "remedy": "Raise a translation error at the fall-through and run the TCK and unit suites to find any shape that relied on it.",
+   "notes": "Latent defensive defect; AST expression classes without an isinstance branch: NodePattern, RelationshipPattern, GraphPattern, NamedPath (all refused or handled upstream in the probes).",
+   "module": "08",
+   "original_ref": "experiment/playbook-uplift/findings/08.md#F-0825"
+  }
+ ],
+ "new_findings": [
+  {
+   "id": "F-C0801",
+   "module": "08",
+   "title": "A rolled-back Cypher edge write leaves the interned snapshot's counters raised",
+   "intended": "SYS-I8 (CONTEXT.md:109-120): a store built from others matches them or says it is out of date; CYP-I6.4: a failed write query takes back all of its steps.",
+   "observed": "Live: with ^NKG built (engine.sync()), a query that creates edge b08_r1-[:B08NEW]->b08_r2 and then fails (duplicate literal edge) rolled back the row and the ^NKG(-1/-2) entries, but ^NKG(-3, idx(b08_r1)) went 1 -> 2 and ^NKG(\"$meta\",\"edgeCount\") 2 -> 3, with no stale mark (Adjacency.Put $Increments them, Adjacency.cls:95-107; $INCREMENT is not undone by TROLLBACK). The journal shows these records outside the transaction (b-08-live-footprints).",
+   "disposition": "reproduced-live",
+   "outcome": "intent-undecided",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-08-live-fc0801-rollback-nkg"
+    },
+    {
+     "kind": "live",
+     "ref": "b-08-live-footprints"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Adjacency.cls:95-107"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/admin.py:808-816"
+    },
+    {
+     "kind": "live",
+     "ref": "b-08-live-fc0801-rollback-nkg-rerun"
+    },
+    {
+     "kind": "live",
+     "ref": "b-08-live-footprints-rerun"
+    }
+   ],
+   "gates": [
+    "3.3a-writesets (^NKG counters written by every edge writer)",
+    "3.2-env-contract ($INCREMENT vs TROLLBACK)"
+   ],
+   "severity": "S4",
+   "confidence": "medium",
+   "remedy": "Either keep the counters inside the transaction (SET from the merged degree, as BuildNKG's sweep does) or mark ^NKG stale when a writer's transaction rolls back; or document ^NKG(-3) and edgeCount as upper bounds (admin.py already treats edgeCount as an over-count).",
+   "notes": "Owning code is module 04 (Adjacency.cls) / module 10 (^NKG readers); found through module 08's rollback. No reader at the pin uses the ^NKG(-3) value except the rebuild (readers iterate it: NKGAccelAdjacency.cls:19, NKGAccelCentrality.cls:473); admin.py:808-816 knowingly tolerates edgeCount over-counts, so whether these counters are contract-bearing is undecided. The ^KG(\"gen\") over-bump is documented as harmless (Adjacency.cls:23-30). Rerun under the iris lock after the 23:02:53-23:03:40 UTC incident window matched the original (b-08-live-fc0801-rollback-nkg-rerun, b-08-live-footprints-rerun)."
+  },
+  {
+   "id": "F-C0802",
+   "module": "08",
+   "title": "Schema procedures report one sampled element's property keys, chosen by storage order",
+   "intended": "db.schema.nodeTypeProperties / relTypeProperties list the property keys a label's nodes / a type's relationships hold (Neo4j procedure contract the handlers emulate: iris_vector_graph/engine.py:1333-1400); gate \u00a73.4 storage-order: no answer depends on storage or insertion order.",
+   "observed": "Live (b-08-live-storage-order): two B08SA nodes inserted with keys {k2} then {k1}: nodeTypeProperties reported [id, k2] (k1 missing); two B08SR edges with qualifiers {qa} then {qb}: relTypeProperties reported [qa, weight] (qb missing). The handlers sample `SELECT TOP 1 rl.s ... WHERE rl.label = ?` (engine.py:1340) and `SELECT TOP 1 qualifiers ... WHERE p = ?` (engine.py:1382) with no ORDER BY, so the keys listed depend on which row storage order puts first.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-08-live-storage-order"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/engine.py:1333-1400"
+    },
+    {
+     "kind": "inspected",
+     "ref": "$RUN_DIR/checks/storage-order.json"
+    }
+   ],
+   "gates": [
+    "3.4-storage-order",
+    "3.6-row-permutation",
+    "3.5-handlers"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "List the distinct keys over every element of the label/type (SELECT DISTINCT key ... JOIN rdf_labels ... ORDER BY key, as apoc.meta.data does at engine.py:1624-1627), or document the procedures as a sample.",
+   "notes": "Schema introspection only (no data change); graph-blind as in F-0816. The text-shortcut answers at query.py:1835 and :1837 (TOP 25 without ORDER BY) are the same scan-order dependence inside F-0802."
+  },
+  {
+   "id": "F-C0803",
+   "module": "08",
+   "title": "MERGE ... ON CREATE SET r = a gives every merged relationship the first row's properties",
+   "intended": "openCypher: MERGE runs once per incoming row; `SET r = a` copies that row's node a onto that row's relationship (CYP-B6.8 per-row MERGE semantics); gate \u00a73.4 storage-order.",
+   "observed": "Live (b-08-live-storage-order): `MATCH (a:B08PP), (t:B08TT {id:'b08_tt'}) MERGE (a)-[r:B08MR3]->(t) ON CREATE SET r = a` with a = b08_p1 {city:'ca', pop:1} and b08_p2 {city:'cb', pop:2} created two relationships whose qualifiers were both {id:'b08_p1', city:'ca', pop:'1'}. The translator copies `(SELECT TOP 1 a.node_id FROM <preceding rows>)` (translator.py:12362-12395) with no ORDER BY and applies one UPDATE to every merged relationship, so the stored values come from whichever row storage order puts first.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-08-live-storage-order"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher/translator.py:12362-12395"
+    },
+    {
+     "kind": "inspected",
+     "ref": "$RUN_DIR/checks/storage-order.json"
+    }
+   ],
+   "gates": [
+    "3.4-storage-order",
+    "3.6-row-permutation",
+    "3.4-statements"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Correlate the copied node with each relationship's own row (per-row UPDATE through the row-bound MERGE plan, or a correlated subquery on the relationship's source/target), or refuse `SET r = a` when the preceding clauses bind more than one row; live test with two rows.",
+   "notes": "The sibling path `_merge_action_value_sql` (translator.py:11123-11190, same TOP 1 of the preceding rows) was not reached: `MATCH (p) MERGE (c:B08CT {name: p.city}) ON CREATE SET c.pop = p.pop` was refused with <ARGUMENT ERROR> (cf. F-0809). CYP-X6.8.6 refuses an edge's ON CREATE value read from another variable's property, not a whole-node copy."
+  }
+ ]
+}

@@ -1,0 +1,29 @@
+{
+ "doc": "F-0303 (corrected harness: the tuple index is keyed by GraphKey.ForLedger, not 0): after a direct delete_edge of a\n    ledger-created edge, the tuple index still maps the triple to the edge's statement and the statement entry is live;\n    after a direct re-create, the tuple index hands that old statement to the next ledger op on the triple.",
+ "id": "p0303b_direct_delete_keeps_stmt",
+ "log": "$RUN_DIR/breadth-a/live/ledger-p_enable-p0303b_direct_delete_keeps_stmt-p_disable-20261113T233237.log",
+ "module": "ledger",
+ "observed": {
+  "ledger_key_default": "'\\x01'",
+  "row_after_direct_delete": 0,
+  "stmt_entry_alive_after_direct_delete": 1,
+  "stmt_first": "4",
+  "tuple_after_create": "4",
+  "tuple_after_direct_delete": "4",
+  "tuple_after_direct_recreate": "4",
+  "verify_after_direct_delete": {
+   "classification": "unrecorded_writes",
+   "differences": [
+    "DiffEntry(entity_kind='rel', entity_id='1', attr='', before='{\"graph\":null,\"o\":\"balb232559\",\"p\":\"LR\",\"s\":\"bala232559\"}', after=None)",
+    "DiffEntry(entity_kind='rel', entity_id='4', attr='', before='{\"graph\":null,\"o\":\"balb233236\",\"p\":\"LR\",\"s\":\"bala233236\"}', after=None)",
+    "DiffEntry(entity_kind='rel', entity_id='{\"graph\":\"baj07232613\",\"o\":\"jv_l1\",\"p\":\"LL\",\"s\":\"jv_l0\"}', attr='', before=None, after='{\"graph\":\"baj07232613\",\"o\":\"jv_l1\",\"p\":\"LL\",\"s\":\"jv_l0\"}')"
+   ],
+   "result": "diverges"
+  }
+ },
+ "oracle": "no live statement outlives its edge row (CONTEXT.md:198-205, INV-stmt)",
+ "reproduced": true,
+ "seconds": 0.06,
+ "started": "2026-11-13T23:32:37",
+ "verdict": "statement 4 and its tuple entry stay live after the row is gone; the re-created edge inherits it"
+}

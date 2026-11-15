@@ -1,0 +1,17 @@
+{
+  "command": "bash versions/privilege/run-r2.sh (privilege_probe.py --revoke-as irisowner,_SYSTEM)",
+  "experiment_head": "3d1095e3490c14fd3e057e8636e294a022754a17",
+  "id": "ver-priv-r2",
+  "kind": "live",
+  "lane": "versions",
+  "log": "$RUN_DIR/versions/privilege/r2/probe.json",
+  "log_bytes": 10873,
+  "log_sha256": "8e2b215a67ad2bac4f3ceb2529c054960c6314e080b3e1c02c106f00fa5ca00c",
+  "observes": "IVGAUDIT_RO in AUDITB, 2026.1, driver 5.3.2. Before: CheckPrivilege(rdf_edges, s) 1 for user and role; $SYSTEM.Security.Check: %DB_%DEFAULT READ, %Native_* USE, %All/%DB_USER/%DB_IRISSYS none; native global SET <PROTECT>; create_node and INSERT -99; F-C1803 file helpers all succeed again. REVOKE AS irisowner and AS _SYSTEM: CheckPrivilege 0/0. Running engine R1 (native privilege cached True, gate open): the unlabelled id-anchored native one-hop is REFUSED at once (Exec.Run's anchor is SQL on Graph_KG.nodes: 'Cypher anchor SQLCODE -99'; engine falls back to SQL, -99, no rows); its SQL is refused too. Fresh engine R2: gate closed ('missing SELECT on a Graph_KG table'), -99. Exec.Run called directly by the revoked user with that plan: refused (anchor SQL -99). The revoked user still reads ^KG over the Native API (isDefined 10, subscripts listed). After the re-GRANT, R2 keeps its cached False (answers via SQL, native delta 0). Data reset by erase_all; user disabled, login refused",
+  "privileges_final_sha256": "d27d99d6d81e16d890fb52a666828a0cab3ca33e3a84156c331dbd85b534071b",
+  "probe_log_sha256": "4731d0a56540031665aa826d9eb664c346c99f36848ee73af4bd7d16c708142a",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T04:44:21+00:00",
+  "result": "pass"
+}

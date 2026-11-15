@@ -1,0 +1,15 @@
+{
+  "command": "experiment/playbook-completion/trace-replay: run.py capture 08 (under locks.sh iris, AUDITE); run.py check NN",
+  "experiment_head": "7b72fc52c878c31e143452a8cc8452cc4a6c198f",
+  "id": "tr-replay-08",
+  "kind": "trace",
+  "lane": "trace-replay",
+  "log": "$RUN_DIR/trace-replay/logs/tr-replay-08.log",
+  "log_bytes": 2443,
+  "log_sha256": "b536fd90ddfc0273b9a76f1bdd115fc1ee436eda36e3fb4fd9922e11dd26b5fc",
+  "observes": "AUDITE traces txn (6 steps, 292 records) and readonly (5 steps, 64 records) replayed through m08 txn and readonly (breadth-b, SQL path, as built): 24 actions all enabled and matching, replays equal the engine; F-0805 (a duplicate literal-endpoint CREATE fails the whole query, steps 0 and 2) and F-0806 (the error says earlier steps are written, none is) reproduced, ATOMIC and CALLER held; the read-only invariant violated by an AQL write in read-only use and a dotted TXN_BEGIN raising TLevel (F-0814, F-0815 reproduced); reviewed designs diverge at the finding steps",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T12:40:13+00:00",
+  "result": "pass"
+}

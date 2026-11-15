@@ -1,0 +1,17 @@
+{
+  "command": "locks.sh iris timeout 600 python experiment/playbook-completion/writesets/live/ws_probes.py sql-insert gap-marker (AUDITB)",
+  "experiment_head": "d77620a9333a7eb5b62ca9b8c92144a6aaf74d2b",
+  "finding": "F-C1150",
+  "id": "ws-live-sql-insert-wedge",
+  "kind": "live",
+  "lane": "writesets",
+  "log": "$RUN_DIR/writesets/sql-insert.json",
+  "log_bytes": 2022,
+  "log_sha256": "efb01c6fad9855436f82e23fd251adca68110d8405c91f3c3559a17b56fdeace",
+  "namespace": "AUDITB",
+  "observes": "Same guard as ws-live-sql-guard (INSERT of seq 2 refused -119 SeqIdx, UPDATE refused -132 trigger), then an SQL INSERT of a row with seq 4 = head+1 (all required columns) is accepted (no INSERT trigger); the next engine.ledger.commit fails LedgerInconsistencyError \"revision row save failed: ERROR #5805 ID key not unique ... ^Graph.KG.LedgerRevisionD(4) exists\"; verify() still equal.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T11:46:13+00:00",
+  "result": "fail"
+}

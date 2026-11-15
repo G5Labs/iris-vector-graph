@@ -1,0 +1,20 @@
+{
+ "doc": "F-0208: engine E1 caches multigraph mode on; E2 turns it off; E1's next Cypher CREATE of the same triple still\n    writes MAX(ekey)+1, so the mode-off graph holds two rows of one triple.",
+ "id": "p0208_stale_mode_cache",
+ "log": "$RUN_DIR/breadth-a/live/02-all-20261113T224011.log",
+ "module": "02",
+ "observed": {
+  "e1_cached_after": true,
+  "e1_cached_multi": true,
+  "rows": [
+   0,
+   1
+  ],
+  "server_mode_after_e2_off": "0"
+ },
+ "oracle": "mode off => at most one row per triple, whichever engine writes (spec 234 FR-002)",
+ "reproduced": true,
+ "seconds": 0.26,
+ "started": "2026-11-13T22:40:14",
+ "verdict": "stale cache wrote a parallel edge into a mode-off graph"
+}

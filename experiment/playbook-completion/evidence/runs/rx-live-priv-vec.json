@@ -1,0 +1,15 @@
+{
+  "command": "RX_PRIV_TAG=r3 RX_PRIV_SCENARIOS=VEC-X1.16-r2 bash experiment/playbook-completion/refusals/priv/run_priv.sh",
+  "experiment_head": "a9b4288fcf7a2e7c55e00c22b709ea5fe61a5c5c",
+  "id": "rx-live-priv-vec",
+  "kind": "live",
+  "lane": "refusals",
+  "log": "$RUN_DIR/refusals/priv/results-r3.json",
+  "log_bytes": 19086,
+  "log_sha256": "92475eebe7faef83c9d46f61ff05b087ab3ae01436133e44af35e182156e896b",
+  "observes": "VEC-X1.16 as IVGAUDIT_RO in AUDITE (enabled 2026-11-14T15:33:36Z, disabled 15:33:38Z; role %DB_%DEFAULT:RW for the window only, restored to R; SELECT on every Graph_KG table but embedding_registry, INSERT/UPDATE/DELETE on kg_NodeEmbeddings and on rxp-m1's routed table kg_emb_98033a63c948f288, EXECUTE on the schema; all revoked AS \"_SYSTEM\", CheckPrivilege 0). (a) fresh engine, routed model rxp-m1, and (b) the default pair: store_embedding refused with SQLCODE -99 raised by the route lookup (frames embeddings.py:973 store_embedding -> 778 _route_for_write -> 420 _read_route), 0 journal records. (c) SELECT on the registry granted, one write of rxp-m1 (route cached, 30 s TTL), SELECT revoked (CheckPrivilege 0; the reader's own registry SELECT now -99), a second store_embedding of rxp-m1 on the same engine returned True and wrote the row (journal: net change in Graph_KG.kg_emb_98033a63c948f288): the registry is there and cannot be read, and the write is not refused, because get_embedding_identity answers None on the read error (F-0601 reproduced live). An earlier attempt r2 (15:33:20-15:33:22Z) stopped at (c) on a harness error (nodes rxp:v4/v5 not seeded) and is not registered; its (a)/(b) agree.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T15:34:18+00:00",
+  "result": "fail"
+}

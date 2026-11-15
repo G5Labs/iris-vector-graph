@@ -1,0 +1,548 @@
+{
+ "module": "18",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "entries": [
+  {
+   "entry": "IRISGraphEngine.save_snapshot",
+   "role": "reader",
+   "source": "iris_vector_graph/_engine/snapshot.py:797-1048",
+   "reads": [
+    "sql:Graph_KG.nodes",
+    "sql:Graph_KG.rdf_edges",
+    "sql:Graph_KG.rdf_labels",
+    "sql:Graph_KG.rdf_props",
+    "sql:Graph_KG.rdf_reifications",
+    "sql:Graph_KG.docs",
+    "sql:Graph_KG.embedding_registry",
+    "sql:Graph_KG.fhir_unresolved",
+    "sql:Graph_KG.fhir_definitions",
+    "sql:Graph_KG.fhir_canonical_refs",
+    "sql:Graph_KG.fhir_graphs",
+    "sql:Graph_KG.code_crosswalk",
+    "sql:Graph_KG.rdf_namespaces",
+    "sql:Graph_KG.table_mappings",
+    "sql:Graph_KG.relationship_mappings",
+    "sql:Graph_KG.fhir_bridges",
+    "sql:Graph_KG.kg_NodeEmbeddings",
+    "sql:Graph_KG.kg_EdgeEmbeddings",
+    "sql:Graph_KG.kg_emb_<route>",
+    "global:^KG(\"out\")",
+    "global:^KG(\"in\")",
+    "global:^KG(\"deg2p\")",
+    "global:^KG(\"deg2p_exact\")",
+    "global:^KG(\"tout\")",
+    "global:^KG(\"tin\")",
+    "global:^KG(\"bucket\")",
+    "global:^KG(\"tagg\")",
+    "global:^KG(\"edgeprop\")",
+    "global:^KG(\"tlast\")",
+    "global:^KG(\"label\")",
+    "global:^KG(\"prop\")",
+    "global:^KG(\"labelset\")",
+    "global:^BM25Idx",
+    "global:^IVF",
+    "global:^PLAID",
+    "global:^VecIdx",
+    "global:^NKG",
+    "global:^IVG.Ledger",
+    "global:^Graph.KG.LedgerRevisionD",
+    "global:^Graph.KG.LedgerRevisionI",
+    "global:^Graph.KG.LedgerStatsD",
+    "global:^IVG.GraphMode",
+    "global:^IVG.TemporalStructural"
+   ],
+   "writes": [
+    "file: the ZIP archive at path (outside IRIS)"
+   ],
+   "transaction": "none: one SELECT * per table and a nextSubscript/get walk per global, in sequence, no transaction, no lock (uncommitted reads)",
+   "locks": [],
+   "claims_atomic": {
+    "claims": false,
+    "source": "snapshot.py:803 'reads only'; no consistency claim (USER_GUIDE.md:1151-1153)"
+   },
+   "journal": {
+    "run": "c18-live-save-footprint",
+    "stores_written": [],
+    "records": 0,
+    "match": true,
+    "mismatch": ""
+   }
+  },
+  {
+   "entry": "IRISGraphEngine.snapshot_info",
+   "role": "reader",
+   "source": "iris_vector_graph/_engine/snapshot.py:1050-1074",
+   "reads": [
+    "file: metadata.json of the archive"
+   ],
+   "writes": [],
+   "transaction": "none (no connection)",
+   "locks": [],
+   "claims_atomic": {
+    "claims": false,
+    "source": "snapshot.py:1052"
+   },
+   "journal": null
+  },
+  {
+   "entry": "IRISGraphEngine.restore_snapshot(merge=False)",
+   "role": "writer",
+   "source": "iris_vector_graph/_engine/snapshot.py:1076-1610; iris_src/src/Graph/KG/Eraser.cls:709-850",
+   "reads": [
+    "file: archive",
+    "sql:Graph_KG.embedding_registry",
+    "global:^NKG(\"$meta\",\"version\")",
+    "global:^KG(\"__version\")",
+    "$TLEVEL (refuse_in_caller_transaction)",
+    "ledger meta (strict guard)"
+   ],
+   "writes": [
+    "sql:Graph_KG.nodes",
+    "sql:Graph_KG.rdf_edges",
+    "sql:Graph_KG.rdf_labels",
+    "sql:Graph_KG.rdf_props",
+    "sql:Graph_KG.rdf_reifications",
+    "sql:Graph_KG.docs",
+    "sql:Graph_KG.embedding_registry",
+    "sql:Graph_KG.fhir_unresolved",
+    "sql:Graph_KG.fhir_definitions",
+    "sql:Graph_KG.fhir_canonical_refs",
+    "sql:Graph_KG.fhir_graphs",
+    "sql:Graph_KG.code_crosswalk",
+    "sql:Graph_KG.rdf_namespaces",
+    "sql:Graph_KG.table_mappings",
+    "sql:Graph_KG.relationship_mappings",
+    "sql:Graph_KG.fhir_bridges",
+    "sql:Graph_KG.kg_NodeEmbeddings",
+    "sql:Graph_KG.kg_NodeEmbeddings_optimized",
+    "sql:Graph_KG.kg_EdgeEmbeddings",
+    "sql:Graph_KG.kg_emb_<route> (DDL + rows)",
+    "sql:Graph_KG.embedding_route_state",
+    "global:^KG",
+    "global:^NKG",
+    "global:^BM25Idx",
+    "global:^IVF",
+    "global:^PLAID",
+    "global:^VecIdx",
+    "global:^IVG.Ledger",
+    "global:^Graph.KG.LedgerRevisionD",
+    "global:^Graph.KG.LedgerRevisionI",
+    "global:^Graph.KG.LedgerStatsD",
+    "global:^IVG.GraphMode",
+    "global:^IVG.TemporalStructural",
+    "global:^ArnoKG",
+    "global:^IVG.AlgoCache",
+    "global:^ArnoAccel",
+    "sql:Graph_KG.ledger_revisions",
+    "sql:Graph_KG.ledger_stats"
+   ],
+   "transaction": "Eraser.EraseAll in one TSTART..TCOMMIT (routed tables dropped after its commit); then each table's INSERTs with conn.commit() after the table (autocommit connection: one commit per statement); globals set node by node over the Native API, no transaction; version counters last",
+   "locks": [
+    "none (no LOCK; the ledger head lock is not taken)"
+   ],
+   "claims_atomic": {
+    "claims": false,
+    "source": "SNP-T3.1, snapshot.py:1086-1094 docstring: partial on failure"
+   },
+   "journal": {
+    "run": "c18-live-restore-footprint",
+    "stores_written": [
+     "global:^KG",
+     "global:^NKG",
+     "sql:Graph_KG.embedding_registry",
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_edges",
+     "sql:Graph_KG.rdf_labels",
+     "sql:Graph_KG.rdf_props"
+    ],
+    "stores_written_in_txn": [
+     "global:^KG",
+     "global:^NKG",
+     "sql:Graph_KG.embedding_registry",
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_edges",
+     "sql:Graph_KG.rdf_labels",
+     "sql:Graph_KG.rdf_props"
+    ],
+    "stores_written_outside_any_txn": [
+     "global:^KG",
+     "global:^NKG"
+    ],
+    "outermost_transactions": 14,
+    "records": 332,
+    "undeclared_writes": [],
+    "match": true,
+    "mismatch": ""
+   }
+  },
+  {
+   "entry": "IRISGraphEngine.restore_snapshot(merge=True)",
+   "role": "writer",
+   "source": "iris_vector_graph/_engine/snapshot.py:1270-1298, 1341-1350, 1510-1552, 1654-1692",
+   "reads": [
+    "file: archive",
+    "each target table (NOT EXISTS guard)"
+   ],
+   "writes": [
+    "sql:Graph_KG.nodes",
+    "sql:Graph_KG.rdf_edges",
+    "sql:Graph_KG.rdf_labels",
+    "sql:Graph_KG.rdf_props",
+    "sql:Graph_KG.rdf_reifications",
+    "sql:Graph_KG.docs",
+    "sql:Graph_KG.embedding_registry",
+    "sql:Graph_KG.fhir_unresolved",
+    "sql:Graph_KG.fhir_definitions",
+    "sql:Graph_KG.fhir_canonical_refs",
+    "sql:Graph_KG.fhir_graphs",
+    "sql:Graph_KG.code_crosswalk",
+    "sql:Graph_KG.rdf_namespaces",
+    "sql:Graph_KG.table_mappings",
+    "sql:Graph_KG.relationship_mappings",
+    "sql:Graph_KG.fhir_bridges",
+    "sql:Graph_KG.kg_NodeEmbeddings",
+    "sql:Graph_KG.kg_NodeEmbeddings_optimized",
+    "sql:Graph_KG.kg_EdgeEmbeddings",
+    "sql:Graph_KG.kg_emb_<route> (DDL + rows)",
+    "sql:Graph_KG.embedding_route_state",
+    "global:^KG",
+    "global:^NKG",
+    "global:^BM25Idx",
+    "global:^IVF",
+    "global:^PLAID",
+    "global:^VecIdx",
+    "global:^IVG.GraphMode",
+    "global:^IVG.TemporalStructural",
+    "global:^ArnoKG",
+    "global:^IVG.AlgoCache",
+    "global:^ArnoAccel",
+    "sql:Graph_KG.ledger_revisions",
+    "sql:Graph_KG.ledger_stats",
+    "global:^IVG.Ledger (if archived)"
+   ],
+   "transaction": "no erase; per statement (autocommit); globals set over the live nodes",
+   "locks": [
+    "none"
+   ],
+   "claims_atomic": {
+    "claims": false,
+    "source": "snapshot.py:1081-1085"
+   },
+   "journal": {
+    "run": "c18-live-restore-footprint",
+    "stores_written": [
+     "global:^KG",
+     "global:^NKG"
+    ],
+    "stores_written_in_txn": [],
+    "stores_written_outside_any_txn": [
+     "global:^KG",
+     "global:^NKG"
+    ],
+    "outermost_transactions": 0,
+    "records": 16,
+    "undeclared_writes": [],
+    "match": true,
+    "mismatch": ""
+   }
+  },
+  {
+   "entry": "IRISGraphEngine.restore_snapshot(merge=False) over an enabled ledger",
+   "role": "writer",
+   "source": "iris_vector_graph/_engine/snapshot.py:1554-1588; Eraser.cls:806-812",
+   "reads": [
+    "file: archive"
+   ],
+   "writes": [
+    "sql:Graph_KG.nodes",
+    "sql:Graph_KG.rdf_edges",
+    "sql:Graph_KG.rdf_labels",
+    "sql:Graph_KG.rdf_props",
+    "sql:Graph_KG.rdf_reifications",
+    "sql:Graph_KG.docs",
+    "sql:Graph_KG.embedding_registry",
+    "sql:Graph_KG.fhir_unresolved",
+    "sql:Graph_KG.fhir_definitions",
+    "sql:Graph_KG.fhir_canonical_refs",
+    "sql:Graph_KG.fhir_graphs",
+    "sql:Graph_KG.code_crosswalk",
+    "sql:Graph_KG.rdf_namespaces",
+    "sql:Graph_KG.table_mappings",
+    "sql:Graph_KG.relationship_mappings",
+    "sql:Graph_KG.fhir_bridges",
+    "sql:Graph_KG.kg_NodeEmbeddings",
+    "sql:Graph_KG.kg_NodeEmbeddings_optimized",
+    "sql:Graph_KG.kg_EdgeEmbeddings",
+    "sql:Graph_KG.kg_emb_<route> (DDL + rows)",
+    "sql:Graph_KG.embedding_route_state",
+    "global:^KG",
+    "global:^NKG",
+    "global:^BM25Idx",
+    "global:^IVF",
+    "global:^PLAID",
+    "global:^VecIdx",
+    "global:^IVG.Ledger",
+    "global:^Graph.KG.LedgerRevisionD",
+    "global:^Graph.KG.LedgerRevisionI",
+    "global:^Graph.KG.LedgerStatsD",
+    "global:^IVG.GraphMode",
+    "global:^IVG.TemporalStructural",
+    "global:^ArnoKG",
+    "global:^IVG.AlgoCache",
+    "global:^ArnoAccel",
+    "sql:Graph_KG.ledger_revisions",
+    "sql:Graph_KG.ledger_stats"
+   ],
+   "transaction": "as above; the ledger globals and the ledger classes' storage are set node by node outside any transaction and nothing of the live ledger is killed but stmt/tuple",
+   "locks": [
+    "none: the ledger head lock is not taken"
+   ],
+   "claims_atomic": {
+    "claims": false,
+    "source": "SNP-B3.4"
+   },
+   "journal": {
+    "run": "c18-live-ledger-overlay",
+    "stores_written": [
+     "global:^IVG.Ledger",
+     "global:^KG",
+     "global:^NKG",
+     "sql:Graph_KG.ledger_revisions",
+     "sql:Graph_KG.ledger_stats",
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_labels"
+    ],
+    "stores_written_in_txn": [
+     "global:^KG",
+     "global:^NKG",
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_labels"
+    ],
+    "stores_written_outside_any_txn": [
+     "global:^IVG.Ledger",
+     "global:^KG",
+     "global:^NKG",
+     "sql:Graph_KG.ledger_revisions",
+     "sql:Graph_KG.ledger_stats"
+    ],
+    "outermost_transactions": 3,
+    "records": 86,
+    "undeclared_writes": [],
+    "match": true,
+    "mismatch": "ledger storage written outside any transaction and without the head lock (Ledger.cls owns it)"
+   }
+  },
+  {
+   "entry": "IRISGraphEngine.restore_snapshot refused (strict ledger / caller transaction)",
+   "role": "refusal",
+   "source": "iris_vector_graph/_engine/snapshot.py:1095-1102; iris_vector_graph/ledger/guard.py:70-80",
+   "reads": [
+    "ledger meta",
+    "$TLEVEL"
+   ],
+   "writes": [
+    "sql:Graph_KG.ledger_stats (rej_strict_block counter, strict refusal only)"
+   ],
+   "transaction": "the counter bump is its own transaction",
+   "locks": [],
+   "claims_atomic": {
+    "claims": false,
+    "source": "SNP-X2.1, SNP-X2.2"
+   },
+   "journal": {
+    "run": "c18-live-refusals",
+    "stores_written": [
+     "sql:Graph_KG.ledger_stats"
+    ],
+    "caller_txn_records": 0,
+    "match": true,
+    "mismatch": "",
+    "note": "the strict refusal's only write is the rejection counter (by design); the caller-transaction refusal writes nothing"
+   }
+  },
+  {
+   "entry": "POST /admin/snapshot",
+   "role": "reader",
+   "source": "iris_vector_graph/cypher_api.py:668-678",
+   "reads": [
+    "sql:Graph_KG.nodes",
+    "sql:Graph_KG.rdf_edges",
+    "sql:Graph_KG.rdf_labels",
+    "sql:Graph_KG.rdf_props",
+    "sql:Graph_KG.rdf_reifications",
+    "sql:Graph_KG.docs",
+    "sql:Graph_KG.embedding_registry",
+    "sql:Graph_KG.fhir_unresolved",
+    "sql:Graph_KG.fhir_definitions",
+    "sql:Graph_KG.fhir_canonical_refs",
+    "sql:Graph_KG.fhir_graphs",
+    "sql:Graph_KG.code_crosswalk",
+    "sql:Graph_KG.rdf_namespaces",
+    "sql:Graph_KG.table_mappings",
+    "sql:Graph_KG.relationship_mappings",
+    "sql:Graph_KG.fhir_bridges",
+    "sql:Graph_KG.kg_NodeEmbeddings",
+    "sql:Graph_KG.kg_EdgeEmbeddings",
+    "sql:Graph_KG.kg_emb_<route>",
+    "global:^KG(\"out\")",
+    "global:^KG(\"in\")",
+    "global:^KG(\"deg2p\")",
+    "global:^KG(\"deg2p_exact\")",
+    "global:^KG(\"tout\")",
+    "global:^KG(\"tin\")",
+    "global:^KG(\"bucket\")",
+    "global:^KG(\"tagg\")",
+    "global:^KG(\"edgeprop\")",
+    "global:^KG(\"tlast\")",
+    "global:^KG(\"label\")",
+    "global:^KG(\"prop\")",
+    "global:^KG(\"labelset\")",
+    "global:^BM25Idx",
+    "global:^IVF",
+    "global:^PLAID",
+    "global:^VecIdx",
+    "global:^NKG",
+    "global:^IVG.Ledger",
+    "global:^Graph.KG.LedgerRevisionD",
+    "global:^Graph.KG.LedgerRevisionI",
+    "global:^Graph.KG.LedgerStatsD",
+    "global:^IVG.GraphMode",
+    "global:^IVG.TemporalStructural"
+   ],
+   "writes": [
+    "file: $IVG_SNAPSHOT_DIR/ivg_snapshot_<epoch second>.snapshot (overwritten when it exists)"
+   ],
+   "transaction": "as save_snapshot, under the server's _engine_lock (Python RLock, one process)",
+   "locks": [
+    "_engine_lock (in-process)"
+   ],
+   "claims_atomic": {
+    "claims": false,
+    "source": "cypher_api.py:668-678"
+   },
+   "journal": {
+    "run": "c18-live-http-endpoint",
+    "match": true,
+    "mismatch": "",
+    "note": "file effect observed: same path twice"
+   }
+  },
+  {
+   "entry": "Graph.KG.Snapshot.NodeValueJSON",
+   "role": "reader",
+   "source": "iris_src/src/Graph/KG/Snapshot.cls:75-82",
+   "reads": [
+    "global:^IVF",
+    "global:^PLAID",
+    "global:^VecIdx"
+   ],
+   "writes": [],
+   "transaction": "none",
+   "locks": [],
+   "claims_atomic": {
+    "claims": false,
+    "source": ""
+   },
+   "journal": null
+  },
+  {
+   "entry": "Graph.KG.Snapshot.SetNodeJSON",
+   "role": "writer",
+   "source": "iris_src/src/Graph/KG/Snapshot.cls:84-89, 93-106",
+   "reads": [],
+   "writes": [
+    "global:^IVF",
+    "global:^PLAID",
+    "global:^VecIdx"
+   ],
+   "transaction": "none (one SET per call)",
+   "locks": [],
+   "claims_atomic": {
+    "claims": false,
+    "source": "NodeRef refuses other globals (:95-99)"
+   },
+   "journal": null
+  },
+  {
+   "entry": "Graph.KG.Snapshot.ImportGlobals",
+   "role": "writer",
+   "source": "iris_src/src/Graph/KG/Snapshot.cls:24-35",
+   "reads": [
+    "server directory *.gof"
+   ],
+   "writes": [
+    "any global or item the files hold ($System.OBJ.Load)"
+   ],
+   "transaction": "none",
+   "locks": [],
+   "claims_atomic": {
+    "claims": false,
+    "source": ""
+   },
+   "journal": {
+    "run": "c18-live-file-helpers",
+    "note": "called on a missing directory only: {imported:0}",
+    "match": true,
+    "mismatch": ""
+   }
+  },
+  {
+   "entry": "Graph.KG.Snapshot.ExportGlobals",
+   "role": "writer (server files)",
+   "source": "iris_src/src/Graph/KG/Snapshot.cls:4-22",
+   "reads": [
+    "any global named in the JSON list"
+   ],
+   "writes": [
+    "server directory (CreateDirectoryChain) and <name>.gof files"
+   ],
+   "transaction": "none",
+   "locks": [],
+   "claims_atomic": {
+    "claims": false,
+    "source": ""
+   },
+   "journal": null
+  },
+  {
+   "entry": "Graph.KG.Snapshot.ReadFileChunk / GetFileSize / FileExists",
+   "role": "reader (server files)",
+   "source": "iris_src/src/Graph/KG/Snapshot.cls:37-47, 59-62, 70-73",
+   "reads": [
+    "any server file the IRIS process can read"
+   ],
+   "writes": [],
+   "transaction": "none",
+   "locks": [],
+   "claims_atomic": {
+    "claims": false,
+    "source": ""
+   },
+   "journal": {
+    "run": "c18-live-file-helpers",
+    "note": "read /etc/hostname over the Native API",
+    "match": true,
+    "mismatch": ""
+   }
+  },
+  {
+   "entry": "Graph.KG.Snapshot.WriteFileChunk / DeleteDir",
+   "role": "writer (server files)",
+   "source": "iris_src/src/Graph/KG/Snapshot.cls:49-57, 64-68",
+   "reads": [],
+   "writes": [
+    "any server file / directory tree the IRIS process can write or remove"
+   ],
+   "transaction": "none",
+   "locks": [],
+   "claims_atomic": {
+    "claims": false,
+    "source": ""
+   },
+   "journal": null
+  }
+ ],
+ "validated": 5,
+ "mismatches": [],
+ "notes": "Store names: sql:<schema.table> from the namespace's compiled storage (traces/journal.py storage_map), global:^Root otherwise. Journal classification per live/breadth-c/jcheck.py."
+}

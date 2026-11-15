@@ -1,0 +1,15 @@
+{
+  "command": "python experiment/playbook-completion/product-gates/check_failure_controls.py --self-test && python experiment/playbook-completion/product-gates/check_failure_controls.py (over product-gates/FAILURE-CONTROLS.md, snapshot sha256 699ed6edb61daea5... in $RUN_DIR/product-gates/failure-controls/FAILURE-CONTROLS.r2.snapshot.md)",
+  "experiment_head": "e7cf1457e9d16c76fa772c2deeb94d31296c62b7",
+  "id": "pg-failure-controls-r2",
+  "kind": "check",
+  "lane": "product-gates",
+  "log": "$RUN_DIR/product-gates/failure-controls/check-failure-controls-r2.log",
+  "log_bytes": 2717,
+  "log_sha256": "2f13350a2766af9b2c00d6616a019003f2abbc087f247d801c3eee81ba2dc74e",
+  "observes": "Gate 3.7-failure-controls inventory after the follow-up (supersedes the counts of pg-failure-controls, which stays as recorded): 20 failure-scenario rows; 17 with a registered negative control (the 12 of r1 plus pg-fc-s5b-control, pg-fc-s13-control, pg-fc-s15-control, pg-fc-s16-control, pg-fc-s17-control, each a live run whose oracle passes with the defect's precondition absent and flags with it present); 2 covered by another row's controlled oracle (S4b, S8); 0 without; 1 blocked-access: S6, licence refusal at product level, needs exclusive use of the container's 8 shared licence units (the orchestrator will run it when the container is exclusive). Every cited run id exists in evidence/runs (0 problems); checker self-test passes. Result blocked: the only open part of the gate is S6's dependency.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T12:55:50+00:00",
+  "result": "blocked"
+}

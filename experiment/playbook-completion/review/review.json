@@ -1,0 +1,256 @@
+{
+ "review": "independent reviewer, playbook §3.8 / §5c",
+ "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "audit_head": "44636dd1",
+ "date": "2026-11-14",
+ "decision": "no sign-off",
+ "evidence_audit": {
+  "registry_records": 377,
+  "sha_ok": 371,
+  "sha_mismatch": 6,
+  "read_against_observes": 38,
+  "match": 20,
+  "partial": 16,
+  "mismatch_content": 2,
+  "mismatch_total": 8
+ },
+ "findings": [
+  {
+   "id": "R-01",
+   "angle": [
+    6,
+    1
+   ],
+   "severity": "S1",
+   "confidence": "medium (legacy rows: inspected, needs probe); high (receipt text, snapshots, quarantine: inspected)",
+   "claim": "A redacted tenant's data stays in IVG-held copies that neither the redaction receipt (out_of_reach lists exports, journals, backups only) nor any finding names: legacy Graph_KG.ledger_revisions rows left by copy_ledger_history after a 4.5.x->4.6 upgrade to a non-default IVG Schema (redaction clears only the schema's table), IVG snapshot archives (also writable on demand via POST /admin/snapshot by any API-key holder) that a restore brings back, and embedding_quarantine rows.",
+   "evidence": [
+    "iris_src/src/Graph/KG/LedgerRedact.cls:355,369,506-508",
+    "iris_vector_graph/_engine/legacy.py:606-646",
+    "iris_vector_graph/_engine/class_deploy.py:109-119",
+    "iris_vector_graph/_engine/snapshot.py:399-404,1035,1679",
+    "iris_vector_graph/cypher_api.py:668-678",
+    "iris_src/src/Graph/KG/Eraser.cls:300-302,756-758",
+    "registry:c18-live-ledger-overlay",
+    "specs/256-ledger-tenant-redaction/spec.md US1, SC-001, FR-008",
+    "experiment/playbook-completion/ontology/01-install-schema.md INS-B6.12"
+   ],
+   "recommendation": "Record as finding(s) against FR-008/SC-001; probe the upgrade path live; add the three copies as reach obligations in the matrix."
+  },
+  {
+   "id": "R-02",
+   "angle": [
+    2
+   ],
+   "severity": "S1",
+   "confidence": "high (inspected, re-checked by grep); inferred items marked",
+   "claim": "The lexical writer census misses 115 Python content writes with formatted table names (Cypher translator 78, nodes_edges 23, snapshot restore, schema reification 5, temporal mirror 3, BulkLoader 1), 23 ObjectScript writes with concatenated table names (LedgerApply 19), and writers of the ledger itself outside the ledger classes: restore_snapshot (variable-name global writes of all of ^IVG.Ledger and LedgerRevision storage, bypassing the immutability trigger, including the marker of a mid-run archive), Snapshot.ImportGlobals, Ledger.Disable/SetStrict (^IVG.Ledger('meta') without the head lock), plain SQL INSERT into ledger_revisions (triggers cover UPDATE/DELETE only), PropWrite's direct storage-global write. The 'bypass writer' grouping (content-only writers) does not cover these; restores during a run are unmodelled. Readers: SQL ledger_records never checks the marker; history() does not mark redacted revisions (FR-003); verify(adopt=True) checks the marker once before a later adoption commit (inferred race re-introducing erased values after a complete receipt).",
+   "evidence": [
+    "experiment/playbook-completion/tools/writer_census.py:28-31",
+    "$RUN_DIR/checks/writer-census.json",
+    "iris_vector_graph/_engine/snapshot.py:1654-1692",
+    "registry:ib-HD1801-merge-restore (log line 24 restored_globals)",
+    "iris_src/src/Graph/KG/Snapshot.cls:24-35",
+    "iris_src/src/Graph/KG/Ledger.cls:331-385",
+    "iris_src/src/Graph/KG/LedgerRevision.cls:87,104",
+    "iris_src/src/Graph/KG/PropWrite.cls:55",
+    "iris_src/src/Graph/KG/SqlProcs.cls:187-190,206-224",
+    "iris_src/src/Graph/KG/Ledger.cls:613-646",
+    "iris_vector_graph/ledger/replay.py:252-279,811-812,857",
+    "iris_vector_graph/ledger/client.py:40-70,687-739",
+    "experiment/playbook-completion/models/core/MODELS.md:282-297,343-344"
+   ],
+   "recommendation": "Make the census see formatted/concatenated SQL and variable-name global writes (with planted self-tests) or derive writers from journal footprints of every public entry point; give the ledger writers their own (invariant, writer) obligations; model or record restore during a run."
+  },
+  {
+   "id": "R-03",
+   "angle": [
+    6,
+    3
+   ],
+   "severity": "S2",
+   "confidence": "high (inspected; mechanism observed live in the original native-commit_in_unmarked_window)",
+   "claim": "Any non-ledger writer (POST /admin/load, Cypher updates; strict mode is client-side and there is no graph-scoped credential) can keep a marked target live, so Final refuses target_live indefinitely; while the marker exists every ledger reader and verify() refuse for all tenants and no other target can be redacted; there is no abandon. Not recorded as a finding; the models assume writers become quiet.",
+   "evidence": [
+    "iris_vector_graph/cypher_api.py:628-643",
+    "iris_vector_graph/_api_key.py",
+    "iris_vector_graph/api_auth.py",
+    "iris_src/src/Graph/KG/LedgerRedact.cls:202-205",
+    "docs/adr/0013-redaction-removes-content-from-history.md Batches",
+    "experiment/playbook-completion/ontology/13-redaction.md RED-B8.2",
+    "experiment/playbook-completion/models/core/MODELS.md:302,310"
+   ],
+   "recommendation": "Record as an availability finding for the erasure obligation; list 'no writer makes a marked target live' (P-C02) as a progress premise; maintainer question on abandonment and on per-graph credentials."
+  },
+  {
+   "id": "R-04",
+   "angle": [
+    1,
+    6
+   ],
+   "severity": "S2",
+   "confidence": "medium (inspected inference; never probed)",
+   "claim": "Temporal-only edges escape FR-005: Matches tombstones create_temporal_edge records, LiveRows counts only the four SQL content tables, a temporal-only predicate writes no structural row, and verify() drops temporal statements, so a live temporal-only edge's history can be tombstoned unnoticed. The audit lists it as open/inspected with no probe.",
+   "evidence": [
+    "iris_src/src/Graph/KG/LedgerRedact.cls:97-98,149-178",
+    "iris_src/src/Graph/KG/LedgerApply.cls:617-639",
+    "docs/adr/0015-temporal-structural-rows-opt-out.md",
+    "iris_vector_graph/ledger/replay.py:617-619,792-800",
+    "experiment/playbook-completion/models/core/MODELS.md:328-331"
+   ],
+   "recommendation": "Run one live probe (temporal-only predicate in a named graph, redact without erase); record the result."
+  },
+  {
+   "id": "R-05",
+   "angle": [
+    4
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "claim": "Model-level results are presented as product status: MATRIX.md has no level column (12 reviewed-model cells counted as closed; 3.3-controls, 3.7-explorers, 3.3-cost, 5-mutants-located carry no level at all); 3.3-model-check is 'failed' for 12-14 but 'closed' (12 cells) for 01-05, 09-11, 15-18 under the same as-built-violates pattern; 3.8-findings-disposed is closed for 16 modules without any fix or maintainer decision; PROOFS.md:152 says 'the pin's rescanning resume is safe'; completion ontology rows carry proved: tags (original submission's proofs) on product statements contradicted by the audit's own findings without citing them (RED-B8, RED-B8.1 vs F-C1303; RED-B4 vs F-1801; RPL-B1.1 vs F-1304).",
+   "evidence": [
+    "experiment/playbook-completion/matrix/MATRIX.md",
+    "experiment/playbook-completion/matrix/obligations.json cells[gate=3.3-model-check]",
+    "experiment/playbook-completion/matrix/orchestrator_status.json 3.8-findings-disposed",
+    "experiment/playbook-uplift/verification-playbook.txt §3.8 gate",
+    "experiment/playbook-completion/proofs/PROOFS.md:152",
+    "experiment/playbook-completion/ontology/13-redaction.md:108,112",
+    "experiment/playbook-completion/ontology/14-replay.md RPL-B1.1",
+    "experiment/playbook-completion/ontology/INDEX.md:10",
+    "registry:core-m3-as-built-F1801-keys"
+   ],
+   "recommendation": "Add level to MATRIX.md; unify 3.3-model-check semantics; reopen 3.8-findings-disposed; correct PROOFS.md:152; complete Q8b so no product statement carries an uncited contradicted proved: tag."
+  },
+  {
+   "id": "R-06",
+   "angle": [
+    3,
+    1
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "claim": "The proofs' safety rests on P-C02 (no bypass writes), P-C03 (one target predicate) and P-C04 (no erasure abort), all refuted at the pin by the audit's own evidence and removing exactly the S1 failure modes; progress rests on productive_fairness, which is not derived from PF-1..PF-4 (theorem_work_available is enabledness only); PF-1, PF-2, PF-4 are untested, PF-3 partly; 'Final is never refused' depends on P-C02, which the PF list omits; the progress-only control demonstrates D-1 only and D-2 (a lane design choice) has no control.",
+   "evidence": [
+    "experiment/playbook-completion/proofs/PROOFS.md §5, §7, §8, §11",
+    "experiment/playbook-completion/proofs/src/progress.rs:165,190-192",
+    "playbook-reference-actors/crates/actors/src/fairness.rs:22-24",
+    "registry:core-proofs-recheck-progress_rewind",
+    "experiment/playbook-completion/iris-contract/CONTRACT.md 'Outside the semantic subset'"
+   ],
+   "recommendation": "Show P-C02/03/04 as refuted at the pin on every proof-level closure; add P-C02 to the progress premises; add a D-2 progress-only control; map each PF premise to a test or a trust/premise inventory entry."
+  },
+  {
+   "id": "R-07",
+   "angle": [
+    5
+   ],
+   "severity": "S2",
+   "confidence": "high (mechanical)",
+   "claim": "QUEUE.md says every closed cell cites registered passing runs; 68 of 109 closed cells cite no run: evidence and 10 cite nothing; build_matrix.py checks only run:-prefixed refs; closed 3.3-model-check/3.3-L1 cells of modules 09-11 rest on 90 distinct (129 citations) unregistered breadth-B model results with only dev logs; 11/3.4-storage-order cites an incomplete run and 11/3.1-intent cites two failing probes.",
+   "evidence": [
+    "experiment/playbook-completion/QUEUE.md header",
+    "experiment/playbook-completion/matrix/build_matrix.py:125-133",
+    "experiment/playbook-completion/models/breadth-b/results/",
+    "$RUN_DIR/breadth-b/mc/07-dev.log..11-dev.log",
+    "registry:storage-order-scan (incomplete)",
+    "registry:ib-HD1101-namedonly, ib-HD1105-replay-reapplies (fail)"
+   ],
+   "recommendation": "Validate every evidence reference regardless of prefix against the registry and its result; register breadth-B model results from a scripted full run; make the QUEUE claim true or remove it."
+  },
+  {
+   "id": "R-08",
+   "angle": [
+    5
+   ],
+   "severity": "S3",
+   "confidence": "high (mechanical)",
+   "claim": "Evidence audit: 377 hashes recomputed, 6 mismatch (overwritten core-proof logs, disclosed; superseded note's time disagrees with mtimes); of 38 runs read against observes, 2 contradicted (trace-conformance-ledger 18 vs 17 transactions; writer-census 56/23/15/8 vs 31+25, 9 plans, 9 stores) and 16 partial; recheck logs lack the claimed counts (only unhashed JSON); result field means 'expectation met' for some defect reproductions (pass) and 'defect' for others (fail); no log records the pin; claimed namespaces absent from logs.",
+   "evidence": [
+    "review/REVIEW.md evidence-audit table",
+    "experiment/playbook-completion/incidents/superseded-logs.json",
+    "$RUN_DIR/traces/conf2/offline-check.log:15-24",
+    "$RUN_DIR/checks/writer-census.json:2-5",
+    "$RUN_DIR/core-proofs-recheck/baseline.log"
+   ],
+   "recommendation": "Fix per ratchet groups RC-E1..RC-E6; re-register proof runs with logs that carry their counts; normalise result semantics with a separate defect field."
+  },
+  {
+   "id": "R-09",
+   "angle": [
+    4
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "claim": "Trace conformance (closing 3.7-trace-replay for 12-14) is one sequential scenario with one target shape; its redaction rule checks soundness only (not completeness, liveness at tombstone time, Decision 2, idemRedacted or SC-001); the journal shows no reads, locks, process-private or ^IRIS.Temp globals and attributes background-job writes to another pid. It cannot distinguish the pin from the reviewed design on any recorded concurrency defect.",
+   "evidence": [
+    "experiment/playbook-completion/traces/conformance.py:202-262,327-343",
+    "registry:trace-conformance-ledger"
+   ],
+   "recommendation": "State the rule coverage and scenario shape in the cell; add completeness/liveness/Decision-2 rules and concurrent schedules before treating the cell as more than a happy-path check."
+  },
+  {
+   "id": "R-10",
+   "angle": [
+    1
+   ],
+   "severity": "S3",
+   "confidence": "high (inspected)",
+   "claim": "The redaction revision, the marker and InProgress() expose sha256(graph NUL match), an unsalted hash of the tenant's name, so a guessed tenant can be confirmed; spec 256 Decision 1 requires nothing from the target and ADR-0013 says nothing in it comes from the target. Spec 256 US2 ('nobody can recover the content from the digest') contradicts ADR-0013 Consequences. Neither conflict is recorded.",
+   "evidence": [
+    "iris_src/src/Graph/KG/LedgerRedact.cls:56-59,204,249,433",
+    "specs/256-ledger-tenant-redaction/spec.md US2, Decision 1",
+    "docs/adr/0013-redaction-removes-content-from-history.md Decision, Consequences"
+   ],
+   "recommendation": "Record two S3 intent conflicts with a maintainer question (salted or keyed digest for the target)."
+  },
+  {
+   "id": "R-11",
+   "angle": [
+    1
+   ],
+   "severity": "S3",
+   "confidence": "medium",
+   "claim": "48 of 61 decisions are Assumptions; 23 S1/S2 findings cite an Assumption HD and the matrix marks their gates failed (product defect); some rest on the assumption alone (F-0401, F-0503), and F-1201 cites ADR-0004 for the converse of the invariant ADR-0004 states (ERS-I3).",
+   "evidence": [
+    "experiment/playbook-completion/decisions.md",
+    "experiment/playbook-completion/findings/audit/04.json F-0401",
+    "experiment/playbook-completion/findings/audit/05.json F-0503",
+    "experiment/playbook-completion/findings/audit/12.json F-1201",
+    "experiment/playbook-completion/ontology/12-erasure.md:46",
+    "experiment/playbook-completion/CONVENTIONS.md outcome taxonomy"
+   ],
+   "recommendation": "Mark such findings conditional on the named HD (intent-undecided where no authority exists) and keep their gates open rather than failed; cite spec 213 for ERS-I3 if it supports it."
+  },
+  {
+   "id": "R-12",
+   "angle": [
+    1
+   ],
+   "severity": "S3",
+   "confidence": "high (disclosed by the audit)",
+   "claim": "The reviewed design is checked under concurrency only for graph-only targets on two named graphs, batch 1, EraseGraph only, lock timeouts as waits, no disable mid-run, no prefix targets, no EraseNodes/EraseEdges/EraseAll concurrency, no restore/snapshot during a run, verify as one cut, no temporal edges, no multi-node; so the reviewed design for the full ADR-0013 tenant procedure is not established even at model level.",
+   "evidence": [
+    "experiment/playbook-completion/models/core/MODELS.md:323-350",
+    "experiment/playbook-completion/proofs/PROOFS.md §11"
+   ],
+   "recommendation": "Carry these limits into the 3.3 closures' remaining notes; prioritise prefix targets under concurrency and restore during a run."
+  },
+  {
+   "id": "R-13",
+   "angle": [
+    5
+   ],
+   "severity": "S4",
+   "confidence": "high",
+   "claim": "Requested breadth-B incident-window reruns are not registered and the incident record does not name the affected AUDITB run; F-1201's evidence lists a run that did not reach the window; F-1302's live evidence is the original submission's (SHA verified against the original registry) not a completion id; live-lost-ack-commit is a re-evaluation after a legitimate oracle field fix whose original failing run is not registered.",
+   "evidence": [
+    "experiment/playbook-completion/incidents/IVG460SNAP.md",
+    "registry:live-erase-vs-commit-emptygraph",
+    "experiment/playbook-uplift/evidence/runs.json native-commit_in_unmarked_window",
+    "registry:live-lost-ack-commit",
+    "git show c407918c"
+   ],
+   "recommendation": "Register the reruns or record why none is needed; drop non-reproducing runs from reproduced-live evidence lists or label them context; register the original lost-ack run as fail with its oracle note."
+  }
+ ]
+}

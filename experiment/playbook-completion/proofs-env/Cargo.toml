@@ -1,0 +1,48 @@
+[package]
+name = "ivg-proofs-env"
+version = "0.1.0"
+edition = "2021"
+description = "Completion audit, lane proofs-env (proof debt D-7): the IRIS environment contract's clauses that the audit's proof crates rely on, as a Verus specification with its permitted-outcome structure; the proof crates' environment premises proved from it (or shown not implied); and exec functions verified against the specification, which the differential harness (harness/) runs on the registered contract rounds."
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+vstd = { version = "=0.0.0-2026-09-20-0158", features = ["std", "alloc"] }
+
+[patch.crates-io]
+verus_builtin_macros = { git = "file:///home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/playbook-reference-actors", rev = "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877" }
+
+[features]
+# Located controls. Each feature weakens exactly one contract clause in `validated()` (src/clauses.rs); every premise
+# theorem is stated for `validated()`, so the theorems that need the clause must fail at the lines marked
+# `// LOCATE <feature>` (their call of the clause's lemma), every other function must verify, and the control's
+# counterexample (src/cx.rs, always compiled) must verify. tools/run_proofs.py checks this.
+#@CONTROLS-BEGIN
+ctl_unlock_immediate = []   # clause E-LOCK-DEFER; mutant unlock-immediate-in-txn; counterexample cx_unlock_immediate
+ctl_stop_commits = []   # clause E-STOP; mutant stop-commits; counterexample cx_stop_commits
+ctl_stop_top_level_only = []   # clause E-STOP; mutant stop-rolls-back-top-level-only; counterexample cx_stop_top_level_only
+ctl_kill_not_logged = []   # clause E-GLOBALS; mutant kill-not-logged; counterexample cx_kill_not_logged
+ctl_dml_ignores_row_locks = []   # clause E-ROWLOCK; mutant dml-ignores-row-locks; counterexample cx_dml_ignores_row_locks
+ctl_row_lock_statement_only = []   # clause E-ROWLOCK; mutant row-lock-statement-only; counterexample cx_row_lock_statement_only
+ctl_insert_dup_waits = []   # clause E-UNIQUE; mutant insert-dup-waits; counterexample cx_insert_dup_waits
+ctl_freedom_wait_only = []   # clause Freedom; mutant freedom-waits-only; counterexample cx_freedom_wait_only
+ctl_no_dirty_reads = []   # clause E-VIS; mutant no-dirty-reads; counterexample cx_no_dirty_reads
+ctl_select_committed_only = []   # clause E-VIS; mutant sql-select-committed-only; counterexample cx_select_committed_only
+ctl_rollback_physical = []   # clause E-ROLLBACK-OTHER; mutant rollback-physical; counterexample cx_rollback_physical
+ctl_incr_rolled_back = []   # clause E-INCR; mutant incr-rolled-back; counterexample cx_incr_rolled_back
+ctl_rollback_one_undoes_all = []   # clause E-PARTIAL; mutant rollback-one-undoes-all; counterexample cx_rollback_one_undoes_all
+ctl_sql_commit_ends_all = []   # clause E-SQL-END; mutant sql-commit-ends-all; counterexample cx_sql_commit_ends_all
+ctl_lock_wait_never_granted = []   # clause E-LOCK-WAIT; mutant lock-wait-never-granted; counterexample cx_lock_wait_never_granted
+ctl_flat_lock_names = []   # clause E-LOCK-NAMES; mutant flat-lock-names; counterexample cx_flat_lock_names
+ctl_shared_conflicts_shared = []   # clause E-LOCK-MODES; mutant shared-conflicts-shared; counterexample cx_shared_conflicts_shared
+#@CONTROLS-END
+
+[package.metadata.verus]
+verify = true
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(verus_only)', 'cfg(verus_keep_ghost)', 'cfg(verus_keep_ghost_body)'] }
+
+[workspace]

@@ -1,0 +1,15 @@
+{
+  "command": "locks.sh iris timeout 2400 python3 experiment/playbook-completion/structural/reads/noninterference.py --modules 10,11,12,13,14,15,18 --out $RUN_DIR/structural/reads/r1-b.json",
+  "experiment_head": "d77620a9333a7eb5b62ca9b8c92144a6aaf74d2b",
+  "id": "st-live-reads-b",
+  "kind": "live",
+  "lane": "structural",
+  "log": "$RUN_DIR/structural/reads/r1-b.json",
+  "log_bytes": 106765,
+  "log_sha256": "3228e47a2024e98deb922f52ab9498ca32b1fc4646cc4d75727ab288da090699",
+  "observes": "AUDITD non-interference read oracle, 36 read actions: 10 19 hold, random_walk undecided (vacuous: no steps without the Arno library, F-1002); 11 4/4 hold (history by actor/correlation/source, idempotent replay); 12 2/2 hold (erase_graph, delete_nodes_by_prefix count and target rows); 13 redact(prefix=t1) receipt holds under other tenants and another tenant live in a named graph (the tenant ids live in a named graph refuse it, which LedgerRedact.cls:143-148 declares); 14 3/3 hold (get_revision, reconstruct, verify); 15 get_reifications changes when a node with the reifier id exists in another graph (new F-C1547) and get_kg_anchors answers an id that exists only in a named graph (F-1507), export_rdf/prov_export/validate_shacl hold; 18 save_snapshot reported changed under a scratch global but this is a harness artifact (nodes.created_at timestamps a second apart in sql/Graph_KG_nodes.ndjson), superseded by st-live-reads-c",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T11:50:47+00:00",
+  "result": "fail"
+}

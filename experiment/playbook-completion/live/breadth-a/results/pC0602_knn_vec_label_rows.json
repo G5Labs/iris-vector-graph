@@ -1,0 +1,23 @@
+{
+ "doc": "New candidate (storage-order sub-lane note): SQL kg_KNN_VEC LEFT JOINs rdf_labels with no DISTINCT, so with no\n    label filter a node with two labels fills two of the k places and pushes another node out (and kg_RRF_FUSE's vector\n    leg passes no filter). Oracle: kg_KNN_VEC is a k-nearest-nodes search (one row per node).",
+ "id": "pC0602_knn_vec_label_rows",
+ "log": "$RUN_DIR/breadth-a/live/06-p0614_embed_nodes_refusal_counted-p0616_selector_crosses_graphs_and_like-pC0602_knn_vec_label_rows-20261113T233234.log",
+ "module": "06",
+ "observed": {
+  "kg_KNN_VEC_k2": [
+   [
+    "bakn1233234",
+    1
+   ],
+   [
+    "bakn1233234",
+    1
+   ]
+  ]
+ },
+ "oracle": "k nearest nodes: each node at most once; with k=2 both a and b answer",
+ "reproduced": true,
+ "seconds": 0.32,
+ "started": "2026-11-13T23:32:36",
+ "verdict": "answer ['bakn1233234', 'bakn1233234'] (a twice, b pushed out)"
+}

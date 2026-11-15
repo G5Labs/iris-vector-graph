@@ -1,0 +1,15 @@
+{
+  "command": "flock -s -w 1800 $RUN_DIR/intent-b/auditib.lock timeout 600 python experiment/playbook-completion/intent/probes/lane-b/hd1703_capabilities.py",
+  "experiment_head": "c01a7ccd00b29670b521799344233fa4a814c925",
+  "id": "ib-HD1703-capabilities",
+  "kind": "probe",
+  "lane": "intent-b",
+  "log": "$RUN_DIR/intent-b/hd1703_capabilities.log",
+  "log_bytes": 1622,
+  "log_sha256": "6b4697e55bef2406b290def2cf356c1c1b0f587b5db907b284f39deed90f8970",
+  "observes": "Discriminates (a) deployment-aware vs (b) static catalogue. IRISGraphStore.capabilities() over a stub connection on which every statement fails (IVG_DISABLE_ARNO=1) still reports all 22 non-Arno keys True: (b) as built. On AUDITIB the engine's separate capabilities property (IRISCapabilities, documented as what the namespace has deployed) reports objectscript_deployed=True, kg_built=False, nkg_built=False while the store dict is all True: the product keeps the two facts apart, but the static dict is undocumented and gates routing (algorithms.py:1096-1100 etc.). Oracle = working assumption; no stated contract, so expected-violation.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-13T22:43:12+00:00",
+  "result": "expected-violation"
+}

@@ -1,0 +1,23 @@
+{
+  "check": "m10-routes-control-no-probe",
+  "command": "CARGO_TARGET_DIR=$RUN_DIR/target/breadth-b cargo build --release && bash experiment/playbook-completion/tools/locks.sh heavy timeout 1800 $RUN_DIR/target/breadth-b/release/breadth-b",
+  "design": "control",
+  "experiment_head": "f3fe3917466f7bae3e46f32f5b0644cfeaff87c8",
+  "full_log": "$RUN_DIR/breadth-b/mc/full-decisive-20261114T012246Z.log",
+  "full_log_sha256": "227f6720d9d86ed75cc8fa7fd71e2d9d31fd6f5ccd627843af4d51997edf4615",
+  "id": "b-mc-m10-routes-control-no-probe",
+  "kind": "control",
+  "lane": "breadth-b",
+  "log": "$RUN_DIR/breadth-b/mc/checks/m10-routes-control-no-probe.log",
+  "log_bytes": 943,
+  "log_sha256": "05debc233e8805de2caba585b07132c9e56bd6799ca81c120d2b88037bde75a0",
+  "module": "10",
+  "observes": "module 10 machine routes design control: expectation violation of 'every route answers the default graph's reference result (ALG-I1, ALG-I3, HD-1004)'; result met (found \"every route answers the default graph's reference result (ALG-I1, ALG-I3, HD-1004)\"); 75 states, 208 transitions, depth 3, exhaustive within the model's bounds; covers: control: route without the named-graph probe (caught only with a merged-scope library: P-1004 open)",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T01:23:54+00:00",
+  "result": "expected-violation",
+  "results": "experiment/playbook-completion/models/breadth-b/RESULTS.json",
+  "search": "exhaustive",
+  "states": "75"
+}

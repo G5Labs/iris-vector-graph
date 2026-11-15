@@ -1,0 +1,15 @@
+{
+  "command": "RX_PRIV_TAG=r1 bash experiment/playbook-completion/refusals/priv/run_priv.sh (one tools/locks.sh iris hold; password only as env var IVGAUDIT_PW; AUDITE reset by EraseAll/PurgeAll before and after)",
+  "experiment_head": "a9b4288fcf7a2e7c55e00c22b709ea5fe61a5c5c",
+  "id": "rx-live-priv",
+  "kind": "live",
+  "lane": "refusals",
+  "log": "$RUN_DIR/refusals/priv/results-r1.json",
+  "log_bytes": 50417,
+  "log_sha256": "da4af3c36556b9070af4dc76455e0abdf16dfe878821cef2b1c4de8915d4416e",
+  "observes": "As the disposable least-privilege user IVGAUDIT_RO in AUDITE (enabled 2026-11-14T15:31:49Z, disabled 15:31:56Z; per-scenario grants as SQL in AUDITE with grantor _SYSTEM, each revoked AS \"_SYSTEM\" and confirmed by CheckPrivilege 0; journal oracle control ok): 15 refusal cases, all hold with 0 journal records. INS-X10.7: EXECUTE ON SCHEMA Graph_KG only: CY_VLP_ENDS, kg_PPR, kg_DegreeCentrality, kg_SCC, MatchEdges, MatchEdgesAllGraphs, DijkstraPath refused 'SQLCODE=-99,%msg=User IVGAUDIT_RO lacks SELECT on Graph_KG.rdf_edges', kg_BM25 '... on Graph_KG.rdf_props' (8/8, wrapped in SQLCODE -149). ALG-B9.3: SELECT+EXECUTE on the schema, database at R: kg_GRAPH_WALK raised 'it writes a work area, ^ArnoKG(\"bfs_r\") ... needs the namespace's database resource at RW'. INS-X1.5: same grants: initialize_schema raised IVGSchemaError 'cannot create IVG's SQL objects in schema Graph_KG: user IVGAUDIT_RO does not hold the SQL privilege %CREATE_TABLE ... Nothing was created.' SNP-X1.3: SELECT on the 18 other Graph_KG tables, none on rdf_props: save_snapshot raised SnapshotReadError 'cannot read Graph_KG.rdf_props ... -99 ... No archive was written', no file in the target directory. OPS-X4.84: role without %DB_%DEFAULT (login still accepted): engine construction/_detect_capabilities and khop raised ClassesUnreadable naming /usr/irissys/mgr/audite/ (<PROTECT>); role resources restored. VEC-X1.16 (superseded by rx-live-priv-vec): with the database at RW, INSERT/UPDATE/DELETE on kg_NodeEmbeddings and no SELECT on embedding_registry, 2 store_embedding calls on a fresh engine were refused (-99). Final: user Enabled 0, role resources as before, 0 SQL privileges in AUDITE, login Access Denied, CheckPrivilege 0.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T15:34:18+00:00",
+  "result": "pass"
+}

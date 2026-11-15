@@ -1,0 +1,120 @@
+{
+ "lane": "product-gates (steer 7, Q17e items 3.5-lint, 3.5-style, 3.7-integration-worlds, 3.7-failure-controls)",
+ "cells": [
+  {
+   "gate": "3.5-lint",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:pg-lint-summary",
+    "run:pg-lint-ruff",
+    "run:pg-lint-ruff-current",
+    "run:pg-lint-black",
+    "run:pg-lint-isort",
+    "run:pg-lint-flake8",
+    "run:pg-lint-mypy",
+    "run:pg-lint-markdown",
+    "experiment/playbook-completion/product-gates/run_lint.sh",
+    "experiment/playbook-completion/product-gates/lint_summary.py"
+   ],
+   "evidence_grade": "run",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "Zero warnings under the product's own configuration holds for none of the 8 tool runs on the unchanged pin (tool versions from uv.lock where it pins them, in an isolated venv; caches outside the tree; check-product-scope before and after): ruff check . with ruff 0.15.14 (the version the product last recorded; no [tool.ruff], no pin) 2,343 findings in 436 files (documented gate 'ruff check . - zero errors', PRE_RELEASE_CHECKLIST.md:139-146; CONTRIBUTING.md:36-39); ruff 0.17.5 13,545; black 26.5.1 --check 1,890 of 2,191 files would be reformatted; isort 8.0.1 --check-only 584 files; flake8 7.3.0 (no config: 79 columns against black's 100) 72,325 (E501 67,520); mypy 2.1.0 with [tool.mypy] on iris_vector_graph 3,535 errors in 89 of 119 files; markdownlint-cli2 0.24.1 with .markdownlint-cli2.jsonc 142 issues in 32 of 268 .md files; prettier 3.10.1 --check 3 files. Real defect among the warnings: 4 shadowed unit tests (F811, F-C0090). Module 11-14 files: ruff 1 (E731), mypy 259 errors, the 13 non-annotation ones in ledger/ read and judged typing imprecision, not runtime defects (inspected).",
+   "as_built_findings": [
+    "F-C0090"
+   ],
+   "remaining": "ObjectScript: no linter is configured; the compile gate (PRE_RELEASE_CHECKLIST.md:150-156) is observable only through the pin's deploy path, which reports failures (0 in AUDITIA, 3 MCP classes skipped for %AI) but not compiler warnings (CompileList flags ck-d, _engine/class_deploy.py:282). The product pins no ruff version, so the ruff count depends on the version (both recorded). Warnings other than F811 and the module 11-14 mypy errors were counted, not triaged one by one."
+  },
+  {
+   "gate": "3.5-style",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:pg-style-review-r2",
+    "run:pg-style-review",
+    "experiment/playbook-completion/product-gates/STYLE.md",
+    "experiment/playbook-completion/product-gates/style-r2/STYLE-G1.md",
+    "experiment/playbook-completion/product-gates/style-r2/STYLE-G2.md",
+    "experiment/playbook-completion/product-gates/style-r2/STYLE-G3.md",
+    "experiment/playbook-completion/product-gates/style-r2/STYLE-G4.md",
+    "experiment/playbook-completion/product-gates/style-r2/summary.json"
+   ],
+   "evidence_grade": "inspected",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "Every module reviewed against the pin's documented conventions (CONTRIBUTING, constitution, CONTEXT, TESTING_POLICY, ADRs 0001-0016, PRE_RELEASE_CHECKLIST, ARCHITECTURE; a research brief at secondary authority, counted apart): 177 deviations across 17 of 19 modules (158 primary, 19 secondary): 00 0, 01 33, 02 3, 03 11, 04 14, 05 12, 06 17, 07 8, 08 2, 09 2, 10 25, 11 9, 12 12, 13 0, 14 2, 15 6, 16 7, 17 7, 18 7. Most frequent: swallowed failures on data-changing paths (TESTING_POLICY.md:291-293), schema hard-coding against ADR-0016, inaccurate class headers (ARCHITECTURE.md:203), direct ^KG writes outside the owners (ADR-0001/0008/0011). Deviations that are reproduced or source-confirmed defects: F-0801, F-0511, F-C0702, F-C0690 (new, S4); 27 more candidates map to existing findings (group files).",
+   "as_built_findings": [
+    "F-0801",
+    "F-0511",
+    "F-C0702",
+    "F-C0690"
+   ],
+   "remaining": "Files over about 3,000 lines (translator.py, iris_sql_store.py, _engine/schema.py, schema.py, cypher_api.py, _engine/snapshot.py, FHIRGraph.cls) were covered by a convention-driven sweep, not line by line. Undocumented aspects (ObjectScript formatting and naming, Python docstrings and naming) cannot be judged: a documentation gap of the product. 29 inspected-only candidate findings need a live check (STYLE.md round 2), first G1's bulk_ingest_edges temporal-marked row (S1 by analogy with F-0304) and the 3.2.0 rescue staging (S2). C-3 (compile cleanliness) and C-20 (justified indirection) not judged."
+  },
+  {
+   "gate": "3.7-integration-worlds",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:live-lost-ack-commit",
+    "run:live-native-rerun-1314",
+    "run:live-crash-world-r2",
+    "run:env-synchcommit-setting",
+    "run:pg-fc-crash-oracle-selftest",
+    "run:pg-fc-lost-ack-oracle-selftest",
+    "run:pg-disconnect-commit",
+    "run:pg-disconnect-redact",
+    "run:pg-disconnect-erase",
+    "run:pg-disconnect-stop",
+    "run:pg-disconnect-stop-midbatch",
+    "run:pg-disconnect-locktimeout",
+    "run:pg-disconnect-reevaluate",
+    "run:pg-disconnect-selftest",
+    "run:pg-disconnect-live-controls",
+    "experiment/playbook-completion/product-gates/disconnect_world.py",
+    "experiment/playbook-completion/product-gates/wireproxy.py",
+    "experiment/playbook-completion/product-gates/DISCONNECT.md",
+    "run:live-crash-repeat-sc0",
+    "run:live-crash-repeat-sc1",
+    "run:live-licence-world"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "Disconnect world (new): 33 trials at 11 exact wire-message points (commit in a caller transaction with its COMMIT dropped, staged commit with Commit dropped, Commit cut in flight, Commit reply held, caller COMMIT reply held; redaction reply held, cut in flight, bounded run with a call dropped; EraseGraph reply held, erasure in a caller transaction with COMMIT dropped, EraseGraph cut in flight), 3 trials each, plus 12 process-stop trials and 4 lock-timeout trials: 49 trials and 3 baselines, 0 violations of full-step-or-nothing, the journal oracle, lock release, same-key retry returning the first answer, verify equal and exactly once (holds-live for these points, SynchCommit=0); 164/164 seeded and 4/4 live controls caught. The cell still fails as before: the crash world's acknowledged commit is lost with SynchCommit=0 (F-C1102, intent-undecided) and the findings attached to this gate by the matrix stay as they are.",
+   "as_built_findings": [],
+   "remaining": "Crash, lost-acknowledgement and disconnect worlds all ran with controls: lost-ack exactly-once 6/6 (live-lost-ack-commit); disconnect 49 trials at 17 points, 0 violations (pg-disconnect-*); instance crash repeated 3+3 times per setting: in-flight commits all-or-nothing in every trial; acknowledged commits lost 3/3 under SynchCommit=0 (live-crash-repeat-sc0) and 0/3 under SynchCommit=1 (live-crash-repeat-sc1), so F-C1102 (intent-undecided: no IVG document states a durability premise) is attributable to the SynchCommit=0 setting the audit container runs by default; setting restored to 0. Multi-node worlds belong to 3.7-e2e (blocked-access). Orchestrator update, steer 11."
+  },
+  {
+   "gate": "3.7-failure-controls",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:pg-failure-controls-r2",
+    "run:pg-failure-controls",
+    "run:pg-fc-crash-oracle-selftest",
+    "run:pg-fc-lost-ack-oracle-selftest",
+    "run:pg-disconnect-selftest",
+    "run:pg-disconnect-live-controls",
+    "run:pg-fc-s5b-control",
+    "run:pg-fc-s13-control",
+    "run:pg-fc-s15-control",
+    "run:pg-fc-s16-control",
+    "run:pg-fc-s17-control",
+    "experiment/playbook-completion/product-gates/FAILURE-CONTROLS.md",
+    "experiment/playbook-completion/product-gates/check_failure_controls.py",
+    "experiment/playbook-completion/product-gates/fc_controls.py",
+    "run:live-licence-world"
+   ],
+   "evidence_grade": "live",
+   "level": "method",
+   "product_obligation": "unknown",
+   "product_basis": "Method gate (negative controls of the audit's failure scenarios), not a product property. 20 scenario rows: 17 with a registered negative control (8 before this lane; added: crash-world and lost-ack oracle self-tests; the disconnect, process-stop and lock-timeout worlds' seeded and live controls; follow-up live controls for S5b F-1102, S13 F-C1307, S15 F-C0801, S16 killed bulk load (F-0305), S17 max_ops refusal, each passing with the defect's precondition absent and flagging with it present), 2 covered by another row's controlled oracle (S4b, S8), 0 without, 1 blocked-access (S6); every cited run id exists in the registry (check_failure_controls.py, self-tested; pg-failure-controls-r2).",
+   "as_built_findings": [
+    "F-C1795"
+   ],
+   "remaining": "All 20 failure scenarios have a registered run with a negative control or are covered by another row's controlled oracle; S6 (licence refusal at product level) ran with the container exclusive (live-licence-world: control world C with units free, world X exhausted before the first native call, world R exhausted before connecting): the product stayed all-or-nothing and refused cleanly at connect, but falls back silently from a refused dedicated connection (F-C1795). Orchestrator update, steer 11."
+  }
+ ]
+}

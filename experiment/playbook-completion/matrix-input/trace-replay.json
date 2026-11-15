@@ -1,0 +1,494 @@
+{
+ "lane": "trace-replay (earlier closed cells' evidence kept)",
+ "source": "trace-replay/MATRIX-INPUT.json",
+ "cells": [
+  {
+   "gate": "3.7-trace-replay",
+   "module": "01",
+   "status": "closed",
+   "evidence": [
+    "run:tr-replay-01-r2",
+    "run:tr-controls-01-r2",
+    "run:tr-replay-01",
+    "run:tr-controls-01",
+    "run:tr-oracle-selftest",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#01"
+   ],
+   "evidence_grade": "trace",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "tr-replay-01-r2: first use replayed through ins_setup (INS-I3.4 violated: F-0103 reproduced) and a real initialize_schema() replayed through ins_setup (NewRun + five steps; Record seen as the journaled schema-record write; INS-B1.12 holds on this success path)",
+   "as_built_findings": [
+    "F-0103"
+   ],
+   "remaining": "setup replayed only on an already set-up namespace (no table created, no class compiled, ^KG not rebuilt) and only on its success path: the failure paths (F-0102: failures only logged) and a fresh-namespace setup are not trace-replayed; ins_legacy not replayed. Limits: sequential traces of one scenario per family (plus the caller-transaction interleavings named); bitmap chunks and ^odd* not replayed; a pass means the as-built machine matched these traces, not that the handler performs its step on every input."
+  },
+  {
+   "gate": "3.7-trace-replay",
+   "module": "02",
+   "status": "closed",
+   "evidence": [
+    "run:tr-replay-02",
+    "run:tr-controls-02",
+    "run:tr-oracle-selftest",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#02"
+   ],
+   "evidence_grade": "trace",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "tr-replay-02: GID-I4.10 violated in the replayed traces (F-0201, F-0208 reproduced)",
+   "as_built_findings": [
+    "F-0201",
+    "F-0208"
+   ],
+   "remaining": "F-0207's count/kill interleaving not produced. Limits: sequential traces of one scenario per family (plus the caller-transaction interleavings named); bitmap chunks and ^odd* not replayed; a pass means the as-built machine matched these traces, not that the handler performs its step on every input."
+  },
+  {
+   "gate": "3.7-trace-replay",
+   "module": "03",
+   "status": "closed",
+   "evidence": [
+    "run:tr-replay-03",
+    "run:tr-controls-03",
+    "run:tr-oracle-selftest",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#03"
+   ],
+   "evidence_grade": "trace",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "tr-replay-03: INV-stmt and WRT-B1.9 (F-0303), WRT-B3.19 (F-0305, F-C0330) and ADR-0009 explicit-survives (F-0304) violated in the replayed traces",
+   "as_built_findings": [
+    "F-0303",
+    "F-0304",
+    "F-0305",
+    "F-C0330"
+   ],
+   "remaining": "footprints/03.json delete_node omits ^IVG.Ledger, ^NKG (and ^IVG.AlgoCache, tr-replay-10). Limits: sequential traces of one scenario per family (plus the caller-transaction interleavings named); bitmap chunks and ^odd* not replayed; a pass means the as-built machine matched these traces, not that the handler performs its step on every input."
+  },
+  {
+   "gate": "3.7-trace-replay",
+   "module": "04",
+   "status": "closed",
+   "evidence": [
+    "run:tr-replay-04",
+    "run:tr-controls-04",
+    "run:tr-oracle-selftest",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#04"
+   ],
+   "evidence_grade": "trace",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "tr-replay-04: ADJ-I11.2 (F-0402) and ADJ-B8.9 (F-0409) violated in the replayed traces; the degree trace matched with no violation",
+   "as_built_findings": [
+    "F-0402",
+    "F-0409"
+   ],
+   "remaining": "F-0401/F-C0401 (reader in flight across a rollback or erase) and adj_rebuild_txn part 2 (F-C0402) not produced. Limits: sequential traces of one scenario per family (plus the caller-transaction interleavings named); bitmap chunks and ^odd* not replayed; a pass means the as-built machine matched these traces, not that the handler performs its step on every input."
+  },
+  {
+   "gate": "3.7-trace-replay",
+   "module": "05",
+   "status": "closed",
+   "evidence": [
+    "run:tr-replay-05",
+    "run:tr-controls-05",
+    "run:tr-oracle-selftest",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#05"
+   ],
+   "evidence_grade": "trace",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "tr-replay-05: TMP-B1.7 (F-0501), ADR-0009 explicit-survives (F-0505), TMP-B9.13 (F-0507) violated in the replayed traces",
+   "as_built_findings": [
+    "F-0501",
+    "F-0505",
+    "F-0507"
+   ],
+   "remaining": "Limits: sequential traces of one scenario per family (plus the caller-transaction interleavings named); bitmap chunks and ^odd* not replayed; a pass means the as-built machine matched these traces, not that the handler performs its step on every input."
+  },
+  {
+   "gate": "3.7-trace-replay",
+   "module": "06",
+   "status": "closed",
+   "evidence": [
+    "run:tr-replay-06",
+    "run:tr-controls-06",
+    "run:tr-oracle-selftest",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#06"
+   ],
+   "evidence_grade": "trace",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "tr-replay-06: VEC-B11.14 (F-0608), VEC-B11.4 (F-0606), VEC-X3.9 (F-0615) violated in the replayed traces",
+   "as_built_findings": [
+    "F-0606",
+    "F-0608",
+    "F-0615"
+   ],
+   "remaining": "vec_queue (F-0604, IRIS worker ProcessBatch) and vec_build_publish not replayed. Limits: sequential traces of one scenario per family (plus the caller-transaction interleavings named); bitmap chunks and ^odd* not replayed; a pass means the as-built machine matched these traces, not that the handler performs its step on every input."
+  },
+  {
+   "gate": "3.7-trace-replay",
+   "module": "07",
+   "status": "closed",
+   "evidence": [
+    "run:tr-replay-07",
+    "run:tr-controls-07",
+    "run:tr-oracle-selftest",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#07"
+   ],
+   "evidence_grade": "trace",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "tr-replay-07: TXT-X2 (F-0704), TXT-I7 (F-0707), TXT-B8.3 (F-0705) violated in the replayed traces; Build/Drop journaled outside any transaction (F-0701 premise)",
+   "as_built_findings": [
+    "F-0704",
+    "F-0705",
+    "F-0707"
+   ],
+   "remaining": "bm25 Upgrade/Crash and the concurrent I5 race (F-0701) not driven; Leg Fusion/Retrieve not driven. Limits: sequential traces of one scenario per family (plus the caller-transaction interleavings named); bitmap chunks and ^odd* not replayed; a pass means the as-built machine matched these traces, not that the handler performs its step on every input."
+  },
+  {
+   "gate": "3.7-trace-replay",
+   "module": "08",
+   "status": "closed",
+   "evidence": [
+    "run:tr-replay-08",
+    "run:tr-controls-08-r2",
+    "run:tr-controls-08",
+    "run:tr-oracle-selftest",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#08"
+   ],
+   "evidence_grade": "trace",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "tr-replay-08: F-0805, F-0806 (txn) and F-0814, F-0815 (readonly) reproduced in the replayed traces; ATOMIC and CALLER held",
+   "as_built_findings": [
+    "F-0805",
+    "F-0806",
+    "F-0814",
+    "F-0815"
+   ],
+   "remaining": "tr-controls-08 (recorded fail) is superseded by tr-controls-08-r2: the readonly reorder control now swaps steps with different machine actions and is caught by model-post-state. Txn CallerRollback not driven. Limits: sequential traces of one scenario per family (plus the caller-transaction interleavings named); bitmap chunks and ^odd* not replayed; a pass means the as-built machine matched these traces, not that the handler performs its step on every input."
+  },
+  {
+   "gate": "3.7-trace-replay",
+   "module": "09",
+   "status": "closed",
+   "evidence": [
+    "run:tr-replay-09-r2",
+    "run:tr-controls-09-r2",
+    "run:tr-replay-09",
+    "run:tr-controls-09",
+    "run:tr-oracle-selftest",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#09"
+   ],
+   "evidence_grade": "trace",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "tr-replay-09-r2 (AUDITC): planc matched a sync/job/DropAll trace (26 actions, every generated class equal to its entry lines); mode: a read under the unknown namespace mode OFF built its plan class in the reader (NAT-X12 violated, F-0903 reproduced); gate matched (AUDITE)",
+   "as_built_findings": [
+    "F-0903"
+   ],
+   "remaining": "F-0901 (two shapes on one 32-bit hash, needs a collision and a race), F-0905 (DropAll against a running build) and F-0902 (machine used: relationship-hash collision) not produced; F-0906 edge-only gate state needs DDL. Limits: sequential traces of one scenario per family (plus the caller-transaction interleavings named); bitmap chunks and ^odd*/routine globals not replayed; a pass means the as-built machine matched these traces, not that the handler performs its step on every input."
+  },
+  {
+   "gate": "3.7-trace-replay",
+   "module": "10",
+   "status": "closed",
+   "evidence": [
+    "run:tr-replay-10",
+    "run:tr-controls-10",
+    "run:tr-oracle-selftest",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#10"
+   ],
+   "evidence_grade": "trace",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "tr-replay-10: F-1004 (cache) and F-1007 (degree) reproduced in the replayed traces",
+   "as_built_findings": [
+    "F-1004",
+    "F-1007"
+   ],
+   "remaining": "nkg, routes and walk machines not driven; concurrent cache interleavings not produced. Limits: sequential traces of one scenario per family (plus the caller-transaction interleavings named); bitmap chunks and ^odd* not replayed; a pass means the as-built machine matched these traces, not that the handler performs its step on every input."
+  },
+  {
+   "gate": "3.7-trace-replay",
+   "module": "11",
+   "status": "closed",
+   "evidence": [
+    "run:tr-replay-11",
+    "run:tr-controls-11",
+    "run:tr-oracle-selftest",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#11"
+   ],
+   "evidence_grade": "trace",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "tr-replay-11: LED-B10.5 and the governed-value invariant (F-1101), LED-B4.7.8 (F-1106), SG (F-0801, F-1108) violated in the replayed traces; enable, commit and adopt matched with no violation",
+   "as_built_findings": [
+    "F-1101",
+    "F-1106",
+    "F-1108",
+    "F-0801"
+   ],
+   "remaining": "stats (F-1102) not replayed; F-1104 and F-1103 need concurrent enables / a commit inside an adoption, not produced; disable/re-enable is covered only through adoption. Limits: sequential traces of one scenario per family (plus the caller-transaction interleavings named); bitmap chunks and ^odd* not replayed; a pass means the as-built machine matched these traces, not that the handler performs its step on every input."
+  },
+  {
+   "gate": "3.7-trace-replay",
+   "module": "15",
+   "status": "blocked",
+   "evidence": [
+    "run:tr-replay-15",
+    "run:tr-oracle-selftest",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#15"
+   ],
+   "evidence_grade": "blocked-access",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "tr-replay-15 (blocked): FHIRGraph.Register refuses on Community; reify/delete_reification match no machine",
+   "as_built_findings": [],
+   "remaining": "blocked-access: HS.FHIRServer.* / HS_FHIRServer SQL schema (IRIS for Health FHIR repository) absent on IRIS Community 2026.1, so fhir.rs and register.rs cannot be driven; unrepresentable: reify_edge and delete_reification have no breadth-c machine."
+  },
+  {
+   "gate": "3.7-trace-replay",
+   "module": "16",
+   "status": "closed",
+   "evidence": [
+    "run:tr-replay-16",
+    "run:tr-controls-16",
+    "run:tr-oracle-selftest",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#16"
+   ],
+   "evidence_grade": "trace",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "tr-replay-16: unit atomicity and at most once violated (F-1601 Bolt, F-1610 HTTP tx/commit)",
+   "as_built_findings": [
+    "F-1601",
+    "F-1610"
+   ],
+   "remaining": "Bolt TCP/WebSocket transports not exercised (in-process dispatch only). Limits: sequential traces of one scenario per family (plus the caller-transaction interleavings named); bitmap chunks and ^odd* not replayed; a pass means the as-built machine matched these traces, not that the handler performs its step on every input."
+  },
+  {
+   "gate": "3.7-trace-replay",
+   "module": "17",
+   "status": "closed",
+   "evidence": [
+    "run:tr-replay-17",
+    "run:tr-controls-17",
+    "run:tr-oracle-selftest",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#17"
+   ],
+   "evidence_grade": "trace",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "tr-replay-17: at most once violated by the client's resend after a lost reply (F-C1703)",
+   "as_built_findings": [
+    "F-C1703"
+   ],
+   "remaining": "the server-side re-run after an exception (F-C1604) not injected. Limits: sequential traces of one scenario per family (plus the caller-transaction interleavings named); bitmap chunks and ^odd* not replayed; a pass means the as-built machine matched these traces, not that the handler performs its step on every input."
+  },
+  {
+   "gate": "3.7-trace-replay",
+   "module": "18",
+   "status": "closed",
+   "evidence": [
+    "run:tr-replay-18",
+    "run:tr-controls-18",
+    "run:tr-oracle-selftest",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#18"
+   ],
+   "evidence_grade": "trace",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "tr-replay-18: one history, redacted-holds-no-content and the-ledger-only-grows violated at the replacing restore (F-1801); the archive is not a committed state (F-C1801)",
+   "as_built_findings": [
+    "F-1801",
+    "F-C1801"
+   ],
+   "remaining": "snapcut's commit and delete paths not exercised; model gaps: the pin's redaction revision mapped as Redact plus an unkeyed Commit, genesis taken from the abstraction. Limits: sequential traces of one scenario per family (plus the caller-transaction interleavings named); bitmap chunks and ^odd* not replayed; a pass means the as-built machine matched these traces, not that the handler performs its step on every input."
+  },
+  {
+   "gate": "3.7-lock-log",
+   "module": "01",
+   "status": "closed",
+   "evidence": [
+    "run:tr-locklog-01",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#01"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "tr-locklog-01: one initialize_schema() held only the parent ^IVG.AdjW S (in the plan); no ledger head lock (observed in sampled runs; the plan's adequacy is a separate question)",
+   "as_built_findings": [],
+   "remaining": "the plan entries ^IVG.AdjW(g) E:0 and ^IVG.NKGBuild X were not exercised by the one setup run. Lock polling sees holds of at least one poll period (20-60 us); a sampled log is evidence about these runs, not a proof of the plan."
+  },
+  {
+   "gate": "3.7-lock-log",
+   "module": "02",
+   "status": "closed",
+   "evidence": [
+    "run:tr-locklog-02",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#02"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "tr-locklog-02: 5,048 set_multigraph calls held no IVG lock; Set(off) did not wait on ^IVG.AdjW(g): consistent with the plan (no lock), the premise of F-0207 (observed in sampled runs; the plan's adequacy is a separate question)",
+   "as_built_findings": [],
+   "remaining": "Lock polling sees holds of at least one poll period (20-60 us); a sampled log is evidence about these runs, not a proof of the plan."
+  },
+  {
+   "gate": "3.7-lock-log",
+   "module": "03",
+   "status": "closed",
+   "evidence": [
+    "run:tr-locklog-03",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#03"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "tr-locklog-03: direct edge writers hold ^IVG.AdjW(g) S only, row locks first, fail-open after 5 s with ^IVG.AdjNoLock as planned (observed in sampled runs; the plan's adequacy is a separate question)",
+   "as_built_findings": [],
+   "remaining": "Lock polling sees holds of at least one poll period (20-60 us); a sampled log is evidence about these runs, not a proof of the plan."
+  },
+  {
+   "gate": "3.7-lock-log",
+   "module": "04",
+   "status": "closed",
+   "evidence": [
+    "run:tr-locklog-04",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#04"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "tr-locklog-04: Degree does not wait (E:0), sync holds the parent ^IVG.AdjW S and ^IVG.NKGBuild X and waits/fails at BeginRebuild when the parent is held (observed in sampled runs; the plan's adequacy is a separate question)",
+   "as_built_findings": [],
+   "remaining": "Degree's own exclusive probe is shorter than the poll period (seen only through the block probe); ^IVG.AdjW and ^IVG.NKGBuild show no consistent nesting order inside sync (2 of 209 intervals nested each way; no conflict follows since the parent lock is shared). Lock polling sees holds of at least one poll period (20-60 us); a sampled log is evidence about these runs, not a proof of the plan."
+  },
+  {
+   "gate": "3.7-lock-log",
+   "module": "05",
+   "status": "closed",
+   "evidence": [
+    "run:tr-locklog-05",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#05"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "tr-locklog-05: temporal writers hold ^IVG.AdjW(g) S only through the row hook; tout/tin/bucket written before it (observed in sampled runs; the plan's adequacy is a separate question)",
+   "as_built_findings": [],
+   "remaining": "Lock polling sees holds of at least one poll period (20-60 us); a sampled log is evidence about these runs, not a proof of the plan."
+  },
+  {
+   "gate": "3.7-lock-log",
+   "module": "06",
+   "status": "closed",
+   "evidence": [
+    "run:tr-locklog-06",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#06"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "tr-locklog-06: vector writers take no IVG lock and do not wait on the ledger head or ^IVG.AdjW(g), as planned (observed in sampled runs; the plan's adequacy is a separate question)",
+   "as_built_findings": [],
+   "remaining": "Lock polling sees holds of at least one poll period (20-60 us); a sampled log is evidence about these runs, not a proof of the plan."
+  },
+  {
+   "gate": "3.7-lock-log",
+   "module": "08",
+   "status": "closed",
+   "evidence": [
+    "run:tr-locklog-08",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#08"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "tr-locklog-08: Cypher writes hold ^IVG.AdjW(g) S through the row hook, row locks first, as planned (observed in sampled runs; the plan's adequacy is a separate question)",
+   "as_built_findings": [],
+   "remaining": "Lock polling sees holds of at least one poll period (20-60 us); a sampled log is evidence about these runs, not a proof of the plan."
+  },
+  {
+   "gate": "3.7-lock-log",
+   "module": "10",
+   "status": "closed",
+   "evidence": [
+    "run:tr-locklog-10",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#10"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "tr-locklog-10: rebuild_nkg holds ^IVG.NKGBuild X only and waits for it, as planned (observed in sampled runs; the plan's adequacy is a separate question)",
+   "as_built_findings": [],
+   "remaining": "routes/walk readers not logged. Lock polling sees holds of at least one poll period (20-60 us); a sampled log is evidence about these runs, not a proof of the plan."
+  },
+  {
+   "gate": "3.7-lock-log",
+   "module": "13",
+   "status": "closed",
+   "evidence": [
+    "run:tr-locklog-13",
+    "run:tr-locklog-13b",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#13"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "tr-locklog-13, tr-locklog-13b: Batch's head lock (:282) and Final's head lock (:390) each observed by a block probe; Final waits after the tombstones and before its revision and head (observed in sampled runs; the plan's adequacy is a separate question)",
+   "as_built_findings": [],
+   "remaining": "tr-locklog-13's observes text also describes the 13b probe, whose check is in tr-locklog-13b's log (erratum). Lock polling sees holds of at least one poll period (20-60 us); a sampled log is evidence about these runs, not a proof of the plan."
+  },
+  {
+   "gate": "3.7-lock-log",
+   "module": "18",
+   "status": "closed",
+   "evidence": [
+    "run:tr-locklog-18",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#18"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "tr-locklog-18: restore never takes or waits for the ledger head lock (as the plan says); it holds the parent ^IVG.AdjW S inherited from erase_all, which the declared plan omits (plan gap) (observed in sampled runs; the plan's adequacy is a separate question)",
+   "as_built_findings": [],
+   "remaining": "footprints/18.json lock plan omits ^IVG.AdjW S from erase_all (Adjacency.RemoveAll). Lock polling sees holds of at least one poll period (20-60 us); a sampled log is evidence about these runs, not a proof of the plan."
+  },
+  {
+   "gate": "3.7-lock-log",
+   "module": "09",
+   "status": "closed",
+   "evidence": [
+    "run:tr-locklog-09",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#09",
+    "experiment/playbook-completion/trace-replay/TRACE-REPLAY.md#gaps"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "tr-locklog-09 (AUDITC): the build lock ^IVG.CypherCompiled(h) is held exclusively by the builder (the reader in sync mode, the job in job mode) and taken with no wait (Lock :0): a sync read meeting it held elsewhere compiles nothing and answers (observed in sampled runs; the plan adequacy is a separate question)",
+   "as_built_findings": [],
+   "remaining": "DropAll takes no lock (as planned at the pin, F-0905) and was not logged against a running build. Lock polling sees holds of at least one poll period. Erratum to tr-locklog-09 observes: the cause of the 844 sync iterations that built nothing (\"the engine route then answered by SQL\") was not established."
+  },
+  {
+   "gate": "3.7-lock-log",
+   "module": "15",
+   "status": "blocked",
+   "evidence": [
+    "run:tr-replay-15"
+   ],
+   "evidence_grade": "blocked-access",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "not observable",
+   "as_built_findings": [],
+   "remaining": "The sync lock ^IVG.FHIRGraph(g) is taken only on a registered FHIR graph: HS.FHIRServer.* / HS_FHIRServer absent on IRIS Community 2026.1 (FHIRGraph.Register refuses, tr-replay-15)."
+  }
+ ]
+}

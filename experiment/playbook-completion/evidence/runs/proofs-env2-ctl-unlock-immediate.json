@@ -1,0 +1,21 @@
+{
+  "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features ctl_unlock_immediate -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+  "error_locations": "src/premises.rs:28,src/premises.rs:38,src/premises.rs:56,src/premises.rs:64,src/premises.rs:137",
+  "errors": "5",
+  "experiment_head": "792b8d6faf0bc77799920155f7eb1bea265a9934",
+  "id": "proofs-env2-ctl-unlock-immediate",
+  "json_log": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_unlock_immediate.json",
+  "json_sha256": "29f1064c384421ef52a7f660195f2ccffbd80e39828eac5577b7e974cba2523c",
+  "kind": "control",
+  "lane": "proofs-env2",
+  "log": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_unlock_immediate.log",
+  "log_bytes": 3561,
+  "log_sha256": "1277fa56e53c926d826c7bb77eac37af049bb5c0e690f55999db79d349719ec9",
+  "observes": "ctl_unlock_immediate (clause E-LOCK-DEFER, mutant unlock-immediate-in-txn): 5 errors exactly at ['src/premises.rs:28', 'src/premises.rs:38', 'src/premises.rs:56', 'src/premises.rs:64', 'src/premises.rs:137']; failing ['premises::premise_breadth_p_l3', 'premises::premise_d1b_p_s1', 'premises::premise_d9_p_d9_1', 'premises::premise_proofs_p_c01', 'premises::premise_trust_p_0003']; every other function verifies as in the baseline=True; counterexample cx::cx_unlock_immediate verified=True",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-15T00:05:11+00:00",
+  "result": "expected-violation",
+  "sources_sha256": "b9a7bb764d46174889eac4290b91b4799f308914c4a682cbed7db9716ad1c99d",
+  "verified": "428"
+}

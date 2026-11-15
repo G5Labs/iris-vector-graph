@@ -1,0 +1,15 @@
+{
+  "command": "bash experiment/playbook-completion/tools/locks.sh iris python experiment/playbook-completion/product-gates/disconnect_world.py $RUN_DIR/product-gates/disconnect-r1 --group erase --trials 3",
+  "experiment_head": "e8a0d08acae6c519bb4db191c593bc75e8223636",
+  "id": "pg-disconnect-erase",
+  "kind": "live",
+  "lane": "product-gates",
+  "log": "$RUN_DIR/product-gates/disconnect-r1/results-erase.json",
+  "log_bytes": 35531,
+  "log_sha256": "51782ca0f87c0c202627f6d6ffdcb4ce4ebcc0b0a8590dfe709b46e19ce70caf",
+  "observes": "Disconnect world, erase_graph, AUDITIA; 9 trials + 1 baseline, 0 violations. D1 (300 edges; EraseGraph reply held) 3/3 full, retry removed 0, erase-then-redact verify equal. D2 (caller START TRANSACTION, erase_graph applied, driver COMMIT dropped) 3/3 nothing: journal span of the dead process 6,900 writes undone by 6,900 compensations; rows, nodes and live statements back; retry removed 900 rows (600 graph nodes + 300 edges). D3 (6,000 edges, EraseGraph cut 0.05 s after forwarding, reply pending) 3/3 full: the server finished the erase and exited 0.61-1.05 s after the kill; retry removed 0. Ledger records unchanged by every erasure; head lock free 9/9; verify equal 9/9 after the documented erase-then-redact flow.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T12:19:24+00:00",
+  "result": "pass"
+}

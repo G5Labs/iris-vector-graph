@@ -1,0 +1,62 @@
+{
+ "lane": "proofs-env (D-7)",
+ "source": "proofs-env/MATRIX-INPUT.json",
+ "supplements": [
+  {
+   "gate": "3.2-library",
+   "module": "product",
+   "add_evidence": [
+    "run:proofs-env-baseline",
+    "run:proofs-env-differential-r3",
+    "run:proofs-env-mutants-r3",
+    "run:env-dml-single",
+    "run:env-estop-gap",
+    "run:proofs-env-differential-r2",
+    "run:proofs-env-mutants-r2",
+    "run:proofs-env-differential",
+    "run:proofs-env-mutants",
+    "run:proofs-env-recheck-baseline",
+    "run:proofs-env-recheck-differential",
+    "experiment/playbook-completion/proofs-env/PROOFS.md",
+    "experiment/playbook-completion/proofs-env/src/spec.rs",
+    "experiment/playbook-completion/proofs-env/src/exec.rs",
+    "experiment/playbook-completion/proofs-env/RESULTS.json"
+   ],
+   "add_remaining": "[proofs-env, D-7] Verus subset excludes the r6 extension clauses (X-FX, X-NOINDEX, X-DDL, X-NULL, INSERT ... SELECT, X-ORDER, X-STAR, X-TLEVEL-SQL, X-VEC, X-ZSTRIP), contract-2's E-1 and X2 (executable evidence only); X-TLEVEL-SQL, X-VEC's SQL functions, X-ZSTRIP, X-ORDER, X-NULL, INSERT ... SELECT, E-1, X2-BATCH and X2-IOU are brought in by proofs-env2 (its supplement). Verus-model mutants: all 29 killed (proofs-env-mutants-r3), after the orchestrator's targeted rounds env-estop-gap (E-STOP's every-level reading) and env-dml-single (single-row autocommit-off DML); the probe freedom-waits-only stays alive by design (the Freedom's proceeding branch is unobserved)"
+  },
+  {
+   "gate": "3.6-closure",
+   "module": "product",
+   "add_evidence": [
+    "run:proofs-env-mutants-r3",
+    "run:proofs-env-premise-map-r2",
+    "run:env-estop-gap",
+    "run:proofs-env-mutants-r2",
+    "run:proofs-env-premise-map",
+    "run:proofs-env-baseline",
+    "run:proofs-env-ctl-unlock-immediate",
+    "run:proofs-env-ctl-stop-commits",
+    "run:proofs-env-ctl-stop-top-level-only",
+    "run:proofs-env-ctl-kill-not-logged",
+    "run:proofs-env-ctl-dml-ignores-row-locks",
+    "run:proofs-env-ctl-row-lock-statement-only",
+    "run:proofs-env-ctl-insert-dup-waits",
+    "run:proofs-env-ctl-freedom-wait-only",
+    "run:proofs-env-ctl-no-dirty-reads",
+    "run:proofs-env-ctl-select-committed-only",
+    "run:proofs-env-ctl-rollback-physical",
+    "run:proofs-env-ctl-incr-rolled-back",
+    "run:proofs-env-ctl-rollback-one-undoes-all",
+    "run:proofs-env-ctl-sql-commit-ends-all",
+    "run:proofs-env-ctl-lock-wait-never-granted",
+    "run:proofs-env-ctl-flat-lock-names",
+    "run:proofs-env-ctl-shared-conflicts-shared",
+    "run:proofs-env-recheck-baseline",
+    "experiment/playbook-completion/proofs-env/premise_map.json",
+    "experiment/playbook-completion/proofs-env/src/premises.rs",
+    "experiment/playbook-completion/proofs-env/PROOFS.md"
+   ],
+   "add_remaining": "[proofs-env, D-7] the discipline 'disc' against the product's code (D-3/D-4; violated by EraseGraph at the pin, F-1201); progress premises (36 rows) not implied by any clause; outside-contract premises (CreateGUID, sha256, caller identity, durability, statement granularity, %ID, multi-row DELETE scan) stay assumed or executable-only (embedded SQL, E-1: proved by proofs-env2 in the specification, where the embedded statements are defined as the dynamic ones (proofs-env2/src/ext.rs:386-401); its link to IRIS is the E-1 rounds (c2-e1-r1, -r2: 121 cases, differential) and the 6 E-1 mutants); several locks / regions are linked premise by premise, not composed into one invariant"
+  }
+ ]
+}

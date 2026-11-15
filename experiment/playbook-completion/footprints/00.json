@@ -1,0 +1,33 @@
+{
+  "module": "00",
+  "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "purpose": "Writer entry points that belong to no module's Scope line (modules/00.json reconciliation), with the footprint read from source so the orchestrator can place them in an invariant write-set. None is journal-validated by lane C (no owning module's checks covered them).",
+  "entries": [
+    {"entry": "IRISGraphEngine.import_graph_ndjson", "role": "writer", "source": "iris_vector_graph/_engine/snapshot.py:1727-1856",
+     "reads": ["file: NDJSON"], "writes": ["sql:Graph_KG.nodes", "sql:Graph_KG.rdf_labels", "sql:Graph_KG.rdf_props", "sql:Graph_KG.rdf_edges", "global:^KG (adjacency via the row index, temporal subtrees via bulk_create_edges_temporal)"],
+     "transaction": "per call of create_node / create_edge / bulk_create_edges_temporal (each its own write_txn): not one transaction for the file", "locks": [],
+     "claims_atomic": {"claims": false, "source": "no claim"}, "guards": "_ledger_check (strict mode refuses)", "reached_by": "POST /admin/load (cypher_api.py:628-645), IVGClient.load_ndjson, `ivg load`", "journal": null},
+    {"entry": "IRISGraphEngine.export_graph_ndjson", "role": "reader", "source": "iris_vector_graph/_engine/snapshot.py:1857-",
+     "reads": ["sql:Graph_KG.nodes", "sql:Graph_KG.rdf_labels", "sql:Graph_KG.rdf_props", "sql:Graph_KG.rdf_edges", "global:^KG temporal"], "writes": ["file"], "transaction": "none", "locks": [],
+     "claims_atomic": {"claims": false, "source": ""}, "reached_by": "GET /admin/export", "journal": null},
+    {"entry": "IRISGraphEngine.import_rdf", "role": "writer", "source": "iris_vector_graph/_engine/snapshot.py:557-796",
+     "reads": ["file: RDF"], "writes": ["sql:Graph_KG.nodes", "sql:Graph_KG.rdf_edges", "sql:Graph_KG.rdf_props", "global:^KG (Graph.KG.Traversal.BuildKG at the end)"],
+     "transaction": "three write_txn blocks (snapshot.py:557-796); BuildKG after", "locks": [], "claims_atomic": {"claims": false, "source": ""}, "guards": "_ledger_check", "journal": null},
+    {"entry": "IRISGraphEngine.load_networkx / load_obo", "role": "writer", "source": "iris_vector_graph/_engine/snapshot.py:446-556, 1694-1726",
+     "reads": ["a networkx graph / an OBO file"], "writes": ["sql:Graph_KG.nodes", "sql:Graph_KG.rdf_labels", "sql:Graph_KG.rdf_props", "sql:Graph_KG.rdf_edges", "global:^KG"],
+     "transaction": "per create_node / create_edge call", "locks": [], "claims_atomic": {"claims": false, "source": ""}, "guards": "_ledger_check", "journal": null},
+    {"entry": "IRISGraphEngine.materialize_inference / retract_inference", "role": "writer", "source": "iris_vector_graph/_engine/schema.py:2966-3260",
+     "reads": ["sql:Graph_KG.rdf_edges (one graph)"], "writes": ["sql:Graph_KG.rdf_edges (qualifiers {\"inferred\":true})", "global:^KG out/in (Graph.KG.Adjacency / EdgeScan.DeleteAdjacency)"],
+     "transaction": "write_txn per batch (six write_txn sites)", "locks": [], "claims_atomic": {"claims": false, "source": ""}, "guards": "_ledger_check", "journal": null},
+    {"entry": "IRISGraphEngine.backfill_deg2p_exact", "role": "writer", "source": "iris_vector_graph/_engine/schema.py:2952-2965",
+     "reads": ["global:^KG(\"out\")"], "writes": ["global:^KG(\"deg2p_exact\")"], "transaction": "server-side (Graph.KG.Traversal.Build2HopExactStats)", "locks": [],
+     "claims_atomic": {"claims": false, "source": ""}, "guards": "none (returns 0 on failure, logged)", "journal": null},
+    {"entry": "setup_tables (module function)", "role": "writer (DDL)", "source": "iris_vector_graph/_engine/schema.py:234-",
+     "reads": [], "writes": ["schema DDL"], "transaction": "DDL (implicit commits)", "locks": [], "claims_atomic": {"claims": false, "source": ""}, "journal": null},
+    {"entry": "scripts/mcp/ivg_mcp_server.py tools", "role": "writer (Cypher and graph loading over MCP stdio)", "source": "scripts/mcp/ivg_mcp_server.py",
+     "reads": ["any"], "writes": ["any store a Cypher write or load reaches"], "transaction": "per tool call", "locks": [], "claims_atomic": {"claims": false, "source": ""},
+     "notes": "connects as IRIS_USER default 'SuperUser' (ivg_mcp_server.py:15-19)", "journal": null}
+  ],
+  "validated": 0,
+  "mismatches": []
+}

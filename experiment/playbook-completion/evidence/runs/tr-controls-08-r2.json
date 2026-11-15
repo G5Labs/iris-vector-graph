@@ -1,0 +1,15 @@
+{
+  "command": "trace-replay/run.py check 08 with m08.CONTROL_PAIRS (readonly reorder pair steps 1, 2)",
+  "experiment_head": "e8a3ab67a0cda8706f581b99ec4fbd83727a02f5",
+  "id": "tr-controls-08-r2",
+  "kind": "control",
+  "lane": "trace-replay",
+  "log": "$RUN_DIR/trace-replay/logs/tr-controls-08-r2.log",
+  "log_bytes": 5194,
+  "log_sha256": "79689181cf3e474e7c0abbe1088fcabd57b3b1abecd5ead1c93eee882679377e",
+  "observes": "Module 08 controls rerun (tr-controls-08 stays as recorded): txn unchanged (dropped record by continuity; reorder by model-post-state; foreign write by foreign-process); readonly: the reorder now moves the first AqlWrite transaction onto the refused read-only CREATE (step 1, Call(WriteClause); the default pair was two identical AqlWrite actions, every journaled transaction of the scenario being an AqlWrite) and is caught by model-post-state at step 1 (model data false, alpha data true) as well as foreign-process; dropped record by faithfulness; foreign write by foreign-process. All 6 seeded defects caught by an expected rule",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T12:48:25+00:00",
+  "result": "pass"
+}

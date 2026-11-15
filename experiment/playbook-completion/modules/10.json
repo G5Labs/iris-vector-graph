@@ -1,0 +1,2146 @@
+{
+ "module": "10",
+ "lane": "breadth-b",
+ "pin": "3eaa79cf",
+ "gates": [
+  {
+   "gate": "3.1-parent",
+   "status": "closed",
+   "reason": "ontology_index.py --check --only 10: every ALG parent id resolves (0 violations).",
+   "evidence": [
+    {
+     "kind": "check",
+     "ref": "b-10-check-ontology-index"
+    }
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.1-grade",
+   "status": "closed",
+   "reason": "ontology_index.py --check --only 10: every ALG statement at Flesch-Kincaid grade <= 8.",
+   "evidence": [
+    {
+     "kind": "check",
+     "ref": "b-10-check-ontology-index"
+    }
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.1-terms",
+   "status": "open",
+   "reason": "Lexical-scope reading: 0 violations; literal rule adopted by decisions.md HD-0001: 36 statement/term pairs in 30 ALG statements fail.",
+   "evidence": [
+    {
+     "kind": "check",
+     "ref": "b-10-check-literal-scope"
+    },
+    {
+     "kind": "check",
+     "ref": "b-10-check-ontology-index"
+    }
+   ],
+   "remaining": "Rewrite or reparent the 30 ALG statements (orchestrator's ontology lane)."
+  },
+  {
+   "gate": "3.1-cells",
+   "status": "closed",
+   "reason": "All 51 cells have an outcome; 6 are 'open', each assigned to HD-1001 (random walk), which decisions.md gives a working assumption; every cell maps to at least one entry point (inventory cell_map).",
+   "evidence": [
+    "experiment/playbook-uplift/ontology/10-algorithms.md (Cells)",
+    "experiment/playbook-completion/decisions.md (HD-1001)",
+    "models/breadth-b/inventory/10.json"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.1-coverage",
+   "status": "open",
+   "reason": "Reconciled mechanically: other-module (cypher procs, builders, other modules' writers) and reached-from-covered entries are not omissions.",
+   "evidence": [
+    "models/breadth-b/inventory/10.json",
+    "$RUN_DIR/breadth-b/inventory/10-reconcile.json",
+    "live/breadth-b/10_reconcile.py"
+   ],
+   "remaining": "178 of 295 mechanically derived entry points are named by no ALG statement: {'direct-surface-only': 56, 'product-caller': 26, 'reached-from-covered': 38, 'objectscript-caller-only': 30, 'other-module': 28}. Genuine omissions are the direct-surface-only public class methods (PageRankEmbedded.ComputePageRank*, PageRank.WithUnscored, Communities.KCoreJson/SCCJson, Subgraph.PPRGuidedJson, ArnoAccel.*Json, legacy Traversal.BFS*/KHop2*, NKGAccel facades, VarLength.LastLevelPart, arno_bridge helpers) and the product-caller set (host.py, admin.py, query.py callers); statements or explicit internal/deprecated status are needed for each."
+  },
+  {
+   "gate": "3.1-intent",
+   "status": "open",
+   "reason": "",
+   "evidence": [
+    "experiment/playbook-completion/decisions.md (HD-1001..HD-1004)"
+   ],
+   "remaining": "Owned by the intent lanes: HD-1001..1004 carry working assumptions, not maintainer decisions."
+  },
+  {
+   "gate": "3.2-coverage",
+   "status": "open",
+   "reason": "",
+   "evidence": [
+    "modules/10.json env_features"
+   ],
+   "remaining": "21 IRIS features listed with source lines; the orchestrator's IRIS 2026.1 contract must cover or mark each outside its subset."
+  },
+  {
+   "gate": "3.3-L1",
+   "status": "closed",
+   "reason": "Five small explorer models (cache, nkg, routes, walk, degree) state ALG-I1, ALG-I2, ALG-I3, ALG-I4, ALG-B2.19, ALG-B12.7, ALG-B16.11 as invariants/action properties.",
+   "evidence": [
+    {
+     "kind": "mc",
+     "ref": "m10-cache-as-built-pagerank"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-as-built-ppr"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-control-no-bump-on-create"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-control-silent-delete-pagerank"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-positive-hit"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-positive-stale-skip"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-reviewed-pagerank"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-reviewed-ppr"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-degree-as-built"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-degree-control-distinct-out"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-degree-positive-parallel"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-degree-reviewed"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-as-built-fresh"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-as-built-scope"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-control-ensure-ignores-stale"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-control-walk-merged"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-positive-current-read"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-positive-refusal"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-reviewed"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-as-built-pagerank-cap"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-as-built-pagerank-scope"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-as-built-pagerank-scope-default-only-lib"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-as-built-walk-empty"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-control-no-probe"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-control-owner-cap"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-positive-native"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-reviewed"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-walk-as-built-khop"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-walk-as-built-one-graph"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-walk-control-reset-at-shared"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-walk-positive-two-hops"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-walk-reviewed"
+    }
+   ],
+   "remaining": "Explorer models are bounded executable L1s, not Verus specs."
+  },
+  {
+   "gate": "3.3-L2",
+   "status": "open",
+   "reason": "",
+   "evidence": [
+    {
+     "kind": "mc",
+     "ref": "m10-cache-as-built-ppr"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-as-built-fresh"
+    }
+   ],
+   "remaining": "The cache and nkg machines abstract ^IVG.AlgoCache / ^KG / ^NKG marks; no L2 over the full global layout."
+  },
+  {
+   "gate": "3.3-refinement",
+   "status": "open",
+   "reason": "",
+   "evidence": [],
+   "remaining": "No refinement audit or proof of the module 10 operations against an L1."
+  },
+  {
+   "gate": "3.3-controls",
+   "status": "open",
+   "reason": "Every explorer control is caught (mc), none by a proof.",
+   "evidence": [
+    {
+     "kind": "mc",
+     "ref": "m10-cache-control-no-bump-on-create"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-control-silent-delete-pagerank"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-degree-control-distinct-out"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-control-ensure-ignores-stale"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-control-walk-merged"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-control-no-probe"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-control-owner-cap"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-walk-control-reset-at-shared"
+    }
+   ],
+   "remaining": "Proof-level controls (Verus)."
+  },
+  {
+   "gate": "3.3-model-check",
+   "status": "closed",
+   "reason": "32 of 32 checks met their expectation: {'as-built': {'met': 11, 'not_met': 0}, 'control': {'met': 8, 'not_met': 0}, 'positive': {'met': 7, 'not_met': 0}, 'reviewed': {'met': 6, 'not_met': 0}}; as-built vs reviewed per modelable finding, controls caught, sharpness witnesses reached, AG EF goals in cache and nkg.",
+   "evidence": [
+    {
+     "kind": "mc",
+     "ref": "m10-cache-as-built-pagerank"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-as-built-ppr"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-control-no-bump-on-create"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-control-silent-delete-pagerank"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-positive-hit"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-positive-stale-skip"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-reviewed-pagerank"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-reviewed-ppr"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-degree-as-built"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-degree-control-distinct-out"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-degree-positive-parallel"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-degree-reviewed"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-as-built-fresh"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-as-built-scope"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-control-ensure-ignores-stale"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-control-walk-merged"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-positive-current-read"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-positive-refusal"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-reviewed"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-as-built-pagerank-cap"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-as-built-pagerank-scope"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-as-built-pagerank-scope-default-only-lib"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-as-built-walk-empty"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-control-no-probe"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-control-owner-cap"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-positive-native"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-reviewed"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-walk-as-built-khop"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-walk-as-built-one-graph"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-walk-control-reset-at-shared"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-walk-positive-two-hops"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-walk-reviewed"
+    }
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.3a-writesets",
+   "status": "failed",
+   "reason": "Every (invariant, writer plan) pair is discharged by a guard, a model check, a live observation or a recorded finding; the pairs discharged only by product-defect findings (F-1004 edgeless node write vs ALG-I4; F-1005 PutShadow vs ALG-B12.7) are failed obligations.",
+   "evidence": [
+    "modules/10.json invariant_writesets"
+   ],
+   "remaining": "Fixes or decisions for F-1004 and F-1005."
+  },
+  {
+   "gate": "3.4-statements",
+   "status": "open",
+   "reason": "",
+   "evidence": [],
+   "remaining": "No storage-statement proofs for the cache Put / Lookup or ^NKG writes."
+  },
+  {
+   "gate": "3.4-ownership",
+   "status": "open",
+   "reason": "^IVG.AlgoCache: written by AlgoCache.Put, killed by AlgoCache.Invalidate* and Eraser.InvalidateDerived (documented, ALG-B16.10). ^NKG: BuildNKG (spec 260 D-NKG-WRITER) plus Adjacency.Put interning, Eraser DropNKG and ArnoAccel.BumpVersion's $meta version: several writers. ^KG(\"degc\") (module 04's degree cache) is filled by module 10 reads (Adj.cls:64-79). ^IVG.Deploy(\"routines\") (setup's record) is written by a read path (F-C1001).",
+   "evidence": [
+    "footprints/10.json"
+   ],
+   "remaining": "A mechanical single-owner check with a self-test over these globals."
+  },
+  {
+   "gate": "3.4-storage-order",
+   "status": "closed",
+   "reason": "0 of 109 flagged SQL texts lie in module 10's owned code; the non-SQL prefix cuts reviewed are ordered by a unique key (storage_order.non_sql_prefix_cuts_reviewed).",
+   "evidence": [
+    "$RUN_DIR/checks/storage-order.json",
+    "modules/10.json storage_order"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.4-declared-reads",
+   "status": "open",
+   "reason": "",
+   "evidence": [
+    "footprints/10.json"
+   ],
+   "remaining": "Reads are declared from the static closure; no read-footprint check with a self-test."
+  },
+  {
+   "gate": "3.5-handlers",
+   "status": "failed",
+   "reason": "Several handlers do not perform their stated step (F-1002, F-1003, F-1004, F-1005 narrowed, F-1006, F-1007, F-1008, F-1009, F-1010, F-1013) or write beyond a read's footprint (F-C1001).",
+   "evidence": [
+    {
+     "kind": "finding",
+     "ref": "F-1002"
+    },
+    {
+     "kind": "finding",
+     "ref": "F-1003"
+    },
+    {
+     "kind": "finding",
+     "ref": "F-1004"
+    },
+    {
+     "kind": "finding",
+     "ref": "F-1005"
+    },
+    {
+     "kind": "finding",
+     "ref": "F-1006"
+    },
+    {
+     "kind": "finding",
+     "ref": "F-1007"
+    },
+    {
+     "kind": "finding",
+     "ref": "F-1008"
+    },
+    {
+     "kind": "finding",
+     "ref": "F-1009"
+    },
+    {
+     "kind": "finding",
+     "ref": "F-1010"
+    },
+    {
+     "kind": "finding",
+     "ref": "F-1011"
+    },
+    {
+     "kind": "finding",
+     "ref": "F-1012"
+    },
+    {
+     "kind": "finding",
+     "ref": "F-1013"
+    },
+    {
+     "kind": "finding",
+     "ref": "F-C1001"
+    }
+   ],
+   "remaining": "No handler is proved; the listed defects stay failed."
+  },
+  {
+   "gate": "3.5-lockplans",
+   "status": "open",
+   "reason": "Lock plan: ^IVG.NKGBuild with timeout for rebuilds; every algorithm read is lock-free (ALG-P6); cache freshness relies on the token protocol instead of locks (m10-cache-as-built-pagerank holds within bounds).",
+   "evidence": [
+    "footprints/10.json"
+   ],
+   "remaining": "No lock-plan proof."
+  },
+  {
+   "gate": "3.5-decoders",
+   "status": "open",
+   "reason": "JSON decoders (_scored_node_rows, UnreadableResultShape) and error maps (_raise_store_error, ALG-I5) are unit-tested (349 passed here).",
+   "evidence": [
+    {
+     "kind": "run",
+     "ref": "b-10-run-unit"
+    }
+   ],
+   "remaining": "Not verified."
+  },
+  {
+   "gate": "3.6-row-permutation",
+   "status": "open",
+   "reason": "Rankings break ties by id (R050, unit-tested); F-1006 is an order-dependent answer when two embedding rows match.",
+   "evidence": [
+    {
+     "kind": "run",
+     "ref": "b-10-run-unit"
+    }
+   ],
+   "remaining": "No proof that answers are invariant under row permutation."
+  },
+  {
+   "gate": "3.6-capacity",
+   "status": "failed",
+   "reason": "Capacity conditions: PageRank owner cut at 10,000 rows (silent; F-1003), Arno $ZF heap 34,808 chars (P-1003), answers chunked at 9,000 chars, cache payloads up to 1,000,000 chars (ALG-B16.5).",
+   "evidence": [
+    {
+     "kind": "finding",
+     "ref": "F-1003"
+    },
+    {
+     "kind": "live",
+     "ref": "b-10-live-cap"
+    }
+   ],
+   "remaining": "F-1003 (silent truncation) stays failed; the $ZF limit is a premise."
+  },
+  {
+   "gate": "3.6-frame",
+   "status": "open",
+   "reason": "",
+   "evidence": [],
+   "remaining": "No frame obligations stated for the cache/^NKG writers."
+  },
+  {
+   "gate": "3.6-keys",
+   "status": "failed",
+   "reason": "The PPR cache key (graph, algorithm, param hash) omits the node set it reads (F-1004).",
+   "evidence": [
+    {
+     "kind": "finding",
+     "ref": "F-1004"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-as-built-ppr"
+    }
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.6-fk",
+   "status": "not-applicable",
+   "reason": "Module 10 writes no SQL data row (journal b-10-live-fp: globals ^IVG.AlgoCache, ^NKG, ^KG, work areas; sync's %BuildIndices writes only index storage of rdf_edges/rdf_labels); no foreign key is involved.",
+   "evidence": [
+    "footprints/10.json",
+    "$RUN_DIR/breadth-b/live/10-live-fp.json"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.7-trace-replay",
+   "status": "open",
+   "reason": "",
+   "evidence": [],
+   "remaining": "Live traces (b-10-live-cache, b-10-live-nkg-f1005) are not replayed through the machines."
+  },
+  {
+   "gate": "3.7-lock-log",
+   "status": "open",
+   "reason": "",
+   "evidence": [],
+   "remaining": "No statement/lock log checked against the lock plan."
+  },
+  {
+   "gate": "3.7-mutation",
+   "status": "open",
+   "reason": "",
+   "evidence": [],
+   "remaining": "No mutation testing of module 10's unverified layers."
+  },
+  {
+   "gate": "3.8-findings-disposed",
+   "status": "closed",
+   "reason": "All 13 original findings carry a disposition with evidence ({'blocked-access': 1, 'reproduced-live': 8, 'confirmed-source': 3, 'reproduced-test': 1}); 1 new.",
+   "evidence": [
+    "findings/audit/10.json"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "5c-refusals",
+   "status": "open",
+   "reason": "30 X statements: 17 upstream-tested, 13 inspected only at the uplift; live here: holds ['ALG-B1.5', 'ALG-B10.6', 'ALG-B2.10', 'ALG-B2.13', 'ALG-B2.2', 'ALG-B2.8', 'ALG-B2.9', 'ALG-B5.10', 'ALG-B5.17', 'ALG-B5.22', 'ALG-B5.3', 'ALG-B6.7', 'ALG-B8.10'], not holding []; ALG-B7 refusal seen live (b-10-live-nkg).",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-10-live-refusals"
+    },
+    {
+     "kind": "run",
+     "ref": "b-10-run-unit"
+    }
+   ],
+   "remaining": "ALG-B5.5, B5.21 (store without a method), B9.3 (read-only login), B12.3 (concurrent rebuild wait), B12.8 (failing rebuild), B13.3, B15.x (gate) are not exercised live."
+  },
+  {
+   "gate": "3.7-explorers",
+   "status": "closed",
+   "reason": "Module 10's explorer checks ran (product-scope gate; module evidence).",
+   "evidence": [
+    {
+     "kind": "mc",
+     "ref": "m10-cache-as-built-pagerank"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-as-built-ppr"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-control-no-bump-on-create"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-control-silent-delete-pagerank"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-positive-hit"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-positive-stale-skip"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-reviewed-pagerank"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-reviewed-ppr"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-degree-as-built"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-degree-control-distinct-out"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-degree-positive-parallel"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-degree-reviewed"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-as-built-fresh"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-as-built-scope"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-control-ensure-ignores-stale"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-control-walk-merged"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-positive-current-read"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-positive-refusal"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-reviewed"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-as-built-pagerank-cap"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-as-built-pagerank-scope"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-as-built-pagerank-scope-default-only-lib"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-as-built-walk-empty"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-control-no-probe"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-control-owner-cap"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-positive-native"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-reviewed"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-walk-as-built-khop"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-walk-as-built-one-graph"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-walk-control-reset-at-shared"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-walk-positive-two-hops"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-walk-reviewed"
+    }
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.7-suites",
+   "status": "open",
+   "reason": "349 IRIS-free module-10 unit tests passed; IRIS-backed upstream suites were not run (their fixture compiles classes).",
+   "evidence": [
+    {
+     "kind": "run",
+     "ref": "b-10-run-unit"
+    }
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.3-progress-controls",
+   "status": "open",
+   "reason": "AG EF goals hold in the reviewed cache and nkg machines; no progress-only control.",
+   "evidence": [
+    {
+     "kind": "mc",
+     "ref": "m10-cache-reviewed-ppr"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-reviewed"
+    }
+   ],
+   "remaining": ""
+  }
+ ],
+ "gates_by_id": {
+  "3.1-parent": {
+   "status": "closed",
+   "reason": "ontology_index.py --check --only 10: every ALG parent id resolves (0 violations).",
+   "evidence": [
+    {
+     "kind": "check",
+     "ref": "b-10-check-ontology-index"
+    }
+   ],
+   "remaining": ""
+  },
+  "3.1-grade": {
+   "status": "closed",
+   "reason": "ontology_index.py --check --only 10: every ALG statement at Flesch-Kincaid grade <= 8.",
+   "evidence": [
+    {
+     "kind": "check",
+     "ref": "b-10-check-ontology-index"
+    }
+   ],
+   "remaining": ""
+  },
+  "3.1-terms": {
+   "status": "failed",
+   "reason": "Literal rule (HD-0001): 36 ALG statement/term pairs are out of scope (b-check-literal-scope-07-11). Lexical-scope reading: 0 violations; literal rule adopted by decisions.md HD-0001: 36 statement/term pairs in 30 ALG statements fail.",
+   "evidence": [
+    {
+     "kind": "check",
+     "ref": "b-10-check-literal-scope"
+    },
+    {
+     "kind": "check",
+     "ref": "b-10-check-ontology-index"
+    },
+    "check:b-check-literal-scope-07-11"
+   ],
+   "remaining": "Rewrite or reparent the 30 ALG statements (orchestrator's ontology lane).",
+   "review_note": "lane B integration review 2026-11-14: open -> failed (a registered check fails; observation-only, not fixed)"
+  },
+  "3.1-cells": {
+   "status": "closed",
+   "reason": "All 51 cells have an outcome; 6 are 'open', each assigned to HD-1001 (random walk), which decisions.md gives a working assumption; every cell maps to at least one entry point (inventory cell_map).",
+   "evidence": [
+    "experiment/playbook-uplift/ontology/10-algorithms.md (Cells)",
+    "experiment/playbook-completion/decisions.md (HD-1001)",
+    "models/breadth-b/inventory/10.json"
+   ],
+   "remaining": ""
+  },
+  "3.1-coverage": {
+   "status": "open",
+   "reason": "Reconciled mechanically: other-module (cypher procs, builders, other modules' writers) and reached-from-covered entries are not omissions.",
+   "evidence": [
+    "models/breadth-b/inventory/10.json",
+    "$RUN_DIR/breadth-b/inventory/10-reconcile.json",
+    "live/breadth-b/10_reconcile.py"
+   ],
+   "remaining": "178 of 295 mechanically derived entry points are named by no ALG statement: {'direct-surface-only': 56, 'product-caller': 26, 'reached-from-covered': 38, 'objectscript-caller-only': 30, 'other-module': 28}. Genuine omissions are the direct-surface-only public class methods (PageRankEmbedded.ComputePageRank*, PageRank.WithUnscored, Communities.KCoreJson/SCCJson, Subgraph.PPRGuidedJson, ArnoAccel.*Json, legacy Traversal.BFS*/KHop2*, NKGAccel facades, VarLength.LastLevelPart, arno_bridge helpers) and the product-caller set (host.py, admin.py, query.py callers); statements or explicit internal/deprecated status are needed for each."
+  },
+  "3.1-intent": {
+   "status": "open",
+   "reason": "",
+   "evidence": [
+    "experiment/playbook-completion/decisions.md (HD-1001..HD-1004)"
+   ],
+   "remaining": "Owned by the intent lanes: HD-1001..1004 carry working assumptions, not maintainer decisions."
+  },
+  "3.2-coverage": {
+   "status": "open",
+   "reason": "",
+   "evidence": [
+    "modules/10.json env_features"
+   ],
+   "remaining": "21 IRIS features listed with source lines; the orchestrator's IRIS 2026.1 contract must cover or mark each outside its subset."
+  },
+  "3.3-L1": {
+   "status": "closed",
+   "reason": "Five small explorer models (cache, nkg, routes, walk, degree) state ALG-I1, ALG-I2, ALG-I3, ALG-I4, ALG-B2.19, ALG-B12.7, ALG-B16.11 as invariants/action properties.",
+   "evidence": [
+    {
+     "kind": "mc",
+     "ref": "m10-cache-as-built-pagerank"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-as-built-ppr"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-control-no-bump-on-create"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-control-silent-delete-pagerank"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-positive-hit"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-positive-stale-skip"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-reviewed-pagerank"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-reviewed-ppr"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-degree-as-built"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-degree-control-distinct-out"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-degree-positive-parallel"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-degree-reviewed"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-as-built-fresh"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-as-built-scope"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-control-ensure-ignores-stale"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-control-walk-merged"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-positive-current-read"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-positive-refusal"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-reviewed"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-as-built-pagerank-cap"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-as-built-pagerank-scope"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-as-built-pagerank-scope-default-only-lib"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-as-built-walk-empty"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-control-no-probe"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-control-owner-cap"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-positive-native"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-reviewed"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-walk-as-built-khop"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-walk-as-built-one-graph"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-walk-control-reset-at-shared"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-walk-positive-two-hops"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-walk-reviewed"
+    }
+   ],
+   "remaining": "Explorer models are bounded executable L1s, not Verus specs."
+  },
+  "3.3-L2": {
+   "status": "open",
+   "reason": "",
+   "evidence": [
+    {
+     "kind": "mc",
+     "ref": "m10-cache-as-built-ppr"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-as-built-fresh"
+    }
+   ],
+   "remaining": "The cache and nkg machines abstract ^IVG.AlgoCache / ^KG / ^NKG marks; no L2 over the full global layout."
+  },
+  "3.3-refinement": {
+   "status": "open",
+   "reason": "",
+   "evidence": [],
+   "remaining": "No refinement audit or proof of the module 10 operations against an L1."
+  },
+  "3.3-controls": {
+   "status": "open",
+   "reason": "Every explorer control is caught (mc), none by a proof.",
+   "evidence": [
+    {
+     "kind": "mc",
+     "ref": "m10-cache-control-no-bump-on-create"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-control-silent-delete-pagerank"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-degree-control-distinct-out"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-control-ensure-ignores-stale"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-control-walk-merged"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-control-no-probe"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-control-owner-cap"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-walk-control-reset-at-shared"
+    }
+   ],
+   "remaining": "Proof-level controls (Verus)."
+  },
+  "3.3-model-check": {
+   "status": "closed",
+   "reason": "32 of 32 checks met their expectation: {'as-built': {'met': 11, 'not_met': 0}, 'control': {'met': 8, 'not_met': 0}, 'positive': {'met': 7, 'not_met': 0}, 'reviewed': {'met': 6, 'not_met': 0}}; as-built vs reviewed per modelable finding, controls caught, sharpness witnesses reached, AG EF goals in cache and nkg.",
+   "evidence": [
+    {
+     "kind": "mc",
+     "ref": "m10-cache-as-built-pagerank"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-as-built-ppr"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-control-no-bump-on-create"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-control-silent-delete-pagerank"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-positive-hit"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-positive-stale-skip"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-reviewed-pagerank"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-reviewed-ppr"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-degree-as-built"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-degree-control-distinct-out"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-degree-positive-parallel"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-degree-reviewed"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-as-built-fresh"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-as-built-scope"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-control-ensure-ignores-stale"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-control-walk-merged"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-positive-current-read"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-positive-refusal"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-reviewed"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-as-built-pagerank-cap"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-as-built-pagerank-scope"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-as-built-pagerank-scope-default-only-lib"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-as-built-walk-empty"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-control-no-probe"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-control-owner-cap"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-positive-native"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-reviewed"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-walk-as-built-khop"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-walk-as-built-one-graph"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-walk-control-reset-at-shared"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-walk-positive-two-hops"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-walk-reviewed"
+    }
+   ],
+   "remaining": ""
+  },
+  "3.3a-writesets": {
+   "status": "failed",
+   "reason": "Every (invariant, writer plan) pair is discharged by a guard, a model check, a live observation or a recorded finding; the pairs discharged only by product-defect findings (F-1004 edgeless node write vs ALG-I4; F-1005 PutShadow vs ALG-B12.7) are failed obligations.",
+   "evidence": [
+    "modules/10.json invariant_writesets"
+   ],
+   "remaining": "Fixes or decisions for F-1004 and F-1005."
+  },
+  "3.4-statements": {
+   "status": "open",
+   "reason": "",
+   "evidence": [],
+   "remaining": "No storage-statement proofs for the cache Put / Lookup or ^NKG writes."
+  },
+  "3.4-ownership": {
+   "status": "open",
+   "reason": "^IVG.AlgoCache: written by AlgoCache.Put, killed by AlgoCache.Invalidate* and Eraser.InvalidateDerived (documented, ALG-B16.10). ^NKG: BuildNKG (spec 260 D-NKG-WRITER) plus Adjacency.Put interning, Eraser DropNKG and ArnoAccel.BumpVersion's $meta version: several writers. ^KG(\"degc\") (module 04's degree cache) is filled by module 10 reads (Adj.cls:64-79). ^IVG.Deploy(\"routines\") (setup's record) is written by a read path (F-C1001).",
+   "evidence": [
+    "footprints/10.json"
+   ],
+   "remaining": "A mechanical single-owner check with a self-test over these globals."
+  },
+  "3.4-storage-order": {
+   "status": "closed",
+   "reason": "0 of 109 flagged SQL texts lie in module 10's owned code; the non-SQL prefix cuts reviewed are ordered by a unique key (storage_order.non_sql_prefix_cuts_reviewed).",
+   "evidence": [
+    "$RUN_DIR/checks/storage-order.json",
+    "modules/10.json storage_order"
+   ],
+   "remaining": ""
+  },
+  "3.4-declared-reads": {
+   "status": "open",
+   "reason": "",
+   "evidence": [
+    "footprints/10.json"
+   ],
+   "remaining": "Reads are declared from the static closure; no read-footprint check with a self-test."
+  },
+  "3.5-handlers": {
+   "status": "failed",
+   "reason": "Several handlers do not perform their stated step (F-1002, F-1003, F-1004, F-1005 narrowed, F-1006, F-1007, F-1008, F-1009, F-1010, F-1013) or write beyond a read's footprint (F-C1001).",
+   "evidence": [
+    {
+     "kind": "finding",
+     "ref": "F-1002"
+    },
+    {
+     "kind": "finding",
+     "ref": "F-1003"
+    },
+    {
+     "kind": "finding",
+     "ref": "F-1004"
+    },
+    {
+     "kind": "finding",
+     "ref": "F-1005"
+    },
+    {
+     "kind": "finding",
+     "ref": "F-1006"
+    },
+    {
+     "kind": "finding",
+     "ref": "F-1007"
+    },
+    {
+     "kind": "finding",
+     "ref": "F-1008"
+    },
+    {
+     "kind": "finding",
+     "ref": "F-1009"
+    },
+    {
+     "kind": "finding",
+     "ref": "F-1010"
+    },
+    {
+     "kind": "finding",
+     "ref": "F-1011"
+    },
+    {
+     "kind": "finding",
+     "ref": "F-1012"
+    },
+    {
+     "kind": "finding",
+     "ref": "F-1013"
+    },
+    {
+     "kind": "finding",
+     "ref": "F-C1001"
+    }
+   ],
+   "remaining": "No handler is proved; the listed defects stay failed."
+  },
+  "3.5-lockplans": {
+   "status": "open",
+   "reason": "Lock plan: ^IVG.NKGBuild with timeout for rebuilds; every algorithm read is lock-free (ALG-P6); cache freshness relies on the token protocol instead of locks (m10-cache-as-built-pagerank holds within bounds).",
+   "evidence": [
+    "footprints/10.json"
+   ],
+   "remaining": "No lock-plan proof."
+  },
+  "3.5-decoders": {
+   "status": "open",
+   "reason": "JSON decoders (_scored_node_rows, UnreadableResultShape) and error maps (_raise_store_error, ALG-I5) are unit-tested (349 passed here).",
+   "evidence": [
+    {
+     "kind": "run",
+     "ref": "b-10-run-unit"
+    }
+   ],
+   "remaining": "Not verified."
+  },
+  "3.6-row-permutation": {
+   "status": "open",
+   "reason": "Rankings break ties by id (R050, unit-tested); F-1006 is an order-dependent answer when two embedding rows match.",
+   "evidence": [
+    {
+     "kind": "run",
+     "ref": "b-10-run-unit"
+    }
+   ],
+   "remaining": "No proof that answers are invariant under row permutation."
+  },
+  "3.6-capacity": {
+   "status": "failed",
+   "reason": "Capacity conditions: PageRank owner cut at 10,000 rows (silent; F-1003), Arno $ZF heap 34,808 chars (P-1003), answers chunked at 9,000 chars, cache payloads up to 1,000,000 chars (ALG-B16.5).",
+   "evidence": [
+    {
+     "kind": "finding",
+     "ref": "F-1003"
+    },
+    {
+     "kind": "live",
+     "ref": "b-10-live-cap"
+    }
+   ],
+   "remaining": "F-1003 (silent truncation) stays failed; the $ZF limit is a premise."
+  },
+  "3.6-frame": {
+   "status": "open",
+   "reason": "",
+   "evidence": [],
+   "remaining": "No frame obligations stated for the cache/^NKG writers."
+  },
+  "3.6-keys": {
+   "status": "failed",
+   "reason": "The PPR cache key (graph, algorithm, param hash) omits the node set it reads (F-1004).",
+   "evidence": [
+    {
+     "kind": "finding",
+     "ref": "F-1004"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-as-built-ppr"
+    }
+   ],
+   "remaining": ""
+  },
+  "3.6-fk": {
+   "status": "not-applicable",
+   "reason": "Module 10 writes no SQL data row (journal b-10-live-fp: globals ^IVG.AlgoCache, ^NKG, ^KG, work areas; sync's %BuildIndices writes only index storage of rdf_edges/rdf_labels); no foreign key is involved.",
+   "evidence": [
+    "footprints/10.json",
+    "$RUN_DIR/breadth-b/live/10-live-fp.json"
+   ],
+   "remaining": ""
+  },
+  "3.7-trace-replay": {
+   "status": "open",
+   "reason": "",
+   "evidence": [],
+   "remaining": "Live traces (b-10-live-cache, b-10-live-nkg-f1005) are not replayed through the machines."
+  },
+  "3.7-lock-log": {
+   "status": "open",
+   "reason": "",
+   "evidence": [],
+   "remaining": "No statement/lock log checked against the lock plan."
+  },
+  "3.7-mutation": {
+   "status": "open",
+   "reason": "",
+   "evidence": [],
+   "remaining": "No mutation testing of module 10's unverified layers."
+  },
+  "3.8-findings-disposed": {
+   "status": "closed",
+   "reason": "All 13 original findings carry a disposition with evidence ({'blocked-access': 1, 'reproduced-live': 8, 'confirmed-source': 3, 'reproduced-test': 1}); 1 new.",
+   "evidence": [
+    "findings/audit/10.json"
+   ],
+   "remaining": ""
+  },
+  "5c-refusals": {
+   "status": "open",
+   "reason": "30 X statements: 17 upstream-tested, 13 inspected only at the uplift; live here: holds ['ALG-B1.5', 'ALG-B10.6', 'ALG-B2.10', 'ALG-B2.13', 'ALG-B2.2', 'ALG-B2.8', 'ALG-B2.9', 'ALG-B5.10', 'ALG-B5.17', 'ALG-B5.22', 'ALG-B5.3', 'ALG-B6.7', 'ALG-B8.10'], not holding []; ALG-B7 refusal seen live (b-10-live-nkg).",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-10-live-refusals"
+    },
+    {
+     "kind": "run",
+     "ref": "b-10-run-unit"
+    }
+   ],
+   "remaining": "ALG-B5.5, B5.21 (store without a method), B9.3 (read-only login), B12.3 (concurrent rebuild wait), B12.8 (failing rebuild), B13.3, B15.x (gate) are not exercised live."
+  },
+  "3.7-explorers": {
+   "status": "closed",
+   "reason": "Module 10's explorer checks ran (product-scope gate; module evidence).",
+   "evidence": [
+    {
+     "kind": "mc",
+     "ref": "m10-cache-as-built-pagerank"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-as-built-ppr"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-control-no-bump-on-create"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-control-silent-delete-pagerank"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-positive-hit"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-positive-stale-skip"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-reviewed-pagerank"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-cache-reviewed-ppr"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-degree-as-built"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-degree-control-distinct-out"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-degree-positive-parallel"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-degree-reviewed"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-as-built-fresh"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-as-built-scope"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-control-ensure-ignores-stale"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-control-walk-merged"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-positive-current-read"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-positive-refusal"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-reviewed"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-as-built-pagerank-cap"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-as-built-pagerank-scope"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-as-built-pagerank-scope-default-only-lib"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-as-built-walk-empty"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-control-no-probe"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-control-owner-cap"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-positive-native"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-routes-reviewed"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-walk-as-built-khop"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-walk-as-built-one-graph"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-walk-control-reset-at-shared"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-walk-positive-two-hops"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-walk-reviewed"
+    }
+   ],
+   "remaining": ""
+  },
+  "3.7-suites": {
+   "status": "open",
+   "reason": "349 IRIS-free module-10 unit tests passed; IRIS-backed upstream suites were not run (their fixture compiles classes).",
+   "evidence": [
+    {
+     "kind": "run",
+     "ref": "b-10-run-unit"
+    }
+   ],
+   "remaining": ""
+  },
+  "3.3-progress-controls": {
+   "status": "open",
+   "reason": "AG EF goals hold in the reviewed cache and nkg machines; no progress-only control.",
+   "evidence": [
+    {
+     "kind": "mc",
+     "ref": "m10-cache-reviewed-ppr"
+    },
+    {
+     "kind": "mc",
+     "ref": "m10-nkg-reviewed"
+    }
+   ],
+   "remaining": ""
+  }
+ },
+ "entry_point_omissions": {
+  "method": "live/breadth-b/10_reconcile.py over models/breadth-b/inventory/10.json (statement covers an entry point when it cites its file with an overlapping line range or names it)",
+  "summary": {
+   "direct-surface-only": 56,
+   "product-caller": 26,
+   "reached-from-covered": 38,
+   "objectscript-caller-only": 30,
+   "other-module": 28
+  },
+  "genuine": [
+   "cls:Graph.KG.ArnoAccel.BumpVersion",
+   "cls:Graph.KG.ArnoAccel.CDLPJson",
+   "cls:Graph.KG.ArnoAccel.GetLibPath",
+   "cls:Graph.KG.ArnoAccel.LibExists",
+   "cls:Graph.KG.ArnoAccel.LibraryVersion",
+   "cls:Graph.KG.ArnoAccel.LoadedPath",
+   "cls:Graph.KG.ArnoAccel.PPRJson",
+   "cls:Graph.KG.ArnoAccel.PageRankGlobalJson",
+   "cls:Graph.KG.ArnoAccel.SubgraphJson",
+   "cls:Graph.KG.ArnoAccel.WCCJson",
+   "cls:Graph.KG.Communities.ClosenessJsonPy",
+   "cls:Graph.KG.Communities.KCoreJson",
+   "cls:Graph.KG.Communities.SCCJson",
+   "cls:Graph.KG.NKGAccel.BetweennessGlobal",
+   "cls:Graph.KG.NKGAccel.BetweennessGlobalParallel",
+   "cls:Graph.KG.NKGAccel.BetweennessWorker",
+   "cls:Graph.KG.NKGAccel.BuildNKGRust",
+   "cls:Graph.KG.NKGAccel.Capabilities",
+   "cls:Graph.KG.NKGAccel.ClosenessGlobal",
+   "cls:Graph.KG.NKGAccel.ClosenessGlobalMSBFS",
+   "cls:Graph.KG.NKGAccel.EigenvectorGlobal",
+   "cls:Graph.KG.NKGAccel.ExportAdjacency",
+   "cls:Graph.KG.NKGAccel.GetFirstNKGNode",
+   "cls:Graph.KG.NKGAccel.IsLoaded",
+   "cls:Graph.KG.NKGAccel.KHopJson",
+   "cls:Graph.KG.NKGAccel.KHopNeighbors",
+   "cls:Graph.KG.NKGAccel.KHopNeighborsSorted",
+   "cls:Graph.KG.NKGAccel.Load",
+   "cls:Graph.KG.NKGAccel.LoadedPath",
+   "cls:Graph.KG.NKGAccel.ReadKHopResults",
+   "cls:Graph.KG.NKGAccel.ReadLargeOutChunk",
+   "cls:Graph.KG.NKGAccel.ResetCache",
+   "cls:Graph.KG.NKGAccel.ShortestPathNKG",
+   "cls:Graph.KG.NKGAccel.Unload",
+   "cls:Graph.KG.NKGAccel.UseNKG",
+   "cls:Graph.KG.NKGAccel.WarmAdjCache",
+   "cls:Graph.KG.NKGAccelLoader.LoadError",
+   "cls:Graph.KG.NKGAccelTraversal.LastBfsChunks",
+   "cls:Graph.KG.NKGAccelTraversal.LastBfsError",
+   "cls:Graph.KG.NKGAccelTraversal.LastBfsPath",
+   "cls:Graph.KG.PageRank.WithUnscored",
+   "cls:Graph.KG.PageRankEmbedded.ComputePageRank",
+   "cls:Graph.KG.PageRankEmbedded.ComputePageRankWithMetrics",
+   "cls:Graph.KG.Subgraph.PPRGuidedJson",
+   "cls:Graph.KG.Traversal.BFS",
+   "cls:Graph.KG.Traversal.BFSFast",
+   "cls:Graph.KG.Traversal.BFSFastCountDistinct",
+   "cls:Graph.KG.Traversal.BFSFastJsonChunked",
+   "cls:Graph.KG.Traversal.BFSFastJsonDirect",
+   "cls:Graph.KG.Traversal.BFSFastStream",
+   "cls:Graph.KG.Traversal.BFSJSON",
+   "cls:Graph.KG.Traversal.DijkstraJson",
+   "cls:Graph.KG.Traversal.KHop2Count",
+   "cls:Graph.KG.Traversal.KHop2CountExact",
+   "cls:Graph.KG.Traversal.KHop2CountFast",
+   "cls:Graph.KG.Traversal.KHop2NeighborIds",
+   "cls:Graph.KG.Traversal.ReadBFSChunk",
+   "cls:Graph.KG.Traversal.ReadBFSPage",
+   "cls:Graph.KG.Traversal.ReadBFSResultsStream",
+   "cls:Graph.KG.Traversal.ReadLargeOutChunk",
+   "cls:Graph.KG.TraversalBFS.ReachTypes",
+   "cls:Graph.KG.TraversalPaths.DijkstraCost",
+   "cls:Graph.KG.VarLength.LastLevelPart",
+   "eng:IRISGraphEngine.kg_GRAPH_WALK_TVF",
+   "eng:IRISGraphEngine.kg_RERANK",
+   "py:iris_vector_graph/_arno_gate.py:cdlp_equivalent",
+   "py:iris_vector_graph/_arno_gate.py:partition_similarity",
+   "py:iris_vector_graph/_arno_gate.py:repeats_identical",
+   "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_GRAPH_WALK_TVF",
+   "py:iris_vector_graph/stores/arno_bridge.py:arno_available",
+   "py:iris_vector_graph/stores/arno_bridge.py:arno_call",
+   "py:iris_vector_graph/stores/arno_bridge.py:build_kg_adjacency_json",
+   "py:iris_vector_graph/stores/arno_bridge.py:clear_probe_cache",
+   "py:iris_vector_graph/stores/arno_bridge.py:configured_lib_path",
+   "py:iris_vector_graph/stores/arno_bridge.py:loader_args",
+   "py:iris_vector_graph/stores/arno_bridge.py:record_configured_lib_path",
+   "py:iris_vector_graph/stores/arno_bridge.py:remap_kernel_ids",
+   "py:iris_vector_graph/stores/arno_bridge.py:resolve_lib_path",
+   "py:iris_vector_graph/stores/arno_bridge.py:wrapper_ddls",
+   "py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.execute_vl_ends",
+   "py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.execute_wcc",
+   "py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.shortest_path_length"
+  ],
+  "wrappers": [
+   "cls:Graph.KG.NKGAccelAdjacency.ExportAdjacency",
+   "cls:Graph.KG.NKGAccelAdjacency.ReadKHopResults",
+   "cls:Graph.KG.NKGAccelAdjacency.ReadLargeOutChunk",
+   "cls:Graph.KG.NKGAccelCentrality.BetweennessGlobal",
+   "cls:Graph.KG.NKGAccelCentrality.BetweennessGlobalParallel",
+   "cls:Graph.KG.NKGAccelCentrality.BetweennessWorker",
+   "cls:Graph.KG.NKGAccelCentrality.ClosenessGlobal",
+   "cls:Graph.KG.NKGAccelCentrality.ClosenessGlobalMSBFS",
+   "cls:Graph.KG.NKGAccelLoader.BuildNKGRust",
+   "cls:Graph.KG.NKGAccelLoader.Capabilities",
+   "cls:Graph.KG.NKGAccelLoader.GetFirstNKGNode",
+   "cls:Graph.KG.NKGAccelLoader.LoadedPath",
+   "cls:Graph.KG.NKGAccelLoader.ResetCache",
+   "cls:Graph.KG.NKGAccelLoader.Unload",
+   "cls:Graph.KG.NKGAccelLoader.WarmAdjCache",
+   "cls:Graph.KG.NKGAccelTraversal.KHopJson",
+   "cls:Graph.KG.NKGAccelTraversal.KHopNeighborsSorted",
+   "cls:Graph.KG.NKGAccelTraversal.ShortestPathNKG",
+   "cls:Graph.KG.Traversal.DijkstraProc",
+   "cls:Graph.KG.TraversalBFS.BFSFastCountDistinct",
+   "cls:Graph.KG.TraversalBFS.BFSFastJsonChunked",
+   "cls:Graph.KG.TraversalBFS.BFSFastJsonDirect",
+   "cls:Graph.KG.TraversalBFS.BFSFastStream",
+   "cls:Graph.KG.TraversalBFS.BFSJSON",
+   "cls:Graph.KG.TraversalBFS.ReadBFSChunk",
+   "cls:Graph.KG.TraversalBFS.ReadBFSPage",
+   "cls:Graph.KG.TraversalBFS.ReadBFSResultsStream",
+   "cls:Graph.KG.TraversalBFS.ReadLargeOutChunk",
+   "cls:Graph.KG.TraversalKHop.KHop2NeighborIds",
+   "cls:Graph.KG.VarLength.NamedEnds"
+  ],
+  "cells_without_entry_point": [],
+  "entry_points_in_no_cell": 256
+ },
+ "invariant_writesets": [
+  {
+   "invariant": "ALG-I4 / ALG-B16.11 / ALG-B2.19 (a served cached answer equals a fresh computation)",
+   "reads": [
+    "^IVG.AlgoCache",
+    "^KG(\"__version\")",
+    "Graph_KG.nodes",
+    "^KG(\"out\")"
+   ],
+   "plans": [
+    {
+     "plan": "ext:IRISGraphEngine.create_edge (Adjacency.Put)",
+     "writes": [
+      "^KG(\"out\")",
+      "^KG(\"__version\")"
+     ],
+     "discharge": "guard: $Increment ^KG(\"__version\") (Adjacency.cls:131-136); mc m10-cache-reviewed-ppr"
+    },
+    {
+     "plan": "ext:IRISGraphEngine.create_node (edgeless)",
+     "writes": [
+      "Graph_KG.nodes",
+      "Graph_KG.rdf_props"
+     ],
+     "discharge": "finding F-1004 (live b-10-live-cache; mc m10-cache-as-built-ppr); PageRank's R313 node-token key covers global PageRank (mc m10-cache-as-built-pagerank)"
+    },
+    {
+     "plan": "ext:IRISGraphEngine.delete_node (Eraser.EraseNodeIds)",
+     "writes": [
+      "Graph_KG.nodes",
+      "^KG",
+      "^IVG.AlgoCache (Kill)"
+     ],
+     "discharge": "guard: InvalidateDerived bumps the token and kills the cache (Eraser.cls:1038-1053; live b-10-live-cache)"
+    },
+    {
+     "plan": "ext:Graph.KG.Eraser.EraseGraph",
+     "writes": [
+      "rows",
+      "^KG",
+      "^IVG.AlgoCache (Kill)"
+     ],
+     "discharge": "guard: InvalidateDerived (Eraser.cls:1038-1053)"
+    },
+    {
+     "plan": "ext:Graph.KG.Adjacency.PutShadow",
+     "writes": [
+      "^KG(\"out\")",
+      "^KG(\"__version\")"
+     ],
+     "discharge": "guard: $Increment token (Adjacency.cls:131-136)"
+    },
+    {
+     "plan": "cls:Graph.KG.AlgoCache.Put",
+     "writes": [
+      "^IVG.AlgoCache"
+     ],
+     "discharge": "token read before compute (AlgoCache.cls:1-13); mc m10-cache-as-built-pagerank, m10-cache-reviewed-*"
+    }
+   ]
+  },
+  {
+   "invariant": "ALG-B12.7 / SYS-I8 (a snapshot reader sees the adjacency index's edges or learns it is stale)",
+   "reads": [
+    "^NKG",
+    "^NKG(\"$meta\")",
+    "^KG(\"out\")"
+   ],
+   "plans": [
+    {
+     "plan": "ext:IRISGraphEngine.create_edge (Adjacency.Put)",
+     "writes": [
+      "^KG",
+      "^NKG (interned when built)"
+     ],
+     "discharge": "guard: Put interns (Adjacency.cls:94-105); mc m10-nkg-reviewed"
+    },
+    {
+     "plan": "ext:Graph.KG.Adjacency.PutShadow",
+     "writes": [
+      "^KG",
+      "^KG(\"__version\")"
+     ],
+     "discharge": "finding F-1005 (live b-10-live-nkg-f1005; mc m10-nkg-as-built-fresh)"
+    },
+    {
+     "plan": "Adjacency.Remove (last named edge)",
+     "writes": [
+      "^KG",
+      "^NKG",
+      "^NKG(\"$meta\",\"stale\")"
+     ],
+     "discharge": "guard: stale mark (Adjacency.cls:169-180); live b-10-live-nkg (fp-betweenness-stale-rebuild)"
+    },
+    {
+     "plan": "ext:Graph.KG.Eraser.EraseGraph",
+     "writes": [
+      "^NKG (DropNKG)",
+      "^NKG(\"$meta\",\"invalidated\")"
+     ],
+     "discharge": "guard: InvalidateDerived (Eraser.cls:1038-1046); mc m10-nkg-reviewed"
+    },
+    {
+     "plan": "eng:IRISGraphEngine.sync / ext:Graph.KG.TraversalBuild.EnsureNKG",
+     "writes": [
+      "^NKG"
+     ],
+     "discharge": "rebuild from ^KG under ^IVG.NKGBuild (TraversalBuild.cls:288-298, :399-424)"
+    }
+   ]
+  },
+  {
+   "invariant": "ALG-I6 (a read algorithm changes no content; it writes only its work areas and caches)",
+   "reads": [
+    "Graph_KG tables",
+    "^KG",
+    "^NKG"
+   ],
+   "plans": [
+    {
+     "plan": "17 journal-validated module-10 readers (footprints/10.json)",
+     "writes": [
+      "^IVG.AlgoCache",
+      "^KG(\"degc\") degree cache",
+      "^NKG (EnsureNKG rebuild)",
+      "^IVG.BuiltFrom",
+      "^bc*/^ArnoKG work areas"
+     ],
+     "discharge": "live b-10-live-fp: caches and work areas only, no SQL data row"
+    },
+    {
+     "plan": "eng:IRISGraphEngine.triangle_count (Arno probe path)",
+     "writes": [
+      "^IVG.Deploy(\"routines\")",
+      "class dictionary (^oddDEP, ^oddTSQL): 12 SQL functions"
+     ],
+     "discharge": "finding F-C1001 (live b-10-live-fp, b-10-live-fp-detail)"
+    }
+   ]
+  }
+ ],
+ "env_features": [
+  {
+   "feature": "$Increment on a global as a cross-process version token (^KG(\"__version\"), ^NKG(\"$meta\",\"version\")); atomic, never rolled back (P-1002)",
+   "used_for": "result-cache token and snapshot version",
+   "source": "iris_src/src/Graph/KG/ArnoAccel.cls:299-303; iris_src/src/Graph/KG/Adjacency.cls:131-136"
+  },
+  {
+   "feature": "LOCK +name:timeout with $TEST (exclusive, incremental) on ^IVG.NKGBuild",
+   "used_for": "one ^NKG rebuild at a time (ALG-B12.3)",
+   "source": "iris_src/src/Graph/KG/TraversalBuild.cls:288-298, :410-424"
+  },
+  {
+   "feature": "lock-free global reads concurrent with writers (read-uncommitted visibility of ^KG/^NKG; a long run may see a mix, ALG-P6)",
+   "used_for": "every algorithm's reads",
+   "source": "iris_src/src/Graph/KG/PageRank.cls:87-116; iris_src/src/Graph/KG/NKGAccelTraversal.cls:187-222"
+  },
+  {
+   "feature": "$Order / $Data traversal in subscript collation order (canonical numbers first, then strings)",
+   "used_for": "deterministic ranking and tie order; cut after ordering (PageRank 10,000 rows)",
+   "source": "iris_src/src/Graph/KG/PageRank.cls:500-521; iris_vector_graph/_engine/algorithms.py:392-420"
+  },
+  {
+   "feature": "process-private globals ^||name (not journaled, per process)",
+   "used_for": "work areas (^||PPR, ^||walkNbrs, ^||LargeOut, ^||IVG.CPUs, ^||NKGAccel)",
+   "source": "iris_src/src/Graph/KG/PageRank.cls:506-521; iris_src/src/Graph/KG/NKGAccelTraversal.cls:198-205; iris_src/src/Graph/KG/NKGAccelAdjacency.cls:217-228; iris_src/src/Graph/KG/VarLength.cls:263-270"
+  },
+  {
+   "feature": "IRISTEMP globals ^IRIS.Temp.* shared across worker processes (not journaled)",
+   "used_for": "variable-length walk partitions",
+   "source": "iris_src/src/Graph/KG/VarLength.cls:342-404"
+  },
+  {
+   "feature": "persistent per-pid work globals killed after use (^bcParSrc, ^bcParScore, ^bcBitAdj; ^ArnoKG(\"bfs_r\"/\"bfs_chunk\"))",
+   "used_for": "parallel betweenness and BFS staging",
+   "source": "iris_src/src/Graph/KG/NKGAccelCentrality.cls:325, :440, :470, :582; iris_src/src/Graph/KG/TraversalBFS.cls:312-318, :458"
+  },
+  {
+   "feature": "JOB worker processes sized by $System.Util.NumberOfCPUs()",
+   "used_for": "parallel betweenness, variable-length last level",
+   "source": "iris_src/src/Graph/KG/NKGAccelCentrality.cls:381, :560; iris_src/src/Graph/KG/VarLength.cls:263-270"
+  },
+  {
+   "feature": "embedded Python class methods [Language = python] with iris.sql.exec / iris.cls",
+   "used_for": "PageRankEmbedded, ClosenessJsonPy, LeidenJsonPy (leidenalg/igraph when installed in mgr/python)",
+   "source": "iris_src/src/Graph/KG/PageRankEmbedded.cls:5-30, :106-131; iris_src/src/Graph/KG/Communities.cls:543, :615"
+  },
+  {
+   "feature": "unqualified SQL table names resolved in the namespace's default schema (SQLUser) from embedded Python",
+   "used_for": "PageRankEmbedded (F-1013)",
+   "source": "iris_src/src/Graph/KG/PageRankEmbedded.cls:19-25"
+  },
+  {
+   "feature": "$ZF(-5) callout library loading and calls, with the $ZF heap limit (34,808 chars at default zfheap, P-1003)",
+   "used_for": "Arno native readers; BFS size gate ZFMAXCHARS",
+   "source": "iris_src/src/Graph/KG/NKGAccelTraversal.cls:17, :279-286; iris_vector_graph/stores/arno_bridge.py:137-350"
+  },
+  {
+   "feature": "runtime CREATE FUNCTION DDL for $ZF wrapper functions",
+   "used_for": "Arno SQL wrappers",
+   "source": "iris_vector_graph/stores/arno_bridge.py:106-136, :360-378"
+  },
+  {
+   "feature": "namespace switch of a process (Arno readers read USER's ^KG whatever namespace calls, P-1001)",
+   "used_for": "native route only in USER",
+   "source": "iris_vector_graph/stores/iris_sql_store.py:883-894; iris_src/src/Graph/KG/ArnoAccel.cls"
+  },
+  {
+   "feature": "%DynamicArray / %DynamicObject JSON (%ToJSON, %FromJSON)",
+   "used_for": "algorithm answers",
+   "source": "iris_src/src/Graph/KG/PageRank.cls:502-521; iris_src/src/Graph/KG/VarLength.cls:14-25"
+  },
+  {
+   "feature": "$ListBuild / $ListGet values",
+   "used_for": "cache entries $LB(token, payload)",
+   "source": "iris_src/src/Graph/KG/AlgoCache.cls:27-50"
+  },
+  {
+   "feature": "long strings and the Native API string limit (answers chunked at 9,000 chars into ^||LargeOut; cache payloads up to 1,000,000 chars)",
+   "used_for": "large algorithm answers",
+   "source": "iris_src/src/Graph/KG/NKGAccelAdjacency.cls:217-228; iris_vector_graph/algo_cache.py:21-28"
+  },
+  {
+   "feature": "$Random",
+   "used_for": "random walk",
+   "source": "iris_src/src/Graph/KG/NKGAccelTraversal.cls:206-208"
+  },
+  {
+   "feature": "SQL COUNT(*) and MAX(%ID) with RowIDs never reused (monotonic row ids)",
+   "used_for": "global PageRank's node-set cache token (R313); sound only with node deletes raising ^KG(\"__version\")",
+   "source": "iris_vector_graph/_engine/algorithms.py:179-193"
+  },
+  {
+   "feature": "Kill of a whole global outside any transaction",
+   "used_for": "cache invalidation",
+   "source": "iris_src/src/Graph/KG/AlgoCache.cls:54-66; iris_src/src/Graph/KG/Eraser.cls:1052"
+  },
+  {
+   "feature": "embedded SQL / %SQL.Statement reads of Graph_KG.nodes at default isolation",
+   "used_for": "seed checks, edgeless nodes",
+   "source": "iris_src/src/Graph/KG/PageRank.cls:87-116; iris_vector_graph/_engine/algorithms.py:619-626"
+  },
+  {
+   "feature": "$SYSTEM.Status / %Status error reporting through the Native API (<THROW>, <PROTECT>)",
+   "used_for": "refused work-area writes (ALG-B9.3)",
+   "source": "iris_vector_graph/_engine/algorithms.py:100-133"
+  }
+ ],
+ "storage_order": {
+  "input": "$RUN_DIR/checks/storage-order.json (experiment/playbook-completion/tools/storage_order_check.py, self-tested)",
+  "sites_in_module_10": [],
+  "dispositions": [],
+  "adjacent_sites_checked": [
+   {
+    "file": "iris_vector_graph/engine.py",
+    "line": 624,
+    "kind": "candidate",
+    "sql": "SELECT TOP 1 graph_id FROM {}.nodes",
+    "disposition": "not-module-10",
+    "owner": "08/02 (engine procedure handlers and graph probes)"
+   },
+   {
+    "file": "iris_vector_graph/engine.py",
+    "line": 1340,
+    "kind": "candidate",
+    "sql": "SELECT TOP 1 rl.s FROM {}.rdf_labels rl WHERE rl.label = ?",
+    "disposition": "not-module-10",
+    "owner": "08/02 (engine procedure handlers and graph probes)"
+   },
+   {
+    "file": "iris_vector_graph/engine.py",
+    "line": 1491,
+    "kind": "candidate",
+    "sql": "SELECT DISTINCT TOP 1000 \"key\" FROM",
+    "disposition": "not-module-10",
+    "owner": "08/02 (engine procedure handlers and graph probes)"
+   },
+   {
+    "file": "iris_vector_graph/engine.py",
+    "line": 634,
+    "kind": "candidate",
+    "sql": "SELECT TOP 1 graph_id FROM {}.nodes WHERE graph_id {} ?",
+    "disposition": "not-module-10",
+    "owner": "08/02 (engine procedure handlers and graph probes)"
+   },
+   {
+    "file": "iris_vector_graph/engine.py",
+    "line": 784,
+    "kind": "candidate",
+    "sql": "FETCH FIRST 0 ROWS ONLY'); cur.fetchall() cur.execute('SELECT a.id FROM",
+    "disposition": "not-module-10",
+    "owner": "08/02 (engine procedure handlers and graph probes)"
+   },
+   {
+    "file": "iris_vector_graph/engine.py",
+    "line": 1382,
+    "kind": "candidate",
+    "sql": "SELECT TOP 1 qualifiers FROM {}.rdf_edges WHERE p = ? AND qualifiers IS NOT NULL",
+    "disposition": "not-module-10",
+    "owner": "08/02 (engine procedure handlers and graph probes)"
+   },
+   {
+    "file": "iris_vector_graph/engine.py",
+    "line": 1624,
+    "kind": "candidate",
+    "sql": "SELECT DISTINCT TOP 20 \"key\" FROM",
+    "disposition": "not-module-10",
+    "owner": "08/02 (engine procedure handlers and graph probes)"
+   },
+   {
+    "file": "iris_vector_graph/engine.py",
+    "line": 1346,
+    "kind": "candidate",
+    "sql": "SELECT DISTINCT TOP 20 \"key\" FROM",
+    "disposition": "not-module-10",
+    "owner": "08/02 (engine procedure handlers and graph probes)"
+   },
+   {
+    "file": "iris_vector_graph/engine.py",
+    "line": 576,
+    "kind": "existence-only",
+    "sql": "SELECT TOP 1 1 FROM {}.{} WHERE 1 = 0",
+    "disposition": "not-module-10",
+    "owner": "08/02 (engine procedure handlers and graph probes)"
+   },
+   {
+    "file": "iris_vector_graph/stores/iris_sql_store.py",
+    "line": 2633,
+    "kind": "candidate",
+    "sql": "SELECT TOP",
+    "disposition": "not-module-10",
+    "owner": "06 (execute_knn_vec, iris_sql_store.py:2568-2651)"
+   }
+  ],
+  "non_sql_prefix_cuts_reviewed": [
+   {
+    "site": "iris_src/src/Graph/KG/PageRank.cls:500-521",
+    "disposition": "unique-key",
+    "why": "rows are emitted in ^||PPR(-score, node id) order and cut at 10,000: (score, node id) is unique; the cut itself is F-1003"
+   },
+   {
+    "site": "iris_vector_graph/_engine/algorithms.py:392-420",
+    "disposition": "unique-key",
+    "why": "_ppr_every_node: SELECT TOP n node_id ... ORDER BY node_id (ordered); ties among scores by id (rank_key)"
+   },
+   {
+    "site": "iris_vector_graph/_engine/algorithms.py:600-616",
+    "disposition": "unique-key",
+    "why": "khop keeps the first max_nodes ids in BFS reach order, which follows BFSFastJson's $Order walk (deterministic for a given ^KG)"
+   }
+  ],
+  "result": "0 of the 109 flagged SQL texts lie in module 10's owned code; nothing to disposition there"
+ },
+ "counts": {
+  "entry_points": 295,
+  "omissions": 178,
+  "omissions_reconciled": {
+   "direct-surface-only": 56,
+   "product-caller": 26,
+   "reached-from-covered": 38,
+   "objectscript-caller-only": 30,
+   "other-module": 28
+  },
+  "cells": 51,
+  "cells_without_entry_point": 0,
+  "footprints": 295,
+  "footprints_journal_validated": 17,
+  "footprint_store_mismatches": 1,
+  "model_checks": 32,
+  "model_checks_met": 32,
+  "model_checks_by_design": {
+   "as-built": {
+    "met": 11,
+    "not_met": 0
+   },
+   "control": {
+    "met": 8,
+    "not_met": 0
+   },
+   "positive": {
+    "met": 7,
+    "not_met": 0
+   },
+   "reviewed": {
+    "met": 6,
+    "not_met": 0
+   }
+  },
+  "original_findings": 13,
+  "findings_by_disposition": {
+   "blocked-access": 1,
+   "reproduced-live": 8,
+   "confirmed-source": 3,
+   "reproduced-test": 1
+  },
+  "findings_by_outcome": {
+   "blocked-access": 1,
+   "product-defect": 12
+  },
+  "new_findings": 1,
+  "env_features": 21,
+  "storage_order_sites_in_module": 0
+ },
+ "registered_runs": [
+  "b-10-check-literal-scope",
+  "b-10-check-ontology-index",
+  "b-10-live-cache",
+  "b-10-live-cap",
+  "b-10-live-fp",
+  "b-10-live-fp-detail",
+  "b-10-live-nkg",
+  "b-10-live-nkg-f1005",
+  "b-10-live-refusals",
+  "b-10-live-scope",
+  "b-10-live-scope2",
+  "b-10-probe-units",
+  "b-10-run-unit"
+ ]
+}

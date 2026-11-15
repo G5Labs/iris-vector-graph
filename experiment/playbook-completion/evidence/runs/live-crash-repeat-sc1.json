@@ -1,0 +1,15 @@
+{
+  "command": "locks.sh iris timeout 7000 bash $RUN_DIR/crash-repeat/sc1-procedure.sh (Config.Miscellaneous SynchCommit=1, docker restart, crash_world_repeat.py --trials 3 --expect-synchcommit 1, restore SynchCommit=0, docker restart)",
+  "experiment_head": "a42f10c87291bef453f1ff7452364129aba747a3",
+  "id": "live-crash-repeat-sc1",
+  "kind": "live",
+  "lane": "orchestrator",
+  "log": "$RUN_DIR/crash-repeat/sc1-procedure.log",
+  "log_bytes": 1728,
+  "log_sha256": "10759879953416d6bd97f5e8b0b4f9e59d69c9931a868856b3e359b023c45d56",
+  "observes": "Instance-crash world under SynchCommit=1 (set through Config.Miscellaneous.Modify, BEFORE=0 AFTER=1, clean container restart, iris.cpf SynchCommit=1 and Config.Miscellaneous 1 read before every trial): 3 in-flight trials all-or-nothing after recovery; 3 acknowledged trials kept the acknowledged commit after SIGKILL and journal recovery (acknowledged_lost 0 of 3); every same-key retry left exactly one revision with no violation. Restored afterwards: Modify BEFORE=1 AFTER=0, restart, iris.cpf line 327 SynchCommit=0, container healthy, qlist ok (16:44:03 UTC). With live-crash-repeat-sc0 (3 of 3 acknowledged commits lost under SynchCommit=0) this attributes F-C1102 to the SynchCommit=0 setting",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T19:22:44+00:00",
+  "result": "pass"
+}

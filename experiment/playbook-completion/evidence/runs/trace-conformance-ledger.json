@@ -1,0 +1,17 @@
+{
+  "command": "locks.sh iris python traces/conformance.py $RUN_DIR/traces/conf2 --batch 1; python traces/conformance.py --check $RUN_DIR/traces/conf2/trace.json",
+  "erratum": "the first registration said 18 transactions; the report counts 17 (independent review R-08)",
+  "experiment_head": "44636dd111c8e83319ca155b0232c86d2fe3ecf2",
+  "id": "trace-conformance-ledger",
+  "kind": "trace",
+  "lane": "orchestrator",
+  "log": "$RUN_DIR/traces/conf2/offline-check.log",
+  "log_bytes": 561,
+  "log_sha256": "accd9669f3a6dccf9d8974f2600e4bf2743fd220f52f31cefbdd7babd737e357",
+  "observes": "IRIS journal of a two-tenant scenario on the pin (AUDITCORE): 4 ledger commits, EraseNodes(default graph, acme|), a 1-batch redaction then a resumed one (10 tombstones, Final), verify; 53 journal units, 17 committed product transactions checked (4 commits, 1 erasure, 11 redaction transactions with 10 tombstones, 1 verify) against spec step rules (commit appends only its seq; erasure keeps records and adds no statements; tombstones only of target records, op/kind kept, marker owned by the target; Final one revision) and declared write footprints: 0 violations, 0 frame excursions, one outermost transaction per commit/erase/batch, replayed ^IVG.Ledger equals the engine's",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-13T23:23:31+00:00",
+  "result": "pass",
+  "trace_sha256": "1d67cbc579a24893bd41050e215352f388b8ac58e6be9512c16f48a99a0570fe"
+}

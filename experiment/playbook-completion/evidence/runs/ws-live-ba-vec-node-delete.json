@@ -1,0 +1,17 @@
+{
+  "command": "locks.sh iris timeout 1200 python experiment/playbook-completion/writesets/live/ws_probes.py ba-noindex-parallel ba-explicit-survives ba-marker-qualifier ba-vec-node-delete ba-restore-merge (AUDITB)",
+  "experiment_head": "1564a673ea1737c0d9e32fe8f30a1d0d04bcf910",
+  "finding": "F-0606",
+  "id": "ws-live-ba-vec-node-delete",
+  "kind": "live",
+  "lane": "writesets",
+  "log": "$RUN_DIR/writesets/ba-vec-node-delete.json",
+  "log_bytes": 963,
+  "log_sha256": "b4dc7d9613f373768efa7f30ceeaf829ca7c1acead29f4e991532fe56c69ddf1",
+  "namespace": "AUDITB",
+  "observes": "VEC-B11.4/HD-0601 for node deletes other than erase_graph. Graph wsvg: 4 nodes with 4-wide embeddings (store_embeddings), ivf_build(nlist 2): indexed 4; ivf_search answered n3, n2, n1, n0. engine.delete_node(\"wsv|n0\", graph) returned True and engine.bulk_delete_nodes([\"wsv|n1\"], graph) DeleteResult(deleted=1): node rows n2, n3 remain; ivf_search still answers n3, n2, n1, n0 and ^IVF lists n0 and n1. The index keeps deleted nodes, as F-0606 records for erase_graph.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T13:19:16+00:00",
+  "result": "fail"
+}

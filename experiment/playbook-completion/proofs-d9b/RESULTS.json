@@ -1,0 +1,3918 @@
+{
+  "crate": "experiment/playbook-completion/proofs-d9b (ivg-proofs-d9b)",
+  "debt": "D-9 and D-12 (experiment/playbook-completion/PROOF-DEBT.md)",
+  "scope": "statements about models only; no proof connects the product at pin 3eaa79cf to these contracts",
+  "generated_utc": "2026-11-14T12:11:12+00:00",
+  "run_dir": "$RUN_DIR/proofs-d9b/run-20261114T120856Z",
+  "verus": "0.2026.10.04.426d8b0",
+  "actors_rev": "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877",
+  "sources_sha256": "f07f7c4d932eb462c2916dfbe2a7ab647852ea7fb37fab6a44ef260792deb1b1",
+  "baseline": {
+    "tag": "baseline",
+    "features": "",
+    "rc": 0,
+    "timed_out": false,
+    "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+    "log": "$RUN_DIR/proofs-d9b/run-20261114T120856Z/baseline.log",
+    "json": "$RUN_DIR/proofs-d9b/run-20261114T120856Z/baseline.json",
+    "wall_seconds": 9.05,
+    "error_locations": [],
+    "resource_limit_hit": false,
+    "verified": 158,
+    "errors": 0,
+    "success": true,
+    "verus_total_ms": 8570,
+    "smt_run_ms": 21412,
+    "rlimit_total": 37965171,
+    "modules": {
+      "theorems": {
+        "ms": 4130,
+        "rlimit": 9116834
+      },
+      "witness_meta": {
+        "ms": 5261,
+        "rlimit": 7040598
+      },
+      "progress": {
+        "ms": 3041,
+        "rlimit": 6129518
+      },
+      "witness": {
+        "ms": 3168,
+        "rlimit": 4533586
+      },
+      "witness_rd": {
+        "ms": 1700,
+        "rlimit": 3542015
+      },
+      "safety": {
+        "ms": 1850,
+        "rlimit": 3417112
+      },
+      "protocol_rl": {
+        "ms": 1032,
+        "rlimit": 1938356
+      },
+      "protocol_rd": {
+        "ms": 380,
+        "rlimit": 648588
+      },
+      "vocab": {
+        "ms": 187,
+        "rlimit": 407869
+      },
+      "ledger": {
+        "ms": 129,
+        "rlimit": 309699
+      },
+      "system": {
+        "ms": 180,
+        "rlimit": 273400
+      },
+      "biz": {
+        "ms": 72,
+        "rlimit": 173945
+      },
+      "protocol_top": {
+        "ms": 76,
+        "rlimit": 96809
+      },
+      "redactor": {
+        "ms": 49,
+        "rlimit": 94904
+      },
+      "protocol_sys": {
+        "ms": 63,
+        "rlimit": 84232
+      },
+      "mid": {
+        "ms": 47,
+        "rlimit": 75794
+      },
+      "store": {
+        "ms": 24,
+        "rlimit": 51268
+      },
+      "compose": {
+        "ms": 8,
+        "rlimit": 20379
+      },
+      "reader": {
+        "ms": 3,
+        "rlimit": 5507
+      },
+      "writer": {
+        "ms": 2,
+        "rlimit": 4758
+      }
+    },
+    "top_functions": [
+      {
+        "function": "witness_meta::witness_noop_recorded",
+        "ms": 4837,
+        "rlimit": 6347762,
+        "success": true
+      },
+      {
+        "function": "theorems::theorem_retry_refused",
+        "ms": 1147,
+        "rlimit": 3423507,
+        "success": true
+      },
+      {
+        "function": "theorems::theorem_marker_owned",
+        "ms": 1427,
+        "rlimit": 2733379,
+        "success": true
+      },
+      {
+        "function": "witness_rd::lemma_rd_run",
+        "ms": 1066,
+        "rlimit": 2306279,
+        "success": true
+      },
+      {
+        "function": "witness::witness_bypass_and_redaction",
+        "ms": 1355,
+        "rlimit": 1959694,
+        "success": true
+      },
+      {
+        "function": "progress::lemma_watch_step",
+        "ms": 776,
+        "rlimit": 1686779,
+        "success": true
+      },
+      {
+        "function": "progress::theorem_work_available",
+        "ms": 731,
+        "rlimit": 1482261,
+        "success": true
+      },
+      {
+        "function": "progress::RunProgress::nonincreasing",
+        "ms": 654,
+        "rlimit": 1344935,
+        "success": true
+      },
+      {
+        "function": "witness::witness_erasure_rollback",
+        "ms": 1083,
+        "rlimit": 1339904,
+        "success": true
+      },
+      {
+        "function": "witness::witness_settled",
+        "ms": 648,
+        "rlimit": 1095533,
+        "success": true
+      }
+    ],
+    "all_functions": [
+      {
+        "function": "biz::Biz::init_safe",
+        "ms": 17,
+        "rlimit": 30194,
+        "success": true
+      },
+      {
+        "function": "biz::Biz::step_safe",
+        "ms": 8,
+        "rlimit": 20776,
+        "success": true
+      },
+      {
+        "function": "biz::lemma_cursor_commit",
+        "ms": 8,
+        "rlimit": 25329,
+        "success": true
+      },
+      {
+        "function": "biz::lemma_cursor_done",
+        "ms": 4,
+        "rlimit": 12348,
+        "success": true
+      },
+      {
+        "function": "biz::lemma_cursor_push",
+        "ms": 21,
+        "rlimit": 35320,
+        "success": true
+      },
+      {
+        "function": "biz::lemma_cursor_resume",
+        "ms": 3,
+        "rlimit": 9818,
+        "success": true
+      },
+      {
+        "function": "biz::lemma_cursor_scan",
+        "ms": 20,
+        "rlimit": 57437,
+        "success": true
+      },
+      {
+        "function": "biz::lemma_pend_insert",
+        "ms": 5,
+        "rlimit": 12954,
+        "success": true
+      },
+      {
+        "function": "biz::lemma_tomb_replay",
+        "ms": 7,
+        "rlimit": 20739,
+        "success": true
+      },
+      {
+        "function": "compose::Id::init_refines",
+        "ms": 0,
+        "rlimit": 1273,
+        "success": true
+      },
+      {
+        "function": "compose::Id::step_refines",
+        "ms": 0,
+        "rlimit": 1889,
+        "success": true
+      },
+      {
+        "function": "compose::Sys::init_refines",
+        "ms": 1,
+        "rlimit": 4218,
+        "success": true
+      },
+      {
+        "function": "compose::Sys::step_refines",
+        "ms": 5,
+        "rlimit": 12999,
+        "success": true
+      },
+      {
+        "function": "ledger::Ledger::init_safe",
+        "ms": 4,
+        "rlimit": 6741,
+        "success": true
+      },
+      {
+        "function": "ledger::Ledger::step_safe",
+        "ms": 4,
+        "rlimit": 8935,
+        "success": true
+      },
+      {
+        "function": "ledger::lemma_ledger_safe",
+        "ms": 48,
+        "rlimit": 102002,
+        "success": true
+      },
+      {
+        "function": "ledger::lemma_meta_audit",
+        "ms": 19,
+        "rlimit": 59689,
+        "success": true
+      },
+      {
+        "function": "ledger::lemma_meta_commit",
+        "ms": 23,
+        "rlimit": 52654,
+        "success": true
+      },
+      {
+        "function": "ledger::lemma_meta_tomb",
+        "ms": 29,
+        "rlimit": 79678,
+        "success": true
+      },
+      {
+        "function": "mid::Mid::init_safe",
+        "ms": 12,
+        "rlimit": 21974,
+        "success": true
+      },
+      {
+        "function": "mid::Mid::step_safe",
+        "ms": 10,
+        "rlimit": 17730,
+        "success": true
+      },
+      {
+        "function": "mid::lemma_mid_safe",
+        "ms": 24,
+        "rlimit": 36090,
+        "success": true
+      },
+      {
+        "function": "progress::RunProgress::decreases",
+        "ms": 28,
+        "rlimit": 42046,
+        "success": true
+      },
+      {
+        "function": "progress::RunProgress::nonincreasing",
+        "ms": 654,
+        "rlimit": 1344935,
+        "success": true
+      },
+      {
+        "function": "progress::lemma_ledger_frame",
+        "ms": 516,
+        "rlimit": 950562,
+        "success": true
+      },
+      {
+        "function": "progress::lemma_rb_push",
+        "ms": 6,
+        "rlimit": 17194,
+        "success": true
+      },
+      {
+        "function": "progress::lemma_rb_same",
+        "ms": 9,
+        "rlimit": 22554,
+        "success": true
+      },
+      {
+        "function": "progress::lemma_scan_rank",
+        "ms": 166,
+        "rlimit": 359962,
+        "success": true
+      },
+      {
+        "function": "progress::lemma_watch_step",
+        "ms": 776,
+        "rlimit": 1686779,
+        "success": true
+      },
+      {
+        "function": "progress::rows_between",
+        "ms": 1,
+        "rlimit": 1615,
+        "success": true
+      },
+      {
+        "function": "progress::theorem_final_effect",
+        "ms": 125,
+        "rlimit": 196698,
+        "success": true
+      },
+      {
+        "function": "progress::theorem_redaction_completes",
+        "ms": 25,
+        "rlimit": 24912,
+        "success": true
+      },
+      {
+        "function": "progress::theorem_work_available",
+        "ms": 731,
+        "rlimit": 1482261,
+        "success": true
+      },
+      {
+        "function": "protocol_rd::RdOuter::init_safe",
+        "ms": 10,
+        "rlimit": 22177,
+        "success": true
+      },
+      {
+        "function": "protocol_rd::RdOuter::step_safe",
+        "ms": 12,
+        "rlimit": 19996,
+        "success": true
+      },
+      {
+        "function": "protocol_rd::ReadP::init_binds",
+        "ms": 7,
+        "rlimit": 13109,
+        "success": true
+      },
+      {
+        "function": "protocol_rd::ReadP::step_binds",
+        "ms": 10,
+        "rlimit": 13924,
+        "success": true
+      },
+      {
+        "function": "protocol_rd::ReadP::step_enabled",
+        "ms": 25,
+        "rlimit": 42561,
+        "success": true
+      },
+      {
+        "function": "protocol_rd::lemma_rd_binds",
+        "ms": 27,
+        "rlimit": 45056,
+        "success": true
+      },
+      {
+        "function": "protocol_rd::lemma_rd_enabled",
+        "ms": 29,
+        "rlimit": 47105,
+        "success": true
+      },
+      {
+        "function": "protocol_rd::lemma_rd_safe",
+        "ms": 48,
+        "rlimit": 96912,
+        "success": true
+      },
+      {
+        "function": "protocol_rd::lemma_view_rl",
+        "ms": 85,
+        "rlimit": 173453,
+        "success": true
+      },
+      {
+        "function": "protocol_rd::theorem_accepted_view_consistent",
+        "ms": 13,
+        "rlimit": 26707,
+        "success": true
+      },
+      {
+        "function": "protocol_rd::theorem_biz_ledger_step",
+        "ms": 24,
+        "rlimit": 37179,
+        "success": true
+      },
+      {
+        "function": "protocol_rd::theorem_biz_step_is_rd_step",
+        "ms": 55,
+        "rlimit": 62435,
+        "success": true
+      },
+      {
+        "function": "protocol_rd::theorem_rd_implementations_refine",
+        "ms": 6,
+        "rlimit": 11215,
+        "success": true
+      },
+      {
+        "function": "protocol_rd::theorem_rd_implementations_safe",
+        "ms": 13,
+        "rlimit": 21133,
+        "success": true
+      },
+      {
+        "function": "protocol_rd::theorem_rd_sys_step_refines",
+        "ms": 9,
+        "rlimit": 15626,
+        "success": true
+      },
+      {
+        "function": "protocol_rl::RL::init_safe",
+        "ms": 7,
+        "rlimit": 15122,
+        "success": true
+      },
+      {
+        "function": "protocol_rl::RL::step_safe",
+        "ms": 16,
+        "rlimit": 22793,
+        "success": true
+      },
+      {
+        "function": "protocol_rl::RLP::init_binds",
+        "ms": 4,
+        "rlimit": 8635,
+        "success": true
+      },
+      {
+        "function": "protocol_rl::RLP::step_binds",
+        "ms": 37,
+        "rlimit": 48217,
+        "success": true
+      },
+      {
+        "function": "protocol_rl::RLP::step_enabled",
+        "ms": 32,
+        "rlimit": 49815,
+        "success": true
+      },
+      {
+        "function": "protocol_rl::lemma_attr_audit",
+        "ms": 12,
+        "rlimit": 28197,
+        "success": true
+      },
+      {
+        "function": "protocol_rl::lemma_attr_commit",
+        "ms": 16,
+        "rlimit": 34667,
+        "success": true
+      },
+      {
+        "function": "protocol_rl::lemma_attr_tomb",
+        "ms": 21,
+        "rlimit": 43555,
+        "success": true
+      },
+      {
+        "function": "protocol_rl::lemma_p1_binds",
+        "ms": 206,
+        "rlimit": 355367,
+        "success": true
+      },
+      {
+        "function": "protocol_rl::lemma_p1_enabled",
+        "ms": 278,
+        "rlimit": 509181,
+        "success": true
+      },
+      {
+        "function": "protocol_rl::lemma_rl_safe",
+        "ms": 398,
+        "rlimit": 822807,
+        "success": true
+      },
+      {
+        "function": "protocol_sys::SysP::init_binds",
+        "ms": 6,
+        "rlimit": 12198,
+        "success": true
+      },
+      {
+        "function": "protocol_sys::SysP::step_binds",
+        "ms": 8,
+        "rlimit": 13747,
+        "success": true
+      },
+      {
+        "function": "protocol_sys::SysP::step_enabled",
+        "ms": 11,
+        "rlimit": 19544,
+        "success": true
+      },
+      {
+        "function": "protocol_sys::lemma_p2_binds",
+        "ms": 30,
+        "rlimit": 26936,
+        "success": true
+      },
+      {
+        "function": "protocol_sys::lemma_p2_enabled",
+        "ms": 6,
+        "rlimit": 11807,
+        "success": true
+      },
+      {
+        "function": "protocol_top::TopP::init_binds",
+        "ms": 8,
+        "rlimit": 13362,
+        "success": true
+      },
+      {
+        "function": "protocol_top::TopP::step_binds",
+        "ms": 15,
+        "rlimit": 17453,
+        "success": true
+      },
+      {
+        "function": "protocol_top::TopP::step_enabled",
+        "ms": 24,
+        "rlimit": 33834,
+        "success": true
+      },
+      {
+        "function": "protocol_top::lemma_p3_binds",
+        "ms": 17,
+        "rlimit": 18154,
+        "success": true
+      },
+      {
+        "function": "protocol_top::lemma_p3_enabled",
+        "ms": 10,
+        "rlimit": 14006,
+        "success": true
+      },
+      {
+        "function": "reader::Reader::init_safe",
+        "ms": 1,
+        "rlimit": 2566,
+        "success": true
+      },
+      {
+        "function": "reader::Reader::step_safe",
+        "ms": 1,
+        "rlimit": 2941,
+        "success": true
+      },
+      {
+        "function": "redactor::Redactor::init_safe",
+        "ms": 1,
+        "rlimit": 3221,
+        "success": true
+      },
+      {
+        "function": "redactor::Redactor::step_safe",
+        "ms": 3,
+        "rlimit": 6532,
+        "success": true
+      },
+      {
+        "function": "redactor::lemma_red_safe",
+        "ms": 44,
+        "rlimit": 85151,
+        "success": true
+      },
+      {
+        "function": "safety::lemma_babort",
+        "ms": 87,
+        "rlimit": 119722,
+        "success": true
+      },
+      {
+        "function": "safety::lemma_babort_view",
+        "ms": 136,
+        "rlimit": 210196,
+        "success": true
+      },
+      {
+        "function": "safety::lemma_bbegin",
+        "ms": 61,
+        "rlimit": 82939,
+        "success": true
+      },
+      {
+        "function": "safety::lemma_bbegin_view",
+        "ms": 118,
+        "rlimit": 181847,
+        "success": true
+      },
+      {
+        "function": "safety::lemma_bcommit",
+        "ms": 69,
+        "rlimit": 112096,
+        "success": true
+      },
+      {
+        "function": "safety::lemma_biz_safe",
+        "ms": 13,
+        "rlimit": 42290,
+        "success": true
+      },
+      {
+        "function": "safety::lemma_commit",
+        "ms": 130,
+        "rlimit": 212282,
+        "success": true
+      },
+      {
+        "function": "safety::lemma_erase_abort",
+        "ms": 113,
+        "rlimit": 165901,
+        "success": true
+      },
+      {
+        "function": "safety::lemma_erase_abort_view",
+        "ms": 78,
+        "rlimit": 118873,
+        "success": true
+      },
+      {
+        "function": "safety::lemma_erase_commit",
+        "ms": 101,
+        "rlimit": 161062,
+        "success": true
+      },
+      {
+        "function": "safety::lemma_erase_index",
+        "ms": 49,
+        "rlimit": 74527,
+        "success": true
+      },
+      {
+        "function": "safety::lemma_erase_index_view",
+        "ms": 58,
+        "rlimit": 82057,
+        "success": true
+      },
+      {
+        "function": "safety::lemma_erase_rows",
+        "ms": 132,
+        "rlimit": 188068,
+        "success": true
+      },
+      {
+        "function": "safety::lemma_erase_rows_view",
+        "ms": 77,
+        "rlimit": 121505,
+        "success": true
+      },
+      {
+        "function": "safety::lemma_final",
+        "ms": 121,
+        "rlimit": 323034,
+        "success": true
+      },
+      {
+        "function": "safety::lemma_quiet",
+        "ms": 157,
+        "rlimit": 519872,
+        "success": true
+      },
+      {
+        "function": "safety::lemma_scan",
+        "ms": 98,
+        "rlimit": 280774,
+        "success": true
+      },
+      {
+        "function": "safety::lemma_start",
+        "ms": 207,
+        "rlimit": 347841,
+        "success": true
+      },
+      {
+        "function": "safety::theorem_open_and_rollback_keep_view",
+        "ms": 9,
+        "rlimit": 21256,
+        "success": true
+      },
+      {
+        "function": "store::Store::init_safe",
+        "ms": 2,
+        "rlimit": 5362,
+        "success": true
+      },
+      {
+        "function": "store::Store::step_safe",
+        "ms": 2,
+        "rlimit": 5785,
+        "success": true
+      },
+      {
+        "function": "store::lemma_store_safe",
+        "ms": 19,
+        "rlimit": 40121,
+        "success": true
+      },
+      {
+        "function": "system::theorem_implementation_states",
+        "ms": 36,
+        "rlimit": 51935,
+        "success": true
+      },
+      {
+        "function": "system::theorem_implementation_steps",
+        "ms": 23,
+        "rlimit": 37240,
+        "success": true
+      },
+      {
+        "function": "system::theorem_implementations_init",
+        "ms": 4,
+        "rlimit": 10915,
+        "success": true
+      },
+      {
+        "function": "system::theorem_implementations_refine",
+        "ms": 4,
+        "rlimit": 11302,
+        "success": true
+      },
+      {
+        "function": "system::theorem_implementations_safe",
+        "ms": 22,
+        "rlimit": 31519,
+        "success": true
+      },
+      {
+        "function": "system::theorem_levels",
+        "ms": 3,
+        "rlimit": 10057,
+        "success": true
+      },
+      {
+        "function": "system::theorem_levels_init",
+        "ms": 3,
+        "rlimit": 9587,
+        "success": true
+      },
+      {
+        "function": "system::theorem_sys_safe",
+        "ms": 22,
+        "rlimit": 35069,
+        "success": true
+      },
+      {
+        "function": "system::theorem_sys_step_refines",
+        "ms": 58,
+        "rlimit": 75776,
+        "success": true
+      },
+      {
+        "function": "theorems::lemma_biz_run_safe",
+        "ms": 14,
+        "rlimit": 31252,
+        "success": true
+      },
+      {
+        "function": "theorems::lemma_final_no_live",
+        "ms": 64,
+        "rlimit": 163717,
+        "success": true
+      },
+      {
+        "function": "theorems::theorem_audit_counts_own_target",
+        "ms": 117,
+        "rlimit": 185619,
+        "success": true
+      },
+      {
+        "function": "theorems::theorem_decision2_any",
+        "ms": 5,
+        "rlimit": 17290,
+        "success": true
+      },
+      {
+        "function": "theorems::theorem_erasure_clears_statement_history",
+        "ms": 38,
+        "rlimit": 76977,
+        "success": true
+      },
+      {
+        "function": "theorems::theorem_final_clears_statement_history",
+        "ms": 53,
+        "rlimit": 47355,
+        "success": true
+      },
+      {
+        "function": "theorems::theorem_marked_target_aligned",
+        "ms": 5,
+        "rlimit": 14283,
+        "success": true
+      },
+      {
+        "function": "theorems::theorem_marker_owned",
+        "ms": 1427,
+        "rlimit": 2733379,
+        "success": true
+      },
+      {
+        "function": "theorems::theorem_no_tombstone_of_live",
+        "ms": 622,
+        "rlimit": 1056707,
+        "success": true
+      },
+      {
+        "function": "theorems::theorem_pending_needs_cover",
+        "ms": 56,
+        "rlimit": 160941,
+        "success": true
+      },
+      {
+        "function": "theorems::theorem_redaction_clears_metadata",
+        "ms": 143,
+        "rlimit": 278101,
+        "success": true
+      },
+      {
+        "function": "theorems::theorem_redaction_retry_refused",
+        "ms": 29,
+        "rlimit": 47862,
+        "success": true
+      },
+      {
+        "function": "theorems::theorem_replay_changes_nothing",
+        "ms": 54,
+        "rlimit": 128311,
+        "success": true
+      },
+      {
+        "function": "theorems::theorem_replay_settled",
+        "ms": 11,
+        "rlimit": 34707,
+        "success": true
+      },
+      {
+        "function": "theorems::theorem_retry_refused",
+        "ms": 1147,
+        "rlimit": 3423507,
+        "success": true
+      },
+      {
+        "function": "theorems::theorem_retry_refused_forever",
+        "ms": 115,
+        "rlimit": 271311,
+        "success": true
+      },
+      {
+        "function": "theorems::theorem_start_reads_committed",
+        "ms": 81,
+        "rlimit": 206496,
+        "success": true
+      },
+      {
+        "function": "theorems::theorem_statements_match",
+        "ms": 9,
+        "rlimit": 21612,
+        "success": true
+      },
+      {
+        "function": "theorems::theorem_statements_match_committed",
+        "ms": 4,
+        "rlimit": 12855,
+        "success": true
+      },
+      {
+        "function": "theorems::theorem_tally_counts_own_target",
+        "ms": 127,
+        "rlimit": 204552,
+        "success": true
+      },
+      {
+        "function": "vocab::lemma_agree_affects",
+        "ms": 5,
+        "rlimit": 11997,
+        "success": true
+      },
+      {
+        "function": "vocab::lemma_agree_hist",
+        "ms": 15,
+        "rlimit": 42875,
+        "success": true
+      },
+      {
+        "function": "vocab::lemma_agree_recs",
+        "ms": 9,
+        "rlimit": 26487,
+        "success": true
+      },
+      {
+        "function": "vocab::lemma_agree_step",
+        "ms": 7,
+        "rlimit": 16263,
+        "success": true
+      },
+      {
+        "function": "vocab::lemma_agree_symm",
+        "ms": 1,
+        "rlimit": 4360,
+        "success": true
+      },
+      {
+        "function": "vocab::lemma_agree_trans",
+        "ms": 3,
+        "rlimit": 6511,
+        "success": true
+      },
+      {
+        "function": "vocab::lemma_lives_no_member",
+        "ms": 6,
+        "rlimit": 12718,
+        "success": true
+      },
+      {
+        "function": "vocab::lemma_lives_touch",
+        "ms": 9,
+        "rlimit": 20479,
+        "success": true
+      },
+      {
+        "function": "vocab::lemma_recs_at",
+        "ms": 80,
+        "rlimit": 159199,
+        "success": true
+      },
+      {
+        "function": "vocab::lemma_recs_no_member",
+        "ms": 12,
+        "rlimit": 25030,
+        "success": true
+      },
+      {
+        "function": "vocab::lemma_replay_audit",
+        "ms": 6,
+        "rlimit": 12683,
+        "success": true
+      },
+      {
+        "function": "vocab::lemma_replay_no_member",
+        "ms": 9,
+        "rlimit": 22516,
+        "success": true
+      },
+      {
+        "function": "vocab::lemma_replay_push",
+        "ms": 3,
+        "rlimit": 10051,
+        "success": true
+      },
+      {
+        "function": "vocab::lemma_shist_at",
+        "ms": 5,
+        "rlimit": 13208,
+        "success": true
+      },
+      {
+        "function": "vocab::replay",
+        "ms": 1,
+        "rlimit": 4649,
+        "success": true
+      },
+      {
+        "function": "vocab::replay_recs",
+        "ms": 2,
+        "rlimit": 5283,
+        "success": true
+      },
+      {
+        "function": "vocab::shist_recs",
+        "ms": 1,
+        "rlimit": 4830,
+        "success": true
+      },
+      {
+        "function": "vocab::stmt_recs",
+        "ms": 1,
+        "rlimit": 4336,
+        "success": true
+      },
+      {
+        "function": "vocab::unrec_recs",
+        "ms": 1,
+        "rlimit": 4394,
+        "success": true
+      },
+      {
+        "function": "witness::lemma_cs2",
+        "ms": 55,
+        "rlimit": 79025,
+        "success": true
+      },
+      {
+        "function": "witness::lemma_keys",
+        "ms": 6,
+        "rlimit": 15283,
+        "success": true
+      },
+      {
+        "function": "witness::lemma_one",
+        "ms": 11,
+        "rlimit": 25733,
+        "success": true
+      },
+      {
+        "function": "witness::lemma_one_sh",
+        "ms": 7,
+        "rlimit": 18414,
+        "success": true
+      },
+      {
+        "function": "witness::witness_bypass_and_redaction",
+        "ms": 1355,
+        "rlimit": 1959694,
+        "success": true
+      },
+      {
+        "function": "witness::witness_erasure_rollback",
+        "ms": 1083,
+        "rlimit": 1339904,
+        "success": true
+      },
+      {
+        "function": "witness::witness_settled",
+        "ms": 648,
+        "rlimit": 1095533,
+        "success": true
+      },
+      {
+        "function": "witness_meta::witness_decision2_spanning",
+        "ms": 424,
+        "rlimit": 692836,
+        "success": true
+      },
+      {
+        "function": "witness_meta::witness_noop_recorded",
+        "ms": 4837,
+        "rlimit": 6347762,
+        "success": true
+      },
+      {
+        "function": "witness_rd::lemma_rd_run",
+        "ms": 1066,
+        "rlimit": 2306279,
+        "success": true
+      },
+      {
+        "function": "witness_rd::witness_reader_accepts",
+        "ms": 236,
+        "rlimit": 456547,
+        "success": true
+      },
+      {
+        "function": "witness_rd::witness_reader_refuses",
+        "ms": 397,
+        "rlimit": 779189,
+        "success": true
+      },
+      {
+        "function": "writer::Writer::init_safe",
+        "ms": 1,
+        "rlimit": 2224,
+        "success": true
+      },
+      {
+        "function": "writer::Writer::step_safe",
+        "ms": 1,
+        "rlimit": 2534,
+        "success": true
+      }
+    ],
+    "failing_functions": [],
+    "functions_checked": 158,
+    "max_function_rlimit": 6347762,
+    "pass": true
+  },
+  "controls": {
+    "control_bypass_start": {
+      "tag": "control_bypass_start",
+      "features": "control_bypass_start",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_bypass_start -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d9b/run-20261114T120856Z/control_bypass_start.log",
+      "json": "$RUN_DIR/proofs-d9b/run-20261114T120856Z/control_bypass_start.json",
+      "wall_seconds": 8.87,
+      "error_locations": [
+        "src/protocol_top.rs:74"
+      ],
+      "resource_limit_hit": false,
+      "verified": 158,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 8671,
+      "smt_run_ms": 22078,
+      "rlimit_total": 38682363,
+      "modules": {
+        "theorems": {
+          "ms": 3872,
+          "rlimit": 9116834
+        },
+        "witness_meta": {
+          "ms": 5165,
+          "rlimit": 7040598
+        },
+        "progress": {
+          "ms": 3162,
+          "rlimit": 6129518
+        },
+        "witness": {
+          "ms": 2923,
+          "rlimit": 4533586
+        },
+        "witness_rd": {
+          "ms": 2267,
+          "rlimit": 3542015
+        },
+        "safety": {
+          "ms": 1822,
+          "rlimit": 3417112
+        },
+        "protocol_rl": {
+          "ms": 1028,
+          "rlimit": 1938356
+        },
+        "protocol_rd": {
+          "ms": 392,
+          "rlimit": 648588
+        },
+        "cx_bypass_start": {
+          "ms": 401,
+          "rlimit": 501482
+        },
+        "vocab": {
+          "ms": 199,
+          "rlimit": 407869
+        },
+        "protocol_top": {
+          "ms": 229,
+          "rlimit": 313174
+        },
+        "ledger": {
+          "ms": 130,
+          "rlimit": 309699
+        },
+        "system": {
+          "ms": 203,
+          "rlimit": 272745
+        },
+        "biz": {
+          "ms": 70,
+          "rlimit": 173945
+        },
+        "redactor": {
+          "ms": 60,
+          "rlimit": 94904
+        },
+        "protocol_sys": {
+          "ms": 65,
+          "rlimit": 84232
+        },
+        "mid": {
+          "ms": 46,
+          "rlimit": 75794
+        },
+        "store": {
+          "ms": 25,
+          "rlimit": 51268
+        },
+        "compose": {
+          "ms": 8,
+          "rlimit": 20379
+        },
+        "reader": {
+          "ms": 2,
+          "rlimit": 5507
+        },
+        "writer": {
+          "ms": 2,
+          "rlimit": 4758
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_meta::witness_noop_recorded",
+          "ms": 4803,
+          "rlimit": 6347762,
+          "success": true
+        },
+        {
+          "function": "theorems::theorem_retry_refused",
+          "ms": 1262,
+          "rlimit": 3423507,
+          "success": true
+        },
+        {
+          "function": "theorems::theorem_marker_owned",
+          "ms": 982,
+          "rlimit": 2733379,
+          "success": true
+        },
+        {
+          "function": "witness_rd::lemma_rd_run",
+          "ms": 1645,
+          "rlimit": 2306279,
+          "success": true
+        },
+        {
+          "function": "witness::witness_bypass_and_redaction",
+          "ms": 1275,
+          "rlimit": 1959694,
+          "success": true
+        },
+        {
+          "function": "progress::lemma_watch_step",
+          "ms": 886,
+          "rlimit": 1686779,
+          "success": true
+        },
+        {
+          "function": "progress::theorem_work_available",
+          "ms": 724,
+          "rlimit": 1482261,
+          "success": true
+        },
+        {
+          "function": "progress::RunProgress::nonincreasing",
+          "ms": 690,
+          "rlimit": 1344935,
+          "success": true
+        },
+        {
+          "function": "witness::witness_erasure_rollback",
+          "ms": 908,
+          "rlimit": 1339904,
+          "success": true
+        },
+        {
+          "function": "witness::witness_settled",
+          "ms": 659,
+          "rlimit": 1095533,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "protocol_top::lemma_p3_binds"
+      ],
+      "functions_checked": 159,
+      "max_function_rlimit": 6347762,
+      "guard": "G-B bypass writers serialized with redaction start",
+      "finding": "F-C1301",
+      "expected": "src/protocol_top.rs",
+      "counterexample": "cx_bypass_start::counterexample_bypass_start",
+      "what": "Start does not wait for open ledger-bypassing transactions (no writer takes a lock the redaction takes, as at the pin)",
+      "killed": true,
+      "counterexample_verified": true,
+      "failing_outside_expected_file": [],
+      "others_verify_as_baseline": true
+    },
+    "control_bypass_erase": {
+      "tag": "control_bypass_erase",
+      "features": "control_bypass_erase",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_bypass_erase -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d9b/run-20261114T120856Z/control_bypass_erase.log",
+      "json": "$RUN_DIR/proofs-d9b/run-20261114T120856Z/control_bypass_erase.json",
+      "wall_seconds": 8.42,
+      "error_locations": [
+        "src/protocol_top.rs:74"
+      ],
+      "resource_limit_hit": false,
+      "verified": 158,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 8249,
+      "smt_run_ms": 21323,
+      "rlimit_total": 38579392,
+      "modules": {
+        "theorems": {
+          "ms": 4042,
+          "rlimit": 9116834
+        },
+        "witness_meta": {
+          "ms": 5179,
+          "rlimit": 7040598
+        },
+        "progress": {
+          "ms": 3373,
+          "rlimit": 6129518
+        },
+        "witness": {
+          "ms": 2577,
+          "rlimit": 4533586
+        },
+        "witness_rd": {
+          "ms": 1615,
+          "rlimit": 3542015
+        },
+        "safety": {
+          "ms": 1833,
+          "rlimit": 3417112
+        },
+        "protocol_rl": {
+          "ms": 1003,
+          "rlimit": 1938356
+        },
+        "protocol_rd": {
+          "ms": 388,
+          "rlimit": 648588
+        },
+        "vocab": {
+          "ms": 185,
+          "rlimit": 407869
+        },
+        "protocol_top": {
+          "ms": 291,
+          "rlimit": 386138
+        },
+        "cx_bypass_erase": {
+          "ms": 260,
+          "rlimit": 326777
+        },
+        "ledger": {
+          "ms": 131,
+          "rlimit": 309699
+        },
+        "system": {
+          "ms": 188,
+          "rlimit": 271515
+        },
+        "biz": {
+          "ms": 63,
+          "rlimit": 173945
+        },
+        "redactor": {
+          "ms": 54,
+          "rlimit": 94904
+        },
+        "protocol_sys": {
+          "ms": 51,
+          "rlimit": 84232
+        },
+        "mid": {
+          "ms": 43,
+          "rlimit": 75794
+        },
+        "store": {
+          "ms": 25,
+          "rlimit": 51268
+        },
+        "compose": {
+          "ms": 8,
+          "rlimit": 20379
+        },
+        "reader": {
+          "ms": 2,
+          "rlimit": 5507
+        },
+        "writer": {
+          "ms": 2,
+          "rlimit": 4758
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_meta::witness_noop_recorded",
+          "ms": 4808,
+          "rlimit": 6347762,
+          "success": true
+        },
+        {
+          "function": "theorems::theorem_retry_refused",
+          "ms": 1157,
+          "rlimit": 3423507,
+          "success": true
+        },
+        {
+          "function": "theorems::theorem_marker_owned",
+          "ms": 1392,
+          "rlimit": 2733379,
+          "success": true
+        },
+        {
+          "function": "witness_rd::lemma_rd_run",
+          "ms": 1046,
+          "rlimit": 2306279,
+          "success": true
+        },
+        {
+          "function": "witness::witness_bypass_and_redaction",
+          "ms": 1110,
+          "rlimit": 1959694,
+          "success": true
+        },
+        {
+          "function": "progress::lemma_watch_step",
+          "ms": 1025,
+          "rlimit": 1686779,
+          "success": true
+        },
+        {
+          "function": "progress::theorem_work_available",
+          "ms": 696,
+          "rlimit": 1482261,
+          "success": true
+        },
+        {
+          "function": "progress::RunProgress::nonincreasing",
+          "ms": 855,
+          "rlimit": 1344935,
+          "success": true
+        },
+        {
+          "function": "witness::witness_erasure_rollback",
+          "ms": 736,
+          "rlimit": 1339904,
+          "success": true
+        },
+        {
+          "function": "witness::witness_settled",
+          "ms": 652,
+          "rlimit": 1095533,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "protocol_top::lemma_p3_binds"
+      ],
+      "functions_checked": 159,
+      "max_function_rlimit": 6347762,
+      "guard": "G-BE the eraser waits for open bypass transactions on its target",
+      "finding": "new (model)",
+      "expected": "src/protocol_top.rs",
+      "counterexample": "cx_bypass_erase::counterexample_bypass_erase",
+      "what": "EraseRows does not wait for open bypass transactions on its target's rows",
+      "killed": true,
+      "counterexample_verified": true,
+      "failing_outside_expected_file": [],
+      "others_verify_as_baseline": true
+    },
+    "control_liveness_dirty": {
+      "tag": "control_liveness_dirty",
+      "features": "control_liveness_dirty",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_liveness_dirty -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d9b/run-20261114T120856Z/control_liveness_dirty.log",
+      "json": "$RUN_DIR/proofs-d9b/run-20261114T120856Z/control_liveness_dirty.json",
+      "wall_seconds": 9.37,
+      "error_locations": [
+        "src/protocol_sys.rs:122",
+        "src/protocol_sys.rs:130"
+      ],
+      "resource_limit_hit": false,
+      "verified": 157,
+      "errors": 2,
+      "success": false,
+      "verus_total_ms": 9179,
+      "smt_run_ms": 24841,
+      "rlimit_total": 38782122,
+      "modules": {
+        "theorems": {
+          "ms": 4557,
+          "rlimit": 9116834
+        },
+        "witness_meta": {
+          "ms": 6000,
+          "rlimit": 7040598
+        },
+        "progress": {
+          "ms": 3579,
+          "rlimit": 6129518
+        },
+        "witness": {
+          "ms": 3358,
+          "rlimit": 4533586
+        },
+        "witness_rd": {
+          "ms": 2410,
+          "rlimit": 3542015
+        },
+        "safety": {
+          "ms": 2102,
+          "rlimit": 3417112
+        },
+        "protocol_rl": {
+          "ms": 977,
+          "rlimit": 1938356
+        },
+        "protocol_rd": {
+          "ms": 395,
+          "rlimit": 648588
+        },
+        "cx_liveness_dirty": {
+          "ms": 428,
+          "rlimit": 552537
+        },
+        "vocab": {
+          "ms": 194,
+          "rlimit": 407869
+        },
+        "protocol_sys": {
+          "ms": 226,
+          "rlimit": 348624
+        },
+        "ledger": {
+          "ms": 135,
+          "rlimit": 309699
+        },
+        "system": {
+          "ms": 190,
+          "rlimit": 273422
+        },
+        "biz": {
+          "ms": 68,
+          "rlimit": 173945
+        },
+        "protocol_top": {
+          "ms": 79,
+          "rlimit": 96809
+        },
+        "redactor": {
+          "ms": 50,
+          "rlimit": 94904
+        },
+        "mid": {
+          "ms": 45,
+          "rlimit": 75794
+        },
+        "store": {
+          "ms": 25,
+          "rlimit": 51268
+        },
+        "compose": {
+          "ms": 8,
+          "rlimit": 20379
+        },
+        "reader": {
+          "ms": 2,
+          "rlimit": 5507
+        },
+        "writer": {
+          "ms": 2,
+          "rlimit": 4758
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_meta::witness_noop_recorded",
+          "ms": 5552,
+          "rlimit": 6347762,
+          "success": true
+        },
+        {
+          "function": "theorems::theorem_retry_refused",
+          "ms": 1434,
+          "rlimit": 3423507,
+          "success": true
+        },
+        {
+          "function": "theorems::theorem_marker_owned",
+          "ms": 1450,
+          "rlimit": 2733379,
+          "success": true
+        },
+        {
+          "function": "witness_rd::lemma_rd_run",
+          "ms": 1495,
+          "rlimit": 2306279,
+          "success": true
+        },
+        {
+          "function": "witness::witness_bypass_and_redaction",
+          "ms": 1545,
+          "rlimit": 1959694,
+          "success": true
+        },
+        {
+          "function": "progress::lemma_watch_step",
+          "ms": 983,
+          "rlimit": 1686779,
+          "success": true
+        },
+        {
+          "function": "progress::theorem_work_available",
+          "ms": 900,
+          "rlimit": 1482261,
+          "success": true
+        },
+        {
+          "function": "progress::RunProgress::nonincreasing",
+          "ms": 789,
+          "rlimit": 1344935,
+          "success": true
+        },
+        {
+          "function": "witness::witness_erasure_rollback",
+          "ms": 952,
+          "rlimit": 1339904,
+          "success": true
+        },
+        {
+          "function": "witness::witness_settled",
+          "ms": 781,
+          "rlimit": 1095533,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "protocol_sys::lemma_p2_binds",
+        "protocol_sys::lemma_p2_enabled"
+      ],
+      "functions_checked": 159,
+      "max_function_rlimit": 6347762,
+      "guard": "G-L liveness on committed state or under the eraser's lock",
+      "finding": "F-C1201",
+      "expected": "src/protocol_sys.rs",
+      "counterexample": "cx_liveness_dirty::counterexample_liveness_dirty",
+      "what": "the liveness check runs at the call, without the head lock, on uncommitted rows (LedgerRedact.cls:206-210); the locked Start does not check again",
+      "killed": true,
+      "counterexample_verified": true,
+      "failing_outside_expected_file": [],
+      "others_verify_as_baseline": true
+    },
+    "control_unaligned_rm": {
+      "tag": "control_unaligned_rm",
+      "features": "control_unaligned_rm",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_unaligned_rm -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d9b/run-20261114T120856Z/control_unaligned_rm.log",
+      "json": "$RUN_DIR/proofs-d9b/run-20261114T120856Z/control_unaligned_rm.json",
+      "wall_seconds": 8.49,
+      "error_locations": [
+        "src/protocol_sys.rs:122"
+      ],
+      "resource_limit_hit": false,
+      "verified": 158,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 8308,
+      "smt_run_ms": 23290,
+      "rlimit_total": 38575019,
+      "modules": {
+        "theorems": {
+          "ms": 4355,
+          "rlimit": 9116834
+        },
+        "witness_meta": {
+          "ms": 5221,
+          "rlimit": 7040598
+        },
+        "progress": {
+          "ms": 3353,
+          "rlimit": 6129518
+        },
+        "witness": {
+          "ms": 2794,
+          "rlimit": 4533586
+        },
+        "witness_rd": {
+          "ms": 2539,
+          "rlimit": 3542015
+        },
+        "safety": {
+          "ms": 2129,
+          "rlimit": 3417112
+        },
+        "protocol_rl": {
+          "ms": 1067,
+          "rlimit": 1938356
+        },
+        "protocol_rd": {
+          "ms": 398,
+          "rlimit": 648588
+        },
+        "vocab": {
+          "ms": 193,
+          "rlimit": 407869
+        },
+        "cx_unaligned_rm": {
+          "ms": 371,
+          "rlimit": 400961
+        },
+        "ledger": {
+          "ms": 137,
+          "rlimit": 309699
+        },
+        "protocol_sys": {
+          "ms": 201,
+          "rlimit": 293001
+        },
+        "system": {
+          "ms": 201,
+          "rlimit": 273518
+        },
+        "biz": {
+          "ms": 85,
+          "rlimit": 173945
+        },
+        "protocol_top": {
+          "ms": 90,
+          "rlimit": 96809
+        },
+        "redactor": {
+          "ms": 49,
+          "rlimit": 94904
+        },
+        "mid": {
+          "ms": 57,
+          "rlimit": 75794
+        },
+        "store": {
+          "ms": 25,
+          "rlimit": 51268
+        },
+        "compose": {
+          "ms": 9,
+          "rlimit": 20379
+        },
+        "reader": {
+          "ms": 2,
+          "rlimit": 5507
+        },
+        "writer": {
+          "ms": 3,
+          "rlimit": 4758
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_meta::witness_noop_recorded",
+          "ms": 4840,
+          "rlimit": 6347762,
+          "success": true
+        },
+        {
+          "function": "theorems::theorem_retry_refused",
+          "ms": 1303,
+          "rlimit": 3423507,
+          "success": true
+        },
+        {
+          "function": "theorems::theorem_marker_owned",
+          "ms": 1455,
+          "rlimit": 2733379,
+          "success": true
+        },
+        {
+          "function": "witness_rd::lemma_rd_run",
+          "ms": 1616,
+          "rlimit": 2306279,
+          "success": true
+        },
+        {
+          "function": "witness::witness_bypass_and_redaction",
+          "ms": 1073,
+          "rlimit": 1959694,
+          "success": true
+        },
+        {
+          "function": "progress::lemma_watch_step",
+          "ms": 759,
+          "rlimit": 1686779,
+          "success": true
+        },
+        {
+          "function": "progress::theorem_work_available",
+          "ms": 956,
+          "rlimit": 1482261,
+          "success": true
+        },
+        {
+          "function": "progress::RunProgress::nonincreasing",
+          "ms": 752,
+          "rlimit": 1344935,
+          "success": true
+        },
+        {
+          "function": "witness::witness_erasure_rollback",
+          "ms": 889,
+          "rlimit": 1339904,
+          "success": true
+        },
+        {
+          "function": "witness::witness_settled",
+          "ms": 753,
+          "rlimit": 1095533,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "protocol_sys::lemma_p2_binds"
+      ],
+      "functions_checked": 159,
+      "max_function_rlimit": 6347762,
+      "guard": "G-P side condition, part rm ⊆ lv",
+      "finding": "F-1304 (shape of F-C1308)",
+      "expected": "src/protocol_sys.rs",
+      "counterexample": "cx_unaligned_rm::counterexample_unaligned_rm",
+      "what": "Start accepts a target whose record match selects rows its liveness check does not look at",
+      "killed": true,
+      "counterexample_verified": true,
+      "failing_outside_expected_file": [],
+      "others_verify_as_baseline": true
+    },
+    "control_unaligned_sc": {
+      "tag": "control_unaligned_sc",
+      "features": "control_unaligned_sc",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_unaligned_sc -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d9b/run-20261114T120856Z/control_unaligned_sc.log",
+      "json": "$RUN_DIR/proofs-d9b/run-20261114T120856Z/control_unaligned_sc.json",
+      "wall_seconds": 8.7,
+      "error_locations": [
+        "src/protocol_sys.rs:122"
+      ],
+      "resource_limit_hit": false,
+      "verified": 158,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 8527,
+      "smt_run_ms": 22512,
+      "rlimit_total": 38920059,
+      "modules": {
+        "theorems": {
+          "ms": 3833,
+          "rlimit": 9116834
+        },
+        "witness_meta": {
+          "ms": 5365,
+          "rlimit": 7040598
+        },
+        "progress": {
+          "ms": 3661,
+          "rlimit": 6129518
+        },
+        "witness": {
+          "ms": 2945,
+          "rlimit": 4533586
+        },
+        "witness_rd": {
+          "ms": 2036,
+          "rlimit": 3542015
+        },
+        "safety": {
+          "ms": 1654,
+          "rlimit": 3417112
+        },
+        "protocol_rl": {
+          "ms": 1002,
+          "rlimit": 1938356
+        },
+        "cx_unaligned_sc": {
+          "ms": 616,
+          "rlimit": 745454
+        },
+        "protocol_rd": {
+          "ms": 386,
+          "rlimit": 648588
+        },
+        "vocab": {
+          "ms": 214,
+          "rlimit": 407869
+        },
+        "ledger": {
+          "ms": 128,
+          "rlimit": 309699
+        },
+        "protocol_sys": {
+          "ms": 186,
+          "rlimit": 293548
+        },
+        "system": {
+          "ms": 195,
+          "rlimit": 273518
+        },
+        "biz": {
+          "ms": 69,
+          "rlimit": 173945
+        },
+        "protocol_top": {
+          "ms": 72,
+          "rlimit": 96809
+        },
+        "redactor": {
+          "ms": 57,
+          "rlimit": 94904
+        },
+        "mid": {
+          "ms": 44,
+          "rlimit": 75794
+        },
+        "store": {
+          "ms": 25,
+          "rlimit": 51268
+        },
+        "compose": {
+          "ms": 8,
+          "rlimit": 20379
+        },
+        "reader": {
+          "ms": 5,
+          "rlimit": 5507
+        },
+        "writer": {
+          "ms": 2,
+          "rlimit": 4758
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_meta::witness_noop_recorded",
+          "ms": 4975,
+          "rlimit": 6347762,
+          "success": true
+        },
+        {
+          "function": "theorems::theorem_retry_refused",
+          "ms": 1248,
+          "rlimit": 3423507,
+          "success": true
+        },
+        {
+          "function": "theorems::theorem_marker_owned",
+          "ms": 1152,
+          "rlimit": 2733379,
+          "success": true
+        },
+        {
+          "function": "witness_rd::lemma_rd_run",
+          "ms": 1437,
+          "rlimit": 2306279,
+          "success": true
+        },
+        {
+          "function": "witness::witness_bypass_and_redaction",
+          "ms": 1134,
+          "rlimit": 1959694,
+          "success": true
+        },
+        {
+          "function": "progress::lemma_watch_step",
+          "ms": 1081,
+          "rlimit": 1686779,
+          "success": true
+        },
+        {
+          "function": "progress::theorem_work_available",
+          "ms": 834,
+          "rlimit": 1482261,
+          "success": true
+        },
+        {
+          "function": "progress::RunProgress::nonincreasing",
+          "ms": 866,
+          "rlimit": 1344935,
+          "success": true
+        },
+        {
+          "function": "witness::witness_erasure_rollback",
+          "ms": 815,
+          "rlimit": 1339904,
+          "success": true
+        },
+        {
+          "function": "witness::witness_settled",
+          "ms": 906,
+          "rlimit": 1095533,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "protocol_sys::lemma_p2_binds"
+      ],
+      "functions_checked": 159,
+      "max_function_rlimit": 6347762,
+      "guard": "G-P side condition, part sc ⊆ rm (edges)",
+      "finding": "core m1-control-dropstatements-all-graphs",
+      "expected": "src/protocol_sys.rs",
+      "counterexample": "cx_unaligned_sc::counterexample_unaligned_sc",
+      "what": "Start accepts a target whose statement cleanup selects statements outside its record match",
+      "killed": true,
+      "counterexample_verified": true,
+      "failing_outside_expected_file": [],
+      "others_verify_as_baseline": true
+    },
+    "control_f1201_erase_unlocked": {
+      "tag": "control_f1201_erase_unlocked",
+      "features": "control_f1201_erase_unlocked",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f1201_erase_unlocked -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d9b/run-20261114T120856Z/control_f1201_erase_unlocked.log",
+      "json": "$RUN_DIR/proofs-d9b/run-20261114T120856Z/control_f1201_erase_unlocked.json",
+      "wall_seconds": 8.22,
+      "error_locations": [
+        "src/protocol_sys.rs:122",
+        "src/protocol_sys.rs:131"
+      ],
+      "resource_limit_hit": false,
+      "verified": 157,
+      "errors": 2,
+      "success": false,
+      "verus_total_ms": 8050,
+      "smt_run_ms": 21620,
+      "rlimit_total": 38472891,
+      "modules": {
+        "theorems": {
+          "ms": 4195,
+          "rlimit": 9116834
+        },
+        "witness_meta": {
+          "ms": 4882,
+          "rlimit": 7040598
+        },
+        "progress": {
+          "ms": 3154,
+          "rlimit": 6129518
+        },
+        "witness": {
+          "ms": 3065,
+          "rlimit": 4533586
+        },
+        "witness_rd": {
+          "ms": 1831,
+          "rlimit": 3542015
+        },
+        "safety": {
+          "ms": 1936,
+          "rlimit": 3417112
+        },
+        "protocol_rl": {
+          "ms": 977,
+          "rlimit": 1938356
+        },
+        "protocol_rd": {
+          "ms": 398,
+          "rlimit": 648588
+        },
+        "protocol_sys": {
+          "ms": 270,
+          "rlimit": 430831
+        },
+        "vocab": {
+          "ms": 186,
+          "rlimit": 407869
+        },
+        "ledger": {
+          "ms": 131,
+          "rlimit": 309699
+        },
+        "system": {
+          "ms": 189,
+          "rlimit": 273471
+        },
+        "biz": {
+          "ms": 69,
+          "rlimit": 173945
+        },
+        "cx_f1201": {
+          "ms": 121,
+          "rlimit": 161050
+        },
+        "protocol_top": {
+          "ms": 72,
+          "rlimit": 96809
+        },
+        "redactor": {
+          "ms": 50,
+          "rlimit": 94904
+        },
+        "mid": {
+          "ms": 44,
+          "rlimit": 75794
+        },
+        "store": {
+          "ms": 24,
+          "rlimit": 51268
+        },
+        "compose": {
+          "ms": 9,
+          "rlimit": 20379
+        },
+        "reader": {
+          "ms": 3,
+          "rlimit": 5507
+        },
+        "writer": {
+          "ms": 1,
+          "rlimit": 4758
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_meta::witness_noop_recorded",
+          "ms": 4500,
+          "rlimit": 6347762,
+          "success": true
+        },
+        {
+          "function": "theorems::theorem_retry_refused",
+          "ms": 1386,
+          "rlimit": 3423507,
+          "success": true
+        },
+        {
+          "function": "theorems::theorem_marker_owned",
+          "ms": 1371,
+          "rlimit": 2733379,
+          "success": true
+        },
+        {
+          "function": "witness_rd::lemma_rd_run",
+          "ms": 1111,
+          "rlimit": 2306279,
+          "success": true
+        },
+        {
+          "function": "witness::witness_bypass_and_redaction",
+          "ms": 1319,
+          "rlimit": 1959694,
+          "success": true
+        },
+        {
+          "function": "progress::lemma_watch_step",
+          "ms": 888,
+          "rlimit": 1686779,
+          "success": true
+        },
+        {
+          "function": "progress::theorem_work_available",
+          "ms": 801,
+          "rlimit": 1482261,
+          "success": true
+        },
+        {
+          "function": "progress::RunProgress::nonincreasing",
+          "ms": 605,
+          "rlimit": 1344935,
+          "success": true
+        },
+        {
+          "function": "witness::witness_erasure_rollback",
+          "ms": 989,
+          "rlimit": 1339904,
+          "success": true
+        },
+        {
+          "function": "witness::witness_settled",
+          "ms": 678,
+          "rlimit": 1095533,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "protocol_sys::lemma_p2_binds",
+        "protocol_sys::lemma_p2_enabled"
+      ],
+      "functions_checked": 159,
+      "max_function_rlimit": 6347762,
+      "guard": "original HD-1201 eraser head lock (regression)",
+      "finding": "F-1201",
+      "expected": "src/protocol_sys.rs",
+      "counterexample": "cx_f1201::counterexample_f1201",
+      "what": "the eraser takes no ledger head lock (Eraser.cls:47-261)",
+      "killed": true,
+      "counterexample_verified": true,
+      "failing_outside_expected_file": [],
+      "others_verify_as_baseline": true
+    },
+    "control_fcs01_noop_unrecorded": {
+      "tag": "control_fcs01_noop_unrecorded",
+      "features": "control_fcs01_noop_unrecorded",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_fcs01_noop_unrecorded -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d9b/run-20261114T120856Z/control_fcs01_noop_unrecorded.log",
+      "json": "$RUN_DIR/proofs-d9b/run-20261114T120856Z/control_fcs01_noop_unrecorded.json",
+      "wall_seconds": 8.3,
+      "error_locations": [
+        "src/protocol_rl.rs:389"
+      ],
+      "resource_limit_hit": false,
+      "verified": 158,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 8121,
+      "smt_run_ms": 22471,
+      "rlimit_total": 39325130,
+      "modules": {
+        "theorems": {
+          "ms": 3936,
+          "rlimit": 9116834
+        },
+        "witness_meta": {
+          "ms": 4949,
+          "rlimit": 7040598
+        },
+        "progress": {
+          "ms": 2979,
+          "rlimit": 6129518
+        },
+        "witness": {
+          "ms": 3121,
+          "rlimit": 4533586
+        },
+        "witness_rd": {
+          "ms": 1944,
+          "rlimit": 3542015
+        },
+        "safety": {
+          "ms": 2128,
+          "rlimit": 3417112
+        },
+        "protocol_rl": {
+          "ms": 1051,
+          "rlimit": 1954594
+        },
+        "cx_fcs01": {
+          "ms": 1144,
+          "rlimit": 1342632
+        },
+        "protocol_rd": {
+          "ms": 379,
+          "rlimit": 648588
+        },
+        "vocab": {
+          "ms": 189,
+          "rlimit": 407869
+        },
+        "ledger": {
+          "ms": 129,
+          "rlimit": 309699
+        },
+        "system": {
+          "ms": 187,
+          "rlimit": 274489
+        },
+        "biz": {
+          "ms": 66,
+          "rlimit": 173945
+        },
+        "protocol_top": {
+          "ms": 76,
+          "rlimit": 96809
+        },
+        "redactor": {
+          "ms": 51,
+          "rlimit": 94904
+        },
+        "protocol_sys": {
+          "ms": 51,
+          "rlimit": 84232
+        },
+        "mid": {
+          "ms": 43,
+          "rlimit": 75794
+        },
+        "store": {
+          "ms": 25,
+          "rlimit": 51268
+        },
+        "compose": {
+          "ms": 9,
+          "rlimit": 20379
+        },
+        "reader": {
+          "ms": 2,
+          "rlimit": 5507
+        },
+        "writer": {
+          "ms": 2,
+          "rlimit": 4758
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_meta::witness_noop_recorded",
+          "ms": 4564,
+          "rlimit": 6347762,
+          "success": true
+        },
+        {
+          "function": "theorems::theorem_retry_refused",
+          "ms": 1262,
+          "rlimit": 3423507,
+          "success": true
+        },
+        {
+          "function": "theorems::theorem_marker_owned",
+          "ms": 1117,
+          "rlimit": 2733379,
+          "success": true
+        },
+        {
+          "function": "witness_rd::lemma_rd_run",
+          "ms": 1266,
+          "rlimit": 2306279,
+          "success": true
+        },
+        {
+          "function": "witness::witness_bypass_and_redaction",
+          "ms": 1336,
+          "rlimit": 1959694,
+          "success": true
+        },
+        {
+          "function": "progress::lemma_watch_step",
+          "ms": 704,
+          "rlimit": 1686779,
+          "success": true
+        },
+        {
+          "function": "progress::theorem_work_available",
+          "ms": 759,
+          "rlimit": 1482261,
+          "success": true
+        },
+        {
+          "function": "progress::RunProgress::nonincreasing",
+          "ms": 690,
+          "rlimit": 1344935,
+          "success": true
+        },
+        {
+          "function": "cx_fcs01::counterexample_fcs01",
+          "ms": 1144,
+          "rlimit": 1342632,
+          "success": true
+        },
+        {
+          "function": "witness::witness_erasure_rollback",
+          "ms": 987,
+          "rlimit": 1339904,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "protocol_rl::lemma_p1_binds"
+      ],
+      "functions_checked": 159,
+      "max_function_rlimit": 6347762,
+      "guard": "R-1 every operation leaves a record (no-op record)",
+      "finding": "F-CS01",
+      "expected": "src/protocol_rl.rs",
+      "counterexample": "cx_fcs01::counterexample_fcs01",
+      "what": "as built: a no-op operation writes no record and the commit writes the revision row and key binding regardless (Ledger.cls:489-492, 520-525; LedgerApply.cls:229-233, 252-263); a zero-record revision keeps its metadata and its bound key through a complete redaction",
+      "killed": true,
+      "counterexample_verified": true,
+      "failing_outside_expected_file": [],
+      "others_verify_as_baseline": true
+    },
+    "control_f1302_unlocked_start": {
+      "tag": "control_f1302_unlocked_start",
+      "features": "control_f1302_unlocked_start",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f1302_unlocked_start -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d9b/run-20261114T120856Z/control_f1302_unlocked_start.log",
+      "json": "$RUN_DIR/proofs-d9b/run-20261114T120856Z/control_f1302_unlocked_start.json",
+      "wall_seconds": 8.42,
+      "error_locations": [
+        "src/protocol_rl.rs:389",
+        "src/protocol_rl.rs:393",
+        "src/protocol_rl.rs:407"
+      ],
+      "resource_limit_hit": false,
+      "verified": 157,
+      "errors": 2,
+      "success": false,
+      "verus_total_ms": 8240,
+      "smt_run_ms": 23177,
+      "rlimit_total": 38747145,
+      "modules": {
+        "theorems": {
+          "ms": 4397,
+          "rlimit": 9116834
+        },
+        "witness_meta": {
+          "ms": 5019,
+          "rlimit": 7040598
+        },
+        "progress": {
+          "ms": 3158,
+          "rlimit": 6129518
+        },
+        "witness": {
+          "ms": 3632,
+          "rlimit": 4533586
+        },
+        "witness_rd": {
+          "ms": 1942,
+          "rlimit": 3542015
+        },
+        "safety": {
+          "ms": 2111,
+          "rlimit": 3417112
+        },
+        "protocol_rl": {
+          "ms": 994,
+          "rlimit": 1850526
+        },
+        "cx_f1302": {
+          "ms": 698,
+          "rlimit": 859825
+        },
+        "protocol_rd": {
+          "ms": 386,
+          "rlimit": 648588
+        },
+        "vocab": {
+          "ms": 189,
+          "rlimit": 407869
+        },
+        "ledger": {
+          "ms": 128,
+          "rlimit": 309699
+        },
+        "system": {
+          "ms": 189,
+          "rlimit": 283379
+        },
+        "biz": {
+          "ms": 59,
+          "rlimit": 173945
+        },
+        "protocol_top": {
+          "ms": 75,
+          "rlimit": 96809
+        },
+        "redactor": {
+          "ms": 48,
+          "rlimit": 94904
+        },
+        "protocol_sys": {
+          "ms": 54,
+          "rlimit": 84232
+        },
+        "mid": {
+          "ms": 51,
+          "rlimit": 75794
+        },
+        "store": {
+          "ms": 22,
+          "rlimit": 51268
+        },
+        "compose": {
+          "ms": 8,
+          "rlimit": 20379
+        },
+        "reader": {
+          "ms": 4,
+          "rlimit": 5507
+        },
+        "writer": {
+          "ms": 2,
+          "rlimit": 4758
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_meta::witness_noop_recorded",
+          "ms": 4578,
+          "rlimit": 6347762,
+          "success": true
+        },
+        {
+          "function": "theorems::theorem_retry_refused",
+          "ms": 1170,
+          "rlimit": 3423507,
+          "success": true
+        },
+        {
+          "function": "theorems::theorem_marker_owned",
+          "ms": 1586,
+          "rlimit": 2733379,
+          "success": true
+        },
+        {
+          "function": "witness_rd::lemma_rd_run",
+          "ms": 1237,
+          "rlimit": 2306279,
+          "success": true
+        },
+        {
+          "function": "witness::witness_bypass_and_redaction",
+          "ms": 1635,
+          "rlimit": 1959694,
+          "success": true
+        },
+        {
+          "function": "progress::lemma_watch_step",
+          "ms": 730,
+          "rlimit": 1686779,
+          "success": true
+        },
+        {
+          "function": "progress::theorem_work_available",
+          "ms": 811,
+          "rlimit": 1482261,
+          "success": true
+        },
+        {
+          "function": "progress::RunProgress::nonincreasing",
+          "ms": 760,
+          "rlimit": 1344935,
+          "success": true
+        },
+        {
+          "function": "witness::witness_erasure_rollback",
+          "ms": 1116,
+          "rlimit": 1339904,
+          "success": true
+        },
+        {
+          "function": "witness::witness_settled",
+          "ms": 797,
+          "rlimit": 1095533,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "protocol_rl::lemma_p1_binds",
+        "protocol_rl::lemma_p1_enabled"
+      ],
+      "functions_checked": 159,
+      "max_function_rlimit": 6347762,
+      "guard": "HD-1301 locked Start writes its marker (re-run)",
+      "finding": "F-1302",
+      "expected": "src/protocol_rl.rs",
+      "counterexample": "cx_f1302::counterexample_f1302",
+      "what": "Start checks without the head lock and writes no marker; the first tombstone writes it (LedgerRedact.cls:202-211, 322-324)",
+      "killed": true,
+      "counterexample_verified": true,
+      "failing_outside_expected_file": [],
+      "others_verify_as_baseline": true
+    },
+    "control_f1303_other_marker": {
+      "tag": "control_f1303_other_marker",
+      "features": "control_f1303_other_marker",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f1303_other_marker -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d9b/run-20261114T120856Z/control_f1303_other_marker.log",
+      "json": "$RUN_DIR/proofs-d9b/run-20261114T120856Z/control_f1303_other_marker.json",
+      "wall_seconds": 8.49,
+      "error_locations": [
+        "src/protocol_rl.rs:389"
+      ],
+      "resource_limit_hit": false,
+      "verified": 158,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 8311,
+      "smt_run_ms": 23899,
+      "rlimit_total": 40317557,
+      "modules": {
+        "theorems": {
+          "ms": 3991,
+          "rlimit": 9116834
+        },
+        "witness_meta": {
+          "ms": 5143,
+          "rlimit": 7040598
+        },
+        "progress": {
+          "ms": 3020,
+          "rlimit": 6129518
+        },
+        "witness": {
+          "ms": 3003,
+          "rlimit": 4533586
+        },
+        "witness_rd": {
+          "ms": 2318,
+          "rlimit": 3542015
+        },
+        "safety": {
+          "ms": 2096,
+          "rlimit": 3417112
+        },
+        "cx_f1303": {
+          "ms": 2048,
+          "rlimit": 2351656
+        },
+        "protocol_rl": {
+          "ms": 1041,
+          "rlimit": 1937436
+        },
+        "protocol_rd": {
+          "ms": 400,
+          "rlimit": 648588
+        },
+        "vocab": {
+          "ms": 191,
+          "rlimit": 407869
+        },
+        "ledger": {
+          "ms": 129,
+          "rlimit": 309699
+        },
+        "system": {
+          "ms": 176,
+          "rlimit": 275050
+        },
+        "biz": {
+          "ms": 69,
+          "rlimit": 173945
+        },
+        "protocol_top": {
+          "ms": 75,
+          "rlimit": 96809
+        },
+        "redactor": {
+          "ms": 50,
+          "rlimit": 94904
+        },
+        "protocol_sys": {
+          "ms": 52,
+          "rlimit": 84232
+        },
+        "mid": {
+          "ms": 48,
+          "rlimit": 75794
+        },
+        "store": {
+          "ms": 25,
+          "rlimit": 51268
+        },
+        "compose": {
+          "ms": 10,
+          "rlimit": 20379
+        },
+        "reader": {
+          "ms": 2,
+          "rlimit": 5507
+        },
+        "writer": {
+          "ms": 2,
+          "rlimit": 4758
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_meta::witness_noop_recorded",
+          "ms": 4762,
+          "rlimit": 6347762,
+          "success": true
+        },
+        {
+          "function": "theorems::theorem_retry_refused",
+          "ms": 1263,
+          "rlimit": 3423507,
+          "success": true
+        },
+        {
+          "function": "theorems::theorem_marker_owned",
+          "ms": 1060,
+          "rlimit": 2733379,
+          "success": true
+        },
+        {
+          "function": "cx_f1303::counterexample_f1303",
+          "ms": 2048,
+          "rlimit": 2351656,
+          "success": true
+        },
+        {
+          "function": "witness_rd::lemma_rd_run",
+          "ms": 1573,
+          "rlimit": 2306279,
+          "success": true
+        },
+        {
+          "function": "witness::witness_bypass_and_redaction",
+          "ms": 1233,
+          "rlimit": 1959694,
+          "success": true
+        },
+        {
+          "function": "progress::lemma_watch_step",
+          "ms": 710,
+          "rlimit": 1686779,
+          "success": true
+        },
+        {
+          "function": "progress::theorem_work_available",
+          "ms": 742,
+          "rlimit": 1482261,
+          "success": true
+        },
+        {
+          "function": "progress::RunProgress::nonincreasing",
+          "ms": 744,
+          "rlimit": 1344935,
+          "success": true
+        },
+        {
+          "function": "witness::witness_erasure_rollback",
+          "ms": 993,
+          "rlimit": 1339904,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "protocol_rl::lemma_p1_binds"
+      ],
+      "functions_checked": 159,
+      "max_function_rlimit": 6347762,
+      "guard": "HD-1301 Final under its own marker (re-run)",
+      "finding": "F-1303",
+      "expected": "src/protocol_rl.rs",
+      "counterexample": "cx_f1303::counterexample_f1303",
+      "what": "Final runs under whatever marker exists (FinalInLock, LedgerRedact.cls:409-441)",
+      "killed": true,
+      "counterexample_verified": true,
+      "failing_outside_expected_file": [],
+      "others_verify_as_baseline": true
+    },
+    "control_f1306_replay_reapplies": {
+      "tag": "control_f1306_replay_reapplies",
+      "features": "control_f1306_replay_reapplies",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f1306_replay_reapplies -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d9b/run-20261114T120856Z/control_f1306_replay_reapplies.log",
+      "json": "$RUN_DIR/proofs-d9b/run-20261114T120856Z/control_f1306_replay_reapplies.json",
+      "wall_seconds": 8.36,
+      "error_locations": [
+        "src/protocol_sys.rs:122",
+        "src/protocol_sys.rs:132"
+      ],
+      "resource_limit_hit": false,
+      "verified": 157,
+      "errors": 2,
+      "success": false,
+      "verus_total_ms": 8194,
+      "smt_run_ms": 21464,
+      "rlimit_total": 38752249,
+      "modules": {
+        "theorems": {
+          "ms": 3537,
+          "rlimit": 9116834
+        },
+        "witness_meta": {
+          "ms": 5078,
+          "rlimit": 7040598
+        },
+        "progress": {
+          "ms": 3206,
+          "rlimit": 6129518
+        },
+        "witness": {
+          "ms": 2578,
+          "rlimit": 4533586
+        },
+        "witness_rd": {
+          "ms": 2527,
+          "rlimit": 3542015
+        },
+        "safety": {
+          "ms": 1617,
+          "rlimit": 3417112
+        },
+        "protocol_rl": {
+          "ms": 1029,
+          "rlimit": 1938356
+        },
+        "protocol_rd": {
+          "ms": 403,
+          "rlimit": 648588
+        },
+        "cx_f1306": {
+          "ms": 386,
+          "rlimit": 445394
+        },
+        "protocol_sys": {
+          "ms": 276,
+          "rlimit": 425985
+        },
+        "vocab": {
+          "ms": 242,
+          "rlimit": 407869
+        },
+        "ledger": {
+          "ms": 128,
+          "rlimit": 309699
+        },
+        "system": {
+          "ms": 177,
+          "rlimit": 273331
+        },
+        "biz": {
+          "ms": 57,
+          "rlimit": 173945
+        },
+        "protocol_top": {
+          "ms": 72,
+          "rlimit": 96809
+        },
+        "redactor": {
+          "ms": 51,
+          "rlimit": 94904
+        },
+        "mid": {
+          "ms": 49,
+          "rlimit": 75794
+        },
+        "store": {
+          "ms": 28,
+          "rlimit": 51268
+        },
+        "compose": {
+          "ms": 8,
+          "rlimit": 20379
+        },
+        "reader": {
+          "ms": 4,
+          "rlimit": 5507
+        },
+        "writer": {
+          "ms": 2,
+          "rlimit": 4758
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_meta::witness_noop_recorded",
+          "ms": 4717,
+          "rlimit": 6347762,
+          "success": true
+        },
+        {
+          "function": "theorems::theorem_retry_refused",
+          "ms": 1188,
+          "rlimit": 3423507,
+          "success": true
+        },
+        {
+          "function": "theorems::theorem_marker_owned",
+          "ms": 1002,
+          "rlimit": 2733379,
+          "success": true
+        },
+        {
+          "function": "witness_rd::lemma_rd_run",
+          "ms": 1627,
+          "rlimit": 2306279,
+          "success": true
+        },
+        {
+          "function": "witness::witness_bypass_and_redaction",
+          "ms": 1074,
+          "rlimit": 1959694,
+          "success": true
+        },
+        {
+          "function": "progress::lemma_watch_step",
+          "ms": 1030,
+          "rlimit": 1686779,
+          "success": true
+        },
+        {
+          "function": "progress::theorem_work_available",
+          "ms": 718,
+          "rlimit": 1482261,
+          "success": true
+        },
+        {
+          "function": "progress::RunProgress::nonincreasing",
+          "ms": 646,
+          "rlimit": 1344935,
+          "success": true
+        },
+        {
+          "function": "witness::witness_erasure_rollback",
+          "ms": 753,
+          "rlimit": 1339904,
+          "success": true
+        },
+        {
+          "function": "witness::witness_settled",
+          "ms": 667,
+          "rlimit": 1095533,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "protocol_sys::lemma_p2_binds",
+        "protocol_sys::lemma_p2_enabled"
+      ],
+      "functions_checked": 159,
+      "max_function_rlimit": 6347762,
+      "guard": "HD-1305 a replayed retry applies nothing (re-run)",
+      "finding": "F-1306",
+      "expected": "src/protocol_sys.rs",
+      "counterexample": "cx_f1306::counterexample_f1306",
+      "what": "a replayed retry re-applies its post-commit properties (client.py:430-435 after Ledger.cls:457-462)",
+      "killed": true,
+      "counterexample_verified": true,
+      "failing_outside_expected_file": [],
+      "others_verify_as_baseline": true
+    },
+    "control_sc_narrow": {
+      "tag": "control_sc_narrow",
+      "features": "control_sc_narrow",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_sc_narrow -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d9b/run-20261114T120856Z/control_sc_narrow.log",
+      "json": "$RUN_DIR/proofs-d9b/run-20261114T120856Z/control_sc_narrow.json",
+      "wall_seconds": 8.15,
+      "error_locations": [
+        "src/protocol_sys.rs:122"
+      ],
+      "resource_limit_hit": false,
+      "verified": 158,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 7976,
+      "smt_run_ms": 22706,
+      "rlimit_total": 39202112,
+      "modules": {
+        "theorems": {
+          "ms": 3903,
+          "rlimit": 9116834
+        },
+        "witness_meta": {
+          "ms": 4757,
+          "rlimit": 7040598
+        },
+        "progress": {
+          "ms": 3715,
+          "rlimit": 6129518
+        },
+        "witness": {
+          "ms": 2643,
+          "rlimit": 4533586
+        },
+        "witness_rd": {
+          "ms": 2277,
+          "rlimit": 3542015
+        },
+        "safety": {
+          "ms": 2154,
+          "rlimit": 3417112
+        },
+        "protocol_rl": {
+          "ms": 1028,
+          "rlimit": 1938356
+        },
+        "cx_sc_narrow": {
+          "ms": 866,
+          "rlimit": 1027145
+        },
+        "protocol_rd": {
+          "ms": 379,
+          "rlimit": 648588
+        },
+        "vocab": {
+          "ms": 192,
+          "rlimit": 407869
+        },
+        "ledger": {
+          "ms": 131,
+          "rlimit": 309699
+        },
+        "protocol_sys": {
+          "ms": 186,
+          "rlimit": 293910
+        },
+        "system": {
+          "ms": 193,
+          "rlimit": 273518
+        },
+        "biz": {
+          "ms": 65,
+          "rlimit": 173945
+        },
+        "protocol_top": {
+          "ms": 75,
+          "rlimit": 96809
+        },
+        "redactor": {
+          "ms": 49,
+          "rlimit": 94904
+        },
+        "mid": {
+          "ms": 43,
+          "rlimit": 75794
+        },
+        "store": {
+          "ms": 25,
+          "rlimit": 51268
+        },
+        "compose": {
+          "ms": 8,
+          "rlimit": 20379
+        },
+        "reader": {
+          "ms": 2,
+          "rlimit": 5507
+        },
+        "writer": {
+          "ms": 2,
+          "rlimit": 4758
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_meta::witness_noop_recorded",
+          "ms": 4328,
+          "rlimit": 6347762,
+          "success": true
+        },
+        {
+          "function": "theorems::theorem_retry_refused",
+          "ms": 1418,
+          "rlimit": 3423507,
+          "success": true
+        },
+        {
+          "function": "theorems::theorem_marker_owned",
+          "ms": 980,
+          "rlimit": 2733379,
+          "success": true
+        },
+        {
+          "function": "witness_rd::lemma_rd_run",
+          "ms": 1666,
+          "rlimit": 2306279,
+          "success": true
+        },
+        {
+          "function": "witness::witness_bypass_and_redaction",
+          "ms": 1092,
+          "rlimit": 1959694,
+          "success": true
+        },
+        {
+          "function": "progress::lemma_watch_step",
+          "ms": 1077,
+          "rlimit": 1686779,
+          "success": true
+        },
+        {
+          "function": "progress::theorem_work_available",
+          "ms": 949,
+          "rlimit": 1482261,
+          "success": true
+        },
+        {
+          "function": "progress::RunProgress::nonincreasing",
+          "ms": 855,
+          "rlimit": 1344935,
+          "success": true
+        },
+        {
+          "function": "witness::witness_erasure_rollback",
+          "ms": 762,
+          "rlimit": 1339904,
+          "success": true
+        },
+        {
+          "function": "witness::witness_settled",
+          "ms": 701,
+          "rlimit": 1095533,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "protocol_sys::lemma_p2_binds"
+      ],
+      "functions_checked": 159,
+      "max_function_rlimit": 6347762,
+      "guard": "G-P side condition, part rm ⊆ sc on edges (statement history)",
+      "finding": "none (design control)",
+      "expected": "src/protocol_sys.rs",
+      "counterexample": "cx_sc_narrow::counterexample_sc_narrow",
+      "what": "Start accepts a target whose statement cleanup misses edges its record match owns; a closed statement entry survives a complete redaction",
+      "killed": true,
+      "counterexample_verified": true,
+      "failing_outside_expected_file": [],
+      "others_verify_as_baseline": true
+    },
+    "control_f1402_reader_no_recheck": {
+      "tag": "control_f1402_reader_no_recheck",
+      "features": "control_f1402_reader_no_recheck",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f1402_reader_no_recheck -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d9b/run-20261114T120856Z/control_f1402_reader_no_recheck.log",
+      "json": "$RUN_DIR/proofs-d9b/run-20261114T120856Z/control_f1402_reader_no_recheck.json",
+      "wall_seconds": 8.27,
+      "error_locations": [
+        "src/protocol_rd.rs:265"
+      ],
+      "resource_limit_hit": false,
+      "verified": 158,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 8107,
+      "smt_run_ms": 22175,
+      "rlimit_total": 39094054,
+      "modules": {
+        "theorems": {
+          "ms": 4088,
+          "rlimit": 9116834
+        },
+        "witness_meta": {
+          "ms": 4948,
+          "rlimit": 7040598
+        },
+        "progress": {
+          "ms": 3408,
+          "rlimit": 6129518
+        },
+        "witness": {
+          "ms": 3095,
+          "rlimit": 4533586
+        },
+        "witness_rd": {
+          "ms": 2013,
+          "rlimit": 3542015
+        },
+        "safety": {
+          "ms": 1729,
+          "rlimit": 3417112
+        },
+        "protocol_rl": {
+          "ms": 949,
+          "rlimit": 1938356
+        },
+        "cx_reader": {
+          "ms": 713,
+          "rlimit": 1153107
+        },
+        "protocol_rd": {
+          "ms": 368,
+          "rlimit": 624364
+        },
+        "vocab": {
+          "ms": 193,
+          "rlimit": 407869
+        },
+        "ledger": {
+          "ms": 128,
+          "rlimit": 309699
+        },
+        "system": {
+          "ms": 201,
+          "rlimit": 273400
+        },
+        "biz": {
+          "ms": 67,
+          "rlimit": 173945
+        },
+        "protocol_top": {
+          "ms": 77,
+          "rlimit": 96809
+        },
+        "redactor": {
+          "ms": 54,
+          "rlimit": 94904
+        },
+        "protocol_sys": {
+          "ms": 52,
+          "rlimit": 84232
+        },
+        "mid": {
+          "ms": 44,
+          "rlimit": 75794
+        },
+        "store": {
+          "ms": 25,
+          "rlimit": 51268
+        },
+        "compose": {
+          "ms": 8,
+          "rlimit": 20379
+        },
+        "reader": {
+          "ms": 2,
+          "rlimit": 5507
+        },
+        "writer": {
+          "ms": 2,
+          "rlimit": 4758
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_meta::witness_noop_recorded",
+          "ms": 4560,
+          "rlimit": 6347762,
+          "success": true
+        },
+        {
+          "function": "theorems::theorem_retry_refused",
+          "ms": 1162,
+          "rlimit": 3423507,
+          "success": true
+        },
+        {
+          "function": "theorems::theorem_marker_owned",
+          "ms": 1239,
+          "rlimit": 2733379,
+          "success": true
+        },
+        {
+          "function": "witness_rd::lemma_rd_run",
+          "ms": 1410,
+          "rlimit": 2306279,
+          "success": true
+        },
+        {
+          "function": "witness::witness_bypass_and_redaction",
+          "ms": 1466,
+          "rlimit": 1959694,
+          "success": true
+        },
+        {
+          "function": "progress::lemma_watch_step",
+          "ms": 1043,
+          "rlimit": 1686779,
+          "success": true
+        },
+        {
+          "function": "progress::theorem_work_available",
+          "ms": 725,
+          "rlimit": 1482261,
+          "success": true
+        },
+        {
+          "function": "progress::RunProgress::nonincreasing",
+          "ms": 835,
+          "rlimit": 1344935,
+          "success": true
+        },
+        {
+          "function": "witness::witness_erasure_rollback",
+          "ms": 894,
+          "rlimit": 1339904,
+          "success": true
+        },
+        {
+          "function": "cx_reader::counterexample_reader_half_redacted",
+          "ms": 713,
+          "rlimit": 1153107,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "protocol_rd::lemma_rd_binds"
+      ],
+      "functions_checked": 159,
+      "max_function_rlimit": 6347762,
+      "guard": "reader re-checks marker and epoch after reading (HD-1401 b2)",
+      "finding": "F-1402",
+      "expected": "src/protocol_rd.rs",
+      "counterexample": "cx_reader::counterexample_reader_half_redacted",
+      "what": "as built: a reader checks the marker once before reading and returns its view unchecked (client.py:720-728, replay.py:231-269)",
+      "killed": true,
+      "counterexample_verified": true,
+      "failing_outside_expected_file": [],
+      "others_verify_as_baseline": true
+    },
+    "control_reader_marker_recheck_only": {
+      "tag": "control_reader_marker_recheck_only",
+      "features": "control_reader_marker_recheck_only",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_reader_marker_recheck_only -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d9b/run-20261114T120856Z/control_reader_marker_recheck_only.log",
+      "json": "$RUN_DIR/proofs-d9b/run-20261114T120856Z/control_reader_marker_recheck_only.json",
+      "wall_seconds": 8.14,
+      "error_locations": [
+        "src/protocol_rd.rs:265"
+      ],
+      "resource_limit_hit": false,
+      "verified": 158,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 7974,
+      "smt_run_ms": 21648,
+      "rlimit_total": 39096834,
+      "modules": {
+        "theorems": {
+          "ms": 3889,
+          "rlimit": 9116834
+        },
+        "witness_meta": {
+          "ms": 4698,
+          "rlimit": 7040598
+        },
+        "progress": {
+          "ms": 3461,
+          "rlimit": 6129518
+        },
+        "witness": {
+          "ms": 3091,
+          "rlimit": 4533586
+        },
+        "witness_rd": {
+          "ms": 1889,
+          "rlimit": 3542015
+        },
+        "safety": {
+          "ms": 1637,
+          "rlimit": 3417112
+        },
+        "protocol_rl": {
+          "ms": 1032,
+          "rlimit": 1938356
+        },
+        "cx_reader": {
+          "ms": 723,
+          "rlimit": 1153103
+        },
+        "protocol_rd": {
+          "ms": 381,
+          "rlimit": 627148
+        },
+        "vocab": {
+          "ms": 196,
+          "rlimit": 407869
+        },
+        "ledger": {
+          "ms": 129,
+          "rlimit": 309699
+        },
+        "system": {
+          "ms": 190,
+          "rlimit": 273400
+        },
+        "biz": {
+          "ms": 67,
+          "rlimit": 173945
+        },
+        "protocol_top": {
+          "ms": 72,
+          "rlimit": 96809
+        },
+        "redactor": {
+          "ms": 50,
+          "rlimit": 94904
+        },
+        "protocol_sys": {
+          "ms": 52,
+          "rlimit": 84232
+        },
+        "mid": {
+          "ms": 45,
+          "rlimit": 75794
+        },
+        "store": {
+          "ms": 24,
+          "rlimit": 51268
+        },
+        "compose": {
+          "ms": 8,
+          "rlimit": 20379
+        },
+        "reader": {
+          "ms": 2,
+          "rlimit": 5507
+        },
+        "writer": {
+          "ms": 2,
+          "rlimit": 4758
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_meta::witness_noop_recorded",
+          "ms": 4344,
+          "rlimit": 6347762,
+          "success": true
+        },
+        {
+          "function": "theorems::theorem_retry_refused",
+          "ms": 1188,
+          "rlimit": 3423507,
+          "success": true
+        },
+        {
+          "function": "theorems::theorem_marker_owned",
+          "ms": 1021,
+          "rlimit": 2733379,
+          "success": true
+        },
+        {
+          "function": "witness_rd::lemma_rd_run",
+          "ms": 1093,
+          "rlimit": 2306279,
+          "success": true
+        },
+        {
+          "function": "witness::witness_bypass_and_redaction",
+          "ms": 1339,
+          "rlimit": 1959694,
+          "success": true
+        },
+        {
+          "function": "progress::lemma_watch_step",
+          "ms": 1011,
+          "rlimit": 1686779,
+          "success": true
+        },
+        {
+          "function": "progress::theorem_work_available",
+          "ms": 797,
+          "rlimit": 1482261,
+          "success": true
+        },
+        {
+          "function": "progress::RunProgress::nonincreasing",
+          "ms": 766,
+          "rlimit": 1344935,
+          "success": true
+        },
+        {
+          "function": "witness::witness_erasure_rollback",
+          "ms": 1027,
+          "rlimit": 1339904,
+          "success": true
+        },
+        {
+          "function": "cx_reader::counterexample_reader_half_redacted",
+          "ms": 723,
+          "rlimit": 1153103,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "protocol_rd::lemma_rd_binds"
+      ],
+      "functions_checked": 159,
+      "max_function_rlimit": 6347762,
+      "guard": "reader compares the redaction epoch (HD-1401 b2 vs b1)",
+      "finding": "F-1402 (HD-1401 b1)",
+      "expected": "src/protocol_rd.rs",
+      "counterexample": "cx_reader::counterexample_reader_half_redacted",
+      "what": "a reader re-checks the marker after reading but compares no epoch; a whole redaction inside one read passes it",
+      "killed": true,
+      "counterexample_verified": true,
+      "failing_outside_expected_file": [],
+      "others_verify_as_baseline": true
+    },
+    "control_progress_rewind": {
+      "tag": "control_progress_rewind",
+      "features": "control_progress_rewind",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_progress_rewind -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d9b/run-20261114T120856Z/control_progress_rewind.log",
+      "json": "$RUN_DIR/proofs-d9b/run-20261114T120856Z/control_progress_rewind.json",
+      "wall_seconds": 8.2,
+      "error_locations": [
+        "src/progress.rs:192"
+      ],
+      "resource_limit_hit": false,
+      "verified": 157,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 8033,
+      "smt_run_ms": 24339,
+      "rlimit_total": 40728689,
+      "modules": {
+        "theorems": {
+          "ms": 4640,
+          "rlimit": 9157408
+        },
+        "progress": {
+          "ms": 4855,
+          "rlimit": 8812541
+        },
+        "witness_meta": {
+          "ms": 5070,
+          "rlimit": 7026424
+        },
+        "witness": {
+          "ms": 2768,
+          "rlimit": 4535249
+        },
+        "witness_rd": {
+          "ms": 2370,
+          "rlimit": 3541843
+        },
+        "safety": {
+          "ms": 2042,
+          "rlimit": 3390047
+        },
+        "protocol_rl": {
+          "ms": 1118,
+          "rlimit": 2006350
+        },
+        "protocol_rd": {
+          "ms": 455,
+          "rlimit": 656101
+        },
+        "vocab": {
+          "ms": 197,
+          "rlimit": 407869
+        },
+        "ledger": {
+          "ms": 134,
+          "rlimit": 309699
+        },
+        "system": {
+          "ms": 281,
+          "rlimit": 273348
+        },
+        "biz": {
+          "ms": 65,
+          "rlimit": 178159
+        },
+        "protocol_top": {
+          "ms": 73,
+          "rlimit": 96809
+        },
+        "redactor": {
+          "ms": 48,
+          "rlimit": 94904
+        },
+        "protocol_sys": {
+          "ms": 50,
+          "rlimit": 84232
+        },
+        "mid": {
+          "ms": 106,
+          "rlimit": 75794
+        },
+        "store": {
+          "ms": 45,
+          "rlimit": 51268
+        },
+        "compose": {
+          "ms": 8,
+          "rlimit": 20379
+        },
+        "reader": {
+          "ms": 3,
+          "rlimit": 5507
+        },
+        "writer": {
+          "ms": 2,
+          "rlimit": 4758
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_meta::witness_noop_recorded",
+          "ms": 4695,
+          "rlimit": 6345530,
+          "success": true
+        },
+        {
+          "function": "theorems::theorem_retry_refused",
+          "ms": 1341,
+          "rlimit": 3468856,
+          "success": true
+        },
+        {
+          "function": "theorems::theorem_marker_owned",
+          "ms": 1543,
+          "rlimit": 2743149,
+          "success": true
+        },
+        {
+          "function": "progress::lemma_watch_step",
+          "ms": 1380,
+          "rlimit": 2695027,
+          "success": true
+        },
+        {
+          "function": "progress::theorem_work_available",
+          "ms": 1223,
+          "rlimit": 2664892,
+          "success": true
+        },
+        {
+          "function": "witness_rd::lemma_rd_run",
+          "ms": 1597,
+          "rlimit": 2306895,
+          "success": true
+        },
+        {
+          "function": "witness::witness_bypass_and_redaction",
+          "ms": 1074,
+          "rlimit": 1959834,
+          "success": true
+        },
+        {
+          "function": "progress::RunProgress::nonincreasing",
+          "ms": 1309,
+          "rlimit": 1598974,
+          "success": false
+        },
+        {
+          "function": "witness::witness_erasure_rollback",
+          "ms": 870,
+          "rlimit": 1340499,
+          "success": true
+        },
+        {
+          "function": "witness::witness_settled",
+          "ms": 742,
+          "rlimit": 1096461,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "progress::RunProgress::nonincreasing"
+      ],
+      "functions_checked": 158,
+      "max_function_rlimit": 6345530,
+      "expected": "src/progress.rs",
+      "element": "D-1 (cursor survives a stop)",
+      "what": "a resume rewinds the run's cursor to the first record (the pin's Redact restarts its scan, LedgerRedact.cls:213)",
+      "failing_outside_progress": [],
+      "killed": true,
+      "safety_still_verifies": true,
+      "non_progress_functions_verified": 147
+    },
+    "control_bound_follows_tail": {
+      "tag": "control_bound_follows_tail",
+      "features": "control_bound_follows_tail",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_bound_follows_tail -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d9b/run-20261114T120856Z/control_bound_follows_tail.log",
+      "json": "$RUN_DIR/proofs-d9b/run-20261114T120856Z/control_bound_follows_tail.json",
+      "wall_seconds": 7.72,
+      "error_locations": [
+        "src/progress.rs:184"
+      ],
+      "resource_limit_hit": false,
+      "verified": 157,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 7551,
+      "smt_run_ms": 22976,
+      "rlimit_total": 40949335,
+      "modules": {
+        "theorems": {
+          "ms": 4174,
+          "rlimit": 9045493
+        },
+        "progress": {
+          "ms": 4354,
+          "rlimit": 8969891
+        },
+        "witness_meta": {
+          "ms": 4700,
+          "rlimit": 7035222
+        },
+        "witness": {
+          "ms": 3154,
+          "rlimit": 4488571
+        },
+        "witness_rd": {
+          "ms": 2690,
+          "rlimit": 3719523
+        },
+        "safety": {
+          "ms": 1654,
+          "rlimit": 3532100
+        },
+        "protocol_rl": {
+          "ms": 1001,
+          "rlimit": 1910488
+        },
+        "protocol_rd": {
+          "ms": 399,
+          "rlimit": 650201
+        },
+        "vocab": {
+          "ms": 198,
+          "rlimit": 407869
+        },
+        "ledger": {
+          "ms": 136,
+          "rlimit": 308989
+        },
+        "system": {
+          "ms": 179,
+          "rlimit": 273392
+        },
+        "biz": {
+          "ms": 70,
+          "rlimit": 173945
+        },
+        "protocol_top": {
+          "ms": 74,
+          "rlimit": 96809
+        },
+        "redactor": {
+          "ms": 45,
+          "rlimit": 94904
+        },
+        "protocol_sys": {
+          "ms": 50,
+          "rlimit": 84232
+        },
+        "mid": {
+          "ms": 43,
+          "rlimit": 75794
+        },
+        "store": {
+          "ms": 34,
+          "rlimit": 51268
+        },
+        "compose": {
+          "ms": 8,
+          "rlimit": 20379
+        },
+        "reader": {
+          "ms": 2,
+          "rlimit": 5507
+        },
+        "writer": {
+          "ms": 2,
+          "rlimit": 4758
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_meta::witness_noop_recorded",
+          "ms": 4343,
+          "rlimit": 6352485,
+          "success": true
+        },
+        {
+          "function": "theorems::theorem_retry_refused",
+          "ms": 1232,
+          "rlimit": 3553818,
+          "success": true
+        },
+        {
+          "function": "progress::theorem_work_available",
+          "ms": 1221,
+          "rlimit": 2792715,
+          "success": true
+        },
+        {
+          "function": "theorems::theorem_marker_owned",
+          "ms": 1370,
+          "rlimit": 2761693,
+          "success": true
+        },
+        {
+          "function": "progress::lemma_watch_step",
+          "ms": 1258,
+          "rlimit": 2676848,
+          "success": true
+        },
+        {
+          "function": "witness_rd::lemma_rd_run",
+          "ms": 1776,
+          "rlimit": 2455332,
+          "success": true
+        },
+        {
+          "function": "witness::witness_bypass_and_redaction",
+          "ms": 1296,
+          "rlimit": 1912106,
+          "success": true
+        },
+        {
+          "function": "progress::RunProgress::nonincreasing",
+          "ms": 977,
+          "rlimit": 1658413,
+          "success": false
+        },
+        {
+          "function": "witness::witness_erasure_rollback",
+          "ms": 1021,
+          "rlimit": 1340499,
+          "success": true
+        },
+        {
+          "function": "witness::witness_settled",
+          "ms": 753,
+          "rlimit": 1097511,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "progress::RunProgress::nonincreasing"
+      ],
+      "functions_checked": 158,
+      "max_function_rlimit": 6352485,
+      "expected": "src/progress.rs",
+      "element": "D-2 (scan bound fixed at marking); proof debt D-12",
+      "what": "the run's scan bound follows the tail: every commit while a marker exists moves it to the new head, as the pin's scan runs to the current end (LedgerRedact.cls:216-226, 308-313)",
+      "failing_outside_progress": [],
+      "killed": true,
+      "safety_still_verifies": true,
+      "non_progress_functions_verified": 147
+    }
+  },
+  "trust_inventory": {
+    "own_sources": {
+      "scanned": [
+        "src/biz.rs",
+        "src/compose.rs",
+        "src/cx_bypass_erase.rs",
+        "src/cx_bypass_start.rs",
+        "src/cx_f1201.rs",
+        "src/cx_f1302.rs",
+        "src/cx_f1303.rs",
+        "src/cx_f1306.rs",
+        "src/cx_fcs01.rs",
+        "src/cx_liveness_dirty.rs",
+        "src/cx_reader.rs",
+        "src/cx_sc_narrow.rs",
+        "src/cx_unaligned_rm.rs",
+        "src/cx_unaligned_sc.rs",
+        "src/ledger.rs",
+        "src/lib.rs",
+        "src/mid.rs",
+        "src/progress.rs",
+        "src/protocol_rd.rs",
+        "src/protocol_rl.rs",
+        "src/protocol_sys.rs",
+        "src/protocol_top.rs",
+        "src/reader.rs",
+        "src/redactor.rs",
+        "src/safety.rs",
+        "src/store.rs",
+        "src/system.rs",
+        "src/theorems.rs",
+        "src/vocab.rs",
+        "src/witness.rs",
+        "src/witness_meta.rs",
+        "src/witness_rd.rs",
+        "src/writer.rs"
+      ],
+      "patterns": [
+        "\\bassume\\s*\\(",
+        "\\badmit\\s*\\(",
+        "external_body",
+        "#\\s*\\[\\s*verifier::external",
+        "\\buninterp\\b",
+        "\\baxiom\\b",
+        "assume_specification",
+        "#\\s*\\[\\s*verifier::assume"
+      ],
+      "violations": []
+    },
+    "actors": {
+      "rev": "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877",
+      "path": "/home/ziniu_wu_g5labs_ai/.cargo/git/checkouts/playbook-reference-actors-924e50ff84dd7a85/c03f9fa/crates/actors/src",
+      "violations": [],
+      "note": "verified in the same build without --no-cheating (forwarded to roots only)"
+    },
+    "vstd": {
+      "version": "0.0.0-2026-09-20-0158",
+      "note": "Verus standard library: the trusted base (its axioms and admits are Verus's own); not scanned"
+    },
+    "trusted_items_in_this_crate": [],
+    "premises": "named in PROOFS.md (P-D9-1..P-D9-5, P-D9b-1..P-D9b-4, PF-1..PF-6); none is an assumption inside a proof"
+  },
+  "gate": "pass"
+}

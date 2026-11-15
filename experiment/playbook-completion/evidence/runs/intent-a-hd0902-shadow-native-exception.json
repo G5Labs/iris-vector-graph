@@ -1,0 +1,15 @@
+{
+  "command": "flock -w 1800 $RUN_DIR/intent-a/auditia.lock timeout 600 python experiment/playbook-completion/intent/probes/lane-a/hd0902_shadow_native_exception.py",
+  "experiment_head": "c01a7ccd00b29670b521799344233fa4a814c925",
+  "id": "intent-a-hd0902-shadow-native-exception",
+  "kind": "probe",
+  "lane": "intent-a",
+  "log": "$RUN_DIR/intent-a/hd0902_shadow_native_exception.log",
+  "log_bytes": 1970,
+  "log_sha256": "241c6c5e1b05257952effbf92e9adb061f0d31459052d0a795229006caa908ce",
+  "observes": "AUDITIA live, fault injected in the probe process only (engine._run_native_plan wrapped): with cypher_shadow=True a native exception did not raise, two calls answered the SQL rows, one WARNING 'native Cypher fell back to SQL' was logged, the native-answer counter did not move; control: an injected extra native row raised NativeMismatch. FR-007 holds; shadow reports differences, not native failures (option a).",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-13T22:45:34+00:00",
+  "result": "pass"
+}

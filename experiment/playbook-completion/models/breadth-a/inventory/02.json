@@ -1,0 +1,2615 @@
+{
+ "module": "02",
+ "name": "graph-identity",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "generated_by": "experiment/playbook-completion/models/breadth-a/tools/inventory.py",
+ "method": "Mechanical: Python ast over the module's files and a line scanner over its .cls files, with the file/function assignment of modules.py transcribed from the ontology Scope line (02-graph-identity.md:5). Coverage: a statement names the entry point or cites its file with an overlapping line range. Name matching is textual; a hit is evidence of mention, not of a correct statement.",
+ "scope_files": {
+  "python": [
+   "iris_vector_graph/_validate.py",
+   "iris_vector_graph/_engine/admin.py",
+   "iris_vector_graph/engine.py"
+  ],
+  "cls": [
+   "iris_src/src/Graph/KG/GraphKey.cls",
+   "iris_src/src/Graph/KG/GraphMode.cls"
+  ],
+  "sql_files": false
+ },
+ "ontology": "experiment/playbook-uplift/ontology/02-graph-identity.md",
+ "statements": 104,
+ "cells": [
+  {
+   "entity": "graph mode",
+   "state": "off",
+   "command": "turn on",
+   "outcome": "ok",
+   "statements": [
+    "GID-B4.3"
+   ],
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.GraphMode.Apply",
+    "cls:Graph.KG.GraphMode.Set",
+    "py:IRISGraphEngine.set_multigraph"
+   ],
+   "entry_point_count": 3,
+   "ontology_line": 145
+  },
+  {
+   "entity": "graph mode",
+   "state": "off",
+   "command": "turn off",
+   "outcome": "no-op",
+   "statements": [
+    "GID-B4.5"
+   ],
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.GraphMode.Apply",
+    "cls:Graph.KG.GraphMode.Set",
+    "py:IRISGraphEngine.set_multigraph"
+   ],
+   "entry_point_count": 3,
+   "ontology_line": 146
+  },
+  {
+   "entity": "graph mode",
+   "state": "off",
+   "command": "direct create of a held triple",
+   "outcome": "no-op",
+   "statements": [
+    "GID-B4.13",
+    "GID-I4.10"
+   ],
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.GraphMode.Apply",
+    "cls:Graph.KG.GraphMode.Set",
+    "py:IRISGraphEngine.is_multigraph",
+    "py:IRISGraphEngine.set_multigraph"
+   ],
+   "entry_point_count": 4,
+   "ontology_line": 147
+  },
+  {
+   "entity": "graph mode",
+   "state": "off",
+   "command": "Cypher create of a held triple",
+   "outcome": "no-op",
+   "statements": [
+    "GID-B4.13"
+   ],
+   "decision": "",
+   "entry_points": [],
+   "entry_point_count": 0,
+   "ontology_line": 148,
+   "statements_cite": [
+    "iris_vector_graph/_engine/nodes_edges.py:1213-1219",
+    "iris_vector_graph/_engine/nodes_edges.py:1250-1254"
+   ],
+   "cited_code_outside_module": [
+    "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.create_edge"
+   ]
+  },
+  {
+   "entity": "graph mode",
+   "state": "off",
+   "command": "erase graph",
+   "outcome": "ok",
+   "statements": [
+    "GID-B4.6"
+   ],
+   "decision": "",
+   "entry_points": [],
+   "entry_point_count": 0,
+   "ontology_line": 149,
+   "statements_cite": [
+    "iris_src/src/Graph/KG/Eraser.cls:244-244",
+    "iris_src/src/Graph/KG/Eraser.cls:807-807"
+   ],
+   "cited_code_outside_module": [
+    "cls:Graph.KG.Eraser.EraseAll",
+    "cls:Graph.KG.Eraser.EraseGraph"
+   ]
+  },
+  {
+   "entity": "graph mode",
+   "state": "on without parallel edges",
+   "command": "turn on",
+   "outcome": "no-op",
+   "statements": [
+    "GID-B4.3"
+   ],
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.GraphMode.Apply",
+    "cls:Graph.KG.GraphMode.Set",
+    "py:IRISGraphEngine.set_multigraph"
+   ],
+   "entry_point_count": 3,
+   "ontology_line": 150
+  },
+  {
+   "entity": "graph mode",
+   "state": "on without parallel edges",
+   "command": "turn off",
+   "outcome": "ok",
+   "statements": [
+    "GID-B4.5"
+   ],
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.GraphMode.Apply",
+    "cls:Graph.KG.GraphMode.Set",
+    "py:IRISGraphEngine.set_multigraph"
+   ],
+   "entry_point_count": 3,
+   "ontology_line": 151
+  },
+  {
+   "entity": "graph mode",
+   "state": "on without parallel edges",
+   "command": "direct create of a held triple",
+   "outcome": "ok",
+   "statements": [
+    "GID-B4.14"
+   ],
+   "decision": "",
+   "entry_points": [],
+   "entry_point_count": 0,
+   "ontology_line": 152,
+   "statements_cite": [
+    "iris_vector_graph/_engine/nodes_edges.py:1213-1219",
+    "iris_vector_graph/_engine/nodes_edges.py:1257-1273"
+   ],
+   "cited_code_outside_module": [
+    "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin._ekey_guard",
+    "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.create_edge"
+   ]
+  },
+  {
+   "entity": "graph mode",
+   "state": "on without parallel edges",
+   "command": "Cypher create of a held triple",
+   "outcome": "ok",
+   "statements": [
+    "GID-B4.12"
+   ],
+   "decision": "",
+   "entry_points": [],
+   "entry_point_count": 0,
+   "ontology_line": 153,
+   "statements_cite": [
+    "iris_vector_graph/cypher/translator.py:10368-10388",
+    "iris_vector_graph/cypher/translator.py:441-457"
+   ],
+   "cited_code_outside_module": [
+    "iris_vector_graph/cypher/translator.py::_create_values_edge_keyed",
+    "iris_vector_graph/cypher/translator.py::_multigraph"
+   ]
+  },
+  {
+   "entity": "graph mode",
+   "state": "on without parallel edges",
+   "command": "erase graph",
+   "outcome": "ok",
+   "statements": [
+    "GID-B4.6"
+   ],
+   "decision": "",
+   "entry_points": [],
+   "entry_point_count": 0,
+   "ontology_line": 154,
+   "statements_cite": [
+    "iris_src/src/Graph/KG/Eraser.cls:244-244",
+    "iris_src/src/Graph/KG/Eraser.cls:807-807"
+   ],
+   "cited_code_outside_module": [
+    "cls:Graph.KG.Eraser.EraseAll",
+    "cls:Graph.KG.Eraser.EraseGraph"
+   ]
+  },
+  {
+   "entity": "graph mode",
+   "state": "on with parallel edges",
+   "command": "turn on",
+   "outcome": "no-op",
+   "statements": [
+    "GID-B4.3"
+   ],
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.GraphMode.Apply",
+    "cls:Graph.KG.GraphMode.Set",
+    "py:IRISGraphEngine.set_multigraph"
+   ],
+   "entry_point_count": 3,
+   "ontology_line": 155
+  },
+  {
+   "entity": "graph mode",
+   "state": "on with parallel edges",
+   "command": "turn off",
+   "outcome": "refused",
+   "statements": [
+    "GID-X4.4"
+   ],
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.GraphMode.Apply",
+    "cls:Graph.KG.GraphMode.ParallelCount",
+    "cls:Graph.KG.GraphMode.Set",
+    "py:IRISGraphEngine.set_multigraph"
+   ],
+   "entry_point_count": 4,
+   "ontology_line": 156
+  },
+  {
+   "entity": "graph mode",
+   "state": "on with parallel edges",
+   "command": "direct create of a held triple",
+   "outcome": "ok",
+   "statements": [
+    "GID-B4.14"
+   ],
+   "decision": "",
+   "entry_points": [],
+   "entry_point_count": 0,
+   "ontology_line": 157,
+   "statements_cite": [
+    "iris_vector_graph/_engine/nodes_edges.py:1213-1219",
+    "iris_vector_graph/_engine/nodes_edges.py:1257-1273"
+   ],
+   "cited_code_outside_module": [
+    "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin._ekey_guard",
+    "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.create_edge"
+   ]
+  },
+  {
+   "entity": "graph mode",
+   "state": "on with parallel edges",
+   "command": "Cypher create of a held triple",
+   "outcome": "ok",
+   "statements": [
+    "GID-B4.12"
+   ],
+   "decision": "",
+   "entry_points": [],
+   "entry_point_count": 0,
+   "ontology_line": 158,
+   "statements_cite": [
+    "iris_vector_graph/cypher/translator.py:10368-10388",
+    "iris_vector_graph/cypher/translator.py:441-457"
+   ],
+   "cited_code_outside_module": [
+    "iris_vector_graph/cypher/translator.py::_create_values_edge_keyed",
+    "iris_vector_graph/cypher/translator.py::_multigraph"
+   ]
+  },
+  {
+   "entity": "graph mode",
+   "state": "on with parallel edges",
+   "command": "erase graph",
+   "outcome": "ok",
+   "statements": [
+    "GID-B4.6"
+   ],
+   "decision": "",
+   "entry_points": [],
+   "entry_point_count": 0,
+   "ontology_line": 159,
+   "statements_cite": [
+    "iris_src/src/Graph/KG/Eraser.cls:244-244",
+    "iris_src/src/Graph/KG/Eraser.cls:807-807"
+   ],
+   "cited_code_outside_module": [
+    "cls:Graph.KG.Eraser.EraseAll",
+    "cls:Graph.KG.Eraser.EraseGraph"
+   ]
+  },
+  {
+   "entity": "graph name",
+   "state": "empty",
+   "command": "make a key",
+   "outcome": "ok",
+   "statements": [
+    "GID-B2.2",
+    "GID-B2.3"
+   ],
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.GraphKey.ForIndex",
+    "cls:Graph.KG.GraphKey.ForLedger"
+   ],
+   "entry_point_count": 2,
+   "ontology_line": 160
+  },
+  {
+   "entity": "graph name",
+   "state": "ordinary name",
+   "command": "make a key",
+   "outcome": "ok",
+   "statements": [
+    "GID-B2.2",
+    "GID-B2.3"
+   ],
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.GraphKey.ForIndex",
+    "cls:Graph.KG.GraphKey.ForLedger"
+   ],
+   "entry_point_count": 2,
+   "ontology_line": 161
+  },
+  {
+   "entity": "graph name",
+   "state": "the name 0",
+   "command": "make a key",
+   "outcome": "refused",
+   "statements": [
+    "GID-X3.1"
+   ],
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.GraphKey.ForIndex",
+    "cls:Graph.KG.GraphKey.ForLedger",
+    "cls:Graph.KG.GraphKey.ForName",
+    "cls:Graph.KG.GraphKey.Validate",
+    "cls:Graph.KG.GraphMode.Apply",
+    "cls:Graph.KG.GraphMode.IsMulti",
+    "cls:Graph.KG.GraphMode.ParallelCount",
+    "cls:Graph.KG.GraphMode.Set",
+    "py:IRISGraphEngine.is_multigraph",
+    "py:iris_vector_graph._validate.validate_graph_name"
+   ],
+   "entry_point_count": 10,
+   "ontology_line": 162
+  },
+  {
+   "entity": "graph name",
+   "state": "name with a control character",
+   "command": "make a key",
+   "outcome": "refused",
+   "statements": [
+    "GID-X3.2"
+   ],
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.GraphKey.ForIndex",
+    "cls:Graph.KG.GraphKey.ForLedger",
+    "cls:Graph.KG.GraphKey.ForName",
+    "cls:Graph.KG.GraphKey.Validate",
+    "cls:Graph.KG.GraphMode.Apply",
+    "cls:Graph.KG.GraphMode.IsMulti",
+    "cls:Graph.KG.GraphMode.ParallelCount",
+    "cls:Graph.KG.GraphMode.Set",
+    "py:IRISGraphEngine.is_multigraph",
+    "py:iris_vector_graph._validate.validate_graph_name"
+   ],
+   "entry_point_count": 10,
+   "ontology_line": 163
+  },
+  {
+   "entity": "graph name",
+   "state": "empty",
+   "command": "direct edge create",
+   "outcome": "ok",
+   "statements": [
+    "GID-B1.1"
+   ],
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.GraphKey.ForIndex",
+    "py:iris_vector_graph._validate.validate_graph_name"
+   ],
+   "entry_point_count": 2,
+   "ontology_line": 164
+  },
+  {
+   "entity": "graph name",
+   "state": "ordinary name",
+   "command": "direct edge create",
+   "outcome": "ok",
+   "statements": [
+    "GID-B1.2"
+   ],
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.GraphKey.ForName",
+    "py:iris_vector_graph._validate.validate_graph_name"
+   ],
+   "entry_point_count": 2,
+   "ontology_line": 165
+  },
+  {
+   "entity": "graph name",
+   "state": "the name 0",
+   "command": "direct edge create",
+   "outcome": "refused",
+   "statements": [
+    "GID-X3.1",
+    "GID-T3.9"
+   ],
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.GraphKey.ForIndex",
+    "cls:Graph.KG.GraphKey.ForLedger",
+    "cls:Graph.KG.GraphKey.ForName",
+    "cls:Graph.KG.GraphKey.Validate",
+    "cls:Graph.KG.GraphMode.Apply",
+    "cls:Graph.KG.GraphMode.IsMulti",
+    "cls:Graph.KG.GraphMode.ParallelCount",
+    "cls:Graph.KG.GraphMode.Set",
+    "py:IRISGraphEngine.is_multigraph",
+    "py:IRISGraphEngine.set_multigraph",
+    "py:iris_vector_graph._validate.graph_index_key",
+    "py:iris_vector_graph._validate.validate_graph_name",
+    "py:iris_vector_graph.engine._GraphSubEngine.is_multigraph",
+    "py:iris_vector_graph.engine._GraphSubEngine.set_multigraph"
+   ],
+   "entry_point_count": 14,
+   "ontology_line": 166
+  },
+  {
+   "entity": "graph name",
+   "state": "name with a control character",
+   "command": "direct edge create",
+   "outcome": "refused",
+   "statements": [
+    "GID-X3.2",
+    "GID-T3.9"
+   ],
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.GraphKey.ForIndex",
+    "cls:Graph.KG.GraphKey.ForLedger",
+    "cls:Graph.KG.GraphKey.ForName",
+    "cls:Graph.KG.GraphKey.Validate",
+    "cls:Graph.KG.GraphMode.Apply",
+    "cls:Graph.KG.GraphMode.IsMulti",
+    "cls:Graph.KG.GraphMode.ParallelCount",
+    "cls:Graph.KG.GraphMode.Set",
+    "py:IRISGraphEngine.is_multigraph",
+    "py:IRISGraphEngine.set_multigraph",
+    "py:iris_vector_graph._validate.graph_index_key",
+    "py:iris_vector_graph._validate.validate_graph_name",
+    "py:iris_vector_graph.engine._GraphSubEngine.is_multigraph",
+    "py:iris_vector_graph.engine._GraphSubEngine.set_multigraph"
+   ],
+   "entry_point_count": 14,
+   "ontology_line": 167
+  },
+  {
+   "entity": "graph name",
+   "state": "empty",
+   "command": "direct node create",
+   "outcome": "ok",
+   "statements": [
+    "GID-B1.1"
+   ],
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.GraphKey.ForIndex",
+    "py:iris_vector_graph._validate.validate_graph_name"
+   ],
+   "entry_point_count": 2,
+   "ontology_line": 168
+  },
+  {
+   "entity": "graph name",
+   "state": "ordinary name",
+   "command": "direct node create",
+   "outcome": "ok",
+   "statements": [
+    "GID-B1.2"
+   ],
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.GraphKey.ForName",
+    "py:iris_vector_graph._validate.validate_graph_name"
+   ],
+   "entry_point_count": 2,
+   "ontology_line": 169
+  },
+  {
+   "entity": "graph name",
+   "state": "the name 0",
+   "command": "direct node create",
+   "outcome": "refused",
+   "statements": [
+    "GID-B3.10"
+   ],
+   "decision": "",
+   "entry_points": [],
+   "entry_point_count": 0,
+   "ontology_line": 170,
+   "statements_cite": [
+    "iris_vector_graph/_engine/nodes_edges.py:1019-1019",
+    "iris_vector_graph/_engine/nodes_edges.py:1797-1806",
+    "iris_vector_graph/_engine/nodes_edges.py:1954-1967",
+    "iris_vector_graph/_engine/nodes_edges.py:2421-2421",
+    "iris_vector_graph/_engine/nodes_edges.py:2560-2560",
+    "iris_vector_graph/bulk_loader.py:73-77"
+   ],
+   "cited_code_outside_module": [
+    "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.bulk_create_edges",
+    "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.bulk_create_nodes",
+    "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.create_node",
+    "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.store_edge",
+    "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.store_node",
+    "iris_vector_graph/bulk_loader.py::BulkLoader.__init__"
+   ]
+  },
+  {
+   "entity": "graph name",
+   "state": "name with a control character",
+   "command": "direct node create",
+   "outcome": "refused",
+   "statements": [
+    "GID-B3.10"
+   ],
+   "decision": "",
+   "entry_points": [],
+   "entry_point_count": 0,
+   "ontology_line": 171,
+   "statements_cite": [
+    "iris_vector_graph/_engine/nodes_edges.py:1019-1019",
+    "iris_vector_graph/_engine/nodes_edges.py:1797-1806",
+    "iris_vector_graph/_engine/nodes_edges.py:1954-1967",
+    "iris_vector_graph/_engine/nodes_edges.py:2421-2421",
+    "iris_vector_graph/_engine/nodes_edges.py:2560-2560",
+    "iris_vector_graph/bulk_loader.py:73-77"
+   ],
+   "cited_code_outside_module": [
+    "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.bulk_create_edges",
+    "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.bulk_create_nodes",
+    "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.create_node",
+    "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.store_edge",
+    "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.store_node",
+    "iris_vector_graph/bulk_loader.py::BulkLoader.__init__"
+   ]
+  },
+  {
+   "entity": "graph name",
+   "state": "empty",
+   "command": "Cypher write under the name",
+   "outcome": "ok",
+   "statements": [
+    "GID-B1.1",
+    "GID-B6.6"
+   ],
+   "decision": "",
+   "entry_points": [
+    "cls:Graph.KG.GraphKey.ForIndex",
+    "py:iris_vector_graph._validate.validate_graph_name"
+   ],
+   "entry_point_count": 2,
+   "ontology_line": 172
+  },
+  {
+   "entity": "graph name",
+   "state": "ordinary name",
+   "command": "Cypher write under the name",
+   "outcome": "ok",
+   "statements": [
+    "GID-B6.6"
+   ],
+   "decision": "",
+   "entry_points": [],
+   "entry_point_count": 0,
+   "ontology_line": 173,
+   "statements_cite": [
+    "iris_vector_graph/cypher/translator.py:2112-2114"
+   ],
+   "cited_code_outside_module": [
+    "iris_vector_graph/cypher/translator.py::TranslationContext.build_dml_subquery"
+   ]
+  },
+  {
+   "entity": "graph name",
+   "state": "the name 0",
+   "command": "Cypher write under the name",
+   "outcome": "refused",
+   "statements": [
+    "GID-B3.11"
+   ],
+   "decision": "",
+   "entry_points": [],
+   "entry_point_count": 0,
+   "ontology_line": 174,
+   "statements_cite": [
+    "iris_vector_graph/cypher/parser.py:175-192",
+    "iris_vector_graph/cypher/translator.py:429-438"
+   ],
+   "cited_code_outside_module": [
+    "iris_vector_graph/cypher/parser.py::Parser.parse",
+    "iris_vector_graph/cypher/translator.py::_graph_of"
+   ]
+  },
+  {
+   "entity": "graph name",
+   "state": "name with a control character",
+   "command": "Cypher write under the name",
+   "outcome": "refused",
+   "statements": [
+    "GID-B3.11"
+   ],
+   "decision": "",
+   "entry_points": [],
+   "entry_point_count": 0,
+   "ontology_line": 175,
+   "statements_cite": [
+    "iris_vector_graph/cypher/parser.py:175-192",
+    "iris_vector_graph/cypher/translator.py:429-438"
+   ],
+   "cited_code_outside_module": [
+    "iris_vector_graph/cypher/parser.py::Parser.parse",
+    "iris_vector_graph/cypher/translator.py::_graph_of"
+   ]
+  }
+ ],
+ "counts": {
+  "entry_points": 46,
+  "by_kind": {
+   "classmethod": 9,
+   "exported": 10,
+   "internal": 1,
+   "python-api": 25,
+   "python-api(property)": 1
+  },
+  "by_tag": {
+   "classmethod": 9,
+   "exported": 10,
+   "internal": 1,
+   "lifecycle": 1,
+   "native": 2,
+   "python-api": 25,
+   "python-api(property)": 1
+  },
+  "omissions": 6,
+  "cells_without_entry_point": 13,
+  "covered": 40
+ },
+ "entry_points": [
+  {
+   "id": "py:iris_vector_graph._validate.validate_graph_name",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "validate_graph_name",
+   "qual": "validate_graph_name",
+   "source": "iris_vector_graph/_validate.py:19-49",
+   "file": "iris_vector_graph/_validate.py",
+   "start": 19,
+   "end": 49,
+   "public": true,
+   "module": "02",
+   "covered_by": [
+    {
+     "statement": "GID-0",
+     "how": "cites iris_vector_graph/_validate.py:19-71"
+    },
+    {
+     "statement": "GID-D1",
+     "how": "cites iris_vector_graph/_validate.py:19-49"
+    },
+    {
+     "statement": "GID-D6",
+     "how": "cites iris_vector_graph/_validate.py:19-49"
+    },
+    {
+     "statement": "GID-B1",
+     "how": "cites iris_vector_graph/_validate.py:19-49"
+    },
+    {
+     "statement": "GID-B1.1",
+     "how": "cites iris_vector_graph/_validate.py:31-32"
+    },
+    {
+     "statement": "GID-B1.2",
+     "how": "cites iris_vector_graph/_validate.py:49-49"
+    },
+    {
+     "statement": "GID-B1.5",
+     "how": "cites iris_vector_graph/_validate.py:19-49"
+    },
+    {
+     "statement": "GID-X3",
+     "how": "cites iris_vector_graph/_validate.py:19-49"
+    },
+    {
+     "statement": "GID-X3.1",
+     "how": "cites iris_vector_graph/_validate.py:38-42"
+    },
+    {
+     "statement": "GID-X3.2",
+     "how": "cites iris_vector_graph/_validate.py:43-48"
+    },
+    {
+     "statement": "GID-T3.3",
+     "how": "cites iris_vector_graph/_validate.py:37-37"
+    },
+    {
+     "statement": "GID-X3.4",
+     "how": "cites iris_vector_graph/_validate.py:37-42"
+    }
+   ],
+   "covered_by_count": 17
+  },
+  {
+   "id": "py:iris_vector_graph._validate.graph_index_key",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "graph_index_key",
+   "qual": "graph_index_key",
+   "source": "iris_vector_graph/_validate.py:52-71",
+   "file": "iris_vector_graph/_validate.py",
+   "start": 52,
+   "end": 71,
+   "public": true,
+   "module": "02",
+   "covered_by": [
+    {
+     "statement": "GID-0",
+     "how": "cites iris_vector_graph/_validate.py:19-71"
+    },
+    {
+     "statement": "GID-T2.8",
+     "how": "cites iris_vector_graph/_validate.py:52-71"
+    },
+    {
+     "statement": "GID-T3.9",
+     "how": "names graph_index_key"
+    }
+   ],
+   "covered_by_count": 3
+  },
+  {
+   "id": "py:iris_vector_graph._validate.NodeIdInput.must_be_nonempty",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "must_be_nonempty",
+   "qual": "NodeIdInput.must_be_nonempty",
+   "source": "iris_vector_graph/_validate.py:90-91",
+   "file": "iris_vector_graph/_validate.py",
+   "start": 90,
+   "end": 91,
+   "public": true,
+   "module": "02",
+   "covered_by": [
+    {
+     "statement": "GID-X7",
+     "how": "cites iris_vector_graph/_validate.py:85-121"
+    },
+    {
+     "statement": "GID-X7.1",
+     "how": "cites iris_vector_graph/_validate.py:85-91"
+    },
+    {
+     "statement": "GID-T7.7",
+     "how": "cites iris_vector_graph/_validate.py:85-112"
+    }
+   ],
+   "covered_by_count": 3
+  },
+  {
+   "id": "py:iris_vector_graph._validate.EdgeInput.source_nonempty",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "source_nonempty",
+   "qual": "EdgeInput.source_nonempty",
+   "source": "iris_vector_graph/_validate.py:101-102",
+   "file": "iris_vector_graph/_validate.py",
+   "start": 101,
+   "end": 102,
+   "public": true,
+   "module": "02",
+   "covered_by": [
+    {
+     "statement": "GID-X7",
+     "how": "cites iris_vector_graph/_validate.py:85-121"
+    },
+    {
+     "statement": "GID-X7.2",
+     "how": "cites iris_vector_graph/_validate.py:94-112"
+    },
+    {
+     "statement": "GID-T7.7",
+     "how": "cites iris_vector_graph/_validate.py:85-112"
+    }
+   ],
+   "covered_by_count": 3
+  },
+  {
+   "id": "py:iris_vector_graph._validate.EdgeInput.predicate_nonempty",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "predicate_nonempty",
+   "qual": "EdgeInput.predicate_nonempty",
+   "source": "iris_vector_graph/_validate.py:106-107",
+   "file": "iris_vector_graph/_validate.py",
+   "start": 106,
+   "end": 107,
+   "public": true,
+   "module": "02",
+   "covered_by": [
+    {
+     "statement": "GID-X7",
+     "how": "cites iris_vector_graph/_validate.py:85-121"
+    },
+    {
+     "statement": "GID-X7.2",
+     "how": "cites iris_vector_graph/_validate.py:94-112"
+    },
+    {
+     "statement": "GID-T7.7",
+     "how": "cites iris_vector_graph/_validate.py:85-112"
+    }
+   ],
+   "covered_by_count": 3
+  },
+  {
+   "id": "py:iris_vector_graph._validate.EdgeInput.target_nonempty",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "target_nonempty",
+   "qual": "EdgeInput.target_nonempty",
+   "source": "iris_vector_graph/_validate.py:111-112",
+   "file": "iris_vector_graph/_validate.py",
+   "start": 111,
+   "end": 112,
+   "public": true,
+   "module": "02",
+   "covered_by": [
+    {
+     "statement": "GID-X7",
+     "how": "cites iris_vector_graph/_validate.py:85-121"
+    },
+    {
+     "statement": "GID-X7.2",
+     "how": "cites iris_vector_graph/_validate.py:94-112"
+    },
+    {
+     "statement": "GID-T7.7",
+     "how": "cites iris_vector_graph/_validate.py:85-112"
+    }
+   ],
+   "covered_by_count": 3
+  },
+  {
+   "id": "py:iris_vector_graph._validate.CypherInput.query_nonempty",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "query_nonempty",
+   "qual": "CypherInput.query_nonempty",
+   "source": "iris_vector_graph/_validate.py:120-121",
+   "file": "iris_vector_graph/_validate.py",
+   "start": 120,
+   "end": 121,
+   "public": true,
+   "module": "02",
+   "covered_by": [
+    {
+     "statement": "GID-X7",
+     "how": "cites iris_vector_graph/_validate.py:85-121"
+    },
+    {
+     "statement": "GID-X7.3",
+     "how": "cites iris_vector_graph/_validate.py:115-121"
+    }
+   ],
+   "covered_by_count": 2
+  },
+  {
+   "id": "py:iris_vector_graph._validate.IVFBuildInput.name_nonempty",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "name_nonempty",
+   "qual": "IVFBuildInput.name_nonempty",
+   "source": "iris_vector_graph/_validate.py:133-134",
+   "file": "iris_vector_graph/_validate.py",
+   "start": 133,
+   "end": 134,
+   "public": true,
+   "module": "02",
+   "covered_by": [
+    {
+     "statement": "GID-X7.5",
+     "how": "cites iris_vector_graph/_validate.py:124-141"
+    }
+   ],
+   "covered_by_count": 1
+  },
+  {
+   "id": "py:iris_vector_graph._validate.IVFBuildInput.metric_valid",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "metric_valid",
+   "qual": "IVFBuildInput.metric_valid",
+   "source": "iris_vector_graph/_validate.py:138-141",
+   "file": "iris_vector_graph/_validate.py",
+   "start": 138,
+   "end": 141,
+   "public": true,
+   "module": "02",
+   "covered_by": [
+    {
+     "statement": "GID-X7.5",
+     "how": "cites iris_vector_graph/_validate.py:124-141"
+    }
+   ],
+   "covered_by_count": 1
+  },
+  {
+   "id": "py:iris_vector_graph._validate.VectorSearchInput.name_nonempty",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "name_nonempty",
+   "qual": "VectorSearchInput.name_nonempty",
+   "source": "iris_vector_graph/_validate.py:152-153",
+   "file": "iris_vector_graph/_validate.py",
+   "start": 152,
+   "end": 153,
+   "public": true,
+   "module": "02",
+   "covered_by": [
+    {
+     "statement": "GID-X7.4",
+     "how": "cites iris_vector_graph/_validate.py:144-160"
+    }
+   ],
+   "covered_by_count": 1
+  },
+  {
+   "id": "py:iris_vector_graph._validate.VectorSearchInput.query_nonempty",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "query_nonempty",
+   "qual": "VectorSearchInput.query_nonempty",
+   "source": "iris_vector_graph/_validate.py:157-160",
+   "file": "iris_vector_graph/_validate.py",
+   "start": 157,
+   "end": 160,
+   "public": true,
+   "module": "02",
+   "covered_by": [
+    {
+     "statement": "GID-X7.4",
+     "how": "cites iris_vector_graph/_validate.py:144-160"
+    }
+   ],
+   "covered_by_count": 1
+  },
+  {
+   "id": "py:iris_vector_graph._validate.BM25BuildInput.name_nonempty",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "name_nonempty",
+   "qual": "BM25BuildInput.name_nonempty",
+   "source": "iris_vector_graph/_validate.py:171-172",
+   "file": "iris_vector_graph/_validate.py",
+   "start": 171,
+   "end": 172,
+   "public": true,
+   "module": "02",
+   "covered_by": [
+    {
+     "statement": "GID-X7.5",
+     "how": "cites iris_vector_graph/_validate.py:163-195"
+    }
+   ],
+   "covered_by_count": 1
+  },
+  {
+   "id": "py:iris_vector_graph._validate.BM25BuildInput.props_nonempty",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "props_nonempty",
+   "qual": "BM25BuildInput.props_nonempty",
+   "source": "iris_vector_graph/_validate.py:176-179",
+   "file": "iris_vector_graph/_validate.py",
+   "start": 176,
+   "end": 179,
+   "public": true,
+   "module": "02",
+   "covered_by": [
+    {
+     "statement": "GID-X7.5",
+     "how": "cites iris_vector_graph/_validate.py:163-195"
+    }
+   ],
+   "covered_by_count": 1
+  },
+  {
+   "id": "py:iris_vector_graph._validate.BM25SearchInput.name_nonempty",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "name_nonempty",
+   "qual": "BM25SearchInput.name_nonempty",
+   "source": "iris_vector_graph/_validate.py:189-190",
+   "file": "iris_vector_graph/_validate.py",
+   "start": 189,
+   "end": 190,
+   "public": true,
+   "module": "02",
+   "covered_by": [
+    {
+     "statement": "GID-X7.5",
+     "how": "cites iris_vector_graph/_validate.py:163-195"
+    }
+   ],
+   "covered_by_count": 1
+  },
+  {
+   "id": "py:iris_vector_graph._validate.BM25SearchInput.query_nonempty",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "query_nonempty",
+   "qual": "BM25SearchInput.query_nonempty",
+   "source": "iris_vector_graph/_validate.py:194-195",
+   "file": "iris_vector_graph/_validate.py",
+   "start": 194,
+   "end": 195,
+   "public": true,
+   "module": "02",
+   "covered_by": [
+    {
+     "statement": "GID-X7.5",
+     "how": "cites iris_vector_graph/_validate.py:163-195"
+    }
+   ],
+   "covered_by_count": 1
+  },
+  {
+   "id": "py:iris_vector_graph._validate.KHop2Input.must_be_nonempty",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "must_be_nonempty",
+   "qual": "KHop2Input.must_be_nonempty",
+   "source": "iris_vector_graph/_validate.py:203-204",
+   "file": "iris_vector_graph/_validate.py",
+   "start": 203,
+   "end": 204,
+   "public": true,
+   "module": "02",
+   "covered_by": [],
+   "covered_by_count": 0,
+   "covered_elsewhere": []
+  },
+  {
+   "id": "py:iris_vector_graph._validate.TemporalEdgeInput.source_nonempty",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "source_nonempty",
+   "qual": "TemporalEdgeInput.source_nonempty",
+   "source": "iris_vector_graph/_validate.py:216-217",
+   "file": "iris_vector_graph/_validate.py",
+   "start": 216,
+   "end": 217,
+   "public": true,
+   "module": "02",
+   "covered_by": [],
+   "covered_by_count": 0,
+   "covered_elsewhere": [
+    "TMP-X1.13 (cites iris_vector_graph/_validate.py:207-227)"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph._validate.TemporalEdgeInput.predicate_nonempty",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "predicate_nonempty",
+   "qual": "TemporalEdgeInput.predicate_nonempty",
+   "source": "iris_vector_graph/_validate.py:221-222",
+   "file": "iris_vector_graph/_validate.py",
+   "start": 221,
+   "end": 222,
+   "public": true,
+   "module": "02",
+   "covered_by": [],
+   "covered_by_count": 0,
+   "covered_elsewhere": [
+    "TMP-X1.13 (cites iris_vector_graph/_validate.py:207-227)"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph._validate.TemporalEdgeInput.target_nonempty",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "target_nonempty",
+   "qual": "TemporalEdgeInput.target_nonempty",
+   "source": "iris_vector_graph/_validate.py:226-227",
+   "file": "iris_vector_graph/_validate.py",
+   "start": 226,
+   "end": 227,
+   "public": true,
+   "module": "02",
+   "covered_by": [],
+   "covered_by_count": 0,
+   "covered_elsewhere": [
+    "TMP-X1.13 (cites iris_vector_graph/_validate.py:207-227)"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph._validate.VecSearchInput.query_nonempty",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "query_nonempty",
+   "qual": "VecSearchInput.query_nonempty",
+   "source": "iris_vector_graph/_validate.py:237-240",
+   "file": "iris_vector_graph/_validate.py",
+   "start": 237,
+   "end": 240,
+   "public": true,
+   "module": "02",
+   "covered_by": [
+    {
+     "statement": "GID-X7.4",
+     "how": "cites iris_vector_graph/_validate.py:230-240"
+    }
+   ],
+   "covered_by_count": 1
+  },
+  {
+   "id": "py:iris_vector_graph._validate.validate_procedure_options",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "validate_procedure_options",
+   "qual": "validate_procedure_options",
+   "source": "iris_vector_graph/_validate.py:291-312",
+   "file": "iris_vector_graph/_validate.py",
+   "start": 291,
+   "end": 312,
+   "public": true,
+   "module": "02",
+   "covered_by": [
+    {
+     "statement": "GID-T7.6",
+     "how": "cites iris_vector_graph/_validate.py:291-312"
+    }
+   ],
+   "covered_by_count": 1
+  },
+  {
+   "id": "py:IRISGraphEngine.set_multigraph",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "set_multigraph",
+   "qual": "AdminMixin.set_multigraph",
+   "source": "iris_vector_graph/_engine/admin.py:893-915",
+   "file": "iris_vector_graph/_engine/admin.py",
+   "start": 893,
+   "end": 915,
+   "public": true,
+   "module": "02",
+   "covered_by": [
+    {
+     "statement": "GID-I1.7",
+     "how": "cites callee cls:Graph.KG.GraphMode.ParallelCount (iris_src/src/Graph/KG/GraphMode.cls:48-53)"
+    },
+    {
+     "statement": "GID-T3.9",
+     "how": "cites iris_vector_graph/_engine/admin.py:904-904"
+    },
+    {
+     "statement": "GID-T4.2",
+     "how": "cites callee cls:Graph.KG.GraphMode.Set (iris_src/src/Graph/KG/GraphMode.cls:30-32)"
+    },
+    {
+     "statement": "GID-B4.3",
+     "how": "cites callee cls:Graph.KG.GraphMode.Set (iris_src/src/Graph/KG/GraphMode.cls:31-34)"
+    },
+    {
+     "statement": "GID-X4.4",
+     "how": "cites iris_vector_graph/_engine/admin.py:911-913"
+    },
+    {
+     "statement": "GID-B4.5",
+     "how": "cites callee cls:Graph.KG.GraphMode.Set (iris_src/src/Graph/KG/GraphMode.cls:35-40)"
+    },
+    {
+     "statement": "GID-T4.8",
+     "how": "cites iris_vector_graph/_engine/admin.py:893-926"
+    },
+    {
+     "statement": "GID-T4.9",
+     "how": "cites callee AdminMixin._graph_mode_forget (iris_vector_graph/_engine/admin.py:917-936)"
+    },
+    {
+     "statement": "GID-I4.10",
+     "how": "cites callee cls:Graph.KG.GraphMode.Set (iris_src/src/Graph/KG/GraphMode.cls:26-45)"
+    }
+   ],
+   "covered_by_count": 9
+  },
+  {
+   "id": "py:IRISGraphEngine.is_multigraph",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "is_multigraph",
+   "qual": "AdminMixin.is_multigraph",
+   "source": "iris_vector_graph/_engine/admin.py:917-926",
+   "file": "iris_vector_graph/_engine/admin.py",
+   "start": 917,
+   "end": 926,
+   "public": true,
+   "module": "02",
+   "covered_by": [
+    {
+     "statement": "GID-D5",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:38-48)"
+    },
+    {
+     "statement": "GID-D6",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:38-48)"
+    },
+    {
+     "statement": "GID-D11",
+     "how": "cites callee cls:Graph.KG.GraphMode.IsMulti (iris_src/src/Graph/KG/GraphMode.cls:15-20)"
+    },
+    {
+     "statement": "GID-T2.4",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:17-87)"
+    },
+    {
+     "statement": "GID-I2.5",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:38-48)"
+    },
+    {
+     "statement": "GID-P2.10",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:42-43)"
+    },
+    {
+     "statement": "GID-X3",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:38-56)"
+    },
+    {
+     "statement": "GID-X3.1",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:42-43)"
+    },
+    {
+     "statement": "GID-X3.2",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:44-45)"
+    },
+    {
+     "statement": "GID-T3.3",
+     "how": "cites callee cls:Graph.KG.GraphKey.Canonical (iris_src/src/Graph/KG/GraphKey.cls:79-85)"
+    },
+    {
+     "statement": "GID-X3.4",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:41-43)"
+    },
+    {
+     "statement": "GID-I3.6",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:45-45)"
+    }
+   ],
+   "covered_by_count": 20
+  },
+  {
+   "id": "py:iris_vector_graph.engine._GraphSubEngine.set_multigraph",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "set_multigraph",
+   "qual": "_GraphSubEngine.set_multigraph",
+   "source": "iris_vector_graph/engine.py:172-172",
+   "file": "iris_vector_graph/engine.py",
+   "start": 172,
+   "end": 172,
+   "public": true,
+   "module": "02",
+   "assignment_reason": "graph-scoping parts of engine.py (02 Scope); _more_than_one_graph decides the all-graphs route",
+   "covered_by": [
+    {
+     "statement": "GID-T3.9",
+     "how": "names set_multigraph"
+    },
+    {
+     "statement": "GID-T4.8",
+     "how": "names set_multigraph"
+    },
+    {
+     "statement": "GID-B4.15",
+     "how": "cites iris_vector_graph/engine.py:157-173"
+    }
+   ],
+   "covered_by_count": 3
+  },
+  {
+   "id": "py:iris_vector_graph.engine._GraphSubEngine.is_multigraph",
+   "kind": "python-api",
+   "kinds": [
+    "python-api"
+   ],
+   "name": "is_multigraph",
+   "qual": "_GraphSubEngine.is_multigraph",
+   "source": "iris_vector_graph/engine.py:173-173",
+   "file": "iris_vector_graph/engine.py",
+   "start": 173,
+   "end": 173,
+   "public": true,
+   "module": "02",
+   "assignment_reason": "graph-scoping parts of engine.py (02 Scope); _more_than_one_graph decides the all-graphs route",
+   "covered_by": [
+    {
+     "statement": "GID-T3.9",
+     "how": "names is_multigraph"
+    },
+    {
+     "statement": "GID-T4.8",
+     "how": "names is_multigraph"
+    },
+    {
+     "statement": "GID-B4.15",
+     "how": "cites iris_vector_graph/engine.py:157-173"
+    }
+   ],
+   "covered_by_count": 3
+  },
+  {
+   "id": "py:iris_vector_graph.engine.IRISGraphEngine.namespace",
+   "kind": "python-api(property)",
+   "kinds": [
+    "python-api(property)"
+   ],
+   "name": "namespace",
+   "qual": "IRISGraphEngine.namespace",
+   "source": "iris_vector_graph/engine.py:424-431",
+   "file": "iris_vector_graph/engine.py",
+   "start": 424,
+   "end": 431,
+   "public": true,
+   "module": "02",
+   "assignment_reason": "graph-scoping parts of engine.py (02 Scope); _more_than_one_graph decides the all-graphs route",
+   "covered_by": [
+    {
+     "statement": "GID-B6.4",
+     "how": "names namespace"
+    }
+   ],
+   "covered_by_count": 1
+  },
+  {
+   "id": "py:iris_vector_graph.engine.IRISGraphEngine._more_than_one_graph",
+   "kind": "internal",
+   "kinds": [
+    "internal"
+   ],
+   "name": "_more_than_one_graph",
+   "qual": "IRISGraphEngine._more_than_one_graph",
+   "source": "iris_vector_graph/engine.py:612-639",
+   "file": "iris_vector_graph/engine.py",
+   "start": 612,
+   "end": 639,
+   "public": false,
+   "module": "02",
+   "assignment_reason": "graph-scoping parts of engine.py (02 Scope); _more_than_one_graph decides the all-graphs route",
+   "covered_by": [
+    {
+     "statement": "GID-T1.8",
+     "how": "cites iris_vector_graph/engine.py:612-639"
+    }
+   ],
+   "covered_by_count": 1
+  },
+  {
+   "id": "export:NodeIdInput",
+   "kind": "exported",
+   "kinds": [
+    "exported"
+   ],
+   "name": "NodeIdInput",
+   "qual": "NodeIdInput",
+   "source": "iris_vector_graph/_validate.py:85-91",
+   "file": "iris_vector_graph/_validate.py",
+   "start": 85,
+   "end": 91,
+   "public": true,
+   "module": "02",
+   "covered_by": [
+    {
+     "statement": "GID-X7",
+     "how": "cites iris_vector_graph/_validate.py:85-121"
+    },
+    {
+     "statement": "GID-X7.1",
+     "how": "cites iris_vector_graph/_validate.py:85-91"
+    },
+    {
+     "statement": "GID-T7.7",
+     "how": "cites iris_vector_graph/_validate.py:85-112"
+    }
+   ],
+   "covered_by_count": 3
+  },
+  {
+   "id": "export:EdgeInput",
+   "kind": "exported",
+   "kinds": [
+    "exported"
+   ],
+   "name": "EdgeInput",
+   "qual": "EdgeInput",
+   "source": "iris_vector_graph/_validate.py:94-112",
+   "file": "iris_vector_graph/_validate.py",
+   "start": 94,
+   "end": 112,
+   "public": true,
+   "module": "02",
+   "covered_by": [
+    {
+     "statement": "GID-X7",
+     "how": "cites iris_vector_graph/_validate.py:85-121"
+    },
+    {
+     "statement": "GID-X7.2",
+     "how": "cites iris_vector_graph/_validate.py:94-112"
+    },
+    {
+     "statement": "GID-T7.7",
+     "how": "cites iris_vector_graph/_validate.py:85-112"
+    }
+   ],
+   "covered_by_count": 3
+  },
+  {
+   "id": "export:CypherInput",
+   "kind": "exported",
+   "kinds": [
+    "exported"
+   ],
+   "name": "CypherInput",
+   "qual": "CypherInput",
+   "source": "iris_vector_graph/_validate.py:115-121",
+   "file": "iris_vector_graph/_validate.py",
+   "start": 115,
+   "end": 121,
+   "public": true,
+   "module": "02",
+   "covered_by": [
+    {
+     "statement": "GID-X7",
+     "how": "cites iris_vector_graph/_validate.py:85-121"
+    },
+    {
+     "statement": "GID-X7.3",
+     "how": "cites iris_vector_graph/_validate.py:115-121"
+    }
+   ],
+   "covered_by_count": 2
+  },
+  {
+   "id": "export:IVFBuildInput",
+   "kind": "exported",
+   "kinds": [
+    "exported"
+   ],
+   "name": "IVFBuildInput",
+   "qual": "IVFBuildInput",
+   "source": "iris_vector_graph/_validate.py:124-141",
+   "file": "iris_vector_graph/_validate.py",
+   "start": 124,
+   "end": 141,
+   "public": true,
+   "module": "02",
+   "covered_by": [
+    {
+     "statement": "GID-X7.5",
+     "how": "cites iris_vector_graph/_validate.py:124-141"
+    }
+   ],
+   "covered_by_count": 1
+  },
+  {
+   "id": "export:VectorSearchInput",
+   "kind": "exported",
+   "kinds": [
+    "exported"
+   ],
+   "name": "VectorSearchInput",
+   "qual": "VectorSearchInput",
+   "source": "iris_vector_graph/_validate.py:144-160",
+   "file": "iris_vector_graph/_validate.py",
+   "start": 144,
+   "end": 160,
+   "public": true,
+   "module": "02",
+   "covered_by": [
+    {
+     "statement": "GID-X7.4",
+     "how": "cites iris_vector_graph/_validate.py:144-160"
+    }
+   ],
+   "covered_by_count": 1
+  },
+  {
+   "id": "export:BM25BuildInput",
+   "kind": "exported",
+   "kinds": [
+    "exported"
+   ],
+   "name": "BM25BuildInput",
+   "qual": "BM25BuildInput",
+   "source": "iris_vector_graph/_validate.py:163-179",
+   "file": "iris_vector_graph/_validate.py",
+   "start": 163,
+   "end": 179,
+   "public": true,
+   "module": "02",
+   "covered_by": [
+    {
+     "statement": "GID-X7.5",
+     "how": "cites iris_vector_graph/_validate.py:163-195"
+    }
+   ],
+   "covered_by_count": 1
+  },
+  {
+   "id": "export:BM25SearchInput",
+   "kind": "exported",
+   "kinds": [
+    "exported"
+   ],
+   "name": "BM25SearchInput",
+   "qual": "BM25SearchInput",
+   "source": "iris_vector_graph/_validate.py:182-195",
+   "file": "iris_vector_graph/_validate.py",
+   "start": 182,
+   "end": 195,
+   "public": true,
+   "module": "02",
+   "covered_by": [
+    {
+     "statement": "GID-X7.5",
+     "how": "cites iris_vector_graph/_validate.py:163-195"
+    }
+   ],
+   "covered_by_count": 1
+  },
+  {
+   "id": "export:KHop2Input",
+   "kind": "exported",
+   "kinds": [
+    "exported"
+   ],
+   "name": "KHop2Input",
+   "qual": "KHop2Input",
+   "source": "iris_vector_graph/_validate.py:198-204",
+   "file": "iris_vector_graph/_validate.py",
+   "start": 198,
+   "end": 204,
+   "public": true,
+   "module": "02",
+   "covered_by": [],
+   "covered_by_count": 0,
+   "covered_elsewhere": []
+  },
+  {
+   "id": "export:TemporalEdgeInput",
+   "kind": "exported",
+   "kinds": [
+    "exported"
+   ],
+   "name": "TemporalEdgeInput",
+   "qual": "TemporalEdgeInput",
+   "source": "iris_vector_graph/_validate.py:207-227",
+   "file": "iris_vector_graph/_validate.py",
+   "start": 207,
+   "end": 227,
+   "public": true,
+   "module": "02",
+   "covered_by": [],
+   "covered_by_count": 0,
+   "covered_elsewhere": [
+    "TMP-X1.13 (cites iris_vector_graph/_validate.py:207-227)"
+   ]
+  },
+  {
+   "id": "export:VecSearchInput",
+   "kind": "exported",
+   "kinds": [
+    "exported"
+   ],
+   "name": "VecSearchInput",
+   "qual": "VecSearchInput",
+   "source": "iris_vector_graph/_validate.py:230-240",
+   "file": "iris_vector_graph/_validate.py",
+   "start": 230,
+   "end": 240,
+   "public": true,
+   "module": "02",
+   "covered_by": [
+    {
+     "statement": "GID-X7.4",
+     "how": "cites iris_vector_graph/_validate.py:230-240"
+    }
+   ],
+   "covered_by_count": 1
+  },
+  {
+   "id": "cls:Graph.KG.GraphKey.Validate",
+   "kind": "classmethod",
+   "kinds": [
+    "classmethod"
+   ],
+   "name": "Validate",
+   "qual": "Graph.KG.GraphKey.Validate",
+   "class": "Graph.KG.GraphKey",
+   "source": "iris_src/src/Graph/KG/GraphKey.cls:38-48",
+   "file": "iris_src/src/Graph/KG/GraphKey.cls",
+   "start": 38,
+   "end": 48,
+   "public": true,
+   "private": false,
+   "module": "02",
+   "keywords": "",
+   "language": "objectscript",
+   "covered_by": [
+    {
+     "statement": "GID-D5",
+     "how": "cites iris_src/src/Graph/KG/GraphKey.cls:38-48"
+    },
+    {
+     "statement": "GID-D6",
+     "how": "cites iris_src/src/Graph/KG/GraphKey.cls:38-48"
+    },
+    {
+     "statement": "GID-T2.4",
+     "how": "cites iris_src/src/Graph/KG/GraphKey.cls:17-87"
+    },
+    {
+     "statement": "GID-I2.5",
+     "how": "cites iris_src/src/Graph/KG/GraphKey.cls:38-48"
+    },
+    {
+     "statement": "GID-P2.10",
+     "how": "cites iris_src/src/Graph/KG/GraphKey.cls:42-43"
+    },
+    {
+     "statement": "GID-X3",
+     "how": "cites iris_src/src/Graph/KG/GraphKey.cls:38-56"
+    },
+    {
+     "statement": "GID-X3.1",
+     "how": "cites iris_src/src/Graph/KG/GraphKey.cls:42-43"
+    },
+    {
+     "statement": "GID-X3.2",
+     "how": "cites iris_src/src/Graph/KG/GraphKey.cls:44-45"
+    },
+    {
+     "statement": "GID-T3.3",
+     "how": "cites callee cls:Graph.KG.GraphKey.Canonical (iris_src/src/Graph/KG/GraphKey.cls:79-85)"
+    },
+    {
+     "statement": "GID-X3.4",
+     "how": "cites iris_src/src/Graph/KG/GraphKey.cls:41-43"
+    },
+    {
+     "statement": "GID-I3.6",
+     "how": "cites iris_src/src/Graph/KG/GraphKey.cls:45-45"
+    },
+    {
+     "statement": "GID-B3.8",
+     "how": "cites iris_src/src/Graph/KG/GraphKey.cls:44-44"
+    }
+   ],
+   "covered_by_count": 12
+  },
+  {
+   "id": "cls:Graph.KG.GraphKey.ForIndex",
+   "kind": "classmethod",
+   "kinds": [
+    "classmethod"
+   ],
+   "name": "ForIndex",
+   "qual": "Graph.KG.GraphKey.ForIndex",
+   "class": "Graph.KG.GraphKey",
+   "source": "iris_src/src/Graph/KG/GraphKey.cls:51-56",
+   "file": "iris_src/src/Graph/KG/GraphKey.cls",
+   "start": 51,
+   "end": 56,
+   "public": true,
+   "private": false,
+   "module": "02",
+   "keywords": "",
+   "language": "objectscript",
+   "covered_by": [
+    {
+     "statement": "GID-D3",
+     "how": "cites iris_src/src/Graph/KG/GraphKey.cls:50-56"
+    },
+    {
+     "statement": "GID-D5",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:38-48)"
+    },
+    {
+     "statement": "GID-D6",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:38-48)"
+    },
+    {
+     "statement": "GID-B1.1",
+     "how": "cites iris_src/src/Graph/KG/GraphKey.cls:51-56"
+    },
+    {
+     "statement": "GID-B2.2",
+     "how": "cites iris_src/src/Graph/KG/GraphKey.cls:50-56"
+    },
+    {
+     "statement": "GID-T2.4",
+     "how": "cites iris_src/src/Graph/KG/GraphKey.cls:17-87"
+    },
+    {
+     "statement": "GID-I2.5",
+     "how": "cites iris_src/src/Graph/KG/GraphKey.cls:55-55"
+    },
+    {
+     "statement": "GID-P2.10",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:42-43)"
+    },
+    {
+     "statement": "GID-P2.11",
+     "how": "cites iris_src/src/Graph/KG/GraphKey.cls:55-55"
+    },
+    {
+     "statement": "GID-X3",
+     "how": "cites iris_src/src/Graph/KG/GraphKey.cls:38-56"
+    },
+    {
+     "statement": "GID-X3.1",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:42-43)"
+    },
+    {
+     "statement": "GID-X3.2",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:44-45)"
+    }
+   ],
+   "covered_by_count": 16
+  },
+  {
+   "id": "cls:Graph.KG.GraphKey.ForName",
+   "kind": "classmethod",
+   "kinds": [
+    "classmethod"
+   ],
+   "name": "ForName",
+   "qual": "Graph.KG.GraphKey.ForName",
+   "class": "Graph.KG.GraphKey",
+   "source": "iris_src/src/Graph/KG/GraphKey.cls:65-69",
+   "file": "iris_src/src/Graph/KG/GraphKey.cls",
+   "start": 65,
+   "end": 69,
+   "public": true,
+   "private": false,
+   "module": "02",
+   "keywords": "",
+   "language": "objectscript",
+   "covered_by": [
+    {
+     "statement": "GID-D5",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:38-48)"
+    },
+    {
+     "statement": "GID-D6",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:38-48)"
+    },
+    {
+     "statement": "GID-B1.2",
+     "how": "cites iris_src/src/Graph/KG/GraphKey.cls:65-69"
+    },
+    {
+     "statement": "GID-T2.4",
+     "how": "cites iris_src/src/Graph/KG/GraphKey.cls:17-87"
+    },
+    {
+     "statement": "GID-I2.5",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:38-48)"
+    },
+    {
+     "statement": "GID-T2.7",
+     "how": "cites iris_src/src/Graph/KG/GraphKey.cls:58-69"
+    },
+    {
+     "statement": "GID-P2.10",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:42-43)"
+    },
+    {
+     "statement": "GID-X3",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:38-56)"
+    },
+    {
+     "statement": "GID-X3.1",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:42-43)"
+    },
+    {
+     "statement": "GID-X3.2",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:44-45)"
+    },
+    {
+     "statement": "GID-T3.3",
+     "how": "cites callee cls:Graph.KG.GraphKey.Canonical (iris_src/src/Graph/KG/GraphKey.cls:79-85)"
+    },
+    {
+     "statement": "GID-X3.4",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:41-43)"
+    }
+   ],
+   "covered_by_count": 14
+  },
+  {
+   "id": "cls:Graph.KG.GraphKey.ForLedger",
+   "kind": "classmethod",
+   "kinds": [
+    "classmethod"
+   ],
+   "name": "ForLedger",
+   "qual": "Graph.KG.GraphKey.ForLedger",
+   "class": "Graph.KG.GraphKey",
+   "source": "iris_src/src/Graph/KG/GraphKey.cls:72-77",
+   "file": "iris_src/src/Graph/KG/GraphKey.cls",
+   "start": 72,
+   "end": 77,
+   "public": true,
+   "private": false,
+   "module": "02",
+   "keywords": "",
+   "language": "objectscript",
+   "covered_by": [
+    {
+     "statement": "GID-D4",
+     "how": "cites iris_src/src/Graph/KG/GraphKey.cls:71-77"
+    },
+    {
+     "statement": "GID-D5",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:38-48)"
+    },
+    {
+     "statement": "GID-D6",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:38-48)"
+    },
+    {
+     "statement": "GID-B2.3",
+     "how": "cites iris_src/src/Graph/KG/GraphKey.cls:71-77"
+    },
+    {
+     "statement": "GID-T2.4",
+     "how": "cites iris_src/src/Graph/KG/GraphKey.cls:17-87"
+    },
+    {
+     "statement": "GID-I2.5",
+     "how": "cites iris_src/src/Graph/KG/GraphKey.cls:76-76"
+    },
+    {
+     "statement": "GID-P2.10",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:42-43)"
+    },
+    {
+     "statement": "GID-X3",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:38-56)"
+    },
+    {
+     "statement": "GID-X3.1",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:42-43)"
+    },
+    {
+     "statement": "GID-X3.2",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:44-45)"
+    },
+    {
+     "statement": "GID-T3.3",
+     "how": "cites callee cls:Graph.KG.GraphKey.Canonical (iris_src/src/Graph/KG/GraphKey.cls:79-85)"
+    },
+    {
+     "statement": "GID-X3.4",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:41-43)"
+    }
+   ],
+   "covered_by_count": 14
+  },
+  {
+   "id": "cls:Graph.KG.GraphKey.Canonical",
+   "kind": "classmethod",
+   "kinds": [
+    "classmethod"
+   ],
+   "name": "Canonical",
+   "qual": "Graph.KG.GraphKey.Canonical",
+   "class": "Graph.KG.GraphKey",
+   "source": "iris_src/src/Graph/KG/GraphKey.cls:82-85",
+   "file": "iris_src/src/Graph/KG/GraphKey.cls",
+   "start": 82,
+   "end": 85,
+   "public": false,
+   "private": true,
+   "module": "02",
+   "keywords": " Private ",
+   "language": "objectscript",
+   "covered_by": [
+    {
+     "statement": "GID-T2.4",
+     "how": "cites iris_src/src/Graph/KG/GraphKey.cls:17-87"
+    },
+    {
+     "statement": "GID-T3.3",
+     "how": "cites iris_src/src/Graph/KG/GraphKey.cls:79-85"
+    }
+   ],
+   "covered_by_count": 2
+  },
+  {
+   "id": "cls:Graph.KG.GraphMode.IsMulti",
+   "kind": "classmethod",
+   "kinds": [
+    "classmethod",
+    "native"
+   ],
+   "name": "IsMulti",
+   "qual": "Graph.KG.GraphMode.IsMulti",
+   "class": "Graph.KG.GraphMode",
+   "source": "iris_src/src/Graph/KG/GraphMode.cls:16-20",
+   "file": "iris_src/src/Graph/KG/GraphMode.cls",
+   "start": 16,
+   "end": 20,
+   "public": true,
+   "private": false,
+   "module": "02",
+   "keywords": "",
+   "language": "objectscript",
+   "native_callers": [
+    "iris_vector_graph/_engine/admin.py:924 (AdminMixin.is_multigraph)"
+   ],
+   "native_caller_count": 1,
+   "covered_by": [
+    {
+     "statement": "GID-D5",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:38-48)"
+    },
+    {
+     "statement": "GID-D6",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:38-48)"
+    },
+    {
+     "statement": "GID-D11",
+     "how": "cites iris_src/src/Graph/KG/GraphMode.cls:15-20"
+    },
+    {
+     "statement": "GID-T2.4",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:17-87)"
+    },
+    {
+     "statement": "GID-I2.5",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:38-48)"
+    },
+    {
+     "statement": "GID-P2.10",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:42-43)"
+    },
+    {
+     "statement": "GID-X3",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:38-56)"
+    },
+    {
+     "statement": "GID-X3.1",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:42-43)"
+    },
+    {
+     "statement": "GID-X3.2",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:44-45)"
+    },
+    {
+     "statement": "GID-T3.3",
+     "how": "cites callee cls:Graph.KG.GraphKey.Canonical (iris_src/src/Graph/KG/GraphKey.cls:79-85)"
+    },
+    {
+     "statement": "GID-X3.4",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:41-43)"
+    },
+    {
+     "statement": "GID-I3.6",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:45-45)"
+    }
+   ],
+   "covered_by_count": 18
+  },
+  {
+   "id": "cls:Graph.KG.GraphMode.Set",
+   "kind": "classmethod",
+   "kinds": [
+    "classmethod"
+   ],
+   "name": "Set",
+   "qual": "Graph.KG.GraphMode.Set",
+   "class": "Graph.KG.GraphMode",
+   "source": "iris_src/src/Graph/KG/GraphMode.cls:26-45",
+   "file": "iris_src/src/Graph/KG/GraphMode.cls",
+   "start": 26,
+   "end": 45,
+   "public": true,
+   "private": false,
+   "module": "02",
+   "keywords": "",
+   "language": "objectscript",
+   "covered_by": [
+    {
+     "statement": "GID-D5",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:38-48)"
+    },
+    {
+     "statement": "GID-D6",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:38-48)"
+    },
+    {
+     "statement": "GID-I1.7",
+     "how": "cites callee cls:Graph.KG.GraphMode.ParallelCount (iris_src/src/Graph/KG/GraphMode.cls:48-53)"
+    },
+    {
+     "statement": "GID-T2.4",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:17-87)"
+    },
+    {
+     "statement": "GID-I2.5",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:38-48)"
+    },
+    {
+     "statement": "GID-P2.10",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:42-43)"
+    },
+    {
+     "statement": "GID-X3",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:38-56)"
+    },
+    {
+     "statement": "GID-X3.1",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:42-43)"
+    },
+    {
+     "statement": "GID-X3.2",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:44-45)"
+    },
+    {
+     "statement": "GID-T3.3",
+     "how": "cites callee cls:Graph.KG.GraphKey.Canonical (iris_src/src/Graph/KG/GraphKey.cls:79-85)"
+    },
+    {
+     "statement": "GID-X3.4",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:41-43)"
+    },
+    {
+     "statement": "GID-I3.6",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:45-45)"
+    }
+   ],
+   "covered_by_count": 19
+  },
+  {
+   "id": "cls:Graph.KG.GraphMode.ParallelCount",
+   "kind": "classmethod",
+   "kinds": [
+    "classmethod"
+   ],
+   "name": "ParallelCount",
+   "qual": "Graph.KG.GraphMode.ParallelCount",
+   "class": "Graph.KG.GraphMode",
+   "source": "iris_src/src/Graph/KG/GraphMode.cls:48-61",
+   "file": "iris_src/src/Graph/KG/GraphMode.cls",
+   "start": 48,
+   "end": 61,
+   "public": true,
+   "private": false,
+   "module": "02",
+   "keywords": "",
+   "language": "objectscript",
+   "covered_by": [
+    {
+     "statement": "GID-D5",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:38-48)"
+    },
+    {
+     "statement": "GID-D6",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:38-48)"
+    },
+    {
+     "statement": "GID-I1.7",
+     "how": "cites iris_src/src/Graph/KG/GraphMode.cls:48-53"
+    },
+    {
+     "statement": "GID-T2.4",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:17-87)"
+    },
+    {
+     "statement": "GID-I2.5",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:38-48)"
+    },
+    {
+     "statement": "GID-T2.7",
+     "how": "names ParallelCount"
+    },
+    {
+     "statement": "GID-P2.10",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:42-43)"
+    },
+    {
+     "statement": "GID-X3",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:38-56)"
+    },
+    {
+     "statement": "GID-X3.1",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:42-43)"
+    },
+    {
+     "statement": "GID-X3.2",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:44-45)"
+    },
+    {
+     "statement": "GID-T3.3",
+     "how": "cites callee cls:Graph.KG.GraphKey.Canonical (iris_src/src/Graph/KG/GraphKey.cls:79-85)"
+    },
+    {
+     "statement": "GID-X3.4",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:41-43)"
+    }
+   ],
+   "covered_by_count": 15
+  },
+  {
+   "id": "cls:Graph.KG.GraphMode.Apply",
+   "kind": "classmethod",
+   "kinds": [
+    "classmethod",
+    "native",
+    "lifecycle"
+   ],
+   "name": "Apply",
+   "qual": "Graph.KG.GraphMode.Apply",
+   "class": "Graph.KG.GraphMode",
+   "source": "iris_src/src/Graph/KG/GraphMode.cls:66-75",
+   "file": "iris_src/src/Graph/KG/GraphMode.cls",
+   "start": 66,
+   "end": 75,
+   "public": true,
+   "private": false,
+   "module": "02",
+   "keywords": "",
+   "language": "objectscript",
+   "native_callers": [
+    "iris_vector_graph/_engine/admin.py:907 (AdminMixin.set_multigraph)"
+   ],
+   "native_caller_count": 1,
+   "covered_by": [
+    {
+     "statement": "GID-D5",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:38-48)"
+    },
+    {
+     "statement": "GID-D6",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:38-48)"
+    },
+    {
+     "statement": "GID-I1.7",
+     "how": "cites callee cls:Graph.KG.GraphMode.ParallelCount (iris_src/src/Graph/KG/GraphMode.cls:48-53)"
+    },
+    {
+     "statement": "GID-T2.4",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:17-87)"
+    },
+    {
+     "statement": "GID-I2.5",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:38-48)"
+    },
+    {
+     "statement": "GID-P2.10",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:42-43)"
+    },
+    {
+     "statement": "GID-X3",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:38-56)"
+    },
+    {
+     "statement": "GID-X3.1",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:42-43)"
+    },
+    {
+     "statement": "GID-X3.2",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:44-45)"
+    },
+    {
+     "statement": "GID-T3.3",
+     "how": "cites callee cls:Graph.KG.GraphKey.Canonical (iris_src/src/Graph/KG/GraphKey.cls:79-85)"
+    },
+    {
+     "statement": "GID-X3.4",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:41-43)"
+    },
+    {
+     "statement": "GID-I3.6",
+     "how": "cites callee cls:Graph.KG.GraphKey.Validate (iris_src/src/Graph/KG/GraphKey.cls:45-45)"
+    }
+   ],
+   "covered_by_count": 19
+  }
+ ],
+ "omissions": [
+  {
+   "id": "py:iris_vector_graph._validate.KHop2Input.must_be_nonempty",
+   "kind": "python-api",
+   "source": "iris_vector_graph/_validate.py:203-204",
+   "covered_elsewhere": []
+  },
+  {
+   "id": "py:iris_vector_graph._validate.TemporalEdgeInput.source_nonempty",
+   "kind": "python-api",
+   "source": "iris_vector_graph/_validate.py:216-217",
+   "covered_elsewhere": [
+    "TMP-X1.13 (cites iris_vector_graph/_validate.py:207-227)"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph._validate.TemporalEdgeInput.predicate_nonempty",
+   "kind": "python-api",
+   "source": "iris_vector_graph/_validate.py:221-222",
+   "covered_elsewhere": [
+    "TMP-X1.13 (cites iris_vector_graph/_validate.py:207-227)"
+   ]
+  },
+  {
+   "id": "py:iris_vector_graph._validate.TemporalEdgeInput.target_nonempty",
+   "kind": "python-api",
+   "source": "iris_vector_graph/_validate.py:226-227",
+   "covered_elsewhere": [
+    "TMP-X1.13 (cites iris_vector_graph/_validate.py:207-227)"
+   ]
+  },
+  {
+   "id": "export:KHop2Input",
+   "kind": "exported",
+   "source": "iris_vector_graph/_validate.py:198-204",
+   "covered_elsewhere": []
+  },
+  {
+   "id": "export:TemporalEdgeInput",
+   "kind": "exported",
+   "source": "iris_vector_graph/_validate.py:207-227",
+   "covered_elsewhere": [
+    "TMP-X1.13 (cites iris_vector_graph/_validate.py:207-227)"
+   ]
+  }
+ ],
+ "not_counted_as_omissions": {},
+ "cells_without_entry_point": [
+  {
+   "entity": "graph mode",
+   "state": "off",
+   "command": "Cypher create of a held triple",
+   "outcome": "no-op",
+   "statements": [
+    "GID-B4.13"
+   ],
+   "decision": "",
+   "entry_points": [],
+   "entry_point_count": 0,
+   "ontology_line": 148,
+   "statements_cite": [
+    "iris_vector_graph/_engine/nodes_edges.py:1213-1219",
+    "iris_vector_graph/_engine/nodes_edges.py:1250-1254"
+   ],
+   "cited_code_outside_module": [
+    "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.create_edge"
+   ]
+  },
+  {
+   "entity": "graph mode",
+   "state": "off",
+   "command": "erase graph",
+   "outcome": "ok",
+   "statements": [
+    "GID-B4.6"
+   ],
+   "decision": "",
+   "entry_points": [],
+   "entry_point_count": 0,
+   "ontology_line": 149,
+   "statements_cite": [
+    "iris_src/src/Graph/KG/Eraser.cls:244-244",
+    "iris_src/src/Graph/KG/Eraser.cls:807-807"
+   ],
+   "cited_code_outside_module": [
+    "cls:Graph.KG.Eraser.EraseAll",
+    "cls:Graph.KG.Eraser.EraseGraph"
+   ]
+  },
+  {
+   "entity": "graph mode",
+   "state": "on without parallel edges",
+   "command": "direct create of a held triple",
+   "outcome": "ok",
+   "statements": [
+    "GID-B4.14"
+   ],
+   "decision": "",
+   "entry_points": [],
+   "entry_point_count": 0,
+   "ontology_line": 152,
+   "statements_cite": [
+    "iris_vector_graph/_engine/nodes_edges.py:1213-1219",
+    "iris_vector_graph/_engine/nodes_edges.py:1257-1273"
+   ],
+   "cited_code_outside_module": [
+    "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin._ekey_guard",
+    "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.create_edge"
+   ]
+  },
+  {
+   "entity": "graph mode",
+   "state": "on without parallel edges",
+   "command": "Cypher create of a held triple",
+   "outcome": "ok",
+   "statements": [
+    "GID-B4.12"
+   ],
+   "decision": "",
+   "entry_points": [],
+   "entry_point_count": 0,
+   "ontology_line": 153,
+   "statements_cite": [
+    "iris_vector_graph/cypher/translator.py:10368-10388",
+    "iris_vector_graph/cypher/translator.py:441-457"
+   ],
+   "cited_code_outside_module": [
+    "iris_vector_graph/cypher/translator.py::_create_values_edge_keyed",
+    "iris_vector_graph/cypher/translator.py::_multigraph"
+   ]
+  },
+  {
+   "entity": "graph mode",
+   "state": "on without parallel edges",
+   "command": "erase graph",
+   "outcome": "ok",
+   "statements": [
+    "GID-B4.6"
+   ],
+   "decision": "",
+   "entry_points": [],
+   "entry_point_count": 0,
+   "ontology_line": 154,
+   "statements_cite": [
+    "iris_src/src/Graph/KG/Eraser.cls:244-244",
+    "iris_src/src/Graph/KG/Eraser.cls:807-807"
+   ],
+   "cited_code_outside_module": [
+    "cls:Graph.KG.Eraser.EraseAll",
+    "cls:Graph.KG.Eraser.EraseGraph"
+   ]
+  },
+  {
+   "entity": "graph mode",
+   "state": "on with parallel edges",
+   "command": "direct create of a held triple",
+   "outcome": "ok",
+   "statements": [
+    "GID-B4.14"
+   ],
+   "decision": "",
+   "entry_points": [],
+   "entry_point_count": 0,
+   "ontology_line": 157,
+   "statements_cite": [
+    "iris_vector_graph/_engine/nodes_edges.py:1213-1219",
+    "iris_vector_graph/_engine/nodes_edges.py:1257-1273"
+   ],
+   "cited_code_outside_module": [
+    "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin._ekey_guard",
+    "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.create_edge"
+   ]
+  },
+  {
+   "entity": "graph mode",
+   "state": "on with parallel edges",
+   "command": "Cypher create of a held triple",
+   "outcome": "ok",
+   "statements": [
+    "GID-B4.12"
+   ],
+   "decision": "",
+   "entry_points": [],
+   "entry_point_count": 0,
+   "ontology_line": 158,
+   "statements_cite": [
+    "iris_vector_graph/cypher/translator.py:10368-10388",
+    "iris_vector_graph/cypher/translator.py:441-457"
+   ],
+   "cited_code_outside_module": [
+    "iris_vector_graph/cypher/translator.py::_create_values_edge_keyed",
+    "iris_vector_graph/cypher/translator.py::_multigraph"
+   ]
+  },
+  {
+   "entity": "graph mode",
+   "state": "on with parallel edges",
+   "command": "erase graph",
+   "outcome": "ok",
+   "statements": [
+    "GID-B4.6"
+   ],
+   "decision": "",
+   "entry_points": [],
+   "entry_point_count": 0,
+   "ontology_line": 159,
+   "statements_cite": [
+    "iris_src/src/Graph/KG/Eraser.cls:244-244",
+    "iris_src/src/Graph/KG/Eraser.cls:807-807"
+   ],
+   "cited_code_outside_module": [
+    "cls:Graph.KG.Eraser.EraseAll",
+    "cls:Graph.KG.Eraser.EraseGraph"
+   ]
+  },
+  {
+   "entity": "graph name",
+   "state": "the name 0",
+   "command": "direct node create",
+   "outcome": "refused",
+   "statements": [
+    "GID-B3.10"
+   ],
+   "decision": "",
+   "entry_points": [],
+   "entry_point_count": 0,
+   "ontology_line": 170,
+   "statements_cite": [
+    "iris_vector_graph/_engine/nodes_edges.py:1019-1019",
+    "iris_vector_graph/_engine/nodes_edges.py:1797-1806",
+    "iris_vector_graph/_engine/nodes_edges.py:1954-1967",
+    "iris_vector_graph/_engine/nodes_edges.py:2421-2421",
+    "iris_vector_graph/_engine/nodes_edges.py:2560-2560",
+    "iris_vector_graph/bulk_loader.py:73-77"
+   ],
+   "cited_code_outside_module": [
+    "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.bulk_create_edges",
+    "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.bulk_create_nodes",
+    "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.create_node",
+    "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.store_edge",
+    "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.store_node",
+    "iris_vector_graph/bulk_loader.py::BulkLoader.__init__"
+   ]
+  },
+  {
+   "entity": "graph name",
+   "state": "name with a control character",
+   "command": "direct node create",
+   "outcome": "refused",
+   "statements": [
+    "GID-B3.10"
+   ],
+   "decision": "",
+   "entry_points": [],
+   "entry_point_count": 0,
+   "ontology_line": 171,
+   "statements_cite": [
+    "iris_vector_graph/_engine/nodes_edges.py:1019-1019",
+    "iris_vector_graph/_engine/nodes_edges.py:1797-1806",
+    "iris_vector_graph/_engine/nodes_edges.py:1954-1967",
+    "iris_vector_graph/_engine/nodes_edges.py:2421-2421",
+    "iris_vector_graph/_engine/nodes_edges.py:2560-2560",
+    "iris_vector_graph/bulk_loader.py:73-77"
+   ],
+   "cited_code_outside_module": [
+    "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.bulk_create_edges",
+    "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.bulk_create_nodes",
+    "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.create_node",
+    "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.store_edge",
+    "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.store_node",
+    "iris_vector_graph/bulk_loader.py::BulkLoader.__init__"
+   ]
+  },
+  {
+   "entity": "graph name",
+   "state": "ordinary name",
+   "command": "Cypher write under the name",
+   "outcome": "ok",
+   "statements": [
+    "GID-B6.6"
+   ],
+   "decision": "",
+   "entry_points": [],
+   "entry_point_count": 0,
+   "ontology_line": 173,
+   "statements_cite": [
+    "iris_vector_graph/cypher/translator.py:2112-2114"
+   ],
+   "cited_code_outside_module": [
+    "iris_vector_graph/cypher/translator.py::TranslationContext.build_dml_subquery"
+   ]
+  },
+  {
+   "entity": "graph name",
+   "state": "the name 0",
+   "command": "Cypher write under the name",
+   "outcome": "refused",
+   "statements": [
+    "GID-B3.11"
+   ],
+   "decision": "",
+   "entry_points": [],
+   "entry_point_count": 0,
+   "ontology_line": 174,
+   "statements_cite": [
+    "iris_vector_graph/cypher/parser.py:175-192",
+    "iris_vector_graph/cypher/translator.py:429-438"
+   ],
+   "cited_code_outside_module": [
+    "iris_vector_graph/cypher/parser.py::Parser.parse",
+    "iris_vector_graph/cypher/translator.py::_graph_of"
+   ]
+  },
+  {
+   "entity": "graph name",
+   "state": "name with a control character",
+   "command": "Cypher write under the name",
+   "outcome": "refused",
+   "statements": [
+    "GID-B3.11"
+   ],
+   "decision": "",
+   "entry_points": [],
+   "entry_point_count": 0,
+   "ontology_line": 175,
+   "statements_cite": [
+    "iris_vector_graph/cypher/parser.py:175-192",
+    "iris_vector_graph/cypher/translator.py:429-438"
+   ],
+   "cited_code_outside_module": [
+    "iris_vector_graph/cypher/parser.py::Parser.parse",
+    "iris_vector_graph/cypher/translator.py::_graph_of"
+   ]
+  }
+ ],
+ "excluded_by_scope": []
+}

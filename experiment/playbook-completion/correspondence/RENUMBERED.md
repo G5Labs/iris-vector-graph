@@ -1,0 +1,2 @@
+Finding ids renumbered at merge to avoid collisions with ids already used elsewhere: F-C1102 -> F-C1106, F-C1103 -> F-C1107, F-C1104 -> F-C1108, F-C1105 -> F-C1109, F-C1203 -> F-C1204.
+Registry records evidence/runs/corr-*.json keep their original wording; where they mention F-C1102..F-C1105 or F-C1203 they mean the renumbered ids above (F-C1102 and F-C1203 elsewhere in the audit are the crash-durability and temporal-only-erase findings).

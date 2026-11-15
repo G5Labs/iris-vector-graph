@@ -1,0 +1,16 @@
+{
+  "command": "locks.sh iris timeout 900 python experiment/playbook-completion/writesets/live/ws_probes.py replay-delete_reification replay-import_rdf noindex-erase (AUDITB; at most 2 connections)",
+  "experiment_head": "e7cf1457e9d16c76fa772c2deeb94d31296c62b7",
+  "id": "ws-live-replay-import_rdf",
+  "kind": "live",
+  "lane": "writesets",
+  "log": "$RUN_DIR/writesets/replay-import_rdf.json",
+  "log_bytes": 2021,
+  "log_sha256": "71624c5985fa564c714b45fd9fd8627eac02f4f7a7e3b8f221715156540000b2",
+  "namespace": "AUDITB",
+  "observes": "Review R4-06 rerun of the INV-replay sub-check for import_rdf from an equal baseline. After EraseAll+PurgeAll a %IGNOREINDEX full scan found 0 content rows; ledger enabled, control tenant committed, verify() = equal. engine.import_rdf of a 2-triple Turtle file (urn:wsri:n1 -urn:p:R-> urn:wsri:n2, property urn:p:secret) on a second connection answered triples 2, nodes 2, edges 1, properties 1; the journal shows its process writing nodes, rdf_edges and rdf_props rows and no ^IVG.Ledger node. verify() = diverges, classification unrecorded_writes, differences name urn:wsri:n1, urn:wsri:n2 and the relationship; after delete_nodes_by_prefix(\"urn:wsri:\") the full scan finds 0 rows and verify() = equal.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T12:56:19+00:00",
+  "result": "pass"
+}

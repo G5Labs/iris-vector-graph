@@ -1,0 +1,15 @@
+{
+  "command": "bash experiment/playbook-completion/tools/locks.sh iris timeout 900 python experiment/playbook-completion/live/breadth-b/11_concurrency.py",
+  "experiment_head": "307a0a8c38fe9a45d7eff7c64995070f21e00b2c",
+  "id": "b-11-live-f1103",
+  "kind": "live",
+  "lane": "breadth-b",
+  "log": "$RUN_DIR/breadth-b/live/11-conc-F-1103.json",
+  "log_bytes": 2020,
+  "log_sha256": "afa74c98881a2963e18eb7c8943d3c805ca6e814a3ee2fc218debc60813ce6a0",
+  "observes": "F-1103 with a forced interleaving at a Python call boundary (replay.read_canonical wrapped in the harness, no product change): a commit of b11_a-B11T-b11_b (stmt 1, seq 2) between the record read and the store read of a re-enable's verify(adopt=True); the adoption (seq 3) recorded create_rel stmt 1 again (LED-B1.20 violated); verify afterwards equal (replay idempotent on stmt id). Second schedule (a whole second enable inside the first's verify) found the ledger already enabled: no second adoption.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T00:11:40+00:00",
+  "result": "fail"
+}

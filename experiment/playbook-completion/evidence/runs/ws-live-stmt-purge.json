@@ -1,0 +1,17 @@
+{
+  "command": "locks.sh iris timeout 900 python experiment/playbook-completion/writesets/live/ws_probes.py rb-delete_reification stmt-purge migrations fhir-blocked (AUDITB)",
+  "experiment_head": "8d11c49c4337db1fcf521c56a0c66e39b67128c4",
+  "finding": "F-C0450",
+  "id": "ws-live-stmt-purge",
+  "kind": "live",
+  "lane": "writesets",
+  "log": "$RUN_DIR/writesets/stmt-purge.json",
+  "log_bytes": 1074,
+  "log_sha256": "7de12ff6bc4d648d22f0e359326cc283904b35511f83aa3717a65a48482f8adc",
+  "namespace": "AUDITB",
+  "observes": "INV-stmt for the purge path: a ledger relationship wsp|a-RP->wsp|b with qualifiers stored {\"temporal\":\"1\"} (statement 1 live), engine.create_edge_temporal on the same triple at ts 1000, engine.purge_before(2000) (TemporalIndex.PurgeBefore -> RetractTemporalRows, whose %STARTSWITH marker test misses and falls back to RetractTemporalRow): the ledger's row is deleted, statement 1 stays live with no row; verify() = diverges.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T12:06:39+00:00",
+  "result": "fail"
+}

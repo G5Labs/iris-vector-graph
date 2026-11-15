@@ -1,0 +1,326 @@
+{
+ "module": "02",
+ "name": "graph-identity",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "lane": "breadth-a",
+ "generated_by": "experiment/playbook-completion/live/breadth-a/make_modules.py",
+ "summary": {
+  "entry_points": 46,
+  "entry_points_by_kind": {
+   "classmethod": 9,
+   "exported": 10,
+   "internal": 1,
+   "python-api": 25,
+   "python-api(property)": 1
+  },
+  "omissions": 6,
+  "cells": 31,
+  "cells_without_entry_point": 13,
+  "footprints": 7,
+  "footprints_reviewed_by_hand": 2,
+  "footprints_journal_validated": 1,
+  "journal": {
+   "validated": 1,
+   "covered": 1,
+   "extraction_gaps": 0,
+   "harness_errors": 0,
+   "product_mismatches": 0
+  },
+  "model_families": [
+   "gid_mode"
+  ],
+  "model_checks": 9,
+  "model_checks_met": 9,
+  "findings_original": 9,
+  "findings_new": 0,
+  "findings_by_disposition": {
+   "confirmed-source": [
+    "F-0205",
+    "F-0209"
+   ],
+   "reproduced-live": [
+    "F-0201",
+    "F-0202",
+    "F-0203",
+    "F-0204",
+    "F-0206",
+    "F-0208"
+   ],
+   "reproduced-model": [
+    "F-0207"
+   ]
+  },
+  "findings_by_severity": {
+   "S2": [
+    "F-0201",
+    "F-0202",
+    "F-0204",
+    "F-0205",
+    "F-0206",
+    "F-0207",
+    "F-0208"
+   ],
+   "S4": [
+    "F-0203",
+    "F-0209"
+   ]
+  },
+  "writeset_pairs": {
+   "mc": 3,
+   "finding": 0,
+   "open": 0
+  },
+  "registered_runs": [
+   "breadth-a-control-gid_mode",
+   "breadth-a-live-02-identity",
+   "breadth-a-live-02-mode-off",
+   "breadth-a-mc-gid_mode-as-built",
+   "breadth-a-mc-gid_mode-reviewed"
+  ]
+ },
+ "gates_by_id": {
+  "3.1-cells": {
+   "status": "closed",
+   "evidence": [
+    "experiment/playbook-uplift/ontology/02-graph-identity.md",
+    "models/breadth-a/inventory/02.json#cells_without_entry_point"
+   ],
+   "remaining": "13 defined cells cite no entry point of this module (most cite code in another module); see the inventory",
+   "reason": "31 cells; 0 carry an open human decision"
+  },
+  "3.1-coverage": {
+   "status": "open",
+   "evidence": [
+    "models/breadth-a/inventory/02.json",
+    "models/breadth-a/tools/inventory.py"
+   ],
+   "remaining": "6 inventoried entry points no statement or cell covers (of 46); add statements or record them as helpers"
+  },
+  "3.1-intent": {
+   "status": "open",
+   "evidence": [
+    "experiment/playbook-completion/decisions.md"
+   ],
+   "remaining": "owned by the intent lanes; decisions.md records a working disposition for every HD of this module"
+  },
+  "3.2-coverage": {
+   "status": "open",
+   "evidence": [
+    "models/breadth-a/inventory/env-features-02.json"
+   ],
+   "remaining": "the orchestrator's IRIS environment contract must cover each env_feature; live premises settled here: P-0202 (F-0203), P-0307 (F-0306), P-0401 ($Increment journaled outside the transaction, J02/J13), P-0002 (dirty reads, F-0402)"
+  },
+  "3.3-L1": {
+   "status": "open",
+   "evidence": [
+    "models/breadth-a/src (gid_mode)"
+   ],
+   "remaining": "explorer models state the module's key invariants (see RESULTS.json); no Verus L1"
+  },
+  "3.3-L2": {
+   "status": "open",
+   "evidence": [
+    "models/breadth-a/RESULTS.json"
+   ],
+   "remaining": "no L2 machine over the real data layout"
+  },
+  "3.3-refinement": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "no refinement evidence"
+  },
+  "3.3-controls": {
+   "status": "open",
+   "evidence": [
+    "models/breadth-a/RESULTS.json: gid_mode-control-writers-unlocked"
+   ],
+   "remaining": "controls are explorer mutants (each caught), not proof-level rejections"
+  },
+  "3.3-model-check": {
+   "status": "closed",
+   "evidence": [
+    "models/breadth-a/RESULTS.json (9 checks, families gid_mode)",
+    "breadth-a-mc-all"
+   ],
+   "reason": "as-built / reviewed / control / sharpness (and progress where it matters) per family, exhaustive within bounds; scope is each family's invariant and the operations its doc comment lists (other operations of the module are not modeled)"
+  },
+  "3.3a-writesets": {
+   "status": "failed",
+   "evidence": [
+    "models/breadth-a/writesets.json"
+   ],
+   "remaining": "as-built violations recorded as findings ['F-0201', 'F-0207', 'F-0208']; 0 (invariant, writer) pairs with no discharge; 3 discharged for the reviewed design by mc (the as-built pair is a finding)",
+   "reason": "pairs computed from footprints (declared + journal) against the model invariants' read sets"
+  },
+  "3.4-statements": {
+   "status": "open",
+   "evidence": [
+    "footprints/02.json#journal_validation"
+   ],
+   "remaining": "no statement proved against an IRIS model; journal validation compares write sets only"
+  },
+  "3.4-ownership": {
+   "status": "open",
+   "evidence": [
+    "footprints/02.json"
+   ],
+   "remaining": "no ownership self-test"
+  },
+  "3.4-storage-order": {
+   "status": "closed",
+   "evidence": [
+    "models/breadth-a/storage-order/02.json",
+    "$RUN_DIR/checks/storage-order.json"
+   ],
+   "reason": "both scan sites are existence probes whose answer is order-independent; the one truncating traversal (_edge_graphs) is collation-ordered and already finding F-0209 (gate 3.6-capacity)"
+  },
+  "3.4-declared-reads": {
+   "status": "failed",
+   "evidence": [
+    "findings/audit/02.json"
+   ],
+   "remaining": "no declared-reads self-test; cross-graph reads are findings ['F-0206']"
+  },
+  "3.5-handlers": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "no handler proved"
+  },
+  "3.5-lockplans": {
+   "status": "failed",
+   "evidence": [
+    "footprints/02.json (locks)",
+    "findings/audit/02.json"
+   ],
+   "remaining": "lock-plan defects: ['F-0207']"
+  },
+  "3.5-decoders": {
+   "status": "failed",
+   "evidence": [
+    "findings/audit/02.json"
+   ],
+   "remaining": "decoder/status-map defects: ['F-0202', 'F-0204']"
+  },
+  "3.6-frame": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "not done in this lane"
+  },
+  "3.6-row-permutation": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "not done in this lane"
+  },
+  "3.7-lock-log": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "not done in this lane"
+  },
+  "3.7-mutation": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "not done in this lane"
+  },
+  "3.6-keys": {
+   "status": "failed",
+   "evidence": [
+    "findings/audit/02.json"
+   ],
+   "remaining": "['F-0201']"
+  },
+  "3.6-fk": {
+   "status": "open",
+   "evidence": [
+    "findings/audit/02.json"
+   ],
+   "remaining": "not done"
+  },
+  "3.6-capacity": {
+   "status": "failed",
+   "evidence": [
+    "findings/audit/02.json"
+   ],
+   "remaining": "['F-0209']"
+  },
+  "3.7-trace-replay": {
+   "status": "open",
+   "evidence": [
+    "footprints/02.json#journal_validation",
+    "breadth-a-journal-footprints"
+   ],
+   "remaining": "1 journal traces captured and compared with footprints; not replayed through the models"
+  },
+  "3.8-findings-disposed": {
+   "status": "closed",
+   "evidence": [
+    "findings/audit/02.json"
+   ],
+   "remaining": "observation-only: every original finding has an audited record; product obligations stay failed",
+   "reason": "dispositions {confirmed-source: 2, reproduced-live: 6, reproduced-model: 1}"
+  },
+  "5c-refusals": {
+   "status": "failed",
+   "evidence": [
+    "findings/audit/02.json"
+   ],
+   "remaining": "refusal defects ['F-0202', 'F-0203']; X statements not audited mechanically"
+  }
+ },
+ "env_features": [
+  {
+   "feature": "Native API from Python (classMethod*, globals)",
+   "occurrences": 2,
+   "samples": [
+    "iris_vector_graph/_engine/admin.py:907",
+    "iris_vector_graph/_engine/admin.py:924"
+   ]
+  },
+  {
+   "feature": "Embedded/dynamic SQL in ObjectScript (&sql, %SQL.Statement)",
+   "occurrences": 1,
+   "samples": [
+    "iris_src/src/Graph/KG/GraphMode.cls:54"
+   ]
+  },
+  {
+   "feature": "$ZStrip / $ZConvert character classes",
+   "occurrences": 1,
+   "samples": [
+    "iris_src/src/Graph/KG/GraphKey.cls:44"
+   ]
+  },
+  {
+   "feature": "Global KILL of a subtree / Merge",
+   "occurrences": 1,
+   "samples": [
+    "iris_src/src/Graph/KG/GraphMode.cls:40"
+   ]
+  },
+  {
+   "feature": "SQL empty string as $Char(0)",
+   "occurrences": 3,
+   "samples": [
+    "iris_src/src/Graph/KG/GraphKey.cls:84",
+    "iris_vector_graph/_validate.py:27",
+    "iris_vector_graph/_validate.py:37"
+   ]
+  },
+  {
+   "feature": "SQLCODE-specific handling",
+   "occurrences": 2,
+   "samples": [
+    "iris_src/src/Graph/KG/GraphMode.cls:55",
+    "iris_src/src/Graph/KG/GraphMode.cls:56"
+   ]
+  },
+  {
+   "feature": "TOP / LIMIT / FETCH FIRST result prefix",
+   "occurrences": 2,
+   "samples": [
+    "iris_vector_graph/engine.py:624",
+    "iris_vector_graph/engine.py:634"
+   ]
+  }
+ ],
+ "env_features_method": "regex over the source ranges of the module's inventoried entry points; over-approximates"
+}

@@ -1,0 +1,720 @@
+{
+ "module": "15",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "statements": [
+  {
+   "id": "INT-F1.5",
+   "text": "A link to a contained item, a urn link, or a link with no clear type and id never becomes an edge.",
+   "outcome": "blocked-access",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/FHIRGraph.cls:2620-2650"
+   ],
+   "evidence": [
+    "run:rx-live-15"
+   ],
+   "notes": "Partial live: Graph.KG.FHIRGraph.Classify (instance method on a fresh %New(), Native API) answers 'skip' for '#contained1', 'urn:uuid:1234', 'Patient', 'Patient/1/x' and '/1' (5 cases, 0 journal records); control 'Patient/p1' answers 'local'. That a skipped link never becomes an edge is a property of a sync, which needs a FHIR repository.",
+   "partial_live_cases": [
+    "Classify '#contained1' (server method, no repository)",
+    "Classify 'urn:uuid:1234' (server method, no repository)",
+    "Classify 'Patient' (server method, no repository)",
+    "Classify 'Patient/1/x' (server method, no repository)",
+    "Classify '/1' (server method, no repository)"
+   ],
+   "dependency": "HS.FHIRServer classes and a JsonAdvSQL FHIR repository in the namespace (InterSystems IRIS for Health; the audit container is IRIS 2026.1 Community: 0 HS.FHIRServer classes, no HS_FHIRServer.Repo table, rx-live-15 observation)"
+  },
+  {
+   "id": "INT-F1.13",
+   "text": "A json link list is refused when an entry has the wrong form, is listed twice, or clashes on its edge name.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/fhir_links.py:44-71",
+    "iris_vector_graph/_engine/fhir_graph.py:247",
+    "iris_src/src/Graph/KG/FHIRGraph.cls:2736-2808",
+    "iris_src/src/Graph/KG/FHIRGraph.cls:171-176"
+   ],
+   "evidence": [
+    "run:rx-live-15"
+   ],
+   "notes": "engine.fhir_graph_register(json_links=...) refuses a wrong form, a duplicate and a predicate clash (ValueError naming the entry) before IRIS; the server's ParseJsonLinks refuses the same three with {'status':'error'}; 6 cases, 0 journal records.",
+   "live_cases": [
+    "engine register json_links wrong form",
+    "engine register json_links listed twice",
+    "engine register json_links clashes on its edge name",
+    "server ParseJsonLinks wrong form",
+    "server ParseJsonLinks listed twice",
+    "server ParseJsonLinks clashes on its edge name"
+   ]
+  },
+  {
+   "id": "INT-F1.14",
+   "text": "Reading a resource fails when its text is not JSON, nests deeper than 64 levels, or has more than 10000 json link matches. That fails its whole batch.",
+   "outcome": "blocked-access",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/FHIRGraph.cls:2380-2394",
+    "iris_src/src/Graph/KG/FHIRGraph.cls:2973-2978",
+    "iris_src/src/Graph/KG/FHIRGraph.cls:2983-2988",
+    "iris_src/src/Graph/KG/FHIRGraph.cls:3017-3021"
+   ],
+   "evidence": [
+    "run:rx-live-15"
+   ],
+   "notes": "Partial live: the server's ExtractLinks (the json-link extractor a sync uses) refuses a body that is not JSON, a 70-level nesting under an extension link (WALKDEPTH 64) and 10,001 matches (WALKMATCHES 10000) with {'status':'error'}; 3 cases, 0 journal records. ReadResource's not-JSON refusal and the failure of the whole batch need a sync over a FHIR repository. Note: the depth bound applies only while an extension json link is configured (Walk runs only then, FHIRGraph.cls:2973-2975).",
+   "partial_live_cases": [
+    "ExtractLinks text not JSON (server method, no repository)",
+    "ExtractLinks nesting deeper than 64 (server method, no repository)",
+    "ExtractLinks more than 10000 json link matches (server method, no repository)"
+   ],
+   "dependency": "HS.FHIRServer classes and a JsonAdvSQL FHIR repository in the namespace (InterSystems IRIS for Health; the audit container is IRIS 2026.1 Community: 0 HS.FHIRServer classes, no HS_FHIRServer.Repo table, rx-live-15 observation)"
+  },
+  {
+   "id": "INT-F1.20",
+   "text": "A category code that is also the name of a resource type is not made a label.",
+   "outcome": "blocked-access",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/FHIRGraph.cls:2519-2525",
+    "iris_src/src/Graph/KG/FHIRGraph.cls:1832-1849"
+   ],
+   "evidence": [
+    "run:rx-live-15"
+   ],
+   "notes": "Category labels are derived in SyncProps (private, during a sync) against R4Types read from the repository's schema; nothing reaches it without a repository.",
+   "dependency": "HS.FHIRServer classes and a JsonAdvSQL FHIR repository in the namespace (InterSystems IRIS for Health; the audit container is IRIS 2026.1 Community: 0 HS.FHIRServer classes, no HS_FHIRServer.Repo table, rx-live-15 observation)"
+  },
+  {
+   "id": "INT-F2.3",
+   "text": "A patient item gets no compartment edge. A link between patients stays a plain link edge.",
+   "outcome": "blocked-access",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/FHIRGraph.cls:2192-2194"
+   ],
+   "evidence": [
+    "run:rx-live-15"
+   ],
+   "notes": "Compartment edges are derived during a sync only.",
+   "dependency": "HS.FHIRServer classes and a JsonAdvSQL FHIR repository in the namespace (InterSystems IRIS for Health; the audit container is IRIS 2026.1 Community: 0 HS.FHIRServer classes, no HS_FHIRServer.Repo table, rx-live-15 observation)"
+  },
+  {
+   "id": "INT-F2.4",
+   "text": "A link to a group, or to any target that is not a patient, gives no compartment edge.",
+   "outcome": "blocked-access",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/FHIRGraph.cls:2194-2205"
+   ],
+   "evidence": [
+    "run:rx-live-15"
+   ],
+   "notes": "Compartment edges are derived during a sync only (only 'Patient/' targets of the compartment params, ..Comp).",
+   "dependency": "HS.FHIRServer classes and a JsonAdvSQL FHIR repository in the namespace (InterSystems IRIS for Health; the audit container is IRIS 2026.1 Community: 0 HS.FHIRServer classes, no HS_FHIRServer.Repo table, rx-live-15 observation)"
+  },
+  {
+   "id": "INT-F3.2",
+   "text": "Register is refused in a namespace with no FHIR repository. It makes no tables there.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/fhir_graph.py:190-202",
+    "iris_src/src/Graph/KG/FHIRGraph.cls:178-181"
+   ],
+   "evidence": [
+    "run:rx-live-15"
+   ],
+   "notes": "engine.fhir_graph_register() and the server's Register in AUDITE (no repository): FHIRGraphError / {'status':'error'} 'namespace AUDITE has no FHIR repository'; no Graph_KG.fhir_g* table before or after; 2 cases, 0 journal records. Upstream e2e test_register_without_repository_creates_nothing also PASSED in val-e2e-1-c01.",
+   "live_cases": [
+    "engine register without a FHIR repository",
+    "server Register without a FHIR repository"
+   ]
+  },
+  {
+   "id": "INT-F3.3",
+   "text": "Register is refused when there are two repositories and no endpoint is named. It is also refused when the named endpoint is not there.",
+   "outcome": "blocked-access",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/FHIRGraph.cls:189-212"
+   ],
+   "evidence": [
+    "run:rx-live-15"
+   ],
+   "notes": "In AUDITE a named endpoint is refused by the repository check first (observation: Register('/csp/healthshare/rx15/fhir/r4') answers 'no FHIR repository'); the two-repository and unknown-endpoint branches need HS_FHIRServer.Repo/RepoInstance. The upstream e2e test was SKIPPED in val-e2e-1-c18 for the same reason.",
+   "dependency": "HS.FHIRServer classes and a JsonAdvSQL FHIR repository in the namespace (InterSystems IRIS for Health; the audit container is IRIS 2026.1 Community: 0 HS.FHIRServer classes, no HS_FHIRServer.Repo table, rx-live-15 observation)"
+  },
+  {
+   "id": "INT-F3.4",
+   "text": "Register refuses a repository whose data is not kept as JsonAdvSQL. It reads no other kind.",
+   "outcome": "blocked-access",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/FHIRGraph.cls:214-225"
+   ],
+   "evidence": [
+    "run:rx-live-15"
+   ],
+   "notes": "The storage-strategy check reads HS_FHIRServer.Repo.",
+   "dependency": "HS.FHIRServer classes and a JsonAdvSQL FHIR repository in the namespace (InterSystems IRIS for Health; the audit container is IRIS 2026.1 Community: 0 HS.FHIRServer classes, no HS_FHIRServer.Repo table, rx-live-15 observation)"
+  },
+  {
+   "id": "INT-F3.5",
+   "text": "Register and schedule refuse a sync time of less than 60 seconds.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/fhir_graph.py:243-246",
+    "iris_vector_graph/_engine/fhir_graph.py:296-299",
+    "iris_src/src/Graph/KG/FHIRGraph.cls:183-185",
+    "iris_src/src/Graph/KG/FHIRGraph.cls:671-675"
+   ],
+   "evidence": [
+    "run:rx-live-15"
+   ],
+   "notes": "engine register (interval 30, 59) and schedule (30) refuse with ValueError before IRIS; 3 cases, 0 journal records. The class's own checks (Register 183-185, Schedule 671-675) sit after the repository / registration checks, so in AUDITE they are not reached.",
+   "live_cases": [
+    "engine register interval 30",
+    "engine register interval 59",
+    "engine schedule interval 30"
+   ]
+  },
+  {
+   "id": "INT-F3.6",
+   "text": "Register refuses a param denylist entry that is not in Type.param form. The error names the bad entry.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/fhir_graph.py:239-242",
+    "iris_src/src/Graph/KG/FHIRGraph.cls:1752-1766"
+   ],
+   "evidence": [
+    "run:rx-live-15"
+   ],
+   "notes": "engine register refuses 'badentry', 'Patient.' and 'Pat ient.x' with the entry named; 3 cases, 0 journal records. The class's ParseDenylist runs after the repository check.",
+   "live_cases": [
+    "engine register denylist 'badentry'",
+    "engine register denylist 'Patient.'",
+    "engine register denylist 'Pat ient.x'"
+   ]
+  },
+  {
+   "id": "INT-F5.8",
+   "text": "If a graph's interpretation version is newer than the code's, the engine raises an error. A newer IVG built it.",
+   "outcome": "holds-run",
+   "implementing_code": [
+    "iris_vector_graph/_engine/fhir_graph.py:64-76",
+    "iris_vector_graph/_engine/fhir_graph.py:270-273",
+    "iris_vector_graph/_engine/fhir_graph.py:510-513"
+   ],
+   "evidence": [
+    "run:val-unit-3-c01"
+   ],
+   "notes": "The version is read from a registered graph's Status/CoverageReport, which needs a FHIR repository; the decision (_interp_stale raises RuntimeError when newer) is covered by the upstream unit test, which passed in val-unit-3-c01.",
+   "log_contains": {
+    "run:val-unit-3-c01": "tests/unit/test_235_interp_marker.py::TestInterpStale::test_higher_raises PASSED"
+   }
+  },
+  {
+   "id": "INT-F8.1",
+   "text": "Status, rebuild, sync and the other graph calls refuse a graph that is not registered.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/FHIRGraph.cls:1713-1724",
+    "iris_vector_graph/_engine/fhir_graph.py:183-188"
+   ],
+   "evidence": [
+    "run:rx-live-15"
+   ],
+   "notes": "status, rebuild, sync, reinterpret, schedule, unschedule, link report, resolve concepts, coverage report, concept gaps, concept ppr and patient anchors (graph=) on an unregistered graph: each FHIRGraphError '... is not registered; call Register() first'; 12 cases, 0 journal records.",
+   "live_cases": [
+    "status of an unregistered graph",
+    "rebuild of an unregistered graph",
+    "sync of an unregistered graph",
+    "reinterpret of an unregistered graph",
+    "schedule of an unregistered graph",
+    "unschedule of an unregistered graph",
+    "link report of an unregistered graph",
+    "resolve concepts of an unregistered graph",
+    "coverage report of an unregistered graph",
+    "concept gaps of an unregistered graph",
+    "concept ppr (hops 0) of an unregistered graph",
+    "patient anchors graph= of an unregistered graph"
+   ]
+  },
+  {
+   "id": "INT-F8.2",
+   "text": "Each FHIR graph call refuses the default graph and a name that is not allowed, before it reaches IRIS.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/fhir_graph.py:56-61",
+    "iris_vector_graph/_validate.py:31-49"
+   ],
+   "evidence": [
+    "run:rx-live-15"
+   ],
+   "notes": "status, sync, rebuild, link report, coverage report with None, '', '0' and a control character: ValueError; a spy on the engine's Native API and FHIR server calls counted 0 requests in every case (before IRIS); 20 cases, 0 journal records.",
+   "live_cases": [
+    "status graph None",
+    "sync graph None",
+    "rebuild graph None",
+    "link report graph None",
+    "coverage report graph None",
+    "status graph ''",
+    "sync graph ''",
+    "rebuild graph ''",
+    "link report graph ''",
+    "coverage report graph ''",
+    "status graph '0'",
+    "sync graph '0'",
+    "rebuild graph '0'",
+    "link report graph '0'",
+    "coverage report graph '0'",
+    "status graph control char",
+    "sync graph control char",
+    "rebuild graph control char",
+    "link report graph control char",
+    "coverage report graph control char"
+   ]
+  },
+  {
+   "id": "INT-F8.4",
+   "text": "The link report refuses a source that is not a Type/id key.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/fhir_graph.py:283-289"
+   ],
+   "evidence": [
+    "run:rx-live-15"
+   ],
+   "notes": "'notakey', 'Patient/', 'Patient/1/x', 'Pat ient/1': ValueError before IRIS; 4 cases.",
+   "live_cases": [
+    "link report source 'notakey'",
+    "link report source 'Patient/'",
+    "link report source 'Patient/1/x'",
+    "link report source 'Pat ient/1'"
+   ]
+  },
+  {
+   "id": "INT-F9.2",
+   "text": "Schedule and unschedule refuse a stored task id that names some other task. Then they change nothing.",
+   "outcome": "blocked-access",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/FHIRGraph.cls:683",
+    "iris_src/src/Graph/KG/FHIRGraph.cls:725",
+    "iris_src/src/Graph/KG/FHIRGraph.cls:744-775"
+   ],
+   "evidence": [
+    "run:rx-live-15"
+   ],
+   "notes": "CheckOwnTask runs on a registered graph's task_id; registering needs a repository (the upstream e2e tests were SKIPPED in val-e2e-1-c14).",
+   "dependency": "HS.FHIRServer classes and a JsonAdvSQL FHIR repository in the namespace (InterSystems IRIS for Health; the audit container is IRIS 2026.1 Community: 0 HS.FHIRServer classes, no HS_FHIRServer.Repo table, rx-live-15 observation)"
+  },
+  {
+   "id": "INT-C1.2",
+   "text": "Expand refuses hops outside 0 to 10, and an unknown way to walk, before it calls IRIS.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/fhir_graph.py:386-389",
+    "iris_vector_graph/_engine/fhir_graph.py:157-159"
+   ],
+   "evidence": [
+    "run:rx-live-15"
+   ],
+   "notes": "hops 11, -1, True and direction 'sideways': ValueError, 0 FHIR server calls (spy); 4 cases.",
+   "live_cases": [
+    "expand hops 11",
+    "expand hops -1",
+    "expand hops True",
+    "expand direction sideways"
+   ]
+  },
+  {
+   "id": "INT-C1.7",
+   "text": "Resolve refuses a relation that is not one of the four, and a param that is not a plain name.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/fhir_graph.py:93-103",
+    "iris_vector_graph/_engine/fhir_graph.py:170-177",
+    "iris_vector_graph/_engine/fhir_graph.py:334-336"
+   ],
+   "evidence": [
+    "run:rx-live-15"
+   ],
+   "notes": "relation 'nope', param 'code; DROP', params a bare string: ValueError; 3 cases.",
+   "live_cases": [
+    "resolve unknown relation",
+    "resolve param not plain",
+    "resolve params a bare string"
+   ]
+  },
+  {
+   "id": "INT-C2.6",
+   "text": "Via and the top count are refused without grouping. A bad group name, via list or count is refused before any IRIS call.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/fhir_graph.py:434-446"
+   ],
+   "evidence": [
+    "run:rx-live-15"
+   ],
+   "notes": "via or explain_top without group_by, group_by 'encounter', via ['Bad Param'], via a string, explain_top -1: ValueError with 0 Native API requests and 0 FHIR calls (spy); 6 cases.",
+   "live_cases": [
+    "ppr via without group_by",
+    "ppr explain_top without group_by",
+    "ppr bad group name",
+    "ppr bad via list",
+    "ppr via a string",
+    "ppr bad count"
+   ]
+  },
+  {
+   "id": "INT-C3.4",
+   "text": "The reports refuse a prefix of ids that is not 1 to 64 id letters. The gaps report refuses a top under 1.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/fhir_graph.py:149-154",
+    "iris_vector_graph/_engine/fhir_graph.py:500",
+    "iris_vector_graph/_engine/fhir_graph.py:533-535"
+   ],
+   "evidence": [
+    "run:rx-live-15"
+   ],
+   "notes": "coverage prefix 'bad prefix!', 65 letters, ''; gaps prefix 'bad prefix!', top 0, top True: ValueError, 0 FHIR calls; 6 cases.",
+   "live_cases": [
+    "coverage prefix with a space",
+    "coverage prefix of 65",
+    "coverage prefix empty",
+    "gaps prefix with a space",
+    "gaps top 0",
+    "gaps top True"
+   ]
+  },
+  {
+   "id": "INT-C4.3",
+   "text": "The anchors call refuses a patient id that is not 1 to 64 id letters.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/fhir_graph.py:571-572"
+   ],
+   "evidence": [
+    "run:rx-live-15"
+   ],
+   "notes": "'bad id!', 65 letters, '', 'p/1': ValueError; 4 cases.",
+   "live_cases": [
+    "anchors patient id 'bad id!'",
+    "anchors patient id 'aaaaaaaaaaaa'",
+    "anchors patient id ''",
+    "anchors patient id 'p/1'"
+   ]
+  },
+  {
+   "id": "INT-C4.5",
+   "text": "The Cypher API will not fetch a FHIR base address that a caller sends, unless the operator listed it.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/cypher_api.py:288-308"
+   ],
+   "evidence": [
+    "run:rx-live-15"
+   ],
+   "notes": "POST /api/cypher (in-process app) with fhir_base_url not listed (no list; a longer path of the listed base; another base listed): HTTP 400 naming IVG_FHIR_ALLOWED_BASES and the target listener saw 0 connections; control: the listed base with a trailing slash is fetched (1 connection); 3 cases.",
+   "live_cases": [
+    "POST /api/cypher fhir_base_url unlisted (no allow-list)",
+    "POST /api/cypher fhir_base_url unlisted (a prefix of the listed base)",
+    "POST /api/cypher fhir_base_url unlisted (another listed base)"
+   ]
+  },
+  {
+   "id": "INT-C5.1",
+   "text": "Adding a crosswalk row refuses an empty system, code or target. It also refuses a relation that is not one of the four.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/fhir_graph.py:620-628"
+   ],
+   "evidence": [
+    "run:rx-live-15"
+   ],
+   "notes": "empty system, code, target and relation 'nope': ValueError; 4 cases.",
+   "live_cases": [
+    "crosswalk empty system",
+    "crosswalk empty code",
+    "crosswalk empty target",
+    "crosswalk bad relation"
+   ]
+  },
+  {
+   "id": "INT-M1.2",
+   "text": "Mapping refuses a table, column or label name that is not a plain name.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/fhir.py:106-110",
+    "iris_vector_graph/security.py:78-99"
+   ],
+   "evidence": [
+    "run:rx-live-15"
+   ],
+   "notes": "table 'IVGAudit.RX15Pat; DROP', column 'pid)--', label 'RX15 L': ValueError; 3 cases.",
+   "live_cases": [
+    "map_sql_table table not a plain name",
+    "map_sql_table column not a plain name",
+    "map_sql_table label not a plain name"
+   ]
+  },
+  {
+   "id": "INT-M1.3",
+   "text": "Mapping refuses a table or id column that the SQL catalog does not list.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/fhir.py:111-126"
+   ],
+   "evidence": [
+    "run:rx-live-15"
+   ],
+   "notes": "missing qualified table and missing id column of an existing IVGAudit table: ValueError 'not found'; 2 cases. Related, not a missing refusal: F-1504 (an unqualified name is looked up in schema USER, so an existing SQLUser table is refused).",
+   "live_cases": [
+    "map_sql_table table missing",
+    "map_sql_table id column missing"
+   ]
+  },
+  {
+   "id": "INT-M1.6",
+   "text": "A link mapping needs a foreign key or a join table, and both labels mapped first.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/fhir.py:165-174"
+   ],
+   "evidence": [
+    "run:rx-live-15"
+   ],
+   "notes": "no fk or join table; source label not mapped; target label not mapped: ValueError; 3 cases.",
+   "live_cases": [
+    "map_sql_relationship without fk or join table",
+    "map_sql_relationship source label not mapped",
+    "map_sql_relationship target label not mapped"
+   ]
+  },
+  {
+   "id": "INT-M1.8",
+   "text": "Removing a label that is not mapped is refused.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/fhir.py:242-247"
+   ],
+   "evidence": [
+    "run:rx-live-15"
+   ],
+   "notes": "remove_table_mapping('RX15NeverMapped'): ValueError, no net journal change; 1 case.",
+   "live_cases": [
+    "remove_table_mapping of a label never mapped"
+   ]
+  },
+  {
+   "id": "INT-M1.12",
+   "text": "Attaching vectors refuses a label that is not mapped.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/fhir.py:296-300"
+   ],
+   "evidence": [
+    "run:rx-live-15"
+   ],
+   "notes": "attach_embeddings_to_table('RX15NeverMapped'): TableNotMappedError; 1 case.",
+   "live_cases": [
+    "attach_embeddings_to_table of an unmapped label"
+   ]
+  },
+  {
+   "id": "INT-R1.18",
+   "text": "Without rdflib, each export call is refused. The error names the extra to install.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/rdf_export.py:39-47",
+    "iris_vector_graph/_engine/rdf_export.py:123",
+    "iris_vector_graph/_engine/rdf_export.py:179"
+   ],
+   "evidence": [
+    "run:rx-live-15"
+   ],
+   "notes": "rdflib hidden from import in the probe process: export_rdf and export_rdf_from_cypher raise ImportError naming iris-vector-graph[rdf]; no file written; 2 cases.",
+   "live_cases": [
+    "export_rdf without rdflib",
+    "export_rdf_from_cypher without rdflib"
+   ]
+  },
+  {
+   "id": "INT-R1.19",
+   "text": "With rdflib 8, export and SHACL checks should be refused with an error that names the wrong version.",
+   "outcome": "product-defect",
+   "implementing_code": [
+    "iris_vector_graph/_engine/_rdf_utils.py:125-133"
+   ],
+   "evidence": [
+    "run:rx-live-15"
+   ],
+   "notes": "An rdflib stand-in (the installed 7.6.0 minus ConjunctiveGraph, __version__ 8.0.0) in the probe process: export_rdf and validate_shacl raise ImportError 'rdflib is required for RDF operations. Install with: pip install iris-vector-graph[rdf]' as if rdflib were missing; the version is not named. Reproduces F-1506 (confirmed-source until now) live; 2 cases.",
+   "live_cases": [
+    "export_rdf with rdflib 8.0.0 lacking ConjunctiveGraph",
+    "validate_shacl with rdflib 8.0.0 lacking ConjunctiveGraph"
+   ],
+   "finding": "F-1506"
+  },
+  {
+   "id": "INT-E1.4",
+   "text": "Reify with a reifier id that is already linked is refused, and nothing is written.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/schema.py:3292-3330"
+   ],
+   "evidence": [
+    "run:rx-live-15"
+   ],
+   "notes": "reify_edge of a second edge, and of the same edge, with the already linked reifier id 'rx15:reif': GraphWriteError (SQLCODE -119), journal net change 0, link and properties unchanged; 2 cases.",
+   "live_cases": [
+    "reify another edge with an already linked reifier id",
+    "reify the same edge again with its reifier id"
+   ]
+  },
+  {
+   "id": "INT-E1.5",
+   "text": "In strict ledger mode, reify and reifier delete are refused.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/schema.py:3286",
+    "iris_vector_graph/_engine/schema.py:3372",
+    "iris_vector_graph/_engine/ledger.py:72-79",
+    "iris_vector_graph/ledger/guard.py:75-80"
+   ],
+   "evidence": [
+    "run:rx-live-15"
+   ],
+   "notes": "ledger enabled strict: reify_edge and delete_reification raise LedgerStrictModeError; the only journal change is the guard's rej_strict_block counter in Graph_KG.ledger_stats (guard.py:77, allowed); 2 cases.",
+   "live_cases": [
+    "reify_edge in strict ledger mode",
+    "delete_reification in strict ledger mode"
+   ]
+  },
+  {
+   "id": "INT-S1.4",
+   "text": "A web address that fails, or does not answer in 30 seconds, is refused with an IO error.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/shacl.py:123-132"
+   ],
+   "evidence": [
+    "run:rx-live-15"
+   ],
+   "notes": "HTTP 500 -> IOError 'Could not fetch shapes ... HTTP 500'; refused connection -> IOError '... Connection refused'; a listener that accepts and never answers -> TimeoutError 'timed out' after 30 s (an OSError subclass, so an IO error, but not wrapped in the 'Could not fetch shapes' message: urlopen times out in the read, outside the caught URLError); 3 cases.",
+   "live_cases": [
+    "shapes URL answering HTTP 500",
+    "shapes URL refusing the connection",
+    "shapes URL that never answers (30 s timeout)"
+   ]
+  },
+  {
+   "id": "INT-S1.6",
+   "text": "Shapes of any other kind are refused.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/shacl.py:115-120"
+   ],
+   "evidence": [
+    "run:rx-live-15"
+   ],
+   "notes": "int, list, bytes: ValueError 'shapes_source must be ...'; 3 cases.",
+   "live_cases": [
+    "shapes of another kind (int)",
+    "shapes of another kind (list)",
+    "shapes of another kind (bytes)"
+   ]
+  },
+  {
+   "id": "INT-S1.11",
+   "text": "Without rdflib or pySHACL, the check is refused with an error that names the extra.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/shacl.py:85-104",
+    "iris_vector_graph/_engine/shacl.py:227-228"
+   ],
+   "evidence": [
+    "run:rx-live-15"
+   ],
+   "notes": "rdflib hidden: ImportError 'rdflib is required for SHACL validation ... [rdf]'; pyshacl hidden: ImportError 'pyshacl is required ... [rdf]'; 2 cases.",
+   "live_cases": [
+    "validate_shacl without rdflib",
+    "validate_shacl without pySHACL"
+   ]
+  },
+  {
+   "id": "INT-V1.4",
+   "text": "PROV export never reads a named graph's temporal edges.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/prov.py:181-191"
+   ],
+   "evidence": [
+    "run:rx-live-15"
+   ],
+   "notes": "A named graph's temporal edge alone in the window: prov_export reports 0 activities and the file does not mention it; control: a default-graph edge in the same window is exported (1 activity); 1 case.",
+   "live_cases": [
+    "prov_export over a window holding only a named graph's temporal edge"
+   ]
+  },
+  {
+   "id": "INT-V1.10",
+   "text": "Without rdflib, PROV export is refused. Looking up one activity still works.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/_engine/prov.py:48-56",
+    "iris_vector_graph/_engine/prov.py:126",
+    "iris_vector_graph/_engine/prov.py:86-105"
+   ],
+   "evidence": [
+    "run:rx-live-15"
+   ],
+   "notes": "rdflib hidden: prov_export raises ImportError naming PROV-O and [rdf], no file; prov_as_dict of the default-graph edge still answers (observation); 1 case.",
+   "live_cases": [
+    "prov_export without rdflib"
+   ]
+  },
+  {
+   "id": "INT-X80.86",
+   "text": "Some namespaces lack the edge index that IRIS keeps. There, undoing inference is refused inside the caller's open transaction.",
+   "outcome": "holds-inspected",
+   "implementing_code": [
+    "iris_vector_graph/_engine/schema.py:3192-3202",
+    "iris_vector_graph/_write_txn.py:90-99"
+   ],
+   "evidence": [
+    "run:rx-live-15"
+   ],
+   "notes": "The refusal applies only where rdf_edges lacks the functional adjacency index. AUDITE, deployed by the pin's initialize_schema, has it (observation: Adjacency.IndexKind() = functional, engine._adjacency_indexed True), so the branch cannot be entered there; making a namespace without it would need a schema change outside the pin's deploy path. No dependency is missing; the code is read at the pin (refuse_in_caller_transaction raises CallerTransactionOpenError when $TLEVEL > 0, the same helper whose refusals hold live elsewhere, e.g. SNP-X2.2)."
+  },
+  {
+   "id": "INT-B90.90",
+   "text": "With no IRIS address in an option or the shell, each command is refused. The error names the settings to set.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/cli.py:28-44",
+    "iris_vector_graph/cli.py:296-317"
+   ],
+   "evidence": [
+    "run:rx-live-15"
+   ],
+   "notes": "`ivg fhir register|status|rebuild|sync --once|links|schedule` and `ivg embeddings inventory` with no IRIS_* variables: exit 1, stderr naming IRIS_HOST and --iris-host; 7 cases.",
+   "live_cases": [
+    "ivg fhir register with no IRIS address",
+    "ivg fhir status with no IRIS address",
+    "ivg fhir rebuild with no IRIS address",
+    "ivg fhir sync with no IRIS address",
+    "ivg fhir links with no IRIS address",
+    "ivg fhir schedule with no IRIS address",
+    "ivg embeddings inventory with no IRIS address"
+   ]
+  },
+  {
+   "id": "INT-B90.91",
+   "text": "The sync command needs the once flag. Without it, the command is refused before it connects, and it points to the schedule command.",
+   "outcome": "holds-live",
+   "implementing_code": [
+    "iris_vector_graph/cli.py:350-361"
+   ],
+   "evidence": [
+    "run:rx-live-15"
+   ],
+   "notes": "`ivg fhir sync G` without --once, IRIS_HOST at a local listener: exit 2 (click UsageError) pointing to `ivg fhir schedule`; the listener saw 0 connections; 1 case.",
+   "live_cases": [
+    "ivg fhir sync without --once (IRIS_HOST at a listener)"
+   ]
+  }
+ ]
+}

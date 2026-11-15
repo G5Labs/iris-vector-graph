@@ -1,0 +1,23 @@
+{
+  "check": "m08-txn-positive-commit",
+  "command": "CARGO_TARGET_DIR=$RUN_DIR/target/breadth-b cargo build --release && bash experiment/playbook-completion/tools/locks.sh heavy timeout 1800 $RUN_DIR/target/breadth-b/release/breadth-b",
+  "design": "positive",
+  "experiment_head": "f3fe3917466f7bae3e46f32f5b0644cfeaff87c8",
+  "full_log": "$RUN_DIR/breadth-b/mc/full-decisive-20261114T012246Z.log",
+  "full_log_sha256": "227f6720d9d86ed75cc8fa7fd71e2d9d31fd6f5ccd627843af4d51997edf4615",
+  "id": "b-mc-m08-txn-positive-commit",
+  "kind": "mc",
+  "lane": "breadth-b",
+  "log": "$RUN_DIR/breadth-b/mc/checks/m08-txn-positive-commit.log",
+  "log_bytes": 952,
+  "log_sha256": "fd19ca74454028623f3e2457b44dc7d918d4771eb454d92cb01f958d2fe8cbc6",
+  "module": "08",
+  "observes": "module 08 machine txn design positive: expectation violation of 'witness: a query's rows committed'; result met (found \"witness: a query's rows committed\"); 23 states, 23 transitions, depth 2, exhaustive within the model's bounds; covers: sharpness: a successful query commits its node and edge",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T01:23:51+00:00",
+  "result": "expected-violation",
+  "results": "experiment/playbook-completion/models/breadth-b/RESULTS.json",
+  "search": "exhaustive",
+  "states": "23"
+}

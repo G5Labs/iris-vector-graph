@@ -1,0 +1,23 @@
+{
+  "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features snapshot_merge_aggregates_as_built -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+  "error_locations": "src/ctl_snapshot.rs:40",
+  "errors": "1",
+  "experiment_head": "95abaf5fe096564138a2f8a9ed58665b85107ad0",
+  "id": "proofs-mech-snapshot-merge-aggregates-as-built",
+  "json_log": "$RUN_DIR/proofs-mech/run-20261114T151136Z/snapshot_merge_aggregates_as_built.json",
+  "json_sha256": "2f04913269b54c6e7c0a4968571929e936cec8e2a7c994772f6c978359467297",
+  "kind": "control",
+  "lane": "proofs-mech",
+  "log": "$RUN_DIR/proofs-mech/run-20261114T151136Z/snapshot_merge_aggregates_as_built.log",
+  "log_bytes": 892,
+  "log_sha256": "0960befb959be3e2c4d17b4950b3e1a2c139cd29c565cafe7614d981e1409d12",
+  "observes": "snapshot_merge_aggregates_as_built (M-06 MergeAggregatesAsBuilt, explorer check snapshot-merge-aggregates-as-built, as-built; findings F-1805): 1 errors, exactly at ['src/ctl_snapshot.rs:40'] (laws M06-L3, the explorer's violated laws); failing ['i06_snapshot::MergeAggregatesAsBuilt::discharge_l3']; every other function verifies as in the baseline=True; refutations i06_snapshot::refute_merge_aggregates_l3 and counterexamples cx06_snapshot::cx_merge_aggregates_l3 verified=True",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T15:47:41+00:00",
+  "result": "expected-violation",
+  "rlimit_total": "102945065",
+  "sources_sha256": "3e168bab31757fd605c7d744a6a9485a4bda23def41d5b86a0b4d5524fd7ab71",
+  "verified": "1151",
+  "verus_total_ms": "17249"
+}

@@ -1,0 +1,479 @@
+{
+  "runs": {
+    "erasure-as-built": {
+      "command": "cargo run --release -- --only erasure-as-built  (in experiment/playbook-uplift/model)",
+      "counterexample": "counterexample for 'statements of G equal the edges of G whenever no transaction is open' (Invariant), 5 steps:\n   1. E1         rows={0} statements={0} P=Idle E=RowsDeleted head=None\n   2. PCreate    rows={0} statements={0, 1} P=Created E=RowsDeleted head=Some('P')\n   3. PCommit    rows={0, 1} statements={0, 1} P=Idle E=RowsDeleted head=None\n   4. E2         rows={0, 1} statements={} P=Idle E=StmtsKilled head=None\n   5. E3         rows={1} statements={} P=Idle E=Done head=None\n",
+      "kind": "mc",
+      "log": "$RUN_DIR/final/mc.log",
+      "log_sha256": "cc6fe775cb044b5db97551f7900258473b9dc03b1fea659eb65ddf38a5a23955",
+      "observes": "erasure machine, as-built design: expected violation of 'statements of G equal the edges of G whenever no transaction is open'; found violation of 'statements of G equal the edges of G whenever no transaction is open'; 35 states, 46 transitions, depth 4, exhaustive within the machine's declared bounds.",
+      "result": "pass",
+      "seconds": 0.0,
+      "states": 35,
+      "transitions": 46
+    },
+    "erasure-reviewed": {
+      "command": "cargo run --release -- --only erasure-reviewed  (in experiment/playbook-uplift/model)",
+      "counterexample": "",
+      "kind": "mc",
+      "log": "$RUN_DIR/final/mc.log",
+      "log_sha256": "cc6fe775cb044b5db97551f7900258473b9dc03b1fea659eb65ddf38a5a23955",
+      "observes": "erasure machine, reviewed design: expected exhaustive pass; no violation; 23 states, 30 transitions, depth 7, exhaustive within the machine's declared bounds.",
+      "result": "pass",
+      "seconds": 0.0,
+      "states": 23,
+      "transitions": 30
+    },
+    "native-commit_in_unmarked_window": {
+      "checks": 15,
+      "command": "python experiment/playbook-uplift/native/scenarios.py --only commit_in_unmarked_window",
+      "failed": [],
+      "kind": "live",
+      "log": "$RUN_DIR/final/native/traces/commit_in_unmarked_window.json",
+      "log_sha256": "675d44538a86080f32034ca07c39cf56c9ffb71ef3bdaed97cdc668a7ad3911f",
+      "observes": "F-1302: a commit that lands after the liveness check and before the first tombstone is redacted while live.",
+      "result": "pass",
+      "run_log": "$RUN_DIR/final/native.log"
+    },
+    "native-default_graph_without_prefix": {
+      "checks": 7,
+      "command": "python experiment/playbook-uplift/native/scenarios.py --only default_graph_without_prefix",
+      "failed": [],
+      "kind": "live",
+      "log": "$RUN_DIR/final/native/traces/default_graph_without_prefix.json",
+      "log_sha256": "ea937da20c36a53953e330a56b246f3741217763524306b7d2a91f883dd74448",
+      "observes": "F-1304: redacting the default graph with no prefix tombstones genesis records of nodes live in a named graph.",
+      "result": "pass",
+      "run_log": "$RUN_DIR/final/native.log"
+    },
+    "native-disabled_mid_run": {
+      "checks": 22,
+      "command": "python experiment/playbook-uplift/native/scenarios.py --only disabled_mid_run",
+      "failed": [],
+      "kind": "live",
+      "log": "$RUN_DIR/final/native/traces/disabled_mid_run.json",
+      "log_sha256": "5efb8a77e2db0c5bf638a7db283fe4e718e6650031925466e21bd5d8fa23fe0a",
+      "observes": "The ledger disabled between batches: the run refuses, keeps its marker, and resumes once re-enabled.",
+      "result": "pass",
+      "run_log": "$RUN_DIR/final/native.log"
+    },
+    "native-graph_per_tenant_unprefixed": {
+      "checks": 7,
+      "command": "python experiment/playbook-uplift/native/scenarios.py --only graph_per_tenant_unprefixed",
+      "failed": [],
+      "kind": "live",
+      "log": "$RUN_DIR/final/native/traces/graph_per_tenant_unprefixed.json",
+      "log_sha256": "5c6a14dc515deaff3bf5a241fca945fc8b676c0ddc6d045b73e4aa1ae6239908",
+      "observes": "F-1305: one graph per tenant with unprefixed ids: erase+redact(graph) cannot remove A's node ids or restore verify.",
+      "result": "pass",
+      "run_log": "$RUN_DIR/final/native.log"
+    },
+    "native-killed_at_random": {
+      "checks": 27,
+      "command": "python experiment/playbook-uplift/native/scenarios.py --only killed_at_random",
+      "failed": [],
+      "kind": "live",
+      "log": "$RUN_DIR/final/native/traces/killed_at_random.json",
+      "log_sha256": "de535d1bfddea08b259182af0d4b40ba7308d960b9900444ed88bda6c313298a",
+      "observes": "Twelve interruptions at spread-out moments of one long run; every stopped state must be a batch boundary.",
+      "result": "pass",
+      "run_log": "$RUN_DIR/final/native.log"
+    },
+    "native-killed_mid_batch": {
+      "checks": 24,
+      "command": "python experiment/playbook-uplift/native/scenarios.py --only killed_mid_batch",
+      "failed": [],
+      "kind": "live",
+      "log": "$RUN_DIR/final/native/traces/killed_mid_batch.json",
+      "log_sha256": "85c8b3a068fc4b48b8ebfa197df2097f96b9148007dc37109762649e0bd99420",
+      "observes": "Interruption inside a batch: stop the redacting process while its transaction is open, then resume.",
+      "result": "pass",
+      "run_log": "$RUN_DIR/final/native.log"
+    },
+    "native-mixed_tenant_flow": {
+      "checks": 31,
+      "command": "python experiment/playbook-uplift/native/scenarios.py --only mixed_tenant_flow",
+      "failed": [],
+      "kind": "live",
+      "log": "$RUN_DIR/final/native/traces/mixed_tenant_flow.json",
+      "log_sha256": "6b2ab7d80a6cbaf47d7ed9aa192dc1f0d652e0f5dedaaa88689efd85938bbc61",
+      "observes": "Two tenants and a spanning revision: erase A, redact A by graph and by prefix, verify, replay.",
+      "result": "pass",
+      "run_log": "$RUN_DIR/final/native.log"
+    },
+    "native-mutants": {
+      "command": "python experiment/playbook-uplift/native/mutants.py",
+      "kind": "live",
+      "log": "$RUN_DIR/final/mutants/mutants.json",
+      "log_sha256": "dadcb7e9c98b8341befc576bdb35622a43e8253e6d81d728b3a0837197da9d89",
+      "observes": "Mutation testing of the ObjectScript on IRIS: no-commit-block (control_no_commit_block) killed by ['paused_and_resumed']; no-final-check (control_no_final_check) killed by ['commit_in_unmarked_window']; keep-retry-key (control_keep_retry_key) killed by ['mixed_tenant_flow', 'retries']; pin classes restored and all 14 scenarios passed: True.",
+      "result": "pass",
+      "run_log": "$RUN_DIR/final/mutants.log"
+    },
+    "native-nested_commit_holds_head": {
+      "checks": 3,
+      "command": "python experiment/playbook-uplift/native/scenarios.py --only nested_commit_holds_head",
+      "failed": [],
+      "kind": "live",
+      "log": "$RUN_DIR/final/native/traces/nested_commit_holds_head.json",
+      "log_sha256": "9f7d7a36e7da72fefa5c10fc470c504461a3f201a4df6a9eeba860455a891bcb",
+      "observes": "4.7.0: a ledger commit inside the caller's transaction keeps the head lock until the caller ends it.",
+      "result": "pass",
+      "run_log": "$RUN_DIR/final/native.log"
+    },
+    "native-paused_and_resumed": {
+      "checks": 29,
+      "command": "python experiment/playbook-uplift/native/scenarios.py --only paused_and_resumed",
+      "failed": [],
+      "kind": "live",
+      "log": "$RUN_DIR/final/native/traces/paused_and_resumed.json",
+      "log_sha256": "5fb0ae17ddb7d3bfda9d2e3a75acc851cbd73834ac03c041b5780258dee44d69",
+      "observes": "Interruption between batches (max_batches), commits in the window, a competing target, resumption.",
+      "result": "pass",
+      "run_log": "$RUN_DIR/final/native.log"
+    },
+    "native-premises": {
+      "checks": 6,
+      "command": "python experiment/playbook-uplift/native/scenarios.py --only premises",
+      "failed": [],
+      "kind": "live",
+      "log": "$RUN_DIR/final/native/traces/premises.json",
+      "log_sha256": "af7c6a209a08ac610a7754640be6c30cbb612eafdc354cc81a56a55fa1639e85",
+      "observes": "P-0001..P-0004 on this IRIS build, with ObjectScript semantics where the product depends on them.",
+      "result": "pass",
+      "run_log": "$RUN_DIR/final/native.log"
+    },
+    "native-reader_races_redaction": {
+      "checks": 9,
+      "command": "python experiment/playbook-uplift/native/scenarios.py --only reader_races_redaction",
+      "failed": [],
+      "kind": "live",
+      "log": "$RUN_DIR/final/native/traces/reader_races_redaction.json",
+      "log_sha256": "918fd89683215a90ad9ab04916a1147fbfdad9ab9aa63b4a1c401f64c71e6cdf",
+      "observes": "F-1402: a record reader checks for a redaction before it reads; a batch that commits in between is read half done.\n\n    The interleaving is forced in this test process only: the reader's record fetch (replay.iter_records_sql) is wrapped\n    so that, after the reader's marker check and before its first read, another IRIS process commits one redaction batch.\n    No product code changes.",
+      "result": "pass",
+      "run_log": "$RUN_DIR/final/native.log"
+    },
+    "native-retries": {
+      "checks": 10,
+      "command": "python experiment/playbook-uplift/native/scenarios.py --only retries",
+      "failed": [],
+      "kind": "live",
+      "log": "$RUN_DIR/final/native/traces/retries.json",
+      "log_sha256": "ab2fad5a41914dd901779902d9fd7063ece6e35bde975b9ad4dc140bfc33aa83",
+      "observes": "Retry keys across tenants after a redaction.",
+      "result": "pass",
+      "run_log": "$RUN_DIR/final/native.log"
+    },
+    "native-retry_between_erase_and_redact": {
+      "checks": 14,
+      "command": "python experiment/playbook-uplift/native/scenarios.py --only retry_between_erase_and_redact",
+      "failed": [],
+      "kind": "live",
+      "log": "$RUN_DIR/final/native/traces/retry_between_erase_and_redact.json",
+      "log_sha256": "18f6a6b30708eeabb817f78406fec9b82e781e2c3e32d6603db05087dc382c4c",
+      "observes": "F-1306: a replayed retry re-applies post-commit properties, reviving an erased node's content and blocking redaction.",
+      "result": "pass",
+      "run_log": "$RUN_DIR/final/native.log"
+    },
+    "native-two_targets_at_once": {
+      "checks": 21,
+      "command": "python experiment/playbook-uplift/native/scenarios.py --only two_targets_at_once",
+      "failed": [],
+      "kind": "live",
+      "log": "$RUN_DIR/final/native/traces/two_targets_at_once.json",
+      "log_sha256": "284164ec977a2bd49757893eec38cbf92b3efec944129aa47383ffbb59fb03e5",
+      "observes": "F-1303: two redactions of different targets that start together both run; the audit mixes them.",
+      "result": "pass",
+      "run_log": "$RUN_DIR/final/native.log"
+    },
+    "readers-as-built": {
+      "command": "cargo run --release -- --only readers-as-built  (in experiment/playbook-uplift/model)",
+      "counterexample": "counterexample for 'an accepted view never shows a redaction half done' (Invariant), 4 steps:\n   1. R1     marker=false tombstones of A=0/2 reader=Checked { epoch: 0 }\n   2. Start  marker=true tombstones of A=0/2 reader=Checked { epoch: 0 }\n   3. Scan   marker=true tombstones of A=1/2 reader=Checked { epoch: 0 }\n   4. R2     marker=true tombstones of A=1/2 reader=Accepted { tombs: 1 }\n",
+      "kind": "mc",
+      "log": "$RUN_DIR/final/mc.log",
+      "log_sha256": "cc6fe775cb044b5db97551f7900258473b9dc03b1fea659eb65ddf38a5a23955",
+      "observes": "readers machine, as-built design: expected violation of 'an accepted view never shows a redaction half done'; found violation of 'an accepted view never shows a redaction half done'; 15 states, 17 transitions, depth 3, exhaustive within the machine's declared bounds.",
+      "result": "pass",
+      "seconds": 0.0,
+      "states": 15,
+      "transitions": 17
+    },
+    "readers-reviewed": {
+      "command": "cargo run --release -- --only readers-reviewed  (in experiment/playbook-uplift/model)",
+      "counterexample": "",
+      "kind": "mc",
+      "log": "$RUN_DIR/final/mc.log",
+      "log_sha256": "cc6fe775cb044b5db97551f7900258473b9dc03b1fea659eb65ddf38a5a23955",
+      "observes": "readers machine, reviewed design: expected exhaustive pass; no violation; 54 states, 80 transitions, depth 9, exhaustive within the machine's declared bounds.",
+      "result": "pass",
+      "seconds": 0.0,
+      "states": 54,
+      "transitions": 80
+    },
+    "redaction-as-built-audit": {
+      "command": "cargo run --release -- --only redaction-as-built-audit  (in experiment/playbook-uplift/model)",
+      "counterexample": "counterexample for 'each audit counts exactly its own target's tombstones' (ActionProperty), 7 steps:\n   1. p0 Start A       live=[] marker=None recs=\n   2. Commit C3        live=[\"a1\"] marker=None recs=r0[a1]\n   3. p1 Start B       live=[\"a1\"] marker=None recs=r0[a1]\n   4. p0 Scan          live=[\"a1\"] marker=Some(\"A\") recs=r0[~a1]*\n   5. p1 Scan          live=[\"a1\"] marker=Some(\"A\") recs=r0[~a1]*\n   6. p1 Scan          live=[\"a1\"] marker=Some(\"A\") recs=r0[~a1]*\n   7. p1 Final         live=[\"a1\"] marker=None recs=r0[~a1]* r1[audit(B:1)]*\n",
+      "kind": "mc",
+      "log": "$RUN_DIR/final/mc.log",
+      "log_sha256": "cc6fe775cb044b5db97551f7900258473b9dc03b1fea659eb65ddf38a5a23955",
+      "observes": "redaction machine, as-built design: expected violation of 'each audit counts exactly its own target's tombstones'; found violation of 'each audit counts exactly its own target's tombstones'; 29981 states, 65042 transitions, depth 6, exhaustive within the machine's declared bounds.",
+      "result": "pass",
+      "seconds": 0.08,
+      "states": 29981,
+      "transitions": 65042
+    },
+    "redaction-as-built-live": {
+      "command": "cargo run --release -- --only redaction-as-built-live  (in experiment/playbook-uplift/model)",
+      "counterexample": "counterexample for 'no tombstone of live content' (ActionProperty), 3 steps:\n   1. p0 Start A       live=[] marker=None recs=\n   2. Commit C0        live=[\"a1\", \"a2\"] marker=None recs=r0[a1,a2]\n   3. p0 Scan          live=[\"a1\", \"a2\"] marker=Some(\"A\") recs=r0[~a1,a2]*\n",
+      "kind": "mc",
+      "log": "$RUN_DIR/final/mc.log",
+      "log_sha256": "cc6fe775cb044b5db97551f7900258473b9dc03b1fea659eb65ddf38a5a23955",
+      "observes": "redaction machine, as-built design: expected violation of 'no tombstone of live content'; found violation of 'no tombstone of live content'; 211 states, 279 transitions, depth 2, exhaustive within the machine's declared bounds.",
+      "result": "pass",
+      "seconds": 0.0,
+      "states": 211,
+      "transitions": 279
+    },
+    "redaction-reviewed": {
+      "command": "cargo run --release -- --only redaction-reviewed  (in experiment/playbook-uplift/model)",
+      "counterexample": "",
+      "kind": "mc",
+      "log": "$RUN_DIR/final/mc.log",
+      "log_sha256": "cc6fe775cb044b5db97551f7900258473b9dc03b1fea659eb65ddf38a5a23955",
+      "observes": "redaction machine, reviewed design: expected exhaustive pass; no violation; 11351753 states, 34915176 transitions, depth 51, exhaustive within the machine's declared bounds.",
+      "result": "pass",
+      "seconds": 78.37,
+      "states": 11351753,
+      "transitions": 34915176
+    },
+    "refinement-as-built": {
+      "command": "cargo run --release -- --only refinement-as-built  (in experiment/playbook-uplift/model)",
+      "counterexample": "counterexample for 'no tombstone of live content' (ActionProperty), 3 steps:\n   1. p0 Start A       live=[] marker=None recs=\n   2. Commit C0        live=[\"a1\", \"a2\"] marker=None recs=r0[a1,a2]\n   3. p0 Scan          live=[\"a1\", \"a2\"] marker=Some(\"A\") recs=r0[~a1,a2]*\n",
+      "kind": "mc",
+      "log": "$RUN_DIR/final/mc.log",
+      "log_sha256": "cc6fe775cb044b5db97551f7900258473b9dc03b1fea659eb65ddf38a5a23955",
+      "observes": "refinement machine, as-built design: expected a violation; found violation of 'no tombstone of live content'; 211 states, 279 transitions, depth 2, exhaustive within the machine's declared bounds.",
+      "result": "pass",
+      "seconds": 1.8,
+      "states": 211,
+      "transitions": 279
+    },
+    "refinement-reviewed": {
+      "command": "cargo run --release -- --only refinement-reviewed  (in experiment/playbook-uplift/model)",
+      "counterexample": "",
+      "kind": "mc",
+      "log": "$RUN_DIR/final/mc.log",
+      "log_sha256": "cc6fe775cb044b5db97551f7900258473b9dc03b1fea659eb65ddf38a5a23955",
+      "observes": "refinement machine, reviewed design: expected exhaustive pass; no violation; 11351753 states, 34915176 transitions, depth 51, exhaustive within the machine's declared bounds.",
+      "result": "pass",
+      "seconds": 115.81,
+      "states": 11351753,
+      "transitions": 34915176
+    },
+    "retry-as-built": {
+      "command": "cargo run --release -- --only retry-as-built  (in experiment/playbook-uplift/model)",
+      "counterexample": "counterexample for 'after erasure only a recorded commit makes the tenant's content live again' (Invariant), 3 steps:\n   1. Commit  node=true post-commit property=true key=Bound erased=false redacted=false\n   2. Erase   node=false post-commit property=false key=Bound erased=true redacted=false\n   3. Retry   node=false post-commit property=true key=Bound erased=true redacted=false\n",
+      "kind": "mc",
+      "log": "$RUN_DIR/final/mc.log",
+      "log_sha256": "cc6fe775cb044b5db97551f7900258473b9dc03b1fea659eb65ddf38a5a23955",
+      "observes": "retry machine, as-built design: expected violation of 'after erasure only a recorded commit makes the tenant's content live again'; found violation of 'after erasure only a recorded commit makes the tenant's content live again'; 7 states, 6 transitions, depth 2, exhaustive within the machine's declared bounds.",
+      "result": "pass",
+      "seconds": 0.0,
+      "states": 7,
+      "transitions": 6
+    },
+    "retry-reviewed": {
+      "command": "cargo run --release -- --only retry-reviewed  (in experiment/playbook-uplift/model)",
+      "counterexample": "",
+      "kind": "mc",
+      "log": "$RUN_DIR/final/mc.log",
+      "log_sha256": "cc6fe775cb044b5db97551f7900258473b9dc03b1fea659eb65ddf38a5a23955",
+      "observes": "retry machine, reviewed design: expected exhaustive pass; no violation; 10 states, 11 transitions, depth 5, exhaustive within the machine's declared bounds.",
+      "result": "pass",
+      "seconds": 0.0,
+      "states": 10,
+      "transitions": 11
+    },
+    "upstream-community-redaction": {
+      "command": "python \"$RUN_DIR/run-community-redaction.py\"",
+      "kind": "live",
+      "log": "$RUN_DIR/final/upstream-community-redaction.log",
+      "log_sha256": "d4b29e18b17eb1615fde0a1e4b59f76acab2e0f17eb26af10dbd421d99ec5661",
+      "observes": "Upstream tests/integration/test_256_ledger_redaction_e2e.py on IRIS Community 2026.1 with the public initialize_schema deploy: 25 passed in 52.21s.",
+      "result": "pass"
+    }
+  },
+  "verus": {
+    "actors": "G5Labs/actors c03f9fa9be961610f2b274ffbb6a2c88d7d4d877 (git dependency)",
+    "command": "cargo verus verify -- --no-cheating",
+    "controls": {
+      "control_keep_retry_key": {
+        "error_locations": [
+          "src/l2.rs:476",
+          "src/l2.rs:731"
+        ],
+        "errors": 2,
+        "features": "control_keep_retry_key",
+        "functions_in_errors": [],
+        "killed": true,
+        "log": "$RUN_DIR/verus/proofs-control_keep_retry_key.log",
+        "rc": 101,
+        "seconds": 2.3,
+        "tag": "control_keep_retry_key",
+        "verified": 51,
+        "what": "the retry key of a redacted revision stays bound"
+      },
+      "control_meta_every": {
+        "error_locations": [
+          "src/l2.rs:476",
+          "src/l2.rs:731"
+        ],
+        "errors": 2,
+        "features": "control_meta_every",
+        "functions_in_errors": [],
+        "killed": true,
+        "log": "$RUN_DIR/verus/proofs-control_meta_every.log",
+        "rc": 101,
+        "seconds": 2.4,
+        "tag": "control_meta_every",
+        "verified": 51,
+        "what": "metadata cleared only when every record of the revision is redacted (spec 256 FR-004 text)"
+      },
+      "control_no_commit_block": {
+        "error_locations": [
+          "src/l2.rs:360"
+        ],
+        "errors": 1,
+        "features": "control_no_commit_block",
+        "functions_in_errors": [],
+        "killed": true,
+        "log": "$RUN_DIR/verus/proofs-control_no_commit_block.log",
+        "rc": 101,
+        "seconds": 2.2,
+        "tag": "control_no_commit_block",
+        "verified": 52,
+        "what": "a commit into the marker's target is not refused"
+      },
+      "control_no_final_check": {
+        "error_locations": [
+          "src/l2.rs:509",
+          "src/progress.rs:105"
+        ],
+        "errors": 2,
+        "features": "control_no_final_check",
+        "functions_in_errors": [
+          "lemma_final_refines",
+          "theorem_run_can_step"
+        ],
+        "killed": true,
+        "log": "$RUN_DIR/verus/proofs-control_no_final_check.log",
+        "rc": 101,
+        "seconds": 2.2,
+        "tag": "control_no_final_check",
+        "verified": 51,
+        "what": "the final step does not re-check liveness"
+      },
+      "control_other_target": {
+        "error_locations": [
+          "src/l2.rs:470",
+          "src/l2.rs:706"
+        ],
+        "errors": 2,
+        "features": "control_other_target",
+        "functions_in_errors": [],
+        "killed": true,
+        "log": "$RUN_DIR/verus/proofs-control_other_target.log",
+        "rc": 101,
+        "seconds": 2.4,
+        "tag": "control_other_target",
+        "verified": 51,
+        "what": "a batch tombstones its target while another target's marker is set (F-1303)"
+      },
+      "control_unmarked_start": {
+        "error_locations": [
+          "src/l2.rs:410",
+          "src/l2.rs:417",
+          "src/l2.rs:470",
+          "src/l2.rs:706"
+        ],
+        "errors": 3,
+        "features": "control_unmarked_start",
+        "functions_in_errors": [
+          "lemma_start_refines"
+        ],
+        "killed": true,
+        "log": "$RUN_DIR/verus/proofs-control_unmarked_start.log",
+        "rc": 101,
+        "seconds": 2.5,
+        "tag": "control_unmarked_start",
+        "verified": 50,
+        "what": "the pin's Redact: liveness checked without the lock, marker set at the first tombstone (F-1302)"
+      }
+    },
+    "crate": "experiment/playbook-uplift/proofs (ivg-redaction-proofs)",
+    "errors": 0,
+    "gate": "pass",
+    "log": "$RUN_DIR/verus/proofs-baseline.log",
+    "proof_fns": [
+      "decreases",
+      "init_refines",
+      "init_safe",
+      "lemma_abs_hist_index",
+      "lemma_append_keeps",
+      "lemma_apply_outside",
+      "lemma_begin_safe",
+      "lemma_commit_inv",
+      "lemma_commit_refines",
+      "lemma_commit_safe",
+      "lemma_cursor_end",
+      "lemma_final_inv",
+      "lemma_final_refines",
+      "lemma_finish_safe",
+      "lemma_lives_no_member",
+      "lemma_no_member_abs",
+      "lemma_outside_idem",
+      "lemma_push_rev",
+      "lemma_recs_of_push",
+      "lemma_recs_of_redact",
+      "lemma_redact_rev_index",
+      "lemma_replay_push",
+      "lemma_replay_recs_tomb",
+      "lemma_replay_tomb",
+      "lemma_rows_from_ge",
+      "lemma_rows_from_same",
+      "lemma_scan_inv",
+      "lemma_scan_stutters",
+      "lemma_start_inv",
+      "lemma_start_refines",
+      "lemma_tomb_all_drop_last",
+      "lemma_tomb_all_noop",
+      "lemma_tomb_hist_drop_last",
+      "step_refines",
+      "step_safe",
+      "theorem_audit_changes_nothing",
+      "theorem_begin_spares_live",
+      "theorem_commit_between",
+      "theorem_commit_keeps_except",
+      "theorem_erase_leaves_except",
+      "theorem_erase_then_redact",
+      "theorem_erasure_alone_diverges",
+      "theorem_inv2_inductive",
+      "theorem_inv2_init",
+      "theorem_isolation",
+      "theorem_l2_satisfies_l1",
+      "theorem_redaction_restores",
+      "theorem_retry_refused",
+      "theorem_run_bounded",
+      "theorem_run_can_step"
+    ],
+    "seconds": 2.6,
+    "sources_sha256": "dc8eeec385f775ec2f11e2b963c4976ff74cdfbf38ce569ef7c7599bfc4b635a",
+    "trust_violations": [],
+    "trusted_uninterp": {},
+    "verified": 53,
+    "verus": [
+      "Verus"
+    ]
+  }
+}

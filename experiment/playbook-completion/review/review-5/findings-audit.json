@@ -1,0 +1,281 @@
+[
+ {
+  "id": "F-C1250",
+  "title": "%NOINDEX edge row survives prefix erase and EraseAll+PurgeAll",
+  "intended_ok": true,
+  "observed_ok": true,
+  "disposition_ok": true,
+  "severity_ok": true,
+  "notes": "ws-live-noindex-erase log matches; S1 defensible though the loader docstring makes rebuild_all_indices a caller duty (record notes it). Run observes' opening clause (full scan 0 before the load) is not in the log (no pre-state key)."
+ },
+ {
+  "id": "F-C0350",
+  "title": "load_edges %NOINDEX %NOCHECK allows parallel rows in mode-off graph",
+  "intended_ok": true,
+  "observed_ok": true,
+  "disposition_ok": true,
+  "severity_ok": true,
+  "notes": "ba-noindex-parallel log matches. Part (b) (two load_edges with skip_existing=False -> duplicate edge keys) duplicates F-C0349 (zz-structural, st-live-keys); F-C0350 does not cite F-C0349."
+ },
+ {
+  "id": "F-C0351",
+  "title": "caller qualifier {temporal:true} makes verify() blind",
+  "intended_ok": true,
+  "observed_ok": true,
+  "disposition_ok": true,
+  "severity_ok": true,
+  "notes": "ADR-0009:38-42, replay.py:617-620 match; ba-marker-qualifier log matches."
+ },
+ {
+  "id": "F-C0415",
+  "title": "refused erase/rebuild leaves no-lock mark, gen, __version",
+  "intended_ok": true,
+  "observed_ok": true,
+  "disposition_ok": true,
+  "severity_ok": true,
+  "notes": "rx-live-04 cases refused-but-changed x3, 15.071/20.068/5.002 s; 'Nothing is written' is the audit ontology's ADJ-X4.7 wording (source ADR-0012), product doc nodes_edges.py:1500-1507 'leaves the graph untouched' holds for content."
+ },
+ {
+  "id": "F-C0615",
+  "title": "migrate_to_optimized fails on 2026.1 (CREATE INDEX IF NOT EXISTS)",
+  "intended_ok": true,
+  "observed_ok": true,
+  "disposition_ok": true,
+  "severity_ok": true,
+  "notes": "rx-live-06 case shows SQLCODE -1 '< ON expected, NOT found ^ CREATE INDEX IF NOT>'; S4 arguably S3 (README 'Any IRIS 2025.1 or later works' vs a public tool that never works)."
+ },
+ {
+  "id": "F-C0690",
+  "title": "VectorOptimizer hard-codes Graph_KG",
+  "intended_ok": true,
+  "observed_ok": true,
+  "disposition_ok": true,
+  "severity_ok": true,
+  "notes": "vector_utils.py:22-26, 46-50, __init__.py:94/123, ADR-0016:10-12 match; STYLE-G2 D-06-14."
+ },
+ {
+  "id": "F-C0715",
+  "title": "bm25_search rewrites ids containing ':.5' etc.",
+  "intended_ok": true,
+  "observed_ok": true,
+  "disposition_ok": true,
+  "severity_ok": true,
+  "notes": "rx-dec-live-07 3/5 mismatches; vector.py:1817-1819 regex; BM25Index.cls:361-365 leading 0."
+ },
+ {
+  "id": "F-C0716",
+  "title": "index registry mis-decodes BM25Index.List names with comma/space",
+  "intended_ok": true,
+  "observed_ok": true,
+  "disposition_ok": true,
+  "severity_ok": true,
+  "notes": "rx-dec-live-07 registry/phantoms match; vector.py:106-118, BM25Index.cls:626-633."
+ },
+ {
+  "id": "F-C0717",
+  "title": "Build/Info graph name not JSON-escaped for control chars",
+  "intended_ok": true,
+  "observed_ok": true,
+  "disposition_ok": true,
+  "severity_ok": true,
+  "notes": "rx-dec-live-07 tab case matches; BM25Index.cls:99, 172-174, 608-614."
+ },
+ {
+  "id": "F-C1018",
+  "title": "membership decoder refuses node named largest/components/communities",
+  "intended_ok": true,
+  "observed_ok": true,
+  "disposition_ok": true,
+  "severity_ok": true,
+  "notes": "iris_sql_store.py:636, 662-676, algorithms.py:816-828 match; 'spec 230 FR-017' is not a document at the pin (no specs/230*); the citation exists only in code comments (iris_sql_store.py:612)."
+ },
+ {
+  "id": "F-C1715",
+  "title": "refused engine: no close(), store close refused",
+  "intended_ok": true,
+  "observed_ok": true,
+  "disposition_ok": true,
+  "severity_ok": true,
+  "notes": "rx-live-17 has_close false, store close IVGSchemaError; schema_name.py:376-377."
+ },
+ {
+  "id": "F-C1716",
+  "title": "kill_query -359 on 2026.1",
+  "intended_ok": true,
+  "observed_ok": true,
+  "disposition_ok": true,
+  "severity_ok": true,
+  "notes": "rx-live-17 cases 26/28: -359, process alive; admin.py:957-969, API_REFERENCE:2686-2692."
+ },
+ {
+  "id": "F-C1795",
+  "title": "dedicated native connect refused -> silent fallback, retried per call",
+  "intended_ok": true,
+  "observed_ok": "partial",
+  "disposition_ok": true,
+  "severity_ok": true,
+  "notes": "live-licence-world r2.log: X commits 2,062.6/2,017.0 ms vs C 47.3/1.46 ms. Finding says '2,064 ms and 2,017 ms against 209 ms and 1.6 ms': 209/1.640/2,063.7 are from r1.log (the failed harness attempt), not the registered r2.log; record observes '~2 s per commit vs 0.2 s' has the same r1 control figure. Id F-C1795 uses nn 95 of the product-gates range (CONVENTIONS.md:96-97; orchestrator has no range; no collision)."
+ },
+ {
+  "id": "F-C0340",
+  "title": "networkx-loader --clear-existing deletes every graph's edges/labels/props",
+  "intended_ok": true,
+  "observed_ok": true,
+  "disposition_ok": true,
+  "severity_ok": "arguable",
+  "notes": "loader-clear.json matches (sgB nodes kept, default graph edges/labels/props gone). 'no revision records the deletion' and 'one the ledger committed' are not shown in the log (verify_before already diverges). S3 arguably low for cross-graph content deletion that bypasses strict mode (S2)."
+ },
+ {
+  "id": "F-C0341",
+  "title": "get_json_field_values SQL injection via field",
+  "intended_ok": true,
+  "observed_ok": true,
+  "disposition_ok": true,
+  "severity_ok": true,
+  "notes": "json-field.json matches; nodes_edges.py:916-930."
+ },
+ {
+  "id": "F-C0841",
+  "title": "range() run-time step 0 answers []",
+  "intended_ok": true,
+  "observed_ok": true,
+  "disposition_ok": true,
+  "severity_ok": true,
+  "notes": "range-step.json matches; CypherFn.cls:255-257; TCK List11.feature:117-130 (vendor submodule)."
+ },
+ {
+  "id": "F-C0940",
+  "title": "CypherEngine.Scalar returns default on error",
+  "intended_ok": true,
+  "observed_ok": true,
+  "disposition_ok": true,
+  "severity_ok": true,
+  "notes": "confirmed-source correct; st-live-susp-scalar is registered blocked and only supports the input shape."
+ },
+ {
+  "id": "F-C1041",
+  "title": "^NKG centrality class methods answer merged graphs",
+  "intended_ok": true,
+  "observed_ok": true,
+  "disposition_ok": true,
+  "severity_ok": true,
+  "notes": "nkg-merged.json matches; S3 consistent with F-1013 (direct-surface S3), not with F-1002 (S1) - pre-existing calibration."
+ },
+ {
+  "id": "F-C1046",
+  "title": "^NKG traversal class methods answer merged graphs",
+  "intended_ok": true,
+  "observed_ok": true,
+  "disposition_ok": true,
+  "severity_ok": true,
+  "notes": "st-live-reads3-10 per_key violations for KHop*, ShortestPathNKG, CountDistinctKHop; selftest pass."
+ },
+ {
+  "id": "F-C1640",
+  "title": "MCP LoadGraph reports 0/0",
+  "intended_ok": true,
+  "observed_ok": true,
+  "disposition_ok": true,
+  "severity_ok": true,
+  "notes": "mcp-load.json; ivg_mcp_server.py:124-125."
+ },
+ {
+  "id": "F-C1641",
+  "title": "GraphQL Node.properties always []",
+  "intended_ok": true,
+  "observed_ok": true,
+  "disposition_ok": true,
+  "severity_ok": true,
+  "notes": "gql/schema.py:35-37 returns []; gql-props log."
+ },
+ {
+  "id": "F-C1741",
+  "title": "enterprise gateway recipe exposes management, _SYSTEM/SYS",
+  "intended_ok": true,
+  "observed_ok": true,
+  "disposition_ok": true,
+  "severity_ok": true,
+  "notes": "webgateway-init.sh System_Manager=*.*.*.*, _SYSTEM ]]]U1lT; merge.cpf:4; compose ports."
+ },
+ {
+  "id": "F-C1240",
+  "title": "(changed) EraseAll kills ^ArnoKG not in Inventory -> refuted",
+  "intended_ok": true,
+  "observed_ok": true,
+  "disposition_ok": true,
+  "severity_ok": true,
+  "notes": "GraphStores.cls:131 lists ^ArnoKG; refutation correct."
+ },
+ {
+  "id": "F-C1720",
+  "title": "(new, duplicate of F-C1743) query_nodes FETCH FIRST SIGSEGV",
+  "intended_ok": true,
+  "observed_ok": true,
+  "disposition_ok": true,
+  "severity_ok": true,
+  "notes": "duplicate disposition, excluded from counts. F-C1743 notes still open with 'Tested with driver 5.3.2 only; 5.4.0 not tried', contradicted by its own merged note (5.4.0 tried via env2-*-d540)."
+ },
+ {
+  "id": "F-0601",
+  "title": "(changed) reproduced-test -> reproduced-live",
+  "intended_ok": true,
+  "observed_ok": true,
+  "disposition_ok": true,
+  "severity_ok": true,
+  "notes": "rx-live-priv-vec case (c): registry read -99, store_embedding returned True and row written; store_embedding always calls enforce_embedding_identity (embeddings.py:981) and get_embedding_identity returns None on exception (schema.py:1033-1061). Justified."
+ },
+ {
+  "id": "F-1506",
+  "title": "(changed) confirmed-source -> reproduced-test",
+  "intended_ok": true,
+  "observed_ok": true,
+  "disposition_ok": true,
+  "severity_ok": true,
+  "notes": "rx-live-15 ImportError ConjunctiveGraph with rdflib 8 stand-in; graded test not live - honest."
+ },
+ {
+  "id": "F-C1306",
+  "title": "(changed) O-1 attribution added",
+  "intended_ok": true,
+  "observed_ok": true,
+  "disposition_ok": true,
+  "severity_ok": true,
+  "notes": "notes attribute IVG262FC1306 to pin initialize_schema(schema_prefix='RAG') + v4.5.1 residue, setup under O-1, defect in pin code; o1-fixture-inventory supports (LedgerRedact equals pin and v4.5.1). Lists 'LedgerRevision/LedgerStats' but omits v4.5.1's Graph.KG.Meta (O-1-FIXTURES.md:26 lists three). Spot diff of 3 'formatting-only' classes confirms formatting-only."
+ },
+ {
+  "id": "F-C1301",
+  "title": "(R4-13) observed should not open with 'Model only'",
+  "intended_ok": true,
+  "observed_ok": true,
+  "disposition_ok": true,
+  "severity_ok": true,
+  "notes": "NOT FIXED: findings/audit/13.json F-C1301 observed still begins 'Model only (core M2, 5 steps)'; record unchanged since f497a387 (disposition reproduced-live)."
+ },
+ {
+  "id": "F-C1150",
+  "title": "(R4-14) soften 'every later commit'",
+  "intended_ok": true,
+  "observed_ok": true,
+  "disposition_ok": true,
+  "severity_ok": true,
+  "notes": "Done: title/observed say 'the next ledger commit (the only one attempted)'."
+ },
+ {
+  "id": "F-C0670",
+  "title": "(R4-14) soften disposition",
+  "intended_ok": true,
+  "observed_ok": "partial",
+  "disposition_ok": "no",
+  "severity_ok": true,
+  "notes": "Not changed since f497a387: still reproduced-live while the live probe intent-a-hd0604-queue-claim (registered kind probe, result pass) shows only the claim overlap; double processing is source+model."
+ },
+ {
+  "id": "F-0304 F-0612 F-0705 F-1107 F-1703 F-1714 F-1804 F-1806 F-C1802 F-C0450",
+  "title": "(changed) evidence/notes additions",
+  "intended_ok": true,
+  "observed_ok": true,
+  "disposition_ok": true,
+  "severity_ok": true,
+  "notes": "all added refs are registered runs; F-0304's ws-live-ba-explicit-survives verdict matches the new note."
+ }
+]

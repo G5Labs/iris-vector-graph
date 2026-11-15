@@ -1,0 +1,11 @@
+{
+ "_doc": "Registered runs whose log file was later overwritten. The record is kept unchanged; check_registry.py reports these as superseded instead of failing. Each names the rerun that reproduces it.",
+ "superseded": {
+  "core-proofs-baseline": {"by": "core-proofs-recheck-baseline", "cause": "orchestrator recheck ran proofs/tools/run_proofs.py, which wrote to the same $RUN_DIR/core-proofs/ files (2026-11-14 ~00:40 UTC); same sources, 88 verified, 0 errors", "fix": "run_proofs.py honours PROOFS_OUT_DIR; verify.sh writes under its own run directory"},
+  "core-proofs-f1201-erase-unlocked": {"by": "core-proofs-recheck-f1201_erase_unlocked", "cause": "same", "fix": "same"},
+  "core-proofs-f1302-unlocked-start": {"by": "core-proofs-recheck-f1302_unlocked_start", "cause": "same", "fix": "same"},
+  "core-proofs-f1303-other-marker": {"by": "core-proofs-recheck-f1303_other_marker", "cause": "same", "fix": "same"},
+  "core-proofs-f1306-replay-reapplies": {"by": "core-proofs-recheck-f1306_replay_reapplies", "cause": "same", "fix": "same"},
+  "core-proofs-progress-rewind": {"by": "core-proofs-recheck-progress_rewind", "cause": "same", "fix": "same"}
+ }
+}

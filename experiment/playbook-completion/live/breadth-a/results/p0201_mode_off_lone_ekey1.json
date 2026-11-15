@@ -1,0 +1,42 @@
+{
+ "doc": "F-0201: after create, create, delete key-0 edge in a multigraph, mode off is accepted and create_edge adds a\n    second row of the triple in a graph that says it is single-edge; a per-edge delete then leaves a row without\n    adjacency. Oracle: spec 234 FR-002 (mode off => at most one row per triple).",
+ "id": "p0201_mode_off_lone_ekey1",
+ "log": "$RUN_DIR/breadth-a/live/02-p0201_mode_off_lone_ekey1-pC0101_inline_rel_prop_null_qualifiers-20261113T224152.log",
+ "module": "02",
+ "observed": {
+  "adjacency_out_leaf_defined": 0,
+  "create_edge_returned": true,
+  "is_multi_server": "0",
+  "mode_off_accepted": true,
+  "rows_after_create_edge": [
+   0,
+   1
+  ],
+  "rows_after_delete_k0": [
+   1
+  ],
+  "rows_after_delete_k1": [
+   0
+  ],
+  "verify_graph_drift": [
+   {
+    "count": 1,
+    "detail": "rows in Graph_KG.rdf_edges with no ^KG(\"out\") entry, so traversal cannot see them",
+    "kind": "missing",
+    "store": "^KG(\"out\")"
+   },
+   {
+    "count": 1,
+    "detail": "rows with no ^KG(\"in\") entry, so inbound traversal cannot see them",
+    "kind": "missing",
+    "store": "^KG(\"in\")"
+   }
+  ],
+  "verify_graph_ok": 0
+ },
+ "oracle": "mode off => at most one row per triple (spec 234 FR-002)",
+ "reproduced": true,
+ "seconds": 0.9,
+ "started": "2026-11-13T22:41:52",
+ "verdict": "two rows of one triple in a mode-off graph"
+}

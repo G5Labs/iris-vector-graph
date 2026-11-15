@@ -1,0 +1,993 @@
+{
+ "gate": "3.5-decoders",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "static_check": "run:rx-dec-map",
+ "modules": {
+  "07": [
+   {
+    "module": "07",
+    "name": "bm25_build <- BM25Index.Build",
+    "kind": "pass-through",
+    "server": [
+     "iris_src/src/Graph/KG/BM25Index.cls:97-175"
+    ],
+    "client": [
+     "iris_vector_graph/_engine/vector.py:1749-1785"
+    ],
+    "wire": [
+     "avgdl",
+     "graph",
+     "indexed",
+     "vocab_size"
+    ],
+    "decoder_reads": [],
+    "dead_reads": [],
+    "dead_reads_explained": {},
+    "static": {},
+    "live_cases": [
+     {
+      "run": "rx-dec-live-07",
+      "case": "build answer agrees with the stored index (Info)",
+      "match": true,
+      "why": "build answer {'indexed': 6, 'avgdl': 3.3333333333333335, 'vocab_size': 8, 'graph': 'rxdg'} vs Info {'N': 6, 'avgdl': 3.3333333333333335, 'vocab_size': 8, 'graph': 'rxdg', 'schema': 2}",
+      "finding": null,
+      "blocked": null
+     }
+    ],
+    "result": "match",
+    "findings": []
+   },
+   {
+    "module": "07",
+    "name": "bm25_search <- BM25Index.Search/SearchCore",
+    "kind": "projecting",
+    "server": [
+     "iris_src/src/Graph/KG/BM25Index.cls:236-374"
+    ],
+    "client": [
+     "iris_vector_graph/_engine/vector.py:1786-1839"
+    ],
+    "wire": [
+     "id",
+     "score"
+    ],
+    "decoder_reads": [
+     "id",
+     "score"
+    ],
+    "dead_reads": [],
+    "dead_reads_explained": {},
+    "static": {},
+    "live_cases": [
+     {
+      "run": "rx-dec-live-07",
+      "case": "ids containing ':.5', ',.7', '[.9' and scores",
+      "match": false,
+      "why": "3 of 5 rows decoded differently: [(('rxd,.7y', 0.2212495934099891), ('rxd,0.7y', 0.2212495934099891)), (('rxd:.5x', 0.2212495934099891), ('rxd:0.5x', 0.2212495934099891)), (('rxd[.9z', 0.2212495934099891), ('rxd[0.9z', 0.2212495934099891))]",
+      "finding": null,
+      "blocked": null
+     }
+    ],
+    "result": "mismatch",
+    "findings": [
+     "F-C0715"
+    ]
+   },
+   {
+    "module": "07",
+    "name": "bm25_search(report=True) <- BM25Index.SearchReport",
+    "kind": "projecting",
+    "server": [
+     "iris_src/src/Graph/KG/BM25Index.cls:221-234",
+     "iris_src/src/Graph/KG/BM25Index.cls:236-374"
+    ],
+    "client": [
+     "iris_vector_graph/_engine/vector.py:1786-1839"
+    ],
+    "wire": [
+     "fallback",
+     "id",
+     "results",
+     "score",
+     "skipped"
+    ],
+    "decoder_reads": [
+     "fallback",
+     "id",
+     "results",
+     "score",
+     "skipped"
+    ],
+    "dead_reads": [],
+    "dead_reads_explained": {},
+    "static": {},
+    "live_cases": [
+     {
+      "run": "rx-dec-live-07",
+      "case": "skipped terms and fallback flag",
+      "match": false,
+      "why": "skipped ['stripes'] vs ['stripes']; fallback True vs 1; ids equal False",
+      "finding": null,
+      "blocked": null
+     }
+    ],
+    "result": "mismatch",
+    "findings": [
+     "F-C0715"
+    ]
+   },
+   {
+    "module": "07",
+    "name": "bm25_upgrade <- BM25Index.Upgrade",
+    "kind": "pass-through",
+    "server": [
+     "iris_src/src/Graph/KG/BM25Index.cls:526-581"
+    ],
+    "client": [
+     "iris_vector_graph/_engine/vector.py:1857-1866"
+    ],
+    "wire": [
+     "already",
+     "docs",
+     "missing",
+     "postings",
+     "upgraded",
+     "vocab"
+    ],
+    "decoder_reads": [],
+    "dead_reads": [],
+    "dead_reads_explained": {},
+    "static": {
+     "undocumented": [
+      "missing"
+     ]
+    },
+    "live_cases": [
+     {
+      "run": "rx-dec-live-07",
+      "case": "absent and schema-2 answers",
+      "match": true,
+      "why": "absent -> {'upgraded': 0, 'missing': 1} (the docstring lists only upgraded/already), schema 2 -> {'upgraded': 0, 'already': 1}",
+      "finding": null,
+      "blocked": null
+     }
+    ],
+    "result": "match",
+    "findings": []
+   },
+   {
+    "module": "07",
+    "name": "bm25_info / _index_graph <- BM25Index.Info",
+    "kind": "pass-through",
+    "server": [
+     "iris_src/src/Graph/KG/BM25Index.cls:597-615"
+    ],
+    "client": [
+     "iris_vector_graph/_engine/vector.py:1871-1879",
+     "iris_vector_graph/_engine/vector.py:164-185"
+    ],
+    "wire": [
+     "N",
+     "avgdl",
+     "graph",
+     "schema",
+     "vocab_size"
+    ],
+    "decoder_reads": [
+     "graph"
+    ],
+    "dead_reads": [],
+    "dead_reads_explained": {},
+    "static": {},
+    "live_cases": [
+     {
+      "run": "rx-dec-live-07",
+      "case": "index built for graph rxdg",
+      "match": true,
+      "why": "graph decoded 'rxdg'",
+      "finding": null,
+      "blocked": null
+     },
+     {
+      "run": "rx-dec-live-07",
+      "case": "absent index",
+      "match": true,
+      "why": "absent index: wire {}, decoded {'type': 'bm25'}, graph None (None = unknown)",
+      "finding": null,
+      "blocked": null
+     },
+     {
+      "run": "rx-dec-live-07",
+      "case": "index made by bm25_insert (no recorded graph)",
+      "match": false,
+      "why": "no graph recorded ($Data=0); Info answers graph ''; _index_graph decodes '' (the default graph)",
+      "finding": "F-0705",
+      "blocked": null
+     }
+    ],
+    "result": "mismatch",
+    "findings": [
+     "F-0705"
+    ]
+   },
+   {
+    "module": "07",
+    "name": "kg_TXT iFind error-text -> LIKE fallback / warning / raise",
+    "kind": "status-map",
+    "ref": "iris_vector_graph/_engine/vector.py:917-1054",
+    "codes": [
+     "-359",
+     "-151",
+     "FIND",
+     "-149",
+     "CLASS DOES NOT EXIST"
+    ],
+    "middleware_codes": null,
+    "live_cases": [
+     {
+      "run": "rx-dec-live-07",
+      "case": "docs rows of graph rxdg",
+      "match": true,
+      "why": "iFind path: tf scores {'rxd:a': 3.0, 'rxd:b': 1.0} (a: 3 occurrences, b: 1)",
+      "finding": null,
+      "blocked": null
+     }
+    ],
+    "result": "match",
+    "findings": []
+   },
+   {
+    "module": "07",
+    "name": "BM25Index.List comma-joined names -> _build_index_registry split(',') + strip()",
+    "kind": "delimited-string",
+    "server": "iris_src/src/Graph/KG/BM25Index.cls:628-633",
+    "client": "iris_vector_graph/_engine/vector.py:84-148",
+    "static": {
+     "separator": ",",
+     "name_validator_refuses_separator": false
+    },
+    "live_cases": [
+     {
+      "run": "rx-dec-live-07",
+      "case": "index names holding the separator or a leading space",
+      "match": false,
+      "why": "List answers ' rxdspace,rxd,comma,rxdidx,rxdins'; the registry has ['comma', 'rxd', 'rxdidx', 'rxdins', 'rxdspace']; real indexes missing [' rxdspace', 'rxd,comma']; phantoms ['comma', 'rxd', 'rxdspace']",
+      "finding": null,
+      "blocked": null
+     }
+    ],
+    "result": "mismatch",
+    "findings": [
+     "F-C0716"
+    ]
+   },
+   {
+    "module": "07",
+    "name": "Build/Info graph string encoding",
+    "kind": "json-literal-encoding",
+    "static": [
+     {
+      "producer": "iris_src/src/Graph/KG/BM25Index.cls:97-175",
+      "method": "Build",
+      "key": "graph",
+      "var": "graphJSON",
+      "string": true,
+      "escaping": "$Replace($Replace(pGraph, \"\\\", \"\\\\\"), \"\"\"\", \"\\\"\"\")",
+      "escapes_control_characters": false
+     },
+     {
+      "producer": "iris_src/src/Graph/KG/BM25Index.cls:597-615",
+      "method": "Info",
+      "key": "graph",
+      "var": "graphJSON",
+      "string": true,
+      "escaping": "$Replace($Replace(graph, \"\\\", \"\\\\\"), \"\"\"\", \"\\\"\"\")",
+      "escapes_control_characters": false
+     }
+    ],
+    "live_cases": [
+     {
+      "run": "rx-dec-live-07",
+      "case": "graph name with a tab",
+      "match": false,
+      "why": "build -> JSONDecodeError: Invalid control character at: line 1 column 51 (char 50); Info wire not JSON: True; _index_graph -> None",
+      "finding": null,
+      "blocked": null
+     }
+    ],
+    "result": "mismatch",
+    "findings": [
+     "F-C0717"
+    ]
+   },
+   {
+    "module": "07",
+    "name": "bm25_insert / bm25_delete <- BM25Index.Insert / Delete (integer)",
+    "kind": "integer",
+    "server": [
+     "iris_src/src/Graph/KG/BM25Index.cls:442-493",
+     "iris_src/src/Graph/KG/BM25Index.cls:496-514"
+    ],
+    "client": [
+     "iris_vector_graph/_engine/vector.py:1840-1856"
+    ],
+    "live_cases": [
+     {
+      "run": "rx-dec-live-07",
+      "case": "integer answers to bool",
+      "match": true,
+      "why": "N 6->7->6",
+      "finding": null,
+      "blocked": null
+     }
+    ],
+    "result": "match",
+    "findings": []
+   },
+   {
+    "module": "07",
+    "name": "bm25_search _parse leading-dot patch",
+    "kind": "text-patch",
+    "ref": "iris_vector_graph/_engine/vector.py:1786-1839",
+    "pattern": "(?<=[:\\[,])(\\.\\d)",
+    "live_cases": [
+     {
+      "run": "rx-dec-live-07",
+      "case": "ids containing ':.5', ',.7', '[.9' and scores",
+      "match": false,
+      "why": "3 of 5 rows decoded differently: [(('rxd,.7y', 0.2212495934099891), ('rxd,0.7y', 0.2212495934099891)), (('rxd:.5x', 0.2212495934099891), ('rxd:0.5x', 0.2212495934099891)), (('rxd[.9z', 0.2212495934099891), ('rxd[0.9z', 0.2212495934099891))]",
+      "finding": null,
+      "blocked": null
+     },
+     {
+      "run": "rx-dec-live-07",
+      "case": "skipped terms and fallback flag",
+      "match": false,
+      "why": "skipped ['stripes'] vs ['stripes']; fallback True vs 1; ids equal False",
+      "finding": null,
+      "blocked": null
+     }
+    ],
+    "result": "mismatch",
+    "findings": [
+     "F-C0715"
+    ]
+   }
+  ],
+  "10": [
+   {
+    "module": "10",
+    "name": "_scored_node_rows <- PageRank.RunJson / PageRankGlobalJson",
+    "kind": "projecting",
+    "server": [
+     "iris_src/src/Graph/KG/PageRank.cls:33-72",
+     "iris_src/src/Graph/KG/PageRank.cls:406-523",
+     "iris_src/src/Graph/KG/PageRank.cls:126-156"
+    ],
+    "client": [
+     "iris_vector_graph/stores/iris_sql_store.py:639-659"
+    ],
+    "wire": [
+     "id",
+     "score"
+    ],
+    "decoder_reads": [
+     "id",
+     "node",
+     "score"
+    ],
+    "dead_reads": [],
+    "dead_reads_explained": {},
+    "static": {},
+    "live_cases": [
+     {
+      "run": "rx-dec-live-10",
+      "case": "personalized PageRank from rxda",
+      "match": true,
+      "why": "4 scored rows; differences {}; zero rows added for unscored nodes ['rxdd', 'rxdx1', 'rxdx2', 'rxdx3', 'rxdx4']",
+      "finding": null,
+      "blocked": null
+     }
+    ],
+    "result": "match",
+    "findings": []
+   },
+   {
+    "module": "10",
+    "name": "_kg_pagerank_global fallback <- PageRank.PageRankGlobalJson",
+    "kind": "projecting",
+    "server": [
+     "iris_src/src/Graph/KG/PageRank.cls:406-523"
+    ],
+    "client": [
+     "iris_vector_graph/_engine/algorithms.py:781-804"
+    ],
+    "wire": [
+     "id",
+     "score"
+    ],
+    "decoder_reads": [
+     "id",
+     "score"
+    ],
+    "dead_reads": [],
+    "dead_reads_explained": {},
+    "static": {},
+    "live_cases": [
+     {
+      "run": "rx-dec-live-10",
+      "case": "global PageRank of the default graph",
+      "match": true,
+      "why": "9 wire rows, 9 decoded; differences []",
+      "finding": null,
+      "blocked": null
+     }
+    ],
+    "result": "match",
+    "findings": []
+   },
+   {
+    "module": "10",
+    "name": "_membership_rows <- Algorithms.WCCJson / CDLPJson",
+    "kind": "map",
+    "server": [
+     "iris_src/src/Graph/KG/Algorithms.cls:10-91",
+     "iris_src/src/Graph/KG/Algorithms.cls:93-186"
+    ],
+    "client": [
+     "iris_vector_graph/stores/iris_sql_store.py:662-694"
+    ],
+    "wire": [],
+    "decoder_reads": [
+     "communities",
+     "components",
+     "id",
+     "largest",
+     "node"
+    ],
+    "dead_reads": [],
+    "dead_reads_explained": {
+     "id": "the row-list form: no Owner producer at the pin emits it (both answer a map); the Native Reader's row lists are blocked here (no x86_64 libarno_callout.so, F-1001)",
+     "node": "as 'id'"
+    },
+    "static": {
+     "notes": "a node->group map whose keys are node ids; a map that holds a summary key is refused as an accelerated summary, so a node named communities/components/largest is refused too"
+    },
+    "live_cases": [
+     {
+      "run": "rx-dec-live-10",
+      "case": "a default-graph node named 'largest'",
+      "match": false,
+      "why": "store decoder: error a summary, not a node\u2192component_id map: it carries ['largest']; engine answer equals wire: True (falls back to WCCJson)",
+      "finding": null,
+      "blocked": null
+     },
+     {
+      "run": "rx-dec-live-10",
+      "case": "a default-graph node named 'largest'",
+      "match": false,
+      "why": "store decoder: error a summary, not a node\u2192community_id map: it carries ['largest']; engine equals wire: True",
+      "finding": null,
+      "blocked": null
+     }
+    ],
+    "result": "mismatch",
+    "findings": [
+     "F-C1018"
+    ]
+   },
+   {
+    "module": "10",
+    "name": "_subgraph_payload / kg_SUBGRAPH <- Subgraph.SubgraphJson",
+    "kind": "projecting",
+    "server": [
+     "iris_src/src/Graph/KG/Subgraph.cls:6-173"
+    ],
+    "client": [
+     "iris_vector_graph/stores/iris_sql_store.py:697-740",
+     "iris_vector_graph/_engine/algorithms.py:881-946"
+    ],
+    "wire": [
+     "edges",
+     "labels",
+     "nodes",
+     "o",
+     "p",
+     "properties",
+     "s"
+    ],
+    "decoder_reads": [
+     "edges",
+     "labels",
+     "nodes",
+     "o",
+     "o_id",
+     "p",
+     "properties",
+     "s"
+    ],
+    "dead_reads": [],
+    "dead_reads_explained": {},
+    "static": {},
+    "live_cases": [
+     {
+      "run": "rx-dec-live-10",
+      "case": "2 hops from rxda",
+      "match": true,
+      "why": "nodes 3/3, edges 2/2",
+      "finding": null,
+      "blocked": null
+     }
+    ],
+    "result": "match",
+    "findings": []
+   },
+   {
+    "module": "10",
+    "name": "execute_degree_centrality <- Centrality.DegreeCentralityJson",
+    "kind": "projecting",
+    "server": [
+     "iris_src/src/Graph/KG/Centrality.cls:40-173"
+    ],
+    "client": [
+     "iris_vector_graph/stores/iris_sql_store.py:3103-3143"
+    ],
+    "wire": [
+     "degree",
+     "id",
+     "score"
+    ],
+    "decoder_reads": [
+     "degree",
+     "id",
+     "score"
+    ],
+    "dead_reads": [],
+    "dead_reads_explained": {},
+    "static": {},
+    "live_cases": [
+     {
+      "run": "rx-dec-live-10",
+      "case": "out-degree, default graph",
+      "match": true,
+      "why": "8 wire rows; store rows equal: True",
+      "finding": null,
+      "blocked": null
+     }
+    ],
+    "result": "match",
+    "findings": []
+   },
+   {
+    "module": "10",
+    "name": "khop <- TraversalBFS.BFSFastJson",
+    "kind": "projecting",
+    "server": [
+     "iris_src/src/Graph/KG/TraversalBFS.cls:213-245",
+     "iris_src/src/Graph/KG/TraversalBFS.cls:249-280"
+    ],
+    "client": [
+     "iris_vector_graph/_engine/algorithms.py:595-618"
+    ],
+    "wire": [
+     "o",
+     "p",
+     "s",
+     "step",
+     "w"
+    ],
+    "decoder_reads": [
+     "o",
+     "s"
+    ],
+    "dead_reads": [],
+    "dead_reads_explained": {},
+    "static": {
+     "dropped": [
+      "p",
+      "step",
+      "w"
+     ]
+    },
+    "live_cases": [
+     {
+      "run": "rx-dec-live-10",
+      "case": "2 hops out of rxda",
+      "match": true,
+      "why": "2 edges; decoded edges equal wire: True",
+      "finding": null,
+      "blocked": null
+     }
+    ],
+    "result": "match",
+    "findings": []
+   },
+   {
+    "module": "10",
+    "name": "_RUNJSON_MISSING (PPR fast path falls back only on a missing RunJson)",
+    "kind": "status-map",
+    "ref": "iris_vector_graph/_engine/algorithms.py:150-152",
+    "codes": "<CLASS DOES NOT EXIST>.*\\*Graph\\.KG\\.PageRank(?![\\w.])|<METHOD DOES NOT EXIST>.*\\*RunJson,Graph\\.KG\\.PageRank(?![\\w.])",
+    "middleware_codes": null,
+    "live_cases": [
+     {
+      "run": "rx-dec-live-10",
+      "case": "driver error text for a missing class/method",
+      "match": true,
+      "why": "the driver writes '<CLASS DOES NOT EXIST> ... *<class>' and '<METHOD DOES NOT EXIST> ... *<method>,<class>', the shapes _RUNJSON_MISSING keys on; near-miss names do not match; the degree fallback token is present for a missing class: True",
+      "finding": null,
+      "blocked": null
+     }
+    ],
+    "result": "match",
+    "findings": []
+   },
+   {
+    "module": "10",
+    "name": "execute_degree_centrality: CLASS DOES NOT EXIST / DBSRV -> gref fallback",
+    "kind": "status-map",
+    "ref": "iris_vector_graph/stores/iris_sql_store.py:3103-3143",
+    "codes": [
+     "CLASS DOES NOT EXIST",
+     "DBSRV"
+    ],
+    "middleware_codes": null,
+    "live_cases": [],
+    "result": "static only (not driven live)",
+    "findings": []
+   },
+   {
+    "module": "10",
+    "name": "_refused_work_area: <THROW>/<PROTECT> -> privilege message",
+    "kind": "status-map",
+    "ref": "iris_vector_graph/_engine/algorithms.py:100-127",
+    "codes": [
+     "<THROW>",
+     "<PROTECT>"
+    ],
+    "middleware_codes": null,
+    "live_cases": [],
+    "result": "static only (not driven live)",
+    "findings": []
+   },
+   {
+    "module": "10",
+    "name": "_runjson_failure: <PARAMETER>RunJson^ -> redeploy hint",
+    "kind": "status-map",
+    "ref": "iris_vector_graph/_engine/algorithms.py:160-167",
+    "codes": [
+     "<PARAMETER>RunJson\\^"
+    ],
+    "middleware_codes": null,
+    "live_cases": [],
+    "result": "static only (not driven live)",
+    "findings": []
+   },
+   {
+    "module": "10",
+    "name": "ALG-I5 store error -> exception (algorithms.py)",
+    "kind": "error-propagation-map",
+    "ref": "iris_vector_graph/_engine/algorithms.py",
+    "mapped": [
+     {
+      "engine_method": "kg_PERSONALIZED_PAGERANK",
+      "store_call": "execute_ppr",
+      "line": 314,
+      "propagation": "raise"
+     },
+     {
+      "engine_method": "_kg_pagerank_global",
+      "store_call": "execute_pagerank",
+      "line": 791,
+      "propagation": "error-test+owner-fallback"
+     },
+     {
+      "engine_method": "_kg_pagerank_global",
+      "store_call": "execute_pagerank",
+      "line": 795,
+      "propagation": "error-test+owner-fallback"
+     },
+     {
+      "engine_method": "_kg_pagerank_global",
+      "store_call": "execute_pagerank",
+      "line": 796,
+      "propagation": "error-test+owner-fallback"
+     },
+     {
+      "engine_method": "_kg_WCC",
+      "store_call": "execute_wcc",
+      "line": 819,
+      "propagation": "error-test+owner-fallback"
+     },
+     {
+      "engine_method": "_kg_WCC",
+      "store_call": "execute_wcc",
+      "line": 821,
+      "propagation": "error-test+owner-fallback"
+     },
+     {
+      "engine_method": "_kg_CDLP",
+      "store_call": "execute_cdlp",
+      "line": 844,
+      "propagation": "error-test+owner-fallback"
+     },
+     {
+      "engine_method": "kg_SUBGRAPH",
+      "store_call": "execute_subgraph",
+      "line": 897,
+      "propagation": "error-test+owner-fallback"
+     },
+     {
+      "engine_method": "degree_centrality",
+      "store_call": "execute_degree_centrality",
+      "line": 1122,
+      "propagation": "raise"
+     },
+     {
+      "engine_method": "betweenness_centrality",
+      "store_call": "execute_betweenness",
+      "line": 1233,
+      "propagation": "raise"
+     },
+     {
+      "engine_method": "betweenness_centrality_neighborhood",
+      "store_call": "execute_betweenness_neighborhood",
+      "line": 1289,
+      "propagation": "raise"
+     },
+     {
+      "engine_method": "closeness_centrality",
+      "store_call": "execute_closeness",
+      "line": 1420,
+      "propagation": "raise"
+     },
+     {
+      "engine_method": "eigenvector_centrality",
+      "store_call": "execute_eigenvector",
+      "line": 1518,
+      "propagation": "raise"
+     },
+     {
+      "engine_method": "leiden_communities",
+      "store_call": "execute_leiden",
+      "line": 1612,
+      "propagation": "raise"
+     },
+     {
+      "engine_method": "triangle_count",
+      "store_call": "execute_triangle_count",
+      "line": 1698,
+      "propagation": "raise"
+     },
+     {
+      "engine_method": "strongly_connected_components",
+      "store_call": "execute_scc",
+      "line": 1756,
+      "propagation": "raise"
+     },
+     {
+      "engine_method": "k_core",
+      "store_call": "execute_k_core",
+      "line": 1814,
+      "propagation": "raise"
+     }
+    ],
+    "unmapped": [],
+    "live_cases": [
+     {
+      "run": "rx-dec-live-10",
+      "case": "WCC with max_iterations=1 on a 4-node chain",
+      "match": true,
+      "why": "server throws: True; store error set: True; engine raises RuntimeError: <THROW> *%Exception.StatusException ERROR #5001: WCC did not converge in 1 rounds: labels were still (ALG-I5: no empty answer)",
+      "finding": null,
+      "blocked": null
+     }
+    ],
+    "result": "match",
+    "findings": []
+   },
+   {
+    "module": "10",
+    "name": "_scored_node_rows <- ArnoAccel *NativeJson (Native Reader)",
+    "kind": "projecting",
+    "server": [
+     "iris_src/src/Graph/KG/ArnoAccel.cls"
+    ],
+    "client": [
+     "iris_vector_graph/stores/iris_sql_store.py:639-658"
+    ],
+    "live_cases": [
+     {
+      "run": "rx-dec-live-10",
+      "case": "Arno producers",
+      "match": null,
+      "why": "Native Reader producers (ArnoAccel *NativeJson) need libarno_callout.so (absent for x86_64, F-1001): <THROW> *%Exception.StatusException ERROR #5001: arno kg_pagerank_global reads USER only, not AUDITE",
+      "finding": null,
+      "blocked": "libarno_callout.so for x86_64 (F-1001; versions/AVAILABILITY.md)"
+     }
+    ],
+    "result": "not decided (blocked)",
+    "findings": [
+     "F-1001"
+    ]
+   }
+  ],
+  "18": [
+   {
+    "module": "18",
+    "name": "global value line <- Snapshot.NodeValueJSON/Encode; import -> SetNodeJSON/Decode",
+    "kind": "forms",
+    "server": [
+     "iris_src/src/Graph/KG/Snapshot.cls:114-141"
+    ],
+    "client": [
+     "iris_vector_graph/_engine/snapshot.py:1654-1692"
+    ],
+    "wire": [
+     "list",
+     "v",
+     "vec"
+    ],
+    "decoder_reads": [
+     "k",
+     "list",
+     "v",
+     "vec"
+    ],
+    "dead_reads": [],
+    "dead_reads_explained": {},
+    "static": {
+     "notes": "plain values travel as {'k','v': str(value)}: the value's type is not encoded (F-1804); $vector and $List-of-$vector travel as 'vec'/'list' and are decoded server-side"
+    },
+    "live_cases": [
+     {
+      "run": "rx-dec-live-18",
+      "case": "forms written for ^VecIdx/^PLAID",
+      "match": true,
+      "why": "vector-global archive line forms ['list', 'v', 'vec']",
+      "finding": null,
+      "blocked": null
+     },
+     {
+      "run": "rx-dec-live-18",
+      "case": "save, replacing restore: ^KG and vector globals",
+      "match": false,
+      "why": "globals with changed nodes ['^KG']; of which value type only (int->str): {'^KG': 5}; edge attrs {'amount': 20, 'neg': -0.25, 'rate': 0.5, 'tag': 'x'} -> {'amount': '20', 'neg': '-0.25', 'rate': '0.5', 'tag': 'x'}",
+      "finding": "F-1804",
+      "blocked": null
+     }
+    ],
+    "result": "mismatch",
+    "findings": [
+     "F-1804",
+     "F-C1802"
+    ]
+   },
+   {
+    "module": "18",
+    "name": "snapshot_info / restore_snapshot <- metadata.json (save_snapshot)",
+    "kind": "metadata",
+    "server": [],
+    "client": [
+     "iris_vector_graph/_engine/snapshot.py:1051-1074",
+     "iris_vector_graph/_engine/snapshot.py:1077-1610"
+    ],
+    "wire": [
+     "created_ts",
+     "embedding_dim",
+     "globals",
+     "globals_format",
+     "has_vector_sql",
+     "iris_version",
+     "ivg_version",
+     "layers",
+     "layout",
+     "python_version",
+     "routed_tables",
+     "tables",
+     "version"
+    ],
+    "decoder_reads": [
+     "created_ts",
+     "globals",
+     "has_vector_sql",
+     "layout",
+     "routed_tables",
+     "tables",
+     "version"
+    ],
+    "dead_reads": [],
+    "dead_reads_explained": {},
+    "static": {
+     "written_not_read": [
+      "embedding_dim",
+      "globals_format",
+      "iris_version",
+      "ivg_version",
+      "layers",
+      "python_version"
+     ]
+    },
+    "live_cases": [
+     {
+      "run": "rx-dec-live-18",
+      "case": "a fresh archive",
+      "match": true,
+      "why": "snapshot_info's fields equal metadata.json's, and save's answer agrees",
+      "finding": null,
+      "blocked": null
+     }
+    ],
+    "result": "match",
+    "findings": []
+   },
+   {
+    "module": "18",
+    "name": "_table_missing: SQLCODE -30 -> skip lazily created table, else SnapshotReadError",
+    "kind": "status-map",
+    "ref": "iris_vector_graph/_engine/snapshot.py:34-34",
+    "codes": "SQLCODE\\s*[:=]\\s*<?-30(?!\\d)",
+    "middleware_codes": null,
+    "live_cases": [
+     {
+      "run": "rx-dec-live-18",
+      "case": "missing table vs missing column",
+      "match": true,
+      "why": "driver text for a missing table maps to 'missing': True; a missing column (SQLCODE -29) does not: True",
+      "finding": null,
+      "blocked": null
+     }
+    ],
+    "result": "match",
+    "findings": []
+   },
+   {
+    "module": "18",
+    "name": "POST /admin/snapshot HTTP status map",
+    "kind": "status-map",
+    "ref": "iris_vector_graph/cypher_api.py:669-678",
+    "codes": [
+     200,
+     500
+    ],
+    "middleware_codes": [
+     401,
+     403
+    ],
+    "live_cases": [
+     {
+      "run": "rx-dec-live-18",
+      "case": "200 / 403 read-only / 500 / 401",
+      "match": true,
+      "why": "statuses ok 200, read-only 403, unwritable 500, no key 401 (docs/ADMIN_API.md:73, 292-303)",
+      "finding": null,
+      "blocked": null
+     }
+    ],
+    "result": "match",
+    "findings": []
+   },
+   {
+    "module": "18",
+    "name": "SQL table rows (save_snapshot ndjson encoder -> restore_snapshot INSERT decoder)",
+    "kind": "row-encoding",
+    "client": [
+     "iris_vector_graph/_engine/snapshot.py:863-905",
+     "iris_vector_graph/_engine/snapshot.py:1234-1300"
+    ],
+    "live_cases": [
+     {
+      "run": "rx-dec-live-18",
+      "case": "save, replacing restore: every row's columns",
+      "match": true,
+      "why": "tables whose rows (column type, text) differ after a replacing restore: []",
+      "finding": null,
+      "blocked": null
+     }
+    ],
+    "result": "match",
+    "findings": []
+   }
+  ]
+ }
+}

@@ -1,0 +1,15 @@
+{
+  "command": "python contract-2/explore/x2_explore.py [--part2|--part3|--part4] under locks.sh iris (AUDITENV; terminal + DB-API; scratch ^IVGAuditEnv, IVGAudit.T)",
+  "experiment_head": "f497a3879ec37c641778a82708d2f3ccd25d3dd8",
+  "id": "env2-x2-explore",
+  "kind": "probe",
+  "lane": "contract-2",
+  "log": "$RUN_DIR/contract-2/explore/x2-explore-all.log",
+  "log_bytes": 8877,
+  "log_sha256": "5277da27eb3daee4ddc10cf86ce9b6fb9e7f4f408d1646aef77106f2737b70f9",
+  "observes": "Exploration for the X2 clauses (not a validation): %DynamicObject: insertion order kept, re-%Set keeps place, duplicate parsed key last-wins at first place, ObjectScript numbers written canonical with a leading 0 (0.5, -0.25, 0.0000001), parsed numbers keep their JSON text (1.50, 1e2, -0.0, 2.0), booleans true/false read back 1/0, null reads \"\" type null, / and non-ASCII not escaped, controls \\u00xx; $LIST: undefined elements <NULL VALUE> for $LIST, default for $LISTGET, U in $LISTNEXT, $LISTSAME 1 vs \"1\" equal but encodings differ, IRISList decodes int/Decimal/str/None; TOP n with ORDER BY k uses SQLUPPER string order (1,10,2,3,9,a,B,c), %EXACT uses $ORDER collation, LIMIT and LIMIT OFFSET work, TOP 0 empty; executemany skips a duplicate row of several silently (rowcount 3 of 4); INSERT OR UPDATE waits for a row another inserted and fails -109 after its rollback; $QUERY in $ORDER collation; MERGE and ZKILL rolled back; $SEQUENCE not rolled back, ranges per process (1,2,3,4 then 5,6 in another process, 7 with the global at 10); FETCH FIRST killed the Python client (x2-explore-4)",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T12:50:05+00:00",
+  "result": "pass"
+}

@@ -1,0 +1,15 @@
+{
+  "command": "$CARGO_TARGET_DIR/release/ivg-core-models --only m2-reviewed-bypass-nonserializing (models/core, CARGO_TARGET_DIR=$RUN_DIR/target/core-models)",
+  "experiment_head": "5d876950777ed08e7921290c20656c2a324380d9",
+  "id": "core-m2-reviewed-bypass-nonserializing",
+  "kind": "mc",
+  "lane": "core-models",
+  "log": "$RUN_DIR/core-models/final/logs/m2-reviewed-bypass-nonserializing.log",
+  "log_bytes": 2444,
+  "log_sha256": "56be882ec37e26a579724a78c6b81e3e415666c0c4aeea4aabe19b18114c8d18",
+  "observes": "M2 reviewed: reviewed design + a bypass writer that does not serialize: the locked Start still reads its uncommitted delete | expect violation of 'INV-no-live-tombstone: no tombstone describes a live incarnation (no transaction open)' | expected-violation; 124 states, exhaustive-within-bounds",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T00:02:05+00:00",
+  "result": "expected-violation"
+}

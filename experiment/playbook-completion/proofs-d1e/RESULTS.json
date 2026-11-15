@@ -1,0 +1,3779 @@
+{
+  "crate": "experiment/playbook-completion/proofs-d1e (ivg-d1e-proofs)",
+  "generated_utc": "2026-11-14T10:00:57+00:00",
+  "verus": "0.2026.10.04.426d8b0",
+  "actors_rev": "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877",
+  "sources_sha256": "cb604bc3555ef40d05fb38ecc95b219c816e49842e1341becb04eecc5d45f2a5",
+  "statement": "Every result is about the models (L1 contracts and the reviewed L2 machines); none is a property of the product at pin 3eaa79cf.",
+  "baseline": {
+    "tag": "baseline",
+    "features": "",
+    "rc": 0,
+    "timed_out": false,
+    "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+    "log": "$RUN_DIR/proofs-d1e/baseline.log",
+    "json": "$RUN_DIR/proofs-d1e/baseline.json",
+    "wall_seconds": 2.59,
+    "max_rss_kb": 475724,
+    "error_locations": [],
+    "resource_limit": false,
+    "verified": 115,
+    "errors": 0,
+    "success": true,
+    "verus_total_ms": 2166,
+    "smt_run_ms": 1709,
+    "rlimit_total": 4155649,
+    "modules": {
+      "inst_l2": {
+        "ms": 340,
+        "rlimit": 1040058
+      },
+      "witness_acache": {
+        "ms": 214,
+        "rlimit": 377876
+      },
+      "witness_inst": {
+        "ms": 117,
+        "rlimit": 370822
+      },
+      "acache_l2": {
+        "ms": 159,
+        "rlimit": 363726
+      },
+      "atrav_l2": {
+        "ms": 151,
+        "rlimit": 359302
+      },
+      "witness_gmode": {
+        "ms": 159,
+        "rlimit": 345936
+      },
+      "gmode_l2": {
+        "ms": 114,
+        "rlimit": 262982
+      },
+      "inst_runs": {
+        "ms": 79,
+        "rlimit": 190195
+      },
+      "witness_atrav": {
+        "ms": 82,
+        "rlimit": 166452
+      },
+      "gid_l2": {
+        "ms": 63,
+        "rlimit": 156057
+      },
+      "inst_l1": {
+        "ms": 41,
+        "rlimit": 96735
+      },
+      "atrav_l1": {
+        "ms": 34,
+        "rlimit": 82909
+      },
+      "witness_gid": {
+        "ms": 30,
+        "rlimit": 77955
+      },
+      "gmode_runs": {
+        "ms": 28,
+        "rlimit": 63959
+      },
+      "acache_runs": {
+        "ms": 30,
+        "rlimit": 62482
+      },
+      "gid_l1": {
+        "ms": 19,
+        "rlimit": 44823
+      },
+      "acache_l1": {
+        "ms": 18,
+        "rlimit": 42960
+      },
+      "atrav_runs": {
+        "ms": 12,
+        "rlimit": 27138
+      },
+      "gmode_l1": {
+        "ms": 7,
+        "rlimit": 15935
+      },
+      "gid_runs": {
+        "ms": 3,
+        "rlimit": 7347
+      }
+    },
+    "top_functions": [
+      {
+        "function": "inst_l2::lemma_step",
+        "ms": 115,
+        "rlimit": 419188,
+        "success": true
+      },
+      {
+        "function": "witness_acache::witness_acache",
+        "ms": 214,
+        "rlimit": 377876,
+        "success": true
+      },
+      {
+        "function": "witness_inst::witness_inst",
+        "ms": 117,
+        "rlimit": 370822,
+        "success": true
+      },
+      {
+        "function": "witness_gmode::witness_gmode",
+        "ms": 159,
+        "rlimit": 345936,
+        "success": true
+      },
+      {
+        "function": "inst_runs::lemma_i_steps",
+        "ms": 79,
+        "rlimit": 190195,
+        "success": true
+      },
+      {
+        "function": "witness_atrav::witness_atrav",
+        "ms": 82,
+        "rlimit": 166452,
+        "success": true
+      },
+      {
+        "function": "inst_l2::lemma_rmfirst",
+        "ms": 32,
+        "rlimit": 128537,
+        "success": true
+      },
+      {
+        "function": "acache_l2::lemma_step",
+        "ms": 54,
+        "rlimit": 117810,
+        "success": true
+      },
+      {
+        "function": "inst_l2::lemma_upgrade",
+        "ms": 33,
+        "rlimit": 78889,
+        "success": true
+      },
+      {
+        "function": "witness_gid::witness_gid",
+        "ms": 30,
+        "rlimit": 77955,
+        "success": true
+      }
+    ],
+    "all_functions": [
+      {
+        "function": "acache_l1::CacheL1::init_safe",
+        "ms": 1,
+        "rlimit": 2747,
+        "success": true
+      },
+      {
+        "function": "acache_l1::CacheL1::step_safe",
+        "ms": 1,
+        "rlimit": 3716,
+        "success": true
+      },
+      {
+        "function": "acache_l1::lemma_l1_safe",
+        "ms": 6,
+        "rlimit": 16016,
+        "success": true
+      },
+      {
+        "function": "acache_l1::theorem_answer_is_fresh",
+        "ms": 1,
+        "rlimit": 2956,
+        "success": true
+      },
+      {
+        "function": "acache_l1::theorem_edgeless_seed_is_answered",
+        "ms": 3,
+        "rlimit": 8670,
+        "success": true
+      },
+      {
+        "function": "acache_l1::theorem_pagerank_lists_every_node",
+        "ms": 2,
+        "rlimit": 6332,
+        "success": true
+      },
+      {
+        "function": "acache_l1::theorem_reads_change_no_content",
+        "ms": 1,
+        "rlimit": 2523,
+        "success": true
+      },
+      {
+        "function": "acache_l2::CacheL2::init_refines",
+        "ms": 3,
+        "rlimit": 7190,
+        "success": true
+      },
+      {
+        "function": "acache_l2::CacheL2::init_safe",
+        "ms": 2,
+        "rlimit": 6389,
+        "success": true
+      },
+      {
+        "function": "acache_l2::CacheL2::step_refines",
+        "ms": 4,
+        "rlimit": 11013,
+        "success": true
+      },
+      {
+        "function": "acache_l2::CacheL2::step_safe",
+        "ms": 3,
+        "rlimit": 10058,
+        "success": true
+      },
+      {
+        "function": "acache_l2::lemma_bumped",
+        "ms": 7,
+        "rlimit": 15957,
+        "success": true
+      },
+      {
+        "function": "acache_l2::lemma_compute",
+        "ms": 20,
+        "rlimit": 44229,
+        "success": true
+      },
+      {
+        "function": "acache_l2::lemma_createnode",
+        "ms": 16,
+        "rlimit": 35822,
+        "success": true
+      },
+      {
+        "function": "acache_l2::lemma_raw_inv_at",
+        "ms": 11,
+        "rlimit": 25420,
+        "success": true
+      },
+      {
+        "function": "acache_l2::lemma_step",
+        "ms": 54,
+        "rlimit": 117810,
+        "success": true
+      },
+      {
+        "function": "acache_l2::lemma_tricount",
+        "ms": 15,
+        "rlimit": 33296,
+        "success": true
+      },
+      {
+        "function": "acache_l2::theorem_hit_is_fresh",
+        "ms": 9,
+        "rlimit": 19805,
+        "success": true
+      },
+      {
+        "function": "acache_l2::theorem_raw_executions_refine",
+        "ms": 10,
+        "rlimit": 36737,
+        "success": true
+      },
+      {
+        "function": "acache_runs::lemma_a_steps",
+        "ms": 30,
+        "rlimit": 62482,
+        "success": true
+      },
+      {
+        "function": "atrav_l1::TravL1::init_safe",
+        "ms": 1,
+        "rlimit": 3637,
+        "success": true
+      },
+      {
+        "function": "atrav_l1::TravL1::step_safe",
+        "ms": 2,
+        "rlimit": 4796,
+        "success": true
+      },
+      {
+        "function": "atrav_l1::lemma_l1_safe",
+        "ms": 4,
+        "rlimit": 11213,
+        "success": true
+      },
+      {
+        "function": "atrav_l1::lemma_shortest_ext",
+        "ms": 3,
+        "rlimit": 7331,
+        "success": true
+      },
+      {
+        "function": "atrav_l1::lemma_walk1",
+        "ms": 2,
+        "rlimit": 5350,
+        "success": true
+      },
+      {
+        "function": "atrav_l1::lemma_walk2",
+        "ms": 2,
+        "rlimit": 7845,
+        "success": true
+      },
+      {
+        "function": "atrav_l1::lemma_walk_ext",
+        "ms": 6,
+        "rlimit": 15476,
+        "success": true
+      },
+      {
+        "function": "atrav_l1::theorem_direction_contract",
+        "ms": 4,
+        "rlimit": 10870,
+        "success": true
+      },
+      {
+        "function": "atrav_l1::theorem_labels_are_nodes",
+        "ms": 2,
+        "rlimit": 6145,
+        "success": true
+      },
+      {
+        "function": "atrav_l1::theorem_walk_in_one_graph",
+        "ms": 3,
+        "rlimit": 8605,
+        "success": true
+      },
+      {
+        "function": "atrav_l1::walk",
+        "ms": 0,
+        "rlimit": 1641,
+        "success": true
+      },
+      {
+        "function": "atrav_l2::TravL2::init_refines",
+        "ms": 2,
+        "rlimit": 5901,
+        "success": true
+      },
+      {
+        "function": "atrav_l2::TravL2::init_safe",
+        "ms": 2,
+        "rlimit": 6849,
+        "success": true
+      },
+      {
+        "function": "atrav_l2::TravL2::step_refines",
+        "ms": 4,
+        "rlimit": 9941,
+        "success": true
+      },
+      {
+        "function": "atrav_l2::TravL2::step_safe",
+        "ms": 4,
+        "rlimit": 9294,
+        "success": true
+      },
+      {
+        "function": "atrav_l2::lemma_both",
+        "ms": 4,
+        "rlimit": 10052,
+        "success": true
+      },
+      {
+        "function": "atrav_l2::lemma_cdlpend",
+        "ms": 14,
+        "rlimit": 34218,
+        "success": true
+      },
+      {
+        "function": "atrav_l2::lemma_cdlpround",
+        "ms": 11,
+        "rlimit": 32837,
+        "success": true
+      },
+      {
+        "function": "atrav_l2::lemma_raw_inv_at",
+        "ms": 8,
+        "rlimit": 21712,
+        "success": true
+      },
+      {
+        "function": "atrav_l2::lemma_splength",
+        "ms": 15,
+        "rlimit": 33344,
+        "success": true
+      },
+      {
+        "function": "atrav_l2::lemma_sppaths",
+        "ms": 16,
+        "rlimit": 34703,
+        "success": true
+      },
+      {
+        "function": "atrav_l2::lemma_step",
+        "ms": 29,
+        "rlimit": 66135,
+        "success": true
+      },
+      {
+        "function": "atrav_l2::lemma_varlen",
+        "ms": 12,
+        "rlimit": 29599,
+        "success": true
+      },
+      {
+        "function": "atrav_l2::theorem_cdlp_answer_in_default_graph",
+        "ms": 11,
+        "rlimit": 27673,
+        "success": true
+      },
+      {
+        "function": "atrav_l2::theorem_raw_executions_refine",
+        "ms": 13,
+        "rlimit": 37044,
+        "success": true
+      },
+      {
+        "function": "atrav_runs::lemma_t_steps",
+        "ms": 12,
+        "rlimit": 27138,
+        "success": true
+      },
+      {
+        "function": "gid_l1::GidL1::init_safe",
+        "ms": 1,
+        "rlimit": 4048,
+        "success": true
+      },
+      {
+        "function": "gid_l1::GidL1::step_safe",
+        "ms": 1,
+        "rlimit": 4674,
+        "success": true
+      },
+      {
+        "function": "gid_l1::lemma_l1_safe",
+        "ms": 6,
+        "rlimit": 14854,
+        "success": true
+      },
+      {
+        "function": "gid_l1::theorem_all_graph_read_is_union",
+        "ms": 2,
+        "rlimit": 5428,
+        "success": true
+      },
+      {
+        "function": "gid_l1::theorem_default_read_is_scoped",
+        "ms": 2,
+        "rlimit": 5751,
+        "success": true
+      },
+      {
+        "function": "gid_l1::theorem_every_graph_erasable",
+        "ms": 2,
+        "rlimit": 6058,
+        "success": true
+      },
+      {
+        "function": "gid_l1::theorem_index_keys_distinct",
+        "ms": 1,
+        "rlimit": 4010,
+        "success": true
+      },
+      {
+        "function": "gid_l2::GidL2::init_refines",
+        "ms": 1,
+        "rlimit": 4702,
+        "success": true
+      },
+      {
+        "function": "gid_l2::GidL2::init_safe",
+        "ms": 1,
+        "rlimit": 4850,
+        "success": true
+      },
+      {
+        "function": "gid_l2::GidL2::step_refines",
+        "ms": 2,
+        "rlimit": 6445,
+        "success": true
+      },
+      {
+        "function": "gid_l2::GidL2::step_safe",
+        "ms": 2,
+        "rlimit": 6248,
+        "success": true
+      },
+      {
+        "function": "gid_l2::lemma_bylabel",
+        "ms": 6,
+        "rlimit": 17636,
+        "success": true
+      },
+      {
+        "function": "gid_l2::lemma_createnode",
+        "ms": 7,
+        "rlimit": 19511,
+        "success": true
+      },
+      {
+        "function": "gid_l2::lemma_inv02_is_inv1",
+        "ms": 2,
+        "rlimit": 7168,
+        "success": true
+      },
+      {
+        "function": "gid_l2::lemma_propkeys",
+        "ms": 5,
+        "rlimit": 14587,
+        "success": true
+      },
+      {
+        "function": "gid_l2::lemma_raw_inv_at",
+        "ms": 5,
+        "rlimit": 12896,
+        "success": true
+      },
+      {
+        "function": "gid_l2::lemma_step",
+        "ms": 11,
+        "rlimit": 27408,
+        "success": true
+      },
+      {
+        "function": "gid_l2::theorem_no_row_under_reserved_name",
+        "ms": 1,
+        "rlimit": 4333,
+        "success": true
+      },
+      {
+        "function": "gid_l2::theorem_raw_executions_refine",
+        "ms": 12,
+        "rlimit": 30273,
+        "success": true
+      },
+      {
+        "function": "gid_runs::lemma_g_steps",
+        "ms": 3,
+        "rlimit": 7347,
+        "success": true
+      },
+      {
+        "function": "gmode_l1::ModeL1::init_safe",
+        "ms": 0,
+        "rlimit": 1956,
+        "success": true
+      },
+      {
+        "function": "gmode_l1::ModeL1::step_safe",
+        "ms": 1,
+        "rlimit": 2857,
+        "success": true
+      },
+      {
+        "function": "gmode_l1::lemma_l1_safe",
+        "ms": 2,
+        "rlimit": 5391,
+        "success": true
+      },
+      {
+        "function": "gmode_l1::theorem_mode_off_single_edge",
+        "ms": 0,
+        "rlimit": 2056,
+        "success": true
+      },
+      {
+        "function": "gmode_l1::theorem_single_writer_never_parallel",
+        "ms": 1,
+        "rlimit": 3675,
+        "success": true
+      },
+      {
+        "function": "gmode_l2::ModeL2::init_refines",
+        "ms": 2,
+        "rlimit": 4737,
+        "success": true
+      },
+      {
+        "function": "gmode_l2::ModeL2::init_safe",
+        "ms": 2,
+        "rlimit": 4922,
+        "success": true
+      },
+      {
+        "function": "gmode_l2::ModeL2::step_refines",
+        "ms": 2,
+        "rlimit": 7637,
+        "success": true
+      },
+      {
+        "function": "gmode_l2::ModeL2::step_safe",
+        "ms": 2,
+        "rlimit": 6840,
+        "success": true
+      },
+      {
+        "function": "gmode_l2::lemma_cyinsertone",
+        "ms": 13,
+        "rlimit": 34755,
+        "success": true
+      },
+      {
+        "function": "gmode_l2::lemma_cyinsertpar",
+        "ms": 10,
+        "rlimit": 25195,
+        "success": true
+      },
+      {
+        "function": "gmode_l2::lemma_cymode",
+        "ms": 8,
+        "rlimit": 20646,
+        "success": true
+      },
+      {
+        "function": "gmode_l2::lemma_raw_inv_at",
+        "ms": 9,
+        "rlimit": 21855,
+        "success": true
+      },
+      {
+        "function": "gmode_l2::lemma_setoffcount",
+        "ms": 7,
+        "rlimit": 15824,
+        "success": true
+      },
+      {
+        "function": "gmode_l2::lemma_single",
+        "ms": 12,
+        "rlimit": 30348,
+        "success": true
+      },
+      {
+        "function": "gmode_l2::lemma_step",
+        "ms": 24,
+        "rlimit": 51304,
+        "success": true
+      },
+      {
+        "function": "gmode_l2::theorem_mode_off_rows",
+        "ms": 1,
+        "rlimit": 4099,
+        "success": true
+      },
+      {
+        "function": "gmode_l2::theorem_raw_executions_refine",
+        "ms": 15,
+        "rlimit": 34820,
+        "success": true
+      },
+      {
+        "function": "gmode_runs::lemma_m_steps",
+        "ms": 28,
+        "rlimit": 63959,
+        "success": true
+      },
+      {
+        "function": "inst_l1::InstL1::init_safe",
+        "ms": 1,
+        "rlimit": 2806,
+        "success": true
+      },
+      {
+        "function": "inst_l1::InstL1::step_safe",
+        "ms": 2,
+        "rlimit": 5363,
+        "success": true
+      },
+      {
+        "function": "inst_l1::lemma_l1_safe",
+        "ms": 8,
+        "rlimit": 18363,
+        "success": true
+      },
+      {
+        "function": "inst_l1::theorem_admitted_only_by_binding",
+        "ms": 2,
+        "rlimit": 5372,
+        "success": true
+      },
+      {
+        "function": "inst_l1::theorem_binding_never_changes",
+        "ms": 9,
+        "rlimit": 23358,
+        "success": true
+      },
+      {
+        "function": "inst_l1::theorem_quiet_reply_means_success",
+        "ms": 4,
+        "rlimit": 10688,
+        "success": true
+      },
+      {
+        "function": "inst_l1::theorem_readiness_is_named",
+        "ms": 3,
+        "rlimit": 7813,
+        "success": true
+      },
+      {
+        "function": "inst_l1::theorem_removed_means_gone",
+        "ms": 3,
+        "rlimit": 7559,
+        "success": true
+      },
+      {
+        "function": "inst_l1::theorem_upgrade_follows_binding",
+        "ms": 5,
+        "rlimit": 15413,
+        "success": true
+      },
+      {
+        "function": "inst_l2::InstL2::init_refines",
+        "ms": 3,
+        "rlimit": 6063,
+        "success": true
+      },
+      {
+        "function": "inst_l2::InstL2::init_safe",
+        "ms": 1,
+        "rlimit": 6090,
+        "success": true
+      },
+      {
+        "function": "inst_l2::InstL2::step_refines",
+        "ms": 3,
+        "rlimit": 11073,
+        "success": true
+      },
+      {
+        "function": "inst_l2::InstL2::step_safe",
+        "ms": 2,
+        "rlimit": 9608,
+        "success": true
+      },
+      {
+        "function": "inst_l2::lemma_access",
+        "ms": 24,
+        "rlimit": 52722,
+        "success": true
+      },
+      {
+        "function": "inst_l2::lemma_ddl",
+        "ms": 25,
+        "rlimit": 57611,
+        "success": true
+      },
+      {
+        "function": "inst_l2::lemma_kg",
+        "ms": 24,
+        "rlimit": 58049,
+        "success": true
+      },
+      {
+        "function": "inst_l2::lemma_raw_inv_at",
+        "ms": 9,
+        "rlimit": 31458,
+        "success": true
+      },
+      {
+        "function": "inst_l2::lemma_rmfirst",
+        "ms": 32,
+        "rlimit": 128537,
+        "success": true
+      },
+      {
+        "function": "inst_l2::lemma_rmlater",
+        "ms": 12,
+        "rlimit": 44662,
+        "success": true
+      },
+      {
+        "function": "inst_l2::lemma_rmview",
+        "ms": 28,
+        "rlimit": 61120,
+        "success": true
+      },
+      {
+        "function": "inst_l2::lemma_step",
+        "ms": 115,
+        "rlimit": 419188,
+        "success": true
+      },
+      {
+        "function": "inst_l2::lemma_upgrade",
+        "ms": 33,
+        "rlimit": 78889,
+        "success": true
+      },
+      {
+        "function": "inst_l2::theorem_no_record_no_admission",
+        "ms": 12,
+        "rlimit": 38577,
+        "success": true
+      },
+      {
+        "function": "inst_l2::theorem_raw_executions_refine",
+        "ms": 10,
+        "rlimit": 36411,
+        "success": true
+      },
+      {
+        "function": "inst_runs::lemma_i_steps",
+        "ms": 79,
+        "rlimit": 190195,
+        "success": true
+      },
+      {
+        "function": "witness_acache::witness_acache",
+        "ms": 214,
+        "rlimit": 377876,
+        "success": true
+      },
+      {
+        "function": "witness_atrav::witness_atrav",
+        "ms": 82,
+        "rlimit": 166452,
+        "success": true
+      },
+      {
+        "function": "witness_gid::witness_gid",
+        "ms": 30,
+        "rlimit": 77955,
+        "success": true
+      },
+      {
+        "function": "witness_gmode::witness_gmode",
+        "ms": 159,
+        "rlimit": 345936,
+        "success": true
+      },
+      {
+        "function": "witness_inst::witness_inst",
+        "ms": 117,
+        "rlimit": 370822,
+        "success": true
+      }
+    ],
+    "failing_functions": [],
+    "functions_checked": 115,
+    "max_function_rlimit": 419188,
+    "json_sha256": "e7ffe6bd02968a7a03485771963f49977a2378dda00b7da810fdd67f3721a08a",
+    "pass": true,
+    "cost_per_module_proof": {
+      "module 01 (install/schema: record, readiness, upgrade, legacy removal)": {
+        "modules": {
+          "inst_l2": {
+            "ms": 340,
+            "rlimit": 1040058
+          },
+          "witness_inst": {
+            "ms": 117,
+            "rlimit": 370822
+          },
+          "inst_runs": {
+            "ms": 79,
+            "rlimit": 190195
+          },
+          "inst_l1": {
+            "ms": 41,
+            "rlimit": 96735
+          }
+        },
+        "ms": 577,
+        "rlimit": 1697810,
+        "functions": 26,
+        "largest_function": {
+          "function": "inst_l2::lemma_step",
+          "ms": 115,
+          "rlimit": 419188,
+          "success": true
+        }
+      },
+      "module 02 (graph names and graph-scoped reads)": {
+        "modules": {
+          "gid_l2": {
+            "ms": 63,
+            "rlimit": 156057
+          },
+          "witness_gid": {
+            "ms": 30,
+            "rlimit": 77955
+          },
+          "gid_l1": {
+            "ms": 19,
+            "rlimit": 44823
+          },
+          "gid_runs": {
+            "ms": 3,
+            "rlimit": 7347
+          }
+        },
+        "ms": 115,
+        "rlimit": 286182,
+        "functions": 21,
+        "largest_function": {
+          "function": "witness_gid::witness_gid",
+          "ms": 30,
+          "rlimit": 77955,
+          "success": true
+        }
+      },
+      "module 02 (multigraph mode)": {
+        "modules": {
+          "witness_gmode": {
+            "ms": 159,
+            "rlimit": 345936
+          },
+          "gmode_l2": {
+            "ms": 114,
+            "rlimit": 262982
+          },
+          "gmode_runs": {
+            "ms": 28,
+            "rlimit": 63959
+          },
+          "gmode_l1": {
+            "ms": 7,
+            "rlimit": 15935
+          }
+        },
+        "ms": 308,
+        "rlimit": 688812,
+        "functions": 20,
+        "largest_function": {
+          "function": "witness_gmode::witness_gmode",
+          "ms": 159,
+          "rlimit": 345936,
+          "success": true
+        }
+      },
+      "module 10 (cached answers, PageRank completeness, read footprint)": {
+        "modules": {
+          "witness_acache": {
+            "ms": 214,
+            "rlimit": 377876
+          },
+          "acache_l2": {
+            "ms": 159,
+            "rlimit": 363726
+          },
+          "acache_runs": {
+            "ms": 30,
+            "rlimit": 62482
+          },
+          "acache_l1": {
+            "ms": 18,
+            "rlimit": 42960
+          }
+        },
+        "ms": 421,
+        "rlimit": 847044,
+        "functions": 21,
+        "largest_function": {
+          "function": "witness_acache::witness_acache",
+          "ms": 214,
+          "rlimit": 377876,
+          "success": true
+        }
+      },
+      "module 10 (shortest-path direction, walk graph scope, label propagation)": {
+        "modules": {
+          "atrav_l2": {
+            "ms": 151,
+            "rlimit": 359302
+          },
+          "witness_atrav": {
+            "ms": 82,
+            "rlimit": 166452
+          },
+          "atrav_l1": {
+            "ms": 34,
+            "rlimit": 82909
+          },
+          "atrav_runs": {
+            "ms": 12,
+            "rlimit": 27138
+          }
+        },
+        "ms": 279,
+        "rlimit": 635801,
+        "functions": 27,
+        "largest_function": {
+          "function": "witness_atrav::witness_atrav",
+          "ms": 82,
+          "rlimit": 166452,
+          "success": true
+        }
+      }
+    }
+  },
+  "controls": {
+    "control_f0103_marker_admits": {
+      "tag": "control_f0103_marker_admits",
+      "features": "control_f0103_marker_admits",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f0103_marker_admits -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1e/control_f0103_marker_admits.log",
+      "json": "$RUN_DIR/proofs-d1e/control_f0103_marker_admits.json",
+      "wall_seconds": 2.03,
+      "max_rss_kb": 476540,
+      "error_locations": [
+        "src/inst_l2.rs:217"
+      ],
+      "resource_limit": false,
+      "verified": 114,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1879,
+      "smt_run_ms": 1583,
+      "rlimit_total": 4043374,
+      "modules": {
+        "inst_l2": {
+          "ms": 311,
+          "rlimit": 1045294
+        },
+        "witness_acache": {
+          "ms": 153,
+          "rlimit": 377876
+        },
+        "acache_l2": {
+          "ms": 161,
+          "rlimit": 363726
+        },
+        "atrav_l2": {
+          "ms": 154,
+          "rlimit": 359302
+        },
+        "witness_gmode": {
+          "ms": 136,
+          "rlimit": 345936
+        },
+        "gmode_l2": {
+          "ms": 112,
+          "rlimit": 262982
+        },
+        "cx_f0103": {
+          "ms": 108,
+          "rlimit": 253311
+        },
+        "inst_runs": {
+          "ms": 80,
+          "rlimit": 190195
+        },
+        "witness_atrav": {
+          "ms": 79,
+          "rlimit": 166452
+        },
+        "gid_l2": {
+          "ms": 59,
+          "rlimit": 156057
+        },
+        "inst_l1": {
+          "ms": 43,
+          "rlimit": 96735
+        },
+        "atrav_l1": {
+          "ms": 32,
+          "rlimit": 82909
+        },
+        "witness_gid": {
+          "ms": 30,
+          "rlimit": 77955
+        },
+        "gmode_runs": {
+          "ms": 25,
+          "rlimit": 63959
+        },
+        "acache_runs": {
+          "ms": 31,
+          "rlimit": 62482
+        },
+        "gid_l1": {
+          "ms": 18,
+          "rlimit": 44823
+        },
+        "acache_l1": {
+          "ms": 18,
+          "rlimit": 42960
+        },
+        "atrav_runs": {
+          "ms": 12,
+          "rlimit": 27138
+        },
+        "gmode_l1": {
+          "ms": 6,
+          "rlimit": 15935
+        },
+        "gid_runs": {
+          "ms": 3,
+          "rlimit": 7347
+        }
+      },
+      "top_functions": [
+        {
+          "function": "inst_l2::lemma_step",
+          "ms": 114,
+          "rlimit": 413511,
+          "success": true
+        },
+        {
+          "function": "witness_acache::witness_acache",
+          "ms": 153,
+          "rlimit": 377876,
+          "success": true
+        },
+        {
+          "function": "witness_gmode::witness_gmode",
+          "ms": 136,
+          "rlimit": 345936,
+          "success": true
+        },
+        {
+          "function": "cx_f0103::counterexample_f0103",
+          "ms": 108,
+          "rlimit": 253311,
+          "success": true
+        },
+        {
+          "function": "inst_runs::lemma_i_steps",
+          "ms": 80,
+          "rlimit": 190195,
+          "success": true
+        },
+        {
+          "function": "witness_atrav::witness_atrav",
+          "ms": 79,
+          "rlimit": 166452,
+          "success": true
+        },
+        {
+          "function": "inst_l2::lemma_rmfirst",
+          "ms": 31,
+          "rlimit": 127510,
+          "success": true
+        },
+        {
+          "function": "acache_l2::lemma_step",
+          "ms": 52,
+          "rlimit": 117810,
+          "success": true
+        },
+        {
+          "function": "inst_l2::lemma_upgrade",
+          "ms": 19,
+          "rlimit": 79134,
+          "success": true
+        },
+        {
+          "function": "witness_gid::witness_gid",
+          "ms": 30,
+          "rlimit": 77955,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "inst_l2::lemma_access"
+      ],
+      "functions_checked": 115,
+      "max_function_rlimit": 413511,
+      "json_sha256": "4e62d85555d8b956b85f2794803ba05ba754ce32c47032962c8f66d924456d89",
+      "module": "01",
+      "finding": "F-0103",
+      "expected": "src/inst_l2.rs",
+      "counterexample": "cx_f0103::counterexample_f0103",
+      "what": "with no schema record, check_first_access admits an engine whose schema holds the marker class <package>.funcCYCMP (schema_name.py:233-235)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f0102_failure_only_logged": {
+      "tag": "control_f0102_failure_only_logged",
+      "features": "control_f0102_failure_only_logged",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f0102_failure_only_logged -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1e/control_f0102_failure_only_logged.log",
+      "json": "$RUN_DIR/proofs-d1e/control_f0102_failure_only_logged.json",
+      "wall_seconds": 2.07,
+      "max_rss_kb": 477824,
+      "error_locations": [
+        "src/inst_l2.rs:199",
+        "src/inst_l2.rs:208"
+      ],
+      "resource_limit": false,
+      "verified": 113,
+      "errors": 2,
+      "success": false,
+      "verus_total_ms": 1922,
+      "smt_run_ms": 1583,
+      "rlimit_total": 4064782,
+      "modules": {
+        "inst_l2": {
+          "ms": 311,
+          "rlimit": 973112
+        },
+        "witness_acache": {
+          "ms": 163,
+          "rlimit": 377876
+        },
+        "acache_l2": {
+          "ms": 153,
+          "rlimit": 363726
+        },
+        "atrav_l2": {
+          "ms": 150,
+          "rlimit": 359302
+        },
+        "cx_f0102": {
+          "ms": 151,
+          "rlimit": 351369
+        },
+        "witness_gmode": {
+          "ms": 110,
+          "rlimit": 345936
+        },
+        "gmode_l2": {
+          "ms": 113,
+          "rlimit": 262982
+        },
+        "inst_runs": {
+          "ms": 78,
+          "rlimit": 185727
+        },
+        "witness_atrav": {
+          "ms": 56,
+          "rlimit": 166452
+        },
+        "gid_l2": {
+          "ms": 64,
+          "rlimit": 156057
+        },
+        "inst_l1": {
+          "ms": 38,
+          "rlimit": 96735
+        },
+        "atrav_l1": {
+          "ms": 35,
+          "rlimit": 82909
+        },
+        "witness_gid": {
+          "ms": 35,
+          "rlimit": 77955
+        },
+        "gmode_runs": {
+          "ms": 29,
+          "rlimit": 63959
+        },
+        "acache_runs": {
+          "ms": 29,
+          "rlimit": 62482
+        },
+        "gid_l1": {
+          "ms": 19,
+          "rlimit": 44823
+        },
+        "acache_l1": {
+          "ms": 18,
+          "rlimit": 42960
+        },
+        "atrav_runs": {
+          "ms": 11,
+          "rlimit": 27138
+        },
+        "gmode_l1": {
+          "ms": 7,
+          "rlimit": 15935
+        },
+        "gid_runs": {
+          "ms": 3,
+          "rlimit": 7347
+        }
+      },
+      "top_functions": [
+        {
+          "function": "inst_l2::lemma_step",
+          "ms": 114,
+          "rlimit": 414494,
+          "success": true
+        },
+        {
+          "function": "witness_acache::witness_acache",
+          "ms": 163,
+          "rlimit": 377876,
+          "success": true
+        },
+        {
+          "function": "cx_f0102::counterexample_f0102",
+          "ms": 151,
+          "rlimit": 351369,
+          "success": true
+        },
+        {
+          "function": "witness_gmode::witness_gmode",
+          "ms": 110,
+          "rlimit": 345936,
+          "success": true
+        },
+        {
+          "function": "inst_runs::lemma_i_steps",
+          "ms": 78,
+          "rlimit": 185727,
+          "success": true
+        },
+        {
+          "function": "witness_atrav::witness_atrav",
+          "ms": 56,
+          "rlimit": 166452,
+          "success": true
+        },
+        {
+          "function": "inst_l2::lemma_rmfirst",
+          "ms": 32,
+          "rlimit": 131084,
+          "success": true
+        },
+        {
+          "function": "acache_l2::lemma_step",
+          "ms": 53,
+          "rlimit": 117810,
+          "success": true
+        },
+        {
+          "function": "inst_l2::lemma_upgrade",
+          "ms": 20,
+          "rlimit": 79350,
+          "success": true
+        },
+        {
+          "function": "witness_gid::witness_gid",
+          "ms": 35,
+          "rlimit": 77955,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "inst_l2::lemma_ddl",
+        "inst_l2::lemma_kg"
+      ],
+      "functions_checked": 115,
+      "max_function_rlimit": 414494,
+      "json_sha256": "623ae169356ef4bc9feabe2c4ed1907da118c99dc1d89bbca1e7237e8a731d54",
+      "module": "01",
+      "finding": "F-0102",
+      "expected": "src/inst_l2.rs",
+      "counterexample": "cx_f0102::counterexample_f0102",
+      "what": "a base DDL statement failing for another reason than exists/privilege, and a failed ^KG bootstrap, are log lines only, not in the reply's warnings (_engine/schema.py:2508-2511, 2680-2681)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f0109_upgrade_default_schema": {
+      "tag": "control_f0109_upgrade_default_schema",
+      "features": "control_f0109_upgrade_default_schema",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f0109_upgrade_default_schema -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1e/control_f0109_upgrade_default_schema.log",
+      "json": "$RUN_DIR/proofs-d1e/control_f0109_upgrade_default_schema.json",
+      "wall_seconds": 2.07,
+      "max_rss_kb": 478892,
+      "error_locations": [
+        "src/inst_l2.rs:225"
+      ],
+      "resource_limit": false,
+      "verified": 114,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1920,
+      "smt_run_ms": 1637,
+      "rlimit_total": 4130879,
+      "modules": {
+        "inst_l2": {
+          "ms": 335,
+          "rlimit": 990955
+        },
+        "cx_f0109": {
+          "ms": 166,
+          "rlimit": 396262
+        },
+        "witness_acache": {
+          "ms": 187,
+          "rlimit": 377876
+        },
+        "acache_l2": {
+          "ms": 165,
+          "rlimit": 363726
+        },
+        "atrav_l2": {
+          "ms": 152,
+          "rlimit": 359302
+        },
+        "witness_gmode": {
+          "ms": 107,
+          "rlimit": 345936
+        },
+        "gmode_l2": {
+          "ms": 105,
+          "rlimit": 262982
+        },
+        "inst_runs": {
+          "ms": 78,
+          "rlimit": 189088
+        },
+        "witness_atrav": {
+          "ms": 55,
+          "rlimit": 166452
+        },
+        "gid_l2": {
+          "ms": 63,
+          "rlimit": 156057
+        },
+        "inst_l1": {
+          "ms": 43,
+          "rlimit": 96735
+        },
+        "atrav_l1": {
+          "ms": 32,
+          "rlimit": 82909
+        },
+        "witness_gid": {
+          "ms": 24,
+          "rlimit": 77955
+        },
+        "gmode_runs": {
+          "ms": 28,
+          "rlimit": 63959
+        },
+        "acache_runs": {
+          "ms": 31,
+          "rlimit": 62482
+        },
+        "gid_l1": {
+          "ms": 18,
+          "rlimit": 44823
+        },
+        "acache_l1": {
+          "ms": 18,
+          "rlimit": 42960
+        },
+        "atrav_runs": {
+          "ms": 12,
+          "rlimit": 27138
+        },
+        "gmode_l1": {
+          "ms": 6,
+          "rlimit": 15935
+        },
+        "gid_runs": {
+          "ms": 2,
+          "rlimit": 7347
+        }
+      },
+      "top_functions": [
+        {
+          "function": "inst_l2::lemma_step",
+          "ms": 117,
+          "rlimit": 419645,
+          "success": true
+        },
+        {
+          "function": "cx_f0109::counterexample_f0109",
+          "ms": 166,
+          "rlimit": 396262,
+          "success": true
+        },
+        {
+          "function": "witness_acache::witness_acache",
+          "ms": 187,
+          "rlimit": 377876,
+          "success": true
+        },
+        {
+          "function": "witness_gmode::witness_gmode",
+          "ms": 107,
+          "rlimit": 345936,
+          "success": true
+        },
+        {
+          "function": "inst_runs::lemma_i_steps",
+          "ms": 78,
+          "rlimit": 189088,
+          "success": true
+        },
+        {
+          "function": "witness_atrav::witness_atrav",
+          "ms": 55,
+          "rlimit": 166452,
+          "success": true
+        },
+        {
+          "function": "inst_l2::lemma_rmfirst",
+          "ms": 30,
+          "rlimit": 128531,
+          "success": true
+        },
+        {
+          "function": "acache_l2::lemma_step",
+          "ms": 55,
+          "rlimit": 117810,
+          "success": true
+        },
+        {
+          "function": "witness_gid::witness_gid",
+          "ms": 24,
+          "rlimit": 77955,
+          "success": true
+        },
+        {
+          "function": "atrav_l2::lemma_step",
+          "ms": 29,
+          "rlimit": 66135,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "inst_l2::lemma_upgrade"
+      ],
+      "functions_checked": 115,
+      "max_function_rlimit": 419645,
+      "json_sha256": "e227542705fa5f442a24936802a5477fe3acdf146342c1e69c5dce91f8491b21",
+      "module": "01",
+      "finding": "F-0109",
+      "expected": "src/inst_l2.rs",
+      "counterexample": "cx_f0109::counterexample_f0109",
+      "what": "upgrade_to_4_0_0 works on its schema= argument (default Graph_KG) and never reads ^IVG.Deploy(\"schema\") (migrations/upgrade.py:58, 140)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f0101_removed_unchecked": {
+      "tag": "control_f0101_removed_unchecked",
+      "features": "control_f0101_removed_unchecked",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f0101_removed_unchecked -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1e/control_f0101_removed_unchecked.log",
+      "json": "$RUN_DIR/proofs-d1e/control_f0101_removed_unchecked.json",
+      "wall_seconds": 2.11,
+      "max_rss_kb": 475916,
+      "error_locations": [
+        "src/inst_l2.rs:234",
+        "src/inst_l2.rs:253"
+      ],
+      "resource_limit": false,
+      "verified": 113,
+      "errors": 2,
+      "success": false,
+      "verus_total_ms": 1954,
+      "smt_run_ms": 1590,
+      "rlimit_total": 3945565,
+      "modules": {
+        "inst_l2": {
+          "ms": 332,
+          "rlimit": 1017899
+        },
+        "witness_acache": {
+          "ms": 168,
+          "rlimit": 377876
+        },
+        "acache_l2": {
+          "ms": 164,
+          "rlimit": 363726
+        },
+        "atrav_l2": {
+          "ms": 150,
+          "rlimit": 359302
+        },
+        "witness_gmode": {
+          "ms": 116,
+          "rlimit": 345936
+        },
+        "gmode_l2": {
+          "ms": 118,
+          "rlimit": 262982
+        },
+        "inst_runs": {
+          "ms": 89,
+          "rlimit": 204712
+        },
+        "cx_f0101": {
+          "ms": 78,
+          "rlimit": 168380
+        },
+        "witness_atrav": {
+          "ms": 76,
+          "rlimit": 166452
+        },
+        "gid_l2": {
+          "ms": 64,
+          "rlimit": 156057
+        },
+        "inst_l1": {
+          "ms": 41,
+          "rlimit": 96735
+        },
+        "atrav_l1": {
+          "ms": 34,
+          "rlimit": 82909
+        },
+        "witness_gid": {
+          "ms": 34,
+          "rlimit": 77955
+        },
+        "gmode_runs": {
+          "ms": 26,
+          "rlimit": 63959
+        },
+        "acache_runs": {
+          "ms": 31,
+          "rlimit": 62482
+        },
+        "gid_l1": {
+          "ms": 18,
+          "rlimit": 44823
+        },
+        "acache_l1": {
+          "ms": 18,
+          "rlimit": 42960
+        },
+        "atrav_runs": {
+          "ms": 12,
+          "rlimit": 27138
+        },
+        "gmode_l1": {
+          "ms": 7,
+          "rlimit": 15935
+        },
+        "gid_runs": {
+          "ms": 3,
+          "rlimit": 7347
+        }
+      },
+      "top_functions": [
+        {
+          "function": "inst_l2::lemma_step",
+          "ms": 113,
+          "rlimit": 412888,
+          "success": true
+        },
+        {
+          "function": "witness_acache::witness_acache",
+          "ms": 168,
+          "rlimit": 377876,
+          "success": true
+        },
+        {
+          "function": "witness_gmode::witness_gmode",
+          "ms": 116,
+          "rlimit": 345936,
+          "success": true
+        },
+        {
+          "function": "inst_runs::lemma_i_steps",
+          "ms": 89,
+          "rlimit": 204712,
+          "success": true
+        },
+        {
+          "function": "cx_f0101::counterexample_f0101",
+          "ms": 78,
+          "rlimit": 168380,
+          "success": true
+        },
+        {
+          "function": "witness_atrav::witness_atrav",
+          "ms": 76,
+          "rlimit": 166452,
+          "success": true
+        },
+        {
+          "function": "inst_l2::lemma_rmfirst",
+          "ms": 32,
+          "rlimit": 127269,
+          "success": true
+        },
+        {
+          "function": "acache_l2::lemma_step",
+          "ms": 54,
+          "rlimit": 117810,
+          "success": true
+        },
+        {
+          "function": "inst_l2::lemma_upgrade",
+          "ms": 33,
+          "rlimit": 78889,
+          "success": true
+        },
+        {
+          "function": "witness_gid::witness_gid",
+          "ms": 34,
+          "rlimit": 77955,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "inst_l2::lemma_rmlater",
+        "inst_l2::lemma_rmview"
+      ],
+      "functions_checked": 115,
+      "max_function_rlimit": 412888,
+      "json_sha256": "3d409b092a3187189b9171d9190529e67f6e5710991c2b1884e7f7e417e02c84",
+      "module": "01",
+      "finding": "F-0101",
+      "expected": "src/inst_l2.rs",
+      "counterexample": "cx_f0101::counterexample_f0101",
+      "what": "remove_legacy_objects reports removed=True after DROP VIEW whatever _drop answered, and for a class's later items whatever the class delete answered (_engine/legacy.py:670-684)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f0202_writer_skips_name_check": {
+      "tag": "control_f0202_writer_skips_name_check",
+      "features": "control_f0202_writer_skips_name_check",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f0202_writer_skips_name_check -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1e/control_f0202_writer_skips_name_check.log",
+      "json": "$RUN_DIR/proofs-d1e/control_f0202_writer_skips_name_check.json",
+      "wall_seconds": 2.02,
+      "max_rss_kb": 477972,
+      "error_locations": [
+        "src/gid_l2.rs:147"
+      ],
+      "resource_limit": false,
+      "verified": 114,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1870,
+      "smt_run_ms": 1616,
+      "rlimit_total": 4088891,
+      "modules": {
+        "inst_l2": {
+          "ms": 339,
+          "rlimit": 1040058
+        },
+        "witness_acache": {
+          "ms": 165,
+          "rlimit": 377876
+        },
+        "witness_inst": {
+          "ms": 115,
+          "rlimit": 370822
+        },
+        "acache_l2": {
+          "ms": 164,
+          "rlimit": 363726
+        },
+        "atrav_l2": {
+          "ms": 150,
+          "rlimit": 359302
+        },
+        "witness_gmode": {
+          "ms": 144,
+          "rlimit": 345936
+        },
+        "gmode_l2": {
+          "ms": 115,
+          "rlimit": 262982
+        },
+        "inst_runs": {
+          "ms": 81,
+          "rlimit": 190195
+        },
+        "witness_atrav": {
+          "ms": 65,
+          "rlimit": 166452
+        },
+        "gid_l2": {
+          "ms": 71,
+          "rlimit": 154921
+        },
+        "inst_l1": {
+          "ms": 41,
+          "rlimit": 96735
+        },
+        "atrav_l1": {
+          "ms": 33,
+          "rlimit": 82909
+        },
+        "gmode_runs": {
+          "ms": 27,
+          "rlimit": 63959
+        },
+        "acache_runs": {
+          "ms": 31,
+          "rlimit": 62482
+        },
+        "gid_l1": {
+          "ms": 19,
+          "rlimit": 44823
+        },
+        "acache_l1": {
+          "ms": 19,
+          "rlimit": 42960
+        },
+        "atrav_runs": {
+          "ms": 12,
+          "rlimit": 27138
+        },
+        "gmode_l1": {
+          "ms": 7,
+          "rlimit": 15935
+        },
+        "cx_f0202": {
+          "ms": 5,
+          "rlimit": 12187
+        },
+        "gid_runs": {
+          "ms": 3,
+          "rlimit": 7493
+        }
+      },
+      "top_functions": [
+        {
+          "function": "inst_l2::lemma_step",
+          "ms": 115,
+          "rlimit": 419188,
+          "success": true
+        },
+        {
+          "function": "witness_acache::witness_acache",
+          "ms": 165,
+          "rlimit": 377876,
+          "success": true
+        },
+        {
+          "function": "witness_inst::witness_inst",
+          "ms": 115,
+          "rlimit": 370822,
+          "success": true
+        },
+        {
+          "function": "witness_gmode::witness_gmode",
+          "ms": 144,
+          "rlimit": 345936,
+          "success": true
+        },
+        {
+          "function": "inst_runs::lemma_i_steps",
+          "ms": 81,
+          "rlimit": 190195,
+          "success": true
+        },
+        {
+          "function": "witness_atrav::witness_atrav",
+          "ms": 65,
+          "rlimit": 166452,
+          "success": true
+        },
+        {
+          "function": "inst_l2::lemma_rmfirst",
+          "ms": 36,
+          "rlimit": 128537,
+          "success": true
+        },
+        {
+          "function": "acache_l2::lemma_step",
+          "ms": 53,
+          "rlimit": 117810,
+          "success": true
+        },
+        {
+          "function": "inst_l2::lemma_upgrade",
+          "ms": 32,
+          "rlimit": 78889,
+          "success": true
+        },
+        {
+          "function": "atrav_l2::lemma_step",
+          "ms": 29,
+          "rlimit": 66135,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "gid_l2::lemma_createnode"
+      ],
+      "functions_checked": 115,
+      "max_function_rlimit": 419188,
+      "json_sha256": "4b7feec152967dc3d08b32dc8f0fdf3b29629c4d1a87a20be076beb97c127f53",
+      "module": "02",
+      "finding": "F-0202",
+      "expected": "src/gid_l2.rs",
+      "counterexample": "cx_f0202::counterexample_f0202",
+      "what": "create_node and store_node call no graph-name check and write rows under the reserved name \"0\" (_engine/nodes_edges.py:968-1105)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f0206_hydrate_from_default": {
+      "tag": "control_f0206_hydrate_from_default",
+      "features": "control_f0206_hydrate_from_default",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f0206_hydrate_from_default -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1e/control_f0206_hydrate_from_default.log",
+      "json": "$RUN_DIR/proofs-d1e/control_f0206_hydrate_from_default.json",
+      "wall_seconds": 1.98,
+      "max_rss_kb": 478716,
+      "error_locations": [
+        "src/gid_l2.rs:164"
+      ],
+      "resource_limit": false,
+      "verified": 114,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1828,
+      "smt_run_ms": 1593,
+      "rlimit_total": 4134096,
+      "modules": {
+        "inst_l2": {
+          "ms": 316,
+          "rlimit": 1040058
+        },
+        "witness_acache": {
+          "ms": 166,
+          "rlimit": 377876
+        },
+        "witness_inst": {
+          "ms": 132,
+          "rlimit": 370822
+        },
+        "acache_l2": {
+          "ms": 165,
+          "rlimit": 363726
+        },
+        "atrav_l2": {
+          "ms": 150,
+          "rlimit": 359302
+        },
+        "witness_gmode": {
+          "ms": 118,
+          "rlimit": 345936
+        },
+        "gmode_l2": {
+          "ms": 117,
+          "rlimit": 262982
+        },
+        "inst_runs": {
+          "ms": 79,
+          "rlimit": 190195
+        },
+        "witness_atrav": {
+          "ms": 60,
+          "rlimit": 166452
+        },
+        "gid_l2": {
+          "ms": 70,
+          "rlimit": 158413
+        },
+        "inst_l1": {
+          "ms": 40,
+          "rlimit": 96735
+        },
+        "atrav_l1": {
+          "ms": 33,
+          "rlimit": 82909
+        },
+        "gmode_runs": {
+          "ms": 27,
+          "rlimit": 63959
+        },
+        "acache_runs": {
+          "ms": 31,
+          "rlimit": 62482
+        },
+        "cx_f0206": {
+          "ms": 23,
+          "rlimit": 54046
+        },
+        "gid_l1": {
+          "ms": 18,
+          "rlimit": 44823
+        },
+        "acache_l1": {
+          "ms": 17,
+          "rlimit": 42960
+        },
+        "atrav_runs": {
+          "ms": 12,
+          "rlimit": 27138
+        },
+        "gmode_l1": {
+          "ms": 7,
+          "rlimit": 15935
+        },
+        "gid_runs": {
+          "ms": 3,
+          "rlimit": 7347
+        }
+      },
+      "top_functions": [
+        {
+          "function": "inst_l2::lemma_step",
+          "ms": 117,
+          "rlimit": 419188,
+          "success": true
+        },
+        {
+          "function": "witness_acache::witness_acache",
+          "ms": 166,
+          "rlimit": 377876,
+          "success": true
+        },
+        {
+          "function": "witness_inst::witness_inst",
+          "ms": 132,
+          "rlimit": 370822,
+          "success": true
+        },
+        {
+          "function": "witness_gmode::witness_gmode",
+          "ms": 118,
+          "rlimit": 345936,
+          "success": true
+        },
+        {
+          "function": "inst_runs::lemma_i_steps",
+          "ms": 79,
+          "rlimit": 190195,
+          "success": true
+        },
+        {
+          "function": "witness_atrav::witness_atrav",
+          "ms": 60,
+          "rlimit": 166452,
+          "success": true
+        },
+        {
+          "function": "inst_l2::lemma_rmfirst",
+          "ms": 32,
+          "rlimit": 128537,
+          "success": true
+        },
+        {
+          "function": "acache_l2::lemma_step",
+          "ms": 56,
+          "rlimit": 117810,
+          "success": true
+        },
+        {
+          "function": "inst_l2::lemma_upgrade",
+          "ms": 23,
+          "rlimit": 78889,
+          "success": true
+        },
+        {
+          "function": "atrav_l2::lemma_step",
+          "ms": 27,
+          "rlimit": 66135,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "gid_l2::lemma_bylabel"
+      ],
+      "functions_checked": 115,
+      "max_function_rlimit": 419188,
+      "json_sha256": "4d8cfe9fc01827f2dcd98fefa64aac38b0bf3467a2eeba1bc47506ac83e51641",
+      "module": "02",
+      "finding": "F-0206 / HD-0201",
+      "expected": "src/gid_l2.rs",
+      "counterexample": "cx_f0206::counterexample_f0206",
+      "what": "get_nodes_by_label takes every graph's ids and hydrates them from the default graph (_engine/nodes_edges.py:760-794, 621-695)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f0106_keys_join_on_id": {
+      "tag": "control_f0106_keys_join_on_id",
+      "features": "control_f0106_keys_join_on_id",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f0106_keys_join_on_id -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1e/control_f0106_keys_join_on_id.log",
+      "json": "$RUN_DIR/proofs-d1e/control_f0106_keys_join_on_id.json",
+      "wall_seconds": 2.03,
+      "max_rss_kb": 478340,
+      "error_locations": [
+        "src/gid_l2.rs:175"
+      ],
+      "resource_limit": false,
+      "verified": 114,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1874,
+      "smt_run_ms": 1632,
+      "rlimit_total": 4160124,
+      "modules": {
+        "inst_l2": {
+          "ms": 341,
+          "rlimit": 1040058
+        },
+        "witness_acache": {
+          "ms": 163,
+          "rlimit": 377876
+        },
+        "witness_inst": {
+          "ms": 118,
+          "rlimit": 370822
+        },
+        "acache_l2": {
+          "ms": 166,
+          "rlimit": 363726
+        },
+        "atrav_l2": {
+          "ms": 152,
+          "rlimit": 359302
+        },
+        "witness_gmode": {
+          "ms": 116,
+          "rlimit": 345936
+        },
+        "gmode_l2": {
+          "ms": 115,
+          "rlimit": 262982
+        },
+        "inst_runs": {
+          "ms": 78,
+          "rlimit": 190195
+        },
+        "witness_atrav": {
+          "ms": 81,
+          "rlimit": 166452
+        },
+        "gid_l2": {
+          "ms": 69,
+          "rlimit": 160906
+        },
+        "inst_l1": {
+          "ms": 42,
+          "rlimit": 96735
+        },
+        "atrav_l1": {
+          "ms": 33,
+          "rlimit": 82909
+        },
+        "cx_f0106": {
+          "ms": 31,
+          "rlimit": 77581
+        },
+        "gmode_runs": {
+          "ms": 27,
+          "rlimit": 63959
+        },
+        "acache_runs": {
+          "ms": 31,
+          "rlimit": 62482
+        },
+        "gid_l1": {
+          "ms": 18,
+          "rlimit": 44823
+        },
+        "acache_l1": {
+          "ms": 19,
+          "rlimit": 42960
+        },
+        "atrav_runs": {
+          "ms": 12,
+          "rlimit": 27138
+        },
+        "gmode_l1": {
+          "ms": 7,
+          "rlimit": 15935
+        },
+        "gid_runs": {
+          "ms": 3,
+          "rlimit": 7347
+        }
+      },
+      "top_functions": [
+        {
+          "function": "inst_l2::lemma_step",
+          "ms": 114,
+          "rlimit": 419188,
+          "success": true
+        },
+        {
+          "function": "witness_acache::witness_acache",
+          "ms": 163,
+          "rlimit": 377876,
+          "success": true
+        },
+        {
+          "function": "witness_inst::witness_inst",
+          "ms": 118,
+          "rlimit": 370822,
+          "success": true
+        },
+        {
+          "function": "witness_gmode::witness_gmode",
+          "ms": 116,
+          "rlimit": 345936,
+          "success": true
+        },
+        {
+          "function": "inst_runs::lemma_i_steps",
+          "ms": 78,
+          "rlimit": 190195,
+          "success": true
+        },
+        {
+          "function": "witness_atrav::witness_atrav",
+          "ms": 81,
+          "rlimit": 166452,
+          "success": true
+        },
+        {
+          "function": "inst_l2::lemma_rmfirst",
+          "ms": 36,
+          "rlimit": 128537,
+          "success": true
+        },
+        {
+          "function": "acache_l2::lemma_step",
+          "ms": 57,
+          "rlimit": 117810,
+          "success": true
+        },
+        {
+          "function": "inst_l2::lemma_upgrade",
+          "ms": 32,
+          "rlimit": 78889,
+          "success": true
+        },
+        {
+          "function": "cx_f0106::counterexample_f0106",
+          "ms": 31,
+          "rlimit": 77581,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "gid_l2::lemma_propkeys"
+      ],
+      "functions_checked": 115,
+      "max_function_rlimit": 419188,
+      "json_sha256": "228b4cbff78f9c42fa8565fa5e5a37d652d0990452039497ee3e625c0e7343a8",
+      "module": "01/02",
+      "finding": "F-0106 / HD-0201",
+      "expected": "src/gid_l2.rs",
+      "counterexample": "cx_f0106::counterexample_f0106",
+      "what": "get_property_keys(label) joins rdf_labels to rdf_props on s alone (_engine/schema.py:500-515)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f0201_ekey0_guard": {
+      "tag": "control_f0201_ekey0_guard",
+      "features": "control_f0201_ekey0_guard",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f0201_ekey0_guard -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1e/control_f0201_ekey0_guard.log",
+      "json": "$RUN_DIR/proofs-d1e/control_f0201_ekey0_guard.json",
+      "wall_seconds": 2.06,
+      "max_rss_kb": 478032,
+      "error_locations": [
+        "src/gmode_l2.rs:162",
+        "src/gmode_l2.rs:170"
+      ],
+      "resource_limit": false,
+      "verified": 113,
+      "errors": 2,
+      "success": false,
+      "verus_total_ms": 1902,
+      "smt_run_ms": 1601,
+      "rlimit_total": 4080363,
+      "modules": {
+        "inst_l2": {
+          "ms": 337,
+          "rlimit": 1040058
+        },
+        "witness_acache": {
+          "ms": 153,
+          "rlimit": 377876
+        },
+        "witness_inst": {
+          "ms": 115,
+          "rlimit": 370822
+        },
+        "acache_l2": {
+          "ms": 156,
+          "rlimit": 363726
+        },
+        "atrav_l2": {
+          "ms": 150,
+          "rlimit": 359302
+        },
+        "cx_f0201": {
+          "ms": 134,
+          "rlimit": 283068
+        },
+        "gmode_l2": {
+          "ms": 122,
+          "rlimit": 250108
+        },
+        "inst_runs": {
+          "ms": 78,
+          "rlimit": 190195
+        },
+        "witness_atrav": {
+          "ms": 56,
+          "rlimit": 166452
+        },
+        "gid_l2": {
+          "ms": 67,
+          "rlimit": 156057
+        },
+        "inst_l1": {
+          "ms": 39,
+          "rlimit": 96735
+        },
+        "atrav_l1": {
+          "ms": 33,
+          "rlimit": 82909
+        },
+        "witness_gid": {
+          "ms": 34,
+          "rlimit": 77955
+        },
+        "gmode_runs": {
+          "ms": 28,
+          "rlimit": 64415
+        },
+        "acache_runs": {
+          "ms": 31,
+          "rlimit": 62482
+        },
+        "gid_l1": {
+          "ms": 18,
+          "rlimit": 44823
+        },
+        "acache_l1": {
+          "ms": 18,
+          "rlimit": 42960
+        },
+        "atrav_runs": {
+          "ms": 12,
+          "rlimit": 27138
+        },
+        "gmode_l1": {
+          "ms": 7,
+          "rlimit": 15935
+        },
+        "gid_runs": {
+          "ms": 3,
+          "rlimit": 7347
+        }
+      },
+      "top_functions": [
+        {
+          "function": "inst_l2::lemma_step",
+          "ms": 116,
+          "rlimit": 419188,
+          "success": true
+        },
+        {
+          "function": "witness_acache::witness_acache",
+          "ms": 153,
+          "rlimit": 377876,
+          "success": true
+        },
+        {
+          "function": "witness_inst::witness_inst",
+          "ms": 115,
+          "rlimit": 370822,
+          "success": true
+        },
+        {
+          "function": "cx_f0201::counterexample_f0201",
+          "ms": 134,
+          "rlimit": 283068,
+          "success": true
+        },
+        {
+          "function": "inst_runs::lemma_i_steps",
+          "ms": 78,
+          "rlimit": 190195,
+          "success": true
+        },
+        {
+          "function": "witness_atrav::witness_atrav",
+          "ms": 56,
+          "rlimit": 166452,
+          "success": true
+        },
+        {
+          "function": "inst_l2::lemma_rmfirst",
+          "ms": 32,
+          "rlimit": 128537,
+          "success": true
+        },
+        {
+          "function": "acache_l2::lemma_step",
+          "ms": 52,
+          "rlimit": 117810,
+          "success": true
+        },
+        {
+          "function": "inst_l2::lemma_upgrade",
+          "ms": 33,
+          "rlimit": 78889,
+          "success": true
+        },
+        {
+          "function": "witness_gid::witness_gid",
+          "ms": 34,
+          "rlimit": 77955,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "gmode_l2::lemma_cyinsertone",
+        "gmode_l2::lemma_single"
+      ],
+      "functions_checked": 115,
+      "max_function_rlimit": 419188,
+      "json_sha256": "df9e700efdb91e3931128de33f1f4931c93b7fb5659f4b8790c1703c54165b8c",
+      "module": "02",
+      "finding": "F-0201",
+      "expected": "src/gmode_l2.rs",
+      "counterexample": "cx_f0201::counterexample_f0201",
+      "what": "the single-edge writers and the mode-off insert are stopped by a row at ekey 0 only (_engine/nodes_edges.py:1214-1217, 1257-1273; 2560-2581)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f0208_mode_cached_forever": {
+      "tag": "control_f0208_mode_cached_forever",
+      "features": "control_f0208_mode_cached_forever",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f0208_mode_cached_forever -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1e/control_f0208_mode_cached_forever.log",
+      "json": "$RUN_DIR/proofs-d1e/control_f0208_mode_cached_forever.json",
+      "wall_seconds": 2.02,
+      "max_rss_kb": 478168,
+      "error_locations": [
+        "src/gmode_l2.rs:152"
+      ],
+      "resource_limit": false,
+      "verified": 114,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1860,
+      "smt_run_ms": 1593,
+      "rlimit_total": 4131279,
+      "modules": {
+        "inst_l2": {
+          "ms": 312,
+          "rlimit": 1040058
+        },
+        "witness_acache": {
+          "ms": 165,
+          "rlimit": 377876
+        },
+        "witness_inst": {
+          "ms": 114,
+          "rlimit": 370822
+        },
+        "acache_l2": {
+          "ms": 157,
+          "rlimit": 363726
+        },
+        "atrav_l2": {
+          "ms": 152,
+          "rlimit": 359302
+        },
+        "cx_f0208": {
+          "ms": 139,
+          "rlimit": 316304
+        },
+        "gmode_l2": {
+          "ms": 123,
+          "rlimit": 267541
+        },
+        "inst_runs": {
+          "ms": 77,
+          "rlimit": 190195
+        },
+        "witness_atrav": {
+          "ms": 60,
+          "rlimit": 166452
+        },
+        "gid_l2": {
+          "ms": 67,
+          "rlimit": 156057
+        },
+        "inst_l1": {
+          "ms": 40,
+          "rlimit": 96735
+        },
+        "atrav_l1": {
+          "ms": 32,
+          "rlimit": 82909
+        },
+        "witness_gid": {
+          "ms": 24,
+          "rlimit": 77955
+        },
+        "gmode_runs": {
+          "ms": 27,
+          "rlimit": 64662
+        },
+        "acache_runs": {
+          "ms": 31,
+          "rlimit": 62482
+        },
+        "gid_l1": {
+          "ms": 20,
+          "rlimit": 44823
+        },
+        "acache_l1": {
+          "ms": 19,
+          "rlimit": 42960
+        },
+        "atrav_runs": {
+          "ms": 12,
+          "rlimit": 27138
+        },
+        "gmode_l1": {
+          "ms": 7,
+          "rlimit": 15935
+        },
+        "gid_runs": {
+          "ms": 3,
+          "rlimit": 7347
+        }
+      },
+      "top_functions": [
+        {
+          "function": "inst_l2::lemma_step",
+          "ms": 117,
+          "rlimit": 419188,
+          "success": true
+        },
+        {
+          "function": "witness_acache::witness_acache",
+          "ms": 165,
+          "rlimit": 377876,
+          "success": true
+        },
+        {
+          "function": "witness_inst::witness_inst",
+          "ms": 114,
+          "rlimit": 370822,
+          "success": true
+        },
+        {
+          "function": "cx_f0208::counterexample_f0208",
+          "ms": 139,
+          "rlimit": 316304,
+          "success": true
+        },
+        {
+          "function": "inst_runs::lemma_i_steps",
+          "ms": 77,
+          "rlimit": 190195,
+          "success": true
+        },
+        {
+          "function": "witness_atrav::witness_atrav",
+          "ms": 60,
+          "rlimit": 166452,
+          "success": true
+        },
+        {
+          "function": "inst_l2::lemma_rmfirst",
+          "ms": 31,
+          "rlimit": 128537,
+          "success": true
+        },
+        {
+          "function": "acache_l2::lemma_step",
+          "ms": 53,
+          "rlimit": 117810,
+          "success": true
+        },
+        {
+          "function": "inst_l2::lemma_upgrade",
+          "ms": 20,
+          "rlimit": 78889,
+          "success": true
+        },
+        {
+          "function": "witness_gid::witness_gid",
+          "ms": 24,
+          "rlimit": 77955,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "gmode_l2::lemma_cymode"
+      ],
+      "functions_checked": 115,
+      "max_function_rlimit": 419188,
+      "json_sha256": "97cde60880c0c470c7a47b71ec91bc7e95b5594b4f63a7742e882da4632e726d",
+      "module": "02",
+      "finding": "F-0208",
+      "expected": "src/gmode_l2.rs",
+      "counterexample": "cx_f0208::counterexample_f0208",
+      "what": "is_multigraph caches each graph's mode per engine with no expiry; another engine's Set(g, 0) is not seen (_engine/admin.py:917-926)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f0207_set_off_unlocked": {
+      "tag": "control_f0207_set_off_unlocked",
+      "features": "control_f0207_set_off_unlocked",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f0207_set_off_unlocked -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1e/control_f0207_set_off_unlocked.log",
+      "json": "$RUN_DIR/proofs-d1e/control_f0207_set_off_unlocked.json",
+      "wall_seconds": 2.03,
+      "max_rss_kb": 477812,
+      "error_locations": [
+        "src/gmode_l2.rs:141",
+        "src/gmode_l2.rs:150"
+      ],
+      "resource_limit": false,
+      "verified": 113,
+      "errors": 2,
+      "success": false,
+      "verus_total_ms": 1882,
+      "smt_run_ms": 1609,
+      "rlimit_total": 4037491,
+      "modules": {
+        "inst_l2": {
+          "ms": 338,
+          "rlimit": 1040058
+        },
+        "witness_acache": {
+          "ms": 183,
+          "rlimit": 377876
+        },
+        "witness_inst": {
+          "ms": 118,
+          "rlimit": 370822
+        },
+        "acache_l2": {
+          "ms": 160,
+          "rlimit": 363726
+        },
+        "atrav_l2": {
+          "ms": 146,
+          "rlimit": 359302
+        },
+        "gmode_l2": {
+          "ms": 121,
+          "rlimit": 267587
+        },
+        "cx_f0207": {
+          "ms": 100,
+          "rlimit": 225457
+        },
+        "inst_runs": {
+          "ms": 76,
+          "rlimit": 190195
+        },
+        "witness_atrav": {
+          "ms": 81,
+          "rlimit": 166452
+        },
+        "gid_l2": {
+          "ms": 63,
+          "rlimit": 156057
+        },
+        "inst_l1": {
+          "ms": 38,
+          "rlimit": 96735
+        },
+        "atrav_l1": {
+          "ms": 33,
+          "rlimit": 82909
+        },
+        "witness_gid": {
+          "ms": 28,
+          "rlimit": 77955
+        },
+        "acache_runs": {
+          "ms": 31,
+          "rlimit": 62482
+        },
+        "gmode_runs": {
+          "ms": 26,
+          "rlimit": 61675
+        },
+        "gid_l1": {
+          "ms": 18,
+          "rlimit": 44823
+        },
+        "acache_l1": {
+          "ms": 19,
+          "rlimit": 42960
+        },
+        "atrav_runs": {
+          "ms": 11,
+          "rlimit": 27138
+        },
+        "gmode_l1": {
+          "ms": 7,
+          "rlimit": 15935
+        },
+        "gid_runs": {
+          "ms": 3,
+          "rlimit": 7347
+        }
+      },
+      "top_functions": [
+        {
+          "function": "inst_l2::lemma_step",
+          "ms": 119,
+          "rlimit": 419188,
+          "success": true
+        },
+        {
+          "function": "witness_acache::witness_acache",
+          "ms": 183,
+          "rlimit": 377876,
+          "success": true
+        },
+        {
+          "function": "witness_inst::witness_inst",
+          "ms": 118,
+          "rlimit": 370822,
+          "success": true
+        },
+        {
+          "function": "cx_f0207::counterexample_f0207",
+          "ms": 100,
+          "rlimit": 225457,
+          "success": true
+        },
+        {
+          "function": "inst_runs::lemma_i_steps",
+          "ms": 76,
+          "rlimit": 190195,
+          "success": true
+        },
+        {
+          "function": "witness_atrav::witness_atrav",
+          "ms": 81,
+          "rlimit": 166452,
+          "success": true
+        },
+        {
+          "function": "inst_l2::lemma_rmfirst",
+          "ms": 31,
+          "rlimit": 128537,
+          "success": true
+        },
+        {
+          "function": "acache_l2::lemma_step",
+          "ms": 54,
+          "rlimit": 117810,
+          "success": true
+        },
+        {
+          "function": "inst_l2::lemma_upgrade",
+          "ms": 32,
+          "rlimit": 78889,
+          "success": true
+        },
+        {
+          "function": "witness_gid::witness_gid",
+          "ms": 28,
+          "rlimit": 77955,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "gmode_l2::lemma_cymode",
+        "gmode_l2::lemma_setoffcount"
+      ],
+      "functions_checked": 115,
+      "max_function_rlimit": 419188,
+      "json_sha256": "537f5f944dee23d6d440abd478839cecf2b38ef6787c4f2cd2e033c4d6e30d74",
+      "module": "02",
+      "finding": "F-0207",
+      "expected": "src/gmode_l2.rs",
+      "counterexample": "cx_f0207::counterexample_f0207",
+      "what": "GraphMode.Set(g, 0) counts parallel triples, then kills the mode, with no lock any writer takes (GraphMode.cls:26-45)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f1004_create_moves_no_token": {
+      "tag": "control_f1004_create_moves_no_token",
+      "features": "control_f1004_create_moves_no_token",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f1004_create_moves_no_token -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1e/control_f1004_create_moves_no_token.log",
+      "json": "$RUN_DIR/proofs-d1e/control_f1004_create_moves_no_token.json",
+      "wall_seconds": 2.03,
+      "max_rss_kb": 476804,
+      "error_locations": [
+        "src/acache_l2.rs:188",
+        "src/acache_l2.rs:189"
+      ],
+      "resource_limit": false,
+      "verified": 114,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1877,
+      "smt_run_ms": 1563,
+      "rlimit_total": 3965957,
+      "modules": {
+        "inst_l2": {
+          "ms": 341,
+          "rlimit": 1040058
+        },
+        "witness_inst": {
+          "ms": 117,
+          "rlimit": 370822
+        },
+        "acache_l2": {
+          "ms": 155,
+          "rlimit": 364070
+        },
+        "atrav_l2": {
+          "ms": 149,
+          "rlimit": 359302
+        },
+        "witness_gmode": {
+          "ms": 142,
+          "rlimit": 345936
+        },
+        "gmode_l2": {
+          "ms": 110,
+          "rlimit": 262982
+        },
+        "inst_runs": {
+          "ms": 81,
+          "rlimit": 190195
+        },
+        "cx_f1004": {
+          "ms": 101,
+          "rlimit": 187841
+        },
+        "witness_atrav": {
+          "ms": 69,
+          "rlimit": 166452
+        },
+        "gid_l2": {
+          "ms": 64,
+          "rlimit": 156057
+        },
+        "inst_l1": {
+          "ms": 39,
+          "rlimit": 96735
+        },
+        "atrav_l1": {
+          "ms": 33,
+          "rlimit": 82909
+        },
+        "witness_gid": {
+          "ms": 34,
+          "rlimit": 77955
+        },
+        "gmode_runs": {
+          "ms": 28,
+          "rlimit": 63959
+        },
+        "acache_runs": {
+          "ms": 32,
+          "rlimit": 62481
+        },
+        "gid_l1": {
+          "ms": 18,
+          "rlimit": 44823
+        },
+        "acache_l1": {
+          "ms": 18,
+          "rlimit": 42960
+        },
+        "atrav_runs": {
+          "ms": 12,
+          "rlimit": 27138
+        },
+        "gmode_l1": {
+          "ms": 7,
+          "rlimit": 15935
+        },
+        "gid_runs": {
+          "ms": 3,
+          "rlimit": 7347
+        }
+      },
+      "top_functions": [
+        {
+          "function": "inst_l2::lemma_step",
+          "ms": 115,
+          "rlimit": 419188,
+          "success": true
+        },
+        {
+          "function": "witness_inst::witness_inst",
+          "ms": 117,
+          "rlimit": 370822,
+          "success": true
+        },
+        {
+          "function": "witness_gmode::witness_gmode",
+          "ms": 142,
+          "rlimit": 345936,
+          "success": true
+        },
+        {
+          "function": "inst_runs::lemma_i_steps",
+          "ms": 81,
+          "rlimit": 190195,
+          "success": true
+        },
+        {
+          "function": "cx_f1004::counterexample_f1004",
+          "ms": 101,
+          "rlimit": 187841,
+          "success": true
+        },
+        {
+          "function": "witness_atrav::witness_atrav",
+          "ms": 69,
+          "rlimit": 166452,
+          "success": true
+        },
+        {
+          "function": "inst_l2::lemma_rmfirst",
+          "ms": 31,
+          "rlimit": 128537,
+          "success": true
+        },
+        {
+          "function": "acache_l2::lemma_step",
+          "ms": 51,
+          "rlimit": 117848,
+          "success": true
+        },
+        {
+          "function": "inst_l2::lemma_upgrade",
+          "ms": 32,
+          "rlimit": 78889,
+          "success": true
+        },
+        {
+          "function": "witness_gid::witness_gid",
+          "ms": 34,
+          "rlimit": 77955,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "acache_l2::lemma_createnode"
+      ],
+      "functions_checked": 115,
+      "max_function_rlimit": 419188,
+      "json_sha256": "87a3194b01771119554ff76c073fb2f99287b1279519e1af9bb41d1ce2b3fee3",
+      "module": "10",
+      "finding": "F-1004",
+      "expected": "src/acache_l2.rs",
+      "counterexample": "cx_f1004::counterexample_f1004",
+      "what": "a node written with no edge moves no token a cached answer is checked against; the PPR key holds the seeds and settings only (iris_sql_store.py:2248-2258; AlgoCache.cls:27-36)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f1003_owner_cap": {
+      "tag": "control_f1003_owner_cap",
+      "features": "control_f1003_owner_cap",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f1003_owner_cap -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1e/control_f1003_owner_cap.log",
+      "json": "$RUN_DIR/proofs-d1e/control_f1003_owner_cap.json",
+      "wall_seconds": 2.02,
+      "max_rss_kb": 477620,
+      "error_locations": [
+        "src/acache_l2.rs:197"
+      ],
+      "resource_limit": false,
+      "verified": 114,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1867,
+      "smt_run_ms": 1523,
+      "rlimit_total": 3904913,
+      "modules": {
+        "inst_l2": {
+          "ms": 314,
+          "rlimit": 1040058
+        },
+        "witness_inst": {
+          "ms": 127,
+          "rlimit": 370822
+        },
+        "acache_l2": {
+          "ms": 176,
+          "rlimit": 369040
+        },
+        "atrav_l2": {
+          "ms": 149,
+          "rlimit": 359302
+        },
+        "witness_gmode": {
+          "ms": 123,
+          "rlimit": 345936
+        },
+        "gmode_l2": {
+          "ms": 114,
+          "rlimit": 262982
+        },
+        "inst_runs": {
+          "ms": 82,
+          "rlimit": 190195
+        },
+        "witness_atrav": {
+          "ms": 77,
+          "rlimit": 166452
+        },
+        "gid_l2": {
+          "ms": 65,
+          "rlimit": 156057
+        },
+        "cx_f1003": {
+          "ms": 67,
+          "rlimit": 119909
+        },
+        "inst_l1": {
+          "ms": 40,
+          "rlimit": 96735
+        },
+        "atrav_l1": {
+          "ms": 32,
+          "rlimit": 82909
+        },
+        "witness_gid": {
+          "ms": 33,
+          "rlimit": 77955
+        },
+        "acache_runs": {
+          "ms": 31,
+          "rlimit": 64399
+        },
+        "gmode_runs": {
+          "ms": 28,
+          "rlimit": 63959
+        },
+        "gid_l1": {
+          "ms": 18,
+          "rlimit": 44823
+        },
+        "acache_l1": {
+          "ms": 17,
+          "rlimit": 42960
+        },
+        "atrav_runs": {
+          "ms": 11,
+          "rlimit": 27138
+        },
+        "gmode_l1": {
+          "ms": 7,
+          "rlimit": 15935
+        },
+        "gid_runs": {
+          "ms": 3,
+          "rlimit": 7347
+        }
+      },
+      "top_functions": [
+        {
+          "function": "inst_l2::lemma_step",
+          "ms": 115,
+          "rlimit": 419188,
+          "success": true
+        },
+        {
+          "function": "witness_inst::witness_inst",
+          "ms": 127,
+          "rlimit": 370822,
+          "success": true
+        },
+        {
+          "function": "witness_gmode::witness_gmode",
+          "ms": 123,
+          "rlimit": 345936,
+          "success": true
+        },
+        {
+          "function": "inst_runs::lemma_i_steps",
+          "ms": 82,
+          "rlimit": 190195,
+          "success": true
+        },
+        {
+          "function": "witness_atrav::witness_atrav",
+          "ms": 77,
+          "rlimit": 166452,
+          "success": true
+        },
+        {
+          "function": "inst_l2::lemma_rmfirst",
+          "ms": 31,
+          "rlimit": 128537,
+          "success": true
+        },
+        {
+          "function": "cx_f1003::counterexample_f1003",
+          "ms": 67,
+          "rlimit": 119909,
+          "success": true
+        },
+        {
+          "function": "acache_l2::lemma_step",
+          "ms": 52,
+          "rlimit": 117745,
+          "success": true
+        },
+        {
+          "function": "inst_l2::lemma_upgrade",
+          "ms": 23,
+          "rlimit": 78889,
+          "success": true
+        },
+        {
+          "function": "witness_gid::witness_gid",
+          "ms": 33,
+          "rlimit": 77955,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "acache_l2::lemma_compute"
+      ],
+      "functions_checked": 115,
+      "max_function_rlimit": 419188,
+      "json_sha256": "6d3911a06e9d28262d36a813f383a5aa0dbeedc48b520875871426715e2a7915",
+      "module": "10",
+      "finding": "F-1003 / HD-1004",
+      "expected": "src/acache_l2.rs",
+      "counterexample": "cx_f1003::counterexample_f1003",
+      "what": "PageRankGlobalJson lists at most 10,000 rows (PageRank.cls:503-520)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_fc1001_read_creates_routines": {
+      "tag": "control_fc1001_read_creates_routines",
+      "features": "control_fc1001_read_creates_routines",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_fc1001_read_creates_routines -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1e/control_fc1001_read_creates_routines.log",
+      "json": "$RUN_DIR/proofs-d1e/control_fc1001_read_creates_routines.json",
+      "wall_seconds": 1.99,
+      "max_rss_kb": 477292,
+      "error_locations": [
+        "src/acache_l2.rs:209"
+      ],
+      "resource_limit": false,
+      "verified": 114,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1836,
+      "smt_run_ms": 1461,
+      "rlimit_total": 3820068,
+      "modules": {
+        "inst_l2": {
+          "ms": 323,
+          "rlimit": 1040058
+        },
+        "witness_inst": {
+          "ms": 114,
+          "rlimit": 370822
+        },
+        "atrav_l2": {
+          "ms": 149,
+          "rlimit": 359302
+        },
+        "acache_l2": {
+          "ms": 162,
+          "rlimit": 349292
+        },
+        "witness_gmode": {
+          "ms": 124,
+          "rlimit": 345936
+        },
+        "gmode_l2": {
+          "ms": 114,
+          "rlimit": 262982
+        },
+        "inst_runs": {
+          "ms": 74,
+          "rlimit": 190195
+        },
+        "witness_atrav": {
+          "ms": 77,
+          "rlimit": 166452
+        },
+        "gid_l2": {
+          "ms": 62,
+          "rlimit": 156057
+        },
+        "inst_l1": {
+          "ms": 38,
+          "rlimit": 96735
+        },
+        "atrav_l1": {
+          "ms": 33,
+          "rlimit": 82909
+        },
+        "witness_gid": {
+          "ms": 32,
+          "rlimit": 77955
+        },
+        "gmode_runs": {
+          "ms": 28,
+          "rlimit": 63959
+        },
+        "acache_runs": {
+          "ms": 31,
+          "rlimit": 62367
+        },
+        "cx_fc1001": {
+          "ms": 29,
+          "rlimit": 56844
+        },
+        "gid_l1": {
+          "ms": 18,
+          "rlimit": 44823
+        },
+        "acache_l1": {
+          "ms": 19,
+          "rlimit": 42960
+        },
+        "atrav_runs": {
+          "ms": 12,
+          "rlimit": 27138
+        },
+        "gmode_l1": {
+          "ms": 7,
+          "rlimit": 15935
+        },
+        "gid_runs": {
+          "ms": 3,
+          "rlimit": 7347
+        }
+      },
+      "top_functions": [
+        {
+          "function": "inst_l2::lemma_step",
+          "ms": 123,
+          "rlimit": 419188,
+          "success": true
+        },
+        {
+          "function": "witness_inst::witness_inst",
+          "ms": 114,
+          "rlimit": 370822,
+          "success": true
+        },
+        {
+          "function": "witness_gmode::witness_gmode",
+          "ms": 124,
+          "rlimit": 345936,
+          "success": true
+        },
+        {
+          "function": "inst_runs::lemma_i_steps",
+          "ms": 74,
+          "rlimit": 190195,
+          "success": true
+        },
+        {
+          "function": "witness_atrav::witness_atrav",
+          "ms": 77,
+          "rlimit": 166452,
+          "success": true
+        },
+        {
+          "function": "inst_l2::lemma_rmfirst",
+          "ms": 32,
+          "rlimit": 128537,
+          "success": true
+        },
+        {
+          "function": "acache_l2::lemma_step",
+          "ms": 55,
+          "rlimit": 117793,
+          "success": true
+        },
+        {
+          "function": "inst_l2::lemma_upgrade",
+          "ms": 22,
+          "rlimit": 78889,
+          "success": true
+        },
+        {
+          "function": "witness_gid::witness_gid",
+          "ms": 32,
+          "rlimit": 77955,
+          "success": true
+        },
+        {
+          "function": "atrav_l2::lemma_step",
+          "ms": 27,
+          "rlimit": 66135,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "acache_l2::lemma_tricount"
+      ],
+      "functions_checked": 115,
+      "max_function_rlimit": 419188,
+      "json_sha256": "8297e026969fc465caaa19a7f79722e1f54e4fd8599a43b7de5864f642df4ba5",
+      "module": "10",
+      "finding": "F-C1001",
+      "expected": "src/acache_l2.rs",
+      "counterexample": "cx_fc1001::counterexample_fc1001",
+      "what": "triangle_count's Arno probe runs CREATE OR REPLACE FUNCTION for the $ZF wrappers the routine record does not list and saves the record (arno_bridge.py:106-134, 360-417; routine_record.py:93-95)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_hd1003_direction_unchecked": {
+      "tag": "control_hd1003_direction_unchecked",
+      "features": "control_hd1003_direction_unchecked",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_hd1003_direction_unchecked -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1e/control_hd1003_direction_unchecked.log",
+      "json": "$RUN_DIR/proofs-d1e/control_hd1003_direction_unchecked.json",
+      "wall_seconds": 1.99,
+      "max_rss_kb": 476392,
+      "error_locations": [
+        "src/atrav_l2.rs:201",
+        "src/atrav_l2.rs:211"
+      ],
+      "resource_limit": false,
+      "verified": 113,
+      "errors": 2,
+      "success": false,
+      "verus_total_ms": 1835,
+      "smt_run_ms": 1623,
+      "rlimit_total": 4037200,
+      "modules": {
+        "inst_l2": {
+          "ms": 317,
+          "rlimit": 1040058
+        },
+        "witness_acache": {
+          "ms": 172,
+          "rlimit": 377876
+        },
+        "witness_inst": {
+          "ms": 146,
+          "rlimit": 370822
+        },
+        "acache_l2": {
+          "ms": 160,
+          "rlimit": 363726
+        },
+        "witness_gmode": {
+          "ms": 131,
+          "rlimit": 345936
+        },
+        "atrav_l2": {
+          "ms": 164,
+          "rlimit": 334047
+        },
+        "gmode_l2": {
+          "ms": 117,
+          "rlimit": 262982
+        },
+        "inst_runs": {
+          "ms": 83,
+          "rlimit": 190195
+        },
+        "gid_l2": {
+          "ms": 66,
+          "rlimit": 156057
+        },
+        "inst_l1": {
+          "ms": 40,
+          "rlimit": 96735
+        },
+        "atrav_l1": {
+          "ms": 32,
+          "rlimit": 82909
+        },
+        "witness_gid": {
+          "ms": 33,
+          "rlimit": 77955
+        },
+        "cx_hd1003": {
+          "ms": 34,
+          "rlimit": 73258
+        },
+        "gmode_runs": {
+          "ms": 28,
+          "rlimit": 63959
+        },
+        "acache_runs": {
+          "ms": 31,
+          "rlimit": 62482
+        },
+        "gid_l1": {
+          "ms": 18,
+          "rlimit": 44823
+        },
+        "acache_l1": {
+          "ms": 18,
+          "rlimit": 42960
+        },
+        "atrav_runs": {
+          "ms": 12,
+          "rlimit": 27138
+        },
+        "gmode_l1": {
+          "ms": 7,
+          "rlimit": 15935
+        },
+        "gid_runs": {
+          "ms": 3,
+          "rlimit": 7347
+        }
+      },
+      "top_functions": [
+        {
+          "function": "inst_l2::lemma_step",
+          "ms": 116,
+          "rlimit": 419188,
+          "success": true
+        },
+        {
+          "function": "witness_acache::witness_acache",
+          "ms": 172,
+          "rlimit": 377876,
+          "success": true
+        },
+        {
+          "function": "witness_inst::witness_inst",
+          "ms": 146,
+          "rlimit": 370822,
+          "success": true
+        },
+        {
+          "function": "witness_gmode::witness_gmode",
+          "ms": 131,
+          "rlimit": 345936,
+          "success": true
+        },
+        {
+          "function": "inst_runs::lemma_i_steps",
+          "ms": 83,
+          "rlimit": 190195,
+          "success": true
+        },
+        {
+          "function": "inst_l2::lemma_rmfirst",
+          "ms": 33,
+          "rlimit": 128537,
+          "success": true
+        },
+        {
+          "function": "acache_l2::lemma_step",
+          "ms": 55,
+          "rlimit": 117810,
+          "success": true
+        },
+        {
+          "function": "inst_l2::lemma_upgrade",
+          "ms": 21,
+          "rlimit": 78889,
+          "success": true
+        },
+        {
+          "function": "witness_gid::witness_gid",
+          "ms": 33,
+          "rlimit": 77955,
+          "success": true
+        },
+        {
+          "function": "cx_hd1003::counterexample_hd1003",
+          "ms": 34,
+          "rlimit": 73258,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "atrav_l2::lemma_splength",
+        "atrav_l2::lemma_sppaths"
+      ],
+      "functions_checked": 115,
+      "max_function_rlimit": 419188,
+      "json_sha256": "eb9c95f028594da27da7eecfab37f87b5cfc5434dedcced840b1de6b4fe70dd4",
+      "module": "10",
+      "finding": "HD-1003",
+      "expected": "src/atrav_l2.rs",
+      "counterexample": "cx_hd1003::counterexample_hd1003",
+      "what": "ShortestLength reads every direction but \"both\" as \"out\" and shortest_path_length passes \"in\" through; ShortestPathJson answers no path for a direction it does not walk (TraversalPaths.cls:5-80, 117-122; iris_sql_store.py:2162-2181)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f1008_every_graph_mixed": {
+      "tag": "control_f1008_every_graph_mixed",
+      "features": "control_f1008_every_graph_mixed",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f1008_every_graph_mixed -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1e/control_f1008_every_graph_mixed.log",
+      "json": "$RUN_DIR/proofs-d1e/control_f1008_every_graph_mixed.json",
+      "wall_seconds": 2.05,
+      "max_rss_kb": 478300,
+      "error_locations": [
+        "src/atrav_l2.rs:219"
+      ],
+      "resource_limit": false,
+      "verified": 114,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1897,
+      "smt_run_ms": 1617,
+      "rlimit_total": 4108113,
+      "modules": {
+        "inst_l2": {
+          "ms": 319,
+          "rlimit": 1040058
+        },
+        "witness_acache": {
+          "ms": 168,
+          "rlimit": 377876
+        },
+        "witness_inst": {
+          "ms": 120,
+          "rlimit": 370822
+        },
+        "acache_l2": {
+          "ms": 166,
+          "rlimit": 363726
+        },
+        "atrav_l2": {
+          "ms": 163,
+          "rlimit": 346754
+        },
+        "witness_gmode": {
+          "ms": 135,
+          "rlimit": 345936
+        },
+        "gmode_l2": {
+          "ms": 111,
+          "rlimit": 262982
+        },
+        "inst_runs": {
+          "ms": 77,
+          "rlimit": 190195
+        },
+        "gid_l2": {
+          "ms": 64,
+          "rlimit": 156057
+        },
+        "cx_f1008": {
+          "ms": 63,
+          "rlimit": 131464
+        },
+        "inst_l1": {
+          "ms": 40,
+          "rlimit": 96735
+        },
+        "atrav_l1": {
+          "ms": 34,
+          "rlimit": 82909
+        },
+        "witness_gid": {
+          "ms": 35,
+          "rlimit": 77955
+        },
+        "gmode_runs": {
+          "ms": 25,
+          "rlimit": 63959
+        },
+        "acache_runs": {
+          "ms": 30,
+          "rlimit": 62482
+        },
+        "gid_l1": {
+          "ms": 19,
+          "rlimit": 44823
+        },
+        "acache_l1": {
+          "ms": 18,
+          "rlimit": 42960
+        },
+        "atrav_runs": {
+          "ms": 12,
+          "rlimit": 27138
+        },
+        "gmode_l1": {
+          "ms": 7,
+          "rlimit": 15935
+        },
+        "gid_runs": {
+          "ms": 3,
+          "rlimit": 7347
+        }
+      },
+      "top_functions": [
+        {
+          "function": "inst_l2::lemma_step",
+          "ms": 116,
+          "rlimit": 419188,
+          "success": true
+        },
+        {
+          "function": "witness_acache::witness_acache",
+          "ms": 168,
+          "rlimit": 377876,
+          "success": true
+        },
+        {
+          "function": "witness_inst::witness_inst",
+          "ms": 120,
+          "rlimit": 370822,
+          "success": true
+        },
+        {
+          "function": "witness_gmode::witness_gmode",
+          "ms": 135,
+          "rlimit": 345936,
+          "success": true
+        },
+        {
+          "function": "inst_runs::lemma_i_steps",
+          "ms": 77,
+          "rlimit": 190195,
+          "success": true
+        },
+        {
+          "function": "cx_f1008::counterexample_f1008",
+          "ms": 63,
+          "rlimit": 131464,
+          "success": true
+        },
+        {
+          "function": "inst_l2::lemma_rmfirst",
+          "ms": 32,
+          "rlimit": 128537,
+          "success": true
+        },
+        {
+          "function": "acache_l2::lemma_step",
+          "ms": 54,
+          "rlimit": 117810,
+          "success": true
+        },
+        {
+          "function": "inst_l2::lemma_upgrade",
+          "ms": 26,
+          "rlimit": 78889,
+          "success": true
+        },
+        {
+          "function": "witness_gid::witness_gid",
+          "ms": 35,
+          "rlimit": 77955,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "atrav_l2::lemma_varlen"
+      ],
+      "functions_checked": 115,
+      "max_function_rlimit": 419188,
+      "json_sha256": "3283f77c083645e5e0713aa1c095d3eac243f60657abbfd628e92b399450e9d3",
+      "module": "10",
+      "finding": "F-1008",
+      "expected": "src/atrav_l2.rs",
+      "counterexample": "cx_f1008::counterexample_f1008",
+      "what": "VarLength's every-graph mode reads a node's entries in every graph at each hop (VarLength.cls:44-51, 126-148)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    }
+  },
+  "trust_inventory": {
+    "own_sources": {
+      "scanned": [
+        "src/acache_l1.rs",
+        "src/acache_l2.rs",
+        "src/acache_runs.rs",
+        "src/atrav_l1.rs",
+        "src/atrav_l2.rs",
+        "src/atrav_runs.rs",
+        "src/cx_f0101.rs",
+        "src/cx_f0102.rs",
+        "src/cx_f0103.rs",
+        "src/cx_f0106.rs",
+        "src/cx_f0109.rs",
+        "src/cx_f0201.rs",
+        "src/cx_f0202.rs",
+        "src/cx_f0206.rs",
+        "src/cx_f0207.rs",
+        "src/cx_f0208.rs",
+        "src/cx_f1003.rs",
+        "src/cx_f1004.rs",
+        "src/cx_f1008.rs",
+        "src/cx_fc1001.rs",
+        "src/cx_hd1003.rs",
+        "src/gid_l1.rs",
+        "src/gid_l2.rs",
+        "src/gid_runs.rs",
+        "src/gmode_l1.rs",
+        "src/gmode_l2.rs",
+        "src/gmode_runs.rs",
+        "src/inst_l1.rs",
+        "src/inst_l2.rs",
+        "src/inst_runs.rs",
+        "src/lib.rs",
+        "src/witness_acache.rs",
+        "src/witness_atrav.rs",
+        "src/witness_gid.rs",
+        "src/witness_gmode.rs",
+        "src/witness_inst.rs"
+      ],
+      "patterns": [
+        "\\bassume\\s*\\(",
+        "\\badmit\\s*\\(",
+        "external_body",
+        "#\\s*\\[\\s*verifier::external",
+        "\\buninterp\\b",
+        "\\baxiom\\b",
+        "assume_specification",
+        "#\\s*\\[\\s*verifier::assume"
+      ],
+      "violations": []
+    },
+    "actors": {
+      "rev": "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877",
+      "path": "/home/ziniu_wu_g5labs_ai/.cargo/git/checkouts/playbook-reference-actors-924e50ff84dd7a85/c03f9fa/crates/actors/src",
+      "violations": [],
+      "note": "verified in the same build without --no-cheating (forwarded to roots only)"
+    },
+    "vstd": {
+      "version": "0.0.0-2026-09-20-0158",
+      "note": "Verus standard library: the trusted base (its axioms, e.g. Map::new and Set extensionality, are Verus's own); not scanned"
+    },
+    "trusted_items_in_this_crate": [],
+    "premises": "named in PROOFS.md (P-I1..P-I6, P-G1..P-G4, P-M1..P-M3, P-C1..P-C5, P-T1..P-T5); none is an assumption inside a proof"
+  },
+  "gate": "pass"
+}

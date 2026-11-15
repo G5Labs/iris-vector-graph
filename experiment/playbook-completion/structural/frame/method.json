@@ -1,0 +1,141 @@
+{
+ "gate": "3.6-frame",
+ "lane": "structural (frame sub-lane)",
+ "namespace": "AUDITD",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "method": "Each writer action runs live through the product's own API on one identity-checked connection (structural/live/lib.py), from lib.reset() (Eraser.EraseAll + Ledger.PurgeAll + BM25 drops) and a fixed base data set (graph fg: fr:a-R->fr:b-R->fr:c; bystander graph fz: fz:x-R->fz:y; default graph fd:p-R->fd:q). Between a journal mark and the read-back, only the action runs; the journal records of that connection's server process in AUDITD's database (traces/journal.py records_since, pid-filtered) are the oracle. frame_check.check judges every journaled global node: (a) store level - its store (SQL table from the compiled storage map, else the global root) is among the entry point's declared writes, read unchanged from footprints/NN.json or correspondence/correspondence.json (declared.py; 'as X' references resolved to X's own declaration; wildcard route tables kg_emb_*/kg_eemb_* where the declaration names routes; never widened); (b) key level - the node lies under the action's keys: an SQL data row whose stored $list holds a key (owned row; a long-column node (rowid,col) of an owned row, or of a row whose current main node holds a key), an SQL index node naming an owned row id or a key, an index-internal node (bitmap/extent chunks, iFind P/W/L, HNSW G/Ver) of a table where the action owns a row, a table's row-id counter, a global node with a key in its subscripts (^NKG's interned integer ids resolved through ^NKG(\"$ND\") before and after the action) or as a whole $list element / JSON leaf of its value, or a declared counter node (each pattern cited in frame_live.py: ^KG(\"__version\"), ^NKG(\"$meta\",*) marks, ledger head/stmtNext, the new revision's own seq and id, the ledger_stats row, per-graph flags of the action's own graph). Derived keys: an owned rdf_edges/nodes/labels/props row adds its node-id columns (an edge's endpoints). Whole-store actions (namespace-wide rebuilds, erase_all/EraseAll, replace restore, PurgeAll, initialize_schema) are judged at store level only. Declared whole-store kills of derived caches (^NKG DropNKG, ^IVG.AlgoCache) and the DDL catalog entries of a DROP TABLE naming the dropped route are accepted with their citation.",
+ "statement_shape_classes": {
+  "sql-insert": "INSERT of a row: writes the table's row (data node), its index entries and its row-id counter",
+  "sql-update": "UPDATE by key: rewrites the row's data node or one long-column node (rowid, column) and moves its index entries",
+  "sql-delete-key / sql-delete-predicate": "DELETE of the rows its WHERE names (by key, or by a graph/prefix/time predicate): kills those rows' data and index nodes; the journal cannot tell the two apart, so both count as observed when a module's action deleted rows, every deleted row being checked against the action's key specification",
+  "sql-ddl": "CREATE/DROP/ALTER TABLE|INDEX, BUILD INDEX: writes the catalog of the table it names and (DROP) that table's storage; observable only through ^oddTSQL, because traces/journal.py filters ^oddDEF/^oddCOM/^oddSQL/^rINDEXSQL as system globals",
+  "global-node-write (Set, $Increment, Merge, Native API set/increment)": "writes the node(s) it names; the journal records all as SET (a $Increment inside a transaction as a non-transactional SET), with the same frame",
+  "global-kill (Kill, Native API kill)": "kills the subtree it names (KILL plus KILLdes records of the descendants)",
+  "obj-save / obj-delete (%Save, %DeleteId, %KillExtent)": "class-storage rows (ledger_revisions, ledger_stats): as sql-insert/update; an extent kill is a KILL of the data global's root"
+ },
+ "denominator": "shape_census.py: the write statement lines of each module's source per class (module of a line = owners of the innermost inventoried entry of models/breadth-c/inventory.json, else the file's owners; Python docstrings skipped). It over-approximates (engine.py:765-803's FETCH FIRST probe DDL falls to engine.py's file owners 02/03/05/10; nodes_edges.py:91 to 03/04/12) and a class counts as observed only in the module whose action produced it.",
+ "closure_rule": "closed only if the registered control passed, at least one writer action of the module was exercised, every excursion is dispositioned (finding or declaration gap of the footprint used, reported), and every statement-shape class in the module's source was observed in the journal of the module's own actions; otherwise open with the exact remainder.",
+ "self_test": "st-control-frame-selftest: offline (synthetic records) and live: a conforming create_node passes; a seeded SET of ^IVGAuditDFrmX in the window fails the store level; a seeded create_node of a second node fails the key level (20 nodes, all attributable to the intruder).",
+ "runs": {
+  "decisive_live": "st-live-frame-r8",
+  "control": "st-control-frame-selftest",
+  "check": "st-check-frame-aggregate",
+  "not_registered": "debug passes debug1, run2-run7 (/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/structural/frame/) fixed harness issues only (long-column nodes, class-storage counters, wildcard routes, interned ^NKG ids, temporal setups, API shapes); their results are superseded by r8, which ran every action with the final checker"
+ },
+ "inputs": {
+  "shape_census": "$RUN_DIR/structural/frame/shape-census.json",
+  "aggregate": "$RUN_DIR/structural/frame/aggregate-r8.json",
+  "dispositions": "experiment/playbook-completion/structural/frame/dispositions.json"
+ },
+ "limitations": [
+  "the journal shows writes only of journaled databases; process-private ^|| and IRISTEMP writes are outside the oracle (none is a durable store)",
+  "DDL catalog globals other than ^oddTSQL are filtered by traces/journal.py (SYSTEM_GLOBAL_PREFIXES lacks ^oddTSQL, so DROP TABLE catalog entries are visible; CREATE TABLE's ^oddDEF/^oddCOM are not)",
+  "key level for value matches uses whole $list elements and JSON leaves (not substrings), so a row holding a key in any column counts as the key's row",
+  "the per-action key specifications are the action's arguments (node ids, edge endpoints, graph id for graph-scoped actions, prefix, index name, archive values for a merge restore); counter patterns are listed with citations in frame_live.py",
+  "the classes observed are attributed to the module of the action, not to the module whose code ran (no line monitor in this sub-lane)"
+ ],
+ "per_module": {
+  "01": {
+   "status": "open",
+   "product_obligation": "unknown",
+   "exercised": "1/2",
+   "reason": "open: sql-ddl, sql-delete-key, sql-delete-predicate, sql-update not observed"
+  },
+  "02": {
+   "status": "open",
+   "product_obligation": "unknown",
+   "exercised": "2/2",
+   "reason": "open: sql-ddl not observed"
+  },
+  "03": {
+   "status": "open",
+   "product_obligation": "unknown",
+   "exercised": "14/14",
+   "reason": "open: sql-ddl not observed"
+  },
+  "04": {
+   "status": "open",
+   "product_obligation": "unknown",
+   "exercised": "6/7",
+   "reason": "open: sql-ddl, sql-delete-predicate, sql-update not observed"
+  },
+  "05": {
+   "status": "open",
+   "product_obligation": "unknown",
+   "exercised": "8/8",
+   "reason": "open: sql-ddl not observed"
+  },
+  "06": {
+   "status": "open",
+   "product_obligation": "unknown",
+   "exercised": "16/16",
+   "reason": "open: sql-ddl not observed"
+  },
+  "07": {
+   "status": "open",
+   "product_obligation": "unknown",
+   "exercised": "4/5",
+   "reason": "open: sql-ddl, sql-insert, sql-update not observed"
+  },
+  "08": {
+   "status": "open",
+   "product_obligation": "unknown",
+   "exercised": "7/7",
+   "reason": "open: sql-ddl not observed"
+  },
+  "09": {
+   "status": "open",
+   "product_obligation": "unknown",
+   "exercised": "0/3",
+   "reason": "open: no persistent writer exercisable without compiling generated plan classes (out of scope)"
+  },
+  "10": {
+   "status": "open",
+   "product_obligation": "fails",
+   "exercised": "6/6",
+   "reason": "open: sql-ddl not observed; product excursion F-C1001 (triangle_count writes ^IVG.Deploy)"
+  },
+  "11": {
+   "status": "open",
+   "product_obligation": "unknown",
+   "exercised": "11/11",
+   "reason": "open: sql-ddl not observed"
+  },
+  "12": {
+   "status": "open",
+   "product_obligation": "unknown",
+   "exercised": "4/4",
+   "reason": "open: sql-update not observed"
+  },
+  "13": {
+   "status": "open",
+   "product_obligation": "unknown",
+   "exercised": "1/1",
+   "reason": "open: sql-delete-key not observed"
+  },
+  "14": {
+   "status": "open",
+   "product_obligation": "unknown",
+   "exercised": "3/4",
+   "reason": "open: sql-ddl not observed"
+  },
+  "15": {
+   "status": "open",
+   "product_obligation": "unknown",
+   "exercised": "8/8",
+   "reason": "open: sql-ddl not observed"
+  },
+  "17": {
+   "status": "open",
+   "product_obligation": "unknown",
+   "exercised": "6/7",
+   "reason": "open: sql-ddl, sql-update not observed"
+  },
+  "18": {
+   "status": "closed",
+   "product_obligation": "unknown",
+   "exercised": "3/3",
+   "reason": "closed: every source statement class (sql-insert, obj-save) observed; merge restore and SetNodeJSON held at store and key level, the replace restore (whole-store class) at store level"
+  }
+ }
+}

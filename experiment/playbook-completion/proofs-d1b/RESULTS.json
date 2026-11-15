@@ -1,0 +1,2423 @@
+{
+  "crate": "experiment/playbook-completion/proofs-d1b (ivg-d1b-proofs)",
+  "generated_utc": "2026-11-14T07:45:51+00:00",
+  "verus": "0.2026.10.04.426d8b0",
+  "actors_rev": "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877",
+  "sources_sha256": "6947c33b20bfe84f56d3b85e8afb760dccdfc1b8b518ad0f1e8f9dfa1c43121f",
+  "statement": "Every result is about the models (L1 contracts and the reviewed L2 machines); none is a property of the product at pin 3eaa79cf.",
+  "baseline": {
+    "tag": "baseline",
+    "features": "",
+    "rc": 0,
+    "timed_out": false,
+    "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+    "log": "$RUN_DIR/proofs-d1b/baseline.log",
+    "json": "$RUN_DIR/proofs-d1b/baseline.json",
+    "wall_seconds": 2.61,
+    "max_rss_kb": 465796,
+    "error_locations": [],
+    "resource_limit": false,
+    "verified": 92,
+    "errors": 0,
+    "success": true,
+    "verus_total_ms": 2194,
+    "smt_run_ms": 2409,
+    "rlimit_total": 4738047,
+    "modules": {
+      "snap_l2": {
+        "ms": 581,
+        "rlimit": 1338662
+      },
+      "snap_runs": {
+        "ms": 533,
+        "rlimit": 883335
+      },
+      "witness_snap": {
+        "ms": 441,
+        "rlimit": 716962
+      },
+      "vidx_l2": {
+        "ms": 185,
+        "rlimit": 410689
+      },
+      "vq_l2": {
+        "ms": 162,
+        "rlimit": 373550
+      },
+      "witness_vq": {
+        "ms": 218,
+        "rlimit": 354533
+      },
+      "snap_l1": {
+        "ms": 109,
+        "rlimit": 270773
+      },
+      "witness_vidx": {
+        "ms": 71,
+        "rlimit": 144867
+      },
+      "vidx_l1": {
+        "ms": 53,
+        "rlimit": 130543
+      },
+      "vq_runs": {
+        "ms": 29,
+        "rlimit": 62329
+      },
+      "vq_l1": {
+        "ms": 22,
+        "rlimit": 51804
+      }
+    },
+    "top_functions": [
+      {
+        "function": "witness_snap::witness_snap",
+        "ms": 441,
+        "rlimit": 716962,
+        "success": true
+      },
+      {
+        "function": "snap_runs::lemma_tenant_run",
+        "ms": 324,
+        "rlimit": 538572,
+        "success": true
+      },
+      {
+        "function": "witness_vq::witness_vq",
+        "ms": 218,
+        "rlimit": 354533,
+        "success": true
+      },
+      {
+        "function": "snap_runs::lemma_save_run",
+        "ms": 124,
+        "rlimit": 172480,
+        "success": true
+      },
+      {
+        "function": "witness_vidx::witness_vidx",
+        "ms": 71,
+        "rlimit": 144867,
+        "success": true
+      },
+      {
+        "function": "snap_runs::lemma_restore_run",
+        "ms": 71,
+        "rlimit": 141150,
+        "success": true
+      },
+      {
+        "function": "snap_l2::lemma_rend",
+        "ms": 48,
+        "rlimit": 124843,
+        "success": true
+      },
+      {
+        "function": "snap_l2::lemma_redact",
+        "ms": 38,
+        "rlimit": 87385,
+        "success": true
+      },
+      {
+        "function": "snap_l2::lemma_rledger",
+        "ms": 31,
+        "rlimit": 83340,
+        "success": true
+      },
+      {
+        "function": "snap_l2::lemma_commit",
+        "ms": 49,
+        "rlimit": 79466,
+        "success": true
+      }
+    ],
+    "all_functions": [
+      {
+        "function": "snap_l1::SnapL1::init_safe",
+        "ms": 4,
+        "rlimit": 8413,
+        "success": true
+      },
+      {
+        "function": "snap_l1::SnapL1::step_safe",
+        "ms": 24,
+        "rlimit": 58442,
+        "success": true
+      },
+      {
+        "function": "snap_l1::lemma_archive_stable",
+        "ms": 17,
+        "rlimit": 55184,
+        "success": true
+      },
+      {
+        "function": "snap_l1::lemma_red_monotone",
+        "ms": 11,
+        "rlimit": 25748,
+        "success": true
+      },
+      {
+        "function": "snap_l1::lemma_scrub_none",
+        "ms": 1,
+        "rlimit": 4075,
+        "success": true
+      },
+      {
+        "function": "snap_l1::lemma_scrub_recs_none",
+        "ms": 3,
+        "rlimit": 9171,
+        "success": true
+      },
+      {
+        "function": "snap_l1::theorem_complete_restore_reproduces_saved_state",
+        "ms": 11,
+        "rlimit": 36776,
+        "success": true
+      },
+      {
+        "function": "snap_l1::theorem_history_only_extends",
+        "ms": 13,
+        "rlimit": 27449,
+        "success": true
+      },
+      {
+        "function": "snap_l1::theorem_next_seq_free",
+        "ms": 2,
+        "rlimit": 4606,
+        "success": true
+      },
+      {
+        "function": "snap_l1::theorem_receipt_names_holding_archives",
+        "ms": 6,
+        "rlimit": 14012,
+        "success": true
+      },
+      {
+        "function": "snap_l1::theorem_redacted_content_never_returns",
+        "ms": 5,
+        "rlimit": 10876,
+        "success": true
+      },
+      {
+        "function": "snap_l1::theorem_refused_restore_changes_nothing",
+        "ms": 7,
+        "rlimit": 16021,
+        "success": true
+      },
+      {
+        "function": "snap_l2::SnapL2::init_refines",
+        "ms": 7,
+        "rlimit": 13678,
+        "success": true
+      },
+      {
+        "function": "snap_l2::SnapL2::init_safe",
+        "ms": 4,
+        "rlimit": 15783,
+        "success": true
+      },
+      {
+        "function": "snap_l2::SnapL2::step_refines",
+        "ms": 8,
+        "rlimit": 22959,
+        "success": true
+      },
+      {
+        "function": "snap_l2::SnapL2::step_safe",
+        "ms": 7,
+        "rlimit": 19868,
+        "success": true
+      },
+      {
+        "function": "snap_l2::lemma_arch_of_insert",
+        "ms": 3,
+        "rlimit": 10616,
+        "success": true
+      },
+      {
+        "function": "snap_l2::lemma_commit",
+        "ms": 49,
+        "rlimit": 79466,
+        "success": true
+      },
+      {
+        "function": "snap_l2::lemma_commit_refused",
+        "ms": 21,
+        "rlimit": 34031,
+        "success": true
+      },
+      {
+        "function": "snap_l2::lemma_erase",
+        "ms": 48,
+        "rlimit": 74742,
+        "success": true
+      },
+      {
+        "function": "snap_l2::lemma_overlay",
+        "ms": 7,
+        "rlimit": 27814,
+        "success": true
+      },
+      {
+        "function": "snap_l2::lemma_raw_inv_at",
+        "ms": 15,
+        "rlimit": 42889,
+        "success": true
+      },
+      {
+        "function": "snap_l2::lemma_rbegin",
+        "ms": 19,
+        "rlimit": 52232,
+        "success": true
+      },
+      {
+        "function": "snap_l2::lemma_read_all",
+        "ms": 5,
+        "rlimit": 15576,
+        "success": true
+      },
+      {
+        "function": "snap_l2::lemma_redact",
+        "ms": 38,
+        "rlimit": 87385,
+        "success": true
+      },
+      {
+        "function": "snap_l2::lemma_rend",
+        "ms": 48,
+        "rlimit": 124843,
+        "success": true
+      },
+      {
+        "function": "snap_l2::lemma_rledger",
+        "ms": 31,
+        "rlimit": 83340,
+        "success": true
+      },
+      {
+        "function": "snap_l2::lemma_rload",
+        "ms": 23,
+        "rlimit": 63606,
+        "success": true
+      },
+      {
+        "function": "snap_l2::lemma_rrefuse",
+        "ms": 20,
+        "rlimit": 58812,
+        "success": true
+      },
+      {
+        "function": "snap_l2::lemma_scrub_recs_none",
+        "ms": 2,
+        "rlimit": 10321,
+        "success": true
+      },
+      {
+        "function": "snap_l2::lemma_step",
+        "ms": 28,
+        "rlimit": 76784,
+        "success": true
+      },
+      {
+        "function": "snap_l2::lemma_wend",
+        "ms": 38,
+        "rlimit": 59334,
+        "success": true
+      },
+      {
+        "function": "snap_l2::lemma_wf2_commit",
+        "ms": 6,
+        "rlimit": 14931,
+        "success": true
+      },
+      {
+        "function": "snap_l2::lemma_wopen",
+        "ms": 28,
+        "rlimit": 47339,
+        "success": true
+      },
+      {
+        "function": "snap_l2::lemma_xend",
+        "ms": 23,
+        "rlimit": 64047,
+        "success": true
+      },
+      {
+        "function": "snap_l2::lemma_xledger",
+        "ms": 24,
+        "rlimit": 64027,
+        "success": true
+      },
+      {
+        "function": "snap_l2::lemma_xread",
+        "ms": 20,
+        "rlimit": 56671,
+        "success": true
+      },
+      {
+        "function": "snap_l2::lemma_xstart",
+        "ms": 17,
+        "rlimit": 41963,
+        "success": true
+      },
+      {
+        "function": "snap_l2::theorem_commit_never_wedged",
+        "ms": 13,
+        "rlimit": 31613,
+        "success": true
+      },
+      {
+        "function": "snap_l2::theorem_raw_executions_refine",
+        "ms": 14,
+        "rlimit": 43992,
+        "success": true
+      },
+      {
+        "function": "snap_runs::lemma_c0",
+        "ms": 1,
+        "rlimit": 4813,
+        "success": true
+      },
+      {
+        "function": "snap_runs::lemma_commit_run",
+        "ms": 6,
+        "rlimit": 16642,
+        "success": true
+      },
+      {
+        "function": "snap_runs::lemma_read_step",
+        "ms": 4,
+        "rlimit": 9678,
+        "success": true
+      },
+      {
+        "function": "snap_runs::lemma_restore_run",
+        "ms": 71,
+        "rlimit": 141150,
+        "success": true
+      },
+      {
+        "function": "snap_runs::lemma_save_run",
+        "ms": 124,
+        "rlimit": 172480,
+        "success": true
+      },
+      {
+        "function": "snap_runs::lemma_tenant_run",
+        "ms": 324,
+        "rlimit": 538572,
+        "success": true
+      },
+      {
+        "function": "vidx_l1::VidxL1::init_safe",
+        "ms": 2,
+        "rlimit": 4519,
+        "success": true
+      },
+      {
+        "function": "vidx_l1::VidxL1::step_safe",
+        "ms": 19,
+        "rlimit": 47240,
+        "success": true
+      },
+      {
+        "function": "vidx_l1::lemma_idx_ok_erase",
+        "ms": 2,
+        "rlimit": 8331,
+        "success": true
+      },
+      {
+        "function": "vidx_l1::lemma_idx_ok_insert",
+        "ms": 1,
+        "rlimit": 3854,
+        "success": true
+      },
+      {
+        "function": "vidx_l1::theorem_abandon_keeps_previous_index",
+        "ms": 5,
+        "rlimit": 12681,
+        "success": true
+      },
+      {
+        "function": "vidx_l1::theorem_erase_leaves_nothing_of_the_graph",
+        "ms": 9,
+        "rlimit": 25629,
+        "success": true
+      },
+      {
+        "function": "vidx_l1::theorem_index_changes_only_by_publish_or_erase",
+        "ms": 2,
+        "rlimit": 5546,
+        "success": true
+      },
+      {
+        "function": "vidx_l1::theorem_published_whole",
+        "ms": 5,
+        "rlimit": 11833,
+        "success": true
+      },
+      {
+        "function": "vidx_l1::theorem_search_answers_live_ids_of_its_graph",
+        "ms": 4,
+        "rlimit": 10910,
+        "success": true
+      },
+      {
+        "function": "vidx_l2::VidxL2::init_refines",
+        "ms": 2,
+        "rlimit": 5580,
+        "success": true
+      },
+      {
+        "function": "vidx_l2::VidxL2::init_safe",
+        "ms": 2,
+        "rlimit": 5212,
+        "success": true
+      },
+      {
+        "function": "vidx_l2::VidxL2::step_refines",
+        "ms": 4,
+        "rlimit": 10110,
+        "success": true
+      },
+      {
+        "function": "vidx_l2::VidxL2::step_safe",
+        "ms": 3,
+        "rlimit": 8659,
+        "success": true
+      },
+      {
+        "function": "vidx_l2::lemma_badd",
+        "ms": 17,
+        "rlimit": 36714,
+        "success": true
+      },
+      {
+        "function": "vidx_l2::lemma_bbuild",
+        "ms": 13,
+        "rlimit": 27778,
+        "success": true
+      },
+      {
+        "function": "vidx_l2::lemma_bpublish",
+        "ms": 17,
+        "rlimit": 36169,
+        "success": true
+      },
+      {
+        "function": "vidx_l2::lemma_bread",
+        "ms": 16,
+        "rlimit": 34240,
+        "success": true
+      },
+      {
+        "function": "vidx_l2::lemma_bstop",
+        "ms": 24,
+        "rlimit": 51571,
+        "success": true
+      },
+      {
+        "function": "vidx_l2::lemma_erase",
+        "ms": 25,
+        "rlimit": 58207,
+        "success": true
+      },
+      {
+        "function": "vidx_l2::lemma_raw_inv_at",
+        "ms": 14,
+        "rlimit": 31400,
+        "success": true
+      },
+      {
+        "function": "vidx_l2::lemma_step",
+        "ms": 15,
+        "rlimit": 32009,
+        "success": true
+      },
+      {
+        "function": "vidx_l2::lemma_store",
+        "ms": 14,
+        "rlimit": 29823,
+        "success": true
+      },
+      {
+        "function": "vidx_l2::theorem_ivf_holds_only_live_vectors",
+        "ms": 2,
+        "rlimit": 8714,
+        "success": true
+      },
+      {
+        "function": "vidx_l2::theorem_raw_executions_refine",
+        "ms": 10,
+        "rlimit": 34503,
+        "success": true
+      },
+      {
+        "function": "vq_l1::QueueL1::init_safe",
+        "ms": 2,
+        "rlimit": 3675,
+        "success": true
+      },
+      {
+        "function": "vq_l1::QueueL1::step_safe",
+        "ms": 14,
+        "rlimit": 33406,
+        "success": true
+      },
+      {
+        "function": "vq_l1::theorem_answered_once",
+        "ms": 2,
+        "rlimit": 7370,
+        "success": true
+      },
+      {
+        "function": "vq_l1::theorem_done_has_current_vector",
+        "ms": 1,
+        "rlimit": 3090,
+        "success": true
+      },
+      {
+        "function": "vq_l1::theorem_no_work_on_answered_entry",
+        "ms": 1,
+        "rlimit": 4263,
+        "success": true
+      },
+      {
+        "function": "vq_l2::QueueL2::init_refines",
+        "ms": 2,
+        "rlimit": 4808,
+        "success": true
+      },
+      {
+        "function": "vq_l2::QueueL2::init_safe",
+        "ms": 3,
+        "rlimit": 6967,
+        "success": true
+      },
+      {
+        "function": "vq_l2::QueueL2::step_refines",
+        "ms": 5,
+        "rlimit": 11501,
+        "success": true
+      },
+      {
+        "function": "vq_l2::QueueL2::step_safe",
+        "ms": 5,
+        "rlimit": 9845,
+        "success": true
+      },
+      {
+        "function": "vq_l2::lemma_claim",
+        "ms": 13,
+        "rlimit": 30179,
+        "success": true
+      },
+      {
+        "function": "vq_l2::lemma_embed",
+        "ms": 11,
+        "rlimit": 34638,
+        "success": true
+      },
+      {
+        "function": "vq_l2::lemma_enqueue",
+        "ms": 27,
+        "rlimit": 61552,
+        "success": true
+      },
+      {
+        "function": "vq_l2::lemma_mark",
+        "ms": 21,
+        "rlimit": 46843,
+        "success": true
+      },
+      {
+        "function": "vq_l2::lemma_raw_inv_at",
+        "ms": 13,
+        "rlimit": 30337,
+        "success": true
+      },
+      {
+        "function": "vq_l2::lemma_step",
+        "ms": 9,
+        "rlimit": 18321,
+        "success": true
+      },
+      {
+        "function": "vq_l2::lemma_write",
+        "ms": 24,
+        "rlimit": 64117,
+        "success": true
+      },
+      {
+        "function": "vq_l2::theorem_raw_executions_refine",
+        "ms": 19,
+        "rlimit": 46634,
+        "success": true
+      },
+      {
+        "function": "vq_l2::theorem_single_consumer",
+        "ms": 3,
+        "rlimit": 7808,
+        "success": true
+      },
+      {
+        "function": "vq_runs::lemma_q_steps",
+        "ms": 29,
+        "rlimit": 62329,
+        "success": true
+      },
+      {
+        "function": "witness_snap::witness_snap",
+        "ms": 441,
+        "rlimit": 716962,
+        "success": true
+      },
+      {
+        "function": "witness_vidx::witness_vidx",
+        "ms": 71,
+        "rlimit": 144867,
+        "success": true
+      },
+      {
+        "function": "witness_vq::witness_vq",
+        "ms": 218,
+        "rlimit": 354533,
+        "success": true
+      }
+    ],
+    "failing_functions": [],
+    "functions_checked": 92,
+    "max_function_rlimit": 716962,
+    "json_sha256": "82ac4dc108b952057f0ca28d12df85d8de5390012aba728982e0352fdaedfe4c",
+    "pass": true,
+    "cost_per_module_proof": {
+      "module 18 (snapshot)": {
+        "modules": {
+          "snap_l2": {
+            "ms": 581,
+            "rlimit": 1338662
+          },
+          "snap_runs": {
+            "ms": 533,
+            "rlimit": 883335
+          },
+          "witness_snap": {
+            "ms": 441,
+            "rlimit": 716962
+          },
+          "snap_l1": {
+            "ms": 109,
+            "rlimit": 270773
+          }
+        },
+        "ms": 1664,
+        "rlimit": 3209732,
+        "functions": 47,
+        "largest_function": {
+          "function": "witness_snap::witness_snap",
+          "ms": 441,
+          "rlimit": 716962,
+          "success": true
+        }
+      },
+      "module 06 (IVF index lifecycle)": {
+        "modules": {
+          "vidx_l2": {
+            "ms": 185,
+            "rlimit": 410689
+          },
+          "witness_vidx": {
+            "ms": 71,
+            "rlimit": 144867
+          },
+          "vidx_l1": {
+            "ms": 53,
+            "rlimit": 130543
+          }
+        },
+        "ms": 309,
+        "rlimit": 686099,
+        "functions": 25,
+        "largest_function": {
+          "function": "witness_vidx::witness_vidx",
+          "ms": 71,
+          "rlimit": 144867,
+          "success": true
+        }
+      },
+      "module 06 (embed queue)": {
+        "modules": {
+          "vq_l2": {
+            "ms": 162,
+            "rlimit": 373550
+          },
+          "witness_vq": {
+            "ms": 218,
+            "rlimit": 354533
+          },
+          "vq_runs": {
+            "ms": 29,
+            "rlimit": 62329
+          },
+          "vq_l1": {
+            "ms": 22,
+            "rlimit": 51804
+          }
+        },
+        "ms": 431,
+        "rlimit": 842216,
+        "functions": 20,
+        "largest_function": {
+          "function": "witness_vq::witness_vq",
+          "ms": 218,
+          "rlimit": 354533,
+          "success": true
+        }
+      }
+    }
+  },
+  "controls": {
+    "control_f1801_no_prefix_check": {
+      "tag": "control_f1801_no_prefix_check",
+      "features": "control_f1801_no_prefix_check",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f1801_no_prefix_check -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1b/control_f1801_no_prefix_check.log",
+      "json": "$RUN_DIR/proofs-d1b/control_f1801_no_prefix_check.json",
+      "wall_seconds": 2.17,
+      "max_rss_kb": 467580,
+      "error_locations": [
+        "src/snap_l2.rs:524"
+      ],
+      "resource_limit": false,
+      "verified": 91,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 2018,
+      "smt_run_ms": 2577,
+      "rlimit_total": 4953862,
+      "modules": {
+        "snap_l2": {
+          "ms": 574,
+          "rlimit": 1354733
+        },
+        "cx_f1801_history": {
+          "ms": 615,
+          "rlimit": 920063
+        },
+        "snap_runs": {
+          "ms": 590,
+          "rlimit": 879978
+        },
+        "vidx_l2": {
+          "ms": 190,
+          "rlimit": 410689
+        },
+        "vq_l2": {
+          "ms": 149,
+          "rlimit": 373550
+        },
+        "witness_vq": {
+          "ms": 160,
+          "rlimit": 354533
+        },
+        "snap_l1": {
+          "ms": 125,
+          "rlimit": 270773
+        },
+        "witness_vidx": {
+          "ms": 65,
+          "rlimit": 144867
+        },
+        "vidx_l1": {
+          "ms": 53,
+          "rlimit": 130543
+        },
+        "vq_runs": {
+          "ms": 29,
+          "rlimit": 62329
+        },
+        "vq_l1": {
+          "ms": 22,
+          "rlimit": 51804
+        }
+      },
+      "top_functions": [
+        {
+          "function": "cx_f1801_history::counterexample_f1801_history",
+          "ms": 615,
+          "rlimit": 920063,
+          "success": true
+        },
+        {
+          "function": "snap_runs::lemma_tenant_run",
+          "ms": 350,
+          "rlimit": 538593,
+          "success": true
+        },
+        {
+          "function": "witness_vq::witness_vq",
+          "ms": 160,
+          "rlimit": 354533,
+          "success": true
+        },
+        {
+          "function": "snap_runs::lemma_save_run",
+          "ms": 125,
+          "rlimit": 172480,
+          "success": true
+        },
+        {
+          "function": "witness_vidx::witness_vidx",
+          "ms": 65,
+          "rlimit": 144867,
+          "success": true
+        },
+        {
+          "function": "snap_runs::lemma_restore_run",
+          "ms": 96,
+          "rlimit": 137760,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_rend",
+          "ms": 49,
+          "rlimit": 124406,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_redact",
+          "ms": 35,
+          "rlimit": 87385,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_rledger",
+          "ms": 31,
+          "rlimit": 83228,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_commit",
+          "ms": 40,
+          "rlimit": 79456,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "snap_l2::lemma_rbegin"
+      ],
+      "functions_checked": 92,
+      "max_function_rlimit": 920063,
+      "json_sha256": "dec67956c709353437c50ec71bcb3d724755daad948f25fa6a6796d0170d244a",
+      "module": "18",
+      "finding": "F-1801 (history half) / HD-1801",
+      "expected": "src/snap_l2.rs",
+      "counterexample": "cx_f1801_history::counterexample_f1801_history",
+      "what": "a replacing restore checks layout, strict mode and a caller transaction only, then sets the archive's ledger nodes over the live ones (snapshot.py:1095-1152, 1554-1588, 1654-1692)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f1801_restore_unredacts": {
+      "tag": "control_f1801_restore_unredacts",
+      "features": "control_f1801_restore_unredacts",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f1801_restore_unredacts -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1b/control_f1801_restore_unredacts.log",
+      "json": "$RUN_DIR/proofs-d1b/control_f1801_restore_unredacts.json",
+      "wall_seconds": 2.16,
+      "max_rss_kb": 468980,
+      "error_locations": [
+        "src/snap_l2.rs:538",
+        "src/snap_l2.rs:553",
+        "src/snap_l2.rs:568"
+      ],
+      "resource_limit": false,
+      "verified": 89,
+      "errors": 3,
+      "success": false,
+      "verus_total_ms": 2006,
+      "smt_run_ms": 2285,
+      "rlimit_total": 4578185,
+      "modules": {
+        "snap_l2": {
+          "ms": 549,
+          "rlimit": 1341863
+        },
+        "snap_runs": {
+          "ms": 492,
+          "rlimit": 772932
+        },
+        "cx_f1801_unredact": {
+          "ms": 483,
+          "rlimit": 664302
+        },
+        "vidx_l2": {
+          "ms": 160,
+          "rlimit": 410689
+        },
+        "vq_l2": {
+          "ms": 133,
+          "rlimit": 373550
+        },
+        "witness_vq": {
+          "ms": 167,
+          "rlimit": 354533
+        },
+        "snap_l1": {
+          "ms": 121,
+          "rlimit": 270773
+        },
+        "witness_vidx": {
+          "ms": 71,
+          "rlimit": 144867
+        },
+        "vidx_l1": {
+          "ms": 52,
+          "rlimit": 130543
+        },
+        "vq_runs": {
+          "ms": 29,
+          "rlimit": 62329
+        },
+        "vq_l1": {
+          "ms": 22,
+          "rlimit": 51804
+        }
+      },
+      "top_functions": [
+        {
+          "function": "cx_f1801_unredact::counterexample_f1801_unredact",
+          "ms": 483,
+          "rlimit": 664302,
+          "success": true
+        },
+        {
+          "function": "snap_runs::lemma_tenant_run",
+          "ms": 249,
+          "rlimit": 435061,
+          "success": true
+        },
+        {
+          "function": "witness_vq::witness_vq",
+          "ms": 167,
+          "rlimit": 354533,
+          "success": true
+        },
+        {
+          "function": "snap_runs::lemma_save_run",
+          "ms": 125,
+          "rlimit": 169195,
+          "success": true
+        },
+        {
+          "function": "witness_vidx::witness_vidx",
+          "ms": 71,
+          "rlimit": 144867,
+          "success": true
+        },
+        {
+          "function": "snap_runs::lemma_restore_run",
+          "ms": 99,
+          "rlimit": 137850,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_rend",
+          "ms": 67,
+          "rlimit": 133531,
+          "success": false
+        },
+        {
+          "function": "snap_l2::lemma_redact",
+          "ms": 33,
+          "rlimit": 85822,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_commit",
+          "ms": 32,
+          "rlimit": 78884,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_rledger",
+          "ms": 40,
+          "rlimit": 77923,
+          "success": false
+        }
+      ],
+      "failing_functions": [
+        "snap_l2::lemma_rend",
+        "snap_l2::lemma_rledger",
+        "snap_l2::lemma_rload"
+      ],
+      "functions_checked": 92,
+      "max_function_rlimit": 664302,
+      "json_sha256": "6c1deb37617f273de6f25eef051d5f88822663fa8ab72c1b02e941ffa8c285ee",
+      "module": "18",
+      "finding": "F-1801 (redaction half) / F-C1304 (restore)",
+      "expected": "src/snap_l2.rs",
+      "counterexample": "cx_f1801_unredact::counterexample_f1801_unredact",
+      "what": "the restore writes the archive's rows and ledger records with no live redaction re-applied (snapshot.py:1141-1588; no reference to redaction)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_fc1304_receipt_omits_archives": {
+      "tag": "control_fc1304_receipt_omits_archives",
+      "features": "control_fc1304_receipt_omits_archives",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_fc1304_receipt_omits_archives -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1b/control_fc1304_receipt_omits_archives.log",
+      "json": "$RUN_DIR/proofs-d1b/control_fc1304_receipt_omits_archives.json",
+      "wall_seconds": 2.15,
+      "max_rss_kb": 466532,
+      "error_locations": [
+        "src/snap_l2.rs:454"
+      ],
+      "resource_limit": false,
+      "verified": 91,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1974,
+      "smt_run_ms": 2301,
+      "rlimit_total": 4527859,
+      "modules": {
+        "snap_l2": {
+          "ms": 582,
+          "rlimit": 1351302
+        },
+        "snap_runs": {
+          "ms": 562,
+          "rlimit": 883335
+        },
+        "cx_fc1304": {
+          "ms": 325,
+          "rlimit": 494134
+        },
+        "vidx_l2": {
+          "ms": 193,
+          "rlimit": 410689
+        },
+        "vq_l2": {
+          "ms": 156,
+          "rlimit": 373550
+        },
+        "witness_vq": {
+          "ms": 189,
+          "rlimit": 354533
+        },
+        "snap_l1": {
+          "ms": 115,
+          "rlimit": 270773
+        },
+        "witness_vidx": {
+          "ms": 71,
+          "rlimit": 144867
+        },
+        "vidx_l1": {
+          "ms": 54,
+          "rlimit": 130543
+        },
+        "vq_runs": {
+          "ms": 28,
+          "rlimit": 62329
+        },
+        "vq_l1": {
+          "ms": 21,
+          "rlimit": 51804
+        }
+      },
+      "top_functions": [
+        {
+          "function": "snap_runs::lemma_tenant_run",
+          "ms": 343,
+          "rlimit": 538572,
+          "success": true
+        },
+        {
+          "function": "cx_fc1304::counterexample_fc1304",
+          "ms": 325,
+          "rlimit": 494134,
+          "success": true
+        },
+        {
+          "function": "witness_vq::witness_vq",
+          "ms": 189,
+          "rlimit": 354533,
+          "success": true
+        },
+        {
+          "function": "snap_runs::lemma_save_run",
+          "ms": 123,
+          "rlimit": 172480,
+          "success": true
+        },
+        {
+          "function": "witness_vidx::witness_vidx",
+          "ms": 71,
+          "rlimit": 144867,
+          "success": true
+        },
+        {
+          "function": "snap_runs::lemma_restore_run",
+          "ms": 76,
+          "rlimit": 141150,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_rend",
+          "ms": 48,
+          "rlimit": 124868,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_redact",
+          "ms": 66,
+          "rlimit": 89548,
+          "success": false
+        },
+        {
+          "function": "snap_l2::lemma_rledger",
+          "ms": 31,
+          "rlimit": 83300,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_commit",
+          "ms": 37,
+          "rlimit": 79456,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "snap_l2::lemma_redact"
+      ],
+      "functions_checked": 92,
+      "max_function_rlimit": 538572,
+      "json_sha256": "6f5ef53e588b1569d6644ef92220b7d90127160379acf5e82be67bbd674ab219",
+      "module": "18",
+      "finding": "F-C1304 (receipt)",
+      "expected": "src/snap_l2.rs",
+      "counterexample": "cx_fc1304::counterexample_fc1304",
+      "what": "the redaction receipt's out_of_reach names exports, journals and backups only, never IVG's own archives (LedgerRedact.cls:504-509)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_fc1801_dirty_export": {
+      "tag": "control_fc1801_dirty_export",
+      "features": "control_fc1801_dirty_export",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_fc1801_dirty_export -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1b/control_fc1801_dirty_export.log",
+      "json": "$RUN_DIR/proofs-d1b/control_fc1801_dirty_export.json",
+      "wall_seconds": 2.54,
+      "max_rss_kb": 466960,
+      "error_locations": [
+        "src/snap_l2.rs:380",
+        "src/snap_l2.rs:408",
+        "src/snap_l2.rs:432",
+        "src/snap_l2.rs:447",
+        "src/snap_l2.rs:473"
+      ],
+      "resource_limit": false,
+      "verified": 87,
+      "errors": 5,
+      "success": false,
+      "verus_total_ms": 2368,
+      "smt_run_ms": 2523,
+      "rlimit_total": 4159056,
+      "modules": {
+        "snap_l2": {
+          "ms": 658,
+          "rlimit": 1238717
+        },
+        "snap_runs": {
+          "ms": 711,
+          "rlimit": 890159
+        },
+        "vidx_l2": {
+          "ms": 199,
+          "rlimit": 410689
+        },
+        "vq_l2": {
+          "ms": 171,
+          "rlimit": 373550
+        },
+        "witness_vq": {
+          "ms": 270,
+          "rlimit": 354533
+        },
+        "snap_l1": {
+          "ms": 124,
+          "rlimit": 270773
+        },
+        "cx_fc1801": {
+          "ms": 172,
+          "rlimit": 231092
+        },
+        "witness_vidx": {
+          "ms": 78,
+          "rlimit": 144867
+        },
+        "vidx_l1": {
+          "ms": 82,
+          "rlimit": 130543
+        },
+        "vq_runs": {
+          "ms": 29,
+          "rlimit": 62329
+        },
+        "vq_l1": {
+          "ms": 24,
+          "rlimit": 51804
+        }
+      },
+      "top_functions": [
+        {
+          "function": "snap_runs::lemma_tenant_run",
+          "ms": 447,
+          "rlimit": 538109,
+          "success": true
+        },
+        {
+          "function": "witness_vq::witness_vq",
+          "ms": 270,
+          "rlimit": 354533,
+          "success": true
+        },
+        {
+          "function": "cx_fc1801::counterexample_fc1801",
+          "ms": 172,
+          "rlimit": 231092,
+          "success": true
+        },
+        {
+          "function": "snap_runs::lemma_save_run",
+          "ms": 140,
+          "rlimit": 179814,
+          "success": true
+        },
+        {
+          "function": "witness_vidx::witness_vidx",
+          "ms": 78,
+          "rlimit": 144867,
+          "success": true
+        },
+        {
+          "function": "snap_runs::lemma_restore_run",
+          "ms": 103,
+          "rlimit": 141093,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_rend",
+          "ms": 66,
+          "rlimit": 124761,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_rledger",
+          "ms": 36,
+          "rlimit": 83311,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_step",
+          "ms": 28,
+          "rlimit": 76885,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_xledger",
+          "ms": 26,
+          "rlimit": 64710,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "snap_l2::lemma_commit",
+        "snap_l2::lemma_erase",
+        "snap_l2::lemma_redact",
+        "snap_l2::lemma_wopen",
+        "snap_l2::lemma_xstart"
+      ],
+      "functions_checked": 92,
+      "max_function_rlimit": 538109,
+      "json_sha256": "afb9ebc83f27128760fb3b3096b46509fa4367206d5591f52ac143dc6f32c11b",
+      "module": "18",
+      "finding": "F-C1801 / HD-1802",
+      "expected": "src/snap_l2.rs",
+      "counterexample": "cx_fc1801::counterexample_fc1801",
+      "what": "save_snapshot takes no lock and writers respect no export gate; reads are uncommitted (snapshot.py:864-1034)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_fc1802_swallowed_line": {
+      "tag": "control_fc1802_swallowed_line",
+      "features": "control_fc1802_swallowed_line",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_fc1802_swallowed_line -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1b/control_fc1802_swallowed_line.log",
+      "json": "$RUN_DIR/proofs-d1b/control_fc1802_swallowed_line.json",
+      "wall_seconds": 2.16,
+      "max_rss_kb": 467496,
+      "error_locations": [
+        "src/snap_l2.rs:536"
+      ],
+      "resource_limit": false,
+      "verified": 91,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 2004,
+      "smt_run_ms": 2324,
+      "rlimit_total": 4660767,
+      "modules": {
+        "snap_l2": {
+          "ms": 570,
+          "rlimit": 1351777
+        },
+        "snap_runs": {
+          "ms": 550,
+          "rlimit": 883655
+        },
+        "cx_fc1802": {
+          "ms": 395,
+          "rlimit": 626247
+        },
+        "vidx_l2": {
+          "ms": 182,
+          "rlimit": 410689
+        },
+        "vq_l2": {
+          "ms": 161,
+          "rlimit": 373550
+        },
+        "witness_vq": {
+          "ms": 162,
+          "rlimit": 354533
+        },
+        "snap_l1": {
+          "ms": 123,
+          "rlimit": 270773
+        },
+        "witness_vidx": {
+          "ms": 71,
+          "rlimit": 144867
+        },
+        "vidx_l1": {
+          "ms": 53,
+          "rlimit": 130543
+        },
+        "vq_runs": {
+          "ms": 29,
+          "rlimit": 62329
+        },
+        "vq_l1": {
+          "ms": 22,
+          "rlimit": 51804
+        }
+      },
+      "top_functions": [
+        {
+          "function": "cx_fc1802::counterexample_fc1802",
+          "ms": 395,
+          "rlimit": 626247,
+          "success": true
+        },
+        {
+          "function": "snap_runs::lemma_tenant_run",
+          "ms": 312,
+          "rlimit": 538661,
+          "success": true
+        },
+        {
+          "function": "witness_vq::witness_vq",
+          "ms": 162,
+          "rlimit": 354533,
+          "success": true
+        },
+        {
+          "function": "snap_runs::lemma_save_run",
+          "ms": 120,
+          "rlimit": 172692,
+          "success": true
+        },
+        {
+          "function": "witness_vidx::witness_vidx",
+          "ms": 71,
+          "rlimit": 144867,
+          "success": true
+        },
+        {
+          "function": "snap_runs::lemma_restore_run",
+          "ms": 99,
+          "rlimit": 141171,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_rend",
+          "ms": 48,
+          "rlimit": 124396,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_redact",
+          "ms": 30,
+          "rlimit": 87373,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_rledger",
+          "ms": 32,
+          "rlimit": 83198,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_commit",
+          "ms": 48,
+          "rlimit": 79429,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "snap_l2::lemma_rload"
+      ],
+      "functions_checked": 92,
+      "max_function_rlimit": 626247,
+      "json_sha256": "4733ff39a7169d3948f95dd63b33649f8b9a017a6bd7a7c7143db0b05c95fdb4",
+      "module": "18",
+      "finding": "F-C1802",
+      "expected": "src/snap_l2.rs",
+      "counterexample": "cx_fc1802::counterexample_fc1802",
+      "what": "a global line IRIS refuses is logged at debug and not counted (snapshot.py:1665-1684)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_fc1804_edge_routes_omitted": {
+      "tag": "control_fc1804_edge_routes_omitted",
+      "features": "control_fc1804_edge_routes_omitted",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_fc1804_edge_routes_omitted -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1b/control_fc1804_edge_routes_omitted.log",
+      "json": "$RUN_DIR/proofs-d1b/control_fc1804_edge_routes_omitted.json",
+      "wall_seconds": 2.38,
+      "max_rss_kb": 466512,
+      "error_locations": [
+        "src/snap_l2.rs:369"
+      ],
+      "resource_limit": false,
+      "verified": 91,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 2220,
+      "smt_run_ms": 2826,
+      "rlimit_total": 4493935,
+      "modules": {
+        "snap_l2": {
+          "ms": 698,
+          "rlimit": 1372518
+        },
+        "snap_runs": {
+          "ms": 749,
+          "rlimit": 794519
+        },
+        "cx_fc1804": {
+          "ms": 434,
+          "rlimit": 527810
+        },
+        "vidx_l2": {
+          "ms": 188,
+          "rlimit": 410689
+        },
+        "vq_l2": {
+          "ms": 175,
+          "rlimit": 373550
+        },
+        "witness_vq": {
+          "ms": 215,
+          "rlimit": 354533
+        },
+        "snap_l1": {
+          "ms": 149,
+          "rlimit": 270773
+        },
+        "witness_vidx": {
+          "ms": 71,
+          "rlimit": 144867
+        },
+        "vidx_l1": {
+          "ms": 57,
+          "rlimit": 130543
+        },
+        "vq_runs": {
+          "ms": 61,
+          "rlimit": 62329
+        },
+        "vq_l1": {
+          "ms": 22,
+          "rlimit": 51804
+        }
+      },
+      "top_functions": [
+        {
+          "function": "cx_fc1804::counterexample_fc1804",
+          "ms": 434,
+          "rlimit": 527810,
+          "success": true
+        },
+        {
+          "function": "snap_runs::lemma_tenant_run",
+          "ms": 453,
+          "rlimit": 432425,
+          "success": true
+        },
+        {
+          "function": "witness_vq::witness_vq",
+          "ms": 215,
+          "rlimit": 354533,
+          "success": true
+        },
+        {
+          "function": "snap_runs::lemma_save_run",
+          "ms": 129,
+          "rlimit": 173199,
+          "success": true
+        },
+        {
+          "function": "snap_runs::lemma_restore_run",
+          "ms": 146,
+          "rlimit": 155852,
+          "success": true
+        },
+        {
+          "function": "witness_vidx::witness_vidx",
+          "ms": 71,
+          "rlimit": 144867,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_rend",
+          "ms": 51,
+          "rlimit": 129891,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_redact",
+          "ms": 45,
+          "rlimit": 88530,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_rledger",
+          "ms": 36,
+          "rlimit": 84153,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_commit",
+          "ms": 99,
+          "rlimit": 80281,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "snap_l2::lemma_read_all"
+      ],
+      "functions_checked": 92,
+      "max_function_rlimit": 527810,
+      "json_sha256": "fe6b17e2f1bc942ad55759e7da52fbc571f7eefe83c484efb9914ef1b038910e",
+      "module": "18",
+      "finding": "F-C1804",
+      "expected": "src/snap_l2.rs",
+      "counterexample": "cx_fc1804::counterexample_fc1804",
+      "what": "the routed export plan keeps node routes (kg_emb_) only, so kg_eemb_ edge-vector routes are not archived (snapshot.py:299-344; security.py:58-68)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f0606_erase_keeps_ivf": {
+      "tag": "control_f0606_erase_keeps_ivf",
+      "features": "control_f0606_erase_keeps_ivf",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f0606_erase_keeps_ivf -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1b/control_f0606_erase_keeps_ivf.log",
+      "json": "$RUN_DIR/proofs-d1b/control_f0606_erase_keeps_ivf.json",
+      "wall_seconds": 2.11,
+      "max_rss_kb": 469060,
+      "error_locations": [
+        "src/vidx_l2.rs:176",
+        "src/vidx_l2.rs:180"
+      ],
+      "resource_limit": false,
+      "verified": 91,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1950,
+      "smt_run_ms": 2268,
+      "rlimit_total": 4654178,
+      "modules": {
+        "snap_l2": {
+          "ms": 549,
+          "rlimit": 1338662
+        },
+        "snap_runs": {
+          "ms": 527,
+          "rlimit": 883335
+        },
+        "witness_snap": {
+          "ms": 421,
+          "rlimit": 716962
+        },
+        "vq_l2": {
+          "ms": 176,
+          "rlimit": 373550
+        },
+        "vidx_l2": {
+          "ms": 138,
+          "rlimit": 372146
+        },
+        "witness_vq": {
+          "ms": 193,
+          "rlimit": 354533
+        },
+        "snap_l1": {
+          "ms": 106,
+          "rlimit": 270773
+        },
+        "vidx_l1": {
+          "ms": 50,
+          "rlimit": 130543
+        },
+        "cx_f0606": {
+          "ms": 52,
+          "rlimit": 99541
+        },
+        "vq_runs": {
+          "ms": 28,
+          "rlimit": 62329
+        },
+        "vq_l1": {
+          "ms": 23,
+          "rlimit": 51804
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_snap::witness_snap",
+          "ms": 421,
+          "rlimit": 716962,
+          "success": true
+        },
+        {
+          "function": "snap_runs::lemma_tenant_run",
+          "ms": 308,
+          "rlimit": 538572,
+          "success": true
+        },
+        {
+          "function": "witness_vq::witness_vq",
+          "ms": 193,
+          "rlimit": 354533,
+          "success": true
+        },
+        {
+          "function": "snap_runs::lemma_save_run",
+          "ms": 111,
+          "rlimit": 172480,
+          "success": true
+        },
+        {
+          "function": "snap_runs::lemma_restore_run",
+          "ms": 93,
+          "rlimit": 141150,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_rend",
+          "ms": 53,
+          "rlimit": 124843,
+          "success": true
+        },
+        {
+          "function": "cx_f0606::counterexample_f0606",
+          "ms": 52,
+          "rlimit": 99541,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_redact",
+          "ms": 31,
+          "rlimit": 87385,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_rledger",
+          "ms": 33,
+          "rlimit": 83340,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_commit",
+          "ms": 48,
+          "rlimit": 79466,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "vidx_l2::lemma_erase"
+      ],
+      "functions_checked": 92,
+      "max_function_rlimit": 716962,
+      "json_sha256": "255129af46884cc461f73026c21736fe1bf50d2bf5915417c8cd2e173e8e32c3",
+      "module": "06",
+      "finding": "F-0606 / HD-0601",
+      "expected": "src/vidx_l2.rs",
+      "counterexample": "cx_f0606::counterexample_f0606",
+      "what": "Eraser.EraseGraph names no ^IVF generation (Eraser.cls; GraphStores.cls:28-131)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_hd0602_inplace_build": {
+      "tag": "control_hd0602_inplace_build",
+      "features": "control_hd0602_inplace_build",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_hd0602_inplace_build -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1b/control_hd0602_inplace_build.log",
+      "json": "$RUN_DIR/proofs-d1b/control_hd0602_inplace_build.json",
+      "wall_seconds": 2.37,
+      "max_rss_kb": 467836,
+      "error_locations": [
+        "src/vidx_l2.rs:214",
+        "src/vidx_l2.rs:228"
+      ],
+      "resource_limit": false,
+      "verified": 90,
+      "errors": 2,
+      "success": false,
+      "verus_total_ms": 2213,
+      "smt_run_ms": 2793,
+      "rlimit_total": 4769700,
+      "modules": {
+        "snap_l2": {
+          "ms": 756,
+          "rlimit": 1338662
+        },
+        "snap_runs": {
+          "ms": 734,
+          "rlimit": 883335
+        },
+        "witness_snap": {
+          "ms": 470,
+          "rlimit": 716962
+        },
+        "vidx_l2": {
+          "ms": 181,
+          "rlimit": 428260
+        },
+        "vq_l2": {
+          "ms": 173,
+          "rlimit": 373550
+        },
+        "witness_vq": {
+          "ms": 172,
+          "rlimit": 354533
+        },
+        "snap_l1": {
+          "ms": 117,
+          "rlimit": 270773
+        },
+        "cx_hd0602": {
+          "ms": 77,
+          "rlimit": 158949
+        },
+        "vidx_l1": {
+          "ms": 56,
+          "rlimit": 130543
+        },
+        "vq_runs": {
+          "ms": 28,
+          "rlimit": 62329
+        },
+        "vq_l1": {
+          "ms": 24,
+          "rlimit": 51804
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_snap::witness_snap",
+          "ms": 470,
+          "rlimit": 716962,
+          "success": true
+        },
+        {
+          "function": "snap_runs::lemma_tenant_run",
+          "ms": 494,
+          "rlimit": 538572,
+          "success": true
+        },
+        {
+          "function": "witness_vq::witness_vq",
+          "ms": 172,
+          "rlimit": 354533,
+          "success": true
+        },
+        {
+          "function": "snap_runs::lemma_save_run",
+          "ms": 125,
+          "rlimit": 172480,
+          "success": true
+        },
+        {
+          "function": "cx_hd0602::counterexample_hd0602",
+          "ms": 77,
+          "rlimit": 158949,
+          "success": true
+        },
+        {
+          "function": "snap_runs::lemma_restore_run",
+          "ms": 100,
+          "rlimit": 141150,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_rend",
+          "ms": 79,
+          "rlimit": 124843,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_redact",
+          "ms": 33,
+          "rlimit": 87385,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_rledger",
+          "ms": 51,
+          "rlimit": 83340,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_commit",
+          "ms": 37,
+          "rlimit": 79466,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "vidx_l2::lemma_badd",
+        "vidx_l2::lemma_bbuild"
+      ],
+      "functions_checked": 92,
+      "max_function_rlimit": 716962,
+      "json_sha256": "6bb84ab7e4d121f5592a4fd1cac95cdd0a09bc38509a726b2196468f16915fe7",
+      "module": "06",
+      "finding": "HD-0602 (intent-a-hd0602-ivf-partial)",
+      "expected": "src/vidx_l2.rs",
+      "counterexample": "cx_hd0602::counterexample_hd0602",
+      "what": "ivf_build kills ^IVF(name) and refills it in place, batch by batch, with no lock or transaction (IVFIndex.cls:8, 237-276; vector.py:2000-2022)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_hd0604_two_consumers": {
+      "tag": "control_hd0604_two_consumers",
+      "features": "control_hd0604_two_consumers",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_hd0604_two_consumers -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1b/control_hd0604_two_consumers.log",
+      "json": "$RUN_DIR/proofs-d1b/control_hd0604_two_consumers.json",
+      "wall_seconds": 2.24,
+      "max_rss_kb": 466944,
+      "error_locations": [
+        "src/vq_l2.rs:171",
+        "src/vq_l2.rs:172"
+      ],
+      "resource_limit": false,
+      "verified": 91,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1964,
+      "smt_run_ms": 2283,
+      "rlimit_total": 4712385,
+      "modules": {
+        "snap_l2": {
+          "ms": 547,
+          "rlimit": 1338662
+        },
+        "snap_runs": {
+          "ms": 571,
+          "rlimit": 883335
+        },
+        "witness_snap": {
+          "ms": 410,
+          "rlimit": 716962
+        },
+        "vidx_l2": {
+          "ms": 192,
+          "rlimit": 410689
+        },
+        "vq_l2": {
+          "ms": 133,
+          "rlimit": 379127
+        },
+        "cx_hd0604": {
+          "ms": 167,
+          "rlimit": 323254
+        },
+        "snap_l1": {
+          "ms": 102,
+          "rlimit": 270773
+        },
+        "witness_vidx": {
+          "ms": 50,
+          "rlimit": 144867
+        },
+        "vidx_l1": {
+          "ms": 55,
+          "rlimit": 130543
+        },
+        "vq_runs": {
+          "ms": 28,
+          "rlimit": 62369
+        },
+        "vq_l1": {
+          "ms": 23,
+          "rlimit": 51804
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_snap::witness_snap",
+          "ms": 410,
+          "rlimit": 716962,
+          "success": true
+        },
+        {
+          "function": "snap_runs::lemma_tenant_run",
+          "ms": 341,
+          "rlimit": 538572,
+          "success": true
+        },
+        {
+          "function": "cx_hd0604::counterexample_hd0604",
+          "ms": 167,
+          "rlimit": 323254,
+          "success": true
+        },
+        {
+          "function": "snap_runs::lemma_save_run",
+          "ms": 125,
+          "rlimit": 172480,
+          "success": true
+        },
+        {
+          "function": "witness_vidx::witness_vidx",
+          "ms": 50,
+          "rlimit": 144867,
+          "success": true
+        },
+        {
+          "function": "snap_runs::lemma_restore_run",
+          "ms": 90,
+          "rlimit": 141150,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_rend",
+          "ms": 49,
+          "rlimit": 124843,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_redact",
+          "ms": 47,
+          "rlimit": 87385,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_rledger",
+          "ms": 31,
+          "rlimit": 83340,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_commit",
+          "ms": 48,
+          "rlimit": 79466,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "vq_l2::lemma_claim"
+      ],
+      "functions_checked": 92,
+      "max_function_rlimit": 716962,
+      "json_sha256": "c1129175a0a32de182aa2504e03b458c874490bed57b682dc9db8d6c0bbad68c",
+      "module": "06",
+      "finding": "HD-0604 (intent-a-hd0604-queue-claim)",
+      "expected": "src/vq_l2.rs",
+      "counterexample": "cx_hd0604::counterexample_hd0604",
+      "what": "ClaimPendingBatch is a plain scan with no claim state and nothing excludes a second worker (EmbedQueue.cls:22-25, 112-134, 258-268)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f0604_done_without_vector": {
+      "tag": "control_f0604_done_without_vector",
+      "features": "control_f0604_done_without_vector",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f0604_done_without_vector -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1b/control_f0604_done_without_vector.log",
+      "json": "$RUN_DIR/proofs-d1b/control_f0604_done_without_vector.json",
+      "wall_seconds": 2.04,
+      "max_rss_kb": 466528,
+      "error_locations": [
+        "src/vq_l2.rs:229"
+      ],
+      "resource_limit": false,
+      "verified": 91,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1885,
+      "smt_run_ms": 2226,
+      "rlimit_total": 4570259,
+      "modules": {
+        "snap_l2": {
+          "ms": 538,
+          "rlimit": 1338662
+        },
+        "snap_runs": {
+          "ms": 524,
+          "rlimit": 883335
+        },
+        "witness_snap": {
+          "ms": 451,
+          "rlimit": 716962
+        },
+        "vidx_l2": {
+          "ms": 168,
+          "rlimit": 410689
+        },
+        "vq_l2": {
+          "ms": 171,
+          "rlimit": 379231
+        },
+        "snap_l1": {
+          "ms": 106,
+          "rlimit": 270773
+        },
+        "cx_f0604": {
+          "ms": 89,
+          "rlimit": 182873
+        },
+        "witness_vidx": {
+          "ms": 71,
+          "rlimit": 144867
+        },
+        "vidx_l1": {
+          "ms": 54,
+          "rlimit": 130543
+        },
+        "vq_runs": {
+          "ms": 28,
+          "rlimit": 60520
+        },
+        "vq_l1": {
+          "ms": 22,
+          "rlimit": 51804
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_snap::witness_snap",
+          "ms": 451,
+          "rlimit": 716962,
+          "success": true
+        },
+        {
+          "function": "snap_runs::lemma_tenant_run",
+          "ms": 310,
+          "rlimit": 538572,
+          "success": true
+        },
+        {
+          "function": "cx_f0604::counterexample_f0604",
+          "ms": 89,
+          "rlimit": 182873,
+          "success": true
+        },
+        {
+          "function": "snap_runs::lemma_save_run",
+          "ms": 108,
+          "rlimit": 172480,
+          "success": true
+        },
+        {
+          "function": "witness_vidx::witness_vidx",
+          "ms": 71,
+          "rlimit": 144867,
+          "success": true
+        },
+        {
+          "function": "snap_runs::lemma_restore_run",
+          "ms": 91,
+          "rlimit": 141150,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_rend",
+          "ms": 53,
+          "rlimit": 124843,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_redact",
+          "ms": 30,
+          "rlimit": 87385,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_rledger",
+          "ms": 31,
+          "rlimit": 83340,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_commit",
+          "ms": 32,
+          "rlimit": 79466,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "vq_l2::lemma_mark"
+      ],
+      "functions_checked": 92,
+      "max_function_rlimit": 716962,
+      "json_sha256": "6f05003aad187b53e12c08372b6620a2cd104329d90b51bf23f6b98289b28b2b",
+      "module": "06",
+      "finding": "F-0604",
+      "expected": "src/vq_l2.rs",
+      "counterexample": "cx_f0604::counterexample_f0604",
+      "what": "ProcessBatch sets DONE when EMBEDDING() made no vector (EmbedQueue.cls:307-327)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_fc0601_no_version_check": {
+      "tag": "control_fc0601_no_version_check",
+      "features": "control_fc0601_no_version_check",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_fc0601_no_version_check -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1b/control_fc0601_no_version_check.log",
+      "json": "$RUN_DIR/proofs-d1b/control_fc0601_no_version_check.json",
+      "wall_seconds": 2.2,
+      "max_rss_kb": 466960,
+      "error_locations": [
+        "src/vq_l2.rs:231"
+      ],
+      "resource_limit": false,
+      "verified": 91,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 2046,
+      "smt_run_ms": 2347,
+      "rlimit_total": 4594141,
+      "modules": {
+        "snap_l2": {
+          "ms": 570,
+          "rlimit": 1338662
+        },
+        "snap_runs": {
+          "ms": 595,
+          "rlimit": 883335
+        },
+        "witness_snap": {
+          "ms": 470,
+          "rlimit": 716962
+        },
+        "vidx_l2": {
+          "ms": 186,
+          "rlimit": 410689
+        },
+        "vq_l2": {
+          "ms": 153,
+          "rlimit": 404545
+        },
+        "snap_l1": {
+          "ms": 122,
+          "rlimit": 270773
+        },
+        "cx_fc0601": {
+          "ms": 84,
+          "rlimit": 176752
+        },
+        "witness_vidx": {
+          "ms": 56,
+          "rlimit": 144867
+        },
+        "vidx_l1": {
+          "ms": 54,
+          "rlimit": 130543
+        },
+        "vq_runs": {
+          "ms": 30,
+          "rlimit": 65209
+        },
+        "vq_l1": {
+          "ms": 22,
+          "rlimit": 51804
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_snap::witness_snap",
+          "ms": 470,
+          "rlimit": 716962,
+          "success": true
+        },
+        {
+          "function": "snap_runs::lemma_tenant_run",
+          "ms": 376,
+          "rlimit": 538572,
+          "success": true
+        },
+        {
+          "function": "cx_fc0601::counterexample_fc0601",
+          "ms": 84,
+          "rlimit": 176752,
+          "success": true
+        },
+        {
+          "function": "snap_runs::lemma_save_run",
+          "ms": 107,
+          "rlimit": 172480,
+          "success": true
+        },
+        {
+          "function": "witness_vidx::witness_vidx",
+          "ms": 56,
+          "rlimit": 144867,
+          "success": true
+        },
+        {
+          "function": "snap_runs::lemma_restore_run",
+          "ms": 93,
+          "rlimit": 141150,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_rend",
+          "ms": 49,
+          "rlimit": 124843,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_redact",
+          "ms": 30,
+          "rlimit": 87385,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_rledger",
+          "ms": 32,
+          "rlimit": 83340,
+          "success": true
+        },
+        {
+          "function": "snap_l2::lemma_commit",
+          "ms": 50,
+          "rlimit": 79466,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "vq_l2::lemma_mark"
+      ],
+      "functions_checked": 92,
+      "max_function_rlimit": 716962,
+      "json_sha256": "71b9e53777e73c7dde6e8efee4a39888f7ca0dc87eb980e6bfa95f4bccd884c0",
+      "module": "06",
+      "finding": "F-C0601",
+      "expected": "src/vq_l2.rs",
+      "counterexample": "cx_fc0601::counterexample_fc0601",
+      "what": "the status mark is unconditional, so a re-enqueue while a worker holds the old text is overwritten by DONE with the old vector (EmbedQueue.cls:44-58, 326-327)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    }
+  },
+  "trust_inventory": {
+    "own_sources": {
+      "scanned": [
+        "src/cx_f0604.rs",
+        "src/cx_f0606.rs",
+        "src/cx_f1801_history.rs",
+        "src/cx_f1801_unredact.rs",
+        "src/cx_fc0601.rs",
+        "src/cx_fc1304.rs",
+        "src/cx_fc1801.rs",
+        "src/cx_fc1802.rs",
+        "src/cx_fc1804.rs",
+        "src/cx_hd0602.rs",
+        "src/cx_hd0604.rs",
+        "src/lib.rs",
+        "src/snap_l1.rs",
+        "src/snap_l2.rs",
+        "src/snap_runs.rs",
+        "src/vidx_l1.rs",
+        "src/vidx_l2.rs",
+        "src/vq_l1.rs",
+        "src/vq_l2.rs",
+        "src/vq_runs.rs",
+        "src/witness_snap.rs",
+        "src/witness_vidx.rs",
+        "src/witness_vq.rs"
+      ],
+      "patterns": [
+        "\\bassume\\s*\\(",
+        "\\badmit\\s*\\(",
+        "external_body",
+        "#\\s*\\[\\s*verifier::external",
+        "\\buninterp\\b",
+        "\\baxiom\\b",
+        "assume_specification",
+        "#\\s*\\[\\s*verifier::assume"
+      ],
+      "violations": []
+    },
+    "actors": {
+      "rev": "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877",
+      "path": "/home/ziniu_wu_g5labs_ai/.cargo/git/checkouts/playbook-reference-actors-924e50ff84dd7a85/c03f9fa/crates/actors/src",
+      "violations": [],
+      "note": "verified in the same build without --no-cheating (forwarded to roots only)"
+    },
+    "vstd": {
+      "version": "0.0.0-2026-09-20-0158",
+      "note": "Verus standard library: the trusted base (its axioms, e.g. Map::new and Set extensionality, are Verus's own); not scanned"
+    },
+    "trusted_items_in_this_crate": [],
+    "premises": "named in PROOFS.md (P-S1..P-S7, P-V1..P-V5, P-Q1..P-Q2); none is an assumption inside a proof"
+  },
+  "gate": "pass"
+}

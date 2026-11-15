@@ -1,0 +1,15 @@
+{
+ "doc": "F-0306: create_node with a graph name over the column width answers False (\"already exists\") although nothing\n    was written: the 'validation failed' text of SQLCODE -104 is matched as a duplicate.",
+ "id": "p0306_long_graph_name_reads_as_duplicate",
+ "log": "$RUN_DIR/breadth-a/live/03-all-20261113T224729.log",
+ "module": "03",
+ "observed": {
+  "create_node": false,
+  "rows_written": 0
+ },
+ "oracle": "False means the node already exists (create_node docstring); a refusal raises (R203)",
+ "reproduced": true,
+ "seconds": 0.09,
+ "started": "2026-11-13T22:47:30",
+ "verdict": "answered False (exists) with nothing written"
+}

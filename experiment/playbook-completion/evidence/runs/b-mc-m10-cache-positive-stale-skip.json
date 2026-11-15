@@ -1,0 +1,23 @@
+{
+  "check": "m10-cache-positive-stale-skip",
+  "command": "CARGO_TARGET_DIR=$RUN_DIR/target/breadth-b cargo build --release && bash experiment/playbook-completion/tools/locks.sh heavy timeout 1800 $RUN_DIR/target/breadth-b/release/breadth-b",
+  "design": "positive",
+  "experiment_head": "f3fe3917466f7bae3e46f32f5b0644cfeaff87c8",
+  "full_log": "$RUN_DIR/breadth-b/mc/full-decisive-20261114T012246Z.log",
+  "full_log_sha256": "227f6720d9d86ed75cc8fa7fd71e2d9d31fd6f5ccd627843af4d51997edf4615",
+  "id": "b-mc-m10-cache-positive-stale-skip",
+  "kind": "mc",
+  "lane": "breadth-b",
+  "log": "$RUN_DIR/breadth-b/mc/checks/m10-cache-positive-stale-skip.log",
+  "log_bytes": 1638,
+  "log_sha256": "105188f608df3c8a2cb989247e8620891112cc1f3c81833fd04464bdddfcdd8a",
+  "module": "10",
+  "observes": "module 10 machine cache design positive: expectation violation of 'never holds an out-of-date PPR entry'; result met (found 'never holds an out-of-date PPR entry'); 1224 states, 2087 transitions, depth 4, exhaustive within the model's bounds; covers: sharpness: an out-of-date entry exists (and P_HIT shows it is never served)",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T01:23:53+00:00",
+  "result": "expected-violation",
+  "results": "experiment/playbook-completion/models/breadth-b/RESULTS.json",
+  "search": "exhaustive",
+  "states": "1224"
+}

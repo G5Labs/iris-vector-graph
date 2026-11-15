@@ -1,0 +1,83 @@
+[
+ {
+  "id": "F-1201",
+  "module": "12",
+  "title": "A graph erasure removes the statement entry of an edge a concurrent ledger commit creates",
+  "intended": "No recorded live edge loses its statement entry (ERS-I3; ADR-0004: 'no live statement outlives its content' and the ledger's statement map tracks every live recorded edge). HD-1201 working answer: erase serializes with same-target commits.",
+  "observed": "Reproduced on the pin 8/8: EraseGraph takes no ledger head lock (Eraser.cls:47-261) and EraseLedgerFor (Eraser.cls:1117-1144) dirty-reads every statement entry; it killed the committer's ^IVG.Ledger(\"stmt\",4001) and tuple after the commit wrote them; the edge u-R-v, its nodes and adjacency stayed live in G with no statement entry. Journal order is the oracle. With an edge in the graph the same race instead makes the erase fail with an FK error and roll back (8/8); with a short statement scan the eraser wins the race (8/8).",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "run",
+    "ref": "live-f1201-reproduced"
+   },
+   {
+    "kind": "run",
+    "ref": "live-erase-vs-commit-fk"
+   },
+   {
+    "kind": "run",
+    "ref": "live-erase-vs-commit-emptygraph"
+   },
+   {
+    "kind": "original",
+    "ref": "mc:erasure-as-built"
+   }
+  ],
+  "gates": [
+   "3.3-model-check",
+   "3.6-composition",
+   "3.7-trace-replay",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S2",
+  "confidence": "high",
+  "remedy": "Serialize graph erasure with ledger commits into the same graph (for example take the ledger head lock, or a per-graph lock both take, around the statement cleanup), or make the cleanup remove only statements whose edge rows the same transaction deleted.",
+  "notes": "Upgraded from model-only (original submission) to live. The next ledger operation touching the edge, and verify(), see an unrecorded live edge. Review-response reclassification (review R2-08 / R-11, condition 5; 2026-11-14): disposition changed from reproduced-live to intent-undecided. ERS-I3 (every live recorded edge keeps its statement entry) is the converse of what ADR-0004 states ('no live statement outlives its content': ERS-I2), so the ADR-0004 citation does not support it; spec 213's contracts (contracts/ledger-api.md, contracts/changeset.schema.json) state no statement-map completeness rule either (checked by this lane). The remaining basis is HD-1201, an Assumption (erase serializes with same-target commits; 'choice of lock is provisional'). Observed behaviour kept and still live 8/8: live-f1201-reproduced (journal order as oracle), live-erase-vs-commit-fk, live-erase-vs-commit-emptygraph. The overlap of an eraser with a writer of the same graph is recorded as the violated breadth premise P-A3 (TRUST.md), which does not depend on this intent. Conditional on HD-1201. Review-2 R2-11 (final): restored to reproduced-live. ADR-0004's Consequences clause ('no live statement outlives its content' and the statement map must track recorded live edges) makes the observed state a defect; only the remedy (which lock or protocol serializes erasure with commits, HD-1201) is undecided."
+ },
+ {
+  "id": "F-C1201",
+  "module": "12",
+  "title": "A redaction can complete against an erasure that is still open and then rolls back",
+  "intended": "Redaction never tombstones content that is (or becomes again) live (RED-B1.1, spec 256 FR-005); premise P-1311 'no erasure open at start'.",
+  "observed": "Intent lane B probe on the pin (AUDITIB): an erasure inside a caller transaction deleted the target's rows; a redaction's liveness check (READ UNCOMMITTED, contract clause 'Visibility') saw them gone and ran to completion; the caller then rolled the erasure back: the content is live and its history is tombstoned. The IRIS contract permits exactly this (dirty reads; rollback restores rows).",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "run",
+    "ref": "ib-HD1201-open-erasure"
+   }
+  ],
+  "gates": [
+   "3.3-model-check",
+   "3.2-coverage",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S1",
+  "confidence": "high",
+  "remedy": "Make the redaction's liveness check and marker one step that cannot observe an uncommitted erasure (e.g. both take one lock the erasure also holds until commit), or refuse redaction while any erasure transaction of the target is open.",
+  "notes": "Counterexample to premise P-1311 of the original proof; the reviewed design's proof assumed it."
+ },
+ {
+  "id": "F-C1202",
+  "module": "12",
+  "title": "EraseGraph's adjacency kill can drop the adjacency of an edge committed after its row delete",
+  "intended": "Adjacency (^KG out/in) matches live edge rows (ADR-0012, ERS-B1.1).",
+  "observed": "Model only (core M2, 6 steps), same root cause as F-1201 (no serialization with commits). In the 8 native F-1201 trials the adjacency survived (kg_out_G_defined), so this interleaving was not hit live.",
+  "disposition": "reproduced-model",
+  "evidence": [
+   {
+    "kind": "run",
+    "ref": "core-m2-as-built-F1201-adjacency"
+   }
+  ],
+  "gates": [
+   "3.3-model-check",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S2",
+  "confidence": "medium",
+  "remedy": "As F-1201.",
+  "notes": ""
+ }
+]

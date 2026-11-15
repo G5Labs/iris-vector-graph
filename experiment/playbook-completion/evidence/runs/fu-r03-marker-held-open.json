@@ -1,0 +1,17 @@
+{
+  "command": "locks.sh iris timeout 900 python experiment/playbook-completion/followup/probes.py r04 r03 r01a (AUDITA; check r03; 2 connections)",
+  "experiment_head": "f3fe3917466f7bae3e46f32f5b0644cfeaff87c8",
+  "finding": "F-C1307",
+  "id": "fu-r03-marker-held-open",
+  "kind": "live",
+  "lane": "followup",
+  "log": "$RUN_DIR/followup/r03.json",
+  "log_bytes": 4891,
+  "log_sha256": "6d12cf5c61b205c7fc1dea50c9d262b15b9486b672b59f63f60dfeaf57b3136d",
+  "namespace": "AUDITA",
+  "observes": "R-03, F-C1307: tenants fa3 (3 revisions, erased), fb3 (live), fc3 (erased). Bounded redact(fa3, batch 1, max_batches 1) leaves the marker; engine.create_node('fa3|zombie') (non-strict ledger, no marker check) is accepted while a ledger commit into fa3 is refused; re-run refused target_live at the entry check (LedgerRedact.cls:207-211); with the head lock held by a second connection, a run that passed the entry check tombstoned every fa3 record and Final refused 'became live again' (:395-396) after a bypass write during the wait; marker kept every time. While it exists: tenant B get_revision, diff, reconstruct refused (RedactionInProgressError), verify() = redaction_in_progress, redact(fc3) refused redaction_in_progress; history() not refused (returns the half-done state); a fb3 ledger commit succeeds. Only erasing fa3 again and re-running clears it (no abandon call; only Final :439 and PurgeAll remove the marker).",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T01:35:36+00:00",
+  "result": "fail"
+}

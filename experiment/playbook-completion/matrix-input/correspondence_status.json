@@ -1,0 +1,538 @@
+{
+ "_doc": "Correspondence lane (\u00a73.4-3.6, modules 11-14). 'closed' cells cite registered passing runs only; a reviewed model's result is never reported here as the product's. See correspondence/CORRESPONDENCE.md \u00a77.",
+ "cells": [
+  {
+   "gate": "3.4-statements",
+   "module": "11",
+   "status": "open",
+   "evidence": [
+    "run:corr-trace-conf",
+    "run:corr-trace-ext",
+    "run:corr-trace-lostack",
+    "run:corr-line-coverage",
+    "run:corr-int-alignment",
+    "run:corr-abstraction-selftest"
+   ],
+   "remaining": "No automated source-level verification of the ObjectScript/Python handlers in this experiment (no supported frontend integrated here): no storage statement is proved equal to the model's evaluation. Strongest discharge: alpha contract-step check of every operation of the journal traces (correspondence/CORRESPONDENCE.md \u00a72, \u00a72b). Unchecked: ObjectScript commit/genesis/adoption/disable handlers: unchecked lines in Ledger 76, LedgerApply 25, LedgerGenesis 13, LedgerStats 3, Txn 7, LedgerRevision 2, Adjacency 29 shared with 12) and Python client/_write_txn/errors lines; exact lines in correspondence/correspondence.json; executed lines are checked only for the traced inputs.",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.5-handlers",
+   "module": "11",
+   "status": "open",
+   "evidence": [
+    "run:corr-trace-conf",
+    "run:corr-trace-ext",
+    "run:corr-trace-lostack",
+    "run:corr-line-coverage"
+   ],
+   "remaining": "No supported frontend integrated here: handlers are trace-checked (spec step rules + alpha steps), not proved to perform their spec step. Unchecked lines: ObjectScript commit/genesis/adoption/disable handlers: unchecked lines in Ledger 76, LedgerApply 25, LedgerGenesis 13, LedgerStats 3, Txn 7, LedgerRevision 2, Adjacency 29 shared with 12) and Python client/_write_txn/errors lines.",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.4-declared-reads",
+   "module": "11",
+   "status": "open",
+   "evidence": [],
+   "remaining": "The journal records writes only; no read oracle. Declared read sets are listed per action from source (correspondence.json reads); the correctness-relevant reads (EraseLedgerFor's dirty scan, unlocked LiveRows, readers' once-only marker check) are modelled (F-1201, F-C1201, F-C1301, F-1402).",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "11",
+   "status": "open",
+   "evidence": [
+    "run:corr-trace-conf",
+    "run:corr-trace-ext",
+    "run:corr-trace-lostack",
+    "run:corr-frame-keys-fk"
+   ],
+   "remaining": "Holds on every executed transaction at store granularity (0 excursions); 43/46 write statements executed; not: LedgerApply.cls:664, LedgerGenesis.cls:110-111.",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.6-row-permutation",
+   "module": "11",
+   "status": "open",
+   "evidence": [
+    "run:corr-row-permutation"
+   ],
+   "remaining": "F-C1108 (intent-undecided): detach-delete statement ids follow storage order; FindEdge's first row in a multigraph inspected only; all $ORDER scans key-ordered (inspected).",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.4-statements",
+   "module": "12",
+   "status": "open",
+   "evidence": [
+    "run:corr-trace-conf",
+    "run:corr-trace-ext",
+    "run:corr-trace-lostack",
+    "run:corr-line-coverage",
+    "run:corr-int-alignment",
+    "run:corr-abstraction-selftest"
+   ],
+   "remaining": "No automated source-level verification of the ObjectScript/Python handlers in this experiment (no supported frontend integrated here): no storage statement is proved equal to the model's evaluation. Strongest discharge: alpha contract-step check of every operation of the journal traces (correspondence/CORRESPONDENCE.md \u00a72, \u00a72b). Unchecked: Eraser 102 unchecked lines (routes, FHIR, NKG-built paths, EraseNodeIds, catch/rollback branches) and Adjacency 29; exact lines in correspondence/correspondence.json; executed lines are checked only for the traced inputs.",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.5-handlers",
+   "module": "12",
+   "status": "open",
+   "evidence": [
+    "run:corr-trace-conf",
+    "run:corr-trace-ext",
+    "run:corr-trace-lostack",
+    "run:corr-line-coverage"
+   ],
+   "remaining": "No supported frontend integrated here: handlers are trace-checked (spec step rules + alpha steps), not proved to perform their spec step. Unchecked lines: Eraser 102 unchecked lines (routes, FHIR, NKG-built paths, EraseNodeIds, catch/rollback branches) and Adjacency 29.",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.4-declared-reads",
+   "module": "12",
+   "status": "open",
+   "evidence": [],
+   "remaining": "The journal records writes only; no read oracle. Declared read sets are listed per action from source (correspondence.json reads); the correctness-relevant reads (EraseLedgerFor's dirty scan, unlocked LiveRows, readers' once-only marker check) are modelled (F-1201, F-C1201, F-C1301, F-1402).",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "12",
+   "status": "open",
+   "evidence": [
+    "run:corr-trace-conf",
+    "run:corr-trace-ext",
+    "run:corr-trace-lostack",
+    "run:corr-frame-keys-fk"
+   ],
+   "remaining": "Holds on every executed transaction at store granularity; 86/97 write statements executed (routed tables, FHIR side tables, ^NKG invalidated, RemoveSource in-kill, AdjNoLock not executed).",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.6-row-permutation",
+   "module": "12",
+   "status": "open",
+   "evidence": [],
+   "remaining": "Inspected only: every eraser scan is set-valued or collect-then-kill (Eraser.cls:331-348, 485-591, 1117-1144); no permutation run.",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.4-statements",
+   "module": "13",
+   "status": "open",
+   "evidence": [
+    "run:corr-trace-conf",
+    "run:corr-trace-ext",
+    "run:corr-trace-lostack",
+    "run:corr-line-coverage",
+    "run:corr-int-alignment",
+    "run:corr-abstraction-selftest"
+   ],
+   "remaining": "No automated source-level verification of the ObjectScript/Python handlers in this experiment (no supported frontend integrated here): no storage statement is proved equal to the model's evaluation. Strongest discharge: alpha contract-step check of every operation of the journal traces (correspondence/CORRESPONDENCE.md \u00a72, \u00a72b). Unchecked: LedgerRedact 24 unchecked lines (lock-timeout/catch branches of Batch/Final, unattributed qualifier records, named-graph prefix LiveRows, DropStatements :465); exact lines in correspondence/correspondence.json; executed lines are checked only for the traced inputs.",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.5-handlers",
+   "module": "13",
+   "status": "open",
+   "evidence": [
+    "run:corr-trace-conf",
+    "run:corr-trace-ext",
+    "run:corr-trace-lostack",
+    "run:corr-line-coverage"
+   ],
+   "remaining": "No supported frontend integrated here: handlers are trace-checked (spec step rules + alpha steps), not proved to perform their spec step. Unchecked lines: LedgerRedact 24 unchecked lines (lock-timeout/catch branches of Batch/Final, unattributed qualifier records, named-graph prefix LiveRows, DropStatements :465).",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.4-declared-reads",
+   "module": "13",
+   "status": "open",
+   "evidence": [],
+   "remaining": "The journal records writes only; no read oracle. Declared read sets are listed per action from source (correspondence.json reads); the correctness-relevant reads (EraseLedgerFor's dirty scan, unlocked LiveRows, readers' once-only marker check) are modelled (F-1201, F-C1201, F-C1301, F-1402).",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "13",
+   "status": "open",
+   "evidence": [
+    "run:corr-trace-conf",
+    "run:corr-trace-ext",
+    "run:corr-trace-lostack",
+    "run:corr-frame-keys-fk"
+   ],
+   "remaining": "Holds on every executed transaction; 18/19 write statements executed (DropStatements' tuple kill LedgerRedact.cls:465 not).",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.6-row-permutation",
+   "module": "13",
+   "status": "open",
+   "evidence": [],
+   "remaining": "Inspected only: the scan order is the (seq, ordinal) key order by design; DropStatements collect-then-kill; no permutation run.",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.4-statements",
+   "module": "14",
+   "status": "open",
+   "evidence": [
+    "run:corr-trace-conf",
+    "run:corr-trace-ext",
+    "run:corr-trace-lostack",
+    "run:corr-line-coverage",
+    "run:corr-int-alignment",
+    "run:corr-abstraction-selftest"
+   ],
+   "remaining": "No automated source-level verification of the ObjectScript/Python handlers in this experiment (no supported frontend integrated here): no storage statement is proved equal to the model's evaluation. Strongest discharge: alpha contract-step check of every operation of the journal traces (correspondence/CORRESPONDENCE.md \u00a72, \u00a72b). Unchecked: verify/readers: replay.py 75, client.py readers and export_reconstruction, Ledger.CanonicalRecord tombstone branch :579-587; exact lines in correspondence/correspondence.json; executed lines are checked only for the traced inputs.",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.5-handlers",
+   "module": "14",
+   "status": "open",
+   "evidence": [
+    "run:corr-trace-conf",
+    "run:corr-trace-ext",
+    "run:corr-trace-lostack",
+    "run:corr-line-coverage"
+   ],
+   "remaining": "No supported frontend integrated here: handlers are trace-checked (spec step rules + alpha steps), not proved to perform their spec step. Unchecked lines: verify/readers: replay.py 75, client.py readers and export_reconstruction, Ledger.CanonicalRecord tombstone branch :579-587.",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.4-declared-reads",
+   "module": "14",
+   "status": "open",
+   "evidence": [],
+   "remaining": "The journal records writes only; no read oracle. Declared read sets are listed per action from source (correspondence.json reads); the correctness-relevant reads (EraseLedgerFor's dirty scan, unlocked LiveRows, readers' once-only marker check) are modelled (F-1201, F-C1201, F-C1301, F-1402).",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "14",
+   "status": "open",
+   "evidence": [
+    "run:corr-trace-conf",
+    "run:corr-trace-ext",
+    "run:corr-trace-lostack",
+    "run:corr-frame-keys-fk"
+   ],
+   "remaining": "Holds on every executed transaction (verify writes only ledger_stats; readers nothing); per-statement-shape obligation not proved.",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.6-row-permutation",
+   "module": "14",
+   "status": "open",
+   "evidence": [],
+   "remaining": "Inspected only: readers iterate key order; verify compares sets; no permutation run.",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.4-ownership",
+   "module": "11",
+   "status": "failed",
+   "evidence": [
+    "run:corr-closure-scan",
+    "run:corr-lockplan",
+    "run:live-f1201-reproduced"
+   ],
+   "remaining": "Statement maps (stmt/tuple) have four owner actions: commit, adoption, erasure without the head lock (F-1114) and Final; ledger_stats shared by Bump and RecordVerify (F-1102); restore_snapshot overlays ^IVG.Ledger (F-1801).",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.4-ownership",
+   "module": "12",
+   "status": "failed",
+   "evidence": [
+    "run:corr-closure-scan",
+    "run:corr-lockplan",
+    "run:corr-trace-f1201"
+   ],
+   "remaining": "The eraser writes the statement maps beside commits without the head lock (F-1114, F-1201); content tables have 25 census writers outside the ledger (writer-census).",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.4-ownership",
+   "module": "13",
+   "status": "failed",
+   "evidence": [
+    "run:corr-closure-scan",
+    "run:live-native-rerun-1314"
+   ],
+   "remaining": "Marker and counters are shared by concurrent runs of different targets (F-1303); restore overwrites tombstones and redaction state (F-1801).",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.4-ownership",
+   "module": "14",
+   "status": "failed",
+   "evidence": [
+    "run:corr-trace-ext",
+    "run:b-11-live-findings"
+   ],
+   "remaining": "Post-commit properties write rdf_props outside the ledger beside commits and erasures (F-1101, F-1306); ledger_stats shared (F-1102).",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.5-lockplans",
+   "module": "11",
+   "status": "failed",
+   "evidence": [
+    "run:corr-lockplan",
+    "run:b-11-live-f1104"
+   ],
+   "remaining": "F-1104 (Enable reads the state before the head lock), F-1114 (the eraser writes ledger maps without it); as-built plans confirmed live.",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.5-lockplans",
+   "module": "12",
+   "status": "failed",
+   "evidence": [
+    "run:corr-lockplan",
+    "run:corr-trace-f1201",
+    "run:live-f1201-reproduced"
+   ],
+   "remaining": "F-1201/F-1114: the eraser takes no head lock (observed: EraseNodes/EraseGraph finish while it is held); reviewed design HD-1201 holds it.",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.5-lockplans",
+   "module": "13",
+   "status": "failed",
+   "evidence": [
+    "run:corr-lockplan",
+    "run:core-proofs-f1302-unlocked-start",
+    "run:core-proofs-f1303-other-marker"
+   ],
+   "remaining": "F-1302/F-1303: the redaction start reads and decides without the head lock (observed: first wait is Batch's lock, LedgerRedact.cls:282).",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.5-lockplans",
+   "module": "14",
+   "status": "failed",
+   "evidence": [
+    "run:corr-lockplan",
+    "run:core-m3-readers-as-built-F1402"
+   ],
+   "remaining": "F-1402: readers check the marker once, without a lock (observed: verify finishes while the head lock is held).",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.6-keys",
+   "module": "11",
+   "status": "failed",
+   "evidence": [
+    "run:corr-frame-keys-fk",
+    "run:c18-live-ledger-overlay"
+   ],
+   "remaining": "head, stmtNext, statement ids and ledger_revisions seqs hold on every trace; a replacing restore (module 18) breaks head/IdKey agreement and stmtNext (F-1801).",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.6-keys",
+   "module": "12",
+   "status": "closed",
+   "evidence": [
+    "run:corr-frame-keys-fk",
+    "run:corr-trace-conf",
+    "run:corr-trace-ext",
+    "run:corr-trace-lostack"
+   ],
+   "remaining": "Trace-checked: no statement id reused, head/stmtNext +1 in journal order, ledger_revisions 1..head; by construction every key writer runs under the head lock; F-1801 (restore) is module 11/18's.",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.6-keys",
+   "module": "13",
+   "status": "closed",
+   "evidence": [
+    "run:corr-frame-keys-fk",
+    "run:corr-trace-conf",
+    "run:corr-trace-ext",
+    "run:corr-trace-lostack"
+   ],
+   "remaining": "Trace-checked: no statement id reused, head/stmtNext +1 in journal order, ledger_revisions 1..head; by construction every key writer runs under the head lock; F-1801 (restore) is module 11/18's.",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.6-keys",
+   "module": "14",
+   "status": "closed",
+   "evidence": [
+    "run:corr-frame-keys-fk",
+    "run:corr-trace-lostack",
+    "run:live-lost-ack-commit"
+   ],
+   "remaining": "Exactly one revision per idempotency key across 9 lost-acknowledgement worlds; replays allocate nothing.",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.6-fk",
+   "module": "11",
+   "status": "closed",
+   "evidence": [
+    "run:corr-frame-keys-fk",
+    "run:corr-trace-ext"
+   ],
+   "remaining": "Final rows FK-closed in every trace; create_rel registers endpoints first (LedgerApply.cls:485-488), delete_node removes or refuses incident edges first (:401-413); IRIS enforces the composite FKs at statement time.",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.6-fk",
+   "module": "12",
+   "status": "closed",
+   "evidence": [
+    "run:corr-frame-keys-fk",
+    "run:live-erase-vs-commit-fk"
+   ],
+   "remaining": "Children deleted before nodes (Eraser.cls:130-225, 497-590); every erasure committed; a racing commit makes the erasure fail whole (-124), never leave dangling rows.",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.6-fk",
+   "module": "13",
+   "status": "not-applicable",
+   "reason": "the redaction writes no content-table row (LedgerRedact.cls writes ^IVG.Ledger and ledger_revisions/ledger_stats only; frame-checked in corr-trace-ext)",
+   "evidence": [
+    "run:corr-trace-ext"
+   ],
+   "level": "as-built (pin 3eaa79cf)"
+  },
+  {
+   "gate": "3.6-fk",
+   "module": "14",
+   "status": "failed",
+   "evidence": [
+    "run:ib-HD1305-retry-revives",
+    "run:core-m3-as-built-F1306"
+   ],
+   "remaining": "rdf_props has no FK: a replayed post-commit property after an erasure writes a property row of a node that no longer exists (F-1306).",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.6-capacity",
+   "module": "11",
+   "status": "failed",
+   "evidence": [
+    "run:corr-capacity"
+   ],
+   "remaining": "F-C1106 (schema-valid edges refused above s=o=194/p=97), F-C1107 (length limits not enforced; violations reported as inconsistent). All refusals clean; lock-table capacity outside the IRIS contract's subset.",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.6-capacity",
+   "module": "12",
+   "status": "failed",
+   "evidence": [
+    "run:corr-capacity"
+   ],
+   "remaining": "F-C1204 (EraseNodes with a 10,000-char prefix fails, SQLCODE -400); erasures at the widest committable edge succeed; lock-table capacity outside the contract's subset.",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.6-capacity",
+   "module": "13",
+   "status": "open",
+   "evidence": [],
+   "remaining": "String/subscript limits hold for the cases probed in run corr-capacity (redaction of a 1 MB record, of the widest edge, a 10,000-char prefix); lock-table capacity and batch-size escalation are outside the IRIS contract's subset (unrepresentable).",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.6-capacity",
+   "module": "14",
+   "status": "open",
+   "evidence": [],
+   "remaining": "verify at the widest edge holds (corr-capacity); readers/reconstruct over very large records not probed; lock-table capacity outside the contract's subset.",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.6-closure",
+   "module": "11",
+   "status": "failed",
+   "evidence": [
+    "run:corr-closure-scan",
+    "run:c18-live-ledger-overlay"
+   ],
+   "remaining": "restore_snapshot (module 18) writes ^IVG.Ledger and the ledger tables outside any modelled action (F-1801). Product-scope gate: module cell informational.",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.6-closure",
+   "module": "12",
+   "status": "open",
+   "evidence": [
+    "run:corr-closure-scan"
+   ],
+   "remaining": "Content tables: 25 census writers outside the ledger represented only by M2's writer W (writer-census incomplete). Product-scope gate: module cell informational.",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.6-closure",
+   "module": "13",
+   "status": "failed",
+   "evidence": [
+    "run:corr-closure-scan",
+    "run:cmc-restore-as-built-redaction"
+   ],
+   "remaining": "restore overlays tombstones and redaction state (F-1801). Product-scope gate: module cell informational.",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.6-closure",
+   "module": "14",
+   "status": "failed",
+   "evidence": [
+    "run:corr-trace-ext",
+    "run:b-11-live-findings"
+   ],
+   "remaining": "Post-commit properties are a store write outside the ledger by design (premise P-C02 false; F-1101). Product-scope gate: module cell informational.",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.7-lock-log",
+   "module": "11",
+   "status": "closed",
+   "evidence": [
+    "run:corr-lockplan"
+   ],
+   "remaining": "Sampled lock log (lock table and wait location at controlled probes; IRIS has no lock event log) matches the source plan: head lock at Ledger.cls:440/266, AdjW S at Adjacency.cls:63 after the head lock, deferred release (count 1D) to the outermost commit, 30 s / 5 s timeouts. Bump's row lock observed by breadth-b (F-1102).",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.7-lock-log",
+   "module": "12",
+   "status": "closed",
+   "evidence": [
+    "run:corr-lockplan"
+   ],
+   "remaining": "No head lock (finishes while held); AdjW S at Adjacency.cls:63 (row writer), :431 (RemoveGraph), :455 (RemoveAll parent), deferred to TCOMMIT; RemoveGraph's refusal rolls the erase back.",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.7-lock-log",
+   "module": "13",
+   "status": "open",
+   "evidence": [
+    "run:corr-lockplan"
+   ],
+   "remaining": "Batch's head lock observed at LedgerRedact.cls:282 with no write before it; Final's head lock (:390) not isolated by a probe (same code shape, executed in every completed redaction).",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  },
+  {
+   "gate": "3.7-lock-log",
+   "module": "14",
+   "status": "closed",
+   "evidence": [
+    "run:corr-lockplan"
+   ],
+   "remaining": "Readers and verify take no lock (verify finishes while the head lock is held); replays take the commit's head lock (module 11).",
+   "level": "as-built (pin 3eaa79cf), AUDITC traces"
+  }
+ ]
+}

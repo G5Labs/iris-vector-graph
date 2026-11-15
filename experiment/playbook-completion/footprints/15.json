@@ -1,0 +1,882 @@
+{
+ "module": "15",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "generated_by": "experiment/playbook-completion/live/breadth-c/15/make_footprints15.py",
+ "journal_oracle": "experiment/playbook-completion/traces/journal.py via live/breadth-c/jcheck.py (AUDITC, db /usr/irissys/mgr/auditc/, filtered to the lane's process)",
+ "store_naming": "sql:<schema.table> | global:^Root | file:<path>",
+ "entries": [
+  {
+   "entry": "IRISGraphEngine.reify_edge",
+   "role": "writer",
+   "source": "iris_vector_graph/_engine/schema.py:3264-3332",
+   "reads": [
+    "sql:Graph_KG.rdf_edges",
+    "sql:Graph_KG.rdf_labels",
+    "sql:Graph_KG.rdf_props",
+    "sql:Graph_KG.nodes"
+   ],
+   "writes": [
+    "sql:Graph_KG.nodes",
+    "sql:Graph_KG.rdf_labels",
+    "sql:Graph_KG.rdf_props",
+    "sql:Graph_KG.rdf_reifications",
+    "global:^KG"
+   ],
+   "transaction": "one outermost txn (WriteTxn; create_node nested)",
+   "locks": [],
+   "claims_atomic": {
+    "value": true,
+    "source": "iris_vector_graph/_engine/schema.py:3271-3279 docstring: 'leaves nothing behind ... in one transaction'"
+   },
+   "journal": {
+    "run": "c15-live-reify",
+    "label": "reify_edge",
+    "error": null,
+    "stores_written": [
+     "global:^KG",
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_labels",
+     "sql:Graph_KG.rdf_props",
+     "sql:Graph_KG.rdf_reifications"
+    ],
+    "stores_written_in_txn": [
+     "global:^KG",
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_labels",
+     "sql:Graph_KG.rdf_props",
+     "sql:Graph_KG.rdf_reifications"
+    ],
+    "stores_with_nontransactional_increments": [
+     "global:^KG",
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_labels",
+     "sql:Graph_KG.rdf_props",
+     "sql:Graph_KG.rdf_reifications"
+    ],
+    "stores_written_outside_any_txn": [],
+    "outermost_transactions": 1,
+    "records": 78,
+    "match": true,
+    "mismatch": null
+   },
+   "notes": "^KG(\"label\",0,...) written by create_node's label index. Every row lands in the default graph whatever the edge's graph (F-1502). Refusal paths (duplicate reifier id: -119; missing edge) journaled 0 records."
+  },
+  {
+   "entry": "IRISGraphEngine.get_reifications",
+   "role": "reader",
+   "source": "iris_vector_graph/_engine/schema.py:3335-3358",
+   "reads": [
+    "sql:Graph_KG.rdf_reifications",
+    "sql:Graph_KG.rdf_props"
+   ],
+   "writes": [],
+   "transaction": "none (single SELECT)",
+   "locks": [],
+   "claims_atomic": {
+    "value": false,
+    "source": "reader"
+   },
+   "journal": {
+    "run": "c15-live-reify",
+    "label": "get_reifications",
+    "error": null,
+    "stores_written": [],
+    "stores_written_in_txn": [],
+    "stores_with_nontransactional_increments": [],
+    "stores_written_outside_any_txn": [],
+    "outermost_transactions": 0,
+    "records": 0,
+    "match": true,
+    "mismatch": null
+   },
+   "notes": "Join on reifier id only; no graph predicate."
+  },
+  {
+   "entry": "IRISGraphEngine.delete_reification",
+   "role": "writer",
+   "source": "iris_vector_graph/_engine/schema.py:3361-3397",
+   "reads": [],
+   "writes": [
+    "sql:Graph_KG.rdf_reifications",
+    "sql:Graph_KG.rdf_props",
+    "sql:Graph_KG.rdf_labels",
+    "sql:Graph_KG.nodes",
+    "global:^KG"
+   ],
+   "transaction": "one outermost txn (WriteTxn)",
+   "locks": [],
+   "claims_atomic": {
+    "value": true,
+    "source": "schema.py:3366-3368 docstring: 'rolled back, so nothing is deleted'"
+   },
+   "journal": {
+    "run": "c15-live-delreif2",
+    "label": "delete_reification(c15:z) on an edge-less non-reifier",
+    "error": null,
+    "stores_written": [
+     "global:^KG",
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_labels",
+     "sql:Graph_KG.rdf_props"
+    ],
+    "stores_written_in_txn": [
+     "global:^KG",
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_labels",
+     "sql:Graph_KG.rdf_props"
+    ],
+    "stores_with_nontransactional_increments": [
+     "global:^KG",
+     "sql:Graph_KG.rdf_props"
+    ],
+    "stores_written_outside_any_txn": [],
+    "outermost_transactions": 1,
+    "records": 87,
+    "declared_not_written_this_run": [
+     "sql:Graph_KG.rdf_reifications"
+    ],
+    "match": true,
+    "mismatch": null
+   },
+   "notes": "^KG(\"label\") index entries go through the rdf_labels row hook; deletes are graph-blind (F-1503). With edges present the FK fk_edges_source refuses the node delete and the whole txn rolls back (c15-live-delreif)."
+  },
+  {
+   "entry": "IRISGraphEngine.fhir_bridge_add",
+   "role": "writer",
+   "source": "iris_vector_graph/_engine/fhir.py:390-442",
+   "reads": [],
+   "writes": [
+    "sql:Graph_KG.fhir_bridges",
+    "sql:Graph_KG.code_crosswalk"
+   ],
+   "transaction": "one outermost txn (write_txn)",
+   "locks": [],
+   "claims_atomic": {
+    "value": true,
+    "source": "INT-B1.1; fhir.py:416 '4.7.0: one transaction of IVG's'"
+   },
+   "journal": {
+    "run": "c15-live-bridge",
+    "label": "fhir_bridge_add",
+    "error": null,
+    "stores_written": [
+     "sql:Graph_KG.code_crosswalk",
+     "sql:Graph_KG.fhir_bridges"
+    ],
+    "stores_written_in_txn": [
+     "sql:Graph_KG.code_crosswalk",
+     "sql:Graph_KG.fhir_bridges"
+    ],
+    "stores_with_nontransactional_increments": [
+     "sql:Graph_KG.code_crosswalk",
+     "sql:Graph_KG.fhir_bridges"
+    ],
+    "stores_written_outside_any_txn": [],
+    "outermost_transactions": 1,
+    "records": 18,
+    "match": true,
+    "mismatch": null
+   },
+   "notes": null
+  },
+  {
+   "entry": "IRISGraphEngine.get_kg_anchors",
+   "role": "reader",
+   "source": "iris_vector_graph/_engine/fhir.py:444-481",
+   "reads": [
+    "sql:Graph_KG.fhir_bridges",
+    "sql:Graph_KG.nodes"
+   ],
+   "writes": [],
+   "transaction": "none",
+   "locks": [],
+   "claims_atomic": {
+    "value": false,
+    "source": "reader"
+   },
+   "journal": {
+    "run": "c15-live-bridge",
+    "label": "get_kg_anchors",
+    "error": null,
+    "stores_written": [],
+    "stores_written_in_txn": [],
+    "stores_with_nontransactional_increments": [],
+    "stores_written_outside_any_txn": [],
+    "outermost_transactions": 0,
+    "records": 0,
+    "match": true,
+    "mismatch": null
+   },
+   "notes": "JOIN nodes ON node_id only (fhir.py:470-477): F-1507."
+  },
+  {
+   "entry": "IRISGraphEngine.code_crosswalk_add",
+   "role": "writer",
+   "source": "iris_vector_graph/_engine/fhir_graph.py:607-645",
+   "reads": [],
+   "writes": [
+    "sql:Graph_KG.code_crosswalk"
+   ],
+   "transaction": "one outermost txn (write_txn)",
+   "locks": [],
+   "claims_atomic": {
+    "value": true,
+    "source": "fhir_graph.py:640"
+   },
+   "journal": {
+    "run": "c15-live-bridge",
+    "label": "code_crosswalk_add",
+    "error": null,
+    "stores_written": [
+     "sql:Graph_KG.code_crosswalk"
+    ],
+    "stores_written_in_txn": [
+     "sql:Graph_KG.code_crosswalk"
+    ],
+    "stores_with_nontransactional_increments": [
+     "sql:Graph_KG.code_crosswalk"
+    ],
+    "stores_written_outside_any_txn": [],
+    "outermost_transactions": 1,
+    "records": 9,
+    "match": true,
+    "mismatch": null
+   },
+   "notes": null
+  },
+  {
+   "entry": "IRISGraphEngine.migrate_fhir_bridges_to_crosswalk",
+   "role": "writer",
+   "source": "iris_vector_graph/_engine/fhir_graph.py:647-680",
+   "reads": [
+    "sql:Graph_KG.fhir_bridges"
+   ],
+   "writes": [
+    "sql:Graph_KG.code_crosswalk"
+   ],
+   "transaction": "one outermost txn (write_txn) around every upsert",
+   "locks": [],
+   "claims_atomic": {
+    "value": true,
+    "source": "fhir_graph.py:662"
+   },
+   "journal": {
+    "run": "c15-live-bridge",
+    "label": "migrate_fhir_bridges_to_crosswalk",
+    "error": null,
+    "stores_written": [
+     "sql:Graph_KG.code_crosswalk"
+    ],
+    "stores_written_in_txn": [
+     "sql:Graph_KG.code_crosswalk"
+    ],
+    "stores_with_nontransactional_increments": [],
+    "stores_written_outside_any_txn": [],
+    "outermost_transactions": 1,
+    "records": 7,
+    "match": true,
+    "mismatch": null
+   },
+   "notes": "Namespace-wide: rewrites every bridge row (run only when no other lane's rows existed)."
+  },
+  {
+   "entry": "IRISGraphEngine.map_sql_table",
+   "role": "writer",
+   "source": "iris_vector_graph/_engine/fhir.py:88-145",
+   "reads": [
+    "sql:INFORMATION_SCHEMA.COLUMNS"
+   ],
+   "writes": [
+    "sql:Graph_KG.table_mappings"
+   ],
+   "transaction": "one outermost txn (write_txn)",
+   "locks": [],
+   "claims_atomic": {
+    "value": true,
+    "source": "fhir.py:127"
+   },
+   "journal": {
+    "run": "c15-live-tablemap",
+    "label": "map_sql_table qualified",
+    "error": null,
+    "stores_written": [
+     "sql:Graph_KG.table_mappings"
+    ],
+    "stores_written_in_txn": [
+     "sql:Graph_KG.table_mappings"
+    ],
+    "stores_with_nontransactional_increments": [
+     "sql:Graph_KG.table_mappings"
+    ],
+    "stores_written_outside_any_txn": [],
+    "outermost_transactions": 1,
+    "records": 10,
+    "match": true,
+    "mismatch": null
+   },
+   "notes": "Catalog lookup uses schema 'USER' for an unqualified name (F-1504). Mapping is namespace-wide (no graph key)."
+  },
+  {
+   "entry": "IRISGraphEngine.map_sql_relationship",
+   "role": "writer",
+   "source": "iris_vector_graph/_engine/fhir.py:147-197",
+   "reads": [
+    "sql:Graph_KG.table_mappings (cache)"
+   ],
+   "writes": [
+    "sql:Graph_KG.relationship_mappings"
+   ],
+   "transaction": "one outermost txn (write_txn)",
+   "locks": [],
+   "claims_atomic": {
+    "value": true,
+    "source": "fhir.py:177"
+   },
+   "journal": {
+    "run": "c15-live-tablemap",
+    "label": "map_sql_relationship",
+    "error": null,
+    "stores_written": [
+     "sql:Graph_KG.relationship_mappings"
+    ],
+    "stores_written_in_txn": [
+     "sql:Graph_KG.relationship_mappings"
+    ],
+    "stores_with_nontransactional_increments": [
+     "sql:Graph_KG.relationship_mappings"
+    ],
+    "stores_written_outside_any_txn": [],
+    "outermost_transactions": 1,
+    "records": 10,
+    "match": true,
+    "mismatch": null
+   },
+   "notes": null
+  },
+  {
+   "entry": "IRISGraphEngine.remove_table_mapping",
+   "role": "writer",
+   "source": "iris_vector_graph/_engine/fhir.py:237-255",
+   "reads": [
+    "sql:Graph_KG.table_mappings"
+   ],
+   "writes": [
+    "sql:Graph_KG.table_mappings",
+    "sql:Graph_KG.relationship_mappings"
+   ],
+   "transaction": "one outermost txn (write_txn)",
+   "locks": [],
+   "claims_atomic": {
+    "value": true,
+    "source": "fhir.py:248; INT-M1.7"
+   },
+   "journal": {
+    "run": "c15-live-tablemap",
+    "label": "remove_table_mapping C15Patient",
+    "error": null,
+    "stores_written": [
+     "sql:Graph_KG.relationship_mappings",
+     "sql:Graph_KG.table_mappings"
+    ],
+    "stores_written_in_txn": [
+     "sql:Graph_KG.relationship_mappings",
+     "sql:Graph_KG.table_mappings"
+    ],
+    "stores_with_nontransactional_increments": [],
+    "stores_written_outside_any_txn": [],
+    "outermost_transactions": 1,
+    "records": 12,
+    "match": true,
+    "mismatch": null
+   },
+   "notes": null
+  },
+  {
+   "entry": "IRISGraphEngine.list_table_mappings",
+   "role": "reader",
+   "source": "iris_vector_graph/_engine/fhir.py:199-235",
+   "reads": [
+    "sql:Graph_KG.table_mappings",
+    "sql:Graph_KG.relationship_mappings"
+   ],
+   "writes": [],
+   "transaction": "none",
+   "locks": [],
+   "claims_atomic": {
+    "value": false,
+    "source": "reader"
+   },
+   "journal": {
+    "run": "c15-live-tablemap",
+    "label": "list_table_mappings",
+    "error": null,
+    "stores_written": [],
+    "stores_written_in_txn": [],
+    "stores_with_nontransactional_increments": [],
+    "stores_written_outside_any_txn": [],
+    "outermost_transactions": 0,
+    "records": 0,
+    "match": true,
+    "mismatch": null
+   },
+   "notes": null
+  },
+  {
+   "entry": "IRISGraphEngine.attach_embeddings_to_table",
+   "role": "writer",
+   "source": "iris_vector_graph/_engine/fhir.py:267-367",
+   "reads": [
+    "<mapped SQL table>",
+    "sql:Graph_KG.nodes",
+    "<route vector table>"
+   ],
+   "writes": [
+    "<routed node vector table kg_emb_<hash>>",
+    "sql:Graph_KG.embedding_registry"
+   ],
+   "transaction": "per row: store_embedding's own (nested) txn; no outer txn",
+   "locks": [],
+   "claims_atomic": {
+    "value": false,
+    "source": "fhir.py:347 '4.7.0: no conn.commit(): store_embedding commits its own part'"
+   },
+   "journal": null,
+   "notes": "Not run live: needs an embedding model (embed_text). Per-row commits by design; a failure mid-table leaves earlier rows embedded and is reported in errors/error_ids (INT-M1.11)."
+  },
+  {
+   "entry": "IRISGraphEngine.register_namespace",
+   "role": "writer",
+   "source": "iris_vector_graph/_engine/rdf_export.py:53-76",
+   "reads": [
+    "sql:Graph_KG.rdf_namespaces"
+   ],
+   "writes": [
+    "sql:Graph_KG.rdf_namespaces"
+   ],
+   "transaction": "one outermost txn (write_txn)",
+   "locks": [],
+   "claims_atomic": {
+    "value": true,
+    "source": "rdf_export.py:63"
+   },
+   "journal": {
+    "run": "c15-live-rdf",
+    "label": "register_namespace",
+    "error": null,
+    "stores_written": [
+     "sql:Graph_KG.rdf_namespaces"
+    ],
+    "stores_written_in_txn": [
+     "sql:Graph_KG.rdf_namespaces"
+    ],
+    "stores_with_nontransactional_increments": [
+     "sql:Graph_KG.rdf_namespaces"
+    ],
+    "stores_written_outside_any_txn": [],
+    "outermost_transactions": 1,
+    "records": 10,
+    "match": true,
+    "mismatch": null
+   },
+   "notes": null
+  },
+  {
+   "entry": "IRISGraphEngine.export_rdf",
+   "role": "reader",
+   "source": "iris_vector_graph/_engine/rdf_export.py:96-157",
+   "reads": [
+    "sql:Graph_KG.rdf_labels",
+    "sql:Graph_KG.rdf_props",
+    "sql:Graph_KG.rdf_edges",
+    "sql:Graph_KG.rdf_namespaces"
+   ],
+   "writes": [
+    "file:<path>"
+   ],
+   "transaction": "none",
+   "locks": [],
+   "claims_atomic": {
+    "value": false,
+    "source": "reader; INT-R1 'changes no graph'"
+   },
+   "journal": {
+    "run": "c15-live-rdf",
+    "label": "export_rdf nquads",
+    "error": null,
+    "stores_written": [],
+    "stores_written_in_txn": [],
+    "stores_with_nontransactional_increments": [],
+    "stores_written_outside_any_txn": [],
+    "outermost_transactions": 0,
+    "records": 0,
+    "declared_not_written_this_run": [
+     "file:<path>"
+    ],
+    "match": true,
+    "mismatch": null
+   },
+   "notes": "Builds the whole rdflib ConjunctiveGraph in memory before writing (F-1510, c15-live-memory)."
+  },
+  {
+   "entry": "IRISGraphEngine.validate_shacl",
+   "role": "reader",
+   "source": "iris_vector_graph/_engine/shacl.py:203-242",
+   "reads": [
+    "sql:Graph_KG.rdf_labels",
+    "sql:Graph_KG.rdf_props",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "writes": [],
+   "transaction": "none",
+   "locks": [],
+   "claims_atomic": {
+    "value": false,
+    "source": "reader; INT-S1"
+   },
+   "journal": {
+    "run": "c15-live-rdf",
+    "label": "validate_shacl",
+    "error": null,
+    "stores_written": [],
+    "stores_written_in_txn": [],
+    "stores_with_nontransactional_increments": [],
+    "stores_written_outside_any_txn": [],
+    "outermost_transactions": 0,
+    "records": 0,
+    "match": true,
+    "mismatch": null
+   },
+   "notes": null
+  },
+  {
+   "entry": "IRISGraphEngine.prov_export",
+   "role": "reader",
+   "source": "iris_vector_graph/_engine/prov.py:107-139",
+   "reads": [
+    "global:^KG (TemporalIndex.QueryWindow, default graph)"
+   ],
+   "writes": [
+    "file:<path>"
+   ],
+   "transaction": "none",
+   "locks": [],
+   "claims_atomic": {
+    "value": false,
+    "source": "reader"
+   },
+   "journal": {
+    "run": "c15-live-rdf",
+    "label": "prov_export healthy",
+    "error": null,
+    "stores_written": [],
+    "stores_written_in_txn": [],
+    "stores_with_nontransactional_increments": [],
+    "stores_written_outside_any_txn": [],
+    "outermost_transactions": 0,
+    "records": 0,
+    "declared_not_written_this_run": [
+     "file:<path>"
+    ],
+    "match": true,
+    "mismatch": null
+   },
+   "notes": "A failed window read raises; no file (F-1501)."
+  },
+  {
+   "entry": "IRISGraphEngine.fhir_graph_register -> Graph.KG.FHIRGraph.Register",
+   "role": "writer",
+   "source": "iris_vector_graph/_engine/fhir_graph.py:190-249; iris_src/src/Graph/KG/FHIRGraph.cls:167-279",
+   "reads": [
+    "sql:HS_FHIRServer.Repo",
+    "sql:HS_FHIRServer.RepoInstance",
+    "sql:Graph_KG.fhir_graphs",
+    "sql:HS_FHIRServer_Storage_Json.SearchColumn"
+   ],
+   "writes": [
+    "sql:Graph_KG.fhir_graphs (INSERT or UPDATE settings; UPDATE json_links; UPDATE last_error)",
+    "DDL: Graph_KG.fhir_graphs, fhir_unresolved, fhir_definitions, fhir_canonical_refs (first register, Python side)",
+    "+ Rebuild's footprint when json_links changed"
+   ],
+   "transaction": "none: the upsert and the json_links update are separate autocommit statements; Catch returns an error without undoing the upsert",
+   "locks": [],
+   "claims_atomic": {
+    "value": false,
+    "source": "no atomicity claim; INT-F3.9 states the intended 'failed register leaves settings'"
+   },
+   "journal": {
+    "run": "c15-live-register",
+    "label": "engine.fhir_graph_register()",
+    "error": "FHIRGraphError: Register: ERROR #5001: namespace AUDITC has no FHIR repository (HS_FHIRServer.Repo not found)",
+    "stores_written": [],
+    "stores_written_in_txn": [],
+    "stores_with_nontransactional_increments": [],
+    "stores_written_outside_any_txn": [],
+    "outermost_transactions": 0,
+    "records": 0,
+    "match": true,
+    "mismatch": null
+   },
+   "notes": "Live on Community: the refusal ('no FHIR repository') precedes every write: 0 journal records (SYS-I3 holds on this path). The F-1511 window (a throw after the upsert) needs a repository: blocked-access: HS.FHIRServer.* / HS_FHIRServer SQL schema (IRIS for Health FHIR repository) absent on Community 2026.1 in AUDITC (c15-live-register), so no FHIR graph can be registered and these paths cannot run; footprint from source only"
+  },
+  {
+   "entry": "Graph.KG.FHIRGraph.Rebuild",
+   "role": "writer",
+   "source": "iris_src/src/Graph/KG/FHIRGraph.cls:448-540",
+   "reads": [
+    "sql:<repo Rsrc/RsrcVer/search tables>",
+    "sql:Graph_KG.fhir_graphs",
+    "sql:Graph_KG.nodes",
+    "sql:Graph_KG.rdf_edges",
+    "sql:Graph_KG.fhir_unresolved"
+   ],
+   "writes": [
+    "sql:Graph_KG.nodes",
+    "sql:Graph_KG.rdf_labels",
+    "sql:Graph_KG.rdf_props",
+    "sql:Graph_KG.rdf_edges",
+    "sql:Graph_KG.rdf_reifications",
+    "sql:Graph_KG.kg_EdgeEmbeddings",
+    "sql:Graph_KG.docs",
+    "sql:Graph_KG.kg_NodeEmbeddings",
+    "sql:Graph_KG.kg_NodeEmbeddings_optimized",
+    "<routed vector tables>",
+    "sql:Graph_KG.fhir_unresolved",
+    "sql:Graph_KG.fhir_definitions",
+    "sql:Graph_KG.fhir_canonical_refs",
+    "sql:Graph_KG.fhir_graphs",
+    "global:^KG (when not Indexed)"
+   ],
+   "transaction": "SyncAllDefinitions: one txn per 200 definitions; RunBatch: one txn per 200 keys (no watermark); DropNode: one txn per stale key; final fhir_graphs UPDATE (watermarks, counts) autocommit",
+   "locks": [
+    "Lock +^IVG.FHIRGraph(graph):0 (busy when held); Eraser.EraseGraph takes no such lock (HD-1503)"
+   ],
+   "claims_atomic": {
+    "value": true,
+    "source": "per batch only: FHIRGraph.cls:15-18 'Each batch of keys is resynced and its watermark advanced inside one transaction'"
+   },
+   "journal": null,
+   "notes": "blocked-access: HS.FHIRServer.* / HS_FHIRServer SQL schema (IRIS for Health FHIR repository) absent on Community 2026.1 in AUDITC (c15-live-register), so no FHIR graph can be registered and these paths cannot run; footprint from source only. Watermarks are read in Open() before the lock is taken (FHIRGraph.cls:550-556 vs 1736-1737)."
+  },
+  {
+   "entry": "Graph.KG.FHIRGraph.SyncOnce",
+   "role": "writer",
+   "source": "iris_src/src/Graph/KG/FHIRGraph.cls:543-628",
+   "reads": [
+    "sql:<repo Rsrc/RsrcVer/search tables>",
+    "sql:Graph_KG.fhir_graphs",
+    "sql:Graph_KG.nodes",
+    "sql:Graph_KG.rdf_edges",
+    "sql:Graph_KG.fhir_unresolved"
+   ],
+   "writes": [
+    "sql:Graph_KG.nodes",
+    "sql:Graph_KG.rdf_labels",
+    "sql:Graph_KG.rdf_props",
+    "sql:Graph_KG.rdf_edges",
+    "sql:Graph_KG.rdf_reifications",
+    "sql:Graph_KG.kg_EdgeEmbeddings",
+    "sql:Graph_KG.docs",
+    "sql:Graph_KG.kg_NodeEmbeddings",
+    "sql:Graph_KG.kg_NodeEmbeddings_optimized",
+    "<routed vector tables>",
+    "sql:Graph_KG.fhir_unresolved",
+    "sql:Graph_KG.fhir_definitions",
+    "sql:Graph_KG.fhir_canonical_refs",
+    "sql:Graph_KG.fhir_graphs (wm_rsrc/wm_ver in batch txn; last_sync autocommit)",
+    "global:^KG (when not Indexed)"
+   ],
+   "transaction": "Rederive batches (txn each) when interp stale; RunBatch: one txn per 200 keys INCLUDING its watermark UPDATE (absolute SET, FHIRGraph.cls:1966-1968); final last_sync UPDATE autocommit",
+   "locks": [
+    "Lock +^IVG.FHIRGraph(graph):0 (busy when held); Eraser.EraseGraph takes no such lock (HD-1503)"
+   ],
+   "claims_atomic": {
+    "value": true,
+    "source": "per batch only: FHIRGraph.cls:15-18 'Each batch of keys is resynced and its watermark advanced inside one transaction'"
+   },
+   "journal": null,
+   "notes": "blocked-access: HS.FHIRServer.* / HS_FHIRServer SQL schema (IRIS for Health FHIR repository) absent on Community 2026.1 in AUDITC (c15-live-register), so no FHIR graph can be registered and these paths cannot run; footprint from source only. Watermarks are read in Open() before the lock is taken (FHIRGraph.cls:550-556 vs 1736-1737)."
+  },
+  {
+   "entry": "Graph.KG.FHIRGraph.Reinterpret",
+   "role": "writer",
+   "source": "iris_src/src/Graph/KG/FHIRGraph.cls:631-662",
+   "reads": [
+    "sql:<repo Rsrc/RsrcVer/search tables>",
+    "sql:Graph_KG.fhir_graphs",
+    "sql:Graph_KG.nodes",
+    "sql:Graph_KG.rdf_edges",
+    "sql:Graph_KG.fhir_unresolved"
+   ],
+   "writes": [
+    "sql:Graph_KG.rdf_edges (compartment)",
+    "sql:Graph_KG.rdf_labels",
+    "sql:Graph_KG.rdf_props",
+    "sql:Graph_KG.fhir_graphs (interp_version)",
+    "global:^KG"
+   ],
+   "transaction": "Rederive: one txn per batch; SetInterpVersion autocommit",
+   "locks": [
+    "Lock +^IVG.FHIRGraph(graph):0 (busy when held); Eraser.EraseGraph takes no such lock (HD-1503)"
+   ],
+   "claims_atomic": {
+    "value": true,
+    "source": "per batch only: FHIRGraph.cls:15-18 'Each batch of keys is resynced and its watermark advanced inside one transaction'"
+   },
+   "journal": null,
+   "notes": "blocked-access: HS.FHIRServer.* / HS_FHIRServer SQL schema (IRIS for Health FHIR repository) absent on Community 2026.1 in AUDITC (c15-live-register), so no FHIR graph can be registered and these paths cannot run; footprint from source only. Watermarks are read in Open() before the lock is taken (FHIRGraph.cls:550-556 vs 1736-1737)."
+  },
+  {
+   "entry": "Graph.KG.FHIRGraph.Schedule / Unschedule",
+   "role": "writer",
+   "source": "iris_src/src/Graph/KG/FHIRGraph.cls:667-741",
+   "reads": [
+    "sql:Graph_KG.fhir_graphs",
+    "sql:%SYS.Task (IRISSYS)"
+   ],
+   "writes": [
+    "sql:%SYS.Task (Task Manager definition, %Save / %DeleteId)",
+    "sql:Graph_KG.fhir_graphs (task_id, interval_s)"
+   ],
+   "transaction": "none: task %Save/%DeleteId and the fhir_graphs UPDATE are separate, no TSTART",
+   "locks": [],
+   "claims_atomic": {
+    "value": false,
+    "source": "no claim; SYS-I4 requires both or neither"
+   },
+   "journal": null,
+   "notes": "blocked-access: HS.FHIRServer.* / HS_FHIRServer SQL schema (IRIS for Health FHIR repository) absent on Community 2026.1 in AUDITC (c15-live-register), so no FHIR graph can be registered and these paths cannot run; footprint from source only (F-C1501)."
+  },
+  {
+   "entry": "Graph.KG.FHIRGraphSyncTask.OnTask",
+   "role": "writer",
+   "source": "iris_src/src/Graph/KG/FHIRGraphSyncTask.cls:14-27",
+   "reads": [
+    "as SyncOnce"
+   ],
+   "writes": [
+    "as SyncOnce"
+   ],
+   "transaction": "as SyncOnce",
+   "locks": [
+    "as SyncOnce"
+   ],
+   "claims_atomic": {
+    "value": false,
+    "source": "as SyncOnce"
+   },
+   "journal": null,
+   "notes": "Background %SYS.Task job; busy counts as success (INT-F6.2). blocked-access: HS.FHIRServer.* / HS_FHIRServer SQL schema (IRIS for Health FHIR repository) absent on Community 2026.1 in AUDITC (c15-live-register), so no FHIR graph can be registered and these paths cannot run; footprint from source only"
+  },
+  {
+   "entry": "Graph.KG.FHIRGraph.RecordError",
+   "role": "writer",
+   "source": "iris_src/src/Graph/KG/FHIRGraph.cls:3101-3109",
+   "reads": [],
+   "writes": [
+    "sql:Graph_KG.fhir_graphs (last_error)"
+   ],
+   "transaction": "autocommit, after the failed batch rolled back",
+   "locks": [],
+   "claims_atomic": {
+    "value": false,
+    "source": "docstring 'outside any transaction'"
+   },
+   "journal": null,
+   "notes": "blocked-access: HS.FHIRServer.* / HS_FHIRServer SQL schema (IRIS for Health FHIR repository) absent on Community 2026.1 in AUDITC (c15-live-register), so no FHIR graph can be registered and these paths cannot run; footprint from source only"
+  },
+  {
+   "entry": "Graph.KG.FHIRGraph.Status / LinkReport / ResolveConcepts / ExpandConcepts / CoverageReport / ConceptGaps / PatientConcepts / TokenPaths / IndexedTokenParams / CompartmentParams / GroupPPR / GroupByPatient",
+   "role": "reader",
+   "source": "iris_src/src/Graph/KG/FHIRGraph.cls:282-1712",
+   "reads": [
+    "sql:Graph_KG.fhir_graphs",
+    "sql:Graph_KG.nodes",
+    "sql:Graph_KG.rdf_edges",
+    "sql:Graph_KG.fhir_unresolved",
+    "sql:Graph_KG.code_crosswalk",
+    "sql:<repo token/search tables>",
+    "global:^KG"
+   ],
+   "writes": [],
+   "transaction": "none",
+   "locks": [
+    "LinkReport takes no lock (INT-F8.3)"
+   ],
+   "claims_atomic": {
+    "value": false,
+    "source": "readers"
+   },
+   "journal": {
+    "run": "c15-live-register",
+    "label": "status",
+    "error": "FHIRGraphError: Status: ERROR #5001: FHIR graph fhir:c15:none is not registered; call Register() first",
+    "stores_written": [],
+    "stores_written_in_txn": [],
+    "stores_with_nontransactional_increments": [],
+    "stores_written_outside_any_txn": [],
+    "outermost_transactions": 0,
+    "records": 0,
+    "match": true,
+    "mismatch": null
+   },
+   "notes": "Live only on the refusal path (unregistered graph: 0 records for every call). blocked-access: HS.FHIRServer.* / HS_FHIRServer SQL schema (IRIS for Health FHIR repository) absent on Community 2026.1 in AUDITC (c15-live-register), so no FHIR graph can be registered and these paths cannot run; footprint from source only"
+  },
+  {
+   "entry": "IRISGraphEngine.fhir_patient_anchors",
+   "role": "reader",
+   "source": "iris_vector_graph/_engine/fhir_graph.py:563-596",
+   "reads": [
+    "sql:Graph_KG.fhir_graphs",
+    "via PatientConcepts"
+   ],
+   "writes": [],
+   "transaction": "none",
+   "locks": [],
+   "claims_atomic": {
+    "value": false,
+    "source": "reader"
+   },
+   "journal": {
+    "run": "c15-live-register",
+    "label": "patient_anchors_no_graph_arg",
+    "error": null,
+    "stores_written": [],
+    "stores_written_in_txn": [],
+    "stores_with_nontransactional_increments": [],
+    "stores_written_outside_any_txn": [],
+    "outermost_transactions": 0,
+    "records": 0,
+    "match": true,
+    "mismatch": null
+   },
+   "notes": "No FHIR tables: {'graphs': [], 'anchors': []} with 0 journal records (INT-C4.2)."
+  },
+  {
+   "entry": "cypher_api /api/cypher (FHIR anchors: _patient_anchors, _resolve_patient_anchors)",
+   "role": "reader",
+   "source": "iris_vector_graph/cypher_api.py:290-347,351-378",
+   "reads": [
+    "as fhir_patient_anchors / get_kg_anchors",
+    "http:FHIR_BASE_URL"
+   ],
+   "writes": [],
+   "transaction": "none (query run separately through _run_cypher)",
+   "locks": [
+    "cypher_api._engine_lock"
+   ],
+   "claims_atomic": {
+    "value": false,
+    "source": "reader"
+   },
+   "journal": null,
+   "notes": "Error swallowing on fhir_patient_anchors observed live (c15-live-anchors, F-1508)."
+  }
+ ],
+ "validated": 18,
+ "validated_writers": 10,
+ "mismatches": [],
+ "notes": [
+  "Classification: stores_with_nontransactional_increments are IRIS $INCREMENT/ID counters and graph version stamps (^KG(\"__version\"), ^NKG(\"$meta\",\"version\")) that IRIS journals as non-transactional inside the bracket; they are expected and not mismatches.",
+  "Every FHIR-graph writer is source-only: blocked-access: HS.FHIRServer.* / HS_FHIRServer SQL schema (IRIS for Health FHIR repository) absent on Community 2026.1 in AUDITC (c15-live-register), so no FHIR graph can be registered and these paths cannot run; footprint from source only."
+ ]
+}

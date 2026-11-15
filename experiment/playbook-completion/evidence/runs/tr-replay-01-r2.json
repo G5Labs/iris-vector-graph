@@ -1,0 +1,15 @@
+{
+  "command": "trace-replay/run.py capture 01 setup (locks.sh iris, AUDITE); run.py check 01",
+  "experiment_head": "e8a3ab67a0cda8706f581b99ec4fbd83727a02f5",
+  "id": "tr-replay-01-r2",
+  "kind": "trace",
+  "lane": "trace-replay",
+  "log": "$RUN_DIR/trace-replay/logs/tr-replay-01-r2.log",
+  "log_bytes": 1884,
+  "log_sha256": "3261a1932bed883e3f6f3150d44644ebb6a1eda234d25995df572bf0da4b5c70",
+  "observes": "Module 01 replays through ins_setup (breadth-a, as built): firstuse unchanged (4 steps, 3 records, 6 actions; INS-I3.4 violated, F-0103) and new setup trace (3 steps, 41 journal records): harness removes ^IVG.Deploy(\"schema\"), the pin initialize_schema() runs on AUDITE (classes unchanged, nothing compiled; reply warnings [], objectscript_failed {}, kg_built false with no \"^KG bootstrap failed\" logged, schema_recorded inferred, no WARNING record logged), check_first_access accepts; setup mapped to NewRun plus Ok for Tables, Marker, Classes, Kg, Record (failure signals: logged Schema setup warning / ^KG bootstrap failed, objectscript_failed): 8 actions all enabled and matching, the Record step seen as the journaled ^IVG.Deploy(\"schema\") write, replay equals the engine, no invariant violated (INS-B1.12 holds on this success path); reviewed design no divergence on setup. Not exercised: a fresh-namespace setup (tables created, classes compiled, ^KG built) and setup failure paths (F-0102); ins_legacy",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T12:48:25+00:00",
+  "result": "pass"
+}

@@ -1,0 +1,17 @@
+{
+  "command": "locks.sh iris timeout 3000 python experiment/playbook-completion/fc1306/probe.py (scratch namespace IVG262FC1306; stdout $RUN_DIR/fc1306/probe.log)",
+  "experiment_head": "78e7a5e8c4f90f7e230207eb0953f781dae48bb7",
+  "finding": "F-C1306",
+  "id": "fc1306-legacy-ledger-rows",
+  "kind": "live",
+  "lane": "fc1306",
+  "log": "$RUN_DIR/fc1306/probe.json",
+  "log_bytes": 70525,
+  "log_sha256": "2e5b283ea4631861d142399b52663f2f59fe6a7c6c428f88396e979b9461dedd",
+  "namespace": "IVG262FC1306",
+  "observes": "F-C1306 live. Pinned fixture functions (scripts/fixtures/build_release_namespace.build('v4.5.1','IVG262FC1306',schema_prefix='RAG'), run_ledger_commits) plus fc1306/ledger451_child.py (v4.5.1's own engine.ledger.commit) built a 4.5.1 namespace whose Graph_KG.ledger_revisions held 7 revisions: tenant T=r114 (seqs 2,3,4,6; seqs 4,6 with message/source/correlation_id/idempotency_key fc1306T-*) and tenant O=o114 (5,7). Pin initialize_schema(schema_prefix='RAG') copied 7+1 rows (ledger_history_copied), verify equal, head 7. delete_nodes_by_prefix('r114:') removed 3 nodes; ledger.redact(None,prefix='r114',separator=':') complete: revisions [2,3,4,6], 11 records tombstoned, metadata_cleared 4, idempotency_keys_removed 2, redaction seq 8; verify equal. After: ^IVG.Ledger and RAG.ledger_revisions hold no T string; Graph_KG.ledger_revisions (still projected by v4.5.1's Graph.KG.LedgerRevision) keeps seq 2/3 messages and seq 4/6 message, source, correlation id and idempotency key verbatim (SC-001 literal scope 'every Graph_KG.ledger_* row': 4 rows hit); ^Graph.KG.LedgerRevisionD holds the same. Receipt out_of_reach names only exports, journals, backups. O's rows unchanged. Side note: actor 'r114' stays in both schemas' ActorIdx (actor is outside FR-004).",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T01:53:18+00:00",
+  "result": "fail"
+}

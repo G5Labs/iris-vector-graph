@@ -1,0 +1,15 @@
+{
+  "command": "bash experiment/playbook-completion/tools/locks.sh iris timeout 1500 python experiment/playbook-completion/refusals/decoders/live_decoders.py 18",
+  "experiment_head": "14678055cebaefe0428ff71328d82cd51162eb1c",
+  "id": "rx-dec-live-18",
+  "kind": "live",
+  "lane": "refusals",
+  "log": "$RUN_DIR/refusals/decoders/18/live-18.json",
+  "log_bytes": 11763,
+  "log_sha256": "836a45cf56a11f03b11a1c9b2e5c2124cdf22c4eabbe32015f096d62cd379e48",
+  "observes": "module 18 decoders driven live in AUDITE (oracle control ok): 6 cases, 5 match, 1 mismatch. Match: snapshot_info fields equal metadata.json and save's answer; vector-global archive lines use the forms vec, list (PLAID docPacked) and v, and ^VecIdx/^PLAID read back identical through NodeValueJSON after a replacing restore; SQL rows of nodes, rdf_edges, rdf_labels, rdf_props, kg_NodeEmbeddings, embedding_registry identical (column type and text) after save + replacing restore; _table_missing maps the driver's SQLCODE -30 text (missing table) and not SQLCODE -29 (missing column); POST /admin/snapshot answers 200 {status,path,result{globals,path,snapshot_ts,tables}}, 403 read_only_mode under IVG_READ_ONLY, 500 {detail} for an unwritable IVG_SNAPSHOT_DIR, 401 without the key. Mismatch: 13 ^KG nodes differ after the restore: ^KG(__version) moved by design (_raise_kg_version), 12 changed value type, int/Decimal -> str (edgeprop amount 20 -> '20', rate 0.5 -> '0.5', neg -0.25 -> '-0.25'; tagg count/min/max/sum, tin, tlast, bucket); get_edge_attrs {amount: 20, rate: 0.5, neg: -0.25} -> {'20','0.5','-0.25'} (F-1804, the plain 'v' archive form)",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T15:15:42+00:00",
+  "result": "fail"
+}

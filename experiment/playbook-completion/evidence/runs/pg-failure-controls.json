@@ -1,0 +1,15 @@
+{
+  "command": "python experiment/playbook-completion/product-gates/check_failure_controls.py --self-test && python experiment/playbook-completion/product-gates/check_failure_controls.py (over product-gates/FAILURE-CONTROLS.md, snapshot sha256 b21e4e3cfa093a8d... in $RUN_DIR/product-gates/failure-controls/)",
+  "experiment_head": "f9e4c64b86f4261c926f274f754f2cc5f1b1e5d0",
+  "id": "pg-failure-controls",
+  "kind": "check",
+  "lane": "product-gates",
+  "log": "$RUN_DIR/product-gates/failure-controls/check-failure-controls.log",
+  "log_bytes": 2597,
+  "log_sha256": "290be44648e615eeb10bfcc7f6e4f131907bc66ffa4c88e11554b24bd473524c",
+  "observes": "Gate 3.7-failure-controls inventory: 20 failure-scenario rows (S1-S18, S4b, S5b) from a keyword search of the 1,015 registry records. 12 have a registered negative control (8 existed before: S2 trace-level, S7, S9, S10 and S14 model-level, S11, S12, S18; added by this lane: S1 pg-fc-crash-oracle-selftest, S2 pg-fc-lost-ack-oracle-selftest, S3 disconnect, S4 process stop, S5 lock timeout via pg-disconnect-selftest and pg-disconnect-live-controls); 2 are covered by another row's controlled oracle (S4b original server stops, S8 FK-refused erase); 5 have none, each with the missing piece named (S5b F-1102 stats row lock, S13 F-C1307 marker held open, S15 F-C0801 rolled-back NKG counters, S16 killed bulk load, S17 max_ops refusal); 1 is blocked-access (S6 licence refusal at product level needs exclusive use of the shared 8-unit licence). Every cited run id exists in evidence/runs (0 problems); checker self-test catches an unregistered id and a row with no control or missing-piece note. Result incomplete: the gate condition (each scenario with a negative control) is not met.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T12:21:56+00:00",
+  "result": "incomplete"
+}

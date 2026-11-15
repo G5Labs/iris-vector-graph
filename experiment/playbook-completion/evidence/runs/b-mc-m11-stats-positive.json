@@ -1,0 +1,23 @@
+{
+  "check": "m11-stats-positive",
+  "command": "CARGO_TARGET_DIR=$RUN_DIR/target/breadth-b cargo build --release && bash experiment/playbook-completion/tools/locks.sh heavy timeout 1800 $RUN_DIR/target/breadth-b/release/breadth-b",
+  "design": "positive",
+  "experiment_head": "f3fe3917466f7bae3e46f32f5b0644cfeaff87c8",
+  "full_log": "$RUN_DIR/breadth-b/mc/full-decisive-20261114T012246Z.log",
+  "full_log_sha256": "227f6720d9d86ed75cc8fa7fd71e2d9d31fd6f5ccd627843af4d51997edf4615",
+  "id": "b-mc-m11-stats-positive",
+  "kind": "mc",
+  "lane": "breadth-b",
+  "log": "$RUN_DIR/breadth-b/mc/checks/m11-stats-positive.log",
+  "log_bytes": 984,
+  "log_sha256": "019f47dbe116449b0292214a8e65d381ec48dad681bfa4179a1174818b2eb73e",
+  "module": "11",
+  "observes": "module 11 machine stats design positive: expectation violation of 'witness: two bumps and a kept commit are all counted'; result met (found 'witness: two bumps and a kept commit are all counted'); 15 states, 23 transitions, depth 3, exhaustive within the model's bounds; covers: sharpness: concurrent bumps and a kept commit are all counted",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T01:23:56+00:00",
+  "result": "expected-violation",
+  "results": "experiment/playbook-completion/models/breadth-b/RESULTS.json",
+  "search": "exhaustive",
+  "states": "15"
+}

@@ -1,0 +1,28 @@
+{
+ "doc": "F-0504: under strict mode delete_node is refused, but purge_before retires bare temporal endpoint nodes with a\n    SQL delete and no guard.",
+ "id": "p0504_purge_retires_nodes_under_strict",
+ "log": "$RUN_DIR/breadth-a/live/ledger-all-20261113T232600.log",
+ "module": "ledger",
+ "observed": {
+  "delete_node_under_strict": "refused LedgerStrictModeError",
+  "endpoints_after": [],
+  "endpoints_before": [
+   [
+    "bato232559"
+   ],
+   [
+    "bats232559"
+   ]
+  ],
+  "purge_before": 2,
+  "verify": {
+   "differences": [],
+   "result": "diverges"
+  }
+ },
+ "oracle": "strict mode refuses structural deletes not made through the ledger (USER_GUIDE.md:1107-1121)",
+ "reproduced": true,
+ "seconds": 0.17,
+ "started": "2026-11-13T23:26:07",
+ "verdict": "purge deleted governed node rows under strict mode"
+}

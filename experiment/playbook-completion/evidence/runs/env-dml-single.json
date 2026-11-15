@@ -1,0 +1,15 @@
+{
+  "command": "python iris-contract/native/dml_single_cases.py; locks.sh iris python iris-contract/native/driver.py (AUDITENV); iris-contract check",
+  "experiment_head": "a07ea0ca2887e7cc6c39c5845fbd632c5784eeda",
+  "id": "env-dml-single",
+  "kind": "live",
+  "lane": "orchestrator",
+  "log": "$RUN_DIR/env/dml-single/dml-single.log",
+  "log_bytes": 2813,
+  "log_sha256": "b2f1252bbe4ecb843b9f1f9b9657865ad1255cfae7b1a7d44977f331a41f4cee",
+  "observes": "The autocommit-off DML cases without INSERT ... SELECT (for proofs-env's Verus subset): with autocommit off, a DELETE and an UPDATE that find no row leave $TLEVEL 0, a failing single-row INSERT (duplicate key, SQL error) opens the transaction ($TLEVEL 1) until the driver rollback. The executable contract: 2 cases, 0 outside, 2 singleton; the contract mutants failed-dml-opens-nothing and empty-dml-opens-txn are both killed by these cases (40 of 42 stay alive, as expected for a 2-case round)",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T22:41:07+00:00",
+  "result": "pass"
+}

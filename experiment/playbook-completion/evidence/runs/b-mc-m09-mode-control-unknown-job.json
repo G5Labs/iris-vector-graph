@@ -1,0 +1,23 @@
+{
+  "check": "m09-mode-control-unknown-job",
+  "command": "CARGO_TARGET_DIR=$RUN_DIR/target/breadth-b cargo build --release && bash experiment/playbook-completion/tools/locks.sh heavy timeout 1800 $RUN_DIR/target/breadth-b/release/breadth-b",
+  "design": "control",
+  "experiment_head": "f3fe3917466f7bae3e46f32f5b0644cfeaff87c8",
+  "full_log": "$RUN_DIR/breadth-b/mc/full-decisive-20261114T012246Z.log",
+  "full_log_sha256": "227f6720d9d86ed75cc8fa7fd71e2d9d31fd6f5ccd627843af4d51997edf4615",
+  "id": "b-mc-m09-mode-control-unknown-job",
+  "kind": "control",
+  "lane": "breadth-b",
+  "log": "$RUN_DIR/breadth-b/mc/checks/m09-mode-control-unknown-job.log",
+  "log_bytes": 615,
+  "log_sha256": "d38adde30cb923bd7cef78c94087e040adee217c3208ef1e6cf8484417e11961",
+  "module": "09",
+  "observes": "module 09 machine mode design control: expectation violation of 'NAT-X12: a read under an unknown namespace mode builds nothing'; result met (found 'NAT-X12: a read under an unknown namespace mode builds nothing'); 28 states, 89 transitions, depth 1, exhaustive within the model's bounds; covers: mutant: unknown namespace mode taken as job",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T01:23:51+00:00",
+  "result": "expected-violation",
+  "results": "experiment/playbook-completion/models/breadth-b/RESULTS.json",
+  "search": "exhaustive",
+  "states": "28"
+}

@@ -1,0 +1,15 @@
+{
+  "command": "locks.sh iris python experiment/playbook-completion/lockplans/probes/guarded_insert.py $RUN_DIR/lockplans/guarded-insert/run-3 --only 08-map-sql-table 08-node-nolabel 17-write-edges",
+  "experiment_head": "a7975f316bb6abc873ad3c92105aeb886e67a532",
+  "id": "lockplans-08-17-guarded-insert-r3",
+  "kind": "live",
+  "lane": "lockplans",
+  "log": "$RUN_DIR/lockplans/guarded-insert/run-3.log",
+  "log_bytes": 7237,
+  "log_sha256": "1a14c957739812db63f8277673d4f7ff5023ff785180392d4a8b9be829cddc8d",
+  "observes": "AUDITD, same harness. Violated: 08-node-nolabel (CREATE (n {id, pb}) guarded INSERT..WHERE NOT EXISTS; rdf_props has no FK) with A ROLLBACK: B returns ok at once, after the rollback node gm absent and B's property pb left with no node row (orphan); 17-write-edges with A ROLLBACK again: B ok, nothing persists. Holds: 08-map-sql-table (UPDATE..WHERE label then INSERT): B waits LOCKW at +512^Graph.KG.tablemappings.1 until A ends; commit and rollback both end with B's mapping (serial). Commit endings of all three serializable.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-15T02:01:55+00:00",
+  "result": "fail"
+}

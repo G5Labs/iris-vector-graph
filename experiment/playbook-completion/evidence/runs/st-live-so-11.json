@@ -1,0 +1,15 @@
+{
+  "command": "locks.sh iris python experiment/playbook-completion/structural/order/so_live.py $RUN_DIR/structural/order/so-live-p11.json P11",
+  "experiment_head": "b04331578b5c2e2ea9559107a7f5d15e29b34530",
+  "id": "st-live-so-11",
+  "kind": "live",
+  "lane": "structural",
+  "log": "$RUN_DIR/structural/order/so-live-p11.json",
+  "log_bytes": 2288,
+  "log_sha256": "81f5e45656f2dedd7fd184f78c30838d1db690f925085610561e0944c65f64fb",
+  "observes": "AUDITD, multigraph so11g with two parallel edges (so11:a,R,so11:b) w=1 and w=2 (first by create_edge, second by a multigraph Cypher CREATE, ekeys 0 and 1), created in two orders; ledger enable, then a changeset delete_relationship by tuple (so11:a,R,so11:b,so11g): forward left [ekey 1, w=2], reverse left [ekey 1, w=1] - the edge removed is the one inserted first, whatever its qualifiers. EXPLAIN of FindEdge statement (LedgerApply.cls:150): idkeys from the index intersection idx_edges_graph_oid INTERSECT idx_edges_s_p, i.e. row-id order, no ekey, no ORDER BY (F-0205 reliance shown live)",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T12:07:13+00:00",
+  "result": "fail"
+}

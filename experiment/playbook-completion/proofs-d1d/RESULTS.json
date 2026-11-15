@@ -1,0 +1,5172 @@
+{
+  "crate": "experiment/playbook-completion/proofs-d1d (ivg-d1d-proofs)",
+  "generated_utc": "2026-11-14T09:59:54+00:00",
+  "verus": "0.2026.10.04.426d8b0",
+  "actors_rev": "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877",
+  "sources_sha256": "24b0330807ead96f893dc14a279a77c5c6a71d4c2f5d2e7ab74348f4da023eab",
+  "round": "r2",
+  "statement": "Every result is about the models (L1 contracts and the reviewed L2 machines); none is a property of the product at pin 3eaa79cf.",
+  "baseline": {
+    "tag": "baseline",
+    "features": "",
+    "rc": 0,
+    "timed_out": false,
+    "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+    "log": "$RUN_DIR/proofs-d1d/r2/baseline.log",
+    "json": "$RUN_DIR/proofs-d1d/r2/baseline.json",
+    "wall_seconds": 2.7,
+    "max_rss_kb": 471512,
+    "error_locations": [],
+    "resource_limit": false,
+    "verified": 118,
+    "errors": 0,
+    "success": true,
+    "verus_total_ms": 2279,
+    "smt_run_ms": 1688,
+    "rlimit_total": 3723644,
+    "modules": {
+      "witness_bmw": {
+        "ms": 341,
+        "rlimit": 658604
+      },
+      "bmw_l2": {
+        "ms": 233,
+        "rlimit": 509907
+      },
+      "planc_l2": {
+        "ms": 124,
+        "rlimit": 308025
+      },
+      "witness_nread": {
+        "ms": 114,
+        "rlimit": 265525
+      },
+      "nread_l2": {
+        "ms": 93,
+        "rlimit": 220279
+      },
+      "cyw_l2": {
+        "ms": 91,
+        "rlimit": 214935
+      },
+      "bmn_l2": {
+        "ms": 86,
+        "rlimit": 207524
+      },
+      "witness_cyw": {
+        "ms": 76,
+        "rlimit": 192058
+      },
+      "witness_bmn": {
+        "ms": 75,
+        "rlimit": 165858
+      },
+      "witness_planc": {
+        "ms": 76,
+        "rlimit": 152018
+      },
+      "bmw_runs": {
+        "ms": 58,
+        "rlimit": 123797
+      },
+      "cyw_l1": {
+        "ms": 43,
+        "rlimit": 97518
+      },
+      "bmn_l1": {
+        "ms": 38,
+        "rlimit": 93326
+      },
+      "bmw_l1": {
+        "ms": 42,
+        "rlimit": 91098
+      },
+      "cys_l2": {
+        "ms": 30,
+        "rlimit": 77047
+      },
+      "witness_cys": {
+        "ms": 32,
+        "rlimit": 64753
+      },
+      "nread_l1": {
+        "ms": 24,
+        "rlimit": 59234
+      },
+      "nread_runs": {
+        "ms": 28,
+        "rlimit": 57708
+      },
+      "cys_l1": {
+        "ms": 17,
+        "rlimit": 43609
+      },
+      "cyw_runs": {
+        "ms": 20,
+        "rlimit": 43462
+      },
+      "bmn_runs": {
+        "ms": 17,
+        "rlimit": 36892
+      },
+      "planc_runs": {
+        "ms": 19,
+        "rlimit": 35853
+      },
+      "planc_l1": {
+        "ms": 2,
+        "rlimit": 4614
+      }
+    },
+    "top_functions": [
+      {
+        "function": "witness_bmw::witness_bmw",
+        "ms": 341,
+        "rlimit": 658604,
+        "success": true
+      },
+      {
+        "function": "witness_nread::witness_nread",
+        "ms": 114,
+        "rlimit": 265525,
+        "success": true
+      },
+      {
+        "function": "witness_cyw::witness_cyw",
+        "ms": 76,
+        "rlimit": 192058,
+        "success": true
+      },
+      {
+        "function": "witness_bmn::witness_bmn",
+        "ms": 75,
+        "rlimit": 165858,
+        "success": true
+      },
+      {
+        "function": "witness_planc::witness_planc",
+        "ms": 76,
+        "rlimit": 152018,
+        "success": true
+      },
+      {
+        "function": "bmw_runs::lemma_w_steps",
+        "ms": 58,
+        "rlimit": 123797,
+        "success": true
+      },
+      {
+        "function": "bmw_l2::lemma_step",
+        "ms": 49,
+        "rlimit": 104251,
+        "success": true
+      },
+      {
+        "function": "bmw_l2::lemma_ins",
+        "ms": 42,
+        "rlimit": 85808,
+        "success": true
+      },
+      {
+        "function": "planc_l2::lemma_for",
+        "ms": 32,
+        "rlimit": 65592,
+        "success": true
+      },
+      {
+        "function": "witness_cys::witness_cys",
+        "ms": 32,
+        "rlimit": 64753,
+        "success": true
+      }
+    ],
+    "all_functions": [
+      {
+        "function": "bmn_l1::BnL1::init_safe",
+        "ms": 2,
+        "rlimit": 4926,
+        "success": true
+      },
+      {
+        "function": "bmn_l1::BnL1::step_safe",
+        "ms": 2,
+        "rlimit": 4945,
+        "success": true
+      },
+      {
+        "function": "bmn_l1::lemma_l1_safe",
+        "ms": 14,
+        "rlimit": 36454,
+        "success": true
+      },
+      {
+        "function": "bmn_l1::lemma_put_ok",
+        "ms": 3,
+        "rlimit": 9585,
+        "success": true
+      },
+      {
+        "function": "bmn_l1::lemma_tokenize_ok",
+        "ms": 3,
+        "rlimit": 9067,
+        "success": true
+      },
+      {
+        "function": "bmn_l1::theorem_erase_leaves_no_index_of_the_graph",
+        "ms": 4,
+        "rlimit": 9176,
+        "success": true
+      },
+      {
+        "function": "bmn_l1::theorem_scoped_search_reads_its_graphs_index",
+        "ms": 2,
+        "rlimit": 5573,
+        "success": true
+      },
+      {
+        "function": "bmn_l1::theorem_stop_name_is_not_an_index",
+        "ms": 1,
+        "rlimit": 3977,
+        "success": true
+      },
+      {
+        "function": "bmn_l1::theorem_tokens_are_words_less_the_stopwords",
+        "ms": 3,
+        "rlimit": 9623,
+        "success": true
+      },
+      {
+        "function": "bmn_l2::BnL2::init_refines",
+        "ms": 2,
+        "rlimit": 5750,
+        "success": true
+      },
+      {
+        "function": "bmn_l2::BnL2::init_safe",
+        "ms": 3,
+        "rlimit": 6613,
+        "success": true
+      },
+      {
+        "function": "bmn_l2::BnL2::step_refines",
+        "ms": 3,
+        "rlimit": 7610,
+        "success": true
+      },
+      {
+        "function": "bmn_l2::BnL2::step_safe",
+        "ms": 2,
+        "rlimit": 6876,
+        "success": true
+      },
+      {
+        "function": "bmn_l2::lemma_build",
+        "ms": 9,
+        "rlimit": 21065,
+        "success": true
+      },
+      {
+        "function": "bmn_l2::lemma_drop",
+        "ms": 7,
+        "rlimit": 17167,
+        "success": true
+      },
+      {
+        "function": "bmn_l2::lemma_eff",
+        "ms": 2,
+        "rlimit": 5454,
+        "success": true
+      },
+      {
+        "function": "bmn_l2::lemma_erase",
+        "ms": 6,
+        "rlimit": 15845,
+        "success": true
+      },
+      {
+        "function": "bmn_l2::lemma_insert",
+        "ms": 11,
+        "rlimit": 28663,
+        "success": true
+      },
+      {
+        "function": "bmn_l2::lemma_raw_inv_at",
+        "ms": 6,
+        "rlimit": 14840,
+        "success": true
+      },
+      {
+        "function": "bmn_l2::lemma_search",
+        "ms": 7,
+        "rlimit": 18186,
+        "success": true
+      },
+      {
+        "function": "bmn_l2::lemma_step",
+        "ms": 9,
+        "rlimit": 20504,
+        "success": true
+      },
+      {
+        "function": "bmn_l2::theorem_raw_executions_refine",
+        "ms": 12,
+        "rlimit": 33000,
+        "success": true
+      },
+      {
+        "function": "bmn_l2::theorem_stopword_node_is_the_77",
+        "ms": 2,
+        "rlimit": 5951,
+        "success": true
+      },
+      {
+        "function": "bmn_runs::lemma_n_steps",
+        "ms": 17,
+        "rlimit": 36892,
+        "success": true
+      },
+      {
+        "function": "bmw_l1::BwL1::init_safe",
+        "ms": 1,
+        "rlimit": 3615,
+        "success": true
+      },
+      {
+        "function": "bmw_l1::BwL1::step_safe",
+        "ms": 2,
+        "rlimit": 5608,
+        "success": true
+      },
+      {
+        "function": "bmw_l1::lemma_l1_safe",
+        "ms": 19,
+        "rlimit": 40672,
+        "success": true
+      },
+      {
+        "function": "bmw_l1::theorem_build_all_or_nothing",
+        "ms": 3,
+        "rlimit": 6429,
+        "success": true
+      },
+      {
+        "function": "bmw_l1::theorem_failed_write_changes_nothing",
+        "ms": 3,
+        "rlimit": 6592,
+        "success": true
+      },
+      {
+        "function": "bmw_l1::theorem_nested_write_goes_with_callers_rollback",
+        "ms": 7,
+        "rlimit": 17109,
+        "success": true
+      },
+      {
+        "function": "bmw_l1::theorem_search_counts_its_documents",
+        "ms": 4,
+        "rlimit": 11073,
+        "success": true
+      },
+      {
+        "function": "bmw_l2::BwL2::init_refines",
+        "ms": 3,
+        "rlimit": 6098,
+        "success": true
+      },
+      {
+        "function": "bmw_l2::BwL2::init_safe",
+        "ms": 2,
+        "rlimit": 6140,
+        "success": true
+      },
+      {
+        "function": "bmw_l2::BwL2::step_refines",
+        "ms": 5,
+        "rlimit": 10576,
+        "success": true
+      },
+      {
+        "function": "bmw_l2::BwL2::step_safe",
+        "ms": 4,
+        "rlimit": 9155,
+        "success": true
+      },
+      {
+        "function": "bmw_l2::lemma_bdoc",
+        "ms": 14,
+        "rlimit": 32445,
+        "success": true
+      },
+      {
+        "function": "bmw_l2::lemma_bheader",
+        "ms": 19,
+        "rlimit": 52031,
+        "success": true
+      },
+      {
+        "function": "bmw_l2::lemma_bstart",
+        "ms": 14,
+        "rlimit": 31485,
+        "success": true
+      },
+      {
+        "function": "bmw_l2::lemma_del",
+        "ms": 26,
+        "rlimit": 57997,
+        "success": true
+      },
+      {
+        "function": "bmw_l2::lemma_ins",
+        "ms": 42,
+        "rlimit": 85808,
+        "success": true
+      },
+      {
+        "function": "bmw_l2::lemma_raw_inv_at",
+        "ms": 14,
+        "rlimit": 30580,
+        "success": true
+      },
+      {
+        "function": "bmw_l2::lemma_step",
+        "ms": 49,
+        "rlimit": 104251,
+        "success": true
+      },
+      {
+        "function": "bmw_l2::theorem_build_invisible_until_published",
+        "ms": 25,
+        "rlimit": 47427,
+        "success": true
+      },
+      {
+        "function": "bmw_l2::theorem_header_counts_the_stored_documents",
+        "ms": 2,
+        "rlimit": 4999,
+        "success": true
+      },
+      {
+        "function": "bmw_l2::theorem_raw_executions_refine",
+        "ms": 9,
+        "rlimit": 30915,
+        "success": true
+      },
+      {
+        "function": "bmw_runs::lemma_w_steps",
+        "ms": 58,
+        "rlimit": 123797,
+        "success": true
+      },
+      {
+        "function": "cys_l1::CsL1::init_safe",
+        "ms": 1,
+        "rlimit": 3424,
+        "success": true
+      },
+      {
+        "function": "cys_l1::CsL1::step_safe",
+        "ms": 6,
+        "rlimit": 13220,
+        "success": true
+      },
+      {
+        "function": "cys_l1::theorem_scoped_reads_answer_their_graph",
+        "ms": 6,
+        "rlimit": 17068,
+        "success": true
+      },
+      {
+        "function": "cys_l1::theorem_walk_stays_in_its_graph",
+        "ms": 3,
+        "rlimit": 9897,
+        "success": true
+      },
+      {
+        "function": "cys_l2::CsL2::init_refines",
+        "ms": 1,
+        "rlimit": 2894,
+        "success": true
+      },
+      {
+        "function": "cys_l2::CsL2::init_safe",
+        "ms": 1,
+        "rlimit": 3610,
+        "success": true
+      },
+      {
+        "function": "cys_l2::CsL2::step_refines",
+        "ms": 1,
+        "rlimit": 3987,
+        "success": true
+      },
+      {
+        "function": "cys_l2::CsL2::step_safe",
+        "ms": 1,
+        "rlimit": 4007,
+        "success": true
+      },
+      {
+        "function": "cys_l2::lemma_raw_inv_at",
+        "ms": 5,
+        "rlimit": 13990,
+        "success": true
+      },
+      {
+        "function": "cys_l2::lemma_step",
+        "ms": 8,
+        "rlimit": 23186,
+        "success": true
+      },
+      {
+        "function": "cys_l2::theorem_raw_executions_refine",
+        "ms": 9,
+        "rlimit": 25373,
+        "success": true
+      },
+      {
+        "function": "cyw_l1::CwL1::init_safe",
+        "ms": 2,
+        "rlimit": 5585,
+        "success": true
+      },
+      {
+        "function": "cyw_l1::CwL1::step_safe",
+        "ms": 1,
+        "rlimit": 4616,
+        "success": true
+      },
+      {
+        "function": "cyw_l1::lemma_apply_safe",
+        "ms": 13,
+        "rlimit": 32301,
+        "success": true
+      },
+      {
+        "function": "cyw_l1::lemma_l1_safe",
+        "ms": 3,
+        "rlimit": 8698,
+        "success": true
+      },
+      {
+        "function": "cyw_l1::theorem_existing_relationship_create_adds_nothing",
+        "ms": 6,
+        "rlimit": 14228,
+        "success": true
+      },
+      {
+        "function": "cyw_l1::theorem_merge_copies_each_rows_node",
+        "ms": 7,
+        "rlimit": 15050,
+        "success": true
+      },
+      {
+        "function": "cyw_l1::theorem_null_set_removes_the_key",
+        "ms": 4,
+        "rlimit": 9561,
+        "success": true
+      },
+      {
+        "function": "cyw_l1::theorem_refused_query_writes_nothing",
+        "ms": 1,
+        "rlimit": 4137,
+        "success": true
+      },
+      {
+        "function": "cyw_l1::theorem_strict_mode_refuses_every_write",
+        "ms": 1,
+        "rlimit": 3342,
+        "success": true
+      },
+      {
+        "function": "cyw_l2::CwL2::init_refines",
+        "ms": 2,
+        "rlimit": 5565,
+        "success": true
+      },
+      {
+        "function": "cyw_l2::CwL2::init_safe",
+        "ms": 2,
+        "rlimit": 6420,
+        "success": true
+      },
+      {
+        "function": "cyw_l2::CwL2::step_refines",
+        "ms": 3,
+        "rlimit": 7183,
+        "success": true
+      },
+      {
+        "function": "cyw_l2::CwL2::step_safe",
+        "ms": 2,
+        "rlimit": 6515,
+        "success": true
+      },
+      {
+        "function": "cyw_l2::lemma_exec",
+        "ms": 29,
+        "rlimit": 58264,
+        "success": true
+      },
+      {
+        "function": "cyw_l2::lemma_raw_inv_at",
+        "ms": 9,
+        "rlimit": 19492,
+        "success": true
+      },
+      {
+        "function": "cyw_l2::lemma_refuse",
+        "ms": 9,
+        "rlimit": 24568,
+        "success": true
+      },
+      {
+        "function": "cyw_l2::lemma_step",
+        "ms": 12,
+        "rlimit": 38296,
+        "success": true
+      },
+      {
+        "function": "cyw_l2::theorem_raw_executions_refine",
+        "ms": 11,
+        "rlimit": 29754,
+        "success": true
+      },
+      {
+        "function": "cyw_l2::theorem_strict_meta_admits_no_write",
+        "ms": 7,
+        "rlimit": 18878,
+        "success": true
+      },
+      {
+        "function": "cyw_runs::lemma_c_steps",
+        "ms": 20,
+        "rlimit": 43462,
+        "success": true
+      },
+      {
+        "function": "nread_l1::NrL1::init_safe",
+        "ms": 1,
+        "rlimit": 2849,
+        "success": true
+      },
+      {
+        "function": "nread_l1::NrL1::step_safe",
+        "ms": 1,
+        "rlimit": 3342,
+        "success": true
+      },
+      {
+        "function": "nread_l1::theorem_native_answer_is_the_sql_answer",
+        "ms": 6,
+        "rlimit": 14728,
+        "success": true
+      },
+      {
+        "function": "nread_l1::theorem_native_read_needs_a_passed_check",
+        "ms": 2,
+        "rlimit": 6827,
+        "success": true
+      },
+      {
+        "function": "nread_l1::theorem_open_transaction_is_seen_and_rolled_back",
+        "ms": 8,
+        "rlimit": 20150,
+        "success": true
+      },
+      {
+        "function": "nread_l1::theorem_shadow_answer_was_compared",
+        "ms": 4,
+        "rlimit": 11338,
+        "success": true
+      },
+      {
+        "function": "nread_l2::NrL2::init_refines",
+        "ms": 2,
+        "rlimit": 5322,
+        "success": true
+      },
+      {
+        "function": "nread_l2::NrL2::init_safe",
+        "ms": 1,
+        "rlimit": 4071,
+        "success": true
+      },
+      {
+        "function": "nread_l2::NrL2::step_refines",
+        "ms": 3,
+        "rlimit": 7650,
+        "success": true
+      },
+      {
+        "function": "nread_l2::NrL2::step_safe",
+        "ms": 2,
+        "rlimit": 6640,
+        "success": true
+      },
+      {
+        "function": "nread_l2::lemma_raw_inv_at",
+        "ms": 6,
+        "rlimit": 16180,
+        "success": true
+      },
+      {
+        "function": "nread_l2::lemma_run",
+        "ms": 17,
+        "rlimit": 34964,
+        "success": true
+      },
+      {
+        "function": "nread_l2::lemma_runlabels",
+        "ms": 6,
+        "rlimit": 20343,
+        "success": true
+      },
+      {
+        "function": "nread_l2::lemma_shadow",
+        "ms": 8,
+        "rlimit": 25140,
+        "success": true
+      },
+      {
+        "function": "nread_l2::lemma_step",
+        "ms": 17,
+        "rlimit": 41852,
+        "success": true
+      },
+      {
+        "function": "nread_l2::theorem_native_read_sees_the_open_transaction",
+        "ms": 12,
+        "rlimit": 26172,
+        "success": true
+      },
+      {
+        "function": "nread_l2::theorem_raw_executions_refine",
+        "ms": 14,
+        "rlimit": 31945,
+        "success": true
+      },
+      {
+        "function": "nread_runs::lemma_r_steps",
+        "ms": 28,
+        "rlimit": 57708,
+        "success": true
+      },
+      {
+        "function": "planc_l1::PcL1::init_safe",
+        "ms": 0,
+        "rlimit": 960,
+        "success": true
+      },
+      {
+        "function": "planc_l1::PcL1::step_safe",
+        "ms": 0,
+        "rlimit": 1323,
+        "success": true
+      },
+      {
+        "function": "planc_l1::theorem_every_answer_is_its_shapes",
+        "ms": 1,
+        "rlimit": 2331,
+        "success": true
+      },
+      {
+        "function": "planc_l2::PcL2::init_refines",
+        "ms": 1,
+        "rlimit": 2150,
+        "success": true
+      },
+      {
+        "function": "planc_l2::PcL2::init_safe",
+        "ms": 1,
+        "rlimit": 6518,
+        "success": true
+      },
+      {
+        "function": "planc_l2::PcL2::step_refines",
+        "ms": 3,
+        "rlimit": 7890,
+        "success": true
+      },
+      {
+        "function": "planc_l2::PcL2::step_safe",
+        "ms": 2,
+        "rlimit": 7630,
+        "success": true
+      },
+      {
+        "function": "planc_l2::lemma_bcompile",
+        "ms": 12,
+        "rlimit": 34758,
+        "success": true
+      },
+      {
+        "function": "planc_l2::lemma_bmark",
+        "ms": 9,
+        "rlimit": 26835,
+        "success": true
+      },
+      {
+        "function": "planc_l2::lemma_bother",
+        "ms": 20,
+        "rlimit": 45049,
+        "success": true
+      },
+      {
+        "function": "planc_l2::lemma_for",
+        "ms": 32,
+        "rlimit": 65592,
+        "success": true
+      },
+      {
+        "function": "planc_l2::lemma_raw_inv_at",
+        "ms": 5,
+        "rlimit": 18544,
+        "success": true
+      },
+      {
+        "function": "planc_l2::lemma_step",
+        "ms": 11,
+        "rlimit": 31932,
+        "success": true
+      },
+      {
+        "function": "planc_l2::lemma_walk",
+        "ms": 11,
+        "rlimit": 25411,
+        "success": true
+      },
+      {
+        "function": "planc_l2::theorem_ok_entry_runs_its_shapes_class",
+        "ms": 1,
+        "rlimit": 5056,
+        "success": true
+      },
+      {
+        "function": "planc_l2::theorem_raw_executions_refine",
+        "ms": 9,
+        "rlimit": 30660,
+        "success": true
+      },
+      {
+        "function": "planc_runs::lemma_p_steps",
+        "ms": 19,
+        "rlimit": 35853,
+        "success": true
+      },
+      {
+        "function": "witness_bmn::witness_bmn",
+        "ms": 75,
+        "rlimit": 165858,
+        "success": true
+      },
+      {
+        "function": "witness_bmw::witness_bmw",
+        "ms": 341,
+        "rlimit": 658604,
+        "success": true
+      },
+      {
+        "function": "witness_cys::witness_cys",
+        "ms": 32,
+        "rlimit": 64753,
+        "success": true
+      },
+      {
+        "function": "witness_cyw::witness_cyw",
+        "ms": 76,
+        "rlimit": 192058,
+        "success": true
+      },
+      {
+        "function": "witness_nread::witness_nread",
+        "ms": 114,
+        "rlimit": 265525,
+        "success": true
+      },
+      {
+        "function": "witness_planc::witness_planc",
+        "ms": 76,
+        "rlimit": 152018,
+        "success": true
+      }
+    ],
+    "failing_functions": [],
+    "functions_checked": 118,
+    "max_function_rlimit": 658604,
+    "json_sha256": "7e021a3f794126ae71718fe9de42b21fd1a724e3b464eabdad82019c4cafe8f7",
+    "pass": true,
+    "cost_per_module_proof": {
+      "module 07 (one BM25 index's writers, the caller's transaction)": {
+        "modules": {
+          "witness_bmw": {
+            "ms": 341,
+            "rlimit": 658604
+          },
+          "bmw_l2": {
+            "ms": 233,
+            "rlimit": 509907
+          },
+          "bmw_runs": {
+            "ms": 58,
+            "rlimit": 123797
+          },
+          "bmw_l1": {
+            "ms": 42,
+            "rlimit": 91098
+          }
+        },
+        "ms": 674,
+        "rlimit": 1383406,
+        "functions": 23,
+        "largest_function": {
+          "function": "witness_bmw::witness_bmw",
+          "ms": 341,
+          "rlimit": 658604,
+          "success": true
+        }
+      },
+      "module 07 (the namespace's indexes: stopwords, graph scope, erasure)": {
+        "modules": {
+          "bmn_l2": {
+            "ms": 86,
+            "rlimit": 207524
+          },
+          "witness_bmn": {
+            "ms": 75,
+            "rlimit": 165858
+          },
+          "bmn_l1": {
+            "ms": 38,
+            "rlimit": 93326
+          },
+          "bmn_runs": {
+            "ms": 17,
+            "rlimit": 36892
+          }
+        },
+        "ms": 216,
+        "rlimit": 503600,
+        "functions": 25,
+        "largest_function": {
+          "function": "witness_bmn::witness_bmn",
+          "ms": 75,
+          "rlimit": 165858,
+          "success": true
+        }
+      },
+      "module 08 (Cypher write queries under the ledger guard)": {
+        "modules": {
+          "cyw_l2": {
+            "ms": 91,
+            "rlimit": 214935
+          },
+          "witness_cyw": {
+            "ms": 76,
+            "rlimit": 192058
+          },
+          "cyw_l1": {
+            "ms": 43,
+            "rlimit": 97518
+          },
+          "cyw_runs": {
+            "ms": 20,
+            "rlimit": 43462
+          }
+        },
+        "ms": 230,
+        "rlimit": 547973,
+        "functions": 21,
+        "largest_function": {
+          "function": "witness_cyw::witness_cyw",
+          "ms": 76,
+          "rlimit": 192058,
+          "success": true
+        }
+      },
+      "module 08 (graph scope of reads)": {
+        "modules": {
+          "cys_l2": {
+            "ms": 30,
+            "rlimit": 77047
+          },
+          "witness_cys": {
+            "ms": 32,
+            "rlimit": 64753
+          },
+          "cys_l1": {
+            "ms": 17,
+            "rlimit": 43609
+          }
+        },
+        "ms": 79,
+        "rlimit": 185409,
+        "functions": 12,
+        "largest_function": {
+          "function": "witness_cys::witness_cys",
+          "ms": 32,
+          "rlimit": 64753,
+          "success": true
+        }
+      },
+      "module 09 (compiled-plan cache)": {
+        "modules": {
+          "planc_l2": {
+            "ms": 124,
+            "rlimit": 308025
+          },
+          "witness_planc": {
+            "ms": 76,
+            "rlimit": 152018
+          },
+          "planc_runs": {
+            "ms": 19,
+            "rlimit": 35853
+          },
+          "planc_l1": {
+            "ms": 2,
+            "rlimit": 4614
+          }
+        },
+        "ms": 221,
+        "rlimit": 500510,
+        "functions": 18,
+        "largest_function": {
+          "function": "witness_planc::witness_planc",
+          "ms": 76,
+          "rlimit": 152018,
+          "success": true
+        }
+      },
+      "module 09 (a native read against the SQL path)": {
+        "modules": {
+          "witness_nread": {
+            "ms": 114,
+            "rlimit": 265525
+          },
+          "nread_l2": {
+            "ms": 93,
+            "rlimit": 220279
+          },
+          "nread_l1": {
+            "ms": 24,
+            "rlimit": 59234
+          },
+          "nread_runs": {
+            "ms": 28,
+            "rlimit": 57708
+          }
+        },
+        "ms": 259,
+        "rlimit": 602746,
+        "functions": 19,
+        "largest_function": {
+          "function": "witness_nread::witness_nread",
+          "ms": 114,
+          "rlimit": 265525,
+          "success": true
+        }
+      }
+    }
+  },
+  "controls": {
+    "control_fc0702_bare_trollback": {
+      "tag": "control_fc0702_bare_trollback",
+      "features": "control_fc0702_bare_trollback",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_fc0702_bare_trollback -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1d/r2/control_fc0702_bare_trollback.log",
+      "json": "$RUN_DIR/proofs-d1d/r2/control_fc0702_bare_trollback.json",
+      "wall_seconds": 1.93,
+      "max_rss_kb": 471632,
+      "error_locations": [
+        "src/bmw_l2.rs:184",
+        "src/bmw_l2.rs:202"
+      ],
+      "resource_limit": false,
+      "verified": 116,
+      "errors": 2,
+      "success": false,
+      "verus_total_ms": 1773,
+      "smt_run_ms": 1418,
+      "rlimit_total": 3191812,
+      "modules": {
+        "bmw_l2": {
+          "ms": 236,
+          "rlimit": 521243
+        },
+        "planc_l2": {
+          "ms": 131,
+          "rlimit": 308025
+        },
+        "witness_nread": {
+          "ms": 111,
+          "rlimit": 265525
+        },
+        "nread_l2": {
+          "ms": 91,
+          "rlimit": 220279
+        },
+        "cyw_l2": {
+          "ms": 100,
+          "rlimit": 214935
+        },
+        "bmn_l2": {
+          "ms": 85,
+          "rlimit": 207524
+        },
+        "witness_cyw": {
+          "ms": 74,
+          "rlimit": 192058
+        },
+        "witness_bmn": {
+          "ms": 73,
+          "rlimit": 165858
+        },
+        "witness_planc": {
+          "ms": 80,
+          "rlimit": 152018
+        },
+        "bmw_runs": {
+          "ms": 56,
+          "rlimit": 123797
+        },
+        "cx_fc0702": {
+          "ms": 54,
+          "rlimit": 115436
+        },
+        "cyw_l1": {
+          "ms": 44,
+          "rlimit": 97518
+        },
+        "bmn_l1": {
+          "ms": 40,
+          "rlimit": 93326
+        },
+        "bmw_l1": {
+          "ms": 42,
+          "rlimit": 91098
+        },
+        "cys_l2": {
+          "ms": 33,
+          "rlimit": 77047
+        },
+        "witness_cys": {
+          "ms": 32,
+          "rlimit": 64753
+        },
+        "nread_l1": {
+          "ms": 22,
+          "rlimit": 59234
+        },
+        "nread_runs": {
+          "ms": 26,
+          "rlimit": 57708
+        },
+        "cys_l1": {
+          "ms": 18,
+          "rlimit": 43609
+        },
+        "cyw_runs": {
+          "ms": 20,
+          "rlimit": 43462
+        },
+        "bmn_runs": {
+          "ms": 18,
+          "rlimit": 36892
+        },
+        "planc_runs": {
+          "ms": 19,
+          "rlimit": 35853
+        },
+        "planc_l1": {
+          "ms": 2,
+          "rlimit": 4614
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_nread::witness_nread",
+          "ms": 111,
+          "rlimit": 265525,
+          "success": true
+        },
+        {
+          "function": "witness_cyw::witness_cyw",
+          "ms": 74,
+          "rlimit": 192058,
+          "success": true
+        },
+        {
+          "function": "witness_bmn::witness_bmn",
+          "ms": 73,
+          "rlimit": 165858,
+          "success": true
+        },
+        {
+          "function": "witness_planc::witness_planc",
+          "ms": 80,
+          "rlimit": 152018,
+          "success": true
+        },
+        {
+          "function": "bmw_runs::lemma_w_steps",
+          "ms": 56,
+          "rlimit": 123797,
+          "success": true
+        },
+        {
+          "function": "cx_fc0702::counterexample_fc0702",
+          "ms": 54,
+          "rlimit": 115436,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_step",
+          "ms": 50,
+          "rlimit": 104169,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_ins",
+          "ms": 47,
+          "rlimit": 92482,
+          "success": false
+        },
+        {
+          "function": "planc_l2::lemma_for",
+          "ms": 34,
+          "rlimit": 65592,
+          "success": true
+        },
+        {
+          "function": "witness_cys::witness_cys",
+          "ms": 32,
+          "rlimit": 64753,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "bmw_l2::lemma_del",
+        "bmw_l2::lemma_ins"
+      ],
+      "functions_checked": 118,
+      "max_function_rlimit": 265525,
+      "json_sha256": "ad8d296ba0bd4fccdfebbe68ba8f04a3186633895d4b2bf7a89347153ca79549",
+      "module": "07",
+      "finding": "F-C0702",
+      "expected": "src/bmw_l2.rs",
+      "counterexample": "cx_fc0702::counterexample_fc0702",
+      "what": "a failed Insert/Delete's Catch runs `If $TLevel > 0 TRollback`, every level: the caller's open transaction ends and its uncommitted rows go (BM25Index.cls:487, :508)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f0701_build_in_place": {
+      "tag": "control_f0701_build_in_place",
+      "features": "control_f0701_build_in_place",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f0701_build_in_place -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1d/r2/control_f0701_build_in_place.log",
+      "json": "$RUN_DIR/proofs-d1d/r2/control_f0701_build_in_place.json",
+      "wall_seconds": 1.99,
+      "max_rss_kb": 474460,
+      "error_locations": [
+        "src/bmw_l2.rs:216",
+        "src/bmw_l2.rs:225",
+        "src/bmw_l2.rs:238",
+        "src/bmw_l2.rs:247"
+      ],
+      "resource_limit": false,
+      "verified": 115,
+      "errors": 3,
+      "success": false,
+      "verus_total_ms": 1828,
+      "smt_run_ms": 1627,
+      "rlimit_total": 3607931,
+      "modules": {
+        "cx_f0701": {
+          "ms": 324,
+          "rlimit": 578577
+        },
+        "bmw_l2": {
+          "ms": 231,
+          "rlimit": 490771
+        },
+        "planc_l2": {
+          "ms": 108,
+          "rlimit": 308025
+        },
+        "witness_nread": {
+          "ms": 114,
+          "rlimit": 265525
+        },
+        "nread_l2": {
+          "ms": 88,
+          "rlimit": 220279
+        },
+        "cyw_l2": {
+          "ms": 95,
+          "rlimit": 214935
+        },
+        "bmn_l2": {
+          "ms": 87,
+          "rlimit": 207524
+        },
+        "witness_cyw": {
+          "ms": 75,
+          "rlimit": 192058
+        },
+        "witness_bmn": {
+          "ms": 63,
+          "rlimit": 165858
+        },
+        "witness_planc": {
+          "ms": 66,
+          "rlimit": 152018
+        },
+        "bmw_runs": {
+          "ms": 53,
+          "rlimit": 107247
+        },
+        "cyw_l1": {
+          "ms": 41,
+          "rlimit": 97518
+        },
+        "bmn_l1": {
+          "ms": 38,
+          "rlimit": 93326
+        },
+        "bmw_l1": {
+          "ms": 42,
+          "rlimit": 91098
+        },
+        "cys_l2": {
+          "ms": 34,
+          "rlimit": 77047
+        },
+        "witness_cys": {
+          "ms": 30,
+          "rlimit": 64753
+        },
+        "nread_l1": {
+          "ms": 25,
+          "rlimit": 59234
+        },
+        "nread_runs": {
+          "ms": 25,
+          "rlimit": 57708
+        },
+        "cys_l1": {
+          "ms": 18,
+          "rlimit": 43609
+        },
+        "cyw_runs": {
+          "ms": 19,
+          "rlimit": 43462
+        },
+        "bmn_runs": {
+          "ms": 17,
+          "rlimit": 36892
+        },
+        "planc_runs": {
+          "ms": 20,
+          "rlimit": 35853
+        },
+        "planc_l1": {
+          "ms": 2,
+          "rlimit": 4614
+        }
+      },
+      "top_functions": [
+        {
+          "function": "cx_f0701::counterexample_f0701",
+          "ms": 324,
+          "rlimit": 578577,
+          "success": true
+        },
+        {
+          "function": "witness_nread::witness_nread",
+          "ms": 114,
+          "rlimit": 265525,
+          "success": true
+        },
+        {
+          "function": "witness_cyw::witness_cyw",
+          "ms": 75,
+          "rlimit": 192058,
+          "success": true
+        },
+        {
+          "function": "witness_bmn::witness_bmn",
+          "ms": 63,
+          "rlimit": 165858,
+          "success": true
+        },
+        {
+          "function": "witness_planc::witness_planc",
+          "ms": 66,
+          "rlimit": 152018,
+          "success": true
+        },
+        {
+          "function": "bmw_runs::lemma_w_steps",
+          "ms": 53,
+          "rlimit": 107247,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_step",
+          "ms": 33,
+          "rlimit": 104354,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_ins",
+          "ms": 43,
+          "rlimit": 95989,
+          "success": true
+        },
+        {
+          "function": "planc_l2::lemma_for",
+          "ms": 25,
+          "rlimit": 65592,
+          "success": true
+        },
+        {
+          "function": "witness_cys::witness_cys",
+          "ms": 30,
+          "rlimit": 64753,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "bmw_l2::lemma_bdoc",
+        "bmw_l2::lemma_bheader",
+        "bmw_l2::lemma_bstart"
+      ],
+      "functions_checked": 118,
+      "max_function_rlimit": 578577,
+      "json_sha256": "0680ccefbc12d7cf9af130cbfc8f85ba953b0b8bb624ff22ebfc27419e18128e",
+      "module": "07",
+      "finding": "F-0701",
+      "expected": "src/bmw_l2.rs",
+      "counterexample": "cx_f0701::counterexample_f0701",
+      "what": "Build kills and rewrites the live index with no lock and no transaction, header last from its own count; an Insert during it is visible over a half-built index and left uncounted (BM25Index.cls:97-175)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f0704_late_refusal": {
+      "tag": "control_f0704_late_refusal",
+      "features": "control_f0704_late_refusal",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f0704_late_refusal -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1d/r2/control_f0704_late_refusal.log",
+      "json": "$RUN_DIR/proofs-d1d/r2/control_f0704_late_refusal.json",
+      "wall_seconds": 1.91,
+      "max_rss_kb": 472724,
+      "error_locations": [
+        "src/bmw_l2.rs:238"
+      ],
+      "resource_limit": false,
+      "verified": 117,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1759,
+      "smt_run_ms": 1433,
+      "rlimit_total": 3307489,
+      "modules": {
+        "bmw_l2": {
+          "ms": 240,
+          "rlimit": 506183
+        },
+        "planc_l2": {
+          "ms": 96,
+          "rlimit": 308025
+        },
+        "cx_f0704": {
+          "ms": 165,
+          "rlimit": 274869
+        },
+        "witness_nread": {
+          "ms": 88,
+          "rlimit": 265525
+        },
+        "nread_l2": {
+          "ms": 92,
+          "rlimit": 220279
+        },
+        "cyw_l2": {
+          "ms": 96,
+          "rlimit": 214935
+        },
+        "bmn_l2": {
+          "ms": 83,
+          "rlimit": 207524
+        },
+        "witness_cyw": {
+          "ms": 66,
+          "rlimit": 192058
+        },
+        "witness_bmn": {
+          "ms": 72,
+          "rlimit": 165858
+        },
+        "witness_planc": {
+          "ms": 67,
+          "rlimit": 152018
+        },
+        "cyw_l1": {
+          "ms": 41,
+          "rlimit": 97518
+        },
+        "bmw_runs": {
+          "ms": 47,
+          "rlimit": 95101
+        },
+        "bmn_l1": {
+          "ms": 39,
+          "rlimit": 93326
+        },
+        "bmw_l1": {
+          "ms": 42,
+          "rlimit": 91098
+        },
+        "cys_l2": {
+          "ms": 34,
+          "rlimit": 77047
+        },
+        "witness_cys": {
+          "ms": 30,
+          "rlimit": 64753
+        },
+        "nread_l1": {
+          "ms": 24,
+          "rlimit": 59234
+        },
+        "nread_runs": {
+          "ms": 24,
+          "rlimit": 57708
+        },
+        "cys_l1": {
+          "ms": 18,
+          "rlimit": 43609
+        },
+        "cyw_runs": {
+          "ms": 21,
+          "rlimit": 43462
+        },
+        "bmn_runs": {
+          "ms": 17,
+          "rlimit": 36892
+        },
+        "planc_runs": {
+          "ms": 19,
+          "rlimit": 35853
+        },
+        "planc_l1": {
+          "ms": 2,
+          "rlimit": 4614
+        }
+      },
+      "top_functions": [
+        {
+          "function": "cx_f0704::counterexample_f0704",
+          "ms": 165,
+          "rlimit": 274869,
+          "success": true
+        },
+        {
+          "function": "witness_nread::witness_nread",
+          "ms": 88,
+          "rlimit": 265525,
+          "success": true
+        },
+        {
+          "function": "witness_cyw::witness_cyw",
+          "ms": 66,
+          "rlimit": 192058,
+          "success": true
+        },
+        {
+          "function": "witness_bmn::witness_bmn",
+          "ms": 72,
+          "rlimit": 165858,
+          "success": true
+        },
+        {
+          "function": "witness_planc::witness_planc",
+          "ms": 67,
+          "rlimit": 152018,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_step",
+          "ms": 45,
+          "rlimit": 100291,
+          "success": true
+        },
+        {
+          "function": "bmw_runs::lemma_w_steps",
+          "ms": 47,
+          "rlimit": 95101,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_ins",
+          "ms": 39,
+          "rlimit": 83946,
+          "success": true
+        },
+        {
+          "function": "planc_l2::lemma_for",
+          "ms": 23,
+          "rlimit": 65592,
+          "success": true
+        },
+        {
+          "function": "witness_cys::witness_cys",
+          "ms": 30,
+          "rlimit": 64753,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "bmw_l2::lemma_bheader"
+      ],
+      "functions_checked": 118,
+      "max_function_rlimit": 274869,
+      "json_sha256": "0431d8d50c899532b4bd71d46f5e03fcb658355647803a82ec66b82420700604",
+      "module": "07",
+      "finding": "F-0704",
+      "expected": "src/bmw_l2.rs",
+      "counterexample": "cx_f0704::counterexample_f0704",
+      "what": "the index handle refuses a 0-row build after Build replaced the index (vector.py:299-310; BM25Index.cls:99)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_fc0701_stop_name_accepted": {
+      "tag": "control_fc0701_stop_name_accepted",
+      "features": "control_fc0701_stop_name_accepted",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_fc0701_stop_name_accepted -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1d/r2/control_fc0701_stop_name_accepted.log",
+      "json": "$RUN_DIR/proofs-d1d/r2/control_fc0701_stop_name_accepted.json",
+      "wall_seconds": 2.1,
+      "max_rss_kb": 472904,
+      "error_locations": [
+        "src/bmn_l2.rs:134",
+        "src/bmn_l2.rs:149",
+        "src/bmn_l2.rs:167"
+      ],
+      "resource_limit": false,
+      "verified": 115,
+      "errors": 3,
+      "success": false,
+      "verus_total_ms": 1945,
+      "smt_run_ms": 1632,
+      "rlimit_total": 3674483,
+      "modules": {
+        "witness_bmw": {
+          "ms": 336,
+          "rlimit": 658604
+        },
+        "bmw_l2": {
+          "ms": 235,
+          "rlimit": 509907
+        },
+        "planc_l2": {
+          "ms": 98,
+          "rlimit": 308025
+        },
+        "witness_nread": {
+          "ms": 88,
+          "rlimit": 265525
+        },
+        "nread_l2": {
+          "ms": 92,
+          "rlimit": 220279
+        },
+        "cyw_l2": {
+          "ms": 97,
+          "rlimit": 214935
+        },
+        "bmn_l2": {
+          "ms": 100,
+          "rlimit": 203538
+        },
+        "witness_cyw": {
+          "ms": 96,
+          "rlimit": 192058
+        },
+        "witness_planc": {
+          "ms": 66,
+          "rlimit": 152018
+        },
+        "bmw_runs": {
+          "ms": 59,
+          "rlimit": 123797
+        },
+        "cx_fc0701": {
+          "ms": 49,
+          "rlimit": 122249
+        },
+        "cyw_l1": {
+          "ms": 41,
+          "rlimit": 97518
+        },
+        "bmn_l1": {
+          "ms": 38,
+          "rlimit": 93326
+        },
+        "bmw_l1": {
+          "ms": 42,
+          "rlimit": 91098
+        },
+        "cys_l2": {
+          "ms": 32,
+          "rlimit": 77047
+        },
+        "witness_cys": {
+          "ms": 29,
+          "rlimit": 64753
+        },
+        "nread_l1": {
+          "ms": 24,
+          "rlimit": 59234
+        },
+        "nread_runs": {
+          "ms": 26,
+          "rlimit": 57708
+        },
+        "cys_l1": {
+          "ms": 18,
+          "rlimit": 43609
+        },
+        "cyw_runs": {
+          "ms": 19,
+          "rlimit": 43462
+        },
+        "planc_runs": {
+          "ms": 19,
+          "rlimit": 35853
+        },
+        "bmn_runs": {
+          "ms": 17,
+          "rlimit": 35326
+        },
+        "planc_l1": {
+          "ms": 2,
+          "rlimit": 4614
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_bmw::witness_bmw",
+          "ms": 336,
+          "rlimit": 658604,
+          "success": true
+        },
+        {
+          "function": "witness_nread::witness_nread",
+          "ms": 88,
+          "rlimit": 265525,
+          "success": true
+        },
+        {
+          "function": "witness_cyw::witness_cyw",
+          "ms": 96,
+          "rlimit": 192058,
+          "success": true
+        },
+        {
+          "function": "witness_planc::witness_planc",
+          "ms": 66,
+          "rlimit": 152018,
+          "success": true
+        },
+        {
+          "function": "bmw_runs::lemma_w_steps",
+          "ms": 59,
+          "rlimit": 123797,
+          "success": true
+        },
+        {
+          "function": "cx_fc0701::counterexample_fc0701",
+          "ms": 49,
+          "rlimit": 122249,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_step",
+          "ms": 46,
+          "rlimit": 104251,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_ins",
+          "ms": 41,
+          "rlimit": 85808,
+          "success": true
+        },
+        {
+          "function": "planc_l2::lemma_for",
+          "ms": 25,
+          "rlimit": 65592,
+          "success": true
+        },
+        {
+          "function": "witness_cys::witness_cys",
+          "ms": 29,
+          "rlimit": 64753,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "bmn_l2::lemma_build",
+        "bmn_l2::lemma_drop",
+        "bmn_l2::lemma_insert"
+      ],
+      "functions_checked": 118,
+      "max_function_rlimit": 658604,
+      "json_sha256": "c6e648f712caf515633dc2a2387df3ddd271b912e65fb9a7f32306761ed56a0e",
+      "module": "07",
+      "finding": "F-C0701 / F-0706",
+      "expected": "src/bmn_l2.rs",
+      "counterexample": "cx_fc0701::counterexample_fc0701",
+      "what": "Build/Insert/Drop accept \"__stop__\": its structure subscripts become stopwords of every index (BM25Index.cls:41-50, :83; _validate.py:163-179)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f0705_absent_graph_is_default": {
+      "tag": "control_f0705_absent_graph_is_default",
+      "features": "control_f0705_absent_graph_is_default",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f0705_absent_graph_is_default -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1d/r2/control_f0705_absent_graph_is_default.log",
+      "json": "$RUN_DIR/proofs-d1d/r2/control_f0705_absent_graph_is_default.json",
+      "wall_seconds": 2.07,
+      "max_rss_kb": 473520,
+      "error_locations": [
+        "src/bmn_l2.rs:180"
+      ],
+      "resource_limit": false,
+      "verified": 117,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1922,
+      "smt_run_ms": 1598,
+      "rlimit_total": 3638873,
+      "modules": {
+        "witness_bmw": {
+          "ms": 328,
+          "rlimit": 658604
+        },
+        "bmw_l2": {
+          "ms": 238,
+          "rlimit": 509907
+        },
+        "planc_l2": {
+          "ms": 109,
+          "rlimit": 308025
+        },
+        "witness_nread": {
+          "ms": 110,
+          "rlimit": 265525
+        },
+        "nread_l2": {
+          "ms": 88,
+          "rlimit": 220279
+        },
+        "cyw_l2": {
+          "ms": 99,
+          "rlimit": 214935
+        },
+        "bmn_l2": {
+          "ms": 86,
+          "rlimit": 210678
+        },
+        "witness_cyw": {
+          "ms": 70,
+          "rlimit": 192058
+        },
+        "witness_planc": {
+          "ms": 63,
+          "rlimit": 152018
+        },
+        "bmw_runs": {
+          "ms": 57,
+          "rlimit": 123797
+        },
+        "cyw_l1": {
+          "ms": 39,
+          "rlimit": 97518
+        },
+        "bmn_l1": {
+          "ms": 35,
+          "rlimit": 93326
+        },
+        "bmw_l1": {
+          "ms": 42,
+          "rlimit": 91098
+        },
+        "cx_f0705": {
+          "ms": 37,
+          "rlimit": 77933
+        },
+        "cys_l2": {
+          "ms": 33,
+          "rlimit": 77047
+        },
+        "witness_cys": {
+          "ms": 29,
+          "rlimit": 64753
+        },
+        "nread_l1": {
+          "ms": 23,
+          "rlimit": 59234
+        },
+        "nread_runs": {
+          "ms": 28,
+          "rlimit": 57708
+        },
+        "cys_l1": {
+          "ms": 18,
+          "rlimit": 43609
+        },
+        "cyw_runs": {
+          "ms": 21,
+          "rlimit": 43462
+        },
+        "bmn_runs": {
+          "ms": 17,
+          "rlimit": 36892
+        },
+        "planc_runs": {
+          "ms": 15,
+          "rlimit": 35853
+        },
+        "planc_l1": {
+          "ms": 2,
+          "rlimit": 4614
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_bmw::witness_bmw",
+          "ms": 328,
+          "rlimit": 658604,
+          "success": true
+        },
+        {
+          "function": "witness_nread::witness_nread",
+          "ms": 110,
+          "rlimit": 265525,
+          "success": true
+        },
+        {
+          "function": "witness_cyw::witness_cyw",
+          "ms": 70,
+          "rlimit": 192058,
+          "success": true
+        },
+        {
+          "function": "witness_planc::witness_planc",
+          "ms": 63,
+          "rlimit": 152018,
+          "success": true
+        },
+        {
+          "function": "bmw_runs::lemma_w_steps",
+          "ms": 57,
+          "rlimit": 123797,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_step",
+          "ms": 48,
+          "rlimit": 104251,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_ins",
+          "ms": 38,
+          "rlimit": 85808,
+          "success": true
+        },
+        {
+          "function": "cx_f0705::counterexample_f0705",
+          "ms": 37,
+          "rlimit": 77933,
+          "success": true
+        },
+        {
+          "function": "planc_l2::lemma_for",
+          "ms": 30,
+          "rlimit": 65592,
+          "success": true
+        },
+        {
+          "function": "witness_cys::witness_cys",
+          "ms": 29,
+          "rlimit": 64753,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "bmn_l2::lemma_search"
+      ],
+      "functions_checked": 118,
+      "max_function_rlimit": 658604,
+      "json_sha256": "c04d696b5688a6752c581f244ec68f8beeb4716d74a77c13f876c26e732c5c41",
+      "module": "07",
+      "finding": "F-0705",
+      "expected": "src/bmn_l2.rs",
+      "counterexample": "cx_f0705::counterexample_f0705",
+      "what": "Info answers graph \"\" for an index with no graph subscript, read as the default graph (BM25Index.cls:612; vector.py:164-185)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f0707_no_scope_check": {
+      "tag": "control_f0707_no_scope_check",
+      "features": "control_f0707_no_scope_check",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f0707_no_scope_check -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1d/r2/control_f0707_no_scope_check.log",
+      "json": "$RUN_DIR/proofs-d1d/r2/control_f0707_no_scope_check.json",
+      "wall_seconds": 2.08,
+      "max_rss_kb": 474200,
+      "error_locations": [
+        "src/bmn_l2.rs:180"
+      ],
+      "resource_limit": false,
+      "verified": 117,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1932,
+      "smt_run_ms": 1636,
+      "rlimit_total": 3642985,
+      "modules": {
+        "witness_bmw": {
+          "ms": 321,
+          "rlimit": 658604
+        },
+        "bmw_l2": {
+          "ms": 229,
+          "rlimit": 509907
+        },
+        "planc_l2": {
+          "ms": 129,
+          "rlimit": 308025
+        },
+        "witness_nread": {
+          "ms": 125,
+          "rlimit": 265525
+        },
+        "nread_l2": {
+          "ms": 96,
+          "rlimit": 220279
+        },
+        "cyw_l2": {
+          "ms": 104,
+          "rlimit": 214935
+        },
+        "bmn_l2": {
+          "ms": 87,
+          "rlimit": 204571
+        },
+        "witness_cyw": {
+          "ms": 72,
+          "rlimit": 192058
+        },
+        "witness_planc": {
+          "ms": 65,
+          "rlimit": 152018
+        },
+        "bmw_runs": {
+          "ms": 55,
+          "rlimit": 123797
+        },
+        "cyw_l1": {
+          "ms": 42,
+          "rlimit": 97518
+        },
+        "bmn_l1": {
+          "ms": 38,
+          "rlimit": 93326
+        },
+        "bmw_l1": {
+          "ms": 37,
+          "rlimit": 91098
+        },
+        "cx_f0707": {
+          "ms": 42,
+          "rlimit": 88152
+        },
+        "cys_l2": {
+          "ms": 32,
+          "rlimit": 77047
+        },
+        "witness_cys": {
+          "ms": 31,
+          "rlimit": 64753
+        },
+        "nread_l1": {
+          "ms": 22,
+          "rlimit": 59234
+        },
+        "nread_runs": {
+          "ms": 23,
+          "rlimit": 57708
+        },
+        "cys_l1": {
+          "ms": 18,
+          "rlimit": 43609
+        },
+        "cyw_runs": {
+          "ms": 20,
+          "rlimit": 43462
+        },
+        "bmn_runs": {
+          "ms": 16,
+          "rlimit": 36892
+        },
+        "planc_runs": {
+          "ms": 18,
+          "rlimit": 35853
+        },
+        "planc_l1": {
+          "ms": 2,
+          "rlimit": 4614
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_bmw::witness_bmw",
+          "ms": 321,
+          "rlimit": 658604,
+          "success": true
+        },
+        {
+          "function": "witness_nread::witness_nread",
+          "ms": 125,
+          "rlimit": 265525,
+          "success": true
+        },
+        {
+          "function": "witness_cyw::witness_cyw",
+          "ms": 72,
+          "rlimit": 192058,
+          "success": true
+        },
+        {
+          "function": "witness_planc::witness_planc",
+          "ms": 65,
+          "rlimit": 152018,
+          "success": true
+        },
+        {
+          "function": "bmw_runs::lemma_w_steps",
+          "ms": 55,
+          "rlimit": 123797,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_step",
+          "ms": 49,
+          "rlimit": 104251,
+          "success": true
+        },
+        {
+          "function": "cx_f0707::counterexample_f0707",
+          "ms": 42,
+          "rlimit": 88152,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_ins",
+          "ms": 42,
+          "rlimit": 85808,
+          "success": true
+        },
+        {
+          "function": "planc_l2::lemma_for",
+          "ms": 33,
+          "rlimit": 65592,
+          "success": true
+        },
+        {
+          "function": "witness_cys::witness_cys",
+          "ms": 31,
+          "rlimit": 64753,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "bmn_l2::lemma_search"
+      ],
+      "functions_checked": 118,
+      "max_function_rlimit": 658604,
+      "json_sha256": "fa1158735068d938e17f5d9c82492a032f311801a520d99a642f07d005654019",
+      "module": "07",
+      "finding": "F-0707",
+      "expected": "src/bmn_l2.rs",
+      "counterexample": "cx_f0707::counterexample_f0707",
+      "what": "ivg.bm25.search under USE GRAPH answers from another graph's index (translator.py:3133-3134, 3283-3292)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f0702_erase_keeps_index": {
+      "tag": "control_f0702_erase_keeps_index",
+      "features": "control_f0702_erase_keeps_index",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f0702_erase_keeps_index -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1d/r2/control_f0702_erase_keeps_index.log",
+      "json": "$RUN_DIR/proofs-d1d/r2/control_f0702_erase_keeps_index.json",
+      "wall_seconds": 2.08,
+      "max_rss_kb": 473792,
+      "error_locations": [
+        "src/bmn_l2.rs:188"
+      ],
+      "resource_limit": false,
+      "verified": 117,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1928,
+      "smt_run_ms": 1608,
+      "rlimit_total": 3600682,
+      "modules": {
+        "witness_bmw": {
+          "ms": 342,
+          "rlimit": 658604
+        },
+        "bmw_l2": {
+          "ms": 232,
+          "rlimit": 509907
+        },
+        "planc_l2": {
+          "ms": 106,
+          "rlimit": 308025
+        },
+        "witness_nread": {
+          "ms": 94,
+          "rlimit": 265525
+        },
+        "nread_l2": {
+          "ms": 92,
+          "rlimit": 220279
+        },
+        "cyw_l2": {
+          "ms": 93,
+          "rlimit": 214935
+        },
+        "bmn_l2": {
+          "ms": 85,
+          "rlimit": 201332
+        },
+        "witness_cyw": {
+          "ms": 100,
+          "rlimit": 192058
+        },
+        "witness_planc": {
+          "ms": 68,
+          "rlimit": 152018
+        },
+        "bmw_runs": {
+          "ms": 58,
+          "rlimit": 123797
+        },
+        "cyw_l1": {
+          "ms": 42,
+          "rlimit": 97518
+        },
+        "bmn_l1": {
+          "ms": 40,
+          "rlimit": 93326
+        },
+        "bmw_l1": {
+          "ms": 40,
+          "rlimit": 91098
+        },
+        "cys_l2": {
+          "ms": 32,
+          "rlimit": 77047
+        },
+        "witness_cys": {
+          "ms": 30,
+          "rlimit": 64753
+        },
+        "nread_l1": {
+          "ms": 24,
+          "rlimit": 59234
+        },
+        "cx_f0702": {
+          "ms": 26,
+          "rlimit": 58366
+        },
+        "nread_runs": {
+          "ms": 25,
+          "rlimit": 57708
+        },
+        "cys_l1": {
+          "ms": 18,
+          "rlimit": 43609
+        },
+        "cyw_runs": {
+          "ms": 21,
+          "rlimit": 43462
+        },
+        "planc_runs": {
+          "ms": 17,
+          "rlimit": 35853
+        },
+        "bmn_runs": {
+          "ms": 13,
+          "rlimit": 27614
+        },
+        "planc_l1": {
+          "ms": 2,
+          "rlimit": 4614
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_bmw::witness_bmw",
+          "ms": 342,
+          "rlimit": 658604,
+          "success": true
+        },
+        {
+          "function": "witness_nread::witness_nread",
+          "ms": 94,
+          "rlimit": 265525,
+          "success": true
+        },
+        {
+          "function": "witness_cyw::witness_cyw",
+          "ms": 100,
+          "rlimit": 192058,
+          "success": true
+        },
+        {
+          "function": "witness_planc::witness_planc",
+          "ms": 68,
+          "rlimit": 152018,
+          "success": true
+        },
+        {
+          "function": "bmw_runs::lemma_w_steps",
+          "ms": 58,
+          "rlimit": 123797,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_step",
+          "ms": 46,
+          "rlimit": 104251,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_ins",
+          "ms": 39,
+          "rlimit": 85808,
+          "success": true
+        },
+        {
+          "function": "planc_l2::lemma_for",
+          "ms": 32,
+          "rlimit": 65592,
+          "success": true
+        },
+        {
+          "function": "witness_cys::witness_cys",
+          "ms": 30,
+          "rlimit": 64753,
+          "success": true
+        },
+        {
+          "function": "cx_f0702::counterexample_f0702",
+          "ms": 26,
+          "rlimit": 58366,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "bmn_l2::lemma_erase"
+      ],
+      "functions_checked": 118,
+      "max_function_rlimit": 658604,
+      "json_sha256": "4d5a8a1c5206556a1e4585ef67efa599d1d09758d0d1eaad106b1a9b957b4195",
+      "module": "07",
+      "finding": "F-0702",
+      "expected": "src/bmn_l2.rs",
+      "counterexample": "cx_f0702::counterexample_f0702",
+      "what": "a graph erasure leaves the BM25 indexes built for the graph (Eraser.cls:138-147; GraphStores.cls:26-133)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f0801_ttl_window": {
+      "tag": "control_f0801_ttl_window",
+      "features": "control_f0801_ttl_window",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f0801_ttl_window -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1d/r2/control_f0801_ttl_window.log",
+      "json": "$RUN_DIR/proofs-d1d/r2/control_f0801_ttl_window.json",
+      "wall_seconds": 2.04,
+      "max_rss_kb": 473564,
+      "error_locations": [
+        "src/cyw_l2.rs:154"
+      ],
+      "resource_limit": false,
+      "verified": 117,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1888,
+      "smt_run_ms": 1611,
+      "rlimit_total": 3582651,
+      "modules": {
+        "witness_bmw": {
+          "ms": 324,
+          "rlimit": 658604
+        },
+        "bmw_l2": {
+          "ms": 231,
+          "rlimit": 509907
+        },
+        "planc_l2": {
+          "ms": 108,
+          "rlimit": 308025
+        },
+        "witness_nread": {
+          "ms": 99,
+          "rlimit": 265525
+        },
+        "nread_l2": {
+          "ms": 90,
+          "rlimit": 220279
+        },
+        "cyw_l2": {
+          "ms": 131,
+          "rlimit": 209319
+        },
+        "bmn_l2": {
+          "ms": 86,
+          "rlimit": 207524
+        },
+        "witness_bmn": {
+          "ms": 75,
+          "rlimit": 165858
+        },
+        "witness_planc": {
+          "ms": 66,
+          "rlimit": 152018
+        },
+        "bmw_runs": {
+          "ms": 58,
+          "rlimit": 123797
+        },
+        "cyw_l1": {
+          "ms": 38,
+          "rlimit": 97518
+        },
+        "bmn_l1": {
+          "ms": 37,
+          "rlimit": 93326
+        },
+        "bmw_l1": {
+          "ms": 38,
+          "rlimit": 91098
+        },
+        "cys_l2": {
+          "ms": 32,
+          "rlimit": 77047
+        },
+        "witness_cys": {
+          "ms": 30,
+          "rlimit": 64753
+        },
+        "nread_l1": {
+          "ms": 23,
+          "rlimit": 59234
+        },
+        "nread_runs": {
+          "ms": 28,
+          "rlimit": 57708
+        },
+        "cx_f0801_ttl": {
+          "ms": 26,
+          "rlimit": 51366
+        },
+        "cyw_runs": {
+          "ms": 24,
+          "rlimit": 48777
+        },
+        "cys_l1": {
+          "ms": 18,
+          "rlimit": 43609
+        },
+        "bmn_runs": {
+          "ms": 18,
+          "rlimit": 36892
+        },
+        "planc_runs": {
+          "ms": 18,
+          "rlimit": 35853
+        },
+        "planc_l1": {
+          "ms": 2,
+          "rlimit": 4614
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_bmw::witness_bmw",
+          "ms": 324,
+          "rlimit": 658604,
+          "success": true
+        },
+        {
+          "function": "witness_nread::witness_nread",
+          "ms": 99,
+          "rlimit": 265525,
+          "success": true
+        },
+        {
+          "function": "witness_bmn::witness_bmn",
+          "ms": 75,
+          "rlimit": 165858,
+          "success": true
+        },
+        {
+          "function": "witness_planc::witness_planc",
+          "ms": 66,
+          "rlimit": 152018,
+          "success": true
+        },
+        {
+          "function": "bmw_runs::lemma_w_steps",
+          "ms": 58,
+          "rlimit": 123797,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_step",
+          "ms": 45,
+          "rlimit": 104251,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_ins",
+          "ms": 41,
+          "rlimit": 85808,
+          "success": true
+        },
+        {
+          "function": "planc_l2::lemma_for",
+          "ms": 33,
+          "rlimit": 65592,
+          "success": true
+        },
+        {
+          "function": "witness_cys::witness_cys",
+          "ms": 30,
+          "rlimit": 64753,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_del",
+          "ms": 27,
+          "rlimit": 57997,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "cyw_l2::lemma_exec"
+      ],
+      "functions_checked": 118,
+      "max_function_rlimit": 658604,
+      "json_sha256": "a352b83b00c9e4f2f53c5ef205cd6f15d19518e48bcaf73084ab8d10f82dd097",
+      "module": "08",
+      "finding": "F-0801 (TTL window)",
+      "expected": "src/cyw_l2.rs",
+      "counterexample": "cx_f0801_ttl::counterexample_f0801_ttl",
+      "what": "the ledger guard answers from Meta cached for 5 s: a Cypher write commits after strict mode was set (guard.py:20, 38-41; query.py:2299-2301)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f0801_fail_open": {
+      "tag": "control_f0801_fail_open",
+      "features": "control_f0801_fail_open",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f0801_fail_open -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1d/r2/control_f0801_fail_open.log",
+      "json": "$RUN_DIR/proofs-d1d/r2/control_f0801_fail_open.json",
+      "wall_seconds": 2.04,
+      "max_rss_kb": 473076,
+      "error_locations": [
+        "src/cyw_l2.rs:154"
+      ],
+      "resource_limit": false,
+      "verified": 117,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1883,
+      "smt_run_ms": 1592,
+      "rlimit_total": 3554706,
+      "modules": {
+        "witness_bmw": {
+          "ms": 321,
+          "rlimit": 658604
+        },
+        "bmw_l2": {
+          "ms": 229,
+          "rlimit": 509907
+        },
+        "planc_l2": {
+          "ms": 106,
+          "rlimit": 308025
+        },
+        "witness_nread": {
+          "ms": 106,
+          "rlimit": 265525
+        },
+        "nread_l2": {
+          "ms": 93,
+          "rlimit": 220279
+        },
+        "bmn_l2": {
+          "ms": 86,
+          "rlimit": 207524
+        },
+        "cyw_l2": {
+          "ms": 115,
+          "rlimit": 204278
+        },
+        "witness_bmn": {
+          "ms": 75,
+          "rlimit": 165858
+        },
+        "witness_planc": {
+          "ms": 69,
+          "rlimit": 152018
+        },
+        "bmw_runs": {
+          "ms": 58,
+          "rlimit": 123797
+        },
+        "cyw_l1": {
+          "ms": 40,
+          "rlimit": 97518
+        },
+        "bmn_l1": {
+          "ms": 38,
+          "rlimit": 93326
+        },
+        "bmw_l1": {
+          "ms": 42,
+          "rlimit": 91098
+        },
+        "cys_l2": {
+          "ms": 34,
+          "rlimit": 77047
+        },
+        "witness_cys": {
+          "ms": 29,
+          "rlimit": 64753
+        },
+        "nread_l1": {
+          "ms": 24,
+          "rlimit": 59234
+        },
+        "nread_runs": {
+          "ms": 25,
+          "rlimit": 57708
+        },
+        "cys_l1": {
+          "ms": 18,
+          "rlimit": 43609
+        },
+        "cyw_runs": {
+          "ms": 20,
+          "rlimit": 42475
+        },
+        "bmn_runs": {
+          "ms": 17,
+          "rlimit": 36892
+        },
+        "planc_runs": {
+          "ms": 19,
+          "rlimit": 35853
+        },
+        "cx_f0801_failopen": {
+          "ms": 16,
+          "rlimit": 34764
+        },
+        "planc_l1": {
+          "ms": 2,
+          "rlimit": 4614
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_bmw::witness_bmw",
+          "ms": 321,
+          "rlimit": 658604,
+          "success": true
+        },
+        {
+          "function": "witness_nread::witness_nread",
+          "ms": 106,
+          "rlimit": 265525,
+          "success": true
+        },
+        {
+          "function": "witness_bmn::witness_bmn",
+          "ms": 75,
+          "rlimit": 165858,
+          "success": true
+        },
+        {
+          "function": "witness_planc::witness_planc",
+          "ms": 69,
+          "rlimit": 152018,
+          "success": true
+        },
+        {
+          "function": "bmw_runs::lemma_w_steps",
+          "ms": 58,
+          "rlimit": 123797,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_step",
+          "ms": 47,
+          "rlimit": 104251,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_ins",
+          "ms": 38,
+          "rlimit": 85808,
+          "success": true
+        },
+        {
+          "function": "planc_l2::lemma_for",
+          "ms": 33,
+          "rlimit": 65592,
+          "success": true
+        },
+        {
+          "function": "witness_cys::witness_cys",
+          "ms": 29,
+          "rlimit": 64753,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_del",
+          "ms": 27,
+          "rlimit": 57997,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "cyw_l2::lemma_exec"
+      ],
+      "functions_checked": 118,
+      "max_function_rlimit": 658604,
+      "json_sha256": "705237eb7ac4982e83a6ce74849a87687e7342b0bb561a7557d482cd8d060d65",
+      "module": "08",
+      "finding": "F-0801 (fail-open)",
+      "expected": "src/cyw_l2.rs",
+      "counterexample": "cx_f0801_failopen::counterexample_f0801_failopen",
+      "what": "a guard probe that cannot run reads never-enabled: a Cypher write commits under strict mode (guard.py:42-56)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f0805_literal_insert_unguarded": {
+      "tag": "control_f0805_literal_insert_unguarded",
+      "features": "control_f0805_literal_insert_unguarded",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f0805_literal_insert_unguarded -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1d/r2/control_f0805_literal_insert_unguarded.log",
+      "json": "$RUN_DIR/proofs-d1d/r2/control_f0805_literal_insert_unguarded.json",
+      "wall_seconds": 2.02,
+      "max_rss_kb": 472980,
+      "error_locations": [
+        "src/cyw_l2.rs:177"
+      ],
+      "resource_limit": false,
+      "verified": 117,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1866,
+      "smt_run_ms": 1560,
+      "rlimit_total": 3591574,
+      "modules": {
+        "witness_bmw": {
+          "ms": 312,
+          "rlimit": 658604
+        },
+        "bmw_l2": {
+          "ms": 238,
+          "rlimit": 509907
+        },
+        "planc_l2": {
+          "ms": 112,
+          "rlimit": 308025
+        },
+        "witness_nread": {
+          "ms": 96,
+          "rlimit": 265525
+        },
+        "cyw_l2": {
+          "ms": 103,
+          "rlimit": 228246
+        },
+        "nread_l2": {
+          "ms": 91,
+          "rlimit": 220279
+        },
+        "bmn_l2": {
+          "ms": 86,
+          "rlimit": 207524
+        },
+        "witness_bmn": {
+          "ms": 63,
+          "rlimit": 165858
+        },
+        "witness_planc": {
+          "ms": 64,
+          "rlimit": 152018
+        },
+        "bmw_runs": {
+          "ms": 57,
+          "rlimit": 123797
+        },
+        "cyw_l1": {
+          "ms": 41,
+          "rlimit": 97518
+        },
+        "bmn_l1": {
+          "ms": 35,
+          "rlimit": 93326
+        },
+        "bmw_l1": {
+          "ms": 41,
+          "rlimit": 91098
+        },
+        "cys_l2": {
+          "ms": 37,
+          "rlimit": 77047
+        },
+        "witness_cys": {
+          "ms": 25,
+          "rlimit": 64753
+        },
+        "nread_l1": {
+          "ms": 21,
+          "rlimit": 59234
+        },
+        "nread_runs": {
+          "ms": 27,
+          "rlimit": 57708
+        },
+        "cyw_runs": {
+          "ms": 23,
+          "rlimit": 45807
+        },
+        "cx_f0805": {
+          "ms": 24,
+          "rlimit": 44332
+        },
+        "cys_l1": {
+          "ms": 18,
+          "rlimit": 43609
+        },
+        "bmn_runs": {
+          "ms": 16,
+          "rlimit": 36892
+        },
+        "planc_runs": {
+          "ms": 19,
+          "rlimit": 35853
+        },
+        "planc_l1": {
+          "ms": 2,
+          "rlimit": 4614
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_bmw::witness_bmw",
+          "ms": 312,
+          "rlimit": 658604,
+          "success": true
+        },
+        {
+          "function": "witness_nread::witness_nread",
+          "ms": 96,
+          "rlimit": 265525,
+          "success": true
+        },
+        {
+          "function": "witness_bmn::witness_bmn",
+          "ms": 63,
+          "rlimit": 165858,
+          "success": true
+        },
+        {
+          "function": "witness_planc::witness_planc",
+          "ms": 64,
+          "rlimit": 152018,
+          "success": true
+        },
+        {
+          "function": "bmw_runs::lemma_w_steps",
+          "ms": 57,
+          "rlimit": 123797,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_step",
+          "ms": 47,
+          "rlimit": 104251,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_ins",
+          "ms": 40,
+          "rlimit": 85808,
+          "success": true
+        },
+        {
+          "function": "planc_l2::lemma_for",
+          "ms": 33,
+          "rlimit": 65592,
+          "success": true
+        },
+        {
+          "function": "witness_cys::witness_cys",
+          "ms": 25,
+          "rlimit": 64753,
+          "success": true
+        },
+        {
+          "function": "cyw_l2::lemma_exec",
+          "ms": 27,
+          "rlimit": 58264,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "cyw_l2::lemma_refuse"
+      ],
+      "functions_checked": 118,
+      "max_function_rlimit": 658604,
+      "json_sha256": "013e5623233b9570cae1b7b1be334ac7130f03af067bd6d5658763bfcecb681b",
+      "module": "08",
+      "finding": "F-0805",
+      "expected": "src/cyw_l2.rs",
+      "counterexample": "cx_f0805::counterexample_f0805",
+      "what": "CREATE between literal endpoints is a bare INSERT: an existing relationship fails the whole query (translator.py:10212-10248)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_fc0803_top1_copy": {
+      "tag": "control_fc0803_top1_copy",
+      "features": "control_fc0803_top1_copy",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_fc0803_top1_copy -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1d/r2/control_fc0803_top1_copy.log",
+      "json": "$RUN_DIR/proofs-d1d/r2/control_fc0803_top1_copy.json",
+      "wall_seconds": 2.04,
+      "max_rss_kb": 472764,
+      "error_locations": [
+        "src/cyw_l2.rs:160"
+      ],
+      "resource_limit": false,
+      "verified": 117,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1893,
+      "smt_run_ms": 1588,
+      "rlimit_total": 3627128,
+      "modules": {
+        "witness_bmw": {
+          "ms": 302,
+          "rlimit": 658604
+        },
+        "bmw_l2": {
+          "ms": 233,
+          "rlimit": 509907
+        },
+        "planc_l2": {
+          "ms": 101,
+          "rlimit": 308025
+        },
+        "witness_nread": {
+          "ms": 109,
+          "rlimit": 265525
+        },
+        "nread_l2": {
+          "ms": 89,
+          "rlimit": 220279
+        },
+        "bmn_l2": {
+          "ms": 86,
+          "rlimit": 207524
+        },
+        "cyw_l2": {
+          "ms": 97,
+          "rlimit": 189630
+        },
+        "witness_bmn": {
+          "ms": 74,
+          "rlimit": 165858
+        },
+        "witness_planc": {
+          "ms": 64,
+          "rlimit": 152018
+        },
+        "bmw_runs": {
+          "ms": 54,
+          "rlimit": 123797
+        },
+        "cx_fc0803": {
+          "ms": 59,
+          "rlimit": 121003
+        },
+        "cyw_l1": {
+          "ms": 43,
+          "rlimit": 97518
+        },
+        "bmn_l1": {
+          "ms": 39,
+          "rlimit": 93326
+        },
+        "bmw_l1": {
+          "ms": 40,
+          "rlimit": 91098
+        },
+        "cys_l2": {
+          "ms": 32,
+          "rlimit": 77047
+        },
+        "witness_cys": {
+          "ms": 30,
+          "rlimit": 64753
+        },
+        "nread_l1": {
+          "ms": 25,
+          "rlimit": 59234
+        },
+        "nread_runs": {
+          "ms": 26,
+          "rlimit": 57708
+        },
+        "cys_l1": {
+          "ms": 17,
+          "rlimit": 43609
+        },
+        "cyw_runs": {
+          "ms": 20,
+          "rlimit": 43306
+        },
+        "bmn_runs": {
+          "ms": 17,
+          "rlimit": 36892
+        },
+        "planc_runs": {
+          "ms": 19,
+          "rlimit": 35853
+        },
+        "planc_l1": {
+          "ms": 2,
+          "rlimit": 4614
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_bmw::witness_bmw",
+          "ms": 302,
+          "rlimit": 658604,
+          "success": true
+        },
+        {
+          "function": "witness_nread::witness_nread",
+          "ms": 109,
+          "rlimit": 265525,
+          "success": true
+        },
+        {
+          "function": "witness_bmn::witness_bmn",
+          "ms": 74,
+          "rlimit": 165858,
+          "success": true
+        },
+        {
+          "function": "witness_planc::witness_planc",
+          "ms": 64,
+          "rlimit": 152018,
+          "success": true
+        },
+        {
+          "function": "bmw_runs::lemma_w_steps",
+          "ms": 54,
+          "rlimit": 123797,
+          "success": true
+        },
+        {
+          "function": "cx_fc0803::counterexample_fc0803",
+          "ms": 59,
+          "rlimit": 121003,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_step",
+          "ms": 47,
+          "rlimit": 104251,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_ins",
+          "ms": 44,
+          "rlimit": 85808,
+          "success": true
+        },
+        {
+          "function": "planc_l2::lemma_for",
+          "ms": 26,
+          "rlimit": 65592,
+          "success": true
+        },
+        {
+          "function": "witness_cys::witness_cys",
+          "ms": 30,
+          "rlimit": 64753,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "cyw_l2::lemma_exec"
+      ],
+      "functions_checked": 118,
+      "max_function_rlimit": 658604,
+      "json_sha256": "eeb0133d9c51c224a13d6febad7e4c2f0da8eddaf9167fe87796de342d3c42ab",
+      "module": "08",
+      "finding": "F-C0803",
+      "expected": "src/cyw_l2.rs",
+      "counterexample": "cx_fc0803::counterexample_fc0803",
+      "what": "MERGE ... ON CREATE SET r = a copies (SELECT TOP 1 a.node_id ...) onto every merged relationship (translator.py:12362-12395)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f0810_null_keeps_key": {
+      "tag": "control_f0810_null_keeps_key",
+      "features": "control_f0810_null_keeps_key",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f0810_null_keeps_key -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1d/r2/control_f0810_null_keeps_key.log",
+      "json": "$RUN_DIR/proofs-d1d/r2/control_f0810_null_keeps_key.json",
+      "wall_seconds": 2.09,
+      "max_rss_kb": 471664,
+      "error_locations": [
+        "src/cyw_l2.rs:164"
+      ],
+      "resource_limit": false,
+      "verified": 117,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1941,
+      "smt_run_ms": 1653,
+      "rlimit_total": 3595039,
+      "modules": {
+        "witness_bmw": {
+          "ms": 349,
+          "rlimit": 658604
+        },
+        "bmw_l2": {
+          "ms": 237,
+          "rlimit": 509907
+        },
+        "planc_l2": {
+          "ms": 105,
+          "rlimit": 308025
+        },
+        "witness_nread": {
+          "ms": 138,
+          "rlimit": 265525
+        },
+        "nread_l2": {
+          "ms": 94,
+          "rlimit": 220279
+        },
+        "bmn_l2": {
+          "ms": 86,
+          "rlimit": 207524
+        },
+        "cyw_l2": {
+          "ms": 99,
+          "rlimit": 191854
+        },
+        "witness_bmn": {
+          "ms": 60,
+          "rlimit": 165858
+        },
+        "witness_planc": {
+          "ms": 66,
+          "rlimit": 152018
+        },
+        "bmw_runs": {
+          "ms": 58,
+          "rlimit": 123797
+        },
+        "cyw_l1": {
+          "ms": 41,
+          "rlimit": 97518
+        },
+        "bmn_l1": {
+          "ms": 38,
+          "rlimit": 93326
+        },
+        "bmw_l1": {
+          "ms": 41,
+          "rlimit": 91098
+        },
+        "cx_f0810": {
+          "ms": 46,
+          "rlimit": 88634
+        },
+        "cys_l2": {
+          "ms": 30,
+          "rlimit": 77047
+        },
+        "witness_cys": {
+          "ms": 29,
+          "rlimit": 64753
+        },
+        "nread_l1": {
+          "ms": 23,
+          "rlimit": 59234
+        },
+        "nread_runs": {
+          "ms": 28,
+          "rlimit": 57708
+        },
+        "cys_l1": {
+          "ms": 16,
+          "rlimit": 43609
+        },
+        "cyw_runs": {
+          "ms": 21,
+          "rlimit": 41362
+        },
+        "bmn_runs": {
+          "ms": 17,
+          "rlimit": 36892
+        },
+        "planc_runs": {
+          "ms": 18,
+          "rlimit": 35853
+        },
+        "planc_l1": {
+          "ms": 2,
+          "rlimit": 4614
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_bmw::witness_bmw",
+          "ms": 349,
+          "rlimit": 658604,
+          "success": true
+        },
+        {
+          "function": "witness_nread::witness_nread",
+          "ms": 138,
+          "rlimit": 265525,
+          "success": true
+        },
+        {
+          "function": "witness_bmn::witness_bmn",
+          "ms": 60,
+          "rlimit": 165858,
+          "success": true
+        },
+        {
+          "function": "witness_planc::witness_planc",
+          "ms": 66,
+          "rlimit": 152018,
+          "success": true
+        },
+        {
+          "function": "bmw_runs::lemma_w_steps",
+          "ms": 58,
+          "rlimit": 123797,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_step",
+          "ms": 48,
+          "rlimit": 104251,
+          "success": true
+        },
+        {
+          "function": "cx_f0810::counterexample_f0810",
+          "ms": 46,
+          "rlimit": 88634,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_ins",
+          "ms": 42,
+          "rlimit": 85808,
+          "success": true
+        },
+        {
+          "function": "planc_l2::lemma_for",
+          "ms": 31,
+          "rlimit": 65592,
+          "success": true
+        },
+        {
+          "function": "witness_cys::witness_cys",
+          "ms": 29,
+          "rlimit": 64753,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "cyw_l2::lemma_exec"
+      ],
+      "functions_checked": 118,
+      "max_function_rlimit": 658604,
+      "json_sha256": "480c99788ea669388998a918471e251884cf0ce9093707e837ba28e6c3ea3249",
+      "module": "08",
+      "finding": "F-0810",
+      "expected": "src/cyw_l2.rs",
+      "counterexample": "cx_f0810::counterexample_f0810",
+      "what": "SET n.p = <literal null> updates the row to '' and keeps the key (translator.py:13655-13665)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f0802_shortcut_unscoped": {
+      "tag": "control_f0802_shortcut_unscoped",
+      "features": "control_f0802_shortcut_unscoped",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f0802_shortcut_unscoped -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1d/r2/control_f0802_shortcut_unscoped.log",
+      "json": "$RUN_DIR/proofs-d1d/r2/control_f0802_shortcut_unscoped.json",
+      "wall_seconds": 2.05,
+      "max_rss_kb": 472512,
+      "error_locations": [
+        "src/cys_l2.rs:68"
+      ],
+      "resource_limit": false,
+      "verified": 117,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1900,
+      "smt_run_ms": 1650,
+      "rlimit_total": 3664348,
+      "modules": {
+        "witness_bmw": {
+          "ms": 334,
+          "rlimit": 658604
+        },
+        "bmw_l2": {
+          "ms": 231,
+          "rlimit": 509907
+        },
+        "planc_l2": {
+          "ms": 119,
+          "rlimit": 308025
+        },
+        "witness_nread": {
+          "ms": 92,
+          "rlimit": 265525
+        },
+        "nread_l2": {
+          "ms": 89,
+          "rlimit": 220279
+        },
+        "cyw_l2": {
+          "ms": 96,
+          "rlimit": 214935
+        },
+        "bmn_l2": {
+          "ms": 83,
+          "rlimit": 207524
+        },
+        "witness_cyw": {
+          "ms": 100,
+          "rlimit": 192058
+        },
+        "witness_bmn": {
+          "ms": 74,
+          "rlimit": 165858
+        },
+        "witness_planc": {
+          "ms": 76,
+          "rlimit": 152018
+        },
+        "bmw_runs": {
+          "ms": 58,
+          "rlimit": 123797
+        },
+        "cyw_l1": {
+          "ms": 40,
+          "rlimit": 97518
+        },
+        "bmn_l1": {
+          "ms": 37,
+          "rlimit": 93326
+        },
+        "bmw_l1": {
+          "ms": 41,
+          "rlimit": 91098
+        },
+        "cys_l2": {
+          "ms": 35,
+          "rlimit": 62200
+        },
+        "nread_l1": {
+          "ms": 24,
+          "rlimit": 59234
+        },
+        "nread_runs": {
+          "ms": 25,
+          "rlimit": 57708
+        },
+        "cys_l1": {
+          "ms": 18,
+          "rlimit": 43609
+        },
+        "cyw_runs": {
+          "ms": 22,
+          "rlimit": 43462
+        },
+        "bmn_runs": {
+          "ms": 16,
+          "rlimit": 36892
+        },
+        "planc_runs": {
+          "ms": 19,
+          "rlimit": 35853
+        },
+        "cx_f0802": {
+          "ms": 8,
+          "rlimit": 20304
+        },
+        "planc_l1": {
+          "ms": 2,
+          "rlimit": 4614
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_bmw::witness_bmw",
+          "ms": 334,
+          "rlimit": 658604,
+          "success": true
+        },
+        {
+          "function": "witness_nread::witness_nread",
+          "ms": 92,
+          "rlimit": 265525,
+          "success": true
+        },
+        {
+          "function": "witness_cyw::witness_cyw",
+          "ms": 100,
+          "rlimit": 192058,
+          "success": true
+        },
+        {
+          "function": "witness_bmn::witness_bmn",
+          "ms": 74,
+          "rlimit": 165858,
+          "success": true
+        },
+        {
+          "function": "witness_planc::witness_planc",
+          "ms": 76,
+          "rlimit": 152018,
+          "success": true
+        },
+        {
+          "function": "bmw_runs::lemma_w_steps",
+          "ms": 58,
+          "rlimit": 123797,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_step",
+          "ms": 47,
+          "rlimit": 104251,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_ins",
+          "ms": 41,
+          "rlimit": 85808,
+          "success": true
+        },
+        {
+          "function": "planc_l2::lemma_for",
+          "ms": 34,
+          "rlimit": 65592,
+          "success": true
+        },
+        {
+          "function": "cyw_l2::lemma_exec",
+          "ms": 29,
+          "rlimit": 58264,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "cys_l2::lemma_step"
+      ],
+      "functions_checked": 118,
+      "max_function_rlimit": 658604,
+      "json_sha256": "f3c957f24e70b24cabe240397b9632a7b7de65c587982d1b2c71740b7606460a",
+      "module": "08",
+      "finding": "F-0802",
+      "expected": "src/cys_l2.rs",
+      "counterexample": "cx_f0802::counterexample_f0802",
+      "what": "the count UNION text shortcut counts every graph's rows under USE GRAPH (query.py:1843-1856)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f0816_dblabels_unscoped": {
+      "tag": "control_f0816_dblabels_unscoped",
+      "features": "control_f0816_dblabels_unscoped",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f0816_dblabels_unscoped -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1d/r2/control_f0816_dblabels_unscoped.log",
+      "json": "$RUN_DIR/proofs-d1d/r2/control_f0816_dblabels_unscoped.json",
+      "wall_seconds": 2.03,
+      "max_rss_kb": 472732,
+      "error_locations": [
+        "src/cys_l2.rs:66"
+      ],
+      "resource_limit": false,
+      "verified": 117,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1882,
+      "smt_run_ms": 1583,
+      "rlimit_total": 3692988,
+      "modules": {
+        "witness_bmw": {
+          "ms": 309,
+          "rlimit": 658604
+        },
+        "bmw_l2": {
+          "ms": 228,
+          "rlimit": 509907
+        },
+        "planc_l2": {
+          "ms": 109,
+          "rlimit": 308025
+        },
+        "witness_nread": {
+          "ms": 92,
+          "rlimit": 265525
+        },
+        "nread_l2": {
+          "ms": 94,
+          "rlimit": 220279
+        },
+        "cyw_l2": {
+          "ms": 94,
+          "rlimit": 214935
+        },
+        "bmn_l2": {
+          "ms": 84,
+          "rlimit": 207524
+        },
+        "witness_cyw": {
+          "ms": 70,
+          "rlimit": 192058
+        },
+        "witness_bmn": {
+          "ms": 68,
+          "rlimit": 165858
+        },
+        "witness_planc": {
+          "ms": 65,
+          "rlimit": 152018
+        },
+        "bmw_runs": {
+          "ms": 57,
+          "rlimit": 123797
+        },
+        "cyw_l1": {
+          "ms": 40,
+          "rlimit": 97518
+        },
+        "bmn_l1": {
+          "ms": 39,
+          "rlimit": 93326
+        },
+        "bmw_l1": {
+          "ms": 42,
+          "rlimit": 91098
+        },
+        "cys_l2": {
+          "ms": 38,
+          "rlimit": 78815
+        },
+        "nread_l1": {
+          "ms": 24,
+          "rlimit": 59234
+        },
+        "nread_runs": {
+          "ms": 27,
+          "rlimit": 57708
+        },
+        "cys_l1": {
+          "ms": 17,
+          "rlimit": 43609
+        },
+        "cyw_runs": {
+          "ms": 21,
+          "rlimit": 43462
+        },
+        "bmn_runs": {
+          "ms": 18,
+          "rlimit": 36892
+        },
+        "planc_runs": {
+          "ms": 19,
+          "rlimit": 35853
+        },
+        "cx_f0816": {
+          "ms": 15,
+          "rlimit": 32329
+        },
+        "planc_l1": {
+          "ms": 2,
+          "rlimit": 4614
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_bmw::witness_bmw",
+          "ms": 309,
+          "rlimit": 658604,
+          "success": true
+        },
+        {
+          "function": "witness_nread::witness_nread",
+          "ms": 92,
+          "rlimit": 265525,
+          "success": true
+        },
+        {
+          "function": "witness_cyw::witness_cyw",
+          "ms": 70,
+          "rlimit": 192058,
+          "success": true
+        },
+        {
+          "function": "witness_bmn::witness_bmn",
+          "ms": 68,
+          "rlimit": 165858,
+          "success": true
+        },
+        {
+          "function": "witness_planc::witness_planc",
+          "ms": 65,
+          "rlimit": 152018,
+          "success": true
+        },
+        {
+          "function": "bmw_runs::lemma_w_steps",
+          "ms": 57,
+          "rlimit": 123797,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_step",
+          "ms": 42,
+          "rlimit": 104251,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_ins",
+          "ms": 38,
+          "rlimit": 85808,
+          "success": true
+        },
+        {
+          "function": "planc_l2::lemma_for",
+          "ms": 33,
+          "rlimit": 65592,
+          "success": true
+        },
+        {
+          "function": "cyw_l2::lemma_exec",
+          "ms": 27,
+          "rlimit": 58264,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "cys_l2::lemma_step"
+      ],
+      "functions_checked": 118,
+      "max_function_rlimit": 658604,
+      "json_sha256": "6eb05195f567d7e49c42d66f54b9b5039bc6f016a0367df4a588e667d2b9ea55",
+      "module": "08",
+      "finding": "F-0816",
+      "expected": "src/cys_l2.rs",
+      "counterexample": "cx_f0816::counterexample_f0816",
+      "what": "db.labels() lists every graph's labels under USE GRAPH (engine.py:1313-1318)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f0818_vlp_crosses_graphs": {
+      "tag": "control_f0818_vlp_crosses_graphs",
+      "features": "control_f0818_vlp_crosses_graphs",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f0818_vlp_crosses_graphs -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1d/r2/control_f0818_vlp_crosses_graphs.log",
+      "json": "$RUN_DIR/proofs-d1d/r2/control_f0818_vlp_crosses_graphs.json",
+      "wall_seconds": 2.07,
+      "max_rss_kb": 473152,
+      "error_locations": [
+        "src/cys_l2.rs:70"
+      ],
+      "resource_limit": false,
+      "verified": 117,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1912,
+      "smt_run_ms": 1638,
+      "rlimit_total": 3709084,
+      "modules": {
+        "witness_bmw": {
+          "ms": 319,
+          "rlimit": 658604
+        },
+        "bmw_l2": {
+          "ms": 227,
+          "rlimit": 509907
+        },
+        "planc_l2": {
+          "ms": 118,
+          "rlimit": 308025
+        },
+        "witness_nread": {
+          "ms": 108,
+          "rlimit": 265525
+        },
+        "nread_l2": {
+          "ms": 92,
+          "rlimit": 220279
+        },
+        "cyw_l2": {
+          "ms": 94,
+          "rlimit": 214935
+        },
+        "bmn_l2": {
+          "ms": 86,
+          "rlimit": 207524
+        },
+        "witness_cyw": {
+          "ms": 78,
+          "rlimit": 192058
+        },
+        "witness_bmn": {
+          "ms": 74,
+          "rlimit": 165858
+        },
+        "witness_planc": {
+          "ms": 66,
+          "rlimit": 152018
+        },
+        "bmw_runs": {
+          "ms": 58,
+          "rlimit": 123797
+        },
+        "cyw_l1": {
+          "ms": 39,
+          "rlimit": 97518
+        },
+        "bmn_l1": {
+          "ms": 39,
+          "rlimit": 93326
+        },
+        "bmw_l1": {
+          "ms": 41,
+          "rlimit": 91098
+        },
+        "cys_l2": {
+          "ms": 36,
+          "rlimit": 63672
+        },
+        "cx_f0818": {
+          "ms": 28,
+          "rlimit": 63568
+        },
+        "nread_l1": {
+          "ms": 25,
+          "rlimit": 59234
+        },
+        "nread_runs": {
+          "ms": 27,
+          "rlimit": 57708
+        },
+        "cys_l1": {
+          "ms": 16,
+          "rlimit": 43609
+        },
+        "cyw_runs": {
+          "ms": 21,
+          "rlimit": 43462
+        },
+        "bmn_runs": {
+          "ms": 15,
+          "rlimit": 36892
+        },
+        "planc_runs": {
+          "ms": 19,
+          "rlimit": 35853
+        },
+        "planc_l1": {
+          "ms": 2,
+          "rlimit": 4614
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_bmw::witness_bmw",
+          "ms": 319,
+          "rlimit": 658604,
+          "success": true
+        },
+        {
+          "function": "witness_nread::witness_nread",
+          "ms": 108,
+          "rlimit": 265525,
+          "success": true
+        },
+        {
+          "function": "witness_cyw::witness_cyw",
+          "ms": 78,
+          "rlimit": 192058,
+          "success": true
+        },
+        {
+          "function": "witness_bmn::witness_bmn",
+          "ms": 74,
+          "rlimit": 165858,
+          "success": true
+        },
+        {
+          "function": "witness_planc::witness_planc",
+          "ms": 66,
+          "rlimit": 152018,
+          "success": true
+        },
+        {
+          "function": "bmw_runs::lemma_w_steps",
+          "ms": 58,
+          "rlimit": 123797,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_step",
+          "ms": 47,
+          "rlimit": 104251,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_ins",
+          "ms": 41,
+          "rlimit": 85808,
+          "success": true
+        },
+        {
+          "function": "planc_l2::lemma_for",
+          "ms": 33,
+          "rlimit": 65592,
+          "success": true
+        },
+        {
+          "function": "cx_f0818::counterexample_f0818",
+          "ms": 28,
+          "rlimit": 63568,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "cys_l2::lemma_step"
+      ],
+      "functions_checked": 118,
+      "max_function_rlimit": 658604,
+      "json_sha256": "b6514e4e66db43a2a4533261ccce31c12da7e77b6bf0cd73ef6e33a284b729ca",
+      "module": "08",
+      "finding": "F-0818",
+      "expected": "src/cys_l2.rs",
+      "counterexample": "cx_f0818::counterexample_f0818",
+      "what": "an all-graphs variable-length walk from a WITH-carried start walks every graph (translator.py:15404-15431)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f0901_shared_class_name": {
+      "tag": "control_f0901_shared_class_name",
+      "features": "control_f0901_shared_class_name",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f0901_shared_class_name -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1d/r2/control_f0901_shared_class_name.log",
+      "json": "$RUN_DIR/proofs-d1d/r2/control_f0901_shared_class_name.json",
+      "wall_seconds": 2.07,
+      "max_rss_kb": 473028,
+      "error_locations": [
+        "src/planc_l2.rs:211"
+      ],
+      "resource_limit": false,
+      "verified": 117,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1914,
+      "smt_run_ms": 1658,
+      "rlimit_total": 3795567,
+      "modules": {
+        "witness_bmw": {
+          "ms": 308,
+          "rlimit": 658604
+        },
+        "bmw_l2": {
+          "ms": 230,
+          "rlimit": 509907
+        },
+        "planc_l2": {
+          "ms": 106,
+          "rlimit": 315450
+        },
+        "witness_nread": {
+          "ms": 85,
+          "rlimit": 265525
+        },
+        "nread_l2": {
+          "ms": 95,
+          "rlimit": 220279
+        },
+        "cx_f0901": {
+          "ms": 142,
+          "rlimit": 216571
+        },
+        "cyw_l2": {
+          "ms": 94,
+          "rlimit": 214935
+        },
+        "bmn_l2": {
+          "ms": 88,
+          "rlimit": 207524
+        },
+        "witness_cyw": {
+          "ms": 68,
+          "rlimit": 192058
+        },
+        "witness_bmn": {
+          "ms": 59,
+          "rlimit": 165858
+        },
+        "bmw_runs": {
+          "ms": 57,
+          "rlimit": 123797
+        },
+        "cyw_l1": {
+          "ms": 40,
+          "rlimit": 97518
+        },
+        "bmn_l1": {
+          "ms": 41,
+          "rlimit": 93326
+        },
+        "bmw_l1": {
+          "ms": 40,
+          "rlimit": 91098
+        },
+        "cys_l2": {
+          "ms": 34,
+          "rlimit": 77047
+        },
+        "witness_cys": {
+          "ms": 30,
+          "rlimit": 64753
+        },
+        "nread_l1": {
+          "ms": 24,
+          "rlimit": 59234
+        },
+        "nread_runs": {
+          "ms": 29,
+          "rlimit": 57708
+        },
+        "cys_l1": {
+          "ms": 19,
+          "rlimit": 43609
+        },
+        "cyw_runs": {
+          "ms": 21,
+          "rlimit": 43462
+        },
+        "bmn_runs": {
+          "ms": 16,
+          "rlimit": 36892
+        },
+        "planc_runs": {
+          "ms": 19,
+          "rlimit": 35798
+        },
+        "planc_l1": {
+          "ms": 2,
+          "rlimit": 4614
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_bmw::witness_bmw",
+          "ms": 308,
+          "rlimit": 658604,
+          "success": true
+        },
+        {
+          "function": "witness_nread::witness_nread",
+          "ms": 85,
+          "rlimit": 265525,
+          "success": true
+        },
+        {
+          "function": "cx_f0901::counterexample_f0901",
+          "ms": 142,
+          "rlimit": 216571,
+          "success": true
+        },
+        {
+          "function": "witness_cyw::witness_cyw",
+          "ms": 68,
+          "rlimit": 192058,
+          "success": true
+        },
+        {
+          "function": "witness_bmn::witness_bmn",
+          "ms": 59,
+          "rlimit": 165858,
+          "success": true
+        },
+        {
+          "function": "bmw_runs::lemma_w_steps",
+          "ms": 57,
+          "rlimit": 123797,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_step",
+          "ms": 47,
+          "rlimit": 104251,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_ins",
+          "ms": 41,
+          "rlimit": 85808,
+          "success": true
+        },
+        {
+          "function": "planc_l2::lemma_for",
+          "ms": 27,
+          "rlimit": 65592,
+          "success": true
+        },
+        {
+          "function": "witness_cys::witness_cys",
+          "ms": 30,
+          "rlimit": 64753,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "planc_l2::lemma_bcompile"
+      ],
+      "functions_checked": 118,
+      "max_function_rlimit": 658604,
+      "json_sha256": "5d96d681afa7b1e2710b3e894fde9ec3c24dc8188c561f7bafef4699ca709449",
+      "module": "09",
+      "finding": "F-0901",
+      "expected": "src/planc_l2.rs",
+      "counterexample": "cx_f0901::counterexample_f0901",
+      "what": "a build compiles into IVGC.P<$ZCRC(shape,7)>: a colliding shape's build recompiles the class a reader is running (Gen.cls:69, 183-207)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_fc0901_mark_any_entry": {
+      "tag": "control_fc0901_mark_any_entry",
+      "features": "control_fc0901_mark_any_entry",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_fc0901_mark_any_entry -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1d/r2/control_fc0901_mark_any_entry.log",
+      "json": "$RUN_DIR/proofs-d1d/r2/control_fc0901_mark_any_entry.json",
+      "wall_seconds": 2.06,
+      "max_rss_kb": 471564,
+      "error_locations": [
+        "src/planc_l2.rs:232"
+      ],
+      "resource_limit": false,
+      "verified": 117,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1904,
+      "smt_run_ms": 1651,
+      "rlimit_total": 3767452,
+      "modules": {
+        "witness_bmw": {
+          "ms": 310,
+          "rlimit": 658604
+        },
+        "bmw_l2": {
+          "ms": 236,
+          "rlimit": 509907
+        },
+        "planc_l2": {
+          "ms": 120,
+          "rlimit": 324513
+        },
+        "witness_nread": {
+          "ms": 88,
+          "rlimit": 265525
+        },
+        "nread_l2": {
+          "ms": 88,
+          "rlimit": 220279
+        },
+        "cyw_l2": {
+          "ms": 94,
+          "rlimit": 214935
+        },
+        "bmn_l2": {
+          "ms": 85,
+          "rlimit": 207524
+        },
+        "witness_cyw": {
+          "ms": 72,
+          "rlimit": 192058
+        },
+        "cx_fc0901": {
+          "ms": 111,
+          "rlimit": 179338
+        },
+        "witness_bmn": {
+          "ms": 76,
+          "rlimit": 165858
+        },
+        "bmw_runs": {
+          "ms": 55,
+          "rlimit": 123797
+        },
+        "cyw_l1": {
+          "ms": 42,
+          "rlimit": 97518
+        },
+        "bmn_l1": {
+          "ms": 39,
+          "rlimit": 93326
+        },
+        "bmw_l1": {
+          "ms": 38,
+          "rlimit": 91098
+        },
+        "cys_l2": {
+          "ms": 34,
+          "rlimit": 77047
+        },
+        "witness_cys": {
+          "ms": 31,
+          "rlimit": 64753
+        },
+        "nread_l1": {
+          "ms": 23,
+          "rlimit": 59234
+        },
+        "nread_runs": {
+          "ms": 29,
+          "rlimit": 57708
+        },
+        "cys_l1": {
+          "ms": 16,
+          "rlimit": 43609
+        },
+        "cyw_runs": {
+          "ms": 19,
+          "rlimit": 43462
+        },
+        "bmn_runs": {
+          "ms": 17,
+          "rlimit": 36892
+        },
+        "planc_runs": {
+          "ms": 17,
+          "rlimit": 35853
+        },
+        "planc_l1": {
+          "ms": 2,
+          "rlimit": 4614
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_bmw::witness_bmw",
+          "ms": 310,
+          "rlimit": 658604,
+          "success": true
+        },
+        {
+          "function": "witness_nread::witness_nread",
+          "ms": 88,
+          "rlimit": 265525,
+          "success": true
+        },
+        {
+          "function": "witness_cyw::witness_cyw",
+          "ms": 72,
+          "rlimit": 192058,
+          "success": true
+        },
+        {
+          "function": "cx_fc0901::counterexample_fc0901",
+          "ms": 111,
+          "rlimit": 179338,
+          "success": true
+        },
+        {
+          "function": "witness_bmn::witness_bmn",
+          "ms": 76,
+          "rlimit": 165858,
+          "success": true
+        },
+        {
+          "function": "bmw_runs::lemma_w_steps",
+          "ms": 55,
+          "rlimit": 123797,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_step",
+          "ms": 46,
+          "rlimit": 104251,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_ins",
+          "ms": 41,
+          "rlimit": 85808,
+          "success": true
+        },
+        {
+          "function": "planc_l2::lemma_for",
+          "ms": 34,
+          "rlimit": 65592,
+          "success": true
+        },
+        {
+          "function": "witness_cys::witness_cys",
+          "ms": 31,
+          "rlimit": 64753,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "planc_l2::lemma_bmark"
+      ],
+      "functions_checked": 118,
+      "max_function_rlimit": 658604,
+      "json_sha256": "35aaee5dbe1fe8ec21e9155b50ef82ff1e1463855c17e87436a126e5b519e68e",
+      "module": "09",
+      "finding": "F-C0901",
+      "expected": "src/planc_l2.rs",
+      "counterexample": "cx_fc0901::counterexample_fc0901",
+      "what": "a build marks ok whatever entry its hash holds: one shape's entry runs another shape's class for good (Gen.cls:207)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f0902_crc_identity": {
+      "tag": "control_f0902_crc_identity",
+      "features": "control_f0902_crc_identity",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f0902_crc_identity -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1d/r2/control_f0902_crc_identity.log",
+      "json": "$RUN_DIR/proofs-d1d/r2/control_f0902_crc_identity.json",
+      "wall_seconds": 2.05,
+      "max_rss_kb": 470168,
+      "error_locations": [
+        "src/nread_l2.rs:160"
+      ],
+      "resource_limit": false,
+      "verified": 117,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1892,
+      "smt_run_ms": 1601,
+      "rlimit_total": 3640004,
+      "modules": {
+        "witness_bmw": {
+          "ms": 311,
+          "rlimit": 658604
+        },
+        "bmw_l2": {
+          "ms": 238,
+          "rlimit": 509907
+        },
+        "planc_l2": {
+          "ms": 111,
+          "rlimit": 308025
+        },
+        "nread_l2": {
+          "ms": 92,
+          "rlimit": 216208
+        },
+        "cyw_l2": {
+          "ms": 93,
+          "rlimit": 214935
+        },
+        "bmn_l2": {
+          "ms": 82,
+          "rlimit": 207524
+        },
+        "witness_cyw": {
+          "ms": 78,
+          "rlimit": 192058
+        },
+        "cx_f0902": {
+          "ms": 87,
+          "rlimit": 185950
+        },
+        "witness_bmn": {
+          "ms": 69,
+          "rlimit": 165858
+        },
+        "witness_planc": {
+          "ms": 64,
+          "rlimit": 152018
+        },
+        "bmw_runs": {
+          "ms": 55,
+          "rlimit": 123797
+        },
+        "cyw_l1": {
+          "ms": 42,
+          "rlimit": 97518
+        },
+        "bmn_l1": {
+          "ms": 39,
+          "rlimit": 93326
+        },
+        "bmw_l1": {
+          "ms": 40,
+          "rlimit": 91098
+        },
+        "cys_l2": {
+          "ms": 34,
+          "rlimit": 77047
+        },
+        "witness_cys": {
+          "ms": 29,
+          "rlimit": 64753
+        },
+        "nread_l1": {
+          "ms": 22,
+          "rlimit": 59234
+        },
+        "nread_runs": {
+          "ms": 28,
+          "rlimit": 57714
+        },
+        "cys_l1": {
+          "ms": 18,
+          "rlimit": 43609
+        },
+        "cyw_runs": {
+          "ms": 21,
+          "rlimit": 43462
+        },
+        "bmn_runs": {
+          "ms": 17,
+          "rlimit": 36892
+        },
+        "planc_runs": {
+          "ms": 18,
+          "rlimit": 35853
+        },
+        "planc_l1": {
+          "ms": 2,
+          "rlimit": 4614
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_bmw::witness_bmw",
+          "ms": 311,
+          "rlimit": 658604,
+          "success": true
+        },
+        {
+          "function": "witness_cyw::witness_cyw",
+          "ms": 78,
+          "rlimit": 192058,
+          "success": true
+        },
+        {
+          "function": "cx_f0902::counterexample_f0902",
+          "ms": 87,
+          "rlimit": 185950,
+          "success": true
+        },
+        {
+          "function": "witness_bmn::witness_bmn",
+          "ms": 69,
+          "rlimit": 165858,
+          "success": true
+        },
+        {
+          "function": "witness_planc::witness_planc",
+          "ms": 64,
+          "rlimit": 152018,
+          "success": true
+        },
+        {
+          "function": "bmw_runs::lemma_w_steps",
+          "ms": 55,
+          "rlimit": 123797,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_step",
+          "ms": 47,
+          "rlimit": 104251,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_ins",
+          "ms": 41,
+          "rlimit": 85808,
+          "success": true
+        },
+        {
+          "function": "planc_l2::lemma_for",
+          "ms": 35,
+          "rlimit": 65592,
+          "success": true
+        },
+        {
+          "function": "witness_cys::witness_cys",
+          "ms": 29,
+          "rlimit": 64753,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "nread_l2::lemma_run"
+      ],
+      "functions_checked": 118,
+      "max_function_rlimit": 658604,
+      "json_sha256": "fef07e34428a1f480010d5c0b8747667a5c6dc96a31cf48d0303cad8d95c8628",
+      "module": "09",
+      "finding": "F-0902",
+      "expected": "src/nread_l2.rs",
+      "counterexample": "cx_f0902::counterexample_f0902",
+      "what": "the interpreter tells used relationships apart by $ZCRC: two colliding relationships are taken as one (Exec.cls:1243-1245)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f0908_run_unchecked": {
+      "tag": "control_f0908_run_unchecked",
+      "features": "control_f0908_run_unchecked",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f0908_run_unchecked -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1d/r2/control_f0908_run_unchecked.log",
+      "json": "$RUN_DIR/proofs-d1d/r2/control_f0908_run_unchecked.json",
+      "wall_seconds": 2.07,
+      "max_rss_kb": 471916,
+      "error_locations": [
+        "src/nread_l2.rs:158",
+        "src/nread_l2.rs:168"
+      ],
+      "resource_limit": false,
+      "verified": 116,
+      "errors": 2,
+      "success": false,
+      "verus_total_ms": 1922,
+      "smt_run_ms": 1594,
+      "rlimit_total": 3494890,
+      "modules": {
+        "witness_bmw": {
+          "ms": 342,
+          "rlimit": 658604
+        },
+        "bmw_l2": {
+          "ms": 233,
+          "rlimit": 509907
+        },
+        "planc_l2": {
+          "ms": 140,
+          "rlimit": 308025
+        },
+        "cyw_l2": {
+          "ms": 99,
+          "rlimit": 214935
+        },
+        "bmn_l2": {
+          "ms": 86,
+          "rlimit": 207524
+        },
+        "nread_l2": {
+          "ms": 81,
+          "rlimit": 197714
+        },
+        "witness_cyw": {
+          "ms": 68,
+          "rlimit": 192058
+        },
+        "witness_bmn": {
+          "ms": 67,
+          "rlimit": 165858
+        },
+        "witness_planc": {
+          "ms": 79,
+          "rlimit": 152018
+        },
+        "bmw_runs": {
+          "ms": 54,
+          "rlimit": 123797
+        },
+        "cyw_l1": {
+          "ms": 39,
+          "rlimit": 97518
+        },
+        "bmn_l1": {
+          "ms": 41,
+          "rlimit": 93326
+        },
+        "bmw_l1": {
+          "ms": 39,
+          "rlimit": 91098
+        },
+        "cys_l2": {
+          "ms": 33,
+          "rlimit": 77047
+        },
+        "witness_cys": {
+          "ms": 28,
+          "rlimit": 64753
+        },
+        "cx_f0908": {
+          "ms": 29,
+          "rlimit": 61658
+        },
+        "nread_l1": {
+          "ms": 21,
+          "rlimit": 59234
+        },
+        "nread_runs": {
+          "ms": 28,
+          "rlimit": 55386
+        },
+        "cys_l1": {
+          "ms": 18,
+          "rlimit": 43609
+        },
+        "cyw_runs": {
+          "ms": 21,
+          "rlimit": 43462
+        },
+        "bmn_runs": {
+          "ms": 17,
+          "rlimit": 36892
+        },
+        "planc_runs": {
+          "ms": 18,
+          "rlimit": 35853
+        },
+        "planc_l1": {
+          "ms": 2,
+          "rlimit": 4614
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_bmw::witness_bmw",
+          "ms": 342,
+          "rlimit": 658604,
+          "success": true
+        },
+        {
+          "function": "witness_cyw::witness_cyw",
+          "ms": 68,
+          "rlimit": 192058,
+          "success": true
+        },
+        {
+          "function": "witness_bmn::witness_bmn",
+          "ms": 67,
+          "rlimit": 165858,
+          "success": true
+        },
+        {
+          "function": "witness_planc::witness_planc",
+          "ms": 79,
+          "rlimit": 152018,
+          "success": true
+        },
+        {
+          "function": "bmw_runs::lemma_w_steps",
+          "ms": 54,
+          "rlimit": 123797,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_step",
+          "ms": 43,
+          "rlimit": 104251,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_ins",
+          "ms": 41,
+          "rlimit": 85808,
+          "success": true
+        },
+        {
+          "function": "planc_l2::lemma_for",
+          "ms": 34,
+          "rlimit": 65592,
+          "success": true
+        },
+        {
+          "function": "witness_cys::witness_cys",
+          "ms": 28,
+          "rlimit": 64753,
+          "success": true
+        },
+        {
+          "function": "cx_f0908::counterexample_f0908",
+          "ms": 29,
+          "rlimit": 61658,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "nread_l2::lemma_run",
+        "nread_l2::lemma_runlabels"
+      ],
+      "functions_checked": 118,
+      "max_function_rlimit": 658604,
+      "json_sha256": "b24a4c0d38edc1af6d1ec893bd4fd77f4476fc9fab76bb2dc29f3840e97a2f17",
+      "module": "09",
+      "finding": "F-0908 (intent-undecided, HD-0901)",
+      "expected": "src/nread_l2.rs",
+      "counterexample": "cx_f0908::counterexample_f0908",
+      "what": "Exec.Run checks no privilege: a process of a user without SELECT that never passed a check is answered (Exec.cls:32-72; engine.py:559-586)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_hd0902_shadow_swallows_native_error": {
+      "tag": "control_hd0902_shadow_swallows_native_error",
+      "features": "control_hd0902_shadow_swallows_native_error",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_hd0902_shadow_swallows_native_error -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1d/r2/control_hd0902_shadow_swallows_native_error.log",
+      "json": "$RUN_DIR/proofs-d1d/r2/control_hd0902_shadow_swallows_native_error.json",
+      "wall_seconds": 2.08,
+      "max_rss_kb": 470992,
+      "error_locations": [
+        "src/nread_l2.rs:178"
+      ],
+      "resource_limit": false,
+      "verified": 117,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1924,
+      "smt_run_ms": 1521,
+      "rlimit_total": 3498065,
+      "modules": {
+        "witness_bmw": {
+          "ms": 315,
+          "rlimit": 658604
+        },
+        "bmw_l2": {
+          "ms": 230,
+          "rlimit": 509907
+        },
+        "planc_l2": {
+          "ms": 109,
+          "rlimit": 308025
+        },
+        "cyw_l2": {
+          "ms": 94,
+          "rlimit": 214935
+        },
+        "nread_l2": {
+          "ms": 93,
+          "rlimit": 210499
+        },
+        "bmn_l2": {
+          "ms": 87,
+          "rlimit": 207524
+        },
+        "witness_cyw": {
+          "ms": 71,
+          "rlimit": 192058
+        },
+        "witness_bmn": {
+          "ms": 60,
+          "rlimit": 165858
+        },
+        "witness_planc": {
+          "ms": 66,
+          "rlimit": 152018
+        },
+        "bmw_runs": {
+          "ms": 56,
+          "rlimit": 123797
+        },
+        "cyw_l1": {
+          "ms": 40,
+          "rlimit": 97518
+        },
+        "bmn_l1": {
+          "ms": 37,
+          "rlimit": 93326
+        },
+        "bmw_l1": {
+          "ms": 40,
+          "rlimit": 91098
+        },
+        "cys_l2": {
+          "ms": 32,
+          "rlimit": 77047
+        },
+        "witness_cys": {
+          "ms": 31,
+          "rlimit": 64753
+        },
+        "nread_l1": {
+          "ms": 25,
+          "rlimit": 59234
+        },
+        "nread_runs": {
+          "ms": 26,
+          "rlimit": 57708
+        },
+        "cx_hd0902": {
+          "ms": 23,
+          "rlimit": 49726
+        },
+        "cys_l1": {
+          "ms": 18,
+          "rlimit": 43609
+        },
+        "cyw_runs": {
+          "ms": 22,
+          "rlimit": 43462
+        },
+        "bmn_runs": {
+          "ms": 15,
+          "rlimit": 36892
+        },
+        "planc_runs": {
+          "ms": 18,
+          "rlimit": 35853
+        },
+        "planc_l1": {
+          "ms": 2,
+          "rlimit": 4614
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_bmw::witness_bmw",
+          "ms": 315,
+          "rlimit": 658604,
+          "success": true
+        },
+        {
+          "function": "witness_cyw::witness_cyw",
+          "ms": 71,
+          "rlimit": 192058,
+          "success": true
+        },
+        {
+          "function": "witness_bmn::witness_bmn",
+          "ms": 60,
+          "rlimit": 165858,
+          "success": true
+        },
+        {
+          "function": "witness_planc::witness_planc",
+          "ms": 66,
+          "rlimit": 152018,
+          "success": true
+        },
+        {
+          "function": "bmw_runs::lemma_w_steps",
+          "ms": 56,
+          "rlimit": 123797,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_step",
+          "ms": 47,
+          "rlimit": 104251,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_ins",
+          "ms": 41,
+          "rlimit": 85808,
+          "success": true
+        },
+        {
+          "function": "planc_l2::lemma_for",
+          "ms": 32,
+          "rlimit": 65592,
+          "success": true
+        },
+        {
+          "function": "witness_cys::witness_cys",
+          "ms": 31,
+          "rlimit": 64753,
+          "success": true
+        },
+        {
+          "function": "cyw_l2::lemma_exec",
+          "ms": 27,
+          "rlimit": 58264,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "nread_l2::lemma_shadow"
+      ],
+      "functions_checked": 118,
+      "max_function_rlimit": 658604,
+      "json_sha256": "426070398eef1fe6306c1c82e17db543c03fdf10e65c6f09dbea11d2a72b4802",
+      "module": "09",
+      "finding": "HD-0902 (assumption)",
+      "expected": "src/nread_l2.rs",
+      "counterexample": "cx_hd0902::counterexample_hd0902",
+      "what": "in shadow mode a native exception yields None: the SQL rows are returned uncompared (query.py:2069-2077, 2146-2152)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f0906_gate_edge_index_only": {
+      "tag": "control_f0906_gate_edge_index_only",
+      "features": "control_f0906_gate_edge_index_only",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f0906_gate_edge_index_only -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1d/r2/control_f0906_gate_edge_index_only.log",
+      "json": "$RUN_DIR/proofs-d1d/r2/control_f0906_gate_edge_index_only.json",
+      "wall_seconds": 2.07,
+      "max_rss_kb": 471676,
+      "error_locations": [
+        "src/nread_l2.rs:170"
+      ],
+      "resource_limit": false,
+      "verified": 117,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1918,
+      "smt_run_ms": 1627,
+      "rlimit_total": 3519725,
+      "modules": {
+        "witness_bmw": {
+          "ms": 353,
+          "rlimit": 658604
+        },
+        "bmw_l2": {
+          "ms": 244,
+          "rlimit": 509907
+        },
+        "planc_l2": {
+          "ms": 134,
+          "rlimit": 308025
+        },
+        "nread_l2": {
+          "ms": 88,
+          "rlimit": 218119
+        },
+        "cyw_l2": {
+          "ms": 97,
+          "rlimit": 214935
+        },
+        "bmn_l2": {
+          "ms": 83,
+          "rlimit": 207524
+        },
+        "witness_cyw": {
+          "ms": 81,
+          "rlimit": 192058
+        },
+        "witness_bmn": {
+          "ms": 73,
+          "rlimit": 165858
+        },
+        "witness_planc": {
+          "ms": 66,
+          "rlimit": 152018
+        },
+        "bmw_runs": {
+          "ms": 58,
+          "rlimit": 123797
+        },
+        "cyw_l1": {
+          "ms": 40,
+          "rlimit": 97518
+        },
+        "bmn_l1": {
+          "ms": 38,
+          "rlimit": 93326
+        },
+        "bmw_l1": {
+          "ms": 38,
+          "rlimit": 91098
+        },
+        "cys_l2": {
+          "ms": 32,
+          "rlimit": 77047
+        },
+        "witness_cys": {
+          "ms": 31,
+          "rlimit": 64753
+        },
+        "cx_f0906": {
+          "ms": 30,
+          "rlimit": 63972
+        },
+        "nread_l1": {
+          "ms": 24,
+          "rlimit": 59234
+        },
+        "nread_runs": {
+          "ms": 28,
+          "rlimit": 57502
+        },
+        "cys_l1": {
+          "ms": 18,
+          "rlimit": 43609
+        },
+        "cyw_runs": {
+          "ms": 21,
+          "rlimit": 43462
+        },
+        "bmn_runs": {
+          "ms": 17,
+          "rlimit": 36892
+        },
+        "planc_runs": {
+          "ms": 19,
+          "rlimit": 35853
+        },
+        "planc_l1": {
+          "ms": 2,
+          "rlimit": 4614
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_bmw::witness_bmw",
+          "ms": 353,
+          "rlimit": 658604,
+          "success": true
+        },
+        {
+          "function": "witness_cyw::witness_cyw",
+          "ms": 81,
+          "rlimit": 192058,
+          "success": true
+        },
+        {
+          "function": "witness_bmn::witness_bmn",
+          "ms": 73,
+          "rlimit": 165858,
+          "success": true
+        },
+        {
+          "function": "witness_planc::witness_planc",
+          "ms": 66,
+          "rlimit": 152018,
+          "success": true
+        },
+        {
+          "function": "bmw_runs::lemma_w_steps",
+          "ms": 58,
+          "rlimit": 123797,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_step",
+          "ms": 47,
+          "rlimit": 104251,
+          "success": true
+        },
+        {
+          "function": "bmw_l2::lemma_ins",
+          "ms": 42,
+          "rlimit": 85808,
+          "success": true
+        },
+        {
+          "function": "planc_l2::lemma_for",
+          "ms": 34,
+          "rlimit": 65592,
+          "success": true
+        },
+        {
+          "function": "witness_cys::witness_cys",
+          "ms": 31,
+          "rlimit": 64753,
+          "success": true
+        },
+        {
+          "function": "cx_f0906::counterexample_f0906",
+          "ms": 30,
+          "rlimit": 63972,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "nread_l2::lemma_runlabels"
+      ],
+      "functions_checked": 118,
+      "max_function_rlimit": 658604,
+      "json_sha256": "1c04122fa01c40274ee8feacc261aa624d1e0a33ba439370ba07da01b9620045",
+      "module": "09",
+      "finding": "F-0906",
+      "expected": "src/nread_l2.rs",
+      "counterexample": "cx_f0906::counterexample_f0906",
+      "what": "the native gate opens on the edge index alone: labels are read from a ^KG the label writes do not keep (native_plan.py:528-529)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    }
+  },
+  "trust_inventory": {
+    "own_sources": {
+      "scanned": [
+        "src/bmn_l1.rs",
+        "src/bmn_l2.rs",
+        "src/bmn_runs.rs",
+        "src/bmw_l1.rs",
+        "src/bmw_l2.rs",
+        "src/bmw_runs.rs",
+        "src/cx_f0701.rs",
+        "src/cx_f0702.rs",
+        "src/cx_f0704.rs",
+        "src/cx_f0705.rs",
+        "src/cx_f0707.rs",
+        "src/cx_f0801_failopen.rs",
+        "src/cx_f0801_ttl.rs",
+        "src/cx_f0802.rs",
+        "src/cx_f0805.rs",
+        "src/cx_f0810.rs",
+        "src/cx_f0816.rs",
+        "src/cx_f0818.rs",
+        "src/cx_f0901.rs",
+        "src/cx_f0902.rs",
+        "src/cx_f0906.rs",
+        "src/cx_f0908.rs",
+        "src/cx_fc0701.rs",
+        "src/cx_fc0702.rs",
+        "src/cx_fc0803.rs",
+        "src/cx_fc0901.rs",
+        "src/cx_hd0902.rs",
+        "src/cys_l1.rs",
+        "src/cys_l2.rs",
+        "src/cyw_l1.rs",
+        "src/cyw_l2.rs",
+        "src/cyw_runs.rs",
+        "src/lib.rs",
+        "src/nread_l1.rs",
+        "src/nread_l2.rs",
+        "src/nread_runs.rs",
+        "src/planc_l1.rs",
+        "src/planc_l2.rs",
+        "src/planc_runs.rs",
+        "src/witness_bmn.rs",
+        "src/witness_bmw.rs",
+        "src/witness_cys.rs",
+        "src/witness_cyw.rs",
+        "src/witness_nread.rs",
+        "src/witness_planc.rs"
+      ],
+      "patterns": [
+        "\\bassume\\s*\\(",
+        "\\badmit\\s*\\(",
+        "external_body",
+        "#\\s*\\[\\s*verifier::external",
+        "\\buninterp\\b",
+        "\\baxiom\\b",
+        "assume_specification",
+        "#\\s*\\[\\s*verifier::assume"
+      ],
+      "violations": []
+    },
+    "actors": {
+      "rev": "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877",
+      "path": "/home/ziniu_wu_g5labs_ai/.cargo/git/checkouts/playbook-reference-actors-924e50ff84dd7a85/c03f9fa/crates/actors/src",
+      "violations": [],
+      "note": "verified in the same build without --no-cheating (forwarded to roots only)"
+    },
+    "vstd": {
+      "version": "0.0.0-2026-09-20-0158",
+      "note": "Verus standard library: the trusted base (its axioms, e.g. Map::new and Set extensionality, are Verus's own); not scanned"
+    },
+    "trusted_items_in_this_crate": [],
+    "premises": "named in PROOFS.md (P-W1..P-W4, P-N1..P-N3, P-C1..P-C5, P-S1, P-P1..P-P4, P-R1..P-R3); none is an assumption inside a proof"
+  },
+  "gate": "pass"
+}

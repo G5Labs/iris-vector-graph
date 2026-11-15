@@ -1,0 +1,43 @@
+sem-control-cap MATCH  {"n": 3}
+sem-control-catalog MATCH  {"n": 4}
+sem-control-derived MATCH  {"n": 5}
+sem-control-epoch MATCH  {"n": 1}
+sem-control-excl MATCH  {"n": 5}
+sem-control-install MATCH  {"n": 4}
+sem-control-ledger MATCH  {"n": 4}
+sem-control-queue MATCH  {"n": 5}
+sem-control-removal MATCH  {"n": 3}
+sem-control-retry MATCH  {"n": 4}
+sem-control-scope MATCH  {"n": 4}
+sem-control-snapshot MATCH  {"n": 3}
+sem-control-sys00 MATCH  {"n": 11}
+sem-control-unit MATCH  {"n": 3}
+sem-mc-all MATCH  {"by_design": {"as-built": 99, "reviewed": 106, "control": 59, "exception": 2}, "total": 266, "max": 59688}
+sem-mc-cap-as-built MATCH  {"n": 6, "viol": 5, "max": 6, "laws": ["M11-L1 a read-only caller changes nothing", "M11-L2 no valid credential, no effect", "M11-L3 no server-file or code capability"], "passing": ["cap-http-server-as-built"]}
+sem-mc-cap-reviewed MATCH  {"n": 6, "sharp": 1, "max": 6, "nonsharp": 5}
+sem-mc-catalog-as-built MATCH  {"n": 6, "viol": 5, "max": 24, "laws": ["M12-L1 every artifact records its binding", "M12-L2 use only the bound artifact", "M12-L3 distinct bindings, distinct artifacts"], "passing": ["catalog-canonical-as-built"]}
+sem-mc-catalog-reviewed MATCH  {"n": 5, "sharp": 1, "max": 24, "nonsharp": 4}
+sem-mc-derived-as-built MATCH  {"n": 15, "viol": 14, "max": 596, "laws": ["M04-L1 current or stale", "M04-L2 every source write maintains or moves the token", "M04-L4 a gated read answers the source"], "passing": ["derived-adjacency-functional-as-built"]}
+sem-mc-derived-reviewed MATCH  {"n": 14, "sharp": 3, "max": 59688, "nonsharp": 11}
+sem-mc-epoch-as-built MATCH  {"n": 2, "viol": 2, "max": 40, "laws": ["M13-L1 a finished read shows one state"], "passing": []}
+sem-mc-epoch-reviewed MATCH  {"n": 4, "sharp": 2, "max": 45, "nonsharp": 2}
+sem-mc-excl-as-built MATCH  {"n": 9, "viol": 8, "max": 261, "laws": ["M03-L2 guarded effects hold the lock", "M03-L3 a marked target is not live", "M03-L4 only the owner clears the marker", "M03-L5 no history of live content is tombstoned"], "passing": ["excl-head-lock-commit-as-built"]}
+sem-mc-excl-reviewed MATCH  {"n": 10, "sharp": 3, "max": 146, "nonsharp": 7}
+sem-mc-install-as-built MATCH  {"n": 5, "viol": 4, "max": 1617, "laws": ["M08-L1 one schema", "M08-L2 repeating setup changes nothing and answers ok", "M08-L3 setup touches only its schema", "M08-L4 a setting outside its domain is refused"], "passing": ["install-canonical-as-built"]}
+sem-mc-install-reviewed MATCH  {"n": 6, "sharp": 2, "max": 1617, "nonsharp": 4}
+sem-mc-ledger-as-built MATCH  {"n": 5, "viol": 4, "max": 76, "laws": ["M01-L2 content equals replay of records", "M01-L4 strict: no unrecorded change"], "passing": ["ledger-commit-core-as-built"]}
+sem-mc-ledger-reviewed MATCH  {"n": 7, "sharp": 2, "max": 252, "nonsharp": 5}
+sem-mc-queue-as-built MATCH  {"n": 7, "viol": 6, "max": 42, "laws": ["M07-L1 done means done", "M07-L2 one worker per entry", "M07-L3 bounded overtaking", "M07-L4 a resumed run can always finish", "M07-L4 every pending entry is served under fairness"], "passing": ["queue-embed-queue-as-built-FC0605-agef-blind"]}
+sem-mc-queue-reviewed MATCH  {"n": 7, "sharp": 3, "max": 59, "nonsharp": 4}
+sem-mc-removal-as-built MATCH  {"n": 12, "viol": 11, "max": 79, "laws": ["M05-L1 removal reaches every store or the receipt names it", "M05-L2 removal leaves other targets", "M05-L3 the inventory is complete"], "passing": ["removal-rows-adjacency-temporal-as-built"]}
+sem-mc-removal-reviewed MATCH  {"n": 12, "sharp": 2, "max": 377, "nonsharp": 10}
+sem-mc-retry-as-built MATCH  {"n": 5, "viol": 4, "max": 30, "laws": ["M02-L1 at most one effect per identity", "M02-L2 a replay changes nothing", "M02-L4 redaction removes the binding"], "passing": ["retry-idempotent-setup-as-built"]}
+sem-mc-retry-reviewed MATCH  {"n": 8, "sharp": 3, "max": 44, "nonsharp": 5}
+sem-mc-scope-as-built MATCH  {"n": 7, "viol": 6, "max": 94, "laws": ["M09-L1 distinct names, distinct keys", "M09-L2 a read answers its own graph", "M09-L3 a write changes only its graph", "M09-L4 the target predicates agree"], "passing": ["scope-canonical-as-built"]}
+sem-mc-scope-reviewed MATCH  {"n": 8, "sharp": 2, "max": 94, "nonsharp": 6}
+sem-mc-snapshot-as-built MATCH  {"n": 3, "viol": 3, "max": 65, "laws": ["M06-L1 round trip on every store", "M06-L2 a restore never lowers the head", "M06-L3 a merge restore combines aggregates"], "passing": []}
+sem-mc-snapshot-reviewed MATCH  {"n": 5, "sharp": 2, "max": 375, "nonsharp": 3}
+sem-mc-sys00-as-built MATCH  {"n": 12, "viol": 6, "max": 2135, "laws": ["AX-06 at most once per retry key", "AX-07 a governed change is recorded with it", "AX-08 derived stores match or say they are stale", "AX-10 removal reaches every store", "AX-11 a marked target is not live", "AX-11 conflicting commands serialize"], "passing": ["sys00-as-built-ax-02", "sys00-as-built-ax-03", "sys00-as-built-ax-04", "sys00-as-built-ax-05", "sys00-as-built-ax-12", "sys00-as-built-ax-14"]}
+sem-mc-sys00-reviewed MATCH  {"n": 6, "sharp": 4, "max": 654, "nonsharp": 2}
+sem-mc-unit-as-built MATCH  {"n": 7, "viol": 6, "max": 12, "laws": ["M10-L1 all or none", "M10-L2 a refusal leaves the caller's writes", "M10-L3 the reply matches the outcome"], "passing": ["unit-canonical-as-built"]}
+sem-mc-unit-reviewed MATCH  {"n": 8, "sharp": 2, "max": 12, "nonsharp": 6}

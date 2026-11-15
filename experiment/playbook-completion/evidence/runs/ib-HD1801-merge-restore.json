@@ -1,0 +1,15 @@
+{
+  "command": "cd experiment/playbook-completion/intent/probes/lane-b && flock -x -w 1800 $RUN_DIR/intent-b/auditib.lock timeout 600 python hd1801_restore_over_moved_ledger.py > $RUN_DIR/intent-b/ib3_hd1801.log 2>&1",
+  "experiment_head": "c01a7ccd00b29670b521799344233fa4a814c925",
+  "id": "ib-HD1801-merge-restore",
+  "kind": "probe",
+  "lane": "intent-b",
+  "log": "$RUN_DIR/intent-b/ib3_hd1801.log",
+  "log_bytes": 5113,
+  "log_sha256": "4580285a96fef3c4db47526696dc4f340b80247c0f94c6fbd1fcf1dbda1e084d",
+  "observes": "AUDITIB. Ledger head 2 saved (save_snapshot), then commits 3 and 4, then restore_snapshot(merge=True) of the older archive: failed_rows {}, ^IVG.Ledger and ledger-class storage restored node by node. Result: meta head_seq=2 while ledger_revisions rows 3,4 and ^IVG.Ledger('rec',3|4) survive; history() lists seq 1-4 past the head; the next commit is refused LedgerInconsistencyError 'ID key not unique ... LedgerRevisionD(3)', so every later commit fails until manual repair; verify() diverges. F-1801 confirmed live and refined: at the pin the overlay wedges the ledger (seq reuse refused by the Seq IdKey) rather than mixing records. Violates the append-only canonical history (CONTEXT.md:193-196, ADMIN_GUIDE.md:317,971) and FR-043's round-trip intent (tests/integration/test_ledger_snapshot.py). Replacing restore not driven (shared namespace); erase_all keeps the same ledger subscripts (Eraser.cls:806-812).",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-13T22:46:22+00:00",
+  "result": "fail"
+}

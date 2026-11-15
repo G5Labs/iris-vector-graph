@@ -1,0 +1,15 @@
+{
+  "command": "IVG_PORT=1 IVG_TEST_CONTAINER=none-b08 IVG_NAMESPACE=NONEB08 python -m pytest -o addopts= -p no:cacheprovider -q <the same 14 tests/unit files as b-08-run-unit> -k 'not TestLiveIRIS and not Live'",
+  "experiment_head": "b20460818750a83c671a5fffa19d72064a341047",
+  "id": "b-08-run-unit-rerun",
+  "kind": "run",
+  "lane": "breadth-b",
+  "log": "$RUN_DIR/breadth-b/live/08-unit-tests-rerun.log",
+  "log_bytes": 6084,
+  "log_sha256": "8b20ce6fe3e0034f7d236947ca42abb2e172f3a7bbca3744774ed2f3a5e537d5",
+  "observes": "MATCHES the original b-08-run-unit: 699 passed. Same 14 files (each scanned: 0 IRIS-backed fixtures/classes; the incident file test_r115_read_only_verdict_independent.py excluded as in the original clean run). Differences from the original: an explicit -k deselection of TestLiveIRIS/Live classes (deselected 0 here) and IVG_PORT/IVG_TEST_CONTAINER/IVG_NAMESPACE pointed at nothing, so an IRIS-backed fixture could not connect or deploy anywhere; no IRIS connection made.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T01:22:20+00:00",
+  "result": "pass"
+}

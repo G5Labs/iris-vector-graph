@@ -1,0 +1,15 @@
+{
+  "command": "experiment/playbook-completion/trace-replay: run.py capture 04 (under locks.sh iris, AUDITE); run.py check NN",
+  "experiment_head": "7b72fc52c878c31e143452a8cc8452cc4a6c198f",
+  "id": "tr-replay-04",
+  "kind": "trace",
+  "lane": "trace-replay",
+  "log": "$RUN_DIR/trace-replay/logs/tr-replay-04.log",
+  "log_bytes": 2866,
+  "log_sha256": "dc93bfc6fc35cddaa3263c15953d56a5e67b973793ad9a02bdf4da0b5af2c205",
+  "observes": "AUDITE traces degree (11 steps, 170 records), rebuild (9 steps, 140 records) and token (4 steps, 34 records) replayed through adj_degree, adj_rebuild_txn Caller and adj_token (breadth-a, as built): 66 actions all enabled and matching (every Degree answer equal to the machine), replays equal the engine; ADJ-B8.9 violated at the failing sync inside the caller transaction (TLevel 0, caller node gone: F-0409 reproduced); ADJ-I11.2 violated after the writer rollback (cache stamped with the current token holds the rolled-back edge; a fresh engine was served it: F-0402 reproduced); degree trace has no violation (F-0401/F-C0401 need a reader in flight across a rollback, not produced); the rolled-back Remove kept its generation step as the machine predicts; HD-0401/probe designs diverge at the erase and at the cache store",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T12:39:44+00:00",
+  "result": "pass"
+}

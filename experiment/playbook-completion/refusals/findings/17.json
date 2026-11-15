@@ -1,0 +1,69 @@
+[
+ {
+  "id": "F-C1715",
+  "module": "17",
+  "title": "On a namespace that refuses the engine, close does not run: IRISGraphEngine has no close() and its store's close() is refused",
+  "intended": "OPS-X2.1.1 (ontology/17-operations.md): 'On a namespace that refuses the engine, most calls are refused. Setup, status, legacy removal and close still run.' Source of the exemption: EXEMPT_METHODS = {'initialize_schema', 'status', 'remove_legacy_objects', 'close'} (iris_vector_graph/schema_name.py:376-377, 'What a namespace that refuses an engine still lets it do').",
+  "observed": "Live (rx-live-17, AUDITE recording Graph_KG): IRISGraphEngine(conn, schema_prefix='RX17ALT') is refused at first access; create_node, get_node, node_count, execute_cypher and the store's get_nodes raise IVGSchemaError, status() and remove_legacy_objects(dry_run=True) run, but hasattr(engine, 'close') is False (the exemption names a method the engine does not define), and engine._store.close() raises IVGSchemaError: the store's methods are guarded with no exemptions (engine.py:388-390 guard_methods(self._store)), so its close (a no-op, iris_sql_store.py:4278-4279) is refused. The refusal itself holds; only the close clause does not.",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "rx-live-17"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/schema_name.py:376-377"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/engine.py:384-390"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/engine.py:414-416"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/stores/iris_sql_store.py:4278-4279"
+   }
+  ],
+  "gates": [
+   "5c-refusals"
+  ],
+  "severity": "S4",
+  "confidence": "high",
+  "remedy": "Either give the engine a close() (releasing what it holds) and exempt the store's close from the guard, or drop 'close' from EXEMPT_METHODS and from the stated behaviour.",
+  "notes": "Found by the refusals lane's mechanical audit of OPS X statements. Consequence is small (the store close is a no-op); the defect is the stated exemption."
+ },
+ {
+  "id": "F-C1716",
+  "module": "17",
+  "title": "kill_query cannot end any process on IRIS 2026.1: %SYSTEM.SYS.KillProcess is not an SQL function (SQLCODE -359), so every call answers False",
+  "intended": "docs/API_REFERENCE.md:2686-2692 'kill_query(query_id) ... End the IRIS process with ID query_id (an id from list_active_queries)'; iris_vector_graph/_engine/admin.py:957-962 'Calls %SYSTEM.SYS.KillProcess through SQL. True when the statement ran ...; False when it failed'.",
+  "observed": "Live (rx-live-17, AUDITE, IRIS 2026.1 Community Build 234U, driver 5.3.2): engine.kill_query on the lane's own scratch process (pid 140416, an ordinary killable client process) answered False and logged 'kill_query 140416 failed: [SQLCODE: <-359>:<SQL Function (function stored procedure) not found>] ... User defined SQL function %SYSTEM.SYS.KILLPROCESS does not exist'; the process answered %SYSTEM.SYS.ProcessID afterwards (still alive). The same -359 for pid 999999999. The statement 'SELECT %SYSTEM.SYS.KillProcess(?)' (admin.py:964-965) cannot run, so the documented operation never ends a process; the refusal branch (OPS-X3.5.1: warning, False) is the only reachable one. The upstream unit tests mock the cursor (test_admin_unit.py TestKillQuery), so they cannot see it.",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "rx-live-17"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/admin.py:957-969"
+   },
+   {
+    "kind": "inspected",
+    "ref": "docs/API_REFERENCE.md:2686-2692"
+   }
+  ],
+  "gates": [
+   "5c-refusals",
+   "3.7-suites"
+  ],
+  "severity": "S3",
+  "confidence": "high",
+  "remedy": "Call the class method through the Native API (classMethodValue('%SYSTEM.SYS', 'KillProcess', pid)) or through a projected stored procedure, check its return status, and answer False (or raise) when the process was not ended; add a live test that ends a scratch process.",
+  "notes": "Not tested on Enterprise or 2026.2/2026.3; the %SYSTEM.SYS class is the same in each, but whether any build projects KillProcess as an SQL function was not checked."
+ }
+]

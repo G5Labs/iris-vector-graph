@@ -1,0 +1,68 @@
+{
+ "_doc": "Which finding each oracle-A violation is attributed to (by case id), and which registered run decided each module. Read by make_cells.py.",
+ "finding_of": {
+  "get_property_keys(label=L) [not graph-scoped: keys of nodes with label L]": "F-0106",
+  "find_burst_nodes(T, window, threshold=1, now) graph=G1": "F-0508",
+  "get_reifications(edge a-R-b)": "F-C1547",
+  "get_kg_anchors([I10, I11])": "F-1507"
+ },
+ "run_of_module": {
+  "01": "st-live-reads-a",
+  "02": "st-live-reads-a",
+  "03": "st-live-reads-a",
+  "04": "st-live-reads-a",
+  "05": "st-live-reads-a",
+  "06": "st-live-reads-a",
+  "10": "st-live-reads-b",
+  "11": "st-live-reads-b",
+  "12": "st-live-reads-b",
+  "13": "st-live-reads-b",
+  "14": "st-live-reads-b",
+  "15": "st-live-reads-b",
+  "18": "st-live-reads-c"
+ },
+ "selftest_run": "st-control-reads-selftest",
+ "feasibility_runs": [
+  "st-probe-reads-stmtindex",
+  "st-probe-reads-ptools",
+  "st-probe-reads-linebyline"
+ ],
+ "emit_cells_for": [
+  "01",
+  "03",
+  "04",
+  "05",
+  "10",
+  "11",
+  "12",
+  "13",
+  "14",
+  "15",
+  "18"
+ ],
+ "not_emitted": {
+  "02": "1 of 7 read entry points checked (is_multigraph holds); the matrix cell is closed/fails on F-0206 by other evidence, which this run does not re-test",
+  "06": "1 of 113 read/both entry points checked (kg_KNN_VEC holds); the matrix cell is closed/fails on F-0609/F-0616 by other evidence, which this run does not re-test"
+ },
+ "inventory_11_14": {
+  "12": {
+   "erase-graph": "erase_graph",
+   "erase-nodes (delete_nodes_by_prefix / EraseNodes)": "delete_nodes_by_prefix",
+   "erase-edges-all (EraseEdgesAll)": null
+  },
+  "13": {
+   "redact-start + redact-batch + redact-final (one complete GraphLedger.redact)": "redact",
+   "redact-stop-resume (max_batches > 0, then resume)": null,
+   "GraphLedger.redaction_in_progress": null
+  },
+  "14": {
+   "verify": "verify",
+   "get_revision": "get_revision",
+   "reconstruct": "reconstruct",
+   "diff": null,
+   "export_reconstruction": null,
+   "Graph.KG.Ledger Records page reader (SqlProcs.LedgerRecordsFetch) / CanonicalRecord": null,
+   "post-commit-properties": null
+  }
+ }
+}

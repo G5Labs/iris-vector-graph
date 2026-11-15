@@ -1,0 +1,484 @@
+{
+ "module": "09",
+ "lane": "breadth-b",
+ "pin": "3eaa79cf",
+ "summary": {
+  "original_findings": 9,
+  "by_disposition": {
+   "reproduced-live": 6,
+   "not-reproduced": 1,
+   "reproduced-model": 1,
+   "confirmed-source": 1
+  },
+  "by_outcome": {
+   "product-defect": 7,
+   "intent-undecided": 2
+  },
+  "new_findings": 1,
+  "new_by_outcome": {
+   "product-defect": 1
+  }
+ },
+ "findings": [
+  {
+   "id": "F-0901",
+   "module": "09",
+   "title": "Two plan shapes with one 32-bit checksum share one compiled class",
+   "intended": "ADR-0014 (docs/adr/0014-native-plans-are-compiled-to-classes-at-run-time.md:19): 'A compiled class answers exactly as the interpreter does'; NAT-I3 (a read never runs code written for another plan shape); NAT-T5.16.",
+   "observed": "Live (b-09-f0901-collision): a birthday search in IRIS over label names of one length found two labels B09QXAYMSHXLZD / B09QWCSOJEBLDF whose plan shapes share $ZCRC(shape,7) = 1912394325 after 90195 candidates (0.23 s); hashes of the separately compiled shapes: {'B09QXAYMSHXLZD': ['1912394325'], 'B09QWCSOJEBLDF': ['1912394325']}. In job mode (one process) a read of the B09QWCSOJEBLDF shape (its build job compiling) then a read of the B09QXAYMSHXLZD shape left one entry, status ['ok']; the next B09QXAYMSHXLZD read answered [[2]] where the SQL path answers [[1]]; a shadow-mode engine raised NativeMismatch; another process's engine answered [[2]]: the B09QXAYMSHXLZD entry runs the class compiled from the B09QWCSOJEBLDF shape's lines (it counts B09QWCSOJEBLDF nodes), in every process. Model: m09-planc-as-built-collide-I3 (a read mid-walk runs the rebuilt class of the other shape), -binding (the entry of one shape marked ok for the class compiled from the other), -progress (two colliding shapes never both run compiled); reviewed per-shape names pass (m09-planc-reviewed); control m09-planc-control-shared-name caught.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-09-f0901-collision"
+    },
+    {
+     "kind": "mc",
+     "ref": "m09-planc-as-built-collide-I3"
+    },
+    {
+     "kind": "mc",
+     "ref": "m09-planc-as-built-collide-binding"
+    },
+    {
+     "kind": "mc",
+     "ref": "m09-planc-as-built-collide-progress"
+    },
+    {
+     "kind": "mc",
+     "ref": "m09-planc-reviewed"
+    },
+    {
+     "kind": "mc",
+     "ref": "m09-planc-control-shared-name"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Cypher/Gen.cls:69"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Cypher/Gen.cls:71-80"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Cypher/Gen.cls:186-207"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Cypher/Exec.cls:158"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Cypher/Exec.cls:199"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Cypher/Exec.cls:258"
+    }
+   ],
+   "gates": [
+    "3.3-model-check",
+    "3.5-handlers",
+    "3.6-keys",
+    "3.4-statements"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Name the class by a digest wide enough to rule out collisions (the SHA-256 Digest already computes) or a counter, keep the shape check, and have Build verify under its lock that the entry still holds the shape it compiled before marking it ok.",
+   "notes": "Labels, relationship types and property keys are caller-chosen, so a collision is constructible on demand (birthday search over ~10^5 names in seconds), not only the accident P-0901's odds describe; one caller's reads can thereby change the answers of another caller's queries of a colliding shape in the same namespace until a deploy, a DropAll or a stamp change."
+  },
+  {
+   "id": "F-0902",
+   "module": "09",
+   "title": "The interpreter tells relationships apart by a 32-bit checksum",
+   "intended": "NAT-B1.11 (two different relationships in one match are never taken as the same one); ADR-0014:19 (compiled = interpreted); spec 253 FR-002 (same answer as the SQL path).",
+   "observed": "Live (b-09-f0902-collision): relationships b09_xxaymshxlzd-[:B09T]->b09_hub and b09_xwcsojebldf-[:B09T]->b09_hub share $ZCRC($LB(src,p,dst,\"\"),7) = 1045711388 (found after 90195 candidates). MATCH (a:B09P)-[:B09T]->(h:B09H)<-[:B09T]-(c:B09P) RETURN count(*): SQL path [[2]], interpreter (off mode) [[0]], compiled walk (sync) [[2]]; a control pair without a collision: SQL [[2]], interpreter [[2]]; shadow mode on the interpreted read: NativeMismatch. Model m09-used-as-built; reviewed exact identity passes.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-09-f0902-collision"
+    },
+    {
+     "kind": "mc",
+     "ref": "m09-used-as-built"
+    },
+    {
+     "kind": "mc",
+     "ref": "m09-used-reviewed"
+    },
+    {
+     "kind": "mc",
+     "ref": "m09-used-control-type-only"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Cypher/Exec.cls:1236-1250"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Cypher/Gen.cls:410-433"
+    }
+   ],
+   "gates": [
+    "3.3-model-check",
+    "3.5-handlers"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Keep used relationships as exact subscripts (a local array keyed by $LB(src, p, dst, ekey)) instead of checksums in a string.",
+   "notes": "Node ids are caller-chosen, so the collision is constructible; the interpreter is also the shadow reference (off mode), so shadow runs then blame the compiled path's correct answer."
+  },
+  {
+   "id": "F-0903",
+   "module": "09",
+   "title": "The namespace compile mode is not checked: any value but job or off acts as sync",
+   "intended": "NAT-X12 (a namespace mode other than job, sync or off is refused, never taken as sync); docs/ADMIN_GUIDE.md:774-779 tells operators to Set ^IVG.CypherGen(\"mode\") = \"off\" under change control.",
+   "observed": "Live (b-09-f0903-mode): namespace value -> (Effective, entry status right after the read returned, IVGC classes, read ms): {\"off\": {\"effective\": \"off\", \"entry_status\": [], \"classes\": [], \"ms\": 2.8}, \"OFF\": {\"effective\": \"OFF\", \"entry_status\": [\"ok\"], \"classes\": [\"IVGC.P3348648270\"], \"ms\": 46.6}, \"none\": {\"effective\": \"none\", \"entry_status\": [\"ok\"], \"classes\": [\"IVGC.P3348648270\"], \"ms\": 43.9}, \"job\": {\"effective\": \"job\", \"entry_status\": [\"ok\"], \"classes\": [\"IVGC.P3348648270\"], \"ms\": 7.2}}. Model m09-mode-as-built (violation of NAT-X12); reviewed (unknown taken as off) passes; control caught.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-09-f0903-mode"
+    },
+    {
+     "kind": "mc",
+     "ref": "m09-mode-as-built"
+    },
+    {
+     "kind": "mc",
+     "ref": "m09-mode-reviewed"
+    },
+    {
+     "kind": "mc",
+     "ref": "m09-mode-control-unknown-job"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Cypher/Gen.cls:41-44"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Cypher/Gen.cls:61-105"
+    }
+   ],
+   "gates": [
+    "3.3-model-check",
+    "5c-refusals",
+    "3.5-decoders"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Effective() (or For) treats an unknown namespace value as off and logs it once; a test that sets \"OFF\" and asserts no entry is written.",
+   "notes": "The operator who meant to stop run-time compilation gets synchronous compilation in every reader's process (F-0904's exposure on top)."
+  },
+  {
+   "id": "F-0904",
+   "module": "09",
+   "title": "In sync mode a failed build runs in the reader's own process",
+   "intended": "specs/257-compiled-native-plans/spec.md:60-63 (User Story 3: compilation never costs a caller); NAT-B5.3 (a failed build never stops the reader's own process from running SQL).",
+   "observed": "Live (b-09-f0904-sync-failed-build, Community 2026.1): with the product's test hook ^IVG.CypherGen(\"breaktest\") a sync-mode read compiled a broken class in the reader's process (entry status ['ERROR #5475: Error compiling routine: IVGC.P1634875687.1.  Errors:  ERROR: IVGC.']); the read answered [['kb']] (31.8 ms). The same process then prepared 3 statement texts it had never run: ['ok', 'ok', 'ok']; the SQL path in that process answered [['kb']]. Premise P-0903 (observed by the product on 2026.3) did not reproduce here.",
+   "disposition": "not-reproduced",
+   "outcome": "intent-undecided",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-09-f0904-sync-failed-build"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Cypher/Gen.cls:101"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Cypher/Gen.cls:204-215"
+    },
+    {
+     "kind": "tested",
+     "ref": "tests/e2e/test_257_compiled_plans_e2e.py::test_the_broken_builds_leave_the_session_process_able_to_compile_sql"
+    },
+    {
+     "kind": "assumed",
+     "ref": "P-0903"
+    }
+   ],
+   "gates": [
+    "3.2-coverage",
+    "3.7-failure-controls"
+   ],
+   "severity": "S3",
+   "confidence": "medium",
+   "remedy": "Build in a job in every mode and let sync wait for the job, or document sync as a test-only mode with this hazard.",
+   "notes": "The mechanism (sync compiles in the reader's process, costing it the compile time) is source-confirmed; the harsher effect (the process can no longer prepare SQL) is an IRIS 2026.3 premise that Community 2026.1 did not show. Whether sync is a supported production mode is not settled: ADMIN_GUIDE offers it (docs/ADMIN_GUIDE.md:746-752), spec 257 US3 promises compilation never costs a caller."
+  },
+  {
+   "id": "F-0905",
+   "module": "09",
+   "title": "A deploy's drop does not wait for builds already running",
+   "intended": "ADR-0014 and NAT-I5 (after a deploy, no compiled plan made before it is left); NAT-T5.22.",
+   "observed": "Live (b-09-f0905-dropall-race): a job-mode read started a build; DropAll 0.0 s later; after the job finished the namespace held entries {\"1226463392\": {\"list_length\": 4, \"elements_defined\": \"10010\", \"class\": \"IVGC.P1226463392\", \"status\": \"ok\", \"shape_len\": 0, \"zcrc_of_shape\": \"0\", \"hash_matches_shape\": false, \"src_lines\": \"\"}} (elements defined '10010') and classes ['IVGC.P1226463392']; Gen.Entries(): RuntimeError: <THROW>; two rereads answered [[['b09_db']], [['b09_db']]] and left {\"1226463392\": {\"list_length\": 4, \"elements_defined\": \"10010\", \"class\": \"IVGC.P1226463392\", \"status\": \"ok\", \"shape_len\": 0, \"zcrc_of_shape\": \"0\", \"hash_matches_shape\": false, \"src_lines\": \"\"}}.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-09-f0905-dropall-race"
+    },
+    {
+     "kind": "mc",
+     "ref": "m09-planc-as-built-drop-shape"
+    },
+    {
+     "kind": "mc",
+     "ref": "m09-planc-as-built-drop-I5"
+    },
+    {
+     "kind": "mc",
+     "ref": "m09-planc-as-built-drop-progress"
+    },
+    {
+     "kind": "mc",
+     "ref": "m09-planc-reviewed"
+    },
+    {
+     "kind": "mc",
+     "ref": "m09-planc-control-drop-nolock"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Cypher/Gen.cls:225-230"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Cypher/Gen.cls:166"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Cypher/Gen.cls:207"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Cypher/Gen.cls:71"
+    },
+    {
+     "kind": "assumed",
+     "ref": "P-0907"
+    }
+   ],
+   "gates": [
+    "3.5-lockplans",
+    "3.3-model-check",
+    "3.7-lock-log"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "DropAll takes each entry's lock (or a namespace lock Build also takes); Build re-checks that its entry still exists before writing; For and Entries read with $ListGet.",
+   "notes": "Answers stay right (the shape runs interpreted); the defect costs speed until the next DropAll and breaks the operator's Entries() listing."
+  },
+  {
+   "id": "F-0906",
+   "module": "09",
+   "title": "The native gate checks the edge index but not the label index",
+   "intended": "NAT-I1 (labels are read from the adjacency index only where each label write keeps it up to date); CONTEXT.md:88-96 (the index is declared on the edge and label tables).",
+   "observed": "Model m09-gate-as-built: with the edge index declared and the label index not (the state ensure_adjacency_index leaves when it fails between its two declarations, iris_vector_graph/schema.py:863-899), a label write keeps only the row and the open gate answers from ^KG; reviewed gate (both indexes) passes; control caught. Live (b-09-f0906-index-facts, read only): AUDITB has [['Graph.KG.rdfedges', 'idxedgesadj', 'index', 'idx_edges_adj'], ['Graph.KG.rdfedges', 'idxedgesgraphid', 'index', 'idx_edges_graph_id'], ['Graph.KG.rdfedges', 'idxedgesgraphoid', 'index', 'idx_edges_graph_oid'], ['Graph.KG.rdfedges', 'idxedgesoid', 'index', 'idx_edges_oid'], ['Graph.KG.rdfedges', 'idxedgesp', 'index', 'idx_edges_p'], ['Graph.KG.rdfedges', 'idxedgespoid', 'index', 'idx_edges_p_oid'], ['Graph.KG.rdfedges', 'idxedgess', 'index', 'idx_edges_s'], ['Graph.KG.rdfedges', 'idxedgessp', 'index', 'idx_edges_s_p'], ['Graph.KG.rdflabels', 'idxlabelsadj', 'index', 'idx_labels_adj'], ['Graph.KG.rdflabels', 'idxlabelslabel', 'index', 'idx_labels_label'], ['Graph.KG.rdflabels', 'idxlabelss', 'index', 'idx_labels_s'], ['Graph.KG.rdflabels', 'idxlabelsslabel', 'index', 'idx_labels_s_label'], ['Graph.KG.rdfprops', 'idxpropskey', 'index', 'idx_props_key'], ['Graph.KG.rdfprops', 'idxpropskeyvalkey', 'index', 'idx_props_key_valkey'], ['Graph.KG.rdfprops', 'idxpropss', 'index', 'idx_props_s'], ['Graph.KG.rdfprops', 'idxpropsskey', 'index', 'idx_props_s_key'], ['Graph.KG.rdfprops', 'idxpropsvalifind', 'index', 'idx_props_val_ifind'], ['Graph.KG.rdfreifications', 'idxreifedge', 'index', 'idx_reif_edge']]; engine._adjacency_indexed = True; the edge-only state was not created live (it needs dropping a product index).",
+   "disposition": "reproduced-model",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "mc",
+     "ref": "m09-gate-as-built"
+    },
+    {
+     "kind": "mc",
+     "ref": "m09-gate-reviewed"
+    },
+    {
+     "kind": "mc",
+     "ref": "m09-gate-control-always-open"
+    },
+    {
+     "kind": "live",
+     "ref": "b-09-f0906-index-facts"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher/native_plan.py:528-529"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/engine.py:703-724"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/schema.py:863-899"
+    }
+   ],
+   "gates": [
+    "3.3-model-check",
+    "3.4-declared-reads"
+   ],
+   "severity": "S2",
+   "confidence": "medium",
+   "remedy": "The gate (or Graph.KG.Adjacency.Indexed()) also requires idx_labels_adj as a functional index; a unit test with the label index absent.",
+   "notes": "Reaching the edge-only state needs a partial index declaration; shadow mode would catch the drift, default mode would not."
+  },
+  {
+   "id": "F-0907",
+   "module": "09",
+   "title": "Shadow mode holds any ordered projection to a fixed row order, ties included",
+   "intended": "spec 253 FR-013 and docs/dev/TCK.md: rows in the same order only where the query orders them completely; NAT-T8.4.",
+   "observed": "Live (b-09-f0907-shadow-ties): {\"limit\": {\"native\": [[\"b09_t1\", \"same\"], [\"b09_t2\", \"same\"]], \"sql\": [[\"b09_t4\", \"same\"], [\"b09_t3\", \"same\"]], \"shadow\": \"NativeMismatch\"}, \"nolimit\": {\"native\": [[\"b09_t1\", \"same\"], [\"b09_t2\", \"same\"], [\"b09_t3\", \"same\"], [\"b09_t4\", \"same\"]], \"sql\": [[\"b09_t4\", \"same\"], [\"b09_t3\", \"same\"], [\"b09_t2\", \"same\"], [\"b09_t1\", \"same\"]], \"shadow\": \"NativeMismatch\"}, \"control_unique_order\": {\"native\": [[\"b09_t1\", \"same\"], [\"b09_t2\", \"same\"]], \"sql\": [[\"b09_t1\", \"same\"], [\"b09_t2\", \"same\"]], \"shadow\": \"no mismatch\"}}.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-09-f0907-shadow-ties"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher/native_plan.py:179-194"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/query.py:2232-2238"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher/native_shadow.py:55-63"
+    }
+   ],
+   "gates": [
+    "3.7-differential"
+   ],
+   "severity": "S4",
+   "confidence": "high",
+   "remedy": "Compute 'ordered' for projections from whether the ORDER BY keys determine the returned row (or compare tied runs as bags); a unit test with a tied ORDER BY.",
+   "notes": "False alarms in shadow runs, not wrong answers."
+  },
+  {
+   "id": "F-0908",
+   "module": "09",
+   "title": "The privilege check spec 253 puts in the executor is in the engine only",
+   "intended": "specs/253-native-cypher-executor/spec.md:124-127 (FR-011: the executor MUST check SELECT on the graph tables, cached per process and user); decisions.md HD-0901 working answer: authorization at use.",
+   "observed": "Source: Graph.KG.Cypher.Exec.Run (iris_src/src/Graph/KG/Cypher/Exec.cls:32-72) checks no privilege; the check is the engine's (iris_vector_graph/engine.py:559-586, gate native_plan.py:532-533), cached per engine. docs/ADMIN_GUIDE.md:565-575 states the database resource is the boundary. A live demonstration needs a second IRIS user without SELECT on the tables but with %Native_ClassExecution: blocked (creating users or roles changes the container's security configuration, which the audit may not do).",
+   "disposition": "confirmed-source",
+   "outcome": "intent-undecided",
+   "live": "blocked-access: needs a second IRIS user/role without SELECT but with %Native_ClassExecution (container security configuration, which the audit may not change); not created",
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Cypher/Exec.cls:32-72"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/engine.py:559-586"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher/native_plan.py:532-533"
+    },
+    {
+     "kind": "inspected",
+     "ref": "docs/ADMIN_GUIDE.md:565-575"
+    },
+    {
+     "kind": "inspected",
+     "ref": "experiment/playbook-completion/intent/HD-0901.md"
+    },
+    {
+     "kind": "open",
+     "ref": "HD-0901"
+    }
+   ],
+   "gates": [
+    "3.5-handlers",
+    "3.8-findings-disposed"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Amend FR-011 to the shipped design (engine-side check, database resource as the boundary), or add the check to Run.",
+   "notes": "The code-vs-spec gap is confirmed in source. Which contract holds is undecided: FR-011 (decided 2026-10-20) puts the check in the executor; the later maintainer statement R280 (commit d3a86fcd, 2026-11-04) and docs/ADMIN_GUIDE.md:565-570 make the database resource the native boundary (intent/HD-0901.md: treat FR-011's executor check as an unimplemented spec requirement whose amendment is the maintainer's call)."
+  },
+  {
+   "id": "F-0909",
+   "module": "09",
+   "title": "Spec 253's 'same process' reason for seeing one's own writes is not what the code does",
+   "intended": "specs/253-native-cypher-executor/spec.md:91-92 (a native read inside an open transaction sees its own writes because it runs in the same process); NAT-B4.1, NAT-T4.7.",
+   "observed": "Live (b-09-f0909-txn-visibility): an engine from from_connect ran SQL in pid 15129 and native reads in pid 15130 (dedicated: True); with START TRANSACTION and an uncommitted node+edge in the SQL process (tlevel 1), its native read answered [[1]] (native: 1); another engine's process (pid 14786) also answered [[1]] natively; after ROLLBACK [[0]]. The read sees the caller's writes by reading uncommitted data from another process (P-0002), as it sees any writer's.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-09-f0909-txn-visibility"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/engine.py:1894-1942"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/query.py:2202-2209"
+    },
+    {
+     "kind": "assumed",
+     "ref": "P-0002"
+    }
+   ],
+   "gates": [
+    "3.7-e2e",
+    "3.2-coverage"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Correct the spec's reason; add an e2e test that writes in an open transaction and reads natively on an engine built with from_connect.",
+   "notes": "Behaviour (own writes visible) holds today only through read-uncommitted visibility across processes (HD-0903)."
+  }
+ ],
+ "new_findings": [
+  {
+   "id": "F-C0901",
+   "module": "09",
+   "title": "A build marks whatever entry its hash holds as ok, so one shape's entry can run another shape's class for good",
+   "intended": "NAT-T5.16 (a ready entry runs only the class written for its own shape) and NAT-I3; ADR-0014:19.",
+   "observed": "Live (b-09-f0901-collision): a birthday search in IRIS over label names of one length found two labels B09QXAYMSHXLZD / B09QWCSOJEBLDF whose plan shapes share $ZCRC(shape,7) = 1912394325 after 90195 candidates (0.23 s); hashes of the separately compiled shapes: {'B09QXAYMSHXLZD': ['1912394325'], 'B09QWCSOJEBLDF': ['1912394325']}. In job mode (one process) a read of the B09QWCSOJEBLDF shape (its build job compiling) then a read of the B09QXAYMSHXLZD shape left one entry, status ['ok']; the next B09QXAYMSHXLZD read answered [[2]] where the SQL path answers [[1]]; a shadow-mode engine raised NativeMismatch; another process's engine answered [[2]]: the B09QXAYMSHXLZD entry runs the class compiled from the B09QWCSOJEBLDF shape's lines (it counts B09QWCSOJEBLDF nodes), in every process. Model: m09-planc-as-built-collide-I3 (a read mid-walk runs the rebuilt class of the other shape), -binding (the entry of one shape marked ok for the class compiled from the other), -progress (two colliding shapes never both run compiled); reviewed per-shape names pass (m09-planc-reviewed); control m09-planc-control-shared-name caught.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-09-f0901-collision"
+    },
+    {
+     "kind": "mc",
+     "ref": "m09-planc-as-built-collide-binding"
+    },
+    {
+     "kind": "mc",
+     "ref": "m09-planc-reviewed"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Cypher/Gen.cls:175-182"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Cypher/Gen.cls:207"
+    }
+   ],
+   "gates": [
+    "3.5-lockplans",
+    "3.3-model-check"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Under its lock, Build writes the entry only if it still holds the shape (or digest) it compiled; otherwise it deletes the class and leaves the entry.",
+   "notes": "Root cause shared with F-0901 (two shapes on one 32-bit name) but a distinct mechanism: F-0901 describes a transient mid-walk race and overwrite churn; here the wrong binding persists across reads and processes until a deploy, a DropAll or a stamp change. The R311 digest check (:175-182) compares only the lines it merged, before compiling, and does not prevent it."
+  }
+ ]
+}

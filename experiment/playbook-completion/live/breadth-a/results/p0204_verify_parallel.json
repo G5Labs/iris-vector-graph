@@ -1,0 +1,42 @@
+{
+ "doc": "F-0204 / F-0403: verify_graph on a healthy multigraph with two parallel edges reports missing adjacency.\n    Oracle: spec 234 SC-005 (zero drift on a multigraph) and spec.md:78-80.",
+ "id": "p0204_verify_parallel",
+ "log": "$RUN_DIR/breadth-a/live/02-all-20261113T224011.log",
+ "module": "02",
+ "observed": {
+  "keyed_count": "3",
+  "rows": [
+   0,
+   1,
+   2
+  ],
+  "verify": {
+   "counts": {
+    "cacheEntries": 0,
+    "inEdges": 1,
+    "outEdges": 1,
+    "sqlEdges": 3
+   },
+   "drift": [
+    {
+     "count": 2,
+     "detail": "rows in Graph_KG.rdf_edges with no ^KG(\"out\") entry, so traversal cannot see them",
+     "kind": "missing",
+     "store": "^KG(\"out\")"
+    },
+    {
+     "count": 2,
+     "detail": "rows with no ^KG(\"in\") entry, so inbound traversal cannot see them",
+     "kind": "missing",
+     "store": "^KG(\"in\")"
+    }
+   ],
+   "ok": 0
+  }
+ },
+ "oracle": "verify_graph(g)['ok'] is true for a multigraph whose index matches its rows",
+ "reproduced": true,
+ "seconds": 0.12,
+ "started": "2026-11-13T22:40:13",
+ "verdict": "false drift on parallel edges"
+}

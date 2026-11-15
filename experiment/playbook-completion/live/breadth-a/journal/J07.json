@@ -1,0 +1,57 @@
+{
+ "call": "returned {'edges': 2, 'endpoints_registered': 0, 'elapsed_s': 0.0, 'noindex': True}",
+ "conn_pid": "11225",
+ "declared_found": true,
+ "declared_not_observed_this_run": [
+  "[no row hook: %NOINDEX insert of Graph_KG.rdf_edges; ^KG is written only by a later %BuildIndices]",
+  "sql:Graph_KG.nodes"
+ ],
+ "declared_writes": [
+  "[no row hook: %NOINDEX insert of Graph_KG.rdf_edges; ^KG is written only by a later %BuildIndices]",
+  "sql:Graph_KG.nodes",
+  "sql:Graph_KG.rdf_edges"
+ ],
+ "footprint": "py:iris_vector_graph.bulk_loader.BulkLoader.load_edges",
+ "graph": "baj07232613",
+ "id": "J07",
+ "log": "$RUN_DIR/breadth-a/journal/journal-20261113T232613.log",
+ "module": "03",
+ "namespace": "AUDITA",
+ "observed": {
+  "outermost_transactions": [
+   {
+    "end": "commit",
+    "nesting_levels": 1,
+    "non_transactional_inside": [
+     "sql:Graph_KG.rdf_edges"
+    ],
+    "pid": "11225",
+    "stores_in_txn": [
+     "sql:Graph_KG.rdf_edges"
+    ]
+   },
+   {
+    "end": "commit",
+    "nesting_levels": 1,
+    "non_transactional_inside": [
+     "sql:Graph_KG.rdf_edges"
+    ],
+    "pid": "11225",
+    "stores_in_txn": [
+     "sql:Graph_KG.rdf_edges"
+    ]
+   }
+  ],
+  "pids": [
+   "11225"
+  ],
+  "records": 4,
+  "stores_written": [
+   "sql:Graph_KG.rdf_edges"
+  ],
+  "written_with_no_transaction_open": []
+ },
+ "seconds": 0.03,
+ "undeclared_writes": [],
+ "verdict": "footprint covers every observed write"
+}

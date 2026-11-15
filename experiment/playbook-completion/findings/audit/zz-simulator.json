@@ -1,0 +1,66 @@
+[
+ {
+  "id": "F-CS01",
+  "module": "13",
+  "title": "A revision whose changeset recorded nothing keeps the tenant's message, source, correlation id and idempotency key (and the key's binding) through a complete redaction",
+  "intended": "specs/256-ledger-tenant-redaction/spec.md:42-44 (US1: after erase and redaction 'no record, revision field or index reachable through IVG holds the tenant's entity ids, attribute values or messages'); spec.md:121-123 (FR-004: 'For a revision whose every record is redacted, message, source, correlation_id and idempotency_key MUST be cleared'; a revision with no records has every record redacted); spec.md:142-143 (SC-001: a scan of every ^IVG.Ledger subscript and value and every Graph_KG.ledger_* row finds none of the tenant's ids or values, 'Zero matches is the bar'); specs/256-ledger-tenant-redaction/plan.md:25 (a redacted revision's key is moved from ^IVG.Ledger(\"idem\") to idemRedacted so a retry neither replays nor re-creates).",
+  "observed": "Found by the randomized simulator (I6 SC-001 scan at each completed redaction) in 9 of 304 schedules, first seed 1033 (graph-per-tenant gamma) and in the prefix shape (seed 1087); shrunk through the product to 7 operations (sim-fcs01-ddmin-s1033) and hand-reduced to 6, reproduced 3/3 on AUDITA (sim-fcs01-minimal): commit(create_node acme|n1 with label Person, key acme-k-min-1) -> seq 2; commit(upsert_node acme|n1 + add_label acme|n1 Person, key acme-k-min-2, message 'acme commit min-2', source {tenant: acme}, correlation id acme-corr-0) -> seq 3 with op_count 0 (an existing node and an existing label are no-ops with no record, LedgerApply.cls:229-233, :252-263; the commit's empty check counts operations, not records, Ledger.cls:491-492, and writes the revision row and the idempotency binding regardless, Ledger.cls:523-525); delete_nodes_by_prefix('acme|'); ledger.redact(None, prefix='acme') -> complete, records_tombstoned 3, revision_seqs [2], redaction revision 4; verify() -> equal. Afterwards Graph_KG.ledger_revisions row 3 still holds message 'acme commit min-2', source {\"n\":2,\"tenant\":\"acme\"}, correlation_id 'acme-corr-0', idempotency_key 'acme-k-min-2'; ^IVG.Ledger(\"idem\",\"acme-k-min-2\") = $LB(3, fingerprint) is still bound while seq 2's key went to idemRedacted; a same-key retry after the redaction answers replayed=True with seq 3 instead of idempotency_redacted. Metadata is cleared only on a revision's first tombstone (LedgerRedact.cls:332-347, plan.md:25), and a revision with no records never receives one. The receipt and the redaction revision do not name revision 3.",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "sim-fcs01-minimal"
+   },
+   {
+    "kind": "live",
+    "ref": "sim-fcs01-ddmin-s1033"
+   },
+   {
+    "kind": "trace",
+    "ref": "sim-main-20261114"
+   },
+   {
+    "kind": "trace",
+    "ref": "sim-race-20261114"
+   },
+   {
+    "kind": "control",
+    "ref": "sim-oracle-selftest"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/LedgerApply.cls:229-233"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/LedgerApply.cls:252-284"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/Ledger.cls:488-497"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/Ledger.cls:520-525"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/LedgerRedact.cls:332-347"
+   },
+   {
+    "kind": "inspected",
+    "ref": "specs/256-ledger-tenant-redaction/plan.md:25"
+   }
+  ],
+  "gates": [
+   "5c-reviewers",
+   "3.7-integration-worlds",
+   "3.8-spec-intent",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S2",
+  "confidence": "high",
+  "remedy": "Give every committed revision something the target predicate can match, or do not create a revision that records nothing. Options: (a) a changeset whose operations all turn out to be no-ops returns the current head without writing a revision row or binding its key (spec 213 would have to say whether an all-no-op commit is a revision); (b) record each no-op operation as a content-free 'noop' record carrying the entity id and graph, so FR-001's predicate matches it and the first-tombstone rule clears the revision and unbinds the key; (c) at Final, clear the metadata of revisions with op_count 0 whose changeset named the target (needs the ids, which only (b) keeps). Extend the SC-001 test (spec.md:48-50) with a no-op changeset of the redacted tenant and a same-key retry after the redaction.",
+  "notes": "Severity S2 rather than S1: the residue is operator-supplied revision metadata and an idempotency binding, not recorded entity content; it is S1-class wherever operators put tenant identifiers in messages, sources, correlation ids or keys, as spec 256's own scenario and opsreview's per-tenant correlation ids do (client.py history() docstring). Not F-1301: that finding is FR-004's 'every' versus Decision 2's 'any' for spanning revisions; here both readings fail, because the plan's mechanism clears metadata only on a first tombstone. Not F-C1306 (non-default IVG Schema after an upgrade): this is the default schema on a fresh enable. Upsert of an existing node with identical properties, set_property with the current value and add_label of a present label all produce the same zero-record revision (FR-009c, LedgerApply.cls:252, :265)."
+ }
+]

@@ -1,0 +1,15 @@
+{
+  "command": "bash experiment/playbook-completion/tools/locks.sh iris python experiment/playbook-completion/product-gates/disconnect_world.py $RUN_DIR/product-gates/disconnect-r1 --group redact --trials 3",
+  "experiment_head": "e8a0d08acae6c519bb4db191c593bc75e8223636",
+  "id": "pg-disconnect-redact",
+  "kind": "live",
+  "lane": "product-gates",
+  "log": "$RUN_DIR/product-gates/disconnect-r1/results-redact.json",
+  "log_bytes": 2908701,
+  "log_sha256": "58700352425e843a63c8d5e94499e7adfc4cefb3573a664bcdf08c214b00bb82",
+  "observes": "Disconnect world, redaction of an erased tenant graph (ledger.redact), AUDITIA; 9 trials + 1 baseline, 0 violations. C1 (600 target records, batch 50, max_batches 0; reply held) 3/3 complete: 13 committed spans (12 batches + final), one redaction revision, re-run receipt zeros. C2 (3,000 records, batch 1, cut 0.020-0.025 s after forwarding, reply pending) 3/3 complete: the server ran all 3,000 batch transactions after the disconnect and exited 0.12-0.21 s after the kill (3,001 committed spans). C3 (fresh ledger, max_batches 1 per call, third call dropped) 3/3 in progress with exactly 100 tombstones in 2 committed batch spans and the marker held; the unbounded re-run completed. A client disconnect never interrupted a batch. Head lock free 9/9, verify equal 9/9, one redaction revision per target 9/9. Exploration (not registered) showed a bounded call on a longer ledger tombstoning nothing and leaving no marker: the F-C1303 rescan, hence C3's fresh ledger.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T12:19:24+00:00",
+  "result": "pass"
+}

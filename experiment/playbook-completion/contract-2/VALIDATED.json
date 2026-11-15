@@ -1,0 +1,96 @@
+{
+ "clauses": {
+  "E-1": {
+   "runs": [
+    "env2-e1-r1",
+    "env2-e1-r1-journal"
+   ],
+   "run_results": [
+    "pass",
+    "pass"
+   ],
+   "result": "pass",
+   "what": "the pin's compiled embedded SQL (SELECT INTO, cursor, INSERT, INSERT ... SELECT WHERE NOT EXISTS, DELETE) has the dynamic statement's permitted outcomes for E-NEST, E-PARTIAL, E-SQL-END, E-DRV, E-AUTOCOMMIT, E-VIS, E-ROWLOCK, E-UNIQUE, E-STOP, X-STMT, X-NULL; -104, -108"
+  },
+  "S-1": {
+   "runs": [
+    "env2-e1-r2"
+   ],
+   "run_results": [
+    "pass"
+   ],
+   "result": "pass",
+   "what": "the pin's compiled SQL functions Txn_Begin / Txn_End / Txn_Undo act on the calling connection's process and transaction"
+  },
+  "X2-JSON": {
+   "runs": [
+    "env2-x2-r1"
+   ],
+   "run_results": [
+    "pass"
+   ],
+   "result": "pass",
+   "what": "%DynamicObject %Set / %Get / %GetTypeOf / %IsDefined / %Remove / %ToJSON / %FromJSON"
+  },
+  "X2-LIST": {
+   "runs": [
+    "env2-x2-r1"
+   ],
+   "run_results": [
+    "pass"
+   ],
+   "result": "pass",
+   "what": "$LIST / $LISTBUILD / $LISTGET / $LISTDATA / $LISTLENGTH / $LISTNEXT / $LISTFIND / $LISTSAME / $LISTTOSTRING / $LISTFROMSTRING; IRISList decode"
+  },
+  "X2-TOP": {
+   "runs": [
+    "env2-x2-r1"
+   ],
+   "run_results": [
+    "pass"
+   ],
+   "result": "pass",
+   "what": "TOP n, LIMIT n [OFFSET m] over ORDER BY (SQLUPPER default, DESC, %EXACT) and unordered"
+  },
+  "X2-BATCH": {
+   "runs": [
+    "env2-x2-r1"
+   ],
+   "run_results": [
+    "pass"
+   ],
+   "result": "pass",
+   "what": "DB-API executemany: a refused row of several skipped silently; one row raises"
+  },
+  "X2-IOU": {
+   "runs": [
+    "env2-x2-r1"
+   ],
+   "run_results": [
+    "pass"
+   ],
+   "result": "pass",
+   "what": "INSERT OR UPDATE: inserts / updates; waits for a held row; -109 if it is gone"
+  },
+  "X2-QUERY": {
+   "runs": [
+    "env2-x2-r1"
+   ],
+   "run_results": [
+    "pass"
+   ],
+   "result": "pass",
+   "what": "$QUERY forward and reverse, $QLENGTH, $QSUBSCRIPT in $ORDER collation"
+  },
+  "X2-MERGE": {
+   "runs": [
+    "env2-x2-r1"
+   ],
+   "run_results": [
+    "pass"
+   ],
+   "result": "pass",
+   "what": "MERGE (copy, onto existing, rolled back) and ZKILL (value only, rolled back)"
+  }
+ }
+}

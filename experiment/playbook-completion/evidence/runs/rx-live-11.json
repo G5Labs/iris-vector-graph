@@ -1,0 +1,15 @@
+{
+  "command": "LOCK_WAIT_SECONDS=10000 timeout 12000 bash experiment/playbook-completion/tools/locks.sh iris timeout 1500 python experiment/playbook-completion/refusals/live_11.py (AUDITE; reset by Graph.KG.Eraser.EraseAll + Graph.KG.Ledger.PurgeAll before and after)",
+  "experiment_head": "ac8eb8a9aa124e438f3c7e0c0e765fed162f06d3",
+  "id": "rx-live-11",
+  "kind": "live",
+  "lane": "refusals",
+  "log": "$RUN_DIR/refusals/11/results.json",
+  "log_bytes": 92565,
+  "log_sha256": "57b4ae530c4ef368c240ce3f5a07ce2893bbb802f9ad4a45323a9c85fe425ba6",
+  "observes": "Module 11 stated refusals (LED kind X) triggered live through engine.ledger / Changeset / Graph.KG.Ledger class methods / SQL and object access to Graph_KG.ledger_revisions, each in a journal window over AUDITE's database (all processes); oracle positive control passed. 60 refusal cases over 32 statements: 56 refused as stated with no net change outside the named stores (ledger_stats for counted rejections; extent ID counters where a refused commit had inserted a row); LED-B4.9.2 not implemented, 2 cases: commit(kind='bogus') and a server Commit kind 'bogus' with ops [] were accepted and stored revisions (F-1107 reproduced); LED-B5.12 2 cases flagged by the strict oracle: the node case refused as stated but left non-transactional residue (^KG(\"__version\"), ^KG(\"gen\",0,\"rx11:d1\"), one rdf_props iFind word node ^t52S.DMCe.7(\"W\",4076)); the tuple case refused with 'relationship not found' instead of the expected 'deleted earlier' text and left the same ^KG residue (re-run with the increment classification as rx-live-11-r2). Lock-timeout refusals waited 30 s (LED-B1.11 twice, LED-B4.4 with the head lock held by another process's open caller transaction). LED-B3.4 only its reachable neighbour (never enabled -> not_enabled).",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T15:22:08+00:00",
+  "result": "fail"
+}

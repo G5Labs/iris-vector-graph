@@ -1,0 +1,453 @@
+{
+ "group": "G3",
+ "modules": {
+  "08": {
+   "files_reviewed": [
+    "iris_vector_graph/cypher/__init__.py",
+    "iris_vector_graph/cypher/lexer.py",
+    "iris_vector_graph/cypher/parser.py",
+    "iris_vector_graph/cypher/ast.py",
+    "iris_vector_graph/cypher/translator.py",
+    "iris_vector_graph/cypher/merge_rows.py",
+    "iris_vector_graph/cypher/row_where.py",
+    "iris_vector_graph/cypher/count_create.py",
+    "iris_vector_graph/cypher/read_only.py",
+    "iris_vector_graph/cypher/procedure_signatures.py",
+    "iris_vector_graph/cypher/algorithms/__init__.py",
+    "iris_vector_graph/cypher/algorithms/paths.py",
+    "iris_vector_graph/cypher/aql/__init__.py",
+    "iris_vector_graph/cypher/aql/ast.py",
+    "iris_vector_graph/cypher/aql/lexer.py",
+    "iris_vector_graph/cypher/aql/parser.py",
+    "iris_vector_graph/cypher/aql/translator.py",
+    "iris_vector_graph/_engine/query.py (all but 2063-2249)",
+    "iris_vector_graph/stores/iris_sql_store.py (execute_transaction 1580-1819)",
+    "iris_vector_graph/operators.py",
+    "sql/operators.sql",
+    "iris_src/src/Graph/KG/CypherFn.cls",
+    "iris_src/src/IVG/Percentile.cls"
+   ],
+   "coverage": {
+    "iris_vector_graph/cypher/__init__.py": "full",
+    "iris_vector_graph/cypher/lexer.py": "full",
+    "iris_vector_graph/cypher/parser.py": "full",
+    "iris_vector_graph/cypher/ast.py": "full",
+    "iris_vector_graph/cypher/translator.py": "sweep",
+    "iris_vector_graph/cypher/merge_rows.py": "full",
+    "iris_vector_graph/cypher/row_where.py": "full",
+    "iris_vector_graph/cypher/count_create.py": "full",
+    "iris_vector_graph/cypher/read_only.py": "full",
+    "iris_vector_graph/cypher/procedure_signatures.py": "full",
+    "iris_vector_graph/cypher/algorithms/__init__.py": "full",
+    "iris_vector_graph/cypher/algorithms/paths.py": "full",
+    "iris_vector_graph/cypher/aql/__init__.py": "full",
+    "iris_vector_graph/cypher/aql/ast.py": "full",
+    "iris_vector_graph/cypher/aql/lexer.py": "full",
+    "iris_vector_graph/cypher/aql/parser.py": "full",
+    "iris_vector_graph/cypher/aql/translator.py": "full",
+    "iris_vector_graph/_engine/query.py (all but 2063-2249)": "sweep",
+    "iris_vector_graph/stores/iris_sql_store.py (execute_transaction 1580-1819)": "full",
+    "iris_vector_graph/operators.py": "full",
+    "sql/operators.sql": "full",
+    "iris_src/src/Graph/KG/CypherFn.cls": "full",
+    "iris_src/src/IVG/Percentile.cls": "full"
+   },
+   "deviations": [
+    {
+     "id": "D-08-01",
+     "convention": "C-25",
+     "where": "iris_src/src/Graph/KG/CypherFn.cls:162",
+     "what": "IVGLISTGET: first operand of a compound condition not parenthesised (secondary, BRIEF.md)"
+    },
+    {
+     "id": "D-08-02",
+     "convention": "C-25",
+     "where": "iris_src/src/IVG/Percentile.cls:45",
+     "what": "SortArray: first operand of a compound condition not parenthesised (secondary, BRIEF.md)"
+    }
+   ],
+   "deviations_by_convention": {
+    "C-25": 2
+   },
+   "deviations_primary": 0,
+   "deviations_secondary": 2,
+   "borderline": 9,
+   "candidates": [
+    {
+     "title": "A relationship SET/REMOVE of a property changes nothing and reports success when the edge's qualifiers are not JSON (from borderline B-08-9, not counted)",
+     "where": "iris_src/src/Graph/KG/CypherFn.cls:220-238, 246-251; iris_vector_graph/cypher/translator.py:12184-12192, 12348-12356",
+     "existing_finding": null,
+     "severity": "S4",
+     "confidence": "medium (code path), low (reachability)",
+     "note": "new candidate; F-C0849 is the cause, not this symptom"
+    }
+   ],
+   "conventions_with_no_documented_rule": [
+    "ObjectScript indentation",
+    "Quit versus Return",
+    "p/t variable prefixes",
+    "comment style and comments attached to no member",
+    "class and method naming",
+    "Python docstrings, naming and comments beyond the configured tools",
+    "C-3 compile cleanliness (not judged)",
+    "C-20 justified indirection (not judged)",
+    "style of sql/*.sql",
+    "conventions for the AQL dialect"
+   ]
+  },
+  "09": {
+   "files_reviewed": [
+    "iris_src/src/Graph/KG/Cypher/Exec.cls",
+    "iris_src/src/Graph/KG/Cypher/Gen.cls",
+    "iris_src/src/Graph/KG/Cypher/Props.cls",
+    "iris_src/src/Graph/KG/Cypher/SortKey.cls",
+    "iris_src/src/IVG/CypherEngine.cls",
+    "iris_vector_graph/cypher/native_plan.py",
+    "iris_vector_graph/cypher/native_route.py",
+    "iris_vector_graph/cypher/native_shadow.py",
+    "iris_vector_graph/_engine/query.py:2063-2249"
+   ],
+   "coverage": {
+    "iris_src/src/Graph/KG/Cypher/Exec.cls": "full",
+    "iris_src/src/Graph/KG/Cypher/Gen.cls": "full",
+    "iris_src/src/Graph/KG/Cypher/Props.cls": "full",
+    "iris_src/src/Graph/KG/Cypher/SortKey.cls": "full",
+    "iris_src/src/IVG/CypherEngine.cls": "full",
+    "iris_vector_graph/cypher/native_plan.py": "full",
+    "iris_vector_graph/cypher/native_route.py": "full",
+    "iris_vector_graph/cypher/native_shadow.py": "full",
+    "iris_vector_graph/_engine/query.py:2063-2249": "full"
+   },
+   "deviations": [
+    {
+     "id": "D-09-01",
+     "convention": "C-14",
+     "where": "iris_src/src/Graph/KG/Cypher/Gen.cls:11-15",
+     "what": "Header calls the 5th entry element 'built at' (For writes pending-since, 76/80; Build never sets it) and says a failed shape's error is logged once (84-87 and 216-218 do not log)"
+    },
+    {
+     "id": "D-09-02",
+     "convention": "C-17",
+     "where": "iris_src/src/IVG/CypherEngine.cls:102-106",
+     "what": "QueryJson: except Exception: pass drops unparseable params, then runs execute_cypher (writes included) with none, saying nothing"
+    }
+   ],
+   "deviations_by_convention": {
+    "C-14": 1,
+    "C-17": 1
+   },
+   "deviations_primary": 2,
+   "deviations_secondary": 0,
+   "borderline": 10,
+   "candidates": [
+    {
+     "title": "IVG.CypherEngine.QueryJson runs a query without its parameters when the params JSON does not parse",
+     "where": "iris_src/src/IVG/CypherEngine.cls:102-108",
+     "existing_finding": null,
+     "severity": "S4",
+     "confidence": "medium",
+     "note": "new candidate; F-C0940 concerns Scalar only"
+    }
+   ],
+   "conventions_with_no_documented_rule": [
+    "ObjectScript indentation",
+    "Quit versus Return",
+    "p/t variable prefixes",
+    "comment style and comments attached to no member",
+    "class and method naming",
+    "Python docstrings, naming and comments beyond the configured tools",
+    "C-3 compile cleanliness (not judged)",
+    "C-20 justified indirection (not judged)",
+    "names of Gen's generated locals",
+    "embedded-Python style inside .cls",
+    "native route thresholds"
+   ]
+  },
+  "10": {
+   "files_reviewed": [
+    "iris_src/src/Graph/KG/Algorithms.cls",
+    "iris_src/src/Graph/KG/PageRank.cls",
+    "iris_src/src/Graph/KG/PageRankEmbedded.cls",
+    "iris_src/src/Graph/KG/Centrality.cls",
+    "iris_src/src/Graph/KG/Communities.cls",
+    "iris_src/src/Graph/KG/Subgraph.cls",
+    "iris_src/src/Graph/KG/Traversal.cls",
+    "iris_src/src/Graph/KG/TraversalBFS.cls",
+    "iris_src/src/Graph/KG/TraversalKHop.cls",
+    "iris_src/src/Graph/KG/TraversalPaths.cls",
+    "iris_src/src/Graph/KG/VarLength.cls",
+    "iris_src/src/Graph/KG/NKGAccel.cls",
+    "iris_src/src/Graph/KG/NKGAccelAdjacency.cls",
+    "iris_src/src/Graph/KG/NKGAccelCentrality.cls",
+    "iris_src/src/Graph/KG/NKGAccelLoader.cls",
+    "iris_src/src/Graph/KG/NKGAccelTraversal.cls",
+    "iris_src/src/Graph/KG/ArnoAccel.cls",
+    "iris_src/src/Graph/KG/AlgoCache.cls",
+    "iris_vector_graph/_engine/algorithms.py",
+    "iris_vector_graph/stores/arno_bridge.py",
+    "iris_vector_graph/arno_readers.py",
+    "iris_vector_graph/_arno_gate.py",
+    "iris_vector_graph/algo_cache.py",
+    "iris_vector_graph/stores/iris_sql_store.py (algorithm routing and cache parts)"
+   ],
+   "coverage": {
+    "iris_src/src/Graph/KG/Algorithms.cls": "full",
+    "iris_src/src/Graph/KG/PageRank.cls": "full",
+    "iris_src/src/Graph/KG/PageRankEmbedded.cls": "full",
+    "iris_src/src/Graph/KG/Centrality.cls": "full",
+    "iris_src/src/Graph/KG/Communities.cls": "full",
+    "iris_src/src/Graph/KG/Subgraph.cls": "full",
+    "iris_src/src/Graph/KG/Traversal.cls": "full",
+    "iris_src/src/Graph/KG/TraversalBFS.cls": "full",
+    "iris_src/src/Graph/KG/TraversalKHop.cls": "full",
+    "iris_src/src/Graph/KG/TraversalPaths.cls": "full",
+    "iris_src/src/Graph/KG/VarLength.cls": "full",
+    "iris_src/src/Graph/KG/NKGAccel.cls": "full",
+    "iris_src/src/Graph/KG/NKGAccelAdjacency.cls": "full",
+    "iris_src/src/Graph/KG/NKGAccelCentrality.cls": "full",
+    "iris_src/src/Graph/KG/NKGAccelLoader.cls": "full",
+    "iris_src/src/Graph/KG/NKGAccelTraversal.cls": "full",
+    "iris_src/src/Graph/KG/ArnoAccel.cls": "full",
+    "iris_src/src/Graph/KG/AlgoCache.cls": "full",
+    "iris_vector_graph/_engine/algorithms.py": "full",
+    "iris_vector_graph/stores/arno_bridge.py": "full",
+    "iris_vector_graph/arno_readers.py": "full",
+    "iris_vector_graph/_arno_gate.py": "full",
+    "iris_vector_graph/algo_cache.py": "full",
+    "iris_vector_graph/stores/iris_sql_store.py (algorithm routing and cache parts)": "sweep"
+   },
+   "deviations": [
+    {
+     "id": "D-10-01",
+     "convention": "C-4",
+     "where": "iris_src/src/Graph/KG/Algorithms.cls:12, 95",
+     "what": "WCCJson/CDLPJson: Set pGraph = 0 inline"
+    },
+    {
+     "id": "D-10-02",
+     "convention": "C-4",
+     "where": "iris_src/src/Graph/KG/PageRank.cls:410",
+     "what": "PageRankGlobalJson: Set pGraph = 0 inline (ForIndex used at 178)"
+    },
+    {
+     "id": "D-10-03",
+     "convention": "C-4",
+     "where": "iris_src/src/Graph/KG/Subgraph.cls:8, 180",
+     "what": "Set pGraph = 0 inline"
+    },
+    {
+     "id": "D-10-04",
+     "convention": "C-4",
+     "where": "iris_src/src/Graph/KG/TraversalKHop.cls:15-22, 30, 69, 137, 218, 229",
+     "what": "Default key 0 written inline (degw/degc subscripts, Adj.Degree(0,...), Set pGraph = 0)"
+    },
+    {
+     "id": "D-10-05",
+     "convention": "C-4",
+     "where": "iris_vector_graph/stores/arno_bridge.py:621-638, 712-742, 786-833",
+     "what": "^KG default key as literal 0 in Native API walks and generated ObjectScript"
+    },
+    {
+     "id": "D-10-06",
+     "convention": "C-5",
+     "where": "iris_src/src/Graph/KG/NKGAccelTraversal.cls:64, 68, 148, 152, 204",
+     "what": "Else branches read ^KG(\"out\", node, pred, dst) with no graph key first"
+    },
+    {
+     "id": "D-10-07",
+     "convention": "C-8",
+     "where": "iris_src/src/Graph/KG/ArnoAccel.cls:299-302",
+     "what": "BumpVersion: $Increment(^KG(\"__version\")) outside Adjacency"
+    },
+    {
+     "id": "D-10-08",
+     "convention": "C-8",
+     "where": "iris_src/src/Graph/KG/NKGAccelTraversal.cls:614, 627",
+     "what": "Build2HopExact kills and sets ^KG(\"deg2p_exact_merged\") outside its owners"
+    },
+    {
+     "id": "D-10-09",
+     "convention": "C-14",
+     "where": "iris_src/src/Graph/KG/Centrality.cls:4-8, 12, 14, 16-23",
+     "what": "Header names BetweennessJson/ClosenessJson (absent), ^KG(\"in\", 0, ...) (code uses pGraph), Adj.NextSource (code walks ^KG), unused scratch BC/CL/EIG, and a warning log this class does not write"
+    },
+    {
+     "id": "D-10-10",
+     "convention": "C-14",
+     "where": "iris_src/src/Graph/KG/Communities.cls:3, 12",
+     "what": "'no embedded Python' (543, 615 are Language = python; LeidenJsonAuto prefers it); 'sorted by descending group size' false for TriangleCount and KCore"
+    },
+    {
+     "id": "D-10-11",
+     "convention": "C-14",
+     "where": "iris_src/src/Graph/KG/NKGAccel.cls:3",
+     "what": "'Full-graph algorithms export adjacency for Rust': they run in ObjectScript over ^NKG via NKGAccelCentrality"
+    },
+    {
+     "id": "D-10-12",
+     "convention": "C-14",
+     "where": "iris_src/src/Graph/KG/ArnoAccel.cls:2-3, 5",
+     "what": "Cache is namespace-wide ^ArnoKG(gname,\"graph_json\"), not ^||ArnoKG.JSON...; 'all methods fall back to pure ObjectScript' false (CallFn throws; KhopSampleJson answers 'arno unavailable')"
+    },
+    {
+     "id": "D-10-13",
+     "convention": "C-17",
+     "where": "iris_vector_graph/stores/arno_bridge.py:403-410",
+     "what": "except Exception around the wrapper DDL: caches available=False, returns False, logs nothing"
+    },
+    {
+     "id": "D-10-14",
+     "convention": "C-17",
+     "where": "iris_vector_graph/stores/iris_sql_store.py:1013-1020",
+     "what": "except Exception: pass around ArnoAccel.Load / NKGAccel.Load (write ^ArnoAccel(\"lib_path\"))"
+    },
+    {
+     "id": "D-10-15",
+     "convention": "C-17",
+     "where": "iris_vector_graph/stores/iris_sql_store.py:1064-1066",
+     "what": "_detect_arno outer except Exception: Arno set unavailable, no log"
+    },
+    {
+     "id": "D-10-16",
+     "convention": "C-17",
+     "where": "iris_vector_graph/stores/iris_sql_store.py:3442-3450",
+     "what": "except Exception: pass around the ^IVG.warnings write"
+    },
+    {
+     "id": "D-10-17",
+     "convention": "C-31",
+     "where": "iris_src/src/Graph/KG/PageRank.cls:233-248, 414-428",
+     "what": "Out-degree counted inline from ^KG(\"out\") instead of Adj.Degree"
+    },
+    {
+     "id": "D-10-18",
+     "convention": "C-32",
+     "where": "iris_src/src/Graph/KG/Centrality.cls:80, 91, 107, 123, 133",
+     "what": "Reads ^KG(\"degc\") with no ^KG(\"gen\") check while AllWarm holds; absent entry counts 0"
+    },
+    {
+     "id": "D-10-19",
+     "convention": "C-32",
+     "where": "iris_src/src/Graph/KG/TraversalKHop.cls:13-21",
+     "what": "KHopCount reads ^KG(\"degc\", 0, ...) unvalidated under an inlined AllWarm"
+    },
+    {
+     "id": "D-10-20",
+     "convention": "C-35",
+     "where": "iris_src/src/Graph/KG/PageRankEmbedded.cls:15, 23",
+     "what": "Embedded-Python SQL names nodes/rdf_edges with no schema; resolves outside the IVG Schema"
+    },
+    {
+     "id": "D-10-21",
+     "convention": "C-25",
+     "where": "iris_src/src/Graph/KG/TraversalBFS.cls:177, 185",
+     "what": "First operand not parenthesised (secondary, BRIEF.md)"
+    },
+    {
+     "id": "D-10-22",
+     "convention": "C-25",
+     "where": "iris_src/src/Graph/KG/TraversalKHop.cls:40, 57",
+     "what": "First operand not parenthesised (secondary, BRIEF.md)"
+    },
+    {
+     "id": "D-10-23",
+     "convention": "C-25",
+     "where": "iris_src/src/Graph/KG/NKGAccelAdjacency.cls:80",
+     "what": "First operand not parenthesised (secondary, BRIEF.md)"
+    },
+    {
+     "id": "D-10-24",
+     "convention": "C-25",
+     "where": "iris_src/src/Graph/KG/NKGAccelTraversal.cls:477, 500",
+     "what": "First operand not parenthesised (secondary, BRIEF.md)"
+    },
+    {
+     "id": "D-10-25",
+     "convention": "C-25",
+     "where": "iris_src/src/Graph/KG/TraversalPaths.cls:10, 29, 45, 184, 267",
+     "what": "First operand not parenthesised (secondary, BRIEF.md)"
+    }
+   ],
+   "deviations_by_convention": {
+    "C-4": 5,
+    "C-5": 1,
+    "C-8": 2,
+    "C-14": 4,
+    "C-17": 4,
+    "C-25": 5,
+    "C-31": 1,
+    "C-32": 2,
+    "C-35": 1
+   },
+   "deviations_primary": 20,
+   "deviations_secondary": 5,
+   "borderline": 10,
+   "candidates": [
+    {
+     "title": "Clearing the degree cache alone gives zeros while the warm stamp holds",
+     "where": "iris_src/src/Graph/KG/Centrality.cls:80-133; iris_src/src/Graph/KG/TraversalKHop.cls:13-21",
+     "existing_finding": "F-0406",
+     "severity": "S2",
+     "confidence": "high"
+    },
+    {
+     "title": "ArnoAccel.BumpVersion moves the adjacency module's Graph-Version Token",
+     "where": "iris_src/src/Graph/KG/ArnoAccel.cls:299-302",
+     "existing_finding": "F-C1040",
+     "severity": "S4",
+     "confidence": "high"
+    },
+    {
+     "title": "PageRankEmbedded is deployed and its unqualified SQL resolves outside the IVG Schema",
+     "where": "iris_src/src/Graph/KG/PageRankEmbedded.cls:15, 23",
+     "existing_finding": "F-1013",
+     "severity": "S3",
+     "confidence": "high"
+    },
+    {
+     "title": "Degree centrality counts parallel edges on out-edges but not in-edges (from borderline B-10-3)",
+     "where": "iris_src/src/Graph/KG/Centrality.cls:93-139",
+     "existing_finding": "F-1007",
+     "severity": "S2",
+     "confidence": "high"
+    },
+    {
+     "title": "A failed Arno wrapper DDL is reported as 'library not available', cached for the connection and logged nowhere",
+     "where": "iris_vector_graph/stores/arno_bridge.py:403-410, 106-134",
+     "existing_finding": null,
+     "severity": "S4",
+     "confidence": "high",
+     "note": "new candidate; related to F-C1001, which does not record the masking"
+    },
+    {
+     "title": "_detect_arno turns a failed ArnoAccel/NKGAccel Load into 'Arno off' with no log line",
+     "where": "iris_vector_graph/stores/iris_sql_store.py:1013-1020, 1064-1066",
+     "existing_finding": null,
+     "severity": "S4",
+     "confidence": "medium",
+     "note": "new candidate"
+    },
+    {
+     "title": "Before ^NKG(\"$meta\") exists, NKGAccel k-hop and random walk read the legacy unkeyed ^KG layout and answer only the seed",
+     "where": "iris_src/src/Graph/KG/NKGAccelTraversal.cls:20-22, 61-77, 145-153, 189-205; iris_src/src/Graph/KG/NKGAccelLoader.cls:8-11",
+     "existing_finding": null,
+     "severity": "S4",
+     "confidence": "low-medium",
+     "note": "new candidate; F-1002 family, not covered by it"
+    }
+   ],
+   "conventions_with_no_documented_rule": [
+    "ObjectScript indentation",
+    "Quit versus Return",
+    "p/t variable prefixes",
+    "comment style and comments attached to no member",
+    "class and method naming",
+    "Python docstrings, naming and comments beyond the configured tools",
+    "C-3 compile cleanliness (not judged)",
+    "C-20 justified indirection (not judged)",
+    "work-area global naming and inventory",
+    "embedded-Python style inside .cls"
+   ]
+  }
+ }
+}

@@ -1,0 +1,15 @@
+{
+  "command": "flock -w 1800 $RUN_DIR/intent-a/auditia.lock timeout 600 python experiment/playbook-completion/intent/probes/lane-a/hd0704_stop_reserved.py",
+  "experiment_head": "c01a7ccd00b29670b521799344233fa4a814c925",
+  "id": "intent-a-hd0704-stop-reserved",
+  "kind": "probe",
+  "lane": "intent-a",
+  "log": "$RUN_DIR/intent-a/hd0704_stop_reserved.log",
+  "log_bytes": 2567,
+  "log_sha256": "48f5326037fea572efb76bdb2d5b9e1f49ca44d48e264eb6f1ecefc90155ec92",
+  "observes": "AUDITIA: engine.bm25_build/bm25_insert/bm25_drop accept the name __stop__; build writes cfg/tf/df/doc/len subtrees under ^BM25Idx(__stop__), which Tokenize then treats as stopwords (82 entries instead of the documented 77), so an unrelated index built afterwards no longer indexes 'doc' or 'len'; drop deletes the stopword list (re-created on next tokenize). Stopword node restored exactly.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-13T22:43:52+00:00",
+  "result": "fail"
+}

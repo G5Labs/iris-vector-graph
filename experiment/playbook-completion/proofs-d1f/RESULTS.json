@@ -1,0 +1,4381 @@
+{
+  "crate": "experiment/playbook-completion/proofs-d1f (ivg-d1f-proofs)",
+  "generated_utc": "2026-11-14T09:54:14+00:00",
+  "verus": "0.2026.10.04.426d8b0",
+  "actors_rev": "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877",
+  "sources_sha256": "fce4cc117e95171a06ae96e2006c4917f4afd9131dcbd3cc67e39d1430ebcf71",
+  "statement": "Every result is about the models (L1 contracts and the reviewed L2 machines); none is a property of the product at pin 3eaa79cf.",
+  "baseline": {
+    "tag": "baseline",
+    "features": "",
+    "rc": 0,
+    "timed_out": false,
+    "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+    "log": "$RUN_DIR/proofs-d1f/baseline.log",
+    "json": "$RUN_DIR/proofs-d1f/baseline.json",
+    "wall_seconds": 2.19,
+    "max_rss_kb": 439644,
+    "error_locations": [],
+    "resource_limit": false,
+    "verified": 115,
+    "errors": 0,
+    "success": true,
+    "verus_total_ms": 1789,
+    "smt_run_ms": 1415,
+    "rlimit_total": 3405772,
+    "modules": {
+      "fhir_l2": {
+        "ms": 266,
+        "rlimit": 596130
+      },
+      "fhir_progress": {
+        "ms": 115,
+        "rlimit": 381634
+      },
+      "witness_call": {
+        "ms": 111,
+        "rlimit": 354753
+      },
+      "witness_fhir": {
+        "ms": 154,
+        "rlimit": 319375
+      },
+      "unit_l2": {
+        "ms": 112,
+        "rlimit": 285156
+      },
+      "auth_l2": {
+        "ms": 118,
+        "rlimit": 249450
+      },
+      "call_l2": {
+        "ms": 94,
+        "rlimit": 201691
+      },
+      "witness_unit": {
+        "ms": 72,
+        "rlimit": 191479
+      },
+      "witness_auth": {
+        "ms": 58,
+        "rlimit": 134060
+      },
+      "fhir_l1": {
+        "ms": 46,
+        "rlimit": 129096
+      },
+      "sqla_l2": {
+        "ms": 50,
+        "rlimit": 116971
+      },
+      "opsc_l2": {
+        "ms": 50,
+        "rlimit": 113714
+      },
+      "fhir_runs": {
+        "ms": 48,
+        "rlimit": 103563
+      },
+      "call_runs": {
+        "ms": 24,
+        "rlimit": 55053
+      },
+      "witness_opsc": {
+        "ms": 18,
+        "rlimit": 34290
+      },
+      "auth_l1": {
+        "ms": 15,
+        "rlimit": 29700
+      },
+      "witness_sqla": {
+        "ms": 14,
+        "rlimit": 28504
+      },
+      "sqla_l1": {
+        "ms": 11,
+        "rlimit": 26667
+      },
+      "opsc_l1": {
+        "ms": 12,
+        "rlimit": 25528
+      },
+      "sqla_runs": {
+        "ms": 6,
+        "rlimit": 13464
+      },
+      "call_l1": {
+        "ms": 4,
+        "rlimit": 8108
+      },
+      "unit_l1": {
+        "ms": 4,
+        "rlimit": 7386
+      },
+      "unit_runs": {
+        "ms": 0,
+        "rlimit": 0
+      }
+    },
+    "top_functions": [
+      {
+        "function": "witness_call::witness_call",
+        "ms": 111,
+        "rlimit": 354753,
+        "success": true
+      },
+      {
+        "function": "witness_fhir::witness_fhir",
+        "ms": 154,
+        "rlimit": 319375,
+        "success": true
+      },
+      {
+        "function": "fhir_l2::lemma_step",
+        "ms": 95,
+        "rlimit": 211917,
+        "success": true
+      },
+      {
+        "function": "witness_unit::witness_unit",
+        "ms": 72,
+        "rlimit": 191479,
+        "success": true
+      },
+      {
+        "function": "fhir_progress::FhirProgress::nonincreasing",
+        "ms": 35,
+        "rlimit": 161030,
+        "success": true
+      },
+      {
+        "function": "witness_auth::witness_auth",
+        "ms": 58,
+        "rlimit": 134060,
+        "success": true
+      },
+      {
+        "function": "fhir_runs::lemma_f_steps",
+        "ms": 44,
+        "rlimit": 92119,
+        "success": true
+      },
+      {
+        "function": "fhir_progress::FhirProgress::decreases",
+        "ms": 22,
+        "rlimit": 90454,
+        "success": true
+      },
+      {
+        "function": "unit_l2::lemma_step",
+        "ms": 30,
+        "rlimit": 74564,
+        "success": true
+      },
+      {
+        "function": "call_runs::lemma_c_steps",
+        "ms": 24,
+        "rlimit": 55053,
+        "success": true
+      }
+    ],
+    "all_functions": [
+      {
+        "function": "auth_l1::AuthL1::init_safe",
+        "ms": 1,
+        "rlimit": 1511,
+        "success": true
+      },
+      {
+        "function": "auth_l1::AuthL1::step_safe",
+        "ms": 2,
+        "rlimit": 5236,
+        "success": true
+      },
+      {
+        "function": "auth_l1::theorem_graph_is_not_authorization",
+        "ms": 2,
+        "rlimit": 4661,
+        "success": true
+      },
+      {
+        "function": "auth_l1::theorem_loopback_server_unreachable_from_other_machines",
+        "ms": 2,
+        "rlimit": 3400,
+        "success": true
+      },
+      {
+        "function": "auth_l1::theorem_no_route_code_without_the_key",
+        "ms": 2,
+        "rlimit": 4413,
+        "success": true
+      },
+      {
+        "function": "auth_l1::theorem_read_only_after_the_key_gate",
+        "ms": 3,
+        "rlimit": 5988,
+        "success": true
+      },
+      {
+        "function": "auth_l1::theorem_refusals_raise_ivg_client_error",
+        "ms": 2,
+        "rlimit": 4491,
+        "success": true
+      },
+      {
+        "function": "auth_l2::AuthL2::init_refines",
+        "ms": 2,
+        "rlimit": 3814,
+        "success": true
+      },
+      {
+        "function": "auth_l2::AuthL2::init_safe",
+        "ms": 1,
+        "rlimit": 3562,
+        "success": true
+      },
+      {
+        "function": "auth_l2::AuthL2::step_refines",
+        "ms": 4,
+        "rlimit": 8776,
+        "success": true
+      },
+      {
+        "function": "auth_l2::AuthL2::step_safe",
+        "ms": 4,
+        "rlimit": 7410,
+        "success": true
+      },
+      {
+        "function": "auth_l2::lemma_bolt",
+        "ms": 15,
+        "rlimit": 38608,
+        "success": true
+      },
+      {
+        "function": "auth_l2::lemma_client",
+        "ms": 9,
+        "rlimit": 16865,
+        "success": true
+      },
+      {
+        "function": "auth_l2::lemma_http",
+        "ms": 20,
+        "rlimit": 51831,
+        "success": true
+      },
+      {
+        "function": "auth_l2::lemma_listen",
+        "ms": 6,
+        "rlimit": 13140,
+        "success": true
+      },
+      {
+        "function": "auth_l2::lemma_raw_inv_at",
+        "ms": 12,
+        "rlimit": 27374,
+        "success": true
+      },
+      {
+        "function": "auth_l2::lemma_step",
+        "ms": 24,
+        "rlimit": 42453,
+        "success": true
+      },
+      {
+        "function": "auth_l2::theorem_raw_executions_refine",
+        "ms": 17,
+        "rlimit": 35617,
+        "success": true
+      },
+      {
+        "function": "call_l1::CallL1::init_safe",
+        "ms": 0,
+        "rlimit": 1323,
+        "success": true
+      },
+      {
+        "function": "call_l1::CallL1::step_safe",
+        "ms": 1,
+        "rlimit": 3115,
+        "success": true
+      },
+      {
+        "function": "call_l1::theorem_at_most_once",
+        "ms": 0,
+        "rlimit": 893,
+        "success": true
+      },
+      {
+        "function": "call_l1::theorem_definite_failure_applied_nothing",
+        "ms": 1,
+        "rlimit": 1792,
+        "success": true
+      },
+      {
+        "function": "call_l1::theorem_success_means_applied_once",
+        "ms": 0,
+        "rlimit": 985,
+        "success": true
+      },
+      {
+        "function": "call_l2::CallL2::init_refines",
+        "ms": 1,
+        "rlimit": 4278,
+        "success": true
+      },
+      {
+        "function": "call_l2::CallL2::init_safe",
+        "ms": 2,
+        "rlimit": 4580,
+        "success": true
+      },
+      {
+        "function": "call_l2::CallL2::step_refines",
+        "ms": 3,
+        "rlimit": 8074,
+        "success": true
+      },
+      {
+        "function": "call_l2::CallL2::step_safe",
+        "ms": 3,
+        "rlimit": 7055,
+        "success": true
+      },
+      {
+        "function": "call_l2::lemma_exec",
+        "ms": 10,
+        "rlimit": 22456,
+        "success": true
+      },
+      {
+        "function": "call_l2::lemma_raw_inv_at",
+        "ms": 12,
+        "rlimit": 26575,
+        "success": true
+      },
+      {
+        "function": "call_l2::lemma_reply",
+        "ms": 18,
+        "rlimit": 41941,
+        "success": true
+      },
+      {
+        "function": "call_l2::lemma_step",
+        "ms": 24,
+        "rlimit": 48805,
+        "success": true
+      },
+      {
+        "function": "call_l2::theorem_raw_executions_refine",
+        "ms": 15,
+        "rlimit": 33335,
+        "success": true
+      },
+      {
+        "function": "call_l2::theorem_server_answers_are_honest",
+        "ms": 2,
+        "rlimit": 4592,
+        "success": true
+      },
+      {
+        "function": "call_runs::lemma_c_steps",
+        "ms": 24,
+        "rlimit": 55053,
+        "success": true
+      },
+      {
+        "function": "fhir_l1::FhirL1::init_safe",
+        "ms": 2,
+        "rlimit": 3210,
+        "success": true
+      },
+      {
+        "function": "fhir_l1::FhirL1::step_safe",
+        "ms": 2,
+        "rlimit": 5157,
+        "success": true
+      },
+      {
+        "function": "fhir_l1::lemma_l1_safe",
+        "ms": 14,
+        "rlimit": 51736,
+        "success": true
+      },
+      {
+        "function": "fhir_l1::theorem_batch_moves_with_its_watermark",
+        "ms": 3,
+        "rlimit": 9007,
+        "success": true
+      },
+      {
+        "function": "fhir_l1::theorem_caught_up_graph_is_the_repository",
+        "ms": 4,
+        "rlimit": 12629,
+        "success": true
+      },
+      {
+        "function": "fhir_l1::theorem_durable_removal_stays_removed",
+        "ms": 5,
+        "rlimit": 10863,
+        "success": true
+      },
+      {
+        "function": "fhir_l1::theorem_refusals_change_nothing",
+        "ms": 4,
+        "rlimit": 11357,
+        "success": true
+      },
+      {
+        "function": "fhir_l1::theorem_register_keeps_watermarks",
+        "ms": 5,
+        "rlimit": 15234,
+        "success": true
+      },
+      {
+        "function": "fhir_l1::theorem_unschedule_stops_the_task",
+        "ms": 4,
+        "rlimit": 9903,
+        "success": true
+      },
+      {
+        "function": "fhir_l2::FhirL2::init_refines",
+        "ms": 3,
+        "rlimit": 5945,
+        "success": true
+      },
+      {
+        "function": "fhir_l2::FhirL2::init_safe",
+        "ms": 4,
+        "rlimit": 8358,
+        "success": true
+      },
+      {
+        "function": "fhir_l2::FhirL2::step_refines",
+        "ms": 5,
+        "rlimit": 10530,
+        "success": true
+      },
+      {
+        "function": "fhir_l2::FhirL2::step_safe",
+        "ms": 4,
+        "rlimit": 9342,
+        "success": true
+      },
+      {
+        "function": "fhir_l2::lemma_batch",
+        "ms": 19,
+        "rlimit": 46382,
+        "success": true
+      },
+      {
+        "function": "fhir_l2::lemma_erase",
+        "ms": 13,
+        "rlimit": 28388,
+        "success": true
+      },
+      {
+        "function": "fhir_l2::lemma_raw_inv_at",
+        "ms": 26,
+        "rlimit": 52834,
+        "success": true
+      },
+      {
+        "function": "fhir_l2::lemma_register",
+        "ms": 17,
+        "rlimit": 40170,
+        "success": true
+      },
+      {
+        "function": "fhir_l2::lemma_remove",
+        "ms": 18,
+        "rlimit": 35373,
+        "success": true
+      },
+      {
+        "function": "fhir_l2::lemma_schedule",
+        "ms": 22,
+        "rlimit": 48623,
+        "success": true
+      },
+      {
+        "function": "fhir_l2::lemma_step",
+        "ms": 95,
+        "rlimit": 211917,
+        "success": true
+      },
+      {
+        "function": "fhir_l2::lemma_unschedule",
+        "ms": 22,
+        "rlimit": 49338,
+        "success": true
+      },
+      {
+        "function": "fhir_l2::theorem_durable_removal_stops_the_feed",
+        "ms": 3,
+        "rlimit": 11779,
+        "success": true
+      },
+      {
+        "function": "fhir_l2::theorem_raw_executions_refine",
+        "ms": 7,
+        "rlimit": 30979,
+        "success": true
+      },
+      {
+        "function": "fhir_l2::theorem_sync_continues_from_the_stored_watermark",
+        "ms": 1,
+        "rlimit": 6172,
+        "success": true
+      },
+      {
+        "function": "fhir_progress::FhirProgress::decreases",
+        "ms": 22,
+        "rlimit": 90454,
+        "success": true
+      },
+      {
+        "function": "fhir_progress::FhirProgress::nonincreasing",
+        "ms": 35,
+        "rlimit": 161030,
+        "success": true
+      },
+      {
+        "function": "fhir_progress::lemma_watch_step",
+        "ms": 15,
+        "rlimit": 39162,
+        "success": true
+      },
+      {
+        "function": "fhir_progress::theorem_watermark_advances",
+        "ms": 25,
+        "rlimit": 53061,
+        "success": true
+      },
+      {
+        "function": "fhir_progress::theorem_work_available",
+        "ms": 16,
+        "rlimit": 37927,
+        "success": true
+      },
+      {
+        "function": "fhir_runs::lemma_clean_empty",
+        "ms": 1,
+        "rlimit": 2551,
+        "success": true
+      },
+      {
+        "function": "fhir_runs::lemma_clean_one",
+        "ms": 3,
+        "rlimit": 8893,
+        "success": true
+      },
+      {
+        "function": "fhir_runs::lemma_f_steps",
+        "ms": 44,
+        "rlimit": 92119,
+        "success": true
+      },
+      {
+        "function": "opsc_l1::OpscL1::init_safe",
+        "ms": 1,
+        "rlimit": 2413,
+        "success": true
+      },
+      {
+        "function": "opsc_l1::OpscL1::step_safe",
+        "ms": 2,
+        "rlimit": 5315,
+        "success": true
+      },
+      {
+        "function": "opsc_l1::theorem_catalogue_is_not_availability",
+        "ms": 4,
+        "rlimit": 10524,
+        "success": true
+      },
+      {
+        "function": "opsc_l1::theorem_duplicate_is_skipped",
+        "ms": 1,
+        "rlimit": 3617,
+        "success": true
+      },
+      {
+        "function": "opsc_l1::theorem_unknown_parts_are_listed",
+        "ms": 1,
+        "rlimit": 3659,
+        "success": true
+      },
+      {
+        "function": "opsc_l2::OpscL2::init_refines",
+        "ms": 2,
+        "rlimit": 4894,
+        "success": true
+      },
+      {
+        "function": "opsc_l2::OpscL2::init_safe",
+        "ms": 1,
+        "rlimit": 4272,
+        "success": true
+      },
+      {
+        "function": "opsc_l2::OpscL2::step_refines",
+        "ms": 2,
+        "rlimit": 6770,
+        "success": true
+      },
+      {
+        "function": "opsc_l2::OpscL2::step_safe",
+        "ms": 2,
+        "rlimit": 6122,
+        "success": true
+      },
+      {
+        "function": "opsc_l2::lemma_install",
+        "ms": 5,
+        "rlimit": 11746,
+        "success": true
+      },
+      {
+        "function": "opsc_l2::lemma_raw_inv_at",
+        "ms": 5,
+        "rlimit": 12206,
+        "success": true
+      },
+      {
+        "function": "opsc_l2::lemma_report",
+        "ms": 5,
+        "rlimit": 12481,
+        "success": true
+      },
+      {
+        "function": "opsc_l2::lemma_step",
+        "ms": 12,
+        "rlimit": 24710,
+        "success": true
+      },
+      {
+        "function": "opsc_l2::theorem_raw_executions_refine",
+        "ms": 12,
+        "rlimit": 30513,
+        "success": true
+      },
+      {
+        "function": "sqla_l1::SqlaL1::init_safe",
+        "ms": 1,
+        "rlimit": 3025,
+        "success": true
+      },
+      {
+        "function": "sqla_l1::SqlaL1::step_safe",
+        "ms": 4,
+        "rlimit": 10404,
+        "success": true
+      },
+      {
+        "function": "sqla_l1::theorem_failure_report_means_nothing_ran",
+        "ms": 1,
+        "rlimit": 3761,
+        "success": true
+      },
+      {
+        "function": "sqla_l1::theorem_node_read_keeps_graphs_apart",
+        "ms": 2,
+        "rlimit": 5583,
+        "success": true
+      },
+      {
+        "function": "sqla_l1::theorem_read_only_call_writes_nothing",
+        "ms": 1,
+        "rlimit": 3894,
+        "success": true
+      },
+      {
+        "function": "sqla_l2::SqlaL2::init_refines",
+        "ms": 1,
+        "rlimit": 3932,
+        "success": true
+      },
+      {
+        "function": "sqla_l2::SqlaL2::init_safe",
+        "ms": 1,
+        "rlimit": 3709,
+        "success": true
+      },
+      {
+        "function": "sqla_l2::SqlaL2::step_refines",
+        "ms": 2,
+        "rlimit": 5946,
+        "success": true
+      },
+      {
+        "function": "sqla_l2::SqlaL2::step_safe",
+        "ms": 2,
+        "rlimit": 5296,
+        "success": true
+      },
+      {
+        "function": "sqla_l2::lemma_exec",
+        "ms": 6,
+        "rlimit": 14313,
+        "success": true
+      },
+      {
+        "function": "sqla_l2::lemma_getnodes",
+        "ms": 5,
+        "rlimit": 13402,
+        "success": true
+      },
+      {
+        "function": "sqla_l2::lemma_raw_inv_at",
+        "ms": 5,
+        "rlimit": 12705,
+        "success": true
+      },
+      {
+        "function": "sqla_l2::lemma_step",
+        "ms": 14,
+        "rlimit": 29092,
+        "success": true
+      },
+      {
+        "function": "sqla_l2::theorem_raw_executions_refine",
+        "ms": 11,
+        "rlimit": 28576,
+        "success": true
+      },
+      {
+        "function": "sqla_runs::lemma_q_build",
+        "ms": 6,
+        "rlimit": 13464,
+        "success": true
+      },
+      {
+        "function": "unit_l1::UnitL1::init_safe",
+        "ms": 0,
+        "rlimit": 1274,
+        "success": true
+      },
+      {
+        "function": "unit_l1::UnitL1::step_safe",
+        "ms": 1,
+        "rlimit": 2577,
+        "success": true
+      },
+      {
+        "function": "unit_l1::theorem_reader_sees_whole_units",
+        "ms": 1,
+        "rlimit": 2369,
+        "success": true
+      },
+      {
+        "function": "unit_l1::theorem_unit_at_most_once",
+        "ms": 0,
+        "rlimit": 1166,
+        "success": true
+      },
+      {
+        "function": "unit_l2::UnitL2::init_refines",
+        "ms": 1,
+        "rlimit": 3577,
+        "success": true
+      },
+      {
+        "function": "unit_l2::UnitL2::init_safe",
+        "ms": 1,
+        "rlimit": 3605,
+        "success": true
+      },
+      {
+        "function": "unit_l2::UnitL2::step_refines",
+        "ms": 4,
+        "rlimit": 13829,
+        "success": true
+      },
+      {
+        "function": "unit_l2::UnitL2::step_safe",
+        "ms": 3,
+        "rlimit": 12463,
+        "success": true
+      },
+      {
+        "function": "unit_l2::lemma_commit",
+        "ms": 11,
+        "rlimit": 25810,
+        "success": true
+      },
+      {
+        "function": "unit_l2::lemma_raw_inv_at",
+        "ms": 11,
+        "rlimit": 38455,
+        "success": true
+      },
+      {
+        "function": "unit_l2::lemma_run1",
+        "ms": 14,
+        "rlimit": 27470,
+        "success": true
+      },
+      {
+        "function": "unit_l2::lemma_run2",
+        "ms": 24,
+        "rlimit": 53998,
+        "success": true
+      },
+      {
+        "function": "unit_l2::lemma_step",
+        "ms": 30,
+        "rlimit": 74564,
+        "success": true
+      },
+      {
+        "function": "unit_l2::theorem_raw_executions_refine",
+        "ms": 10,
+        "rlimit": 31385,
+        "success": true
+      },
+      {
+        "function": "witness_auth::witness_auth",
+        "ms": 58,
+        "rlimit": 134060,
+        "success": true
+      },
+      {
+        "function": "witness_call::witness_call",
+        "ms": 111,
+        "rlimit": 354753,
+        "success": true
+      },
+      {
+        "function": "witness_fhir::witness_fhir",
+        "ms": 154,
+        "rlimit": 319375,
+        "success": true
+      },
+      {
+        "function": "witness_opsc::witness_opsc",
+        "ms": 18,
+        "rlimit": 34290,
+        "success": true
+      },
+      {
+        "function": "witness_sqla::witness_sqla",
+        "ms": 14,
+        "rlimit": 28504,
+        "success": true
+      },
+      {
+        "function": "witness_unit::witness_unit",
+        "ms": 72,
+        "rlimit": 191479,
+        "success": true
+      }
+    ],
+    "failing_functions": [],
+    "functions_checked": 115,
+    "max_function_rlimit": 354753,
+    "json_sha256": "041facbda21eb0c0f37404d7328d9741445c70dffef99ebac388f0b25adb7f2c",
+    "pass": true,
+    "cost_per_module_proof": {
+      "module 15 (FHIR sync, erase, task, registration; progress)": {
+        "modules": {
+          "fhir_l2": {
+            "ms": 266,
+            "rlimit": 596130
+          },
+          "fhir_progress": {
+            "ms": 115,
+            "rlimit": 381634
+          },
+          "witness_fhir": {
+            "ms": 154,
+            "rlimit": 319375
+          },
+          "fhir_l1": {
+            "ms": 46,
+            "rlimit": 129096
+          },
+          "fhir_runs": {
+            "ms": 48,
+            "rlimit": 103563
+          }
+        },
+        "ms": 629,
+        "rlimit": 1529798,
+        "functions": 33,
+        "largest_function": {
+          "function": "witness_fhir::witness_fhir",
+          "ms": 154,
+          "rlimit": 319375,
+          "success": true
+        }
+      },
+      "modules 16+17 (one HTTP call: retries and status map)": {
+        "modules": {
+          "witness_call": {
+            "ms": 111,
+            "rlimit": 354753
+          },
+          "call_l2": {
+            "ms": 94,
+            "rlimit": 201691
+          },
+          "call_runs": {
+            "ms": 24,
+            "rlimit": 55053
+          },
+          "call_l1": {
+            "ms": 4,
+            "rlimit": 8108
+          }
+        },
+        "ms": 233,
+        "rlimit": 619605,
+        "functions": 17,
+        "largest_function": {
+          "function": "witness_call::witness_call",
+          "ms": 111,
+          "rlimit": 354753,
+          "success": true
+        }
+      },
+      "module 16 (unit of work: Bolt, HTTP tx/commit)": {
+        "modules": {
+          "unit_l2": {
+            "ms": 112,
+            "rlimit": 285156
+          },
+          "witness_unit": {
+            "ms": 72,
+            "rlimit": 191479
+          },
+          "unit_l1": {
+            "ms": 4,
+            "rlimit": 7386
+          },
+          "unit_runs": {
+            "ms": 0,
+            "rlimit": 0
+          }
+        },
+        "ms": 188,
+        "rlimit": 484021,
+        "functions": 15,
+        "largest_function": {
+          "function": "witness_unit::witness_unit",
+          "ms": 72,
+          "rlimit": 191479,
+          "success": true
+        }
+      },
+      "modules 16+17 (authorization boundary, client status map)": {
+        "modules": {
+          "auth_l2": {
+            "ms": 118,
+            "rlimit": 249450
+          },
+          "witness_auth": {
+            "ms": 58,
+            "rlimit": 134060
+          },
+          "auth_l1": {
+            "ms": 15,
+            "rlimit": 29700
+          }
+        },
+        "ms": 191,
+        "rlimit": 413210,
+        "functions": 19,
+        "largest_function": {
+          "function": "witness_auth::witness_auth",
+          "ms": 58,
+          "rlimit": 134060,
+          "success": true
+        }
+      },
+      "module 17 (SQL adapter)": {
+        "modules": {
+          "sqla_l2": {
+            "ms": 50,
+            "rlimit": 116971
+          },
+          "witness_sqla": {
+            "ms": 14,
+            "rlimit": 28504
+          },
+          "sqla_l1": {
+            "ms": 11,
+            "rlimit": 26667
+          },
+          "sqla_runs": {
+            "ms": 6,
+            "rlimit": 13464
+          }
+        },
+        "ms": 81,
+        "rlimit": 185606,
+        "functions": 16,
+        "largest_function": {
+          "function": "sqla_l2::lemma_step",
+          "ms": 14,
+          "rlimit": 29092,
+          "success": true
+        }
+      },
+      "module 17 (status, capability claims, driver pin)": {
+        "modules": {
+          "opsc_l2": {
+            "ms": 50,
+            "rlimit": 113714
+          },
+          "witness_opsc": {
+            "ms": 18,
+            "rlimit": 34290
+          },
+          "opsc_l1": {
+            "ms": 12,
+            "rlimit": 25528
+          }
+        },
+        "ms": 80,
+        "rlimit": 173532,
+        "functions": 15,
+        "largest_function": {
+          "function": "witness_opsc::witness_opsc",
+          "ms": 18,
+          "rlimit": 34290,
+          "success": true
+        }
+      }
+    }
+  },
+  "controls": {
+    "control_hd1503_erase_ignores_sync_lock": {
+      "tag": "control_hd1503_erase_ignores_sync_lock",
+      "features": "control_hd1503_erase_ignores_sync_lock",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_hd1503_erase_ignores_sync_lock -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1f/control_hd1503_erase_ignores_sync_lock.log",
+      "json": "$RUN_DIR/proofs-d1f/control_hd1503_erase_ignores_sync_lock.json",
+      "wall_seconds": 1.67,
+      "max_rss_kb": 441508,
+      "error_locations": [
+        "src/fhir_l2.rs:227",
+        "src/fhir_l2.rs:237"
+      ],
+      "resource_limit": false,
+      "verified": 113,
+      "errors": 2,
+      "success": false,
+      "verus_total_ms": 1515,
+      "smt_run_ms": 1440,
+      "rlimit_total": 3426690,
+      "modules": {
+        "fhir_l2": {
+          "ms": 269,
+          "rlimit": 613722
+        },
+        "fhir_progress": {
+          "ms": 128,
+          "rlimit": 391016
+        },
+        "witness_call": {
+          "ms": 108,
+          "rlimit": 354753
+        },
+        "cx_hd1503": {
+          "ms": 180,
+          "rlimit": 315654
+        },
+        "unit_l2": {
+          "ms": 121,
+          "rlimit": 285156
+        },
+        "auth_l2": {
+          "ms": 123,
+          "rlimit": 249450
+        },
+        "call_l2": {
+          "ms": 89,
+          "rlimit": 201691
+        },
+        "witness_unit": {
+          "ms": 69,
+          "rlimit": 191479
+        },
+        "witness_auth": {
+          "ms": 47,
+          "rlimit": 134060
+        },
+        "fhir_l1": {
+          "ms": 43,
+          "rlimit": 129096
+        },
+        "sqla_l2": {
+          "ms": 49,
+          "rlimit": 116971
+        },
+        "opsc_l2": {
+          "ms": 49,
+          "rlimit": 113714
+        },
+        "fhir_runs": {
+          "ms": 49,
+          "rlimit": 101228
+        },
+        "call_runs": {
+          "ms": 25,
+          "rlimit": 55053
+        },
+        "witness_opsc": {
+          "ms": 18,
+          "rlimit": 34290
+        },
+        "auth_l1": {
+          "ms": 16,
+          "rlimit": 29700
+        },
+        "witness_sqla": {
+          "ms": 11,
+          "rlimit": 28504
+        },
+        "sqla_l1": {
+          "ms": 12,
+          "rlimit": 26667
+        },
+        "opsc_l1": {
+          "ms": 11,
+          "rlimit": 25528
+        },
+        "sqla_runs": {
+          "ms": 7,
+          "rlimit": 13464
+        },
+        "call_l1": {
+          "ms": 5,
+          "rlimit": 8108
+        },
+        "unit_l1": {
+          "ms": 3,
+          "rlimit": 7386
+        },
+        "unit_runs": {
+          "ms": 0,
+          "rlimit": 0
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_call::witness_call",
+          "ms": 108,
+          "rlimit": 354753,
+          "success": true
+        },
+        {
+          "function": "cx_hd1503::counterexample_hd1503",
+          "ms": 180,
+          "rlimit": 315654,
+          "success": true
+        },
+        {
+          "function": "fhir_l2::lemma_step",
+          "ms": 90,
+          "rlimit": 211812,
+          "success": true
+        },
+        {
+          "function": "witness_unit::witness_unit",
+          "ms": 69,
+          "rlimit": 191479,
+          "success": true
+        },
+        {
+          "function": "fhir_progress::FhirProgress::nonincreasing",
+          "ms": 37,
+          "rlimit": 161030,
+          "success": true
+        },
+        {
+          "function": "witness_auth::witness_auth",
+          "ms": 47,
+          "rlimit": 134060,
+          "success": true
+        },
+        {
+          "function": "fhir_progress::FhirProgress::decreases",
+          "ms": 21,
+          "rlimit": 90454,
+          "success": true
+        },
+        {
+          "function": "fhir_runs::lemma_f_steps",
+          "ms": 43,
+          "rlimit": 89941,
+          "success": true
+        },
+        {
+          "function": "unit_l2::lemma_step",
+          "ms": 37,
+          "rlimit": 74564,
+          "success": true
+        },
+        {
+          "function": "fhir_l2::lemma_raw_inv_at",
+          "ms": 18,
+          "rlimit": 59491,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "fhir_l2::lemma_erase",
+        "fhir_l2::lemma_remove"
+      ],
+      "functions_checked": 115,
+      "max_function_rlimit": 354753,
+      "json_sha256": "9ebf4abb82ab4be9031d2e6db077a42a6de8bcc6792ea5f2dfdf86493416212f",
+      "module": "15",
+      "finding": "HD-1503 / HD-1502 (explorer cmc-fhir-erase-as-built, cmc-fhir-durable-as-built)",
+      "expected": "src/fhir_l2.rs",
+      "counterexample": "cx_hd1503::counterexample_hd1503",
+      "what": "EraseGraph takes no lock, so an erase or a durable removal commits while a SyncOnce runs; the sync's next batch writes its absolute watermark from its in-memory position (Eraser.cls:47-258; FHIRGraph.cls:543-626, 1967-1969)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_fc1501_schedule_untransacted": {
+      "tag": "control_fc1501_schedule_untransacted",
+      "features": "control_fc1501_schedule_untransacted",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_fc1501_schedule_untransacted -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1f/control_fc1501_schedule_untransacted.log",
+      "json": "$RUN_DIR/proofs-d1f/control_fc1501_schedule_untransacted.json",
+      "wall_seconds": 1.61,
+      "max_rss_kb": 440920,
+      "error_locations": [
+        "src/fhir_l2.rs:252"
+      ],
+      "resource_limit": false,
+      "verified": 114,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1465,
+      "smt_run_ms": 1331,
+      "rlimit_total": 3327747,
+      "modules": {
+        "fhir_l2": {
+          "ms": 254,
+          "rlimit": 584953
+        },
+        "fhir_progress": {
+          "ms": 124,
+          "rlimit": 391021
+        },
+        "witness_call": {
+          "ms": 103,
+          "rlimit": 354753
+        },
+        "unit_l2": {
+          "ms": 98,
+          "rlimit": 285156
+        },
+        "auth_l2": {
+          "ms": 114,
+          "rlimit": 249450
+        },
+        "cx_fc1501": {
+          "ms": 104,
+          "rlimit": 239981
+        },
+        "call_l2": {
+          "ms": 94,
+          "rlimit": 201691
+        },
+        "witness_unit": {
+          "ms": 72,
+          "rlimit": 191479
+        },
+        "witness_auth": {
+          "ms": 53,
+          "rlimit": 134060
+        },
+        "fhir_l1": {
+          "ms": 44,
+          "rlimit": 129096
+        },
+        "sqla_l2": {
+          "ms": 50,
+          "rlimit": 116971
+        },
+        "opsc_l2": {
+          "ms": 51,
+          "rlimit": 113714
+        },
+        "fhir_runs": {
+          "ms": 48,
+          "rlimit": 106722
+        },
+        "call_runs": {
+          "ms": 25,
+          "rlimit": 55053
+        },
+        "witness_opsc": {
+          "ms": 18,
+          "rlimit": 34290
+        },
+        "auth_l1": {
+          "ms": 14,
+          "rlimit": 29700
+        },
+        "witness_sqla": {
+          "ms": 14,
+          "rlimit": 28504
+        },
+        "sqla_l1": {
+          "ms": 12,
+          "rlimit": 26667
+        },
+        "opsc_l1": {
+          "ms": 12,
+          "rlimit": 25528
+        },
+        "sqla_runs": {
+          "ms": 6,
+          "rlimit": 13464
+        },
+        "call_l1": {
+          "ms": 5,
+          "rlimit": 8108
+        },
+        "unit_l1": {
+          "ms": 6,
+          "rlimit": 7386
+        },
+        "unit_runs": {
+          "ms": 0,
+          "rlimit": 0
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_call::witness_call",
+          "ms": 103,
+          "rlimit": 354753,
+          "success": true
+        },
+        {
+          "function": "cx_fc1501::counterexample_fc1501",
+          "ms": 104,
+          "rlimit": 239981,
+          "success": true
+        },
+        {
+          "function": "fhir_l2::lemma_step",
+          "ms": 76,
+          "rlimit": 213004,
+          "success": true
+        },
+        {
+          "function": "witness_unit::witness_unit",
+          "ms": 72,
+          "rlimit": 191479,
+          "success": true
+        },
+        {
+          "function": "fhir_progress::FhirProgress::nonincreasing",
+          "ms": 35,
+          "rlimit": 163980,
+          "success": true
+        },
+        {
+          "function": "witness_auth::witness_auth",
+          "ms": 53,
+          "rlimit": 134060,
+          "success": true
+        },
+        {
+          "function": "fhir_runs::lemma_f_steps",
+          "ms": 42,
+          "rlimit": 95318,
+          "success": true
+        },
+        {
+          "function": "fhir_progress::FhirProgress::decreases",
+          "ms": 21,
+          "rlimit": 90454,
+          "success": true
+        },
+        {
+          "function": "unit_l2::lemma_step",
+          "ms": 22,
+          "rlimit": 74564,
+          "success": true
+        },
+        {
+          "function": "fhir_l2::lemma_raw_inv_at",
+          "ms": 19,
+          "rlimit": 57128,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "fhir_l2::lemma_schedule"
+      ],
+      "functions_checked": 115,
+      "max_function_rlimit": 354753,
+      "json_sha256": "273e7a4b7d780a848c0e97e5de5e177173105ffb72e4443989e4d0381f0ec65e",
+      "module": "15",
+      "finding": "F-C1501",
+      "expected": "src/fhir_l2.rs",
+      "counterexample": "cx_fc1501::counterexample_fc1501",
+      "what": "Schedule saves the %SYS.Task, then records task_id in a separate autocommit UPDATE; a failed UPDATE leaves a task the registry does not name (FHIRGraph.cls:701-703)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f1511_upsert_before_load": {
+      "tag": "control_f1511_upsert_before_load",
+      "features": "control_f1511_upsert_before_load",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f1511_upsert_before_load -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1f/control_f1511_upsert_before_load.log",
+      "json": "$RUN_DIR/proofs-d1f/control_f1511_upsert_before_load.json",
+      "wall_seconds": 1.65,
+      "max_rss_kb": 439912,
+      "error_locations": [
+        "src/fhir_l2.rs:270"
+      ],
+      "resource_limit": false,
+      "verified": 114,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1494,
+      "smt_run_ms": 1284,
+      "rlimit_total": 3106370,
+      "modules": {
+        "fhir_l2": {
+          "ms": 267,
+          "rlimit": 565376
+        },
+        "fhir_progress": {
+          "ms": 119,
+          "rlimit": 382544
+        },
+        "witness_call": {
+          "ms": 103,
+          "rlimit": 354753
+        },
+        "unit_l2": {
+          "ms": 122,
+          "rlimit": 285156
+        },
+        "auth_l2": {
+          "ms": 118,
+          "rlimit": 249450
+        },
+        "call_l2": {
+          "ms": 95,
+          "rlimit": 201691
+        },
+        "witness_unit": {
+          "ms": 72,
+          "rlimit": 191479
+        },
+        "witness_auth": {
+          "ms": 52,
+          "rlimit": 134060
+        },
+        "fhir_l1": {
+          "ms": 47,
+          "rlimit": 129096
+        },
+        "sqla_l2": {
+          "ms": 49,
+          "rlimit": 116971
+        },
+        "opsc_l2": {
+          "ms": 51,
+          "rlimit": 113714
+        },
+        "fhir_runs": {
+          "ms": 50,
+          "rlimit": 106610
+        },
+        "call_runs": {
+          "ms": 24,
+          "rlimit": 55053
+        },
+        "cx_f1511": {
+          "ms": 26,
+          "rlimit": 46770
+        },
+        "witness_opsc": {
+          "ms": 17,
+          "rlimit": 34290
+        },
+        "auth_l1": {
+          "ms": 15,
+          "rlimit": 29700
+        },
+        "witness_sqla": {
+          "ms": 9,
+          "rlimit": 28504
+        },
+        "sqla_l1": {
+          "ms": 12,
+          "rlimit": 26667
+        },
+        "opsc_l1": {
+          "ms": 12,
+          "rlimit": 25528
+        },
+        "sqla_runs": {
+          "ms": 7,
+          "rlimit": 13464
+        },
+        "call_l1": {
+          "ms": 5,
+          "rlimit": 8108
+        },
+        "unit_l1": {
+          "ms": 4,
+          "rlimit": 7386
+        },
+        "unit_runs": {
+          "ms": 0,
+          "rlimit": 0
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_call::witness_call",
+          "ms": 103,
+          "rlimit": 354753,
+          "success": true
+        },
+        {
+          "function": "fhir_l2::lemma_step",
+          "ms": 101,
+          "rlimit": 218917,
+          "success": true
+        },
+        {
+          "function": "witness_unit::witness_unit",
+          "ms": 72,
+          "rlimit": 191479,
+          "success": true
+        },
+        {
+          "function": "fhir_progress::FhirProgress::nonincreasing",
+          "ms": 35,
+          "rlimit": 159978,
+          "success": true
+        },
+        {
+          "function": "witness_auth::witness_auth",
+          "ms": 52,
+          "rlimit": 134060,
+          "success": true
+        },
+        {
+          "function": "fhir_runs::lemma_f_steps",
+          "ms": 45,
+          "rlimit": 95185,
+          "success": true
+        },
+        {
+          "function": "fhir_progress::FhirProgress::decreases",
+          "ms": 22,
+          "rlimit": 90454,
+          "success": true
+        },
+        {
+          "function": "unit_l2::lemma_step",
+          "ms": 37,
+          "rlimit": 74564,
+          "success": true
+        },
+        {
+          "function": "call_runs::lemma_c_steps",
+          "ms": 24,
+          "rlimit": 55053,
+          "success": true
+        },
+        {
+          "function": "unit_l2::lemma_run2",
+          "ms": 23,
+          "rlimit": 53998,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "fhir_l2::lemma_register"
+      ],
+      "functions_checked": 115,
+      "max_function_rlimit": 354753,
+      "json_sha256": "90e902cd508c876470f3caf659f48151e670f61650cd5a400f0a1cb990edce3c",
+      "module": "15",
+      "finding": "F-1511",
+      "expected": "src/fhir_l2.rs",
+      "counterexample": "cx_f1511::counterexample_f1511",
+      "what": "Register upserts fhir_graphs before LoadColumns can throw, with no transaction (FHIRGraph.cls:235-258, 274-276)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_progress_rederive_restart": {
+      "tag": "control_progress_rederive_restart",
+      "features": "control_progress_rederive_restart",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_progress_rederive_restart -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1f/control_progress_rederive_restart.log",
+      "json": "$RUN_DIR/proofs-d1f/control_progress_rederive_restart.json",
+      "wall_seconds": 1.67,
+      "max_rss_kb": 441300,
+      "error_locations": [
+        "src/fhir_progress.rs:95"
+      ],
+      "resource_limit": false,
+      "verified": 116,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1523,
+      "smt_run_ms": 1596,
+      "rlimit_total": 3899904,
+      "modules": {
+        "cx_progress": {
+          "ms": 341,
+          "rlimit": 776818
+        },
+        "fhir_l2": {
+          "ms": 254,
+          "rlimit": 598170
+        },
+        "fhir_progress": {
+          "ms": 129,
+          "rlimit": 416308
+        },
+        "witness_call": {
+          "ms": 110,
+          "rlimit": 354753
+        },
+        "unit_l2": {
+          "ms": 96,
+          "rlimit": 285156
+        },
+        "auth_l2": {
+          "ms": 119,
+          "rlimit": 249450
+        },
+        "call_l2": {
+          "ms": 90,
+          "rlimit": 201691
+        },
+        "witness_unit": {
+          "ms": 71,
+          "rlimit": 191479
+        },
+        "witness_auth": {
+          "ms": 68,
+          "rlimit": 134060
+        },
+        "fhir_l1": {
+          "ms": 46,
+          "rlimit": 129096
+        },
+        "sqla_l2": {
+          "ms": 50,
+          "rlimit": 116971
+        },
+        "opsc_l2": {
+          "ms": 51,
+          "rlimit": 113714
+        },
+        "fhir_runs": {
+          "ms": 50,
+          "rlimit": 103538
+        },
+        "call_runs": {
+          "ms": 25,
+          "rlimit": 55053
+        },
+        "witness_opsc": {
+          "ms": 18,
+          "rlimit": 34290
+        },
+        "auth_l1": {
+          "ms": 15,
+          "rlimit": 29700
+        },
+        "witness_sqla": {
+          "ms": 14,
+          "rlimit": 28504
+        },
+        "sqla_l1": {
+          "ms": 12,
+          "rlimit": 26667
+        },
+        "opsc_l1": {
+          "ms": 11,
+          "rlimit": 25528
+        },
+        "sqla_runs": {
+          "ms": 6,
+          "rlimit": 13464
+        },
+        "call_l1": {
+          "ms": 5,
+          "rlimit": 8108
+        },
+        "unit_l1": {
+          "ms": 3,
+          "rlimit": 7386
+        },
+        "unit_runs": {
+          "ms": 0,
+          "rlimit": 0
+        }
+      },
+      "top_functions": [
+        {
+          "function": "cx_progress::counterexample_progress",
+          "ms": 175,
+          "rlimit": 434446,
+          "success": true
+        },
+        {
+          "function": "witness_call::witness_call",
+          "ms": 110,
+          "rlimit": 354753,
+          "success": true
+        },
+        {
+          "function": "cx_progress::lemma_cycle_step",
+          "ms": 113,
+          "rlimit": 240792,
+          "success": true
+        },
+        {
+          "function": "fhir_l2::lemma_step",
+          "ms": 95,
+          "rlimit": 213491,
+          "success": true
+        },
+        {
+          "function": "fhir_progress::FhirProgress::nonincreasing",
+          "ms": 47,
+          "rlimit": 197405,
+          "success": false
+        },
+        {
+          "function": "witness_unit::witness_unit",
+          "ms": 71,
+          "rlimit": 191479,
+          "success": true
+        },
+        {
+          "function": "witness_auth::witness_auth",
+          "ms": 68,
+          "rlimit": 134060,
+          "success": true
+        },
+        {
+          "function": "cx_progress::lemma_states",
+          "ms": 53,
+          "rlimit": 101580,
+          "success": true
+        },
+        {
+          "function": "fhir_runs::lemma_f_steps",
+          "ms": 46,
+          "rlimit": 92094,
+          "success": true
+        },
+        {
+          "function": "fhir_progress::FhirProgress::decreases",
+          "ms": 21,
+          "rlimit": 90454,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "fhir_progress::FhirProgress::nonincreasing"
+      ],
+      "functions_checked": 117,
+      "max_function_rlimit": 434446,
+      "json_sha256": "709ca9f3e6b72f11d7f969ef20219ace5f7745d244af43351439e298134c51b2",
+      "module": "15",
+      "finding": "progress-only (INT-F5.7, spec 235 FR-024; as built and intended)",
+      "expected": "src/fhir_progress.rs",
+      "counterexample": "cx_progress::counterexample_progress",
+      "progress_only": true,
+      "what": "an interrupted re-derivation pass starts again from the first key (FHIRGraph.cls:573-581, 1451-1473)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true,
+      "progress_only_ok": true
+    },
+    "control_fc1604_server_reruns_write": {
+      "tag": "control_fc1604_server_reruns_write",
+      "features": "control_fc1604_server_reruns_write",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_fc1604_server_reruns_write -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1f/control_fc1604_server_reruns_write.log",
+      "json": "$RUN_DIR/proofs-d1f/control_fc1604_server_reruns_write.json",
+      "wall_seconds": 1.63,
+      "max_rss_kb": 439996,
+      "error_locations": [
+        "src/call_l2.rs:167"
+      ],
+      "resource_limit": false,
+      "verified": 114,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1479,
+      "smt_run_ms": 1307,
+      "rlimit_total": 3162904,
+      "modules": {
+        "fhir_l2": {
+          "ms": 235,
+          "rlimit": 596130
+        },
+        "fhir_progress": {
+          "ms": 114,
+          "rlimit": 381634
+        },
+        "witness_fhir": {
+          "ms": 126,
+          "rlimit": 319375
+        },
+        "unit_l2": {
+          "ms": 105,
+          "rlimit": 285156
+        },
+        "auth_l2": {
+          "ms": 121,
+          "rlimit": 249450
+        },
+        "call_l2": {
+          "ms": 100,
+          "rlimit": 200537
+        },
+        "witness_unit": {
+          "ms": 70,
+          "rlimit": 191479
+        },
+        "witness_auth": {
+          "ms": 65,
+          "rlimit": 134060
+        },
+        "fhir_l1": {
+          "ms": 47,
+          "rlimit": 129096
+        },
+        "sqla_l2": {
+          "ms": 50,
+          "rlimit": 116971
+        },
+        "opsc_l2": {
+          "ms": 51,
+          "rlimit": 113714
+        },
+        "cx_fc1604": {
+          "ms": 52,
+          "rlimit": 113039
+        },
+        "fhir_runs": {
+          "ms": 51,
+          "rlimit": 103563
+        },
+        "call_runs": {
+          "ms": 24,
+          "rlimit": 55053
+        },
+        "witness_opsc": {
+          "ms": 16,
+          "rlimit": 34290
+        },
+        "auth_l1": {
+          "ms": 16,
+          "rlimit": 29700
+        },
+        "witness_sqla": {
+          "ms": 14,
+          "rlimit": 28504
+        },
+        "sqla_l1": {
+          "ms": 12,
+          "rlimit": 26667
+        },
+        "opsc_l1": {
+          "ms": 12,
+          "rlimit": 25528
+        },
+        "sqla_runs": {
+          "ms": 6,
+          "rlimit": 13464
+        },
+        "call_l1": {
+          "ms": 5,
+          "rlimit": 8108
+        },
+        "unit_l1": {
+          "ms": 4,
+          "rlimit": 7386
+        },
+        "unit_runs": {
+          "ms": 0,
+          "rlimit": 0
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_fhir::witness_fhir",
+          "ms": 126,
+          "rlimit": 319375,
+          "success": true
+        },
+        {
+          "function": "fhir_l2::lemma_step",
+          "ms": 81,
+          "rlimit": 211917,
+          "success": true
+        },
+        {
+          "function": "witness_unit::witness_unit",
+          "ms": 70,
+          "rlimit": 191479,
+          "success": true
+        },
+        {
+          "function": "fhir_progress::FhirProgress::nonincreasing",
+          "ms": 34,
+          "rlimit": 161030,
+          "success": true
+        },
+        {
+          "function": "witness_auth::witness_auth",
+          "ms": 65,
+          "rlimit": 134060,
+          "success": true
+        },
+        {
+          "function": "cx_fc1604::counterexample_fc1604",
+          "ms": 52,
+          "rlimit": 113039,
+          "success": true
+        },
+        {
+          "function": "fhir_runs::lemma_f_steps",
+          "ms": 46,
+          "rlimit": 92119,
+          "success": true
+        },
+        {
+          "function": "fhir_progress::FhirProgress::decreases",
+          "ms": 19,
+          "rlimit": 90454,
+          "success": true
+        },
+        {
+          "function": "unit_l2::lemma_step",
+          "ms": 23,
+          "rlimit": 74564,
+          "success": true
+        },
+        {
+          "function": "call_runs::lemma_c_steps",
+          "ms": 24,
+          "rlimit": 55053,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "call_l2::lemma_exec"
+      ],
+      "functions_checked": 115,
+      "max_function_rlimit": 319375,
+      "json_sha256": "12e14ef792d169e68dd5172fc4fae5feb270905dae092279cd9d6a7a43ec4245",
+      "module": "16",
+      "finding": "F-C1604 (HD-1603)",
+      "expected": "src/call_l2.rs",
+      "counterexample": "cx_fc1604::counterexample_fc1604",
+      "what": "_run_cypher runs the query again after any exception, a write whose statement left included (cypher_api.py:239-250)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_fc1602_unknown_as_client_error": {
+      "tag": "control_fc1602_unknown_as_client_error",
+      "features": "control_fc1602_unknown_as_client_error",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_fc1602_unknown_as_client_error -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1f/control_fc1602_unknown_as_client_error.log",
+      "json": "$RUN_DIR/proofs-d1f/control_fc1602_unknown_as_client_error.json",
+      "wall_seconds": 1.65,
+      "max_rss_kb": 437492,
+      "error_locations": [
+        "src/call_l2.rs:169"
+      ],
+      "resource_limit": false,
+      "verified": 114,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1496,
+      "smt_run_ms": 1265,
+      "rlimit_total": 3133277,
+      "modules": {
+        "fhir_l2": {
+          "ms": 243,
+          "rlimit": 596130
+        },
+        "fhir_progress": {
+          "ms": 114,
+          "rlimit": 381634
+        },
+        "witness_fhir": {
+          "ms": 128,
+          "rlimit": 319375
+        },
+        "unit_l2": {
+          "ms": 89,
+          "rlimit": 285156
+        },
+        "auth_l2": {
+          "ms": 118,
+          "rlimit": 249450
+        },
+        "call_l2": {
+          "ms": 96,
+          "rlimit": 201287
+        },
+        "witness_unit": {
+          "ms": 70,
+          "rlimit": 191479
+        },
+        "witness_auth": {
+          "ms": 50,
+          "rlimit": 134060
+        },
+        "fhir_l1": {
+          "ms": 47,
+          "rlimit": 129096
+        },
+        "sqla_l2": {
+          "ms": 48,
+          "rlimit": 116971
+        },
+        "opsc_l2": {
+          "ms": 52,
+          "rlimit": 113714
+        },
+        "fhir_runs": {
+          "ms": 49,
+          "rlimit": 103563
+        },
+        "cx_fc1602": {
+          "ms": 41,
+          "rlimit": 82662
+        },
+        "call_runs": {
+          "ms": 24,
+          "rlimit": 55053
+        },
+        "witness_opsc": {
+          "ms": 18,
+          "rlimit": 34290
+        },
+        "auth_l1": {
+          "ms": 15,
+          "rlimit": 29700
+        },
+        "witness_sqla": {
+          "ms": 13,
+          "rlimit": 28504
+        },
+        "sqla_l1": {
+          "ms": 12,
+          "rlimit": 26667
+        },
+        "opsc_l1": {
+          "ms": 12,
+          "rlimit": 25528
+        },
+        "sqla_runs": {
+          "ms": 7,
+          "rlimit": 13464
+        },
+        "call_l1": {
+          "ms": 5,
+          "rlimit": 8108
+        },
+        "unit_l1": {
+          "ms": 3,
+          "rlimit": 7386
+        },
+        "unit_runs": {
+          "ms": 0,
+          "rlimit": 0
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_fhir::witness_fhir",
+          "ms": 128,
+          "rlimit": 319375,
+          "success": true
+        },
+        {
+          "function": "fhir_l2::lemma_step",
+          "ms": 88,
+          "rlimit": 211917,
+          "success": true
+        },
+        {
+          "function": "witness_unit::witness_unit",
+          "ms": 70,
+          "rlimit": 191479,
+          "success": true
+        },
+        {
+          "function": "fhir_progress::FhirProgress::nonincreasing",
+          "ms": 34,
+          "rlimit": 161030,
+          "success": true
+        },
+        {
+          "function": "witness_auth::witness_auth",
+          "ms": 50,
+          "rlimit": 134060,
+          "success": true
+        },
+        {
+          "function": "fhir_runs::lemma_f_steps",
+          "ms": 44,
+          "rlimit": 92119,
+          "success": true
+        },
+        {
+          "function": "fhir_progress::FhirProgress::decreases",
+          "ms": 20,
+          "rlimit": 90454,
+          "success": true
+        },
+        {
+          "function": "cx_fc1602::counterexample_fc1602",
+          "ms": 41,
+          "rlimit": 82662,
+          "success": true
+        },
+        {
+          "function": "unit_l2::lemma_step",
+          "ms": 24,
+          "rlimit": 74564,
+          "success": true
+        },
+        {
+          "function": "call_runs::lemma_c_steps",
+          "ms": 24,
+          "rlimit": 55053,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "call_l2::lemma_exec"
+      ],
+      "functions_checked": 115,
+      "max_function_rlimit": 319375,
+      "json_sha256": "ed6d48afb768a27d46257f57cb463eecdddaaca77f9707e0eb32943effb981b4",
+      "module": "16",
+      "finding": "F-C1602",
+      "expected": "src/call_l2.rs",
+      "counterexample": "cx_fc1602::counterexample_fc1602",
+      "what": "a lost IRIS connection after the statement left is answered HTTP 400, a definite client error (cypher_api.py:369-376)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_fc1703_client_resends_write": {
+      "tag": "control_fc1703_client_resends_write",
+      "features": "control_fc1703_client_resends_write",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_fc1703_client_resends_write -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1f/control_fc1703_client_resends_write.log",
+      "json": "$RUN_DIR/proofs-d1f/control_fc1703_client_resends_write.json",
+      "wall_seconds": 1.69,
+      "max_rss_kb": 442024,
+      "error_locations": [
+        "src/call_l2.rs:180"
+      ],
+      "resource_limit": false,
+      "verified": 114,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1533,
+      "smt_run_ms": 1359,
+      "rlimit_total": 3159701,
+      "modules": {
+        "fhir_l2": {
+          "ms": 266,
+          "rlimit": 596130
+        },
+        "fhir_progress": {
+          "ms": 120,
+          "rlimit": 381634
+        },
+        "witness_fhir": {
+          "ms": 153,
+          "rlimit": 319375
+        },
+        "unit_l2": {
+          "ms": 107,
+          "rlimit": 285156
+        },
+        "auth_l2": {
+          "ms": 115,
+          "rlimit": 249450
+        },
+        "call_l2": {
+          "ms": 89,
+          "rlimit": 192990
+        },
+        "witness_unit": {
+          "ms": 71,
+          "rlimit": 191479
+        },
+        "witness_auth": {
+          "ms": 63,
+          "rlimit": 134060
+        },
+        "fhir_l1": {
+          "ms": 43,
+          "rlimit": 129096
+        },
+        "sqla_l2": {
+          "ms": 51,
+          "rlimit": 116971
+        },
+        "cx_fc1703": {
+          "ms": 59,
+          "rlimit": 116773
+        },
+        "opsc_l2": {
+          "ms": 48,
+          "rlimit": 113714
+        },
+        "fhir_runs": {
+          "ms": 51,
+          "rlimit": 103563
+        },
+        "call_runs": {
+          "ms": 25,
+          "rlimit": 55663
+        },
+        "witness_opsc": {
+          "ms": 18,
+          "rlimit": 34290
+        },
+        "auth_l1": {
+          "ms": 13,
+          "rlimit": 29700
+        },
+        "witness_sqla": {
+          "ms": 14,
+          "rlimit": 28504
+        },
+        "sqla_l1": {
+          "ms": 13,
+          "rlimit": 26667
+        },
+        "opsc_l1": {
+          "ms": 13,
+          "rlimit": 25528
+        },
+        "sqla_runs": {
+          "ms": 6,
+          "rlimit": 13464
+        },
+        "call_l1": {
+          "ms": 5,
+          "rlimit": 8108
+        },
+        "unit_l1": {
+          "ms": 4,
+          "rlimit": 7386
+        },
+        "unit_runs": {
+          "ms": 0,
+          "rlimit": 0
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_fhir::witness_fhir",
+          "ms": 153,
+          "rlimit": 319375,
+          "success": true
+        },
+        {
+          "function": "fhir_l2::lemma_step",
+          "ms": 90,
+          "rlimit": 211917,
+          "success": true
+        },
+        {
+          "function": "witness_unit::witness_unit",
+          "ms": 71,
+          "rlimit": 191479,
+          "success": true
+        },
+        {
+          "function": "fhir_progress::FhirProgress::nonincreasing",
+          "ms": 38,
+          "rlimit": 161030,
+          "success": true
+        },
+        {
+          "function": "witness_auth::witness_auth",
+          "ms": 63,
+          "rlimit": 134060,
+          "success": true
+        },
+        {
+          "function": "cx_fc1703::counterexample_fc1703",
+          "ms": 59,
+          "rlimit": 116773,
+          "success": true
+        },
+        {
+          "function": "fhir_runs::lemma_f_steps",
+          "ms": 46,
+          "rlimit": 92119,
+          "success": true
+        },
+        {
+          "function": "fhir_progress::FhirProgress::decreases",
+          "ms": 20,
+          "rlimit": 90454,
+          "success": true
+        },
+        {
+          "function": "unit_l2::lemma_step",
+          "ms": 22,
+          "rlimit": 74564,
+          "success": true
+        },
+        {
+          "function": "call_runs::lemma_c_steps",
+          "ms": 25,
+          "rlimit": 55663,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "call_l2::lemma_reply"
+      ],
+      "functions_checked": 115,
+      "max_function_rlimit": 319375,
+      "json_sha256": "15cca968e5748c3d2c54e8aea8973cf587e415d38004323c775be1e3ab592bb5",
+      "module": "17",
+      "finding": "F-C1703 (HD-1702)",
+      "expected": "src/call_l2.rs",
+      "counterexample": "cx_fc1703::counterexample_fc1703",
+      "what": "IVGClient._post resends the same POST after a timeout or a 5xx whatever the query (sdk.py:209-228)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f1601_bolt_run_commits": {
+      "tag": "control_f1601_bolt_run_commits",
+      "features": "control_f1601_bolt_run_commits",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f1601_bolt_run_commits -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1f/control_f1601_bolt_run_commits.log",
+      "json": "$RUN_DIR/proofs-d1f/control_f1601_bolt_run_commits.json",
+      "wall_seconds": 1.66,
+      "max_rss_kb": 441348,
+      "error_locations": [
+        "src/unit_l2.rs:143",
+        "src/unit_l2.rs:159",
+        "src/unit_l2.rs:168"
+      ],
+      "resource_limit": false,
+      "verified": 112,
+      "errors": 3,
+      "success": false,
+      "verus_total_ms": 1511,
+      "smt_run_ms": 1438,
+      "rlimit_total": 3407346,
+      "modules": {
+        "fhir_l2": {
+          "ms": 269,
+          "rlimit": 596130
+        },
+        "fhir_progress": {
+          "ms": 120,
+          "rlimit": 381634
+        },
+        "witness_call": {
+          "ms": 141,
+          "rlimit": 354753
+        },
+        "witness_fhir": {
+          "ms": 125,
+          "rlimit": 319375
+        },
+        "unit_l2": {
+          "ms": 100,
+          "rlimit": 258573
+        },
+        "auth_l2": {
+          "ms": 119,
+          "rlimit": 249450
+        },
+        "cx_f1601": {
+          "ms": 109,
+          "rlimit": 219636
+        },
+        "call_l2": {
+          "ms": 92,
+          "rlimit": 201691
+        },
+        "witness_auth": {
+          "ms": 53,
+          "rlimit": 134060
+        },
+        "fhir_l1": {
+          "ms": 47,
+          "rlimit": 129096
+        },
+        "sqla_l2": {
+          "ms": 48,
+          "rlimit": 116971
+        },
+        "opsc_l2": {
+          "ms": 48,
+          "rlimit": 113714
+        },
+        "fhir_runs": {
+          "ms": 50,
+          "rlimit": 103563
+        },
+        "call_runs": {
+          "ms": 24,
+          "rlimit": 55053
+        },
+        "witness_opsc": {
+          "ms": 17,
+          "rlimit": 34290
+        },
+        "auth_l1": {
+          "ms": 15,
+          "rlimit": 29700
+        },
+        "witness_sqla": {
+          "ms": 11,
+          "rlimit": 28504
+        },
+        "sqla_l1": {
+          "ms": 12,
+          "rlimit": 26667
+        },
+        "opsc_l1": {
+          "ms": 11,
+          "rlimit": 25528
+        },
+        "sqla_runs": {
+          "ms": 7,
+          "rlimit": 13464
+        },
+        "call_l1": {
+          "ms": 5,
+          "rlimit": 8108
+        },
+        "unit_l1": {
+          "ms": 4,
+          "rlimit": 7386
+        },
+        "unit_runs": {
+          "ms": 0,
+          "rlimit": 0
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_call::witness_call",
+          "ms": 141,
+          "rlimit": 354753,
+          "success": true
+        },
+        {
+          "function": "witness_fhir::witness_fhir",
+          "ms": 125,
+          "rlimit": 319375,
+          "success": true
+        },
+        {
+          "function": "cx_f1601::counterexample_f1601",
+          "ms": 109,
+          "rlimit": 219636,
+          "success": true
+        },
+        {
+          "function": "fhir_l2::lemma_step",
+          "ms": 97,
+          "rlimit": 211917,
+          "success": true
+        },
+        {
+          "function": "fhir_progress::FhirProgress::nonincreasing",
+          "ms": 38,
+          "rlimit": 161030,
+          "success": true
+        },
+        {
+          "function": "witness_auth::witness_auth",
+          "ms": 53,
+          "rlimit": 134060,
+          "success": true
+        },
+        {
+          "function": "fhir_runs::lemma_f_steps",
+          "ms": 45,
+          "rlimit": 92119,
+          "success": true
+        },
+        {
+          "function": "fhir_progress::FhirProgress::decreases",
+          "ms": 19,
+          "rlimit": 90454,
+          "success": true
+        },
+        {
+          "function": "unit_l2::lemma_step",
+          "ms": 21,
+          "rlimit": 74542,
+          "success": true
+        },
+        {
+          "function": "call_runs::lemma_c_steps",
+          "ms": 24,
+          "rlimit": 55053,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "unit_l2::lemma_commit",
+        "unit_l2::lemma_run1",
+        "unit_l2::lemma_run2"
+      ],
+      "functions_checked": 115,
+      "max_function_rlimit": 354753,
+      "json_sha256": "c468bd70d382710f53af86ef502083809e3e52b8a3372c60879b07171a4e6f8e",
+      "module": "16",
+      "finding": "F-1601",
+      "expected": "src/unit_l2.rs",
+      "counterexample": "cx_f1601::counterexample_f1601",
+      "what": "Bolt BEGIN/COMMIT/ROLLBACK do nothing and every RUN commits (bolt_server.py:500-510, 579-581)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f1610_tx_commit_per_statement": {
+      "tag": "control_f1610_tx_commit_per_statement",
+      "features": "control_f1610_tx_commit_per_statement",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f1610_tx_commit_per_statement -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1f/control_f1610_tx_commit_per_statement.log",
+      "json": "$RUN_DIR/proofs-d1f/control_f1610_tx_commit_per_statement.json",
+      "wall_seconds": 1.68,
+      "max_rss_kb": 439196,
+      "error_locations": [
+        "src/unit_l2.rs:146",
+        "src/unit_l2.rs:156"
+      ],
+      "resource_limit": false,
+      "verified": 113,
+      "errors": 2,
+      "success": false,
+      "verus_total_ms": 1531,
+      "smt_run_ms": 1361,
+      "rlimit_total": 3297299,
+      "modules": {
+        "fhir_l2": {
+          "ms": 241,
+          "rlimit": 596130
+        },
+        "fhir_progress": {
+          "ms": 118,
+          "rlimit": 381634
+        },
+        "witness_call": {
+          "ms": 121,
+          "rlimit": 354753
+        },
+        "witness_fhir": {
+          "ms": 155,
+          "rlimit": 319375
+        },
+        "unit_l2": {
+          "ms": 113,
+          "rlimit": 282529
+        },
+        "auth_l2": {
+          "ms": 118,
+          "rlimit": 249450
+        },
+        "call_l2": {
+          "ms": 93,
+          "rlimit": 201691
+        },
+        "witness_auth": {
+          "ms": 49,
+          "rlimit": 134060
+        },
+        "fhir_l1": {
+          "ms": 47,
+          "rlimit": 129096
+        },
+        "sqla_l2": {
+          "ms": 44,
+          "rlimit": 116971
+        },
+        "opsc_l2": {
+          "ms": 51,
+          "rlimit": 113714
+        },
+        "fhir_runs": {
+          "ms": 46,
+          "rlimit": 103563
+        },
+        "cx_f1610": {
+          "ms": 50,
+          "rlimit": 85633
+        },
+        "call_runs": {
+          "ms": 25,
+          "rlimit": 55053
+        },
+        "witness_opsc": {
+          "ms": 11,
+          "rlimit": 34290
+        },
+        "auth_l1": {
+          "ms": 16,
+          "rlimit": 29700
+        },
+        "witness_sqla": {
+          "ms": 14,
+          "rlimit": 28504
+        },
+        "sqla_l1": {
+          "ms": 12,
+          "rlimit": 26667
+        },
+        "opsc_l1": {
+          "ms": 12,
+          "rlimit": 25528
+        },
+        "sqla_runs": {
+          "ms": 6,
+          "rlimit": 13464
+        },
+        "call_l1": {
+          "ms": 5,
+          "rlimit": 8108
+        },
+        "unit_l1": {
+          "ms": 3,
+          "rlimit": 7386
+        },
+        "unit_runs": {
+          "ms": 0,
+          "rlimit": 0
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_call::witness_call",
+          "ms": 121,
+          "rlimit": 354753,
+          "success": true
+        },
+        {
+          "function": "witness_fhir::witness_fhir",
+          "ms": 155,
+          "rlimit": 319375,
+          "success": true
+        },
+        {
+          "function": "fhir_l2::lemma_step",
+          "ms": 86,
+          "rlimit": 211917,
+          "success": true
+        },
+        {
+          "function": "fhir_progress::FhirProgress::nonincreasing",
+          "ms": 36,
+          "rlimit": 161030,
+          "success": true
+        },
+        {
+          "function": "witness_auth::witness_auth",
+          "ms": 49,
+          "rlimit": 134060,
+          "success": true
+        },
+        {
+          "function": "fhir_runs::lemma_f_steps",
+          "ms": 41,
+          "rlimit": 92119,
+          "success": true
+        },
+        {
+          "function": "fhir_progress::FhirProgress::decreases",
+          "ms": 21,
+          "rlimit": 90454,
+          "success": true
+        },
+        {
+          "function": "cx_f1610::counterexample_f1610",
+          "ms": 50,
+          "rlimit": 85633,
+          "success": true
+        },
+        {
+          "function": "unit_l2::lemma_step",
+          "ms": 37,
+          "rlimit": 77866,
+          "success": true
+        },
+        {
+          "function": "call_runs::lemma_c_steps",
+          "ms": 25,
+          "rlimit": 55053,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "unit_l2::lemma_run1",
+        "unit_l2::lemma_run2"
+      ],
+      "functions_checked": 115,
+      "max_function_rlimit": 354753,
+      "json_sha256": "6a021b083154098622081a95e8d5a3c69d615e01a35e527f88b9a4adee630f67",
+      "module": "16",
+      "finding": "F-1610",
+      "expected": "src/unit_l2.rs",
+      "counterexample": "cx_f1610::counterexample_f1610",
+      "what": "/db/neo4j/tx/commit runs each statement through _run_cypher, which commits it (cypher_api.py:391-401)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f1614_app_without_key_gate": {
+      "tag": "control_f1614_app_without_key_gate",
+      "features": "control_f1614_app_without_key_gate",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f1614_app_without_key_gate -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1f/control_f1614_app_without_key_gate.log",
+      "json": "$RUN_DIR/proofs-d1f/control_f1614_app_without_key_gate.json",
+      "wall_seconds": 1.7,
+      "max_rss_kb": 441564,
+      "error_locations": [
+        "src/auth_l2.rs:131"
+      ],
+      "resource_limit": false,
+      "verified": 114,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1548,
+      "smt_run_ms": 1388,
+      "rlimit_total": 3274371,
+      "modules": {
+        "fhir_l2": {
+          "ms": 256,
+          "rlimit": 596130
+        },
+        "fhir_progress": {
+          "ms": 118,
+          "rlimit": 381634
+        },
+        "witness_call": {
+          "ms": 133,
+          "rlimit": 354753
+        },
+        "witness_fhir": {
+          "ms": 152,
+          "rlimit": 319375
+        },
+        "unit_l2": {
+          "ms": 117,
+          "rlimit": 285156
+        },
+        "auth_l2": {
+          "ms": 114,
+          "rlimit": 216781
+        },
+        "call_l2": {
+          "ms": 90,
+          "rlimit": 201691
+        },
+        "witness_unit": {
+          "ms": 74,
+          "rlimit": 191479
+        },
+        "fhir_l1": {
+          "ms": 46,
+          "rlimit": 129096
+        },
+        "sqla_l2": {
+          "ms": 49,
+          "rlimit": 116971
+        },
+        "opsc_l2": {
+          "ms": 51,
+          "rlimit": 113714
+        },
+        "fhir_runs": {
+          "ms": 50,
+          "rlimit": 103563
+        },
+        "call_runs": {
+          "ms": 25,
+          "rlimit": 55053
+        },
+        "cx_f1614": {
+          "ms": 23,
+          "rlimit": 35328
+        },
+        "witness_opsc": {
+          "ms": 17,
+          "rlimit": 34290
+        },
+        "auth_l1": {
+          "ms": 16,
+          "rlimit": 29700
+        },
+        "witness_sqla": {
+          "ms": 10,
+          "rlimit": 28504
+        },
+        "sqla_l1": {
+          "ms": 12,
+          "rlimit": 26667
+        },
+        "opsc_l1": {
+          "ms": 11,
+          "rlimit": 25528
+        },
+        "sqla_runs": {
+          "ms": 7,
+          "rlimit": 13464
+        },
+        "call_l1": {
+          "ms": 5,
+          "rlimit": 8108
+        },
+        "unit_l1": {
+          "ms": 3,
+          "rlimit": 7386
+        },
+        "unit_runs": {
+          "ms": 0,
+          "rlimit": 0
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_call::witness_call",
+          "ms": 133,
+          "rlimit": 354753,
+          "success": true
+        },
+        {
+          "function": "witness_fhir::witness_fhir",
+          "ms": 152,
+          "rlimit": 319375,
+          "success": true
+        },
+        {
+          "function": "fhir_l2::lemma_step",
+          "ms": 96,
+          "rlimit": 211917,
+          "success": true
+        },
+        {
+          "function": "witness_unit::witness_unit",
+          "ms": 74,
+          "rlimit": 191479,
+          "success": true
+        },
+        {
+          "function": "fhir_progress::FhirProgress::nonincreasing",
+          "ms": 35,
+          "rlimit": 161030,
+          "success": true
+        },
+        {
+          "function": "fhir_runs::lemma_f_steps",
+          "ms": 44,
+          "rlimit": 92119,
+          "success": true
+        },
+        {
+          "function": "fhir_progress::FhirProgress::decreases",
+          "ms": 21,
+          "rlimit": 90454,
+          "success": true
+        },
+        {
+          "function": "unit_l2::lemma_step",
+          "ms": 36,
+          "rlimit": 74564,
+          "success": true
+        },
+        {
+          "function": "call_runs::lemma_c_steps",
+          "ms": 25,
+          "rlimit": 55053,
+          "success": true
+        },
+        {
+          "function": "unit_l2::lemma_run2",
+          "ms": 15,
+          "rlimit": 53998,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "auth_l2::lemma_http"
+      ],
+      "functions_checked": 115,
+      "max_function_rlimit": 354753,
+      "json_sha256": "44a6fb39f06b0256ccb8162f48bc79e26b581ed71f9ba22997b2922c3340708e",
+      "module": "16",
+      "finding": "F-1614",
+      "expected": "src/auth_l2.rs",
+      "counterexample": "cx_f1614::counterexample_f1614",
+      "what": "the demo server's app has no ApiKeyMiddleware (src/iris_demo_server/app.py:1-22)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_fc1603_bolt_binds_every_interface": {
+      "tag": "control_fc1603_bolt_binds_every_interface",
+      "features": "control_fc1603_bolt_binds_every_interface",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_fc1603_bolt_binds_every_interface -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1f/control_fc1603_bolt_binds_every_interface.log",
+      "json": "$RUN_DIR/proofs-d1f/control_fc1603_bolt_binds_every_interface.json",
+      "wall_seconds": 1.68,
+      "max_rss_kb": 440628,
+      "error_locations": [
+        "src/auth_l2.rs:123"
+      ],
+      "resource_limit": false,
+      "verified": 114,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1530,
+      "smt_run_ms": 1351,
+      "rlimit_total": 3321839,
+      "modules": {
+        "fhir_l2": {
+          "ms": 242,
+          "rlimit": 596130
+        },
+        "fhir_progress": {
+          "ms": 118,
+          "rlimit": 381634
+        },
+        "witness_call": {
+          "ms": 105,
+          "rlimit": 354753
+        },
+        "witness_fhir": {
+          "ms": 146,
+          "rlimit": 319375
+        },
+        "unit_l2": {
+          "ms": 113,
+          "rlimit": 285156
+        },
+        "auth_l2": {
+          "ms": 121,
+          "rlimit": 257073
+        },
+        "call_l2": {
+          "ms": 91,
+          "rlimit": 201691
+        },
+        "witness_unit": {
+          "ms": 81,
+          "rlimit": 191479
+        },
+        "fhir_l1": {
+          "ms": 46,
+          "rlimit": 129096
+        },
+        "sqla_l2": {
+          "ms": 47,
+          "rlimit": 116971
+        },
+        "opsc_l2": {
+          "ms": 48,
+          "rlimit": 113714
+        },
+        "fhir_runs": {
+          "ms": 50,
+          "rlimit": 103563
+        },
+        "call_runs": {
+          "ms": 24,
+          "rlimit": 55053
+        },
+        "cx_fc1603": {
+          "ms": 24,
+          "rlimit": 42504
+        },
+        "witness_opsc": {
+          "ms": 18,
+          "rlimit": 34290
+        },
+        "auth_l1": {
+          "ms": 15,
+          "rlimit": 29700
+        },
+        "witness_sqla": {
+          "ms": 14,
+          "rlimit": 28504
+        },
+        "sqla_l1": {
+          "ms": 12,
+          "rlimit": 26667
+        },
+        "opsc_l1": {
+          "ms": 12,
+          "rlimit": 25528
+        },
+        "sqla_runs": {
+          "ms": 7,
+          "rlimit": 13464
+        },
+        "call_l1": {
+          "ms": 4,
+          "rlimit": 8108
+        },
+        "unit_l1": {
+          "ms": 3,
+          "rlimit": 7386
+        },
+        "unit_runs": {
+          "ms": 0,
+          "rlimit": 0
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_call::witness_call",
+          "ms": 105,
+          "rlimit": 354753,
+          "success": true
+        },
+        {
+          "function": "witness_fhir::witness_fhir",
+          "ms": 146,
+          "rlimit": 319375,
+          "success": true
+        },
+        {
+          "function": "fhir_l2::lemma_step",
+          "ms": 87,
+          "rlimit": 211917,
+          "success": true
+        },
+        {
+          "function": "witness_unit::witness_unit",
+          "ms": 81,
+          "rlimit": 191479,
+          "success": true
+        },
+        {
+          "function": "fhir_progress::FhirProgress::nonincreasing",
+          "ms": 37,
+          "rlimit": 161030,
+          "success": true
+        },
+        {
+          "function": "fhir_runs::lemma_f_steps",
+          "ms": 44,
+          "rlimit": 92119,
+          "success": true
+        },
+        {
+          "function": "fhir_progress::FhirProgress::decreases",
+          "ms": 21,
+          "rlimit": 90454,
+          "success": true
+        },
+        {
+          "function": "unit_l2::lemma_step",
+          "ms": 36,
+          "rlimit": 74564,
+          "success": true
+        },
+        {
+          "function": "call_runs::lemma_c_steps",
+          "ms": 24,
+          "rlimit": 55053,
+          "success": true
+        },
+        {
+          "function": "unit_l2::lemma_run2",
+          "ms": 22,
+          "rlimit": 53998,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "auth_l2::lemma_listen"
+      ],
+      "functions_checked": 115,
+      "max_function_rlimit": 354753,
+      "json_sha256": "2e1556ad45991c6bbbf34e77d313cd55624f80ab5a493d97dcd1c7d0531d8f2b",
+      "module": "16",
+      "finding": "F-C1603",
+      "expected": "src/auth_l2.rs",
+      "counterexample": "cx_fc1603::counterexample_fc1603",
+      "what": "BOLT_TCP_HOST defaults to 0.0.0.0 unless `ivg server start` set it (cypher_api.py:51; cli.py:429)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f1714_unmapped_refusal": {
+      "tag": "control_f1714_unmapped_refusal",
+      "features": "control_f1714_unmapped_refusal",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f1714_unmapped_refusal -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1f/control_f1714_unmapped_refusal.log",
+      "json": "$RUN_DIR/proofs-d1f/control_f1714_unmapped_refusal.json",
+      "wall_seconds": 1.71,
+      "max_rss_kb": 441548,
+      "error_locations": [
+        "src/auth_l2.rs:146"
+      ],
+      "resource_limit": false,
+      "verified": 114,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1550,
+      "smt_run_ms": 1384,
+      "rlimit_total": 3303544,
+      "modules": {
+        "fhir_l2": {
+          "ms": 243,
+          "rlimit": 596130
+        },
+        "fhir_progress": {
+          "ms": 122,
+          "rlimit": 381634
+        },
+        "witness_call": {
+          "ms": 138,
+          "rlimit": 354753
+        },
+        "witness_fhir": {
+          "ms": 130,
+          "rlimit": 319375
+        },
+        "unit_l2": {
+          "ms": 97,
+          "rlimit": 285156
+        },
+        "auth_l2": {
+          "ms": 124,
+          "rlimit": 252069
+        },
+        "call_l2": {
+          "ms": 92,
+          "rlimit": 201691
+        },
+        "witness_unit": {
+          "ms": 103,
+          "rlimit": 191479
+        },
+        "fhir_l1": {
+          "ms": 48,
+          "rlimit": 129096
+        },
+        "sqla_l2": {
+          "ms": 51,
+          "rlimit": 116971
+        },
+        "opsc_l2": {
+          "ms": 49,
+          "rlimit": 113714
+        },
+        "fhir_runs": {
+          "ms": 49,
+          "rlimit": 103563
+        },
+        "call_runs": {
+          "ms": 25,
+          "rlimit": 55053
+        },
+        "witness_opsc": {
+          "ms": 16,
+          "rlimit": 34290
+        },
+        "auth_l1": {
+          "ms": 18,
+          "rlimit": 29700
+        },
+        "cx_f1714": {
+          "ms": 18,
+          "rlimit": 29213
+        },
+        "witness_sqla": {
+          "ms": 15,
+          "rlimit": 28504
+        },
+        "sqla_l1": {
+          "ms": 12,
+          "rlimit": 26667
+        },
+        "opsc_l1": {
+          "ms": 13,
+          "rlimit": 25528
+        },
+        "sqla_runs": {
+          "ms": 5,
+          "rlimit": 13464
+        },
+        "call_l1": {
+          "ms": 5,
+          "rlimit": 8108
+        },
+        "unit_l1": {
+          "ms": 3,
+          "rlimit": 7386
+        },
+        "unit_runs": {
+          "ms": 0,
+          "rlimit": 0
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_call::witness_call",
+          "ms": 138,
+          "rlimit": 354753,
+          "success": true
+        },
+        {
+          "function": "witness_fhir::witness_fhir",
+          "ms": 130,
+          "rlimit": 319375,
+          "success": true
+        },
+        {
+          "function": "fhir_l2::lemma_step",
+          "ms": 86,
+          "rlimit": 211917,
+          "success": true
+        },
+        {
+          "function": "witness_unit::witness_unit",
+          "ms": 103,
+          "rlimit": 191479,
+          "success": true
+        },
+        {
+          "function": "fhir_progress::FhirProgress::nonincreasing",
+          "ms": 38,
+          "rlimit": 161030,
+          "success": true
+        },
+        {
+          "function": "fhir_runs::lemma_f_steps",
+          "ms": 44,
+          "rlimit": 92119,
+          "success": true
+        },
+        {
+          "function": "fhir_progress::FhirProgress::decreases",
+          "ms": 21,
+          "rlimit": 90454,
+          "success": true
+        },
+        {
+          "function": "unit_l2::lemma_step",
+          "ms": 23,
+          "rlimit": 74564,
+          "success": true
+        },
+        {
+          "function": "call_runs::lemma_c_steps",
+          "ms": 25,
+          "rlimit": 55053,
+          "success": true
+        },
+        {
+          "function": "unit_l2::lemma_run2",
+          "ms": 22,
+          "rlimit": 53998,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "auth_l2::lemma_client"
+      ],
+      "functions_checked": 115,
+      "max_function_rlimit": 354753,
+      "json_sha256": "6e201595faa17a040bd2ec4fb2300cddfdb372f1864b2e4023fcdf74a89629ef",
+      "module": "17",
+      "finding": "F-1714",
+      "expected": "src/auth_l2.rs",
+      "counterexample": "cx_f1714::counterexample_f1714",
+      "what": "explain, load_ndjson and AsyncIVGClient raise httpx's HTTPStatusError for 401/403 (sdk.py:166-182, 254-281)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_hd1701_read_only_ignored": {
+      "tag": "control_hd1701_read_only_ignored",
+      "features": "control_hd1701_read_only_ignored",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_hd1701_read_only_ignored -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1f/control_hd1701_read_only_ignored.log",
+      "json": "$RUN_DIR/proofs-d1f/control_hd1701_read_only_ignored.json",
+      "wall_seconds": 1.72,
+      "max_rss_kb": 439872,
+      "error_locations": [
+        "src/sqla_l2.rs:111"
+      ],
+      "resource_limit": false,
+      "verified": 114,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1564,
+      "smt_run_ms": 1461,
+      "rlimit_total": 3388146,
+      "modules": {
+        "fhir_l2": {
+          "ms": 252,
+          "rlimit": 596130
+        },
+        "fhir_progress": {
+          "ms": 121,
+          "rlimit": 381634
+        },
+        "witness_call": {
+          "ms": 148,
+          "rlimit": 354753
+        },
+        "witness_fhir": {
+          "ms": 151,
+          "rlimit": 319375
+        },
+        "unit_l2": {
+          "ms": 98,
+          "rlimit": 285156
+        },
+        "auth_l2": {
+          "ms": 121,
+          "rlimit": 249450
+        },
+        "call_l2": {
+          "ms": 92,
+          "rlimit": 201691
+        },
+        "witness_unit": {
+          "ms": 112,
+          "rlimit": 191479
+        },
+        "witness_auth": {
+          "ms": 60,
+          "rlimit": 134060
+        },
+        "fhir_l1": {
+          "ms": 49,
+          "rlimit": 129096
+        },
+        "sqla_l2": {
+          "ms": 48,
+          "rlimit": 119609
+        },
+        "opsc_l2": {
+          "ms": 51,
+          "rlimit": 113714
+        },
+        "fhir_runs": {
+          "ms": 49,
+          "rlimit": 103563
+        },
+        "call_runs": {
+          "ms": 23,
+          "rlimit": 55053
+        },
+        "witness_opsc": {
+          "ms": 18,
+          "rlimit": 34290
+        },
+        "auth_l1": {
+          "ms": 15,
+          "rlimit": 29700
+        },
+        "sqla_l1": {
+          "ms": 11,
+          "rlimit": 26667
+        },
+        "opsc_l1": {
+          "ms": 12,
+          "rlimit": 25528
+        },
+        "sqla_runs": {
+          "ms": 7,
+          "rlimit": 13464
+        },
+        "cx_hd1701": {
+          "ms": 4,
+          "rlimit": 8240
+        },
+        "call_l1": {
+          "ms": 5,
+          "rlimit": 8108
+        },
+        "unit_l1": {
+          "ms": 4,
+          "rlimit": 7386
+        },
+        "unit_runs": {
+          "ms": 0,
+          "rlimit": 0
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_call::witness_call",
+          "ms": 148,
+          "rlimit": 354753,
+          "success": true
+        },
+        {
+          "function": "witness_fhir::witness_fhir",
+          "ms": 151,
+          "rlimit": 319375,
+          "success": true
+        },
+        {
+          "function": "fhir_l2::lemma_step",
+          "ms": 86,
+          "rlimit": 211917,
+          "success": true
+        },
+        {
+          "function": "witness_unit::witness_unit",
+          "ms": 112,
+          "rlimit": 191479,
+          "success": true
+        },
+        {
+          "function": "fhir_progress::FhirProgress::nonincreasing",
+          "ms": 38,
+          "rlimit": 161030,
+          "success": true
+        },
+        {
+          "function": "witness_auth::witness_auth",
+          "ms": 60,
+          "rlimit": 134060,
+          "success": true
+        },
+        {
+          "function": "fhir_runs::lemma_f_steps",
+          "ms": 44,
+          "rlimit": 92119,
+          "success": true
+        },
+        {
+          "function": "fhir_progress::FhirProgress::decreases",
+          "ms": 21,
+          "rlimit": 90454,
+          "success": true
+        },
+        {
+          "function": "unit_l2::lemma_step",
+          "ms": 22,
+          "rlimit": 74564,
+          "success": true
+        },
+        {
+          "function": "call_runs::lemma_c_steps",
+          "ms": 23,
+          "rlimit": 55053,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "sqla_l2::lemma_exec"
+      ],
+      "functions_checked": 115,
+      "max_function_rlimit": 354753,
+      "json_sha256": "5e2fc7767b8416f6b1d2f7d98efcdd9fdbae48c2badaa7c322693375cf36b09b",
+      "module": "17",
+      "finding": "HD-1701 (live ib-HD1701-readonly-flag)",
+      "expected": "src/sqla_l2.rs",
+      "counterexample": "cx_hd1701::counterexample_hd1701_read_only",
+      "what": "execute_sql(read_only=True) runs any statement (iris_sql_store.py:1522-1531)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_hd1701_write_reported_failed": {
+      "tag": "control_hd1701_write_reported_failed",
+      "features": "control_hd1701_write_reported_failed",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_hd1701_write_reported_failed -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1f/control_hd1701_write_reported_failed.log",
+      "json": "$RUN_DIR/proofs-d1f/control_hd1701_write_reported_failed.json",
+      "wall_seconds": 1.69,
+      "max_rss_kb": 440120,
+      "error_locations": [
+        "src/sqla_l2.rs:113"
+      ],
+      "resource_limit": false,
+      "verified": 114,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1530,
+      "smt_run_ms": 1400,
+      "rlimit_total": 3381699,
+      "modules": {
+        "fhir_l2": {
+          "ms": 266,
+          "rlimit": 596130
+        },
+        "fhir_progress": {
+          "ms": 117,
+          "rlimit": 381634
+        },
+        "witness_call": {
+          "ms": 115,
+          "rlimit": 354753
+        },
+        "witness_fhir": {
+          "ms": 131,
+          "rlimit": 319375
+        },
+        "unit_l2": {
+          "ms": 121,
+          "rlimit": 285156
+        },
+        "auth_l2": {
+          "ms": 116,
+          "rlimit": 249450
+        },
+        "call_l2": {
+          "ms": 94,
+          "rlimit": 201691
+        },
+        "witness_unit": {
+          "ms": 81,
+          "rlimit": 191479
+        },
+        "witness_auth": {
+          "ms": 54,
+          "rlimit": 134060
+        },
+        "fhir_l1": {
+          "ms": 45,
+          "rlimit": 129096
+        },
+        "opsc_l2": {
+          "ms": 51,
+          "rlimit": 113714
+        },
+        "sqla_l2": {
+          "ms": 53,
+          "rlimit": 113130
+        },
+        "fhir_runs": {
+          "ms": 49,
+          "rlimit": 103563
+        },
+        "call_runs": {
+          "ms": 25,
+          "rlimit": 55053
+        },
+        "witness_opsc": {
+          "ms": 12,
+          "rlimit": 34290
+        },
+        "auth_l1": {
+          "ms": 15,
+          "rlimit": 29700
+        },
+        "sqla_l1": {
+          "ms": 12,
+          "rlimit": 26667
+        },
+        "opsc_l1": {
+          "ms": 12,
+          "rlimit": 25528
+        },
+        "sqla_runs": {
+          "ms": 6,
+          "rlimit": 13464
+        },
+        "cx_hd1701": {
+          "ms": 5,
+          "rlimit": 8272
+        },
+        "call_l1": {
+          "ms": 5,
+          "rlimit": 8108
+        },
+        "unit_l1": {
+          "ms": 4,
+          "rlimit": 7386
+        },
+        "unit_runs": {
+          "ms": 0,
+          "rlimit": 0
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_call::witness_call",
+          "ms": 115,
+          "rlimit": 354753,
+          "success": true
+        },
+        {
+          "function": "witness_fhir::witness_fhir",
+          "ms": 131,
+          "rlimit": 319375,
+          "success": true
+        },
+        {
+          "function": "fhir_l2::lemma_step",
+          "ms": 100,
+          "rlimit": 211917,
+          "success": true
+        },
+        {
+          "function": "witness_unit::witness_unit",
+          "ms": 81,
+          "rlimit": 191479,
+          "success": true
+        },
+        {
+          "function": "fhir_progress::FhirProgress::nonincreasing",
+          "ms": 35,
+          "rlimit": 161030,
+          "success": true
+        },
+        {
+          "function": "witness_auth::witness_auth",
+          "ms": 54,
+          "rlimit": 134060,
+          "success": true
+        },
+        {
+          "function": "fhir_runs::lemma_f_steps",
+          "ms": 44,
+          "rlimit": 92119,
+          "success": true
+        },
+        {
+          "function": "fhir_progress::FhirProgress::decreases",
+          "ms": 20,
+          "rlimit": 90454,
+          "success": true
+        },
+        {
+          "function": "unit_l2::lemma_step",
+          "ms": 36,
+          "rlimit": 74564,
+          "success": true
+        },
+        {
+          "function": "call_runs::lemma_c_steps",
+          "ms": 25,
+          "rlimit": 55053,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "sqla_l2::lemma_exec"
+      ],
+      "functions_checked": 115,
+      "max_function_rlimit": 354753,
+      "json_sha256": "c7b4bf904130f6b8a58c8b54d464a27c4d615c94b67211b97972b07b5c317b41",
+      "module": "17",
+      "finding": "HD-1701 observation (ib-HD1701-readonly-flag; unfiled candidate S3)",
+      "expected": "src/sqla_l2.rs",
+      "counterexample": "cx_hd1701::counterexample_hd1701_write_reported",
+      "what": "a statement with no result set that ran comes back with IVGResult.error (iris_sql_store.py:1531, 1537-1553)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f1701_unscoped_merge": {
+      "tag": "control_f1701_unscoped_merge",
+      "features": "control_f1701_unscoped_merge",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f1701_unscoped_merge -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1f/control_f1701_unscoped_merge.log",
+      "json": "$RUN_DIR/proofs-d1f/control_f1701_unscoped_merge.json",
+      "wall_seconds": 1.71,
+      "max_rss_kb": 441456,
+      "error_locations": [
+        "src/sqla_l2.rs:125"
+      ],
+      "resource_limit": false,
+      "verified": 114,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1562,
+      "smt_run_ms": 1478,
+      "rlimit_total": 3412396,
+      "modules": {
+        "fhir_l2": {
+          "ms": 252,
+          "rlimit": 596130
+        },
+        "fhir_progress": {
+          "ms": 108,
+          "rlimit": 381634
+        },
+        "witness_call": {
+          "ms": 160,
+          "rlimit": 354753
+        },
+        "witness_fhir": {
+          "ms": 173,
+          "rlimit": 319375
+        },
+        "unit_l2": {
+          "ms": 121,
+          "rlimit": 285156
+        },
+        "auth_l2": {
+          "ms": 117,
+          "rlimit": 249450
+        },
+        "call_l2": {
+          "ms": 96,
+          "rlimit": 201691
+        },
+        "witness_unit": {
+          "ms": 71,
+          "rlimit": 191479
+        },
+        "witness_auth": {
+          "ms": 67,
+          "rlimit": 134060
+        },
+        "fhir_l1": {
+          "ms": 45,
+          "rlimit": 129096
+        },
+        "sqla_l2": {
+          "ms": 52,
+          "rlimit": 114575
+        },
+        "opsc_l2": {
+          "ms": 50,
+          "rlimit": 113714
+        },
+        "fhir_runs": {
+          "ms": 48,
+          "rlimit": 103563
+        },
+        "call_runs": {
+          "ms": 24,
+          "rlimit": 55053
+        },
+        "cx_f1701": {
+          "ms": 18,
+          "rlimit": 37524
+        },
+        "witness_opsc": {
+          "ms": 12,
+          "rlimit": 34290
+        },
+        "auth_l1": {
+          "ms": 16,
+          "rlimit": 29700
+        },
+        "sqla_l1": {
+          "ms": 12,
+          "rlimit": 26667
+        },
+        "opsc_l1": {
+          "ms": 12,
+          "rlimit": 25528
+        },
+        "sqla_runs": {
+          "ms": 7,
+          "rlimit": 13464
+        },
+        "call_l1": {
+          "ms": 5,
+          "rlimit": 8108
+        },
+        "unit_l1": {
+          "ms": 4,
+          "rlimit": 7386
+        },
+        "unit_runs": {
+          "ms": 0,
+          "rlimit": 0
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_call::witness_call",
+          "ms": 160,
+          "rlimit": 354753,
+          "success": true
+        },
+        {
+          "function": "witness_fhir::witness_fhir",
+          "ms": 173,
+          "rlimit": 319375,
+          "success": true
+        },
+        {
+          "function": "fhir_l2::lemma_step",
+          "ms": 91,
+          "rlimit": 211917,
+          "success": true
+        },
+        {
+          "function": "witness_unit::witness_unit",
+          "ms": 71,
+          "rlimit": 191479,
+          "success": true
+        },
+        {
+          "function": "fhir_progress::FhirProgress::nonincreasing",
+          "ms": 32,
+          "rlimit": 161030,
+          "success": true
+        },
+        {
+          "function": "witness_auth::witness_auth",
+          "ms": 67,
+          "rlimit": 134060,
+          "success": true
+        },
+        {
+          "function": "fhir_runs::lemma_f_steps",
+          "ms": 42,
+          "rlimit": 92119,
+          "success": true
+        },
+        {
+          "function": "fhir_progress::FhirProgress::decreases",
+          "ms": 21,
+          "rlimit": 90454,
+          "success": true
+        },
+        {
+          "function": "unit_l2::lemma_step",
+          "ms": 28,
+          "rlimit": 74564,
+          "success": true
+        },
+        {
+          "function": "call_runs::lemma_c_steps",
+          "ms": 24,
+          "rlimit": 55053,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "sqla_l2::lemma_getnodes"
+      ],
+      "functions_checked": 115,
+      "max_function_rlimit": 354753,
+      "json_sha256": "c3d4eea79ac9196c57c75be81bb0463c73ae9d999a8b6d86ad75c857bda272f7",
+      "module": "17",
+      "finding": "F-1701",
+      "expected": "src/sqla_l2.rs",
+      "counterexample": "cx_f1701::counterexample_f1701",
+      "what": "get_nodes with graph None reads every graph's labels and folds them by id (iris_sql_store.py:1116-1150)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f1713_status_parts_short": {
+      "tag": "control_f1713_status_parts_short",
+      "features": "control_f1713_status_parts_short",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f1713_status_parts_short -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1f/control_f1713_status_parts_short.log",
+      "json": "$RUN_DIR/proofs-d1f/control_f1713_status_parts_short.json",
+      "wall_seconds": 1.68,
+      "max_rss_kb": 439212,
+      "error_locations": [
+        "src/opsc_l2.rs:108"
+      ],
+      "resource_limit": false,
+      "verified": 114,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1527,
+      "smt_run_ms": 1424,
+      "rlimit_total": 3392877,
+      "modules": {
+        "fhir_l2": {
+          "ms": 254,
+          "rlimit": 596130
+        },
+        "fhir_progress": {
+          "ms": 117,
+          "rlimit": 381634
+        },
+        "witness_call": {
+          "ms": 132,
+          "rlimit": 354753
+        },
+        "witness_fhir": {
+          "ms": 133,
+          "rlimit": 319375
+        },
+        "unit_l2": {
+          "ms": 123,
+          "rlimit": 285156
+        },
+        "auth_l2": {
+          "ms": 119,
+          "rlimit": 249450
+        },
+        "call_l2": {
+          "ms": 93,
+          "rlimit": 201691
+        },
+        "witness_unit": {
+          "ms": 81,
+          "rlimit": 191479
+        },
+        "witness_auth": {
+          "ms": 62,
+          "rlimit": 134060
+        },
+        "fhir_l1": {
+          "ms": 46,
+          "rlimit": 129096
+        },
+        "opsc_l2": {
+          "ms": 55,
+          "rlimit": 119212
+        },
+        "sqla_l2": {
+          "ms": 52,
+          "rlimit": 116971
+        },
+        "fhir_runs": {
+          "ms": 50,
+          "rlimit": 103563
+        },
+        "call_runs": {
+          "ms": 25,
+          "rlimit": 55053
+        },
+        "auth_l1": {
+          "ms": 16,
+          "rlimit": 29700
+        },
+        "witness_sqla": {
+          "ms": 13,
+          "rlimit": 28504
+        },
+        "sqla_l1": {
+          "ms": 11,
+          "rlimit": 26667
+        },
+        "opsc_l1": {
+          "ms": 11,
+          "rlimit": 25528
+        },
+        "cx_f1713": {
+          "ms": 7,
+          "rlimit": 15897
+        },
+        "sqla_runs": {
+          "ms": 7,
+          "rlimit": 13464
+        },
+        "call_l1": {
+          "ms": 5,
+          "rlimit": 8108
+        },
+        "unit_l1": {
+          "ms": 4,
+          "rlimit": 7386
+        },
+        "unit_runs": {
+          "ms": 0,
+          "rlimit": 0
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_call::witness_call",
+          "ms": 132,
+          "rlimit": 354753,
+          "success": true
+        },
+        {
+          "function": "witness_fhir::witness_fhir",
+          "ms": 133,
+          "rlimit": 319375,
+          "success": true
+        },
+        {
+          "function": "fhir_l2::lemma_step",
+          "ms": 86,
+          "rlimit": 211917,
+          "success": true
+        },
+        {
+          "function": "witness_unit::witness_unit",
+          "ms": 81,
+          "rlimit": 191479,
+          "success": true
+        },
+        {
+          "function": "fhir_progress::FhirProgress::nonincreasing",
+          "ms": 34,
+          "rlimit": 161030,
+          "success": true
+        },
+        {
+          "function": "witness_auth::witness_auth",
+          "ms": 62,
+          "rlimit": 134060,
+          "success": true
+        },
+        {
+          "function": "fhir_runs::lemma_f_steps",
+          "ms": 45,
+          "rlimit": 92119,
+          "success": true
+        },
+        {
+          "function": "fhir_progress::FhirProgress::decreases",
+          "ms": 22,
+          "rlimit": 90454,
+          "success": true
+        },
+        {
+          "function": "unit_l2::lemma_step",
+          "ms": 34,
+          "rlimit": 74564,
+          "success": true
+        },
+        {
+          "function": "call_runs::lemma_c_steps",
+          "ms": 25,
+          "rlimit": 55053,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "opsc_l2::lemma_report"
+      ],
+      "functions_checked": 115,
+      "max_function_rlimit": 354753,
+      "json_sha256": "549335f36ab485edcf79b0b453ba7bcb9a0679da1ea128ab0b83327cbdaafc92",
+      "module": "17",
+      "finding": "F-1713",
+      "expected": "src/opsc_l2.rs",
+      "counterexample": "cx_f1713::counterexample_f1713",
+      "what": "STATUS_PARTS lacks adjacency and routines, which status() can mark unknown (status.py:11; admin.py:551, 752-753)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_fc1706_driver_floor": {
+      "tag": "control_fc1706_driver_floor",
+      "features": "control_fc1706_driver_floor",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_fc1706_driver_floor -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1f/control_fc1706_driver_floor.log",
+      "json": "$RUN_DIR/proofs-d1f/control_fc1706_driver_floor.json",
+      "wall_seconds": 1.67,
+      "max_rss_kb": 440700,
+      "error_locations": [
+        "src/opsc_l2.rs:116"
+      ],
+      "resource_limit": false,
+      "verified": 114,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1522,
+      "smt_run_ms": 1432,
+      "rlimit_total": 3390422,
+      "modules": {
+        "fhir_l2": {
+          "ms": 257,
+          "rlimit": 596130
+        },
+        "fhir_progress": {
+          "ms": 113,
+          "rlimit": 381634
+        },
+        "witness_call": {
+          "ms": 136,
+          "rlimit": 354753
+        },
+        "witness_fhir": {
+          "ms": 139,
+          "rlimit": 319375
+        },
+        "unit_l2": {
+          "ms": 108,
+          "rlimit": 285156
+        },
+        "auth_l2": {
+          "ms": 118,
+          "rlimit": 249450
+        },
+        "call_l2": {
+          "ms": 91,
+          "rlimit": 201691
+        },
+        "witness_unit": {
+          "ms": 96,
+          "rlimit": 191479
+        },
+        "witness_auth": {
+          "ms": 63,
+          "rlimit": 134060
+        },
+        "fhir_l1": {
+          "ms": 44,
+          "rlimit": 129096
+        },
+        "sqla_l2": {
+          "ms": 48,
+          "rlimit": 116971
+        },
+        "opsc_l2": {
+          "ms": 54,
+          "rlimit": 110157
+        },
+        "fhir_runs": {
+          "ms": 49,
+          "rlimit": 103563
+        },
+        "call_runs": {
+          "ms": 25,
+          "rlimit": 55053
+        },
+        "auth_l1": {
+          "ms": 15,
+          "rlimit": 29700
+        },
+        "witness_sqla": {
+          "ms": 14,
+          "rlimit": 28504
+        },
+        "sqla_l1": {
+          "ms": 12,
+          "rlimit": 26667
+        },
+        "opsc_l1": {
+          "ms": 11,
+          "rlimit": 25528
+        },
+        "cx_fc1706": {
+          "ms": 10,
+          "rlimit": 22497
+        },
+        "sqla_runs": {
+          "ms": 7,
+          "rlimit": 13464
+        },
+        "call_l1": {
+          "ms": 4,
+          "rlimit": 8108
+        },
+        "unit_l1": {
+          "ms": 3,
+          "rlimit": 7386
+        },
+        "unit_runs": {
+          "ms": 0,
+          "rlimit": 0
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_call::witness_call",
+          "ms": 136,
+          "rlimit": 354753,
+          "success": true
+        },
+        {
+          "function": "witness_fhir::witness_fhir",
+          "ms": 139,
+          "rlimit": 319375,
+          "success": true
+        },
+        {
+          "function": "fhir_l2::lemma_step",
+          "ms": 82,
+          "rlimit": 211917,
+          "success": true
+        },
+        {
+          "function": "witness_unit::witness_unit",
+          "ms": 96,
+          "rlimit": 191479,
+          "success": true
+        },
+        {
+          "function": "fhir_progress::FhirProgress::nonincreasing",
+          "ms": 35,
+          "rlimit": 161030,
+          "success": true
+        },
+        {
+          "function": "witness_auth::witness_auth",
+          "ms": 63,
+          "rlimit": 134060,
+          "success": true
+        },
+        {
+          "function": "fhir_runs::lemma_f_steps",
+          "ms": 44,
+          "rlimit": 92119,
+          "success": true
+        },
+        {
+          "function": "fhir_progress::FhirProgress::decreases",
+          "ms": 21,
+          "rlimit": 90454,
+          "success": true
+        },
+        {
+          "function": "unit_l2::lemma_step",
+          "ms": 26,
+          "rlimit": 74564,
+          "success": true
+        },
+        {
+          "function": "call_runs::lemma_c_steps",
+          "ms": 25,
+          "rlimit": 55053,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "opsc_l2::lemma_install"
+      ],
+      "functions_checked": 115,
+      "max_function_rlimit": 354753,
+      "json_sha256": "94d5c30d9a047ec8dfeb0f3623505d0ceff2125e8ad424ed06bfd33893711937",
+      "module": "17",
+      "finding": "F-C1706",
+      "expected": "src/opsc_l2.rs",
+      "counterexample": "cx_fc1706::counterexample_fc1706",
+      "what": "pyproject asks intersystems-iris>=1.0.0 and uv.lock pins intersystems-irispython 5.3.2 (pyproject.toml:42; uv.lock:1358-1371)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    }
+  },
+  "trust_inventory": {
+    "own_sources": {
+      "scanned": [
+        "src/auth_l1.rs",
+        "src/auth_l2.rs",
+        "src/call_l1.rs",
+        "src/call_l2.rs",
+        "src/call_runs.rs",
+        "src/cx_f1511.rs",
+        "src/cx_f1601.rs",
+        "src/cx_f1610.rs",
+        "src/cx_f1614.rs",
+        "src/cx_f1701.rs",
+        "src/cx_f1713.rs",
+        "src/cx_f1714.rs",
+        "src/cx_fc1501.rs",
+        "src/cx_fc1602.rs",
+        "src/cx_fc1603.rs",
+        "src/cx_fc1604.rs",
+        "src/cx_fc1703.rs",
+        "src/cx_fc1706.rs",
+        "src/cx_hd1503.rs",
+        "src/cx_hd1701.rs",
+        "src/cx_progress.rs",
+        "src/fhir_l1.rs",
+        "src/fhir_l2.rs",
+        "src/fhir_progress.rs",
+        "src/fhir_runs.rs",
+        "src/lib.rs",
+        "src/opsc_l1.rs",
+        "src/opsc_l2.rs",
+        "src/sqla_l1.rs",
+        "src/sqla_l2.rs",
+        "src/sqla_runs.rs",
+        "src/unit_l1.rs",
+        "src/unit_l2.rs",
+        "src/unit_runs.rs",
+        "src/witness_auth.rs",
+        "src/witness_call.rs",
+        "src/witness_fhir.rs",
+        "src/witness_opsc.rs",
+        "src/witness_sqla.rs",
+        "src/witness_unit.rs"
+      ],
+      "patterns": [
+        "\\bassume\\s*\\(",
+        "\\badmit\\s*\\(",
+        "external_body",
+        "#\\s*\\[\\s*verifier::external",
+        "\\buninterp\\b",
+        "\\baxiom\\b",
+        "assume_specification",
+        "#\\s*\\[\\s*verifier::assume"
+      ],
+      "violations": []
+    },
+    "actors": {
+      "rev": "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877",
+      "path": "/home/ziniu_wu_g5labs_ai/.cargo/git/checkouts/playbook-reference-actors-924e50ff84dd7a85/c03f9fa/crates/actors/src",
+      "violations": [],
+      "note": "verified in the same build without --no-cheating (forwarded to roots only)"
+    },
+    "vstd": {
+      "version": "0.0.0-2026-09-20-0158",
+      "note": "Verus standard library: the trusted base (its axioms, e.g. Map::new and Set extensionality, are Verus's own); not scanned"
+    },
+    "trusted_items_in_this_crate": [],
+    "premises": "named in PROOFS.md (P-F*, PF-*, P-C*, P-U*, P-A*, P-Q*, P-O*, P-D1); none is an assumption inside a proof"
+  },
+  "gate": "pass"
+}

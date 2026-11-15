@@ -1,0 +1,15 @@
+{
+  "command": "IVG_NAMESPACE=AUDITCORE locks.sh iris python experiment/playbook-uplift/native/scenarios.py --out $RUN_DIR/native-rerun --only <10 scenarios that compile no class>",
+  "experiment_head": "e1df8e3ee7e5af2d2e9e11f1ad7b68e193d8e287",
+  "id": "live-native-rerun-1314",
+  "kind": "live",
+  "lane": "orchestrator",
+  "log": "$RUN_DIR/native-rerun/run.log",
+  "log_bytes": 57105,
+  "log_sha256": "b9b7e81dbcf6b516cfa34c7432bb83556d35ff601a344782b40392f499443c90",
+  "observes": "fresh rerun on the unchanged pin of the original submission's 10 class-free scenarios (177 checks, all met): reproduces F-1303 (audit counts mixed between two targets), F-1304 (redact(None) tombstones node records of nodes live in a named graph; verify diverges), F-1305 (graph-per-tenant unprefixed target leaves node history), F-1306 (replay re-applies a post-commit property of an erased node), F-1401 (verify diverges after detach delete with named-graph edges), F-1402 (reader sees a half-redacted graph); resume, random stops and disable mid-run behave as specified. The 4 scenarios that compile the original probe class were not rerun (observation-only rule).",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-13T23:34:03+00:00",
+  "result": "pass"
+}

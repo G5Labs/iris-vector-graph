@@ -1,0 +1,21 @@
+{
+  "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features ctl_sql_commit_ends_all -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+  "error_locations": "src/premises.rs:429",
+  "errors": "1",
+  "experiment_head": "792b8d6faf0bc77799920155f7eb1bea265a9934",
+  "id": "proofs-env2-ctl-sql-commit-ends-all",
+  "json_log": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_sql_commit_ends_all.json",
+  "json_sha256": "9c1a57b7bef2d6f17525d03474a84e269bdc8a1c8beb3d6e0a86342bbb4f1c19",
+  "kind": "control",
+  "lane": "proofs-env2",
+  "log": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_sql_commit_ends_all.log",
+  "log_bytes": 2152,
+  "log_sha256": "fd38b3274750f451e9685051e522e67035d99a6fdad1b78c31cb80cde62dd9a8",
+  "observes": "ctl_sql_commit_ends_all (clause E-SQL-END, mutant sql-commit-ends-all): 1 errors exactly at ['src/premises.rs:429']; failing ['premises::premise_trust_txn_cls_8_false']; every other function verifies as in the baseline=True; counterexample cx::cx_sql_commit_ends_all verified=True",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-15T00:05:11+00:00",
+  "result": "expected-violation",
+  "sources_sha256": "b9a7bb764d46174889eac4290b91b4799f308914c4a682cbed7db9716ad1c99d",
+  "verified": "432"
+}

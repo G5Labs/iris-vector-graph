@@ -1,0 +1,23 @@
+{
+  "check": "m11-commit-control-unlock",
+  "command": "CARGO_TARGET_DIR=$RUN_DIR/target/breadth-b cargo build --release && bash experiment/playbook-completion/tools/locks.sh heavy timeout 1800 $RUN_DIR/target/breadth-b/release/breadth-b",
+  "design": "control",
+  "experiment_head": "f3fe3917466f7bae3e46f32f5b0644cfeaff87c8",
+  "full_log": "$RUN_DIR/breadth-b/mc/full-decisive-20261114T012246Z.log",
+  "full_log_sha256": "227f6720d9d86ed75cc8fa7fd71e2d9d31fd6f5ccd627843af4d51997edf4615",
+  "id": "b-mc-m11-commit-control-unlock",
+  "kind": "control",
+  "lane": "breadth-b",
+  "log": "$RUN_DIR/breadth-b/mc/checks/m11-commit-control-unlock.log",
+  "log_bytes": 1335,
+  "log_sha256": "6c33853aa27e022961cbe713db4072ae037d12a70aa64f74a1286c91762bf961",
+  "module": "11",
+  "observes": "module 11 machine commit design control: expectation violation of 'LED-B4.3 no commit builds on a head whose transaction has not ended'; result met (found 'LED-B4.3 no commit builds on a head whose transaction has not ended'); 25 states, 25 transitions, depth 4, exhaustive within the model's bounds; covers: mutant: head lock released while the caller transaction can still roll back",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T01:23:55+00:00",
+  "result": "expected-violation",
+  "results": "experiment/playbook-completion/models/breadth-b/RESULTS.json",
+  "search": "exhaustive",
+  "states": "25"
+}

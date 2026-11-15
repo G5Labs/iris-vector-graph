@@ -1,0 +1,230 @@
+{
+ "module": "06",
+ "generated_by": "experiment/playbook-completion/models/breadth-a/tools/env_features.py",
+ "method": "regex over the source ranges of the module's inventoried entry points; over-approximates",
+ "env_features": [
+  {
+   "feature": "$Increment (not undone by rollback, P-0401)",
+   "occurrences": 1,
+   "samples": [
+    "iris_src/src/Graph/KG/EmbedQueue.cls:91"
+   ]
+  },
+  {
+   "feature": "SQL transaction control from Python (commit/rollback/autocommit)",
+   "occurrences": 15,
+   "samples": [
+    "iris_vector_graph/_engine/embeddings.py:1004",
+    "iris_vector_graph/_engine/embeddings.py:1022",
+    "iris_vector_graph/_engine/embeddings.py:1024",
+    "iris_vector_graph/_engine/embeddings.py:1109",
+    "iris_vector_graph/_engine/embeddings.py:1112"
+   ]
+  },
+  {
+   "feature": "DDL (CREATE/ALTER/DROP TABLE, INDEX, VIEW)",
+   "occurrences": 5,
+   "samples": [
+    "iris_vector_graph/_engine/embeddings.py:254",
+    "iris_vector_graph/_engine/schema.py:842",
+    "iris_vector_graph/_engine/schema.py:1730",
+    "iris_vector_graph/migrations/docs_and_edge_vectors.py:316",
+    "iris_vector_graph/vector_utils.py:195"
+   ]
+  },
+  {
+   "feature": "Vector SQL (VECTOR type, TO_VECTOR, VECTOR_COSINE/DOT)",
+   "occurrences": 28,
+   "samples": [
+    "iris_src/src/Graph/KG/EmbedQueue.cls:284",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:316",
+    "iris_vector_graph/_engine/embeddings.py:1015",
+    "iris_vector_graph/_engine/embeddings.py:1106",
+    "iris_vector_graph/_engine/embeddings.py:1194"
+   ]
+  },
+  {
+   "feature": "HNSW vector index",
+   "occurrences": 14,
+   "samples": [
+    "iris_vector_graph/_engine/schema.py:334",
+    "iris_vector_graph/_engine/vector.py:1428",
+    "iris_vector_graph/migrations/docs_and_edge_vectors.py:192",
+    "iris_vector_graph/schema.py:1967",
+    "iris_vector_graph/schema.py:1974"
+   ]
+  },
+  {
+   "feature": "$vectorop / $vector (ObjectScript vectors)",
+   "occurrences": 53,
+   "samples": [
+    "iris_src/src/Graph/KG/IVFIndex.cls:24",
+    "iris_src/src/Graph/KG/IVFIndex.cls:68",
+    "iris_src/src/Graph/KG/IVFIndex.cls:76",
+    "iris_src/src/Graph/KG/IVFIndex.cls:78",
+    "iris_src/src/Graph/KG/IVFIndex.cls:80"
+   ]
+  },
+  {
+   "feature": "IRIS EMBEDDING() SQL function / %Embedding config",
+   "occurrences": 4,
+   "samples": [
+    "iris_src/src/Graph/KG/EmbedQueue.cls:308",
+    "iris_vector_graph/_engine/embeddings.py:153",
+    "iris_vector_graph/_engine/embeddings.py:162",
+    "iris_vector_graph/embedding_identity.py:137"
+   ]
+  },
+  {
+   "feature": "iFind full-text index",
+   "occurrences": 5,
+   "samples": [
+    "iris_vector_graph/_engine/vector.py:1510",
+    "iris_vector_graph/migrations/docs_and_edge_vectors.py:180",
+    "iris_vector_graph/migrations/kg_node_stores.py:126",
+    "iris_vector_graph/migrations/kg_node_stores.py:150",
+    "iris_vector_graph/migrations/kg_node_stores.py:162"
+   ]
+  },
+  {
+   "feature": "Process-private globals (^||)",
+   "occurrences": 47,
+   "samples": [
+    "iris_src/src/Graph/KG/IVFIndex.cls:71",
+    "iris_src/src/Graph/KG/IVFIndex.cls:83",
+    "iris_src/src/Graph/KG/IVFIndex.cls:86",
+    "iris_src/src/Graph/KG/IVFIndex.cls:89",
+    "iris_src/src/Graph/KG/IVFIndex.cls:93"
+   ]
+  },
+  {
+   "feature": "Native API from Python (classMethod*, globals)",
+   "occurrences": 23,
+   "samples": [
+    "iris_vector_graph/_engine/vector.py:1566",
+    "iris_vector_graph/_engine/vector.py:1582",
+    "iris_vector_graph/_engine/vector.py:1594",
+    "iris_vector_graph/_engine/vector.py:1602",
+    "iris_vector_graph/_engine/vector.py:1618"
+   ]
+  },
+  {
+   "feature": "Embedded/dynamic SQL in ObjectScript (&sql, %SQL.Statement)",
+   "occurrences": 5,
+   "samples": [
+    "iris_src/src/Graph/KG/EmbedQueue.cls:207",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:225",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:246",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:309",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:317"
+   ]
+  },
+  {
+   "feature": "%DynamicObject / JSON functions",
+   "occurrences": 25,
+   "samples": [
+    "iris_src/src/Graph/KG/EmbedQueue.cls:67",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:86",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:133",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:165",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:337"
+   ]
+  },
+  {
+   "feature": "$ZStrip / $ZConvert character classes",
+   "occurrences": 5,
+   "samples": [
+    "iris_src/src/Graph/KG/EmbedQueue.cls:30",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:141",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:222",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:251",
+    "iris_src/src/Graph/KG/VecIndex.cls:44"
+   ]
+  },
+  {
+   "feature": "Global collation order ($Order/$Query)",
+   "occurrences": 32,
+   "samples": [
+    "iris_src/src/Graph/KG/EmbedQueue.cls:118",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:173",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:187",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:264",
+    "iris_src/src/Graph/KG/IVFIndex.cls:41"
+   ]
+  },
+  {
+   "feature": "Global KILL of a subtree / Merge",
+   "occurrences": 24,
+   "samples": [
+    "iris_src/src/Graph/KG/EmbedQueue.cls:191",
+    "iris_src/src/Graph/KG/IVFIndex.cls:8",
+    "iris_src/src/Graph/KG/IVFIndex.cls:71",
+    "iris_src/src/Graph/KG/IVFIndex.cls:86",
+    "iris_src/src/Graph/KG/IVFIndex.cls:102"
+   ]
+  },
+  {
+   "feature": "Class dictionary reads (^oddDEF, %Dictionary)",
+   "occurrences": 4,
+   "samples": [
+    "iris_vector_graph/_engine/schema.py:333",
+    "iris_vector_graph/schema.py:1999",
+    "iris_vector_graph/schema.py:2002",
+    "iris_vector_graph/schema.py:2087"
+   ]
+  },
+  {
+   "feature": "Task Manager (%SYS.Task)",
+   "occurrences": 3,
+   "samples": [
+    "iris_src/src/Graph/KG/EmbedQueue.cls:353",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:354",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:367"
+   ]
+  },
+  {
+   "feature": "Time functions (DATEDIFF, $ZTimeStamp, $Horolog)",
+   "occurrences": 2,
+   "samples": [
+    "iris_src/src/Graph/KG/EmbedQueue.cls:58",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:100"
+   ]
+  },
+  {
+   "feature": "SQL empty string as $Char(0)",
+   "occurrences": 1,
+   "samples": [
+    "iris_vector_graph/schema.py:2101"
+   ]
+  },
+  {
+   "feature": "SQLCODE-specific handling",
+   "occurrences": 24,
+   "samples": [
+    "iris_src/src/Graph/KG/EmbedQueue.cls:211",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:228",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:249",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:313",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:321"
+   ]
+  },
+  {
+   "feature": "INSERT OR UPDATE",
+   "occurrences": 1,
+   "samples": [
+    "iris_src/src/Graph/KG/EmbedQueue.cls:316"
+   ]
+  },
+  {
+   "feature": "TOP / LIMIT / FETCH FIRST result prefix",
+   "occurrences": 12,
+   "samples": [
+    "iris_vector_graph/_engine/vector.py:377",
+    "iris_vector_graph/_engine/vector.py:569",
+    "iris_vector_graph/_engine/vector.py:578",
+    "iris_vector_graph/_engine/vector.py:587",
+    "iris_vector_graph/_engine/vector.py:595"
+   ]
+  }
+ ]
+}

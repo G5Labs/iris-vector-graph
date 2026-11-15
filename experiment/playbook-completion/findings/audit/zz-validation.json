@@ -1,0 +1,98 @@
+[
+ {
+  "id": "F-C1706",
+  "module": "17",
+  "title": "The pin's uv.lock installs intersystems-irispython 5.3.2, on which IVG answers scores as Decimal or text, raises on duplicate rows and refuses list parameters",
+  "intended": "pyproject.toml:42 asks only intersystems-iris>=1.0.0 and uv.lock:1358-1371 resolves it to intersystems-iris 5.3.3 / intersystems-irispython 5.3.2, so a uv sync of the pin installs this driver. Against it: OPS-B5.4 and iris_vector_graph/stores/iris_sql_store.py:1215-1220 (write_nodes / write_edges: 'A duplicate row is skipped'); the product's own tests and oracle: tests/e2e/test_460_proc_yield_alias_e2e.py:108 (a YIELDed score is int/float), the r306 algorithm oracle (scores equal the float reference), tests/e2e/test_460_r284_retrieve_rrf_score_e2e.py (retrieve() rrf_score is a float); the openCypher TCK scenario Unwind1 [3] (UNWIND of a list concatenation).",
+  "observed": "Driver A/B, alternating in time over the same files (validation/SUITES.md 'Driver A/B'). Under 5.3.2 (the uv.lock version): (a) Cypher CALL ivg.* YIELD scores come back as decimal.Decimal and retrieve()'s rrf_score as str ('.032522474881015332737'): 252 type-only failures in the r306 oracle (oracle-1), 289 in the gated subset, 2/2 rrf cases; (b) a duplicate INSERT inside write_txn surfaces as '<LIST ERROR> Incorrect list format, unsupported type for IRISList' instead of SQLCODE -119, so write_nodes / write_edges / create_edge raise GraphWriteError and write nothing (is_duplicate, iris_vector_graph/_write_txn.py:46-49, recognises only 'unique'/-119; intermittent per case, reproduced in every 5.3.2 run); (c) create_edge_temporal with temporal_structural_rows=True raises 'Cursor closed' (filed as F-C0502); (d) Cypher with list parameters or a list concatenation fails with '<PARAMETER ERROR> Invalid number of parameters' / '<ARGUMENT ERROR> Incorrect number of parameters' (TCK Unwind1 [3]; 14 gated e2e cases). Under 5.4.0 the same files pass: driver540-1 and driver540-2 237 passed (only F-C1002 fails) against driver532-1 224 passed / 14 failed; driver540-oracle-1 960/960 against oracle-1-c00 926/960; gated-540-1 138/138 against gated-532-1 119/138; gated-rag-540-1 2/2 against gated-rag-532-1 0/2; driver540-tck-unwind-1 14/14 against tck-1 and tck-unwind-rerun-1 13/14.",
+  "disposition": "reproduced-test",
+  "evidence": [
+   {"kind": "run", "ref": "val-driver532-1"},
+   {"kind": "run", "ref": "val-driver540-1"},
+   {"kind": "run", "ref": "val-driver540-2"},
+   {"kind": "run", "ref": "val-driver540-oracle-1"},
+   {"kind": "run", "ref": "val-oracle-1-c00"},
+   {"kind": "run", "ref": "val-gated-532-1"},
+   {"kind": "run", "ref": "val-gated-540-1"},
+   {"kind": "run", "ref": "val-gated-rag-532-1"},
+   {"kind": "run", "ref": "val-gated-rag-540-1"},
+   {"kind": "run", "ref": "val-tck-1"},
+   {"kind": "run", "ref": "val-tck-unwind-rerun-1"},
+   {"kind": "run", "ref": "val-driver540-tck-unwind-1"},
+   {"kind": "inspected", "ref": "pyproject.toml:42"},
+   {"kind": "inspected", "ref": "uv.lock:1358-1371"},
+   {"kind": "inspected", "ref": "iris_vector_graph/_write_txn.py:46-49"},
+   {"kind": "inspected", "ref": "iris_vector_graph/stores/iris_sql_store.py:1215-1220"}
+  ],
+  "gates": ["3.7-suites", "3.7-e2e", "3.7-editions", "3.8-findings-disposed"],
+  "severity": "S2",
+  "confidence": "high",
+  "remedy": "Set a driver floor in pyproject.toml (the version CI tests, at least 5.4.0) and refresh uv.lock; type numeric result columns of Cypher procedure YIELDs and retrieve() explicitly; recognise the driver's duplicate-row error in is_duplicate.",
+  "notes": "Filed by the review-response lane (review R2-04) from validation/results.json rules decimal-score, duplicate-listerror, list-param-count and rrf-score-string (category 'product-defect (driver 5.3.2 from the pin's uv.lock)') and validation/SUITES.md 'Product-defect findings' item 1 (S2, high). CI tests a fresh resolution (.github/workflows/ci.yml), so it does not see the locked driver. For (a) the float type rests on the product's tests and oracle: docs/dev/driver-drift.md covers typed decoding of property values, not score columns, and shows 5.4.0 also decoding a SQL decimal as Decimal elsewhere. Driver versions after 5.4.0 not tested (offline)."
+ },
+ {
+  "id": "F-C0502",
+  "module": "05",
+  "title": "With temporal_structural_rows=True, create_edge_temporal raises 'Cursor closed' and writes no marked row under the driver the pin's uv.lock installs",
+  "intended": "specs/246-alt-temporal-structural-row and tests/e2e/test_temporal_structural_row_live.py:53-90: with IRISGraphEngine(temporal_structural_rows=True), create_edge_temporal gives a temporal-only edge a marked structural row; TMP-B2.13 (that engine flag makes the Python side write and remove the marked row).",
+  "observed": "ProgrammingError 'Cursor closed; DataRow is inaccessible' at iris_vector_graph/_engine/temporal.py:188-189 (_own_structural_row -> _select_structural_row fetchone) in e2e-1-c20 and in rerun-3 (fresh session, file first): deterministic; again in driver532-1 (2 cases). The same file passes under intersystems-irispython 5.4.0 (driver540-1, driver540-2).",
+  "disposition": "reproduced-test",
+  "evidence": [
+   {"kind": "run", "ref": "val-e2e-1-c20"},
+   {"kind": "run", "ref": "val-rerun-3"},
+   {"kind": "run", "ref": "val-driver532-1"},
+   {"kind": "run", "ref": "val-driver540-1"},
+   {"kind": "run", "ref": "val-driver540-2"},
+   {"kind": "inspected", "ref": "iris_vector_graph/_engine/temporal.py:171-236"}
+  ],
+  "gates": ["3.7-e2e", "3.8-findings-disposed"],
+  "severity": "S2",
+  "confidence": "medium",
+  "remedy": "As F-C1706 (driver floor); independently, read the structural-row probe before reusing its cursor.",
+  "notes": "Filed by the review-response lane (review R2-04) from validation/results.json rule temporal-structural-cursor (S2, confidence medium). Same carrier as F-C1706 (driver 5.3.2 from the pin's uv.lock); filed on its own because it is an S2 failure of an opt-in write path (spec 246)."
+ },
+ {
+  "id": "F-C1002",
+  "module": "10",
+  "title": "Leiden on Zachary's karate club gives ARI 0.072 on the non-Arno path, against the product's 0.75 threshold",
+  "intended": "Spec 163 FR-007 as stated and relaxed in tests/e2e/test_communities_e2e.py:78-110 (Leiden on the karate club, gamma 0.05, seed 42, ARI > 0.75 against the ground truth); tests/perf/test_leiden_four_way.py:12-15 (the Arno path and the non-Arno leidenalg path both give ARI 1.0 against the leidenalg reference).",
+  "observed": "ARI = 0.072 in e2e-1-c17, rerun-2, driver540-1, driver540-2 and driver532-1: identical on both drivers (deterministic). The Community container has no Arno library, so the non-Arno fallback path ran (ALG-B6.2).",
+  "disposition": "reproduced-test",
+  "evidence": [
+   {"kind": "run", "ref": "val-e2e-1-c17"},
+   {"kind": "run", "ref": "val-rerun-2"},
+   {"kind": "run", "ref": "val-driver540-1"},
+   {"kind": "run", "ref": "val-driver540-2"},
+   {"kind": "run", "ref": "val-driver532-1"},
+   {"kind": "inspected", "ref": "tests/e2e/test_communities_e2e.py:78-110"},
+   {"kind": "inspected", "ref": "tests/perf/test_leiden_four_way.py:12-15"}
+  ],
+  "gates": ["3.7-e2e", "3.8-findings-disposed"],
+  "severity": "S3",
+  "confidence": "medium",
+  "remedy": "Check the fallback path's partition against the leidenalg reference the perf test names, or state the fallback's quality separately.",
+  "notes": "Filed by the review-response lane (review R2-04) from validation/results.json rule leiden-karate-ari and validation/SUITES.md 'Product-defect findings' item 2. Confidence medium: the threshold's derivation assumes one path, and the Arno path could not run here (no libarno on Community: blocked-access)."
+ },
+ {
+  "id": "F-C0606",
+  "module": "06",
+  "title": "The graph-scoped vector search exceeds spec 227 SC-010's 1.1x latency budget in every run",
+  "intended": "Spec 227 SC-010 as stated in tests/perf/test_227_single_graph_latency.py:1-5, 41-44 (a single-graph installation does not pay for routing: the graph-scoped kg_KNN_VEC stays within 1.10x of the 3.2.0 unscoped scan on the same 300 rows, interleaved medians).",
+  "observed": "Scoped/unscoped median ratio 1.169, 1.145, 1.205, 1.124 under driver 5.3.2 (perf-default-1..4) and 1.149, 1.147 under 5.4.0 (perf-default-540-1/2): over the budget in 6 of 6 runs; about 0.25-0.3 ms per call.",
+  "disposition": "reproduced-test",
+  "evidence": [
+   {"kind": "run", "ref": "val-perf-default-1"},
+   {"kind": "run", "ref": "val-perf-default-2"},
+   {"kind": "run", "ref": "val-perf-default-3"},
+   {"kind": "run", "ref": "val-perf-default-4"},
+   {"kind": "run", "ref": "val-perf-default-540-1"},
+   {"kind": "run", "ref": "val-perf-default-540-2"},
+   {"kind": "inspected", "ref": "tests/perf/test_227_single_graph_latency.py:1-44"}
+  ],
+  "gates": ["3.7-perf", "3.8-findings-disposed"],
+  "severity": "S4",
+  "confidence": "medium",
+  "remedy": "Profile the scoped statement against the unscoped one on a quiet machine; either close the gap or restate the budget.",
+  "notes": "Filed by the review-response lane (review R2-04) from validation/results.json rule sc010-latency and validation/SUITES.md 'Product-defect findings' item 3. Measured on a 2-CPU Community container shared with other lanes (load 5-8), not the author's machine; the criterion is the ratio, which the test measures as an interleaved A/B on the same rows."
+ }
+]

@@ -1,0 +1,16 @@
+{
+ "doc": "F-0502: create_edge_temporal(timestamp=None) stores the edge at ts 0; the batch path turns an explicit ts 0\n    into now. Oracle: InsertEdge's own rule (a missing time is now, TemporalIndex.cls:51).",
+ "id": "p0502_missing_time_is_epoch_zero",
+ "log": "$RUN_DIR/breadth-a/live/05-all-20261113T224508.log",
+ "module": "05",
+ "observed": {
+  "batch_first_ts": "1794609910",
+  "batch_stored_at_0": 0,
+  "single_stored_at_0": 1
+ },
+ "oracle": "a missing time means now on every path; an explicit 0 means 0",
+ "reproduced": true,
+ "seconds": 0.1,
+ "started": "2026-11-13T22:45:09",
+ "verdict": "single write stored at 0; batch ts 0 stored at 1794609910 (>1767225600)"
+}

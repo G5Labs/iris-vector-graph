@@ -1,0 +1,2776 @@
+{
+ "_doc": "Orchestrator statuses (product-scope gates and modules 12-14), each citing registered runs. level='reviewed model' marks a result about a model, not the product.",
+ "cells": [
+  {
+   "gate": "3.1-parent",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:ontology-check-final",
+    "run:rr2-ontology-check"
+   ]
+  },
+  {
+   "gate": "3.1-grade",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:ontology-check-final",
+    "run:rr2-ontology-check"
+   ]
+  },
+  {
+   "gate": "3.1-terms",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:ontology-check-final",
+    "run:ontology-self-test",
+    "run:ontology-independent-recheck",
+    "run:rr2-ontology-check",
+    "run:rr2-ontology-self-test",
+    "run:rr2-ontology-independent-recheck"
+   ],
+   "remaining": "system-module terms are not checked across modules (literal rule is per module glossary); maintainer question"
+  },
+  {
+   "gate": "3.1-index",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:ontology-check-final",
+    "run:rr2-ontology-check"
+   ]
+  },
+  {
+   "gate": "3.2-library",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:env-contract-r2",
+    "run:env-contract-r6-recheck",
+    "run:env-contract-selftest",
+    "run:env-ext-r6"
+   ]
+  },
+  {
+   "gate": "3.2-differential",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:env-contract-r2",
+    "run:env-contract-r6-recheck",
+    "run:env-ext-r6"
+   ]
+  },
+  {
+   "gate": "3.2-sharpness",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:env-contract-r2",
+    "run:env-contract-r6-recheck",
+    "run:env-ext-r6"
+   ],
+   "remaining": "r6: 515 of 516 cases single-outcome; one freedom kept"
+  },
+  {
+   "gate": "3.2-mutants",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:env-contract-r2",
+    "run:env-contract-r6-recheck",
+    "run:env-ext-r6"
+   ]
+  },
+  {
+   "gate": "3.3-protocol",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:core-proofs-baseline",
+    "run:core-proofs-f1201-erase-unlocked",
+    "run:core-proofs-f1302-unlocked-start",
+    "run:core-proofs-f1303-other-marker",
+    "run:core-proofs-f1306-replay-reapplies",
+    "run:core-proofs-recheck-baseline",
+    "run:proofs-d9-baseline",
+    "run:proofs-d9-progress-rewind",
+    "run:proofs-d9-recheck"
+   ],
+   "remaining": "model-level: participant contracts composed with actors Protocol2 in two levels; no code correspondence (see 3.5-handlers); premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 46 undeclared writers (corrected census); F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested; as built: the four located controls encode the pin's behaviour (F-1302, F-1303, F-1306; F-1201 intent-undecided) and each has a proved counterexample, and the premises above are violated by reproduced findings, so the product obligation fails [review-response R2-01]; proofs-d9 premise P-D9-3 (bypass writers never write ledger globals) is false at the pin (census: restore, ImportGlobals, Disable/SetStrict, copy_ledger_history, SQL INSERT into ledger_revisions)",
+   "level": "model",
+   "premises_refuted_at_pin": [
+    "no-bypass-writes",
+    "single-target-predicate",
+    "erasure-never-rolls-back"
+   ],
+   "level_detail": "reviewed model",
+   "as_built_findings": [
+    "F-C1301",
+    "F-1304",
+    "F-1305",
+    "F-C1201"
+   ]
+  },
+  {
+   "gate": "3.3-progress-controls",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:core-proofs-progress-rewind",
+    "run:core-proofs-recheck-progress_rewind",
+    "run:proofs-d9-baseline",
+    "run:proofs-d9-progress-rewind",
+    "run:proofs-d9-recheck"
+   ],
+   "remaining": "progress premises not discharged against IRIS scheduling; premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 46 undeclared writers (corrected census); F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
+   "level": "model",
+   "premises_refuted_at_pin": [
+    "no-bypass-writes",
+    "single-target-predicate",
+    "erasure-never-rolls-back"
+   ],
+   "level_detail": "reviewed model"
+  },
+  {
+   "gate": "3.3-cost",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:core-proofs-baseline",
+    "run:core-proofs-recheck-baseline"
+   ],
+   "level": "method",
+   "level_detail": "proof cost per crate: a property of the verification, not of the product"
+  },
+  {
+   "gate": "3.3a-axioms",
+   "module": "product",
+   "status": "open",
+   "evidence": [],
+   "remaining": "axioms/mechanisms/lifecycles exist for the worked example only (experiment/playbook-uplift/semantics); not product-wide"
+  },
+  {
+   "gate": "3.3a-mechanisms",
+   "module": "product",
+   "status": "open",
+   "evidence": [],
+   "remaining": "worked example only"
+  },
+  {
+   "gate": "3.3a-lifecycles",
+   "module": "product",
+   "status": "open",
+   "evidence": [],
+   "remaining": "worked example only"
+  },
+  {
+   "gate": "3.3a-domain-contract",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:core-proofs-baseline",
+    "run:core-proofs-recheck-baseline",
+    "run:trace-conformance-ledger"
+   ],
+   "remaining": "replay-equals-store contract proved for the reviewed model; as-built fails (F-1304/F-1305/F-1306); premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 46 undeclared writers (corrected census); F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
+   "level": "model",
+   "premises_refuted_at_pin": [
+    "no-bypass-writes",
+    "single-target-predicate",
+    "erasure-never-rolls-back"
+   ],
+   "level_detail": "reviewed model",
+   "as_built_findings": [
+    "F-1304",
+    "F-1305",
+    "F-1306"
+   ]
+  },
+  {
+   "gate": "3.3a-trace",
+   "module": "product",
+   "status": "open",
+   "evidence": [],
+   "remaining": "requirement-to-axiom tracing only for modules 12-14"
+  },
+  {
+   "gate": "3.5-lint",
+   "module": "product",
+   "status": "open",
+   "evidence": [],
+   "remaining": "product linters not run"
+  },
+  {
+   "gate": "3.5-style",
+   "module": "product",
+   "status": "open",
+   "evidence": [],
+   "remaining": "no style review of product code (observation-only)"
+  },
+  {
+   "gate": "3.6-composition",
+   "module": "product",
+   "status": "open",
+   "evidence": [
+    "run:core-proofs-baseline",
+    "run:core-proofs-recheck-baseline",
+    "run:trace-conformance-ledger"
+   ],
+   "remaining": "composition proved over contracts; committed IRIS transactions checked empirically on one scenario only; no proof over ObjectScript/Python (no frontend)"
+  },
+  {
+   "gate": "3.6-closure",
+   "module": "product",
+   "status": "open",
+   "evidence": [
+    "run:corr-closure-scan",
+    "run:followup-writer-census"
+   ],
+   "remaining": "condition list not written. Ledger-state writers outside any modelled action, reconciled (review R2-04): corr-closure-scan finds 1 of 44 literal-name sites (restore_snapshot, snapshot.py:403; F-1801); followup-writer-census lists 8 ledger writers outside the ledger classes, of which it agrees on 4 (EraseAll, EraseEdgeRow, EraseLedgerFor: erasure owner actions without the head lock, F-1114; restore via _import_global_from_ndjson, snapshot.py:1679, the same writer as the scan's snapshot.py:403) and adds 4 the scan does not see because they use run-time names or a client surface: Snapshot.ImportGlobals (Snapshot.cls:31, $System.OBJ.Load), Snapshot.SetNodeJSON (Snapshot.cls:90, Set @ indirection), legacy.copy_ledger_history (legacy.py:642; F-C1306) and the SQL INSERT surface of Graph_KG.ledger_revisions (the triggers cover UPDATE and DELETE only). So 5 ledger writers lie outside every modelled action, not 1 (erratum for corr-closure-scan in evidence/errata.json)"
+  },
+  {
+   "gate": "3.7-explorers",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:core-m1-reviewed-a",
+    "run:env-contract-selftest"
+   ]
+  },
+  {
+   "gate": "3.7-integration-worlds",
+   "module": "product",
+   "status": "open",
+   "evidence": [
+    "run:live-lost-ack-commit",
+    "run:live-native-rerun-1314",
+    "run:live-crash-world-r2",
+    "run:env-synchcommit-setting"
+   ],
+   "remaining": "lost-ack world (6/6 exactly once) and native rerun ran; the instance crash world ran once per world (live-crash-world-r2: in-flight commit all-or-nothing; an acknowledged commit lost with SynchCommit=0, env-synchcommit-setting; F-C1102 intent-undecided); SynchCommit=1, repeated trials and multi-node worlds not run"
+  },
+  {
+   "gate": "3.7-differential",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:env-contract-r2",
+    "run:env-contract-r6-recheck",
+    "run:env-ext-r6"
+   ]
+  },
+  {
+   "gate": "3.7-editions",
+   "module": "product",
+   "status": "blocked",
+   "level": "product",
+   "evidence": [
+    "run:ver-e261-d532",
+    "run:ver-e261-d540",
+    "run:ver-e262-d532-full",
+    "run:ver-e262-d540-full",
+    "run:ver-matrix-compare",
+    "run:ver-avail-iris-2026.3",
+    "run:ver-arno-callout",
+    "run:val-driver540-1",
+    "run:val-driver532-1",
+    "versions/AVAILABILITY.md",
+    "versions/VERSIONS.md"
+   ],
+   "as_built_findings": [
+    "F-C1705",
+    "F-C1706"
+   ],
+   "remaining": "compared: IRIS Community 2026.1 and 2026.2 with drivers 5.3.2 and 5.4.0 (SQL COMMIT/ROLLBACK end one level on both engines and drivers, F-C1705; driver 5.3.2 defects, F-C1706). Blocked-access (attempts recorded in versions/AVAILABILITY.md): an IRIS 2026.3 engine (no public tag; irishealth:2026.3.0AI is on an internal registry), an Enterprise or IRIS for Health image and licence, and an x86_64 libarno_callout.so"
+  },
+  {
+   "gate": "3.7-full-rerun",
+   "module": "product",
+   "status": "closed",
+   "level": "product",
+   "evidence": [
+    "run:verify-clean-25ba22dd",
+    "run:verify-clean-a42f10c8",
+    "experiment/playbook-completion/verify.sh"
+   ],
+   "remaining": "A full rerun from clean builds on candidate 25ba22dd (verify.sh --live --clean: every model crate in an empty target, every proof runner with a private RUN_DIR, live rounds on the dedicated IRIS): 73 of 73 steps exit 0, each result recorded in $RUN_DIR/verify/20261114T203920Z (summary.jsonl, per-step logs with SHA-256, versions, inputs). The earlier clean run on a42f10c8 failed nine proof readers and is kept. Commits after 25ba22dd are queue, review and new-lane artifacts, not inputs of these steps."
+  },
+  {
+   "gate": "3.8-status",
+   "module": "product",
+   "status": "closed",
+   "level": "method",
+   "evidence": [
+    "run:status-numbers-check",
+    "experiment/playbook-completion/STATUS.md"
+   ],
+   "remaining": "STATUS.md gives each phase's level, status and conditions, the blockers and the ranked maintainer questions; its numbers are generated from the artifacts and checked by the fast gate (tools/status_numbers.py). The verdict is 'not complete'."
+  },
+  {
+   "gate": "3.8-trust",
+   "module": "product",
+   "status": "closed",
+   "level": "method",
+   "evidence": [
+    "run:rf-premise-map-check-r3",
+    "run:rf-closure-check-r3",
+    "experiment/playbook-completion/TRUST.md",
+    "experiment/playbook-completion/reflection/CLOSURE.md"
+   ],
+   "remaining": "TRUST.md lists the trusted items (Verus/vstd, actors/explorer, the executable contract, the journal oracle, harnesses, upstream fixtures), the premises whose status changed, the premises the proofs introduce, and log provenance (six superseded proof logs, never relabelled); every premise is mapped to a test (reflection/premise_tests.json) and every environment condition to its validation or assumption (CLOSURE.md)."
+  },
+  {
+   "gate": "3.8-test-reflection",
+   "module": "product",
+   "status": "open",
+   "evidence": [],
+   "remaining": "pending"
+  },
+  {
+   "gate": "3.8-review",
+   "module": "product",
+   "status": "closed",
+   "level": "method",
+   "evidence": [
+    "run:independent-review-1",
+    "run:independent-review-2-final",
+    "run:independent-review-3",
+    "run:independent-review-4",
+    "run:independent-review-5",
+    "run:independent-review-6",
+    "review/REVIEW-6.md",
+    "review/RESPONSE-5.md"
+   ],
+   "remaining": "Signed off in the sixth pass for candidate 76fb07ce: the specification against intent and the account's accuracy (not a claim that the product passes; the product fails most obligations). Passes 1-5 did not sign off; their conditions were met (R5-01..R5-09) or stated as not done (R5-10 parts). The minor inaccuracies R6-01..R6-03 are corrected after the candidate. The operator applied O-1 to IVG262CAP (22:42 UTC). D-7 (proofs-env), added after the candidate, needs its own scoped reviewer addendum."
+  },
+  {
+   "gate": "5-trust-strict",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:core-proofs-baseline",
+    "run:core-proofs-recheck-baseline"
+   ],
+   "remaining": "proof crate trust inventory empty; contract and models are executable (not proofs)"
+  },
+  {
+   "gate": "5-mutants-located",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:core-proofs-f1302-unlocked-start",
+    "run:core-proofs-recheck-f1302_unlocked_start",
+    "run:env-contract-r2"
+   ]
+  },
+  {
+   "gate": "5-selftests",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:ontology-self-test",
+    "run:env-contract-selftest",
+    "run:decoder-map-ledger",
+    "run:trace-conformance-controls",
+    "run:structural-selftests"
+   ]
+  },
+  {
+   "gate": "5-hygiene",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:hygiene-check-r1",
+    "tools/locks.sh",
+    "tools/locks_rec.py",
+    "tools/hygiene_check.py",
+    "incidents/IVG460SNAP.md",
+    "incidents/HEALTH-ALERT-0119.md",
+    "incidents/superseded-logs.json"
+   ],
+   "remaining": "From the commit after d293fb6b, tools/locks.sh logs every hold to $RUN_DIR/locks/holds.jsonl (request with the command, parent pid, free disk and the wait cap; acquired with the wait and the holder's own pid and process group, so a job is stopped by that pid; released with the exit code; timeout), refuses a lock when free disk is below a floor (LOCK_DISK_FLOOR_GB, 20), and tools/hygiene_check.py checks the log (H1 one holder at a time per lock, H2 every hold released or its holder alive, H3 hold time <= 3 h, H4 disk floor, H5 a stoppable pid, H6 wait caps and outcomes, H7 well-formed lines; self-test with seeded violations); verify.sh runs the self-test in every mode and the check over its own window at the end. Closed at method level by hygiene-check-r1 (20 holds since logging began, 0 problems) and the per-run step of every verify.sh mode. Not covered: a job that never goes through locks.sh. Recorded lapses before the log: uncoordinated connections 23:02:53-23:03:40 UTC (IVG460SNAP), a heavy-lock deadlock from wrapping a self-locking proof runner (stopped by PID), licence exhaustion by the scratch-236 suites (HEALTH-ALERT-0119), and overwritten proof logs (superseded-logs.json).",
+   "level": "method"
+  },
+  {
+   "gate": "5a-proof-debt",
+   "module": "product",
+   "status": "closed",
+   "level": "method",
+   "evidence": [
+    "run:rf-premise-map-check-r3",
+    "experiment/playbook-completion/PROOF-DEBT.md"
+   ],
+   "remaining": "PROOF-DEBT.md lists every unproved obligation (D-1..D-14) with the evidence that stands instead and why the proof is missing; paid rows name their decisive runs; nothing is reported as proved without a decisive Verus run with an empty trust inventory. Open debt: D-2..D-8, D-11."
+  },
+  {
+   "gate": "5a-gate-20min",
+   "module": "product",
+   "status": "closed",
+   "level": "method",
+   "evidence": [
+    "run:verify-merge-20e3b336",
+    "run:verify-merge-3904248d",
+    "run:verify-merge-4f7da97d",
+    "run:verify-clean-25ba22dd",
+    "experiment/playbook-completion/verify.sh",
+    "experiment/playbook-completion/tools/merge_gate.py"
+   ],
+   "remaining": "Interpretation corrected (operator, 2026-11-14 22:45 UTC; verification-playbook.txt:479-489): the hard 20-minute bound is on the merge gate, a single build on one machine whose blocking checks are real-database tests of the touched slices plus a fixed canary set, the spec and trust checks and Verus on the changed crates only (a time or resource limit is debt, not a failure); full controls and every crate belong to the periodic full verification. verify.sh --merge re-executes itself under timeout 1200 and passed on 20e3b336 in 215 s (base 25ba22dd; changed crate proofs-env verified; 12 unchanged crates reused after their sources hashes and their base gate exits were checked; canaries: the contract's named cases, trace conformance, F-1201; touched slices 03, 10, 11, 17; module 13 via the ledger canaries). Two earlier failing merge runs are kept; they show the gate blocks. 'Touched slices' in this observation-only audit are the modules whose verification artifacts changed since the base; the product source is pinned. The periodic full verification is verify.sh --live --clean (verify-clean-25ba22dd, 5,119 s). Slice selection (review A-02, tightened after the addendum): a change to a shared harness (traces/, iris-contract/, contract-2/, live probes, trace-replay's library, iris_conn/locks) replays every runnable module; otherwise the modules whose verification files or matrix cells changed since the base; modules whose replay is blocked (15: no FHIR server) are listed, not run. A Verus time or resource limit is written to merge-debt.jsonl and reported as inconclusive, never as a pass (A-01). proofs-env (D-7) postdates the base 25ba22dd, so it has not yet been through a periodic full verification; its lane baseline, controls and recheck stand."
+  },
+  {
+   "gate": "5b-client-entry",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:env-contract-r2",
+    "run:env-contract-r6-recheck",
+    "run:env-ext-r6"
+   ]
+  },
+  {
+   "gate": "5b-refuse-not-guess",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:env-contract-r2",
+    "run:env-contract-r6-recheck",
+    "run:env-ext-r6"
+   ]
+  },
+  {
+   "gate": "5c-root-causes",
+   "module": "product",
+   "status": "open",
+   "evidence": [],
+   "remaining": "root-cause grouping pending"
+  },
+  {
+   "gate": "5c-reviewers",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:independent-review-1",
+    "run:independent-review-2-final",
+    "run:sim-main-20261114",
+    "run:sim-race-20261114",
+    "run:sim-oracle-selftest"
+   ],
+   "remaining": "mechanical evidence audit, adversarial review and a randomized simulator through the real product (304 schedules, invariants after every commit) all ran"
+  },
+  {
+   "gate": "3.1-cells",
+   "module": "12",
+   "status": "closed",
+   "evidence": [],
+   "remaining": "original gate: cells defined or assigned"
+  },
+  {
+   "gate": "3.1-coverage",
+   "module": "12",
+   "status": "open",
+   "evidence": [],
+   "remaining": "entry-point reconciliation for 12-14 not run"
+  },
+  {
+   "gate": "3.1-intent",
+   "module": "12",
+   "status": "closed",
+   "level": "method",
+   "evidence": [
+    "run:intent-structure-check",
+    "run:intent-structure-selftest",
+    "intent/HD-1201.md"
+   ],
+   "remaining": "intent recovered independently for HD-1201 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided"
+  },
+  {
+   "gate": "3.2-coverage",
+   "module": "12",
+   "status": "closed",
+   "evidence": [
+    "run:env-contract-r2"
+   ],
+   "remaining": "locks, nested txn, dirty reads, row locks, process stop are in the contract"
+  },
+  {
+   "gate": "3.3-L1",
+   "module": "12",
+   "status": "closed",
+   "evidence": [
+    "run:core-proofs-baseline",
+    "run:core-proofs-recheck-baseline"
+   ],
+   "level": "model",
+   "remaining": "premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 46 undeclared writers (corrected census); F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
+   "premises_refuted_at_pin": [
+    "no-bypass-writes",
+    "single-target-predicate",
+    "erasure-never-rolls-back"
+   ],
+   "level_detail": "reviewed model",
+   "as_built_findings": [
+    "F-C1301",
+    "F-1304",
+    "F-1305",
+    "F-C1201"
+   ]
+  },
+  {
+   "gate": "3.3-L2",
+   "module": "12",
+   "status": "closed",
+   "evidence": [
+    "run:core-refine-m2-reviewed"
+   ],
+   "level": "model",
+   "remaining": "premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 46 undeclared writers (corrected census); F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
+   "premises_refuted_at_pin": [
+    "no-bypass-writes",
+    "single-target-predicate",
+    "erasure-never-rolls-back"
+   ],
+   "level_detail": "reviewed model",
+   "as_built_findings": [
+    "F-C1301",
+    "F-1304",
+    "F-1305",
+    "F-C1201"
+   ]
+  },
+  {
+   "gate": "3.3-refinement",
+   "module": "12",
+   "status": "closed",
+   "evidence": [
+    "run:core-refine-m2-reviewed",
+    "run:core-proofs-baseline",
+    "run:core-proofs-recheck-baseline",
+    "run:core-refine-m2-as-built"
+   ],
+   "remaining": "model to model; as-built fails refinement (core-refine-m2-as-built); premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 46 undeclared writers (corrected census); F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
+   "level": "model",
+   "premises_refuted_at_pin": [
+    "no-bypass-writes",
+    "single-target-predicate",
+    "erasure-never-rolls-back"
+   ],
+   "level_detail": "reviewed model",
+   "as_built_findings": [
+    "F-C1301",
+    "F-1304",
+    "F-1305",
+    "F-C1201"
+   ]
+  },
+  {
+   "gate": "3.3-controls",
+   "module": "12",
+   "status": "closed",
+   "evidence": [
+    "run:core-proofs-f1302-unlocked-start",
+    "run:core-proofs-recheck-f1302_unlocked_start"
+   ]
+  },
+  {
+   "gate": "3.3-model-check",
+   "module": "12",
+   "status": "closed",
+   "evidence": [
+    "run:core-m2-as-built-F1201-stmt",
+    "run:live-f1201-reproduced",
+    "run:live-native-rerun-1314"
+   ],
+   "remaining": "as-built violates; reviewed model passes"
+  },
+  {
+   "gate": "3.3a-writesets",
+   "module": "12",
+   "status": "open",
+   "evidence": [
+    "run:writer-census",
+    "run:followup-writer-census"
+   ],
+   "remaining": "corrected census (followup-writer-census, superseding writer-census's 100): 162 (invariant, writer) obligations, 20 conditional obligations and 3 write-set gaps, each an open cell of this gate in the writer's module (matrix-input/writer-census-obligations.json; 01: 29, 03: 28, 04: 20, 05: 16, 06: 15, 11: 1, 12: 4, 15: 28, 17: 21, 18: 23; module 12: 4); INV-no-live-tombstone fails with non-serializing bypass writers (F-C1301) [review-response R2-02]",
+   "as_built_findings": [
+    "F-C1301"
+   ]
+  },
+  {
+   "gate": "3.4-statements",
+   "module": "12",
+   "status": "open",
+   "evidence": [],
+   "remaining": "no statement-level correspondence proof for IRIS SQL/ObjectScript (no frontend); trace conformance only"
+  },
+  {
+   "gate": "3.4-ownership",
+   "module": "12",
+   "status": "open",
+   "evidence": [
+    "run:writer-census"
+   ],
+   "remaining": "stores have several writers outside the ledger"
+  },
+  {
+   "gate": "3.4-storage-order",
+   "module": "12",
+   "status": "open",
+   "evidence": [
+    "run:storage-order-scan"
+   ]
+  },
+  {
+   "gate": "3.4-declared-reads",
+   "module": "12",
+   "status": "open",
+   "evidence": [],
+   "remaining": "reads not checked; writes checked by journal frame"
+  },
+  {
+   "gate": "3.5-handlers",
+   "module": "12",
+   "status": "open",
+   "evidence": [
+    "run:trace-conformance-ledger"
+   ],
+   "remaining": "no automated source-level verification of the ObjectScript/Python handlers in this experiment (no supported frontend integrated here); strongest correspondence is journal trace conformance; unchecked: every line outside the traced scenario"
+  },
+  {
+   "gate": "3.5-lockplans",
+   "module": "12",
+   "status": "open",
+   "evidence": [],
+   "remaining": "lock plan not proved; F-1201 shows the eraser's missing head lock"
+  },
+  {
+   "gate": "3.5-decoders",
+   "module": "12",
+   "status": "closed",
+   "evidence": [
+    "run:decoder-map-ledger"
+   ]
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "12",
+   "status": "open",
+   "evidence": [
+    "run:trace-conformance-ledger"
+   ],
+   "remaining": "empirical frame check only"
+  },
+  {
+   "gate": "3.7-trace-replay",
+   "module": "12",
+   "status": "closed",
+   "evidence": [
+    "run:trace-conformance-ledger",
+    "run:trace-conformance-controls"
+   ],
+   "remaining": "one two-tenant scenario"
+  },
+  {
+   "gate": "3.7-lock-log",
+   "module": "12",
+   "status": "open",
+   "evidence": [],
+   "remaining": "no lock event log; lock order inferred from journal and controlled lock probes"
+  },
+  {
+   "gate": "3.7-mutation",
+   "module": "12",
+   "status": "blocked",
+   "evidence": [],
+   "remaining": "observation-only control forbids deploying mutated classes; the original run's 3 killed ObjectScript mutants (9c3719c1) are the only evidence"
+  },
+  {
+   "gate": "3.8-findings-disposed",
+   "module": "12",
+   "status": "closed",
+   "evidence": [],
+   "remaining": "findings/audit/12-14.json: every finding recorded with evidence; product obligations stay failed"
+  },
+  {
+   "gate": "5c-refusals",
+   "module": "12",
+   "status": "closed",
+   "evidence": [
+    "run:live-native-rerun-1314"
+   ],
+   "remaining": "RED-X2 refusal not implemented (F-1304)",
+   "as_built_findings": [
+    "F-1304"
+   ]
+  },
+  {
+   "gate": "3.1-cells",
+   "module": "13",
+   "status": "closed",
+   "evidence": [],
+   "remaining": "original gate: cells defined or assigned"
+  },
+  {
+   "gate": "3.1-coverage",
+   "module": "13",
+   "status": "open",
+   "evidence": [],
+   "remaining": "entry-point reconciliation for 12-14 not run"
+  },
+  {
+   "gate": "3.1-intent",
+   "module": "13",
+   "status": "closed",
+   "level": "method",
+   "evidence": [
+    "run:intent-structure-check",
+    "run:intent-structure-selftest",
+    "intent/HD-1301.md",
+    "intent/HD-1302.md",
+    "intent/HD-1303.md",
+    "intent/HD-1304.md",
+    "intent/HD-1305.md"
+   ],
+   "remaining": "intent recovered independently for HD-1301, HD-1302, HD-1303, HD-1304, HD-1305 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided"
+  },
+  {
+   "gate": "3.2-coverage",
+   "module": "13",
+   "status": "closed",
+   "evidence": [
+    "run:env-contract-r2"
+   ],
+   "remaining": "locks, nested txn, dirty reads, row locks, process stop are in the contract"
+  },
+  {
+   "gate": "3.3-L1",
+   "module": "13",
+   "status": "closed",
+   "evidence": [
+    "run:core-proofs-baseline",
+    "run:core-proofs-recheck-baseline"
+   ],
+   "level": "model",
+   "remaining": "premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 46 undeclared writers (corrected census); F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
+   "premises_refuted_at_pin": [
+    "no-bypass-writes",
+    "single-target-predicate",
+    "erasure-never-rolls-back"
+   ],
+   "level_detail": "reviewed model",
+   "as_built_findings": [
+    "F-C1301",
+    "F-1304",
+    "F-1305",
+    "F-C1201"
+   ]
+  },
+  {
+   "gate": "3.3-L2",
+   "module": "13",
+   "status": "closed",
+   "evidence": [
+    "run:core-refine-m2-reviewed"
+   ],
+   "level": "model",
+   "remaining": "premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 46 undeclared writers (corrected census); F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
+   "premises_refuted_at_pin": [
+    "no-bypass-writes",
+    "single-target-predicate",
+    "erasure-never-rolls-back"
+   ],
+   "level_detail": "reviewed model",
+   "as_built_findings": [
+    "F-C1301",
+    "F-1304",
+    "F-1305",
+    "F-C1201"
+   ]
+  },
+  {
+   "gate": "3.3-refinement",
+   "module": "13",
+   "status": "closed",
+   "evidence": [
+    "run:core-refine-m2-reviewed",
+    "run:core-proofs-baseline",
+    "run:core-proofs-recheck-baseline",
+    "run:core-refine-m2-as-built"
+   ],
+   "remaining": "model to model; as-built fails refinement (core-refine-m2-as-built); premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 46 undeclared writers (corrected census); F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
+   "level": "model",
+   "premises_refuted_at_pin": [
+    "no-bypass-writes",
+    "single-target-predicate",
+    "erasure-never-rolls-back"
+   ],
+   "level_detail": "reviewed model",
+   "as_built_findings": [
+    "F-C1301",
+    "F-1304",
+    "F-1305",
+    "F-C1201"
+   ]
+  },
+  {
+   "gate": "3.3-controls",
+   "module": "13",
+   "status": "closed",
+   "evidence": [
+    "run:core-proofs-f1302-unlocked-start",
+    "run:core-proofs-recheck-f1302_unlocked_start"
+   ]
+  },
+  {
+   "gate": "3.3-model-check",
+   "module": "13",
+   "status": "closed",
+   "evidence": [
+    "run:core-m2-as-built-F1201-stmt",
+    "run:live-f1201-reproduced",
+    "run:live-native-rerun-1314"
+   ],
+   "remaining": "as-built violates; reviewed model passes"
+  },
+  {
+   "gate": "3.3a-writesets",
+   "module": "13",
+   "status": "open",
+   "evidence": [
+    "run:writer-census",
+    "run:followup-writer-census"
+   ],
+   "remaining": "corrected census (followup-writer-census, superseding writer-census's 100): 162 (invariant, writer) obligations, 20 conditional obligations and 3 write-set gaps, each an open cell of this gate in the writer's module (matrix-input/writer-census-obligations.json; 01: 29, 03: 28, 04: 20, 05: 16, 06: 15, 11: 1, 12: 4, 15: 28, 17: 21, 18: 23; module 13: 0); INV-no-live-tombstone fails with non-serializing bypass writers (F-C1301) [review-response R2-02]",
+   "as_built_findings": [
+    "F-C1301"
+   ]
+  },
+  {
+   "gate": "3.4-statements",
+   "module": "13",
+   "status": "open",
+   "evidence": [],
+   "remaining": "no statement-level correspondence proof for IRIS SQL/ObjectScript (no frontend); trace conformance only"
+  },
+  {
+   "gate": "3.4-ownership",
+   "module": "13",
+   "status": "open",
+   "evidence": [
+    "run:writer-census"
+   ],
+   "remaining": "stores have several writers outside the ledger"
+  },
+  {
+   "gate": "3.4-storage-order",
+   "module": "13",
+   "status": "open",
+   "evidence": [
+    "run:storage-order-scan"
+   ]
+  },
+  {
+   "gate": "3.4-declared-reads",
+   "module": "13",
+   "status": "open",
+   "evidence": [],
+   "remaining": "reads not checked; writes checked by journal frame"
+  },
+  {
+   "gate": "3.5-handlers",
+   "module": "13",
+   "status": "open",
+   "evidence": [
+    "run:trace-conformance-ledger"
+   ],
+   "remaining": "no automated source-level verification of the ObjectScript/Python handlers in this experiment (no supported frontend integrated here); strongest correspondence is journal trace conformance; unchecked: every line outside the traced scenario"
+  },
+  {
+   "gate": "3.5-lockplans",
+   "module": "13",
+   "status": "open",
+   "evidence": [],
+   "remaining": "lock plan not proved; F-1201 shows the eraser's missing head lock"
+  },
+  {
+   "gate": "3.5-decoders",
+   "module": "13",
+   "status": "closed",
+   "evidence": [
+    "run:decoder-map-ledger"
+   ]
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "13",
+   "status": "open",
+   "evidence": [
+    "run:trace-conformance-ledger"
+   ],
+   "remaining": "empirical frame check only"
+  },
+  {
+   "gate": "3.7-trace-replay",
+   "module": "13",
+   "status": "closed",
+   "evidence": [
+    "run:trace-conformance-ledger",
+    "run:trace-conformance-controls"
+   ],
+   "remaining": "one two-tenant scenario"
+  },
+  {
+   "gate": "3.7-lock-log",
+   "module": "13",
+   "status": "open",
+   "evidence": [],
+   "remaining": "no lock event log; lock order inferred from journal and controlled lock probes"
+  },
+  {
+   "gate": "3.7-mutation",
+   "module": "13",
+   "status": "blocked",
+   "evidence": [],
+   "remaining": "observation-only control forbids deploying mutated classes; the original run's 3 killed ObjectScript mutants (9c3719c1) are the only evidence"
+  },
+  {
+   "gate": "3.8-findings-disposed",
+   "module": "13",
+   "status": "closed",
+   "evidence": [],
+   "remaining": "findings/audit/12-14.json: every finding recorded with evidence; product obligations stay failed"
+  },
+  {
+   "gate": "5c-refusals",
+   "module": "13",
+   "status": "closed",
+   "evidence": [
+    "run:live-native-rerun-1314"
+   ],
+   "remaining": "RED-X2 refusal not implemented (F-1304)",
+   "as_built_findings": [
+    "F-1304"
+   ]
+  },
+  {
+   "gate": "3.1-cells",
+   "module": "14",
+   "status": "closed",
+   "evidence": [],
+   "remaining": "original gate: cells defined or assigned"
+  },
+  {
+   "gate": "3.1-coverage",
+   "module": "14",
+   "status": "open",
+   "evidence": [],
+   "remaining": "entry-point reconciliation for 12-14 not run"
+  },
+  {
+   "gate": "3.1-intent",
+   "module": "14",
+   "status": "closed",
+   "level": "method",
+   "evidence": [
+    "run:intent-structure-check",
+    "run:intent-structure-selftest",
+    "intent/HD-1401.md"
+   ],
+   "remaining": "intent recovered independently for HD-1401 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided"
+  },
+  {
+   "gate": "3.2-coverage",
+   "module": "14",
+   "status": "closed",
+   "evidence": [
+    "run:env-contract-r2"
+   ],
+   "remaining": "locks, nested txn, dirty reads, row locks, process stop are in the contract"
+  },
+  {
+   "gate": "3.3-L1",
+   "module": "14",
+   "status": "closed",
+   "evidence": [
+    "run:core-proofs-baseline",
+    "run:core-proofs-recheck-baseline"
+   ],
+   "level": "model",
+   "remaining": "premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 46 undeclared writers (corrected census); F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
+   "premises_refuted_at_pin": [
+    "no-bypass-writes",
+    "single-target-predicate",
+    "erasure-never-rolls-back"
+   ],
+   "level_detail": "reviewed model",
+   "as_built_findings": [
+    "F-C1301",
+    "F-1304",
+    "F-1305",
+    "F-C1201"
+   ]
+  },
+  {
+   "gate": "3.3-L2",
+   "module": "14",
+   "status": "closed",
+   "evidence": [
+    "run:core-refine-m2-reviewed"
+   ],
+   "level": "model",
+   "remaining": "premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 46 undeclared writers (corrected census); F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
+   "premises_refuted_at_pin": [
+    "no-bypass-writes",
+    "single-target-predicate",
+    "erasure-never-rolls-back"
+   ],
+   "level_detail": "reviewed model",
+   "as_built_findings": [
+    "F-C1301",
+    "F-1304",
+    "F-1305",
+    "F-C1201"
+   ]
+  },
+  {
+   "gate": "3.3-refinement",
+   "module": "14",
+   "status": "closed",
+   "evidence": [
+    "run:core-refine-m2-reviewed",
+    "run:core-proofs-baseline",
+    "run:core-proofs-recheck-baseline",
+    "run:core-refine-m2-as-built"
+   ],
+   "remaining": "model to model; as-built fails refinement (core-refine-m2-as-built); premises the pin violates (so the result does not transfer to the product): no write outside the ledger (writer census: 46 undeclared writers (corrected census); F-C1301), one shared target predicate (F-1304, F-1305), an erasure never rolls back after a liveness check saw it (F-C1201, live); progress additionally assumes fair scheduling, operator re-runs and no write outside the ledger, none derived or tested",
+   "level": "model",
+   "premises_refuted_at_pin": [
+    "no-bypass-writes",
+    "single-target-predicate",
+    "erasure-never-rolls-back"
+   ],
+   "level_detail": "reviewed model",
+   "as_built_findings": [
+    "F-C1301",
+    "F-1304",
+    "F-1305",
+    "F-C1201"
+   ]
+  },
+  {
+   "gate": "3.3-controls",
+   "module": "14",
+   "status": "closed",
+   "evidence": [
+    "run:core-proofs-f1302-unlocked-start",
+    "run:core-proofs-recheck-f1302_unlocked_start"
+   ]
+  },
+  {
+   "gate": "3.3-model-check",
+   "module": "14",
+   "status": "closed",
+   "evidence": [
+    "run:core-m2-as-built-F1201-stmt",
+    "run:live-f1201-reproduced",
+    "run:live-native-rerun-1314"
+   ],
+   "remaining": "as-built violates; reviewed model passes"
+  },
+  {
+   "gate": "3.3a-writesets",
+   "module": "14",
+   "status": "open",
+   "evidence": [
+    "run:writer-census",
+    "run:followup-writer-census"
+   ],
+   "remaining": "corrected census (followup-writer-census, superseding writer-census's 100): 162 (invariant, writer) obligations, 20 conditional obligations and 3 write-set gaps, each an open cell of this gate in the writer's module (matrix-input/writer-census-obligations.json; 01: 29, 03: 28, 04: 20, 05: 16, 06: 15, 11: 1, 12: 4, 15: 28, 17: 21, 18: 23; module 14: 0); INV-no-live-tombstone fails with non-serializing bypass writers (F-C1301) [review-response R2-02]",
+   "as_built_findings": [
+    "F-C1301"
+   ]
+  },
+  {
+   "gate": "3.4-statements",
+   "module": "14",
+   "status": "open",
+   "evidence": [],
+   "remaining": "no statement-level correspondence proof for IRIS SQL/ObjectScript (no frontend); trace conformance only"
+  },
+  {
+   "gate": "3.4-ownership",
+   "module": "14",
+   "status": "open",
+   "evidence": [
+    "run:writer-census"
+   ],
+   "remaining": "stores have several writers outside the ledger"
+  },
+  {
+   "gate": "3.4-storage-order",
+   "module": "14",
+   "status": "open",
+   "evidence": [
+    "run:storage-order-scan"
+   ]
+  },
+  {
+   "gate": "3.4-declared-reads",
+   "module": "14",
+   "status": "open",
+   "evidence": [],
+   "remaining": "reads not checked; writes checked by journal frame"
+  },
+  {
+   "gate": "3.5-handlers",
+   "module": "14",
+   "status": "open",
+   "evidence": [
+    "run:trace-conformance-ledger"
+   ],
+   "remaining": "no automated source-level verification of the ObjectScript/Python handlers in this experiment (no supported frontend integrated here); strongest correspondence is journal trace conformance; unchecked: every line outside the traced scenario"
+  },
+  {
+   "gate": "3.5-lockplans",
+   "module": "14",
+   "status": "open",
+   "evidence": [],
+   "remaining": "lock plan not proved; F-1201 shows the eraser's missing head lock"
+  },
+  {
+   "gate": "3.5-decoders",
+   "module": "14",
+   "status": "closed",
+   "evidence": [
+    "run:decoder-map-ledger"
+   ]
+  },
+  {
+   "gate": "3.6-frame",
+   "module": "14",
+   "status": "open",
+   "evidence": [
+    "run:trace-conformance-ledger"
+   ],
+   "remaining": "empirical frame check only"
+  },
+  {
+   "gate": "3.7-trace-replay",
+   "module": "14",
+   "status": "closed",
+   "evidence": [
+    "run:trace-conformance-ledger",
+    "run:trace-conformance-controls"
+   ],
+   "remaining": "one two-tenant scenario"
+  },
+  {
+   "gate": "3.7-lock-log",
+   "module": "14",
+   "status": "open",
+   "evidence": [],
+   "remaining": "no lock event log; lock order inferred from journal and controlled lock probes"
+  },
+  {
+   "gate": "3.7-mutation",
+   "module": "14",
+   "status": "blocked",
+   "evidence": [],
+   "remaining": "observation-only control forbids deploying mutated classes; the original run's 3 killed ObjectScript mutants (9c3719c1) are the only evidence"
+  },
+  {
+   "gate": "3.8-findings-disposed",
+   "module": "14",
+   "status": "closed",
+   "evidence": [],
+   "remaining": "findings/audit/12-14.json: every finding recorded with evidence; product obligations stay failed"
+  },
+  {
+   "gate": "5c-refusals",
+   "module": "14",
+   "status": "closed",
+   "evidence": [
+    "run:live-native-rerun-1314"
+   ],
+   "remaining": "RED-X2 refusal not implemented (F-1304)",
+   "as_built_findings": [
+    "F-1304"
+   ]
+  },
+  {
+   "gate": "3.3-L1",
+   "module": "04",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-breadth-baseline"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence; as built: the module-04 controls encode the pin's behaviour and each has a proved counterexample (F-C0401, reproduced in the model; F-0401/HD-0401 and F-C0402 intent-undecided), so the product obligation fails; the violated premises also include P-A3 (an eraser of g overlaps no writer of g: F-1201's live interleaving, F-C1202 in the core model; review R2-06), recorded in TRUST.md [review-response R2-01]",
+   "as_built_findings": [
+    "F-C0401",
+    "F-0401",
+    "F-C0402"
+   ]
+  },
+  {
+   "gate": "3.3-L2",
+   "module": "04",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-breadth-baseline"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence; as built: the module-04 controls encode the pin's behaviour and each has a proved counterexample (F-C0401, reproduced in the model; F-0401/HD-0401 and F-C0402 intent-undecided), so the product obligation fails; the violated premises also include P-A3 (an eraser of g overlaps no writer of g: F-1201's live interleaving, F-C1202 in the core model; review R2-06), recorded in TRUST.md [review-response R2-01]",
+   "as_built_findings": [
+    "F-C0401",
+    "F-0401",
+    "F-C0402"
+   ]
+  },
+  {
+   "gate": "3.3-refinement",
+   "module": "04",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-breadth-baseline",
+    "run:proofs-breadth-recheck"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence; as built: the module-04 controls encode the pin's behaviour and each has a proved counterexample (F-C0401, reproduced in the model; F-0401/HD-0401 and F-C0402 intent-undecided), so the product obligation fails; the violated premises also include P-A3 (an eraser of g overlaps no writer of g: F-1201's live interleaving, F-C1202 in the core model; review R2-06), recorded in TRUST.md [review-response R2-01]",
+   "as_built_findings": [
+    "F-C0401",
+    "F-0401",
+    "F-C0402"
+   ]
+  },
+  {
+   "gate": "3.3-controls",
+   "module": "04",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-breadth-fc0401-write-before-gen",
+    "run:proofs-breadth-hd0401-erase-kills-gen",
+    "run:proofs-breadth-hd0401-rebuild-kills-gen"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence; as built: the module-04 controls encode the pin's behaviour and each has a proved counterexample (F-C0401, reproduced in the model; F-0401/HD-0401 and F-C0402 intent-undecided), so the product obligation fails; the violated premises also include P-A3 (an eraser of g overlaps no writer of g: F-1201's live interleaving, F-C1202 in the core model; review R2-06), recorded in TRUST.md [review-response R2-01]",
+   "as_built_findings": [
+    "F-C0401",
+    "F-0401",
+    "F-C0402"
+   ]
+  },
+  {
+   "gate": "3.3-L1",
+   "module": "11",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-breadth-baseline"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence; as built: the module-11 controls encode the pin's behaviour and each has a proved counterexample, and F-0801, F-1108 and F-C1101 are reproduced live, so the product obligation fails [review-response R2-01]",
+   "as_built_findings": [
+    "F-0801",
+    "F-1108",
+    "F-C1101"
+   ]
+  },
+  {
+   "gate": "3.3-L2",
+   "module": "11",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-breadth-baseline"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence; as built: the module-11 controls encode the pin's behaviour and each has a proved counterexample, and F-0801, F-1108 and F-C1101 are reproduced live, so the product obligation fails [review-response R2-01]",
+   "as_built_findings": [
+    "F-0801",
+    "F-1108",
+    "F-C1101"
+   ]
+  },
+  {
+   "gate": "3.3-refinement",
+   "module": "11",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-breadth-baseline",
+    "run:proofs-breadth-recheck"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence; as built: the module-11 controls encode the pin's behaviour and each has a proved counterexample, and F-0801, F-1108 and F-C1101 are reproduced live, so the product obligation fails [review-response R2-01]",
+   "as_built_findings": [
+    "F-0801",
+    "F-1108",
+    "F-C1101"
+   ]
+  },
+  {
+   "gate": "3.3-controls",
+   "module": "11",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-breadth-f0801-ttl-cache",
+    "run:proofs-breadth-f0801-fail-open",
+    "run:proofs-breadth-f1108-unguarded-bulk-delete",
+    "run:proofs-breadth-fc1101-stats-whole-row"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates listed in proofs-breadth/PROOFS.md; no code correspondence; as built: the module-11 controls encode the pin's behaviour and each has a proved counterexample, and F-0801, F-1108 and F-C1101 are reproduced live, so the product obligation fails [review-response R2-01]",
+   "as_built_findings": [
+    "F-0801",
+    "F-1108",
+    "F-C1101"
+   ]
+  },
+  {
+   "gate": "3.2-coverage",
+   "module": "00",
+   "status": "closed",
+   "level": "method",
+   "evidence": [
+    "run:env-ext-r6"
+   ],
+   "remaining": "every relied-on feature is in the contract"
+  },
+  {
+   "gate": "3.2-coverage",
+   "module": "01",
+   "status": "open",
+   "level": "method",
+   "evidence": [
+    "run:env-ext-r6"
+   ],
+   "remaining": "outside the contract's subset: %DynamicObject / JSON functions not modelled; HNSW vector index maintenance is outside the subset; SQL routines (compiled) not modelled; class dictionary and run-time compilation not modelled (compiling is out of the audit's scope); embedded SQL (&sql) compiled into classes: assumed equal to dynamic SQL (premise E-1), untested; %SQL.Statement %ExecDirect is in the contract (E-PARTIAL, X-FX, X-STMT, X-NULL); iFind search semantics (tokenizer, word dictionary written outside the transaction, ranking) not modelled; only the per-row index entries' transaction behaviour is (X-FX)"
+  },
+  {
+   "gate": "3.2-coverage",
+   "module": "02",
+   "status": "open",
+   "level": "method",
+   "evidence": [
+    "run:env-ext-r6"
+   ],
+   "remaining": "outside the contract's subset: embedded SQL (&sql) compiled into classes: assumed equal to dynamic SQL (premise E-1), untested; %SQL.Statement %ExecDirect is in the contract (E-PARTIAL, X-FX, X-STMT, X-NULL); only -30, -110, -119, -201, -359 and -400 are contract observations; the other codes the module maps are not modelled; result-prefix queries not modelled"
+  },
+  {
+   "gate": "3.2-coverage",
+   "module": "03",
+   "status": "open",
+   "level": "method",
+   "evidence": [
+    "run:env-ext-r6"
+   ],
+   "remaining": "outside the contract's subset: %DynamicObject / JSON functions not modelled; class dictionary and run-time compilation not modelled (compiling is out of the audit's scope); embedded SQL (&sql) compiled into classes: assumed equal to dynamic SQL (premise E-1), untested; %SQL.Statement %ExecDirect is in the contract (E-PARTIAL, X-FX, X-STMT, X-NULL); iFind search semantics (tokenizer, word dictionary written outside the transaction, ranking) not modelled; only the per-row index entries' transaction behaviour is (X-FX); only -30, -110, -119, -201, -359 and -400 are contract observations; the other codes the module maps are not modelled; result-prefix queries not modelled"
+  },
+  {
+   "gate": "3.2-coverage",
+   "module": "04",
+   "status": "open",
+   "level": "method",
+   "evidence": [
+    "run:env-ext-r6"
+   ],
+   "remaining": "outside the contract's subset: %DynamicObject / JSON functions not modelled; JOB / WorkMgr processes not modelled; class dictionary and run-time compilation not modelled (compiling is out of the audit's scope); embedded SQL (&sql) compiled into classes: assumed equal to dynamic SQL (premise E-1), untested; %SQL.Statement %ExecDirect is in the contract (E-PARTIAL, X-FX, X-STMT, X-NULL); only -30, -110, -119, -201, -359 and -400 are contract observations; the other codes the module maps are not modelled; only the `%IGNOREINDEX *` full scan is exercised (X-NOINDEX); the product's named-index forms are not"
+  },
+  {
+   "gate": "3.2-coverage",
+   "module": "05",
+   "status": "open",
+   "level": "method",
+   "evidence": [
+    "run:env-ext-r6"
+   ],
+   "remaining": "outside the contract's subset: %DynamicObject / JSON functions not modelled; embedded SQL (&sql) compiled into classes: assumed equal to dynamic SQL (premise E-1), untested; %SQL.Statement %ExecDirect is in the contract (E-PARTIAL, X-FX, X-STMT, X-NULL); only -30, -110, -119, -201, -359 and -400 are contract observations; the other codes the module maps are not modelled; pure functions and clocks not modelled"
+  },
+  {
+   "gate": "3.2-coverage",
+   "module": "06",
+   "status": "open",
+   "level": "method",
+   "evidence": [
+    "run:env-ext-r6"
+   ],
+   "remaining": "outside the contract's subset: %DynamicObject / JSON functions not modelled; EMBEDDING() / %Embedding configuration not modelled; HNSW vector index maintenance is outside the subset; INSERT OR UPDATE not modelled; Task Manager not modelled; class dictionary and run-time compilation not modelled (compiling is out of the audit's scope)"
+  },
+  {
+   "gate": "3.2-coverage",
+   "module": "07",
+   "status": "open",
+   "level": "method",
+   "evidence": [
+    "run:env-ext-r6"
+   ],
+   "remaining": "outside the contract's subset: %DynamicObject / JSON functions not modelled; embedded Python is not driven by the contract (needs irispython in the container); engine limits (string, subscript, parameter count) not modelled; iFind search semantics (tokenizer, word dictionary written outside the transaction, ranking) not modelled; only the per-row index entries' transaction behaviour is (X-FX); iFind tokenizer / analysis not modelled; the journal is the audit's oracle, not a contract clause"
+  },
+  {
+   "gate": "3.2-coverage",
+   "module": "08",
+   "status": "open",
+   "level": "method",
+   "evidence": [
+    "run:env-ext-r6"
+   ],
+   "remaining": "outside the contract's subset: $LIST semantics not modelled; %DynamicObject / JSON functions not modelled; %Regex not modelled; SQL collation functions / generated SQL not modelled; SQL routines (compiled) not modelled; SQL text parsing not modelled"
+  },
+  {
+   "gate": "3.2-coverage",
+   "module": "09",
+   "status": "open",
+   "level": "method",
+   "evidence": [
+    "run:env-ext-r6"
+   ],
+   "remaining": "outside the contract's subset: $LIST semantics not modelled; IRISTEMP database (not journaled, shared) not modelled; JOB / WorkMgr processes not modelled; class dictionary and run-time compilation not modelled (compiling is out of the audit's scope); embedded Python is not driven by the contract (needs irispython in the container); engine limits (string, subscript, parameter count) not modelled"
+  },
+  {
+   "gate": "3.2-coverage",
+   "module": "10",
+   "status": "open",
+   "level": "method",
+   "evidence": [
+    "run:env-ext-r6"
+   ],
+   "remaining": "outside the contract's subset: $LIST semantics not modelled; $ZF callouts not modelled; %DynamicObject / JSON functions not modelled; IRISTEMP database (not journaled, shared) not modelled; JOB / WorkMgr processes not modelled; catalog views other than TABLES / COLUMNS, default-schema resolution and namespaces not modelled"
+  },
+  {
+   "gate": "3.2-coverage",
+   "module": "11",
+   "status": "open",
+   "level": "method",
+   "evidence": [
+    "run:env-ext-r6"
+   ],
+   "remaining": "outside the contract's subset: %DynamicObject / JSON functions not modelled; object filing, triggers and foreign keys not modelled; pure functions and clocks not modelled; result-prefix queries not modelled; streams not modelled; the journal is the audit's oracle, not a contract clause"
+  },
+  {
+   "gate": "3.2-coverage",
+   "module": "15",
+   "status": "open",
+   "level": "method",
+   "evidence": [
+    "run:env-ext-r6"
+   ],
+   "remaining": "outside the contract's subset: INSERT OR UPDATE not modelled; InterSystems FHIR server storage: absent on Community 2026.1; Task Manager not modelled; default-schema (SQLUser) resolution is not modelled; TABLES, COLUMNS and TableExists are (X-DDL); engine limits (string, subscript, parameter count) not modelled; object filing, triggers and foreign keys not modelled"
+  },
+  {
+   "gate": "3.2-coverage",
+   "module": "16",
+   "status": "open",
+   "level": "method",
+   "evidence": [
+    "run:env-ext-r6"
+   ],
+   "remaining": "outside the contract's subset: %AI classes: absent on Community 2026.1; embedded Python is not driven by the contract (needs irispython in the container); management APIs not modelled (process stop is, via %SYSTEM.Process.Terminate: E-STOP); web dispatch, roles and SQL privileges not modelled"
+  },
+  {
+   "gate": "3.2-coverage",
+   "module": "17",
+   "status": "open",
+   "level": "method",
+   "evidence": [
+    "run:env-ext-r6"
+   ],
+   "remaining": "outside the contract's subset: HNSW vector index maintenance is outside the subset; catalog views other than TABLES / COLUMNS, default-schema resolution and namespaces not modelled; class dictionary reads not modelled; effects of an index (re)build on another connection's cached code are not modelled; embedded Python is not driven by the contract (needs irispython in the container); engine limits (string, subscript, parameter count) not modelled"
+  },
+  {
+   "gate": "3.2-coverage",
+   "module": "18",
+   "status": "open",
+   "level": "method",
+   "evidence": [
+    "run:env-ext-r6"
+   ],
+   "remaining": "outside the contract's subset: $LISTVALID / $LISTNEXT, $NAME and %DynamicObject are not modelled; $VECTOR set/get/rollback is (X-VEC); HNSW index build is outside; CREATE / DROP TABLE are in X-DDL; INSERT OR UPDATE not modelled; Native API subscript validation not modelled; class dictionary and run-time compilation not modelled (compiling is out of the audit's scope); object filing, triggers and foreign keys not modelled"
+  },
+  {
+   "gate": "3.3-L1",
+   "module": "18",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1b-baseline"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1b/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin (proofs-d1b/PROOFS.md)"
+  },
+  {
+   "gate": "3.3-L2",
+   "module": "18",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1b-baseline"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1b/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin (proofs-d1b/PROOFS.md)"
+  },
+  {
+   "gate": "3.3-refinement",
+   "module": "18",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1b-baseline",
+    "run:proofs-d1b-recheck"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1b/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin (proofs-d1b/PROOFS.md)"
+  },
+  {
+   "gate": "3.3-controls",
+   "module": "18",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1b-f0604-done-without-vector",
+    "run:proofs-d1b-f0606-erase-keeps-ivf",
+    "run:proofs-d1b-f1801-no-prefix-check",
+    "run:proofs-d1b-f1801-restore-unredacts",
+    "run:proofs-d1b-fc0601-no-version-check",
+    "run:proofs-d1b-fc1304-receipt-omits-archives",
+    "run:proofs-d1b-fc1801-dirty-export",
+    "run:proofs-d1b-fc1802-swallowed-line",
+    "run:proofs-d1b-fc1804-edge-routes-omitted",
+    "run:proofs-d1b-hd0602-inplace-build",
+    "run:proofs-d1b-hd0604-two-consumers"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1b/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin (proofs-d1b/PROOFS.md)"
+  },
+  {
+   "gate": "3.3-L1",
+   "module": "06",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1b-baseline"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1b/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin (proofs-d1b/PROOFS.md)"
+  },
+  {
+   "gate": "3.3-L2",
+   "module": "06",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1b-baseline"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1b/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin (proofs-d1b/PROOFS.md)"
+  },
+  {
+   "gate": "3.3-refinement",
+   "module": "06",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1b-baseline",
+    "run:proofs-d1b-recheck"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1b/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin (proofs-d1b/PROOFS.md)"
+  },
+  {
+   "gate": "3.3-controls",
+   "module": "06",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1b-f0604-done-without-vector",
+    "run:proofs-d1b-f0606-erase-keeps-ivf",
+    "run:proofs-d1b-f1801-no-prefix-check",
+    "run:proofs-d1b-f1801-restore-unredacts",
+    "run:proofs-d1b-fc0601-no-version-check",
+    "run:proofs-d1b-fc1304-receipt-omits-archives",
+    "run:proofs-d1b-fc1801-dirty-export",
+    "run:proofs-d1b-fc1802-swallowed-line",
+    "run:proofs-d1b-fc1804-edge-routes-omitted",
+    "run:proofs-d1b-hd0602-inplace-build",
+    "run:proofs-d1b-hd0604-two-consumers"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1b/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin (proofs-d1b/PROOFS.md)"
+  },
+  {
+   "gate": "3.3-L1",
+   "module": "03",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1c-baseline"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1c/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-L2",
+   "module": "03",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1c-baseline"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1c/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-refinement",
+   "module": "03",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1c-baseline",
+    "run:proofs-d1c-recheck"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1c/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-controls",
+   "module": "03",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1c-f0303-direct-delete-keeps-stmt",
+    "run:proofs-d1c-f0304-store-no-adopt",
+    "run:proofs-d1c-f0305-chunks-commit-alone",
+    "run:proofs-d1c-f0501-update-counted-again",
+    "run:proofs-d1c-f0505-marker-predicate",
+    "run:proofs-d1c-f0507-purge-keeps-rows",
+    "run:proofs-d1c-fc0301-adopt-after-commit",
+    "run:proofs-d1c-fc0501-refused-write-partial",
+    "run:proofs-d1c-fc1203-prefix-from-node-rows",
+    "run:proofs-d1c-hd0302-delete-removes-row"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1c/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-L1",
+   "module": "05",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1c-baseline"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1c/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-L2",
+   "module": "05",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1c-baseline"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1c/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-refinement",
+   "module": "05",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1c-baseline",
+    "run:proofs-d1c-recheck"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1c/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-controls",
+   "module": "05",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1c-f0303-direct-delete-keeps-stmt",
+    "run:proofs-d1c-f0304-store-no-adopt",
+    "run:proofs-d1c-f0305-chunks-commit-alone",
+    "run:proofs-d1c-f0501-update-counted-again",
+    "run:proofs-d1c-f0505-marker-predicate",
+    "run:proofs-d1c-f0507-purge-keeps-rows",
+    "run:proofs-d1c-fc0301-adopt-after-commit",
+    "run:proofs-d1c-fc0501-refused-write-partial",
+    "run:proofs-d1c-fc1203-prefix-from-node-rows",
+    "run:proofs-d1c-hd0302-delete-removes-row"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1c/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-L1",
+   "module": "07",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1d-r2-baseline"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1d/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-L2",
+   "module": "07",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1d-r2-baseline"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1d/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-refinement",
+   "module": "07",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1d-r2-baseline",
+    "run:proofs-d1d-recheck"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1d/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-controls",
+   "module": "07",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1d-r2-f0701-build-in-place",
+    "run:proofs-d1d-r2-f0702-erase-keeps-index",
+    "run:proofs-d1d-r2-f0704-late-refusal",
+    "run:proofs-d1d-r2-f0705-absent-graph-is-default",
+    "run:proofs-d1d-r2-f0707-no-scope-check",
+    "run:proofs-d1d-r2-f0801-fail-open",
+    "run:proofs-d1d-r2-f0801-ttl-window",
+    "run:proofs-d1d-r2-f0802-shortcut-unscoped",
+    "run:proofs-d1d-r2-f0805-literal-insert-unguarded",
+    "run:proofs-d1d-r2-f0810-null-keeps-key",
+    "run:proofs-d1d-r2-f0816-dblabels-unscoped",
+    "run:proofs-d1d-r2-f0818-vlp-crosses-graphs",
+    "run:proofs-d1d-r2-f0901-shared-class-name",
+    "run:proofs-d1d-r2-f0902-crc-identity",
+    "run:proofs-d1d-r2-f0906-gate-edge-index-only",
+    "run:proofs-d1d-r2-f0908-run-unchecked",
+    "run:proofs-d1d-r2-fc0701-stop-name-accepted",
+    "run:proofs-d1d-r2-fc0702-bare-trollback",
+    "run:proofs-d1d-r2-fc0803-top1-copy",
+    "run:proofs-d1d-r2-fc0901-mark-any-entry",
+    "run:proofs-d1d-r2-hd0902-shadow-swallows-native-error"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1d/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-L1",
+   "module": "08",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1d-r2-baseline"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1d/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-L2",
+   "module": "08",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1d-r2-baseline"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1d/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-refinement",
+   "module": "08",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1d-r2-baseline",
+    "run:proofs-d1d-recheck"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1d/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-controls",
+   "module": "08",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1d-r2-f0701-build-in-place",
+    "run:proofs-d1d-r2-f0702-erase-keeps-index",
+    "run:proofs-d1d-r2-f0704-late-refusal",
+    "run:proofs-d1d-r2-f0705-absent-graph-is-default",
+    "run:proofs-d1d-r2-f0707-no-scope-check",
+    "run:proofs-d1d-r2-f0801-fail-open",
+    "run:proofs-d1d-r2-f0801-ttl-window",
+    "run:proofs-d1d-r2-f0802-shortcut-unscoped",
+    "run:proofs-d1d-r2-f0805-literal-insert-unguarded",
+    "run:proofs-d1d-r2-f0810-null-keeps-key",
+    "run:proofs-d1d-r2-f0816-dblabels-unscoped",
+    "run:proofs-d1d-r2-f0818-vlp-crosses-graphs",
+    "run:proofs-d1d-r2-f0901-shared-class-name",
+    "run:proofs-d1d-r2-f0902-crc-identity",
+    "run:proofs-d1d-r2-f0906-gate-edge-index-only",
+    "run:proofs-d1d-r2-f0908-run-unchecked",
+    "run:proofs-d1d-r2-fc0701-stop-name-accepted",
+    "run:proofs-d1d-r2-fc0702-bare-trollback",
+    "run:proofs-d1d-r2-fc0803-top1-copy",
+    "run:proofs-d1d-r2-fc0901-mark-any-entry",
+    "run:proofs-d1d-r2-hd0902-shadow-swallows-native-error"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1d/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-L1",
+   "module": "09",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1d-r2-baseline"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1d/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-L2",
+   "module": "09",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1d-r2-baseline"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1d/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-refinement",
+   "module": "09",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1d-r2-baseline",
+    "run:proofs-d1d-recheck"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1d/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-controls",
+   "module": "09",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1d-r2-f0701-build-in-place",
+    "run:proofs-d1d-r2-f0702-erase-keeps-index",
+    "run:proofs-d1d-r2-f0704-late-refusal",
+    "run:proofs-d1d-r2-f0705-absent-graph-is-default",
+    "run:proofs-d1d-r2-f0707-no-scope-check",
+    "run:proofs-d1d-r2-f0801-fail-open",
+    "run:proofs-d1d-r2-f0801-ttl-window",
+    "run:proofs-d1d-r2-f0802-shortcut-unscoped",
+    "run:proofs-d1d-r2-f0805-literal-insert-unguarded",
+    "run:proofs-d1d-r2-f0810-null-keeps-key",
+    "run:proofs-d1d-r2-f0816-dblabels-unscoped",
+    "run:proofs-d1d-r2-f0818-vlp-crosses-graphs",
+    "run:proofs-d1d-r2-f0901-shared-class-name",
+    "run:proofs-d1d-r2-f0902-crc-identity",
+    "run:proofs-d1d-r2-f0906-gate-edge-index-only",
+    "run:proofs-d1d-r2-f0908-run-unchecked",
+    "run:proofs-d1d-r2-fc0701-stop-name-accepted",
+    "run:proofs-d1d-r2-fc0702-bare-trollback",
+    "run:proofs-d1d-r2-fc0803-top1-copy",
+    "run:proofs-d1d-r2-fc0901-mark-any-entry",
+    "run:proofs-d1d-r2-hd0902-shadow-swallows-native-error"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1d/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-L1",
+   "module": "01",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1e-baseline"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1e/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-L2",
+   "module": "01",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1e-baseline"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1e/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-refinement",
+   "module": "01",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1e-baseline",
+    "run:proofs-d1e-recheck"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1e/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-controls",
+   "module": "01",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1e-f0101-removed-unchecked",
+    "run:proofs-d1e-f0102-failure-only-logged",
+    "run:proofs-d1e-f0103-marker-admits",
+    "run:proofs-d1e-f0106-keys-join-on-id",
+    "run:proofs-d1e-f0109-upgrade-default-schema",
+    "run:proofs-d1e-f0201-ekey0-guard",
+    "run:proofs-d1e-f0202-writer-skips-name-check",
+    "run:proofs-d1e-f0206-hydrate-from-default",
+    "run:proofs-d1e-f0207-set-off-unlocked",
+    "run:proofs-d1e-f0208-mode-cached-forever",
+    "run:proofs-d1e-f1003-owner-cap",
+    "run:proofs-d1e-f1004-create-moves-no-token",
+    "run:proofs-d1e-f1008-every-graph-mixed",
+    "run:proofs-d1e-fc1001-read-creates-routines",
+    "run:proofs-d1e-hd1003-direction-unchecked"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1e/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-L1",
+   "module": "02",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1e-baseline"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1e/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-L2",
+   "module": "02",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1e-baseline"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1e/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-refinement",
+   "module": "02",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1e-baseline",
+    "run:proofs-d1e-recheck"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1e/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-controls",
+   "module": "02",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1e-f0101-removed-unchecked",
+    "run:proofs-d1e-f0102-failure-only-logged",
+    "run:proofs-d1e-f0103-marker-admits",
+    "run:proofs-d1e-f0106-keys-join-on-id",
+    "run:proofs-d1e-f0109-upgrade-default-schema",
+    "run:proofs-d1e-f0201-ekey0-guard",
+    "run:proofs-d1e-f0202-writer-skips-name-check",
+    "run:proofs-d1e-f0206-hydrate-from-default",
+    "run:proofs-d1e-f0207-set-off-unlocked",
+    "run:proofs-d1e-f0208-mode-cached-forever",
+    "run:proofs-d1e-f1003-owner-cap",
+    "run:proofs-d1e-f1004-create-moves-no-token",
+    "run:proofs-d1e-f1008-every-graph-mixed",
+    "run:proofs-d1e-fc1001-read-creates-routines",
+    "run:proofs-d1e-hd1003-direction-unchecked"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1e/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-L1",
+   "module": "10",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1e-baseline"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1e/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-L2",
+   "module": "10",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1e-baseline"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1e/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-refinement",
+   "module": "10",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1e-baseline",
+    "run:proofs-d1e-recheck"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1e/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-controls",
+   "module": "10",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1e-f0101-removed-unchecked",
+    "run:proofs-d1e-f0102-failure-only-logged",
+    "run:proofs-d1e-f0103-marker-admits",
+    "run:proofs-d1e-f0106-keys-join-on-id",
+    "run:proofs-d1e-f0109-upgrade-default-schema",
+    "run:proofs-d1e-f0201-ekey0-guard",
+    "run:proofs-d1e-f0202-writer-skips-name-check",
+    "run:proofs-d1e-f0206-hydrate-from-default",
+    "run:proofs-d1e-f0207-set-off-unlocked",
+    "run:proofs-d1e-f0208-mode-cached-forever",
+    "run:proofs-d1e-f1003-owner-cap",
+    "run:proofs-d1e-f1004-create-moves-no-token",
+    "run:proofs-d1e-f1008-every-graph-mixed",
+    "run:proofs-d1e-fc1001-read-creates-routines",
+    "run:proofs-d1e-hd1003-direction-unchecked"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1e/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-L1",
+   "module": "15",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1f-baseline"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1f/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-L2",
+   "module": "15",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1f-baseline"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1f/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-refinement",
+   "module": "15",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1f-baseline",
+    "run:proofs-d1f-recheck"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1f/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-controls",
+   "module": "15",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1f-f1511-upsert-before-load",
+    "run:proofs-d1f-f1601-bolt-run-commits",
+    "run:proofs-d1f-f1610-tx-commit-per-statement",
+    "run:proofs-d1f-f1614-app-without-key-gate",
+    "run:proofs-d1f-f1701-unscoped-merge",
+    "run:proofs-d1f-f1713-status-parts-short",
+    "run:proofs-d1f-f1714-unmapped-refusal",
+    "run:proofs-d1f-fc1501-schedule-untransacted",
+    "run:proofs-d1f-fc1602-unknown-as-client-error",
+    "run:proofs-d1f-fc1603-bolt-binds-every-interface",
+    "run:proofs-d1f-fc1604-server-reruns-write",
+    "run:proofs-d1f-fc1703-client-resends-write",
+    "run:proofs-d1f-fc1706-driver-floor",
+    "run:proofs-d1f-hd1503-erase-ignores-sync-lock",
+    "run:proofs-d1f-hd1701-read-only-ignored",
+    "run:proofs-d1f-hd1701-write-reported-failed",
+    "run:proofs-d1f-progress-rederive-restart"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1f/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-L1",
+   "module": "16",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1f-baseline"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1f/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-L2",
+   "module": "16",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1f-baseline"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1f/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-refinement",
+   "module": "16",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1f-baseline",
+    "run:proofs-d1f-recheck"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1f/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-controls",
+   "module": "16",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1f-f1511-upsert-before-load",
+    "run:proofs-d1f-f1601-bolt-run-commits",
+    "run:proofs-d1f-f1610-tx-commit-per-statement",
+    "run:proofs-d1f-f1614-app-without-key-gate",
+    "run:proofs-d1f-f1701-unscoped-merge",
+    "run:proofs-d1f-f1713-status-parts-short",
+    "run:proofs-d1f-f1714-unmapped-refusal",
+    "run:proofs-d1f-fc1501-schedule-untransacted",
+    "run:proofs-d1f-fc1602-unknown-as-client-error",
+    "run:proofs-d1f-fc1603-bolt-binds-every-interface",
+    "run:proofs-d1f-fc1604-server-reruns-write",
+    "run:proofs-d1f-fc1703-client-resends-write",
+    "run:proofs-d1f-fc1706-driver-floor",
+    "run:proofs-d1f-hd1503-erase-ignores-sync-lock",
+    "run:proofs-d1f-hd1701-read-only-ignored",
+    "run:proofs-d1f-hd1701-write-reported-failed",
+    "run:proofs-d1f-progress-rederive-restart"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1f/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-L1",
+   "module": "17",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1f-baseline"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1f/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-L2",
+   "module": "17",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1f-baseline"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1f/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-refinement",
+   "module": "17",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1f-baseline",
+    "run:proofs-d1f-recheck"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1f/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-controls",
+   "module": "17",
+   "status": "closed",
+   "evidence": [
+    "run:proofs-d1f-f1511-upsert-before-load",
+    "run:proofs-d1f-f1601-bolt-run-commits",
+    "run:proofs-d1f-f1610-tx-commit-per-statement",
+    "run:proofs-d1f-f1614-app-without-key-gate",
+    "run:proofs-d1f-f1701-unscoped-merge",
+    "run:proofs-d1f-f1713-status-parts-short",
+    "run:proofs-d1f-f1714-unmapped-refusal",
+    "run:proofs-d1f-fc1501-schedule-untransacted",
+    "run:proofs-d1f-fc1602-unknown-as-client-error",
+    "run:proofs-d1f-fc1603-bolt-binds-every-interface",
+    "run:proofs-d1f-fc1604-server-reruns-write",
+    "run:proofs-d1f-fc1703-client-resends-write",
+    "run:proofs-d1f-fc1706-driver-floor",
+    "run:proofs-d1f-hd1503-erase-ignores-sync-lock",
+    "run:proofs-d1f-hd1701-read-only-ignored",
+    "run:proofs-d1f-hd1701-write-reported-failed",
+    "run:proofs-d1f-progress-rederive-restart"
+   ],
+   "level": "model",
+   "remaining": "model-level: reviewed L2 refines L1 for every step; premises the pin violates in proofs-d1f/PROOFS.md; no code correspondence",
+   "product_obligation": "fails",
+   "product_basis": "controls encoding defects reproduced at the pin are rejected by the proof; the reviewed guards do not exist at the pin"
+  },
+  {
+   "gate": "3.3-L1",
+   "module": "00",
+   "status": "not-applicable",
+   "level": "model",
+   "reason": "module 00 holds only definitions, axioms and premises and no operations (ontology/00-system.md:46-96; proofs-d1f/PROOFS.md module 00 decision); its system-wide axioms are instantiated in the module contracts (model level) and model-checked over six composed mechanisms (sem-mc-sys00-reviewed, -as-built, sem-control-sys00; mc, exhaustive within bounds); no cross-module proof of them exists (proof debt D-5)"
+  },
+  {
+   "gate": "3.3-L2",
+   "module": "00",
+   "status": "not-applicable",
+   "level": "model",
+   "reason": "module 00 holds only definitions, axioms and premises and no operations (ontology/00-system.md:46-96; proofs-d1f/PROOFS.md module 00 decision); its system-wide axioms are instantiated in the module contracts (model level) and model-checked over six composed mechanisms (sem-mc-sys00-reviewed, -as-built, sem-control-sys00; mc, exhaustive within bounds); no cross-module proof of them exists (proof debt D-5)"
+  },
+  {
+   "gate": "3.3-refinement",
+   "module": "00",
+   "status": "not-applicable",
+   "level": "model",
+   "reason": "module 00 holds only definitions, axioms and premises and no operations (ontology/00-system.md:46-96; proofs-d1f/PROOFS.md module 00 decision); its system-wide axioms are instantiated in the module contracts (model level) and model-checked over six composed mechanisms (sem-mc-sys00-reviewed, -as-built, sem-control-sys00; mc, exhaustive within bounds); no cross-module proof of them exists (proof debt D-5)"
+  },
+  {
+   "gate": "3.3-controls",
+   "module": "00",
+   "status": "not-applicable",
+   "level": "model",
+   "reason": "module 00 holds only definitions, axioms and premises and no operations (ontology/00-system.md:46-96; proofs-d1f/PROOFS.md module 00 decision); its system-wide axioms are instantiated in the module contracts (model level) and model-checked over six composed mechanisms (sem-mc-sys00-reviewed, -as-built, sem-control-sys00; mc, exhaustive within bounds); no cross-module proof of them exists (proof debt D-5)"
+  },
+  {
+   "gate": "3.7-suites",
+   "module": "product",
+   "status": "blocked",
+   "level": "product",
+   "evidence": [
+    "run:val-unit-3-c00",
+    "run:val-unit-3-c01",
+    "run:val-unit-3-c02",
+    "run:val-unit-3-c03",
+    "run:val-unit-3-c04",
+    "run:val-unit-3-c05",
+    "run:val-unit-3-c06",
+    "run:val-unit-3-c07",
+    "run:val-integration-1-c00",
+    "run:val-integration-1-c01",
+    "run:val-integration-1-c02",
+    "run:val-integration-1-c03",
+    "run:val-integration-1-c04",
+    "run:val-integration-1-c05",
+    "run:val-e2e-1-c00",
+    "run:val-gated-1",
+    "run:val-oracle-1-c00",
+    "run:val-tck-1",
+    "run:val-docs-run-1",
+    "run:val-contract-optin-1",
+    "run:val-regression-2",
+    "run:val-python-1",
+    "run:val-schema-contract-1",
+    "run:val-alt-1",
+    "run:val-scratch-1",
+    "run:val-scratch-236-1",
+    "validation/SUITES.md"
+   ],
+   "as_built_findings": [
+    "F-C1706",
+    "F-C0502",
+    "F-C1002"
+   ],
+   "remaining": "every existing suite (unit, integration, e2e gated and ungated, oracle, TCK, docs, contract, regression, python, schema contract, scratch fixtures) ran on an unchanged clean clone of the pin with every failure triaged (validation/SUITES.md, triage.py); blocked-access for the rest: the spec 236 scratch suites (22 integration files) and the 8-writer ledger cases need more than the 8 licence units of IRIS Community (an Enterprise licence); the scratch-236 attempts hit licence exhaustion and are recorded as infrastructure, not results"
+  },
+  {
+   "gate": "3.7-perf",
+   "module": "product",
+   "status": "blocked",
+   "level": "product",
+   "evidence": [
+    "run:val-perf-sc256-upstream-1",
+    "run:val-perf-sc256-upstream-2",
+    "run:val-perf-committer-n1-1",
+    "run:val-perf-committer-n1-2",
+    "run:val-perf-committer-n3-1",
+    "run:val-perf-ledger-1",
+    "run:val-perf-algos-1",
+    "run:val-perf-default-1",
+    "validation/SUITES.md"
+   ],
+   "as_built_findings": [
+    "F-C0606"
+   ],
+   "remaining": "runnable subset done (Community 2026.1, 2 CPUs, driver 5.3.2 vs 5.4.0): SC-002 verify equal (2 runs); SC-003 1.42/1.41 s for 100,000 records, longest batch 39/31 ms, committer-side longest overlapping commit 311/55/57 and 253/39/28 ms; spec 227 SC-010 exceeds its 1.1x budget in 6 of 6 runs (F-C0606). Blocked-access for the rest of the gate's baseline configurations (review R4-11): SC-003's target platform (an Enterprise laptop container), the Neo4j/GDS/Memgraph legs and LDBC SNB (no such services or datasets here), and the Enterprise/Arno benchmarks/ scripts (no Enterprise licence, no x86_64 libarno_callout.so; validation/SUITES.md:188-190)"
+  },
+  {
+   "gate": "3.7-e2e",
+   "module": "product",
+   "status": "blocked",
+   "level": "product",
+   "evidence": [
+    "run:val-e2e-1-c00",
+    "run:val-gated-1",
+    "run:val-mp-existing-1",
+    "run:val-mp-existing-2",
+    "run:val-mp-existing-3",
+    "run:val-perf-committer-n3-1",
+    "validation/SUITES.md"
+   ],
+   "as_built_findings": [
+    "F-C1002",
+    "F-C0502",
+    "F-C1706"
+   ],
+   "remaining": "one application process: the e2e suites (gate off and gated subsets) ran with triage; N processes: test_ledger_us03/us04/us09 (15 passed in each of 3 runs) and 3 committer processes during 2 redactions of 100,000 records (0 errors, verify equal); multi-node is blocked-access: one container, no second IRIS instance, no ECP data server or mirror member, and a licence enabling ECP or mirroring is needed"
+  },
+  {
+   "gate": "3.1-intent",
+   "module": "00",
+   "status": "closed",
+   "level": "method",
+   "evidence": [
+    "run:intent-structure-check",
+    "run:intent-structure-selftest",
+    "intent/HD-0001.md"
+   ],
+   "remaining": "intent recovered independently for HD-0001 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided"
+  },
+  {
+   "gate": "3.1-intent",
+   "module": "01",
+   "status": "closed",
+   "level": "method",
+   "evidence": [
+    "run:intent-structure-check",
+    "run:intent-structure-selftest",
+    "intent/HD-0101.md",
+    "intent/HD-0102.md",
+    "intent/HD-0103.md"
+   ],
+   "remaining": "intent recovered independently for HD-0101, HD-0102, HD-0103 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided"
+  },
+  {
+   "gate": "3.1-intent",
+   "module": "02",
+   "status": "closed",
+   "level": "method",
+   "evidence": [
+    "run:intent-structure-check",
+    "run:intent-structure-selftest",
+    "intent/HD-0201.md",
+    "intent/HD-0202.md"
+   ],
+   "remaining": "intent recovered independently for HD-0201, HD-0202 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided"
+  },
+  {
+   "gate": "3.1-intent",
+   "module": "03",
+   "status": "closed",
+   "level": "method",
+   "evidence": [
+    "run:intent-structure-check",
+    "run:intent-structure-selftest",
+    "intent/HD-0301.md",
+    "intent/HD-0302.md"
+   ],
+   "remaining": "intent recovered independently for HD-0301, HD-0302 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided"
+  },
+  {
+   "gate": "3.1-intent",
+   "module": "04",
+   "status": "closed",
+   "level": "method",
+   "evidence": [
+    "run:intent-structure-check",
+    "run:intent-structure-selftest",
+    "intent/HD-0401.md",
+    "intent/HD-0402.md"
+   ],
+   "remaining": "intent recovered independently for HD-0401, HD-0402 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided"
+  },
+  {
+   "gate": "3.1-intent",
+   "module": "05",
+   "status": "closed",
+   "level": "method",
+   "evidence": [
+    "run:intent-structure-check",
+    "run:intent-structure-selftest",
+    "intent/HD-0501.md",
+    "intent/HD-0502.md"
+   ],
+   "remaining": "intent recovered independently for HD-0501, HD-0502 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided"
+  },
+  {
+   "gate": "3.1-intent",
+   "module": "06",
+   "status": "closed",
+   "level": "method",
+   "evidence": [
+    "run:intent-structure-check",
+    "run:intent-structure-selftest",
+    "intent/HD-0601.md",
+    "intent/HD-0602.md",
+    "intent/HD-0603.md",
+    "intent/HD-0604.md"
+   ],
+   "remaining": "intent recovered independently for HD-0601, HD-0602, HD-0603, HD-0604 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided"
+  },
+  {
+   "gate": "3.1-intent",
+   "module": "07",
+   "status": "closed",
+   "level": "method",
+   "evidence": [
+    "run:intent-structure-check",
+    "run:intent-structure-selftest",
+    "intent/HD-0701.md",
+    "intent/HD-0702.md",
+    "intent/HD-0703.md",
+    "intent/HD-0704.md",
+    "intent/HD-0705.md"
+   ],
+   "remaining": "intent recovered independently for HD-0701, HD-0702, HD-0703, HD-0704, HD-0705 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided"
+  },
+  {
+   "gate": "3.1-intent",
+   "module": "08",
+   "status": "closed",
+   "level": "method",
+   "evidence": [
+    "run:intent-structure-check",
+    "run:intent-structure-selftest",
+    "intent/HD-0801.md",
+    "intent/HD-0802.md",
+    "intent/HD-0803.md",
+    "intent/HD-0804.md"
+   ],
+   "remaining": "intent recovered independently for HD-0801, HD-0802, HD-0803, HD-0804 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided"
+  },
+  {
+   "gate": "3.1-intent",
+   "module": "09",
+   "status": "closed",
+   "level": "method",
+   "evidence": [
+    "run:intent-structure-check",
+    "run:intent-structure-selftest",
+    "intent/HD-0901.md",
+    "intent/HD-0902.md",
+    "intent/HD-0903.md",
+    "intent/HD-0904.md"
+   ],
+   "remaining": "intent recovered independently for HD-0901, HD-0902, HD-0903, HD-0904 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided"
+  },
+  {
+   "gate": "3.1-intent",
+   "module": "10",
+   "status": "closed",
+   "level": "method",
+   "evidence": [
+    "run:intent-structure-check",
+    "run:intent-structure-selftest",
+    "intent/HD-1001.md",
+    "intent/HD-1002.md",
+    "intent/HD-1003.md",
+    "intent/HD-1004.md"
+   ],
+   "remaining": "intent recovered independently for HD-1001, HD-1002, HD-1003, HD-1004 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided"
+  },
+  {
+   "gate": "3.1-intent",
+   "module": "11",
+   "status": "closed",
+   "level": "method",
+   "evidence": [
+    "run:intent-structure-check",
+    "run:intent-structure-selftest",
+    "intent/HD-1101.md",
+    "intent/HD-1102.md",
+    "intent/HD-1103.md",
+    "intent/HD-1104.md",
+    "intent/HD-1105.md"
+   ],
+   "remaining": "intent recovered independently for HD-1101, HD-1102, HD-1103, HD-1104, HD-1105 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided"
+  },
+  {
+   "gate": "3.1-intent",
+   "module": "15",
+   "status": "closed",
+   "level": "method",
+   "evidence": [
+    "run:intent-structure-check",
+    "run:intent-structure-selftest",
+    "intent/HD-1501.md",
+    "intent/HD-1502.md",
+    "intent/HD-1503.md",
+    "intent/HD-1504.md"
+   ],
+   "remaining": "intent recovered independently for HD-1501, HD-1502, HD-1503, HD-1504 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided"
+  },
+  {
+   "gate": "3.1-intent",
+   "module": "16",
+   "status": "closed",
+   "level": "method",
+   "evidence": [
+    "run:intent-structure-check",
+    "run:intent-structure-selftest",
+    "intent/HD-1601.md",
+    "intent/HD-1602.md",
+    "intent/HD-1603.md",
+    "intent/HD-1604.md",
+    "intent/HD-1605.md"
+   ],
+   "remaining": "intent recovered independently for HD-1601, HD-1602, HD-1603, HD-1604, HD-1605 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided"
+  },
+  {
+   "gate": "3.1-intent",
+   "module": "17",
+   "status": "closed",
+   "level": "method",
+   "evidence": [
+    "run:intent-structure-check",
+    "run:intent-structure-selftest",
+    "intent/HD-1701.md",
+    "intent/HD-1702.md",
+    "intent/HD-1703.md",
+    "intent/HD-1704.md",
+    "intent/HD-1705.md"
+   ],
+   "remaining": "intent recovered independently for HD-1701, HD-1702, HD-1703, HD-1704, HD-1705 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided"
+  },
+  {
+   "gate": "3.1-intent",
+   "module": "18",
+   "status": "closed",
+   "level": "method",
+   "evidence": [
+    "run:intent-structure-check",
+    "run:intent-structure-selftest",
+    "intent/HD-1801.md",
+    "intent/HD-1802.md"
+   ],
+   "remaining": "intent recovered independently for HD-1801, HD-1802 (sources, contradictions, as built, intended, working assumption, alternatives, discriminating check; checked structurally). The intent itself stays a maintainer decision (residual questions in each file); findings whose intent is undecided keep product label intent-undecided"
+  },
+  {
+   "gate": "3.7-mutation",
+   "module": "01",
+   "status": "blocked",
+   "level": "product",
+   "evidence": [],
+   "remaining": "blocked by the binding observation-only control, not by access: mutation testing of the product's unverified layers (Python/ObjectScript handlers) needs mutated copies of product code, and the operator's instruction is that model mutations belong in synthetic verification artifacts only and that no patch is prepared elsewhere or deployed. Model-level mutants exist instead (every crate's located controls, the explorer's as-built variants, the IRIS contract's 42 mutants). Operator question O-2: may product-code mutants be generated in a scratch clone outside the repository, never committed and never compiled into IRIS, and run only against the product's own unit tests?"
+  },
+  {
+   "gate": "3.7-mutation",
+   "module": "02",
+   "status": "blocked",
+   "level": "product",
+   "evidence": [],
+   "remaining": "blocked by the binding observation-only control, not by access: mutation testing of the product's unverified layers (Python/ObjectScript handlers) needs mutated copies of product code, and the operator's instruction is that model mutations belong in synthetic verification artifacts only and that no patch is prepared elsewhere or deployed. Model-level mutants exist instead (every crate's located controls, the explorer's as-built variants, the IRIS contract's 42 mutants). Operator question O-2: may product-code mutants be generated in a scratch clone outside the repository, never committed and never compiled into IRIS, and run only against the product's own unit tests?"
+  },
+  {
+   "gate": "3.7-mutation",
+   "module": "03",
+   "status": "blocked",
+   "level": "product",
+   "evidence": [],
+   "remaining": "blocked by the binding observation-only control, not by access: mutation testing of the product's unverified layers (Python/ObjectScript handlers) needs mutated copies of product code, and the operator's instruction is that model mutations belong in synthetic verification artifacts only and that no patch is prepared elsewhere or deployed. Model-level mutants exist instead (every crate's located controls, the explorer's as-built variants, the IRIS contract's 42 mutants). Operator question O-2: may product-code mutants be generated in a scratch clone outside the repository, never committed and never compiled into IRIS, and run only against the product's own unit tests?"
+  },
+  {
+   "gate": "3.7-mutation",
+   "module": "04",
+   "status": "blocked",
+   "level": "product",
+   "evidence": [],
+   "remaining": "blocked by the binding observation-only control, not by access: mutation testing of the product's unverified layers (Python/ObjectScript handlers) needs mutated copies of product code, and the operator's instruction is that model mutations belong in synthetic verification artifacts only and that no patch is prepared elsewhere or deployed. Model-level mutants exist instead (every crate's located controls, the explorer's as-built variants, the IRIS contract's 42 mutants). Operator question O-2: may product-code mutants be generated in a scratch clone outside the repository, never committed and never compiled into IRIS, and run only against the product's own unit tests?"
+  },
+  {
+   "gate": "3.7-mutation",
+   "module": "05",
+   "status": "blocked",
+   "level": "product",
+   "evidence": [],
+   "remaining": "blocked by the binding observation-only control, not by access: mutation testing of the product's unverified layers (Python/ObjectScript handlers) needs mutated copies of product code, and the operator's instruction is that model mutations belong in synthetic verification artifacts only and that no patch is prepared elsewhere or deployed. Model-level mutants exist instead (every crate's located controls, the explorer's as-built variants, the IRIS contract's 42 mutants). Operator question O-2: may product-code mutants be generated in a scratch clone outside the repository, never committed and never compiled into IRIS, and run only against the product's own unit tests?"
+  },
+  {
+   "gate": "3.7-mutation",
+   "module": "06",
+   "status": "blocked",
+   "level": "product",
+   "evidence": [],
+   "remaining": "blocked by the binding observation-only control, not by access: mutation testing of the product's unverified layers (Python/ObjectScript handlers) needs mutated copies of product code, and the operator's instruction is that model mutations belong in synthetic verification artifacts only and that no patch is prepared elsewhere or deployed. Model-level mutants exist instead (every crate's located controls, the explorer's as-built variants, the IRIS contract's 42 mutants). Operator question O-2: may product-code mutants be generated in a scratch clone outside the repository, never committed and never compiled into IRIS, and run only against the product's own unit tests?"
+  },
+  {
+   "gate": "3.7-mutation",
+   "module": "07",
+   "status": "blocked",
+   "level": "product",
+   "evidence": [],
+   "remaining": "blocked by the binding observation-only control, not by access: mutation testing of the product's unverified layers (Python/ObjectScript handlers) needs mutated copies of product code, and the operator's instruction is that model mutations belong in synthetic verification artifacts only and that no patch is prepared elsewhere or deployed. Model-level mutants exist instead (every crate's located controls, the explorer's as-built variants, the IRIS contract's 42 mutants). Operator question O-2: may product-code mutants be generated in a scratch clone outside the repository, never committed and never compiled into IRIS, and run only against the product's own unit tests?"
+  },
+  {
+   "gate": "3.7-mutation",
+   "module": "08",
+   "status": "blocked",
+   "level": "product",
+   "evidence": [],
+   "remaining": "blocked by the binding observation-only control, not by access: mutation testing of the product's unverified layers (Python/ObjectScript handlers) needs mutated copies of product code, and the operator's instruction is that model mutations belong in synthetic verification artifacts only and that no patch is prepared elsewhere or deployed. Model-level mutants exist instead (every crate's located controls, the explorer's as-built variants, the IRIS contract's 42 mutants). Operator question O-2: may product-code mutants be generated in a scratch clone outside the repository, never committed and never compiled into IRIS, and run only against the product's own unit tests?"
+  },
+  {
+   "gate": "3.7-mutation",
+   "module": "09",
+   "status": "blocked",
+   "level": "product",
+   "evidence": [],
+   "remaining": "blocked by the binding observation-only control, not by access: mutation testing of the product's unverified layers (Python/ObjectScript handlers) needs mutated copies of product code, and the operator's instruction is that model mutations belong in synthetic verification artifacts only and that no patch is prepared elsewhere or deployed. Model-level mutants exist instead (every crate's located controls, the explorer's as-built variants, the IRIS contract's 42 mutants). Operator question O-2: may product-code mutants be generated in a scratch clone outside the repository, never committed and never compiled into IRIS, and run only against the product's own unit tests?"
+  },
+  {
+   "gate": "3.7-mutation",
+   "module": "10",
+   "status": "blocked",
+   "level": "product",
+   "evidence": [],
+   "remaining": "blocked by the binding observation-only control, not by access: mutation testing of the product's unverified layers (Python/ObjectScript handlers) needs mutated copies of product code, and the operator's instruction is that model mutations belong in synthetic verification artifacts only and that no patch is prepared elsewhere or deployed. Model-level mutants exist instead (every crate's located controls, the explorer's as-built variants, the IRIS contract's 42 mutants). Operator question O-2: may product-code mutants be generated in a scratch clone outside the repository, never committed and never compiled into IRIS, and run only against the product's own unit tests?"
+  },
+  {
+   "gate": "3.7-mutation",
+   "module": "11",
+   "status": "blocked",
+   "level": "product",
+   "evidence": [],
+   "remaining": "blocked by the binding observation-only control, not by access: mutation testing of the product's unverified layers (Python/ObjectScript handlers) needs mutated copies of product code, and the operator's instruction is that model mutations belong in synthetic verification artifacts only and that no patch is prepared elsewhere or deployed. Model-level mutants exist instead (every crate's located controls, the explorer's as-built variants, the IRIS contract's 42 mutants). Operator question O-2: may product-code mutants be generated in a scratch clone outside the repository, never committed and never compiled into IRIS, and run only against the product's own unit tests?"
+  },
+  {
+   "gate": "3.7-mutation",
+   "module": "15",
+   "status": "blocked",
+   "level": "product",
+   "evidence": [],
+   "remaining": "blocked by the binding observation-only control, not by access: mutation testing of the product's unverified layers (Python/ObjectScript handlers) needs mutated copies of product code, and the operator's instruction is that model mutations belong in synthetic verification artifacts only and that no patch is prepared elsewhere or deployed. Model-level mutants exist instead (every crate's located controls, the explorer's as-built variants, the IRIS contract's 42 mutants). Operator question O-2: may product-code mutants be generated in a scratch clone outside the repository, never committed and never compiled into IRIS, and run only against the product's own unit tests?"
+  },
+  {
+   "gate": "3.7-mutation",
+   "module": "16",
+   "status": "blocked",
+   "level": "product",
+   "evidence": [],
+   "remaining": "blocked by the binding observation-only control, not by access: mutation testing of the product's unverified layers (Python/ObjectScript handlers) needs mutated copies of product code, and the operator's instruction is that model mutations belong in synthetic verification artifacts only and that no patch is prepared elsewhere or deployed. Model-level mutants exist instead (every crate's located controls, the explorer's as-built variants, the IRIS contract's 42 mutants). Operator question O-2: may product-code mutants be generated in a scratch clone outside the repository, never committed and never compiled into IRIS, and run only against the product's own unit tests?"
+  },
+  {
+   "gate": "3.7-mutation",
+   "module": "17",
+   "status": "blocked",
+   "level": "product",
+   "evidence": [],
+   "remaining": "blocked by the binding observation-only control, not by access: mutation testing of the product's unverified layers (Python/ObjectScript handlers) needs mutated copies of product code, and the operator's instruction is that model mutations belong in synthetic verification artifacts only and that no patch is prepared elsewhere or deployed. Model-level mutants exist instead (every crate's located controls, the explorer's as-built variants, the IRIS contract's 42 mutants). Operator question O-2: may product-code mutants be generated in a scratch clone outside the repository, never committed and never compiled into IRIS, and run only against the product's own unit tests?"
+  },
+  {
+   "gate": "3.7-mutation",
+   "module": "18",
+   "status": "blocked",
+   "level": "product",
+   "evidence": [],
+   "remaining": "blocked by the binding observation-only control, not by access: mutation testing of the product's unverified layers (Python/ObjectScript handlers) needs mutated copies of product code, and the operator's instruction is that model mutations belong in synthetic verification artifacts only and that no patch is prepared elsewhere or deployed. Model-level mutants exist instead (every crate's located controls, the explorer's as-built variants, the IRIS contract's 42 mutants). Operator question O-2: may product-code mutants be generated in a scratch clone outside the repository, never committed and never compiled into IRIS, and run only against the product's own unit tests?"
+  }
+ ]
+}

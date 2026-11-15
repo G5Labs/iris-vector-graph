@@ -1,0 +1,15 @@
+{
+  "command": "flock -w 1800 $RUN_DIR/intent-a/auditia.lock bash experiment/playbook-completion/tools/locks.sh iris timeout 600 python experiment/playbook-completion/intent/probes/lane-a/hd0402_two_rebuilds.py",
+  "experiment_head": "c01a7ccd00b29670b521799344233fa4a814c925",
+  "id": "intent-a-hd0402-two-rebuilds",
+  "kind": "probe",
+  "lane": "intent-a",
+  "log": "$RUN_DIR/intent-a/hd0402_two_rebuilds.log",
+  "log_bytes": 1547,
+  "log_sha256": "7c7a680cd839981c8165ff678fd802b91591085ee2578ff783772aee3b072f02",
+  "observes": "AUDITIA, adjacency indexed. Conn A in BuildKG's lock state (Adjacency.BeginRebuild, ^IVG.AdjW#S): conn B's Graph.KG.Traversal.BuildKG completed OK in 0.075 s, i.e. a second ^KG rebuild is admitted while one is in progress. Conn A holding ^IVG.NKGBuild: conn B's BuildNKG waited (still running at 3 s) and finished OK 3.001 s, right after release. Pass for ADMIN_GUIDE:1050's literal claim (one ^NKG rebuild at a time, lock ^IVG.NKGBuild); the broad reading (sync() as a whole serialized) does not hold for its ^KG half. verify_graph ok afterwards.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-13T22:43:49+00:00",
+  "result": "pass"
+}

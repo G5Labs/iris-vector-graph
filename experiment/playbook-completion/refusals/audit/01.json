@@ -1,0 +1,517 @@
+{
+ "module": "01",
+ "lane": "refusals (fork C)",
+ "statements": [
+  {
+   "id": "INS-X1.2",
+   "text": "Setup refuses to run without a vector width. It says so before it writes anything.",
+   "implementing_code": [
+    "iris_vector_graph/_engine/schema.py:2227-2228",
+    "iris_vector_graph/_engine/schema.py:2432-2438"
+   ],
+   "outcome": "holds-live",
+   "notes": "Live in AUDITE: an engine built with embedding_dimension=None (it stayed None) gets ValueError naming embedding_dimension from initialize_schema(); the journal window shows 0 records. The upstream unit test on fakes passed too (val-unit-3-c02).",
+   "live_cases": [
+    "initialize_schema() with no vector width -> ValueError naming embedding_dimension"
+   ],
+   "evidence": [
+    "run:rx-live-01",
+    "run:val-unit-3-c02"
+   ]
+  },
+  {
+   "id": "INS-X1.3",
+   "text": "Setup refuses to start while the caller has an open transaction on the connection. A preview refuses too.",
+   "implementing_code": [
+    "iris_vector_graph/_engine/schema.py:2150-2157",
+    "iris_vector_graph/_write_txn.py:90-99"
+   ],
+   "outcome": "holds-live",
+   "notes": "Live: START TRANSACTION on the engine's connection ($TLEVEL 1), then initialize_schema() and initialize_schema(dry_run=True): both CallerTransactionOpenError, 0 journal records, the caller's level still 1 afterwards.",
+   "live_cases": [
+    "initialize_schema(dry_run=False) with a caller transaction open (TLEVEL 1) -> CallerTransactionOpenError",
+    "initialize_schema(dry_run=True) with a caller transaction open (TLEVEL 1) -> CallerTransactionOpenError"
+   ],
+   "evidence": [
+    "run:rx-live-01"
+   ]
+  },
+  {
+   "id": "INS-X1.5",
+   "text": "A user who lacks a right to make tables or routines is stopped at the first statement that needs it. The error names the user, the schema and the right.",
+   "implementing_code": [
+    "iris_vector_graph/_engine/schema.py:685-704",
+    "iris_vector_graph/_engine/schema.py:765",
+    "iris_vector_graph/_engine/schema.py:2469",
+    "iris_vector_graph/schema_name.py:107-121",
+    "iris_vector_graph/schema_name.py:123-131"
+   ],
+   "outcome": "holds-live",
+   "notes": "Live as IVGAUDIT_RO (SELECT and EXECUTE on the schema, database at R, no %CREATE_* privilege): engine.initialize_schema() raised IVGSchemaError 'cannot create IVG's SQL objects in schema Graph_KG: user IVGAUDIT_RO does not hold the SQL privilege %CREATE_TABLE ... Nothing was created.' (names the user, the schema and the right); 0 journal records. Unit tests on fakes also passed in val-unit-3-c01.",
+   "evidence": [
+    "run:rx-live-priv",
+    "run:val-unit-3-c01"
+   ],
+   "live_cases": [
+    "as IVGAUDIT_RO (no %CREATE_* rights): initialize_schema -> IVGSchemaError naming user, schema and the right"
+   ]
+  },
+  {
+   "id": "INS-X2.3",
+   "text": "A bad schema name is refused before any database call. The error names the rule it breaks.",
+   "implementing_code": [
+    "iris_vector_graph/schema_name.py:143-158",
+    "iris_vector_graph/engine.py:299"
+   ],
+   "outcome": "holds-live",
+   "notes": "Live: IRISGraphEngine(schema_prefix=...) with '', '1bad', 'bad-name', '%Bad', 'SQLUser', 'sqluser': each ValueError naming its rule, raised in the constructor before the record read; 0 journal records.",
+   "live_cases": [
+    "IRISGraphEngine(schema_prefix='') -> ValueError (it is empty)",
+    "IRISGraphEngine(schema_prefix='1bad') -> ValueError (must start with a letter)",
+    "IRISGraphEngine(schema_prefix='bad-name') -> ValueError (must start with a letter)",
+    "IRISGraphEngine(schema_prefix='%Bad') -> ValueError (reserved for InterSystems)",
+    "IRISGraphEngine(schema_prefix='SQLUser') -> ValueError (SQLUser is the default schema)",
+    "IRISGraphEngine(schema_prefix='sqluser') -> ValueError (SQLUser is the default schema)"
+   ],
+   "evidence": [
+    "run:rx-live-01",
+    "run:val-unit-3-c06"
+   ]
+  },
+  {
+   "id": "INS-X2.4",
+   "text": "A name whose class package is, or lies under, one of the product's own code packages is refused.",
+   "implementing_code": [
+    "iris_vector_graph/schema_name.py:24",
+    "iris_vector_graph/schema_name.py:159-163"
+   ],
+   "outcome": "holds-live",
+   "notes": "Live: 'IVG', 'ivgc', 'IVG_Sub', 'Graph_KG_Sub', 'IVGC_x' each refused naming the code package; 'graph_kg' validates to Graph_KG (allowed).",
+   "live_cases": [
+    "IRISGraphEngine(schema_prefix='IVG') -> ValueError (under an IVG code package)",
+    "IRISGraphEngine(schema_prefix='ivgc') -> ValueError (under an IVG code package)",
+    "IRISGraphEngine(schema_prefix='IVG_Sub') -> ValueError (under an IVG code package)",
+    "IRISGraphEngine(schema_prefix='Graph_KG_Sub') -> ValueError (under an IVG code package)",
+    "IRISGraphEngine(schema_prefix='IVGC_x') -> ValueError (under an IVG code package)"
+   ],
+   "evidence": [
+    "run:rx-live-01"
+   ]
+  },
+  {
+   "id": "INS-X2.6",
+   "text": "Setup refuses a schema whose class package already holds classes the product did not make. Nothing is made.",
+   "implementing_code": [
+    "iris_vector_graph/schema_name.py:465-498",
+    "iris_vector_graph/schema_name.py:501-509",
+    "iris_vector_graph/_engine/schema.py:2243"
+   ],
+   "outcome": "holds-run",
+   "notes": "Through setup the check is reached only on a namespace whose record names the requested schema or has none; AUDITE records Graph_KG, so initialize_schema(dry_run=True) on INFORMATION_SCHEMA meets the record check first (live case shown, IVGSchemaError mismatch). The implementing function itself was driven live and read-only: refuse_package_clash(conn, 'INFORMATION_SCHEMA') raised, naming INFORMATION.SCHEMA.* classes, 0 journal records (case 'function: refuse_package_clash...'). The upstream integration test on a real scratch namespace passed in val-scratch-1.",
+   "live_function_cases": [
+    "function: refuse_package_clash(conn, 'INFORMATION_SCHEMA') -> IVGSchemaError"
+   ],
+   "live_entry_cases": [
+    "entry: initialize_schema(dry_run=True) on INFORMATION_SCHEMA meets the record check first"
+   ],
+   "evidence": [
+    "run:rx-live-01",
+    "run:val-scratch-1"
+   ],
+   "log_contains": {
+    "run:val-scratch-1": "tests/integration/test_schema_record.py::test_a_package_holding_someone_elses_class_is_refused_and_ivgs_own_are_not PASSED"
+   }
+  },
+  {
+   "id": "INS-X2.10",
+   "text": "With no record and the product's tables in another schema, or in several, setup refuses unless the caller named one. It lists each schema with its row counts and saves nothing.",
+   "implementing_code": [
+    "iris_vector_graph/schema_name.py:84-104",
+    "iris_vector_graph/_engine/schema.py:2229-2242"
+   ],
+   "outcome": "blocked-access",
+   "notes": "No upstream test outside that e2e file exercises unrecorded_schemas. Inspected: _engine/schema.py:2229-2242 computes the held schemas only when nothing is recorded and raises before refuse_package_clash and before any write.",
+   "evidence": [],
+   "dependency": "a namespace with no IVG Schema record whose IVG tables are in another schema or in several (the pinned fixture tests/e2e/test_262_record.py builds one in a scratch namespace; its tests were SKIPPED in val-e2e-1-c03, gate off, and are not in the gated subsets). AUDITE records Graph_KG; per the lane brief no scratch namespace is created here: open"
+  },
+  {
+   "id": "INS-X2.12",
+   "text": "Setup is refused when the record names another schema. So is a deploy. Nothing is read or loaded first.",
+   "implementing_code": [
+    "iris_vector_graph/_engine/schema.py:2222-2226",
+    "iris_vector_graph/_engine/class_deploy.py:355-357",
+    "iris_vector_graph/schema.py:2878-2888",
+    "iris_vector_graph/schema_name.py:184-192"
+   ],
+   "outcome": "holds-live",
+   "notes": "Live: an engine on RXOTHER (AUDITE records Graph_KG): initialize_schema() and its preview raise IVGSchemaError naming both schemas; deploy_packaged_classes(conn, schema='RXOTHER') and GraphSchema.deploy_objectscript_classes(schema='RXOTHER') raise the same before any load; 0 journal records each; the record still reads Graph_KG after the run.",
+   "live_cases": [
+    "initialize_schema(dry_run=False) with schema_prefix=RXOTHER -> IVGSchemaError naming both",
+    "initialize_schema(dry_run=True) with schema_prefix=RXOTHER -> IVGSchemaError naming both",
+    "deploy_packaged_classes(conn, schema='RXOTHER') -> IVGSchemaError before loading",
+    "GraphSchema.deploy_objectscript_classes(schema='RXOTHER') -> IVGSchemaError before the rescue probe or any load"
+   ],
+   "evidence": [
+    "run:rx-live-01",
+    "run:val-unit-3-c02"
+   ]
+  },
+  {
+   "id": "INS-X3.2",
+   "text": "When the record names another schema, every public call of the engine is refused. The error names both schemas, and nothing is written.",
+   "implementing_code": [
+    "iris_vector_graph/schema_name.py:74-82",
+    "iris_vector_graph/schema_name.py:220-228",
+    "iris_vector_graph/schema_name.py:322-348",
+    "iris_vector_graph/engine.py:362-366",
+    "iris_vector_graph/engine.py:414-416",
+    "iris_vector_graph/engine.py:1847-1868"
+   ],
+   "outcome": "holds-live",
+   "notes": "Mechanical and live: every public function of the engine class not in EXEMPT_METHODS (233, the guard's own selection criterion) and every public method of engine.graph/cypher/temporal/algorithms plus ledger meta/head/stats/history/enable/disable/redaction_in_progress/verify, each called with no arguments on an engine for RXOTHER: every one raised IVGSchemaError naming Graph_KG and RXOTHER; construction itself wrote nothing; 0 journal records. Not called: the 4 public class-level callables the guard does not wrap (TableNotMappedError, the classmethods from_connect and from_wrapper, which build a new engine, and the staticmethod snapshot_info).",
+   "live_cases": [
+    "construct IRISGraphEngine(schema_prefix='RXOTHER') on a namespace recording Graph_KG: no exception, nothing written",
+    "every public engine method (233) on schema_prefix=RXOTHER -> IVGSchemaError naming both schemas",
+    "every public sub-engine and ledger method on schema_prefix=RXOTHER (no arguments) -> IVGSchemaError naming both schemas"
+   ],
+   "evidence": [
+    "run:rx-live-01"
+   ]
+  },
+  {
+   "id": "INS-X3.3",
+   "text": "With no record and no marker routine, every public call is refused. The error says which of three cases it is.",
+   "implementing_code": [
+    "iris_vector_graph/schema_name.py:220-235",
+    "iris_vector_graph/schema_name.py:249-267"
+   ],
+   "outcome": "holds-run",
+   "notes": "Needs a namespace with no record and no marker routine; AUDITE has a record. Upstream unit tests (fakes) passed in val-unit-3-c05; the never-set-up branch also passed on real IRIS (INS-X3.3.1).",
+   "evidence": [
+    "run:val-unit-3-c05"
+   ],
+   "log_contains": {
+    "run:val-unit-3-c05": "tests/unit/test_first_access.py::test_every_kind_of_first_access_is_refused[<lambda>0] PASSED"
+   }
+  },
+  {
+   "id": "INS-X3.3.1",
+   "text": "A namespace with none of the product's classes, tables or globals is called never set up.",
+   "implementing_code": [
+    "iris_vector_graph/schema_name.py:55-61",
+    "iris_vector_graph/schema_name.py:262-267"
+   ],
+   "outcome": "holds-run",
+   "notes": "The integration test ran check_first_access on a real untouched scratch namespace.",
+   "evidence": [
+    "run:val-scratch-1",
+    "run:val-unit-3-c02"
+   ],
+   "log_contains": {
+    "run:val-scratch-1": "tests/integration/test_schema_record.py::test_no_record_and_no_46_objects_is_refused_with_the_never_set_up_error PASSED",
+    "run:val-unit-3-c02": "tests/unit/test_460_r201_never_set_up.py::test_a_namespace_never_set_up_says_so PASSED"
+   }
+  },
+  {
+   "id": "INS-X3.3.2",
+   "text": "A namespace that holds a legacy object is set up by an old release and not yet brought up to date.",
+   "implementing_code": [
+    "iris_vector_graph/schema_name.py:48-53",
+    "iris_vector_graph/schema_name.py:256-261"
+   ],
+   "outcome": "holds-run",
+   "notes": "Needs a namespace with no record holding a legacy object. The O-1 fixture namespace IVG262FC1306 holds v4.5.1 objects but records RAG (the pin's setup ran there), so it would not reach this branch; not used.",
+   "evidence": [
+    "run:val-unit-3-c02"
+   ],
+   "log_contains": {
+    "run:val-unit-3-c02": "tests/unit/test_460_r201_never_set_up.py::test_a_namespace_with_an_earlier_releases_objects_is_still_not_upgraded[User.funcCYCMP] PASSED"
+   }
+  },
+  {
+   "id": "INS-X3.3.3",
+   "text": "Some namespaces hold some of the product's own parts and no legacy object. Such a namespace holds a setup that did not finish.",
+   "implementing_code": [
+    "iris_vector_graph/schema_name.py:63-71",
+    "iris_vector_graph/schema_name.py:238-243",
+    "iris_vector_graph/schema_name.py:262-266"
+   ],
+   "outcome": "holds-run",
+   "notes": "Needs a namespace with no record holding IVG's own parts only; unit tests on fakes.",
+   "evidence": [
+    "run:val-unit-3-c02"
+   ],
+   "log_contains": {
+    "run:val-unit-3-c02": "tests/unit/test_460_r201_never_set_up.py::test_ivgs_own_objects_without_an_earlier_releases_are_an_unfinished_setup[trace0] PASSED"
+   }
+  },
+  {
+   "id": "INS-X4.10",
+   "text": "A schema class name may be taken in the class package by a class the product did not make. Then the deploy loads nothing.",
+   "implementing_code": [
+    "iris_vector_graph/_engine/class_deploy.py:193-210",
+    "iris_vector_graph/_engine/class_deploy.py:245-251"
+   ],
+   "outcome": "holds-run",
+   "notes": "A live trigger needs a foreign class compiled under a schema class name in a schema's package (compiling a class is out of scope).",
+   "evidence": [
+    "run:val-unit-3-c05"
+   ],
+   "log_contains": {
+    "run:val-unit-3-c05": "tests/unit/test_class_deploy.py::TestSchemaClasses::test_someone_elses_class_of_a_schema_class_name_stops_the_deploy PASSED"
+   }
+  },
+  {
+   "id": "INS-X5.6",
+   "text": "The core vector search procedure may fail to be made. Unless its width is the cause, setup stops with an error.",
+   "implementing_code": [
+    "iris_vector_graph/_engine/schema.py:766-785",
+    "iris_vector_graph/_engine/schema.py:797-803"
+   ],
+   "outcome": "holds-inspected",
+   "notes": "Not triggerable here: it needs the core kg_KNN_VEC procedure DDL to fail with an SQLCODE other than -260 (an error the deployed namespace does not produce, and changing the deployed objects is out of scope); no upstream test exercises it (searched tests/ for the RuntimeError text). Inspected: a non -260 failure of a core routine is appended to procedure_errors (:783-784) and raised as RuntimeError after routines.save() (:797-803), so the record of the others is saved first, as the statement's note says.",
+   "evidence": []
+  },
+  {
+   "id": "INS-X6.2",
+   "text": "A right whose grantee or target has an odd name is refused before it is granted.",
+   "implementing_code": [
+    "iris_vector_graph/_engine/legacy.py:257-259",
+    "iris_vector_graph/_engine/legacy.py:432-434"
+   ],
+   "outcome": "holds-run",
+   "notes": "Reached through setup only with 4.5.x grants on legacy objects. The implementing function was driven live: legacy.copy_grants with grantee 'rx01 bad;name' raised ValueError before any GRANT, 0 journal records (case 'function: legacy.copy_grants...').",
+   "live_function_cases": [
+    "function: legacy.copy_grants with grantee 'rx01 bad;name' -> ValueError"
+   ],
+   "live_entry_cases": [],
+   "evidence": [
+    "run:rx-live-01",
+    "run:val-unit-3-c02"
+   ],
+   "log_contains": {
+    "run:val-unit-3-c02": "tests/unit/test_460_r170_read_path_grants.py::test_an_unexpected_grantee_name_is_refused PASSED"
+   }
+  },
+  {
+   "id": "INS-X6.11",
+   "text": "If a right is still held after it was taken away, setup raises.",
+   "implementing_code": [
+    "iris_vector_graph/_engine/legacy.py:576-587"
+   ],
+   "outcome": "holds-run",
+   "notes": "Needs a REVOKE that IRIS accepts but that leaves the grant; unit test on fakes.",
+   "evidence": [
+    "run:val-unit-3-c03"
+   ],
+   "log_contains": {
+    "run:val-unit-3-c03": "tests/unit/test_460_r293_legacy_arno_wrappers.py::test_a_revoke_that_leaves_the_grant_raises PASSED"
+   }
+  },
+  {
+   "id": "INS-X6.13",
+   "text": "If a ledger table is missing after setup, setup raises. It copies no rows.",
+   "implementing_code": [
+    "iris_vector_graph/_engine/legacy.py:633-635"
+   ],
+   "outcome": "holds-inspected",
+   "notes": "No upstream test. Reached through setup only on a namespace recorded under a schema other than Graph_KG whose ledger table was not created. The implementing function was driven live in AUDITE (case 'function: copy_ledger_history...'): with one genesis row in Graph_KG.ledger_revisions, copy_ledger_history(conn, 'RXNOSCHEMA', dry_run=False) raised RuntimeError naming the table and the 1 row not copied, 0 journal records.",
+   "live_function_cases": [
+    "function: copy_ledger_history(conn, 'RXNOSCHEMA', dry_run=False) with no target table -> RuntimeError, nothing copied"
+   ],
+   "live_entry_cases": [],
+   "evidence": [
+    "run:rx-live-01"
+   ]
+  },
+  {
+   "id": "INS-X7.7",
+   "text": "Legacy removal will not drop a thing if the caller has work not yet saved. That work is an open transaction.",
+   "implementing_code": [
+    "iris_vector_graph/_engine/admin.py:388-395"
+   ],
+   "outcome": "holds-live",
+   "notes": "Live: with a caller transaction open, remove_legacy_objects(dry_run=False) raised CallerTransactionOpenError (0 journal records) and the listing (dry_run=True) answered [] in the same transaction, not refused.",
+   "live_cases": [
+    "remove_legacy_objects(dry_run=False) with a caller transaction open (TLEVEL 1) -> CallerTransactionOpenError",
+    "remove_legacy_objects(dry_run=True) in the same caller transaction: listed, not refused"
+   ],
+   "evidence": [
+    "run:rx-live-01",
+    "run:val-unit-3-c06"
+   ]
+  },
+  {
+   "id": "INS-X8.5",
+   "text": "A failed edge rescue stops setup, even though other deploy failures do not.",
+   "implementing_code": [
+    "iris_vector_graph/_engine/schema.py:2582-2590",
+    "iris_vector_graph/schema.py:3098-3109"
+   ],
+   "outcome": "holds-run",
+   "notes": "Needs a v3.2.0 class-owned rdf_edges and a failing restore; unit test on fakes.",
+   "evidence": [
+    "run:val-unit-3-c00"
+   ],
+   "log_contains": {
+    "run:val-unit-3-c00": "tests/unit/test_230_rdf_edges_rescue.py::TestARescueFailureIsNotSwallowed::test_initialize_schema_reraises_a_rescue_failure PASSED"
+   }
+  },
+  {
+   "id": "INS-X8.7",
+   "text": "An edge table in the way that holds rows the side table lacks is never dropped. Setup raises instead.",
+   "implementing_code": [
+    "iris_vector_graph/schema.py:3185-3202"
+   ],
+   "outcome": "holds-run",
+   "notes": "Needs a rescue table and a leftover rdf_edges holding foreign rows; unit test on fakes.",
+   "evidence": [
+    "run:val-unit-3-c06"
+   ],
+   "log_contains": {
+    "run:val-unit-3-c06": "tests/unit/test_ivg400_rescue_resume.py::TestWhatTheReRunLeavesInTheWay::test_a_leftover_holding_rows_the_rescue_lacks_is_never_dropped PASSED"
+   }
+  },
+  {
+   "id": "INS-X9.5",
+   "text": "A step name that is not one of the four is refused before any step runs.",
+   "implementing_code": [
+    "iris_vector_graph/migrations/upgrade.py:178",
+    "iris_vector_graph/migrations/upgrade.py:226-236"
+   ],
+   "outcome": "holds-live",
+   "notes": "Live: steps=['rx01_bogus'] (dry_run=False) and ['rx01_bogus', 'embeddings'] (dry_run=True) both ValueError naming the four known steps before any step; 0 journal records.",
+   "live_cases": [
+    "upgrade_to_4_0_0(steps=['rx01_bogus'], dry_run=False) -> ValueError naming the known steps",
+    "upgrade_to_4_0_0(steps=['rx01_bogus', <a real step>], dry_run=True) -> ValueError before the real step"
+   ],
+   "evidence": [
+    "run:rx-live-01"
+   ]
+  },
+  {
+   "id": "INS-X9.8",
+   "text": "The upgrade refuses to start while the caller has an open transaction. A preview does not refuse.",
+   "implementing_code": [
+    "iris_vector_graph/migrations/upgrade.py:176-177",
+    "iris_vector_graph/migrations/_commit.py:18-22"
+   ],
+   "outcome": "holds-live",
+   "notes": "Live: with a caller transaction open, upgrade_to_4_0_0(dry_run=False) raised CallerTransactionOpenError (0 journal records); the preview (dry_run=True) in the same transaction answered an UpgradeReport, not refused.",
+   "live_cases": [
+    "upgrade_to_4_0_0(dry_run=False) with a caller transaction open (TLEVEL 1) -> CallerTransactionOpenError",
+    "upgrade_to_4_0_0(dry_run=True) in the same caller transaction: a preview, not refused"
+   ],
+   "evidence": [
+    "run:rx-live-01"
+   ]
+  },
+  {
+   "id": "INS-X9.9",
+   "text": "If a step's save fails, the step is rolled back and the upgrade raises an error that names it.",
+   "implementing_code": [
+    "iris_vector_graph/migrations/_commit.py:25-35"
+   ],
+   "outcome": "holds-run",
+   "notes": "Needs a commit IRIS refuses mid-upgrade; unit test with a failing connection.",
+   "evidence": [
+    "run:val-unit-3-c04"
+   ],
+   "log_contains": {
+    "run:val-unit-3-c04": "tests/unit/test_470_migration_commit.py::test_a_failed_commit_raises_naming_the_migration_and_rolls_back[docs_and_edge_vectors] PASSED"
+   }
+  },
+  {
+   "id": "INS-X9.4.91",
+   "text": "The re-key refuses an old key name that is not plain. It hands back no statements then.",
+   "implementing_code": [
+    "iris_vector_graph/schema.py:1446-1451"
+   ],
+   "outcome": "holds-live",
+   "notes": "Live call of GraphSchema.get_graph_scope_migration_sql(legacy_node_keys=['bad; DROP']): ValueError, no statements returned (pure function, 0 journal records).",
+   "live_cases": [
+    "GraphSchema.get_graph_scope_migration_sql(legacy_node_keys=['bad; DROP']) -> ValueError"
+   ],
+   "evidence": [
+    "run:rx-live-01"
+   ]
+  },
+  {
+   "id": "INS-X9.13",
+   "text": "A statement with an unknown expected outcome is refused when it is declared.",
+   "implementing_code": [
+    "iris_vector_graph/migrations/statements.py:55-57"
+   ],
+   "outcome": "holds-live",
+   "notes": "Live call: Statement(expects='rx01-bogus') raised ValueError (no IRIS contact).",
+   "live_cases": [
+    "Statement(expects='rx01-bogus') -> ValueError"
+   ],
+   "evidence": [
+    "run:rx-live-01",
+    "run:val-unit-3-c06"
+   ]
+  },
+  {
+   "id": "INS-X9.14",
+   "text": "A run with the wrong number of inputs sends nothing to IRIS.",
+   "implementing_code": [
+    "iris_vector_graph/migrations/statements.py:315-320"
+   ],
+   "outcome": "holds-live",
+   "notes": "Live: run_statement on a cursor-counting wrapper of the lane's real connection with 2 values for 1 placeholder raised ValueError; 0 cursors opened, 0 journal records.",
+   "live_cases": [
+    "run_statement(1 placeholder, 2 values) -> ValueError, no cursor opened"
+   ],
+   "evidence": [
+    "run:rx-live-01",
+    "run:val-unit-3-c06"
+   ]
+  },
+  {
+   "id": "INS-X10.7",
+   "text": "A caller who lacks the right is refused with SQL's privilege error, which names the table.",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/SqlPrivilege.cls:18-31",
+    "iris_src/src/Graph/KG/SqlProcs.cls:133-162"
+   ],
+   "outcome": "holds-live",
+   "notes": "Live as IVGAUDIT_RO holding only EXECUTE ON SCHEMA Graph_KG in AUDITE (window 15:31:49-15:31:56Z, 2026-11-14): each of the 8 global-reading SQL functions the pinned e2e test names was refused with 'SQLCODE=-99,%msg=User IVGAUDIT_RO lacks SELECT on Graph_KG.rdf_edges' (rdf_props for kg_BM25), surfaced by the driver inside SQLCODE -149; 0 journal records. Earlier evidence: the e2e test passed in val-gated-rag-1.",
+   "evidence": [
+    "run:rx-live-priv",
+    "run:val-gated-rag-1"
+   ],
+   "live_cases": [
+    "as IVGAUDIT_RO (EXECUTE only): CY_VLP_ENDS -> -99 naming Graph_KG.rdf_edges",
+    "as IVGAUDIT_RO (EXECUTE only): kg_PPR -> -99 naming Graph_KG.rdf_edges",
+    "as IVGAUDIT_RO (EXECUTE only): kg_DegreeCentrality -> -99 naming Graph_KG.rdf_edges",
+    "as IVGAUDIT_RO (EXECUTE only): kg_SCC -> -99 naming Graph_KG.rdf_edges",
+    "as IVGAUDIT_RO (EXECUTE only): MatchEdges -> -99 naming Graph_KG.rdf_edges",
+    "as IVGAUDIT_RO (EXECUTE only): MatchEdgesAllGraphs -> -99 naming Graph_KG.rdf_edges",
+    "as IVGAUDIT_RO (EXECUTE only): DijkstraPath -> -99 naming Graph_KG.rdf_edges",
+    "as IVGAUDIT_RO (EXECUTE only): kg_BM25 -> -99 naming Graph_KG.rdf_props"
+   ]
+  },
+  {
+   "id": "INS-X10.8",
+   "text": "A refused or failed read inside a routine raises. It does not come back as an empty answer.",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/SqlPrivilege.cls:56-67",
+    "iris_vector_graph/schema.py:2396",
+    "iris_vector_graph/schema.py:2405",
+    "iris_vector_graph/schema.py:2420"
+   ],
+   "outcome": "holds-live",
+   "notes": "Live (failed read): SQL functions CY_PROPS_MAP, CY_VLP_OPT and CY_VLP_CHAIN given a missing table each raised SQLCODE -149 wrapping -30 '... (reading Graph_KG.rx01_no_such_table)' instead of an empty answer; 0 journal records. The refused (-99) read is covered by the real-IRIS e2e test_460_r279_dynamic_sql_refusals_e2e.py::test_the_refusal_is_raised_naming_the_table (3 parametrizations PASSED in val-gated-rag-1).",
+   "live_cases": [
+    "SQL CY_PROPS_MAP reading a missing table -> SQL error naming the table, not an empty answer",
+    "SQL CY_VLP_OPT reading a missing table -> SQL error naming the table, not an empty answer",
+    "SQL CY_VLP_CHAIN reading a missing table -> SQL error naming the table, not an empty answer"
+   ],
+   "evidence": [
+    "run:rx-live-01",
+    "run:val-gated-rag-1"
+   ]
+  }
+ ]
+}

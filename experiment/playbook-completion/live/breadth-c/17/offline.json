@@ -1,0 +1,296 @@
+{
+ "F-1702": {
+  "BEGIN": {
+   "calls": [],
+   "sent_to_iris": false
+  },
+  "COMMIT": {
+   "calls": [],
+   "sent_to_iris": false
+  },
+  "ROLLBACK": {
+   "calls": [],
+   "sent_to_iris": false
+  },
+  "START TRANSACTION": {
+   "calls": [],
+   "sent_to_iris": false
+  },
+  "source_312_321": [
+   "    def execute(self, sql, params=None):",
+   "        iris_sql = self._get_iris_sql()",
+   "        lowered = sql.strip().upper()",
+   "        if lowered in (\"START TRANSACTION\", \"COMMIT\", \"ROLLBACK\",",
+   "                       \"BEGIN\", \"BEGIN TRANSACTION\"):",
+   "            self._rs = None",
+   "            self._rows = None",
+   "            self.description = None",
+   "            self.rowcount = -1",
+   "            return"
+  ]
+ },
+ "F-1704": {
+  "errors_py_docstring": "Engine-side exception hierarchy for iris-vector-graph.\n\nDesign principle (SDK ergonomics rubric, Principle 2): *raise* when an operation\nis structurally impossible to satisfy; *return empty* only when a valid query\nlegitimately found nothing. Every exception below carries an actionable message\nthat points the caller at the recovery method.\n\nAll engine-side errors descend from ``IVGError`` (defined",
+  "every_package_exception": {
+   "iris_vector_graph._batch_check.BatchShortfall": false,
+   "iris_vector_graph._engine.query._NotALiteral": false,
+   "iris_vector_graph._engine.snapshot.SnapshotReadError": false,
+   "iris_vector_graph.cypher.aql.__init__.AQLParseError": false,
+   "iris_vector_graph.cypher.aql.__init__.AQLTranslationError": false,
+   "iris_vector_graph.cypher.native_plan._Decline": false,
+   "iris_vector_graph.cypher.native_shadow.NativeMismatch": false,
+   "iris_vector_graph.cypher.parser.CypherParseError": false,
+   "iris_vector_graph.cypher.translator.EntityNotFoundError": false,
+   "iris_vector_graph.cypher.translator.TemporalQueryRequiresEngine": false,
+   "iris_vector_graph.cypher.translator._NoFold": false,
+   "iris_vector_graph.embedded.EmbeddedUnavailableError": false,
+   "iris_vector_graph.errors.CallerTransactionOpenError": true,
+   "iris_vector_graph.errors.EmbeddingsMissingError": true,
+   "iris_vector_graph.errors.GraphWriteError": true,
+   "iris_vector_graph.errors.GraphWriteSchemaError": true,
+   "iris_vector_graph.errors.IndexNotBuiltError": true,
+   "iris_vector_graph.errors.IndexNotFoundError": true,
+   "iris_vector_graph.errors.IndexNotSyncedError": true,
+   "iris_vector_graph.errors.NodeNotFoundError": true,
+   "iris_vector_graph.errors.ParallelEdgesPresentError": true,
+   "iris_vector_graph.errors.PowerIterationFailedConvergence": true,
+   "iris_vector_graph.errors.PrerequisiteError": true,
+   "iris_vector_graph.exceptions.BulkLoadError": false,
+   "iris_vector_graph.exceptions.ClassesUnreadable": false,
+   "iris_vector_graph.exceptions.EmbeddingIdentityConflict": false,
+   "iris_vector_graph.exceptions.FHIRGraphError": false,
+   "iris_vector_graph.exceptions.NamespaceConsistencyError": false,
+   "iris_vector_graph.exceptions.NamespaceMismatchWarning": false,
+   "iris_vector_graph.exceptions.TemporalWindowError": false,
+   "iris_vector_graph.host.HostError": false,
+   "iris_vector_graph.ledger.errors.ChangesetOperationError": true,
+   "iris_vector_graph.ledger.errors.ChangesetTooLargeError": true,
+   "iris_vector_graph.ledger.errors.EmptyChangesetError": true,
+   "iris_vector_graph.ledger.errors.IdempotencyConflictError": true,
+   "iris_vector_graph.ledger.errors.IdempotencyRedactedError": true,
+   "iris_vector_graph.ledger.errors.InvalidRedactionTargetError": true,
+   "iris_vector_graph.ledger.errors.LedgerDisabledError": true,
+   "iris_vector_graph.ledger.errors.LedgerError": true,
+   "iris_vector_graph.ledger.errors.LedgerInconsistencyError": true,
+   "iris_vector_graph.ledger.errors.LedgerLockTimeoutError": true,
+   "iris_vector_graph.ledger.errors.LedgerNotEnabledError": true,
+   "iris_vector_graph.ledger.errors.LedgerStrictModeError": true,
+   "iris_vector_graph.ledger.errors.LedgerTransactionOpenError": true,
+   "iris_vector_graph.ledger.errors.NodeNotFoundError": true,
+   "iris_vector_graph.ledger.errors.ReconstructionTooLargeError": true,
+   "iris_vector_graph.ledger.errors.RedactionInProgressError": true,
+   "iris_vector_graph.ledger.errors.RedactionTargetLiveError": true,
+   "iris_vector_graph.ledger.errors.StaleHeadError": true,
+   "iris_vector_graph.ledger.errors.UnknownRevisionError": true,
+   "iris_vector_graph.schema.RdfEdgesRescueError": false,
+   "iris_vector_graph.schema_name.IVGSchemaError": false,
+   "iris_vector_graph.sdk.IVGClientError": true,
+   "iris_vector_graph.sdk.IVGError": true,
+   "iris_vector_graph.sdk.IVGServerError": true,
+   "iris_vector_graph.stores.arno_bridge.ArnoError": false,
+   "iris_vector_graph.stores.iris_sql_store.AcceleratedSummaryShape": false,
+   "iris_vector_graph.stores.iris_sql_store.UnreadableResultShape": false,
+   "iris_vector_graph.vector_utils.UndeclaredVectorWidth": false
+  },
+  "named_in_finding": {
+   "iris_vector_graph.embedded.EmbeddedUnavailableError": {
+    "is_IVGError": false,
+    "mro": [
+     "EmbeddedUnavailableError",
+     "ImportError",
+     "Exception",
+     "BaseException",
+     "object"
+    ]
+   },
+   "iris_vector_graph.exceptions.BulkLoadError": {
+    "is_IVGError": false,
+    "mro": [
+     "BulkLoadError",
+     "RuntimeError",
+     "Exception",
+     "BaseException",
+     "object"
+    ]
+   },
+   "iris_vector_graph.exceptions.ClassesUnreadable": {
+    "is_IVGError": false,
+    "mro": [
+     "ClassesUnreadable",
+     "RuntimeError",
+     "Exception",
+     "BaseException",
+     "object"
+    ]
+   },
+   "iris_vector_graph.exceptions.EmbeddingIdentityConflict": {
+    "is_IVGError": false,
+    "mro": [
+     "EmbeddingIdentityConflict",
+     "ValueError",
+     "Exception",
+     "BaseException",
+     "object"
+    ]
+   },
+   "iris_vector_graph.exceptions.FHIRGraphError": {
+    "is_IVGError": false,
+    "mro": [
+     "FHIRGraphError",
+     "RuntimeError",
+     "Exception",
+     "BaseException",
+     "object"
+    ]
+   },
+   "iris_vector_graph.exceptions.NamespaceConsistencyError": {
+    "is_IVGError": false,
+    "mro": [
+     "NamespaceConsistencyError",
+     "ValueError",
+     "Exception",
+     "BaseException",
+     "object"
+    ]
+   },
+   "iris_vector_graph.exceptions.TemporalWindowError": {
+    "is_IVGError": false,
+    "mro": [
+     "TemporalWindowError",
+     "RuntimeError",
+     "Exception",
+     "BaseException",
+     "object"
+    ]
+   },
+   "iris_vector_graph.host.HostError": {
+    "is_IVGError": false,
+    "mro": [
+     "HostError",
+     "RuntimeError",
+     "Exception",
+     "BaseException",
+     "object"
+    ]
+   },
+   "iris_vector_graph.schema_name.IVGSchemaError": {
+    "is_IVGError": false,
+    "mro": [
+     "IVGSchemaError",
+     "RuntimeError",
+     "Exception",
+     "BaseException",
+     "object"
+    ]
+   }
+  },
+  "not_under_IVGError": [
+   "iris_vector_graph._batch_check.BatchShortfall",
+   "iris_vector_graph._engine.query._NotALiteral",
+   "iris_vector_graph._engine.snapshot.SnapshotReadError",
+   "iris_vector_graph.cypher.aql.__init__.AQLParseError",
+   "iris_vector_graph.cypher.aql.__init__.AQLTranslationError",
+   "iris_vector_graph.cypher.native_plan._Decline",
+   "iris_vector_graph.cypher.native_shadow.NativeMismatch",
+   "iris_vector_graph.cypher.parser.CypherParseError",
+   "iris_vector_graph.cypher.translator.EntityNotFoundError",
+   "iris_vector_graph.cypher.translator.TemporalQueryRequiresEngine",
+   "iris_vector_graph.cypher.translator._NoFold",
+   "iris_vector_graph.embedded.EmbeddedUnavailableError",
+   "iris_vector_graph.exceptions.BulkLoadError",
+   "iris_vector_graph.exceptions.ClassesUnreadable",
+   "iris_vector_graph.exceptions.EmbeddingIdentityConflict",
+   "iris_vector_graph.exceptions.FHIRGraphError",
+   "iris_vector_graph.exceptions.NamespaceConsistencyError",
+   "iris_vector_graph.exceptions.NamespaceMismatchWarning",
+   "iris_vector_graph.exceptions.TemporalWindowError",
+   "iris_vector_graph.host.HostError",
+   "iris_vector_graph.schema.RdfEdgesRescueError",
+   "iris_vector_graph.schema_name.IVGSchemaError",
+   "iris_vector_graph.stores.arno_bridge.ArnoError",
+   "iris_vector_graph.stores.iris_sql_store.AcceleratedSummaryShape",
+   "iris_vector_graph.stores.iris_sql_store.UnreadableResultShape",
+   "iris_vector_graph.vector_utils.UndeclaredVectorWidth"
+  ]
+ },
+ "F-1711": {
+  "deploy_README_73_79": [
+   "with IVGClient(\"http://localhost:8200\", api_key=\"your-key\") as client:",
+   "    result = client.execute_cypher(",
+   "        \"MATCH (a)-[*1..3]->(b) WHERE a.node_id = $s RETURN b.node_id\",",
+   "        parameters={\"s\": \"mesh:D003924\"}",
+   "    )",
+   "    for r in result.records:",
+   "        print(r[\"node_id\"])"
+  ],
+  "fields": [
+   "bolt_column_types",
+   "columns",
+   "error",
+   "metadata",
+   "params",
+   "rows",
+   "sql"
+  ],
+  "result.records": "AttributeError: 'IVGResult' object has no attribute 'records'"
+ },
+ "F-1713": {
+  "STATUS_PARTS": [
+   "graph",
+   "acceleration",
+   "sync",
+   "vector_index",
+   "fulltext_index",
+   "ivf_index",
+   "plaid_index",
+   "ledger"
+  ],
+  "names_outside_STATUS_PARTS": [
+   "adjacency",
+   "routines"
+  ],
+  "unknown_appends_in_admin_py": [
+   "admin.py:457: unknown.append(part)",
+   "admin.py:466: unknown.append(part)",
+   "admin.py:493: unknown.append(\"sync\")",
+   "admin.py:511: unknown.append(\"sync\")",
+   "admin.py:531: unknown.append(\"sync\")",
+   "admin.py:551: unknown.append(\"adjacency\")  # not readable for this role: unknown, not an error (R050)",
+   "admin.py:581: unknown.append(\"acceleration\")",
+   "admin.py:657: unknown.append(kind_parts[index_type])",
+   "admin.py:683: unknown.append(\"ledger\")",
+   "admin.py:752: if (unchecked or failed) and unknown is not None and \"routines\" not in unknown:",
+   "admin.py:753: unknown.append(\"routines\")"
+  ]
+ },
+ "F-C1701": {
+  "declared": {
+   "ivg": "iris_vector_graph.cli:main",
+   "networkx-loader": "scripts.ingest.networkx_loader:main",
+   "run-tests": "scripts.test:main"
+  },
+  "installed_package_path": "/home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/iris-vector-graph/iris_vector_graph/__init__.py",
+  "runs_outside_repo_without_PYTHONPATH": {
+   "networkx-loader": {
+    "exit": 0,
+    "stderr_tail": []
+   },
+   "run-tests": {
+    "exit": 1,
+    "stderr_tail": [
+     "    from scripts.test import main",
+     "ModuleNotFoundError: No module named 'scripts.test'"
+    ]
+   }
+  },
+  "scripts/ingest/networkx_loader.py tracked at pin": true,
+  "scripts/test.py tracked at pin": false,
+  "wheel_force_include": {
+   "docs/dev/arno-reader-proof.json": "iris_vector_graph/_data/arno-reader-proof.json",
+   "iris_src/src": "iris_vector_graph/iris_src/src"
+  },
+  "wheel_packages": [
+   "iris_vector_graph"
+  ]
+ }
+}

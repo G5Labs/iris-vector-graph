@@ -1,0 +1,15 @@
+{
+  "command": "locks.sh iris python experiment/playbook-completion/structural/capkeys/race_edge.py $RUN_DIR/structural/capkeys/race-edge.json",
+  "experiment_head": "d77620a9333a7eb5b62ca9b8c92144a6aaf74d2b",
+  "id": "st-live-keys-race-edge",
+  "kind": "live",
+  "lane": "structural",
+  "log": "$RUN_DIR/structural/capkeys/race-edge.json",
+  "log_bytes": 5183,
+  "log_sha256": "98800510d9a1cbb68c98edbb0faa18bcaf3d25eaa532dce2af1e9df45af74165",
+  "observes": "AUDITD, 4 connections released together call create_edge('rx:1','R','rx:2'), 8 trials per variant from an empty namespace. Variant B (both endpoints exist): 8/8 trials one True, three False, one edge row. Variant A (only rx:1 exists, create_edge registers rx:2): 4/8 trials one True and one edge; 4/8 trials (1, 3, 5, 7) end with NO edge row and no rx:2 node while two calls answered False (create_edge's 'the edge already existed' answer) and two raised GraphWriteError SQLCODE -121 (fk_edges_dest). No key or FK violation in any trial",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T11:53:45+00:00",
+  "result": "fail"
+}

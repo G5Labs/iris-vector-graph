@@ -1,0 +1,127 @@
+{
+ "_doc": "Read/both entry points whose closure reads no shared store (pure helpers, constant maps, process-private globals) or whose reads are exactly the statement their caller passes: justified from source at the pin (path:lines), not run. Each 'why' says what the body reads.",
+ "03": [
+  {
+   "entry": "cls:Graph.KG.PropWrite.SetVal",
+   "check": "static",
+   "cite": "iris_src/src/Graph/KG/PropWrite.cls:32-63",
+   "why": "reads only row pId of rdf_props' data global (through Layout's compiled-storage lookup, :66-100, checked live as PropWrite.Layout) under a lock on that row; the row is the one the UPDATE that calls it names"
+  }
+ ],
+ "11": [
+  {
+   "entry": "cls:Graph.KG.Ledger.NowMs",
+   "check": "static",
+   "cite": "iris_src/src/Graph/KG/Ledger.cls:27-33",
+   "why": "the clock only; no global or table"
+  },
+  {
+   "entry": "cls:Graph.KG.Ledger.NewId",
+   "check": "static",
+   "cite": "iris_src/src/Graph/KG/Ledger.cls:35-38",
+   "why": "a generated id; no global or table"
+  },
+  {
+   "entry": "cls:Graph.KG.Ledger.GKey",
+   "check": "static",
+   "cite": "iris_src/src/Graph/KG/Ledger.cls:47-50",
+   "why": "derives the ledger graph key from its argument (GraphKey.ForLedger, pure)"
+  },
+  {
+   "entry": "cls:Graph.KG.Ledger.MetaGet",
+   "check": "static",
+   "cite": "iris_src/src/Graph/KG/Ledger.cls:52-59",
+   "why": "reads a key of the %DynamicObject passed in; no store"
+  },
+  {
+   "entry": "cls:Graph.KG.Ledger.Err",
+   "check": "static",
+   "cite": "iris_src/src/Graph/KG/Ledger.cls:61-70",
+   "why": "builds an error JSON from its arguments"
+  },
+  {
+   "entry": "cls:Graph.KG.Ledger.ErrLimit",
+   "check": "static",
+   "cite": "iris_src/src/Graph/KG/Ledger.cls:72-82",
+   "why": "builds an error JSON from its arguments"
+  },
+  {
+   "entry": "cls:Graph.KG.Ledger.ReadLargeOutChunk",
+   "check": "static",
+   "cite": "iris_src/src/Graph/KG/Ledger.cls:136-139",
+   "why": "reads the caller process's own ^||IVG.LedgerOut(tag, chunk) (process-private, no other process's or graph's data)"
+  },
+  {
+   "entry": "cls:Graph.KG.LedgerApply.Enc",
+   "check": "static",
+   "cite": "iris_src/src/Graph/KG/LedgerApply.cls:52-55",
+   "why": "encodes its argument"
+  },
+  {
+   "entry": "cls:Graph.KG.LedgerApply.EncNull",
+   "check": "static",
+   "cite": "iris_src/src/Graph/KG/LedgerApply.cls:57-60",
+   "why": "encodes its argument"
+  },
+  {
+   "entry": "cls:Graph.KG.LedgerApply.Rec",
+   "check": "static",
+   "cite": "iris_src/src/Graph/KG/LedgerApply.cls:62-66",
+   "why": "builds a record list from its arguments"
+  },
+  {
+   "entry": "cls:Graph.KG.LedgerApply.IsReserved",
+   "check": "static",
+   "cite": "iris_src/src/Graph/KG/LedgerApply.cls:68-71",
+   "why": "tests its argument against reserved keys"
+  },
+  {
+   "entry": "cls:Graph.KG.LedgerApply.Run",
+   "check": "static",
+   "cite": "iris_src/src/Graph/KG/LedgerApply.cls:74-77",
+   "why": "executes the statement its caller passes; its reads are those statements' (NodeExists :81, FindEdge :148, node inserts :104-106), checked live through NodeExists and FindEdge"
+  },
+  {
+   "entry": "cls:Graph.KG.LedgerApply.TupleJson",
+   "check": "static",
+   "cite": "iris_src/src/Graph/KG/LedgerApply.cls:112-120",
+   "why": "formats its arguments"
+  },
+  {
+   "entry": "cls:Graph.KG.LedgerApply.ParseQuals",
+   "check": "static",
+   "cite": "iris_src/src/Graph/KG/LedgerApply.cls:123-141",
+   "why": "parses the qualifiers text passed in"
+  },
+  {
+   "entry": "cls:Graph.KG.LedgerApply.QualsJson",
+   "check": "static",
+   "cite": "iris_src/src/Graph/KG/LedgerApply.cls:420-434",
+   "why": "formats the qualifiers passed in"
+  },
+  {
+   "entry": "cls:Graph.KG.LedgerApply.WeightOf",
+   "check": "static",
+   "cite": "iris_src/src/Graph/KG/LedgerApply.cls:436-443",
+   "why": "reads the weight from the qualifiers passed in"
+  },
+  {
+   "entry": "cls:Graph.KG.LedgerApply.IsNumeric",
+   "check": "static",
+   "cite": "iris_src/src/Graph/KG/LedgerApply.cls:445-448",
+   "why": "tests its argument"
+  },
+  {
+   "entry": "cls:Graph.KG.LedgerStats.PropertyFor",
+   "check": "static",
+   "cite": "iris_src/src/Graph/KG/LedgerStats.cls:90-104",
+   "why": "a constant column-to-property map"
+  },
+  {
+   "entry": "eng:IRISGraphEngine.ledger",
+   "check": "static",
+   "cite": "iris_vector_graph/_engine/ledger.py:16-27",
+   "why": "'Making it reads nothing from the database' (the client object; its methods are checked as their own entry points)"
+  }
+ ]
+}

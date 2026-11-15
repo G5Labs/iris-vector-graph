@@ -1,0 +1,26 @@
+{
+ "doc": "F-0604: Graph.KG.EmbedQueue.ProcessBatch marks an entry DONE when EMBEDDING() cannot run (Community has no such\n    config), with no vector and no error. Oracle: DONE is the result vector (SetResult docstring); a failure is ERROR.",
+ "id": "p0604_queue_done_without_vector",
+ "log": "$RUN_DIR/breadth-a/live/06-all-20261113T230626.log",
+ "module": "06",
+ "observed": {
+  "enqueued": 1,
+  "entry_status_error_result": {
+   "baq230626": [
+    "DONE",
+    "",
+    1
+   ]
+  },
+  "process_batch": "{\"processed\":1,\"errors\":0}",
+  "req_ids": [
+   "baq230626"
+  ],
+  "vector_rows": 0
+ },
+ "oracle": "an entry is DONE only with a stored vector; a failed EMBEDDING() is ERROR with the IRIS message",
+ "reproduced": true,
+ "seconds": 1.01,
+ "started": "2026-11-13T23:06:26",
+ "verdict": "entry DONE, no vector, no error"
+}

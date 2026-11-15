@@ -1,0 +1,17 @@
+{
+  "command": "cases_e1.py --seed 8221 --random 30 --s1; bash contract-2/run-e1.sh $RUN_DIR/contract-2/e1-r2 8221 30 (driver_e1.py in 3 chunks under locks.sh iris, AUDITCORE); iris-contract(contract-2) check e1-r2/cases.json e1-r2/observed.json --mutants sqlproc,emb-own-txn,rollback-one-undoes-all,driver-rollback-one-level,driver-commit-ends-all,stop-commits,dml-ignores-row-locks,emb-ignores-driver-autocommit",
+  "experiment_head": "7b72fc52c878c31e143452a8cc8452cc4a6c198f",
+  "id": "env2-e1-r2",
+  "kind": "check",
+  "lane": "contract-2",
+  "log": "$RUN_DIR/contract-2/e1-r2/report.json",
+  "log_bytes": 2563,
+  "log_sha256": "a38a977e95b3fac8687816f65243b788afb7f9aa955a8aa026520cef7bd57ba8",
+  "namespace": "AUDITCORE",
+  "observes": "Premise S-1 (the pin's compiled SQL functions act on the calling connection's process and transaction) and a fresh E-1 family, IRIS 2026.1 (Build 234U) Community, AUDITCORE: 54 cases (9 named s1-* + 30 rand-s1 + 15 rand-e1, seed 8221) driving SELECT Graph_KG.Txn_Begin/Txn_End/Txn_Undo(?) on the DB-API cursor (SqlProcs.cls:168-180 over Txn.cls:19-58, the product's main write path) next to dynamic DML, the pin's embedded INSERT (RegisterDefaultNode), TSTART/TCOMMIT/TROLLBACK 1, driver commit/rollback/autocommit and process stop; 0 outcomes outside the contract permitted sets, 54 singleton; 8/8 targeted mutants killed (sqlproc-levels-end-with-statement by 5 named cases; emb-own-txn, rollback-one-undoes-all, driver-rollback-one-level, driver-commit-ends-all, stop-commits, dml-ignores-row-locks, emb-ignores-driver-autocommit); Txn_Begin(1) with autocommit off answered 2 and the driver rollback undid both levels; cleanup left 0 test rows",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T12:31:59+00:00",
+  "result": "pass",
+  "seed": "8221"
+}

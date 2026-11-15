@@ -1,0 +1,633 @@
+{
+ "module": "16",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "findings": [
+  {
+   "id": "F-1601",
+   "module": "16",
+   "title": "Bolt BEGIN, COMMIT and ROLLBACK do nothing; every RUN commits at once",
+   "intended": "A Bolt explicit transaction is atomic: ROLLBACK discards the writes made since BEGIN (Bolt protocol, P-1612; API-B9.10 'A rollback should undo the writes made since the driver began its transaction').",
+   "observed": "Live (c16-s1-cypher-http): neo4j driver 6.4.1 began a transaction, ran CREATE c16:b1, rolled back; the node is still there (count 1). The journal shows the RUN's write committed in its own outermost IRIS transaction before ROLLBACK arrived. A managed transaction (execute_write) whose second statement fails keeps the first statement's node c16:b2. Source: BEGIN/COMMIT answer SUCCESS and ROLLBACK only clears pending rows (iris_vector_graph/bolt_server.py:500-510); RUN calls engine.execute_cypher, which commits (bolt_server.py:567-591).",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c16-s1-cypher-http"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/bolt_server.py:500-510"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/bolt_server.py:567-622"
+    },
+    {
+     "kind": "mc",
+     "ref": "cmc-unit-bolt-as-built-atomic"
+    },
+    {
+     "kind": "mc",
+     "ref": "cmc-unit-bolt-as-built-once"
+    },
+    {
+     "kind": "mc",
+     "ref": "cmc-unit-bolt-reviewed"
+    },
+    {
+     "kind": "control",
+     "ref": "cmc-unit-ctl-rollback"
+    },
+    {
+     "kind": "mc",
+     "ref": "cmc-unit-wit-bolt"
+    }
+   ],
+   "gates": [
+    "3.5-handlers",
+    "3.5-decoders",
+    "3.7 ambiguous acknowledgement",
+    "3.3-model-check"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Run a Bolt transaction's RUNs inside one engine write transaction and commit/roll it back on COMMIT/ROLLBACK, or refuse BEGIN with a FAILURE that says explicit transactions are unsupported.",
+   "model_hint": "as-built: each RUN commits immediately; BEGIN/COMMIT/ROLLBACK are acknowledgements only (bolt_server.py:500-510, 580). A driver retry of a managed unit of work after a failure re-applies the committed statements. Reviewed (decisions.md HD-1603 policy applied to Bolt units): RUNs of a BEGIN..COMMIT unit become visible together at COMMIT; ROLLBACK leaves no effect; a retried unit applies once. Invariant: committed effects == effects of COMMITted units.",
+   "notes": "Driver retries make it worse: execute_write retries a unit after transient errors, re-running statements that already committed."
+  },
+  {
+   "id": "F-1602",
+   "module": "16",
+   "title": "Bolt PULL {n} drops every row after the first n",
+   "intended": "PULL {n} returns at most n records and has_more=true while rows remain (Bolt protocol, P-1612; API-B9.11).",
+   "observed": "Live (c16-s1-cypher-http): MATCH over three C16F nodes with driver fetch_size=2 returned 2 rows (c16:f1, c16:f2); the default fetch size returned 3. Source: rows[:n], SUCCESS without has_more, pending result discarded (iris_vector_graph/bolt_server.py:624-660).",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c16-s1-cypher-http"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/bolt_server.py:624-660"
+    }
+   ],
+   "gates": [
+    "3.5-decoders",
+    "3.5-handlers"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Keep the remainder and answer has_more: true until drained; unit test PULL {n:2} over three rows.",
+   "notes": "Silent truncation: the driver reports success with fewer rows."
+  },
+  {
+   "id": "F-1603",
+   "module": "16",
+   "title": "The generated GraphQL server mixes graphs in one answer",
+   "intended": "SYS-I2 / API-B10.3 / API-B15.8: an answer about one graph holds no content of another; a read with no graph reads the default graph (HD-0201).",
+   "observed": "Live (c16-s3-graphql-sample-api, create_app over AUDITC): node(id:'c16:x') of the default graph listed outgoing [C16_DEF_EDGE->c16:z, C16_G1_EDGE->c16:y]; the second edge lives only in graph c16g1. nodes(label:'C16Q', limit:3) answered [] although default-graph node c16:qz has the label: the page was cut from all graphs' ids (three c16g1-only nodes) and then read in the default graph. Source: iris_vector_graph/gql/resolvers.py:32-46, :90-133 (no graph_id), gql/engine.py:32-57 (field discovery joins rdf_props to rdf_labels on s only).",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c16-s3-graphql-sample-api"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/gql/resolvers.py:32-133"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/gql/engine.py:32-57"
+    }
+   ],
+   "gates": [
+    "3.4-declared-reads",
+    "3.1-coverage",
+    "SYS-I2"
+   ],
+   "severity": "S1",
+   "confidence": "high",
+   "remedy": "Filter every statement by graph_id (default graph unless a graph argument names one), as api/gql/core/resolvers.py does since spec 230; e2e test with one id in two graphs.",
+   "notes": "Isolation leak of edge facts across graphs; a named graph is a tenant unit (spec 256)."
+  },
+  {
+   "id": "F-1604",
+   "module": "16",
+   "title": "The sample API's biomedical fields and its update mutation ignore graphs",
+   "intended": "API-B6.6/B6.7/B15.8: biomedical fields read one graph; updateProtein changes only the named node in one graph (CONTEXT.md:44-48).",
+   "observed": "Live (c16-s3-graphql-sample-api): protein(id:'c16:p1') answered labels [Protein, Protein, C16G1Label], name 'p-g1' and interactsWith [c16:p2] \u2014 the c16g1 copy's label, property and edge merged into the default-graph protein. updateProtein(name:'p-updated') rewrote the name property in BOTH graphs (props_after shows c16g1 name 'p-updated'). Journal (c16-s8-followup): the mutation wrote ['sql:Graph_KG.rdf_props'] on IRIS process(es) ['10556'], outermost commits {'10556': 1}, outside any transaction: []; cross-graph rewrite reproduced again: True. Source: api/gql/loaders.py:19-45, :183-272 (WHERE s IN ...), examples/domains/biomedical/resolver.py:240-278 (UPDATE Graph_KG.rdf_props ... WHERE s = ? AND key = ?).",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c16-s3-graphql-sample-api"
+    },
+    {
+     "kind": "live",
+     "ref": "c16-s8-followup"
+    },
+    {
+     "kind": "inspected",
+     "ref": "api/gql/loaders.py:19-272"
+    },
+    {
+     "kind": "inspected",
+     "ref": "examples/domains/biomedical/resolver.py:240-278"
+    }
+   ],
+   "gates": [
+    "3.4-declared-reads",
+    "3.4-ownership",
+    "3.3a-writesets",
+    "SYS-I2"
+   ],
+   "severity": "S1",
+   "confidence": "high",
+   "remedy": "Add graph_id = ? (default graph) to every loader statement and route the update through the engine with graph=; e2e test with one id in two graphs.",
+   "notes": "The update bypasses the engine (no write transaction wrapper, no ledger guard) and writes another tenant's graph."
+  },
+  {
+   "id": "F-1605",
+   "module": "16",
+   "title": "The sample API's nodes field names Graph_KG instead of the engine's schema",
+   "intended": "Spec 262 / API-B6.5: surfaces read the engine's IVG Schema (engine._ivg_schema); the generated server does (iris_vector_graph/gql/engine.py:14-15).",
+   "observed": "Source at the pin: api/gql/core/resolvers.py:172-175, :206-274 and api/gql/loaders.py hard-code Graph_KG. Not reproducible live here: AUDITC is installed under Graph_KG and lanes may not create a namespace with another IVG Schema (CONVENTIONS.md scope control). The server classes are not affected: class deploy rewrites the Graph_KG token to the chosen schema (iris_vector_graph/_engine/class_deploy.py:112-117), so MCPTools/PyOps literals are rewritten at deploy.",
+   "disposition": "confirmed-source",
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "api/gql/core/resolvers.py:172-274"
+    },
+    {
+     "kind": "inspected",
+     "ref": "api/gql/loaders.py:29-263"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/class_deploy.py:112-117"
+    }
+   ],
+   "gates": [
+    "3.4-declared-reads",
+    "3.2-coverage"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Build the SQL from engine._ivg_schema; run the GraphQL tests on a custom-schema namespace.",
+   "notes": "Live check blocked-access: needs a namespace installed under a non-default IVG Schema."
+  },
+  {
+   "id": "F-1606",
+   "module": "16",
+   "title": "The sample API's Cypher route accepts a timeout and a cache flag and uses neither",
+   "intended": "api/models/cypher.py:41-58 documents timeout as 'Query execution timeout' (1-300 s); API-B5.7.",
+   "observed": "Live (c16-s3-graphql-sample-api): POST /api/cypher with timeout=1 ran a 3-way cross join of 120 nodes for 1.83 s and answered 200 with the full count (1,728,000). Source: api/routers/cypher.py:94-260 never reads request.timeout or enable_cache.",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c16-s3-graphql-sample-api"
+    },
+    {
+     "kind": "inspected",
+     "ref": "api/models/cypher.py:41-58"
+    },
+    {
+     "kind": "inspected",
+     "ref": "api/routers/cypher.py:94-260"
+    }
+   ],
+   "gates": [
+    "3.5-handlers",
+    "3.6-capacity"
+   ],
+   "severity": "S3",
+   "confidence": "medium",
+   "remedy": "Enforce the timeout (statement timeout or cancel) or remove the fields from the model and docs.",
+   "notes": "Margin is modest (1.83 s against 1 s) but the source shows the field is never read."
+  },
+  {
+   "id": "F-1607",
+   "module": "16",
+   "title": "Two Cypher entries of the sample API bypass the engine and answer differently",
+   "intended": "API-B5.8: the route answers each query as the engine's execute_cypher does (4.7.0 row 22 rewrite).",
+   "observed": "Live (c16-s3-graphql-sample-api) with UNWIND $p AS e RETURN e, p=['[2]',[2],true,'1']: engine.execute_cypher and the Cypher HTTP server (c16-s1) answer [['[2]'],[[2]],[true],['1']]; the sample API's POST /api/cypher answers 500 'query execution failed' and its GraphQL executeCypher answers data {error: '<PARAMETER ERROR> Invalid number of parameters'}. Source: api/routers/cypher.py:118-166 and api/gql/schema.py:170-230 call parse_query/translate_to_sql directly, skipping rewrite_ambiguous_param_unwind (iris_vector_graph/_engine/query.py:1900).",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c16-s3-graphql-sample-api"
+    },
+    {
+     "kind": "live",
+     "ref": "c16-s1-cypher-http"
+    },
+    {
+     "kind": "inspected",
+     "ref": "api/routers/cypher.py:118-166"
+    },
+    {
+     "kind": "inspected",
+     "ref": "api/gql/schema.py:149-230"
+    }
+   ],
+   "gates": [
+    "3.5-handlers",
+    "3.6 composition (one semantics per query)"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Call engine.execute_cypher from both entries (keeping the hop cap), or apply the same rewrite; parity test across the Cypher entries.",
+   "notes": "The divergence differs from the original prediction (pre-4.7.0 coerced rows): at this pin both bypassing entries fail on the input instead. Either way they do not answer as the engine does."
+  },
+  {
+   "id": "F-1608",
+   "module": "16",
+   "title": "The sample API lets two threads use its one IRIS connection at once",
+   "intended": "API-B4.5: two calls never use the one IRIS connection at once (DB-API threadsafety 1, P-1605; CHANGELOG 4.6.5 fixed the same pattern in cypher_api with _engine_lock).",
+   "observed": "Source: no lock around the shared connection (api/main.py:100-113 health is a sync def run on the thread pool; api/routers/cypher.py:94 is async with blocking DB calls on the event loop). Live (c16-s3-graphql-sample-api): 12 s with two threads on /health and one on /api/cypher: 6,943 health probes and 3,184 queries, 0 non-200 answers and 0 wrong counts on IRIS Community 2026.1 with intersystems-irispython 5.3.2.",
+   "disposition": "not-reproduced",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c16-s3-graphql-sample-api"
+    },
+    {
+     "kind": "inspected",
+     "ref": "api/main.py:100-113"
+    },
+    {
+     "kind": "inspected",
+     "ref": "api/routers/cypher.py:94"
+    }
+   ],
+   "gates": [
+    "3.7 1 vs N processes/threads"
+   ],
+   "severity": "S3",
+   "confidence": "medium",
+   "remedy": "Serialize use of the connection (as cypher_api._engine) or use one connection per request.",
+   "notes": "The overlap was exercised but the failure (SQLCODE -400 seen upstream on 2026.3 AI with driver 5.4.1) did not occur on this build/driver. The code still relies on an unproved premise; obligation stays open."
+  },
+  {
+   "id": "F-1609",
+   "module": "16",
+   "title": "The FHIR event route's writes are not all-or-nothing",
+   "intended": "API-B7.4 / SYS-I4: the writes of one call all happen or none do.",
+   "observed": "Live (c16-s3-graphql-sample-api): POST /fhir-event/ with graph c16g2 and date 1960-01-01 answered 500 ('IRIS write failed: ... TemporalEdgeInput timestamp >= 0') after both create_node calls committed; nodes c16:fe1 and c16:fp1 remain in c16g2. Journal: two outermost commits on the server's IRIS process before the refusal. A successful call journals three separate outermost commits, and the temporal index entries (^KG tout/tin/tlast/bucket/tagg) are written outside any transaction. Source: api/routers/fhir_event.py:318-346.",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c16-s3-graphql-sample-api"
+    },
+    {
+     "kind": "inspected",
+     "ref": "api/routers/fhir_event.py:283-365"
+    },
+    {
+     "kind": "mc",
+     "ref": "cmc-unit-http-as-built-atomic (analogous shape: several committed writes per request; not a model of this route)"
+    }
+   ],
+   "gates": [
+    "3.5-handlers",
+    "3.3a-writesets",
+    "SYS-I4"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Validate first and run the three writes in one engine transaction (write_txn); a unit test that a failed edge write leaves no node.",
+   "notes": "Deprecated route (removed in 5.0). The outside-transaction temporal ^KG writes belong to create_edge_temporal (module 05) and are reported there as an observation, not as a module-16 finding."
+  },
+  {
+   "id": "F-1610",
+   "module": "16",
+   "title": "The Neo4j HTTP commit route runs its statements one by one",
+   "intended": "Neo4j's /db/neo4j/tx/commit is a begin-and-commit-in-one-request transaction: all statements or none (P-1612); API-B8.6.1.",
+   "observed": "Live (c16-s1-cypher-http): three statements (CREATE c16:t1; an unparsable line; CREATE c16:t3) answered 400 with one SyntaxError, and both c16:t1 and c16:t3 are committed \u2014 the third ran after the failure. Journal: two separate outermost commits on two different IRIS processes: the failed statement made _run_cypher reset the engine (closing the connection) and retry, so statement 3 ran on a new connection. Source: iris_vector_graph/cypher_api.py:379-410, :239-250.",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c16-s1-cypher-http"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher_api.py:379-410"
+    },
+    {
+     "kind": "mc",
+     "ref": "cmc-unit-http-as-built-atomic"
+    },
+    {
+     "kind": "mc",
+     "ref": "cmc-unit-http-reviewed"
+    }
+   ],
+   "gates": [
+    "3.5-handlers",
+    "3.6 composition",
+    "3.3-model-check"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Run the statements in one engine transaction and roll back on the first error (Neo4j stops there), or document the route as non-atomic.",
+   "model_hint": "as-built: per-statement commit, later statements still run after an error (cypher_api.py:391-405). Reviewed: unit atomicity \u2014 the request's effects are all statements' or none; processing stops at the first error. Invariant: after a 4xx/5xx answer no statement effect of the request is committed."
+  },
+  {
+   "id": "F-1611",
+   "module": "16",
+   "title": "The generated GraphQL server's health route always says healthy",
+   "intended": "API-B10.6: health says so when IRIS does not answer (the sample API answers 503 since 4.6.3, CHANGELOG.md:493-497).",
+   "observed": "Live (c16-s3-graphql-sample-api): create_app over an engine whose connection was closed answered GET /health 200 {status: healthy, database: disconnected}. Source: iris_vector_graph/gql/__init__.py:58-67.",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c16-s3-graphql-sample-api"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/gql/__init__.py:58-67"
+    }
+   ],
+   "gates": [
+    "3.5-decoders (status map)"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Answer 503 when the probe fails, as api/main.py does.",
+   "notes": ""
+  },
+  {
+   "id": "F-1612",
+   "module": "16",
+   "title": "The REST dispatcher may read only the first chunk of a large request body",
+   "intended": "API-B11.12: the routes read a request body of any size.",
+   "observed": "The finding rests on premise P-1607 (Read() with no length returns at most 32,000 characters). On IRIS Community 2026.1 the premise does not hold for the CSP request stream classes: a 50,000-character stream read with Read() and no length returned all 50,000 characters for %CSP.BinaryStream, %CSP.CharacterStream and %Stream.TmpCharacter (Native API invoke, c16-s5-fraud-sql-stream; ObjectScript in a terminal, c16-s8-followup: %CSP.BinaryStream=50000;%CSP.CharacterStream=50000;%Stream.TmpCharacter=50000;). End-to-end through a web application is blocked: no web application in the instance dispatches to Graph.KG.Service (Security.Applications read, $RUN_DIR/breadth-c/16/webapps.txt) and creating one changes instance security, which lanes may not do.",
+   "disposition": "refuted",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c16-s5-fraud-sql-stream"
+    },
+    {
+     "kind": "live",
+     "ref": "c16-s8-followup"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Service.cls:321-327"
+    }
+   ],
+   "gates": [
+    "3.2-coverage (P-1607)",
+    "3.5-decoders"
+   ],
+   "severity": "S4",
+   "confidence": "medium",
+   "remedy": "None needed for the 32,000 premise on this build; keep a large-body test (bodies past the long-string limit still fail at %FromJSON of one string).",
+   "notes": "blocked-access for the end-to-end check: dependency = a %CSP.REST web application dispatching to Graph.KG.Service (Graph.KG.Service.CreateWebApp), which modifies Security.Applications. Other IRIS versions may still default to 32,000 (documented %Stream.Object.Read signature)."
+  },
+  {
+   "id": "F-1613",
+   "module": "16",
+   "title": "The MCP vector lookup treats the client's text as a node id",
+   "intended": "MCPTools.cls:189-192 documents query as a natural-language description; API-B12.9.",
+   "observed": "Source at the pin: EvidenceSearch binds query as node_id in the subquery that fetches that node's vector (iris_src/src/Graph/KG/MCPTools.cls:193-221). Not run: Graph.KG.MCPService/MCPToolSet/MCPTools cannot be deployed on IRIS Community (setup skipped them: needs %AI.MCP.Service, %AI.ToolSet, %AI.Tool, %AI.Policy.ConsoleAudit; $RUN_DIR/setup/deploy-AUDITC.json).",
+   "disposition": "blocked-access",
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/MCPTools.cls:189-221"
+    },
+    {
+     "kind": "inspected",
+     "ref": "$RUN_DIR/setup/deploy-AUDITC.json (objectscript_skipped)"
+    }
+   ],
+   "gates": [
+    "3.5-handlers"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Embed the text before the search (engine.embed_text or IRIS EMBEDDING()), or document the argument as a node id; e2e test on an AI build.",
+   "notes": "Blocked dependency: IRIS %AI package (%AI.MCP.Service, %AI.ToolSet, %AI.Tool, %AI.Policy.ConsoleAudit), absent on Community 2026.1. Source-confirmed."
+  },
+  {
+   "id": "F-1614",
+   "module": "16",
+   "title": "The demo server's write routes need no key",
+   "intended": "CHANGELOG.md:994-996 says every app needs the key; API-B13.2.",
+   "observed": "Live (c16-s8-followup): demo server started with IVG_API_KEY set; without the key GET /api/status/none answered 404 and POST /api/fhir/live/add answered 400 (validation reached, not 401). Source: src/iris_demo_server/app.py:1-22 adds no ApiKeyMiddleware; routes/fhir.py:503-533 write to the FHIR repository and start a sync; __main__ binds 0.0.0.0:8200 (app.py:503-504).",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c16-s8-followup"
+    },
+    {
+     "kind": "inspected",
+     "ref": "src/iris_demo_server/app.py:1-22"
+    },
+    {
+     "kind": "inspected",
+     "ref": "src/iris_demo_server/routes/fhir.py:503-533"
+    }
+   ],
+   "gates": [
+    "3.5-handlers",
+    "API-T1"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Add ApiKeyMiddleware and bind 127.0.0.1 by default, or document the demo server as presenter-only.",
+   "notes": "The write itself was not attempted (no FHIR repository on Community); the key gate is absent for every route."
+  },
+  {
+   "id": "F-1615",
+   "module": "16",
+   "title": "The fraud server's vector lookup always falls back to zeros",
+   "intended": "API-B13.7: the fraud score reads the payer's stored vector.",
+   "observed": "Live (c16-s5-fraud-sql-stream): the statement as written fails in AUDITC with SQLCODE -30 (table SQLUSER.KG_NODEEMBEDDINGS not found); schema-qualified it fails with SQLCODE -29 (field EMBEDDING not found); the intended form (emb, Graph_KG, default graph) prepares. Source: src/iris_fraud_server/app.py:246-279 also calls fetchone() on an iris.sql.exec result (none exists, app.py:211) and returns np.zeros(768) on any error.",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c16-s5-fraud-sql-stream"
+    },
+    {
+     "kind": "inspected",
+     "ref": "src/iris_fraud_server/app.py:246-279"
+    }
+   ],
+   "gates": [
+    "3.4-statements",
+    "3.5-decoders"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Read emb from the schema-qualified table for the default graph and iterate the result; a test that a stored vector reaches the score.",
+   "notes": "Silent false result: errors become a zero vector."
+  },
+  {
+   "id": "F-C1601",
+   "module": "16",
+   "title": "A finished Bolt session never gives back its IRIS connection",
+   "intended": "API-T8.3 says each Bolt session opens its own IRIS connection; P-1609: each connection counts against the instance's connection/licence limit (8 on this Community container), so a session must release it.",
+   "observed": "Live (c16-s2-bolt-sessions): three sequential Bolt sessions (driver closed each, GOODBYE sent) left three new AUDITC IRIS processes alive 20 s later; they disappeared only when the server process stopped. Source: the session builds its engine lazily (iris_vector_graph/bolt_server.py:391-394) and its run() finally-blocks close only the socket (bolt_server.py:404, :423 WebSocket; :940, :957 TCP), never self._engine.conn.",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c16-s2-bolt-sessions"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/bolt_server.py:391-423"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/bolt_server.py:922-960"
+    }
+   ],
+   "gates": [
+    "3.6-capacity",
+    "3.7 reconnect / 1 vs N sessions",
+    "3.5-handlers"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Close the session's engine connection when the session ends (finally block), or share a bounded pool.",
+   "notes": "On Community a handful of Bolt sessions exhaust IRIS connections for every client of the instance; the refused connection then reaches the driver as Neo.ClientError.Statement.SyntaxError (F-C1602)."
+  },
+  {
+   "id": "F-C1602",
+   "module": "16",
+   "title": "Server and connection failures are reported as client syntax errors",
+   "intended": "SYS-I9 (every refusal says why); Neo4j status codes distinguish ClientError (caller's fault, not retried) from TransientError/DatabaseError (P-1612); HTTP 4xx means the request was wrong.",
+   "observed": "Live (c16-s6-status-maps, stub engine, no IRIS): a lost IRIS connection answers HTTP 400 on /api/cypher and /db/{db}/query/v2, 400 + 'Neo.ClientError.Statement.SyntaxError' on /db/neo4j/tx/commit, and a Bolt FAILURE 'Neo.ClientError.Statement.SyntaxError' (classification ClientError, not retryable) both when the session's engine cannot connect and when a query's connection fails. Source: cypher_api.py:367-376, :396-400, :451-460; bolt_server.py:617-622 map every exception to those codes. Also: the sample API answers an unknown function as 400 UNDEFINED_VARIABLE (c16-s3, api/routers/cypher.py:231-247); the generated server's semantic_search swallows every error as [] (iris_vector_graph/gql/resolvers.py:85-88).",
+   "disposition": "confirmed-source",
+   "evidence": [
+    {
+     "kind": "probe",
+     "ref": "c16-s6-status-maps"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher_api.py:367-460"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/bolt_server.py:614-622"
+    }
+   ],
+   "gates": [
+    "3.5-decoders",
+    "SYS-I9"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Map connection/database failures to 5xx / Neo.TransientError.* (or DatabaseError) and keep SyntaxError for parse failures.",
+   "notes": "Disposition is confirmed-source: the probe ran the real server code (FastAPI app, Bolt TCP listener, neo4j driver) but the IRIS failure was simulated by a stub engine, not observed on IRIS. Interacts with retry policy: a correct transient code would let drivers retry, which is only safe once F-1601 is fixed."
+  },
+  {
+   "id": "F-C1603",
+   "module": "16",
+   "title": "Bolt listens on every interface unless the server is started by `ivg server start`",
+   "intended": "docs/ADMIN_API.md:26-28: the Bolt listener 'listens on the address --host names, or on BOLT_TCP_HOST'; API-T9.1; HD-1705 working answer: local-only or explicit opt-in for unauthenticated external binding.",
+   "observed": "Live (c16-s6-status-maps): `uvicorn iris_vector_graph.cypher_api:app --host 127.0.0.1` served HTTP on 127.0.0.1:18617 and the Bolt listener on 0.0.0.0:18618. Source: cypher_api.py:51 defaults BOLT_TCP_HOST to 0.0.0.0; only the CLI sets it from --host (cli.py:429); the documented `python -m iris_vector_graph.cypher_api` binds HTTP 0.0.0.0:8000 and Bolt 0.0.0.0:7687 (cypher_api.py:779; ADMIN_API.md:22). With IVG_API_KEY unset the listener needs no credentials.",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "probe",
+     "ref": "c16-s6-status-maps"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher_api.py:47-63"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cli.py:419-441"
+    },
+    {
+     "kind": "inspected",
+     "ref": "docs/ADMIN_API.md:13-28"
+    }
+   ],
+   "gates": [
+    "3.5-handlers",
+    "HD-1705"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Default BOLT_TCP_HOST to the HTTP host (or 127.0.0.1) in the app itself, not only in the CLI; refuse an unauthenticated non-loopback bind unless explicitly forced.",
+   "notes": "Deployment-default question is HD-1705 (intent-undecided); the mismatch with ADMIN_API's statement is a defect regardless."
+  },
+  {
+   "id": "F-C1604",
+   "module": "16",
+   "title": "The Cypher HTTP server runs a query again after any failure, writes included",
+   "intended": "decisions.md HD-1603 (working answer): retry only a read, a write known not to have run, or a write with a verified idempotency key; an ambiguous commit outcome stays unknown.",
+   "observed": "Live (c16-s4-server-retry, fault injection of a lost acknowledgement after the engine's commit, through the real FastAPI app on AUDITC): SET n.counter = n.counter + 1 \u2014 one request moved the counter from 1 to 3 and answered 200; CREATE without a key \u2014 after the control run made 1 C16R2 node, ONE faulted request brought the total to 3 (control total 1); CREATE with an id answered 200 {'columns': ['id'], 'rowCount': 1, 'rows': [['c16:r3']], 'status': 'OK'}. c16-s1 also shows a plain parse error triggering the reset-and-retry (two IRIS processes for one /db/neo4j/tx/commit). Source: _run_cypher retries once after any exception, resetting the engine (iris_vector_graph/cypher_api.py:239-250); every Cypher route uses it.",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c16-s4-server-retry"
+    },
+    {
+     "kind": "live",
+     "ref": "c16-s1-cypher-http"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher_api.py:239-260"
+    },
+    {
+     "kind": "mc",
+     "ref": "cmc-retry-as-built-once"
+    },
+    {
+     "kind": "mc",
+     "ref": "cmc-retry-as-built-honest"
+    },
+    {
+     "kind": "mc",
+     "ref": "cmc-retry-reviewed"
+    },
+    {
+     "kind": "control",
+     "ref": "cmc-retry-ctl-client"
+    },
+    {
+     "kind": "control",
+     "ref": "cmc-retry-ctl-server"
+    },
+    {
+     "kind": "mc",
+     "ref": "cmc-retry-wit-read"
+    },
+    {
+     "kind": "mc",
+     "ref": "cmc-retry-wit-write"
+    }
+   ],
+   "gates": [
+    "3.7 ambiguous acknowledgement / crash / reconnect",
+    "3.5-handlers",
+    "3.3-model-check",
+    "SYS-I6"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Retry only reads or errors raised before the statement ran (connection refused at connect); otherwise return an unknown-outcome error; or carry an idempotency key end to end. Combine with the SDK retry (HD-1702, module 17) as one protocol.",
+   "model_hint": "as-built: on any exception after execute_cypher (including after the engine's commit) the server resets the connection and re-executes the same query (cypher_api.py:241-250). Reviewed (HD-1603): re-execute only if the first attempt is known not to have committed or the query is a read; an ambiguous outcome is reported as unknown. Invariant: one client request applies its write at most once. Combined with the SDK's own POST retry (sdk.py, HD-1702) the as-built protocol can apply one logical write up to 4 times.",
+   "notes": "The fault is a wrapper around engine.execute_cypher in the test process only (no product change); it models a connection lost after the server-side commit. Model: cmc-retry-as-built-once's shortest trace is the server re-running a committed write whose reply was lost; cmc-retry-as-built-honest: the client is told 'failed' for an applied write. The client half (SDK POST retry) is module 17's F-C1703."
+  }
+ ]
+}

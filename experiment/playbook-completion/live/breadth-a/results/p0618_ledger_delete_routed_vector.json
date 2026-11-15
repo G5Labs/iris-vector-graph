@@ -1,0 +1,24 @@
+{
+ "doc": "F-0618: a ledger delete_node of a default-graph node that has a vector in a declared-model route is refused\n    (LedgerApply.DeleteNodeRows clears only the legacy tables; the route's FK refuses the node delete), where the\n    engine's delete_node succeeds.",
+ "id": "p0618_ledger_delete_routed_vector",
+ "log": "$RUN_DIR/breadth-a/live/ledger-all-20261113T232600.log",
+ "module": "ledger",
+ "observed": {
+  "engine_delete_node": true,
+  "ledger_delete": [
+   "refused",
+   "ChangesetOperationError: changeset operation 0 failed: delete node failed: At least 1 Row exists in table 'Graph_KG.kg_emb_2bc807736f42742f' which references key 'uqnodesgraphnode' - Foreign Key Constraint 'fk_kg_emb_2bc807736f42742f', Field(s) 'graph_id','node_id' failed on"
+  ],
+  "node_after": 1,
+  "route": [
+   [
+    "kg_emb_2bc807736f42742f"
+   ]
+  ]
+ },
+ "oracle": "a ledger delete_node removes what the engine's delete_node removes (Eraser reaches every route)",
+ "reproduced": true,
+ "seconds": 0.73,
+ "started": "2026-11-13T23:26:00",
+ "verdict": "ledger delete refused by the route's foreign key"
+}

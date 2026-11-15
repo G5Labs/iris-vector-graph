@@ -1,0 +1,15 @@
+{
+  "command": "bash experiment/playbook-completion/tools/locks.sh iris timeout 900 python experiment/playbook-completion/live/breadth-b/11_live.py",
+  "experiment_head": "307a0a8c38fe9a45d7eff7c64995070f21e00b2c",
+  "id": "b-11-live-findings",
+  "kind": "live",
+  "lane": "breadth-b",
+  "log": "$RUN_DIR/breadth-b/live/11-findings-1.json",
+  "log_bytes": 11764,
+  "log_sha256": "f703ee3ac8b546383c215e429e4b95be10bfef09b968bab957e1f297f68bc7b9",
+  "observes": "F-1101 replay rewrote post-commit audit=pcp-v1 over governed-v2 (and a same-key retry with different post-commit properties wrote pcp-OTHER), verify diverges; F-1106 replay stmt_ids {} vs {0:2}; F-1109 no-key retry = new revision / node_exists; F-1107 kinds genesis, redaction, b11-bogus accepted and stored, other kind skips max_ops (4 ops > 3 accepted; changeset refused too_large), adoption of b11_ghost recorded with no store row, verify diverges; F-1105 delete_node of a named-only id committed (prior snapshot empty), named row kept, set_prop wrote an orphan default-graph prop, add_label refused fk_labels_node, verify diverges; F-1111 hook not called for EmptyChangesetError/ChangesetOperationError, called once for stale_head; F-1112 meta has no 'enabled' key. (F-1113 here was a harness error: changeset without ops; redone in b-11-live-f1113.)",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T00:11:40+00:00",
+  "result": "fail"
+}

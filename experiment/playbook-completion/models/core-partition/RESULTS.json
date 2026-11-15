@@ -1,0 +1,337 @@
+{
+  "crate": "experiment/playbook-completion/models/core-partition (ivg-core-partition)",
+  "copied_from": "experiment/playbook-completion/models/core/src/m1.rs (sha256 5490e14e9b23a629fed054685a344709f1500f1cfc8f9a2b82679c70075428a2), util.rs (9ec651ccc610b168...)",
+  "explorer_rev": "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "generated_utc": "20261114T113041Z",
+  "sources_sha256": "53041b01f069bef1f546e1463e4189d3f6792561a1cc1a22335636d437e629c3",
+  "out_dir": "$RUN_DIR/models-2/final-20261114T113041Z",
+  "statement": "Every result is about the M1 model (bounded, explorer); none is a property of the product at pin 3eaa79cf.",
+  "checks": {
+    "coverage-keys": {
+      "tag": "coverage-keys",
+      "rc": 0,
+      "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/models-2/final-20261114T113041Z/coverage-keys.log",
+      "command": "timeout 3000 ivg-core-partition --coverage 2 2",
+      "max_rss_kb": 2196,
+      "wall_seconds": 0.0,
+      "ok": true,
+      "summary": [
+        "profile (2, 2): 43 pre-enable worlds by search (75 pre-enable write transitions), 43 by the independent enumeration; keys distinct: true; equal: true; structural errors: 0",
+        "coverage: PASS"
+      ]
+    },
+    "coverage-keys-control": {
+      "tag": "coverage-keys-control",
+      "rc": 1,
+      "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/models-2/final-20261114T113041Z/coverage-keys-control.log",
+      "command": "timeout 3000 ivg-core-partition --coverage 2 2 --broken-key",
+      "max_rss_kb": 2188,
+      "wall_seconds": 0.0,
+      "ok": true,
+      "summary": [
+        "profile (2, 2): 42 pre-enable worlds by search (75 pre-enable write transitions), 43 by the independent enumeration; keys distinct: true; equal: false; structural errors: 0",
+        "coverage (control: one piece key dropped): FAIL"
+      ]
+    },
+    "union-a-reviewed": {
+      "tag": "union-a-reviewed",
+      "rc": 0,
+      "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/models-2/final-20261114T113041Z/union-a-reviewed.log",
+      "command": "timeout 3000 ivg-core-partition --union 1 2 reviewed",
+      "max_rss_kb": 966548,
+      "wall_seconds": 60.69,
+      "ok": true,
+      "summary": [
+        "union (1, 2) Reviewed: full reachable set 2849806 states (own breadth-first search); 10 pieces; sum of piece sets 2849806; piece states outside the full set 0; states in two pieces 0; full states in no piece 0: PASS"
+      ]
+    },
+    "union-b-reviewed": {
+      "tag": "union-b-reviewed",
+      "rc": 0,
+      "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/models-2/final-20261114T113041Z/union-b-reviewed.log",
+      "command": "timeout 3000 ivg-core-partition --union 2 1 reviewed",
+      "max_rss_kb": 360524,
+      "wall_seconds": 27.33,
+      "ok": true,
+      "summary": [
+        "union (2, 1) Reviewed: full reachable set 1469036 states (own breadth-first search); 43 pieces; sum of piece sets 1469036; piece states outside the full set 0; states in two pieces 0; full states in no piece 0: PASS"
+      ]
+    },
+    "union-b-as-built": {
+      "tag": "union-b-as-built",
+      "rc": 0,
+      "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/models-2/final-20261114T113041Z/union-b-as-built.log",
+      "command": "timeout 3000 ivg-core-partition --union 2 1 as-built",
+      "max_rss_kb": 405904,
+      "wall_seconds": 32.79,
+      "ok": true,
+      "summary": [
+        "union (2, 1) AsBuilt: full reachable set 1720016 states (own breadth-first search); 43 pieces; sum of piece sets 1720016; piece states outside the full set 0; states in two pieces 0; full states in no piece 0: PASS"
+      ]
+    },
+    "union-c-reviewed": {
+      "tag": "union-c-reviewed",
+      "rc": 0,
+      "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/models-2/final-20261114T113041Z/union-c-reviewed.log",
+      "command": "timeout 3000 ivg-core-partition --union 0 3 reviewed",
+      "max_rss_kb": 765792,
+      "wall_seconds": 26.78,
+      "ok": true,
+      "summary": [
+        "union (0, 3) Reviewed: full reachable set 1369721 states (own breadth-first search); 1 pieces; sum of piece sets 1369721; piece states outside the full set 0; states in two pieces 0; full states in no piece 0: PASS"
+      ]
+    },
+    "union-control": {
+      "tag": "union-control",
+      "rc": 1,
+      "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/models-2/final-20261114T113041Z/union-control.log",
+      "command": "timeout 3000 ivg-core-partition --union 2 1 reviewed --broken-key",
+      "max_rss_kb": 360440,
+      "wall_seconds": 25.53,
+      "ok": true,
+      "summary": [
+        "union (2, 1) Reviewed (control: one piece dropped): full reachable set 1469036 states (own breadth-first search); 42 pieces; sum of piece sets 1366025; piece states outside the full set 0; states in two pieces 0; full states in no piece 103011: FAIL"
+      ]
+    },
+    "fidelity": {
+      "tag": "fidelity",
+      "rc": 0,
+      "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/models-2/final-20261114T113041Z/fidelity.log",
+      "command": "timeout 3000 ivg-core-partition --only fidelity-m1-reviewed-a fidelity-m1-reviewed-b fidelity-m1-reviewed-c fidelity-m1-as-built-isolation-stmt-a fidelity-m1-as-built-isolation-stmt-b fidelity-m1-as-built-isolation-stmt-c",
+      "max_rss_kb": 2228392,
+      "wall_seconds": 129.21,
+      "states": {
+        "fidelity-m1-reviewed-a": 2849806,
+        "fidelity-m1-as-built-isolation-stmt-a": 3257790,
+        "fidelity-m1-reviewed-b": 1469036,
+        "fidelity-m1-as-built-isolation-stmt-b": 1720016,
+        "fidelity-m1-reviewed-c": 1369721,
+        "fidelity-m1-as-built-isolation-stmt-c": 1398785
+      },
+      "registered_states": {
+        "fidelity-m1-reviewed-a": 2849806,
+        "fidelity-m1-reviewed-b": 1469036,
+        "fidelity-m1-reviewed-c": 1369721,
+        "fidelity-m1-as-built-isolation-stmt-a": 3257790,
+        "fidelity-m1-as-built-isolation-stmt-b": 1720016,
+        "fidelity-m1-as-built-isolation-stmt-c": 1398785
+      },
+      "ok": true
+    },
+    "family-reviewed": {
+      "tag": "family-reviewed",
+      "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/models-2/final-20261114T113041Z/family-reviewed.log",
+      "json": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/models-2/final-20261114T113041Z/family-reviewed.json",
+      "summary": "family reviewed profile (2, 2): 43 pieces, 43 met, 0 with a violation, 43 without, 0 truncated; states 21355762 (largest piece 1558548), transitions 266808918, 427.2s: EVERY EXPECTATION MET",
+      "max_rss_kb": 1078688,
+      "wall_seconds": 436.0,
+      "data": {
+        "crate": "experiment/playbook-completion/models/core-partition",
+        "explorer_rev": "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877",
+        "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+        "family": "reviewed",
+        "what": "HD-1303 + HD-1304 working assumptions: every property, AG EF and PARTITION",
+        "profile": [
+          2,
+          2
+        ],
+        "max_states": 60000000,
+        "pieces_total": 43,
+        "states_total": 21355762,
+        "transitions_total": 266808918,
+        "largest_piece_states": 1558548,
+        "with_violation": 0,
+        "without_violation": 43,
+        "truncated": 0,
+        "seconds_total": 427.2,
+        "met": true
+      },
+      "command": "locks.sh heavy timeout 3600 (parallel) ivg-core-partition --family reviewed 2 2 --out family-reviewed.json",
+      "ok": true
+    },
+    "family-as-built-isolation-stmt": {
+      "tag": "family-as-built-isolation-stmt",
+      "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/models-2/final-20261114T113041Z/family-as-built-isolation-stmt.log",
+      "json": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/models-2/final-20261114T113041Z/family-as-built-isolation-stmt.json",
+      "summary": "family as-built-isolation-stmt profile (2, 2): 43 pieces, 43 met, 0 with a violation, 43 without, 0 truncated; states 25117999 (largest piece 1912607), transitions 314278010, 483.2s: EVERY EXPECTATION MET",
+      "max_rss_kb": 1375092,
+      "wall_seconds": 494.17,
+      "data": {
+        "crate": "experiment/playbook-completion/models/core-partition",
+        "explorer_rev": "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877",
+        "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+        "family": "as-built-isolation-stmt",
+        "what": "at the pin, sequentially: RED-I1/I2, ERS-I2/I3, AG EF and PARTITION hold",
+        "profile": [
+          2,
+          2
+        ],
+        "max_states": 60000000,
+        "pieces_total": 43,
+        "states_total": 25117999,
+        "transitions_total": 314278010,
+        "largest_piece_states": 1912607,
+        "with_violation": 0,
+        "without_violation": 43,
+        "truncated": 0,
+        "seconds_total": 483.25,
+        "met": true
+      },
+      "command": "locks.sh heavy timeout 3600 (parallel) ivg-core-partition --family as-built-isolation-stmt 2 2 --out family-as-built-isolation-stmt.json",
+      "ok": true
+    },
+    "family-as-built-F1304": {
+      "tag": "family-as-built-F1304",
+      "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/models-2/final-20261114T113041Z/family-as-built-F1304.log",
+      "json": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/models-2/final-20261114T113041Z/family-as-built-F1304.json",
+      "summary": "family as-built-F1304 profile (2, 2): 43 pieces, 43 met, 43 with a violation, 0 without, 0 truncated; states 3901 (largest piece 706), transitions 7454, 0.0s: EVERY EXPECTATION MET",
+      "max_rss_kb": 2536,
+      "wall_seconds": 0.02,
+      "data": {
+        "crate": "experiment/playbook-completion/models/core-partition",
+        "explorer_rev": "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877",
+        "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+        "family": "as-built-F1304",
+        "what": "F-1304: the unprefixed default-graph target counts default-graph rows only but matches every node record",
+        "profile": [
+          2,
+          2
+        ],
+        "max_states": 60000000,
+        "pieces_total": 43,
+        "states_total": 3901,
+        "transitions_total": 7454,
+        "largest_piece_states": 706,
+        "with_violation": 43,
+        "without_violation": 0,
+        "truncated": 0,
+        "seconds_total": 0.03,
+        "met": true
+      },
+      "command": "locks.sh heavy timeout 3600 (parallel) ivg-core-partition --family as-built-F1304 2 2 --out family-as-built-F1304.json",
+      "ok": true
+    },
+    "family-as-built-F1305": {
+      "tag": "family-as-built-F1305",
+      "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/models-2/final-20261114T113041Z/family-as-built-F1305.log",
+      "json": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/models-2/final-20261114T113041Z/family-as-built-F1305.json",
+      "summary": "family as-built-F1305 profile (2, 2): 43 pieces, 43 met, 22 with a violation, 21 without, 0 truncated; states 6893103 (largest piece 740891), transitions 85937065, 116.4s: EVERY EXPECTATION MET",
+      "max_rss_kb": 252740,
+      "wall_seconds": 118.08,
+      "data": {
+        "crate": "experiment/playbook-completion/models/core-partition",
+        "explorer_rev": "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877",
+        "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+        "family": "as-built-F1305",
+        "what": "F-1305: violation in exactly the pieces whose world has a node row of n in G; elsewhere RED-B12/SC-001 holds",
+        "profile": [
+          2,
+          2
+        ],
+        "max_states": 60000000,
+        "pieces_total": 43,
+        "states_total": 6893103,
+        "transitions_total": 85937065,
+        "largest_piece_states": 740891,
+        "with_violation": 22,
+        "without_violation": 21,
+        "truncated": 0,
+        "seconds_total": 116.35,
+        "met": true
+      },
+      "command": "locks.sh heavy timeout 3600 (parallel) ivg-core-partition --family as-built-F1305 2 2 --out family-as-built-F1305.json",
+      "ok": true
+    },
+    "family-control-liveness-collapsed": {
+      "tag": "family-control-liveness-collapsed",
+      "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/models-2/final-20261114T113041Z/family-control-liveness-collapsed.log",
+      "json": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/models-2/final-20261114T113041Z/family-control-liveness-collapsed.json",
+      "summary": "family control-liveness-collapsed profile (2, 2): 43 pieces, 43 met, 43 with a violation, 0 without, 0 truncated; states 5382 (largest piece 706), transitions 12111, 0.1s: EVERY EXPECTATION MET",
+      "max_rss_kb": 2684,
+      "wall_seconds": 0.06,
+      "data": {
+        "crate": "experiment/playbook-completion/models/core-partition",
+        "explorer_rev": "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877",
+        "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+        "family": "control-liveness-collapsed",
+        "what": "negative control: the reviewed design with one liveness predicate (a default-graph prefix target counts default-graph rows only)",
+        "profile": [
+          2,
+          2
+        ],
+        "max_states": 60000000,
+        "pieces_total": 43,
+        "states_total": 5382,
+        "transitions_total": 12111,
+        "largest_piece_states": 706,
+        "with_violation": 43,
+        "without_violation": 0,
+        "truncated": 0,
+        "seconds_total": 0.06,
+        "met": true
+      },
+      "command": "locks.sh heavy timeout 3600 (parallel) ivg-core-partition --family control-liveness-collapsed 2 2 --out family-control-liveness-collapsed.json",
+      "ok": true
+    },
+    "family-control-dropstatements-all-graphs": {
+      "tag": "family-control-dropstatements-all-graphs",
+      "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/models-2/final-20261114T113041Z/family-control-dropstatements-all-graphs.log",
+      "json": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/models-2/final-20261114T113041Z/family-control-dropstatements-all-graphs.json",
+      "summary": "family control-dropstatements-all-graphs profile (2, 2): 43 pieces, 43 met, 43 with a violation, 0 without, 0 truncated; states 8563 (largest piece 512), transitions 19102, 0.1s: EVERY EXPECTATION MET",
+      "max_rss_kb": 2708,
+      "wall_seconds": 0.06,
+      "data": {
+        "crate": "experiment/playbook-completion/models/core-partition",
+        "explorer_rev": "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877",
+        "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+        "family": "control-dropstatements-all-graphs",
+        "what": "negative control: the reviewed design with DropStatements ignoring the graph",
+        "profile": [
+          2,
+          2
+        ],
+        "max_states": 60000000,
+        "pieces_total": 43,
+        "states_total": 8563,
+        "transitions_total": 19102,
+        "largest_piece_states": 512,
+        "with_violation": 43,
+        "without_violation": 0,
+        "truncated": 0,
+        "seconds_total": 0.07,
+        "met": true
+      },
+      "command": "locks.sh heavy timeout 3600 (parallel) ivg-core-partition --family control-dropstatements-all-graphs 2 2 --out family-control-dropstatements-all-graphs.json",
+      "ok": true
+    },
+    "full-reviewed-22": {
+      "tag": "full-reviewed-22",
+      "rc": 0,
+      "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/models-2/final-20261114T113041Z/full-reviewed-22.log",
+      "command": "locks.sh heavy timeout 3600 ivg-core-partition --only full-m1-reviewed-22",
+      "max_rss_kb": 14684468,
+      "wall_seconds": 263.07,
+      "states": 21355762,
+      "transitions": 266808993,
+      "partition_states_total": 21355762,
+      "free_before": "               total        used        free      shared  buff/cache   available\nMem:              86          48           7          28          59          38\nSwap:              0           0           0\n",
+      "ok": true
+    },
+    "full-as-built-isolation-stmt-22": {
+      "tag": "full-as-built-isolation-stmt-22",
+      "rc": 0,
+      "log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/models-2/final-20261114T113041Z/full-as-built-isolation-stmt-22.log",
+      "command": "locks.sh heavy timeout 3600 ivg-core-partition --only full-m1-as-built-isolation-stmt-22",
+      "max_rss_kb": 17068396,
+      "wall_seconds": 289.69,
+      "states": 25117999,
+      "transitions": 314278085,
+      "partition_states_total": 25117999,
+      "free_before": "               total        used        free      shared  buff/cache   available\nMem:              86          48          14          28          52          38\nSwap:              0           0           0\n",
+      "ok": true
+    }
+  },
+  "families_rc": 0,
+  "all_ok": true
+}

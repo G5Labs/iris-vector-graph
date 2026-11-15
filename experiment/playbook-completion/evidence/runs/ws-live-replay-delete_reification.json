@@ -1,0 +1,16 @@
+{
+  "command": "locks.sh iris timeout 900 python experiment/playbook-completion/writesets/live/ws_probes.py replay-delete_reification replay-import_rdf noindex-erase (AUDITB; at most 2 connections)",
+  "experiment_head": "e7cf1457e9d16c76fa772c2deeb94d31296c62b7",
+  "id": "ws-live-replay-delete_reification",
+  "kind": "live",
+  "lane": "writesets",
+  "log": "$RUN_DIR/writesets/replay-delete_reification.json",
+  "log_bytes": 1659,
+  "log_sha256": "aa9867f0632e90538d2c9b0eb6da7def261d3392caf7533d0f41ce49a0aa76af",
+  "namespace": "AUDITB",
+  "observes": "Review R4-02 rerun of WS-OBL-093 (INV-replay, delete_reification) with a committed delete. After EraseAll+PurgeAll a %IGNOREINDEX full scan found 0 content rows; ledger enabled, control tenant wsctl and tenant wsrd (node wsrd|n1 with label and property) committed; verify() = equal. On a second connection with $TLEVEL 0 (no caller transaction) engine.delete_reification(\"wsrd|n1\") returned True, $TLEVEL 0 after; the journal shows its process deleting nodes, rdf_labels and rdf_props rows, every transaction committed, no rollback, no ^IVG.Ledger node written. verify() = diverges, classification unrecorded_writes, difference: node wsrd|n1 before \"\" after None. Holds as detection (RPL-B7.1); the writer breaks RPL-B3 premise.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T12:56:19+00:00",
+  "result": "pass"
+}

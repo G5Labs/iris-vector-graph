@@ -1,0 +1,24 @@
+{
+ "doc": "F-0615: store_embeddings refused for a missing node has already created (and committed) the route table and its\n    registry row. Oracle: SYS-I3 (a refused write changes no store).",
+ "id": "p0615_refused_batch_leaves_route",
+ "log": "$RUN_DIR/breadth-a/live/06-all-20261113T230626.log",
+ "module": "06",
+ "observed": {
+  "call": "refused ValueError: Node does not exist in graph 'barb230626': missing",
+  "registry_after": [
+   [
+    "kg_emb_e36fb2b6690d9b86",
+    "barb230626",
+    "ba-m6",
+    6
+   ]
+  ],
+  "registry_after_erase": [],
+  "registry_before": []
+ },
+ "oracle": "a refused batch leaves the registry and routes as they were",
+ "reproduced": true,
+ "seconds": 0.49,
+ "started": "2026-11-13T23:06:32",
+ "verdict": "refused, yet a 6-wide route and registry row now exist"
+}

@@ -1,0 +1,17 @@
+{
+  "command": "SFP_TAG=r1 bash experiment/playbook-completion/writesets/live/run_sql_fallback.sh (locks.sh iris; writesets/live/sql_fallback_priv.py; AUDITB; disposable principal IVGAUDIT_RO, password by env var name)",
+  "experiment_head": "792b8d6faf0bc77799920155f7eb1bea265a9934",
+  "id": "ws-live-sql-fallback-priv",
+  "kind": "live",
+  "lane": "orchestrator",
+  "log": "$RUN_DIR/writesets/sql-fallback/run-r1.out",
+  "log_bytes": 12994,
+  "log_sha256": "e24db41ef04c18a21688f21c110ad0bb2b745474de7e44d22fc47d7cecb086cb",
+  "observes": "Census cells WS-OBL-147/148/150/154: the SQL fallback of IRISGraphStore's deleters is reachable at the pin. Same seeded state (ledger enabled, not strict; 4 nodes, 2 recorded edges, verify equal), two roles. Control, ADMIN_GUIDE's writing row (%DB_%DEFAULT:RW, %Native_ClassExecution:U, %Native_GlobalAccess:U, INSERT/UPDATE/DELETE ON SCHEMA): the probe answers True, engine.delete_node and IRISGraphStore.delete_edges go through Graph.KG.Eraser, the rows, ^KG out entries and both ledger statements go. Variant without %Native_ClassExecution: the dictionary SELECT is refused (-99), the native IDKEYExists raises <PROTECT>, _has_eraser_method caches False ('taken as absent', DEBUG only), the SQL fallback deletes the rows (^KG out removed by the index), and both ledger statements (^IVG.Ledger tuple/stmt, closed seq empty) stay live without their rows: INV-stmt broken for _delete_nodes_sql and delete_edges (F-C1750). verify() diverges (unrecorded_writes) in both variants. Principal restored exactly (user disabled, role resources, 2 grants); password not in any log.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-15T00:13:06+00:00",
+  "result": "fail",
+  "results": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/writesets/sql-fallback/results-r1.json",
+  "results_sha256": "15078c518908ab3a30616be6bdcf98ac71aba37b2f40e03a606e6f21db13ed75"
+}

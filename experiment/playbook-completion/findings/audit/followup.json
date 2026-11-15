@@ -1,0 +1,289 @@
+[
+ {
+  "id": "F-C1304",
+  "module": "13",
+  "title": "IVG's own snapshot archives keep an erased and redacted tenant, the receipt does not name them, and a restore brings the tenant back",
+  "intended": "specs/256-ledger-tenant-redaction/spec.md:42-44 (US1: afterwards 'no record, revision field or index reachable through IVG holds the tenant's entity ids, attribute values or messages'; the receipt says 'what stayed out of reach'); spec.md:127-128 (FR-008: the receipt states what stays out of reach); docs/adr/0013-redaction-removes-content-from-history.md:47-48 ('Together they cover everything IVG can reach'; out of reach: export_reconstruction files, journals, backups); iris_src/src/Graph/KG/LedgerRedact.cls:504-508 (the receipt's out_of_reach: exactly those three).",
+  "observed": "Live in AUDITA (fu-r01a-snapshot-copies): tenant fu1|x committed through the ledger with a secret property, message, source, correlation id and idempotency key; engine.save_snapshot (the call POST /admin/snapshot makes with $IVG_SNAPSHOT_DIR or the temp folder, iris_vector_graph/cypher_api.py:668-678) taken before the erase, after the erase and after the redaction; delete_nodes_by_prefix + ledger.redact(None, prefix='fu1') complete, verify() equal, and the SC-001 scan of ^IVG.Ledger and Graph_KG.ledger_* finds none of the six tenant tokens. The pre-erase archive holds the tenant in sql/Graph_KG_nodes, rdf_labels, rdf_props, globals/IVG.Ledger (records, idempotency binding) and globals/Graph.KG.LedgerRevisionD (message, source, correlation id, idempotency key); the after-erase archive holds the whole history; the after-redaction archive holds none. The receipt's out_of_reach names exports, journals and backups only. restore_snapshot of the pre-erase archive (the replacing default) put back the node, the property secret='fu1-sensitive-7f3a', the records and the revision row's message, correlation id and idempotency key; the SC-001 scan is non-zero again, and the idempotency binding the redaction moved to idemRedacted is live again.",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "fu-r01a-snapshot-copies"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/cypher_api.py:668-678"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/snapshot.py:387-422"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/snapshot.py:1035"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/LedgerRedact.cls:504-508"
+   },
+   {
+    "kind": "live",
+    "ref": "c18-live-ledger-overlay"
+   }
+  ],
+  "gates": [
+   "3.8-spec-intent",
+   "3.8-findings-disposed",
+   "3.4-ownership"
+  ],
+  "severity": "S2",
+  "confidence": "high",
+  "remedy": "Name IVG's own archives (save_snapshot files, including those POST /admin/snapshot writes to $IVG_SNAPSHOT_DIR or the temp folder) in the receipt's out_of_reach and in ADR-0013's reach statement; optionally refuse or warn on restoring an archive older than a completed redaction (HD-1801's re-apply of live redactions) and give the HTTP snapshot a retention rule.",
+  "notes": "F-1801 records what a restore does to the ledger; this finding records the archives as copies of the tenant that IVG itself writes (on demand, by any API-key holder through POST /admin/snapshot, with no retention or deletion) and that the receipt and ADR-0013 leave out. Severity S2 (a receipt that understates what IVG holds); S1 if an operator relies on the receipt as an erasure statement. The archives here have mode 0600 because this probe ran with umask 077; the product sets no mode (snapshot.py:1035)."
+ },
+ {
+  "id": "F-C1305",
+  "module": "13",
+  "title": "Graph_KG.embedding_quarantine keeps a tenant's node ids and vectors through every erase and redaction, and the receipt does not say so",
+  "intended": "specs/256-ledger-tenant-redaction/spec.md:42-44 and 127-128 (FR-008 reach statement); docs/adr/0013-redaction-removes-content-from-history.md:47-48 ('Together they cover everything IVG can reach'). By design the quarantine is evidence, not content: iris_src/src/Graph/KG/Eraser.cls:300-302 and 756-758 (FR-039, FR-040); iris_vector_graph/_engine/schema.py:205-227 (node_id, vector, metadata, no graph).",
+  "observed": "Source: neither EraseGraph, EraseNodes/EraseIdSet nor EraseAll names Graph_KG.embedding_quarantine except in comments (Eraser.cls:300, 756); LedgerRedact.cls never names it; the receipt (LedgerRedact.cls:504-508) does not mention it; engine.list_quarantine() (schema.py:1913) returns its rows with node_id. The pin's own upstream tests that pin this behaviour pass here (fu-r01b-quarantine-erase-plan: tests/unit/test_227_erase_plan.py, 3 quarantine tests). Not built live: the only writer of a quarantine row is the 4.0.0 migration from a 3.2.0 install (iris_vector_graph/migrations/graph_scoped_embeddings.py:955-968); planting a row by SQL would be outside the product path.",
+  "disposition": "confirmed-source",
+  "evidence": [
+   {
+    "kind": "run",
+    "ref": "fu-r01b-quarantine-erase-plan"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/Eraser.cls:300-302"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/Eraser.cls:752-758"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/schema.py:205-227"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/migrations/graph_scoped_embeddings.py:955-968"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/LedgerRedact.cls:504-508"
+   }
+  ],
+  "gates": [
+   "3.8-spec-intent",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S3",
+  "confidence": "high",
+  "remedy": "Keep the by-design behaviour but state it: the receipt's out_of_reach (and ADR-0013) should name embedding_quarantine rows, or the redaction should report the count of quarantined rows whose node_id matches the target's prefix.",
+  "notes": "Applies only to namespaces upgraded from 3.2.0 whose migration quarantined rows. docs_quarantine and edge_vector_quarantine (spec 230 migrations) are the same shape and are not named either (review angle 2); not examined here."
+ },
+ {
+  "id": "F-C1306",
+  "module": "13",
+  "title": "After a 4.5.x upgrade to a non-default IVG Schema, Graph_KG.ledger_revisions keeps the tenant's messages, sources, correlation ids and idempotency keys, which redaction never clears",
+  "intended": "specs/256-ledger-tenant-redaction/spec.md:142-143 (SC-001: after erase and redaction 'every Graph_KG.ledger_* row finds none of the tenant's ids or values'); spec.md:120-121 (FR-004, Decision 2: a revision's free text is cleared); FR-008 reach statement; docs/adr/0013-redaction-removes-content-from-history.md:47.",
+  "observed": "Live (run fc1306-legacy-ledger-rows, scratch namespace IVG262FC1306): the pinned fixture's own functions (scripts/fixtures/build_release_namespace.build('v4.5.1', ..., schema_prefix='RAG'), run_ledger_commits) plus v4.5.1's public engine.ledger.commit built a 4.5.1 namespace whose Graph_KG.ledger_revisions held 7 revisions: tenant r114 (seqs 2, 3, 4, 6; seqs 4 and 6 with message, source, correlation_id and idempotency_key) and tenant o114 (seqs 5, 7). The pin's initialize_schema(schema_prefix='RAG') copied them (ledger_history_copied {ledger_revisions: 7, ledger_stats: 1}); verify() equal. The pin's delete_nodes_by_prefix('r114:') removed 3 nodes and ledger.redact(None, prefix='r114', separator=':') completed: revisions [2, 3, 4, 6], 11 records tombstoned, metadata_cleared 4, idempotency_keys_removed 2; verify() equal. Afterwards ^IVG.Ledger and RAG.ledger_revisions hold none of r114's strings, but Graph_KG.ledger_revisions (still projected by v4.5.1's Graph.KG.LedgerRevision after the upgrade) keeps seqs 2 and 3's messages and seqs 4 and 6's message, source, correlation_id and idempotency_key verbatim (4 rows hit by SC-001's 'every Graph_KG.ledger_* row' scan), and ^Graph.KG.LedgerRevisionD holds the same values (what the documented step-4 DROP ... %NODELDATA would leave). The receipt reported metadata_cleared 4 and its out_of_reach names only exports, journals and backups. Tenant o114's rows are unchanged. Source cause as before: copy_ledger_history copies and leaves the Graph_KG rows (iris_vector_graph/_engine/legacy.py:606-646, ':613'); ClearRevision's SQL is rewritten to the IVG Schema's table (iris_src/src/Graph/KG/LedgerRedact.cls:351-376; class_deploy.py:109-119).",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "fc1306-legacy-ledger-rows"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/legacy.py:606-646"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/schema.py:2223-2226"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/schema.py:2308"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/class_deploy.py:109-119"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/LedgerRedact.cls:351-376"
+   },
+   {
+    "kind": "inspected",
+    "ref": "docs/migration/v4.6.0.md:240-252"
+   },
+   {
+    "kind": "run",
+    "ref": "scripts/fixtures/build_release_namespace.py:466-491 (build), :367-376 (run_ledger_commits), used unmodified"
+   },
+   {
+    "kind": "probe",
+    "ref": "o1-fixture-inventory"
+   }
+  ],
+  "gates": [
+   "3.8-spec-intent",
+   "3.8-findings-disposed",
+   "3.7-integration-worlds"
+  ],
+  "severity": "S1",
+  "confidence": "high",
+  "remedy": "On redaction, also clear (or report) rows of a legacy Graph_KG.ledger_revisions (and ^Graph.KG.LedgerRevisionD) when the IVG Schema is not Graph_KG; or have the upgrade move rather than copy the rows (delete or %NODELDATA plus kill of the legacy storage after the copy is verified); and name any remaining legacy copy in the receipt.",
+  "notes": "Reproduced live 2026-11-14 01:52 UTC by lane fc1306 under tools/locks.sh iris, in a new scratch namespace IVG262FC1306 (/usr/irissys/mgr/ivg262fc1306/, recorded in incidents/NAMESPACES.md, left intact). The pinned fixture compiled v4.5.1's classes there (its own code, as tests/e2e/test_460_upgrade_ledger_history_e2e.py::upg does); nothing else was compiled besides the pin's own initialize_schema (66 classes, 3 MCP classes skipped: %AI absent on Community; not a dependency of this probe). The probe adds two tenants' metadata-bearing changesets through v4.5.1's public ledger API (fc1306/ledger451_child.py) because the fixture's own two changesets carry messages only. Side observation, not part of this finding: the actor value ('r114', the fixture's) stays in both schemas' ActorIdx; actor is outside FR-004's cleared fields by design. Probe: experiment/playbook-completion/fc1306/probe.py; raw result $RUN_DIR/fc1306/probe.json. Attribution (operator clarification O-1, incidents/O-1-FIXTURES.md, o1-fixture-inventory): the probe's namespace IVG262FC1306 holds the pin's classes deployed by the pin's own initialize_schema(schema_prefix='RAG') and residue of the unchanged v4.5.1 release that the pinned fixture scripts/fixtures/build_release_namespace.build built there (8 v4.5.1-only classes and v4.5.1's Graph.KG.LedgerRevision/LedgerStats/Meta); that residue is the upgrade test's intended precondition. The defect is in the pin's upgrade and redaction code. Setup authorized under O-1."
+ },
+ {
+  "id": "F-C1307",
+  "module": "13",
+  "title": "A writer that keeps the target live holds a redaction open indefinitely, and while it is open every tenant's record readers, verify() and other redactions are refused",
+  "intended": "docs/adr/0013-redaction-removes-content-from-history.md:18 (Batches: while the marker exists 'a commit with a record in the target is refused'; 'Re-running the same redaction resumes it'); specs/256-ledger-tenant-redaction/spec.md:156 (Decision 3), :125 (FR-006), :148 (SC-004: other tenants' verify() result unchanged); iris_vector_graph/ledger/client.py:633-660 (redact docstring: calling again resumes the run).",
+  "observed": "Live in AUDITA (fu-r03-marker-held-open, two connections): tenant fa3 erased, a bounded run (batch 1, max_batches 1) left the marker. engine.create_node('fa3|zombie') on a non-strict ledger was accepted (no non-ledger writer reads the marker), while a ledger commit into fa3 was refused. Running the redaction again was refused at the entry liveness check ('still holds 4 live row(s)', LedgerRedact.cls:207-211). A run that passed the entry check while a second connection held the head lock tombstoned every remaining fa3 record, and after a bypass write during the wait Final refused ('became live again', :395-396); the marker stayed after every refusal. While it existed, tenant fb3's get_revision, diff and reconstruct raised RedactionInProgressError, verify() returned redaction_in_progress, and redact(None, prefix='fc3') of an erased tenant was refused redaction_in_progress; history() was not refused and returned the half-done state; an fb3 ledger commit succeeded. Only erasing fa3 again and re-running cleared it. The marker is removed only by Final (LedgerRedact.cls:439) and PurgeAll (Ledger.cls:242-248); there is no abandon call.",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "fu-r03-marker-held-open"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/LedgerRedact.cls:202-211"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/LedgerRedact.cls:393-441"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/ledger/client.py:682-693"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/cypher_api.py:628-643"
+   }
+  ],
+  "gates": [
+   "3.3-progress-controls",
+   "3.7-integration-worlds",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S2",
+  "confidence": "high",
+  "remedy": "Either make the marker binding on every writer of the content tables (the non-ledger write paths, Cypher updating clauses, POST /admin/load and the temporal mirror refuse a write into the marked target), or scope the readers' refusal to the marked target and add an operator abandon/rollback for a run that cannot finish; state 'no writer makes a marked target live' as a progress premise (P-C02).",
+  "notes": "Availability and cross-tenant impact: one writer that keeps re-creating a row of the target (careless or with the single shared API key, review R-03) blocks every tenant's ledger record readers, verify() and redactions for as long as it writes. Whether non-ledger writers must honour the marker is not settled by any source (ADR-0013 names only commits): the refusal-of-everyone part is as designed, its unbounded duration is not. The core models record this as 'AG EF still holds: erase again' under the premise that writers become quiet (models/core/MODELS.md:302, 310). Strict mode (client-side, HD-1103) would refuse engine.create_node but not POST /admin/load (import_graph_ndjson is checked only in strict mode) or temporal writes with a graph in non-strict mode."
+ },
+ {
+  "id": "F-C1308",
+  "module": "13",
+  "title": "Redaction ignores live temporal-only edges (ADR-0015): it completes and tombstones their history while they stay live",
+  "intended": "specs/256-ledger-tenant-redaction/spec.md:124 (FR-005: refuse while any non-tombstoned live statement or node of the target remains), :88-93 (Story 3: refused while the tenant's content is still live); docs/adr/0013-redaction-removes-content-from-history.md:17 ('refused while any row of the target is live'); RED-B1.1 / INV-no-live-tombstone (a record becomes a tombstone only while its content is not live).",
+  "observed": "Live in AUDITA (fu-r04-temporal-only-live-b; first run fu-r04-temporal-only-live-a): control: a structural temporal predicate's edge in graph fqctl writes 2 node rows and a marked rdf_edges row, and redact('fqctl') is refused target_live. Case G: set_temporal_structural('FQ_OBS', False, graph='fq4g') and a ledger commit of create_temporal_edge(fq4|s1, FQ_OBS, fq4|t1, weight 7.5, attrs) write no row in nodes, rdf_labels, rdf_props or rdf_edges; redact('fq4g') with nothing erased completes and tombstones the create_temporal_edge record, while get_edges_in_window still returns the edge. Case P: a prefix tenant fq5 with a node and a temporal-only edge: delete_nodes_by_prefix('fq5|') removes the node and leaves the edge; redact(None, prefix='fq5') completes (4 records tombstoned) and the edge stays live. verify() is equal after both. Cause: LiveRows counts only nodes, rdf_labels, rdf_props and rdf_edges (LedgerRedact.cls:149-178) while Matches treats temporal_edge records as the target's (:97-98); verify() leaves temporal statements out (iris_vector_graph/ledger/replay.py:617-619, 791-800, 836).",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "fu-r04-temporal-only-live-b"
+   },
+   {
+    "kind": "live",
+    "ref": "fu-r04-temporal-only-live-a"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/LedgerRedact.cls:85-111"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/LedgerRedact.cls:149-178"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/LedgerApply.cls:617-639"
+   },
+   {
+    "kind": "inspected",
+    "ref": "docs/adr/0015-temporal-structural-rows-opt-out.md:10-14"
+   }
+  ],
+  "gates": [
+   "3.3a-writesets",
+   "3.7-integration-worlds",
+   "3.8-spec-intent",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S1",
+  "confidence": "high",
+  "remedy": "Count the target's temporal-only edges in LiveRows (the temporal globals of the graph, and for a prefix target the edges whose endpoints carry the prefix, e.g. through TemporalIndex's per-node walk), so that a redaction is refused while any of them is live.",
+  "notes": "Closes the core lane's open item (models/core/MODELS.md:328-331). With F-C1203 the documented erase-then-redact order ends with a 'complete' receipt while the tenant's temporal-only edges (ids, weights, attributes) remain queryable and their history is gone, so the history can no longer show they exist."
+ },
+ {
+  "id": "F-C1203",
+  "module": "12",
+  "title": "A prefix erase (EraseNodes / delete_nodes_by_prefix) leaves the tenant's temporal-only edges",
+  "intended": "docs/adr/0015-temporal-structural-rows-opt-out.md:59-60 ('EraseNodeIds still clears them, because TemporalIndex.EraseNodes walks the temporal globals, not the rows'); iris_vector_graph/_engine/nodes_edges.py:1529-1545 (delete_nodes_by_prefix removes every node whose id starts with the prefix and everything that hangs off it); spec 256 tenant erasure = erase then redact (spec.md:14-20).",
+  "observed": "Live (fu-r04-temporal-only-live-b, case P): after delete_nodes_by_prefix('fq5|') the temporal-only edge fq5|s1 -FQ_OBS-> fq5|t1 is still returned by get_edges_in_window. EraseNodes selects the ids to erase from Graph_KG.nodes only (iris_src/src/Graph/KG/Eraser.cls:322-348) and passes them to TemporalIndex.EraseNodes (:595-605); a temporal-only edge's endpoints have no node row (ADR-0015 Decision), so they are never selected.",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "fu-r04-temporal-only-live-b"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/Eraser.cls:322-348"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/Eraser.cls:590-610"
+   }
+  ],
+  "gates": [
+   "3.7-integration-worlds",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S1",
+  "confidence": "high",
+  "remedy": "Have EraseNodes also select the prefix's ids from the temporal globals of the graph (the endpoints of its temporal-only predicates), or document that a prefix erase does not reach temporal-only edges and give it a temporal counterpart.",
+  "notes": "Filed under module 12 (erasure) as F-C1203 because the defect is the eraser's; it surfaced from review item R-04 together with F-C1308. EraseGraph does clear a whole graph's temporal globals (Eraser.cls:236-237)."
+ },
+ {
+  "id": "F-C1309",
+  "module": "13",
+  "title": "The redaction's audit revision stores an unsalted SHA-256 of the tenant's name: a guessed tenant is confirmable from history",
+  "intended": "specs/256-ledger-tenant-redaction/spec.md:152-154 (Decision 1: the audit holds 'no entity id, attribute, value or free text from the target'); docs/adr/0013-redaction-removes-content-from-history.md:16 ('holds counts and sha256(graph NUL match) instead of the target's name. Nothing in it comes from the target'); spec.md:66-67 (US2: 'nobody can recover the content from the digest') against ADR-0013:43, 49 (record digests unsalted, 'can be confirmed by guessing').",
+  "observed": "Live digest (fu-r01a-snapshot-copies) and computation (fu-r10-target-digest): the redaction revision's source.target_sha256, readable through history() (which does not check the marker) and Graph_KG.ledger_revisions.source, is 5693ca28...c58d = SHA-256('' NUL 'fu1|') = Graph.KG.LedgerRedact.TargetDigest('', 'fu1|') (LedgerRedact.cls:56-59, :200, :433, :487). A 200,006-name dictionary confirmed exactly 'fu1' in 0.13 s (about 1.5 million guesses a second on one Python core). The marker and the receipt carry the same digest.",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "check",
+    "ref": "fu-r10-target-digest"
+   },
+   {
+    "kind": "live",
+    "ref": "fu-r01a-snapshot-copies"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/LedgerRedact.cls:56-59"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/LedgerRedact.cls:418-441"
+   }
+  ],
+  "gates": [
+   "3.8-spec-intent",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S3",
+  "confidence": "high",
+  "remedy": "Decide the intent (maintainer question): if the audit must not identify the tenant, store a keyed digest (HMAC with a namespace secret) or nothing; if confirmability is accepted, say so in ADR-0013 (as it already does for record digests) and drop 'Nothing in it comes from the target'. Reconcile spec 256 US2 with ADR-0013 Consequences.",
+  "notes": "Privacy: anyone who can read the ledger history can test whether a named tenant was redacted. Tenant names are low-entropy, so the digest is close to the name itself for this purpose. F-1301 records only the FR-004/Decision 2 conflict. intent-undecided between 'content-free' (spec Decision 1) and 'verifiable by an auditor' (ADR-0013:43)."
+ }
+]

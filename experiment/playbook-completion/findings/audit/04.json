@@ -1,0 +1,500 @@
+{
+ "module": "04",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "lane": "breadth-a",
+ "generated_by": "experiment/playbook-completion/live/breadth-a/make_audit.py",
+ "source_findings": "experiment/playbook-uplift/findings/04.md",
+ "original_count": 9,
+ "new_count": 3,
+ "dispositions": {
+  "confirmed-source": 2,
+  "not-reproduced": 1,
+  "reproduced-live": 6,
+  "reproduced-model": 3
+ },
+ "findings": [
+  {
+   "id": "F-0401",
+   "title": "A killed source generation can let an in-flight reader store a wrong out-degree",
+   "intended": "ADJ-I5.9 / ADJ-I5.9.1; HD-0401 (assumption): invalidation never makes an old degree-cache value valid again.",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Per HD-0401: step the generation (or a graph epoch) and never kill it; the model also needs the step before the write (see F-C0401).",
+   "gates": [
+    "3.3-model-check",
+    "3.3-refinement",
+    "3.3a-writesets",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "mc",
+     "ref": "breadth-a-mc-adj_degree-as-built"
+    },
+    {
+     "kind": "mc",
+     "ref": "breadth-a-mc-adj_degree-reviewed"
+    },
+    {
+     "kind": "control",
+     "ref": "breadth-a-control-adj_degree"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Adj.cls:51-90"
+    }
+   ],
+   "notes": "adj_degree-as-built-F0401-erase gives the finding's trace; the refinement audit against L1 'degree = committed out count' fails as built and passes for the reviewed design. Live provocation is unrepresentable with the public surface: the window lies between the probe and the count inside one Adj.Degree call. Review-response reclassification (review R2-08 / R-11, condition 5; 2026-11-14): disposition changed from reproduced-model to intent-undecided. The intended behaviour rests only on HD-0401, an Assumption (decisions.md: 'invalidation can never make an old degree-cache value valid again' is the working choice; a per-source generation is named as an alternative) and on ADJ-I5.9, which restates it; no authoritative source settles it. The observed behaviour is unchanged and kept: as-built model breadth-a-mc-adj_degree-as-built and the located control proofs-breadth-hd0401-erase-kills-gen reproduce the trace (model-level; not provoked live). Conditional on HD-0401: a defect if the maintainer adopts it.",
+   "module": "04",
+   "observed": "Adj.Degree's four steps (iris_src/src/Graph/KG/Adj.cls:51-90) against RemoveSource/RemoveGraph/RemoveAll killing ^KG('gen') (Adjacency.cls:376-377, 437-438, 461-462) and a rolled-back erase.",
+   "disposition": "intent-undecided"
+  },
+  {
+   "id": "F-0402",
+   "title": "A rebuilt store or cached answer can stay current after the write it read is rolled back",
+   "intended": "AlgoCache.cls:5-7 ('never wrongly fresh'); ADR-0012:23-26 names the case unsafe; ADJ-I7.3 / ADJ-I11.2.",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Probe the writer lock exclusively before computing and store only if the probe held and the token did not move, AND step the token before the adjacency write: the model shows the probe alone leaves a writer-stopped-mid-write window (adj_token-probe-writer-window).",
+   "gates": [
+    "3.3-model-check",
+    "3.3a-writesets",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-04-adjacency"
+    },
+    {
+     "kind": "mc",
+     "ref": "breadth-a-mc-adj_token-as-built"
+    },
+    {
+     "kind": "mc",
+     "ref": "breadth-a-mc-adj_token-reviewed"
+    },
+    {
+     "kind": "mc",
+     "ref": "breadth-a-mc-adj_token-probe-writer-window"
+    },
+    {
+     "kind": "control",
+     "ref": "breadth-a-control-adj_token"
+    }
+   ],
+   "notes": "Live: token 114 -> 115 by the open write, WCC computed and cached under 115, writer rolled back (row and out entry gone), token stays 115, a fresh engine's kg_WCC was a cache hit joining the rolled-back edge's endpoints.",
+   "module": "04",
+   "observed": {
+    "probe": "p0402_rolled_back_edge_served_current",
+    "verdict": "cache entry stamped with the rolled-back write's token served the rolled-back edge",
+    "oracle": "after W's rollback no current cached answer includes W's edge",
+    "values": {
+     "edge_rows_after_rollback": 0,
+     "fresh_engine_cache_stats": {
+      "hit": 1
+     },
+     "fresh_engine_wcc_same_component": true,
+     "out_entry_after_rollback": 0,
+     "token_after_rollback": 115,
+     "token_before": 114,
+     "token_with_open_write": 115,
+     "wcc_during_open_write_same_component": true,
+     "writer_tlevel": 1
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0402_rolled_back_edge_served_current.json",
+    "log": "$RUN_DIR/breadth-a/live/04-all-20261113T224336.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-0403",
+   "title": "verify_graph reports drift on a graph with parallel edges whose index matches its rows",
+   "intended": "Spec 234 SC-005 and spec.md:78-80.",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Count rows per triple against the '#' count.",
+   "gates": [
+    "3.5-decoders",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-02-identity"
+    }
+   ],
+   "notes": "Same defect as F-0204.",
+   "module": "04",
+   "observed": {
+    "probe": "p0204_verify_parallel",
+    "verdict": "false drift on parallel edges",
+    "oracle": "verify_graph(g)['ok'] is true for a multigraph whose index matches its rows",
+    "values": {
+     "keyed_count": "3",
+     "rows": [
+      0,
+      1,
+      2
+     ],
+     "verify": {
+      "counts": {
+       "cacheEntries": 0,
+       "inEdges": 1,
+       "outEdges": 1,
+       "sqlEdges": 3
+      },
+      "drift": [
+       {
+        "count": 2,
+        "detail": "rows in Graph_KG.rdf_edges with no ^KG(\"out\") entry, so traversal cannot see them",
+        "kind": "missing",
+        "store": "^KG(\"out\")"
+       },
+       {
+        "count": 2,
+        "detail": "rows with no ^KG(\"in\") entry, so inbound traversal cannot see them",
+        "kind": "missing",
+        "store": "^KG(\"in\")"
+       }
+      ],
+      "ok": 0
+     }
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0204_verify_parallel.json",
+    "log": "$RUN_DIR/breadth-a/live/02-all-20261113T224011.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-0404",
+   "title": "Snapshot restore writes the adjacency index outside the one writer where the row hook is not declared",
+   "intended": "ADR-0011 (one writer); ADR-0008:46 and spec 252 FR-016 (ImportGlobals restores rows only).",
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Route the restore through Graph.KG.Adjacency or rebuild from rows; extend the single-writer guard to Python.",
+   "gates": [
+    "3.4-ownership",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/snapshot.py:1656-1692"
+    }
+   ],
+   "notes": "AUDITA declares the row hook, so the path is unreachable there; a non-indexed namespace is not available.",
+   "module": "04",
+   "observed": "_import_global_from_ndjson sets ^KG out/in over the Native API when the namespace is not indexed (iris_vector_graph/_engine/snapshot.py:1656-1692).",
+   "disposition": "confirmed-source"
+  },
+  {
+   "id": "F-0405",
+   "title": "Some weight refreshes do not move the graph-version token",
+   "intended": "CONTEXT.md:116-119: every write path able to change an algorithm's answer moves the token.",
+   "severity": "S4",
+   "confidence": "high",
+   "remedy": "Step the token whenever a stored weight changes.",
+   "gates": [
+    "3.3a-writesets",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-04-adjacency"
+    }
+   ],
+   "notes": "",
+   "module": "04",
+   "observed": {
+    "probe": "p0405_weight_refresh_token",
+    "verdict": "weight changed 1.0 -> 5.0 with token and generation unchanged",
+    "oracle": "a stored weight change moves the graph-version token",
+    "values": {
+     "cleanup_out_left": 0,
+     "gen_after_first": "1",
+     "gen_after_second": "1",
+     "token_after_first": 120,
+     "token_after_second": 120,
+     "weight_after_second": "5.0"
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0405_weight_refresh_token.json",
+    "log": "$RUN_DIR/breadth-a/live/04-all-20261113T224336.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-0406",
+   "title": "Clearing the degree cache alone gives zeros while the warm stamp holds",
+   "intended": "ADR-0012:17: the cache is derived; kill it and every answer is still right.",
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Make AllWarm require an entry, or document killing ^KG('degw') with ^KG('degc').",
+   "gates": [
+    "3.3a-writesets",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-04-adjacency"
+    }
+   ],
+   "notes": "",
+   "module": "04",
+   "observed": {
+    "probe": "p0406_degc_kill_under_warm_stamp",
+    "verdict": "degree centrality answered 0 for a node with 2 out-edges",
+    "oracle": "ADR-0012:17 the cache is derived: kill it and every answer is still right",
+    "values": {
+     "Adj.Degree_a": 2,
+     "all_warm": 1,
+     "all_warm_after_kill": 1,
+     "centrality_after_kill": {
+      "a": 0,
+      "b": 0,
+      "c": 0
+     },
+     "centrality_before": {
+      "a": 2,
+      "b": 0,
+      "c": 0
+     },
+     "warm_fill": 1
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0406_degc_kill_under_warm_stamp.json",
+    "log": "$RUN_DIR/breadth-a/live/04-all-20261113T224336.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-0407",
+   "title": "Reweight takes no writer lock and moves no generation, against ADR-0012 and spec 252 FR-004",
+   "intended": "ADR-0012:31 and spec 252 FR-004 as written.",
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Amend ADR-0012 and FR-004 to 'every write that changes the set of out entries'.",
+   "gates": [
+    "3.5-lockplans",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-04-adjacency"
+    },
+    {
+     "kind": "tested",
+     "ref": "tests/e2e/test_degree_cache_live.py::test_reweight_does_not_move_the_generation"
+    }
+   ],
+   "notes": "The behaviour is deliberate and harmless for counts; the documents over-state the rule.",
+   "module": "04",
+   "observed": {
+    "probe": "p0407_reweight_generation",
+    "verdict": "weight changed, generation unchanged (docs over-state the rule)",
+    "oracle": "ADR-0012:31 / spec 252 FR-004 as written: every index change moves the source's generation",
+    "values": {
+     "gen_after": "1",
+     "gen_before": "1",
+     "set_edge_weight": true,
+     "weight_after": "7.0"
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0407_reweight_generation.json",
+    "log": "$RUN_DIR/breadth-a/live/04-all-20261113T224336.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-0408",
+   "title": "Comments and docs still describe adjacency behaviour that changed",
+   "intended": "Comments and ADRs describe the shipped behaviour.",
+   "severity": "S4",
+   "confidence": "high",
+   "remedy": "Correct the four texts.",
+   "gates": [
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/EdgeScan.cls:149"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/admin.py:854-861"
+    }
+   ],
+   "notes": "",
+   "module": "04",
+   "observed": "EdgeScan.cls:149 'graph=\"\" = default graph'; admin.py:854-861 drop_graph text; ADR-0010 line 5 'implementation pending'.",
+   "disposition": "confirmed-source"
+  },
+  {
+   "id": "F-0409",
+   "title": "A failed adjacency rebuild inside a caller's transaction rolls back the caller's work",
+   "intended": "CHANGELOG 4.6.4 (CHANGELOG.md:410-424): an IVG write never commits or rolls back a transaction its caller opened.",
+   "severity": "S1",
+   "confidence": "high",
+   "remedy": "Roll back to the level found, or refuse sync() inside a caller transaction.",
+   "gates": [
+    "3.3-model-check",
+    "3.5-lockplans",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-04-adjacency"
+    },
+    {
+     "kind": "mc",
+     "ref": "breadth-a-mc-adj_rebuild_txn-as-built"
+    },
+    {
+     "kind": "mc",
+     "ref": "breadth-a-mc-adj_rebuild_txn-reviewed"
+    },
+    {
+     "kind": "control",
+     "ref": "breadth-a-control-adj_rebuild_txn"
+    }
+   ],
+   "notes": "Precondition: the engine's Native API handle shares the caller's process (an engine built on the caller's DB-API connection, as here); on a from_connect engine BuildKG runs in another process.",
+   "module": "04",
+   "observed": {
+    "probe": "p0409_failed_sync_rolls_back_caller",
+    "verdict": "failed sync ended the caller's transaction and discarded its node",
+    "oracle": "the caller's transaction and its writes survive a failed IVG call made inside it",
+    "values": {
+     "caller_create_node": true,
+     "caller_node_after_failed_sync": 0,
+     "caller_sees_own_node": 1,
+     "caller_tlevel_after": 0,
+     "caller_tlevel_before": 1,
+     "cleanup_poison_rows_left": 0,
+     "cleanup_sync": "ok",
+     "sync": "RuntimeError: Graph.KG.Traversal.BuildKG failed: ERROR #5001: graph name \"0\" is reserved: IRIS canonicalizes the subscript \"0\" to the integer 0 that keys the default graph"
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/p0409_failed_sync_rolls_back_caller.json",
+    "log": "$RUN_DIR/breadth-a/live/04-all-20261113T224336.log"
+   },
+   "disposition": "reproduced-live"
+  },
+  {
+   "id": "F-C0401",
+   "title": "A writer stopped between its adjacency write and its generation step lets a reader cache a count that includes the undone edge",
+   "intended": "ADJ-I5.9 / ADR-0012: a cached degree carrying the current generation equals the committed count.",
+   "severity": "S2",
+   "confidence": "medium",
+   "remedy": "Step the generation before the out write (the reviewed adj_degree design), as well as never killing it (HD-0401).",
+   "gates": [
+    "3.3-model-check",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "mc",
+     "ref": "breadth-a-mc-adj_degree-hd0401-writer-window"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Adjacency.cls:80-93"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Adj.cls:51-90"
+    }
+   ],
+   "notes": "New, from the model sub-lane. The same window exists as built (Put's order is unchanged in HD-0401's fix). Not provoked live: needs a process stopped between two statements of one class method.",
+   "module": "04",
+   "observed": "Adjacency.Put writes ^KG('out')/('in') and only then $Increments ^KG('gen') (iris_src/src/Graph/KG/Adjacency.cls:87-89); Adj.Degree's probe can precede the writer's lock and its count can follow the out write (iris_src/src/Graph/KG/Adj.cls:68-80). A writer process stopped between the two (rolled back by IRIS, P-0001) leaves the generation unchanged, so the reader's store of the dirty count stays current.",
+   "disposition": "reproduced-model"
+  },
+  {
+   "id": "F-C0402",
+   "title": "Two adjacency rebuilds can run at once",
+   "intended": "HD-0402 (assumption): at most one publishing rebuild per adjacency structure; the ADMIN_GUIDE names a single rebuild.",
+   "severity": "S2",
+   "confidence": "medium",
+   "remedy": "Take the rebuild lock exclusively (or a separate exclusive rebuild lock) and return busy to a second caller.",
+   "gates": [
+    "3.3-model-check",
+    "3.5-lockplans",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "mc",
+     "ref": "breadth-a-mc-adj_rebuild_txn-as-built"
+    },
+    {
+     "kind": "mc",
+     "ref": "breadth-a-mc-adj_rebuild_txn-reviewed"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Adjacency.cls:809-822"
+    }
+   ],
+   "notes": "New. Check adj_rebuild_txn-concurrent-as-built-HD0402 violates ADJ-Q8.10; the reviewed exclusive design passes; control early-release is caught. Intent rests on HD-0402, an assumption. Review-response reclassification (review R2-08 / R-11, condition 5; 2026-11-14): disposition changed from reproduced-model to intent-undecided. The record's own intent rests on HD-0402, an Assumption ('a proven concurrent generation swap would also satisfy the objective', decisions.md); the ADMIN_GUIDE naming a single rebuild does not forbid two. Observed behaviour kept: adj_rebuild_txn-concurrent-as-built-HD0402 violates ADJ-Q8.10 in the model. Conditional on HD-0402. The overlap itself stays recorded as the violated breadth-proof premise P-A4.",
+   "module": "04",
+   "observed": "Adjacency.BeginRebuild takes ^IVG.AdjW in shared mode (iris_src/src/Graph/KG/Adjacency.cls:814-822), which a second rebuild's shared request does not conflict with (P-0403).",
+   "disposition": "intent-undecided"
+  },
+  {
+   "id": "F-C0403",
+   "title": "Candidate: with the adjacency index declared, a failed rebuild could leave part of the adjacency missing",
+   "intended": "TraversalBuild.BuildKG's comment (iris_src/src/Graph/KG/TraversalBuild.cls:46-55): the kill sits inside the transaction so a row the rebuild cannot process leaves the adjacency as it was, never destroyed.",
+   "severity": "S4",
+   "confidence": "low",
+   "remedy": "Build the new adjacency beside the old one and publish it atomically, or keep the indexed path's purge inside a transaction it can roll back (no parallel jobs), or validate every row's graph key before purging.",
+   "gates": [
+    "3.5-lockplans",
+    "3.7-trace-replay",
+    "3.8-findings-disposed"
+   ],
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "breadth-a-live-04-rebuild"
+    },
+    {
+     "kind": "trace",
+     "ref": "breadth-a-journal-footprints"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/TraversalBuild.cls:120-131"
+    }
+   ],
+   "notes": "Candidate from the journal (J12: ^KG out/in refilled outside any transaction by the caller's and two worker processes) against the method's comment: the indexed path purges and refills after TCommit with %BuildIndices in parallel jobs. Not reproduced: a sync() failed on a row with graph_id '0' left all 400 sources of a 400-edge graph in ^KG out and verify_graph ok. Readers during the refill can still see a partial adjacency (the method's own catch comment says so); that window was not measured. Not counted as a defect.",
+   "module": "04",
+   "observed": {
+    "probe": "pC0403_failed_rebuild_leaves_partial_adjacency",
+    "verdict": "adjacency intact after the failed rebuild",
+    "oracle": "TraversalBuild.cls:46-55: a row the rebuild cannot process leaves the adjacency as it was",
+    "values": {
+     "cleanup_sync": "ok",
+     "out_sources_after_failed_sync": 400,
+     "out_sources_before": 400,
+     "rows": 400,
+     "sync": "RuntimeError: Graph.KG.Traversal.BuildKG failed: ERROR #5001: graph name \"0\" is reserved: IRIS canonicalizes the subscript \"0\" to the integer 0 that keys the default graph",
+     "verify_after": {
+      "counts": {
+       "cacheEntries": 0,
+       "inEdges": 400,
+       "outEdges": 400,
+       "sqlEdges": 400
+      },
+      "ok": 1
+     }
+    },
+    "result_file": "experiment/playbook-completion/live/breadth-a/results/pC0403_failed_rebuild_leaves_partial_adjacency.json",
+    "log": "$RUN_DIR/breadth-a/live/04-pC0403_failed_rebuild_leaves_partial_adjacency-20261113T233431.log"
+   },
+   "disposition": "not-reproduced"
+  }
+ ]
+}

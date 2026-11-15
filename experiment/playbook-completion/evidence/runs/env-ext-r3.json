@@ -1,0 +1,17 @@
+{
+  "command": "bash iris-contract/run-round.sh $RUN_DIR/env/r3 4242 (cases.py --seed 4242 --random-per-family 60 --ext-per-family 30; driver.py in 12 chunks under locks.sh iris); iris-contract check r3/cases.json r3/observed.json",
+  "driver_log_sha256": "93bc211252749161261f68134f68f6e9e2a5fba58eedf7c3bcb36c60f04e74db",
+  "experiment_head": "94013c188219fc23a1178f6b33d22fd585131bd6",
+  "id": "env-ext-r3",
+  "kind": "check",
+  "lane": "env-ext",
+  "log": "$RUN_DIR/env/r3/report.json",
+  "log_bytes": 20444,
+  "log_sha256": "574df51b48d9b5d494bba6cfbce1be1197312c635ef6084945a1f5db9c693b9f",
+  "observes": "IRIS 2026.1 (Build 234U), AUDITENV: 513 cases (43 + 50 named, 4 x 60 + 6 x 30 random), 2 outcomes outside (rand-stmt-4242-21/-23: a failing INSERT...SELECT reported SQLCODE -119 plus a stale [Error: <<COMMAND>>] from an earlier Native tCommit at level 0; the driver classified it by the ObjectScript name; explore-8 confirms -119, driver now classifies by SQLCODE first), 511 singleton, 40/40 mutants killed but empty-dml-opens-txn and failed-dml-opens-nothing only by those two cases (no named case covered them: autocommit-off-failed-dml added). Gate not met; retained; r4 reruns on a fresh seed",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T02:20:36+00:00",
+  "result": "fail",
+  "seed": "4242"
+}

@@ -1,0 +1,23 @@
+{
+  "check": "m11-enable-as-built",
+  "command": "CARGO_TARGET_DIR=$RUN_DIR/target/breadth-b cargo build --release && bash experiment/playbook-completion/tools/locks.sh heavy timeout 1800 $RUN_DIR/target/breadth-b/release/breadth-b",
+  "design": "as-built",
+  "experiment_head": "f3fe3917466f7bae3e46f32f5b0644cfeaff87c8",
+  "full_log": "$RUN_DIR/breadth-b/mc/full-decisive-20261114T012246Z.log",
+  "full_log_sha256": "227f6720d9d86ed75cc8fa7fd71e2d9d31fd6f5ccd627843af4d51997edf4615",
+  "id": "b-mc-m11-enable-as-built",
+  "kind": "mc",
+  "lane": "breadth-b",
+  "log": "$RUN_DIR/breadth-b/mc/checks/m11-enable-as-built.log",
+  "log_bytes": 1089,
+  "log_sha256": "fb41a824dd4bdb7017565879cbc88c186700c16cb9e45d901a10b841a1827683",
+  "module": "11",
+  "observes": "module 11 machine enable design as-built: expectation violation of 'LED-B1.12 every concurrent enable answers the genesis'; result met (found 'LED-B1.12 every concurrent enable answers the genesis'); 12 states, 14 transitions, depth 3, exhaustive within the model's bounds; covers: F-1104; LED-B1.12, LED-P6",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T01:23:55+00:00",
+  "result": "expected-violation",
+  "results": "experiment/playbook-completion/models/breadth-b/RESULTS.json",
+  "search": "exhaustive",
+  "states": "12"
+}

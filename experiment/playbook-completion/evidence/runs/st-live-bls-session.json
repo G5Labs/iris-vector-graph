@@ -1,0 +1,15 @@
+{
+  "command": "locks.sh iris python experiment/playbook-completion/structural/bls/bls.py $RUN_DIR/structural/bls/bls.json",
+  "experiment_head": "e3118ecade016d16ac2b8194d0c94f25ad6f1d6f",
+  "id": "st-live-bls-session",
+  "kind": "live",
+  "lane": "structural",
+  "log": "$RUN_DIR/structural/bls/bls.json",
+  "log_bytes": 3242,
+  "log_sha256": "bd54378a2b6255bae1aba299cfff9e165b026a8a68541f385622f1ff05362877",
+  "observes": "AUDITD, default graph (mode off), write-set pair 03|GID-I4.10|bulk_load_session. A (plain session, indexes dropped and rebuilt by the session): inside the session add_nodes twice over bl:a, add_edges twice over bl:a-R-bl:b (each answers 1), the same engine's create_edge answers False, create_node False, store_node True (merge), a second connection's create_edge answers False; inside, the triple has 1 row (ekey 0) and bl:a 1 node row; after the session create_edge answers False; indexes_not_rebuilt []; key oracle (K1 %IGNOREINDEX * duplicates, K2 ^KG = rows): no violation. B (the same inside a caller transaction, autocommit off, the session keeps its indexes): identical answers, 1 row, no violation. C (control, F-C0350's mode): BulkLoader.load_edges (INSERT %NOINDEX %NOCHECK) then create_edge of the same triple answers True, 2 rows at ekey 0 after rebuild_all_indices answers True, and the key oracle reports the duplicate rdf_edges key (expected violation caught)",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T19:36:56+00:00",
+  "result": "pass"
+}

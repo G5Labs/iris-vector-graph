@@ -1,0 +1,23 @@
+{
+  "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features sys00_control_ax12_receipt_early -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+  "error_locations": "src/ctl_sys.rs:241,src/ctl_sys.rs:246",
+  "errors": "2",
+  "experiment_head": "0b36c251cfc75bbc48ed4d982a515374abd4f0db",
+  "id": "proofs-sys-sys00-control-ax12-receipt-early",
+  "json_log": "$RUN_DIR/proofs-sys/run-20261114T234729Z/sys00_control_ax12_receipt_early.json",
+  "json_sha256": "81808313ec024edde04b91446687abc33601b73e89556cd902fd075caa852ed1",
+  "kind": "control",
+  "lane": "proofs-sys",
+  "log": "$RUN_DIR/proofs-sys/run-20261114T234729Z/sys00_control_ax12_receipt_early.log",
+  "log_bytes": 5744,
+  "log_sha256": "9ca8b8c3fe444786f297d5e8c26fb2f8655fada34cb25c74268636e0526a70c9",
+  "observes": "sys00_control_ax12_receipt_early (SYS CtlReceiptEarly, explorer check sys00-control-ax12-receipt-early, mutant; findings none): 2 errors, exactly at ['src/ctl_sys.rs:241', 'src/ctl_sys.rs:246'] (laws AX-10,AX-12, the explorer's violated laws); failing ['inst::CtlReceiptEarly::discharge_ax10', 'inst::CtlReceiptEarly::discharge_ax12']; every other function verifies as in the baseline=True; refutations inst::refute_ctlreceiptearly_ax10,inst::refute_ctlreceiptearly_ax12 and counterexamples cx::cx_ctlreceiptearly_ax10,cx::cx_ctlreceiptearly_ax12 verified=True",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T23:51:43+00:00",
+  "result": "expected-violation",
+  "rlimit_total": "60004153",
+  "sources_sha256": "fc9757dc97b10479b3f8f5d25e14d0c93ca1156b9cc78c60c3ee4096945e09df",
+  "verified": "266",
+  "verus_total_ms": "7387"
+}

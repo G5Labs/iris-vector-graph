@@ -1,0 +1,21 @@
+{
+  "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features ctl_row_lock_statement_only -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+  "error_locations": "src/premises.rs:211,src/premises.rs:224,src/premises.rs:260,src/premises.rs:273",
+  "errors": "4",
+  "experiment_head": "792b8d6faf0bc77799920155f7eb1bea265a9934",
+  "id": "proofs-env2-ctl-row-lock-statement-only",
+  "json_log": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_row_lock_statement_only.json",
+  "json_sha256": "be6e00cc0b29d056f55bc8e62e2a28ef81728bb7df8f42eaadb408878b395b42",
+  "kind": "control",
+  "lane": "proofs-env2",
+  "log": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_row_lock_statement_only.log",
+  "log_bytes": 3476,
+  "log_sha256": "fb31d4ba2691832607773bba7652378576486a702430d3577349eb2eaf43e4e7",
+  "observes": "ctl_row_lock_statement_only (clause E-ROWLOCK, mutant row-lock-statement-only): 4 errors exactly at ['src/premises.rs:211', 'src/premises.rs:224', 'src/premises.rs:260', 'src/premises.rs:273']; failing ['premises::premise_breadth_p_a2', 'premises::premise_breadth_p_l5', 'premises::premise_d9_p_d9_2_wait', 'premises::premise_trust_p_1201']; every other function verifies as in the baseline=True; counterexample cx::cx_row_lock_statement_only verified=True",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-15T00:05:11+00:00",
+  "result": "expected-violation",
+  "sources_sha256": "b9a7bb764d46174889eac4290b91b4799f308914c4a682cbed7db9716ad1c99d",
+  "verified": "429"
+}

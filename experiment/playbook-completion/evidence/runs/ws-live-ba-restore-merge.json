@@ -1,0 +1,17 @@
+{
+  "command": "locks.sh iris timeout 1200 python experiment/playbook-completion/writesets/live/ws_probes.py ba-noindex-parallel ba-explicit-survives ba-marker-qualifier ba-vec-node-delete ba-restore-merge (AUDITB)",
+  "experiment_head": "1564a673ea1737c0d9e32fe8f30a1d0d04bcf910",
+  "finding": "F-C1850",
+  "id": "ws-live-ba-restore-merge",
+  "kind": "live",
+  "lane": "writesets",
+  "log": "$RUN_DIR/writesets/ba-restore-merge.json",
+  "log_bytes": 3146,
+  "log_sha256": "7492666452f8d403706eaf2643d86998087defdab8c54e2c799bf1ea4961807d",
+  "namespace": "AUDITB",
+  "observes": "snapshot.restore_merge (restore_snapshot merge=True), the gap-restore and gap-marker sequences. Tenant wsrm, revision 2 (message, key wsrm-k1): save_snapshot, erase, redact (complete); restore_snapshot(archive, merge=True) brought revision 2 records back as originals, row 2 message and key back, idem(wsrm-k1) live, redactedRev(2) still set; erase and redact again: the 3 records tombstoned, row 2 keeps \"wsrm secret message\" and key wsrm-k1, idem live (INV-text, INV-retry fail); Final failed (^Graph.KG.LedgerRevisionD(3) exists), marker held. Tenant wsrn: bounded redaction left the marker; a merging restore of the pre-erase archive kept the marker and made wsrn live (nodes 2, labels 1, props 1) (INV-marker fails).",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T13:19:16+00:00",
+  "result": "fail"
+}

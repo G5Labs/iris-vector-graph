@@ -1,0 +1,15 @@
+{
+  "command": "locks.sh iris python traces/crash_world.py $RUN_DIR/traces/crash (N=12000 relationships = 36,000 operations; container SIGKILL + start)",
+  "experiment_head": "b91921793fca8e2c5679453f0aec2a733c01f9f7",
+  "id": "live-crash-world-r2",
+  "kind": "live",
+  "lane": "orchestrator",
+  "log": "$RUN_DIR/traces/crash/results.json",
+  "log_bytes": 1574,
+  "log_sha256": "f0232a8a25ade9845dff629c64dbf1491335d29aa5b3d95258955ebe4622b1e8",
+  "observes": "Instance crash on IRIS 2026.1 Community (iris.cpf SynchCommit=0, the default). In-flight trial: commit running at the kill; after restart (16.6 s) nothing of it is visible, head 1, one revision row, statement/tuple consistent, verify equal (FR-047 all-or-nothing held); retry with the same key committed once (seq 2). Acknowledged trial: the client received seq 3, the container was killed at once; after restart (16.5 s) revision 3 and its 12,000 rows are gone entirely (head 2, consistent, verify equal); retry with the same key committed once (seq 3). Oracle check 'an acknowledged commit survives a crash' FAILED; consistency and exactly-once retry held in both trials.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T01:22:15+00:00",
+  "result": "fail"
+}

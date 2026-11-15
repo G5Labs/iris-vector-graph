@@ -1,0 +1,23 @@
+{
+ "doc": "F-0607: IVF metric \"cosine\" ranks by unnormalised dot product: a long vector at 45 degrees outranks a short one\n    pointing the query's way, and scores leave [-1, 1].",
+ "id": "p0607_ivf_cosine_is_dot",
+ "log": "$RUN_DIR/breadth-a/live/06-all-20261113T230626.log",
+ "module": "06",
+ "observed": {
+  "ivf_search": [
+   [
+    "long45",
+    10.0
+   ],
+   [
+    "short0",
+    0.2
+   ]
+  ]
+ },
+ "oracle": "cosine ranks short0 (cos 1.0) above long45 (cos 0.707), scores within [-1, 1]",
+ "reproduced": true,
+ "seconds": 1.01,
+ "started": "2026-11-13T23:06:29",
+ "verdict": "dot-product order and scores outside [-1, 1]"
+}

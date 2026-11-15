@@ -1,0 +1,15 @@
+{
+  "command": "experiment/playbook-completion/trace-replay: run.py capture 16 (under locks.sh iris, AUDITE); run.py check NN",
+  "experiment_head": "7b72fc52c878c31e143452a8cc8452cc4a6c198f",
+  "id": "tr-replay-16",
+  "kind": "trace",
+  "lane": "trace-replay",
+  "log": "$RUN_DIR/trace-replay/logs/tr-replay-16.log",
+  "log_bytes": 2198,
+  "log_sha256": "1773565907f67af8440c6a7a6fef4adcb4986b34fcb9c6bf86213e9aeb4be43e",
+  "observes": "AUDITE traces bolt (12 steps, 182 records; in-process BoltSession dispatch, harness transport) and http (2 steps, 111 records; FastAPI TestClient over cypher_api) replayed through unit (breadth-c, as built): 18 actions all enabled and matching, replays equal the engine; unit atomicity violated at the RESET after a failed RUN (w1 kept) and at most once violated at the driver retry (w1 twice) (F-1601 reproduced); the HTTP tx/commit kept w1 after a failing second statement and the resend applied it twice (F-1610 reproduced); reviewed design diverges at the first RUN; TCP/WebSocket transports not exercised",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T12:40:13+00:00",
+  "result": "pass"
+}

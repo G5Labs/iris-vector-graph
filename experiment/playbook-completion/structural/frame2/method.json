@@ -1,0 +1,22 @@
+{
+ "gate": "3.6-frame",
+ "sub_lane": "frame2",
+ "namespace": "AUDITD",
+ "oracle": "frame2/dictoracle.py: (1) catalog snapshot before/after: INFORMATION_SCHEMA TABLES, COLUMNS, INDEXES, TABLE_CONSTRAINTS, ROUTINES (LAST_ALTERED), %Dictionary.CompiledClass (TimeChanged) and CompiledStorage locations, the namespace global directory (^$GLOBAL, read-only); (2) the journal with catalog globals kept (^oddDEF/^oddCOM/^oddSQL/^oddTSQL/^oddPROC/^ROUTINE/^rOBJ/^rINDEX*...), each node attributed to a class, SQL table, procedure, routine or global (IRIS bookkeeping under numeric/hash first subscripts reported apart; the snapshot diff is the decisive view); (3) the DDL text the product's Python code executed (DB-API cursor wrapped in the harness). Data rows: journal key-level check, a row keyed when it carries one of the action's keys (journal values or SQL lookup of row ids before and after). Nothing compiled; the only DDL the harness issues is on scratch IVGAudit.* tables (CONVENTIONS).",
+ "frame_per_action": "cited in frame2_live.py ACTIONS (each action's frame: the schema objects and data keys its statements name, path:lines)",
+ "self_test": "st-control-frame2-selftest: conforming F06 and F11 pass; seeded scratch table, scratch global and second triple each caught",
+ "runs": [
+  "st-control-frame2-selftest",
+  "st-live-frame2-run",
+  "st-check-frame2-census"
+ ],
+ "closure_rule": "as the frame sub-lane (structural/frame/method.json): every statement-shape class in the module's source observed in its actions with the frame held; a frame2 action counts for each module it lists (attribution cited); statement-level residue listed in 'remaining'",
+ "unregistered": {
+  "$RUN_DIR/structural/frame2/run.json, control.json, r2/": "earlier passes; catalog classification of IRIS bookkeeping nodes and SQL row-id attribution fixed before r3"
+ },
+ "no_oracle": {
+  "09": "native executor plan compilation (out of scope)",
+  "15": "FHIR DDL (no FHIR classes)",
+  "07": "3.2.0 rescue statements and generated kg_TXT procedure re-creation"
+ }
+}

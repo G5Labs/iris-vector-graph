@@ -1,0 +1,17 @@
+{
+  "command": "locks.sh iris timeout 900 python experiment/playbook-completion/writesets/live/ws_probes.py replay-delete_reification replay-import_rdf noindex-erase (AUDITB; at most 2 connections)",
+  "experiment_head": "e7cf1457e9d16c76fa772c2deeb94d31296c62b7",
+  "finding": "F-C1250",
+  "id": "ws-live-noindex-erase",
+  "kind": "live",
+  "lane": "writesets",
+  "log": "$RUN_DIR/writesets/noindex-erase.json",
+  "log_bytes": 3346,
+  "log_sha256": "f8ba8c1d54b98312bb74bd6d8089fa4deb79ada652d0db2b18da11123f78bbb6",
+  "namespace": "AUDITB",
+  "observes": "Review R4-06: the %NOINDEX edge residue. After EraseAll+PurgeAll a full scan found 0 content rows; ledger enabled. BulkLoader(conn).load_edges([(\"wse|a\",\"R\",\"wse|b\",None)]) (default use_noindex) registered 2 endpoint nodes and wrote 1 edge row: indexed counts nodes 2, edges 0; %IGNOREINDEX full scan nodes 2, edges 1; verify() diverges naming both nodes and the relationship. engine.delete_nodes_by_prefix(\"wse|\") answered 2 and deleted both node rows; the edge row (%ID 10237, wse|a -R-> wse|b, graph \"\") stayed (full scan 1, indexed 0; the foreign keys did not refuse the node deletes); verify() diverges on the relationship. Graph.KG.Eraser.EraseAll answered 0 and Ledger.PurgeAll ran: the full scan still finds the edge row (whole table: 1 edge, 0 nodes); after re-enabling the ledger verify() diverges on it. BulkLoader.rebuild_all_indices made it visible (indexed edges 1); the following EraseAll+PurgeAll removed it (full scan 0).",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T12:56:19+00:00",
+  "result": "fail"
+}

@@ -1,0 +1,880 @@
+{
+ "_foreign_content_at_start": {
+  "embedding_registry": 0,
+  "kg_EdgeEmbeddings": 0,
+  "ledger_state": "never-enabled",
+  "nodes": 0,
+  "rdf_edges": 0,
+  "rdf_labels": 0,
+  "rdf_props": 0
+ },
+ "aggregates": {
+  "aggregate_count_after": 2,
+  "aggregate_count_before": 3,
+  "aggregate_disagrees_with_window": true,
+  "bucket": 1700001000,
+  "error": null,
+  "observes": "F-1805 / SNP-B4.6",
+  "result": {
+   "failed_rows": {},
+   "restored_globals": [
+    "KG",
+    "NKG"
+   ],
+   "restored_layers": [
+    "sql",
+    "globals"
+   ],
+   "restored_tables": {
+    "Graph_KG.code_crosswalk": 0,
+    "Graph_KG.docs": 0,
+    "Graph_KG.embedding_registry": 0,
+    "Graph_KG.fhir_bridges": 0,
+    "Graph_KG.kg_EdgeEmbeddings": 0,
+    "Graph_KG.kg_NodeEmbeddings": 0,
+    "Graph_KG.nodes": 3,
+    "Graph_KG.rdf_edges": 2,
+    "Graph_KG.rdf_labels": 0,
+    "Graph_KG.rdf_namespaces": 0,
+    "Graph_KG.rdf_props": 0,
+    "Graph_KG.rdf_reifications": 0,
+    "Graph_KG.relationship_mappings": 0,
+    "Graph_KG.table_mappings": 0
+   },
+   "snapshot_ts": 1794612073348
+  },
+  "seconds": 0.21,
+  "utc": "2026-11-13T23:21:13Z",
+  "window_count_after": 3,
+  "window_count_before": 3
+ },
+ "dirty_export": {
+  "archive_holds_never_committed_write": true,
+  "ghost_in_archive": {
+   "kg_lines": [
+    {
+     "k": [
+      "label",
+      "0",
+      "C18Ghost",
+      "c18:ghost"
+     ],
+     "v": ""
+    }
+   ],
+   "nodes": [
+    {
+     "created_at": "2026-11-13T23:05:06",
+     "graph_id": "",
+     "node_id": "c18:ghost"
+    }
+   ],
+   "rdf_props": [
+    {
+     "graph_id": "",
+     "key": "p",
+     "s": "c18:ghost",
+     "val": "uncommitted"
+    },
+    {
+     "graph_id": "",
+     "key": "id",
+     "s": "c18:ghost",
+     "val": "c18:ghost"
+    }
+   ]
+  },
+  "ghost_rows_in_db_after_rollback": 0,
+  "observes": "HD-1802 / SNP-Q1.17: export of a write that never commits",
+  "seconds": 0.14,
+  "utc": "2026-11-13T23:05:06Z",
+  "writer_tlevel_during_save": 1
+ },
+ "edge_routes": {
+  "edge_route": {
+   "archive_members": [
+    "metadata.json",
+    "sql/Graph_KG_nodes.ndjson",
+    "sql/Graph_KG_rdf_edges.ndjson",
+    "sql/Graph_KG_rdf_labels.ndjson",
+    "sql/Graph_KG_rdf_props.ndjson",
+    "sql/Graph_KG_rdf_reifications.ndjson",
+    "sql/Graph_KG_docs.ndjson",
+    "sql/Graph_KG_embedding_registry.ndjson",
+    "sql/Graph_KG_code_crosswalk.ndjson",
+    "sql/Graph_KG_rdf_namespaces.ndjson",
+    "sql/Graph_KG_table_mappings.ndjson",
+    "sql/Graph_KG_relationship_mappings.ndjson",
+    "sql/Graph_KG_fhir_bridges.ndjson",
+    "sql/Graph_KG_kg_NodeEmbeddings.ndjson",
+    "sql/Graph_KG_kg_EdgeEmbeddings.ndjson",
+    "globals/KG.ndjson",
+    "globals/NKG.ndjson"
+   ],
+   "archive_routed_tables": null,
+   "edge_vector_search_after": "[]",
+   "registry_after": [
+    [
+     "kg_eemb_cb5b098c95e72cdb",
+     "c18w",
+     "edge",
+     "present"
+    ]
+   ],
+   "registry_before": [
+    [
+     "kg_eemb_cb5b098c95e72cdb",
+     "c18w",
+     "edge",
+     "4"
+    ]
+   ],
+   "restore_result": {
+    "failed_rows": {},
+    "restored_globals": [
+     "NKG"
+    ],
+    "restored_layers": [
+     "sql",
+     "globals"
+    ],
+    "restored_tables": {
+     "Graph_KG.code_crosswalk": 0,
+     "Graph_KG.docs": 0,
+     "Graph_KG.embedding_registry": 1,
+     "Graph_KG.fhir_bridges": 0,
+     "Graph_KG.kg_EdgeEmbeddings": 0,
+     "Graph_KG.kg_NodeEmbeddings": 0,
+     "Graph_KG.nodes": 2,
+     "Graph_KG.rdf_edges": 1,
+     "Graph_KG.rdf_labels": 0,
+     "Graph_KG.rdf_namespaces": 0,
+     "Graph_KG.rdf_props": 2,
+     "Graph_KG.rdf_reifications": 0,
+     "Graph_KG.relationship_mappings": 0,
+     "Graph_KG.table_mappings": 0
+    },
+    "snapshot_ts": 1794614290768
+   },
+   "route_rows_after": null,
+   "route_rows_before": 1,
+   "route_table_exists_after": 0
+  },
+  "edge_route_lost": true,
+  "legacy_row_lost_graph": true,
+  "legacy_table": {
+   "after_merge_restore": [
+    [
+     "",
+     "c18:l1",
+     "None"
+    ]
+   ],
+   "archived_row": [
+    {
+     "emb": "1,2,3,4",
+     "o_id": "c18:l2",
+     "p": "R",
+     "s": "c18:l1"
+    }
+   ],
+   "planted_row": [
+    [
+     "c18L",
+     "c18:l1",
+     "{\"m\": 1}"
+    ]
+   ],
+   "restore_result": {
+    "failed_rows": {},
+    "restored_globals": [
+     "NKG"
+    ],
+    "restored_layers": [
+     "sql",
+     "globals"
+    ],
+    "restored_tables": {
+     "Graph_KG.code_crosswalk": 0,
+     "Graph_KG.docs": 0,
+     "Graph_KG.embedding_registry": 1,
+     "Graph_KG.fhir_bridges": 0,
+     "Graph_KG.kg_EdgeEmbeddings": 1,
+     "Graph_KG.kg_NodeEmbeddings": 0,
+     "Graph_KG.nodes": 2,
+     "Graph_KG.rdf_edges": 1,
+     "Graph_KG.rdf_labels": 0,
+     "Graph_KG.rdf_namespaces": 0,
+     "Graph_KG.rdf_props": 2,
+     "Graph_KG.rdf_reifications": 0,
+     "Graph_KG.relationship_mappings": 0,
+     "Graph_KG.table_mappings": 0
+    },
+    "snapshot_ts": 1794614291616
+   }
+  },
+  "observes": "edge routes in snapshots (new) and F-1803 (legacy table)",
+  "seconds": 2.02,
+  "utc": "2026-11-13T23:58:12Z"
+ },
+ "edge_vectors": {
+  "after_merge_restore_kg_EdgeEmbeddings": [],
+  "archived_legacy_rows": [],
+  "archived_routed_rows": {},
+  "error": null,
+  "observes": "F-1803 / SNP-B1.18",
+  "result": {
+   "failed_rows": {},
+   "restored_globals": [
+    "NKG"
+   ],
+   "restored_layers": [
+    "sql",
+    "globals"
+   ],
+   "restored_tables": {
+    "Graph_KG.code_crosswalk": 0,
+    "Graph_KG.docs": 0,
+    "Graph_KG.embedding_registry": 1,
+    "Graph_KG.fhir_bridges": 0,
+    "Graph_KG.kg_EdgeEmbeddings": 0,
+    "Graph_KG.kg_NodeEmbeddings": 0,
+    "Graph_KG.nodes": 2,
+    "Graph_KG.rdf_edges": 1,
+    "Graph_KG.rdf_labels": 0,
+    "Graph_KG.rdf_namespaces": 0,
+    "Graph_KG.rdf_props": 2,
+    "Graph_KG.rdf_reifications": 0,
+    "Graph_KG.relationship_mappings": 0,
+    "Graph_KG.table_mappings": 0
+   },
+   "snapshot_ts": 1794612072603
+  },
+  "seconds": 1.15,
+  "stored_in": {
+   "kg_eemb_45fd75680a986cc6": [
+    [
+     "c18v",
+     "c18:v1",
+     "{\"src\": \"c18\"}"
+    ]
+   ]
+  },
+  "utc": "2026-11-13T23:21:12Z"
+ },
+ "file_helpers": {
+  "FileExists": "1",
+  "GetFileSize": "33",
+  "ImportGlobals": "{\"imported\":0}",
+  "ReadFileChunk": "ivg-playbook-20261113-audit-iris\n",
+  "caller": "_SYSTEM over the Native API",
+  "callers_in_product": "none (grep at the pin: ExportGlobals/ImportGlobals/ReadFileChunk/WriteFileChunk/DeleteDir are called by no product code)",
+  "deployed_methods": [
+   "%%OIDGet",
+   "%%OIDIsValid",
+   "%%OIDSet",
+   "%AddToSaveSet",
+   "%BindExport",
+   "%BuildObjectGraph",
+   "%ClassIsLatestVersion",
+   "%ClassName",
+   "%Close",
+   "%Construct",
+   "%ConstructClone",
+   "%ConstructCloneInit",
+   "%Destruct",
+   "%DispatchClassMethod",
+   "%DispatchGetModified",
+   "%DispatchGetProperty",
+   "%DispatchMethod",
+   "%DispatchSetModified",
+   "%DispatchSetMultidimProperty",
+   "%DispatchSetProperty",
+   "%Extends",
+   "%GetParameter",
+   "%IncrementCount",
+   "%IsA",
+   "%IsModified",
+   "%New",
+   "%NormalizeObject",
+   "%ObjectModified",
+   "%OnAddToSaveSet",
+   "%OnClose",
+   "%OnConstructClone",
+   "%OnNew",
+   "%OnValidateObject",
+   "%OriginalNamespace",
+   "%PackageName",
+   "%RemoveFromSaveSet",
+   "%SerializeObject",
+   "%SetModified",
+   "%ValidateObject",
+   "Decode",
+   "DeleteDir",
+   "Encode",
+   "ExportGlobals",
+   "FileExists",
+   "GetFileSize",
+   "ImportGlobals",
+   "IsVector",
+   "NodeRef",
+   "NodeValueJSON",
+   "ReadFileChunk",
+   "SetNodeJSON",
+   "WriteFileChunk"
+  ],
+  "observes": "F-1806; Snapshot.cls:4-73 deployed helpers",
+  "seconds": 0.02,
+  "utc": "2026-11-13T23:05:06Z"
+ },
+ "http_endpoint": {
+  "file_created_ts": 1794611107088,
+  "first_archive_overwritten": true,
+  "observes": "F-1807",
+  "paths": [
+   "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/breadth-c/18/archives/ivg_snapshot_1794611107.snapshot",
+   "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/breadth-c/18/archives/ivg_snapshot_1794611107.snapshot"
+  ],
+  "same_path": true,
+  "seconds": 0.7,
+  "snapshot_ts": [
+   1794611107076,
+   1794611107088
+  ],
+  "status": [
+   200,
+   200
+  ],
+  "utc": "2026-11-13T23:05:07Z"
+ },
+ "ledger_overlay": {
+  "after": {
+   "commit_after_restore": {
+    "error": "LedgerInconsistencyError: revision row save failed: ERROR #5805: ID key not unique for extent 'Graph.KG.LedgerRevision' : '^Graph.KG.LedgerRevisionD(3)' exists. Id counter location = '\"^Graph.KG.LedgerRevisionD\"'",
+    "ok": false
+   },
+   "idem_c18_k2": "\u0003\u0004\u0003B\u0001de63550c92cde590c0b3685718c468739957a52a0fc9cc4ac0b69b089ee8c653",
+   "meta_after_restore": {
+    "head_id": "ebae4dc3dfb811f1b3edf277e9aab529",
+    "head_seq": 2,
+    "max_ops": 50000,
+    "ok": true,
+    "recon_bound": 250000,
+    "state": "enabled",
+    "strict": false
+   },
+   "rec_seq_after_head_present": [
+    1
+   ],
+   "retry_of_k2": {
+    "head_seq": 2,
+    "replayed": true,
+    "seq": 3
+   },
+   "revision_rows": [
+    1,
+    2,
+    3
+   ],
+   "verify": "equal"
+  },
+  "head_before_restore": {
+   "head_id": "ebb13665dfb811f1b3edf277e9aab529",
+   "head_seq": 3,
+   "max_ops": 50000,
+   "ok": true,
+   "recon_bound": 250000,
+   "state": "enabled",
+   "strict": false
+  },
+  "observes": "F-1801, HD-1801, SNP-I3.6, SNP-B3.7, SYS-I5",
+  "part2_redaction": {
+   "content_back_in_history": true,
+   "receipt": "RedactionReceipt(complete=True, target_sha256='e3a91f8df8c27abe0a1c4f41f7ef84cdf3de26712a1a07adf6ce82259d17b509', revision_seqs=[2], records_tombstoned=3, metadata_cleared=1, idempotency_keys_removed=0, statements_removed=0, unattributed_records=0, batches=2, max_batch_ms=135, redaction=RevisionInfo(seq=3, revision_id='ec55929bdfb811f1b3edf277e9aab529', parent_id='ec144dc0dfb811f1b3edf277e9aab529'",
+   "records_after_redaction": [
+    {
+     "attr": "",
+     "digest": "3b2fff558a9c0868e7a9e8274446c3fa0a86327f09d812aa05cdd53d59b9858c",
+     "entity_id": "None",
+     "entity_kind": "node",
+     "flags": [],
+     "graph": null,
+     "new": null,
+     "op": "redacted",
+     "ordinal": 1,
+     "prior": null,
+     "redacted_op": "create_node",
+     "seq": 2
+    },
+    {
+     "attr": "",
+     "digest": "c81fabeb686b8b9ae288d6ac215276928ba0e15cd67019213a07d837cd89d4b2",
+     "entity_id": "None",
+     "entity_kind": "node",
+     "flags": [],
+     "graph": null,
+     "new": null,
+     "op": "redacted",
+     "ordinal": 2,
+     "prior": null,
+     "redacted_op": "add_label",
+     "seq": 2
+    },
+    {
+     "attr": "",
+     "digest": "f0be49eb039eeeb69dbf0014ccb208c777ff62a920e6f7db4b86f2e5d921cad5",
+     "entity_id": "None",
+     "entity_kind": "node",
+     "flags": [],
+     "graph": null,
+     "new": null,
+     "op": "redacted",
+     "ordinal": 3,
+     "prior": null,
+     "redacted_op": "set_prop",
+     "seq": 2
+    }
+   ],
+   "records_after_restore": [
+    {
+     "attr": "",
+     "entity_id": "c18t|x",
+     "entity_kind": "node",
+     "flags": [],
+     "graph": null,
+     "new": "",
+     "op": "create_node",
+     "ordinal": 1,
+     "prior": null,
+     "seq": 2
+    },
+    {
+     "attr": "C18T",
+     "entity_id": "c18t|x",
+     "entity_kind": "node",
+     "flags": [],
+     "graph": null,
+     "new": "",
+     "op": "add_label",
+     "ordinal": 2,
+     "prior": null,
+     "seq": 2
+    },
+    {
+     "attr": "secret",
+     "entity_id": "c18t|x",
+     "entity_kind": "node",
+     "flags": [],
+     "graph": null,
+     "new": "c18-sensitive",
+     "op": "set_prop",
+     "ordinal": 3,
+     "prior": null,
+     "seq": 2
+    }
+   ],
+   "redactedRev_marks_after_restore": [
+    "2"
+   ],
+   "restore_error": null
+  },
+  "restore": {
+   "autocommit_units": 35,
+   "error": null,
+   "label": "restore_older_archive_over_moved_ledger",
+   "other_pids_in_window": [],
+   "outermost_transactions": 3,
+   "pid": "10029",
+   "records": 86,
+   "result": {
+    "failed_rows": {},
+    "restored_globals": [
+     "NKG",
+     "IVG.Ledger",
+     "Graph.KG.LedgerRevisionD",
+     "Graph.KG.LedgerRevisionI",
+     "Graph.KG.LedgerStatsD"
+    ],
+    "restored_layers": [
+     "sql",
+     "globals"
+    ],
+    "restored_tables": {
+     "Graph_KG.code_crosswalk": 0,
+     "Graph_KG.docs": 0,
+     "Graph_KG.embedding_registry": 0,
+     "Graph_KG.fhir_bridges": 0,
+     "Graph_KG.kg_EdgeEmbeddings": 0,
+     "Graph_KG.kg_NodeEmbeddings": 0,
+     "Graph_KG.nodes": 1,
+     "Graph_KG.rdf_edges": 0,
+     "Graph_KG.rdf_labels": 1,
+     "Graph_KG.rdf_namespaces": 0,
+     "Graph_KG.rdf_props": 0,
+     "Graph_KG.rdf_reifications": 0,
+     "Graph_KG.relationship_mappings": 0,
+     "Graph_KG.table_mappings": 0
+    },
+    "snapshot_ts": 1794612074624
+   },
+   "seconds": 0.054,
+   "stores_with_nontransactional_increments": [
+    "global:^KG",
+    "global:^NKG"
+   ],
+   "stores_written": [
+    "global:^IVG.Ledger",
+    "global:^KG",
+    "global:^NKG",
+    "sql:Graph_KG.ledger_revisions",
+    "sql:Graph_KG.ledger_stats",
+    "sql:Graph_KG.nodes",
+    "sql:Graph_KG.rdf_labels"
+   ],
+   "stores_written_in_txn": [
+    "global:^KG",
+    "global:^NKG",
+    "sql:Graph_KG.nodes",
+    "sql:Graph_KG.rdf_labels"
+   ],
+   "stores_written_outside_any_txn": [
+    "global:^IVG.Ledger",
+    "global:^KG",
+    "global:^NKG",
+    "sql:Graph_KG.ledger_revisions",
+    "sql:Graph_KG.ledger_stats"
+   ],
+   "traceback": null,
+   "transactions": [
+    {
+     "committed": true,
+     "kind": "txn",
+     "n": 18,
+     "nested_levels": 8,
+     "rolled_back": false,
+     "stores": [
+      "global:^KG",
+      "global:^NKG",
+      "sql:Graph_KG.nodes",
+      "sql:Graph_KG.rdf_labels"
+     ]
+    },
+    {
+     "committed": true,
+     "kind": "txn",
+     "n": 4,
+     "nested_levels": 0,
+     "rolled_back": false,
+     "stores": [
+      "sql:Graph_KG.nodes"
+     ]
+    },
+    {
+     "committed": true,
+     "kind": "txn",
+     "n": 7,
+     "nested_levels": 0,
+     "rolled_back": false,
+     "stores": [
+      "global:^KG",
+      "sql:Graph_KG.rdf_labels"
+     ]
+    }
+   ]
+  },
+  "seconds": 1.48,
+  "utc": "2026-11-13T23:21:15Z"
+ },
+ "merge_guard": {
+  "after_merge": {
+   "nodes": 3,
+   "rdf_edges": 1,
+   "rdf_labels": 1,
+   "rdf_props": 3
+  },
+  "archive_counts": {
+   "nodes": 3,
+   "rdf_edges": 2,
+   "rdf_labels": 3,
+   "rdf_props": 6
+  },
+  "error": null,
+  "first_columns": {
+   "docs": null,
+   "nodes": [
+    "node_id",
+    "graph_id",
+    "created_at"
+   ],
+   "rdf_edges": [
+    "graph_id",
+    "s",
+    "p",
+    "o_id",
+    "qualifiers",
+    "ekey"
+   ],
+   "rdf_labels": [
+    "graph_id",
+    "s",
+    "label"
+   ],
+   "rdf_props": [
+    "graph_id",
+    "s",
+    "key",
+    "val"
+   ]
+  },
+  "live_before_merge": {
+   "nodes": 2,
+   "rdf_edges": 1,
+   "rdf_labels": 1,
+   "rdf_props": 3
+  },
+  "observes": "F-1802 / SNP-B4.1 / SNP-B4.2",
+  "result": {
+   "failed_rows": {},
+   "restored_globals": [
+    "NKG"
+   ],
+   "restored_layers": [
+    "sql",
+    "globals"
+   ],
+   "restored_tables": {
+    "Graph_KG.code_crosswalk": 0,
+    "Graph_KG.docs": 0,
+    "Graph_KG.embedding_registry": 0,
+    "Graph_KG.fhir_bridges": 0,
+    "Graph_KG.kg_EdgeEmbeddings": 0,
+    "Graph_KG.kg_NodeEmbeddings": 0,
+    "Graph_KG.nodes": 3,
+    "Graph_KG.rdf_edges": 2,
+    "Graph_KG.rdf_labels": 3,
+    "Graph_KG.rdf_namespaces": 0,
+    "Graph_KG.rdf_props": 6,
+    "Graph_KG.rdf_reifications": 0,
+    "Graph_KG.relationship_mappings": 0,
+    "Graph_KG.table_mappings": 0
+   },
+   "snapshot_ts": 1794612071473
+  },
+  "rows_missing_after_merge": {
+   "nodes": 0,
+   "rdf_edges": 1,
+   "rdf_labels": 2,
+   "rdf_props": 3
+  },
+  "seconds": 0.36,
+  "utc": "2026-11-13T23:21:11Z"
+ },
+ "refusals": {
+  "caller_txn": {
+   "autocommit_units": 0,
+   "error": "CallerTransactionOpenError: restore_snapshot() cannot run inside the caller's open transaction ($TLEVEL 1): a restore erases the graph (without merge), may create tables, and commits table by table. Nothing was done, and the caller's transaction is still open; commit or roll it back, then call restore_snapshot() again",
+   "label": "restore_in_caller_txn",
+   "other_pids_in_window": [],
+   "outermost_transactions": 0,
+   "pid": "10029",
+   "records": 0,
+   "result": null,
+   "seconds": 0.001,
+   "stores_with_nontransactional_increments": [],
+   "stores_written": [],
+   "stores_written_in_txn": [],
+   "stores_written_outside_any_txn": [],
+   "traceback": "Traceback (most recent call last):\n  File \"/home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/iris-vector-graph-audit/experiment/playbook-completion/live/breadth-c/jcheck.py\", line 61, in journaled\n    res = fn()\n          ^^^^\n  File \"/home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/iris-vector-graph-audit/experiment/playbook-completion/live/breadth-c/18/snp_live.py\", line 177, in <lambda>\n    return L.journaled(label, lambda: L.eng.restore_snapshot(path, merge=merge))\n                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/iris-vector-graph-audit/iris_vector_graph/schema_name.py\", line 523, in wrapper\n    return method(self, *args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/iris-vector-graph-audit/iris_vector_graph/_engine/snapshot.py\", line 1099, in restore_snapshot\n    refuse_in_caller_transaction(\n  File \"/home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/iris-vector-graph-audit/iris_vector_graph/_write_txn.py\", line 99, in refuse_in_caller_transaction\n    raise CallerTransactionOpenError(operation, level, why)\niris_vector_graph.errors.CallerTransactionOpenError: restore_snapshot() cannot run inside the caller's open transaction ($TLEVEL 1): a restore erases the graph (without merge), may create tables, and commits table by table. Nothing was done, and the caller's transaction is still open; commit or roll it back, then call restore_snapshot() again\n",
+   "transactions": []
+  },
+  "observes": "SNP-X2.1, SNP-X2.2, SYS-I3",
+  "seconds": 0.72,
+  "strict": {
+   "autocommit_units": 0,
+   "error": "LedgerStrictModeError: ledger strict mode: structural write 'restore_snapshot' rejected; commit a changeset via engine.ledger",
+   "label": "restore_in_strict",
+   "other_pids_in_window": [],
+   "outermost_transactions": 1,
+   "pid": "10029",
+   "records": 5,
+   "result": null,
+   "seconds": 0.004,
+   "stores_with_nontransactional_increments": [],
+   "stores_written": [
+    "sql:Graph_KG.ledger_stats"
+   ],
+   "stores_written_in_txn": [
+    "sql:Graph_KG.ledger_stats"
+   ],
+   "stores_written_outside_any_txn": [],
+   "traceback": "Traceback (most recent call last):\n  File \"/home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/iris-vector-graph-audit/experiment/playbook-completion/live/breadth-c/jcheck.py\", line 61, in journaled\n    res = fn()\n          ^^^^\n  File \"/home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/iris-vector-graph-audit/experiment/playbook-completion/live/breadth-c/18/snp_live.py\", line 177, in <lambda>\n    return L.journaled(label, lambda: L.eng.restore_snapshot(path, merge=merge))\n                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/iris-vector-graph-audit/iris_vector_graph/schema_name.py\", line 523, in wrapper\n    return method(self, *args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/iris-vector-graph-audit/iris_vector_graph/_engine/snapshot.py\", line 1095, in restore_snapshot\n    _ledger_check(self, \"restore_snapshot\")\n  File \"/home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/iris-vector-graph-audit/iris_vector_graph/_engine/ledger.py\", line 79, in ledger_check\n    guard.check_structural_write(kind)\n  File \"/home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/iris-vector-graph-audit/iris_vector_graph/ledger/guard.py\", line 78, in check_structural_write\n    raise LedgerStrictModeError(\niris_vector_graph.ledger.errors.LedgerStrictModeError: ledger strict mode: structural write 'restore_snapshot' rejected; commit a changeset via engine.ledger\n",
+   "transactions": [
+    {
+     "committed": true,
+     "kind": "txn",
+     "n": 1,
+     "nested_levels": 1,
+     "rolled_back": false,
+     "stores": [
+      "sql:Graph_KG.ledger_stats"
+     ]
+    }
+   ]
+  },
+  "utc": "2026-11-13T23:21:14Z"
+ },
+ "restore_footprint": {
+  "edges_after": 2,
+  "observes": "SNP-B3, SNP-T2.10, SNP-T3.1, SYS-I4 (restore is not one transaction)",
+  "seconds": 1.24,
+  "utc": "2026-11-13T23:21:11Z"
+ },
+ "save_footprint": {
+  "archived_attr_lines": [
+   {
+    "k": [
+     "edgeprop",
+     "c18g",
+     "1700000000",
+     "c18:a",
+     "T",
+     "c18:b",
+     "amount"
+    ],
+    "v": "20"
+   }
+  ],
+  "first_columns": {
+   "docs": null,
+   "nodes": [
+    "node_id",
+    "graph_id",
+    "created_at"
+   ],
+   "rdf_edges": [
+    "graph_id",
+    "s",
+    "p",
+    "o_id",
+    "qualifiers",
+    "ekey"
+   ],
+   "rdf_labels": [
+    "graph_id",
+    "s",
+    "label"
+   ],
+   "rdf_props": [
+    "graph_id",
+    "s",
+    "key",
+    "val"
+   ]
+  },
+  "observes": "SNP-I2 (save writes nothing), P-1801 (first SELECT * column), SNP-T1.11 (values archived as text)",
+  "pass": true,
+  "seconds": 0.66,
+  "utc": "2026-11-13T23:05:06Z",
+  "writes_by_save_pid": 0
+ },
+ "swallowed_global_lines": {
+  "archive_lines": [
+   "{\"k\": [\"c18x\"], \"v\": \"1\"}",
+   "{\"k\": [\"\"], \"v\": \"1\"}",
+   "{\"k\": [\"c18y\", \"\"], \"v\": \"1\"}"
+  ],
+  "bad_lines_reported": false,
+  "direct_native_set_of_bad_subscripts": {
+   "[\"\"]": "RuntimeError: <SUBSCRIPT>",
+   "[\"c18y\", \"\"]": "RuntimeError: <SUBSCRIPT>"
+  },
+  "good_line_written": {
+   "c18x": 1
+  },
+  "observes": "SNP-X2.14 vs snapshot.py:1679-1683 (per-line except: logger.debug)",
+  "restore_error": null,
+  "restore_result": {
+   "failed_rows": {},
+   "restored_globals": [
+    "IVG.GraphMode"
+   ],
+   "restored_layers": [
+    "globals"
+   ],
+   "restored_tables": {},
+   "snapshot_ts": 1794612073559
+  },
+  "seconds": 0.21,
+  "utc": "2026-11-13T23:21:13Z"
+ },
+ "value_types": {
+  "amount_type_after": "str",
+  "amount_type_before": "int",
+  "edge_attrs_after": {
+   "amount": "20"
+  },
+  "edge_attrs_before": {
+   "amount": 20
+  },
+  "error": null,
+  "observes": "F-1804 / SNP-B2.21",
+  "result": {
+   "failed_rows": {},
+   "restored_globals": [
+    "KG",
+    "NKG"
+   ],
+   "restored_layers": [
+    "sql",
+    "globals"
+   ],
+   "restored_tables": {
+    "Graph_KG.code_crosswalk": 0,
+    "Graph_KG.docs": 0,
+    "Graph_KG.embedding_registry": 0,
+    "Graph_KG.fhir_bridges": 0,
+    "Graph_KG.kg_EdgeEmbeddings": 0,
+    "Graph_KG.kg_NodeEmbeddings": 0,
+    "Graph_KG.nodes": 2,
+    "Graph_KG.rdf_edges": 1,
+    "Graph_KG.rdf_labels": 0,
+    "Graph_KG.rdf_namespaces": 0,
+    "Graph_KG.rdf_props": 0,
+    "Graph_KG.rdf_reifications": 0,
+    "Graph_KG.relationship_mappings": 0,
+    "Graph_KG.table_mappings": 0
+   },
+   "snapshot_ts": 1794612073001
+  },
+  "seconds": 0.34,
+  "utc": "2026-11-13T23:21:13Z",
+  "window_after": [
+   {
+    "o": "c18:t2",
+    "p": "T",
+    "predicate": "T",
+    "s": "c18:t1",
+    "source": "c18:t1",
+    "target": "c18:t2",
+    "timestamp": 1700000100,
+    "ts": 1700000100,
+    "w": 1.0,
+    "weight": 1.0
+   }
+  ],
+  "window_before": [
+   {
+    "o": "c18:t2",
+    "p": "T",
+    "predicate": "T",
+    "s": "c18:t1",
+    "source": "c18:t1",
+    "target": "c18:t2",
+    "timestamp": 1700000100,
+    "ts": 1700000100,
+    "w": 1,
+    "weight": 1
+   }
+  ]
+ }
+}

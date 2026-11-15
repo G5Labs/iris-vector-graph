@@ -1,0 +1,23 @@
+{
+  "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features queue_control_c4_restart_scan -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+  "error_locations": "src/ctl_queue.rs:98",
+  "errors": "1",
+  "experiment_head": "95abaf5fe096564138a2f8a9ed58665b85107ad0",
+  "id": "proofs-mech-queue-control-c4-restart-scan",
+  "json_log": "$RUN_DIR/proofs-mech/run-20261114T151136Z/queue_control_c4_restart_scan.json",
+  "json_sha256": "607174ab20538fc64797881aa059168d7fe6d4019081689fadec828a67ccbc9b",
+  "kind": "control",
+  "lane": "proofs-mech",
+  "log": "$RUN_DIR/proofs-mech/run-20261114T151136Z/queue_control_c4_restart_scan.log",
+  "log_bytes": 874,
+  "log_sha256": "bfda390189b3a68c71dd509b327005e126a0a4836fa6a45b6a598124ee5dac4f",
+  "observes": "queue_control_c4_restart_scan (M-07 CtlRestartScan, explorer check queue-control-C4-restart-scan, mutant; findings none): 1 errors, exactly at ['src/ctl_queue.rs:98'] (laws M07-L4, the explorer's violated laws); failing ['i07_queue::CtlRestartScan::discharge_l4']; every other function verifies as in the baseline=True; refutations i07_queue::refute_ctl_restart_scan_l4 and counterexamples cx07_queue::cx_ctl_restart_scan_l4 verified=True",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T15:47:39+00:00",
+  "result": "expected-violation",
+  "rlimit_total": "102952595",
+  "sources_sha256": "3e168bab31757fd605c7d744a6a9485a4bda23def41d5b86a0b4d5524fd7ab71",
+  "verified": "1149",
+  "verus_total_ms": "17313"
+}

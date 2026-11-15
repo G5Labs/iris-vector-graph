@@ -1,0 +1,472 @@
+{
+ "sub_lane": "capkeys",
+ "cells": [
+  {
+   "gate": "3.6-capacity",
+   "module": "01",
+   "status": "open",
+   "evidence": [
+    "run:st-live-setup-rerun",
+    "run:st-live-keys",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "setup re-run over 2,200 nodes / 4,200 edges keeps every row, key, FK and declared constraint (st-live-setup-rerun)",
+   "as_built_findings": [],
+   "remaining": "setup's size-dependent statements are the legacy upgrade steps (iris_vector_graph/migrations/upgrade.py:441-451, statements.py:331, kg_node_stores.py:335-356, docs_and_edge_vectors.py:575: whole-table fetchall); they run only on a pre-4.6 namespace, which needs the pinned release fixture (scripts/fixtures/build_release_namespace) in a scratch namespace; not driven here"
+  },
+  {
+   "gate": "3.6-capacity",
+   "module": "03",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-cap-width",
+    "run:st-live-cap-values",
+    "run:st-live-cap-batch",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "every direct writer refuses edges past s=o=194/p=97 (155 with a 100-char graph; node ids past 234 in a 256-char graph) with SQLCODE -415 and nothing written: the schema-valid-width refusal F-C1106 records for the ledger applies to every writer of rdf_edges/nodes, and the limit shrinks as row ids gain digits; property/label/key widths refused cleanly; a caller transaction of 1,500 inserts escalates to table locks on nodes and rdf_props and another process's create_node then fails after 10 s with SQLCODE -110 (clean, consistent)",
+   "as_built_findings": [
+    "F-C1106"
+   ],
+   "remaining": "lock escalation across graphs (one caller transaction blocks every graph's writers) is IRIS behaviour no IVG document states; intent-undecided, reported to the orchestrator, no finding filed"
+  },
+  {
+   "gate": "3.6-capacity",
+   "module": "04",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-cap-width",
+    "run:st-live-cap-batch",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "no violation in the probed cases (live, not a proof): the adjacency limit coincides with the row limit: at the widest accepted edge every writer's row has ^KG out/in, and sync, rebuild_kg, verify_graph, Cypher MATCH, snapshot round trip and erase stay consistent; bulk_create_edges of 5,000 edges in a named graph verifies (5,000 sql/out/in)",
+   "as_built_findings": [],
+   "remaining": "lock-table use of Adjacency's own Lock +^KG(...) under many concurrent writers not driven"
+  },
+  {
+   "gate": "3.6-capacity",
+   "module": "06",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-cap-values",
+    "run:st-live-cap-batch",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "no violation in the probed cases (live, not a proof): vector metadata of 1,000,000 chars stored exactly, 4,000,000 refused cleanly (<MAXSTRING>); store_embeddings of 2,000 vectors writes 2,000 rows",
+   "as_built_findings": [],
+   "remaining": "IVF/PLAID/VecIdx global sizes and vector dimension limits not probed"
+  },
+  {
+   "gate": "3.6-capacity",
+   "module": "07",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-cap-bm25",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "a token of 600 chars (or 300 with a 256-char document id) makes bm25_build fail after emptying the index; searches then answer []",
+   "as_built_findings": [
+    "F-C0748",
+    "F-0704"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.6-capacity",
+   "module": "08",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-cap-values",
+    "run:st-live-cypher-relprop",
+    "run:st-live-cap-batch-r2",
+    "run:st-live-cap-width",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "node property values refused cleanly past 64,000 (-104), widest edge 194 like every writer, UNWIND of 3,000 rows all or nothing; the read-back oracle found parameter-bound relationship properties dropped at every size (F-C0848) and a WITH-bound one stored as non-JSON (F-C0849)",
+   "as_built_findings": [
+    "F-C0848",
+    "F-C0849",
+    "F-C1106"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.6-capacity",
+   "module": "09",
+   "status": "closed",
+   "evidence": [
+    "iris_src/src/Graph/KG/Cypher/Gen.cls:163-230",
+    "iris_vector_graph/schema.py:2939",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "inspected",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "one compiled class IVGC.P<hash> per plan shape, removed only by DropAll at deploy; no bound",
+   "as_built_findings": [
+    "F-C0948"
+   ],
+   "remaining": "not measured live (running the native executor compiles product-generated classes into the namespace)"
+  },
+  {
+   "gate": "3.6-capacity",
+   "module": "13",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-cap-records",
+    "run:st-live-cap-batch",
+    "run:corr-capacity",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "no violation in the probed cases (live, not a proof): redaction of tenants whose records reach 3,600,000 chars completes and removes the value; a 1,100-revision redaction in one batch (batch_size 100,000) completes while another tenant commits 400 times with max latency 0.002 s and no error",
+   "as_built_findings": [],
+   "remaining": "IRIS lock-table capacity not filled on purpose (shared instance)"
+  },
+  {
+   "gate": "3.6-capacity",
+   "module": "14",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-cap-records",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "no violation in the probed cases (live, not a proof): get_revision, history, reconstruct, export_reconstruction and verify return records up to 3,600,000 chars exactly; escape-expanding payloads past the limit are refused at commit (reported as LedgerInconsistencyError, F-C1107, module 11)",
+   "as_built_findings": [],
+   "remaining": ""
+  },
+  {
+   "gate": "3.6-capacity",
+   "module": "15",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-cap-batch",
+    "run:st-live-cap-batch-r2",
+    "run:st-live-cap-values",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "reifier properties past 64,000 refused cleanly; with 40,000 temporal edges past the string limit prov_as_dict of one edge and prov_export_from_cypher of one node raise <MAXSTRING> (whole-window read), the whole-window export raises (documented cap INT-V1.6; raise vs docs F-1501)",
+   "as_built_findings": [
+    "F-C1549",
+    "F-1501"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.6-capacity",
+   "module": "17",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-cap-width",
+    "run:st-live-cap-values",
+    "run:st-live-cap-batch",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "schema-valid edges past s=o=194/p=97 refused by IRISGraphStore.write_edges with SQLCODE -415, nothing written (the shared rdf_edges index limit, F-C1106); values past 64,000 refused cleanly; write_nodes of 1,201 nodes and get_nodes over 1,201 ids (500-id chunks) return each id exactly once",
+   "as_built_findings": [
+    "F-C1106"
+   ],
+   "remaining": "host.py connection limits (P-1707) not probed"
+  },
+  {
+   "gate": "3.6-capacity",
+   "module": "18",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-cap-snapshot-mem",
+    "run:st-live-cap-records",
+    "run:st-live-cap-width",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "a 3,600,000-char record and the widest edge survive save/restore exactly, but client memory grows about 11 MB per 1,000 edges (356 MB peak for 32,000 edges, 190 x the archive), no bound or streaming",
+   "as_built_findings": [
+    "F-C1848"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.6-keys",
+   "module": "01",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-keys",
+    "run:st-live-setup-rerun",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "no violation in the probed cases (live, not a proof): all 24 PK/UNIQUE/FK constraints the DDL declares are in the catalog with their columns, before and after a setup re-run over data; 12 extra are IRIS idkeys and class-defined keys",
+   "as_built_findings": [],
+   "remaining": ""
+  },
+  {
+   "gate": "3.6-keys",
+   "module": "03",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-keys",
+    "run:st-live-keys-race-edge",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "create_node/create_edge/store_*/bulk_create_* keep the keys (duplicates answer False or merge; racing create_node one True); BulkLoader writes duplicate node/label/prop/edge keys (in-batch duplicate, skip_existing=False, two loaders); racing create_edge on a new edge with a new endpoint answers False for an edge never written in 4/8 trials",
+   "as_built_findings": [
+    "F-C0349",
+    "F-C0348"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.6-keys",
+   "module": "04",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-keys",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "no violation in the probed cases (live, not a proof): ^KG out/in equal the rows after 4 writers create/delete one triple 15 times each and with multigraph parallel edges; verify_graph ok",
+   "as_built_findings": [],
+   "remaining": ""
+  },
+  {
+   "gate": "3.6-keys",
+   "module": "05",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-keys",
+    "run:st-live-keys-temporal-count",
+    "run:st-live-keys-temporal-race",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "no violation in the probed cases (live, not a proof): one temporal key (ts, s, p, o) is one event under duplicate inserts, upserts and 4 racing inserts (tout = tin; 12/12 race trials)",
+   "as_built_findings": [],
+   "remaining": "the count aggregate once read 4 for 3 events after keys.py's combined sequence (st-live-keys) and was not reproduced in 18 isolated trials; the bucket aggregate is a derived count, F-0501 family"
+  },
+  {
+   "gate": "3.6-keys",
+   "module": "08",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-keys",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "no violation in the probed cases (live, not a proof): racing MERGE of a node, a relationship and a path and repeated CREATE leave no duplicate key; the losers raise GraphWriteError (-119/-110/-121, nothing written)",
+   "as_built_findings": [],
+   "remaining": "racing MERGE answers errors rather than matching (a MERGE path race left nothing in one round); callers must retry"
+  },
+  {
+   "gate": "3.6-keys",
+   "module": "15",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-keys",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "no violation seen: reifier_id is a namespace-wide key (pk_reifications); a second edge's reify with a used id is refused -119 and racing reify with one id leaves one row; the reifier node always lands in the default graph (F-1502, not a key violation)",
+   "as_built_findings": [],
+   "remaining": ""
+  },
+  {
+   "gate": "3.6-keys",
+   "module": "17",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-keys",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "data keys hold under IRISGraphStore in-batch and repeated duplicates and 4 racing write_nodes (no violation seen); the adapter's SHOW CONSTRAINTS and index lists name keys the schema does not have (F-1707, reproduced live by breadth C)",
+   "as_built_findings": [
+    "F-1707"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.6-keys",
+   "module": "18",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-keys",
+    "run:st-live-cap-snapshot-mem",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "graph tables: merge restore twice and replace restore twice over the same archive leave no duplicate key and ^KG equal to the rows, restores of 2,000-32,000 edges key- and FK-clean (no violation seen); plain tables: a merge restore guards them on their first column only (F-1802, breadth C, live)",
+   "as_built_findings": [
+    "F-1802"
+   ],
+   "remaining": "F-1802 not re-probed here"
+  },
+  {
+   "gate": "3.6-fk",
+   "module": "01",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-keys",
+    "run:st-live-setup-rerun",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "no violation in the probed cases (live, not a proof): the 5 declared FKs (fk_edges_source/dest, fk_labels_node, fk_emb_node, fk_emb_node_opt) are in the catalog against uq_nodes_graph_node, before and after a setup re-run",
+   "as_built_findings": [],
+   "remaining": ""
+  },
+  {
+   "gate": "3.6-fk",
+   "module": "02",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-fk",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "no violation in the probed cases (live, not a proof): an edge into a graph whose endpoints exist only in the default graph registers them in its own graph; Cypher USE GRAPH writes and delete_edge(all_graphs) leave no endpoint outside the edge's graph",
+   "as_built_findings": [],
+   "remaining": ""
+  },
+  {
+   "gate": "3.6-fk",
+   "module": "03",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-fk",
+    "run:st-live-keys-race-edge",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "no violation in the probed cases (live, not a proof): delete_node, Cypher DETACH DELETE (DELETE with edges refused), REMOVE, endpoint registration by write_edges/BulkLoader/bulk_create_edges/store_edge, erase paths: no edge, label, property or index entry of a missing node",
+   "as_built_findings": [],
+   "remaining": ""
+  },
+  {
+   "gate": "3.6-fk",
+   "module": "04",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-fk",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "no violation in the probed cases (live, not a proof): 4 racing delete_node/create_edge on one node leave no ^KG entry whose endpoint has no node row",
+   "as_built_findings": [],
+   "remaining": ""
+  },
+  {
+   "gate": "3.6-fk",
+   "module": "05",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-fk",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "no violation in the probed cases (live, not a proof): temporal edges with unknown endpoints register node rows (F-0503 records that the ledger does not see them); delete_node of an endpoint removes its ^KG tout entries",
+   "as_built_findings": [],
+   "remaining": "drop_temporal_structural_rows(predicate) not run (harness passed no predicate)"
+  },
+  {
+   "gate": "3.6-fk",
+   "module": "15",
+   "status": "closed",
+   "evidence": [
+    "run:st-live-fk",
+    "run:st-control-capkeys-selftest",
+    "experiment/playbook-completion/structural/STRUCTURAL.md"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "delete_edge and Cypher DELETE r leave rdf_reifications rows naming deleted edge ids; get_reifications(deleted id) still answers",
+   "as_built_findings": [
+    "F-C1548"
+   ],
+   "remaining": ""
+  }
+ ]
+}

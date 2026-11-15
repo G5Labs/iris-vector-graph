@@ -1,0 +1,23 @@
+{
+  "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features excl_control_c2_writer_without_lock -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+  "error_locations": "src/ctl_excl.rs:104,src/ctl_excl.rs:107,src/ctl_excl.rs:111",
+  "errors": "3",
+  "experiment_head": "95abaf5fe096564138a2f8a9ed58665b85107ad0",
+  "id": "proofs-mech-excl-control-c2-writer-without-lock",
+  "json_log": "$RUN_DIR/proofs-mech/run-20261114T151136Z/excl_control_c2_writer_without_lock.json",
+  "json_sha256": "87d04084b63f29873382256bc26f67d00fffbd666eed1d65b1daf0a3926b7363",
+  "kind": "control",
+  "lane": "proofs-mech",
+  "log": "$RUN_DIR/proofs-mech/run-20261114T151136Z/excl_control_c2_writer_without_lock.log",
+  "log_bytes": 1448,
+  "log_sha256": "fded6ddda35503c332074b5afbce6a526d0428a18590159fed1cc5e4f2ced47f",
+  "observes": "excl_control_c2_writer_without_lock (M-03 CtlWriterWithoutLock, explorer check excl-control-C2-writer-without-lock, mutant; findings none): 3 errors, exactly at ['src/ctl_excl.rs:104', 'src/ctl_excl.rs:107', 'src/ctl_excl.rs:111'] (laws M03-L2,M03-L3,M03-L5, the explorer's violated laws); failing ['i03_excl::CtlWriterWithoutLock::discharge_l2', 'i03_excl::CtlWriterWithoutLock::discharge_l3', 'i03_excl::CtlWriterWithoutLock::discharge_l5']; every other function verifies as in the baseline=True; refutations i03_excl::refute_ctl_writer_without_lock_l2,i03_excl::refute_ctl_writer_without_lock_l3,i03_excl::refute_ctl_writer_without_lock_l5 and counterexamples cx03_excl::cx_ctl_writer_without_lock_l2,cx03_excl::cx_ctl_writer_without_lock_l3,cx03_excl::cx_ctl_writer_without_lock_l5 verified=True",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T15:47:38+00:00",
+  "result": "expected-violation",
+  "rlimit_total": "106323055",
+  "sources_sha256": "3e168bab31757fd605c7d744a6a9485a4bda23def41d5b86a0b4d5524fd7ab71",
+  "verified": "1151",
+  "verus_total_ms": "17364"
+}

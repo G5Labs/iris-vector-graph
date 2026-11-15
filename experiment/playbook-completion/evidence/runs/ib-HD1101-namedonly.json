@@ -1,0 +1,15 @@
+{
+  "command": "cd experiment/playbook-completion/intent/probes/lane-b && flock -x -w 1800 $RUN_DIR/intent-b/auditib.lock timeout 600 python hd1101_named_graph_only_node_ops.py > $RUN_DIR/intent-b/ib3_hd1101.log 2>&1",
+  "experiment_head": "c01a7ccd00b29670b521799344233fa4a814c925",
+  "id": "ib-HD1101-namedonly",
+  "kind": "probe",
+  "lane": "intent-b",
+  "log": "$RUN_DIR/intent-b/ib3_hd1101.log",
+  "log_bytes": 6138,
+  "log_sha256": "f6feff4e5e857cfd9502f0f474203199595b01b2cd895d1a00508dd619675dff",
+  "observes": "AUDITIB, ids only in named graph ib3_g1101, ledger enabled after (genesis). As built (alternative c, F-1105 reproduced live): create_node refused node_exists; upsert_node with no labels commits a revision with 0 records; set_prop committed and wrote an orphan default-graph rdf_props row (no default-graph node row); add_label refused 'insert label failed' (fk_labels_node); remove_label refused label_not_present; strict delete_node committed a delete_node record with prior {labels:[],props:{}} and removed nothing. verify() then diverges (unrecorded_writes on ib3_n3) after ledger-only commits: violates replay==store (ADR-0013:35, USER_GUIDE 1085-1108). Neither alternative (a) refuse nor (b) materialise is the pin's behaviour.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-13T22:43:18+00:00",
+  "result": "fail"
+}

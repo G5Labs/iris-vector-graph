@@ -1,0 +1,263 @@
+{
+ "lane": "proofs-d9b (merged as supplements by the orchestrator so earlier evidence stays cited)",
+ "source": "proofs-d9b/MATRIX-INPUT.json",
+ "supplements": [
+  {
+   "gate": "3.3-protocol",
+   "module": "product",
+   "add_evidence": [
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "run:proofs-d9b-bypass-start",
+    "run:proofs-d9b-bypass-erase",
+    "run:proofs-d9b-liveness-dirty",
+    "run:proofs-d9b-unaligned-rm",
+    "run:proofs-d9b-unaligned-sc",
+    "run:proofs-d9b-f1201-erase-unlocked",
+    "run:proofs-d9b-fcs01-noop-unrecorded",
+    "run:proofs-d9b-f1302-unlocked-start",
+    "run:proofs-d9b-f1303-other-marker",
+    "run:proofs-d9b-f1306-replay-reapplies",
+    "run:proofs-d9b-sc-narrow",
+    "run:proofs-d9b-f1402-reader-no-recheck",
+    "run:proofs-d9b-reader-marker-recheck-only",
+    "run:proofs-d9b-progress-rewind",
+    "run:proofs-d9b-bound-follows-tail",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md",
+    "experiment/playbook-completion/proofs-d9b/RESULTS.json"
+   ],
+   "as_built_findings": [
+    "F-CS01",
+    "F-1302",
+    "F-1303",
+    "F-1306",
+    "F-1402",
+    "F-C1201",
+    "F-1304",
+    "F-1201",
+    "F-C1301",
+    "F-C1303",
+    "F-C1307"
+   ],
+   "add_remaining": "[proofs-d9b] D-9 now paid at model level for readers (record readers; partition ReadP over RL), statement history, Decision 2, retry-key movement, F-1306 and the F-1302/F-1303/F-1306 re-runs; model-level only; no proof links the ObjectScript/Python to these contracts (D-2..D-5); verify()'s table read and graph-blind node identity (F-1401) not modelled; F-CS01's reviewed design (R-1 no-op records) is intent-undecided (PROOFS.md section 6); eraser variants, temporal-only storage, lock timeouts, restore/redactedRev not modelled; progress premises PF-1..PF-6 not discharged against IRIS"
+  },
+  {
+   "gate": "3.3-progress-controls",
+   "module": "product",
+   "add_evidence": [
+    "run:proofs-d9b-progress-rewind",
+    "run:proofs-d9b-bound-follows-tail",
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md",
+    "experiment/playbook-completion/proofs-d9b/RESULTS.json"
+   ],
+   "as_built_findings": [
+    "F-C1303",
+    "F-C1307"
+   ],
+   "add_remaining": "[proofs-d9b] D-12 paid at model level; progress premises PF-1..PF-6 not derived or tested against IRIS scheduling; readers' progress (M3-readers AG EF) not proved"
+  },
+  {
+   "gate": "3.3-L1",
+   "module": "12",
+   "add_evidence": [
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md"
+   ],
+   "as_built_findings": [
+    "F-1201",
+    "F-C1201"
+   ],
+   "add_remaining": "[proofs-d9b] L1 here is the outer business contract at protocol granularity with its invariants (Biz invariants for erasure with rollback (committed view), statement index and statement history after an erasure (theorem_erasure_clears_statement_history), lock serialization (G-L)); model-level only; no proof links the ObjectScript/Python to these contracts (D-2..D-5); verify()'s table read and graph-blind node identity (F-1401) not modelled; F-CS01's reviewed design (R-1 no-op records) is intent-undecided (PROOFS.md section 6); eraser variants, temporal-only storage, lock timeouts, restore/redactedRev not modelled; progress premises PF-1..PF-6 not discharged against IRIS"
+  },
+  {
+   "gate": "3.3-L2",
+   "module": "12",
+   "add_evidence": [
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md"
+   ],
+   "as_built_findings": [
+    "F-1201",
+    "F-C1201"
+   ],
+   "add_remaining": "[proofs-d9b] participant contracts over the pin's data layout (^IVG.Ledger rec/head/idem/idemRedacted/stmt/tuple/redacting, Graph_KG.ledger_revisions row fields, content tables keyed by graph and id; epoch is a reviewed-design addition); one statement-history key per edge (P-D9b-3); model-level only; no proof links the ObjectScript/Python to these contracts (D-2..D-5); verify()'s table read and graph-blind node identity (F-1401) not modelled; F-CS01's reviewed design (R-1 no-op records) is intent-undecided (PROOFS.md section 6); eraser variants, temporal-only storage, lock timeouts, restore/redactedRev not modelled; progress premises PF-1..PF-6 not discharged against IRIS"
+  },
+  {
+   "gate": "3.3-refinement",
+   "module": "12",
+   "add_evidence": [
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md"
+   ],
+   "as_built_findings": [
+    "F-1201",
+    "F-C1201"
+   ],
+   "add_remaining": "[proofs-d9b] step_binds and step_enabled proved for every operation at RLP, SysP, TopP and ReadP; any implementations of the participant contracts refine Biz/RdOuter and keep their invariants (system.rs, protocol_rd.rs); model to model only, model-level only; no proof links the ObjectScript/Python to these contracts (D-2..D-5); verify()'s table read and graph-blind node identity (F-1401) not modelled; F-CS01's reviewed design (R-1 no-op records) is intent-undecided (PROOFS.md section 6); eraser variants, temporal-only storage, lock timeouts, restore/redactedRev not modelled; progress premises PF-1..PF-6 not discharged against IRIS"
+  },
+  {
+   "gate": "3.3-controls",
+   "module": "12",
+   "add_evidence": [
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "run:proofs-d9b-f1201-erase-unlocked",
+    "run:proofs-d9b-liveness-dirty",
+    "run:proofs-d9b-bypass-erase",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md",
+    "experiment/playbook-completion/proofs-d9b/RESULTS.json"
+   ],
+   "as_built_findings": [
+    "F-1201",
+    "F-C1201"
+   ],
+   "add_remaining": "[proofs-d9b] each control rejected only in its expected file with every other function verified as in the baseline and a proved reachable counterexample; controls are model changes, the product's own behaviour is the as-built evidence (live findings)"
+  },
+  {
+   "gate": "3.3-L1",
+   "module": "13",
+   "add_evidence": [
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md"
+   ],
+   "as_built_findings": [
+    "F-CS01",
+    "F-1302",
+    "F-1303",
+    "F-1306",
+    "F-1304",
+    "F-C1301"
+   ],
+   "add_remaining": "[proofs-d9b] L1 here is the outer business contract at protocol granularity with its invariants (Biz invariants and theorems: no tombstone of live content, per-target audit, marker ownership, revision metadata redacted for every revision attributable to a completed target (F-CS01), Decision 2, INV-retry (step and executions), statement history after Final, replay changes nothing); model-level only; no proof links the ObjectScript/Python to these contracts (D-2..D-5); verify()'s table read and graph-blind node identity (F-1401) not modelled; F-CS01's reviewed design (R-1 no-op records) is intent-undecided (PROOFS.md section 6); eraser variants, temporal-only storage, lock timeouts, restore/redactedRev not modelled; progress premises PF-1..PF-6 not discharged against IRIS"
+  },
+  {
+   "gate": "3.3-L2",
+   "module": "13",
+   "add_evidence": [
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md"
+   ],
+   "as_built_findings": [
+    "F-CS01",
+    "F-1302",
+    "F-1303",
+    "F-1306",
+    "F-1304",
+    "F-C1301"
+   ],
+   "add_remaining": "[proofs-d9b] participant contracts over the pin's data layout (^IVG.Ledger rec/head/idem/idemRedacted/stmt/tuple/redacting, Graph_KG.ledger_revisions row fields, content tables keyed by graph and id; epoch is a reviewed-design addition); one statement-history key per edge (P-D9b-3); model-level only; no proof links the ObjectScript/Python to these contracts (D-2..D-5); verify()'s table read and graph-blind node identity (F-1401) not modelled; F-CS01's reviewed design (R-1 no-op records) is intent-undecided (PROOFS.md section 6); eraser variants, temporal-only storage, lock timeouts, restore/redactedRev not modelled; progress premises PF-1..PF-6 not discharged against IRIS"
+  },
+  {
+   "gate": "3.3-refinement",
+   "module": "13",
+   "add_evidence": [
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md"
+   ],
+   "as_built_findings": [
+    "F-CS01",
+    "F-1302",
+    "F-1303",
+    "F-1306",
+    "F-1304",
+    "F-C1301"
+   ],
+   "add_remaining": "[proofs-d9b] step_binds and step_enabled proved for every operation at RLP, SysP, TopP and ReadP; any implementations of the participant contracts refine Biz/RdOuter and keep their invariants (system.rs, protocol_rd.rs); model to model only, model-level only; no proof links the ObjectScript/Python to these contracts (D-2..D-5); verify()'s table read and graph-blind node identity (F-1401) not modelled; F-CS01's reviewed design (R-1 no-op records) is intent-undecided (PROOFS.md section 6); eraser variants, temporal-only storage, lock timeouts, restore/redactedRev not modelled; progress premises PF-1..PF-6 not discharged against IRIS"
+  },
+  {
+   "gate": "3.3-controls",
+   "module": "13",
+   "add_evidence": [
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "run:proofs-d9b-fcs01-noop-unrecorded",
+    "run:proofs-d9b-f1302-unlocked-start",
+    "run:proofs-d9b-f1303-other-marker",
+    "run:proofs-d9b-f1306-replay-reapplies",
+    "run:proofs-d9b-unaligned-rm",
+    "run:proofs-d9b-unaligned-sc",
+    "run:proofs-d9b-sc-narrow",
+    "run:proofs-d9b-bypass-start",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md",
+    "experiment/playbook-completion/proofs-d9b/RESULTS.json"
+   ],
+   "as_built_findings": [
+    "F-CS01",
+    "F-1302",
+    "F-1303",
+    "F-1306",
+    "F-1304",
+    "F-C1301"
+   ],
+   "add_remaining": "[proofs-d9b] each control rejected only in its expected file with every other function verified as in the baseline and a proved reachable counterexample; controls are model changes, the product's own behaviour is the as-built evidence (live findings)"
+  },
+  {
+   "gate": "3.3-L1",
+   "module": "14",
+   "add_evidence": [
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md"
+   ],
+   "as_built_findings": [
+    "F-1402",
+    "F-1306"
+   ],
+   "add_remaining": "[proofs-d9b] L1 here is the outer business contract at protocol granularity with its invariants (RdOuter invariant rd_inv and RPL-I1 (theorem_accepted_view_consistent: a returned view is a prefix of the current history with no marker and the epoch unchanged); replay = store once settled; a replayed retry changes nothing); model-level only; no proof links the ObjectScript/Python to these contracts (D-2..D-5); verify()'s table read and graph-blind node identity (F-1401) not modelled; F-CS01's reviewed design (R-1 no-op records) is intent-undecided (PROOFS.md section 6); eraser variants, temporal-only storage, lock timeouts, restore/redactedRev not modelled; progress premises PF-1..PF-6 not discharged against IRIS"
+  },
+  {
+   "gate": "3.3-L2",
+   "module": "14",
+   "add_evidence": [
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md"
+   ],
+   "as_built_findings": [
+    "F-1402",
+    "F-1306"
+   ],
+   "add_remaining": "[proofs-d9b] participant contracts over the pin's data layout (^IVG.Ledger rec/head/idem/idemRedacted/stmt/tuple/redacting, Graph_KG.ledger_revisions row fields, content tables keyed by graph and id; epoch is a reviewed-design addition); one statement-history key per edge (P-D9b-3); model-level only; no proof links the ObjectScript/Python to these contracts (D-2..D-5); verify()'s table read and graph-blind node identity (F-1401) not modelled; F-CS01's reviewed design (R-1 no-op records) is intent-undecided (PROOFS.md section 6); eraser variants, temporal-only storage, lock timeouts, restore/redactedRev not modelled; progress premises PF-1..PF-6 not discharged against IRIS"
+  },
+  {
+   "gate": "3.3-refinement",
+   "module": "14",
+   "add_evidence": [
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md"
+   ],
+   "as_built_findings": [
+    "F-1402",
+    "F-1306"
+   ],
+   "add_remaining": "[proofs-d9b] step_binds and step_enabled proved for every operation at RLP, SysP, TopP and ReadP; any implementations of the participant contracts refine Biz/RdOuter and keep their invariants (system.rs, protocol_rd.rs); model to model only, model-level only; no proof links the ObjectScript/Python to these contracts (D-2..D-5); verify()'s table read and graph-blind node identity (F-1401) not modelled; F-CS01's reviewed design (R-1 no-op records) is intent-undecided (PROOFS.md section 6); eraser variants, temporal-only storage, lock timeouts, restore/redactedRev not modelled; progress premises PF-1..PF-6 not discharged against IRIS"
+  },
+  {
+   "gate": "3.3-controls",
+   "module": "14",
+   "add_evidence": [
+    "run:proofs-d9b-baseline",
+    "run:proofs-d9b-recheck",
+    "run:proofs-d9b-f1402-reader-no-recheck",
+    "run:proofs-d9b-reader-marker-recheck-only",
+    "run:proofs-d9b-f1306-replay-reapplies",
+    "experiment/playbook-completion/proofs-d9b/PROOFS.md",
+    "experiment/playbook-completion/proofs-d9b/RESULTS.json"
+   ],
+   "as_built_findings": [
+    "F-1402",
+    "F-1306"
+   ],
+   "add_remaining": "[proofs-d9b] each control rejected only in its expected file with every other function verified as in the baseline and a proved reachable counterexample; controls are model changes, the product's own behaviour is the as-built evidence (live findings)"
+  }
+ ]
+}

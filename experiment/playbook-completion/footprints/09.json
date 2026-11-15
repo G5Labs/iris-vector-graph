@@ -1,0 +1,1971 @@
+{
+ "module": "09",
+ "pin": "3eaa79cf",
+ "inventory": "experiment/playbook-completion/models/breadth-b/inventory/09.json",
+ "oracle": "experiment/playbook-completion/traces/journal.py via live/breadth-b/blive.capture (AUDITB database records; transaction markers by pid)",
+ "summary": {
+  "entry_points": 63,
+  "journal_validated_entry_points": 15,
+  "journal_validation_runs": 9,
+  "mismatches": [],
+  "persistent_writers": [
+   "cls:Graph.KG.Cypher.Gen.Build",
+   "cls:Graph.KG.Cypher.Gen.DropAll",
+   "cls:Graph.KG.Cypher.Gen.For",
+   "cls:IVG.CypherEngine.InitSchema",
+   "cls:IVG.CypherEngine.InitSchemaJson",
+   "cls:IVG.CypherEngine.Query",
+   "cls:IVG.CypherEngine.QueryJson",
+   "cls:IVG.CypherEngine.RebuildKG",
+   "cls:IVG.CypherEngine.Scalar",
+   "cls:IVG.CypherEngine.SmokeTest",
+   "job:Graph.KG.Cypher.Gen.Build[job]",
+   "lifecycle:deploy-DropAll"
+  ]
+ },
+ "entry_points": [
+  {
+   "id": "cls:Graph.KG.Cypher.Exec.PlanVersion",
+   "role": "pure",
+   "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:19-22",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "",
+   "inventory_hint": {}
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.Exec.BuiltAt",
+   "role": "pure",
+   "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:25-29",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "objectgenerator: the compile time is a literal in the code",
+   "inventory_hint": {}
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.Exec.Run",
+   "role": "reader (writes a plan cache)",
+   "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:32-72 (RunA :110-285, Parallel :447-511, Gen.For iris_src/src/Graph/KG/Cypher/Gen.cls:61-105)",
+   "reads": {
+    "tables": [
+     "Graph_KG.nodes (Exec.Anchors :856-869)",
+     "Graph_KG.rdf_props (Anchors :886-899, NamedEnds :1101-1109; Props.Get SQL fallback :64-70)",
+     "%Dictionary.CompiledStorage/CompiledStorageIndex/CompiledIndex/CompiledStorageDataValue/CompiledClass (Props.Resolve/Stamp :29-41, :106-110; NamedEnds :1103)"
+    ],
+    "globals": [
+     "^KG(\"label\", g, label, id) (RunA :241-266, NodeOK, Neighbours :1191-1197)",
+     "^KG(\"out\"/\"in\", g, s, p, o[, ekey]) (Neighbours :1174-1250)",
+     "^KG(\"__version\") (Recall :817)",
+     "rdf_props data/index storage globals by name (Props.Get :56-60; RunA tQ(\"pd\") :131-132)",
+     "degree cache via Graph.KG.Adj.Cached (module 04)",
+     "^IVG.CypherCompiled(h) (Gen.For :70)",
+     "^IVG.CypherGen(\"mode\"/\"breakfor\"/\"breakwrite\"/\"breaktest\") (Gen :43, :78, :267, :193)"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "^||IVG.CypherOut",
+     "^||IVG.CypherRun",
+     "^||IVG.CypherProps",
+     "^||IVG.CypherMemo",
+     "^||IVG.CypherGenFailed",
+     "^||IVG.CypherCompiledRuns",
+     "^||IVG.CypherDegreeTally",
+     "^||IVG.CypherNamedEnds",
+     "%ivgCypherPropsStmt (process variable)",
+     "^IRIS.Temp.IVG.Cypher(share, ...) (Parallel :451-505, Out :1889-1898; IRISTEMP, not journaled)",
+     "^IVG.CypherCompiled(h) = $LB(class, shape, stamp, status, began) and (h, \"src\", i) (through Gen.For, a new or stale shape in job/sync mode; persistent, outside any transaction)",
+     "IVGC.P<h> class (Gen.Build in sync mode, in this process)"
+    ]
+   },
+   "transaction": "none: no TSTART; the entry writes of Gen.For are plain Sets (not rolled back with a caller's transaction); a caller's open transaction is not joined or ended",
+   "locks": [
+    "through Gen.Build (sync mode): Lock +^IVG.CypherCompiled(h):0, no wait"
+   ],
+   "nolock": [
+    "no LOCK, no snapshot: globals read with $Order/$Data at the moment of each read; SQL by %SQL.Statement at the process default isolation (read uncommitted, P-0002); NAT-T4.6"
+   ],
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/09-footprint.json#read_off",
+    "run_id": "b-09-footprint",
+    "declared_stores": [],
+    "observed_stores": [],
+    "match": true,
+    "undeclared": [],
+    "records": 0,
+    "outside_txn": 0,
+    "transaction_units": [],
+    "pids": [],
+    "reader_pid": "14786",
+    "notes": "off mode: an interpreted native read writes nothing persistent in AUDITB (process-private globals are not journaled)"
+   },
+   "notes": "rows of a run live in ^||IVG.CypherOut(tag) (first 1000 returned inline and freed, Head :76-87)",
+   "inventory_hint": {
+    "globals_written": [
+     "^IRIS.Temp.IVG.Cypher",
+     "^IRIS.Temp.IVG.VL",
+     "^IVG.CypherCompiled",
+     "^KG",
+     "^||IVG.CPUs",
+     "^||IVG.CypherCompiledRuns",
+     "^||IVG.CypherDegreeTally",
+     "^||IVG.CypherEndsCount",
+     "^||IVG.CypherGenFailed",
+     "^||IVG.CypherMemo",
+     "^||IVG.CypherNamedEnds",
+     "^||IVG.CypherOut",
+     "^||IVG.CypherProps",
+     "^||IVG.CypherRun",
+     "^||IVG.CypherTrims",
+     "^||IVG.VLParallelRuns"
+    ],
+    "globals_killed": [
+     "^IRIS.Temp.IVG.Cypher",
+     "^IRIS.Temp.IVG.VL",
+     "^IVG.CypherCompiled",
+     "^||IVG.CypherOut",
+     "^||IVG.CypherProps",
+     "^||IVG.CypherRun"
+    ],
+    "globals_read": [
+     "^IVG.CypherGen",
+     "^KG",
+     "^||IVG.CypherGenMode",
+     "^||IVG.CypherMemo",
+     "^||IVG.CypherProps",
+     "^||IVG.CypherRun",
+     "^||IVG.CypherTrimAt",
+     "^||IVG.VLParallelMin",
+     "^||IVG.VLSharedReads",
+     "^||IVG.VLWorker"
+    ],
+    "locks": [
+     "+^IVG.CypherCompiled",
+     "-^IVG.CypherCompiled"
+    ],
+    "tables_read": [
+     "nodes",
+     "rdf_props"
+    ],
+    "flags": [
+     "$INCREMENT",
+     "$ZCRC",
+     "COMPILE",
+     "JOB",
+     "LOCK-TIMEOUT",
+     "TSTART"
+    ]
+   }
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.Exec.Part",
+   "role": "reader (worker)",
+   "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:540-554",
+   "reads": {
+    "tables": [
+     "Graph_KG.nodes (Exec.Anchors :856-869)",
+     "Graph_KG.rdf_props (Anchors :886-899, NamedEnds :1101-1109; Props.Get SQL fallback :64-70)",
+     "%Dictionary.CompiledStorage/CompiledStorageIndex/CompiledIndex/CompiledStorageDataValue/CompiledClass (Props.Resolve/Stamp :29-41, :106-110; NamedEnds :1103)"
+    ],
+    "globals": [
+     "^KG(\"label\", g, label, id) (RunA :241-266, NodeOK, Neighbours :1191-1197)",
+     "^KG(\"out\"/\"in\", g, s, p, o[, ekey]) (Neighbours :1174-1250)",
+     "^KG(\"__version\") (Recall :817)",
+     "rdf_props data/index storage globals by name (Props.Get :56-60; RunA tQ(\"pd\") :131-132)",
+     "degree cache via Graph.KG.Adj.Cached (module 04)",
+     "^IVG.CypherCompiled(h) (Gen.For :70)",
+     "^IVG.CypherGen(\"mode\"/\"breakfor\"/\"breakwrite\"/\"breaktest\") (Gen :43, :78, :267, :193)"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "^IRIS.Temp.IVG.Cypher(share, \"rows\"/\"sort\"/\"k\"/\"c\"/\"d\"/\"seq\") (Export :560-589, Out :1882-1899)",
+     "^||IVG.VLWorker",
+     "^||IVG.CypherProps",
+     "^||IVG.CypherRun"
+    ]
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [
+    "no LOCK, no snapshot: globals read with $Order/$Data at the moment of each read; SQL by %SQL.Statement at the process default isolation (read uncommitted, P-0002); NAT-T4.6"
+   ],
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/09-footprint.json#read_parallel",
+    "run_id": "b-09-footprint",
+    "declared_stores": [],
+    "observed_stores": [],
+    "match": true,
+    "undeclared": [],
+    "records": 0,
+    "outside_txn": 0,
+    "transaction_units": [],
+    "pids": [],
+    "reader_pid": "14786",
+    "notes": "workers write ^IRIS.Temp.IVG.Cypher (IRISTEMP, not journaled): nothing persistent in AUDITB"
+   },
+   "notes": "%SYSTEM.WorkMgr worker; runs in its coordinator's compile mode (pPlan genmode, :454)",
+   "inventory_hint": {
+    "globals_written": [
+     "^IRIS.Temp.IVG.Cypher",
+     "^IRIS.Temp.IVG.VL",
+     "^IVG.CypherCompiled",
+     "^KG",
+     "^||IVG.CPUs",
+     "^||IVG.CypherCompiledRuns",
+     "^||IVG.CypherDegreeTally",
+     "^||IVG.CypherEndsCount",
+     "^||IVG.CypherGenFailed",
+     "^||IVG.CypherMemo",
+     "^||IVG.CypherNamedEnds",
+     "^||IVG.CypherOut",
+     "^||IVG.CypherProps",
+     "^||IVG.CypherRun",
+     "^||IVG.CypherTrims",
+     "^||IVG.VLParallelRuns",
+     "^||IVG.VLWorker"
+    ],
+    "globals_killed": [
+     "^IRIS.Temp.IVG.Cypher",
+     "^IRIS.Temp.IVG.VL",
+     "^IVG.CypherCompiled",
+     "^||IVG.CypherProps",
+     "^||IVG.CypherRun",
+     "^||IVG.VLWorker"
+    ],
+    "globals_read": [
+     "^IVG.CypherGen",
+     "^KG",
+     "^||IVG.CypherGenMode",
+     "^||IVG.CypherMemo",
+     "^||IVG.CypherProps",
+     "^||IVG.CypherRun",
+     "^||IVG.CypherTrimAt",
+     "^||IVG.VLParallelMin",
+     "^||IVG.VLSharedReads",
+     "^||IVG.VLWorker"
+    ],
+    "locks": [
+     "+^IVG.CypherCompiled",
+     "-^IVG.CypherCompiled"
+    ],
+    "tables_read": [
+     "nodes",
+     "rdf_props"
+    ],
+    "flags": [
+     "$INCREMENT",
+     "$ZCRC",
+     "COMPILE",
+     "JOB",
+     "LOCK-TIMEOUT",
+     "TSTART"
+    ]
+   }
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.Exec.ReadPage",
+   "role": "reader",
+   "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:1902-1910",
+   "reads": {
+    "tables": [],
+    "globals": [
+     "^||IVG.CypherOut(tag, n)"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/09-footprint.json#read_off",
+    "run_id": "b-09-footprint",
+    "declared_stores": [],
+    "observed_stores": [],
+    "match": true,
+    "undeclared": [],
+    "records": 0,
+    "outside_txn": 0,
+    "transaction_units": [],
+    "pids": [],
+    "reader_pid": "14786",
+    "notes": "off mode: an interpreted native read writes nothing persistent in AUDITB (process-private globals are not journaled)"
+   },
+   "notes": "",
+   "inventory_hint": {
+    "globals_read": [
+     "^||IVG.CypherOut"
+    ]
+   }
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.Exec.Drop",
+   "role": "writer (process-private)",
+   "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:1913-1916",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "^||IVG.CypherOut(tag) (Kill)"
+    ]
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/09-footprint.json#read_off",
+    "run_id": "b-09-footprint",
+    "declared_stores": [],
+    "observed_stores": [],
+    "match": true,
+    "undeclared": [],
+    "records": 0,
+    "outside_txn": 0,
+    "transaction_units": [],
+    "pids": [],
+    "reader_pid": "14786",
+    "notes": "off mode: an interpreted native read writes nothing persistent in AUDITB (process-private globals are not journaled)"
+   },
+   "notes": "",
+   "inventory_hint": {
+    "globals_killed": [
+     "^||IVG.CypherOut"
+    ]
+   }
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.Gen.Mode",
+   "role": "writer (process-private)",
+   "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:28-39",
+   "reads": {
+    "tables": [],
+    "globals": [
+     "^IVG.CypherGen(\"mode\") (Effective)"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "^||IVG.CypherGenMode (Set or Kill)"
+    ]
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/09-footprint.json#mode_set",
+    "run_id": "b-09-footprint",
+    "declared_stores": [],
+    "observed_stores": [],
+    "match": true,
+    "undeclared": [],
+    "records": 0,
+    "outside_txn": 0,
+    "transaction_units": [],
+    "pids": [],
+    "reader_pid": "14786",
+    "notes": "Gen.Mode writes only the process-private mode"
+   },
+   "notes": "validates the value (NAT-X11); refuses others with an exception",
+   "inventory_hint": {
+    "globals_written": [
+     "^||IVG.CypherGenMode"
+    ],
+    "globals_killed": [
+     "^||IVG.CypherGenMode"
+    ],
+    "globals_read": [
+     "^IVG.CypherGen",
+     "^||IVG.CypherGenMode"
+    ],
+    "flags": [
+     "JOB"
+    ]
+   }
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.Gen.Effective",
+   "role": "reader",
+   "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:41-44",
+   "reads": {
+    "tables": [],
+    "globals": [
+     "^||IVG.CypherGenMode",
+     "^IVG.CypherGen(\"mode\")"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "namespace value unchecked (F-0903)",
+   "inventory_hint": {
+    "globals_read": [
+     "^IVG.CypherGen",
+     "^||IVG.CypherGenMode"
+    ],
+    "flags": [
+     "JOB"
+    ]
+   }
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.Gen.ModeOf",
+   "role": "reader",
+   "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:47-50",
+   "reads": {
+    "tables": [],
+    "globals": [
+     "pQ(\"genmode\")",
+     "^||IVG.CypherGenMode",
+     "^IVG.CypherGen(\"mode\")"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "",
+   "inventory_hint": {
+    "globals_read": [
+     "^IVG.CypherGen",
+     "^||IVG.CypherGenMode"
+    ],
+    "flags": [
+     "JOB"
+    ]
+   }
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.Gen.BuiltAt",
+   "role": "pure",
+   "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:53-57",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "",
+   "inventory_hint": {}
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.Gen.For",
+   "role": "writer",
+   "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:61-105",
+   "reads": {
+    "tables": [],
+    "globals": [
+     "^IVG.CypherCompiled(h)",
+     "^IVG.CypherGen(\"breakfor\"/\"breakwrite\") test hooks",
+     "^||IVG.CypherProps(\"stamp\")"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "^IVG.CypherCompiled(h) = $LB(class, shape, stamp, status, began) and (h, \"src\", i): Set entry pending :80, Kill src :81, Merge src :89, Set $List(.,4) 'not written' :86",
+     "JOB Gen.Build (job mode :96)",
+     "Gen.Build inline (sync mode :101)",
+     "^oddDEP (class-dependency dictionary global written by the class compiler, also from a system process; journal-observed)"
+    ]
+   },
+   "transaction": "none: plain Sets/Kill/Merge outside any transaction, no lock between reading the entry (:70-71) and overwriting it (:80)",
+   "locks": [],
+   "nolock": [
+    "reads and overwrites the entry with no lock (F-0901: two colliding shapes overwrite each other)"
+   ],
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/09-footprint.json#read_job_new_shape",
+    "run_id": "b-09-footprint",
+    "declared_stores": [
+     "global:^IVG.CypherCompiled",
+     "global:^oddDEP"
+    ],
+    "observed_stores": [
+     "global:^IVG.CypherCompiled",
+     "global:^oddDEP"
+    ],
+    "match": true,
+    "undeclared": [],
+    "records": 51,
+    "outside_txn": 40,
+    "transaction_units": [
+     "auto"
+    ],
+    "pids": [
+     "14786",
+     "14840",
+     "828"
+    ],
+    "reader_pid": "14786",
+    "notes": "job mode, new shape: the reader writes the pending entry and its lines; the background job (another pid) writes elements 1 and 4; class compilation writes system globals only (filtered); all outside a transaction"
+   },
+   "notes": "key: tH = $ZCRC(shape, 7), 32 bits (:69, P-0901)",
+   "inventory_hint": {
+    "globals_written": [
+     "^IRIS.Temp.IVG.VL",
+     "^IVG.CypherCompiled",
+     "^||IVG.CPUs",
+     "^||IVG.CypherDegreeTally",
+     "^||IVG.CypherEndsCount",
+     "^||IVG.CypherRun",
+     "^||IVG.VLParallelRuns"
+    ],
+    "globals_killed": [
+     "^IRIS.Temp.IVG.VL",
+     "^IVG.CypherCompiled"
+    ],
+    "globals_read": [
+     "^IVG.CypherGen",
+     "^KG",
+     "^||IVG.CypherGenMode",
+     "^||IVG.CypherProps",
+     "^||IVG.VLParallelMin",
+     "^||IVG.VLSharedReads",
+     "^||IVG.VLWorker"
+    ],
+    "locks": [
+     "+^IVG.CypherCompiled",
+     "-^IVG.CypherCompiled"
+    ],
+    "tables_read": [
+     "rdf_props"
+    ],
+    "flags": [
+     "$INCREMENT",
+     "$ZCRC",
+     "COMPILE",
+     "JOB",
+     "LOCK-TIMEOUT"
+    ]
+   }
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.Gen.Build",
+   "role": "writer",
+   "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:163-222",
+   "reads": {
+    "tables": [],
+    "globals": [
+     "^IVG.CypherCompiled(h), (h, \"src\")",
+     "^IVG.CypherGen(\"breaktest\")"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "$List(^IVG.CypherCompiled(h), 1) = class and (.., 4) = \"ok\" (:207) or the error text (:210, :215) or \"refused...\" (:176)",
+     "class IVGC.P<h>: $System.OBJ.LoadStream + Compile (:204-205; class dictionary and routine globals, ^oddDEP journal-observed), $System.OBJ.Delete on failure (:213)",
+     "messages.log line on failure/refusal (:177, :212)"
+    ]
+   },
+   "transaction": "none: no TSTART; class compile is not transactional",
+   "locks": [
+    {
+     "lock": "^IVG.CypherCompiled(h)",
+     "mode": "+ exclusive",
+     "timeout": "0 (Quit when not granted, :167)",
+     "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:166-167, released :172, :180, :220"
+    }
+   ],
+   "nolock": [],
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/09-footprint.json#read_sync_new_shape",
+    "run_id": "b-09-footprint",
+    "declared_stores": [
+     "global:^IVG.CypherCompiled",
+     "global:^oddDEP"
+    ],
+    "observed_stores": [
+     "global:^IVG.CypherCompiled",
+     "global:^oddDEP"
+    ],
+    "match": true,
+    "undeclared": [],
+    "records": 53,
+    "outside_txn": 40,
+    "transaction_units": [
+     "auto"
+    ],
+    "pids": [
+     "14786",
+     "7940"
+    ],
+    "reader_pid": "14786",
+    "notes": "sync mode: entry, lines and Build's update all in the reader's pid, outside a transaction"
+   },
+   "notes": "writes elements 1 and 4 of whatever entry the hash holds at :207, without checking it still holds the shape compiled (F-C0901), and re-creates a killed entry as $LB(class,,,\"ok\") (F-0905)",
+   "inventory_hint": {
+    "globals_written": [
+     "^IVG.CypherCompiled"
+    ],
+    "globals_read": [
+     "^IVG.CypherGen"
+    ],
+    "locks": [
+     "+^IVG.CypherCompiled",
+     "-^IVG.CypherCompiled"
+    ],
+    "flags": [
+     "COMPILE",
+     "LOCK-TIMEOUT"
+    ]
+   }
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.Gen.DropAll",
+   "role": "writer",
+   "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:225-230",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "package IVGC: $System.OBJ.DeletePackage (:227; ^oddDEP and other class-dictionary globals)",
+     "Kill ^IVG.CypherCompiled (:228)"
+    ]
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [
+    "takes no entry lock: a build compiling concurrently re-creates its entry and class after the drop (F-0905)"
+   ],
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/09-footprint.json#dropall",
+    "run_id": "b-09-footprint",
+    "declared_stores": [
+     "global:^IVG.CypherCompiled",
+     "global:^oddDEP"
+    ],
+    "observed_stores": [
+     "global:^IVG.CypherCompiled",
+     "global:^oddDEP"
+    ],
+    "match": true,
+    "undeclared": [],
+    "records": 13,
+    "outside_txn": 13,
+    "transaction_units": [
+     "auto"
+    ],
+    "pids": [
+     "14786"
+    ],
+    "reader_pid": "14786",
+    "notes": "DropAll kills the entries (and deletes IVGC classes: system globals, filtered); outside a transaction"
+   },
+   "notes": "",
+   "inventory_hint": {
+    "globals_killed": [
+     "^IVG.CypherCompiled"
+    ]
+   }
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.Gen.Source",
+   "role": "reader",
+   "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:233-242",
+   "reads": {
+    "tables": [],
+    "globals": [
+     "^IVG.CypherCompiled(h, \"src\", i)"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "NAT-T5.21: any caller of the generator reads entries' code",
+   "inventory_hint": {
+    "globals_read": [
+     "^IVG.CypherCompiled"
+    ]
+   }
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.Gen.Entries",
+   "role": "reader",
+   "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:245-254",
+   "reads": {
+    "tables": [],
+    "globals": [
+     "^IVG.CypherCompiled(h)"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/09-footprint.json#gen_entries_read",
+    "run_id": "b-09-footprint",
+    "declared_stores": [],
+    "observed_stores": [],
+    "match": true,
+    "undeclared": [],
+    "records": 0,
+    "outside_txn": 0,
+    "transaction_units": [],
+    "pids": [],
+    "reader_pid": "14786",
+    "notes": "Entries reads only"
+   },
+   "notes": "$List(tE, 3) raises <NULL VALUE> on a broken entry (F-0905)",
+   "inventory_hint": {
+    "globals_read": [
+     "^IVG.CypherCompiled"
+    ]
+   }
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.Props.Layout",
+   "role": "reader (process cache)",
+   "source": "iris_src/src/Graph/KG/Cypher/Props.cls:14-25 (Resolve :29-41, Stamp :106-110)",
+   "reads": {
+    "tables": [
+     "%Dictionary.CompiledStorage",
+     "%Dictionary.CompiledStorageIndex",
+     "%Dictionary.CompiledIndex",
+     "%Dictionary.CompiledStorageDataValue",
+     "%Dictionary.CompiledClass"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "^||IVG.CypherProps(\"stamp\"/\"data\"/\"index\"/\"slot\")"
+    ]
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "",
+   "inventory_hint": {
+    "globals_written": [
+     "^||IVG.CypherProps"
+    ],
+    "globals_killed": [
+     "^||IVG.CypherProps"
+    ]
+   }
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.Props.Get",
+   "role": "reader",
+   "source": "iris_src/src/Graph/KG/Cypher/Props.cls:44-72",
+   "reads": {
+    "tables": [
+     "Graph_KG.rdf_props (SQL fallback, :64-70)"
+    ],
+    "globals": [
+     "rdf_props pkprops index and data globals by name (:57-60)"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "%ivgCypherPropsStmt (process public variable, :64-67)",
+     "^||IVG.CypherProps (through Layout)"
+    ]
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [
+    "no LOCK, no snapshot: globals read with $Order/$Data at the moment of each read; SQL by %SQL.Statement at the process default isolation (read uncommitted, P-0002); NAT-T4.6"
+   ],
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/09-footprint.json#read_off",
+    "run_id": "b-09-footprint",
+    "declared_stores": [],
+    "observed_stores": [],
+    "match": true,
+    "undeclared": [],
+    "records": 0,
+    "outside_txn": 0,
+    "transaction_units": [],
+    "pids": [],
+    "reader_pid": "14786",
+    "notes": "off mode: an interpreted native read writes nothing persistent in AUDITB (process-private globals are not journaled)"
+   },
+   "notes": "",
+   "inventory_hint": {
+    "globals_written": [
+     "^||IVG.CypherProps"
+    ],
+    "globals_killed": [
+     "^||IVG.CypherProps"
+    ],
+    "globals_read": [
+     "^||IVG.CypherProps"
+    ],
+    "tables_read": [
+     "rdf_props"
+    ]
+   }
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.Props.Begin",
+   "role": "writer (process-private)",
+   "source": "iris_src/src/Graph/KG/Cypher/Props.cls:76-79",
+   "reads": {
+    "tables": [
+     "%Dictionary (Layout)"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "^||IVG.CypherProps(\"run\")"
+    ]
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/09-footprint.json#read_off",
+    "run_id": "b-09-footprint",
+    "declared_stores": [],
+    "observed_stores": [],
+    "match": true,
+    "undeclared": [],
+    "records": 0,
+    "outside_txn": 0,
+    "transaction_units": [],
+    "pids": [],
+    "reader_pid": "14786",
+    "notes": "off mode: an interpreted native read writes nothing persistent in AUDITB (process-private globals are not journaled)"
+   },
+   "notes": "",
+   "inventory_hint": {
+    "globals_written": [
+     "^||IVG.CypherProps"
+    ],
+    "globals_killed": [
+     "^||IVG.CypherProps"
+    ]
+   }
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.Props.End",
+   "role": "writer (process-private)",
+   "source": "iris_src/src/Graph/KG/Cypher/Props.cls:82-85",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "^||IVG.CypherProps(\"run\") (Kill)"
+    ]
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "",
+   "inventory_hint": {
+    "globals_killed": [
+     "^||IVG.CypherProps"
+    ]
+   }
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.Props.GetJson",
+   "role": "reader",
+   "source": "iris_src/src/Graph/KG/Cypher/Props.cls:88-97",
+   "reads": {
+    "tables": [
+     "as Props.Get"
+    ],
+    "globals": [
+     "as Props.Get"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "as Props.Get"
+    ]
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "",
+   "inventory_hint": {
+    "globals_written": [
+     "^||IVG.CypherProps"
+    ],
+    "globals_killed": [
+     "^||IVG.CypherProps"
+    ],
+    "globals_read": [
+     "^||IVG.CypherProps"
+    ],
+    "tables_read": [
+     "rdf_props"
+    ]
+   }
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.Props.LayoutOK",
+   "role": "reader",
+   "source": "iris_src/src/Graph/KG/Cypher/Props.cls:100-103",
+   "reads": {
+    "tables": [
+     "as Props.Layout"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "^||IVG.CypherProps"
+    ]
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "",
+   "inventory_hint": {
+    "globals_written": [
+     "^||IVG.CypherProps"
+    ],
+    "globals_killed": [
+     "^||IVG.CypherProps"
+    ]
+   }
+  },
+  {
+   "id": "cls:Graph.KG.Cypher.SortKey.Key",
+   "role": "pure",
+   "source": "iris_src/src/Graph/KG/Cypher/SortKey.cls:9-151",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "",
+   "inventory_hint": {}
+  },
+  {
+   "id": "cls:IVG.CypherEngine.Local",
+   "role": "pure",
+   "source": "iris_src/src/IVG/CypherEngine.cls:27-33",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "the engine's (module 08 / 01 / 04)",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "object constructor",
+   "inventory_hint": {}
+  },
+  {
+   "id": "cls:IVG.CypherEngine.Remote",
+   "role": "pure",
+   "source": "iris_src/src/IVG/CypherEngine.cls:35-53",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "the engine's (module 08 / 01 / 04)",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "object constructor; default credentials _SYSTEM/SYS",
+   "inventory_hint": {}
+  },
+  {
+   "id": "cls:IVG.CypherEngine.EnsureEngine",
+   "role": "reader",
+   "source": "iris_src/src/IVG/CypherEngine.cls:56-94",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "the engine's (module 08 / 01 / 04)",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "builds an IRISGraphEngine (remote mode: opens an IRIS connection)",
+   "inventory_hint": {}
+  },
+  {
+   "id": "cls:IVG.CypherEngine.QueryJson",
+   "role": "reader or writer",
+   "source": "iris_src/src/IVG/CypherEngine.cls:97-132",
+   "reads": {
+    "tables": [
+     "any Cypher: Graph_KG tables, ^KG (module 08's write footprint for writes)"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [
+     "any Cypher: Graph_KG tables, ^KG (module 08's write footprint for writes)"
+    ],
+    "globals": []
+   },
+   "transaction": "the engine's (module 08 / 01 / 04)",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "execute_cypher without read_only: writes run too",
+   "inventory_hint": {}
+  },
+  {
+   "id": "cls:IVG.CypherEngine.Query",
+   "role": "reader or writer",
+   "source": "iris_src/src/IVG/CypherEngine.cls:135-138",
+   "reads": {
+    "tables": [
+     "as QueryJson"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [
+     "as QueryJson"
+    ],
+    "globals": []
+   },
+   "transaction": "the engine's (module 08 / 01 / 04)",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "",
+   "inventory_hint": {}
+  },
+  {
+   "id": "cls:IVG.CypherEngine.Scalar",
+   "role": "reader or writer",
+   "source": "iris_src/src/IVG/CypherEngine.cls:141-150",
+   "reads": {
+    "tables": [
+     "as QueryJson"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [
+     "as QueryJson"
+    ],
+    "globals": []
+   },
+   "transaction": "the engine's (module 08 / 01 / 04)",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "execute_cypher without read_only",
+   "inventory_hint": {}
+  },
+  {
+   "id": "cls:IVG.CypherEngine.GetLabelsJson",
+   "role": "reader",
+   "source": "iris_src/src/IVG/CypherEngine.cls:153-158",
+   "reads": {
+    "tables": [
+     "Graph_KG.rdf_labels (engine.get_labels)"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "the engine's (module 08 / 01 / 04)",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "",
+   "inventory_hint": {}
+  },
+  {
+   "id": "cls:IVG.CypherEngine.GetLabels",
+   "role": "reader",
+   "source": "iris_src/src/IVG/CypherEngine.cls:161-164",
+   "reads": {
+    "tables": [
+     "as GetLabelsJson"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "the engine's (module 08 / 01 / 04)",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "",
+   "inventory_hint": {}
+  },
+  {
+   "id": "cls:IVG.CypherEngine.GetNodeCount",
+   "role": "reader",
+   "source": "iris_src/src/IVG/CypherEngine.cls:167-171",
+   "reads": {
+    "tables": [
+     "Graph_KG.nodes / rdf_labels (engine.get_node_count)"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "the engine's (module 08 / 01 / 04)",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "",
+   "inventory_hint": {}
+  },
+  {
+   "id": "cls:IVG.CypherEngine.GetEdgeCount",
+   "role": "reader",
+   "source": "iris_src/src/IVG/CypherEngine.cls:174-178",
+   "reads": {
+    "tables": [
+     "Graph_KG.rdf_edges (engine.get_edge_count)"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "the engine's (module 08 / 01 / 04)",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "",
+   "inventory_hint": {}
+  },
+  {
+   "id": "cls:IVG.CypherEngine.NodeExists",
+   "role": "reader",
+   "source": "iris_src/src/IVG/CypherEngine.cls:181-185",
+   "reads": {
+    "tables": [
+     "Graph_KG.nodes"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "the engine's (module 08 / 01 / 04)",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "",
+   "inventory_hint": {}
+  },
+  {
+   "id": "cls:IVG.CypherEngine.GetLabelCountsJson",
+   "role": "reader",
+   "source": "iris_src/src/IVG/CypherEngine.cls:188-193",
+   "reads": {
+    "tables": [
+     "Graph_KG.rdf_labels"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "the engine's (module 08 / 01 / 04)",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "",
+   "inventory_hint": {}
+  },
+  {
+   "id": "cls:IVG.CypherEngine.GetLabelCounts",
+   "role": "reader",
+   "source": "iris_src/src/IVG/CypherEngine.cls:196-199",
+   "reads": {
+    "tables": [
+     "as GetLabelCountsJson"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "the engine's (module 08 / 01 / 04)",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "",
+   "inventory_hint": {}
+  },
+  {
+   "id": "cls:IVG.CypherEngine.InitSchemaJson",
+   "role": "writer",
+   "source": "iris_src/src/IVG/CypherEngine.cls:202-208",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [
+     "schema DDL, class deploy, Gen.DropAll (initialize_schema)"
+    ],
+    "globals": []
+   },
+   "transaction": "the engine's (module 08 / 01 / 04)",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "a lifecycle operation (module 01's footprint)",
+   "inventory_hint": {}
+  },
+  {
+   "id": "cls:IVG.CypherEngine.InitSchema",
+   "role": "writer",
+   "source": "iris_src/src/IVG/CypherEngine.cls:210-213",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [
+     "as InitSchemaJson"
+    ],
+    "globals": []
+   },
+   "transaction": "the engine's (module 08 / 01 / 04)",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "",
+   "inventory_hint": {}
+  },
+  {
+   "id": "cls:IVG.CypherEngine.RebuildKG",
+   "role": "writer",
+   "source": "iris_src/src/IVG/CypherEngine.cls:216-220",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [
+     "^KG rebuild (module 04's footprint)"
+    ],
+    "globals": []
+   },
+   "transaction": "the engine's (module 08 / 01 / 04)",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "",
+   "inventory_hint": {}
+  },
+  {
+   "id": "cls:IVG.CypherEngine.IsReady",
+   "role": "reader",
+   "source": "iris_src/src/IVG/CypherEngine.cls:223-230",
+   "reads": {
+    "tables": [
+     "Graph_KG tables"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "the engine's (module 08 / 01 / 04)",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "",
+   "inventory_hint": {}
+  },
+  {
+   "id": "cls:IVG.CypherEngine.SmokeTest",
+   "role": "writer",
+   "source": "iris_src/src/IVG/CypherEngine.cls:233-246",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [
+     "InitSchema when needed, then a node count"
+    ],
+    "globals": []
+   },
+   "transaction": "the engine's (module 08 / 01 / 04)",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "",
+   "inventory_hint": {}
+  },
+  {
+   "id": "py:iris_vector_graph/cypher/native_plan.py:plan_query",
+   "role": "pure",
+   "source": "iris_vector_graph/cypher/native_plan.py:50-59",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "",
+   "inventory_hint": {}
+  },
+  {
+   "id": "py:iris_vector_graph/cypher/native_plan.py:native_gate",
+   "role": "reader (cached gate facts)",
+   "source": "iris_vector_graph/cypher/native_plan.py:524-536",
+   "reads": {
+    "tables": [
+     "first use: engine gate probes (engine.py:559-611, 703-724)"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "",
+   "inventory_hint": {}
+  },
+  {
+   "id": "py:iris_vector_graph/cypher/native_route.py:NativeRoute.__init__",
+   "role": "pure",
+   "source": "iris_vector_graph/cypher/native_route.py:33-55",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "",
+   "inventory_hint": {}
+  },
+  {
+   "id": "py:iris_vector_graph/cypher/native_route.py:NativeRoute.sql_failed",
+   "role": "pure (in-memory route)",
+   "source": "iris_vector_graph/cypher/native_route.py:71-74",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "",
+   "inventory_hint": {}
+  },
+  {
+   "id": "py:iris_vector_graph/cypher/native_route.py:NativeRoute.next_path",
+   "role": "pure (in-memory route)",
+   "source": "iris_vector_graph/cypher/native_route.py:76-83",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "",
+   "inventory_hint": {}
+  },
+  {
+   "id": "py:iris_vector_graph/cypher/native_route.py:NativeRoute.record",
+   "role": "pure (in-memory route)",
+   "source": "iris_vector_graph/cypher/native_route.py:85-107",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "",
+   "inventory_hint": {}
+  },
+  {
+   "id": "py:iris_vector_graph/cypher/native_shadow.py:compare",
+   "role": "pure",
+   "source": "iris_vector_graph/cypher/native_shadow.py:29-69",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "",
+   "inventory_hint": {}
+  },
+  {
+   "id": "eng:IRISGraphEngine.execute_cypher[native]",
+   "role": "reader (native branch)",
+   "source": "iris_vector_graph/_engine/query.py:2032-2082 (_try_native :2118-2160, _run_native_plan :2202-2224)",
+   "reads": {
+    "tables": [
+     "Graph_KG.table_mappings (mapped-label check, :2162-2184)",
+     "gate probes on first use"
+    ],
+    "globals": [
+     "as Exec.Run"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "as Exec.Run (plan cache)"
+    ]
+   },
+   "transaction": "none of its own; a native read runs on the engine's native link (a separate process when from_connect knows the login, engine.py:1894-1942)",
+   "locks": [],
+   "nolock": [
+    "no LOCK, no snapshot: globals read with $Order/$Data at the moment of each read; SQL by %SQL.Statement at the process default isolation (read uncommitted, P-0002); NAT-T4.6"
+   ],
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/09-footprint.json#read_off",
+    "run_id": "b-09-footprint",
+    "declared_stores": [],
+    "observed_stores": [],
+    "match": true,
+    "undeclared": [],
+    "records": 0,
+    "outside_txn": 0,
+    "transaction_units": [],
+    "pids": [],
+    "reader_pid": "14786",
+    "notes": "off mode: an interpreted native read writes nothing persistent in AUDITB (process-private globals are not journaled)"
+   },
+   "notes": "",
+   "inventory_hint": {}
+  },
+  {
+   "id": "eng:IRISGraphEngine._routed_sql",
+   "role": "reader",
+   "source": "iris_vector_graph/_engine/query.py:2084-2110",
+   "reads": {
+    "tables": [
+     "see notes"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "SQL path of a routed shape (module 08's footprint); native retry on SQL failure",
+   "inventory_hint": {}
+  },
+  {
+   "id": "eng:IRISGraphEngine._try_native",
+   "role": "reader",
+   "source": "iris_vector_graph/_engine/query.py:2118-2160",
+   "reads": {
+    "tables": [
+     "see notes"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "plan, gate, translation cache, Exec.Run",
+   "inventory_hint": {}
+  },
+  {
+   "id": "eng:IRISGraphEngine._run_native_plan",
+   "role": "reader",
+   "source": "iris_vector_graph/_engine/query.py:2202-2224",
+   "reads": {
+    "tables": [
+     "see notes"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "Exec.Run, ReadPage, Drop",
+   "inventory_hint": {}
+  },
+  {
+   "id": "eng:IRISGraphEngine._shadow_compare",
+   "role": "reader",
+   "source": "iris_vector_graph/_engine/query.py:2226-2249",
+   "reads": {
+    "tables": [
+     "see notes"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "re-runs the SQL path without LIMIT for an unordered limited read",
+   "inventory_hint": {}
+  },
+  {
+   "id": "eng:IRISGraphEngine._names_mapped_label",
+   "role": "reader",
+   "source": "iris_vector_graph/_engine/query.py:2162-2184",
+   "reads": {
+    "tables": [
+     "see notes"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "reads the table mapping cache (Graph_KG.table_mappings)",
+   "inventory_hint": {}
+  },
+  {
+   "id": "env:IVG_NATIVE_CYPHER",
+   "role": "configuration",
+   "source": "iris_vector_graph/engine.py:302-306",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "",
+   "inventory_hint": {}
+  },
+  {
+   "id": "env:IVG_CYPHER_SHADOW",
+   "role": "configuration",
+   "source": "iris_vector_graph/_engine/query.py:2112-2116",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "",
+   "inventory_hint": {}
+  },
+  {
+   "id": "global:^IVG.CypherGen(\"mode\")",
+   "role": "configuration (operator write)",
+   "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:41-44; docs/ADMIN_GUIDE.md:774-779",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "^IVG.CypherGen(\"mode\") by a plain Set (any text)"
+    ]
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "unvalidated (F-0903)",
+   "inventory_hint": {}
+  },
+  {
+   "id": "lifecycle:deploy-DropAll",
+   "role": "writer",
+   "source": "iris_vector_graph/schema.py:2934-2941",
+   "reads": {
+    "tables": [],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "as Gen.DropAll"
+    ]
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/09-footprint.json#dropall",
+    "run_id": "b-09-footprint",
+    "declared_stores": [
+     "global:^IVG.CypherCompiled",
+     "global:^oddDEP"
+    ],
+    "observed_stores": [
+     "global:^IVG.CypherCompiled",
+     "global:^oddDEP"
+    ],
+    "match": true,
+    "undeclared": [],
+    "records": 13,
+    "outside_txn": 13,
+    "transaction_units": [
+     "auto"
+    ],
+    "pids": [
+     "14786"
+    ],
+    "reader_pid": "14786",
+    "notes": "DropAll kills the entries (and deletes IVGC classes: system globals, filtered); outside a transaction"
+   },
+   "notes": "only when the deploy installed classes; a failure is logged at debug and ignored (NAT-T5.24)",
+   "inventory_hint": {}
+  },
+  {
+   "id": "job:Graph.KG.Cypher.Gen.Build[job]",
+   "role": "writer",
+   "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:92-99 -> :163-222",
+   "reads": {
+    "tables": [],
+    "globals": [
+     "^IVG.CypherCompiled(h), (h, \"src\")",
+     "^IVG.CypherGen(\"breaktest\")"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "$List(^IVG.CypherCompiled(h), 1) = class and (.., 4) = \"ok\" (:207) or the error text (:210, :215) or \"refused...\" (:176)",
+     "class IVGC.P<h>: $System.OBJ.LoadStream + Compile (:204-205; class dictionary and routine globals, ^oddDEP journal-observed), $System.OBJ.Delete on failure (:213)",
+     "messages.log line on failure/refusal (:177, :212)"
+    ]
+   },
+   "transaction": "none: no TSTART; class compile is not transactional",
+   "locks": [
+    {
+     "lock": "^IVG.CypherCompiled(h)",
+     "mode": "+ exclusive",
+     "timeout": "0 (Quit when not granted, :167)",
+     "source": "iris_src/src/Graph/KG/Cypher/Gen.cls:166-167, released :172, :180, :220"
+    }
+   ],
+   "nolock": [],
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/09-footprint.json#read_job_new_shape",
+    "run_id": "b-09-footprint",
+    "declared_stores": [
+     "global:^IVG.CypherCompiled",
+     "global:^oddDEP"
+    ],
+    "observed_stores": [
+     "global:^IVG.CypherCompiled",
+     "global:^oddDEP"
+    ],
+    "match": true,
+    "undeclared": [],
+    "records": 51,
+    "outside_txn": 40,
+    "transaction_units": [
+     "auto"
+    ],
+    "pids": [
+     "14786",
+     "14840",
+     "828"
+    ],
+    "reader_pid": "14786",
+    "notes": "job mode, new shape: the reader writes the pending entry and its lines; the background job (another pid) writes elements 1 and 4; class compilation writes system globals only (filtered); all outside a transaction"
+   },
+   "notes": "background JOB started by For in job mode, one attempt (:95-98)",
+   "inventory_hint": {}
+  },
+  {
+   "id": "job:Graph.KG.Cypher.Exec.Part[worker]",
+   "role": "reader (worker)",
+   "source": "iris_src/src/Graph/KG/Cypher/Exec.cls:447-511 -> :540-554",
+   "reads": {
+    "tables": [
+     "Graph_KG.nodes (Exec.Anchors :856-869)",
+     "Graph_KG.rdf_props (Anchors :886-899, NamedEnds :1101-1109; Props.Get SQL fallback :64-70)",
+     "%Dictionary.CompiledStorage/CompiledStorageIndex/CompiledIndex/CompiledStorageDataValue/CompiledClass (Props.Resolve/Stamp :29-41, :106-110; NamedEnds :1103)"
+    ],
+    "globals": [
+     "^KG(\"label\", g, label, id) (RunA :241-266, NodeOK, Neighbours :1191-1197)",
+     "^KG(\"out\"/\"in\", g, s, p, o[, ekey]) (Neighbours :1174-1250)",
+     "^KG(\"__version\") (Recall :817)",
+     "rdf_props data/index storage globals by name (Props.Get :56-60; RunA tQ(\"pd\") :131-132)",
+     "degree cache via Graph.KG.Adj.Cached (module 04)",
+     "^IVG.CypherCompiled(h) (Gen.For :70)",
+     "^IVG.CypherGen(\"mode\"/\"breakfor\"/\"breakwrite\"/\"breaktest\") (Gen :43, :78, :267, :193)"
+    ]
+   },
+   "writes": {
+    "tables": [],
+    "globals": [
+     "^IRIS.Temp.IVG.Cypher(share, \"rows\"/\"sort\"/\"k\"/\"c\"/\"d\"/\"seq\") (Export :560-589, Out :1882-1899)",
+     "^||IVG.VLWorker",
+     "^||IVG.CypherProps",
+     "^||IVG.CypherRun"
+    ]
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [
+    "no LOCK, no snapshot: globals read with $Order/$Data at the moment of each read; SQL by %SQL.Statement at the process default isolation (read uncommitted, P-0002); NAT-T4.6"
+   ],
+   "journal_validation": {
+    "log": "$RUN_DIR/breadth-b/live/09-footprint.json#read_parallel",
+    "run_id": "b-09-footprint",
+    "declared_stores": [],
+    "observed_stores": [],
+    "match": true,
+    "undeclared": [],
+    "records": 0,
+    "outside_txn": 0,
+    "transaction_units": [],
+    "pids": [],
+    "reader_pid": "14786",
+    "notes": "workers write ^IRIS.Temp.IVG.Cypher (IRISTEMP, not journaled): nothing persistent in AUDITB"
+   },
+   "notes": "%SYSTEM.WorkMgr worker; runs in its coordinator's compile mode (pPlan genmode, :454)",
+   "inventory_hint": {}
+  },
+  {
+   "id": "gate:engine._native_privileges",
+   "role": "reader (cited gate fact, not owned)",
+   "source": "iris_vector_graph/engine.py:559-586",
+   "reads": {
+    "tables": [
+     "%Dictionary / Graph_KG tables (see notes)"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "SELECT TOP 1 1 FROM Graph_KG.<t> WHERE 1 = 0 on four tables (existence-only), cached per engine",
+   "inventory_hint": {}
+  },
+  {
+   "id": "gate:engine._native_executor_current",
+   "role": "reader (cited gate fact, not owned)",
+   "source": "iris_vector_graph/engine.py:588-611",
+   "reads": {
+    "tables": [
+     "%Dictionary / Graph_KG tables (see notes)"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "Native call Exec.PlanVersion, cached per engine",
+   "inventory_hint": {}
+  },
+  {
+   "id": "gate:engine._adjacency_indexed",
+   "role": "reader (cited gate fact, not owned)",
+   "source": "iris_vector_graph/engine.py:703-724",
+   "reads": {
+    "tables": [
+     "%Dictionary / Graph_KG tables (see notes)"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "GraphSchema.adjacency_index_kind on rdf_edges only (F-0906), cached per engine",
+   "inventory_hint": {}
+  },
+  {
+   "id": "gate:engine._iris_obj",
+   "role": "reader (cited gate fact, not owned)",
+   "source": "iris_vector_graph/engine.py:1894-1942",
+   "reads": {
+    "tables": [
+     "%Dictionary / Graph_KG tables (see notes)"
+    ],
+    "globals": []
+   },
+   "writes": {
+    "tables": [],
+    "globals": []
+   },
+   "transaction": "none",
+   "locks": [],
+   "nolock": [],
+   "journal_validation": null,
+   "notes": "opens a dedicated Native API connection when the login is known (from_connect)",
+   "inventory_hint": {}
+  }
+ ]
+}

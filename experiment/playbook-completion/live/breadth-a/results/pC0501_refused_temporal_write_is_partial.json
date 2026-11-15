@@ -1,0 +1,22 @@
+{
+ "doc": "New (static candidate from the footprint sub-lane): TemporalIndex.WriteStores writes tout/tin/bucket/latest\n    before Adjacency.AssertTemporalRow, with no transaction of its own; when the structural row is refused (a predicate\n    over rdf_edges.p's width) the call raises yet the temporal stores keep the edge. Oracle: create_edge_temporal's\n    docstring \"A write IRIS refuses raises GraphWriteError and writes nothing\".",
+ "id": "pC0501_refused_temporal_write_is_partial",
+ "log": "$RUN_DIR/breadth-a/live/05-pC0501_refused_temporal_write_is_partial-20261113T232556.log",
+ "module": "05",
+ "observed": {
+  "call": "raised GraphWriteError: create_edge_temporal failed (SQLCODE -104), the temporal stores written before the error stay (the temporal write runs no transaction): <THROW> *%Exception.StatusException ERROR #5001: AssertTemporalRow edge: SQLCODE -104 Field 'Graph_KG.rdf_edges.p'",
+  "rows": 0,
+  "temporal_stores_left": {
+   "bucket": 10,
+   "tagg": 0,
+   "tin": 10,
+   "tout": 10
+  },
+  "tout_entry": 1
+ },
+ "oracle": "a refused temporal write raises and writes nothing (temporal.py create_edge_temporal docstring)",
+ "reproduced": true,
+ "seconds": 0.94,
+ "started": "2026-11-13T23:25:56",
+ "verdict": "raised, yet the temporal index holds the edge"
+}

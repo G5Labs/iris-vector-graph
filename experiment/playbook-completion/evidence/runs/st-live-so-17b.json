@@ -1,0 +1,15 @@
+{
+  "command": "locks.sh iris python experiment/playbook-completion/structural/order/so_live.py $RUN_DIR/structural/order/so-live-p17b.json P17b",
+  "experiment_head": "00206ce6b39ee44140ab17aa7dfbb0ac46186f4d",
+  "id": "st-live-so-17b",
+  "kind": "live",
+  "lane": "structural",
+  "log": "$RUN_DIR/structural/order/so-live-p17b.json",
+  "log_bytes": 1026,
+  "log_sha256": "83eee48572a82e6dfb26de4f636063b4761e6092ae6cf0e761068928baa1eacd",
+  "observes": "AUDITD, attribution controls for query_nodes(limit): a harness cursor in a child process sending the product statement SELECT node_id FROM Graph_KG.nodes FETCH FIRST 2 ROWS ONLY exits -11 (SIGSEGV) in both insertion orders; the TOP spelling SELECT TOP 2 node_id FROM Graph_KG.nodes returns 0 and answers [so17:0,so17:1] forward vs [so17:4,so17:3] reverse: the FETCH FIRST crash is the engine/driver behaviour on this setup (IRIS 2026.1 Community, intersystems_irispython 5.3.2) that query_nodes walks into without its own _fetch_first_unsafe check (F-C1743), and the unordered prefix it would take follows insertion order (F-C1742)",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T12:08:44+00:00",
+  "result": "fail"
+}

@@ -1,0 +1,27 @@
+{
+ "doc": "F-0406: with the warm stamp current, killing ^KG(\"degc\", g) alone (ADR-0012: \"Kill it and every answer is still\n    right\") makes degree centrality answer 0 for every node until the next write.",
+ "id": "p0406_degc_kill_under_warm_stamp",
+ "log": "$RUN_DIR/breadth-a/live/04-all-20261113T224336.log",
+ "module": "04",
+ "observed": {
+  "Adj.Degree_a": 2,
+  "all_warm": 1,
+  "all_warm_after_kill": 1,
+  "centrality_after_kill": {
+   "a": 0,
+   "b": 0,
+   "c": 0
+  },
+  "centrality_before": {
+   "a": 2,
+   "b": 0,
+   "c": 0
+  },
+  "warm_fill": 1
+ },
+ "oracle": "ADR-0012:17 the cache is derived: kill it and every answer is still right",
+ "reproduced": true,
+ "seconds": 0.12,
+ "started": "2026-11-13T22:43:37",
+ "verdict": "degree centrality answered 0 for a node with 2 out-edges"
+}

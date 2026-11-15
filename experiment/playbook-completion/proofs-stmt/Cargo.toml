@@ -1,0 +1,39 @@
+[package]
+name = "ivg-proofs-stmt"
+version = "0.1.0"
+edition = "2021"
+description = "Completion audit, lane proofs-stmt (steer 14; proof debt D-2 statements and D-3 handlers): the pin's storage statements of Graph.KG.Eraser.EraseGraph, hand-translated into the operation language of the IRIS 2026.1 contract's Verus specification (proofs-env2, a path dependency, unchanged), proved in that model to perform the core Store contract's EraseRows and EraseIndex steps under an abstraction to proofs/ (a path dependency, unchanged); the head-lock discipline of proofs-env2 for the reviewed program; the as-built departure F-1201 and statement mutants as located controls with proved counterexamples; exec counterparts verified equal, which the harness (harness/) replays against the correspondence lane's recorded journal traces."
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+vstd = { version = "=0.0.0-2026-09-20-0158", features = ["std", "alloc"] }
+actors = { git = "file:///home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/playbook-reference-actors", rev = "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877" }
+ivg-proofs-env2 = { path = "../proofs-env2" }
+ivg-core-proofs = { path = "../proofs" }
+
+[patch.crates-io]
+verus_builtin_macros = { git = "file:///home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/playbook-reference-actors", rev = "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877" }
+
+[features]
+# Located controls. Each feature replaces exactly one element of the reviewed EraseGraph program (src/prog.rs,
+# `active_mut` / `design_head`) by the pin's as-built element or by a statement mutant. Every theorem that needs the
+# element must fail exactly at the lines marked `// LOCATE <feature>`, every other function must verify, and the
+# control's counterexample (src/cx.rs, always compiled) must verify. tools/run_proofs.py checks this.
+#@CONTROLS-BEGIN
+ctl_f1201_erase_no_head_lock = []   # finding F-1201; EraseGraph takes no ledger head lock (Eraser.cls:47-261); counterexample cx_f1201_interleaving
+ctl_mut_drop_edges_delete = []   # mutant: drop the DELETE FROM Graph_KG.rdf_edges (Eraser.cls:217-219); counterexample cx_mut_drop_edges_delete
+ctl_mut_drop_ledger_cleanup = []   # mutant: drop EraseLedgerFor (Eraser.cls:256); counterexample cx_mut_drop_ledger_cleanup
+ctl_mut_ledger_first = []   # mutant: reorder EraseLedgerFor before the row DELETEs (Eraser.cls:256 moved before :130); counterexample cx_mut_ledger_first
+ctl_mut_cleanup_after_commit = []   # mutant: reorder EraseLedgerFor after TCOMMIT (Eraser.cls:256 moved after :258); counterexample cx_mut_cleanup_after_commit
+#@CONTROLS-END
+
+[package.metadata.verus]
+verify = true
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(verus_only)', 'cfg(verus_keep_ghost)', 'cfg(verus_keep_ghost_body)'] }
+
+[workspace]

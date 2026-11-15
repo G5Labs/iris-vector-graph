@@ -1,0 +1,173 @@
+{
+ "sub_lane": "reads2",
+ "cells": [
+  {
+   "gate": "3.4-declared-reads",
+   "module": "03",
+   "status": "closed",
+   "evidence": [
+    "run:st-control-reads-selftest",
+    "run:st-live-reads-a",
+    "experiment/playbook-completion/structural/reads/method.json",
+    "experiment/playbook-completion/structural/reads/noninterference.py",
+    "run:st-live-reads2-12-18",
+    "run:st-live-reads2-03-11",
+    "run:st-control-reads2-selftest",
+    "run:st-control-reads-selftest",
+    "experiment/playbook-completion/structural/reads2/method.json",
+    "experiment/playbook-completion/structural/reads2/static.json",
+    "run:st-live-susp-json-field"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "all 43 inventoried read/both entry points checked: 23 in st-live-reads-a, 18 actions (19 entries) in st-live-reads2-03-11, PropWrite.SetVal justified statically (reads only the row it is called for, PropWrite.cls:32-63); all hold under outside perturbations, but get_json_field_values lets its field argument rewrite the statement and read other keys' rows (F-C0341, st-live-susp-json-field)",
+   "as_built_findings": [
+    "F-C0341"
+   ],
+   "remaining": "non-interference sees only reads that reach the answer, under the perturbations listed per action"
+  },
+  {
+   "gate": "3.4-declared-reads",
+   "module": "11",
+   "status": "closed",
+   "evidence": [
+    "run:st-control-reads-selftest",
+    "run:st-live-reads-b",
+    "experiment/playbook-completion/structural/reads/method.json",
+    "experiment/playbook-completion/structural/reads/noninterference.py",
+    "run:st-live-reads2-12-18",
+    "run:st-live-reads2-03-11",
+    "run:st-control-reads2-selftest",
+    "run:st-control-reads-selftest",
+    "experiment/playbook-completion/structural/reads2/method.json",
+    "experiment/playbook-completion/structural/reads2/static.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "all 37 inventoried read/both entry points checked: 1 in st-live-reads-b, 15 actions in st-live-reads2-03-11, 19 pure helpers / process-private / caller-statement readers justified statically (reads2/static.json); no violation seen",
+   "as_built_findings": [],
+   "remaining": "non-interference sees only reads that reach the answer, under the perturbations listed per action"
+  },
+  {
+   "gate": "3.4-declared-reads",
+   "module": "12",
+   "status": "closed",
+   "evidence": [
+    "run:st-control-reads-selftest",
+    "run:st-live-reads-b",
+    "experiment/playbook-completion/structural/reads/method.json",
+    "experiment/playbook-completion/structural/reads/noninterference.py",
+    "run:st-live-reads2-12-18",
+    "run:st-live-reads2-03-11",
+    "run:st-control-reads2-selftest",
+    "run:st-control-reads-selftest",
+    "experiment/playbook-completion/structural/reads2/method.json",
+    "experiment/playbook-completion/structural/reads2/static.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "all 3 entry points checked (EraseEdges and EraseAll added in st-live-reads2-12-18); no violation seen",
+   "as_built_findings": [],
+   "remaining": "non-interference sees only reads that reach the answer, under the perturbations listed per action"
+  },
+  {
+   "gate": "3.4-declared-reads",
+   "module": "13",
+   "status": "closed",
+   "evidence": [
+    "run:st-control-reads-selftest",
+    "run:st-live-reads-b",
+    "experiment/playbook-completion/structural/reads/method.json",
+    "experiment/playbook-completion/structural/reads/noninterference.py",
+    "run:st-live-reads2-12-18",
+    "run:st-live-reads2-03-11",
+    "run:st-control-reads2-selftest",
+    "run:st-control-reads-selftest",
+    "experiment/playbook-completion/structural/reads2/method.json",
+    "experiment/playbook-completion/structural/reads2/static.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "all 3 entry points checked (a bounded redaction and its resume, redaction_in_progress added); no violation seen",
+   "as_built_findings": [],
+   "remaining": "non-interference sees only reads that reach the answer, under the perturbations listed per action"
+  },
+  {
+   "gate": "3.4-declared-reads",
+   "module": "14",
+   "status": "closed",
+   "evidence": [
+    "run:st-control-reads-selftest",
+    "run:st-live-reads-b",
+    "experiment/playbook-completion/structural/reads/method.json",
+    "experiment/playbook-completion/structural/reads/noninterference.py",
+    "run:st-live-reads2-12-18",
+    "run:st-live-reads2-03-11",
+    "run:st-control-reads2-selftest",
+    "run:st-control-reads-selftest",
+    "experiment/playbook-completion/structural/reads2/method.json",
+    "experiment/playbook-completion/structural/reads2/static.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "all 7 entry points checked (diff, export_reconstruction, the ledger_records page reader, CanonicalRecord, post-commit properties added); no violation seen",
+   "as_built_findings": [],
+   "remaining": "non-interference sees only reads that reach the answer, under the perturbations listed per action"
+  },
+  {
+   "gate": "3.4-declared-reads",
+   "module": "18",
+   "status": "closed",
+   "evidence": [
+    "run:st-control-reads-selftest",
+    "run:st-live-reads-c",
+    "run:st-live-reads-b (module 18 verdict there is a harness artifact, superseded)",
+    "experiment/playbook-completion/structural/reads/method.json",
+    "experiment/playbook-completion/structural/reads/noninterference.py",
+    "run:st-live-reads2-12-18",
+    "run:st-live-reads2-03-11",
+    "run:st-control-reads2-selftest",
+    "run:st-control-reads-selftest",
+    "experiment/playbook-completion/structural/reads2/method.json",
+    "experiment/playbook-completion/structural/reads2/static.json"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "all 5 entry points checked (snapshot_info, POST /admin/snapshot in-process, Snapshot.NodeValueJSON, the server-file helpers added); no violation seen",
+   "as_built_findings": [],
+   "remaining": "non-interference sees only reads that reach the answer, under the perturbations listed per action"
+  },
+  {
+   "gate": "3.4-declared-reads",
+   "module": "10",
+   "status": "open",
+   "evidence": [
+    "run:st-control-reads-selftest",
+    "run:st-live-reads-b",
+    "experiment/playbook-completion/structural/reads/method.json",
+    "experiment/playbook-completion/structural/reads/noninterference.py",
+    "run:st-live-reads2-12-18",
+    "run:st-live-reads2-03-11",
+    "run:st-control-reads2-selftest",
+    "run:st-control-reads-selftest",
+    "experiment/playbook-completion/structural/reads2/method.json",
+    "experiment/playbook-completion/structural/reads2/static.json",
+    "run:st-live-susp-nkg-merged"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "19 checked actions hold (st-live-reads-b), but the ^NKG centrality class methods called directly answer every graph merged (F-C1041, st-live-susp-nkg-merged)",
+   "as_built_findings": [
+    "F-C1041"
+   ],
+   "remaining": "200 of 219 inventoried read/both entry points not checked: cls:Graph.KG.Algorithms.WCCJson, cls:Graph.KG.Algorithms.CDLPJson, cls:Graph.KG.PageRank.RunJson, cls:Graph.KG.PageRank.CheckArgs, cls:Graph.KG.PageRank.NodeSeeds, cls:Graph.KG.PageRank.WithUnscored, cls:Graph.KG.PageRank.Run, cls:Graph.KG.PageRank.PageRankGlobalJson, cls:Graph.KG.PageRankEmbedded.ComputePageRank, cls:Graph.KG.PageRankEmbedded.ComputePageRankWithMetrics, cls:Graph.KG.Centrality.DegreeCentralityJson, cls:Graph.KG.Communities.TriangleCountJson, cls:Graph.KG.Communities.KCoreJson, cls:Graph.KG.Communities.SCCJson, cls:Graph.KG.Communities.LeidenJson, cls:Graph.KG.Communities.ClosenessJsonPy, cls:Graph.KG.Communities.LeidenJsonPy, cls:Graph.KG.Communities.LeidenJsonAuto, cls:Graph.KG.Subgraph.SubgraphJson, cls:Graph.KG.Subgraph.PPRGuidedJson, cls:Graph.KG.Traversal.DijkstraProc, cls:Graph.KG.Traversal.BuildKG, cls:Graph.KG.Traversal.NKGEdgeCount, cls:Graph.KG.Traversal.NKGNodeCount, cls:Graph.KG.Traversal.NKGLiveNodeCount, cls:Graph.KG.Traversal.BuildNKG, cls:Graph.KG.Traversal.BackfillDegp, cls:Graph.KG.Traversal.Build2HopStats, cls:Graph.KG.Traversal.Build2HopExactStats, cls:Graph.KG.Traversal.KGEdgeCount, cls:Graph.KG.Traversal.NKGPopulated, cls:Graph.KG.Traversal.BFS, cls:Graph.KG.Traversal.BFSFast, cls:Graph.KG.Traversal.BFSJSON, cls:Graph.KG.Traversal.BFSFastJson, cls:Graph.KG.Traversal.BFSFastJsonDirect, cls:Graph.KG.Traversal.BFSFastJsonChunked, cls:Graph.KG.Traversal.BFSFastStream, cls:Graph.KG.Traversal.ReadLargeOutChunk, cls:Graph.KG.Traversal.BFSFastJsonSorted, cls:Graph.KG.Traversal.BFSFastCountDistinct, cls:Graph.KG.Traversal.ShortestPathJson, cls:Graph.KG.Traversal.DijkstraJson, cls:Graph.KG.Traversal.KHopCount, cls:Graph.KG.Traversal.KHopNeighborIds, cls:Graph.KG.Traversal.KHop2Count, cls:Graph.KG.Traversal.KHop2NeighborIds, cls:Graph.KG.Traversal.KHop2CountFast, cls:Graph.KG.Traversal.KHop2CountExact, cls:Graph.KG.TraversalBFS.BFS, cls:Graph.KG.TraversalBFS.BFSFast, cls:Graph.KG.TraversalBFS.BFSJSON, cls:Graph.KG.TraversalBFS.BFSFastJson, cls:Graph.KG.TraversalBFS.BFSFastJsonDirect, cls:Graph.KG.TraversalBFS.BFSFastJsonChunked, cls:Graph.KG.TraversalBFS.BFSFastStream, cls:Graph.KG.TraversalBFS.ReachTypes, cls:Graph.KG.TraversalBFS.ReadLargeOutChunk, cls:Graph.KG.TraversalBFS.BFSFastJsonSorted, cls:Graph.KG.TraversalBFS.BFSFastCountDistinct, cls:Graph.KG.TraversalKHop.KHopCount, cls:Graph.KG.TraversalKHop.KHopNeighborIds, cls:Graph.KG.TraversalKHop.KHop2Count, cls:Graph.KG.TraversalKHop.KHop2NeighborIds, cls:Graph.KG.TraversalKHop.KHop2CountFast, cls:Graph.KG.TraversalKHop.KHop2CountExact, cls:Graph.KG.TraversalPaths.ShortestPathJson, cls:Graph.KG.TraversalPaths.ShortestLength, cls:Graph.KG.TraversalPaths.DijkstraJson, cls:Graph.KG.TraversalPaths.DijkstraCost, cls:Graph.KG.VarLength.Ends, cls:Graph.KG.VarLength.NamedEnds, cls:Graph.KG.VarLength.EndsCount, cls:Graph.KG.VarLength.EndsInto, cls:Graph.KG.VarLength.CPUs, cls:Graph.KG.VarLength.LastLevelPart, cls:Graph.KG.NKGAccel.UseNKG, cls:Graph.KG.NKGAccel.ResetCache, cls:Graph.KG.NKGAccel.Load, cls:Graph.KG.NKGAccel.LoadedPath, cls:Graph.KG.NKGAccel.Unload, cls:Graph.KG.NKGAccel.IsLoaded, cls:Graph.KG.NKGAccel.WarmAdjCache, cls:Graph.KG.NKGAccel.Capabilities, cls:Graph.KG.NKGAccel.BuildNKGRust, cls:Graph.KG.NKGAccel.GetFirstNKGNode, cls:Graph.KG.NKGAccel.ExportAdjacency, cls:Graph.KG.NKGAccel.ReadLargeOutChunk, cls:Graph.KG.NKGAccel.KHopNeighbors, cls:Graph.KG.NKGAccel.KHopNeighborsSorted, cls:Graph.KG.NKGAccel.KHopJson, cls:Graph.KG.NKGAccel.RandomWalkJson, cls:Graph.KG.NKGAccel.BFSJson, cls:Graph.KG.NKGAccel.ShortestPathNKG, cls:Graph.KG.NKGAccel.CountDistinctKHop, cls:Graph.KG.NKGAccel.Build2HopExact, cls:Graph.KG.NKGAccel.ClosenessGlobal, cls:Graph.KG.NKGAccel.ClosenessGlobalMSBFS, cls:Graph.KG.NKGAccel.EigenvectorGlobal, cls:Graph.KG.NKGAccel.BetweennessGlobal, cls:Graph.KG.NKGAccel.BetweennessWorker, cls:Graph.KG.NKGAccel.BetweennessGlobalParallel, cls:Graph.KG.NKGAccel.BetweennessNeighborhood, cls:Graph.KG.NKGAccelAdjacency.ExportAdjacency, cls:Graph.KG.NKGAccelAdjacency.ExportAdjacencyWithPreds, cls:Graph.KG.NKGAccelAdjacency.StoreLargeOut, cls:Graph.KG.NKGAccelAdjacency.ReadLargeOutChunk, cls:Graph.KG.NKGAccelCentrality.ClosenessGlobal, cls:Graph.KG.NKGAccelCentrality.EigenvectorGlobal, cls:Graph.KG.NKGAccelCentrality.BetweennessGlobal, cls:Graph.KG.NKGAccelCentrality.BetweennessWorker, cls:Graph.KG.NKGAccelCentrality.BetweennessGlobalParallel, cls:Graph.KG.NKGAccelCentrality.BetweennessNeighborhood, cls:Graph.KG.NKGAccelCentrality.ClosenessGlobalMSBFS, cls:Graph.KG.NKGAccelLoader.UseNKG, cls:Graph.KG.NKGAccelLoader.ResetCache, cls:Graph.KG.NKGAccelLoader.Load, cls:Graph.KG.NKGAccelLoader.LoadedPath, cls:Graph.KG.NKGAccelLoader.LoadError, cls:Graph.KG.NKGAccelLoader.Unload, cls:Graph.KG.NKGAccelLoader.IsLoaded, cls:Graph.KG.NKGAccelLoader.WarmAdjCache, cls:Graph.KG.NKGAccelLoader.Capabilities, cls:Graph.KG.NKGAccelLoader.BuildNKGRust, cls:Graph.KG.NKGAccelLoader.GetFirstNKGNode, cls:Graph.KG.NKGAccelTraversal.KHopNeighbors, cls:Graph.KG.NKGAccelTraversal.KHopNeighborsSorted, cls:Graph.KG.NKGAccelTraversal.KHopJson, cls:Graph.KG.NKGAccelTraversal.RandomWalkJson, cls:Graph.KG.NKGAccelTraversal.LastBfsPath, cls:Graph.KG.NKGAccelTraversal.LastBfsError, cls:Graph.KG.NKGAccelTraversal.LastBfsChunks, cls:Graph.KG.NKGAccelTraversal.BFSJson, cls:Graph.KG.NKGAccelTraversal.ShortestPathNKG, cls:Graph.KG.NKGAccelTraversal.CountDistinctKHop, cls:Graph.KG.NKGAccelTraversal.StructuralGuard, cls:Graph.KG.NKGAccelTraversal.Build2HopExact, cls:Graph.KG.ArnoAccel.LibPath, cls:Graph.KG.ArnoAccel.TrustedPath, cls:Graph.KG.ArnoAccel.RequireCallout, cls:Graph.KG.ArnoAccel.LoadedPath, cls:Graph.KG.ArnoAccel.LibExists, cls:Graph.KG.ArnoAccel.OpenLibrary, cls:Graph.KG.ArnoAccel.Load, cls:Graph.KG.ArnoAccel.GetLibPath, cls:Graph.KG.ArnoAccel.IsAvailable, cls:Graph.KG.ArnoAccel.ReaderRevisions, cls:Graph.KG.ArnoAccel.LibraryVersion, cls:Graph.KG.ArnoAccel.PageRankNativeJson, cls:Graph.KG.ArnoAccel.PPRNativeJson, cls:Graph.KG.ArnoAccel.WCCNativeJson, cls:Graph.KG.ArnoAccel.CDLPNativeJson, cls:Graph.KG.ArnoAccel.SubgraphNativeJson, cls:Graph.KG.ArnoAccel.BuildGraphJson, cls:Graph.KG.ArnoAccel.PageRankGlobalJson, cls:Graph.KG.ArnoAccel.PPRJson, cls:Graph.KG.ArnoAccel.WCCJson, cls:Graph.KG.ArnoAccel.CDLPJson, cls:Graph.KG.ArnoAccel.SubgraphJson, cls:Graph.KG.ArnoAccel.KhopSampleJson, cls:Graph.KG.ArnoAccel.RandomWalkJson, cls:Graph.KG.ArnoAccel.NeighborAggJson, cls:Graph.KG.AlgoCache.Token, cls:Graph.KG.AlgoCache.Lookup, cls:Graph.KG.AlgoCache.Get, py:iris_vector_graph/stores/arno_bridge.py:resolve_lib_path, py:iris_vector_graph/stores/arno_bridge.py:record_configured_lib_path, py:iris_vector_graph/stores/arno_bridge.py:build_kg_adjacency_json, py:iris_vector_graph/stores/arno_bridge.py:build_kg_adjacency_chunked, py:iris_vector_graph/arno_readers.py:read_reader_report, py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.execute_vl_ends, py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.shortest_path_length, py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.execute_shortest_path, py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.execute_subgraph, py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.execute_degree_centrality, py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.execute_betweenness_neighborhood, eng:IRISGraphEngine.betweenness_centrality_neighborhood, eng:IRISGraphEngine.bfs_vector_rerank, eng:IRISGraphEngine.kg_GRAPH_PATH, eng:IRISGraphEngine.kg_GRAPH_WALK_TVF, eng:IRISGraphEngine.kg_MENTIONS, eng:IRISGraphEngine.kg_PPR, eng:IRISGraphEngine.kg_PPR_GUIDED_SUBGRAPH, eng:IRISGraphEngine.kg_RERANK, eng:IRISGraphEngine.rebuild_nkg, eng:IRISGraphEngine.sync, cypher:ivg.shortestpath.weighted, cypher:gds.pagerank.stream, cypher:gds.betweenness.stream, cypher:gds.shortestpath.dijkstra.stream, cypher:gds.shortestpath.dijkstra, cypher:ivg.degreecentrality, cypher:ivg.betweenness, cypher:ivg.closeness, cypher:ivg.eigenvector, cypher:ivg.leiden, cypher:ivg.trianglecount, cypher:ivg.scc, cypher:ivg.kcore, cypher:ivg.neighbors | undecided: random_walk(a) [default graph]: nodes visited (vacuous: no walk steps without the Arno library (F-1002)) | non-interference sees only reads that reach the answer, and only under the perturbations listed per action in structural/reads/method.json"
+  }
+ ]
+}

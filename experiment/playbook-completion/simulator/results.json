@@ -1,0 +1,680 @@
+{
+ "by_batch": {
+  "main": {
+   "committed_units": 8170,
+   "invariant_x_finding": {
+    "I2b|F-0303": 6,
+    "I2b|F-1114": 1,
+    "I3|F-1302": 10,
+    "I4|F-1303": 4,
+    "I5|F-1303": 1,
+    "I6|F-CS01": 4,
+    "I8|F-1101": 33,
+    "I8|F-1306": 3
+   },
+   "journal_units": 45140,
+   "kills": 62,
+   "kills_mid_op": 43,
+   "observations": {
+    "kills": 62,
+    "marker_left_at_phase_end": 53,
+    "reader_checks": 515,
+    "reader_points_evaluated": 515,
+    "redaction_runs_left_open": 23,
+    "redactions_completed": 1124,
+    "replays": 312,
+    "unattributed_units": 0
+   },
+   "ok_by_kind": {
+    "commit": 3589,
+    "direct": 990,
+    "erase": 1929,
+    "hold": 487,
+    "reconstruct": 515,
+    "redact": 1299,
+    "verify": 827
+   },
+   "operations": 11905,
+   "ops_by_kind": {
+    "commit": 5090,
+    "direct": 991,
+    "erase": 1952,
+    "hold": 488,
+    "reconstruct": 559,
+    "redact": 1997,
+    "verify": 828
+   },
+   "persistent_by_invariant": {
+    "I2b": 4,
+    "I3": 10,
+    "I4": 4,
+    "I5": 1,
+    "I6": 4,
+    "I8": 36
+   },
+   "phase_minutes": 43.2,
+   "phase_seconds": 2589.2600000000025,
+   "probe_schedules": 111,
+   "quiescent_checks": 408,
+   "refusals": {
+    "commit:ChangesetOperationError": 1073,
+    "commit:IdempotencyConflictError": 95,
+    "commit:IdempotencyRedactedError": 36,
+    "commit:LedgerInconsistencyError": 20,
+    "commit:NodeNotFoundError": 177,
+    "commit:OperationalError": 4,
+    "commit:RedactionInProgressError": 96,
+    "direct:GraphWriteError": 1,
+    "erase:GraphWriteError": 1,
+    "erase:RuntimeError": 22,
+    "hold:RuntimeError": 1,
+    "reconstruct:RedactionInProgressError": 44,
+    "redact:RedactionInProgressError": 161,
+    "redact:RedactionTargetLiveError": 533,
+    "redact:RuntimeError": 4,
+    "verify:RuntimeError": 1
+   },
+   "replay_mismatch_seeds": [],
+   "schedules": 204,
+   "schedules_by_template": {
+    "general": 204
+   },
+   "schedules_with_violation": {
+    "I2b": 7,
+    "I3": 4,
+    "I4": 1,
+    "I5": 1,
+    "I6": 4,
+    "I8": 31
+   },
+   "tenant_sets": {
+    "acme+beta": 45,
+    "acme+beta+gamma": 126,
+    "acme+gamma": 33
+   },
+   "transient_by_finding": {
+    "I2b|F-0303": 2,
+    "I2b|F-1114": 1
+   },
+   "verify_results": {
+    "diverges->diverges": 327,
+    "equal->equal": 28,
+    "redaction_in_progress->redaction_in_progress": 53
+   },
+   "violations_by_finding": {
+    "F-0303": 6,
+    "F-1101": 33,
+    "F-1114": 1,
+    "F-1302": 10,
+    "F-1303": 5,
+    "F-1306": 3,
+    "F-CS01": 4
+   },
+   "violations_by_invariant": {
+    "I2b": 7,
+    "I3": 10,
+    "I4": 4,
+    "I5": 1,
+    "I6": 4,
+    "I8": 36
+   },
+   "workers": {
+    "2": 77,
+    "3": 89,
+    "4": 38
+   }
+  },
+  "race": {
+   "committed_units": 5112,
+   "invariant_x_finding": {
+    "I2b|F-1114": 1,
+    "I6|F-CS01": 5,
+    "I8|F-1101": 13,
+    "I8|F-1306": 41
+   },
+   "journal_units": 19506,
+   "kills": 20,
+   "kills_mid_op": 13,
+   "observations": {
+    "kills": 20,
+    "marker_left_at_phase_end": 27,
+    "reader_checks": 168,
+    "reader_points_evaluated": 185,
+    "redaction_runs_left_open": 10,
+    "redactions_completed": 277,
+    "replays": 62,
+    "unattributed_units": 0
+   },
+   "ok_by_kind": {
+    "commit": 1895,
+    "direct": 207,
+    "erase": 377,
+    "hold": 48,
+    "reconstruct": 168,
+    "redact": 364,
+    "verify": 180
+   },
+   "operations": 4146,
+   "ops_by_kind": {
+    "commit": 2639,
+    "direct": 209,
+    "erase": 393,
+    "hold": 48,
+    "reconstruct": 218,
+    "redact": 459,
+    "verify": 180
+   },
+   "persistent_by_invariant": {
+    "I6": 5,
+    "I8": 54
+   },
+   "phase_minutes": 9.7,
+   "phase_seconds": 584.1099999999998,
+   "probe_schedules": 33,
+   "quiescent_checks": 300,
+   "refusals": {
+    "commit:ChangesetOperationError": 593,
+    "commit:IdempotencyConflictError": 1,
+    "commit:IdempotencyRedactedError": 77,
+    "commit:LedgerInconsistencyError": 3,
+    "commit:NodeNotFoundError": 65,
+    "commit:OperationalError": 2,
+    "commit:RedactionInProgressError": 3,
+    "direct:GraphWriteError": 2,
+    "erase:RuntimeError": 16,
+    "reconstruct:RedactionInProgressError": 50,
+    "redact:RedactionInProgressError": 30,
+    "redact:RedactionTargetLiveError": 65
+   },
+   "replay_mismatch_seeds": [],
+   "schedules": 100,
+   "schedules_by_template": {
+    "bounded-resume": 14,
+    "commit-into-offboard": 16,
+    "dual-offboard": 8,
+    "erase-vs-commit": 10,
+    "kill-redaction": 16,
+    "mixed": 8,
+    "reader-vs-redact": 12,
+    "retry-after-erase": 16
+   },
+   "schedules_with_violation": {
+    "I2b": 1,
+    "I6": 5,
+    "I8": 9
+   },
+   "tenant_sets": {
+    "acme+beta+gamma": 100
+   },
+   "transient_by_finding": {
+    "I2b|F-1114": 1
+   },
+   "verify_results": {
+    "diverges->diverges": 241,
+    "equal->equal": 32,
+    "redaction_in_progress->redaction_in_progress": 27
+   },
+   "violations_by_finding": {
+    "F-1101": 13,
+    "F-1114": 1,
+    "F-1306": 41,
+    "F-CS01": 5
+   },
+   "violations_by_invariant": {
+    "I2b": 1,
+    "I6": 5,
+    "I8": 54
+   },
+   "workers": {
+    "3": 100
+   }
+  }
+ },
+ "examples": {
+  "I2b|F-0303": [
+   {
+    "detail": "live statement 18 ('beta|n2', 'KNOWS', 'beta|n0', '') has no edge row",
+    "dir": "main",
+    "seed": 1007,
+    "why": "direct edge delete left the statement live"
+   },
+   {
+    "detail": "live statement 5 ('acme|n5', 'KNOWS', 'acme|n4', '') has no edge row",
+    "dir": "main",
+    "seed": 1080,
+    "why": "direct edge delete left the statement live"
+   },
+   {
+    "detail": "live statement 11 ('gamma|n2', 'KNOWS', 'gamma|n1', 'gamma_g') has no edge row",
+    "dir": "main",
+    "seed": 1125,
+    "why": "direct edge delete left the statement live"
+   },
+   {
+    "detail": "live statement 2 ('gamma|n1', 'KNOWS', 'gamma|n5', 'gamma_g') has no edge row",
+    "dir": "main",
+    "seed": 1161,
+    "why": "direct edge delete left the statement live"
+   }
+  ],
+  "I2b|F-1114": [
+   {
+    "detail": "live statement 9 ('beta|n4', 'KNOWS', 'beta|n0', '') has no edge row",
+    "dir": "main",
+    "seed": 1006,
+    "why": "erasure left a live statement whose row is gone"
+   },
+   {
+    "detail": "live statement 5 ('acme|n4', 'KNOWS', 'acme|n0', '') has no edge row",
+    "dir": "race",
+    "seed": 2051,
+    "why": "a commit read a concurrent erasure's uncommitted kill of the statement maps (erasure takes no head lock); the statement was killed by erase ['10', 0, 0]"
+   }
+  ],
+  "I3|F-1302": [
+   {
+    "detail": "tombstone at ['rec', 4, 2] of ('create_node', 'node', 'acme|n0'): node acme|n0 at the batch's commit",
+    "dir": "main",
+    "seed": 1077,
+    "why": "a commit made the target live in the redaction's unlocked window"
+   },
+   {
+    "detail": "tombstone at ['rec', 5, 1] of ('add_label', 'node', 'acme|n0'): node acme|n0 at the batch's commit",
+    "dir": "main",
+    "seed": 1077,
+    "why": "a commit made the target live in the redaction's unlocked window"
+   },
+   {
+    "detail": "tombstone at ['rec', 5, 2] of ('set_prop', 'node', 'acme|n0'): node acme|n0 at the batch's commit",
+    "dir": "main",
+    "seed": 1077,
+    "why": "a commit made the target live in the redaction's unlocked window"
+   },
+   {
+    "detail": "tombstone at ['rec', 5, 1] of ('create_node', 'node', 'gamma|n0'): node gamma|n0 at the batch's commit",
+    "dir": "main",
+    "seed": 1115,
+    "why": "a commit made the target live in the redaction's unlocked window"
+   }
+  ],
+  "I4|F-1303": [
+   {
+    "detail": "batch tombstoned 5 under marker e765dc65a940 not its own f550baa1e56d",
+    "dir": "main",
+    "seed": 1226,
+    "why": "two targets' runs shared the marker or counters"
+   },
+   {
+    "detail": "batch tombstoned 5 under marker e765dc65a940 not its own f550baa1e56d",
+    "dir": "main",
+    "seed": 1226,
+    "why": "two targets' runs shared the marker or counters"
+   },
+   {
+    "detail": "batch tombstoned 5 under marker e765dc65a940 not its own f550baa1e56d",
+    "dir": "main",
+    "seed": 1226,
+    "why": "two targets' runs shared the marker or counters"
+   },
+   {
+    "detail": "batch tombstoned 1 under marker e765dc65a940 not its own f550baa1e56d",
+    "dir": "main",
+    "seed": 1226,
+    "why": "two targets' runs shared the marker or counters"
+   }
+  ],
+  "I5|F-1303": [
+   {
+    "detail": "audit counts {2: 4, 3: 2, 4: 6, 6: 4, 8: 2, 10: 2, 13: 2} != this target's tombstones {3: 2, 10: 2, 13: 2}",
+    "dir": "main",
+    "seed": 1226,
+    "why": "two targets' runs shared the marker or counters"
+   }
+  ],
+  "I6|F-CS01": [
+   {
+    "detail": "tenant gamma: 2 string(s) remain after complete redaction, e.g. [\"^IVG.Ledger['idem', 'gamma-k-1033-11'] = (9, '16b522b9f01caf5b9b3f86896b11f9e45f32cee415df98d24e0a21a2e3eee921')\", \"ledger_revisions seq 9: ('9eccfe0fdffd11f1a6603a1e08fee210', '9eb614fadffd11f1a6603a1e08fee210', 'changeset', 'audit:sim:w1', 'ingest', '_SYSTEM', 1794641580915, 'gamma commit 1033-11'\"]",
+    "dir": "main",
+    "seed": 1033,
+    "why": "a revision with no records keeps its message, source, correlation id and idempotency key (and binding) through a complete redaction"
+   },
+   {
+    "detail": "tenant gamma: 2 string(s) remain after complete redaction, e.g. [\"^IVG.Ledger['idem', 'gamma-k-1037-10'] = (14, '5e669b46019f30eef760d184b0a7405b3f41cc4d1ce644e87e37a8f6902cd805')\", \"ledger_revisions seq 14: ('bc82ad02dffd11f1a6603a1e08fee210', 'bc8290d8dffd11f1a6603a1e08fee210', 'changeset', 'audit:sim:w2', 'ingest', '_SYSTEM', 1794641630759, 'gamma commit 1037-10'\"]",
+    "dir": "main",
+    "seed": 1037,
+    "why": "a revision with no records keeps its message, source, correlation id and idempotency key (and binding) through a complete redaction"
+   },
+   {
+    "detail": "tenant acme: 1 string(s) remain after complete redaction, e.g. [\"ledger_revisions seq 18: ('13cccefcdfff11f1a6603a1e08fee210', '13c199f4dfff11f1a6603a1e08fee210', 'changeset', 'audit:sim:w12', 'ingest', '_SYSTEM', 1794642206704, 'acme commit 1087-23'\"]",
+    "dir": "main",
+    "seed": 1087,
+    "why": "a revision with no records keeps its message, source, correlation id and idempotency key (and binding) through a complete redaction"
+   },
+   {
+    "detail": "tenant gamma: 2 string(s) remain after complete redaction, e.g. [\"^IVG.Ledger['idem', 'gamma-k-1092-7'] = (10, 'c5269967da65171ae2a3321c6b20d307319fb49b58dc5111b5981d3ca34ca248')\", \"ledger_revisions seq 10: ('31a6a1c1dfff11f1a6603a1e08fee210', '31a6770edfff11f1a6603a1e08fee210', 'changeset', 'audit:sim:w1', 'ingest', '_SYSTEM', 1794642256785, 'gamma commit 1092-7',\"]",
+    "dir": "main",
+    "seed": 1092,
+    "why": "a revision with no records keeps its message, source, correlation id and idempotency key (and binding) through a complete redaction"
+   }
+  ],
+  "I8|F-1101": [
+   {
+    "detail": "replayed commit ('11', 9, 0) wrote 2 content row(s) ['acme|n4']",
+    "dir": "main",
+    "seed": 1004,
+    "why": "replayed commit re-applied post-commit properties"
+   },
+   {
+    "detail": "replayed commit ('0', 8, 0) wrote 1 content row(s) ['acme|n2']",
+    "dir": "main",
+    "seed": 1005,
+    "why": "replayed commit re-applied post-commit properties"
+   },
+   {
+    "detail": "replayed commit ('11', 3, 0) wrote 2 content row(s) ['beta|n5']",
+    "dir": "main",
+    "seed": 1007,
+    "why": "replayed commit re-applied post-commit properties"
+   },
+   {
+    "detail": "replayed commit ('1', 9, 0) wrote 2 content row(s) ['gamma|n3']",
+    "dir": "main",
+    "seed": 1010,
+    "why": "replayed commit re-applied post-commit properties"
+   }
+  ],
+  "I8|F-1306": [
+   {
+    "detail": "replayed commit ('1', 3, 0) wrote 1 content row(s) ['acme|n2']",
+    "dir": "main",
+    "seed": 1011,
+    "why": "replayed commit re-applied post-commit properties"
+   },
+   {
+    "detail": "replayed commit ('0', 15, 0) wrote 1 content row(s) ['acme|n4']",
+    "dir": "main",
+    "seed": 1024,
+    "why": "replayed commit re-applied post-commit properties"
+   },
+   {
+    "detail": "replayed commit ('3', 10, 0) wrote 2 content row(s) ['gamma|n0']",
+    "dir": "main",
+    "seed": 1094,
+    "why": "replayed commit re-applied post-commit properties"
+   },
+   {
+    "detail": "replayed commit ('11', 0, 0) wrote 1 content row(s) ['beta|n0']",
+    "dir": "race",
+    "seed": 2012,
+    "why": "replayed commit re-applied post-commit properties"
+   }
+  ]
+ },
+ "gate": "5c-reviewers",
+ "invariant_x_finding": {
+  "I2b|F-0303": 6,
+  "I2b|F-1114": 2,
+  "I3|F-1302": 10,
+  "I4|F-1303": 4,
+  "I5|F-1303": 1,
+  "I6|F-CS01": 9,
+  "I8|F-1101": 46,
+  "I8|F-1306": 44
+ },
+ "invariants_with_no_violation": [
+  "ADJ",
+  "I1",
+  "I10",
+  "I11",
+  "I2",
+  "I3b",
+  "I7",
+  "I9"
+ ],
+ "known_findings_not_hit": {
+  "F-1201": "the erase-vs-commit template pre-populates the graph; with an edge in the graph the race makes the erasure fail and roll back (traces/f1201_native.py note), seen here as 15 SQLCODE -124 erase refusals",
+  "F-1402": "683 reconstruct() answers all matched a committed point",
+  "F-C1202": "no edge row without ^KG out at 708 quiescent points"
+ },
+ "lane": "simulator",
+ "liveness_observations": {
+  "bounded_calls": {
+   "complete": 473,
+   "incomplete": 262,
+   "incomplete_with_nothing_tombstoned_yet": 65
+  },
+  "erase_refused_under_concurrency": {
+   "SQLCODE -110 (lock conflict)": 3,
+   "SQLCODE -124 (foreign key)": 15
+  },
+  "note": "observations, not invariant violations: they are the documented effects of F-C1303 / F-C1307; refused erasures were checked by I10 (no committed write)",
+  "of_which_last_call_bounded_incomplete_F-C1303": 29,
+  "of_which_last_call_refused_target_live_F-C1307": 3,
+  "reconstruct_refused_redaction_in_progress": 94,
+  "redact_refused_redaction_in_progress": 191,
+  "redaction_markers_left_open_at_schedule_end": 32
+ },
+ "namespace": "AUDITA",
+ "new_findings": {
+  "F-CS01": {
+   "first_seed": 1033,
+   "hand_minimal_operations": 6,
+   "minimal_reproduced": "3/3",
+   "schedules": 9,
+   "shrink_candidate_runs": 41,
+   "shrunk_operations": 7
+  }
+ },
+ "oracle_self_test": {
+  "baseline_traces": 40,
+  "controls": {
+   "adjacency-missing": {
+    "baseline": 0,
+    "caught": true,
+    "invariant": "ADJ",
+    "mutated": 1,
+    "seed": 1000
+   },
+   "assigned-over-live": {
+    "baseline": 0,
+    "caught": true,
+    "invariant": "I11",
+    "mutated": 1,
+    "seed": 1000
+   },
+   "count-mismatch": {
+    "baseline": 0,
+    "caught": true,
+    "invariant": "I5",
+    "mutated": 1,
+    "seed": 1000
+   },
+   "drop-tuple": {
+    "baseline": 0,
+    "caught": true,
+    "invariant": "I1",
+    "mutated": 1,
+    "seed": 1000
+   },
+   "failed-op-wrote": {
+    "baseline": 0,
+    "caught": true,
+    "invariant": "I10",
+    "mutated": 1,
+    "seed": 1000
+   },
+   "foreign-marker": {
+    "baseline": 0,
+    "caught": true,
+    "invariant": "I4",
+    "mutated": 2,
+    "seed": 1000
+   },
+   "idem-rebind": {
+    "baseline": 0,
+    "caught": true,
+    "invariant": "I8",
+    "mutated": 1,
+    "seed": 1000
+   },
+   "kill-stmt": {
+    "baseline": 0,
+    "caught": true,
+    "invariant": "I2",
+    "mutated": 1,
+    "seed": 1000
+   },
+   "reader-wrong": {
+    "baseline": 0,
+    "caught": true,
+    "invariant": "I9",
+    "mutated": 1,
+    "seed": 1000
+   },
+   "residue": {
+    "baseline": 0,
+    "caught": true,
+    "invariant": "I6",
+    "mutated": 1,
+    "seed": 1000
+   },
+   "row-gone": {
+    "baseline": 0,
+    "caught": true,
+    "invariant": "I2b",
+    "mutated": 1,
+    "seed": 1000
+   },
+   "tombstone-live": {
+    "baseline": 0,
+    "caught": true,
+    "invariant": "I3",
+    "mutated": 1,
+    "seed": 1000
+   },
+   "verify-flip": {
+    "baseline": 0,
+    "caught": true,
+    "invariant": "I7",
+    "mutated": 1,
+    "seed": 1000
+   }
+  },
+  "pass": true
+ },
+ "persistent_by_invariant": {
+  "I2b": 4,
+  "I3": 10,
+  "I4": 4,
+  "I5": 1,
+  "I6": 9,
+  "I8": 90
+ },
+ "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "registry": {
+  "main": "sim-main-20261114",
+  "minimal_reproduction": "sim-fcs01-minimal",
+  "oracle_self_test": "sim-oracle-selftest",
+  "race": "sim-race-20261114",
+  "shrink": "sim-fcs01-ddmin-s1033"
+ },
+ "schedules_with_violation_by_invariant": {
+  "I2b": 8,
+  "I3": 4,
+  "I4": 1,
+  "I5": 1,
+  "I6": 9,
+  "I8": 40
+ },
+ "totals": {
+  "committed_transactions_checked": 13282,
+  "journal_units": 64646,
+  "kills": 82,
+  "kills_mid_operation": 56,
+  "lock_hold_minutes": {
+   "holds": 9,
+   "main": 45.7,
+   "max_hold_minutes": 9.3,
+   "minimal_replay": 0.5,
+   "note": "from holds.log; each hold is one tools/locks.sh iris command; <= 6 IRIS connections at once",
+   "pause_between_holds_s": 30,
+   "race": 11.2,
+   "shrink": 9.0
+  },
+  "ok_by_kind": {
+   "commit": 5484,
+   "direct": 1197,
+   "erase": 2306,
+   "hold": 535,
+   "reconstruct": 683,
+   "redact": 1663,
+   "verify": 1007
+  },
+  "operations": 16051,
+  "ops_by_kind": {
+   "commit": 7729,
+   "direct": 1200,
+   "erase": 2345,
+   "hold": 536,
+   "reconstruct": 777,
+   "redact": 2456,
+   "verify": 1008
+  },
+  "probe_lock_holds": 536,
+  "probe_schedules": 144,
+  "quiescent_verify_checks": 708,
+  "reader_answers_checked": 683,
+  "refusals": {
+   "commit:ChangesetOperationError": 1666,
+   "commit:IdempotencyConflictError": 96,
+   "commit:IdempotencyRedactedError": 113,
+   "commit:LedgerInconsistencyError": 23,
+   "commit:NodeNotFoundError": 242,
+   "commit:OperationalError": 6,
+   "commit:RedactionInProgressError": 99,
+   "direct:GraphWriteError": 3,
+   "erase:GraphWriteError": 1,
+   "erase:RuntimeError": 38,
+   "hold:RuntimeError": 1,
+   "reconstruct:RedactionInProgressError": 94,
+   "redact:RedactionInProgressError": 191,
+   "redact:RedactionTargetLiveError": 598,
+   "redact:RuntimeError": 4,
+   "verify:RuntimeError": 1
+  },
+  "replay_equals_engine": "304/304",
+  "schedules": 304,
+  "simulated_minutes_in_phases": 52.9,
+  "verify_expected_vs_product": {
+   "diverges->diverges": 568,
+   "equal->equal": 60,
+   "redaction_in_progress->redaction_in_progress": 80
+  },
+  "workers_per_schedule": {
+   "2": 77,
+   "3": 189,
+   "4": 38
+  }
+ },
+ "transient_by_finding": {
+  "I2b|F-0303": 2,
+  "I2b|F-1114": 2
+ },
+ "violations_by_finding": {
+  "F-0303": 6,
+  "F-1101": 46,
+  "F-1114": 2,
+  "F-1302": 10,
+  "F-1303": 5,
+  "F-1306": 44,
+  "F-CS01": 9
+ },
+ "violations_by_invariant": {
+  "I2b": 8,
+  "I3": 10,
+  "I4": 4,
+  "I5": 1,
+  "I6": 9,
+  "I8": 90
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "doc": "F-0409: inside a caller's open transaction, a sync() whose BuildKG fails runs TROLLBACK with no argument and\n    discards the caller's earlier uncommitted write. Oracle: CHANGELOG 4.6.4 (CHANGELOG.md:410-424) \"An IVG write never\n    commits or rolls back a transaction its caller opened\". The failing row is made as the upstream\n    test_a_failed_buildkg_leaves_the_adjacency_and_releases_the_rebuild_lock makes it (graph_id '0', %NOINDEX).",
+ "id": "p0409_failed_sync_rolls_back_caller",
+ "log": "$RUN_DIR/breadth-a/live/04-all-20261113T224336.log",
+ "module": "04",
+ "observed": {
+  "caller_create_node": true,
+  "caller_node_after_failed_sync": 0,
+  "caller_sees_own_node": 1,
+  "caller_tlevel_after": 0,
+  "caller_tlevel_before": 1,
+  "cleanup_poison_rows_left": 0,
+  "cleanup_sync": "ok",
+  "sync": "RuntimeError: Graph.KG.Traversal.BuildKG failed: ERROR #5001: graph name \"0\" is reserved: IRIS canonicalizes the subscript \"0\" to the integer 0 that keys the default graph"
+ },
+ "oracle": "the caller's transaction and its writes survive a failed IVG call made inside it",
+ "reproduced": true,
+ "seconds": 0.39,
+ "started": "2026-11-13T22:43:37",
+ "verdict": "failed sync ended the caller's transaction and discarded its node"
+}

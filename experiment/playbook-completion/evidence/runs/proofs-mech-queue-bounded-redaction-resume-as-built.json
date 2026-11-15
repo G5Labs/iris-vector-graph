@@ -1,0 +1,23 @@
+{
+  "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features queue_bounded_redaction_resume_as_built -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+  "error_locations": "src/ctl_queue.rs:90",
+  "errors": "1",
+  "experiment_head": "95abaf5fe096564138a2f8a9ed58665b85107ad0",
+  "id": "proofs-mech-queue-bounded-redaction-resume-as-built",
+  "json_log": "$RUN_DIR/proofs-mech/run-20261114T151136Z/queue_bounded_redaction_resume_as_built.json",
+  "json_sha256": "7b11acbf327439bc652df702818afee25a584bf07559f82ed714f586216a2c49",
+  "kind": "control",
+  "lane": "proofs-mech",
+  "log": "$RUN_DIR/proofs-mech/run-20261114T151136Z/queue_bounded_redaction_resume_as_built.log",
+  "log_bytes": 919,
+  "log_sha256": "4ad39cb99617115f90c9a138c4db2c37ec035b358b91a7a32b35e0d0760625c6",
+  "observes": "queue_bounded_redaction_resume_as_built (M-07 BoundedRedactionResumeAsBuilt, explorer check queue-bounded-redaction-resume-as-built, as-built; findings F-C1303): 1 errors, exactly at ['src/ctl_queue.rs:90'] (laws M07-L4, the explorer's violated laws); failing ['i07_queue::BoundedRedactionResumeAsBuilt::discharge_l4']; every other function verifies as in the baseline=True; refutations i07_queue::refute_bounded_redaction_resume_l4 and counterexamples cx07_queue::cx_bounded_redaction_resume_l4 verified=True",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T15:47:39+00:00",
+  "result": "expected-violation",
+  "rlimit_total": "102952595",
+  "sources_sha256": "3e168bab31757fd605c7d744a6a9485a4bda23def41d5b86a0b4d5524fd7ab71",
+  "verified": "1149",
+  "verus_total_ms": "17393"
+}

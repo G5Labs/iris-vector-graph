@@ -1,0 +1,15 @@
+{
+  "command": "CARGO_TARGET_DIR=$RUN_DIR/target/lockplans cargo run --release -- --only conn_mutex (lockplans/models, explorer c03f9fa)",
+  "experiment_head": "d293fb6beb0729329901e10bcd8c104ac18aeea3",
+  "id": "lockplans-mc-conn_mutex-as-built",
+  "kind": "mc",
+  "lane": "lockplans",
+  "log": "$RUN_DIR/lockplans/models/conn_mutex.log",
+  "log_bytes": 4106,
+  "log_sha256": "8c192ec379f0a95a6ab133ada305e7235186be4fbd8df4337b0b36cabcf190c9",
+  "observes": "lockplans model family conn_mutex (as-built design; all checks met, exhaustive within the declared bounds): conn_mutex-http-as-built: exhaustive pass -> met (85 states, exhaustive); conn_mutex-http-as-built-progress: exhaustive pass -> met (85 states, exhaustive); conn_mutex-sample-as-built: violation of 'MUTEX: no two threads use the one connection at once (P-1605, API-B4.5)' -> met (13 states, exhaustive); conn_mutex-http-reach-both-served: violation of 'never: both threads served two requests' -> met (85 states, exhaustive); conn_mutex-http-reach-wait: violation of 'never: a thread waits while the other uses the connection' -> met (4 states, exhaustive)",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-15T01:06:54+00:00",
+  "result": "expected-violation"
+}

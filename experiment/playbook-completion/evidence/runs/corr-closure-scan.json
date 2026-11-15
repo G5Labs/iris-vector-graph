@@ -1,0 +1,15 @@
+{
+  "command": "python experiment/playbook-completion/correspondence/tools/closure_scan.py --json checks/closure.json; --self-test",
+  "experiment_head": "78e7a5e8c4f90f7e230207eb0953f781dae48bb7",
+  "id": "corr-closure-scan",
+  "kind": "check",
+  "lane": "correspondence",
+  "log": "$RUN_DIR/correspondence/checks/closure.log",
+  "log_bytes": 275,
+  "log_sha256": "5bf736655cd238b853d75bcd8f47f6dcf33f1c374f24924d0658c5a1880dd9b9",
+  "observes": "44 product write sites of ^IVG.Ledger and the ledger tables; 43 owned by modelled actions (commit, genesis/adoption, disable, redaction batch/final, erasure EraseIndex without the head lock), PurgeAll is an admin reset; restore_snapshot (snapshot.py:403, module 18) writes the archive's ^IVG.Ledger and ledger storage outside any modelled action (F-1801); statement maps (stmt/tuple) have four owner actions (commit, adoption, erasure without head lock F-1114, Final); self-test detects an injected writer",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T01:53:06+00:00",
+  "result": "fail"
+}

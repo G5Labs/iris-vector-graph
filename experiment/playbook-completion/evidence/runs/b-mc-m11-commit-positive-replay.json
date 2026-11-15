@@ -1,0 +1,23 @@
+{
+  "check": "m11-commit-positive-replay",
+  "command": "CARGO_TARGET_DIR=$RUN_DIR/target/breadth-b cargo build --release && bash experiment/playbook-completion/tools/locks.sh heavy timeout 1800 $RUN_DIR/target/breadth-b/release/breadth-b",
+  "design": "positive",
+  "experiment_head": "f3fe3917466f7bae3e46f32f5b0644cfeaff87c8",
+  "full_log": "$RUN_DIR/breadth-b/mc/full-decisive-20261114T012246Z.log",
+  "full_log_sha256": "227f6720d9d86ed75cc8fa7fd71e2d9d31fd6f5ccd627843af4d51997edf4615",
+  "id": "b-mc-m11-commit-positive-replay",
+  "kind": "mc",
+  "lane": "breadth-b",
+  "log": "$RUN_DIR/breadth-b/mc/checks/m11-commit-positive-replay.log",
+  "log_bytes": 1045,
+  "log_sha256": "78216a0e6f287d6b2e9e4a1619097775e9b2fb5fdcdf24bc68b2264c6dd45b31",
+  "module": "11",
+  "observes": "module 11 machine commit design positive: expectation violation of 'witness: the second process got the first revision back (replay)'; result met (found 'witness: the second process got the first revision back (replay)'); 20 states, 18 transitions, depth 3, exhaustive within the model's bounds; covers: sharpness: a same-key commit is replayed",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T01:23:55+00:00",
+  "result": "expected-violation",
+  "results": "experiment/playbook-completion/models/breadth-b/RESULTS.json",
+  "search": "exhaustive",
+  "states": "20"
+}

@@ -1,0 +1,20 @@
+[
+ {
+  "id": "F-C0615",
+  "module": "06",
+  "title": "VectorOptimizer.migrate_to_optimized cannot run on IRIS 2026.1: its CREATE INDEX IF NOT EXISTS ... AS HNSW is rejected, so it copies nothing and answers success False",
+  "intended": "README.md:12 and :21 ('Any IRIS 2025.1 or later works'); the method's own contract (iris_vector_graph/vector_utils.py:150-162: migrate the source table's vectors into kg_NodeEmbeddings_optimized and return migration results), and ADR-0006 as stated by VEC-X3.16 (the tool that fills the second legacy table checks the identity too).",
+  "observed": "Live in AUDITE (IRIS 2026.1 Community Build 234U, run rx-live-06, case 'VectorOptimizer.migrate_to_optimized copies rx06-src vectors into a table claimed for rx06-dst -> refused by the identity check'): with one vector in kg_NodeEmbeddings, migrate_to_optimized() returned {'success': False, 'reason': 'Migration error: <SQL ERROR>; Details: [SQLCODE: <-1>:<Invalid SQL statement>] ... < ON expected, NOT found ^ CREATE INDEX IF NOT>'} and copied nothing (kg_NodeEmbeddings_optimized 0 rows; journal: no net change). The statement at vector_utils.py:194-199 runs before the copy loop (vector_utils.py:205-249) and IRIS 2026.1 does not accept IF NOT EXISTS on CREATE INDEX, so the method fails on every call on this engine, whatever the data. As a consequence the missing identity check of F-0613 (no enforce_embedding_identity in the copy loop) cannot be observed live here: the tool fails earlier for an unrelated reason.",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {"kind": "live", "ref": "rx-live-06"},
+   {"kind": "inspected", "ref": "iris_vector_graph/vector_utils.py:194-199"},
+   {"kind": "inspected", "ref": "README.md:12-21"}
+  ],
+  "gates": ["5c-refusals", "3.7-suites"],
+  "severity": "S4",
+  "confidence": "high",
+  "remedy": "Use a CREATE INDEX form every supported engine accepts (or probe for the index and skip the statement when it exists, as other setup code does), and run the identity check of F-0613 before the copy; add a live test of migrate_to_optimized on the oldest supported engine.",
+  "notes": "Found by the refusals lane while probing VEC-X3.16. Version-dependent: an engine that accepts CREATE INDEX IF NOT EXISTS (not available here) would reach the copy loop and then show F-0613's unchecked copy. Related: F-0613 (confirmed-source)."
+ }
+]

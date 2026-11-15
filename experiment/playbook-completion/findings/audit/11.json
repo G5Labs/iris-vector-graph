@@ -1,0 +1,639 @@
+{
+ "module": "11",
+ "lane": "breadth-b",
+ "pin": "3eaa79cf",
+ "summary": {
+  "original_findings": 14,
+  "by_disposition": {
+   "reproduced-live": 13,
+   "reproduced-test": 1
+  },
+  "by_outcome": {
+   "product-defect": 14
+  },
+  "by_severity": {
+   "S1": 2,
+   "S3": 6,
+   "S2": 4,
+   "S4": 2
+  },
+  "new_findings": 1,
+  "new_by_outcome": {
+   "product-defect": 1
+  },
+  "live_logs": "$RUN_DIR/breadth-b/live/11-*.json",
+  "notes": "All live checks on AUDITB under tools/locks.sh iris + the lane-B lock; ledger reset with the pin's PurgeAll before and after; scratch ids b11_* / graph b11g removed after each command."
+ },
+ "findings": [
+  {
+   "id": "F-1101",
+   "title": "A replayed commit writes its post-commit properties again",
+   "intended": "A replayed commit applies nothing: specs/213-graph-revision-ledger/contracts/ledger-api.md:26 ('original outcome with replayed=True'), tests/integration/test_ledger_us04_idempotency.py:52-62, LED-B10.5; decisions.md HD-1105 (supported: post-commit properties are a separate direct write and retries must be idempotent) and HD-1305 (supported: a retry must not recreate an erased tenant's properties).",
+   "observed": "Live AUDITB (b-11-live-findings): commit with key b11-k1 created b11_p1 and post-commit property audit=pcp-v1; a governed set_property wrote governed-v2 (seq 7); the retry with the same key answered replayed=True (seq 6) and post_commit_applied=True and audit read pcp-v1 again; a same-key retry carrying different post-commit properties (fingerprint excludes them, changeset.py:365-385) was replayed and wrote pcp-OTHER; verify() diverges on b11_p1.audit. Journal of the retry: Bump's ledger_stats transaction, then a separate rdf_props DELETE+INSERT transaction (b-11-live-footprints-1 capture commit_replayed_with_pcp). Model: m11-retry-as-built-pcp and m11-retry-as-built-governed violate LED-B10.5; m11-retry-reviewed (no post-commit write on replay) passes; control m11-retry-control-reapply caught. Erasure part (retry after an erasure revives the tenant): reproduced by the orchestrator as F-1306 (findings/audit/13.json; runs live-native-rerun-1314, ib-HD1305-retry-revives); corroborated by intent lane run ib-HD1105-replay-reapplies.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-11-live-findings"
+    },
+    {
+     "kind": "live",
+     "ref": "b-11-live-footprints-1"
+    },
+    {
+     "kind": "mc",
+     "ref": "m11-retry-as-built-pcp"
+    },
+    {
+     "kind": "mc",
+     "ref": "m11-retry-as-built-governed"
+    },
+    {
+     "kind": "mc",
+     "ref": "m11-retry-reviewed"
+    },
+    {
+     "kind": "live",
+     "ref": "ib-HD1105-replay-reapplies"
+    },
+    {
+     "kind": "live",
+     "ref": "live-native-rerun-1314"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/ledger/client.py:418-443"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/ledger/client.py:445-487"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/ledger/changeset.py:365-385"
+    }
+   ],
+   "gates": [
+    "3.3-model-check",
+    "3.3a-writesets",
+    "3.5-handlers",
+    "3.8-findings-disposed"
+   ],
+   "severity": "S1",
+   "confidence": "high",
+   "remedy": "Skip post-commit properties when the answer is replayed (or record them in the revision, HD-1105 option a), and include them in the fingerprint so a retry with other properties is a key conflict; a live test retrying after a later set_prop and after an erasure.",
+   "notes": "Severity S1 because after an erasure the retry writes the erased tenant's property row back (orchestrator F-1306); without erasure the impact is a governed value overwritten outside the ledger (S2).",
+   "module": "11",
+   "original_ref": "experiment/playbook-uplift/findings/11.md#F-1101"
+  },
+  {
+   "id": "F-1102",
+   "title": "The stats row can lose counts",
+   "intended": "docs/ledger-prometheus-hook.md:16 ('ledger_stats counts every process's commits, so it is the one to use for totals'); LED-B13.4 (each outcome adds exactly one); FR-051 (LedgerStats.cls:1-3).",
+   "observed": "Live AUDITB: (1) four processes x 1,000 Ledger.Count calls, each answering status 1, raised the counter by 3,865 (135 lost updates of the %OpenId/%Save read-modify-write; b-11-live-f1102-contention; 2 x 300 calls lost none in b-11-live-f1102-txn). (2) A commit nested in process A's caller transaction holds the stats row's lock until that transaction ends: process B's Count waited 10.0 s and failed with a %SaveData lock error that every caller ignores, so its count is lost (b-11-live-f1102-locktimeout); a refused commit or a guard refusal in another process therefore stalls 10 s too. (3) The finding's 'before-image wipes other processes' counts' did not occur: B is blocked by the row lock, not overwritten; instead B's save after A's rollback wrote its dirty copy and kept the rolled-back commit's count (new finding F-C1101). Model: m11-stats-as-built-rmw and m11-stats-as-built-caller-txn violate LED-B13.4; m11-stats-reviewed (atomic per-counter increments) passes; control m11-stats-control-split caught.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-11-live-f1102-contention"
+    },
+    {
+     "kind": "live",
+     "ref": "b-11-live-f1102-locktimeout"
+    },
+    {
+     "kind": "live",
+     "ref": "b-11-live-f1102-txn"
+    },
+    {
+     "kind": "mc",
+     "ref": "m11-stats-as-built-rmw"
+    },
+    {
+     "kind": "mc",
+     "ref": "m11-stats-as-built-caller-txn"
+    },
+    {
+     "kind": "mc",
+     "ref": "m11-stats-reviewed"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/LedgerStats.cls:51-88"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Ledger.cls:404-416"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Ledger.cls:559-565"
+    }
+   ],
+   "gates": [
+    "3.3-model-check",
+    "3.5-lockplans",
+    "3.7-lock-log",
+    "3.8-findings-disposed"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Increment each counter atomically ($Increment on a mapped global, or UPDATE ... SET c = c + 1 outside the commit's transaction for refusals), count commits in a way a rollback takes back exactly, and never let a counter update wait on another process's transaction; or document the counters as approximate lower bounds.",
+   "notes": "Premise P-1103 is only partly true on IRIS 2026.1 Community: %OpenId takes no lock, but %Save's row lock inside a transaction is held to its end.",
+   "module": "11",
+   "original_ref": "experiment/playbook-uplift/findings/11.md#F-1102"
+  },
+  {
+   "id": "F-1103",
+   "title": "An adoption is not tied to the head it compared",
+   "intended": "LED-B1.20 (an adoption records only the unrecorded writes it was built from; nothing a later commit did); the history replays to the live store (spec 213 verify); decisions.md HD-1401 (verify needs a coherent cut across its reads).",
+   "observed": "Live AUDITB with a forced interleaving at a Python call boundary in the harness (replay.read_canonical wrapped; no product file changed): a commit of b11_a-B11T-b11_b (stmt 1, seq 2) landed after verify(adopt=True) had read the records up to its head and before it read the stores; the adoption revision (seq 3) recorded create_rel stmt 1 a second time, so LED-B1.20 is violated (b-11-live-f1103). verify() afterwards still answered equal (replay is idempotent on the statement id), so the 'history no longer replays' impact was not observed for this schedule. Double adoption by two concurrent re-enables was not reproduced live in 6 trials (one Enable always saw the other's state; b-11-live-f1103-reenable-race). Model: m11-adopt-as-built-commit and m11-adopt-as-built-two-enables violate LED-B1.20; m11-adopt-reviewed (adoption sends the verified head, re-verifies on stale head) passes; control m11-adopt-control-nocheck caught.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-11-live-f1103"
+    },
+    {
+     "kind": "live",
+     "ref": "b-11-live-f1103-reenable-race"
+    },
+    {
+     "kind": "mc",
+     "ref": "m11-adopt-as-built-commit"
+    },
+    {
+     "kind": "mc",
+     "ref": "m11-adopt-as-built-two-enables"
+    },
+    {
+     "kind": "mc",
+     "ref": "m11-adopt-reviewed"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/ledger/replay.py:806-857"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/LedgerGenesis.cls:82-129"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Ledger.cls:271-286"
+    }
+   ],
+   "gates": [
+    "3.3-model-check",
+    "3.3a-writesets",
+    "3.5-handlers",
+    "3.8-findings-disposed"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Send the verified head as expected_head on the adoption and re-verify on StaleHeadError (or compute the adoption under the head lock on the server); re-read the state under the head lock in Enable so two re-enables cannot both answer adoption_needed.",
+   "notes": "The forced schedule is realizable by any concurrent commit during verify's reads (verify reads every record, then every live table).",
+   "module": "11",
+   "original_ref": "experiment/playbook-uplift/findings/11.md#F-1103"
+  },
+  {
+   "id": "F-1104",
+   "title": "Two first enables at once: the second fails instead of returning the genesis",
+   "intended": "specs/213-graph-revision-ledger/contracts/ledger-api.md:22 (enable returns the genesis on the first call or the current head, idempotent); LED-B1.12; decisions.md HD-1104 (assumption: settings fixed at genesis; does not change idempotency).",
+   "observed": "Live AUDITB, two processes released together on a never-enabled ledger with 1,500 nodes: in 8 of 8 trials one Enable answered inconsistent and the other seq 1 (b-11-live-f1104). Two mechanisms: 6 trials 'revision row missing for seq 0': the second read the first's uncommitted state=enabled and head=0 on the unlocked fast path (Ledger.cls:254-260); 2 trials 'ID key not unique': the second had read never-enabled before the first set it, waited on the head lock and re-ran the genesis (:288-304, P-1106 confirmed). The ledger was left enabled at head 1 with one revision (rollback intact). Model: m11-enable-as-built violates LED-B1.12; m11-enable-as-built-consistency passes (LED-B1.7 holds); m11-enable-reviewed (lock first, then read state) passes; control m11-enable-control-nolock caught.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-11-live-f1104"
+    },
+    {
+     "kind": "mc",
+     "ref": "m11-enable-as-built"
+    },
+    {
+     "kind": "mc",
+     "ref": "m11-enable-as-built-consistency"
+    },
+    {
+     "kind": "mc",
+     "ref": "m11-enable-reviewed"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Ledger.cls:252-329"
+    }
+   ],
+   "gates": [
+    "3.3-model-check",
+    "3.5-lockplans",
+    "3.8-findings-disposed"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Take the head lock before reading the state (or re-read it under the lock) in every branch, including the enabled fast path; a live test with two concurrent enable() calls.",
+   "notes": "The dirty-read branch is the more frequent cause on this build; the finding named only the genesis re-run.",
+   "module": "11",
+   "original_ref": "experiment/playbook-uplift/findings/11.md#F-1104"
+  },
+  {
+   "id": "F-1105",
+   "title": "Deleting a node that only a named graph holds records a delete that removed nothing",
+   "intended": "LED-B5.3 (a node delete record is written only when a node row was deleted); a commit the ledger accepts replays to the store; decisions.md HD-1101 (assumption: ledger node mutations are scoped to the default-graph row; a named-only id cannot satisfy the existence precondition).",
+   "observed": "Live AUDITB (b-11-live-findings): b11_named only in graph b11g; ledger delete_node committed (revision with a delete_node record whose prior is {labels:[],props:{}}), the named row stayed, verify() diverges on b11_named; set_property committed and wrote an orphan default-graph rdf_props row; add_label refused 'insert label failed' (fk_labels_node). Matches intent lane run ib-HD1101-namedonly (AUDITIB).",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-11-live-findings"
+    },
+    {
+     "kind": "live",
+     "ref": "ib-HD1101-namedonly"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/LedgerApply.cls:79-84"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/LedgerApply.cls:354-385"
+    }
+   ],
+   "gates": [
+    "3.3a-writesets",
+    "3.5-handlers",
+    "3.8-findings-disposed"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Per HD-1101: node changes test existence of the default-graph row (NodeExists with the default-graph predicate) and refuse node_not_found otherwise, keeping the graph-blind check for edge end nodes; a live test with a named-only id.",
+   "notes": "Which refusal the node ops should give for a named-only id is a working assumption (HD-1101); the divergence right after an accepted commit is a defect under every option.",
+   "module": "11",
+   "original_ref": "experiment/playbook-uplift/findings/11.md#F-1105"
+  },
+  {
+   "id": "F-1106",
+   "title": "A replayed commit returns no statement ids",
+   "intended": "ledger-api.md:26 ('original outcome with replayed=True'); changeset.schema.json:273-285 (CommitResponse.stmt_ids); LED-B4.7.8.",
+   "observed": "Live AUDITB (b-11-live-findings): first commit of a keyed create_relationship answered stmt_ids {0: '2'}; the retry answered replayed=True with stmt_ids {}. Model m11-retry-as-built-stmt-ids violates LED-B4.7.8; m11-retry-reviewed passes.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-11-live-findings"
+    },
+    {
+     "kind": "mc",
+     "ref": "m11-retry-as-built-stmt-ids"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Ledger.cls:455-462"
+    }
+   ],
+   "gates": [
+    "3.5-decoders",
+    "3.8-findings-disposed"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Rebuild stmt_ids from the revision's create_rel/upsert_rel records (or store them with the key), or amend the contract; a test comparing both answers.",
+   "notes": "",
+   "module": "11",
+   "original_ref": "experiment/playbook-uplift/findings/11.md#F-1106"
+  },
+  {
+   "id": "F-1107",
+   "title": "A commit accepts any revision kind",
+   "intended": "changeset.schema.json:219 (kind enum genesis | adoption | changeset; spec 256 adds redaction) and LED-B4.9.2 (a commit takes only changeset and adoption); LED-B4.9.1 size limit.",
+   "observed": "Live AUDITB (b-11-live-findings): GraphLedger.commit(kind='genesis'), kind='redaction' and kind='b11-bogus' were accepted and stored with that kind; with max_ops 3 a 4-op changeset was refused too_large while the same size under kind 'b11-bogus' was accepted (size check only for changeset, Ledger.cls:488-498); a kind='adoption' commit of a hand-made create_node item for b11_ghost wrote a record with no store row and verify() diverges.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-11-live-findings"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/ledger/client.py:381-405"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Ledger.cls:424"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Ledger.cls:488-498"
+    },
+    {
+     "kind": "live",
+     "ref": "rx-live-11"
+    }
+   ],
+   "gates": [
+    "5c-refusals",
+    "3.5-handlers",
+    "3.8-findings-disposed"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Refuse kinds other than changeset and adoption in CommitInTxn (keep adoption for the client's verify), and validate adoption items against the stores or restrict adoption to the verify path; a unit test.",
+   "notes": "",
+   "module": "11",
+   "original_ref": "experiment/playbook-uplift/findings/11.md#F-1107"
+  },
+  {
+   "id": "F-1108",
+   "title": "Two write paths skip the strict-mode guard",
+   "intended": "docs/USER_GUIDE.md:1107-1109 (strict mode refuses create_node, create_edge and the other methods); ledger-api.md:82-93 lists the guarded calls and names only BulkLoader and raw SQL as unguarded; decisions.md HD-1103 (supported: client-side guard on the specified methods; inventory uncovered Python paths).",
+   "observed": "Live AUDITB (b-11-live-footprints-2): strict on; engine.create_node refused (LedgerStrictModeError) but engine.bulk_delete_adjacency(['b11_a']) deleted the recorded edge b11_a-B11S-b11_b through Graph.KG.Eraser.EraseEdges; the journal shows rdf_edges, ^KG, ^NKG and ^IVG.Ledger stmt/tuple written in the eraser's own transaction with no head lock; verify diverges on that rel. GraphQL create_protein called directly on this connection failed SQLCODE -30 (unqualified SQLUSER.NODES), so that write did not land here; the resolver has no guard (api/gql/resolvers/mutation.py:23-230) and the sample API's own deployment reaches the graph tables (lane C run c16-s3-graphql-sample-api: updateProtein rewrote a property). Model: m11-guard-as-built-unguarded violates the shared invariant SG; m11-guard-reviewed passes. Corroborated by ib-HD1103-bulk-delete-adjacency.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-11-live-footprints-2"
+    },
+    {
+     "kind": "live",
+     "ref": "ib-HD1103-bulk-delete-adjacency"
+    },
+    {
+     "kind": "live",
+     "ref": "c16-s3-graphql-sample-api"
+    },
+    {
+     "kind": "mc",
+     "ref": "m11-guard-as-built-unguarded"
+    },
+    {
+     "kind": "mc",
+     "ref": "m11-guard-reviewed"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/nodes_edges.py:2301-2339"
+    },
+    {
+     "kind": "inspected",
+     "ref": "api/gql/resolvers/mutation.py:23-230"
+    }
+   ],
+   "gates": [
+    "3.3a-writesets",
+    "3.3-model-check",
+    "3.8-findings-disposed"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Call the guard in bulk_delete_adjacency and the GraphQL mutations (or document them as unguarded next to BulkLoader and raw SQL); extend tests/integration/test_ledger_us05_compat.py::test_every_guarded_api_is_rejected_and_nothing_changes.",
+   "notes": "The GraphQL path is confirmed from source here and observed live by lane C; its live write needs the sample API's connection setup.",
+   "module": "11",
+   "original_ref": "experiment/playbook-uplift/findings/11.md#F-1108"
+  },
+  {
+   "id": "F-1109",
+   "title": "The user guide says a retry replays without a retry key",
+   "intended": "docs/USER_GUIDE.md:1102 ('Committing the same actor and operations again returns the first revision with replayed=True'); client.py:85-91 CommitResult docstring.",
+   "observed": "Live AUDITB (b-11-live-findings): the same set_property changeset committed twice without a key made two revisions (second not replayed); create_node twice without a key: the second refused node_exists. The server looks for a replay only with an idempotency_key (Ledger.cls:455-457).",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-11-live-findings"
+    },
+    {
+     "kind": "inspected",
+     "ref": "docs/USER_GUIDE.md:1102"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Ledger.cls:453-463"
+    }
+   ],
+   "gates": [
+    "3.8-findings-disposed"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Say 'with the same idempotency_key' in USER_GUIDE.md:1102 and the CommitResult docstring.",
+   "notes": "Documentation defect.",
+   "module": "11",
+   "original_ref": "experiment/playbook-uplift/findings/11.md#F-1109"
+  },
+  {
+   "id": "F-1110",
+   "title": "The wire contract lags the code",
+   "intended": "LED-B8.12 (the wire contract lists every change kind and error code the server uses); specs/213-graph-revision-ledger/contracts/changeset.schema.json; ledger-api.md:26.",
+   "observed": "Probe (b-11-probe-schema, no IRIS; the pin's builder validated against the published schema with jsonschema Draft 2020-12 as tests/unit/test_ledger_changeset.py does): a create_temporal_edge op is invalid; post_commit_properties is rejected (additionalProperties false); CommitError.error lacks idempotency_redacted, redaction_in_progress, invalid_target and target_live, which Ledger*.cls answer; MutationRecord enums lack create_temporal_edge / temporal_edge; ledger-api.md:26 still lists LedgerTransactionOpenError for commit.",
+   "disposition": "reproduced-test",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "probe",
+     "ref": "b-11-probe-schema"
+    },
+    {
+     "kind": "inspected",
+     "ref": "specs/213-graph-revision-ledger/contracts/changeset.schema.json"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/ledger/changeset.py:309-360"
+    }
+   ],
+   "gates": [
+    "3.5-decoders",
+    "3.8-findings-disposed"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Update changeset.schema.json and ledger-api.md; extend the upstream schema unit test with a temporal op and post-commit properties.",
+   "notes": "Two codes beyond the original finding (invalid_target, target_live) belong to the redaction entry points (modules 13); they are still commit-module wire codes in the same enum.",
+   "module": "11",
+   "original_ref": "experiment/playbook-uplift/findings/11.md#F-1110"
+  },
+  {
+   "id": "F-1111",
+   "title": "The metrics hook is not called for refusals made in Python",
+   "intended": "docs/ledger-prometheus-hook.md:35-36 ('engine.ledger.commit() calls it once per call, whatever the outcome'); LED-B9.8.",
+   "observed": "Live AUDITB (b-11-live-findings): a registered hook saw 0 events for an EmptyChangesetError and for a ChangesetOperationError (bad op_ref), both raised by changeset.validate() before _emit (client.py:392), and 1 event (stale_head) for a server refusal.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-11-live-findings"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/ledger/client.py:381-416"
+    }
+   ],
+   "gates": [
+    "3.8-findings-disposed"
+   ],
+   "severity": "S4",
+   "confidence": "high",
+   "remedy": "Emit before raising in commit(), or narrow the doc to calls that reach the server.",
+   "notes": "",
+   "module": "11",
+   "original_ref": "experiment/playbook-uplift/findings/11.md#F-1111"
+  },
+  {
+   "id": "F-1112",
+   "title": "Two e2e fixtures read a meta key that does not exist and disable the ledger after them",
+   "intended": "LED-B3.12 (a caller learns if the ledger is on from meta's state; meta has no other on flag).",
+   "observed": "Live AUDITB (b-11-live-findings): meta() keys are ok, state, strict, max_ops, recon_bound, head_seq, head_id; with the ledger enabled bool(meta().get('enabled')) is False, so the fixtures at tests/e2e/test_460_r281_ledger_post_commit_graph_e2e.py:52 and tests/e2e/test_460_r290_ledger_node_ops_graph_e2e.py:66 always enable() and always disable() at teardown.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-11-live-findings"
+    },
+    {
+     "kind": "inspected",
+     "ref": "tests/e2e/test_460_r281_ledger_post_commit_graph_e2e.py:52"
+    },
+    {
+     "kind": "inspected",
+     "ref": "tests/e2e/test_460_r290_ledger_node_ops_graph_e2e.py:66"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Ledger.cls:143-156"
+    }
+   ],
+   "gates": [
+    "3.7-suites",
+    "3.8-findings-disposed"
+   ],
+   "severity": "S4",
+   "confidence": "high",
+   "remedy": "Test meta()['state'] == 'enabled' in both fixtures.",
+   "notes": "Test-suite defect; the two e2e tests were not run (their fixture deploys classes).",
+   "module": "11",
+   "original_ref": "experiment/playbook-uplift/findings/11.md#F-1112"
+  },
+  {
+   "id": "F-1113",
+   "title": "The history source filter matches stored JSON text, not a source string",
+   "intended": "client.py:613 ('Filter to revisions tagged with this source string'); LED-B3.9; CHANGELOG spec 216 entry.",
+   "observed": "Live AUDITB (b-11-live-f1113): source={'system':'cmms','run':'b11'} is stored as IRIS JSON text {\"run\":\"b11\",\"system\":\"cmms\"}; history(source='cmms') answers 0 revisions, the exact stored text 1, Python's insertion-order JSON text 0.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-11-live-f1113"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/ledger/replay.py:339-341"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Ledger.cls:521-522"
+    }
+   ],
+   "gates": [
+    "3.8-findings-disposed"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Document the exact-text rule or filter on a JSON field of source; a live test.",
+   "notes": "The first attempt in b-11-live-findings was a harness error (changeset without ops) and is not used.",
+   "module": "11",
+   "original_ref": "experiment/playbook-uplift/findings/11.md#F-1113"
+  },
+  {
+   "id": "F-1114",
+   "title": "Erasure changes the statement maps without the head lock",
+   "intended": "LED-B4.14.4 (only a process that holds the head lock changes the statement id maps); SYS-I1 one owner per fact; ADR-0004.",
+   "observed": "Source at the pin: Graph.KG.Eraser takes no Lock and kills ^IVG.Ledger('stmt')/('tuple') entries in its own transaction (Eraser.cls:665-678, :809-811, EraseLedgerFor :1117-1145 dirty-reads every statement entry). Live: this lane's journal shows the same writes reached from engine.bulk_delete_adjacency -> Eraser.EraseEdges (^IVG.Ledger stmt/tuple killed in the eraser's transaction, no head lock; b-11-live-footprints-2). The interleaving with a commit was reproduced by the orchestrator (run live-f1201-reproduced: the committer's SET ^IVG.Ledger('stmt',4001)/tuple followed by the eraser's KILL of both; F-1201 in modules 12). Erase/redact models belong to the orchestrator (modules 12-14) and were not built here.",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "live-f1201-reproduced"
+    },
+    {
+     "kind": "live",
+     "ref": "b-11-live-footprints-2"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Eraser.cls:665-678"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Eraser.cls:809-811"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Eraser.cls:1117-1145"
+    }
+   ],
+   "gates": [
+    "3.5-lockplans",
+    "3.3a-writesets",
+    "3.8-findings-disposed"
+   ],
+   "severity": "S1",
+   "confidence": "high",
+   "remedy": "Take ^IVG.Ledger('head') in the eraser's transaction when it touches the statement maps (or document that erasure must not run beside commits); a live commit-into-erased-graph test (owned by the orchestrator's erasure module).",
+   "notes": "Disposition rests on the orchestrator's registered live run for the race itself; this lane observed the unlocked map writes only.",
+   "module": "11",
+   "original_ref": "experiment/playbook-uplift/findings/11.md#F-1114"
+  }
+ ],
+ "new_findings": [
+  {
+   "id": "F-C1101",
+   "module": "11",
+   "title": "The stats row can count a commit its caller rolled back",
+   "intended": "LED-B13.2 (kept revisions are counted in the commit's own transaction), LED-B13.4; docs/ledger-prometheus-hook.md:16 (ledger_stats is the one to use for totals); stats head_seq mirrors the ledger head.",
+   "observed": "Live AUDITB (b-11-live-f1102-txn): process A committed inside its own caller transaction (stats row saved: commits_ok 1->2, head_seq 1->2, row lock held to A's end); process B's Ledger.Count opened the row (dirty copy: commits_ok 2, head_seq 2), waited 2.5 s on the row lock; A rolled back (row restored to commits_ok 1, head_seq 1); B's %Save then wrote its whole dirty copy: final commits_ok 2 and head_seq 2 while the ledger head is 1 and only one commit is kept. Model m11-stats-as-built-caller-txn finds exactly this trace (read during the caller transaction, rollback, whole-row save).",
+   "disposition": "reproduced-live",
+   "outcome": "product-defect",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-11-live-f1102-txn"
+    },
+    {
+     "kind": "mc",
+     "ref": "m11-stats-as-built-caller-txn"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/LedgerStats.cls:51-88"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Ledger.cls:559-565"
+    }
+   ],
+   "gates": [
+    "3.3-model-check",
+    "3.5-lockplans",
+    "3.8-findings-disposed"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Same as F-1102: per-counter atomic increments (a refusal count must not write the commit count or head_seq), and derive head_seq from ^IVG.Ledger('head') at read time.",
+   "notes": "Distinct from F-1102 (lost counts): here the row over-counts and reports a head the ledger does not have. Root cause shared with F-1102 (whole-row %Save from an unlocked %OpenId copy)."
+  }
+ ]
+}

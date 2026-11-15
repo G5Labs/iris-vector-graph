@@ -1,0 +1,29 @@
+{
+ "doc": "F-0303: a direct delete_edge of a ledger-created edge leaves ^IVG.Ledger(\"tuple\"/\"stmt\") naming it; a later ledger\n    create of the same triple reuses the old statement id. Oracle: CONTEXT.md:198-205 (no live statement outlives\n    its content) and INV-stmt.",
+ "id": "p0303_direct_delete_keeps_stmt",
+ "log": "$RUN_DIR/breadth-a/live/ledger-all-20261113T232600.log",
+ "module": "ledger",
+ "observed": {
+  "direct_delete_edge": true,
+  "row_after_direct_delete": 0,
+  "stmt_entry_alive": 0,
+  "stmt_ids_first": {
+   "2": "1"
+  },
+  "stmt_ids_recreate": {
+   "0": "2"
+  },
+  "tuple_entry_after_create": "",
+  "tuple_entry_after_direct_delete": "",
+  "verify": {
+   "classification": null,
+   "differences": [],
+   "result": "equal"
+  }
+ },
+ "oracle": "after the edge row is gone no live statement names it; a re-created edge gets a new statement",
+ "reproduced": false,
+ "seconds": 0.21,
+ "started": "2026-11-13T23:26:00",
+ "verdict": "cleared"
+}

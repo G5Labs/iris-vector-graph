@@ -1,0 +1,15 @@
+{
+  "command": "cd experiment/playbook-completion/intent/probes/lane-b && flock -x -w 1800 $RUN_DIR/intent-b/auditib.lock timeout 600 python hd1102_disable_in_caller_txn.py > $RUN_DIR/intent-b/ib3_hd1102.log 2>&1",
+  "experiment_head": "c01a7ccd00b29670b521799344233fa4a814c925",
+  "id": "ib-HD1102-txn-rollback",
+  "kind": "probe",
+  "lane": "intent-b",
+  "log": "$RUN_DIR/intent-b/ib3_hd1102.log",
+  "log_bytes": 5857,
+  "log_sha256": "eaa39d2ac6861f70b5d24a69c0ca97b703788311c993849ef64e5df25c4a7da8",
+  "observes": "AUDITIB. Caller START TRANSACTION + INSERT (TLEVEL 1), then ledger.disable() / set_strict(False), then ROLLBACK, on two engine topologies (plain: Native API on caller process; native2: Native API on a second identity-checked process, the from_connect topology). enable() refused LedgerTransactionOpenError on both (4.7.0). disable()/set_strict() accepted on both: plain -> rollback restored state=enabled/strict=True (joined); native2 -> state stayed disabled / strict stayed False (committed outside the caller transaction). Other processes saw the uncommitted 'disabled' inside the transaction (dirty read). On plain, the guard cached the rolled-back strict=False and let a guarded create_node write within its 5 s TTL. Alternative (c) as built confirmed; neither (a) refuse nor (b) join holds; the 4.7.0 'join or refuse' principle (0cf1524f) is not met for native2. No stated contract names disable/set_strict.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-13T22:44:10+00:00",
+  "result": "expected-violation"
+}

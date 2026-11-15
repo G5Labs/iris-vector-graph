@@ -1,0 +1,15 @@
+{
+  "command": "experiment/playbook-completion/trace-replay: run.py capture 03 (under locks.sh iris, AUDITE); run.py check NN",
+  "experiment_head": "7b72fc52c878c31e143452a8cc8452cc4a6c198f",
+  "id": "tr-replay-03",
+  "kind": "trace",
+  "lane": "trace-replay",
+  "log": "$RUN_DIR/trace-replay/logs/tr-replay-03.log",
+  "log_bytes": 3855,
+  "log_sha256": "e90629cef921128fb83b50d439f76e4911906e6f440f4acc2d39e6c96499efb2",
+  "observes": "AUDITE traces stmt (7 steps, 250 records), bulk (2 steps, 92,056 records) and mark (6 steps, 125 records) replayed through wrt_ledger_stmt, wrt_bulk_atomic and tmp_mark (breadth-a, as built): 17 actions all enabled and matching (incl. 2 transaction-end checkpoints), replays equal the engine; INV-stmt (step 1) and WRT-B1.9 (step 3) violated (F-0303 reproduced); WRT-B3.19 violated in state Raised with loader chunk 1 committed by the engine native process while the call raised nothing written (F-0305 reproduced; new F-C0330); ADR-0009 explicit-survives violated by the last temporal delete after store_edge (F-0304 reproduced), the create_edge control keeps its row; reviewed designs diverge at the finding steps; frame gap: footprints/03.json delete_node omits ^IVG.Ledger and ^NKG",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T12:39:44+00:00",
+  "result": "pass"
+}

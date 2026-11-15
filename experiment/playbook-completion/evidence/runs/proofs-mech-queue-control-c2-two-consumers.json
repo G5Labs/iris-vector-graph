@@ -1,0 +1,23 @@
+{
+  "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features queue_control_c2_two_consumers -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+  "error_locations": "src/ctl_queue.rs:48,src/ctl_queue.rs:51",
+  "errors": "2",
+  "experiment_head": "95abaf5fe096564138a2f8a9ed58665b85107ad0",
+  "id": "proofs-mech-queue-control-c2-two-consumers",
+  "json_log": "$RUN_DIR/proofs-mech/run-20261114T151136Z/queue_control_c2_two_consumers.json",
+  "json_sha256": "fbb3a232580369e0d61d759af1b066d64fb79b0a35ecdfadae6c73cea1cfb883",
+  "kind": "control",
+  "lane": "proofs-mech",
+  "log": "$RUN_DIR/proofs-mech/run-20261114T151136Z/queue_control_c2_two_consumers.log",
+  "log_bytes": 1132,
+  "log_sha256": "9dbe9f6d9638de713a96efadded432654e985b1bdb77b4a51cdbebd32a51f4ea",
+  "observes": "queue_control_c2_two_consumers (M-07 CtlTwoConsumers, explorer check queue-control-C2-two-consumers, mutant; findings none): 2 errors, exactly at ['src/ctl_queue.rs:48', 'src/ctl_queue.rs:51'] (laws M07-L1,M07-L2, the explorer's violated laws); failing ['i07_queue::CtlTwoConsumers::discharge_l1', 'i07_queue::CtlTwoConsumers::discharge_l2']; every other function verifies as in the baseline=True; refutations i07_queue::refute_ctl_two_consumers_l1,i07_queue::refute_ctl_two_consumers_l2 and counterexamples cx07_queue::cx_ctl_two_consumers_l1,cx07_queue::cx_ctl_two_consumers_l2 verified=True",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T15:47:39+00:00",
+  "result": "expected-violation",
+  "rlimit_total": "102953529",
+  "sources_sha256": "3e168bab31757fd605c7d744a6a9485a4bda23def41d5b86a0b4d5524fd7ab71",
+  "verified": "1149",
+  "verus_total_ms": "17590"
+}

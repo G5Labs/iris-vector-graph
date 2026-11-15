@@ -1,0 +1,17 @@
+{
+  "command": "locks.sh iris timeout 1200 python experiment/playbook-completion/writesets/live/ws_probes.py ba-noindex-parallel ba-explicit-survives ba-marker-qualifier ba-vec-node-delete ba-restore-merge (AUDITB)",
+  "experiment_head": "1564a673ea1737c0d9e32fe8f30a1d0d04bcf910",
+  "finding": "F-C0350",
+  "id": "ws-live-ba-noindex-parallel",
+  "kind": "live",
+  "lane": "writesets",
+  "log": "$RUN_DIR/writesets/ba-noindex-parallel.json",
+  "log_bytes": 1821,
+  "log_sha256": "9575fbd19e43ac2a59a9df6681ef8dc711d91ad2d31bfea7e289f04aac880c7e",
+  "namespace": "AUDITB",
+  "observes": "GID-I4.10 (a mode-off graph holds no parallel edges). Default graph, mode off (is_multigraph False), namespace empty (full scan 0). (a) BulkLoader.load_edges([(\"wsgp|a\",\"R\",\"wsgp|b\",None)]) (default use_noindex) wrote one row (ekey 0); engine.create_edge of the same triple returned True and wrote a second row, ekey 0 as well (2 rows); store_edge then added none (still 2); BulkLoader.rebuild_all_indices answered True for every index with the two rows of key (s, p, o_id, graph_id, ekey) = (wsgp|a, R, wsgp|b, \"\", 0) in place. (b) Two load_edges calls with skip_existing=False wrote two rows of wsgq|a -R-> wsgq|b, both ekey 0; rebuild answered True. Final reset leaves a clean full scan.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T13:19:16+00:00",
+  "result": "fail"
+}

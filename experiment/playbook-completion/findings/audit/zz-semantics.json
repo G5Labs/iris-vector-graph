@@ -1,0 +1,22 @@
+[
+  {
+    "id": "F-C0670",
+    "module": "06",
+    "title": "Two embed-queue workers can work the same entry at once: the single-consumer premise is neither enforced nor documented",
+    "intended": "The embed queue is single-consumer by design (iris_src/src/Graph/KG/EmbedQueue.cls:22-25 'Single-processor', maintainer commit 5bb149ed; intent/HD-0604.md, status supported). Mechanism M-07 (semantics/mechanisms.json) law M07-L2: one worker per entry at a time, held by a claim or a lock, or refused.",
+    "observed": "Neither worker claims an entry: ClaimPendingBatch is a read-only scan of PENDING entries (EmbedQueue.cls:112-134) and ProcessBatch tests status PENDING and works the entry (EmbedQueue.cls:258-268); the Python worker process_embed_queue calls ClaimPendingBatch with no lock (iris_vector_graph/_engine/embeddings.py:1912-1915). Both the IRIS task (Graph.KG.EmbedQueueTask) and process_embed_queue are public, and no user document states the single-worker rule (docs/API_REFERENCE.md:1387-1416). Two IRIS processes calling ClaimPendingBatch were handed the same 3 entries (probe intent-a-hd0604-queue-claim). The generic queue machine shows two workers in flight on one entry (sem-mc-queue-as-built, check queue-embed-queue-as-built-HD0604, expected violation of M07-L2).",
+    "disposition": "reproduced-live",
+    "evidence": [
+      {"kind": "inspected", "ref": "iris_src/src/Graph/KG/EmbedQueue.cls:112-134"},
+      {"kind": "inspected", "ref": "iris_src/src/Graph/KG/EmbedQueue.cls:258-268"},
+      {"kind": "inspected", "ref": "iris_vector_graph/_engine/embeddings.py:1912-1915"},
+      {"kind": "live", "ref": "intent-a-hd0604-queue-claim"},
+      {"kind": "mc", "ref": "sem-mc-queue-as-built"}
+    ],
+    "gates": ["3.3a-mechanisms", "3.3-model-check", "3.8-findings-disposed"],
+    "severity": "S3",
+    "confidence": "high",
+    "remedy": "Enforce one consumer per namespace (a lock held from claim to mark, or an atomic claim state per entry that a second worker skips), or document that only one of the two workers may run and refuse to start the second.",
+    "notes": "Semantics lane (steer 7): a hand-rolled variant of mechanism M-07 that departs from law M07-L2. HD-0604 records the design premise and leaves enforcement open; no earlier finding covered the departure (F-C0601 is the re-enqueue race with a single worker). Consequences: double model calls and the marks racing (with F-0604 and F-C0601)."
+  }
+]

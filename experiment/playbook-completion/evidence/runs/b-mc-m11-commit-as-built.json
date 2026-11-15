@@ -1,0 +1,23 @@
+{
+  "check": "m11-commit-as-built",
+  "command": "CARGO_TARGET_DIR=$RUN_DIR/target/breadth-b cargo build --release && bash experiment/playbook-completion/tools/locks.sh heavy timeout 1800 $RUN_DIR/target/breadth-b/release/breadth-b",
+  "design": "as-built",
+  "experiment_head": "f3fe3917466f7bae3e46f32f5b0644cfeaff87c8",
+  "full_log": "$RUN_DIR/breadth-b/mc/full-decisive-20261114T012246Z.log",
+  "full_log_sha256": "227f6720d9d86ed75cc8fa7fd71e2d9d31fd6f5ccd627843af4d51997edf4615",
+  "id": "b-mc-m11-commit-as-built",
+  "kind": "mc",
+  "lane": "breadth-b",
+  "log": "$RUN_DIR/breadth-b/mc/checks/m11-commit-as-built.log",
+  "log_bytes": 200,
+  "log_sha256": "d45515a4ede9cc261881c2d8c98079cd702ef1ebfc72b2ebc13be610fb5a9256",
+  "module": "11",
+  "observes": "module 11 machine commit design as-built: expectation exhaustive pass; result met; 28 states, 29 transitions, depth 6, exhaustive within the model's bounds; covers: LED-B4.3, LED-B4.11.2, LED-B4.7.5, LED-B9.4 hold with the deferred unlock; AG EF done",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T01:23:54+00:00",
+  "result": "pass",
+  "results": "experiment/playbook-completion/models/breadth-b/RESULTS.json",
+  "search": "exhaustive",
+  "states": "28"
+}

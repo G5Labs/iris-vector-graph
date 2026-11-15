@@ -1,0 +1,18 @@
+{
+ "module": "16",
+ "name": "interfaces",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "gate": "3.5-lockplans",
+ "sources": ["experiment/playbook-uplift/ontology/16-interfaces.md (API-B4.5, API-T8.2, API-T8.3, API-T9.8)", "experiment/playbook-uplift/trust/16.md:31-35 (P-1605)", "CHANGELOG.md:304-310 (4.6.5)", "PEP 249 (threadsafety)", "footprints/16.json (22 entries)", "findings/audit/16.json (F-1608)"],
+ "summary": "PENDING-LIVE",
+ "inventory": [
+  {"site": "iris_vector_graph/cypher_api.py:150-153, 201-224", "what": "_engine_cache (one engine, one IRIS connection per server process) and _engine_lock = threading.RLock(); _engine() holds the lock for the whole block", "reached_by": "every Cypher HTTP server route: /health, /api/cypher, /db/neo4j/tx/commit, /db/{db}/query/v2, /schema, /indexes, /server, /metrics, /stats, /admin/*"},
+  {"site": "iris_vector_graph/cypher_api.py:239-260", "what": "_run_cypher: _engine_lock around execute_cypher and the retry after _reset_engine (rows materialised inside)", "reached_by": "/api/cypher, /db/neo4j/tx/commit (per statement), /db/{db}/query/v2"},
+  {"site": "iris_vector_graph/cypher_api.py:623-643", "what": "/admin/load (async) waits for the lock in the thread pool (run_in_threadpool)", "reached_by": "POST /admin/load"},
+  {"site": "iris_vector_graph/cypher_api.py:56, 134-138; bolt_server.py:381-394, 579-614, 920-936", "what": "Bolt: one engine (one IRIS connection) per session, created lazily by _make_engine, used only on the event-loop thread; no lock", "reached_by": "Bolt TCP and WebSocket sessions"},
+  {"site": "api/main.py:68-113, 140-142; api/dependencies.py:10-36; api/routers/cypher.py:89-97", "what": "sample API: one engine and connection on app.state, no lock; /health is a plain def (thread pool), /api/cypher and the GraphQL resolvers are async (event loop)", "reached_by": "sample API routes"},
+  {"site": "module 16 handlers", "what": "no IRIS LOCK; each write is one engine call whose lock plan belongs to the engine module (03, 08, 11)", "reached_by": "all"}
+ ],
+ "obligations": [],
+ "cell": {}
+}

@@ -1,0 +1,15 @@
+{
+  "command": "flock -w 1800 $RUN_DIR/intent-a/auditia.lock timeout 600 python experiment/playbook-completion/intent/probes/lane-a/hd0501_temporal_ledger.py",
+  "experiment_head": "c01a7ccd00b29670b521799344233fa4a814c925",
+  "id": "intent-a-hd0501-temporal-endpoints",
+  "kind": "probe",
+  "lane": "intent-a",
+  "log": "$RUN_DIR/intent-a/hd0501_temporal_ledger.log",
+  "log_bytes": 4392,
+  "log_sha256": "e5849d997345dd56a1f6d4b19b7143e0448122d6278cd0ae57b2fe2f94fc4b0f",
+  "observes": "AUDITIA, adjacency indexed, ledger enabled (re-enabled from disabled), new endpoint ids in graph ia-0501. (E) engine create_edge_temporal, not strict: node rows a,b + marked row, 0 revisions, verify diverges unrecorded_writes naming nodes a,b (F-0503 live). (CS) committed changeset create_temporal_edge: 1 revision with one create_temporal_edge record, no create_node; node rows c,d created; verify diverges immediately after the commit. (ES) strict mode: create_edge_temporal(graph=...) succeeds AND writes node rows e,f and a marked row, against ledger-api.md:92 'succeeds but skips the structural mirror'. Fail = the strict-mode contract clause is violated and a committed changeset leaves verify diverged; the coexist test's 'equal' holds only for pre-existing endpoints. Restored: strict off, graph erased (verify equal), ledger disabled.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-13T22:44:56+00:00",
+  "result": "fail"
+}

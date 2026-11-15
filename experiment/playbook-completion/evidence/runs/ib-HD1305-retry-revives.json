@@ -1,0 +1,15 @@
+{
+  "command": "bash experiment/playbook-completion/tools/locks.sh iris bash $RUN_DIR/intent-b/run_ibR_all.sh (runs: timeout 600 python experiment/playbook-completion/intent/probes/lane-b/hd12_14_redaction_probes.py retry_revives)",
+  "experiment_head": "dbcb7e147469b6da8b3b82a49a03ad64e0312533",
+  "id": "ib-HD1305-retry-revives",
+  "kind": "probe",
+  "lane": "intent-b",
+  "log": "$RUN_DIR/intent-b/ibR_retry_revives.log",
+  "log_bytes": 6332,
+  "log_sha256": "c5d737e1ddac0ed6177bf164f5c364bb78f3dcfa3a731b79e69b1761eec2157b",
+  "observes": "AUDITIB. (1) commit with idempotency key and post_commit_properties for ibR_A|n5; delete_nodes_by_prefix('ibR_A|'); retry -> replayed=True, post_commit_applied=True, an rdf_props row of the erased tenant is live again; redact(None, prefix='ibR_A') refused target_live. (2) partial run (batch 1, marker set): a fresh commit into the target is refused (control), but a retry whose revision is not yet tombstoned is replayed and writes the property row into the marked target; the resumed run fails target_live and the marker stays. Oracle ledger-api.md:26 ('original outcome'), test_ledger_us04_idempotency.py:52 ('applies nothing'), Ledger.cls:514, ADR-0013:15: VIOLATED (F-1306 / F-1101 reproduced in this audit).",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-13T23:26:22+00:00",
+  "result": "fail"
+}

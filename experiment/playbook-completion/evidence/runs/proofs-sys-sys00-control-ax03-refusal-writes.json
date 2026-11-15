@@ -1,0 +1,23 @@
+{
+  "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features sys00_control_ax03_refusal_writes -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+  "error_locations": "src/ctl_sys.rs:67,src/ctl_sys.rs:73,src/ctl_sys.rs:76,src/ctl_sys.rs:81",
+  "errors": "4",
+  "experiment_head": "0b36c251cfc75bbc48ed4d982a515374abd4f0db",
+  "id": "proofs-sys-sys00-control-ax03-refusal-writes",
+  "json_log": "$RUN_DIR/proofs-sys/run-20261114T234729Z/sys00_control_ax03_refusal_writes.json",
+  "json_sha256": "19d1b1e10e22b2096e9076a320563830da5de1465a9cf36176b007d4f42d50a1",
+  "kind": "control",
+  "lane": "proofs-sys",
+  "log": "$RUN_DIR/proofs-sys/run-20261114T234729Z/sys00_control_ax03_refusal_writes.log",
+  "log_bytes": 6276,
+  "log_sha256": "725d739af8e9ff290a495711c41840743bd080660ae957f1fb07fb9b5dd3fc53",
+  "observes": "sys00_control_ax03_refusal_writes (SYS CtlRefusalWrites, explorer check sys00-control-ax03-refusal-writes, mutant; findings none): 4 errors, exactly at ['src/ctl_sys.rs:67', 'src/ctl_sys.rs:73', 'src/ctl_sys.rs:76', 'src/ctl_sys.rs:81'] (laws AX-03,AX-07,AX-08,AX-11M, the explorer's violated laws); failing ['inst::CtlRefusalWrites::discharge_ax03', 'inst::CtlRefusalWrites::discharge_ax07', 'inst::CtlRefusalWrites::discharge_ax08', 'inst::CtlRefusalWrites::discharge_ax11m']; every other function verifies as in the baseline=True; refutations inst::refute_ctlrefusalwrites_ax03,inst::refute_ctlrefusalwrites_ax07,inst::refute_ctlrefusalwrites_ax08,inst::refute_ctlrefusalwrites_ax11m and counterexamples cx::cx_ctlrefusalwrites_ax03,cx::cx_ctlrefusalwrites_ax07,cx::cx_ctlrefusalwrites_ax08,cx::cx_ctlrefusalwrites_ax11m verified=True",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T23:51:42+00:00",
+  "result": "expected-violation",
+  "rlimit_total": "60006684",
+  "sources_sha256": "fc9757dc97b10479b3f8f5d25e14d0c93ca1156b9cc78c60c3ee4096945e09df",
+  "verified": "264",
+  "verus_total_ms": "7307"
+}

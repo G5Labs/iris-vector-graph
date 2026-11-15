@@ -1,0 +1,15 @@
+{
+  "command": "flock -x $RUN_DIR/intent-b/auditib.lock timeout 900 python experiment/playbook-completion/intent/probes/lane-b/hd1001_random_walk.py",
+  "experiment_head": "c01a7ccd00b29670b521799344233fa4a814c925",
+  "id": "ib-HD1001-random-walk",
+  "kind": "probe",
+  "lane": "intent-b",
+  "log": "$RUN_DIR/intent-b/hd1001_random_walk.log",
+  "log_bytes": 1508,
+  "log_sha256": "d44a4ee85a68b088cb6bb22d9d2b0482440f005d33652a685add64648d1d2849",
+  "observes": "AUDITIB, library absent (_detect_arno False, no libarno in the container). engine.random_walk(seed,1,30) answers [] (matches its docstring) although the deployed ObjectScript walk exists; after the pin's engine.sync(), the exact call random_walk makes when the library is present (engine._arno_call('Graph.KG.NKGAccel','RandomWalkJson',...), pure ObjectScript over ^NKG) walks from a seed shared by the default graph and graph ib1_rw_g to both ib1_rw_b (default) and ib1_rw_c (named graph only). Violates ADMIN_GUIDE.md:651-654 (complete without the library) and USER_GUIDE.md:767-769 (methods with no graph answer the default graph). Library-present route inferred: the library only gates the call.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-13T22:44:08+00:00",
+  "result": "fail"
+}

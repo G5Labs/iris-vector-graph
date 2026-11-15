@@ -1,0 +1,533 @@
+{
+ "module": "11",
+ "statements": [
+  {
+   "id": "LED-B1.9",
+   "text": "Enable is refused if its process has an open transaction. The check is skipped when the ledger is on.",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/Ledger.cls:252-261"
+   ],
+   "evidence": [
+    "run:rx-live-11"
+   ],
+   "live_cases": [
+    "server Enable with $TLEVEL>0 -> transaction_open"
+   ],
+   "outcome": "holds-live",
+   "notes": "[server Enable with $TLEVEL>0 -> transaction_open] holds-live; returned {'error': 'transaction_open', 'head': None, 'ok': False, 'op_index': None, 'reason': 'a transaction is already open ($TLEVEL=1)'}; journal records 0, net changes outside allowed 0; obs {\"tlevel\": 1} | (observation) setup: caller transaction open: {\"tlevel\": 1} | (observation) after rollback: ledger state: {\"state\": \"never-enabled\"} | (observation) enabled ledger: Enable with an open transaction answers ok (check skipped): {\"adoption_needed\": false, \"ok\": true, \"tlevel\": 1}"
+  },
+  {
+   "id": "LED-B1.10",
+   "text": "The Python enable refuses a caller transaction that holds a write. It sends nothing.",
+   "implementing_code": [
+    "iris_vector_graph/ledger/client.py:268-284",
+    "iris_vector_graph/_write_txn.py:64-87"
+   ],
+   "evidence": [
+    "run:rx-live-11"
+   ],
+   "live_cases": [
+    "engine.ledger.enable() with a caller write open -> LedgerTransactionOpenError"
+   ],
+   "outcome": "holds-live",
+   "notes": "[engine.ledger.enable() with a caller write open -> LedgerTransactionOpenError] holds-live; LedgerTransactionOpenError: ledger.enable() cannot run inside the caller's open transaction ($TLEVEL 1) on the engine's connection; nothing was done. Commit or roll it ; journal records 0, net changes outside allowed 0; obs {\"caller_row_still_there\": 1, \"tlevel\": 1} | (observation) setup: caller transaction open: {\"tlevel\": 1} | (observation) after rollback: ledger state: {\"state\": \"never-enabled\"}"
+  },
+  {
+   "id": "LED-B1.11",
+   "text": "Enable waits up to 30 seconds for the head lock, then gives up and changes nothing.",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/Ledger.cls:263-270"
+   ],
+   "evidence": [
+    "run:rx-live-11"
+   ],
+   "live_cases": [
+    "enable while another process holds the head lock -> lock_timeout after ~30 s",
+    "re-enable a disabled ledger while another process holds the head lock -> lock_timeout"
+   ],
+   "outcome": "holds-live",
+   "notes": "[enable while another process holds the head lock -> lock_timeout after ~30 s] holds-live; LedgerLockTimeoutError: could not acquire ledger head lock; journal records 0, net changes outside allowed 0; obs {\"state\": \"never-enabled\"} | [re-enable a disabled ledger while another process holds the head lock -> lock_timeout] holds-live; LedgerLockTimeoutError: could not acquire ledger head lock; journal records 0, net changes outside allowed 0; obs {\"state\": \"disabled\"} | (observation) setup: a second process holds ^IVG.Ledger(\"head\"): {\"holder_pid\": \"145370\", \"lock_name\": \"^IVG.Ledger\"}"
+  },
+  {
+   "id": "LED-B3.4",
+   "text": "Head reports the ledger as broken when it is enabled but holds no revision.",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/Ledger.cls:158-164"
+   ],
+   "evidence": [
+    "run:rx-live-11"
+   ],
+   "live_cases": [
+    "Head on a never-enabled ledger -> not_enabled (neighbouring branch, reachable)"
+   ],
+   "outcome": "holds-inspected",
+   "notes": "Enabled with head 0 is not reachable through any entry point: Enable writes the state, head and the genesis revision in one transaction (Ledger.cls:288-319) and PurgeAll removes all three; forging it would need a harness write into ^IVG.Ledger, which the audit does not make. Read at Ledger.cls:162 (Err inconsistent before RevisionResponse). Live: the neighbouring branch (never enabled -> not_enabled) holds. | [Head on a never-enabled ledger -> not_enabled (neighbouring branch, reachable)] holds-live; LedgerNotEnabledError: ledger has not been enabled; journal records 0, net changes outside allowed 0 | (observation) enabled ledger: head after genesis: {\"head_seq\": 1}"
+  },
+  {
+   "id": "LED-B4.4",
+   "text": "A commit gives up after 30 seconds without the head lock and changes nothing.",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/Ledger.cls:440-444",
+    "iris_src/src/Graph/KG/Ledger.cls:397-414"
+   ],
+   "evidence": [
+    "run:rx-live-11"
+   ],
+   "live_cases": [
+    "commit while another process holds the head lock -> lock_timeout, rej_lock_timeout"
+   ],
+   "outcome": "holds-live",
+   "notes": "The head lock was held by the product itself: process 2 committed inside its own open transaction (4.7.0 keeps the head lock until that transaction ends); the refused commit waited the 30 s timeout. | [commit while another process holds the head lock -> lock_timeout, rej_lock_timeout] holds-live; LedgerLockTimeoutError: could not acquire ledger head lock within 30s; journal records 0, net changes outside allowed 0; obs {\"before\": 0, \"counter\": \"rej_lock_timeout\", \"prop_rows\": 0, \"stats\": {\"commits_ok\": 3, \"head_seq\": 3, \"rejections\": {\"rej_disabled\": 0, \"rej_failed_op\": 0, \"rej_idem_conflict\": 0, \"rej_lock_timeout\": | (observation) setup: process 2 committed inside its open transaction (head lock held): {\"holder_pid\": \"145479\", \"holder_seq\": 3, \"holder_tlevel\": 1}"
+  },
+  {
+   "id": "LED-B4.5",
+   "text": "A commit is refused when the ledger was never enabled.",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/Ledger.cls:445-446"
+   ],
+   "evidence": [
+    "run:rx-live-11"
+   ],
+   "live_cases": [
+    "commit on a never-enabled ledger -> not_enabled"
+   ],
+   "outcome": "holds-live",
+   "notes": "[commit on a never-enabled ledger -> not_enabled] holds-live; LedgerNotEnabledError: ledger has not been enabled; journal records 0, net changes outside allowed 0; obs {\"node_rows\": 0}"
+  },
+  {
+   "id": "LED-B4.6",
+   "text": "A commit is refused while the ledger is disabled.",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/Ledger.cls:447-450"
+   ],
+   "evidence": [
+    "run:rx-live-11"
+   ],
+   "live_cases": [
+    "commit on a disabled ledger -> disabled, rej_disabled"
+   ],
+   "outcome": "holds-live",
+   "notes": "[commit on a disabled ledger -> disabled, rej_disabled] holds-live; LedgerDisabledError: ledger is disabled; re-enable before committing; journal records 5, net changes outside allowed 0, allowed changed ['^Graph.KG.LedgerStatsD(\"default\")']; obs {\"counter\": \"rej_disabled\", \"node_rows\": 0, \"stats\": {\"commits_ok\": 1, \"head_seq\": 1, \"rejections\": {\"rej_disabled\": 1, \"rej_failed_op\": 0, \"rej_idem_conflict\": 0, \"rej_lock_timeout\": 0, \"rej_size_lim"
+  },
+  {
+   "id": "LED-B4.7.1",
+   "text": "A retry key that is bound to a different fingerprint is refused.",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/Ledger.cls:454-465"
+   ],
+   "evidence": [
+    "run:rx-live-11"
+   ],
+   "live_cases": [
+    "same idempotency key, different changeset -> idempotency_conflict",
+    "server Commit: conflict answer names the head"
+   ],
+   "outcome": "holds-live",
+   "notes": "[same idempotency key, different changeset -> idempotency_conflict] holds-live; IdempotencyConflictError: idempotency key 'rx11-key' already bound to a different changeset; journal records 5, net changes outside allowed 0, allowed changed ['^Graph.KG.LedgerStatsD(\"default\")']; obs {\"counter\": \"rej_idem_conflict\", \"node_rows\": 0, \"stats\": {\"commits_ok\": 2, \"head_seq\": 2, \"rejections\": {\"rej_disabled\": 0, \"rej_failed_op\": 0, \"rej_idem_conflict\": 1, \"rej_lock_timeout\": 0, \"rej_siz | [server Commit: conflict answer names the head] holds-live; returned {'error': 'idempotency_conflict', 'head': 'f5b776e5e03e11f1a6603a1e08fee210', 'ok': False, 'op_index': None, 'reason': \"idempotency key 'rx1; journal records 5, net changes outside allowed 0, allowed changed ['^Graph.KG.LedgerStatsD(\"default\")'] | (observation) same key and ops, new message/correlation id: replay, not a conflict: {\"first_seq\": 2, \"replayed\": true, \"seq\": 2}"
+  },
+  {
+   "id": "LED-B4.8",
+   "text": "A commit whose expected head is not the head is refused as stale. The answer names the head.",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/Ledger.cls:475-486",
+    "iris_vector_graph/ledger/errors.py:182-183"
+   ],
+   "evidence": [
+    "run:rx-live-11"
+   ],
+   "live_cases": [
+    "expected_head = an older revision -> stale_head naming the head",
+    "second process commits on the same expected head -> stale_head"
+   ],
+   "outcome": "holds-live",
+   "notes": "[expected_head = an older revision -> stale_head naming the head] holds-live; StaleHeadError: expected_head f5f218e9e03e11f1a6603a1e08fee210 but head is f5f2c2abe03e11f1a6603a1e08fee210 (current head: f5f2c2abe03e11f1a6603a1e08fee210); journal records 5, net changes outside allowed 0, allowed changed ['^Graph.KG.LedgerStatsD(\"default\")']; obs {\"counter\": \"rej_stale_head\", \"node_rows\": 0, \"stats\": {\"commits_ok\": 2, \"head_seq\": 2, \"rejections\": {\"rej_disabled\": 0, \"rej_failed_op\": 0, \"rej_idem_conflict\": 0, \"rej_lock_timeout\": 0, \"rej_size_l | [second process commits on the same expected head -> stale_head] holds-live; StaleHeadError: expected_head f5f2c2abe03e11f1a6603a1e08fee210 but head is f61bb6ffe03e11f1a6603a1e08fee210 (current head: f61bb6ffe03e11f1a6603a1e08fee210); journal records 5, net changes outside allowed 0, allowed changed ['^Graph.KG.LedgerStatsD(\"default\")']"
+  },
+  {
+   "id": "LED-B4.8.1",
+   "text": "An expected head that names no revision of this ledger is refused with its own error code.",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/Ledger.cls:475-481"
+   ],
+   "evidence": [
+    "run:rx-live-11"
+   ],
+   "live_cases": [
+    "expected_head names no revision -> unknown_head",
+    "expected_head = a rolled-back revision -> unknown_head"
+   ],
+   "outcome": "holds-live",
+   "notes": "[expected_head names no revision -> unknown_head] holds-live; UnknownRevisionError: expected_head ffffffffffffffffffffffffffffffff is not a revision of this ledger; journal records 5, net changes outside allowed 0, allowed changed ['^Graph.KG.LedgerStatsD(\"default\")']; obs {\"counter\": \"rej_unknown_head\", \"node_rows\": 0, \"stats\": {\"commits_ok\": 1, \"head_seq\": 1, \"rejections\": {\"rej_disabled\": 0, \"rej_failed_op\": 0, \"rej_idem_conflict\": 0, \"rej_lock_timeout\": 0, \"rej_size | [expected_head = a rolled-back revision -> unknown_head] holds-live; UnknownRevisionError: expected_head f655d912e03e11f1a6603a1e08fee210 is not a revision of this ledger; journal records 5, net changes outside allowed 0, allowed changed ['^Graph.KG.LedgerStatsD(\"default\")'] | (observation) setup: a revision committed inside a caller transaction, then rolled back: {\"node_rows\": 0, \"revision_id\": \"f655d912e03e11f1a6603a1e08fee210\"}"
+  },
+  {
+   "id": "LED-B4.9",
+   "text": "A changeset with no changes is refused.",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/Ledger.cls:488-492"
+   ],
+   "evidence": [
+    "run:rx-live-11"
+   ],
+   "live_cases": [
+    "server Commit with ops [] -> empty (not counted)",
+    "engine.ledger.commit(empty) -> EmptyChangesetError"
+   ],
+   "outcome": "holds-live",
+   "notes": "[server Commit with ops [] -> empty (not counted)] holds-live; returned {'error': 'empty', 'head': 'f67b49a6e03e11f1a6603a1e08fee210', 'ok': False, 'op_index': None, 'reason': 'changeset has no operations'}; journal records 0, net changes outside allowed 0; obs {\"after\": {\"rej_disabled\": 0, \"rej_failed_op\": 0, \"rej_idem_conflict\": 0, \"rej_lock_timeout\": 0, \"rej_size_limit\": 0, \"rej_stale_head\": 0, \"rej_strict_block\": 0, \"rej_unknown_head\": 0}, \"before\": {\"re | [engine.ledger.commit(empty) -> EmptyChangesetError] holds-live; EmptyChangesetError: changeset has no operations; journal records 0, net changes outside allowed 0"
+  },
+  {
+   "id": "LED-B4.9.1",
+   "text": "A changeset with more changes than the size limit is refused before any change is made.",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/Ledger.cls:493-497",
+    "iris_src/src/Graph/KG/Ledger.cls:72-80"
+   ],
+   "evidence": [
+    "run:rx-live-11"
+   ],
+   "live_cases": [
+    "4 ops with max_ops=3 -> too_large with limit, rej_size_limit"
+   ],
+   "outcome": "holds-live",
+   "notes": "[4 ops with max_ops=3 -> too_large with limit, rej_size_limit] holds-live; ChangesetTooLargeError: changeset has 4 operations; max_ops is 3; journal records 5, net changes outside allowed 0, allowed changed ['^Graph.KG.LedgerStatsD(\"default\")']; obs {\"counter\": \"rej_size_limit\", \"node_rows\": 0, \"stats\": {\"commits_ok\": 1, \"head_seq\": 1, \"rejections\": {\"rej_disabled\": 0, \"rej_failed_op\": 0, \"rej_idem_conflict\": 0, \"rej_lock_timeout\": 0, \"rej_size_l"
+  },
+  {
+   "id": "LED-B4.9.2",
+   "text": "A commit takes only two kinds of revision: changeset and adoption.",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/Ledger.cls:488-509",
+    "iris_vector_graph/ledger/client.py:381-401"
+   ],
+   "evidence": [
+    "run:rx-live-11"
+   ],
+   "live_cases": [
+    "engine.ledger.commit(kind='bogus') -> refused (stated)",
+    "server Commit kind='bogus' with ops [] -> refused (stated)"
+   ],
+   "outcome": "product-defect",
+   "finding": "F-1107",
+   "notes": "Reproduces F-1107 live again: any kind string is accepted and stored, and only kind changeset gets the empty and size checks. | [engine.ledger.commit(kind='bogus') -> refused (stated)] not-refused-as-stated; returned CommitResult(revision=RevisionInfo(seq=2, revision_id='f6e007cbe03e11f1a6603a1e08fee210', parent_id='f6d153d6e03e11f1a6603a1e08fee210', kind; journal records 24, net changes outside allowed 8, allowed changed ['^Graph.KG.LedgerStatsD(\"default\")']; obs {\"head_kind\": \"bogus\", \"node_rows\": 1} | [server Commit kind='bogus' with ops [] -> refused (stated)] not-refused-as-stated; returned {'ok': True, 'replayed': False, 'revision': {'actor': 'audit:refusals', 'actor_type': 'ingest', 'committed_ms': 1794669646180, 'conn_user': ; journal records 16, net changes outside allowed 4, allowed changed ['^Graph.KG.LedgerStatsD(\"default\")']; obs {\"head\": {\"actor\": \"audit:refusals\", \"actor_type\": \"ingest\", \"committed_ms\": 1794669646180, \"conn_user\": \"_SYSTEM\", \"correlation_id\": null, \"idempotency_key\": null, \"kind\": \"bogus\", \"message\": null, \""
+  },
+  {
+   "id": "LED-B4.11.8",
+   "text": "A revision row that cannot be saved stops the commit. A message over 4,000 letters is one such case.",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/Ledger.cls:554-555",
+    "iris_src/src/Graph/KG/LedgerRevision.cls:30"
+   ],
+   "evidence": [
+    "run:rx-live-11"
+   ],
+   "live_cases": [
+    "message of 4,001 letters -> inconsistent, nothing saved"
+   ],
+   "outcome": "holds-live",
+   "notes": "[message of 4,001 letters -> inconsistent, nothing saved] holds-live; LedgerInconsistencyError: revision row save failed: ERROR #7201: Datatype value 'mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm; journal records 17, net changes outside allowed 0, allowed changed ['^t52S.XCFT.1']; obs {\"head_after\": 1, \"head_before\": 1, \"node_rows\": 0}"
+  },
+  {
+   "id": "LED-B4.13",
+   "text": "Any fault in a commit undoes its own transaction level. The answer calls the ledger broken.",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/Ledger.cls:397-414"
+   ],
+   "evidence": [
+    "run:rx-live-11"
+   ],
+   "live_cases": [
+    "server Commit with a malformed meta JSON (fault) -> inconsistent, $TLEVEL 0",
+    "fault inside a caller transaction -> inconsistent, caller's level kept"
+   ],
+   "outcome": "holds-live",
+   "notes": "The fault used is a malformed meta JSON (the server entry point the client calls; the client always sends well-formed JSON), so it occurs before any write; a fault after a write was not constructed (every malformed op shape found returns a reason instead of faulting). Inside a caller's transaction the answer is inconsistent and $TLEVEL returns to the caller's level with the caller's row still visible. | [server Commit with a malformed meta JSON (fault) -> inconsistent, $TLEVEL 0] holds-live; returned {'error': 'inconsistent', 'head': None, 'ok': False, 'op_index': None, 'reason': 'Parsing error 3 Line 1 Offset 2 '}; journal records 0, net changes outside allowed 0; obs {\"tlevel\": 0} | [fault inside a caller transaction -> inconsistent, caller's level kept] holds-live; returned {'error': 'inconsistent', 'head': None, 'ok': False, 'op_index': None, 'reason': 'Parsing error 3 Line 1 Offset 2 '}; journal records 2, net changes outside allowed 0; obs {\"caller_row_visible\": 1, \"tlevel_after\": 1, \"tlevel_before\": 1}"
+  },
+  {
+   "id": "LED-B5.6",
+   "text": "A reserved property name is refused, and the commit saves nothing.",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/LedgerApply.cls:223-228",
+    "iris_src/src/Graph/KG/LedgerApply.cls:266-269",
+    "iris_src/src/Graph/KG/LedgerApply.cls:312-314",
+    "iris_vector_graph/ledger/changeset.py:63-67"
+   ],
+   "evidence": [
+    "run:rx-live-11"
+   ],
+   "live_cases": [
+    "builder: create_node props {'id': ...} -> reserved_property at once",
+    "builder: set_property '__graph' -> reserved_property at once",
+    "server: op 1 sets '__graph' after op 0 created a node -> failed_op, nothing saved",
+    "server: create_node props {'id': ...} -> failed_op reserved_property"
+   ],
+   "outcome": "holds-live",
+   "notes": "[builder: create_node props {'id': ...} -> reserved_property at once] holds-live; ChangesetOperationError: changeset operation 0 failed: reserved_property: 'id' may not be set or removed; journal records 0, net changes outside allowed 0 | [builder: set_property '__graph' -> reserved_property at once] holds-live; ChangesetOperationError: changeset operation 0 failed: reserved_property: '__graph' may not be set or removed; journal records 0, net changes outside allowed 0 | [server: op 1 sets '__graph' after op 0 created a node -> failed_op, nothing saved] holds-live; returned {'error': 'failed_op', 'head': None, 'ok': False, 'op_index': 1, 'reason': \"reserved_property: '__graph'\"}; journal records 18, net changes outside allowed 0, allowed changed ['^Graph.KG.LedgerStatsD(\"default\")', '^t52S.XCFT.1']; obs {\"node_rows\": 0} | [server: create_node props {'id': ...} -> failed_op reserved_property] holds-live; returned {'error': 'failed_op', 'head': None, 'ok': False, 'op_index': 0, 'reason': \"reserved_property: 'id'\"}; journal records 5, net changes outside allowed 0, allowed changed ['^Graph.KG.LedgerStatsD(\"default\")']"
+  },
+  {
+   "id": "LED-B5.8",
+   "text": "Remove label is refused when the label is not on the node.",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/LedgerApply.cls:294-302"
+   ],
+   "evidence": [
+    "run:rx-live-11"
+   ],
+   "live_cases": [
+    "remove_label of a label the node lacks -> label_not_present"
+   ],
+   "outcome": "holds-live",
+   "notes": "[remove_label of a label the node lacks -> label_not_present] holds-live; ChangesetOperationError: changeset operation 0 failed: label_not_present: 'Nope' on 'rx11:l'; journal records 5, net changes outside allowed 0, allowed changed ['^Graph.KG.LedgerStatsD(\"default\")']"
+  },
+  {
+   "id": "LED-B5.10",
+   "text": "Remove property is refused when the node does not have it.",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/LedgerApply.cls:319-328"
+   ],
+   "evidence": [
+    "run:rx-live-11"
+   ],
+   "live_cases": [
+    "remove_property the node lacks -> property_not_present"
+   ],
+   "outcome": "holds-live",
+   "notes": "[remove_property the node lacks -> property_not_present] holds-live; ChangesetOperationError: changeset operation 0 failed: property_not_present: 'nope' on 'rx11:p'; journal records 5, net changes outside allowed 0, allowed changed ['^Graph.KG.LedgerStatsD(\"default\")']"
+  },
+  {
+   "id": "LED-B5.11",
+   "text": "A change to a node that is not there is refused as not found.",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/LedgerApply.cls:290",
+    "iris_src/src/Graph/KG/LedgerApply.cls:380",
+    "iris_vector_graph/ledger/errors.py:184-195"
+   ],
+   "evidence": [
+    "run:rx-live-11"
+   ],
+   "live_cases": [
+    "set_property on a node that is not there -> NodeNotFoundError",
+    "add_label on a node that is not there -> NodeNotFoundError",
+    "delete_node on a node that is not there -> NodeNotFoundError"
+   ],
+   "outcome": "holds-live",
+   "notes": "Refused as not found (NodeNotFoundError, missing_node set) for set_property, add_label and delete_node; the decoded message names create_relationship for every op (existing decoder finding F-C1109, not a refusal defect). | [set_property on a node that is not there -> NodeNotFoundError] holds-live; NodeNotFoundError: create_relationship failed: node 'rx11:ghost' does not exist. Add upsert_node('rx11:ghost') to the changeset, or set auto_stub_missing_nodes; journal records 5, net changes outside allowed 0, allowed changed ['^Graph.KG.LedgerStatsD(\"default\")'] | [add_label on a node that is not there -> NodeNotFoundError] holds-live; NodeNotFoundError: create_relationship failed: node 'rx11:ghost' does not exist. Add upsert_node('rx11:ghost') to the changeset, or set auto_stub_missing_nodes; journal records 5, net changes outside allowed 0, allowed changed ['^Graph.KG.LedgerStatsD(\"default\")'] | [delete_node on a node that is not there -> NodeNotFoundError] holds-live; NodeNotFoundError: create_relationship failed: node 'rx11:ghost' does not exist. Add upsert_node('rx11:ghost') to the changeset, or set auto_stub_missing_nodes; journal records 5, net changes outside allowed 0, allowed changed ['^Graph.KG.LedgerStatsD(\"default\")']"
+  },
+  {
+   "id": "LED-B5.12",
+   "text": "A change to a node or edge that was deleted earlier in the same changeset is refused.",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/LedgerApply.cls:197-203",
+    "iris_src/src/Graph/KG/LedgerApply.cls:220",
+    "iris_src/src/Graph/KG/LedgerApply.cls:312"
+   ],
+   "evidence": [
+    "run:rx-live-11-r2"
+   ],
+   "live_cases": [
+    "set_property on a node deleted earlier in the changeset -> refused, nothing saved",
+    "set_qualifier by tuple on an edge deleted earlier in the changeset -> refused (op 1)",
+    "set_qualifier by statement id on an edge deleted earlier in the changeset -> 'deleted earlier'"
+   ],
+   "outcome": "holds-live",
+   "notes": "Re-run as rx-live-11-r2 after rx-live-11's strict oracle flagged [set_property on a node deleted earlier in the changeset -> refused, nothing saved] refused-but-changed, net changes ['^KG(\"__version\")', '^KG(\"gen\",0,\"rx11:d1\")', '^t52S.DMCe.7(\"W\",4076)']; [set_qualifier on an edge deleted earlier in the changeset -> refused, nothing saved] not-refused-as-stated, net changes ['^KG(\"__version\")', '^KG(\"gen\",0,\"rx11:d1\")']. The re-run reports nodes written only non-transactionally inside the commit's bracket (IRIS $INCREMENT-style, not undone by a rollback by design) separately | [set_property on a node deleted earlier in the changeset -> refused, nothing saved] holds-live; ChangesetOperationError: changeset operation 1 failed: node 'rx11:d1' was deleted earlier in this changeset; journal records 97, net changes outside allowed 0, allowed changed ['^Graph.KG.LedgerStatsD(\"default\")'], non-transactional increments ['^KG(\"__version\")', '^KG(\"gen\",0,\"rx11:d1\")', '^t52S.DMCe.7(\"W\",4076)']; obs {\"edge_rows\": 1, \"node_rows\": 1} | [set_qualifier by tuple on an edge deleted earlier in the changeset -> refused (op 1)] holds-live; ChangesetOperationError: changeset operation 1 failed: relationship not found: rx11:d1 -[R]-> rx11:d2; journal records 41, net changes outside allowed 0, allowed changed ['^Graph.KG.LedgerStatsD(\"default\")'], non-transactional increments ['^KG(\"__version\")', '^KG(\"gen\",0,\"rx11:d1\")']; obs {\"edge_rows\": 1} | [set_qualifier by statement id on an edge deleted earlier in the changeset -> 'deleted earlier'] holds-live; ChangesetOperationError: changeset operation 1 failed: statement 1 was deleted earlier in this changeset; journal records 41, net changes outside allowed 0, allowed changed ['^Graph.KG.LedgerStatsD(\"default\")'], non-transactional increments ['^KG(\"__version\")', '^KG(\"gen\",0,\"rx11:d1\")']; obs {\"edge_rows\": 1}"
+  },
+  {
+   "id": "LED-B5.13",
+   "text": "A plain delete of a node is refused while the node has an edge in the default graph.",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/LedgerApply.cls:374-402",
+    "iris_vector_graph/ledger/changeset.py:159-163"
+   ],
+   "evidence": [
+    "run:rx-live-11"
+   ],
+   "live_cases": [
+    "plain (strict) delete_node with a default-graph edge -> node_has_relationships"
+   ],
+   "outcome": "holds-live",
+   "notes": "[plain (strict) delete_node with a default-graph edge -> node_has_relationships] holds-live; ChangesetOperationError: changeset operation 0 failed: node_has_relationships: 'rx11:h1' has 1 live relationship(s); use mode=detach; journal records 5, net changes outside allowed 0, allowed changed ['^Graph.KG.LedgerStatsD(\"default\")'] | (observation) builder default mode: {\"mode\": \"strict\"}"
+  },
+  {
+   "id": "LED-B5.18",
+   "text": "Create edge is refused when the edge is already there or an end node is not.",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/LedgerApply.cls:457-471"
+   ],
+   "evidence": [
+    "run:rx-live-11"
+   ],
+   "live_cases": [
+    "create_relationship that already exists -> relationship_exists",
+    "create_relationship to a missing end node -> node_not_found"
+   ],
+   "outcome": "holds-live",
+   "notes": "The missing-end-node case decodes to NodeNotFoundError (narrowed from failed_op node_not_found). | [create_relationship that already exists -> relationship_exists] holds-live; ChangesetOperationError: changeset operation 0 failed: relationship_exists: rx11:e1 -[R]-> rx11:e2; journal records 5, net changes outside allowed 0, allowed changed ['^Graph.KG.LedgerStatsD(\"default\")'] | [create_relationship to a missing end node -> node_not_found] holds-live; NodeNotFoundError: create_relationship failed: node 'rx11:missing' does not exist. Add upsert_node('rx11:missing') to the changeset, or set auto_stub_missing_n; journal records 5, net changes outside allowed 0, allowed changed ['^Graph.KG.LedgerStatsD(\"default\")']"
+  },
+  {
+   "id": "LED-B5.21",
+   "text": "A weight qualifier that is not a number is refused.",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/LedgerApply.cls:463",
+    "iris_src/src/Graph/KG/LedgerApply.cls:576",
+    "iris_src/src/Graph/KG/LedgerApply.cls:593"
+   ],
+   "evidence": [
+    "run:rx-live-11"
+   ],
+   "live_cases": [
+    "create_relationship with weight 'heavy' -> weight must be numeric",
+    "set_qualifier weight 'x' -> weight must be numeric",
+    "replace_qualifiers weight 'x' -> weight must be numeric"
+   ],
+   "outcome": "holds-live",
+   "notes": "[create_relationship with weight 'heavy' -> weight must be numeric] holds-live; ChangesetOperationError: changeset operation 0 failed: qualifier 'weight' must be numeric; journal records 5, net changes outside allowed 0, allowed changed ['^Graph.KG.LedgerStatsD(\"default\")'] | [set_qualifier weight 'x' -> weight must be numeric] holds-live; ChangesetOperationError: changeset operation 0 failed: qualifier 'weight' must be numeric; journal records 5, net changes outside allowed 0, allowed changed ['^Graph.KG.LedgerStatsD(\"default\")'] | [replace_qualifiers weight 'x' -> weight must be numeric] holds-live; ChangesetOperationError: changeset operation 0 failed: qualifier 'weight' must be numeric; journal records 5, net changes outside allowed 0, allowed changed ['^Graph.KG.LedgerStatsD(\"default\")']"
+  },
+  {
+   "id": "LED-B5.26",
+   "text": "Remove qualifier is refused when the key is not there.",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/LedgerApply.cls:581-584"
+   ],
+   "evidence": [
+    "run:rx-live-11"
+   ],
+   "live_cases": [
+    "remove_qualifier of a key not there -> qualifier_not_present"
+   ],
+   "outcome": "holds-live",
+   "notes": "[remove_qualifier of a key not there -> qualifier_not_present] holds-live; ChangesetOperationError: changeset operation 0 failed: qualifier_not_present: 'nope' on statement 1; journal records 5, net changes outside allowed 0, allowed changed ['^Graph.KG.LedgerStatsD(\"default\")']"
+  },
+  {
+   "id": "LED-B5.27",
+   "text": "A change to an edge that is not there is refused.",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/LedgerApply.cls:182-211"
+   ],
+   "evidence": [
+    "run:rx-live-11"
+   ],
+   "live_cases": [
+    "set_qualifier on a tuple with no edge -> relationship not found",
+    "set_qualifier on an unknown statement id -> statement unknown",
+    "delete_relationship on a tuple with no edge -> relationship not found"
+   ],
+   "outcome": "holds-live",
+   "notes": "[set_qualifier on a tuple with no edge -> relationship not found] holds-live; ChangesetOperationError: changeset operation 0 failed: relationship not found: rx11:x1 -[NOPE]-> rx11:x2; journal records 5, net changes outside allowed 0, allowed changed ['^Graph.KG.LedgerStatsD(\"default\")'] | [set_qualifier on an unknown statement id -> statement unknown] holds-live; ChangesetOperationError: changeset operation 0 failed: statement 987654 is unknown; journal records 5, net changes outside allowed 0, allowed changed ['^Graph.KG.LedgerStatsD(\"default\")'] | [delete_relationship on a tuple with no edge -> relationship not found] holds-live; ChangesetOperationError: changeset operation 0 failed: relationship not found: rx11:x1 -[NOPE]-> rx11:x2; journal records 5, net changes outside allowed 0, allowed changed ['^Graph.KG.LedgerStatsD(\"default\")']"
+  },
+  {
+   "id": "LED-B6.7",
+   "text": "A reference to a closed statement id is refused.",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/LedgerApply.cls:204-206"
+   ],
+   "evidence": [
+    "run:rx-live-11"
+   ],
+   "live_cases": [
+    "set_qualifier on a closed statement id -> 'statement N was deleted in revision M'"
+   ],
+   "outcome": "holds-live",
+   "notes": "[set_qualifier on a closed statement id -> 'statement N was deleted in revision M'] holds-live; ChangesetOperationError: changeset operation 0 failed: statement 1 was deleted in revision 4; journal records 5, net changes outside allowed 0, allowed changed ['^Graph.KG.LedgerStatsD(\"default\")'] | (observation) setup: statement closed: {\"closed_in\": 4, \"stmt_id\": \"1\"}"
+  },
+  {
+   "id": "LED-B7.1",
+   "text": "An SQL update of a revision row is refused.",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/LedgerRevision.cls:87-101"
+   ],
+   "evidence": [
+    "run:rx-live-11"
+   ],
+   "live_cases": [
+    "SQL UPDATE of a revision row -> refused"
+   ],
+   "outcome": "holds-live",
+   "notes": "[SQL UPDATE of a revision row -> refused] holds-live; OperationalError: <SQL ERROR>; Details: [SQLCODE: <-132>:<Before Update trigger failed>]\r\n[Location: <ServerLoop>]\r\n[%msg: <Graph_KG.ledger_revisions is immut; journal records 0, net changes outside allowed 0; obs {\"message\": \"rev\"}"
+  },
+  {
+   "id": "LED-B7.2",
+   "text": "An SQL delete of a revision row is refused.",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/LedgerRevision.cls:103-108"
+   ],
+   "evidence": [
+    "run:rx-live-11"
+   ],
+   "live_cases": [
+    "SQL DELETE of a revision row -> refused"
+   ],
+   "outcome": "holds-live",
+   "notes": "[SQL DELETE of a revision row -> refused] holds-live; OperationalError: <SQL ERROR>; Details: [SQLCODE: <-134>:<Before Delete trigger failed>]\r\n[Location: <ServerLoop>]\r\n[%msg: <Graph_KG.ledger_revisions is immut; journal records 0, net changes outside allowed 0; obs {\"rows\": 2}"
+  },
+  {
+   "id": "LED-B7.3",
+   "text": "A stored revision is refused if it is saved again or deleted as an object.",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/LedgerRevision.cls:110-123"
+   ],
+   "evidence": [
+    "run:rx-live-11"
+   ],
+   "live_cases": [
+    "object %Save of a stored revision -> error status",
+    "object %DeleteId of a stored revision -> error status"
+   ],
+   "outcome": "holds-live",
+   "notes": "[object %Save of a stored revision -> error status] holds-live; returned {'ok': False, 'status': '0 \\x00\u00c6\\x01\\x01\\x04\\x04\\x89\\x13:\\x01Graph_KG.ledger_revisions is immutable (spec 213 FR-023)\\x01\\x01\\x01\\x01\\x01\\x0; journal records 0, net changes outside allowed 0; obs {\"message\": \"rev\"} | [object %DeleteId of a stored revision -> error status] holds-live; returned {'ok': False, 'status': '0 \\x00\\x90\\x01\\x01\\x04\\x04\\x89\\x13:\\x01Graph_KG.ledger_revisions is immutable (spec 213 FR-023)\\x01\\x01\\x01\\x01\\x01; journal records 0, net changes outside allowed 0; obs {\"rows\": 2} | (observation) revision class: {\"cls\": \"Graph.KG.LedgerRevision\", \"id\": 2}"
+  },
+  {
+   "id": "LED-B8.2",
+   "text": "A null value, or a value of another type such as a list, is refused.",
+   "implementing_code": [
+    "iris_vector_graph/ledger/changeset.py:47-60"
+   ],
+   "evidence": [
+    "run:rx-live-11"
+   ],
+   "live_cases": [
+    "builder set_property None -> ChangesetOperationError",
+    "builder set_property list -> ChangesetOperationError",
+    "builder create_node props dict value -> ChangesetOperationError",
+    "builder set_qualifier None -> ChangesetOperationError"
+   ],
+   "outcome": "holds-live",
+   "notes": "[builder set_property None -> ChangesetOperationError] holds-live; ChangesetOperationError: changeset operation 0 failed: property k: value may not be null; use a remove operation; journal records 0, net changes outside allowed 0 | [builder set_property list -> ChangesetOperationError] holds-live; ChangesetOperationError: changeset operation 0 failed: property k: unsupported value type list; journal records 0, net changes outside allowed 0 | [builder create_node props dict value -> ChangesetOperationError] holds-live; ChangesetOperationError: changeset operation 0 failed: property k: unsupported value type dict; journal records 0, net changes outside allowed 0 | [builder set_qualifier None -> ChangesetOperationError] holds-live; ChangesetOperationError: changeset operation 0 failed: qualifier k: value may not be null; use a remove operation; journal records 0, net changes outside allowed 0"
+  },
+  {
+   "id": "LED-B8.4",
+   "text": "Before it sends anything, the client refuses an empty changeset. It also refuses a back link to a change that is not an earlier edge create.",
+   "implementing_code": [
+    "iris_vector_graph/ledger/changeset.py:290-305",
+    "iris_vector_graph/ledger/client.py:392"
+   ],
+   "evidence": [
+    "run:rx-live-11"
+   ],
+   "live_cases": [
+    "commit(empty changeset) -> EmptyChangesetError before sending",
+    "back link OpRef(0) to a create_node -> ChangesetOperationError before sending",
+    "forward back link OpRef(1) -> ChangesetOperationError before sending",
+    "control: a server-refused commit is sent and emits one event"
+   ],
+   "outcome": "holds-live",
+   "notes": "[commit(empty changeset) -> EmptyChangesetError before sending] holds-live; EmptyChangesetError: changeset has no operations; journal records 0, net changes outside allowed 0; obs {\"wire_events\": 0} | [back link OpRef(0) to a create_node -> ChangesetOperationError before sending] holds-live; ChangesetOperationError: changeset operation 1 failed: op_ref 0 must point to a create_rel or upsert_rel operation; journal records 0, net changes outside allowed 0; obs {\"node_rows\": 0, \"wire_events\": 0} | [forward back link OpRef(1) -> ChangesetOperationError before sending] holds-live; ChangesetOperationError: changeset operation 0 failed: op_ref 1 must point to an earlier operation; journal records 0, net changes outside allowed 0; obs {\"wire_events\": 0} | [control: a server-refused commit is sent and emits one event] holds-live; ChangesetOperationError: changeset operation 0 failed: label_not_present: 'Nope' on 'rx11:o1'; journal records 5, net changes outside allowed 0, allowed changed ['^Graph.KG.LedgerStatsD(\"default\")']; obs {\"wire_events\": 1}"
+  },
+  {
+   "id": "LED-B15.1",
+   "text": "The index rebuild refuses a schema name that is not a plain SQL name, before any statement runs.",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/Ledger.cls:224-228",
+    "iris_src/src/Graph/KG/SqlProcs.cls:200-202"
+   ],
+   "evidence": [
+    "run:rx-live-11"
+   ],
+   "live_cases": [
+    "RebuildEdgeIndices('Graph_KG.nodes --') -> refused before any statement",
+    "RebuildEdgeIndices('1abc') -> refused before any statement",
+    "RebuildEdgeIndices('Graph KG') -> refused before any statement",
+    "SQL procedure rebuild_edge_indices('Graph_KG.nodes --') -> refused"
+   ],
+   "outcome": "holds-live",
+   "notes": "[RebuildEdgeIndices('Graph_KG.nodes --') -> refused before any statement] holds-live; RuntimeError: <THROW> *%Exception.StatusException ERROR #5001: rebuild_edge_indices: schema 'Graph_KG.nodes --' is not an SQL identifier; journal records 0, net changes outside allowed 0 | [RebuildEdgeIndices('1abc') -> refused before any statement] holds-live; RuntimeError: <THROW> *%Exception.StatusException ERROR #5001: rebuild_edge_indices: schema '1abc' is not an SQL identifier; journal records 0, net changes outside allowed 0 | [RebuildEdgeIndices('Graph KG') -> refused before any statement] holds-live; RuntimeError: <THROW> *%Exception.StatusException ERROR #5001: rebuild_edge_indices: schema 'Graph KG' is not an SQL identifier; journal records 0, net changes outside allowed 0 | [SQL procedure rebuild_edge_indices('Graph_KG.nodes --') -> refused] holds-live; OperationalError: <SQL ERROR>; Details: [SQLCODE: <-149>:<SQL Function encountered an error>]\r\n[Location: <ServerLoop - Query Open()>]\r\n[%msg: <SQL Function G; journal records 0, net changes outside allowed 0"
+  }
+ ]
+}

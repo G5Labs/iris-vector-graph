@@ -1,0 +1,23 @@
+{
+  "check": "m09-planc-as-built-collide-binding",
+  "command": "CARGO_TARGET_DIR=$RUN_DIR/target/breadth-b cargo build --release && bash experiment/playbook-completion/tools/locks.sh heavy timeout 1800 $RUN_DIR/target/breadth-b/release/breadth-b",
+  "design": "as-built",
+  "experiment_head": "f3fe3917466f7bae3e46f32f5b0644cfeaff87c8",
+  "full_log": "$RUN_DIR/breadth-b/mc/full-decisive-20261114T012246Z.log",
+  "full_log_sha256": "227f6720d9d86ed75cc8fa7fd71e2d9d31fd6f5ccd627843af4d51997edf4615",
+  "id": "b-mc-m09-planc-as-built-collide-binding",
+  "kind": "mc",
+  "lane": "breadth-b",
+  "log": "$RUN_DIR/breadth-b/mc/checks/m09-planc-as-built-collide-binding.log",
+  "log_bytes": 2260,
+  "log_sha256": "b00db66472ea82cf102631d5f9cb516d6abe5142ef73179ef7964c8f3cc52a27",
+  "module": "09",
+  "observes": "module 09 machine planc design as-built: expectation violation of 'NAT-T5.16: an ok entry runs the class compiled from its own shape'; result met (found 'NAT-T5.16: an ok entry runs the class compiled from its own shape'); 86 states, 136 transitions, depth 4, exhaustive within the model's bounds; covers: F-0901, F-C0901: Build marks the entry the hash holds now ok for the class it compiled from the other shape",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T01:23:51+00:00",
+  "result": "expected-violation",
+  "results": "experiment/playbook-completion/models/breadth-b/RESULTS.json",
+  "search": "exhaustive",
+  "states": "86"
+}

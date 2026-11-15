@@ -1,0 +1,231 @@
+[
+ {
+  "id": "F-1301",
+  "module": "13",
+  "title": "Spec 256 FR-004 ('every record') contradicts Decision 2 ('any record') on clearing revision free text",
+  "intended": "Decision 2 / ADR-0013 (accepted): clear free text when any record of the revision is redacted (HD-1302 supported).",
+  "observed": "Implementation and live behaviour follow 'any' (fresh: upstream spanning-revision test in the original run; intent lane B record HD-1302). The spec's FR-004 wording is stale.",
+  "disposition": "confirmed-source",
+  "evidence": [
+   {
+    "kind": "source",
+    "ref": "specs/256-ledger-tenant-redaction/spec.md (FR-004 vs Decisions)"
+   }
+  ],
+  "gates": [
+   "3.1-intent",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S3",
+  "confidence": "high",
+  "remedy": "Edit FR-004 to say 'any record', matching Decision 2 and ADR-0013.",
+  "notes": "Documentation conflict; product behaviour matches the accepted decision."
+ },
+ {
+  "id": "F-1302",
+  "module": "13",
+  "title": "Redaction can tombstone history of content a concurrent commit made live (unlocked start, late marker)",
+  "intended": "RED-B1.1 / ADR-0013: a redaction never tombstones live content; the marker refuses commits into the target from the start.",
+  "observed": "Original live reproduction on the same pin (scenario commit_in_unmarked_window, which compiles the original probe class and is not rerun here) and as-built model trace (3 steps); the opening checks run without the head lock and the marker is set at the first tombstone (LedgerRedact.cls:202-211, 322-324). Fresh model and proof evidence: core lanes (pending).",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "original",
+    "ref": "live:native-commit_in_unmarked_window"
+   },
+   {
+    "kind": "original",
+    "ref": "mc:redaction-as-built-live"
+   }
+  ],
+  "gates": [
+   "3.3-model-check",
+   "3.3-controls",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S1",
+  "confidence": "high",
+  "remedy": "Check liveness and set the marker in one transaction under the head lock (HD-1301 working answer).",
+  "notes": "Original evidence attributable to submission 9c3719c1 at the same product pin."
+ },
+ {
+  "id": "F-1303",
+  "module": "13",
+  "title": "Concurrent redactions of two targets mix their audit counts and one removes the other's marker",
+  "intended": "Decision 1: each redaction revision records what it redacted; one target at a time (RED-B6, RED-B7.1).",
+  "observed": "Fresh rerun on the pin: both runs pass the 'another redaction?' check, each target gets a redaction revision, and the audits' record counts are mixed (shared counters; Final reads them under any marker, LedgerRedact.cls:409-462).",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "run",
+    "ref": "live-native-rerun-1314"
+   },
+   {
+    "kind": "original",
+    "ref": "mc:redaction-as-built-audit"
+   }
+  ],
+  "gates": [
+   "3.3-model-check",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S1",
+  "confidence": "high",
+  "remedy": "Own the marker per target from the start and let Batch/Final act only under their own marker; keep counters per target.",
+  "notes": ""
+ },
+ {
+  "id": "F-1304",
+  "module": "13",
+  "title": "An unprefixed default-graph redaction tombstones history of nodes live in a named graph",
+  "intended": "RED-X2 / FR-005: never redact content that is live in any graph; HD-1303(b) working answer: refuse an ambiguous unprefixed default-graph target unless no matching node is live anywhere.",
+  "observed": "Fresh rerun: redact(None) is accepted although tenant B's nodes are live in a named graph, tombstones their node records (graph-blind), and verify then diverges. Independently reproduced by intent lane B.",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "run",
+    "ref": "live-native-rerun-1314"
+   }
+  ],
+  "gates": [
+   "3.3-model-check",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S1",
+  "confidence": "high",
+  "remedy": "Count live nodes in every graph for an unprefixed default-graph target (as LiveRows already does for prefixed ones), or refuse it.",
+  "notes": "Three targeting predicates differ (Matches, LiveRows, DropStatements); see the core models."
+ },
+ {
+  "id": "F-1305",
+  "module": "13",
+  "title": "A graph-per-tenant redaction with unprefixed ids reports success while the tenant's node history remains",
+  "intended": "Spec 256: tenant erasure removes the tenant's content from history (RED-B1.2, SC-001).",
+  "observed": "Fresh rerun: redact(gTenantA) completes; tenant A's node ids and property values stay in the ledger (node records are graph-blind); verify diverges.",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "run",
+    "ref": "live-native-rerun-1314"
+   }
+  ],
+  "gates": [
+   "3.3-model-check",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S1",
+  "confidence": "high",
+  "remedy": "Return an explicit incomplete/refused outcome when node history cannot be attributed (HD-1304 working answer), or record each node record's graph.",
+  "notes": ""
+ },
+ {
+  "id": "F-1306",
+  "module": "13",
+  "title": "A retried commit re-applies post-commit properties and revives erased content",
+  "intended": "HD-1305 (supported): a retry must not recreate an erased tenant's properties; idempotency contract.",
+  "observed": "Fresh rerun: the replay of a retried commit re-applies the post-commit property; an erased node's property is live again. Intent lane B additionally observed the property write landing in a target while its redaction marker was set (RED-B5 bypass).",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "run",
+    "ref": "live-native-rerun-1314"
+   },
+   {
+    "kind": "run",
+    "ref": "ib-HD1305-retry-revives"
+   }
+  ],
+  "gates": [
+   "3.3-model-check",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S1",
+  "confidence": "high",
+  "remedy": "Do not reapply post-commit properties on an idempotent replay (or record their completion atomically with the revision) and route them through the marker check.",
+  "notes": ""
+ },
+ {
+  "id": "F-C1303",
+  "module": "13",
+  "title": "A bounded redaction (max_batches) restarts its scan at the first record and may never finish",
+  "intended": "LedgerRedact.cls:178-180: 'pMaxBatches > 0 stops after that many batches and leaves the run in progress; running the same target again resumes it.' RED-B8 (a stopped run resumes); spec 256 SC-003 (batching).",
+  "observed": "Live on the pin: 60 calls with batch 1 and max_batches 1 each re-scanned the first 20 records (batch x SCANFACTOR cap, :306-310) from the start (:213), tombstoned nothing and returned complete=false; 9 target records remained. The same world completes with max_batches 0. Model: core M2 paced-resume progress mutant and AG EF failure.",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "run",
+    "ref": "live-fc1303-bounded-resume"
+   },
+   {
+    "kind": "run",
+    "ref": "core-m2-as-built-paced-resume"
+   }
+  ],
+  "gates": [
+   "3.3-progress-controls",
+   "3.7-integration-worlds",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S2",
+  "confidence": "high",
+  "remedy": "Persist the scan cursor with the marker (or start each call after the last tombstoned position) so a resumed call continues where the previous one stopped.",
+  "notes": "With the default batch 2000 the cap is 40,000 records: a ledger with more non-target records before the target's never progresses under max_batches. The core proofs lane's reviewed model keeps the cursor across stops for this reason (model-level)."
+ },
+ {
+  "id": "F-C1301",
+  "module": "13",
+  "title": "The redaction liveness check reads any writer's uncommitted delete",
+  "intended": "RED-B1.1: never tombstone content that is live after the run.",
+  "observed": "First shown in the core model (M2, 5 steps) and reproduced live since steer 7 (ws-live-fc1301-delete-reification, below): a stopped ledger commit or a rolled-back ledger-bypassing write that deleted target rows lets LiveRows (READ UNCOMMITTED) see the target empty; the run tombstones content that is live again after the rollback. Even the reviewed locked start fails against a bypass writer that does not serialize (4 steps). The IRIS contract permits both premises (dirty reads, rollback restores rows). Live analogue for erasure: F-C1201 (reproduced). Live since steer 7 (writesets lane, ws-live-fc1301-delete-reification, AUDITB): engine.delete_reification nested in a caller's open transaction; another connection's redact(None, prefix) completed on the dirty read (3 records tombstoned); the caller's ROLLBACK restored the node, label and property under tombstoned records; verify() diverges (unrecorded_writes). With a bounded run, the rollback made a target live while the marker names it.",
+  "disposition": "reproduced-live",
+  "evidence": [
+   {
+    "kind": "run",
+    "ref": "core-m2-as-built-commit-rollback"
+   },
+   {
+    "kind": "run",
+    "ref": "core-m2-as-built-bypass-rollback"
+   },
+   {
+    "kind": "run",
+    "ref": "core-m2-reviewed-bypass-nonserializing"
+   },
+   {
+    "kind": "live",
+    "ref": "ws-live-fc1301-delete-reification"
+   }
+  ],
+  "gates": [
+   "3.3-model-check",
+   "3.3a-writesets",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S1",
+  "confidence": "medium",
+  "remedy": "Serialize every content writer of a target with redaction start (or check liveness against committed state only).",
+  "notes": "Contradicts the original discharge in experiment/playbook-uplift/semantics/WRITESETS.md:62. Correction (writesets lane): the contradiction with WRITESETS.md:62 holds for node deletes; for edge-only deletes that line still holds, since an edge row matching a target always has an endpoint node row that matches it too."
+ },
+ {
+  "id": "F-C1302",
+  "module": "13",
+  "title": "Final trusts a scan that ended before it took the lock",
+  "intended": "A complete receipt means no record of the target remains unredacted.",
+  "observed": "Model only (core M2, 20 steps; low likelihood): a record committed and then erased between the last batch and Final stays unredacted while the call reports complete.",
+  "disposition": "reproduced-model",
+  "evidence": [
+   {
+    "kind": "run",
+    "ref": "core-m2-as-built-F1302-commit-after-check"
+   }
+  ],
+  "gates": [
+   "3.3-model-check",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S2",
+  "confidence": "medium",
+  "remedy": "Have Final check that the scan reached the head it holds the lock on, or rescan the tail under the lock.",
+  "notes": "Evidence id to be re-pointed if the core lane registered this trace under another id."
+ }
+]

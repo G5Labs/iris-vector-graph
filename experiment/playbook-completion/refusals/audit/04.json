@@ -1,0 +1,65 @@
+{
+ "module": "04",
+ "lane": "refusals (fork C)",
+ "statements": [
+  {
+   "id": "ADJ-X4.7",
+   "text": "Removing a graph, removing all graphs and starting an adjacency rebuild are refused when the lock is not granted in 5 seconds. Nothing is written.",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/Adjacency.cls:428-434",
+    "iris_src/src/Graph/KG/Adjacency.cls:452-458",
+    "iris_src/src/Graph/KG/Adjacency.cls:814-821",
+    "iris_src/src/Graph/KG/Eraser.cls:234-235",
+    "iris_src/src/Graph/KG/Eraser.cls:788-789",
+    "iris_src/src/Graph/KG/TraversalBuild.cls:37-38"
+   ],
+   "outcome": "product-defect",
+   "notes": "Live: a second process holds ^IVG.AdjW exclusively (Native API lock, shown in ^$LOCK). The refusal is implemented: erase_graph, erase_all and sync (BuildKG) each raised the writer-lock error and the seeded rows and ^KG out entries are all still there; after the lock is released the same erase_graph succeeds (control). 'Nothing is written' does not hold: the journal keeps net changes the rollback does not undo (^IVG.AdjNoLock(g), ^KG(\"gen\",g,src), ^KG(\"__version\"); BuildKG only the version), and the erase refusal comes after 5 s per deleted edge row plus 5 s (15.07 s, 20.07 s): F-C0415 (S4).",
+   "live_cases": [
+    "erase_graph('rx04g') while ^IVG.AdjW is held -> refused after 5 s",
+    "erase_all() while ^IVG.AdjW is held -> refused after 5 s",
+    "sync() (BuildKG) while ^IVG.AdjW is held -> refused after 5 s"
+   ],
+   "evidence": [
+    "run:rx-live-04"
+   ],
+   "finding": "F-C0415"
+  },
+  {
+   "id": "ADJ-X7.10",
+   "text": "A rebuild of the interned snapshot waits for any other one. It is refused after 900 seconds.",
+   "implementing_code": [
+    "iris_src/src/Graph/KG/TraversalBuild.cls:249-250",
+    "iris_src/src/Graph/KG/TraversalBuild.cls:293-296",
+    "iris_src/src/Graph/KG/TraversalBuild.cls:410-413"
+   ],
+   "outcome": "holds-live",
+   "notes": "Live: a second process holds ^IVG.NKGBuild exclusively; engine.rebuild_nkg() (BuildNKG) waited and raised 'another ^NKG build held ^IVG.NKGBuild for 900 seconds' (elapsed time in the case record). EnsureNKG (:410-413) shares the lock and the wait; not probed separately.",
+   "live_cases": [
+    "rebuild_nkg() while ^IVG.NKGBuild is held -> refused after 900 s"
+   ],
+   "evidence": [
+    "run:rx-live-04"
+   ]
+  },
+  {
+   "id": "ADJ-X9.4",
+   "text": "A name that cannot be a graph key is refused before the check runs.",
+   "implementing_code": [
+    "iris_vector_graph/_engine/admin.py:885-886",
+    "iris_vector_graph/_validate.py:19-49"
+   ],
+   "outcome": "holds-live",
+   "notes": "Live: verify_graph('0'), verify_graph('rx04\\x01bad') and verify_graph(5) each ValueError before GraphVerify runs; 0 journal records. The upstream integration test test_a_graph_name_that_cannot_be_represented_is_rejected PASSED in val-integration-1-c05.",
+   "live_cases": [
+    "verify_graph('0') -> ValueError",
+    "verify_graph('rx04\\x01bad') -> ValueError",
+    "verify_graph(5) -> ValueError"
+   ],
+   "evidence": [
+    "run:rx-live-04",
+    "run:val-integration-1-c05"
+   ]
+  }
+ ]
+}

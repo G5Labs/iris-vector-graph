@@ -1,0 +1,15 @@
+{
+  "command": "bash experiment/playbook-completion/tools/locks.sh iris python experiment/playbook-completion/product-gates/disconnect_world.py $RUN_DIR/product-gates/disconnect-r1 --group commit --trials 3",
+  "experiment_head": "e8a0d08acae6c519bb4db191c593bc75e8223636",
+  "id": "pg-disconnect-commit",
+  "kind": "live",
+  "lane": "product-gates",
+  "log": "$RUN_DIR/product-gates/disconnect-r1/results-commit.json",
+  "log_bytes": 55978,
+  "log_sha256": "77b760016776dbb101525e1d3098ce0b8e0238effc6afae93c6349bee8cb0228",
+  "observes": "Disconnect world, ledger commit, AUDITIA, IRIS 2026.1 Community, client through a TCP proxy that frames the IRIS wire protocol, SIGKILL + both sockets closed at an exact message; 15 trials + 1 baseline, 0 violations of O1-O6 (judged again by pg-disconnect-reevaluate). A1 (caller START TRANSACTION, ledger.commit of 300 relationships applied at a nested level, driver COMMIT 'TC' dropped) 3/3 nothing: the dead server process's transaction was undone (journal: one span, 10,511 writes and 10,511 compensating records, net zero), the revision the client had been answered inside its transaction (seq, id) does not exist and the same-key retry committed it fresh once (same seq, new id). A2 (7,000 relationships, staged: 2 StageChunk requests reached the server, Commit dropped) 3/3 nothing, nothing journaled, retry committed once. A3 (6,000 relationships, Commit cut 0.30 s after forwarding, reply pending) 3/3 full: the server ran the call to its end and exited 5.4-6.4 s after the kill (18,000 records committed); the retry replayed the revision the state holds. B1 (Commit reply held) 3/3 full, retry replayed=True with the held reply's seq and revision id. B2 (caller transaction, the COMMIT's reply held) 3/3 full, retry replayed the first answer. Head lock free after every kill and retry (15/15); verify equal 15/15; content exactly once 15/15. SynchCommit=0; no crash here.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T12:19:24+00:00",
+  "result": "pass"
+}

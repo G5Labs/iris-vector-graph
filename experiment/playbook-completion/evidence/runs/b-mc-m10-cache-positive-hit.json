@@ -1,0 +1,23 @@
+{
+  "check": "m10-cache-positive-hit",
+  "command": "CARGO_TARGET_DIR=$RUN_DIR/target/breadth-b cargo build --release && bash experiment/playbook-completion/tools/locks.sh heavy timeout 1800 $RUN_DIR/target/breadth-b/release/breadth-b",
+  "design": "positive",
+  "experiment_head": "f3fe3917466f7bae3e46f32f5b0644cfeaff87c8",
+  "full_log": "$RUN_DIR/breadth-b/mc/full-decisive-20261114T012246Z.log",
+  "full_log_sha256": "227f6720d9d86ed75cc8fa7fd71e2d9d31fd6f5ccd627843af4d51997edf4615",
+  "id": "b-mc-m10-cache-positive-hit",
+  "kind": "mc",
+  "lane": "breadth-b",
+  "log": "$RUN_DIR/breadth-b/mc/checks/m10-cache-positive-hit.log",
+  "log_bytes": 2536,
+  "log_sha256": "01691e800ad2c9af9903824df25dc0e306747338417ddbacb0015dac4044333f",
+  "module": "10",
+  "observes": "module 10 machine cache design positive: expectation violation of 'never serves a cache hit after a node write'; result met (found 'never serves a cache hit after a node write'); 104204 states, 176189 transitions, depth 8, exhaustive within the model's bounds; covers: sharpness: a current entry after a node write is reachable",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T01:23:52+00:00",
+  "result": "expected-violation",
+  "results": "experiment/playbook-completion/models/breadth-b/RESULTS.json",
+  "search": "exhaustive",
+  "states": "104204"
+}

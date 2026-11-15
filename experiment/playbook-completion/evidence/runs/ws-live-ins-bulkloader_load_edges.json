@@ -1,0 +1,17 @@
+{
+  "command": "locks.sh iris timeout 1200 python experiment/playbook-completion/writesets/live/ws_probes.py ins-all (AUDITB; per case <= 4 connections)",
+  "experiment_head": "d77620a9333a7eb5b62ca9b8c92144a6aaf74d2b",
+  "finding": "F-C1350",
+  "id": "ws-live-ins-bulkloader_load_edges",
+  "kind": "live",
+  "lane": "writesets",
+  "log": "$RUN_DIR/writesets/ins-bulkloader_load_edges.json",
+  "log_bytes": 4765,
+  "log_sha256": "e51d795110e37caf0a1fbe2d7d56ce7b7276c40a1c43ce1eb499712b0371e0b6",
+  "namespace": "AUDITB",
+  "observes": "Writer bulk_loader.py::_register_endpoints (BulkLoader.load_edges). (1) INV-replay: on control prefix wsd10 the writer's process wrote content table rows and no ^IVG.Ledger node (journal); verify() went equal -> diverges, classification unrecorded_writes; equal again after erasing wsd10. (2) target wst10 (6 ledger records + 1 rel record, erased, 0 live rows): a redaction started while a second connection held ^IVG.Ledger(\"head\") passed its entry liveness check and waited; the writer, not blocked, wrote the target's rows (target live again); after the lock was released the run wrote 7 tombstones, every one after the writer's committed transaction (journal addresses), and Final refused 'became live again'; the marker stayed, verify() = redaction_in_progress, a ledger commit into the target was refused redaction_in_progress and a re-run was refused target_live. Violates INV-no-live-tombstone (RED-B1.1) and the marker discipline (F-C1307 mechanism) for this writer.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T11:45:18+00:00",
+  "result": "fail"
+}

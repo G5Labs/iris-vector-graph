@@ -1,0 +1,21 @@
+{
+ "doc": "F-0614: embed_nodes against a route that records another width logs the EmbeddingIdentityConflict and returns\n    {\"embedded\": 0, \"errors\": N} instead of raising. Oracle: ADR-0006 (spec 226 requires it to raise).",
+ "id": "p0614_embed_nodes_refusal_counted",
+ "log": "$RUN_DIR/breadth-a/live/06-p0614_embed_nodes_refusal_counted-p0616_selector_crosses_graphs_and_like-pC0602_knn_vec_label_rows-20261113T233234.log",
+ "module": "06",
+ "observed": {
+  "embed_nodes": {
+   "embedded": 0,
+   "errors": 2,
+   "skipped": 0,
+   "total": 2
+  },
+  "identity_conflict_logged": true,
+  "rows_in_route": 1
+ },
+ "oracle": "a recorded-identity conflict raises EmbeddingIdentityConflict",
+ "reproduced": true,
+ "seconds": 1.32,
+ "started": "2026-11-13T23:32:34",
+ "verdict": "identity conflict counted as errors; returned normally"
+}

@@ -1,0 +1,6819 @@
+{
+ "_doc": "\u00a73.3a write-set obligations for modules 01-06: every writer footprint (footprints/NN.json, role writer/both) whose declared or journal-observed writes meet an invariant's read set. A pair is 'mc' when the invariant's explorer family models that writer (the reviewed design passes; the as-built violation is the cited finding), 'finding' when only a finding covers it, else 'open'.",
+ "invariants": {
+  "ADJ-I5.9": {
+   "reads": [
+    "global:^KG(\"degc\")",
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "family": "adj_degree",
+   "findings": [
+    "F-0401",
+    "F-C0401",
+    "F-0406"
+   ]
+  },
+  "ADJ-I11.2": {
+   "reads": [
+    "global:^KG(\"__version\")",
+    "global:^IVG.AlgoCache",
+    "global:^KG(\"deg2p\")",
+    "global:^IVG.BuiltFrom"
+   ],
+   "family": "adj_token",
+   "findings": [
+    "F-0402",
+    "F-0405"
+   ]
+  },
+  "GID-I4.10": {
+   "reads": [
+    "sql:Graph_KG.rdf_edges",
+    "global:^IVG.GraphMode"
+   ],
+   "family": "gid_mode",
+   "findings": [
+    "F-0201",
+    "F-0207",
+    "F-0208"
+   ]
+  },
+  "INV-stmt": {
+   "reads": [
+    "global:^IVG.Ledger(\"stmt\")",
+    "global:^IVG.Ledger(\"tuple\")",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "family": "wrt_ledger_stmt",
+   "findings": [
+    "F-0303"
+   ]
+  },
+  "ADR-0009/HD-0302 explicit-survives": {
+   "reads": [
+    "sql:Graph_KG.rdf_edges",
+    "global:^KG(\"tout\")"
+   ],
+   "family": "tmp_mark",
+   "findings": [
+    "F-0304",
+    "F-0505"
+   ]
+  },
+  "ADR-0009/TMP-B9.13 marked-needs-time": {
+   "reads": [
+    "sql:Graph_KG.rdf_edges",
+    "global:^KG(\"tout\")"
+   ],
+   "family": "tmp_mark",
+   "findings": [
+    "F-0507"
+   ]
+  },
+  "TMP-B1.7": {
+   "reads": [
+    "global:^KG(\"bucket\")",
+    "global:^KG(\"tagg\")",
+    "global:^KG(\"tout\")"
+   ],
+   "family": "tmp_bucket",
+   "findings": [
+    "F-0501"
+   ]
+  },
+  "VEC-I7.18": {
+   "reads": [
+    "global:^EmbedQueue",
+    "sql:Graph_KG.kg_NodeEmbeddings"
+   ],
+   "family": "vec_queue",
+   "findings": [
+    "F-0604",
+    "F-C0601"
+   ]
+  },
+  "VEC-B11.14": {
+   "reads": [
+    "global:^IVF"
+   ],
+   "family": "vec_ivf",
+   "findings": [
+    "F-0608"
+   ]
+  },
+  "VEC-B11.4/HD-0601": {
+   "reads": [
+    "global:^IVF",
+    "global:^VecIdx",
+    "global:^PLAID",
+    "sql:Graph_KG.nodes"
+   ],
+   "family": "vec_ivf",
+   "findings": [
+    "F-0606"
+   ]
+  },
+  "VEC-X3.9/SYS-I3": {
+   "reads": [
+    "sql:Graph_KG.embedding_registry"
+   ],
+   "family": "vec_route_batch",
+   "findings": [
+    "F-0615"
+   ]
+  },
+  "INS-I3.4": {
+   "reads": [
+    "global:^IVG.Deploy"
+   ],
+   "family": "ins_setup",
+   "findings": [
+    "F-0103"
+   ]
+  }
+ },
+ "pairs": [
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "01",
+   "writer": "py:IRISGraphEngine.initialize_schema",
+   "writes": [
+    "global:^KG(\"degc\")",
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "01",
+   "writer": "py:IRISGraphEngine.initialize_schema",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "01",
+   "writer": "py:IRISGraphEngine.initialize_schema",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "01",
+   "writer": "py:IRISGraphEngine.initialize_schema",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "01",
+   "writer": "py:IRISGraphEngine.initialize_schema",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "01",
+   "writer": "py:IRISGraphEngine.initialize_schema",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-I7.18",
+   "module": "01",
+   "writer": "py:IRISGraphEngine.initialize_schema",
+   "writes": [
+    "sql:Graph_KG.kg_NodeEmbeddings"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "01",
+   "writer": "py:IRISGraphEngine.initialize_schema",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INS-I3.4",
+   "module": "01",
+   "writer": "py:IRISGraphEngine.initialize_schema",
+   "writes": [
+    "global:^IVG.Deploy"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-ins_setup-reviewed; finding:F-0103"
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "01",
+   "writer": "cls:Graph.KG.SqlProcs.backfilltemporalrows",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "01",
+   "writer": "cls:Graph.KG.SqlProcs.backfilltemporalrows",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "01",
+   "writer": "cls:Graph.KG.SqlProcs.backfilltemporalrows",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "01",
+   "writer": "cls:Graph.KG.SqlProcs.backfilltemporalrows",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "01",
+   "writer": "cls:Graph.KG.SqlProcs.backfilltemporalrows",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "01",
+   "writer": "cls:Graph.KG.SqlProcs.backfilltemporalrows",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "01",
+   "writer": "cls:Graph.KG.SqlProcs.backfilltemporalrows",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "01",
+   "writer": "py:iris_vector_graph._engine.legacy.grant_read_path",
+   "writes": [
+    "global:^KG(\"degc\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "01",
+   "writer": "py:iris_vector_graph._engine.legacy.read_path_routines",
+   "writes": [
+    "global:^KG(\"degc\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "01",
+   "writer": "py:iris_vector_graph._engine.legacy.read_path_routines",
+   "writes": [
+    "global:^IVG.BuiltFrom(\"deg2p\")",
+    "global:^IVG.BuiltFrom(\"deg2p_exact\")",
+    "global:^KG(\"deg2p\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "01",
+   "writer": "py:iris_vector_graph._engine.schema.setup_tables",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "01",
+   "writer": "py:iris_vector_graph._engine.schema.setup_tables",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "01",
+   "writer": "py:iris_vector_graph._engine.schema.setup_tables",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "01",
+   "writer": "py:iris_vector_graph._engine.schema.setup_tables",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-I7.18",
+   "module": "01",
+   "writer": "py:iris_vector_graph._engine.schema.setup_tables",
+   "writes": [
+    "sql:Graph_KG.kg_NodeEmbeddings"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "01",
+   "writer": "py:iris_vector_graph._engine.schema.setup_tables",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "01",
+   "writer": "py:iris_vector_graph.migrations.upgrade.upgrade_to_4_0_0",
+   "writes": [
+    "global:^KG"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "01",
+   "writer": "py:iris_vector_graph.migrations.upgrade.upgrade_to_4_0_0",
+   "writes": [
+    "global:^KG"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "01",
+   "writer": "py:iris_vector_graph.migrations.upgrade.upgrade_to_4_0_0",
+   "writes": [
+    "global:^KG"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "01",
+   "writer": "py:iris_vector_graph.migrations.upgrade.upgrade_to_4_0_0",
+   "writes": [
+    "global:^KG"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "TMP-B1.7",
+   "module": "01",
+   "writer": "py:iris_vector_graph.migrations.upgrade.upgrade_to_4_0_0",
+   "writes": [
+    "global:^KG"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.add_graph_id_column",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.add_graph_id_column",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.add_graph_id_column",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.add_graph_id_column",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.add_graph_id_index",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.add_graph_id_index",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.add_graph_id_index",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.add_graph_id_index",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.add_graph_id_to_nodes",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.add_graph_oid_index",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.add_graph_oid_index",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.add_graph_oid_index",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.add_graph_oid_index",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.bootstrap_kg_global",
+   "writes": [
+    "global:^KG(\"degc\")",
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.bootstrap_kg_global",
+   "writes": [
+    "global:^IVG.BuiltFrom(\"deg2p\")",
+    "global:^IVG.BuiltFrom(\"deg2p_exact\")",
+    "global:^KG(\"__version\")",
+    "global:^KG(\"deg2p\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.bootstrap_kg_global",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.bootstrap_kg_global",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.bootstrap_kg_global",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.bootstrap_kg_global",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.ensure_adjacency_index",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.ensure_adjacency_index",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.ensure_adjacency_index",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.ensure_adjacency_index",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.ensure_adjacency_index",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.ensure_ekey",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.ensure_ekey",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.ensure_ekey",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.ensure_ekey",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.ensure_ekey",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.ensure_ekey",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.ensure_indexes",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.ensure_indexes",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.ensure_indexes",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.ensure_indexes",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.get_base_schema_sql",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.get_base_schema_sql",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.get_base_schema_sql",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.get_base_schema_sql",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-I7.18",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.get_base_schema_sql",
+   "writes": [
+    "sql:Graph_KG.kg_NodeEmbeddings"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.get_base_schema_sql",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.get_bulk_insert_sql",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.get_bulk_insert_sql",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.get_bulk_insert_sql",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.get_bulk_insert_sql",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.get_bulk_insert_sql",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.get_bulk_insert_sql",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-I7.18",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.get_bulk_insert_sql",
+   "writes": [
+    "sql:Graph_KG.kg_NodeEmbeddings"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.get_bulk_insert_sql",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.get_graph_scope_migration_sql",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.get_graph_scope_migration_sql",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.get_graph_scope_migration_sql",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.get_graph_scope_migration_sql",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-I7.18",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.get_graph_scope_migration_sql",
+   "writes": [
+    "sql:Graph_KG.kg_NodeEmbeddings"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.get_graph_scope_migration_sql",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.get_indexes_sql",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.get_indexes_sql",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.get_indexes_sql",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.get_indexes_sql",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.get_procedures_sql_list",
+   "writes": [
+    "global:^KG(\"degc\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.get_procedures_sql_list",
+   "writes": [
+    "global:^IVG.BuiltFrom(\"deg2p\")",
+    "global:^IVG.BuiltFrom(\"deg2p_exact\")",
+    "global:^KG(\"deg2p\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.update_spo_unique_constraint",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.update_spo_unique_constraint",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.update_spo_unique_constraint",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema.GraphSchema.update_spo_unique_constraint",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema_name.foreign_classes",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema_name.foreign_classes",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema_name.foreign_classes",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema_name.foreign_classes",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-I7.18",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema_name.foreign_classes",
+   "writes": [
+    "sql:Graph_KG.kg_NodeEmbeddings"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema_name.foreign_classes",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema_name.refuse_package_clash",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema_name.refuse_package_clash",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema_name.refuse_package_clash",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema_name.refuse_package_clash",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-I7.18",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema_name.refuse_package_clash",
+   "writes": [
+    "sql:Graph_KG.kg_NodeEmbeddings"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "01",
+   "writer": "py:iris_vector_graph.schema_name.refuse_package_clash",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "01",
+   "writer": "rest:POST /admin/schema/init",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "01",
+   "writer": "rest:POST /admin/schema/init",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "01",
+   "writer": "rest:POST /admin/schema/init",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "01",
+   "writer": "rest:POST /admin/schema/init",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "01",
+   "writer": "rest:POST /admin/schema/init",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-I7.18",
+   "module": "01",
+   "writer": "rest:POST /admin/schema/init",
+   "writes": [
+    "sql:Graph_KG.kg_NodeEmbeddings"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "01",
+   "writer": "rest:POST /admin/schema/init",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "02",
+   "writer": "cls:Graph.KG.GraphMode.Set",
+   "writes": [
+    "global:^IVG.GraphMode"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-gid_mode-reviewed; finding:F-0201,F-0207,F-0208"
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "02",
+   "writer": "py:IRISGraphEngine.set_multigraph",
+   "writes": [
+    "global:^IVG.GraphMode"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-gid_mode-reviewed; finding:F-0201,F-0207,F-0208"
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "02",
+   "writer": "cls:Graph.KG.GraphMode.Apply",
+   "writes": [
+    "global:^IVG.GraphMode"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-gid_mode-reviewed; finding:F-0201,F-0207,F-0208"
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.bulk_create_edges",
+   "writes": [
+    "global:^KG(\"degc\")",
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-adj_degree-reviewed; finding:F-0401,F-C0401,F-0406"
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.bulk_create_edges",
+   "writes": [
+    "global:^IVG.BuiltFrom(\"deg2p\")",
+    "global:^IVG.BuiltFrom(\"deg2p_exact\")",
+    "global:^KG(\"__version\")",
+    "global:^KG(\"deg2p\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-adj_token-reviewed; finding:F-0402,F-0405"
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.bulk_create_edges",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-gid_mode-reviewed; finding:F-0201,F-0207,F-0208"
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.bulk_create_edges",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.bulk_create_edges",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-tmp_mark-reviewed; finding:F-0304,F-0505"
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.bulk_create_edges",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-I7.18",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.bulk_create_edges",
+   "writes": [
+    "sql:Graph_KG.kg_NodeEmbeddings"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.bulk_create_edges",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.bulk_create_nodes",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.bulk_create_nodes",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.bulk_create_nodes",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.bulk_create_nodes",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.bulk_create_nodes",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.bulk_create_nodes",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-I7.18",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.bulk_create_nodes",
+   "writes": [
+    "sql:Graph_KG.kg_NodeEmbeddings"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.bulk_create_nodes",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.bulk_ingest_edges",
+   "writes": [
+    "global:^KG(\"degc\")",
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.bulk_ingest_edges",
+   "writes": [
+    "global:^IVG.BuiltFrom(\"deg2p\")",
+    "global:^IVG.BuiltFrom(\"deg2p_exact\")",
+    "global:^KG(\"__version\")",
+    "global:^KG(\"deg2p\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.bulk_ingest_edges",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.bulk_ingest_edges",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.bulk_ingest_edges",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.bulk_ingest_edges",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-I7.18",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.bulk_ingest_edges",
+   "writes": [
+    "sql:Graph_KG.kg_NodeEmbeddings"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.bulk_ingest_edges",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.create_edge",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-adj_degree-reviewed; finding:F-0401,F-C0401,F-0406"
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.create_edge",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-adj_token-reviewed; finding:F-0402,F-0405"
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.create_edge",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-gid_mode-reviewed; finding:F-0201,F-0207,F-0208"
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.create_edge",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.create_edge",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-tmp_mark-reviewed; finding:F-0304,F-0505"
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.create_edge",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-I7.18",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.create_edge",
+   "writes": [
+    "sql:Graph_KG.kg_NodeEmbeddings"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.create_edge",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.create_node",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.create_node",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.create_node",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.create_node",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.create_node",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.create_node",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-I7.18",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.create_node",
+   "writes": [
+    "sql:Graph_KG.kg_NodeEmbeddings"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.create_node",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.delete_edge",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-adj_degree-reviewed; finding:F-0401,F-C0401,F-0406"
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.delete_edge",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.delete_edge",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.delete_edge",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-wrt_ledger_stmt-reviewed; finding:F-0303"
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.delete_edge",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.delete_edge",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.delete_node",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.delete_node",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.delete_node",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.delete_node",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-wrt_ledger_stmt-reviewed; finding:F-0303"
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.delete_node",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.delete_node",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.delete_node",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.store_edge",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.store_edge",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.store_edge",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-gid_mode-reviewed; finding:F-0201,F-0207,F-0208"
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.store_edge",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.store_edge",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-tmp_mark-reviewed; finding:F-0304,F-0505"
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.store_edge",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-I7.18",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.store_edge",
+   "writes": [
+    "sql:Graph_KG.kg_NodeEmbeddings"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.store_edge",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.store_node",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.store_node",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "03",
+   "writer": "py:iris_vector_graph.bulk_loader.BulkLoader.load_edges",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "03",
+   "writer": "py:iris_vector_graph.bulk_loader.BulkLoader.load_edges",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "03",
+   "writer": "py:iris_vector_graph.bulk_loader.BulkLoader.load_edges",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "03",
+   "writer": "py:iris_vector_graph.bulk_loader.BulkLoader.load_edges",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "03",
+   "writer": "py:iris_vector_graph.bulk_loader.BulkLoader.load_edges",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "03",
+   "writer": "py:iris_vector_graph.bulk_loader.BulkLoader.load_networkx",
+   "writes": [
+    "global:^KG(\"degc\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "03",
+   "writer": "py:iris_vector_graph.bulk_loader.BulkLoader.load_networkx",
+   "writes": [
+    "global:^IVG.BuiltFrom(\"deg2p\")",
+    "global:^KG(\"deg2p\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "03",
+   "writer": "py:iris_vector_graph.bulk_loader.BulkLoader.load_networkx",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "03",
+   "writer": "py:iris_vector_graph.bulk_loader.BulkLoader.load_networkx",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "03",
+   "writer": "py:iris_vector_graph.bulk_loader.BulkLoader.load_networkx",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "03",
+   "writer": "py:iris_vector_graph.bulk_loader.BulkLoader.load_networkx",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "03",
+   "writer": "py:iris_vector_graph.bulk_loader.BulkLoader.load_networkx",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "03",
+   "writer": "py:iris_vector_graph.bulk_loader.BulkLoader.load_nodes",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "03",
+   "writer": "cls:Graph.KG.LabelIndex.DeleteIndex",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "03",
+   "writer": "cls:Graph.KG.LabelIndex.InsertIndex",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "03",
+   "writer": "cls:Graph.KG.LabelIndex.PurgeIndex",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "03",
+   "writer": "cls:Graph.KG.LabelIndex.UpdateIndex",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.bulk_delete_nodes",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.bulk_delete_nodes",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.bulk_delete_nodes",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.bulk_delete_nodes",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-wrt_ledger_stmt-reviewed; finding:F-0303"
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.bulk_delete_nodes",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.bulk_delete_nodes",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.bulk_delete_nodes",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.bulk_load_session",
+   "writes": [
+    "global:^KG(\"degc\")",
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.bulk_load_session",
+   "writes": [
+    "global:^IVG.BuiltFrom(\"deg2p\")",
+    "global:^IVG.BuiltFrom(\"deg2p_exact\")",
+    "global:^KG(\"__version\")",
+    "global:^KG(\"deg2p\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.bulk_load_session",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.bulk_load_session",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.bulk_load_session",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.bulk_load_session",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.erase_all",
+   "writes": [
+    "global:^KG(\"degc\")",
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.erase_all",
+   "writes": [
+    "global:^IVG.AlgoCache",
+    "global:^KG(\"__version\")",
+    "global:^KG(\"deg2p\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.erase_all",
+   "writes": [
+    "global:^IVG.GraphMode",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.erase_all",
+   "writes": [
+    "global:^IVG.Ledger(\"stmt\")",
+    "global:^IVG.Ledger(\"tuple\")",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.erase_all",
+   "writes": [
+    "global:^KG(\"tout\")",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.erase_all",
+   "writes": [
+    "global:^KG(\"tout\")",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "TMP-B1.7",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.erase_all",
+   "writes": [
+    "global:^KG(\"bucket\")",
+    "global:^KG(\"tagg\")",
+    "global:^KG(\"tout\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-I7.18",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.erase_all",
+   "writes": [
+    "sql:Graph_KG.kg_NodeEmbeddings"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.erase_all",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-X3.9/SYS-I3",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.erase_all",
+   "writes": [
+    "sql:Graph_KG.embedding_registry"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.set_edge_weight",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.set_edge_weight",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.set_edge_weight",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.set_edge_weight",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.set_edge_weight",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "03",
+   "writer": "py:IRISGraphEngine.set_edge_weight",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "03",
+   "writer": "py:iris_vector_graph.bulk_loader.BulkLoader.build_graph_globals",
+   "writes": [
+    "global:^KG(\"degc\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "03",
+   "writer": "py:iris_vector_graph.bulk_loader.BulkLoader.build_graph_globals",
+   "writes": [
+    "global:^IVG.BuiltFrom(\"deg2p\")",
+    "global:^KG(\"deg2p\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adj.Degree",
+   "writes": [
+    "global:^KG(\"degc\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-adj_degree-reviewed; finding:F-0401,F-C0401,F-0406"
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.Put",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-adj_degree-reviewed; finding:F-0401,F-C0401,F-0406"
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.Put",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-adj_token-reviewed; finding:F-0402,F-0405"
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.PutShadow",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-adj_degree-reviewed; finding:F-0401,F-C0401,F-0406"
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.PutShadow",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-adj_token-reviewed; finding:F-0402,F-0405"
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.Remove",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-adj_degree-reviewed; finding:F-0401,F-C0401,F-0406"
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.Remove",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-adj_token-reviewed; finding:F-0402,F-0405"
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.RemoveGraph",
+   "writes": [
+    "global:^KG(\"degc\")",
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-adj_degree-reviewed; finding:F-0401,F-C0401,F-0406"
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.RemoveGraph",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-adj_token-reviewed; finding:F-0402,F-0405"
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.Reweight",
+   "writes": [
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.Reweight",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.TraversalBuild.BuildKG",
+   "writes": [
+    "global:^KG(\"degc\")",
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.TraversalBuild.BuildKG",
+   "writes": [
+    "global:^IVG.BuiltFrom(\"deg2p\")",
+    "global:^IVG.BuiltFrom(\"deg2p_exact\")",
+    "global:^KG(\"__version\")",
+    "global:^KG(\"deg2p\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "04",
+   "writer": "cls:Graph.KG.TraversalBuild.BuildKG",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "04",
+   "writer": "cls:Graph.KG.TraversalBuild.BuildKG",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "04",
+   "writer": "cls:Graph.KG.TraversalBuild.BuildKG",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "04",
+   "writer": "cls:Graph.KG.TraversalBuild.BuildKG",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "py:IRISGraphEngine.sync",
+   "writes": [
+    "global:^KG(\"degc\")",
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "py:IRISGraphEngine.sync",
+   "writes": [
+    "global:^IVG.BuiltFrom(\"deg2p\")",
+    "global:^IVG.BuiltFrom(\"deg2p_exact\")",
+    "global:^KG(\"__version\")",
+    "global:^KG(\"deg2p\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "04",
+   "writer": "py:IRISGraphEngine.sync",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "04",
+   "writer": "py:IRISGraphEngine.sync",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "04",
+   "writer": "py:IRISGraphEngine.sync",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "04",
+   "writer": "py:IRISGraphEngine.sync",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adj.WarmAll",
+   "writes": [
+    "global:^KG(\"degc\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-adj_degree-reviewed; finding:F-0401,F-C0401,F-0406"
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adj.WarmCache",
+   "writes": [
+    "global:^KG(\"degc\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adj.WarmFill",
+   "writes": [
+    "global:^KG(\"degc\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-adj_degree-reviewed; finding:F-0401,F-C0401,F-0406"
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.AdjIndex.DeleteIndex",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.AdjIndex.DeleteIndex",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.AdjIndex.InsertIndex",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.AdjIndex.InsertIndex",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.AdjIndex.PurgeIndex",
+   "writes": [
+    "global:^KG(\"degc\")",
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.AdjIndex.PurgeIndex",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.AdjIndex.UpdateIndex",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.AdjIndex.UpdateIndex",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.AssertTemporalRow",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.AssertTemporalRow",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.AssertTemporalRow",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.AssertTemporalRow",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.AssertTemporalRow",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-tmp_mark-reviewed; finding:F-0304,F-0505"
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.AssertTemporalRow",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.AssertTemporalRow",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.EndRebuild",
+   "writes": [
+    "global:^KG(\"degc\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.FillEdge",
+   "writes": [
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.FillTriple",
+   "writes": [
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.PutKeyed",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-adj_degree-reviewed; finding:F-0401,F-C0401,F-0406"
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.PutKeyed",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-adj_token-reviewed; finding:F-0402,F-0405"
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.PutLabel",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-adj_token-reviewed; finding:F-0402,F-0405"
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.RemoveAll",
+   "writes": [
+    "global:^KG(\"degc\")",
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-adj_degree-reviewed; finding:F-0401,F-C0401,F-0406"
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.RemoveAll",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-adj_token-reviewed; finding:F-0402,F-0405"
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.RemoveAllLabels",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-adj_token-reviewed; finding:F-0402,F-0405"
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.RemoveKeyed",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-adj_degree-reviewed; finding:F-0401,F-C0401,F-0406"
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.RemoveKeyed",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-adj_token-reviewed; finding:F-0402,F-0405"
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.RemoveLabel",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-adj_token-reviewed; finding:F-0402,F-0405"
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.RemoveNode",
+   "writes": [
+    "global:^KG(\"degc\")",
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-adj_degree-reviewed; finding:F-0401,F-C0401,F-0406"
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.RemoveNode",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-adj_token-reviewed; finding:F-0402,F-0405"
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.RemoveSource",
+   "writes": [
+    "global:^KG(\"degc\")",
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-adj_degree-reviewed; finding:F-0401,F-C0401,F-0406"
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.RemoveSource",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-adj_token-reviewed; finding:F-0402,F-0405"
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.RetractTemporalRow",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.RetractTemporalRow",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.RetractTemporalRow",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.RetractTemporalRow",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.RetractTemporalRow",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-tmp_mark-reviewed; finding:F-0304,F-0505"
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.RetractTemporalRow",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.RetractTemporalRows",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.RetractTemporalRows",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.RetractTemporalRows",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.RetractTemporalRows",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.RetractTemporalRows",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-tmp_mark-reviewed; finding:F-0304,F-0505"
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.RetractTemporalRows",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.RetractTemporalShadows",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.RetractTemporalShadows",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.RowPut",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.RowPut",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.RowRemove",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.RowRemove",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.RowUpdate",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.RowUpdate",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.Adjacency.SetLeafFromLowest",
+   "writes": [
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.AlgoCache.InvalidateAll",
+   "writes": [
+    "global:^IVG.AlgoCache"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-adj_token-reviewed; finding:F-0402,F-0405"
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.AlgoCache.InvalidateGraph",
+   "writes": [
+    "global:^IVG.AlgoCache"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-adj_token-reviewed; finding:F-0402,F-0405"
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.AlgoCache.Put",
+   "writes": [
+    "global:^IVG.AlgoCache"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-adj_token-reviewed; finding:F-0402,F-0405"
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.EdgeScan.BulkDeleteAdjacency",
+   "writes": [
+    "global:^KG(\"degc\")",
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.EdgeScan.BulkDeleteAdjacency",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.EdgeScan.BulkIngestEdgesFile",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.EdgeScan.BulkIngestEdgesFile",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "04",
+   "writer": "cls:Graph.KG.EdgeScan.BulkIngestEdgesFile",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "04",
+   "writer": "cls:Graph.KG.EdgeScan.BulkIngestEdgesFile",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "04",
+   "writer": "cls:Graph.KG.EdgeScan.BulkIngestEdgesFile",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "04",
+   "writer": "cls:Graph.KG.EdgeScan.BulkIngestEdgesFile",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "04",
+   "writer": "cls:Graph.KG.EdgeScan.BulkIngestEdgesFile",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.EdgeScan.BulkIngestEdgesSQL",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.EdgeScan.BulkIngestEdgesSQL",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "04",
+   "writer": "cls:Graph.KG.EdgeScan.BulkIngestEdgesSQL",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "04",
+   "writer": "cls:Graph.KG.EdgeScan.BulkIngestEdgesSQL",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "04",
+   "writer": "cls:Graph.KG.EdgeScan.BulkIngestEdgesSQL",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "04",
+   "writer": "cls:Graph.KG.EdgeScan.BulkIngestEdgesSQL",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "04",
+   "writer": "cls:Graph.KG.EdgeScan.BulkIngestEdgesSQL",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.EdgeScan.BulkIngestNodesSQL",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "04",
+   "writer": "cls:Graph.KG.EdgeScan.BulkIngestNodesSQL",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.EdgeScan.DeleteAdjacency",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.EdgeScan.DeleteAdjacency",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.EdgeScan.DeleteAdjacencyAllGraphs",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.EdgeScan.DeleteAdjacencyAllGraphs",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.EdgeScan.DeleteAdjacencyKeyed",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.EdgeScan.DeleteAdjacencyKeyed",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "04",
+   "writer": "cls:Graph.KG.EdgeScan.RegisterDefaultNode",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.EdgeScan.WriteAdjacency",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.EdgeScan.WriteAdjacency",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.EdgeScan.WriteAdjacencyKeyed",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.EdgeScan.WriteAdjacencyKeyed",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.TraversalBuild.BackfillDegp",
+   "writes": [
+    "global:^KG(\"degc\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.TraversalBuild.Build2HopExactStats",
+   "writes": [
+    "global:^IVG.BuiltFrom(\"deg2p_exact\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.TraversalBuild.Build2HopStats",
+   "writes": [
+    "global:^KG(\"degc\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.TraversalBuild.Build2HopStats",
+   "writes": [
+    "global:^IVG.BuiltFrom(\"deg2p\")",
+    "global:^KG(\"deg2p\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.TraversalBuild.BuildKGKeyed",
+   "writes": [
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.TraversalBuild.BuildNKG",
+   "writes": [
+    "global:^KG(\"degc\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.TraversalBuild.BuildNKG",
+   "writes": [
+    "global:^IVG.BuiltFrom(\"deg2p\")",
+    "global:^IVG.BuiltFrom(\"deg2p_exact\")",
+    "global:^KG(\"deg2p\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.TraversalBuild.EnsureNKG",
+   "writes": [
+    "global:^KG(\"degc\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "cls:Graph.KG.TraversalBuild.EnsureNKG",
+   "writes": [
+    "global:^IVG.BuiltFrom(\"deg2p\")",
+    "global:^IVG.BuiltFrom(\"deg2p_exact\")",
+    "global:^KG(\"deg2p\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.TraversalBuild.MergedDegree",
+   "writes": [
+    "global:^KG(\"degc\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.TraversalBuild.RewriteNKG",
+   "writes": [
+    "global:^KG(\"degc\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.TraversalBuild.RewritePass",
+   "writes": [
+    "global:^KG(\"degc\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.TraversalBuild.SweepDegrees",
+   "writes": [
+    "global:^KG(\"degc\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "cls:Graph.KG.TraversalBuild.WalkSource",
+   "writes": [
+    "global:^KG(\"degc\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "py:IRISGraphEngine.backfill_2hop_exact",
+   "writes": [
+    "global:^IVG.BuiltFrom(\"deg2p_exact\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "py:IRISGraphEngine.backfill_deg2p_exact",
+   "writes": [
+    "global:^IVG.BuiltFrom(\"deg2p_exact\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "py:IRISGraphEngine.bulk_delete_adjacency",
+   "writes": [
+    "global:^KG(\"degc\")",
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "py:IRISGraphEngine.bulk_delete_adjacency",
+   "writes": [
+    "global:^IVG.AlgoCache",
+    "global:^KG(\"__version\")",
+    "global:^KG(\"deg2p\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "04",
+   "writer": "py:IRISGraphEngine.bulk_delete_adjacency",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "04",
+   "writer": "py:IRISGraphEngine.bulk_delete_adjacency",
+   "writes": [
+    "global:^IVG.Ledger(\"stmt\")",
+    "global:^IVG.Ledger(\"tuple\")",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "04",
+   "writer": "py:IRISGraphEngine.bulk_delete_adjacency",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "04",
+   "writer": "py:IRISGraphEngine.bulk_delete_adjacency",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "py:IRISGraphEngine.rebuild_kg",
+   "writes": [
+    "global:^KG(\"degc\")",
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "py:IRISGraphEngine.rebuild_kg",
+   "writes": [
+    "global:^IVG.BuiltFrom(\"deg2p\")",
+    "global:^IVG.BuiltFrom(\"deg2p_exact\")",
+    "global:^KG(\"__version\")",
+    "global:^KG(\"deg2p\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "04",
+   "writer": "py:IRISGraphEngine.rebuild_kg",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "04",
+   "writer": "py:IRISGraphEngine.rebuild_kg",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "04",
+   "writer": "py:IRISGraphEngine.rebuild_kg",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "04",
+   "writer": "py:IRISGraphEngine.rebuild_kg",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "py:IRISGraphEngine.rebuild_nkg",
+   "writes": [
+    "global:^KG(\"degc\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "py:IRISGraphEngine.rebuild_nkg",
+   "writes": [
+    "global:^IVG.BuiltFrom(\"deg2p\")",
+    "global:^IVG.BuiltFrom(\"deg2p_exact\")",
+    "global:^KG(\"deg2p\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "py:IRISGraphEngine.status",
+   "writes": [
+    "global:^KG(\"degc\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "py:IRISGraphEngine.verify_sync",
+   "writes": [
+    "global:^KG(\"degc\")",
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "py:IRISGraphEngine.verify_sync",
+   "writes": [
+    "global:^IVG.BuiltFrom(\"deg2p\")",
+    "global:^IVG.BuiltFrom(\"deg2p_exact\")",
+    "global:^KG(\"__version\")",
+    "global:^KG(\"deg2p\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "04",
+   "writer": "py:IRISGraphEngine.verify_sync",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "04",
+   "writer": "py:IRISGraphEngine.verify_sync",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "04",
+   "writer": "py:IRISGraphEngine.verify_sync",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "04",
+   "writer": "py:IRISGraphEngine.verify_sync",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "rest:GET /metrics",
+   "writes": [
+    "global:^KG(\"degc\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "rest:GET /server",
+   "writes": [
+    "global:^KG(\"degc\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "04",
+   "writer": "rest:POST /admin/indexes/rebuild",
+   "writes": [
+    "global:^KG(\"degc\")",
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "04",
+   "writer": "rest:POST /admin/indexes/rebuild",
+   "writes": [
+    "global:^IVG.BuiltFrom(\"deg2p\")",
+    "global:^IVG.BuiltFrom(\"deg2p_exact\")",
+    "global:^KG(\"__version\")",
+    "global:^KG(\"deg2p\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "04",
+   "writer": "rest:POST /admin/indexes/rebuild",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "04",
+   "writer": "rest:POST /admin/indexes/rebuild",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "04",
+   "writer": "rest:POST /admin/indexes/rebuild",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "04",
+   "writer": "rest:POST /admin/indexes/rebuild",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.Purge",
+   "writes": [
+    "global:^KG(\"tout\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-tmp_mark-reviewed; finding:F-0304,F-0505"
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.Purge",
+   "writes": [
+    "global:^KG(\"tout\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-tmp_mark-reviewed; finding:F-0507"
+  },
+  {
+   "invariant": "TMP-B1.7",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.Purge",
+   "writes": [
+    "global:^KG(\"bucket\")",
+    "global:^KG(\"tagg\")",
+    "global:^KG(\"tout\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.bulk_create_edges_temporal",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-adj_degree-reviewed; finding:F-0401,F-C0401,F-0406"
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.bulk_create_edges_temporal",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-adj_token-reviewed; finding:F-0402,F-0405"
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.bulk_create_edges_temporal",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-gid_mode-reviewed; finding:F-0201,F-0207,F-0208"
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.bulk_create_edges_temporal",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.bulk_create_edges_temporal",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-tmp_mark-reviewed; finding:F-0304,F-0505"
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.bulk_create_edges_temporal",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.bulk_create_edges_temporal",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.create_edge_temporal",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-adj_degree-reviewed; finding:F-0401,F-C0401,F-0406"
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.create_edge_temporal",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-adj_token-reviewed; finding:F-0402,F-0405"
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.create_edge_temporal",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-gid_mode-reviewed; finding:F-0201,F-0207,F-0208"
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.create_edge_temporal",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.create_edge_temporal",
+   "writes": [
+    "global:^KG(\"tout\")",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-tmp_mark-reviewed; finding:F-0304,F-0505"
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.create_edge_temporal",
+   "writes": [
+    "global:^KG(\"tout\")",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-tmp_mark-reviewed; finding:F-0507"
+  },
+  {
+   "invariant": "TMP-B1.7",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.create_edge_temporal",
+   "writes": [
+    "global:^KG(\"bucket\")",
+    "global:^KG(\"tagg\")",
+    "global:^KG(\"tout\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-tmp_bucket-reviewed; finding:F-0501"
+  },
+  {
+   "invariant": "VEC-I7.18",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.create_edge_temporal",
+   "writes": [
+    "sql:Graph_KG.kg_NodeEmbeddings"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.create_edge_temporal",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.delete_edge_temporal",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-adj_degree-reviewed; finding:F-0401,F-C0401,F-0406"
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.delete_edge_temporal",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.delete_edge_temporal",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.delete_edge_temporal",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-wrt_ledger_stmt-reviewed; finding:F-0303"
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.delete_edge_temporal",
+   "writes": [
+    "global:^KG(\"tout\")",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-tmp_mark-reviewed; finding:F-0304,F-0505"
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.delete_edge_temporal",
+   "writes": [
+    "global:^KG(\"tout\")",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-tmp_mark-reviewed; finding:F-0507"
+  },
+  {
+   "invariant": "TMP-B1.7",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.delete_edge_temporal",
+   "writes": [
+    "global:^KG(\"bucket\")",
+    "global:^KG(\"tagg\")",
+    "global:^KG(\"tout\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-tmp_bucket-reviewed; finding:F-0501"
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.purge_before",
+   "writes": [
+    "global:^KG(\"degc\")",
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.purge_before",
+   "writes": [
+    "global:^IVG.AlgoCache",
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.purge_before",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.purge_before",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.purge_before",
+   "writes": [
+    "global:^KG(\"tout\")",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-tmp_mark-reviewed; finding:F-0304,F-0505"
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.purge_before",
+   "writes": [
+    "global:^KG(\"tout\")",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-tmp_mark-reviewed; finding:F-0507"
+  },
+  {
+   "invariant": "TMP-B1.7",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.purge_before",
+   "writes": [
+    "global:^KG(\"bucket\")",
+    "global:^KG(\"tagg\")",
+    "global:^KG(\"tout\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.purge_before",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "05",
+   "writer": "cls:Graph.KG.Adjacency.AssertTemporalRow",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "05",
+   "writer": "cls:Graph.KG.Adjacency.AssertTemporalRow",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "05",
+   "writer": "cls:Graph.KG.Adjacency.AssertTemporalRow",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "05",
+   "writer": "cls:Graph.KG.Adjacency.AssertTemporalRow",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "05",
+   "writer": "cls:Graph.KG.Adjacency.AssertTemporalRow",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-tmp_mark-reviewed; finding:F-0304,F-0505"
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "05",
+   "writer": "cls:Graph.KG.Adjacency.AssertTemporalRow",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "05",
+   "writer": "cls:Graph.KG.Adjacency.AssertTemporalRow",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "05",
+   "writer": "cls:Graph.KG.Adjacency.RetractTemporalRow",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "05",
+   "writer": "cls:Graph.KG.Adjacency.RetractTemporalRow",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "05",
+   "writer": "cls:Graph.KG.Adjacency.RetractTemporalRow",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "05",
+   "writer": "cls:Graph.KG.Adjacency.RetractTemporalRow",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "05",
+   "writer": "cls:Graph.KG.Adjacency.RetractTemporalRow",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-tmp_mark-reviewed; finding:F-0304,F-0505"
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "05",
+   "writer": "cls:Graph.KG.Adjacency.RetractTemporalRow",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "05",
+   "writer": "cls:Graph.KG.Adjacency.RetractTemporalRows",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "05",
+   "writer": "cls:Graph.KG.Adjacency.RetractTemporalRows",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "05",
+   "writer": "cls:Graph.KG.Adjacency.RetractTemporalRows",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "05",
+   "writer": "cls:Graph.KG.Adjacency.RetractTemporalRows",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "05",
+   "writer": "cls:Graph.KG.Adjacency.RetractTemporalRows",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-tmp_mark-reviewed; finding:F-0304,F-0505"
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "05",
+   "writer": "cls:Graph.KG.Adjacency.RetractTemporalRows",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "05",
+   "writer": "cls:Graph.KG.LedgerApply.OpCreateTemporalEdge",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "05",
+   "writer": "cls:Graph.KG.LedgerApply.OpCreateTemporalEdge",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "05",
+   "writer": "cls:Graph.KG.LedgerApply.OpCreateTemporalEdge",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "05",
+   "writer": "cls:Graph.KG.LedgerApply.OpCreateTemporalEdge",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "05",
+   "writer": "cls:Graph.KG.LedgerApply.OpCreateTemporalEdge",
+   "writes": [
+    "global:^KG(\"tout\")",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "05",
+   "writer": "cls:Graph.KG.LedgerApply.OpCreateTemporalEdge",
+   "writes": [
+    "global:^KG(\"tout\")",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "TMP-B1.7",
+   "module": "05",
+   "writer": "cls:Graph.KG.LedgerApply.OpCreateTemporalEdge",
+   "writes": [
+    "global:^KG(\"bucket\")",
+    "global:^KG(\"tagg\")",
+    "global:^KG(\"tout\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "05",
+   "writer": "cls:Graph.KG.LedgerApply.OpCreateTemporalEdge",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.BackfillRows",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.BackfillRows",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.BackfillRows",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.BackfillRows",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.BackfillRows",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.BackfillRows",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.BackfillRows",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.BackfillStructuralRows",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.BackfillStructuralRows",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.BackfillStructuralRows",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.BackfillStructuralRows",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.BackfillStructuralRows",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.BackfillStructuralRows",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.BackfillStructuralRows",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.BackfillWalk",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.BackfillWalk",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.BackfillWalk",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.BackfillWalk",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.BackfillWalk",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.BackfillWalk",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.BackfillWalk",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.BulkInsert",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.BulkInsert",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.BulkInsert",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.BulkInsert",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.BulkInsert",
+   "writes": [
+    "global:^KG(\"tout\")",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.BulkInsert",
+   "writes": [
+    "global:^KG(\"tout\")",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "TMP-B1.7",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.BulkInsert",
+   "writes": [
+    "global:^KG(\"bucket\")",
+    "global:^KG(\"tagg\")",
+    "global:^KG(\"tout\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.BulkInsert",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.BulkInsertCounts",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.BulkInsertCounts",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.BulkInsertCounts",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.BulkInsertCounts",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.BulkInsertCounts",
+   "writes": [
+    "global:^KG(\"tout\")",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.BulkInsertCounts",
+   "writes": [
+    "global:^KG(\"tout\")",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "TMP-B1.7",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.BulkInsertCounts",
+   "writes": [
+    "global:^KG(\"bucket\")",
+    "global:^KG(\"tagg\")",
+    "global:^KG(\"tout\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.BulkInsertCounts",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.DeleteTemporalEdge",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.DeleteTemporalEdge",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.DeleteTemporalEdge",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.DeleteTemporalEdge",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.DeleteTemporalEdge",
+   "writes": [
+    "global:^KG(\"tout\")",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.DeleteTemporalEdge",
+   "writes": [
+    "global:^KG(\"tout\")",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "TMP-B1.7",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.DeleteTemporalEdge",
+   "writes": [
+    "global:^KG(\"bucket\")",
+    "global:^KG(\"tagg\")",
+    "global:^KG(\"tout\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-tmp_bucket-reviewed; finding:F-0501"
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.EraseAll",
+   "writes": [
+    "global:^KG(\"tout\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.EraseAll",
+   "writes": [
+    "global:^KG(\"tout\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-tmp_mark-reviewed; finding:F-0507"
+  },
+  {
+   "invariant": "TMP-B1.7",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.EraseAll",
+   "writes": [
+    "global:^KG(\"bucket\")",
+    "global:^KG(\"tagg\")",
+    "global:^KG(\"tout\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.EraseGraph",
+   "writes": [
+    "global:^KG(\"tout\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.EraseGraph",
+   "writes": [
+    "global:^KG(\"tout\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "TMP-B1.7",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.EraseGraph",
+   "writes": [
+    "global:^KG(\"bucket\")",
+    "global:^KG(\"tagg\")",
+    "global:^KG(\"tout\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.EraseNodes",
+   "writes": [
+    "global:^KG(\"tout\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.EraseNodes",
+   "writes": [
+    "global:^KG(\"tout\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "TMP-B1.7",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.EraseNodes",
+   "writes": [
+    "global:^KG(\"bucket\")",
+    "global:^KG(\"tagg\")",
+    "global:^KG(\"tout\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.InsertEdge",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.InsertEdge",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.InsertEdge",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.InsertEdge",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.InsertEdge",
+   "writes": [
+    "global:^KG(\"tout\")",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.InsertEdge",
+   "writes": [
+    "global:^KG(\"tout\")",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "TMP-B1.7",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.InsertEdge",
+   "writes": [
+    "global:^KG(\"bucket\")",
+    "global:^KG(\"tagg\")",
+    "global:^KG(\"tout\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-tmp_bucket-reviewed; finding:F-0501"
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.InsertEdge",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "TMP-B1.7",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.MigrateDerived",
+   "writes": [
+    "global:^KG(\"bucket\")",
+    "global:^KG(\"tagg\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.MigrateRaw",
+   "writes": [
+    "global:^KG(\"tout\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.MigrateRaw",
+   "writes": [
+    "global:^KG(\"tout\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "TMP-B1.7",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.MigrateRaw",
+   "writes": [
+    "global:^KG(\"tout\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.MigrateToGraphScoped",
+   "writes": [
+    "global:^KG(\"tout\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.MigrateToGraphScoped",
+   "writes": [
+    "global:^KG(\"tout\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "TMP-B1.7",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.MigrateToGraphScoped",
+   "writes": [
+    "global:^KG(\"bucket\")",
+    "global:^KG(\"tagg\")",
+    "global:^KG(\"tout\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.PurgeBefore",
+   "writes": [
+    "global:^KG(\"degc\")",
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.PurgeBefore",
+   "writes": [
+    "global:^IVG.AlgoCache",
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.PurgeBefore",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.PurgeBefore",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.PurgeBefore",
+   "writes": [
+    "global:^KG(\"tout\")",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-tmp_mark-reviewed; finding:F-0304,F-0505"
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.PurgeBefore",
+   "writes": [
+    "global:^KG(\"tout\")",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-tmp_mark-reviewed; finding:F-0507"
+  },
+  {
+   "invariant": "TMP-B1.7",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.PurgeBefore",
+   "writes": [
+    "global:^KG(\"bucket\")",
+    "global:^KG(\"tagg\")",
+    "global:^KG(\"tout\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.PurgeBefore",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "TMP-B1.7",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.PurgeBucketRange",
+   "writes": [
+    "global:^KG(\"bucket\")",
+    "global:^KG(\"tagg\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.PurgeRawBefore",
+   "writes": [
+    "global:^KG(\"degc\")",
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.PurgeRawBefore",
+   "writes": [
+    "global:^IVG.AlgoCache",
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.PurgeRawBefore",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.PurgeRawBefore",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.PurgeRawBefore",
+   "writes": [
+    "global:^KG(\"tout\")",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-tmp_mark-reviewed; finding:F-0304,F-0505"
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.PurgeRawBefore",
+   "writes": [
+    "global:^KG(\"tout\")",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-tmp_mark-reviewed; finding:F-0507"
+  },
+  {
+   "invariant": "TMP-B1.7",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.PurgeRawBefore",
+   "writes": [
+    "global:^KG(\"tout\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.PurgeRawBefore",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "TMP-B1.7",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.RebuildBucket",
+   "writes": [
+    "global:^KG(\"bucket\")",
+    "global:^KG(\"tagg\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "TMP-B1.7",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.RebuildBucketAggregate",
+   "writes": [
+    "global:^KG(\"tagg\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.RemoveTemporalRow",
+   "writes": [
+    "global:^KG(\"tout\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.RemoveTemporalRow",
+   "writes": [
+    "global:^KG(\"tout\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "TMP-B1.7",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.RemoveTemporalRow",
+   "writes": [
+    "global:^KG(\"bucket\")",
+    "global:^KG(\"tagg\")",
+    "global:^KG(\"tout\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.RetireExpired",
+   "writes": [
+    "global:^KG(\"degc\")",
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.RetireExpired",
+   "writes": [
+    "global:^IVG.AlgoCache",
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.RetireExpired",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.RetireExpired",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.RetireExpired",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.RetireExpired",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.RetireExpired",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "TMP-B1.7",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.UpdateHLL",
+   "writes": [
+    "global:^KG(\"tagg\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.WriteStores",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.WriteStores",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.WriteStores",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.WriteStores",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.WriteStores",
+   "writes": [
+    "global:^KG(\"tout\")",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.WriteStores",
+   "writes": [
+    "global:^KG(\"tout\")",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "TMP-B1.7",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.WriteStores",
+   "writes": [
+    "global:^KG(\"bucket\")",
+    "global:^KG(\"tagg\")",
+    "global:^KG(\"tout\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-tmp_bucket-reviewed; finding:F-0501"
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalIndex.WriteStores",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalPolicy.BackfillRows",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalPolicy.BackfillRows",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalPolicy.BackfillRows",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalPolicy.BackfillRows",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalPolicy.BackfillRows",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalPolicy.BackfillRows",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalPolicy.BackfillRows",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalPolicy.DropRows",
+   "writes": [
+    "global:^KG(\"degc\")",
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalPolicy.DropRows",
+   "writes": [
+    "global:^IVG.AlgoCache",
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalPolicy.DropRows",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalPolicy.DropRows",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalPolicy.DropRows",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalPolicy.DropRows",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "05",
+   "writer": "cls:Graph.KG.TemporalPolicy.DropRows",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.backfill_temporal_structural_rows",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.backfill_temporal_structural_rows",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.backfill_temporal_structural_rows",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.backfill_temporal_structural_rows",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.backfill_temporal_structural_rows",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.drop_temporal_structural_rows",
+   "writes": [
+    "global:^KG(\"degc\")",
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.drop_temporal_structural_rows",
+   "writes": [
+    "global:^IVG.AlgoCache",
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.drop_temporal_structural_rows",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.drop_temporal_structural_rows",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.drop_temporal_structural_rows",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.drop_temporal_structural_rows",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "05",
+   "writer": "py:IRISGraphEngine.drop_temporal_structural_rows",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "05",
+   "writer": "py:iris_vector_graph.migrations.temporal_structural_rows.backfill_structural_rows",
+   "writes": [
+    "global:^KG(\"gen\")",
+    "global:^KG(\"out\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "05",
+   "writer": "py:iris_vector_graph.migrations.temporal_structural_rows.backfill_structural_rows",
+   "writes": [
+    "global:^KG(\"__version\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "GID-I4.10",
+   "module": "05",
+   "writer": "py:iris_vector_graph.migrations.temporal_structural_rows.backfill_structural_rows",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "INV-stmt",
+   "module": "05",
+   "writer": "py:iris_vector_graph.migrations.temporal_structural_rows.backfill_structural_rows",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "05",
+   "writer": "py:iris_vector_graph.migrations.temporal_structural_rows.backfill_structural_rows",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "05",
+   "writer": "py:iris_vector_graph.migrations.temporal_structural_rows.backfill_structural_rows",
+   "writes": [
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-I7.18",
+   "module": "05",
+   "writer": "py:iris_vector_graph.migrations.temporal_structural_rows.backfill_structural_rows",
+   "writes": [
+    "sql:Graph_KG.kg_NodeEmbeddings"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "05",
+   "writer": "py:iris_vector_graph.migrations.temporal_structural_rows.backfill_structural_rows",
+   "writes": [
+    "sql:Graph_KG.nodes"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-I7.18",
+   "module": "06",
+   "writer": "cls:Graph.KG.EmbedQueue.ProcessBatch",
+   "writes": [
+    "global:^EmbedQueue"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-vec_queue-reviewed; finding:F-0604,F-C0601"
+  },
+  {
+   "invariant": "VEC-B11.14",
+   "module": "06",
+   "writer": "cls:Graph.KG.IVFIndex.Insert",
+   "writes": [
+    "global:^IVF"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-vec_ivf-reviewed; finding:F-0608"
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "06",
+   "writer": "cls:Graph.KG.IVFIndex.Insert",
+   "writes": [
+    "global:^IVF"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-vec_ivf-reviewed; finding:F-0606"
+  },
+  {
+   "invariant": "VEC-I7.18",
+   "module": "06",
+   "writer": "py:IRISGraphEngine.enqueue_for_embedding",
+   "writes": [
+    "global:^EmbedQueue",
+    "global:^EmbedQueue(\"$seq\")"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-vec_queue-reviewed; finding:F-0604,F-C0601"
+  },
+  {
+   "invariant": "VEC-B11.14",
+   "module": "06",
+   "writer": "py:IRISGraphEngine.ivf_build",
+   "writes": [
+    "global:^IVF"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-vec_ivf-reviewed; finding:F-0608"
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "06",
+   "writer": "py:IRISGraphEngine.ivf_build",
+   "writes": [
+    "global:^IVF"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-vec_ivf-reviewed; finding:F-0606"
+  },
+  {
+   "invariant": "VEC-X3.9/SYS-I3",
+   "module": "06",
+   "writer": "py:IRISGraphEngine.store_embeddings",
+   "writes": [
+    "sql:Graph_KG.embedding_registry"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-vec_route_batch-reviewed; finding:F-0615"
+  },
+  {
+   "invariant": "VEC-I7.18",
+   "module": "06",
+   "writer": "cls:Graph.KG.EmbedQueue.BulkEnqueue",
+   "writes": [
+    "global:^EmbedQueue"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-I7.18",
+   "module": "06",
+   "writer": "cls:Graph.KG.EmbedQueue.BulkEnqueueText",
+   "writes": [
+    "global:^EmbedQueue",
+    "global:^EmbedQueue(\"$seq\")"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-I7.18",
+   "module": "06",
+   "writer": "cls:Graph.KG.EmbedQueue.ClearDone",
+   "writes": [
+    "global:^EmbedQueue"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-I7.18",
+   "module": "06",
+   "writer": "cls:Graph.KG.EmbedQueue.Enqueue",
+   "writes": [
+    "global:^EmbedQueue"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-vec_queue-reviewed; finding:F-0604,F-C0601"
+  },
+  {
+   "invariant": "VEC-I7.18",
+   "module": "06",
+   "writer": "cls:Graph.KG.EmbedQueue.SetResult",
+   "writes": [
+    "global:^EmbedQueue"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-vec_queue-reviewed; finding:F-0604,F-C0601"
+  },
+  {
+   "invariant": "VEC-I7.18",
+   "module": "06",
+   "writer": "cls:Graph.KG.EmbedQueueTask.OnTask",
+   "writes": [
+    "global:^EmbedQueue"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.14",
+   "module": "06",
+   "writer": "cls:Graph.KG.IVFIndex.AddBatch",
+   "writes": [
+    "global:^IVF"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "06",
+   "writer": "cls:Graph.KG.IVFIndex.AddBatch",
+   "writes": [
+    "global:^IVF"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.14",
+   "module": "06",
+   "writer": "cls:Graph.KG.IVFIndex.Build",
+   "writes": [
+    "global:^IVF"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-vec_ivf-reviewed; finding:F-0608"
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "06",
+   "writer": "cls:Graph.KG.IVFIndex.Build",
+   "writes": [
+    "global:^IVF"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.14",
+   "module": "06",
+   "writer": "cls:Graph.KG.IVFIndex.Delete",
+   "writes": [
+    "global:^IVF"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "06",
+   "writer": "cls:Graph.KG.IVFIndex.Delete",
+   "writes": [
+    "global:^IVF"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.14",
+   "module": "06",
+   "writer": "cls:Graph.KG.IVFIndex.Drop",
+   "writes": [
+    "global:^IVF"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "06",
+   "writer": "cls:Graph.KG.IVFIndex.Drop",
+   "writes": [
+    "global:^IVF"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.14",
+   "module": "06",
+   "writer": "cls:Graph.KG.IVFIndex.FinalizeIndex",
+   "writes": [
+    "global:^IVF"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "06",
+   "writer": "cls:Graph.KG.IVFIndex.FinalizeIndex",
+   "writes": [
+    "global:^IVF"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "06",
+   "writer": "cls:Graph.KG.PLAIDSearch.Build",
+   "writes": [
+    "global:^PLAID"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "06",
+   "writer": "cls:Graph.KG.PLAIDSearch.BuildInvertedIndex",
+   "writes": [
+    "global:^PLAID"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "06",
+   "writer": "cls:Graph.KG.PLAIDSearch.Drop",
+   "writes": [
+    "global:^PLAID"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "06",
+   "writer": "cls:Graph.KG.PLAIDSearch.Insert",
+   "writes": [
+    "global:^PLAID"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "06",
+   "writer": "cls:Graph.KG.PLAIDSearch.StoreCentroids",
+   "writes": [
+    "global:^PLAID"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "06",
+   "writer": "cls:Graph.KG.PLAIDSearch.StoreDocTokens",
+   "writes": [
+    "global:^PLAID"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "06",
+   "writer": "cls:Graph.KG.PLAIDSearch.StoreDocTokensBatch",
+   "writes": [
+    "global:^PLAID"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "06",
+   "writer": "cls:Graph.KG.VecIndex.Build",
+   "writes": [
+    "global:^VecIdx"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "06",
+   "writer": "cls:Graph.KG.VecIndex.BuildTree",
+   "writes": [
+    "global:^VecIdx"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "06",
+   "writer": "cls:Graph.KG.VecIndex.Create",
+   "writes": [
+    "global:^VecIdx"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "06",
+   "writer": "cls:Graph.KG.VecIndex.Drop",
+   "writes": [
+    "global:^VecIdx"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "06",
+   "writer": "cls:Graph.KG.VecIndex.GetDim",
+   "writes": [
+    "global:^VecIdx"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "06",
+   "writer": "cls:Graph.KG.VecIndex.Insert",
+   "writes": [
+    "global:^VecIdx"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "06",
+   "writer": "cls:Graph.KG.VecIndex.InsertBatchJSON",
+   "writes": [
+    "global:^VecIdx"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "06",
+   "writer": "cls:Graph.KG.VecIndex.InsertIntoTree",
+   "writes": [
+    "global:^VecIdx"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "06",
+   "writer": "cls:Graph.KG.VecIndex.InsertJSON",
+   "writes": [
+    "global:^VecIdx"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "06",
+   "writer": "cls:Graph.KG.VecIndex.SetInverseCov",
+   "writes": [
+    "global:^VecIdx"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-I7.18",
+   "module": "06",
+   "writer": "py:IRISGraphEngine.clear_done",
+   "writes": [
+    "global:^EmbedQueue"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.14",
+   "module": "06",
+   "writer": "py:IRISGraphEngine.ivf_delete",
+   "writes": [
+    "global:^IVF"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "06",
+   "writer": "py:IRISGraphEngine.ivf_delete",
+   "writes": [
+    "global:^IVF"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.14",
+   "module": "06",
+   "writer": "py:IRISGraphEngine.ivf_drop",
+   "writes": [
+    "global:^IVF"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "06",
+   "writer": "py:IRISGraphEngine.ivf_drop",
+   "writes": [
+    "global:^IVF"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.14",
+   "module": "06",
+   "writer": "py:IRISGraphEngine.ivf_insert",
+   "writes": [
+    "global:^IVF"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-vec_ivf-reviewed; finding:F-0608"
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "06",
+   "writer": "py:IRISGraphEngine.ivf_insert",
+   "writes": [
+    "global:^IVF"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-vec_ivf-reviewed; finding:F-0606"
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "06",
+   "writer": "py:IRISGraphEngine.plaid_build",
+   "writes": [
+    "global:^PLAID"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "06",
+   "writer": "py:IRISGraphEngine.plaid_drop",
+   "writes": [
+    "global:^PLAID"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "06",
+   "writer": "py:IRISGraphEngine.plaid_insert",
+   "writes": [
+    "global:^PLAID"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-I7.18",
+   "module": "06",
+   "writer": "py:IRISGraphEngine.process_embed_queue",
+   "writes": [
+    "global:^EmbedQueue"
+   ],
+   "status": "mc",
+   "discharged_by": "mc:breadth-a-mc-vec_queue-reviewed; finding:F-0604,F-C0601"
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "06",
+   "writer": "py:IRISGraphEngine.vec_build",
+   "writes": [
+    "global:^VecIdx"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "06",
+   "writer": "py:IRISGraphEngine.vec_bulk_insert",
+   "writes": [
+    "global:^VecIdx"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "06",
+   "writer": "py:IRISGraphEngine.vec_create_index",
+   "writes": [
+    "global:^VecIdx"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "06",
+   "writer": "py:IRISGraphEngine.vec_drop",
+   "writes": [
+    "global:^VecIdx"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "VEC-B11.4/HD-0601",
+   "module": "06",
+   "writer": "py:IRISGraphEngine.vec_insert",
+   "writes": [
+    "global:^VecIdx"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I5.9",
+   "module": "06",
+   "writer": "py:iris_vector_graph.migrations.kg_node_stores.rekey_kg_node_stores",
+   "writes": [
+    "global:^KG"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADJ-I11.2",
+   "module": "06",
+   "writer": "py:iris_vector_graph.migrations.kg_node_stores.rekey_kg_node_stores",
+   "writes": [
+    "global:^KG"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/HD-0302 explicit-survives",
+   "module": "06",
+   "writer": "py:iris_vector_graph.migrations.kg_node_stores.rekey_kg_node_stores",
+   "writes": [
+    "global:^KG"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "ADR-0009/TMP-B9.13 marked-needs-time",
+   "module": "06",
+   "writer": "py:iris_vector_graph.migrations.kg_node_stores.rekey_kg_node_stores",
+   "writes": [
+    "global:^KG"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  },
+  {
+   "invariant": "TMP-B1.7",
+   "module": "06",
+   "writer": "py:iris_vector_graph.migrations.kg_node_stores.rekey_kg_node_stores",
+   "writes": [
+    "global:^KG"
+   ],
+   "status": "open",
+   "discharged_by": ""
+  }
+ ],
+ "counts_by_module": {
+  "01": {
+   "open": 112,
+   "mc": 1
+  },
+  "02": {
+   "mc": 3
+  },
+  "03": {
+   "mc": 14,
+   "open": 97
+  },
+  "04": {
+   "mc": 30,
+   "open": 125
+  },
+  "05": {
+   "mc": 30,
+   "open": 171
+  },
+  "06": {
+   "mc": 13,
+   "open": 48
+  }
+ }
+}

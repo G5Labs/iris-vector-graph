@@ -1,0 +1,1565 @@
+{
+ "module": "07",
+ "lane": "breadth-b",
+ "pin": "3eaa79cf",
+ "gates": [
+  {
+   "gate": "3.1-statements",
+   "status": "open",
+   "reason": "The original index gate passes for 07 under the lexical-scope reading (ontology_index.py --check --only 07: 0 violations), but decisions.md HD-0001 adopts the literal rule: check-literal-scope.py reports 49 TXT statement/term pairs using a term not defined by an ancestor or an earlier sibling.",
+   "evidence": [
+    "inspected:experiment/playbook-uplift/tools/ontology_index.py",
+    "inspected:experiment/playbook-completion/check-literal-scope.py"
+   ],
+   "remaining": "Rewrite or reparent the 49 TXT term uses (orchestrator's ontology lane)."
+  },
+  {
+   "gate": "3.1-cells",
+   "status": "open",
+   "reason": "All 53 cells are defined or open; 4 cells are open on HD-0701 (building x build/insert/drop, upgrading x build/drop: 5 rows) whose working answer (serialize, complete-or-unavailable) the reviewed model now covers. The docs-table text search (kg_TXT engine/SQL/operators) and TextSearchEngine have no entity in Cells.",
+   "evidence": [
+    "inventory:models/breadth-b/inventory/07.json"
+   ],
+   "remaining": "Add cells for kg_TXT (docs table: iFind present/absent x graph) and TextSearchEngine; resolve the HD-0701 cells to the reviewed outcome."
+  },
+  {
+   "gate": "3.1-entry-points",
+   "status": "open",
+   "reason": "48 entry points derived mechanically; 0 cell commands lack an entry point; 7 entry points no statement covers: the Index handle's fulltext build/search/insert/drop/info (index_protocol.py:83-105; Index.build reaches TXT-X2 only via vector.py:299-310), create_index(replace=True)'s drop (vector.py:243-259) and HybridSearchFusion.__init__ (pure). 12 entry points are in no cell (kg_TXT x3, TextSearchEngine x5, RRFFusion x2, kg_RERANK, HybridSearchFusion.__init__).",
+   "evidence": [
+    "inventory:models/breadth-b/inventory/07.json"
+   ],
+   "remaining": "Add statements for the Index handle fulltext path and create_index(replace=True)."
+  },
+  {
+   "gate": "3.2-env-contract",
+   "status": "open",
+   "reason": "Module 07 relies on the IRIS features in env_features (timed LOCK, TSTART nesting with bare TROLLBACK, journaling of Kill/Set outside transactions, process-private globals, %iFind.Utils.Analyze, iFind index, embedded Python gref). None is covered by a differential environment contract yet; P-0702/P-0703 were premises in the submission. F-C0702 shows the TROLLBACK-level semantics matter.",
+   "evidence": [
+    "live:b-07-fc0702-nested-rollback"
+   ],
+   "remaining": "Orchestrator's IRIS environment contract (AUDITENV) must cover the listed features."
+  },
+  {
+   "gate": "3.3-L1",
+   "status": "open",
+   "reason": "No Verus L1 model for module 07. Executable explorer models exist (bm25, leg).",
+   "evidence": [],
+   "remaining": "Write the L1 for the BM25 index (I1-I3, I5, X2) if module 07 enters proof depth."
+  },
+  {
+   "gate": "3.3-L2",
+   "status": "closed",
+   "reason": "The bm25 machine abstracts the real ^BM25Idx layout and every writer step at path:lines (m07.rs header); as-built reproduces F-0701/F-0704 and the reviewed design passes exhaustively within bounds (bounded mc, not a proof).",
+   "evidence": [
+    "mc:m07-bm25-reviewed",
+    "mc:m07-bm25-as-built-I2",
+    "mc:m07-bm25-as-built-X2"
+   ],
+   "remaining": "Bounds: 3 documents, 2 tokens, 1 build, 2 writer ops, 1 drop, 1 upgrade."
+  },
+  {
+   "gate": "3.3-refinement",
+   "status": "open",
+   "reason": "No refinement audit (explorer::refinement) between an L1 and the bm25 machine.",
+   "evidence": [],
+   "remaining": "Bind the bm25 machine to an L1 with explorer::refinement::audit."
+  },
+  {
+   "gate": "3.3-controls",
+   "status": "open",
+   "reason": "No proof-level controls (no Verus L1/L2 for module 07). Explorer-level negative controls caught: m07-bm25-control-nolock (Build without the lock -> TXT-I5), m07-bm25-control-late-refusal (refusal after replacement -> TXT-X2), m07-leg-control-no-scope-check (-> TXT-I7).",
+   "evidence": [
+    "mc:m07-bm25-control-nolock",
+    "mc:m07-bm25-control-late-refusal",
+    "mc:m07-leg-control-no-scope-check"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.3-progress",
+   "status": "closed",
+   "reason": "AG EF 'the index can always settle' holds in m07-bm25-reviewed (exhaustive within bounds) and fails as built (m07-bm25-as-built-settle: Drop during Build). Sharpness witnesses: complete index, insert serialized after build, insert after a crashed build, scoped fusion answer all reachable.",
+   "evidence": [
+    "mc:m07-bm25-reviewed",
+    "mc:m07-bm25-as-built-settle",
+    "mc:m07-bm25-positive-complete",
+    "mc:m07-bm25-positive-insert-after-build",
+    "mc:m07-bm25-positive-crash-then-insert",
+    "mc:m07-leg-positive-scoped"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.3a-mechanisms",
+   "status": "open",
+   "reason": "BM25 writers use a per-index lock + transaction mechanism (Insert/Delete/Upgrade) but Build and Drop bypass it (F-0701); no shared 'derived store generation' mechanism records staleness (F-0703) or erasure (F-0702).",
+   "evidence": [
+    "live:b-07-f0701-race"
+   ],
+   "remaining": "Adopt HD-0701's serialized generation mechanism; decide the SYS-I8 status of BM25 indexes."
+  },
+  {
+   "gate": "3.3a-writesets",
+   "status": "failed",
+   "reason": "Invariant/plan pairs computed below: TXT-I1/I2 x Build, Drop (F-0701, product defect, live), TXT-I8 x eraser.erase_graph (F-0702), TXT-B8.3/I7 x Insert-created index (F-0705). Remaining pairs discharged by guard (lock+transaction) or mc.",
+   "evidence": [
+    "live:b-07-f0701-race",
+    "live:b-07-f0702-f0703",
+    "mc:m07-bm25-reviewed"
+   ],
+   "remaining": "Fixes per findings; rerun the pairs."
+  },
+  {
+   "gate": "3.4-statements",
+   "status": "open",
+   "reason": "No storage statement (ObjectScript global operations on ^BM25Idx, the kg_TXT/kg_RRF_FUSE SQL) is proved against an IRIS contract; the bm25 machine abstracts the global operations at path:lines but is bounded mc, not a statement proof.",
+   "evidence": [
+    "inspected:iris_src/src/Graph/KG/BM25Index.cls:97-591"
+   ],
+   "remaining": "Statement lemmas against the IRIS environment contract."
+  },
+  {
+   "gate": "3.4-ownership",
+   "status": "failed",
+   "reason": "^BM25Idx('__stop__') (stopword list) shares the index key space and any index-management call can write it (F-0706, F-C0701 live); ^BM25Idx is written only by Graph.KG.BM25Index (grep), but erasure does not own its graph-scoped content (F-0702).",
+   "evidence": [
+    "live:b-07-f0706",
+    "live:b-07-f0702-f0703"
+   ],
+   "remaining": "Reserve or relocate the stopword node; give ^BM25Idx an owner in GraphStores."
+  },
+  {
+   "gate": "3.4-storage-order",
+   "status": "failed",
+   "reason": "Storage-order scanner ($RUN_DIR/checks/storage-order.json): 11 flagged records in module-07 code plus 3 reviewed unflagged sites; dispositions {'F-C0703': 11, 'F-0711': 1, 'false-positive': 1, 'unique-key': 1}; 16 other vector.py records are module 06's (adjacent_sites_not_owned). Top-k text answers and fused ranks follow scan order (F-C0703).",
+   "evidence": [
+    "finding:F-C0703",
+    "inspected:iris_vector_graph/_engine/vector.py:1041-1046",
+    "live:b-07-f0709"
+   ],
+   "remaining": "Total tie keys (node id) on every top-k text query and fusion rank (F-C0703)."
+  },
+  {
+   "gate": "3.4-declared-reads",
+   "status": "failed",
+   "reason": "Reads not scoped to the declared graph: ivg.bm25.search/ivg.retrieve under USE GRAPH (F-0707), insert-created/legacy indexes read as the default graph's (F-0705), TextSearchEngine (F-0711): all reproduced live.",
+   "evidence": [
+    "live:b-07-f0705-f0707",
+    "live:b-07-f0711"
+   ],
+   "remaining": "Fixes per findings."
+  },
+  {
+   "gate": "3.5-handlers",
+   "status": "failed",
+   "reason": "Handler contracts broken live: refused rebuild destroys (F-0704); failing Insert inside a caller transaction rolls it back (F-C0702); positional default weights (F-0710).",
+   "evidence": [
+    "live:b-07-f0704",
+    "live:b-07-fc0702-nested-rollback",
+    "probe:b-07-probe-fusion"
+   ],
+   "remaining": "Fixes per findings."
+  },
+  {
+   "gate": "3.5-lock-plans",
+   "status": "failed",
+   "reason": "Lock plan: Insert/Delete/Upgrade take Lock +^BM25Idx(name,'lock'):timeout; Build and Drop take none (journal: no transaction, model TXT-I5 violation); Upgrade sets its flag before the lock (by design).",
+   "evidence": [
+    "live:b-07-fp-writers",
+    "mc:m07-bm25-as-built-I5"
+   ],
+   "remaining": "Build/Drop under the lock (HD-0701)."
+  },
+  {
+   "gate": "3.5-decoders",
+   "status": "open",
+   "reason": "Info's JSON maps an absent graph to '' (F-0705); bm25_search's parser patches '.5' numbers (vector.py:1816-1819); kg_TXT LIKE fallback scores 1.0. Not proved.",
+   "evidence": [
+    "live:b-07-f0705-f0707"
+   ],
+   "remaining": "Info answers null for an absent graph; decoder unit tests."
+  },
+  {
+   "gate": "3.5-status-maps",
+   "status": "failed",
+   "reason": "Error-to-outcome maps hide failures: kg_RRF_FUSE logs and drops legs, adaptive_search answers [], TextSearchEngine answers [] on SQL errors (F-0709, F-0711).",
+   "evidence": [
+    "live:b-07-f0709",
+    "probe:b-07-probe-fusion"
+   ],
+   "remaining": "Raise naming the leg."
+  },
+  {
+   "gate": "3.6-composition",
+   "status": "failed",
+   "reason": "Composition with erasure (F-0702) and with caller transactions (F-C0702) breaks module contracts at the boundary, both live.",
+   "evidence": [
+    "live:b-07-f0702-f0703",
+    "live:b-07-fc0702-nested-rollback"
+   ],
+   "remaining": "Orchestrator: include ^BM25Idx in the erasure composition; transaction-level contract for nested IVG writes."
+  },
+  {
+   "gate": "3.7-explorers",
+   "status": "closed",
+   "reason": "18 explorer checks for module 07, 18 met their expectation, all exhaustive within bounds.",
+   "evidence": [
+    "mc:m07-bm25-as-built-I2",
+    "mc:m07-bm25-as-built-I5",
+    "mc:m07-bm25-as-built-X2",
+    "mc:m07-bm25-as-built-X2-existing",
+    "mc:m07-bm25-as-built-quiesced-crash",
+    "mc:m07-bm25-as-built-settle",
+    "mc:m07-bm25-control-late-refusal",
+    "mc:m07-bm25-control-nolock",
+    "mc:m07-bm25-positive-complete",
+    "mc:m07-bm25-positive-crash-then-insert",
+    "mc:m07-bm25-positive-insert-after-build",
+    "mc:m07-bm25-reviewed",
+    "mc:m07-leg-as-built-fusion-unknown",
+    "mc:m07-leg-as-built-label",
+    "mc:m07-leg-as-built-scope",
+    "mc:m07-leg-control-no-scope-check",
+    "mc:m07-leg-positive-scoped",
+    "mc:m07-leg-reviewed"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.7-integration-worlds",
+   "status": "open",
+   "reason": "Crash of a Build modelled (m07-bm25-as-built-quiesced-crash) but not injected live (no safe way to kill a server process mid-build on the shared container).",
+   "evidence": [
+    "mc:m07-bm25-as-built-quiesced-crash"
+   ],
+   "remaining": "A crash world needs an orchestrator-approved process termination."
+  },
+  {
+   "gate": "3.7-differential",
+   "status": "open",
+   "reason": "No differential run of the BM25 tokenizer/analyzer (P-0701) against the documented examples.",
+   "evidence": [],
+   "remaining": "Probe %iFind.Utils.Analyze on the USER_GUIDE examples in AUDITENV."
+  },
+  {
+   "gate": "3.7-e2e",
+   "status": "open",
+   "reason": "Upstream e2e/integration BM25 tests (tests/integration/test_044_bm25_incremental.py, tests/e2e/test_230_retrieval_scope.py) not run: their session fixture LoadStream-compiles classes, which the audit rules forbid in AUDITB. 69 unit tests run and passed.",
+   "evidence": [
+    "run:b-07-unit"
+   ],
+   "remaining": "Validation lane (USER namespace) runs the IRIS-backed suites."
+  },
+  {
+   "gate": "3.7-trace-replay",
+   "status": "open",
+   "reason": "Journal traces of the writers exist (b-07-fp-writers, b-07-f0701-race) but are not replayed through the bm25 machine.",
+   "evidence": [
+    "live:b-07-fp-writers",
+    "live:b-07-f0701-race"
+   ],
+   "remaining": "Replay journal records as bm25 machine steps."
+  },
+  {
+   "gate": "3.7-statement-log-vs-lock-plan",
+   "status": "failed",
+   "reason": "Journal vs lock plan: Insert/Delete each one transaction under the lock (match); Build 106/106 and 30008/30008 records outside any transaction and with no lock while a concurrent Insert committed (mismatch with ADR-0007).",
+   "evidence": [
+    "live:b-07-fp-writers",
+    "live:b-07-f0701-race"
+   ],
+   "remaining": "Fix F-0701 and rerun."
+  },
+  {
+   "gate": "3.7-mutation",
+   "status": "open",
+   "reason": "Model mutants only (controls); no mutation testing of BM25Index.cls or fusion.py.",
+   "evidence": [
+    "mc:m07-bm25-control-nolock"
+   ],
+   "remaining": "Mutation testing of the unverified layers."
+  },
+  {
+   "gate": "3.7-perf-ab",
+   "status": "not-applicable",
+   "reason": "No structural change was made by this audit (product read-only), so there is nothing to A/B.",
+   "evidence": [],
+   "remaining": ""
+  },
+  {
+   "gate": "3.7-failure-scenarios",
+   "status": "closed",
+   "reason": "Failure scenarios each with a control: lock timeout refusal and refused rebuild (model), failing Insert in a caller transaction (live, with a valid-insert control), vector leg failure (live + probe).",
+   "evidence": [
+    "live:b-07-fc0702-nested-rollback",
+    "live:b-07-f0704",
+    "mc:m07-bm25-control-late-refusal"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.8-account",
+   "status": "open",
+   "reason": "Module 07 account written here (footprints, findings audit, gates); no independent reviewer sign-off; 13 product defects open (11 original incl. 1 intent-undecided, 2 new).",
+   "evidence": [
+    "findings:findings/audit/07.json"
+   ],
+   "remaining": "Reviewer sign-off; maintainer decisions HD-0701..0705."
+  }
+ ],
+ "gates_by_id": {
+  "3.1-parent": {
+   "status": "closed",
+   "reason": "ontology_index.py --check --only 07: 0 violations (parent ids, grade, lexical-scope terms).",
+   "evidence": [
+    {
+     "kind": "run",
+     "ref": "python3 -I experiment/playbook-uplift/tools/ontology_index.py --check --only 07"
+    }
+   ],
+   "remaining": ""
+  },
+  "3.1-grade": {
+   "status": "closed",
+   "reason": "0 Flesch-Kincaid violations in TXT statements (same run).",
+   "evidence": [
+    {
+     "kind": "run",
+     "ref": "python3 -I experiment/playbook-uplift/tools/ontology_index.py --check --only 07"
+    }
+   ],
+   "remaining": ""
+  },
+  "3.1-terms": {
+   "status": "failed",
+   "reason": "Literal rule (HD-0001): 49 TXT statement/term pairs are out of scope (b-check-literal-scope-07-11). The original index gate passes for 07 under the lexical-scope reading (ontology_index.py --check --only 07: 0 violations), but decisions.md HD-0001 adopts the literal rule: check-literal-scope.py reports 49 TXT statement/term pairs using a term not defined by an ancestor or an earlier sibling.",
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "experiment/playbook-uplift/tools/ontology_index.py"
+    },
+    {
+     "kind": "inspected",
+     "ref": "experiment/playbook-completion/check-literal-scope.py"
+    },
+    "check:b-check-literal-scope-07-11"
+   ],
+   "remaining": "Rewrite or reparent the 49 TXT term uses (orchestrator's ontology lane).",
+   "review_note": "lane B integration review 2026-11-14: open -> failed (a registered check fails; observation-only, not fixed)"
+  },
+  "3.3-progress-controls": {
+   "status": "open",
+   "reason": "AG EF 'the index can always settle' holds in m07-bm25-reviewed and fails as built (m07-bm25-as-built-settle); no control that fails only the progress property.",
+   "evidence": [
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-reviewed"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-as-built-settle"
+    }
+   ],
+   "remaining": "A progress-only mutant (e.g. a lock never released) that keeps safety."
+  },
+  "3.6-composition": {
+   "status": "failed",
+   "reason": "Composition with erasure (F-0702) and with caller transactions (F-C0702) breaks module contracts at the boundary, both live.",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-07-f0702-f0703"
+    },
+    {
+     "kind": "live",
+     "ref": "b-07-fc0702-nested-rollback"
+    }
+   ],
+   "remaining": "Orchestrator: include ^BM25Idx in the erasure composition; transaction-level contract for nested IVG writes."
+  },
+  "3.7-explorers": {
+   "status": "closed",
+   "reason": "18 explorer checks for module 07, 18 met their expectation, all exhaustive within bounds.",
+   "evidence": [
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-as-built-I2"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-as-built-I5"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-as-built-X2"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-as-built-X2-existing"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-as-built-quiesced-crash"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-as-built-settle"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-control-late-refusal"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-control-nolock"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-positive-complete"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-positive-crash-then-insert"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-positive-insert-after-build"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-reviewed"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-leg-as-built-fusion-unknown"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-leg-as-built-label"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-leg-as-built-scope"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-leg-control-no-scope-check"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-leg-positive-scoped"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-leg-reviewed"
+    }
+   ],
+   "remaining": ""
+  },
+  "3.7-integration-worlds": {
+   "status": "open",
+   "reason": "Crash of a Build modelled (m07-bm25-as-built-quiesced-crash) but not injected live (no safe way to kill a server process mid-build on the shared container).",
+   "evidence": [
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-as-built-quiesced-crash"
+    }
+   ],
+   "remaining": "A crash world needs an orchestrator-approved process termination."
+  },
+  "3.7-differential": {
+   "status": "open",
+   "reason": "No differential run of the BM25 tokenizer/analyzer (P-0701) against the documented examples.",
+   "evidence": [],
+   "remaining": "Probe %iFind.Utils.Analyze on the USER_GUIDE examples in AUDITENV."
+  },
+  "3.7-e2e": {
+   "status": "open",
+   "reason": "Upstream e2e/integration BM25 tests (tests/integration/test_044_bm25_incremental.py, tests/e2e/test_230_retrieval_scope.py) not run: their session fixture LoadStream-compiles classes, which the audit rules forbid in AUDITB. 69 unit tests run and passed.",
+   "evidence": [
+    {
+     "kind": "run",
+     "ref": "b-07-unit"
+    }
+   ],
+   "remaining": "Validation lane (USER namespace) runs the IRIS-backed suites."
+  },
+  "3.7-failure-controls": {
+   "status": "closed",
+   "reason": "Failure scenarios each with a control: lock timeout refusal and refused rebuild (model), failing Insert in a caller transaction (live, with a valid-insert control), vector leg failure (live + probe).",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-07-fc0702-nested-rollback"
+    },
+    {
+     "kind": "live",
+     "ref": "b-07-f0704"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-control-late-refusal"
+    }
+   ],
+   "remaining": ""
+  },
+  "3.7-suites": {
+   "status": "open",
+   "reason": "69 module-07 unit tests (no IRIS) rerun on the unchanged pin and passed; the IRIS-backed integration/e2e BM25 and fusion suites were not run here (their fixture compiles classes).",
+   "evidence": [
+    {
+     "kind": "run",
+     "ref": "b-07-unit"
+    }
+   ],
+   "remaining": "Validation lane runs the IRIS-backed suites in USER."
+  },
+  "3.1-cells": {
+   "status": "open",
+   "reason": "All 53 cells are defined or open; 4 cells are open on HD-0701 (building x build/insert/drop, upgrading x build/drop: 5 rows) whose working answer (serialize, complete-or-unavailable) the reviewed model now covers. The docs-table text search (kg_TXT engine/SQL/operators) and TextSearchEngine have no entity in Cells.",
+   "evidence": [
+    {
+     "kind": "inventory",
+     "ref": "models/breadth-b/inventory/07.json"
+    }
+   ],
+   "remaining": "Add cells for kg_TXT (docs table: iFind present/absent x graph) and TextSearchEngine; resolve the HD-0701 cells to the reviewed outcome."
+  },
+  "3.1-coverage": {
+   "status": "open",
+   "reason": "48 entry points derived mechanically; 0 cell commands lack an entry point; 7 entry points no statement covers: the Index handle's fulltext build/search/insert/drop/info (index_protocol.py:83-105; Index.build reaches TXT-X2 only via vector.py:299-310), create_index(replace=True)'s drop (vector.py:243-259) and HybridSearchFusion.__init__ (pure). 12 entry points are in no cell (kg_TXT x3, TextSearchEngine x5, RRFFusion x2, kg_RERANK, HybridSearchFusion.__init__).",
+   "evidence": [
+    {
+     "kind": "inventory",
+     "ref": "models/breadth-b/inventory/07.json"
+    }
+   ],
+   "remaining": "Add statements for the Index handle fulltext path and create_index(replace=True)."
+  },
+  "3.1-intent": {
+   "status": "open",
+   "reason": "HD-0701..HD-0705 carry working assumptions (decisions.md:93-111), not maintainer decisions; F-0703 is intent-undecided (SYS-I8 status of a caller-maintained BM25 index).",
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "experiment/playbook-completion/decisions.md:93-111"
+    }
+   ],
+   "remaining": "Owned by the intent lanes."
+  },
+  "3.2-coverage": {
+   "status": "open",
+   "reason": "20 IRIS features listed in env_features; none yet inside the orchestrator's IRIS contract. F-C0702 shows TROLLBACK-level semantics (bare TROLLBACK ends every level) matter to this module.",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-07-fc0702-nested-rollback"
+    }
+   ],
+   "remaining": "IRIS environment contract (AUDITENV) to cover or exclude each env feature."
+  },
+  "3.3-L1": {
+   "status": "open",
+   "reason": "No Verus L1 model for module 07. Executable explorer models exist (bm25, leg).",
+   "evidence": [],
+   "remaining": "Write the L1 for the BM25 index (I1-I3, I5, X2) if module 07 enters proof depth."
+  },
+  "3.3-L2": {
+   "status": "closed",
+   "reason": "The bm25 machine abstracts the real ^BM25Idx layout and every writer step at path:lines (m07.rs header); as-built reproduces F-0701/F-0704 and the reviewed design passes exhaustively within bounds (bounded mc, not a proof).",
+   "evidence": [
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-reviewed"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-as-built-I2"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-as-built-X2"
+    }
+   ],
+   "remaining": "Bounds: 3 documents, 2 tokens, 1 build, 2 writer ops, 1 drop, 1 upgrade."
+  },
+  "3.3-refinement": {
+   "status": "open",
+   "reason": "No refinement audit (explorer::refinement) between an L1 and the bm25 machine.",
+   "evidence": [],
+   "remaining": "Bind the bm25 machine to an L1 with explorer::refinement::audit."
+  },
+  "3.3-controls": {
+   "status": "open",
+   "reason": "No proof-level controls (no Verus L1/L2 for module 07). Explorer-level negative controls caught: m07-bm25-control-nolock (Build without the lock -> TXT-I5), m07-bm25-control-late-refusal (refusal after replacement -> TXT-X2), m07-leg-control-no-scope-check (-> TXT-I7).",
+   "evidence": [
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-control-nolock"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-control-late-refusal"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-leg-control-no-scope-check"
+    }
+   ],
+   "remaining": ""
+  },
+  "3.3-model-check": {
+   "status": "closed",
+   "reason": "18 explorer checks, all met and exhaustive within bounds: as-built reproduces F-0701, F-0704, F-0705, F-0707; reviewed (HD-0701, HD-0703) passes incl. AG EF; 3 negative controls caught; 4 sharpness witnesses.",
+   "evidence": [
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-as-built-I2"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-as-built-I5"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-as-built-X2"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-as-built-X2-existing"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-as-built-quiesced-crash"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-as-built-settle"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-control-late-refusal"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-control-nolock"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-positive-complete"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-positive-crash-then-insert"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-positive-insert-after-build"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-reviewed"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-leg-as-built-fusion-unknown"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-leg-as-built-label"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-leg-as-built-scope"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-leg-control-no-scope-check"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-leg-positive-scoped"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-leg-reviewed"
+    }
+   ],
+   "remaining": "Bounds: 3 documents, 2 tokens, 1 build, 2 writer ops, 1 drop, 1 upgrade; 3 indexes x 2 graphs."
+  },
+  "3.4-storage-order": {
+   "status": "failed",
+   "reason": "Storage-order scanner ($RUN_DIR/checks/storage-order.json): 11 flagged records in module-07 code plus 3 reviewed unflagged sites; dispositions {'F-C0703': 11, 'F-0711': 1, 'false-positive': 1, 'unique-key': 1}; 16 other vector.py records are module 06's (adjacent_sites_not_owned). Top-k text answers and fused ranks follow scan order (F-C0703).",
+   "evidence": [
+    {
+     "kind": "finding",
+     "ref": "F-C0703"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/vector.py:1041-1046"
+    },
+    {
+     "kind": "live",
+     "ref": "b-07-f0709"
+    }
+   ],
+   "remaining": "Total tie keys (node id) on every top-k text query and fusion rank (F-C0703)."
+  },
+  "3.4-declared-reads": {
+   "status": "failed",
+   "reason": "Reads not scoped to the declared graph: ivg.bm25.search/ivg.retrieve under USE GRAPH (F-0707), insert-created/legacy indexes read as the default graph's (F-0705), TextSearchEngine (F-0711): all reproduced live.",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-07-f0705-f0707"
+    },
+    {
+     "kind": "live",
+     "ref": "b-07-f0711"
+    }
+   ],
+   "remaining": "Fixes per findings."
+  },
+  "3.5-handlers": {
+   "status": "failed",
+   "reason": "Handler contracts broken live: refused rebuild destroys (F-0704); failing Insert inside a caller transaction rolls it back (F-C0702); positional default weights (F-0710).",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-07-f0704"
+    },
+    {
+     "kind": "live",
+     "ref": "b-07-fc0702-nested-rollback"
+    },
+    {
+     "kind": "probe",
+     "ref": "b-07-probe-fusion"
+    }
+   ],
+   "remaining": "Fixes per findings."
+  },
+  "3.5-decoders": {
+   "status": "open",
+   "reason": "Info's JSON maps an absent graph to '' (F-0705); bm25_search's parser patches '.5' numbers (vector.py:1816-1819); kg_TXT LIKE fallback scores 1.0. Not proved.",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-07-f0705-f0707"
+    },
+    {
+     "kind": "live",
+     "ref": "b-07-f0709"
+    }
+   ],
+   "remaining": "Info answers null for an absent graph; decoder unit tests."
+  },
+  "3.6-row-permutation": {
+   "status": "failed",
+   "reason": "Top-k text answers and fused ranks change with row order (F-C0703: kg_TXT LIKE fallback has no ORDER BY; score-only orderings tie).",
+   "evidence": [
+    {
+     "kind": "finding",
+     "ref": "F-C0703"
+    }
+   ],
+   "remaining": "Total tie keys; a permutation test."
+  },
+  "3.6-capacity": {
+   "status": "open",
+   "reason": "Subscript capacity: document ids and tokens are global subscripts; a 604-character id raised <SUBSCRIPT> inside Insert (b-07-fc0702-nested-rollback), which also triggered F-C0702. Not checked: a token longer than a subscript in Build, which writes outside a transaction (would leave a partial index, cf. F-0701); lock-table limits not exercised.",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-07-fc0702-nested-rollback"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/BM25Index.cls:194"
+    }
+   ],
+   "remaining": "Live check of an over-long token in Build; document the id/token length limits."
+  },
+  "3.7-mutation": {
+   "status": "open",
+   "reason": "Model mutants only (controls); no mutation testing of BM25Index.cls or fusion.py.",
+   "evidence": [
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-control-nolock"
+    }
+   ],
+   "remaining": "Mutation testing of the unverified layers."
+  },
+  "3.8-findings-disposed": {
+   "status": "closed",
+   "reason": "Every original finding F-0701..F-0711 and the 3 new ones has a recorded disposition, outcome and evidence in findings/audit/07.json (observation-only: the product obligations stay failed in their gates).",
+   "evidence": [
+    {
+     "kind": "ref",
+     "ref": "experiment/playbook-completion/findings/audit/07.json"
+    }
+   ],
+   "remaining": ""
+  },
+  "5c-refusals": {
+   "status": "failed",
+   "reason": "25 refusal statements (kind X): 4 run here and held (TXT-X3, X4, X12, X15 via b-07-unit); 4 broken live (TXT-X2 by F-0704; TXT-B13.7, B17.3, B18.2 by F-0709); 10 upstream-tested but not run here (X5-X9, X13, X17-X20); 7 inspected only (X1, X10, X11, X14, X16, B12.7, B15.3).",
+   "evidence": [
+    {
+     "kind": "run",
+     "ref": "b-07-unit"
+    },
+    {
+     "kind": "live",
+     "ref": "b-07-f0704"
+    },
+    {
+     "kind": "live",
+     "ref": "b-07-f0709"
+    },
+    {
+     "kind": "probe",
+     "ref": "b-07-probe-fusion"
+    }
+   ],
+   "remaining": "Run the 10 upstream-tested refusals in the validation lane; evidence the 7 inspected-only ones."
+  },
+  "3.3a-writesets": {
+   "status": "failed",
+   "reason": "Invariant/plan pairs computed below: TXT-I1/I2 x Build, Drop (F-0701, product defect, live), TXT-I8 x eraser.erase_graph (F-0702), TXT-B8.3/I7 x Insert-created index (F-0705). Remaining pairs discharged by guard (lock+transaction) or mc.",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-07-f0701-race"
+    },
+    {
+     "kind": "live",
+     "ref": "b-07-f0702-f0703"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-reviewed"
+    }
+   ],
+   "remaining": "Fixes per findings; rerun the pairs."
+  },
+  "3.4-statements": {
+   "status": "open",
+   "reason": "No storage statement (ObjectScript global operations on ^BM25Idx, the kg_TXT/kg_RRF_FUSE SQL) is proved against an IRIS contract; the bm25 machine abstracts the global operations at path:lines but is bounded mc, not a statement proof.",
+   "evidence": [
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/BM25Index.cls:97-591"
+    }
+   ],
+   "remaining": "Statement lemmas against the IRIS environment contract."
+  },
+  "3.4-ownership": {
+   "status": "failed",
+   "reason": "^BM25Idx('__stop__') (stopword list) shares the index key space and any index-management call can write it (F-0706, F-C0701 live); ^BM25Idx is written only by Graph.KG.BM25Index (grep), but erasure does not own its graph-scoped content (F-0702).",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-07-f0706"
+    },
+    {
+     "kind": "live",
+     "ref": "b-07-f0702-f0703"
+    }
+   ],
+   "remaining": "Reserve or relocate the stopword node; give ^BM25Idx an owner in GraphStores."
+  },
+  "3.5-lockplans": {
+   "status": "failed",
+   "reason": "Lock plan: Insert/Delete/Upgrade take Lock +^BM25Idx(name,'lock'):timeout; Build and Drop take none (journal: no transaction, model TXT-I5 violation); Upgrade sets its flag before the lock (by design).",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-07-fp-writers"
+    },
+    {
+     "kind": "mc",
+     "ref": "m07-bm25-as-built-I5"
+    }
+   ],
+   "remaining": "Build/Drop under the lock (HD-0701)."
+  },
+  "3.6-frame": {
+   "status": "open",
+   "reason": "No frame obligation per statement shape for the ^BM25Idx writers (the model frames by construction only).",
+   "evidence": [],
+   "remaining": "Frame lemmas: Build/Insert/Delete/Upgrade/Drop touch only ^BM25Idx(name) and the stopword node."
+  },
+  "3.6-keys": {
+   "status": "failed",
+   "reason": "^BM25Idx is keyed by index name alone: the graph is a config value an Insert-created index lacks (F-0705), and the stopword list shares the index key space (F-0706, F-C0701), all live.",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-07-f0705-f0707"
+    },
+    {
+     "kind": "live",
+     "ref": "b-07-f0706"
+    }
+   ],
+   "remaining": "Graph-recorded or graph-keyed indexes; reserved or separate stopword root."
+  },
+  "3.6-fk": {
+   "status": "not-applicable",
+   "reason": "Module 07 writes no SQL row: every journaled write of its writers is in ^BM25Idx (b-07-fp-writers footprint; BM25Index.cls has no INSERT/UPDATE/DELETE), and its SQL is read-only (kg_TXT, kg_RRF_FUSE, TextSearchEngine). No foreign key is involved.",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-07-fp-writers"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/BM25Index.cls:97-591"
+    }
+   ],
+   "remaining": ""
+  },
+  "3.7-trace-replay": {
+   "status": "open",
+   "reason": "Journal traces of the writers exist (b-07-fp-writers, b-07-f0701-race) but are not replayed through the bm25 machine.",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-07-fp-writers"
+    },
+    {
+     "kind": "live",
+     "ref": "b-07-f0701-race"
+    }
+   ],
+   "remaining": "Replay journal records as bm25 machine steps."
+  },
+  "3.7-lock-log": {
+   "status": "failed",
+   "reason": "Journal vs lock plan: Insert/Delete each one transaction under the lock (match); Build 106/106 and 30008/30008 records outside any transaction and with no lock while a concurrent Insert committed (mismatch with ADR-0007).",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "b-07-fp-writers"
+    },
+    {
+     "kind": "live",
+     "ref": "b-07-f0701-race"
+    }
+   ],
+   "remaining": "Fix F-0701 and rerun."
+  }
+ },
+ "storage_order": {
+  "input": "$RUN_DIR/checks/storage-order.json (prefix without ORDER BY scanner)",
+  "sites_in_module_07": [
+   {
+    "file": "iris_vector_graph/_engine/vector.py",
+    "line": 1042,
+    "kind": "candidate",
+    "sql": "SELECT TOP {} d.id, 1.0 AS score FROM {} d WHERE {} AND {}",
+    "disposition": "F-C0703",
+    "reason": "kg_TXT LIKE fallback: TOP k with no ORDER BY (vector.py:1041-1046); every score 1.0, so the answer set and its ranks are the scan's. The path that ran on AUDITB (b-07-f0709)."
+   },
+   {
+    "file": "iris_vector_graph/_engine/vector.py",
+    "line": 1042,
+    "kind": "candidate",
+    "sql": "SELECT TOP",
+    "disposition": "F-C0703",
+    "reason": "kg_TXT LIKE fallback: TOP k with no ORDER BY (vector.py:1041-1046); every score 1.0, so the answer set and its ranks are the scan's. The path that ran on AUDITB (b-07-f0709)."
+   },
+   {
+    "file": "iris_vector_graph/_engine/vector.py",
+    "line": 979,
+    "kind": "candidate",
+    "sql": "SELECT TOP ? d.id,",
+    "disposition": "F-C0703",
+    "reason": "kg_TXT iFind path with min_confidence: ORDER BY score DESC only (vector.py:984); score is an occurrence count that ties."
+   },
+   {
+    "file": "iris_vector_graph/_engine/vector.py",
+    "line": 998,
+    "kind": "candidate",
+    "sql": "SELECT TOP ? d.id,",
+    "disposition": "F-C0703",
+    "reason": "kg_TXT iFind path: ORDER BY score DESC only (vector.py:1002); ties cut in scan order."
+   },
+   {
+    "file": "iris_vector_graph/schema.py",
+    "line": 2484,
+    "kind": "candidate",
+    "sql": ".kg_TXT( IN q VARCHAR(4000), IN k INT, -- Minimum number of occurrences of the search string in the document, matching the -- score below. It used to be documen",
+    "disposition": "F-C0703",
+    "reason": "generated kg_TXT procedure: ORDER BY score DESC only (schema.py:2484-2520); ties cut in scan order, and kg_RRF_FUSE ranks them."
+   },
+   {
+    "file": "iris_vector_graph/text_search.py",
+    "line": 212,
+    "kind": "candidate",
+    "sql": "SELECT TOP {} p.s as entity_id, p.val as matched_text, p.key as property_type, l.label as entity_type, CASE WHEN UPPER(p.val) LIKE UPPER(?) THEN 1.0 WHEN UPPER(",
+    "disposition": "F-C0703",
+    "reason": "search_with_context: ORDER BY relevance_score DESC, LENGTH(p.val) ASC (text_search.py:233); tied rows (and the label LEFT JOIN's duplicates) are cut in scan order."
+   },
+   {
+    "file": "iris_vector_graph/text_search.py",
+    "line": 48,
+    "kind": "candidate",
+    "sql": "SELECT TOP",
+    "disposition": "F-0711",
+    "reason": "search_documents: has ORDER BY relevance_score DESC (text_search.py:54), which ties; the statement cannot run at the pin (%FIND(text, ?) is not IRIS syntax and `docs` is unqualified: SQLCODE -30 live, b-07-f0711), so the tie dependency is moot until F-0711 is fixed; then F-C0703 applies."
+   },
+   {
+    "file": "iris_vector_graph/text_search.py",
+    "line": 77,
+    "kind": "candidate",
+    "sql": "SELECT TOP",
+    "disposition": "false-positive",
+    "reason": "_fallback_text_search: ORDER BY id (text_search.py:82); rows tied on id differ only in graph and project the same (id, 1.0), so the answer does not depend on scan order (the statement itself fails at the pin: F-0711)."
+   },
+   {
+    "file": "iris_vector_graph/text_search.py",
+    "line": 111,
+    "kind": "candidate",
+    "sql": "SELECT TOP",
+    "disposition": "F-C0703",
+    "reason": "search_entity_qualifiers: ORDER BY text_match_score DESC, jt.confidence DESC (text_search.py:123); edges tied on both keys are cut at TOP k in scan order."
+   },
+   {
+    "file": "iris_vector_graph/text_search.py",
+    "line": 165,
+    "kind": "candidate",
+    "sql": "SELECT TOP",
+    "disposition": "F-C0703",
+    "reason": "extract_entity_names: ORDER BY match_score DESC, LENGTH(p.val) ASC (text_search.py:177); tied names are cut in scan order."
+   },
+   {
+    "file": "iris_vector_graph/text_search.py",
+    "line": 212,
+    "kind": "candidate",
+    "sql": "SELECT TOP",
+    "disposition": "F-C0703",
+    "reason": "search_with_context: ORDER BY relevance_score DESC, LENGTH(p.val) ASC (text_search.py:233); tied rows (and the label LEFT JOIN's duplicates) are cut in scan order."
+   }
+  ],
+  "reviewed_sites_not_flagged": [
+   {
+    "file": "iris_vector_graph/schema.py",
+    "line": 2557,
+    "sql": "ROW_NUMBER() OVER (ORDER BY score DESC) ... kg_KNN_VEC / kg_TXT legs of kg_RRF_FUSE; final ORDER BY rrf DESC",
+    "disposition": "F-C0703",
+    "reason": "not flagged (it has ORDER BY), but the rank of tied leg scores and the TOP :k cut on tied rrf follow scan order (schema.py:2557-2578)."
+   },
+   {
+    "file": "iris_vector_graph/_engine/vector.py",
+    "line": 1438,
+    "sql": "(Python) fused = [...] over set(vec_rank) | set(txt_rank); fused.sort(key=lambda x: -x[1]); fused[:k]",
+    "disposition": "F-C0703",
+    "reason": "no SQL prefix, but ties in rrf keep Python set iteration order (string hash, per process) before the cut (vector.py:1438-1452)."
+   },
+   {
+    "file": "iris_src/src/Graph/KG/BM25Index.cls",
+    "line": 300,
+    "sql": "(ObjectScript) ^||bm25sorted walked backwards by score*10^12 then docId",
+    "disposition": "unique-key",
+    "reason": "SearchCore sorts by (score subscript, docId subscript); docId is the unique document key within the index, so ties are broken by collation, not storage order (BM25Index.cls:300-374, P-0705)."
+   }
+  ],
+  "adjacent_sites_not_owned": [
+   {
+    "file": "iris_vector_graph/_engine/vector.py",
+    "line": 377,
+    "kind": "candidate",
+    "sql": "SELECT TOP",
+    "disposition": "not-owned",
+    "owner": "iris_vector_graph/_engine/vector.py:333-503 edge_vector_search (module 06)"
+   },
+   {
+    "file": "iris_vector_graph/_engine/vector.py",
+    "line": 1265,
+    "kind": "candidate",
+    "sql": "SELECT TOP",
+    "disposition": "not-owned",
+    "owner": "iris_vector_graph/_engine/vector.py:1169-1287 vector_search (module 06)"
+   },
+   {
+    "file": "iris_vector_graph/_engine/vector.py",
+    "line": 60,
+    "kind": "candidate",
+    "sql": "SELECT TOP 1 emb FROM {} WHERE emb IS NOT NULL",
+    "disposition": "not-owned",
+    "owner": "iris_vector_graph/_engine/vector.py:56-84 VectorMixin._detect_stored_vector_dtype (module 06)"
+   },
+   {
+    "file": "iris_vector_graph/_engine/vector.py",
+    "line": 435,
+    "kind": "candidate",
+    "sql": "SELECT TOP 1 emb FROM {} WHERE {}",
+    "disposition": "not-owned",
+    "owner": "iris_vector_graph/_engine/vector.py:333-503 edge_vector_search (module 06)"
+   },
+   {
+    "file": "iris_vector_graph/_engine/vector.py",
+    "line": 661,
+    "kind": "candidate",
+    "sql": "SELECT TOP ? node_id FROM",
+    "disposition": "not-owned",
+    "owner": "iris_vector_graph/_engine/vector.py:620-725 measure_route_recall (module 06)"
+   },
+   {
+    "file": "iris_vector_graph/_engine/vector.py",
+    "line": 819,
+    "kind": "candidate",
+    "sql": "SELECT TOP",
+    "disposition": "not-owned",
+    "owner": "iris_vector_graph/_engine/vector.py:748-916 search_nodes_by_vector (module 06)"
+   },
+   {
+    "file": "iris_vector_graph/_engine/vector.py",
+    "line": 829,
+    "kind": "candidate",
+    "sql": "SELECT TOP",
+    "disposition": "not-owned",
+    "owner": "iris_vector_graph/_engine/vector.py:748-916 search_nodes_by_vector (module 06)"
+   },
+   {
+    "file": "iris_vector_graph/_engine/vector.py",
+    "line": 1146,
+    "kind": "candidate",
+    "sql": "SELECT TOP 1 {} FROM {}",
+    "disposition": "not-owned",
+    "owner": "iris_vector_graph/_engine/vector.py:1122-1168 validate_vector_table (module 06)"
+   },
+   {
+    "file": "iris_vector_graph/_engine/vector.py",
+    "line": 60,
+    "kind": "candidate",
+    "sql": "SELECT TOP 1 emb FROM",
+    "disposition": "not-owned",
+    "owner": "iris_vector_graph/_engine/vector.py:56-84 VectorMixin._detect_stored_vector_dtype (module 06)"
+   },
+   {
+    "file": "iris_vector_graph/_engine/vector.py",
+    "line": 435,
+    "kind": "candidate",
+    "sql": "SELECT TOP 1 emb FROM",
+    "disposition": "not-owned",
+    "owner": "iris_vector_graph/_engine/vector.py:333-503 edge_vector_search (module 06)"
+   },
+   {
+    "file": "iris_vector_graph/_engine/vector.py",
+    "line": 1146,
+    "kind": "candidate",
+    "sql": "SELECT TOP 1",
+    "disposition": "not-owned",
+    "owner": "iris_vector_graph/_engine/vector.py:1122-1168 validate_vector_table (module 06)"
+   },
+   {
+    "file": "iris_vector_graph/_engine/vector.py",
+    "line": 72,
+    "kind": "candidate",
+    "sql": "SELECT VECTOR_COSINE(emb, TO_VECTOR(?, {})) FROM {} WHERE emb IS NOT NULL LIMIT 1",
+    "disposition": "not-owned",
+    "owner": "iris_vector_graph/_engine/vector.py:56-84 VectorMixin._detect_stored_vector_dtype (module 06)"
+   },
+   {
+    "file": "iris_vector_graph/_engine/vector.py",
+    "line": 569,
+    "kind": "candidate",
+    "sql": "SELECT TOP ? n.node_id, VECTOR_COSINE(n.emb, TO_VECTOR(?,",
+    "disposition": "not-owned",
+    "owner": "iris_vector_graph/_engine/vector.py:504-619 kg_KNN_VEC (module 06)"
+   },
+   {
+    "file": "iris_vector_graph/_engine/vector.py",
+    "line": 578,
+    "kind": "candidate",
+    "sql": "SELECT TOP ? n.node_id, VECTOR_COSINE(n.emb, TO_VECTOR(?,",
+    "disposition": "not-owned",
+    "owner": "iris_vector_graph/_engine/vector.py:504-619 kg_KNN_VEC (module 06)"
+   },
+   {
+    "file": "iris_vector_graph/_engine/vector.py",
+    "line": 587,
+    "kind": "candidate",
+    "sql": "SELECT TOP ? n.node_id, VECTOR_COSINE(n.emb, TO_VECTOR(?,",
+    "disposition": "not-owned",
+    "owner": "iris_vector_graph/_engine/vector.py:504-619 kg_KNN_VEC (module 06)"
+   },
+   {
+    "file": "iris_vector_graph/_engine/vector.py",
+    "line": 595,
+    "kind": "candidate",
+    "sql": "SELECT TOP ? n.node_id, VECTOR_COSINE(n.emb, TO_VECTOR(?,",
+    "disposition": "not-owned",
+    "owner": "iris_vector_graph/_engine/vector.py:504-619 kg_KNN_VEC (module 06)"
+   }
+  ],
+  "counts": {
+   "flagged_in_module_07": 11,
+   "by_disposition": {
+    "F-C0703": 11,
+    "F-0711": 1,
+    "false-positive": 1,
+    "unique-key": 1
+   },
+   "not_owned": 16
+  }
+ },
+ "invariant_writesets": [
+  {
+   "invariant": "TXT-I1/TXT-I2 (df, N, totalLen match the stored documents)",
+   "reads": [
+    "^BM25Idx(name,cfg N/totalLen)",
+    "^BM25Idx(name,df/tf/doc/len)"
+   ],
+   "plans": [
+    {
+     "plan": "cls:Graph.KG.BM25Index.Build",
+     "writes": [
+      "^BM25Idx(name)"
+     ],
+     "discharge": "finding F-0701 (live b-07-f0701-race; mc m07-bm25-as-built-I2); reviewed design mc m07-bm25-reviewed"
+    },
+    {
+     "plan": "cls:Graph.KG.BM25Index.Insert",
+     "writes": [
+      "^BM25Idx(name)"
+     ],
+     "discharge": "guard: lock + transaction iris_src/src/Graph/KG/BM25Index.cls:456-491 (journal b-07-fp-writers); mc m07-bm25-reviewed"
+    },
+    {
+     "plan": "cls:Graph.KG.BM25Index.Delete",
+     "writes": [
+      "^BM25Idx(name)"
+     ],
+     "discharge": "guard: lock + transaction iris_src/src/Graph/KG/BM25Index.cls:500-512; mc m07-bm25-reviewed"
+    },
+    {
+     "plan": "cls:Graph.KG.BM25Index.Upgrade",
+     "writes": [
+      "^BM25Idx(name)"
+     ],
+     "discharge": "guard: flag + lock iris_src/src/Graph/KG/BM25Index.cls:533-579 (no transaction; recompute from postings); mc m07-bm25-reviewed"
+    },
+    {
+     "plan": "cls:Graph.KG.BM25Index.Drop",
+     "writes": [
+      "^BM25Idx(name)"
+     ],
+     "discharge": "finding F-0701 (mc m07-bm25-as-built-settle: Drop during Build)"
+    }
+   ]
+  },
+  {
+   "invariant": "TXT-I3 (schema 2 holds no idf)",
+   "reads": [
+    "^BM25Idx(name,cfg schema)",
+    "^BM25Idx(name,idf)"
+   ],
+   "plans": [
+    {
+     "plan": "cls:Graph.KG.BM25Index.Upgrade",
+     "writes": [
+      "schema",
+      "idf"
+     ],
+     "discharge": "mc m07-bm25-reviewed (atomic body); inspected :569-572 (flip then kill idf: a reader can see schema 2 with idf briefly)"
+    },
+    {
+     "plan": "cls:Graph.KG.BM25Index.Build",
+     "writes": [
+      "^BM25Idx(name)"
+     ],
+     "discharge": "inspected iris_src/src/Graph/KG/BM25Index.cls:99 (Kill removes idf)"
+    }
+   ]
+  },
+  {
+   "invariant": "TXT-I5 (two writers never change one index at once)",
+   "reads": [
+    "write lock",
+    "^BM25Idx(name)"
+   ],
+   "plans": [
+    {
+     "plan": "Build",
+     "writes": [
+      "^BM25Idx(name)"
+     ],
+     "discharge": "finding F-0701"
+    },
+    {
+     "plan": "Drop",
+     "writes": [
+      "^BM25Idx(name)"
+     ],
+     "discharge": "finding F-0701"
+    },
+    {
+     "plan": "Insert/Delete/Upgrade",
+     "writes": [
+      "^BM25Idx(name)"
+     ],
+     "discharge": "guard iris_src/src/Graph/KG/BM25Index.cls:403-410"
+    }
+   ]
+  },
+  {
+   "invariant": "TXT-I6 (an index matches its graph's text or says it is stale)",
+   "reads": [
+    "^BM25Idx(name)",
+    "Graph_KG.nodes",
+    "Graph_KG.rdf_props"
+   ],
+   "plans": [
+    {
+     "plan": "engine node/property writers, delete_node, Cypher writes (modules 03/08)",
+     "writes": [
+      "nodes",
+      "rdf_props"
+     ],
+     "discharge": "finding F-0703 (live), intent-undecided"
+    }
+   ]
+  },
+  {
+   "invariant": "TXT-I8 (erasing a graph removes its BM25 content)",
+   "reads": [
+    "^BM25Idx(name) with cfg graph = g"
+   ],
+   "plans": [
+    {
+     "plan": "eraser.erase_graph / erase_nodes (module 12)",
+     "writes": [
+      "content tables",
+      "^KG",
+      "^NKG",
+      "docs"
+     ],
+     "discharge": "finding F-0702 (live)"
+    }
+   ]
+  },
+  {
+   "invariant": "TXT-B8.3 / TXT-I7 (graph scope of an index)",
+   "reads": [
+    "^BM25Idx(name,cfg graph)"
+   ],
+   "plans": [
+    {
+     "plan": "cls:Graph.KG.BM25Index.Insert (creates a header with no graph)",
+     "writes": [
+      "^BM25Idx(name,cfg)"
+     ],
+     "discharge": "finding F-0705 (live)"
+    },
+    {
+     "plan": "cls:Graph.KG.BM25Index.Build",
+     "writes": [
+      "^BM25Idx(name,cfg graph)"
+     ],
+     "discharge": "inspected iris_src/src/Graph/KG/BM25Index.cls:168"
+    }
+   ]
+  },
+  {
+   "invariant": "TXT-D1 stopword list is the 77 words (^BM25Idx('__stop__'))",
+   "reads": [
+    "^BM25Idx('__stop__')"
+   ],
+   "plans": [
+    {
+     "plan": "Build/Insert/Drop with name '__stop__'",
+     "writes": [
+      "^BM25Idx('__stop__')"
+     ],
+     "discharge": "finding F-0706, F-C0701 (live)"
+    },
+    {
+     "plan": "InitStopwords (any Tokenize)",
+     "writes": [
+      "^BM25Idx('__stop__',word)"
+     ],
+     "discharge": "journal b-07-fp-writers (77 SETs, idempotent)"
+    }
+   ]
+  }
+ ],
+ "env_features": [
+  {
+   "feature": "LOCK +name:timeout (incremental exclusive lock with timeout, $TEST)",
+   "used_for": "BM25 write lock",
+   "source": "iris_src/src/Graph/KG/BM25Index.cls:403-410, :534-539"
+  },
+  {
+   "feature": "LOCK released when the owning process ends",
+   "used_for": "reviewed-design crash safety (premise of the model)",
+   "source": "iris_src/src/Graph/KG/BM25Index.cls:403-410"
+  },
+  {
+   "feature": "TSTART/TCOMMIT nesting inside a caller's transaction; TROLLBACK with no argument ends every level",
+   "used_for": "Insert/Delete atomicity; F-C0702",
+   "source": "iris_src/src/Graph/KG/BM25Index.cls:460-490, :504-511"
+  },
+  {
+   "feature": "$TLEVEL",
+   "used_for": "Insert/Delete error path; SQL SELECT $TLEVEL probe",
+   "source": "iris_src/src/Graph/KG/BM25Index.cls:487, :508; iris_vector_graph/_write_txn.py:64-85"
+  },
+  {
+   "feature": "TROLLBACK undoes Set/Kill but not $Increment (P-0702)",
+   "used_for": "plain Set counters in Insert/Delete",
+   "source": "iris_src/src/Graph/KG/BM25Index.cls:24-26"
+  },
+  {
+   "feature": "Global Kill of a subtree, Set/$Get/$Data/$Order on globals, no transaction (auto-commit per node)",
+   "used_for": "Build, Drop, Upgrade",
+   "source": "iris_src/src/Graph/KG/BM25Index.cls:99, :542-572, :587-591"
+  },
+  {
+   "feature": "Visibility of other processes' uncommitted global writes (no read isolation for globals)",
+   "used_for": "Search/Info during Build or Insert (reader saw N=1 mid-build)",
+   "source": "iris_src/src/Graph/KG/BM25Index.cls:236-374"
+  },
+  {
+   "feature": "Global subscript length limit (<SUBSCRIPT> error)",
+   "used_for": "document ids and tokens as subscripts",
+   "source": "iris_src/src/Graph/KG/BM25Index.cls:194, :418, :474"
+  },
+  {
+   "feature": "Process-private globals ^|| (P-0704)",
+   "used_for": "Search scores, sort, skipped terms",
+   "source": "iris_src/src/Graph/KG/BM25Index.cls:223-233, :261"
+  },
+  {
+   "feature": "Canonical numeric subscript collation (P-0705)",
+   "used_for": "^||bm25sorted descending walk",
+   "source": "iris_src/src/Graph/KG/BM25Index.cls:300-374"
+  },
+  {
+   "feature": "%iFind.Utils.Analyze(text,'en',1) tokenizer (P-0701)",
+   "used_for": "Tokenize",
+   "source": "iris_src/src/Graph/KG/BM25Index.cls:60-64"
+  },
+  {
+   "feature": "iFind index on docs and %ID %FIND search_index(...) predicate (P-0707)",
+   "used_for": "kg_TXT engine and SQL procedure",
+   "source": "iris_vector_graph/schema.py:2485-2503; iris_vector_graph/_engine/vector.py:917-1054"
+  },
+  {
+   "feature": "%SQL.Statement dynamic SQL at default isolation (read uncommitted) with empty parameter bound as NULL (P-0706)",
+   "used_for": "Build's node/property read",
+   "source": "iris_src/src/Graph/KG/BM25Index.cls:123-131"
+  },
+  {
+   "feature": "SQL procedures/functions (CREATE OR REPLACE PROCEDURE ... LANGUAGE SQL; [SqlProc] class methods), JSON_TABLE over a function result",
+   "used_for": "kg_TXT, kg_RRF_FUSE, kg_BM25, ivg.bm25.search",
+   "source": "iris_vector_graph/schema.py:2485-2560; iris_src/src/Graph/KG/SqlProcs.cls:131-135; iris_vector_graph/cypher/translator.py:3168-3190"
+  },
+  {
+   "feature": "SQL privilege check ($SYSTEM.SQL.Security.CheckPrivilege via Graph.KG.SqlPrivilege)",
+   "used_for": "kg_BM25 RequireSelect on rdf_props",
+   "source": "iris_src/src/Graph/KG/SqlProcs.cls:131-135"
+  },
+  {
+   "feature": "Embedded Python (Language = python) and iris.gref global walk",
+   "used_for": "PyOps.HybridSearch; engine index registry in embedded mode",
+   "source": "iris_src/src/Graph/KG/PyOps.cls:370-421; iris_vector_graph/_engine/vector.py:84-104"
+  },
+  {
+   "feature": "Native API classMethodValue sharing the DBAPI connection's server process",
+   "used_for": "engine bm25_* calls run in the caller's process and transaction",
+   "source": "iris_vector_graph/_engine/vector.py:1749-1880"
+  },
+  {
+   "feature": "SQL START TRANSACTION/COMMIT/ROLLBACK end every level (driver autocommit)",
+   "used_for": "caller transactions around BM25 calls (F-C0702 test)",
+   "source": "iris_vector_graph/_write_txn.py:15-18"
+  },
+  {
+   "feature": "Journaling of the database holding ^BM25Idx",
+   "used_for": "audit oracle; crash recovery of transactions",
+   "source": "experiment/playbook-completion/traces/journal.py"
+  },
+  {
+   "feature": "%CSP.REST routing",
+   "used_for": "POST /hybridSearch",
+   "source": "iris_src/src/Graph/KG/Service.cls:7-9, :286-302"
+  }
+ ],
+ "counts": {
+  "entry_points": 48,
+  "omissions": 7,
+  "cells": 53,
+  "cells_without_entry_point": 0,
+  "entry_points_in_no_cell": 12,
+  "footprints": 48,
+  "footprints_journal_validated": 15,
+  "footprint_store_mismatches": 0,
+  "model_checks": 18,
+  "model_checks_met": 18,
+  "model_checks_by_design": {
+   "positive": {
+    "met": 4,
+    "not_met": 0
+   },
+   "as-built": {
+    "met": 9,
+    "not_met": 0
+   },
+   "reviewed": {
+    "met": 2,
+    "not_met": 0
+   },
+   "control": {
+    "met": 3,
+    "not_met": 0
+   }
+  },
+  "original_findings": 11,
+  "findings_by_disposition": {
+   "reproduced-live": 9,
+   "reproduced-test": 2
+  },
+  "findings_by_outcome": {
+   "product-defect": 10,
+   "intent-undecided": 1
+  },
+  "new_findings": 3,
+  "env_features": 20,
+  "storage_order": {
+   "flagged_in_module_07": 11,
+   "by_disposition": {
+    "F-C0703": 11,
+    "F-0711": 1,
+    "false-positive": 1,
+    "unique-key": 1
+   },
+   "not_owned": 16
+  },
+  "gates_by_id_status": {
+   "closed": 7,
+   "failed": 11,
+   "not-applicable": 1,
+   "open": 19
+  }
+ },
+ "registered_runs": [
+  "b-07-fp-writers",
+  "b-07-f0701-race",
+  "b-07-f0704",
+  "b-07-f0702-f0703",
+  "b-07-f0705-f0707",
+  "b-07-f0706",
+  "b-07-f0709",
+  "b-07-f0711",
+  "b-07-probe-fusion",
+  "b-07-unit",
+  "b-07-fc0702-nested-rollback"
+ ]
+}

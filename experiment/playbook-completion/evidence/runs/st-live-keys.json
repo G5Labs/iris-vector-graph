@@ -1,0 +1,15 @@
+{
+  "command": "locks.sh iris python experiment/playbook-completion/structural/capkeys/keys.py $RUN_DIR/structural/capkeys/keys.json",
+  "experiment_head": "d77620a9333a7eb5b62ca9b8c92144a6aaf74d2b",
+  "id": "st-live-keys",
+  "kind": "live",
+  "lane": "structural",
+  "log": "$RUN_DIR/structural/capkeys/keys.json",
+  "log_bytes": 32432,
+  "log_sha256": "73933cc3a9a9793584fe10f4f81d59236eefc01c16c69794ffa178b11fca568b",
+  "observes": "AUDITD, key oracle (K1 no duplicate declared key by %IGNOREINDEX * full scans of nodes, rdf_labels, rdf_props, rdf_edges, kg_NodeEmbeddings, rdf_reifications; K2 ^KG out/in and label index equal the rows; K3 edge ids distinct) after 13 cases: holds for 01 catalog (all 24 declared PK/UNIQUE/FK constraints present with their columns; 12 extra are IRIS idkeys and class-defined keys), 03 sequential duplicates (create_node/create_edge answer False the second time; store_node/store_edge, bulk_create_nodes/edges duplicates in a batch, delete then re-create), 03 racing create_node x4 (one True, three False), 04 four writers creating/deleting one triple 15 times each and multigraph parallel edges, 05 temporal duplicates and 4 racing inserts (tout = tin), 08 racing MERGE/CREATE (one succeeds, the others raise -119/-110/-121; no duplicate), 15 reifier ids (a second edge's reify with a used reifier_id refused -119), 17 store adapter duplicates and 4 racing write_nodes, 18 merge and replace restores twice. Violated: BulkLoader.load_nodes with one id twice in a batch writes 2 node rows, 2 label rows and duplicate props for (graph,id) (get_node answers labels ['A','A']); a second load_nodes/load_edges with skip_existing=False duplicates node, label, prop and edge keys; two concurrent loaders of the same 50 ids each write 50 nodes (duplicates); rebuild_all_indices reports True for all four classes afterwards. Also seen: 4 racing create_edge on a new edge whose target did not exist: two raised -121, two answered False, and no edge row exists (followed up in race_edge.py)",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T11:50:51+00:00",
+  "result": "fail"
+}

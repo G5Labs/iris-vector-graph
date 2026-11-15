@@ -1,0 +1,15 @@
+{
+  "command": "bash experiment/playbook-completion/tools/locks.sh iris python experiment/playbook-completion/product-gates/fc_controls.py s17 $RUN_DIR/product-gates/fc-controls",
+  "experiment_head": "e7cf1457e9d16c76fa772c2deeb94d31296c62b7",
+  "id": "pg-fc-s17-control",
+  "kind": "control",
+  "lane": "product-gates",
+  "log": "$RUN_DIR/product-gates/fc-controls/s17.json",
+  "log_bytes": 1274,
+  "log_sha256": "2f68c2b5c3d92f404c68c4062b3b6b2fe6e7162702d4bb8d36d74df80254297e",
+  "observes": "Negative control for S17 (max_ops refusal, live-maxops-60000-refused), AUDITIA, default max_ops 50000 (Ledger.cls:493-497 refuses count > max). Oracle unchanged: refused with ChangesetTooLargeError, nothing of it applied, head unchanged. Refusal precondition present (50,001 create_node operations): refused in 0.14 s ('changeset has 50001 operations; max_ops is 50000'), 0 rows, head 1 -> 1, rej_size_limit +1: passes. Precondition absent (50,000 operations, the limit itself): committed as seq 2 in 6.6 s, 50,000 rows, head 1 -> 2: flagged (3 violations). Control passes and pins the boundary at exactly 50,000.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T12:54:49+00:00",
+  "result": "pass"
+}

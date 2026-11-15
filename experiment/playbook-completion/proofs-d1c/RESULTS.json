@@ -1,0 +1,2639 @@
+{
+  "crate": "experiment/playbook-completion/proofs-d1c (ivg-d1c-proofs)",
+  "generated_utc": "2026-11-14T09:07:40+00:00",
+  "verus": "0.2026.10.04.426d8b0",
+  "actors_rev": "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877",
+  "sources_sha256": "2a16c6b076326773b6583eee8e4d3d8082a91091253fb4ff63c4716fcd02105f",
+  "statement": "Every result is about the models (L1 contracts and the reviewed L2 machines); none is a property of the product at pin 3eaa79cf.",
+  "baseline": {
+    "tag": "baseline",
+    "features": "",
+    "rc": 0,
+    "timed_out": false,
+    "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+    "log": "$RUN_DIR/proofs-d1c/baseline.log",
+    "json": "$RUN_DIR/proofs-d1c/baseline.json",
+    "wall_seconds": 2.41,
+    "max_rss_kb": 466360,
+    "error_locations": [],
+    "resource_limit": false,
+    "verified": 111,
+    "errors": 0,
+    "success": true,
+    "verus_total_ms": 1989,
+    "smt_run_ms": 1333,
+    "rlimit_total": 3429692,
+    "modules": {
+      "edge_l2": {
+        "ms": 377,
+        "rlimit": 1033337
+      },
+      "witness_edge": {
+        "ms": 196,
+        "rlimit": 554573
+      },
+      "stmt_l2": {
+        "ms": 179,
+        "rlimit": 447131
+      },
+      "edge_l1": {
+        "ms": 136,
+        "rlimit": 353241
+      },
+      "edge_runs": {
+        "ms": 100,
+        "rlimit": 233136
+      },
+      "witness_tagg": {
+        "ms": 42,
+        "rlimit": 153815
+      },
+      "tagg_l2": {
+        "ms": 54,
+        "rlimit": 125565
+      },
+      "stmt_l1": {
+        "ms": 51,
+        "rlimit": 121640
+      },
+      "witness_stmt": {
+        "ms": 50,
+        "rlimit": 100083
+      },
+      "bulk_l2": {
+        "ms": 43,
+        "rlimit": 98107
+      },
+      "tagg_l1": {
+        "ms": 35,
+        "rlimit": 80342
+      },
+      "witness_bulk": {
+        "ms": 30,
+        "rlimit": 63977
+      },
+      "stmt_runs": {
+        "ms": 12,
+        "rlimit": 23885
+      },
+      "bulk_runs": {
+        "ms": 10,
+        "rlimit": 21816
+      },
+      "tagg_runs": {
+        "ms": 7,
+        "rlimit": 13599
+      },
+      "bulk_l1": {
+        "ms": 2,
+        "rlimit": 5445
+      }
+    },
+    "top_functions": [
+      {
+        "function": "witness_edge::witness_edge",
+        "ms": 196,
+        "rlimit": 554573,
+        "success": true
+      },
+      {
+        "function": "witness_tagg::witness_tagg",
+        "ms": 42,
+        "rlimit": 153815,
+        "success": true
+      },
+      {
+        "function": "edge_l2::lemma_tdelete",
+        "ms": 38,
+        "rlimit": 123207,
+        "success": true
+      },
+      {
+        "function": "edge_l2::lemma_sstore",
+        "ms": 49,
+        "rlimit": 105513,
+        "success": true
+      },
+      {
+        "function": "edge_l2::lemma_ddelete",
+        "ms": 49,
+        "rlimit": 100818,
+        "success": true
+      },
+      {
+        "function": "witness_stmt::witness_stmt",
+        "ms": 50,
+        "rlimit": 100083,
+        "success": true
+      },
+      {
+        "function": "edge_l2::lemma_enodes",
+        "ms": 31,
+        "rlimit": 90882,
+        "success": true
+      },
+      {
+        "function": "edge_l2::lemma_cinsert",
+        "ms": 37,
+        "rlimit": 87923,
+        "success": true
+      },
+      {
+        "function": "edge_l2::lemma_tinsert",
+        "ms": 31,
+        "rlimit": 81559,
+        "success": true
+      },
+      {
+        "function": "stmt_l1::lemma_l1_safe",
+        "ms": 32,
+        "rlimit": 81451,
+        "success": true
+      }
+    ],
+    "all_functions": [
+      {
+        "function": "bulk_l1::BulkL1::init_safe",
+        "ms": 0,
+        "rlimit": 1402,
+        "success": true
+      },
+      {
+        "function": "bulk_l1::BulkL1::step_safe",
+        "ms": 0,
+        "rlimit": 1606,
+        "success": true
+      },
+      {
+        "function": "bulk_l1::theorem_bulk_all_or_nothing",
+        "ms": 1,
+        "rlimit": 2437,
+        "success": true
+      },
+      {
+        "function": "bulk_l2::BulkL2::init_refines",
+        "ms": 1,
+        "rlimit": 3172,
+        "success": true
+      },
+      {
+        "function": "bulk_l2::BulkL2::init_safe",
+        "ms": 1,
+        "rlimit": 2685,
+        "success": true
+      },
+      {
+        "function": "bulk_l2::BulkL2::step_refines",
+        "ms": 2,
+        "rlimit": 5814,
+        "success": true
+      },
+      {
+        "function": "bulk_l2::BulkL2::step_safe",
+        "ms": 1,
+        "rlimit": 5035,
+        "success": true
+      },
+      {
+        "function": "bulk_l2::lemma_chunkok",
+        "ms": 6,
+        "rlimit": 12793,
+        "success": true
+      },
+      {
+        "function": "bulk_l2::lemma_raw_inv_at",
+        "ms": 5,
+        "rlimit": 12090,
+        "success": true
+      },
+      {
+        "function": "bulk_l2::lemma_step",
+        "ms": 10,
+        "rlimit": 22279,
+        "success": true
+      },
+      {
+        "function": "bulk_l2::theorem_no_partial_batch_visible",
+        "ms": 3,
+        "rlimit": 5905,
+        "success": true
+      },
+      {
+        "function": "bulk_l2::theorem_raw_executions_refine",
+        "ms": 11,
+        "rlimit": 28334,
+        "success": true
+      },
+      {
+        "function": "bulk_runs::lemma_b_steps",
+        "ms": 10,
+        "rlimit": 21816,
+        "success": true
+      },
+      {
+        "function": "edge_l1::EdgeL1::init_safe",
+        "ms": 2,
+        "rlimit": 5457,
+        "success": true
+      },
+      {
+        "function": "edge_l1::EdgeL1::step_safe",
+        "ms": 4,
+        "rlimit": 9004,
+        "success": true
+      },
+      {
+        "function": "edge_l1::lemma_assert_safe",
+        "ms": 7,
+        "rlimit": 17204,
+        "success": true
+      },
+      {
+        "function": "edge_l1::lemma_erase_safe",
+        "ms": 15,
+        "rlimit": 34676,
+        "success": true
+      },
+      {
+        "function": "edge_l1::lemma_has_of",
+        "ms": 1,
+        "rlimit": 2930,
+        "success": true
+      },
+      {
+        "function": "edge_l1::lemma_has_sub",
+        "ms": 2,
+        "rlimit": 5364,
+        "success": true
+      },
+      {
+        "function": "edge_l1::lemma_keep_safe",
+        "ms": 7,
+        "rlimit": 16419,
+        "success": true
+      },
+      {
+        "function": "edge_l1::lemma_l1_safe",
+        "ms": 21,
+        "rlimit": 49989,
+        "success": true
+      },
+      {
+        "function": "edge_l1::lemma_retract_safe",
+        "ms": 18,
+        "rlimit": 44932,
+        "success": true
+      },
+      {
+        "function": "edge_l1::lemma_twrite_safe",
+        "ms": 19,
+        "rlimit": 44264,
+        "success": true
+      },
+      {
+        "function": "edge_l1::theorem_derived_edge_needs_time",
+        "ms": 1,
+        "rlimit": 4368,
+        "success": true
+      },
+      {
+        "function": "edge_l1::theorem_direct_delete_keeps_supported_edge",
+        "ms": 4,
+        "rlimit": 18121,
+        "success": true
+      },
+      {
+        "function": "edge_l1::theorem_explicit_write_owns_its_edge",
+        "ms": 6,
+        "rlimit": 22255,
+        "success": true
+      },
+      {
+        "function": "edge_l1::theorem_prefix_erase_leaves_nothing_of_the_prefix",
+        "ms": 7,
+        "rlimit": 24331,
+        "success": true
+      },
+      {
+        "function": "edge_l1::theorem_refused_temporal_write_writes_nothing",
+        "ms": 1,
+        "rlimit": 4654,
+        "success": true
+      },
+      {
+        "function": "edge_l1::theorem_temporal_implies_structural",
+        "ms": 1,
+        "rlimit": 4070,
+        "success": true
+      },
+      {
+        "function": "edge_l1::theorem_temporal_only_writes_nothing_structural",
+        "ms": 5,
+        "rlimit": 18932,
+        "success": true
+      },
+      {
+        "function": "edge_l1::theorem_temporal_side_keeps_explicit_edges",
+        "ms": 7,
+        "rlimit": 26271,
+        "success": true
+      },
+      {
+        "function": "edge_l2::EdgeL2::init_refines",
+        "ms": 3,
+        "rlimit": 8506,
+        "success": true
+      },
+      {
+        "function": "edge_l2::EdgeL2::init_safe",
+        "ms": 3,
+        "rlimit": 11721,
+        "success": true
+      },
+      {
+        "function": "edge_l2::EdgeL2::step_refines",
+        "ms": 4,
+        "rlimit": 16232,
+        "success": true
+      },
+      {
+        "function": "edge_l2::EdgeL2::step_safe",
+        "ms": 3,
+        "rlimit": 13647,
+        "success": true
+      },
+      {
+        "function": "edge_l2::lemma_cadopt",
+        "ms": 5,
+        "rlimit": 14160,
+        "success": true
+      },
+      {
+        "function": "edge_l2::lemma_cinsert",
+        "ms": 37,
+        "rlimit": 87923,
+        "success": true
+      },
+      {
+        "function": "edge_l2::lemma_createnode",
+        "ms": 17,
+        "rlimit": 38189,
+        "success": true
+      },
+      {
+        "function": "edge_l2::lemma_ddelete",
+        "ms": 49,
+        "rlimit": 100818,
+        "success": true
+      },
+      {
+        "function": "edge_l2::lemma_enodes",
+        "ms": 31,
+        "rlimit": 90882,
+        "success": true
+      },
+      {
+        "function": "edge_l2::lemma_purgeraw",
+        "ms": 22,
+        "rlimit": 77318,
+        "success": true
+      },
+      {
+        "function": "edge_l2::lemma_raw_inv_at",
+        "ms": 11,
+        "rlimit": 41036,
+        "success": true
+      },
+      {
+        "function": "edge_l2::lemma_row_ends",
+        "ms": 5,
+        "rlimit": 11625,
+        "success": true
+      },
+      {
+        "function": "edge_l2::lemma_sstore",
+        "ms": 49,
+        "rlimit": 105513,
+        "success": true
+      },
+      {
+        "function": "edge_l2::lemma_step",
+        "ms": 10,
+        "rlimit": 32730,
+        "success": true
+      },
+      {
+        "function": "edge_l2::lemma_tdelete",
+        "ms": 38,
+        "rlimit": 123207,
+        "success": true
+      },
+      {
+        "function": "edge_l2::lemma_tinsert",
+        "ms": 31,
+        "rlimit": 81559,
+        "success": true
+      },
+      {
+        "function": "edge_l2::lemma_tpurge",
+        "ms": 24,
+        "rlimit": 75993,
+        "success": true
+      },
+      {
+        "function": "edge_l2::lemma_trefuse",
+        "ms": 11,
+        "rlimit": 45312,
+        "success": true
+      },
+      {
+        "function": "edge_l2::theorem_adjacency_holds_every_structural_temporal_edge",
+        "ms": 2,
+        "rlimit": 9425,
+        "success": true
+      },
+      {
+        "function": "edge_l2::theorem_marked_row_has_time",
+        "ms": 2,
+        "rlimit": 8186,
+        "success": true
+      },
+      {
+        "function": "edge_l2::theorem_raw_executions_refine",
+        "ms": 10,
+        "rlimit": 39355,
+        "success": true
+      },
+      {
+        "function": "edge_runs::lemma_p_cadopt",
+        "ms": 10,
+        "rlimit": 22505,
+        "success": true
+      },
+      {
+        "function": "edge_runs::lemma_p_cinsert",
+        "ms": 9,
+        "rlimit": 23834,
+        "success": true
+      },
+      {
+        "function": "edge_runs::lemma_p_ddelete",
+        "ms": 9,
+        "rlimit": 21846,
+        "success": true
+      },
+      {
+        "function": "edge_runs::lemma_p_enodes",
+        "ms": 9,
+        "rlimit": 22579,
+        "success": true
+      },
+      {
+        "function": "edge_runs::lemma_p_node",
+        "ms": 6,
+        "rlimit": 11787,
+        "success": true
+      },
+      {
+        "function": "edge_runs::lemma_p_purgeraw",
+        "ms": 9,
+        "rlimit": 22244,
+        "success": true
+      },
+      {
+        "function": "edge_runs::lemma_p_sstore",
+        "ms": 8,
+        "rlimit": 21467,
+        "success": true
+      },
+      {
+        "function": "edge_runs::lemma_p_tdelete",
+        "ms": 9,
+        "rlimit": 22178,
+        "success": true
+      },
+      {
+        "function": "edge_runs::lemma_p_tinsert",
+        "ms": 8,
+        "rlimit": 21690,
+        "success": true
+      },
+      {
+        "function": "edge_runs::lemma_p_tpurge",
+        "ms": 10,
+        "rlimit": 21740,
+        "success": true
+      },
+      {
+        "function": "edge_runs::lemma_p_trefuse",
+        "ms": 8,
+        "rlimit": 21266,
+        "success": true
+      },
+      {
+        "function": "stmt_l1::StmtL1::init_safe",
+        "ms": 2,
+        "rlimit": 5102,
+        "success": true
+      },
+      {
+        "function": "stmt_l1::StmtL1::step_safe",
+        "ms": 2,
+        "rlimit": 4717,
+        "success": true
+      },
+      {
+        "function": "stmt_l1::lemma_l1_safe",
+        "ms": 32,
+        "rlimit": 81451,
+        "success": true
+      },
+      {
+        "function": "stmt_l1::theorem_direct_delete_ends_the_statement",
+        "ms": 5,
+        "rlimit": 12219,
+        "success": true
+      },
+      {
+        "function": "stmt_l1::theorem_live_statement_names_live_edge",
+        "ms": 1,
+        "rlimit": 3970,
+        "success": true
+      },
+      {
+        "function": "stmt_l1::theorem_statement_identity_is_stable",
+        "ms": 6,
+        "rlimit": 14181,
+        "success": true
+      },
+      {
+        "function": "stmt_l2::StmtL2::init_refines",
+        "ms": 4,
+        "rlimit": 8126,
+        "success": true
+      },
+      {
+        "function": "stmt_l2::StmtL2::init_safe",
+        "ms": 4,
+        "rlimit": 13724,
+        "success": true
+      },
+      {
+        "function": "stmt_l2::StmtL2::step_refines",
+        "ms": 3,
+        "rlimit": 10659,
+        "success": true
+      },
+      {
+        "function": "stmt_l2::StmtL2::step_safe",
+        "ms": 2,
+        "rlimit": 9095,
+        "success": true
+      },
+      {
+        "function": "stmt_l2::lemma_dcreate",
+        "ms": 14,
+        "rlimit": 31412,
+        "success": true
+      },
+      {
+        "function": "stmt_l2::lemma_ddelete",
+        "ms": 6,
+        "rlimit": 13956,
+        "success": true
+      },
+      {
+        "function": "stmt_l2::lemma_enode",
+        "ms": 12,
+        "rlimit": 36493,
+        "success": true
+      },
+      {
+        "function": "stmt_l2::lemma_lcreate",
+        "ms": 20,
+        "rlimit": 48765,
+        "success": true
+      },
+      {
+        "function": "stmt_l2::lemma_ldelete",
+        "ms": 22,
+        "rlimit": 48652,
+        "success": true
+      },
+      {
+        "function": "stmt_l2::lemma_live_named",
+        "ms": 3,
+        "rlimit": 10050,
+        "success": true
+      },
+      {
+        "function": "stmt_l2::lemma_lupdate",
+        "ms": 28,
+        "rlimit": 60778,
+        "success": true
+      },
+      {
+        "function": "stmt_l2::lemma_raw_inv_at",
+        "ms": 9,
+        "rlimit": 33027,
+        "success": true
+      },
+      {
+        "function": "stmt_l2::lemma_step",
+        "ms": 5,
+        "rlimit": 16413,
+        "success": true
+      },
+      {
+        "function": "stmt_l2::lemma_unlink",
+        "ms": 27,
+        "rlimit": 57083,
+        "success": true
+      },
+      {
+        "function": "stmt_l2::theorem_raw_executions_refine",
+        "ms": 11,
+        "rlimit": 41219,
+        "success": true
+      },
+      {
+        "function": "stmt_l2::theorem_tuple_entry_names_current_row",
+        "ms": 2,
+        "rlimit": 7679,
+        "success": true
+      },
+      {
+        "function": "stmt_runs::lemma_s_steps",
+        "ms": 12,
+        "rlimit": 23885,
+        "success": true
+      },
+      {
+        "function": "tagg_l1::TaggL1::init_safe",
+        "ms": 1,
+        "rlimit": 2913,
+        "success": true
+      },
+      {
+        "function": "tagg_l1::TaggL1::step_safe",
+        "ms": 3,
+        "rlimit": 6620,
+        "success": true
+      },
+      {
+        "function": "tagg_l1::cnt",
+        "ms": 0,
+        "rlimit": 1030,
+        "success": true
+      },
+      {
+        "function": "tagg_l1::lemma_cnt_empty",
+        "ms": 2,
+        "rlimit": 6044,
+        "success": true
+      },
+      {
+        "function": "tagg_l1::lemma_cnt_insert",
+        "ms": 9,
+        "rlimit": 21407,
+        "success": true
+      },
+      {
+        "function": "tagg_l1::lemma_cnt_nonneg",
+        "ms": 2,
+        "rlimit": 4731,
+        "success": true
+      },
+      {
+        "function": "tagg_l1::lemma_cnt_remove",
+        "ms": 8,
+        "rlimit": 20689,
+        "success": true
+      },
+      {
+        "function": "tagg_l1::sm",
+        "ms": 0,
+        "rlimit": 922,
+        "success": true
+      },
+      {
+        "function": "tagg_l1::theorem_aggregate_read_is_exact",
+        "ms": 2,
+        "rlimit": 4415,
+        "success": true
+      },
+      {
+        "function": "tagg_l1::theorem_collision_changes_nothing",
+        "ms": 1,
+        "rlimit": 3452,
+        "success": true
+      },
+      {
+        "function": "tagg_l1::theorem_update_replaces_the_edge",
+        "ms": 3,
+        "rlimit": 8119,
+        "success": true
+      },
+      {
+        "function": "tagg_l2::TaggL2::init_refines",
+        "ms": 1,
+        "rlimit": 3752,
+        "success": true
+      },
+      {
+        "function": "tagg_l2::TaggL2::init_safe",
+        "ms": 2,
+        "rlimit": 4784,
+        "success": true
+      },
+      {
+        "function": "tagg_l2::TaggL2::step_refines",
+        "ms": 2,
+        "rlimit": 6135,
+        "success": true
+      },
+      {
+        "function": "tagg_l2::TaggL2::step_safe",
+        "ms": 2,
+        "rlimit": 5523,
+        "success": true
+      },
+      {
+        "function": "tagg_l2::lemma_delete",
+        "ms": 6,
+        "rlimit": 14039,
+        "success": true
+      },
+      {
+        "function": "tagg_l2::lemma_raw_inv_at",
+        "ms": 6,
+        "rlimit": 12915,
+        "success": true
+      },
+      {
+        "function": "tagg_l2::lemma_step",
+        "ms": 5,
+        "rlimit": 12167,
+        "success": true
+      },
+      {
+        "function": "tagg_l2::lemma_write",
+        "ms": 10,
+        "rlimit": 24434,
+        "success": true
+      },
+      {
+        "function": "tagg_l2::theorem_raw_executions_refine",
+        "ms": 16,
+        "rlimit": 41816,
+        "success": true
+      },
+      {
+        "function": "tagg_runs::lemma_t_steps",
+        "ms": 7,
+        "rlimit": 13599,
+        "success": true
+      },
+      {
+        "function": "witness_bulk::witness_bulk",
+        "ms": 30,
+        "rlimit": 63977,
+        "success": true
+      },
+      {
+        "function": "witness_edge::witness_edge",
+        "ms": 196,
+        "rlimit": 554573,
+        "success": true
+      },
+      {
+        "function": "witness_stmt::witness_stmt",
+        "ms": 50,
+        "rlimit": 100083,
+        "success": true
+      },
+      {
+        "function": "witness_tagg::witness_tagg",
+        "ms": 42,
+        "rlimit": 153815,
+        "success": true
+      }
+    ],
+    "failing_functions": [],
+    "functions_checked": 111,
+    "max_function_rlimit": 554573,
+    "json_sha256": "ed6cfec8048a99891d26c3e450e0f79e235166475198a9ffa61d9b2ae31c7a75",
+    "pass": true,
+    "cost_per_module_proof": {
+      "modules 03+05 (structural-versus-temporal edge)": {
+        "modules": {
+          "edge_l2": {
+            "ms": 377,
+            "rlimit": 1033337
+          },
+          "witness_edge": {
+            "ms": 196,
+            "rlimit": 554573
+          },
+          "edge_l1": {
+            "ms": 136,
+            "rlimit": 353241
+          },
+          "edge_runs": {
+            "ms": 100,
+            "rlimit": 233136
+          }
+        },
+        "ms": 809,
+        "rlimit": 2174287,
+        "functions": 51,
+        "largest_function": {
+          "function": "witness_edge::witness_edge",
+          "ms": 196,
+          "rlimit": 554573,
+          "success": true
+        }
+      },
+      "module 03 (ledger statement link)": {
+        "modules": {
+          "stmt_l2": {
+            "ms": 179,
+            "rlimit": 447131
+          },
+          "stmt_l1": {
+            "ms": 51,
+            "rlimit": 121640
+          },
+          "witness_stmt": {
+            "ms": 50,
+            "rlimit": 100083
+          },
+          "stmt_runs": {
+            "ms": 12,
+            "rlimit": 23885
+          }
+        },
+        "ms": 292,
+        "rlimit": 692739,
+        "functions": 24,
+        "largest_function": {
+          "function": "witness_stmt::witness_stmt",
+          "ms": 50,
+          "rlimit": 100083,
+          "success": true
+        }
+      },
+      "module 03 (bulk atomicity)": {
+        "modules": {
+          "bulk_l2": {
+            "ms": 43,
+            "rlimit": 98107
+          },
+          "witness_bulk": {
+            "ms": 30,
+            "rlimit": 63977
+          },
+          "bulk_runs": {
+            "ms": 10,
+            "rlimit": 21816
+          },
+          "bulk_l1": {
+            "ms": 2,
+            "rlimit": 5445
+          }
+        },
+        "ms": 85,
+        "rlimit": 189345,
+        "functions": 14,
+        "largest_function": {
+          "function": "witness_bulk::witness_bulk",
+          "ms": 30,
+          "rlimit": 63977,
+          "success": true
+        }
+      },
+      "module 05 (bucket aggregates)": {
+        "modules": {
+          "witness_tagg": {
+            "ms": 42,
+            "rlimit": 153815
+          },
+          "tagg_l2": {
+            "ms": 54,
+            "rlimit": 125565
+          },
+          "tagg_l1": {
+            "ms": 35,
+            "rlimit": 80342
+          },
+          "tagg_runs": {
+            "ms": 7,
+            "rlimit": 13599
+          }
+        },
+        "ms": 138,
+        "rlimit": 373321,
+        "functions": 22,
+        "largest_function": {
+          "function": "witness_tagg::witness_tagg",
+          "ms": 42,
+          "rlimit": 153815,
+          "success": true
+        }
+      }
+    }
+  },
+  "controls": {
+    "control_f0304_store_no_adopt": {
+      "tag": "control_f0304_store_no_adopt",
+      "features": "control_f0304_store_no_adopt",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f0304_store_no_adopt -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1c/control_f0304_store_no_adopt.log",
+      "json": "$RUN_DIR/proofs-d1c/control_f0304_store_no_adopt.json",
+      "wall_seconds": 1.85,
+      "max_rss_kb": 466492,
+      "error_locations": [
+        "src/edge_l2.rs:304"
+      ],
+      "resource_limit": false,
+      "verified": 110,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1693,
+      "smt_run_ms": 1151,
+      "rlimit_total": 2971483,
+      "modules": {
+        "edge_l2": {
+          "ms": 327,
+          "rlimit": 978893
+        },
+        "stmt_l2": {
+          "ms": 172,
+          "rlimit": 447131
+        },
+        "edge_l1": {
+          "ms": 144,
+          "rlimit": 353241
+        },
+        "edge_runs": {
+          "ms": 102,
+          "rlimit": 233132
+        },
+        "witness_tagg": {
+          "ms": 51,
+          "rlimit": 153815
+        },
+        "cx_f0304": {
+          "ms": 78,
+          "rlimit": 150812
+        },
+        "tagg_l2": {
+          "ms": 53,
+          "rlimit": 125565
+        },
+        "stmt_l1": {
+          "ms": 52,
+          "rlimit": 121640
+        },
+        "witness_stmt": {
+          "ms": 33,
+          "rlimit": 100083
+        },
+        "bulk_l2": {
+          "ms": 45,
+          "rlimit": 98107
+        },
+        "tagg_l1": {
+          "ms": 36,
+          "rlimit": 80342
+        },
+        "witness_bulk": {
+          "ms": 21,
+          "rlimit": 63977
+        },
+        "stmt_runs": {
+          "ms": 12,
+          "rlimit": 23885
+        },
+        "bulk_runs": {
+          "ms": 11,
+          "rlimit": 21816
+        },
+        "tagg_runs": {
+          "ms": 6,
+          "rlimit": 13599
+        },
+        "bulk_l1": {
+          "ms": 2,
+          "rlimit": 5445
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_tagg::witness_tagg",
+          "ms": 51,
+          "rlimit": 153815,
+          "success": true
+        },
+        {
+          "function": "cx_f0304::counterexample_f0304",
+          "ms": 78,
+          "rlimit": 150812,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_tdelete",
+          "ms": 37,
+          "rlimit": 123248,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_ddelete",
+          "ms": 31,
+          "rlimit": 100879,
+          "success": true
+        },
+        {
+          "function": "witness_stmt::witness_stmt",
+          "ms": 33,
+          "rlimit": 100083,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_enodes",
+          "ms": 25,
+          "rlimit": 90893,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_cinsert",
+          "ms": 35,
+          "rlimit": 87923,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_tinsert",
+          "ms": 27,
+          "rlimit": 81616,
+          "success": true
+        },
+        {
+          "function": "stmt_l1::lemma_l1_safe",
+          "ms": 33,
+          "rlimit": 81451,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_purgeraw",
+          "ms": 22,
+          "rlimit": 77354,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "edge_l2::lemma_sstore"
+      ],
+      "functions_checked": 111,
+      "max_function_rlimit": 153815,
+      "json_sha256": "1358b05fd3a56d261884bfa8a2c578a19e3c08dca20bf901e3bd9efe0b0eb8eb",
+      "module": "03",
+      "finding": "F-0304",
+      "expected": "src/edge_l2.rs",
+      "counterexample": "cx_f0304::counterexample_f0304",
+      "what": "store_edge swallows the duplicate over a temporal edge's marked row and never adopts it, so the triple's last temporal delete deletes the stored edge (nodes_edges.py:2560-2588)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f0505_marker_predicate": {
+      "tag": "control_f0505_marker_predicate",
+      "features": "control_f0505_marker_predicate",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f0505_marker_predicate -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1c/control_f0505_marker_predicate.log",
+      "json": "$RUN_DIR/proofs-d1c/control_f0505_marker_predicate.json",
+      "wall_seconds": 1.97,
+      "max_rss_kb": 467400,
+      "error_locations": [
+        "src/edge_l2.rs:361",
+        "src/edge_l2.rs:381",
+        "src/edge_l2.rs:403"
+      ],
+      "resource_limit": false,
+      "verified": 108,
+      "errors": 3,
+      "success": false,
+      "verus_total_ms": 1814,
+      "smt_run_ms": 1252,
+      "rlimit_total": 3082103,
+      "modules": {
+        "edge_l2": {
+          "ms": 360,
+          "rlimit": 1033707
+        },
+        "stmt_l2": {
+          "ms": 189,
+          "rlimit": 447131
+        },
+        "edge_l1": {
+          "ms": 153,
+          "rlimit": 353241
+        },
+        "edge_runs": {
+          "ms": 100,
+          "rlimit": 233075
+        },
+        "cx_f0505": {
+          "ms": 121,
+          "rlimit": 206675
+        },
+        "witness_tagg": {
+          "ms": 43,
+          "rlimit": 153815
+        },
+        "tagg_l2": {
+          "ms": 49,
+          "rlimit": 125565
+        },
+        "stmt_l1": {
+          "ms": 53,
+          "rlimit": 121640
+        },
+        "witness_stmt": {
+          "ms": 34,
+          "rlimit": 100083
+        },
+        "bulk_l2": {
+          "ms": 46,
+          "rlimit": 98107
+        },
+        "tagg_l1": {
+          "ms": 36,
+          "rlimit": 80342
+        },
+        "witness_bulk": {
+          "ms": 27,
+          "rlimit": 63977
+        },
+        "stmt_runs": {
+          "ms": 12,
+          "rlimit": 23885
+        },
+        "bulk_runs": {
+          "ms": 11,
+          "rlimit": 21816
+        },
+        "tagg_runs": {
+          "ms": 8,
+          "rlimit": 13599
+        },
+        "bulk_l1": {
+          "ms": 2,
+          "rlimit": 5445
+        }
+      },
+      "top_functions": [
+        {
+          "function": "cx_f0505::counterexample_f0505",
+          "ms": 121,
+          "rlimit": 206675,
+          "success": true
+        },
+        {
+          "function": "witness_tagg::witness_tagg",
+          "ms": 43,
+          "rlimit": 153815,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_tdelete",
+          "ms": 47,
+          "rlimit": 138124,
+          "success": false
+        },
+        {
+          "function": "edge_l2::lemma_sstore",
+          "ms": 41,
+          "rlimit": 105511,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_ddelete",
+          "ms": 31,
+          "rlimit": 100818,
+          "success": true
+        },
+        {
+          "function": "witness_stmt::witness_stmt",
+          "ms": 34,
+          "rlimit": 100083,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_tpurge",
+          "ms": 28,
+          "rlimit": 92406,
+          "success": false
+        },
+        {
+          "function": "edge_l2::lemma_enodes",
+          "ms": 25,
+          "rlimit": 90887,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_cinsert",
+          "ms": 35,
+          "rlimit": 87923,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_tinsert",
+          "ms": 24,
+          "rlimit": 81559,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "edge_l2::lemma_purgeraw",
+        "edge_l2::lemma_tdelete",
+        "edge_l2::lemma_tpurge"
+      ],
+      "functions_checked": 111,
+      "max_function_rlimit": 206675,
+      "json_sha256": "4cf645fff4dd4182e3e0835c4d29a95f58dad7e89efacf15b441aaaf33329e82",
+      "module": "05",
+      "finding": "F-0505 / HD-0302",
+      "expected": "src/edge_l2.rs",
+      "counterexample": "cx_f0505::counterexample_f0505",
+      "what": "the deleters' marker test is IsTemporalMarked's %Get(\"temporal\") = 1, true for JSON true, 1 and \"1\", so an explicit {\"temporal\": 1} edge is deleted by the temporal side (Adjacency.cls:736-748)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f0507_purge_keeps_rows": {
+      "tag": "control_f0507_purge_keeps_rows",
+      "features": "control_f0507_purge_keeps_rows",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f0507_purge_keeps_rows -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1c/control_f0507_purge_keeps_rows.log",
+      "json": "$RUN_DIR/proofs-d1c/control_f0507_purge_keeps_rows.json",
+      "wall_seconds": 1.89,
+      "max_rss_kb": 465520,
+      "error_locations": [
+        "src/edge_l2.rs:400"
+      ],
+      "resource_limit": false,
+      "verified": 110,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1732,
+      "smt_run_ms": 1122,
+      "rlimit_total": 2895933,
+      "modules": {
+        "edge_l2": {
+          "ms": 339,
+          "rlimit": 954071
+        },
+        "stmt_l2": {
+          "ms": 172,
+          "rlimit": 447131
+        },
+        "edge_l1": {
+          "ms": 149,
+          "rlimit": 353241
+        },
+        "edge_runs": {
+          "ms": 93,
+          "rlimit": 223506
+        },
+        "witness_tagg": {
+          "ms": 45,
+          "rlimit": 153815
+        },
+        "tagg_l2": {
+          "ms": 39,
+          "rlimit": 125565
+        },
+        "stmt_l1": {
+          "ms": 53,
+          "rlimit": 121640
+        },
+        "cx_f0507": {
+          "ms": 50,
+          "rlimit": 109710
+        },
+        "witness_stmt": {
+          "ms": 35,
+          "rlimit": 100083
+        },
+        "bulk_l2": {
+          "ms": 44,
+          "rlimit": 98107
+        },
+        "tagg_l1": {
+          "ms": 37,
+          "rlimit": 80342
+        },
+        "witness_bulk": {
+          "ms": 29,
+          "rlimit": 63977
+        },
+        "stmt_runs": {
+          "ms": 12,
+          "rlimit": 23885
+        },
+        "bulk_runs": {
+          "ms": 9,
+          "rlimit": 21816
+        },
+        "tagg_runs": {
+          "ms": 8,
+          "rlimit": 13599
+        },
+        "bulk_l1": {
+          "ms": 2,
+          "rlimit": 5445
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_tagg::witness_tagg",
+          "ms": 45,
+          "rlimit": 153815,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_tdelete",
+          "ms": 39,
+          "rlimit": 124802,
+          "success": true
+        },
+        {
+          "function": "cx_f0507::counterexample_f0507",
+          "ms": 50,
+          "rlimit": 109710,
+          "success": true
+        },
+        {
+          "function": "witness_stmt::witness_stmt",
+          "ms": 35,
+          "rlimit": 100083,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_sstore",
+          "ms": 45,
+          "rlimit": 94222,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_cinsert",
+          "ms": 42,
+          "rlimit": 88293,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_enodes",
+          "ms": 25,
+          "rlimit": 86667,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_ddelete",
+          "ms": 27,
+          "rlimit": 86548,
+          "success": true
+        },
+        {
+          "function": "stmt_l1::lemma_l1_safe",
+          "ms": 35,
+          "rlimit": 81451,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_tinsert",
+          "ms": 22,
+          "rlimit": 74589,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "edge_l2::lemma_tpurge"
+      ],
+      "functions_checked": 111,
+      "max_function_rlimit": 153815,
+      "json_sha256": "d0b605cc4bd83bf59f31134f86a282039359eb46ec20b59876026942d296fa39",
+      "module": "05",
+      "finding": "F-0507",
+      "expected": "src/edge_l2.rs",
+      "counterexample": "cx_f0507::counterexample_f0507",
+      "what": "TemporalIndex.Purge is EraseAll: every temporal global goes and no marked row is retracted (TemporalIndex.cls:381-392, 808-811)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_fc0501_refused_write_partial": {
+      "tag": "control_fc0501_refused_write_partial",
+      "features": "control_fc0501_refused_write_partial",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_fc0501_refused_write_partial -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1c/control_fc0501_refused_write_partial.log",
+      "json": "$RUN_DIR/proofs-d1c/control_fc0501_refused_write_partial.json",
+      "wall_seconds": 1.85,
+      "max_rss_kb": 464720,
+      "error_locations": [
+        "src/edge_l2.rs:350"
+      ],
+      "resource_limit": false,
+      "verified": 110,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1702,
+      "smt_run_ms": 1139,
+      "rlimit_total": 2957576,
+      "modules": {
+        "edge_l2": {
+          "ms": 351,
+          "rlimit": 1015107
+        },
+        "stmt_l2": {
+          "ms": 173,
+          "rlimit": 447131
+        },
+        "edge_l1": {
+          "ms": 131,
+          "rlimit": 353241
+        },
+        "edge_runs": {
+          "ms": 99,
+          "rlimit": 233026
+        },
+        "witness_tagg": {
+          "ms": 62,
+          "rlimit": 153815
+        },
+        "tagg_l2": {
+          "ms": 46,
+          "rlimit": 125565
+        },
+        "stmt_l1": {
+          "ms": 50,
+          "rlimit": 121640
+        },
+        "cx_fc0501": {
+          "ms": 54,
+          "rlimit": 100797
+        },
+        "witness_stmt": {
+          "ms": 34,
+          "rlimit": 100083
+        },
+        "bulk_l2": {
+          "ms": 46,
+          "rlimit": 98107
+        },
+        "tagg_l1": {
+          "ms": 35,
+          "rlimit": 80342
+        },
+        "witness_bulk": {
+          "ms": 20,
+          "rlimit": 63977
+        },
+        "stmt_runs": {
+          "ms": 12,
+          "rlimit": 23885
+        },
+        "bulk_runs": {
+          "ms": 10,
+          "rlimit": 21816
+        },
+        "tagg_runs": {
+          "ms": 8,
+          "rlimit": 13599
+        },
+        "bulk_l1": {
+          "ms": 2,
+          "rlimit": 5445
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_tagg::witness_tagg",
+          "ms": 62,
+          "rlimit": 153815,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_tdelete",
+          "ms": 38,
+          "rlimit": 123265,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_sstore",
+          "ms": 52,
+          "rlimit": 105511,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_ddelete",
+          "ms": 37,
+          "rlimit": 100818,
+          "success": true
+        },
+        {
+          "function": "cx_fc0501::counterexample_fc0501",
+          "ms": 54,
+          "rlimit": 100797,
+          "success": true
+        },
+        {
+          "function": "witness_stmt::witness_stmt",
+          "ms": 34,
+          "rlimit": 100083,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_enodes",
+          "ms": 25,
+          "rlimit": 90935,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_cinsert",
+          "ms": 38,
+          "rlimit": 87923,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_tinsert",
+          "ms": 23,
+          "rlimit": 81559,
+          "success": true
+        },
+        {
+          "function": "stmt_l1::lemma_l1_safe",
+          "ms": 35,
+          "rlimit": 81451,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "edge_l2::lemma_trefuse"
+      ],
+      "functions_checked": 111,
+      "max_function_rlimit": 153815,
+      "json_sha256": "9f7e40783fe1ce0ccc03a269b867cb7b8da1b0b6c8cd2ce0963024a2b1278720",
+      "module": "05",
+      "finding": "F-C0501",
+      "expected": "src/edge_l2.rs",
+      "counterexample": "cx_fc0501::counterexample_fc0501",
+      "what": "WriteStores sets tout/tin/bucket before AssertTemporalRow, whose refused edge INSERT throws, and no transaction takes them back (TemporalIndex.cls:80-111; Adjacency.cls:597-608)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_hd0302_delete_removes_row": {
+      "tag": "control_hd0302_delete_removes_row",
+      "features": "control_hd0302_delete_removes_row",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_hd0302_delete_removes_row -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1c/control_hd0302_delete_removes_row.log",
+      "json": "$RUN_DIR/proofs-d1c/control_hd0302_delete_removes_row.json",
+      "wall_seconds": 1.87,
+      "max_rss_kb": 467492,
+      "error_locations": [
+        "src/edge_l2.rs:318"
+      ],
+      "resource_limit": false,
+      "verified": 110,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1716,
+      "smt_run_ms": 1190,
+      "rlimit_total": 3051456,
+      "modules": {
+        "edge_l2": {
+          "ms": 337,
+          "rlimit": 1009537
+        },
+        "stmt_l2": {
+          "ms": 172,
+          "rlimit": 447131
+        },
+        "edge_l1": {
+          "ms": 155,
+          "rlimit": 353241
+        },
+        "edge_runs": {
+          "ms": 98,
+          "rlimit": 232172
+        },
+        "cx_hd0302": {
+          "ms": 95,
+          "rlimit": 201101
+        },
+        "witness_tagg": {
+          "ms": 60,
+          "rlimit": 153815
+        },
+        "tagg_l2": {
+          "ms": 47,
+          "rlimit": 125565
+        },
+        "stmt_l1": {
+          "ms": 50,
+          "rlimit": 121640
+        },
+        "witness_stmt": {
+          "ms": 33,
+          "rlimit": 100083
+        },
+        "bulk_l2": {
+          "ms": 40,
+          "rlimit": 98107
+        },
+        "tagg_l1": {
+          "ms": 37,
+          "rlimit": 80342
+        },
+        "witness_bulk": {
+          "ms": 27,
+          "rlimit": 63977
+        },
+        "stmt_runs": {
+          "ms": 12,
+          "rlimit": 23885
+        },
+        "bulk_runs": {
+          "ms": 11,
+          "rlimit": 21816
+        },
+        "tagg_runs": {
+          "ms": 8,
+          "rlimit": 13599
+        },
+        "bulk_l1": {
+          "ms": 2,
+          "rlimit": 5445
+        }
+      },
+      "top_functions": [
+        {
+          "function": "cx_hd0302::counterexample_hd0302",
+          "ms": 95,
+          "rlimit": 201101,
+          "success": true
+        },
+        {
+          "function": "witness_tagg::witness_tagg",
+          "ms": 60,
+          "rlimit": 153815,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_tdelete",
+          "ms": 38,
+          "rlimit": 123181,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_sstore",
+          "ms": 39,
+          "rlimit": 105511,
+          "success": true
+        },
+        {
+          "function": "witness_stmt::witness_stmt",
+          "ms": 33,
+          "rlimit": 100083,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_enodes",
+          "ms": 25,
+          "rlimit": 90890,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_cinsert",
+          "ms": 41,
+          "rlimit": 87923,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_tinsert",
+          "ms": 25,
+          "rlimit": 81615,
+          "success": true
+        },
+        {
+          "function": "stmt_l1::lemma_l1_safe",
+          "ms": 31,
+          "rlimit": 81451,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_purgeraw",
+          "ms": 22,
+          "rlimit": 77318,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "edge_l2::lemma_ddelete"
+      ],
+      "functions_checked": 111,
+      "max_function_rlimit": 201101,
+      "json_sha256": "c2b73719afcbc5052b612bb7b83c22fca1d39304c85730438d59db42b84d92af",
+      "module": "03",
+      "finding": "HD-0302 (intent-a-hd0302-temporal-row-delete)",
+      "expected": "src/edge_l2.rs",
+      "counterexample": "cx_hd0302::counterexample_hd0302",
+      "what": "delete_edge deletes the triple's row, marked or adopted, while its timestamps remain (nodes_edges.py:1414-1433)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_fc1203_prefix_from_node_rows": {
+      "tag": "control_fc1203_prefix_from_node_rows",
+      "features": "control_fc1203_prefix_from_node_rows",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_fc1203_prefix_from_node_rows -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1c/control_fc1203_prefix_from_node_rows.log",
+      "json": "$RUN_DIR/proofs-d1c/control_fc1203_prefix_from_node_rows.json",
+      "wall_seconds": 1.86,
+      "max_rss_kb": 466304,
+      "error_locations": [
+        "src/edge_l2.rs:426"
+      ],
+      "resource_limit": false,
+      "verified": 110,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1701,
+      "smt_run_ms": 1156,
+      "rlimit_total": 2975798,
+      "modules": {
+        "edge_l2": {
+          "ms": 345,
+          "rlimit": 1011747
+        },
+        "stmt_l2": {
+          "ms": 165,
+          "rlimit": 447131
+        },
+        "edge_l1": {
+          "ms": 145,
+          "rlimit": 353241
+        },
+        "edge_runs": {
+          "ms": 98,
+          "rlimit": 233150
+        },
+        "witness_tagg": {
+          "ms": 47,
+          "rlimit": 153815
+        },
+        "tagg_l2": {
+          "ms": 54,
+          "rlimit": 125565
+        },
+        "cx_fc1203": {
+          "ms": 55,
+          "rlimit": 122255
+        },
+        "stmt_l1": {
+          "ms": 53,
+          "rlimit": 121640
+        },
+        "witness_stmt": {
+          "ms": 47,
+          "rlimit": 100083
+        },
+        "bulk_l2": {
+          "ms": 46,
+          "rlimit": 98107
+        },
+        "tagg_l1": {
+          "ms": 35,
+          "rlimit": 80342
+        },
+        "witness_bulk": {
+          "ms": 30,
+          "rlimit": 63977
+        },
+        "stmt_runs": {
+          "ms": 13,
+          "rlimit": 23885
+        },
+        "bulk_runs": {
+          "ms": 8,
+          "rlimit": 21816
+        },
+        "tagg_runs": {
+          "ms": 8,
+          "rlimit": 13599
+        },
+        "bulk_l1": {
+          "ms": 2,
+          "rlimit": 5445
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_tagg::witness_tagg",
+          "ms": 47,
+          "rlimit": 153815,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_tdelete",
+          "ms": 38,
+          "rlimit": 123237,
+          "success": true
+        },
+        {
+          "function": "cx_fc1203::counterexample_fc1203",
+          "ms": 55,
+          "rlimit": 122255,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_sstore",
+          "ms": 43,
+          "rlimit": 105529,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_ddelete",
+          "ms": 32,
+          "rlimit": 100835,
+          "success": true
+        },
+        {
+          "function": "witness_stmt::witness_stmt",
+          "ms": 47,
+          "rlimit": 100083,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_cinsert",
+          "ms": 40,
+          "rlimit": 87957,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_tinsert",
+          "ms": 24,
+          "rlimit": 81573,
+          "success": true
+        },
+        {
+          "function": "stmt_l1::lemma_l1_safe",
+          "ms": 34,
+          "rlimit": 81451,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_purgeraw",
+          "ms": 22,
+          "rlimit": 77325,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "edge_l2::lemma_enodes"
+      ],
+      "functions_checked": 111,
+      "max_function_rlimit": 153815,
+      "json_sha256": "b1065a8404e0a1666c96e58fc110e1b15aea8b8356ee378949ae6488fc3dc554",
+      "module": "12",
+      "finding": "F-C1203",
+      "expected": "src/edge_l2.rs",
+      "counterexample": "cx_fc1203::counterexample_fc1203",
+      "what": "EraseNodes selects the prefix's ids from Graph_KG.nodes only, so a temporal-only edge (no row, no endpoint rows) is never erased (Eraser.cls:322-348; TemporalIndex.cls:400-453)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_fc0301_adopt_after_commit": {
+      "tag": "control_fc0301_adopt_after_commit",
+      "features": "control_fc0301_adopt_after_commit",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_fc0301_adopt_after_commit -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1c/control_fc0301_adopt_after_commit.log",
+      "json": "$RUN_DIR/proofs-d1c/control_fc0301_adopt_after_commit.json",
+      "wall_seconds": 1.85,
+      "max_rss_kb": 466420,
+      "error_locations": [
+        "src/edge_l2.rs:275"
+      ],
+      "resource_limit": false,
+      "verified": 110,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1694,
+      "smt_run_ms": 1155,
+      "rlimit_total": 2966440,
+      "modules": {
+        "edge_l2": {
+          "ms": 318,
+          "rlimit": 976298
+        },
+        "stmt_l2": {
+          "ms": 183,
+          "rlimit": 447131
+        },
+        "edge_l1": {
+          "ms": 155,
+          "rlimit": 353241
+        },
+        "edge_runs": {
+          "ms": 99,
+          "rlimit": 232249
+        },
+        "witness_tagg": {
+          "ms": 48,
+          "rlimit": 153815
+        },
+        "cx_fc0301": {
+          "ms": 70,
+          "rlimit": 149247
+        },
+        "tagg_l2": {
+          "ms": 49,
+          "rlimit": 125565
+        },
+        "stmt_l1": {
+          "ms": 53,
+          "rlimit": 121640
+        },
+        "witness_stmt": {
+          "ms": 35,
+          "rlimit": 100083
+        },
+        "bulk_l2": {
+          "ms": 45,
+          "rlimit": 98107
+        },
+        "tagg_l1": {
+          "ms": 36,
+          "rlimit": 80342
+        },
+        "witness_bulk": {
+          "ms": 22,
+          "rlimit": 63977
+        },
+        "stmt_runs": {
+          "ms": 12,
+          "rlimit": 23885
+        },
+        "bulk_runs": {
+          "ms": 11,
+          "rlimit": 21816
+        },
+        "tagg_runs": {
+          "ms": 8,
+          "rlimit": 13599
+        },
+        "bulk_l1": {
+          "ms": 2,
+          "rlimit": 5445
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_tagg::witness_tagg",
+          "ms": 48,
+          "rlimit": 153815,
+          "success": true
+        },
+        {
+          "function": "cx_fc0301::counterexample_fc0301",
+          "ms": 70,
+          "rlimit": 149247,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_tdelete",
+          "ms": 37,
+          "rlimit": 123277,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_sstore",
+          "ms": 36,
+          "rlimit": 105659,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_ddelete",
+          "ms": 31,
+          "rlimit": 101110,
+          "success": true
+        },
+        {
+          "function": "witness_stmt::witness_stmt",
+          "ms": 35,
+          "rlimit": 100083,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_enodes",
+          "ms": 25,
+          "rlimit": 90884,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_tinsert",
+          "ms": 24,
+          "rlimit": 81613,
+          "success": true
+        },
+        {
+          "function": "stmt_l1::lemma_l1_safe",
+          "ms": 34,
+          "rlimit": 81451,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_purgeraw",
+          "ms": 22,
+          "rlimit": 77352,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "edge_l2::lemma_cinsert"
+      ],
+      "functions_checked": 111,
+      "max_function_rlimit": 153815,
+      "json_sha256": "b2de947106149ad7306332f5a79e0c28f1531bc9f9438b10f79876f7e4df5767",
+      "module": "03",
+      "finding": "F-C0301",
+      "expected": "src/edge_l2.rs",
+      "counterexample": "cx_fc0301::counterexample_fc0301",
+      "what": "create_edge commits the guarded insert, then adopts the marked row in a statement of its own; a temporal delete in between leaves the call answering False with no edge (nodes_edges.py:1236-1252)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f0303_direct_delete_keeps_stmt": {
+      "tag": "control_f0303_direct_delete_keeps_stmt",
+      "features": "control_f0303_direct_delete_keeps_stmt",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f0303_direct_delete_keeps_stmt -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1c/control_f0303_direct_delete_keeps_stmt.log",
+      "json": "$RUN_DIR/proofs-d1c/control_f0303_direct_delete_keeps_stmt.json",
+      "wall_seconds": 1.85,
+      "max_rss_kb": 465220,
+      "error_locations": [
+        "src/stmt_l2.rs:267"
+      ],
+      "resource_limit": false,
+      "verified": 110,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1697,
+      "smt_run_ms": 1289,
+      "rlimit_total": 3459800,
+      "modules": {
+        "edge_l2": {
+          "ms": 333,
+          "rlimit": 1033337
+        },
+        "witness_edge": {
+          "ms": 171,
+          "rlimit": 554573
+        },
+        "stmt_l2": {
+          "ms": 172,
+          "rlimit": 448746
+        },
+        "edge_l1": {
+          "ms": 153,
+          "rlimit": 353241
+        },
+        "edge_runs": {
+          "ms": 96,
+          "rlimit": 233136
+        },
+        "witness_tagg": {
+          "ms": 61,
+          "rlimit": 153815
+        },
+        "cx_f0303": {
+          "ms": 62,
+          "rlimit": 128722
+        },
+        "tagg_l2": {
+          "ms": 45,
+          "rlimit": 125565
+        },
+        "stmt_l1": {
+          "ms": 52,
+          "rlimit": 121640
+        },
+        "bulk_l2": {
+          "ms": 45,
+          "rlimit": 98107
+        },
+        "tagg_l1": {
+          "ms": 37,
+          "rlimit": 80342
+        },
+        "witness_bulk": {
+          "ms": 22,
+          "rlimit": 63977
+        },
+        "stmt_runs": {
+          "ms": 12,
+          "rlimit": 23739
+        },
+        "bulk_runs": {
+          "ms": 10,
+          "rlimit": 21816
+        },
+        "tagg_runs": {
+          "ms": 8,
+          "rlimit": 13599
+        },
+        "bulk_l1": {
+          "ms": 2,
+          "rlimit": 5445
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_edge::witness_edge",
+          "ms": 171,
+          "rlimit": 554573,
+          "success": true
+        },
+        {
+          "function": "witness_tagg::witness_tagg",
+          "ms": 61,
+          "rlimit": 153815,
+          "success": true
+        },
+        {
+          "function": "cx_f0303::counterexample_f0303",
+          "ms": 62,
+          "rlimit": 128722,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_tdelete",
+          "ms": 38,
+          "rlimit": 123207,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_sstore",
+          "ms": 36,
+          "rlimit": 105513,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_ddelete",
+          "ms": 32,
+          "rlimit": 100818,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_enodes",
+          "ms": 26,
+          "rlimit": 90882,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_cinsert",
+          "ms": 38,
+          "rlimit": 87923,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_tinsert",
+          "ms": 26,
+          "rlimit": 81559,
+          "success": true
+        },
+        {
+          "function": "stmt_l1::lemma_l1_safe",
+          "ms": 34,
+          "rlimit": 81451,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "stmt_l2::lemma_ddelete"
+      ],
+      "functions_checked": 111,
+      "max_function_rlimit": 554573,
+      "json_sha256": "2683fdb624f08bb79ba3b26bbaf5e52a52ade489c594d0289665ae739686baf4",
+      "module": "03",
+      "finding": "F-0303",
+      "expected": "src/stmt_l2.rs",
+      "counterexample": "cx_f0303::counterexample_f0303",
+      "what": "delete_edge is a plain SQL DELETE: ^IVG.Ledger(\"stmt\") and (\"tuple\") stay live, and a re-created edge inherits the statement (nodes_edges.py:1414-1433; cf. Eraser.cls:641-683)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f0305_chunks_commit_alone": {
+      "tag": "control_f0305_chunks_commit_alone",
+      "features": "control_f0305_chunks_commit_alone",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f0305_chunks_commit_alone -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1c/control_f0305_chunks_commit_alone.log",
+      "json": "$RUN_DIR/proofs-d1c/control_f0305_chunks_commit_alone.json",
+      "wall_seconds": 1.84,
+      "max_rss_kb": 465724,
+      "error_locations": [
+        "src/bulk_l2.rs:123"
+      ],
+      "resource_limit": false,
+      "verified": 110,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1683,
+      "smt_run_ms": 1279,
+      "rlimit_total": 3392779,
+      "modules": {
+        "edge_l2": {
+          "ms": 350,
+          "rlimit": 1033337
+        },
+        "witness_edge": {
+          "ms": 173,
+          "rlimit": 554573
+        },
+        "stmt_l2": {
+          "ms": 179,
+          "rlimit": 447131
+        },
+        "edge_l1": {
+          "ms": 143,
+          "rlimit": 353241
+        },
+        "edge_runs": {
+          "ms": 97,
+          "rlimit": 233136
+        },
+        "witness_tagg": {
+          "ms": 61,
+          "rlimit": 153815
+        },
+        "tagg_l2": {
+          "ms": 52,
+          "rlimit": 125565
+        },
+        "stmt_l1": {
+          "ms": 53,
+          "rlimit": 121640
+        },
+        "witness_stmt": {
+          "ms": 36,
+          "rlimit": 100083
+        },
+        "bulk_l2": {
+          "ms": 47,
+          "rlimit": 96520
+        },
+        "tagg_l1": {
+          "ms": 37,
+          "rlimit": 80342
+        },
+        "cx_f0305": {
+          "ms": 13,
+          "rlimit": 28578
+        },
+        "stmt_runs": {
+          "ms": 11,
+          "rlimit": 23885
+        },
+        "bulk_runs": {
+          "ms": 11,
+          "rlimit": 21889
+        },
+        "tagg_runs": {
+          "ms": 6,
+          "rlimit": 13599
+        },
+        "bulk_l1": {
+          "ms": 2,
+          "rlimit": 5445
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_edge::witness_edge",
+          "ms": 173,
+          "rlimit": 554573,
+          "success": true
+        },
+        {
+          "function": "witness_tagg::witness_tagg",
+          "ms": 61,
+          "rlimit": 153815,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_tdelete",
+          "ms": 37,
+          "rlimit": 123207,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_sstore",
+          "ms": 50,
+          "rlimit": 105513,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_ddelete",
+          "ms": 37,
+          "rlimit": 100818,
+          "success": true
+        },
+        {
+          "function": "witness_stmt::witness_stmt",
+          "ms": 36,
+          "rlimit": 100083,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_enodes",
+          "ms": 25,
+          "rlimit": 90882,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_cinsert",
+          "ms": 40,
+          "rlimit": 87923,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_tinsert",
+          "ms": 23,
+          "rlimit": 81559,
+          "success": true
+        },
+        {
+          "function": "stmt_l1::lemma_l1_safe",
+          "ms": 35,
+          "rlimit": 81451,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "bulk_l2::lemma_chunkok"
+      ],
+      "functions_checked": 111,
+      "max_function_rlimit": 554573,
+      "json_sha256": "7aff318a41f5bc3b5f7d98b1f63e4f2335fa1fde2e3f0b464af6e45aea2b4cc9",
+      "module": "03",
+      "finding": "F-0305",
+      "expected": "src/bulk_l2.rs",
+      "counterexample": "cx_f0305::counterexample_f0305",
+      "what": "outside a caller's transaction the server loader runs on the engine's Native API connection (another process), so each chunk's TCOMMIT is durable on its own (nodes_edges.py:1715-1757; EdgeScan.cls:352, 424)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    },
+    "control_f0501_update_counted_again": {
+      "tag": "control_f0501_update_counted_again",
+      "features": "control_f0501_update_counted_again",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features control_f0501_update_counted_again -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-d1c/control_f0501_update_counted_again.log",
+      "json": "$RUN_DIR/proofs-d1c/control_f0501_update_counted_again.json",
+      "wall_seconds": 1.88,
+      "max_rss_kb": 464932,
+      "error_locations": [
+        "src/tagg_l2.rs:100"
+      ],
+      "resource_limit": false,
+      "verified": 110,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 1725,
+      "smt_run_ms": 1321,
+      "rlimit_total": 3380635,
+      "modules": {
+        "edge_l2": {
+          "ms": 376,
+          "rlimit": 1033337
+        },
+        "witness_edge": {
+          "ms": 176,
+          "rlimit": 554573
+        },
+        "stmt_l2": {
+          "ms": 207,
+          "rlimit": 447131
+        },
+        "edge_l1": {
+          "ms": 137,
+          "rlimit": 353241
+        },
+        "edge_runs": {
+          "ms": 98,
+          "rlimit": 233136
+        },
+        "tagg_l2": {
+          "ms": 47,
+          "rlimit": 123255
+        },
+        "stmt_l1": {
+          "ms": 52,
+          "rlimit": 121640
+        },
+        "cx_f0501": {
+          "ms": 44,
+          "rlimit": 109001
+        },
+        "witness_stmt": {
+          "ms": 41,
+          "rlimit": 100083
+        },
+        "bulk_l2": {
+          "ms": 43,
+          "rlimit": 98107
+        },
+        "tagg_l1": {
+          "ms": 36,
+          "rlimit": 80342
+        },
+        "witness_bulk": {
+          "ms": 26,
+          "rlimit": 63977
+        },
+        "stmt_runs": {
+          "ms": 12,
+          "rlimit": 23885
+        },
+        "bulk_runs": {
+          "ms": 11,
+          "rlimit": 21816
+        },
+        "tagg_runs": {
+          "ms": 6,
+          "rlimit": 11666
+        },
+        "bulk_l1": {
+          "ms": 2,
+          "rlimit": 5445
+        }
+      },
+      "top_functions": [
+        {
+          "function": "witness_edge::witness_edge",
+          "ms": 176,
+          "rlimit": 554573,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_tdelete",
+          "ms": 38,
+          "rlimit": 123207,
+          "success": true
+        },
+        {
+          "function": "cx_f0501::counterexample_f0501",
+          "ms": 44,
+          "rlimit": 109001,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_sstore",
+          "ms": 51,
+          "rlimit": 105513,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_ddelete",
+          "ms": 42,
+          "rlimit": 100818,
+          "success": true
+        },
+        {
+          "function": "witness_stmt::witness_stmt",
+          "ms": 41,
+          "rlimit": 100083,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_enodes",
+          "ms": 25,
+          "rlimit": 90882,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_cinsert",
+          "ms": 42,
+          "rlimit": 87923,
+          "success": true
+        },
+        {
+          "function": "edge_l2::lemma_tinsert",
+          "ms": 38,
+          "rlimit": 81559,
+          "success": true
+        },
+        {
+          "function": "stmt_l1::lemma_l1_safe",
+          "ms": 34,
+          "rlimit": 81451,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "tagg_l2::lemma_write"
+      ],
+      "functions_checked": 111,
+      "max_function_rlimit": 554573,
+      "json_sha256": "0ba0d341974136854668a02f7bc539a27cacccedaf74057fdd6bd15d47f1c2cb",
+      "module": "05",
+      "finding": "F-0501",
+      "expected": "src/tagg_l2.rs",
+      "counterexample": "cx_f0501::counterexample_f0501",
+      "what": "an update-mode write skips the collision check and $Increments bucket, tagg count and sum again (TemporalIndex.cls:80-118)",
+      "failing_outside_expected_module": [],
+      "killed": true,
+      "counterexample_verified": true
+    }
+  },
+  "trust_inventory": {
+    "own_sources": {
+      "scanned": [
+        "src/bulk_l1.rs",
+        "src/bulk_l2.rs",
+        "src/bulk_runs.rs",
+        "src/cx_f0303.rs",
+        "src/cx_f0304.rs",
+        "src/cx_f0305.rs",
+        "src/cx_f0501.rs",
+        "src/cx_f0505.rs",
+        "src/cx_f0507.rs",
+        "src/cx_fc0301.rs",
+        "src/cx_fc0501.rs",
+        "src/cx_fc1203.rs",
+        "src/cx_hd0302.rs",
+        "src/edge_l1.rs",
+        "src/edge_l2.rs",
+        "src/edge_runs.rs",
+        "src/lib.rs",
+        "src/stmt_l1.rs",
+        "src/stmt_l2.rs",
+        "src/stmt_runs.rs",
+        "src/tagg_l1.rs",
+        "src/tagg_l2.rs",
+        "src/tagg_runs.rs",
+        "src/witness_bulk.rs",
+        "src/witness_edge.rs",
+        "src/witness_stmt.rs",
+        "src/witness_tagg.rs"
+      ],
+      "patterns": [
+        "\\bassume\\s*\\(",
+        "\\badmit\\s*\\(",
+        "external_body",
+        "#\\s*\\[\\s*verifier::external",
+        "\\buninterp\\b",
+        "\\baxiom\\b",
+        "assume_specification",
+        "#\\s*\\[\\s*verifier::assume"
+      ],
+      "violations": []
+    },
+    "actors": {
+      "rev": "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877",
+      "path": "/home/ziniu_wu_g5labs_ai/.cargo/git/checkouts/playbook-reference-actors-924e50ff84dd7a85/c03f9fa/crates/actors/src",
+      "violations": [],
+      "note": "verified in the same build without --no-cheating (forwarded to roots only)"
+    },
+    "vstd": {
+      "version": "0.0.0-2026-09-20-0158",
+      "note": "Verus standard library: the trusted base (its axioms, e.g. Map::new and Set extensionality, are Verus's own); not scanned"
+    },
+    "trusted_items_in_this_crate": [],
+    "premises": "named in PROOFS.md (P-E1..P-E9, P-L1..P-L3, P-B1..P-B3, P-T1..P-T3); none is an assumption inside a proof"
+  },
+  "gate": "pass"
+}

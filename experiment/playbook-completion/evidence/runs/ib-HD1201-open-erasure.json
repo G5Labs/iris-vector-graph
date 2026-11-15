@@ -1,0 +1,15 @@
+{
+  "command": "bash experiment/playbook-completion/tools/locks.sh iris bash $RUN_DIR/intent-b/run_ibR_all.sh (runs: timeout 600 python experiment/playbook-completion/intent/probes/lane-b/hd12_14_redaction_probes.py open_erasure)",
+  "experiment_head": "dbcb7e147469b6da8b3b82a49a03ad64e0312533",
+  "id": "ib-HD1201-open-erasure",
+  "kind": "probe",
+  "lane": "intent-b",
+  "log": "$RUN_DIR/intent-b/ibR_open_erasure.log",
+  "log_bytes": 5561,
+  "log_sha256": "1089885a305e6f3e3aa1e990cde6ab9499c35f05947e4e975589aaea598842a8",
+  "observes": "AUDITIB. Process 1 opens a caller transaction (START TRANSACTION + scratch INSERT, $TLEVEL 1) and calls engine.erase_graph(ibR_gA) on an engine built on its connection (Eraser nests, stays open). Process 2 calls ledger.redact(ibR_gA): liveness reads the uncommitted deletes (0 rows), run completes (2 records tombstoned, audit revision seq 4). Process 1 rolls back: gA has 2 node rows and 1 edge again, its statement entry is restored, no record names gA, verify() diverges (unrecorded_writes on the gA relationship). Oracle ADR-0013:17 / spec 256 FR-005 / CONTEXT.md:212 (redaction only follows erasure; refused while live): VIOLATED. HD-1201 (also HD-1301 coupling); P-1311 of the original was unchecked.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-13T23:26:22+00:00",
+  "result": "fail"
+}

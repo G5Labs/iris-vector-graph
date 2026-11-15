@@ -1,0 +1,3405 @@
+{
+ "about": "Reviewed coverage records of the ontology-2 lane (playbook 3.1-coverage): one record per inventoried entry point, file or store that no statement covers mechanically. Read and validated by tools/coverage_reconcile.py (statuses and rules in its docstring).",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "modules": {
+  "00": {
+   "deploy:scripts/backfill_temporal_edges.py:197:__main__": {
+    "status": "owner",
+    "module": "05",
+    "statements": [
+     "TMP-B81",
+     "TMP-T81.80"
+    ],
+    "why": "Operator-run writer of nodes and temporal edges (scripts/backfill_temporal_edges.py) through create_node / create_edge_temporal; 05 owns temporal writes.",
+    "lane_group": "g9"
+   },
+   "deploy:scripts/deploy_graph_tvfs.py:242:__main__": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B80",
+     "INS-T80.82"
+    ],
+    "why": "Operator SQL install script scripts/deploy_graph_tvfs.py (loads sql/graph_walk_tvf.sql); 01 owns install and the files under sql/.",
+    "lane_group": "g9"
+   },
+   "deploy:scripts/deploy_objectscript.py:265:__main__": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B80",
+     "INS-T80.81"
+    ],
+    "why": "Operator class install script scripts/deploy_objectscript.py; 01 owns install and class deploy.",
+    "lane_group": "g9"
+   },
+   "deploy:scripts/deploy_production.py:111:__main__": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B80",
+     "INS-B80.80"
+    ],
+    "why": "Operator install path scripts/deploy_production.py (SQL files then the class deploy; HD-0103 treats it as reachable); 01 owns install.",
+    "lane_group": "g9"
+   },
+   "deploy:scripts/ingest/load_umls_bridges.py:137:__main__": {
+    "status": "owner",
+    "module": "15",
+    "statements": [
+     "INT-T1.80"
+    ],
+    "why": "Writes Graph_KG.fhir_bridges (FHIR bridge rows, module 15's store: INT-D16, sql/fhir_bridges.sql in 15's Scope) with plain SQL; assigned to 15, not 03, because the table and its glossary term are 15's.",
+    "lane_group": "g9"
+   },
+   "deploy:scripts/ingest/networkx_loader.py:577:__main__": {
+    "status": "owner",
+    "module": "03",
+    "statements": [
+     "WRT-T1.82"
+    ],
+    "why": "Writer of rdf_labels / rdf_props / rdf_edges by plain SQL (scripts/ingest/networkx_loader.py:264-364), declared as console script networkx-loader (pyproject.toml:178; F-C1701, stated in 17 as OPS-T80.83); 03 owns direct writes and bulk loads.",
+    "lane_group": "g9"
+   },
+   "deploy:scripts/install-embedded-deps.sh:1:install-embedded-deps.sh": {
+    "status": "owner",
+    "module": "17",
+    "statements": [
+     "OPS-B81",
+     "OPS-T81.81"
+    ],
+    "why": "Operator script that installs the embedded-Python dependencies into an IRIS container (scripts/install-embedded-deps.sh:1-42); 17 owns the runtime premises and Python dependencies.",
+    "lane_group": "g9"
+   },
+   "deploy:scripts/load_demo_data.py:149:__main__": {
+    "status": "owner",
+    "module": "03",
+    "statements": [
+     "WRT-B7.89"
+    ],
+    "why": "Operator-run demo data loaders (scripts/load_drkg.py, scripts/load_demo_data.py) that write through the engine's bulk and networkx loads; 03 owns bulk loads.",
+    "lane_group": "g9"
+   },
+   "deploy:scripts/load_drkg.py:101:__main__": {
+    "status": "owner",
+    "module": "03",
+    "statements": [
+     "WRT-B7.89"
+    ],
+    "why": "Operator-run demo data loaders (scripts/load_drkg.py, scripts/load_demo_data.py) that write through the engine's bulk and networkx loads; 03 owns bulk loads.",
+    "lane_group": "g9"
+   },
+   "deploy:scripts/mcp/ivg_mcp_server.py:136:__main__": {
+    "status": "owner",
+    "module": "16",
+    "statements": [
+     "API-B80",
+     "API-T80.80",
+     "API-T80.81",
+     "API-T80.82",
+     "API-T80.83"
+    ],
+    "why": "Stdio MCP server scripts/mcp/ivg_mcp_server.py (Cypher and graph loading tools, IRIS_USER default SuperUser / SYS at 15-19): an interface entry point; 16 owns the ways a caller reaches the product from outside Python. Not shipped (scripts/ is in neither distribution, pyproject.toml:181-189).",
+    "lane_group": "g9"
+   },
+   "deploy:scripts/migrations/migrate_to_nodepk.py:850:__main__": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B80",
+     "INS-T80.84"
+    ],
+    "why": "Old schema migration script scripts/migrations/migrate_to_nodepk.py (nodes table and foreign keys); 01 owns upgrades.",
+    "lane_group": "g9"
+   },
+   "deploy:scripts/setup_iris.py:65:__main__": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B80",
+     "INS-T80.83"
+    ],
+    "why": "Dev setup script scripts/setup_iris.py (docker compose up, then initialize_schema); 01 owns setup.",
+    "lane_group": "g9"
+   },
+   "deploy:scripts/sweep_bare_nodes_interim.py:104:__main__": {
+    "status": "owner",
+    "module": "05",
+    "statements": [
+     "TMP-B80",
+     "TMP-T80.80"
+    ],
+    "why": "Interim tool for erase_bare_nodes (scripts/sweep_bare_nodes_interim.py:1-28), which module 05 states (TMP-B12.8, TMP-D20).",
+    "lane_group": "g9"
+   },
+   "file:config/mcp-graph.toml": {
+    "status": "owner",
+    "module": "16",
+    "statements": [
+     "API-T12.80"
+    ],
+    "why": "Sample config of an outside MCP server program for the IRIS MCP web path (config/mcp-graph.toml:1-18); 16 owns the MCP interface.",
+    "lane_group": "g9"
+   },
+   "file:examples/domains/__init__.py": {
+    "status": "helper",
+    "module": "16",
+    "of": "API-B6",
+    "why": "Empty package marker (0 bytes) that the sample API's import of examples.domains.biomedical (api/gql/schema.py:78-85) passes through; API-B6 states that the biomedical types load from examples/domains/biomedical.",
+    "lane_group": "g9"
+   },
+   "file:examples/domains/biomedical/__init__.py": {
+    "status": "helper",
+    "module": "16",
+    "of": "API-B6",
+    "why": "Empty package marker (0 bytes) that the sample API's import of examples.domains.biomedical (api/gql/schema.py:78-85) passes through; API-B6 states that the biomedical types load from examples/domains/biomedical.",
+    "lane_group": "g9"
+   },
+   "file:examples/domains/biomedical/loaders.py": {
+    "status": "owner",
+    "module": "16",
+    "statements": [
+     "API-T6.83"
+    ],
+    "why": "Biomedical example loaders, imported with the sample API's biomedical resolver (examples/domains/biomedical/resolver.py:17) but never instantiated (api/gql/context.py:33-50 makes api.gql.loaders' classes).",
+    "lane_group": "g9"
+   },
+   "file:examples/domains/biomedical/types.py": {
+    "status": "owner",
+    "module": "16",
+    "statements": [
+     "API-B6.80",
+     "API-T6.81",
+     "API-T6.82"
+    ],
+    "why": "Biomedical example GraphQL types the sample API serves when they import (api/gql/schema.py:78-85); runtime of the sample API, module 16.",
+    "lane_group": "g9"
+   },
+   "file:iris_vector_graph/__init__.py": {
+    "status": "owner",
+    "module": "17",
+    "statements": [
+     "OPS-B80",
+     "OPS-B80.80",
+     "OPS-T80.81"
+    ],
+    "why": "The package's export list (iris_vector_graph/__init__.py:1-179) defines the public Python API (HD-0705: exports are evidence for callers); 17 owns how programs reach the product.",
+    "lane_group": "g9"
+   },
+   "file:iris_vector_graph/_engine/__init__.py": {
+    "status": "owner",
+    "module": "17",
+    "statements": [
+     "OPS-B80",
+     "OPS-T80.82"
+    ],
+    "why": "Subpackage export files (_engine/__init__.py is empty; stores/__init__.py exports GraphStore and IRISGraphStore); part of the package surface 17 owns.",
+    "lane_group": "g9"
+   },
+   "file:iris_vector_graph/stores/__init__.py": {
+    "status": "owner",
+    "module": "17",
+    "statements": [
+     "OPS-B80",
+     "OPS-T80.82"
+    ],
+    "why": "Subpackage export files (_engine/__init__.py is empty; stores/__init__.py exports GraphStore and IRISGraphStore); part of the package surface 17 owns.",
+    "lane_group": "g9"
+   },
+   "file:scripts/backfill_temporal_edges.py": {
+    "status": "owner",
+    "module": "05",
+    "statements": [
+     "TMP-B81",
+     "TMP-T81.80"
+    ],
+    "why": "Operator-run writer of nodes and temporal edges (scripts/backfill_temporal_edges.py) through create_node / create_edge_temporal; 05 owns temporal writes.",
+    "lane_group": "g9"
+   },
+   "file:scripts/deploy_graph_tvfs.py": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B80",
+     "INS-T80.82"
+    ],
+    "why": "Operator SQL install script scripts/deploy_graph_tvfs.py (loads sql/graph_walk_tvf.sql); 01 owns install and the files under sql/.",
+    "lane_group": "g9"
+   },
+   "file:scripts/deploy_objectscript.py": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B80",
+     "INS-T80.81"
+    ],
+    "why": "Operator class install script scripts/deploy_objectscript.py; 01 owns install and class deploy.",
+    "lane_group": "g9"
+   },
+   "file:scripts/deploy_production.py": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B80",
+     "INS-B80.80"
+    ],
+    "why": "Operator install path scripts/deploy_production.py (SQL files then the class deploy; HD-0103 treats it as reachable); 01 owns install.",
+    "lane_group": "g9"
+   },
+   "file:scripts/ingest/load_umls_bridges.py": {
+    "status": "owner",
+    "module": "15",
+    "statements": [
+     "INT-T1.80"
+    ],
+    "why": "Writes Graph_KG.fhir_bridges (FHIR bridge rows, module 15's store: INT-D16, sql/fhir_bridges.sql in 15's Scope) with plain SQL; assigned to 15, not 03, because the table and its glossary term are 15's.",
+    "lane_group": "g9"
+   },
+   "file:scripts/ingest/networkx_loader.py": {
+    "status": "owner",
+    "module": "03",
+    "statements": [
+     "WRT-T1.82"
+    ],
+    "why": "Writer of rdf_labels / rdf_props / rdf_edges by plain SQL (scripts/ingest/networkx_loader.py:264-364), declared as console script networkx-loader (pyproject.toml:178; F-C1701, stated in 17 as OPS-T80.83); 03 owns direct writes and bulk loads.",
+    "lane_group": "g9"
+   },
+   "file:scripts/install-embedded-deps.sh": {
+    "status": "owner",
+    "module": "17",
+    "statements": [
+     "OPS-B81",
+     "OPS-T81.81"
+    ],
+    "why": "Operator script that installs the embedded-Python dependencies into an IRIS container (scripts/install-embedded-deps.sh:1-42); 17 owns the runtime premises and Python dependencies.",
+    "lane_group": "g9"
+   },
+   "file:scripts/load_demo_data.py": {
+    "status": "owner",
+    "module": "03",
+    "statements": [
+     "WRT-B7.89"
+    ],
+    "why": "Operator-run demo data loaders (scripts/load_drkg.py, scripts/load_demo_data.py) that write through the engine's bulk and networkx loads; 03 owns bulk loads.",
+    "lane_group": "g9"
+   },
+   "file:scripts/load_drkg.py": {
+    "status": "owner",
+    "module": "03",
+    "statements": [
+     "WRT-B7.89"
+    ],
+    "why": "Operator-run demo data loaders (scripts/load_drkg.py, scripts/load_demo_data.py) that write through the engine's bulk and networkx loads; 03 owns bulk loads.",
+    "lane_group": "g9"
+   },
+   "file:scripts/mcp/ivg_mcp_server.py": {
+    "status": "owner",
+    "module": "16",
+    "statements": [
+     "API-B80",
+     "API-T80.80",
+     "API-T80.81",
+     "API-T80.82",
+     "API-T80.83"
+    ],
+    "why": "Stdio MCP server scripts/mcp/ivg_mcp_server.py (Cypher and graph loading tools, IRIS_USER default SuperUser / SYS at 15-19): an interface entry point; 16 owns the ways a caller reaches the product from outside Python. Not shipped (scripts/ is in neither distribution, pyproject.toml:181-189).",
+    "lane_group": "g9"
+   },
+   "file:scripts/migrations/migrate_to_nodepk.py": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B80",
+     "INS-T80.84"
+    ],
+    "why": "Old schema migration script scripts/migrations/migrate_to_nodepk.py (nodes table and foreign keys); 01 owns upgrades.",
+    "lane_group": "g9"
+   },
+   "file:scripts/setup_iris.py": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B80",
+     "INS-T80.83"
+    ],
+    "why": "Dev setup script scripts/setup_iris.py (docker compose up, then initialize_schema); 01 owns setup.",
+    "lane_group": "g9"
+   },
+   "file:scripts/setup_security.sql": {
+    "status": "owner",
+    "module": "17",
+    "statements": [
+     "OPS-B81",
+     "OPS-T81.80"
+    ],
+    "why": "SQL half of ADMIN_GUIDE section 3's roles (scripts/setup_security.sql:1-20), also run by scripts/deploy_production.py:65; operator setup, module 17.",
+    "lane_group": "g9"
+   },
+   "file:scripts/sweep_bare_nodes_interim.py": {
+    "status": "owner",
+    "module": "05",
+    "statements": [
+     "TMP-B80",
+     "TMP-T80.80"
+    ],
+    "why": "Interim tool for erase_bare_nodes (scripts/sweep_bare_nodes_interim.py:1-28), which module 05 states (TMP-B12.8, TMP-D20).",
+    "lane_group": "g9"
+   },
+   "graphql-field:examples/domains/biomedical/types.py:104:similar": {
+    "status": "owner",
+    "module": "16",
+    "statements": [
+     "API-T6.82"
+    ],
+    "why": "Biomedical example GraphQL types the sample API serves when they import (api/gql/schema.py:78-85); runtime of the sample API, module 16.",
+    "lane_group": "g9"
+   },
+   "graphql-field:examples/domains/biomedical/types.py:207:encodes": {
+    "status": "owner",
+    "module": "16",
+    "statements": [
+     "API-B6.80"
+    ],
+    "why": "Biomedical example GraphQL types the sample API serves when they import (api/gql/schema.py:78-85); runtime of the sample API, module 16.",
+    "lane_group": "g9"
+   },
+   "graphql-field:examples/domains/biomedical/types.py:252:variants": {
+    "status": "owner",
+    "module": "16",
+    "statements": [
+     "API-T6.81"
+    ],
+    "why": "Biomedical example GraphQL types the sample API serves when they import (api/gql/schema.py:78-85); runtime of the sample API, module 16.",
+    "lane_group": "g9"
+   },
+   "graphql-field:examples/domains/biomedical/types.py:277:proteins": {
+    "status": "owner",
+    "module": "16",
+    "statements": [
+     "API-T6.81"
+    ],
+    "why": "Biomedical example GraphQL types the sample API serves when they import (api/gql/schema.py:78-85); runtime of the sample API, module 16.",
+    "lane_group": "g9"
+   },
+   "graphql-field:examples/domains/biomedical/types.py:287:genes": {
+    "status": "owner",
+    "module": "16",
+    "statements": [
+     "API-T6.81"
+    ],
+    "why": "Biomedical example GraphQL types the sample API serves when they import (api/gql/schema.py:78-85); runtime of the sample API, module 16.",
+    "lane_group": "g9"
+   },
+   "graphql-field:examples/domains/biomedical/types.py:38:interacts_with": {
+    "status": "owner",
+    "module": "16",
+    "statements": [
+     "API-B6.80"
+    ],
+    "why": "Biomedical example GraphQL types the sample API serves when they import (api/gql/schema.py:78-85); runtime of the sample API, module 16.",
+    "lane_group": "g9"
+   },
+   "graphql-field:examples/domains/biomedical/types.py:83:regulated_by": {
+    "status": "owner",
+    "module": "16",
+    "statements": [
+     "API-T6.81"
+    ],
+    "why": "Biomedical example GraphQL types the sample API serves when they import (api/gql/schema.py:78-85); runtime of the sample API, module 16.",
+    "lane_group": "g9"
+   },
+   "graphql-field:examples/domains/biomedical/types.py:93:participates_in": {
+    "status": "owner",
+    "module": "16",
+    "statements": [
+     "API-T6.81"
+    ],
+    "why": "Biomedical example GraphQL types the sample API serves when they import (api/gql/schema.py:78-85); runtime of the sample API, module 16.",
+    "lane_group": "g9"
+   },
+   "py-api:examples/domains/biomedical/loaders.py:116:batch_load_fn": {
+    "status": "owner",
+    "module": "16",
+    "statements": [
+     "API-T6.83"
+    ],
+    "why": "Biomedical example loaders, imported with the sample API's biomedical resolver (examples/domains/biomedical/resolver.py:17) but never instantiated (api/gql/context.py:33-50 makes api.gql.loaders' classes).",
+    "lane_group": "g9"
+   },
+   "py-api:examples/domains/biomedical/loaders.py:23:batch_load_fn": {
+    "status": "owner",
+    "module": "16",
+    "statements": [
+     "API-T6.83"
+    ],
+    "why": "Biomedical example loaders, imported with the sample API's biomedical resolver (examples/domains/biomedical/resolver.py:17) but never instantiated (api/gql/context.py:33-50 makes api.gql.loaders' classes).",
+    "lane_group": "g9"
+   },
+   "py-api:examples/domains/biomedical/loaders.py:74:batch_load_fn": {
+    "status": "owner",
+    "module": "16",
+    "statements": [
+     "API-T6.83"
+    ],
+    "why": "Biomedical example loaders, imported with the sample API's biomedical resolver (examples/domains/biomedical/resolver.py:17) but never instantiated (api/gql/context.py:33-50 makes api.gql.loaders' classes).",
+    "lane_group": "g9"
+   },
+   "py-api:examples/domains/biomedical/types.py:104:similar": {
+    "status": "owner",
+    "module": "16",
+    "statements": [
+     "API-T6.82"
+    ],
+    "why": "Biomedical example GraphQL types the sample API serves when they import (api/gql/schema.py:78-85); runtime of the sample API, module 16.",
+    "lane_group": "g9"
+   },
+   "py-api:examples/domains/biomedical/types.py:207:encodes": {
+    "status": "owner",
+    "module": "16",
+    "statements": [
+     "API-B6.80"
+    ],
+    "why": "Biomedical example GraphQL types the sample API serves when they import (api/gql/schema.py:78-85); runtime of the sample API, module 16.",
+    "lane_group": "g9"
+   },
+   "py-api:examples/domains/biomedical/types.py:252:variants": {
+    "status": "owner",
+    "module": "16",
+    "statements": [
+     "API-T6.81"
+    ],
+    "why": "Biomedical example GraphQL types the sample API serves when they import (api/gql/schema.py:78-85); runtime of the sample API, module 16.",
+    "lane_group": "g9"
+   },
+   "py-api:examples/domains/biomedical/types.py:277:proteins": {
+    "status": "owner",
+    "module": "16",
+    "statements": [
+     "API-T6.81"
+    ],
+    "why": "Biomedical example GraphQL types the sample API serves when they import (api/gql/schema.py:78-85); runtime of the sample API, module 16.",
+    "lane_group": "g9"
+   },
+   "py-api:examples/domains/biomedical/types.py:287:genes": {
+    "status": "owner",
+    "module": "16",
+    "statements": [
+     "API-T6.81"
+    ],
+    "why": "Biomedical example GraphQL types the sample API serves when they import (api/gql/schema.py:78-85); runtime of the sample API, module 16.",
+    "lane_group": "g9"
+   },
+   "py-api:examples/domains/biomedical/types.py:38:interacts_with": {
+    "status": "owner",
+    "module": "16",
+    "statements": [
+     "API-B6.80"
+    ],
+    "why": "Biomedical example GraphQL types the sample API serves when they import (api/gql/schema.py:78-85); runtime of the sample API, module 16.",
+    "lane_group": "g9"
+   },
+   "py-api:examples/domains/biomedical/types.py:83:regulated_by": {
+    "status": "owner",
+    "module": "16",
+    "statements": [
+     "API-T6.81"
+    ],
+    "why": "Biomedical example GraphQL types the sample API serves when they import (api/gql/schema.py:78-85); runtime of the sample API, module 16.",
+    "lane_group": "g9"
+   },
+   "py-api:examples/domains/biomedical/types.py:93:participates_in": {
+    "status": "owner",
+    "module": "16",
+    "statements": [
+     "API-T6.81"
+    ],
+    "why": "Biomedical example GraphQL types the sample API serves when they import (api/gql/schema.py:78-85); runtime of the sample API, module 16.",
+    "lane_group": "g9"
+   },
+   "py-api:iris_vector_graph/_engine/nodes_edges.py:1588:drop_graph": {
+    "status": "helper",
+    "module": "12",
+    "of": "ERS-D1",
+    "why": "Deprecated name for erase_graph: its body is only 'return self.erase_graph(graph_id)' (nodes_edges.py:1588-1595); ERS-D1 states engine.erase_graph.",
+    "lane_group": "g9"
+   },
+   "py-api:iris_vector_graph/_engine/schema.py:234:setup_tables": {
+    "status": "helper",
+    "module": "01",
+    "of": "INS-B1.17",
+    "why": "Module function in the private _engine package (schema.py:234-240) that lists table names and runs no DDL; its only caller is initialize_schema's dry run, tables_created (schema.py:2365), which INS-B1.17 states.",
+    "lane_group": "g9"
+   },
+   "py-api:iris_vector_graph/_engine/schema.py:2772:get_schema_visualization": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B12.5"
+    ],
+    "why": "IRISGraphEngine.get_schema_visualization (schema.py:2772): a schema read that module 01 already states with its graph scope (INS-B12.5, under INS-B12, citing schema.py:426-534 / 2772-2856; F-0106 for the property keys). Assigned to 01, not 02: 02 would restate the same graph scope (GID-Q6.11 / HD-0201 stay the open question).",
+    "lane_group": "g9"
+   },
+   "py-api:iris_vector_graph/_engine/schema.py:2952:backfill_deg2p_exact": {
+    "status": "owner",
+    "module": "04",
+    "statements": [
+     "ADJ-B7.80"
+    ],
+    "why": "IRISGraphEngine.backfill_deg2p_exact (schema.py:2952-2963) runs Graph.KG.Traversal.Build2HopExactStats, which rewrites ^KG(\"deg2p_exact\"), a store module 04 owns (ADJ-0 Notes, ADJ-B7.7); 04's Scope named backfill_degp only.",
+    "lane_group": "g9"
+   },
+   "py-api:iris_vector_graph/_engine/schema.py:2966:materialize_inference": {
+    "status": "owner",
+    "module": "15",
+    "statements": [
+     "INT-B80",
+     "INT-T80.80",
+     "INT-T80.81",
+     "INT-B80.82",
+     "INT-T80.83",
+     "INT-T80.84"
+    ],
+    "why": "IRISGraphEngine.materialize_inference (schema.py:2966-3183) implements RDFS/OWL rule inference over rdf_edges (subClassOf/subPropertyOf closure, domain/range, OWL equivalence/inverse/transitive/symmetric); module 15 owns the RDF links (export, SHACL, reification).",
+    "lane_group": "g9"
+   },
+   "py-api:iris_vector_graph/_engine/schema.py:3186:retract_inference": {
+    "status": "owner",
+    "module": "15",
+    "statements": [
+     "INT-B80.85",
+     "INT-X80.86",
+     "INT-T80.84"
+    ],
+    "why": "IRISGraphEngine.retract_inference (schema.py:3186-3259) undoes materialize_inference; same owner. F-C0151 cited.",
+    "lane_group": "g9"
+   },
+   "py-api:iris_vector_graph/_engine/schema.py:440:get_labels": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B12.3"
+    ],
+    "why": "IRISGraphEngine.get_labels (schema.py:440): a schema read that module 01 already states with its graph scope (INS-B12.3, under INS-B12, citing schema.py:426-534 / 2772-2856; F-0106 for the property keys). Assigned to 01, not 02: 02 would restate the same graph scope (GID-Q6.11 / HD-0201 stay the open question).",
+    "lane_group": "g9"
+   },
+   "py-api:iris_vector_graph/_engine/schema.py:447:get_relationship_types": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B12.3"
+    ],
+    "why": "IRISGraphEngine.get_relationship_types (schema.py:447): a schema read that module 01 already states with its graph scope (INS-B12.3, under INS-B12, citing schema.py:426-534 / 2772-2856; F-0106 for the property keys). Assigned to 01, not 02: 02 would restate the same graph scope (GID-Q6.11 / HD-0201 stay the open question).",
+    "lane_group": "g9"
+   },
+   "py-api:iris_vector_graph/_engine/schema.py:454:get_node_count": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B12.2"
+    ],
+    "why": "IRISGraphEngine.get_node_count (schema.py:454): a schema read that module 01 already states with its graph scope (INS-B12.2, under INS-B12, citing schema.py:426-534 / 2772-2856; F-0106 for the property keys). Assigned to 01, not 02: 02 would restate the same graph scope (GID-Q6.11 / HD-0201 stay the open question).",
+    "lane_group": "g9"
+   },
+   "py-api:iris_vector_graph/_engine/schema.py:472:get_edge_count": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B12.2"
+    ],
+    "why": "IRISGraphEngine.get_edge_count (schema.py:472): a schema read that module 01 already states with its graph scope (INS-B12.2, under INS-B12, citing schema.py:426-534 / 2772-2856; F-0106 for the property keys). Assigned to 01, not 02: 02 would restate the same graph scope (GID-Q6.11 / HD-0201 stay the open question).",
+    "lane_group": "g9"
+   },
+   "py-api:iris_vector_graph/_engine/schema.py:487:get_label_distribution": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B12.2"
+    ],
+    "why": "IRISGraphEngine.get_label_distribution (schema.py:487): a schema read that module 01 already states with its graph scope (INS-B12.2, under INS-B12, citing schema.py:426-534 / 2772-2856; F-0106 for the property keys). Assigned to 01, not 02: 02 would restate the same graph scope (GID-Q6.11 / HD-0201 stay the open question).",
+    "lane_group": "g9"
+   },
+   "py-api:iris_vector_graph/_engine/schema.py:500:get_property_keys": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-I12.4",
+     "INS-B12.80"
+    ],
+    "why": "IRISGraphEngine.get_property_keys (schema.py:500): a schema read that module 01 already states with its graph scope (INS-I12.4, INS-B12.80, under INS-B12, citing schema.py:426-534 / 2772-2856; F-0106 for the property keys). Assigned to 01, not 02: 02 would restate the same graph scope (GID-Q6.11 / HD-0201 stay the open question).",
+    "lane_group": "g9"
+   },
+   "py-api:iris_vector_graph/_engine/schema.py:518:node_exists": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B12.6"
+    ],
+    "why": "IRISGraphEngine.node_exists (schema.py:518): a schema read that module 01 already states with its graph scope (INS-B12.6, under INS-B12, citing schema.py:426-534 / 2772-2856; F-0106 for the property keys). Assigned to 01, not 02: 02 would restate the same graph scope (GID-Q6.11 / HD-0201 stay the open question).",
+    "lane_group": "g9"
+   },
+   "py-api:iris_vector_graph/_engine/snapshot.py:1694:load_obo": {
+    "status": "owner",
+    "module": "03",
+    "statements": [
+     "WRT-B7.82",
+     "WRT-B1.80",
+     "WRT-B2.80"
+    ],
+    "why": "IRISGraphEngine.load_obo (snapshot.py:1694-1725): a public writer; loads an OBO file through load_networkx. Module 18's Scope excludes the import/export half of snapshot.py; 03 owns direct writes and bulk loads.",
+    "lane_group": "g9"
+   },
+   "py-api:iris_vector_graph/_engine/snapshot.py:1727:import_graph_ndjson": {
+    "status": "owner",
+    "module": "03",
+    "statements": [
+     "WRT-B7.86",
+     "WRT-T7.87",
+     "WRT-B1.80",
+     "WRT-B2.80"
+    ],
+    "why": "IRISGraphEngine.import_graph_ndjson (snapshot.py:1727-1855): a public writer, reachable over POST /admin/load (cypher_api.py:628-645). Module 18's Scope excludes the import/export half of snapshot.py; 03 owns direct writes and bulk loads.",
+    "lane_group": "g9"
+   },
+   "py-api:iris_vector_graph/_engine/snapshot.py:1857:export_graph_ndjson": {
+    "status": "owner",
+    "module": "03",
+    "statements": [
+     "WRT-B7.88"
+    ],
+    "why": "IRISGraphEngine.export_graph_ndjson (snapshot.py:1857-1904): a public reader that writes a file; the counterpart of import_graph_ndjson (GET /admin/export, cypher_api.py:646-666). Module 18's Scope excludes the import/export half of snapshot.py; 03 owns direct writes and bulk loads.",
+    "lane_group": "g9"
+   },
+   "py-api:iris_vector_graph/_engine/snapshot.py:446:load_networkx": {
+    "status": "owner",
+    "module": "03",
+    "statements": [
+     "WRT-B7.80",
+     "WRT-T7.81",
+     "WRT-B1.80",
+     "WRT-B1.81",
+     "WRT-B2.80"
+    ],
+    "why": "IRISGraphEngine.load_networkx (snapshot.py:446-555): a public writer of nodes and edges (create_node/create_edge per item). Module 18's Scope excludes the import/export half of snapshot.py; 03 owns direct writes and bulk loads.",
+    "lane_group": "g9"
+   },
+   "py-api:iris_vector_graph/_engine/snapshot.py:557:import_rdf": {
+    "status": "owner",
+    "module": "03",
+    "statements": [
+     "WRT-B7.83",
+     "WRT-T7.84",
+     "WRT-T7.85",
+     "WRT-B1.80",
+     "WRT-B1.81",
+     "WRT-B2.81"
+    ],
+    "why": "IRISGraphEngine.import_rdf (snapshot.py:557-795): a public bulk writer by plain SQL (ledger-bypassing writer of F-C1350). Module 18's Scope excludes the import/export half of snapshot.py; 03 owns direct writes and bulk loads.",
+    "lane_group": "g9"
+   },
+   "py-api:iris_vector_graph/engine.py:1742:capabilities": {
+    "status": "owner",
+    "module": "17",
+    "statements": [
+     "OPS-B4.83",
+     "OPS-X4.84"
+    ],
+    "why": "IRISGraphEngine.capabilities getter (engine.py:1741-1755, detection 1788-1812): which server classes the namespace holds; 17 owns capabilities.py and the status of what will answer.",
+    "lane_group": "g9"
+   },
+   "py-api:iris_vector_graph/engine.py:1758:capabilities": {
+    "status": "owner",
+    "module": "17",
+    "statements": [
+     "OPS-B4.83"
+    ],
+    "why": "IRISGraphEngine.capabilities setter (engine.py:1757-1760): stores or clears the detected value; same statement as the getter.",
+    "lane_group": "g9"
+   },
+   "py-api:iris_vector_graph/engine.py:487:from_connect": {
+    "status": "owner",
+    "module": "17",
+    "statements": [
+     "OPS-B4.80",
+     "OPS-T4.82"
+    ],
+    "why": "IRISGraphEngine.from_connect (engine.py:486-514): documented engine construction over a connection; 17 owns hosts and connections.",
+    "lane_group": "g9"
+   },
+   "py-api:iris_vector_graph/engine.py:517:from_wrapper": {
+    "status": "owner",
+    "module": "17",
+    "statements": [
+     "OPS-B4.81",
+     "OPS-T4.82"
+    ],
+    "why": "IRISGraphEngine.from_wrapper (engine.py:516-557): engine construction through the wrapper package; 17 owns hosts and connections.",
+    "lane_group": "g9"
+   },
+   "py-api:iris_vector_graph/ledger/client.py:162:revisions_touched": {
+    "status": "helper",
+    "module": "13",
+    "of": "py-api:iris_vector_graph/ledger/client.py:633:redact",
+    "why": "RedactionReceipt.revisions_touched (client.py:161-163) is len(revision_seqs) of the receipt redact returns (client.py:680); RED-B10 states the receipt's counts.",
+    "lane_group": "g9"
+   },
+   "py-api:iris_vector_graph/ledger/client.py:166:from_wire": {
+    "status": "helper",
+    "module": "13",
+    "of": "py-api:iris_vector_graph/ledger/client.py:633:redact",
+    "why": "RedactionReceipt.from_wire (client.py:165-181) only decodes LedgerRedact's answer into the receipt; its one caller is GraphLedger.redact (client.py:680). RED-B10 states the receipt.",
+    "lane_group": "g9"
+   },
+   "py-api:iris_vector_graph/ledger/client.py:56:from_wire": {
+    "status": "helper",
+    "module": "11",
+    "of": [
+     "py:iris_vector_graph/ledger/client.py:GraphLedger.enable",
+     "py:iris_vector_graph/ledger/client.py:GraphLedger.head",
+     "py:iris_vector_graph/ledger/client.py:GraphLedger.commit"
+    ],
+    "why": "RevisionInfo.from_wire (client.py:55-77) only decodes a revision dict into RevisionInfo (JSON source parsed, empty fields to None); called by enable (client.py:291), head (318) and _commit (419), and by ledger/replay.py:286.",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/backfill_temporal_edges.py:52:fetch_all": {
+    "status": "owner",
+    "module": "05",
+    "statements": [
+     "TMP-B81",
+     "TMP-T81.80"
+    ],
+    "why": "Operator-run writer of nodes and temporal edges (scripts/backfill_temporal_edges.py) through create_node / create_edge_temporal; 05 owns temporal writes.",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/backfill_temporal_edges.py:68:main": {
+    "status": "owner",
+    "module": "05",
+    "statements": [
+     "TMP-B81",
+     "TMP-T81.80"
+    ],
+    "why": "Operator-run writer of nodes and temporal edges (scripts/backfill_temporal_edges.py) through create_node / create_edge_temporal; 05 owns temporal writes.",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/deploy_graph_tvfs.py:125:verify_deployment": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B80",
+     "INS-T80.82"
+    ],
+    "why": "Operator SQL install script scripts/deploy_graph_tvfs.py (loads sql/graph_walk_tvf.sql); 01 owns install and the files under sql/.",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/deploy_graph_tvfs.py:172:main": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B80",
+     "INS-T80.82"
+    ],
+    "why": "Operator SQL install script scripts/deploy_graph_tvfs.py (loads sql/graph_walk_tvf.sql); 01 owns install and the files under sql/.",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/deploy_graph_tvfs.py:23:parse_arguments": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B80",
+     "INS-T80.82"
+    ],
+    "why": "Operator SQL install script scripts/deploy_graph_tvfs.py (loads sql/graph_walk_tvf.sql); 01 owns install and the files under sql/.",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/deploy_graph_tvfs.py:38:load_sql_file": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B80",
+     "INS-T80.82"
+    ],
+    "why": "Operator SQL install script scripts/deploy_graph_tvfs.py (loads sql/graph_walk_tvf.sql); 01 owns install and the files under sql/.",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/deploy_graph_tvfs.py:50:execute_sql_statements": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B80",
+     "INS-T80.82"
+    ],
+    "why": "Operator SQL install script scripts/deploy_graph_tvfs.py (loads sql/graph_walk_tvf.sql); 01 owns install and the files under sql/.",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/deploy_objectscript.py:104:deploy_sql_functions": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B80",
+     "INS-T80.81"
+    ],
+    "why": "Operator class install script scripts/deploy_objectscript.py; 01 owns install and class deploy.",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/deploy_objectscript.py:171:verify_deployment": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B80",
+     "INS-T80.81"
+    ],
+    "why": "Operator class install script scripts/deploy_objectscript.py; 01 owns install and class deploy.",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/deploy_objectscript.py:209:main": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B80",
+     "INS-T80.81"
+    ],
+    "why": "Operator class install script scripts/deploy_objectscript.py; 01 owns install and class deploy.",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/deploy_objectscript.py:30:parse_arguments": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B80",
+     "INS-T80.81"
+    ],
+    "why": "Operator class install script scripts/deploy_objectscript.py; 01 owns install and class deploy.",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/deploy_objectscript.py:46:find_objectscript_classes": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B80",
+     "INS-T80.81"
+    ],
+    "why": "Operator class install script scripts/deploy_objectscript.py; 01 owns install and class deploy.",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/deploy_objectscript.py:62:connect_native": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B80",
+     "INS-T80.81"
+    ],
+    "why": "Operator class install script scripts/deploy_objectscript.py; 01 owns install and class deploy.",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/deploy_objectscript.py:72:deploy_via_tcp": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B80",
+     "INS-T80.81"
+    ],
+    "why": "Operator class install script scripts/deploy_objectscript.py; 01 owns install and class deploy.",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/deploy_production.py:28:deploy_classes": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B80",
+     "INS-B80.80"
+    ],
+    "why": "Operator install path scripts/deploy_production.py (SQL files then the class deploy; HD-0103 treats it as reachable); 01 owns install.",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/deploy_production.py:43:deploy_via_sql": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B80",
+     "INS-B80.80"
+    ],
+    "why": "Operator install path scripts/deploy_production.py (SQL files then the class deploy; HD-0103 treats it as reachable); 01 owns install.",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/deploy_production.py:87:main": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B80",
+     "INS-B80.80"
+    ],
+    "why": "Operator install path scripts/deploy_production.py (SQL files then the class deploy; HD-0103 treats it as reachable); 01 owns install.",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/ingest/load_umls_bridges.py:104:main": {
+    "status": "owner",
+    "module": "15",
+    "statements": [
+     "INT-T1.80"
+    ],
+    "why": "Writes Graph_KG.fhir_bridges (FHIR bridge rows, module 15's store: INT-D16, sql/fhir_bridges.sql in 15's Scope) with plain SQL; assigned to 15, not 03, because the table and its glossary term are 15's.",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/ingest/load_umls_bridges.py:14:parse_mrconso": {
+    "status": "owner",
+    "module": "15",
+    "statements": [
+     "INT-T1.80"
+    ],
+    "why": "Writes Graph_KG.fhir_bridges (FHIR bridge rows, module 15's store: INT-D16, sql/fhir_bridges.sql in 15's Scope) with plain SQL; assigned to 15, not 03, because the table and its glossary term are 15's.",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/ingest/load_umls_bridges.py:56:load_to_iris": {
+    "status": "owner",
+    "module": "15",
+    "statements": [
+     "INT-T1.80"
+    ],
+    "why": "Writes Graph_KG.fhir_bridges (FHIR bridge rows, module 15's store: INT-D16, sql/fhir_bridges.sql in 15's Scope) with plain SQL; assigned to 15, not 03, because the table and its glossary term are 15's.",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/ingest/networkx_loader.py:264:import_graph": {
+    "status": "owner",
+    "module": "03",
+    "statements": [
+     "WRT-T1.82"
+    ],
+    "why": "Writer of rdf_labels / rdf_props / rdf_edges by plain SQL (scripts/ingest/networkx_loader.py:264-364), declared as console script networkx-loader (pyproject.toml:178; F-C1701, stated in 17 as OPS-T80.83); 03 owns direct writes and bulk loads.",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/ingest/networkx_loader.py:366:export_graph": {
+    "status": "owner",
+    "module": "03",
+    "statements": [
+     "WRT-T1.82"
+    ],
+    "why": "Writer of rdf_labels / rdf_props / rdf_edges by plain SQL (scripts/ingest/networkx_loader.py:264-364), declared as console script networkx-loader (pyproject.toml:178; F-C1701, stated in 17 as OPS-T80.83); 03 owns direct writes and bulk loads.",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/ingest/networkx_loader.py:451:close": {
+    "status": "owner",
+    "module": "03",
+    "statements": [
+     "WRT-T1.82"
+    ],
+    "why": "Writer of rdf_labels / rdf_props / rdf_edges by plain SQL (scripts/ingest/networkx_loader.py:264-364), declared as console script networkx-loader (pyproject.toml:178; F-C1701, stated in 17 as OPS-T80.83); 03 owns direct writes and bulk loads.",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/ingest/networkx_loader.py:459:main": {
+    "status": "owner",
+    "module": "03",
+    "statements": [
+     "WRT-T1.82"
+    ],
+    "why": "Writer of rdf_labels / rdf_props / rdf_edges by plain SQL (scripts/ingest/networkx_loader.py:264-364), declared as console script networkx-loader (pyproject.toml:178; F-C1701, stated in 17 as OPS-T80.83); 03 owns direct writes and bulk loads.",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/ingest/networkx_loader.py:51:connect": {
+    "status": "owner",
+    "module": "03",
+    "statements": [
+     "WRT-T1.82"
+    ],
+    "why": "Writer of rdf_labels / rdf_props / rdf_edges by plain SQL (scripts/ingest/networkx_loader.py:264-364), declared as console script networkx-loader (pyproject.toml:178; F-C1701, stated in 17 as OPS-T80.83); 03 owns direct writes and bulk loads.",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/ingest/networkx_loader.py:75:load_format": {
+    "status": "owner",
+    "module": "03",
+    "statements": [
+     "WRT-T1.82"
+    ],
+    "why": "Writer of rdf_labels / rdf_props / rdf_edges by plain SQL (scripts/ingest/networkx_loader.py:264-364), declared as console script networkx-loader (pyproject.toml:178; F-C1701, stated in 17 as OPS-T80.83); 03 owns direct writes and bulk loads.",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/load_demo_data.py:55:main": {
+    "status": "owner",
+    "module": "03",
+    "statements": [
+     "WRT-B7.89"
+    ],
+    "why": "Operator-run demo data loaders (scripts/load_drkg.py, scripts/load_demo_data.py) that write through the engine's bulk and networkx loads; 03 owns bulk loads.",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/load_drkg.py:21:load_drkg": {
+    "status": "owner",
+    "module": "03",
+    "statements": [
+     "WRT-B7.89"
+    ],
+    "why": "Operator-run demo data loaders (scripts/load_drkg.py, scripts/load_demo_data.py) that write through the engine's bulk and networkx loads; 03 owns bulk loads.",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/mcp/ivg_mcp_server.py:131:main": {
+    "status": "owner",
+    "module": "16",
+    "statements": [
+     "API-B80",
+     "API-T80.80",
+     "API-T80.81",
+     "API-T80.82",
+     "API-T80.83"
+    ],
+    "why": "Stdio MCP server scripts/mcp/ivg_mcp_server.py (Cypher and graph loading tools, IRIS_USER default SuperUser / SYS at 15-19): an interface entry point; 16 owns the ways a caller reaches the product from outside Python. Not shipped (scripts/ is in neither distribution, pyproject.toml:181-189).",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/mcp/ivg_mcp_server.py:25:get_conn": {
+    "status": "owner",
+    "module": "16",
+    "statements": [
+     "API-B80",
+     "API-T80.80",
+     "API-T80.81",
+     "API-T80.82",
+     "API-T80.83"
+    ],
+    "why": "Stdio MCP server scripts/mcp/ivg_mcp_server.py (Cypher and graph loading tools, IRIS_USER default SuperUser / SYS at 15-19): an interface entry point; 16 owns the ways a caller reaches the product from outside Python. Not shipped (scripts/ is in neither distribution, pyproject.toml:181-189).",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/mcp/ivg_mcp_server.py:34:list_tools": {
+    "status": "owner",
+    "module": "16",
+    "statements": [
+     "API-B80",
+     "API-T80.80",
+     "API-T80.81",
+     "API-T80.82",
+     "API-T80.83"
+    ],
+    "why": "Stdio MCP server scripts/mcp/ivg_mcp_server.py (Cypher and graph loading tools, IRIS_USER default SuperUser / SYS at 15-19): an interface entry point; 16 owns the ways a caller reaches the product from outside Python. Not shipped (scripts/ is in neither distribution, pyproject.toml:181-189).",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/mcp/ivg_mcp_server.py:72:call_tool": {
+    "status": "owner",
+    "module": "16",
+    "statements": [
+     "API-B80",
+     "API-T80.80",
+     "API-T80.81",
+     "API-T80.82",
+     "API-T80.83"
+    ],
+    "why": "Stdio MCP server scripts/mcp/ivg_mcp_server.py (Cypher and graph loading tools, IRIS_USER default SuperUser / SYS at 15-19): an interface entry point; 16 owns the ways a caller reaches the product from outside Python. Not shipped (scripts/ is in neither distribution, pyproject.toml:181-189).",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/migrations/migrate_to_nodepk.py:172:discover_nodes": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B80",
+     "INS-T80.84"
+    ],
+    "why": "Old schema migration script scripts/migrations/migrate_to_nodepk.py (nodes table and foreign keys); 01 owns upgrades.",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/migrations/migrate_to_nodepk.py:254:bulk_insert_nodes": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B80",
+     "INS-T80.84"
+    ],
+    "why": "Old schema migration script scripts/migrations/migrate_to_nodepk.py (nodes table and foreign keys); 01 owns upgrades.",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/migrations/migrate_to_nodepk.py:336:detect_orphans": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B80",
+     "INS-T80.84"
+    ],
+    "why": "Old schema migration script scripts/migrations/migrate_to_nodepk.py (nodes table and foreign keys); 01 owns upgrades.",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/migrations/migrate_to_nodepk.py:448:validate_migration": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B80",
+     "INS-T80.84"
+    ],
+    "why": "Old schema migration script scripts/migrations/migrate_to_nodepk.py (nodes table and foreign keys); 01 owns upgrades.",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/migrations/migrate_to_nodepk.py:53:setup_logging": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B80",
+     "INS-T80.84"
+    ],
+    "why": "Old schema migration script scripts/migrations/migrate_to_nodepk.py (nodes table and foreign keys); 01 owns upgrades.",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/migrations/migrate_to_nodepk.py:572:execute_migration": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B80",
+     "INS-T80.84"
+    ],
+    "why": "Old schema migration script scripts/migrations/migrate_to_nodepk.py (nodes table and foreign keys); 01 owns upgrades.",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/migrations/migrate_to_nodepk.py:65:get_container_port": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B80",
+     "INS-T80.84"
+    ],
+    "why": "Old schema migration script scripts/migrations/migrate_to_nodepk.py (nodes table and foreign keys); 01 owns upgrades.",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/migrations/migrate_to_nodepk.py:708:execute_sql_migration": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B80",
+     "INS-T80.84"
+    ],
+    "why": "Old schema migration script scripts/migrations/migrate_to_nodepk.py (nodes table and foreign keys); 01 owns upgrades.",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/migrations/migrate_to_nodepk.py:769:main": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B80",
+     "INS-T80.84"
+    ],
+    "why": "Old schema migration script scripts/migrations/migrate_to_nodepk.py (nodes table and foreign keys); 01 owns upgrades.",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/migrations/migrate_to_nodepk.py:82:get_connection": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B80",
+     "INS-T80.84"
+    ],
+    "why": "Old schema migration script scripts/migrations/migrate_to_nodepk.py (nodes table and foreign keys); 01 owns upgrades.",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/setup_iris.py:34:main": {
+    "status": "owner",
+    "module": "01",
+    "statements": [
+     "INS-B80",
+     "INS-T80.83"
+    ],
+    "why": "Dev setup script scripts/setup_iris.py (docker compose up, then initialize_schema); 01 owns setup.",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/sweep_bare_nodes_interim.py:47:sweep": {
+    "status": "owner",
+    "module": "05",
+    "statements": [
+     "TMP-B80",
+     "TMP-T80.80"
+    ],
+    "why": "Interim tool for erase_bare_nodes (scripts/sweep_bare_nodes_interim.py:1-28), which module 05 states (TMP-B12.8, TMP-D20).",
+    "lane_group": "g9"
+   },
+   "py-api:scripts/sweep_bare_nodes_interim.py:84:main": {
+    "status": "owner",
+    "module": "05",
+    "statements": [
+     "TMP-B80",
+     "TMP-T80.80"
+    ],
+    "why": "Interim tool for erase_bare_nodes (scripts/sweep_bare_nodes_interim.py:1-28), which module 05 states (TMP-B12.8, TMP-D20).",
+    "lane_group": "g9"
+   }
+  },
+  "01": {
+   "cli:ivg schema status": {
+    "status": "other-module",
+    "module": "17",
+    "statements": [
+     "OPS-B1.9"
+    ],
+    "why": "The command prints the web server's GET /schema answer (cli.py:236-245); OPS-B1.9 states it and cites those lines.",
+    "lane_group": "g4"
+   },
+   "py:iris_vector_graph._engine.class_deploy.DeployResult.fail": {
+    "status": "helper",
+    "of": "py:iris_vector_graph._engine.class_deploy.upload_and_compile",
+    "why": "Records one class's error in failed and errors (class_deploy.py:164-166); called only by upload_and_compile (class_deploy.py:249, 265, 292). INS-B4.3 and INS-B1.11 state the reply.",
+    "lane_group": "g4"
+   },
+   "py:iris_vector_graph._engine.class_deploy.class_exists": {
+    "status": "helper",
+    "of": [
+     "py:iris_vector_graph._engine.class_deploy.select_classes",
+     "py:iris_vector_graph._engine.class_deploy.upload_and_compile",
+     "py:IRISGraphEngine.initialize_schema"
+    ],
+    "why": "One %Dictionary.CompiledClass %ExistsId probe over the Native API, False on any error (class_deploy.py:145-149). Called as select_classes' callback (class_deploy.py:320), by _unchanged for upload_and_compile (224-225), by setup's preview (_engine/schema.py:2354, 2358) and by the kg_node_stores step (migrations/kg_node_stores.py:248).",
+    "lane_group": "g4"
+   },
+   "py:iris_vector_graph._engine.class_deploy.uses_embedded_python": {
+    "status": "helper",
+    "of": "py:iris_vector_graph._engine.class_deploy.select_classes",
+    "why": "One regex test (_PY_METHOD) of a class text (class_deploy.py:70-71); called only by select_classes (class_deploy.py:86), whose skip INS-B4.2 states.",
+    "lane_group": "g4"
+   },
+   "py:iris_vector_graph._engine.legacy.class_source": {
+    "status": "statement",
+    "statements": [
+     "INS-B7.3",
+     "INS-B7.4"
+    ],
+    "why": "Reads a class's text through %Compiler.UDL.TextServices.GetTextAsString and raises without a native handle or on a refusal (_engine/legacy.py:51-65); _class_verdicts (72-86) compares it, as INS-B7.3 states, and an unreadable class is kept, as INS-B7.4 states (its notes: without a native call interface no class counts).",
+    "lane_group": "g4"
+   },
+   "py:iris_vector_graph._engine.legacy.direct_grants": {
+    "status": "helper",
+    "of": "py:iris_vector_graph._engine.legacy.grants_by_object",
+    "why": "Thin wrapper: the Direct rows of grants_on (_engine/legacy.py:242-245); no caller in the package, e2e tests use it (tests/e2e/test_262_upgrade_451.py:188-190).",
+    "lane_group": "g4"
+   },
+   "py:iris_vector_graph._engine.legacy.grants_on": {
+    "status": "helper",
+    "of": "py:iris_vector_graph._engine.legacy.grants_by_object",
+    "why": "Thin wrapper: grants_by_object for one object (_engine/legacy.py:207-209); in the package only direct_grants calls it (legacy.py:245).",
+    "lane_group": "g4"
+   },
+   "py:iris_vector_graph._engine.legacy.user_roles": {
+    "status": "helper",
+    "of": "py:iris_vector_graph._engine.legacy.grant_read_path",
+    "why": "One SQLUserRole query for a user's roles (_engine/legacy.py:212-215); called only by grant_read_path (legacy.py:425) for INS-B6.4's 'a user whose role already qualifies gets nothing of its own'.",
+    "lane_group": "g4"
+   },
+   "py:iris_vector_graph.legacy_text.derived_class": {
+    "status": "statement",
+    "statements": [
+     "INS-B7.5"
+    ],
+    "why": "Tells a manifest function whose class CREATE FUNCTION made (User.func<NAME>) from a shipped class's SqlProc (legacy_text.py:33-36): the split INS-B7.5 states ('a made function as a function, and a shipped class once'). Used by remove_legacy_objects via _derived_class (_engine/legacy.py:48, 673) and for SOURCE_CHECKED_CLASSES (legacy_text.py:43).",
+    "lane_group": "g4"
+   },
+   "py:iris_vector_graph.routine_record.declared_routine_name": {
+    "status": "helper",
+    "of": "py:IRISGraphEngine.initialize_schema",
+    "why": "The same parse with the name as the DDL spells it, for messages (routine_record.py:32-35). Used by setup's routine pass for its warnings and status['routines'] (_engine/schema.py:777, 788, 795), its preview (2388) and status (_engine/admin.py:727).",
+    "lane_group": "g4"
+   },
+   "py:iris_vector_graph.routine_record.routine_name": {
+    "status": "helper",
+    "of": [
+     "py:iris_vector_graph.routine_record.RoutineRecord.unchanged",
+     "py:iris_vector_graph.routine_record.RoutineRecord.forget",
+     "py:iris_vector_graph.routine_record.RoutineRecord.created"
+    ],
+    "why": "Regex parse of 'CREATE OR REPLACE FUNCTION|PROCEDURE schema.name', upper case, the key of the routine record (routine_record.py:26-29). Called by RoutineRecord.unchanged, forget and created (routine_record.py:75, 82, 88) and the Arno bridge's wrappers (stores/arno_bridge.py:127, 357).",
+    "lane_group": "g4"
+   },
+   "py:iris_vector_graph.schema.GraphSchema.ensure_ledger_index": {
+    "status": "statement",
+    "statements": [
+     "INS-B1.20"
+    ],
+    "why": "INS-B1.20 states this step: setup asks for idx_ledger_correlation after the deploy compiles ledger_revisions (_engine/schema.py:2661-2671 calls it), a failure is a warning, and its notes name the build by LedgerRevision.BuildCorrelationIndex when old rows exist (schema.py:737-765: present, created or skipped).",
+    "lane_group": "g4"
+   },
+   "py:iris_vector_graph.schema.GraphSchema.get_bulk_insert_sql": {
+    "status": "other-module",
+    "module": "03",
+    "statements": [
+     "WRT-D10",
+     "WRT-0"
+    ],
+    "why": "The guarded INSERT ... WHERE NOT EXISTS templates of bulk writes (schema.py:1780-1840; ValueError for an unknown table). WRT-D10 defines that guarded insert and cites schema.py:1814; WRT-0 cites the engine's _bulk_sql (nodes_edges.py:361-368) that reads them for module 03's bulk writes. GID-B5.10 (module 02) states their one-edge-per-triple guards.",
+    "lane_group": "g4"
+   },
+   "py:iris_vector_graph.schema.GraphSchema.get_fhir_graph_schema_sql": {
+    "status": "other-module",
+    "module": "15",
+    "statements": [
+     "INT-F3.1"
+    ],
+    "why": "The DDL of the FHIR graph tables (schema.py:292-368), run by the first fhir_graph_register (_engine/fhir_graph.py:208) and by restore_snapshot (_engine/snapshot.py:1224). INT-F3.1 states it and cites schema.py:292-301: 'The first register in a namespace makes the tables for FHIR graphs. Normal setup does not make them.'",
+    "lane_group": "g4"
+   },
+   "py:iris_vector_graph.schema.GraphSchema.global_indexes": {
+    "status": "helper",
+    "module": "17",
+    "of": "py-api:iris_vector_graph/stores/iris_sql_store.py:3060:list_indexes",
+    "why": "Public static by visibility; the shared read behind the two index reports: each of BM25Index, IVFIndex and PLAIDSearch List() through the caller's class-method bridge, a failing call raising (schema.py:1950-1963). Called by IRISSqlStore.list_indexes (iris_sql_store.py:3077) and the engine's SHOW INDEXES (_engine/admin.py:221-223), module 17's (OPS-B3.7).",
+    "lane_group": "g4"
+   },
+   "py:iris_vector_graph.schema.GraphSchema.indexes_not_rebuilt": {
+    "status": "helper",
+    "of": "py:iris_vector_graph.schema.GraphSchema.rebuild_indexes",
+    "why": "A filter of rebuild_indexes' answer: the names whose status is False (schema.py:1775-1777). Called by rebuild_indexes (schema.py:1766) and nodes_edges._rebuild_after_load (_engine/nodes_edges.py:72).",
+    "lane_group": "g4"
+   },
+   "py:iris_vector_graph.schema_name.FirstAccessCheck.release_methods": {
+    "status": "statement",
+    "statements": [
+     "INS-B1.22",
+     "INS-B3.8"
+    ],
+    "why": "Pops each name in _schema_guarded_methods from the instance (schema_name.py:351-353): INS-B1.22's 'Its call wrappers are taken off'. Called only by IRISGraphEngine._schema_check_passed (engine.py:1881, 1884); INS-B3.8's notes: no wrappers stay on an accepted engine.",
+    "lane_group": "g4"
+   },
+   "py:iris_vector_graph.schema_name.guarded_connection": {
+    "status": "statement",
+    "statements": [
+     "INS-B3.7",
+     "INS-T3.6"
+    ],
+    "why": "Builds the conn property of the engine and its store; each read runs the pending first-access check (schema_name.py:356-373). INS-B3.7 states it ('The pending check runs on every read of conn until it passes') and INS-T3.6's notes ('the conn property runs the check too').",
+    "lane_group": "g4"
+   },
+   "py:iris_vector_graph.schema_name.native_namespace": {
+    "status": "helper",
+    "of": [
+     "py:iris_vector_graph.schema_name.check_first_access",
+     "py:iris_vector_graph.schema_name.refuse_other_record"
+    ],
+    "why": "Public by visibility; only words an error message: %SYSTEM.SYS.NameSpace over the Native API, 'this namespace' when that fails (schema_name.py:212-217). Called by refuse_other_record and check_first_access (schema_name.py:191, 229), _why_not_current (258) and setup's messages (_engine/schema.py:2226, 2242, 2322).",
+    "lane_group": "g4"
+   },
+   "py:scripts.deploy_graph_tvfs.load_sql_file": {
+    "status": "helper",
+    "of": "py:scripts.deploy_graph_tvfs.main",
+    "why": "Reads the SQL file, None on an error (scripts/deploy_graph_tvfs.py:38-48); called only by main (line 195).",
+    "lane_group": "g4"
+   },
+   "py:scripts.deploy_graph_tvfs.parse_arguments": {
+    "status": "helper",
+    "of": "py:scripts.deploy_graph_tvfs.main",
+    "why": "argparse of the script's options (scripts/deploy_graph_tvfs.py:23-36); called only by main (line 174).",
+    "lane_group": "g4"
+   },
+   "rest:GET /schema": {
+    "status": "other-module",
+    "module": "16",
+    "statements": [
+     "API-T8.8"
+    ],
+    "why": "The route returns the engine's labels, types, keys and counts (cypher_api.py:470-482); API-T8.8 states it and cites cypher_api.py:469-482 (counts the default graph, lists cover every graph). The read calls themselves are INS-B12.2 and INS-B12.3.",
+    "lane_group": "g4"
+   },
+   "rest:GET /stats": {
+    "status": "other-module",
+    "module": "16",
+    "statements": [
+     "API-T8.8"
+    ],
+    "why": "The route returns the label distribution, counts and embedding count (cypher_api.py:558-568); API-T8.8 states it and cites cypher_api.py:557-568.",
+    "lane_group": "g4"
+   },
+   "sqlfile:sql/procedures/kg_PageRank.sql:PageRankTmp": {
+    "status": "not-entry-point",
+    "why": "sql/procedures/kg_PageRank.sql is comments only: line 17 is '-- CREATE TABLE PageRankTmp (' and every line of the file is a comment or blank; it makes nothing.",
+    "lane_group": "g4"
+   },
+   "sqlfile:sql/schema.sql:idx_docs_text_find": {
+    "status": "not-entry-point",
+    "why": "sql/schema.sql:56 is a comment ('-- CREATE INDEX idx_docs_text_find ON Graph_KG.docs(text) ...', after 'Skip for DB API compatibility' at 54-55); the file makes no such index.",
+    "lane_group": "g4"
+   }
+  },
+  "02": {},
+  "03": {
+   "cli:ivg connect": {
+    "status": "other-module",
+    "module": "17",
+    "statements": [
+     "OPS-B1.4"
+    ],
+    "why": "OPS-B1.4 states the connect command (cli.py:138-148): it asks the web server's health route (IVGClient.ping, GET /health) and prints the answer. Module 17 owns the command line.",
+    "lane_group": "g6"
+   },
+   "py:IRISGraphEngine.list_graphs": {
+    "status": "other-module",
+    "module": "02",
+    "statements": [
+     "GID-B1.6"
+    ],
+    "why": "GID-B1.6 states list_graphs: it cites nodes_edges.py:1458-1471 and names it. The list holds the named graphs with an edge and leaves out the default graph in both spellings.",
+    "lane_group": "g6"
+   },
+   "py:iris_vector_graph._dictionary.sql_refused": {
+    "status": "helper",
+    "of": [
+     "py:iris_vector_graph._dictionary.compiled_class_exists",
+     "py:iris_vector_graph._dictionary.compiled_method_exists"
+    ],
+    "why": "Pure test of a SQLCODE -99 refusal (_dictionary.py:31-34): the 'if SQL is refused' of WRT-T8.5, called inside _dictionary_has (_dictionary.py:54) for both lookups; other modules' dictionary reads call it the same way (schema.py:805, 1992, 2007; admin.py:550).",
+    "lane_group": "g6"
+   },
+   "py:iris_vector_graph._write_txn.WriteTxn.__init__": {
+    "status": "helper",
+    "of": "py:iris_vector_graph._write_txn.WriteTxn.begin",
+    "why": "Constructor only: stores the connection, schema and cursor and zeroes the state (_write_txn.py:110-121); no IRIS call. begin, commit and rollback carry the behaviour (WRT-T2.4, WRT-B2.1 to WRT-B2.3).",
+    "lane_group": "g6"
+   },
+   "py:iris_vector_graph._write_txn.write_txn": {
+    "status": "helper",
+    "of": "py:iris_vector_graph._write_txn.WriteTxn.begin",
+    "why": "Thin wrapper: returns WriteTxn(conn, schema, cursor).begin() (_write_txn.py:275-277); every direct write opens its write level through it.",
+    "lane_group": "g6"
+   },
+   "rest:GET /health": {
+    "status": "other-module",
+    "module": "16",
+    "statements": [
+     "API-B4.3",
+     "API-T4.4"
+    ],
+    "why": "The sample API's health route (api/main.py:100-113): API-B4.3 states when it says healthy and the fixed reason otherwise; API-T4.4 states that IRIS's error text goes to the log. Module 16 owns the sample API.",
+    "lane_group": "g6"
+   }
+  },
+  "04": {
+   "cli:ivg indexes rebuild": {
+    "status": "other-module",
+    "module": "17",
+    "statements": [
+     "OPS-B1.14"
+    ],
+    "why": "OPS-B1.14 states the indexes rebuild command (cli.py:458-471): POST /admin/indexes/rebuild.",
+    "lane_group": "g6"
+   },
+   "cli:ivg status": {
+    "status": "other-module",
+    "module": "17",
+    "statements": [
+     "OPS-B1.7"
+    ],
+    "why": "OPS-B1.7 states the status command (cli.py:187-196): it prints the web server's GET /server report.",
+    "lane_group": "g6"
+   },
+   "cls:Graph.KG.EdgeScan.BulkIngestNodesSQL": {
+    "status": "other-module",
+    "module": "03",
+    "statements": [
+     "WRT-D12",
+     "WRT-T3.18",
+     "WRT-B3.14",
+     "WRT-B3.5"
+    ],
+    "why": "The node half of the server loader, which module 03 owns: WRT-D12 cites EdgeScan.cls:340-429 and names it; WRT-T3.18 states when a batch goes to it; WRT-B3.14 and WRT-B3.5 state its merge into an existing node and the removal of orphan property rows first (EdgeScan.cls:354-361).",
+    "lane_group": "g6"
+   },
+   "cls:Graph.KG.TraversalBuild.KGEdgeCount": {
+    "status": "other-module",
+    "module": "17",
+    "statements": [
+     "OPS-B2.5",
+     "OPS-T2.5.1"
+    ],
+    "why": "Read only by the status report and the index list (admin.py:247, 485) through Graph.KG.Traversal; OPS-B2.5 (whose Notes name KGEdgeCount) and OPS-T2.5.1 (the 10,000 cap) state it. It counts every graph's entries in ^KG(out), a parallel edge each (TraversalBuild.cls:1068-1096).",
+    "lane_group": "g6"
+   },
+   "cls:Graph.KG.TraversalBuild.NKGEdgeCount": {
+    "status": "statement",
+    "statements": [
+     "ADJ-T7.9.4",
+     "ADJ-B9.9"
+    ],
+    "why": "It answers ^NKG $meta edgeCount (TraversalBuild.cls:226-229): the interned snapshot's edge count that ADJ-T7.9.4 states may be too high but never too low, and that the sync check of ADJ-B9.9 compares with the table (admin.py:793).",
+    "lane_group": "g6"
+   },
+   "cls:Graph.KG.TraversalBuild.NKGPopulated": {
+    "status": "other-module",
+    "module": "17",
+    "statements": [
+     "OPS-B2.5"
+    ],
+    "why": "1 when ^NKG has a node dictionary (TraversalBuild.cls:1098-1103); read by the status report and the index list (admin.py:230, 488), which OPS-B2.5 states (its Notes name NKGPopulated).",
+    "lane_group": "g6"
+   },
+   "py:iris_vector_graph._edgeless.complete_labels": {
+    "status": "other-module",
+    "module": "10",
+    "statements": [
+     "ALG-B3.2",
+     "ALG-B4.3"
+    ],
+    "why": "complete_labels (_edgeless.py:109-114) labels each loner a WCC or CDLP map lacks with itself. Its callers are kg_WCC and kg_CDLP (algorithms.py:812-814, 838-840); ALG-B3.2 (which names it) and ALG-B4.3 state the result.",
+    "lane_group": "g6"
+   },
+   "py:iris_vector_graph._edgeless.edgeless": {
+    "status": "other-module",
+    "module": "10",
+    "statements": [
+     "ALG-B1.1"
+    ],
+    "why": "edgeless (_edgeless.py:58-60) keeps the loners with no edge at all, in collation order. Its one caller is global PageRank (algorithms.py:785-798), and ALG-B1.1 (which cites those lines) states the behaviour: a node with no edge takes part as a node with no way out.",
+    "lane_group": "g6"
+   },
+   "py:iris_vector_graph._engine.nodes_edges._rebuild_after_load": {
+    "status": "helper",
+    "module": "03",
+    "of": [
+     "py:IRISGraphEngine.bulk_load_session",
+     "py:IRISGraphEngine.bulk_create_nodes",
+     "py:IRISGraphEngine.bulk_create_edges"
+    ],
+    "why": "Private (underscore); called only at nodes_edges.py:456, 1870 and 2011. It rebuilds the table indexes a load dropped and warns about any not rebuilt, as WRT-T3.20 and WRT-T3.21 state (WRT-T3.21 cites nodes_edges.py:67-79).",
+    "lane_group": "g6"
+   },
+   "py:iris_vector_graph.algo_cache.graph_name": {
+    "status": "helper",
+    "of": "py:iris_vector_graph.stores.iris_sql_store.IRISGraphStore._cached_algorithm",
+    "why": "Returns graph or '' (algo_cache.py:35-36); its one caller builds the result cache key (iris_sql_store.py:945), whose per-graph keying ADJ-B11.7 states.",
+    "lane_group": "g6"
+   },
+   "py:iris_vector_graph.engine._CypherSubEngine.rebuild_kg": {
+    "status": "helper",
+    "of": "py:IRISGraphEngine.rebuild_kg",
+    "why": "One-line delegation to the engine's rebuild_kg (engine.py:187), the engine.cypher spelling.",
+    "lane_group": "g6"
+   },
+   "py:iris_vector_graph.engine._CypherSubEngine.rebuild_nkg": {
+    "status": "helper",
+    "of": "py:IRISGraphEngine.rebuild_nkg",
+    "why": "One-line delegation to the engine's rebuild_nkg (engine.py:186), the engine.cypher spelling.",
+    "lane_group": "g6"
+   },
+   "py:iris_vector_graph.freshness.Freshness.__init__": {
+    "status": "helper",
+    "of": [
+     "py:iris_vector_graph.freshness.Freshness.token",
+     "py:iris_vector_graph.freshness.Freshness.is_current"
+    ],
+    "why": "Constructor only: stores the host (freshness.py:42-43). token, stamp, built_from, is_current and stale_stores carry the behaviour (ADJ-B7, ADJ-T7.5).",
+    "lane_group": "g6"
+   },
+   "rest:GET /metrics": {
+    "status": "other-module",
+    "module": "16",
+    "statements": [
+     "API-T8.9"
+    ],
+    "why": "API-T8.9 states the server and metrics routes (it cites cypher_api.py:498-554): counts over every graph from engine.status(), plus the adjacency built flags.",
+    "lane_group": "g6"
+   },
+   "rest:GET /server": {
+    "status": "other-module",
+    "module": "16",
+    "statements": [
+     "API-T8.9"
+    ],
+    "why": "API-T8.9 states the server and metrics routes (it cites cypher_api.py:498-554): counts over every graph from engine.status(), plus the adjacency built flags.",
+    "lane_group": "g6"
+   },
+   "rest:POST /admin/indexes/rebuild": {
+    "status": "other-module",
+    "module": "17",
+    "statements": [
+     "OPS-B1.14"
+    ],
+    "why": "OPS-B1.14 cites the route (cypher_api.py:597-605) and states it: rebuild_kg, then rebuild_nkg, the adjacency index and the packed index.",
+    "lane_group": "g6"
+   }
+  },
+  "05": {
+   "py:iris_vector_graph._engine.temporal_window.event": {
+    "status": "helper",
+    "of": [
+     "py:iris_vector_graph._engine.temporal_window.latest",
+     "py:IRISGraphEngine.iter_edges_in_window"
+    ],
+    "why": "Module function of the paged reader's Python half, an internal step: it turns one server row into the event dict with short and long keys (s/source, p/predicate, o/target, ts/timestamp, w/weight, plus attrs when asked) (temporal_window.py:26-34). Called only by TemporalWindowCursor.__next__ (temporal_window.py:113), the cursor iter_edges_in_window returns (temporal.py:552-580), and by latest (temporal_window.py:171).",
+    "lane_group": "g5"
+   },
+   "py:iris_vector_graph.engine._TemporalSubEngine.find_burst_nodes": {
+    "status": "helper",
+    "of": "py:IRISGraphEngine.find_burst_nodes",
+    "why": "Thin delegator of the engine.temporal namespace (spec-arch-2, engine.py:150-155, 190-212): find_burst_nodes(*a, **kw) returns self._e.find_burst_nodes(*a, **kw) (engine.py:202); no behaviour of its own.",
+    "lane_group": "g5"
+   },
+   "py:iris_vector_graph.engine._TemporalSubEngine.get_bucket_groups": {
+    "status": "helper",
+    "of": "py:IRISGraphEngine.get_bucket_groups",
+    "why": "Thin delegator of the engine.temporal namespace (spec-arch-2, engine.py:150-155, 190-212): get_bucket_groups(*a, **kw) returns self._e.get_bucket_groups(*a, **kw) (engine.py:205); no behaviour of its own.",
+    "lane_group": "g5"
+   },
+   "py:iris_vector_graph.engine._TemporalSubEngine.get_edge_velocity": {
+    "status": "helper",
+    "of": "py:IRISGraphEngine.get_edge_velocity",
+    "why": "Thin delegator of the engine.temporal namespace (spec-arch-2, engine.py:150-155, 190-212): get_edge_velocity(*a, **kw) returns self._e.get_edge_velocity(*a, **kw) (engine.py:201); no behaviour of its own.",
+    "lane_group": "g5"
+   },
+   "py:iris_vector_graph.engine._TemporalSubEngine.get_temporal_structural": {
+    "status": "helper",
+    "of": "py:IRISGraphEngine.get_temporal_structural",
+    "why": "Thin delegator of the engine.temporal namespace (spec-arch-2, engine.py:150-155, 190-212): get_temporal_structural(*a, **kw) returns self._e.get_temporal_structural(*a, **kw) (engine.py:210); no behaviour of its own.",
+    "lane_group": "g5"
+   },
+   "py:iris_vector_graph.engine._TemporalSubEngine.list_temporal_structural_opt_outs": {
+    "status": "helper",
+    "of": "py:IRISGraphEngine.list_temporal_structural_opt_outs",
+    "why": "Thin delegator of the engine.temporal namespace (spec-arch-2, engine.py:150-155, 190-212): list_temporal_structural_opt_outs(*a, **kw) returns self._e.list_temporal_structural_opt_outs(*a, **kw) (engine.py:211); no behaviour of its own.",
+    "lane_group": "g5"
+   },
+   "py:iris_vector_graph.engine._TemporalSubEngine.set_temporal_structural": {
+    "status": "helper",
+    "of": "py:IRISGraphEngine.set_temporal_structural",
+    "why": "Thin delegator of the engine.temporal namespace (spec-arch-2, engine.py:150-155, 190-212): set_temporal_structural(*a, **kw) returns self._e.set_temporal_structural(*a, **kw) (engine.py:209); no behaviour of its own.",
+    "lane_group": "g5"
+   }
+  },
+  "06": {
+   "cli:ivg embeddings inventory": {
+    "status": "other-module",
+    "module": "17",
+    "statements": [
+     "OPS-B1.10"
+    ],
+    "why": "OPS-B1.10 states the command (cli.py:251-281): it reads embedding_inventory straight from IRIS and prints one line per vector table and one per graph with none. The report itself is VEC-B8.",
+    "lane_group": "g6"
+   },
+   "cls:Graph.KG.IVFIndex.List": {
+    "status": "statement",
+    "statements": [
+     "VEC-B11"
+    ],
+    "why": "The comma-joined names under ^IVF (IVFIndex.cls:278-283). The engine reads it at start to know its IVF indexes (vector.py:107-115), the read VEC-B11 states ('from the index stores at start'); GraphSchema.global_indexes (schema.py:1958-1962) lists the same names for the index reports.",
+    "lane_group": "g6"
+   },
+   "cls:Graph.KG.PLAIDSearch.List": {
+    "status": "statement",
+    "statements": [
+     "VEC-B11"
+    ],
+    "why": "The comma-joined names under ^PLAID (PLAIDSearch.cls:249-254). The engine reads it at start to know its PLAID indexes (vector.py:107-115), the read VEC-B11 states ('from the index stores at start'); GraphSchema.global_indexes (schema.py:1958-1962) lists the same names for the index reports.",
+    "lane_group": "g6"
+   },
+   "cls:Graph.KG.VecIndex.JsonToVector": {
+    "status": "helper",
+    "of": [
+     "cls:Graph.KG.VecIndex.SearchJSON",
+     "cls:Graph.KG.VecIndex.InsertJSON"
+    ],
+    "why": "Turns a JSON array into a $vector of doubles (VecIndex.cls:184-193), with no width check; called only at VecIndex.cls:197 (SearchJSON) and 223 (InsertJSON).",
+    "lane_group": "g6"
+   },
+   "export:QuarantinedVector": {
+    "status": "statement",
+    "statements": [
+     "VEC-B9.1"
+    ],
+    "why": "The frozen row type list_quarantine answers (_engine/schema.py:372-392, built at 1959): node id, source table, width, number type, metadata, reason and time, with no vector, as VEC-B9.1 states.",
+    "lane_group": "g6"
+   },
+   "py:iris_vector_graph.vector_utils.VectorOptimizer.__init__": {
+    "status": "helper",
+    "of": [
+     "py:iris_vector_graph.vector_utils.VectorOptimizer.check_hnsw_availability",
+     "py:iris_vector_graph.vector_utils.VectorOptimizer.migrate_to_optimized",
+     "py:iris_vector_graph.vector_utils.VectorOptimizer.benchmark_vector_search"
+    ],
+    "why": "Constructor only: stores the connection (vector_utils.py:58-60); the methods carry the behaviour.",
+    "lane_group": "g6"
+   },
+   "rest:POST /hybridSearch": {
+    "status": "other-module",
+    "module": "16",
+    "statements": [
+     "API-B11",
+     "API-B11.9"
+    ],
+    "why": "The REST dispatcher's route (Service.cls:286-302, PyOps.HybridSearch): API-B11 states it, and API-B11.9 states its graph. TXT-B14.4 (module 07) states the fusion.",
+    "lane_group": "g6"
+   },
+   "rest:POST /vectorSearch": {
+    "status": "other-module",
+    "module": "16",
+    "statements": [
+     "API-B11",
+     "API-B11.9"
+    ],
+    "why": "The REST dispatcher's route (Service.cls:265-284, PyOps.VectorSearch): API-B11 states it, and API-B11.9 states its graph (the one named, else the default graph, unchecked). Module 16 owns the dispatcher.",
+    "lane_group": "g6"
+   }
+  },
+  "07": {
+   "py:iris_vector_graph/fusion.py:HybridSearchFusion.__init__": {
+    "status": "helper",
+    "of": [
+     "py:iris_vector_graph/fusion.py:HybridSearchFusion.multi_modal_search",
+     "py:iris_vector_graph/fusion.py:HybridSearchFusion.adaptive_search"
+    ],
+    "why": "Constructor (fusion.py:105-107): only keeps the engine it is given (self.graph_engine); reads and writes nothing. The behaviour is in its two methods, multi_modal_search (fusion.py:109-252, TXT-B17) and adaptive_search (fusion.py:254-310, TXT-B18), which read self.graph_engine.",
+    "lane_group": "g2"
+   }
+  },
+  "08": {
+   "cli:ivg query": {
+    "status": "other-module",
+    "module": "17",
+    "statements": [
+     "OPS-B1.5",
+     "OPS-T1.5.1",
+     "OPS-B1.5.2"
+    ],
+    "why": "The ivg query command (cli.py:150-173) sends the text to the web server through IVGClient and prints a table or JSON; module 17 states it (OPS-B1.5 cites cli.py:150-173; bound values as text, OPS-T1.5.1; the AQL flag, OPS-B1.5.2). The server runs it through execute_cypher (module 16 API-B8.5).",
+    "lane_group": "g5"
+   },
+   "cls:Graph.KG.SqlProcs.CypherFnIVGJSONARRAYLENGTH": {
+    "status": "helper",
+    "of": "cls:Graph.KG.CypherFn.IVGJSONARRAYLENGTH",
+    "why": "SQL forwarder (SqlProcs.cls:22-25): [ SqlProc, SqlName = CypherFn_IVGJSONARRAYLENGTH ], body Quit ##class(Graph.KG.CypherFn).IVGJSONARRAYLENGTH(...) with the same arguments and return type (SqlProcs.cls:1-3, 4.6.0 R084). It is the SQL name of that method and adds nothing.",
+    "lane_group": "g5"
+   },
+   "cls:Graph.KG.SqlProcs.CypherFnIVGJSONKEYS": {
+    "status": "helper",
+    "of": "cls:Graph.KG.CypherFn.IVGJSONKEYS",
+    "why": "SQL forwarder (SqlProcs.cls:32-35): [ SqlProc, SqlName = CypherFn_IVGJSONKEYS ], body Quit ##class(Graph.KG.CypherFn).IVGJSONKEYS(...) with the same arguments and return type (SqlProcs.cls:1-3, 4.6.0 R084). It is the SQL name of that method and adds nothing.",
+    "lane_group": "g5"
+   },
+   "cls:Graph.KG.SqlProcs.CypherFnIVGJSONSET": {
+    "status": "helper",
+    "of": "cls:Graph.KG.CypherFn.IVGJSONSET",
+    "why": "SQL forwarder (SqlProcs.cls:87-90): [ SqlProc, SqlName = CypherFn_IVGJSONSET ], body Quit ##class(Graph.KG.CypherFn).IVGJSONSET(...) with the same arguments and return type (SqlProcs.cls:1-3, 4.6.0 R084). It is the SQL name of that method and adds nothing.",
+    "lane_group": "g5"
+   },
+   "cls:Graph.KG.SqlProcs.CypherFnIVGJSONVALUE": {
+    "status": "helper",
+    "of": "cls:Graph.KG.CypherFn.IVGJSONVALUE",
+    "why": "SQL forwarder (SqlProcs.cls:27-30): [ SqlProc, SqlName = CypherFn_IVGJSONVALUE ], body Quit ##class(Graph.KG.CypherFn).IVGJSONVALUE(...) with the same arguments and return type (SqlProcs.cls:1-3, 4.6.0 R084). It is the SQL name of that method and adds nothing.",
+    "lane_group": "g5"
+   },
+   "cls:Graph.KG.SqlProcs.CypherFnIVGLISTGET": {
+    "status": "helper",
+    "of": "cls:Graph.KG.CypherFn.IVGLISTGET",
+    "why": "SQL forwarder (SqlProcs.cls:72-75): [ SqlProc, SqlName = CypherFn_IVGLISTGET ], body Quit ##class(Graph.KG.CypherFn).IVGLISTGET(...) with the same arguments and return type (SqlProcs.cls:1-3, 4.6.0 R084). It is the SQL name of that method and adds nothing.",
+    "lane_group": "g5"
+   },
+   "cls:Graph.KG.SqlProcs.CypherFnIVGLISTHEAD": {
+    "status": "helper",
+    "of": "cls:Graph.KG.CypherFn.IVGLISTHEAD",
+    "why": "SQL forwarder (SqlProcs.cls:57-60): [ SqlProc, SqlName = CypherFn_IVGLISTHEAD ], body Quit ##class(Graph.KG.CypherFn).IVGLISTHEAD(...) with the same arguments and return type (SqlProcs.cls:1-3, 4.6.0 R084). It is the SQL name of that method and adds nothing.",
+    "lane_group": "g5"
+   },
+   "cls:Graph.KG.SqlProcs.CypherFnIVGLISTLAST": {
+    "status": "helper",
+    "of": "cls:Graph.KG.CypherFn.IVGLISTLAST",
+    "why": "SQL forwarder (SqlProcs.cls:62-65): [ SqlProc, SqlName = CypherFn_IVGLISTLAST ], body Quit ##class(Graph.KG.CypherFn).IVGLISTLAST(...) with the same arguments and return type (SqlProcs.cls:1-3, 4.6.0 R084). It is the SQL name of that method and adds nothing.",
+    "lane_group": "g5"
+   },
+   "cls:Graph.KG.SqlProcs.CypherFnIVGLISTREVERSE": {
+    "status": "helper",
+    "of": "cls:Graph.KG.CypherFn.IVGLISTREVERSE",
+    "why": "SQL forwarder (SqlProcs.cls:37-40): [ SqlProc, SqlName = CypherFn_IVGLISTREVERSE ], body Quit ##class(Graph.KG.CypherFn).IVGLISTREVERSE(...) with the same arguments and return type (SqlProcs.cls:1-3, 4.6.0 R084). It is the SQL name of that method and adds nothing.",
+    "lane_group": "g5"
+   },
+   "cls:Graph.KG.SqlProcs.CypherFnIVGLISTTAIL": {
+    "status": "helper",
+    "of": "cls:Graph.KG.CypherFn.IVGLISTTAIL",
+    "why": "SQL forwarder (SqlProcs.cls:67-70): [ SqlProc, SqlName = CypherFn_IVGLISTTAIL ], body Quit ##class(Graph.KG.CypherFn).IVGLISTTAIL(...) with the same arguments and return type (SqlProcs.cls:1-3, 4.6.0 R084). It is the SQL name of that method and adds nothing.",
+    "lane_group": "g5"
+   },
+   "cls:Graph.KG.SqlProcs.CypherFnIVGMAPGET": {
+    "status": "helper",
+    "of": "cls:Graph.KG.CypherFn.IVGMAPGET",
+    "why": "SQL forwarder (SqlProcs.cls:82-85): [ SqlProc, SqlName = CypherFn_IVGMAPGET ], body Quit ##class(Graph.KG.CypherFn).IVGMAPGET(...) with the same arguments and return type (SqlProcs.cls:1-3, 4.6.0 R084). It is the SQL name of that method and adds nothing.",
+    "lane_group": "g5"
+   },
+   "cls:Graph.KG.SqlProcs.CypherFnIVGNEWID": {
+    "status": "helper",
+    "of": "cls:Graph.KG.CypherFn.IVGNEWID",
+    "why": "SQL forwarder (SqlProcs.cls:47-50): [ SqlProc, SqlName = CypherFn_IVGNEWID ], body Quit ##class(Graph.KG.CypherFn).IVGNEWID(...) with the same arguments and return type (SqlProcs.cls:1-3, 4.6.0 R084). It is the SQL name of that method and adds nothing.",
+    "lane_group": "g5"
+   },
+   "cls:Graph.KG.SqlProcs.CypherFnIVGRAND": {
+    "status": "helper",
+    "of": "cls:Graph.KG.CypherFn.IVGRAND",
+    "why": "SQL forwarder (SqlProcs.cls:52-55): [ SqlProc, SqlName = CypherFn_IVGRAND ], body Quit ##class(Graph.KG.CypherFn).IVGRAND(...) with the same arguments and return type (SqlProcs.cls:1-3, 4.6.0 R084). It is the SQL name of that method and adds nothing.",
+    "lane_group": "g5"
+   },
+   "cls:Graph.KG.SqlProcs.CypherFnIVGRANGE": {
+    "status": "helper",
+    "of": "cls:Graph.KG.CypherFn.IVGRANGE",
+    "why": "SQL forwarder (SqlProcs.cls:97-100): [ SqlProc, SqlName = CypherFn_IVGRANGE ], body Quit ##class(Graph.KG.CypherFn).IVGRANGE(...) with the same arguments and return type (SqlProcs.cls:1-3, 4.6.0 R084). It is the SQL name of that method and adds nothing.",
+    "lane_group": "g5"
+   },
+   "cls:Graph.KG.SqlProcs.CypherFnIVGREGEXMATCH": {
+    "status": "helper",
+    "of": "cls:Graph.KG.CypherFn.IVGREGEXMATCH",
+    "why": "SQL forwarder (SqlProcs.cls:17-20): [ SqlProc, SqlName = CypherFn_IVGREGEXMATCH ], body Quit ##class(Graph.KG.CypherFn).IVGREGEXMATCH(...) with the same arguments and return type (SqlProcs.cls:1-3, 4.6.0 R084). It is the SQL name of that method and adds nothing.",
+    "lane_group": "g5"
+   },
+   "cls:Graph.KG.SqlProcs.CypherFnIVGSTRSPLIT": {
+    "status": "helper",
+    "of": "cls:Graph.KG.CypherFn.IVGSTRSPLIT",
+    "why": "SQL forwarder (SqlProcs.cls:42-45): [ SqlProc, SqlName = CypherFn_IVGSTRSPLIT ], body Quit ##class(Graph.KG.CypherFn).IVGSTRSPLIT(...) with the same arguments and return type (SqlProcs.cls:1-3, 4.6.0 R084). It is the SQL name of that method and adds nothing.",
+    "lane_group": "g5"
+   },
+   "cls:Graph.KG.SqlProcs.CypherFnIVGTYPEERROR": {
+    "status": "helper",
+    "of": "cls:Graph.KG.CypherFn.IVGTYPEERROR",
+    "why": "SQL forwarder (SqlProcs.cls:77-80): [ SqlProc, SqlName = CypherFn_IVGTYPEERROR ], body Quit ##class(Graph.KG.CypherFn).IVGTYPEERROR(...) with the same arguments and return type (SqlProcs.cls:1-3, 4.6.0 R084). It is the SQL name of that method and adds nothing.",
+    "lane_group": "g5"
+   },
+   "cypher:dbms.jvm.heap.initial_size": {
+    "status": "not-entry-point",
+    "why": "An attribute key (value \"256m\"/\"512m\") of the Configuration row in the fixed answer of the dbms.queryJmx procedure (_proc_dbms_queryjmx, engine.py:1527-1615; key at engine.py:1609), not a procedure: the procedure table (engine.py:959) has no such name. dbms.queryjmx itself is covered by CYP-T10.1.",
+    "lane_group": "g5"
+   },
+   "cypher:dbms.jvm.heap.max_size": {
+    "status": "not-entry-point",
+    "why": "An attribute key (value \"256m\"/\"512m\") of the Configuration row in the fixed answer of the dbms.queryJmx procedure (_proc_dbms_queryjmx, engine.py:1527-1615; key at engine.py:1610), not a procedure: the procedure table (engine.py:959) has no such name. dbms.queryjmx itself is covered by CYP-T10.1.",
+    "lane_group": "g5"
+   },
+   "cypher:dbms.logs.native.size": {
+    "status": "not-entry-point",
+    "why": "An attribute key (value \"20m\") of the Configuration row in the fixed answer of the dbms.queryJmx procedure (_proc_dbms_queryjmx, engine.py:1527-1615; key at engine.py:1611), not a procedure. Today the reconcile counts it covered only because CYP-B6.8.4's Notes hold \"size(\", a spurious name match; this record states what it is.",
+    "lane_group": "g5"
+   },
+   "cypher:dbms.security.auth_enabled": {
+    "status": "not-entry-point",
+    "why": "A key/value row of the fixed answer of the dbms.clientconfig procedure (_proc_dbms_clientconfig, engine.py:1495-1506: [\"dbms.security.auth_enabled\", \"false\"]), not a procedure: the procedure table (engine.py:955) has no such name, so CALL dbms.security.auth_enabled() is an unknown procedure (CYP-X10.2). dbms.clientconfig itself is covered by CYP-T10.1.",
+    "lane_group": "g5"
+   },
+   "extra:IVG.CypherEngine.Query": {
+    "status": "other-module",
+    "module": "09",
+    "statements": [
+     "NAT-T10",
+     "NAT-B10.1",
+     "NAT-T10.2",
+     "NAT-T10.3"
+    ],
+    "why": "IVG.CypherEngine.Query parses QueryJson's answer (CypherEngine.cls:97-131), which runs execute_cypher; module 09 states it: columns, rows and an error text, never a throw (NAT-B10.1 cites CypherEngine.cls:97-131), lists and maps as text (NAT-T10.2), the engine's own read paths (NAT-T10.3).",
+    "lane_group": "g5"
+   },
+   "extra:http POST /api/cypher": {
+    "status": "other-module",
+    "module": "16",
+    "statements": [
+     "API-B8.5",
+     "API-T8.5.1",
+     "API-T8.5.3",
+     "API-T8.5.4",
+     "API-T3.1"
+    ],
+    "why": "The route cypher_query (cypher_api.py:351-378) is module 16's: the read-only check by the one parser rule (API-T3.1), patient anchors (API-T8.5.4), one execute_cypher run cut to limitRows (API-B8.5 cites cypher_api.py:351-376; API-T8.5.1), and a 400 with the error text (API-T8.5.3).",
+    "lane_group": "g5"
+   }
+  },
+  "10": {
+   "cls:Graph.KG.NKGAccel.BFSJson": {
+    "status": "helper",
+    "of": "cls:Graph.KG.NKGAccelTraversal.BFSJson",
+    "why": "Thin delegating wrapper (NKGAccel.cls:180-183) of NKGAccelTraversal.BFSJson (ALG-B9.8); called by the store's library walk (iris_sql_store.py:1980-1987) and its one-hop probe (iris_sql_store.py:1053-1055)",
+    "lane_group": "g3"
+   },
+   "cls:Graph.KG.NKGAccel.EigenvectorGlobal": {
+    "status": "helper",
+    "of": "cls:Graph.KG.NKGAccelCentrality.EigenvectorGlobal",
+    "why": "Thin delegating wrapper (NKGAccel.cls:204-207) of NKGAccelCentrality.EigenvectorGlobal (ALG-B5.18); called by the store's eigenvector tier (iris_sql_store.py:3694) and the kg_Eigenvector SQL function (schema.py:2687)",
+    "lane_group": "g3"
+   },
+   "cls:Graph.KG.NKGAccel.Load": {
+    "status": "helper",
+    "of": "cls:Graph.KG.NKGAccelLoader.Load",
+    "why": "Thin delegating wrapper (NKGAccel.cls:115-118) of NKGAccelLoader.Load (ALG-B13.4); called by the store's library check (iris_sql_store.py:1018)",
+    "lane_group": "g3"
+   },
+   "cls:Graph.KG.NKGAccelTraversal.StructuralGuard": {
+    "status": "helper",
+    "of": [
+     "cls:Graph.KG.TraversalKHop.KHopNeighborIds",
+     "cls:Graph.KG.NKGAccelAdjacency.ExportAdjacencyWithPreds"
+    ],
+    "why": "Public ClassMethod with no effect of its own (NKGAccelTraversal.cls:556-566): 1 when the node index has an ^NKG(-1) row for each listed type index; called only as the type filter of TraversalKHop.KHopNeighborIds (TraversalKHop.cls:40, 57) and NKGAccelAdjacency.ExportAdjacencyWithPreds (NKGAccelAdjacency.cls:188)",
+    "lane_group": "g3"
+   },
+   "cls:Graph.KG.Traversal.BFS": {
+    "status": "helper",
+    "of": "cls:Graph.KG.TraversalBFS.BFS",
+    "why": "Thin delegating wrapper (Traversal.cls:74-77) of TraversalBFS.BFS, same arguments; no product caller",
+    "lane_group": "g3"
+   },
+   "cls:Graph.KG.Traversal.BFSFast": {
+    "status": "helper",
+    "of": "cls:Graph.KG.TraversalBFS.BFSFast",
+    "why": "Thin delegating wrapper (Traversal.cls:79-82) of TraversalBFS.BFSFast, same arguments; no product caller",
+    "lane_group": "g3"
+   },
+   "cls:Graph.KG.Traversal.BackfillDegp": {
+    "status": "other-module",
+    "module": "04",
+    "statements": [
+     "ADJ-B5.18"
+    ],
+    "why": "Traversal.cls:46-49 delegates to TraversalBuild.BackfillDegp, which only warms the degree cache (TraversalBuild.cls:924-930); ADJ-B5.18 states it",
+    "lane_group": "g3"
+   },
+   "cls:Graph.KG.Traversal.Build2HopExactStats": {
+    "status": "other-module",
+    "module": "04",
+    "statements": [
+     "ADJ-B7.7",
+     "ADJ-T7.2"
+    ],
+    "why": "Traversal.cls:56-59 delegates to TraversalBuild.Build2HopExactStats (^KG(\"deg2p_exact\") per graph); module 04 states it (ADJ-B7.7, ADJ-T7.2); its call of the library's merged counts is ALG-B12.93. Called by the engine's backfill_2hop_exact and backfill_deg2p_exact (nodes_edges.py:526, schema.py:2959)",
+    "lane_group": "g3"
+   },
+   "cls:Graph.KG.Traversal.BuildKG": {
+    "status": "other-module",
+    "module": "04",
+    "statements": [
+     "ADJ-D18",
+     "ADJ-B8.2",
+     "ADJ-B8.3",
+     "ADJ-B8.7"
+    ],
+    "why": "Traversal.cls:16-19 delegates to TraversalBuild.BuildKG, the adjacency rebuild; module 04 owns it: ADJ-D18 names Graph.KG.Traversal.BuildKG, ADJ-B8.2/ADJ-B8.3 state the refill, ADJ-B8.7 the token move",
+    "lane_group": "g3"
+   },
+   "cls:Graph.KG.Traversal.DijkstraProc": {
+    "status": "helper",
+    "of": "cls:Graph.KG.TraversalPaths.DijkstraJson",
+    "why": "Thin delegating wrapper (Traversal.cls:11-14): Quit TraversalPaths.DijkstraJson with the same arguments; called by SqlProcs.DijkstraPath (SqlProcs.cls:163)",
+    "lane_group": "g3"
+   },
+   "cls:Graph.KG.Traversal.KHop2CountExact": {
+    "status": "helper",
+    "of": "cls:Graph.KG.TraversalKHop.KHop2CountExact",
+    "why": "Thin delegating wrapper (Traversal.cls:181-184) of TraversalKHop.KHop2CountExact (ALG-B9.12); called by the engine's khop2_count_exact (_engine/query.py:4542-4544)",
+    "lane_group": "g3"
+   },
+   "cls:Graph.KG.Traversal.KHop2CountFast": {
+    "status": "helper",
+    "of": "cls:Graph.KG.TraversalKHop.KHop2CountFast",
+    "why": "Thin delegating wrapper (Traversal.cls:176-179) of TraversalKHop.KHop2CountFast (ALG-B9.12); called by the engine's khop2_count_fast (_engine/query.py:4530-4532)",
+    "lane_group": "g3"
+   },
+   "cypher:gds.betweenness.stream": {
+    "status": "other-module",
+    "module": "08",
+    "statements": [
+     "CYP-T10.1",
+     "CYP-X10.5",
+     "CYP-X10.6"
+    ],
+    "why": "gds.betweenness.stream is an engine-answered procedure (_SYSTEM_PROCEDURES, engine.py:962-965); module 08 owns procedure dispatch: CYP-T10.1 cites engine.py:944-966, CYP-X10.5 and CYP-X10.6 state its graph refusals (it reads the default graph only)",
+    "lane_group": "g3"
+   },
+   "cypher:gds.pagerank.stream": {
+    "status": "other-module",
+    "module": "08",
+    "statements": [
+     "CYP-T10.1",
+     "CYP-X10.5",
+     "CYP-X10.6"
+    ],
+    "why": "gds.pagerank.stream is an engine-answered procedure (_SYSTEM_PROCEDURES, engine.py:962-965); module 08 owns procedure dispatch: CYP-T10.1 cites engine.py:944-966, CYP-X10.5 and CYP-X10.6 state its graph refusals (it reads the default graph only)",
+    "lane_group": "g3"
+   },
+   "cypher:gds.shortestpath.dijkstra": {
+    "status": "other-module",
+    "module": "08",
+    "statements": [
+     "CYP-T10.1",
+     "CYP-X10.5",
+     "CYP-X10.6"
+    ],
+    "why": "gds.shortestpath.dijkstra is an engine-answered procedure (_SYSTEM_PROCEDURES, engine.py:962-965); module 08 owns procedure dispatch: CYP-T10.1 cites engine.py:944-966, CYP-X10.5 and CYP-X10.6 state its graph refusals (it reads the default graph only)",
+    "lane_group": "g3"
+   },
+   "cypher:gds.shortestpath.dijkstra.stream": {
+    "status": "other-module",
+    "module": "08",
+    "statements": [
+     "CYP-T10.1",
+     "CYP-X10.5",
+     "CYP-X10.6"
+    ],
+    "why": "gds.shortestpath.dijkstra.stream is an engine-answered procedure (_SYSTEM_PROCEDURES, engine.py:962-965); module 08 owns procedure dispatch: CYP-T10.1 cites engine.py:944-966, CYP-X10.5 and CYP-X10.6 state its graph refusals (it reads the default graph only)",
+    "lane_group": "g3"
+   },
+   "eng:IRISGraphEngine.kg_GRAPH_WALK_TVF": {
+    "status": "helper",
+    "of": "eng:IRISGraphEngine.kg_GRAPH_WALK",
+    "why": "Thin delegating wrapper (_engine/algorithms.py:733-740): returns self.kg_GRAPH_WALK(...) with the same arguments, the older table-valued-function name (ALG-B9.1, ALG-B9.2)",
+    "lane_group": "g3"
+   },
+   "eng:IRISGraphEngine.kg_RERANK": {
+    "status": "other-module",
+    "module": "07",
+    "statements": [
+     "TXT-B13.10"
+    ],
+    "why": "_engine/algorithms.py:1043-1050 is kg_RRF_FUSE(k=top_n, k1=k2=2*top_n, c=60); module 07 owns rank fusion and TXT-B13.10 cites these lines and states the rerank call",
+    "lane_group": "g3"
+   },
+   "ext:Graph.KG.Eraser.EraseGraph": {
+    "status": "other-module",
+    "module": "12",
+    "statements": [
+     "ERS-D1",
+     "ERS-B1"
+    ],
+    "why": "The graph erasure (Eraser.cls:47-306), owned by module 12 (ERS-D1, ERS-B1); listed in module 10 for the cache and snapshot cells only: ALG-B12.4 and ALG-B16.10 state what it does to the snapshot and the result cache",
+    "lane_group": "g3"
+   },
+   "ext:IRISGraphEngine.create_edge": {
+    "status": "other-module",
+    "module": "03",
+    "statements": [
+     "WRT-D1",
+     "WRT-B4"
+    ],
+    "why": "The edge writer (nodes_edges.py:1151-1300), owned by module 03 (WRT-D1, WRT-B4); listed in module 10 for the cache and snapshot cells only: ALG-B16.4 (the shared token) and ALG-B12.6 (the snapshot kept current) state its effect here",
+    "lane_group": "g3"
+   },
+   "ext:IRISGraphEngine.create_node": {
+    "status": "other-module",
+    "module": "03",
+    "statements": [
+     "WRT-D1",
+     "WRT-B3"
+    ],
+    "why": "The node writer (nodes_edges.py:968-1150), owned by module 03 (WRT-D1, WRT-B3); listed in module 10 for the cache cells only: ALG-B1.12 and ALG-B2.19 state what a node written without an edge does to cached answers (F-1004)",
+    "lane_group": "g3"
+   },
+   "py:iris_vector_graph/operators.py:IRISGraphOperators.kg_GRAPH_WALK_TVF": {
+    "status": "helper",
+    "of": "eng:IRISGraphEngine.kg_GRAPH_WALK_TVF",
+    "why": "Thin delegating wrapper (operators.py:57-61) of the engine's kg_GRAPH_WALK_TVF, same arguments, as IRISGraphOperators.kg_GRAPH_WALK is of kg_GRAPH_WALK",
+    "lane_group": "g3"
+   },
+   "py:iris_vector_graph/stores/arno_bridge.py:configured_lib_path": {
+    "status": "statement",
+    "statements": [
+     "ALG-B13.2"
+    ],
+    "why": "arno_bridge.py:48-50 reads IVG_ARNO_LIB (\"\" when unset or blank), the caller's setting that ALG-B13.2 puts first; used by the loader arguments and the SQL bridge's path (arno_bridge.py:56, 63, 78, 396)",
+    "lane_group": "g3"
+   },
+   "py:iris_vector_graph/stores/arno_bridge.py:loader_args": {
+    "status": "statement",
+    "statements": [
+     "ALG-B13.2"
+    ],
+    "why": "arno_bridge.py:53-57 gives both server loaders IVG_ARNO_LIB when set, else no argument so ArnoAccel.LibPath resolves the path; ALG-B13.2 states that order (the caller's setting, IVG_ARNO_LIB in its Notes, else the recorded path, else the default). Called by status (admin.py:31) and the store's loaders (iris_sql_store.py:871, 1012)",
+    "lane_group": "g3"
+   },
+   "py:iris_vector_graph/stores/arno_bridge.py:wrapper_ddls": {
+    "status": "helper",
+    "of": "py:iris_vector_graph._engine.legacy.replace_arno_wrappers",
+    "why": "Pure function (arno_bridge.py:351-357): the {routine name: CREATE OR REPLACE} texts of the bridge's SQL functions, no effect; called only by setup's replace_arno_wrappers (_engine/legacy.py:499), module 01",
+    "module": "01",
+    "lane_group": "g3"
+   },
+   "py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.execute_betweenness": {
+    "status": "statement",
+    "statements": [
+     "ALG-B5.6",
+     "ALG-B5.11",
+     "ALG-B5.12",
+     "ALG-I5"
+    ],
+    "why": "iris_sql_store.py:3196-3220 runs _betweenness_gref and turns any exception into the result's error; ALG-B5.11 and ALG-B5.12 cite that method (iris_sql_store.py:3300-3335), ALG-B5.6 states the scores and ALG-I5 the engine raising the error (_engine/algorithms.py:1233)",
+    "lane_group": "g3"
+   },
+   "py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.execute_closeness": {
+    "status": "statement",
+    "statements": [
+     "ALG-B5.16",
+     "ALG-B5.19",
+     "ALG-I5"
+    ],
+    "why": "iris_sql_store.py:3484-3496 runs _closeness_gref and turns any exception into the result's error; ALG-B5.19 cites that method's snapshot check (iris_sql_store.py:3548-3556), ALG-B5.16 states the formulas and ALG-I5 the engine raising the error (_engine/algorithms.py:1420)",
+    "lane_group": "g3"
+   },
+   "py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.execute_eigenvector": {
+    "status": "statement",
+    "statements": [
+     "ALG-B5.18",
+     "ALG-B5.19",
+     "ALG-I5"
+    ],
+    "why": "iris_sql_store.py:3636-3654 runs _eigenvector_gref, re-raises PowerIterationFailedConvergence and turns any other exception into the result's error; ALG-B5.18 states the non-convergence error, ALG-B5.19 cites the snapshot check (iris_sql_store.py:3669-3691), ALG-I5 the engine raising (_engine/algorithms.py:1518)",
+    "lane_group": "g3"
+   },
+   "py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.execute_vl_ends": {
+    "status": "statement",
+    "statements": [
+     "ALG-B11",
+     "ALG-B11.1"
+    ],
+    "why": "iris_sql_store.py:1938-1971 calls Graph.KG.VarLength.Ends with pAll 0 and the graph (\"\" the default) and maps {t, l} to (id, hops) rows; ALG-B11 states that walk (each end once at its least depth, no edge twice) and ALG-B11.1 its one graph. Called by the query engine's var-length reader (_engine/query.py:3429)",
+    "lane_group": "g3"
+   },
+   "py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.execute_wcc": {
+    "status": "statement",
+    "statements": [
+     "ALG-B3",
+     "ALG-B3.5",
+     "ALG-B3.6",
+     "ALG-B16"
+    ],
+    "why": "iris_sql_store.py:2419-2423 runs _execute_wcc through _cached_algorithm(\"wcc\", ...) keyed by max_iterations; ALG-B3 states the answer, ALG-B3.5 and ALG-B3.6 the owner and native choices inside _execute_wcc (iris_sql_store.py:2425-2452), ALG-B16 the caching. Called by kg_WCC (_engine/algorithms.py:819-821)",
+    "lane_group": "g3"
+   },
+   "py:iris_vector_graph/stores/iris_sql_store.py:IRISGraphStore.shortest_path_length": {
+    "status": "statement",
+    "statements": [
+     "ALG-B10",
+     "ALG-B10.1",
+     "ALG-B10.3"
+    ],
+    "why": "iris_sql_store.py:2162-2181 returns int(TraversalPaths.ShortestLength(src, dst, maxHops, types, direction, graph)), -1 for none; ALG-B10, ALG-B10.1 and ALG-B10.3 state that search (one graph, \"\" the default, the hop limit). Called by the query engine's length-only path (_engine/query.py:3630)",
+    "lane_group": "g3"
+   }
+  },
+  "11": {
+   "cls:Graph.KG.Ledger.ErrLimit": {
+    "status": "helper",
+    "of": "cls:Graph.KG.Ledger.CommitInTxn",
+    "why": "Public only by visibility (Ledger.cls:72); builds the too_large error JSON with the limit (Ledger.cls:72-82), writing nothing. Called only by CommitInTxn for the size refusal (Ledger.cls:493-497), which LED-B4.9.1 states (error code too_large with limit).",
+    "lane_group": "g2"
+   },
+   "cls:Graph.KG.Ledger.MetaGet": {
+    "status": "helper",
+    "of": [
+     "cls:Graph.KG.Ledger.CommitInTxn",
+     "cls:Graph.KG.LedgerApply.ApplyAll",
+     "cls:Graph.KG.LedgerApply.ResolveRef",
+     "cls:Graph.KG.LedgerApply.OpCreateNode",
+     "cls:Graph.KG.LedgerApply.OpAddLabel",
+     "cls:Graph.KG.LedgerApply.OpRemoveLabel",
+     "cls:Graph.KG.LedgerApply.OpSetProp",
+     "cls:Graph.KG.LedgerApply.OpRemoveProp",
+     "cls:Graph.KG.LedgerApply.OpDeleteNode",
+     "cls:Graph.KG.LedgerApply.OpCreateRel",
+     "cls:Graph.KG.LedgerApply.OpQual",
+     "cls:Graph.KG.LedgerApply.OpCreateTemporalEdge",
+     "cls:Graph.KG.LedgerGenesis.Adopt"
+    ],
+    "why": "Public only by visibility (no Private flag, Ledger.cls:52); a pure read of one key of a %DynamicObject with a default for absent or null (Ledger.cls:52-59), writing nothing. Called only inside the commit and adoption paths: CommitInTxn (Ledger.cls:423-425, 455-456, 476, 523), LedgerApply.ApplyAll (:27), ResolveRef (:188-189), the Op methods (:218-628) and LedgerGenesis.Adopt (LedgerGenesis.cls:90-120). Its argument is an object, so it is not a useful Native API call.",
+    "lane_group": "g2"
+   },
+   "cls:Graph.KG.Ledger.RevisionObj": {
+    "status": "helper",
+    "of": "cls:Graph.KG.Ledger.RevisionResponse",
+    "why": "Public only by visibility (Ledger.cls:85); opens one revision row and copies its fields into the revision wire object, writing nothing (Ledger.cls:85-108). Called by RevisionResponse (Ledger.cls:114; LED-B4.12) and by module RED's LedgerRedact.Receipt (LedgerRedact.cls:503); it answers a %DynamicObject, so the wire read callers use is Head or Commit.",
+    "lane_group": "g2"
+   },
+   "cls:Graph.KG.LedgerApply.EncNull": {
+    "status": "helper",
+    "of": [
+     "cls:Graph.KG.LedgerApply.OpCreateNode",
+     "cls:Graph.KG.LedgerApply.AddLabel",
+     "cls:Graph.KG.LedgerApply.SetProp",
+     "cls:Graph.KG.LedgerApply.OpRemoveLabel",
+     "cls:Graph.KG.LedgerApply.OpRemoveProp",
+     "cls:Graph.KG.LedgerApply.DeleteNodeRows",
+     "cls:Graph.KG.LedgerApply.OpCreateRel",
+     "cls:Graph.KG.LedgerApply.MergeQuals",
+     "cls:Graph.KG.LedgerApply.OpQual",
+     "cls:Graph.KG.LedgerApply.OpCreateTemporalEdge",
+     "cls:Graph.KG.LedgerApply.DeleteRelInternal"
+    ],
+    "why": "Public only by visibility (LedgerApply.cls:57); returns the constant \"N\", the record encoding of null (Ledger.cls:14). Used only as an argument of Rec in the op methods (LedgerApply.cls:232, 261, 282, 305, 332, 369, 515, 523, 543, 587, 604, 639, 690).",
+    "lane_group": "g2"
+   },
+   "cls:Graph.KG.LedgerApply.IsNumeric": {
+    "status": "helper",
+    "of": [
+     "cls:Graph.KG.LedgerApply.OpCreateRel",
+     "cls:Graph.KG.LedgerApply.OpQual"
+    ],
+    "why": "Public only by visibility (LedgerApply.cls:445); a pure test that a value is non-empty and $IsValidNum (LedgerApply.cls:445-448). Called by OpCreateRel (:463) and OpQual (:576, 593); the refusal it feeds is LED-B5.21.",
+    "lane_group": "g2"
+   },
+   "cls:Graph.KG.LedgerApply.IsReserved": {
+    "status": "helper",
+    "of": [
+     "cls:Graph.KG.LedgerApply.OpCreateNode",
+     "cls:Graph.KG.LedgerApply.SetProp",
+     "cls:Graph.KG.LedgerApply.OpSetProp",
+     "cls:Graph.KG.LedgerApply.OpRemoveProp",
+     "cls:Graph.KG.LedgerApply.NodeSnapshotJson",
+     "cls:Graph.KG.LedgerGenesis.Capture"
+    ],
+    "why": "Public only by visibility (LedgerApply.cls:68); a pure test that a property key is id or __graph (LedgerApply.cls:68-71). Called by OpCreateNode (:227), SetProp (:269), OpSetProp (:314), OpRemoveProp (:324), NodeSnapshotJson (:345) and LedgerGenesis.Capture (LedgerGenesis.cls:34); the refusal it feeds is LED-B5.6.",
+    "lane_group": "g2"
+   },
+   "cls:Graph.KG.LedgerApply.ParseQuals": {
+    "status": "helper",
+    "of": [
+     "cls:Graph.KG.LedgerApply.FindEdge",
+     "cls:Graph.KG.LedgerApply.OpDeleteNode",
+     "cls:Graph.KG.LedgerGenesis.Capture"
+    ],
+    "why": "Public only by visibility (LedgerApply.cls:123); a pure parse of a qualifiers column value into string values, dropping nulls and answering {} for text that is not JSON (LedgerApply.cls:122-141). Called by FindEdge (:155), OpDeleteNode (:408) and LedgerGenesis.Capture (LedgerGenesis.cls:46); LED-B4.10.4 states that values are kept as text.",
+    "lane_group": "g2"
+   },
+   "cls:Graph.KG.LedgerApply.QualsJson": {
+    "status": "helper",
+    "of": [
+     "cls:Graph.KG.LedgerApply.OpCreateRel",
+     "cls:Graph.KG.LedgerApply.PersistQuals",
+     "cls:Graph.KG.LedgerApply.DeleteRelInternal"
+    ],
+    "why": "Public only by visibility (LedgerApply.cls:420); a pure sorted-key JSON form of a qualifiers object (LedgerApply.cls:420-434). Called by OpCreateRel (:484), PersistQuals (:554) and DeleteRelInternal (:676) to write the qualifiers column and the delete record.",
+    "lane_group": "g2"
+   },
+   "cls:Graph.KG.LedgerApply.Rec": {
+    "status": "helper",
+    "of": [
+     "cls:Graph.KG.LedgerApply.OpCreateNode",
+     "cls:Graph.KG.LedgerApply.AddLabel",
+     "cls:Graph.KG.LedgerApply.SetProp",
+     "cls:Graph.KG.LedgerApply.OpRemoveLabel",
+     "cls:Graph.KG.LedgerApply.OpRemoveProp",
+     "cls:Graph.KG.LedgerApply.DeleteNodeRows",
+     "cls:Graph.KG.LedgerApply.OpCreateRel",
+     "cls:Graph.KG.LedgerApply.MergeQuals",
+     "cls:Graph.KG.LedgerApply.OpQual",
+     "cls:Graph.KG.LedgerApply.OpCreateTemporalEdge",
+     "cls:Graph.KG.LedgerApply.DeleteRelInternal",
+     "cls:Graph.KG.LedgerGenesis.Capture",
+     "cls:Graph.KG.LedgerGenesis.Adopt"
+    ],
+    "why": "Public only by visibility (LedgerApply.cls:62); appends one $LB record to the caller's by-reference local array and writes no global (LedgerApply.cls:62-66). Called by the op methods (LedgerApply.cls:232-690), LedgerGenesis.Capture (LedgerGenesis.cls:21-56) and Adopt (:104-126), and module RED's LedgerRedact.FinalInLock (LedgerRedact.cls:427); the records reach the ledger only through WriteRevision (LED-B4.11). A local array cannot be passed over the Native API.",
+    "lane_group": "g2"
+   },
+   "cls:Graph.KG.LedgerApply.Run": {
+    "status": "helper",
+    "of": [
+     "cls:Graph.KG.LedgerApply.NodeExists",
+     "cls:Graph.KG.LedgerApply.EnsureEndpoint",
+     "cls:Graph.KG.LedgerApply.FindEdge",
+     "cls:Graph.KG.LedgerApply.OpCreateNode",
+     "cls:Graph.KG.LedgerApply.AddLabel",
+     "cls:Graph.KG.LedgerApply.SetProp",
+     "cls:Graph.KG.LedgerApply.OpRemoveLabel",
+     "cls:Graph.KG.LedgerApply.OpRemoveProp",
+     "cls:Graph.KG.LedgerApply.NodeSnapshotJson",
+     "cls:Graph.KG.LedgerApply.DeleteNodeRows",
+     "cls:Graph.KG.LedgerApply.OpDeleteNode",
+     "cls:Graph.KG.LedgerApply.OpCreateRel",
+     "cls:Graph.KG.LedgerApply.PersistQuals",
+     "cls:Graph.KG.LedgerApply.DeleteRelInternal",
+     "cls:Graph.KG.LedgerGenesis.Capture"
+    ],
+    "why": "Public only by visibility (LedgerApply.cls:74); returns %SQL.Statement.%ExecDirect of the SQL text and arguments it is given (LedgerApply.cls:73-77), with no behaviour of its own. Called by the ledger's node, edge and genesis steps (LedgerApply.cls:81-678; LedgerGenesis.cls:18-38) to run their own statements.",
+    "lane_group": "g2"
+   },
+   "cls:Graph.KG.LedgerApply.WeightOf": {
+    "status": "helper",
+    "of": [
+     "cls:Graph.KG.LedgerApply.OpCreateRel",
+     "cls:Graph.KG.LedgerApply.PersistQuals"
+    ],
+    "why": "Public only by visibility (LedgerApply.cls:436); a pure read of the weight qualifier, 1.0 when absent or empty (LedgerApply.cls:436-443). Called by OpCreateRel (:511, 513) and PersistQuals (:562) for the edge index weight (LED-B5.28).",
+    "lane_group": "g2"
+   },
+   "py:iris_vector_graph/ledger/client.py:GraphLedger.__init__": {
+    "status": "helper",
+    "of": "LED-B16",
+    "why": "Constructor (client.py:227-229): keeps the engine and an empty metrics-hook list; reads nothing from the database. The client is made only by the engine's ledger property (_engine/ledger.py:26), which LED-B16 states (made on first use and kept).",
+    "lane_group": "g2"
+   },
+   "py:iris_vector_graph/ledger/client.py:RevisionInfo.from_wire": {
+    "status": "helper",
+    "of": [
+     "py:iris_vector_graph/ledger/client.py:GraphLedger.enable",
+     "py:iris_vector_graph/ledger/client.py:GraphLedger.head",
+     "py:iris_vector_graph/ledger/client.py:GraphLedger.commit"
+    ],
+    "why": "Decoder of the revision wire object (client.py:55-77): copies the fields, turns empty ones into None, and parses a source that is a JSON string (else {\"raw\": text}); reads and writes nothing. Called by GraphLedger.enable (client.py:291), head (:318), commit through _commit (:419) and RedactionReceipt.from_wire (:179).",
+    "lane_group": "g2"
+   },
+   "py:iris_vector_graph/ledger/errors.py:ChangesetTooLargeError.__init__": {
+    "status": "statement",
+    "statements": [
+     "LED-B14",
+     "LED-B4.9.1"
+    ],
+    "why": "Constructor (errors.py:58-60) that keeps the limit and a default message. from_commit_error builds it for error code too_large with the server's limit (errors.py:196-198). LED-B14 states the mapping of error codes to error types and its Notes say a size refusal carries its limit; LED-B4.9.1 states the refusal (too_large with limit).",
+    "lane_group": "g2"
+   }
+  },
+  "12": {
+   "os-method:iris_src/src/Graph/KG/Eraser.cls:1058:Graph.KG.Eraser.IsRouteName": {
+    "status": "helper",
+    "of": [
+     "os-method:iris_src/src/Graph/KG/Eraser.cls:47:Graph.KG.Eraser.EraseGraph",
+     "os-method:iris_src/src/Graph/KG/Eraser.cls:709:Graph.KG.Eraser.EraseAll"
+    ],
+    "why": "Private ClassMethod (Eraser.cls:1058); called by EraseGraph (96), EraseAll (734) and CollectOrphanRoutes (1101).",
+    "lane_group": "g1"
+   },
+   "os-method:iris_src/src/Graph/KG/Eraser.cls:1085:Graph.KG.Eraser.CollectOrphanRoutes": {
+    "status": "helper",
+    "of": [
+     "os-method:iris_src/src/Graph/KG/Eraser.cls:47:Graph.KG.Eraser.EraseGraph",
+     "os-method:iris_src/src/Graph/KG/Eraser.cls:322:Graph.KG.Eraser.EraseNodes",
+     "os-method:iris_src/src/Graph/KG/Eraser.cls:372:Graph.KG.Eraser.EraseNodeIds",
+     "os-method:iris_src/src/Graph/KG/Eraser.cls:395:Graph.KG.Eraser.EraseEdges",
+     "os-method:iris_src/src/Graph/KG/Eraser.cls:709:Graph.KG.Eraser.EraseAll",
+     "os-method:iris_src/src/Graph/KG/Eraser.cls:1208:Graph.KG.Eraser.EraseBareNodes"
+    ],
+    "why": "Private ClassMethod (Eraser.cls:1085); called by EraseGraph (113), EraseEdges (405), EraseIdSet (475), EraseAll (741), EraseBareNodes (1214) and DeleteBareSet (1268).",
+    "lane_group": "g1"
+   },
+   "os-method:iris_src/src/Graph/KG/Eraser.cls:1151:Graph.KG.Eraser.EraseFHIRGraphRows": {
+    "status": "helper",
+    "of": [
+     "os-method:iris_src/src/Graph/KG/Eraser.cls:47:Graph.KG.Eraser.EraseGraph",
+     "os-method:iris_src/src/Graph/KG/Eraser.cls:709:Graph.KG.Eraser.EraseAll"
+    ],
+    "why": "Private ClassMethod (Eraser.cls:1151); called only by EraseGraph (183) and EraseAll (762).",
+    "lane_group": "g1"
+   },
+   "os-method:iris_src/src/Graph/KG/Eraser.cls:1253:Graph.KG.Eraser.RetireBareNodes": {
+    "status": "other-module",
+    "module": "05",
+    "statements": [
+     "TMP-B9.7",
+     "TMP-B3.10.4",
+     "TMP-T3.10.6"
+    ],
+    "why": "Public ClassMethod (Eraser.cls:1253-1256) that takes an index key and a global of ids and calls DeleteBareSet with 10,000 ids a transaction; its only callers are the temporal purge (TemporalIndex.cls:1040) and the row drop (TemporalPolicy.cls:206). Module 05 states the retirement: TMP-B9.7 (a purge deletes the end nodes it leaves bare), TMP-B3.10.4 (the drop deletes the bare nodes it leaves) and TMP-T3.10.6 (after each batch). The sweep's own statements are ERS-B94 to ERS-T94.",
+    "lane_group": "g1"
+   },
+   "os-method:iris_src/src/Graph/KG/Eraser.cls:1356:Graph.KG.Eraser.SqlErr": {
+    "status": "helper",
+    "of": [
+     "os-method:iris_src/src/Graph/KG/Eraser.cls:47:Graph.KG.Eraser.EraseGraph",
+     "os-method:iris_src/src/Graph/KG/Eraser.cls:322:Graph.KG.Eraser.EraseNodes",
+     "os-method:iris_src/src/Graph/KG/Eraser.cls:372:Graph.KG.Eraser.EraseNodeIds",
+     "os-method:iris_src/src/Graph/KG/Eraser.cls:395:Graph.KG.Eraser.EraseEdges",
+     "os-method:iris_src/src/Graph/KG/Eraser.cls:709:Graph.KG.Eraser.EraseAll"
+    ],
+    "why": "Private ClassMethod (Eraser.cls:1356); formats the error each failed step of the erasers throws (50 call sites, e.g. Eraser.cls:90, 339, 430, 728).",
+    "lane_group": "g1"
+   },
+   "os-method:iris_src/src/Graph/KG/Eraser.cls:685:Graph.KG.Eraser.EraseFHIRNodeRows": {
+    "status": "helper",
+    "of": [
+     "os-method:iris_src/src/Graph/KG/Eraser.cls:322:Graph.KG.Eraser.EraseNodes",
+     "os-method:iris_src/src/Graph/KG/Eraser.cls:372:Graph.KG.Eraser.EraseNodeIds"
+    ],
+    "why": "Private ClassMethod (Eraser.cls:685); called only by EraseIdSet (Eraser.cls:576), the body of EraseNodes and EraseNodeIds.",
+    "lane_group": "g1"
+   },
+   "os-method:iris_src/src/Graph/KG/Eraser.cls:868:Graph.KG.Eraser.GraphEdgesInNKG": {
+    "status": "helper",
+    "of": "os-method:iris_src/src/Graph/KG/Eraser.cls:47:Graph.KG.Eraser.EraseGraph",
+    "why": "Private ClassMethod (Eraser.cls:868); called only by EraseGraph (Eraser.cls:215) to decide whether ^NKG is dropped.",
+    "lane_group": "g1"
+   },
+   "os-method:iris_src/src/Graph/KG/Eraser.cls:929:Graph.KG.Eraser.GraphNodesInNKG": {
+    "status": "helper",
+    "of": "os-method:iris_src/src/Graph/KG/Eraser.cls:47:Graph.KG.Eraser.EraseGraph",
+    "why": "Private ClassMethod (Eraser.cls:929); called only by EraseGraph (Eraser.cls:215).",
+    "lane_group": "g1"
+   },
+   "os-method:iris_src/src/Graph/KG/Eraser.cls:975:Graph.KG.Eraser.NKGMayHoldAny": {
+    "status": "helper",
+    "of": [
+     "os-method:iris_src/src/Graph/KG/Eraser.cls:322:Graph.KG.Eraser.EraseNodes",
+     "os-method:iris_src/src/Graph/KG/Eraser.cls:372:Graph.KG.Eraser.EraseNodeIds"
+    ],
+    "why": "Private ClassMethod (Eraser.cls:975); called only by EraseIdSet (Eraser.cls:624), the body of EraseNodes and EraseNodeIds.",
+    "lane_group": "g1"
+   },
+   "os-method:iris_src/src/Graph/KG/Eraser.cls:994:Graph.KG.Eraser.NodeInterned": {
+    "status": "helper",
+    "of": [
+     "os-method:iris_src/src/Graph/KG/Eraser.cls:47:Graph.KG.Eraser.EraseGraph",
+     "os-method:iris_src/src/Graph/KG/Eraser.cls:322:Graph.KG.Eraser.EraseNodes",
+     "os-method:iris_src/src/Graph/KG/Eraser.cls:372:Graph.KG.Eraser.EraseNodeIds"
+    ],
+    "why": "Private ClassMethod (Eraser.cls:994); called by EraseIdSet (532), GraphEdgesInNKG (876, 887, 912), GraphNodesInNKG (949) and NKGMayHoldAny (981), all inside EraseGraph or EraseNodes/EraseNodeIds.",
+    "lane_group": "g1"
+   },
+   "os-method:iris_src/src/Graph/KG/GraphStores.cls:304:Graph.KG.GraphStores.VectorRouteGuard": {
+    "status": "other-module",
+    "module": "06",
+    "statements": [
+     "VEC-B5.21"
+    ],
+    "why": "Public ClassMethod (GraphStores.cls:304-317) whose only caller is the SQL function kg_VEC_ROUTE_GUARD (schema.py:2434), which kg_KNN_VEC calls. VEC-B5.21 states its refusal and cites GraphStores.cls:304-317; TXT-X13 (module 07) states the same refusal for kg_RRF_FUSE.",
+    "lane_group": "g1"
+   },
+   "os-method:iris_src/src/Graph/KG/GraphStores.cls:320:Graph.KG.GraphStores.Hex": {
+    "status": "helper",
+    "of": "os-method:iris_src/src/Graph/KG/GraphStores.cls:189:Graph.KG.GraphStores.Digest",
+    "why": "Private ClassMethod (GraphStores.cls:320); called only by Digest (194), DigestGlobal (238) and DigestTable (292).",
+    "lane_group": "g1"
+   },
+   "os-method:iris_src/src/Graph/KG/GraphStores.cls:326:Graph.KG.GraphStores.Entry": {
+    "status": "helper",
+    "of": "os-method:iris_src/src/Graph/KG/GraphStores.cls:28:Graph.KG.GraphStores.Inventory",
+    "why": "Private ClassMethod (GraphStores.cls:326); builds one entry; called only by Inventory (GraphStores.cls:33-131).",
+    "lane_group": "g1"
+   }
+  },
+  "13": {
+   "os-method:iris_src/src/Graph/KG/LedgerRedact.cls:116:Graph.KG.LedgerRedact.PrePass": {
+    "status": "helper",
+    "of": "os-method:iris_src/src/Graph/KG/LedgerRedact.cls:185:Graph.KG.LedgerRedact.Redact",
+    "why": "Public only by visibility (LedgerRedact.cls:114-141); called only by Redact (212) for a prefix target: a read-only scan, outside any lock, of the target graph's create_rel and delete_rel records into ^||IVG.RedactStmt, which Matches reads (104) for qualifier records (RED-P1).",
+    "lane_group": "g1"
+   },
+   "os-method:iris_src/src/Graph/KG/LedgerRedact.cls:384:Graph.KG.LedgerRedact.Final": {
+    "status": "helper",
+    "of": [
+     "os-method:iris_src/src/Graph/KG/LedgerRedact.cls:185:Graph.KG.LedgerRedact.Redact",
+     "os-method:iris_src/src/Graph/KG/LedgerRedact.cls:409:Graph.KG.LedgerRedact.FinalInLock"
+    ],
+    "why": "Public only by visibility (LedgerRedact.cls:382-407); called only by Redact (231); runs FinalInLock in its own transaction under the head lock (RED-B9, RED-D10).",
+    "lane_group": "g1"
+   },
+   "os-method:iris_src/src/Graph/KG/LedgerRedact.cls:473:Graph.KG.LedgerRedact.ReadCounts": {
+    "status": "helper",
+    "of": [
+     "os-method:iris_src/src/Graph/KG/LedgerRedact.cls:185:Graph.KG.LedgerRedact.Redact",
+     "os-method:iris_src/src/Graph/KG/LedgerRedact.cls:409:Graph.KG.LedgerRedact.FinalInLock"
+    ],
+    "why": "Public only by visibility (LedgerRedact.cls:473-480); copies the run's counters into the receipt array; called only by Redact (236) and FinalInLock (417).",
+    "lane_group": "g1"
+   },
+   "os-method:iris_src/src/Graph/KG/LedgerRedact.cls:67:Graph.KG.LedgerRedact.TargetText": {
+    "status": "helper",
+    "of": [
+     "os-method:iris_src/src/Graph/KG/LedgerRedact.cls:185:Graph.KG.LedgerRedact.Redact",
+     "os-method:iris_src/src/Graph/KG/LedgerRedact.cls:409:Graph.KG.LedgerRedact.FinalInLock"
+    ],
+    "why": "Public only by visibility (LedgerRedact.cls:66-72, 'For an error message only (never stored)'); called only by Redact (209) and FinalInLock (415) to word target_live.",
+    "lane_group": "g1"
+   },
+   "os-method:iris_src/src/Graph/KG/LedgerRedact.cls:75:Graph.KG.LedgerRedact.TupleEnds": {
+    "status": "helper",
+    "of": [
+     "os-method:iris_src/src/Graph/KG/LedgerRedact.cls:89:Graph.KG.LedgerRedact.Matches",
+     "os-method:iris_src/src/Graph/KG/LedgerRedact.cls:185:Graph.KG.LedgerRedact.Redact"
+    ],
+    "why": "Public only by visibility (LedgerRedact.cls:74-85); decodes an edge record's ends; called only by Matches (98, 100) and PrePass (132, 134), steps of Redact.",
+    "lane_group": "g1"
+   }
+  },
+  "14": {
+   "py-api:iris_vector_graph/ledger/client.py:741:verify": {
+    "status": "helper",
+    "of": "py-api:iris_vector_graph/ledger/replay.py:806:verify",
+    "why": "GraphLedger.verify (client.py:741-744) imports replay.verify and returns verify(self, adopt=adopt, actor=actor): a thin delegating wrapper. RPL-D2 calls it the verify call.",
+    "lane_group": "g1"
+   },
+   "py-api:iris_vector_graph/ledger/replay.py:132:tuple": {
+    "status": "helper",
+    "of": [
+     "py-api:iris_vector_graph/ledger/replay.py:170:apply",
+     "py-api:iris_vector_graph/ledger/replay.py:645:compare",
+     "py-api:iris_vector_graph/ledger/replay.py:806:verify"
+    ],
+    "why": "StmtState.tuple, a read-only property (replay.py:131-133) giving (s, p, o, graph); used only inside replay.py by GraphState.apply (197, 201), as_comparable for compare (220) and verify's temporal filter (802-803). The inventory's other callers are unrelated uses of the word tuple.",
+    "lane_group": "g1"
+   },
+   "py-api:iris_vector_graph/ledger/replay.py:213:as_comparable": {
+    "status": "helper",
+    "of": "py-api:iris_vector_graph/ledger/replay.py:645:compare",
+    "why": "GraphState.as_comparable (replay.py:213-223) builds the dict compare reads; its only caller is compare (replay.py:653).",
+    "lane_group": "g1"
+   },
+   "py-api:iris_vector_graph/ledger/replay.py:289:fetch_revision_info": {
+    "status": "helper",
+    "module": "11",
+    "of": "py:iris_vector_graph/ledger/client.py:GraphLedger.get_revision",
+    "why": "SQL read of one ledger_revisions row by seq (replay.py:289-296); exported in __all__ but called only by GraphLedger.get_revision (client.py:700), a record reader (RPL-D4) that module 11's inventory counts.",
+    "lane_group": "g1"
+   },
+   "py-api:iris_vector_graph/ledger/replay.py:299:fetch_history": {
+    "status": "other-module",
+    "module": "11",
+    "statements": [
+     "LED-B3.7",
+     "LED-B3.8"
+    ],
+    "why": "The SQL body of GraphLedger.history (client.py:617). LED-B3.7 (a page of revisions in seq order) and LED-B3.8 (the filters, pushed to SQL) state it and cite replay.py:299-354 and 315-345; module 11's inventory also lists it (py:iris_vector_graph/ledger/replay.py:fetch_history).",
+    "lane_group": "g1"
+   }
+  },
+  "15": {
+   "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:1344:Graph.KG.FHIRGraph.HasText": {
+    "status": "helper",
+    "of": "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:1128:Graph.KG.FHIRGraph.ConceptGaps",
+    "why": "Private ClassMethod (FHIRGraph.cls:1344); called only by ConceptGaps (FHIRGraph.cls:1227) to test whether a code field holds only text, the count INT-C3.3 states",
+    "lane_group": "g8"
+   },
+   "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:1362:Graph.KG.FHIRGraph.NodeSet": {
+    "status": "helper",
+    "of": [
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:940:Graph.KG.FHIRGraph.CoverageReport",
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:1128:Graph.KG.FHIRGraph.ConceptGaps"
+    ],
+    "why": "Private Method (FHIRGraph.cls:1362); called only by CoverageReport (FHIRGraph.cls:946) and ConceptGaps (FHIRGraph.cls:1134) to collect the graph's R4 nodes for an id prefix (INT-C3.1, INT-C3.3)",
+    "lane_group": "g8"
+   },
+   "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:1378:Graph.KG.FHIRGraph.TokenRows": {
+    "status": "helper",
+    "of": [
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:940:Graph.KG.FHIRGraph.CoverageReport",
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:1128:Graph.KG.FHIRGraph.ConceptGaps",
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:1249:Graph.KG.FHIRGraph.PatientConcepts"
+    ],
+    "why": "Private Method (FHIRGraph.cls:1378); builds the token-index SELECTs for CoverageReport (FHIRGraph.cls:1026), ConceptGaps (:1140) and PatientConcepts (:1267); runs no SQL itself",
+    "lane_group": "g8"
+   },
+   "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:1398:Graph.KG.FHIRGraph.Crosswalked": {
+    "status": "helper",
+    "of": [
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:940:Graph.KG.FHIRGraph.CoverageReport",
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:1128:Graph.KG.FHIRGraph.ConceptGaps"
+    ],
+    "why": "Private Method (FHIRGraph.cls:1398); one code_crosswalk COUNT, called only by CoverageReport (FHIRGraph.cls:1051) and ConceptGaps (:1162)",
+    "lane_group": "g8"
+   },
+   "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:1899:Graph.KG.FHIRGraph.LinksJson": {
+    "status": "helper",
+    "of": "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:167:Graph.KG.FHIRGraph.Register",
+    "why": "Instance Method (FHIRGraph.cls:1899), reachable only on a context object from Open; called only by Register (FHIRGraph.cls:249) to compare the stored json link list with the new one (INT-F3.8); reads nothing",
+    "lane_group": "g8"
+   },
+   "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:2007:Graph.KG.FHIRGraph.SyncDefinition": {
+    "status": "helper",
+    "of": [
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:1923:Graph.KG.FHIRGraph.RunBatch",
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:1982:Graph.KG.FHIRGraph.SyncAllDefinitions"
+    ],
+    "why": "Private Method (FHIRGraph.cls:2007); called only by RunBatch (FHIRGraph.cls:1934) and SyncAllDefinitions (:1993) inside their transactions; keeps fhir_definitions in step for canonical resolution (INT-F1.11, INT-F5.9)",
+    "lane_group": "g8"
+   },
+   "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:2364:Graph.KG.FHIRGraph.BodyRel": {
+    "status": "helper",
+    "of": [
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:358:Graph.KG.FHIRGraph.LinkReport",
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:2039:Graph.KG.FHIRGraph.ResyncKey"
+    ],
+    "why": "Instance Method (FHIRGraph.cls:2364), reachable only on a context object from Open; called only by LinkReport (FHIRGraph.cls:378) and ResyncKey (:2140); strips a registered endpoint from an absolute reference, the local-versus-external rule of INT-F1.6; pure",
+    "lane_group": "g8"
+   },
+   "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:2664:Graph.KG.FHIRGraph.LoadRoutes": {
+    "status": "helper",
+    "of": [
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:2402:Graph.KG.FHIRGraph.DropNode",
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:2585:Graph.KG.FHIRGraph.DeleteEdge"
+    ],
+    "why": "Private Method (FHIRGraph.cls:2664); lists the routed kg_emb_/kg_eemb_ tables for DropNode (FHIRGraph.cls:2484) and DeleteEdge (:2589); a catalog read",
+    "lane_group": "g8"
+   },
+   "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:2706:Graph.KG.FHIRGraph.UnresolvedCounts": {
+    "status": "helper",
+    "of": [
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:303:Graph.KG.FHIRGraph.Status",
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:2676:Graph.KG.FHIRGraph.Counts"
+    ],
+    "why": "Instance Method (FHIRGraph.cls:2706), reachable only on a context object from Open; called only by Status (FHIRGraph.cls:330) and Counts (:2702) for the per-reason unresolved counts INT-F8 reports; reads only",
+    "lane_group": "g8"
+   },
+   "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:2877:Graph.KG.FHIRGraph.CanonKey": {
+    "status": "helper",
+    "of": [
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:2039:Graph.KG.FHIRGraph.ResyncKey",
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:2888:Graph.KG.FHIRGraph.SplitKeep"
+    ],
+    "why": "Private ClassMethod (FHIRGraph.cls:2877); called only by ResyncKey (FHIRGraph.cls:2066, 2076) and SplitKeep (:2895, 2899, 2905); url or url|version after SplitValue (INT-F1.12); pure",
+    "lane_group": "g8"
+   },
+   "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:2917:Graph.KG.FHIRGraph.KeepIndex": {
+    "status": "helper",
+    "of": [
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:2039:Graph.KG.FHIRGraph.ResyncKey",
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:2888:Graph.KG.FHIRGraph.SplitKeep"
+    ],
+    "why": "Private ClassMethod (FHIRGraph.cls:2917); called only by ResyncKey (FHIRGraph.cls:2104) and SplitKeep (:2905); the library-split keep rule; pure",
+    "lane_group": "g8"
+   },
+   "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:3017:Graph.KG.FHIRGraph.WalkArray": {
+    "status": "helper",
+    "of": "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:2983:Graph.KG.FHIRGraph.Walk",
+    "why": "Private ClassMethod (FHIRGraph.cls:3017); called only by Walk (FHIRGraph.cls:3009); same depth limit (INT-F1.14)",
+    "lane_group": "g8"
+   },
+   "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:3029:Graph.KG.FHIRGraph.RTable": {
+    "status": "helper",
+    "of": [
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:1451:Graph.KG.FHIRGraph.Rederive",
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:1982:Graph.KG.FHIRGraph.SyncAllDefinitions",
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:2380:Graph.KG.FHIRGraph.ReadResource",
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:543:Graph.KG.FHIRGraph.SyncOnce"
+    ],
+    "why": "Instance Method (FHIRGraph.cls:3029), reachable only on a context object from Open; returns the quoted repository table name for Rederive (FHIRGraph.cls:1457), SyncAllDefinitions (:1989), ReadResource (:2382), SyncOnce (:558, 586) and others; runs no SQL",
+    "lane_group": "g8"
+   },
+   "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:3034:Graph.KG.FHIRGraph.VTable": {
+    "status": "helper",
+    "of": [
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:303:Graph.KG.FHIRGraph.Status",
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:448:Graph.KG.FHIRGraph.Rebuild",
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:543:Graph.KG.FHIRGraph.SyncOnce"
+    ],
+    "why": "Instance Method (FHIRGraph.cls:3034), reachable only on a context object from Open; returns the quoted version table name for Status (FHIRGraph.cls:345), Rebuild (:464) and SyncOnce (:559, 586); runs no SQL",
+    "lane_group": "g8"
+   },
+   "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:3039:Graph.KG.FHIRGraph.TableExists": {
+    "status": "helper",
+    "of": [
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:167:Graph.KG.FHIRGraph.Register",
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:1713:Graph.KG.FHIRGraph.Open"
+    ],
+    "why": "Instance Method (FHIRGraph.cls:3039), reachable only on a context object from Open; one INFORMATION_SCHEMA COUNT for Register (FHIRGraph.cls:179, 182) and Open (:1723) (INT-F3.1, INT-F8.1)",
+    "lane_group": "g8"
+   },
+   "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:3061:Graph.KG.FHIRGraph.Exec": {
+    "status": "helper",
+    "of": [
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:167:Graph.KG.FHIRGraph.Register",
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:667:Graph.KG.FHIRGraph.Schedule",
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:716:Graph.KG.FHIRGraph.Unschedule",
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:1923:Graph.KG.FHIRGraph.RunBatch",
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:543:Graph.KG.FHIRGraph.SyncOnce"
+    ],
+    "why": "Instance Method (FHIRGraph.cls:3061), reachable only on a context object from Open; runs one statement through Query for Register (FHIRGraph.cls:241-270), Schedule (:703), Unschedule (:729), RunBatch (:1968), SyncOnce (:611) and the other writers; the SQL runs with the caller's own rights (INT-F12.2)",
+    "lane_group": "g8"
+   },
+   "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:3069:Graph.KG.FHIRGraph.ExecTolerant": {
+    "status": "helper",
+    "of": [
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:2402:Graph.KG.FHIRGraph.DropNode",
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:2585:Graph.KG.FHIRGraph.DeleteEdge"
+    ],
+    "why": "Private Method (FHIRGraph.cls:3069); called only by DropNode (FHIRGraph.cls:2489) and DeleteEdge (:2594) so a routed table dropped since LoadRoutes (SQLCODE -30) counts as nothing to delete",
+    "lane_group": "g8"
+   },
+   "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:3084:Graph.KG.FHIRGraph.Scalar": {
+    "status": "helper",
+    "of": [
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:1404:Graph.KG.FHIRGraph.InterpVersion",
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:1814:Graph.KG.FHIRGraph.LoadProps",
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:303:Graph.KG.FHIRGraph.Status",
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:543:Graph.KG.FHIRGraph.SyncOnce"
+    ],
+    "why": "Instance Method (FHIRGraph.cls:3084), reachable only on a context object from Open; the first column of the first row, for InterpVersion (FHIRGraph.cls:1408), LoadProps (:1823), Status (:322-344), SyncOnce (:558-559) and others",
+    "lane_group": "g8"
+   },
+   "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:3096:Graph.KG.FHIRGraph.Err": {
+    "status": "helper",
+    "of": [
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:167:Graph.KG.FHIRGraph.Register",
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:282:Graph.KG.FHIRGraph.CompartmentParams",
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:303:Graph.KG.FHIRGraph.Status",
+     "os-method:iris_src/src/Graph/KG/FHIRGraph.cls:543:Graph.KG.FHIRGraph.SyncOnce"
+    ],
+    "why": "Private ClassMethod (FHIRGraph.cls:3096); formats the {status: error} JSON every public ClassMethod returns from its Catch, e.g. Register (FHIRGraph.cls:275), CompartmentParams (:297), Status (:349), SyncOnce (:622)",
+    "lane_group": "g8"
+   },
+   "py-api:iris_vector_graph/_engine/rdf_export.py:159:export_rdf_from_cypher": {
+    "status": "statement",
+    "statements": [
+     "INT-R1.16",
+     "INT-R1.17",
+     "INT-R1.18"
+    ],
+    "why": "export_rdf_from_cypher (rdf_export.py:159-209) runs the Cypher query and projects each row through _project_row_as_rdf (rdf_export.py:197, 212-246): INT-R1.16 (one triple per row from s/p/o or the first three columns), INT-R1.17 (rows with fewer columns) and INT-R1.18 (refused without rdflib, its own unit test) state exactly that call under the name 'the Cypher export'",
+    "lane_group": "g8"
+   },
+   "py-api:iris_vector_graph/_engine/shacl.py:58:to_dict": {
+    "status": "statement",
+    "statements": [
+     "INT-S1.8"
+    ],
+    "why": "Violation.to_dict (shacl.py:58-66) returns the six fields focus_node, shape, message, severity, path and value; INT-S1.8 states that each failure gives exactly these",
+    "lane_group": "g8"
+   },
+   "py-api:iris_vector_graph/fhir_links.py:34:link_predicate": {
+    "status": "helper",
+    "of": "py-api:iris_vector_graph/fhir_links.py:44:parse_json_links",
+    "why": "Public by name but called only by parse_json_links (fhir_links.py:64) to derive the edge name whose clash INT-F1.13 refuses; pure string split, no other caller in the package",
+    "lane_group": "g8"
+   }
+  },
+  "16": {
+   "deploy:src/iris_fraud_server/__main__.py:20:__main__": {
+    "status": "helper",
+    "of": "py-api:src/iris_fraud_server/app.py:544:run_server",
+    "why": "irispython -m iris_fraud_server: exits 1 without the iris module (__main__.py:11-15), else calls run_server (__main__.py:20-21), which API-T13.5 states.",
+    "lane_group": "g7"
+   },
+   "graphql-field:api/gql/resolvers/mutation.py:106:update_protein": {
+    "status": "statement",
+    "statements": [
+     "API-T6.11"
+    ],
+    "why": "Mutation.update_protein of api/gql/resolvers/mutation.py: not served (API-T6.11); the served updateProtein is API-B6.7.",
+    "lane_group": "g7"
+   },
+   "graphql-field:api/gql/resolvers/mutation.py:24:create_protein": {
+    "status": "statement",
+    "statements": [
+     "API-T6.11"
+    ],
+    "why": "Mutation.create_protein of api/gql/resolvers/mutation.py: API-T6.11 states that the resolvers of the api resolvers folder are not part of the served schema (api/gql/schema.py imports none of them); the served createProtein is API-B6.90.",
+    "lane_group": "g7"
+   },
+   "graphql-field:api/gql/resolvers/query.py:176:gene": {
+    "status": "statement",
+    "statements": [
+     "API-T6.11"
+    ],
+    "why": "Query.gene of api/gql/resolvers/query.py: not served (API-T6.11); the served gene field is api/gql/schema.py:129-137 (API-B6, API-B6.6).",
+    "lane_group": "g7"
+   },
+   "graphql-field:api/gql/resolvers/query.py:203:pathway": {
+    "status": "statement",
+    "statements": [
+     "API-T6.11"
+    ],
+    "why": "Query.pathway of api/gql/resolvers/query.py: not served (API-T6.11); the served pathway field is api/gql/schema.py:139-147 (API-B6, API-B6.6).",
+    "lane_group": "g7"
+   },
+   "graphql-field:api/gql/schema.py:265:update_protein": {
+    "status": "statement",
+    "statements": [
+     "API-B6.7",
+     "API-X6.8"
+    ],
+    "why": "The served updateProtein (api/gql/schema.py:264-273) runs _check_read_only (API-X6.8) and then BiomedicalDomainResolver._update_protein_mutation, whose as-built UPDATE over every graph API-B6.7 states (examples/domains/biomedical/resolver.py:240-278).",
+    "lane_group": "g7"
+   },
+   "os-method:iris_src/src/Graph/KG/Service.cls:329:Graph.KG.Service.WriteJSON": {
+    "status": "helper",
+    "of": [
+     "os-method:iris_src/src/Graph/KG/Service.cls:265:Graph.KG.Service.VectorSearch",
+     "os-method:iris_src/src/Graph/KG/Service.cls:286:Graph.KG.Service.HybridSearch",
+     "os-method:iris_src/src/Graph/KG/Service.cls:304:Graph.KG.Service.MetaPath"
+    ],
+    "why": "Writes the result object as JSON to the current device; called only by VectorSearch, HybridSearch and MetaPath (Service.cls:280, 298, 315). Public only by visibility; no behaviour of its own.",
+    "lane_group": "g7"
+   },
+   "py-api:api/dependencies.py:25:get_engine_optional": {
+    "status": "helper",
+    "of": "py-api:api/routers/cypher.py:94:execute_cypher_query",
+    "why": "FastAPI dependency of execute_cypher_query (Depends at api/routers/cypher.py:97), its only caller; it returns app.state.engine or None, which the translator uses for its build probes (api/routers/cypher.py:122-129).",
+    "lane_group": "g7"
+   },
+   "py-api:api/dependencies.py:38:get_db_connection": {
+    "status": "helper",
+    "of": "py-api:api/routers/cypher.py:94:execute_cypher_query",
+    "why": "FastAPI dependency of execute_cypher_query (Depends at api/routers/cypher.py:96), its only caller; it yields the app's connection and answers 500 when there is none (API-T4.2), never closing it.",
+    "lane_group": "g7"
+   },
+   "py-api:api/gql/loaders.py:128:batch_load_fn": {
+    "status": "statement",
+    "statements": [
+     "API-B6.6"
+    ],
+    "why": "GeneLoader, PathwayLoader, PropertyLoader and LabelLoader batch loads (api/gql/loaders.py:67-272): API-B6.6 names these loaders and states what they do (filter on s only, so graphs merge; swallow SQL errors).",
+    "lane_group": "g7"
+   },
+   "py-api:api/gql/loaders.py:222:batch_load_fn": {
+    "status": "statement",
+    "statements": [
+     "API-B6.6"
+    ],
+    "why": "GeneLoader, PathwayLoader, PropertyLoader and LabelLoader batch loads (api/gql/loaders.py:67-272): API-B6.6 names these loaders and states what they do (filter on s only, so graphs merge; swallow SQL errors).",
+    "lane_group": "g7"
+   },
+   "py-api:api/gql/loaders.py:252:batch_load_fn": {
+    "status": "statement",
+    "statements": [
+     "API-B6.6"
+    ],
+    "why": "GeneLoader, PathwayLoader, PropertyLoader and LabelLoader batch loads (api/gql/loaders.py:67-272): API-B6.6 names these loaders and states what they do (filter on s only, so graphs merge; swallow SQL errors).",
+    "lane_group": "g7"
+   },
+   "py-api:api/gql/loaders.py:74:batch_load_fn": {
+    "status": "statement",
+    "statements": [
+     "API-B6.6"
+    ],
+    "why": "GeneLoader, PathwayLoader, PropertyLoader and LabelLoader batch loads (api/gql/loaders.py:67-272): API-B6.6 names these loaders and states what they do (filter on s only, so graphs merge; swallow SQL errors).",
+    "lane_group": "g7"
+   },
+   "py-api:api/gql/resolvers/mutation.py:106:update_protein": {
+    "status": "statement",
+    "statements": [
+     "API-T6.11"
+    ],
+    "why": "Mutation.update_protein of api/gql/resolvers/mutation.py: not served (API-T6.11); the served updateProtein is API-B6.7.",
+    "lane_group": "g7"
+   },
+   "py-api:api/gql/resolvers/mutation.py:24:create_protein": {
+    "status": "statement",
+    "statements": [
+     "API-T6.11"
+    ],
+    "why": "Mutation.create_protein of api/gql/resolvers/mutation.py: API-T6.11 states that the resolvers of the api resolvers folder are not part of the served schema (api/gql/schema.py imports none of them); the served createProtein is API-B6.90.",
+    "lane_group": "g7"
+   },
+   "py-api:api/gql/resolvers/query.py:176:gene": {
+    "status": "statement",
+    "statements": [
+     "API-T6.11"
+    ],
+    "why": "Query.gene of api/gql/resolvers/query.py: not served (API-T6.11); the served gene field is api/gql/schema.py:129-137 (API-B6, API-B6.6).",
+    "lane_group": "g7"
+   },
+   "py-api:api/gql/resolvers/query.py:203:pathway": {
+    "status": "statement",
+    "statements": [
+     "API-T6.11"
+    ],
+    "why": "Query.pathway of api/gql/resolvers/query.py: not served (API-T6.11); the served pathway field is api/gql/schema.py:139-147 (API-B6, API-B6.6).",
+    "lane_group": "g7"
+   },
+   "py-api:api/routers/fhir_event.py:244:is_embed_eligible": {
+    "status": "statement",
+    "statements": [
+     "API-T7.7"
+    ],
+    "why": "Decides whether the FHIR event route queues a vector (api/routers/fhir_event.py:349-351): API-T7.7 states the two resource kinds that carry text (Condition, DiagnosticReport).",
+    "lane_group": "g7"
+   },
+   "py-api:api/routers/fhir_event.py:253:already_embedded": {
+    "status": "statement",
+    "statements": [
+     "API-T7.7"
+    ],
+    "why": "The 'node already has a vector' check of the FHIR event route (api/routers/fhir_event.py:352): API-T7.7 Notes state the skip.",
+    "lane_group": "g7"
+   },
+   "py-api:iris_vector_graph/bolt_server.py:152:unpack": {
+    "status": "helper",
+    "of": [
+     "py-api:iris_vector_graph/bolt_server.py:396:run",
+     "py-api:iris_vector_graph/bolt_server.py:936:run"
+    ],
+    "why": "PackStream.unpack: decodes the fields of HELLO, LOGON, RUN and PULL in _dispatch (bolt_server.py:482-498); an internal step of the sessions' run loops.",
+    "lane_group": "g7"
+   },
+   "py-api:iris_vector_graph/bolt_server.py:256:encode_message": {
+    "status": "helper",
+    "of": [
+     "py-api:iris_vector_graph/bolt_server.py:396:run",
+     "py-api:iris_vector_graph/bolt_server.py:936:run"
+    ],
+    "why": "Bolt chunk framing of every outgoing message (bolt_server.py:325) and of the consumed-length count (bolt_server.py:449); an internal step of the sessions.",
+    "lane_group": "g7"
+   },
+   "py-api:iris_vector_graph/bolt_server.py:269:decode_messages": {
+    "status": "helper",
+    "of": [
+     "py-api:iris_vector_graph/bolt_server.py:396:run",
+     "py-api:iris_vector_graph/bolt_server.py:936:run"
+    ],
+    "why": "Chunk decoder of the web socket session's _recv_message (bolt_server.py:445); this def is rebound to _decode_messages_stateless at bolt_server.py:314, so the name runs that one. Internal step of BoltSession.run.",
+    "lane_group": "g7"
+   },
+   "py-api:iris_vector_graph/bolt_server.py:317:bolt_message_bytes": {
+    "status": "helper",
+    "of": [
+     "py-api:iris_vector_graph/bolt_server.py:396:run",
+     "py-api:iris_vector_graph/bolt_server.py:936:run"
+    ],
+    "why": "Builds a message structure; called only by encode_bolt_message (bolt_server.py:325) on the sessions' send path.",
+    "lane_group": "g7"
+   },
+   "py-api:iris_vector_graph/bolt_server.py:324:encode_bolt_message": {
+    "status": "helper",
+    "of": [
+     "py-api:iris_vector_graph/bolt_server.py:396:run",
+     "py-api:iris_vector_graph/bolt_server.py:936:run"
+    ],
+    "why": "Thin wrapper (bolt_message_bytes then encode_message) called only by the sessions' _send_message (bolt_server.py:457, 988).",
+    "lane_group": "g7"
+   },
+   "py-api:iris_vector_graph/bolt_server.py:360:pack_relationship": {
+    "status": "not-entry-point",
+    "why": "A module-level PackStream helper with no caller anywhere in the pinned tree (grep); relationship structures are packed inline with PackStream._pack_struct (bolt_server.py:772, 793, 834-861). Not reachable from a driver.",
+    "lane_group": "g7"
+   },
+   "py-api:iris_vector_graph/bolt_server.py:69:pack": {
+    "status": "helper",
+    "of": [
+     "py-api:iris_vector_graph/bolt_server.py:396:run",
+     "py-api:iris_vector_graph/bolt_server.py:936:run"
+    ],
+    "why": "PackStream.pack: the PackStream encoder of every field the sessions send (bolt_server.py:317-325, 457, 988); an internal step of BoltSession.run and TcpBoltSession.run.",
+    "lane_group": "g7"
+   },
+   "py-api:iris_vector_graph/gql/engine.py:17:get_labels": {
+    "status": "helper",
+    "of": "py-api:iris_vector_graph/gql/schema.py:126:build_schema",
+    "why": "Called only by get_schema_metadata (gql/engine.py:63), which build_schema calls (gql/schema.py:133): the labels of every graph, one generated type each (API-D4, API-B10; mixing graphs is API-B10.3, F-1603). A failure logs and gives no label.",
+    "lane_group": "g7"
+   },
+   "py-api:iris_vector_graph/gql/engine.py:59:get_schema_metadata": {
+    "status": "helper",
+    "of": "py-api:iris_vector_graph/gql/schema.py:126:build_schema",
+    "why": "Called only by build_schema (gql/schema.py:133): label to sampled property keys for the generated types (API-D4; the label-to-property join on s alone is API-B10.3).",
+    "lane_group": "g7"
+   },
+   "py-api:iris_vector_graph/gql/pooling.py:50:get_pool": {
+    "status": "helper",
+    "of": "py-api:iris_vector_graph/gql/__init__.py:15:create_app",
+    "why": "Process-wide pool getter called by create_app's context getter on every request (gql/__init__.py:32) and by connection_context; the pool is API-T10.9 (one shared connection). Resolvers never use it.",
+    "lane_group": "g7"
+   },
+   "py-api:iris_vector_graph/gql/pooling.py:62:connection_context": {
+    "status": "helper",
+    "of": "py-api:iris_vector_graph/gql/pooling.py:26:acquire",
+    "why": "Thin delegating wrapper of AsyncConnectionPool.acquire (gql/pooling.py:64-66); imported by gql/resolvers.py:6 and called nowhere.",
+    "lane_group": "g7"
+   },
+   "py-api:iris_vector_graph/gql/resolvers.py:167:serialize_value": {
+    "status": "helper",
+    "of": "py-api:iris_vector_graph/gql/resolvers.py:136:resolve_cypher",
+    "why": "Called only by resolve_cypher (gql/resolvers.py:159) to make each row JSON-safe (dates as ISO text, Decimal as float).",
+    "lane_group": "g7"
+   },
+   "py-api:iris_vector_graph/gql/schema.py:50:resolve_type": {
+    "status": "helper",
+    "of": [
+     "graphql-field:iris_vector_graph/gql/schema.py:149:node",
+     "graphql-field:iris_vector_graph/gql/schema.py:154:nodes",
+     "graphql-field:iris_vector_graph/gql/schema.py:63:node"
+    ],
+    "why": "Node.resolve_type, called by Strawberry for every Node result of the node, nodes and Relationship.node fields (and semantic search): it answers the object's first label as the type name (gql/schema.py:49-55).",
+    "lane_group": "g7"
+   },
+   "py-api:iris_vector_graph/security.py:58:is_routed_embedding_table": {
+    "status": "statement",
+    "statements": [
+     "API-X14.1"
+    ],
+    "why": "is_routed_embedding_table is the by-shape test API-X14.1 Notes state (kg_emb_ or kg_eemb_ plus 16 hex digits admitted beside VALID_GRAPH_TABLES), called by validate_table_name (security.py:131-135) and the engine's route lookups.",
+    "lane_group": "g7"
+   },
+   "py-api:iris_vector_graph/security.py:71:is_routed_edge_embedding_table": {
+    "status": "statement",
+    "statements": [
+     "API-X14.1"
+    ],
+    "why": "is_routed_edge_embedding_table is the by-shape test API-X14.1 Notes state (kg_emb_ or kg_eemb_ plus 16 hex digits admitted beside VALID_GRAPH_TABLES), called by validate_table_name (security.py:131-135) and the engine's route lookups.",
+    "lane_group": "g7"
+   },
+   "py-api:src/iris_demo_server/models/biomedical.py:126:validate_edge_protein_ids": {
+    "status": "helper",
+    "of": "http-route:src/iris_demo_server/routes/biomedical.py:587:GET /api/bio/network/{protein_id}",
+    "why": "Pydantic validator of InteractionNetwork, built only by get_interaction_network (iris_biomedical_client.py:174-178): every edge end is a listed node.",
+    "lane_group": "g7"
+   },
+   "py-api:src/iris_demo_server/models/biomedical.py:142:validate_non_empty_nodes": {
+    "status": "helper",
+    "of": "http-route:src/iris_demo_server/routes/biomedical.py:587:GET /api/bio/network/{protein_id}",
+    "why": "Pydantic validator of InteractionNetwork (built only by get_interaction_network): at least one node, which the centre always gives.",
+    "lane_group": "g7"
+   },
+   "py-api:src/iris_demo_server/models/biomedical.py:192:validate_path_length": {
+    "status": "helper",
+    "of": "http-route:src/iris_demo_server/routes/biomedical.py:1157:POST /api/bio/pathway",
+    "why": "Pydantic validator of PathwayResult, built only by find_pathway (iris_biomedical_client.py:194-199): two proteins at least.",
+    "lane_group": "g7"
+   },
+   "py-api:src/iris_demo_server/models/biomedical.py:199:validate_proteins_match_path": {
+    "status": "helper",
+    "of": "http-route:src/iris_demo_server/routes/biomedical.py:1157:POST /api/bio/pathway",
+    "why": "Pydantic validator of PathwayResult (built only by find_pathway): one protein per path step.",
+    "lane_group": "g7"
+   },
+   "py-api:src/iris_demo_server/models/biomedical.py:34:validate_embedding_dimension": {
+    "status": "helper",
+    "of": [
+     "http-route:src/iris_demo_server/routes/biomedical.py:417:POST /api/bio/search",
+     "http-route:src/iris_demo_server/routes/biomedical.py:587:GET /api/bio/network/{protein_id}",
+     "http-route:src/iris_demo_server/routes/biomedical.py:1157:POST /api/bio/pathway"
+    ],
+    "why": "Pydantic validator of the Protein model the bio client builds for every result (iris_biomedical_client.py:68-75); it refuses a vector not 768 wide, and the demo sets none.",
+    "lane_group": "g7"
+   },
+   "py-api:src/iris_demo_server/models/biomedical.py:76:validate_scores": {
+    "status": "helper",
+    "of": "http-route:src/iris_demo_server/routes/biomedical.py:417:POST /api/bio/search",
+    "why": "Pydantic validator of SimilaritySearchResult, built only by search_proteins (iris_biomedical_client.py:144-148): scores in 0-1 and one per protein.",
+    "lane_group": "g7"
+   },
+   "py-api:src/iris_demo_server/routes/biomedical.py:24:get_biomedical_client": {
+    "status": "helper",
+    "of": [
+     "http-route:src/iris_demo_server/routes/biomedical.py:417:POST /api/bio/search",
+     "http-route:src/iris_demo_server/routes/biomedical.py:587:GET /api/bio/network/{protein_id}",
+     "http-route:src/iris_demo_server/routes/biomedical.py:1157:POST /api/bio/pathway"
+    ],
+    "why": "Lazy module-level client getter (IRISBiomedicalClient over bio_demo_data.connect) called by the bio routes (routes/biomedical.py:41, 440, 592, 1178) and the landing status card (app.py:111).",
+    "lane_group": "g7"
+   },
+   "py-api:src/iris_demo_server/routes/biomedical.py:32:set_biomedical_client": {
+    "status": "not-entry-point",
+    "why": "A test seam: swaps the module's client; nothing in the shipped code calls it (grep), and no route or command reaches it.",
+    "lane_group": "g7"
+   },
+   "py-api:src/iris_demo_server/routes/fhir.py:71:set_fhir_client": {
+    "status": "not-entry-point",
+    "why": "A test seam: installs a client or None (routes/fhir.py:71-74); nothing in the shipped code calls it (grep), and no route or command reaches it.",
+    "lane_group": "g7"
+   },
+   "py-api:src/iris_demo_server/routes/fhir.py:77:get_fhir_client": {
+    "status": "helper",
+    "of": [
+     "http-route:src/iris_demo_server/routes/fhir.py:476:POST /api/fhir/search",
+     "http-route:src/iris_demo_server/routes/fhir.py:495:GET /api/fhir/neighborhood/{key:path}"
+    ],
+    "why": "Lazy module-level client getter (FHIRGraphDemoClient.from_env) called by every FHIR route (routes/fhir.py:399, 464, 485, 499, 512, 524) and the landing status card (app.py:121).",
+    "lane_group": "g7"
+   }
+  },
+  "17": {
+   "py-api:iris_vector_graph/status.py:95:to_dict": {
+    "status": "statement",
+    "statements": [
+     "OPS-B3.1"
+    ],
+    "why": "SyncReport.to_dict (status.py:95-104) returns the fields of the report verify_sync returns (in_sync, sql_edges, global_edges, global_nodes, pending_sync, healed, detail); OPS-B3.1 states that report. Same treatment as LedgerStatus.to_dict, which OPS-B2.9 covers by citation",
+    "lane_group": "g8"
+   },
+   "py-api:iris_vector_graph/stores/iris_sql_store.py:1938:execute_vl_ends": {
+    "status": "other-module",
+    "module": "10",
+    "statements": [
+     "ALG-B11",
+     "ALG-B11.1"
+    ],
+    "why": "IRISGraphStore.execute_vl_ends (iris_sql_store.py:1938-1971) calls Graph.KG.VarLength.Ends for one graph (None or '' the default graph) and returns its (id, hops) rows; ALG-B11/ALG-B11.1 state that walk",
+    "lane_group": "g8"
+   },
+   "py-api:iris_vector_graph/stores/iris_sql_store.py:2162:shortest_path_length": {
+    "status": "other-module",
+    "module": "10",
+    "statements": [
+     "ALG-B10"
+    ],
+    "why": "IRISGraphStore.shortest_path_length (iris_sql_store.py:2162-2181) returns Graph.KG.TraversalPaths.ShortestLength for one graph; ALG-B10 states path search in one graph and names ShortestLength",
+    "lane_group": "g8"
+   },
+   "py-api:iris_vector_graph/stores/iris_sql_store.py:2183:execute_shortest_path": {
+    "status": "other-module",
+    "module": "10",
+    "statements": [
+     "ALG-B10",
+     "ALG-B10.4"
+    ],
+    "why": "IRISGraphStore.execute_shortest_path (iris_sql_store.py:2183-2227) is the store side of path search; ALG-B10.4 cites its in-edge reversal (iris_sql_store.py:2196-2207)",
+    "lane_group": "g8"
+   },
+   "py-api:iris_vector_graph/stores/iris_sql_store.py:2231:execute_ppr": {
+    "status": "other-module",
+    "module": "10",
+    "statements": [
+     "ALG-B2",
+     "ALG-B2.18"
+    ],
+    "why": "IRISGraphStore.execute_ppr (iris_sql_store.py:2231-2274) is personalized PageRank behind the result cache; ALG-B2.18 cites these lines (2244-2273)",
+    "lane_group": "g8"
+   },
+   "py-api:iris_vector_graph/stores/iris_sql_store.py:2362:execute_pagerank": {
+    "status": "other-module",
+    "module": "10",
+    "statements": [
+     "ALG-B1",
+     "ALG-B1.12"
+    ],
+    "why": "IRISGraphStore.execute_pagerank (iris_sql_store.py:2362-2386) is global PageRank behind the result cache; ALG-B1.12 cites exactly these lines",
+    "lane_group": "g8"
+   },
+   "py-api:iris_vector_graph/stores/iris_sql_store.py:2419:execute_wcc": {
+    "status": "other-module",
+    "module": "10",
+    "statements": [
+     "ALG-B3",
+     "ALG-B3.5"
+    ],
+    "why": "IRISGraphStore.execute_wcc (iris_sql_store.py:2419-2423) puts _execute_wcc (2425-2452) behind the result cache; ALG-B3 and ALG-B3.5 (citing 2425-2445) state connected components",
+    "lane_group": "g8"
+   },
+   "py-api:iris_vector_graph/stores/iris_sql_store.py:2462:execute_cdlp": {
+    "status": "other-module",
+    "module": "10",
+    "statements": [
+     "ALG-B4",
+     "ALG-B4.4"
+    ],
+    "why": "IRISGraphStore.execute_cdlp (iris_sql_store.py:2462-2469) is label spreading behind the result cache; ALG-B4.4 cites exactly these lines",
+    "lane_group": "g8"
+   },
+   "py-api:iris_vector_graph/stores/iris_sql_store.py:2500:execute_subgraph": {
+    "status": "other-module",
+    "module": "10",
+    "statements": [
+     "ALG-B8",
+     "ALG-B8.7"
+    ],
+    "why": "IRISGraphStore.execute_subgraph (iris_sql_store.py:2500-2566) is subgraph extraction; ALG-B8.7 cites its edge-type routing (2526-2535)",
+    "lane_group": "g8"
+   },
+   "py-api:iris_vector_graph/stores/iris_sql_store.py:2568:execute_knn_vec": {
+    "status": "other-module",
+    "module": "06",
+    "statements": [
+     "VEC-B5",
+     "VEC-B5.1",
+     "VEC-I5.9"
+    ],
+    "why": "IRISGraphStore.execute_knn_vec (iris_sql_store.py:2568-2651), called by the engine's Cypher KNN procedure (engine.py:1186), searches one graph's routed table (knn_route), best first, the default graph when none is named, and answers nothing for a pair with no route; VEC-B5, VEC-B5.1 and VEC-I5.9 state that search",
+    "lane_group": "g8"
+   },
+   "py-api:iris_vector_graph/stores/iris_sql_store.py:2655:write_temporal_edge": {
+    "status": "other-module",
+    "module": "05",
+    "statements": [
+     "TMP-B1",
+     "TMP-B1.14"
+    ],
+    "why": "IRISGraphStore.write_temporal_edge (iris_sql_store.py:2655-2690) calls Graph.KG.TemporalIndex.InsertEdge for one graph and returns a failure as the result's error, which the engine raises (temporal.py:292); TMP-B1 (InsertEdge) and TMP-B1.14 state the write",
+    "lane_group": "g8"
+   },
+   "py-api:iris_vector_graph/stores/iris_sql_store.py:2692:delete_temporal_edge": {
+    "status": "other-module",
+    "module": "05",
+    "statements": [
+     "TMP-B4",
+     "TMP-B4.1"
+    ],
+    "why": "IRISGraphStore.delete_temporal_edge (iris_sql_store.py:2692-2717) calls DeleteTemporalEdge and returns its 1/0 as a bool; TMP-B4 and TMP-B4.1 state that delete",
+    "lane_group": "g8"
+   },
+   "py-api:iris_vector_graph/stores/iris_sql_store.py:2719:bulk_write_temporal_edges": {
+    "status": "other-module",
+    "module": "05",
+    "statements": [
+     "TMP-B1.4",
+     "TMP-T1.19"
+    ],
+    "why": "IRISGraphStore.bulk_write_temporal_edges (iris_sql_store.py:2719-2786); TMP-T1.19 cites its per-edge fallback (2759-2786) and TMP-B1.4 its counts",
+    "lane_group": "g8"
+   },
+   "py-api:iris_vector_graph/stores/iris_sql_store.py:2788:purge_bucket_range": {
+    "status": "other-module",
+    "module": "05",
+    "statements": [
+     "TMP-B9.12"
+    ],
+    "why": "IRISGraphStore.purge_bucket_range (iris_sql_store.py:2788-2796) calls TemporalIndex.PurgeBucketRange for one graph; TMP-B9.12 states the bucket purge",
+    "lane_group": "g8"
+   },
+   "py-api:iris_vector_graph/stores/iris_sql_store.py:2798:purge_raw_before": {
+    "status": "other-module",
+    "module": "05",
+    "statements": [
+     "TMP-B9",
+     "TMP-B9.7"
+    ],
+    "why": "IRISGraphStore.purge_raw_before (iris_sql_store.py:2798-2814) calls PurgeRawBefore; TMP-B9.7 cites these lines and TMP-B9 states the purge",
+    "lane_group": "g8"
+   },
+   "py-api:iris_vector_graph/stores/iris_sql_store.py:2816:erase_bare_nodes": {
+    "status": "other-module",
+    "module": "05",
+    "statements": [
+     "TMP-D20",
+     "TMP-B12.8"
+    ],
+    "why": "IRISGraphStore.erase_bare_nodes (iris_sql_store.py:2816-2840) checks the ledger and calls Graph.KG.Eraser.EraseBareNodes for one graph (refused when that method is not deployed); TMP-D20 defines the bare nodes it deletes and names EraseBareNodes, TMP-B12.8 cites its strict check (2823-2825)",
+    "lane_group": "g8"
+   },
+   "py-api:iris_vector_graph/stores/iris_sql_store.py:2842:intern_label_set": {
+    "status": "other-module",
+    "module": "05",
+    "statements": [
+     "TMP-B13"
+    ],
+    "why": "IRISGraphStore.intern_label_set (iris_sql_store.py:2842-2846) returns TemporalIndex.InternLabelSet's hash ('' for none); TMP-B13 states interning",
+    "lane_group": "g8"
+   },
+   "py-api:iris_vector_graph/stores/iris_sql_store.py:2848:resolve_label_set": {
+    "status": "other-module",
+    "module": "05",
+    "statements": [
+     "TMP-B13",
+     "TMP-B13.2"
+    ],
+    "why": "IRISGraphStore.resolve_label_set (iris_sql_store.py:2848-2852) returns ResolveLabelSet's text ('' for an unknown hash); TMP-B13.2 states that lookup",
+    "lane_group": "g8"
+   },
+   "py-api:iris_vector_graph/stores/iris_sql_store.py:2854:execute_temporal_window_query": {
+    "status": "other-module",
+    "module": "05",
+    "statements": [
+     "TMP-B5",
+     "TMP-X5.1"
+    ],
+    "why": "IRISGraphStore.execute_temporal_window_query (iris_sql_store.py:2854-2898) reads QueryWindow for one graph; TMP-X5.1 cites its failure handling (2890-2898) and TMP-B5 states the window read",
+    "lane_group": "g8"
+   },
+   "py-api:iris_vector_graph/stores/iris_sql_store.py:2900:execute_temporal_cypher": {
+    "status": "other-module",
+    "module": "05",
+    "statements": [
+     "TMP-B3.9"
+    ],
+    "why": "IRISGraphStore.execute_temporal_cypher (iris_sql_store.py:2900-2969) walks QueryWindow hop by hop; TMP-B3.9 cites these lines (2900-2915)",
+    "lane_group": "g8"
+   },
+   "py-api:iris_vector_graph/stores/iris_sql_store.py:2971:get_temporal_aggregate": {
+    "status": "other-module",
+    "module": "05",
+    "statements": [
+     "TMP-B8"
+    ],
+    "why": "IRISGraphStore.get_temporal_aggregate (iris_sql_store.py:2971-2987) returns TemporalIndex.GetAggregate as a float and raises on failure; TMP-B8 states the aggregate read",
+    "lane_group": "g8"
+   },
+   "py-api:iris_vector_graph/stores/iris_sql_store.py:3103:execute_degree_centrality": {
+    "status": "other-module",
+    "module": "10",
+    "statements": [
+     "ALG-B5",
+     "ALG-B5.5"
+    ],
+    "why": "IRISGraphStore.execute_degree_centrality (iris_sql_store.py:3103-3143) calls Centrality.DegreeCentralityJson, passing the graph only when named; ALG-B5 and ALG-B5.5 state degree centrality and that rule",
+    "lane_group": "g8"
+   },
+   "py-api:iris_vector_graph/stores/iris_sql_store.py:3196:execute_betweenness": {
+    "status": "other-module",
+    "module": "10",
+    "statements": [
+     "ALG-B5",
+     "ALG-B5.11"
+    ],
+    "why": "IRISGraphStore.execute_betweenness (iris_sql_store.py:3196-3220) runs _betweenness_gref, whose snapshot rule ALG-B5.11 states (citing 3300-3335)",
+    "lane_group": "g8"
+   },
+   "py-api:iris_vector_graph/stores/iris_sql_store.py:3222:execute_betweenness_neighborhood": {
+    "status": "other-module",
+    "module": "10",
+    "statements": [
+     "ALG-B5.15"
+    ],
+    "why": "IRISGraphStore.execute_betweenness_neighborhood (iris_sql_store.py:3222-3257); ALG-B5.15 cites these lines (3222-3253)",
+    "lane_group": "g8"
+   },
+   "py-api:iris_vector_graph/stores/iris_sql_store.py:3484:execute_closeness": {
+    "status": "other-module",
+    "module": "10",
+    "statements": [
+     "ALG-B5",
+     "ALG-B5.19"
+    ],
+    "why": "IRISGraphStore.execute_closeness (iris_sql_store.py:3484-3496) runs _closeness_gref, whose snapshot rule ALG-B5.19 states (citing 3548-3556)",
+    "lane_group": "g8"
+   },
+   "py-api:iris_vector_graph/stores/iris_sql_store.py:3636:execute_eigenvector": {
+    "status": "other-module",
+    "module": "10",
+    "statements": [
+     "ALG-B5",
+     "ALG-B5.19"
+    ],
+    "why": "IRISGraphStore.execute_eigenvector (iris_sql_store.py:3636-3654) runs _eigenvector_gref, whose snapshot rule ALG-B5.19 states (citing 3669-3691); a power iteration that does not settle raises (OPS-B7.4)",
+    "lane_group": "g8"
+   },
+   "py-api:iris_vector_graph/stores/iris_sql_store.py:3737:execute_leiden": {
+    "status": "other-module",
+    "module": "10",
+    "statements": [
+     "ALG-B6.2"
+    ],
+    "why": "IRISGraphStore.execute_leiden (iris_sql_store.py:3737-3763); ALG-B6.2 cites these lines (3737-3762)",
+    "lane_group": "g8"
+   },
+   "py-api:iris_vector_graph/stores/iris_sql_store.py:394:json_table_text": {
+    "status": "helper",
+    "of": "py-api:iris_vector_graph/stores/iris_sql_store.py:1580:execute_transaction",
+    "why": "Module-level function (iris_sql_store.py:394) used only by _pinned_stage_sql (:416) and _stage_snapshot_sql (:531), which only execute_transaction calls (:1639, 1672-1725); it spells '' for JSON_TABLE; no other caller",
+    "lane_group": "g8"
+   },
+   "py-api:iris_vector_graph/stores/iris_sql_store.py:3977:execute_triangle_count": {
+    "status": "other-module",
+    "module": "10",
+    "statements": [
+     "ALG-B6",
+     "ALG-B6.6"
+    ],
+    "why": "IRISGraphStore.execute_triangle_count (iris_sql_store.py:3977-3988), Arno then LazyKG; ALG-B6.6 cites these lines (3977-4006)",
+    "lane_group": "g8"
+   },
+   "py-api:iris_vector_graph/stores/iris_sql_store.py:4064:execute_scc": {
+    "status": "other-module",
+    "module": "10",
+    "statements": [
+     "ALG-B6",
+     "ALG-B6.6"
+    ],
+    "why": "IRISGraphStore.execute_scc (iris_sql_store.py:4064-4075), Arno then LazyKG over the default graph; ALG-B6.6 states strong components on that path",
+    "lane_group": "g8"
+   },
+   "py-api:iris_vector_graph/stores/iris_sql_store.py:4179:execute_k_core": {
+    "status": "other-module",
+    "module": "10",
+    "statements": [
+     "ALG-B6",
+     "ALG-B6.6"
+    ],
+    "why": "IRISGraphStore.execute_k_core (iris_sql_store.py:4179-4190), Arno then LazyKG over the default graph; ALG-B6.6 states k-cores on that path",
+    "lane_group": "g8"
+   },
+   "py-api:iris_vector_graph/utils.py:114:is_list_error": {
+    "status": "helper",
+    "of": "py-api:iris_vector_graph/utils.py:118:execute_decoded",
+    "why": "One-line predicate (utils.py:114-115) used by execute_decoded (utils.py:135, 144), whose retry OPS-T9.6 states, and by bulk_loader.py:124 (module 03's loader); no behaviour of its own",
+    "lane_group": "g8"
+   }
+  },
+  "stores": {
+   "store:^KG_populated": {
+    "status": "not-entry-point",
+    "why": "not a global: a key of the status report's internals map, {\"^KG_populated\": adjacency.kg_populated, ...} (iris_vector_graph/_engine/admin.py:698-700)",
+    "lane_group": "lead"
+   },
+   "store:^NKG_populated": {
+    "status": "not-entry-point",
+    "why": "not a global: a key of the status report's internals map (iris_vector_graph/_engine/admin.py:698-700)",
+    "lane_group": "lead"
+   }
+  }
+ },
+ "rules": [
+  {
+   "module": "00",
+   "file_glob": "iris_src/dev/*",
+   "status": "not-deployed",
+   "why": "Dev ObjectScript classes. Class deploy reads only iris_src/src (the wheel's copy or the source tree's: iris_vector_graph/_engine/class_deploy.py:52-58), and the wheel force-includes only iris_src/src (pyproject.toml:194-195); iris_src/dev reaches the sdist only through /iris_src (pyproject.toml:182) and is loaded only by tests (tests/helpers/dev_classes.py:3-44). BenchFormat and Benchmark are benchmark code, User.Exec an Xecute helper, iris.vector.graph.GraphOperators an older generation of kg_TXT / kg_KNN_VEC / kg_GRAPH_PATH / kg_RRF_FUSE (no longer shipped since 4.6.0 R080, tests/e2e/test_ppr_cls_fast_path.py:137).",
+   "lane_group": "g9"
+  },
+  {
+   "module": "00",
+   "file_glob": "scripts/*",
+   "status": "tooling",
+   "why": "Repository tooling under scripts/ (benchmarks, TCK runner, line coverage, dev, demo, fixtures, FHIR benchmarks, sample SQL, container helpers, CI parity, release gates). In neither distribution: the sdist includes only /iris_vector_graph, /iris_src, /sql, /examples, /tests, /README.md, /LICENSE and /docs/dev/arno-reader-proof.json (pyproject.toml:181-183), the wheel packages only iris_vector_graph (pyproject.toml:185-189); setup runs none of it (initialize_schema uses the package's own DDL and iris_src/src, iris_vector_graph/_engine/class_deploy.py:52-58). The scripts that write product data or install the product have their own owner records.",
+   "lane_group": "g9"
+  },
+  {
+   "module": "00",
+   "file_glob": "examples/*",
+   "status": "tooling",
+   "why": "Example code under examples/: in the sdist (pyproject.toml:182, /examples) but not the wheel (packages = iris_vector_graph, pyproject.toml:186), and not deployed; nothing under iris_vector_graph imports it. The one product import, the sample API's of examples.domains.biomedical (api/gql/schema.py:78-85), has owner records in module 16.",
+   "lane_group": "g9"
+  }
+ ]
+}

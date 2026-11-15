@@ -1,0 +1,17 @@
+{
+  "command": "locks.sh iris timeout 600 python experiment/playbook-completion/followup/probes.py r04 (AUDITA; first decisive run)",
+  "experiment_head": "f3fe3917466f7bae3e46f32f5b0644cfeaff87c8",
+  "finding": "F-C1308",
+  "id": "fu-r04-temporal-only-live-a",
+  "kind": "live",
+  "lane": "followup",
+  "log": "$RUN_DIR/followup/r04-run2.json",
+  "log_bytes": 5201,
+  "log_sha256": "eba24ccc7d8e05cfdc7216e5bd1a17d56cb142918be6fd0a23562513c15b424e",
+  "namespace": "AUDITA",
+  "observes": "R-04, F-C1308/F-C1203 (first run): control (structural temporal predicate) refused target_live; graph fq4g whose only content is a temporal-only (ADR-0015) edge: no row in nodes/rdf_*, redact('fq4g') completes without an erase and tombstones the create_temporal_edge record while get_edges_in_window still returns the edge; prefix tenant fq5: delete_nodes_by_prefix('fq5|') leaves the temporal-only edge, redact(None, prefix='fq5') completes, edge still live. verify() here reported diverges because the control graph fqctl was left live (confounded; see fu-r04-temporal-only-live-b).",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T01:35:36+00:00",
+  "result": "fail"
+}

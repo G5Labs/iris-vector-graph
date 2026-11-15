@@ -1,0 +1,462 @@
+{
+  "_doc": "Canonical lifecycles of IVG (playbook 3.3a step 3), semantics lane, pin 3eaa79cf. One name and one meaning per state and per command. A facet is a property orthogonal to the lifecycle state (approval and block in the playbook; here: governed, marked, read-only, layout, ...); an object maps each of its ontology states to one canonical state, optionally with facets, and each of its ontology commands to one canonical command of its lifecycle. Object declarations: semantics/objects.json. State and command ids are unique in meaning across lifecycles (the same id recurs only where the meaning is the same: absent = no instance exists; read = answer or report without changing anything; restore = put archived content back into the live stores, seen from the item (LC-1) or from the copy (LC-8); erase = remove every item of a scope, seen from the item (LC-1) or the scope (LC-6)). Renamed after the mapping lane's report: LC-3 current -> in-force, LC-3 use -> consult, LC-2 failed -> build-failed, LC-7 failed -> errored; after the checker's vocabulary rule: LC-4 commit -> append (LC-7 commit ends a transaction). Ids that recur with one meaning seen from two levels: absent, read, restore, erase, live (SYS-D13: some store holds the content, of an item or of a scope), upgrade (bring to the current release's layout or setup), redact (turn history into tombstones, of a record or of a scope).",
+  "lifecycles": [
+    {
+      "id": "LC-1",
+      "name": "Content item",
+      "meaning": "A piece of graph content a caller writes: a node, edge, label, property, qualifier, temporal event, vector, text document or reifier, in one graph.",
+      "states": [
+        {
+          "id": "absent",
+          "meaning": "no store holds the item in its graph"
+        },
+        {
+          "id": "live",
+          "meaning": "some primary store holds the item in its graph (SYS-D13)"
+        }
+      ],
+      "commands": [
+        {
+          "id": "create",
+          "meaning": "make the item live (also store, insert, merge-create, bulk create)"
+        },
+        {
+          "id": "update",
+          "meaning": "change a live item's value (set, reweight, replace, merge-match)"
+        },
+        {
+          "id": "delete",
+          "meaning": "make one item absent by its id"
+        },
+        {
+          "id": "erase",
+          "meaning": "make every item of a graph or id prefix absent (module 12)"
+        },
+        {
+          "id": "read",
+          "meaning": "answer from the item without changing it"
+        },
+        {
+          "id": "restore",
+          "meaning": "bring the item back from an archive (module 18)"
+        }
+      ],
+      "facets": [
+        "governed (the ledger records it)",
+        "marked (implied by a temporal write, ADR-0009)",
+        "shared id (the same id is live in another graph)",
+        "parallel (multigraph)",
+        "orphan (outlived the item it depends on)",
+        "rolled back (an open writer's write was undone)"
+      ],
+      "mechanisms": [
+        "M-01",
+        "M-09",
+        "M-10",
+        "M-05"
+      ]
+    },
+    {
+      "id": "LC-2",
+      "name": "Derived entry",
+      "meaning": "A store or entry computed from other stores: an index, a cache entry, a compiled plan, a statement map, an aggregate.",
+      "states": [
+        {
+          "id": "absent",
+          "meaning": "not built"
+        },
+        {
+          "id": "building",
+          "meaning": "a build or upgrade is in progress"
+        },
+        {
+          "id": "current",
+          "meaning": "equals its derivation from the committed source (stamp equals token)"
+        },
+        {
+          "id": "stale",
+          "meaning": "known not to equal its derivation; readers must not trust it"
+        },
+        {
+          "id": "build-failed",
+          "meaning": "a build failed; readers fall back to the source"
+        }
+      ],
+      "commands": [
+        {
+          "id": "build",
+          "meaning": "compute from the source and stamp it"
+        },
+        {
+          "id": "maintain",
+          "meaning": "a source write that updates the entry in its transaction or marks it stale"
+        },
+        {
+          "id": "read",
+          "meaning": "answer from the entry after checking its signal"
+        },
+        {
+          "id": "rebuild",
+          "meaning": "recompute from the source, replacing the entry"
+        },
+        {
+          "id": "drop",
+          "meaning": "remove the entry"
+        },
+        {
+          "id": "upgrade",
+          "meaning": "move the entry to a newer layout"
+        }
+      ],
+      "facets": [
+        "layout version (e.g. BM25 schema 1 or 2)",
+        "degraded (written without its lock, with a mark)"
+      ],
+      "mechanisms": [
+        "M-04",
+        "M-12",
+        "M-03"
+      ]
+    },
+    {
+      "id": "LC-3",
+      "name": "Setting or install",
+      "meaning": "A configuration of a namespace, a graph, a process or a deployment: the install, the class set, the ledger state, a graph's mode, a route registration, an optional dependency.",
+      "states": [
+        {
+          "id": "absent",
+          "meaning": "not set up or not present"
+        },
+        {
+          "id": "in-force",
+          "meaning": "set up and in force"
+        },
+        {
+          "id": "outdated",
+          "meaning": "present from an earlier release or setup; needs an upgrade or forced setup"
+        },
+        {
+          "id": "partial",
+          "meaning": "a setup started and did not finish"
+        },
+        {
+          "id": "broken",
+          "meaning": "present but unusable or in conflict (another schema, another app, a bad value)"
+        },
+        {
+          "id": "disabled",
+          "meaning": "set up and switched off"
+        }
+      ],
+      "commands": [
+        {
+          "id": "setup",
+          "meaning": "create or bring in force (deploy, setup, register, create web app, map)"
+        },
+        {
+          "id": "set",
+          "meaning": "change one value of a setting in force (turn on/off, set strict, set mode)"
+        },
+        {
+          "id": "upgrade",
+          "meaning": "move from outdated to in force (forced setup, migration, adopt)"
+        },
+        {
+          "id": "remove",
+          "meaning": "take the setting or install away (legacy removal, unmap, drop)"
+        },
+        {
+          "id": "read",
+          "meaning": "report the setting (status, info, preview, list)"
+        },
+        {
+          "id": "consult",
+          "meaning": "run a command that depends on the setting (first use, a call under the mode)"
+        }
+      ],
+      "facets": [
+        "strict (ledger)",
+        "read-only role",
+        "edition (Community without %AI)",
+        "mode value"
+      ],
+      "mechanisms": [
+        "M-08",
+        "M-11",
+        "M-12"
+      ]
+    },
+    {
+      "id": "LC-4",
+      "name": "History item",
+      "meaning": "An item of the revision ledger: a revision, a record, a retry-key binding.",
+      "states": [
+        {
+          "id": "absent",
+          "meaning": "not yet committed (a retry key: free)"
+        },
+        {
+          "id": "committed",
+          "meaning": "saved in a revision and never changed since (a retry key: bound)"
+        },
+        {
+          "id": "tombstoned",
+          "meaning": "redacted: keeps its place, holds no content (a retry key: redacted)"
+        }
+      ],
+      "commands": [
+        {
+          "id": "append",
+          "meaning": "append in a new revision"
+        },
+        {
+          "id": "replay",
+          "meaning": "a retry answered from the binding, with no effect"
+        },
+        {
+          "id": "redact",
+          "meaning": "turn into a tombstone"
+        },
+        {
+          "id": "read",
+          "meaning": "read history (history, records, diff, verify, export)"
+        }
+      ],
+      "facets": [
+        "kind (changeset, adoption, redaction)"
+      ],
+      "mechanisms": [
+        "M-01",
+        "M-02"
+      ]
+    },
+    {
+      "id": "LC-5",
+      "name": "Run",
+      "meaning": "Work that takes several steps or is done later: a queue entry, a redaction run, a sync, a build job.",
+      "states": [
+        {
+          "id": "absent",
+          "meaning": "not requested"
+        },
+        {
+          "id": "pending",
+          "meaning": "requested and waiting for a worker"
+        },
+        {
+          "id": "running",
+          "meaning": "a worker is on it"
+        },
+        {
+          "id": "stopped",
+          "meaning": "interrupted, with its effects so far kept; can be resumed"
+        },
+        {
+          "id": "done",
+          "meaning": "finished with its result"
+        },
+        {
+          "id": "failed",
+          "meaning": "finished without its result, reported"
+        }
+      ],
+      "commands": [
+        {
+          "id": "start",
+          "meaning": "request the work (enqueue, call, schedule)"
+        },
+        {
+          "id": "work",
+          "meaning": "a worker step"
+        },
+        {
+          "id": "stop",
+          "meaning": "interrupt (process stop, a bound reached, the ledger disabled)"
+        },
+        {
+          "id": "resume",
+          "meaning": "call again after a stop"
+        },
+        {
+          "id": "finish",
+          "meaning": "mark done or failed"
+        },
+        {
+          "id": "clear",
+          "meaning": "remove finished entries"
+        },
+        {
+          "id": "read",
+          "meaning": "report the state"
+        }
+      ],
+      "facets": [],
+      "mechanisms": [
+        "M-07",
+        "M-03"
+      ]
+    },
+    {
+      "id": "LC-6",
+      "name": "Scope",
+      "meaning": "A graph or a tenant target (a graph plus an optional id prefix) as a whole.",
+      "states": [
+        {
+          "id": "empty",
+          "meaning": "no content and no history"
+        },
+        {
+          "id": "live",
+          "meaning": "holds content"
+        },
+        {
+          "id": "erasing",
+          "meaning": "an erasure is open on it"
+        },
+        {
+          "id": "erased",
+          "meaning": "no content; history still holds its records"
+        },
+        {
+          "id": "redacting",
+          "meaning": "a redaction run is open on it (marker set)"
+        },
+        {
+          "id": "redacted",
+          "meaning": "no content and its history is tombstoned"
+        }
+      ],
+      "commands": [
+        {
+          "id": "write-into",
+          "meaning": "a commit or direct write of content into the scope"
+        },
+        {
+          "id": "erase",
+          "meaning": "remove the scope's content from every store"
+        },
+        {
+          "id": "redact",
+          "meaning": "remove the scope's content from history"
+        },
+        {
+          "id": "read",
+          "meaning": "a read or verify of the scope"
+        }
+      ],
+      "facets": [
+        "default graph or named graph",
+        "with unrecorded writes"
+      ],
+      "mechanisms": [
+        "M-05",
+        "M-03",
+        "M-09"
+      ]
+    },
+    {
+      "id": "LC-7",
+      "name": "Session, request or claim",
+      "meaning": "Something held for a while by one caller: a transaction, a reader handle, a Bolt session, an HTTP request, a connection, a lock.",
+      "states": [
+        {
+          "id": "new",
+          "meaning": "created, not yet accepted (not logged in, not begun)"
+        },
+        {
+          "id": "open",
+          "meaning": "in use by its holder"
+        },
+        {
+          "id": "closed",
+          "meaning": "ended normally; its outcome was delivered"
+        },
+        {
+          "id": "refused",
+          "meaning": "ended by an explicit refusal before any effect"
+        },
+        {
+          "id": "errored",
+          "meaning": "ended by an error; its effect may be unknown"
+        }
+      ],
+      "commands": [
+        {
+          "id": "open",
+          "meaning": "begin, log in, connect, take the lock"
+        },
+        {
+          "id": "use",
+          "meaning": "a step inside it (run, read a page, write)"
+        },
+        {
+          "id": "commit",
+          "meaning": "end keeping its writes"
+        },
+        {
+          "id": "rollback",
+          "meaning": "end dropping its writes"
+        },
+        {
+          "id": "close",
+          "meaning": "end it, release what it holds"
+        }
+      ],
+      "facets": [
+        "read-only",
+        "shared or exclusive (a lock)",
+        "link kind (client, inside IRIS)"
+      ],
+      "mechanisms": [
+        "M-10",
+        "M-11",
+        "M-03",
+        "M-13"
+      ]
+    },
+    {
+      "id": "LC-8",
+      "name": "Copy",
+      "meaning": "A copy of content kept outside the live stores: a snapshot archive, a quarantined vector.",
+      "states": [
+        {
+          "id": "absent",
+          "meaning": "no copy"
+        },
+        {
+          "id": "kept",
+          "meaning": "the copy exists and holds content"
+        },
+        {
+          "id": "released",
+          "meaning": "the copy was placed back or restored and no longer holds what it released"
+        }
+      ],
+      "commands": [
+        {
+          "id": "save",
+          "meaning": "make the copy"
+        },
+        {
+          "id": "restore",
+          "meaning": "put the copy's content back (replacing or merging, or placing a quarantined row)"
+        },
+        {
+          "id": "read",
+          "meaning": "report on the copy"
+        },
+        {
+          "id": "discard",
+          "meaning": "delete the copy"
+        }
+      ],
+      "facets": [
+        "layout version"
+      ],
+      "mechanisms": [
+        "M-06",
+        "M-05"
+      ]
+    }
+  ]
+}

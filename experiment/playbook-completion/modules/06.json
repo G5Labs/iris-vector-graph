@@ -1,0 +1,547 @@
+{
+ "module": "06",
+ "name": "vectors",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "lane": "breadth-a",
+ "generated_by": "experiment/playbook-completion/live/breadth-a/make_modules.py",
+ "summary": {
+  "entry_points": 182,
+  "entry_points_by_kind": {
+   "classmethod": 67,
+   "cli": 1,
+   "exported": 9,
+   "python-api": 90,
+   "python-api(constructor)": 2,
+   "python-api(property)": 5,
+   "rest": 4,
+   "sqlproc": 3,
+   "task": 1
+  },
+  "omissions": 43,
+  "cells": 90,
+  "cells_without_entry_point": 6,
+  "footprints": 127,
+  "footprints_reviewed_by_hand": 6,
+  "footprints_journal_validated": 4,
+  "journal": {
+   "validated": 4,
+   "covered": 1,
+   "extraction_gaps": 1,
+   "harness_errors": 2,
+   "product_mismatches": 0
+  },
+  "model_families": [
+   "vec_build_publish",
+   "vec_ivf",
+   "vec_queue",
+   "vec_route_batch"
+  ],
+  "model_checks": 27,
+  "model_checks_met": 27,
+  "findings_original": 18,
+  "findings_new": 5,
+  "findings_by_disposition": {
+   "confirmed-source": [
+    "F-0602",
+    "F-0603",
+    "F-0605",
+    "F-0609",
+    "F-0611",
+    "F-0612",
+    "F-0613",
+    "F-0617",
+    "F-C0603",
+    "F-C0604",
+    "F-C0605"
+   ],
+   "reproduced-live": [
+    "F-0604",
+    "F-0606",
+    "F-0607",
+    "F-0608",
+    "F-0610",
+    "F-0614",
+    "F-0615",
+    "F-0616",
+    "F-0618",
+    "F-C0602"
+   ],
+   "reproduced-model": [
+    "F-C0601"
+   ],
+   "reproduced-test": [
+    "F-0601"
+   ]
+  },
+  "findings_by_severity": {
+   "S1": [
+    "F-0606"
+   ],
+   "S2": [
+    "F-0601",
+    "F-0602",
+    "F-0603",
+    "F-0604",
+    "F-0607",
+    "F-0608",
+    "F-0609",
+    "F-0610",
+    "F-0611",
+    "F-0615",
+    "F-0616",
+    "F-0618",
+    "F-C0602"
+   ],
+   "S3": [
+    "F-0605",
+    "F-0612",
+    "F-0613",
+    "F-0614",
+    "F-0617",
+    "F-C0601"
+   ],
+   "S4": [
+    "F-C0603",
+    "F-C0604",
+    "F-C0605"
+   ]
+  },
+  "writeset_pairs": {
+   "mc": 13,
+   "finding": 0,
+   "open": 48
+  },
+  "registered_runs": [
+   "breadth-a-control-vec_ivf",
+   "breadth-a-control-vec_queue",
+   "breadth-a-control-vec_route_batch",
+   "breadth-a-live-06-embed",
+   "breadth-a-live-06-selector",
+   "breadth-a-live-06-vectors",
+   "breadth-a-live-ledger",
+   "breadth-a-mc-vec_ivf-as-built",
+   "breadth-a-mc-vec_ivf-reviewed",
+   "breadth-a-mc-vec_queue-as-built",
+   "breadth-a-mc-vec_queue-reviewed",
+   "breadth-a-mc-vec_route_batch-as-built",
+   "breadth-a-mc-vec_route_batch-reviewed",
+   "breadth-a-probe-local-0101-0601"
+  ]
+ },
+ "gates_by_id": {
+  "3.1-cells": {
+   "status": "closed",
+   "evidence": [
+    "experiment/playbook-uplift/ontology/06-vectors.md",
+    "models/breadth-a/inventory/06.json#cells_without_entry_point"
+   ],
+   "remaining": "6 defined cells cite no entry point of this module (most cite code in another module); see the inventory",
+   "reason": "90 cells; 0 carry an open human decision"
+  },
+  "3.1-coverage": {
+   "status": "open",
+   "evidence": [
+    "models/breadth-a/inventory/06.json",
+    "models/breadth-a/tools/inventory.py"
+   ],
+   "remaining": "43 inventoried entry points no statement or cell covers (of 182); add statements or record them as helpers"
+  },
+  "3.1-intent": {
+   "status": "open",
+   "evidence": [
+    "experiment/playbook-completion/decisions.md"
+   ],
+   "remaining": "owned by the intent lanes; decisions.md records a working disposition for every HD of this module"
+  },
+  "3.2-coverage": {
+   "status": "open",
+   "evidence": [
+    "models/breadth-a/inventory/env-features-06.json"
+   ],
+   "remaining": "the orchestrator's IRIS environment contract must cover each env_feature; live premises settled here: P-0202 (F-0203), P-0307 (F-0306), P-0401 ($Increment journaled outside the transaction, J02/J13), P-0002 (dirty reads, F-0402)"
+  },
+  "3.3-L1": {
+   "status": "open",
+   "evidence": [
+    "models/breadth-a/src (vec_build_publish, vec_ivf, vec_queue, vec_route_batch)"
+   ],
+   "remaining": "explorer models state the module's key invariants (see RESULTS.json); no Verus L1"
+  },
+  "3.3-L2": {
+   "status": "open",
+   "evidence": [
+    "models/breadth-a/RESULTS.json"
+   ],
+   "remaining": "no L2 machine over the real data layout"
+  },
+  "3.3-refinement": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "no refinement evidence"
+  },
+  "3.3-controls": {
+   "status": "open",
+   "evidence": [
+    "models/breadth-a/RESULTS.json: vec_queue-control-two-consumers, vec_ivf-control-count-every, vec_build_publish-control-early-publish, vec_route_batch-control-first-item-only"
+   ],
+   "remaining": "controls are explorer mutants (each caught), not proof-level rejections"
+  },
+  "3.3-model-check": {
+   "status": "open",
+   "evidence": [
+    "models/breadth-a/RESULTS.json (27 checks, families vec_build_publish, vec_ivf, vec_queue, vec_route_batch)",
+    "breadth-a-mc-all"
+   ],
+   "remaining": "findings meant for a model with no model: ['F-C0605']",
+   "reason": "as-built / reviewed / control / sharpness (and progress where it matters) per family, exhaustive within bounds; scope is each family's invariant and the operations its doc comment lists (other operations of the module are not modeled)"
+  },
+  "3.3a-writesets": {
+   "status": "failed",
+   "evidence": [
+    "models/breadth-a/writesets.json"
+   ],
+   "remaining": "as-built violations recorded as findings ['F-0604', 'F-0606', 'F-0608', 'F-0615', 'F-C0601']; 48 (invariant, writer) pairs with no discharge; 13 discharged for the reviewed design by mc (the as-built pair is a finding)",
+   "reason": "pairs computed from footprints (declared + journal) against the model invariants' read sets"
+  },
+  "3.4-statements": {
+   "status": "open",
+   "evidence": [
+    "footprints/06.json#journal_validation"
+   ],
+   "remaining": "no statement proved against an IRIS model; journal validation compares write sets only"
+  },
+  "3.4-ownership": {
+   "status": "open",
+   "evidence": [
+    "footprints/06.json"
+   ],
+   "remaining": "no ownership self-test"
+  },
+  "3.4-storage-order": {
+   "status": "open",
+   "evidence": [
+    "models/breadth-a/storage-order/06.json",
+    "$RUN_DIR/checks/storage-order.json"
+   ],
+   "remaining": "dispose of the order-dependent sites listed",
+   "reason": "two order-dependent candidates (graph_scoped_embeddings.py:1273 migration width; GraphStores.cls:308 route guard), score ties cut in scan order at every top-k search, and the embed queue's id-order service"
+  },
+  "3.4-declared-reads": {
+   "status": "failed",
+   "evidence": [
+    "findings/audit/06.json"
+   ],
+   "remaining": "no declared-reads self-test; cross-graph reads are findings ['F-0609', 'F-0616']"
+  },
+  "3.5-handlers": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "no handler proved"
+  },
+  "3.5-lockplans": {
+   "status": "open",
+   "evidence": [
+    "footprints/06.json (locks)",
+    "findings/audit/06.json"
+   ],
+   "remaining": "lock plans extracted (footprints) but not proved"
+  },
+  "3.5-decoders": {
+   "status": "failed",
+   "evidence": [
+    "findings/audit/06.json"
+   ],
+   "remaining": "decoder/status-map defects: ['F-0601', 'F-0604', 'F-0607', 'F-0610', 'F-0612', 'F-0614']"
+  },
+  "3.6-frame": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "not done in this lane"
+  },
+  "3.6-row-permutation": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "not done in this lane"
+  },
+  "3.7-lock-log": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "not done in this lane"
+  },
+  "3.7-mutation": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "not done in this lane"
+  },
+  "3.6-keys": {
+   "status": "failed",
+   "evidence": [
+    "findings/audit/06.json"
+   ],
+   "remaining": "['F-0608']"
+  },
+  "3.6-fk": {
+   "status": "failed",
+   "evidence": [
+    "findings/audit/06.json"
+   ],
+   "remaining": "['F-0618']"
+  },
+  "3.6-capacity": {
+   "status": "open",
+   "evidence": [
+    "findings/audit/06.json"
+   ],
+   "remaining": "not done"
+  },
+  "3.7-trace-replay": {
+   "status": "open",
+   "evidence": [
+    "footprints/06.json#journal_validation",
+    "breadth-a-journal-footprints"
+   ],
+   "remaining": "4 journal traces captured and compared with footprints; not replayed through the models"
+  },
+  "3.8-findings-disposed": {
+   "status": "closed",
+   "evidence": [
+    "findings/audit/06.json"
+   ],
+   "remaining": "observation-only: every original finding has an audited record; product obligations stay failed",
+   "reason": "dispositions {confirmed-source: 11, reproduced-live: 10, reproduced-model: 1, reproduced-test: 1}"
+  },
+  "5c-refusals": {
+   "status": "open",
+   "evidence": [
+    "findings/audit/06.json"
+   ],
+   "remaining": "X statements not audited mechanically"
+  }
+ },
+ "env_features": [
+  {
+   "feature": "$Increment (not undone by rollback, P-0401)",
+   "occurrences": 1,
+   "samples": [
+    "iris_src/src/Graph/KG/EmbedQueue.cls:91"
+   ]
+  },
+  {
+   "feature": "SQL transaction control from Python (commit/rollback/autocommit)",
+   "occurrences": 15,
+   "samples": [
+    "iris_vector_graph/_engine/embeddings.py:1004",
+    "iris_vector_graph/_engine/embeddings.py:1022",
+    "iris_vector_graph/_engine/embeddings.py:1024",
+    "iris_vector_graph/_engine/embeddings.py:1109",
+    "iris_vector_graph/_engine/embeddings.py:1112"
+   ]
+  },
+  {
+   "feature": "DDL (CREATE/ALTER/DROP TABLE, INDEX, VIEW)",
+   "occurrences": 5,
+   "samples": [
+    "iris_vector_graph/_engine/embeddings.py:254",
+    "iris_vector_graph/_engine/schema.py:842",
+    "iris_vector_graph/_engine/schema.py:1730",
+    "iris_vector_graph/migrations/docs_and_edge_vectors.py:316",
+    "iris_vector_graph/vector_utils.py:195"
+   ]
+  },
+  {
+   "feature": "Vector SQL (VECTOR type, TO_VECTOR, VECTOR_COSINE/DOT)",
+   "occurrences": 28,
+   "samples": [
+    "iris_src/src/Graph/KG/EmbedQueue.cls:284",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:316",
+    "iris_vector_graph/_engine/embeddings.py:1015",
+    "iris_vector_graph/_engine/embeddings.py:1106",
+    "iris_vector_graph/_engine/embeddings.py:1194"
+   ]
+  },
+  {
+   "feature": "HNSW vector index",
+   "occurrences": 14,
+   "samples": [
+    "iris_vector_graph/_engine/schema.py:334",
+    "iris_vector_graph/_engine/vector.py:1428",
+    "iris_vector_graph/migrations/docs_and_edge_vectors.py:192",
+    "iris_vector_graph/schema.py:1967",
+    "iris_vector_graph/schema.py:1974"
+   ]
+  },
+  {
+   "feature": "$vectorop / $vector (ObjectScript vectors)",
+   "occurrences": 53,
+   "samples": [
+    "iris_src/src/Graph/KG/IVFIndex.cls:24",
+    "iris_src/src/Graph/KG/IVFIndex.cls:68",
+    "iris_src/src/Graph/KG/IVFIndex.cls:76",
+    "iris_src/src/Graph/KG/IVFIndex.cls:78",
+    "iris_src/src/Graph/KG/IVFIndex.cls:80"
+   ]
+  },
+  {
+   "feature": "IRIS EMBEDDING() SQL function / %Embedding config",
+   "occurrences": 4,
+   "samples": [
+    "iris_src/src/Graph/KG/EmbedQueue.cls:308",
+    "iris_vector_graph/_engine/embeddings.py:153",
+    "iris_vector_graph/_engine/embeddings.py:162",
+    "iris_vector_graph/embedding_identity.py:137"
+   ]
+  },
+  {
+   "feature": "iFind full-text index",
+   "occurrences": 5,
+   "samples": [
+    "iris_vector_graph/_engine/vector.py:1510",
+    "iris_vector_graph/migrations/docs_and_edge_vectors.py:180",
+    "iris_vector_graph/migrations/kg_node_stores.py:126",
+    "iris_vector_graph/migrations/kg_node_stores.py:150",
+    "iris_vector_graph/migrations/kg_node_stores.py:162"
+   ]
+  },
+  {
+   "feature": "Process-private globals (^||)",
+   "occurrences": 47,
+   "samples": [
+    "iris_src/src/Graph/KG/IVFIndex.cls:71",
+    "iris_src/src/Graph/KG/IVFIndex.cls:83",
+    "iris_src/src/Graph/KG/IVFIndex.cls:86",
+    "iris_src/src/Graph/KG/IVFIndex.cls:89",
+    "iris_src/src/Graph/KG/IVFIndex.cls:93"
+   ]
+  },
+  {
+   "feature": "Native API from Python (classMethod*, globals)",
+   "occurrences": 23,
+   "samples": [
+    "iris_vector_graph/_engine/vector.py:1566",
+    "iris_vector_graph/_engine/vector.py:1582",
+    "iris_vector_graph/_engine/vector.py:1594",
+    "iris_vector_graph/_engine/vector.py:1602",
+    "iris_vector_graph/_engine/vector.py:1618"
+   ]
+  },
+  {
+   "feature": "Embedded/dynamic SQL in ObjectScript (&sql, %SQL.Statement)",
+   "occurrences": 5,
+   "samples": [
+    "iris_src/src/Graph/KG/EmbedQueue.cls:207",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:225",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:246",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:309",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:317"
+   ]
+  },
+  {
+   "feature": "%DynamicObject / JSON functions",
+   "occurrences": 25,
+   "samples": [
+    "iris_src/src/Graph/KG/EmbedQueue.cls:67",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:86",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:133",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:165",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:337"
+   ]
+  },
+  {
+   "feature": "$ZStrip / $ZConvert character classes",
+   "occurrences": 5,
+   "samples": [
+    "iris_src/src/Graph/KG/EmbedQueue.cls:30",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:141",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:222",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:251",
+    "iris_src/src/Graph/KG/VecIndex.cls:44"
+   ]
+  },
+  {
+   "feature": "Global collation order ($Order/$Query)",
+   "occurrences": 32,
+   "samples": [
+    "iris_src/src/Graph/KG/EmbedQueue.cls:118",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:173",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:187",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:264",
+    "iris_src/src/Graph/KG/IVFIndex.cls:41"
+   ]
+  },
+  {
+   "feature": "Global KILL of a subtree / Merge",
+   "occurrences": 24,
+   "samples": [
+    "iris_src/src/Graph/KG/EmbedQueue.cls:191",
+    "iris_src/src/Graph/KG/IVFIndex.cls:8",
+    "iris_src/src/Graph/KG/IVFIndex.cls:71",
+    "iris_src/src/Graph/KG/IVFIndex.cls:86",
+    "iris_src/src/Graph/KG/IVFIndex.cls:102"
+   ]
+  },
+  {
+   "feature": "Class dictionary reads (^oddDEF, %Dictionary)",
+   "occurrences": 4,
+   "samples": [
+    "iris_vector_graph/_engine/schema.py:333",
+    "iris_vector_graph/schema.py:1999",
+    "iris_vector_graph/schema.py:2002",
+    "iris_vector_graph/schema.py:2087"
+   ]
+  },
+  {
+   "feature": "Task Manager (%SYS.Task)",
+   "occurrences": 3,
+   "samples": [
+    "iris_src/src/Graph/KG/EmbedQueue.cls:353",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:354",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:367"
+   ]
+  },
+  {
+   "feature": "Time functions (DATEDIFF, $ZTimeStamp, $Horolog)",
+   "occurrences": 2,
+   "samples": [
+    "iris_src/src/Graph/KG/EmbedQueue.cls:58",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:100"
+   ]
+  },
+  {
+   "feature": "SQL empty string as $Char(0)",
+   "occurrences": 1,
+   "samples": [
+    "iris_vector_graph/schema.py:2101"
+   ]
+  },
+  {
+   "feature": "SQLCODE-specific handling",
+   "occurrences": 24,
+   "samples": [
+    "iris_src/src/Graph/KG/EmbedQueue.cls:211",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:228",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:249",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:313",
+    "iris_src/src/Graph/KG/EmbedQueue.cls:321"
+   ]
+  },
+  {
+   "feature": "INSERT OR UPDATE",
+   "occurrences": 1,
+   "samples": [
+    "iris_src/src/Graph/KG/EmbedQueue.cls:316"
+   ]
+  },
+  {
+   "feature": "TOP / LIMIT / FETCH FIRST result prefix",
+   "occurrences": 12,
+   "samples": [
+    "iris_vector_graph/_engine/vector.py:377",
+    "iris_vector_graph/_engine/vector.py:569",
+    "iris_vector_graph/_engine/vector.py:578",
+    "iris_vector_graph/_engine/vector.py:587",
+    "iris_vector_graph/_engine/vector.py:595"
+   ]
+  }
+ ],
+ "env_features_method": "regex over the source ranges of the module's inventoried entry points; over-approximates"
+}

@@ -1,0 +1,27 @@
+{
+ "doc": "F-0202: create_node / store_node accept graph \"0\" (no validate_graph_name), the counts and delete_node refuse\n    it; store_edge into \"0\" fails late inside GraphKey.ForIndex. Oracle: ADR-0003 (the validator rejects \"0\").",
+ "id": "p0202_reserved_name_writers",
+ "log": "$RUN_DIR/breadth-a/live/02-all-20261113T224011.log",
+ "module": "02",
+ "observed": {
+  "cleanup_rows_left": 0,
+  "create_node_graph0": true,
+  "delete_node_graph0": "ValueError: graph name \"0\" is reserved: IRIS canonicalizes the subscript \"0\" to the integer 0 that keys the default graph",
+  "node_count_graph0": "ValueError: graph name \"0\" is reserved: IRIS canonicalizes the subscript \"0\" to the integer 0 that keys the default graph",
+  "rows_in_graph_0": [
+   [
+    "ban0224011"
+   ],
+   [
+    "ban0224011s"
+   ]
+  ],
+  "store_edge_graph0": "GraphWriteError: store_edge failed (SQLCODE -400), nothing written: <SQL ERROR>; Details: [SQLCODE: <-400>:<Fatal error occurred>]\r\n[Location: <ServerLoop>]\r\n[%msg: <ERROR #5001: graph name \"0\" is reserved: IRIS canonicalizes the subscript \"0\" to the integer 0 that keys the default graph>]",
+  "store_node_graph0": true
+ },
+ "oracle": "every writer that takes a graph name refuses the reserved name \"0\" (ADR-0003:119-121)",
+ "reproduced": true,
+ "seconds": 0.3,
+ "started": "2026-11-13T22:40:13",
+ "verdict": "2 node rows written under the reserved graph name 0"
+}

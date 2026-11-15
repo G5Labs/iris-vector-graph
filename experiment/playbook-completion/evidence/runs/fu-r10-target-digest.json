@@ -1,0 +1,16 @@
+{
+  "command": "python experiment/playbook-completion/followup/r10_digest.py (no IRIS; digest read live by fu-r01a-snapshot-copies)",
+  "experiment_head": "f3fe3917466f7bae3e46f32f5b0644cfeaff87c8",
+  "finding": "F-C1309",
+  "id": "fu-r10-target-digest",
+  "kind": "check",
+  "lane": "followup",
+  "log": "$RUN_DIR/followup/r10.json",
+  "log_bytes": 844,
+  "log_sha256": "03cb00b05e9973f6046dedd4c12212bfb098fd48815aea035bf849e184121238",
+  "observes": "R-10, F-C1309: the redaction revision's source.target_sha256 (read through history() and Graph_KG.ledger_revisions.source) = 5693ca28...c58d = SHA-256('' NUL 'fu1|') = Graph.KG.LedgerRedact.TargetDigest('', 'fu1|'); a 200,006-name dictionary confirms exactly 'fu1' in 0.13 s (about 1.5 million guesses a second, one Python core). The audit revision identifies a guessed tenant; ADR-0013 says 'Nothing in it comes from the target' and spec 256 Decision 1 requires the audit hold nothing from the target.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T01:35:36+00:00",
+  "result": "fail"
+}

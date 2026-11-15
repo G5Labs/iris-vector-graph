@@ -1,0 +1,15 @@
+{
+  "command": "bash experiment/playbook-completion/tools/locks.sh iris python experiment/playbook-completion/product-gates/disconnect_world.py $RUN_DIR/product-gates/disconnect-r1 --group commit|redact|erase (live_controls at the end of each group)",
+  "experiment_head": "e8a0d08acae6c519bb4db191c593bc75e8223636",
+  "id": "pg-disconnect-live-controls",
+  "kind": "control",
+  "lane": "product-gates",
+  "log": "$RUN_DIR/product-gates/disconnect-r1/reevaluate.log",
+  "log_bytes": 2939,
+  "log_sha256": "230b9474ed70404dc856f7678d4a421f69d8a1cc5e7bb1e5d647dd0f5f055cfd",
+  "observes": "Defects seeded through the product's own API, each flagged by the checker: (1) a second live connection holding the head lock while the checker looks, plus the tag's relationships committed again under another key with predicate R2 (flagged O3 lock, O1 partial, O6 not exactly once); (2) a same-key retry with a different changeset (IdempotencyConflictError, flagged O4); (3) a bounded redaction left in progress presented as final (flagged O1, O4, O5 redaction_in_progress, O6); (4) two nodes and an edge written into an erased graph outside the ledger, accepted on a non-strict ledger (flagged O5 verify diverges, O6). 4 of 4 caught.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T12:19:25+00:00",
+  "result": "pass"
+}

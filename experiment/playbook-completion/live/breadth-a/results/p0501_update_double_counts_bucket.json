@@ -1,0 +1,19 @@
+{
+ "doc": "F-0501: an update-mode write at the same coordinates adds the edge to the bucket aggregate again.\n    Oracle: CONTEXT.md:173-177 (an upsert replaces the edge) and the docstring (aggregates keep the original value).",
+ "id": "p0501_update_double_counts_bucket",
+ "log": "$RUN_DIR/breadth-a/live/05-all-20261113T224508.log",
+ "module": "05",
+ "observed": {
+  "bucket_counter_after_delete": "1",
+  "cut_window_count": 1,
+  "tagg_count": "2",
+  "tout_weight": "5.0",
+  "whole_bucket_count": 2,
+  "whole_bucket_sum": 6.0
+ },
+ "oracle": "whole-bucket count equals the edges at its coordinates (1) and sum their weights",
+ "reproduced": true,
+ "seconds": 0.98,
+ "started": "2026-11-13T22:45:08",
+ "verdict": "count 2, sum 6.0 for one edge"
+}

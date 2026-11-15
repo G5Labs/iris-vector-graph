@@ -1,0 +1,733 @@
+# End-to-end verification playbook
+
+*Distilled from the hand-tuned Verus Bank of Ziniu (October 2026), the blind study arms A–H and a sister
+procurement project. Written as instructions for an orchestrator agent and its builders. It is meant to be applied to
+other services, and to much larger systems; part 4 adapts it to PostgreSQL itself.*
+
+## 0. What this produces
+
+At the end of a run, for the target system you have:
+
+- **An ontology:** every business and technical requirement as a plain-English statement. Each carries every kind of
+  evidence that applies: proved, model-checked, tested, inspected, or not implemented.
+- **A stack of state machines,** each proved to refine the one above:
+  - abstract per-module models (L1);
+  - algorithmic machines over the real data layout (L2);
+  - the running code (L3), which may use its own idiomatic types under a proved abstraction mapping.
+- **Protocols:** each cross-module behaviour is its own module, proved for safety and progress.
+- **Environment contracts:** reusable models of what the system depends on (a database, providers, servers, clients),
+  each validated against the real thing.
+- **A composition theorem:** a committed execution of the concurrent, multi-node system is an execution of the serial
+  model. Every remaining premise is named.
+- **A test plan for what proofs cannot cover** (see `TEST-REFLECTION.md`).
+
+## 1. Principles (binding; each one changed the design)
+
+1. **Mapped, not generated.** Running code need not be generated from the spec. It must be proved to perform the spec
+   transition under an abstraction function. That is what lets the code be idiomatic.
+2. **Model the environment's freedom; never opt into a subset.** If PostgreSQL may do X, the model permits X. Where the
+   model is narrower than reality, state it as a premise and test it.
+3. **Concurrency control lives in the database.** Application nodes are stateless. Lock plans are proved per handler.
+4. **Each module proves only its own contract.** Composition sees only external states. Protocols are modules, never
+   back doors. Each table has a single write owner.
+5. **Reads are contract operations implemented by plain queries.** No views as a hiding place. Never depend on storage
+   or insertion order, only on keys and explicit orderings.
+6. **Set-based data access.** No row-by-row database writes. If the database model cannot express the set-based form,
+   extend the model (part 3.4) rather than writing a loop.
+7. **Idiomatic code is a requirement.** Enums, not codes; typed ids and values; `Result` errors; no numeric casts;
+   clean names; zero default lints. Verification is not an excuse for unreadable code.
+8. **Proved means proved.** No `assume`, `admit` or `external_body` in lemmas or theorems. Trusted items are only
+   boundary ports, each listed in a trust inventory and checked by a strict gate.
+9. **Measure before and after every structural change.** Use alternating A/B runs; a slow verified design is a defect.
+10. **Restating a claim means rerunning everything behind it.** Run whole test sets, not tests by name. An intermittent
+    failure is a lead, not noise.
+11. **Design proofs for the final scope, not the first module.** A lemma must see only the objects it is about (part
+    3.3, "Proof layout"). A resource-limit error or timeout in any crate is a signal about the generator's design, not
+    a local problem in that crate: when one appears, fix the layout for every crate before adding features.
+12. **Refinement proofs check the code against the model, not the model against the business.** A proof that each
+    command refines its lifecycle cell says nothing about rules the model never states. Specify the system's
+    semantics first and explicitly (part 3.3a): universal axioms, shared mechanisms, canonical lifecycles and global
+    invariants with exhaustive write-set obligations. In omniSaaS, independent audits found about 500 finance design
+    defects (double payment, double reversal, mixed-currency balances, events never consumed) behind evidence that
+    was green.
+13. **Objects never invent their own mechanics** (human decision 2026-11-11). Claims, reversal, approval, blocking,
+    clearing, numbering, period checks, event handoff, versions and totals are each one generator-provided mechanism,
+    proved once. An object declares which mechanisms it uses; a hand-rolled variant is a finding.
+14. **A small set of universal rules constrains every object** (human decision 2026-11-12), and every requirement
+    traces to a rule, a domain-contract clause or a named exception. Lifecycles come from a few canonical machines;
+    any extra state or command is a justified exception (human decision 2026-11-12).
+
+## 1a. Reference libraries (reuse these; do not rebuild them per application)
+
+Updated 2026-11-12. The reusable models live in one private repo, **G5Labs/actors**:
+- **Contents:** the actor libraries (`actors`, `explorer`, `vecops`, `verification-tools/builtin-macros`), the
+  PostgreSQL contract `pgspec`, and the PostgreSQL-internals machines from pg-verify.
+- **Snapshot:** r8. Bank `sql/next` 1ecc0035, pin `sql/next-pin` a8e5d2bf, pg-verify `main` at the r8 promote.
+- **Provenance:** `SOURCE.json` records every source commit and file hash.
+- **Branch:** `r8-models`, until its PR into `main` merges.
+
+The application-specific crates stay in G5Labs/bank-of-ziniu: `storage-contracts`, `provider-contracts`,
+`provider-http`, `auth`, `reservations`.
+
+Live development continues in two places, and the repo above is refreshed from them at each promoted tree:
+- **pgspec:** the bank repo, `sql/next` plus its pin.
+- **PostgreSQL internals:** pg-verify `main`.
+
+How to use them:
+- **How to consume:** as Cargo git dependencies on G5Labs/actors pinned to a commit, with the vendored Verus
+  toolchain. pgspec's package is `pgspec-keyed`; its library name is `pgspec`. It depends on the `f-eval` machine,
+  which is shipped in the same repo.
+- **Each library's own docs** state its interface, trusted items and validation; read them before use:
+  - `crates/pgspec/INTERFACE.md` and `STATUS.md`
+  - `HIERARCHY.md` for `actors`
+  - pg-verify's `HIERARCHY.md`, `ARCHITECTURE.md`, `machines.toml` and `ontology/` for the internals machines
+  - in G5Labs/bank-of-ziniu: `PROVIDER_CONTRACTS.md`, `AUTHENTICATION_CONTRACT.md`
+
+| Library | What it gives you | Trusted items | Validated by |
+|---|---|---|---|
+| **`pgspec`** | PostgreSQL contract (see below) | The `pg.rs` port and the parser/printer (parse/print identity tested); exec twins marked `external_body` are listed as proof debt, never as proved (see `proof-debt.md`) | Differential tests on PostgreSQL 15.13 and 17.11 through the IR client entry point; per-feature SQL surface bins, each with a mutant control; the G5 corpus gate (r8: 545 statement shapes executed and checked, 0 lost per tree); named and random schedules; mutants for evaluator, permitted set, machine and SSI. r8 root: 18,842 Verus obligations verified on the keyed,pg16 set, 0 logical errors, 58 resource-limit sites recorded as debt |
+| **PostgreSQL internals (from pg-verify)** | A Verus state-machine hierarchy of PostgreSQL 17.11 below the SQL level: xids and snapshots, tuple visibility, row locks and multixacts, HOT chains, lock modes, the lock table, deadlock, the wire protocol, executor, planner, rewriter, parser/analyzer, catalog and DDL, constraints, sequences, SSI, and the value semantics (`f-eval`: numeric, text, datetime, json, arrays, bit strings, full text search, uuid, network) | Listed per machine in pg-verify's trust inventory | Ontology-tagged evidence (`ontology/INDEX.md`); differential checks against PostgreSQL 15.13 and 17.11 |
+| **`pgspec::lemmas`** | One proved statement-lemma library (227+ proof functions, see below) | None | Verus |
+| **`actors`** | Generic machines and theorems for services (see below) | None | Generic proofs; a toy domain where breaking each obligation yields a counterexample |
+| **`explorer`** | Explicit-state model checking over executable machines: invariants, action properties, AG EF, deadlock, shortest counterexamples, abstraction and refinement checks | Executable only (not a proof) | Self-tests |
+| **`storage-contracts`** | The bridge from SQL to domain: frame obligations, lock-coverage bridging to pgspec, authentication storage contracts, replay | None | Verus |
+| **`provider-contracts`** | Executable contracts for external providers (ACH network, SMS, directory) shared by simulators and contract exploration: redelivery, duplicates, returns, delays | Executable only | Bounded exploration; log replay of the simulators |
+| **`provider-http`** | The provider transport envelope and strict protocol decoding, the analogue of pgspec's port | 3 transport items (the strict gate's expected failures) | Contract tests |
+| **`vecops`** | Verified `map`, `filter`, `count`, `position`, `fold`, `any`/`all`, `eq` and proved conversions, each taking a closure plus the spec function it computes. Lets verified code read like idiomatic Rust | None | Verus |
+| **`auth`** (generic parts) | `auth::ceremony` (one-time ceremonies binding subject, attempt, purpose, verifier, epoch; consumed once; recovery cannot issue access), `auth::lifecycle`, `DurableAuthenticationBinding` | None | Verus; exhaustive fixture exploration with negative controls |
+| **`reservations`** | A second consumer of the hierarchy primitives (inventory and reservations over PostgreSQL); a worked example of reuse outside banking | As pgspec | Verus; PostgreSQL tests |
+| **`pgspec/example-app`** | A minimal application wired to pgspec end to end; the starting template for a new service | As pgspec | Verus |
+
+**What `pgspec` covers** (r8; the per-feature status is in pg-verify `review/sql/BATCHES.md` and `BACKLOG.md`):
+- **Two paths for a statement:**
+  - **The IR carrier** (the client entry point, primary): statements are analyzed into a typed query IR with a meaning
+    (`query_outs`), a canonical generator and a checker (`admits`).
+  - **The legacy evaluator:** frozen, and used only where the IR refuses.
+- **Additions since the first release:**
+  - SQL: DISTINCT / DISTINCT ON, set operations, LATERAL, window functions, `LIMIT`/`OFFSET`, LIKE and regex,
+    numeric and float, most built-in function families, casts, jsonb and jsonpath, ranges, arrays, and
+    `SAVEPOINT`/`ROLLBACK TO`.
+  - Server-side code: a general PL/pgSQL interpreter for triggers and functions, with deferred constraint triggers.
+  - DDL as catalog actions: tables, indexes, sequences, partitions, foreign data wrappers, roles, `GRANT`/`REVOKE`
+    and row-level security.
+  - Session commands.
+  - Server versions: features `pg16` and `pg17`.
+- **Schema and evaluation:** schemas, a typed SQL AST, `eval` over in-memory tables, and the permitted-outcome set.
+- **The transaction machine:** read committed with EvalPlanQual, repeatable read, SSI, the four row-lock modes,
+  `NOWAIT`/`SKIP LOCKED`, `ON CONFLICT`, sequences, timeouts, advisory locks, disconnects and the lost COMMIT
+  acknowledgement.
+- **Proved theorems:**
+  - strict 2PL, serializable in commit order;
+  - the guard-lock theorems;
+  - several databases;
+  - **WIP:** the row-id invariant, the key-clash invariant and the transaction frame theorem.
+- **SQL coverage:** subqueries, array parameters with `= ANY/ALL`, jsonb, BEFORE triggers, integer division,
+  `LEAST`/`GREATEST` and `INSERT … SELECT`.
+- **Engines and tools:** a verified in-memory engine, `pgspec-gen` (statement code generation), and server-version
+  modelling (15 by default; feature `pg16`).
+
+**What `pgspec::lemmas` covers:** closed forms per query shape:
+- `point`, `scan`/`scanorder`/`ordered`, `filtered`/`conjfilter`, `grouped`/`agg`/`aggregate`;
+- `writes`/`rowwrites` (trigger-aware, with trigger-free variants);
+- `frame`/`frame_filtered`;
+- `relational` (keyed tables, order-independence);
+- `stmt` (joins, subqueries, the query pipeline);
+- `txn_compose`, `mapped`;
+- **WIP:** `serial`, `rids`, `keys`, `txn_frame` and the frame classes per statement shape.
+
+**What `actors` covers:**
+- **Abstractions:** `Domain`, `Contract`, `Refines`, `ObservedRefinement`, `Footprint`, `UserFacing` and `Protocol2`
+  (`step_binds`, `step_enabled`).
+- **Machines:** a stateless-node cluster and users with stale views, with obligations O1–O5 and U1–U2.
+- **Generic theorems:** refines-serial, at-most-once, outbox and jobs; `trace_refines` and
+  `refinement_preserves_safety`.
+- **Hierarchy and guards:** `hierarchy`, `guarded`, `fairness`.
+- **WIP:** `progress`, eventual delivery, job completion and reply under `productive_fairness`.
+- **A server skeleton.**
+
+**Tooling (in the bank repo; to become a product):**
+- **Generators:** `gen/*.py` generate the store, the fast paths, the bindings and the statement lemmas from
+  `sql/queries.sql`. They are ad hoc, and should become one generator with a stable input format.
+- **Gate scripts:**
+  - `scripts/ontology-index.py` builds the evidence index;
+  - `hierarchy-check.sh` runs the full gate, including 21 hierarchy mutants;
+  - `scripts/c3-mutants.py` and `scripts/refinement-mutations.py` run the composition and refinement controls;
+  - `no-storage-order.py`, `ownership.py` and `c3-annotations.py` are the structural checks;
+  - `validate.sh` runs pgspec's validation;
+  - `integration.sh` runs the crash and lost-acknowledgement worlds.
+
+**Known gaps in the libraries** (live list: pg-verify `review/sql/BACKLOG.md`, regenerated from the client-entry
+census at each tree):
+- **pgspec, refused by design for now:**
+  - non-C collations;
+  - large objects;
+  - two-phase commit;
+  - asynchronous delivery of LISTEN/NOTIFY (only each statement's own outcome is claimed);
+  - plan-dependent join and LATERAL placements (no claim where PostgreSQL's plan decides).
+- **Proof debt:** pg-verify `review/sql/proof-debt.md` lists every admitted lemma and `external_body` twin, plus the
+  resource-limit sites. A false admitted lemma counts as a soundness defect: restate it and prove it before anything
+  new depends on it (r8 found and fixed two, LC2 and `lemma_wfinish_plain`).
+- **Architectures not modelled:** replicas, shards, caches or queues as a source of truth, and rolling schema
+  migrations.
+- **Infrastructure:** no package registry for contracts, and no incremental verification across crates.
+
+## 2. Roles
+
+- **Human.** Sets principles, approves changes to abstract contracts (L1, environment models), and decides trade-offs.
+- **Orchestrator** (one agent).
+  - Owns the plan and cross-cutting decisions.
+  - Writes every builder prompt from section 6's template.
+  - Verifies every builder report against the code and logs itself: the diff for trusted code, the verification
+    counts, the mutant kills.
+  - Manages shared resources: the heavy-job lock, disk floor, keep-awake.
+- **Builders** (one per branch or worktree).
+  - Each owns disjoint files.
+  - Commits at verified milestones.
+  - Shares one heavy-job lock.
+  - Never touches another builder's paths or processes.
+- **Reviewer** (independent, read-only). Compares specs against intent and the ontology, adversarially, at least once
+  per phase.
+
+## 3. The phases
+
+Each phase ends at a gate. Do not start a phase whose inputs failed their gate.
+
+### 3.1 Uplift: requirements into an ontology
+
+- **Do:**
+  - Back-translate the brief, the mocks, existing docs, code comments and existing tests into plain-English statements,
+    one behaviour each, grouped by module.
+  - Enumerate the (entity state × command) cells.
+  - Tag every statement with every evidence kind that applies, plus its conditions.
+- **Output:** `ontology/NN-module.md`, plus an `INDEX.md` generated by a script (counts, combinations, the proof-only
+  list, the not-implemented list).
+- **How to write a statement** (human decision 2026-11-12):
+  - **Parent reference.** Every statement names its parent statement by id, in a `Parent` column. The statements
+    form a tree from the module's root statement, which points at the system root (as pg-verify's `SYS-*` rows do). A
+    statement with no parent is an error, unless it is a module root.
+  - **Concise and plain.** One behaviour per statement, written at an 8th-grade reading level:
+    - short sentences;
+    - everyday words;
+    - one idea per sentence;
+    - no unexplained jargon.
+
+    Put the precise detail (code paths, SQLSTATEs, version differences) in the Source and Notes columns, not in the
+    statement.
+  - **Definitions first.** A statement may only use terms already defined in one of two places:
+    - by its ancestors (its parent chain);
+    - by an earlier statement at its own level under the same parent.
+
+    Any other term gets a definition statement (kind D) placed before the first statement that uses it. Never use a
+    term first and define it later.
+- **Gate:**
+  - Every cell is defined, or has an open decision assigned to the human.
+  - The index regenerates without manual edits.
+  - The index script checks every statement:
+    - its parent id resolves;
+    - its reading grade is at most 8 (Flesch–Kincaid, on the statement text only);
+    - every term in the module glossary that the statement uses is defined by an ancestor or an earlier same-level
+      statement.
+
+    Violations fail the gate.
+
+### 3.2 Environment contracts and reusable libraries
+
+- **Do:**
+  - Reuse or extend `pgspec` (database), `actors` (servers, users, clusters, protocols, progress), `explorer` (model
+    checking), `vecops` (verified iteration) and the provider contracts.
+  - Model anything new as a library, not inside the application.
+- **Gate:**
+  - Differential validation against the real system with 0 outcomes outside the model's permitted set.
+  - Sharpness tests.
+  - Every model mutant detected.
+
+### 3.3 L1 models, L2 machines, protocols
+
+- **Do:**
+  - Write one small L1 model per module, with its business invariants.
+  - Write the L2 machine over the real data layout.
+  - Prove that every L2 operation refines an L1 step, or a stutter that L1 or an explicit capacity contract permits.
+  - Write the protocols as `Protocol2` over participant contracts, with progress under named fairness.
+- **Proof layout** (from day one; retrofitting it cost omniSaaS a day of failed 4-hour builds):
+  - The module step function is a dispatcher over one `#[verifier::opaque]` step function per object. Each
+    per-object and per-command lemma `reveal`s only its own object. A parity check, run on every generation, confirms
+    the per-object functions hold exactly the arms of the single step function. Opaque assumes nothing: it can only make
+    a proof fail.
+  - The invariant is a conjunction of opaque per-object invariants plus explicit cross-object invariants. Generate
+    frame lemmas once ("a step that leaves object X's tables unchanged keeps X's invariant") so a step lemma reveals
+    only its own object's invariant and the cross-object invariants it touches.
+  - Every quantifier has explicit triggers that mention only the objects it is about.
+  - Why: with one transparent step function and one invariant, every lemma unfolds every arm and carries every
+    conjunct. Cost then grows with module size and with an object's position in the request enum, so the last objects
+    hit the resource limit first.
+- **Gate:**
+  - Refinement proved for **every** operation.
+  - A set of broken-implementation controls: each must be **rejected** by a proof. If one passes as a stutter, the L1
+    model is too weak; strengthen it.
+  - Progress controls fail only the progress proof.
+  - Proof cost is measured: baseline time per crate is recorded, and a crate whose per-lemma cost grows as objects are
+    added gets the layout above before more features land.
+
+### 3.3a System semantics: axioms, mechanisms, lifecycles and invariants
+
+Added 2026-11-12 from omniSaaS. Do this before spec breadth, not after it; retrofitting it to a broad spec is the most
+expensive rework in the method.
+- **Do, in this order:**
+  1. **Universal axioms** (aim for about 12). For example: every change is made by an authorized, recorded actor;
+     committed records change only by a new version or a reversing document; one write owner per fact; cross-object
+     effects only as events, published once and consumed once; at most once per business identity; conservation
+     (balanced double entry per currency); totals only from lines; explicit, recorded refusals; periods immutable
+     once closed; exactly one published inverse per effect; least capability per state; segregation of duties.
+  2. **Shared mechanisms** implementing the axioms, each with its state, operations, generator effect kinds, events,
+     L1 laws, generic lemmas proved once over a trait, and generic controls. Keep every mechanism's storage inside the
+     database model's statement classes (for pgspec: plain UNIQUE over NOT NULL slot columns; no partial or
+     expression indexes; no reliance on NULL-distinct uniqueness).
+  3. **Canonical lifecycles** (about 6–8) composed from the mechanisms: master data, business document, run, open
+     item, period, case, with approval and block as facets rather than states. One name and one meaning per state and
+     command.
+  4. **A domain contract** for the central component. For an ERP it is the ledger: an abstract double-entry ledger, a
+     posting function per component, and the theorem that the ledger equals the fold of the posting functions over
+     the committed business history.
+  5. **Global invariants with write-set obligations.** For each invariant, a generator computes every plan that writes
+     what it reads. Each such plan needs a preservation lemma, a guard or a recorded finding. Coverage is then
+     exhaustive by construction: a new or forgotten command shows up automatically.
+- **Gate:** every object declares its lifecycle, mechanisms and axioms; every requirement traces to an axiom, a
+  contract clause or a named exception; no uncovered (invariant, plan) pair in the finished scope.
+
+### 3.4 Storage: schema, statements and statement lemmas
+
+- **Do:**
+  - Design owned tables and indexes.
+  - Write each query as one set-based statement reading only its footprint.
+  - Generate the statement code and its lemma instances. Generated files are changed only through their generators.
+- **If the database model lacks a construct you need** (as with `INSERT … SELECT`, integer division and `LEAST` in
+  the bank):
+  1. add it to the model, evaluator, permitted-outcome set and parser/printer;
+  2. add class lemmas;
+  3. add mutants;
+  4. validate on every target database version.
+- **Gate:**
+  - Every statement proved equal to the model's evaluation.
+  - The ownership, storage-order and declared-reads checks pass, each with a self-test that rejects an injected
+    violation.
+
+### 3.5 Handlers (L3) and the edge
+
+- **Do:**
+  - Write handlers as methods with an `ensures performs(result, spec_step(abstract(old)), abstract(new))` contract.
+  - Give each handler a lock plan (rules D1–D6) recorded as ghost state.
+  - Verify the decoders and status maps.
+  - Keep the HTTP layer thin and plain.
+- **Gate:**
+  - Every handler is proved.
+  - The lock-plan obligations are proved.
+  - Clippy reports 0 default warnings.
+  - The style review passes.
+
+### 3.6 Composition
+
+- **Do:** prove that a committed transaction refines the serial step, then chain this over whole executions. Discharge
+  each condition:
+  - the frame obligation, generically, per statement-shape class;
+  - well-formedness under row permutation;
+  - row-id and key invariants;
+  - foreign keys;
+  - capacity.
+- **Gate:**
+  - The condition list in `SQL_CLOSURE.md` is exact.
+  - Every remaining premise maps to a test (`TEST-REFLECTION.md`, section D).
+
+### 3.7 Validation and evidence
+
+- **Do:** run all of these:
+  - the explorers;
+  - integration worlds (crash, lost acknowledgement, disconnect);
+  - the differential suite;
+  - end-to-end tests on 1 and N nodes;
+  - trace replay of real runs through the machines;
+  - the database statement log checked against the lock plan;
+  - mutation testing of the unverified layers;
+  - an A/B performance comparison;
+  - failure scenarios, each with a negative control.
+- **Gate:** a full rerun from clean builds, with each result recorded in the evidence files.
+
+### 3.8 Account
+
+- **Do:** update the ontology tags and write:
+  - `STATUS.md`, with each guarantee's level, status and conditions;
+  - the trust inventory;
+  - the test reflection;
+  - the remaining gaps.
+- **Gate:** an independent reviewer signs off on spec against intent, and every finding becomes a fix or a recorded
+  decision.
+
+## 4. Scaling up: applying this to PostgreSQL
+
+PostgreSQL is about 1.5 million lines of C, with decades of design history and an extensive test suite. The bank was
+written for verification; PostgreSQL was not. The method still applies, but its centre of gravity moves from
+"prove the code" to "**prove the design, and tie the code to it with trace conformance**". Proofs over C are kept for
+small, critical pure functions.
+
+### 4.1 Scope by risk, one subsystem at a time
+
+Candidate subsystems, in a suggested order. Each has documented invariants and a history of real bugs.
+
+| Subsystem | Where the design lives | What to prove or check |
+|---|---|---|
+| MVCC visibility | `heapam_visibility.c`, `src/backend/access/heap/README.tuplock` | Snapshot visibility rules; HOT chains; the multixact lock-mode table |
+| Lock manager and deadlock detection | `src/backend/storage/lmgr/README`, `lock.c`, `deadlock.c` | The conflict table; wait-for graph soundness; group locking |
+| SSI | `src/backend/storage/lmgr/README-SSI`, `predicate.c` | Dangerous-structure detection: no false negatives (pgspec found an `ON CONFLICT` anomaly) |
+| WAL and recovery | `src/backend/access/transam/README` | Redo idempotence; checkpoint and crash consistency; full-page writes |
+| B-tree (Lehman–Yao) | `src/backend/access/nbtree/README` | Concurrent splits; right-links; page deletion; vacuum interlocks |
+| Transaction ids and freezing | `transam.c`, `vacuum.c`, `multixact.c` | No wraparound loss; freeze safety (historically a data-loss source) |
+| Two-phase commit and replication | `twophase.c`, `walsender.c`, `logical/` | Prepared-transaction durability; slot and LSN monotonicity |
+
+### 4.2 The levels for an existing C system
+
+- **L1, abstract models.**
+  - One per subsystem, in Verus spec code, or TLA+ where the team prefers it.
+  - Back-translate them from the READMEs, comments, docs and mailing-list designs (phase 3.1).
+  - Use **pgspec** as the SQL-level L1 for the whole server. Its transaction machine already models read committed,
+    repeatable read, SSI, the lock modes, EvalPlanQual and `ON CONFLICT`.
+- **L2, algorithmic machines.**
+  - The subsystem's real data structures (tuple headers, the lock table, the WAL record stream), proved to refine L1.
+- **L3, the C code.** Three ways to tie it to L2, in order of preference:
+  1. **Trace conformance** (the default). Add probes (USDT/DTrace, or log hooks behind a compile flag) that emit the L2
+     events. Record them during the regression, isolation and TAP suites and during fuzzing. Replay every trace through
+     the verified L2 machine. This is "mapped transition" at scale: the code is not proved, but every observed run is
+     checked against a proved model.
+  2. **C verification for small pure kernels,** with Frama-C/WP, CN, VST or CBMC. Examples: visibility predicates,
+     lock-conflict checks, CRC and WAL record decoding, numeric arithmetic, varlena and datum parsing.
+  3. **Verified replacement through FFI,** only where a component is small, hot and self-contained, and only with the
+     community's agreement.
+- **The existing tests become model inputs.**
+  - The isolation tester's specs (`src/test/isolation/specs`) map directly onto schedules for pgspec's machine and the
+    explorer.
+  - The regression suite feeds the differential corpus.
+  - Historical bug fixes become negative controls: reintroduce the bug in a copy and require that the model, a proof
+    or the trace check rejects it.
+
+### 4.3 What changes in the mechanics at this scale
+
+- **Parallel builders per subsystem,** each in its own worktree with a disjoint file allowlist, sharing one heavy-job
+  lock. Plan disk per worktree, since verification builds take gigabytes. Keep the machine awake for long runs.
+- **Proof cost is bounded by the same three levers as the bank:**
+  - contracts between modules, so a proof sees only the participants' abstract states;
+  - statement- and shape-class lemmas written once, in libraries;
+  - capacity contracts instead of unbounded reasoning.
+- **Model checking is bounded:**
+  - explore at commit points, never at internal steps;
+  - each control produces a counterexample;
+  - progress is checked with AG EF plus fairness.
+- **Liveness and recovery** need real-environment tests (crash, restore, failover) with negative controls. These are
+  where the sister project found most of its late bugs.
+- **Version drift.**
+  - Pin the model to a server version (pgspec models PostgreSQL 15 by default, with a feature for 16 and later).
+  - Run the differential suite on every supported major version.
+  - Record each version difference as a modelled feature, never a silent assumption.
+
+### 4.4 A first experiment
+
+This is now running as **pg-verify**. Its ontology modules `00` to `21` cover the subsystems below and the SQL
+surface. Its machines are published with the libraries in G5Labs/actors (1a), and its process (stacked lanes, area
+sub-stacks, one root gate per tree, proof debt delegated) is in `review/sql/LANES.md` and `ORCHESTRATOR.md`. The
+original plan:
+
+Pick **MVCC visibility plus the lock manager** on one major version:
+1. Uplift their READMEs into ontology statements.
+2. Write the L1 and L2 models in Verus, reusing pgspec's transaction machine as the L1 for SQL-level behaviour.
+3. Instrument heap visibility and lock acquisition with probes.
+4. Replay the isolation suite's traces through L2.
+5. Reintroduce three historical bugs as negative controls; each must be caught.
+6. Verify one pure kernel, the visibility predicate, with a C verifier.
+7. Report under the same evidence structure: ontology tags, the trust inventory and the test reflection.
+
+## 5. Gates that are easy to forget
+
+- **The trust inventory:** an exact list of trusted items, with the strict gate's expected failures pinned. Any new item
+  fails the build until declared and justified.
+- **Mutants for every layer:** model mutants, hierarchy mutants, composition mutants, refinement controls and progress
+  controls. Each kill counts only when the error is located in the expected file. Inconclusive results (for example a
+  resource-limit error) are rerun until decisive, with an unmutated control run alongside.
+- **Self-tests for every structural check:** ownership, storage order, declared reads and annotations. Checks drift as
+  code is refactored; the self-test catches it.
+- **Generated code changes only through its generator.** Generator parity is part of the gate.
+- **Resource hygiene:**
+  - one heavy job at a time, with time caps;
+  - a disk floor, with a pause-and-report rule below it;
+  - every wait loop has a timeout;
+  - processes are stopped by recorded PID, never with a broad `pkill`.
+
+## 5a. Delivery cadence: spec breadth, proof depth and merges
+
+Added 2026-11-04 (human decision) after a day in which every feature waited on proof runs and no new process was
+specified. Gating every merge on full proofs serializes the whole project behind the solver; these rules keep breadth
+moving without letting proved results decay.
+
+- **Spec ahead of proof.** A lane may carry a feature through 3.1 (ontology, cells, decisions), 3.3's models and
+  protocols, and 3.4's schema, statements and real-database tests before its Verus proofs exist. Its requirements are
+  tagged **tested** (and inspected), never proved, until a decisive run shows otherwise. Every unproved obligation
+  (invariant, refinement, control, statement lemma) is listed in the lane's proof-debt file, and the debt is paid in
+  batches. The phase rule still holds: nothing downstream may rely on a claim its inputs did not earn.
+- **Specification first** (human decision 2026-11-05). Complete the specification across the product's processes
+  before spending effort on proof depth: making the proofs tractable may need redesigns, and those are cheaper to choose
+  once the whole model is known. While a product is in this phase, merges are gated on the spec checks (pipeline
+  `--check`, trust inventory unchanged, real-database tests of the touched slices); Verus runs are recorded, not gating.
+  A previously verified obligation that no longer verifies is recorded as debt with its location and cause, never
+  silently, and its requirement drops back to **tested**. Proof debt is paid in a later proof phase that may redesign
+  the model; nothing is ever reported as proved without a decisive run.
+- **One gate = one build on one machine, at most 20 minutes** (human decision 2026-11-05; same shape as pg-verify's
+  fast gate). A merge gate is a single build with a hard 20-minute timeout; hitting it fails the gate, and a gate that
+  cannot fit is narrowed or made faster, never split or given a longer limit.
+  - Blocking, lane: real-database tests (PostgreSQL 15 and 17, pgspec-gen) of the touched slices plus a fixed canary
+    slice set; pipeline `--check`; the trust inventory; Verus on the changed crates only, where only logical errors
+    block. A resource-limit or time-limit result is recorded as proof debt with its location, not a gate failure.
+  - Blocking, batch: the same, with every slice's real-database tests, inside the same 20 minutes (human decision
+    2026-11-05: a 20-minute merge gate is the fidelity for spec progress). Full controls and every crate run in the
+    periodic full verification (every 4 hours).
+  - Not blocking (periodic full verification, nightly): control and mutant runs, every crate's Verus, margin runs at tighter limits, mock
+    audits. Their failures are triaged into debt or fixes the next day.
+  - Results are cached by input hash: an unchanged slice or crate reuses its last decisive result at no build cost.
+  - Dry runs never write.
+- **Never regress** (proof phase). New obligations may be debt; anything that already verifies must keep verifying. A
+  change that touches a shared object or statement runs the touched crates' baseline and controls before handoff.
+- **Tiered gates.**
+  - Before a merge (minutes): real-database tests of the touched slices, the Verus baseline of the touched crates, and
+    the controls of the touched feature areas, each decisive and located.
+  - After merges, in a batch: every crate, every control. A failure is fixed forward within a day or the merge is
+    reverted.
+  - Inconclusive (resource limit, timeout) is never a pass at either tier.
+- **Generators split by feature area.** Each area is its own module, registered in one ordered list (order matters
+  where proof hints are matched to invariants by position). A lane owns its area's files. A refactor of the generators
+  is accepted only with byte-identical generated output.
+- **Shared objects.** A change to an object several areas use is approved by the orchestrator first, kept additive,
+  edited surgically by id, and listed in the merge note. Patch scripts must replay in any order with the other lanes'.
+- **Merges.** Batch finished lanes into one merge and one full proof run. Script the mechanical steps (rebase, replay,
+  regenerate, byte-identity, copy results, checks) so a merge is one command, not an orchestrator's afternoon.
+- **Build capacity.** Run controls in parallel, each with its own time limit, on a machine sized for it. Keep the
+  project's builds in capacity of their own, not a pool shared with unrelated projects. Work copies are copy-on-write
+  clones where the filesystem allows.
+
+## 5b. Lessons from pgspec and pg-verify (rounds r4–r8, 2026-11)
+
+These come from scaling the PostgreSQL model from about 390 to 545 executed-and-checked corpus shapes with up to 20
+parallel lanes. pg-verify's `review/sql/ORCHESTRATOR.md` and `LANES.md` hold the dated decisions behind each one.
+
+**What counts as a claim**
+- **Measure through the client's entry point.** Count a statement only through the path a real client statement
+  takes, for pgspec the IR carrier. Once a new path exists, freeze the old one; new forms go only to the new path.
+  Never report upper bounds such as reachability or static coding as coverage. Loader acceptance never counts as DDL
+  coverage.
+- **Refuse rather than guess.** Where the outcome depends on something the model doesn't fix, the model makes no
+  claim. Examples are plan order, platform `memcmp`, a dynamic timezone abbreviation and asynchronous delivery. It
+  must never claim an error the real system would not raise.
+- **Recover lost claims with witnesses, not guesses.** When a claim is withdrawn for soundness, win it back by
+  admitting every outcome the real system may choose:
+  - a row-order freedom witness under DISTINCT, GROUP BY and ties;
+  - a lock-optional outcome where the plan decides whether a lock is taken.
+
+  Never pick one outcome and claim it.
+- **General semantics only.** Port the real algorithm (for example `numeric.c`, `formatting.c`, `jsonfuncs.c`). The
+  corpus decides priority, never special cases.
+- **Wrong results first.** Every lane's round starts with the wrong results in its area, before new coverage.
+
+**Proof debt**
+- **Spec first, proofs later.** Defer what can't be proved cheaply with a `PROOF-DEBT(<lane>)` marker and a ledger
+  row. Gates block on logical errors only; resource-limit sites are recorded debt.
+- **An admitted lemma can be false, and that is a soundness defect.** Two were found (LC2 and `lemma_wfinish_plain`):
+  a later feature (user triggers inside the foreign-key pass) made their statements untrue. Debt workers scan
+  admitted lemmas whenever a feature changes what they quantify over. They restate the lemma soundly, prove it, and
+  re-check every consumer. A lemma that only "verified" through a false one is suspect too.
+- **Settle ambiguous proof failures with a focus build.** Run the same module on the base and on the change, in one
+  batched build. A per-function `#[verifier::rlimit(N)]` overrides the command-line limit, so lift it explicitly. A
+  "postcondition not satisfied" next to a resource-limit error is logical until a decisive run shows otherwise.
+- **Prelude growth destabilises unrelated proofs.** Put new machinery in lean modules rather than raising a module's
+  budget. A large budget raise is a warning sign, not a fix.
+
+**Lanes, rounds and trees**
+- **The structure:**
+  - **Lane:** one session owns one slice. It works in rounds on its own branches, and each round ends in a report
+    with a READY line.
+  - **Sub-stack:** lanes merge, without a gate, into an area sub-stack under its lock.
+  - **Root:** an integrator merges the sub-stacks into the root, resolving each conflict once (rerere), and runs
+    **one full root gate per tree**, bisected by sub-stack if red. The whole tree promotes together.
+- **Continuous rounds.** A lane never waits for the root. It starts its next round off its own heads. A lane whose
+  backlog drains takes over a queued lane rather than idling.
+- **Merge the root; don't chain-sync sub-stacks.** Syncing sub-stacks into each other resolves the same conflicts
+  several times and invalidates their gates.
+- **Shared lists conflict on every round.** Error variants, dispatch tables and type arms collide. Generate them from
+  per-lane fragment files.
+- **A clean textual merge is not a compiling merge.** A lane that changes a shared signature, or stacks one in, runs
+  the compile check on the merged head. Root merges can silently drop a hunk (r8 lost a quoted-keyword lexer rule
+  this way); the root gate catches it.
+- **Ownership is explicit.** Every backlog row has an owning lane. Route cross-lane findings to the owner, and watch
+  for duplicate kernels when two lanes port the same C function.
+- **Backlogs go stale.** Regenerate the backlog from a fresh census at every promoted tree. Before starting an item,
+  check it against the current code.
+
+**Build economics**
+- **One compile check per round,** after a local parse-only `rustfmt --check`.
+- **A full lane gate only for central edits.** Otherwise the area's shared gate and the root gate run the lane's
+  tests.
+- **One build in flight per lane.** Recheck only the failing units; the cache keys results by input hash.
+- **No new build pools.** Keep batches big.
+- **Run a smoke stage before any full gate:** one unit of each kind.
+- **Run a narrow focus build before a full re-gate.** A full re-gate re-runs everything once the bank changes.
+- **Waivers only for units that were never green,** recorded with owner, reason and evidence. A unit green in the
+  last promoted tree is never waivable, and waivers expire.
+
+**Tests**
+- **Floors, not exact pins,** in surface-test assertions. Stale exact pins caused reds on several sub-stacks.
+- **A mutant control every round** that shows the new check can fail.
+- **Most gate reds are harness bugs.** Diagnose before changing the model. Typical causes:
+  - printer round trips;
+  - stale refusal lists;
+  - per-connection settings, such as the driver's `extra_float_digits`;
+  - environment names, such as the bootstrap role.
+
+  Fix the test's environment assumption; never drop the coverage.
+
+**Running many agents**
+- **Ask before deleting anything,** in every case: worktrees, scratch, caches. Tooling silently depends on "old"
+  worktrees.
+- **Expired credentials and a full disk are infrastructure, not reds.** Gates must report them as incomplete, so a
+  resume clears them. Watch the disk floor; other projects on the same machine fill it.
+- **Successor briefs.** When a session's context runs out, start a successor with the full brief: state, branches,
+  stack order and open decisions. Never lose a round's results.
+- **Cap the reporting.** Agents report at READY, STACKED or when blocked, with one background watcher per build. No
+  interim hand-backs.
+
+## 5c. Lessons from omniSaaS (2026-11): build speed, spec first, parallel provers and consolidation
+
+Added 2026-11-12 from two weeks of omniSaaS (about 35,000 ontology statements, 50 storage slices, 47 proof crates,
+up to 25 parallel lanes). 5b's lessons apply too; these are the ones specific to an application on top of pgspec.
+
+**Build speed** (each item measured):
+- **Verify shared libraries once per build and use prebuilt toolchain images.** A full GL crate run went from 4,066 s
+  to 984 s.
+- **The per-object proof layout (3.3).** Crates that timed out after 4 hours verified in 2–4 minutes; one crate went
+  from a 1,000 s timeout to 64 s.
+- **One merge gate of at most 20 minutes, cached by input hash.** A gate went from 510 s to 143 s, and an unchanged
+  repeat builds nothing.
+- **Scope cache keys to real inputs.** A slice's stamp covers the shared harness plus only the scenario files that
+  name that slice. Before that, one new scenario file made all 50 slices stale.
+- **A private build pool for large runs; small gates on the default pool.** Two full runs on a shared 64-CPU quota
+  blocked every lane gate.
+- **Memory-aware scheduling and per-crate streaming uploads.** Running eight crates at once lost controls and whole
+  machines; a 22-crate run hit the 4-hour cap and published nothing. Now about 8 crates per build, the largest crate
+  alone, and each crate uploaded as soon as it finishes.
+- **Measure per-function solver cost (rlimit), not wall time.** Wall time on a shared pool varies by about ±20%.
+  Per-function timing found one lemma that had regressed from 23 s to 128 s.
+- **Keep the model file small.** Shard it behind one loader once it nears 50 MB (GitHub warns there and rejects pushes
+  over 100 MB), and save only the shards that changed.
+- **Copy-on-write lane copies, and rehearsals as clones rather than full copies.** Each regeneration rewrites tens of
+  MB per copy; a rehearsal copy with full history costs about 0.5 GB.
+
+**Proof and module structure** (each item measured):
+- **Per-object step functions and invariants (3.3) first, then split by feature area.** Moving the eight largest
+  crates to the per-object split-step layout took a sales crate from a 1,056 s timeout to 236 s and a treasury crate
+  to 36 s. Contract accounting went from about 1,000 s timeouts to 64 s.
+- **Statement lemmas in their own module tree,** one module per table or statement shape rather than one large file.
+  The GL crate went from 226 s to 161 s (−29%).
+- **Pass-through frame lemmas.** Prove once that a statement leaves untouched columns and tables unchanged. The
+  costliest lemma (insert-row) went from 161M to 64M rlimit (53.5 s to 19.2 s); summed function time from 465 s to
+  422 s.
+- **One prelude per crate, kept lean.** New machinery goes into small modules; a budget raise is a warning sign (5b).
+- **Size crates by memory, not just by time.** The GL crate holds about 11.6 GB while verifying, so it always runs
+  alone, with a per-crate memory budget declared to the scheduler.
+- **Generators split by feature area, one registry entry per area,** so lanes don't collide in one file. Refactors are
+  accepted only with byte-identical output (5a).
+- **Requests carry typed payloads.** One generic amount/item request made rules unstatable and hid 70 operations that
+  changed fields the proofs ignored. Typed per-command payloads fixed both for about 1% more proof cost.
+- **Shared mechanisms are proved once over a trait** and instantiated per object, so adding an object adds no new
+  proof work for its mechanics.
+
+**Runtime performance of the designed system** (measured on Cloud Build PostgreSQL 17, durable commits):
+- **Gapless numbering serializes posting.** One number range topped out at about 200–250 postings per second whatever
+  the machine size. Buffered numbering in blocks of 10 reached about 1,900 per second on 8 CPUs and 3,500 on 32, with
+  a 95th percentile of 14 ms. So gaplessness is a per-range legal choice, not a default (omniSaaS L-711).
+- **Take contended locks last.** Allocate the number at the end of the posting plan, so the range lock is held for the
+  shortest time.
+- **A shared-row FOR SHARE (the posting period) costs about 10–20%,** but it wasn't the limit; CPU was.
+- **Measure with one process per client.** Threaded Python clients capped the benchmark at about 360 per second and
+  made the database look like the bottleneck.
+- **Index from the read catalogue.** Generate indexes from every list, guard and filter read, organisation key
+  first, at most three per table unless measured. An audit found 219 finance tables whose list filters no index
+  served.
+
+**Specification first, and its limit:**
+- **Specification first still holds,** but specify the system semantics (3.3a) before breadth. Breadth without
+  axioms, mechanisms and invariants produced hundreds of locally plausible, globally wrong designs. The proofs passed,
+  because each matched its own model.
+- **Run independent reviewers early and continuously,** each with a different angle:
+  - a mechanical audit with a ratchet: no defect is ever accepted, a finding leaves the list only when fixed, and
+    findings are grouped by root cause;
+  - an adversarial reviewer acting as an accountant, an auditor and an attacker;
+  - a randomized simulator that runs long interleaved scenarios through the real SQL and checks global invariants
+    after every commit.
+- **Count root causes, not findings.** 1,149 omniSaaS finance findings came from 175 root causes. Twenty generator
+  causes covered 382 findings, and 12 shared mechanisms closed 90% of them.
+- **A refusal written in the spec is not a refusal.** 58 stated refusals were implemented by neither the SQL nor the
+  proofs; audit for them mechanically.
+
+**Parallel provers:**
+- **One lane per area or crate,** owning disjoint files, in a copy-on-write clone of live with its merge base kept
+  beside it. Give each lane a numbered decision block and a numbered registry slot, recorded centrally, to avoid
+  collisions.
+- **Split ownership by layer when two lanes touch the same concern.** For example, a mechanism lane owns the
+  generator and a protocol lane owns the step data. Settle it before either builds.
+- **Design findings from proving come to the orchestrator before any model change,** as delegated decisions. Some of
+  the most valuable findings came this way (an unlocked read racing a reversal; a costing run with no barrier).
+- **The orchestrator's rule-of-thumb answers:**
+  - accept a weaker database constraint only when a proved invariant with a control is as strong;
+  - never encode new fields into old generic parameters;
+  - never relay a user approval as if it were the user's.
+
+**Consolidation:**
+- **Integrator tree.** Lanes freeze packages, a root integrator rehearses each on a scratch copy, then merges, commits
+  and pushes. One merge is one command.
+- **Landing rules:**
+  - first ready lands first, and the others rebase once onto the result;
+  - large structural packages land alone;
+  - no proved, model-checked or model-tested count may drop into live;
+  - crate results carry only from script-collected full runs with control records, never hand-stamped results or
+    gate-only results;
+  - a gate must never overwrite a richer full-run result;
+  - a shared-harness or oracle edit stales every slice and needs a full batch rerun.
+- **Disk guard.** The integrator refuses to start a merge below the disk floor. A half-merge caused by a full disk
+  was recovered by re-running the idempotent merge, not by restoring.
+- **Package hygiene.** Supersede rather than stack (pkg-2 replaces pkg-1); give every package its merge bases.
+- **The message budget between agents is finite.** Batch replies, and let lanes coordinate directly on shared files.
+
+## 6. Builder prompt template
+
+```
+You are a builder agent on <system>. Worktree <path>, branch <branch> from <commit>. Edit only <allowlist>.
+Do not touch <other worktrees / repos>; stop only processes you started, by PID; never push.
+Resources: one heavy job under flock <lock>, each `timeout 1800`; free disk >= <floor>; every wait loop has a timeout.
+Invariants for every commit: every crate 0 errors; no new assume/admit/external_body (trust inventory unchanged);
+strict gate fails only on <pinned list>; all mutants KILLED; tests pass. (A spec lane under 5a: existing proofs do
+not regress; new obligations are tagged tested and listed in <lane>-proof-debt.md.)
+Read first: <docs, ontology modules, interfaces>.
+Task: <numbered steps>.  If a step cannot be done without weakening a proof or trusting code, revert it and explain.
+Deliverable: commits at verified milestones; <docs to update>; a final report under N words with per-crate verified
+counts, mutant results, validation results, what changed materially, and what remains — never claim a check passed
+unless you ran it and saw the result.
+```
+
+## 7. What to expect
+
+- **Most real defects sit at boundaries:** loaders, persistence, recovery, and spec against intent. They are rarely in
+  the verified kernel.
+- **Weak abstract models silently admit broken implementations.** Always include rejection controls.
+- **The first verified design is often too slow.** Set-based rewrites and model extensions are part of the method, not
+  a detour.
+- **Proof cost creeps up feature by feature, then falls off a cliff.** In omniSaaS, R2R verified at 200 obligations;
+  one more feature pushed the last objects in the enum over the resource limit, and a serial control run hit the
+  4-hour cap. After the per-object layout (3.3), the same crate's baseline took 118 s and each control under 2.5 min.
+  Watch per-crate time, not just pass/fail.
+- **Green evidence can hide wrong designs.** In omniSaaS, more than half the statements were proved while hundreds of
+  business defects sat in rules the models never stated. Expect most of them to fall to a handful of shared
+  mechanisms and invariants once you look for root causes.
+- **Idiomatic code and proofs coexist once the code only has to map to the spec.** Most of the remaining friction is
+  library coverage (iterators, maps), which is solved once in shared crates.

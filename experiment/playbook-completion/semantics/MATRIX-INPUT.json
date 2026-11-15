@@ -1,0 +1,489 @@
+{
+ "_doc": "Semantics lane (steer 7, Q17b; revised after review 4, R4-08/R4-09) proposed matrix cells. Orchestrator integrates. Run ids are registered under evidence/runs/; the first pass's ids are superseded by the -r2 ids.",
+ "lane": "semantics",
+ "cells": [
+  {
+   "gate": "3.3a-axioms",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "experiment/playbook-completion/semantics/AXIOMS.md",
+    "experiment/playbook-completion/semantics/axioms.json",
+    "experiment/playbook-completion/semantics/src/finding_classes.json",
+    "run:sem-check-r4",
+    "run:sem-check-selftest-r4",
+    "run:sem-mc-sys00-reviewed-r2",
+    "run:sem-mc-sys00-as-built-r2",
+    "run:sem-control-sys00-r2"
+   ],
+   "evidence_grade": "inspected (axioms stated with sources at the pin; every finding classed by hand) + mc (module-00 composition, model-level)",
+   "level": "method",
+   "product_obligation": "fails",
+   "product_basis": "208 of 309 counted findings (duplicates not counted) break at least one of the 14 axioms (axioms.json violating_findings); each of the 14 axioms is broken by at least one finding; S1 findings breaking an axiom: 44",
+   "as_built_findings": [
+    "F-0304",
+    "F-0409",
+    "F-0505",
+    "F-0606",
+    "F-0702",
+    "F-0705",
+    "F-0707",
+    "F-0711",
+    "F-0802",
+    "F-0814",
+    "F-0815",
+    "F-0816",
+    "F-0818",
+    "F-0820",
+    "F-1001",
+    "F-1002",
+    "F-1008",
+    "F-1101",
+    "F-1114",
+    "F-1302",
+    "F-1303",
+    "F-1304",
+    "F-1305",
+    "F-1306",
+    "F-1402",
+    "F-1502",
+    "F-1503",
+    "F-1603",
+    "F-1604",
+    "F-1701",
+    "F-1709",
+    "F-1801",
+    "F-C0702",
+    "F-C1201",
+    "F-C1203",
+    "F-C1250",
+    "F-C1301",
+    "F-C1306",
+    "F-C1308",
+    "F-C1350",
+    "F-C1351",
+    "F-C1803",
+    "F-C1804",
+    "F-C1850"
+   ],
+   "remaining": "the repaired SYS-I wording (AX-01..AX-09) is proposed in semantics/src/axioms_src.json, not written into ontology/00-system.md (ontology lane); AX-12's durability half rests on an intent-undecided premise (F-C1102)"
+  },
+  {
+   "gate": "3.3a-mechanisms",
+   "module": "product",
+   "status": "open",
+   "evidence": [
+    "experiment/playbook-completion/semantics/MECHANISMS.md",
+    "experiment/playbook-completion/semantics/mechanisms.json",
+    "experiment/playbook-completion/models/semantics/RESULTS.json",
+    "run:sem-mc-all-r2",
+    "run:sem-mc-cap-as-built-r2",
+    "run:sem-mc-cap-reviewed-r2",
+    "run:sem-mc-catalog-as-built-r2",
+    "run:sem-mc-catalog-reviewed-r2",
+    "run:sem-mc-derived-as-built-r2",
+    "run:sem-mc-derived-reviewed-r2",
+    "run:sem-mc-epoch-as-built-r2",
+    "run:sem-mc-epoch-reviewed-r2",
+    "run:sem-mc-excl-as-built-r2",
+    "run:sem-mc-excl-reviewed-r2",
+    "run:sem-mc-install-as-built-r2",
+    "run:sem-mc-install-reviewed-r2",
+    "run:sem-mc-ledger-as-built-r2",
+    "run:sem-mc-ledger-reviewed-r2",
+    "run:sem-mc-queue-as-built-r2",
+    "run:sem-mc-queue-reviewed-r2",
+    "run:sem-mc-removal-as-built-r2",
+    "run:sem-mc-removal-reviewed-r2",
+    "run:sem-mc-retry-as-built-r2",
+    "run:sem-mc-retry-reviewed-r2",
+    "run:sem-mc-scope-as-built-r2",
+    "run:sem-mc-scope-reviewed-r2",
+    "run:sem-mc-snapshot-as-built-r2",
+    "run:sem-mc-snapshot-reviewed-r2",
+    "run:sem-mc-unit-as-built-r2",
+    "run:sem-mc-unit-reviewed-r2",
+    "run:sem-control-cap-r2",
+    "run:sem-control-catalog-r2",
+    "run:sem-control-derived-r2",
+    "run:sem-control-epoch-r2",
+    "run:sem-control-excl-r2",
+    "run:sem-control-install-r2",
+    "run:sem-control-ledger-r2",
+    "run:sem-control-queue-r2",
+    "run:sem-control-removal-r2",
+    "run:sem-control-retry-r2",
+    "run:sem-control-scope-r2",
+    "run:sem-control-snapshot-r2",
+    "run:sem-control-unit-r2",
+    "run:sem-check-r4"
+   ],
+   "evidence_grade": "mc (explorer, exhaustive within declared bounds, none truncated; 243 mechanism checks: one generic machine per mechanism over a trait, one instance per object variant; 48 negative controls, at least one per law, all caught; every Keep check with its complement (all safety laws explored alone)); not proved",
+   "level": "model",
+   "product_obligation": "fails",
+   "product_basis": "59 of 77 objects hand-roll at least one mechanism; for every modelled instance the laws its as-built model violates equal its declared departures, each with a finding or a named exception (EXC-05, EXC-06, EXC-11), checked by sem-check-r4",
+   "as_built_findings": [
+    "F-0103",
+    "F-0107",
+    "F-0202",
+    "F-0203",
+    "F-0207",
+    "F-0208",
+    "F-0301",
+    "F-0302",
+    "F-0303",
+    "F-0305",
+    "F-0306",
+    "F-0307",
+    "F-0402",
+    "F-0406",
+    "F-0407",
+    "F-0409",
+    "F-0501",
+    "F-0503",
+    "F-0504",
+    "F-0507",
+    "F-0511",
+    "F-0601",
+    "F-0602",
+    "F-0603",
+    "F-0604",
+    "F-0605",
+    "F-0606",
+    "F-0609",
+    "F-0613",
+    "F-0615",
+    "F-0616",
+    "F-0618",
+    "F-0701",
+    "F-0702",
+    "F-0703",
+    "F-0704",
+    "F-0705",
+    "F-0707",
+    "F-0709",
+    "F-0711",
+    "F-0801",
+    "F-0804",
+    "F-0807",
+    "F-0814",
+    "F-0815",
+    "F-0817",
+    "F-0818",
+    "F-0819",
+    "F-0820",
+    "F-0901",
+    "F-0903",
+    "F-0905",
+    "F-0906",
+    "F-0908",
+    "F-1001",
+    "F-1002",
+    "F-1004",
+    "F-1005",
+    "F-1006",
+    "F-1008",
+    "F-1013",
+    "F-1101",
+    "F-1104",
+    "F-1105",
+    "F-1108",
+    "F-1114",
+    "F-1201",
+    "F-1302",
+    "F-1303",
+    "F-1304",
+    "F-1305",
+    "F-1306",
+    "F-1401",
+    "F-1402",
+    "F-1502",
+    "F-1503",
+    "F-1506",
+    "F-1507",
+    "F-1508",
+    "F-1511",
+    "F-1601",
+    "F-1603",
+    "F-1604",
+    "F-1609",
+    "F-1610",
+    "F-1614",
+    "F-1615",
+    "F-1701",
+    "F-1801",
+    "F-1803",
+    "F-1804",
+    "F-1805",
+    "F-1806",
+    "F-C0401",
+    "F-C0501",
+    "F-C0601",
+    "F-C0605",
+    "F-C0670",
+    "F-C0702",
+    "F-C0801",
+    "F-C0901",
+    "F-C1201",
+    "F-C1203",
+    "F-C1303",
+    "F-C1304",
+    "F-C1305",
+    "F-C1306",
+    "F-C1308",
+    "F-C1309",
+    "F-C1501",
+    "F-C1502",
+    "F-C1604",
+    "F-C1703",
+    "F-C1801",
+    "F-C1803",
+    "F-C1804",
+    "F-CS01"
+   ],
+   "remaining": "the playbook's 'generic lemmas proved once over a trait' (Verus) are not written: PROOF-DEBT D-14 (a separate proof lane); 75 axiom-breaking findings are not attached to a mechanism instance (MECHANISMS.md, last section); no result transfers to the product"
+  },
+  {
+   "gate": "3.3a-lifecycles",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "experiment/playbook-completion/semantics/LIFECYCLES.md",
+    "experiment/playbook-completion/semantics/lifecycles.json",
+    "experiment/playbook-completion/semantics/objects.json",
+    "run:sem-check-r4",
+    "run:sem-check-selftest-r4"
+   ],
+   "evidence_grade": "inspected + check (8 canonical lifecycles, one meaning per id; 77 of 77 objects derived from the ontology's Entity lines: 75 declare a lifecycle with every state and command mapped, 2 carry an explicit reason; every object declares mechanisms and axioms; checker with seeded mutations)",
+   "level": "method",
+   "product_obligation": "fails",
+   "product_basis": "the canonical mapping shows states the mechanisms forbid or lack at the pin: IVF and BM25 indexes have no stale state (F-0606, F-0703), the queue entry has no running/claimed state (F-C0601, F-C0670), the reifier has an orphan state (F-1502)",
+   "as_built_findings": [
+    "F-0606",
+    "F-0703",
+    "F-C0601",
+    "F-C0670",
+    "F-1502"
+   ],
+   "remaining": "none for the gate text; the ontology's own entity names collide across modules (namespace in 01/17/18, result cache entry in 04/10, caller transaction in 03/11): resolved in the mapping, not renamed in the ontology (ontology lane)"
+  },
+  {
+   "gate": "3.3a-trace",
+   "module": "product",
+   "status": "open",
+   "evidence": [
+    "experiment/playbook-completion/semantics/trace.json",
+    "experiment/playbook-completion/semantics/data/trace_sample_review.json",
+    "experiment/playbook-completion/semantics/SEMANTICS.md",
+    "experiment/playbook-completion/contract-2/VALIDATED.json",
+    "experiment/playbook-completion/contract-2/coverage.json",
+    "run:sem-check-r4",
+    "run:sem-check-selftest-r4"
+   ],
+   "evidence_grade": "check (mechanical: every B/T/I/X/P ontology statement of 19 modules, 2939, exactly once; contract clauses of round r6 and contract-2) + inspected (rule precision by a sample of 80 of the first 2,600: 68 agree, 10 partly, 2 disagree; one reviewer, not independent)",
+   "level": "method",
+   "product_obligation": "n/a",
+   "product_basis": "a trace is a property of the specification; the product's conformance is in the other cells",
+   "as_built_findings": [],
+   "remaining": "55 requirements open after the re-trace against the contract-2 clauses (none of them is decided by E-1, S-1 or an X2 clause; 17 already-traced statements gained one): 42 of the 53 open P premises are held by a named contract-2 outside premise (assumed, not validated; outside_premise in trace.json: P2-ABSENT 7, P2-SEC 5, P2-CATALOG 4, P2-DICT 4, P2-LIMITS 4, P2-SQLEXPR 2, P2-SQLTEXT 2, and 14 families once each); 11 P premises have no clause and no premise family (third-party library facts ALG-P1, ALG-P4, ALG-P5, INT-S1.12; driver and packaging OPS-P4, OPS-P6; language OPS-P12; not engine behaviour OPS-P16, INS-P4.16; engine behaviour no family covers WRT-P5.12, TMP-P4); 2 I cost/memory rules (TXT-B4.8, INT-R1.13); 1183 B/T statements trace only to their module's functional contract (DC-FUNC-NN), whose L1 models are not checked statement by statement; the precision sample predates the 339 ontology-2 statements"
+  },
+  {
+   "gate": "3.3-model-check",
+   "module": "00",
+   "status": "closed",
+   "evidence": [
+    "experiment/playbook-completion/models/semantics/src/sys00.rs",
+    "experiment/playbook-completion/models/semantics/RESULTS.json",
+    "run:sem-mc-sys00-reviewed-r2",
+    "run:sem-mc-sys00-as-built-r2",
+    "run:sem-control-sys00-r2"
+   ],
+   "evidence_grade": "mc (explorer, exhaustive within bounds: two tenants, four processes; 29 checks)",
+   "level": "model",
+   "product_obligation": "fails",
+   "product_basis": "the universal axioms model-checked over the composed mechanisms M-01, M-02, M-03, M-04, M-05, M-10: the reviewed composition keeps AX-02..AX-08, AX-10..AX-12 and AX-14 (complement empty); the as-built composition violates AX-06 (F-1101, F-1306), AX-07 and AX-11 (F-1302), AX-08 (F-0702, F-0606), AX-10 (F-1306, F-0702), each check attributed to one axiom and the complement showing all of them in one model; one control per axiom (11) caught, 6 of which also break other axioms; 4 sharpness witnesses",
+   "as_built_findings": [
+    "F-1101",
+    "F-1306",
+    "F-1302",
+    "F-0702",
+    "F-0606"
+   ],
+   "remaining": "AX-01, AX-09 and AX-13 are outside the composition (checked by the generic machines M-12/M-01, M-08, M-11: sem-mc-catalog-*, sem-mc-install-*, sem-mc-cap-*); AX-02, AX-03, AX-04, AX-05, AX-12 hold within the composition only, the product breaks them elsewhere (axioms.json); progress rests on TRUST.md's operator-re-run premise"
+  },
+  {
+   "gate": "3.3-model-check",
+   "module": "06",
+   "status": "closed",
+   "evidence": [
+    "models/breadth-a/RESULTS.json",
+    "run:breadth-a-mc-all",
+    "experiment/playbook-completion/models/semantics/src/queue.rs",
+    "run:sem-mc-queue-as-built-r2",
+    "run:sem-mc-queue-reviewed-r2",
+    "run:sem-control-queue-r2"
+   ],
+   "evidence_grade": "mc (explorer, exhaustive within bounds; F-C0605 by bounded overtaking and a fair-lasso liveness check over the full reachable graph)",
+   "level": "model",
+   "product_obligation": "fails",
+   "product_basis": "F-C0605 now has a model: as built, an entry is overtaken more than N-1 times (M07-L3) and a fair cycle keeps it pending forever (M07-L4); AG EF holds as built (why breadth-a's bounded model could not show it); reviewed FIFO passes both, a LIFO control is caught by both; also F-0604, F-C0601 and the new F-C0670 (two workers on one entry) in the generic queue machine",
+   "as_built_findings": [
+    "F-0604",
+    "F-0606",
+    "F-0608",
+    "F-0615",
+    "F-C0601",
+    "F-C0605",
+    "F-C0670"
+   ],
+   "remaining": "fair_lasso is tooling added in models/semantics (unproved; its controls are the FIFO pass and the LIFO and as-built catches); the batch size is abstracted to 1"
+  }
+ ],
+ "errata_proposed": [
+  {
+   "id": "sem-mc-all",
+   "correction": "The record says 'as-built 99 (including 2 exception checks for EXC-05, EXC-06), reviewed 106 (including sharpness), controls 61'. Correct: as-built 99 plus 2 exception checks (101), reviewed 106, controls 59; total 266. RESULTS.json and the log are right; only the description is wrong.",
+   "evidence": [
+    "sem-mc-all"
+   ]
+  },
+  {
+   "id": "sem-mc-cap-as-built",
+   "correction": "The record says each expected violation is 'a violation of exactly its named law'. That is an artefact of Keep::only, which keeps only the attributed law: each check does violate its attributed law (shortest counterexample), but with the other laws kept too, 1 of them also violate another law (cap-snapshot-file-helpers-as-built (M11-L3) also M11-L2). Measured by review 4 (review/review-4/semantics/specificity.txt); the rerun with the harness complement check records every violated law per check (RESULTS.json violates/also_violates) and the undeclared departures are now declared in mechanisms.json.",
+   "evidence": [
+    "sem-mc-cap-as-built-r2",
+    "sem-mc-all-r2",
+    "sem-check-r2"
+   ]
+  },
+  {
+   "id": "sem-mc-catalog-as-built",
+   "correction": "The record says each expected violation is 'a violation of exactly its named law'. That is an artefact of Keep::only, which keeps only the attributed law: each check does violate its attributed law (shortest counterexample), but with the other laws kept too, 2 of them also violate another law (catalog-index-graph-unchecked-as-built-M12-L1-F-0705 (M12-L1) also M12-L2; catalog-index-graph-unchecked-as-built-M12-L2-F-0705 (M12-L2) also M12-L1). Measured by review 4 (review/review-4/semantics/specificity.txt); the rerun with the harness complement check records every violated law per check (RESULTS.json violates/also_violates) and the undeclared departures are now declared in mechanisms.json.",
+   "evidence": [
+    "sem-mc-catalog-as-built-r2",
+    "sem-mc-all-r2",
+    "sem-check-r2"
+   ]
+  },
+  {
+   "id": "sem-control-catalog",
+   "correction": "The record says each control is 'a violation of exactly its law'. That is an artefact of Keep::only, which keeps only the attributed law: each check does violate its attributed law (shortest counterexample), but with the other laws kept too, 1 of them also violate another law (catalog-control-C3-no-record (M12-L1) also M12-L2). Measured by review 4 (review/review-4/semantics/specificity.txt); the rerun with the harness complement check records every violated law per check (RESULTS.json violates/also_violates) and the undeclared departures are now declared in mechanisms.json.",
+   "evidence": [
+    "sem-control-catalog-r2",
+    "sem-mc-all-r2",
+    "sem-check-r2"
+   ]
+  },
+  {
+   "id": "sem-mc-derived-as-built",
+   "correction": "The record says each expected violation is 'a violation of exactly its named law'. That is an artefact of Keep::only, which keeps only the attributed law: each check does violate its attributed law (shortest counterexample), but with the other laws kept too, 14 of them also violate another law (derived-degree-cache-as-built-F0402 (M04-L1) also M04-L4; derived-degree-cache-as-built-FC0401 (M04-L1) also M04-L4; derived-degree-cache-as-built-F0406 (M04-L1) also M04-L4; derived-algo-cache-edgeless-as-built-F1004 (M04-L2) also M04-L1; derived-interned-snapshot-as-built-F1005 (M04-L2) also M04-L1; derived-interned-snapshot-as-built-FC0801 (M04-L1) also M04-L4; derived-bm25-text-change-as-built-F0703 (M04-L2) also M04-L1; derived-statement-map-direct-delete-as-built-F0303 (M04-L2) also M04-L1; derived-bucket-aggregate-update-as-built-F0501 (M04-L1) also M04-L4; derived-engine-mode-cache-as-built-F0208 (M04-L2) also M04-L1; derived-ttl-cache-as-built-F0302 (M04-L2) also M04-L1; derived-ttl-cache-as-built-EXC05 (M04-L2) also M04-L1; derived-native-gate-label-index-as-built-F0906 (M04-L4) also M04-L2; derived-ivf-erase-as-built-F0606 (M04-L2) also M04-L1). Measured by review 4 (review/review-4/semantics/specificity.txt); the rerun with the harness complement check records every violated law per check (RESULTS.json violates/also_violates) and the undeclared departures are now declared in mechanisms.json.",
+   "evidence": [
+    "sem-mc-derived-as-built-r2",
+    "sem-mc-all-r2",
+    "sem-check-r2"
+   ]
+  },
+  {
+   "id": "sem-control-derived",
+   "correction": "The record says each control is 'a violation of exactly its law'. That is an artefact of Keep::only, which keeps only the attributed law: each check does violate its attributed law (shortest counterexample), but with the other laws kept too, 4 of them also violate another law (derived-control-C1-unmaintained-path (M04-L2) also M04-L1; derived-control-C2-token-after-compute (M04-L1) also M04-L4; derived-control-C3-rebuild-stamp-only (M04-L3) also M04-L1; derived-control-C5-probe-late (M04-L1) also M04-L4). Measured by review 4 (review/review-4/semantics/specificity.txt); the rerun with the harness complement check records every violated law per check (RESULTS.json violates/also_violates) and the undeclared departures are now declared in mechanisms.json.",
+   "evidence": [
+    "sem-control-derived-r2",
+    "sem-mc-all-r2",
+    "sem-check-r2"
+   ]
+  },
+  {
+   "id": "sem-mc-excl-as-built",
+   "correction": "The record says each expected violation is 'a violation of exactly its named law'. That is an artefact of Keep::only, which keeps only the attributed law: each check does violate its attributed law (shortest counterexample), but with the other laws kept too, 3 of them also violate another law (excl-redaction-marker-as-built (M03-L4) also M03-L3; excl-redaction-marker-as-built-F1302-marker (M03-L3) also M03-L5; excl-redaction-marker-as-built-F1302-tomb-live (M03-L5) also M03-L3). Measured by review 4 (review/review-4/semantics/specificity.txt); the rerun with the harness complement check records every violated law per check (RESULTS.json violates/also_violates) and the undeclared departures are now declared in mechanisms.json.",
+   "evidence": [
+    "sem-mc-excl-as-built-r2",
+    "sem-mc-all-r2",
+    "sem-check-r2"
+   ]
+  },
+  {
+   "id": "sem-control-excl",
+   "correction": "The record says each control is 'a violation of exactly its law'. That is an artefact of Keep::only, which keeps only the attributed law: each check does violate its attributed law (shortest counterexample), but with the other laws kept too, 3 of them also violate another law (excl-control-C2-writer-without-lock (M03-L2) also M03-L3; excl-control-C3-check-before-lock (M03-L3) also M03-L5; excl-control-C5-tomb-without-check (M03-L5) also M03-L3). Measured by review 4 (review/review-4/semantics/specificity.txt); the rerun with the harness complement check records every violated law per check (RESULTS.json violates/also_violates) and the undeclared departures are now declared in mechanisms.json.",
+   "evidence": [
+    "sem-control-excl-r2",
+    "sem-mc-all-r2",
+    "sem-check-r2"
+   ]
+  },
+  {
+   "id": "sem-mc-queue-as-built",
+   "correction": "The record says each expected violation is 'a violation of exactly its named law'. That is an artefact of Keep::only, which keeps only the attributed law: each check does violate its attributed law (shortest counterexample), but with the other laws kept too, 1 of them also violate another law (queue-embed-queue-as-built-HD0604 (M07-L2) also M07-L1). Measured by review 4 (review/review-4/semantics/specificity.txt); the rerun with the harness complement check records every violated law per check (RESULTS.json violates/also_violates) and the undeclared departures are now declared in mechanisms.json.",
+   "evidence": [
+    "sem-mc-queue-as-built-r2",
+    "sem-mc-all-r2",
+    "sem-check-r2"
+   ]
+  },
+  {
+   "id": "sem-control-queue",
+   "correction": "The record says each control is 'a violation of exactly its law'. That is an artefact of Keep::only, which keeps only the attributed law: each check does violate its attributed law (shortest counterexample), but with the other laws kept too, 1 of them also violate another law (queue-control-C2-two-consumers (M07-L2) also M07-L1). Measured by review 4 (review/review-4/semantics/specificity.txt); the rerun with the harness complement check records every violated law per check (RESULTS.json violates/also_violates) and the undeclared departures are now declared in mechanisms.json.",
+   "evidence": [
+    "sem-control-queue-r2",
+    "sem-mc-all-r2",
+    "sem-check-r2"
+   ]
+  },
+  {
+   "id": "sem-mc-removal-as-built",
+   "correction": "The record says each expected violation is 'a violation of exactly its named law'. That is an artefact of Keep::only, which keeps only the attributed law: each check does violate its attributed law (shortest counterexample), but with the other laws kept too, 10 of them also violate another law (removal-bm25-as-built (M05-L1) also M05-L3; removal-bm25-as-built-M05-L3 (M05-L3) also M05-L1; removal-vector-indexes-as-built (M05-L1) also M05-L3; removal-vector-indexes-as-built-M05-L3 (M05-L3) also M05-L1; removal-quarantine-as-built (M05-L1) also M05-L3; removal-snapshot-archives-as-built (M05-L1) also M05-L3; removal-reifier-default-graph-as-built (M05-L1) also M05-L3; removal-temporal-only-prefix-as-built (M05-L1) also M05-L3; removal-history-text-as-built (M05-L1) also M05-L3; removal-default-routed-vectors-as-built (M05-L1) also M05-L3). Measured by review 4 (review/review-4/semantics/specificity.txt); the rerun with the harness complement check records every violated law per check (RESULTS.json violates/also_violates) and the undeclared departures are now declared in mechanisms.json.",
+   "evidence": [
+    "sem-mc-removal-as-built-r2",
+    "sem-mc-all-r2",
+    "sem-check-r2"
+   ]
+  },
+  {
+   "id": "sem-control-removal",
+   "correction": "The record says each control is 'a violation of exactly its law'. That is an artefact of Keep::only, which keeps only the attributed law: each check does violate its attributed law (shortest counterexample), but with the other laws kept too, 2 of them also violate another law (removal-control-C1-store-dropped (M05-L1) also M05-L3; removal-control-C1b-store-dropped-inventory (M05-L3) also M05-L1). Measured by review 4 (review/review-4/semantics/specificity.txt); the rerun with the harness complement check records every violated law per check (RESULTS.json violates/also_violates) and the undeclared departures are now declared in mechanisms.json.",
+   "evidence": [
+    "sem-control-removal-r2",
+    "sem-mc-all-r2",
+    "sem-check-r2"
+   ]
+  },
+  {
+   "id": "sem-mc-retry-as-built",
+   "correction": "The record says each expected violation is 'a violation of exactly its named law'. That is an artefact of Keep::only, which keeps only the attributed law: each check does violate its attributed law (shortest counterexample), but with the other laws kept too, 1 of them also violate another law (retry-ledger-key-as-built (M02-L2) also M02-L1). Measured by review 4 (review/review-4/semantics/specificity.txt); the rerun with the harness complement check records every violated law per check (RESULTS.json violates/also_violates) and the undeclared departures are now declared in mechanisms.json.",
+   "evidence": [
+    "sem-mc-retry-as-built-r2",
+    "sem-mc-all-r2",
+    "sem-check-r2"
+   ]
+  },
+  {
+   "id": "sem-control-retry",
+   "correction": "The record says each control is 'a violation of exactly its law'. That is an artefact of Keep::only, which keeps only the attributed law: each check does violate its attributed law (shortest counterexample), but with the other laws kept too, 2 of them also violate another law (retry-control-C2-post-on-replay (M02-L2) also M02-L1; retry-control-C3-apply-conflict (M02-L3) also M02-L1). Measured by review 4 (review/review-4/semantics/specificity.txt); the rerun with the harness complement check records every violated law per check (RESULTS.json violates/also_violates) and the undeclared departures are now declared in mechanisms.json.",
+   "evidence": [
+    "sem-control-retry-r2",
+    "sem-mc-all-r2",
+    "sem-check-r2"
+   ]
+  },
+  {
+   "id": "sem-mc-sys00-as-built",
+   "correction": "The record says each expected violation is 'a violation of exactly its named axiom'. That is an artefact of Keep::only, which keeps only the attributed axiom: each check does violate its attributed axiom (shortest counterexample), but with the other axioms kept too, 6 of them also violate another axiom (sys00-as-built-ax-06 (AX-06) also AX-08; sys00-as-built-ax-07 (AX-07) also AX-08; sys00-as-built-ax-08 (AX-08) also AX-11; sys00-as-built-ax-10 (AX-10) also AX-08; sys00-as-built-ax-11 (AX-11) also AX-08; sys00-as-built-ax-11-marker (AX-11) also AX-08). Measured by review 4 (review/review-4/semantics/specificity.txt); the rerun with the harness complement check records every violated axiom per check (RESULTS.json violates/also_violates).",
+   "evidence": [
+    "sem-mc-sys00-as-built-r2",
+    "sem-mc-all-r2",
+    "sem-check-r2"
+   ]
+  },
+  {
+   "id": "sem-control-sys00",
+   "correction": "The record says each control is 'a violation of exactly its axiom'. That is an artefact of Keep::only, which keeps only the attributed axiom: each check does violate its attributed axiom (shortest counterexample), but with the other axioms kept too, 6 of them also violate another axiom (sys00-control-ax02-tomb-both-tenants (AX-02) also AX-07; sys00-control-ax03-refusal-writes (AX-03) also AX-07; sys00-control-ax06-post-on-replay (AX-06) also AX-11; sys00-control-ax08-erase-skips-derived (AX-08) also AX-10; sys00-control-ax11-check-before-lock (AX-11) also AX-11; sys00-control-ax12-receipt-early (AX-12) also AX-10). Measured by review 4 (review/review-4/semantics/specificity.txt); the rerun with the harness complement check records every violated axiom per check (RESULTS.json violates/also_violates).",
+   "evidence": [
+    "sem-control-sys00-r2",
+    "sem-mc-all-r2",
+    "sem-check-r2"
+   ]
+  }
+ ],
+ "new_findings": [
+  "F-C0670"
+ ]
+}

@@ -1,0 +1,35 @@
+[package]
+name = "ivg-proofs-d9"
+version = "0.1.0"
+edition = "2021"
+description = "Completion audit, PROOFS-D9 lane: the erase/redact/replay participant contracts generalised to three target predicates, ledger-bypassing writers and erasure rollback (IRIS dirty reads), composed in three Protocol2 levels; safety under named premises, progress under productive fairness, and controls for each new guard (proof debt D-9)."
+publish = false
+
+[dependencies]
+vstd = { version = "=0.0.0-2026-09-20-0158", features = ["std", "alloc"] }
+actors = { git = "file:///home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/playbook-reference-actors", rev = "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877" }
+
+[patch.crates-io]
+verus_builtin_macros = { git = "file:///home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/playbook-reference-actors", rev = "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877" }
+
+[features]
+# Safety controls for the NEW guards (D-9). Each removes one guard of the reviewed protocol and must make a refinement
+# proof fail in the file named here; each has a proved counterexample (src/cx_*.rs, compiled only with its feature).
+control_bypass_start = []      # src/protocol_top.rs  Start does not wait for open ledger-bypassing transactions
+control_bypass_erase = []      # src/protocol_top.rs  the eraser does not wait for open bypass transactions on its target
+control_liveness_dirty = []    # src/protocol_sys.rs  the liveness check runs at the call, unlocked, on uncommitted rows
+control_unaligned_rm = []      # src/protocol_sys.rs  a target whose record match is not inside its liveness predicate
+control_unaligned_sc = []      # src/protocol_sys.rs  a target whose statement cleanup is not inside its record match
+# Regression of an original guard in the generalised model (erasure is now four steps with rollback).
+control_f1201_erase_unlocked = []  # src/protocol_sys.rs  the eraser takes no ledger head lock
+# Progress-only control: a resume rewinds the run's cursor to the first record (LedgerRedact.cls:213). Every safety
+# proof must still verify; the progress proof must fail in src/progress.rs.
+control_progress_rewind = []
+
+[package.metadata.verus]
+verify = true
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(verus_only)', 'cfg(verus_keep_ghost)', 'cfg(verus_keep_ghost_body)'] }
+
+[workspace]

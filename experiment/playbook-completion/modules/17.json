@@ -1,0 +1,468 @@
+{
+ "module": "17",
+ "name": "OPS",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "lane": "breadth-c",
+ "entry_points": {
+  "total": 279,
+  "by_kind": {
+   "py-api": 214,
+   "os-method": 25,
+   "cli-command": 23,
+   "deploy": 17
+  },
+  "cli": [
+   "ivg (group)",
+   "ivg version / health / load / info",
+   "ivg schema init | status",
+   "ivg embeddings inventory",
+   "ivg fhir register | rebuild | sync | status | links | schedule (owned with 15)",
+   "ivg server start",
+   "ivg indexes list | rebuild"
+  ],
+  "deployment_paths": [
+   "docker-compose.yml (iris-community:2026.1)",
+   "docker/enterprise/* (licensed image, web gateway; VPN-only images, P-1716)",
+   "deploy/bolt-on/install.sh",
+   "deploy/docker/compose.yml + cpf/merge.conf",
+   "deploy/iris-build/Dockerfile",
+   "pyproject console scripts ivg, run-tests, networkx-loader"
+  ],
+  "lexically_uncovered": 132,
+  "classification_of_uncovered": {
+   "covered under another name (stated by behaviour or class)": "store_protocol.py (28) and the SQL adapter's algorithm/temporal dispatch methods (32): OPS states only routing and guards and leaves semantics to 05/10 (Scope); status.py EngineStatus helpers (10, OPS-B2.x); embedded.py cursor/native methods (10, OPS-B4.6.x); host.py get_string (3, OPS-B4.x); lazy_kg.py methods (8, LazyKG statements); Graph.KG.Meta (3) and Graph.KG.PyOps (10) by class name; admin.py list_active_queries/kill_query (OPS-B3.4/B3.5), active_queries_sql; _iris_compat.repair_iris_namespace (OPS-B4.7, P-1706); utils.is_list_error (OPS-T9.6, P-1715)",
+   "owned and stated by another module": "admin.py verify_sync/verify_graph (04), is_multigraph (02), remove_legacy_objects (01), arno_library_path/arno_status/get_centrality_warnings (10), PyOps.HybridSearch (07), errors.PowerIterationFailedConvergence.eigenvector (10)",
+   "genuinely omitted": "see omissions"
+  },
+  "omissions": [
+   {
+    "name": "IVGClient.execute_aql / AsyncIVGClient.execute_aql",
+    "file:line": "iris_vector_graph/sdk.py:124, :269",
+    "why": "client-side AQL translation then POST /api/cypher; no OPS statement"
+   },
+   {
+    "name": "IVGServerError.is_retryable",
+    "file:line": "iris_vector_graph/sdk.py:41-42",
+    "why": "public retry advice (any 5xx is retryable, writes included) - part of the HD-1702 protocol, stated nowhere"
+   },
+   {
+    "name": "dbapi_utils.insert_vector / create_ivfflat_index / normalize_vector",
+    "file:line": "iris_vector_graph/dbapi_utils.py:29, 101, 207",
+    "why": "public helpers; only vector_similarity_search and create_hnsw_index appear (as findings F-1705/F-1706), and normalize_vector only through HD-1704"
+   },
+   {
+    "name": "IRISGraphEngine.from_connect / from_wrapper / capabilities",
+    "file:line": "iris_vector_graph/engine.py:487, 517, 1742",
+    "why": "engine construction and the capability matrix (HD-1703) are in no module's Scope; OPS-D1 states connections without naming them"
+   },
+   {
+    "name": "console scripts run-tests and networkx-loader",
+    "file:line": "pyproject.toml:176-178",
+    "why": "declared install entry points; broken (F-C1701)"
+   },
+   {
+    "name": "ivg server start --workers",
+    "file:line": "iris_vector_graph/cli.py:419-441",
+    "why": "OPS-B1.12 states the option; that N>1 cannot start is stated nowhere (F-C1702)"
+   },
+   {
+    "name": "docker/enterprise web gateway (webgateway-init.sh, merge.cpf, compose service webgateway)",
+    "file:line": "docker/enterprise/",
+    "why": "the only recipe that fronts the REST dispatcher (Graph.KG.Service) with a web gateway; not stated"
+   }
+  ],
+  "cells_without_entry_point": [],
+  "notes": "Cell commands map: call method/percent method -> host.py/embedded.py classMethodValue; run SQL -> IRISGraphStore.execute_sql / EmbeddedCursor.execute; SQL begin/commit/rollback -> EmbeddedCursor.execute statements (F-1702) and DB-API; status/verify -> AdminMixin.status/verify_sync/verify_graph; run query/ping/read info/load file -> IVGClient.execute_cypher/health/server_info,schema,stats/load_ndjson; index handle build/status/search/insert/drop -> index_config.py/index_protocol.py handles over vec_/ivf_/plaid_/bm25_ engine methods."
+ },
+ "gates": [
+  {
+   "gate": "3.1 statements/cells",
+   "status": "open",
+   "reason": "54 cells defined; seven genuine omissions (entry_points.omissions)",
+   "evidence": [
+    "experiment/playbook-completion/models/breadth-c/inventory.json reconciliation.17"
+   ],
+   "remaining": "statements for the omissions"
+  },
+  {
+   "gate": "3.2 IRIS features relied on",
+   "status": "open",
+   "reason": "env_features below (P-1701..P-1716 restated with source lines; several checked live)",
+   "evidence": [
+    "c17-live-engine"
+   ],
+   "remaining": "IRIS contract placement"
+  },
+  {
+   "gate": "3.3 L1/L2/refinement/controls/progress",
+   "status": "open",
+   "reason": "M1 retry (client+server over ambiguous acknowledgement) model-checked: as-built violates at-most-once and honest-failure, reviewed passes, two controls caught, two witnesses; no Verus",
+   "evidence": [
+    "cmc-retry-as-built-once",
+    "cmc-retry-as-built-honest",
+    "cmc-retry-reviewed",
+    "cmc-retry-ctl-client",
+    "cmc-retry-ctl-server",
+    "cmc-retry-wit-read",
+    "cmc-retry-wit-write"
+   ],
+   "remaining": "L1/L2/refinement proofs"
+  },
+  {
+   "gate": "3.3a mechanisms and invariant write-sets",
+   "status": "open",
+   "reason": "the SQL adapter's execute_sql pass-through is a writer of any store (HD-1701; footprint shows a write with read_only=True) and is not a plan in semantics/writesets.json",
+   "evidence": [
+    "footprints/17.json",
+    "evidence/runs/ib-HD1701-readonly-flag.json"
+   ],
+   "remaining": "declare the pass-through as a plan or enforce read_only"
+  },
+  {
+   "gate": "3.4 statements/ownership/storage-order/declared-reads",
+   "status": "failed",
+   "reason": "declared reads: unscoped label/property reads cross graphs (F-1701); ownership: execute_sql writes any table (HD-1701); storage-order sites dispositioned (gates_by_id)",
+   "evidence": [
+    "c17-live-engine"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.5 handlers/lock plans/decoders/status maps",
+   "status": "failed",
+   "reason": "SDK status map: 401/403 -> IVGClientError only through _refused (sdk.py:195-201), load_ndjson/explain/AsyncIVGClient raise httpx.HTTPStatusError (F-1714); 5xx -> retry then IVGServerError(is_retryable) (sdk.py:214-219); 4xx other -> httpx.HTTPStatusError (raise_for_status); query error in a 200 body -> IVGServerError (sdk.py:118-121); ConnectError/Timeout -> retry then IVGClientError (sdk.py:223-228). CLI exit codes: click default 1 on exception, `ivg server start` exits 1 with --workers>1 (F-C1702). Decoders: SHOW CONSTRAINTS names (F-1707), STATUS_PARTS (F-1713), error root (F-1704)",
+   "evidence": [
+    "c17-live-server",
+    "c17-offline",
+    "c17-live-server-workers"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.6 composition conditions",
+   "status": "open",
+   "reason": "keys misreported (F-1707); capacity premises (500-id chunks for the ~1000-parameter limit, P-1708; <MAXSTRING> P-1707) inspected only",
+   "evidence": [
+    "c17-live-engine"
+   ],
+   "remaining": ""
+  },
+  {
+   "gate": "3.7 validation kinds (crash/reconnect/ambiguous ack, 1 vs N processes)",
+   "status": "failed",
+   "reason": "ambiguous acknowledgement reproduced live: one IVGClient call through a proxy that delayed the first reply past the client timeout created the node twice and answered success (c17-live-server, F-C1703), and in M1; the server's re-run after any exception is reproduced by module 16 (F-C1604); 1 vs N: the product's own N-process server path (`ivg server start --workers N`) does not start (F-C1702)",
+   "evidence": [
+    "c17-live-server",
+    "cmc-retry-as-built-once",
+    "c17-live-server-workers"
+   ],
+   "remaining": "a reconnect-after-commit world on the server side"
+  },
+  {
+   "gate": "3.8 account",
+   "status": "closed",
+   "reason": "all 14 original findings audited (F-1701..F-1714); new F-C1701..F-C1704",
+   "evidence": [
+    "findings/audit/17.json"
+   ],
+   "remaining": ""
+  }
+ ],
+ "gates_by_id": {
+  "3.1-cells": {
+   "status": "closed",
+   "evidence": [
+    "experiment/playbook-uplift/ontology/17-operations.md ## Cells (54 cells, none open)"
+   ],
+   "remaining": ""
+  },
+  "3.1-coverage": {
+   "status": "open",
+   "evidence": [
+    "models/breadth-c/inventory.json reconciliation.17",
+    "modules/17.json entry_points.omissions"
+   ],
+   "remaining": "statements for 7 omissions"
+  },
+  "3.1-intent": {
+   "status": "closed",
+   "evidence": [
+    "experiment/playbook-completion/decisions.md HD-1701..HD-1705"
+   ],
+   "remaining": ""
+  },
+  "3.2-coverage": {
+   "status": "open",
+   "evidence": [
+    "modules/17.json env_features"
+   ],
+   "remaining": "IRIS contract placement"
+  },
+  "3.3-L1": {
+   "status": "open",
+   "evidence": [
+    "models/breadth-c/src/retry.rs"
+   ],
+   "remaining": "explorer abstraction only; no Verus L1"
+  },
+  "3.3-L2": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "no L2"
+  },
+  "3.3-refinement": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "not proved"
+  },
+  "3.3-controls": {
+   "status": "open",
+   "evidence": [
+    "cmc-retry-ctl-client",
+    "cmc-retry-ctl-server"
+   ],
+   "remaining": "rejected by the explorer, not by a proof"
+  },
+  "3.3-model-check": {
+   "status": "closed",
+   "evidence": [
+    "cmc-retry-as-built-once",
+    "cmc-retry-as-built-honest",
+    "cmc-retry-reviewed",
+    "cmc-retry-ctl-client",
+    "cmc-retry-ctl-server",
+    "cmc-retry-wit-read",
+    "cmc-retry-wit-write"
+   ],
+   "remaining": "other operations (adapter routing, status probes) not modelled"
+  },
+  "3.3a-writesets": {
+   "status": "open",
+   "evidence": [
+    "footprints/17.json",
+    "evidence/runs/ib-HD1701-readonly-flag.json"
+   ],
+   "remaining": "execute_sql pass-through and dbapi_utils writers are not plans"
+  },
+  "3.4-statements": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "not proved"
+  },
+  "3.4-ownership": {
+   "status": "failed",
+   "evidence": [
+    "footprints/17.json execute_sql(read_only=True) INSERT",
+    "evidence/runs/ib-HD1701-readonly-flag.json"
+   ],
+   "remaining": "HD-1701: enforce read_only at a trusted boundary or refuse"
+  },
+  "3.4-storage-order": {
+   "status": "closed",
+   "evidence": [
+    "$RUN_DIR/checks/storage-order.json sites in module-17 files: admin.py:104 (active_queries_sql: TOP n of CURRENT_STATEMENTS, a documented bounded diagnostic sample, OPS-B3.4 'up to a limit'; no order promised - existence-only/sample, not a finding); admin.py:706 (docstring text: false positive); admin.py:733 (SELECT TOP 0 name(NULL): a prepare-time existence probe returning no rows - false positive); dbapi_utils.py:267 (ORDER BY score DESC is on the next f-string line :272 - false positive for row order; the direction is wrong for L2, F-1705); stores/iris_sql_store.py:2633 (ORDER BY score DESC at :2641 - false positive; ties at the k-th score are broken by storage order, an open note for HD-0603's defined tie behaviour, not a finding here)"
+   ],
+   "remaining": ""
+  },
+  "3.4-declared-reads": {
+   "status": "failed",
+   "evidence": [
+    "F-1701",
+    "c17-live-engine"
+   ],
+   "remaining": ""
+  },
+  "3.5-handlers": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "not proved"
+  },
+  "3.5-lockplans": {
+   "status": "open",
+   "evidence": [
+    "footprints/17.json (writers use write_txn; no LOCK)"
+   ],
+   "remaining": "no lock plan stated for the adapter"
+  },
+  "3.5-decoders": {
+   "status": "failed",
+   "evidence": [
+    "F-1714",
+    "F-1707",
+    "F-1713",
+    "F-1704",
+    "c17-live-server"
+   ],
+   "remaining": ""
+  },
+  "3.6-frame": {
+   "status": "open",
+   "evidence": [],
+   "remaining": ""
+  },
+  "3.6-row-permutation": {
+   "status": "open",
+   "evidence": [],
+   "remaining": ""
+  },
+  "3.6-keys": {
+   "status": "failed",
+   "evidence": [
+    "F-1707"
+   ],
+   "remaining": ""
+  },
+  "3.6-fk": {
+   "status": "closed",
+   "evidence": [
+    "iris_vector_graph/stores/iris_sql_store.py:1275-1290 (write_edges registers endpoints in the default graph first)",
+    "footprints/17.json store.write_edges journal"
+   ],
+   "remaining": "inspected + one journal"
+  },
+  "3.6-capacity": {
+   "status": "open",
+   "evidence": [
+    "iris_vector_graph/stores/iris_sql_store.py:1112-1114, 1303-1305 (500-id chunks, P-1708)",
+    "iris_vector_graph/host.py:52-77 (P-1707)"
+   ],
+   "remaining": "not measured"
+  },
+  "3.7-trace-replay": {
+   "status": "open",
+   "evidence": [
+    "c17-live-engine journals"
+   ],
+   "remaining": "not replayed through a machine"
+  },
+  "3.7-lock-log": {
+   "status": "not-applicable",
+   "evidence": [
+    "iris_vector_graph/stores/iris_sql_store.py (the adapter takes no LOCK; transactions only)"
+   ],
+   "remaining": ""
+  },
+  "3.7-mutation": {
+   "status": "open",
+   "evidence": [],
+   "remaining": "not done"
+  },
+  "3.8-findings-disposed": {
+   "status": "closed",
+   "evidence": [
+    "findings/audit/17.json"
+   ],
+   "remaining": ""
+  },
+  "5c-refusals": {
+   "status": "open",
+   "evidence": [
+    "F-1703 (strict namespace warns, X statement says raise)",
+    "F-1714"
+   ],
+   "remaining": "the remaining OPS X statements not audited one by one"
+  }
+ },
+ "env_features": [
+  {
+   "feature": "DB-API driver iris.dbapi.connect and Native API iris.createIRIS (classMethodValue, get, set, kill, isDefined, nextSubscript); one IRIS process per connection (P-1704)",
+   "source": "iris_vector_graph/host.py; stores/iris_sql_store.py; pyproject.toml:41-48",
+   "used_by": "every client-side entry point",
+   "checked": "live (every c17 run)"
+  },
+  {
+   "feature": "DB-API autocommit True by default; SQL START TRANSACTION/COMMIT/ROLLBACK and $TLEVEL probe",
+   "source": "iris_vector_graph/_write_txn.py:90-277",
+   "used_by": "write_txn, refuse_in_caller_transaction",
+   "checked": "live (autocommit attribute; caller transaction in c18-live-dirty-export)"
+  },
+  {
+   "feature": "Embedded Python iris.sql / iris.cls / iris.gref in-process (P-1705) and '' bound as NULL (P-1709)",
+   "source": "iris_vector_graph/embedded.py:136-150, 188-190",
+   "used_by": "EmbeddedConnection",
+   "checked": "not (needs irispython inside the container)"
+  },
+  {
+   "feature": "IRIS long-string limit 3,641,144 (<MAXSTRING>, <STRINGSTACK>) (P-1707)",
+   "source": "iris_vector_graph/host.py:52-77",
+   "used_by": "host replies",
+   "checked": "not"
+  },
+  {
+   "feature": "~1000 bound parameters per statement (P-1708)",
+   "source": "iris_vector_graph/stores/iris_sql_store.py:1112-1114, 1303-1305",
+   "used_by": "500-id chunking",
+   "checked": "not"
+  },
+  {
+   "feature": "VECTOR_L2 is a distance; VECTOR_COSINE / VECTOR_DOT_PRODUCT similarities; TO_VECTOR(text, dtype, dim); VECTOR(DOUBLE, n) columns (P-1710)",
+   "source": "iris_vector_graph/dbapi_utils.py:238-275; stores/iris_sql_store.py:2633-2645",
+   "used_by": "vector_similarity_search, execute_knn_vec",
+   "checked": "live c17-live-vec: VECTOR_L2 does not exist on Community 2026.1 (P-1710 does not hold here); VECTOR_COSINE works"
+  },
+  {
+   "feature": "CREATE INDEX ... AS HNSW(M, efConstruction, Distance) DDL",
+   "source": "iris_vector_graph/dbapi_utils.py:170-204",
+   "used_by": "create_hnsw_index",
+   "checked": "live c17-live-engine (statement captured)"
+  },
+  {
+   "feature": "INFORMATION_SCHEMA.ROUTINES visibility and Prepare SQLCODE -359/-99/-357 (P-1711)",
+   "source": "iris_vector_graph/_engine/admin.py:705-760",
+   "used_by": "status() routines probe",
+   "checked": "not"
+  },
+  {
+   "feature": "INFORMATION_SCHEMA.CURRENT_STATEMENTS / STATEMENTS and %SYSTEM.SYS.KillProcess via SQL",
+   "source": "iris_vector_graph/_engine/admin.py:94-107, 938-966",
+   "used_by": "list_active_queries, kill_query, /admin/queries",
+   "checked": "not"
+  },
+  {
+   "feature": "INFORMATION_SCHEMA.TABLE_CONSTRAINTS",
+   "source": "(oracle used by lane C for F-1707)",
+   "used_by": "check only",
+   "checked": "live"
+  },
+  {
+   "feature": "%Dictionary.CompiledMethod/CompiledClass/CompiledStorage reads (compiled_method_exists, Meta.cls HNSW listing)",
+   "source": "iris_vector_graph/stores/iris_sql_store.py:1305-1318; iris_src/src/Graph/KG/Meta.cls:37-60",
+   "used_by": "Eraser method probe, status index inventory",
+   "checked": "not"
+  },
+  {
+   "feature": "<LIST ERROR> after another connection's %BuildIndices (P-1715)",
+   "source": "iris_vector_graph/utils.py:114-130",
+   "used_by": "error classification",
+   "checked": "not"
+  },
+  {
+   "feature": "%SYS.Namespace query / Create over SQL and Native API (bolt-on installer)",
+   "source": "deploy/bolt-on/install.sh:36-49",
+   "used_by": "deploy recipe",
+   "checked": "not (would create a namespace)"
+  },
+  {
+   "feature": "Community core limit and ignored licence key (P-1702); %AI classes only on AI builds (P-1703)",
+   "source": "docker-compose.yml:17-22; docs/ADMIN_GUIDE.md section 4",
+   "used_by": "deploy recipes",
+   "checked": "P-1703 live via setup's skip of the MCP classes ($RUN_DIR/setup/deploy-AUDITC.err)"
+  },
+  {
+   "feature": "VECTOR_L2 absent on IRIS Community 2026.1 (SQLCODE -359)",
+   "source": "iris_vector_graph/dbapi_utils.py:256-272",
+   "used_by": "vector_similarity_search / create_hnsw_index with metric L2",
+   "checked": "live c17-live-vec"
+  }
+ ],
+ "blockers": [
+  "F-1702 end-to-end inside IRIS: blocked-access (iris_vector_graph not installed in the container's irispython; installing it changes the container)",
+  "F-1708/F-1710 recipes not executed: they create namespaces/users or build images (outside the lane's scope)",
+  "traces/journal.py cannot read journaled $vector values (<VECTOR> in Base64Encode): dbapi_utils.insert_vector not journal-validated"
+ ],
+ "findings_summary": {
+  "reproduced-live": 10,
+  "reproduced-test": 4,
+  "confirmed-source": 4
+ }
+}

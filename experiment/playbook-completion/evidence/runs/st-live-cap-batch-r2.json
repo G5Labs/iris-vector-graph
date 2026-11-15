@@ -1,0 +1,15 @@
+{
+  "command": "locks.sh iris python experiment/playbook-completion/structural/capkeys/cap_batch.py $RUN_DIR/structural/capkeys/cap-batch-r2.json 08-unwind 15-prov-long",
+  "experiment_head": "00206ce6b39ee44140ab17aa7dfbb0ac46186f4d",
+  "id": "st-live-cap-batch-r2",
+  "kind": "live",
+  "lane": "structural",
+  "log": "$RUN_DIR/structural/capkeys/cap-batch-r2.json",
+  "log_bytes": 1626,
+  "log_sha256": "e6e700d676b524d1f78fe69d7cee9497a981964fcdb485a248fd65fbc645c5dc",
+  "observes": "AUDITD: 08 Cypher UNWIND of 3,000 rows creates 3,000 nodes; the same with a 64,001-char value in the last row raises GraphWriteError SQLCODE -104 'nothing written' and leaves 0 nodes and 0 props (all or nothing holds). 15 with 40,000 temporal edges whose ids carry 40 extra characters (window JSON past 3,641,144): get_edges_in_window raises TemporalWindowError naming the limit and iter_edges_in_window (paged) returns 40,000 (documented, module 05); prov_export of the whole window, prov_as_dict of ONE edge and prov_export_from_cypher of ONE node all raise RuntimeError '<MAXSTRING>QueryWindow+27^Graph.KG.TemporalIndex.1'; prov_export of a one-second window succeeds (1 activity)",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T12:14:01+00:00",
+  "result": "fail"
+}

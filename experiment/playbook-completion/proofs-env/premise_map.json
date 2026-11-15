@@ -1,0 +1,1049 @@
+{
+ "generated_by": "proofs-env/tools/premise_map.py",
+ "closure_conditions": 72,
+ "closure_verdicts": {
+  "proved": 9,
+  "shown-false": 3,
+  "outside-contract": 9,
+  "progress": 36,
+  "proved-in-part": 10,
+  "product-discipline": 5
+ },
+ "all_verdicts": {
+  "proved": 12,
+  "shown-false": 3,
+  "outside-contract": 9,
+  "progress": 36,
+  "proved-in-part": 10,
+  "product-discipline": 8,
+  "permitted-not-implied": 1
+ },
+ "rows": [
+  {
+   "id": "proof-premise:TRUST:changed:P-0001 steps are transactions (rollback on stop)",
+   "condition": "a stopped process's open transaction is rolled back (every level) [engine]",
+   "closure_status": "validated",
+   "source": "closure.json",
+   "verdict": "proved",
+   "lemmas": [
+    "premises::premise_trust_p_0001"
+   ],
+   "controls": [
+    "ctl_stop_commits",
+    "ctl_stop_top_level_only"
+   ],
+   "note": "the 'every level' reading now rests on an observation: round env-estop-gap (3 stops at $TLEVEL 2 without a commit) kills the Verus mutant stop-rolls-back-top-level-only (proofs-env-mutants-r2); before it, no recorded case discriminated it (stop-nested-levels commits its inner level before the stop)"
+  },
+  {
+   "id": "proof-premise:TRUST:changed:P-0003 unlock inside a transaction is deferred",
+   "condition": "an unlock inside a transaction takes effect at the outermost end [engine]",
+   "closure_status": "validated",
+   "source": "closure.json",
+   "verdict": "proved",
+   "lemmas": [
+    "premises::premise_trust_p_0003"
+   ],
+   "controls": [
+    "ctl_unlock_immediate"
+   ],
+   "note": ""
+  },
+  {
+   "id": "proof-premise:TRUST:changed:P-1201 a SQL delete waits for a row another transaction holds",
+   "condition": "a DELETE/UPDATE waits for a row another open transaction inserted or updated [engine]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "proved",
+   "lemmas": [
+    "premises::premise_trust_p_1201",
+    "premises::premise_d9_p_d9_2_wait"
+   ],
+   "controls": [
+    "ctl_dml_ignores_row_locks",
+    "ctl_row_lock_statement_only"
+   ],
+   "note": "for a row another open transaction inserted (premise_trust_p_1201) or updated (premise_d9_p_d9_2_wait); the INSERT over an uncommitted DELETE stays the contract's Freedom (premise_d9_p_d9_2_freedom)"
+  },
+  {
+   "id": "proof-premise:TRUST:changed:Txn.cls:8 / _write_txn.py:15: SQL COMMIT and ROLLBACK end every level",
+   "condition": "product premise 'measured on 2026.3': SQL COMMIT/ROLLBACK end every level [engine]",
+   "closure_status": "shown-false",
+   "source": "closure.json",
+   "verdict": "shown-false",
+   "lemmas": [
+    "premises::premise_trust_txn_cls_8_false"
+   ],
+   "controls": [
+    "ctl_sql_commit_ends_all"
+   ],
+   "note": "SQL COMMIT at a nested level leaves a transaction open on this engine"
+  },
+  {
+   "id": "proof-premise:TRUST:new:Durability of an acknowledged commit: a revision the ledger reports as committed survives an instance crash, which needs IRIS SynchCommit=1 or a journal flush before the acknowledgement",
+   "condition": "an acknowledged revision survives an instance crash [engine]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "outside-contract",
+   "lemmas": [],
+   "controls": [],
+   "note": "journal restore and crash recovery are outside the contract's subset"
+  },
+  {
+   "id": "proof-premise:TRUST:new:Embedded SQL (&sql) behaves as dynamic SQL for the clauses used",
+   "condition": "embedded SQL obeys the contract's dynamic-SQL clauses [engine]",
+   "closure_status": "validated",
+   "source": "closure.json",
+   "verdict": "outside-contract",
+   "lemmas": [],
+   "controls": [],
+   "note": "embedded SQL (contract-2 E-1) is outside the Verus subset: the Verus theorems are about the dynamic statements; E-1 links the pin's embedded statements to them by executable validation (env2-e1-r1); the 67 E-1 cases are reported as outside the subset by the differential"
+  },
+  {
+   "id": "proof-premise:TRUST:new:Enabled steps are eventually scheduled; the operator re-runs after a stop; the ledger is (re-)enabled; every erasure releases its lock",
+   "condition": "progress premises of proofs/src/progress.rs [progress]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "progress",
+   "lemmas": [
+    "premises::premise_proofs_pf_3_commit"
+   ],
+   "controls": [],
+   "note": "scheduling and operator: not implied; 'releases its lock' at its end is proved (premise_proofs_pf_3_commit)"
+  },
+  {
+   "id": "proof-premise:TRUST:new:M07-L4 progress: the queue worker is weakly fair; a stopped run is resumed 3 - cursor more times",
+   "condition": "M07-L4 fairness premises of proofs-mech [progress]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "progress",
+   "lemmas": [],
+   "controls": [],
+   "note": "scheduling / operator / fairness: the contract has no liveness clause"
+  },
+  {
+   "id": "proof-premise:TRUST:new:Writers go quiet, the operator resumes, nothing is stopped forever, erasure may be repeated",
+   "condition": "the core models' AG EF premises [progress]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "progress",
+   "lemmas": [],
+   "controls": [],
+   "note": "scheduling / operator / fairness: the contract has no liveness clause"
+  },
+  {
+   "id": "proof-premise:TRUST:trusted:IRIS environment contract",
+   "condition": "the executable IRIS contract is trusted only inside its stated semantic subset [engine]",
+   "closure_status": "validated",
+   "source": "closure.json",
+   "verdict": "proved-in-part",
+   "lemmas": [
+    "exec::e_run",
+    "exec::e_step"
+   ],
+   "controls": [],
+   "note": "the Verus subset is linked mechanically: the exec model is verified against the specification and agrees with the executable contract on every recorded in-subset case, every observation inside (differential); outside the subset (X-*, E-1, X2) the executable contract stays trusted as before"
+  },
+  {
+   "id": "proof-premise:models-core:MA-1",
+   "condition": "Writers become quiet: the AG EF path adds no commit or bypass write during a redaction [progress]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "progress",
+   "lemmas": [],
+   "controls": [],
+   "note": "scheduling / operator / fairness: the contract has no liveness clause"
+  },
+  {
+   "id": "proof-premise:models-core:MA-2",
+   "condition": "The operator resumes stopped or paused runs (calls are unbounded) [progress]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "progress",
+   "lemmas": [],
+   "controls": [],
+   "note": "scheduling / operator / fairness: the contract has no liveness clause"
+  },
+  {
+   "id": "proof-premise:models-core:MA-3",
+   "condition": "No process is stopped forever: the AG EF path contains no stop [progress]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "progress",
+   "lemmas": [],
+   "controls": [],
+   "note": "scheduling / operator / fairness: the contract has no liveness clause"
+  },
+  {
+   "id": "proof-premise:models-core:MA-4",
+   "condition": "The operator may erase a target again when a write made it live (erasures unbounded) [progress]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "progress",
+   "lemmas": [],
+   "controls": [],
+   "note": "scheduling / operator / fairness: the contract has no liveness clause"
+  },
+  {
+   "id": "proof-premise:models-core:MA-5",
+   "condition": "IRIS semantics (dirty reads, value rollback, row-lock waits, stop rollback and lock release) come from the validated contract [engine]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "proved",
+   "lemmas": [
+    "premises::premise_d1f_p_u2_false",
+    "premises::premise_core_ma_5_rollback_other",
+    "premises::premise_trust_p_1201",
+    "premises::premise_trust_p_0001",
+    "premises::premise_proofs_pf_3"
+   ],
+   "controls": [
+    "ctl_no_dirty_reads",
+    "ctl_rollback_physical",
+    "ctl_dml_ignores_row_locks",
+    "ctl_row_lock_statement_only",
+    "ctl_stop_commits",
+    "ctl_stop_top_level_only",
+    "ctl_lock_wait_never_granted"
+   ],
+   "note": "dirty reads, value rollback, row-lock waits, stop rollback, lock release: each a theorem"
+  },
+  {
+   "id": "proof-premise:models-core:MA-6",
+   "condition": "The delete case of dirty reads (a reader sees another txn's uncommitted DELETE) is the general Visibility clause; only inserts are decided cases [engine]",
+   "closure_status": "validated",
+   "source": "closure.json",
+   "verdict": "proved",
+   "lemmas": [
+    "premises::premise_core_ma_6"
+   ],
+   "controls": [
+    "ctl_select_committed_only"
+   ],
+   "note": ""
+  },
+  {
+   "id": "proof-premise:models-core:P-1306",
+   "condition": "Commits pause long enough for a redaction run to reach the last record (the scan follows the tail) [progress]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "progress",
+   "lemmas": [],
+   "controls": [],
+   "note": "scheduling / operator / fairness: the contract has no liveness clause"
+  },
+  {
+   "id": "proof-premise:proofs-breadth:P-A2",
+   "condition": "No two open writer transactions on one edge row (the edge row's lock serializes them). [engine]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "proved-in-part",
+   "lemmas": [
+    "premises::premise_breadth_p_a2",
+    "premises::premise_d9_p_d9_2_insert_fails",
+    "premises::premise_d9_p_d9_2_freedom"
+   ],
+   "controls": [
+    "ctl_dml_ignores_row_locks",
+    "ctl_row_lock_statement_only",
+    "ctl_insert_dup_waits",
+    "ctl_freedom_wait_only"
+   ],
+   "note": "proved for UPDATE / DELETE of an existing edge row: the second writer waits (premise_breadth_p_a2). An INSERT of a visible key fails at once (-119); an INSERT over another's uncommitted DELETE may proceed under a new row id (the Freedom) -- then the two writers hold different rows, so 'one edge row' still has one open writer"
+  },
+  {
+   "id": "proof-premise:proofs-breadth:P-A6",
+   "condition": "A rollback restores the before-images of the nodes its transaction set or killed; $Increment is not undone. [engine]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "proved-in-part",
+   "lemmas": [
+    "premises::premise_breadth_p_a6_kill",
+    "premises::premise_breadth_p_a6_incr",
+    "premises::premise_core_ma_5_rollback_other",
+    "gen::lemma_fresh_set_rollback"
+   ],
+   "controls": [
+    "ctl_kill_not_logged",
+    "ctl_incr_rolled_back",
+    "ctl_rollback_physical"
+   ],
+   "note": "proved: a rollback restores the before-image of a node the transaction set or killed when nobody wrote it since (lemma_fresh_set_rollback, premise_breadth_p_a6_kill); $INCREMENT is not undone (premise_breadth_p_a6_incr). Not as worded unconditionally: a node another process wrote since keeps that write (E-ROLLBACK-OTHER, premise_core_ma_5_rollback_other) -- the models' writers are serialized by the row lock (P-A2), so this does not arise there for rows; for globals written without a lock it does"
+  },
+  {
+   "id": "proof-premise:proofs-breadth:P-L1",
+   "condition": "A new ledger revision id is fresh: CreateGUID never returns an id an existing revision already carries. [engine]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "outside-contract",
+   "lemmas": [],
+   "controls": [],
+   "note": "CreateGUID freshness: no contract clause (outside-premise family P2-RANDOM)"
+  },
+  {
+   "id": "proof-premise:proofs-breadth:P-L3",
+   "condition": "Every L2 step is one transaction under the locks the code takes, with IRIS nesting, deferred unlock, stop rollback and dirty reads. [engine]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "product-discipline",
+   "lemmas": [
+    "premises::premise_breadth_p_l3",
+    "premises::premise_head_lock_init"
+   ],
+   "controls": [
+    "ctl_unlock_immediate",
+    "ctl_stop_commits",
+    "ctl_stop_top_level_only",
+    "ctl_kill_not_logged"
+   ],
+   "note": "proved under `disc` for the lock the code takes (inv_h inductive; the step atomic). That the code takes the locks the model assumes is D-3/D-4 (P-L4: Disable takes no head lock -- violated at the pin)"
+  },
+  {
+   "id": "proof-premise:proofs-breadth:P-L5",
+   "condition": "A governed write waits for the row locks of an open nested ledger commit. [engine]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "proved",
+   "lemmas": [
+    "premises::premise_breadth_p_l5"
+   ],
+   "controls": [
+    "ctl_dml_ignores_row_locks",
+    "ctl_row_lock_statement_only"
+   ],
+   "note": ""
+  },
+  {
+   "id": "proof-premise:proofs-d1b:P-S7",
+   "condition": "Revision ids identify revisions (CreateGUID is fresh), so the prefix check over ids compares histories [engine]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "outside-contract",
+   "lemmas": [],
+   "controls": [],
+   "note": "CreateGUID freshness: no contract clause (outside-premise family P2-RANDOM)"
+  },
+  {
+   "id": "proof-premise:proofs-d1c:P-B2",
+   "condition": "Nested transactions: an inner TCOMMIT only lowers $TLEVEL and an outer rollback undoes inner work [engine]",
+   "closure_status": "validated",
+   "source": "closure.json",
+   "verdict": "proved",
+   "lemmas": [
+    "premises::premise_d1c_p_b2"
+   ],
+   "controls": [],
+   "note": "no control: the specification has no alternative reading of an inner TCOMMIT (the contract's nesting mutant concerns TROLLBACK 1, see premise_contract2_s1_partial)"
+  },
+  {
+   "id": "proof-premise:proofs-d1c:P-L3",
+   "condition": "Statement ids and edge_ids are fresh (stmtNext and the %ID counter only grow) [engine]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "proved-in-part",
+   "lemmas": [
+    "premises::premise_d1c_p_l3_counter",
+    "premises::premise_proofs_p_c01"
+   ],
+   "controls": [
+    "ctl_incr_rolled_back",
+    "ctl_unlock_immediate",
+    "ctl_stop_commits",
+    "ctl_stop_top_level_only",
+    "ctl_kill_not_logged"
+   ],
+   "note": "a counter only $INCREMENT writes never goes back (premise_d1c_p_l3_counter); stmtNext is a SET inside the head-locked commit (LedgerApply.cls:162-163): committed values change only at the holder's commit (premise_proofs_p_c01, under `disc`); the SQL %ID counter is outside the contract"
+  },
+  {
+   "id": "proof-premise:proofs-d1c:P-T3",
+   "condition": "The bucket's writes are not rolled back [engine]",
+   "closure_status": "validated",
+   "source": "closure.json",
+   "verdict": "proved",
+   "lemmas": [
+    "premises::premise_d1c_p_t3"
+   ],
+   "controls": [
+    "ctl_incr_rolled_back"
+   ],
+   "note": ""
+  },
+  {
+   "id": "proof-premise:proofs-d1d:P-R3",
+   "condition": "A process's caller identity is its Native API session's user. [engine]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "outside-contract",
+   "lemmas": [],
+   "controls": [],
+   "note": "caller identity (E-CALLER) is outside the Verus subset"
+  },
+  {
+   "id": "proof-premise:proofs-d1e:P-C5",
+   "condition": "Writes commit as they are made: no reader sees an uncommitted write and none is rolled back. [engine]",
+   "closure_status": "shown-false",
+   "source": "closure.json",
+   "verdict": "shown-false",
+   "lemmas": [
+    "premises::premise_d1e_p_c5_false"
+   ],
+   "controls": [
+    "ctl_no_dirty_reads"
+   ],
+   "note": ""
+  },
+  {
+   "id": "proof-premise:proofs-d1e:P-M2",
+   "condition": "Each SQL statement and global operation is one atomic step; a Cypher statement reads the graph mode once. [engine]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "outside-contract",
+   "lemmas": [],
+   "controls": [],
+   "note": "statement granularity: one SQL statement / global operation per step is the contract's own granularity (validated as observed), not a consequence; Cypher's mode read is product code"
+  },
+  {
+   "id": "proof-premise:proofs-d1f:P-F4",
+   "condition": "The sync lock admits one sync (or rebuild/redo) per FHIR graph; a killed holder's lock is freed by IRIS (SYS-P4) [engine]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "proved-in-part",
+   "lemmas": [
+    "premises::premise_d1f_p_f4",
+    "headlock::theorem_inv_h"
+   ],
+   "controls": [
+    "ctl_lock_wait_never_granted"
+   ],
+   "note": "a killed holder's lock is freed and a waiter is granted it (premise_d1f_p_f4); mutual exclusion of the sync lock is the lock_ok part of the inductive invariant (theorem_inv_h); that the sync takes it is the product's"
+  },
+  {
+   "id": "proof-premise:proofs-d1f:P-U2",
+   "condition": "Readers see committed state only, so a reviewed unit of work is visible whole [engine]",
+   "closure_status": "shown-false",
+   "source": "closure.json",
+   "verdict": "shown-false",
+   "lemmas": [
+    "premises::premise_d1f_p_u2_false"
+   ],
+   "controls": [
+    "ctl_no_dirty_reads"
+   ],
+   "note": ""
+  },
+  {
+   "id": "proof-premise:proofs-d1f:PF-1",
+   "condition": "FHIR progress: no erase or durable removal of the watched graph happens during the watch [progress]",
+   "closure_status": "assumed",
+   "source": "closure.json",
+   "verdict": "progress",
+   "lemmas": [],
+   "controls": [],
+   "note": "scheduling / operator / fairness: the contract has no liveness clause"
+  },
+  {
+   "id": "proof-premise:proofs-d1f:PF-2",
+   "condition": "FHIR progress: a sync is started again after each stop (by the task, which counts busy as success, INT-F6.2, or by an operator) [progress]",
+   "closure_status": "assumed",
+   "source": "closure.json",
+   "verdict": "progress",
+   "lemmas": [],
+   "controls": [],
+   "note": "scheduling / operator / fairness: the contract has no liveness clause"
+  },
+  {
+   "id": "proof-premise:proofs-d1f:PF-3",
+   "condition": "FHIR progress: the next key is readable, or an operator repairs it (a failed batch never advances, HD-1504) [progress]",
+   "closure_status": "assumed",
+   "source": "closure.json",
+   "verdict": "progress",
+   "lemmas": [],
+   "controls": [],
+   "note": "scheduling / operator / fairness: the contract has no liveness clause"
+  },
+  {
+   "id": "proof-premise:proofs-d1f:PF-4",
+   "condition": "FHIR progress: a process with an enabled step (sync start, batch, pass, task tick) is eventually scheduled [progress]",
+   "closure_status": "assumed",
+   "source": "closure.json",
+   "verdict": "progress",
+   "lemmas": [],
+   "controls": [],
+   "note": "scheduling / operator / fairness: the contract has no liveness clause"
+  },
+  {
+   "id": "proof-premise:proofs-d9:P-D9-1",
+   "condition": "Commits, replays, Start, batches, Final: one atomic head-locked txn each (a stopped one leaves nothing); erasures and bypass writes stay open and may roll back [engine]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "product-discipline",
+   "lemmas": [
+    "premises::premise_d9_p_d9_1",
+    "premises::premise_d9_p_d9_1_may_roll_back",
+    "premises::premise_d9_g_l_reader_under_lock",
+    "premises::premise_head_lock_init"
+   ],
+   "controls": [
+    "ctl_unlock_immediate",
+    "ctl_stop_commits",
+    "ctl_stop_top_level_only",
+    "ctl_kill_not_logged"
+   ],
+   "note": "proved under the discipline `disc` (every write to the ledger's globals by the exclusive head-lock holder inside its transaction, no immediate unlock of the head lock, no $INCREMENT on them): inv_h is inductive over every operation of every process and holds initially; the holder's step is atomic (all or none at its end, none after a stop); readers under the lock see committed values; erasures and bypass writes may roll back (premise_d9_p_d9_1_may_roll_back). A commit nested in a caller's transaction (Ledger.cls:390-396) stopped with both levels open leaves nothing: the clause's every-level reading is observed (env-estop-gap, proofs-env-mutants-r2). That the product's code follows `disc` is code correspondence (D-3/D-4): EraseGraph takes no head lock at the pin (F-1201) -- the pin's violation, not a contract gap"
+  },
+  {
+   "id": "proof-premise:proofs-d9:P-D9-2",
+   "condition": "A ledger commit waits for a row an open bypass txn wrote; a bypass write waits for a row the open erasure deleted (insert over uncommitted delete: a Freedom) [engine]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "proved-in-part",
+   "lemmas": [
+    "premises::premise_d9_p_d9_2_wait",
+    "premises::premise_d9_p_d9_2_insert_fails",
+    "premises::premise_d9_p_d9_2_freedom"
+   ],
+   "controls": [
+    "ctl_dml_ignores_row_locks",
+    "ctl_row_lock_statement_only",
+    "ctl_insert_dup_waits",
+    "ctl_freedom_wait_only"
+   ],
+   "note": "proved: a commit's UPDATE / DELETE of a row an open bypass transaction wrote waits (premise_d9_p_d9_2_wait). Not as worded for an INSERT of a key the bypass inserted: the contract implies an immediate -119, not a wait (premise_d9_p_d9_2_insert_fails). Permitted-not-implied: a bypass INSERT over the open erasure's uncommitted DELETE may wait or proceed (premise_d9_p_d9_2_freedom); the crates' wait is a sharpening (the observed branch)"
+  },
+  {
+   "id": "proof-premise:proofs-d9:PF-1",
+   "condition": "The operator re-runs the redaction after a stop (as in proofs/) [progress]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "progress",
+   "lemmas": [],
+   "controls": [],
+   "note": "scheduling / operator / fairness: the contract has no liveness clause"
+  },
+  {
+   "id": "proof-premise:proofs-d9:PF-2",
+   "condition": "The ledger is enabled (re-enabled after a disable) while the run needs it [progress]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "progress",
+   "lemmas": [],
+   "controls": [],
+   "note": "scheduling / operator / fairness: the contract has no liveness clause"
+  },
+  {
+   "id": "proof-premise:proofs-d9:PF-3",
+   "condition": "Every erasure ends: its commit or rollback releases the head lock [progress]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "progress",
+   "lemmas": [
+    "premises::premise_proofs_pf_3",
+    "premises::premise_proofs_pf_3_commit"
+   ],
+   "controls": [
+    "ctl_lock_wait_never_granted"
+   ],
+   "note": "that every erasure ENDS (and that a stopped holder is stopped) is scheduling: not implied. What the contract implies is proved: its commit or rollback releases the holds it deferred (premise_proofs_pf_3_commit) and a waiter on a stopped holder's lock is granted it (premise_proofs_pf_3)"
+  },
+  {
+   "id": "proof-premise:proofs-d9:PF-4",
+   "condition": "An enabled step is eventually scheduled (as in proofs/) [progress]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "progress",
+   "lemmas": [],
+   "controls": [],
+   "note": "scheduling / operator / fairness: the contract has no liveness clause"
+  },
+  {
+   "id": "proof-premise:proofs-d9:PF-5",
+   "condition": "Every bypass transaction ends (a resume's Start waits for them, G-B) [progress]",
+   "closure_status": "assumed",
+   "source": "closure.json",
+   "verdict": "progress",
+   "lemmas": [],
+   "controls": [],
+   "note": "scheduling / operator / fairness: the contract has no liveness clause"
+  },
+  {
+   "id": "proof-premise:proofs-d9:PF-6",
+   "condition": "Eventually nothing t.lv selects is live when Final runs (no bypass writer or commit into lv minus rm keeps it live), or the operator erases t again [progress]",
+   "closure_status": "shown-false",
+   "source": "closure.json",
+   "verdict": "progress",
+   "lemmas": [],
+   "controls": [],
+   "note": "shown false at the pin (F-C1307): product behaviour, not the contract"
+  },
+  {
+   "id": "proof-premise:proofs-d9b:P-D9b-2",
+   "condition": "idemRedacted is keyed by sha256(key), modelled by the key itself (no collision) [engine]",
+   "closure_status": "assumed",
+   "source": "closure.json",
+   "verdict": "outside-contract",
+   "lemmas": [],
+   "controls": [],
+   "note": "sha256 collision freedom: outside (P2-HASH)"
+  },
+  {
+   "id": "proof-premise:proofs-d9b:PF-1",
+   "condition": "The operator re-runs the redaction after a stop (as in proofs/) [progress]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "progress",
+   "lemmas": [],
+   "controls": [],
+   "note": "scheduling / operator / fairness: the contract has no liveness clause"
+  },
+  {
+   "id": "proof-premise:proofs-d9b:PF-2",
+   "condition": "The ledger is enabled (re-enabled after a disable) while the run needs it [progress]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "progress",
+   "lemmas": [],
+   "controls": [],
+   "note": "scheduling / operator / fairness: the contract has no liveness clause"
+  },
+  {
+   "id": "proof-premise:proofs-d9b:PF-3",
+   "condition": "Every erasure ends: its commit or rollback releases the head lock [progress]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "progress",
+   "lemmas": [
+    "premises::premise_proofs_pf_3",
+    "premises::premise_proofs_pf_3_commit"
+   ],
+   "controls": [
+    "ctl_lock_wait_never_granted"
+   ],
+   "note": "that every erasure ENDS (and that a stopped holder is stopped) is scheduling: not implied. What the contract implies is proved: its commit or rollback releases the holds it deferred (premise_proofs_pf_3_commit) and a waiter on a stopped holder's lock is granted it (premise_proofs_pf_3)"
+  },
+  {
+   "id": "proof-premise:proofs-d9b:PF-4",
+   "condition": "An enabled step is eventually scheduled (as in proofs/) [progress]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "progress",
+   "lemmas": [],
+   "controls": [],
+   "note": "scheduling / operator / fairness: the contract has no liveness clause"
+  },
+  {
+   "id": "proof-premise:proofs-d9b:PF-5",
+   "condition": "Every bypass transaction ends (a resume's Start waits for them, G-B) [progress]",
+   "closure_status": "assumed",
+   "source": "closure.json",
+   "verdict": "progress",
+   "lemmas": [],
+   "controls": [],
+   "note": "scheduling / operator / fairness: the contract has no liveness clause"
+  },
+  {
+   "id": "proof-premise:proofs-d9b:PF-6",
+   "condition": "Eventually nothing t.lv selects is live when Final runs (no bypass writer or commit into lv minus rm keeps it live), or the operator erases t again [progress]",
+   "closure_status": "shown-false",
+   "source": "closure.json",
+   "verdict": "progress",
+   "lemmas": [],
+   "controls": [],
+   "note": "shown false at the pin (F-C1307): product behaviour"
+  },
+  {
+   "id": "proof-premise:proofs-d9c:P-D9-1",
+   "condition": "Commits, replays, Start, batches, Final: one atomic head-locked txn each (a stopped one leaves nothing); erasures and bypass writes stay open and may roll back [engine]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "product-discipline",
+   "lemmas": [
+    "premises::premise_d9_p_d9_1",
+    "premises::premise_d9_p_d9_1_may_roll_back",
+    "premises::premise_d9_g_l_reader_under_lock",
+    "premises::premise_head_lock_init"
+   ],
+   "controls": [
+    "ctl_unlock_immediate",
+    "ctl_stop_commits",
+    "ctl_stop_top_level_only",
+    "ctl_kill_not_logged"
+   ],
+   "note": "proved under the discipline `disc` (every write to the ledger's globals by the exclusive head-lock holder inside its transaction, no immediate unlock of the head lock, no $INCREMENT on them): inv_h is inductive over every operation of every process and holds initially; the holder's step is atomic (all or none at its end, none after a stop); readers under the lock see committed values; erasures and bypass writes may roll back (premise_d9_p_d9_1_may_roll_back). A commit nested in a caller's transaction (Ledger.cls:390-396) stopped with both levels open leaves nothing: the clause's every-level reading is observed (env-estop-gap, proofs-env-mutants-r2). That the product's code follows `disc` is code correspondence (D-3/D-4): EraseGraph takes no head lock at the pin (F-1201) -- the pin's violation, not a contract gap"
+  },
+  {
+   "id": "proof-premise:proofs-d9c:P-D9-2",
+   "condition": "A ledger commit waits for a row an open bypass txn wrote; a bypass write waits for a row the open erasure deleted (insert over uncommitted delete: a Freedom) [engine]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "proved-in-part",
+   "lemmas": [
+    "premises::premise_d9_p_d9_2_wait",
+    "premises::premise_d9_p_d9_2_insert_fails",
+    "premises::premise_d9_p_d9_2_freedom"
+   ],
+   "controls": [
+    "ctl_dml_ignores_row_locks",
+    "ctl_row_lock_statement_only",
+    "ctl_insert_dup_waits",
+    "ctl_freedom_wait_only"
+   ],
+   "note": "proved: a commit's UPDATE / DELETE of a row an open bypass transaction wrote waits (premise_d9_p_d9_2_wait). Not as worded for an INSERT of a key the bypass inserted: the contract implies an immediate -119, not a wait (premise_d9_p_d9_2_insert_fails). Permitted-not-implied: a bypass INSERT over the open erasure's uncommitted DELETE may wait or proceed (premise_d9_p_d9_2_freedom); the crates' wait is a sharpening (the observed branch)"
+  },
+  {
+   "id": "proof-premise:proofs-d9c:P-D9b-2",
+   "condition": "idemRedacted is keyed by sha256(key), modelled by the key itself (no collision) [engine]",
+   "closure_status": "assumed",
+   "source": "closure.json",
+   "verdict": "outside-contract",
+   "lemmas": [],
+   "controls": [],
+   "note": "sha256 collision freedom: outside (P2-HASH)"
+  },
+  {
+   "id": "proof-premise:proofs-d9c:PF-1",
+   "condition": "The operator re-runs the redaction after a stop (as in proofs/) [progress]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "progress",
+   "lemmas": [],
+   "controls": [],
+   "note": "scheduling / operator / fairness: the contract has no liveness clause"
+  },
+  {
+   "id": "proof-premise:proofs-d9c:PF-2",
+   "condition": "The ledger is enabled (re-enabled after a disable) while the run needs it [progress]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "progress",
+   "lemmas": [],
+   "controls": [],
+   "note": "scheduling / operator / fairness: the contract has no liveness clause"
+  },
+  {
+   "id": "proof-premise:proofs-d9c:PF-3",
+   "condition": "Every erasure ends: its commit or rollback releases the head lock [progress]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "progress",
+   "lemmas": [
+    "premises::premise_proofs_pf_3",
+    "premises::premise_proofs_pf_3_commit"
+   ],
+   "controls": [
+    "ctl_lock_wait_never_granted"
+   ],
+   "note": "that every erasure ENDS (and that a stopped holder is stopped) is scheduling: not implied. What the contract implies is proved: its commit or rollback releases the holds it deferred (premise_proofs_pf_3_commit) and a waiter on a stopped holder's lock is granted it (premise_proofs_pf_3)"
+  },
+  {
+   "id": "proof-premise:proofs-d9c:PF-4",
+   "condition": "An enabled step is eventually scheduled (as in proofs/) [progress]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "progress",
+   "lemmas": [],
+   "controls": [],
+   "note": "scheduling / operator / fairness: the contract has no liveness clause"
+  },
+  {
+   "id": "proof-premise:proofs-d9c:PF-5",
+   "condition": "Every bypass transaction ends (a resume's Start waits for them, G-B) [progress]",
+   "closure_status": "assumed",
+   "source": "closure.json",
+   "verdict": "progress",
+   "lemmas": [],
+   "controls": [],
+   "note": "scheduling / operator / fairness: the contract has no liveness clause"
+  },
+  {
+   "id": "proof-premise:proofs-d9c:PF-6",
+   "condition": "Eventually nothing t.lv selects is live when Final runs (no bypass writer or commit into lv minus rm keeps it live), or the operator erases t again [progress]",
+   "closure_status": "shown-false",
+   "source": "closure.json",
+   "verdict": "progress",
+   "lemmas": [],
+   "controls": [],
+   "note": "shown false at the pin (F-C1307): product behaviour"
+  },
+  {
+   "id": "proof-premise:proofs-mech:PM-1",
+   "condition": "M07-L4 fair service: the queue worker is weakly fair (whenever an entry is pending, some later step serves) [progress]",
+   "closure_status": "assumed",
+   "source": "closure.json",
+   "verdict": "progress",
+   "lemmas": [],
+   "controls": [],
+   "note": "scheduling / operator / fairness: the contract has no liveness clause"
+  },
+  {
+   "id": "proof-premise:proofs-mech:PM-2",
+   "condition": "M07-L4 resumed run: a stopped bounded run is resumed 3 - cursor more times [progress]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "progress",
+   "lemmas": [],
+   "controls": [],
+   "note": "scheduling / operator / fairness: the contract has no liveness clause"
+  },
+  {
+   "id": "proof-premise:proofs-pa3:P-A2",
+   "condition": "No two open writer transactions on one edge row (the edge row's lock serializes them). [engine]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "proved-in-part",
+   "lemmas": [
+    "premises::premise_breadth_p_a2",
+    "premises::premise_d9_p_d9_2_insert_fails",
+    "premises::premise_d9_p_d9_2_freedom"
+   ],
+   "controls": [
+    "ctl_dml_ignores_row_locks",
+    "ctl_row_lock_statement_only",
+    "ctl_insert_dup_waits",
+    "ctl_freedom_wait_only"
+   ],
+   "note": "proved for UPDATE / DELETE of an existing edge row: the second writer waits (premise_breadth_p_a2). An INSERT of a visible key fails at once (-119); an INSERT over another's uncommitted DELETE may proceed under a new row id (the Freedom) -- then the two writers hold different rows, so 'one edge row' still has one open writer"
+  },
+  {
+   "id": "proof-premise:proofs-pa3:P-A6",
+   "condition": "A rollback restores the before-images of the nodes its transaction set or killed; $Increment is not undone. [engine]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "proved-in-part",
+   "lemmas": [
+    "premises::premise_breadth_p_a6_kill",
+    "premises::premise_breadth_p_a6_incr",
+    "premises::premise_core_ma_5_rollback_other",
+    "gen::lemma_fresh_set_rollback"
+   ],
+   "controls": [
+    "ctl_kill_not_logged",
+    "ctl_incr_rolled_back",
+    "ctl_rollback_physical"
+   ],
+   "note": "proved: a rollback restores the before-image of a node the transaction set or killed when nobody wrote it since (lemma_fresh_set_rollback, premise_breadth_p_a6_kill); $INCREMENT is not undone (premise_breadth_p_a6_incr). Not as worded unconditionally: a node another process wrote since keeps that write (E-ROLLBACK-OTHER, premise_core_ma_5_rollback_other) -- the models' writers are serialized by the row lock (P-A2), so this does not arise there for rows; for globals written without a lock it does"
+  },
+  {
+   "id": "proof-premise:proofs-pa3:P-E2",
+   "condition": "an erasure's DELETE of a graph's rows is one step (row locks serialize each insert before or after it) [engine]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "proved-in-part",
+   "lemmas": [
+    "premises::premise_breadth_p_a2",
+    "premises::premise_trust_p_1201",
+    "premises::premise_d9_p_d9_2_freedom"
+   ],
+   "controls": [
+    "ctl_dml_ignores_row_locks",
+    "ctl_row_lock_statement_only",
+    "ctl_freedom_wait_only"
+   ],
+   "note": "per row: a writer of an existing row and the DELETE serialize through its row lock; an INSERT after the DELETE of its key may wait or proceed (Freedom). A multi-row DELETE's scan order is outside the contract (DELETE by key only), so 'the DELETE is one step' is not implied"
+  },
+  {
+   "id": "proof-premise:proofs-pa3:P-L1",
+   "condition": "A new ledger revision id is fresh: CreateGUID never returns an id an existing revision already carries. [engine]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "outside-contract",
+   "lemmas": [],
+   "controls": [],
+   "note": "CreateGUID freshness: no contract clause (outside-premise family P2-RANDOM)"
+  },
+  {
+   "id": "proof-premise:proofs-pa3:P-L3",
+   "condition": "Every L2 step is one transaction under the locks the code takes, with IRIS nesting, deferred unlock, stop rollback and dirty reads. [engine]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "product-discipline",
+   "lemmas": [
+    "premises::premise_breadth_p_l3",
+    "premises::premise_head_lock_init"
+   ],
+   "controls": [
+    "ctl_unlock_immediate",
+    "ctl_stop_commits",
+    "ctl_stop_top_level_only",
+    "ctl_kill_not_logged"
+   ],
+   "note": "proved under `disc` for the lock the code takes (inv_h inductive; the step atomic). That the code takes the locks the model assumes is D-3/D-4 (P-L4: Disable takes no head lock -- violated at the pin)"
+  },
+  {
+   "id": "proof-premise:proofs-pa3:P-L5",
+   "condition": "A governed write waits for the row locks of an open nested ledger commit. [engine]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "proved",
+   "lemmas": [
+    "premises::premise_breadth_p_l5"
+   ],
+   "controls": [
+    "ctl_dml_ignores_row_locks",
+    "ctl_row_lock_statement_only"
+   ],
+   "note": ""
+  },
+  {
+   "id": "proof-premise:proofs:P-C01",
+   "condition": "Each step (commit, replay, Start, batch, Final) is one atomic txn holding the head lock; erasure is one open transaction; a stop loses only its own state [engine]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "product-discipline",
+   "lemmas": [
+    "premises::premise_proofs_p_c01",
+    "premises::premise_head_lock_init",
+    "effects::lemma_step_eff"
+   ],
+   "controls": [
+    "ctl_unlock_immediate",
+    "ctl_stop_commits",
+    "ctl_stop_top_level_only",
+    "ctl_kill_not_logged"
+   ],
+   "note": "proved under `disc`: each head-locked step is atomic, a stop leaves nothing (with nested levels open too: observed by env-estop-gap, proofs-env-mutants-r2), a stopped process loses only its own state (lemma_step_eff: every other process is unchanged). 'The erasure is one open transaction' holds for an erasure that takes the head lock (the reviewed HD-1201); at the pin EraseGraph does not (F-1201)"
+  },
+  {
+   "id": "proof-premise:proofs:PF-1",
+   "condition": "The operator re-runs the redaction after a stop (Redact is re-invoked; HD-1303 'resume the same target') [progress]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "progress",
+   "lemmas": [],
+   "controls": [],
+   "note": "scheduling / operator / fairness: the contract has no liveness clause"
+  },
+  {
+   "id": "proof-premise:proofs:PF-2",
+   "condition": "The ledger is enabled again and stays enabled long enough (BatchInLock/FinalInLock refuse while it is disabled) [progress]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "progress",
+   "lemmas": [],
+   "controls": [],
+   "note": "scheduling / operator / fairness: the contract has no liveness clause"
+  },
+  {
+   "id": "proof-premise:proofs:PF-3",
+   "condition": "Every erasure ends (releases the head lock); a lock waiter proceeds when the holder releases; a stopped holder's locks are released [progress]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "progress",
+   "lemmas": [
+    "premises::premise_proofs_pf_3",
+    "premises::premise_proofs_pf_3_commit"
+   ],
+   "controls": [
+    "ctl_lock_wait_never_granted"
+   ],
+   "note": "that every erasure ENDS (and that a stopped holder is stopped) is scheduling: not implied. What the contract implies is proved: its commit or rollback releases the holds it deferred (premise_proofs_pf_3_commit) and a waiter on a stopped holder's lock is granted it (premise_proofs_pf_3)"
+  },
+  {
+   "id": "proof-premise:proofs:PF-4",
+   "condition": "A process with an enabled step is eventually scheduled and its transaction commits (IRIS Locks: deferral, Nesting) [progress]",
+   "closure_status": "validated-in-part",
+   "source": "closure.json",
+   "verdict": "progress",
+   "lemmas": [],
+   "controls": [],
+   "note": "scheduling / operator / fairness: the contract has no liveness clause"
+  },
+  {
+   "id": "proofs:P-C04 (an erasure is not rolled back between its two steps)",
+   "condition": "proofs:P-C04 (an erasure is not rolled back between its two steps)",
+   "closure_status": null,
+   "source": "PROOFS.md",
+   "verdict": "permitted-not-implied",
+   "lemmas": [
+    "premises::premise_proofs_p_c04_not_implied"
+   ],
+   "controls": [],
+   "note": "a stop of the erasure's process is permitted at any moment and ends its transaction: a modelling restriction (dropped by proofs-d9)"
+  },
+  {
+   "id": "proofs-d1b:P-S1 (a ledger commit is one step)",
+   "condition": "proofs-d1b:P-S1 (a ledger commit is one step)",
+   "closure_status": null,
+   "source": "PROOFS.md",
+   "verdict": "product-discipline",
+   "lemmas": [
+    "premises::premise_d1b_p_s1"
+   ],
+   "controls": [
+    "ctl_unlock_immediate",
+    "ctl_stop_commits",
+    "ctl_stop_top_level_only",
+    "ctl_kill_not_logged"
+   ],
+   "note": "as P-C01, under `disc`"
+  },
+  {
+   "id": "proofs-breadth:P-A4 (a rebuild overlaps no writer; violated at the pin)",
+   "condition": "proofs-breadth:P-A4 (a rebuild overlaps no writer; violated at the pin)",
+   "closure_status": null,
+   "source": "PROOFS.md",
+   "verdict": "product-discipline",
+   "lemmas": [
+    "premises::premise_breadth_p_a4_shared"
+   ],
+   "controls": [
+    "ctl_shared_conflicts_shared"
+   ],
+   "note": "the contract makes shared holds compatible (proved), so BeginRebuild's ^IVG.AdjW#\"S\" excludes no shared writer: P-A4 needs an exclusive lock the pin does not take (F-C0402) -- the pin's violation"
+  },
+  {
+   "id": "proofs-pa3:R04-5 (reviewed guard: exclusive ^IVG.AdjW excludes the writers' ^IVG.AdjW(g))",
+   "condition": "proofs-pa3:R04-5 (reviewed guard: exclusive ^IVG.AdjW excludes the writers' ^IVG.AdjW(g))",
+   "closure_status": null,
+   "source": "PROOFS.md",
+   "verdict": "proved",
+   "lemmas": [
+    "premises::premise_pa3_r04_5_names"
+   ],
+   "controls": [
+    "ctl_flat_lock_names"
+   ],
+   "note": "lock-name hierarchy"
+  },
+  {
+   "id": "proofs-d9:G-L (the liveness check runs under the eraser's lock)",
+   "condition": "proofs-d9:G-L (the liveness check runs under the eraser's lock)",
+   "closure_status": null,
+   "source": "PROOFS.md",
+   "verdict": "product-discipline",
+   "lemmas": [
+    "premises::premise_d9_g_l_reader_under_lock"
+   ],
+   "controls": [],
+   "note": "a reader holding the lock sees committed protected values (from inv_h); that Start/Final take it is the reviewed design (not at the pin, F-C1201)"
+  },
+  {
+   "id": "contract-2:S-1 / _write_txn (Txn_Undo, TROLLBACK 1)",
+   "condition": "contract-2:S-1 / _write_txn (Txn_Undo, TROLLBACK 1)",
+   "closure_status": null,
+   "source": "PROOFS.md",
+   "verdict": "proved",
+   "lemmas": [
+    "premises::premise_contract2_s1_partial"
+   ],
+   "controls": [
+    "ctl_rollback_one_undoes_all"
+   ],
+   "note": ""
+  },
+  {
+   "id": "proofs-d9:EraseAbort (the erasure's value-based rollback; E-ROLLBACK-OTHER)",
+   "condition": "proofs-d9:EraseAbort (the erasure's value-based rollback; E-ROLLBACK-OTHER)",
+   "closure_status": null,
+   "source": "PROOFS.md",
+   "verdict": "proved",
+   "lemmas": [
+    "premises::premise_d9_erasure_rollback"
+   ],
+   "controls": [
+    "ctl_rollback_physical",
+    "ctl_freedom_wait_only"
+   ],
+   "note": ""
+  }
+ ],
+ "problems": []
+}

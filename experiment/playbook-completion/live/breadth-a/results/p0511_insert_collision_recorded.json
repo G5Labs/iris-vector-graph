@@ -1,0 +1,20 @@
+{
+ "doc": "F-0511: a changeset temporal op in mode \"insert\" at occupied coordinates changes nothing yet commits a revision\n    recording a create_temporal_edge.",
+ "id": "p0511_insert_collision_recorded",
+ "log": "$RUN_DIR/breadth-a/live/ledger-all-20261113T232600.log",
+ "module": "ledger",
+ "observed": {
+  "commit": [
+   "ok",
+   "RevisionInfo(seq=5, revision_id='96587457dfb911f1b3edf277e9aab529', parent_id='965533d7dfb911f1b3edf277e9aab529', kind='changeset', actor='breadth-a', actor_typ"
+  ],
+  "recorded_ops": "[MutationRecord(seq=5, ordinal=1, op='create_temporal_edge', entity_kind='temporal_edge', entity_id='bats232559|TP|bato232559@1700000000', attr='', prior=None, new='{\"graph\":null,\"o\":\"bato232559\",\"p\":\"TP\",\"s\":\"bats232559\"}', graph=None, flags=[], digest=None, redacted_op=None)]",
+  "weight_after": "2.0",
+  "weight_before": "2.0"
+ },
+ "oracle": "Changeset.create_temporal_edge docstring: insert fails if the key exists; a no-op is not recorded",
+ "reproduced": true,
+ "seconds": 0.02,
+ "started": "2026-11-13T23:26:00",
+ "verdict": "collision committed and recorded; weight unchanged"
+}

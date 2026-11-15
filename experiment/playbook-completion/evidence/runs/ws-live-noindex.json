@@ -1,0 +1,17 @@
+{
+  "command": "locks.sh iris timeout 600 python experiment/playbook-completion/writesets/live/ws_probes.py noindex (AUDITB; 2 connections)",
+  "experiment_head": "8d11c49c4337db1fcf521c56a0c66e39b67128c4",
+  "finding": "F-C1351",
+  "id": "ws-live-noindex",
+  "kind": "live",
+  "lane": "writesets",
+  "log": "$RUN_DIR/writesets/noindex.json",
+  "log_bytes": 2223,
+  "log_sha256": "1928b83daa5dd8467dff758b1caf9a9fbb5b9c05191d52c92f1f4827b1e14205",
+  "namespace": "AUDITB",
+  "observes": "Tenant wsni: one ledger revision (3 records), erased (0 live rows). BulkLoader(conn).load_nodes([(\"wsni|n1\", {namespace, secret})]) (use_noindex default True) wrote 1 node, 1 label and 2 property rows (journal: its process set nodes, rdf_labels, rdf_props storage); the LiveRows-shaped counts (indexed) saw 0 rows while a %IGNOREINDEX full scan saw nodes 1, labels 1, props 2; redact(None, prefix=\"wsni\") completed (complete true, 3 records tombstoned, audit revision 3, marker removed); after BulkLoader.rebuild_all_indices the target has 4 live rows under the tombstoned records; verify() = diverges (unrecorded_writes).",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T12:05:59+00:00",
+  "result": "fail"
+}

@@ -1,0 +1,274 @@
+[
+ {
+  "id": "F-C0348",
+  "module": "03",
+  "title": "Racing create_edge calls on a new edge whose endpoint is new can all lose: some answer False ('already exists') and no edge is written",
+  "intended": "create_edge answers False only if the edge already existed, a duplicate is never an error (iris_vector_graph/_engine/nodes_edges.py:1176-1186 docstring); when two writers race to create one edge, one adds it and the other answers False (WRT-B4.9, 03-writes.md:118; nodes_edges.py:1243-1245 'a concurrent writer won the race'); endpoint rows a concurrent writer got to first are not an error (nodes_edges.py:1123-1124).",
+  "observed": "Live AUDITD (st-live-keys-race-edge): four connections released together call create_edge('rx:1','R','rx:2') with rx:2 not yet a node. In 4 of 8 trials no call succeeds: two answer False and two raise GraphWriteError SQLCODE -121 (fk_edges_dest), and afterwards neither the edge nor rx:2 exists. With both endpoints present beforehand, 8 of 8 trials give one True, three False and one edge. Reading of the code: a racer that meets another racer's uncommitted endpoint row skips its own insert (nodes_edges.py:1123-1124), its edge insert then fails the FK or meets another racer's uncommitted edge row, and -119 from an uncommitted row that later rolls back is answered as a duplicate (nodes_edges.py:1243-1245, 1251-1255).",
+  "disposition": "reproduced-live",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "st-live-keys-race-edge"
+   },
+   {
+    "kind": "live",
+    "ref": "st-live-keys"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/nodes_edges.py:1205-1256"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/nodes_edges.py:1106-1150"
+   }
+  ],
+  "gates": [
+   "3.6-keys",
+   "3.6-fk"
+  ],
+  "severity": "S2",
+  "confidence": "high",
+  "remedy": "Treat -119/-121 met against another writer's uncommitted row as 'retry' rather than 'duplicate': wait on the row (a SQL lock on the key, e.g. LOCK of the (graph, s, p, o) tuple before the probe) and re-probe after it commits or rolls back; answer False only when a committed edge is found.",
+  "notes": "A caller that receives False has no reason to retry, so the write is lost. The same race shape (several -119/-121/-110 errors, nothing written) was seen for bulk_create_nodes, store_node, Cypher MERGE of a new path and concurrent reify_edge (st-live-keys); those raise errors rather than answer success, so callers can retry."
+ },
+ {
+  "id": "F-C0349",
+  "module": "03",
+  "title": "The bulk loader writes duplicate node, label, property and edge keys: an id twice in one batch, a load with skip_existing=False, or two loaders at once",
+  "intended": "Graph_KG.nodes is keyed by (node_id, graph_id), rdf_labels by (graph_id, s, label), rdf_props by (graph_id, s, key) and rdf_edges by (s, p, o_id, graph_id, ekey) (iris_vector_graph/schema.py:35-44, 396-419). BulkLoader writes %NOINDEX %NOCHECK, which skips those checks (P-0304), and relies on its own scans to keep them: 'Without the hint every existence check here believes the previous bulk load never happened, and %NOCHECK means the second copy lands without complaint' (iris_vector_graph/bulk_loader.py:182-199); load_edges dedupes its input in memory (bulk_loader.py:420-427).",
+  "observed": "Live AUDITD (st-live-keys): load_nodes([('kb:1', ...), ('kb:1', ...)]) answers nodes 2, labels 2, props 4 and leaves two node rows, two label rows and two rows per property key for (default graph, kb:1); get_node('kb:1') answers labels ['A', 'A']. load_nodes and load_edges run a second time with skip_existing=False duplicate the node, label, prop and edge keys. Two loaders of the same 50 ids started together each write all 50 nodes. In every case rebuild_all_indices answers True for all four classes and the duplicates stay; the load answers report no error.",
+  "disposition": "reproduced-live",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "st-live-keys"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/bulk_loader.py:290-334"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/bulk_loader.py:420-440"
+   }
+  ],
+  "gates": [
+   "3.6-keys"
+  ],
+  "severity": "S2",
+  "confidence": "high",
+  "remedy": "Deduplicate node ids (and labels/properties per node) in the batch as load_edges does; refuse skip_existing=False under %NOCHECK or drop %NOCHECK for the key-carrying inserts; serialise loaders of one graph (a lock on the graph) and check the declared keys before %BuildIndices, failing the load on a duplicate.",
+  "notes": "The default path (skip_existing=True, one loader, distinct ids) keeps the keys. The duplicates are invisible to index reads that pick one row and visible to scans and to get_node's label list."
+ },
+ {
+  "id": "F-C0748",
+  "module": "07",
+  "title": "One token longer than the subscript limit in any document makes bm25_build fail after it has emptied the index, and searches then answer nothing",
+  "intended": "A refused command leaves every store as it was (SYS-I3, TXT-X2 in experiment/playbook-uplift/ontology/07-text-search.md; cited by F-0704); Build indexes every node of the graph over the named properties (iris_src/src/Graph/KG/BM25Index.cls:97-175).",
+  "observed": "Live AUDITD (st-live-cap-bm25): with one document holding a 600- or 2,000-character token (or a 300-character token in a document whose id has 256 characters), bm25_build raises 'RuntimeError: <THROW>' and leaves the index without documents; rebuilding a good 5-document index after one such node is added destroys it the same way, and bm25_search for any ordinary term then answers [] without error. Build kills ^BM25Idx(name) first (BM25Index.cls:99) and Tokenize tests each token with $Data(^BM25Idx(\"__stop__\", tok)) (:83), which raises <SUBSCRIPT> for a long token; bm25_insert and bm25_search with such a token raise <SUBSCRIPT> and leave the index unchanged. Tokens of 200 and 400 characters index normally.",
+  "disposition": "reproduced-live",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "st-live-cap-bm25"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/BM25Index.cls:56-87"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/BM25Index.cls:97-110"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/BM25Index.cls:176-204"
+   }
+  ],
+  "gates": [
+   "3.6-capacity"
+  ],
+  "severity": "S2",
+  "confidence": "high",
+  "remedy": "Skip or truncate tokens longer than a fixed length in Tokenize (before any subscript use), and build into a temporary name that replaces the old index only on success (as F-0704's remedy); report the document that failed.",
+  "notes": "Same kill-before-build root as F-0704 (a refused index-handle build), reached here by data rather than by a bad argument: a URL, hash or sequence of a few hundred characters anywhere in the graph makes the graph's BM25 index unbuildable."
+ },
+ {
+  "id": "F-C0848",
+  "module": "08",
+  "title": "A Cypher CREATE or MERGE with literal or parameter endpoint ids drops a parameter-bound relationship property without an error",
+  "intended": "docs/KNOWN_ISSUES.md:89-95: 'A literal (a list or a map too), a parameter and a WITH's column are stored'; iris_vector_graph/cypher/translator.py:507-512 (_refuse_unstorable_rel_props: a parameter is stored, anything it cannot store is refused before writing).",
+  "observed": "Live AUDITD (st-live-cypher-relprop, found by st-live-cap-values): CREATE (a:L {id: 'a2'})-[:R {q: $v}]->(b:L {id: 'b2'}), the same with $s/$o endpoint ids, with a number parameter, and MERGE (a:L {id: 'a4'})-[:R {q: $v}]->(b:L {id: 'b4'}) each answer no error and create the edge with no q (rdf_edges.qualifiers empty; r.q null). The same parameter between MATCHed endpoints and a literal q are stored. The literal-endpoint path (translator.py:10213-10222) resolves an ast.Literal or a FOREACH binding only, so a parameter resolves to None and is dropped as a null property (:10228).",
+  "disposition": "reproduced-live",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "st-live-cypher-relprop"
+   },
+   {
+    "kind": "live",
+    "ref": "st-live-cap-values"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/cypher/translator.py:10213-10246"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/cypher/translator.py:473-504"
+   }
+  ],
+  "gates": [
+   "3.6-capacity",
+   "3.6-frame"
+  ],
+  "severity": "S2",
+  "confidence": "high",
+  "remedy": "Resolve parameters (context.input_params) in the literal-endpoint path as _rel_literal_props does, or route such patterns through _rel_literal_props; refuse any property the writer cannot store instead of dropping it.",
+  "notes": "Not a capacity effect: the property is dropped at every size (10 characters included). Found by the capacity probe's read-back oracle."
+ },
+ {
+  "id": "F-C0849",
+  "module": "08",
+  "title": "A relationship property bound by a WITH before a literal-endpoint CREATE is stored as text that is not JSON",
+  "intended": "rdf_edges.qualifiers holds a JSON object (iris_vector_graph/schema.py:40, %Library.DynamicObject; translator.py:466-469); docs/KNOWN_ISSUES.md:94-95 says a WITH's column is stored.",
+  "observed": "Live AUDITD (st-live-cypher-relprop): WITH $v AS v CREATE (a:L {id: 'a5'})-[:R {q: v}]->(b:L {id: 'b5'}) with v = 'val' answers no error and stores the qualifiers text {\"q\": val} (unquoted), which json.loads rejects; MATCH ...-[r]->... RETURN r.q answers null.",
+  "disposition": "reproduced-live",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "st-live-cypher-relprop"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/cypher/translator.py:10410-10432"
+   }
+  ],
+  "gates": [
+   "3.6-frame"
+  ],
+  "severity": "S3",
+  "confidence": "medium",
+  "remedy": "Quote stage-bound string values when the qualifiers JSON is assembled (json-encode the column, not splice it raw), or bind the whole object as one parameter.",
+  "notes": "translator.py:10415-10418 says stage columns are spliced raw because some are already JSON; a plain string column is not. Which code path built this statement was inferred from the stored text, not traced."
+ },
+ {
+  "id": "F-C0948",
+  "module": "09",
+  "title": "Compiled native plan classes have no bound: one class per plan shape accumulates until a deploy",
+  "intended": "Playbook \u00a73.6 capacity: a stated bound or measured limit for every resource that grows with use (gate 3.6-capacity, open text 'a bound or a measured limit for compiled classes'); NAT-T5.2: one compiled plan serves every read of its shape.",
+  "observed": "Inspected at the pin: Gen.Build compiles one class IVGC.P<hash> per plan-shape hash (iris_src/src/Graph/KG/Cypher/Gen.cls:163-221) and records it in ^IVG.CypherCompiled; the only removal is DropAll (Gen.cls:225-230), called by setup's deploy (iris_vector_graph/schema.py:2939). No count, size or age bound and no eviction exist, so the namespace gains one compiled class (and its routines) per distinct shape (labels, keys, hop structure) for as long as the namespace lives, within the 32-bit hash space that F-0901 shows can collide.",
+  "disposition": "confirmed-source",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "inspected",
+    "ref": "iris_src/src/Graph/KG/Cypher/Gen.cls:163-230"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/schema.py:2939"
+   }
+  ],
+  "gates": [
+   "3.6-capacity"
+  ],
+  "severity": "S4",
+  "confidence": "medium",
+  "remedy": "Bound the compiled-plan set (a count or LRU with DropAll of cold entries, or compile only shapes seen N times) and document the bound; or state that applications must not generate unbounded shapes.",
+  "notes": "Not measured live: running the native executor compiles product-generated classes into the namespace, which this lane left to the native-executor lane. Impact depends on how many distinct shapes an application issues."
+ },
+ {
+  "id": "F-C1548",
+  "module": "15",
+  "title": "Deleting a relationship with delete_edge or Cypher DELETE leaves its reification rows pointing at an edge that no longer exists",
+  "intended": "A reification belongs to its edge: rdf_reifications(reifier_id, edge_id) names the reified edge (iris_vector_graph/schema.py:514-519); delete_node removes the reifiers of a node's edges (INT-E1.9, F-C1502) and erase_graph deletes the rdf_reifications rows of the graph's edges (F-1502 observed), so a deleted edge has no reification.",
+  "observed": "Live AUDITD (st-live-fk): two edges reified (fr:r1, fr:r2); delete_edge('fr:1','R','fr:2') and MATCH (a {id:'fr:2'})-[r:R]->(b {id:'fr:3'}) DELETE r both answer success, and afterwards both rdf_reifications rows remain with edge_ids 6101 and 6102 that no rdf_edges row has; get_reifications(6101) still answers fr:r1 with its properties. rdf_reifications.edge_id has no foreign key (schema.py:514-519).",
+  "disposition": "reproduced-live",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "st-live-fk"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/schema.py:514-519"
+   }
+  ],
+  "gates": [
+   "3.6-fk"
+  ],
+  "severity": "S3",
+  "confidence": "high",
+  "remedy": "Delete (or refuse to delete before removing) the edge's rdf_reifications rows and reifier nodes in delete_edge and in the Cypher relationship DELETE, in the same transaction, as delete_node intends; or declare a foreign key with ON DELETE CASCADE.",
+  "notes": "Edge ids are IDENTITY values and are not reused here, so a dangling row does not attach to a new edge; the reifier node and its properties survive (cf. F-1502 for erase_graph, F-1503 for delete_reification)."
+ },
+ {
+  "id": "F-C1549",
+  "module": "15",
+  "title": "A one-edge PROV lookup fails once the default graph's temporal history no longer fits one IRIS string",
+  "intended": "prov_as_dict maps one temporal edge (iris_vector_graph/_engine/prov.py:86-105) and prov_export_from_cypher the edges of the nodes a query returns (prov.py:141-175); INT-V1.6 (15-integrations.md:283) bounds only a window export ('Export a big history window by window'); module 05 has a paged reader for any window (iter_edges_in_window, spec 255).",
+  "observed": "Live AUDITD (st-live-cap-batch-r2): with 40,000 default-graph temporal edges whose JSON passes 3,641,144 characters, prov_as_dict of one edge and prov_export_from_cypher of one node both raise RuntimeError '<MAXSTRING>QueryWindow+27^Graph.KG.TemporalIndex.1', as does prov_export of the whole window; a one-second window exports. Both helpers read the whole default-graph window with QueryWindow(0, 9999999999) and filter in Python (prov.py:181-221). With short ids (st-live-cap-batch, window under the limit) all succeed.",
+  "disposition": "reproduced-live",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "st-live-cap-batch-r2"
+   },
+   {
+    "kind": "live",
+    "ref": "st-live-cap-batch"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/prov.py:181-221"
+   }
+  ],
+  "gates": [
+   "3.6-capacity"
+  ],
+  "severity": "S3",
+  "confidence": "high",
+  "remedy": "Read through the paged cursor (iter_edges_in_window with source or sources filters) or QueryWindow narrowed to the edge's timestamp and source, so a lookup's cost depends on its own edges, not on the whole history.",
+  "notes": "prov_as_dict's docstring says the whole window is read; it does not say the call fails past the string limit. The whole-window prov_export failure is the documented INT-V1.6 cap (its raising instead of logging is F-1501)."
+ },
+ {
+  "id": "F-C1848",
+  "module": "18",
+  "title": "save_snapshot and restore_snapshot hold the whole archive in client memory: about 11 MB per 1,000 edges, 190 times the archive's size",
+  "intended": "Playbook \u00a73.6 capacity: a stated bound or measured limit for every resource that grows with the data. save_snapshot documents 'the whole database's graph content' (iris_vector_graph/_engine/snapshot.py:803-815) and states no memory bound; no IVG document gives one.",
+  "observed": "Live AUDITD (st-live-cap-snapshot-mem): peak client allocation of save_snapshot 21.3 / 89.2 / 356.1 MB and of restore_snapshot 21.8 / 84.6 / 338.4 MB for 2,000 / 8,000 / 32,000 edges (archives of 0.12 / 0.48 / 1.9 MB); save takes 7 / 28 / 108 s. save_snapshot fetches every row of every table with fetchall() and builds every NDJSON member as a list in memory before writing (snapshot.py:864-900); restore reads every member into memory (snapshot.py:1107-1112). By extrapolation a namespace of a million edges needs about 11 GB on the client; nothing refuses or streams.",
+  "disposition": "reproduced-live",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "st-live-cap-snapshot-mem"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/snapshot.py:864-900"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/snapshot.py:1107-1112"
+   }
+  ],
+  "gates": [
+   "3.6-capacity"
+  ],
+  "severity": "S3",
+  "confidence": "high",
+  "remedy": "Stream each table into its ZIP member with a server-side cursor in pages (zipfile open(..., 'w') per member) and restore member by member in batches; until then document the memory needed per edge and a size above which snapshots are refused.",
+  "notes": "The million-edge figure is a linear extrapolation of three points, not measured. Cf. F-1510 (RDF export claims bounded memory); here no claim is made, so the defect is the missing capacity contract plus the amplification."
+ }
+]

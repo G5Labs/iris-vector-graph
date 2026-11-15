@@ -1,0 +1,84 @@
+{
+ "_doc": "Entry points of modules 04/10 justified (or bounded) from source at the pin (path:lines), in reads2/static.json's format. 'check': 'static' = the closure reads no shared store or only what is cited; 'static-violation' = inspected to read outside its graph scope (no live run could decide it here); 'static-holds' = the read path inspected to stay in its declared footprint where the live run could not reach it; 'not-covered' = neither live nor static can decide it at this pin in this container (the reason is given). Entries that were also run live say so.",
+ "04": [],
+ "10": [
+  {
+   "entry": "cls:Graph.KG.VarLength.CPUs",
+   "check": "static",
+   "cite": "iris_src/src/Graph/KG/VarLength.cls:260-269",
+   "why": "$System.Util.NumberOfCPUs() cached in the process-private ^||IVG.CPUs; no graph store"
+  },
+  {
+   "entry": "cls:Graph.KG.PageRank.CheckArgs",
+   "check": "static",
+   "cite": "iris_src/src/Graph/KG/PageRank.cls:77-85",
+   "why": "validates its two arguments and throws; reads no store (also run live: <void>, holds)"
+  },
+  {
+   "entry": "cls:Graph.KG.NKGAccelLoader.BuildNKGRust",
+   "check": "static",
+   "cite": "iris_src/src/Graph/KG/NKGAccelLoader.cls:132-135; iris_src/src/Graph/KG/NKGAccel.cls:144-147",
+   "why": "returns a constant error JSON; reads nothing (also run live, both class names: constant, holds)"
+  },
+  {
+   "entry": "cls:Graph.KG.NKGAccelTraversal.LastBfsPath / LastBfsError / LastBfsChunks",
+   "check": "static",
+   "cite": "iris_src/src/Graph/KG/NKGAccelTraversal.cls:225-240",
+   "why": "read the caller process's own ^||NKGAccel; no shared store (also run live: holds)"
+  },
+  {
+   "entry": "cls:Graph.KG.NKGAccelAdjacency.StoreLargeOut",
+   "check": "static",
+   "cite": "iris_src/src/Graph/KG/NKGAccelAdjacency.cls:217-228",
+   "why": "splits its argument into the process-private ^||LargeOut(tag); reads no shared store (also run live: holds)"
+  },
+  {
+   "entry": "cls:Graph.KG.NKGAccelLoader.ResetCache / Unload / LoadedPath / LoadError / IsLoaded (and the NKGAccel wrappers)",
+   "check": "static",
+   "cite": "iris_src/src/Graph/KG/NKGAccelLoader.cls:12-15, 44-61; iris_src/src/Graph/KG/NKGAccel.cls:111-131",
+   "why": "kill or read the process-private ^||NKGAccel only (also run live: holds)"
+  },
+  {
+   "entry": "cls:Graph.KG.ArnoAccel.TrustedPath / LoadedPath",
+   "check": "static",
+   "cite": "iris_src/src/Graph/KG/ArnoAccel.cls:37-49, 74-77",
+   "why": "TrustedPath normalizes its argument against the manager/binary directories; LoadedPath reads the process-private ^||ArnoAccel(\"path\") (also run live: holds)"
+  },
+  {
+   "entry": "eng:IRISGraphEngine.bfs_vector_rerank",
+   "check": "static",
+   "cite": "iris_vector_graph/_engine/algorithms.py:1293-1334",
+   "why": "raises NotImplementedError naming the store's missing execute_bfs_vector_rerank before any read (also run live: the same refusal on every state)"
+  },
+  {
+   "entry": "py:iris_vector_graph/stores/arno_bridge.py:build_kg_adjacency_chunked",
+   "check": "static-holds",
+   "cite": "iris_vector_graph/stores/arno_bridge.py:694-695 (raises ArnoError without the library, before walking); :712-742 (the walk: next_subscript(\"^KG\", \"out\"|\"in\", 0, ...) only, the default graph's key)",
+   "why": "live it raised before walking (library absent: undecided-error in st-live-reads3-10); the walk it would run reads only the default graph's ^KG entries; what the library does with the uploaded chunks is not inspectable at the pin"
+  },
+  {
+   "entry": "cls:Graph.KG.Communities.ClosenessJsonPy",
+   "check": "static-violation",
+   "cite": "iris_src/src/Graph/KG/Communities.cls:543-612",
+   "why": "after EnsureNKG it reads ^NKG (iris.gref) with no graph key and no refusal, the same merged store ClosenessGlobal answers from (violation live, F-C1041); live it answered PYUNAVAIL (igraph not importable in this IRIS: undecided-vacuous)"
+  },
+  {
+   "entry": "cls:Graph.KG.Communities.LeidenJsonPy",
+   "check": "static-violation",
+   "cite": "iris_src/src/Graph/KG/Communities.cls:613-696",
+   "why": "reads ^NKG(-1, ...) symmetrized with no graph key and no refusal, as LeidenJson does (violation live, F-C1041); live it answered PYUNAVAIL (igraph/leidenalg not importable: undecided-vacuous). LeidenJsonAuto, which calls it first, fell through to LeidenJson live"
+  },
+  {
+   "entry": "cls:Graph.KG.ArnoAccel.PageRankNativeJson / PPRNativeJson / WCCNativeJson / CDLPNativeJson / SubgraphNativeJson",
+   "check": "not-covered",
+   "cite": "iris_src/src/Graph/KG/ArnoAccel.cls:241-291",
+   "why": "outside USER NativeResult refuses before any read (observed live, every state: 'reads USER only, not AUDITD'); in USER the read is the arno-callout library's walk of ^KG, whose source is not at the pin and whose binary is not in this container (F-1001, blocked-access); USER belongs to the validation lane"
+  },
+  {
+   "entry": "cls:Graph.KG.ArnoAccel.KhopSampleJson / RandomWalkJson / NeighborAggJson",
+   "check": "not-covered",
+   "cite": "iris_src/src/Graph/KG/ArnoAccel.cls:305-368, 404-440",
+   "why": "outside USER they answer the empty marker before any read (observed live); in USER they cache BuildGraphJson's default-graph JSON (ArnoAccel.cls:305-368, run live: holds) in ^ArnoKG(\"KG\") and hand the name to the library, whose read is not inspectable at the pin and whose binary is absent (F-1001, blocked-access)"
+  }
+ ]
+}

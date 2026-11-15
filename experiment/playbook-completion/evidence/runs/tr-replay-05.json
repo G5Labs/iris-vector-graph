@@ -1,0 +1,15 @@
+{
+  "command": "experiment/playbook-completion/trace-replay: run.py capture 05 (under locks.sh iris, AUDITE); run.py check NN",
+  "experiment_head": "7b72fc52c878c31e143452a8cc8452cc4a6c198f",
+  "id": "tr-replay-05",
+  "kind": "trace",
+  "lane": "trace-replay",
+  "log": "$RUN_DIR/trace-replay/logs/tr-replay-05.log",
+  "log_bytes": 2618,
+  "log_sha256": "990495b4a677098af4435bf356e13752e5e816391b8f97f919f7ac2ca2ec3c0b",
+  "observes": "AUDITE traces bucket (5 steps, 62 records) and mark (8 steps, 153 records) replayed through tmp_bucket and tmp_mark (breadth-a, as built): 11 actions all enabled and matching, replays equal the engine; TMP-B1.7 violated at the update-mode write (count 2, sum 3 for one edge: F-0501 reproduced); ADR-0009 explicit-survives violated when the last temporal delete retracts an explicit {\"temporal\": 1} row (F-0505 reproduced); TMP-B9.13 violated after TemporalIndex.Purge leaves a marked row with no timestamp (F-0507 reproduced); reviewed designs diverge at the finding steps",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T12:39:44+00:00",
+  "result": "pass"
+}

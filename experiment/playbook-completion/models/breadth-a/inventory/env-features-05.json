@@ -1,0 +1,163 @@
+{
+ "module": "05",
+ "generated_by": "experiment/playbook-completion/models/breadth-a/tools/env_features.py",
+ "method": "regex over the source ranges of the module's inventoried entry points; over-approximates",
+ "env_features": [
+  {
+   "feature": "$Increment (not undone by rollback, P-0401)",
+   "occurrences": 9,
+   "samples": [
+    "iris_src/src/Graph/KG/TemporalIndex.cls:102",
+    "iris_src/src/Graph/KG/TemporalIndex.cls:117",
+    "iris_src/src/Graph/KG/TemporalIndex.cls:118",
+    "iris_src/src/Graph/KG/TemporalIndex.cls:357",
+    "iris_src/src/Graph/KG/TemporalIndex.cls:422"
+   ]
+  },
+  {
+   "feature": "TSTART / TCOMMIT nesting",
+   "occurrences": 5,
+   "samples": [
+    "iris_src/src/Graph/KG/TemporalIndex.cls:1103",
+    "iris_src/src/Graph/KG/TemporalIndex.cls:1106",
+    "iris_src/src/Graph/KG/TemporalPolicy.cls:175",
+    "iris_src/src/Graph/KG/TemporalPolicy.cls:202",
+    "iris_src/src/Graph/KG/TemporalPolicy.cls:210"
+   ]
+  },
+  {
+   "feature": "TROLLBACK 1 (one level)",
+   "occurrences": 2,
+   "samples": [
+    "iris_src/src/Graph/KG/TemporalIndex.cls:1108",
+    "iris_src/src/Graph/KG/TemporalPolicy.cls:215"
+   ]
+  },
+  {
+   "feature": "$TLevel",
+   "occurrences": 4,
+   "samples": [
+    "iris_src/src/Graph/KG/TemporalIndex.cls:1101",
+    "iris_src/src/Graph/KG/TemporalIndex.cls:1108",
+    "iris_src/src/Graph/KG/TemporalPolicy.cls:173",
+    "iris_src/src/Graph/KG/TemporalPolicy.cls:215"
+   ]
+  },
+  {
+   "feature": "SQL transaction control from Python (commit/rollback/autocommit)",
+   "occurrences": 2,
+   "samples": [
+    "iris_vector_graph/_engine/temporal.py:322",
+    "iris_vector_graph/_engine/temporal.py:474"
+   ]
+  },
+  {
+   "feature": "Process-private globals (^||)",
+   "occurrences": 48,
+   "samples": [
+    "iris_src/src/Graph/KG/TemporalIndex.cls:947",
+    "iris_src/src/Graph/KG/TemporalIndex.cls:971",
+    "iris_src/src/Graph/KG/TemporalIndex.cls:972",
+    "iris_src/src/Graph/KG/TemporalIndex.cls:996",
+    "iris_src/src/Graph/KG/TemporalIndex.cls:1001"
+   ]
+  },
+  {
+   "feature": "Native API from Python (classMethod*, globals)",
+   "occurrences": 17,
+   "samples": [
+    "iris_vector_graph/_engine/temporal.py:619",
+    "iris_vector_graph/_engine/temporal.py:637",
+    "iris_vector_graph/_engine/temporal.py:742",
+    "iris_vector_graph/_engine/temporal.py:750",
+    "iris_vector_graph/_engine/temporal.py:756"
+   ]
+  },
+  {
+   "feature": "Embedded/dynamic SQL in ObjectScript (&sql, %SQL.Statement)",
+   "occurrences": 10,
+   "samples": [
+    "iris_src/src/Graph/KG/Adjacency.cls:597",
+    "iris_src/src/Graph/KG/Adjacency.cls:603",
+    "iris_src/src/Graph/KG/Adjacency.cls:628",
+    "iris_src/src/Graph/KG/Adjacency.cls:636",
+    "iris_src/src/Graph/KG/Adjacency.cls:674"
+   ]
+  },
+  {
+   "feature": "%DynamicObject / JSON functions",
+   "occurrences": 22,
+   "samples": [
+    "iris_src/src/Graph/KG/Adjacency.cls:584",
+    "iris_src/src/Graph/KG/Adjacency.cls:589",
+    "iris_src/src/Graph/KG/Adjacency.cls:656",
+    "iris_src/src/Graph/KG/LedgerApply.cls:617",
+    "iris_src/src/Graph/KG/LedgerApply.cls:633"
+   ]
+  },
+  {
+   "feature": "$ZStrip / $ZConvert character classes",
+   "occurrences": 5,
+   "samples": [
+    "iris_src/src/Graph/KG/TemporalWindow.cls:265",
+    "iris_src/src/Graph/KG/TemporalWindow.cls:266",
+    "iris_src/src/Graph/KG/TemporalWindow.cls:282",
+    "iris_src/src/Graph/KG/TemporalWindow.cls:284",
+    "iris_src/src/Graph/KG/TemporalWindow.cls:358"
+   ]
+  },
+  {
+   "feature": "Global collation order ($Order/$Query)",
+   "occurrences": 128,
+   "samples": [
+    "iris_src/src/Graph/KG/Adjacency.cls:664",
+    "iris_src/src/Graph/KG/Adjacency.cls:668",
+    "iris_src/src/Graph/KG/Adjacency.cls:672",
+    "iris_src/src/Graph/KG/TemporalIndex.cls:253",
+    "iris_src/src/Graph/KG/TemporalIndex.cls:255"
+   ]
+  },
+  {
+   "feature": "Global KILL of a subtree / Merge",
+   "occurrences": 58,
+   "samples": [
+    "iris_src/src/Graph/KG/TemporalIndex.cls:83",
+    "iris_src/src/Graph/KG/TemporalIndex.cls:91",
+    "iris_src/src/Graph/KG/TemporalIndex.cls:350",
+    "iris_src/src/Graph/KG/TemporalIndex.cls:351",
+    "iris_src/src/Graph/KG/TemporalIndex.cls:352"
+   ]
+  },
+  {
+   "feature": "Time functions (DATEDIFF, $ZTimeStamp, $Horolog)",
+   "occurrences": 4,
+   "samples": [
+    "iris_src/src/Graph/KG/TemporalIndex.cls:51",
+    "iris_src/src/Graph/KG/TemporalIndex.cls:170",
+    "iris_src/src/Graph/KG/TemporalIndex.cls:761",
+    "iris_src/src/Graph/KG/TemporalIndex.cls:776"
+   ]
+  },
+  {
+   "feature": "SQL empty string as $Char(0)",
+   "occurrences": 4,
+   "samples": [
+    "iris_src/src/Graph/KG/Adjacency.cls:582",
+    "iris_src/src/Graph/KG/Adjacency.cls:583",
+    "iris_src/src/Graph/KG/Adjacency.cls:627",
+    "iris_src/src/Graph/KG/Adjacency.cls:654"
+   ]
+  },
+  {
+   "feature": "SQLCODE-specific handling",
+   "occurrences": 16,
+   "samples": [
+    "iris_src/src/Graph/KG/Adjacency.cls:598",
+    "iris_src/src/Graph/KG/Adjacency.cls:599",
+    "iris_src/src/Graph/KG/Adjacency.cls:604",
+    "iris_src/src/Graph/KG/Adjacency.cls:609",
+    "iris_src/src/Graph/KG/Adjacency.cls:610"
+   ]
+  }
+ ]
+}

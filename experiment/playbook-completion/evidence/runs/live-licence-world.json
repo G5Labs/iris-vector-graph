@@ -1,0 +1,15 @@
+{
+  "command": "locks.sh iris timeout 1200 python experiment/playbook-completion/traces/licence_world.py $RUN_DIR/licence-world/r2 (container exclusive)",
+  "experiment_head": "6238aaaadfb281e48cb258b76befcabcba62448f",
+  "id": "live-licence-world",
+  "kind": "live",
+  "lane": "orchestrator",
+  "log": "$RUN_DIR/licence-world/r2.log",
+  "log_bytes": 5227,
+  "log_sha256": "1878236cf9253f9c374dc46d58748210b856e5226a0d0c4537dc1dac2d15eeb4",
+  "observes": "Failure scenario S6, licence refusal at product level (IRIS Community 2026.1, 8 units, AUDITE, product used through IRISGraphEngine.from_connect and its ledger API). World C (control, units free): the engine's first native call opened its dedicated connection; commits seq 2 and 3, 51 edge rows, parameterised reads correct, verify equal. World X (7 holders took every free unit after the engine connected; the next connect refused 'Unable to allocate a license'): the dedicated connect was refused and the engine fell back to the caller's connection without any log line (native_conn_dedicated false); commits still all-or-nothing (51 rows), reads correct, verify equal, but each native call retried the refused connect (~2 s per commit vs 0.2 s); filed F-C1795 (S4). World R (8 holders, every unit taken before connecting): from_connect refused with the licence error; row counts unchanged (nothing written). Harness attempt r1 failed on the harness's own extra connection (kept, $RUN_DIR/licence-world/r1.log)",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T19:28:42+00:00",
+  "result": "fail"
+}

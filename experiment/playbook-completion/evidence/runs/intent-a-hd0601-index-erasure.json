@@ -1,0 +1,15 @@
+{
+  "command": "flock -w 1800 $RUN_DIR/intent-a/auditia.lock timeout 600 python experiment/playbook-completion/intent/probes/lane-a/hd0601_index_erasure.py",
+  "experiment_head": "c01a7ccd00b29670b521799344233fa4a814c925",
+  "id": "intent-a-hd0601-index-erasure",
+  "kind": "probe",
+  "lane": "intent-a",
+  "log": "$RUN_DIR/intent-a/hd0601_index_erasure.log",
+  "log_bytes": 1915,
+  "log_sha256": "60625cc7000334082bcbc229d18dcd2f0f20265c3fce6c762192553db7d7de7b",
+  "observes": "AUDITIA: 6 nodes with vectors in graph ia-0601 (route kg_emb_583aad691f21a367); ivf_build(graph=ia-0601), a VecIndex and a PLAID index fed the same ids. erase_graph removed 6 rows and dropped the route table, yet ivf_search, vec_search and plaid_search each still answer ia0601:n1,n2,n6 and ^IVF still holds all 6 vectors (cfg table names the dropped route). F-0606 reproduced live. Fail against CONTEXT.md/ADR-0004 'every store that holds it' for the graph-derived IVF index; VecIndex/PLAID are caller-fed, so their retention is a scope question, not settled by any source. Probe's own indexes dropped afterwards.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-13T22:45:43+00:00",
+  "result": "fail"
+}

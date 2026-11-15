@@ -1,0 +1,15 @@
+{
+  "command": "flock -w 1800 $RUN_DIR/intent-a/auditia.lock env LOCK_WAIT_SECONDS=900 bash experiment/playbook-completion/tools/locks.sh iris timeout 600 python experiment/playbook-completion/intent/probes/lane-a/hd0701_build_drop_lock.py",
+  "experiment_head": "c01a7ccd00b29670b521799344233fa4a814c925",
+  "id": "intent-a-hd0701-build-drop-lock",
+  "kind": "probe",
+  "lane": "intent-a",
+  "log": "$RUN_DIR/intent-a/hd0701_build_drop_lock.log",
+  "log_bytes": 2418,
+  "log_sha256": "f98eaa3174a678596cd40169302d718fdb9a16ca06ff557275c1d510f005f334",
+  "observes": "AUDITIA, two processes: with ^BM25Idx(idx,lock) held by process A, bm25_insert in B waits and fails after lock_timeout 2 s (control, FR-019 holds), while bm25_build completes in 1 ms and bm25_drop in 0 ms (index removed under a held writer lock), contrary to ADR-0007's literal 'every write under an index-level lock'; bm25_build(idx, [' ']) is accepted, kills the complete previous index and returns indexed 0 with no header (Info {} , search []).",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-13T22:44:36+00:00",
+  "result": "fail"
+}

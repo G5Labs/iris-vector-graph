@@ -1,0 +1,714 @@
+{
+ "group": "G2",
+ "modules": {
+  "04": {
+   "files_reviewed": [
+    "iris_src/src/Graph/KG/Adjacency.cls",
+    "iris_src/src/Graph/KG/AdjIndex.cls",
+    "iris_src/src/Graph/KG/Adj.cls",
+    "iris_src/src/Graph/KG/EdgeScan.cls",
+    "iris_src/src/Graph/KG/Edgeless.cls",
+    "iris_src/src/Graph/KG/GraphIndex.cls",
+    "iris_src/src/Graph/KG/TraversalBuild.cls",
+    "iris_src/src/Graph/KG/GraphVerify.cls",
+    "iris_src/src/Graph/KG/AlgoCache.cls",
+    "iris_vector_graph/_edgeless.py",
+    "iris_vector_graph/freshness.py",
+    "iris_vector_graph/algo_cache.py",
+    "iris_vector_graph/_engine/schema.py:2858-2963",
+    "iris_vector_graph/_engine/admin.py:60-91,470-575,756-891",
+    "iris_vector_graph/_engine/nodes_edges.py:476-515,2301-2339",
+    "iris_vector_graph/stores/iris_sql_store.py:921-988"
+   ],
+   "coverage": {
+    "iris_src/src/Graph/KG/Adjacency.cls": "full",
+    "iris_src/src/Graph/KG/AdjIndex.cls": "full",
+    "iris_src/src/Graph/KG/Adj.cls": "full",
+    "iris_src/src/Graph/KG/EdgeScan.cls": "full",
+    "iris_src/src/Graph/KG/Edgeless.cls": "full",
+    "iris_src/src/Graph/KG/GraphIndex.cls": "full",
+    "iris_src/src/Graph/KG/TraversalBuild.cls": "full (340-820 sweep)",
+    "iris_src/src/Graph/KG/GraphVerify.cls": "full",
+    "iris_src/src/Graph/KG/AlgoCache.cls": "full",
+    "iris_vector_graph/_edgeless.py": "full",
+    "iris_vector_graph/freshness.py": "full",
+    "iris_vector_graph/algo_cache.py": "full",
+    "iris_vector_graph/_engine/schema.py": "sweep (named part read in full)",
+    "iris_vector_graph/_engine/admin.py": "full (named parts)",
+    "iris_vector_graph/_engine/nodes_edges.py": "full (named parts)",
+    "iris_vector_graph/stores/iris_sql_store.py": "sweep (named part read in full)"
+   },
+   "deviations": [
+    {
+     "id": "D-04-01",
+     "convention": "C-4",
+     "where": "iris_src/src/Graph/KG/EdgeScan.cls:51,56-58",
+     "what": "MatchEdges derives the ^KG default key inline instead of through GraphKey"
+    },
+    {
+     "id": "D-04-02",
+     "convention": "C-4",
+     "where": "iris_src/src/Graph/KG/Adjacency.cls:583,627,654,698,889",
+     "what": "temporal-row methods and OtherEdgeKeys convert the index key back to a graph_id inline"
+    },
+    {
+     "id": "D-04-03",
+     "convention": "C-7",
+     "where": "iris_src/src/Graph/KG/TraversalBuild.cls:67,83",
+     "what": "BuildKG kills and refills ^KG(\"label\") directly, not through Adjacency"
+    },
+    {
+     "id": "D-04-04",
+     "convention": "C-8",
+     "where": "iris_src/src/Graph/KG/TraversalBuild.cls:65",
+     "what": "Kill ^KG(\"prop\") outside the owners"
+    },
+    {
+     "id": "D-04-05",
+     "convention": "C-14",
+     "where": "iris_src/src/Graph/KG/Adjacency.cls:34-36",
+     "what": "header says a lock failure is an error and nothing is written except for row writers; PutShadow/RemoveSource write without it too"
+    },
+    {
+     "id": "D-04-06",
+     "convention": "C-14",
+     "where": "iris_src/src/Graph/KG/Adj.cls:1-3",
+     "what": "header says every reader of the out-adjacency goes through Adj; several classes read it directly"
+    },
+    {
+     "id": "D-04-07",
+     "convention": "C-14",
+     "where": "iris_src/src/Graph/KG/EdgeScan.cls:9",
+     "what": "header says gen is bumped by every write; Reweight bumps none"
+    },
+    {
+     "id": "D-04-08",
+     "convention": "C-14",
+     "where": "iris_src/src/Graph/KG/GraphIndex.cls:11-14",
+     "what": "header names EdgeScan as a caller and three callers; actual callers are Adjacency, Eraser, TraversalBuild, NKGAccelTraversal"
+    },
+    {
+     "id": "D-04-09",
+     "convention": "C-14",
+     "where": "iris_src/src/Graph/KG/GraphVerify.cls:4-5,12-16",
+     "what": "header describes pre-spec-252 adjacency and drop_graph leaving adjacency behind"
+    },
+    {
+     "id": "D-04-10",
+     "convention": "C-16",
+     "where": "iris_vector_graph/_engine/admin.py:760-766",
+     "what": "verify_sync calls drop_graph/delete_node/raw SQL inserts BYPASS paths, against the glossary's declared Adjacency Index"
+    },
+    {
+     "id": "D-04-11",
+     "convention": "C-17",
+     "where": "iris_vector_graph/_engine/schema.py:2958-2963",
+     "what": "backfill_deg2p_exact: except Exception -> warning, return 0 on a rebuild"
+    },
+    {
+     "id": "D-04-12",
+     "convention": "C-17",
+     "where": "iris_vector_graph/_engine/nodes_edges.py:487-490",
+     "what": "except Exception: pass around Build2HopStats"
+    },
+    {
+     "id": "D-04-13",
+     "convention": "C-17",
+     "where": "iris_vector_graph/_engine/nodes_edges.py:496-499",
+     "what": "failed closing sync() of bulk_load_session only logged; caller not told"
+    },
+    {
+     "id": "D-04-14",
+     "convention": "C-18",
+     "where": "iris_vector_graph/_engine/admin.py:526-527,561-562",
+     "what": "status() hints name engine.sync() and initialize_schema() without saying they write"
+    },
+    {
+     "id": "D-04-15",
+     "convention": "C-40G2",
+     "where": "iris_src/src/Graph/KG/TraversalBuild.cls:155-156",
+     "what": "BuildKG's Catch runs a bare TRollback, ending the caller's transaction"
+    },
+    {
+     "id": "D-04-16",
+     "convention": "C-25",
+     "where": "iris_src/src/Graph/KG/GraphIndex.cls:146",
+     "what": "unparenthesised first operand in a compound condition (secondary)"
+    }
+   ],
+   "deviations_by_convention": {
+    "C-4": 2,
+    "C-7": 1,
+    "C-8": 1,
+    "C-14": 5,
+    "C-16": 1,
+    "C-17": 3,
+    "C-18": 1,
+    "C-40G2": 1,
+    "C-25": 1
+   },
+   "borderline": 9,
+   "candidates": [
+    {
+     "title": "A failed adjacency rebuild inside a caller's transaction rolls back the caller's work",
+     "where": "iris_src/src/Graph/KG/TraversalBuild.cls:155-156",
+     "existing_finding": "F-0409",
+     "severity": "S1",
+     "confidence": "high",
+     "severity_source": "the existing finding's record"
+    },
+    {
+     "title": "EdgeScan header overstates generation bumping (Reweight bumps none)",
+     "where": "iris_src/src/Graph/KG/EdgeScan.cls:9",
+     "existing_finding": "F-0407",
+     "severity": "S3",
+     "confidence": "high",
+     "severity_source": "the existing finding's record"
+    },
+    {
+     "title": "GraphVerify header and verify_sync docstring describe adjacency behaviour that changed",
+     "where": "iris_src/src/Graph/KG/GraphVerify.cls:4-16; iris_vector_graph/_engine/admin.py:760-766",
+     "existing_finding": "F-0408",
+     "severity": "S4",
+     "confidence": "high",
+     "severity_source": "the existing finding's record"
+    },
+    {
+     "title": "^KG(\"prop\") killed by TraversalBuild (prop has no owning module)",
+     "where": "iris_src/src/Graph/KG/TraversalBuild.cls:65",
+     "existing_finding": "F-C0440",
+     "severity": "S4",
+     "confidence": "high",
+     "severity_source": "the existing finding's record"
+    },
+    {
+     "title": "backfill_deg2p_exact answers 0 when the rebuild fails",
+     "where": "iris_vector_graph/_engine/schema.py:2952-2963; iris_src/src/Graph/KG/TraversalBuild.cls:1007",
+     "existing_finding": null,
+     "severity": "S4",
+     "confidence": "medium"
+    },
+    {
+     "title": "bulk_load_session ends normally when its closing two-hop rebuild or sync() fails",
+     "where": "iris_vector_graph/_engine/nodes_edges.py:487-499",
+     "existing_finding": null,
+     "severity": "S4",
+     "confidence": "medium"
+    }
+   ],
+   "conventions_with_no_documented_rule": [
+    "ObjectScript indentation, Quit vs Return, p/t prefixes, single-line If forms, class/method naming (round-1 L-2)",
+    "Python docstrings and naming beyond the configured tools (round-1 L-3)",
+    "C-3 compile cleanliness and C-20 justified indirection: not judged",
+    "who may write the two-hop Rebuilt stores and the Graph-Version Token: documents disagree (B-04-2, B-04-3)"
+   ],
+   "totals": {
+    "deviations": 16,
+    "conventions_broken": 9,
+    "primary": 15,
+    "primary_conventions": 8,
+    "secondary_brief_md": 1
+   }
+  },
+  "05": {
+   "files_reviewed": [
+    "iris_src/src/Graph/KG/TemporalIndex.cls",
+    "iris_src/src/Graph/KG/TemporalIndexMS.cls",
+    "iris_src/src/Graph/KG/TemporalPolicy.cls",
+    "iris_src/src/Graph/KG/TemporalWindow.cls",
+    "iris_vector_graph/_engine/temporal.py",
+    "iris_vector_graph/_engine/temporal_window.py",
+    "iris_vector_graph/_engine/temporal_only_warning.py",
+    "iris_vector_graph/_tz.py",
+    "iris_vector_graph/migrations/temporal_structural_rows.py",
+    "scripts/sweep_bare_nodes_interim.py",
+    "scripts/backfill_temporal_edges.py"
+   ],
+   "coverage": {
+    "iris_src/src/Graph/KG/TemporalIndex.cls": "sweep (hit methods read)",
+    "iris_src/src/Graph/KG/TemporalIndexMS.cls": "full",
+    "iris_src/src/Graph/KG/TemporalPolicy.cls": "full",
+    "iris_src/src/Graph/KG/TemporalWindow.cls": "full (walk 128-437 swept)",
+    "iris_vector_graph/_engine/temporal.py": "sweep (write paths read)",
+    "iris_vector_graph/_engine/temporal_window.py": "full",
+    "iris_vector_graph/_engine/temporal_only_warning.py": "full",
+    "iris_vector_graph/_tz.py": "full",
+    "iris_vector_graph/migrations/temporal_structural_rows.py": "full",
+    "scripts/sweep_bare_nodes_interim.py": "full",
+    "scripts/backfill_temporal_edges.py": "full"
+   },
+   "deviations": [
+    {
+     "id": "D-05-01",
+     "convention": "C-2",
+     "where": "iris_vector_graph/_engine/temporal.py:292",
+     "what": "type: ignore[call-arg] with no stated justification"
+    },
+    {
+     "id": "D-05-02",
+     "convention": "C-4",
+     "where": "iris_src/src/Graph/KG/TemporalIndex.cls:818",
+     "what": "PurgeBefore: Set tGKey = 0, inline default-key derivation"
+    },
+    {
+     "id": "D-05-03",
+     "convention": "C-4",
+     "where": "iris_src/src/Graph/KG/TemporalIndex.cls:1149-1157,1194,1236-1246",
+     "what": "migration writes the default key as a literal 0"
+    },
+    {
+     "id": "D-05-04",
+     "convention": "C-9",
+     "where": "iris_src/src/Graph/KG/TemporalWindow.cls:143-174,209-233,276,309-437",
+     "what": "TemporalWindow (not TemporalIndex or a subclass) reads tout/tin/edgeprop/tlast directly, partly through indirection"
+    },
+    {
+     "id": "D-05-05",
+     "convention": "C-14",
+     "where": "iris_src/src/Graph/KG/TemporalIndex.cls:1",
+     "what": "no class header"
+    },
+    {
+     "id": "D-05-06",
+     "convention": "C-16",
+     "where": "iris_vector_graph/_engine/temporal.py:280-287",
+     "what": "docstring: edges mirrored to rdf_edges only with graph=, shadow at ^KG(\"out\",0,...); glossary: every Temporal Edge implies a Structural Edge in its graph"
+    },
+    {
+     "id": "D-05-07",
+     "convention": "C-17",
+     "where": "iris_vector_graph/_engine/temporal.py:114-118,324-332",
+     "what": "structural mirror failure logged, create_edge_temporal returns True"
+    },
+    {
+     "id": "D-05-08",
+     "convention": "C-17",
+     "where": "iris_vector_graph/_engine/temporal.py:469-473",
+     "what": "bulk mirror failure logged, count unaffected"
+    },
+    {
+     "id": "D-05-09",
+     "convention": "C-17",
+     "where": "scripts/backfill_temporal_edges.py:130-131,139-140",
+     "what": "except Exception: pass around create_node writes"
+    },
+    {
+     "id": "D-05-10",
+     "convention": "C-35",
+     "where": "scripts/backfill_temporal_edges.py:182-184",
+     "what": "hard-coded Graph_KG tables"
+    },
+    {
+     "id": "D-05-11",
+     "convention": "C-22",
+     "where": "iris_src/src/Graph/KG/TemporalIndex.cls:46,64",
+     "what": "%Status method returns literal 1, not $$$OK (secondary)"
+    },
+    {
+     "id": "D-05-12",
+     "convention": "C-25",
+     "where": "iris_src/src/Graph/KG/TemporalIndex.cls:659",
+     "what": "GetDistinctCount: unparenthesised first operand (secondary)"
+    },
+    {
+     "id": "D-05-13",
+     "convention": "C-25",
+     "where": "iris_src/src/Graph/KG/TemporalIndex.cls:1521,1526,1534,1535",
+     "what": "GetBucketGroups: unparenthesised first operands (secondary)"
+    },
+    {
+     "id": "D-05-14",
+     "convention": "C-25",
+     "where": "iris_src/src/Graph/KG/TemporalIndex.cls:1614",
+     "what": "GetBucketGroupTargets: unparenthesised first operand (secondary)"
+    }
+   ],
+   "deviations_by_convention": {
+    "C-2": 1,
+    "C-4": 2,
+    "C-9": 1,
+    "C-14": 1,
+    "C-16": 1,
+    "C-17": 3,
+    "C-35": 1,
+    "C-22": 1,
+    "C-25": 3
+   },
+   "borderline": 5,
+   "candidates": [
+    {
+     "title": "Without the adjacency index, deleting a triple's last timestamp removes an explicitly created edge's adjacency",
+     "where": "iris_src/src/Graph/KG/TemporalIndex.cls:334-341; iris_src/src/Graph/KG/Adjacency.cls:689-733",
+     "existing_finding": null,
+     "severity": "S3",
+     "confidence": "medium"
+    },
+    {
+     "title": "Without the adjacency index, create_edge_temporal(graph=...) and bulk_create_edges_temporal answer success when the structural mirror fails",
+     "where": "iris_vector_graph/_engine/temporal.py:114-118,320-332,456-473",
+     "existing_finding": null,
+     "severity": "S3",
+     "confidence": "medium"
+    }
+   ],
+   "conventions_with_no_documented_rule": [
+    "ObjectScript indentation, Quit vs Return, p/t prefixes, single-line If forms, class/method naming (round-1 L-2)",
+    "Python docstrings and naming beyond the configured tools (round-1 L-3)",
+    "C-3 compile cleanliness and C-20 justified indirection: not judged",
+    "named time-zone handling (_tz.py)"
+   ],
+   "totals": {
+    "deviations": 14,
+    "conventions_broken": 9,
+    "primary": 10,
+    "primary_conventions": 7,
+    "secondary_brief_md": 4
+   }
+  },
+  "06": {
+   "files_reviewed": [
+    "iris_src/src/Graph/KG/IVFIndex.cls",
+    "iris_src/src/Graph/KG/VecIndex.cls",
+    "iris_src/src/Graph/KG/PLAIDSearch.cls",
+    "iris_src/src/Graph/KG/EmbedQueue.cls",
+    "iris_src/src/Graph/KG/EmbedQueueTask.cls",
+    "iris_vector_graph/embedding_identity.py",
+    "iris_vector_graph/embed_selector.py",
+    "iris_vector_graph/vector_utils.py",
+    "iris_vector_graph/_widths.py",
+    "iris_vector_graph/_engine/vector.py (vector parts)",
+    "iris_vector_graph/_engine/embeddings.py",
+    "iris_vector_graph/migrations/graph_scoped_embeddings.py",
+    "iris_vector_graph/migrations/docs_and_edge_vectors.py",
+    "iris_vector_graph/migrations/kg_node_stores.py",
+    "iris_vector_graph/_engine/schema.py:538-602,987-1514,1811-1831",
+    "iris_vector_graph/schema.py:2144-2156,2437-2483"
+   ],
+   "coverage": {
+    "iris_src/src/Graph/KG/IVFIndex.cls": "full (scoring swept)",
+    "iris_src/src/Graph/KG/VecIndex.cls": "full (scoring swept)",
+    "iris_src/src/Graph/KG/PLAIDSearch.cls": "full (scoring swept)",
+    "iris_src/src/Graph/KG/EmbedQueue.cls": "full",
+    "iris_src/src/Graph/KG/EmbedQueueTask.cls": "full",
+    "iris_vector_graph/embedding_identity.py": "full",
+    "iris_vector_graph/embed_selector.py": "full",
+    "iris_vector_graph/vector_utils.py": "full",
+    "iris_vector_graph/_widths.py": "full",
+    "iris_vector_graph/_engine/vector.py": "sweep",
+    "iris_vector_graph/_engine/embeddings.py": "sweep (write paths read)",
+    "iris_vector_graph/migrations/graph_scoped_embeddings.py": "sweep",
+    "iris_vector_graph/migrations/docs_and_edge_vectors.py": "sweep",
+    "iris_vector_graph/migrations/kg_node_stores.py": "sweep",
+    "iris_vector_graph/_engine/schema.py": "sweep (named part)",
+    "iris_vector_graph/schema.py": "sweep (named part)"
+   },
+   "deviations": [
+    {
+     "id": "D-06-01",
+     "convention": "C-14",
+     "where": "iris_src/src/Graph/KG/IVFIndex.cls:1",
+     "what": "no class header"
+    },
+    {
+     "id": "D-06-02",
+     "convention": "C-14",
+     "where": "iris_src/src/Graph/KG/PLAIDSearch.cls:1",
+     "what": "no class header"
+    },
+    {
+     "id": "D-06-03",
+     "convention": "C-14",
+     "where": "iris_src/src/Graph/KG/EmbedQueue.cls:23-25",
+     "what": "class description says embedding is Python-side; ProcessBatch embeds and writes vectors in IRIS (308-320)"
+    },
+    {
+     "id": "D-06-04",
+     "convention": "C-14",
+     "where": "iris_src/src/Graph/KG/VecIndex.cls:4,9",
+     "what": "header lists mahalanobis; Metrics/CheckMetric refuse it (26-40)"
+    },
+    {
+     "id": "D-06-05",
+     "convention": "C-17",
+     "where": "iris_vector_graph/_engine/schema.py:1054-1056",
+     "what": "unreadable registry becomes no identity on the write path"
+    },
+    {
+     "id": "D-06-06",
+     "convention": "C-17",
+     "where": "iris_vector_graph/_engine/embeddings.py:1916-1918",
+     "what": "process_embed_queue: failed claim answers processed 0, errors 0"
+    },
+    {
+     "id": "D-06-07",
+     "convention": "C-17",
+     "where": "iris_vector_graph/_engine/embeddings.py:2084-2086",
+     "what": "clear_done: except Exception: return 0"
+    },
+    {
+     "id": "D-06-08",
+     "convention": "C-17",
+     "where": "iris_vector_graph/_engine/embeddings.py:2117-2119",
+     "what": "start_background_embedding: except Exception: return \"\""
+    },
+    {
+     "id": "D-06-09",
+     "convention": "C-17",
+     "where": "iris_vector_graph/migrations/kg_node_stores.py:285-287",
+     "what": "iFind repair exception logged at debug, migration continues"
+    },
+    {
+     "id": "D-06-10",
+     "convention": "C-27",
+     "where": "iris_vector_graph/_engine/vector.py:368",
+     "what": "edge_vector_search: three-argument TO_VECTOR for the query vector"
+    },
+    {
+     "id": "D-06-11",
+     "convention": "C-27",
+     "where": "iris_vector_graph/_engine/vector.py:1239-1240",
+     "what": "vector_search: three-argument TO_VECTOR for the query vector"
+    },
+    {
+     "id": "D-06-12",
+     "convention": "C-27",
+     "where": "iris_vector_graph/vector_utils.py:111-124",
+     "what": "check_hnsw_availability wires the declared width into the query TO_VECTOR"
+    },
+    {
+     "id": "D-06-13",
+     "convention": "C-27",
+     "where": "iris_vector_graph/vector_utils.py:319-321",
+     "what": "benchmark_vector_search wires the declared width into the query TO_VECTOR"
+    },
+    {
+     "id": "D-06-14",
+     "convention": "C-35",
+     "where": "iris_vector_graph/vector_utils.py:26,46-50,295,322,352",
+     "what": "VectorOptimizer hard-codes Graph_KG for reads and writes"
+    },
+    {
+     "id": "D-06-15",
+     "convention": "C-25",
+     "where": "iris_src/src/Graph/KG/IVFIndex.cls:34",
+     "what": "Build: unparenthesised first operand (secondary)"
+    },
+    {
+     "id": "D-06-16",
+     "convention": "C-25",
+     "where": "iris_src/src/Graph/KG/IVFIndex.cls:200",
+     "what": "Insert: unparenthesised first operand (secondary)"
+    },
+    {
+     "id": "D-06-17",
+     "convention": "C-25",
+     "where": "iris_src/src/Graph/KG/EmbedQueue.cls:313",
+     "what": "ProcessBatch: unparenthesised first operand (secondary)"
+    }
+   ],
+   "deviations_by_convention": {
+    "C-14": 4,
+    "C-17": 5,
+    "C-27": 4,
+    "C-35": 1,
+    "C-25": 3
+   },
+   "borderline": 4,
+   "candidates": [
+    {
+     "title": "A registry read that fails lets a vector write through unchecked",
+     "where": "iris_vector_graph/_engine/schema.py:1054-1056",
+     "existing_finding": "F-0601",
+     "severity": "S2",
+     "confidence": "high",
+     "severity_source": "the existing finding's record"
+    },
+    {
+     "title": "Edge and table searches use the lengthed TO_VECTOR for the query vector",
+     "where": "iris_vector_graph/_engine/vector.py:368,1240",
+     "existing_finding": "F-0612",
+     "severity": "S3",
+     "confidence": "high",
+     "severity_source": "the existing finding's record"
+    },
+    {
+     "title": "VectorOptimizer.migrate_to_optimized reports success with failures",
+     "where": "iris_vector_graph/vector_utils.py:247-249,271-277",
+     "existing_finding": "F-0613",
+     "severity": "S3",
+     "confidence": "high",
+     "severity_source": "the existing finding's record"
+    },
+    {
+     "title": "The IRIS queue worker writes vectors itself (EmbedQueue description says Python-side)",
+     "where": "iris_src/src/Graph/KG/EmbedQueue.cls:23-25,258-345",
+     "existing_finding": "F-0603",
+     "severity": "S2",
+     "confidence": "high",
+     "severity_source": "the existing finding's record"
+    },
+    {
+     "title": "VectorOptimizer reads and writes Graph_KG whatever the namespace's IVG Schema",
+     "where": "iris_vector_graph/vector_utils.py:26,46-50,235-240,295,322,352",
+     "existing_finding": null,
+     "severity": "S4",
+     "confidence": "high"
+    },
+    {
+     "title": "Embed-queue admin calls answer 'nothing done' when the call fails",
+     "where": "iris_vector_graph/_engine/embeddings.py:1916-1918,2084-2086,2117-2119",
+     "existing_finding": null,
+     "severity": "S4",
+     "confidence": "medium"
+    }
+   ],
+   "conventions_with_no_documented_rule": [
+    "ObjectScript indentation, Quit vs Return, p/t prefixes, single-line If forms, class/method naming (round-1 L-2)",
+    "Python docstrings and naming beyond the configured tools (round-1 L-3)",
+    "C-3 compile cleanliness and C-20 justified indirection: not judged",
+    "ownership and locking of ^IVF, ^VecIdx, ^PLAID and ^EmbedQueue (ARCHITECTURE.md:153-160 gives layouts only)"
+   ],
+   "totals": {
+    "deviations": 17,
+    "conventions_broken": 5,
+    "primary": 14,
+    "primary_conventions": 4,
+    "secondary_brief_md": 3
+   }
+  },
+  "07": {
+   "files_reviewed": [
+    "iris_src/src/Graph/KG/BM25Index.cls",
+    "iris_src/src/Graph/KG/SqlProcs.cls:115-135",
+    "iris_src/src/Graph/KG/Service.cls:286-302",
+    "iris_src/src/Graph/KG/PyOps.cls:305-421",
+    "iris_vector_graph/text_search.py",
+    "iris_vector_graph/fusion.py",
+    "iris_vector_graph/operators.py",
+    "iris_vector_graph/_engine/vector.py:917-1054,1382-1452,1749-1879",
+    "iris_vector_graph/schema.py:2485-2581",
+    "iris_vector_graph/cypher/translator.py:3145-3375"
+   ],
+   "coverage": {
+    "iris_src/src/Graph/KG/BM25Index.cls": "full",
+    "iris_src/src/Graph/KG/SqlProcs.cls": "full (named part)",
+    "iris_src/src/Graph/KG/Service.cls": "full (named part)",
+    "iris_src/src/Graph/KG/PyOps.cls": "full (named part)",
+    "iris_vector_graph/text_search.py": "full",
+    "iris_vector_graph/fusion.py": "full",
+    "iris_vector_graph/operators.py": "full",
+    "iris_vector_graph/_engine/vector.py": "full (named parts)",
+    "iris_vector_graph/schema.py": "sweep (named part read)",
+    "iris_vector_graph/cypher/translator.py": "sweep (named part read)"
+   },
+   "deviations": [
+    {
+     "id": "D-07-01",
+     "convention": "C-14",
+     "where": "iris_src/src/Graph/KG/BM25Index.cls:28-29",
+     "what": "header says stopwords are stored at class-load time; InitStopwords runs on first Tokenize"
+    },
+    {
+     "id": "D-07-02",
+     "convention": "C-29",
+     "where": "iris_src/src/Graph/KG/BM25Index.cls:97-175",
+     "what": "Build writes df, doc and counters with no index lock and no transaction"
+    },
+    {
+     "id": "D-07-03",
+     "convention": "C-29",
+     "where": "iris_src/src/Graph/KG/BM25Index.cls:587-591",
+     "what": "Drop kills the index without the write lock"
+    },
+    {
+     "id": "D-07-04",
+     "convention": "C-35",
+     "where": "iris_vector_graph/text_search.py:44-55,73-84",
+     "what": "docs table named unqualified, resolves outside the IVG Schema"
+    },
+    {
+     "id": "D-07-05",
+     "convention": "C-35",
+     "where": "iris_vector_graph/text_search.py:22-29",
+     "what": "default schema skips IVG_SCHEMA_PREFIX and the record"
+    },
+    {
+     "id": "D-07-06",
+     "convention": "C-40G2",
+     "where": "iris_src/src/Graph/KG/BM25Index.cls:486-490",
+     "what": "Insert's Catch runs a bare TRollback, ending the caller's transaction"
+    },
+    {
+     "id": "D-07-07",
+     "convention": "C-40G2",
+     "where": "iris_src/src/Graph/KG/BM25Index.cls:507-511",
+     "what": "Delete's Catch runs a bare TRollback, ending the caller's transaction"
+    },
+    {
+     "id": "D-07-08",
+     "convention": "C-25",
+     "where": "iris_src/src/Graph/KG/BM25Index.cls:241,309",
+     "what": "SearchCore: unparenthesised first operands (secondary)"
+    }
+   ],
+   "deviations_by_convention": {
+    "C-14": 1,
+    "C-29": 2,
+    "C-35": 2,
+    "C-40G2": 2,
+    "C-25": 1
+   },
+   "borderline": 4,
+   "candidates": [
+    {
+     "title": "BM25 Build and Drop write without the write lock or a transaction",
+     "where": "iris_src/src/Graph/KG/BM25Index.cls:97-175,587-591",
+     "existing_finding": "F-0701",
+     "severity": "S2",
+     "confidence": "high",
+     "severity_source": "the existing finding's record"
+    },
+    {
+     "title": "TextSearchEngine cannot reach iFind (unqualified docs table) and answers across graphs",
+     "where": "iris_vector_graph/text_search.py:44-55,73-84",
+     "existing_finding": "F-0711",
+     "severity": "S1",
+     "confidence": "high",
+     "severity_source": "the existing finding's record"
+    },
+    {
+     "title": "A failed bm25_insert/bm25_delete inside a caller's transaction rolls back the caller's work",
+     "where": "iris_src/src/Graph/KG/BM25Index.cls:486-490,507-511; iris_vector_graph/_engine/vector.py:1840-1855",
+     "existing_finding": null,
+     "severity": "S2",
+     "confidence": "medium"
+    },
+    {
+     "title": "TextSearchEngine without schema= ignores IVG_SCHEMA_PREFIX and reads Graph_KG",
+     "where": "iris_vector_graph/text_search.py:22-29",
+     "existing_finding": null,
+     "severity": "S4",
+     "confidence": "low"
+    }
+   ],
+   "conventions_with_no_documented_rule": [
+    "ObjectScript indentation, Quit vs Return, p/t prefixes, single-line If forms, class/method naming (round-1 L-2)",
+    "Python docstrings and naming beyond the configured tools (round-1 L-3)",
+    "C-3 compile cleanliness and C-20 justified indirection: not judged",
+    "fusion weights and scoring"
+   ],
+   "totals": {
+    "deviations": 8,
+    "conventions_broken": 5,
+    "primary": 7,
+    "primary_conventions": 4,
+    "secondary_brief_md": 1
+   }
+  }
+ },
+ "added_conventions": {
+  "C-40G2": "PRE_RELEASE_CHECKLIST.md:354-356: every IVG write runs as a nested level of its own, so it never commits or rolls back a transaction its caller opened (known exceptions :384)"
+ },
+ "pin": "3eaa79cf",
+ "evidence_grade": "inspected (source reading only)"
+}

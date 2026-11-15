@@ -1,0 +1,346 @@
+{
+ "lane": "refusals (earlier evidence kept)",
+ "source": "refusals/MATRIX-INPUT.json",
+ "cells": [
+  {
+   "gate": "5c-refusals",
+   "module": "01",
+   "status": "closed",
+   "evidence": [
+    "run:rx-live-01",
+    "run:rx-live-priv",
+    "run:val-gated-rag-1",
+    "run:val-scratch-1",
+    "run:val-unit-3-c00",
+    "run:val-unit-3-c01",
+    "run:val-unit-3-c02",
+    "run:val-unit-3-c03",
+    "run:val-unit-3-c04",
+    "run:val-unit-3-c05",
+    "run:val-unit-3-c06",
+    "run:rx-audit-r2",
+    "run:rx-audit-selftest-r2",
+    "refusals/audit.json",
+    "refusals/REFUSALS.md",
+    "run:rx-audit",
+    "run:rx-audit-selftest",
+    "findings/audit/01.json"
+   ],
+   "evidence_grade": "live (blocked-access 1, holds-inspected 2, holds-live 15, holds-run 11)",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "29 X statements audited mechanically (rx-audit-r2): blocked-access 1, holds-inspected 2, holds-live 15, holds-run 11; no refusal found not implemented as stated, but not every one is evidenced live",
+   "as_built_findings": [],
+   "remaining": "INS-X2.10 blocked-access (needs a namespace with no schema record holding the product's tables in another schema; the only fixture, tests/e2e/test_262_record.py, was skipped in every validation run, and no scratch namespace was created); 11 statements evidenced by upstream tests passed here (val-*), not live (no-record namespace, foreign classes in a schema package, v3.2.0 tables, refused mid-upgrade commit); INS-X5.6 and INS-X6.13 inspected only (X6.13's function driven live). INS-X1.5 and INS-X10.7 now live as IVGAUDIT_RO (rx-live-priv)"
+  },
+  {
+   "gate": "5c-refusals",
+   "module": "04",
+   "status": "closed",
+   "evidence": [
+    "run:rx-live-04",
+    "run:val-integration-1-c05",
+    "run:rx-audit-r2",
+    "run:rx-audit-selftest-r2",
+    "refusals/audit.json",
+    "refusals/REFUSALS.md",
+    "run:rx-audit",
+    "run:rx-audit-selftest",
+    "findings/audit/04.json"
+   ],
+   "evidence_grade": "live (holds-live 2, product-defect 1)",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "3 X statements audited mechanically (rx-audit-r2): holds-live 2, product-defect 1; refusals not implemented as stated: ADJ-X4.7",
+   "as_built_findings": [
+    "F-C0415"
+   ],
+   "remaining": "ADJ-X4.7 fails: a refused erase/rebuild (writer lock not granted) leaves ^IVG.AdjNoLock(g), ^KG gen/version counters and rdf_props iFind words behind, and the refusal comes after 5 s per deleted edge row (F-C0415)"
+  },
+  {
+   "gate": "5c-refusals",
+   "module": "06",
+   "status": "closed",
+   "evidence": [
+    "run:breadth-a-probe-local-0101-0601",
+    "run:rx-live-06",
+    "run:rx-live-priv-vec",
+    "run:rx-probe-06-local",
+    "run:val-e2e-1-c00",
+    "run:val-unit-2",
+    "run:val-unit-3-c00",
+    "run:val-unit-3-c01",
+    "run:val-unit-3-c02",
+    "run:val-unit-3-c03",
+    "run:val-unit-3-c05",
+    "run:val-unit-3-c06",
+    "run:rx-audit-r2",
+    "run:rx-audit-selftest-r2",
+    "refusals/audit.json",
+    "refusals/REFUSALS.md",
+    "run:rx-audit",
+    "run:rx-audit-selftest",
+    "findings/audit/06.json"
+   ],
+   "evidence_grade": "live (blocked-access 1, holds-live 24, holds-run 10, intent-undecided 1, product-defect 5)",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "41 X statements audited mechanically (rx-audit-r2): blocked-access 1, holds-live 24, holds-run 10, intent-undecided 1, product-defect 5; refusals not implemented as stated: VEC-X1.16, VEC-X3.9, VEC-X3.16, VEC-X5.15, VEC-X6.7",
+   "as_built_findings": [
+    "F-0601",
+    "F-0612",
+    "F-0613",
+    "F-0614",
+    "F-0615"
+   ],
+   "remaining": "product defects VEC-X1.16 (F-0601: live as IVGAUDIT_RO, rx-live-priv-vec: refused on a fresh engine only by the route lookup; with a cached route a write after REVOKE SELECT on the registry lands), X3.9 (F-0615), X3.16 (F-0613), X5.15 (F-0612, edge-route half now live), X6.7 (F-0614); VEC-X8.4 intent-undecided (pin docstring answers [] for an unreadable registry); VEC-X5.11 blocked-access (needs an IRIS without native VECTOR_COSINE, before 2024.1); 10 statements by upstream tests passed here only (restricted user or legacy/upgrade states: the O-1 4.5.1 fixture namespace could make the quarantine/migration ones live)"
+  },
+  {
+   "gate": "5c-refusals",
+   "module": "10",
+   "status": "closed",
+   "evidence": [
+    "run:b-10-run-unit",
+    "run:rx-live-10",
+    "run:rx-live-10-rebuild-wait",
+    "run:rx-live-priv",
+    "run:rx-audit-r2",
+    "run:rx-audit-selftest-r2",
+    "refusals/audit.json",
+    "refusals/REFUSALS.md",
+    "run:rx-audit",
+    "run:rx-audit-selftest",
+    {
+     "kind": "live",
+     "ref": "b-10-live-refusals"
+    },
+    {
+     "kind": "run",
+     "ref": "b-10-run-unit"
+    }
+   ],
+   "evidence_grade": "live (blocked-access 1, holds-live 28, holds-run 5)",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "34 X statements audited mechanically (rx-audit-r2): blocked-access 1, holds-live 28, holds-run 5; no refusal found not implemented as stated, but not every one is evidenced live",
+   "as_built_findings": [],
+   "remaining": "ALG-B6.95 library branches blocked-access (x86_64 libarno_callout.so 1.2.1, F-1001); ALG-B1.13, B15.2, B15.3, B15.10, B15.11 by upstream tests/gate functions only (B1.13 mocked path). ALG-B9.3 now live as IVGAUDIT_RO (rx-live-priv)"
+  },
+  {
+   "gate": "5c-refusals",
+   "module": "11",
+   "status": "closed",
+   "evidence": [
+    "run:rx-live-11",
+    "run:rx-live-11-r2",
+    "run:rx-audit-r2",
+    "run:rx-audit-selftest-r2",
+    "refusals/audit.json",
+    "refusals/REFUSALS.md",
+    "run:rx-audit",
+    "run:rx-audit-selftest",
+    "live:b-11-live-findings",
+    "live:b-11-live-footprints-1",
+    "run:b-11-run-unit",
+    "finding:F-1107"
+   ],
+   "evidence_grade": "live (holds-inspected 1, holds-live 30, product-defect 1)",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "32 X statements audited mechanically (rx-audit-r2): holds-inspected 1, holds-live 30, product-defect 1; refusals not implemented as stated: LED-B4.9.2",
+   "as_built_findings": [
+    "F-1107"
+   ],
+   "remaining": "LED-B4.9.2 fails (any revision kind is accepted and stored, F-1107, live again); LED-B3.4 inspected only (enabled with head 0 is unreachable through any entry point)"
+  },
+  {
+   "gate": "5c-refusals",
+   "module": "15",
+   "status": "closed",
+   "evidence": [
+    "run:rx-live-15",
+    "run:val-unit-3-c01",
+    "run:rx-audit-r2",
+    "run:rx-audit-selftest-r2",
+    "refusals/audit.json",
+    "refusals/REFUSALS.md",
+    "run:rx-audit",
+    "run:rx-audit-selftest",
+    "c15-live-refusals",
+    "c15-live-register",
+    "c15-run-unit",
+    "modules/15.json refusals"
+   ],
+   "evidence_grade": "live (blocked-access 8, holds-inspected 1, holds-live 29, holds-run 1, product-defect 1)",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "40 X statements audited mechanically (rx-audit-r2): blocked-access 8, holds-inspected 1, holds-live 29, holds-run 1, product-defect 1; refusals not implemented as stated: INT-R1.19",
+   "as_built_findings": [
+    "F-1506"
+   ],
+   "remaining": "INT-R1.19 fails (F-1506, first live reproduction with an rdflib-8 stand-in in the probe process); 8 statements (INT-F1.5, F1.14, F1.20, F2.3, F2.4, F3.3, F3.4, F9.2) blocked-access on HS.FHIRServer classes and a FHIR repository (IRIS for Health), parts reachable without one probed live; INT-X80.86 inspected only (AUDITE has the functional adjacency index); INT-F5.8 by an upstream test"
+  },
+  {
+   "gate": "5c-refusals",
+   "module": "16",
+   "status": "closed",
+   "evidence": [
+    "run:rx-live-16",
+    "run:val-gated-rag-1",
+    "run:rx-audit-r2",
+    "run:rx-audit-selftest-r2",
+    "refusals/audit.json",
+    "refusals/REFUSALS.md",
+    "run:rx-audit",
+    "run:rx-audit-selftest",
+    "c16-s1-cypher-http"
+   ],
+   "evidence_grade": "live (holds-live 24, holds-run 1)",
+   "level": "product",
+   "product_obligation": "unknown",
+   "product_basis": "25 X statements audited mechanically (rx-audit-r2): holds-live 24, holds-run 1; no refusal found not implemented as stated, but not every one is evidenced live",
+   "as_built_findings": [],
+   "remaining": "API-X11.4 by the pinned e2e test only (val-gated-rag-1), not re-probed (a defect would reconfigure a system web application on the shared container); API-X13.6/X13.106 probed with inert stand-ins for torch and structlog"
+  },
+  {
+   "gate": "5c-refusals",
+   "module": "17",
+   "status": "closed",
+   "evidence": [
+    "run:rx-live-17",
+    "run:rx-live-priv",
+    "run:val-unit-3-c02",
+    "run:val-unit-3-c05",
+    "run:rx-audit-r2",
+    "run:rx-audit-selftest-r2",
+    "refusals/audit.json",
+    "refusals/REFUSALS.md",
+    "run:rx-audit",
+    "run:rx-audit-selftest",
+    "F-1703 (strict namespace warns, X statement says raise)",
+    "F-1714"
+   ],
+   "evidence_grade": "live (holds-live 26, holds-run 1, product-defect 3)",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "30 X statements audited mechanically (rx-audit-r2): holds-live 26, holds-run 1, product-defect 3; refusals not implemented as stated: OPS-X2.1.1, OPS-X4.8.2, OPS-X6.2",
+   "as_built_findings": [
+    "F-1703",
+    "F-1714",
+    "F-C1715"
+   ],
+   "remaining": "OPS-X4.8.2 (F-1703), OPS-X6.2 (F-1714, explain and load_ndjson raise httpx.HTTPStatusError), OPS-X2.1.1 (close does not run, F-C1715) fail; OPS-X5.7.1 by an upstream unit test only (needs a namespace without Graph.KG.Eraser); async client not re-probed for OPS-X6.2. OPS-X4.84 now live as IVGAUDIT_RO (rx-live-priv)"
+  },
+  {
+   "gate": "5c-refusals",
+   "module": "18",
+   "status": "closed",
+   "evidence": [
+    "run:rx-live-18",
+    "run:rx-live-priv",
+    "run:val-unit-3-c02",
+    "run:rx-audit-r2",
+    "run:rx-audit-selftest-r2",
+    "refusals/audit.json",
+    "refusals/REFUSALS.md",
+    "run:rx-audit",
+    "run:rx-audit-selftest",
+    "SNP-X2.1/X2.2: c18-live-refusals",
+    "SNP-X2.14: F-C1802",
+    "SNP-X5.1: F-1806"
+   ],
+   "evidence_grade": "live (holds-live 8, product-defect 2)",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "10 X statements audited mechanically (rx-audit-r2): holds-live 8, product-defect 2; refusals not implemented as stated: SNP-X2.14, SNP-X5.1",
+   "as_built_findings": [
+    "F-1806",
+    "F-C1802"
+   ],
+   "remaining": "SNP-X2.14 (F-C1802) and SNP-X5.1 (F-1806) fail, reproduced live; SNP-X1.3 now live as IVGAUDIT_RO (rx-live-priv; the native-index half cannot be separated: AUDITE's globals share one database resource)"
+  },
+  {
+   "gate": "3.5-decoders",
+   "module": "07",
+   "status": "closed",
+   "evidence": [
+    "run:rx-dec-map",
+    "run:rx-dec-selftest",
+    "run:rx-dec-live-07",
+    "run:rx-dec-unit",
+    "refusals/decoders/decoders.json",
+    {
+     "kind": "live",
+     "ref": "b-07-f0705-f0707"
+    },
+    {
+     "kind": "live",
+     "ref": "b-07-f0709"
+    }
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "5 module-07 decoders and their error/status maps enumerated from source (rx-dec-map, 0 unmapped, 0 unexplained dead reads); driven live: 11 cases, 6 match, 5 mismatch: Info of an index built by bm25_insert answers '' and decodes as the default graph (F-0705, reproduced; 'Info answers null for an absent graph' still fails), bm25_search rewrites ids containing ':.5' etc. (F-C0715, S2), List mis-decodes names with a comma or leading space (F-C0716), a tab in a graph name makes Build/Info answer invalid JSON (F-C0717); 107 upstream decoder unit tests pass (rx-dec-unit)",
+   "as_built_findings": [
+    "F-0705",
+    "F-C0715",
+    "F-C0716",
+    "F-C0717"
+   ],
+   "remaining": "the /hybridSearch HTTP status map (needs a CSP web application on the container) and kg_TXT's non-iFind fallback branches (-359/-151/-149, need the iFind index removed) not driven live"
+  },
+  {
+   "gate": "3.5-decoders",
+   "module": "10",
+   "status": "closed",
+   "evidence": [
+    "run:rx-dec-map",
+    "run:rx-dec-selftest",
+    "run:rx-dec-live-10",
+    "run:rx-dec-unit",
+    "run:b-10-run-unit",
+    "refusals/decoders/decoders.json",
+    "run:rx-live-priv",
+    {
+     "kind": "run",
+     "ref": "b-10-run-unit"
+    }
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "6 module-10 decoders and error maps enumerated (ALG-I5: all 17 store execute_* calls raise or fall back to the Owner, 0 unmapped); driven live: 10 cases, 7 match (PageRank -> _scored_node_rows, SubgraphJson, degree, BFSFastJson -> khop, ALG-I5 non-convergence raises, _RUNJSON_MISSING error-text shapes), 2 mismatch: a default-graph node named 'largest'/'components'/'communities' makes _membership_rows refuse the Owner's valid WCC and CDLP answers (F-C1018), 1 blocked",
+   "as_built_findings": [
+    "F-C1018"
+   ],
+   "remaining": "Native Reader (ArnoAccel) decoders blocked-access (x86_64 libarno_callout.so, F-1001); the degree fallback and _runjson_failure branches not exercised live (need a missing deployed class or pre-4.6 classes; token and text shapes checked statically). _refused_work_area's message now live as IVGAUDIT_RO (rx-live-priv, ALG-B9.3)"
+  },
+  {
+   "gate": "3.5-decoders",
+   "module": "18",
+   "status": "closed",
+   "evidence": [
+    "run:rx-dec-map",
+    "run:rx-dec-selftest",
+    "run:rx-dec-live-18",
+    "run:rx-dec-unit",
+    "run:c18-live-value-types",
+    "run:c18-live-swallowed-lines",
+    "refusals/decoders/decoders.json",
+    "run:rx-live-priv",
+    "F-1804",
+    "F-C1802"
+   ],
+   "evidence_grade": "live",
+   "level": "product",
+   "product_obligation": "fails",
+   "product_basis": "2 module-18 decoders plus the snapshot HTTP map enumerated; driven live: 6 cases, 5 match (snapshot_info = metadata.json, vector-global archive forms vec/list/v round-trip, six SQL tables row-identical after save and replacing restore, _table_missing maps SQLCODE -30 and not -29, POST /admin/snapshot 200/403/500/401), 1 mismatch: 12 ^KG nodes (edgeprop, tagg count/min/max/sum, tin, tlast, bucket) come back as text (F-1804, on more stores than its record shows); F-C1802 cited from c18-live-swallowed-lines; the SnapshotReadError mapping for a refused table is now live as IVGAUDIT_RO (rx-live-priv, SNP-X1.3: -99 on Graph_KG.rdf_props -> SnapshotReadError naming it, no archive)",
+   "as_built_findings": [
+    "F-1804",
+    "F-C1802"
+   ],
+   "remaining": ""
+  }
+ ]
+}

@@ -1,0 +1,24 @@
+[
+ {
+  "id": "F-C1110",
+  "module": "11",
+  "title": "After a BUILD INDEX, a duplicate-key insert raises <LIST ERROR>, which the duplicate check does not recognise",
+  "intended": "`_write_txn.is_duplicate` (iris_vector_graph/_write_txn.py:46-49) treats a unique-key refusal as 'already there'.",
+  "observed": "IRIS contract clause X-NOINDEX (round r6, scratch tables only): after BUILD INDEX a duplicate insert through DB-API raises DataError <LIST ERROR> instead of SQLCODE -119; is_duplicate matches only 'unique' or '-119'. Not reproduced on the product's own tables.",
+  "disposition": "confirmed-source",
+  "evidence": [
+   {
+    "kind": "run",
+    "ref": "env-ext-r6"
+   }
+  ],
+  "gates": [
+   "3.2-coverage",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S3",
+  "confidence": "medium",
+  "remedy": "Recognise the <LIST ERROR> form in is_duplicate (or check the key explicitly) after index rebuilds.",
+  "notes": "Candidate from the contract-extension lane; affects writers after the bulk loader's index rebuild or BUILD INDEX (modules 03, 08, 11)."
+ }
+]

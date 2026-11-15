@@ -1,0 +1,16 @@
+{
+ "doc": "F-0509: InternLabelSet writes keys and string values unescaped, so a value holding a quote resolves to text\n    that is not JSON.",
+ "id": "p0509_label_set_json",
+ "log": "$RUN_DIR/breadth-a/live/05-all-20261113T224508.log",
+ "module": "05",
+ "observed": {
+  "hash": "26c78fcd160e2ac0935cefe478ec33cc3f5c2555",
+  "json_error": "Expecting ',' delimiter: line 1 column 9 (char 8)",
+  "resolved": "{\"k\":\"a\"b\"}"
+ },
+ "oracle": "the canonical form of a label set is JSON (spec 204 FR-012)",
+ "reproduced": true,
+ "seconds": 0.06,
+ "started": "2026-11-13T22:45:10",
+ "verdict": "resolved text is not JSON"
+}

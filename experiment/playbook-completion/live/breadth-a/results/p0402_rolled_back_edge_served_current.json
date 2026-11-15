@@ -1,0 +1,24 @@
+{
+ "doc": "F-0402: writer W opens a transaction and creates an edge (the row hook writes ^KG and steps ^KG(\"__version\")\n    outside the transaction); reader R computes WCC (cached under the token it read) while W is open; W rolls back;\n    a fresh engine's WCC is served from the cache, still joining the rolled-back edge's endpoints.\n    Oracle: AlgoCache.cls:5-7 \"never wrongly fresh\"; ADR-0012:23-26 names this case unsafe.",
+ "id": "p0402_rolled_back_edge_served_current",
+ "log": "$RUN_DIR/breadth-a/live/04-all-20261113T224336.log",
+ "module": "04",
+ "observed": {
+  "edge_rows_after_rollback": 0,
+  "fresh_engine_cache_stats": {
+   "hit": 1
+  },
+  "fresh_engine_wcc_same_component": true,
+  "out_entry_after_rollback": 0,
+  "token_after_rollback": 115,
+  "token_before": 114,
+  "token_with_open_write": 115,
+  "wcc_during_open_write_same_component": true,
+  "writer_tlevel": 1
+ },
+ "oracle": "after W's rollback no current cached answer includes W's edge",
+ "reproduced": true,
+ "seconds": 1.1,
+ "started": "2026-11-13T22:43:36",
+ "verdict": "cache entry stamped with the rolled-back write's token served the rolled-back edge"
+}

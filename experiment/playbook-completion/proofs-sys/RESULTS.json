@@ -1,0 +1,3110 @@
+{
+  "crate": "experiment/playbook-completion/proofs-sys (ivg-proofs-sys)",
+  "debt": "D-14 remainder (experiment/playbook-completion/PROOF-DEBT.md): the module-00 axioms over the composed mechanisms",
+  "scope": "statements about the semantics lane's composed module-00 model (sys00) only; no proof connects the product at pin 3eaa79cf to it; the pin's as-built composition stays failed (a located control)",
+  "generated_utc": "2026-11-14T23:51:42+00:00",
+  "run_dir": "$RUN_DIR/proofs-sys/run-20261114T234729Z",
+  "verus": "0.2026.10.04.426d8b0",
+  "actors_rev": "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877",
+  "sources_sha256": "fc9757dc97b10479b3f8f5d25e14d0c93ca1156b9cc78c60c3ee4096945e09df",
+  "complete_run": true,
+  "hygiene_problems": [],
+  "baseline": {
+    "tag": "baseline",
+    "features": "",
+    "rc": 0,
+    "timed_out": false,
+    "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+    "log": "$RUN_DIR/proofs-sys/run-20261114T234729Z/baseline.log",
+    "json": "$RUN_DIR/proofs-sys/run-20261114T234729Z/baseline.json",
+    "wall_seconds": 8.13,
+    "error_locations": [],
+    "resource_limit_hit": false,
+    "json_sha256": "7f0124c749b03b8d4c13ee892300cb360ecc4e7f29442598b95a3a915d903d54",
+    "verified": 256,
+    "errors": 0,
+    "success": true,
+    "verus_total_ms": 7641,
+    "smt_run_ms": 14993,
+    "rlimit_total": 59998656,
+    "modules": {
+      "base": {
+        "ms": 5595,
+        "rlimit": 25030521
+      },
+      "axioms": {
+        "ms": 4488,
+        "rlimit": 19668673
+      },
+      "cx": {
+        "ms": 2023,
+        "rlimit": 7281619
+      },
+      "progress": {
+        "ms": 1172,
+        "rlimit": 2905898
+      },
+      "facts": {
+        "ms": 978,
+        "rlimit": 2756030
+      },
+      "inst": {
+        "ms": 635,
+        "rlimit": 2055931
+      },
+      "bridge": {
+        "ms": 76,
+        "rlimit": 253278
+      },
+      "theorem": {
+        "ms": 14,
+        "rlimit": 29683
+      },
+      "sys": {
+        "ms": 8,
+        "rlimit": 17023
+      }
+    },
+    "top_functions": [
+      {
+        "function": "base::lemma_base_run",
+        "ms": 2978,
+        "rlimit": 12895487,
+        "success": true
+      },
+      {
+        "function": "base::lemma_positions",
+        "ms": 1392,
+        "rlimit": 6801878,
+        "success": true
+      },
+      {
+        "function": "axioms::lemma_ax07_step",
+        "ms": 1184,
+        "rlimit": 5904520,
+        "success": true
+      },
+      {
+        "function": "axioms::lemma_ax02",
+        "ms": 1339,
+        "rlimit": 5506351,
+        "success": true
+      },
+      {
+        "function": "axioms::lemma_ax10_step",
+        "ms": 739,
+        "rlimit": 3140109,
+        "success": true
+      },
+      {
+        "function": "base::lemma_effect_binding",
+        "ms": 632,
+        "rlimit": 2711255,
+        "success": true
+      },
+      {
+        "function": "progress::lemma_ef",
+        "ms": 621,
+        "rlimit": 1475709,
+        "success": true
+      },
+      {
+        "function": "axioms::lemma_ax11m_step",
+        "ms": 222,
+        "rlimit": 1132627,
+        "success": true
+      },
+      {
+        "function": "base::lemma_base_run_marker",
+        "ms": 140,
+        "rlimit": 979523,
+        "success": true
+      },
+      {
+        "function": "axioms::lemma_ax03",
+        "ms": 194,
+        "rlimit": 863030,
+        "success": true
+      }
+    ],
+    "failing_functions": [],
+    "functions_checked": 256,
+    "max_function_rlimit": 12895487,
+    "named_lemmas_missing": [],
+    "pass": true,
+    "functions": [
+      "axioms::lemma_ax02",
+      "axioms::lemma_ax03",
+      "axioms::lemma_ax04_step",
+      "axioms::lemma_ax05",
+      "axioms::lemma_ax06_step",
+      "axioms::lemma_ax07_step",
+      "axioms::lemma_ax08_step",
+      "axioms::lemma_ax10_step",
+      "axioms::lemma_ax11m_step",
+      "axioms::lemma_run",
+      "axioms::theorem_ax02",
+      "axioms::theorem_ax03",
+      "axioms::theorem_ax04",
+      "axioms::theorem_ax05",
+      "axioms::theorem_ax06",
+      "axioms::theorem_ax07",
+      "axioms::theorem_ax08",
+      "axioms::theorem_ax10",
+      "axioms::theorem_ax11",
+      "axioms::theorem_ax11m",
+      "axioms::theorem_ax12",
+      "base::lemma_after",
+      "base::lemma_base_run",
+      "base::lemma_base_run_lock",
+      "base::lemma_base_run_marker",
+      "base::lemma_base_run_pcs",
+      "base::lemma_base_step",
+      "base::lemma_effect_binding",
+      "base::lemma_effect_data",
+      "base::lemma_frame",
+      "base::lemma_init",
+      "base::lemma_positions",
+      "base::lemma_run_shape",
+      "base::theorem_base",
+      "bridge::bridge_m02",
+      "bridge::bridge_m03",
+      "bridge::bridge_m04",
+      "bridge::bridge_m05",
+      "bridge::bridge_m10",
+      "bridge::component_m02",
+      "bridge::component_m03",
+      "bridge::component_m04",
+      "bridge::component_m05",
+      "bridge::component_m10",
+      "cx::cx_ctlbindingkept_ax10",
+      "cx::cx_ctlcheckbeforelock_ax07",
+      "cx::cx_ctlcheckbeforelock_ax11",
+      "cx::cx_ctlcheckbeforelock_ax11m",
+      "cx::cx_ctldeleterecords_ax05",
+      "cx::cx_ctleraseskipsderived_ax08",
+      "cx::cx_ctleraseskipsderived_ax10",
+      "cx::cx_ctlerasesplit_ax04",
+      "cx::cx_ctlmarkernevercleared_ax14",
+      "cx::cx_ctlpostonreplay_ax06",
+      "cx::cx_ctlpostonreplay_ax10",
+      "cx::cx_ctlpostonreplay_ax11m",
+      "cx::cx_ctlreceiptearly_ax10",
+      "cx::cx_ctlreceiptearly_ax12",
+      "cx::cx_ctlrefusalwrites_ax03",
+      "cx::cx_ctlrefusalwrites_ax07",
+      "cx::cx_ctlrefusalwrites_ax08",
+      "cx::cx_ctlrefusalwrites_ax11m",
+      "cx::cx_ctltombbothtenants_ax02",
+      "cx::cx_ctltombbothtenants_ax07",
+      "cx::cx_ctlunrecordedapply_ax07",
+      "cx::cx_sysasbuilt_ax06",
+      "cx::cx_sysasbuilt_ax07",
+      "cx::cx_sysasbuilt_ax08",
+      "cx::cx_sysasbuilt_ax10",
+      "cx::cx_sysasbuilt_ax11",
+      "cx::cx_sysasbuilt_ax11m",
+      "cx::lemma_never_cleared",
+      "cx::lemma_no_live",
+      "cx::no_live",
+      "facts::lemma_facts_ce",
+      "facts::lemma_facts_env",
+      "facts::lemma_facts_r",
+      "facts::lemma_facts_step",
+      "facts::lemma_facts_w",
+      "facts::lemma_w_blocked",
+      "facts::theorem_facts",
+      "inst::SysReviewed::discharge_ax02",
+      "inst::SysReviewed::discharge_ax03",
+      "inst::SysReviewed::discharge_ax04",
+      "inst::SysReviewed::discharge_ax05",
+      "inst::SysReviewed::discharge_ax06",
+      "inst::SysReviewed::discharge_ax07",
+      "inst::SysReviewed::discharge_ax08",
+      "inst::SysReviewed::discharge_ax10",
+      "inst::SysReviewed::discharge_ax11",
+      "inst::SysReviewed::discharge_ax11m",
+      "inst::SysReviewed::discharge_ax12",
+      "inst::SysReviewed::discharge_ax14",
+      "inst::keep_ctlbindingkept_ax02",
+      "inst::keep_ctlbindingkept_ax03",
+      "inst::keep_ctlbindingkept_ax04",
+      "inst::keep_ctlbindingkept_ax05",
+      "inst::keep_ctlbindingkept_ax06",
+      "inst::keep_ctlbindingkept_ax07",
+      "inst::keep_ctlbindingkept_ax08",
+      "inst::keep_ctlbindingkept_ax11",
+      "inst::keep_ctlbindingkept_ax11m",
+      "inst::keep_ctlbindingkept_ax12",
+      "inst::keep_ctlbindingkept_ax14",
+      "inst::keep_ctlcheckbeforelock_ax02",
+      "inst::keep_ctlcheckbeforelock_ax03",
+      "inst::keep_ctlcheckbeforelock_ax04",
+      "inst::keep_ctlcheckbeforelock_ax05",
+      "inst::keep_ctlcheckbeforelock_ax06",
+      "inst::keep_ctlcheckbeforelock_ax08",
+      "inst::keep_ctlcheckbeforelock_ax10",
+      "inst::keep_ctlcheckbeforelock_ax12",
+      "inst::keep_ctlcheckbeforelock_ax14",
+      "inst::keep_ctldeleterecords_ax02",
+      "inst::keep_ctldeleterecords_ax03",
+      "inst::keep_ctldeleterecords_ax04",
+      "inst::keep_ctldeleterecords_ax06",
+      "inst::keep_ctldeleterecords_ax07",
+      "inst::keep_ctldeleterecords_ax08",
+      "inst::keep_ctldeleterecords_ax10",
+      "inst::keep_ctldeleterecords_ax11",
+      "inst::keep_ctldeleterecords_ax11m",
+      "inst::keep_ctldeleterecords_ax12",
+      "inst::keep_ctldeleterecords_ax14",
+      "inst::keep_ctleraseskipsderived_ax02",
+      "inst::keep_ctleraseskipsderived_ax03",
+      "inst::keep_ctleraseskipsderived_ax04",
+      "inst::keep_ctleraseskipsderived_ax05",
+      "inst::keep_ctleraseskipsderived_ax06",
+      "inst::keep_ctleraseskipsderived_ax07",
+      "inst::keep_ctleraseskipsderived_ax11",
+      "inst::keep_ctleraseskipsderived_ax11m",
+      "inst::keep_ctleraseskipsderived_ax12",
+      "inst::keep_ctleraseskipsderived_ax14",
+      "inst::keep_ctlerasesplit_ax02",
+      "inst::keep_ctlerasesplit_ax03",
+      "inst::keep_ctlerasesplit_ax05",
+      "inst::keep_ctlerasesplit_ax06",
+      "inst::keep_ctlerasesplit_ax07",
+      "inst::keep_ctlerasesplit_ax08",
+      "inst::keep_ctlerasesplit_ax10",
+      "inst::keep_ctlerasesplit_ax11",
+      "inst::keep_ctlerasesplit_ax11m",
+      "inst::keep_ctlerasesplit_ax12",
+      "inst::keep_ctlerasesplit_ax14",
+      "inst::keep_ctlmarkernevercleared_ax02",
+      "inst::keep_ctlmarkernevercleared_ax03",
+      "inst::keep_ctlmarkernevercleared_ax04",
+      "inst::keep_ctlmarkernevercleared_ax05",
+      "inst::keep_ctlmarkernevercleared_ax06",
+      "inst::keep_ctlmarkernevercleared_ax07",
+      "inst::keep_ctlmarkernevercleared_ax08",
+      "inst::keep_ctlmarkernevercleared_ax10",
+      "inst::keep_ctlmarkernevercleared_ax11",
+      "inst::keep_ctlmarkernevercleared_ax11m",
+      "inst::keep_ctlmarkernevercleared_ax12",
+      "inst::keep_ctlpostonreplay_ax02",
+      "inst::keep_ctlpostonreplay_ax03",
+      "inst::keep_ctlpostonreplay_ax04",
+      "inst::keep_ctlpostonreplay_ax05",
+      "inst::keep_ctlpostonreplay_ax07",
+      "inst::keep_ctlpostonreplay_ax08",
+      "inst::keep_ctlpostonreplay_ax11",
+      "inst::keep_ctlpostonreplay_ax12",
+      "inst::keep_ctlpostonreplay_ax14",
+      "inst::keep_ctlreceiptearly_ax02",
+      "inst::keep_ctlreceiptearly_ax03",
+      "inst::keep_ctlreceiptearly_ax04",
+      "inst::keep_ctlreceiptearly_ax05",
+      "inst::keep_ctlreceiptearly_ax06",
+      "inst::keep_ctlreceiptearly_ax07",
+      "inst::keep_ctlreceiptearly_ax08",
+      "inst::keep_ctlreceiptearly_ax11",
+      "inst::keep_ctlreceiptearly_ax11m",
+      "inst::keep_ctlreceiptearly_ax14",
+      "inst::keep_ctlrefusalwrites_ax02",
+      "inst::keep_ctlrefusalwrites_ax04",
+      "inst::keep_ctlrefusalwrites_ax05",
+      "inst::keep_ctlrefusalwrites_ax06",
+      "inst::keep_ctlrefusalwrites_ax10",
+      "inst::keep_ctlrefusalwrites_ax11",
+      "inst::keep_ctlrefusalwrites_ax12",
+      "inst::keep_ctlrefusalwrites_ax14",
+      "inst::keep_ctltombbothtenants_ax03",
+      "inst::keep_ctltombbothtenants_ax04",
+      "inst::keep_ctltombbothtenants_ax05",
+      "inst::keep_ctltombbothtenants_ax06",
+      "inst::keep_ctltombbothtenants_ax08",
+      "inst::keep_ctltombbothtenants_ax10",
+      "inst::keep_ctltombbothtenants_ax11",
+      "inst::keep_ctltombbothtenants_ax11m",
+      "inst::keep_ctltombbothtenants_ax12",
+      "inst::keep_ctltombbothtenants_ax14",
+      "inst::keep_ctlunrecordedapply_ax02",
+      "inst::keep_ctlunrecordedapply_ax03",
+      "inst::keep_ctlunrecordedapply_ax04",
+      "inst::keep_ctlunrecordedapply_ax05",
+      "inst::keep_ctlunrecordedapply_ax06",
+      "inst::keep_ctlunrecordedapply_ax08",
+      "inst::keep_ctlunrecordedapply_ax10",
+      "inst::keep_ctlunrecordedapply_ax11",
+      "inst::keep_ctlunrecordedapply_ax11m",
+      "inst::keep_ctlunrecordedapply_ax12",
+      "inst::keep_ctlunrecordedapply_ax14",
+      "inst::keep_sysasbuilt_ax02",
+      "inst::keep_sysasbuilt_ax03",
+      "inst::keep_sysasbuilt_ax04",
+      "inst::keep_sysasbuilt_ax05",
+      "inst::keep_sysasbuilt_ax12",
+      "inst::keep_sysasbuilt_ax14",
+      "inst::laws_sys_reviewed",
+      "inst::refute_ctlbindingkept_ax10",
+      "inst::refute_ctlcheckbeforelock_ax07",
+      "inst::refute_ctlcheckbeforelock_ax11",
+      "inst::refute_ctlcheckbeforelock_ax11m",
+      "inst::refute_ctldeleterecords_ax05",
+      "inst::refute_ctleraseskipsderived_ax08",
+      "inst::refute_ctleraseskipsderived_ax10",
+      "inst::refute_ctlerasesplit_ax04",
+      "inst::refute_ctlmarkernevercleared_ax14",
+      "inst::refute_ctlpostonreplay_ax06",
+      "inst::refute_ctlpostonreplay_ax10",
+      "inst::refute_ctlpostonreplay_ax11m",
+      "inst::refute_ctlreceiptearly_ax10",
+      "inst::refute_ctlreceiptearly_ax12",
+      "inst::refute_ctlrefusalwrites_ax03",
+      "inst::refute_ctlrefusalwrites_ax07",
+      "inst::refute_ctlrefusalwrites_ax08",
+      "inst::refute_ctlrefusalwrites_ax11m",
+      "inst::refute_ctltombbothtenants_ax02",
+      "inst::refute_ctltombbothtenants_ax07",
+      "inst::refute_ctlunrecordedapply_ax07",
+      "inst::refute_sysasbuilt_ax06",
+      "inst::refute_sysasbuilt_ax07",
+      "inst::refute_sysasbuilt_ax08",
+      "inst::refute_sysasbuilt_ax10",
+      "inst::refute_sysasbuilt_ax11",
+      "inst::refute_sysasbuilt_ax11m",
+      "inst::sharp_commit_blocked_by_marker",
+      "inst::sharp_redaction_completes",
+      "inst::sharp_replay",
+      "inst::sharp_retry_refused_after_redaction",
+      "progress::lemma_cons",
+      "progress::lemma_drain",
+      "progress::lemma_drain_e",
+      "progress::lemma_drain_if",
+      "progress::lemma_drain_r_final",
+      "progress::lemma_ef",
+      "progress::lemma_quiesce",
+      "progress::lemma_run_base",
+      "progress::lemma_run_cfg",
+      "progress::lemma_run_snoc",
+      "progress::lemma_step_alone",
+      "progress::theorem_ax14",
+      "sys::run_cfg",
+      "theorem::theorem_sys"
+    ]
+  },
+  "cost_per_mechanism": {
+    "axioms": {
+      "ms": 4488,
+      "rlimit": 19668673,
+      "modules": [
+        "axioms"
+      ],
+      "functions": 21
+    },
+    "base": {
+      "ms": 5595,
+      "rlimit": 25030521,
+      "modules": [
+        "base"
+      ],
+      "functions": 13
+    },
+    "bridge": {
+      "ms": 76,
+      "rlimit": 253278,
+      "modules": [
+        "bridge"
+      ],
+      "functions": 10
+    },
+    "cx": {
+      "ms": 2023,
+      "rlimit": 7281619,
+      "modules": [
+        "cx"
+      ],
+      "functions": 30
+    },
+    "facts": {
+      "ms": 978,
+      "rlimit": 2756030,
+      "modules": [
+        "facts"
+      ],
+      "functions": 7
+    },
+    "inst": {
+      "ms": 635,
+      "rlimit": 2055931,
+      "modules": [
+        "inst"
+      ],
+      "functions": 161
+    },
+    "progress": {
+      "ms": 1172,
+      "rlimit": 2905898,
+      "modules": [
+        "progress"
+      ],
+      "functions": 12
+    },
+    "sys": {
+      "ms": 8,
+      "rlimit": 17023,
+      "modules": [
+        "sys"
+      ],
+      "functions": 1
+    },
+    "theorem": {
+      "ms": 14,
+      "rlimit": 29683,
+      "modules": [
+        "theorem"
+      ],
+      "functions": 1
+    }
+  },
+  "controls": {
+    "sys00_as_built": {
+      "tag": "sys00_as_built",
+      "features": "sys00_as_built",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features sys00_as_built -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-sys/run-20261114T234729Z/sys00_as_built.log",
+      "json": "$RUN_DIR/proofs-sys/run-20261114T234729Z/sys00_as_built.json",
+      "wall_seconds": 7.5,
+      "error_locations": [
+        "src/ctl_sys.rs:20",
+        "src/ctl_sys.rs:23",
+        "src/ctl_sys.rs:26",
+        "src/ctl_sys.rs:29",
+        "src/ctl_sys.rs:32",
+        "src/ctl_sys.rs:35"
+      ],
+      "resource_limit_hit": false,
+      "json_sha256": "2c2a0707be8023aecda0a426e709cd37806ff3366a383a73167ea1ec1f0438c5",
+      "verified": 262,
+      "errors": 6,
+      "success": false,
+      "verus_total_ms": 7326,
+      "smt_run_ms": 14801,
+      "rlimit_total": 60010408,
+      "modules": {
+        "base": {
+          "ms": 5593,
+          "rlimit": 25030521
+        },
+        "axioms": {
+          "ms": 4323,
+          "rlimit": 19668673
+        },
+        "cx": {
+          "ms": 2023,
+          "rlimit": 7281619
+        },
+        "progress": {
+          "ms": 1155,
+          "rlimit": 2905898
+        },
+        "facts": {
+          "ms": 790,
+          "rlimit": 2756030
+        },
+        "inst": {
+          "ms": 761,
+          "rlimit": 2055931
+        },
+        "bridge": {
+          "ms": 123,
+          "rlimit": 253278
+        },
+        "theorem": {
+          "ms": 9,
+          "rlimit": 29683
+        },
+        "sys": {
+          "ms": 8,
+          "rlimit": 17023
+        },
+        "ctl_sys": {
+          "ms": 10,
+          "rlimit": 11752
+        }
+      },
+      "top_functions": [
+        {
+          "function": "base::lemma_base_run",
+          "ms": 2936,
+          "rlimit": 12895487,
+          "success": true
+        },
+        {
+          "function": "base::lemma_positions",
+          "ms": 1442,
+          "rlimit": 6801878,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax07_step",
+          "ms": 1170,
+          "rlimit": 5904520,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax02",
+          "ms": 1206,
+          "rlimit": 5506351,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax10_step",
+          "ms": 735,
+          "rlimit": 3140109,
+          "success": true
+        },
+        {
+          "function": "base::lemma_effect_binding",
+          "ms": 629,
+          "rlimit": 2711255,
+          "success": true
+        },
+        {
+          "function": "progress::lemma_ef",
+          "ms": 680,
+          "rlimit": 1475709,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax11m_step",
+          "ms": 222,
+          "rlimit": 1132627,
+          "success": true
+        },
+        {
+          "function": "base::lemma_base_run_marker",
+          "ms": 142,
+          "rlimit": 979523,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax03",
+          "ms": 173,
+          "rlimit": 863030,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "inst::SysAsBuilt::discharge_ax06",
+        "inst::SysAsBuilt::discharge_ax07",
+        "inst::SysAsBuilt::discharge_ax08",
+        "inst::SysAsBuilt::discharge_ax10",
+        "inst::SysAsBuilt::discharge_ax11",
+        "inst::SysAsBuilt::discharge_ax11m"
+      ],
+      "functions_checked": 268,
+      "max_function_rlimit": 12895487,
+      "file": "src/ctl_sys.rs",
+      "trait": "SysObject",
+      "variant": "SysAsBuilt",
+      "check": "sys00-as-built-ax-06,sys00-as-built-ax-07,sys00-as-built-ax-08,sys00-as-built-ax-10,sys00-as-built-ax-11,sys00-as-built-ax-11-marker",
+      "kind": "as-built",
+      "mechanism": "SYS",
+      "objects": [
+        "00/system"
+      ],
+      "findings": [
+        "F-1101",
+        "F-1306",
+        "F-1302",
+        "F-0702",
+        "F-0606"
+      ],
+      "explorer_violates": [
+        "AX-06",
+        "AX-07",
+        "AX-08",
+        "AX-10",
+        "AX-11",
+        "AX-11M"
+      ],
+      "refutations": [
+        "inst::refute_sysasbuilt_ax06",
+        "inst::refute_sysasbuilt_ax07",
+        "inst::refute_sysasbuilt_ax08",
+        "inst::refute_sysasbuilt_ax10",
+        "inst::refute_sysasbuilt_ax11",
+        "inst::refute_sysasbuilt_ax11m"
+      ],
+      "counterexamples": [
+        "cx::cx_sysasbuilt_ax06",
+        "cx::cx_sysasbuilt_ax07",
+        "cx::cx_sysasbuilt_ax08",
+        "cx::cx_sysasbuilt_ax10",
+        "cx::cx_sysasbuilt_ax11",
+        "cx::cx_sysasbuilt_ax11m"
+      ],
+      "locate": [
+        {
+          "law": "AX-06",
+          "at": "src/ctl_sys.rs:20"
+        },
+        {
+          "law": "AX-07",
+          "at": "src/ctl_sys.rs:23"
+        },
+        {
+          "law": "AX-08",
+          "at": "src/ctl_sys.rs:26"
+        },
+        {
+          "law": "AX-10",
+          "at": "src/ctl_sys.rs:29"
+        },
+        {
+          "law": "AX-11",
+          "at": "src/ctl_sys.rs:32"
+        },
+        {
+          "law": "AX-11M",
+          "at": "src/ctl_sys.rs:35"
+        }
+      ],
+      "broken_laws": [
+        "AX-06",
+        "AX-07",
+        "AX-08",
+        "AX-10",
+        "AX-11",
+        "AX-11M"
+      ],
+      "expected_locations": [
+        "src/ctl_sys.rs:20",
+        "src/ctl_sys.rs:23",
+        "src/ctl_sys.rs:26",
+        "src/ctl_sys.rs:29",
+        "src/ctl_sys.rs:32",
+        "src/ctl_sys.rs:35"
+      ],
+      "own_functions": [
+        "inst::SysAsBuilt::discharge_ax02",
+        "inst::SysAsBuilt::discharge_ax03",
+        "inst::SysAsBuilt::discharge_ax04",
+        "inst::SysAsBuilt::discharge_ax05",
+        "inst::SysAsBuilt::discharge_ax06",
+        "inst::SysAsBuilt::discharge_ax07",
+        "inst::SysAsBuilt::discharge_ax08",
+        "inst::SysAsBuilt::discharge_ax10",
+        "inst::SysAsBuilt::discharge_ax11",
+        "inst::SysAsBuilt::discharge_ax11m",
+        "inst::SysAsBuilt::discharge_ax12",
+        "inst::SysAsBuilt::discharge_ax14"
+      ],
+      "expected_failing_functions": [
+        "inst::SysAsBuilt::discharge_ax06",
+        "inst::SysAsBuilt::discharge_ax07",
+        "inst::SysAsBuilt::discharge_ax08",
+        "inst::SysAsBuilt::discharge_ax10",
+        "inst::SysAsBuilt::discharge_ax11",
+        "inst::SysAsBuilt::discharge_ax11m"
+      ],
+      "others_verify_as_baseline": true,
+      "refutations_verified": true,
+      "counterexamples_verified": true,
+      "located": true,
+      "killed": true
+    },
+    "sys00_control_ax02_tomb_both_tenants": {
+      "tag": "sys00_control_ax02_tomb_both_tenants",
+      "features": "sys00_control_ax02_tomb_both_tenants",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features sys00_control_ax02_tomb_both_tenants -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-sys/run-20261114T234729Z/sys00_control_ax02_tomb_both_tenants.log",
+      "json": "$RUN_DIR/proofs-sys/run-20261114T234729Z/sys00_control_ax02_tomb_both_tenants.json",
+      "wall_seconds": 7.43,
+      "error_locations": [
+        "src/ctl_sys.rs:45",
+        "src/ctl_sys.rs:52"
+      ],
+      "resource_limit_hit": false,
+      "json_sha256": "0f9bae03fd99c80ab658f885bda6d21a4f6d51e4650111fc3593215022500576",
+      "verified": 266,
+      "errors": 2,
+      "success": false,
+      "verus_total_ms": 7267,
+      "smt_run_ms": 14638,
+      "rlimit_total": 60003630,
+      "modules": {
+        "base": {
+          "ms": 5521,
+          "rlimit": 25030521
+        },
+        "axioms": {
+          "ms": 4525,
+          "rlimit": 19668673
+        },
+        "cx": {
+          "ms": 2028,
+          "rlimit": 7281619
+        },
+        "progress": {
+          "ms": 992,
+          "rlimit": 2905898
+        },
+        "facts": {
+          "ms": 744,
+          "rlimit": 2756030
+        },
+        "inst": {
+          "ms": 696,
+          "rlimit": 2055931
+        },
+        "bridge": {
+          "ms": 101,
+          "rlimit": 253278
+        },
+        "theorem": {
+          "ms": 14,
+          "rlimit": 29683
+        },
+        "sys": {
+          "ms": 7,
+          "rlimit": 17023
+        },
+        "ctl_sys": {
+          "ms": 5,
+          "rlimit": 4974
+        }
+      },
+      "top_functions": [
+        {
+          "function": "base::lemma_base_run",
+          "ms": 2957,
+          "rlimit": 12895487,
+          "success": true
+        },
+        {
+          "function": "base::lemma_positions",
+          "ms": 1333,
+          "rlimit": 6801878,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax07_step",
+          "ms": 1182,
+          "rlimit": 5904520,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax02",
+          "ms": 1369,
+          "rlimit": 5506351,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax10_step",
+          "ms": 744,
+          "rlimit": 3140109,
+          "success": true
+        },
+        {
+          "function": "base::lemma_effect_binding",
+          "ms": 642,
+          "rlimit": 2711255,
+          "success": true
+        },
+        {
+          "function": "progress::lemma_ef",
+          "ms": 565,
+          "rlimit": 1475709,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax11m_step",
+          "ms": 227,
+          "rlimit": 1132627,
+          "success": true
+        },
+        {
+          "function": "base::lemma_base_run_marker",
+          "ms": 140,
+          "rlimit": 979523,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax03",
+          "ms": 168,
+          "rlimit": 863030,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "inst::CtlTombBothTenants::discharge_ax02",
+        "inst::CtlTombBothTenants::discharge_ax07"
+      ],
+      "functions_checked": 268,
+      "max_function_rlimit": 12895487,
+      "file": "src/ctl_sys.rs",
+      "trait": "SysObject",
+      "variant": "CtlTombBothTenants",
+      "check": "sys00-control-ax02-tomb-both-tenants",
+      "kind": "mutant",
+      "mechanism": "SYS",
+      "objects": [
+        "00/system"
+      ],
+      "findings": [],
+      "explorer_violates": [
+        "AX-02",
+        "AX-07"
+      ],
+      "refutations": [
+        "inst::refute_ctltombbothtenants_ax02",
+        "inst::refute_ctltombbothtenants_ax07"
+      ],
+      "counterexamples": [
+        "cx::cx_ctltombbothtenants_ax02",
+        "cx::cx_ctltombbothtenants_ax07"
+      ],
+      "locate": [
+        {
+          "law": "AX-02",
+          "at": "src/ctl_sys.rs:45"
+        },
+        {
+          "law": "AX-07",
+          "at": "src/ctl_sys.rs:52"
+        }
+      ],
+      "broken_laws": [
+        "AX-02",
+        "AX-07"
+      ],
+      "expected_locations": [
+        "src/ctl_sys.rs:45",
+        "src/ctl_sys.rs:52"
+      ],
+      "own_functions": [
+        "inst::CtlTombBothTenants::discharge_ax02",
+        "inst::CtlTombBothTenants::discharge_ax03",
+        "inst::CtlTombBothTenants::discharge_ax04",
+        "inst::CtlTombBothTenants::discharge_ax05",
+        "inst::CtlTombBothTenants::discharge_ax06",
+        "inst::CtlTombBothTenants::discharge_ax07",
+        "inst::CtlTombBothTenants::discharge_ax08",
+        "inst::CtlTombBothTenants::discharge_ax10",
+        "inst::CtlTombBothTenants::discharge_ax11",
+        "inst::CtlTombBothTenants::discharge_ax11m",
+        "inst::CtlTombBothTenants::discharge_ax12",
+        "inst::CtlTombBothTenants::discharge_ax14"
+      ],
+      "expected_failing_functions": [
+        "inst::CtlTombBothTenants::discharge_ax02",
+        "inst::CtlTombBothTenants::discharge_ax07"
+      ],
+      "others_verify_as_baseline": true,
+      "refutations_verified": true,
+      "counterexamples_verified": true,
+      "located": true,
+      "killed": true
+    },
+    "sys00_control_ax03_refusal_writes": {
+      "tag": "sys00_control_ax03_refusal_writes",
+      "features": "sys00_control_ax03_refusal_writes",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features sys00_control_ax03_refusal_writes -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-sys/run-20261114T234729Z/sys00_control_ax03_refusal_writes.log",
+      "json": "$RUN_DIR/proofs-sys/run-20261114T234729Z/sys00_control_ax03_refusal_writes.json",
+      "wall_seconds": 7.47,
+      "error_locations": [
+        "src/ctl_sys.rs:67",
+        "src/ctl_sys.rs:73",
+        "src/ctl_sys.rs:76",
+        "src/ctl_sys.rs:81"
+      ],
+      "resource_limit_hit": false,
+      "json_sha256": "19d1b1e10e22b2096e9076a320563830da5de1465a9cf36176b007d4f42d50a1",
+      "verified": 264,
+      "errors": 4,
+      "success": false,
+      "verus_total_ms": 7307,
+      "smt_run_ms": 14555,
+      "rlimit_total": 60006684,
+      "modules": {
+        "base": {
+          "ms": 5560,
+          "rlimit": 25030521
+        },
+        "axioms": {
+          "ms": 4414,
+          "rlimit": 19668673
+        },
+        "cx": {
+          "ms": 2056,
+          "rlimit": 7281619
+        },
+        "progress": {
+          "ms": 966,
+          "rlimit": 2905898
+        },
+        "facts": {
+          "ms": 778,
+          "rlimit": 2756030
+        },
+        "inst": {
+          "ms": 654,
+          "rlimit": 2055877
+        },
+        "bridge": {
+          "ms": 93,
+          "rlimit": 253278
+        },
+        "theorem": {
+          "ms": 15,
+          "rlimit": 29683
+        },
+        "sys": {
+          "ms": 8,
+          "rlimit": 17023
+        },
+        "ctl_sys": {
+          "ms": 7,
+          "rlimit": 8082
+        }
+      },
+      "top_functions": [
+        {
+          "function": "base::lemma_base_run",
+          "ms": 2966,
+          "rlimit": 12895487,
+          "success": true
+        },
+        {
+          "function": "base::lemma_positions",
+          "ms": 1362,
+          "rlimit": 6801878,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax07_step",
+          "ms": 1170,
+          "rlimit": 5904520,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax02",
+          "ms": 1293,
+          "rlimit": 5506351,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax10_step",
+          "ms": 731,
+          "rlimit": 3140109,
+          "success": true
+        },
+        {
+          "function": "base::lemma_effect_binding",
+          "ms": 638,
+          "rlimit": 2711255,
+          "success": true
+        },
+        {
+          "function": "progress::lemma_ef",
+          "ms": 561,
+          "rlimit": 1475709,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax11m_step",
+          "ms": 221,
+          "rlimit": 1132627,
+          "success": true
+        },
+        {
+          "function": "base::lemma_base_run_marker",
+          "ms": 143,
+          "rlimit": 979523,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax03",
+          "ms": 173,
+          "rlimit": 863030,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "inst::CtlRefusalWrites::discharge_ax03",
+        "inst::CtlRefusalWrites::discharge_ax07",
+        "inst::CtlRefusalWrites::discharge_ax08",
+        "inst::CtlRefusalWrites::discharge_ax11m"
+      ],
+      "functions_checked": 268,
+      "max_function_rlimit": 12895487,
+      "file": "src/ctl_sys.rs",
+      "trait": "SysObject",
+      "variant": "CtlRefusalWrites",
+      "check": "sys00-control-ax03-refusal-writes",
+      "kind": "mutant",
+      "mechanism": "SYS",
+      "objects": [
+        "00/system"
+      ],
+      "findings": [],
+      "explorer_violates": [
+        "AX-03",
+        "AX-07",
+        "AX-08",
+        "AX-11M"
+      ],
+      "refutations": [
+        "inst::refute_ctlrefusalwrites_ax03",
+        "inst::refute_ctlrefusalwrites_ax07",
+        "inst::refute_ctlrefusalwrites_ax08",
+        "inst::refute_ctlrefusalwrites_ax11m"
+      ],
+      "counterexamples": [
+        "cx::cx_ctlrefusalwrites_ax03",
+        "cx::cx_ctlrefusalwrites_ax07",
+        "cx::cx_ctlrefusalwrites_ax08",
+        "cx::cx_ctlrefusalwrites_ax11m"
+      ],
+      "locate": [
+        {
+          "law": "AX-03",
+          "at": "src/ctl_sys.rs:67"
+        },
+        {
+          "law": "AX-07",
+          "at": "src/ctl_sys.rs:73"
+        },
+        {
+          "law": "AX-08",
+          "at": "src/ctl_sys.rs:76"
+        },
+        {
+          "law": "AX-11M",
+          "at": "src/ctl_sys.rs:81"
+        }
+      ],
+      "broken_laws": [
+        "AX-03",
+        "AX-07",
+        "AX-08",
+        "AX-11M"
+      ],
+      "expected_locations": [
+        "src/ctl_sys.rs:67",
+        "src/ctl_sys.rs:73",
+        "src/ctl_sys.rs:76",
+        "src/ctl_sys.rs:81"
+      ],
+      "own_functions": [
+        "inst::CtlRefusalWrites::discharge_ax02",
+        "inst::CtlRefusalWrites::discharge_ax03",
+        "inst::CtlRefusalWrites::discharge_ax04",
+        "inst::CtlRefusalWrites::discharge_ax05",
+        "inst::CtlRefusalWrites::discharge_ax06",
+        "inst::CtlRefusalWrites::discharge_ax07",
+        "inst::CtlRefusalWrites::discharge_ax08",
+        "inst::CtlRefusalWrites::discharge_ax10",
+        "inst::CtlRefusalWrites::discharge_ax11",
+        "inst::CtlRefusalWrites::discharge_ax11m",
+        "inst::CtlRefusalWrites::discharge_ax12",
+        "inst::CtlRefusalWrites::discharge_ax14"
+      ],
+      "expected_failing_functions": [
+        "inst::CtlRefusalWrites::discharge_ax03",
+        "inst::CtlRefusalWrites::discharge_ax07",
+        "inst::CtlRefusalWrites::discharge_ax08",
+        "inst::CtlRefusalWrites::discharge_ax11m"
+      ],
+      "others_verify_as_baseline": true,
+      "refutations_verified": true,
+      "counterexamples_verified": true,
+      "located": true,
+      "killed": true
+    },
+    "sys00_control_ax04_erase_split": {
+      "tag": "sys00_control_ax04_erase_split",
+      "features": "sys00_control_ax04_erase_split",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features sys00_control_ax04_erase_split -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-sys/run-20261114T234729Z/sys00_control_ax04_erase_split.log",
+      "json": "$RUN_DIR/proofs-sys/run-20261114T234729Z/sys00_control_ax04_erase_split.json",
+      "wall_seconds": 7.55,
+      "error_locations": [
+        "src/ctl_sys.rs:93"
+      ],
+      "resource_limit_hit": false,
+      "json_sha256": "f3c64f5856d161c9acf55ee1024c06a597db48ccfa47e3c8f5d503d9f6d2cb53",
+      "verified": 267,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 7381,
+      "smt_run_ms": 14658,
+      "rlimit_total": 60001775,
+      "modules": {
+        "base": {
+          "ms": 5630,
+          "rlimit": 25030521
+        },
+        "axioms": {
+          "ms": 4384,
+          "rlimit": 19668673
+        },
+        "cx": {
+          "ms": 2022,
+          "rlimit": 7281619
+        },
+        "progress": {
+          "ms": 1009,
+          "rlimit": 2905898
+        },
+        "facts": {
+          "ms": 870,
+          "rlimit": 2756030
+        },
+        "inst": {
+          "ms": 632,
+          "rlimit": 2055877
+        },
+        "bridge": {
+          "ms": 81,
+          "rlimit": 253278
+        },
+        "theorem": {
+          "ms": 14,
+          "rlimit": 29683
+        },
+        "sys": {
+          "ms": 8,
+          "rlimit": 17023
+        },
+        "ctl_sys": {
+          "ms": 3,
+          "rlimit": 3173
+        }
+      },
+      "top_functions": [
+        {
+          "function": "base::lemma_base_run",
+          "ms": 2956,
+          "rlimit": 12895487,
+          "success": true
+        },
+        {
+          "function": "base::lemma_positions",
+          "ms": 1441,
+          "rlimit": 6801878,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax07_step",
+          "ms": 1223,
+          "rlimit": 5904520,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax02",
+          "ms": 1200,
+          "rlimit": 5506351,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax10_step",
+          "ms": 746,
+          "rlimit": 3140109,
+          "success": true
+        },
+        {
+          "function": "base::lemma_effect_binding",
+          "ms": 639,
+          "rlimit": 2711255,
+          "success": true
+        },
+        {
+          "function": "progress::lemma_ef",
+          "ms": 540,
+          "rlimit": 1475709,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax11m_step",
+          "ms": 223,
+          "rlimit": 1132627,
+          "success": true
+        },
+        {
+          "function": "base::lemma_base_run_marker",
+          "ms": 141,
+          "rlimit": 979523,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax03",
+          "ms": 171,
+          "rlimit": 863030,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "inst::CtlEraseSplit::discharge_ax04"
+      ],
+      "functions_checked": 268,
+      "max_function_rlimit": 12895487,
+      "file": "src/ctl_sys.rs",
+      "trait": "SysObject",
+      "variant": "CtlEraseSplit",
+      "check": "sys00-control-ax04-erase-split",
+      "kind": "mutant",
+      "mechanism": "SYS",
+      "objects": [
+        "00/system"
+      ],
+      "findings": [],
+      "explorer_violates": [
+        "AX-04"
+      ],
+      "refutations": [
+        "inst::refute_ctlerasesplit_ax04"
+      ],
+      "counterexamples": [
+        "cx::cx_ctlerasesplit_ax04"
+      ],
+      "locate": [
+        {
+          "law": "AX-04",
+          "at": "src/ctl_sys.rs:93"
+        }
+      ],
+      "broken_laws": [
+        "AX-04"
+      ],
+      "expected_locations": [
+        "src/ctl_sys.rs:93"
+      ],
+      "own_functions": [
+        "inst::CtlEraseSplit::discharge_ax02",
+        "inst::CtlEraseSplit::discharge_ax03",
+        "inst::CtlEraseSplit::discharge_ax04",
+        "inst::CtlEraseSplit::discharge_ax05",
+        "inst::CtlEraseSplit::discharge_ax06",
+        "inst::CtlEraseSplit::discharge_ax07",
+        "inst::CtlEraseSplit::discharge_ax08",
+        "inst::CtlEraseSplit::discharge_ax10",
+        "inst::CtlEraseSplit::discharge_ax11",
+        "inst::CtlEraseSplit::discharge_ax11m",
+        "inst::CtlEraseSplit::discharge_ax12",
+        "inst::CtlEraseSplit::discharge_ax14"
+      ],
+      "expected_failing_functions": [
+        "inst::CtlEraseSplit::discharge_ax04"
+      ],
+      "others_verify_as_baseline": true,
+      "refutations_verified": true,
+      "counterexamples_verified": true,
+      "located": true,
+      "killed": true
+    },
+    "sys00_control_ax05_delete_records": {
+      "tag": "sys00_control_ax05_delete_records",
+      "features": "sys00_control_ax05_delete_records",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features sys00_control_ax05_delete_records -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-sys/run-20261114T234729Z/sys00_control_ax05_delete_records.log",
+      "json": "$RUN_DIR/proofs-sys/run-20261114T234729Z/sys00_control_ax05_delete_records.json",
+      "wall_seconds": 7.77,
+      "error_locations": [
+        "src/ctl_sys.rs:113"
+      ],
+      "resource_limit_hit": false,
+      "json_sha256": "22fffb9ff2a1b79f47e813782496fa2745126c661e67de1027ae7982d8ffca95",
+      "verified": 267,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 7593,
+      "smt_run_ms": 15203,
+      "rlimit_total": 60001763,
+      "modules": {
+        "base": {
+          "ms": 5847,
+          "rlimit": 25030521
+        },
+        "axioms": {
+          "ms": 4628,
+          "rlimit": 19668673
+        },
+        "cx": {
+          "ms": 2112,
+          "rlimit": 7281619
+        },
+        "progress": {
+          "ms": 974,
+          "rlimit": 2905898
+        },
+        "facts": {
+          "ms": 852,
+          "rlimit": 2756030
+        },
+        "inst": {
+          "ms": 671,
+          "rlimit": 2055877
+        },
+        "bridge": {
+          "ms": 93,
+          "rlimit": 253278
+        },
+        "theorem": {
+          "ms": 11,
+          "rlimit": 29683
+        },
+        "sys": {
+          "ms": 8,
+          "rlimit": 17023
+        },
+        "ctl_sys": {
+          "ms": 3,
+          "rlimit": 3161
+        }
+      },
+      "top_functions": [
+        {
+          "function": "base::lemma_base_run",
+          "ms": 2955,
+          "rlimit": 12895487,
+          "success": true
+        },
+        {
+          "function": "base::lemma_positions",
+          "ms": 1633,
+          "rlimit": 6801878,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax07_step",
+          "ms": 1200,
+          "rlimit": 5904520,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax02",
+          "ms": 1464,
+          "rlimit": 5506351,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax10_step",
+          "ms": 742,
+          "rlimit": 3140109,
+          "success": true
+        },
+        {
+          "function": "base::lemma_effect_binding",
+          "ms": 637,
+          "rlimit": 2711255,
+          "success": true
+        },
+        {
+          "function": "progress::lemma_ef",
+          "ms": 545,
+          "rlimit": 1475709,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax11m_step",
+          "ms": 223,
+          "rlimit": 1132627,
+          "success": true
+        },
+        {
+          "function": "base::lemma_base_run_marker",
+          "ms": 144,
+          "rlimit": 979523,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax03",
+          "ms": 169,
+          "rlimit": 863030,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "inst::CtlDeleteRecords::discharge_ax05"
+      ],
+      "functions_checked": 268,
+      "max_function_rlimit": 12895487,
+      "file": "src/ctl_sys.rs",
+      "trait": "SysObject",
+      "variant": "CtlDeleteRecords",
+      "check": "sys00-control-ax05-delete-records",
+      "kind": "mutant",
+      "mechanism": "SYS",
+      "objects": [
+        "00/system"
+      ],
+      "findings": [],
+      "explorer_violates": [
+        "AX-05"
+      ],
+      "refutations": [
+        "inst::refute_ctldeleterecords_ax05"
+      ],
+      "counterexamples": [
+        "cx::cx_ctldeleterecords_ax05"
+      ],
+      "locate": [
+        {
+          "law": "AX-05",
+          "at": "src/ctl_sys.rs:113"
+        }
+      ],
+      "broken_laws": [
+        "AX-05"
+      ],
+      "expected_locations": [
+        "src/ctl_sys.rs:113"
+      ],
+      "own_functions": [
+        "inst::CtlDeleteRecords::discharge_ax02",
+        "inst::CtlDeleteRecords::discharge_ax03",
+        "inst::CtlDeleteRecords::discharge_ax04",
+        "inst::CtlDeleteRecords::discharge_ax05",
+        "inst::CtlDeleteRecords::discharge_ax06",
+        "inst::CtlDeleteRecords::discharge_ax07",
+        "inst::CtlDeleteRecords::discharge_ax08",
+        "inst::CtlDeleteRecords::discharge_ax10",
+        "inst::CtlDeleteRecords::discharge_ax11",
+        "inst::CtlDeleteRecords::discharge_ax11m",
+        "inst::CtlDeleteRecords::discharge_ax12",
+        "inst::CtlDeleteRecords::discharge_ax14"
+      ],
+      "expected_failing_functions": [
+        "inst::CtlDeleteRecords::discharge_ax05"
+      ],
+      "others_verify_as_baseline": true,
+      "refutations_verified": true,
+      "counterexamples_verified": true,
+      "located": true,
+      "killed": true
+    },
+    "sys00_control_ax06_post_on_replay": {
+      "tag": "sys00_control_ax06_post_on_replay",
+      "features": "sys00_control_ax06_post_on_replay",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features sys00_control_ax06_post_on_replay -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-sys/run-20261114T234729Z/sys00_control_ax06_post_on_replay.log",
+      "json": "$RUN_DIR/proofs-sys/run-20261114T234729Z/sys00_control_ax06_post_on_replay.json",
+      "wall_seconds": 7.54,
+      "error_locations": [
+        "src/ctl_sys.rs:133",
+        "src/ctl_sys.rs:138",
+        "src/ctl_sys.rs:142"
+      ],
+      "resource_limit_hit": false,
+      "json_sha256": "7d355d2c5b25f60a3bab20203975244bf6663770ba9ccf3af976226e4c48e304",
+      "verified": 265,
+      "errors": 3,
+      "success": false,
+      "verus_total_ms": 7374,
+      "smt_run_ms": 14802,
+      "rlimit_total": 60006301,
+      "modules": {
+        "base": {
+          "ms": 5593,
+          "rlimit": 25030521
+        },
+        "axioms": {
+          "ms": 4412,
+          "rlimit": 19668673
+        },
+        "cx": {
+          "ms": 1990,
+          "rlimit": 7281619
+        },
+        "progress": {
+          "ms": 1055,
+          "rlimit": 2905898
+        },
+        "facts": {
+          "ms": 938,
+          "rlimit": 2756030
+        },
+        "inst": {
+          "ms": 692,
+          "rlimit": 2055931
+        },
+        "bridge": {
+          "ms": 93,
+          "rlimit": 253278
+        },
+        "theorem": {
+          "ms": 10,
+          "rlimit": 29683
+        },
+        "sys": {
+          "ms": 8,
+          "rlimit": 17023
+        },
+        "ctl_sys": {
+          "ms": 6,
+          "rlimit": 7645
+        }
+      },
+      "top_functions": [
+        {
+          "function": "base::lemma_base_run",
+          "ms": 2969,
+          "rlimit": 12895487,
+          "success": true
+        },
+        {
+          "function": "base::lemma_positions",
+          "ms": 1391,
+          "rlimit": 6801878,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax07_step",
+          "ms": 1179,
+          "rlimit": 5904520,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax02",
+          "ms": 1281,
+          "rlimit": 5506351,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax10_step",
+          "ms": 740,
+          "rlimit": 3140109,
+          "success": true
+        },
+        {
+          "function": "base::lemma_effect_binding",
+          "ms": 637,
+          "rlimit": 2711255,
+          "success": true
+        },
+        {
+          "function": "progress::lemma_ef",
+          "ms": 534,
+          "rlimit": 1475709,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax11m_step",
+          "ms": 225,
+          "rlimit": 1132627,
+          "success": true
+        },
+        {
+          "function": "base::lemma_base_run_marker",
+          "ms": 144,
+          "rlimit": 979523,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax03",
+          "ms": 168,
+          "rlimit": 863030,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "inst::CtlPostOnReplay::discharge_ax06",
+        "inst::CtlPostOnReplay::discharge_ax10",
+        "inst::CtlPostOnReplay::discharge_ax11m"
+      ],
+      "functions_checked": 268,
+      "max_function_rlimit": 12895487,
+      "file": "src/ctl_sys.rs",
+      "trait": "SysObject",
+      "variant": "CtlPostOnReplay",
+      "check": "sys00-control-ax06-post-on-replay",
+      "kind": "mutant",
+      "mechanism": "SYS",
+      "objects": [
+        "00/system"
+      ],
+      "findings": [],
+      "explorer_violates": [
+        "AX-06",
+        "AX-10",
+        "AX-11M"
+      ],
+      "refutations": [
+        "inst::refute_ctlpostonreplay_ax06",
+        "inst::refute_ctlpostonreplay_ax10",
+        "inst::refute_ctlpostonreplay_ax11m"
+      ],
+      "counterexamples": [
+        "cx::cx_ctlpostonreplay_ax06",
+        "cx::cx_ctlpostonreplay_ax10",
+        "cx::cx_ctlpostonreplay_ax11m"
+      ],
+      "locate": [
+        {
+          "law": "AX-06",
+          "at": "src/ctl_sys.rs:133"
+        },
+        {
+          "law": "AX-10",
+          "at": "src/ctl_sys.rs:138"
+        },
+        {
+          "law": "AX-11M",
+          "at": "src/ctl_sys.rs:142"
+        }
+      ],
+      "broken_laws": [
+        "AX-06",
+        "AX-10",
+        "AX-11M"
+      ],
+      "expected_locations": [
+        "src/ctl_sys.rs:133",
+        "src/ctl_sys.rs:138",
+        "src/ctl_sys.rs:142"
+      ],
+      "own_functions": [
+        "inst::CtlPostOnReplay::discharge_ax02",
+        "inst::CtlPostOnReplay::discharge_ax03",
+        "inst::CtlPostOnReplay::discharge_ax04",
+        "inst::CtlPostOnReplay::discharge_ax05",
+        "inst::CtlPostOnReplay::discharge_ax06",
+        "inst::CtlPostOnReplay::discharge_ax07",
+        "inst::CtlPostOnReplay::discharge_ax08",
+        "inst::CtlPostOnReplay::discharge_ax10",
+        "inst::CtlPostOnReplay::discharge_ax11",
+        "inst::CtlPostOnReplay::discharge_ax11m",
+        "inst::CtlPostOnReplay::discharge_ax12",
+        "inst::CtlPostOnReplay::discharge_ax14"
+      ],
+      "expected_failing_functions": [
+        "inst::CtlPostOnReplay::discharge_ax06",
+        "inst::CtlPostOnReplay::discharge_ax10",
+        "inst::CtlPostOnReplay::discharge_ax11m"
+      ],
+      "others_verify_as_baseline": true,
+      "refutations_verified": true,
+      "counterexamples_verified": true,
+      "located": true,
+      "killed": true
+    },
+    "sys00_control_ax07_unrecorded_apply": {
+      "tag": "sys00_control_ax07_unrecorded_apply",
+      "features": "sys00_control_ax07_unrecorded_apply",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features sys00_control_ax07_unrecorded_apply -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-sys/run-20261114T234729Z/sys00_control_ax07_unrecorded_apply.log",
+      "json": "$RUN_DIR/proofs-sys/run-20261114T234729Z/sys00_control_ax07_unrecorded_apply.json",
+      "wall_seconds": 7.61,
+      "error_locations": [
+        "src/ctl_sys.rs:157"
+      ],
+      "resource_limit_hit": false,
+      "json_sha256": "1cb87b27ca8ebe53e9f4cec6caaca7f9b07e20f612c91305e88c31b6e48ec3fa",
+      "verified": 267,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 7446,
+      "smt_run_ms": 14722,
+      "rlimit_total": 60002109,
+      "modules": {
+        "base": {
+          "ms": 5700,
+          "rlimit": 25030521
+        },
+        "axioms": {
+          "ms": 4325,
+          "rlimit": 19668673
+        },
+        "cx": {
+          "ms": 1990,
+          "rlimit": 7281619
+        },
+        "progress": {
+          "ms": 1022,
+          "rlimit": 2905898
+        },
+        "facts": {
+          "ms": 934,
+          "rlimit": 2756030
+        },
+        "inst": {
+          "ms": 623,
+          "rlimit": 2055931
+        },
+        "bridge": {
+          "ms": 98,
+          "rlimit": 253278
+        },
+        "theorem": {
+          "ms": 15,
+          "rlimit": 29683
+        },
+        "sys": {
+          "ms": 8,
+          "rlimit": 17023
+        },
+        "ctl_sys": {
+          "ms": 2,
+          "rlimit": 3453
+        }
+      },
+      "top_functions": [
+        {
+          "function": "base::lemma_base_run",
+          "ms": 2954,
+          "rlimit": 12895487,
+          "success": true
+        },
+        {
+          "function": "base::lemma_positions",
+          "ms": 1518,
+          "rlimit": 6801878,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax07_step",
+          "ms": 1167,
+          "rlimit": 5904520,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax02",
+          "ms": 1210,
+          "rlimit": 5506351,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax10_step",
+          "ms": 736,
+          "rlimit": 3140109,
+          "success": true
+        },
+        {
+          "function": "base::lemma_effect_binding",
+          "ms": 638,
+          "rlimit": 2711255,
+          "success": true
+        },
+        {
+          "function": "progress::lemma_ef",
+          "ms": 557,
+          "rlimit": 1475709,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax11m_step",
+          "ms": 221,
+          "rlimit": 1132627,
+          "success": true
+        },
+        {
+          "function": "base::lemma_base_run_marker",
+          "ms": 141,
+          "rlimit": 979523,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax03",
+          "ms": 170,
+          "rlimit": 863030,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "inst::CtlUnrecordedApply::discharge_ax07"
+      ],
+      "functions_checked": 268,
+      "max_function_rlimit": 12895487,
+      "file": "src/ctl_sys.rs",
+      "trait": "SysObject",
+      "variant": "CtlUnrecordedApply",
+      "check": "sys00-control-ax07-unrecorded-apply",
+      "kind": "mutant",
+      "mechanism": "SYS",
+      "objects": [
+        "00/system"
+      ],
+      "findings": [],
+      "explorer_violates": [
+        "AX-07"
+      ],
+      "refutations": [
+        "inst::refute_ctlunrecordedapply_ax07"
+      ],
+      "counterexamples": [
+        "cx::cx_ctlunrecordedapply_ax07"
+      ],
+      "locate": [
+        {
+          "law": "AX-07",
+          "at": "src/ctl_sys.rs:157"
+        }
+      ],
+      "broken_laws": [
+        "AX-07"
+      ],
+      "expected_locations": [
+        "src/ctl_sys.rs:157"
+      ],
+      "own_functions": [
+        "inst::CtlUnrecordedApply::discharge_ax02",
+        "inst::CtlUnrecordedApply::discharge_ax03",
+        "inst::CtlUnrecordedApply::discharge_ax04",
+        "inst::CtlUnrecordedApply::discharge_ax05",
+        "inst::CtlUnrecordedApply::discharge_ax06",
+        "inst::CtlUnrecordedApply::discharge_ax07",
+        "inst::CtlUnrecordedApply::discharge_ax08",
+        "inst::CtlUnrecordedApply::discharge_ax10",
+        "inst::CtlUnrecordedApply::discharge_ax11",
+        "inst::CtlUnrecordedApply::discharge_ax11m",
+        "inst::CtlUnrecordedApply::discharge_ax12",
+        "inst::CtlUnrecordedApply::discharge_ax14"
+      ],
+      "expected_failing_functions": [
+        "inst::CtlUnrecordedApply::discharge_ax07"
+      ],
+      "others_verify_as_baseline": true,
+      "refutations_verified": true,
+      "counterexamples_verified": true,
+      "located": true,
+      "killed": true
+    },
+    "sys00_control_ax08_erase_skips_derived": {
+      "tag": "sys00_control_ax08_erase_skips_derived",
+      "features": "sys00_control_ax08_erase_skips_derived",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features sys00_control_ax08_erase_skips_derived -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-sys/run-20261114T234729Z/sys00_control_ax08_erase_skips_derived.log",
+      "json": "$RUN_DIR/proofs-sys/run-20261114T234729Z/sys00_control_ax08_erase_skips_derived.json",
+      "wall_seconds": 7.57,
+      "error_locations": [
+        "src/ctl_sys.rs:177",
+        "src/ctl_sys.rs:180"
+      ],
+      "resource_limit_hit": false,
+      "json_sha256": "f38b179dd2fadab628e578553ef044219e0e255a3e77c8125b47d4d15b82484c",
+      "verified": 266,
+      "errors": 2,
+      "success": false,
+      "verus_total_ms": 7402,
+      "smt_run_ms": 15084,
+      "rlimit_total": 60005958,
+      "modules": {
+        "base": {
+          "ms": 5637,
+          "rlimit": 25030521
+        },
+        "axioms": {
+          "ms": 4527,
+          "rlimit": 19668673
+        },
+        "cx": {
+          "ms": 2143,
+          "rlimit": 7281619
+        },
+        "progress": {
+          "ms": 1070,
+          "rlimit": 2905898
+        },
+        "facts": {
+          "ms": 945,
+          "rlimit": 2756030
+        },
+        "inst": {
+          "ms": 654,
+          "rlimit": 2058056
+        },
+        "bridge": {
+          "ms": 75,
+          "rlimit": 253278
+        },
+        "theorem": {
+          "ms": 14,
+          "rlimit": 29683
+        },
+        "sys": {
+          "ms": 8,
+          "rlimit": 17023
+        },
+        "ctl_sys": {
+          "ms": 5,
+          "rlimit": 5177
+        }
+      },
+      "top_functions": [
+        {
+          "function": "base::lemma_base_run",
+          "ms": 2980,
+          "rlimit": 12895487,
+          "success": true
+        },
+        {
+          "function": "base::lemma_positions",
+          "ms": 1422,
+          "rlimit": 6801878,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax07_step",
+          "ms": 1189,
+          "rlimit": 5904520,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax02",
+          "ms": 1380,
+          "rlimit": 5506351,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax10_step",
+          "ms": 739,
+          "rlimit": 3140109,
+          "success": true
+        },
+        {
+          "function": "base::lemma_effect_binding",
+          "ms": 640,
+          "rlimit": 2711255,
+          "success": true
+        },
+        {
+          "function": "progress::lemma_ef",
+          "ms": 539,
+          "rlimit": 1475709,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax11m_step",
+          "ms": 222,
+          "rlimit": 1132627,
+          "success": true
+        },
+        {
+          "function": "base::lemma_base_run_marker",
+          "ms": 142,
+          "rlimit": 979523,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax03",
+          "ms": 170,
+          "rlimit": 863030,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "inst::CtlEraseSkipsDerived::discharge_ax08",
+        "inst::CtlEraseSkipsDerived::discharge_ax10"
+      ],
+      "functions_checked": 268,
+      "max_function_rlimit": 12895487,
+      "file": "src/ctl_sys.rs",
+      "trait": "SysObject",
+      "variant": "CtlEraseSkipsDerived",
+      "check": "sys00-control-ax08-erase-skips-derived",
+      "kind": "mutant",
+      "mechanism": "SYS",
+      "objects": [
+        "00/system"
+      ],
+      "findings": [],
+      "explorer_violates": [
+        "AX-08",
+        "AX-10"
+      ],
+      "refutations": [
+        "inst::refute_ctleraseskipsderived_ax08",
+        "inst::refute_ctleraseskipsderived_ax10"
+      ],
+      "counterexamples": [
+        "cx::cx_ctleraseskipsderived_ax08",
+        "cx::cx_ctleraseskipsderived_ax10"
+      ],
+      "locate": [
+        {
+          "law": "AX-08",
+          "at": "src/ctl_sys.rs:177"
+        },
+        {
+          "law": "AX-10",
+          "at": "src/ctl_sys.rs:180"
+        }
+      ],
+      "broken_laws": [
+        "AX-08",
+        "AX-10"
+      ],
+      "expected_locations": [
+        "src/ctl_sys.rs:177",
+        "src/ctl_sys.rs:180"
+      ],
+      "own_functions": [
+        "inst::CtlEraseSkipsDerived::discharge_ax02",
+        "inst::CtlEraseSkipsDerived::discharge_ax03",
+        "inst::CtlEraseSkipsDerived::discharge_ax04",
+        "inst::CtlEraseSkipsDerived::discharge_ax05",
+        "inst::CtlEraseSkipsDerived::discharge_ax06",
+        "inst::CtlEraseSkipsDerived::discharge_ax07",
+        "inst::CtlEraseSkipsDerived::discharge_ax08",
+        "inst::CtlEraseSkipsDerived::discharge_ax10",
+        "inst::CtlEraseSkipsDerived::discharge_ax11",
+        "inst::CtlEraseSkipsDerived::discharge_ax11m",
+        "inst::CtlEraseSkipsDerived::discharge_ax12",
+        "inst::CtlEraseSkipsDerived::discharge_ax14"
+      ],
+      "expected_failing_functions": [
+        "inst::CtlEraseSkipsDerived::discharge_ax08",
+        "inst::CtlEraseSkipsDerived::discharge_ax10"
+      ],
+      "others_verify_as_baseline": true,
+      "refutations_verified": true,
+      "counterexamples_verified": true,
+      "located": true,
+      "killed": true
+    },
+    "sys00_control_ax10_binding_kept": {
+      "tag": "sys00_control_ax10_binding_kept",
+      "features": "sys00_control_ax10_binding_kept",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features sys00_control_ax10_binding_kept -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-sys/run-20261114T234729Z/sys00_control_ax10_binding_kept.log",
+      "json": "$RUN_DIR/proofs-sys/run-20261114T234729Z/sys00_control_ax10_binding_kept.json",
+      "wall_seconds": 7.66,
+      "error_locations": [
+        "src/ctl_sys.rs:199"
+      ],
+      "resource_limit_hit": false,
+      "json_sha256": "06b62c45734778ca095bc60b310976e5858173920e2d6668a88ea91162301c68",
+      "verified": 267,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 7487,
+      "smt_run_ms": 14834,
+      "rlimit_total": 60002549,
+      "modules": {
+        "base": {
+          "ms": 5749,
+          "rlimit": 25030521
+        },
+        "axioms": {
+          "ms": 4319,
+          "rlimit": 19668673
+        },
+        "cx": {
+          "ms": 2031,
+          "rlimit": 7281619
+        },
+        "progress": {
+          "ms": 1076,
+          "rlimit": 2905898
+        },
+        "facts": {
+          "ms": 767,
+          "rlimit": 2756030
+        },
+        "inst": {
+          "ms": 776,
+          "rlimit": 2055877
+        },
+        "bridge": {
+          "ms": 86,
+          "rlimit": 253278
+        },
+        "theorem": {
+          "ms": 15,
+          "rlimit": 29683
+        },
+        "sys": {
+          "ms": 8,
+          "rlimit": 17023
+        },
+        "ctl_sys": {
+          "ms": 3,
+          "rlimit": 3947
+        }
+      },
+      "top_functions": [
+        {
+          "function": "base::lemma_base_run",
+          "ms": 2981,
+          "rlimit": 12895487,
+          "success": true
+        },
+        {
+          "function": "base::lemma_positions",
+          "ms": 1545,
+          "rlimit": 6801878,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax07_step",
+          "ms": 1171,
+          "rlimit": 5904520,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax02",
+          "ms": 1189,
+          "rlimit": 5506351,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax10_step",
+          "ms": 742,
+          "rlimit": 3140109,
+          "success": true
+        },
+        {
+          "function": "base::lemma_effect_binding",
+          "ms": 635,
+          "rlimit": 2711255,
+          "success": true
+        },
+        {
+          "function": "progress::lemma_ef",
+          "ms": 639,
+          "rlimit": 1475709,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax11m_step",
+          "ms": 224,
+          "rlimit": 1132627,
+          "success": true
+        },
+        {
+          "function": "base::lemma_base_run_marker",
+          "ms": 140,
+          "rlimit": 979523,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax03",
+          "ms": 169,
+          "rlimit": 863030,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "inst::CtlBindingKept::discharge_ax10"
+      ],
+      "functions_checked": 268,
+      "max_function_rlimit": 12895487,
+      "file": "src/ctl_sys.rs",
+      "trait": "SysObject",
+      "variant": "CtlBindingKept",
+      "check": "sys00-control-ax10-binding-kept",
+      "kind": "mutant",
+      "mechanism": "SYS",
+      "objects": [
+        "00/system"
+      ],
+      "findings": [],
+      "explorer_violates": [
+        "AX-10"
+      ],
+      "refutations": [
+        "inst::refute_ctlbindingkept_ax10"
+      ],
+      "counterexamples": [
+        "cx::cx_ctlbindingkept_ax10"
+      ],
+      "locate": [
+        {
+          "law": "AX-10",
+          "at": "src/ctl_sys.rs:199"
+        }
+      ],
+      "broken_laws": [
+        "AX-10"
+      ],
+      "expected_locations": [
+        "src/ctl_sys.rs:199"
+      ],
+      "own_functions": [
+        "inst::CtlBindingKept::discharge_ax02",
+        "inst::CtlBindingKept::discharge_ax03",
+        "inst::CtlBindingKept::discharge_ax04",
+        "inst::CtlBindingKept::discharge_ax05",
+        "inst::CtlBindingKept::discharge_ax06",
+        "inst::CtlBindingKept::discharge_ax07",
+        "inst::CtlBindingKept::discharge_ax08",
+        "inst::CtlBindingKept::discharge_ax10",
+        "inst::CtlBindingKept::discharge_ax11",
+        "inst::CtlBindingKept::discharge_ax11m",
+        "inst::CtlBindingKept::discharge_ax12",
+        "inst::CtlBindingKept::discharge_ax14"
+      ],
+      "expected_failing_functions": [
+        "inst::CtlBindingKept::discharge_ax10"
+      ],
+      "others_verify_as_baseline": true,
+      "refutations_verified": true,
+      "counterexamples_verified": true,
+      "located": true,
+      "killed": true
+    },
+    "sys00_control_ax11_check_before_lock": {
+      "tag": "sys00_control_ax11_check_before_lock",
+      "features": "sys00_control_ax11_check_before_lock",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features sys00_control_ax11_check_before_lock -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-sys/run-20261114T234729Z/sys00_control_ax11_check_before_lock.log",
+      "json": "$RUN_DIR/proofs-sys/run-20261114T234729Z/sys00_control_ax11_check_before_lock.json",
+      "wall_seconds": 7.42,
+      "error_locations": [
+        "src/ctl_sys.rs:216",
+        "src/ctl_sys.rs:221",
+        "src/ctl_sys.rs:224"
+      ],
+      "resource_limit_hit": false,
+      "json_sha256": "3f680eb9d5b109600b12ca3af67855ccc31cd78d064af941011e13e5a018dbfc",
+      "verified": 265,
+      "errors": 3,
+      "success": false,
+      "verus_total_ms": 7259,
+      "smt_run_ms": 14534,
+      "rlimit_total": 60005584,
+      "modules": {
+        "base": {
+          "ms": 5519,
+          "rlimit": 25030521
+        },
+        "axioms": {
+          "ms": 4370,
+          "rlimit": 19668673
+        },
+        "cx": {
+          "ms": 2004,
+          "rlimit": 7281619
+        },
+        "progress": {
+          "ms": 1075,
+          "rlimit": 2905898
+        },
+        "facts": {
+          "ms": 741,
+          "rlimit": 2756030
+        },
+        "inst": {
+          "ms": 676,
+          "rlimit": 2055975
+        },
+        "bridge": {
+          "ms": 115,
+          "rlimit": 253278
+        },
+        "theorem": {
+          "ms": 15,
+          "rlimit": 29683
+        },
+        "sys": {
+          "ms": 8,
+          "rlimit": 17023
+        },
+        "ctl_sys": {
+          "ms": 6,
+          "rlimit": 6884
+        }
+      },
+      "top_functions": [
+        {
+          "function": "base::lemma_base_run",
+          "ms": 2931,
+          "rlimit": 12895487,
+          "success": true
+        },
+        {
+          "function": "base::lemma_positions",
+          "ms": 1364,
+          "rlimit": 6801878,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax07_step",
+          "ms": 1193,
+          "rlimit": 5904520,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax02",
+          "ms": 1183,
+          "rlimit": 5506351,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax10_step",
+          "ms": 744,
+          "rlimit": 3140109,
+          "success": true
+        },
+        {
+          "function": "base::lemma_effect_binding",
+          "ms": 634,
+          "rlimit": 2711255,
+          "success": true
+        },
+        {
+          "function": "progress::lemma_ef",
+          "ms": 626,
+          "rlimit": 1475709,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax11m_step",
+          "ms": 225,
+          "rlimit": 1132627,
+          "success": true
+        },
+        {
+          "function": "base::lemma_base_run_marker",
+          "ms": 141,
+          "rlimit": 979523,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax03",
+          "ms": 173,
+          "rlimit": 863030,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "inst::CtlCheckBeforeLock::discharge_ax07",
+        "inst::CtlCheckBeforeLock::discharge_ax11",
+        "inst::CtlCheckBeforeLock::discharge_ax11m"
+      ],
+      "functions_checked": 268,
+      "max_function_rlimit": 12895487,
+      "file": "src/ctl_sys.rs",
+      "trait": "SysObject",
+      "variant": "CtlCheckBeforeLock",
+      "check": "sys00-control-ax11-check-before-lock",
+      "kind": "mutant",
+      "mechanism": "SYS",
+      "objects": [
+        "00/system"
+      ],
+      "findings": [],
+      "explorer_violates": [
+        "AX-07",
+        "AX-11",
+        "AX-11M"
+      ],
+      "refutations": [
+        "inst::refute_ctlcheckbeforelock_ax07",
+        "inst::refute_ctlcheckbeforelock_ax11",
+        "inst::refute_ctlcheckbeforelock_ax11m"
+      ],
+      "counterexamples": [
+        "cx::cx_ctlcheckbeforelock_ax07",
+        "cx::cx_ctlcheckbeforelock_ax11",
+        "cx::cx_ctlcheckbeforelock_ax11m"
+      ],
+      "locate": [
+        {
+          "law": "AX-07",
+          "at": "src/ctl_sys.rs:216"
+        },
+        {
+          "law": "AX-11",
+          "at": "src/ctl_sys.rs:221"
+        },
+        {
+          "law": "AX-11M",
+          "at": "src/ctl_sys.rs:224"
+        }
+      ],
+      "broken_laws": [
+        "AX-07",
+        "AX-11",
+        "AX-11M"
+      ],
+      "expected_locations": [
+        "src/ctl_sys.rs:216",
+        "src/ctl_sys.rs:221",
+        "src/ctl_sys.rs:224"
+      ],
+      "own_functions": [
+        "inst::CtlCheckBeforeLock::discharge_ax02",
+        "inst::CtlCheckBeforeLock::discharge_ax03",
+        "inst::CtlCheckBeforeLock::discharge_ax04",
+        "inst::CtlCheckBeforeLock::discharge_ax05",
+        "inst::CtlCheckBeforeLock::discharge_ax06",
+        "inst::CtlCheckBeforeLock::discharge_ax07",
+        "inst::CtlCheckBeforeLock::discharge_ax08",
+        "inst::CtlCheckBeforeLock::discharge_ax10",
+        "inst::CtlCheckBeforeLock::discharge_ax11",
+        "inst::CtlCheckBeforeLock::discharge_ax11m",
+        "inst::CtlCheckBeforeLock::discharge_ax12",
+        "inst::CtlCheckBeforeLock::discharge_ax14"
+      ],
+      "expected_failing_functions": [
+        "inst::CtlCheckBeforeLock::discharge_ax07",
+        "inst::CtlCheckBeforeLock::discharge_ax11",
+        "inst::CtlCheckBeforeLock::discharge_ax11m"
+      ],
+      "others_verify_as_baseline": true,
+      "refutations_verified": true,
+      "counterexamples_verified": true,
+      "located": true,
+      "killed": true
+    },
+    "sys00_control_ax12_receipt_early": {
+      "tag": "sys00_control_ax12_receipt_early",
+      "features": "sys00_control_ax12_receipt_early",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features sys00_control_ax12_receipt_early -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-sys/run-20261114T234729Z/sys00_control_ax12_receipt_early.log",
+      "json": "$RUN_DIR/proofs-sys/run-20261114T234729Z/sys00_control_ax12_receipt_early.json",
+      "wall_seconds": 7.56,
+      "error_locations": [
+        "src/ctl_sys.rs:241",
+        "src/ctl_sys.rs:246"
+      ],
+      "resource_limit_hit": false,
+      "json_sha256": "81808313ec024edde04b91446687abc33601b73e89556cd902fd075caa852ed1",
+      "verified": 266,
+      "errors": 2,
+      "success": false,
+      "verus_total_ms": 7387,
+      "smt_run_ms": 14627,
+      "rlimit_total": 60004153,
+      "modules": {
+        "base": {
+          "ms": 5611,
+          "rlimit": 25030521
+        },
+        "axioms": {
+          "ms": 4353,
+          "rlimit": 19668673
+        },
+        "cx": {
+          "ms": 2063,
+          "rlimit": 7281619
+        },
+        "progress": {
+          "ms": 1067,
+          "rlimit": 2905898
+        },
+        "facts": {
+          "ms": 759,
+          "rlimit": 2756030
+        },
+        "inst": {
+          "ms": 659,
+          "rlimit": 2055877
+        },
+        "bridge": {
+          "ms": 82,
+          "rlimit": 253278
+        },
+        "theorem": {
+          "ms": 15,
+          "rlimit": 29683
+        },
+        "sys": {
+          "ms": 8,
+          "rlimit": 17023
+        },
+        "ctl_sys": {
+          "ms": 5,
+          "rlimit": 5551
+        }
+      },
+      "top_functions": [
+        {
+          "function": "base::lemma_base_run",
+          "ms": 2977,
+          "rlimit": 12895487,
+          "success": true
+        },
+        {
+          "function": "base::lemma_positions",
+          "ms": 1377,
+          "rlimit": 6801878,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax07_step",
+          "ms": 1172,
+          "rlimit": 5904520,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax02",
+          "ms": 1234,
+          "rlimit": 5506351,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax10_step",
+          "ms": 732,
+          "rlimit": 3140109,
+          "success": true
+        },
+        {
+          "function": "base::lemma_effect_binding",
+          "ms": 633,
+          "rlimit": 2711255,
+          "success": true
+        },
+        {
+          "function": "progress::lemma_ef",
+          "ms": 550,
+          "rlimit": 1475709,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax11m_step",
+          "ms": 222,
+          "rlimit": 1132627,
+          "success": true
+        },
+        {
+          "function": "base::lemma_base_run_marker",
+          "ms": 142,
+          "rlimit": 979523,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax03",
+          "ms": 168,
+          "rlimit": 863030,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "inst::CtlReceiptEarly::discharge_ax10",
+        "inst::CtlReceiptEarly::discharge_ax12"
+      ],
+      "functions_checked": 268,
+      "max_function_rlimit": 12895487,
+      "file": "src/ctl_sys.rs",
+      "trait": "SysObject",
+      "variant": "CtlReceiptEarly",
+      "check": "sys00-control-ax12-receipt-early",
+      "kind": "mutant",
+      "mechanism": "SYS",
+      "objects": [
+        "00/system"
+      ],
+      "findings": [],
+      "explorer_violates": [
+        "AX-10",
+        "AX-12"
+      ],
+      "refutations": [
+        "inst::refute_ctlreceiptearly_ax10",
+        "inst::refute_ctlreceiptearly_ax12"
+      ],
+      "counterexamples": [
+        "cx::cx_ctlreceiptearly_ax10",
+        "cx::cx_ctlreceiptearly_ax12"
+      ],
+      "locate": [
+        {
+          "law": "AX-10",
+          "at": "src/ctl_sys.rs:241"
+        },
+        {
+          "law": "AX-12",
+          "at": "src/ctl_sys.rs:246"
+        }
+      ],
+      "broken_laws": [
+        "AX-10",
+        "AX-12"
+      ],
+      "expected_locations": [
+        "src/ctl_sys.rs:241",
+        "src/ctl_sys.rs:246"
+      ],
+      "own_functions": [
+        "inst::CtlReceiptEarly::discharge_ax02",
+        "inst::CtlReceiptEarly::discharge_ax03",
+        "inst::CtlReceiptEarly::discharge_ax04",
+        "inst::CtlReceiptEarly::discharge_ax05",
+        "inst::CtlReceiptEarly::discharge_ax06",
+        "inst::CtlReceiptEarly::discharge_ax07",
+        "inst::CtlReceiptEarly::discharge_ax08",
+        "inst::CtlReceiptEarly::discharge_ax10",
+        "inst::CtlReceiptEarly::discharge_ax11",
+        "inst::CtlReceiptEarly::discharge_ax11m",
+        "inst::CtlReceiptEarly::discharge_ax12",
+        "inst::CtlReceiptEarly::discharge_ax14"
+      ],
+      "expected_failing_functions": [
+        "inst::CtlReceiptEarly::discharge_ax10",
+        "inst::CtlReceiptEarly::discharge_ax12"
+      ],
+      "others_verify_as_baseline": true,
+      "refutations_verified": true,
+      "counterexamples_verified": true,
+      "located": true,
+      "killed": true
+    },
+    "sys00_control_ax14_marker_never_cleared": {
+      "tag": "sys00_control_ax14_marker_never_cleared",
+      "features": "sys00_control_ax14_marker_never_cleared",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features sys00_control_ax14_marker_never_cleared -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-sys/run-20261114T234729Z/sys00_control_ax14_marker_never_cleared.log",
+      "json": "$RUN_DIR/proofs-sys/run-20261114T234729Z/sys00_control_ax14_marker_never_cleared.json",
+      "wall_seconds": 7.56,
+      "error_locations": [
+        "src/ctl_sys.rs:266"
+      ],
+      "resource_limit_hit": false,
+      "json_sha256": "4981a8b2dfd75b7dd33f734c3e0fc03731f2eca23b00dfd43f3a556faf02360d",
+      "verified": 267,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 7395,
+      "smt_run_ms": 14695,
+      "rlimit_total": 60001810,
+      "modules": {
+        "base": {
+          "ms": 5640,
+          "rlimit": 25030521
+        },
+        "axioms": {
+          "ms": 4366,
+          "rlimit": 19668673
+        },
+        "cx": {
+          "ms": 2055,
+          "rlimit": 7281619
+        },
+        "progress": {
+          "ms": 984,
+          "rlimit": 2905898
+        },
+        "facts": {
+          "ms": 786,
+          "rlimit": 2756030
+        },
+        "inst": {
+          "ms": 721,
+          "rlimit": 2055877
+        },
+        "bridge": {
+          "ms": 116,
+          "rlimit": 253278
+        },
+        "theorem": {
+          "ms": 11,
+          "rlimit": 29683
+        },
+        "sys": {
+          "ms": 8,
+          "rlimit": 17023
+        },
+        "ctl_sys": {
+          "ms": 3,
+          "rlimit": 3208
+        }
+      },
+      "top_functions": [
+        {
+          "function": "base::lemma_base_run",
+          "ms": 2948,
+          "rlimit": 12895487,
+          "success": true
+        },
+        {
+          "function": "base::lemma_positions",
+          "ms": 1463,
+          "rlimit": 6801878,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax07_step",
+          "ms": 1178,
+          "rlimit": 5904520,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax02",
+          "ms": 1236,
+          "rlimit": 5506351,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax10_step",
+          "ms": 737,
+          "rlimit": 3140109,
+          "success": true
+        },
+        {
+          "function": "base::lemma_effect_binding",
+          "ms": 639,
+          "rlimit": 2711255,
+          "success": true
+        },
+        {
+          "function": "progress::lemma_ef",
+          "ms": 544,
+          "rlimit": 1475709,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax11m_step",
+          "ms": 223,
+          "rlimit": 1132627,
+          "success": true
+        },
+        {
+          "function": "base::lemma_base_run_marker",
+          "ms": 142,
+          "rlimit": 979523,
+          "success": true
+        },
+        {
+          "function": "axioms::lemma_ax03",
+          "ms": 168,
+          "rlimit": 863030,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "inst::CtlMarkerNeverCleared::discharge_ax14"
+      ],
+      "functions_checked": 268,
+      "max_function_rlimit": 12895487,
+      "file": "src/ctl_sys.rs",
+      "trait": "SysObject",
+      "variant": "CtlMarkerNeverCleared",
+      "check": "sys00-control-ax14-marker-never-cleared",
+      "kind": "mutant",
+      "mechanism": "SYS",
+      "objects": [
+        "00/system"
+      ],
+      "findings": [],
+      "explorer_violates": [
+        "AX-14"
+      ],
+      "refutations": [
+        "inst::refute_ctlmarkernevercleared_ax14"
+      ],
+      "counterexamples": [
+        "cx::cx_ctlmarkernevercleared_ax14"
+      ],
+      "locate": [
+        {
+          "law": "AX-14",
+          "at": "src/ctl_sys.rs:266"
+        }
+      ],
+      "broken_laws": [
+        "AX-14"
+      ],
+      "expected_locations": [
+        "src/ctl_sys.rs:266"
+      ],
+      "own_functions": [
+        "inst::CtlMarkerNeverCleared::discharge_ax02",
+        "inst::CtlMarkerNeverCleared::discharge_ax03",
+        "inst::CtlMarkerNeverCleared::discharge_ax04",
+        "inst::CtlMarkerNeverCleared::discharge_ax05",
+        "inst::CtlMarkerNeverCleared::discharge_ax06",
+        "inst::CtlMarkerNeverCleared::discharge_ax07",
+        "inst::CtlMarkerNeverCleared::discharge_ax08",
+        "inst::CtlMarkerNeverCleared::discharge_ax10",
+        "inst::CtlMarkerNeverCleared::discharge_ax11",
+        "inst::CtlMarkerNeverCleared::discharge_ax11m",
+        "inst::CtlMarkerNeverCleared::discharge_ax12",
+        "inst::CtlMarkerNeverCleared::discharge_ax14"
+      ],
+      "expected_failing_functions": [
+        "inst::CtlMarkerNeverCleared::discharge_ax14"
+      ],
+      "others_verify_as_baseline": true,
+      "refutations_verified": true,
+      "counterexamples_verified": true,
+      "located": true,
+      "killed": true
+    }
+  },
+  "trust_inventory": {
+    "own_sources": {
+      "scanned": [
+        "src/axioms.rs",
+        "src/base.rs",
+        "src/bridge.rs",
+        "src/ctl_sys.rs",
+        "src/cx.rs",
+        "src/facts.rs",
+        "src/inst.rs",
+        "src/lib.rs",
+        "src/progress.rs",
+        "src/sys.rs",
+        "src/theorem.rs",
+        "../proofs-mech/src/ctl_cap.rs",
+        "../proofs-mech/src/ctl_catalog.rs",
+        "../proofs-mech/src/ctl_derived.rs",
+        "../proofs-mech/src/ctl_epoch.rs",
+        "../proofs-mech/src/ctl_excl.rs",
+        "../proofs-mech/src/ctl_install.rs",
+        "../proofs-mech/src/ctl_ledger.rs",
+        "../proofs-mech/src/ctl_queue.rs",
+        "../proofs-mech/src/ctl_removal.rs",
+        "../proofs-mech/src/ctl_retry.rs",
+        "../proofs-mech/src/ctl_scope.rs",
+        "../proofs-mech/src/ctl_snapshot.rs",
+        "../proofs-mech/src/ctl_unit.rs",
+        "../proofs-mech/src/cx01_ledger.rs",
+        "../proofs-mech/src/cx02_retry.rs",
+        "../proofs-mech/src/cx03_excl.rs",
+        "../proofs-mech/src/cx04_derived.rs",
+        "../proofs-mech/src/cx05_removal.rs",
+        "../proofs-mech/src/cx06_snapshot.rs",
+        "../proofs-mech/src/cx07_queue.rs",
+        "../proofs-mech/src/cx08_install.rs",
+        "../proofs-mech/src/cx09_scope.rs",
+        "../proofs-mech/src/cx10_unit.rs",
+        "../proofs-mech/src/cx11_cap.rs",
+        "../proofs-mech/src/cx12_catalog.rs",
+        "../proofs-mech/src/cx13_epoch.rs",
+        "../proofs-mech/src/exec.rs",
+        "../proofs-mech/src/i01_ledger.rs",
+        "../proofs-mech/src/i02_retry.rs",
+        "../proofs-mech/src/i03_excl.rs",
+        "../proofs-mech/src/i04_derived.rs",
+        "../proofs-mech/src/i05_removal.rs",
+        "../proofs-mech/src/i06_snapshot.rs",
+        "../proofs-mech/src/i07_queue.rs",
+        "../proofs-mech/src/i08_install.rs",
+        "../proofs-mech/src/i09_scope.rs",
+        "../proofs-mech/src/i10_unit.rs",
+        "../proofs-mech/src/i11_cap.rs",
+        "../proofs-mech/src/i12_catalog.rs",
+        "../proofs-mech/src/i13_epoch.rs",
+        "../proofs-mech/src/lib.rs",
+        "../proofs-mech/src/m01_ledger.rs",
+        "../proofs-mech/src/m02_retry.rs",
+        "../proofs-mech/src/m03_excl.rs",
+        "../proofs-mech/src/m04_derived.rs",
+        "../proofs-mech/src/m05_removal.rs",
+        "../proofs-mech/src/m06_snapshot.rs",
+        "../proofs-mech/src/m07_queue.rs",
+        "../proofs-mech/src/m08_install.rs",
+        "../proofs-mech/src/m09_scope.rs",
+        "../proofs-mech/src/m10_unit.rs",
+        "../proofs-mech/src/m11_cap.rs",
+        "../proofs-mech/src/m12_catalog.rs",
+        "../proofs-mech/src/m13_epoch.rs"
+      ],
+      "patterns": [
+        "\\bassume\\s*\\(",
+        "\\badmit\\s*\\(",
+        "external_body",
+        "#\\s*\\[\\s*verifier::external",
+        "\\buninterp\\b",
+        "\\baxiom\\b",
+        "assume_specification",
+        "#\\s*\\[\\s*verifier::assume"
+      ],
+      "violations": []
+    },
+    "actors": {
+      "rev": "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877",
+      "path": "/home/ziniu_wu_g5labs_ai/.cargo/git/checkouts/playbook-reference-actors-924e50ff84dd7a85/c03f9fa/crates/actors/src",
+      "violations": [],
+      "note": "verified in the same build without --no-cheating (forwarded to roots only)"
+    },
+    "vstd": {
+      "version": "0.0.0-2026-09-20-0158",
+      "note": "Verus standard library: the trusted base (its axioms and admits are Verus's own); not scanned"
+    },
+    "trusted_items_in_this_crate": [],
+    "premises": "named in PROOFS.md (the `| Id | Premise |` table); none is an assumption inside a proof"
+  },
+  "gate": "pass",
+  "axioms": {
+    "note": "AX-01, AX-09, AX-13 are outside sys00's composition (their laws: proofs-mech M-12/M-01, M-08, M-11)",
+    "missing_theorems": [],
+    "per_axiom": {
+      "AX-02": {
+        "generic_theorem": "axioms::theorem_ax02",
+        "obligation": "sys::obl_ax02",
+        "proved_generically": true,
+        "reviewed_keeps": true,
+        "broken_by_controls": [
+          "sys00_control_ax02_tomb_both_tenants"
+        ],
+        "as_built_breaks": false
+      },
+      "AX-03": {
+        "generic_theorem": "axioms::theorem_ax03",
+        "obligation": "sys::obl_ax03",
+        "proved_generically": true,
+        "reviewed_keeps": true,
+        "broken_by_controls": [
+          "sys00_control_ax03_refusal_writes"
+        ],
+        "as_built_breaks": false
+      },
+      "AX-04": {
+        "generic_theorem": "axioms::theorem_ax04",
+        "obligation": "sys::obl_ax04",
+        "proved_generically": true,
+        "reviewed_keeps": true,
+        "broken_by_controls": [
+          "sys00_control_ax04_erase_split"
+        ],
+        "as_built_breaks": false
+      },
+      "AX-05": {
+        "generic_theorem": "axioms::theorem_ax05",
+        "obligation": "sys::obl_ax05",
+        "proved_generically": true,
+        "reviewed_keeps": true,
+        "broken_by_controls": [
+          "sys00_control_ax05_delete_records"
+        ],
+        "as_built_breaks": false
+      },
+      "AX-06": {
+        "generic_theorem": "axioms::theorem_ax06",
+        "obligation": "sys::obl_ax06",
+        "proved_generically": true,
+        "reviewed_keeps": true,
+        "broken_by_controls": [
+          "sys00_as_built",
+          "sys00_control_ax06_post_on_replay"
+        ],
+        "as_built_breaks": true
+      },
+      "AX-07": {
+        "generic_theorem": "axioms::theorem_ax07",
+        "obligation": "sys::obl_ax07",
+        "proved_generically": true,
+        "reviewed_keeps": true,
+        "broken_by_controls": [
+          "sys00_as_built",
+          "sys00_control_ax02_tomb_both_tenants",
+          "sys00_control_ax03_refusal_writes",
+          "sys00_control_ax07_unrecorded_apply",
+          "sys00_control_ax11_check_before_lock"
+        ],
+        "as_built_breaks": true
+      },
+      "AX-08": {
+        "generic_theorem": "axioms::theorem_ax08",
+        "obligation": "sys::obl_ax08",
+        "proved_generically": true,
+        "reviewed_keeps": true,
+        "broken_by_controls": [
+          "sys00_as_built",
+          "sys00_control_ax03_refusal_writes",
+          "sys00_control_ax08_erase_skips_derived"
+        ],
+        "as_built_breaks": true
+      },
+      "AX-10": {
+        "generic_theorem": "axioms::theorem_ax10",
+        "obligation": "sys::obl_ax10",
+        "proved_generically": true,
+        "reviewed_keeps": true,
+        "broken_by_controls": [
+          "sys00_as_built",
+          "sys00_control_ax06_post_on_replay",
+          "sys00_control_ax08_erase_skips_derived",
+          "sys00_control_ax10_binding_kept",
+          "sys00_control_ax12_receipt_early"
+        ],
+        "as_built_breaks": true
+      },
+      "AX-11": {
+        "generic_theorem": "axioms::theorem_ax11",
+        "obligation": "sys::obl_ax11",
+        "proved_generically": true,
+        "reviewed_keeps": true,
+        "broken_by_controls": [
+          "sys00_as_built",
+          "sys00_control_ax11_check_before_lock"
+        ],
+        "as_built_breaks": true
+      },
+      "AX-11M": {
+        "generic_theorem": "axioms::theorem_ax11m",
+        "obligation": "sys::obl_ax11m",
+        "proved_generically": true,
+        "reviewed_keeps": true,
+        "broken_by_controls": [
+          "sys00_as_built",
+          "sys00_control_ax03_refusal_writes",
+          "sys00_control_ax06_post_on_replay",
+          "sys00_control_ax11_check_before_lock"
+        ],
+        "as_built_breaks": true
+      },
+      "AX-12": {
+        "generic_theorem": "axioms::theorem_ax12",
+        "obligation": "sys::obl_ax12",
+        "proved_generically": true,
+        "reviewed_keeps": true,
+        "broken_by_controls": [
+          "sys00_control_ax12_receipt_early"
+        ],
+        "as_built_breaks": false
+      },
+      "AX-14": {
+        "generic_theorem": "progress::theorem_ax14",
+        "obligation": "sys::obl_ax14",
+        "proved_generically": true,
+        "reviewed_keeps": true,
+        "broken_by_controls": [
+          "sys00_control_ax14_marker_never_cleared"
+        ],
+        "as_built_breaks": false
+      }
+    },
+    "bridge": [
+      "bridge::bridge_m02",
+      "bridge::bridge_m03",
+      "bridge::bridge_m04",
+      "bridge::bridge_m05",
+      "bridge::bridge_m10",
+      "bridge::component_m02",
+      "bridge::component_m03",
+      "bridge::component_m04",
+      "bridge::component_m05",
+      "bridge::component_m10"
+    ],
+    "bridge_verified": true
+  },
+  "recheck": {
+    "run_dir": "$RUN_DIR/proofs-sys-recheck/run-20261114T235149Z",
+    "gate": "pass",
+    "sources_sha256": "fc9757dc97b10479b3f8f5d25e14d0c93ca1156b9cc78c60c3ee4096945e09df",
+    "verified": 256,
+    "errors": 0,
+    "controls_rejected": 12,
+    "controls": 12
+  }
+}

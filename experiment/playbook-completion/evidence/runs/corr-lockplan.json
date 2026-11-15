@@ -1,0 +1,15 @@
+{
+  "command": "locks.sh iris python experiment/playbook-completion/correspondence/tools/lockplan.py (16 probes) + --only adjw-erase-graph-timeout head-erase-graph + --only adjw-erase-all-parent",
+  "experiment_head": "78e7a5e8c4f90f7e230207eb0953f781dae48bb7",
+  "id": "corr-lockplan",
+  "kind": "live",
+  "lane": "correspondence",
+  "log": "$RUN_DIR/correspondence/checks/lockplan.json",
+  "log_bytes": 46611,
+  "log_sha256": "1db4dd5b2251d4f2d295e911b43efb4d4187f0317dc1e40b7e7f6415aaace30c",
+  "observes": "18 probes in AUDITC confirm the source lock plans: commit waits for ^IVG.Ledger(head) exclusively at Ledger.cls:440 inside its transaction having written nothing, times out after 30 s cleanly; Enable waits at :266 after its unlocked state read; a redaction's first wait is Batch's lock at LedgerRedact.cls:282 after unlocked opening reads; EraseNodes/EraseGraph/Disable/verify finish while the head lock is held (no head lock); a commit holds the head lock while waiting for ^IVG.AdjW(0) shared at Adjacency.cls:63 (order head -> AdjW), proceeds without it after 5 s marking ^IVG.AdjNoLock; a shared holder does not delay it; EraseGraph waits at :63 and RemoveGraph :431 and fails cleanly after 10 s; EraseAll waits for the parent ^IVG.AdjW#S at :455; nested in a caller's transaction the head and AdjW locks stay held with deferred count 1D until the caller's COMMIT",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T01:53:06+00:00",
+  "result": "pass"
+}

@@ -1,0 +1,23 @@
+{
+  "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features retry_ledger_key_as_built -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+  "error_locations": "src/ctl_retry.rs:16,src/ctl_retry.rs:19",
+  "errors": "2",
+  "experiment_head": "95abaf5fe096564138a2f8a9ed58665b85107ad0",
+  "id": "proofs-mech-retry-ledger-key-as-built",
+  "json_log": "$RUN_DIR/proofs-mech/run-20261114T151136Z/retry_ledger_key_as_built.json",
+  "json_sha256": "4718e7cc64379b6dc2b66dcd4e54fca11fdffb097da9ea988cf6f5a6d38699f9",
+  "kind": "control",
+  "lane": "proofs-mech",
+  "log": "$RUN_DIR/proofs-mech/run-20261114T151136Z/retry_ledger_key_as_built.log",
+  "log_bytes": 1114,
+  "log_sha256": "0952c3ba3cab0bfabd50ba13c6b7dd87c522594ec49f02f4d786d358c283e798",
+  "observes": "retry_ledger_key_as_built (M-02 LedgerKeyAsBuilt, explorer check retry-ledger-key-as-built, as-built; findings F-1101,F-1306): 2 errors, exactly at ['src/ctl_retry.rs:16', 'src/ctl_retry.rs:19'] (laws M02-L1,M02-L2, the explorer's violated laws); failing ['i02_retry::LedgerKeyAsBuilt::discharge_l1', 'i02_retry::LedgerKeyAsBuilt::discharge_l2']; every other function verifies as in the baseline=True; refutations i02_retry::refute_ledger_key_l1,i02_retry::refute_ledger_key_l2 and counterexamples cx02_retry::cx_ledger_key_l1,cx02_retry::cx_ledger_key_l2 verified=True",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T15:47:40+00:00",
+  "result": "expected-violation",
+  "rlimit_total": "102955121",
+  "sources_sha256": "3e168bab31757fd605c7d744a6a9485a4bda23def41d5b86a0b4d5524fd7ab71",
+  "verified": "1151",
+  "verus_total_ms": "17207"
+}

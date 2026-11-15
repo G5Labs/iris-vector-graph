@@ -1,0 +1,19 @@
+[package]
+name = "proofs-env2-harness"
+version = "0.1.0"
+edition = "2021"
+description = "Differential harness of lane proofs-env: the verified exec model of the IRIS contract's Verus subset against iris-contract's permitted sets and the recorded observations (no IRIS)."
+publish = false
+
+[[bin]]
+name = "proofs-env2-harness"
+path = "src/main.rs"
+
+[dependencies]
+ivg-proofs-env2 = { path = ".." }
+serde_json = "1"
+
+[patch.crates-io]
+verus_builtin_macros = { git = "file:///home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/playbook-reference-actors", rev = "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877" }
+
+[workspace]

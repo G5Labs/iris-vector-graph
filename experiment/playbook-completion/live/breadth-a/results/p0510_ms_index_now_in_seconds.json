@@ -1,0 +1,15 @@
+{
+ "doc": "F-0510: Graph.KG.TemporalIndexMS.InsertEdge with no time stores the edge at \"now\" in seconds, not ms.",
+ "id": "p0510_ms_index_now_in_seconds",
+ "log": "$RUN_DIR/breadth-a/live/05-all-20261113T224508.log",
+ "module": "05",
+ "observed": {
+  "now_ms": 1794609910951,
+  "stored_ts": 1794609910
+ },
+ "oracle": "TSUNIT=ms: a missing time is now in milliseconds",
+ "reproduced": true,
+ "seconds": 0.07,
+ "started": "2026-11-13T22:45:10",
+ "verdict": "stored at 1794609910 (seconds scale) instead of ~1794609910951"
+}

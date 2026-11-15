@@ -1,0 +1,45 @@
+[package]
+name = "ivg-d1e-proofs"
+version = "0.1.0"
+edition = "2021"
+description = "Completion audit, PROOFS-D1E lane (proof debt D-1, playbook §3.3): Verus L1 contracts, L2 machines over the stored layout, refinement and broken-implementation controls for module 01 (install/schema: the deploy record, readiness, the upgrade, legacy removal), module 02 (graph identity: graph names and keys, graph-scoped reads, multigraph mode) and module 10 (algorithms: cached answers, PageRank completeness, the read footprint, shortest-path direction, walk graph scope, label propagation)."
+publish = false
+
+[dependencies]
+vstd = { version = "=0.0.0-2026-09-20-0158", features = ["std", "alloc"] }
+actors = { git = "file:///home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/playbook-reference-actors", rev = "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877" }
+
+[patch.crates-io]
+verus_builtin_macros = { git = "file:///home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/playbook-reference-actors", rev = "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877" }
+
+[features]
+# Broken-implementation controls (playbook §3.3 gate). Each puts back one as-built decision of the pin (as reproduced by
+# the audit) into the reviewed L2 machine and must make verification fail, every error located in the file named here.
+# Module 01, install/schema:
+control_f0103_marker_admits = []            # src/inst_l2.rs   no record: check_first_access admits when the marker class exists (schema_name.py:233-235)
+control_f0102_failure_only_logged = []      # src/inst_l2.rs   a failed DDL statement / ^KG bootstrap is a log line only (_engine/schema.py:2508-2511, 2680-2681)
+control_f0109_upgrade_default_schema = []   # src/inst_l2.rs   upgrade_to_4_0_0 works on schema= (default Graph_KG), never reads the record (migrations/upgrade.py:58, 140)
+control_f0101_removed_unchecked = []        # src/inst_l2.rs   remove_legacy_objects reports removed=True after DROP VIEW and for a class's later items (_engine/legacy.py:670-684)
+# Module 02, graph names and graph-scoped reads:
+control_f0202_writer_skips_name_check = []  # src/gid_l2.rs    create_node/store_node write under the reserved name "0" (_engine/nodes_edges.py:968-1015)
+control_f0206_hydrate_from_default = []     # src/gid_l2.rs    get_nodes_by_label: every graph's ids, hydrated from the default graph (_engine/nodes_edges.py:760-794)
+control_f0106_keys_join_on_id = []          # src/gid_l2.rs    get_property_keys joins rdf_labels to rdf_props on s alone (_engine/schema.py:500-515)
+# Module 02, multigraph mode:
+control_f0201_ekey0_guard = []              # src/gmode_l2.rs  the single-edge writers guard ekey 0 only (_engine/nodes_edges.py:1214-1217, 1257-1273)
+control_f0208_mode_cached_forever = []      # src/gmode_l2.rs  is_multigraph caches each graph's mode per engine with no expiry (_engine/admin.py:917-926)
+control_f0207_set_off_unlocked = []         # src/gmode_l2.rs  GraphMode.Set(g, 0) counts then kills with no lock (GraphMode.cls:26-45)
+# Module 10, cached answers and the read footprint:
+control_f1004_create_moves_no_token = []    # src/acache_l2.rs a node written with no edge moves no token a PPR entry is checked against (iris_sql_store.py:2248-2258; AlgoCache.cls:27-36)
+control_f1003_owner_cap = []                # src/acache_l2.rs PageRankGlobalJson lists at most 10,000 rows (PageRank.cls:503-520)
+control_fc1001_read_creates_routines = []   # src/acache_l2.rs triangle_count's probe runs CREATE OR REPLACE FUNCTION and saves the routine record (arno_bridge.py:106-134, 360-376)
+# Module 10, traversal result contracts:
+control_hd1003_direction_unchecked = []     # src/atrav_l2.rs  ShortestLength reads any direction but "both" as "out", ShortestPathJson answers none, shortest_path_length passes "in" through (TraversalPaths.cls:5-80, 117-122; iris_sql_store.py:2162-2181)
+control_f1008_every_graph_mixed = []        # src/atrav_l2.rs  VarLength's every-graph mode reads every graph at each hop (VarLength.cls:44-51, 126-148)
+
+[package.metadata.verus]
+verify = true
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(verus_only)', 'cfg(verus_keep_ghost)', 'cfg(verus_keep_ghost_body)'] }
+
+[workspace]

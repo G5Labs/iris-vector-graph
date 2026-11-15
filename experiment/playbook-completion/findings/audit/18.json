@@ -1,0 +1,384 @@
+{
+ "module": "18",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "findings": [
+  {
+   "id": "F-1801",
+   "module": "18",
+   "title": "A replacing restore lays the archive's ledger over the live one",
+   "intended": "spec 213 FR-043 (the ledger survives a snapshot); SNP-I3.6 (after a restore the ledger holds one history whose records and head agree); SYS-I5 (the ledger only grows); ADR-0013 (redacted content leaves history); decisions.md HD-1801 (treat the archive's history as a unit; refuse divergent histories before mutation; keep current redaction obligations).",
+   "observed": "Live (c18-live-ledger-overlay, AUDITC): ledger enabled, commit seq 2 (c18:L1), save, commit seq 3 (c18:L2, retry key c18-k2), replacing restore of the older archive: meta after restore {'head_id': 'ebae4dc3dfb811f1b3edf277e9aab529', 'head_seq': 2, 'max_ops': 50000, 'ok': True, 'recon_bound': 250000, 'state': 'enabled', 'strict': False}; record (3,1) still present: [1]; LedgerRevision seqs [1, 2, 3]; idem binding c18-k2 = '\\x03\\x04\\x03B\\x01de63550c92cde590c0b3685718c468739957a52a0fc9cc4ac0b69b089ee8c653'; the next commit -> {'error': 'LedgerInconsistencyError: revision row save failed: ERROR #5805: ID key not unique for extent \\'Graph.KG.LedgerRevision\\' : \\'^Graph.KG.LedgerRevisionD(3)\\' exists. Id counter location = \\'\"^Graph.KG.LedgerRevisionD\"\\'', 'ok': False}; a retry of c18-k2 -> {'head_seq': 2, 'replayed': True, 'seq': 3}; verify -> equal. Redaction half: a tenant node c18t|x with property secret committed, archived, erased (delete_nodes_by_prefix) and redacted; records after redaction [{'attr': '', 'digest': '3b2fff558a9c0868e7a9e8274446c3fa0a86327f09d812aa05cdd53d59b9858c', 'entity_id': 'None', 'entity_kind': 'node', 'flags': [], 'graph': None, 'new': None, 'op': 'redacted', 'ordinal': 1, 'prior': None, 'redacted_op': 'create_node', 'seq': 2}, {'attr': '', 'digest': 'c81fabeb686b8b9ae288d6ac215276928ba0e15cd67019213a07d837cd89d4b2', 'entity_id': 'None', 'entity_kind': 'node', 'flags': [], 'graph': None, 'new': None, 'op': 'redacted', 'ordinal': 2, 'prior': None, 'redacted_op': 'add_label', 'seq': 2}, {'attr': '', 'digest': 'f0be49eb039eeeb69dbf0014ccb208c777ff62a920e6f7db4b86f2e5d921cad5', 'entity_id': 'None', 'entity_kind': 'node', 'flags': [], 'graph': None, 'new': None, 'op': 'redacted', 'ordinal': 3, 'prior': None, 'redacted_op': 'set_prop', 'seq': 2}]; after a replacing restore of the pre-redaction archive the same revision's records are [{'attr': '', 'entity_id': 'c18t|x', 'entity_kind': 'node', 'flags': [], 'graph': None, 'new': '', 'op': 'create_node', 'ordinal': 1, 'prior': None, 'seq': 2}, {'attr': 'C18T', 'entity_id': 'c18t|x', 'entity_kind': 'node', 'flags': [], 'graph': None, 'new': '', 'op': 'add_label', 'ordinal': 2, 'prior': None, 'seq': 2}, {'attr': 'secret', 'entity_id': 'c18t|x', 'entity_kind': 'node', 'flags': [], 'graph': None, 'new': 'c18-sensitive', 'op': 'set_prop', 'ordinal': 3, 'prior': None, 'seq': 2}] (content back: True) while redactedRev marks ['2'] remain. Models: cmc-restore-as-built-history (expected-violation, 39 states, exhaustive within bounds), cmc-restore-as-built-grows (expected-violation, 39 states, exhaustive within bounds), cmc-restore-as-built-commit (expected-violation, 1482 states, exhaustive within bounds) (the ledger can never commit again: the leftover LedgerRevision row holds the IdKey of head+1, Ledger.cls:530-556, LedgerRevision.cls:44), cmc-restore-as-built-redaction (expected-violation, 85 states, exhaustive within bounds); reviewed cmc-restore-reviewed (pass, 891 states, exhaustive within bounds); control cmc-restore-ctl-marks (expected-violation, 85 states, exhaustive within bounds).",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c18-live-ledger-overlay"
+    },
+    {
+     "kind": "mc",
+     "ref": "cmc-restore-as-built-history"
+    },
+    {
+     "kind": "mc",
+     "ref": "cmc-restore-as-built-grows"
+    },
+    {
+     "kind": "mc",
+     "ref": "cmc-restore-as-built-commit"
+    },
+    {
+     "kind": "mc",
+     "ref": "cmc-restore-as-built-redaction"
+    },
+    {
+     "kind": "mc",
+     "ref": "cmc-restore-reviewed"
+    },
+    {
+     "kind": "control",
+     "ref": "cmc-restore-ctl-marks"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Eraser.cls:806-812"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/snapshot.py:1554-1588, 1654-1692"
+    }
+   ],
+   "gates": [
+    "3.3a-writesets",
+    "3.4-ownership",
+    "3.3-model-check",
+    "SYS-I5",
+    "SNP-I3.6"
+   ],
+   "severity": "S1",
+   "confidence": "high",
+   "remedy": "Per HD-1801: refuse a restore whose archive history does not extend the live one, before erase_all; otherwise replace the ledger as a unit (kill ^IVG.Ledger and the ledger storage first) and re-apply live redactions (tombstones, redactedRev, idemRedacted) to the archived records.",
+   "notes": "The wedge (no commit possible after restoring an older archive) is stronger than the original's 'reuses sequence numbers': the IdKey on LedgerRevision.Seq refuses the next revision row, and nothing removes the leftover row."
+  },
+  {
+   "id": "F-1802",
+   "module": "18",
+   "title": "A merge restore guards plain tables on their first column only, and counts skipped rows as restored",
+   "intended": "SNP-B4.1 (a merge adds each missing row, judged by the row's own key); SNP-B4.2 (a row counts as restored only when added); USER_GUIDE.md:1151-1153 (merge=True adds to what is there).",
+   "observed": "Live (c18-live-merge-guard): graph c18m with 3 nodes, 2 edges, labels and props archived ({'nodes': 3, 'rdf_edges': 2, 'rdf_labels': 3, 'rdf_props': 6}); after erase and re-creating one edge, one label, one property ({'nodes': 2, 'rdf_edges': 1, 'rdf_labels': 1, 'rdf_props': 3}), merge restore left {'nodes': 3, 'rdf_edges': 1, 'rdf_labels': 1, 'rdf_props': 3} - rows missing {'nodes': 0, 'rdf_edges': 1, 'rdf_labels': 2, 'rdf_props': 3}; the result reported restored_tables {'Graph_KG.code_crosswalk': 0, 'Graph_KG.docs': 0, 'Graph_KG.embedding_registry': 0, 'Graph_KG.fhir_bridges': 0, 'Graph_KG.kg_EdgeEmbeddings': 0, 'Graph_KG.kg_NodeEmbeddings': 0, 'Graph_KG.nodes': 3, 'Graph_KG.rdf_edges': 2, 'Graph_KG.rdf_labels': 3, 'Graph_KG.rdf_namespaces': 0, 'Graph_KG.rdf_props': 6, 'Graph_KG.rdf_reifications': 0, 'Graph_KG.relationship_mappings': 0, 'Graph_KG.table_mappings': 0} and failed_rows {}. First SELECT * columns {'docs': None, 'nodes': ['node_id', 'graph_id', 'created_at'], 'rdf_edges': ['graph_id', 's', 'p', 'o_id', 'qualifiers', 'ekey'], 'rdf_labels': ['graph_id', 's', 'label'], 'rdf_props': ['graph_id', 's', 'key', 'val']} (P-1801 confirmed live).",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c18-live-merge-guard"
+    },
+    {
+     "kind": "live",
+     "ref": "c18-live-save-footprint"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/snapshot.py:1287-1298"
+    }
+   ],
+   "gates": [
+    "3.4-declared-reads",
+    "3.6-keys"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Guard each table on its primary or unique key (as CONFIGURATION_TABLES does) and count only inserted rows.",
+   "notes": ""
+  },
+  {
+   "id": "F-1803",
+   "module": "18",
+   "title": "Edge vectors lose their graph and metadata in a snapshot",
+   "intended": "SNP-B1.18 (edge vectors keep their graph and notes); Graph_KG.kg_EdgeEmbeddings is UNIQUE (graph_id, s, p, o_id) with metadata (iris_vector_graph/schema.py:455-464).",
+   "observed": "Live (c18-live-edge-routes, part b): a kg_EdgeEmbeddings row of graph c18L with metadata, planted by SQL (the shape the table's key and metadata column exist for; the pin's own writer sends named-graph edge vectors to routes, part a), [['c18L', 'c18:l1', '{\"m\": 1}']]; archived as [{'emb': '1,2,3,4', 'o_id': 'c18:l2', 'p': 'R', 's': 'c18:l1'}] (no graph_id, no metadata); after deleting it and a merge restore: [['', 'c18:l1', 'None']].",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c18-live-edge-routes"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/snapshot.py:942-956, 1510-1552"
+    }
+   ],
+   "gates": [
+    "3.4-declared-reads",
+    "3.6-keys",
+    "SYS-I2"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Export and restore graph_id and metadata; match on the full key.",
+   "notes": "At the pin store_edge_embedding(graph=<named>) writes a routed kg_eemb_ table, not kg_EdgeEmbeddings (c18-live-edge-vectors), so the legacy-table path concerns rows written before routing or by SQL; the routed path has its own, larger defect F-C1804."
+  },
+  {
+   "id": "F-1804",
+   "module": "18",
+   "title": "Native index values come back as text",
+   "intended": "spec 255 (a value comes back with the type it was written with); SNP-B2.21.",
+   "observed": "Live (c18-live-value-types and c18-live-save-footprint): the archive line for the attribute is [{'k': ['edgeprop', 'c18g', '1700000000', 'c18:a', 'T', 'c18:b', 'amount'], 'v': '20'}]; get_edge_attrs before {'amount': 20} (int), after merge restore {'amount': '20'} (str).",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c18-live-value-types"
+    },
+    {
+     "kind": "live",
+     "ref": "c18-live-save-footprint"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/snapshot.py:1644-1646, 1679"
+    },
+    {
+     "kind": "live",
+     "ref": "rx-dec-live-18"
+    }
+   ],
+   "gates": [
+    "3.5-decoders"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Archive the value's type (as the vector form does) or move values on the server.",
+   "notes": ""
+  },
+  {
+   "id": "F-1805",
+   "module": "18",
+   "title": "A merge restore overwrites temporal aggregates instead of combining them",
+   "intended": "SNP-B4.6 (after a merge restore the timed summaries still match the timed events); TemporalIndex.cls:96-125.",
+   "observed": "Live (c18-live-aggregates): bucket 1700001000 with 2 archived events and a third live one; aggregate count before merge 3 / window 3; after merge restore aggregate 2 / window 3.",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c18-live-aggregates"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/snapshot.py:1679"
+    }
+   ],
+   "gates": [
+    "3.6-frame",
+    "SYS-I8"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Rebuild touched buckets and tlast after a merge (RebuildBucketAggregate, RebuildLatest) or refuse overlapping merges.",
+   "notes": ""
+  },
+  {
+   "id": "F-1806",
+   "module": "18",
+   "title": "Graph.KG.Snapshot.ImportGlobals loads any global file without the allow-list",
+   "intended": "SNP-X5.1 (every way to load globals keeps to the restore allow-list); snapshot.py:412-422 (an archive is a file anyone can write).",
+   "observed": "Live (c18-live-file-helpers): Graph.KG.Snapshot is deployed in AUDITC with ['Decode', 'DeleteDir', 'Encode', 'ExportGlobals', 'FileExists', 'GetFileSize', 'ImportGlobals', 'IsVector', 'NodeRef', 'NodeValueJSON', 'ReadFileChunk', 'SetNodeJSON', 'WriteFileChunk']; ImportGlobals('/nonexistent-ivgaudit-c18/') answered {\"imported\":0} - callable over the Native API; its body runs $System.OBJ.Load on every *.gof (Snapshot.cls:24-35) with no list. No product code calls it.",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c18-live-file-helpers"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Snapshot.cls:4-73"
+    },
+    {
+     "kind": "live",
+     "ref": "ws-live-snap-importglobals"
+    },
+    {
+     "kind": "live",
+     "ref": "rx-live-18"
+    }
+   ],
+   "gates": [
+    "5c-refusals",
+    "3.4-ownership"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Delete the unused methods, or apply the restore allow-list.",
+   "notes": " Steer 7: ImportGlobals shown overwriting the ledger's records, head and meta with another history's export (ws-live-snap-importglobals), not only callable."
+  },
+  {
+   "id": "F-1807",
+   "module": "18",
+   "title": "The HTTP snapshot endpoint can write two snapshots to one path",
+   "intended": "Each save produces its own archive (POST /admin/snapshot answers the path it wrote).",
+   "observed": "Live (c18-live-http-endpoint): two POSTs in one second answered [200, 200] with paths ['/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/breadth-c/18/archives/ivg_snapshot_1794611107.snapshot', '/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/breadth-c/18/archives/ivg_snapshot_1794611107.snapshot']; the file holds created_ts 1794611107088 of the second (save timestamps [1794611107076, 1794611107088]).",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c18-live-http-endpoint"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/cypher_api.py:668-678"
+    }
+   ],
+   "gates": [
+    "3.5-handlers"
+   ],
+   "severity": "S3",
+   "confidence": "high",
+   "remedy": "Use a unique name (uuid or ms + counter) and refuse to overwrite.",
+   "notes": ""
+  },
+  {
+   "id": "F-C1801",
+   "module": "18",
+   "title": "save_snapshot archives writes that never commit",
+   "intended": "decisions.md HD-1802 (working): claim a consistent snapshot only with quiescent writers or a verified snapshot/epoch protocol, and declare the quiet-writer premise for the current exporter; SNP-Q1.17.",
+   "observed": "Live (c18-live-dirty-export): another connection opened a transaction (TLEVEL 1) and created c18:ghost; save_snapshot ran; the writer rolled back; the DB holds 0 ghost rows, the archive holds {'kg_lines': [{'k': ['label', '0', 'C18Ghost', 'c18:ghost'], 'v': ''}], 'nodes': [{'created_at': '2026-11-13T23:05:06', 'graph_id': '', 'node_id': 'c18:ghost'}], 'rdf_props': [{'graph_id': '', 'key': 'p', 's': 'c18:ghost', 'val': 'uncommitted'}, {'graph_id': '', 'key': 'id', 's': 'c18:ghost', 'val': 'c18:ghost'}]}. Model: cmc-snap-as-built-committed (expected-violation, 36 states, exhaustive within bounds), cmc-snap-as-built-dangling (expected-violation, 63 states, exhaustive within bounds) (an edge archived without its endpoint), reviewed export gate cmc-snap-reviewed (pass, 65 states, exhaustive within bounds), control cmc-snap-ctl-gate (expected-violation, 36 states, exhaustive within bounds), witness cmc-snap-wit (expected-violation, 41 states, exhaustive within bounds). Neither USER_GUIDE.md:1151-1168 nor ADMIN_GUIDE.md:975-1010 declares a quiet-writer premise; the docstring says only 'reads only' (snapshot.py:803).",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c18-live-dirty-export"
+    },
+    {
+     "kind": "mc",
+     "ref": "cmc-snap-as-built-committed"
+    },
+    {
+     "kind": "mc",
+     "ref": "cmc-snap-as-built-dangling"
+    },
+    {
+     "kind": "mc",
+     "ref": "cmc-snap-reviewed"
+    },
+    {
+     "kind": "control",
+     "ref": "cmc-snap-ctl-gate"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/snapshot.py:864-1034"
+    }
+   ],
+   "gates": [
+    "3.5-lockplans",
+    "3.3-model-check",
+    "SYS-P2"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Document the quiet-writer premise (HD-1802) and refuse or warn when transactions are open; or export under a namespace-wide export gate that writers respect.",
+   "notes": "Intent: HD-1802 is a working assumption; the observation (an archive can hold content that never existed, which a restore then makes real) is beyond 'not point in time' and holds under any reading."
+  },
+  {
+   "id": "F-C1802",
+   "module": "18",
+   "title": "restore_snapshot drops a global line it cannot write without raising or counting it",
+   "intended": "SNP-X2.14 (a native index that cannot be written stops the restore; the error says what is done); restore docstring snapshot.py:1088-1094 ('A global it cannot write ... raises RuntimeError').",
+   "observed": "Live (c18-live-swallowed-lines): an archive with ^IVG.GraphMode lines ['{\"k\": [\"c18x\"], \"v\": \"1\"}', '{\"k\": [\"\"], \"v\": \"1\"}', '{\"k\": [\"c18y\", \"\"], \"v\": \"1\"}']; the bad subscripts set directly over the Native API -> {'[\"\"]': 'RuntimeError: <SUBSCRIPT>', '[\"c18y\", \"\"]': 'RuntimeError: <SUBSCRIPT>'}; merge restore answered {'failed_rows': {}, 'restored_globals': ['IVG.GraphMode'], 'restored_layers': ['globals'], 'restored_tables': {}, 'snapshot_ts': 1794612073559} (error None); the good line was written: {'c18x': 1}. Source: _import_global_from_ndjson catches every per-line exception with logger.debug (snapshot.py:1665-1683); the unit test test_restore_raises_on_a_global_it_cannot_write patches the whole method to raise (tests/unit/test_460_r271_snapshot_raises.py:156-163), so the per-line path is untested.",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c18-live-swallowed-lines"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/snapshot.py:1654-1692"
+    },
+    {
+     "kind": "inspected",
+     "ref": "tests/unit/test_460_r271_snapshot_raises.py:156-163"
+    },
+    {
+     "kind": "live",
+     "ref": "rx-live-18"
+    }
+   ],
+   "gates": [
+    "5c-refusals",
+    "3.5-decoders"
+   ],
+   "severity": "S2",
+   "confidence": "high",
+   "remedy": "Count failed lines in failed_rows (per global) or raise as documented; a test with a line IRIS refuses.",
+   "notes": ""
+  },
+  {
+   "id": "F-C1803",
+   "module": "18",
+   "title": "Graph.KG.Snapshot's unused file helpers read, write and delete server files for any Native API caller",
+   "intended": "ADMIN_GUIDE.md:450-473 grants the least-privilege reading role %Native_ClassExecution:U; nothing in the product needs server file access through IVG classes (no caller of ReadFileChunk/WriteFileChunk/DeleteDir/ExportGlobals).",
+   "observed": "Live (c18-live-file-helpers, as _SYSTEM): FileExists('/etc/hostname') = 1, GetFileSize = 33, ReadFileChunk returned 'ivg-playbook-20261113-audit-iris\\n'. Source: WriteFileChunk (Snapshot.cls:49-57) writes any path, DeleteDir (:64-68) runs RemoveDirectoryTree on any path, ExportGlobals (:4-22) writes any global to any directory, all as the IRIS server's OS user, with no IVG check. Whether a user holding only the documented reading role can call them was not run: it needs a new IRIS user and role on the audit container (blocked-access: Security.Users/Roles changes are container configuration).",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c18-live-file-helpers"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_src/src/Graph/KG/Snapshot.cls:4-73"
+    },
+    {
+     "kind": "inspected",
+     "ref": "docs/ADMIN_GUIDE.md:450-473"
+    },
+    {
+     "kind": "inspected",
+     "ref": "scripts/setup_security.sql:5-7"
+    }
+   ],
+   "gates": [
+    "3.4-ownership",
+    "5c-refusals"
+   ],
+   "severity": "S1",
+   "confidence": "medium",
+   "remedy": "Delete the file and global helpers (no product caller), or restrict them to an admin role and an allow-listed folder.",
+   "notes": "Extends F-1806 from loading globals to arbitrary server file read/write/delete. Confidence medium: the reading-role reachability rests on ADMIN_GUIDE's grants and IRIS's resource model (file I/O is not resource-protected), not on a live call as that role."
+  },
+  {
+   "id": "F-C1804",
+   "module": "18",
+   "title": "A snapshot carries no routed edge vectors (kg_eemb_ tables): a restore loses them silently",
+   "intended": "ADMIN_GUIDE.md:984-986 (a snapshot holds kg_EdgeEmbeddings and each routed embedding table the registry names); SNP-I1 (each store is copied or its omission explained); SNP-B1.18.",
+   "observed": "Live (c18-live-edge-vectors, c18-live-edge-routes part a): store_edge_embedding(graph='c18w') wrote route [['kg_eemb_cb5b098c95e72cdb', 'c18w', 'edge', '4']] with 1 row(s); the archive's members are ['metadata.json', 'sql/Graph_KG_nodes.ndjson', 'sql/Graph_KG_rdf_edges.ndjson', 'sql/Graph_KG_rdf_labels.ndjson', 'sql/Graph_KG_rdf_props.ndjson', 'sql/Graph_KG_rdf_reifications.ndjson', 'sql/Graph_KG_docs.ndjson', 'sql/Graph_KG_embedding_registry.ndjson', 'sql/Graph_KG_code_crosswalk.ndjson', 'sql/Graph_KG_rdf_namespaces.ndjson', 'sql/Graph_KG_table_mappings.ndjson', 'sql/Graph_KG_relationship_mappings.ndjson', 'sql/Graph_KG_fhir_bridges.ndjson', 'sql/Graph_KG_kg_NodeEmbeddings.ndjson', 'sql/Graph_KG_kg_EdgeEmbeddings.ndjson', 'globals/KG.ndjson', 'globals/NKG.ndjson'] (no kg_eemb_ file, no routed-table entry; the registry row is archived); after a replacing restore (failed_rows {}) the registry holds [['kg_eemb_cb5b098c95e72cdb', 'c18w', 'edge', 'present']], the route table exists: 0, rows: None; edge_vector_search on the graph: []. Source: routed_export_plan keeps only names is_routed_embedding_table accepts, node routes kg_emb_<16 hex> (snapshot.py:299-344; security.py:58-68 'False for an edge route'), and no other code exports or recreates kg_eemb_ tables.",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "c18-live-edge-vectors"
+    },
+    {
+     "kind": "live",
+     "ref": "c18-live-edge-routes"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_engine/snapshot.py:299-344, 960-1025"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/security.py:58-80"
+    }
+   ],
+   "gates": [
+    "3.1-coverage",
+    "3.3a-writesets",
+    "SNP-I1"
+   ],
+   "severity": "S1",
+   "confidence": "high",
+   "remedy": "Plan and export edge routes (is_routed_edge_embedding_table) with their width and kind, recreate them on restore, and count a registry row whose table could not be restored as failed.",
+   "notes": "Data loss: after a replacing restore the graph's edge vectors are gone and the report is complete-looking."
+  }
+ ]
+}

@@ -1,0 +1,15 @@
+{
+  "command": "bash experiment/playbook-completion/tools/locks.sh iris python experiment/playbook-completion/product-gates/fc_controls.py s15 $RUN_DIR/product-gates/fc-controls",
+  "experiment_head": "e7cf1457e9d16c76fa772c2deeb94d31296c62b7",
+  "id": "pg-fc-s15-control",
+  "kind": "control",
+  "lane": "product-gates",
+  "log": "$RUN_DIR/product-gates/fc-controls/s15.json",
+  "log_bytes": 1983,
+  "log_sha256": "27b52ebb62ae0c525405e81cc2b1305d55ccb132a14ee1099de02299eafb57e7",
+  "observes": "Negative control for S15 (F-C0801, b-08-live-fc0801-rollback-nkg), AUDITIA, Cypher on the SQL path (native_cypher=False) with ^NKG built by sync(). Oracle (SYS-I8, CYP-I6.4): after a Cypher write query, ^NKG(-3,src) and ^NKG('$meta','edgeCount') move with the rdf_edges rows, or ^NKG is marked stale. Precondition absent (MATCH ... CREATE (a)-[:PGNEW]->(b) commits): rows out of src 1 -> 2, deg 1 -> 2, edgeCount 2 -> 3: passes. Precondition present (the same edge write followed by a CREATE that fails, so the query rolls back; here the failing statement raised GraphWriteError '<PARAMETER ERROR> Invalid number of parameters', the driver 5.3.2 behaviour of F-C1706, not the original's duplicate id): rows unchanged 2 -> 2, deg 2 -> 3, edgeCount 3 -> 4, no stale mark: flagged (2 violations). Control passes.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T12:54:49+00:00",
+  "result": "pass"
+}

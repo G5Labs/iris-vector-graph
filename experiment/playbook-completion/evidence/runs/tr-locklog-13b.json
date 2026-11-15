@@ -1,0 +1,15 @@
+{
+  "command": "trace-replay/lockrun.py 13b (locks.sh iris, AUDITE) then lockcheck.py 13b",
+  "experiment_head": "7b72fc52c878c31e143452a8cc8452cc4a6c198f",
+  "id": "tr-locklog-13b",
+  "kind": "live",
+  "lane": "trace-replay",
+  "log": "$RUN_DIR/trace-replay/logs/tr-locklog-13b.log",
+  "log_bytes": 880,
+  "log_sha256": "f9fd819c2285bbf205ef045c84ef9ca6eb994b1a62613ec056737c9d0f8a4b61",
+  "observes": "Isolation of Final head lock (LedgerRedact.cls:390): with ^IVG.Ledger(\"head\") held from the start the redaction waited at Batch lock (+11^Graph.KG.LedgerRedact.1, :282) having written nothing; with a probe session that waited for the redaction marker and then queued for the head lock behind the only Batch (batch 1000), the redaction waited at a second line (+119^Graph.KG.LedgerRedact.1) after writing its 8 tombstones and clearing revisions 2-5, and wrote its redaction revision row 6 and the head only after the release (receipt: 2 batches, complete). This is the 13b part that tr-locklog-13 observes text also describes (its log holds only the batch-1 poll check)",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T12:41:04+00:00",
+  "result": "pass"
+}

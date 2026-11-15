@@ -1,0 +1,48 @@
+[package]
+name = "ivg-d1f-proofs"
+version = "0.1.0"
+edition = "2021"
+description = "Completion audit, PROOFS-D1F lane (proof debt D-1, playbook §3.3): Verus L1 contracts, L2 machines, refinement, inductive invariants and broken-implementation controls for module 15 (FHIR sync against erase, the sync task and registration; watermark progress under fairness), module 16 (HTTP and Bolt servers: retries after ambiguous outcomes, status maps, units of work, the authorization boundary) and module 17 (the HTTP client's retries and status map, the SQL adapter's read_only and node reads, status and capability claims, the driver pin)."
+publish = false
+
+[dependencies]
+vstd = { version = "=0.0.0-2026-09-20-0158", features = ["std", "alloc"] }
+actors = { git = "file:///home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/playbook-reference-actors", rev = "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877" }
+
+[patch.crates-io]
+verus_builtin_macros = { git = "file:///home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/playbook-reference-actors", rev = "c03f9fa9be961610f2b274ffbb6a2c88d7d4d877" }
+
+[features]
+# Broken-implementation controls (playbook §3.3 gate). Each replaces one decision of the reviewed design by the pin's
+# behaviour (as reproduced by the audit) and must make verification fail, every error located in the file named here.
+# Module 15: a FHIR graph's sync, erase, sync task and registration.
+control_hd1503_erase_ignores_sync_lock = []  # src/fhir_l2.rs   EraseGraph takes no lock: an erase (or a durable removal) commits while a SyncOnce runs (Eraser.cls:47-258, no LOCK; FHIRGraph.cls:543-626, 1967-1969)
+control_fc1501_schedule_untransacted = []    # src/fhir_l2.rs   Schedule saves the %SYS.Task, then records task_id in a separate autocommit UPDATE (FHIRGraph.cls:701-703)
+control_f1511_upsert_before_load = []        # src/fhir_l2.rs   Register upserts fhir_graphs before LoadColumns can throw, with no transaction (FHIRGraph.cls:235-258, 274-276)
+control_progress_rederive_restart = []       # src/fhir_progress.rs  progress-only: an interrupted re-derivation pass starts again from the first key (FHIRGraph.cls:573-581, 1451-1473; INT-F5.7)
+# Modules 16 and 17: one HTTP call through IVGClient and the Cypher HTTP server.
+control_fc1604_server_reruns_write = []      # src/call_l2.rs   _run_cypher runs the query again after any exception, a write whose statement left included (cypher_api.py:239-250)
+control_fc1602_unknown_as_client_error = []  # src/call_l2.rs   a lost IRIS connection after the statement left is answered 400, a definite client error (cypher_api.py:369-376)
+control_fc1703_client_resends_write = []     # src/call_l2.rs   IVGClient._post resends the same POST after a timeout or a 5xx, whatever the query (sdk.py:209-228)
+# Module 16: a unit of work over Bolt and over the Neo4j HTTP commit route.
+control_f1601_bolt_run_commits = []          # src/unit_l2.rs   Bolt BEGIN/COMMIT/ROLLBACK do nothing and every RUN commits (bolt_server.py:500-510, 579-581)
+control_f1610_tx_commit_per_statement = []   # src/unit_l2.rs   /db/neo4j/tx/commit runs each statement through _run_cypher, which commits it (cypher_api.py:391-401)
+# Modules 16 and 17: the authorization boundary and the client's status map.
+control_f1614_app_without_key_gate = []      # src/auth_l2.rs   the demo server's app has no ApiKeyMiddleware (src/iris_demo_server/app.py:1-22)
+control_fc1603_bolt_binds_every_interface = [] # src/auth_l2.rs BOLT_TCP_HOST defaults to 0.0.0.0 unless `ivg server start` set it (cypher_api.py:51; cli.py:429)
+control_f1714_unmapped_refusal = []          # src/auth_l2.rs   explain, load_ndjson and AsyncIVGClient raise httpx's HTTPStatusError for 401/403 (sdk.py:166-182, 254-281)
+# Module 17: the SQL adapter.
+control_hd1701_read_only_ignored = []        # src/sqla_l2.rs   execute_sql(read_only=True) runs any statement (iris_sql_store.py:1522-1531)
+control_hd1701_write_reported_failed = []    # src/sqla_l2.rs   a statement with no result set that ran comes back with IVGResult.error (iris_sql_store.py:1531, 1537-1553)
+control_f1701_unscoped_merge = []            # src/sqla_l2.rs   get_nodes with graph None reads every graph's labels and folds them by id (iris_sql_store.py:1116-1150)
+# Module 17: status claims and the driver pin.
+control_f1713_status_parts_short = []        # src/opsc_l2.rs   STATUS_PARTS lacks "adjacency" and "routines", which status() can mark unknown (status.py:11; admin.py:551, 752-753)
+control_fc1706_driver_floor = []             # src/opsc_l2.rs   pyproject asks intersystems-iris>=1.0.0 and uv.lock pins irispython 5.3.2 (pyproject.toml:42; uv.lock:1358-1371)
+
+[package.metadata.verus]
+verify = true
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(verus_only)', 'cfg(verus_keep_ghost)', 'cfg(verus_keep_ghost_body)'] }
+
+[workspace]

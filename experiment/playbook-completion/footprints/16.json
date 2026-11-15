@@ -1,0 +1,729 @@
+{
+ "module": "16",
+ "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "method": "Declared footprints from source; journal validation with experiment/playbook-completion/traces/journal.py via live/breadth-c/16/jsrv.py journal_by_marker (the server's IRIS pid found from the scratch id in the journaled global nodes; all records of that pid in the window classified as in-transaction, non-transactional increment (ID counters, ^KG(\"__version\")) or outside any transaction).",
+ "entries": [
+  {
+   "entry": "POST /api/cypher (write)",
+   "role": "writer",
+   "source": "iris_vector_graph/cypher_api.py:351-376 -> _run_cypher :239-260 -> engine.execute_cypher (iris_vector_graph/_engine/query.py:1946-1967)",
+   "reads": [
+    "sql:Graph_KG.*  (per translated query)"
+   ],
+   "writes": [
+    "sql:Graph_KG.nodes",
+    "sql:Graph_KG.rdf_labels",
+    "sql:Graph_KG.rdf_props",
+    "global:^KG",
+    "sql:Graph_KG.rdf_edges",
+    "global:^NKG (version stamp)"
+   ],
+   "transaction": "one engine write transaction per execute_cypher; on ANY exception the engine is reset (connection closed) and the query re-run once on a new connection (HD-1603, F-C1604)",
+   "locks": [
+    "_engine_lock (threading.RLock, in-process only, cypher_api.py:149)"
+   ],
+   "claims_atomic": "per Cypher statement (engine write wrapper)",
+   "journal": {
+    "run": "c16-s1-cypher-http",
+    "label": "POST /api/cypher write",
+    "pids": [
+     "6246"
+    ],
+    "records": 52,
+    "outermost_commits_by_pid": {
+     "6246": 1
+    },
+    "stores_written": [
+     "global:^KG",
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_labels",
+     "sql:Graph_KG.rdf_props"
+    ],
+    "stores_written_in_txn": [
+     "global:^KG",
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_labels",
+     "sql:Graph_KG.rdf_props"
+    ],
+    "stores_with_nontransactional_increments": [
+     "global:^KG",
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_labels",
+     "sql:Graph_KG.rdf_props"
+    ],
+    "stores_written_outside_any_txn": [],
+    "error": null,
+    "other_pids_in_window": [],
+    "undeclared_writes": [],
+    "match": true
+   }
+  },
+  {
+   "entry": "POST /api/cypher (write) with a lost acknowledgement (fault injected after the engine's commit)",
+   "role": "writer",
+   "source": "iris_vector_graph/cypher_api.py:239-260 (retry after any exception)",
+   "reads": [
+    "as /api/cypher"
+   ],
+   "writes": [
+    "sql:Graph_KG.rdf_props"
+   ],
+   "transaction": "first attempt commits; the server resets the engine and commits the same write again on a new IRIS process",
+   "locks": [
+    "_engine_lock"
+   ],
+   "claims_atomic": "one request applies its write once (HD-1603)",
+   "journal": {
+    "run": "c16-s4-server-retry",
+    "label": "POST /api/cypher SET counter+1 with lost ack",
+    "pids": [
+     "10536",
+     "10543"
+    ],
+    "records": 46,
+    "outermost_commits_by_pid": {
+     "10536": 1,
+     "10543": 1
+    },
+    "stores_written": [
+     "sql:Graph_KG.rdf_props"
+    ],
+    "stores_written_in_txn": [
+     "sql:Graph_KG.rdf_props"
+    ],
+    "stores_with_nontransactional_increments": [
+     "sql:Graph_KG.rdf_props"
+    ],
+    "stores_written_outside_any_txn": [],
+    "error": null,
+    "other_pids_in_window": [],
+    "undeclared_writes": [],
+    "match": false
+   }
+  },
+  {
+   "entry": "POST /db/neo4j/tx/commit (N statements)",
+   "role": "writer",
+   "source": "iris_vector_graph/cypher_api.py:379-410",
+   "reads": [
+    "as /api/cypher"
+   ],
+   "writes": [
+    "sql:Graph_KG.nodes",
+    "sql:Graph_KG.rdf_labels",
+    "sql:Graph_KG.rdf_props",
+    "global:^KG",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "transaction": "one engine transaction PER statement; later statements run after a failure",
+   "locks": [
+    "_engine_lock per statement"
+   ],
+   "claims_atomic": "Neo4j endpoint contract: one transaction per request (P-1612)",
+   "journal": {
+    "run": "c16-s1-cypher-http",
+    "label": "POST /db/neo4j/tx/commit (3 statements, 2nd fails)",
+    "pids": [
+     "6259",
+     "6266"
+    ],
+    "records": 74,
+    "outermost_commits_by_pid": {
+     "6259": 1,
+     "6266": 1
+    },
+    "stores_written": [
+     "global:^KG",
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_labels",
+     "sql:Graph_KG.rdf_props"
+    ],
+    "stores_written_in_txn": [
+     "global:^KG",
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_labels",
+     "sql:Graph_KG.rdf_props"
+    ],
+    "stores_with_nontransactional_increments": [
+     "global:^KG",
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_labels",
+     "sql:Graph_KG.rdf_props"
+    ],
+    "stores_written_outside_any_txn": [],
+    "error": null,
+    "other_pids_in_window": [],
+    "undeclared_writes": [],
+    "match": false
+   }
+  },
+  {
+   "entry": "POST /db/{db}/query/v2",
+   "role": "reader|writer",
+   "source": "iris_vector_graph/cypher_api.py:436-460",
+   "reads": [
+    "as /api/cypher"
+   ],
+   "writes": [
+    "sql:Graph_KG.nodes",
+    "sql:Graph_KG.rdf_labels",
+    "sql:Graph_KG.rdf_props",
+    "global:^KG",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "transaction": "as /api/cypher (via _run_cypher)",
+   "locks": [
+    "_engine_lock"
+   ],
+   "claims_atomic": "per statement",
+   "journal": null
+  },
+  {
+   "entry": "Bolt RUN (TCP / WebSocket), inside BEGIN..ROLLBACK",
+   "role": "writer",
+   "source": "iris_vector_graph/bolt_server.py:567-622; BEGIN/COMMIT/ROLLBACK :500-510",
+   "reads": [
+    "as execute_cypher"
+   ],
+   "writes": [
+    "sql:Graph_KG.nodes",
+    "sql:Graph_KG.rdf_labels",
+    "sql:Graph_KG.rdf_props",
+    "global:^KG",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "transaction": "each RUN commits its own engine transaction; BEGIN/COMMIT/ROLLBACK touch no transaction",
+   "locks": [
+    "none (one IRIS connection per session, never closed: F-C1601)"
+   ],
+   "claims_atomic": "Bolt explicit transaction contract (P-1612)",
+   "journal": {
+    "run": "c16-s1-cypher-http",
+    "label": "Bolt BEGIN; RUN CREATE; ROLLBACK",
+    "pids": [
+     "6279"
+    ],
+    "records": 37,
+    "outermost_commits_by_pid": {
+     "6279": 1
+    },
+    "stores_written": [
+     "global:^KG",
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_labels",
+     "sql:Graph_KG.rdf_props"
+    ],
+    "stores_written_in_txn": [
+     "global:^KG",
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_labels",
+     "sql:Graph_KG.rdf_props"
+    ],
+    "stores_with_nontransactional_increments": [
+     "global:^KG",
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_labels",
+     "sql:Graph_KG.rdf_props"
+    ],
+    "stores_written_outside_any_txn": [],
+    "error": null,
+    "other_pids_in_window": [],
+    "undeclared_writes": [],
+    "match": false,
+    "mismatch": "the RUN's write committed in its own outermost transaction; the unit was then rolled back by the client and the write stayed (F-1601)"
+   }
+  },
+  {
+   "entry": "POST /admin/load",
+   "role": "writer",
+   "source": "iris_vector_graph/cypher_api.py:623-643 -> import_graph_ndjson (iris_vector_graph/_engine/snapshot.py:1727)",
+   "reads": [
+    "request body (temp file)"
+   ],
+   "writes": [
+    "sql:Graph_KG.nodes",
+    "sql:Graph_KG.rdf_labels",
+    "sql:Graph_KG.rdf_props",
+    "global:^KG",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "transaction": "per line / per batch (import_graph_ndjson)",
+   "locks": [
+    "_engine_lock (thread pool)"
+   ],
+   "claims_atomic": "no claim (ADMIN_API.md:260-281)",
+   "journal": {
+    "run": "c16-s7-more-writers",
+    "label": "POST /admin/load",
+    "pids": [
+     "10245"
+    ],
+    "records": 108,
+    "outermost_commits_by_pid": {
+     "10245": 3
+    },
+    "stores_written": [
+     "global:^KG",
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_edges",
+     "sql:Graph_KG.rdf_labels",
+     "sql:Graph_KG.rdf_props"
+    ],
+    "stores_written_in_txn": [
+     "global:^KG",
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_edges",
+     "sql:Graph_KG.rdf_labels",
+     "sql:Graph_KG.rdf_props"
+    ],
+    "stores_with_nontransactional_increments": [
+     "global:^KG",
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_edges",
+     "sql:Graph_KG.rdf_labels",
+     "sql:Graph_KG.rdf_props"
+    ],
+    "stores_written_outside_any_txn": [],
+    "error": null,
+    "other_pids_in_window": [],
+    "undeclared_writes": [],
+    "match": true
+   }
+  },
+  {
+   "entry": "POST /admin/indexes/rebuild",
+   "role": "writer",
+   "source": "iris_vector_graph/cypher_api.py:597-610",
+   "reads": [
+    "sql:Graph_KG.rdf_edges",
+    "sql:Graph_KG.nodes"
+   ],
+   "writes": [
+    "global:^KG",
+    "global:^NKG"
+   ],
+   "transaction": "rebuild_kg / rebuild_nkg (module 04)",
+   "locks": [
+    "_engine_lock"
+   ],
+   "claims_atomic": "no claim",
+   "journal": null,
+   "note": "namespace-wide rebuild: not run in a shared namespace"
+  },
+  {
+   "entry": "POST /admin/embed",
+   "role": "writer",
+   "source": "iris_vector_graph/cypher_api.py:613-620 -> embed_nodes",
+   "reads": [
+    "sql:Graph_KG.nodes",
+    "sql:Graph_KG.rdf_props"
+   ],
+   "writes": [
+    "sql:Graph_KG.kg_NodeEmbeddings | routed kg_emb_*"
+   ],
+   "transaction": "module 06 embed_nodes",
+   "locks": [
+    "_engine_lock"
+   ],
+   "claims_atomic": "no claim",
+   "journal": null,
+   "note": "needs an embedder; not run"
+  },
+  {
+   "entry": "POST /admin/schema/init",
+   "role": "writer",
+   "source": "iris_vector_graph/cypher_api.py:578-594 -> initialize_schema",
+   "reads": [
+    "^IVG.Deploy"
+   ],
+   "writes": [
+    "DDL, class compile, ^IVG.Deploy (module 01)"
+   ],
+   "transaction": "module 01",
+   "locks": [
+    "_engine_lock"
+   ],
+   "claims_atomic": "no claim",
+   "journal": null,
+   "note": "forbidden by lane rules (compiles classes)"
+  },
+  {
+   "entry": "DELETE /admin/queries/{id}",
+   "role": "writer (process control)",
+   "source": "iris_vector_graph/cypher_api.py:702-715",
+   "reads": [],
+   "writes": [
+    "IRIS process table (KillProcess)"
+   ],
+   "transaction": "none",
+   "locks": [
+    "_engine_lock"
+   ],
+   "claims_atomic": "n/a",
+   "journal": null
+  },
+  {
+   "entry": "GET /health, /schema, /indexes, /server, /metrics, /stats, /admin/export, /admin/queries; POST /admin/explain",
+   "role": "reader",
+   "source": "iris_vector_graph/cypher_api.py:268-284, :469-570, :646-740",
+   "reads": [
+    "sql:Graph_KG.nodes",
+    "sql:Graph_KG.rdf_labels",
+    "sql:Graph_KG.rdf_props",
+    "sql:Graph_KG.rdf_edges",
+    "%SYS.ProcessQuery (queries)",
+    "%SYSTEM.Version"
+   ],
+   "writes": [
+    "(export: a temp file, removed)"
+   ],
+   "transaction": "none",
+   "locks": [
+    "_engine_lock"
+   ],
+   "claims_atomic": "n/a",
+   "journal": null
+  },
+  {
+   "entry": "sample API POST /api/cypher (write)",
+   "role": "writer",
+   "source": "api/routers/cypher.py:94-260 (translate_to_sql; START TRANSACTION..COMMIT on the shared connection)",
+   "reads": [
+    "sql:Graph_KG.*"
+   ],
+   "writes": [
+    "sql:Graph_KG.nodes",
+    "sql:Graph_KG.rdf_labels",
+    "sql:Graph_KG.rdf_props",
+    "global:^KG",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "transaction": "SQL START TRANSACTION / COMMIT / ROLLBACK when is_transactional (api/routers/cypher.py:139-158)",
+   "locks": [
+    "none (shared connection without a lock, F-1608)"
+   ],
+   "claims_atomic": "statements of one query",
+   "journal": {
+    "run": "c16-s7-more-writers",
+    "label": "sample API POST /api/cypher CREATE",
+    "pids": [
+     "10260"
+    ],
+    "records": 85,
+    "outermost_commits_by_pid": {
+     "10260": 1
+    },
+    "stores_written": [
+     "global:^KG",
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_edges",
+     "sql:Graph_KG.rdf_labels",
+     "sql:Graph_KG.rdf_props"
+    ],
+    "stores_written_in_txn": [
+     "global:^KG",
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_edges",
+     "sql:Graph_KG.rdf_labels",
+     "sql:Graph_KG.rdf_props"
+    ],
+    "stores_with_nontransactional_increments": [
+     "global:^KG",
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_edges",
+     "sql:Graph_KG.rdf_labels",
+     "sql:Graph_KG.rdf_props"
+    ],
+    "stores_written_outside_any_txn": [],
+    "error": null,
+    "other_pids_in_window": [],
+    "undeclared_writes": [],
+    "match": true
+   }
+  },
+  {
+   "entry": "sample API GraphQL executeCypher",
+   "role": "writer",
+   "source": "api/gql/schema.py:149-230",
+   "reads": [
+    "sql:Graph_KG.*"
+   ],
+   "writes": [
+    "sql:Graph_KG.nodes",
+    "sql:Graph_KG.rdf_labels",
+    "sql:Graph_KG.rdf_props",
+    "global:^KG",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "transaction": "as the sample API Cypher route",
+   "locks": [
+    "none"
+   ],
+   "claims_atomic": "statements of one query",
+   "journal": null
+  },
+  {
+   "entry": "sample API GraphQL updateProtein",
+   "role": "writer",
+   "source": "examples/domains/biomedical/resolver.py:240-290",
+   "reads": [
+    "sql:Graph_KG.nodes (node_exists, default graph)"
+   ],
+   "writes": [
+    "sql:Graph_KG.rdf_props (EVERY graph's row for s,key)"
+   ],
+   "transaction": "UPDATE/INSERT per field then connection.commit()",
+   "locks": [
+    "none"
+   ],
+   "claims_atomic": "no claim; API-B6.7 requires one node in one graph",
+   "journal": {
+    "run": "c16-s8-followup",
+    "label": "sample API updateProtein",
+    "pids": [
+     "10556"
+    ],
+    "records": 32,
+    "outermost_commits_by_pid": {
+     "10556": 1
+    },
+    "stores_written": [
+     "sql:Graph_KG.rdf_props"
+    ],
+    "stores_written_in_txn": [
+     "sql:Graph_KG.rdf_props"
+    ],
+    "stores_with_nontransactional_increments": [
+     "sql:Graph_KG.rdf_props"
+    ],
+    "stores_written_outside_any_txn": [],
+    "error": null,
+    "other_pids_in_window": [],
+    "undeclared_writes": [],
+    "match": true
+   }
+  },
+  {
+   "entry": "sample API GraphQL createProtein / deleteProtein",
+   "role": "writer",
+   "source": "examples/domains/biomedical/resolver.py:188-240, :299-320 (engine.create_node / delete_node, default graph)",
+   "reads": [
+    "engine"
+   ],
+   "writes": [
+    "sql:Graph_KG.nodes",
+    "sql:Graph_KG.rdf_labels",
+    "sql:Graph_KG.rdf_props",
+    "global:^KG",
+    "routed vector table (createProtein embedding)"
+   ],
+   "transaction": "engine write wrappers",
+   "locks": [
+    "none"
+   ],
+   "claims_atomic": "engine",
+   "journal": null
+  },
+  {
+   "entry": "sample API POST /fhir-event/",
+   "role": "writer",
+   "source": "api/routers/fhir_event.py:283-365",
+   "reads": [
+    "sql:Graph_KG.kg_NodeEmbeddings (already_embedded)"
+   ],
+   "writes": [
+    "sql:Graph_KG.nodes",
+    "sql:Graph_KG.rdf_labels",
+    "sql:Graph_KG.rdf_props",
+    "global:^KG",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "transaction": "three engine calls, each its own transaction; temporal ^KG entries outside any transaction",
+   "locks": [
+    "none"
+   ],
+   "claims_atomic": "API-B7.4 should be all-or-nothing",
+   "journal": {
+    "run": "c16-s3-graphql-sample-api",
+    "label": "POST /fhir-event (success)",
+    "pids": [
+     "8644"
+    ],
+    "records": 99,
+    "outermost_commits_by_pid": {
+     "8644": 3
+    },
+    "stores_written": [
+     "global:^KG",
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_edges",
+     "sql:Graph_KG.rdf_labels",
+     "sql:Graph_KG.rdf_props"
+    ],
+    "stores_written_in_txn": [
+     "global:^KG",
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_edges",
+     "sql:Graph_KG.rdf_labels",
+     "sql:Graph_KG.rdf_props"
+    ],
+    "stores_with_nontransactional_increments": [
+     "global:^KG",
+     "sql:Graph_KG.nodes",
+     "sql:Graph_KG.rdf_edges",
+     "sql:Graph_KG.rdf_labels",
+     "sql:Graph_KG.rdf_props"
+    ],
+    "stores_written_outside_any_txn": [
+     "global:^KG"
+    ],
+    "error": null,
+    "other_pids_in_window": [],
+    "undeclared_writes": [],
+    "match": false
+   }
+  },
+  {
+   "entry": "sample API GraphQL node/nodes/stats/protein/gene/pathway; generated GraphQL node/nodes/stats/semantic_search/outgoing/incoming",
+   "role": "reader",
+   "source": "api/gql/core/resolvers.py:60-355; api/gql/loaders.py; iris_vector_graph/gql/resolvers.py:10-133",
+   "reads": [
+    "sql:Graph_KG.nodes",
+    "sql:Graph_KG.rdf_labels",
+    "sql:Graph_KG.rdf_props",
+    "sql:Graph_KG.rdf_edges",
+    "kg_KNN_VEC routes"
+   ],
+   "writes": [],
+   "transaction": "none",
+   "locks": [
+    "none"
+   ],
+   "claims_atomic": "n/a",
+   "journal": null,
+   "note": "declared-read violations: rdf_edges/rdf_labels/rdf_props read without graph_id (F-1603, F-1604)"
+  },
+  {
+   "entry": "generated GraphQL cypher field",
+   "role": "writer",
+   "source": "iris_vector_graph/gql/resolvers.py:136-165",
+   "reads": [
+    "as execute_cypher"
+   ],
+   "writes": [
+    "sql:Graph_KG.nodes",
+    "sql:Graph_KG.rdf_labels",
+    "sql:Graph_KG.rdf_props",
+    "global:^KG",
+    "sql:Graph_KG.rdf_edges"
+   ],
+   "transaction": "engine.execute_cypher",
+   "locks": [
+    "none"
+   ],
+   "claims_atomic": "per statement",
+   "journal": null
+  },
+  {
+   "entry": "Graph.KG.Service VectorSearch / HybridSearch / MetaPath",
+   "role": "reader",
+   "source": "iris_src/src/Graph/KG/Service.cls:263-320 -> Graph.KG.PyOps",
+   "reads": [
+    "kg_KNN_VEC / kg_RRF_FUSE / kg_TXT routes",
+    "sql:Graph_KG.embedding_registry",
+    "global:^KG (MetaPath)"
+   ],
+   "writes": [],
+   "transaction": "none",
+   "locks": [
+    "none"
+   ],
+   "claims_atomic": "n/a",
+   "journal": null,
+   "note": "blocked-access live: no web application dispatches to Graph.KG.Service"
+  },
+  {
+   "entry": "Graph.KG.Service.CreateWebApp",
+   "role": "writer (security config)",
+   "source": "iris_src/src/Graph/KG/Service.cls:30-75",
+   "reads": [
+    "Security.Applications (%SYS)"
+   ],
+   "writes": [
+    "Security.Applications, Security.Roles, SQL GRANTs"
+   ],
+   "transaction": "none",
+   "locks": [
+    "none"
+   ],
+   "claims_atomic": "refuses another app before changing anything (Service.cls:39-41)",
+   "journal": null,
+   "note": "not run: modifies instance security"
+  },
+  {
+   "entry": "MCPTools CypherQuery / RunSQL / LoadGraph / GraphStats / PPRWalk / EvidenceSearch",
+   "role": "writer|reader",
+   "source": "iris_src/src/Graph/KG/MCPTools.cls:9-221",
+   "reads": [
+    "sql:Graph_KG.*"
+   ],
+   "writes": [
+    "any (RunSQL runs arbitrary SQL; LoadGraph loads files)"
+   ],
+   "transaction": "per tool call",
+   "locks": [
+    "none"
+   ],
+   "claims_atomic": "n/a",
+   "journal": null,
+   "note": "blocked-access: %AI classes absent on Community"
+  },
+  {
+   "entry": "demo server /api/fhir/live/add, /api/fhir/live/sync",
+   "role": "writer",
+   "source": "src/iris_demo_server/routes/fhir.py:503-533",
+   "reads": [
+    "FHIR repository (HTTP)"
+   ],
+   "writes": [
+    "FHIR repository (PUT Condition)",
+    "FHIR graph sync (module 15)"
+   ],
+   "transaction": "FHIR server / sync",
+   "locks": [
+    "sync lock (module 15)"
+   ],
+   "claims_atomic": "n/a",
+   "journal": null,
+   "note": "needs IRIS for Health FHIR server: not run"
+  }
+ ],
+ "validated": 8,
+ "mismatches": [
+  {
+   "entry": "POST /api/cypher (write) with a lost acknowledgement (fault injected after the engine's commit)",
+   "run": "c16-s4-server-retry",
+   "what": "more than one outermost transaction for a unit claimed atomic: {\"10536\": 1, \"10543\": 1}"
+  },
+  {
+   "entry": "POST /db/neo4j/tx/commit (N statements)",
+   "run": "c16-s1-cypher-http",
+   "what": "more than one outermost transaction for a unit claimed atomic: {\"6259\": 1, \"6266\": 1}"
+  },
+  {
+   "entry": "Bolt RUN (TCP / WebSocket), inside BEGIN..ROLLBACK",
+   "run": "c16-s1-cypher-http",
+   "what": "the RUN's write committed in its own outermost transaction; the unit was then rolled back by the client and the write stayed (F-1601)"
+  },
+  {
+   "entry": "sample API POST /fhir-event/",
+   "run": "c16-s3-graphql-sample-api",
+   "what": "more than one outermost transaction for a unit claimed atomic: {\"8644\": 3}"
+  },
+  {
+   "entry": "sample API POST /fhir-event/ (success path)",
+   "run": "c16-s3-graphql-sample-api",
+   "what": "temporal index entries ^KG(\"tout\"|\"tin\"|\"tlast\"|\"bucket\"|\"tagg\", graph, ...) journaled outside any transaction (create_edge_temporal, module 05 owner): observation passed to module 05"
+  }
+ ]
+}

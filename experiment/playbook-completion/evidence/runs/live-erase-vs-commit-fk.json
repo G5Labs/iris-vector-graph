@@ -1,0 +1,15 @@
+{
+  "command": "locks.sh iris python traces/f1201_native.py $RUN_DIR/traces/f1201-seeded --trials 8 (graph G seeded with edge x-R-y)",
+  "experiment_head": "dd6ac5832cae4a6616468c566d1577e089b721cf",
+  "id": "live-erase-vs-commit-fk",
+  "kind": "live",
+  "lane": "orchestrator",
+  "log": "$RUN_DIR/traces/f1201-seeded/summary.json",
+  "log_bytes": 1250,
+  "log_sha256": "26b5b1840d218f7a4e4a5bbb045774e52e05b53a692b22957248d4a77207fec1",
+  "observes": "8/8 trials: the probe's exclusive ^IVG.AdjW(\"G\") paused EraseGraph inside its rdf_edges DELETE (functional index writer lock); a concurrent ledger commit of u-R-v into G committed; the eraser's node DELETE then failed with SQLCODE -124 (FK) and rolled back: 'nothing was erased'. ERS-I1 (all or nothing) held in every trial; ERS-I3 not violated; the erase failed instead (availability under concurrent commit). F-1201 window not reached by this schedule.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-13T23:22:01+00:00",
+  "result": "pass"
+}

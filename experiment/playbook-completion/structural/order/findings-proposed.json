@@ -1,0 +1,126 @@
+[
+ {
+  "id": "F-C0642",
+  "module": "06",
+  "title": "Vector top-k searches cut equal scores in storage order",
+  "intended": "Playbook principle 5 (never depend on storage or insertion order, only on keys and explicit orderings; verification-playbook.txt:33-34); HD-0603's working assumption, a ranking contract with defined tie behaviour (decisions.md:83-85, intent/HD-0603.md:37-41); kg_KNN_VEC returns 'up to k (node_id, cosine) pairs, highest first' (docs/API_REFERENCE.md:955-971) with no tie rule. F-C0703 is the same defect for text search.",
+  "observed": "Live (st-live-perm-b, AUDITD): five nodes, three with the identical vector [1,0,0,0], stored in three insertion orders; kg_KNN_VEC('[1,0,0,0]', k=2) answered [pv:1, pv:2] (forward), [pv:3, pv:2] (reverse), [pv:2, pv:3] (shuffle): which tied node is cut depends on insertion order; with k=4 the same set comes back with the tied ranks reordered. Source: every vector top-k orders by score only (ORDER BY score DESC with no tie key: iris_vector_graph/_engine/vector.py:569-600 kg_KNN_VEC, :377-383 edge_vector_search, :819-829 the optimized path, :1264-1268 vector_search; the generated kg_KNN_VEC procedure iris_vector_graph/schema.py:2436-2482); module 17's adapter helpers have the same shape (iris_vector_graph/dbapi_utils.py:266-272, iris_vector_graph/stores/iris_sql_store.py:2633-2641).",
+  "disposition": "reproduced-live",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "st-live-perm-b"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_engine/vector.py:569-600"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/schema.py:2436-2482"
+   }
+  ],
+  "gates": [
+   "3.6-row-permutation",
+   "3.4-storage-order"
+  ],
+  "severity": "S3",
+  "confidence": "high",
+  "remedy": "Order every vector top-k by a total key (score DESC, then node_id, or (s, p, o_id) for edges) in the SQL, the generated procedure and the adapter helpers, and state the tie rule in the API reference; a test that stores tied vectors in two orders and compares answers.",
+  "notes": "Severity follows F-C0703 (the text-search counterpart). The storage-order gate disposes these statements as 'ORDER BY present'; the reliance is the incomplete order at the cut, which only the row-permutation run shows. HD-0603 itself (kg_VECTOR_GRAPH_SEARCH's list(set(...))[:k], Python hash order) is intent-undecided and not part of this finding."
+ },
+ {
+  "id": "F-C1642",
+  "module": "16",
+  "title": "The generated GraphQL server pages nodes(label) over an unordered id list",
+  "intended": "A paged field (nodes(label, limit, offset), iris_vector_graph/gql/schema.py:150-156 -> gql/resolvers.py:32) is meant to page a defined sequence, so that consecutive pages partition the answer whatever the storage order (playbook principle 5, verification-playbook.txt:33-34). The sample API's own nodes field orders before it pages (api/gql/core/resolvers.py:159-177).",
+  "observed": "Live (st-live-so-confirm P16, AUDITD): five nodes of label Q written forward and in reverse; resolve_nodes(label='Q', limit=2, offset=0|2|4) answered pages [so16:0, so16:1] [so16:2, so16:3] [so16:4] forward and [so16:4, so16:3] [so16:2, so16:1] [so16:0] reverse; the permutation run (st-live-perm-c, module 16) shows three different first pages for three orders, while the sample API's ORDER BY created_at pages held. Source: SELECT s FROM rdf_labels WHERE label = ? with no ORDER BY, then all_ids[offset : offset + limit] (iris_vector_graph/gql/resolvers.py:32-46).",
+  "disposition": "reproduced-live",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "st-live-so-confirm"
+   },
+   {
+    "kind": "live",
+    "ref": "st-live-perm-c"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/gql/resolvers.py:32-46"
+   }
+  ],
+  "gates": [
+   "3.4-storage-order",
+   "3.6-row-permutation"
+  ],
+  "severity": "S4",
+  "confidence": "high",
+  "remedy": "ORDER BY s (and the graph) in the statement and page in SQL (TOP/offset over the ordered rows), scoped to one graph (F-1603).",
+  "notes": "F-1603 is the cross-graph part of the same resolver (the page is cut from every graph's ids); this finding is the order part and holds within one graph."
+ },
+ {
+  "id": "F-C1742",
+  "module": "17",
+  "title": "IRISGraphStore.query_nodes(limit=n) cuts an unordered node scan",
+  "intended": "A capped read answers a defined subset (playbook principle 5; store_protocol.py:10-11 states no order); the same lane's F-C0302 is the engine counterpart.",
+  "observed": "Source at the pin: without a label, query_nodes runs SELECT node_id FROM <schema>.nodes FETCH FIRST n ROWS ONLY with no ORDER BY (iris_vector_graph/stores/iris_sql_store.py:1176-1181), so the n nodes answered (and then filtered by property) are the first n in scan order. The product call itself cannot be observed answering here: it kills the client process first (F-C1743, st-live-so-confirm P17). The same unordered prefix in the TOP spelling, sent by a harness cursor over the same data, answered [so17:0, so17:1] forward and [so17:4, so17:3] reverse (st-live-so-17b).",
+  "disposition": "confirmed-source",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/stores/iris_sql_store.py:1162-1200"
+   },
+   {
+    "kind": "check",
+    "ref": "st-check-so-gate"
+   },
+   {
+    "kind": "live",
+    "ref": "st-live-so-17b"
+   }
+  ],
+  "gates": [
+   "3.4-storage-order",
+   "3.6-row-permutation"
+  ],
+  "severity": "S4",
+  "confidence": "high",
+  "remedy": "ORDER BY node_id (and graph) before the cut, with TOP n rather than FETCH FIRST (see F-C1743), and scope the read to one graph (F-1701).",
+  "notes": "The property filter that follows reads by (s, key) in any graph (F-1701). Disposition stays confirmed-source: the live answer shown is a harness statement of the same shape, not the product call."
+ },
+ {
+  "id": "F-C1743",
+  "module": "17",
+  "title": "IRISGraphStore.query_nodes(limit=n) kills the calling Python process (SIGSEGV) on IRIS Community 2026.1 with the locked driver",
+  "intended": "A public store method either answers or raises (store_protocol.py:10-11); the product knows FETCH FIRST is hazardous for this driver/engine family and avoids it elsewhere (iris_vector_graph/engine.py:725-739 _fetch_first_unsafe and its subprocess probe :772-830; docs/iris-sql-quirks.md:47-62; the in-line comment iris_sql_store.py:1177-1178 records a segfault on FETCH FIRST ? ROWS ONLY on ARM64).",
+  "observed": "Live (st-live-so-confirm P17, AUDITD, IRIS 2026.1 Community build 234U, intersystems_irispython 5.3.2, x86_64): a child process that calls engine._store.query_nodes(limit=2) prints its start mark and exits with return code -11 (SIGSEGV) before any answer, in both insertion orders; the first attempt inside the permutation harness ended the harness with 'dumped core'. The statement is SELECT node_id FROM Graph_KG.nodes FETCH FIRST 2 ROWS ONLY (iris_vector_graph/stores/iris_sql_store.py:1179-1180), sent without consulting _fetch_first_unsafe. Attribution control (st-live-so-17b): the same statement from a harness cursor also exits -11, the TOP spelling answers: the crash is the engine/driver's behaviour on this statement, which the adapter sends without the engine's own _fetch_first_unsafe check.",
+  "disposition": "reproduced-live",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "st-live-so-confirm"
+   },
+   {
+    "kind": "live",
+    "ref": "st-live-so-17b"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/stores/iris_sql_store.py:1176-1181"
+   }
+  ],
+  "gates": [
+   "3.7-failure-controls",
+   "3.6-capacity"
+  ],
+  "severity": "S2",
+  "confidence": "high",
+  "remedy": "Use TOP n (as the translator does for joins and the engine does when _fetch_first_unsafe is set) or consult _fetch_first_unsafe in the adapter; a test that runs query_nodes(limit=n) on the supported driver.",
+  "notes": "Tested with driver 5.3.2 (the pin's uv.lock) only; 5.4.0 not tried. A segfault is uncatchable in-process: every caller of the adapter (LazyKG, the store protocol's users) loses the process."
+ }
+]

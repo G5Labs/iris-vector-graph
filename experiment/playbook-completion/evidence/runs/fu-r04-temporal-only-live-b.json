@@ -1,0 +1,17 @@
+{
+  "command": "locks.sh iris timeout 600 python experiment/playbook-completion/followup/probes.py r04 (AUDITA; control graph erased before the cases)",
+  "experiment_head": "f3fe3917466f7bae3e46f32f5b0644cfeaff87c8",
+  "finding": "F-C1308",
+  "id": "fu-r04-temporal-only-live-b",
+  "kind": "live",
+  "lane": "followup",
+  "log": "$RUN_DIR/followup/r04.json",
+  "log_bytes": 5351,
+  "log_sha256": "2a49e2b66b34485720984a2edd7ffa3b37236120ff1bae11ad57e50ed3d519bd",
+  "namespace": "AUDITA",
+  "observes": "R-04, F-C1308/F-C1203: control: structural temporal edge in fqctl -> redact refused target_live (nodes 2, rdf_edges 1); after erase_graph it completes; verify equal. Case G: set_temporal_structural('FQ_OBS', False, graph='fq4g'), ledger commit create_temporal_edge(fq4|s1 FQ_OBS fq4|t1, w 7.5, attrs secret): 0 rows in nodes/rdf_edges/rdf_props/rdf_labels; redact('fq4g') with nothing erased: complete, 1 record tombstoned; get_edges_in_window still returns the edge (w 7.5). Case P: prefix tenant fq5 (a node + a temporal-only edge): delete_nodes_by_prefix('fq5|') erases 1 node, leaves the edge; redact(None, prefix='fq5') complete, 4 records tombstoned; edge still live. verify() equal after both: it cannot see temporal statements (replay.py:617-619, 792-800). FR-005 (refuse while live content remains) and INV-no-live-tombstone violated.",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-14T01:35:36+00:00",
+  "result": "fail"
+}

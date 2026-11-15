@@ -1,0 +1,578 @@
+{
+ "_doc": "Regex rules of semantics/tools/trace_requirements.py (basis rule:<id>). Each rule: id, pattern (Python re, case-insensitive, searched in the named fields joined by a space; default field: statement), optional kinds / modules / not_modules filters, targets, why. Patterns are kept specific (word boundaries, scope qualifiers); a missed trace falls to the functional fallback (B, T) or stays open (I, X, P), which is preferred to a wrong trace. Precision is measured in data/trace_sample_review.json. Round 2 (after the round-1 review in data/trace_sample_review.json): read-purity 'reads only' now needs the sentence to end there; 'recorded graph' is no ledger record; redaction verbs need removal context and cost statements are excluded from AX-10; the BM25 version-gate rule needs an upgrade or layout word; AX-04 also matches 'at once or not at all'.",
+ "rules": [
+  {
+   "id": "R-AX01-owner",
+   "kinds": [
+    "B",
+    "T",
+    "I"
+   ],
+   "pattern": "\\b(only|no other|nothing (else|outside))\\b[^.]{0,60}\\b(class|classes|module|writer|code|path|owner|routine)\\b[^.]{0,40}\\b(writes?|sets?|kills?|makes?|changes?|touch(es)?)\\b|\\bno code outside\\b|\\bgoes through (it|the)\\b|\\bevery (other )?(caller|writer) goes through\\b|\\bone writer\\b|\\bthe one writer\\b",
+   "targets": [
+    "AX-01"
+   ],
+   "why": "A store owned by one writer (SYS-I1, ADR-0011, ADR-0002)."
+  },
+  {
+   "id": "R-AX02-qualified-graph",
+   "kinds": [
+    "B",
+    "T",
+    "I"
+   ],
+   "pattern": "\\b(only|never|apart|its own|own|every|each|all|another|other|any|the same|same|that|this|one|named|default|no|both|two)\\s+(named\\s+)?graphs?\\b(?!-version)",
+   "not_modules": [
+    "15"
+   ],
+   "targets": [
+    "AX-02"
+   ],
+   "why": "States which graph(s) a command reads or changes: an instance of graph scope (SYS-I2 extended)."
+  },
+  {
+   "id": "R-AX02-scope-terms",
+   "kinds": [
+    "B",
+    "T",
+    "I"
+   ],
+   "pattern": "\\bnames? no graph\\b|\\ball-graphs\\b|\\bgraph keys?\\b|\\buse graph\\b|\\bper[- ]graph\\b|\\bacross graphs\\b|\\bcross(es)? graphs\\b|\\bmix(es)? graphs\\b|\\bin (its|their|the edge's|each edge's|that) graph\\b|\\bgraph by graph\\b|\\bscoped (query|read|write|lookup)\\b",
+   "targets": [
+    "AX-02"
+   ],
+   "why": "Graph-scope vocabulary (CONTEXT.md:27-59)."
+  },
+  {
+   "id": "R-AX02-tenant",
+   "kinds": [
+    "B",
+    "T",
+    "I"
+   ],
+   "pattern": "\\btenants?\\b",
+   "targets": [
+    "AX-02"
+   ],
+   "why": "Tenant separation (SYS-D14, SYS-I2)."
+  },
+  {
+   "id": "R-AX03-refusal-words",
+   "kinds": [
+    "B",
+    "T",
+    "I"
+   ],
+   "pattern": "\\brefus(e|es|ed|al|als)\\b|\\braises? (an? )?(error|\\w+error)\\b|\\bnothing is (written|changed)\\b|\\bwrites nothing\\b(?=[^.]*\\b(fail|refus|error))|\\bthe error (names|says)\\b|\\berror names\\b|\\bsays why\\b",
+   "targets": [
+    "AX-03"
+   ],
+   "why": "A refusal or failure and what it leaves and says (SYS-I3, SYS-I9)."
+  },
+  {
+   "id": "R-AX04-one-transaction",
+   "kinds": [
+    "B",
+    "T",
+    "I"
+   ],
+   "pattern": "\\b(in|inside|within|as) (one|a single|its own|the same|a new|the caller's|one server) transactions?\\b|\\bone transaction\\b|\\ball or nothing\\b|\\ball-or-nothing\\b|\\bin full or\\b|\\ball together\\b|\\bor none\\b|\\bleaves? none of\\b|\\brolls? (it |them |the \\w+ )?back\\b|\\btakes? back\\b|\\bpartly (written|done)\\b|\\bhalf[- ]written\\b|\\ball at once or not at all\\b|\\bat once or not at all\\b",
+   "targets": [
+    "AX-04"
+   ],
+   "why": "Several writes kept together or not at all (SYS-I4)."
+  },
+  {
+   "id": "R-AX05-history",
+   "kinds": [
+    "B",
+    "T",
+    "I"
+   ],
+   "pattern": "\\btombstones?\\b|\\b(revision|revisions|record|records)\\b[^.]{0,50}\\bnever (changed|changes|deleted|removed|lost)\\b|\\bnever (changed|deleted)\\b[^.]{0,40}\\b(revision|record)s?\\b|\\bhead\\b[^.]{0,40}\\b(never|goes back|falls|lower)\\b|\\bone chain\\b|\\bno gaps\\b|\\bkeeps? (its|their|each) place\\b|\\bonly grows\\b",
+   "modules": [
+    "00",
+    "11",
+    "12",
+    "13",
+    "14",
+    "18"
+   ],
+   "targets": [
+    "AX-05"
+   ],
+   "why": "History only grows; records change only into tombstones (SYS-I5)."
+  },
+  {
+   "id": "R-AX06-retry",
+   "kinds": [
+    "B",
+    "T",
+    "I"
+   ],
+   "pattern": "\\bretry keys?\\b|\\bretr(y|ies|ied)\\b|\\bidempot\\w*|\\breplay(ed|s)? (commit|answer)\\w*|\\b(saves?|saved|writes?|written|runs?|ran|applied|applies|creates?|created|commits?|committed|counts?|counted) (it |them |the \\w+ )?twice\\b|\\bsame (retry )?key\\b|\\b(sends?|sent|resends?|runs?|run) (it |the query |the request )?again\\b|\\bat most once\\b|\\bexactly once\\b|\\bsaves? it once\\b|\\bgets? (it|the first answer) back\\b",
+   "targets": [
+    "AX-06"
+   ],
+   "why": "At most once per retry key or business identity (SYS-I6)."
+  },
+  {
+   "id": "R-AX07-recorded",
+   "kinds": [
+    "B",
+    "T",
+    "I"
+   ],
+   "pattern": "\\b(un)?recorded\\b(?! graph)|\\bstrict( mode)?\\b|\\b(ledger|commit)\\b[^.]{0,50}\\brecords? (it|the|a|each|every|that|them)\\b|\\bwrites? (a|no|its|the) records?\\b|\\bwith (its|their) records?\\b|\\bthe ledger (governs|watches|never sees|sees)\\b|\\bgoverned\\b|\\boutside the ledger\\b|\\bthrough the ledger\\b",
+   "targets": [
+    "AX-07"
+   ],
+   "why": "A governed change and its record together; strict mode (SYS-I7)."
+  },
+  {
+   "id": "R-AX08-derived",
+   "kinds": [
+    "B",
+    "T",
+    "I"
+   ],
+   "pattern": "\\bstale\\b|\\bout of date\\b|\\bup to date\\b|\\brebuil(d|ds|t|ding)\\b|\\bcached?\\b|\\bcaches\\b|\\b(graph-version )?token\\b|\\bgenerations?\\b|\\bdrift\\b|\\b(is|stays?|kept|becomes?|no longer|still) current\\b|\\bcurrent while\\b|\\bwarm stamp\\b|(?<!-)\\bstamp(ed|s)?\\b|\\bin step\\b|\\bmatch(es)? (the|its) (rows|text|stored|table)\\b|\\bagrees? with\\b|\\bthe two agree\\b|\\bderived\\b|\\bkept by\\b|\\bresync\\w*\\b",
+   "targets": [
+    "AX-08"
+   ],
+   "why": "A derived store matches its source or says it is stale (SYS-I8, CONTEXT.md:88-128)."
+  },
+  {
+   "id": "R-AX09-install",
+   "kinds": [
+    "B",
+    "T",
+    "I"
+   ],
+   "pattern": "\\bsetup\\b|\\bset up\\b|\\binstall(s|ed|ing)?\\b|\\bdeploy(s|ed|ing)?\\b|\\bschema record\\b|\\b(the|its|one|another|other) schema\\b|\\bschema names?\\b|\\bupgrad(e|es|ed|ing)\\b|\\b(old|older|earlier|new|newer) releases?\\b|\\blegacy\\b|\\bmigrat\\w*\\b|\\bfirst use\\b|\\bfirst-access\\b|\\bclass set\\b|\\bcompile[sd]? (the|every|each) class\\w*\\b",
+   "not_modules": [
+    "07"
+   ],
+   "targets": [
+    "AX-09"
+   ],
+   "why": "One install, one schema, one version; setup idempotent and reporting (SYS-I10)."
+  },
+  {
+   "id": "R-AX09-index-schema",
+   "kinds": [
+    "B",
+    "T",
+    "I"
+   ],
+   "modules": [
+    "07"
+   ],
+   "pattern": "\\bupgrad(e|es|ed|ing)\\b|\\bindex schema\\b|\\bschema [12] index\\b",
+   "targets": [
+    "AX-09"
+   ],
+   "why": "BM25 index layout version gate (CONTEXT.md:149-153), an instance of the version gate."
+  },
+  {
+   "id": "R-AX10-removal",
+   "kinds": [
+    "B",
+    "T",
+    "I"
+   ],
+   "pattern": "^(?![^.]*\\b(costs? about|microseconds?|milliseconds?)\\b)(?=.*?(\\beras(e|es|ed|ing|ure|ures)\\b|\\bpurg(e|es|ed|ing)\\b|\\bredact\\w*\\b(?=[^.]*\\b(remov\\w*|clear\\w*|reach\\w*|leaves?|keeps?|stays?|content|text|tenants?|back|remain\\w*|gone|digest)\\b)|\\bquarantine\\b[^.]{0,60}\\b(keeps?|erase|remov)\\w*))",
+   "targets": [
+    "AX-10"
+   ],
+   "why": "Removal of a target's content from every store and copy (erasure, redaction; SYS-D26, SYS-D27)."
+  },
+  {
+   "id": "R-AX11-concurrency",
+   "kinds": [
+    "B",
+    "T",
+    "I"
+   ],
+   "pattern": "\\blocks?\\b|\\blocked\\b|\\b(two|both|several)\\b[^.]{0,60}\\bat once\\b|\\bat the same time\\b|\\bat a time\\b|\\bconcurrent\\w*\\b|\\b(two|another|second|other) (writers?|runs?|callers?|workers?|redactions?|builds?|rebuilds?|commits?|erasures?)\\b|\\bwaits? (for|on)\\b|\\bwhile (a|another|the|one) (\\w+ )?(write|writer|commit|redaction|run|build|sync|rebuild)\\w* (runs?|is (running|open|in progress)|holds?|lands?)\\b|\\bin progress\\b|\\bopen write\\b|\\brac(e|es|ing)\\b",
+   "targets": [
+    "AX-11"
+   ],
+   "why": "Conflicting commands serialize (locks, markers, waits)."
+  },
+  {
+   "id": "R-AX11-marker",
+   "kinds": [
+    "B",
+    "T",
+    "I"
+   ],
+   "modules": [
+    "11",
+    "13",
+    "14"
+   ],
+   "pattern": "\\bmarker\\b|\\bmarked target\\b",
+   "targets": [
+    "AX-11"
+   ],
+   "why": "The redaction marker is the exclusive-section signal (ADR-0013)."
+  },
+  {
+   "id": "R-AX12-outcome",
+   "kinds": [
+    "B",
+    "T",
+    "I"
+   ],
+   "pattern": "\\breports?\\b|\\breported\\b|\\breceipts?\\b|\\bsuccess\\w*\\b|\\bhalf done\\b|\\bpartially\\b|\\bsays ok\\b|\\bwarnings?\\b|\\bdurabl\\w*\\b|\\backnowledg\\w*\\b|\\bonly reads\\b|\\breads only\\b(?=\\s*[.,;]|\\s+and\\b)|\\bwrites nothing\\b|\\bchanges no (data|content)\\b|\\bcounts? (it|them|what|every|each|the rows|skipped)\\b[^.]{0,30}\\b(restored|done|removed|written|kept|placed)\\b|\\bin (its|their) place\\b(?=[^.]*\\b(answer|empty|result))",
+   "targets": [
+    "AX-12"
+   ],
+   "why": "The reported outcome equals the effect; reads write nothing; observations are committed states."
+  },
+  {
+   "id": "R-AX13-capability",
+   "kinds": [
+    "B",
+    "T",
+    "I"
+   ],
+   "pattern": "\\b(api|admin|read) keys?\\b|\\bread-only\\b|\\bread only\\b|\\bprivileges?\\b|\\b(sql )?rights?\\b(?! (end|side))|\\broles?\\b|\\bgrants?\\b|\\bgranted\\b|\\blog(s|ged)? in\\b|\\bpasswords?\\b|\\bcredentials?\\b|\\ballow-list\\b|\\ballowed\\b[^.]{0,30}\\b(bases|urls?|files?)\\b|\\bserver files?\\b|\\blistens? on\\b|\\bsecurity line\\b|\\bwho may\\b",
+   "targets": [
+    "AX-13"
+   ],
+   "why": "Least capability: keys, roles, read-only, no server-file or code capability."
+  },
+  {
+   "id": "R-AX13-key-routes",
+   "kinds": [
+    "B",
+    "T",
+    "I"
+   ],
+   "modules": [
+    "16",
+    "17"
+   ],
+   "pattern": "\\bthe key\\b|\\bwith a key\\b|\\bwithout a key\\b|\\bno key\\b|\\bwrong key\\b|\\bkey (check|gate|is set|set)\\b|\\b401\\b|\\b403\\b",
+   "targets": [
+    "AX-13"
+   ],
+   "why": "The HTTP/Bolt key gate (docs/ADMIN_GUIDE.md section 5)."
+  },
+  {
+   "id": "R-AX14-progress",
+   "kinds": [
+    "B",
+    "T",
+    "I"
+   ],
+   "pattern": "\\beventually\\b|\\bresum(e|es|ed|ing)\\b|\\b(call|called|calls) again\\b|\\bstarv\\w*\\b|\\bforever\\b|\\bindefinitely\\b|\\bnever (finish|finishes|ends|reaches)\\b|\\bpending\\b|\\bnext (sync|run|call|resync)\\b|\\brepeats? it\\b|\\bstarts? it again\\b|\\bpicks? up where\\b|\\bresume point\\b",
+   "targets": [
+    "AX-14"
+   ],
+   "why": "Accepted work progresses (no starvation, resumable runs, resources given back)."
+  },
+  {
+   "id": "R-C-stop",
+   "pattern": "\\b(process|job|connection) (stops|ends|is stopped|is killed|dies)\\b|\\bwhen (a|the|its) process (stops|ends)\\b|\\bstopped (process|run)\\b|\\bkilled (process|sync|run|writer)\\b|\\ba killed\\b|\\bprocess that holds it ends\\b",
+   "targets": [
+    "E-STOP"
+   ],
+   "why": "Process stop rolls back every level and releases every lock (E-STOP)."
+  },
+  {
+   "id": "R-C-nest",
+   "pattern": "\\btransaction levels?\\b|\\bnew transaction level\\b|\\bnest(s|ed)? (under|in|inside) the caller's (open )?transaction\\b|\\bnested level\\b|\\bits own (transaction )?level\\b|\\blevels? under (it|them)\\b",
+   "targets": [
+    "E-NEST",
+    "E-PARTIAL"
+   ],
+   "why": "TSTART nests; TROLLBACK 1 undoes the top level only (E-NEST, E-PARTIAL)."
+  },
+  {
+   "id": "R-C-lock-defer",
+   "pattern": "\\block (freed|released|unlocked) inside a transaction\\b|\\bstays held until\\b|\\bunlock\\b[^.]{0,40}\\b(commit|transaction ends)\\b|\\bheld to the end of the transaction\\b|\\b(frees?|releases?) the (head )?lock\\b[^.]{0,40}\\bbefore the transaction ends\\b",
+   "targets": [
+    "E-LOCK-DEFER"
+   ],
+   "why": "An unlock inside a transaction takes effect at the outer end (E-LOCK-DEFER)."
+  },
+  {
+   "id": "R-C-lock-modes",
+   "pattern": "\\bshared (claims?|locks?|lock claims?)\\b|\\bexclusive (claim|lock)\\b",
+   "targets": [
+    "E-LOCK-MODES"
+   ],
+   "why": "Shared locks are compatible, exclusive conflicts (E-LOCK-MODES)."
+  },
+  {
+   "id": "R-C-lock-names",
+   "pattern": "\\b(parent|child) (lock )?names?\\b",
+   "targets": [
+    "E-LOCK-NAMES"
+   ],
+   "why": "Hierarchical lock names (E-LOCK-NAMES)."
+  },
+  {
+   "id": "R-C-lock-own",
+   "pattern": "\\bown lock never blocks\\b|\\bits own request\\b",
+   "targets": [
+    "E-LOCK-COUNT"
+   ],
+   "why": "Incremental locks of one process (E-LOCK-COUNT)."
+  },
+  {
+   "id": "R-C-lock-wait",
+   "kinds": [
+    "P",
+    "T"
+   ],
+   "pattern": "\\block\\b[^.]{0,50}\\b(waits?|timeout|seconds|gives up)\\b|\\bwaits? (up to|for) \\d+ s(econds)?\\b",
+   "targets": [
+    "E-LOCK-WAIT"
+   ],
+   "why": "A waiting lock is granted on release; timeouts (E-LOCK-WAIT)."
+  },
+  {
+   "id": "R-C-visibility",
+   "pattern": "\\bread[^.]{0,50}\\bbefore (it|the writer's transaction|the transaction|its transaction) (commits|ends)\\b|\\buncommitted\\b|\\bdirty\\b|\\bread isolation\\b|\\bwrite that is still open\\b|\\bopen write\\b|\\bother process's open\\b",
+   "targets": [
+    "E-VIS"
+   ],
+   "why": "No isolation for globals; SQL reads uncommitted rows (E-VIS)."
+  },
+  {
+   "id": "R-C-incr",
+   "pattern": "\\bcounter step\\b|\\badding to a counter\\b|\\bcount raised in one atomic step\\b|\\bnot undone by (a )?rollback\\b|\\brollback does not undo\\b|\\bnever lowered by a rollback\\b|\\bsurvives? (a )?rollback\\b",
+   "targets": [
+    "E-INCR"
+   ],
+   "why": "$Increment is not undone by rollback (E-INCR)."
+  },
+  {
+   "id": "R-C-ppg",
+   "pattern": "\\bprocess-private\\b|\\bbelong to its own process\\b",
+   "targets": [
+    "E-PPG"
+   ],
+   "why": "Process-private globals (E-PPG)."
+  },
+  {
+   "id": "R-C-rowlock",
+   "pattern": "\\bwaits? for that transaction\\b|\\brow another transaction holds\\b|\\bholds the row\\b|\\brow locks?\\b|\\bmeets a row\\b",
+   "targets": [
+    "E-ROWLOCK"
+   ],
+   "why": "Row locks of open transactions (E-ROWLOCK)."
+  },
+  {
+   "id": "R-C-unique",
+   "pattern": "\\bunique key\\b|\\bsame unique\\b|\\bSQLCODE -119\\b|\\balready taken fails\\b|\\bduplicate[- ]key\\b",
+   "targets": [
+    "E-UNIQUE"
+   ],
+   "why": "Unique keys (E-UNIQUE)."
+  },
+  {
+   "id": "R-C-ddl",
+   "pattern": "\\btable made inside a transaction\\b|\\bDDL\\b|\\b(made|created|dropped) inside a transaction\\b|\\bdrop table\\b",
+   "targets": [
+    "X-DDL"
+   ],
+   "why": "DDL and transactions (X-DDL)."
+  },
+  {
+   "id": "R-C-null",
+   "pattern": "\\bempty (string|text)\\b[^.]{0,40}\\bnull\\b|\\bnull\\b[^.]{0,40}\\bempty (string|text|name)\\b|\\bbinds an empty string\\b|\\ban empty string as a null\\b",
+   "targets": [
+    "X-NULL"
+   ],
+   "why": "NULL and the empty string (X-NULL)."
+  },
+  {
+   "id": "R-C-order",
+   "pattern": "\\bsorts? keys\\b|\\bcollat\\w*\\b|\\bnumbers? before (all )?text\\b|\\bstorage order\\b|\\bscan order\\b|\\bsubscript order\\b",
+   "targets": [
+    "X-ORDER"
+   ],
+   "why": "Subscript collation and scan order (X-ORDER)."
+  },
+  {
+   "id": "R-C-vec",
+   "pattern": "\\bL2\\b|\\bvector function\\b|\\bVECTOR_(COSINE|DOT_PRODUCT|L2)\\b",
+   "targets": [
+    "X-VEC"
+   ],
+   "why": "Vector functions available on the engine (X-VEC)."
+  },
+  {
+   "id": "R-C-fx",
+   "pattern": "\\bdeclared index\\b|\\brow hooks?\\b|\\bfunctional index\\b|\\binside the row's transaction\\b|\\beach write of an edge or label row also changes the adjacency index\\b",
+   "targets": [
+    "X-FX"
+   ],
+   "why": "Functional index in the row's transaction (X-FX)."
+  },
+  {
+   "id": "R-C-stmt",
+   "pattern": "\\bfailed (SQL )?statement takes back only its own\\b|\\bstatement[^.]{0,30}\\btakes back only\\b",
+   "targets": [
+    "X-STMT"
+   ],
+   "why": "Statement atomicity (X-STMT)."
+  },
+  {
+   "id": "R-C-star",
+   "pattern": "\\bselect star\\b|\\bselect \\*",
+   "targets": [
+    "X-STAR"
+   ],
+   "why": "SELECT * column order (X-STAR)."
+  },
+  {
+   "id": "R-C-noindex",
+   "pattern": "%NOINDEX|\\bBUILD INDEX\\b|\\brebuilds? (every|the) ind(ex|ices|exes)\\b[^.]{0,40}\\b(another connection|rows)\\b|\\bwithout (their|its) index entries\\b",
+   "targets": [
+    "X-NOINDEX"
+   ],
+   "why": "%NOINDEX, BUILD INDEX (X-NOINDEX)."
+  },
+  {
+   "id": "R-C-caller",
+   "pattern": "\\bsame (server )?process\\b|\\bcaller's (own )?(link|server process)\\b|\\bon the caller's server process\\b",
+   "targets": [
+    "E-CALLER"
+   ],
+   "why": "SQL and the Native API of one connection share a server process (E-CALLER)."
+  },
+  {
+   "id": "R-C-autocommit",
+   "pattern": "\\bautocommit\\b",
+   "targets": [
+    "E-AUTOCOMMIT"
+   ],
+   "why": "Autocommit (E-AUTOCOMMIT)."
+  },
+  {
+   "id": "R-C-driver",
+   "pattern": "\\bdriver's (commit|rollback)\\b|\\bdriver (commit|rollback)\\b",
+   "targets": [
+    "E-DRV"
+   ],
+   "why": "Driver commit/rollback levels (E-DRV)."
+  },
+  {
+   "id": "R-C-sqlend",
+   "pattern": "\\bSQL (COMMIT|ROLLBACK)\\b|\\bSQL commit\\b",
+   "targets": [
+    "E-SQL-END"
+   ],
+   "why": "SQL COMMIT/ROLLBACK end one level (E-SQL-END)."
+  },
+  {
+   "id": "R-C-tlevel",
+   "pattern": "\\bTLEVEL\\b|\\btransaction level the caller\\b",
+   "targets": [
+    "X-TLEVEL-SQL"
+   ],
+   "why": "SELECT $TLEVEL (X-TLEVEL-SQL)."
+  },
+  {
+   "id": "R-EXC01-ddl-after-commit",
+   "pattern": "\\bdrops? (its|the|their) (routes|route tables|routed tables|vector tables)\\b|\\bafter (its|the) commit\\b[^.]{0,40}\\bdrop",
+   "targets": [
+    "EXC-01"
+   ],
+   "why": "Routed tables dropped after the erasure's commit (EXC-01)."
+  },
+  {
+   "id": "R-EXC02-purgeall",
+   "pattern": "\\bpurge all\\b|\\breset (of )?the (whole )?ledger\\b|\\btest and admin reset\\b",
+   "targets": [
+    "EXC-02"
+   ],
+   "why": "PurgeAll, outside the growth rule (EXC-02)."
+  },
+  {
+   "id": "R-EXC03-post-commit",
+   "pattern": "\\bpost-commit propert\\w*",
+   "targets": [
+    "EXC-03"
+   ],
+   "why": "Post-commit properties are written after the ledger commit (EXC-03)."
+  },
+  {
+   "id": "R-EXC04-vectors-not-ledgered",
+   "pattern": "\\bvector writes never pass through the ledger\\b|\\bno revision holds a vector\\b|\\bvectors?\\b[^.]{0,40}\\bnot (in|through) the ledger\\b|\\bnot the ledger, says\\b",
+   "targets": [
+    "EXC-04"
+   ],
+   "why": "Vectors are not ledgered (EXC-04)."
+  },
+  {
+   "id": "R-EXC05-route-memory",
+   "pattern": "\\breuse a route it read\\b|\\b30 seconds\\b",
+   "modules": [
+    "06"
+   ],
+   "targets": [
+    "EXC-05"
+   ],
+   "why": "The documented 30 s route memory (EXC-05)."
+  },
+  {
+   "id": "R-EXC06-interned-no-graph",
+   "pattern": "\\binterned snapshot\\b[^.]{0,80}\\b(no graph|every graph|all graphs|default graph|named graph)\\b|\\b(no graph|every graph|all graphs|named graph)\\b[^.]{0,80}\\binterned snapshot\\b",
+   "targets": [
+    "EXC-06"
+   ],
+   "why": "The interned snapshot has no graph dimension (EXC-06)."
+  },
+  {
+   "id": "R-EXC07-tombstone-digest",
+   "pattern": "\\bdigest\\b",
+   "modules": [
+    "11",
+    "13",
+    "14"
+   ],
+   "targets": [
+    "EXC-07"
+   ],
+   "why": "A tombstone keeps shape and digest (EXC-07)."
+  },
+  {
+   "id": "R-EXC08-monotone-counter",
+   "pattern": "\\bnot undone by (a )?rollback\\b|\\brollback does not undo a counter\\b|\\bnever lowered by a rollback\\b|\\bsurvives? (a )?rollback\\b|\\bthe token never falls\\b",
+   "targets": [
+    "EXC-08"
+   ],
+   "why": "Monotone counters survive rollback (EXC-08)."
+  },
+  {
+   "id": "R-EXC09-legacy-kept",
+   "pattern": "\\blegacy (objects?|functions?|views?|classes)\\b[^.]{0,60}\\b(stay|stays|left|kept|frozen|in place|until)\\b|\\bfrozen\\b",
+   "targets": [
+    "EXC-09"
+   ],
+   "why": "Legacy objects stay until removed (EXC-09)."
+  },
+  {
+   "id": "R-DC-replay",
+   "pattern": "\\breplay (of|gives|skips|still|rebuilds|holds)\\b|\\ba replay\\b|\\bafter (a|the) replay\\b|\\breconstruct\\w*\\b|\\bverify\\b[^.]{0,60}\\b(equal|divergen\\w*|agree)\\b|\\bthe verify call\\b",
+   "modules": [
+    "11",
+    "12",
+    "13",
+    "14",
+    "18"
+   ],
+   "targets": [
+    "DC-REPLAY"
+   ],
+   "why": "Replay equals the governed store (domain contract, 3.3a-domain-contract)."
+  }
+ ]
+}

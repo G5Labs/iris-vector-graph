@@ -1,0 +1,104 @@
+{
+ "lane": "reflection",
+ "pass": "r3 (follow-up after review R4-09/R4-14)",
+ "cells": [
+  {
+   "gate": "5c-root-causes",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:rf-root-causes-check-r3",
+    "run:rf-root-causes-selftest-r3",
+    "experiment/playbook-completion/reflection/ROOT-CAUSES.md",
+    "experiment/playbook-completion/reflection/root_causes.json"
+   ],
+   "evidence_grade": "inspected",
+   "level": "method",
+   "product_obligation": "fails",
+   "product_basis": "304 of the corpus's 310 findings (313 audit records) fall to 36 root causes, each a missing or violated shared rule, cross-referenced to the semantics lane's final axioms (AX-NN) and mechanisms (M-NN); 8 conditional (intent-undecided or blocked-access); 6 excluded (refuted, not reproduced, duplicate); 14 root causes carry S1 findings (RC-01, RC-02, RC-03, RC-04, RC-07, RC-08, RC-09, RC-11, RC-16, RC-19, RC-20, RC-22, RC-25, RC-35); the ten largest cover 143. as_built_findings lists the highest-severity reproduced member of each root cause.",
+   "as_built_findings": [
+    "F-0707",
+    "F-0705",
+    "F-0606",
+    "F-1114",
+    "F-0701",
+    "F-0208",
+    "F-1402",
+    "F-C1350",
+    "F-1101",
+    "F-0305",
+    "F-0409",
+    "F-C1743",
+    "F-0309",
+    "F-0307",
+    "F-0804",
+    "F-0802",
+    "F-0308",
+    "F-0502",
+    "F-0814",
+    "F-C1803",
+    "F-0201",
+    "F-0304",
+    "F-C0602",
+    "F-0901",
+    "F-1801",
+    "F-0601",
+    "F-0202",
+    "F-C1601",
+    "F-1003",
+    "F-C1303",
+    "F-0407",
+    "F-1708",
+    "F-0803",
+    "F-C0340",
+    "F-C1250",
+    "F-C0715"
+   ],
+   "remaining": "findings added later by any lane make check_root_causes.py fail until assigned (ratchet); remedies are prose, none implemented or tested; the semantics lane's own classification disagrees with this grouping for some members (member_classes per root cause in root_causes.json)"
+  },
+  {
+   "gate": "3.8-test-reflection",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:rf-premise-map-check-r3",
+    "run:rf-premise-map-selftest-r3",
+    "experiment/playbook-completion/reflection/TEST-REFLECTION.md",
+    "experiment/playbook-completion/reflection/premise_tests.json",
+    "run:live-crash-repeat-sc1"
+   ],
+   "evidence_grade": "inspected",
+   "level": "method",
+   "product_obligation": "unknown",
+   "product_basis": "every premise named in TRUST.md, every proofs*/PROOFS.md premise table (13 crates, read by glob), models/*/MODELS.md (2) and the IRIS contract maps to a test or a named missing test: 278 premises, 44 tested and holding, 56 shown false at the pin, 120 partial, 58 untested; 14 proof-debt rows each with the testing that covers part of it; the product's own suites detect 4 of 298 reproduced findings (292 undetected, incl. all 43 reproduced S1). Whether the product meets the untested or partial premises is open.",
+   "as_built_findings": [],
+   "remaining": "the tests named in should_exist are not run (58 untested, 120 partial); the SynchCommit=1 crash world ran (live-crash-repeat-sc1; the durability premise is tested-partial: 3 trials); needing an unavailable dependency: IRIS 2026.3 / Enterprise / multi-node (blocked-access), the spec-236 scratch suites (licence); breadth model crates' restrictions (modules/NN.json) are outside this map"
+  },
+  {
+   "gate": "3.6-closure",
+   "module": "product",
+   "status": "closed",
+   "evidence": [
+    "run:rf-closure-check-r3",
+    "run:rf-closure-selftest-r3",
+    "run:rf-premise-map-check-r3",
+    "run:corr-closure-scan",
+    "run:followup-writer-census",
+    "experiment/playbook-completion/reflection/CLOSURE.md",
+    "experiment/playbook-completion/reflection/closure.json"
+   ],
+   "evidence_grade": "inspected",
+   "level": "method",
+   "product_obligation": "fails",
+   "product_basis": "the environment condition list is exact and checked against its sources: 171 conditions (32 IRIS contract r6 clauses, 9 contract-2 clauses, 57 outside-premise families, 73 engine/progress premises of the proofs and models, incl. proofs-env's ENV-1..ENV-4): 47 validated by a registered run, 51 in part, 66 assumed with consequence and the test that should exist, 7 shown false at the pin (FETCH FIRST used by the product, F-C1743; the SQL COMMIT premise, F-C1705; committed-only reads P-C5/P-U2, F-0402/F-C1801; PF-6 of proofs-d9, -d9b and -d9c, F-C1307); every premise maps to a test or a named missing test (premise_tests.json). The ledger-writer closure scan (corr-closure-scan, fail) also stands.",
+   "as_built_findings": [
+    "F-C1743",
+    "F-C1705",
+    "F-0402",
+    "F-C1801",
+    "F-C1307"
+   ],
+   "remaining": "65 assumed and 51 partly validated conditions keep their consequences; none of their missing tests was run; the ledger-state writers outside every modelled action (corr-closure-scan, followup-writer-census; F-1801, F-1114) stay as the existing cell records"
+  }
+ ]
+}
