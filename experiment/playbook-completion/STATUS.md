@@ -23,7 +23,7 @@ below, generated and checked by the fast gate). Applicable gates remain open or 
 - the periodic full verification passed on `d293fb6b` (`verify.sh --live --clean`, `verify-clean-d293fb6b`: 78/78 steps,
   6,008 s, all 15 Verus crates and their controls from empty targets, live rounds on a fresh seed); the earlier full runs
   `verify-clean-25ba22dd` (pass) and `a42f10c8` (failed nine proof readers) are kept. The bounded merge gate (playbook
-  :479-489; `verify.sh --merge`, hard 1,200 s envelope) ran on the final reviewed changes: on `a7975f31` it failed one of 62 steps (`verify-merge-a7975f31`: the committed matrix counted 15 run records that were not committed, review A3-01; kept as a failed run); the final candidate's gate is registered in the evidence-only commit that follows it (`verify-merge-<candidate>`).
+  :479-489; `verify.sh --merge`, hard 1,200 s envelope) ran on the final reviewed changes: on `a7975f31` it failed one of 62 steps (`verify-merge-a7975f31`: the committed matrix counted 15 run records that were not committed, review A3-01; kept as a failed run); on the final candidate `927ed001` it passed, 62/62 steps (`verify-merge-927ed001`, registered in the evidence-only commit that follows it).
 
 ## Final checkpoint (finish request)
 
