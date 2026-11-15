@@ -7,8 +7,8 @@ Lane reflection, product pin `3eaa79cf`. Level: **method**. The playbook's `SQL_
 | contract-r6 | IRIS contract r6 clauses | 32 | 31 | 1 | 0 | 0 |
 | contract-2 | contract-2 validated clauses | 9 | 9 | 0 | 0 | 0 |
 | outside | outside-premise families (contract-2 coverage) | 57 | 0 | 1 | 1 | 55 |
-| proof-premise | proofs' and models' environment premises (engine, progress) | 75 | 7 | 50 | 6 | 12 |
-| **total** | | **173** | **47** | **52** | **7** | **67** |
+| proof-premise | proofs' and models' environment premises (engine, progress) | 76 | 7 | 50 | 6 | 13 |
+| **total** | | **174** | **47** | **52** | **7** | **68** |
 
 Reading the statuses: *validated* means a passing differential or probe run on this engine decides the condition (within the contract's semantic subset); *assumed* means nothing here validates it and the consequence column says which results rest on it; *shown-false* means the pin breaks it, so results relying on it do not transfer. The engine is IRIS 2026.1 Community with driver 5.3.2 (2026.2 and driver 5.4.0 only where a run says so); 2026.3, Enterprise and multi-node are blocked-access.
 
@@ -204,6 +204,7 @@ Reading the statuses: *validated* means a passing differential or probe run on t
 | `proof-premise:proofs-env:ENV-4`: no liveness clause: the progress premises are not implied by the contract [progress] | assumed | observed: `proofs-env-premise-map` | results of proofs-env that rest on it hold only where it holds; missing test: Progress tests under IRIS scheduling (D-8). | Progress tests under IRIS scheduling (D-8). | proofs-env/PROOFS.md |
 | `proof-premise:proofs-sys:PS-2`: the operator re-runs the erasure of a target found live and resumes a parked redaction (actions ReErase, Resume) [progress] | validated-in-part | `live-fc1303-bounded-resume`, `fu-r03-marker-held-open` | results of proofs-sys that rest on it hold only where it holds; missing test: That the operator does re-run and resume is an operator premise; a test would script the re-erase/resume loop through the product and count the calls to completion (the pin's re-run does not progress, so none exists at the pin). | That the operator does re-run and resume is an operator premise; a test would script the re-erase/resume loop through the product and count the calls to completion (the pin's re-run does not progress, so none exists at the pin). | proofs-sys/PROOFS.md |
 | `proof-premise:proofs-sys:PS-3`: AX-14 is AG EF ('can finish'): the theorem exhibits a finishing schedule; a scheduler that runs it (fairness) is not modelled [progress] | assumed | - | results of proofs-sys that rest on it hold only where it holds; missing test: A soak through the product with concurrent committers, erasures and redactions asserting each redaction's marker clears within a bound (fair-scheduling progress), and a fairness version of the theorem. | A soak through the product with concurrent committers, erasures and redactions asserting each redaction's marker clears within a bound (fair-scheduling progress), and a fairness version of the theorem. | proofs-sys/PROOFS.md |
+| `proof-premise:proofs-env2:ENV2-4`: no liveness clause: the progress premises are not implied by the contract [progress] | assumed | observed: `proofs-env2-premise-map` | results of proofs-env2 that rest on it hold only where it holds; missing test: Progress tests under IRIS scheduling (D-8). | Progress tests under IRIS scheduling (D-8). | proofs-env2/PROOFS.md |
 
 ## Limits
 

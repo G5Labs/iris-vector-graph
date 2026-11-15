@@ -1,0 +1,5896 @@
+{
+  "crate": "experiment/playbook-completion/proofs-env2 (ivg-proofs-env2)",
+  "debt": "D-7 (experiment/playbook-completion/PROOF-DEBT.md): the IRIS environment contract as a Verus specification linked to the participant contracts -- remaining part (steer 13): the clauses outside proofs-env's subset (r6 X-*, contract-2 E-1 and X2)",
+  "supersedes_nothing": "proofs-env's registered sources and runs (proofs-env-*) stay as recorded; this crate is a copy extended under new ids (proofs-env2-*)",
+  "scope": "statements about the contract's Verus specification (a model of IRIS 2026.1 validated by the registered rounds); the product's discipline (disc) and its code correspondence are not proved here",
+  "generated_utc": "2026-11-15T00:05:10+00:00",
+  "run_dir": "$RUN_DIR/proofs-env2/run-20261114T235905Z",
+  "verus": "0.2026.10.04.426d8b0",
+  "sources_sha256": "b9a7bb764d46174889eac4290b91b4799f308914c4a682cbed7db9716ad1c99d",
+  "complete_run": true,
+  "hygiene_problems": [],
+  "baseline": {
+    "tag": "baseline",
+    "features": "",
+    "rc": 0,
+    "timed_out": false,
+    "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+    "log": "$RUN_DIR/proofs-env2/run-20261114T235905Z/baseline.log",
+    "json": "$RUN_DIR/proofs-env2/run-20261114T235905Z/baseline.json",
+    "wall_seconds": 16.43,
+    "error_locations": [],
+    "resource_limit_hit": false,
+    "json_sha256": "dce25d87017c918106fbf8576807bb70fc08d2d3fdcd7413db2b01bd70128cc4",
+    "verified": 433,
+    "errors": 0,
+    "success": true,
+    "verus_total_ms": 15873,
+    "smt_run_ms": 60080,
+    "rlimit_total": 150310396,
+    "modules": {
+      "ext_exec": {
+        "ms": 9844,
+        "rlimit": 31800189
+      },
+      "headlock": {
+        "ms": 10060,
+        "rlimit": 24052463
+      },
+      "cx": {
+        "ms": 10156,
+        "rlimit": 23562770
+      },
+      "exec": {
+        "ms": 6223,
+        "rlimit": 20648989
+      },
+      "wf": {
+        "ms": 8906,
+        "rlimit": 19657438
+      },
+      "gen": {
+        "ms": 7228,
+        "rlimit": 14360002
+      },
+      "effects": {
+        "ms": 3760,
+        "rlimit": 7693860
+      },
+      "ext_lemmas": {
+        "ms": 3234,
+        "rlimit": 7222523
+      },
+      "premises": {
+        "ms": 610,
+        "rlimit": 1172365
+      },
+      "ext": {
+        "ms": 26,
+        "rlimit": 87612
+      },
+      "spec": {
+        "ms": 28,
+        "rlimit": 51069
+      },
+      "clauses": {
+        "ms": 1,
+        "rlimit": 1116
+      }
+    },
+    "top_functions": [
+      {
+        "function": "wf::lemma_await_wf",
+        "ms": 7481,
+        "rlimit": 15880779,
+        "success": true
+      },
+      {
+        "function": "ext_exec::e_ext_step",
+        "ms": 2886,
+        "rlimit": 11079725,
+        "success": true
+      },
+      {
+        "function": "headlock::lemma_txn_locks",
+        "ms": 5013,
+        "rlimit": 10029726,
+        "success": true
+      },
+      {
+        "function": "cx::cx_select_committed_only",
+        "ms": 2971,
+        "rlimit": 7445691,
+        "success": true
+      },
+      {
+        "function": "ext_exec::e_emb_assert",
+        "ms": 2061,
+        "rlimit": 4512580,
+        "success": true
+      },
+      {
+        "function": "ext_exec::e_insert_select",
+        "ms": 1246,
+        "rlimit": 3760618,
+        "success": true
+      },
+      {
+        "function": "gen::gen_erasure_rollback_keeps_insert",
+        "ms": 1635,
+        "rlimit": 3703147,
+        "success": true
+      },
+      {
+        "function": "exec::e_txn_sqlproc",
+        "ms": 715,
+        "rlimit": 3064949,
+        "success": true
+      },
+      {
+        "function": "cx::cx_no_dirty_reads",
+        "ms": 1202,
+        "rlimit": 2746159,
+        "success": true
+      },
+      {
+        "function": "ext_lemmas::lemma_insert_select_xok",
+        "ms": 982,
+        "rlimit": 2385368,
+        "success": true
+      }
+    ],
+    "failing_functions": [],
+    "functions_checked": 412,
+    "cx_missing": [],
+    "pass": true,
+    "functions": [
+      "clauses::e_contract_sem",
+      "cx::cx_dml_ignores_row_locks",
+      "cx::cx_emb_ignores_autocommit",
+      "cx::cx_emb_ignores_row_locks",
+      "cx::cx_emb_own_txn",
+      "cx::cx_emb_select_committed_only",
+      "cx::cx_flat_lock_names",
+      "cx::cx_freedom_wait_only",
+      "cx::cx_incr_rolled_back",
+      "cx::cx_insert_dup_waits",
+      "cx::cx_kill_not_logged",
+      "cx::cx_lock_wait_never_granted",
+      "cx::cx_no_dirty_reads",
+      "cx::cx_rollback_one_undoes_all",
+      "cx::cx_rollback_physical",
+      "cx::cx_row_lock_statement_only",
+      "cx::cx_select_committed_only",
+      "cx::cx_shared_conflicts_shared",
+      "cx::cx_sql_commit_ends_all",
+      "cx::cx_statement_not_atomic",
+      "cx::cx_stop_commits",
+      "cx::cx_stop_top_level_only",
+      "cx::cx_unlock_immediate",
+      "cx::lemma_cu_inv",
+      "cx::lemma_cu_wf",
+      "cx::lemma_rows_hyp",
+      "cx::lemma_s_holder_hyp",
+      "effects::lemma_acquire_eff",
+      "effects::lemma_await_eff",
+      "effects::lemma_commit_n_eff",
+      "effects::lemma_commit_n_level",
+      "effects::lemma_commit_top_eff",
+      "effects::lemma_commit_top_level",
+      "effects::lemma_dml_eff",
+      "effects::lemma_dml_free_world",
+      "effects::lemma_eff_refl",
+      "effects::lemma_eff_trans",
+      "effects::lemma_end_levels_alive",
+      "effects::lemma_end_levels_eff",
+      "effects::lemma_failed_stmt_eff",
+      "effects::lemma_glob_step_eff",
+      "effects::lemma_kill_eff",
+      "effects::lemma_lock_step_eff",
+      "effects::lemma_others_same_locks",
+      "effects::lemma_others_same_rows",
+      "effects::lemma_rb_len",
+      "effects::lemma_rb_pointwise",
+      "effects::lemma_rb_push_ppg",
+      "effects::lemma_rb_push_write",
+      "effects::lemma_rb_split",
+      "effects::lemma_rb_untouched",
+      "effects::lemma_release_all_eff",
+      "effects::lemma_release_eff",
+      "effects::lemma_rollback_n_eff",
+      "effects::lemma_rollback_n_level",
+      "effects::lemma_row_step_eff",
+      "effects::lemma_run_dml_eff",
+      "effects::lemma_select_txn_eff",
+      "effects::lemma_set_hold_reduce_eff",
+      "effects::lemma_set_pending_eff",
+      "effects::lemma_set_rlock_eff",
+      "effects::lemma_set_sqlflag_eff",
+      "effects::lemma_step_eff",
+      "effects::lemma_stmt_begin_eff",
+      "effects::lemma_stop_eff",
+      "effects::lemma_tstart_eff",
+      "effects::lemma_txn_basic_eff",
+      "effects::lemma_txn_end_eff",
+      "effects::lemma_txn_ends_eff",
+      "effects::lemma_txn_sqlproc_eff",
+      "effects::lemma_txn_step_eff",
+      "effects::lemma_undo_top_eff",
+      "effects::lemma_undo_top_level",
+      "effects::lemma_upd_eff",
+      "effects::lemma_write_eff",
+      "exec::clone_proc",
+      "exec::clone_state",
+      "exec::e_acquire",
+      "exec::e_any",
+      "exec::e_await",
+      "exec::e_blocked",
+      "exec::e_choice_point",
+      "exec::e_commit_n",
+      "exec::e_commit_top",
+      "exec::e_conflicts",
+      "exec::e_covers",
+      "exec::e_cv",
+      "exec::e_data",
+      "exec::e_dml",
+      "exec::e_driver_refusal",
+      "exec::e_end_levels",
+      "exec::e_excl",
+      "exec::e_failed_stmt",
+      "exec::e_finals",
+      "exec::e_freedom_cond",
+      "exec::e_glob_step",
+      "exec::e_hold_conflicts",
+      "exec::e_init_state",
+      "exec::e_is_glob_op",
+      "exec::e_is_lock_op",
+      "exec::e_is_row_op",
+      "exec::e_is_txn_op",
+      "exec::e_kill",
+      "exec::e_kind_of",
+      "exec::e_level",
+      "exec::e_lock_now",
+      "exec::e_lock_step",
+      "exec::e_num_obs",
+      "exec::e_num_of",
+      "exec::e_rb",
+      "exec::e_related",
+      "exec::e_release",
+      "exec::e_release_all",
+      "exec::e_restore1",
+      "exec::e_rollback_all_g",
+      "exec::e_rollback_n",
+      "exec::e_row_held",
+      "exec::e_row_step",
+      "exec::e_rows",
+      "exec::e_run",
+      "exec::e_run_dml",
+      "exec::e_select_obs",
+      "exec::e_select_txn",
+      "exec::e_set_hold",
+      "exec::e_set_pending",
+      "exec::e_set_rlock",
+      "exec::e_set_sqlflag",
+      "exec::e_step",
+      "exec::e_stmt_begin",
+      "exec::e_stop",
+      "exec::e_tstart",
+      "exec::e_txn_basic",
+      "exec::e_txn_end",
+      "exec::e_txn_ends",
+      "exec::e_txn_sqlproc",
+      "exec::e_txn_step",
+      "exec::e_undo_top",
+      "exec::e_wf_case",
+      "exec::e_wf_op",
+      "exec::e_wf_univ",
+      "exec::e_write",
+      "exec::eq_oval",
+      "exec::lemma_cv_end",
+      "exec::lemma_cv_unfold",
+      "exec::lemma_marks_view_drop_last",
+      "exec::lemma_marks_view_push",
+      "exec::lemma_obs_view_push",
+      "exec::lemma_procs_view_update",
+      "exec::put_proc",
+      "ext::batch_held",
+      "ext::batch_probe",
+      "ext::batch_run",
+      "ext::find_cp",
+      "ext::find_twin",
+      "ext::first_fail",
+      "ext::ins_sorted",
+      "ext::is_lock",
+      "ext::is_write",
+      "ext::isort",
+      "ext::lexcmp",
+      "ext::match_from",
+      "ext::subs_from",
+      "ext::trim0",
+      "ext::zcollapse",
+      "ext::zfilter",
+      "ext::zlead",
+      "ext::zranges",
+      "ext::ztrail",
+      "ext_exec::e_all_digits",
+      "ext_exec::e_batch_held",
+      "ext_exec::e_batch_ok",
+      "ext_exec::e_batch_probe",
+      "ext_exec::e_batch_run",
+      "ext_exec::e_canonical",
+      "ext_exec::e_cmp_abs",
+      "ext_exec::e_collate",
+      "ext_exec::e_contains",
+      "ext_exec::e_contains_u64",
+      "ext_exec::e_e1_step",
+      "ext_exec::e_emb_assert",
+      "ext_exec::e_emb_dml",
+      "ext_exec::e_emb_register",
+      "ext_exec::e_emb_visible",
+      "ext_exec::e_ext_step",
+      "ext_exec::e_find_cp",
+      "ext_exec::e_find_twin",
+      "ext_exec::e_gete_obs",
+      "ext_exec::e_ins_sorted",
+      "ext_exec::e_insert_many",
+      "ext_exec::e_insert_select",
+      "ext_exec::e_is_ext_op",
+      "ext_exec::e_isort",
+      "ext_exec::e_lexcmp",
+      "ext_exec::e_match_count",
+      "ext_exec::e_matches_e",
+      "ext_exec::e_order_obs",
+      "ext_exec::e_others_hold_rows",
+      "ext_exec::e_own_dml",
+      "ext_exec::e_plain_dml",
+      "ext_exec::e_reg_obs",
+      "ext_exec::e_retract_obs",
+      "ext_exec::e_route_obs",
+      "ext_exec::e_rows_count_obs",
+      "ext_exec::e_set_autocommit",
+      "ext_exec::e_slice",
+      "ext_exec::e_sqlfn_obs",
+      "ext_exec::e_stored",
+      "ext_exec::e_sub_lt",
+      "ext_exec::e_subs",
+      "ext_exec::e_too_long_number",
+      "ext_exec::e_trim0",
+      "ext_exec::e_twin",
+      "ext_exec::e_upper",
+      "ext_exec::e_upsert_run",
+      "ext_exec::e_x2_step",
+      "ext_exec::e_zclass",
+      "ext_exec::e_zcollapse",
+      "ext_exec::e_zfilter",
+      "ext_exec::e_zlead",
+      "ext_exec::e_zm",
+      "ext_exec::e_zranges",
+      "ext_exec::e_zstrip",
+      "ext_exec::e_ztrail",
+      "ext_exec::lemma_ins_sorted_split",
+      "ext_lemmas::lemma_await_emb_xok",
+      "ext_lemmas::lemma_batch_run_xok",
+      "ext_lemmas::lemma_dml_xok",
+      "ext_lemmas::lemma_emb_assert_xok",
+      "ext_lemmas::lemma_emb_dml_xok",
+      "ext_lemmas::lemma_emb_register_xok",
+      "ext_lemmas::lemma_ext_step_xok",
+      "ext_lemmas::lemma_failed_stmt_xok",
+      "ext_lemmas::lemma_find_twin",
+      "ext_lemmas::lemma_insert_many_xok",
+      "ext_lemmas::lemma_insert_select_xok",
+      "ext_lemmas::lemma_is_lock_xok",
+      "ext_lemmas::lemma_is_write_xok",
+      "ext_lemmas::lemma_own_dml_xok",
+      "ext_lemmas::lemma_plain_dml_xok",
+      "ext_lemmas::lemma_r_glob_rows",
+      "ext_lemmas::lemma_rows_from",
+      "ext_lemmas::lemma_run_dml_like_wf",
+      "ext_lemmas::lemma_select_txn_xok",
+      "ext_lemmas::lemma_set_autocommit_xok",
+      "ext_lemmas::lemma_set_pending_xok",
+      "ext_lemmas::lemma_set_rlock_xok",
+      "ext_lemmas::lemma_src_ok",
+      "ext_lemmas::lemma_upd_same_xok",
+      "ext_lemmas::lemma_upsert_run_xok",
+      "ext_lemmas::lemma_write_xok",
+      "ext_lemmas::lemma_xok_refl",
+      "ext_lemmas::lemma_xok_trans",
+      "gen::gen_abort_permitted",
+      "gen::gen_commit_releases",
+      "gen::gen_counter",
+      "gen::gen_deferred_unlock",
+      "gen::gen_dirty_read",
+      "gen::gen_e1",
+      "gen::gen_erasure_rollback_keeps_insert",
+      "gen::gen_freedom_both",
+      "gen::gen_head_lock",
+      "gen::gen_hierarchy",
+      "gen::gen_incr_unlogged",
+      "gen::gen_init_inv_h",
+      "gen::gen_inner_commit",
+      "gen::gen_insert_dup_fails",
+      "gen::gen_kill_rollback",
+      "gen::gen_partial",
+      "gen::gen_rollback_keeps_other",
+      "gen::gen_select_sees_delete",
+      "gen::gen_select_sees_insert",
+      "gen::gen_shared_compat",
+      "gen::gen_sql_commit_one",
+      "gen::gen_stmt_atomic",
+      "gen::gen_stop_all_levels",
+      "gen::gen_wait_after_inner_commit",
+      "gen::gen_wait_after_insert",
+      "gen::gen_wait_after_update",
+      "gen::gen_waiter_after_stop",
+      "gen::lemma_fresh_set_rollback",
+      "gen::lemma_kill_rest",
+      "gen::lemma_kill_single",
+      "headlock::lemma_await_keeps_h",
+      "headlock::lemma_base_commit_n",
+      "headlock::lemma_base_eq",
+      "headlock::lemma_base_kill",
+      "headlock::lemma_base_rollback_n",
+      "headlock::lemma_base_undo_top",
+      "headlock::lemma_base_unlogged",
+      "headlock::lemma_base_write",
+      "headlock::lemma_commit_n_locks",
+      "headlock::lemma_dml_locks",
+      "headlock::lemma_end_levels_base",
+      "headlock::lemma_end_levels_locks",
+      "headlock::lemma_holder_autocommit",
+      "headlock::lemma_holder_await",
+      "headlock::lemma_holder_commit_n",
+      "headlock::lemma_holder_commit_top",
+      "headlock::lemma_holder_dml",
+      "headlock::lemma_holder_glob",
+      "headlock::lemma_holder_own",
+      "headlock::lemma_holder_rollback_n",
+      "headlock::lemma_holder_row",
+      "headlock::lemma_holder_same",
+      "headlock::lemma_holder_txn",
+      "headlock::lemma_holder_txn_begin",
+      "headlock::lemma_holder_undo_top",
+      "headlock::lemma_kill_alive",
+      "headlock::lemma_kill_locks",
+      "headlock::lemma_lock_ok_step",
+      "headlock::lemma_lock_step_alive",
+      "headlock::lemma_lock_step_keeps_h",
+      "headlock::lemma_lock_step_same",
+      "headlock::lemma_mutex",
+      "headlock::lemma_related_sym",
+      "headlock::lemma_rollback_n_locks",
+      "headlock::lemma_row_locks",
+      "headlock::lemma_step_keeps_h",
+      "headlock::lemma_txn_locks",
+      "headlock::theorem_atomic",
+      "headlock::theorem_inv_h",
+      "headlock::theorem_reader_under_lock",
+      "premises::premise_breadth_p_a2",
+      "premises::premise_breadth_p_a4_shared",
+      "premises::premise_breadth_p_a6_incr",
+      "premises::premise_breadth_p_a6_kill",
+      "premises::premise_breadth_p_l3",
+      "premises::premise_breadth_p_l5",
+      "premises::premise_contract2_s1_partial",
+      "premises::premise_core_ma_5_rollback_other",
+      "premises::premise_core_ma_6",
+      "premises::premise_d1b_p_s1",
+      "premises::premise_d1c_p_b2",
+      "premises::premise_d1c_p_l3_counter",
+      "premises::premise_d1c_p_t3",
+      "premises::premise_d1d_p_0002",
+      "premises::premise_d1e_p_c5_false",
+      "premises::premise_d1e_p_m2_stmt_atomic",
+      "premises::premise_d1f_p_f4",
+      "premises::premise_d1f_p_u2_false",
+      "premises::premise_d9_erasure_rollback",
+      "premises::premise_d9_g_l_reader_under_lock",
+      "premises::premise_d9_p_d9_1",
+      "premises::premise_d9_p_d9_1_may_roll_back",
+      "premises::premise_d9_p_d9_2_freedom",
+      "premises::premise_d9_p_d9_2_insert_fails",
+      "premises::premise_d9_p_d9_2_wait",
+      "premises::premise_head_lock_init",
+      "premises::premise_pa3_r04_5_names",
+      "premises::premise_proofs_p_c01",
+      "premises::premise_proofs_p_c04_not_implied",
+      "premises::premise_proofs_pf_3",
+      "premises::premise_proofs_pf_3_commit",
+      "premises::premise_trust_e1",
+      "premises::premise_trust_p_0001",
+      "premises::premise_trust_p_0003",
+      "premises::premise_trust_p_1201",
+      "premises::premise_trust_txn_cls_8_false",
+      "spec::Ends::clone",
+      "spec::ErrK::clone",
+      "spec::FreedomSem::clone",
+      "spec::Hold::clone",
+      "spec::Kind::clone",
+      "spec::Mode::clone",
+      "spec::Op::clone",
+      "spec::Param::clone",
+      "spec::RefK::clone",
+      "spec::Sem::clone",
+      "spec::SqlStartSem::clone",
+      "spec::Undo::clone",
+      "spec::Val::clone",
+      "spec::commit_n",
+      "spec::cv_from",
+      "spec::finals_from",
+      "spec::kill_from",
+      "spec::rb",
+      "spec::rollback_n",
+      "spec::rows_from",
+      "spec::run_from",
+      "wf::lemma_acquire_wf",
+      "wf::lemma_await_wf",
+      "wf::lemma_commit_n_wf",
+      "wf::lemma_commit_top_wf",
+      "wf::lemma_cv_wf",
+      "wf::lemma_end_levels_wf",
+      "wf::lemma_failed_stmt_wf",
+      "wf::lemma_glob_step_wf",
+      "wf::lemma_kill_wf",
+      "wf::lemma_lock_step_wf",
+      "wf::lemma_rb_len_n",
+      "wf::lemma_release_all_wf",
+      "wf::lemma_release_wf",
+      "wf::lemma_rollback_n_wf",
+      "wf::lemma_row_step_wf",
+      "wf::lemma_run_dml_wf",
+      "wf::lemma_select_txn_wf",
+      "wf::lemma_set_hold_wf",
+      "wf::lemma_set_pending_wf",
+      "wf::lemma_set_rlock_wf",
+      "wf::lemma_set_sqlflag_wf",
+      "wf::lemma_step_wf",
+      "wf::lemma_stmt_begin_wf",
+      "wf::lemma_stop_wf",
+      "wf::lemma_tstart_wf",
+      "wf::lemma_txn_basic_wf",
+      "wf::lemma_txn_end_wf",
+      "wf::lemma_txn_ends_wf",
+      "wf::lemma_txn_sqlproc_wf",
+      "wf::lemma_txn_step_wf",
+      "wf::lemma_undo_top_wf",
+      "wf::lemma_upd_wf",
+      "wf::lemma_write_wf"
+    ]
+  },
+  "controls": {
+    "ctl_unlock_immediate": {
+      "tag": "ctl_unlock_immediate",
+      "features": "ctl_unlock_immediate",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features ctl_unlock_immediate -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_unlock_immediate.log",
+      "json": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_unlock_immediate.json",
+      "wall_seconds": 15.79,
+      "error_locations": [
+        "src/premises.rs:28",
+        "src/premises.rs:38",
+        "src/premises.rs:56",
+        "src/premises.rs:64",
+        "src/premises.rs:137"
+      ],
+      "resource_limit_hit": false,
+      "json_sha256": "29f1064c384421ef52a7f660195f2ccffbd80e39828eac5577b7e974cba2523c",
+      "verified": 428,
+      "errors": 5,
+      "success": false,
+      "verus_total_ms": 15605,
+      "smt_run_ms": 61958,
+      "rlimit_total": 151209248,
+      "modules": {
+        "ext_exec": {
+          "ms": 9217,
+          "rlimit": 31800189
+        },
+        "headlock": {
+          "ms": 11070,
+          "rlimit": 24052463
+        },
+        "cx": {
+          "ms": 9572,
+          "rlimit": 23562770
+        },
+        "exec": {
+          "ms": 7163,
+          "rlimit": 20648989
+        },
+        "wf": {
+          "ms": 8402,
+          "rlimit": 19657438
+        },
+        "gen": {
+          "ms": 7606,
+          "rlimit": 14360002
+        },
+        "effects": {
+          "ms": 3752,
+          "rlimit": 7693860
+        },
+        "ext_lemmas": {
+          "ms": 4012,
+          "rlimit": 7222523
+        },
+        "premises": {
+          "ms": 1110,
+          "rlimit": 2071217
+        },
+        "ext": {
+          "ms": 25,
+          "rlimit": 87612
+        },
+        "spec": {
+          "ms": 23,
+          "rlimit": 51069
+        },
+        "clauses": {
+          "ms": 1,
+          "rlimit": 1116
+        }
+      },
+      "top_functions": [
+        {
+          "function": "wf::lemma_await_wf",
+          "ms": 6557,
+          "rlimit": 15880779,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_ext_step",
+          "ms": 3483,
+          "rlimit": 11079725,
+          "success": true
+        },
+        {
+          "function": "headlock::lemma_txn_locks",
+          "ms": 5462,
+          "rlimit": 10029726,
+          "success": true
+        },
+        {
+          "function": "cx::cx_select_committed_only",
+          "ms": 2977,
+          "rlimit": 7445691,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_emb_assert",
+          "ms": 1781,
+          "rlimit": 4512580,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_insert_select",
+          "ms": 997,
+          "rlimit": 3760618,
+          "success": true
+        },
+        {
+          "function": "gen::gen_erasure_rollback_keeps_insert",
+          "ms": 1650,
+          "rlimit": 3703147,
+          "success": true
+        },
+        {
+          "function": "exec::e_txn_sqlproc",
+          "ms": 685,
+          "rlimit": 3064949,
+          "success": true
+        },
+        {
+          "function": "cx::cx_no_dirty_reads",
+          "ms": 1199,
+          "rlimit": 2746159,
+          "success": true
+        },
+        {
+          "function": "ext_lemmas::lemma_insert_select_xok",
+          "ms": 1476,
+          "rlimit": 2385368,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "premises::premise_breadth_p_l3",
+        "premises::premise_d1b_p_s1",
+        "premises::premise_d9_p_d9_1",
+        "premises::premise_proofs_p_c01",
+        "premises::premise_trust_p_0003"
+      ],
+      "functions_checked": 412,
+      "clause": "E-LOCK-DEFER",
+      "mutant": "unlock-immediate-in-txn",
+      "counterexample": "cx::cx_unlock_immediate",
+      "expected_locations": [
+        "src/premises.rs:28",
+        "src/premises.rs:38",
+        "src/premises.rs:56",
+        "src/premises.rs:64",
+        "src/premises.rs:137"
+      ],
+      "expected_failing_functions": [
+        "premises::premise_breadth_p_l3",
+        "premises::premise_d1b_p_s1",
+        "premises::premise_d9_p_d9_1",
+        "premises::premise_proofs_p_c01",
+        "premises::premise_trust_p_0003"
+      ],
+      "located": true,
+      "others_verify_as_baseline": true,
+      "counterexample_verified": true,
+      "counterexamples_all_verified": true,
+      "killed": true
+    },
+    "ctl_stop_commits": {
+      "tag": "ctl_stop_commits",
+      "features": "ctl_stop_commits",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features ctl_stop_commits -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_stop_commits.log",
+      "json": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_stop_commits.json",
+      "wall_seconds": 15.25,
+      "error_locations": [
+        "src/premises.rs:28",
+        "src/premises.rs:38",
+        "src/premises.rs:56",
+        "src/premises.rs:64",
+        "src/premises.rs:124"
+      ],
+      "resource_limit_hit": false,
+      "json_sha256": "a06179673ff494e3908562352d81b12f1602d949b3f42ac0a73436e56c9a52f3",
+      "verified": 428,
+      "errors": 5,
+      "success": false,
+      "verus_total_ms": 15054,
+      "smt_run_ms": 60723,
+      "rlimit_total": 150606401,
+      "modules": {
+        "ext_exec": {
+          "ms": 8935,
+          "rlimit": 31800189
+        },
+        "headlock": {
+          "ms": 10176,
+          "rlimit": 24052463
+        },
+        "cx": {
+          "ms": 10599,
+          "rlimit": 23562770
+        },
+        "exec": {
+          "ms": 7479,
+          "rlimit": 20648989
+        },
+        "wf": {
+          "ms": 9200,
+          "rlimit": 19657438
+        },
+        "gen": {
+          "ms": 6398,
+          "rlimit": 14360002
+        },
+        "effects": {
+          "ms": 3232,
+          "rlimit": 7693860
+        },
+        "ext_lemmas": {
+          "ms": 3800,
+          "rlimit": 7222523
+        },
+        "premises": {
+          "ms": 850,
+          "rlimit": 1468370
+        },
+        "ext": {
+          "ms": 25,
+          "rlimit": 87612
+        },
+        "spec": {
+          "ms": 24,
+          "rlimit": 51069
+        },
+        "clauses": {
+          "ms": 1,
+          "rlimit": 1116
+        }
+      },
+      "top_functions": [
+        {
+          "function": "wf::lemma_await_wf",
+          "ms": 7335,
+          "rlimit": 15880779,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_ext_step",
+          "ms": 2946,
+          "rlimit": 11079725,
+          "success": true
+        },
+        {
+          "function": "headlock::lemma_txn_locks",
+          "ms": 5226,
+          "rlimit": 10029726,
+          "success": true
+        },
+        {
+          "function": "cx::cx_select_committed_only",
+          "ms": 3280,
+          "rlimit": 7445691,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_emb_assert",
+          "ms": 1540,
+          "rlimit": 4512580,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_insert_select",
+          "ms": 1078,
+          "rlimit": 3760618,
+          "success": true
+        },
+        {
+          "function": "gen::gen_erasure_rollback_keeps_insert",
+          "ms": 1484,
+          "rlimit": 3703147,
+          "success": true
+        },
+        {
+          "function": "exec::e_txn_sqlproc",
+          "ms": 681,
+          "rlimit": 3064949,
+          "success": true
+        },
+        {
+          "function": "cx::cx_no_dirty_reads",
+          "ms": 1382,
+          "rlimit": 2746159,
+          "success": true
+        },
+        {
+          "function": "ext_lemmas::lemma_insert_select_xok",
+          "ms": 1395,
+          "rlimit": 2385368,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "premises::premise_breadth_p_l3",
+        "premises::premise_d1b_p_s1",
+        "premises::premise_d9_p_d9_1",
+        "premises::premise_proofs_p_c01",
+        "premises::premise_trust_p_0001"
+      ],
+      "functions_checked": 412,
+      "clause": "E-STOP",
+      "mutant": "stop-commits",
+      "counterexample": "cx::cx_stop_commits",
+      "expected_locations": [
+        "src/premises.rs:28",
+        "src/premises.rs:38",
+        "src/premises.rs:56",
+        "src/premises.rs:64",
+        "src/premises.rs:124"
+      ],
+      "expected_failing_functions": [
+        "premises::premise_breadth_p_l3",
+        "premises::premise_d1b_p_s1",
+        "premises::premise_d9_p_d9_1",
+        "premises::premise_proofs_p_c01",
+        "premises::premise_trust_p_0001"
+      ],
+      "located": true,
+      "others_verify_as_baseline": true,
+      "counterexample_verified": true,
+      "counterexamples_all_verified": true,
+      "killed": true
+    },
+    "ctl_stop_top_level_only": {
+      "tag": "ctl_stop_top_level_only",
+      "features": "ctl_stop_top_level_only",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features ctl_stop_top_level_only -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_stop_top_level_only.log",
+      "json": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_stop_top_level_only.json",
+      "wall_seconds": 16.11,
+      "error_locations": [
+        "src/premises.rs:28",
+        "src/premises.rs:38",
+        "src/premises.rs:56",
+        "src/premises.rs:64",
+        "src/premises.rs:124"
+      ],
+      "resource_limit_hit": false,
+      "json_sha256": "16fe519b87ca2604feb333a01c41fad7bb0fe5429303f7d323d3aefd99c6628c",
+      "verified": 428,
+      "errors": 5,
+      "success": false,
+      "verus_total_ms": 15922,
+      "smt_run_ms": 62299,
+      "rlimit_total": 150708297,
+      "modules": {
+        "ext_exec": {
+          "ms": 10544,
+          "rlimit": 31800189
+        },
+        "headlock": {
+          "ms": 9424,
+          "rlimit": 24052463
+        },
+        "cx": {
+          "ms": 11501,
+          "rlimit": 23562770
+        },
+        "exec": {
+          "ms": 7302,
+          "rlimit": 20648989
+        },
+        "wf": {
+          "ms": 8556,
+          "rlimit": 19657438
+        },
+        "gen": {
+          "ms": 7262,
+          "rlimit": 14360002
+        },
+        "effects": {
+          "ms": 3372,
+          "rlimit": 7693860
+        },
+        "ext_lemmas": {
+          "ms": 3399,
+          "rlimit": 7222523
+        },
+        "premises": {
+          "ms": 882,
+          "rlimit": 1570266
+        },
+        "ext": {
+          "ms": 26,
+          "rlimit": 87612
+        },
+        "spec": {
+          "ms": 24,
+          "rlimit": 51069
+        },
+        "clauses": {
+          "ms": 1,
+          "rlimit": 1116
+        }
+      },
+      "top_functions": [
+        {
+          "function": "wf::lemma_await_wf",
+          "ms": 6820,
+          "rlimit": 15880779,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_ext_step",
+          "ms": 2898,
+          "rlimit": 11079725,
+          "success": true
+        },
+        {
+          "function": "headlock::lemma_txn_locks",
+          "ms": 4402,
+          "rlimit": 10029726,
+          "success": true
+        },
+        {
+          "function": "cx::cx_select_committed_only",
+          "ms": 3458,
+          "rlimit": 7445691,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_emb_assert",
+          "ms": 2432,
+          "rlimit": 4512580,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_insert_select",
+          "ms": 1370,
+          "rlimit": 3760618,
+          "success": true
+        },
+        {
+          "function": "gen::gen_erasure_rollback_keeps_insert",
+          "ms": 1748,
+          "rlimit": 3703147,
+          "success": true
+        },
+        {
+          "function": "exec::e_txn_sqlproc",
+          "ms": 696,
+          "rlimit": 3064949,
+          "success": true
+        },
+        {
+          "function": "cx::cx_no_dirty_reads",
+          "ms": 1880,
+          "rlimit": 2746159,
+          "success": true
+        },
+        {
+          "function": "ext_lemmas::lemma_insert_select_xok",
+          "ms": 1225,
+          "rlimit": 2385368,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "premises::premise_breadth_p_l3",
+        "premises::premise_d1b_p_s1",
+        "premises::premise_d9_p_d9_1",
+        "premises::premise_proofs_p_c01",
+        "premises::premise_trust_p_0001"
+      ],
+      "functions_checked": 412,
+      "clause": "E-STOP",
+      "mutant": "stop-rolls-back-top-level-only",
+      "counterexample": "cx::cx_stop_top_level_only",
+      "expected_locations": [
+        "src/premises.rs:28",
+        "src/premises.rs:38",
+        "src/premises.rs:56",
+        "src/premises.rs:64",
+        "src/premises.rs:124"
+      ],
+      "expected_failing_functions": [
+        "premises::premise_breadth_p_l3",
+        "premises::premise_d1b_p_s1",
+        "premises::premise_d9_p_d9_1",
+        "premises::premise_proofs_p_c01",
+        "premises::premise_trust_p_0001"
+      ],
+      "located": true,
+      "others_verify_as_baseline": true,
+      "counterexample_verified": true,
+      "counterexamples_all_verified": true,
+      "killed": true
+    },
+    "ctl_kill_not_logged": {
+      "tag": "ctl_kill_not_logged",
+      "features": "ctl_kill_not_logged",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features ctl_kill_not_logged -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_kill_not_logged.log",
+      "json": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_kill_not_logged.json",
+      "wall_seconds": 14.65,
+      "error_locations": [
+        "src/premises.rs:28",
+        "src/premises.rs:38",
+        "src/premises.rs:56",
+        "src/premises.rs:64",
+        "src/premises.rs:375"
+      ],
+      "resource_limit_hit": false,
+      "json_sha256": "930096c15cb817698227e3de2c648305411064199786fda7fcedc2802617515a",
+      "verified": 428,
+      "errors": 5,
+      "success": false,
+      "verus_total_ms": 14457,
+      "smt_run_ms": 60813,
+      "rlimit_total": 150807680,
+      "modules": {
+        "ext_exec": {
+          "ms": 9230,
+          "rlimit": 31800189
+        },
+        "headlock": {
+          "ms": 9650,
+          "rlimit": 24052463
+        },
+        "cx": {
+          "ms": 9993,
+          "rlimit": 23562770
+        },
+        "exec": {
+          "ms": 8238,
+          "rlimit": 20648989
+        },
+        "wf": {
+          "ms": 8265,
+          "rlimit": 19657438
+        },
+        "gen": {
+          "ms": 7422,
+          "rlimit": 14360002
+        },
+        "effects": {
+          "ms": 3718,
+          "rlimit": 7693860
+        },
+        "ext_lemmas": {
+          "ms": 3340,
+          "rlimit": 7222523
+        },
+        "premises": {
+          "ms": 904,
+          "rlimit": 1669649
+        },
+        "ext": {
+          "ms": 26,
+          "rlimit": 87612
+        },
+        "spec": {
+          "ms": 21,
+          "rlimit": 51069
+        },
+        "clauses": {
+          "ms": 1,
+          "rlimit": 1116
+        }
+      },
+      "top_functions": [
+        {
+          "function": "wf::lemma_await_wf",
+          "ms": 6479,
+          "rlimit": 15880779,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_ext_step",
+          "ms": 2998,
+          "rlimit": 11079725,
+          "success": true
+        },
+        {
+          "function": "headlock::lemma_txn_locks",
+          "ms": 4752,
+          "rlimit": 10029726,
+          "success": true
+        },
+        {
+          "function": "cx::cx_select_committed_only",
+          "ms": 2956,
+          "rlimit": 7445691,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_emb_assert",
+          "ms": 1520,
+          "rlimit": 4512580,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_insert_select",
+          "ms": 1314,
+          "rlimit": 3760618,
+          "success": true
+        },
+        {
+          "function": "gen::gen_erasure_rollback_keeps_insert",
+          "ms": 2294,
+          "rlimit": 3703147,
+          "success": true
+        },
+        {
+          "function": "exec::e_txn_sqlproc",
+          "ms": 1090,
+          "rlimit": 3064949,
+          "success": true
+        },
+        {
+          "function": "cx::cx_no_dirty_reads",
+          "ms": 1451,
+          "rlimit": 2746159,
+          "success": true
+        },
+        {
+          "function": "ext_lemmas::lemma_insert_select_xok",
+          "ms": 1225,
+          "rlimit": 2385368,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "premises::premise_breadth_p_a6_kill",
+        "premises::premise_breadth_p_l3",
+        "premises::premise_d1b_p_s1",
+        "premises::premise_d9_p_d9_1",
+        "premises::premise_proofs_p_c01"
+      ],
+      "functions_checked": 412,
+      "clause": "E-GLOBALS",
+      "mutant": "kill-not-logged",
+      "counterexample": "cx::cx_kill_not_logged",
+      "expected_locations": [
+        "src/premises.rs:28",
+        "src/premises.rs:38",
+        "src/premises.rs:56",
+        "src/premises.rs:64",
+        "src/premises.rs:375"
+      ],
+      "expected_failing_functions": [
+        "premises::premise_breadth_p_a6_kill",
+        "premises::premise_breadth_p_l3",
+        "premises::premise_d1b_p_s1",
+        "premises::premise_d9_p_d9_1",
+        "premises::premise_proofs_p_c01"
+      ],
+      "located": true,
+      "others_verify_as_baseline": true,
+      "counterexample_verified": true,
+      "counterexamples_all_verified": true,
+      "killed": true
+    },
+    "ctl_dml_ignores_row_locks": {
+      "tag": "ctl_dml_ignores_row_locks",
+      "features": "ctl_dml_ignores_row_locks",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features ctl_dml_ignores_row_locks -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_dml_ignores_row_locks.log",
+      "json": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_dml_ignores_row_locks.json",
+      "wall_seconds": 14.85,
+      "error_locations": [
+        "src/premises.rs:211",
+        "src/premises.rs:224",
+        "src/premises.rs:246",
+        "src/premises.rs:260",
+        "src/premises.rs:273"
+      ],
+      "resource_limit_hit": false,
+      "json_sha256": "cfec5a71739dd32a3bdbef6dc4a6c58b94b103475cab452cddbac61e8b18f20d",
+      "verified": 428,
+      "errors": 5,
+      "success": false,
+      "verus_total_ms": 14669,
+      "smt_run_ms": 62851,
+      "rlimit_total": 153997702,
+      "modules": {
+        "ext_exec": {
+          "ms": 9578,
+          "rlimit": 31800189
+        },
+        "headlock": {
+          "ms": 10132,
+          "rlimit": 24052463
+        },
+        "cx": {
+          "ms": 10215,
+          "rlimit": 23562770
+        },
+        "exec": {
+          "ms": 6926,
+          "rlimit": 20648989
+        },
+        "wf": {
+          "ms": 8999,
+          "rlimit": 19657438
+        },
+        "gen": {
+          "ms": 6882,
+          "rlimit": 14360002
+        },
+        "effects": {
+          "ms": 3316,
+          "rlimit": 7693860
+        },
+        "ext_lemmas": {
+          "ms": 3929,
+          "rlimit": 7222523
+        },
+        "premises": {
+          "ms": 2817,
+          "rlimit": 4859671
+        },
+        "ext": {
+          "ms": 25,
+          "rlimit": 87612
+        },
+        "spec": {
+          "ms": 24,
+          "rlimit": 51069
+        },
+        "clauses": {
+          "ms": 1,
+          "rlimit": 1116
+        }
+      },
+      "top_functions": [
+        {
+          "function": "wf::lemma_await_wf",
+          "ms": 7398,
+          "rlimit": 15880779,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_ext_step",
+          "ms": 2929,
+          "rlimit": 11079725,
+          "success": true
+        },
+        {
+          "function": "headlock::lemma_txn_locks",
+          "ms": 4502,
+          "rlimit": 10029726,
+          "success": true
+        },
+        {
+          "function": "cx::cx_select_committed_only",
+          "ms": 2887,
+          "rlimit": 7445691,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_emb_assert",
+          "ms": 1761,
+          "rlimit": 4512580,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_insert_select",
+          "ms": 1376,
+          "rlimit": 3760618,
+          "success": true
+        },
+        {
+          "function": "gen::gen_erasure_rollback_keeps_insert",
+          "ms": 1460,
+          "rlimit": 3703147,
+          "success": true
+        },
+        {
+          "function": "exec::e_txn_sqlproc",
+          "ms": 687,
+          "rlimit": 3064949,
+          "success": true
+        },
+        {
+          "function": "cx::cx_no_dirty_reads",
+          "ms": 1345,
+          "rlimit": 2746159,
+          "success": true
+        },
+        {
+          "function": "ext_lemmas::lemma_insert_select_xok",
+          "ms": 1478,
+          "rlimit": 2385368,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "premises::premise_breadth_p_a2",
+        "premises::premise_breadth_p_l5",
+        "premises::premise_d9_p_d9_2_freedom",
+        "premises::premise_d9_p_d9_2_wait",
+        "premises::premise_trust_p_1201"
+      ],
+      "functions_checked": 412,
+      "clause": "E-ROWLOCK",
+      "mutant": "dml-ignores-row-locks",
+      "counterexample": "cx::cx_dml_ignores_row_locks",
+      "expected_locations": [
+        "src/premises.rs:211",
+        "src/premises.rs:224",
+        "src/premises.rs:246",
+        "src/premises.rs:260",
+        "src/premises.rs:273"
+      ],
+      "expected_failing_functions": [
+        "premises::premise_breadth_p_a2",
+        "premises::premise_breadth_p_l5",
+        "premises::premise_d9_p_d9_2_freedom",
+        "premises::premise_d9_p_d9_2_wait",
+        "premises::premise_trust_p_1201"
+      ],
+      "located": true,
+      "others_verify_as_baseline": true,
+      "counterexample_verified": true,
+      "counterexamples_all_verified": true,
+      "killed": true
+    },
+    "ctl_row_lock_statement_only": {
+      "tag": "ctl_row_lock_statement_only",
+      "features": "ctl_row_lock_statement_only",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features ctl_row_lock_statement_only -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_row_lock_statement_only.log",
+      "json": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_row_lock_statement_only.json",
+      "wall_seconds": 14.93,
+      "error_locations": [
+        "src/premises.rs:211",
+        "src/premises.rs:224",
+        "src/premises.rs:260",
+        "src/premises.rs:273"
+      ],
+      "resource_limit_hit": false,
+      "json_sha256": "be6e00cc0b29d056f55bc8e62e2a28ef81728bb7df8f42eaadb408878b395b42",
+      "verified": 429,
+      "errors": 4,
+      "success": false,
+      "verus_total_ms": 14744,
+      "smt_run_ms": 62880,
+      "rlimit_total": 153294270,
+      "modules": {
+        "ext_exec": {
+          "ms": 9276,
+          "rlimit": 31800189
+        },
+        "headlock": {
+          "ms": 9408,
+          "rlimit": 24052463
+        },
+        "cx": {
+          "ms": 10350,
+          "rlimit": 23562770
+        },
+        "exec": {
+          "ms": 6919,
+          "rlimit": 20648989
+        },
+        "wf": {
+          "ms": 9592,
+          "rlimit": 19657438
+        },
+        "gen": {
+          "ms": 7746,
+          "rlimit": 14360002
+        },
+        "effects": {
+          "ms": 3527,
+          "rlimit": 7693860
+        },
+        "ext_lemmas": {
+          "ms": 3768,
+          "rlimit": 7222523
+        },
+        "premises": {
+          "ms": 2232,
+          "rlimit": 4156239
+        },
+        "ext": {
+          "ms": 32,
+          "rlimit": 87612
+        },
+        "spec": {
+          "ms": 25,
+          "rlimit": 51069
+        },
+        "clauses": {
+          "ms": 1,
+          "rlimit": 1116
+        }
+      },
+      "top_functions": [
+        {
+          "function": "wf::lemma_await_wf",
+          "ms": 7976,
+          "rlimit": 15880779,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_ext_step",
+          "ms": 3041,
+          "rlimit": 11079725,
+          "success": true
+        },
+        {
+          "function": "headlock::lemma_txn_locks",
+          "ms": 4436,
+          "rlimit": 10029726,
+          "success": true
+        },
+        {
+          "function": "cx::cx_select_committed_only",
+          "ms": 3005,
+          "rlimit": 7445691,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_emb_assert",
+          "ms": 1537,
+          "rlimit": 4512580,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_insert_select",
+          "ms": 1306,
+          "rlimit": 3760618,
+          "success": true
+        },
+        {
+          "function": "gen::gen_erasure_rollback_keeps_insert",
+          "ms": 2258,
+          "rlimit": 3703147,
+          "success": true
+        },
+        {
+          "function": "exec::e_txn_sqlproc",
+          "ms": 702,
+          "rlimit": 3064949,
+          "success": true
+        },
+        {
+          "function": "cx::cx_no_dirty_reads",
+          "ms": 1268,
+          "rlimit": 2746159,
+          "success": true
+        },
+        {
+          "function": "ext_lemmas::lemma_insert_select_xok",
+          "ms": 1330,
+          "rlimit": 2385368,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "premises::premise_breadth_p_a2",
+        "premises::premise_breadth_p_l5",
+        "premises::premise_d9_p_d9_2_wait",
+        "premises::premise_trust_p_1201"
+      ],
+      "functions_checked": 412,
+      "clause": "E-ROWLOCK",
+      "mutant": "row-lock-statement-only",
+      "counterexample": "cx::cx_row_lock_statement_only",
+      "expected_locations": [
+        "src/premises.rs:211",
+        "src/premises.rs:224",
+        "src/premises.rs:260",
+        "src/premises.rs:273"
+      ],
+      "expected_failing_functions": [
+        "premises::premise_breadth_p_a2",
+        "premises::premise_breadth_p_l5",
+        "premises::premise_d9_p_d9_2_wait",
+        "premises::premise_trust_p_1201"
+      ],
+      "located": true,
+      "others_verify_as_baseline": true,
+      "counterexample_verified": true,
+      "counterexamples_all_verified": true,
+      "killed": true
+    },
+    "ctl_insert_dup_waits": {
+      "tag": "ctl_insert_dup_waits",
+      "features": "ctl_insert_dup_waits",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features ctl_insert_dup_waits -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_insert_dup_waits.log",
+      "json": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_insert_dup_waits.json",
+      "wall_seconds": 15.12,
+      "error_locations": [
+        "src/premises.rs:234"
+      ],
+      "resource_limit_hit": false,
+      "json_sha256": "1b6d7550cb40040da5f10d6a5d8f0f105d3a5c5e02075d085f9b19d961790b2c",
+      "verified": 432,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 14934,
+      "smt_run_ms": 60163,
+      "rlimit_total": 150561178,
+      "modules": {
+        "ext_exec": {
+          "ms": 9090,
+          "rlimit": 31800189
+        },
+        "headlock": {
+          "ms": 9517,
+          "rlimit": 24052463
+        },
+        "cx": {
+          "ms": 10534,
+          "rlimit": 23562770
+        },
+        "exec": {
+          "ms": 7111,
+          "rlimit": 20648989
+        },
+        "wf": {
+          "ms": 9081,
+          "rlimit": 19657438
+        },
+        "gen": {
+          "ms": 6433,
+          "rlimit": 14360002
+        },
+        "effects": {
+          "ms": 3674,
+          "rlimit": 7693860
+        },
+        "ext_lemmas": {
+          "ms": 3968,
+          "rlimit": 7222523
+        },
+        "premises": {
+          "ms": 696,
+          "rlimit": 1423147
+        },
+        "ext": {
+          "ms": 29,
+          "rlimit": 87612
+        },
+        "spec": {
+          "ms": 23,
+          "rlimit": 51069
+        },
+        "clauses": {
+          "ms": 2,
+          "rlimit": 1116
+        }
+      },
+      "top_functions": [
+        {
+          "function": "wf::lemma_await_wf",
+          "ms": 7487,
+          "rlimit": 15880779,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_ext_step",
+          "ms": 2906,
+          "rlimit": 11079725,
+          "success": true
+        },
+        {
+          "function": "headlock::lemma_txn_locks",
+          "ms": 4587,
+          "rlimit": 10029726,
+          "success": true
+        },
+        {
+          "function": "cx::cx_select_committed_only",
+          "ms": 3865,
+          "rlimit": 7445691,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_emb_assert",
+          "ms": 1485,
+          "rlimit": 4512580,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_insert_select",
+          "ms": 1508,
+          "rlimit": 3760618,
+          "success": true
+        },
+        {
+          "function": "gen::gen_erasure_rollback_keeps_insert",
+          "ms": 1469,
+          "rlimit": 3703147,
+          "success": true
+        },
+        {
+          "function": "exec::e_txn_sqlproc",
+          "ms": 680,
+          "rlimit": 3064949,
+          "success": true
+        },
+        {
+          "function": "cx::cx_no_dirty_reads",
+          "ms": 1183,
+          "rlimit": 2746159,
+          "success": true
+        },
+        {
+          "function": "ext_lemmas::lemma_insert_select_xok",
+          "ms": 1383,
+          "rlimit": 2385368,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "premises::premise_d9_p_d9_2_insert_fails"
+      ],
+      "functions_checked": 412,
+      "clause": "E-UNIQUE",
+      "mutant": "insert-dup-waits",
+      "counterexample": "cx::cx_insert_dup_waits",
+      "expected_locations": [
+        "src/premises.rs:234"
+      ],
+      "expected_failing_functions": [
+        "premises::premise_d9_p_d9_2_insert_fails"
+      ],
+      "located": true,
+      "others_verify_as_baseline": true,
+      "counterexample_verified": true,
+      "counterexamples_all_verified": true,
+      "killed": true
+    },
+    "ctl_freedom_wait_only": {
+      "tag": "ctl_freedom_wait_only",
+      "features": "ctl_freedom_wait_only",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features ctl_freedom_wait_only -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_freedom_wait_only.log",
+      "json": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_freedom_wait_only.json",
+      "wall_seconds": 16.08,
+      "error_locations": [
+        "src/premises.rs:246",
+        "src/premises.rs:364"
+      ],
+      "resource_limit_hit": false,
+      "json_sha256": "d22da92483b5b9097378a538e73f04ea0c69dd7db5b226758ba291fb1dbbd549",
+      "verified": 431,
+      "errors": 2,
+      "success": false,
+      "verus_total_ms": 15895,
+      "smt_run_ms": 62989,
+      "rlimit_total": 153561693,
+      "modules": {
+        "ext_exec": {
+          "ms": 9117,
+          "rlimit": 31800189
+        },
+        "headlock": {
+          "ms": 9578,
+          "rlimit": 24052463
+        },
+        "cx": {
+          "ms": 11458,
+          "rlimit": 23562770
+        },
+        "exec": {
+          "ms": 6664,
+          "rlimit": 20648989
+        },
+        "wf": {
+          "ms": 8401,
+          "rlimit": 19657438
+        },
+        "gen": {
+          "ms": 7807,
+          "rlimit": 14360002
+        },
+        "effects": {
+          "ms": 3683,
+          "rlimit": 7693860
+        },
+        "ext_lemmas": {
+          "ms": 3658,
+          "rlimit": 7222523
+        },
+        "premises": {
+          "ms": 2568,
+          "rlimit": 4423662
+        },
+        "ext": {
+          "ms": 26,
+          "rlimit": 87612
+        },
+        "spec": {
+          "ms": 22,
+          "rlimit": 51069
+        },
+        "clauses": {
+          "ms": 1,
+          "rlimit": 1116
+        }
+      },
+      "top_functions": [
+        {
+          "function": "wf::lemma_await_wf",
+          "ms": 6612,
+          "rlimit": 15880779,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_ext_step",
+          "ms": 2964,
+          "rlimit": 11079725,
+          "success": true
+        },
+        {
+          "function": "headlock::lemma_txn_locks",
+          "ms": 4716,
+          "rlimit": 10029726,
+          "success": true
+        },
+        {
+          "function": "cx::cx_select_committed_only",
+          "ms": 3700,
+          "rlimit": 7445691,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_emb_assert",
+          "ms": 1486,
+          "rlimit": 4512580,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_insert_select",
+          "ms": 1332,
+          "rlimit": 3760618,
+          "success": true
+        },
+        {
+          "function": "gen::gen_erasure_rollback_keeps_insert",
+          "ms": 2177,
+          "rlimit": 3703147,
+          "success": true
+        },
+        {
+          "function": "exec::e_txn_sqlproc",
+          "ms": 689,
+          "rlimit": 3064949,
+          "success": true
+        },
+        {
+          "function": "premises::premise_d9_erasure_rollback",
+          "ms": 1833,
+          "rlimit": 3046970,
+          "success": false
+        },
+        {
+          "function": "cx::cx_no_dirty_reads",
+          "ms": 1813,
+          "rlimit": 2746159,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "premises::premise_d9_erasure_rollback",
+        "premises::premise_d9_p_d9_2_freedom"
+      ],
+      "functions_checked": 412,
+      "clause": "Freedom",
+      "mutant": "freedom-waits-only",
+      "counterexample": "cx::cx_freedom_wait_only",
+      "expected_locations": [
+        "src/premises.rs:246",
+        "src/premises.rs:364"
+      ],
+      "expected_failing_functions": [
+        "premises::premise_d9_erasure_rollback",
+        "premises::premise_d9_p_d9_2_freedom"
+      ],
+      "located": true,
+      "others_verify_as_baseline": true,
+      "counterexample_verified": true,
+      "counterexamples_all_verified": true,
+      "killed": true
+    },
+    "ctl_no_dirty_reads": {
+      "tag": "ctl_no_dirty_reads",
+      "features": "ctl_no_dirty_reads",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features ctl_no_dirty_reads -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_no_dirty_reads.log",
+      "json": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_no_dirty_reads.json",
+      "wall_seconds": 15.77,
+      "error_locations": [
+        "src/premises.rs:290",
+        "src/premises.rs:305"
+      ],
+      "resource_limit_hit": false,
+      "json_sha256": "fa625a0da05bbe3f6742594268b5e2277c322a98ff36bd56dcdc245777dfc082",
+      "verified": 431,
+      "errors": 2,
+      "success": false,
+      "verus_total_ms": 15587,
+      "smt_run_ms": 61788,
+      "rlimit_total": 152759093,
+      "modules": {
+        "ext_exec": {
+          "ms": 9021,
+          "rlimit": 31800189
+        },
+        "headlock": {
+          "ms": 10456,
+          "rlimit": 24052463
+        },
+        "cx": {
+          "ms": 11183,
+          "rlimit": 23562770
+        },
+        "exec": {
+          "ms": 7025,
+          "rlimit": 20648989
+        },
+        "wf": {
+          "ms": 8411,
+          "rlimit": 19657438
+        },
+        "gen": {
+          "ms": 6420,
+          "rlimit": 14360002
+        },
+        "effects": {
+          "ms": 3581,
+          "rlimit": 7693860
+        },
+        "ext_lemmas": {
+          "ms": 3570,
+          "rlimit": 7222523
+        },
+        "premises": {
+          "ms": 2062,
+          "rlimit": 3621062
+        },
+        "ext": {
+          "ms": 30,
+          "rlimit": 87612
+        },
+        "spec": {
+          "ms": 23,
+          "rlimit": 51069
+        },
+        "clauses": {
+          "ms": 1,
+          "rlimit": 1116
+        }
+      },
+      "top_functions": [
+        {
+          "function": "wf::lemma_await_wf",
+          "ms": 6542,
+          "rlimit": 15880779,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_ext_step",
+          "ms": 2957,
+          "rlimit": 11079725,
+          "success": true
+        },
+        {
+          "function": "headlock::lemma_txn_locks",
+          "ms": 5189,
+          "rlimit": 10029726,
+          "success": true
+        },
+        {
+          "function": "cx::cx_select_committed_only",
+          "ms": 3353,
+          "rlimit": 7445691,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_emb_assert",
+          "ms": 1525,
+          "rlimit": 4512580,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_insert_select",
+          "ms": 1092,
+          "rlimit": 3760618,
+          "success": true
+        },
+        {
+          "function": "gen::gen_erasure_rollback_keeps_insert",
+          "ms": 1436,
+          "rlimit": 3703147,
+          "success": true
+        },
+        {
+          "function": "exec::e_txn_sqlproc",
+          "ms": 678,
+          "rlimit": 3064949,
+          "success": true
+        },
+        {
+          "function": "cx::cx_no_dirty_reads",
+          "ms": 1866,
+          "rlimit": 2746159,
+          "success": true
+        },
+        {
+          "function": "ext_lemmas::lemma_insert_select_xok",
+          "ms": 1478,
+          "rlimit": 2385368,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "premises::premise_d1e_p_c5_false",
+        "premises::premise_d1f_p_u2_false"
+      ],
+      "functions_checked": 412,
+      "clause": "E-VIS",
+      "mutant": "no-dirty-reads",
+      "counterexample": "cx::cx_no_dirty_reads",
+      "expected_locations": [
+        "src/premises.rs:290",
+        "src/premises.rs:305"
+      ],
+      "expected_failing_functions": [
+        "premises::premise_d1e_p_c5_false",
+        "premises::premise_d1f_p_u2_false"
+      ],
+      "located": true,
+      "others_verify_as_baseline": true,
+      "counterexample_verified": true,
+      "counterexamples_all_verified": true,
+      "killed": true
+    },
+    "ctl_select_committed_only": {
+      "tag": "ctl_select_committed_only",
+      "features": "ctl_select_committed_only",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features ctl_select_committed_only -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_select_committed_only.log",
+      "json": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_select_committed_only.json",
+      "wall_seconds": 16.31,
+      "error_locations": [
+        "src/premises.rs:320",
+        "src/premises.rs:334"
+      ],
+      "resource_limit_hit": false,
+      "json_sha256": "be7ef014087605daab6019e21a5469b05bb78049bd999f9953a2a434daec1a24",
+      "verified": 431,
+      "errors": 2,
+      "success": false,
+      "verus_total_ms": 16117,
+      "smt_run_ms": 62157,
+      "rlimit_total": 151388540,
+      "modules": {
+        "ext_exec": {
+          "ms": 10278,
+          "rlimit": 31800189
+        },
+        "headlock": {
+          "ms": 9572,
+          "rlimit": 24052463
+        },
+        "cx": {
+          "ms": 11649,
+          "rlimit": 23562770
+        },
+        "exec": {
+          "ms": 6804,
+          "rlimit": 20648989
+        },
+        "wf": {
+          "ms": 8518,
+          "rlimit": 19657438
+        },
+        "gen": {
+          "ms": 6852,
+          "rlimit": 14360002
+        },
+        "effects": {
+          "ms": 3674,
+          "rlimit": 7693860
+        },
+        "ext_lemmas": {
+          "ms": 3365,
+          "rlimit": 7222523
+        },
+        "premises": {
+          "ms": 1392,
+          "rlimit": 2250509
+        },
+        "ext": {
+          "ms": 26,
+          "rlimit": 87612
+        },
+        "spec": {
+          "ms": 22,
+          "rlimit": 51069
+        },
+        "clauses": {
+          "ms": 1,
+          "rlimit": 1116
+        }
+      },
+      "top_functions": [
+        {
+          "function": "wf::lemma_await_wf",
+          "ms": 6785,
+          "rlimit": 15880779,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_ext_step",
+          "ms": 2869,
+          "rlimit": 11079725,
+          "success": true
+        },
+        {
+          "function": "headlock::lemma_txn_locks",
+          "ms": 4598,
+          "rlimit": 10029726,
+          "success": true
+        },
+        {
+          "function": "cx::cx_select_committed_only",
+          "ms": 3544,
+          "rlimit": 7445691,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_emb_assert",
+          "ms": 2421,
+          "rlimit": 4512580,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_insert_select",
+          "ms": 1353,
+          "rlimit": 3760618,
+          "success": true
+        },
+        {
+          "function": "gen::gen_erasure_rollback_keeps_insert",
+          "ms": 1541,
+          "rlimit": 3703147,
+          "success": true
+        },
+        {
+          "function": "exec::e_txn_sqlproc",
+          "ms": 695,
+          "rlimit": 3064949,
+          "success": true
+        },
+        {
+          "function": "cx::cx_no_dirty_reads",
+          "ms": 1873,
+          "rlimit": 2746159,
+          "success": true
+        },
+        {
+          "function": "ext_lemmas::lemma_insert_select_xok",
+          "ms": 1281,
+          "rlimit": 2385368,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "premises::premise_core_ma_6",
+        "premises::premise_d1d_p_0002"
+      ],
+      "functions_checked": 412,
+      "clause": "E-VIS",
+      "mutant": "sql-select-committed-only",
+      "counterexample": "cx::cx_select_committed_only",
+      "expected_locations": [
+        "src/premises.rs:320",
+        "src/premises.rs:334"
+      ],
+      "expected_failing_functions": [
+        "premises::premise_core_ma_6",
+        "premises::premise_d1d_p_0002"
+      ],
+      "located": true,
+      "others_verify_as_baseline": true,
+      "counterexample_verified": true,
+      "counterexamples_all_verified": true,
+      "killed": true
+    },
+    "ctl_rollback_physical": {
+      "tag": "ctl_rollback_physical",
+      "features": "ctl_rollback_physical",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features ctl_rollback_physical -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_rollback_physical.log",
+      "json": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_rollback_physical.json",
+      "wall_seconds": 16.23,
+      "error_locations": [
+        "src/premises.rs:349",
+        "src/premises.rs:364"
+      ],
+      "resource_limit_hit": false,
+      "json_sha256": "c880fb871b61bbbfd1ac9d10d9d0a7983ea38f3968b4e41f110f53fad6cdfe1f",
+      "verified": 431,
+      "errors": 2,
+      "success": false,
+      "verus_total_ms": 16036,
+      "smt_run_ms": 64925,
+      "rlimit_total": 155796743,
+      "modules": {
+        "ext_exec": {
+          "ms": 10134,
+          "rlimit": 31800189
+        },
+        "headlock": {
+          "ms": 9752,
+          "rlimit": 24052463
+        },
+        "cx": {
+          "ms": 11576,
+          "rlimit": 23562770
+        },
+        "exec": {
+          "ms": 7001,
+          "rlimit": 20648989
+        },
+        "wf": {
+          "ms": 8401,
+          "rlimit": 19657438
+        },
+        "gen": {
+          "ms": 6730,
+          "rlimit": 14360002
+        },
+        "effects": {
+          "ms": 3355,
+          "rlimit": 7693860
+        },
+        "ext_lemmas": {
+          "ms": 3849,
+          "rlimit": 7222523
+        },
+        "premises": {
+          "ms": 4063,
+          "rlimit": 6658712
+        },
+        "ext": {
+          "ms": 34,
+          "rlimit": 87612
+        },
+        "spec": {
+          "ms": 25,
+          "rlimit": 51069
+        },
+        "clauses": {
+          "ms": 1,
+          "rlimit": 1116
+        }
+      },
+      "top_functions": [
+        {
+          "function": "wf::lemma_await_wf",
+          "ms": 6555,
+          "rlimit": 15880779,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_ext_step",
+          "ms": 2896,
+          "rlimit": 11079725,
+          "success": true
+        },
+        {
+          "function": "headlock::lemma_txn_locks",
+          "ms": 4819,
+          "rlimit": 10029726,
+          "success": true
+        },
+        {
+          "function": "cx::cx_select_committed_only",
+          "ms": 3505,
+          "rlimit": 7445691,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_emb_assert",
+          "ms": 2401,
+          "rlimit": 4512580,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_insert_select",
+          "ms": 1258,
+          "rlimit": 3760618,
+          "success": true
+        },
+        {
+          "function": "gen::gen_erasure_rollback_keeps_insert",
+          "ms": 1452,
+          "rlimit": 3703147,
+          "success": true
+        },
+        {
+          "function": "premises::premise_d9_erasure_rollback",
+          "ms": 2040,
+          "rlimit": 3317863,
+          "success": false
+        },
+        {
+          "function": "exec::e_txn_sqlproc",
+          "ms": 746,
+          "rlimit": 3064949,
+          "success": true
+        },
+        {
+          "function": "cx::cx_no_dirty_reads",
+          "ms": 1889,
+          "rlimit": 2746159,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "premises::premise_core_ma_5_rollback_other",
+        "premises::premise_d9_erasure_rollback"
+      ],
+      "functions_checked": 412,
+      "clause": "E-ROLLBACK-OTHER",
+      "mutant": "rollback-physical",
+      "counterexample": "cx::cx_rollback_physical",
+      "expected_locations": [
+        "src/premises.rs:349",
+        "src/premises.rs:364"
+      ],
+      "expected_failing_functions": [
+        "premises::premise_core_ma_5_rollback_other",
+        "premises::premise_d9_erasure_rollback"
+      ],
+      "located": true,
+      "others_verify_as_baseline": true,
+      "counterexample_verified": true,
+      "counterexamples_all_verified": true,
+      "killed": true
+    },
+    "ctl_incr_rolled_back": {
+      "tag": "ctl_incr_rolled_back",
+      "features": "ctl_incr_rolled_back",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features ctl_incr_rolled_back -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_incr_rolled_back.log",
+      "json": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_incr_rolled_back.json",
+      "wall_seconds": 15.62,
+      "error_locations": [
+        "src/premises.rs:383",
+        "src/premises.rs:391",
+        "src/premises.rs:408"
+      ],
+      "resource_limit_hit": false,
+      "json_sha256": "9b5a632ac7d098e653f1d37cc0f4fe11d402a6b56c1da6fa2ac19933c0b9fbe3",
+      "verified": 430,
+      "errors": 3,
+      "success": false,
+      "verus_total_ms": 15433,
+      "smt_run_ms": 64418,
+      "rlimit_total": 151473120,
+      "modules": {
+        "ext_exec": {
+          "ms": 10006,
+          "rlimit": 31800189
+        },
+        "headlock": {
+          "ms": 10835,
+          "rlimit": 24052463
+        },
+        "cx": {
+          "ms": 10841,
+          "rlimit": 23562770
+        },
+        "exec": {
+          "ms": 7717,
+          "rlimit": 20648989
+        },
+        "wf": {
+          "ms": 9107,
+          "rlimit": 19657438
+        },
+        "gen": {
+          "ms": 7460,
+          "rlimit": 14360002
+        },
+        "effects": {
+          "ms": 3371,
+          "rlimit": 7693860
+        },
+        "ext_lemmas": {
+          "ms": 3665,
+          "rlimit": 7222523
+        },
+        "premises": {
+          "ms": 1359,
+          "rlimit": 2335089
+        },
+        "ext": {
+          "ms": 28,
+          "rlimit": 87612
+        },
+        "spec": {
+          "ms": 24,
+          "rlimit": 51069
+        },
+        "clauses": {
+          "ms": 0,
+          "rlimit": 1116
+        }
+      },
+      "top_functions": [
+        {
+          "function": "wf::lemma_await_wf",
+          "ms": 7494,
+          "rlimit": 15880779,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_ext_step",
+          "ms": 2936,
+          "rlimit": 11079725,
+          "success": true
+        },
+        {
+          "function": "headlock::lemma_txn_locks",
+          "ms": 4849,
+          "rlimit": 10029726,
+          "success": true
+        },
+        {
+          "function": "cx::cx_select_committed_only",
+          "ms": 2964,
+          "rlimit": 7445691,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_emb_assert",
+          "ms": 2088,
+          "rlimit": 4512580,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_insert_select",
+          "ms": 1520,
+          "rlimit": 3760618,
+          "success": true
+        },
+        {
+          "function": "gen::gen_erasure_rollback_keeps_insert",
+          "ms": 1770,
+          "rlimit": 3703147,
+          "success": true
+        },
+        {
+          "function": "exec::e_txn_sqlproc",
+          "ms": 686,
+          "rlimit": 3064949,
+          "success": true
+        },
+        {
+          "function": "cx::cx_no_dirty_reads",
+          "ms": 1862,
+          "rlimit": 2746159,
+          "success": true
+        },
+        {
+          "function": "ext_lemmas::lemma_insert_select_xok",
+          "ms": 1353,
+          "rlimit": 2385368,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "premises::premise_breadth_p_a6_incr",
+        "premises::premise_d1c_p_l3_counter",
+        "premises::premise_d1c_p_t3"
+      ],
+      "functions_checked": 412,
+      "clause": "E-INCR",
+      "mutant": "incr-rolled-back",
+      "counterexample": "cx::cx_incr_rolled_back",
+      "expected_locations": [
+        "src/premises.rs:383",
+        "src/premises.rs:391",
+        "src/premises.rs:408"
+      ],
+      "expected_failing_functions": [
+        "premises::premise_breadth_p_a6_incr",
+        "premises::premise_d1c_p_l3_counter",
+        "premises::premise_d1c_p_t3"
+      ],
+      "located": true,
+      "others_verify_as_baseline": true,
+      "counterexample_verified": true,
+      "counterexamples_all_verified": true,
+      "killed": true
+    },
+    "ctl_rollback_one_undoes_all": {
+      "tag": "ctl_rollback_one_undoes_all",
+      "features": "ctl_rollback_one_undoes_all",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features ctl_rollback_one_undoes_all -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_rollback_one_undoes_all.log",
+      "json": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_rollback_one_undoes_all.json",
+      "wall_seconds": 15.24,
+      "error_locations": [
+        "src/premises.rs:420"
+      ],
+      "resource_limit_hit": false,
+      "json_sha256": "424ac86c03c243ba6b83e43ec816770e9337cbaea3f8f12149ceb4037b356ece",
+      "verified": 432,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 15052,
+      "smt_run_ms": 60555,
+      "rlimit_total": 150711369,
+      "modules": {
+        "ext_exec": {
+          "ms": 9369,
+          "rlimit": 31800189
+        },
+        "headlock": {
+          "ms": 10513,
+          "rlimit": 24052463
+        },
+        "cx": {
+          "ms": 9773,
+          "rlimit": 23562770
+        },
+        "exec": {
+          "ms": 8366,
+          "rlimit": 20648989
+        },
+        "wf": {
+          "ms": 7958,
+          "rlimit": 19657438
+        },
+        "gen": {
+          "ms": 6695,
+          "rlimit": 14360002
+        },
+        "effects": {
+          "ms": 3520,
+          "rlimit": 7693860
+        },
+        "ext_lemmas": {
+          "ms": 3463,
+          "rlimit": 7222523
+        },
+        "premises": {
+          "ms": 843,
+          "rlimit": 1573338
+        },
+        "ext": {
+          "ms": 26,
+          "rlimit": 87612
+        },
+        "spec": {
+          "ms": 23,
+          "rlimit": 51069
+        },
+        "clauses": {
+          "ms": 1,
+          "rlimit": 1116
+        }
+      },
+      "top_functions": [
+        {
+          "function": "wf::lemma_await_wf",
+          "ms": 6249,
+          "rlimit": 15880779,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_ext_step",
+          "ms": 3158,
+          "rlimit": 11079725,
+          "success": true
+        },
+        {
+          "function": "headlock::lemma_txn_locks",
+          "ms": 4947,
+          "rlimit": 10029726,
+          "success": true
+        },
+        {
+          "function": "cx::cx_select_committed_only",
+          "ms": 2992,
+          "rlimit": 7445691,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_emb_assert",
+          "ms": 1511,
+          "rlimit": 4512580,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_insert_select",
+          "ms": 1278,
+          "rlimit": 3760618,
+          "success": true
+        },
+        {
+          "function": "gen::gen_erasure_rollback_keeps_insert",
+          "ms": 1431,
+          "rlimit": 3703147,
+          "success": true
+        },
+        {
+          "function": "exec::e_txn_sqlproc",
+          "ms": 1099,
+          "rlimit": 3064949,
+          "success": true
+        },
+        {
+          "function": "cx::cx_no_dirty_reads",
+          "ms": 1186,
+          "rlimit": 2746159,
+          "success": true
+        },
+        {
+          "function": "ext_lemmas::lemma_insert_select_xok",
+          "ms": 1163,
+          "rlimit": 2385368,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "premises::premise_contract2_s1_partial"
+      ],
+      "functions_checked": 412,
+      "clause": "E-PARTIAL",
+      "mutant": "rollback-one-undoes-all",
+      "counterexample": "cx::cx_rollback_one_undoes_all",
+      "expected_locations": [
+        "src/premises.rs:420"
+      ],
+      "expected_failing_functions": [
+        "premises::premise_contract2_s1_partial"
+      ],
+      "located": true,
+      "others_verify_as_baseline": true,
+      "counterexample_verified": true,
+      "counterexamples_all_verified": true,
+      "killed": true
+    },
+    "ctl_sql_commit_ends_all": {
+      "tag": "ctl_sql_commit_ends_all",
+      "features": "ctl_sql_commit_ends_all",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features ctl_sql_commit_ends_all -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_sql_commit_ends_all.log",
+      "json": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_sql_commit_ends_all.json",
+      "wall_seconds": 15.65,
+      "error_locations": [
+        "src/premises.rs:429"
+      ],
+      "resource_limit_hit": false,
+      "json_sha256": "9c1a57b7bef2d6f17525d03474a84e269bdc8a1c8beb3d6e0a86342bbb4f1c19",
+      "verified": 432,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 15453,
+      "smt_run_ms": 61000,
+      "rlimit_total": 150771064,
+      "modules": {
+        "ext_exec": {
+          "ms": 8675,
+          "rlimit": 31800189
+        },
+        "headlock": {
+          "ms": 10904,
+          "rlimit": 24052463
+        },
+        "cx": {
+          "ms": 10761,
+          "rlimit": 23562770
+        },
+        "exec": {
+          "ms": 6558,
+          "rlimit": 20648989
+        },
+        "wf": {
+          "ms": 8407,
+          "rlimit": 19657438
+        },
+        "gen": {
+          "ms": 7275,
+          "rlimit": 14360002
+        },
+        "effects": {
+          "ms": 3717,
+          "rlimit": 7693860
+        },
+        "ext_lemmas": {
+          "ms": 3768,
+          "rlimit": 7222523
+        },
+        "premises": {
+          "ms": 878,
+          "rlimit": 1633033
+        },
+        "ext": {
+          "ms": 25,
+          "rlimit": 87612
+        },
+        "spec": {
+          "ms": 25,
+          "rlimit": 51069
+        },
+        "clauses": {
+          "ms": 1,
+          "rlimit": 1116
+        }
+      },
+      "top_functions": [
+        {
+          "function": "wf::lemma_await_wf",
+          "ms": 6802,
+          "rlimit": 15880779,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_ext_step",
+          "ms": 2946,
+          "rlimit": 11079725,
+          "success": true
+        },
+        {
+          "function": "headlock::lemma_txn_locks",
+          "ms": 5378,
+          "rlimit": 10029726,
+          "success": true
+        },
+        {
+          "function": "cx::cx_select_committed_only",
+          "ms": 3544,
+          "rlimit": 7445691,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_emb_assert",
+          "ms": 1566,
+          "rlimit": 4512580,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_insert_select",
+          "ms": 1015,
+          "rlimit": 3760618,
+          "success": true
+        },
+        {
+          "function": "gen::gen_erasure_rollback_keeps_insert",
+          "ms": 1706,
+          "rlimit": 3703147,
+          "success": true
+        },
+        {
+          "function": "exec::e_txn_sqlproc",
+          "ms": 692,
+          "rlimit": 3064949,
+          "success": true
+        },
+        {
+          "function": "cx::cx_no_dirty_reads",
+          "ms": 1189,
+          "rlimit": 2746159,
+          "success": true
+        },
+        {
+          "function": "ext_lemmas::lemma_insert_select_xok",
+          "ms": 1215,
+          "rlimit": 2385368,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "premises::premise_trust_txn_cls_8_false"
+      ],
+      "functions_checked": 412,
+      "clause": "E-SQL-END",
+      "mutant": "sql-commit-ends-all",
+      "counterexample": "cx::cx_sql_commit_ends_all",
+      "expected_locations": [
+        "src/premises.rs:429"
+      ],
+      "expected_failing_functions": [
+        "premises::premise_trust_txn_cls_8_false"
+      ],
+      "located": true,
+      "others_verify_as_baseline": true,
+      "counterexample_verified": true,
+      "counterexamples_all_verified": true,
+      "killed": true
+    },
+    "ctl_lock_wait_never_granted": {
+      "tag": "ctl_lock_wait_never_granted",
+      "features": "ctl_lock_wait_never_granted",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features ctl_lock_wait_never_granted -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_lock_wait_never_granted.log",
+      "json": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_lock_wait_never_granted.json",
+      "wall_seconds": 15.45,
+      "error_locations": [
+        "src/premises.rs:150",
+        "src/premises.rs:172"
+      ],
+      "resource_limit_hit": false,
+      "json_sha256": "36079f4930e32f23cd3ce5c3e9aae7775801b0ba35f7bde201311bdd3aecb56e",
+      "verified": 431,
+      "errors": 2,
+      "success": false,
+      "verus_total_ms": 15260,
+      "smt_run_ms": 61067,
+      "rlimit_total": 151397301,
+      "modules": {
+        "ext_exec": {
+          "ms": 9205,
+          "rlimit": 31800189
+        },
+        "headlock": {
+          "ms": 10711,
+          "rlimit": 24052463
+        },
+        "cx": {
+          "ms": 10392,
+          "rlimit": 23562770
+        },
+        "exec": {
+          "ms": 8295,
+          "rlimit": 20648989
+        },
+        "wf": {
+          "ms": 7878,
+          "rlimit": 19657438
+        },
+        "gen": {
+          "ms": 6503,
+          "rlimit": 14360002
+        },
+        "effects": {
+          "ms": 3601,
+          "rlimit": 7693860
+        },
+        "ext_lemmas": {
+          "ms": 3148,
+          "rlimit": 7222523
+        },
+        "premises": {
+          "ms": 1277,
+          "rlimit": 2259270
+        },
+        "ext": {
+          "ms": 27,
+          "rlimit": 87612
+        },
+        "spec": {
+          "ms": 24,
+          "rlimit": 51069
+        },
+        "clauses": {
+          "ms": 1,
+          "rlimit": 1116
+        }
+      },
+      "top_functions": [
+        {
+          "function": "wf::lemma_await_wf",
+          "ms": 6350,
+          "rlimit": 15880779,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_ext_step",
+          "ms": 2928,
+          "rlimit": 11079725,
+          "success": true
+        },
+        {
+          "function": "headlock::lemma_txn_locks",
+          "ms": 5471,
+          "rlimit": 10029726,
+          "success": true
+        },
+        {
+          "function": "cx::cx_select_committed_only",
+          "ms": 2933,
+          "rlimit": 7445691,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_emb_assert",
+          "ms": 1514,
+          "rlimit": 4512580,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_insert_select",
+          "ms": 1350,
+          "rlimit": 3760618,
+          "success": true
+        },
+        {
+          "function": "gen::gen_erasure_rollback_keeps_insert",
+          "ms": 1438,
+          "rlimit": 3703147,
+          "success": true
+        },
+        {
+          "function": "exec::e_txn_sqlproc",
+          "ms": 1097,
+          "rlimit": 3064949,
+          "success": true
+        },
+        {
+          "function": "cx::cx_no_dirty_reads",
+          "ms": 1494,
+          "rlimit": 2746159,
+          "success": true
+        },
+        {
+          "function": "ext_lemmas::lemma_insert_select_xok",
+          "ms": 1118,
+          "rlimit": 2385368,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "premises::premise_d1f_p_f4",
+        "premises::premise_proofs_pf_3"
+      ],
+      "functions_checked": 412,
+      "clause": "E-LOCK-WAIT",
+      "mutant": "lock-wait-never-granted",
+      "counterexample": "cx::cx_lock_wait_never_granted",
+      "expected_locations": [
+        "src/premises.rs:150",
+        "src/premises.rs:172"
+      ],
+      "expected_failing_functions": [
+        "premises::premise_d1f_p_f4",
+        "premises::premise_proofs_pf_3"
+      ],
+      "located": true,
+      "others_verify_as_baseline": true,
+      "counterexample_verified": true,
+      "counterexamples_all_verified": true,
+      "killed": true
+    },
+    "ctl_flat_lock_names": {
+      "tag": "ctl_flat_lock_names",
+      "features": "ctl_flat_lock_names",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features ctl_flat_lock_names -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_flat_lock_names.log",
+      "json": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_flat_lock_names.json",
+      "wall_seconds": 16.24,
+      "error_locations": [
+        "src/premises.rs:182"
+      ],
+      "resource_limit_hit": false,
+      "json_sha256": "6bc7d512b6d9743699dc59fb59f532611c42fd35f6f7ceb0e6ba2ccdd5feb45c",
+      "verified": 432,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 16051,
+      "smt_run_ms": 64741,
+      "rlimit_total": 150672823,
+      "modules": {
+        "ext_exec": {
+          "ms": 9651,
+          "rlimit": 31800189
+        },
+        "headlock": {
+          "ms": 10691,
+          "rlimit": 24052463
+        },
+        "cx": {
+          "ms": 11531,
+          "rlimit": 23562770
+        },
+        "exec": {
+          "ms": 8016,
+          "rlimit": 20648989
+        },
+        "wf": {
+          "ms": 8766,
+          "rlimit": 19657438
+        },
+        "gen": {
+          "ms": 7755,
+          "rlimit": 14360002
+        },
+        "effects": {
+          "ms": 3539,
+          "rlimit": 7693860
+        },
+        "ext_lemmas": {
+          "ms": 3886,
+          "rlimit": 7222523
+        },
+        "premises": {
+          "ms": 843,
+          "rlimit": 1534792
+        },
+        "ext": {
+          "ms": 33,
+          "rlimit": 87612
+        },
+        "spec": {
+          "ms": 23,
+          "rlimit": 51069
+        },
+        "clauses": {
+          "ms": 1,
+          "rlimit": 1116
+        }
+      },
+      "top_functions": [
+        {
+          "function": "wf::lemma_await_wf",
+          "ms": 6918,
+          "rlimit": 15880779,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_ext_step",
+          "ms": 2919,
+          "rlimit": 11079725,
+          "success": true
+        },
+        {
+          "function": "headlock::lemma_txn_locks",
+          "ms": 4644,
+          "rlimit": 10029726,
+          "success": true
+        },
+        {
+          "function": "cx::cx_select_committed_only",
+          "ms": 4027,
+          "rlimit": 7445691,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_emb_assert",
+          "ms": 1644,
+          "rlimit": 4512580,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_insert_select",
+          "ms": 1509,
+          "rlimit": 3760618,
+          "success": true
+        },
+        {
+          "function": "gen::gen_erasure_rollback_keeps_insert",
+          "ms": 2301,
+          "rlimit": 3703147,
+          "success": true
+        },
+        {
+          "function": "exec::e_txn_sqlproc",
+          "ms": 1090,
+          "rlimit": 3064949,
+          "success": true
+        },
+        {
+          "function": "cx::cx_no_dirty_reads",
+          "ms": 1270,
+          "rlimit": 2746159,
+          "success": true
+        },
+        {
+          "function": "ext_lemmas::lemma_insert_select_xok",
+          "ms": 1417,
+          "rlimit": 2385368,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "premises::premise_pa3_r04_5_names"
+      ],
+      "functions_checked": 412,
+      "clause": "E-LOCK-NAMES",
+      "mutant": "flat-lock-names",
+      "counterexample": "cx::cx_flat_lock_names",
+      "expected_locations": [
+        "src/premises.rs:182"
+      ],
+      "expected_failing_functions": [
+        "premises::premise_pa3_r04_5_names"
+      ],
+      "located": true,
+      "others_verify_as_baseline": true,
+      "counterexample_verified": true,
+      "counterexamples_all_verified": true,
+      "killed": true
+    },
+    "ctl_shared_conflicts_shared": {
+      "tag": "ctl_shared_conflicts_shared",
+      "features": "ctl_shared_conflicts_shared",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features ctl_shared_conflicts_shared -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_shared_conflicts_shared.log",
+      "json": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_shared_conflicts_shared.json",
+      "wall_seconds": 16.48,
+      "error_locations": [
+        "src/premises.rs:196"
+      ],
+      "resource_limit_hit": false,
+      "json_sha256": "893065811cc550d320d49838399e9adbafa41b3c863b2e7d1fad95e7b0d7d33e",
+      "verified": 432,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 16296,
+      "smt_run_ms": 63097,
+      "rlimit_total": 150637610,
+      "modules": {
+        "ext_exec": {
+          "ms": 10564,
+          "rlimit": 31800189
+        },
+        "headlock": {
+          "ms": 9376,
+          "rlimit": 24052463
+        },
+        "cx": {
+          "ms": 11857,
+          "rlimit": 23562770
+        },
+        "exec": {
+          "ms": 6844,
+          "rlimit": 20648989
+        },
+        "wf": {
+          "ms": 8515,
+          "rlimit": 19657438
+        },
+        "gen": {
+          "ms": 7721,
+          "rlimit": 14360002
+        },
+        "effects": {
+          "ms": 3553,
+          "rlimit": 7693860
+        },
+        "ext_lemmas": {
+          "ms": 3776,
+          "rlimit": 7222523
+        },
+        "premises": {
+          "ms": 827,
+          "rlimit": 1499579
+        },
+        "ext": {
+          "ms": 33,
+          "rlimit": 87612
+        },
+        "spec": {
+          "ms": 24,
+          "rlimit": 51069
+        },
+        "clauses": {
+          "ms": 1,
+          "rlimit": 1116
+        }
+      },
+      "top_functions": [
+        {
+          "function": "wf::lemma_await_wf",
+          "ms": 6660,
+          "rlimit": 15880779,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_ext_step",
+          "ms": 2915,
+          "rlimit": 11079725,
+          "success": true
+        },
+        {
+          "function": "headlock::lemma_txn_locks",
+          "ms": 4465,
+          "rlimit": 10029726,
+          "success": true
+        },
+        {
+          "function": "cx::cx_select_committed_only",
+          "ms": 3854,
+          "rlimit": 7445691,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_emb_assert",
+          "ms": 2381,
+          "rlimit": 4512580,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_insert_select",
+          "ms": 1287,
+          "rlimit": 3760618,
+          "success": true
+        },
+        {
+          "function": "gen::gen_erasure_rollback_keeps_insert",
+          "ms": 2035,
+          "rlimit": 3703147,
+          "success": true
+        },
+        {
+          "function": "exec::e_txn_sqlproc",
+          "ms": 703,
+          "rlimit": 3064949,
+          "success": true
+        },
+        {
+          "function": "cx::cx_no_dirty_reads",
+          "ms": 1857,
+          "rlimit": 2746159,
+          "success": true
+        },
+        {
+          "function": "ext_lemmas::lemma_insert_select_xok",
+          "ms": 1320,
+          "rlimit": 2385368,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "premises::premise_breadth_p_a4_shared"
+      ],
+      "functions_checked": 412,
+      "clause": "E-LOCK-MODES",
+      "mutant": "shared-conflicts-shared",
+      "counterexample": "cx::cx_shared_conflicts_shared",
+      "expected_locations": [
+        "src/premises.rs:196"
+      ],
+      "expected_failing_functions": [
+        "premises::premise_breadth_p_a4_shared"
+      ],
+      "located": true,
+      "others_verify_as_baseline": true,
+      "counterexample_verified": true,
+      "counterexamples_all_verified": true,
+      "killed": true
+    },
+    "ctl_emb_own_txn": {
+      "tag": "ctl_emb_own_txn",
+      "features": "ctl_emb_own_txn",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features ctl_emb_own_txn -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_emb_own_txn.log",
+      "json": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_emb_own_txn.json",
+      "wall_seconds": 16.97,
+      "error_locations": [
+        "src/premises.rs:442"
+      ],
+      "resource_limit_hit": false,
+      "json_sha256": "b33fd4c49285b953033edd4ebed7c9acc085685cdffac26507b9fdca0674bc75",
+      "verified": 432,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 16757,
+      "smt_run_ms": 71741,
+      "rlimit_total": 150584490,
+      "modules": {
+        "ext_exec": {
+          "ms": 11455,
+          "rlimit": 31800189
+        },
+        "headlock": {
+          "ms": 12063,
+          "rlimit": 24052463
+        },
+        "cx": {
+          "ms": 11402,
+          "rlimit": 23562770
+        },
+        "exec": {
+          "ms": 9316,
+          "rlimit": 20648989
+        },
+        "wf": {
+          "ms": 9579,
+          "rlimit": 19657438
+        },
+        "gen": {
+          "ms": 8636,
+          "rlimit": 14360002
+        },
+        "effects": {
+          "ms": 4291,
+          "rlimit": 7693860
+        },
+        "ext_lemmas": {
+          "ms": 4140,
+          "rlimit": 7222523
+        },
+        "premises": {
+          "ms": 795,
+          "rlimit": 1446459
+        },
+        "ext": {
+          "ms": 33,
+          "rlimit": 87612
+        },
+        "spec": {
+          "ms": 24,
+          "rlimit": 51069
+        },
+        "clauses": {
+          "ms": 1,
+          "rlimit": 1116
+        }
+      },
+      "top_functions": [
+        {
+          "function": "wf::lemma_await_wf",
+          "ms": 7693,
+          "rlimit": 15880779,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_ext_step",
+          "ms": 3389,
+          "rlimit": 11079725,
+          "success": true
+        },
+        {
+          "function": "headlock::lemma_txn_locks",
+          "ms": 6198,
+          "rlimit": 10029726,
+          "success": true
+        },
+        {
+          "function": "cx::cx_select_committed_only",
+          "ms": 3045,
+          "rlimit": 7445691,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_emb_assert",
+          "ms": 2114,
+          "rlimit": 4512580,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_insert_select",
+          "ms": 1542,
+          "rlimit": 3760618,
+          "success": true
+        },
+        {
+          "function": "gen::gen_erasure_rollback_keeps_insert",
+          "ms": 2176,
+          "rlimit": 3703147,
+          "success": true
+        },
+        {
+          "function": "exec::e_txn_sqlproc",
+          "ms": 1091,
+          "rlimit": 3064949,
+          "success": true
+        },
+        {
+          "function": "cx::cx_no_dirty_reads",
+          "ms": 1995,
+          "rlimit": 2746159,
+          "success": true
+        },
+        {
+          "function": "ext_lemmas::lemma_insert_select_xok",
+          "ms": 1451,
+          "rlimit": 2385368,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "premises::premise_trust_e1"
+      ],
+      "functions_checked": 412,
+      "clause": "E-1",
+      "mutant": "emb-own-txn",
+      "counterexample": "cx::cx_emb_own_txn",
+      "expected_locations": [
+        "src/premises.rs:442"
+      ],
+      "expected_failing_functions": [
+        "premises::premise_trust_e1"
+      ],
+      "located": true,
+      "others_verify_as_baseline": true,
+      "counterexample_verified": true,
+      "counterexamples_all_verified": true,
+      "killed": true
+    },
+    "ctl_emb_ignores_autocommit": {
+      "tag": "ctl_emb_ignores_autocommit",
+      "features": "ctl_emb_ignores_autocommit",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features ctl_emb_ignores_autocommit -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_emb_ignores_autocommit.log",
+      "json": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_emb_ignores_autocommit.json",
+      "wall_seconds": 15.91,
+      "error_locations": [
+        "src/premises.rs:442"
+      ],
+      "resource_limit_hit": false,
+      "json_sha256": "54826dd9fdf459521b986cb90beae1cca72cd6560a5215849a7bf3734f59636a",
+      "verified": 432,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 15714,
+      "smt_run_ms": 62063,
+      "rlimit_total": 150603563,
+      "modules": {
+        "ext_exec": {
+          "ms": 9370,
+          "rlimit": 31800189
+        },
+        "headlock": {
+          "ms": 10028,
+          "rlimit": 24052463
+        },
+        "cx": {
+          "ms": 11239,
+          "rlimit": 23562770
+        },
+        "exec": {
+          "ms": 8007,
+          "rlimit": 20648989
+        },
+        "wf": {
+          "ms": 8385,
+          "rlimit": 19657438
+        },
+        "gen": {
+          "ms": 6798,
+          "rlimit": 14360002
+        },
+        "effects": {
+          "ms": 3470,
+          "rlimit": 7693860
+        },
+        "ext_lemmas": {
+          "ms": 3944,
+          "rlimit": 7222523
+        },
+        "premises": {
+          "ms": 757,
+          "rlimit": 1465532
+        },
+        "ext": {
+          "ms": 34,
+          "rlimit": 87612
+        },
+        "spec": {
+          "ms": 24,
+          "rlimit": 51069
+        },
+        "clauses": {
+          "ms": 1,
+          "rlimit": 1116
+        }
+      },
+      "top_functions": [
+        {
+          "function": "wf::lemma_await_wf",
+          "ms": 6540,
+          "rlimit": 15880779,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_ext_step",
+          "ms": 3014,
+          "rlimit": 11079725,
+          "success": true
+        },
+        {
+          "function": "headlock::lemma_txn_locks",
+          "ms": 5066,
+          "rlimit": 10029726,
+          "success": true
+        },
+        {
+          "function": "cx::cx_select_committed_only",
+          "ms": 3566,
+          "rlimit": 7445691,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_emb_assert",
+          "ms": 1582,
+          "rlimit": 4512580,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_insert_select",
+          "ms": 1340,
+          "rlimit": 3760618,
+          "success": true
+        },
+        {
+          "function": "gen::gen_erasure_rollback_keeps_insert",
+          "ms": 1622,
+          "rlimit": 3703147,
+          "success": true
+        },
+        {
+          "function": "exec::e_txn_sqlproc",
+          "ms": 1095,
+          "rlimit": 3064949,
+          "success": true
+        },
+        {
+          "function": "cx::cx_no_dirty_reads",
+          "ms": 1823,
+          "rlimit": 2746159,
+          "success": true
+        },
+        {
+          "function": "ext_lemmas::lemma_insert_select_xok",
+          "ms": 1408,
+          "rlimit": 2385368,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "premises::premise_trust_e1"
+      ],
+      "functions_checked": 412,
+      "clause": "E-1",
+      "mutant": "emb-ignores-driver-autocommit",
+      "counterexample": "cx::cx_emb_ignores_autocommit",
+      "expected_locations": [
+        "src/premises.rs:442"
+      ],
+      "expected_failing_functions": [
+        "premises::premise_trust_e1"
+      ],
+      "located": true,
+      "others_verify_as_baseline": true,
+      "counterexample_verified": true,
+      "counterexamples_all_verified": true,
+      "killed": true
+    },
+    "ctl_emb_select_committed_only": {
+      "tag": "ctl_emb_select_committed_only",
+      "features": "ctl_emb_select_committed_only",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features ctl_emb_select_committed_only -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_emb_select_committed_only.log",
+      "json": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_emb_select_committed_only.json",
+      "wall_seconds": 15.96,
+      "error_locations": [
+        "src/premises.rs:442"
+      ],
+      "resource_limit_hit": false,
+      "json_sha256": "e45bcf1ce6f9a26a36f0b240daaf6b1cd64f60122a09c9b32b71ac0846745226",
+      "verified": 432,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 15772,
+      "smt_run_ms": 59873,
+      "rlimit_total": 150616580,
+      "modules": {
+        "ext_exec": {
+          "ms": 9139,
+          "rlimit": 31800189
+        },
+        "headlock": {
+          "ms": 9543,
+          "rlimit": 24052463
+        },
+        "cx": {
+          "ms": 11319,
+          "rlimit": 23562770
+        },
+        "exec": {
+          "ms": 7878,
+          "rlimit": 20648989
+        },
+        "wf": {
+          "ms": 7565,
+          "rlimit": 19657438
+        },
+        "gen": {
+          "ms": 6751,
+          "rlimit": 14360002
+        },
+        "effects": {
+          "ms": 2838,
+          "rlimit": 7693860
+        },
+        "ext_lemmas": {
+          "ms": 3999,
+          "rlimit": 7222523
+        },
+        "premises": {
+          "ms": 776,
+          "rlimit": 1478549
+        },
+        "ext": {
+          "ms": 34,
+          "rlimit": 87612
+        },
+        "spec": {
+          "ms": 24,
+          "rlimit": 51069
+        },
+        "clauses": {
+          "ms": 1,
+          "rlimit": 1116
+        }
+      },
+      "top_functions": [
+        {
+          "function": "wf::lemma_await_wf",
+          "ms": 6184,
+          "rlimit": 15880779,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_ext_step",
+          "ms": 3095,
+          "rlimit": 11079725,
+          "success": true
+        },
+        {
+          "function": "headlock::lemma_txn_locks",
+          "ms": 4469,
+          "rlimit": 10029726,
+          "success": true
+        },
+        {
+          "function": "cx::cx_select_committed_only",
+          "ms": 3367,
+          "rlimit": 7445691,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_emb_assert",
+          "ms": 1531,
+          "rlimit": 4512580,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_insert_select",
+          "ms": 1190,
+          "rlimit": 3760618,
+          "success": true
+        },
+        {
+          "function": "gen::gen_erasure_rollback_keeps_insert",
+          "ms": 1449,
+          "rlimit": 3703147,
+          "success": true
+        },
+        {
+          "function": "exec::e_txn_sqlproc",
+          "ms": 1085,
+          "rlimit": 3064949,
+          "success": true
+        },
+        {
+          "function": "cx::cx_no_dirty_reads",
+          "ms": 1856,
+          "rlimit": 2746159,
+          "success": true
+        },
+        {
+          "function": "ext_lemmas::lemma_insert_select_xok",
+          "ms": 1471,
+          "rlimit": 2385368,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "premises::premise_trust_e1"
+      ],
+      "functions_checked": 412,
+      "clause": "E-1",
+      "mutant": "emb-select-committed-only",
+      "counterexample": "cx::cx_emb_select_committed_only",
+      "expected_locations": [
+        "src/premises.rs:442"
+      ],
+      "expected_failing_functions": [
+        "premises::premise_trust_e1"
+      ],
+      "located": true,
+      "others_verify_as_baseline": true,
+      "counterexample_verified": true,
+      "counterexamples_all_verified": true,
+      "killed": true
+    },
+    "ctl_emb_ignores_row_locks": {
+      "tag": "ctl_emb_ignores_row_locks",
+      "features": "ctl_emb_ignores_row_locks",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features ctl_emb_ignores_row_locks -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_emb_ignores_row_locks.log",
+      "json": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_emb_ignores_row_locks.json",
+      "wall_seconds": 15.86,
+      "error_locations": [
+        "src/premises.rs:442"
+      ],
+      "resource_limit_hit": false,
+      "json_sha256": "663c360252e5a8b7fed01694431bafff2f6e5b28e79e2233bc2e452a952fbac6",
+      "verified": 432,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 15669,
+      "smt_run_ms": 60663,
+      "rlimit_total": 150592637,
+      "modules": {
+        "ext_exec": {
+          "ms": 8785,
+          "rlimit": 31800189
+        },
+        "headlock": {
+          "ms": 10784,
+          "rlimit": 24052463
+        },
+        "cx": {
+          "ms": 11259,
+          "rlimit": 23562770
+        },
+        "exec": {
+          "ms": 6910,
+          "rlimit": 20648989
+        },
+        "wf": {
+          "ms": 8284,
+          "rlimit": 19657438
+        },
+        "gen": {
+          "ms": 6957,
+          "rlimit": 14360002
+        },
+        "effects": {
+          "ms": 2869,
+          "rlimit": 7693860
+        },
+        "ext_lemmas": {
+          "ms": 3987,
+          "rlimit": 7222523
+        },
+        "premises": {
+          "ms": 772,
+          "rlimit": 1454606
+        },
+        "ext": {
+          "ms": 25,
+          "rlimit": 87612
+        },
+        "spec": {
+          "ms": 25,
+          "rlimit": 51069
+        },
+        "clauses": {
+          "ms": 1,
+          "rlimit": 1116
+        }
+      },
+      "top_functions": [
+        {
+          "function": "wf::lemma_await_wf",
+          "ms": 6559,
+          "rlimit": 15880779,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_ext_step",
+          "ms": 3006,
+          "rlimit": 11079725,
+          "success": true
+        },
+        {
+          "function": "headlock::lemma_txn_locks",
+          "ms": 5371,
+          "rlimit": 10029726,
+          "success": true
+        },
+        {
+          "function": "cx::cx_select_committed_only",
+          "ms": 3248,
+          "rlimit": 7445691,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_emb_assert",
+          "ms": 1655,
+          "rlimit": 4512580,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_insert_select",
+          "ms": 998,
+          "rlimit": 3760618,
+          "success": true
+        },
+        {
+          "function": "gen::gen_erasure_rollback_keeps_insert",
+          "ms": 1638,
+          "rlimit": 3703147,
+          "success": true
+        },
+        {
+          "function": "exec::e_txn_sqlproc",
+          "ms": 709,
+          "rlimit": 3064949,
+          "success": true
+        },
+        {
+          "function": "cx::cx_no_dirty_reads",
+          "ms": 1847,
+          "rlimit": 2746159,
+          "success": true
+        },
+        {
+          "function": "ext_lemmas::lemma_insert_select_xok",
+          "ms": 1455,
+          "rlimit": 2385368,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "premises::premise_trust_e1"
+      ],
+      "functions_checked": 412,
+      "clause": "E-1",
+      "mutant": "emb-ignores-row-locks",
+      "counterexample": "cx::cx_emb_ignores_row_locks",
+      "expected_locations": [
+        "src/premises.rs:442"
+      ],
+      "expected_failing_functions": [
+        "premises::premise_trust_e1"
+      ],
+      "located": true,
+      "others_verify_as_baseline": true,
+      "counterexample_verified": true,
+      "counterexamples_all_verified": true,
+      "killed": true
+    },
+    "ctl_statement_not_atomic": {
+      "tag": "ctl_statement_not_atomic",
+      "features": "ctl_statement_not_atomic",
+      "rc": 101,
+      "timed_out": false,
+      "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features ctl_statement_not_atomic -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+      "log": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_statement_not_atomic.log",
+      "json": "$RUN_DIR/proofs-env2/run-20261114T235905Z/ctl_statement_not_atomic.json",
+      "wall_seconds": 15.83,
+      "error_locations": [
+        "src/premises.rs:453"
+      ],
+      "resource_limit_hit": false,
+      "json_sha256": "40e599d8e4a6591c5cff9415c7333f830f53b116bfd911f414a08a8f508faac7",
+      "verified": 432,
+      "errors": 1,
+      "success": false,
+      "verus_total_ms": 15636,
+      "smt_run_ms": 60181,
+      "rlimit_total": 150535835,
+      "modules": {
+        "ext_exec": {
+          "ms": 8645,
+          "rlimit": 31800189
+        },
+        "headlock": {
+          "ms": 9653,
+          "rlimit": 24052463
+        },
+        "cx": {
+          "ms": 11179,
+          "rlimit": 23562770
+        },
+        "exec": {
+          "ms": 7055,
+          "rlimit": 20648989
+        },
+        "wf": {
+          "ms": 9144,
+          "rlimit": 19657438
+        },
+        "gen": {
+          "ms": 7111,
+          "rlimit": 14360002
+        },
+        "effects": {
+          "ms": 3115,
+          "rlimit": 7693860
+        },
+        "ext_lemmas": {
+          "ms": 3498,
+          "rlimit": 7222523
+        },
+        "premises": {
+          "ms": 724,
+          "rlimit": 1397804
+        },
+        "ext": {
+          "ms": 26,
+          "rlimit": 87612
+        },
+        "spec": {
+          "ms": 26,
+          "rlimit": 51069
+        },
+        "clauses": {
+          "ms": 1,
+          "rlimit": 1116
+        }
+      },
+      "top_functions": [
+        {
+          "function": "wf::lemma_await_wf",
+          "ms": 7347,
+          "rlimit": 15880779,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_ext_step",
+          "ms": 2876,
+          "rlimit": 11079725,
+          "success": true
+        },
+        {
+          "function": "headlock::lemma_txn_locks",
+          "ms": 4592,
+          "rlimit": 10029726,
+          "success": true
+        },
+        {
+          "function": "cx::cx_select_committed_only",
+          "ms": 3868,
+          "rlimit": 7445691,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_emb_assert",
+          "ms": 1537,
+          "rlimit": 4512580,
+          "success": true
+        },
+        {
+          "function": "ext_exec::e_insert_select",
+          "ms": 1226,
+          "rlimit": 3760618,
+          "success": true
+        },
+        {
+          "function": "gen::gen_erasure_rollback_keeps_insert",
+          "ms": 1475,
+          "rlimit": 3703147,
+          "success": true
+        },
+        {
+          "function": "exec::e_txn_sqlproc",
+          "ms": 766,
+          "rlimit": 3064949,
+          "success": true
+        },
+        {
+          "function": "cx::cx_no_dirty_reads",
+          "ms": 1152,
+          "rlimit": 2746159,
+          "success": true
+        },
+        {
+          "function": "ext_lemmas::lemma_insert_select_xok",
+          "ms": 1281,
+          "rlimit": 2385368,
+          "success": true
+        }
+      ],
+      "failing_functions": [
+        "premises::premise_d1e_p_m2_stmt_atomic"
+      ],
+      "functions_checked": 412,
+      "clause": "X-STMT",
+      "mutant": "statement-not-atomic",
+      "counterexample": "cx::cx_statement_not_atomic",
+      "expected_locations": [
+        "src/premises.rs:453"
+      ],
+      "expected_failing_functions": [
+        "premises::premise_d1e_p_m2_stmt_atomic"
+      ],
+      "located": true,
+      "others_verify_as_baseline": true,
+      "counterexample_verified": true,
+      "counterexamples_all_verified": true,
+      "killed": true
+    }
+  },
+  "differential": {
+    "builds": [
+      {
+        "tag": "iris-contract-r6",
+        "rc": 0,
+        "log": "$RUN_DIR/proofs-env2/run-20261114T235905Z/differential/build-iris-contract-r6.log",
+        "command": "CARGO_TARGET_DIR=/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/target/proofs-env2-contract-r6 cargo build --release --offline --manifest-path /home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/iris-vector-graph-audit/experiment/playbook-completion/iris-contract/Cargo.toml"
+      },
+      {
+        "tag": "contract-2",
+        "rc": 0,
+        "log": "$RUN_DIR/proofs-env2/run-20261114T235905Z/differential/build-contract-2.log",
+        "command": "CARGO_TARGET_DIR=/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/target/proofs-env2-contract-2 cargo build --release --offline --manifest-path /home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/iris-vector-graph-audit/experiment/playbook-completion/contract-2/contract/Cargo.toml"
+      },
+      {
+        "tag": "harness",
+        "rc": 0,
+        "log": "$RUN_DIR/proofs-env2/run-20261114T235905Z/differential/build-harness.log",
+        "command": "CARGO_TARGET_DIR=/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-playbook-uplift-20261113/completion-audit/target/proofs-env2-harness cargo build --release --offline --manifest-path /home/ziniu_wu_g5labs_ai/experiments/iris-vector-graph-playbook-uplift-20261113/iris-vector-graph-audit/experiment/playbook-completion/proofs-env2/harness/Cargo.toml"
+      }
+    ],
+    "rounds": {
+      "r6": {
+        "cases": 516,
+        "observed": "$RUN_DIR/env/r6/observed.json",
+        "contract_binary": "r6",
+        "permitted_rc": 0,
+        "permitted": "$RUN_DIR/proofs-env2/run-20261114T235905Z/differential/r6-permitted.json",
+        "permitted_sha256": "d403326426ecba38f2c9a2c46b3abc9326454210cbc6b775c0489b6bf4d1ce9b",
+        "report": "$RUN_DIR/proofs-env2/run-20261114T235905Z/differential/r6-report.json",
+        "harness_rc": 0,
+        "summary": "HARNESS r6: cases 516 in-subset 420 outside-subset 96 agree 420 disagree 0 observed-runs 420 outside-verus 0 singleton 419 max-permitted 2 freedom-cases 1 overflow 0 errors 0 mutants 50 killed 36 alive [\"batch-atomic\", \"batch-raises-on-dup\", \"batch-single-row-skips\", \"emb-empty-host-var-empty\", \"emb-ignores-driver-autocommit\", \"emb-ignores-row-locks\", \"emb-own-txn\", \"emb-select-committed-only\", \"freedom-waits-only (sharpening; expected alive)\", \"iou-ignores-row-locks\", \"iou-retries-insert\", \"maxlen-not-enforced\", \"sqlproc-levels-end-with-statement\", \"stop-rolls-back-top-level-only\"]",
+        "in_subset": 420,
+        "outside_subset": {
+          "insert %NOINDEX/%NOCHECK (X-NOINDEX) outside the Verus subset": 7,
+          "operation add_column outside the Verus subset": 3,
+          "operation build_index outside the Verus subset": 4,
+          "operation create_table outside the Verus subset": 20,
+          "operation drop_table outside the Verus subset": 7,
+          "operation find outside the Verus subset": 8,
+          "operation select_star outside the Verus subset": 1,
+          "operation table_exists outside the Verus subset": 3,
+          "operation vec_set outside the Verus subset": 2,
+          "table D1 outside the Verus subset": 6,
+          "table D2 outside the Verus subset": 4,
+          "table F (X-FX functional index) outside the Verus subset": 31
+        },
+        "disagree": 0,
+        "observed_runs": 420,
+        "observed_outside_verus": 0,
+        "singleton_cases": 419,
+        "max_permitted": 2,
+        "freedom_cases": 1,
+        "overflow_cases": 0,
+        "errors": [],
+        "outside_families": {
+          "X-DDL": {
+            "cases": 43,
+            "examples": [
+              "ddl-create-in-txn",
+              "ddl-create-commit",
+              "ddl-drop-in-txn"
+            ]
+          },
+          "X-FX": {
+            "cases": 29,
+            "examples": [
+              "fx-autocommit-visible",
+              "fx-dirty-then-rollback",
+              "fx-rollback-one"
+            ]
+          },
+          "X-NOINDEX": {
+            "cases": 21,
+            "examples": [
+              "noindex-insert-then-build",
+              "noindex-in-txn-rollback",
+              "noindex-term"
+            ]
+          },
+          "X-STAR": {
+            "cases": 1,
+            "examples": [
+              "select-star-order"
+            ]
+          },
+          "X-VEC ($VECTOR set/get)": {
+            "cases": 2,
+            "examples": [
+              "vec-global",
+              "vec-native-get"
+            ]
+          }
+        },
+        "mutants_killed": [
+          "autocommit-on-keeps-txn",
+          "coalesce-c0-differs",
+          "dbapi-empty-param-null",
+          "dml-ignores-row-locks",
+          "driver-commit-ends-all",
+          "driver-rollback-one-level",
+          "empty-dml-opens-txn",
+          "failed-dml-opens-nothing",
+          "flat-lock-names",
+          "freedom-proceeds-only",
+          "incr-rolled-back",
+          "insert-dup-waits (PostgreSQL reading)",
+          "kill-not-logged",
+          "lock-wait-never-granted",
+          "no-dirty-reads",
+          "non-incremental-locks",
+          "objectscript-empty-param-empty",
+          "objectscript-reads-empty-as-empty",
+          "ppg-rolled-back",
+          "rollback-one-undoes-all",
+          "rollback-physical",
+          "row-lock-statement-only",
+          "select-opens-txn",
+          "shared-conflicts-shared",
+          "sql-commit-ends-all (product premise, 2026.3)",
+          "sql-rollback-ends-all (product premise, 2026.3)",
+          "sql-select-committed-only",
+          "sql-start-always",
+          "sql-start-unless-sql-owns",
+          "statement-not-atomic",
+          "stop-commits",
+          "string-collation",
+          "unlock-immediate-in-txn",
+          "vector-l2-available (product premise P-1710)",
+          "zstrip-c-ascii-only",
+          "zstrip-w-space-only"
+        ],
+        "mutant_kinds": {
+          "autocommit-on-keeps-txn": "contract",
+          "batch-atomic": "contract-2",
+          "batch-raises-on-dup": "contract-2",
+          "batch-single-row-skips": "contract-2",
+          "coalesce-c0-differs": "contract",
+          "dbapi-empty-param-null": "contract",
+          "dml-ignores-row-locks": "contract",
+          "driver-commit-ends-all": "contract",
+          "driver-rollback-one-level": "contract",
+          "emb-empty-host-var-empty": "contract-2",
+          "emb-ignores-driver-autocommit": "contract-2",
+          "emb-ignores-row-locks": "contract-2",
+          "emb-own-txn": "contract-2",
+          "emb-select-committed-only": "contract-2",
+          "empty-dml-opens-txn": "contract",
+          "failed-dml-opens-nothing": "contract",
+          "flat-lock-names": "contract",
+          "freedom-proceeds-only": "seeded",
+          "freedom-waits-only (sharpening; expected alive)": "probe",
+          "incr-rolled-back": "contract",
+          "insert-dup-waits (PostgreSQL reading)": "seeded",
+          "iou-ignores-row-locks": "contract-2",
+          "iou-retries-insert": "contract-2",
+          "kill-not-logged": "seeded",
+          "lock-wait-never-granted": "seeded",
+          "maxlen-not-enforced": "contract-2",
+          "no-dirty-reads": "contract",
+          "non-incremental-locks": "contract",
+          "objectscript-empty-param-empty": "contract",
+          "objectscript-reads-empty-as-empty": "contract",
+          "ppg-rolled-back": "contract",
+          "rollback-one-undoes-all": "contract",
+          "rollback-physical": "contract",
+          "row-lock-statement-only": "seeded",
+          "select-opens-txn": "contract",
+          "shared-conflicts-shared": "contract",
+          "sql-commit-ends-all (product premise, 2026.3)": "contract",
+          "sql-rollback-ends-all (product premise, 2026.3)": "contract",
+          "sql-select-committed-only": "contract-2",
+          "sql-start-always": "contract",
+          "sql-start-unless-sql-owns": "contract",
+          "sqlproc-levels-end-with-statement": "contract-2",
+          "statement-not-atomic": "contract",
+          "stop-commits": "contract",
+          "stop-rolls-back-top-level-only": "seeded",
+          "string-collation": "contract",
+          "unlock-immediate-in-txn": "contract",
+          "vector-l2-available (product premise P-1710)": "contract",
+          "zstrip-c-ascii-only": "contract",
+          "zstrip-w-space-only": "contract"
+        }
+      },
+      "r2": {
+        "cases": 283,
+        "observed": "$RUN_DIR/env/r2/observed.json",
+        "contract_binary": "r6",
+        "permitted_rc": 0,
+        "permitted": "$RUN_DIR/proofs-env2/run-20261114T235905Z/differential/r2-permitted.json",
+        "permitted_sha256": "e10263b788bf1ca5a08e2e900ba55d80d58dc57caf3a245af36b748c082f60a8",
+        "report": "$RUN_DIR/proofs-env2/run-20261114T235905Z/differential/r2-report.json",
+        "harness_rc": 0,
+        "summary": "HARNESS r2: cases 283 in-subset 283 outside-subset 0 agree 283 disagree 0 observed-runs 283 outside-verus 0 singleton 282 max-permitted 2 freedom-cases 1 overflow 0 errors 0 mutants 50 killed 23 alive [\"autocommit-on-keeps-txn\", \"batch-atomic\", \"batch-raises-on-dup\", \"batch-single-row-skips\", \"coalesce-c0-differs\", \"dbapi-empty-param-null\", \"emb-empty-host-var-empty\", \"emb-ignores-driver-autocommit\", \"emb-ignores-row-locks\", \"emb-own-txn\", \"emb-select-committed-only\", \"empty-dml-opens-txn\", \"failed-dml-opens-nothing\", \"freedom-waits-only (sharpening; expected alive)\", \"iou-ignores-row-locks\", \"iou-retries-insert\", \"maxlen-not-enforced\", \"objectscript-empty-param-empty\", \"objectscript-reads-empty-as-empty\", \"select-opens-txn\", \"sqlproc-levels-end-with-statement\", \"statement-not-atomic\", \"stop-rolls-back-top-level-only\", \"string-collation\", \"vector-l2-available (product premise P-1710)\", \"zstrip-c-ascii-only\", \"zstrip-w-space-only\"]",
+        "in_subset": 283,
+        "outside_subset": {},
+        "disagree": 0,
+        "observed_runs": 283,
+        "observed_outside_verus": 0,
+        "singleton_cases": 282,
+        "max_permitted": 2,
+        "freedom_cases": 1,
+        "overflow_cases": 0,
+        "errors": [],
+        "outside_families": {},
+        "mutants_killed": [
+          "dml-ignores-row-locks",
+          "driver-commit-ends-all",
+          "driver-rollback-one-level",
+          "flat-lock-names",
+          "freedom-proceeds-only",
+          "incr-rolled-back",
+          "insert-dup-waits (PostgreSQL reading)",
+          "kill-not-logged",
+          "lock-wait-never-granted",
+          "no-dirty-reads",
+          "non-incremental-locks",
+          "ppg-rolled-back",
+          "rollback-one-undoes-all",
+          "rollback-physical",
+          "row-lock-statement-only",
+          "shared-conflicts-shared",
+          "sql-commit-ends-all (product premise, 2026.3)",
+          "sql-rollback-ends-all (product premise, 2026.3)",
+          "sql-select-committed-only",
+          "sql-start-always",
+          "sql-start-unless-sql-owns",
+          "stop-commits",
+          "unlock-immediate-in-txn"
+        ],
+        "mutant_kinds": {
+          "autocommit-on-keeps-txn": "contract",
+          "batch-atomic": "contract-2",
+          "batch-raises-on-dup": "contract-2",
+          "batch-single-row-skips": "contract-2",
+          "coalesce-c0-differs": "contract",
+          "dbapi-empty-param-null": "contract",
+          "dml-ignores-row-locks": "contract",
+          "driver-commit-ends-all": "contract",
+          "driver-rollback-one-level": "contract",
+          "emb-empty-host-var-empty": "contract-2",
+          "emb-ignores-driver-autocommit": "contract-2",
+          "emb-ignores-row-locks": "contract-2",
+          "emb-own-txn": "contract-2",
+          "emb-select-committed-only": "contract-2",
+          "empty-dml-opens-txn": "contract",
+          "failed-dml-opens-nothing": "contract",
+          "flat-lock-names": "contract",
+          "freedom-proceeds-only": "seeded",
+          "freedom-waits-only (sharpening; expected alive)": "probe",
+          "incr-rolled-back": "contract",
+          "insert-dup-waits (PostgreSQL reading)": "seeded",
+          "iou-ignores-row-locks": "contract-2",
+          "iou-retries-insert": "contract-2",
+          "kill-not-logged": "seeded",
+          "lock-wait-never-granted": "seeded",
+          "maxlen-not-enforced": "contract-2",
+          "no-dirty-reads": "contract",
+          "non-incremental-locks": "contract",
+          "objectscript-empty-param-empty": "contract",
+          "objectscript-reads-empty-as-empty": "contract",
+          "ppg-rolled-back": "contract",
+          "rollback-one-undoes-all": "contract",
+          "rollback-physical": "contract",
+          "row-lock-statement-only": "seeded",
+          "select-opens-txn": "contract",
+          "shared-conflicts-shared": "contract",
+          "sql-commit-ends-all (product premise, 2026.3)": "contract",
+          "sql-rollback-ends-all (product premise, 2026.3)": "contract",
+          "sql-select-committed-only": "contract-2",
+          "sql-start-always": "contract",
+          "sql-start-unless-sql-owns": "contract",
+          "sqlproc-levels-end-with-statement": "contract-2",
+          "statement-not-atomic": "contract",
+          "stop-commits": "contract",
+          "stop-rolls-back-top-level-only": "seeded",
+          "string-collation": "contract",
+          "unlock-immediate-in-txn": "contract",
+          "vector-l2-available (product premise P-1710)": "contract",
+          "zstrip-c-ascii-only": "contract",
+          "zstrip-w-space-only": "contract"
+        }
+      },
+      "r4": {
+        "cases": 514,
+        "observed": "$RUN_DIR/env/r4/observed.json",
+        "contract_binary": "r6",
+        "permitted_rc": 0,
+        "permitted": "$RUN_DIR/proofs-env2/run-20261114T235905Z/differential/r4-permitted.json",
+        "permitted_sha256": "2817089d8c0424ce6d62083325f3edd22b4e9fb7fcab165016f6f8125150d0f9",
+        "report": "$RUN_DIR/proofs-env2/run-20261114T235905Z/differential/r4-report.json",
+        "harness_rc": 0,
+        "summary": "HARNESS r4: cases 514 in-subset 419 outside-subset 95 agree 419 disagree 0 observed-runs 419 outside-verus 0 singleton 418 max-permitted 2 freedom-cases 1 overflow 0 errors 0 mutants 50 killed 36 alive [\"batch-atomic\", \"batch-raises-on-dup\", \"batch-single-row-skips\", \"emb-empty-host-var-empty\", \"emb-ignores-driver-autocommit\", \"emb-ignores-row-locks\", \"emb-own-txn\", \"emb-select-committed-only\", \"freedom-waits-only (sharpening; expected alive)\", \"iou-ignores-row-locks\", \"iou-retries-insert\", \"maxlen-not-enforced\", \"sqlproc-levels-end-with-statement\", \"stop-rolls-back-top-level-only\"]",
+        "in_subset": 419,
+        "outside_subset": {
+          "insert %NOINDEX/%NOCHECK (X-NOINDEX) outside the Verus subset": 7,
+          "operation add_column outside the Verus subset": 3,
+          "operation build_index outside the Verus subset": 1,
+          "operation create_table outside the Verus subset": 19,
+          "operation drop_table outside the Verus subset": 4,
+          "operation find outside the Verus subset": 4,
+          "operation select_star outside the Verus subset": 1,
+          "operation table_exists outside the Verus subset": 10,
+          "operation vec_set outside the Verus subset": 2,
+          "table D1 outside the Verus subset": 1,
+          "table D2 outside the Verus subset": 6,
+          "table F (X-FX functional index) outside the Verus subset": 37
+        },
+        "disagree": 0,
+        "observed_runs": 419,
+        "observed_outside_verus": 0,
+        "singleton_cases": 418,
+        "max_permitted": 2,
+        "freedom_cases": 1,
+        "overflow_cases": 0,
+        "errors": [],
+        "outside_families": {
+          "X-DDL": {
+            "cases": 43,
+            "examples": [
+              "ddl-create-in-txn",
+              "ddl-create-commit",
+              "ddl-drop-in-txn"
+            ]
+          },
+          "X-FX": {
+            "cases": 30,
+            "examples": [
+              "fx-autocommit-visible",
+              "fx-dirty-then-rollback",
+              "fx-rollback-one"
+            ]
+          },
+          "X-NOINDEX": {
+            "cases": 19,
+            "examples": [
+              "noindex-insert-then-build",
+              "noindex-in-txn-rollback",
+              "noindex-term"
+            ]
+          },
+          "X-STAR": {
+            "cases": 1,
+            "examples": [
+              "select-star-order"
+            ]
+          },
+          "X-VEC ($VECTOR set/get)": {
+            "cases": 2,
+            "examples": [
+              "vec-global",
+              "vec-native-get"
+            ]
+          }
+        },
+        "mutants_killed": [
+          "autocommit-on-keeps-txn",
+          "coalesce-c0-differs",
+          "dbapi-empty-param-null",
+          "dml-ignores-row-locks",
+          "driver-commit-ends-all",
+          "driver-rollback-one-level",
+          "empty-dml-opens-txn",
+          "failed-dml-opens-nothing",
+          "flat-lock-names",
+          "freedom-proceeds-only",
+          "incr-rolled-back",
+          "insert-dup-waits (PostgreSQL reading)",
+          "kill-not-logged",
+          "lock-wait-never-granted",
+          "no-dirty-reads",
+          "non-incremental-locks",
+          "objectscript-empty-param-empty",
+          "objectscript-reads-empty-as-empty",
+          "ppg-rolled-back",
+          "rollback-one-undoes-all",
+          "rollback-physical",
+          "row-lock-statement-only",
+          "select-opens-txn",
+          "shared-conflicts-shared",
+          "sql-commit-ends-all (product premise, 2026.3)",
+          "sql-rollback-ends-all (product premise, 2026.3)",
+          "sql-select-committed-only",
+          "sql-start-always",
+          "sql-start-unless-sql-owns",
+          "statement-not-atomic",
+          "stop-commits",
+          "string-collation",
+          "unlock-immediate-in-txn",
+          "vector-l2-available (product premise P-1710)",
+          "zstrip-c-ascii-only",
+          "zstrip-w-space-only"
+        ],
+        "mutant_kinds": {
+          "autocommit-on-keeps-txn": "contract",
+          "batch-atomic": "contract-2",
+          "batch-raises-on-dup": "contract-2",
+          "batch-single-row-skips": "contract-2",
+          "coalesce-c0-differs": "contract",
+          "dbapi-empty-param-null": "contract",
+          "dml-ignores-row-locks": "contract",
+          "driver-commit-ends-all": "contract",
+          "driver-rollback-one-level": "contract",
+          "emb-empty-host-var-empty": "contract-2",
+          "emb-ignores-driver-autocommit": "contract-2",
+          "emb-ignores-row-locks": "contract-2",
+          "emb-own-txn": "contract-2",
+          "emb-select-committed-only": "contract-2",
+          "empty-dml-opens-txn": "contract",
+          "failed-dml-opens-nothing": "contract",
+          "flat-lock-names": "contract",
+          "freedom-proceeds-only": "seeded",
+          "freedom-waits-only (sharpening; expected alive)": "probe",
+          "incr-rolled-back": "contract",
+          "insert-dup-waits (PostgreSQL reading)": "seeded",
+          "iou-ignores-row-locks": "contract-2",
+          "iou-retries-insert": "contract-2",
+          "kill-not-logged": "seeded",
+          "lock-wait-never-granted": "seeded",
+          "maxlen-not-enforced": "contract-2",
+          "no-dirty-reads": "contract",
+          "non-incremental-locks": "contract",
+          "objectscript-empty-param-empty": "contract",
+          "objectscript-reads-empty-as-empty": "contract",
+          "ppg-rolled-back": "contract",
+          "rollback-one-undoes-all": "contract",
+          "rollback-physical": "contract",
+          "row-lock-statement-only": "seeded",
+          "select-opens-txn": "contract",
+          "shared-conflicts-shared": "contract",
+          "sql-commit-ends-all (product premise, 2026.3)": "contract",
+          "sql-rollback-ends-all (product premise, 2026.3)": "contract",
+          "sql-select-committed-only": "contract-2",
+          "sql-start-always": "contract",
+          "sql-start-unless-sql-owns": "contract",
+          "sqlproc-levels-end-with-statement": "contract-2",
+          "statement-not-atomic": "contract",
+          "stop-commits": "contract",
+          "stop-rolls-back-top-level-only": "seeded",
+          "string-collation": "contract",
+          "unlock-immediate-in-txn": "contract",
+          "vector-l2-available (product premise P-1710)": "contract",
+          "zstrip-c-ascii-only": "contract",
+          "zstrip-w-space-only": "contract"
+        }
+      },
+      "r5": {
+        "cases": 515,
+        "observed": "$RUN_DIR/env/r5/observed.json",
+        "contract_binary": "r6",
+        "permitted_rc": 0,
+        "permitted": "$RUN_DIR/proofs-env2/run-20261114T235905Z/differential/r5-permitted.json",
+        "permitted_sha256": "5d3d95dd0b06e10d9fea241816e3761ee1927367de5bbf6f6e6ce6d2a0c50a8c",
+        "report": "$RUN_DIR/proofs-env2/run-20261114T235905Z/differential/r5-report.json",
+        "harness_rc": 0,
+        "summary": "HARNESS r5: cases 515 in-subset 420 outside-subset 95 agree 420 disagree 0 observed-runs 420 outside-verus 0 singleton 419 max-permitted 2 freedom-cases 1 overflow 0 errors 0 mutants 50 killed 36 alive [\"batch-atomic\", \"batch-raises-on-dup\", \"batch-single-row-skips\", \"emb-empty-host-var-empty\", \"emb-ignores-driver-autocommit\", \"emb-ignores-row-locks\", \"emb-own-txn\", \"emb-select-committed-only\", \"freedom-waits-only (sharpening; expected alive)\", \"iou-ignores-row-locks\", \"iou-retries-insert\", \"maxlen-not-enforced\", \"sqlproc-levels-end-with-statement\", \"stop-rolls-back-top-level-only\"]",
+        "in_subset": 420,
+        "outside_subset": {
+          "insert %NOINDEX/%NOCHECK (X-NOINDEX) outside the Verus subset": 6,
+          "operation add_column outside the Verus subset": 3,
+          "operation build_index outside the Verus subset": 3,
+          "operation create_table outside the Verus subset": 18,
+          "operation drop_table outside the Verus subset": 6,
+          "operation find outside the Verus subset": 12,
+          "operation select_star outside the Verus subset": 1,
+          "operation table_exists outside the Verus subset": 3,
+          "operation vec_set outside the Verus subset": 2,
+          "table D1 outside the Verus subset": 7,
+          "table D2 outside the Verus subset": 6,
+          "table F (X-FX functional index) outside the Verus subset": 28
+        },
+        "disagree": 0,
+        "observed_runs": 420,
+        "observed_outside_verus": 0,
+        "singleton_cases": 419,
+        "max_permitted": 2,
+        "freedom_cases": 1,
+        "overflow_cases": 0,
+        "errors": [],
+        "outside_families": {
+          "X-DDL": {
+            "cases": 43,
+            "examples": [
+              "ddl-create-in-txn",
+              "ddl-create-commit",
+              "ddl-drop-in-txn"
+            ]
+          },
+          "X-FX": {
+            "cases": 27,
+            "examples": [
+              "fx-autocommit-visible",
+              "fx-dirty-then-rollback",
+              "fx-rollback-one"
+            ]
+          },
+          "X-NOINDEX": {
+            "cases": 22,
+            "examples": [
+              "noindex-insert-then-build",
+              "noindex-in-txn-rollback",
+              "noindex-term"
+            ]
+          },
+          "X-STAR": {
+            "cases": 1,
+            "examples": [
+              "select-star-order"
+            ]
+          },
+          "X-VEC ($VECTOR set/get)": {
+            "cases": 2,
+            "examples": [
+              "vec-global",
+              "vec-native-get"
+            ]
+          }
+        },
+        "mutants_killed": [
+          "autocommit-on-keeps-txn",
+          "coalesce-c0-differs",
+          "dbapi-empty-param-null",
+          "dml-ignores-row-locks",
+          "driver-commit-ends-all",
+          "driver-rollback-one-level",
+          "empty-dml-opens-txn",
+          "failed-dml-opens-nothing",
+          "flat-lock-names",
+          "freedom-proceeds-only",
+          "incr-rolled-back",
+          "insert-dup-waits (PostgreSQL reading)",
+          "kill-not-logged",
+          "lock-wait-never-granted",
+          "no-dirty-reads",
+          "non-incremental-locks",
+          "objectscript-empty-param-empty",
+          "objectscript-reads-empty-as-empty",
+          "ppg-rolled-back",
+          "rollback-one-undoes-all",
+          "rollback-physical",
+          "row-lock-statement-only",
+          "select-opens-txn",
+          "shared-conflicts-shared",
+          "sql-commit-ends-all (product premise, 2026.3)",
+          "sql-rollback-ends-all (product premise, 2026.3)",
+          "sql-select-committed-only",
+          "sql-start-always",
+          "sql-start-unless-sql-owns",
+          "statement-not-atomic",
+          "stop-commits",
+          "string-collation",
+          "unlock-immediate-in-txn",
+          "vector-l2-available (product premise P-1710)",
+          "zstrip-c-ascii-only",
+          "zstrip-w-space-only"
+        ],
+        "mutant_kinds": {
+          "autocommit-on-keeps-txn": "contract",
+          "batch-atomic": "contract-2",
+          "batch-raises-on-dup": "contract-2",
+          "batch-single-row-skips": "contract-2",
+          "coalesce-c0-differs": "contract",
+          "dbapi-empty-param-null": "contract",
+          "dml-ignores-row-locks": "contract",
+          "driver-commit-ends-all": "contract",
+          "driver-rollback-one-level": "contract",
+          "emb-empty-host-var-empty": "contract-2",
+          "emb-ignores-driver-autocommit": "contract-2",
+          "emb-ignores-row-locks": "contract-2",
+          "emb-own-txn": "contract-2",
+          "emb-select-committed-only": "contract-2",
+          "empty-dml-opens-txn": "contract",
+          "failed-dml-opens-nothing": "contract",
+          "flat-lock-names": "contract",
+          "freedom-proceeds-only": "seeded",
+          "freedom-waits-only (sharpening; expected alive)": "probe",
+          "incr-rolled-back": "contract",
+          "insert-dup-waits (PostgreSQL reading)": "seeded",
+          "iou-ignores-row-locks": "contract-2",
+          "iou-retries-insert": "contract-2",
+          "kill-not-logged": "seeded",
+          "lock-wait-never-granted": "seeded",
+          "maxlen-not-enforced": "contract-2",
+          "no-dirty-reads": "contract",
+          "non-incremental-locks": "contract",
+          "objectscript-empty-param-empty": "contract",
+          "objectscript-reads-empty-as-empty": "contract",
+          "ppg-rolled-back": "contract",
+          "rollback-one-undoes-all": "contract",
+          "rollback-physical": "contract",
+          "row-lock-statement-only": "seeded",
+          "select-opens-txn": "contract",
+          "shared-conflicts-shared": "contract",
+          "sql-commit-ends-all (product premise, 2026.3)": "contract",
+          "sql-rollback-ends-all (product premise, 2026.3)": "contract",
+          "sql-select-committed-only": "contract-2",
+          "sql-start-always": "contract",
+          "sql-start-unless-sql-owns": "contract",
+          "sqlproc-levels-end-with-statement": "contract-2",
+          "statement-not-atomic": "contract",
+          "stop-commits": "contract",
+          "stop-rolls-back-top-level-only": "seeded",
+          "string-collation": "contract",
+          "unlock-immediate-in-txn": "contract",
+          "vector-l2-available (product premise P-1710)": "contract",
+          "zstrip-c-ascii-only": "contract",
+          "zstrip-w-space-only": "contract"
+        }
+      },
+      "c2-e1-r1": {
+        "cases": 67,
+        "observed": "$RUN_DIR/contract-2/e1-r1/observed.json",
+        "contract_binary": "c2",
+        "permitted_rc": 0,
+        "permitted": "$RUN_DIR/proofs-env2/run-20261114T235905Z/differential/c2-e1-r1-permitted.json",
+        "permitted_sha256": "0440162b3636c4edc60b3e58d221735d9d72065905b35b317e78535b53c887b5",
+        "report": "$RUN_DIR/proofs-env2/run-20261114T235905Z/differential/c2-e1-r1-report.json",
+        "harness_rc": 0,
+        "summary": "HARNESS c2-e1-r1: cases 67 in-subset 67 outside-subset 0 agree 67 disagree 0 observed-runs 67 outside-verus 0 singleton 67 max-permitted 1 freedom-cases 0 overflow 0 errors 0 mutants 50 killed 16 alive [\"batch-atomic\", \"batch-raises-on-dup\", \"batch-single-row-skips\", \"coalesce-c0-differs\", \"dbapi-empty-param-null\", \"driver-commit-ends-all\", \"empty-dml-opens-txn\", \"flat-lock-names\", \"freedom-proceeds-only\", \"freedom-waits-only (sharpening; expected alive)\", \"incr-rolled-back\", \"iou-ignores-row-locks\", \"iou-retries-insert\", \"kill-not-logged\", \"lock-wait-never-granted\", \"no-dirty-reads\", \"non-incremental-locks\", \"objectscript-empty-param-empty\", \"objectscript-reads-empty-as-empty\", \"ppg-rolled-back\", \"rollback-physical\", \"select-opens-txn\", \"shared-conflicts-shared\", \"sql-commit-ends-all (product premise, 2026.3)\", \"sql-start-always\", \"sql-start-unless-sql-owns\", \"sqlproc-levels-end-with-statement\", \"statement-not-atomic\", \"stop-rolls-back-top-level-only\", \"string-collation\", \"unlock-immediate-in-txn\", \"vector-l2-available (product premise P-1710)\", \"zstrip-c-ascii-only\", \"zstrip-w-space-only\"]",
+        "in_subset": 67,
+        "outside_subset": {},
+        "disagree": 0,
+        "observed_runs": 67,
+        "observed_outside_verus": 0,
+        "singleton_cases": 67,
+        "max_permitted": 1,
+        "freedom_cases": 0,
+        "overflow_cases": 0,
+        "errors": [],
+        "outside_families": {},
+        "mutants_killed": [
+          "autocommit-on-keeps-txn",
+          "dml-ignores-row-locks",
+          "driver-rollback-one-level",
+          "emb-empty-host-var-empty",
+          "emb-ignores-driver-autocommit",
+          "emb-ignores-row-locks",
+          "emb-own-txn",
+          "emb-select-committed-only",
+          "failed-dml-opens-nothing",
+          "insert-dup-waits (PostgreSQL reading)",
+          "maxlen-not-enforced",
+          "rollback-one-undoes-all",
+          "row-lock-statement-only",
+          "sql-rollback-ends-all (product premise, 2026.3)",
+          "sql-select-committed-only",
+          "stop-commits"
+        ],
+        "mutant_kinds": {
+          "autocommit-on-keeps-txn": "contract",
+          "batch-atomic": "contract-2",
+          "batch-raises-on-dup": "contract-2",
+          "batch-single-row-skips": "contract-2",
+          "coalesce-c0-differs": "contract",
+          "dbapi-empty-param-null": "contract",
+          "dml-ignores-row-locks": "contract",
+          "driver-commit-ends-all": "contract",
+          "driver-rollback-one-level": "contract",
+          "emb-empty-host-var-empty": "contract-2",
+          "emb-ignores-driver-autocommit": "contract-2",
+          "emb-ignores-row-locks": "contract-2",
+          "emb-own-txn": "contract-2",
+          "emb-select-committed-only": "contract-2",
+          "empty-dml-opens-txn": "contract",
+          "failed-dml-opens-nothing": "contract",
+          "flat-lock-names": "contract",
+          "freedom-proceeds-only": "seeded",
+          "freedom-waits-only (sharpening; expected alive)": "probe",
+          "incr-rolled-back": "contract",
+          "insert-dup-waits (PostgreSQL reading)": "seeded",
+          "iou-ignores-row-locks": "contract-2",
+          "iou-retries-insert": "contract-2",
+          "kill-not-logged": "seeded",
+          "lock-wait-never-granted": "seeded",
+          "maxlen-not-enforced": "contract-2",
+          "no-dirty-reads": "contract",
+          "non-incremental-locks": "contract",
+          "objectscript-empty-param-empty": "contract",
+          "objectscript-reads-empty-as-empty": "contract",
+          "ppg-rolled-back": "contract",
+          "rollback-one-undoes-all": "contract",
+          "rollback-physical": "contract",
+          "row-lock-statement-only": "seeded",
+          "select-opens-txn": "contract",
+          "shared-conflicts-shared": "contract",
+          "sql-commit-ends-all (product premise, 2026.3)": "contract",
+          "sql-rollback-ends-all (product premise, 2026.3)": "contract",
+          "sql-select-committed-only": "contract-2",
+          "sql-start-always": "contract",
+          "sql-start-unless-sql-owns": "contract",
+          "sqlproc-levels-end-with-statement": "contract-2",
+          "statement-not-atomic": "contract",
+          "stop-commits": "contract",
+          "stop-rolls-back-top-level-only": "seeded",
+          "string-collation": "contract",
+          "unlock-immediate-in-txn": "contract",
+          "vector-l2-available (product premise P-1710)": "contract",
+          "zstrip-c-ascii-only": "contract",
+          "zstrip-w-space-only": "contract"
+        }
+      },
+      "c2-e1-r2": {
+        "cases": 54,
+        "observed": "$RUN_DIR/contract-2/e1-r2/observed.json",
+        "contract_binary": "c2",
+        "permitted_rc": 0,
+        "permitted": "$RUN_DIR/proofs-env2/run-20261114T235905Z/differential/c2-e1-r2-permitted.json",
+        "permitted_sha256": "28e4ebdfa8b7e9087f6baf05934251d4177b660b32139a85218050867a017aa6",
+        "report": "$RUN_DIR/proofs-env2/run-20261114T235905Z/differential/c2-e1-r2-report.json",
+        "harness_rc": 0,
+        "summary": "HARNESS c2-e1-r2: cases 54 in-subset 54 outside-subset 0 agree 54 disagree 0 observed-runs 54 outside-verus 0 singleton 54 max-permitted 1 freedom-cases 0 overflow 0 errors 0 mutants 50 killed 11 alive [\"autocommit-on-keeps-txn\", \"batch-atomic\", \"batch-raises-on-dup\", \"batch-single-row-skips\", \"coalesce-c0-differs\", \"dbapi-empty-param-null\", \"emb-empty-host-var-empty\", \"emb-ignores-row-locks\", \"emb-select-committed-only\", \"empty-dml-opens-txn\", \"failed-dml-opens-nothing\", \"flat-lock-names\", \"freedom-proceeds-only\", \"freedom-waits-only (sharpening; expected alive)\", \"incr-rolled-back\", \"insert-dup-waits (PostgreSQL reading)\", \"iou-ignores-row-locks\", \"iou-retries-insert\", \"kill-not-logged\", \"lock-wait-never-granted\", \"maxlen-not-enforced\", \"no-dirty-reads\", \"non-incremental-locks\", \"objectscript-empty-param-empty\", \"objectscript-reads-empty-as-empty\", \"ppg-rolled-back\", \"rollback-physical\", \"shared-conflicts-shared\", \"sql-commit-ends-all (product premise, 2026.3)\", \"sql-rollback-ends-all (product premise, 2026.3)\", \"sql-start-always\", \"sql-start-unless-sql-owns\", \"statement-not-atomic\", \"stop-rolls-back-top-level-only\", \"string-collation\", \"unlock-immediate-in-txn\", \"vector-l2-available (product premise P-1710)\", \"zstrip-c-ascii-only\", \"zstrip-w-space-only\"]",
+        "in_subset": 54,
+        "outside_subset": {},
+        "disagree": 0,
+        "observed_runs": 54,
+        "observed_outside_verus": 0,
+        "singleton_cases": 54,
+        "max_permitted": 1,
+        "freedom_cases": 0,
+        "overflow_cases": 0,
+        "errors": [],
+        "outside_families": {},
+        "mutants_killed": [
+          "dml-ignores-row-locks",
+          "driver-commit-ends-all",
+          "driver-rollback-one-level",
+          "emb-ignores-driver-autocommit",
+          "emb-own-txn",
+          "rollback-one-undoes-all",
+          "row-lock-statement-only",
+          "select-opens-txn",
+          "sql-select-committed-only",
+          "sqlproc-levels-end-with-statement",
+          "stop-commits"
+        ],
+        "mutant_kinds": {
+          "autocommit-on-keeps-txn": "contract",
+          "batch-atomic": "contract-2",
+          "batch-raises-on-dup": "contract-2",
+          "batch-single-row-skips": "contract-2",
+          "coalesce-c0-differs": "contract",
+          "dbapi-empty-param-null": "contract",
+          "dml-ignores-row-locks": "contract",
+          "driver-commit-ends-all": "contract",
+          "driver-rollback-one-level": "contract",
+          "emb-empty-host-var-empty": "contract-2",
+          "emb-ignores-driver-autocommit": "contract-2",
+          "emb-ignores-row-locks": "contract-2",
+          "emb-own-txn": "contract-2",
+          "emb-select-committed-only": "contract-2",
+          "empty-dml-opens-txn": "contract",
+          "failed-dml-opens-nothing": "contract",
+          "flat-lock-names": "contract",
+          "freedom-proceeds-only": "seeded",
+          "freedom-waits-only (sharpening; expected alive)": "probe",
+          "incr-rolled-back": "contract",
+          "insert-dup-waits (PostgreSQL reading)": "seeded",
+          "iou-ignores-row-locks": "contract-2",
+          "iou-retries-insert": "contract-2",
+          "kill-not-logged": "seeded",
+          "lock-wait-never-granted": "seeded",
+          "maxlen-not-enforced": "contract-2",
+          "no-dirty-reads": "contract",
+          "non-incremental-locks": "contract",
+          "objectscript-empty-param-empty": "contract",
+          "objectscript-reads-empty-as-empty": "contract",
+          "ppg-rolled-back": "contract",
+          "rollback-one-undoes-all": "contract",
+          "rollback-physical": "contract",
+          "row-lock-statement-only": "seeded",
+          "select-opens-txn": "contract",
+          "shared-conflicts-shared": "contract",
+          "sql-commit-ends-all (product premise, 2026.3)": "contract",
+          "sql-rollback-ends-all (product premise, 2026.3)": "contract",
+          "sql-select-committed-only": "contract-2",
+          "sql-start-always": "contract",
+          "sql-start-unless-sql-owns": "contract",
+          "sqlproc-levels-end-with-statement": "contract-2",
+          "statement-not-atomic": "contract",
+          "stop-commits": "contract",
+          "stop-rolls-back-top-level-only": "seeded",
+          "string-collation": "contract",
+          "unlock-immediate-in-txn": "contract",
+          "vector-l2-available (product premise P-1710)": "contract",
+          "zstrip-c-ascii-only": "contract",
+          "zstrip-w-space-only": "contract"
+        }
+      },
+      "c2-x2-r1": {
+        "cases": 190,
+        "observed": "$RUN_DIR/contract-2/x2-r1/observed.json",
+        "contract_binary": "c2",
+        "permitted_rc": 0,
+        "permitted": "$RUN_DIR/proofs-env2/run-20261114T235905Z/differential/c2-x2-r1-permitted.json",
+        "permitted_sha256": "1443044ff1e144f18074f88a7b2b2b5ea1e0c0d5d026647984c79df86a02c4d8",
+        "report": "$RUN_DIR/proofs-env2/run-20261114T235905Z/differential/c2-x2-r1-report.json",
+        "harness_rc": 0,
+        "summary": "HARNESS c2-x2-r1: cases 190 in-subset 59 outside-subset 131 agree 59 disagree 0 observed-runs 59 outside-verus 0 singleton 59 max-permitted 1 freedom-cases 0 overflow 0 errors 0 mutants 50 killed 8 alive [\"autocommit-on-keeps-txn\", \"coalesce-c0-differs\", \"dbapi-empty-param-null\", \"driver-commit-ends-all\", \"driver-rollback-one-level\", \"emb-empty-host-var-empty\", \"emb-ignores-driver-autocommit\", \"emb-ignores-row-locks\", \"emb-own-txn\", \"emb-select-committed-only\", \"empty-dml-opens-txn\", \"failed-dml-opens-nothing\", \"flat-lock-names\", \"freedom-proceeds-only\", \"freedom-waits-only (sharpening; expected alive)\", \"incr-rolled-back\", \"insert-dup-waits (PostgreSQL reading)\", \"kill-not-logged\", \"lock-wait-never-granted\", \"maxlen-not-enforced\", \"no-dirty-reads\", \"non-incremental-locks\", \"objectscript-empty-param-empty\", \"objectscript-reads-empty-as-empty\", \"ppg-rolled-back\", \"rollback-one-undoes-all\", \"rollback-physical\", \"select-opens-txn\", \"shared-conflicts-shared\", \"sql-commit-ends-all (product premise, 2026.3)\", \"sql-rollback-ends-all (product premise, 2026.3)\", \"sql-start-always\", \"sql-start-unless-sql-owns\", \"sqlproc-levels-end-with-statement\", \"statement-not-atomic\", \"stop-commits\", \"stop-rolls-back-top-level-only\", \"string-collation\", \"unlock-immediate-in-txn\", \"vector-l2-available (product premise P-1710)\", \"zstrip-c-ascii-only\", \"zstrip-w-space-only\"]",
+        "in_subset": 59,
+        "outside_subset": {
+          "operation json_build outside the Verus subset": 19,
+          "operation json_get outside the Verus subset": 8,
+          "operation json_roundtrip outside the Verus subset": 11,
+          "operation list_eval outside the Verus subset": 23,
+          "operation list_fromstring outside the Verus subset": 4,
+          "operation list_same outside the Verus subset": 5,
+          "operation list_store outside the Verus subset": 1,
+          "operation merge outside the Verus subset": 12,
+          "operation query_back outside the Verus subset": 7,
+          "operation query_walk outside the Verus subset": 1,
+          "operation select_top outside the Verus subset": 30,
+          "operation zkill outside the Verus subset": 10
+        },
+        "disagree": 0,
+        "observed_runs": 59,
+        "observed_outside_verus": 0,
+        "singleton_cases": 59,
+        "max_permitted": 1,
+        "freedom_cases": 0,
+        "overflow_cases": 0,
+        "errors": [],
+        "outside_families": {
+          "X2-JSON": {
+            "cases": 38,
+            "examples": [
+              "x2-json-order",
+              "x2-json-reset-keeps-place",
+              "x2-json-number-form"
+            ]
+          },
+          "X2-LIST": {
+            "cases": 33,
+            "examples": [
+              "x2-list-get",
+              "x2-list-item",
+              "x2-list-walk"
+            ]
+          },
+          "X2-QUERY/MERGE/ZKILL": {
+            "cases": 30,
+            "examples": [
+              "x2-query-walk",
+              "x2-query-back",
+              "x2-merge-rollback"
+            ]
+          },
+          "X2-TOP": {
+            "cases": 30,
+            "examples": [
+              "x2-top-asc",
+              "x2-top-zero",
+              "x2-limit"
+            ]
+          }
+        },
+        "mutants_killed": [
+          "batch-atomic",
+          "batch-raises-on-dup",
+          "batch-single-row-skips",
+          "dml-ignores-row-locks",
+          "iou-ignores-row-locks",
+          "iou-retries-insert",
+          "row-lock-statement-only",
+          "sql-select-committed-only"
+        ],
+        "mutant_kinds": {
+          "autocommit-on-keeps-txn": "contract",
+          "batch-atomic": "contract-2",
+          "batch-raises-on-dup": "contract-2",
+          "batch-single-row-skips": "contract-2",
+          "coalesce-c0-differs": "contract",
+          "dbapi-empty-param-null": "contract",
+          "dml-ignores-row-locks": "contract",
+          "driver-commit-ends-all": "contract",
+          "driver-rollback-one-level": "contract",
+          "emb-empty-host-var-empty": "contract-2",
+          "emb-ignores-driver-autocommit": "contract-2",
+          "emb-ignores-row-locks": "contract-2",
+          "emb-own-txn": "contract-2",
+          "emb-select-committed-only": "contract-2",
+          "empty-dml-opens-txn": "contract",
+          "failed-dml-opens-nothing": "contract",
+          "flat-lock-names": "contract",
+          "freedom-proceeds-only": "seeded",
+          "freedom-waits-only (sharpening; expected alive)": "probe",
+          "incr-rolled-back": "contract",
+          "insert-dup-waits (PostgreSQL reading)": "seeded",
+          "iou-ignores-row-locks": "contract-2",
+          "iou-retries-insert": "contract-2",
+          "kill-not-logged": "seeded",
+          "lock-wait-never-granted": "seeded",
+          "maxlen-not-enforced": "contract-2",
+          "no-dirty-reads": "contract",
+          "non-incremental-locks": "contract",
+          "objectscript-empty-param-empty": "contract",
+          "objectscript-reads-empty-as-empty": "contract",
+          "ppg-rolled-back": "contract",
+          "rollback-one-undoes-all": "contract",
+          "rollback-physical": "contract",
+          "row-lock-statement-only": "seeded",
+          "select-opens-txn": "contract",
+          "shared-conflicts-shared": "contract",
+          "sql-commit-ends-all (product premise, 2026.3)": "contract",
+          "sql-rollback-ends-all (product premise, 2026.3)": "contract",
+          "sql-select-committed-only": "contract-2",
+          "sql-start-always": "contract",
+          "sql-start-unless-sql-owns": "contract",
+          "sqlproc-levels-end-with-statement": "contract-2",
+          "statement-not-atomic": "contract",
+          "stop-commits": "contract",
+          "stop-rolls-back-top-level-only": "seeded",
+          "string-collation": "contract",
+          "unlock-immediate-in-txn": "contract",
+          "vector-l2-available (product premise P-1710)": "contract",
+          "zstrip-c-ascii-only": "contract",
+          "zstrip-w-space-only": "contract"
+        }
+      },
+      "c2-regress-r6": {
+        "cases": 516,
+        "observed": "$RUN_DIR/env/r6/observed.json",
+        "contract_binary": "c2",
+        "permitted_rc": 0,
+        "permitted": "$RUN_DIR/proofs-env2/run-20261114T235905Z/differential/c2-regress-r6-permitted.json",
+        "permitted_sha256": "d403326426ecba38f2c9a2c46b3abc9326454210cbc6b775c0489b6bf4d1ce9b",
+        "report": "$RUN_DIR/proofs-env2/run-20261114T235905Z/differential/c2-regress-r6-report.json",
+        "harness_rc": 0,
+        "summary": "HARNESS c2-regress-r6: cases 516 in-subset 420 outside-subset 96 agree 420 disagree 0 observed-runs 420 outside-verus 0 singleton 419 max-permitted 2 freedom-cases 1 overflow 0 errors 0 mutants 50 killed 36 alive [\"batch-atomic\", \"batch-raises-on-dup\", \"batch-single-row-skips\", \"emb-empty-host-var-empty\", \"emb-ignores-driver-autocommit\", \"emb-ignores-row-locks\", \"emb-own-txn\", \"emb-select-committed-only\", \"freedom-waits-only (sharpening; expected alive)\", \"iou-ignores-row-locks\", \"iou-retries-insert\", \"maxlen-not-enforced\", \"sqlproc-levels-end-with-statement\", \"stop-rolls-back-top-level-only\"]",
+        "in_subset": 420,
+        "outside_subset": {
+          "insert %NOINDEX/%NOCHECK (X-NOINDEX) outside the Verus subset": 7,
+          "operation add_column outside the Verus subset": 3,
+          "operation build_index outside the Verus subset": 4,
+          "operation create_table outside the Verus subset": 20,
+          "operation drop_table outside the Verus subset": 7,
+          "operation find outside the Verus subset": 8,
+          "operation select_star outside the Verus subset": 1,
+          "operation table_exists outside the Verus subset": 3,
+          "operation vec_set outside the Verus subset": 2,
+          "table D1 outside the Verus subset": 6,
+          "table D2 outside the Verus subset": 4,
+          "table F (X-FX functional index) outside the Verus subset": 31
+        },
+        "disagree": 0,
+        "observed_runs": 420,
+        "observed_outside_verus": 0,
+        "singleton_cases": 419,
+        "max_permitted": 2,
+        "freedom_cases": 1,
+        "overflow_cases": 0,
+        "errors": [],
+        "outside_families": {
+          "X-DDL": {
+            "cases": 43,
+            "examples": [
+              "ddl-create-in-txn",
+              "ddl-create-commit",
+              "ddl-drop-in-txn"
+            ]
+          },
+          "X-FX": {
+            "cases": 29,
+            "examples": [
+              "fx-autocommit-visible",
+              "fx-dirty-then-rollback",
+              "fx-rollback-one"
+            ]
+          },
+          "X-NOINDEX": {
+            "cases": 21,
+            "examples": [
+              "noindex-insert-then-build",
+              "noindex-in-txn-rollback",
+              "noindex-term"
+            ]
+          },
+          "X-STAR": {
+            "cases": 1,
+            "examples": [
+              "select-star-order"
+            ]
+          },
+          "X-VEC ($VECTOR set/get)": {
+            "cases": 2,
+            "examples": [
+              "vec-global",
+              "vec-native-get"
+            ]
+          }
+        },
+        "mutants_killed": [
+          "autocommit-on-keeps-txn",
+          "coalesce-c0-differs",
+          "dbapi-empty-param-null",
+          "dml-ignores-row-locks",
+          "driver-commit-ends-all",
+          "driver-rollback-one-level",
+          "empty-dml-opens-txn",
+          "failed-dml-opens-nothing",
+          "flat-lock-names",
+          "freedom-proceeds-only",
+          "incr-rolled-back",
+          "insert-dup-waits (PostgreSQL reading)",
+          "kill-not-logged",
+          "lock-wait-never-granted",
+          "no-dirty-reads",
+          "non-incremental-locks",
+          "objectscript-empty-param-empty",
+          "objectscript-reads-empty-as-empty",
+          "ppg-rolled-back",
+          "rollback-one-undoes-all",
+          "rollback-physical",
+          "row-lock-statement-only",
+          "select-opens-txn",
+          "shared-conflicts-shared",
+          "sql-commit-ends-all (product premise, 2026.3)",
+          "sql-rollback-ends-all (product premise, 2026.3)",
+          "sql-select-committed-only",
+          "sql-start-always",
+          "sql-start-unless-sql-owns",
+          "statement-not-atomic",
+          "stop-commits",
+          "string-collation",
+          "unlock-immediate-in-txn",
+          "vector-l2-available (product premise P-1710)",
+          "zstrip-c-ascii-only",
+          "zstrip-w-space-only"
+        ],
+        "mutant_kinds": {
+          "autocommit-on-keeps-txn": "contract",
+          "batch-atomic": "contract-2",
+          "batch-raises-on-dup": "contract-2",
+          "batch-single-row-skips": "contract-2",
+          "coalesce-c0-differs": "contract",
+          "dbapi-empty-param-null": "contract",
+          "dml-ignores-row-locks": "contract",
+          "driver-commit-ends-all": "contract",
+          "driver-rollback-one-level": "contract",
+          "emb-empty-host-var-empty": "contract-2",
+          "emb-ignores-driver-autocommit": "contract-2",
+          "emb-ignores-row-locks": "contract-2",
+          "emb-own-txn": "contract-2",
+          "emb-select-committed-only": "contract-2",
+          "empty-dml-opens-txn": "contract",
+          "failed-dml-opens-nothing": "contract",
+          "flat-lock-names": "contract",
+          "freedom-proceeds-only": "seeded",
+          "freedom-waits-only (sharpening; expected alive)": "probe",
+          "incr-rolled-back": "contract",
+          "insert-dup-waits (PostgreSQL reading)": "seeded",
+          "iou-ignores-row-locks": "contract-2",
+          "iou-retries-insert": "contract-2",
+          "kill-not-logged": "seeded",
+          "lock-wait-never-granted": "seeded",
+          "maxlen-not-enforced": "contract-2",
+          "no-dirty-reads": "contract",
+          "non-incremental-locks": "contract",
+          "objectscript-empty-param-empty": "contract",
+          "objectscript-reads-empty-as-empty": "contract",
+          "ppg-rolled-back": "contract",
+          "rollback-one-undoes-all": "contract",
+          "rollback-physical": "contract",
+          "row-lock-statement-only": "seeded",
+          "select-opens-txn": "contract",
+          "shared-conflicts-shared": "contract",
+          "sql-commit-ends-all (product premise, 2026.3)": "contract",
+          "sql-rollback-ends-all (product premise, 2026.3)": "contract",
+          "sql-select-committed-only": "contract-2",
+          "sql-start-always": "contract",
+          "sql-start-unless-sql-owns": "contract",
+          "sqlproc-levels-end-with-statement": "contract-2",
+          "statement-not-atomic": "contract",
+          "stop-commits": "contract",
+          "stop-rolls-back-top-level-only": "seeded",
+          "string-collation": "contract",
+          "unlock-immediate-in-txn": "contract",
+          "vector-l2-available (product premise P-1710)": "contract",
+          "zstrip-c-ascii-only": "contract",
+          "zstrip-w-space-only": "contract"
+        }
+      },
+      "c2-regress-r2": {
+        "cases": 283,
+        "observed": "$RUN_DIR/env/r2/observed.json",
+        "contract_binary": "c2",
+        "permitted_rc": 0,
+        "permitted": "$RUN_DIR/proofs-env2/run-20261114T235905Z/differential/c2-regress-r2-permitted.json",
+        "permitted_sha256": "e10263b788bf1ca5a08e2e900ba55d80d58dc57caf3a245af36b748c082f60a8",
+        "report": "$RUN_DIR/proofs-env2/run-20261114T235905Z/differential/c2-regress-r2-report.json",
+        "harness_rc": 0,
+        "summary": "HARNESS c2-regress-r2: cases 283 in-subset 283 outside-subset 0 agree 283 disagree 0 observed-runs 283 outside-verus 0 singleton 282 max-permitted 2 freedom-cases 1 overflow 0 errors 0 mutants 50 killed 23 alive [\"autocommit-on-keeps-txn\", \"batch-atomic\", \"batch-raises-on-dup\", \"batch-single-row-skips\", \"coalesce-c0-differs\", \"dbapi-empty-param-null\", \"emb-empty-host-var-empty\", \"emb-ignores-driver-autocommit\", \"emb-ignores-row-locks\", \"emb-own-txn\", \"emb-select-committed-only\", \"empty-dml-opens-txn\", \"failed-dml-opens-nothing\", \"freedom-waits-only (sharpening; expected alive)\", \"iou-ignores-row-locks\", \"iou-retries-insert\", \"maxlen-not-enforced\", \"objectscript-empty-param-empty\", \"objectscript-reads-empty-as-empty\", \"select-opens-txn\", \"sqlproc-levels-end-with-statement\", \"statement-not-atomic\", \"stop-rolls-back-top-level-only\", \"string-collation\", \"vector-l2-available (product premise P-1710)\", \"zstrip-c-ascii-only\", \"zstrip-w-space-only\"]",
+        "in_subset": 283,
+        "outside_subset": {},
+        "disagree": 0,
+        "observed_runs": 283,
+        "observed_outside_verus": 0,
+        "singleton_cases": 282,
+        "max_permitted": 2,
+        "freedom_cases": 1,
+        "overflow_cases": 0,
+        "errors": [],
+        "outside_families": {},
+        "mutants_killed": [
+          "dml-ignores-row-locks",
+          "driver-commit-ends-all",
+          "driver-rollback-one-level",
+          "flat-lock-names",
+          "freedom-proceeds-only",
+          "incr-rolled-back",
+          "insert-dup-waits (PostgreSQL reading)",
+          "kill-not-logged",
+          "lock-wait-never-granted",
+          "no-dirty-reads",
+          "non-incremental-locks",
+          "ppg-rolled-back",
+          "rollback-one-undoes-all",
+          "rollback-physical",
+          "row-lock-statement-only",
+          "shared-conflicts-shared",
+          "sql-commit-ends-all (product premise, 2026.3)",
+          "sql-rollback-ends-all (product premise, 2026.3)",
+          "sql-select-committed-only",
+          "sql-start-always",
+          "sql-start-unless-sql-owns",
+          "stop-commits",
+          "unlock-immediate-in-txn"
+        ],
+        "mutant_kinds": {
+          "autocommit-on-keeps-txn": "contract",
+          "batch-atomic": "contract-2",
+          "batch-raises-on-dup": "contract-2",
+          "batch-single-row-skips": "contract-2",
+          "coalesce-c0-differs": "contract",
+          "dbapi-empty-param-null": "contract",
+          "dml-ignores-row-locks": "contract",
+          "driver-commit-ends-all": "contract",
+          "driver-rollback-one-level": "contract",
+          "emb-empty-host-var-empty": "contract-2",
+          "emb-ignores-driver-autocommit": "contract-2",
+          "emb-ignores-row-locks": "contract-2",
+          "emb-own-txn": "contract-2",
+          "emb-select-committed-only": "contract-2",
+          "empty-dml-opens-txn": "contract",
+          "failed-dml-opens-nothing": "contract",
+          "flat-lock-names": "contract",
+          "freedom-proceeds-only": "seeded",
+          "freedom-waits-only (sharpening; expected alive)": "probe",
+          "incr-rolled-back": "contract",
+          "insert-dup-waits (PostgreSQL reading)": "seeded",
+          "iou-ignores-row-locks": "contract-2",
+          "iou-retries-insert": "contract-2",
+          "kill-not-logged": "seeded",
+          "lock-wait-never-granted": "seeded",
+          "maxlen-not-enforced": "contract-2",
+          "no-dirty-reads": "contract",
+          "non-incremental-locks": "contract",
+          "objectscript-empty-param-empty": "contract",
+          "objectscript-reads-empty-as-empty": "contract",
+          "ppg-rolled-back": "contract",
+          "rollback-one-undoes-all": "contract",
+          "rollback-physical": "contract",
+          "row-lock-statement-only": "seeded",
+          "select-opens-txn": "contract",
+          "shared-conflicts-shared": "contract",
+          "sql-commit-ends-all (product premise, 2026.3)": "contract",
+          "sql-rollback-ends-all (product premise, 2026.3)": "contract",
+          "sql-select-committed-only": "contract-2",
+          "sql-start-always": "contract",
+          "sql-start-unless-sql-owns": "contract",
+          "sqlproc-levels-end-with-statement": "contract-2",
+          "statement-not-atomic": "contract",
+          "stop-commits": "contract",
+          "stop-rolls-back-top-level-only": "seeded",
+          "string-collation": "contract",
+          "unlock-immediate-in-txn": "contract",
+          "vector-l2-available (product premise P-1710)": "contract",
+          "zstrip-c-ascii-only": "contract",
+          "zstrip-w-space-only": "contract"
+        }
+      },
+      "estop-gap": {
+        "cases": 3,
+        "observed": "$RUN_DIR/env/estop-gap/observed.json",
+        "contract_binary": "r6",
+        "permitted_rc": 0,
+        "permitted": "$RUN_DIR/proofs-env2/run-20261114T235905Z/differential/estop-gap-permitted.json",
+        "permitted_sha256": "ca9fa408083d2fed525302e8bc8a0cb6a381b6f240e8b6acb9bd2683161b4cbf",
+        "report": "$RUN_DIR/proofs-env2/run-20261114T235905Z/differential/estop-gap-report.json",
+        "harness_rc": 0,
+        "summary": "HARNESS estop-gap: cases 3 in-subset 3 outside-subset 0 agree 3 disagree 0 observed-runs 3 outside-verus 0 singleton 3 max-permitted 1 freedom-cases 0 overflow 0 errors 0 mutants 50 killed 2 alive [\"autocommit-on-keeps-txn\", \"batch-atomic\", \"batch-raises-on-dup\", \"batch-single-row-skips\", \"coalesce-c0-differs\", \"dbapi-empty-param-null\", \"dml-ignores-row-locks\", \"driver-commit-ends-all\", \"driver-rollback-one-level\", \"emb-empty-host-var-empty\", \"emb-ignores-driver-autocommit\", \"emb-ignores-row-locks\", \"emb-own-txn\", \"emb-select-committed-only\", \"empty-dml-opens-txn\", \"failed-dml-opens-nothing\", \"flat-lock-names\", \"freedom-proceeds-only\", \"freedom-waits-only (sharpening; expected alive)\", \"incr-rolled-back\", \"insert-dup-waits (PostgreSQL reading)\", \"iou-ignores-row-locks\", \"iou-retries-insert\", \"kill-not-logged\", \"lock-wait-never-granted\", \"maxlen-not-enforced\", \"no-dirty-reads\", \"non-incremental-locks\", \"objectscript-empty-param-empty\", \"objectscript-reads-empty-as-empty\", \"ppg-rolled-back\", \"rollback-one-undoes-all\", \"rollback-physical\", \"row-lock-statement-only\", \"select-opens-txn\", \"shared-conflicts-shared\", \"sql-commit-ends-all (product premise, 2026.3)\", \"sql-rollback-ends-all (product premise, 2026.3)\", \"sql-select-committed-only\", \"sql-start-always\", \"sql-start-unless-sql-owns\", \"sqlproc-levels-end-with-statement\", \"statement-not-atomic\", \"string-collation\", \"unlock-immediate-in-txn\", \"vector-l2-available (product premise P-1710)\", \"zstrip-c-ascii-only\", \"zstrip-w-space-only\"]",
+        "in_subset": 3,
+        "outside_subset": {},
+        "disagree": 0,
+        "observed_runs": 3,
+        "observed_outside_verus": 0,
+        "singleton_cases": 3,
+        "max_permitted": 1,
+        "freedom_cases": 0,
+        "overflow_cases": 0,
+        "errors": [],
+        "outside_families": {},
+        "mutants_killed": [
+          "stop-commits",
+          "stop-rolls-back-top-level-only"
+        ],
+        "mutant_kinds": {
+          "autocommit-on-keeps-txn": "contract",
+          "batch-atomic": "contract-2",
+          "batch-raises-on-dup": "contract-2",
+          "batch-single-row-skips": "contract-2",
+          "coalesce-c0-differs": "contract",
+          "dbapi-empty-param-null": "contract",
+          "dml-ignores-row-locks": "contract",
+          "driver-commit-ends-all": "contract",
+          "driver-rollback-one-level": "contract",
+          "emb-empty-host-var-empty": "contract-2",
+          "emb-ignores-driver-autocommit": "contract-2",
+          "emb-ignores-row-locks": "contract-2",
+          "emb-own-txn": "contract-2",
+          "emb-select-committed-only": "contract-2",
+          "empty-dml-opens-txn": "contract",
+          "failed-dml-opens-nothing": "contract",
+          "flat-lock-names": "contract",
+          "freedom-proceeds-only": "seeded",
+          "freedom-waits-only (sharpening; expected alive)": "probe",
+          "incr-rolled-back": "contract",
+          "insert-dup-waits (PostgreSQL reading)": "seeded",
+          "iou-ignores-row-locks": "contract-2",
+          "iou-retries-insert": "contract-2",
+          "kill-not-logged": "seeded",
+          "lock-wait-never-granted": "seeded",
+          "maxlen-not-enforced": "contract-2",
+          "no-dirty-reads": "contract",
+          "non-incremental-locks": "contract",
+          "objectscript-empty-param-empty": "contract",
+          "objectscript-reads-empty-as-empty": "contract",
+          "ppg-rolled-back": "contract",
+          "rollback-one-undoes-all": "contract",
+          "rollback-physical": "contract",
+          "row-lock-statement-only": "seeded",
+          "select-opens-txn": "contract",
+          "shared-conflicts-shared": "contract",
+          "sql-commit-ends-all (product premise, 2026.3)": "contract",
+          "sql-rollback-ends-all (product premise, 2026.3)": "contract",
+          "sql-select-committed-only": "contract-2",
+          "sql-start-always": "contract",
+          "sql-start-unless-sql-owns": "contract",
+          "sqlproc-levels-end-with-statement": "contract-2",
+          "statement-not-atomic": "contract",
+          "stop-commits": "contract",
+          "stop-rolls-back-top-level-only": "seeded",
+          "string-collation": "contract",
+          "unlock-immediate-in-txn": "contract",
+          "vector-l2-available (product premise P-1710)": "contract",
+          "zstrip-c-ascii-only": "contract",
+          "zstrip-w-space-only": "contract"
+        }
+      },
+      "dml-single": {
+        "cases": 2,
+        "observed": "$RUN_DIR/env/dml-single/observed.json",
+        "contract_binary": "r6",
+        "permitted_rc": 0,
+        "permitted": "$RUN_DIR/proofs-env2/run-20261114T235905Z/differential/dml-single-permitted.json",
+        "permitted_sha256": "1f5310afb3dcd5b5ff10e70d62269b554e802fe41b570652f6d7ab339da4ef72",
+        "report": "$RUN_DIR/proofs-env2/run-20261114T235905Z/differential/dml-single-report.json",
+        "harness_rc": 0,
+        "summary": "HARNESS dml-single: cases 2 in-subset 2 outside-subset 0 agree 2 disagree 0 observed-runs 2 outside-verus 0 singleton 2 max-permitted 1 freedom-cases 0 overflow 0 errors 0 mutants 50 killed 2 alive [\"autocommit-on-keeps-txn\", \"batch-atomic\", \"batch-raises-on-dup\", \"batch-single-row-skips\", \"coalesce-c0-differs\", \"dbapi-empty-param-null\", \"dml-ignores-row-locks\", \"driver-commit-ends-all\", \"driver-rollback-one-level\", \"emb-empty-host-var-empty\", \"emb-ignores-driver-autocommit\", \"emb-ignores-row-locks\", \"emb-own-txn\", \"emb-select-committed-only\", \"flat-lock-names\", \"freedom-proceeds-only\", \"freedom-waits-only (sharpening; expected alive)\", \"incr-rolled-back\", \"insert-dup-waits (PostgreSQL reading)\", \"iou-ignores-row-locks\", \"iou-retries-insert\", \"kill-not-logged\", \"lock-wait-never-granted\", \"maxlen-not-enforced\", \"no-dirty-reads\", \"non-incremental-locks\", \"objectscript-empty-param-empty\", \"objectscript-reads-empty-as-empty\", \"ppg-rolled-back\", \"rollback-one-undoes-all\", \"rollback-physical\", \"row-lock-statement-only\", \"select-opens-txn\", \"shared-conflicts-shared\", \"sql-commit-ends-all (product premise, 2026.3)\", \"sql-rollback-ends-all (product premise, 2026.3)\", \"sql-select-committed-only\", \"sql-start-always\", \"sql-start-unless-sql-owns\", \"sqlproc-levels-end-with-statement\", \"statement-not-atomic\", \"stop-commits\", \"stop-rolls-back-top-level-only\", \"string-collation\", \"unlock-immediate-in-txn\", \"vector-l2-available (product premise P-1710)\", \"zstrip-c-ascii-only\", \"zstrip-w-space-only\"]",
+        "in_subset": 2,
+        "outside_subset": {},
+        "disagree": 0,
+        "observed_runs": 2,
+        "observed_outside_verus": 0,
+        "singleton_cases": 2,
+        "max_permitted": 1,
+        "freedom_cases": 0,
+        "overflow_cases": 0,
+        "errors": [],
+        "outside_families": {},
+        "mutants_killed": [
+          "empty-dml-opens-txn",
+          "failed-dml-opens-nothing"
+        ],
+        "mutant_kinds": {
+          "autocommit-on-keeps-txn": "contract",
+          "batch-atomic": "contract-2",
+          "batch-raises-on-dup": "contract-2",
+          "batch-single-row-skips": "contract-2",
+          "coalesce-c0-differs": "contract",
+          "dbapi-empty-param-null": "contract",
+          "dml-ignores-row-locks": "contract",
+          "driver-commit-ends-all": "contract",
+          "driver-rollback-one-level": "contract",
+          "emb-empty-host-var-empty": "contract-2",
+          "emb-ignores-driver-autocommit": "contract-2",
+          "emb-ignores-row-locks": "contract-2",
+          "emb-own-txn": "contract-2",
+          "emb-select-committed-only": "contract-2",
+          "empty-dml-opens-txn": "contract",
+          "failed-dml-opens-nothing": "contract",
+          "flat-lock-names": "contract",
+          "freedom-proceeds-only": "seeded",
+          "freedom-waits-only (sharpening; expected alive)": "probe",
+          "incr-rolled-back": "contract",
+          "insert-dup-waits (PostgreSQL reading)": "seeded",
+          "iou-ignores-row-locks": "contract-2",
+          "iou-retries-insert": "contract-2",
+          "kill-not-logged": "seeded",
+          "lock-wait-never-granted": "seeded",
+          "maxlen-not-enforced": "contract-2",
+          "no-dirty-reads": "contract",
+          "non-incremental-locks": "contract",
+          "objectscript-empty-param-empty": "contract",
+          "objectscript-reads-empty-as-empty": "contract",
+          "ppg-rolled-back": "contract",
+          "rollback-one-undoes-all": "contract",
+          "rollback-physical": "contract",
+          "row-lock-statement-only": "seeded",
+          "select-opens-txn": "contract",
+          "shared-conflicts-shared": "contract",
+          "sql-commit-ends-all (product premise, 2026.3)": "contract",
+          "sql-rollback-ends-all (product premise, 2026.3)": "contract",
+          "sql-select-committed-only": "contract-2",
+          "sql-start-always": "contract",
+          "sql-start-unless-sql-owns": "contract",
+          "sqlproc-levels-end-with-statement": "contract-2",
+          "statement-not-atomic": "contract",
+          "stop-commits": "contract",
+          "stop-rolls-back-top-level-only": "seeded",
+          "string-collation": "contract",
+          "unlock-immediate-in-txn": "contract",
+          "vector-l2-available (product premise P-1710)": "contract",
+          "zstrip-c-ascii-only": "contract",
+          "zstrip-w-space-only": "contract"
+        }
+      }
+    },
+    "log": "$RUN_DIR/proofs-env2/run-20261114T235905Z/differential/differential.log",
+    "log_sha256": "8d0c306048d506b590d007321aff2a07add7f1b8f6a9f12797d538df50a4332f",
+    "builds_ok": true,
+    "agreement": true,
+    "cases_in_subset": 2430,
+    "cases_total": 2943,
+    "observed_runs": 2430,
+    "observed_outside_verus": 0,
+    "disagreements": 0,
+    "mutants": {
+      "autocommit-on-keeps-txn": {
+        "kind": "contract",
+        "killed_in": [
+          "r6",
+          "r4",
+          "r5",
+          "c2-e1-r1",
+          "c2-regress-r6"
+        ]
+      },
+      "batch-atomic": {
+        "kind": "contract-2",
+        "killed_in": [
+          "c2-x2-r1"
+        ]
+      },
+      "batch-raises-on-dup": {
+        "kind": "contract-2",
+        "killed_in": [
+          "c2-x2-r1"
+        ]
+      },
+      "batch-single-row-skips": {
+        "kind": "contract-2",
+        "killed_in": [
+          "c2-x2-r1"
+        ]
+      },
+      "coalesce-c0-differs": {
+        "kind": "contract",
+        "killed_in": [
+          "r6",
+          "r4",
+          "r5",
+          "c2-regress-r6"
+        ]
+      },
+      "dbapi-empty-param-null": {
+        "kind": "contract",
+        "killed_in": [
+          "r6",
+          "r4",
+          "r5",
+          "c2-regress-r6"
+        ]
+      },
+      "dml-ignores-row-locks": {
+        "kind": "contract",
+        "killed_in": [
+          "r6",
+          "r2",
+          "r4",
+          "r5",
+          "c2-e1-r1",
+          "c2-e1-r2",
+          "c2-x2-r1",
+          "c2-regress-r6",
+          "c2-regress-r2"
+        ]
+      },
+      "driver-commit-ends-all": {
+        "kind": "contract",
+        "killed_in": [
+          "r6",
+          "r2",
+          "r4",
+          "r5",
+          "c2-e1-r2",
+          "c2-regress-r6",
+          "c2-regress-r2"
+        ]
+      },
+      "driver-rollback-one-level": {
+        "kind": "contract",
+        "killed_in": [
+          "r6",
+          "r2",
+          "r4",
+          "r5",
+          "c2-e1-r1",
+          "c2-e1-r2",
+          "c2-regress-r6",
+          "c2-regress-r2"
+        ]
+      },
+      "emb-empty-host-var-empty": {
+        "kind": "contract-2",
+        "killed_in": [
+          "c2-e1-r1"
+        ]
+      },
+      "emb-ignores-driver-autocommit": {
+        "kind": "contract-2",
+        "killed_in": [
+          "c2-e1-r1",
+          "c2-e1-r2"
+        ]
+      },
+      "emb-ignores-row-locks": {
+        "kind": "contract-2",
+        "killed_in": [
+          "c2-e1-r1"
+        ]
+      },
+      "emb-own-txn": {
+        "kind": "contract-2",
+        "killed_in": [
+          "c2-e1-r1",
+          "c2-e1-r2"
+        ]
+      },
+      "emb-select-committed-only": {
+        "kind": "contract-2",
+        "killed_in": [
+          "c2-e1-r1"
+        ]
+      },
+      "empty-dml-opens-txn": {
+        "kind": "contract",
+        "killed_in": [
+          "r6",
+          "r4",
+          "r5",
+          "c2-regress-r6",
+          "dml-single"
+        ]
+      },
+      "failed-dml-opens-nothing": {
+        "kind": "contract",
+        "killed_in": [
+          "r6",
+          "r4",
+          "r5",
+          "c2-e1-r1",
+          "c2-regress-r6",
+          "dml-single"
+        ]
+      },
+      "flat-lock-names": {
+        "kind": "contract",
+        "killed_in": [
+          "r6",
+          "r2",
+          "r4",
+          "r5",
+          "c2-regress-r6",
+          "c2-regress-r2"
+        ]
+      },
+      "freedom-proceeds-only": {
+        "kind": "seeded",
+        "killed_in": [
+          "r6",
+          "r2",
+          "r4",
+          "r5",
+          "c2-regress-r6",
+          "c2-regress-r2"
+        ]
+      },
+      "freedom-waits-only (sharpening; expected alive)": {
+        "kind": "probe",
+        "killed_in": []
+      },
+      "incr-rolled-back": {
+        "kind": "contract",
+        "killed_in": [
+          "r6",
+          "r2",
+          "r4",
+          "r5",
+          "c2-regress-r6",
+          "c2-regress-r2"
+        ]
+      },
+      "insert-dup-waits (PostgreSQL reading)": {
+        "kind": "seeded",
+        "killed_in": [
+          "r6",
+          "r2",
+          "r4",
+          "r5",
+          "c2-e1-r1",
+          "c2-regress-r6",
+          "c2-regress-r2"
+        ]
+      },
+      "iou-ignores-row-locks": {
+        "kind": "contract-2",
+        "killed_in": [
+          "c2-x2-r1"
+        ]
+      },
+      "iou-retries-insert": {
+        "kind": "contract-2",
+        "killed_in": [
+          "c2-x2-r1"
+        ]
+      },
+      "kill-not-logged": {
+        "kind": "seeded",
+        "killed_in": [
+          "r6",
+          "r2",
+          "r4",
+          "r5",
+          "c2-regress-r6",
+          "c2-regress-r2"
+        ]
+      },
+      "lock-wait-never-granted": {
+        "kind": "seeded",
+        "killed_in": [
+          "r6",
+          "r2",
+          "r4",
+          "r5",
+          "c2-regress-r6",
+          "c2-regress-r2"
+        ]
+      },
+      "maxlen-not-enforced": {
+        "kind": "contract-2",
+        "killed_in": [
+          "c2-e1-r1"
+        ]
+      },
+      "no-dirty-reads": {
+        "kind": "contract",
+        "killed_in": [
+          "r6",
+          "r2",
+          "r4",
+          "r5",
+          "c2-regress-r6",
+          "c2-regress-r2"
+        ]
+      },
+      "non-incremental-locks": {
+        "kind": "contract",
+        "killed_in": [
+          "r6",
+          "r2",
+          "r4",
+          "r5",
+          "c2-regress-r6",
+          "c2-regress-r2"
+        ]
+      },
+      "objectscript-empty-param-empty": {
+        "kind": "contract",
+        "killed_in": [
+          "r6",
+          "r4",
+          "r5",
+          "c2-regress-r6"
+        ]
+      },
+      "objectscript-reads-empty-as-empty": {
+        "kind": "contract",
+        "killed_in": [
+          "r6",
+          "r4",
+          "r5",
+          "c2-regress-r6"
+        ]
+      },
+      "ppg-rolled-back": {
+        "kind": "contract",
+        "killed_in": [
+          "r6",
+          "r2",
+          "r4",
+          "r5",
+          "c2-regress-r6",
+          "c2-regress-r2"
+        ]
+      },
+      "rollback-one-undoes-all": {
+        "kind": "contract",
+        "killed_in": [
+          "r6",
+          "r2",
+          "r4",
+          "r5",
+          "c2-e1-r1",
+          "c2-e1-r2",
+          "c2-regress-r6",
+          "c2-regress-r2"
+        ]
+      },
+      "rollback-physical": {
+        "kind": "contract",
+        "killed_in": [
+          "r6",
+          "r2",
+          "r4",
+          "r5",
+          "c2-regress-r6",
+          "c2-regress-r2"
+        ]
+      },
+      "row-lock-statement-only": {
+        "kind": "seeded",
+        "killed_in": [
+          "r6",
+          "r2",
+          "r4",
+          "r5",
+          "c2-e1-r1",
+          "c2-e1-r2",
+          "c2-x2-r1",
+          "c2-regress-r6",
+          "c2-regress-r2"
+        ]
+      },
+      "select-opens-txn": {
+        "kind": "contract",
+        "killed_in": [
+          "r6",
+          "r4",
+          "r5",
+          "c2-e1-r2",
+          "c2-regress-r6"
+        ]
+      },
+      "shared-conflicts-shared": {
+        "kind": "contract",
+        "killed_in": [
+          "r6",
+          "r2",
+          "r4",
+          "r5",
+          "c2-regress-r6",
+          "c2-regress-r2"
+        ]
+      },
+      "sql-commit-ends-all (product premise, 2026.3)": {
+        "kind": "contract",
+        "killed_in": [
+          "r6",
+          "r2",
+          "r4",
+          "r5",
+          "c2-regress-r6",
+          "c2-regress-r2"
+        ]
+      },
+      "sql-rollback-ends-all (product premise, 2026.3)": {
+        "kind": "contract",
+        "killed_in": [
+          "r6",
+          "r2",
+          "r4",
+          "r5",
+          "c2-e1-r1",
+          "c2-regress-r6",
+          "c2-regress-r2"
+        ]
+      },
+      "sql-select-committed-only": {
+        "kind": "contract-2",
+        "killed_in": [
+          "r6",
+          "r2",
+          "r4",
+          "r5",
+          "c2-e1-r1",
+          "c2-e1-r2",
+          "c2-x2-r1",
+          "c2-regress-r6",
+          "c2-regress-r2"
+        ]
+      },
+      "sql-start-always": {
+        "kind": "contract",
+        "killed_in": [
+          "r6",
+          "r2",
+          "r4",
+          "r5",
+          "c2-regress-r6",
+          "c2-regress-r2"
+        ]
+      },
+      "sql-start-unless-sql-owns": {
+        "kind": "contract",
+        "killed_in": [
+          "r6",
+          "r2",
+          "r4",
+          "r5",
+          "c2-regress-r6",
+          "c2-regress-r2"
+        ]
+      },
+      "sqlproc-levels-end-with-statement": {
+        "kind": "contract-2",
+        "killed_in": [
+          "c2-e1-r2"
+        ]
+      },
+      "statement-not-atomic": {
+        "kind": "contract",
+        "killed_in": [
+          "r6",
+          "r4",
+          "r5",
+          "c2-regress-r6"
+        ]
+      },
+      "stop-commits": {
+        "kind": "contract",
+        "killed_in": [
+          "r6",
+          "r2",
+          "r4",
+          "r5",
+          "c2-e1-r1",
+          "c2-e1-r2",
+          "c2-regress-r6",
+          "c2-regress-r2",
+          "estop-gap"
+        ]
+      },
+      "stop-rolls-back-top-level-only": {
+        "kind": "seeded",
+        "killed_in": [
+          "estop-gap"
+        ]
+      },
+      "string-collation": {
+        "kind": "contract",
+        "killed_in": [
+          "r6",
+          "r4",
+          "r5",
+          "c2-regress-r6"
+        ]
+      },
+      "unlock-immediate-in-txn": {
+        "kind": "contract",
+        "killed_in": [
+          "r6",
+          "r2",
+          "r4",
+          "r5",
+          "c2-regress-r6",
+          "c2-regress-r2"
+        ]
+      },
+      "vector-l2-available (product premise P-1710)": {
+        "kind": "contract",
+        "killed_in": [
+          "r6",
+          "r4",
+          "r5",
+          "c2-regress-r6"
+        ]
+      },
+      "zstrip-c-ascii-only": {
+        "kind": "contract",
+        "killed_in": [
+          "r6",
+          "r4",
+          "r5",
+          "c2-regress-r6"
+        ]
+      },
+      "zstrip-w-space-only": {
+        "kind": "contract",
+        "killed_in": [
+          "r6",
+          "r4",
+          "r5",
+          "c2-regress-r6"
+        ]
+      }
+    },
+    "gating_mutants": 49,
+    "gating_killed": 49,
+    "gating_alive": [],
+    "probe_mutants": {
+      "freedom-waits-only (sharpening; expected alive)": {
+        "kind": "probe",
+        "killed_in": []
+      }
+    },
+    "outside_families_total": {
+      "X-DDL": 172,
+      "X-FX": 115,
+      "X-NOINDEX": 83,
+      "X-STAR": 4,
+      "X-VEC ($VECTOR set/get)": 8,
+      "X2-JSON": 38,
+      "X2-LIST": 33,
+      "X2-QUERY/MERGE/ZKILL": 30,
+      "X2-TOP": 30
+    }
+  },
+  "trust_inventory": {
+    "own_sources": {
+      "scanned": [
+        "src/clauses.rs",
+        "src/cx.rs",
+        "src/effects.rs",
+        "src/exec.rs",
+        "src/ext.rs",
+        "src/ext_exec.rs",
+        "src/ext_lemmas.rs",
+        "src/gen.rs",
+        "src/headlock.rs",
+        "src/lib.rs",
+        "src/premises.rs",
+        "src/spec.rs",
+        "src/wf.rs"
+      ],
+      "patterns": [
+        "\\bassume\\s*\\(",
+        "\\badmit\\s*\\(",
+        "external_body",
+        "#\\s*\\[\\s*verifier::external",
+        "\\buninterp\\b",
+        "\\baxiom\\b",
+        "assume_specification",
+        "#\\s*\\[\\s*verifier::assume"
+      ],
+      "violations": []
+    },
+    "vstd": {
+      "version": "0.0.0-2026-09-20-0158",
+      "note": "Verus standard library: the trusted base (its axioms and admits are Verus's own); not scanned"
+    },
+    "harness": {
+      "path": "harness/src/main.rs",
+      "note": "unverified test code: reads the rounds' JSON, interns names and values, enumerates choice sequences depth-first and renders outcomes; the outcome computation it calls (e_run) is verified; its rendering is cross-checked by set equality with the contract binary"
+    },
+    "trusted_items_in_this_crate": [],
+    "premises": "named in PROOFS.md; the discipline `disc` of the head-lock theorems is a hypothesis, never assumed"
+  },
+  "gate_proofs": "pass",
+  "gate_differential": "pass",
+  "gate_mutants": "pass"
+}

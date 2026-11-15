@@ -413,7 +413,11 @@ deleter(f"{NE}::_drop_orphaned_props", [f"{NE}:1617-1646", f"{NE}:1761-1866", PR
              "bulk_create_nodes' SQL path inside its WriteTxn (nodes_edges.py:1761-1866, call at 1843), so a target whose only live "
              "rows are such properties is seen not live while the delete is uncommitted.")
 
-# SQL fallbacks of the store's deleters: unreached at the pin's deploy ------------------------------------------
+# SQL fallbacks of the store's deleters: reachable when the Eraser probe fails (F-C1750) ----------------------
+# Originally open as "unreached at the pin's deploy" (fallback_open below, kept for the record). The orchestrator's
+# live probe ws-live-sql-fallback-priv reached them through the pin's public API: a writing role without
+# %Native_ClassExecution is refused the dictionary SELECT (-99) and the native IDKEYExists (<PROTECT>), and
+# _has_eraser_method caches the exception as "absent" (iris_sql_store.py:1307-1318).
 
 def fallback_open(what):
     return (f"open: unreached at the pin's deploy. {what} runs only when IRISGraphStore._has_eraser_method answers "
@@ -424,15 +428,28 @@ def fallback_open(what):
             "back (the F-0303 / F-C1301 shapes). That configuration was not reproduced, so no finding is recorded.")
 
 
-SQLF = [f"{ST}:1307-1318", f"{ST}:1320-1361", f"{ST}:1474-1518"]
+R_SFP = "run:ws-live-sql-fallback-priv"
+SQLF = [f"{ST}:1307-1318", f"{ST}:1320-1361", f"{ST}:1474-1518", "iris_vector_graph/_dictionary.py:46-64"]
+SFP_REACH = (" Reachable at the pin (ws-live-sql-fallback-priv): with a writing role that lacks "
+             "%Native_ClassExecution, the probe's dictionary SELECT is refused (-99), its native IDKEYExists raises "
+             "<PROTECT>, and _has_eraser_method caches the exception as 'absent' (iris_sql_store.py:1307-1318), so "
+             "engine.delete_node / delete_nodes take this SQL path (F-C1750).")
+
+
+def sfp_stmt(what, sites):
+    return D("finding", "live", [R_SFP] + sites + SQLF, ["F-C1750"],
+             f"Live: {what} ran as plain SQL after the refused Eraser probe was cached as absent; it deleted the "
+             "recorded edge row and left its ledger statement (^IVG.Ledger tuple and stmt, closed seq empty) live "
+             "without the row, with no warning (F-C1750). With ADMIN_GUIDE's writing row the same call went through "
+             "Graph.KG.Eraser and the statement went with the row (control in the same run).")
+
+
 W[f"{ST}::_delete_nodes_sql"] = {
-    "INV-marker": open_(fallback_open("_delete_nodes_sql (iris_sql_store.py:1363-1418)"),
-                        ["run:ws-deploy-auditb", f"{ST}:1363-1418"] + SQLF),
-    "INV-no-live-tombstone": open_(fallback_open("_delete_nodes_sql (iris_sql_store.py:1363-1418)"),
-                                   ["run:ws-deploy-auditb", f"{ST}:1363-1418"] + SQLF),
+    "INV-marker": fc1301([f"{ST}:1363-1418", R_SFP] + SQLF, None, SFP_REACH),
+    "INV-no-live-tombstone": fc1301([f"{ST}:1363-1418", R_SFP] + SQLF, None, SFP_REACH),
     "INV-replay": replay_lemma([f"{ST}:1363-1418"], None),
-    "INV-stmt": open_(fallback_open("_delete_nodes_sql (iris_sql_store.py:1363-1418)"),
-                      ["run:ws-deploy-auditb", f"{ST}:1363-1418"] + SQLF),
+    "INV-stmt": sfp_stmt("engine.delete_node('sfp|a') (store.delete_nodes -> _delete_nodes_sql, "
+                         "iris_sql_store.py:1363-1418)", [f"{ST}:1363-1418"]),
 }
 W[f"{ST}::delete_edges"] = {
     "INV-marker": fk_lemma([f"{ST}:1474-1518"], "The writer deletes only rdf_edges rows (through EraseEdges or its "
@@ -440,8 +457,8 @@ W[f"{ST}::delete_edges"] = {
     "INV-no-live-tombstone": fk_lemma([f"{ST}:1474-1518"], "The writer deletes only rdf_edges rows (through "
                                       "EraseEdges or its SQL fallback)."),
     "INV-replay": replay_lemma([f"{ST}:1474-1518"], None),
-    "INV-stmt": open_(fallback_open("The SQL DELETE of delete_edges (iris_sql_store.py:1504-1518)"),
-                      ["run:ws-deploy-auditb", f"{ST}:1474-1518"] + SQLF),
+    "INV-stmt": sfp_stmt("IRISGraphStore.delete_edges([('sfp|c', 'R', 'sfp|d')]) (exported by iris_vector_graph; "
+                         "its SQL DELETE, iris_sql_store.py:1504-1518)", [f"{ST}:1474-1518"]),
 }
 # add_graph_id_to_nodes -----------------------------------------------------------------------------------------
 AG = [f"{GS}:1514-1637", f"{GS}:704-722", f"{SC}:2513-2514"]
@@ -740,6 +757,7 @@ def _w(name):
         "sql": "<any SQL client>::INSERT INTO Graph_KG.ledger_revisions",
         "gap": f"{SN}::_import_global_from_ndjson", "add_graph_id_to_nodes": f"{GS}::add_graph_id_to_nodes",
         "copy_ledger_history": "iris_vector_graph/_engine/legacy.py::copy_ledger_history",
+        "_delete_nodes_sql": f"{ST}::_delete_nodes_sql", "delete_edges": f"{ST}::delete_edges",
         "tighten_graph_id_column": f"{GS}::tighten_graph_id_column", "ensure_ekey": f"{GS}::ensure_ekey",
         "ensure_props_value_key": f"{GS}::ensure_props_value_key",
     }[name]
@@ -815,6 +833,11 @@ RUN_PAIRS.update({
                          "and EraseAll+PurgeAll (an erasure defect, not a census pair)"]},
     "fc1306-legacy-ledger-rows": {"journal": False, "exercised": [_ex("INV-text", "copy_ledger_history", "fail")],
                                   "lane": "fc1306"},
+    "ws-live-sql-fallback-priv": {"journal": False, "lane": "orchestrator", "exercised": [
+        _ex("INV-stmt", "_delete_nodes_sql", "fail", "role without %Native_ClassExecution: the Eraser probe cached "
+            "absent; the statement of the deleted edge stays live (F-C1750)"),
+        _ex("INV-stmt", "delete_edges", "fail", "same role, IRISGraphStore.delete_edges' SQL DELETE (F-C1750)")],
+        "context_for": [[i, _w("_delete_nodes_sql")] for i in ("INV-marker", "INV-no-live-tombstone")]},
 })
 
 

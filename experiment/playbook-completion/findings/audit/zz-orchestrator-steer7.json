@@ -51,5 +51,45 @@
   "confidence": "high",
   "remedy": "Log the refused dedicated connect and either raise or record the degraded mode once (do not retry the connect on every native call); if sharing the caller's connection is unsafe, as the comment says, refuse instead of falling back.",
   "notes": "Failure scenario S6 (licence refusal at product level), run by the orchestrator while no lane used the container; the style lane had read the same lines as a borderline C-17 case from source. Its id (nn 95) lies in the product-gates lane's range; the orchestrator filed it, after that lane had finished."
+ },
+ {
+  "id": "F-C1750",
+  "module": "17",
+  "title": "A refused Eraser probe is cached as 'absent': the store's deletes then run as plain SQL and leave the ledger statements of the deleted edges live",
+  "intended": "iris_vector_graph/_dictionary.py:1-12 (4.6.0 R206: before it, a refusal 'reached the callers as an error or as \"absent\"'; refused the dictionary SELECT, IVG asks over the Native API instead); docs/ADMIN_GUIDE.md section 3 (classes the role cannot read: 'on <PROTECT> every call that needs to know what is deployed ... raises ClassesUnreadable'); iris_sql_store.py:1333-1338 (the SQL path is for 'an install with no ObjectScript classes, hence no ^KG to maintain'); INV-stmt / ERS-I2 (no live statement without its row).",
+  "observed": "Live in AUDITB (ws-live-sql-fallback-priv), as the operator-authorised disposable principal, ledger enabled (not strict), 4 nodes and 2 recorded edges, verify() equal. With ADMIN_GUIDE's writing row (%DB_%DEFAULT:RW, %Native_ClassExecution:U, %Native_GlobalAccess:U, INSERT/UPDATE/DELETE ON SCHEMA Graph_KG) engine.delete_node('sfp|a') and IRISGraphStore.delete_edges([('sfp|c','R','sfp|d')]) went through Graph.KG.Eraser (probe cache True) and the rows, the ^KG out entries and both ledger statements went. With the same role without %Native_ClassExecution the dictionary SELECT was refused (-99), the native IDKEYExists raised '<PROTECT> *Resource %Native_ClassExecution required', and _has_eraser_method (iris_sql_store.py:1307-1318, except Exception -> False, cached for the store's life) took the Eraser as absent, logged at DEBUG only; both calls returned success through the SQL fallbacks (_delete_nodes_sql, iris_sql_store.py:1363-1418; delete_edges, :1504-1518), which deleted the rows and left both statements (^IVG.Ledger tuple and stmt, closed seq empty) live without their rows. No warning or error was raised. Any other exception of the probe (a transient driver or network error) takes the same path for the life of that store.",
+  "disposition": "reproduced-live",
+  "outcome": "product-defect",
+  "evidence": [
+   {
+    "kind": "live",
+    "ref": "ws-live-sql-fallback-priv"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/stores/iris_sql_store.py:1307-1318"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/stores/iris_sql_store.py:1363-1418"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/stores/iris_sql_store.py:1474-1518"
+   },
+   {
+    "kind": "inspected",
+    "ref": "iris_vector_graph/_dictionary.py:1-64"
+   }
+  ],
+  "gates": [
+   "3.3a-writesets",
+   "3.5-handlers",
+   "3.8-findings-disposed"
+  ],
+  "severity": "S2",
+  "confidence": "high",
+  "remedy": "Treat only a definite 'not compiled' answer as absent: re-raise (or raise ClassesUnreadable) on a refusal or any other probe error, do not cache a failed probe, and log the fallback at WARNING; or remove the SQL fallback for namespaces where the ledger or ^KG exists.",
+  "notes": "Filed by the orchestrator from the writer census (WS-OBL-147/148/150/154 were open as 'unreached at the pin's deploy'); id in the writesets lane's range (nn 50-69), that lane having finished. The role without %Native_ClassExecution departs from ADMIN_GUIDE's writing row; the defect is the silent fallback, which the guide's own rule for unreadable classes (raise) and R206 exclude. Same pattern as the ledger guard's fail-open (F-0801) and the engine's native fallback (F-C1795). The five 'gref ... Returning a mock object' WARNING lines in each variant's log are emitted by the driver package's embedded-python shim (_iris_ep/_runtime_facade.py) on a lookup of iris.gref outside embedded Python; they appear identically with both roles and say nothing about the fallback."
  }
 ]

@@ -30,7 +30,7 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 3.3a-mechanisms | model | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 3.3a-lifecycles | model | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 3.3a-domain-contract | model | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| 3.3a-writesets | model | 191 | 0 | 12 | 0 | 1 | 82 | 0 | 9 | 69 | 36 | 0 | 7 | 1 |
+| 3.3a-writesets | model | 197 | 0 | 6 | 0 | 1 | 86 | 0 | 9 | 69 | 36 | 0 | 3 | 1 |
 | 3.3a-trace | model | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 3.4-statements | product | 0 | 0 | 16 | 0 | 3 | 5 | 0 | 0 | 0 | 0 | 0 | 13 | 1 |
 | 3.4-ownership | product | 18 | 0 | 0 | 0 | 1 | 18 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
@@ -78,11 +78,11 @@ Two separate questions per cell. **Status**: was the verification step done with
 | 5c-root-causes | method | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 5c-reviewers | method | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
-Totals: {'closed': 612, 'not-applicable': 35, 'open': 81, 'blocked': 24}; evidence grade of closed cells: {'registered-run': 496, 'inspected': 116}; product: {'unknown': 190, 'n/a': 33, 'fails': 408, 'intent-undecided': 6, 'holds-in-model-only': 1, 'holds-live': 9, 'holds-inspected': 69, 'holds-as-detection': 36}
+Totals: {'closed': 618, 'not-applicable': 35, 'open': 75, 'blocked': 24}; evidence grade of closed cells: {'registered-run': 502, 'inspected': 116}; product: {'unknown': 186, 'n/a': 33, 'fails': 412, 'intent-undecided': 6, 'holds-in-model-only': 1, 'holds-live': 9, 'holds-inspected': 69, 'holds-as-detection': 36}
 
 ## Writer census obligations (review R2-02)
 
-From `followup-writer-census` via `matrix-input/writer-census-obligations.json`: declared 162 (invariant, writer) obligations, 20 conditional obligations and 3 write-set gaps; one open cell of gate 3.3a-writesets each, in the writer's module. Cells by kind {'WS-OBL': 162, 'WS-COND': 20, 'WS-GAP': 3}; by module {'01': 29, '03': 28, '04': 20, '05': 16, '06': 15, '11': 1, '12': 4, '15': 28, '17': 21, '18': 23}; product {'holds-live': 9, 'holds-inspected': 69, 'holds-as-detection': 36, 'fails': 64, 'unknown': 7}. The starting inventory's 83 writer obligations are the original hand manifest and stay as they were.
+From `followup-writer-census` via `matrix-input/writer-census-obligations.json`: declared 162 (invariant, writer) obligations, 20 conditional obligations and 3 write-set gaps; one open cell of gate 3.3a-writesets each, in the writer's module. Cells by kind {'WS-OBL': 162, 'WS-COND': 20, 'WS-GAP': 3}; by module {'01': 29, '03': 28, '04': 20, '05': 16, '06': 15, '11': 1, '12': 4, '15': 28, '17': 21, '18': 23}; product {'holds-live': 9, 'holds-inspected': 69, 'holds-as-detection': 36, 'fails': 68, 'unknown': 3}. The starting inventory's 83 writer obligations are the original hand manifest and stay as they were.
 
 ## Reach obligations (review R2-10)
 

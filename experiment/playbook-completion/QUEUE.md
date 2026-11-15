@@ -53,7 +53,8 @@ status, evidence level and product obligation per cell). Reconciled 2026-11-14 (
 | Q18h | proofs-env | D-7: the IRIS environment contract as a Verus specification, premises linked, differential link to the executable contract | done (737c3930): Verus subset; 29/29 mutants |
 | Q18i | orchestrator | bounded merge gate per the playbook (verify.sh --merge, hard 1200 s) | done: verify-merge-20e3b336, -bb1f23fc (51/51, ~216 s) |
 | Q18j | proofs-sys | D-14 remainder: system axioms over the composed mechanisms in Verus | done (integrated by the orchestrator): 256 verified, 12/12 located controls, recheck; exactness against the explorer's `violates` checked independently |
-| Q18k | proofs-env | D-7 remainder: extension clauses, E-1, X2 into the Verus subset | doing (steer 13) |
+| Q18k | proofs-env | D-7 remainder: extension clauses, E-1, X2 into the Verus subset | done (`proofs-env2`, integrated): 433 verified, 22 controls, 2,430/2,943 cases, 49/49 mutants, recheck; 9 families (513 cases) open with exact obligations |
+| Q18m | orchestrator | write-set cells left 'unreached' (WS-OBL-147/148/150/154): is the SQL fallback reachable? | done: reachable with a writing role lacking %Native_ClassExecution (`ws-live-sql-fallback-priv`, F-C1750); cells 13 and 17 closed |
 | Q18l | review | scoped addendum to review 6: R6 fixes, O-1 on IVG262CAP, D-7, the merge-gate interpretation | done: sign-off extends to 4e4a4d88; A-01..A-06 fixed (06cf63d1) |
 | Q18g | orchestrator | STATUS/TRUST/PROOF-DEBT refresh; verify.sh --live --clean on a committed tree; fifth review | doing: account refreshed (1dff8e3c, 82027430); clean gate on the candidate running |
 | I-1..I-4 | orchestrator | Incidents: IVG460SNAP, USER-REDEPLOY-08, superseded proof logs, health alert | recorded in `incidents/` |

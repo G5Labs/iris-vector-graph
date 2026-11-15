@@ -12,10 +12,10 @@
    "experiment/playbook-completion/findings/audit/*.json"
   ],
   "rule": "one entry per finding id; an id recorded in several audit files takes the last file in sorted order (as matrix/build_matrix.py)",
-  "unique_ids": 312,
+  "unique_ids": 313,
   "original": 197,
-  "new": 115,
-  "audit_records": 315,
+  "new": 116,
+  "audit_records": 316,
   "duplicate_records": {
    "F-0908": [
     "09",
@@ -37,7 +37,7 @@
    "intent-undecided": 6,
    "not-reproduced": 3,
    "refuted": 2,
-   "reproduced-live": 219,
+   "reproduced-live": 220,
    "reproduced-model": 7,
    "reproduced-test": 16
   }
@@ -534,7 +534,8 @@
     "F-C0340",
     "F-C0450",
     "F-C1108",
-    "F-C1301"
+    "F-C1301",
+    "F-C1750"
    ],
    "conditional": [
     "F-0503"
@@ -848,7 +849,8 @@
      "AX-03": 6,
      "AX-07": 1,
      "AX-09": 1,
-     "AX-12": 11
+     "AX-12": 11,
+     "unclassed": 1
     },
     "members_agreeing": 11
    },
@@ -868,6 +870,7 @@
     "F-1615",
     "F-C0940",
     "F-C1640",
+    "F-C1750",
     "F-C1795",
     "F-C1802"
    ],
@@ -889,7 +892,7 @@
    "conditional": [],
    "highest_severity": "S2",
    "severity_counts": {
-    "S2": 7,
+    "S2": 8,
     "S3": 6,
     "S4": 4
    },
@@ -4674,6 +4677,16 @@
    "module": "17",
    "title": "IRISGraphStore.query_nodes(limit=n) kills the calling Python process (SIGSEGV) on IRIS Community 2026.1 with the locked driver"
   },
+  "F-C1750": {
+   "primary": "RC-14",
+   "secondary": [
+    "RC-08"
+   ],
+   "severity": "S2",
+   "disposition": "reproduced-live",
+   "module": "17",
+   "title": "A refused Eraser probe is cached as 'absent': the store's deletes then run as plain SQL and leave the ledger statements of the deleted edges live"
+  },
   "F-C1795": {
    "primary": "RC-14",
    "secondary": [],
@@ -4747,13 +4760,13 @@
  },
  "summary": {
   "root_causes": 36,
-  "assigned": 306,
+  "assigned": 307,
   "excluded": 6,
   "conditional": 8,
   "top10": [
    "RC-01",
-   "RC-33",
    "RC-14",
+   "RC-33",
    "RC-31",
    "RC-16",
    "RC-03",
@@ -4762,7 +4775,7 @@
    "RC-06",
    "RC-23"
   ],
-  "top10_cover": 145,
+  "top10_cover": 146,
   "no_sys_axiom": [
    "RC-12",
    "RC-16",

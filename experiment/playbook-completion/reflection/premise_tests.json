@@ -6833,6 +6833,116 @@
    ],
    "verdict": "tested-partial",
    "should_exist": "A bridge in proofs-sys that proves the AX-01, AX-09 and AX-13 check predicates equal to the proofs-mech laws (as bridge_m02..m10 do for the composed mechanisms); today the correspondence is by inspection."
+  },
+  {
+   "key": "proofs-env2:ENV2-1",
+   "source": "experiment/playbook-completion/proofs-env2/PROOFS.md",
+   "id": "ENV2-1",
+   "premise": "the recorded rounds (11, contract-2's included) are faithful observations of IRIS 2026.1",
+   "pin_status": "engine observation",
+   "class": "harness",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "env-contract-selftest",
+     "what": "the contract's self-test"
+    },
+    {
+     "kind": "run",
+     "ref": "env-ext-r6",
+     "what": "516 cases, 0 outside, 42/42 mutants"
+    },
+    {
+     "kind": "run",
+     "ref": "env2-e1-r1",
+     "what": "E-1: 67 cases, 0 outside, 14/14 mutants"
+    },
+    {
+     "kind": "run",
+     "ref": "env2-x2-r1",
+     "what": "X2: 190 cases, 0 outside"
+    },
+    {
+     "kind": "run",
+     "ref": "proofs-env2-differential",
+     "what": "exec model = contract on 2,430 in-subset case runs, 0 disagreements"
+    }
+   ],
+   "verdict": "tested-holds",
+   "should_exist": "Not covered: observations by a second, independent driver."
+  },
+  {
+   "key": "proofs-env2:ENV2-2",
+   "source": "experiment/playbook-completion/proofs-env2/PROOFS.md",
+   "id": "ENV2-2",
+   "premise": "the extended Verus subset covers the clauses the proof premises use; 9 families stay executable evidence only",
+   "pin_status": "stated",
+   "class": "method",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "proofs-env2-premise-map",
+     "what": "every closure premise has a verdict; none rests on the 9 outside families"
+    }
+   ],
+   "verdict": "tested-partial",
+   "should_exist": "Bringing X-DDL, X-STAR, X-FX, X-NOINDEX, X-VEC $VECTOR, X2-JSON, X2-LIST, X2-TOP and X2-QUERY/MERGE/ZKILL into the specification (proofs-env2/PROOFS.md section 6)."
+  },
+  {
+   "key": "proofs-env2:ENV2-3",
+   "source": "experiment/playbook-completion/proofs-env2/PROOFS.md",
+   "id": "ENV2-3",
+   "premise": "the product discipline disc (only the exclusive head-lock holder writes the ledger globals, inside its transaction)",
+   "pin_status": "violated at the pin (F-1201: EraseGraph takes no head lock)",
+   "class": "product",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "live-f1201-reproduced",
+     "what": "F-1201: a commit lands between EraseGraph's row delete and its cleanup"
+    }
+   ],
+   "verdict": "tested-violated",
+   "should_exist": "A code-level check of every ledger-global writer's lock plan (D-3/D-4)."
+  },
+  {
+   "key": "proofs-env2:ENV2-4",
+   "source": "experiment/playbook-completion/proofs-env2/PROOFS.md",
+   "id": "ENV2-4",
+   "premise": "no liveness clause: the progress premises are not implied by the contract",
+   "pin_status": "stated",
+   "class": "progress",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "proofs-env2-premise-map",
+     "what": "39 progress rows carry the verdict 'progress'"
+    }
+   ],
+   "verdict": "untested",
+   "should_exist": "Progress tests under IRIS scheduling (D-8)."
+  },
+  {
+   "key": "proofs-env2:ENV2-5",
+   "source": "experiment/playbook-completion/proofs-env2/PROOFS.md",
+   "id": "ENV2-5",
+   "premise": "batch_probe (the batch-atomic mutant's dry run) depends only on the globals: an INSERT's outcome depends only on its table's existence and its row's visibility",
+   "pin_status": "modelling choice",
+   "class": "modelling-restriction",
+   "tests": [
+    {
+     "kind": "run",
+     "ref": "proofs-env2-differential",
+     "what": "the exec model agrees with contract-2 on the x2-r1 batch cases"
+    },
+    {
+     "kind": "run",
+     "ref": "proofs-env2-mutants",
+     "what": "batch-atomic killed by observation"
+    }
+   ],
+   "verdict": "tested-partial",
+   "should_exist": "A frame lemma in the specification that insert_many's per-row outcome depends only on table existence and row visibility, replacing the dry run."
   }
  ],
  "proof_debt": [
@@ -7049,9 +7159,14 @@
      "kind": "run",
      "ref": "ver-e262-d532-full",
      "what": "holds on 2026.2"
+    },
+    {
+     "kind": "run",
+     "ref": "proofs-env2-differential",
+     "what": "extended subset: exec model = contract on 2,430 of 2,943 recorded case runs"
     }
    ],
-   "not_covered": "The link from proofs/ participant contracts to contract clauses is by inspection; outside-subset features have no clause."
+   "not_covered": "The link from proofs/ participant contracts to contract clauses is by inspection; 9 clause families (513 recorded case runs) stay outside the Verus subset (proofs-env2/PROOFS.md section 6); outside-subset features of contract-2's coverage have no clause."
   },
   {
    "id": "D-8",
@@ -7252,19 +7367,19 @@
    "temporal-structural-cursor": "F-C0502"
   },
   "counts": {
-   "findings": 312,
-   "reproduced": 298,
+   "findings": 313,
+   "reproduced": 299,
    "detected": 4,
-   "not_detected": 294,
+   "not_detected": 295,
    "not_detected_by_severity": {
     "S1": 43,
-    "S2": 113,
+    "S2": 114,
     "S3": 94,
     "S4": 44
    },
    "not_detected_by_disposition": {
     "confirmed-source": 56,
-    "reproduced-live": 219,
+    "reproduced-live": 220,
     "reproduced-model": 7,
     "reproduced-test": 12
    },
@@ -8925,6 +9040,12 @@
     "detected_by_product_suite": false,
     "cited_upstream_tests": {}
    },
+   "F-C1046": {
+    "disposition": "reproduced-live",
+    "severity": "S3",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
    "F-C1101": {
     "disposition": "reproduced-live",
     "severity": "S3",
@@ -9272,6 +9393,18 @@
     "detected_by_product_suite": false,
     "cited_upstream_tests": {}
    },
+   "F-C1750": {
+    "disposition": "reproduced-live",
+    "severity": "S2",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
+   "F-C1795": {
+    "disposition": "reproduced-live",
+    "severity": "S4",
+    "detected_by_product_suite": false,
+    "cited_upstream_tests": {}
+   },
    "F-C1801": {
     "disposition": "reproduced-live",
     "severity": "S2",
@@ -9313,18 +9446,6 @@
    "F-CS01": {
     "disposition": "reproduced-live",
     "severity": "S2",
-    "detected_by_product_suite": false,
-    "cited_upstream_tests": {}
-   },
-   "F-C1795": {
-    "disposition": "reproduced-live",
-    "severity": "S4",
-    "detected_by_product_suite": false,
-    "cited_upstream_tests": {}
-   },
-   "F-C1046": {
-    "disposition": "reproduced-live",
-    "severity": "S3",
     "detected_by_product_suite": false,
     "cited_upstream_tests": {}
    }

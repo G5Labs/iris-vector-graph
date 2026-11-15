@@ -1,6 +1,6 @@
 # Lane checkpoint (orchestrator; read by the hourly monitor)
 
-Updated: 2026-11-15 ~00:30 UTC: proofs-sys (D-14 composition) done and integrated (256 verified, 0 errors, 12/12 located controls, recheck; matrix supplements, PS-1..PS-4 in the premise map, closure 173 conditions, verify.sh crate loop); running: the proofs-env extension (proofs-env2, its gate in the background); next: integrate it, a periodic full verification (verify.sh --live --clean) including both crates, a merge gate from a fresh checkout, a scoped addendum.
+Updated: 2026-11-15 ~00:45 UTC: proofs-sys integrated (792b8d6f; fresh-checkout fast gate verify-fast-export-792b8d6f 40/40); proofs-env2 (D-7 remainder) done and integrated; write-set fallback cells resolved live (ws-live-sql-fallback-priv, new finding F-C1750, cells 13/17 closed; disposable principal restored and disabled); no lane running; next: commit, periodic full verification (verify.sh --live --clean) on the committed candidate, merge gate from a fresh checkout, scoped review addendum.
 previous account is live: `ListAgents` empty, no audit process running, IRIS and heavy locks free, container healthy,
 product scope check passes). Last checkpoint commit before the switch: `1564a673`.
 

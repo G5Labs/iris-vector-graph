@@ -22,7 +22,7 @@
     "experiment/playbook-completion/proofs-env/src/exec.rs",
     "experiment/playbook-completion/proofs-env/RESULTS.json"
    ],
-   "add_remaining": "[proofs-env, D-7] Verus subset excludes the r6 extension clauses (X-FX, X-NOINDEX, X-DDL, X-NULL, INSERT ... SELECT, X-ORDER, X-STAR, X-TLEVEL-SQL, X-VEC, X-ZSTRIP), contract-2's E-1 and X2 (executable evidence only). Verus-model mutants: all 29 killed (proofs-env-mutants-r3), after the orchestrator's targeted rounds env-estop-gap (E-STOP's every-level reading) and env-dml-single (single-row autocommit-off DML); the probe freedom-waits-only stays alive by design (the Freedom's proceeding branch is unobserved)"
+   "add_remaining": "[proofs-env, D-7] Verus subset excludes the r6 extension clauses (X-FX, X-NOINDEX, X-DDL, X-NULL, INSERT ... SELECT, X-ORDER, X-STAR, X-TLEVEL-SQL, X-VEC, X-ZSTRIP), contract-2's E-1 and X2 (executable evidence only); X-TLEVEL-SQL, X-VEC's SQL functions, X-ZSTRIP, X-ORDER, X-NULL, INSERT ... SELECT, E-1, X2-BATCH and X2-IOU are brought in by proofs-env2 (its supplement). Verus-model mutants: all 29 killed (proofs-env-mutants-r3), after the orchestrator's targeted rounds env-estop-gap (E-STOP's every-level reading) and env-dml-single (single-row autocommit-off DML); the probe freedom-waits-only stays alive by design (the Freedom's proceeding branch is unobserved)"
   },
   {
    "gate": "3.6-closure",
@@ -56,7 +56,7 @@
     "experiment/playbook-completion/proofs-env/src/premises.rs",
     "experiment/playbook-completion/proofs-env/PROOFS.md"
    ],
-   "add_remaining": "[proofs-env, D-7] the discipline 'disc' against the product's code (D-3/D-4; violated by EraseGraph at the pin, F-1201); progress premises (36 rows) not implied by any clause; outside-contract premises (CreateGUID, sha256, caller identity, durability, statement granularity, %ID, multi-row DELETE scan, embedded SQL) stay assumed or executable-only; several locks / regions are linked premise by premise, not composed into one invariant"
+   "add_remaining": "[proofs-env, D-7] the discipline 'disc' against the product's code (D-3/D-4; violated by EraseGraph at the pin, F-1201); progress premises (36 rows) not implied by any clause; outside-contract premises (CreateGUID, sha256, caller identity, durability, statement granularity, %ID, multi-row DELETE scan) stay assumed or executable-only (embedded SQL, E-1, is proved by proofs-env2); several locks / regions are linked premise by premise, not composed into one invariant"
   }
  ]
 }

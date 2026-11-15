@@ -4,21 +4,21 @@ Lane reflection of the completion audit, product pin `3eaa79cf`. Level: **method
 
 ## Corpus and rule
 
-- Findings: every id in the original submission (`experiment/playbook-uplift/FINDINGS.md`, `findings/*.md`: 197 ids) and every audit record in `findings/audit/*.json` (315 records, 312 distinct ids: 197 original, 115 new). Ids recorded twice take the later file's record, as the matrix does: F-0908 (09 then zz-versions), F-1001 (10 then zz-versions), F-C1803 (18 then zz-versions).
-- Dispositions in the corpus: blocked-access 2, confirmed-source 56, duplicate 1, intent-undecided 6, not-reproduced 3, refuted 2, reproduced-live 219, reproduced-model 7, reproduced-test 16.
+- Findings: every id in the original submission (`experiment/playbook-uplift/FINDINGS.md`, `findings/*.md`: 197 ids) and every audit record in `findings/audit/*.json` (316 records, 313 distinct ids: 197 original, 116 new). Ids recorded twice take the later file's record, as the matrix does: F-0908 (09 then zz-versions), F-1001 (10 then zz-versions), F-C1803 (18 then zz-versions).
+- Dispositions in the corpus: blocked-access 2, confirmed-source 56, duplicate 1, intent-undecided 6, not-reproduced 3, refuted 2, reproduced-live 220, reproduced-model 7, reproduced-test 16.
 - Each finding has exactly one **primary** root cause; **secondary** causes are listed where another rule is also broken. Refuted, not-reproduced and duplicate findings are listed separately and count to no root cause (6). Intent-undecided and blocked-access findings are assigned but marked *conditional* (8): the behaviour is observed or confirmed in source, the intent or the live reproduction is not settled.
 - A root cause is a missing or violated shared rule or mechanism. 'Violates' names the original ontology's universal axioms SYS-I1..SYS-I10 (`experiment/playbook-uplift/ontology/00-system.md`) where one applies, and otherwise the playbook principle or product document it breaks.
 - Cross-reference to the semantics lane (`semantics/axioms.json`, `semantics/mechanisms.json`): final ids: each root cause names the axioms (AX-NN) it violates and the mechanism (M-NN) its remedy needs; member_classes counts the semantics lane's own classes of its members. The checker verifies every AX/M id against the final files; 'agreeing' counts the members the semantics lane itself classed under one of the root cause's axioms (an independent classification of the same findings, `semantics/src/finding_classes.json`).
 
-**Result: 312 findings -> 306 assigned to 36 root causes, 6 excluded.** The ten largest root causes cover 145 of the 306 assigned findings (47%).
+**Result: 313 findings -> 307 assigned to 36 root causes, 6 excluded.** The ten largest root causes cover 146 of the 307 assigned findings (48%).
 
 ## Root causes (ordered by findings covered, then S1 count)
 
 | Rank | Id | Root cause | Violates | Findings | S1 | S2 | S3 | S4 | Highest | Conditional | Secondary |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | 1 | RC-01 | Graph scope is added by hand to each statement | SYS-I2 | 23 | 12 | 7 | 4 | 0 | S1 | 1 | 9 |
-| 2 | RC-33 | Stated refusals, options and protocol verbs are accepted and ignored | SYS-I9 | 18 | 0 | 6 | 8 | 4 | S2 | 1 | 2 |
-| 3 | RC-14 | Failures are swallowed into empty, default or success answers | SYS-I9 | 17 | 0 | 7 | 6 | 4 | S2 | 0 | 13 |
+| 2 | RC-14 | Failures are swallowed into empty, default or success answers | SYS-I9 | 18 | 0 | 8 | 6 | 4 | S2 | 0 | 13 |
+| 3 | RC-33 | Stated refusals, options and protocol verbs are accepted and ignored | SYS-I9 | 18 | 0 | 6 | 8 | 4 | S2 | 1 | 2 |
 | 4 | RC-31 | Descriptions are written by hand and not checked against the code | (none of SYS-I1..I10) | 16 | 0 | 0 | 13 | 3 | S3 | 0 | 12 |
 | 5 | RC-16 | The Cypher and AQL translators have no reference semantics | (none of SYS-I1..I10) | 13 | 1 | 6 | 5 | 1 | S1 | 0 | 0 |
 | 6 | RC-03 | Removal reach is not derived from a declared store inventory | SYS-I4 | 12 | 6 | 3 | 3 | 0 | S1 | 0 | 10 |
@@ -27,7 +27,7 @@ Lane reflection of the completion audit, product pin `3eaa79cf`. Level: **method
 | 9 | RC-06 | Derived stores and caches have no reliable staleness signal | SYS-I8 | 11 | 0 | 8 | 1 | 2 | S2 | 1 | 3 |
 | 10 | RC-23 | Results depend on storage order or join multiplicity | (none of SYS-I1..I10) | 11 | 0 | 1 | 3 | 7 | S2 | 1 | 0 |
 | 11 | RC-04 | Erase, ledger commits and redaction start are not serialized on the ledger head lock | SYS-I1, SYS-I3 | 10 | 5 | 4 | 1 | 0 | S1 | 0 | 3 |
-| 12 | RC-08 | The ledger is not the single writer of governed content | SYS-I1, SYS-I7 | 10 | 1 | 7 | 2 | 0 | S1 | 1 | 9 |
+| 12 | RC-08 | The ledger is not the single writer of governed content | SYS-I1, SYS-I7 | 10 | 1 | 7 | 2 | 0 | S1 | 1 | 10 |
 | 13 | RC-05 | Unlocked read-modify-write of shared facts outside the ledger | SYS-I1 | 10 | 0 | 4 | 6 | 0 | S2 | 1 | 2 |
 | 14 | RC-28 | Resource bounds are not declared | (none of SYS-I1..I10) | 10 | 0 | 2 | 5 | 3 | S2 | 1 | 4 |
 | 15 | RC-02 | Stored facts whose key omits the graph | SYS-I2 | 8 | 4 | 4 | 0 | 0 | S1 | 0 | 4 |
@@ -56,8 +56,8 @@ Lane reflection of the completion audit, product pin `3eaa79cf`. Level: **method
 ## Top 10 (findings covered, then severity)
 
 1. **RC-01 Graph scope is added by hand to each statement** — 23 findings (12 S1, 7 S2, 4 S3), highest S1. Remedy: Route every read and write through one graph-scoped access layer whose statements always bind graph_id (default '') and join on (graph_id, id); refuse unscoped calls; give every reader's tests a two-graph fixture with one id held by both graphs.
-2. **RC-33 Stated refusals, options and protocol verbs are accepted and ignored** — 18 findings (6 S2, 8 S3, 4 S4), highest S2. Remedy: Audit every documented refusal, parameter and protocol verb mechanically (a list generated from the docs and specs), implement it or refuse it with a named error, and test each.
-3. **RC-14 Failures are swallowed into empty, default or success answers** — 17 findings (7 S2, 6 S3, 4 S4), highest S2. Remedy: Enforce the 4.6.0 rule mechanically: no handler returns an empty/default answer from an except clause; every outcome (removed, DONE, restored counts, health, legs used) is computed from the operation's own result; a lint over except clauses plus a fault-injection test per reader.
+2. **RC-14 Failures are swallowed into empty, default or success answers** — 18 findings (8 S2, 6 S3, 4 S4), highest S2. Remedy: Enforce the 4.6.0 rule mechanically: no handler returns an empty/default answer from an except clause; every outcome (removed, DONE, restored counts, health, legs used) is computed from the operation's own result; a lint over except clauses plus a fault-injection test per reader.
+3. **RC-33 Stated refusals, options and protocol verbs are accepted and ignored** — 18 findings (6 S2, 8 S3, 4 S4), highest S2. Remedy: Audit every documented refusal, parameter and protocol verb mechanically (a list generated from the docs and specs), implement it or refuse it with a named error, and test each.
 4. **RC-31 Descriptions are written by hand and not checked against the code** — 16 findings (13 S3, 3 S4), highest S3. Remedy: Generate or test every description: execute documentation examples (tests/docs), check spec and ADR status lines in CI, generate the wire schema, constraint lists and status parts from the code, and keep evidence claims tied to commits of this repository.
 5. **RC-16 The Cypher and AQL translators have no reference semantics** — 13 findings (1 S1, 6 S2, 5 S3, 1 S4), highest S1. Remedy: Drive the translators from a reference semantics: the typed openCypher TCK at the pin on every supported engine, a differential oracle per clause shape against a reference evaluator, and a refusal for every shape outside the covered set.
 6. **RC-03 Removal reach is not derived from a declared store inventory** — 12 findings (6 S1, 3 S2, 3 S3), highest S1. Remedy: Declare one store inventory (each store and field with its owning graph/tenant key and its erase, redact, export and liveness hooks) and generate erasure, LiveRows/Matches, the snapshot plan and the receipt's out_of_reach list from it; check mechanically that every writer's target store is in the inventory.
@@ -70,7 +70,7 @@ Lane reflection of the completion audit, product pin `3eaa79cf`. Level: **method
 
 - S1 findings (44 assigned) concentrate in few causes: RC-01 12, RC-03 6, RC-04 5, RC-02 4, RC-09 2, RC-11 2, RC-19 2, RC-20 2, RC-22 2, RC-25 2, RC-35 2, RC-07 1, RC-08 1, RC-16 1.
 - 17 of 36 root causes break no SYS-I axiom of the original ontology (RC-12, RC-16, RC-17, RC-18, RC-19, RC-20, RC-21, RC-22, RC-23, RC-24, RC-26, RC-28, RC-29, RC-30, RC-31, RC-32, RC-36). The semantics lane's fourteen axioms (AX-01..AX-14) cover some of them (authorization AX-13, progress AX-14, vector identity and derived marks AX-01, wire answers AX-12); 11 root causes map to none of AX-01..AX-14 either (RC-16, RC-17, RC-18, RC-19, RC-21, RC-23, RC-24, RC-28, RC-29, RC-31, RC-32): candidates for further axioms or for the lane's FUNC/DOC/ENV/TEST classes.
-- Shared-mechanism view (playbook: '12 shared mechanisms closed 90%'): one graph-scoped access layer (RC-01, RC-02), one store inventory (RC-03), one ledger head-lock protocol and server-side write gate (RC-04, RC-08), one staleness epoch (RC-06, RC-07), one write-transaction wrapper (RC-10, RC-11), one outcome/error rule (RC-14, RC-15, RC-33), an executable environment contract (RC-12) and one owner per store with current indexes (RC-34, RC-35) would address the root causes of 156 of the 306 assigned findings. This is a statement about the grouping, not a claim that the remedies are correct or sufficient: each remedy is prose, nothing was implemented or tested here.
+- Shared-mechanism view (playbook: '12 shared mechanisms closed 90%'): one graph-scoped access layer (RC-01, RC-02), one store inventory (RC-03), one ledger head-lock protocol and server-side write gate (RC-04, RC-08), one staleness epoch (RC-06, RC-07), one write-transaction wrapper (RC-10, RC-11), one outcome/error rule (RC-14, RC-15, RC-33), an executable environment contract (RC-12) and one owner per store with current indexes (RC-34, RC-35) would address the root causes of 157 of the 307 assigned findings. This is a statement about the grouping, not a claim that the remedies are correct or sufficient: each remedy is prose, nothing was implemented or tested here.
 
 ## Root-cause details
 
@@ -237,7 +237,7 @@ Lane reflection of the completion audit, product pin `3eaa79cf`. Level: **method
   - F-C1150 [S2, reproduced-live] A plain SQL INSERT into Graph_KG.ledger_revisions is accepted, and a row planted at head+1 made the next ledger commit fail
   - F-C1307 [S2, reproduced-live] A writer that keeps the target live holds a redaction open indefinitely, and while it is open every tenant's record readers, verify() and other redactions are refused
   - F-C1350 [S1, reproduced-live] Redaction batches tombstone the history of content a ledger-bypassing writer made live after the run's entry check
-- Also a secondary cause of: F-0404, F-0506, F-1306, F-C0150, F-C0151, F-C0340, F-C0450, F-C1108, F-C1301
+- Also a secondary cause of: F-0404, F-0506, F-1306, F-C0150, F-C0151, F-C0340, F-C0450, F-C1108, F-C1301, F-C1750
 
 ### RC-09 Retries re-execute effects the idempotency record does not cover
 
@@ -330,9 +330,9 @@ Lane reflection of the completion audit, product pin `3eaa79cf`. Level: **method
 - Statement: Handlers catch failures and answer as if nothing happened: [] for a failed read, False ('exists') for a refused write, DONE for a failed embedding, success with failed rows, 'healthy' with no database, zero vectors for a failed lookup, a fused search without its failed leg, a restore that drops a line it cannot write. The outcome is not computed from the operation's result.
 - Violates: SYS-I9; CHANGELOG 4.6.0 rule 'a failed read raises'; 4.7.0 row 14 (every bulk writer raises for a refused row); 4.6.0 R265 (no silent empty answer).
 - Highest severity S2; modules 01, 02, 03, 05, 06, 07, 09, 15, 16, 17, 18.
-- Semantics lane: axioms AX-12; mechanism M-10; 11 of 17 members classed under one of these axioms by the semantics lane; its classes of the members: AX-02 1, AX-03 6, AX-07 1, AX-09 1, AX-12 11.
+- Semantics lane: axioms AX-12; mechanism M-10; 11 of 18 members classed under one of these axioms by the semantics lane; its classes of the members: AX-02 1, AX-03 6, AX-07 1, AX-09 1, AX-12 11, unclassed 1.
 - Remedy (prose only): Enforce the 4.6.0 rule mechanically: no handler returns an empty/default answer from an except clause; every outcome (removed, DONE, restored counts, health, legs used) is computed from the operation's own result; a lint over except clauses plus a fault-injection test per reader.
-- Findings (17):
+- Findings (18):
   - F-0101 [S3, reproduced-test] Legacy removal reports objects removed that may still be there
   - F-0102 [S2, confirmed-source] Some setup failures are only logged, not put in the reply's warnings
   - F-0209 [S4, confirmed-source] An all-graphs walk can miss graphs
@@ -348,6 +348,7 @@ Lane reflection of the completion audit, product pin `3eaa79cf`. Level: **method
   - F-1615 [S2, reproduced-live] The fraud server's vector lookup always falls back to zeros
   - F-C0940 [S3, confirmed-source] IVG.CypherEngine.Scalar answers the caller's default when the read fails, so a failed COUNT reads as 0
   - F-C1640 [S4, reproduced-live] The stdio MCP server's LoadGraph always reports 0 nodes and 0 edges loaded
+  - F-C1750 [S2, reproduced-live] A refused Eraser probe is cached as 'absent': the store's deletes then run as plain SQL and leave the ledger statements of the deleted edges live
   - F-C1795 [S4, reproduced-live] When its dedicated Native API connection is refused (licence units exhausted), the engine silently uses the caller's connection and retries the refused connect on every native call
   - F-C1802 [S2, reproduced-live] restore_snapshot drops a global line it cannot write without raising or counting it
 - Also a secondary cause of: F-0601, F-0610, F-0612, F-0613, F-1003, F-1602, F-1802, F-C0330, F-C0348, F-C0690, F-C1641, F-C1716, F-C1804

@@ -1,0 +1,40 @@
+{
+ "lane": "proofs-env2 (D-7 remainder: the contract clauses outside proofs-env's Verus subset)",
+ "source": "proofs-env2/MATRIX-INPUT.json (its proposed cells merged as supplements, so proofs-env's cells and evidence stay; levels: model)",
+ "supplements": [
+  {
+   "gate": "3.2-library",
+   "module": "product",
+   "add_evidence": [
+    "run:proofs-env2-baseline",
+    "run:proofs-env2-differential",
+    "run:proofs-env2-mutants",
+    "run:proofs-env2-recheck-baseline",
+    "run:proofs-env2-recheck-differential",
+    "experiment/playbook-completion/proofs-env2/PROOFS.md",
+    "experiment/playbook-completion/proofs-env2/src/ext.rs",
+    "experiment/playbook-completion/proofs-env2/src/ext_exec.rs",
+    "experiment/playbook-completion/proofs-env2/RESULTS.json"
+   ],
+   "add_remaining": "[proofs-env2, D-7 remainder] supplement to proofs-env's 3.2-library cell (its sources and runs unchanged): the Verus specification now also states X-TLEVEL-SQL, X-VEC's SQL functions, X-ZSTRIP, X-ORDER, X-NULL, X-STMT's INSERT ... SELECT, contract-2's E-1 (with the VARCHAR(256) key limit), X2-BATCH and X2-IOU; the exec model verified against it agrees with iris-contract / contract-2 on 2,430 of 2,943 recorded case runs (proofs-env: 1,769), 0 disagreements, 0 observations outside; 49/49 Verus-model mutants killed by observation (the 20 new ones each in the rounds that exercise their clause). Still outside: 513 recorded case runs in 9 clause families stay executable evidence only: X-DDL 172, X-FX 115, X-NOINDEX 83, X2-JSON 38, X2-LIST 33, X2-QUERY/MERGE/ZKILL 30, X2-TOP 30, X-VEC ($VECTOR set/get) 8, X-STAR 4 (exact obligations: proofs-env2/PROOFS.md section 6); the probe freedom-waits-only alive by design"
+  },
+  {
+   "gate": "3.6-closure",
+   "module": "product",
+   "add_evidence": [
+    "run:proofs-env2-premise-map",
+    "run:proofs-env2-baseline",
+    "run:proofs-env2-mutants",
+    "run:proofs-env2-ctl-emb-own-txn",
+    "run:proofs-env2-ctl-emb-ignores-autocommit",
+    "run:proofs-env2-ctl-emb-select-committed-only",
+    "run:proofs-env2-ctl-emb-ignores-row-locks",
+    "run:proofs-env2-ctl-statement-not-atomic",
+    "experiment/playbook-completion/proofs-env2/premise_map.json",
+    "experiment/playbook-completion/proofs-env2/src/premises.rs",
+    "experiment/playbook-completion/proofs-env2/PROOFS.md"
+   ],
+   "add_remaining": "[proofs-env2, D-7 remainder] supplement to proofs-env's 3.6-closure cell: TRUST's new premise 'Embedded SQL (&sql) behaves as dynamic SQL for the clauses used' moves from outside-contract to proved (premise_trust_e1: same effect and answer, same visibility, same waits, same Freedom; 4 located controls with counterexamples; its 121 recorded cases in the subset and its 6 mutants killed); proofs-d1e P-M2 moves from outside-contract to proved in part (premise_d1e_p_m2_stmt_atomic: a failing multi-row INSERT ... SELECT writes nothing, control ctl_statement_not_atomic); the 'IRIS environment contract' row's linked subset grows; the new closure rows proofs-env:ENV-4, proofs-sys:PS-2 and PS-3 mapped (progress). Closure verdicts: outside-contract 7, product-discipline 5, progress 39, proved 10, proved-in-part 11, shown-false 3. Still outside: as proofs-env (disc against the code, progress premises, uncomposed locks); premises resting on the 9 families still outside: none found in closure.json"
+  }
+ ]
+}

@@ -165,7 +165,7 @@ RCS = [
      "Enforce the 4.6.0 rule mechanically: no handler returns an empty/default answer from an except clause; every "
      "outcome (removed, DONE, restored counts, health, legs used) is computed from the operation's own result; a lint "
      "over except clauses plus a fault-injection test per reader.",
-     "F-0101 F-0102 F-0209 F-0306 F-0307 F-0511 F-0604 F-0614 F-0709 F-1508 F-1509 F-1611 F-1615 F-C0940 F-C1640 F-C1795 F-C1802"),
+     "F-0101 F-0102 F-0209 F-0306 F-0307 F-0511 F-0604 F-0614 F-0709 F-1508 F-1509 F-1611 F-1615 F-C0940 F-C1640 F-C1750 F-C1795 F-C1802"),
     ("Refusals are not mapped to one typed error hierarchy at the boundary",
      ["SYS-I9"], "errors.py:1-17 (one catchable root IVGError); USER_GUIDE.md:313-318 (CypherParseError, GraphWriteError)",
      "Each layer raises its own exception types and messages: lexer SyntaxError, ValueError from the translator, "
@@ -379,7 +379,7 @@ SECONDARY = {
     "F-1505": [31], "F-1111": [31], "F-1706": [31], "F-1703": [31], "F-1602": [14],
     # findings added after the first pass (r3)
     "F-C0330": [14], "F-C0340": [8, 3, 1], "F-C0348": [14], "F-C0349": [27], "F-C0350": [21], "F-C0351": [27],
-    "F-C0450": [8], "F-C0151": [8], "F-C0748": [28], "F-C0840": [3], "F-C0849": [17], "F-C1716": [14],
+    "F-C0450": [8], "F-C1750": [8], "F-C0151": [8], "F-C0748": [28], "F-C0840": [3], "F-C0849": [17], "F-C1716": [14],
     "F-C1743": [29], "F-C1350": [4], "F-C1351": [3, 4], "F-C1250": [3], "F-C1850": [3], "F-C0717": [27],
     "F-C0150": [8], "F-C1547": [2], "F-C1041": [29], "F-C0690": [14], "F-C1642": [1], "F-C1742": [1],
     "F-C1741": [32], "F-C1641": [14], "F-C0615": [10],

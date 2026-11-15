@@ -1435,7 +1435,12 @@
     "proofs-env-mutants-r2",
     "proofs-env-mutants-r3",
     "proofs-env-recheck-baseline",
-    "proofs-env-recheck-differential"
+    "proofs-env-recheck-differential",
+    "proofs-env2-baseline",
+    "proofs-env2-differential",
+    "proofs-env2-mutants",
+    "proofs-env2-recheck-baseline",
+    "proofs-env2-recheck-differential"
    ],
    "evidence": [
     "run:env-contract-r2",
@@ -1456,17 +1461,27 @@
     "experiment/playbook-completion/proofs-env/PROOFS.md",
     "experiment/playbook-completion/proofs-env/src/spec.rs",
     "experiment/playbook-completion/proofs-env/src/exec.rs",
-    "experiment/playbook-completion/proofs-env/RESULTS.json"
+    "experiment/playbook-completion/proofs-env/RESULTS.json",
+    "run:proofs-env2-baseline",
+    "run:proofs-env2-differential",
+    "run:proofs-env2-mutants",
+    "run:proofs-env2-recheck-baseline",
+    "run:proofs-env2-recheck-differential",
+    "experiment/playbook-completion/proofs-env2/PROOFS.md",
+    "experiment/playbook-completion/proofs-env2/src/ext.rs",
+    "experiment/playbook-completion/proofs-env2/src/ext_exec.rs",
+    "experiment/playbook-completion/proofs-env2/RESULTS.json"
    ],
    "evidence_grade": "registered-run",
    "gate": "3.2-library",
    "level": "method",
    "module": "product",
    "product_obligation": "unknown",
-   "remaining": "[proofs-env, D-7] Verus subset excludes the r6 extension clauses (X-FX, X-NOINDEX, X-DDL, X-NULL, INSERT ... SELECT, X-ORDER, X-STAR, X-TLEVEL-SQL, X-VEC, X-ZSTRIP), contract-2's E-1 and X2 (executable evidence only). Verus-model mutants: all 29 killed (proofs-env-mutants-r3), after the orchestrator's targeted rounds env-estop-gap (E-STOP's every-level reading) and env-dml-single (single-row autocommit-off DML); the probe freedom-waits-only stays alive by design (the Freedom's proceeding branch is unobserved)",
+   "remaining": "[proofs-env, D-7] Verus subset excludes the r6 extension clauses (X-FX, X-NOINDEX, X-DDL, X-NULL, INSERT ... SELECT, X-ORDER, X-STAR, X-TLEVEL-SQL, X-VEC, X-ZSTRIP), contract-2's E-1 and X2 (executable evidence only); X-TLEVEL-SQL, X-VEC's SQL functions, X-ZSTRIP, X-ORDER, X-NULL, INSERT ... SELECT, E-1, X2-BATCH and X2-IOU are brought in by proofs-env2 (its supplement). Verus-model mutants: all 29 killed (proofs-env-mutants-r3), after the orchestrator's targeted rounds env-estop-gap (E-STOP's every-level reading) and env-dml-single (single-row autocommit-off DML); the probe freedom-waits-only stays alive by design (the Freedom's proceeding branch is unobserved) [proofs-env2, D-7 remainder] supplement to proofs-env's 3.2-library cell (its sources and runs unchanged): the Verus specification now also states X-TLEVEL-SQL, X-VEC's SQL functions, X-ZSTRIP, X-ORDER, X-NULL, X-STMT's INSERT ... SELECT, contract-2's E-1 (with the VARCHAR(256) key limit), X2-BATCH and X2-IOU; the exec model verified against it agrees with iris-contract / contract-2 on 2,430 of 2,943 recorded case runs (proofs-env: 1,769), 0 disagreements, 0 observations outside; 49/49 Verus-model mutants killed by observation (the 20 new ones each in the rounds that exercise their clause). Still outside: 513 recorded case runs in 9 clause families stay executable evidence only: X-DDL 172, X-FX 115, X-NOINDEX 83, X2-JSON 38, X2-LIST 33, X2-QUERY/MERGE/ZKILL 30, X2-TOP 30, X-VEC ($VECTOR set/get) 8, X-STAR 4 (exact obligations: proofs-env2/PROOFS.md section 6); the probe freedom-waits-only alive by design",
    "status": "closed",
    "supplemented_by": [
-    "matrix-input/proofs-env.json"
+    "matrix-input/proofs-env.json",
+    "matrix-input/proofs-env2.json"
    ]
   },
   {
@@ -7919,11 +7934,14 @@
    "as_built_findings": [
     "F-C0151",
     "F-C0450",
-    "F-C1250"
+    "F-C1250",
+    "F-C1750"
    ],
    "cited_runs": [
+    "ws-check-r5",
     "ws-live-fhir-blocked",
     "ws-live-noindex-erase",
+    "ws-live-sql-fallback-priv",
     "ws-live-stmt-collision",
     "ws-live-stmt-purge"
    ],
@@ -7932,13 +7950,16 @@
     "run:ws-live-stmt-collision",
     "run:ws-live-stmt-purge",
     "run:ws-live-fhir-blocked",
-    "run:ws-live-noindex-erase"
+    "run:ws-live-noindex-erase",
+    "run:ws-live-sql-fallback-priv",
+    "run:ws-check-r5"
    ],
    "evidence_grade": "inspected",
    "findings": [
     "F-C0151",
     "F-C0450",
-    "F-C1250"
+    "F-C1250",
+    "F-C1750"
    ],
    "gate": "3.3a-writesets",
    "level": "product",
@@ -7948,15 +7969,17 @@
      "finding F-C0151",
      "finding F-C0450",
      "finding F-C1250",
+     "finding F-C1750",
      "stated fails by matrix-input/writesets.json",
      "run ws-live-noindex-erase (fail)",
+     "run ws-live-sql-fallback-priv (fail)",
      "run ws-live-stmt-collision (fail)",
      "run ws-live-stmt-purge (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "open INV-stmt census cells: WS-OBL-029, WS-OBL-033, WS-OBL-041, WS-OBL-150, WS-OBL-154 (FHIR DropNode/DeleteEdge/ResyncKey: blocked-access, HS_FHIRServer absent; iris_sql_store SQL fallbacks of _delete_nodes_sql/delete_edges: unreached at the pin's deploy)",
+   "remaining": "open INV-stmt census cells: WS-OBL-029, WS-OBL-033, WS-OBL-041 (FHIR DropNode/DeleteEdge/ResyncKey: blocked-access, HS_FHIRServer absent); WS-OBL-150 and WS-OBL-154 (the SQL fallbacks of _delete_nodes_sql/delete_edges) discharged by F-C1750, live (ws-live-sql-fallback-priv)",
    "source": "matrix-input/writesets.json",
    "status": "open"
   },
@@ -7971,6 +7994,7 @@
     "F-C1308"
    ],
    "cited_runs": [
+    "ws-check-r5",
     "ws-live-fc1301-delete-reification",
     "ws-live-gap-marker",
     "ws-live-ins-bulk_create_edges",
@@ -7986,7 +8010,8 @@
     "ws-live-ins-store_write_edges",
     "ws-live-ins-store_write_nodes",
     "ws-live-migrations",
-    "ws-live-noindex"
+    "ws-live-noindex",
+    "ws-live-sql-fallback-priv"
    ],
    "evidence": [
     "experiment/playbook-completion/writesets/DISCHARGES.json",
@@ -8005,9 +8030,11 @@
     "run:ws-live-fc1301-delete-reification",
     "run:ws-live-migrations",
     "run:ws-live-gap-marker",
-    "run:ws-live-noindex"
+    "run:ws-live-noindex",
+    "run:ws-live-sql-fallback-priv",
+    "run:ws-check-r5"
    ],
-   "evidence_grade": "inspected",
+   "evidence_grade": "registered-run",
    "findings": [
     "F-C0150",
     "F-C1301",
@@ -8045,14 +8072,15 @@
      "run ws-live-ins-store_write_edges (fail)",
      "run ws-live-ins-store_write_nodes (fail)",
      "run ws-live-migrations (fail)",
-     "run ws-live-noindex (fail)"
+     "run ws-live-noindex (fail)",
+     "run ws-live-sql-fallback-priv (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "open INV-marker/INV-no-live-tombstone census cells: WS-OBL-147, WS-OBL-148 (iris_sql_store._delete_nodes_sql SQL fallback, unreached at the pin's deploy); 23 census discharges by finding are graded inspected (FHIR writers live-blocked, _mirror_node, DeleteBareSet, DropRows, _drop_orphaned_props, add_graph_id_to_nodes' INV-no-live-tombstone)",
+   "remaining": "",
    "source": "matrix-input/writesets.json",
-   "status": "open"
+   "status": "closed"
   },
   {
    "as_built_findings": [
@@ -8164,36 +8192,47 @@
   },
   {
    "as_built_findings": [
+    "F-C1301",
     "F-C1307",
-    "F-C1350"
+    "F-C1350",
+    "F-C1750"
    ],
    "cited_runs": [
-    "followup-writer-census"
+    "followup-writer-census",
+    "ws-check-r5",
+    "ws-live-sql-fallback-priv"
    ],
    "evidence": [
     "experiment/playbook-completion/writesets/DISCHARGES.json",
+    "run:ws-live-sql-fallback-priv",
+    "run:ws-check-r5",
     "run:followup-writer-census"
    ],
-   "evidence_grade": "inspected",
+   "evidence_grade": "registered-run",
    "findings": [
+    "F-C1301",
     "F-C1307",
-    "F-C1350"
+    "F-C1350",
+    "F-C1750"
    ],
    "gate": "3.3a-writesets",
    "level": "product",
    "module": "17",
    "product_basis": {
     "fails": [
+     "finding F-C1301",
      "finding F-C1307",
      "finding F-C1350",
-     "stated fails by matrix-input/writesets.json"
+     "finding F-C1750",
+     "stated fails by matrix-input/writesets.json",
+     "run ws-live-sql-fallback-priv (fail)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "open census cells WS-OBL-147, WS-OBL-148, WS-OBL-150, WS-OBL-154 (SQL fallbacks of _delete_nodes_sql/delete_edges, unreached at the pin's deploy: iris_sql_store.py:1307-1318); insert_vector's 5 conditional cells resolved (no product caller) Corrected census (followup-writer-census): 21 open per-obligation cells of this gate in module 17 (WS-COND 5, WS-OBL 16; matrix-input/writer-census-obligations.json) [review-response R2-02].",
+   "remaining": "Census reopen lifted: every census cell of this module is discharged (writesets/DISCHARGES.json). Corrected census (followup-writer-census): 21 open per-obligation cells of this gate in module 17 (WS-COND 5, WS-OBL 16; matrix-input/writer-census-obligations.json) [review-response R2-02].",
    "source": "matrix-input/writesets.json",
-   "status": "open",
+   "status": "closed",
    "supplemented_by": [
     "matrix-input/review-response-2.json"
    ]
@@ -11101,6 +11140,7 @@
     "F-1706",
     "F-1712",
     "F-C1704",
+    "F-C1750",
     "F-C1795"
    ],
    "gate": "3.5-handlers",
@@ -11113,6 +11153,7 @@
      "finding F-1706",
      "finding F-1712",
      "finding F-C1704",
+     "finding F-C1750",
      "finding F-C1795"
     ],
     "intent_undecided": []
@@ -15149,6 +15190,14 @@
     "proofs-env-premise-map",
     "proofs-env-premise-map-r2",
     "proofs-env-recheck-baseline",
+    "proofs-env2-baseline",
+    "proofs-env2-ctl-emb-ignores-autocommit",
+    "proofs-env2-ctl-emb-ignores-row-locks",
+    "proofs-env2-ctl-emb-own-txn",
+    "proofs-env2-ctl-emb-select-committed-only",
+    "proofs-env2-ctl-statement-not-atomic",
+    "proofs-env2-mutants",
+    "proofs-env2-premise-map",
     "rf-closure-check-r3",
     "rf-closure-selftest-r3",
     "rf-premise-map-check-r3"
@@ -15187,7 +15236,18 @@
     "run:proofs-env-recheck-baseline",
     "experiment/playbook-completion/proofs-env/premise_map.json",
     "experiment/playbook-completion/proofs-env/src/premises.rs",
-    "experiment/playbook-completion/proofs-env/PROOFS.md"
+    "experiment/playbook-completion/proofs-env/PROOFS.md",
+    "run:proofs-env2-premise-map",
+    "run:proofs-env2-baseline",
+    "run:proofs-env2-mutants",
+    "run:proofs-env2-ctl-emb-own-txn",
+    "run:proofs-env2-ctl-emb-ignores-autocommit",
+    "run:proofs-env2-ctl-emb-select-committed-only",
+    "run:proofs-env2-ctl-emb-ignores-row-locks",
+    "run:proofs-env2-ctl-statement-not-atomic",
+    "experiment/playbook-completion/proofs-env2/premise_map.json",
+    "experiment/playbook-completion/proofs-env2/src/premises.rs",
+    "experiment/playbook-completion/proofs-env2/PROOFS.md"
    ],
    "evidence_grade": "registered-run",
    "findings": [
@@ -15212,11 +15272,12 @@
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "65 assumed and 51 partly validated conditions keep their consequences; none of their missing tests was run; the ledger-state writers outside every modelled action (corr-closure-scan, followup-writer-census; F-1801, F-1114) stay as the existing cell records [proofs-env, D-7] the discipline 'disc' against the product's code (D-3/D-4; violated by EraseGraph at the pin, F-1201); progress premises (36 rows) not implied by any clause; outside-contract premises (CreateGUID, sha256, caller identity, durability, statement granularity, %ID, multi-row DELETE scan, embedded SQL) stay assumed or executable-only; several locks / regions are linked premise by premise, not composed into one invariant",
+   "remaining": "65 assumed and 51 partly validated conditions keep their consequences; none of their missing tests was run; the ledger-state writers outside every modelled action (corr-closure-scan, followup-writer-census; F-1801, F-1114) stay as the existing cell records [proofs-env, D-7] the discipline 'disc' against the product's code (D-3/D-4; violated by EraseGraph at the pin, F-1201); progress premises (36 rows) not implied by any clause; outside-contract premises (CreateGUID, sha256, caller identity, durability, statement granularity, %ID, multi-row DELETE scan) stay assumed or executable-only (embedded SQL, E-1, is proved by proofs-env2); several locks / regions are linked premise by premise, not composed into one invariant [proofs-env2, D-7 remainder] supplement to proofs-env's 3.6-closure cell: TRUST's new premise 'Embedded SQL (&sql) behaves as dynamic SQL for the clauses used' moves from outside-contract to proved (premise_trust_e1: same effect and answer, same visibility, same waits, same Freedom; 4 located controls with counterexamples; its 121 recorded cases in the subset and its 6 mutants killed); proofs-d1e P-M2 moves from outside-contract to proved in part (premise_d1e_p_m2_stmt_atomic: a failing multi-row INSERT ... SELECT writes nothing, control ctl_statement_not_atomic); the 'IRIS environment contract' row's linked subset grows; the new closure rows proofs-env:ENV-4, proofs-sys:PS-2 and PS-3 mapped (progress). Closure verdicts: outside-contract 7, product-discipline 5, progress 39, proved 10, proved-in-part 11, shown-false 3. Still outside: as proofs-env (disc against the code, progress premises, uncomposed locks); premises resting on the 9 families still outside: none found in closure.json",
    "source": "matrix-input/reflection.json",
    "status": "closed",
    "supplemented_by": [
-    "matrix-input/proofs-env.json"
+    "matrix-input/proofs-env.json",
+    "matrix-input/proofs-env2.json"
    ]
   },
   {
@@ -17590,6 +17651,7 @@
    "findings": [
     "F-C1705",
     "F-C1706",
+    "F-C1750",
     "F-C1795"
    ],
    "gate": "3.8-findings-disposed",
@@ -17599,6 +17661,7 @@
     "fails": [
      "finding F-C1705",
      "finding F-C1706",
+     "finding F-C1750",
      "finding F-C1795"
     ],
     "intent_undecided": []
@@ -25816,25 +25879,46 @@
    "writer": "iris_vector_graph/schema.py::tighten_graph_id_column"
   },
   {
-   "cited_runs": [
-    "ws-deploy-auditb"
+   "as_built_findings": [
+    "F-C1301"
    ],
-   "discharge": "open",
+   "cited_runs": [
+    "core-m2-as-built-bypass-rollback",
+    "core-m2-as-built-commit-rollback",
+    "ws-live-sql-fallback-priv"
+   ],
+   "discharge": "finding",
    "discharge_evidence": [
-    "run:ws-deploy-auditb",
+    "run:core-m2-as-built-bypass-rollback",
+    "run:core-m2-as-built-commit-rollback",
     "iris_vector_graph/stores/iris_sql_store.py:1363-1418",
+    "run:ws-live-sql-fallback-priv",
     "iris_vector_graph/stores/iris_sql_store.py:1307-1318",
     "iris_vector_graph/stores/iris_sql_store.py:1320-1361",
-    "iris_vector_graph/stores/iris_sql_store.py:1474-1518"
+    "iris_vector_graph/stores/iris_sql_store.py:1474-1518",
+    "iris_vector_graph/_dictionary.py:46-64",
+    "iris_src/src/Graph/KG/LedgerRedact.cls:149-178",
+    "iris_src/src/Graph/KG/LedgerRedact.cls:202-211",
+    "iris_vector_graph/_write_txn.py:1-30"
    ],
-   "discharge_grade": "open",
+   "discharge_grade": "inspected",
    "discharge_source": "writesets/DISCHARGES.json",
    "evidence": [
-    "run:ws-deploy-auditb",
+    "run:core-m2-as-built-bypass-rollback",
+    "run:core-m2-as-built-commit-rollback",
+    "iris_vector_graph/stores/iris_sql_store.py",
+    "run:ws-live-sql-fallback-priv",
     "iris_vector_graph/stores/iris_sql_store.py",
     "iris_vector_graph/stores/iris_sql_store.py",
     "iris_vector_graph/stores/iris_sql_store.py",
-    "iris_vector_graph/stores/iris_sql_store.py"
+    "iris_vector_graph/_dictionary.py",
+    "iris_src/src/Graph/KG/LedgerRedact.cls",
+    "iris_src/src/Graph/KG/LedgerRedact.cls",
+    "iris_vector_graph/_write_txn.py"
+   ],
+   "evidence_grade": "registered-run",
+   "findings": [
+    "F-C1301"
    ],
    "gate": "3.3a-writesets",
    "invariant": "INV-marker",
@@ -25846,35 +25930,65 @@
    "obligation_source": [
     "run:followup-writer-census"
    ],
-   "product_obligation": "unknown",
-   "remaining": "open after the writesets lane: open: unreached at the pin's deploy. _delete_nodes_sql (iris_sql_store.py:1363-1418) runs only when IRISGraphStore._has_eraser_method answers False (iris_sql_store.py:1307-1318), i.e. when Graph.KG.Eraser.EraseNodeIds / EraseEdges is not compiled; initialize_schema compiles the Eraser with the ledger (ws-deploy-auditb: 66 classes unchanged), and the deployed path goes through the Eraser. The probe caches any exception as 'absent', and on that path the SQL deletes recorded rows with no statement cleanup inside a WriteTxn that can roll back (the F-0303 / F-C1301 shapes). That configuration was not reproduced, so no finding is recorded.",
+   "product_basis": {
+    "fails": [
+     "finding F-C1301",
+     "run core-m2-as-built-bypass-rollback (expected-violation)",
+     "run core-m2-as-built-commit-rollback (expected-violation)",
+     "run ws-live-sql-fallback-priv (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "discharged by finding (inspected): The writer deletes node rows (or the only rows) of a target inside a transaction that can roll back (its own TSTART/TROLLBACK or WriteTxn, nested in a caller's transaction). LiveRows reads uncommitted data, so while the delete is uncommitted another connection's redaction sees the target not live, tombstones it (and sets the marker); the rollback then makes the target live again: F-C1301. Graded inspected for this writer (F-C1301 is live for delete_reification, ws-live-fc1301-delete-reification; model for any writer). Reachable at the pin (ws-live-sql-fallback-priv): with a writing role that lacks %Native_ClassExecution, the probe's dictionary SELECT is refused (-99), its native IDKEYExists raises <PROTECT>, and _has_eraser_method caches the exception as 'absent' (iris_sql_store.py:1307-1318), so engine.delete_node / delete_nodes take this SQL path (F-C1750).",
    "source": "matrix-input/writer-census-obligations.json",
-   "status": "open",
+   "status": "closed",
    "stores": [
     "content"
    ],
    "writer": "iris_vector_graph/stores/iris_sql_store.py::_delete_nodes_sql"
   },
   {
-   "cited_runs": [
-    "ws-deploy-auditb"
+   "as_built_findings": [
+    "F-C1301"
    ],
-   "discharge": "open",
+   "cited_runs": [
+    "core-m2-as-built-bypass-rollback",
+    "core-m2-as-built-commit-rollback",
+    "ws-live-sql-fallback-priv"
+   ],
+   "discharge": "finding",
    "discharge_evidence": [
-    "run:ws-deploy-auditb",
+    "run:core-m2-as-built-bypass-rollback",
+    "run:core-m2-as-built-commit-rollback",
     "iris_vector_graph/stores/iris_sql_store.py:1363-1418",
+    "run:ws-live-sql-fallback-priv",
     "iris_vector_graph/stores/iris_sql_store.py:1307-1318",
     "iris_vector_graph/stores/iris_sql_store.py:1320-1361",
-    "iris_vector_graph/stores/iris_sql_store.py:1474-1518"
+    "iris_vector_graph/stores/iris_sql_store.py:1474-1518",
+    "iris_vector_graph/_dictionary.py:46-64",
+    "iris_src/src/Graph/KG/LedgerRedact.cls:149-178",
+    "iris_src/src/Graph/KG/LedgerRedact.cls:202-211",
+    "iris_vector_graph/_write_txn.py:1-30"
    ],
-   "discharge_grade": "open",
+   "discharge_grade": "inspected",
    "discharge_source": "writesets/DISCHARGES.json",
    "evidence": [
-    "run:ws-deploy-auditb",
+    "run:core-m2-as-built-bypass-rollback",
+    "run:core-m2-as-built-commit-rollback",
+    "iris_vector_graph/stores/iris_sql_store.py",
+    "run:ws-live-sql-fallback-priv",
     "iris_vector_graph/stores/iris_sql_store.py",
     "iris_vector_graph/stores/iris_sql_store.py",
     "iris_vector_graph/stores/iris_sql_store.py",
-    "iris_vector_graph/stores/iris_sql_store.py"
+    "iris_vector_graph/_dictionary.py",
+    "iris_src/src/Graph/KG/LedgerRedact.cls",
+    "iris_src/src/Graph/KG/LedgerRedact.cls",
+    "iris_vector_graph/_write_txn.py"
+   ],
+   "evidence_grade": "registered-run",
+   "findings": [
+    "F-C1301"
    ],
    "gate": "3.3a-writesets",
    "invariant": "INV-no-live-tombstone",
@@ -25886,10 +26000,19 @@
    "obligation_source": [
     "run:followup-writer-census"
    ],
-   "product_obligation": "unknown",
-   "remaining": "open after the writesets lane: open: unreached at the pin's deploy. _delete_nodes_sql (iris_sql_store.py:1363-1418) runs only when IRISGraphStore._has_eraser_method answers False (iris_sql_store.py:1307-1318), i.e. when Graph.KG.Eraser.EraseNodeIds / EraseEdges is not compiled; initialize_schema compiles the Eraser with the ledger (ws-deploy-auditb: 66 classes unchanged), and the deployed path goes through the Eraser. The probe caches any exception as 'absent', and on that path the SQL deletes recorded rows with no statement cleanup inside a WriteTxn that can roll back (the F-0303 / F-C1301 shapes). That configuration was not reproduced, so no finding is recorded.",
+   "product_basis": {
+    "fails": [
+     "finding F-C1301",
+     "run core-m2-as-built-bypass-rollback (expected-violation)",
+     "run core-m2-as-built-commit-rollback (expected-violation)",
+     "run ws-live-sql-fallback-priv (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "discharged by finding (inspected): The writer deletes node rows (or the only rows) of a target inside a transaction that can roll back (its own TSTART/TROLLBACK or WriteTxn, nested in a caller's transaction). LiveRows reads uncommitted data, so while the delete is uncommitted another connection's redaction sees the target not live, tombstones it (and sets the marker); the rollback then makes the target live again: F-C1301. Graded inspected for this writer (F-C1301 is live for delete_reification, ws-live-fc1301-delete-reification; model for any writer). Reachable at the pin (ws-live-sql-fallback-priv): with a writing role that lacks %Native_ClassExecution, the probe's dictionary SELECT is refused (-99), its native IDKEYExists raises <PROTECT>, and _has_eraser_method caches the exception as 'absent' (iris_sql_store.py:1307-1318), so engine.delete_node / delete_nodes take this SQL path (F-C1750).",
    "source": "matrix-input/writer-census-obligations.json",
-   "status": "open",
+   "status": "closed",
    "stores": [
     "content"
    ],
@@ -25936,25 +26059,34 @@
    "writer": "iris_vector_graph/stores/iris_sql_store.py::_delete_nodes_sql"
   },
   {
-   "cited_runs": [
-    "ws-deploy-auditb"
+   "as_built_findings": [
+    "F-C1750"
    ],
-   "discharge": "open",
+   "cited_runs": [
+    "ws-live-sql-fallback-priv"
+   ],
+   "discharge": "finding",
    "discharge_evidence": [
-    "run:ws-deploy-auditb",
+    "run:ws-live-sql-fallback-priv",
     "iris_vector_graph/stores/iris_sql_store.py:1363-1418",
     "iris_vector_graph/stores/iris_sql_store.py:1307-1318",
     "iris_vector_graph/stores/iris_sql_store.py:1320-1361",
-    "iris_vector_graph/stores/iris_sql_store.py:1474-1518"
+    "iris_vector_graph/stores/iris_sql_store.py:1474-1518",
+    "iris_vector_graph/_dictionary.py:46-64"
    ],
-   "discharge_grade": "open",
+   "discharge_grade": "live",
    "discharge_source": "writesets/DISCHARGES.json",
    "evidence": [
-    "run:ws-deploy-auditb",
+    "run:ws-live-sql-fallback-priv",
     "iris_vector_graph/stores/iris_sql_store.py",
     "iris_vector_graph/stores/iris_sql_store.py",
     "iris_vector_graph/stores/iris_sql_store.py",
-    "iris_vector_graph/stores/iris_sql_store.py"
+    "iris_vector_graph/stores/iris_sql_store.py",
+    "iris_vector_graph/_dictionary.py"
+   ],
+   "evidence_grade": "registered-run",
+   "findings": [
+    "F-C1750"
    ],
    "gate": "3.3a-writesets",
    "invariant": "INV-stmt",
@@ -25966,10 +26098,17 @@
    "obligation_source": [
     "run:followup-writer-census"
    ],
-   "product_obligation": "unknown",
-   "remaining": "open after the writesets lane: open: unreached at the pin's deploy. _delete_nodes_sql (iris_sql_store.py:1363-1418) runs only when IRISGraphStore._has_eraser_method answers False (iris_sql_store.py:1307-1318), i.e. when Graph.KG.Eraser.EraseNodeIds / EraseEdges is not compiled; initialize_schema compiles the Eraser with the ledger (ws-deploy-auditb: 66 classes unchanged), and the deployed path goes through the Eraser. The probe caches any exception as 'absent', and on that path the SQL deletes recorded rows with no statement cleanup inside a WriteTxn that can roll back (the F-0303 / F-C1301 shapes). That configuration was not reproduced, so no finding is recorded.",
+   "product_basis": {
+    "fails": [
+     "finding F-C1750",
+     "run ws-live-sql-fallback-priv (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "discharged by finding (live): Live: engine.delete_node('sfp|a') (store.delete_nodes -> _delete_nodes_sql, iris_sql_store.py:1363-1418) ran as plain SQL after the refused Eraser probe was cached as absent; it deleted the recorded edge row and left its ledger statement (^IVG.Ledger tuple and stmt, closed seq empty) live without the row, with no warning (F-C1750). With ADMIN_GUIDE's writing row the same call went through Graph.KG.Eraser and the statement went with the row (control in the same run).",
    "source": "matrix-input/writer-census-obligations.json",
-   "status": "open",
+   "status": "closed",
    "stores": [
     "content"
    ],
@@ -26098,25 +26237,34 @@
    "writer": "iris_vector_graph/stores/iris_sql_store.py::delete_edges"
   },
   {
-   "cited_runs": [
-    "ws-deploy-auditb"
+   "as_built_findings": [
+    "F-C1750"
    ],
-   "discharge": "open",
+   "cited_runs": [
+    "ws-live-sql-fallback-priv"
+   ],
+   "discharge": "finding",
    "discharge_evidence": [
-    "run:ws-deploy-auditb",
+    "run:ws-live-sql-fallback-priv",
     "iris_vector_graph/stores/iris_sql_store.py:1474-1518",
     "iris_vector_graph/stores/iris_sql_store.py:1307-1318",
     "iris_vector_graph/stores/iris_sql_store.py:1320-1361",
-    "iris_vector_graph/stores/iris_sql_store.py:1474-1518"
+    "iris_vector_graph/stores/iris_sql_store.py:1474-1518",
+    "iris_vector_graph/_dictionary.py:46-64"
    ],
-   "discharge_grade": "open",
+   "discharge_grade": "live",
    "discharge_source": "writesets/DISCHARGES.json",
    "evidence": [
-    "run:ws-deploy-auditb",
+    "run:ws-live-sql-fallback-priv",
     "iris_vector_graph/stores/iris_sql_store.py",
     "iris_vector_graph/stores/iris_sql_store.py",
     "iris_vector_graph/stores/iris_sql_store.py",
-    "iris_vector_graph/stores/iris_sql_store.py"
+    "iris_vector_graph/stores/iris_sql_store.py",
+    "iris_vector_graph/_dictionary.py"
+   ],
+   "evidence_grade": "registered-run",
+   "findings": [
+    "F-C1750"
    ],
    "gate": "3.3a-writesets",
    "invariant": "INV-stmt",
@@ -26128,10 +26276,17 @@
    "obligation_source": [
     "run:followup-writer-census"
    ],
-   "product_obligation": "unknown",
-   "remaining": "open after the writesets lane: open: unreached at the pin's deploy. The SQL DELETE of delete_edges (iris_sql_store.py:1504-1518) runs only when IRISGraphStore._has_eraser_method answers False (iris_sql_store.py:1307-1318), i.e. when Graph.KG.Eraser.EraseNodeIds / EraseEdges is not compiled; initialize_schema compiles the Eraser with the ledger (ws-deploy-auditb: 66 classes unchanged), and the deployed path goes through the Eraser. The probe caches any exception as 'absent', and on that path the SQL deletes recorded rows with no statement cleanup inside a WriteTxn that can roll back (the F-0303 / F-C1301 shapes). That configuration was not reproduced, so no finding is recorded.",
+   "product_basis": {
+    "fails": [
+     "finding F-C1750",
+     "run ws-live-sql-fallback-priv (fail)"
+    ],
+    "intent_undecided": []
+   },
+   "product_obligation": "fails",
+   "remaining": "discharged by finding (live): Live: IRISGraphStore.delete_edges([('sfp|c', 'R', 'sfp|d')]) (exported by iris_vector_graph; its SQL DELETE, iris_sql_store.py:1504-1518) ran as plain SQL after the refused Eraser probe was cached as absent; it deleted the recorded edge row and left its ledger statement (^IVG.Ledger tuple and stmt, closed seq empty) live without the row, with no warning (F-C1750). With ADMIN_GUIDE's writing row the same call went through Graph.KG.Eraser and the statement went with the row (control in the same run).",
    "source": "matrix-input/writer-census-obligations.json",
-   "status": "open",
+   "status": "closed",
    "stores": [
     "content"
    ],
@@ -27488,11 +27643,11 @@
   },
   "input": "matrix-input/writer-census-obligations.json",
   "product": {
-   "fails": 64,
+   "fails": 68,
    "holds-as-detection": 36,
    "holds-inspected": 69,
    "holds-live": 9,
-   "unknown": 7
+   "unknown": 3
   },
   "source_run": "followup-writer-census"
  },
@@ -35900,6 +36055,39 @@
   },
   {
    "confidence": "high",
+   "disposition": "reproduced-live",
+   "evidence": [
+    {
+     "kind": "live",
+     "ref": "ws-live-sql-fallback-priv"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/stores/iris_sql_store.py:1307-1318"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/stores/iris_sql_store.py:1363-1418"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/stores/iris_sql_store.py:1474-1518"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/_dictionary.py:1-64"
+    }
+   ],
+   "gates": [
+    "3.3a-writesets",
+    "3.5-handlers",
+    "3.8-findings-disposed"
+   ],
+   "id": "F-C1750",
+   "severity": "S2"
+  },
+  {
+   "confidence": "high",
    "disposition": "confirmed-source",
    "evidence": [
     {
@@ -38343,16 +38531,16 @@
   }
  ],
  "product_counts": {
-  "fails": 408,
+  "fails": 412,
   "holds-as-detection": 36,
   "holds-in-model-only": 1,
   "holds-inspected": 69,
   "holds-live": 9,
   "intent-undecided": 6,
   "n/a": 33,
-  "unknown": 190
+  "unknown": 186
  },
- "registry_runs": 1493,
+ "registry_runs": 1547,
  "starting_inventory": {
   "cells": 904,
   "decisions": 61,
@@ -38364,9 +38552,9 @@
  },
  "status_counts": {
   "blocked": 24,
-  "closed": 612,
+  "closed": 618,
   "not-applicable": 35,
-  "open": 81
+  "open": 75
  },
  "submission": "9c3719c1",
  "writer_obligations": [

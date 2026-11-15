@@ -1,0 +1,21 @@
+{
+  "command": "bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify --offline --fwd-verus-args-to roots --features ctl_select_committed_only -- --no-cheating --triggers-mode silent --time-expanded --output-json",
+  "error_locations": "src/premises.rs:320,src/premises.rs:334",
+  "errors": "2",
+  "experiment_head": "792b8d6faf0bc77799920155f7eb1bea265a9934",
+  "id": "proofs-env2-recheck-ctl-select-committed-only",
+  "json_log": "$RUN_DIR/proofs-env2-recheck/run-20261115T000520Z/ctl_select_committed_only.json",
+  "json_sha256": "6d9ce9470f7de7c7912702773ff13d145a924ba5756b7b75b7066c973b8a5e6e",
+  "kind": "control",
+  "lane": "proofs-env2",
+  "log": "$RUN_DIR/proofs-env2-recheck/run-20261115T000520Z/ctl_select_committed_only.log",
+  "log_bytes": 3942,
+  "log_sha256": "eee1d59c8f643ac94289cda5fd2e188adb2f10fbfe46a2815fb6926fe38fbdca",
+  "observes": "ctl_select_committed_only (clause E-VIS, mutant sql-select-committed-only): 2 errors exactly at ['src/premises.rs:320', 'src/premises.rs:334']; failing ['premises::premise_core_ma_6', 'premises::premise_d1d_p_0002']; every other function verifies as in the baseline=True; counterexample cx::cx_select_committed_only verified=True",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-15T00:11:20+00:00",
+  "result": "expected-violation",
+  "sources_sha256": "b9a7bb764d46174889eac4290b91b4799f308914c4a682cbed7db9716ad1c99d",
+  "verified": "431"
+}

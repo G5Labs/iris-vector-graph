@@ -485,6 +485,34 @@
    ],
    "journal": true
   },
+  "ws-live-sql-fallback-priv": {
+   "context_for": [
+    [
+     "INV-marker",
+     "iris_vector_graph/stores/iris_sql_store.py::_delete_nodes_sql"
+    ],
+    [
+     "INV-no-live-tombstone",
+     "iris_vector_graph/stores/iris_sql_store.py::_delete_nodes_sql"
+    ]
+   ],
+   "exercised": [
+    {
+     "invariant": "INV-stmt",
+     "note": "role without %Native_ClassExecution: the Eraser probe cached absent; the statement of the deleted edge stays live (F-C1750)",
+     "outcome": "fail",
+     "writer": "iris_vector_graph/stores/iris_sql_store.py::_delete_nodes_sql"
+    },
+    {
+     "invariant": "INV-stmt",
+     "note": "same role, IRISGraphStore.delete_edges' SQL DELETE (F-C1750)",
+     "outcome": "fail",
+     "writer": "iris_vector_graph/stores/iris_sql_store.py::delete_edges"
+    }
+   ],
+   "journal": false,
+   "lane": "orchestrator"
+  },
   "ws-live-sql-guard": {
    "exercised": [
     {

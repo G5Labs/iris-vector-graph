@@ -4,14 +4,14 @@ Lane reflection, product pin `3eaa79cf`, IRIS 2026.1 Community in the dedicated 
 
 ## A. The audit's own tests that this reflection cites
 
-214 distinct registered runs are cited below (premise tests, proof-debt coverage, detections), by kind and result:
+217 distinct registered runs are cited below (premise tests, proof-debt coverage, detections), by kind and result:
 
 | Kind | Runs | Results |
 |---|---|---|
 | live | 75 | fail 58, pass 17 |
 | probe | 38 | blocked 1, expected-violation 7, fail 14, pass 16 |
 | run | 28 | fail 19, pass 9 |
-| check | 24 | fail 3, incomplete 2, pass 19 |
+| check | 27 | fail 3, incomplete 2, pass 22 |
 | mc | 21 | expected-violation 19, pass 2 |
 | control | 14 | expected-violation 11, pass 3 |
 | trace | 8 | fail 3, pass 5 |
@@ -30,7 +30,7 @@ From the validation lane (`validation/SUITES.md`, `validation/results.json`): un
 
 ## C. Does the product's own suite detect the defects this audit reproduced?
 
-Reproduced findings (reproduced-live, reproduced-test, reproduced-model, confirmed-source): **298**. Detected by a product test that is red at the pin because of the defect: **4** (F-C0502, F-C0606, F-C1002, F-C1706). **Not detected by any product test: 294** (by severity S1 43, S2 113, S3 94, S4 44; by disposition confirmed-source 56, reproduced-live 219, reproduced-model 7, reproduced-test 12). 8 further findings are intent-undecided or blocked-access and are not counted either way.
+Reproduced findings (reproduced-live, reproduced-test, reproduced-model, confirmed-source): **299**. Detected by a product test that is red at the pin because of the defect: **4** (F-C0502, F-C0606, F-C1002, F-C1706). **Not detected by any product test: 295** (by severity S1 43, S2 114, S3 94, S4 44; by disposition confirmed-source 56, reproduced-live 220, reproduced-model 7, reproduced-test 12). 8 further findings are intent-undecided or blocked-access and are not counted either way.
 
 The four detected findings are the validation lane's own: they were found by running the suites (`zz-validation.json`), so the suites detected nothing the other lanes found. Every S1 finding that is reproduced (43) is undetected by the product's tests.
 
@@ -95,7 +95,7 @@ Undetected findings by root cause, and the product test that would have detected
 | RC-11 IVG ObjectScript writers roll back their caller's transaction | 2 | 2 | a failing IVG call inside a caller's open transaction, asserting the caller's own write survives |
 | RC-12 Environment premises are asserted, not validated | 12 | 9 | the suites on every supported cell (engine version x edition x driver x optional library), as the validation lane's driver A/B did for 5.3.2 vs 5.4.0 |
 | RC-13 The IVG Schema name is not resolved from one source | 7 | 7 | the suites on a namespace installed with a non-default IVG Schema |
-| RC-14 Failures are swallowed into empty, default or success answers | 17 | 17 | fault-injected reads and writes asserting a raise, not an empty or default answer |
+| RC-14 Failures are swallowed into empty, default or success answers | 18 | 18 | fault-injected reads and writes asserting a raise, not an empty or default answer |
 | RC-15 Refusals are not mapped to one typed error hierarchy at the boundary | 8 | 8 | a test that enumerates exported exception classes and server reason codes against IVGError and the HTTP/SDK maps |
 | RC-16 The Cypher and AQL translators have no reference semantics | 13 | 13 | the typed openCypher TCK on mixed data and a differential oracle per clause shape |
 | RC-17 Stored values carry no type | 7 | 7 | round trips of every value type through every writer and reader |
@@ -139,11 +139,12 @@ Every premise named in the sources below has an entry (the checker extracts them
 | proofs-d9b/PROOFS.md | 11 | 0 | 2 | 6 | 3 |
 | proofs-d9c/PROOFS.md | 17 | 0 | 4 | 10 | 3 |
 | proofs-env/PROOFS.md | 4 | 1 | 1 | 1 | 1 |
+| proofs-env2/PROOFS.md | 5 | 1 | 1 | 2 | 1 |
 | proofs-mech/PROOFS.md (prose premises) | 3 | 0 | 0 | 2 | 1 |
 | proofs-pa3/PROOFS.md | 15 | 0 | 5 | 8 | 2 |
 | proofs-sys/PROOFS.md | 4 | 0 | 0 | 3 | 1 |
 | iris-contract/CONTRACT.md (clauses, E-1, Freedom, outside-subset features) | 59 | 34 | 0 | 5 | 20 |
-| **total** | **282** | **44** | **56** | **123** | **59** |
+| **total** | **287** | **45** | **57** | **125** | **60** |
 
 ### D.1 Premises shown false at the pin (tested-violated)
 
@@ -205,6 +206,7 @@ Every premise named in the sources below has an entry (the checker extracts them
 | proofs:P-C03 | Target membership is a property of the replay key (separability); one predicate stands for the Eraser's SQL, LiveRows and Matches | live-native-rerun-1314, ib-HD1303-nopfx-default, ib-HD1304-graph-per-tenant, fu-r04-temporal-only-live-b |
 | proofs:P-C04 | An erasure is not rolled back between its two steps (no abort modelled) | ib-HD1201-open-erasure, env-contract-r2 |
 | proofs-env:ENV-3 | the product discipline disc (only the exclusive head-lock holder writes the ledger globals, inside its transaction) | live-f1201-reproduced |
+| proofs-env2:ENV2-3 | the product discipline disc (only the exclusive head-lock holder writes the ledger globals, inside its transaction) | live-f1201-reproduced |
 
 ### D.2 Premises with no test or a partial test, and the test that should exist
 
@@ -371,6 +373,9 @@ Contract features outside the validated subset are summarised after the table.
 | proofs-sys:PS-2 | the operator re-runs the erasure of a target found live and resumes a parked redaction (actions ReErase, Resume) | tested-partial | live-fc1303-bounded-resume, fu-r03-marker-held-open | That the operator does re-run and resume is an operator premise; a test would script the re-erase/resume loop through the product and count the calls to completion (the pin's re-run does not progress, so none exists at the pin). |
 | proofs-sys:PS-3 | AX-14 is AG EF ('can finish'): the theorem exhibits a finishing schedule; a scheduler that runs it (fairness) is not modelled | untested | - | A soak through the product with concurrent committers, erasures and redactions asserting each redaction's marker clears within a bound (fair-scheduling progress), and a fairness version of the theorem. |
 | proofs-sys:PS-4 | AX-01, AX-09 and AX-13 are outside the composition; their laws are proofs-mech's M-12/M-01, M-08 and M-11 theorems | tested-partial | proofs-mech-baseline, proofs-sys-baseline | A bridge in proofs-sys that proves the AX-01, AX-09 and AX-13 check predicates equal to the proofs-mech laws (as bridge_m02..m10 do for the composed mechanisms); today the correspondence is by inspection. |
+| proofs-env2:ENV2-2 | the extended Verus subset covers the clauses the proof premises use; 9 families stay executable evidence only | tested-partial | proofs-env2-premise-map | Bringing X-DDL, X-STAR, X-FX, X-NOINDEX, X-VEC $VECTOR, X2-JSON, X2-LIST, X2-TOP and X2-QUERY/MERGE/ZKILL into the specification (proofs-env2/PROOFS.md section 6). |
+| proofs-env2:ENV2-4 | no liveness clause: the progress premises are not implied by the contract | untested | proofs-env2-premise-map | Progress tests under IRIS scheduling (D-8). |
+| proofs-env2:ENV2-5 | batch_probe (the batch-atomic mutant's dry run) depends only on the globals: an INSERT's outcome depends only on its table's existence and its row's visibility | tested-partial | proofs-env2-differential, proofs-env2-mutants | A frame lemma in the specification that insert_many's per-row outcome depends only on table existence and row visibility, replacing the dry run. |
 
 Outside the contract's validated subset (23 features, all untested as engine clauses; the modules relying on each are listed in `iris-contract/CONTRACT.md`): $LIST semantics, $NAME, $LISTVALID; $ZF callouts; %Regex; EMBEDDING(); SQL text parsing; generat; %DynamicObject / JSON functions; HNSW vector index maintenance and build; IRISTEMP globals; JOB / WorkMgr processes; SQLCODEs other than -30, -110, -119, -201, -359, -400; Task Manager; absent on Community 2026.1: InterSystems FHIR server storage; catalog views other than TABLES / COLUMNS, default-schema re; class dictionary and run-time compilation (compiling is out ; compiled SQL routines (CREATE FUNCTION / PROCEDURE, [SqlProc; embedded Python (needs irispython in the container); engine limits (long strings, subscript length, bound-paramet; iFind search semantics (tokenizer %iFind.Utils.Analyze, word; journaling (the audit's oracle, not a clause); management APIs (%SYS.ProcessQuery, KillProcess, GetVersion,; named-index %IGNOREINDEX forms (only %IGNOREINDEX * is exerc; object filing (%OpenId / %Save concurrency), triggers, forei; pure functions and clocks ($ZCRC, SHA, GUID, $RANDOM, $HOROL; result-prefix queries (TOP / LIMIT / FETCH FIRST); streams; web dispatch, roles and SQL privileges. Test that should exist for each: $NAME and $LISTVALID remain outside (contract-2 family 'list' residual)..
 
@@ -384,7 +389,7 @@ Outside the contract's validated subset (23 features, all untested as engine cla
 | D-4 | `corr-lockplan`, `live-f1201-reproduced`, `live-erase-vs-commit-fk`, `env-ext-r6` | Lock plans of modules other than 11-14 and of the AdjW users beyond the probes; lock timeouts and escalation (outside the contract). |
 | D-5 | `trace-conformance-ledger`, `sim-main-20261114`, `live-lost-ack-commit`, `corr-trace-lostack`, `live-crash-world-r2` | Composition over arbitrary executions, multi-node (ECP/mirror: blocked-access), and every invariant the simulator's oracle does not state; durability under SynchCommit=1 is sampled by 3 crash trials only (live-crash-repeat-sc1). |
 | D-6 | `corr-frame-keys-fk`, `corr-capacity`, `corr-row-permutation`, `corr-closure-scan` | Modules other than 11-14; capacity beyond the key-length limits probed. |
-| D-7 | `env-contract-r2`, `env-ext-r6`, `env-contract-r6-recheck`, `ver-e262-d532-full` | The link from proofs/ participant contracts to contract clauses is by inspection; outside-subset features have no clause. |
+| D-7 | `env-contract-r2`, `env-ext-r6`, `env-contract-r6-recheck`, `ver-e262-d532-full`, `proofs-env2-differential` | The link from proofs/ participant contracts to contract clauses is by inspection; 9 clause families (513 recorded case runs) stay outside the Verus subset (proofs-env2/PROOFS.md section 6); outside-subset features of contract-2's coverage have no clause. |
 | D-8 | `live-fc1303-bounded-resume`, `fu-r03-marker-held-open`, `sim-race-20261114`, `env-contract-r2` | Fair scheduling of enabled steps and operator behaviour are not tested; no soak shows completion under fair schedules. |
 | D-9 | `live-native-rerun-1314`, `ib-HD1401-reader-full-race`, `ib-HD1305-retry-revives`, `sim-race-20261114`, `sim-fcs01-minimal`, `core-m3-readers-as-built-F1402` (model) | Every reviewed guard of D-9 is absent at the pin, so nothing can test the reviewed protocol on the product; readers, statement history, Decision 2 and retry-key movement are tested only as-built. |
 | D-10 | `live-native-rerun-1314`, `ib-HD1303-nopfx-default`, `ib-HD1304-graph-per-tenant`, `core-m1-as-built-F1304` (model) | The (2 pre-enable writes + 2 commits) profile is not model-checked; live scenarios sample it, they do not enumerate it. |
@@ -405,7 +410,7 @@ No row of PROOF-DEBT.md is paid by these tests: they sample the obligation on th
 
 ## G. Environment closure
 
-The environment conditions the proofs and models rely on are listed exactly in `CLOSURE.md` (gate 3.6-closure): 173 conditions, validated 47, validated-in-part 52, assumed 67, shown-false 7. It joins this map's engine and progress premises with the IRIS contract's clauses (r6 and contract-2) and contract-2's outside-premise families, each with its validating run or its consequence.
+The environment conditions the proofs and models rely on are listed exactly in `CLOSURE.md` (gate 3.6-closure): 174 conditions, validated 47, validated-in-part 52, assumed 68, shown-false 7. It joins this map's engine and progress premises with the IRIS contract's clauses (r6 and contract-2) and contract-2's outside-premise families, each with its validating run or its consequence.
 
 ## H. Limits
 
