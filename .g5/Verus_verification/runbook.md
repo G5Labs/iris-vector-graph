@@ -254,3 +254,24 @@ container and run native-setup.py if classes are absent. The scripts refuse wron
 identity. Their state is disposable; archives/raw results persist outside it.
 The compiled-index catalog observations do not prove arbitrary commit-failure
 semantics. Member reverse lookup: iteration5/after-reach/bindings.json.
+
+## Improvement iteration 6 on this Mac
+
+[Checkpoint](../uplift/consolidated/iteration-6/HANDOFF.md) and family NOTES name
+exact provider limits. Reuse iteration4 Verus/Python pins and a new isolated RUN_DIR.
+
+```sh
+python3 .g5/Verus_verification/run_verus.py prove .g5/Verus_verification/models/temporal_restore
+CONTROL=zero-start-export python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/temporal_restore
+IVG_TEMPORAL_NATIVE=1 /Users/ziniuw/runs/ivg-consolidated-20261114/venv/bin/python -B -I .g5/Verus_verification/models/temporal_restore/binding.py
+python3 .g5/Verus_verification/run_verus.py prove .g5/Verus_verification/models/history_paging
+CONTROL=converted-cursor-truthiness python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/history_paging
+/Users/ziniuw/runs/ivg-consolidated-20261114/venv/bin/python -B -I .g5/Verus_verification/models/history_paging/binding.py
+python3 .g5/Verus_verification/tools/correspondence_gate.py check .g5/uplift/consolidated/iteration-6/correspondence-inputs.json
+python3 .g5/Verus_verification/tools/check_consolidated.py
+```
+
+Expected31 total/7 controls/AGREES7 native and20/13/AGREES6080. Omit CONTROL
+for complete suites. Run native scripts serially on the guarded iteration5 isolated
+instance. History iteration6/history-*-native.py retains actual writer evidence.
+Additional model inputs are stamped and each control keeps its dependency tree.

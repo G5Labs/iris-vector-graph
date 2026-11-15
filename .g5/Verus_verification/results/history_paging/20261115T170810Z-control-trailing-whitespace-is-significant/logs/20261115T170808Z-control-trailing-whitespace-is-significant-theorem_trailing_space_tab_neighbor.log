@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/controls/trailing-whitespace-is-significant/20261115T170808Z/history_paging.rs:204:13
+    |
+203 | pub proof fn theorem_trailing_space_tab_neighbor(a:Seq<int>)
+    | ------------------------------------------------------------ at the end of the function body
+204 |     ensures text_eq(a,a+seq![32,9],Collation::SqlUpperAscii),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

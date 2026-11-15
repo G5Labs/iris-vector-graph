@@ -1,0 +1,71 @@
+verification results:: 16 verified, 4 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/controls/limit-before-filter/20261115T170936Z/history_paging.rs:117:13
+    |
+114 | pub proof fn theorem_filter_happens_before_limit(t:Table)
+    | --------------------------------------------------------- at the end of the function body
+...
+117 |     ensures selected(t,Params{actor:Some(seq![65]),..defaults(2,false,0)})==seq![2,3],
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: recommendation not met
+   --> /Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/controls/limit-before-filter/20261115T170936Z/history_paging.rs:136:67
+    |
+136 |     assert forall|i:int| 0<=i<selected(t,p).len() implies matches(t.rows[selected(t,p)[i]],p,t.collation) by {
+    |                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   --> map.rs:87:12
+    |
+    = note: recommendation not met
+
+error: assertion failed
+   --> /Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/controls/limit-before-filter/20261115T170936Z/history_paging.rs:137:16
+    |
+137 |         assert(selected(t,p)[i]==ordered(t,p)[i]);
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+note: recommendation not met
+   --> /Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/controls/limit-before-filter/20261115T170936Z/history_paging.rs:137:34
+    |
+137 |         assert(selected(t,p)[i]==ordered(t,p)[i]);
+    |                                  ^^^^^^^^^^^^^^^
+    |
+   --> seq.rs:980:12
+    |
+    = note: recommendation not met
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/controls/limit-before-filter/20261115T170936Z/history_paging.rs:140:1
+    |
+140 | pub proof fn theorem_page_length_and_decoded_sequence(t:Table,p:Params)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/controls/limit-before-filter/20261115T170936Z/history_paging.rs:142:13
+    |
+142 |       ensures match history(t,p) {Outcome::Page(page)=>
+    |  _____________^
+143 | |         page.revisions.len()==if p.limit<admitted(t,p).len(){p.limit as nat}else{admitted(t,p).len()}
+144 | |         && (forall|i:int| 0<=i<page.revisions.len() ==> page.revisions[i].seq==selected(t,p)[i]),_=>false},
+    | |__________________________________________________________________________________________________________^ failed this postcondition
+...
+150 |       assert forall|i:int| 0<=i<selected(t,p).len() implies decode(t.rows[selected(t,p)[i]]).seq==selected(t,p)[i] by {
+    |       ------ at the end of the function body
+
+error: assertion failed
+   --> /Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/controls/limit-before-filter/20261115T170936Z/history_paging.rs:151:40
+    |
+151 |         let id=selected(t,p)[i];assert(ordered(t,p).contains(id));
+    |                                        ^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/controls/limit-before-filter/20261115T170936Z/history_paging.rs:181:13
+    |
+178 | pub proof fn theorem_after_last_is_empty(t:Table,p:Params)
+    | ---------------------------------------------------------- at the end of the function body
+...
+181 |     ensures match history(t,p) {Outcome::Page(page)=>page.revisions.len()==0 && page.next==None,_=>false},
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 5 previous errors
+

@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_full_page_supplies_cursor"
+    ],
+    "find": "next:if rows.len()>0 && rows.len()==limit",
+    "name": "full-page-hides-cursor",
+    "replace": "next:if rows.len()>0 && rows.len()>limit"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_full_page_supplies_cursor"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/history_paging/history_paging.rs": "461bc00d2ce6c6f1f8b676b017964e80a64bc0f7d010d2ed219e0148626accd4",
+    ".g5/Verus_verification/models/history_paging/model.json": "6fab7fd53d8712bd3c24dc14931426c1d789160643a331af804137e67868ce52"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/controls/full-page-hides-cursor/20261115T170800Z/history_paging.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_full_page_supplies_cursor": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/20261115T170800Z-control-full-page-hides-cursor-theorem_full_page_supplies_cursor.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/20261115T170800Z-control-full-page-hides-cursor.log",
+    "timed_out": false,
+    "verified": 18
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/history_paging/20261115T170802Z-control-full-page-hides-cursor/logs/20261115T170800Z-control-full-page-hides-cursor-theorem_full_page_supplies_cursor.log": "a00cedbc6be56d63b6d362ca48b464863620ae57a4281f9fdbacc4f32b384575",
+    ".g5/Verus_verification/results/history_paging/20261115T170802Z-control-full-page-hides-cursor/logs/20261115T170800Z-control-full-page-hides-cursor.log": "523b9a5e79f1291c724a5b58352ce85002f65fe60506548fc5e85bd301e90537"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

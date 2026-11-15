@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_filter_happens_before_limit"
+    ],
+    "find": "prefix(ordered(t,p),p.limit)",
+    "name": "limit-before-filter",
+    "replace": "prefix(t.ids.sort_by(less(p.descending)),p.limit).filter(|id:int|matches(t.rows[id],p,t.collation))"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_filter_happens_before_limit"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/history_paging/history_paging.rs": "60572dda768f8190a7ab67352680eb6ef6256a53481936b078ec5b581c9e2c3a",
+    ".g5/Verus_verification/models/history_paging/model.json": "ae1e09540126b40c188435693f49dd0bda9193b32ad7de8eca16a8ec5fce0071"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/controls/limit-before-filter/history_paging.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 4,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_filter_happens_before_limit": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/20261115T170515Z-control-limit-before-filter-theorem_filter_happens_before_limit.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/20261115T170515Z-control-limit-before-filter.log",
+    "timed_out": false,
+    "verified": 13
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/history_paging/20261115T170516Z-control-limit-before-filter/logs/20261115T170515Z-control-limit-before-filter-theorem_filter_happens_before_limit.log": "33ebc29eb96722c58304a5f36d53d666d8e818ae6ce82296eccaecc378708c2e",
+    ".g5/Verus_verification/results/history_paging/20261115T170516Z-control-limit-before-filter/logs/20261115T170515Z-control-limit-before-filter.log": "263cac60745777337dc28c36219acd196b0af8ff7ba16b2929b49233fa10e782"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

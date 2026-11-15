@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_empty_filter_is_not_omitted"
+    ],
+    "find": "filter.is_none() ||",
+    "name": "empty-filter-disabled",
+    "replace": "(filter.is_none() || filter.unwrap().len()==0) ||"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_empty_filter_is_not_omitted"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/history_paging/history_paging.rs": "385755ecc9062df77704e9b19316f17e7ef23f09ef629d80bf592f1487a84f41",
+    ".g5/Verus_verification/models/history_paging/model.json": "ebc4d6ea6bf1bb56c7a12592ff389c8aa0b0e7d9d2ea25003ba98edce9958041"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/controls/empty-filter-disabled/20261115T170930Z/history_paging.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_empty_filter_is_not_omitted": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/20261115T170930Z-control-empty-filter-disabled-theorem_empty_filter_is_not_omitted.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/20261115T170930Z-control-empty-filter-disabled.log",
+    "timed_out": false,
+    "verified": 19
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/history_paging/20261115T170931Z-control-empty-filter-disabled/logs/20261115T170930Z-control-empty-filter-disabled-theorem_empty_filter_is_not_omitted.log": "7fe44ade70af4c01fa7525ff1c1d0a5175258098e0ab291673362be1dc3d9ed6",
+    ".g5/Verus_verification/results/history_paging/20261115T170931Z-control-empty-filter-disabled/logs/20261115T170930Z-control-empty-filter-disabled.log": "27652eda63277651f12985ad7044dbc86fe52d46459c6da507db522fa88f204c"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

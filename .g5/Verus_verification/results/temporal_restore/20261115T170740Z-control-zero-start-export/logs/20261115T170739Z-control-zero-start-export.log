@@ -1,0 +1,32 @@
+verification results:: 25 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /Users/ziniuw/runs/ivg-iteration6-temporal-20261115/verus/temporal_restore/controls/zero-start-export/20261115T170739Z/temporal_restore.rs:70:1
+   |
+70 | pub proof fn lemma_export_import_key(src:Global,dst:Global,keys:Seq<Key>,stores:Set<nat>,k:Key)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+  --> /Users/ziniuw/runs/ivg-iteration6-temporal-20261115/verus/temporal_restore/controls/zero-start-export/20261115T170739Z/temporal_restore.rs:79:28
+   |
+79 |         if head==k {assert(next.contains_key(k));assert(next[k]==src[k]);}
+   |                            ^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+  --> /Users/ziniuw/runs/ivg-iteration6-temporal-20261115/verus/temporal_restore/controls/zero-start-export/20261115T170739Z/temporal_restore.rs:79:57
+   |
+79 |         if head==k {assert(next.contains_key(k));assert(next[k]==src[k]);}
+   |                                                         ^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration6-temporal-20261115/verus/temporal_restore/controls/zero-start-export/20261115T170739Z/temporal_restore.rs:109:13
+    |
+107 |   pub proof fn theorem_zero_graph_epoch_is_preserved(e:Edge,w:int)
+    |   ---------------------------------------------------------------- at the end of the function body
+108 |       requires e.0==0,e.1==0,e.2.len()>0,
+109 |       ensures weight(restore(Map::empty(),export(map![out(e)=>w],seq![out(e)],set![0nat],false),Some(true),false,Set::empty()).state,
+    |  _____________^
+110 | |         e,false,0,0,0,paging::plain(None))==Some(w),
+    | |___________________________________________________^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

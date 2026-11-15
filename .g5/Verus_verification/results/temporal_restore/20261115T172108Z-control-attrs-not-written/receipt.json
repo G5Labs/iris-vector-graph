@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_writer_derives_direction_and_attrs"
+    ],
+    "find": "if k.0==2 && same_event(k,e) && attrs.contains_key(k.6)",
+    "name": "attrs-not-written",
+    "replace": "if false"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_writer_derives_direction_and_attrs"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal_restore/model.json": "6e7137843cae40f30a383cad43dee83f6733faac5bdff15cd9709921284cfb12",
+    ".g5/Verus_verification/models/temporal_restore/temporal_restore.rs": "ba855930771f858e31c543ca268e465d80df35e21165c0baa2bf7b5b938c4141",
+    ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs": "4f14236f57a45c64e889f794b6d55f3fc823dccaba4a2759ed7cedc97fd3bd9d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration6-temporal-20261115/verus/temporal_restore/controls/attrs-not-written/20261115T172107Z/models/temporal_restore/temporal_restore.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_writer_derives_direction_and_attrs": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration6-temporal-20261115/verus/temporal_restore/20261115T172107Z-control-attrs-not-written-theorem_writer_derives_direction_and_attrs.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration6-temporal-20261115/verus/temporal_restore/20261115T172107Z-control-attrs-not-written.log",
+    "timed_out": false,
+    "verified": 30
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal_restore/20261115T172108Z-control-attrs-not-written/logs/20261115T172107Z-control-attrs-not-written-theorem_writer_derives_direction_and_attrs.log": "d90420ccd00bdeb780de76c7cc4ef42a4bf3dbf38a5be8e6341f571720431689",
+    ".g5/Verus_verification/results/temporal_restore/20261115T172108Z-control-attrs-not-written/logs/20261115T172107Z-control-attrs-not-written.log": "049c4cebe45661827addb5b536a13357496ee02b94d34d1c67bc0a0c84140685"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

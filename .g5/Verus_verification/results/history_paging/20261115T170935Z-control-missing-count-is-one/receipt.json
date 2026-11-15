@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_decode_normalizes_fields"
+    ],
+    "find": "op_count:r.op_count.unwrap_or(0)",
+    "name": "missing-count-is-one",
+    "replace": "op_count:r.op_count.unwrap_or(1)"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_decode_normalizes_fields"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/history_paging/history_paging.rs": "385755ecc9062df77704e9b19316f17e7ef23f09ef629d80bf592f1487a84f41",
+    ".g5/Verus_verification/models/history_paging/model.json": "ebc4d6ea6bf1bb56c7a12592ff389c8aa0b0e7d9d2ea25003ba98edce9958041"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/controls/missing-count-is-one/20261115T170934Z/history_paging.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_decode_normalizes_fields": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/20261115T170934Z-control-missing-count-is-one-theorem_decode_normalizes_fields.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/20261115T170934Z-control-missing-count-is-one.log",
+    "timed_out": false,
+    "verified": 19
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/history_paging/20261115T170935Z-control-missing-count-is-one/logs/20261115T170934Z-control-missing-count-is-one-theorem_decode_normalizes_fields.log": "a2fbb430fe6fdc0dd97cdfa7dadd9146a84a3c5800bffe75d061a17be46a9142",
+    ".g5/Verus_verification/results/history_paging/20261115T170935Z-control-missing-count-is-one/logs/20261115T170934Z-control-missing-count-is-one.log": "2c96249440b22474943ad54130cbc34bc6d6b2f4a247836848a057670d2e1ca0"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

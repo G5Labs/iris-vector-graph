@@ -19,6 +19,8 @@ def inputs(root):
         product[str(p.relative_to(root))]=sha(p)
     for n in ['tools/binding_common.py']:
         p=root/'.g5/Verus_verification'/n;product[str(p.relative_to(root))]=sha(p)
+    for n in ['crosswalk/decision-links.tsv','families.tsv']:
+        p=root/'.g5/Verus_verification'/n;product[str(p.relative_to(root))]=sha(p)
     p=root/'.g5/Verus_verification/run_verus.py';formal[str(p.relative_to(root))]=sha(p)
     for n in ['SOURCE.json','SOURCE-consolidated.json']:
         p=root/'.g5/Verus_verification'/n;formal[str(p.relative_to(root))]=sha(p)

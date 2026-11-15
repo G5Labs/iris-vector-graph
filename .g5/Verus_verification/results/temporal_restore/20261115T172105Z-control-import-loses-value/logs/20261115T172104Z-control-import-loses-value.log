@@ -1,0 +1,36 @@
+verification results:: 27 verified, 4 errors
+error: assertion failed
+  --> /Users/ziniuw/runs/ivg-iteration6-temporal-20261115/verus/temporal_restore/controls/import-loses-value/20261115T172104Z/models/temporal_restore/temporal_restore.rs:96:20
+   |
+96 |             assert(import(dst,export(src,keys,stores,false),Set::empty()).state==import(next,tail,Set::empty()).state);
+   |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration6-temporal-20261115/verus/temporal_restore/controls/import-loses-value/20261115T172104Z/models/temporal_restore/temporal_restore.rs:116:13
+    |
+114 |   pub proof fn theorem_zero_graph_epoch_is_preserved(e:Edge,w:int)
+    |   ---------------------------------------------------------------- at the end of the function body
+115 |       requires e.0==0,e.1==0,e.2.len()>0,
+116 |       ensures weight(restore(Map::empty(),export(map![out(e)=>Scalar::Number(w)],seq![out(e)],set![0nat],false),Some(true),false,Se...
+    |  _____________^
+117 | |         e,false,0,0,0,paging::plain(None))==Some(w),
+    | |___________________________________________________^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration6-temporal-20261115/verus/temporal_restore/controls/import-loses-value/20261115T172104Z/models/temporal_restore/temporal_restore.rs:135:13
+    |
+134 | pub proof fn theorem_numeric_attribute_becomes_text(e:Edge,a:Seq<char>,n:int)
+    | ----------------------------------------------------------------------------- at the end of the function body
+135 |     ensures attrs(restore(Map::empty(),export(map![prop(e,a)=>Scalar::Number(n)],seq![prop(e,a)],set![2nat],false),Some(true),false,Set::empty()).state,e)[a]==Scalar::NumericText(n),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration6-temporal-20261115/verus/temporal_restore/controls/import-loses-value/20261115T172104Z/models/temporal_restore/temporal_restore.rs:139:13
+    |
+138 | pub proof fn theorem_text_attribute_preserved(e:Edge,a:Seq<char>,v:int)
+    | ----------------------------------------------------------------------- at the end of the function body
+139 |     ensures attrs(restore(Map::empty(),export(map![prop(e,a)=>Scalar::Text(v)],seq![prop(e,a)],set![2nat],false),Some(true),false,Set::empty()).state,e)[a]==Scalar::Text(v),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 4 previous errors
+

@@ -1,0 +1,16 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration6-temporal-20261115/verus/temporal_restore/controls/zero-start-export/20261115T172102Z/models/temporal_restore/temporal_restore.rs:116:13
+    |
+114 |   pub proof fn theorem_zero_graph_epoch_is_preserved(e:Edge,w:int)
+    |   ---------------------------------------------------------------- at the end of the function body
+115 |       requires e.0==0,e.1==0,e.2.len()>0,
+116 |       ensures weight(restore(Map::empty(),export(map![out(e)=>Scalar::Number(w)],seq![out(e)],set![0nat],false),Some(true),false,Se...
+    |  _____________^
+117 | |         e,false,0,0,0,paging::plain(None))==Some(w),
+    | |___________________________________________________^ failed this postcondition
+
+error: aborting due to 1 previous error
+

@@ -1,0 +1,35 @@
+Traceback (most recent call last):
+  File "/Users/ziniuw/runs/ivg-consolidated-20261114/pin/iris_vector_graph/_engine/snapshot.py", line 1023, in save_snapshot
+    self._export_global_to_ndjson(iris_obj, f"^{gname}", prefix_subs)
+  File "<string>", line 40, in _export_global_to_ndjson
+  File "<string>", line 36, in _recurse
+  File "<string>", line 36, in _recurse
+  File "<string>", line 36, in _recurse
+  File "<string>", line 35, in _recurse
+  File "/Users/ziniuw/miniconda3/lib/python3.11/json/__init__.py", line 231, in dumps
+    return _default_encoder.encode(obj)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ziniuw/miniconda3/lib/python3.11/json/encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ziniuw/miniconda3/lib/python3.11/json/encoder.py", line 258, in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+  File "/Users/ziniuw/miniconda3/lib/python3.11/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Decimal is not JSON serializable
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/temporal_restore/binding.py", line 129, in <module>
+    if __name__=='__main__':raise SystemExit(main())
+                                             ^^^^^^
+  File "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/temporal_restore/binding.py", line 108, in main
+    e.save_snapshot(str(typed_path))
+  File "/Users/ziniuw/runs/ivg-consolidated-20261114/pin/iris_vector_graph/schema_name.py", line 523, in wrapper
+    return method(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ziniuw/runs/ivg-consolidated-20261114/pin/iris_vector_graph/_engine/snapshot.py", line 1026, in save_snapshot
+    raise _unreadable(f"^{gname}{prefix_subs or ''}", eg) from eg
+iris_vector_graph._engine.snapshot.SnapshotReadError: save_snapshot: cannot read ^KG['out']: Object of type Decimal is not JSON serializable. No archive was written: one without it would restore an empty table (or global) in its place.

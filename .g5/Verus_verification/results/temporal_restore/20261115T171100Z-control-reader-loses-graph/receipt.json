@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_wrong_graph_and_empty_sources"
+    ],
+    "find": "if e.0==g && lo<=e.1",
+    "name": "reader-loses-graph",
+    "replace": "if true && lo<=e.1"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_wrong_graph_and_empty_sources"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal_restore/model.json": "d250b2a8d9cb27c8cfe0c8fd2c3657399d30042813f746bf52dc6f28c40052f8",
+    ".g5/Verus_verification/models/temporal_restore/temporal_restore.rs": "630f1bc4fdfd6c729b45a2e1d4d66a5cde20916fd6fa8445b9fdce2fd8f4a3c6",
+    ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs": "4f14236f57a45c64e889f794b6d55f3fc823dccaba4a2759ed7cedc97fd3bd9d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration6-temporal-20261115/verus/temporal_restore/controls/reader-loses-graph/20261115T171059Z/temporal_restore.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_wrong_graph_and_empty_sources": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration6-temporal-20261115/verus/temporal_restore/20261115T171059Z-control-reader-loses-graph-theorem_wrong_graph_and_empty_sources.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration6-temporal-20261115/verus/temporal_restore/20261115T171059Z-control-reader-loses-graph.log",
+    "timed_out": false,
+    "verified": 28
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal_restore/20261115T171100Z-control-reader-loses-graph/logs/20261115T171059Z-control-reader-loses-graph-theorem_wrong_graph_and_empty_sources.log": "4ef0e5216bf73e14ea61521b15b51a0fd3d3bacc4a272600e491fbc44d22933b",
+    ".g5/Verus_verification/results/temporal_restore/20261115T171100Z-control-reader-loses-graph/logs/20261115T171059Z-control-reader-loses-graph.log": "a105499e0f84e81a2f4c5a3971d3581d4d94ffcec0449ff0195c0e983ffde189"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -6,7 +6,7 @@ Product baseline `3eaa79cf`. The register covers every bug, design simplificatio
 |---|---:|---:|---:|---:|---:|---:|
 | [Bugs and issues](bugs_issues.md) | 428 | 48 | 129 | 220 | 31 | 240 of 397 |
 | [Design simplifications](design_simplification.md) | 55 | 16 | 25 | 13 | 1 | n/a |
-| [Open questions](open_questions.md) | 140 | 1 | 19 | 40 | 16 | n/a |
+| [Open questions](open_questions.md) | 141 | 1 | 20 | 40 | 16 | n/a |
 
 How to read an entry: a bug cites the governing source of the expected behavior (**Expected**), what the baseline does (**Observed**) and the evidence (**Found by** — model witness, source review or reviewer — and **Reproduced by** — native probe receipt under `receipts/native/` or an upstream test). An entry whose product reachability was not shown natively says **Suspected** and its severity is one level lower than its consequence. A simplification states the proposal, why it helps, the behavior to preserve and a distinguishing case. A question states the evidence, the plausible interpretations and the decision needed.
 
@@ -133,6 +133,7 @@ How to read an entry: a bug cites the governing source of the expected behavior 
 | [q-cyp-001](open_questions.md#q-cyp-001) | When a write without USE GRAPH creates a relationship between nodes its MATCH bound in a named graph, which graph gets it? |
 | [q-led-005](open_questions.md#q-led-005) | Should callers be able to choose a commit's kind? |
 | [q-plt-019](open_questions.md#q-plt-019) | May the server or the client retry a call that writes? |
+| [q-iter-003](open_questions.md#q-iter-003) | Should history text filters use binary identity or the current database comparison? |
 
 ## Sources of the findings
 

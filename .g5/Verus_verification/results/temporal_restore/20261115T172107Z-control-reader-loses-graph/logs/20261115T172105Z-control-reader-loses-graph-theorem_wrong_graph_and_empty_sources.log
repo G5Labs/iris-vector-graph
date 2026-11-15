@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration6-temporal-20261115/verus/temporal_restore/controls/reader-loses-graph/20261115T172105Z/models/temporal_restore/temporal_restore.rs:121:13
+    |
+119 | pub proof fn theorem_wrong_graph_and_empty_sources(s:Global,e:Edge,g:int)
+    | ------------------------------------------------------------------------- at the end of the function body
+120 |     requires g!=e.0,
+121 |     ensures weight(s,e,false,g,e.1,e.1,paging::plain(None))==None,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

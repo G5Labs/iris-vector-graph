@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/controls/descending-cursor-reversed/history_paging.rs:150:9
+    |
+148 | pub proof fn theorem_direction_and_exclusive_cursor(r:Row,p:Params,c:Collation)
+    | ------------------------------------------------------------------------------- at the end of the function body
+149 |     ensures (!p.descending && r.seq<=p.after) ==> !matches(r,p,c),
+150 |         (p.descending && p.after!=0 && r.seq>=p.after) ==> !matches(r,p,c),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

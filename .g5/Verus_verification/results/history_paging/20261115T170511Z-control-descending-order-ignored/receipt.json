@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_order_is_derived"
+    ],
+    "find": "admitted(t,p).sort_by(less(p.descending))",
+    "name": "descending-order-ignored",
+    "replace": "admitted(t,p).sort_by(less(false))"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_order_is_derived"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/history_paging/history_paging.rs": "60572dda768f8190a7ab67352680eb6ef6256a53481936b078ec5b581c9e2c3a",
+    ".g5/Verus_verification/models/history_paging/model.json": "ae1e09540126b40c188435693f49dd0bda9193b32ad7de8eca16a8ec5fce0071"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/controls/descending-order-ignored/history_paging.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_order_is_derived": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/20261115T170509Z-control-descending-order-ignored-theorem_order_is_derived.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/20261115T170509Z-control-descending-order-ignored.log",
+    "timed_out": false,
+    "verified": 14
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/history_paging/20261115T170511Z-control-descending-order-ignored/logs/20261115T170509Z-control-descending-order-ignored-theorem_order_is_derived.log": "5e1242c429597e6a16ab01d96b83bbe4b40955987e82940039ada435d6a5ef66",
+    ".g5/Verus_verification/results/history_paging/20261115T170511Z-control-descending-order-ignored/logs/20261115T170509Z-control-descending-order-ignored.log": "0c190335025e31c760a11209b9624bde27c08a4c55915fca9472103fab532ee8"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

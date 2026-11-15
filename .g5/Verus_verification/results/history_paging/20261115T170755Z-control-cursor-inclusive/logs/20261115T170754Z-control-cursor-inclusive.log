@@ -1,0 +1,17 @@
+verification results:: 17 verified, 2 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/controls/cursor-inclusive/20261115T170754Z/history_paging.rs:153:13
+    |
+152 | pub proof fn theorem_direction_and_exclusive_cursor(r:Row,p:Params,c:Collation)
+    | ------------------------------------------------------------------------------- at the end of the function body
+153 |     ensures (!p.descending && r.seq<=p.after) ==> !matches(r,p,c),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: assertion failed
+   --> /Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/controls/cursor-inclusive/20261115T170754Z/history_paging.rs:179:16
+    |
+179 |         assert(admitted(t,p).len()==0) by {
+    |                ^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

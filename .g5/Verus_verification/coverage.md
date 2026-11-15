@@ -600,3 +600,17 @@ under member_reach.py; exact unlinked members and exclusions retained. Purposive
 four-case self-scores stay separate from historical/public evaluator cohorts.
 Temporal restore/window and history paging remain material next gaps; no
 convergence claim. Both canonical owners carry stable formal links in G5 metadata.
+
+## Improvement iteration 6 (2026-11-15)
+
+[Evidence](../uplift/consolidated/iteration-6/HANDOFF.md): temporal_restore31 units
+(15 new +16 inherited paging rechecked)/7 controls/7 native groups; history_paging20
+new units/13 controls/6080 Python/SQLite journeys and actual IRIS TOP/collation/
+continuation probes.35 new units,20 controls,zero direct product-body proofs.
+Native enumeration/codec and full restored page composition remain qualified.
+F-1804/F-C1802 strengthened; no new bugs. Raw-value Decimal proposal retired as
+insufficient; snapshot observation-control credit withdrawn/replaced with native
+11-world oracle refresh. q-iter-003 opens history text policy.19 qualified roles,
+17 newly reached:123/4130->140/4130. Six purposive builder cases measure no
+independent/population performance. Timestamp resolution, service recovery and
+CALL tails remain material; no convergence. Stable formal links live in owners.

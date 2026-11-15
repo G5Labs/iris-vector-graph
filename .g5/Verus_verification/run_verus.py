@@ -109,7 +109,8 @@ def write_receipt(model: dict, label: str, body: dict) -> Path:
 
 def base_inputs(model: dict) -> dict:
     d = model["dir"]
-    files = {str((d / f).relative_to(REPO)): sha256(d / f) for f in [model["root"], "model.json"]}
+    files = {str((d / f).resolve().relative_to(REPO)): sha256((d / f).resolve())
+             for f in [model["root"], "model.json", *model.get("additional_inputs", [])]}
     return {
         "inputs": files,
         "verus": {"bin": VERUS, "version": verus_version()},
@@ -148,10 +149,17 @@ def controls(model_dir: Path) -> int:
         name = c["name"]
         if only and name != only:
             continue
-        work = RUN_DIR / "verus" / model["name"] / "controls" / name
-        if work.exists():
-            shutil.rmtree(work)
+        # Preserve earlier work/control copies; imported model paths need the same relative layout.
+        control_root = RUN_DIR / "verus" / model["name"] / "controls" / name / stamp()
+        work = control_root / "models" / model["name"]
         work.mkdir(parents=True)
+        for dependency in model.get("additional_inputs", []):
+            src_dependency = (model_dir / dependency).resolve()
+            dst_dependency = (work / dependency).resolve()
+            if not dst_dependency.is_relative_to(control_root.resolve()):
+                raise ValueError(f"control dependency escapes its preserved control snapshot: {dependency}")
+            dst_dependency.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(src_dependency, dst_dependency)
         n = src.count(c["find"])
         log = RUN_DIR / "verus" / model["name"] / f"{stamp()}-control-{name}.log"
         if n != 1:

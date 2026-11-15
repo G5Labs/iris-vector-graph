@@ -177,6 +177,8 @@ P = [
 ]
 
 C = [  # this consolidation's new model directories: (name, scope, design, status, premises/notes)
+    ("history_paging", "raw cursor/filter/order/limit producer, native text comparison fragment, exact-full-page cursor and RevisionInfo projection", "as-built transcription", "active"),
+    ("temporal_restore", "event/global export/import to window, graph0/epoch0, scalar type loss and silent line refusal; imported paging units separated", "as-built transcription", "active"),
     ("bulk_children", "graph-key/parent census, orphan properties, missing-key merge, label union, repeat order and complete typed reader projection; native finite witnesses", "as-built transcription", "active"),
     ("snapshot_routes", "source registry/archive width to declarations, restored route/rows, literal width guard and real vector reader; merge parent/row and provider limits", "as-built transcription", "active"),
     ("edge_acceptance", "ordinary create/store duplicate returns, temporal adoption, endpoint/refusal and SQL/adjacency distinction; one triple", "as-built transcription", "active"),

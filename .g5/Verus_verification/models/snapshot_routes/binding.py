@@ -68,6 +68,11 @@ def observation(e,tables):
         cur.close()
         result[graph]={'route':None if route is None else {'table':route.table_name,'width':route.dimension,'index_state':route.index_state},'declared':declared,'count':count,'read':read,'compiled_hnsw':compiled}
     return result
+def complete_values(got):
+    """Input-derived acceptance predicate, independent of a baseline observation."""
+    return all(got[g]['route'] is not None and got[g]['route']['width']==w and got[g]['declared']==w
+        and got[g]['read']['kind']=='value' and got[g]['read']['row']['embedding']==[v]*w
+        for g,m,w,v in [A,B])
 
 def main():
     start=time.monotonic();c=connect();e=IRISGraphEngine(c,embedding_dimension=8)
@@ -147,7 +152,7 @@ def main():
     # Restore valid neighbor before returning, preserving a usable last runtime state.
     empty_destination(e,list(tables.values()));e.restore_snapshot(str(original));final=observation(e,tables)
     changed=json.loads(json.dumps(final));changed[B[0]]['read']['row']['embedding'][0]=99
-    detection={'creator_default_width_mutant':bool(detected),'changed_final_vector':changed!=final}
+    detection={'creator_default_width_mutant':bool(detected),'changed_final_vector':complete_values(final) and not complete_values(changed)}
     c.close()
     extra_sources=['iris_vector_graph/_engine/snapshot.py','iris_vector_graph/_engine/schema.py','iris_vector_graph/_engine/embeddings.py']
     hashes={p:bc.sha(PIN_DIR/p) for p in extra_sources}

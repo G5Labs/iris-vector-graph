@@ -1,0 +1,32 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_zero_and_negative_limits"
+    ],
+    "find": "if p.limit<0 {Outcome::SqlRefused}",
+    "name": "negative-top-is-empty",
+    "replace": "if p.limit<0 {Outcome::Page(finish(seq![],p.limit))}"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_zero_and_negative_limits"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/history_paging/history_paging.rs": "60572dda768f8190a7ab67352680eb6ef6256a53481936b078ec5b581c9e2c3a",
+    ".g5/Verus_verification/models/history_paging/model.json": "ae1e09540126b40c188435693f49dd0bda9193b32ad7de8eca16a8ec5fce0071"
+  },
+  "kind": "control",
+  "observed": {
+    "error": "patch anchor matched 2 times"
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "ERROR",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

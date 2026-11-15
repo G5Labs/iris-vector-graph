@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_time_boundaries_are_inclusive"
+    ],
+    "find": "r.committed_ms.unwrap()>=p.since.unwrap()",
+    "name": "time-equality-excluded",
+    "replace": "r.committed_ms.unwrap()>p.since.unwrap()"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_time_boundaries_are_inclusive"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/history_paging/history_paging.rs": "60572dda768f8190a7ab67352680eb6ef6256a53481936b078ec5b581c9e2c3a",
+    ".g5/Verus_verification/models/history_paging/model.json": "ae1e09540126b40c188435693f49dd0bda9193b32ad7de8eca16a8ec5fce0071"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/controls/time-equality-excluded/history_paging.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_time_boundaries_are_inclusive": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/20261115T170512Z-control-time-equality-excluded-theorem_time_boundaries_are_inclusive.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/20261115T170512Z-control-time-equality-excluded.log",
+    "timed_out": false,
+    "verified": 16
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/history_paging/20261115T170513Z-control-time-equality-excluded/logs/20261115T170512Z-control-time-equality-excluded-theorem_time_boundaries_are_inclusive.log": "e7763b79f283ec83db6bd744a5691805ade8b4b22820c9bd8ea2bf65e0eb3f9d",
+    ".g5/Verus_verification/results/history_paging/20261115T170513Z-control-time-equality-excluded/logs/20261115T170512Z-control-time-equality-excluded.log": "2a0fdd5453ce717fb437bd1e27227dad1839a825df4651f8b8181bbc1680083e"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

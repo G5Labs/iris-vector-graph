@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-6/history-collation-native.py", line 9, in <module>
+    commit=e.ledger.commit(cs);cur=c.cursor();cur.execute('SELECT Actor, ActorType, CorrelationId, Source FROM Graph_KG.ledger_revisions WHERE seq=?',[commit.revision.seq]);raw=list(cur.fetchone());cur.close()
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+iris.dbapi.ProgrammingError: <SQL ERROR>; Details: [SQLCODE: <-29>:<Field not found in the applicable tables>]
+[Location: <Prepare>]
+[%msg: < Field 'ACTORTYPE' not found in the applicable tables^SELECT Actor , ActorType ,>]

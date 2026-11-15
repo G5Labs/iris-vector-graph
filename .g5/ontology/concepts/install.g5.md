@@ -267,6 +267,10 @@ A snapshot saves each routed vector table and restores it at the width the archi
 [I · install.snapshot.temporal]
 
 A temporal event saved in a snapshot answers a [window read](../features/temporal.g5.md#temporal.window) after a restore, not only a row count. The native subtrees the archive holds are read from the same store plan the restore uses, so every temporal subtree goes out and comes back.
+- The default graph and timestamp zero are included. A suppressed reverse entry stays absent, so an outgoing event need not appear in an inbound window.
+- Attribute types should survive too. Today scalar export turns numbers into text: a numeric attribute returns as a string after restore, while text stays text; the weight reader still returns a number. This is a known failure of type preservation.
+- A refused global line can be skipped without an error or failed-row count while valid neighbors restore. This is a known failure of the required restore error report.
+- An archive naming another storage layout is refused before anything is erased. The current reader admits an archive with no layout stamp; this does not establish compatibility for arbitrary old global shapes.
 - The temporal subtrees saved are the events by time in both directions, the time buckets and their aggregates, the edge attributes, and the latest-event index.
 ## Bulk loading
 
@@ -683,7 +687,8 @@ Public case J01. Edge vectors matching with no graph is the playbook's finding F
 ### install.snapshot.temporal
 - Sources: [`iris_vector_graph/_engine/snapshot.py::snapshot_globals`](../../../iris_vector_graph/_engine/snapshot.py#L387-L408), [`::kg_export_subscripts`](../../../iris_vector_graph/_engine/snapshot.py#L425-L437), `STORE_PLAN` temporal entries [`snapshot.py`](../../../iris_vector_graph/_engine/snapshot.py#L136-L144); live tests [`test_the_restored_temporal_edge_answers_a_window_query`](../../../tests/integration/test_snapshot_inventory.py#L116-L130), unit `tests/unit/test_snapshot_inventory.py::test_the_globals_export_is_derived_from_the_plan`
 - Playbook: [SNP-I1.1](../../../experiment/playbook-completion/ontology/18-snapshot.md#L40), [SNP-B1](../../../experiment/playbook-completion/ontology/18-snapshot.md#L42), [TMP-B6](../../../experiment/playbook-completion/ontology/05-temporal.md#L201)
-- Verus: the window reader after restore reuses [temporal_window_reader](../../Verus_verification/models/temporal_window_reader/NOTES.md) for the read; no formal contract connects a save, a restore and that read. The playbook's `proofs-d1b` `snap_l2` restores generic rows, not the decoded window.
+- Formal contract: [temporal restore, scalar types and window projection](../../Verus_verification/models/temporal_restore/temporal_restore.rs). Critical source keys are derived from the finite source map under the Native API enumeration contract; full page-sequence/global-loop composition and general codecs remain open. The unchanged paging family is an explicitly stamped dependency, not new proof credit.
+- Findings: [scalar type loss](../../Verus_verification/bugs_issues.md#F-1804), [silent global-line loss](../../Verus_verification/bugs_issues.md#F-C1802)
 - Expands: [Snapshots](#install.snapshot)
 - agent
 - user-facing-behavior, data-integrity

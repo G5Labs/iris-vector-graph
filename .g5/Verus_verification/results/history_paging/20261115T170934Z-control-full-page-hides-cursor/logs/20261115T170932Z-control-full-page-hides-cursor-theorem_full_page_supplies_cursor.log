@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/controls/full-page-hides-cursor/20261115T170932Z/history_paging.rs:172:13
+    |
+170 | pub proof fn theorem_full_page_supplies_cursor(rows:Seq<View>,limit:int)
+    | ------------------------------------------------------------------------ at the end of the function body
+171 |     requires rows.len()==limit,limit>0,
+172 |     ensures finish(rows,limit).next==Some(rows[rows.len()-1].seq),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

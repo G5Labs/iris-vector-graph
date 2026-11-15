@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration6-temporal-20261115/verus/temporal_restore/controls/layout-refusal-erases/20261115T170744Z/temporal_restore.rs:119:9
+    |
+117 | pub proof fn theorem_layout_refuses_before_erasure(s:Global,lines:Seq<Line>,merge:bool,rejected:Set<Key>)
+    | --------------------------------------------------------------------------------------------------------- at the end of the function body
+118 |     ensures restore(s,lines,Some(false),merge,rejected).refused,
+119 |         restore(s,lines,Some(false),merge,rejected).state==s,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

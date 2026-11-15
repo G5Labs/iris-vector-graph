@@ -1,0 +1,41 @@
+verification results:: 26 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/temporal_restore/temporal_restore.rs:70:1
+   |
+70 | pub proof fn lemma_export_import_key(src:Global,dst:Global,keys:Seq<Key>,stores:Set<nat>,k:Key)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/temporal_restore/temporal_restore.rs:73:13
+   |
+73 |       ensures import(dst,export(src,keys,stores,false),Set::empty()).state.contains_key(k),
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+77 | /     if keys.len()>0 {
+78 | |         let head=keys[0];let next=if src.contains_key(head) && captured(head,stores,false){dst.insert(head,src[head])}else{dst};
+79 | |         if head==k {assert(next.contains_key(k));assert(next[k]==src[k]);}
+80 | |         lemma_export_import_key(src,next,keys.drop_first(),stores,k);
+81 | |     }
+   | |_____- at the end of the function body
+
+note: recommendation not met
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/temporal_restore/temporal_restore.rs:74:9
+   |
+74 |         import(dst,export(src,keys,stores,false),Set::empty()).state[k]==src[k],
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+  --> map.rs:87:12
+   |
+   = note: recommendation not met
+
+error: precondition not satisfied
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/temporal_restore/temporal_restore.rs:80:9
+   |
+72 |         keys.contains(k) || (dst.contains_key(k) && dst[k]==src[k]),
+   |         ----------------------------------------------------------- failed precondition
+...
+80 |         lemma_export_import_key(src,next,keys.drop_first(),stores,k);
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: aborting due to 2 previous errors
+

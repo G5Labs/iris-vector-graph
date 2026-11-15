@@ -1,0 +1,19 @@
+verification results:: 17 verified, 2 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/controls/sqlupper-is-binary/20261115T170807Z/history_paging.rs:200:13
+    |
+199 | pub proof fn theorem_sqlupper_ascii_neighbor()
+    | ---------------------------------------------- at the end of the function body
+200 |     ensures text_eq(seq![80,108,97,110],seq![112,76,65,78],Collation::SqlUpperAscii),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/controls/sqlupper-is-binary/20261115T170807Z/history_paging.rs:204:13
+    |
+203 | pub proof fn theorem_trailing_space_tab_neighbor(a:Seq<int>)
+    | ------------------------------------------------------------ at the end of the function body
+204 |     ensures text_eq(a,a+seq![32,9],Collation::SqlUpperAscii),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

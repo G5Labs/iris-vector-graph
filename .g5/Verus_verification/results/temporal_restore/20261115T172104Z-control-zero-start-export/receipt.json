@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_zero_graph_epoch_is_preserved"
+    ],
+    "find": "(!zero_start || (k.1>0 && k.2>0))",
+    "name": "zero-start-export",
+    "replace": "(k.1>0 && k.2>0)"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_zero_graph_epoch_is_preserved"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal_restore/model.json": "6e7137843cae40f30a383cad43dee83f6733faac5bdff15cd9709921284cfb12",
+    ".g5/Verus_verification/models/temporal_restore/temporal_restore.rs": "ba855930771f858e31c543ca268e465d80df35e21165c0baa2bf7b5b938c4141",
+    ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs": "4f14236f57a45c64e889f794b6d55f3fc823dccaba4a2759ed7cedc97fd3bd9d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration6-temporal-20261115/verus/temporal_restore/controls/zero-start-export/20261115T172102Z/models/temporal_restore/temporal_restore.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 4,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_zero_graph_epoch_is_preserved": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration6-temporal-20261115/verus/temporal_restore/20261115T172102Z-control-zero-start-export-theorem_zero_graph_epoch_is_preserved.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration6-temporal-20261115/verus/temporal_restore/20261115T172102Z-control-zero-start-export.log",
+    "timed_out": false,
+    "verified": 27
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal_restore/20261115T172104Z-control-zero-start-export/logs/20261115T172102Z-control-zero-start-export-theorem_zero_graph_epoch_is_preserved.log": "8852f95314fcf7b3074fb492af0ada0ff41de0f954f87e26d0fbe02f98c860b4",
+    ".g5/Verus_verification/results/temporal_restore/20261115T172104Z-control-zero-start-export/logs/20261115T172102Z-control-zero-start-export.log": "8b8cf47689c9b8112af517061c54dea9836ce040501f730c40d290fac6643ea3"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

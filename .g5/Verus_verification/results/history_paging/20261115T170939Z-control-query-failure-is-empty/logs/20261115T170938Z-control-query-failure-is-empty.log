@@ -1,0 +1,27 @@
+verification results:: 19 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/controls/query-failure-is-empty/20261115T170938Z/history_paging.rs:216:1
+    |
+216 | pub proof fn theorem_failed_reader_never_becomes_empty(t:Table,p:Params)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/controls/query-failure-is-empty/20261115T170938Z/history_paging.rs:218:13
+    |
+216 | pub proof fn theorem_failed_reader_never_becomes_empty(t:Table,p:Params)
+    | ------------------------------------------------------------------------ at the end of the function body
+217 |     requires p.limit>=0,
+218 |     ensures attempt(t,p,Fault::Execute).outcome==Outcome::QueryError,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/controls/query-failure-is-empty/20261115T170938Z/history_paging.rs:219:9
+    |
+216 | pub proof fn theorem_failed_reader_never_becomes_empty(t:Table,p:Params)
+    | ------------------------------------------------------------------------ at the end of the function body
+...
+219 |         attempt(t,p,Fault::Fetch).outcome==Outcome::QueryError,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

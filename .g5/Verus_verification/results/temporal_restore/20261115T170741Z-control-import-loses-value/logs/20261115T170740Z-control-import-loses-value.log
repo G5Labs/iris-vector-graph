@@ -1,0 +1,20 @@
+verification results:: 25 verified, 2 errors
+error: assertion failed
+  --> /Users/ziniuw/runs/ivg-iteration6-temporal-20261115/verus/temporal_restore/controls/import-loses-value/20261115T170740Z/temporal_restore.rs:89:20
+   |
+89 |             assert(import(dst,export(src,keys,stores,false),Set::empty()).state==import(next,tail,Set::empty()).state);
+   |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration6-temporal-20261115/verus/temporal_restore/controls/import-loses-value/20261115T170740Z/temporal_restore.rs:109:13
+    |
+107 |   pub proof fn theorem_zero_graph_epoch_is_preserved(e:Edge,w:int)
+    |   ---------------------------------------------------------------- at the end of the function body
+108 |       requires e.0==0,e.1==0,e.2.len()>0,
+109 |       ensures weight(restore(Map::empty(),export(map![out(e)=>w],seq![out(e)],set![0nat],false),Some(true),false,Set::empty()).state,
+    |  _____________^
+110 | |         e,false,0,0,0,paging::plain(None))==Some(w),
+    | |___________________________________________________^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

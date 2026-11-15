@@ -266,6 +266,19 @@ Interpretations: (a) retries are allowed only for reads and for idempotency-keye
 
 Decision needed: the retry policy for writes.
 
+<a id="q-iter-003"></a>
+### Should history text filters use binary identity or the current database comparison?
+
+Severity: Medium · Decision: Open
+
+Run: Improvement iteration 6, 2026-11-15
+
+Evidence: the Python API calls a correlation filter exact, but persisted fields use ordinary IRIS String columns. Actual native commits/history match ASCII case changes and trailing spaces or tabs, including in raw source JSON; interior JSON spacing still differs. Evidence and raw rows: [native comparison](../uplift/consolidated/iteration-6/history-collation-native.json), [spaces](../uplift/consolidated/iteration-6/history-collation-spaces-native.json), [interior source spacing](../uplift/consolidated/iteration-6/history-collation-interior-native.json). The as-built history_paging model represents both comparison modes; no human policy was inferred.
+
+Working answer: document current matching until a maintainer decides, preserving existing queries. Alternative: use binary identity for some or all metadata fields so distinct correlation IDs/source text do not compare equal; that can change existing queries.
+
+Decision needed: which comparison is intended for actor/type/correlation/source fields, and whether any change needs a compatibility path. Canonical owner: [history text policy](../ontology/features/ledger.g5.md#ledger.readers.history.text-policy).
+
 <a id="q-plt-018"></a>
 ### Which graph do rows of a mapped FHIR SQL table belong to?
 

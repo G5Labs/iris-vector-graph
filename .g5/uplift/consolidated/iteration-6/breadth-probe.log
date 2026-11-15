@@ -1,0 +1,421 @@
+WARNING:root:IRISINSTALLDIR or ISC_PACKAGE_INSTALLDIR environment variable is not set
+WARNING:root:Embedded Python not configured; call iris.connect(path=...) to configure it
+WARNING:api.main:IRIS Vector Graph API starting without the database: survey has no live connection
+WARNING:root:Class or module 'sql' not found in iris_embedded_python. Returning a mock object. Make sure you local installation is correct.
+WARNING:root:Class or module 'sql' not found in iris_embedded_python. Returning a mock object. Make sure you local installation is correct.
+/Users/ziniuw/runs/ivg-consolidated-20261114/venv/lib/python3.11/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  from starlette.testclient import TestClient as TestClient  # noqa
+INFO:httpx:HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+WARNING:api.main:/health: the database did not answer SELECT 1 (it answered (0,), not 1)
+INFO:httpx:HTTP Request: GET http://testserver/health "HTTP/1.1 503 Service Unavailable"
+WARNING:api.main:/health: the database did not answer SELECT 1 (unavailable)
+INFO:httpx:HTTP Request: GET http://testserver/health "HTTP/1.1 503 Service Unavailable"
+INFO:httpx:HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+WARNING:api.main:/health: the namespace records another IVG Schema (the namespace records OtherKG, and this API's engine asks for Graph_KG)
+INFO:httpx:HTTP Request: GET http://testserver/health "HTTP/1.1 503 Service Unavailable"
+WARNING:api.main:/health: the namespace has no IVG Schema record: setup has not finished; run initialize_schema() (no record; this API's engine asks for Graph_KG)
+INFO:httpx:HTTP Request: GET http://testserver/health "HTTP/1.1 503 Service Unavailable"
+INFO:httpx:HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+WARNING:iris_vector_graph.cypher_api:health probe failed: unavailable
+Traceback (most recent call last):
+  File "/Users/ziniuw/runs/ivg-consolidated-20261114/pin/iris_vector_graph/cypher_api.py", line 281, in health
+    raise RuntimeError(error)
+RuntimeError: unavailable
+INFO:httpx:HTTP Request: GET http://testserver/health "HTTP/1.1 503 Service Unavailable"
+WARNING:iris_vector_graph.cypher_api:health probe failed: unavailable
+Traceback (most recent call last):
+  File "/Users/ziniuw/runs/ivg-consolidated-20261114/pin/iris_vector_graph/cypher_api.py", line 276, in health
+    with _engine() as eng:
+  File "/Users/ziniuw/miniconda3/lib/python3.11/contextlib.py", line 137, in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+  File "/Users/ziniuw/runs/ivg-consolidated-20261114/pin/iris_vector_graph/cypher_api.py", line 224, in _engine
+    yield _get_engine()
+          ^^^^^^^^^^^^^
+  File "/Users/ziniuw/miniconda3/lib/python3.11/unittest/mock.py", line 1124, in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ziniuw/miniconda3/lib/python3.11/unittest/mock.py", line 1128, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ziniuw/miniconda3/lib/python3.11/unittest/mock.py", line 1183, in _execute_mock_call
+    raise effect
+RuntimeError: unavailable
+INFO:httpx:HTTP Request: GET http://testserver/health "HTTP/1.1 503 Service Unavailable"
+WARNING:api.main:IRIS Vector Graph API starting without the database: unavailable
+WARNING:api.main:/health: the API started without the database (unavailable)
+INFO:httpx:HTTP Request: GET http://testserver/health "HTTP/1.1 503 Service Unavailable"
+WARNING:api.main:/health: the API started without the database (unavailable)
+INFO:httpx:HTTP Request: GET http://testserver/health "HTTP/1.1 503 Service Unavailable"
+WARNING:iris_vector_graph.cypher_api:health probe failed: unavailable
+Traceback (most recent call last):
+  File "/Users/ziniuw/runs/ivg-consolidated-20261114/pin/iris_vector_graph/cypher_api.py", line 276, in health
+    with _engine() as eng:
+  File "/Users/ziniuw/miniconda3/lib/python3.11/contextlib.py", line 137, in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+  File "/Users/ziniuw/runs/ivg-consolidated-20261114/pin/iris_vector_graph/cypher_api.py", line 224, in _engine
+    yield _get_engine()
+          ^^^^^^^^^^^^^
+  File "/Users/ziniuw/runs/ivg-consolidated-20261114/pin/iris_vector_graph/cypher_api.py", line 205, in _get_engine
+    _engine_cache = _make_engine()
+                    ^^^^^^^^^^^^^^
+  File "/Users/ziniuw/miniconda3/lib/python3.11/unittest/mock.py", line 1124, in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ziniuw/miniconda3/lib/python3.11/unittest/mock.py", line 1128, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ziniuw/miniconda3/lib/python3.11/unittest/mock.py", line 1187, in _execute_mock_call
+    raise result
+RuntimeError: unavailable
+INFO:httpx:HTTP Request: GET http://testserver/health "HTTP/1.1 503 Service Unavailable"
+INFO:httpx:HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+{
+  "pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "query": [
+    {
+      "name": "P1-A",
+      "query": "CALL db.labels() YIELD label AS l WHERE l = $wanted RETURN l",
+      "params": {
+        "wanted": "A"
+      },
+      "columns": [
+        "l"
+      ],
+      "rows": [
+        [
+          "A"
+        ]
+      ],
+      "error": null
+    },
+    {
+      "name": "P1-C",
+      "query": "CALL db.labels() YIELD label AS l WHERE l = $wanted RETURN l",
+      "params": {
+        "wanted": "C"
+      },
+      "columns": [
+        "l"
+      ],
+      "rows": [],
+      "error": null
+    },
+    {
+      "name": "P1-unfiltered",
+      "query": "CALL db.labels() YIELD label RETURN label",
+      "params": {},
+      "columns": [
+        "label"
+      ],
+      "rows": [
+        [
+          "A"
+        ],
+        [
+          "B"
+        ]
+      ],
+      "error": null
+    },
+    {
+      "name": "P2-with",
+      "query": "CALL db.labels() YIELD label WITH label WHERE label = 'B' RETURN label",
+      "params": {},
+      "columns": [
+        "label"
+      ],
+      "rows": [
+        [
+          "B"
+        ]
+      ],
+      "error": null
+    },
+    {
+      "name": "P2-refuse-match",
+      "query": "CALL db.labels() YIELD label MATCH (n:X) RETURN label",
+      "params": {},
+      "raised": "ValueError",
+      "message": "db.labels is answered by IVG outside SQL, which applies a WHERE, a WITH of the yielded names and its WHERE, a RETURN of the yielded names, ORDER BY, SKIP and LIMIT after the YIELD; not MATCH. Run the rest in Python over the returned rows."
+    },
+    {
+      "name": "P2-refuse-starts",
+      "query": "CALL db.labels() YIELD label WHERE label STARTS WITH 'A' RETURN label",
+      "params": {},
+      "raised": "ValueError",
+      "message": "WHERE after YIELD of a procedure IVG answers outside SQL reads the yielded names, literals and parameters, comparisons, IN a literal list, IS NULL, AND, OR, XOR and NOT; not BooleanExpression(operator=<BooleanOperator.STARTS_WITH: 'STARTS WITH'>, operands=[Variable(name='label', is_parameter=False), Literal(value='A')]). Filter the returned rows in Python instead."
+    },
+    {
+      "name": "P2-null",
+      "query": "CALL db.labels() YIELD label WHERE label = null RETURN label",
+      "params": {},
+      "columns": [
+        "label"
+      ],
+      "rows": [],
+      "error": null
+    },
+    {
+      "name": "alias-standalone-discovery",
+      "query": "CALL db.labels() YIELD label AS l WHERE l = 'A'",
+      "params": {},
+      "columns": [
+        "label"
+      ],
+      "rows": [
+        [
+          "A"
+        ]
+      ],
+      "error": null
+    },
+    {
+      "name": "alias-standalone-return-neighbor",
+      "query": "CALL db.labels() YIELD label AS l WHERE l = 'A' RETURN l",
+      "params": {},
+      "columns": [
+        "l"
+      ],
+      "rows": [
+        [
+          "A"
+        ]
+      ],
+      "error": null
+    },
+    {
+      "name": "alias-standalone-order-discovery",
+      "query": "CALL db.labels() YIELD label AS l ORDER BY l",
+      "params": {},
+      "raised": "ValueError",
+      "message": "db.labels: ORDER BY reads a returned column by name, not Variable(name='l', is_parameter=False)"
+    },
+    {
+      "name": "where-consumer-control",
+      "columns": [
+        "l"
+      ],
+      "rows": [
+        [
+          "A"
+        ],
+        [
+          "B"
+        ]
+      ],
+      "detected": true
+    },
+    {
+      "name": "public-entry-P1-A",
+      "columns": [
+        "l"
+      ],
+      "rows": [
+        [
+          "A"
+        ]
+      ],
+      "error": null
+    },
+    {
+      "name": "public-entry-alias-standalone-discovery",
+      "columns": [
+        "label"
+      ],
+      "rows": [
+        [
+          "A"
+        ]
+      ],
+      "error": null
+    },
+    {
+      "name": "public-entry-alias-standalone-return-neighbor",
+      "columns": [
+        "l"
+      ],
+      "rows": [
+        [
+          "A"
+        ]
+      ],
+      "error": null
+    },
+    {
+      "name": "public-entry-alias-standalone-order-discovery",
+      "raised": "ValueError",
+      "message": "db.labels: ORDER BY reads a returned column by name, not Variable(name='l', is_parameter=False)"
+    }
+  ],
+  "http": [
+    {
+      "name": "H2-select1",
+      "status_code": 200,
+      "body": {
+        "status": "healthy",
+        "database": "connected",
+        "graphql": "available"
+      },
+      "sql": [
+        "SELECT 1"
+      ]
+    },
+    {
+      "name": "H2-wrong-select1",
+      "status_code": 503,
+      "body": {
+        "status": "unhealthy",
+        "database": "unavailable",
+        "graphql": "available",
+        "reason": "the database did not answer SELECT 1"
+      },
+      "sql": [
+        "SELECT 1"
+      ]
+    },
+    {
+      "name": "H2-failed-select1",
+      "status_code": 503,
+      "body": {
+        "status": "unhealthy",
+        "database": "unavailable",
+        "graphql": "available",
+        "reason": "the database did not answer SELECT 1"
+      },
+      "sql": [
+        "SELECT 1"
+      ]
+    },
+    {
+      "name": "H2-matching-record",
+      "status_code": 200,
+      "body": {
+        "status": "healthy",
+        "database": "connected",
+        "graphql": "available"
+      },
+      "sql": [
+        "SELECT 1"
+      ]
+    },
+    {
+      "name": "H2-other-record",
+      "status_code": 503,
+      "body": {
+        "status": "unhealthy",
+        "database": "unavailable",
+        "graphql": "available",
+        "reason": "the namespace records another IVG Schema"
+      },
+      "sql": [
+        "SELECT 1"
+      ]
+    },
+    {
+      "name": "H2-missing-record",
+      "status_code": 503,
+      "body": {
+        "status": "unhealthy",
+        "database": "unavailable",
+        "graphql": "available",
+        "reason": "the namespace has no IVG Schema record: setup has not finished; run initialize_schema()"
+      },
+      "sql": [
+        "SELECT 1"
+      ]
+    },
+    {
+      "name": "H1-ok",
+      "status_code": 200,
+      "body": {
+        "status": "ok"
+      }
+    },
+    {
+      "name": "H1-folded-error",
+      "status_code": 503,
+      "body": {
+        "status": "unavailable"
+      }
+    },
+    {
+      "name": "H1-no-engine",
+      "status_code": 503,
+      "body": {
+        "status": "unavailable"
+      }
+    },
+    {
+      "name": "startup-recovery-discovery-api-main",
+      "statuses": [
+        503,
+        503
+      ],
+      "engine_factory_calls": 1
+    },
+    {
+      "name": "startup-recovery-discovery-cypher-api",
+      "statuses": [
+        503,
+        200
+      ],
+      "engine_factory_calls": 2
+    }
+  ],
+  "scope": "actual parser, SQLite-backed metadata producer, _execute_parsed handler consumer and ASGI routes; IRIS schema record and query-result provider are substituted; no security behavior tested, live connection, listener or container used",
+  "source_identities": {
+    "iris_vector_graph/engine.py": {
+      "pin_blob": "b23b79b8cec0d68a755888bace0e9aa6ffe63e8c",
+      "export_equal_pin": true,
+      "current_equal_pin": true,
+      "sha256": "89d5bc083ddf15315eef449fb1896c8d9864f5a125ba2515b1a0b39deb8a3eba"
+    },
+    "iris_vector_graph/_engine/query.py": {
+      "pin_blob": "e091ddd364d4e44da07c6cde9aa41be5acbfc2d1",
+      "export_equal_pin": true,
+      "current_equal_pin": true,
+      "sha256": "197e7abc8ae204165b363ba4fc17445cb6fc7f789efd3b9dad6d88b0334945a3"
+    },
+    "iris_vector_graph/cypher/row_where.py": {
+      "pin_blob": "2a98a89d0305229beca934bc99815d97901ab834",
+      "export_equal_pin": true,
+      "current_equal_pin": true,
+      "sha256": "dda4a80ea20023502c6751e07dd0a7b64ac05b792ff278bbbbf585ccdb3ca654"
+    },
+    "iris_vector_graph/cypher/parser.py": {
+      "pin_blob": "d1a97f4ff4603e41304da07df8ddf44b194aa5db",
+      "export_equal_pin": true,
+      "current_equal_pin": true,
+      "sha256": "fb75d7be8289d65934e3bf40673c8e77db29e220a030d781b548f55820061805"
+    },
+    "iris_vector_graph/cypher/translator.py": {
+      "pin_blob": "fa0ec4c20143ebca3682b09857b10802235707e3",
+      "export_equal_pin": true,
+      "current_equal_pin": true,
+      "sha256": "0a37bc8fb5c00a26a3b672eb524de6cbc8e5c8092f4415fb5c83a96c7fe8d78c"
+    },
+    "iris_vector_graph/cypher_api.py": {
+      "pin_blob": "a616e1ae0d129973d52bae07e4bb1383764064ac",
+      "export_equal_pin": true,
+      "current_equal_pin": true,
+      "sha256": "7402a8392ec939ac742b4651d21aac876f3343b0191b8cb7f590562aa3416bef"
+    },
+    "iris_vector_graph/schema_name.py": {
+      "pin_blob": "61e1b94d74be137ff50c7a95d49a683353a19a61",
+      "export_equal_pin": true,
+      "current_equal_pin": true,
+      "sha256": "1672cdf714665ca76d5ff6bdffd739448ba48b9ba7f4cff3a5598d284295409e"
+    },
+    "api/main.py": {
+      "pin_blob": "f4d2af5e41db8995edd47f3e55de0ba62d6fe456",
+      "export_equal_pin": true,
+      "current_equal_pin": true,
+      "sha256": "5028bd39bf8b5c0f1384eaeeafd194a2953cd501ffe55f9887c09cf728ba4c86"
+    }
+  },
+  "probe_sha256": "438b2a93e73ca0dd41954a18825543872bc7b04da8c51ce7e0883c7c39cb7d8b",
+  "blocked_network_calls": 0,
+  "wall_s": 1.34
+}

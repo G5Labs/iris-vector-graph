@@ -1,0 +1,20 @@
+error[E0308]: mismatched types
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/temporal_restore/temporal_restore.rs:58:14
+   |
+58 |     Map::new(Set::new(|a:Seq<char>|s.contains_key(prop(e,a))),|a:Seq<char>|s[prop(e,a)])
+   |     -------- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `Set<Seq<char>>`, found `Option<Set<Seq<char>>>`
+   |     |
+   |     arguments to this function are incorrect
+   |
+   = note: expected struct `vstd::set::Set<_>`
+                found enum `std::option::Option<vstd::set::Set<_>>`
+note: associated function defined here
+  --> map.rs:67:25
+help: consider using `Option::expect` to unwrap the `std::option::Option<vstd::set::Set<vstd::seq::Seq<char>>>` value, panicking if the value is an `Option::None`
+   |
+58 |     Map::new(Set::new(|a:Seq<char>|s.contains_key(prop(e,a))).expect("REASON"),|a:Seq<char>|s[prop(e,a)])
+   |                                                              +++++++++++++++++
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0308`.

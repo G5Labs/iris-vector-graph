@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_direction_and_exclusive_cursor"
+    ],
+    "find": "r.seq<p.after",
+    "name": "descending-cursor-reversed",
+    "replace": "r.seq>p.after"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_direction_and_exclusive_cursor"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/history_paging/history_paging.rs": "385755ecc9062df77704e9b19316f17e7ef23f09ef629d80bf592f1487a84f41",
+    ".g5/Verus_verification/models/history_paging/model.json": "ebc4d6ea6bf1bb56c7a12592ff389c8aa0b0e7d9d2ea25003ba98edce9958041"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/controls/descending-cursor-reversed/20261115T170927Z/history_paging.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_direction_and_exclusive_cursor": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/20261115T170927Z-control-descending-cursor-reversed-theorem_direction_and_exclusive_cursor.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/20261115T170927Z-control-descending-cursor-reversed.log",
+    "timed_out": false,
+    "verified": 18
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/history_paging/20261115T170928Z-control-descending-cursor-reversed/logs/20261115T170927Z-control-descending-cursor-reversed-theorem_direction_and_exclusive_cursor.log": "8ef38cedd4f94c279a65939fbebbc454e81e039e3393df9ceceace38fc86f40e",
+    ".g5/Verus_verification/results/history_paging/20261115T170928Z-control-descending-cursor-reversed/logs/20261115T170927Z-control-descending-cursor-reversed.log": "b72356fa78d1e9b4ba32738b2025851a3c60c22688e87330cbd162a877d549ed"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

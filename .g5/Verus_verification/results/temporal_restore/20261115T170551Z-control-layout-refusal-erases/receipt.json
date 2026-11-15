@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_layout_refuses_before_erasure"
+    ],
+    "find": "Restored{state:s,refused:true",
+    "name": "layout-refusal-erases",
+    "replace": "Restored{state:Map::empty(),refused:true"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_layout_refuses_before_erasure"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal_restore/model.json": "a859301d2d51b8572d293a6c89141ae15492939e0393b2fb0d88326ad87c62f1",
+    ".g5/Verus_verification/models/temporal_restore/temporal_restore.rs": "30b4cb9fea81bd860dd1fe8863a34ba3dda788f899bf9fc0c5dd5dfd9dee7713",
+    ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs": "4f14236f57a45c64e889f794b6d55f3fc823dccaba4a2759ed7cedc97fd3bd9d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration6-temporal-20261115/verus/temporal_restore/controls/layout-refusal-erases/20261115T170549Z/temporal_restore.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_layout_refuses_before_erasure": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration6-temporal-20261115/verus/temporal_restore/20261115T170549Z-control-layout-refusal-erases-theorem_layout_refuses_before_erasure.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration6-temporal-20261115/verus/temporal_restore/20261115T170549Z-control-layout-refusal-erases.log",
+    "timed_out": false,
+    "verified": 26
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal_restore/20261115T170551Z-control-layout-refusal-erases/logs/20261115T170549Z-control-layout-refusal-erases-theorem_layout_refuses_before_erasure.log": "c785b2ce26b48087a3a567d045bc989c94f96d294283832e790d99c11122386f",
+    ".g5/Verus_verification/results/temporal_restore/20261115T170551Z-control-layout-refusal-erases/logs/20261115T170549Z-control-layout-refusal-erases.log": "28ae18f30839ff8fb2dc3a57fc551a512e95ec70b058e5ff92e7866a63e9c4e9"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

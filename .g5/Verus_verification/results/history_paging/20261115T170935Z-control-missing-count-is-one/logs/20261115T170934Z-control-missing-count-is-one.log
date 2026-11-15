@@ -1,0 +1,12 @@
+verification results:: 19 verified, 1 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/controls/missing-count-is-one/20261115T170934Z/history_paging.rs:201:60
+    |
+199 | pub proof fn theorem_decode_normalizes_fields(r:Row)
+    | ---------------------------------------------------- at the end of the function body
+200 |     requires r.committed_ms.is_none(),r.op_count.is_none(),r.parent_id==Some(seq![]),r.message==Some(seq![]),r.actor.is_none(),
+201 |     ensures decode(r).seq==r.seq,decode(r).committed_ms==0,decode(r).op_count==0,
+    |                                                            ^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

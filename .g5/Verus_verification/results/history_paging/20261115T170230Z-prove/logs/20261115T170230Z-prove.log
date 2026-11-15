@@ -1,0 +1,79 @@
+verification results:: 14 verified, 3 errors
+note: recommendation not met
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/history_paging/history_paging.rs:106:42
+    |
+106 |     requires frame(t),t.ids==seq![1,2,3],t.rows[1].actor==Some(seq![66]),
+    |                                          ^^^^^^^^^
+    |
+   --> map.rs:87:12
+    |
+    = note: recommendation not met
+
+note: recommendation not met
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/history_paging/history_paging.rs:107:9
+    |
+107 |         t.rows[2].actor==Some(seq![65]),t.rows[3].actor==Some(seq![65]),
+    |         ^^^^^^^^^
+    |
+   --> map.rs:87:12
+    |
+    = note: recommendation not met
+
+note: recommendation not met
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/history_paging/history_paging.rs:107:41
+    |
+107 |         t.rows[2].actor==Some(seq![65]),t.rows[3].actor==Some(seq![65]),
+    |                                         ^^^^^^^^^
+    |
+   --> map.rs:87:12
+    |
+    = note: recommendation not met
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/history_paging/history_paging.rs:111:12
+    |
+111 |     assert(admitted(t,p)==seq![2,3]) by {reveal_with_fuel(Seq::filter,5);}
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/history_paging/history_paging.rs:123:1
+    |
+123 | pub proof fn theorem_page_length_and_decoded_sequence(t:Table,p:Params)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/history_paging/history_paging.rs:125:13
+    |
+125 |       ensures match history(t,p) {Outcome::Page(page)=>
+    |  _____________^
+126 | |         page.revisions.len()==if p.limit<admitted(t,p).len(){p.limit as nat}else{admitted(t,p).len()}
+127 | |         && (forall|i:int| 0<=i<page.revisions.len() ==> page.revisions[i].seq==selected(t,p)[i]),_=>false},
+    | |__________________________________________________________________________________________________________^ failed this postcondition
+...
+131 |       assert forall|i:int| 0<=i<selected(t,p).len() implies decode(t.rows[selected(t,p)[i]]).seq==selected(t,p)[i] by {
+    |       ------ at the end of the function body
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/history_paging/history_paging.rs:135:16
+    |
+135 |         assert(t.ids.contains(id));
+    |                ^^^^^^^^^^^^^^^^^^ assertion failed
+
+note: recommendation not met
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/history_paging/history_paging.rs:161:44
+    |
+161 |         forall|i:int| 0<=i<t.ids.len() ==> t.rows[t.ids[i]].seq<=p.after,
+    |                                            ^^^^^^^^^^^^^^^^
+    |
+   --> map.rs:87:12
+    |
+    = note: recommendation not met
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/history_paging/history_paging.rs:168:48
+    |
+168 |                 let id=admitted(t,p)[0];assert(t.ids.contains(id));
+    |                                                ^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 4 previous errors
+

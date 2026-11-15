@@ -1,0 +1,16 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration6-temporal-20261115/verus/temporal_restore/controls/refused-line-still-written/20261115T171103Z/temporal_restore.rs:131:13
+    |
+129 |   pub proof fn theorem_swallowed_line_is_not_reported(k:Key,good:Key,v:Scalar)
+    |   ---------------------------------------------------------------------------- at the end of the function body
+130 |       requires k!=good,
+131 |       ensures ({let r=restore(Map::empty(),seq![Line::Value{key:good,value:v},Line::Value{key:k,value:v}],Some(true),false,set![k]);
+    |  _____________^
+132 | |         !r.refused && r.applied==1 && r.failed_rows==0 && r.state.contains_key(good) && !r.state.contains_key(k)}),
+    | |__________________________________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 1 previous error
+

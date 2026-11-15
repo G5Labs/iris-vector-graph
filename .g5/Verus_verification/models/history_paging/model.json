@@ -1,0 +1,112 @@
+{
+  "name": "history_paging",
+  "root": "history_paging.rs",
+  "expected_verified": 20,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "controls": [
+    {
+      "name": "cursor-inclusive",
+      "find": "r.seq>p.after",
+      "replace": "r.seq>=p.after",
+      "expect_fail_in": [
+        "theorem_direction_and_exclusive_cursor"
+      ]
+    },
+    {
+      "name": "descending-cursor-reversed",
+      "find": "r.seq<p.after",
+      "replace": "r.seq>p.after",
+      "expect_fail_in": [
+        "theorem_direction_and_exclusive_cursor"
+      ]
+    },
+    {
+      "name": "descending-order-ignored",
+      "find": "admitted(t,p).sort_by(less(p.descending))",
+      "replace": "admitted(t,p).sort_by(less(false))",
+      "expect_fail_in": [
+        "theorem_order_is_derived"
+      ]
+    },
+    {
+      "name": "empty-filter-disabled",
+      "find": "filter.is_none() ||",
+      "replace": "(filter.is_none() || filter.unwrap().len()==0) ||",
+      "expect_fail_in": [
+        "theorem_empty_filter_is_not_omitted"
+      ]
+    },
+    {
+      "name": "time-equality-excluded",
+      "find": "r.committed_ms.unwrap()>=p.since.unwrap()",
+      "replace": "r.committed_ms.unwrap()>p.since.unwrap()",
+      "expect_fail_in": [
+        "theorem_time_boundaries_are_inclusive"
+      ]
+    },
+    {
+      "name": "full-page-hides-cursor",
+      "find": "next:if rows.len()>0 && rows.len()==limit",
+      "replace": "next:if rows.len()>0 && rows.len()>limit",
+      "expect_fail_in": [
+        "theorem_full_page_supplies_cursor"
+      ]
+    },
+    {
+      "name": "missing-count-is-one",
+      "find": "op_count:r.op_count.unwrap_or(0)",
+      "replace": "op_count:r.op_count.unwrap_or(1)",
+      "expect_fail_in": [
+        "theorem_decode_normalizes_fields"
+      ]
+    },
+    {
+      "name": "negative-top-is-empty",
+      "find": "if p.limit<0 {Outcome::SqlRefused}else{Outcome::Page(finish",
+      "replace": "if p.limit<0 {Outcome::Page(finish(seq![],p.limit))}else{Outcome::Page(finish",
+      "expect_fail_in": [
+        "theorem_zero_and_negative_limits"
+      ]
+    },
+    {
+      "name": "limit-before-filter",
+      "find": "prefix(ordered(t,p),p.limit)",
+      "replace": "prefix(t.ids.sort_by(less(p.descending)),p.limit).filter(|id:int|matches(t.rows[id],p,t.collation))",
+      "expect_fail_in": [
+        "theorem_filter_happens_before_limit"
+      ]
+    },
+    {
+      "name": "query-failure-is-empty",
+      "find": "Fault::Execute|Fault::Fetch=>Outcome::QueryError",
+      "replace": "Fault::Execute|Fault::Fetch=>Outcome::Page(finish(seq![],p.limit))",
+      "expect_fail_in": [
+        "theorem_failed_reader_never_becomes_empty"
+      ]
+    },
+    {
+      "name": "sqlupper-is-binary",
+      "find": "Collation::SqlUpperAscii=>trim_tail(upper(a))==trim_tail(upper(b))",
+      "replace": "Collation::SqlUpperAscii=>a==b",
+      "expect_fail_in": [
+        "theorem_sqlupper_ascii_neighbor"
+      ]
+    },
+    {
+      "name": "trailing-whitespace-is-significant",
+      "find": "Collation::SqlUpperAscii=>trim_tail(upper(a))==trim_tail(upper(b))",
+      "replace": "Collation::SqlUpperAscii=>upper(a)==upper(b)",
+      "expect_fail_in": [
+        "theorem_trailing_space_tab_neighbor"
+      ]
+    },
+    {
+      "name": "converted-cursor-truthiness",
+      "find": "!p.after_truthy || r.seq<p.after",
+      "replace": "p.after==0 || r.seq<p.after",
+      "expect_fail_in": [
+        "theorem_raw_cursor_truthiness_precedes_conversion"
+      ]
+    }
+  ]
+}

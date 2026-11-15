@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_order_is_derived"
+    ],
+    "find": "admitted(t,p).sort_by(less(p.descending))",
+    "name": "descending-order-ignored",
+    "replace": "admitted(t,p).sort_by(less(false))"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_order_is_derived"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/history_paging/history_paging.rs": "461bc00d2ce6c6f1f8b676b017964e80a64bc0f7d010d2ed219e0148626accd4",
+    ".g5/Verus_verification/models/history_paging/model.json": "6fab7fd53d8712bd3c24dc14931426c1d789160643a331af804137e67868ce52"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/controls/descending-order-ignored/20261115T170756Z/history_paging.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_order_is_derived": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/20261115T170756Z-control-descending-order-ignored-theorem_order_is_derived.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/20261115T170756Z-control-descending-order-ignored.log",
+    "timed_out": false,
+    "verified": 16
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/history_paging/20261115T170758Z-control-descending-order-ignored/logs/20261115T170756Z-control-descending-order-ignored-theorem_order_is_derived.log": "3467a4ac8716c2acf5f5fad050c738e72ccd33ac257cbd88be743c6078fb5af8",
+    ".g5/Verus_verification/results/history_paging/20261115T170758Z-control-descending-order-ignored/logs/20261115T170756Z-control-descending-order-ignored.log": "66bf1703ea4a17245b785a9d08276d60f1a8843ce410a2029fc58fb2143aa9b7"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_numeric_attribute_becomes_text"
+    ],
+    "find": "Scalar::Number(n)=>Scalar::NumericText(n)",
+    "name": "scalar-typing-assumed-preserved",
+    "replace": "Scalar::Number(n)=>Scalar::Number(n)"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_numeric_attribute_becomes_text"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal_restore/model.json": "6e7137843cae40f30a383cad43dee83f6733faac5bdff15cd9709921284cfb12",
+    ".g5/Verus_verification/models/temporal_restore/temporal_restore.rs": "0f72f0047d5a1faf6471e0cd7b2bc369fe2c4e334144bbc17b6264b961d584a6",
+    ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs": "4f14236f57a45c64e889f794b6d55f3fc823dccaba4a2759ed7cedc97fd3bd9d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration6-temporal-20261115/verus/temporal_restore/controls/scalar-typing-assumed-preserved/20261115T175724Z/models/temporal_restore/temporal_restore.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_numeric_attribute_becomes_text": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration6-temporal-20261115/verus/temporal_restore/20261115T175724Z-control-scalar-typing-assumed-preserved-theorem_numeric_attribute_becomes_text.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration6-temporal-20261115/verus/temporal_restore/20261115T175724Z-control-scalar-typing-assumed-preserved.log",
+    "timed_out": false,
+    "verified": 30
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal_restore/20261115T175725Z-control-scalar-typing-assumed-preserved/logs/20261115T175724Z-control-scalar-typing-assumed-preserved-theorem_numeric_attribute_becomes_text.log": "584f5c3965606a9286837bf9f7ab9f7481e657050d23582bd189bfc1fe082b6f",
+    ".g5/Verus_verification/results/temporal_restore/20261115T175725Z-control-scalar-typing-assumed-preserved/logs/20261115T175724Z-control-scalar-typing-assumed-preserved.log": "079b4a3e3f3799a82f033ebd691e540b30760c7fb81d1a0c3e454ca6e7815f23"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

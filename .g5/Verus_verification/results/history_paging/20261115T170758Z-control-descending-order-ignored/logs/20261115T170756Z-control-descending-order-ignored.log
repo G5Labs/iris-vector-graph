@@ -1,0 +1,58 @@
+verification results:: 16 verified, 3 errors
+note: recommendation not met
+  --> /Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/controls/descending-order-ignored/20261115T170756Z/history_paging.rs:86:63
+   |
+86 |     ensures forall|i:int| 0<=i<ordered(t,p).len() ==> matches(t.rows[ordered(t,p)[i]],p,t.collation),
+   |                                                               ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+  --> map.rs:87:12
+   |
+   = note: recommendation not met
+
+note: recommendation not met
+  --> /Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/controls/descending-order-ignored/20261115T170756Z/history_paging.rs:90:66
+   |
+90 |     assert forall|i:int| 0<=i<ordered(t,p).len() implies matches(t.rows[ordered(t,p)[i]],p,t.collation) by {
+   |                                                                  ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+  --> map.rs:87:12
+   |
+   = note: recommendation not met
+
+error: assertion failed
+  --> /Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/controls/descending-order-ignored/20261115T170756Z/history_paging.rs:91:73
+   |
+91 |         let id=ordered(t,p)[i];assert(ordered(t,p).contains(id));assert(ids.contains(id));
+   |                                                                         ^^^^^^^^^^^^^^^^ assertion failed
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/controls/descending-order-ignored/20261115T170756Z/history_paging.rs:96:1
+   |
+96 | pub proof fn theorem_order_is_derived(t:Table,p:Params)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/controls/descending-order-ignored/20261115T170756Z/history_paging.rs:97:13
+   |
+96 | pub proof fn theorem_order_is_derived(t:Table,p:Params)
+   | ------------------------------------------------------- at the end of the function body
+97 |     ensures sorted_by(ordered(t,p),less(p.descending)),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/controls/descending-order-ignored/20261115T170756Z/history_paging.rs:98:9
+   |
+96 | pub proof fn theorem_order_is_derived(t:Table,p:Params)
+   | ------------------------------------------------------- at the end of the function body
+97 |     ensures sorted_by(ordered(t,p),less(p.descending)),
+98 |         admitted(t,p).to_multiset()==ordered(t,p).to_multiset(),
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: assertion failed
+   --> /Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/controls/descending-order-ignored/20261115T170756Z/history_paging.rs:148:16
+    |
+148 |         assert(ids.contains(id));let j=choose|j:int| 0<=j<ids.len() && ids[j]==id;
+    |                ^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 4 previous errors
+

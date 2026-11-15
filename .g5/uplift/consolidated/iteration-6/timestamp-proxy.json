@@ -1,0 +1,491 @@
+{
+  "kind": "actual Python port observation only",
+  "singles": [
+    {
+      "input": null,
+      "omitted": true,
+      "outcome": {
+        "kind": "value",
+        "result": true
+      },
+      "native_port_calls": [
+        {
+          "class": "Graph.KG.TemporalIndex",
+          "method": "InsertEdge",
+          "args": [
+            "",
+            "a",
+            "R",
+            "b",
+            "0",
+            "1.0",
+            "",
+            "0",
+            "0",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "input": null,
+      "omitted": false,
+      "outcome": {
+        "kind": "value",
+        "result": true
+      },
+      "native_port_calls": [
+        {
+          "class": "Graph.KG.TemporalIndex",
+          "method": "InsertEdge",
+          "args": [
+            "",
+            "a",
+            "R",
+            "b",
+            "0",
+            "1.0",
+            "",
+            "0",
+            "0",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "input": 0,
+      "omitted": false,
+      "outcome": {
+        "kind": "value",
+        "result": true
+      },
+      "native_port_calls": [
+        {
+          "class": "Graph.KG.TemporalIndex",
+          "method": "InsertEdge",
+          "args": [
+            "",
+            "a",
+            "R",
+            "b",
+            "0",
+            "1.0",
+            "",
+            "0",
+            "0",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "input": "0",
+      "omitted": false,
+      "outcome": {
+        "kind": "value",
+        "result": true
+      },
+      "native_port_calls": [
+        {
+          "class": "Graph.KG.TemporalIndex",
+          "method": "InsertEdge",
+          "args": [
+            "",
+            "a",
+            "R",
+            "b",
+            "0",
+            "1.0",
+            "",
+            "0",
+            "0",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "input": 100,
+      "omitted": false,
+      "outcome": {
+        "kind": "value",
+        "result": true
+      },
+      "native_port_calls": [
+        {
+          "class": "Graph.KG.TemporalIndex",
+          "method": "InsertEdge",
+          "args": [
+            "",
+            "a",
+            "R",
+            "b",
+            "100",
+            "1.0",
+            "",
+            "0",
+            "0",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "input": "100",
+      "omitted": false,
+      "outcome": {
+        "kind": "value",
+        "result": true
+      },
+      "native_port_calls": [
+        {
+          "class": "Graph.KG.TemporalIndex",
+          "method": "InsertEdge",
+          "args": [
+            "",
+            "a",
+            "R",
+            "b",
+            "100",
+            "1.0",
+            "",
+            "0",
+            "0",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "input": "",
+      "omitted": false,
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "invalid literal for int() with base 10: ''"
+      },
+      "native_port_calls": []
+    },
+    {
+      "input": -1,
+      "omitted": false,
+      "outcome": {
+        "kind": "error",
+        "type": "ValidationError",
+        "message": "1 validation error for TemporalEdgeInput\ntimestamp\n  Input should be greater than or equal to 0 [type=greater_than_equal, input_value=-1, input_type=int]\n    For further information visit https://errors.pydantic.dev/2.13/v/greater_than_equal"
+      },
+      "native_port_calls": []
+    }
+  ],
+  "batches": [
+    {
+      "edge": {
+        "s": "a",
+        "p": "R",
+        "o": "b",
+        "ts": 0
+      },
+      "fail_bulk": false,
+      "outcome": {
+        "kind": "value",
+        "count": 1,
+        "collisions": 0,
+        "skipped": 0
+      },
+      "native_port_calls": [
+        {
+          "class": "Graph.KG.TemporalIndex",
+          "method": "BulkInsertCounts",
+          "args": [
+            "",
+            "[{\"s\": \"a\", \"p\": \"R\", \"o\": \"b\", \"ts\": 0, \"w\": 1.0}]",
+            "0",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "edge": {
+        "s": "a",
+        "p": "R",
+        "o": "b",
+        "timestamp": 0
+      },
+      "fail_bulk": false,
+      "outcome": {
+        "kind": "value",
+        "count": 1,
+        "collisions": 0,
+        "skipped": 0
+      },
+      "native_port_calls": [
+        {
+          "class": "Graph.KG.TemporalIndex",
+          "method": "BulkInsertCounts",
+          "args": [
+            "",
+            "[{\"s\": \"a\", \"p\": \"R\", \"o\": \"b\", \"ts\": 0, \"w\": 1.0}]",
+            "0",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "edge": {
+        "s": "a",
+        "p": "R",
+        "o": "b",
+        "ts": "0"
+      },
+      "fail_bulk": false,
+      "outcome": {
+        "kind": "value",
+        "count": 1,
+        "collisions": 0,
+        "skipped": 0
+      },
+      "native_port_calls": [
+        {
+          "class": "Graph.KG.TemporalIndex",
+          "method": "BulkInsertCounts",
+          "args": [
+            "",
+            "[{\"s\": \"a\", \"p\": \"R\", \"o\": \"b\", \"ts\": 0, \"w\": 1.0}]",
+            "0",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "edge": {
+        "s": "a",
+        "p": "R",
+        "o": "b",
+        "ts": 100
+      },
+      "fail_bulk": false,
+      "outcome": {
+        "kind": "value",
+        "count": 1,
+        "collisions": 0,
+        "skipped": 0
+      },
+      "native_port_calls": [
+        {
+          "class": "Graph.KG.TemporalIndex",
+          "method": "BulkInsertCounts",
+          "args": [
+            "",
+            "[{\"s\": \"a\", \"p\": \"R\", \"o\": \"b\", \"ts\": 100, \"w\": 1.0}]",
+            "0",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "edge": {
+        "s": "a",
+        "p": "R",
+        "o": "b"
+      },
+      "fail_bulk": false,
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "bulk_create_edges_temporal: edge 0 {'s': 'a', 'p': 'R', 'o': 'b'} has no timestamp; each edge is a dict with s/source_id/source, p/predicate, o/target_id/target, ts/timestamp, and optionally w/weight, attrs"
+      },
+      "native_port_calls": []
+    },
+    {
+      "edge": {
+        "s": "a",
+        "p": "R",
+        "o": "b",
+        "ts": null
+      },
+      "fail_bulk": false,
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "bulk_create_edges_temporal: edge 0 {'s': 'a', 'p': 'R', 'o': 'b', 'ts': None} has no timestamp; each edge is a dict with s/source_id/source, p/predicate, o/target_id/target, ts/timestamp, and optionally w/weight, attrs"
+      },
+      "native_port_calls": []
+    },
+    {
+      "edge": {
+        "s": "a",
+        "p": "R",
+        "o": "b",
+        "ts": ""
+      },
+      "fail_bulk": false,
+      "outcome": {
+        "kind": "error",
+        "type": "ValueError",
+        "message": "bulk_create_edges_temporal: edge 0 {'s': 'a', 'p': 'R', 'o': 'b', 'ts': ''} has no timestamp; each edge is a dict with s/source_id/source, p/predicate, o/target_id/target, ts/timestamp, and optionally w/weight, attrs"
+      },
+      "native_port_calls": []
+    },
+    {
+      "edge": {
+        "s": "a",
+        "p": "R",
+        "o": "b",
+        "ts": 0,
+        "timestamp": 100
+      },
+      "fail_bulk": false,
+      "outcome": {
+        "kind": "value",
+        "count": 1,
+        "collisions": 0,
+        "skipped": 0
+      },
+      "native_port_calls": [
+        {
+          "class": "Graph.KG.TemporalIndex",
+          "method": "BulkInsertCounts",
+          "args": [
+            "",
+            "[{\"s\": \"a\", \"p\": \"R\", \"o\": \"b\", \"ts\": 100, \"w\": 1.0}]",
+            "0",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "edge": {
+        "s": "a",
+        "p": "R",
+        "o": "b",
+        "ts": 100,
+        "timestamp": 0
+      },
+      "fail_bulk": false,
+      "outcome": {
+        "kind": "value",
+        "count": 1,
+        "collisions": 0,
+        "skipped": 0
+      },
+      "native_port_calls": [
+        {
+          "class": "Graph.KG.TemporalIndex",
+          "method": "BulkInsertCounts",
+          "args": [
+            "",
+            "[{\"s\": \"a\", \"p\": \"R\", \"o\": \"b\", \"ts\": 100, \"w\": 1.0}]",
+            "0",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "edge": {
+        "s": "a",
+        "p": "R",
+        "o": "b",
+        "ts": 0
+      },
+      "fail_bulk": true,
+      "outcome": {
+        "kind": "value",
+        "count": 1,
+        "collisions": 0,
+        "skipped": 0
+      },
+      "native_port_calls": [
+        {
+          "class": "Graph.KG.TemporalIndex",
+          "method": "BulkInsertCounts",
+          "args": [
+            "",
+            "[{\"s\": \"a\", \"p\": \"R\", \"o\": \"b\", \"ts\": 0, \"w\": 1.0}]",
+            "0",
+            ""
+          ]
+        },
+        {
+          "class": "Graph.KG.TemporalIndex",
+          "method": "InsertEdge",
+          "args": [
+            "",
+            "a",
+            "R",
+            "b",
+            "0",
+            "1.0",
+            "",
+            "0",
+            "0",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "edge": {
+        "s": "a",
+        "p": "R",
+        "o": "b",
+        "ts": 100
+      },
+      "fail_bulk": true,
+      "outcome": {
+        "kind": "value",
+        "count": 1,
+        "collisions": 0,
+        "skipped": 0
+      },
+      "native_port_calls": [
+        {
+          "class": "Graph.KG.TemporalIndex",
+          "method": "BulkInsertCounts",
+          "args": [
+            "",
+            "[{\"s\": \"a\", \"p\": \"R\", \"o\": \"b\", \"ts\": 100, \"w\": 1.0}]",
+            "0",
+            ""
+          ]
+        },
+        {
+          "class": "Graph.KG.TemporalIndex",
+          "method": "InsertEdge",
+          "args": [
+            "",
+            "a",
+            "R",
+            "b",
+            "100",
+            "1.0",
+            "",
+            "0",
+            "0",
+            ""
+          ]
+        }
+      ]
+    }
+  ],
+  "mutation_empty_for_none_detected": true,
+  "not_observed": [
+    "ObjectScript clock resolution",
+    "native-driver coercion",
+    "IRIS persistence/window",
+    "partial bulk failure after a prefix"
+  ],
+  "substituted": "Native API recording endpoint and namespace/ledger/setup guards; no database connection",
+  "source_sha256": {
+    "iris_vector_graph/_engine/temporal.py": "0dab28a4a76d088d31b87d4dea23699b3e15a33fc0a96785f66b1defdb164802",
+    "iris_vector_graph/stores/iris_sql_store.py": "737df8a794a979d2c2e4f3af100508fd05c1907893ec2fa65f2fc440e34ff153",
+    "iris_src/src/Graph/KG/TemporalIndex.cls": "4b00154628b5b77ae3bbae26c857f81d934d09d73bc271f65cb1e202d616cb54"
+  },
+  "elapsed": 0.006513624975923449
+}

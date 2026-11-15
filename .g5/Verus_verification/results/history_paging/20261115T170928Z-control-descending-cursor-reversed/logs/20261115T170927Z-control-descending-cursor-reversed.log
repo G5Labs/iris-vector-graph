@@ -1,0 +1,21 @@
+verification results:: 18 verified, 2 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/controls/descending-cursor-reversed/20261115T170927Z/history_paging.rs:159:9
+    |
+157 | pub proof fn theorem_direction_and_exclusive_cursor(r:Row,p:Params,c:Collation)
+    | ------------------------------------------------------------------------------- at the end of the function body
+158 |     ensures (!p.descending && r.seq<=p.after) ==> !matches(r,p,c),
+159 |         (p.descending && p.after_truthy && r.seq>=p.after) ==> !matches(r,p,c),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/controls/descending-cursor-reversed/20261115T170927Z/history_paging.rs:227:9
+    |
+224 | pub proof fn theorem_raw_cursor_truthiness_precedes_conversion(r:Row,c:Collation)
+    | --------------------------------------------------------------------------------- at the end of the function body
+...
+227 |         !matches(r,cursor_input(defaults(2,true,0),CursorInput::IntegerText(0)),c),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

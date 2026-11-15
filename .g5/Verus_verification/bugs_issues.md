@@ -3468,6 +3468,8 @@ Reproduced by: playbook arm, live on its IRIS (x86_64 VM): `c18-live-swallowed-l
 - Reviewed-design control: `playbook-proofs-d1b` `control_fc1802_swallowed_line` fails where expected in this run ([receipt](results/playbook-proofs-d1b/20261115T035742Z-control_fc1802_swallowed_line/receipt.json)); the reviewed design verifies ([baseline](results/playbook-proofs-d1b/20261115T035711Z-baseline/receipt.json)). That is a model fact about the reviewed design, not a product property.
 - Not yet compared with the guidance arm's entries beyond the confirmed merges.
 
+Iteration 6 strengthening: a real Native API <SUBSCRIPT> refusal for one temporal KG line is caught, while valid neighboring events restore, failed_rows stays empty and KG is reported restored. temporal_restore::theorem_swallowed_line_is_not_reported derives that outcome; native layout/zero/valid neighbors retained. The intended error-reporting obligation is still violated. This corroborates the inherited root, not a new defect. Owner install.snapshot.temporal.
+
 _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
 
 <a id="F-CS01"></a>
@@ -6544,6 +6546,8 @@ Reproduced by: playbook arm, live on its IRIS (x86_64 VM): `c18-live-value-types
 - Source severity S3, confidence high; module 18; governing page here: `install.snapshot`.
 - Remedy proposed by the playbook arm (not implemented): Archive the value's type (as the vector form does) or move values on the server.
 - Not yet compared with the guidance arm's entries beyond the confirmed merges.
+
+Iteration 6 strengthening, not a new discovery: actual fresh temporal writer -> snapshot -> one-call/paged window preserves weights but changes integer attrs n=1 to string n='1'. The initial DISAGREES receipt170720 and intended type-preservation oracle remain. temporal_restore now models Number -> NumericText scalar export separately from weight coercion and attribute type, with a distinguishing Verus theorem. A method-copy proposal merely removing str(value) failed on actual Decimal JSON serialization and is retired as insufficient; no repair implemented. Owner install.snapshot.temporal.
 
 _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
 

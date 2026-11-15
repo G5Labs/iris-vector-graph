@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration6-history-20261115/verus/history_paging/controls/limit-before-filter/20261115T170936Z/history_paging.rs:117:13
+    |
+114 | pub proof fn theorem_filter_happens_before_limit(t:Table)
+    | --------------------------------------------------------- at the end of the function body
+...
+117 |     ensures selected(t,Params{actor:Some(seq![65]),..defaults(2,false,0)})==seq![2,3],
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

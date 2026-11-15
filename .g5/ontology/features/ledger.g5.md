@@ -201,6 +201,21 @@ Readers show the ledger without changing it.
 - Reconstruct returns the graph as of a revision. Above 250,000 nodes and relationships (set at enable) it refuses with `ReconstructionTooLargeError` unless asked to stream.
 - Export writes a reconstruction as NDJSON that `import_graph_ndjson` accepts, with no size bound.
 
+<a id="ledger.readers.history"></a>
+[I · ledger.readers.history]
+
+History filters the current revision rows before it sorts and limits a page. Oldest-first pages exclude the cursor sequence and everything older; newest-first pages exclude it and everything newer, while integer zero starts at the newest revision.
+- A full nonempty page returns its last sequence as the next cursor, even when it is the final full page. A short or empty page returns no cursor, so an exactly full final page needs one extra empty read.
+- Time bounds include equality. A filter set to None is omitted; empty text is still a supplied filter.
+- Text comparisons follow the database: this provider accepts ASCII case changes and trailing spaces or tabs, but interior JSON spacing still matters for stored source text. Decoding that source for display is a separate step.
+- A zero limit returns an empty page, and IRIS refuses a negative one. A failed read or required-field decode raises instead of becoming an empty page. Each acquired cursor gets one close attempt.
+- Pages are live reads, not one fixed snapshot. Text "0" is tested as true before cursor conversion, so in newest-first order it selects sequences below zero instead of the initial page. The scope of exact text matching is [open](#ledger.readers.history.text-policy).
+
+<a id="ledger.readers.history.text-policy"></a>
+[Q · ledger.readers.history.text-policy]
+
+Should history text filters keep the database's case and trailing-space matching, or use binary string identity? Working answer: document current matching to preserve existing queries until the maintainer decides; binary matching would distinguish correlation IDs and source JSON text that currently compare equal. The API says "exact" for correlation IDs, but no source settles whether that requires binary matching.
+
 <a id="ledger.readers.bound"></a>
 [D · ledger.readers.bound]
 
@@ -515,7 +530,7 @@ Findings: [When the strict-mode guard cannot read the ledger's state, should it 
 ### ledger.readers
 
 - Sources: [ledger API contract](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md#L27-L31), [client.py readers](../../../iris_vector_graph/ledger/client.py#L585-L739), [export.py](../../../iris_vector_graph/ledger/export.py)
-- Children: [diff](#ledger.readers.diff), [bound during reconstruction](#ledger.readers.bound)
+- Children: [history pages](#ledger.readers.history), [diff](#ledger.readers.diff), [bound during reconstruction](#ledger.readers.bound)
 - agent
 - user-facing-behavior
 - test-coverage
@@ -523,6 +538,23 @@ Findings: [When the strict-mode guard cannot read the ledger's state, should it 
 The diff order is [replay.py _sort_key](../../../iris_vector_graph/ledger/replay.py#L404-L405); the reconstruct bound counts nodes plus relationships while folding ([replay.py reconstruct](../../../iris_vector_graph/ledger/replay.py#L544-L558)). Live tests: `test_ledger_us06_history.py`, `test_ledger_us07_diff.py`, `test_ledger_us08_reconstruct.py`. While a redaction is unfinished some readers refuse ([rule](redaction.g5.md#redaction.batches.readers)).
 
 Findings: [Lifecycle diff range priors](../../Verus_verification/bugs_issues.md#bug-led-101); questions [Must the streaming history reader bound its memory?](../../Verus_verification/open_questions.md#q-con-001), [Is a ledger diff an ordered script?](../../Verus_verification/open_questions.md#q-con-002). Public cases M04, M05 and J03 read this block. The new [diff owner](#ledger.readers.diff) and as-built history_diff contract represent named endpoint selection, inversion and continuous per-attribute endpoint values; complete lifecycle/content reconstruction remains open.
+
+### ledger.readers.history
+- Sources: [history caller](../../../iris_vector_graph/ledger/client.py#L585-L629), [SQL and row producer](../../../iris_vector_graph/ledger/replay.py#L275-L370), [history contract](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md), [revision string columns](../../../iris_src/src/Graph/KG/LedgerRevision.cls#L20-L36)
+- Expands: [readers](#ledger.readers)
+- Formal contract: [history paging and typed view](../../Verus_verification/models/history_paging/history_paging.rs)
+- Children: [text matching policy](#ledger.readers.history.text-policy)
+- agent
+- user-facing-behavior
+- test-coverage
+
+### ledger.readers.history.text-policy
+- Sources: [API exact correlation filter](../../../iris_vector_graph/ledger/client.py#L607-L609), [native comparison evidence](../../uplift/consolidated/iteration-6/history-collation-native.json), [space comparisons](../../uplift/consolidated/iteration-6/history-collation-spaces-native.json)
+- Expands: [history pages](#ledger.readers.history)
+- Findings: [text policy question](../../Verus_verification/open_questions.md#q-iter-003)
+- agent
+- assumption
+- uncertain
 
 ### ledger.readers.bound
 - Sources: [`GraphLedger.reconstruct`](../../../iris_vector_graph/ledger/client.py#L720-L729), [`::export_reconstruction`](../../../iris_vector_graph/ledger/client.py#L731-L739), [`replay.reconstruct`](../../../iris_vector_graph/ledger/replay.py#L544-L566), [`GraphState.apply`](../../../iris_vector_graph/ledger/replay.py#L172-L212), [numeric metadata producer `Ledger.Meta`](../../../iris_src/src/Graph/KG/Ledger.cls#L143-L151), [API contract](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md#L30-L31)
